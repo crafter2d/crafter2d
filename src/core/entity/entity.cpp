@@ -103,7 +103,9 @@ void Entity::setTransform(const XForm& transform)
 void Entity::setPosition(const Vector& p)
 {
    mTransform.setPosition(p + mOffset);
-   sendComponentMessage(ComponentMessage(ComponentInterface::ePositionChangedMsg));
+   
+   ComponentMessage message(ComponentInterface::ePositionChangedMsg);
+   sendComponentMessage(message);
 
    setDirty(ePositionDirty);
 
@@ -116,7 +118,9 @@ void Entity::setPosition(const Vector& p)
 void Entity::setRotation(const float rotation) 
 {
    mTransform.setAngle(rotation);
-   sendComponentMessage(ComponentMessage(ComponentInterface::eRotationChangedMsg));
+   
+   ComponentMessage message(ComponentInterface::eRotationChangedMsg);
+   sendComponentMessage(message);
 
    setDirty(ePositionDirty);
 
@@ -130,7 +134,8 @@ void Entity::setOffset(const Vector& offset)
    mTransform.setPosition(mTransform.getPosition() + (offset - mOffset));
    mOffset = offset;
 
-   sendComponentMessage(ComponentMessage(ComponentInterface::ePositionChangedMsg));
+   ComponentMessage message(ComponentInterface::ePositionChangedMsg);
+   sendComponentMessage(message);
 }
 
 // - Query
@@ -174,7 +179,8 @@ void Entity::flip()
 
 void Entity::update(float delta)
 {
-   mComponents.postMessage(ComponentMessage(ComponentInterface::eUpdateMsg, &delta));
+   ComponentMessage message(ComponentInterface::eUpdateMsg, &delta);
+   mComponents.postMessage(message);
 
    mChildren.update(delta);
 }

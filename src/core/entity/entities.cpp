@@ -2,6 +2,8 @@
 
 #include "entities.h"
 
+#include <algorithm>
+
 #include "core/defines.h"
 
 #include "entity.h"

@@ -54,7 +54,7 @@ namespace c2d
       Module* pmodule = mpManager->lookup(uuid);
       if ( pmodule == NULL )
       {
-         throw new std::exception("");
+         throw new std::exception();
       }
       return *pmodule;
    }

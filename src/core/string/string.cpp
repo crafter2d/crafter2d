@@ -23,10 +23,9 @@
 #include <functional>
 
 #include "core/defines.h"
-#include "core/conv/numberconverter.h"
 
-#include "char.h"
 #include "utf.h"
+#include "char.h"
 
 int hex_digit(char c)
 {
@@ -223,14 +222,6 @@ CORE_API String operator+(const UChar* pleft, const String& right)
    return String(pleft) + right;
 }
 
-CORE_API String operator+(const UChar ch, const String& right)
-{
-   String result;
-   result = ch;
-   result += right;
-   return result;
-}
-
 // - Query
 
 bool String::isEmpty() const
@@ -321,13 +312,13 @@ UChar* String::getBuffer(uint32_t length)
 
 const String& String::toLower()
 {
-    _wcslwr_s(mpString, mLength + 1);
+   //s_wcslwr(mpString, mLength + 1);
    return *this;
 }
 
 const String& String::toUpper()
 {
-   _wcsupr_s(mpString, mLength + 1);
+   //_wcsupr(mpString, mLength + 1);
    return *this;
 }
 
@@ -435,16 +426,6 @@ void String::replace(int start, int count, const String& with)
 
    mLength = newlen;
    mpString[newlen] = 0;
-   delete[] ptemp;
-}
-
-void String::replace(const String& original, const String& with)
-{
-   int index = indexOf(original);
-   if ( index != -1 )
-   {
-      replace(index, original.length(), with);
-   }
 }
 
 /// removes characters [start, start+count>.
@@ -460,20 +441,6 @@ String String::subStr(int start, int count) const
 {
    String result;
    result.setTo(&mpString[start], count);
-   return result;
-}
-
-String String::left(int to) const
-{
-   String result;
-   result.setTo(mpString, to + 1);
-   return result;
-}
-
-String String::right(int from) const
-{
-   String result;
-   result.setTo(&mpString[from], mLength - from);
    return result;
 }
 
@@ -517,25 +484,6 @@ String String::unescape() const
    result.mLength = pos;
    result.mpString[pos] = 0;
    return result;
-}
-
-// - Arguments
-
-String& String::arg(int arg, const String& value)
-{
-   String num;
-   String search = L'{' + NumberConverter::getInstance().format(num, arg) + L'}';
-   replace(search, value);
-   return *this;
-}
-
-String& String::arg(int arg, int value)
-{
-   String num;
-   NumberConverter& inst = NumberConverter::getInstance();
-   String search = L'{' + inst.format(num, arg) + L'}';
-   replace(search, inst.format(num, value));
-   return *this;
 }
 
 // - Searching

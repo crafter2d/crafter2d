@@ -21,6 +21,8 @@
 
 #include "core/defines.h"
 
+#include "vertexlayout.h"
+
 namespace Graphics
 {
    CodePath::CodePath():

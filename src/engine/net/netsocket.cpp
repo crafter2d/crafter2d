@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "netsocket.h"
 
+#include <cstring>
+
 #ifdef WIN32
 #include <ws2tcpip.h>
 #else
@@ -44,7 +46,7 @@ NetSocket::NetSocket():
 }
 
 // - Query
-   
+
 bool NetSocket::resolve(NetAddress& address, const String& name)
 {
    const std::string addr = name.toUtf8();
@@ -82,7 +84,7 @@ bool NetSocket::create()
    unsigned long non_block = 1;
    ioctlsocket (mSocket, FIONBIO, &non_block);
 #else
-   fcntl (mSock, F_SETFL, O_NONBLOCK );
+   fcntl (mSocket, F_SETFL, O_NONBLOCK );
 #endif
 
    return true;
@@ -127,8 +129,8 @@ void NetSocket::close()
       shutdown(mSocket, SD_BOTH);
       closesocket(mSocket);
 #else
-      shutdown(mSocket, SHUT_RDWR);
-      close(mSocket);
+      ::shutdown(mSocket, SHUT_RDWR);
+      ::close(mSocket);
 #endif
 }
 
@@ -152,11 +154,11 @@ int NetSocket::receive(NetAddress& from, NetPackage& package)
    int bytes = recvfrom(mSocket, (char*)&package, NetPackage::MaxPackageSize, 0, (struct sockaddr*)&(from.addr), (socklen_t*)&addrlen);
    if ( bytes == SOCKET_ERROR )
    {
-      handleError();  
+      handleError();
    }
    return bytes;
 }
-   
+
 int NetSocket::send(NetAddress& to, const NetPackage& package)
 {
    int size = package.getSize();
@@ -175,9 +177,10 @@ int NetSocket::send(NetAddress& to, const NetPackage& package)
 /// is only supported on the Windows platform.
 void NetSocket::handleError() const
 {
+    NetSocketException::Error error = NetSocketException::eUnsupportedError;
+
 #ifdef WIN32
    int platformerror = WSAGetLastError();
-   NetSocketException::Error error = NetSocketException::eUnsupportedError;
    switch ( WSAGetLastError() )
    {
    case WSAECONNRESET:

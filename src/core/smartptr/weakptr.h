@@ -4,7 +4,7 @@
 
 #include "weakcount.h"
 
-template<class T> class SharedPtr;
+template<class E> class SharedPtr;
 
 template <class T>
 class WeakPtr
@@ -19,7 +19,7 @@ public:
    SharedPtr<T> lock();
 
 private:
-   template<class T> friend class SharedPtr;
+   template<class E> friend class SharedPtr;
 
    CountBase* mpCount;
    T*         mpPointer;

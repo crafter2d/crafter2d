@@ -29,6 +29,7 @@
 #include "core/world/world.h"
 #include "core/world/bound.h"
 #include "core/world/bounds.h"
+#include "core/system/exception.h"
 
 #include "box2dbody.h"
 #include "box2draycastcallback.h"
@@ -130,7 +131,7 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
             fixturedef.restitution = 0.2f;
             fixturedef.shape    = &shape;
             fixturedef.userData = (void*)Box2DSimulator::eObject;
-            
+
             pboxbody->CreateFixture(&fixturedef);
          }
          break;
@@ -148,7 +149,7 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
             pboxbody->CreateFixture(&fixturedef);
          }
       default:
-         throw new std::exception("invalid body shape.");
+         throw new c2d::Exception(UTEXT("invalid body shape."));
    }
 
    Box2DBody* pbody = new Box2DBody(*this, *pboxbody);
@@ -256,7 +257,7 @@ void Box2DSimulator::run(float timestep)
    {
       static const int velocityIterations = 8;
       static const int positionIterations = 3;
-   
+
       getBodies().integrate(step);
 
       mpb2World->Step(step, velocityIterations, positionIterations);

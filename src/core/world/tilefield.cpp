@@ -1,6 +1,8 @@
 
 #include "tilefield.h"
 
+#include <cstring>
+
 #include "core/streams/datastream.h"
 #include "core/defines.h"
 
@@ -79,7 +81,7 @@ void TileField::resize(int width, int height)
 // - Loading
 
 // save & load
-   
+
 void TileField::load(DataStream& stream)
 {
    stream >> mWidth >> mHeight;

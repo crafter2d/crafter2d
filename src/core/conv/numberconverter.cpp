@@ -1,6 +1,8 @@
 
 #include "numberconverter.h"
 
+#include <string.h>
+
 #include "core/defines.h"
 #include "core/string/string.h"
 

@@ -35,10 +35,28 @@ LinuxFileSystem::~LinuxFileSystem()
 {
 }
 
-bool LinuxFileSystem::doRecurseDirectory(const String& dir, const String& mask, Callback callback, void* pdata)
+int LinuxFileSystem::mkdir(const String& path)
 {
+   return NO_ERR;
+}
+
+bool LinuxFileSystem::copyFile(const String& from, const String& to)
+{
+   return true;
+}
+
+UChar LinuxFileSystem::getSeparator() const
+{
+   return L'/';
+}
+
+bool LinuxFileSystem::doRecurseDirectory(const String& dir, const String& mask, std::vector<String>& result, bool recursive)
+{
+   const char* pdir = dir.toUtf8().c_str();
+   const char* pmask = mask.toUtf8().c_str();
+
    dirent** pentries = NULL;
-   int      count    = scandir(dir.getBuffer(), &pentries, 0, alphasort);
+   int      count    = scandir(pdir, &pentries, NULL, alphasort);
 
    struct stat s;
 
@@ -46,34 +64,34 @@ bool LinuxFileSystem::doRecurseDirectory(const String& dir, const String& mask, 
    {
       dirent& entry = *pentries[index];
 
-      if ( fnmatch(mask.getBuffer(), entry.d_name, FNM_PATHNAME) == 0 )
+      String path = dir + L'/' + String::fromUtf8(entry.d_name);
+      stat(path.toUtf8().c_str(), &s);
+      if ( S_ISDIR(s.st_mode) )
       {
-         String file = dir + entry.d_name;
-         stat(file.getBuffer(), &s);
-
-         callback(entry.d_name, S_ISDIR(s.st_mode), pdata);
+         if ( recursive && (path != UTEXT(".") || path != UTEXT("..")) )
+         {
+            doRecurseDirectory(path, mask, result, recursive);
+         }
+      }
+      else
+      {
+         if ( fnmatch(pmask, entry.d_name, FNM_PATHNAME) == 0 )
+         {
+            result.push_back(path);
+         }
       }
    }
 
    return true;
 }
 
-bool LinuxFileSystem::recurseDirectory(const String& dir, Callback callback, void* pdata)
-{
-   String localdir = dir;
-   if ( localdir[localdir.length() - 1] != '/' )
-      localdir += '/';
-
-   return doRecurseDirectory(localdir, "*.*", callback, pdata);
-}
-
-bool LinuxFileSystem::find(const String& mask, Callback callback, void* pdata)
+bool LinuxFileSystem::find(const String& mask, std::vector<String>& result, bool recursive)
 {
    String dir;
    String pattern;
 
-   String::size_type index = mask.lastIndexOf('/');
-   if ( index != mask.npos )
+   int index = mask.lastIndexOf('/');
+   if ( index != -1 )
    {
       dir     = mask.subStr(0, index);
       pattern = mask.subStr(index+1, mask.length() - index - 1);
@@ -84,5 +102,5 @@ bool LinuxFileSystem::find(const String& mask, Callback callback, void* pdata)
       pattern = mask;
    }
 
-   return doRecurseDirectory(dir, pattern, callback, pdata);
+   return doRecurseDirectory(dir, pattern, result, recursive);
 }

@@ -24,7 +24,7 @@
 
 #include "sharedcount.h"
 
-template<class T> class WeakPtr;
+template<class E> class WeakPtr;
 
 template<class T>
 class SharedPtr
@@ -53,7 +53,7 @@ public:
    void reset();
 
 private:
-   template<class T> friend class WeakPtr;
+   template<class E> friend class WeakPtr;
 
  // operations
    void inc();

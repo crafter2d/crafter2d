@@ -1,4 +1,6 @@
 
+#include "core/defines.h"
+
 template <typename K, class E>
 HashMapBucket<K,E>::HashMapBucket(K key, E& element):
    mKey(key),

@@ -5,6 +5,7 @@
 
 #include "core/smartptr/autoptr.h"
 #include "core/system/platform.h"
+#include "core/system/exception.h"
 #include "core/vfs/filesystem.h"
 
 #include "module.h"
@@ -73,7 +74,7 @@ namespace c2d
             AutoPtr<Module> module = (*pfunc)();
             if ( !module.hasPointer() )
             {
-               throw std::exception("Could not get the module handle.");
+               throw c2d::Exception(UTEXT("Could not get the module handle."));
             }
 
             add(module.release());

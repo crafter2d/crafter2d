@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "netaddress.h"
 
+#include <cstring>
+
 INLINE
 NetAddress::NetAddress():
    index(0),

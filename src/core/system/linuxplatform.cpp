@@ -19,18 +19,49 @@
  ***************************************************************************/
 #include "linuxplatform.h"
 
+#include "core/defines.h"
+
 #include "linuxtimer.h"
 
 LinuxPlatform::LinuxPlatform():
-   Platform()
+   Platform(),
+   mpTimer(new LinuxTimer())
 {
 }
 
 LinuxPlatform::~LinuxPlatform()
 {
+  delete mpTimer;
+}
+// - Query
+
+Platform::OS LinuxPlatform::getOS() const
+{
+   return Platform::eLinux;
 }
 
-Timer* LinuxPlatform::createTimer()
+Timer& LinuxPlatform::getTimer()
 {
-   return new LinuxTimer();
+   ASSERT_PTR(mpTimer);
+   return *mpTimer;
+}
+
+// - Operations
+
+void LinuxPlatform::initialize()
+{
+}
+
+void* LinuxPlatform::loadModule(const String& name)
+{
+   return NULL;
+}
+
+void LinuxPlatform::freeModule(void* pmodule)
+{
+}
+
+void* LinuxPlatform::getFunctionAddress(void* module, const String& name)
+{
+   return NULL;
 }

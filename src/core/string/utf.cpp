@@ -20,11 +20,11 @@ uint32_t conv_utf8_to_utf16(wchar_t* pdest, uint32_t size, const char* psrc, uin
       return 0;
    }
 
-   uint32_t inleft = length;
-   uint32_t outleft = size * sizeof(wchar_t);
+   size_t inleft = length;
+   size_t outleft = size * sizeof(wchar_t);
    const char* pinput = psrc;
    char* poutput = (char*) pdest;
-   size_t converted = iconv (cd, (const char **) &pinput, &inleft, (char**) &poutput, &outleft);
+   size_t converted = iconv (cd, (char **) &pinput, &inleft, (char**) &poutput, &outleft);
    if ( converted == (size_t) -1 )
    {
       if ( errno == EINVAL )
@@ -54,9 +54,9 @@ char* conv_utf16_to_utf8(const wchar_t* psrc, uint32_t length)
       return NULL;
    }
 
-   uint32_t totalsize = length * sizeof(wchar_t) + 1;
-   uint32_t inleft = totalsize;
-   uint32_t outleft = inleft;
+   size_t totalsize = length * sizeof(wchar_t) + 1;
+   size_t inleft = totalsize;
+   size_t outleft = inleft;
 
    char* presult = (char*) malloc(totalsize);
 
@@ -67,7 +67,7 @@ char* conv_utf16_to_utf8(const wchar_t* psrc, uint32_t length)
    {
       errno = 0;
 
-      size_t converted = iconv (cd, (const char **) &pinput, &inleft, (char**) &poutput, &outleft);
+      size_t converted = iconv (cd, (char **) &pinput, &inleft, (char**) &poutput, &outleft);
       if ( converted == (size_t)-1 )
       {
          if ( errno == E2BIG )

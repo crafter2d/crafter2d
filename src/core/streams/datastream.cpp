@@ -22,6 +22,8 @@
 #  include "datastream.inl"
 #endif
 
+#include <cstring>
+
 #include "core/string/string.h"
 
 DataStream::DataStream()

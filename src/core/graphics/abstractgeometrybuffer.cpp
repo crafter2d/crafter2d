@@ -1,6 +1,8 @@
 
 #include "geometrybuffer.h"
 
+#include <string.h>
+
 #include "core/defines.h"
 
 #include "device.h"
@@ -59,7 +61,7 @@ namespace Graphics
    {
       // if ( mVertices.size() > mpVB->size() ) does not exist yet :(
       void* pvbdata = mpVB->lock(context);
-      std::memcpy(pvbdata, pdata, size);
+      memcpy(pvbdata, pdata, size);
       mpVB->unlock(context);
    }
 }

@@ -1,6 +1,8 @@
 
 #include "modulecollection.h"
 
+#include "core/system/exception.h"
+
 namespace c2d
 {
    ModuleCollection::ModuleCollection() :
@@ -47,7 +49,7 @@ namespace c2d
       ModuleMap::iterator it = mModules.find(pmodule->getUuid());
       if ( it != mModules.end() && it->second != pmodule )
       {
-         throw new std::exception("Can not add module with duplicate key.");
+         throw new c2d::Exception(UTEXT("Can not add module with duplicate key."));
       }
 
       mModules.insert(std::make_pair(pmodule->getUuid(), pmodule));

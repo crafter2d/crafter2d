@@ -1,7 +1,7 @@
 
 #include "pluginmanager.h"
 
-#include <exception>
+#include "core/system/exception.h"
 
 namespace c2d
 {
@@ -13,6 +13,6 @@ namespace c2d
 
    System& PluginManager::querySystem(SystemKind kind)
    {
-      throw std::exception("not implemented yet!");
+      throw c2d::Exception(UTEXT("not implemented yet!"));
    }
 }

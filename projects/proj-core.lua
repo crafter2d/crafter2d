@@ -55,7 +55,7 @@ project "Core"
 
 	configuration "linux"
 		defines { "LINUX" }
-		buildoptions { "-W", "-Wall", "-O0", "-Wunused-parameter" }
+		buildoptions { "-std=c++11", "-W", "-Wall", "-O0", "-Wunused-parameter" }
 		if ( _ACTION == "cb-gcc" ) then
 			linkoptions { "-Xlinker", "-zmuldefs" }
 		end

@@ -6,7 +6,11 @@
 
 class Vector;
 
-__declspec(align(16)) class CORE_API Matrix4
+#ifdef WIN32
+__declspec(align(16))
+#endif
+
+class CORE_API Matrix4
 {
 public:
    Matrix4();

@@ -22,7 +22,7 @@
 #  include "tileset.inl"
 #endif
 
-#include <string>
+#include <cstring>
 
 #include "core/content/contentmanager.h"
 #include "core/graphics/device.h"

@@ -20,6 +20,8 @@
 #include "bufferedstream.h"
 
 #include <memory>
+#include <cstdlib>
+#include <cstring>
 
 #include "core/defines.h"
 

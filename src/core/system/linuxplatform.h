@@ -22,13 +22,28 @@
 
 #include "platform.h"
 
+class LinuxTimer;
+
 class LinuxPlatform : public Platform
 {
 public:
    LinuxPlatform();
    virtual ~LinuxPlatform();
 
-   virtual Timer* createTimer();
+ // query
+   virtual OS getOS() const override;
+   virtual Timer& getTimer() override;
+   
+ // operations
+   virtual void  initialize() override;
+   virtual void* loadModule(const String& name) override;
+   virtual void  freeModule(void* pmodule) override;
+   virtual void* getFunctionAddress(void* module, const String& name) override;
+   
+private:
+  
+ // data
+    LinuxTimer* mpTimer;
 };
 
 #endif

@@ -23,7 +23,9 @@
 
 #include "game.h"
 #include "sdlgamewindowfactory.h"
-#include "win32gamewindowfactory.h"
+#ifdef WIN32
+//#include "win32gamewindowfactory.h"
+#endif
 
 /*!
  	\mainpage Crafter 2D - Game framework for traditional platform games
@@ -44,7 +46,7 @@
 	</ul>
 
 	\section lic_sec Licence
-	The source code and documentation are released LGPL. This means that you may use, alter and 
+	The source code and documentation are released LGPL. This means that you may use, alter and
    redistribute the sources and documentation freely as long as the original licence notification
    is included both in open source as in commercial products. Credits are appreciated, but not
    required. If you have any questions, please contact me at
@@ -72,9 +74,9 @@
 int main(int argc, char *argv[])
 {
    CommandLine cmd(argc, argv);
-   
-   Win32GameWindowFactory windowfactory;
-   //SDLGameWindowFactory windowfactory;
+
+   //Win32GameWindowFactory windowfactory;
+   SDLGameWindowFactory windowfactory;
 
    AutoPtr<Game> game = new Game(cmd);
    game->setWindowFactory(windowfactory);

@@ -24,7 +24,7 @@
 
 #include "core/core_base.h"
 
-#include "filesystempaths.h" 
+#include "filesystempaths.h"
 
 class File;
 class String;
@@ -41,8 +41,6 @@ enum Errors
 class CORE_API FileSystem
 {
 public:
-   typedef void(*Callback)(const String& name, bool isdir, void* pdata);
-
    static FileSystem&   getInstance();
    static UChar         getNativeSeparator();
    static String        toNativeSeparator(const String& path);
@@ -63,16 +61,15 @@ public:
    virtual bool copyFile(const String& from, const String& to) = 0;
 
    virtual UChar getSeparator() const = 0;
-   virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL) = 0;
    virtual bool find(const String& mask, std::vector<String>& result, bool recursive) = 0;
 
 protected:
    FileSystem();
 
    String expand(const String& path) const;
-      
+
 private:
-  
+
    FileSystemPaths mPaths;
 };
 

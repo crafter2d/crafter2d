@@ -31,13 +31,16 @@ public:
    LinuxFileSystem();
    virtual ~LinuxFileSystem();
 
-   virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata);
-   virtual bool find(const String& mask, Callback callback, void* pdata = NULL);
+   virtual int mkdir(const String& path) override;
+   virtual bool copyFile(const String& from, const String& to) override;
+
+   virtual UChar getSeparator() const override;
+   virtual bool find(const String& mask, std::vector<String>& result, bool recursive) override;
 
 private:
    friend class FileSystem;
 
-   bool doRecurseDirectory(const String& dir, const String& mask, Callback callback, void* pdata);
+   bool doRecurseDirectory(const String& dir, const String& mask, std::vector<String>& result, bool recursive);
 };
 
 #endif

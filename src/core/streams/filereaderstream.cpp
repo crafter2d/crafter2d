@@ -1,6 +1,8 @@
 
 #include "filereaderstream.h"
 
+#include <cstring>
+
 #include "core/vfs/file.h"
 #include "core/defines.h"
 
