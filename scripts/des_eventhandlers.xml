@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<dialog>
+<self x="77" y="46" width="200" height="235">
+    <properties>
+        <property name="Name" value="" />
+        <property name="Caption" value="Event Handlers" />
+        <property name="Background image" value="" />
+        <property name="Background" value="true" />
+        <property name="Border" value="true" />
+        <property name="Visible" value="true" />
+        <property name="Center" value="false" />
+    </properties>
+    <eventhandlers>
+        <eventhandler name="onLoaded">
+            <code>designer_eh_handlers = tolua.cast(self:findChildByName(&apos;designer_eh_handlers&apos;), &quot;GuiListBox&quot;)</code>
+        </eventhandler>
+    </eventhandlers>
+</self>
+<children>
+    <child type="6" x="6" y="25" width="188" height="187">
+        <properties>
+            <property name="Name" value="designer_eh_handlers" />
+            <property name="Caption" value="Listbox" />
+            <property name="Background image" value="" />
+            <property name="Background" value="true" />
+            <property name="Border" value="true" />
+            <property name="Visible" value="true" />
+            <property name="Linebreak" value="false" />
+        </properties>
+        <eventhandlers>
+            <eventhandler name="onKeyPress">
+                <code>if key == SDLK_RETURN then&#x0A;   local id = self:getItemData(self:getCurSel())&#x0A;   local definitions = designer_curwindow:getEventHandlerDefinitions()&#x0A;   local definition = definitions:getDefinition(id)&#x0A;   local dialog = guimanager:loadFromXML(&quot;des_scripteditor&quot;)&#x0A;   local edit = dialog:findChildByName(&quot;des_se_script&quot;)&#x0A;   edit:setCaption(definition:getCode())&#x0A;   &#x0A;   if dialog:doModal() == 0 then&#x0A;      definition:setCode(edit:getCaption())&#x0A;   end&#x0A;end</code>
+            </eventhandler>
+        </eventhandlers>
+    </child>
+</children>
+<functions>
+    <function>function designer_eh_setwindow(window)&#x0A;   designer_curwindow = window&#x0A;   local definitions = designer_curwindow:getEventHandlerDefinitions()&#x0A;   designer_eh_handlers:removeAll()&#x0A;   for i=0, definitions:size()-1 do&#x0A;   local definition = definitions:getDefinition(i)&#x0A;   local index = designer_eh_handlers:addString(definition:getName())&#x0A;   designer_eh_handlers:setItemData(index, i)&#x0A; end&#x0A;end
+    </function>
+</functions>
+</dialog>

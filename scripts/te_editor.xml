@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<dialog>
+    <self x="34" y="118" width="589" height="500">
+        <properties>
+            <property name="Name" value="wndTileEditor" />
+            <property name="Caption" value="Tile Editor" />
+            <property name="Background image" value="" />
+            <property name="Background" value="true" />
+            <property name="Border" value="true" />
+            <property name="Visible" value="true" />
+            <property name="Center" value="false" />
+            <property name="Ok Button" value="" />
+            <property name="Cancel Button" value="" />
+        </properties>
+        <eventhandlers>
+            <eventhandler name="onLoaded">
+                <code>te_world = nil&#x0A;te_edit = tolua.cast(self:findChildByName(&apos;teEditor&apos;), &quot;GuiTileEditor&quot;)&#x0A;te_images = tolua.cast(self:findChildByName(&apos;lstTiles&apos;), &quot;GuiImageListBox&quot;)&#x0A;te_layers = tolua.cast(self:findChildByName(&apos;lstLayers&apos;), &quot;GuiListBox&quot;)&#x0A;te_selection = 0&#x0A;te_editbound = nil&#x0A;te_editboundpoint = -1&#x0A;&#x0A;editor:setControl(te_edit)&#x0A;&#x0A;--local count = te_world:getLayerCount()&#x0A;--for i=0, count-1 do&#x0A;-- local layer = te_world:getLayer(i)&#x0A;-- te_layers:addString(layer:getName())&#x0A;--end</code>
+            </eventhandler>
+        </eventhandlers>
+    </self>
+    <children>
+        <child type="11" x="457" y="21" width="119" height="298">
+            <properties>
+                <property name="Name" value="lstTiles" />
+                <property name="Caption" value="Tile Image List" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="true" />
+                <property name="Visible" value="true" />
+                <property name="Linebreak" value="false" />
+            </properties>
+            <eventhandlers>
+                <eventhandler name="onSelectionChanged">
+                    <code>te_selection = selection</code>
+                </eventhandler>
+            </eventhandlers>
+        </child>
+        <child type="10" x="31" y="21" width="410" height="462">
+            <properties>
+                <property name="Name" value="teEditor" />
+                <property name="Caption" value="Tile Editor" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="true" />
+                <property name="Visible" value="true" />
+            </properties>
+            <eventhandlers>
+                <eventhandler name="onCreated">
+                    <code>editor:setControl(self)</code>
+                </eventhandler>
+                <eventhandler name="onContextMenu">
+                    <code>editor:setContextPosition(point)&#x0A;if editor:hasSelectedBound() then&#x0A; guimanager:showPopup(self, point, &quot;te_editor_bound_popup&quot;)&#x0A;else&#x0A; guimanager:showPopup(self, point, &quot;te_editor_popup&quot;)&#x0A;end&#x0A;return true</code>
+                </eventhandler>
+                <eventhandler name="onMouseDown">
+                    <code>if editor:isBoundMode() then&#x0A; editor:selectBound(point)&#x0A;end&#x0A;</code>
+                </eventhandler>
+                <eventhandler name="onClick">
+                    <code>if editor:getMode() == EDIT_MODE_TILE then&#x0A; -- tile edit mode&#x0A; local layerpoint = te_edit:PointToTile(point)&#x0A; if te_world ~= nil and te_world:getLayerCount() &gt; 0 then&#x0A; local layer = te_world:getLayer(0)&#x0A; if layer ~= nil then&#x0A;  if GuiCanvas:isShift() then&#x0A;   layer:setTile(layerpoint.x, layerpoint.y, 0)&#x0A;  else&#x0A;   layer:setTile(layerpoint.x, layerpoint.y, te_selection+1)&#x0A;  end&#x0A; end&#x0A; end&#x0A;elseif editor:getMode() == EDIT_MODE_BOUND then&#x0A; -- bound edit mode&#x0A; if GuiCanvas:isCtrl() then&#x0A; editor:addBound(point)&#x0A; else&#x0A; editor:selectBound(point)&#x0A; end&#x0A;else&#x0A; -- object mode&#x0A; local object = editor:pickObject(point)&#x0A; if object ~= nil then&#x0A; Object_edit(object)&#x0A; else&#x0A; console:print(&quot;could not find entity&quot;)&#x0A; end&#x0A;end</code>
+                </eventhandler>
+                <eventhandler name="onMouseMove">
+                    <code>if pressed and editor:getMode() == EDIT_MODE_BOUND then&#x0A; editor:moveBound(relative)&#x0A;end</code>
+                </eventhandler>
+                <eventhandler name="onKeyPress">
+                    <code>if key == SDLK_DELETE and te_editbound ~= nil then&#x0A; te_world:removeBound(te_editbound)&#x0A;&#x0A; te_editbound = nil&#x0A; te_editboundpoint = -1&#x0A;end</code>
+                </eventhandler>
+            </eventhandlers>
+        </child>
+        <child type="6" x="457" y="357" width="118" height="126">
+            <properties>
+                <property name="Name" value="lstLayers" />
+                <property name="Caption" value="Layers" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="true" />
+                <property name="Visible" value="true" />
+                <property name="Linebreak" value="false" />
+            </properties>
+            <eventhandlers>
+                <eventhandler name="onContextMenu">
+                    <code>guimanager:showPopup(self, point, &quot;te_layer_popup&quot;); return true</code>
+                </eventhandler>
+                <eventhandler name="onSelectionChanged">
+                    <code>te_edit:setActiveLayer(selection)&#x0A;te_images:setActiveLayer(selection)</code>
+                </eventhandler>
+            </eventhandlers>
+        </child>
+        <child type="2" x="456" y="334" width="19" height="19">
+            <properties>
+                <property name="Name" value="btnMoveUp" />
+                <property name="Caption" value="" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="false" />
+                <property name="Visible" value="true" />
+                <property name="Default" value="false" />
+                <property name="Icon" value="../images/go-up.png" />
+            </properties>
+            <eventhandlers>
+                <eventhandler name="onClick">
+                    <code>local layer = te_world:getLayer(te_layers:getCurSel())&#x0A;te_world:moveLayer(layer, -1)</code>
+                </eventhandler>
+            </eventhandlers>
+        </child>
+        <child type="2" x="479" y="334" width="19" height="19">
+            <properties>
+                <property name="Name" value="btnMoveDown" />
+                <property name="Caption" value="" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="false" />
+                <property name="Visible" value="true" />
+                <property name="Default" value="false" />
+                <property name="Icon" value="../images/go-down.png" />
+            </properties>
+            <eventhandlers />
+        </child>
+    </children>
+</dialog>

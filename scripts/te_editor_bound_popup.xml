@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<menu id="1" name="te_bound_popup">
+    <eventhandlers>
+        <eventhandler name="onClick">
+            <code>if id == 0 then&#x0A;   local dialog = guimanager:loadFromXML(&quot;te_changebound&quot;)&#x0A;   local cmbBlueprints = Gui_findComboBox(dialog, &quot;cmbBlueprints&quot;)&#x0A;   &#x0A;   if dialog:doModal() == 0 then&#x0A;      local bound = editor:getSelectedBound()&#x0A;      bound:setBlueprint(cmbBlueprints:getCaption())&#x0A;   end&#x0A;elseif id == 1 then&#x0A;elseif id == 2 then&#x0A;elseif id == 3 then&#x0A;   -- new bound blueprint&#x0A;   local dialog   = guimanager:loadFromXML(&quot;te_editbound&quot;)&#x0A;   local edtName  = Gui_findEditBox(dialog, &quot;edtName&quot;)&#x0A;&#x0A;   if dialog:doModal() == 0 then&#x0A;      local edtCheck = Gui_findEditBox(dialog, &quot;edtCheck&quot;)&#x0A;      local edtHit   = Gui_findEditBox(dialog, &quot;edtHit&quot;)&#x0A;&#x0A;      local blueprint = BoundBlueprint:new()&#x0A;      blueprint:setName(edtName:getCaption())&#x0A;      blueprint:setOnShouldCheckScript(edtCheck:getCaption())&#x0A;      blueprint:setOnHitScript(edtHit:getCaption())&#x0A;&#x0A;      boundblueprintmanager:add(blueprint)&#x0A;   end&#x0A;end&#x0A;</code>
+        </eventhandler>
+    </eventhandlers>
+    <menuitems>
+        <item id="0" text="Edit" />
+        <item id="1" text="Swap" />
+        <item id="2" text="Delete" />
+        <item id="3" text="New blueprint" />
+    </menuitems>
+</menu>

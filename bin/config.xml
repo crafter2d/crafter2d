@@ -1,0 +1,23 @@
+<!--
+
+Copyright (c) Jeroen Broekhuizen, 2008
+Configuration file for JEngine SSE
+
+//-->
+
+<screen>
+  <width>800</width>
+  <height>600</height>
+  <fullscreen>0</fullscreen>
+  <clearcolor>75,150,230</clearcolor>
+</screen>
+<gui>
+  <textcolor>255,0,0</textcolor>
+  <windowcolor>69,112,121</windowcolor>
+  <bordercolor>204,204,204</bordercolor>
+</gui>
+<multiplayer>
+  <name>player</name>
+  <ip>localhost</ip>
+  <port>6400</port>
+</multiplayer>

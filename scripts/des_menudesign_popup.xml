@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<menu id=22 name="des_menudesign_popup" >
+    <eventhandlers />
+    <menuitems>
+        <item id="0" text="New" />
+        <item id="1" text="Edit" />
+        <item id="2" text="Delete" />
+        <item id="3" text="Save" />
+        <item id="4" text="Close" />
+    </menuitems>
+</menu>
+

@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<menu id="200" name="des_control_layout_popup">
+    <eventhandlers />
+    <menuitems>
+        <item id="0" text="Align left" />
+        <item id="1" text="Align right" />
+        <item id="2" text="Align top" />
+        <item id="3" text="Align bottom" />
+        <item id="4" text="Make same width" />
+        <item id="5" text="Make same height" />
+    </menuitems>
+</menu>

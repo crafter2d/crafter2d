@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<dialog>
+<self x="20" y="20" width="559" height="540">
+    <properties>
+        <property name="Name" value="" />
+        <property name="Caption" value="Edit script" />
+        <property name="Background image" value="" />
+        <property name="Background" value="true" />
+        <property name="Border" value="true" />
+        <property name="Visible" value="true" />
+    </properties>
+    <eventhandlers />
+</self>
+<children>
+    <child type="3" x="11" y="20" width="536" height="485">
+        <properties>
+            <property name="Name" value="des_se_script" />
+            <property name="Caption" value="" />
+            <property name="Background image" value="" />
+            <property name="Background" value="true" />
+            <property name="Border" value="true" />
+            <property name="Visible" value="true" />
+            <property name="Multi line" value="true" />
+        </properties>
+        <eventhandlers />
+    </child>
+    <child type="2" x="411" y="512" width="64" height="22">
+        <properties>
+            <property name="Name" value="btnSave" />
+            <property name="Caption" value="Save" />
+            <property name="Background image" value="" />
+            <property name="Background" value="true" />
+            <property name="Border" value="false" />
+            <property name="Visible" value="true" />
+        </properties>
+        <eventhandlers>
+            <eventhandler name="onClick">
+                <code>canvas:endModal(0)</code>
+            </eventhandler>
+        </eventhandlers>
+    </child>
+    <child type="2" x="482" y="512" width="66" height="21">
+        <properties>
+            <property name="Name" value="btnCancel" />
+            <property name="Caption" value="Cancel" />
+            <property name="Background image" value="" />
+            <property name="Background" value="true" />
+            <property name="Border" value="false" />
+            <property name="Visible" value="true" />
+        </properties>
+        <eventhandlers>
+            <eventhandler name="onClick">
+                <code>canvas:endModal(1)</code>
+            </eventhandler>
+        </eventhandlers>
+    </child>
+</children>
+</dialog>

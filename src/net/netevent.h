@@ -1,0 +1,72 @@
+/***************************************************************************
+ *   Copyright (C) 2004 by Jeroen Broekhuizen                              *
+ *   jeroen@nwnx.homedns.org                                               *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
+#ifndef _NETEVENT_H_
+#define _NETEVENT_H_
+
+#include "netobject.h"
+
+class BitStream;
+
+enum EventType {
+   // network events
+   connectEvent      = 0x0000,
+   disconnectEvent   = 0x0002,
+   deniteEvent       = 0x0006,
+   joinEvent         = 0x0003,
+   acceptEvent       = 0x0004,
+   serverdownEvent   = 0x0005,
+
+   // game events
+   inputEvent        = 0x0020,
+   scriptEvent       = 0x0023,
+   newobjectEvent    = 0x0024,
+   delobjectEvent    = 0x0025,
+   updobjectEvent    = 0x0021,
+   reqobjectEvent    = 0x0022,
+   scrollEvent       = 0x0026,
+
+   generalEvent      = 0x1000
+};
+
+/// NetEvent
+/// The base class for events that should be sended to the client or server.
+class NetEvent: public NetObject
+{
+public:
+   DEFINE_REPLICATABLE(NetEvent)
+
+   explicit       NetEvent(EventType _type = generalEvent);
+
+   virtual void   pack(BitStream& stream) const;
+   virtual void   unpack(BitStream& stream);
+
+   void           setType(EventType t);
+   EventType      getType() const;
+
+protected:
+   EventType type;
+};
+
+#ifdef JENGINE_INLINE
+#  include "netevent.inl"
+#endif
+
+#endif

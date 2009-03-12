@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<dialog>
+    <self x="260" y="160" width="268" height="94">
+        <properties>
+            <property name="Name" value="frmResizeLayer" />
+            <property name="Caption" value="Resize layer" />
+            <property name="Background image" value="" />
+            <property name="Background" value="true" />
+            <property name="Border" value="true" />
+            <property name="Visible" value="true" />
+            <property name="Center" value="false" />
+            <property name="Ok Button" value="btnOk" />
+            <property name="Cancel Button" value="btnCancel" />
+        </properties>
+        <eventhandlers />
+    </self>
+    <children>
+        <child type="3" x="76" y="23" width="40" height="15">
+            <properties>
+                <property name="Name" value="edtWidth" />
+                <property name="Caption" value="" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="true" />
+                <property name="Visible" value="true" />
+                <property name="Multi line" value="false" />
+                <property name="Wordwrap" value="false" />
+            </properties>
+            <eventhandlers />
+        </child>
+        <child type="3" x="207" y="23" width="40" height="15">
+            <properties>
+                <property name="Name" value="edtHeight" />
+                <property name="Caption" value="" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="true" />
+                <property name="Visible" value="true" />
+                <property name="Multi line" value="false" />
+                <property name="Wordwrap" value="false" />
+            </properties>
+            <eventhandlers />
+        </child>
+        <child type="1" x="17" y="23" width="50" height="16">
+            <properties>
+                <property name="Name" value="" />
+                <property name="Caption" value="Width:" />
+                <property name="Background image" value="" />
+                <property name="Background" value="false" />
+                <property name="Border" value="false" />
+                <property name="Visible" value="true" />
+            </properties>
+            <eventhandlers />
+        </child>
+        <child type="1" x="147" y="23" width="50" height="16">
+            <properties>
+                <property name="Name" value="" />
+                <property name="Caption" value="Height:" />
+                <property name="Background image" value="" />
+                <property name="Background" value="false" />
+                <property name="Border" value="false" />
+                <property name="Visible" value="true" />
+            </properties>
+            <eventhandlers />
+        </child>
+        <child type="2" x="16" y="61" width="84" height="22">
+            <properties>
+                <property name="Name" value="btnOk" />
+                <property name="Caption" value="Ok" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="false" />
+                <property name="Visible" value="true" />
+                <property name="Default" value="false" />
+                <property name="Icon" value="" />
+            </properties>
+            <eventhandlers>
+                <eventhandler name="onClick">
+                    <code>canvas:endModal(0)</code>
+                </eventhandler>
+            </eventhandlers>
+        </child>
+        <child type="2" x="163" y="61" width="84" height="22">
+            <properties>
+                <property name="Name" value="btnCancel" />
+                <property name="Caption" value="Cancel" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="false" />
+                <property name="Visible" value="true" />
+                <property name="Default" value="false" />
+                <property name="Icon" value="" />
+            </properties>
+            <eventhandlers>
+                <eventhandler name="onClick">
+                    <code>canvas:endModal(1)</code>
+                </eventhandler>
+            </eventhandlers>
+        </child>
+    </children>
+</dialog>

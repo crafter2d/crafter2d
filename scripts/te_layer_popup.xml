@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<menu id="1" name="te_layer_popup">
+    <eventhandlers>
+        <eventhandler name="onClick">
+            <code>if id == 0 then&#x0A; console:print(&quot;!! start creating new layer !!&quot;)&#x0A; local dialog = guimanager:loadFromXML(&quot;te_newlayer&quot;)&#x0A;&#x0A; if dialog:doModal() == 0 then&#x0A; local edtLayerName = dialog:findChildByName(&quot;nl_layername&quot;)&#x0A; local edtLayerWidth = dialog:findChildByName(&quot;nl_layerwidth&quot;)&#x0A; local edtLayerHeight = dialog:findChildByName(&quot;nl_layerheight&quot;)&#x0A; local edtEffect = dialog:findChildByName(&quot;nl_tileeffect&quot;)&#x0A;&#x0A; layer = te_world:createLayer()&#x0A; result = layer:create(&#x0A; edtLayerName:getCaption(),&#x0A; tonumber(edtLayerWidth:getCaption()),&#x0A; tonumber(edtLayerHeight:getCaption()),&#x0A; edtEffect:getCaption())&#x0A;&#x0A; if result then&#x0A;&#x0A; local index = te_world:addLayer(layer)&#x0A; te_edit:setActiveLayer(index)&#x0A; te_images:setActiveLayer(index)&#x0A;&#x0A; te_layers:addString(&quot;name&quot;)&#x0A; end&#x0A; end&#x0A;elseif id == 1 then&#x0A; -- delete the layer&#x0A;&#x0A;elseif id == 2 then&#x0A; -- show all layers&#x0A; te_edit:showAll(true);&#x0A;&#x0A;elseif id == 3 then&#x0A; -- resize the layer&#x0A; local layer = te_world:getLayer(te_layers:getCurSel())&#x0A; local dlgResize = guimanager:loadFromXML(&quot;te_resize_layer&quot;)&#x0A; local edtWidth = dlgResize:findChildByName(&quot;edtWidth&quot;)&#x0A; local edtHeight = dlgResize:findChildByName(&quot;edtHeight&quot;)&#x0A;&#x0A; local dims = layer:getDimensions()&#x0A; edtWidth:setCaption(dims.x)&#x0A; edtHeight:setCaption(dims.y)&#x0A;&#x0A; if dlgResize:doModal() == 0 then&#x0A; -- resize the layer&#x0A; local newwidth = tonumber(edtWidth:getCaption())&#x0A; local newheight = tonumber(edtHeight:getCaption())&#x0A;&#x0A; layer:resize(newwidth, newheight)&#x0A; end&#x0A;end</code>
+        </eventhandler>
+    </eventhandlers>
+    <menuitems>
+        <item id="0" text="New" />
+        <item id="1" text="Delete" />
+        <item id="2" text="Show All" />
+        <item id="3" text="Resize" />
+    </menuitems>
+</menu>
