@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
- *   jeroen@jengine.homedns.org                                            *
+ *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU Library General Public License as       *
@@ -16,7 +16,7 @@
  *   License along with this program; if not, write to the                 *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- **************************************************************************/
+ ***************************************************************************/
 #ifndef WORLDVERSION1READER_H
 #define WORLDVERSION1READER_H
 
