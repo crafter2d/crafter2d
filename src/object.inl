@@ -151,6 +151,16 @@ INLINE Vector Object::getSize() const
    return Vector(static_cast<float>(width), static_cast<float>(height)); 
 }
 
+INLINE void Object::setMass(bool mass)
+{
+   mMass = mass;
+}
+
+INLINE bool Object::hasMass() const
+{
+   return mMass;
+}
+
 /// \fn Object::filename() const
 /// \brief Returns the name of the XML file for this object.
 INLINE const std::string& Object::filename() const

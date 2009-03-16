@@ -228,7 +228,6 @@ void World::setObjectLayer(int objectlayerid)
 void World::draw ()
 {
    // scroll if necessary
-   // (3D only: comment next line)
    if (autoFollow && followMode != NoFollow)
    {
       scroll ();
@@ -249,7 +248,6 @@ void World::draw ()
    }
 
    // scroll the viewpoint to the right position
-   // (3D only: comment next 3 lines)
    Vector scroll = layers[getObjectLayer()]->getScroll ();
    glTranslatef(-scroll.x, -scroll.y, 0);
 }
@@ -317,7 +315,7 @@ int World::collide (Object& object) const
 			object.setVelocity(vel);
 
 			//p3 = ip;
-			collided = 1;
+			collided = 2;
 			break;
 		}
 	}

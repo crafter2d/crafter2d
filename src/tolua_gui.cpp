@@ -1,6 +1,6 @@
 /*
 ** Lua binding: gui
-** Generated automatically by tolua++-1.0.92 on 03/13/09 16:16:12.
+** Generated automatically by tolua++-1.0.92 on 03/16/09 18:05:54.
 */
 
 #ifndef __cplusplus

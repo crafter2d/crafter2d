@@ -1,0 +1,12 @@
+JEngine SSE, version 0.4.4, Jeroen Broekhuizen
+
+Release Notes
+-------------
+
+This latest release of the JEngine SSE framework contains numerous fixes since last release.
+
+Note that the engine still in development and parts can be changed or removed. This software currently isnt bug free. 
+Please submit any bug you find on http://sourceforge.com/projects/jenginesse.
+
+
+Known bugs:

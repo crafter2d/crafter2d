@@ -49,12 +49,13 @@ public:
 	virtual Object*   clone ();
 
    void              addState(State* state);
-	void              applyGravity (Uint32 tick);
-	void              move (Uint32 tick);
+	void              applyGravity();
+	void              move(Uint32 tick);
    void              rotate(float deg);
-	void              flip ();
+	void              flip();
 	bool              direction() const;
 	
+ // get/set interface
 	void              setMoveSpeed(int msec);
 	void              setPosition(const Vector& vec);
 	void              setVelocity(const Vector& vec);
@@ -69,11 +70,15 @@ public:
    Vector            getSize() const;
 	bool              isVisible() const;
 
+   void              setMass(bool mass);
+   bool              hasMass() const;
+
    const std::string& filename() const;
 
  // visitor interface
    virtual void      accept(NodeVisitor& nv);
 
+ // streaming
    virtual void      pack(BitStream& stream) const;
    virtual void      unpack(BitStream& stream);
 
@@ -83,15 +88,16 @@ protected:
    std::string name;
 	TexturePtr texture;
    std::queue<State*> states;
-	int width, height;
 	Vector pos, vel;
+   int width, height;
 	float halfX, halfY;
    float angle;
-	bool dir;
 	float radius;
 	Uint32 moveSpeed;
 	Uint32 moveLast;
 	bool visible;
+   bool dir;
+   bool mMass;
 };
 
 #ifdef JENGINE_INLINE

@@ -48,7 +48,8 @@ Object::Object():
    radius(.0f),
 	moveSpeed(0),
 	moveLast(0),
-	visible(true)
+	visible(true),
+   mMass(false)
 {
 }
 
@@ -71,7 +72,8 @@ bool Object::load (TiXmlDocument& doc)
 
 	// try to find the object in the file
 	object = (TiXmlElement*)doc.FirstChild ("object");
-	if (object == NULL) {
+	if (object == NULL)
+   {
       console.print("Object.load: Invalid XML file format, object expected.\n");
 		return false;
 	}
@@ -81,18 +83,19 @@ bool Object::load (TiXmlDocument& doc)
 	if (object->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
 		object->QueryIntAttribute ("height", &height) != TIXML_SUCCESS)
    {
-         console.print("Object.load: object needs to have dimensions.\n");
+      console.print("Object.load: object needs to have dimensions.\n");
 		return false;
 	}
 
+   // check the mass of the object
+   if ( object->QueryIntAttribute("mass", &temp) == TIXML_SUCCESS )
+      setMass(temp != 0);
+
    // see whether or not the object is static
    if ( object->QueryIntAttribute("static", &temp) == TIXML_SUCCESS )
-   {
       statik = (temp == 1);
-   }
 
 	// determine radius of object
-	//radius = (width > height ? width : height) * 0.5f;
 	radius = height * 0.5f;
 
 	// determine upper left corner
@@ -101,11 +104,13 @@ bool Object::load (TiXmlDocument& doc)
 
 	// load texture data
 	tex = (TiXmlElement*)object->FirstChild ("texture");
-	if (tex == NULL) {
+	if ( tex == NULL )
+   {
 		console.print("Object.load: object has no texture");
 		return false;
 	}
-	else {
+	else
+   {
 		TiXmlText* value = (TiXmlText*)tex->FirstChild();
       texture = ResourceManager::getInstance().loadTexture(value->Value());
       if ( !texture.valid() )
@@ -119,22 +124,18 @@ bool Object::load (TiXmlDocument& doc)
 
 void Object::update(Uint32 tick)
 {
-   applyGravity(tick);
    dirty = false;
    dirtyFlag = 0;
-   if (states.size() > 0) {
-      if (states.front()->update( tick ))
+
+   if ( states.size() > 0 )
+   {
+      if ( states.front()->update(tick) )
          states.pop();
    }
-   else {
-      Game::getInstance().getServer().getSceneGraph().getWorld()->collide(*this);
+   else
+   {
       move(tick);
    }
-
-   //SceneGraph* graph = NULL;
-   SceneGraph& graph = isReplica() ? Game::getInstance().getClient().getSceneGraph()
-                                   : Game::getInstance().getServer().getSceneGraph();
-   graph.getWorld()->collide (*this);
 }
 
 /*!
@@ -148,7 +149,8 @@ void Object::draw()
 
 	texture->enable();
 
-	if (dir) {
+	if (dir)
+   {
 		glBegin (GL_QUADS);
 			glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, 0);
 			glVertex2f (pos.x,pos.y);
@@ -163,7 +165,8 @@ void Object::draw()
 			glVertex2f (pos.x+width,pos.y);
 		glEnd();
 	}
-	else {
+	else
+   {
 		glBegin (GL_QUADS);
 			glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), 0);
 			glVertex2f (pos.x,pos.y);
@@ -179,6 +182,8 @@ void Object::draw()
 		glEnd();
 	}
 
+   texture->disable();
+
 	glPopMatrix ();
 }
 
@@ -191,12 +196,23 @@ void Object::draw()
  */
 void Object::move (Uint32 tick)
 {
-	if (tick - moveLast >= moveSpeed) {
-      if (vel.x != 0 || vel.y != 0) {
-		   pos += vel;
-		   moveLast = tick;
-         dirtyFlag |= 4;
-         dirty = true;
+	if (tick - moveLast >= moveSpeed)
+   {
+      applyGravity();
+
+      if (vel.x != 0 || vel.y != 0) 
+      {
+         SceneGraph& graph = Game::getInstance().getServer().getSceneGraph();
+         graph.getWorld()->collide(*this);
+
+         pos += vel;
+
+         if ( !isReplica() )
+         {
+		      moveLast = tick;
+            dirtyFlag |= 4;
+            dirty = true;
+         }
       }
 	}
 }
@@ -207,9 +223,10 @@ void Object::move (Uint32 tick)
 	 means that the velocity becomes larger downwards.
 	 \param tick the time tick of this frame (in milliseconds)
  */
-void Object::applyGravity (Uint32 tick)
+void Object::applyGravity()
 {
-	if (tick - moveLast >= moveSpeed) {
+	if ( hasMass() )
+   {
 		vel.y += 1;
 	}
 }
