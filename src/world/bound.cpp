@@ -98,22 +98,31 @@ bool Bound::hitTest(const Vector& point, float& distance)
 bool Bound::intersect (const Vector& p3, const Vector& p4, Vector& ip)
 {
 	// calculate the denominator
-	float denom = float((p4.y-p3.y)*(_p2.x-_p1.x)) - ((p4.x-p3.x)*(_p2.y-_p1.y));
-	if (denom == 0)
-		return false;
+	float denom = ((p4.y - p3.y) * (_p2.x - _p1.x)) - ((p4.x - p3.x) * (_p2.y - _p1.y));
 
-	float x1 = _p1.y-p3.y;
-	float x2 = _p1.x-p3.x;
+   float nume_a = (( p4.x - p3.x)  * (_p1.y-p3.y)) - ((p4.y - p3.y) * (_p1.x-p3.x));
+   float nume_b = ((_p2.x - _p1.x) * (_p1.y-p3.y)) - ((_p2.y - _p1.y) * (_p1.x-p3.x));
 
-	float ua = (((p4.x-p3.x)*x1) - ((p4.y-p3.y)*x2)) / denom;
-	float ub = (((_p2.x-_p1.x)*x1) - ((_p2.y-_p1.y)*x2)) / denom;
+	if ( denom == 0 )
+   {
+      if( nume_a == 0.0f && nume_b == 0.0f )
+      {
+         // coincident
+      }
 
-	if (ua >= 0.0f && ua <= 1.0f && ub >= 0.0f && ub <= 1.0f) {
+		return false; // parallel
+   }
+
+   float ua = nume_a / denom;
+	float ub = nume_b / denom;
+
+	if (ua >= 0.0f && ua <= 1.0f && ub >= 0.0f && ub <= 1.0f) 
+   {
 		ip = _p1 + (_p2 - _p1) * ua;
 		return true;
 	}
-	else
-		return false;
+
+   return false;
 }
 
 void Bound::move(const Vector& offset)
