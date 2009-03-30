@@ -32,6 +32,9 @@
 #include <GL/glu.h>
 #include <tolua++.h>
 
+#include "tools/profiler/profiler.h"
+#include "tools/profiler/profilerinstance.h"
+
 #include "gui/guimanager.h"
 #include "gui/guidesigner.h"
 #include "gui/guifocus.h"
@@ -552,25 +555,45 @@ void Game::runFrame()
 {
    Uint32 tick = SDL_GetTicks ();
 
-   ScriptManager::getInstance().update(tick);
-   if ( !isActive() )
-      return;
+   Profiler::getInstance().begin();
 
-   server.update(tick);
-   client.update(tick);
+   {
+      PROFILE("runFrame")
 
-   // here also nothing happens (should be overloaded)
-   glLoadIdentity ();
-   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glAlphaFunc (GL_GREATER, 0.1f);
-   glEnable (GL_ALPHA_TEST);
+      ScriptManager::getInstance().update(tick);
+      if ( !isActive() )
+         return;
 
-   // call overloaded function
-   canvas.render (tick);
-   drawFrame (tick);
+      {
+         PROFILE("server.update")
+         server.update(tick);
+      }
+      {
+         PROFILE("client.update")
+         client.update(tick);
+      }
 
-   //glDisable(GL_MULTISAMPLE);
-   glDisable (GL_ALPHA_TEST);
+      // here also nothing happens (should be overloaded)
+      glLoadIdentity ();
+      glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      glAlphaFunc (GL_GREATER, 0.1f);
+      glEnable (GL_ALPHA_TEST);
+
+      // call overloaded function
+      {
+         PROFILE("Drawing")
+
+         canvas.render (tick);
+         drawFrame (tick);
+      }
+
+      //glDisable(GL_MULTISAMPLE);
+      glDisable (GL_ALPHA_TEST);
+   }
+
+   Profiler::getInstance().end();
+   Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());
+
    SDL_GL_SwapBuffers ();
 }
 
