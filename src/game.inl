@@ -72,6 +72,22 @@ INLINE GuiCanvas& Game::getCanvas()
    return canvas;
 }
 
+/// \fn Game::getTimer()
+/// \brief Returns the timer instance of the game
+INLINE Timer& Game::getTimer()
+{
+   if ( mpTimer == NULL )
+      allocateTimer();
+
+   return *mpTimer;
+}
+
+INLINE TimerData& Game::getTimerData()
+{
+   ASSERT_PTR(mpTimerData);
+   return *mpTimerData;
+}
+
 INLINE int Game::getScreenWidth() const
 {
    return width;

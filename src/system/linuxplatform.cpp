@@ -17,36 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "timer.h"
+#include "linuxplatform.h"
 
-#include "..\defines.h"
+#include "sdltimer.h"
 
-Timer::Timer()
+LinuxPlatform::LinuxPlatform():
+   Platform()
 {
 }
 
-Timer::~Timer()
+LinuxPlatform::~LinuxPlatform()
 {
 }
 
-TimerData* Timer::createData() const
+Timer* LinuxPlatform::createTimer()
 {
-   PURE_VIRTUAL
-   return NULL;
-}
-
-void Timer::releaseData(TimerData*& pdata)
-{
-   PURE_VIRTUAL
-}
-   
-void Timer::start(TimerData& info)
-{
-   PURE_VIRTUAL
-}
-
-float Timer::getInterval(const TimerData& info)
-{
-   PURE_VIRTUAL
-   return 0;
+   return new SDLTimer();
 }

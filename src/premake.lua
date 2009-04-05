@@ -10,11 +10,11 @@ package.workdir = "../bin"
 
 -- set all files
 if ( OS == "windows" ) then
-   exclude_files = matchfiles("../src/vfs/linux*")
+   exclude_files = matchfiles("../src/vfs/linux*", "../src/system/linux*")
 
    package.kind = "winexe"
 elseif ( OS == "linux" ) then
-   exclude_files = matchfiles("../src/vfs/win*")
+   exclude_files = matchfiles("../src/vfs/win*", "../src/system/win*")
 
    package.kind = "exe"
 end

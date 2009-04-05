@@ -17,60 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef PROFILER_H_
-#define PROFILER_H_
+#ifndef TIMER_DATA_IMPL_H_
+#define TIMER_DATA_IMPL_H_
 
-#include <SDL/SDL.h>
-#include <map>
-#include <string>
-#include <stack>
+#include "timerdata.h"
 
-class GuiFont;
-class ProfilerItem;
-class TimerData;
-
-class Profiler
+template <typename T>
+class TimerDataImpl : public TimerData
 {
 public:
-   typedef std::map<std::string, ProfilerItem*> ItemMap;
-   typedef std::stack<ProfilerItem*>            CallStack;
+   TimerDataImpl();
+   virtual ~TimerDataImpl();
 
- // singleton instance
-   static Profiler& getInstance();
-
-   ~Profiler();
-
-   bool           isCurrent(const ProfilerItem& item) const;
-
-   bool           hasParent() const;
-   ProfilerItem&  getParent();
-   int            getParentCount() const;
-
-   void push(ProfilerItem& item);
-   void pop();
-
-   void begin();
-   void end();
-
- // drawing
-   void draw(GuiFont& font);
-
- // searching
-   ProfilerItem*  findOrCreateItem(const std::string& name);
+         T&    getData();
+   const T&    getData() const;
+         void  setData(const T& data);
 
 private:
-   static Profiler mInstance;
-
-   Profiler();
-
-   TimerData&  getTimerData();
-
-   bool contains(const std::string& name) const;
-
-   ItemMap        mItems;
-   CallStack      mCallstack;
-   TimerData*     mpTimerData;
-   float          mDamping;
+   T mData;
 };
+
+#include "timerdataimpl.inl"
 
 #endif

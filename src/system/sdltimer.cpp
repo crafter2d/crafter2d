@@ -17,36 +17,45 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "timer.h"
+#include "sdltimer.h"
 
-#include "..\defines.h"
+#include <SDL/SDL.h>
 
-Timer::Timer()
+#include "timerdataimpl.h"
+
+#define       TIMERDATA(var,data)       TimerDataImpl<float>& var = dynamic_cast<      TimerDataImpl<float>&>(data)
+#define CONST_TIMERDATA(var,data) const TimerDataImpl<float>& var = dynamic_cast<const TimerDataImpl<float>&>(data)
+
+
+SDLTimer::SDLTimer():
+   mStart(0.0f)
 {
 }
 
-Timer::~Timer()
+TimerData* SDLTimer::createData() const
 {
+   return new TimerDataImpl<float>();
 }
 
-TimerData* Timer::createData() const
+void SDLTimer::releaseData(TimerData*& pdata)
 {
-   PURE_VIRTUAL
-   return NULL;
-}
-
-void Timer::releaseData(TimerData*& pdata)
-{
-   PURE_VIRTUAL
+   delete pdata;
+   pdata = NULL;   
 }
    
-void Timer::start(TimerData& info)
+void SDLTimer::start(TimerData& info)
 {
-   PURE_VIRTUAL
+   TIMERDATA(thedata, info);
+   thedata.setData(getTicksAsFloat());
 }
 
-float Timer::getInterval(const TimerData& info)
+float SDLTimer::getInterval(const TimerData& info)
 {
-   PURE_VIRTUAL
-   return 0;
+   CONST_TIMERDATA(thedata, info);
+   return getTicksAsFloat() - thedata.getData();
+}
+
+float SDLTimer::getTicksAsFloat()
+{
+   return (float)SDL_GetTicks() / 1000.0f;
 }

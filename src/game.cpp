@@ -43,6 +43,9 @@
 
 #include "net/netobjectfactory.h"
 
+#include "system/platform.h"
+#include "system/precisetimer.h"
+
 #include "console.h"
 #include "opengl.h"
 #include "scriptmanager.h"
@@ -63,6 +66,11 @@ int main(int argc, char *argv[])
    return EXIT_SUCCESS;
 }
 
+Timer& Game::timer()
+{
+   return getInstance().getTimer();
+}
+
 /*!
     \fn Game::Game()
 	 \brief Initialized member variables
@@ -81,6 +89,8 @@ Game::Game():
    mpConfiguration(NULL),
    window(NULL),
    mpDesigner(NULL),
+   mpTimer(NULL),
+   mpTimerData(NULL),
    bitdepth(32),
    videoFlags(0),
    mDesigning(false)
@@ -116,6 +126,8 @@ bool Game::create()
       log << "Couldn't initialize the SDL library!";
       return false;
    }
+
+   mpTimerData = getTimer().createData();
 
    // initialize the Lua scripting environment
    ScriptManager& scriptMgr = ScriptManager::getInstance ();
@@ -223,12 +235,16 @@ void Game::destroy()
 	// destroy the gui manager
 	GuiManager::getInstance().destroy();
 
+   // release timer data
+   getTimer().releaseData(mpTimerData);
+
 #ifdef WIN32
    // release the avi library
    AVIFileExit();
 #endif
 
-	if (window) {
+	if ( window != NULL )
+   {
 		// release main window
 		SDL_FreeSurface (window);
 		window = NULL;
@@ -324,6 +340,11 @@ void Game::initOpenGL()
 	OpenGL::initialize ();
 }
 
+void Game::allocateTimer()
+{
+   mpTimer = Platform::getInstance().createTimer();
+}
+
 /*!
     \fn Game::run()
 	 \brief Runs the main event loop of the game.
@@ -331,6 +352,8 @@ void Game::initOpenGL()
  */
 void Game::run()
 {
+   getTimer().start(getTimerData());
+
 	while ( active )
    {
 		processFrame();
@@ -556,6 +579,8 @@ void Game::runFrame()
    Uint32 tick = SDL_GetTicks ();
 
    Profiler::getInstance().begin();
+
+   float interval = getTimer().getInterval(getTimerData());
 
    {
       PROFILE("runFrame")

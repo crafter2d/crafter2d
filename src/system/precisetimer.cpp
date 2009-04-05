@@ -17,36 +17,68 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "timer.h"
+#include "precisetimer.h"
 
-#include "..\defines.h"
+#include <windows.h>
 
-Timer::Timer()
+#include "timerdataimpl.h"
+
+#define       TIMERDATA1(var,data)       TimerDataImpl<LARGE_INTEGER>& var = dynamic_cast<      TimerDataImpl<LARGE_INTEGER>&>(data)
+#define CONST_TIMERDATA1(var,data) const TimerDataImpl<LARGE_INTEGER>& var = dynamic_cast<const TimerDataImpl<LARGE_INTEGER>&>(data)
+
+struct PreciseTimerData
 {
+   PreciseTimerData();
+
+   LARGE_INTEGER mFreq;
+};
+
+PreciseTimerData::PreciseTimerData():
+   mFreq()
+{
+   QueryPerformanceFrequency(&mFreq);
 }
 
-Timer::~Timer()
+PreciseTimer::PreciseTimer():
+   Timer(),
+   mpData(NULL)
 {
+   mpData = new PreciseTimerData();
 }
 
-TimerData* Timer::createData() const
+PreciseTimer::~PreciseTimer()
 {
-   PURE_VIRTUAL
-   return NULL;
+   delete mpData;
+   mpData = NULL;
 }
 
-void Timer::releaseData(TimerData*& pdata)
+TimerData* PreciseTimer::createData() const
 {
-   PURE_VIRTUAL
-}
-   
-void Timer::start(TimerData& info)
-{
-   PURE_VIRTUAL
+   return new TimerDataImpl<LARGE_INTEGER>();
 }
 
-float Timer::getInterval(const TimerData& info)
+void PreciseTimer::releaseData(TimerData*& pdata)
 {
-   PURE_VIRTUAL
-   return 0;
+   TimerDataImpl<LARGE_INTEGER>* pmydata = dynamic_cast< TimerDataImpl<LARGE_INTEGER>* >(pdata);
+
+   delete pmydata;
+   pdata = NULL;
+}
+
+void PreciseTimer::start(TimerData& info)
+{
+   TIMERDATA1(thedata, info);
+   LARGE_INTEGER& start = thedata.getData();
+   QueryPerformanceCounter(&start);
+}
+
+float PreciseTimer::getInterval(const TimerData& info)
+{
+   LARGE_INTEGER end;
+   QueryPerformanceCounter(&end);
+
+   CONST_TIMERDATA1(thedata, info);
+   const LARGE_INTEGER& start = thedata.getData();
+
+   return (float)((double)(end.QuadPart - start.QuadPart) / (double)mpData->mFreq.QuadPart);
 }

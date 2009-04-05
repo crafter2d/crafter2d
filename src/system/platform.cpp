@@ -17,36 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "timer.h"
+#include "platform.h"
 
-#include "..\defines.h"
+#include "../defines.h"
 
-Timer::Timer()
+#ifdef WIN32
+#  include "winplatform.h"
+#elif LINUX
+#  include "linuxplatform.h"
+#endif
+
+Platform& Platform::getInstance()
+{
+#ifdef WIN32
+   static WinPlatform platform;
+#elif LINUX
+   static LinuxPlatform platform;
+#else
+   ASSERT_MSG("Unknown platform!");
+#endif
+
+   return platform;
+}
+
+Platform::Platform()
 {
 }
 
-Timer::~Timer()
+Platform::~Platform()
 {
 }
 
-TimerData* Timer::createData() const
+Timer* Platform::createTimer()
 {
    PURE_VIRTUAL
    return NULL;
-}
-
-void Timer::releaseData(TimerData*& pdata)
-{
-   PURE_VIRTUAL
-}
-   
-void Timer::start(TimerData& info)
-{
-   PURE_VIRTUAL
-}
-
-float Timer::getInterval(const TimerData& info)
-{
-   PURE_VIRTUAL
-   return 0;
 }

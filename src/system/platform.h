@@ -17,36 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "timer.h"
+#ifndef PLATFORM_H_
+#define PLATFORM_H_
 
-#include "..\defines.h"
+class Timer;
 
-Timer::Timer()
+class Platform
 {
-}
+public:
+      static Platform&  getInstance();
 
-Timer::~Timer()
-{
-}
+   virtual ~Platform();
 
-TimerData* Timer::createData() const
-{
-   PURE_VIRTUAL
-   return NULL;
-}
+   virtual Timer* createTimer() = 0;
 
-void Timer::releaseData(TimerData*& pdata)
-{
-   PURE_VIRTUAL
-}
-   
-void Timer::start(TimerData& info)
-{
-   PURE_VIRTUAL
-}
+protected:
+   Platform();
+};
 
-float Timer::getInterval(const TimerData& info)
-{
-   PURE_VIRTUAL
-   return 0;
-}
+#endif

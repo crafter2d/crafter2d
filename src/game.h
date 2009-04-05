@@ -42,6 +42,8 @@
 
 class GuiDesigner;
 class GameConfiguration;
+class Timer;
+class TimerData;
 
 /**
 @author Jeroen Broekhuizen
@@ -52,6 +54,7 @@ class Game
 {
 public:
  // static interface
+   static Timer&        timer();
    static Game&         getInstance();
 
                         Game();
@@ -75,6 +78,8 @@ public:
          GuiCanvas&           getCanvas();
          GuiDesigner&         designer();
 
+         Timer&               getTimer();
+
  // operations
    bool                 create();
    void                 destroy();
@@ -91,6 +96,10 @@ public:
    virtual void         loadCustomScriptLibraries();
 
 protected:
+ // get/set
+   TimerData&           getTimerData();
+
+ // overloadables
    virtual bool         initGame();
    virtual void         endGame();
    virtual void         updateFrame(Uint8* keys);
@@ -115,6 +124,7 @@ private:
    int                  preConfigScreen();
    void                 runFrame();
    int                  mouseKeyFlags();
+   void                 allocateTimer();
 
    void                 switchDesigner();
    void                 switchEditor();
@@ -125,6 +135,8 @@ private:
    GameConfiguration*   mpConfiguration;     // owned
    SDL_Surface*         window;
    GuiDesigner*         mpDesigner;
+   Timer*               mpTimer;
+   TimerData*           mpTimerData;
    int                  bitdepth;
    int                  videoFlags;
    bool                 mDesigning;

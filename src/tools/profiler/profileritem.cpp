@@ -20,12 +20,15 @@
 #include "profileritem.h"
 
 #include "..\..\defines.h"
+#include "..\..\game.h"
+
 #include "..\..\system\timer.h"
 
 #include "profiler.h"
 
 ProfilerItem::ProfilerItem(const std::string& name):
    mName(name),
+   mpTimerData(Game::timer().createData()),
    mCalls(0),
    mParents(0),
    mStartTime(0),
@@ -34,29 +37,19 @@ ProfilerItem::ProfilerItem(const std::string& name):
    mAverage(0.0f),
    mMinimum(0.0f),
    mMaximum(0.0f),
-   mActive(false),
-   mpTimer(NULL)
+   mActive(false)
 {
-   mpTimer = new Timer();
+   ASSERT_PTR(mpTimerData)
 }
 
 ProfilerItem::~ProfilerItem()
 {
-   if ( mpTimer != NULL )
-   {
-      delete mpTimer;
-      mpTimer = NULL;
-   }
+   Game::timer().releaseData(mpTimerData);
 }
 
 const std::string& ProfilerItem::getName() const
 {
    return mName;
-}
-
-Uint32 ProfilerItem::getStartTime() const
-{
-   return mStartTime;
 }
 
 void ProfilerItem::asString(char line[])
@@ -79,7 +72,7 @@ void ProfilerItem::asString(char line[])
    sprintf(line, "%5s, : %5s : %5s : %3s\n", avg, min, max, indentedname);
 }
 
-void ProfilerItem::increaseChildSampleTime(double amount)
+void ProfilerItem::increaseChildSampleTime(float amount)
 {
    mChildenSampleTime += amount;
 }
@@ -92,14 +85,13 @@ void ProfilerItem::begin()
 
    mCalls++;
    mActive = true;
-   //mStartTime = SDL_GetTicks();
 
-   mpTimer->begin();
+   Game::timer().start(*mpTimerData);
 }
 
 void ProfilerItem::end()
 {
-   const double duration = mpTimer->getInterval();
+   const double duration = Game::timer().getInterval(*mpTimerData);
    //const double endtime = SDL_GetTicks();
    // const double duration = endtime - mStartTime;
 
@@ -119,14 +111,14 @@ void ProfilerItem::end()
    }
 }
 
-void ProfilerItem::updateHistory(double damping, double elapsedtime)
+void ProfilerItem::updateHistory(float damping, float elapsedtime)
 {
    ASSERT(!mActive)
 
    if ( elapsedtime > 0 )
    {
-      double sampletime  = mAccumulator - mChildenSampleTime;
-      double percenttime = (sampletime / elapsedtime) * 100.0;
+      float sampletime  = mAccumulator - mChildenSampleTime;
+      float percenttime = (sampletime / elapsedtime) * 100.0;
 
       mAverage = damping * (mAverage - percenttime) + percenttime;
 

@@ -20,6 +20,8 @@
 #include "profiler.h"
 
 #include "..\..\defines.h"
+#include "..\..\game.h"
+
 #include "..\..\system\timer.h"
 
 #include "..\..\gui\guitext.h"
@@ -38,19 +40,15 @@ Profiler& Profiler::getInstance()
 Profiler::Profiler():
    mItems(),
    mCallstack(),
-   mpTimer(NULL),
+   mpTimerData(NULL),
    mDamping(0.8)
 {
-   mpTimer = new Timer();
+   mpTimerData = Game::timer().createData();
 }
 
 Profiler::~Profiler()
 {
-   if ( mpTimer != NULL )
-   {
-      delete mpTimer;
-      mpTimer = NULL;
-   }
+   Game::timer().releaseData(mpTimerData);
 }
 
 bool Profiler::hasParent() const
@@ -67,6 +65,12 @@ ProfilerItem& Profiler::getParent()
 int Profiler::getParentCount() const
 {
    return mCallstack.size();
+}
+
+TimerData& Profiler::getTimerData()
+{
+   ASSERT_PTR(mpTimerData)
+   return *mpTimerData;
 }
 
 bool Profiler::isCurrent(const ProfilerItem& item) const
@@ -91,12 +95,12 @@ void Profiler::pop()
 
 void Profiler::begin()
 {
-   mpTimer->begin();
+   Game::timer().start(getTimerData());
 }
 
 void Profiler::end()
 {
-   double elapsedtime = mpTimer->getInterval();
+   float elapsedtime = Game::timer().getInterval(getTimerData());
    if ( elapsedtime == 0.0 )
       elapsedtime = 0.001;
 

@@ -1,37 +1,38 @@
-#pragma once
+/***************************************************************************
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+#ifndef TIMER_H_
+#define TIMER_H_
 
-#ifdef WIN32
-
-#include <windows.h>
+class TimerData;
 
 class Timer
 {
 public:
    Timer();
+   virtual ~Timer() = 0;
 
-   void   begin();
-   double getInterval();
-
-private:
-   LARGE_INTEGER mFreq;
-   LARGE_INTEGER mStart;
-};
-
-#else
-
-class Timer
-{
-public:
-   Timer();
-   ~Timer();
-
-   void begin();
-   double getInterval();
-
-private:
-   double getTicks();
-
-   double mStart;
+   virtual TimerData*   createData() const = 0;
+   virtual void         releaseData(TimerData*& pdata) = 0;
+   
+   virtual void         start(TimerData& info) = 0;
+   virtual float        getInterval(const TimerData& info) = 0;
 };
 
 #endif

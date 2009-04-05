@@ -23,7 +23,7 @@
 #include <SDL/SDL.h>
 #include <string>
 
-class Timer;
+class TimerData;
 
 class ProfilerItem
 {
@@ -32,32 +32,30 @@ public:
    ~ProfilerItem();
 
    const std::string&   getName() const;
-   Uint32               getStartTime() const;
 
    void asString(char line[]);
 
-   void increaseChildSampleTime(double amount);
+   void increaseChildSampleTime(float amount);
 
    void begin();
    void end();
 
-   void updateHistory(double damping, double elapsedtime);
+   void updateHistory(float damping, float elapsedtime);
 
 private:
    void reset();
 
    std::string mName;
+   TimerData*  mpTimerData;
    int         mCalls;
    int         mParents;
-   double      mStartTime;
-   double      mAccumulator;
-   double      mChildenSampleTime;
-   double      mAverage;
-   double      mMinimum;
-   double      mMaximum;
+   float       mStartTime;
+   float       mAccumulator;
+   float       mChildenSampleTime;
+   float       mAverage;
+   float       mMinimum;
+   float       mMaximum;
    bool        mActive;
-
-   Timer*   mpTimer;
 };
 
 #endif
