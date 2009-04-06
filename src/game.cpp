@@ -66,11 +66,6 @@ int main(int argc, char *argv[])
    return EXIT_SUCCESS;
 }
 
-Timer& Game::timer()
-{
-   return getInstance().getTimer();
-}
-
 /*!
     \fn Game::Game()
 	 \brief Initialized member variables
@@ -89,7 +84,6 @@ Game::Game():
    mpConfiguration(NULL),
    window(NULL),
    mpDesigner(NULL),
-   mpTimer(NULL),
    mpTimerData(NULL),
    bitdepth(32),
    videoFlags(0),
@@ -127,7 +121,7 @@ bool Game::create()
       return false;
    }
 
-   mpTimerData = getTimer().createData();
+   mpTimerData = TIMER.createData();
 
    // initialize the Lua scripting environment
    ScriptManager& scriptMgr = ScriptManager::getInstance ();
@@ -236,7 +230,7 @@ void Game::destroy()
 	GuiManager::getInstance().destroy();
 
    // release timer data
-   getTimer().releaseData(mpTimerData);
+   TIMER.releaseData(mpTimerData);
 
 #ifdef WIN32
    // release the avi library
@@ -340,11 +334,6 @@ void Game::initOpenGL()
 	OpenGL::initialize ();
 }
 
-void Game::allocateTimer()
-{
-   mpTimer = Platform::getInstance().createTimer();
-}
-
 /*!
     \fn Game::run()
 	 \brief Runs the main event loop of the game.
@@ -352,7 +341,7 @@ void Game::allocateTimer()
  */
 void Game::run()
 {
-   getTimer().start(getTimerData());
+   TIMER.start(getTimerData());
 
 	while ( active )
    {
@@ -580,41 +569,27 @@ void Game::runFrame()
 
    Profiler::getInstance().begin();
 
-   float interval = getTimer().getInterval(getTimerData());
+   float interval = TIMER.getInterval(getTimerData());
 
-   {
-      PROFILE("runFrame")
+   ScriptManager::getInstance().update(tick);
+   if ( !isActive() )
+      return;
 
-      ScriptManager::getInstance().update(tick);
-      if ( !isActive() )
-         return;
+   server.update(interval);
+   client.update(interval);
 
-      {
-         PROFILE("server.update")
-         server.update(tick);
-      }
-      {
-         PROFILE("client.update")
-         client.update(tick);
-      }
+   // here also nothing happens (should be overloaded)
+   glLoadIdentity ();
+   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glAlphaFunc (GL_GREATER, 0.1f);
+   glEnable (GL_ALPHA_TEST);
 
-      // here also nothing happens (should be overloaded)
-      glLoadIdentity ();
-      glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      glAlphaFunc (GL_GREATER, 0.1f);
-      glEnable (GL_ALPHA_TEST);
-
-      // call overloaded function
-      {
-         PROFILE("Drawing")
-
-         canvas.render (tick);
-         drawFrame (tick);
-      }
-
-      //glDisable(GL_MULTISAMPLE);
-      glDisable (GL_ALPHA_TEST);
-   }
+   // call overloaded function
+   canvas.render (tick);
+   drawFrame (tick);
+   
+   //glDisable(GL_MULTISAMPLE);
+   glDisable (GL_ALPHA_TEST);
 
    Profiler::getInstance().end();
    Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());

@@ -24,6 +24,8 @@
 
 #include <string.h>
 
+#include "../system/timer.h"
+
 #include "../console.h"
 #include "../process.h"
 #include "../script.h"
@@ -49,7 +51,7 @@
  */
 
 NetConnection::NetConnection(void):
-   sendAliveMsg(false),
+   mSendAliveMsg(false),
    connected(false),
    lastSendAlive(0),
    clientid(0),
@@ -202,11 +204,13 @@ int NetConnection::getErrorNumber()
 
 /// \fn NetConnection::update()
 /// \brief Updates the message queues etc.
-void NetConnection::update(Uint32 tick)
+void NetConnection::update()
 {
-   if (sendAliveMsg)
+   Timer& timer = Timer::getInstance();
+
+   if ( mSendAliveMsg )
    {
-      sendAliveMessages(tick);
+      sendAliveMessages(timer.getTick());
    }
 
    // receive pending messages
@@ -223,7 +227,7 @@ void NetConnection::update(Uint32 tick)
 
       if ( pclient->pstatistics )
       {
-         pclient->pstatistics->update(tick);
+         pclient->pstatistics->update(timer.getTick());
       }
 
       
@@ -244,10 +248,11 @@ void NetConnection::update(Uint32 tick)
          for (; pit != pclient->resendQueue.end(); ++pit) 
          {
             NetPackage& package = (*pit);
+            const float tick = timer.getTick();
 
-            if (SDL_GetTicks() - package.time > MAX_TIME_BETWEEN_RECV)
+            if ( tick - package.time > MAX_TIME_BETWEEN_RECV)
             {
-               package.time = SDL_GetTicks();
+               package.time = tick;
 
                Console::getInstance().printf("Resending package number for client %d: %d", i, package.number);
                resend(*pclient, package);
@@ -264,7 +269,7 @@ void NetConnection::send(NetAddress& client, BitStream* stream, PacketReliabilit
    package.isAck = false;
    package.clientid = clientid;
    package.number = client.packageNumber;
-   package.time = SDL_GetTicks();
+   package.time = Timer::getInstance().getTick();
    package.datasize = stream->getSize();
    package.data = new char[package.datasize];
    memcpy(package.data, stream->getBuf(), package.datasize);
@@ -323,7 +328,7 @@ void NetConnection::doSend(NetAddress& client, const BitStream& stream)
    }
    else
    {
-      client.lastTimeSend = SDL_GetTicks();
+      client.lastTimeSend = Timer::getInstance().getTick();
       if ( client.pstatistics )
       {
          client.pstatistics->addPackageSend(stream.getSize());
@@ -331,19 +336,19 @@ void NetConnection::doSend(NetAddress& client, const BitStream& stream)
    }
 }
 
-void NetConnection::sendAliveMessages(Uint32 tick)
+void NetConnection::sendAliveMessages(float tick)
 {
    for ( Uint32 i = 0; i < clients.size(); ++i )
    {
       NetAddress& client = *clients[clientid];
 
-      if (tick - client.lastTimeSend > 1000)
+      if ( tick - client.lastTimeSend > 1.0f )
       {
 		   NetPackage ackPackage;
 		   ackPackage.type = ALIVE_MSG_ID;
 		   ackPackage.isAck = false;
 		   ackPackage.number = 0;
-		   ackPackage.time = tick;
+         ackPackage.time = tick;
 		   ackPackage.datasize = 0;
 
          BitStream stream;
@@ -373,7 +378,7 @@ void NetConnection::recv()
    }
 
    NetAddress& client = resolveClient(clientid);
-   client.lastTimeRecv = SDL_GetTicks();
+   client.lastTimeRecv = Timer::getInstance().getTick();
    if ( client.pstatistics )
    {
       client.pstatistics->addPackageSend(recvStream.getSize());
@@ -522,7 +527,7 @@ bool NetConnection::addNewClient(NetAddress& address, bool connecting)
 
       // build the new address structure
       NetAddress* addr = new NetAddress(address.addr);
-      addr->lastTimeRecv = SDL_GetTicks();
+      addr->lastTimeRecv = Timer::getInstance().getTick();
 
       // create new statistics
       addr->pstatistics = new NetStatistics();

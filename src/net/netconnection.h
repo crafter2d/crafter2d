@@ -40,12 +40,12 @@ class Process;
 const int   MAX_PACKAGE_NUMBER            = 0xAFFFFFFF;
 const int   MIN_PACKAGE_NUMBER_DIFFERENCE = 0xAFFFF000;
 const int   RESET_DIFFERENCE              = 0x1FFFFFFF;
-const int   MAX_TIME_BETWEEN_RECV         = 3000;
+const float   MAX_TIME_BETWEEN_RECV         = 3.0f;
 const int   HEADER_SIZE                   = sizeof(Uint32)*2 + 2;
 const int   SOCKADDR_SIZE                 = sizeof(sockaddr_in);
 const int   INVALID_CLIENTID              = -1;
 const char  ALIVE_MSG_ID                  = 0xF;
-const int   ALIVE_MSG_INTERVAL            = 1000;
+const float   ALIVE_MSG_INTERVAL            = 1.0f;
 
 enum PacketReliability {
    Unreliable,
@@ -59,13 +59,13 @@ enum PacketReliability {
 /// \brief Package of data to be send over the network
 struct NetPackage
 {
-   char type;
-   bool isAck;
+   char   type;
+   bool   isAck;
    Uint32 clientid;
    Uint32 number;
-   Uint32 time;
-   int datasize;
-   char* data;
+   float  time;
+   int    datasize;
+   char*  data;
 };
 
 typedef std::vector<NetPackage> PackageQueue;
@@ -81,8 +81,8 @@ struct NetAddress {
 
    Uint32 packageNumber;
    Uint32 lastPackageNumber;
-   Uint32 lastTimeRecv;
-   Uint32 lastTimeSend;
+   float  lastTimeRecv;
+   float  lastTimeSend;
 
    PackageList orderQueue;
    PackageQueue resendQueue;
@@ -109,7 +109,7 @@ public:
    bool        create(Uint32 port=0);
    bool        connect(const char* serverName, Uint32 port);
    void        disconnect();
-   void        update(Uint32 tick);
+   void        update();
 
    void        attachProcess(Process* proc);
    void        setAccepting(bool a);
@@ -127,7 +127,7 @@ public:
    void        setClientId(const int client);
    int         getClientId();
 
-   void        sendAliveMessages(bool yes);
+   void        setSendAliveMessages(bool yes);
 
    const NetAddress& resolveClient(int idx) const;
          NetAddress& resolveClient(int idx);
@@ -141,7 +141,7 @@ protected:
 
    void        send(NetAddress& client, BitStream* stream, PacketReliability reliability);
    void        sendAck(NetAddress& client, const NetPackage& package);
-   void        sendAliveMessages(Uint32 tick);
+   void        sendAliveMessages(float tick);
 
    void        doSend(NetAddress& client, const BitStream& stream);
    bool        doReceive(NetAddress& address, BitStream& recvStream);
@@ -157,7 +157,8 @@ protected:
 
 private:
    AdressList clients;
-   bool sendAliveMsg, connected;
+   bool mSendAliveMsg;
+   bool connected;
    Uint32 lastSendAlive;
    Uint32 clientid;
    int sock;

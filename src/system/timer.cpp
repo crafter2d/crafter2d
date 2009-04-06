@@ -19,7 +19,17 @@
  ***************************************************************************/
 #include "timer.h"
 
-#include "..\defines.h"
+#include "../autoptr.h"
+#include "../defines.h"
+
+#include "platform.h"
+
+// static 
+Timer& Timer::getInstance()
+{
+   static AutoPtr<Timer> ptimer(Platform::getInstance().createTimer());
+   return *ptimer;
+}
 
 Timer::Timer()
 {
@@ -46,6 +56,12 @@ void Timer::start(TimerData& info)
 }
 
 float Timer::getInterval(const TimerData& info)
+{
+   PURE_VIRTUAL
+   return 0;
+}
+
+float Timer::getTick() const
 {
    PURE_VIRTUAL
    return 0;

@@ -142,16 +142,16 @@ void Server::shutdown()
 ///
 /// Updates the server side scenegraph and sends the changes to the connected clients.
 /// At the end it handles the incomming events.
-void Server::update (Uint32 tick)
+void Server::update(float delta)
 {
    // update the connection
    if (!conn.isConnected())
       return;
-   conn.update(tick);
+   conn.update();
 
    // update the graph
    graph.setConnection(&conn);
-   graph.update(tick);
+   graph.update(SDL_GetTicks());
 
    // send changes to the clients
    ClientMap::iterator it = clients.begin();

@@ -54,10 +54,10 @@ bool Process::destroy()
    return true;
 }
 
-void Process::update(Uint32 tick)
+void Process::update(float tick)
 {
    if ( conn.isConnected() )
-      conn.update(tick);
+      conn.update();
 }
 
 void Process::sendScriptEvent(const BitStream* stream, Uint32 client)

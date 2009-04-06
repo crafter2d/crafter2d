@@ -26,17 +26,22 @@
 #define       TIMERDATA1(var,data)       TimerDataImpl<LARGE_INTEGER>& var = dynamic_cast<      TimerDataImpl<LARGE_INTEGER>&>(data)
 #define CONST_TIMERDATA1(var,data) const TimerDataImpl<LARGE_INTEGER>& var = dynamic_cast<const TimerDataImpl<LARGE_INTEGER>&>(data)
 
+#define INTERVAL(start,end) (float)((double)(end.QuadPart - start.QuadPart) / (double)mpData->mFreq.QuadPart);
+
 struct PreciseTimerData
 {
    PreciseTimerData();
 
    LARGE_INTEGER mFreq;
+   LARGE_INTEGER mStart;
 };
 
 PreciseTimerData::PreciseTimerData():
-   mFreq()
+   mFreq(),
+   mStart()
 {
    QueryPerformanceFrequency(&mFreq);
+   QueryPerformanceCounter(&mStart);
 }
 
 PreciseTimer::PreciseTimer():
@@ -80,5 +85,13 @@ float PreciseTimer::getInterval(const TimerData& info)
    CONST_TIMERDATA1(thedata, info);
    const LARGE_INTEGER& start = thedata.getData();
 
-   return (float)((double)(end.QuadPart - start.QuadPart) / (double)mpData->mFreq.QuadPart);
+   return INTERVAL(start, end);
+}
+
+float PreciseTimer::getTick() const
+{
+   LARGE_INTEGER end;
+   QueryPerformanceCounter(&end);
+
+   return INTERVAL(mpData->mStart, end);
 }

@@ -41,7 +41,7 @@ public:
 
    virtual bool   create();
    virtual bool   destroy();
-   virtual void   update (Uint32 tick);
+   virtual void   update (float delta);
 
    void           sendScriptEvent(const BitStream* stream, Uint32 client=INVALID_CLIENTID);
 

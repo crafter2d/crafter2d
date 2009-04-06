@@ -54,7 +54,6 @@ class Game
 {
 public:
  // static interface
-   static Timer&        timer();
    static Game&         getInstance();
 
                         Game();
@@ -77,8 +76,6 @@ public:
          Client&              getClient();
          GuiCanvas&           getCanvas();
          GuiDesigner&         designer();
-
-         Timer&               getTimer();
 
  // operations
    bool                 create();
@@ -124,7 +121,6 @@ private:
    int                  preConfigScreen();
    void                 runFrame();
    int                  mouseKeyFlags();
-   void                 allocateTimer();
 
    void                 switchDesigner();
    void                 switchEditor();
@@ -135,7 +131,6 @@ private:
    GameConfiguration*   mpConfiguration;     // owned
    SDL_Surface*         window;
    GuiDesigner*         mpDesigner;
-   Timer*               mpTimer;
    TimerData*           mpTimerData;
    int                  bitdepth;
    int                  videoFlags;

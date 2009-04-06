@@ -55,7 +55,15 @@ float SDLTimer::getInterval(const TimerData& info)
    return getTicksAsFloat() - thedata.getData();
 }
 
-float SDLTimer::getTicksAsFloat()
+float SDLTimer::getTick() const
+{
+   return getTicksAsFloat();
+}
+
+// Helper
+
+float SDLTimer::getTicksAsFloat() const
 {
    return (float)SDL_GetTicks() / 1000.0f;
 }
+

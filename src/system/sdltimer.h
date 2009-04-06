@@ -32,9 +32,10 @@ public:
    
    virtual void         start(TimerData& info);
    virtual float        getInterval(const TimerData& info);
+   virtual float        getTick() const;
 
 private:
-   float getTicksAsFloat();
+   float getTicksAsFloat() const;
 
    float mStart; 
 };

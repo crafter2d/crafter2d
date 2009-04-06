@@ -86,7 +86,7 @@ public:
 
    virtual int    onClientEvent(int client, NetEvent* event, BitStream& stream);
 
-   virtual void   update (Uint32 tick);
+   virtual void   update(float delta);
 
 protected:
    ClientMap clients;

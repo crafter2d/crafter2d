@@ -80,9 +80,9 @@ INLINE bool NetConnection::isConnected()
    return connected;
 }
 
-INLINE void NetConnection::sendAliveMessages(bool yes) 
+INLINE void NetConnection::setSendAliveMessages(bool yes) 
 {
-   sendAliveMsg = yes; 
+   mSendAliveMsg = yes; 
 }
 
 INLINE 

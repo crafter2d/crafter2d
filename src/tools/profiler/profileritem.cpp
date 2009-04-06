@@ -20,7 +20,6 @@
 #include "profileritem.h"
 
 #include "..\..\defines.h"
-#include "..\..\game.h"
 
 #include "..\..\system\timer.h"
 
@@ -28,7 +27,7 @@
 
 ProfilerItem::ProfilerItem(const std::string& name):
    mName(name),
-   mpTimerData(Game::timer().createData()),
+   mpTimerData(TIMER.createData()),
    mCalls(0),
    mParents(0),
    mStartTime(0),
@@ -44,7 +43,7 @@ ProfilerItem::ProfilerItem(const std::string& name):
 
 ProfilerItem::~ProfilerItem()
 {
-   Game::timer().releaseData(mpTimerData);
+   TIMER.releaseData(mpTimerData);
 }
 
 const std::string& ProfilerItem::getName() const
@@ -86,14 +85,12 @@ void ProfilerItem::begin()
    mCalls++;
    mActive = true;
 
-   Game::timer().start(*mpTimerData);
+   Timer::getInstance().start(*mpTimerData);
 }
 
 void ProfilerItem::end()
 {
-   const double duration = Game::timer().getInterval(*mpTimerData);
-   //const double endtime = SDL_GetTicks();
-   // const double duration = endtime - mStartTime;
+   const float duration = TIMER.getInterval(*mpTimerData);
 
    mAccumulator += duration;
    mActive = false;
@@ -118,7 +115,7 @@ void ProfilerItem::updateHistory(float damping, float elapsedtime)
    if ( elapsedtime > 0 )
    {
       float sampletime  = mAccumulator - mChildenSampleTime;
-      float percenttime = (sampletime / elapsedtime) * 100.0;
+      float percenttime = (sampletime / elapsedtime) * 100.0f;
 
       mAverage = damping * (mAverage - percenttime) + percenttime;
 

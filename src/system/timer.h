@@ -20,12 +20,15 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
+#define TIMER Timer::getInstance()
+
 class TimerData;
 
 class Timer
 {
 public:
-   Timer();
+   static Timer&  getInstance();
+
    virtual ~Timer() = 0;
 
    virtual TimerData*   createData() const = 0;
@@ -33,6 +36,10 @@ public:
    
    virtual void         start(TimerData& info) = 0;
    virtual float        getInterval(const TimerData& info) = 0;
+   virtual float        getTick() const;
+
+protected:
+   Timer();
 };
 
 #endif

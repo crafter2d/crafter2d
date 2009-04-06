@@ -48,7 +48,7 @@ bool Client::connect(const char* server, int port, const char* name)
    conn.create();
    if (!conn.connect(server, port))
       return false;
-   conn.sendAliveMessages(false);
+   conn.setSendAliveMessages(false);
    conn.setAccepting(false);
 
    _pplayer = new Player();

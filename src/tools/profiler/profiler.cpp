@@ -20,7 +20,6 @@
 #include "profiler.h"
 
 #include "..\..\defines.h"
-#include "..\..\game.h"
 
 #include "..\..\system\timer.h"
 
@@ -40,15 +39,14 @@ Profiler& Profiler::getInstance()
 Profiler::Profiler():
    mItems(),
    mCallstack(),
-   mpTimerData(NULL),
-   mDamping(0.8)
+   mpTimerData(TIMER.createData()),
+   mDamping(0.8f)
 {
-   mpTimerData = Game::timer().createData();
 }
 
 Profiler::~Profiler()
 {
-   Game::timer().releaseData(mpTimerData);
+   TIMER.releaseData(mpTimerData);
 }
 
 bool Profiler::hasParent() const
@@ -95,14 +93,14 @@ void Profiler::pop()
 
 void Profiler::begin()
 {
-   Game::timer().start(getTimerData());
+   TIMER.start(getTimerData());
 }
 
 void Profiler::end()
 {
-   float elapsedtime = Game::timer().getInterval(getTimerData());
-   if ( elapsedtime == 0.0 )
-      elapsedtime = 0.001;
+   float elapsedtime = TIMER.getInterval(getTimerData());
+   if ( elapsedtime == 0.0f )
+      elapsedtime = 0.001f;
 
    ItemMap::iterator it = mItems.begin();
    for ( ; it != mItems.end(); it++ )
