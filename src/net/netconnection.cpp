@@ -230,8 +230,6 @@ void NetConnection::update()
          pclient->pstatistics->update(timer.getTick());
       }
 
-      
-
 #ifdef JENGINE_AUTODISCONNECT
       // check if the client has disconnected/timed out
       if ((SDL_GetTicks() - client.lastTimeRecv) > MAX_TIME_BETWEEN_RECV)
@@ -306,7 +304,7 @@ void NetConnection::send(BitStream* stream, PacketReliability reliability)
 void NetConnection::send(NetObject* obj, PacketReliability reliability)
 {
    BitStream stream;
-   stream << obj->getRuntimeInfo()->getName().c_str() << obj;
+   stream << obj->getRuntimeInfo().getName() << obj;
    send(&stream, reliability);
 }
 
@@ -530,7 +528,7 @@ bool NetConnection::addNewClient(NetAddress& address, bool connecting)
       addr->lastTimeRecv = Timer::getInstance().getTick();
 
       // create new statistics
-      addr->pstatistics = new NetStatistics();
+      // addr->pstatistics = new NetStatistics();
 
       Uint32 i = 0;
       for (; i < clients.size(); ++i)

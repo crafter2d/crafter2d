@@ -64,6 +64,8 @@ public:
    typedef std::vector<Bound*> Bounds;
    typedef std::vector<WorldObserver*> Observers;
 
+   static bool isWorld(NetObject& object);
+
                   World();
    virtual        ~World();
 
@@ -73,7 +75,6 @@ public:
    bool           save();
 
    int            collide(Object& object) const;
-	void           draw();
 
    void           loadObjects(const char* filename);
 
@@ -92,6 +93,8 @@ public:
    Layer*         getLayer(int index);
    const Layer*   getLayer(int index) const;
    int            getObjectLayer() const;
+
+   virtual const Vector& getPosition() const;
 
    LayerType      getLayerType() const;
    void           setLayerType(int type);
@@ -120,6 +123,10 @@ protected:
    void           initializeBorders();
 
    std::string    getFilename() const;
+
+   virtual void   doUpdate(DirtySet& dirtyset, float delta);
+   virtual void   doDraw();
+
  // notifications
    void notifyLayerAdded(Layer& layer);
    void notifyScrollChange(const Vector& scrollposition);

@@ -65,6 +65,7 @@ public:
 	}
 
    bool valid() const { return (ptr != 0); }
+   operator bool() { return ptr != NULL; }
 
 	/** Dereferencing operator. Provided to behave like the normal pointer. */
 	T& operator* () const { return *ptr; }

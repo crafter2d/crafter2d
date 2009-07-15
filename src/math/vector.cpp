@@ -21,24 +21,6 @@
 
 #include <math.h>
 
-Color::Color()
-{
-	r = g = b = 0.0f;
-	a = 1.0f;
-}
-
-Color::Color(float _r, float _g, float _b, float _a): r(_r), g(_g), b(_b), a(_a)
-{
-}
-
-Color::~Color()
-{
-}
-
-void Color::set (float _r, float _g, float _b) {
-	r = _r; g = _g; b = _b;
-}
-
 Vector::Vector(void)
 {
 	x = y = 0.0f;

@@ -32,7 +32,7 @@ class RuntimeInfo
 public:
    typedef NetObject* (*CreateObjectFnc)();
 
-   explicit RuntimeInfo(int id);
+   RuntimeInfo(int id, const std::string& classname, const std::string& base, CreateObjectFnc createfunction);
    ~RuntimeInfo();
    
  // Get/set interface
@@ -53,10 +53,10 @@ public:
    bool isDerivedFrom(int baseid);
 
 private:
-   CreateObjectFnc   _createObject;
-   RuntimeInfo*      _pbaseobject;
    std::string       _name;
    std::string       _base;
+   CreateObjectFnc   _createObject;
+   RuntimeInfo*      _pbaseobject;
    int               _id;
 };
 

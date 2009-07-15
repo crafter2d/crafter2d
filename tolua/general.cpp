@@ -62,12 +62,21 @@ class Color
 	Color();
 	Color(float r, float g, float b, float a=1.0f);
 
-	void set (float r, float g, float b);
+   // get/set
+   float getRed() const;
+   void  setRed(float red);
 
-	float r;
-	float g;
-	float b;
-	float a;
+   float getGreen() const;
+   void  setGreen(float green);
+
+   float getBlue() const;
+   void  setBlue(float blue);
+
+   float getAlpha() const;
+   void  setAlpha(float alpha);
+
+ // operations
+	void set(float red, float green, float blue, float alpha=1.0f);
 };
 
 class Particle

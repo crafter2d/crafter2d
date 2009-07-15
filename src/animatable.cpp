@@ -233,11 +233,11 @@ void AnimObject::nextFrame ()
    }
 }
 
-void AnimObject::update(Uint32 tick)
+void AnimObject::doUpdate(DirtySet& dirtyset, float delta)
 {
-   Object::update(tick);
+   Object::doUpdate(dirtyset, delta);
 
-   animate(tick);
+   animate(delta);
 
    if ( _animChanged )
    {
@@ -247,9 +247,9 @@ void AnimObject::update(Uint32 tick)
 }
 
 /*!
-    \fn AnimObject::draw()
+    \fn AnimObject::doDraw()
  */
-void AnimObject::draw()
+void AnimObject::doDraw()
 {
    animate(SDL_GetTicks());
 
@@ -258,7 +258,7 @@ void AnimObject::draw()
    glPushMatrix();
 
    // (3D only: negate the y coord)
-   glTranslatef(pos.x, pos.y, 0);
+   //glTranslatef(pos.x, pos.y, 0);
    glRotatef(angle, 0,0,1);
 	glBegin (GL_QUADS);
 
@@ -295,8 +295,6 @@ void AnimObject::draw()
 
 	glEnd();
    texture->disable ();
-
-   SceneObject::draw();
 
    glPopMatrix();
 }

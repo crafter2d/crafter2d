@@ -91,10 +91,12 @@ void Creature::draw()
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-void Creature::update(Uint32 tick)
+void Creature::update(DirtySet& dirtyset, float delta)
 {
-   AnimObject::update(tick);
-	if (target) {
+   AnimObject::update(dirtyset, delta);
+
+	if ( target != NULL ) 
+   {
 		vel = target->getPosition () - pos;
 		vel.normalize ();
 		vel.x *= 4;

@@ -37,7 +37,7 @@ public:
    void initialize();
 
  // Operations
-   RuntimeInfo* registerObject(int id, const NetObject& object);
+   void         registerObject(int id, RuntimeInfo& info);
    NetObject*   createObject(const std::string& name);
    NetObject*   createObject(int id);
 

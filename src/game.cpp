@@ -44,7 +44,8 @@
 #include "net/netobjectfactory.h"
 
 #include "system/platform.h"
-#include "system/precisetimer.h"
+#include "system/timer.h"
+#include "system/timerdelta.h"
 
 #include "console.h"
 #include "opengl.h"
@@ -59,9 +60,11 @@
 int main(int argc, char *argv[])
 {
    Game& game = Game::getInstance();
-   game.create();
-   game.run ();
-   game.destroy ();
+   if ( game.create() )
+   {
+      game.run ();
+      game.destroy ();
+   }
 
    return EXIT_SUCCESS;
 }
@@ -569,14 +572,15 @@ void Game::runFrame()
 
    Profiler::getInstance().begin();
 
-   float interval = TIMER.getInterval(getTimerData());
+   TimerDelta timerdelta(getTimerData());
+   float delta = timerdelta.getDelta();
 
    ScriptManager::getInstance().update(tick);
    if ( !isActive() )
       return;
 
-   server.update(interval);
-   client.update(interval);
+   server.update(delta);
+   client.update(delta);
 
    // here also nothing happens (should be overloaded)
    glLoadIdentity ();
@@ -585,8 +589,8 @@ void Game::runFrame()
    glEnable (GL_ALPHA_TEST);
 
    // call overloaded function
-   canvas.render (tick);
-   drawFrame (tick);
+   canvas.render(tick);
+   drawFrame(tick);
    
    //glDisable(GL_MULTISAMPLE);
    glDisable (GL_ALPHA_TEST);

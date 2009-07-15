@@ -53,7 +53,7 @@ private:
    void  handleUpdateObjectEvent(BitStream& stream);
    void  handleRequestObjectEvent(BitStream& stream);
 
-   Player*  _pplayer;
+   Player*  mpPlayer;
    Requests requests;
 };
 

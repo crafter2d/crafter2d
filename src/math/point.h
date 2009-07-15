@@ -27,18 +27,16 @@ public:
    Point(int x, int y);
 
    int   x() const;
-   void  x(int x);
+   void  x(int xvalue);
 
    int   y() const;
-   void  y(int y);
+   void  y(int yvalue);
 
 private:
-   int _x;
-   int _y;
+   int mX;
+   int mY;
 };
 
-#ifdef JENGINE_INLINE
-#  include "point.inl"
-#endif
+#include "point.inl"
 
 #endif

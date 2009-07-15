@@ -24,6 +24,7 @@
 #include <list>
 #include "net/netobject.h"
 
+class DirtySet;
 class NodeVisitor;
 class SceneGraph;
 class TiXmlDocument;
@@ -60,8 +61,8 @@ public:
    void                    removeAll();
 
    SceneObject*            find(const char* node, bool recurse = true);
-	virtual void            update(Uint32 tick);
-   virtual void            draw();
+	void                    update(DirtySet& dirtyset, float delta);
+   void                    draw();
 
    virtual void            accept(NodeVisitor& nv);
 
@@ -74,11 +75,16 @@ public:
    const SceneObjectList&  getChildren() const;
    SceneObject*            getParent();
 
+   virtual const Vector&   getPosition() const = 0;
+
    virtual void            pack(BitStream& stream) const;
    virtual void            unpack(BitStream& stream);
    
 protected:
    virtual bool            load(TiXmlDocument& doc);
+
+   virtual void            doUpdate(DirtySet& dirtyset, float delta) = 0;
+   virtual void            doDraw() = 0;
 
    char name[MAX_NAME_LEN];
    std::string       xmlfile;

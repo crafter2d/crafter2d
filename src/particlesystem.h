@@ -21,8 +21,11 @@
 #define PARTICLESYSTEM_H
 
 #include <SDL/SDL.h>
-#include "texture.h"
+
 #include "math/vector.h"
+#include "math/color.h"
+
+#include "texture.h"
 #include "object.h"
 
 class CodePath;
@@ -61,9 +64,6 @@ public:
 	
    virtual void   destroy();
 
-	virtual void   update(Uint32 tick);
-	virtual void   draw();
-
 	void           setEmitRate(int rate);
 	void           setEmitCount(int count);
 
@@ -74,6 +74,9 @@ public:
 	
 protected:
    virtual bool   load(TiXmlDocument& doc);
+
+   virtual void   doUpdate(DirtySet& dirtyset, float delta);
+	virtual void   doDraw();
 
    bool           prepare();
 
@@ -88,8 +91,6 @@ protected:
 	Script* updateScript;
 	
 	VertexBuffer* buffer;
-	//ShaderObject object;
-	//VertexProgram vp;
 	CodePath* path;
 };
 

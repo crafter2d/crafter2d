@@ -47,9 +47,16 @@ static const std::string WORLD_EXTENSION = ".jwl";
 
 IMPLEMENT_REPLICATABLE(WorldId, World, SceneObject)
 
+// static 
+bool World::isWorld(NetObject& object)
+{
+   return object.getRuntimeInfo().getName() == "World";
+}
+
 /// fn World::World
 /// brief Currently does nothing
 World::World():
+   SceneObject(),
    layers(),
    bounds(),
    _observers(),
@@ -223,16 +230,24 @@ void World::setObjectLayer(int objectlayerid)
    }
 }
 
-/// \fn World::draw()
-/// \brief Draws the world on screen
-void World::draw ()
+void World::doUpdate(DirtySet& dirtyset, float delta)
 {
    // scroll if necessary
    if (autoFollow && followMode != NoFollow)
    {
       scroll ();
    }
+}
 
+const Vector& World::getPosition() const
+{
+   return Vector::zero();
+}
+
+/// \fn World::doDraw()
+/// \brief Draws the world on screen
+void World::doDraw ()
+{
    // render the layers
    for ( int i = 0; i < layers.size(); i++ )
    {

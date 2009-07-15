@@ -20,6 +20,9 @@
 #include "net/netevent.h"
 #include "net/newobjectevent.h"
 
+#include "world/world.h"
+
+#include "autoptr.h"
 #include "console.h"
 #include "client.h"
 #include "player.h"
@@ -30,7 +33,7 @@
 #include "defines.h"
 
 Client::Client(void):
-   _pplayer(NULL),
+   mpPlayer(NULL),
    requests()
 {
 }
@@ -51,7 +54,7 @@ bool Client::connect(const char* server, int port, const char* name)
    conn.setSendAliveMessages(false);
    conn.setAccepting(false);
 
-   _pplayer = new Player();
+   mpPlayer = new Player();
 
    // send login command
    NetEvent event(connectEvent);
@@ -62,7 +65,8 @@ bool Client::connect(const char* server, int port, const char* name)
 
 void Client::disconnect()
 {
-   if (conn.isConnected()) {
+   if ( conn.isConnected() )
+   {
       BitStream stream;
       DisconnectEvent event;
       stream << &event;
@@ -79,8 +83,8 @@ bool Client::destroy()
 
 Player& Client::getPlayer()
 {
-   ASSERT_PTR(_pplayer);
-   return *_pplayer;
+   ASSERT_PTR(mpPlayer);
+   return *mpPlayer;
 }
 
 int Client::onClientEvent(int client, NetEvent* event, BitStream& stream)
@@ -102,7 +106,6 @@ int Client::onClientEvent(int client, NetEvent* event, BitStream& stream)
       case joinEvent:
          {
             // player joined the game
-            Object* controler = NULL;
             JoinEvent* je = dynamic_cast<JoinEvent*>(event);
 
             // run the onConnected script
@@ -177,17 +180,17 @@ void Client::handleNewObjectEvent(NewObjectEvent& event)
 {
    // a new object has been made on the server and 
    // is now also known on the client
-   SceneObject* obj = event.getObject();
+   AutoPtr<SceneObject> obj = event.getObject();
    obj->setReplica();
    obj->create();
 
    if ( graph.find(obj->getName()) == 0 )
    {
-      if ( obj->getRuntimeInfo()->getName() == "World" )
+      if ( World::isWorld(*obj) )
       {
-         _pplayer->initialize(*(World*)obj);
+         mpPlayer->initialize((World&)*obj);
 
-         getSceneGraph().setWorld((World*)obj);
+         getSceneGraph().setWorld((World*)obj.release());
    
          // run the onWorldChanged script
          Script& script = ScriptManager::getInstance().getTemporaryScript();
@@ -197,9 +200,15 @@ void Client::handleNewObjectEvent(NewObjectEvent& event)
       }
       else
       {
-         SceneObject* parent = graph.find(event.getParent().c_str());
-         if ( parent != NULL )
-            parent->add(obj);
+         SceneObject* pparent = graph.find(event.getParent().c_str());
+         if ( pparent != NULL )
+         {
+            pparent->add(obj.release());
+         }
+         else
+         {
+            UNREACHABLE("Parent of object not found.")
+         }
       }
    }
 }

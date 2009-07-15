@@ -24,6 +24,7 @@
 #include "player.h"
 #include "script.h"
 #include "scriptmanager.h"
+#include "sceneobjectdirtyset.h"
 
 IMPLEMENT_REPLICATABLE(JoinEventId, JoinEvent, NetEvent)
 
@@ -149,9 +150,11 @@ void Server::update(float delta)
       return;
    conn.update();
 
+   SceneObjectDirtySet dirtyset;
+
    // update the graph
    graph.setConnection(&conn);
-   graph.update(SDL_GetTicks());
+   graph.update(dirtyset, delta);
 
    // send changes to the clients
    ClientMap::iterator it = clients.begin();

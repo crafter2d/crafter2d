@@ -44,7 +44,7 @@ public:
          Weapon*        getWeapon();
    void                 setWeapon(Weapon* w);
 
-   virtual void      update(Uint32 tick);
+   virtual void      update(DirtySet& dirtyset, float delta);
    virtual void      draw();
 
 	void              moveto(Creature* t);

@@ -43,14 +43,11 @@ public:
 	                  Object();
 	virtual           ~Object();
 
-   virtual void      update(Uint32 tick);
-	virtual void      draw();
-
 	virtual Object*   clone ();
 
    void              addState(State* state);
 	void              applyGravity();
-	void              move(Uint32 tick);
+	void              move(float tick);
    void              rotate(float deg);
 	void              flip();
 	bool              direction() const;
@@ -62,7 +59,8 @@ public:
    void              setRotation(const float deg);
 	void              setVisible(bool vis = true);
 
-	Vector            getPosition() const;
+	virtual const Vector& getPosition() const;
+
 	Vector            getVelocity() const;
    float             getRadius() const;
    float             getRotation() const;
@@ -84,6 +82,9 @@ public:
 
 protected:
    virtual bool      load(TiXmlDocument& doc);
+
+   virtual void      doUpdate(DirtySet& dirtyset, float delta);
+	virtual void      doDraw();
 	 
    std::string name;
 	TexturePtr texture;
@@ -94,7 +95,7 @@ protected:
    float angle;
 	float radius;
 	Uint32 moveSpeed;
-	Uint32 moveLast;
+	float moveLast;
 	bool visible;
    bool dir;
    bool mMass;

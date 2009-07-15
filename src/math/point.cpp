@@ -18,18 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "point.h"
-#ifndef JENGINE_INLINE
-#  include "point.inl"
-#endif
 
 Point::Point():
-   _x(0),
-   _y(0)
+   mX(0),
+   mY(0)
 {
 }
 
 Point::Point(int x, int y):
-   _x(x),
-   _y(y)
+   mX(x),
+   mY(y)
 {
 }

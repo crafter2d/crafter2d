@@ -20,25 +20,18 @@
 #ifndef _OBJECT3D_H_
 #define _OBJECT3D_H_
 
+#include <vector>
+
 #include "object.h"
 #include "vertexbufferobject.h"
-#include <vector>
+
+struct Mesh;
 
 class Object3D : public Object
 {
-   struct Face {
-      int idx[3];
-   };
-   struct Mesh {
-      Vector3* verts;
-      Uint32 nverts;
-      Face* faces;
-      Uint32 nfaces;
-   };
-
 public:
-   Object3D(void);
-   ~Object3D(void);
+   Object3D();
+   virtual ~Object3D();
 
    bool create(const char* filename=NULL);
    

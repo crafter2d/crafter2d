@@ -19,22 +19,22 @@
  ***************************************************************************/
 #include "../defines.h"
 
-INLINE int Point::x() const
+inline int Point::x() const
 {
-   return _x;
+   return mX;
 }
 
-INLINE void Point::x(int x)
+inline void Point::x(int xvalue)
 {
-   _x = x;
+   mX = xvalue;
 }
 
-INLINE int Point::y() const
+inline int Point::y() const
 {
-   return _y;
+   return mY;
 }
 
-INLINE void Point::y(int y)
+inline void Point::y(int yvalue)
 {
-   _y = y;
+   mY = yvalue;
 }

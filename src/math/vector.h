@@ -22,18 +22,6 @@
 
 #include <math.h>
 
-class Color
-{
-public:
-	Color();
-	Color(float _r, float _g, float _b, float _a=1.0f);
-	~Color();
-
-	void set (float _r, float _g, float _b);
-
-	float r, g, b, a;
-};
-
 class Vector
 {
 public:
@@ -62,16 +50,10 @@ public:
 	inline Vector operator* (const float f) const;
    inline Vector operator/ (const float f) const;
 
-   inline bool operator== (const Vector& v);
-   inline bool operator!= (const Vector& v);
+   inline bool operator== (const Vector& v) const;
+   inline bool operator!= (const Vector& v) const;
 
 	float x, y;
-};
-
-class Vector3
-{
-public:
-   float x,y,z;
 };
 
 inline float Vector::dot (const Vector& v) {
@@ -126,11 +108,12 @@ inline Vector Vector::operator/ (const float f) const {
 	return Vector (x/f, y/f);
 }
 
-bool Vector::operator== (const Vector& v) {
+bool Vector::operator== (const Vector& v) const
+{
    return ((fabs(v.x-x)<0.001) && (fabs(v.y-y)<0.001));
 }
 
-bool Vector::operator!= (const Vector& v)
+bool Vector::operator!= (const Vector& v) const
 {
    return !operator==(v);
 }

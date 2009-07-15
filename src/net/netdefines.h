@@ -42,26 +42,29 @@ enum NetObjectId
 
 /// Add this macro to the class definition which should be able to replicate
 #define DEFINE_REPLICATABLE(className)                                     \
-   virtual void initInfo(RuntimeInfo* info) const;                         \
-   virtual RuntimeInfo* getRuntimeInfo() const;                            \
+   virtual RuntimeInfo& getRuntimeInfo() const;                            \
    virtual bool isDerivedFrom(int baseid) const;                           \
-   static NetObject* createObject();                                       \
-   static RuntimeInfo* info;
+   static RuntimeInfo info;
 
 /// Add this macro to the class implementation file which should be able to replicate
-#define IMPLEMENT_REPLICATABLE(id, className, baseName)                    \
-   RuntimeInfo* className::info = NetObjectFactory::getInstance().registerObject(id,className());\
-   NetObject* className::createObject() { return new className(); }        \
-   RuntimeInfo* className::getRuntimeInfo() const {                        \
-      return className::info;                                              \
-   }                                                                       \
-   void className::initInfo(RuntimeInfo* info) const {                     \
-      info->setBase(#baseName);                                            \
-      info->setName(#className);                                           \
-      info->setCreateObjectFnc(createObject);                              \
+#define ABSTRACT_IMPLEMENT_REPLICATABLE(id, className, baseName)           \
+   RuntimeInfo className::info(id, #className, #baseName, NULL);           \
+   RuntimeInfo& className::getRuntimeInfo() const {                        \
+      return info;                                                         \
    }                                                                       \
    bool className::isDerivedFrom(int baseid) const {                       \
-      return info->isDerivedFrom(baseid);                                  \
+      return info.isDerivedFrom(baseid);                                   \
+   }
+
+/// Add this macro to the class implementation file which should be able to replicate
+#define IMPLEMENT_REPLICATABLE(id, className, baseName)                                \
+   static NetObject* className##_createObject() { return new className(); }            \
+   RuntimeInfo className::info(id, #className, #baseName, className##_createObject);   \
+   RuntimeInfo& className::getRuntimeInfo() const {                                    \
+      return info;                                                                     \
+   }                                                                                   \
+   bool className::isDerivedFrom(int baseid) const {                                   \
+      return info.isDerivedFrom(baseid);                                               \
    }
 
 #endif

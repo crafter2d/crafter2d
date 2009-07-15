@@ -80,9 +80,6 @@ public:
 
                   AnimObject();
    virtual        ~AnimObject();
-	 
-   virtual void   update(Uint32 tick);
-	virtual void   draw();
 
 	AnimObject*    clone();
    int            getAnimation() const;
@@ -102,6 +99,9 @@ protected:
    virtual bool   load(TiXmlDocument& doc);
 	void           parseAnimation(const char* sequence, Animation *animation);
    void           determineFrameCount();
+
+   virtual void   doUpdate(DirtySet& dirtyset, float delta);
+	virtual void   doDraw();
 
 	RefPointer<AnimationSet> _animations;
    TextureCoordLookup _textureCoords;

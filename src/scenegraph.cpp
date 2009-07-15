@@ -42,10 +42,11 @@
 SceneGraph::SceneGraph():
    conn(0),
    notifyClients(false),
+   objects(),
+   root(),
    controler(0),
    world(0)
 {
-   root.setName("root");
    objects["root"] = &root;
 }
 
@@ -72,9 +73,9 @@ void SceneGraph::setWorld(World* w)
       root.add (world);
 }
 
-void SceneGraph::update(Uint32 tick)
+void SceneGraph::update(DirtySet& dirtyset, float delta)
 {
-   root.update(tick);
+   root.update(dirtyset, delta);
 }
 
 void SceneGraph::draw()

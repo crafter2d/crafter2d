@@ -99,7 +99,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
    {
 		TiXmlText* value = (TiXmlText*)pelement->FirstChild();
       texture = ResourceManager::getInstance().loadTexture(value->Value());
-      if ( !bool(texture) )
+      if ( !(texture) )
          return false;
 	}
 
@@ -172,21 +172,21 @@ void ParticleSystem::destroy()
    }
 }
 
-/// \fn ParticleSystem::update (Uint32 tick)
+/// \fn ParticleSystem::doUpdate (DirtySet& dirtyset, float delta)
 /// \brief Fires the particle update script for every particle. After that the system
 /// checks if there are still enough particles alive. If not, new particles are initialized
 /// and put in the active list.
-void ParticleSystem::update (Uint32 tick)
+void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
 {
    if ( isReplica() )
    {
-	   if (tick - lastUpdate > 100)
+	   if ( delta > 100 )
       {
 		   Particle** part = &activeList;
 		   while ( *part != NULL)
          {
 			   Particle *curpart = *part;
-			   Uint32 lifetime = tick - curpart->initTime;
+			   Uint32 lifetime = curpart->initTime;
 
 			   if (lifetime >= curpart->life)
             {
@@ -199,6 +199,7 @@ void ParticleSystem::update (Uint32 tick)
 				   active--;
 			   }
 			   else {
+               curpart->initTime += delta;
 				   curpart->pos += curpart->vel;
 
 				   // run the particle script
@@ -210,13 +211,12 @@ void ParticleSystem::update (Uint32 tick)
 				   part = &curpart->next;
 			   }
 		   }
-		   lastUpdate = tick;
 	   }
 
-	   if (tick - lastInit > emitRate && active < maxActive)
+	   if ( delta > emitRate && active < maxActive)
       {
-		   lastInit = tick;
-		   for (Uint32 i = 0; i < emitCount; i++) {
+		   for ( int i = 0; i < emitCount; i++ )
+         {
 			   // fetch a particle from the free list
 			   Particle *part = freeList;
 			   if (!part)
@@ -232,7 +232,7 @@ void ParticleSystem::update (Uint32 tick)
 			   part->pos.y += rand()%4;
 			   part->vel = Vector (0, -1.0f-rand()%2);
 			   part->color = Color(1,1,0);
-			   part->initTime = tick;
+			   part->initTime = 0;
 			   part->life = rand()%2000;
 			   part->state = 0;
 			   part->size = 20;
@@ -247,15 +247,13 @@ void ParticleSystem::update (Uint32 tick)
    }
 }
 
-/// \fn ParticleSystem::draw ()
+/// \fn ParticleSystem::doDraw ()
 /// \brief Draw the particles to the screen buffer via a vertex buffer and
 /// vertex shader for rendering speed.
-void ParticleSystem::draw ()
+void ParticleSystem::doDraw ()
 {
    if ( isReplica() )
    {
-      update(SDL_GetTicks());
-
       glDisable(GL_DEPTH_TEST);
 	   //glDisable(GL_ALPHA_TEST);
 	   glEnable(GL_BLEND);

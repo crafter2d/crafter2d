@@ -28,8 +28,9 @@
 #include "gameconfiguration.h"
 #include "nodevisitor.h"
 #include "scenegraph.h"
+#include "scopedtransform.h"
 
-IMPLEMENT_REPLICATABLE(SceneObjectId, SceneObject, NetObject)
+ABSTRACT_IMPLEMENT_REPLICATABLE(SceneObjectId, SceneObject, NetObject)
 
 SceneObject::SceneObject(void):
    xmlfile(),
@@ -148,28 +149,56 @@ void SceneObject::accept(NodeVisitor& nv)
    nv.visitSceneObject(this); 
 }
 
-/// \fn SceneObject::update(Uint32 tick)
+const Vector& SceneObject::getPosition() const
+{
+   PURE_VIRTUAL
+   return Vector::zero();
+}
+
+/// \fn SceneObject::update(float delta)
 /// \brief Update mechanism for the derived nodes of the SceneObject class.
 /// \param tick current tick in the game (in msecs)
-void SceneObject::update (Uint32 tick)
+void SceneObject::update(DirtySet& dirtyset, float delta)
 {
+   doUpdate(dirtyset, delta);
+
    // update the children
 	SceneObjectList::iterator it = children.begin();
    for (; it != children.end(); it++)
    {
-      (*it)->setDirty(false);
-		(*it)->update(tick);
+      SceneObject& sceneobject = *(*it);
+      sceneobject.setDirty(false);
+		sceneobject.update(dirtyset, delta);
    }
+}
+
+/// \fn SceneObject::doUpdate(DirtySet& dirtyset, float delta)
+void SceneObject::doUpdate(DirtySet&, float)
+{
+   PURE_VIRTUAL;
 }
 
 /// \fn SceneObject::draw()
 /// \brief Draw mechanism for the derived nodes of the SceneObject class.
 void SceneObject::draw()
 {
+   ScopedTransform transform(getPosition());
+
+   doDraw();
+
    // draw the children
 	SceneObjectList::iterator it = children.begin();
-	for (; it != children.end(); it++)
-		(*it)->draw ();
+	for ( ; it != children.end(); it++ )
+   {
+      SceneObject& sceneobject = *(*it);
+		sceneobject.draw();
+   }
+}
+
+/// \fn SceneObject::doDraw()
+void SceneObject::doDraw()
+{
+   PURE_VIRTUAL;
 }
 
 /// \fn SceneObject::find(const char* node, bool recurse)

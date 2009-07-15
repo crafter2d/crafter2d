@@ -169,7 +169,7 @@ BitStream& BitStream::operator<<(const std::string& text)
 
 BitStream& BitStream::operator<<(const NetObject* obj)
 {
-   *this << obj->getRuntimeInfo()->getId();
+   *this << obj->getRuntimeInfo().getId();
    obj->pack(*this);
    return *this;
 }

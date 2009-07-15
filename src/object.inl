@@ -128,14 +128,6 @@ INLINE float Object::getRotation() const
    return angle;
 }
 
-/// \fn Object::getPosition () const
-/// \brief Returns the current position of the object
-/// \returns current position of object
-INLINE Vector Object::getPosition() const
-{
-	return pos;
-}
-
 /// \fn Object::getVelocity ()
 /// \brief Returns the current velocity of the object
 /// \returns current velocity of the object

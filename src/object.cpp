@@ -122,19 +122,19 @@ bool Object::load (TiXmlDocument& doc)
 	return true;
 }
 
-void Object::update(Uint32 tick)
+void Object::doUpdate(DirtySet& dirtyset, float delta)
 {
    dirty = false;
    dirtyFlag = 0;
 
    if ( states.size() > 0 )
    {
-      if ( states.front()->update(tick) )
+      if ( states.front()->update(delta) )
          states.pop();
    }
    else
    {
-      move(tick);
+      move(delta);
    }
 }
 
@@ -142,10 +142,10 @@ void Object::update(Uint32 tick)
     \fn Object::draw()
 	 \brief Draws the object on the screen.
  */
-void Object::draw()
+void Object::doDraw()
 {
 	glPushMatrix ();
-	glTranslatef (-halfX, -halfY, 0);
+	//glTranslatef (-halfX, -halfY, 0);
 
 	texture->enable();
 
@@ -188,37 +188,35 @@ void Object::draw()
 }
 
 /*!
-    \fn Object::move (Uint32 tick)
+    \fn Object::move(float delta)
 	 \brief If the difference between this call and the previous call to this function
 	 is larger than the movement rate, the position of the object is updated using the
 	 objects velocity.
 	 \param tick the time tick of this frame (in milliseconds)
  */
-void Object::move (Uint32 tick)
+void Object::move(float delta)
 {
-	if (tick - moveLast >= moveSpeed)
+	//if (tick - moveLast >= moveSpeed)
    {
       applyGravity();
 
-      if (vel.x != 0 || vel.y != 0) 
+      if ( vel.x != 0 || vel.y != 0 ) 
       {
          SceneGraph& graph = Game::getInstance().getServer().getSceneGraph();
          graph.getWorld()->collide(*this);
 
          pos += vel;
 
-         if ( !isReplica() )
-         {
-		      moveLast = tick;
-            dirtyFlag |= 4;
-            dirty = true;
-         }
+         ASSERT(!isReplica())
+	      moveLast = delta;
+         dirtyFlag |= 4;
+         dirty = true;
       }
 	}
 }
 
 /*!
-    \fn Object::applyGravity (Uint32 tick)
+    \fn Object::applyGravity()
 	 \brief At the same rate as the movement the engine can add gravity to your object. This
 	 means that the velocity becomes larger downwards.
 	 \param tick the time tick of this frame (in milliseconds)
@@ -247,6 +245,14 @@ void Object::addState(State* state)
 {
    state->object(this);
    states.push(state);
+}
+
+/// \fn Object::getPosition () const
+/// \brief Returns the current position of the object
+/// \returns current position of object
+const Vector& Object::getPosition() const
+{
+   return pos;
 }
 
 //////////////////////////////////////////////////////////////////////////

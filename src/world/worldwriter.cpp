@@ -144,7 +144,7 @@ bool WorldWriter::writeObjects(ZipFile& zip)
    {
       const SceneObject& object = *(*it);
 
-      TiXmlElement* pobject = new TiXmlElement(object.getRuntimeInfo()->getName());
+      TiXmlElement* pobject = new TiXmlElement(object.getRuntimeInfo().getName());
 
 		//object.save(*pobject);
 

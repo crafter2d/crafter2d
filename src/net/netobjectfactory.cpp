@@ -69,7 +69,7 @@ void NetObjectFactory::buildHierarchy()
 // - Registration & creation
 //////////////////////////////////////////////////////////////////////////
 
-/// \fn NetObjectFactory::registerObject(int id, const NetObject& obj)
+/// \fn NetObjectFactory::registerObject(int id, RuntimeInfo& info)
 /// \brief Registers a NetObject based class for replication.
 /// \param obj Reference to some object derived from NetObject
 ///
@@ -77,13 +77,9 @@ void NetObjectFactory::buildHierarchy()
 /// across a network. You should not call this function.
 ///
 /// Consult @ref enable_replication "'Enabling class replication'" for more information
-RuntimeInfo* NetObjectFactory::registerObject(int id, const NetObject& object)
+void NetObjectFactory::registerObject(int id, RuntimeInfo& info)
 {
-   RuntimeInfo* pinfo = new RuntimeInfo(id);
-   object.initInfo(pinfo);
-   
-   getRuntimeInfoMap()[id] = pinfo;
-   return pinfo;
+   getRuntimeInfoMap()[id] = &info;
 }
 
 NetObject* NetObjectFactory::createObject(const std::string& name)

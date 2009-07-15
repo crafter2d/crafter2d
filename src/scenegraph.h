@@ -26,9 +26,11 @@
 #include "defines.h"
 #include "hashtable.h"
 #include "sceneobject.h"
+#include "sceneroot.h"
 
 class Object;
 class World;
+class DirtySet;
 class SceneObject;
 class SceneGraph;
 class NetConnection;
@@ -57,7 +59,7 @@ public:
                      SceneGraph();
                      ~SceneGraph();
 
-   void              update(Uint32 tick);
+   void              update(DirtySet& dirtyset, float delta);
    void              draw();
 
    void              addObject(SceneObject* obj, const char* name);
@@ -85,7 +87,7 @@ protected:
    NetConnection* conn;
    bool notifyClients;
    ObjectMap objects;
-   SceneObject root;
+   SceneRoot root;
    Object* controler;
    World* world;
 };

@@ -22,13 +22,16 @@
 #  include "runtimeinfo.inl"
 #endif
 
-RuntimeInfo::RuntimeInfo(int id):
-   _createObject(NULL),
+#include "netobjectfactory.h"
+
+RuntimeInfo::RuntimeInfo(int id, const std::string& classname, const std::string& base, CreateObjectFnc createfunction):
+   _name(classname),
+   _base(base),
+   _createObject(createfunction),
    _pbaseobject(NULL),
-   _name(),
-   _base(),
    _id(id)
 {
+   NetObjectFactory::getInstance().registerObject(id, *this);
 }
 
 RuntimeInfo::~RuntimeInfo()
