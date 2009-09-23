@@ -26,32 +26,9 @@
 #include <GL/GLee.h>
 #include <tinyxml.h>
 
-#include "object.h"
+#include "animation.h"
 #include "console.h"
 #include "nodevisitor.h"
-
-/**************************************************************
- * AnimationSet class
- */
-
-AnimationSet::~AnimationSet()
-{
-   destroy();
-}
-
-void AnimationSet::destroy()
-{
-   while (!animations.empty())
-      remove(animations[0]);
-}
-
-void AnimationSet::remove(Animation* animation)
-{
-   Animations::iterator it = find(animation);
-   if (it != animations.end()) {
-      animations.erase(it);
-   }
-}
 
 /**************************************************************
  * AnimObject class
@@ -61,7 +38,7 @@ IMPLEMENT_REPLICATABLE(AnimObjectId, AnimObject, Object)
 
 AnimObject::AnimObject():
    Object(),
-   _animations(),
+   mAnimations(),
    _textureCoords(),
    animSpeed(100),
 	animLast(0),
@@ -101,8 +78,8 @@ bool AnimObject::load(TiXmlDocument& doc)
 				animSpeed = 100;
 
 			// allocate a new animationset
-			_animations = new AnimationSet ();
-         if ( !_animations.valid() )
+			mAnimations = new AnimationSet ();
+         if ( !mAnimations.valid() )
 				return false;
 
 			// parse all animations
@@ -116,11 +93,11 @@ bool AnimObject::load(TiXmlDocument& doc)
 				else {
 					// parse the comma seperated string
 					TiXmlText* xmlValue = (TiXmlText*)xmlAnim->FirstChild();
-					Animation *anim = new Animation;
+					Animation *anim = new Animation();
 					getAnimations().add (anim);
 
 					// now parse the animation sequence
-					parseAnimation (xmlValue->Value(), anim);
+					//parseAnimation (xmlValue->Value(), anim);
 					anim->add (-1);
 				}
 			}
@@ -130,7 +107,7 @@ bool AnimObject::load(TiXmlDocument& doc)
             determineFrameCount();
 
 			// we are using it
-			_animations->addRef ();
+			mAnimations->addRef ();
 		}
 	}
 	else {
@@ -141,33 +118,6 @@ bool AnimObject::load(TiXmlDocument& doc)
    _textureCoords.generateFromTexture(*texture, width, height, _animFrameCount);
 
 	return true;
-}
-
-/*!
-    \fn AnimObject::parseAnimation (const char* animation)
- */
-void AnimObject::parseAnimation (const char* sequence, Animation *animation)
-{
-	char number[10] = "";
-	Uint32 length = (Uint32)strlen (sequence);
-	Uint32 anim = 0, j = 0;
-
-	// parse the sequence
-	for ( Uint32 i = 0; i < length; ++i )
-   {
-		if (isdigit (sequence[i]))
-			number[j++] = sequence[i];
-		else {
-			// save the number and skip trailing spaces
-			animation->add (atoi (number));
-			while (isspace (sequence[i])) i++;
-
-         i--;
-			j = 0;
-		}
-	}
-	// see if there is still a number in the buffer
-	if (j > 0) animation->add (atoi (number));
 }
 
 void AnimObject::determineFrameCount()
@@ -262,7 +212,7 @@ void AnimObject::doDraw()
    glRotatef(angle, 0,0,1);
 	glBegin (GL_QUADS);
 
-   const Vector& texcoord = _textureCoords[animFrame];
+   const Vector& texcoord = Vector::zero();// = _textureCoords[animFrame];
 
    if (dir)
    {
@@ -302,7 +252,7 @@ void AnimObject::doDraw()
 AnimObject* AnimObject::clone ()
 {
 	AnimObject* c = new AnimObject();
-	c->_animations = _animations;
+	c->mAnimations = mAnimations;
 	c->animSpeed = animSpeed;
 	c->visible = visible;
 	c->moveSpeed = moveSpeed;

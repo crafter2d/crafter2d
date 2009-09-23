@@ -19,12 +19,28 @@
  ***************************************************************************/
 #include "defines.h"
 
-INLINE int AnimObject::getAnimation() const
+INLINE const Animation& AnimationSet::operator[](int index) const 
 {
-   return animCur;
+   return *mAnimations[index];
 }
 
-INLINE AnimationSet& AnimObject::getAnimations()
+INLINE int AnimationSet::size() const
 {
-   return *mAnimations;
+   return static_cast<int>(mAnimations.size());
+}
+
+INLINE void AnimationSet::add(Animation* anim)
+{
+	mAnimations.push_back (anim);
+}
+
+INLINE AnimationSet::Animations::iterator AnimationSet::find(Animation* panimation)
+{
+   Animations::iterator it = mAnimations.begin();
+   for ( ; it != mAnimations.end(); ++it) {
+      if ((*it) == panimation)
+         return it;
+   }
+
+   return mAnimations.end();
 }

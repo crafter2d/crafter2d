@@ -143,6 +143,11 @@ INLINE Vector Object::getSize() const
    return Vector(static_cast<float>(width), static_cast<float>(height)); 
 }
 
+INLINE const Texture& Object::getTexture() const
+{
+   return *texture;
+}
+
 INLINE void Object::setMass(bool mass)
 {
    mMass = mass;
@@ -159,3 +164,9 @@ INLINE const std::string& Object::filename() const
 {
    return xmlfile;
 }
+
+INLINE Animator& Object::getAnimator()
+{
+   return *mpAnimator;
+}
+

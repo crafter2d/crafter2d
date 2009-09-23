@@ -17,33 +17,60 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _TEXTURE_COORD_LOOKUP
-#define _TEXTURE_COORD_LOOKUP
-
 #include "texturecoordinate.h"
 
-class Texture;
-class Vector;
-
-class TextureCoordLookup
+TextureCoordinate::TextureCoordinate():
+   mTL(),
+   mBR()
 {
-public:
-   TextureCoordLookup();
+}
 
- // Get/set interface
-   float getFrameWidth() const;
-   float getFrameHeight() const;
+TextureCoordinate::TextureCoordinate(const TextureCoordinate& that):
+   mTL(that.mTL),
+   mBR(that.mBR)
+{
+}
 
- // Operations
-   void generateFromTexture(const Texture& texture, float framewidth, float frameheight, int framecount);
-   
-   const TextureCoordinate& operator[](int index) const;
+TextureCoordinate::~TextureCoordinate()
+{
+}
 
-private:
-   TextureCoordinate* _lookupTable;
-   float _texFrameWidth;
-   float _texFrameHeight;
-   int _frameCount;
-};
+void TextureCoordinate::initialize(const Vector& tl, const Vector& br)
+{
+   mTL = tl;
+   mBR = br;
+}
 
-#endif
+Vector TextureCoordinate::getTopLeft()
+{
+   return mTL;
+}
+
+Vector TextureCoordinate::getTopRight()
+{
+   return Vector(mBR.x, mTL.y);
+}
+
+Vector TextureCoordinate::getBottomLeft()
+{
+   return Vector(mTL.x, mBR.y);
+}
+
+Vector TextureCoordinate::getBottomRight()
+{
+   return mBR;
+}
+
+void TextureCoordinate::flipHorizontal()
+{
+   float temp = mTL.x;
+   mTL.x = mBR.x;
+   mBR.x = temp;
+}
+
+void TextureCoordinate::flipVertical()
+{
+   float temp = mTL.y;
+   mTL.y = mBR.y;
+   mBR.y = temp;
+}

@@ -17,33 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _TEXTURE_COORD_LOOKUP
-#define _TEXTURE_COORD_LOOKUP
+#ifndef _TEXTURE_COORDINATE
+#define _TEXTURE_COORDINATE
 
-#include "texturecoordinate.h"
+#include "math/vector.h"
 
-class Texture;
-class Vector;
+class TextureCoordLookup;
 
-class TextureCoordLookup
+class TextureCoordinate
 {
 public:
-   TextureCoordLookup();
+   TextureCoordinate();
+   TextureCoordinate(const TextureCoordinate& that);
+   ~TextureCoordinate();
 
- // Get/set interface
-   float getFrameWidth() const;
-   float getFrameHeight() const;
+   void initialize(const Vector& tl, const Vector& br);
 
- // Operations
-   void generateFromTexture(const Texture& texture, float framewidth, float frameheight, int framecount);
-   
-   const TextureCoordinate& operator[](int index) const;
+   Vector getTopLeft();
+   Vector getTopRight();
+   Vector getBottomLeft();
+   Vector getBottomRight();
+
+   void flipHorizontal();
+   void flipVertical();
 
 private:
-   TextureCoordinate* _lookupTable;
-   float _texFrameWidth;
-   float _texFrameHeight;
-   int _frameCount;
+   Vector mTL;
+   Vector mBR;
 };
 
 #endif

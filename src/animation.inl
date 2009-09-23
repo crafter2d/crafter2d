@@ -19,12 +19,9 @@
  ***************************************************************************/
 #include "defines.h"
 
-INLINE int AnimObject::getAnimation() const
+/// \fn Animation::add(int id)
+/// \brief Add a new item to the sequence
+INLINE void Animation::add(int id)
 {
-   return animCur;
-}
-
-INLINE AnimationSet& AnimObject::getAnimations()
-{
-   return *mAnimations;
+   push_back(id);
 }

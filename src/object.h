@@ -29,6 +29,8 @@
 #include "resources.h"
 
 class TiXmlDocument;
+
+class Animator;
 class State;
 
 /**
@@ -67,9 +69,13 @@ public:
 	int               getMoveSpeed() const;
    Vector            getSize() const;
 	bool              isVisible() const;
+   const Texture&    getTexture() const;
 
    void              setMass(bool mass);
    bool              hasMass() const;
+
+   int               getAnimation() const;
+	void              setAnimation(int anim);
 
    const std::string& filename() const;
 
@@ -81,6 +87,8 @@ public:
    virtual void      unpack(BitStream& stream);
 
 protected:
+   Animator&         getAnimator();
+
    virtual bool      load(TiXmlDocument& doc);
 
    virtual void      doUpdate(DirtySet& dirtyset, float delta);
@@ -88,6 +96,7 @@ protected:
 	 
    std::string name;
 	TexturePtr texture;
+   Animator*    mpAnimator;
    std::queue<State*> states;
 	Vector pos, vel;
    int width, height;

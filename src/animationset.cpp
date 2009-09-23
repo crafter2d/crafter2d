@@ -17,14 +17,37 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#include "animationset.h"
+#ifndef JENGINE_INLINE
+#  include "animationset.inl"
+#endif
 
-INLINE int AnimObject::getAnimation() const
+#include "animation.h"
+
+AnimationSet::AnimationSet():
+   mAnimations()
 {
-   return animCur;
 }
 
-INLINE AnimationSet& AnimObject::getAnimations()
+AnimationSet::~AnimationSet()
 {
-   return *mAnimations;
+   destroy();
+}
+
+/**************************************************************
+ * Operations
+ */
+
+void AnimationSet::destroy()
+{
+   while (!mAnimations.empty())
+      remove(mAnimations[0]);
+}
+
+void AnimationSet::remove(Animation* animation)
+{
+   Animations::iterator it = find(animation);
+   if (it != mAnimations.end()) {
+      mAnimations.erase(it);
+   }
 }

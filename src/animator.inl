@@ -19,12 +19,7 @@
  ***************************************************************************/
 #include "defines.h"
 
-INLINE int AnimObject::getAnimation() const
-{
-   return animCur;
-}
-
-INLINE AnimationSet& AnimObject::getAnimations()
+INLINE AnimationSet& Animator::getAnimations()
 {
    return *mAnimations;
 }

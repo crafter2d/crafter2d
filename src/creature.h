@@ -34,7 +34,7 @@ class TiXmlDocument;
 Creatures can be implemented using the Creature class. It currently supports only the moveto
 function, which makes this creature follow another creature.
 */
-class Creature: public AnimObject
+class Creature: public Object
 {
 public:
 	                  Creature();

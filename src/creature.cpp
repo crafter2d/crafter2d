@@ -32,9 +32,10 @@
 #include "script.h"
 #include "weapon.h"
 
-IMPLEMENT_REPLICATABLE(CreatureId, Creature, AnimObject)
+IMPLEMENT_REPLICATABLE(CreatureId, Creature, Object)
 
 Creature::Creature():
+   Object(),
    target(0),
    weapon(0)
 {
@@ -66,7 +67,7 @@ bool Creature::load(TiXmlDocument& doc)
       }
    }
 
-   return AnimObject::load(doc);
+   return Object::load(doc);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,7 +85,7 @@ void Creature::draw()
       glPopMatrix();
    }
 
-   AnimObject::draw();
+   Object::draw();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -93,7 +94,7 @@ void Creature::draw()
 
 void Creature::update(DirtySet& dirtyset, float delta)
 {
-   AnimObject::update(dirtyset, delta);
+   Object::update(dirtyset, delta);
 
 	if ( target != NULL ) 
    {
@@ -125,12 +126,10 @@ void Creature::accept(NodeVisitor& nv)
 
 void Creature::pack(BitStream& stream)
 {
-   // call base class for packing
-   AnimObject::pack(stream);
+   Object::pack(stream);
 }
 
 void Creature::unpack(BitStream& stream)
 {
-   // call base class for unpacking
-   AnimObject::unpack(stream);
+   Object::unpack(stream);
 }

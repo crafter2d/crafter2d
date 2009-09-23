@@ -28,11 +28,13 @@
 
 #include "world/world.h"
 
+#include "animator.h"
 #include "scenegraph.h"
 #include "game.h"
 #include "console.h"
 #include "state.h"
 #include "nodevisitor.h"
+#include "texturecoordinate.h"
 
 IMPLEMENT_REPLICATABLE(ObjectId, Object, SceneObject)
 
@@ -119,11 +121,17 @@ bool Object::load (TiXmlDocument& doc)
          return false;
       }
 	}
+
+   // load animation stuff
+   mpAnimator = Animator::construct(object, *this);
+
 	return true;
 }
 
 void Object::doUpdate(DirtySet& dirtyset, float delta)
 {
+   mpAnimator->animate(delta);
+
    dirty = false;
    dirtyFlag = 0;
 
@@ -144,47 +152,55 @@ void Object::doUpdate(DirtySet& dirtyset, float delta)
  */
 void Object::doDraw()
 {
-	glPushMatrix ();
-	//glTranslatef (-halfX, -halfY, 0);
-
 	texture->enable();
 
-	if (dir)
-   {
-		glBegin (GL_QUADS);
-			glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, 0);
-			glVertex2f (pos.x,pos.y);
+   TextureCoordinate texcoord = mpAnimator->getTextureCoordinate();
+   if ( !dir )
+      texcoord.flipHorizontal();
 
-         glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, texture->getSourceHeight());
-			glVertex2f (pos.x,pos.y+height);
+   Vector tex;
 
-         glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), texture->getSourceHeight());
-			glVertex2f (pos.x+width,pos.y+height);
+   glColor3f (1,1,1);
+   glPushMatrix();
 
-         glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), 0);
-			glVertex2f (pos.x+width,pos.y);
-		glEnd();
-	}
-	else
-   {
-		glBegin (GL_QUADS);
-			glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), 0);
-			glVertex2f (pos.x,pos.y);
+   glRotatef(angle, 0,0,1);
+	glBegin (GL_QUADS);
+      tex = texcoord.getTopLeft();
+		glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
+		glVertex2f (-halfX,-halfY); //glVertex2f (pos.x,pos.y);
 
-			glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), texture->getSourceHeight());
-			glVertex2f (pos.x,pos.y+height);
+      tex = texcoord.getBottomLeft();
+      glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
+		glVertex2f (-halfX,halfY);// glVertex2f (pos.x,pos.y+height);
 
-			glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, texture->getSourceHeight());
-			glVertex2f (pos.x+width,pos.y+height);
+      tex = texcoord.getBottomRight();
+      glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
+		glVertex2f (halfX,halfY);// glVertex2f (pos.x+width,pos.y+height);
 
-			glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, 0);
-			glVertex2f (pos.x+width,pos.y);
-		glEnd();
-	}
+      tex = texcoord.getTopRight();
+      glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
+		glVertex2f (halfX,-halfY);// glVertex2f (pos.x+width,pos.y);
+	glEnd();
+
+   /*
+   glBegin (GL_QUADS);
+		glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), 0);
+		glVertex2f (pos.x,pos.y);
+
+		glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), texture->getSourceHeight());
+		glVertex2f (pos.x,pos.y+height);
+
+		glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, texture->getSourceHeight());
+		glVertex2f (pos.x+width,pos.y+height);
+
+		glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, 0);
+		glVertex2f (pos.x+width,pos.y);
+	glEnd();
+   */
 
    texture->disable();
 
-	glPopMatrix ();
+   glPopMatrix();
 }
 
 /*!
@@ -253,6 +269,19 @@ void Object::addState(State* state)
 const Vector& Object::getPosition() const
 {
    return pos;
+}
+
+int Object::getAnimation() const
+{
+   return mpAnimator != NULL ? mpAnimator->getAnimation() : 0;
+}
+
+void Object::setAnimation(int anim)
+{
+   if ( mpAnimator != NULL )
+   {
+      mpAnimator->setAnimation(anim);
+   }
 }
 
 //////////////////////////////////////////////////////////////////////////

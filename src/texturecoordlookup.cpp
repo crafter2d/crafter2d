@@ -18,8 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "texture.h"
+
 #include "math/vector.h"
 
+#include "defines.h"
 #include "texturecoordlookup.h"
 
 TextureCoordLookup::TextureCoordLookup():
@@ -30,7 +32,7 @@ TextureCoordLookup::TextureCoordLookup():
 {
 }
 
-void TextureCoordLookup::generateFromTexture(const Texture& texture, int framewidth, int frameheight, int framecount)
+void TextureCoordLookup::generateFromTexture(const Texture& texture, float framewidth, float frameheight, int framecount)
 {
    _frameCount = framecount;
 
@@ -42,21 +44,25 @@ void TextureCoordLookup::generateFromTexture(const Texture& texture, int framewi
    _texFrameHeight = texture.getSourceHeight() / nY;
 
    // build the texture coord lookup table
-	_lookupTable = new Vector[_frameCount];
+	_lookupTable = new TextureCoordinate[_frameCount];
 	for (int tc = 0; tc < _frameCount; tc++)
    {
 		// calculate starting texture coordinates
-		_lookupTable[tc].x = static_cast<float>((tc % maxFramesPerRow) * _texFrameWidth);
-		_lookupTable[tc].y = floorf ((float)tc / maxFramesPerRow) * _texFrameHeight;
+      float x = static_cast<float>(tc % maxFramesPerRow) * _texFrameWidth;
+      float y = floorf ((float)tc / maxFramesPerRow) * _texFrameHeight;
+
+      Vector tl = Vector(x, y);
+      Vector br = Vector(x + _texFrameWidth, y + _texFrameHeight);
+
+      _lookupTable[tc].initialize(tl, br);
 	}
 }
 
-const Vector& TextureCoordLookup::operator[](int index) const
+const TextureCoordinate& TextureCoordLookup::operator[](int index) const
 {
-   if ( index < _frameCount )
-      return _lookupTable[index];
-   else
-      return Vector::zero();
+   ASSERT(index < _frameCount);
+
+   return _lookupTable[index];
 }
 
 float TextureCoordLookup::getFrameWidth() const

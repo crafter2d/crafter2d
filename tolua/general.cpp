@@ -151,18 +151,13 @@ class Object: public SceneObject
    Vector getVelocity();
    float getRotation();
 
+   int getAnimation() const;
+	void setAnimation (int anim);
+
    void addState(State* state);
 };
 
-class AnimObject: public Object
-{
-	AnimObject();
-
-   int getAnimation() const;
-	void setAnimation (int anim);
-};
-
-class Creature: public AnimObject
+class Creature: public Object
 {
 	Creature();
 

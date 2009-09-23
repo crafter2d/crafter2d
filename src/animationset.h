@@ -17,14 +17,44 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#ifndef ANIMATIONSET_H_
+#define ANIMATIONSET_H_
 
-INLINE int AnimObject::getAnimation() const
-{
-   return animCur;
-}
+#include <vector>
+#include "refcount.h"
 
-INLINE AnimationSet& AnimObject::getAnimations()
+class Animation;
+
+/**
+@author Jeroen Broekhuizen
+\brief Interface for an animation set. It includes one animation.
+
+You can use this class for your objects that have a form of animation in it.
+*/
+class AnimationSet: public RefCount
 {
-   return *mAnimations;
-}
+public:
+   typedef std::vector<Animation*> Animations;
+
+                     AnimationSet();
+	virtual           ~AnimationSet();
+
+   void              destroy();
+
+   void              add(Animation* anim);
+   void              remove(Animation* anim);
+
+	int               size() const;
+	const Animation&  operator[](int index) const;
+
+private:
+   Animations::iterator find(Animation* animation);
+
+   Animations mAnimations;
+};
+
+#ifdef JENGINE_INLINE
+#  include "animationset.inl"
+#endif
+
+#endif

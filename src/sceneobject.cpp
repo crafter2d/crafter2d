@@ -32,15 +32,18 @@
 
 ABSTRACT_IMPLEMENT_REPLICATABLE(SceneObjectId, SceneObject, NetObject)
 
-SceneObject::SceneObject(void):
+SceneObject::SceneObject():
+   name(),
    xmlfile(),
+   children(),
    parent(NULL)
 {
    memset(name, 0, MAX_NAME_LEN);
 }
 
-SceneObject::~SceneObject(void)
+SceneObject::~SceneObject()
 {
+   ASSERT(parent == NULL);
 }
 
 /*!
@@ -86,8 +89,11 @@ bool SceneObject::save(TiXmlElement& element)
 /// recursively calls destroy for the children of the current node.
 void SceneObject::destroy ()
 {
-   if (parent)
+   if ( parent )
+   {
       parent->remove(this);
+      parent = NULL;
+   }
 
    // remove the object from the scenegraph
    SceneGraph& graph = getSceneGraph(this);

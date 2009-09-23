@@ -17,14 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#include "animation.h"
 
-INLINE int AnimObject::getAnimation() const
-{
-   return animCur;
-}
-
-INLINE AnimationSet& AnimObject::getAnimations()
-{
-   return *mAnimations;
-}
+#ifndef JENGINE_INLINE
+#  include "animation.inl"
+#endif

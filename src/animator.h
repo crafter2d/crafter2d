@@ -17,14 +17,60 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#ifndef ANIMATOR_H_
+#define ANIMATOR_H_
 
-INLINE int AnimObject::getAnimation() const
-{
-   return animCur;
-}
+#include <SDL/SDL.h>
 
-INLINE AnimationSet& AnimObject::getAnimations()
+#include "animationset.h"
+#include "texturecoordlookup.h"
+
+class Object;
+class TiXmlElement;
+
+class Animator
 {
-   return *mAnimations;
-}
+public:
+   static Animator* construct(TiXmlElement* pXmlObject, Object& object);
+
+   Animator();
+   ~Animator();
+
+   bool loadFromXML(TiXmlElement* panimation, Object& object);
+
+  // Animation
+   void animate(float delta);
+   void nextFrame();
+
+   int  getAnimation() const;
+   void setAnimation(int animation);
+
+   const TextureCoordinate& getTextureCoordinate();
+
+private:
+  // get/set
+   AnimationSet&  getAnimations();
+
+  // parsing
+   bool parseAnimations(TiXmlElement* pxmlAnimations, int count);
+   void parseAnimation(const char* sequence, Animation *animation);
+
+   void determineFrameCount();
+
+   TextureCoordLookup        mTextureCoords;
+   RefPointer<AnimationSet>  mAnimations;
+	float   mAnimationSpeed;
+	float   mAnimationDelta;
+   float  _animFrameWidth;
+   int    _animFrameCount;
+	int mCurrentAnimation;
+	int animIndex;
+	int animFrame;
+   bool   _animChanged;
+};
+
+#ifdef JENGINE_INLINE
+#  include "animator.inl"
+#endif
+
+#endif
