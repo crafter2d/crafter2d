@@ -76,7 +76,8 @@ public:
    virtual              ~NetObject();
 
    void                 setReplica(bool replica=true);
-   void                 setDirty(bool dirty=true);
+   void                 setDirty(int flag);
+   void                 resetDirty();
 
    bool                 isDirty() const;
    bool                 isReplica() const;
@@ -86,8 +87,9 @@ public:
    virtual void         unpack(BitStream& stream);
 
 protected:
-   bool dirty, replica, statik;
    int dirtyFlag;
+   bool replica;
+   bool statik;
 };
 
 #ifdef JENGINE_INLINE

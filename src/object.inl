@@ -25,8 +25,7 @@ INLINE void Object::flip ()
 {
    dir = !dir;
 
-   dirtyFlag |= 4;
-   dirty = true;
+   setDirty(ePositionDirty);
 }
 
 /// \fn Object::direction()
@@ -51,8 +50,7 @@ INLINE void Object::rotate(float degree)
 INLINE void Object::setPosition(const Vector& p)
 {
 	pos = p;
-   dirtyFlag |= 4;
-   dirty = true;
+   setDirty(ePositionDirty);
 }
 
 /// \fn Object::setVelocity (const Vector& v)
@@ -62,8 +60,7 @@ INLINE void Object::setPosition(const Vector& p)
 INLINE void Object::setVelocity (const Vector& v)
 {
 	vel = v;
-   dirtyFlag |= 4;
-   dirty = true;
+   setDirty(ePositionDirty);
 }
 
 /// \fn void setRotation(const float deg)
@@ -72,8 +69,8 @@ INLINE void Object::setVelocity (const Vector& v)
 INLINE void Object::setRotation(const float deg) 
 {
    angle = deg;
-   dirtyFlag |= 4;
-   dirty = true;
+   setDirty(ePositionDirty);
+
    if (angle<0) 
       angle+=360;
    else if (angle>=360) 

@@ -32,6 +32,7 @@ public:
 
 protected:
    virtual void            doUpdate(DirtySet& dirtyset, float delta);
+   virtual void            doUpdateClient(float delta);
    virtual void            doDraw();
 };
 

@@ -243,7 +243,7 @@ void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
    }
    else
    {
-      setDirty();
+      setDirty(8);
    }
 }
 

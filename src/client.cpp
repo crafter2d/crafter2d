@@ -81,6 +81,13 @@ bool Client::destroy()
    return true;
 }
 
+void Client::update(float delta)
+{
+   Process::update(delta);
+
+   graph.updateClient(delta);
+}
+
 Player& Client::getPlayer()
 {
    ASSERT_PTR(mpPlayer);

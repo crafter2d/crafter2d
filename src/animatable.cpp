@@ -192,7 +192,7 @@ void AnimObject::doUpdate(DirtySet& dirtyset, float delta)
    if ( _animChanged )
    {
       _animChanged = false;
-      setDirty();
+      setDirty(2);
    }
 }
 

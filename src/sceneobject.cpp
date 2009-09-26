@@ -178,8 +178,28 @@ void SceneObject::update(DirtySet& dirtyset, float delta)
    }
 }
 
+void SceneObject::updateClient(float delta)
+{
+   doUpdateClient(delta);
+
+   // update the children
+	SceneObjectList::iterator it = children.begin();
+   for (; it != children.end(); it++)
+   {
+      SceneObject& sceneobject = *(*it);
+      sceneobject.setDirty(false);
+		sceneobject.updateClient(delta);
+   }
+}
+
 /// \fn SceneObject::doUpdate(DirtySet& dirtyset, float delta)
 void SceneObject::doUpdate(DirtySet&, float)
+{
+   PURE_VIRTUAL;
+}
+
+/// \fn void SceneObject::doUpdateClient(float)
+void SceneObject::doUpdateClient(float)
 {
    PURE_VIRTUAL;
 }

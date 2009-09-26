@@ -62,6 +62,7 @@ public:
 
    SceneObject*            find(const char* node, bool recurse = true);
 	void                    update(DirtySet& dirtyset, float delta);
+   void                    updateClient(float delta);
    void                    draw();
 
    virtual void            accept(NodeVisitor& nv);
@@ -84,6 +85,7 @@ protected:
    virtual bool            load(TiXmlDocument& doc);
 
    virtual void            doUpdate(DirtySet& dirtyset, float delta) = 0;
+   virtual void            doUpdateClient(float delta) = 0;
    virtual void            doDraw() = 0;
 
    char name[MAX_NAME_LEN];

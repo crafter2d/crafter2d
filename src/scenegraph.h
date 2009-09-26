@@ -60,6 +60,7 @@ public:
                      ~SceneGraph();
 
    void              update(DirtySet& dirtyset, float delta);
+   void              updateClient(float delta);
    void              draw();
 
    void              addObject(SceneObject* obj, const char* name);

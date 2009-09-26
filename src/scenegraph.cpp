@@ -78,6 +78,11 @@ void SceneGraph::update(DirtySet& dirtyset, float delta)
    root.update(dirtyset, delta);
 }
 
+void SceneGraph::updateClient(float delta)
+{
+   root.updateClient(delta);
+}
+
 void SceneGraph::draw()
 {
    root.draw();
@@ -159,6 +164,8 @@ void SceneGraph::transmitObject(const char* key, void* data) const
 
       // send the package
       conn->send(&stream);
+
+      obj->resetDirty();
    }
 }
 

@@ -28,18 +28,22 @@ void NetObject::setReplica(bool rep)
 
 /// \fn NetObject::setDirty(bool dirt)
 /// \brief Set the dirty flag.
-void NetObject::setDirty(bool dirt)
+void NetObject::setDirty(int flag)
 {
-   dirty = dirt; 
-   if(!dirty)
-      dirtyFlag = 0;
+   SET_FLAG(dirtyFlag, flag);
 }
 
 /// \fn NetObject::isDirty() const
 /// \brief Checks if this object is dirty.
 bool NetObject::isDirty() const
 { 
-   return dirty; 
+   return dirtyFlag > 0; 
+}
+
+/// \fn NetObject::resetDirty()
+void NetObject::resetDirty()
+{
+   dirtyFlag = 0;
 }
 
 /// \fn NetObject::isReplica() const

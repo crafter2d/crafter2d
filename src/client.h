@@ -47,6 +47,8 @@ public:
 
    virtual int    onClientEvent(int client, NetEvent* event, BitStream& stream);
 
+   virtual void   update(float delta);
+
 private:
    void  handleNewObjectEvent(NewObjectEvent& event);
    void  handleDeleteObjectEvent(BitStream& stream);

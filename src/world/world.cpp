@@ -239,6 +239,10 @@ void World::doUpdate(DirtySet& dirtyset, float delta)
    }
 }
 
+void World::doUpdateClient(float delta)
+{
+}
+
 const Vector& World::getPosition() const
 {
    return Vector::zero();

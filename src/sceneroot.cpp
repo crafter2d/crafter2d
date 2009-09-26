@@ -40,6 +40,10 @@ void SceneRoot::doUpdate(DirtySet& dirtyset, float delta)
 {
 }
 
+void SceneRoot::doUpdateClient(float delta)
+{
+}
+
 void SceneRoot::doDraw()
 {
 }

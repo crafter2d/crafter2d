@@ -41,6 +41,7 @@ IMPLEMENT_REPLICATABLE(ObjectId, Object, SceneObject)
 Object::Object():
    SceneObject(),
    texture(),
+   mpAnimator(NULL),
 	width(0),
    height(0),
    halfX(.0f),
@@ -130,11 +131,6 @@ bool Object::load (TiXmlDocument& doc)
 
 void Object::doUpdate(DirtySet& dirtyset, float delta)
 {
-   mpAnimator->animate(delta);
-
-   dirty = false;
-   dirtyFlag = 0;
-
    if ( states.size() > 0 )
    {
       if ( states.front()->update(delta) )
@@ -144,6 +140,13 @@ void Object::doUpdate(DirtySet& dirtyset, float delta)
    {
       move(delta);
    }
+}
+
+void Object::doUpdateClient(float delta)
+{
+   // perform client side predictions
+   if ( mpAnimator != NULL )
+      mpAnimator->animate(delta);  
 }
 
 /*!
@@ -167,36 +170,20 @@ void Object::doDraw()
 	glBegin (GL_QUADS);
       tex = texcoord.getTopLeft();
 		glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
-		glVertex2f (-halfX,-halfY); //glVertex2f (pos.x,pos.y);
+		glVertex2f (-halfX,-halfY);
 
       tex = texcoord.getBottomLeft();
       glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
-		glVertex2f (-halfX,halfY);// glVertex2f (pos.x,pos.y+height);
+		glVertex2f (-halfX,halfY);
 
       tex = texcoord.getBottomRight();
       glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
-		glVertex2f (halfX,halfY);// glVertex2f (pos.x+width,pos.y+height);
+		glVertex2f (halfX,halfY);
 
       tex = texcoord.getTopRight();
       glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
-		glVertex2f (halfX,-halfY);// glVertex2f (pos.x+width,pos.y);
+		glVertex2f (halfX,-halfY);
 	glEnd();
-
-   /*
-   glBegin (GL_QUADS);
-		glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), 0);
-		glVertex2f (pos.x,pos.y);
-
-		glMultiTexCoord2f (GL_TEXTURE0_ARB, texture->getSourceWidth(), texture->getSourceHeight());
-		glVertex2f (pos.x,pos.y+height);
-
-		glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, texture->getSourceHeight());
-		glVertex2f (pos.x+width,pos.y+height);
-
-		glMultiTexCoord2f (GL_TEXTURE0_ARB, 0, 0);
-		glVertex2f (pos.x+width,pos.y);
-	glEnd();
-   */
 
    texture->disable();
 
@@ -212,6 +199,8 @@ void Object::doDraw()
  */
 void Object::move(float delta)
 {
+   ASSERT(!isReplica())
+
 	//if (tick - moveLast >= moveSpeed)
    {
       applyGravity();
@@ -223,10 +212,9 @@ void Object::move(float delta)
 
          pos += vel;
 
-         ASSERT(!isReplica())
 	      moveLast = delta;
-         dirtyFlag |= 4;
-         dirty = true;
+
+         setDirty(ePositionDirty);
       }
 	}
 }
@@ -281,6 +269,8 @@ void Object::setAnimation(int anim)
    if ( mpAnimator != NULL )
    {
       mpAnimator->setAnimation(anim);
+
+      setDirty(eAnimationDirty);
    }
 }
 
@@ -300,20 +290,34 @@ void Object::accept(NodeVisitor& nv)
 void Object::pack(BitStream& stream) const
 {
    SceneObject::pack(stream);
-   if (dirtyFlag & 4)
-      stream << true << pos << vel << angle << dir;
-   else
-      stream << false;
+   stream << dirtyFlag;
+
+   if ( IS_SET(dirtyFlag, ePositionDirty) )
+      stream << pos << vel << angle << dir;
+
+   if ( IS_SET(dirtyFlag, eAnimationDirty) )
+      stream << mpAnimator->getAnimation();
 }
 
 void Object::unpack(BitStream& stream)
 {
    char filen[256];
-   bool flag;
+   int flag;
    SceneObject::unpack(stream);
    stream >> flag;
-   if (flag)
+
+   if ( IS_SET(flag, ePositionDirty) )
       stream >> pos >> vel >> angle >> dir;
+
+   if ( IS_SET(flag, eAnimationDirty) )
+   {
+      int anim;
+
+      stream >> anim;
+
+      if ( mpAnimator != NULL )
+         mpAnimator->setAnimation(anim);
+   }
 
    xmlfile = filen;
 }

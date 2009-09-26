@@ -71,7 +71,7 @@ bool Animator::loadFromXML(TiXmlElement* pXmlAnimation, Object& object)
 			if (pXmlAnimation->QueryFloatAttribute("speed", &mAnimationSpeed) != TIXML_SUCCESS)
 				mAnimationSpeed = 100;
 
-         mAnimationSpeed = 1.0f;
+         mAnimationSpeed /= 1000.0f;
 
 			// allocate a new animationset
 			mAnimations = new AnimationSet ();
@@ -216,10 +216,13 @@ int Animator::getAnimation() const
 
 void Animator::setAnimation(int animation)
 {
+   animation--;
+
 	if ( animation != mCurrentAnimation )
    {
-		mCurrentAnimation = animation - 1;
+		mCurrentAnimation = animation;
 		animIndex = 0;
+      animFrame = 0;
 
       _animChanged = true;
 	}
