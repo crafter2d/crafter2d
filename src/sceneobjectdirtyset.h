@@ -24,19 +24,24 @@
 
 #include "dirtyset.h"
 
+class NetConnection;
 class SceneObject;
 
 class SceneObjectDirtySet : public DirtySet
 {
 public:
-   typedef std::list<const SceneObject*> Objects;
+   typedef std::list<SceneObject*> Objects;
 
    SceneObjectDirtySet();
    virtual ~SceneObjectDirtySet();
 
-   virtual void reportDirty(const NetObject& object);
+   virtual void reportDirty(NetObject& object);
+
+   void send(NetConnection& conn);
 
 private:
+   void resetDirty();
+
    Objects mObjects;
 };
 

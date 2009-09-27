@@ -56,6 +56,7 @@ class SceneGraph
 {
 public:
    typedef std::map<const char*, SceneObject*, ltstr> ObjectMap;
+
                      SceneGraph();
                      ~SceneGraph();
 
@@ -70,27 +71,21 @@ public:
    SceneObject*      find(const char* node);
 
    void              setNotify(bool notify = true);
-   void              setConnection(NetConnection* c);
    void              setControler(Object* c);
    void              setWorld(World* w);
 
    Object*           getControler();
-   NetConnection*    getConnection();
    bool              getNotify();
    World*            getWorld();
    SceneObject&      getRoot();
 
-   void              transmitChanges();
-
 protected:
-   void              transmitObject(const char* key, void* data) const;
 
-   NetConnection* conn;
-   bool notifyClients;
    ObjectMap objects;
    SceneRoot root;
    Object* controler;
    World* world;
+   bool notifyClients;
 };
 
 #ifdef JENGINE_INLINE

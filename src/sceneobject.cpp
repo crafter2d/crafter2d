@@ -24,6 +24,7 @@
 
 #include <tinyxml.h>
 
+#include "dirtyset.h"
 #include "game.h"
 #include "gameconfiguration.h"
 #include "nodevisitor.h"
@@ -166,7 +167,10 @@ const Vector& SceneObject::getPosition() const
 /// \param tick current tick in the game (in msecs)
 void SceneObject::update(DirtySet& dirtyset, float delta)
 {
-   doUpdate(dirtyset, delta);
+   doUpdate(delta);
+
+   if ( isDirty() )
+      dirtyset.reportDirty(*this);
 
    // update the children
 	SceneObjectList::iterator it = children.begin();
@@ -193,7 +197,7 @@ void SceneObject::updateClient(float delta)
 }
 
 /// \fn SceneObject::doUpdate(DirtySet& dirtyset, float delta)
-void SceneObject::doUpdate(DirtySet&, float)
+void SceneObject::doUpdate(float)
 {
    PURE_VIRTUAL;
 }
@@ -206,18 +210,21 @@ void SceneObject::doUpdateClient(float)
 
 /// \fn SceneObject::draw()
 /// \brief Draw mechanism for the derived nodes of the SceneObject class.
-void SceneObject::draw()
+void SceneObject::draw(bool traverse)
 {
    ScopedTransform transform(getPosition());
 
    doDraw();
 
-   // draw the children
-	SceneObjectList::iterator it = children.begin();
-	for ( ; it != children.end(); it++ )
+   if ( traverse )
    {
-      SceneObject& sceneobject = *(*it);
-		sceneobject.draw();
+      // draw the children
+	   SceneObjectList::iterator it = children.begin();
+	   for ( ; it != children.end(); it++ )
+      {
+         SceneObject& sceneobject = *(*it);
+		   sceneobject.draw();
+      }
    }
 }
 

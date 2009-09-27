@@ -31,7 +31,7 @@ public:
    virtual const Vector&   getPosition() const;
 
 protected:
-   virtual void            doUpdate(DirtySet& dirtyset, float delta);
+   virtual void            doUpdate(float delta);
    virtual void            doUpdateClient(float delta);
    virtual void            doDraw();
 };

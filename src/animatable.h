@@ -58,7 +58,7 @@ protected:
    virtual bool   load(TiXmlDocument& doc);
    void           determineFrameCount();
 
-   virtual void   doUpdate(DirtySet& dirtyset, float delta);
+   virtual void   doUpdate(float delta);
 	virtual void   doDraw();
 
 	RefPointer<AnimationSet> mAnimations;

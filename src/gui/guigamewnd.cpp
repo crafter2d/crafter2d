@@ -72,10 +72,7 @@ void GuiGameWnd::onRender (Uint32 tick, const GuiGraphics& graphics)
 
 void GuiGameWnd::renderWorld(SceneGraph& graph)
 {
-   graph.getWorld()->draw();
-
-   Client& client = Game::getInstance().getClient();
-   client.getPlayer();
+   graph.getWorld()->draw(false);
 
    IsometricRenderVisitor visitor;
    visitor.traverse(graph.getRoot());

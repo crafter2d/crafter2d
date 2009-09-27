@@ -230,17 +230,17 @@ void World::setObjectLayer(int objectlayerid)
    }
 }
 
-void World::doUpdate(DirtySet& dirtyset, float delta)
+void World::doUpdate(float delta)
 {
-   // scroll if necessary
-   if (autoFollow && followMode != NoFollow)
-   {
-      scroll ();
-   }
 }
 
 void World::doUpdateClient(float delta)
 {
+   // scroll if necessary
+   if (autoFollow && followMode != NoFollow)
+   {
+      scroll();
+   }
 }
 
 const Vector& World::getPosition() const

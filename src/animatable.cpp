@@ -183,9 +183,9 @@ void AnimObject::nextFrame ()
    }
 }
 
-void AnimObject::doUpdate(DirtySet& dirtyset, float delta)
+void AnimObject::doUpdate(float delta)
 {
-   Object::doUpdate(dirtyset, delta);
+   Object::doUpdate(delta);
 
    animate(delta);
 

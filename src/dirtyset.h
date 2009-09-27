@@ -28,7 +28,7 @@ public:
    DirtySet();
    virtual ~DirtySet();
 
-   virtual void reportDirty(const NetObject& object) = 0;
+   virtual void reportDirty(NetObject& object) = 0;
 };
 
 #endif

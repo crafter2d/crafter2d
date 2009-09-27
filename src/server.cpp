@@ -150,10 +150,8 @@ void Server::update(float delta)
       return;
    conn.update();
 
-   SceneObjectDirtySet dirtyset;
-
    // update the graph
-   graph.setConnection(&conn);
+   SceneObjectDirtySet dirtyset;
    graph.update(dirtyset, delta);
 
    // send changes to the clients
@@ -161,7 +159,7 @@ void Server::update(float delta)
    for ( ; it != clients.end(); ++it)
    {
       conn.setClientId(it->first);
-      graph.transmitChanges();
+      dirtyset.send(conn);
    }
 }
 

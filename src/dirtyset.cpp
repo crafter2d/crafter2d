@@ -29,7 +29,7 @@ DirtySet::~DirtySet()
 {
 }
 
-void DirtySet::reportDirty(const NetObject& object)
+void DirtySet::reportDirty(NetObject& object)
 {
    PURE_VIRTUAL;
 }

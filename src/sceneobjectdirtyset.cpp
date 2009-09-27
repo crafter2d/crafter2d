@@ -19,6 +19,10 @@
  ***************************************************************************/
 #include "sceneobjectdirtyset.h"
 
+#include "net/bitstream.h"
+#include "net/netevent.h"
+#include "net/netconnection.h"
+
 #include "sceneobject.h"
 
 SceneObjectDirtySet::SceneObjectDirtySet():
@@ -29,15 +33,49 @@ SceneObjectDirtySet::SceneObjectDirtySet():
 
 SceneObjectDirtySet::~SceneObjectDirtySet()
 {
+   resetDirty();
 }
 
 // - operations
 
-void SceneObjectDirtySet::reportDirty(const NetObject& object)
+void SceneObjectDirtySet::reportDirty(NetObject& object)
 {
-   const SceneObject* psceneobject = dynamic_cast<const SceneObject*>(&object);
+   SceneObject* psceneobject = dynamic_cast<SceneObject*>(&object);
    if ( psceneobject != NULL )
    {
       mObjects.push_back(psceneobject);
+   }
+}
+
+void SceneObjectDirtySet::send(NetConnection& conn)
+{
+   Objects::iterator it = mObjects.begin();
+   for ( ; it != mObjects.end(); ++it )
+   {
+      SceneObject& object = *(*it);
+
+      if ( object.isDirty() && !object.isStatic() )
+      {
+         BitStream stream;
+         NetEvent event(updobjectEvent);
+
+         // fill it in
+         stream << &event;
+         stream << object.getName();
+         object.pack(stream);
+
+         // send the package
+         conn.send(&stream);
+      }
+   }
+}
+
+void SceneObjectDirtySet::resetDirty()
+{
+   Objects::iterator it = mObjects.begin();
+   for ( ; it != mObjects.end(); ++it )
+   {
+      SceneObject& object = *(*it);
+      object.resetDirty();
    }
 }

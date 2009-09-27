@@ -129,7 +129,7 @@ bool Object::load (TiXmlDocument& doc)
 	return true;
 }
 
-void Object::doUpdate(DirtySet& dirtyset, float delta)
+void Object::doUpdate(float delta)
 {
    if ( states.size() > 0 )
    {

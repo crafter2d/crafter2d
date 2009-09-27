@@ -19,32 +19,32 @@
  ***************************************************************************/
 #include "defines.h"
 
-void SceneGraph::setNotify(bool notify)
+INLINE void SceneGraph::setNotify(bool notify)
 {
    notifyClients = notify;
 }
-   
-void SceneGraph::setConnection(NetConnection* connection) 
-{
-   conn = connection; 
-}
 
-NetConnection* SceneGraph::getConnection()
-{
-   return conn; 
-}
-
-bool SceneGraph::getNotify()
+INLINE bool SceneGraph::getNotify()
 {
    return notifyClients;
 }
 
-World* SceneGraph::getWorld()
+INLINE World* SceneGraph::getWorld()
 {
    return world;
 }
 
-SceneObject& SceneGraph::getRoot()
+INLINE SceneObject& SceneGraph::getRoot()
 {
    return root;
+}
+
+INLINE void SceneGraph::setControler(Object* c)
+{
+   controler = c;
+}
+
+INLINE Object* SceneGraph::getControler()
+{
+   return controler;
 }

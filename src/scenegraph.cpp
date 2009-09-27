@@ -29,7 +29,6 @@
 
 #include <tinyxml.h>
 
-#include "net/netconnection.h"
 #include "net/newobjectevent.h"
 
 #include "world/world.h"
@@ -40,12 +39,11 @@
 #include "nodevisitor.h"
 
 SceneGraph::SceneGraph():
-   conn(0),
-   notifyClients(false),
    objects(),
    root(),
-   controler(0),
-   world(0)
+   controler(NULL),
+   world(NULL),
+   notifyClients(false)
 {
    objects["root"] = &root;
 }
@@ -54,16 +52,6 @@ SceneGraph::~SceneGraph()
 {
    world = 0;
    controler = 0;
-}
-
-void SceneGraph::setControler(Object* c)
-{
-   controler = c;
-}
-
-Object* SceneGraph::getControler()
-{
-   return controler;
 }
 
 void SceneGraph::setWorld(World* w)
@@ -146,36 +134,4 @@ void SceneGraph::removeAll()
 
    controler = 0;
    world = 0;
-}
-
-/// \fn transmitObjects(const char* key, void* data, void* param)
-/// \brief Called by enumerate to transmit the objects changes to the client.
-void SceneGraph::transmitObject(const char* key, void* data) const
-{
-   SceneObject* obj = (SceneObject*)data;
-   if (obj->isDirty() && !obj->isStatic()) {
-      BitStream stream;
-      NetEvent event(updobjectEvent);
-
-      // fill it in
-      stream << &event;
-      stream << key;
-      obj->pack(stream);
-
-      // send the package
-      conn->send(&stream);
-
-      obj->resetDirty();
-   }
-}
-
-/// \fn SceneGraph::transmitChanges(NetConnection* conn)
-/// \brief Transmit all objects who are have their dirty flag set.
-void SceneGraph::transmitChanges()
-{
-   //objects.enumerate(transmitObjects, this);
-   ObjectMap::iterator it = objects.begin();
-   for ( ; it != objects.end(); ++it) {
-      transmitObject((*it).first, (*it).second);
-   }
 }
