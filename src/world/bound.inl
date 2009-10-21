@@ -25,25 +25,25 @@
 /// \returns the normal of this bound
 INLINE Vector Bound::getNormal()
 {
-	return _normal;
+	return mNormal;
 }
 
 INLINE const Vector& Bound::getLeft() const
 {
-   return _p1;
+   return mLeft;
 }
 
 INLINE void Bound::setLeft(const Vector& left)
 {
-   _p1 = left;
+   mLeft = left;
 }
 
 INLINE const Vector& Bound::getRight() const
 {
-   return _p2;
+   return mRight;
 }
 
 INLINE void Bound::setRight(const Vector& right)
 {
-   _p2 = right;
+   mRight = right;
 }

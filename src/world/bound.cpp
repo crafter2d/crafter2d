@@ -29,58 +29,41 @@
 #endif
 
 Bound::Bound():
-   _p1(),
-   _p2(),
-   _normal()
+   mLeft(),
+   mRight(),
+   mNormal()
 {
 }
 
-Bound::Bound(const Vector& _p1, const Vector& _p2):
-   _p1(_p1),
-   _p2(_p2),
-   _normal()
+Bound::Bound(const Vector& left, const Vector& right):
+   mLeft(left),
+   mRight(right),
+   mNormal()
 {
    calculateNormal();
 }
 
-/// \fn Bound::set(int bounds[4])
-/// \brief Initialize this bound with its line data and precalculates the normal of this bound.
-void Bound::set (int bounds[4])
-{
-	_p1.x = bounds[0]; _p1.y = bounds[1];
-	_p2.x = bounds[2]; _p2.y = bounds[3];
-
-	calculateNormal();
-}
-
 void Bound::calculateNormal()
 {
-   Vector direction = _p2 - _p1;
-   _normal.set(-direction.y, direction.x);
-   _normal.normalize();
-}
-
-float magnitude(const Vector& v1, const Vector& v2)
-{
-   return (v2 - v1).length();
+   Vector direction = mRight - mLeft;
+   mNormal.set(-direction.y, direction.x);
+   mNormal.normalize();
 }
 
 bool Bound::hitTest(const Vector& point, float& distance)
 {
-   float linelength = magnitude(_p1, _p2);
+   float linelength = mLeft.distance(mRight);
 
-   float u = ( ( ( point.x - _p1.x ) * ( _p2.x - _p1.x ) ) +
-               ( ( point.y - _p1.y ) * ( _p2.y - _p1.y ) ) ) /
+   float u = ( ( ( point.x - mLeft.x ) * ( mRight.x - mLeft.x ) ) +
+               ( ( point.y - mLeft.y ) * ( mRight.y - mLeft.y ) ) ) /
             ( linelength * linelength );
 
-   if ( u < 0.0f || u > 1.0f )
+   if ( u < -0.001f || u > 1.001f )
      return false;   // closest point does not fall within the line segment
 
-   Vector intersection = _p1 + (_p2 - _p1) * u;
-   //intersection.x = _p1.x + U * ( _p2.x - _p1.x );
-   //intersection.y = _p1.y + U * ( _p2.y - _p1.y );
+   Vector intersection = mLeft + (mRight - mLeft) * u;
 
-   distance = magnitude(point, intersection);
+   distance = point.distance(intersection);
 
    return true;
 }
@@ -95,13 +78,13 @@ bool Bound::hitTest(const Vector& point, float& distance)
 /// \param [out] ip intersection point (valid if function returns true)
 /// \retval true there was an intersection with this bound
 /// \retval false no intersection was detected
-Bound::CollisionType Bound::intersect (const Vector& p3, const Vector& p4, Vector& ip)
+Bound::CollisionType Bound::intersect(const Vector& p3, const Vector& p4, Vector& ip)
 {
 	// calculate the denominator
-	float denom = ((p4.y - p3.y) * (_p2.x - _p1.x)) - ((p4.x - p3.x) * (_p2.y - _p1.y));
+	float denom = ((p4.y - p3.y) * (mRight.x - mLeft.x)) - ((p4.x - p3.x) * (mRight.y - mLeft.y));
 
-   float nume_a = (( p4.x - p3.x)  * (_p1.y-p3.y)) - ((p4.y - p3.y) * (_p1.x-p3.x));
-   float nume_b = ((_p2.x - _p1.x) * (_p1.y-p3.y)) - ((_p2.y - _p1.y) * (_p1.x-p3.x));
+   float nume_a = (( p4.x - p3.x)  * (mLeft.y-p3.y)) - ((p4.y - p3.y) * (mLeft.x-p3.x));
+   float nume_b = ((mRight.x - mLeft.x) * (mLeft.y-p3.y)) - ((mRight.y - mLeft.y) * (mLeft.x-p3.x));
 
 	if ( denom == 0 )
    {
@@ -116,28 +99,32 @@ Bound::CollisionType Bound::intersect (const Vector& p3, const Vector& p4, Vecto
    float ua = nume_a / denom;
 	float ub = nume_b / denom;
 
-	if ( ua >= 0.0f && ua <= 1.0f && ub >= 0.0f && ub <= 1.0f )
+	if ( ua > -0.001f && ua < 1.001f && ub > -0.001f && ub < 1.001f )
    {
-		ip = _p1 + (_p2 - _p1) * ua;
+		ip = mLeft + (mRight - mLeft) * ua;
 		return eCollision;
 	}
 
    return eNoCollision;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// - Editing interface
+//////////////////////////////////////////////////////////////////////////
+
 void Bound::move(const Vector& offset)
 {
-   _p1 += offset;
-   _p2 += offset;
+   mLeft += offset;
+   mRight += offset;
 }
 
 int Bound::findPoint(const Vector& point)
 {
-   if ( (point - _p1).length() < 4 )
+   if ( (point - mLeft).length() < 4 )
    {
       return 0;
    }
-   else if ( (point - _p2).length() < 4 )
+   else if ( (point - mRight).length() < 4 )
    {
       return 1;
    }
@@ -149,11 +136,11 @@ void Bound::movePoint(int point, const Vector& offset)
 {
    if ( point == 0 )
    {
-      _p1 += offset;
+      mLeft += offset;
    }
    else if ( point == 1 )
    {
-      _p2 += offset;
+      mRight += offset;
    }
 
    calculateNormal();

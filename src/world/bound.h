@@ -36,7 +36,7 @@ public:
    enum CollisionType { eCoinsident, eCollision, eParellel, eNoCollision };
 
    Bound();
-   Bound(const Vector& p3, const Vector& p4);
+   Bound(const Vector& left, const Vector& right);
 
  // get/set interface
    const Vector&  getLeft() const;
@@ -46,10 +46,9 @@ public:
    void           setRight(const Vector& right);
 
  //operations
-	void           set (int bounds[4]);
    bool           hitTest(const Vector& point, float& distance);
-   CollisionType  intersect (const Vector& p3, const Vector& p4, Vector& ip);
-	Vector         getNormal ();
+   CollisionType  intersect(const Vector& p3, const Vector& p4, Vector& ip);
+	Vector         getNormal();
 
    void     move(const Vector& offset);
 
@@ -59,9 +58,9 @@ public:
 private:
    void  calculateNormal();
 
-	Vector _p1;
-   Vector _p2;
-	Vector _normal;
+	Vector mLeft;
+   Vector mRight;
+	Vector mNormal;
 };
 
 #ifdef JENGINE_INLINE
