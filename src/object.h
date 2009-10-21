@@ -107,7 +107,6 @@ protected:
    float angle;
 	float radius;
 	Uint32 moveSpeed;
-	float moveLast;
 	bool visible;
    bool dir;
    bool mMass;

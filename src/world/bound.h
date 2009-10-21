@@ -33,18 +33,23 @@ of intersection can be determined.
 class Bound
 {
 public:
+   enum CollisionType { eCoinsident, eCollision, eParellel, eNoCollision };
+
    Bound();
    Bound(const Vector& p3, const Vector& p4);
 
  // get/set interface
    const Vector&  getLeft() const;
+   void           setLeft(const Vector& left);
+
    const Vector&  getRight() const;
+   void           setRight(const Vector& right);
 
  //operations
-	void     set (int bounds[4]);
-   bool     hitTest(const Vector& point, float& distance);
-	bool     intersect (const Vector& p3, const Vector& p4, Vector& ip);
-	Vector   getNormal ();
+	void           set (int bounds[4]);
+   bool           hitTest(const Vector& point, float& distance);
+   CollisionType  intersect (const Vector& p3, const Vector& p4, Vector& ip);
+	Vector         getNormal ();
 
    void     move(const Vector& offset);
 

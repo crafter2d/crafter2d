@@ -297,16 +297,16 @@ int World::collide (Object& object) const
 		Vector normal = bound.getNormal ();
 		if (normal.x != 0)
       {
-			if ( bound.intersect (p3, p4, ip) )
+         if ( bound.intersect(p3, p4, ip) == Bound::eCollision )
          {
-				Vector normal = bound.getNormal ();
+				Vector normal = bound.getNormal();
 				if (normal.x != 0)
 					vel.x = 0;
 
 				normal *= radius;
 				ip += normal;
-				object.setPosition (ip);
-				object.setVelocity (vel);
+				object.setPosition(ip);
+				object.setVelocity(vel);
 				p3 = ip;
 				collided = 1;
 			}
@@ -323,9 +323,9 @@ int World::collide (Object& object) const
 	for (Bounds::size_type i = 0; i < bounds.size(); ++i)
    {
       Bound& bound = *bounds[i];
-		if ( bound.intersect (p3, p4, ip) )
+		if ( bound.intersect(p3, p4, ip) == Bound::eCollision )
       {
-			Vector normal = bound.getNormal ();
+			Vector normal = bound.getNormal();
 			ip += (normal * radius);
 			vel.y = 0;
 

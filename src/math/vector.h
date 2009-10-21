@@ -34,6 +34,7 @@ public:
 
 	float normalize ();
 	float length ();
+   float distance(const Vector& that) const;
 
 	inline void set (float _x, float _y);
 	inline float dot (const Vector& v);

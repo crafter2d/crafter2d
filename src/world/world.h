@@ -27,6 +27,7 @@
 #include "../scenegraph.h"
 #include "../worldobserver.h"
 
+#include "bounds.h"
 #include "layertype.h"
 
 class BitStream;
@@ -61,7 +62,6 @@ public:
    enum FollowMode { FollowObject=0, FollowMouse=1, NoFollow=2 };
 
    typedef std::vector<Layer*> Layers;
-   typedef std::vector<Bound*> Bounds;
    typedef std::vector<WorldObserver*> Observers;
 
    static bool isWorld(NetObject& object);

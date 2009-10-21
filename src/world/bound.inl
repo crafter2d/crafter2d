@@ -33,7 +33,17 @@ INLINE const Vector& Bound::getLeft() const
    return _p1;
 }
 
+INLINE void Bound::setLeft(const Vector& left)
+{
+   _p1 = left;
+}
+
 INLINE const Vector& Bound::getRight() const
 {
    return _p2;
+}
+
+INLINE void Bound::setRight(const Vector& right)
+{
+   _p2 = right;
 }

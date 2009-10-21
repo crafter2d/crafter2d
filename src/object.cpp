@@ -50,7 +50,6 @@ Object::Object():
    dir(true),
    radius(.0f),
 	moveSpeed(0),
-	moveLast(0),
 	visible(true),
    mMass(false)
 {
@@ -201,22 +200,17 @@ void Object::move(float delta)
 {
    ASSERT(!isReplica())
 
-	//if (tick - moveLast >= moveSpeed)
+   applyGravity();
+
+   if ( vel != Vector::zero() ) 
    {
-      applyGravity();
+      SceneGraph& graph = Game::getInstance().getServer().getSceneGraph();
+      graph.getWorld()->collide(*this);
 
-      if ( vel.x != 0 || vel.y != 0 ) 
-      {
-         SceneGraph& graph = Game::getInstance().getServer().getSceneGraph();
-         graph.getWorld()->collide(*this);
+      pos += vel;
 
-         pos += vel;
-
-	      moveLast = delta;
-
-         setDirty(ePositionDirty);
-      }
-	}
+      setDirty(ePositionDirty);
+   }
 }
 
 /*!

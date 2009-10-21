@@ -95,7 +95,7 @@ bool Bound::hitTest(const Vector& point, float& distance)
 /// \param [out] ip intersection point (valid if function returns true)
 /// \retval true there was an intersection with this bound
 /// \retval false no intersection was detected
-bool Bound::intersect (const Vector& p3, const Vector& p4, Vector& ip)
+Bound::CollisionType Bound::intersect (const Vector& p3, const Vector& p4, Vector& ip)
 {
 	// calculate the denominator
 	float denom = ((p4.y - p3.y) * (_p2.x - _p1.x)) - ((p4.x - p3.x) * (_p2.y - _p1.y));
@@ -107,22 +107,22 @@ bool Bound::intersect (const Vector& p3, const Vector& p4, Vector& ip)
    {
       if( nume_a == 0.0f && nume_b == 0.0f )
       {
-         // coincident
+         return eCoinsident;
       }
 
-		return false; // parallel
+		return eParellel;
    }
 
    float ua = nume_a / denom;
 	float ub = nume_b / denom;
 
-	if (ua >= 0.0f && ua <= 1.0f && ub >= 0.0f && ub <= 1.0f) 
+	if ( ua >= 0.0f && ua <= 1.0f && ub >= 0.0f && ub <= 1.0f )
    {
 		ip = _p1 + (_p2 - _p1) * ua;
-		return true;
+		return eCollision;
 	}
 
-   return false;
+   return eNoCollision;
 }
 
 void Bound::move(const Vector& offset)

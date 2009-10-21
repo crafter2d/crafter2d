@@ -56,3 +56,11 @@ float Vector::normalize ()
 	*this /= len;
 	return len;
 }
+
+float Vector::distance(const Vector& that) const
+{
+   float nx = that.x - x;
+   float ny = that.y - y;
+
+   return (float)sqrt((nx * nx) + (ny * ny));
+}
