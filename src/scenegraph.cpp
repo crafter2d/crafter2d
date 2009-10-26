@@ -30,6 +30,7 @@
 #include <tinyxml.h>
 
 #include "net/newobjectevent.h"
+#include "net/events/deleteobjectevent.h"
 
 #include "world/world.h"
 
@@ -57,8 +58,9 @@ SceneGraph::~SceneGraph()
 void SceneGraph::setWorld(World* w)
 {
    world = w;
+   world->setName("world");
    if (!w->isReplica() || !objects[w->getName()])
-      root.add (world);
+      root.add(world);
 }
 
 void SceneGraph::update(DirtySet& dirtyset, float delta)
@@ -76,7 +78,7 @@ void SceneGraph::draw()
    root.draw();
 }
 
-SceneObject* SceneGraph::find(const char* node)
+SceneObject* SceneGraph::find(const std::string& node)
 {
    if (objects.find(node) == objects.end())
       return 0;
@@ -86,10 +88,10 @@ SceneObject* SceneGraph::find(const char* node)
 
 /// \fn SceneGraph::addObject(SceneObject* obj, const char* name)
 /// \brief Inserts the object in the hashtable.
-void SceneGraph::addObject(SceneObject* obj, const char* name)
+void SceneGraph::addObject(SceneObject* obj)
 {
    // add object to the hash table
-   objects[name] = obj;
+   objects[obj->getName()] = obj;
 
    if (notifyClients)
    {
@@ -104,20 +106,19 @@ void SceneGraph::addObject(SceneObject* obj, const char* name)
 
 /// \fn removeObject(const char* name)
 /// \brief Remove a scene node from the scene graph (optionally inform clients about removal).
-void SceneGraph::removeObject(const char* name)
+void SceneGraph::removeObject(const std::string& name)
 {
-   assert(name && "A scene node must have a name!");
-
    ObjectMap::iterator it = objects.find(name);
    if (it != objects.end()) {
       objects.erase(it);
    }
 
-   if (notifyClients) {
-      BitStream stream;
-      NetEvent event(delobjectEvent);
+   if ( notifyClients )
+   {
+      DeleteObjectEvent event(name);
 
       // let the clients know that the object has been removed
+      BitStream stream;
       stream << &event << name;
       Game::getInstance().getServer().sendToAllClients(stream);
    }

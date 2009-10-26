@@ -77,7 +77,7 @@ bool ActionMap::process (int key, bool down)
    return true;
 }
 
-bool ActionMap::process(InputEvent& event, Object* obj)
+bool ActionMap::process(const InputEvent& event, Object* obj)
 {
    Action action = event.getAction();
    if (actions.find(action) == actions.end())

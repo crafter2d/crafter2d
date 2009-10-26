@@ -17,53 +17,44 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _PROCESS_H_
-#define _PROCESS_H_
+#include "viewportevent.h"
+#ifndef JENGINE_INLINE
+#  include "viewportevent.inl"
+#endif
 
-#include "net/netconnection.h"
+#include "../../viewport.h"
 
-#include "scenegraph.h"
+IMPLEMENT_REPLICATABLE(ViewportEventId, ViewportEvent, NetEvent)
 
-class ActionMap;
-class BitStream;
-class NetEvent;
-
-/// @author Jeroen Broekhuizen
-/// \brief Provides the basic functionality for the process.
-///
-/// Abstract base class for processes. This class provides the common functionality 
-/// needed for client and server processes.
-class Process
+ViewportEvent::ViewportEvent():
+   NetEvent(viewportEvent),
+   mX(0),
+   mY(0)
 {
-public:
-                  Process();
-   virtual        ~Process();
+}
 
-   virtual bool   create();
-   virtual bool   destroy();
-   virtual void   update (float delta);
+ViewportEvent::ViewportEvent(const Viewport& viewport):
+   NetEvent(viewportEvent),
+   mX(viewport._left),
+   mY(viewport._top)
+{
+}
 
-   void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
+void ViewportEvent::update(Viewport& viewport) const
+{
+   viewport.setPosition(mX, mY);
+}
 
-   virtual int    onClientEvent(int client, const NetEvent& event) = 0;
+void ViewportEvent::pack(BitStream& stream) const
+{
+   NetEvent::pack(stream);
 
-   void           setActionMap(ActionMap* map);
-   void           setInitialized(bool init);
+   stream << mX << mY;
+}
 
-   NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
-   ActionMap*     getActionMap();
-   bool           isInitialized();
+void ViewportEvent::unpack(BitStream& stream)
+{
+   NetEvent::unpack(stream);
 
-protected:
-   NetConnection  conn;
-   SceneGraph     graph;
-   ActionMap*     actionMap;
-   bool           initialized;
-};
-
-#ifdef JENGINE_INLINE
-#  include "process.inl"
-#endif
-
-#endif
+   stream >> mX >> mY;
+}

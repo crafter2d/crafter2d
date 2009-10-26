@@ -25,11 +25,18 @@ enum NetObjectId
    NetObjectId             = 1,
    
    NetEventId              = 2,
-   JoinEventId             = 3,
-   DisconnectEventId       = 4,
-   InputEventId            = 5,
-   NewObjectEventId        = 6,
-   
+   ConnectEventId          = 3,
+   ConnectReplyEventId     = 4,
+   JoinEventId             = 5,
+   DisconnectEventId       = 6,
+   InputEventId            = 7,
+   ViewportEventId         = 8,
+   NewObjectEventId        = 9,
+   DeleteObjectEventId     = 10,
+   RequestObjectEventId    = 11,
+   UpdateObjectEventId     = 12,
+   ScriptEventId           = 13,
+
    SceneObjectId           = 101,
    ObjectId                = 102,
    AnimObjectId            = 103,

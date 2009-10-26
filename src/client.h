@@ -24,7 +24,14 @@
 #include "object.h"
 #include "process.h"
 
+class ConnectReplyEvent;
+class DisconnectEvent;
+class JoinEvent;
 class NewObjectEvent;
+class DeleteObjectEvent;
+class UpdateObjectEvent;
+class ScriptEvent;
+
 class Player;
 
 /// @author Jeroen Broekhuizen
@@ -45,15 +52,20 @@ public:
    bool           connect(const char* server, int port, const char* name);
    void           disconnect();
 
-   virtual int    onClientEvent(int client, NetEvent* event, BitStream& stream);
+   virtual int    onClientEvent(int client, const NetEvent& event);
 
    virtual void   update(float delta);
 
 private:
-   void  handleNewObjectEvent(NewObjectEvent& event);
-   void  handleDeleteObjectEvent(BitStream& stream);
-   void  handleUpdateObjectEvent(BitStream& stream);
-   void  handleRequestObjectEvent(BitStream& stream);
+   void  handleConnectReplyEvent(const ConnectReplyEvent& event);
+   void  handleDisconnectEvent(const DisconnectEvent& event);
+   void  handleJoinEvent(const JoinEvent& event);
+   void  handleServerdownEvent();
+
+   void  handleNewObjectEvent(const NewObjectEvent& event);
+   void  handleDeleteObjectEvent(const DeleteObjectEvent& event);
+   void  handleUpdateObjectEvent(const UpdateObjectEvent& event);
+   void  handleScriptEvent(const ScriptEvent& event);
 
    Player*  mpPlayer;
    Requests requests;

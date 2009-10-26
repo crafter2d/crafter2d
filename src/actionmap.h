@@ -67,7 +67,7 @@ public:
    void bind(int key, const char* function);
 
    bool process(int key, bool down=true);
-   bool process(InputEvent& event, Object* obj);
+   bool process(const InputEvent& event, Object* obj);
 
 private:
    std::map<Action, const char*> actions;

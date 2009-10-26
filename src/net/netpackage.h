@@ -17,53 +17,56 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _PROCESS_H_
-#define _PROCESS_H_
+#ifndef _NETPACKAGE_H_
+#define _NETPACKAGE_H_
 
-#include "net/netconnection.h"
+#include "../defines.h"
 
-#include "scenegraph.h"
+#include "bitstream.h"
 
-class ActionMap;
 class BitStream;
-class NetEvent;
+class NetObject;
 
-/// @author Jeroen Broekhuizen
-/// \brief Provides the basic functionality for the process.
-///
-/// Abstract base class for processes. This class provides the common functionality 
-/// needed for client and server processes.
-class Process
+class NetPackage
 {
 public:
-                  Process();
-   virtual        ~Process();
+   enum Type {
+      eEvent,
+      eAck,
+      eAlive,
+      eInvalid
+   };
 
-   virtual bool   create();
-   virtual bool   destroy();
-   virtual void   update (float delta);
+   enum Reliability {
+      eUnreliable = 0,
+      eUnreliableSequenced = 1,
+      eReliableSequenced = 2,
+      eReliableOrdered = 3
+   };
 
-   void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
+   NetPackage();
+   NetPackage(const NetPackage& that);
+   NetPackage(Type type, Reliability reliability, int packagenr, int datasize = 0, const char* pdata = NULL);
+   ~NetPackage();
 
-   virtual int    onClientEvent(int client, const NetEvent& event) = 0;
+   Type        getType() const;
+   Reliability getReliability() const;
+   uint        getNumber() const;
+   float       getTimeStamp() const;
+   void        setTimeStamp(float timestamp);
 
-   void           setActionMap(ActionMap* map);
-   void           setInitialized(bool init);
+   NetObject*  getObject();
 
-   NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
-   ActionMap*     getActionMap();
-   bool           isInitialized();
+         NetPackage& operator<<(BitStream& stream);
+   const NetPackage& operator>>(BitStream& stream) const;
 
-protected:
-   NetConnection  conn;
-   SceneGraph     graph;
-   ActionMap*     actionMap;
-   bool           initialized;
+private:
+
+   char        mType;
+   char        mReliability;
+   uint        mNumber;
+   float       mTimeStamp;
+   BitStream   mDataStream;
 };
-
-#ifdef JENGINE_INLINE
-#  include "process.inl"
-#endif
 
 #endif

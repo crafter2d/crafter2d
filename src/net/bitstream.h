@@ -36,14 +36,15 @@ class Vector;
 class BitStream
 {
 public:
-   explicit    BitStream(void);
-               ~BitStream(void);
+               BitStream();
+               BitStream(int reserve);
+               BitStream(const BitStream& that);
+               ~BitStream();
 
    void        clear();
    bool        empty();
    void        reset();
 
-   void        setSize(int s);
    void        setBuffer(const char* data, int size);
    int         getSize() const;
    const char* getBuf() const;
@@ -59,7 +60,7 @@ public:
    void        writeString(const char* string);
    void        writeInt(int i);
    void        writeBool(bool b);
-   void        writeRaw(char* data, int size);
+   void        writeRaw(const char* data, int size);
 
    BitStream&  operator<<(const Vector& v);
    BitStream&  operator<<(const char* s);
@@ -79,14 +80,17 @@ public:
    BitStream&  operator>>(Uint32& i);
    BitStream&  operator>>(bool& b);
    BitStream&  operator>>(char& c);
+   BitStream&  operator>>(std::string& str);
+   BitStream&  operator>>(BitStream& stream);
    BitStream&  operator>>(NetObject** obj);
 
 protected:
    void ensureFits(int size);
 
-   //char buf[MAX_BITSTREAM_BUFSIZE];
    char* buf;
-   int pos, size, bufsize;
+   int   pos;
+   int   size;
+   int   bufsize;
 };
 
 #ifdef JENGINE_INLINE

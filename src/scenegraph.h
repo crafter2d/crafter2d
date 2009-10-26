@@ -37,13 +37,14 @@ class NetConnection;
 class NodeVisitor;
 class TiXmlDocument;
 
+/*
 struct ltstr
 {
-  bool operator()(const char* s1, const char* s2) const
+   bool operator()(const std::string s1, const char* s2) const
   {
     return strcmp(s1, s2) < 0;
   }
-};
+}; */
 
 /**
 @author Jeroen Broekhuizen
@@ -55,7 +56,7 @@ Every object that is drawn on screen is stored in this scene graph.
 class SceneGraph
 {
 public:
-   typedef std::map<const char*, SceneObject*, ltstr> ObjectMap;
+   typedef std::map<std::string, SceneObject*> ObjectMap;
 
                      SceneGraph();
                      ~SceneGraph();
@@ -64,11 +65,11 @@ public:
    void              updateClient(float delta);
    void              draw();
 
-   void              addObject(SceneObject* obj, const char* name);
-   void              removeObject(const char* name);
+   void              addObject(SceneObject* obj);
+   void              removeObject(const std::string& name);
    void              removeAll();
 
-   SceneObject*      find(const char* node);
+   SceneObject*      find(const std::string& node);
 
    void              setNotify(bool notify = true);
    void              setControler(Object* c);

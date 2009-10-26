@@ -19,7 +19,15 @@
  ***************************************************************************/
 #include "server.h"
 
+#include "net/events/connectevent.h"
+#include "net/events/connectreplyevent.h"
+#include "net/events/scriptevent.h"
+#include "net/events/requestobjectevent.h"
+#include "net/events/viewportevent.h"
+#include "net/newobjectevent.h"
+
 #include "actionmap.h"
+#include "autoptr.h"
 #include "console.h"
 #include "player.h"
 #include "script.h"
@@ -92,11 +100,13 @@ void DisconnectEvent::unpack(BitStream& stream)
  * Server class
  */
 
-Server::Server(void)
+Server::Server():
+   clients(),
+   mActiveClient(-1)
 {
 }
 
-Server::~Server(void)
+Server::~Server()
 {
 }
 
@@ -163,6 +173,13 @@ void Server::update(float delta)
    }
 }
 
+void Server::sendToAllClients(NetObject& object)
+{
+   BitStream stream;
+   stream << &object;
+   sendToAllClients(stream);
+}
+
 void Server::sendToAllClients(BitStream& stream)
 {
    // send changes to the clients
@@ -174,49 +191,47 @@ void Server::sendToAllClients(BitStream& stream)
    }
 }
 
-void Server::sendScriptEventToAllClients(BitStream* stream)
+void Server::sendToActiveClient(NetObject& object)
 {
-   BitStream s;
-   NetEvent event(scriptEvent);
-   s << &event << stream;
-   sendToAllClients(s);
+  conn.setClientId(mActiveClient);
+  conn.send(&object);
 }
 
-/// \fn Server::onClientEvent(int client, NetEvent* event, BitStream& stream)
-/// \brief Handles the incomming events.
-int Server::onClientEvent(int client, NetEvent* event, BitStream& stream)
+void Server::sendScriptEventToAllClients(BitStream* pstream)
 {
-   switch (event->getType()) {
+   ScriptEvent event(pstream);
+
+   BitStream stream;
+   stream << &event;
+
+   sendToAllClients(stream);
+}
+
+/// \fn Server::onClientEvent(int client, const NetEvent& event)
+/// \brief Handles the incomming events.
+int Server::onClientEvent(int client, const NetEvent& event)
+{
+   mActiveClient = client;
+
+   switch ( event.getType() )
+   {
       case connectEvent:
          {
-            char name[256];
-            stream >> name;
-
-            // create the player object
-            Player* player = new Player();
-            player->name = name;
-            addPlayer(client, player);
-
-            // run the onClientConnect script
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
-            script.setSelf (this, "Server");
-            script.prepareCall ("Server_onClientConnect");
-            script.addParam(player, "Player");
-            script.run (1);
+            const ConnectEvent& connectevent = dynamic_cast<const ConnectEvent&>(event);
+            handleConnectEvent(connectevent);
             break;
          }
       case disconnectEvent:
          {
-            stream.clear();
-            Player* player = clients[client];
+            AutoPtr<Player> player = clients[client];
 
             // run the onClientConnect script
             Script& script = ScriptManager::getInstance().getTemporaryScript();
-            script.setSelf (this, "Server");
-            script.prepareCall ("Server_onClientDisconnect");
-            script.addParam ((int)client);
-            script.addParam (player, "Player");
-            script.run (2);
+            script.setSelf(this, "Server");
+            script.prepareCall("Server_onClientDisconnect");
+            script.addParam((int)client);
+            script.addParam(player.getPointer(), "Player");
+            script.run(2);
 
             // remove the player from the client list
             ClientMap::iterator it = clients.find(client);
@@ -224,23 +239,15 @@ int Server::onClientEvent(int client, NetEvent* event, BitStream& stream)
 
             // fill in the event and put it in the stream
             DisconnectEvent event(client);
-            stream << &event;
-
-            // send the disconnect message to the other clients
-            it = clients.begin();
-            for ( ; it != clients.end(); ++it)
-            {
-               Player* otherPlayer = it->second;
-               conn.setClientId(otherPlayer->client);
-               conn.send(&stream);
-            }
-
-            // delete the player object
-            delete player;
+            sendToAllClients(event);
             break;
          }
       case scriptEvent:
          {
+            const ScriptEvent& scriptevent = dynamic_cast<const ScriptEvent&>(event);
+
+            AutoPtr<BitStream> stream = scriptevent.getStream();
+
             // run the onClientConnect script
             Player* player = clients[client];
             Script& script = ScriptManager::getInstance().getTemporaryScript();
@@ -257,43 +264,37 @@ int Server::onClientEvent(int client, NetEvent* event, BitStream& stream)
             Player* player = clients[client];
             if (player == NULL)
                Console::getInstance().print("Invalid player input event.");
-            else {
-               InputEvent* ie = (InputEvent*)event;
-               actionMap->process((InputEvent&)*ie, (Object*)player->controler);
+            else
+            {
+               const InputEvent& inputevent = dynamic_cast<const InputEvent&>(event);
+               actionMap->process(inputevent, (Object*)player->controler);
             }
             break;
          }
       case reqobjectEvent:
          {
-            char objname[256];
-            stream >> objname;
-            SceneObject* obj = graph.find(objname);
+            const RequestObjectEvent& request = dynamic_cast<const RequestObjectEvent&>(event);
+            
+            SceneObject* obj = graph.find(request.getName().c_str());
 
-            // fill in & send the reponse of the requestEvent
-            NetEvent event(reqobjectEvent);
-            stream.clear();
-            stream << &event;
-            stream << obj->getParent()->getName();
-            stream << (NetObject*)obj;
-
-            Player* player = clients[client];
-            conn.setClientId(player->client);
-            conn.send(&stream);
+            NewObjectEvent event(*obj);
+            sendToActiveClient(event);
             break;
          }
-      case scrollEvent:
+      case viewportEvent:
          {
-            int x, y;
-            stream >> x >> y;
-
-            Player* player = clients[client];
-            player->getViewport().setPosition(x, y);
+            const ViewportEvent& viewportevent = dynamic_cast<const ViewportEvent&>(event);
+            handleViewportEvent(viewportevent);
+            
             break;
          }
       default:
          Console::getInstance().print("Server: Received an unknown message.");
          break;
    }
+
+   mActiveClient = -1;
+
    return 0;
 }
 
@@ -311,18 +312,16 @@ void Server::addPlayer(int client, Player* player)
       player->name = name;
    }
 
-   BitStream stream;
-
    // send the reply to the connecting client
-   NetEvent event(acceptEvent);
-   stream << &event;
+   ConnectReplyEvent event(ConnectReplyEvent::eAccepted);
    conn.setClientId(client);
-   conn.send(&stream);
-   stream.clear();
+   conn.send(&event);
 
    // notify other players about the new player
    JoinEvent join(player->client, player->name);
-   stream << (NetObject*)&join;
+
+   BitStream stream;
+   stream << &join;
    ClientMap::iterator it = clients.begin();
    for ( ; it != clients.end(); ++it)
    {
@@ -333,4 +332,25 @@ void Server::addPlayer(int client, Player* player)
          conn.send(&stream);
       }
    }
+}
+
+void Server::handleConnectEvent(const ConnectEvent& event)
+{
+   // create the player object
+   Player* player = new Player();
+   player->name = event.getName();
+   addPlayer(mActiveClient, player);
+
+   // run the onClientConnect script
+   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   script.setSelf (this, "Server");
+   script.prepareCall ("Server_onClientConnect");
+   script.addParam(player, "Player");
+   script.run (1);
+}
+
+void Server::handleViewportEvent(const ViewportEvent& event)
+{
+   Player& player = *clients[mActiveClient];
+   event.update(player.getViewport());
 }

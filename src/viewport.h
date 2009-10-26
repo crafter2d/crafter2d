@@ -28,9 +28,11 @@ public:
 
    void setPosition(int x, int y);
 
-   bool pointInViewport(int x, int y);
+   bool pointInViewport(int x, int y) const;
 
 private:
+   friend class ViewportEvent;
+
    int _left;
    int _top;
    int _width;

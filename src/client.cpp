@@ -19,6 +19,12 @@
  ***************************************************************************/
 #include "net/netevent.h"
 #include "net/newobjectevent.h"
+#include "net/events/connectevent.h"
+#include "net/events/connectreplyevent.h"
+#include "net/events/deleteobjectevent.h"
+#include "net/events/updateobjectevent.h"
+#include "net/events/requestobjectevent.h"
+#include "net/events/scriptevent.h"
 
 #include "world/world.h"
 
@@ -33,6 +39,7 @@
 #include "defines.h"
 
 Client::Client(void):
+   Process(),
    mpPlayer(NULL),
    requests()
 {
@@ -45,8 +52,6 @@ Client::~Client(void)
 
 bool Client::connect(const char* server, int port, const char* name)
 {
-   BitStream stream;
-
    // setup connection to the server
    conn.create();
    if (!conn.connect(server, port))
@@ -57,9 +62,8 @@ bool Client::connect(const char* server, int port, const char* name)
    mpPlayer = new Player();
 
    // send login command
-   NetEvent event(connectEvent);
-   stream << &event << name;
-   conn.send (&stream);
+   ConnectEvent event(name);
+   conn.send (&event);
    return true;
 }
 
@@ -67,10 +71,8 @@ void Client::disconnect()
 {
    if ( conn.isConnected() )
    {
-      BitStream stream;
       DisconnectEvent event;
-      stream << &event;
-      conn.send(&stream);
+      conn.send(&event);
    }
 }
 
@@ -94,96 +96,120 @@ Player& Client::getPlayer()
    return *mpPlayer;
 }
 
-int Client::onClientEvent(int client, NetEvent* event, BitStream& stream)
+int Client::onClientEvent(int client, const NetEvent& event)
 {
-   char buffer[256] = "";
-   switch (event->getType())
+   switch ( event.getType() )
    {
-      case acceptEvent:
+      case connectReplyEvent:
          {
-            // run the onConnected script
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
-            script.setSelf (this, "Client");
-            script.prepareCall ("Client_onConnected");
-            script.run (0);
-
-            initialized = true;
+            const ConnectReplyEvent& crevent = dynamic_cast<const ConnectReplyEvent&>(event);
+            handleConnectReplyEvent(crevent);           
             break;
          };
       case joinEvent:
          {
-            // player joined the game
-            JoinEvent* je = dynamic_cast<JoinEvent*>(event);
-
-            // run the onConnected script
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
-            script.setSelf (this, "Client");
-            script.prepareCall ("Client_onJoined");
-            script.addParam(je->getId()+1);
-            script.addParam(je->getPlayerName());
-            script.run (2);
-            break;
-         }
-      case deniteEvent:
-         {
-            int reason;
-            stream >> reason;
-
-            // run the Client_onConnectionDenite script
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
-            script.setSelf (this, "Client");
-            script.prepareCall ("Client_onConnectionDenite");
-            script.addParam(reason);
-            script.run(1);
+            const JoinEvent& joinevent = dynamic_cast<const JoinEvent&>(event);
+            handleJoinEvent(joinevent);
             break;
          }
       case disconnectEvent:
          {
-            DisconnectEvent* je = dynamic_cast<DisconnectEvent*>(event);
-
-            // call the script
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
-            script.setSelf (this, "Client");
-            script.prepareCall ("Client_onPlayerLeft");
-            script.addParam(je->getId()+1);
-            script.run (1);
+            const DisconnectEvent& disconnectevent = dynamic_cast<const DisconnectEvent&>(event);
+            handleDisconnectEvent(disconnectevent);
             break;
          }
       case serverdownEvent:
          {
-            // server went down, run the onClientConnect script
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
-            script.setSelf (this, "Client");
-            script.prepareCall ("Client_onServerDown");
-            script.run (0);
+            handleServerdownEvent();
             break;
          }
       case scriptEvent:
          {
-            // run the onClientConnect script
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
-            script.setSelf (this, "Client");
-            script.prepareCall ("Client_onEvent");
-            script.addParam(&stream, "BitStream");
-            script.run (1);
+            const ScriptEvent& scriptevent = dynamic_cast<const ScriptEvent&>(event);
+            handleScriptEvent(scriptevent);
             break;
          }
-
       case newobjectEvent:
-      {
-         NewObjectEvent* pevent = dynamic_cast<NewObjectEvent*>(event);
-         handleNewObjectEvent(*pevent);
-         break;
-      }
-      case delobjectEvent: handleDeleteObjectEvent(stream);    break;
-      case updobjectEvent: handleUpdateObjectEvent(stream);    break;
-      case reqobjectEvent: handleRequestObjectEvent(stream);   break;
+         {
+            const NewObjectEvent& newobjectevent = dynamic_cast<const NewObjectEvent&>(event);
+            handleNewObjectEvent(newobjectevent);
+            break;
+         }
+      case delobjectEvent: 
+         {
+            const DeleteObjectEvent& delobjectevent = dynamic_cast<const DeleteObjectEvent&>(event);
+            handleDeleteObjectEvent(delobjectevent);
+            break;
+         }
+      case updobjectEvent: 
+         {
+            const UpdateObjectEvent& updateobjectevent = dynamic_cast<const UpdateObjectEvent&>(event);
+            handleUpdateObjectEvent(updateobjectevent);
+            break;
+         }
    }
    
    return 0;
 }
 
-void Client::handleNewObjectEvent(NewObjectEvent& event)
+void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
+{
+   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   script.setSelf (this, "Client");
+
+   switch ( event.getReply() )
+   {
+      case ConnectReplyEvent::eAccepted:
+         {
+            // run the onConnected script
+            script.prepareCall ("Client_onConnected");
+            script.run (0);
+
+            initialized = true;
+            break;
+         }
+      case ConnectReplyEvent::eDenite:
+         {
+             // run the Client_onConnectionDenite script
+             script.prepareCall ("Client_onConnectionDenite");
+             script.addParam(event.getReason());
+             script.run(1);
+             break;
+         }
+   }
+}
+
+void Client::handleDisconnectEvent(const DisconnectEvent& event)
+{
+   // call the script
+   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   script.setSelf (this, "Client");
+   script.prepareCall("Client_onPlayerLeft");
+   script.addParam(event.getId()+1);
+   script.run (1);
+}
+
+void Client::handleJoinEvent(const JoinEvent& event)
+{
+   // run the onConnected script
+   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   script.setSelf (this, "Client");
+   script.prepareCall("Client_onJoined");
+   script.addParam(event.getId()+1);
+   script.addParam(event.getPlayerName());
+   script.run(2);
+}
+
+void Client::handleServerdownEvent()
+{
+   // server went down, run the onClientConnect script
+   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   script.setSelf (this, "Client");
+   script.prepareCall ("Client_onServerDown");
+   script.run (0);
+}
+
+void Client::handleNewObjectEvent(const NewObjectEvent& event)
 {
    // a new object has been made on the server and 
    // is now also known on the client
@@ -191,7 +217,7 @@ void Client::handleNewObjectEvent(NewObjectEvent& event)
    obj->setReplica();
    obj->create();
 
-   if ( graph.find(obj->getName()) == 0 )
+   if ( graph.find(obj->getName().c_str()) == 0 )
    {
       if ( World::isWorld(*obj) )
       {
@@ -220,11 +246,9 @@ void Client::handleNewObjectEvent(NewObjectEvent& event)
    }
 }
 
-void Client::handleDeleteObjectEvent(BitStream& stream)
+void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
 {
-   char object[256] = {0};
-   stream >> object;
-   SceneObject* node = graph.find(object);
+   SceneObject* node = graph.find(event.getName().c_str());
    if ( node != NULL )
    {
       node->destroy();
@@ -232,40 +256,35 @@ void Client::handleDeleteObjectEvent(BitStream& stream)
    }
 }
 
-void Client::handleUpdateObjectEvent(BitStream& stream)
+void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
 {
-   char object[256] = {0};
-   stream >> object;
-   SceneObject* pobject = graph.find(object);
+   const std::string& objectname = event.getName();
+   SceneObject* pobject = graph.find(objectname.c_str());
    if ( pobject == NULL )
    {
-      if ( requests.find(object) == requests.end() )
+      if ( requests.find(objectname.c_str()) == requests.end() )
       {
          // unknown object, must have been generated before the player entered the game
-         NetEvent event(reqobjectEvent);
-         BitStream stream;
-         stream << &event << object;
-         getConnection()->send(&stream);
+         RequestObjectEvent event(objectname);
+         getConnection()->send(&event);
 
-         requests[object] = true;
+         requests[objectname.c_str()] = true;
       }
    }
    else
-      pobject->unpack(stream);
+   {
+      event.update(*pobject);
+   }
 }
 
-void Client::handleRequestObjectEvent(BitStream& stream)
+void Client::handleScriptEvent(const ScriptEvent& event)
 {
-   char parent[256] = {0};
-   stream >> parent;
+   AutoPtr<BitStream> stream(event.getStream());
 
-   Object* obj;
-   stream >> (NetObject**)&obj;
-   obj->setReplica();
-   obj->create();
-
-   SceneObject* pparent = graph.find(parent);
-   pparent->add(obj);
-
-   requests.erase(parent);
+   // run the onClientConnect script
+   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   script.setSelf (this, "Client");
+   script.prepareCall ("Client_onEvent");
+   script.addParam(stream.getPointer(), "BitStream");
+   script.run (1);
 }

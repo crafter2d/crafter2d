@@ -17,53 +17,40 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _PROCESS_H_
-#define _PROCESS_H_
+#include "scriptevent.h"
 
-#include "net/netconnection.h"
+#include "../bitstream.h"
 
-#include "scenegraph.h"
+IMPLEMENT_REPLICATABLE(ScriptEventId, ScriptEvent, NetEvent)
 
-class ActionMap;
-class BitStream;
-class NetEvent;
-
-/// @author Jeroen Broekhuizen
-/// \brief Provides the basic functionality for the process.
-///
-/// Abstract base class for processes. This class provides the common functionality 
-/// needed for client and server processes.
-class Process
+ScriptEvent::ScriptEvent():
+   NetEvent(scriptEvent),
+   mpStream(NULL)
 {
-public:
-                  Process();
-   virtual        ~Process();
+}
 
-   virtual bool   create();
-   virtual bool   destroy();
-   virtual void   update (float delta);
+ScriptEvent::ScriptEvent(BitStream* pstream):
+   NetEvent(scriptEvent),
+   mpStream(pstream)
+{
+}
 
-   void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
+BitStream* ScriptEvent::getStream() const
+{
+   return mpStream;
+}
 
-   virtual int    onClientEvent(int client, const NetEvent& event) = 0;
+void ScriptEvent::pack(BitStream& stream) const
+{
+   NetEvent::pack(stream);
 
-   void           setActionMap(ActionMap* map);
-   void           setInitialized(bool init);
+   stream << mpStream;
+}
 
-   NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
-   ActionMap*     getActionMap();
-   bool           isInitialized();
-
-protected:
-   NetConnection  conn;
-   SceneGraph     graph;
-   ActionMap*     actionMap;
-   bool           initialized;
-};
-
-#ifdef JENGINE_INLINE
-#  include "process.inl"
-#endif
-
-#endif
+void ScriptEvent::unpack(BitStream& stream)
+{
+   NetEvent::unpack(stream);
+   
+   mpStream = new BitStream();
+   stream >> *mpStream;
+}

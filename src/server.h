@@ -24,6 +24,8 @@
 #include "process.h"
 #include "net/netevent.h"
 
+class ConnectEvent;
+class ViewportEvent;
 class World;
 class Player;
 
@@ -84,12 +86,19 @@ public:
    void           sendToAllClients(BitStream& stream);
    void           sendScriptEventToAllClients(BitStream* stream);
 
-   virtual int    onClientEvent(int client, NetEvent* event, BitStream& stream);
+   virtual int    onClientEvent(int client, const NetEvent& event);
 
    virtual void   update(float delta);
 
 protected:
+   void           sendToAllClients(NetObject& object);
+   void           sendToActiveClient(NetObject& stream);
+
+   void handleConnectEvent(const ConnectEvent& event);
+   void handleViewportEvent(const ViewportEvent& event);
+
    ClientMap clients;
+   int mActiveClient;
 };
 
 #endif

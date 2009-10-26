@@ -20,18 +20,13 @@
 #include <assert.h>
 #include "../defines.h"
 
-INLINE void BitStream::setSize(int s)
-{ 
-   size = s;
-}
-
 INLINE void BitStream::setBuffer(const char* data, int _size)
 {
    ASSERT_MSG(data != NULL, "BitStream::setBuf : data pointer is null");
 
-   setSize(_size);
-   ensureFits(0); 
+   ensureFits(_size);
 
+   size = _size;
    memcpy(buf, data, size);
 }
 

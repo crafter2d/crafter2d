@@ -34,12 +34,11 @@
 ABSTRACT_IMPLEMENT_REPLICATABLE(SceneObjectId, SceneObject, NetObject)
 
 SceneObject::SceneObject():
-   name(),
+   mName(),
    xmlfile(),
    children(),
    parent(NULL)
 {
-   memset(name, 0, MAX_NAME_LEN);
 }
 
 SceneObject::~SceneObject()
@@ -98,26 +97,23 @@ void SceneObject::destroy ()
 
    // remove the object from the scenegraph
    SceneGraph& graph = getSceneGraph(this);
-   graph.removeObject(name);
+   graph.removeObject(mName);
 
 	// destroy the children
    removeAll();
 }
 
-/// \fn SceneObject::add(SceneObject* child, const char* name)
+/// \fn SceneObject::add(SceneObject* child)
 /// \brief Adds a child node to this node and optionally supplies it a name
 /// \param child Child to add to this node
-/// \param name [Optional] name of the child node
-void SceneObject::add (SceneObject* child, const char* name)
+void SceneObject::add(SceneObject* child)
 {
    // copy the name
-   if (name != NULL)
-      strcpy(child->name, name);
    child->parent = this;
 
    // add object to the scenegraph list
    SceneGraph& graph = getSceneGraph(child);
-   graph.addObject(child, child->name);
+   graph.addObject(child);
 
    // add new child to the back of the list
    children.push_back (child);
@@ -238,18 +234,21 @@ void SceneObject::doDraw()
 /// \brief Searches for a node with name 'node' and optionally recurses into the children.
 /// \param node name of the node to find
 /// \param recurse recurce into the children
-SceneObject* SceneObject::find(const char* node, bool recurse)
+SceneObject* SceneObject::find(const std::string& node, bool recurse)
 {
    // see if this node is the one were looking for
-   if (strcmp(name, node) == 0)
+   if ( mName == node )
       return this;
 
-   if (recurse) {
+   if ( recurse )
+   {
       // recursively search the children for the node
       SceneObjectList::iterator it = children.begin();
-      for (; it != children.end(); it++) {
+      for (; it != children.end(); it++)
+      {
          SceneObject* n = (*it)->find(node, recurse);
-         if (n) return n;
+         if ( n != NULL )
+            return n;
       }
    }
    return NULL;
@@ -257,12 +256,10 @@ SceneObject* SceneObject::find(const char* node, bool recurse)
 
 void SceneObject::pack(BitStream& stream) const
 {
-   stream << name;
+   stream << mName;
 }
 
 void SceneObject::unpack(BitStream& stream)
 {
-   char buf[256];
-   stream >> buf;
-   strcpy(name,buf);
+   stream >> mName;
 }

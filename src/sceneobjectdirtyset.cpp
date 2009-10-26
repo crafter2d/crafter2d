@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "sceneobjectdirtyset.h"
 
+#include "net/events/updateobjectevent.h"
+
 #include "net/bitstream.h"
 #include "net/netevent.h"
 #include "net/netconnection.h"
@@ -56,16 +58,8 @@ void SceneObjectDirtySet::send(NetConnection& conn)
 
       if ( object.isDirty() && !object.isStatic() )
       {
-         BitStream stream;
-         NetEvent event(updobjectEvent);
-
-         // fill it in
-         stream << &event;
-         stream << object.getName();
-         object.pack(stream);
-
-         // send the package
-         conn.send(&stream);
+         UpdateObjectEvent event(object);
+         conn.send(&event);
       }
    }
 }

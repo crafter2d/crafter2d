@@ -33,10 +33,10 @@ NetEvent::NetEvent(EventType _type):
 
 void NetEvent::pack(BitStream& stream) const
 {
-   stream << (int)type;
+   //stream << (int)type;
 }
 
 void NetEvent::unpack(BitStream& stream)
 {
-   stream >> (int&)type;
+   //stream >> (int&)type;
 }

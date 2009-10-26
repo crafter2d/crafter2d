@@ -39,6 +39,20 @@ BitStream::BitStream():
    buf = new char[1024];
 }
 
+BitStream::BitStream(int reserve)
+{
+}
+
+BitStream::BitStream(const BitStream& that):
+   buf(NULL),
+   pos(0),
+   size(that.size),
+   bufsize(that.bufsize)
+{
+   buf = new char[bufsize];
+   memcpy(buf, that.buf, size);
+}
+
 BitStream::~BitStream()
 {
    try
@@ -58,9 +72,8 @@ void BitStream::ensureFits(int datasize)
          bufsize *= 2;
       }
       while ( newsize >= bufsize );
-
+      
       char* pnewbuf = new char[bufsize];
-      memset(pnewbuf, 0, bufsize);
       memmove(pnewbuf, buf, size);
 
       delete[] buf;
@@ -70,7 +83,6 @@ void BitStream::ensureFits(int datasize)
 
 void BitStream::clear()
 {
-   buf[0] = 0;
    pos = size = 0;
 }
 
@@ -79,7 +91,7 @@ bool BitStream::empty()
    return (size == 0);
 }
 
-void BitStream::writeRaw(char* data, int dataSize)
+void BitStream::writeRaw(const char* data, int dataSize)
 {
    ensureFits(dataSize);
 
@@ -176,10 +188,12 @@ BitStream& BitStream::operator<<(const NetObject* obj)
 
 BitStream& BitStream::operator<<(const BitStream* stream)
 {
-   ensureFits(stream->size);
+   int totalsize = stream->size + sizeof(int);
+   ensureFits(totalsize);
 
+   writeInt(stream->size);
    memcpy(&buf[size], stream->buf, stream->size);
-   size += stream->size;
+   size += totalsize;
    return *this;
 }
 
@@ -232,6 +246,24 @@ BitStream& BitStream::operator>>(char& c)
 {
    c = buf[pos];
    pos++;
+   return *this;
+}
+
+BitStream& BitStream::operator>>(std::string& str)
+{
+  int len;
+  *this >> len;
+  str.assign(&buf[pos], len);
+  pos += len;
+  return *this;
+}
+
+BitStream& BitStream::operator>>(BitStream& stream)
+{
+   int streamsize = readInt();
+   stream.writeRaw(&buf[pos], streamsize);
+   pos += streamsize;
+
    return *this;
 }
 

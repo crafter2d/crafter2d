@@ -43,7 +43,8 @@
 #  define INLINE
 #endif
 
-typedef void* handle;
+typedef unsigned int uint;
+typedef void*        handle;
 
 #define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
 

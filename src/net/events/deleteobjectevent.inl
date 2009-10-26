@@ -17,55 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#include "../../defines.h"
 
-INLINE bool RuntimeInfo::hasBaseObject() const
+INLINE const std::string& DeleteObjectEvent::getName() const
 {
-   return _pbaseobject != NULL;
-}
-
-INLINE RuntimeInfo::CreateObjectFnc RuntimeInfo::getCreateObjectFnc() const
-{
-   return _createObject;
-}
-
-INLINE RuntimeInfo& RuntimeInfo::getBaseObject() const
-{
-   ASSERT_PTR(_pbaseobject)
-   return *_pbaseobject;
-}
-
-INLINE const std::string& RuntimeInfo::getName() const
-{
-   return _name;
-}
-
-INLINE const std::string& RuntimeInfo::getBase() const
-{
-   return _base;
-}
-
-INLINE int RuntimeInfo::getId() const
-{
-   return _id;
-}
-
-INLINE void RuntimeInfo::setName(const std::string& name)
-{
-   _name = name;
-}
-
-INLINE void RuntimeInfo::setBase(const std::string& base)
-{
-   _base = base;
-}
-
-INLINE void RuntimeInfo::setBaseObject(RuntimeInfo* pbase)
-{
-   _pbaseobject = pbase;
-}
-
-INLINE void RuntimeInfo::setCreateObjectFnc(CreateObjectFnc fnc)
-{
-   _createObject = fnc;
+  return mName;
 }

@@ -33,6 +33,7 @@
 #include <SDL/SDL.h>
 #include "bitstream.h"
 #include "netobject.h"
+#include "netpackage.h"
 
 class NetStatistics;
 class Process;
@@ -40,35 +41,14 @@ class Process;
 const int   MAX_PACKAGE_NUMBER            = 0xAFFFFFFF;
 const int   MIN_PACKAGE_NUMBER_DIFFERENCE = 0xAFFFF000;
 const int   RESET_DIFFERENCE              = 0x1FFFFFFF;
-const float   MAX_TIME_BETWEEN_RECV         = 3.0f;
+const float MAX_TIME_BETWEEN_RECV         = 3.0f;
 const int   HEADER_SIZE                   = sizeof(Uint32)*2 + 2;
 const int   SOCKADDR_SIZE                 = sizeof(sockaddr_in);
 const int   INVALID_CLIENTID              = -1;
 const char  ALIVE_MSG_ID                  = 0xF;
-const float   ALIVE_MSG_INTERVAL            = 1.0f;
+const float ALIVE_MSG_INTERVAL            = 1.0f;
 
-enum PacketReliability {
-   Unreliable,
-   UnreliableSequenced,
-   Reliable,
-   ReliableSequenced,
-   ReliableOrdered
-};
-
-/// NetPackage
-/// \brief Package of data to be send over the network
-struct NetPackage
-{
-   char   type;
-   bool   isAck;
-   Uint32 clientid;
-   Uint32 number;
-   float  time;
-   int    datasize;
-   char*  data;
-};
-
-typedef std::vector<NetPackage> PackageQueue;
+typedef std::vector<NetPackage*> PackageQueue;
 typedef std::list<NetPackage> PackageList;
 
 /// NetAddress
@@ -117,8 +97,8 @@ public:
 
    bool        select (bool read, bool write);
 
-   void        send(BitStream* stream, PacketReliability pr=ReliableSequenced);
-   void        send(NetObject* obj, PacketReliability pr=ReliableSequenced);
+   void        send(BitStream* stream, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
+   void        send(NetObject* obj, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
    
    void        recv();
 
@@ -133,13 +113,10 @@ public:
          NetAddress& resolveClient(int idx);
 
 protected:
-   void        convertPackageToBitStream(const NetPackage& package, BitStream& stream);
-   void        convertBitStreamToPackage(BitStream& stream, NetPackage& package);
-
    bool        addNewClient(NetAddress& address, bool connecting = false);
    int         findClient(const NetAddress& address) const;
 
-   void        send(NetAddress& client, BitStream* stream, PacketReliability reliability);
+   void        send(NetAddress& client, BitStream* stream, NetPackage::Reliability reliability);
    void        sendAck(NetAddress& client, const NetPackage& package);
    void        sendAliveMessages(float tick);
 

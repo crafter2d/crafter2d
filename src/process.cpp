@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "net/netevent.h"
+#include "net/events/scriptevent.h"
 
 #include "actionmap.h"
 #include "scenegraph.h"
@@ -27,7 +28,8 @@
 #  include "process.inl"
 #endif
 
-Process::Process(void): 
+Process::Process(void):
+   conn(),
    graph(),
    actionMap(0),
    initialized(false)
@@ -60,15 +62,13 @@ void Process::update(float tick)
       conn.update();
 }
 
-void Process::sendScriptEvent(const BitStream* stream, Uint32 client)
+void Process::sendScriptEvent(BitStream* pstream, Uint32 client)
 {
    if ( conn.isConnected() )
    {
-      BitStream s;
-      NetEvent event(scriptEvent);
-      s << &event << stream;
+      ScriptEvent event(pstream);
       if (client != INVALID_CLIENTID)
          conn.setClientId(client);
-      conn.send(&s);
+      conn.send(&event);
    }
 }

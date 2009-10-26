@@ -26,13 +26,11 @@
 class BitStream;
 
 enum EventType {
-   // network events
    connectEvent      = 0x0000,
+   connectReplyEvent = 0x0001,
    disconnectEvent   = 0x0002,
-   deniteEvent       = 0x0006,
    joinEvent         = 0x0003,
-   acceptEvent       = 0x0004,
-   serverdownEvent   = 0x0005,
+   serverdownEvent   = 0x0004,
 
    // game events
    inputEvent        = 0x0020,
@@ -41,7 +39,7 @@ enum EventType {
    delobjectEvent    = 0x0025,
    updobjectEvent    = 0x0021,
    reqobjectEvent    = 0x0022,
-   scrollEvent       = 0x0026,
+   viewportEvent     = 0x0026,
 
    generalEvent      = 0x1000
 };

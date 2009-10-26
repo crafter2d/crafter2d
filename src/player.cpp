@@ -23,8 +23,7 @@
 #endif
 
 #include "net/netconnection.h"
-#include "net/netevent.h"
-#include "net/bitstream.h"
+#include "net/events/viewportevent.h"
 
 #include "world/world.h"
 
@@ -65,10 +64,7 @@ void Player::initialize(World& world)
 
 void Player::notifyScrollChange(const Vector& scrollposition)
 {
-   BitStream stream;
-   NetEvent event(scrollEvent);
+   ViewportEvent event(_viewport);
 
-   // inform the server about the viewport change
-   stream << (NetObject*)&event << (int)scrollposition.x << (int)scrollposition.y;
-   Game::getInstance().getClient().getConnection()->send(&stream);
+   Game::getInstance().getClient().getConnection()->send(&event);
 }

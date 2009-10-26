@@ -56,11 +56,11 @@ public:
    virtual bool            load(TiXmlElement& element);
    virtual bool            save(TiXmlElement& element);
 
-	void                    add (SceneObject* child, const char* name=NULL);
+   void                    add(SceneObject* child);
    void                    remove(SceneObject* child);
    void                    removeAll();
 
-   SceneObject*            find(const char* node, bool recurse = true);
+   SceneObject*            find(const std::string& node, bool recurse = true);
 	void                    update(DirtySet& dirtyset, float delta);
    void                    updateClient(float delta);
    void                    draw(bool traverse = true);
@@ -68,10 +68,10 @@ public:
    virtual void            accept(NodeVisitor& nv);
 
    void                    setParent(SceneObject* p);
-   void                    setName(const char* name);
+   void                    setName(const std::string& name);
    void                    setFilename(const std::string& filename);
 
-   const char*             getName() const;
+   const std::string&      getName() const;
    const std::string&      getFilename() const;
    const SceneObjectList&  getChildren() const;
    SceneObject*            getParent();
@@ -88,7 +88,7 @@ protected:
    virtual void            doUpdateClient(float delta) = 0;
    virtual void            doDraw() = 0;
 
-   char name[MAX_NAME_LEN];
+   std::string       mName;
    std::string       xmlfile;
    SceneObjectList   children;
    SceneObject*      parent;

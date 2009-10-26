@@ -17,53 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _PROCESS_H_
-#define _PROCESS_H_
+#include "requestobjectevent.h"
+#ifndef JENGINE_INLINE
+#  include "requestobjectevent.inl"
+#endif
 
-#include "net/netconnection.h"
+IMPLEMENT_REPLICATABLE(RequestObjectEventId, RequestObjectEvent, NetEvent)
 
-#include "scenegraph.h"
-
-class ActionMap;
-class BitStream;
-class NetEvent;
-
-/// @author Jeroen Broekhuizen
-/// \brief Provides the basic functionality for the process.
-///
-/// Abstract base class for processes. This class provides the common functionality 
-/// needed for client and server processes.
-class Process
+RequestObjectEvent::RequestObjectEvent():
+   NetEvent(delobjectEvent),
+   mName()
 {
-public:
-                  Process();
-   virtual        ~Process();
+}
 
-   virtual bool   create();
-   virtual bool   destroy();
-   virtual void   update (float delta);
+RequestObjectEvent::RequestObjectEvent(const std::string& name):
+   NetEvent(delobjectEvent),
+   mName(name)
+{
+}
 
-   void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
+void RequestObjectEvent::pack(BitStream& stream) const
+{
+   NetEvent::pack(stream);
+   stream << mName;
+}
 
-   virtual int    onClientEvent(int client, const NetEvent& event) = 0;
-
-   void           setActionMap(ActionMap* map);
-   void           setInitialized(bool init);
-
-   NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
-   ActionMap*     getActionMap();
-   bool           isInitialized();
-
-protected:
-   NetConnection  conn;
-   SceneGraph     graph;
-   ActionMap*     actionMap;
-   bool           initialized;
-};
-
-#ifdef JENGINE_INLINE
-#  include "process.inl"
-#endif
-
-#endif
+void RequestObjectEvent::unpack(BitStream& stream)
+{
+   NetEvent::pack(stream);
+   stream >> mName;
+}

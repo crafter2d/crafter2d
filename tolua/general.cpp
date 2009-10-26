@@ -125,12 +125,12 @@ class RotateState: public State
 
 class SceneObject
 {
-   void add(SceneObject* child, const char* name = NULL);
+   void add(SceneObject* child);
 
-   SceneObject* find(const char* name);
+   SceneObject* find(const std::string& name);
 
-   void setName(const char* name);
-   char* getName();
+   void setName(const std::string& name);
+   const std::string& getName();
 };
 
 class Object: public SceneObject
@@ -263,7 +263,7 @@ class SceneGraph
 
    void removeAll();
 
-   SceneObject* find(const char* name);
+   SceneObject* find(const std::string& name);
 };
 
 class Console

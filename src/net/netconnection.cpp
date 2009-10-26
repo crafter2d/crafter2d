@@ -26,10 +26,13 @@
 
 #include "../system/timer.h"
 
+#include "../autoptr.h"
 #include "../console.h"
 #include "../process.h"
 #include "../script.h"
 #include "../scriptmanager.h"
+
+#include "events/connectreplyevent.h"
 
 #include "netevent.h"
 #include "netstatistics.h"
@@ -50,19 +53,21 @@
  * NetConnection class
  */
 
-NetConnection::NetConnection(void):
+NetConnection::NetConnection():
+   clients(),
    mSendAliveMsg(false),
    connected(false),
    lastSendAlive(0),
    clientid(0),
    sock(-1),
-   process(0),
+   process(NULL),
    accept(true)
 {
 }
 
-NetConnection::~NetConnection(void)
+NetConnection::~NetConnection()
 {
+   process = NULL;
 }
 
 #ifdef WIN32
@@ -169,7 +174,8 @@ bool NetConnection::connect(const char* serverName, Uint32 port)
 
 void NetConnection::disconnect()
 {
-   if (connected) {
+   if ( connected )
+   {
       connected = false;
 
       // close the socket connection
@@ -245,14 +251,14 @@ void NetConnection::update()
          PackageQueue::iterator pit = pclient->resendQueue.begin();
          for (; pit != pclient->resendQueue.end(); ++pit) 
          {
-            NetPackage& package = (*pit);
+            NetPackage& package = *(*pit);
             const float tick = timer.getTick();
 
-            if ( tick - package.time > MAX_TIME_BETWEEN_RECV)
+            if ( tick - package.getTimeStamp() > MAX_TIME_BETWEEN_RECV)
             {
-               package.time = tick;
+               package.setTimeStamp(tick);
 
-               Console::getInstance().printf("Resending package number for client %d: %d", i, package.number);
+               Console::getInstance().printf("Resending package number for client %d: %d", i, package.getNumber());
                resend(*pclient, package);
             }
          }
@@ -260,40 +266,28 @@ void NetConnection::update()
    }
 }
 
-void NetConnection::send(NetAddress& client, BitStream* stream, PacketReliability reliability)
+void NetConnection::send(NetAddress& client, BitStream* stream, NetPackage::Reliability reliability)
 {
-   NetPackage package;
-   package.type = reliability;
-   package.isAck = false;
-   package.clientid = clientid;
-   package.number = client.packageNumber;
-   package.time = Timer::getInstance().getTick();
-   package.datasize = stream->getSize();
-   package.data = new char[package.datasize];
-   memcpy(package.data, stream->getBuf(), package.datasize);
+   AutoPtr<NetPackage> package = new NetPackage(NetPackage::eEvent, reliability, client.packageNumber, stream->getSize(), stream->getBuf());
 
    // update the package numbering
    if (++client.packageNumber > MAX_PACKAGE_NUMBER)
       client.packageNumber = 0;
 
    BitStream packageStream;
-   convertPackageToBitStream(package, packageStream);
+   *package >> packageStream;
    doSend(client, packageStream);
 
    // when reliability is requested, save the package in the resend queue
-   if (reliability >= Reliable)
+   if ( reliability >= NetPackage::eReliableSequenced )
    {
-      client.resendQueue.push_back (package);
-   }
-   else
-   {
-      delete[] package.data;
+      client.resendQueue.push_back(package.release());
    }
 }
 
 /// \fn NetConnection::send(BitStream& stream)
 /// \brief Sends the data from the bitstream to the client/server
-void NetConnection::send(BitStream* stream, PacketReliability reliability)
+void NetConnection::send(BitStream* stream, NetPackage::Reliability reliability)
 {
    NetAddress& client = *clients[clientid];
    send(client, stream, reliability);
@@ -301,19 +295,19 @@ void NetConnection::send(BitStream* stream, PacketReliability reliability)
 
 /// \fn NetConnection::send(NetObject* obj, PacketReliability reliability)
 /// \brief Transmits a NetObject to the current client.
-void NetConnection::send(NetObject* obj, PacketReliability reliability)
+void NetConnection::send(NetObject* obj, NetPackage::Reliability reliability)
 {
    BitStream stream;
-   stream << obj->getRuntimeInfo().getName() << obj;
+   stream << obj;
    send(&stream, reliability);
 }
 
 void NetConnection::resend(NetAddress& client, const NetPackage& package)
 {
    BitStream stream;
+   package >> stream;
 
    // resend the package to the client
-   convertPackageToBitStream(package, stream);
    doSend(client, stream);
 }
 
@@ -336,21 +330,16 @@ void NetConnection::doSend(NetAddress& client, const BitStream& stream)
 
 void NetConnection::sendAliveMessages(float tick)
 {
+   BitStream stream;
+   NetPackage package(NetPackage::eAlive, NetPackage::eUnreliable, 0);
+   package >> stream;
+
    for ( Uint32 i = 0; i < clients.size(); ++i )
    {
-      NetAddress& client = *clients[clientid];
+      NetAddress& client = *clients[i];
 
       if ( tick - client.lastTimeSend > 1.0f )
       {
-		   NetPackage ackPackage;
-		   ackPackage.type = ALIVE_MSG_ID;
-		   ackPackage.isAck = false;
-		   ackPackage.number = 0;
-         ackPackage.time = tick;
-		   ackPackage.datasize = 0;
-
-         BitStream stream;
-		   convertPackageToBitStream(ackPackage, stream);
 		   doSend(client, stream);
 	   }
    }
@@ -384,60 +373,55 @@ void NetConnection::recv()
 
    // convert package into a header and stream
    NetPackage package;
-   convertBitStreamToPackage(recvStream, package);
-   if (package.isAck == true)
+   package << recvStream;
+
+   if ( package.getType() == NetPackage::eAck )
    {
       // remove package from the resend list and return
-      removePackageFromResendQueue(client, package.number);
+      removePackageFromResendQueue(client, package.getNumber());
    }
-   else if (package.type == ALIVE_MSG_ID)
+   else if ( package.getType() == NetPackage::eAlive )
    {
       // don't do anything with the I'm alive message
    }
    else
    {
+      NetPackage::Reliability reliability = package.getReliability();
+
       // if the message is reliable, send an ack back
-      if (package.type >= Reliable)
+      if ( reliability >= NetPackage::eReliableSequenced )
          sendAck(client, package);
 
-      BitStream sendStream;
-      switch ( package.type )
+      switch ( reliability )
       {
-      case Unreliable:
-         sendStream.setBuffer(package.data, package.datasize);
+      case NetPackage::eUnreliable:
+         // the package can be used always
          break;
-      case UnreliableSequenced:
-      case ReliableSequenced:
+      case NetPackage::eUnreliableSequenced:
+      case NetPackage::eReliableSequenced:
          // if this package has an old package number, then drop it
-         if ( isValidSequencedPackage(client, package) )
+         if ( !isValidSequencedPackage(client, package) )
          {
-            // prepare package for usage
-            sendStream.setBuffer(package.data, package.datasize);
-         }
-         else
-         {
-            delete[] package.data;
             return;
          }
          break;
-      case ReliableOrdered:
+      case NetPackage::eReliableOrdered:
          // make sure client receives the messages in order (+1 as
          // the new package is at least 1 bigger than the last received one).
-         if (false && package.number > (client.lastPackageNumber+1))
+         if ( false && package.getNumber() > (client.lastPackageNumber+1) )
          {
             insertOrderedPackage(client, package);
 
             // check if we have already the package we are waiting for
             PackageList::iterator it = client.orderQueue.begin();
             NetPackage& pack = (*it);
-            if (pack.number == client.lastPackageNumber) {
-               // extract the actual message
-               sendStream.setBuffer(pack.data, pack.datasize);
-
+            if ( pack.getNumber() == client.lastPackageNumber )
+            {
                // erase the package from the list
                client.orderQueue.erase(it);
             }
-            else {
+            else
+            {
                // nope, still waiting for the right one
                return;
             }
@@ -452,14 +436,10 @@ void NetConnection::recv()
       // is the next one. sequenced packages which should be received later
       // will be stored in the list. this will result in an orderly fasion
       // of processing the messages.
-      client.lastPackageNumber = package.number;
+      client.lastPackageNumber = package.getNumber();
 
-      NetEvent* event = 0;
-      sendStream >> (NetObject**)&event;
-      process->onClientEvent(clientid, event, sendStream);
-      delete event;
-
-      delete[] package.data;
+      AutoPtr<NetObject> event = package.getObject();
+      process->onClientEvent(clientid, dynamic_cast<NetEvent&>(*event));
    }
 }
 
@@ -515,10 +495,12 @@ bool NetConnection::addNewClient(NetAddress& address, bool connecting)
          int reason = script.getInteger();
          if ( reason < 0 )
          {
-            NetEvent event(deniteEvent);
+            ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
+
             BitStream stream;
-            stream << &event << reason;
-            send(address, &stream, Unreliable);
+            stream << &event;
+
+            send(address, &stream, NetPackage::eUnreliable);
             return false;
          }
       }
@@ -577,7 +559,7 @@ int NetConnection::findClient(const NetAddress& address) const
 
 bool NetConnection::isValidSequencedPackage(const NetAddress& client, const NetPackage& package)
 {
-   if ( package.number > client.lastPackageNumber || client.lastPackageNumber - package.number > MIN_PACKAGE_NUMBER_DIFFERENCE )
+   if ( package.getNumber() > client.lastPackageNumber || client.lastPackageNumber - package.getNumber() > MIN_PACKAGE_NUMBER_DIFFERENCE )
       return true;
 
    // say max = 250, client.lastPN = 249 and package.nr = 2 -> diff = 247 and thus must be overflow -> set flag
@@ -586,46 +568,14 @@ bool NetConnection::isValidSequencedPackage(const NetAddress& client, const NetP
    return false;
 }
 
-/// \fn NetConnection::convertPackageToBitStream(const NetPackage& package, BitStream& stream)
-/// \brief Convert a network package to a bitstream object for tranmission.
-void NetConnection::convertPackageToBitStream(const NetPackage& package, BitStream& stream)
-{
-   stream << package.type << package.isAck << (int)package.number << (int)package.datasize;
-   if (package.datasize > 0)
-   {
-      stream.writeRaw(package.data, package.datasize);
-   }
-}
-
-/// \fn NetConnection::convertBitStreamToPackage(BitStream& stream, NetPackage& package)
-/// \brief Convert a bitstream object to the network package format.
-void NetConnection::convertBitStreamToPackage(BitStream& stream, NetPackage& package)
-{
-   stream >> package.type >> package.isAck >> (int&)package.number >> (int&)package.datasize;
-   if (package.datasize > 0)
-   {
-      package.data = new char[package.datasize];
-      stream.readRaw(package.data, package.datasize);
-   }
-   else
-   {
-	   package.data = 0;
-   }
-}
-
 /// \fn NetConnection::sendAck(const NetPackage& package)
 /// \brief Send an acknowledgement back to the sender of a reliable package.
 void NetConnection::sendAck(NetAddress& client, const NetPackage& package)
 {
    BitStream stream;
-   NetPackage ackPackage;
+   NetPackage ackPackage(NetPackage::eAck, NetPackage::eUnreliable, package.getNumber());
+   ackPackage >> stream;
 
-   ackPackage.type = Unreliable;
-   ackPackage.isAck = true;
-   ackPackage.number = package.number;
-   ackPackage.datasize = 0;
-
-   convertPackageToBitStream(ackPackage, stream);
    doSend(client, stream);
 }
 
@@ -636,10 +586,11 @@ void NetConnection::removePackageFromResendQueue(NetAddress& client, Uint32 pack
    PackageQueue::iterator it = client.resendQueue.begin();
    for ( ; it != client.resendQueue.end(); ++it)
    {
-      if ((*it).number == packageNumber)
+      NetPackage* ppackage = *it;
+      if ( ppackage->getNumber() == packageNumber)
       {
-         delete[] it->data;
          client.resendQueue.erase(it);
+         delete ppackage;
          return;
       }
    }
@@ -667,16 +618,18 @@ void NetConnection::insertOrderedPackage(NetAddress& client, const NetPackage& p
    {
       // find the correct location to put in the package
       PackageList::iterator it = client.orderQueue.begin();
-      while (it != client.orderQueue.end() && (*it).number < package.number)
+      while (it != client.orderQueue.end() && (*it).getNumber() < package.getNumber())
       {
          ++it;
       }
+
+      NetPackage& savedpackage = *it;
 
       if (it != client.orderQueue.end())
       {
          // note that eventually the package could already been there (if for example
          // the ACK got lost), so make sure the new package number is smaller
-         if (package.number < (*it).number)
+         if ( package.getNumber() < (*it).getNumber() )
          {
             client.orderQueue.insert(it, package);
          }

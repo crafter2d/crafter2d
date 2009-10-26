@@ -17,53 +17,45 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _PROCESS_H_
-#define _PROCESS_H_
+#include "updateobjectevent.h"
+#ifndef JENGINE_INLINE
+#  include "updateobjectevent.inl"
+#endif
 
-#include "net/netconnection.h"
+#include "../../object.h"
 
-#include "scenegraph.h"
+IMPLEMENT_REPLICATABLE(UpdateObjectEventId, UpdateObjectEvent, NetEvent)
 
-class ActionMap;
-class BitStream;
-class NetEvent;
-
-/// @author Jeroen Broekhuizen
-/// \brief Provides the basic functionality for the process.
-///
-/// Abstract base class for processes. This class provides the common functionality 
-/// needed for client and server processes.
-class Process
+UpdateObjectEvent::UpdateObjectEvent():
+   NetEvent(updobjectEvent),
+   mName(),
+   mDataStream()
 {
-public:
-                  Process();
-   virtual        ~Process();
+}
 
-   virtual bool   create();
-   virtual bool   destroy();
-   virtual void   update (float delta);
+UpdateObjectEvent::UpdateObjectEvent(SceneObject& object):
+   NetEvent(updobjectEvent),
+   mName(object.getName()),
+   mDataStream()
+{
+   object.pack(mDataStream);
+}
 
-   void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
+void UpdateObjectEvent::update(SceneObject& object) const
+{
+   object.unpack(const_cast<BitStream&>(mDataStream));
+}
 
-   virtual int    onClientEvent(int client, const NetEvent& event) = 0;
+void UpdateObjectEvent::pack(BitStream& stream) const
+{
+   NetEvent::pack(stream);
 
-   void           setActionMap(ActionMap* map);
-   void           setInitialized(bool init);
+   stream << mName << &mDataStream;
+}
 
-   NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
-   ActionMap*     getActionMap();
-   bool           isInitialized();
+void UpdateObjectEvent::unpack(BitStream& stream)
+{
+   NetEvent::unpack(stream);
 
-protected:
-   NetConnection  conn;
-   SceneGraph     graph;
-   ActionMap*     actionMap;
-   bool           initialized;
-};
-
-#ifdef JENGINE_INLINE
-#  include "process.inl"
-#endif
-
-#endif
+   stream >> mName >> mDataStream;
+}

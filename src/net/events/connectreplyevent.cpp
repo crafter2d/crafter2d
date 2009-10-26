@@ -17,53 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _PROCESS_H_
-#define _PROCESS_H_
+#include "connectreplyevent.h"
+#ifndef JENGINE_INLINE
+#  include "connectreplyevent.inl"
+#endif
 
-#include "net/netconnection.h"
+IMPLEMENT_REPLICATABLE(ConnectReplyEventId, ConnectReplyEvent, NetEvent)
 
-#include "scenegraph.h"
-
-class ActionMap;
-class BitStream;
-class NetEvent;
-
-/// @author Jeroen Broekhuizen
-/// \brief Provides the basic functionality for the process.
-///
-/// Abstract base class for processes. This class provides the common functionality 
-/// needed for client and server processes.
-class Process
+ConnectReplyEvent::ConnectReplyEvent():
+   NetEvent(connectReplyEvent),
+   mReply(eDenite),
+   mReason(0)
 {
-public:
-                  Process();
-   virtual        ~Process();
+}
 
-   virtual bool   create();
-   virtual bool   destroy();
-   virtual void   update (float delta);
+ConnectReplyEvent::ConnectReplyEvent(Reply reply, int reason):
+   NetEvent(connectReplyEvent),
+   mReply(reply),
+   mReason(reason)
+{
+}
 
-   void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
+void ConnectReplyEvent::pack(BitStream& stream) const
+{
+   NetEvent::pack(stream);
+   stream << mReply << mReason;
+}
 
-   virtual int    onClientEvent(int client, const NetEvent& event) = 0;
-
-   void           setActionMap(ActionMap* map);
-   void           setInitialized(bool init);
-
-   NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
-   ActionMap*     getActionMap();
-   bool           isInitialized();
-
-protected:
-   NetConnection  conn;
-   SceneGraph     graph;
-   ActionMap*     actionMap;
-   bool           initialized;
-};
-
-#ifdef JENGINE_INLINE
-#  include "process.inl"
-#endif
-
-#endif
+void ConnectReplyEvent::unpack(BitStream& stream)
+{
+   NetEvent::unpack(stream);
+   stream >> (int&)mReply << mReason;
+}

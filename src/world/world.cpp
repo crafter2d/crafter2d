@@ -153,7 +153,7 @@ void World::loadObjects(const char* filename)
       obj->setAnimation(1);
 
       // insert the object in the scenegraph
-      add(obj, name.c_str());
+      add(obj);
 
       object = (TiXmlElement*)doc.IterateChildren("instance", object);
    }

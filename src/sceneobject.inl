@@ -28,9 +28,9 @@ INLINE void SceneObject::setParent(SceneObject* p)
 /// \fn SceneObject::setName(const char* newName)
 /// \brief Sets the name of this object.
 /// \param n the new name for this object
-INLINE void SceneObject::setName(const char* newName)
+INLINE void SceneObject::setName(const std::string& name)
 {
-   strcpy(name, newName);
+   mName = name;
 }
 
 INLINE void SceneObject::setFilename(const std::string& filename)
@@ -40,9 +40,9 @@ INLINE void SceneObject::setFilename(const std::string& filename)
 
 /// \fn SceneObject::getName()
 /// \brief Returns the name of this object.
-INLINE const char* SceneObject::getName() const
+INLINE const std::string& SceneObject::getName() const
 {
-   return name;
+   return mName;
 }
 
 INLINE const std::string& SceneObject::getFilename() const

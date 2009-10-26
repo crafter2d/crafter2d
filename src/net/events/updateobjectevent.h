@@ -17,53 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _PROCESS_H_
-#define _PROCESS_H_
+#ifndef UPDATE_OBJECT_EVENT_H_
+#define UPDATE_OBJECT_EVENT_H_
 
-#include "net/netconnection.h"
+#include "../netevent.h"
 
-#include "scenegraph.h"
+class SceneObject;
 
-class ActionMap;
-class BitStream;
-class NetEvent;
-
-/// @author Jeroen Broekhuizen
-/// \brief Provides the basic functionality for the process.
-///
-/// Abstract base class for processes. This class provides the common functionality 
-/// needed for client and server processes.
-class Process
+/**
+@author Jeroen Broekhuizen
+*/
+class UpdateObjectEvent : public NetEvent
 {
 public:
-                  Process();
-   virtual        ~Process();
+   DEFINE_REPLICATABLE(UpdateObjectEvent)
 
-   virtual bool   create();
-   virtual bool   destroy();
-   virtual void   update (float delta);
+            UpdateObjectEvent();
+   explicit UpdateObjectEvent(SceneObject& object);
+   
+   const std::string&   getName() const;
+   const BitStream&     getDataStream() const;
 
-   void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
+   void update(SceneObject& object) const;
 
-   virtual int    onClientEvent(int client, const NetEvent& event) = 0;
+   virtual void   pack(BitStream& stream) const;
+   virtual void   unpack(BitStream& stream);
 
-   void           setActionMap(ActionMap* map);
-   void           setInitialized(bool init);
-
-   NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
-   ActionMap*     getActionMap();
-   bool           isInitialized();
-
-protected:
-   NetConnection  conn;
-   SceneGraph     graph;
-   ActionMap*     actionMap;
-   bool           initialized;
+private:
+   std::string mName;
+   BitStream   mDataStream;
 };
 
 #ifdef JENGINE_INLINE
-#  include "process.inl"
+#  include "updateobjectevent.inl"
 #endif
 
 #endif
