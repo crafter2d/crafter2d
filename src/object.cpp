@@ -205,10 +205,10 @@ void Object::move(float delta)
    if ( vel != Vector::zero() ) 
    {
       SceneGraph& graph = Game::getInstance().getServer().getSceneGraph();
-      graph.getWorld()->collide(*this);
+      graph.getWorld()->collide(*this, pos);
 
-      pos += vel;
-
+      //pos += vel;
+      
       setDirty(ePositionDirty);
    }
 }

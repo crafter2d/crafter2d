@@ -274,7 +274,7 @@ void World::doDraw ()
 /// \fn World::collide(Object& object)
 /// \brief Performs collision detection with the object against the bounds
 /// \param object Object to test for collisions with the bounds
-int World::collide (Object& object) const
+int World::collide (Object& object, Vector& newpos) const
 {
 	Vector p3, p4, ip, vel;
 	int collided = 0;
@@ -283,9 +283,9 @@ int World::collide (Object& object) const
 	vel = object.getVelocity ();
 
 	p3 = object.getPosition ();
-	p4.set (p3.x+vel.x, p3.y);
+	p4.set (p3.x+vel.x, p3.y+vel.y);
 
-	Vector extra(vel.x,0);
+	Vector extra(vel);
 	extra.normalize ();
 	extra *= radius;
 	p4 += extra;
@@ -295,13 +295,13 @@ int World::collide (Object& object) const
    {
       Bound& bound = *bounds[i];
 		Vector normal = bound.getNormal ();
-		if (normal.x != 0)
+		//if (normal.x != 0)
       {
          if ( bound.intersect(p3, p4, ip) == Bound::eCollision )
          {
 				Vector normal = bound.getNormal();
-				if (normal.x != 0)
-					vel.x = 0;
+				//if (normal.x != 0)
+				//	vel.x = 0;
 
 				normal *= radius;
 				ip += normal;
@@ -313,6 +313,9 @@ int World::collide (Object& object) const
 		}
 	}
 
+   newpos = p3;
+
+   /*
 	p4.set (p3.x, p3.y + vel.y);
 	extra.set (0, vel.y);
 	extra.normalize ();
@@ -338,7 +341,7 @@ int World::collide (Object& object) const
 			break;
 		}
 	}
-
+   */
 	return collided;
 }
 

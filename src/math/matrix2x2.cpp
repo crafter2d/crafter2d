@@ -17,22 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MATRIX3_H_
-#define MATRIX3_H_
+#include "matrix2x2.h"
 
-class Matrix3
+#include <math.h>
+
+Matrix2x2::Matrix2x2():
+   m11(0.0f),
+   m12(0.0f),
+   m21(0.0f),
+   m22(0.0f)
 {
-public:
-   Matrix3();
-   ~Matrix3();
+}
 
-   float&   operator[](int index);
-   float    operator[](int index) const;
+Matrix2x2::~Matrix2x2()
+{
+}
 
-private:
-   float mData[9];
-};
+void Matrix2x2::setRotation(float deg)
+{
+   float cos = cosf(deg);
+   float sin = sinf(deg);
 
-#include "matrix3.inl"
+   m11 = cos;
+   m12 = -sin;
+   m21 = sin;
+   m22 = cos;
+}
 
-#endif
+void Matrix::setScale(float x, float y)
+{
+   m11 = x;
+   m12 = 0;
+   m21 = 0;
+   m22 = y;
+}
+
+Vector Matrix::transform(const Vector& point) const
+{
+   return Vector(point.x * m11 + point.y * m21,
+                 point.x * m12 + point.y * m22);
+}

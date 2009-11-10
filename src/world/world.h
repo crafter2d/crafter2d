@@ -74,7 +74,7 @@ public:
    void           destroy();
    bool           save();
 
-   int            collide(Object& object) const;
+   int            collide(Object& object, Vector& newpos) const;
 
    void           loadObjects(const char* filename);
 

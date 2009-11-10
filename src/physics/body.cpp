@@ -17,30 +17,44 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#include "body.h"
+#ifndef JENGINE_INLINE
+#  include "body.inl"
+#endif
 
-inline Matrix3::Matrix3():
-   mData()
+Body::Body():
+   mTransform(),
+   mPosition(),
+   mOrientation(),
+   mAccumForce(),
+   mAccumTorque(),
+   mInverseMass(0.0f)
 {
-   mData[1] = mData[2] = 0;
-   mData[3] = mData[5] = 0;
-   mData[6] = mData[7] = 0;
-
-   mData[0] = mData[4] = mData[8] = 1;
 }
 
-inline Matrix3::~Matrix3()
+Body::~Body()
 {
 }
 
-inline float& Matrix3::operator[](int index)
+// ----------------------------------
+// -- Forces
+// ----------------------------------
+
+void Body::addForce(const Vector& force)
 {
-   ASSERT(index >= 0 && index < 9);
-   return mData[index];
+   mAccumForce += force;
 }
 
-inline float Matrix3::operator[](int index) const
+void Body::addLocalizedForce(const Vector& force, const Vector& location)
 {
-   ASSERT(index >= 0 && index < 9);
-   return mData[index];
+   Vector point = localToWorld(location);
+}
+
+// ----------------------------------
+// -- Space conversion
+// ----------------------------------
+
+Vector Body::localToWorld(const Vector& vector) const
+{
+   return mTransform.transform(vector);
 }

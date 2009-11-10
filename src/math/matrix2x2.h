@@ -17,44 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "..\defines.h"
+#ifndef MATRIX_2x2_H_
+#define MATRIX_2x2_H_
 
-INLINE float Quaternion::r() const
-{
-   return mData[0];
-}
+#include "vector.h"
 
-INLINE void Quaternion::r(float nr)
+class Matrix2x2
 {
-   mData[0] = nr;
-}
+public:
+   Matrix2x2();
+   ~Matrix2x2();
 
-INLINE float Quaternion::i() const
-{
-   return mData[1];
-}
+   void setRotation(float deg);
 
-INLINE void Quaternion::i(float ni)
-{
-   mData[1] = ni;
-}
+   Vector transform(const Vector& point) const;
 
-INLINE float Quaternion::j() const
-{
-   return mData[2];
-}
+private:
+   float m11, m12;
+   float m21, m22;
+};
 
-INLINE void Quaternion::j(float nj)
-{
-   mData[2] = nj;
-}
-
-INLINE float Quaternion::k() const
-{
-   return mData[3];
-}
-
-INLINE void Quaternion::k(float nk)
-{
-   mData[3] = nk;
-}
+#endif

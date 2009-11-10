@@ -19,34 +19,12 @@
  ***************************************************************************/
 #include "../defines.h"
 
-inline Matrix4::Matrix4():
-   mData()
+float Body::getMass() const
 {
-   mData[1] = mData[2] = mData[3] = 0;
-   mData[4] = mData[6] = mData[7] = 0;
-   mData[8] = mData[9] = mData[11] = 0;
-
-   mData[0] = mData[5] = mData[10] = 1;
+   return 1.0f / mInverseMass;
 }
 
-inline Matrix4::~Matrix4()
+void Body::setMass(float mass)
 {
-}
-
-inline float& Matrix4::operator[](int index)
-{
-   ASSERT(index >= 0 && index < 12)
-   return mData[index];
-}
-
-inline float Matrix4::operator[](int index) const
-{
-   ASSERT(index >= 0 && index < 12)
-   return mData[index];
-}
-
-inline void Matrix4::set(int index, float value)
-{
-   ASSERT(index >= 0 && index < 12)
-   mData[index] = value;
+   mInverseMass = 1.0f / mass;
 }

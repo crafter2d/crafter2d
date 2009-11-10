@@ -17,47 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef QUATERNION_H_
-#define QUATERNION_H_
+#ifndef XFORM_H_
+#define XFORM_H_
 
-class Quaternion
+#include "matrix2x2.h"
+#include "vector.h"
+
+class XForm
 {
 public:
-   Quaternion();
-   ~Quaternion();
+   XForm();
+   ~XForm();
 
-   float r() const;
-   void  r(float nr);
-
-   float i() const;
-   void  i(float ni);
-
-   float j() const;
-   void  j(float nj);
-
-   float k() const;
-   void  k(float nk);
-
- // operations
-   void normalize();
+   Vector transform(const Vector& point) const;
 
 private:
-   union
-   {
-      struct
-      {
-         float mR;
-         float mI;
-         float mJ;
-         float mK;
-      };
-
-      float mData[4];
-   };
+   Matrix2x2 mMatrix;
+   Vector    mPosition;
 };
-
-#ifdef JENGINE_INLINE
-#  include "quaternion.inl"
-#endif
 
 #endif

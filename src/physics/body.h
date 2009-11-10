@@ -17,36 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RIGID_BODY_H_
-#define RIGID_BODY_H_
+#ifndef BODY_H_
+#define BODY_H_
 
-#include "../math/matrix3.h"
-#include "../math/matrix4.h"
-#include "../math/quaternion.h"
-#include "../math/vector3.h"
+#include "..\math\xform.h"
 
-class RigidBody
+class Body
 {
 public:
-   RigidBody();
-   ~RigidBody();
+   Body();
+   ~Body();
 
-   void setInertiaTensor(const Matrix4& tensor);
+   float getMass() const;
+   void  setMass(float mass);
 
-   void calculateDerivedData();
+   void  addForce(const Vector& force);
+   void  addLocalizedForce(const Vector& force, const Vector& location);
 
 private:
-   void calculateTransformMatrix(Matrix4& transform, const Vector3& position, const Quaternion& orientation);
-   void transformInertiaTensor(Matrix3& worldtensor, const Matrix4& inertiatensor, const Matrix4& tranform, const Quaternion& orientation);
+   Vector localToWorld(const Vector& vector) const;
 
-   Matrix4     mTransformation;
-   Matrix4     mInverseInertiaTensor;
-   Matrix3     mInverseInertiaTensorWorld;
-   Vector3     mPosition;
-   Vector3     mVelocity;
-   Vector3     mRotation;
-   Quaternion  mOrientation;
-   float       mInverseMass;
+   XForm    mTransform;
+   Vector   mPosition;
+   float    mOrientation;
+   Vector   mAccumForce;
+   Vector   mAccumTorque;
+   float    mInverseMass;
 };
+
+#ifdef JENGINE_INLINE
+#  include "body.inl"
+#endif
 
 #endif

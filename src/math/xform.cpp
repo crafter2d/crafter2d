@@ -17,4 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "matrix3.h"
+#include "xform.h"
+
+XForm::XForm():
+   mMatrix(),
+   mPosition()
+{
+}
+
+XForm::~XForm()
+{
+}
+
+Vector XForm::transform(const Vector& point) const
+{
+   return mPosition + mMatrix.transform(point);
+}
