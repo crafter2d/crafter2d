@@ -28,6 +28,8 @@ class XForm
 public:
    XForm();
    ~XForm();
+   
+   void set(const Vector& position, float angle);
 
    Vector transform(const Vector& point) const;
 

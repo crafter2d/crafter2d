@@ -22,13 +22,21 @@
 #  include "body.inl"
 #endif
 
+#include "collisionshape.h"
+
 Body::Body():
    mTransform(),
    mPosition(),
-   mOrientation(),
+   mAngle(0.0f),
+   mLinearVelocity(),
+   mAngularVelocity(0.0f),
    mAccumForce(),
-   mAccumTorque(),
-   mInverseMass(0.0f)
+   mAccumTorque(0.0f),
+   mLinearDamping(0.0f),
+   mAngularDamping(0.0f),
+   mInverseInertia(0.0f),
+   mInverseMass(0.0f),
+   mpShape(NULL)
 {
 }
 
@@ -37,17 +45,36 @@ Body::~Body()
 }
 
 // ----------------------------------
+// -- Shapes
+// ----------------------------------
+
+void Body::addShape(CollisionShape* pshape)
+{
+   if ( mpShape != NULL )
+   {
+      pshape->setNext(mpShape);
+   }
+
+   mpShape = pshape;
+   mpShape->setBody(*this);
+}
+
+// ----------------------------------
 // -- Forces
 // ----------------------------------
 
-void Body::addForce(const Vector& force)
+void Body::addForce(const Vector& force, const Vector& point)
 {
-   mAccumForce += force;
+   Vector pt = localToWorld(point);
+   addWorldForce(force, pt);
 }
 
-void Body::addLocalizedForce(const Vector& force, const Vector& location)
+void Body::addWorldForce(const Vector& force, const Vector& location)
 {
-   Vector point = localToWorld(location);
+   Vector pt = location - mPosition;
+
+   mAccumForce += force;
+   mAccumTorque += pt.cross(force);
 }
 
 // ----------------------------------
@@ -57,4 +84,34 @@ void Body::addLocalizedForce(const Vector& force, const Vector& location)
 Vector Body::localToWorld(const Vector& vector) const
 {
    return mTransform.transform(vector);
+}
+
+// ----------------------------------
+// -- Integration
+// ----------------------------------
+
+void Body::integrate(float timestep)
+{
+   mLinearVelocity  += timestep * (mAccumForce * mInverseMass);
+   mAngularVelocity += timestep * (mAccumTorque * mInverseInertia);
+
+   mLinearVelocity  *= powf(mLinearDamping, timestep);
+   mAngularVelocity *= powf(mAngularDamping, timestep);
+
+   mPosition += mLinearVelocity;
+   mAngle    += mAngularVelocity;
+
+   calculateDerivedData();
+   clearAccumulates();
+}
+
+void Body::calculateDerivedData()
+{
+   mTransform.set(mPosition, mAngle);
+}
+
+void Body::clearAccumulates()
+{
+   mAccumForce  = Vector::zero();
+   mAccumTorque = 0.0f;
 }

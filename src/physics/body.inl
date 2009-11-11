@@ -19,12 +19,36 @@
  ***************************************************************************/
 #include "../defines.h"
 
-float Body::getMass() const
+INLINE const Vector& Body::getPosition() const
+{
+   return mPosition;
+}
+
+INLINE float Body::getMass() const
 {
    return 1.0f / mInverseMass;
 }
 
-void Body::setMass(float mass)
+INLINE void Body::setMass(float mass)
 {
    mInverseMass = 1.0f / mass;
+}
+
+INLINE float Body::getInertia() const
+{
+   return 1.0f / mInverseInertia;
+}
+
+INLINE void  Body::setInertia(float inertia)
+{
+}
+
+INLINE void Body::addForce(const Vector& force)
+{
+   mAccumForce += force;
+}
+
+INLINE void Body::addTorque(float torque)
+{
+   mAccumTorque += torque;
 }

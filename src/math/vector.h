@@ -37,7 +37,8 @@ public:
    float distance(const Vector& that) const;
 
 	inline void set (float _x, float _y);
-	inline float dot (const Vector& v);
+	inline float dot (const Vector& v) const;
+   inline float cross(const Vector& v) const;
 
    inline Vector& operator-();
 	inline void operator= (const Vector& v);
@@ -48,17 +49,25 @@ public:
 
 	inline Vector operator+ (const Vector& v) const;
 	inline Vector operator- (const Vector& v) const;
+   inline Vector operator* (const Vector& v) const;
 	inline Vector operator* (const float f) const;
    inline Vector operator/ (const float f) const;
 
    inline bool operator== (const Vector& v) const;
    inline bool operator!= (const Vector& v) const;
 
+   friend Vector operator*(float f, const Vector& v);
+
 	float x, y;
 };
 
-inline float Vector::dot (const Vector& v) {
+inline float Vector::dot (const Vector& v) const {
 	return (x * v.x + y * v.y);
+}
+
+inline float Vector::cross(const Vector& v) const
+{
+   return (x * v.y) - (y * v.x);
 }
 
 inline Vector& Vector::operator-()
@@ -105,6 +114,11 @@ inline Vector Vector::operator* (const float f) const {
 	return Vector (x*f, y*f);
 }
 
+inline Vector Vector::operator* (const Vector& v) const
+{
+   return Vector(x*v.x, y*v.y);
+}
+
 inline Vector Vector::operator/ (const float f) const {
 	return Vector (x/f, y/f);
 }
@@ -117,6 +131,11 @@ bool Vector::operator== (const Vector& v) const
 bool Vector::operator!= (const Vector& v) const
 {
    return !operator==(v);
+}
+
+inline Vector operator*(float f, const Vector& v)
+{
+   return Vector(f * v.x, f * v.y);
 }
 
 #endif

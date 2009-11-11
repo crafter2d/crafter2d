@@ -17,43 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "matrix2x2.h"
+#ifndef COLLISION_SHAPE_H_
+#define COLLISION_SHAPE_H_
 
-#include <math.h>
+#include "../math/vector.h"
 
-Matrix2x2::Matrix2x2():
-   m11(0.0f),
-   m12(0.0f),
-   m21(0.0f),
-   m22(0.0f)
+class Body;
+
+class CollisionShape
 {
-}
+public:
+   CollisionShape();
+   virtual ~CollisionShape();
 
-Matrix2x2::~Matrix2x2()
-{
-}
+ // get/set
+   void setBody(Body& body);
 
-void Matrix2x2::setRotation(float deg)
-{
-   float cos = cosf(deg);
-   float sin = sinf(deg);
+   const CollisionShape*   getNext() const;
+   void                    setNext(CollisionShape* pshape);
 
-   m11 = cos;
-   m12 = -sin;
-   m21 = sin;
-   m22 = cos;
-}
+ // query
+   const Vector& getPosition() const;
 
-void Matrix2x2::setScale(float x, float y)
-{
-   m11 = x;
-   m12 = 0;
-   m21 = 0;
-   m22 = y;
-}
+private:
+   CollisionShape* mpNext;
+   Body*           mpBody;
+};
 
-Vector Matrix2x2::transform(const Vector& point) const
-{
-   return Vector(point.x * m11 + point.y * m21,
-                 point.x * m12 + point.y * m22);
-}
+#endif

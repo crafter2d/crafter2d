@@ -22,27 +22,56 @@
 
 #include "..\math\xform.h"
 
+class CollisionShape;
+
 class Body
 {
 public:
    Body();
    ~Body();
 
+   const Vector& getPosition() const;
+
    float getMass() const;
    void  setMass(float mass);
 
+   float getInertia() const;
+   void  setInertia(float inertia);
+
+ // shapes
+   void  addShape(CollisionShape* pshape);
+
+ // forces
    void  addForce(const Vector& force);
-   void  addLocalizedForce(const Vector& force, const Vector& location);
+   void  addForce(const Vector& force, const Vector& location);
+   void  addWorldForce(const Vector& force, const Vector& location);
+   void  addTorque(float torque);
+
+   void  integrate(float timestep);
 
 private:
    Vector localToWorld(const Vector& vector) const;
 
+   void calculateDerivedData();
+   void clearAccumulates();
+
    XForm    mTransform;
    Vector   mPosition;
-   float    mOrientation;
+   float    mAngle;
+   
+   Vector   mLinearVelocity;
+   float    mAngularVelocity;
+
    Vector   mAccumForce;
-   Vector   mAccumTorque;
+   float    mAccumTorque;
+
+   float    mLinearDamping;
+   float    mAngularDamping;
+
+   float    mInverseInertia;
    float    mInverseMass;
+
+   CollisionShape*  mpShape;
 };
 
 #ifdef JENGINE_INLINE

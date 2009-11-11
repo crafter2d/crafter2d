@@ -29,6 +29,12 @@ XForm::~XForm()
 {
 }
 
+void XForm::set(const Vector& position, float angle)
+{
+   mPosition = position;
+   mMatrix.setRotation(angle);
+}
+
 Vector XForm::transform(const Vector& point) const
 {
    return mPosition + mMatrix.transform(point);

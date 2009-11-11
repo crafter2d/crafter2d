@@ -29,6 +29,7 @@ public:
    ~Matrix2x2();
 
    void setRotation(float deg);
+   void setScale(float x, float y);
 
    Vector transform(const Vector& point) const;
 
