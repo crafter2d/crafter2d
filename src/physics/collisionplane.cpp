@@ -19,6 +19,20 @@
  ***************************************************************************/
 #include "collisionplane.h"
 
+#include "../autoptr.h"
+
+CollisionPlane* CollisionPlane::construct(const Vector& left, const Vector& right)
+{
+   Vector diff = right - left;
+
+   AutoPtr<CollisionPlane> plane = new CollisionPlane();
+   plane->mNormal.set(-diff.y, diff.x);
+   plane->mNormal.normalize();
+   plane->mOffset = plane->mNormal.dot(left);
+
+   return plane.release();
+}
+
 CollisionPlane::CollisionPlane():
    CollisionShape(),
    mNormal(),

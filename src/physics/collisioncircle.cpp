@@ -19,6 +19,14 @@
  ***************************************************************************/
 #include "collisioncircle.h"
 
+CollisionCircle* CollisionCircle::construct(float radius)
+{
+   CollisionCircle* pcircle = new CollisionCircle();
+   pcircle->mRadius = radius;
+
+   return pcircle;
+}
+
 CollisionCircle::CollisionCircle():
    CollisionShape(),
    mRadius(0.0f)

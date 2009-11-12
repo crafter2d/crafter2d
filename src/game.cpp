@@ -102,6 +102,8 @@ Game::~Game()
 {
 }
 
+#include "physics/collisionplane.h"
+
 /*!
     \fn Game::create(char* caption, int w, int h, int bd)
 	 \brief Call this function to initialize the main window and OpenGL for your game.
@@ -113,6 +115,8 @@ Game::~Game()
  */
 bool Game::create()
 {
+   CollisionPlane::construct(Vector(4,1), Vector(4,3));
+
    Log& log = Console::getLog();
    log << "JEngine SSE V0.4.4 - Copyright 2006 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";

@@ -25,8 +25,10 @@
 class CollisionCircle : public CollisionShape
 {
 public:
+   static CollisionCircle* construct(float radius);
+
    CollisionCircle();
-   ~CollisionCircle();
+   virtual ~CollisionCircle();
 
    float getRadius() const;
 

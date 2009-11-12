@@ -31,6 +31,7 @@ public:
    ~Body();
 
    const Vector& getPosition() const;
+   void          setPosition(const Vector& position);
 
    float getMass() const;
    void  setMass(float mass);

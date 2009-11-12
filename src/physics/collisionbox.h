@@ -17,43 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#ifndef COLLISION_BOX_H_
+#define COLLISION_BOX_H_
 
-INLINE const Vector& Body::getPosition() const
-{
-   return mPosition;
-}
+#include "collisionshape.h"
 
-INLINE void Body::setPosition(const Vector& position)
+class CollisionBox : public CollisionShape
 {
-   mPosition = position;
-}
+public:
+   CollisionBox();
+   ~CollisionBox();
 
-INLINE float Body::getMass() const
-{
-   return 1.0f / mInverseMass;
-}
+private:
+   Vector mHalfSize;
+};
 
-INLINE void Body::setMass(float mass)
-{
-   mInverseMass = 1.0f / mass;
-}
-
-INLINE float Body::getInertia() const
-{
-   return 1.0f / mInverseInertia;
-}
-
-INLINE void  Body::setInertia(float inertia)
-{
-}
-
-INLINE void Body::addForce(const Vector& force)
-{
-   mAccumForce += force;
-}
-
-INLINE void Body::addTorque(float torque)
-{
-   mAccumTorque += torque;
-}
+#endif

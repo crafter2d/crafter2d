@@ -27,6 +27,8 @@
 class CollisionPlane : public CollisionShape
 {
 public:
+   static CollisionPlane* construct(const Vector& left, const Vector& right);
+
    CollisionPlane();
    virtual ~CollisionPlane();
 
