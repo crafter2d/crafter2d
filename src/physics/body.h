@@ -28,50 +28,31 @@ class Body
 {
 public:
    Body();
-   ~Body();
+   virtual ~Body();
 
    const Vector& getPosition() const;
    void          setPosition(const Vector& position);
 
-   float getMass() const;
-   void  setMass(float mass);
+   float getAngle() const;
+   void  setAngle(float angle);
 
-   float getInertia() const;
-   void  setInertia(float inertia);
-
- // shapes
+  // shapes
    void  addShape(CollisionShape* pshape);
 
- // forces
-   void  addForce(const Vector& force);
-   void  addForce(const Vector& force, const Vector& location);
-   void  addWorldForce(const Vector& force, const Vector& location);
-   void  addTorque(float torque);
+  // integration
+   virtual void integrate(float timestep) = 0;
 
-   void  integrate(float timestep);
-
-private:
+  // space conversion
    Vector localToWorld(const Vector& vector) const;
 
-   void calculateDerivedData();
-   void clearAccumulates();
-
-   XForm    mTransform;
+protected:
    Vector   mPosition;
    float    mAngle;
-   
-   Vector   mLinearVelocity;
-   float    mAngularVelocity;
 
-   Vector   mAccumForce;
-   float    mAccumTorque;
+private:
+   void calculateDerivedData();
 
-   float    mLinearDamping;
-   float    mAngularDamping;
-
-   float    mInverseInertia;
-   float    mInverseMass;
-
+   XForm    mTransform;
    CollisionShape*  mpShape;
 };
 

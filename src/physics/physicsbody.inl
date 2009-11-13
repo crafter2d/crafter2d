@@ -17,43 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "simulator.h"
-
 #include "../defines.h"
 
-Simulator::Simulator():
-   mBodies()
+
+INLINE float PhysicsBody::getMass() const
 {
+   return 1.0f / mInverseMass;
 }
 
-Simulator::~Simulator()
+INLINE void PhysicsBody::setMass(float mass)
 {
+   mInverseMass = 1.0f / mass;
 }
 
-// ----------------------------------
-// -- Body interface
-// ----------------------------------
-
-Bodies& Simulator::getBodies()
+INLINE float PhysicsBody::getInertia() const
 {
-   return mBodies;
+   return 1.0f / mInverseInertia;
 }
 
-void Simulator::addBody(Body& body)
+INLINE void PhysicsBody::setInertia(float inertia)
 {
-   mBodies.add(body);
+   mInverseInertia = 1.0f / inertia;
 }
 
-void Simulator::removeBody(Body& body)
+INLINE void PhysicsBody::addForce(const Vector& force)
 {
-   mBodies.remove(body);
+   mAccumForce += force;
 }
 
-// ----------------------------------
-// -- Run
-// ----------------------------------
-
-void Simulator::run(float timestep)
+INLINE void PhysicsBody::addTorque(float torque)
 {
-   PURE_VIRTUAL;
+   mAccumTorque += torque;
 }

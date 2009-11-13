@@ -20,11 +20,24 @@
 #ifndef SIMULATOR_H_
 #define SIMULATOR_H_
 
+#include "bodies.h"
+
 class Simulator
 {
 public:
    Simulator();
    virtual ~Simulator() = 0;
+
+   void addBody(Body& body);
+   void removeBody(Body& body);
+
+   virtual void run(float timestep) = 0;
+
+protected:
+   Bodies&  getBodies();
+
+private:
+   Bodies   mBodies;
 };
 
 #endif

@@ -17,43 +17,47 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "simulator.h"
+#ifndef PHYSICS_BODY_H_
+#define PHYSICS_BODY_H_
 
-#include "../defines.h"
+#include "body.h"
 
-Simulator::Simulator():
-   mBodies()
+class PhysicsBody : public Body
 {
-}
+public:
+   PhysicsBody();
+   virtual ~PhysicsBody();
 
-Simulator::~Simulator()
-{
-}
+  // get/set
+   float getMass() const;
+   void  setMass(float mass);
 
-// ----------------------------------
-// -- Body interface
-// ----------------------------------
+   float getInertia() const;
+   void  setInertia(float inertia);
 
-Bodies& Simulator::getBodies()
-{
-   return mBodies;
-}
+  // forces
+   void  addForce(const Vector& force);
+   void  addForce(const Vector& force, const Vector& location);
+   void  addWorldForce(const Vector& force, const Vector& location);
+   void  addTorque(float torque);
 
-void Simulator::addBody(Body& body)
-{
-   mBodies.add(body);
-}
+  // integration
+   virtual void integrate(float timestep);
 
-void Simulator::removeBody(Body& body)
-{
-   mBodies.remove(body);
-}
+private:
+   void clearAccumulates();
 
-// ----------------------------------
-// -- Run
-// ----------------------------------
+   Vector   mLinearVelocity;
+   float    mAngularVelocity;
 
-void Simulator::run(float timestep)
-{
-   PURE_VIRTUAL;
-}
+   Vector   mAccumForce;
+   float    mAccumTorque;
+
+   float    mLinearDamping;
+   float    mAngularDamping;
+
+   float    mInverseInertia;
+   float    mInverseMass;
+};
+
+#endif

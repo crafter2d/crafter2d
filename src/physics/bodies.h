@@ -17,43 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "simulator.h"
+#ifndef BODIES_H_
+#define BODIES_H_
 
-#include "../defines.h"
+#include <vector>
 
-Simulator::Simulator():
-   mBodies()
+#include "body.h"
+
+class Bodies : public std::vector<Body*>
 {
-}
+   typedef std::vector<Body*> BodiesImp;
 
-Simulator::~Simulator()
-{
-}
+public:
+   Bodies();
+   ~Bodies();
 
-// ----------------------------------
-// -- Body interface
-// ----------------------------------
+   void add(Body& body);
+   void remove(Body& body);
 
-Bodies& Simulator::getBodies()
-{
-   return mBodies;
-}
+private:
+   iterator find(Body* pbody);
+};
 
-void Simulator::addBody(Body& body)
-{
-   mBodies.add(body);
-}
-
-void Simulator::removeBody(Body& body)
-{
-   mBodies.remove(body);
-}
-
-// ----------------------------------
-// -- Run
-// ----------------------------------
-
-void Simulator::run(float timestep)
-{
-   PURE_VIRTUAL;
-}
+#endif

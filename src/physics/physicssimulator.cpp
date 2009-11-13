@@ -17,43 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "simulator.h"
+#include "physicssimulator.h"
 
-#include "../defines.h"
-
-Simulator::Simulator():
-   mBodies()
+PhysicsSimulator::PhysicsSimulator():
+   Simulator()
 {
 }
 
-Simulator::~Simulator()
+PhysicsSimulator::~PhysicsSimulator()
 {
 }
 
-// ----------------------------------
-// -- Body interface
-// ----------------------------------
-
-Bodies& Simulator::getBodies()
+void PhysicsSimulator::run(float timestep)
 {
-   return mBodies;
-}
-
-void Simulator::addBody(Body& body)
-{
-   mBodies.add(body);
-}
-
-void Simulator::removeBody(Body& body)
-{
-   mBodies.remove(body);
-}
-
-// ----------------------------------
-// -- Run
-// ----------------------------------
-
-void Simulator::run(float timestep)
-{
-   PURE_VIRTUAL;
+   Bodies& bodies = getBodies();
+   for ( Bodies::size_type index = 0; index < bodies.size(); index++ )
+   {
+      Body& body = *bodies[index];
+      body.integrate(timestep);
+   }
 }

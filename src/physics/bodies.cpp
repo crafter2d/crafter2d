@@ -17,43 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "simulator.h"
+#include "bodies.h"
 
-#include "../defines.h"
+#include <algorithm>
 
-Simulator::Simulator():
-   mBodies()
+Bodies::Bodies():
+   BodiesImp()
 {
 }
 
-Simulator::~Simulator()
+Bodies::~Bodies()
 {
 }
 
-// ----------------------------------
-// -- Body interface
-// ----------------------------------
-
-Bodies& Simulator::getBodies()
+void Bodies::add(Body& body)
 {
-   return mBodies;
+   push_back(&body);
 }
 
-void Simulator::addBody(Body& body)
+void Bodies::remove(Body& body)
 {
-   mBodies.add(body);
+   Bodies::iterator it = find(&body);
+   if ( it != end() )
+   {
+      erase(it);
+   }
 }
 
-void Simulator::removeBody(Body& body)
+Bodies::iterator Bodies::find(Body* pbody)
 {
-   mBodies.remove(body);
-}
-
-// ----------------------------------
-// -- Run
-// ----------------------------------
-
-void Simulator::run(float timestep)
-{
-   PURE_VIRTUAL;
+   return std::find(begin(), end(), pbody);
 }

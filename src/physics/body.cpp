@@ -28,14 +28,6 @@ Body::Body():
    mTransform(),
    mPosition(),
    mAngle(0.0f),
-   mLinearVelocity(),
-   mAngularVelocity(0.0f),
-   mAccumForce(),
-   mAccumTorque(0.0f),
-   mLinearDamping(0.0f),
-   mAngularDamping(0.0f),
-   mInverseInertia(0.0f),
-   mInverseMass(0.0f),
    mpShape(NULL)
 {
 }
@@ -60,24 +52,6 @@ void Body::addShape(CollisionShape* pshape)
 }
 
 // ----------------------------------
-// -- Forces
-// ----------------------------------
-
-void Body::addForce(const Vector& force, const Vector& point)
-{
-   Vector pt = localToWorld(point);
-   addWorldForce(force, pt);
-}
-
-void Body::addWorldForce(const Vector& force, const Vector& location)
-{
-   Vector pt = location - mPosition;
-
-   mAccumForce += force;
-   mAccumTorque += pt.cross(force);
-}
-
-// ----------------------------------
 // -- Space conversion
 // ----------------------------------
 
@@ -92,26 +66,10 @@ Vector Body::localToWorld(const Vector& vector) const
 
 void Body::integrate(float timestep)
 {
-   mLinearVelocity  += timestep * (mAccumForce * mInverseMass);
-   mAngularVelocity += timestep * (mAccumTorque * mInverseInertia);
-
-   mLinearVelocity  *= powf(mLinearDamping, timestep);
-   mAngularVelocity *= powf(mAngularDamping, timestep);
-
-   mPosition += mLinearVelocity;
-   mAngle    += mAngularVelocity;
-
    calculateDerivedData();
-   clearAccumulates();
 }
 
 void Body::calculateDerivedData()
 {
    mTransform.set(mPosition, mAngle);
-}
-
-void Body::clearAccumulates()
-{
-   mAccumForce  = Vector::zero();
-   mAccumTorque = 0.0f;
 }

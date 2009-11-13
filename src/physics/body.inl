@@ -29,31 +29,12 @@ INLINE void Body::setPosition(const Vector& position)
    mPosition = position;
 }
 
-INLINE float Body::getMass() const
+INLINE float Body::getAngle() const
 {
-   return 1.0f / mInverseMass;
+   return mAngle;
 }
 
-INLINE void Body::setMass(float mass)
+INLINE void Body::setAngle(float angle)
 {
-   mInverseMass = 1.0f / mass;
-}
-
-INLINE float Body::getInertia() const
-{
-   return 1.0f / mInverseInertia;
-}
-
-INLINE void  Body::setInertia(float inertia)
-{
-}
-
-INLINE void Body::addForce(const Vector& force)
-{
-   mAccumForce += force;
-}
-
-INLINE void Body::addTorque(float torque)
-{
-   mAccumTorque += torque;
+   mAngle = angle;
 }

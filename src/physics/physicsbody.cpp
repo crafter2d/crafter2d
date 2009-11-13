@@ -17,43 +17,68 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "simulator.h"
+#include "physicsbody.h"
+#ifndef JENGINE_INLINE
+#  include "physicsbody.inl"
+#endif
 
-#include "../defines.h"
-
-Simulator::Simulator():
-   mBodies()
+PhysicsBody::PhysicsBody():
+   Body(),
+   mLinearVelocity(),
+   mAngularVelocity(0.0f),
+   mAccumForce(),
+   mAccumTorque(0.0f),
+   mLinearDamping(0.0f),
+   mAngularDamping(0.0f),
+   mInverseInertia(0.0f),
+   mInverseMass(0.0f)
 {
 }
 
-Simulator::~Simulator()
+PhysicsBody::~PhysicsBody()
 {
-}
-
-// ----------------------------------
-// -- Body interface
-// ----------------------------------
-
-Bodies& Simulator::getBodies()
-{
-   return mBodies;
-}
-
-void Simulator::addBody(Body& body)
-{
-   mBodies.add(body);
-}
-
-void Simulator::removeBody(Body& body)
-{
-   mBodies.remove(body);
 }
 
 // ----------------------------------
-// -- Run
+// -- Forces
 // ----------------------------------
 
-void Simulator::run(float timestep)
+void PhysicsBody::addForce(const Vector& force, const Vector& point)
 {
-   PURE_VIRTUAL;
+   Vector pt = localToWorld(point);
+   addWorldForce(force, pt);
+}
+
+void PhysicsBody::addWorldForce(const Vector& force, const Vector& location)
+{
+   Vector pt = location - getPosition();
+
+   mAccumForce += force;
+   mAccumTorque += pt.cross(force);
+}
+
+// ----------------------------------
+// -- Integration
+// ----------------------------------
+
+void PhysicsBody::integrate(float timestep)
+{
+   mLinearVelocity  += timestep * (mAccumForce * mInverseMass);
+   mAngularVelocity += timestep * (mAccumTorque * mInverseInertia);
+
+   mLinearVelocity  *= powf(mLinearDamping, timestep);
+   mAngularVelocity *= powf(mAngularDamping, timestep);
+
+   mPosition += mLinearVelocity;
+   mAngle    += mAngularVelocity;
+
+   clearAccumulates();
+
+   Body::integrate(timestep);
+}
+
+void PhysicsBody::clearAccumulates()
+{
+   mAccumForce  = Vector::zero();
+   mAccumTorque = 0.0f;
 }
