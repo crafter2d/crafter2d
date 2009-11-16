@@ -32,8 +32,8 @@ public:
 
    Contact& operator[](int index);
 
-   void increaseContactCount();
-   void resetContactCount();
+   Contact& getNext();
+   void     reset();
 
 private:
    Contact  mContacts[sMaxContacts];

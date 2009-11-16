@@ -22,8 +22,10 @@
 
 #include <SDL/SDL.h>
 #include <list>
+
 #include "net/netobject.h"
 
+class Body;
 class DirtySet;
 class NodeVisitor;
 class SceneGraph;

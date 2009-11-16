@@ -51,7 +51,7 @@ Object::Object():
    radius(.0f),
 	moveSpeed(0),
 	visible(true),
-   mMass(false)
+   mpBody(NULL)
 {
 }
 
@@ -68,12 +68,10 @@ Object::~Object()
  */
 bool Object::load (TiXmlDocument& doc)
 {
-	TiXmlElement *object = NULL, *tex = NULL;
-   Console& console = Console::getInstance();
-   int temp = 0;
+	Console& console = Console::getInstance();
 
 	// try to find the object in the file
-	object = (TiXmlElement*)doc.FirstChild ("object");
+	TiXmlElement* object = (TiXmlElement*)doc.FirstChild ("object");
 	if (object == NULL)
    {
       console.print("Object.load: Invalid XML file format, object expected.\n");
@@ -89,11 +87,8 @@ bool Object::load (TiXmlDocument& doc)
 		return false;
 	}
 
-   // check the mass of the object
-   if ( object->QueryIntAttribute("mass", &temp) == TIXML_SUCCESS )
-      setMass(temp != 0);
-
    // see whether or not the object is static
+   int temp = 0;
    if ( object->QueryIntAttribute("static", &temp) == TIXML_SUCCESS )
       statik = (temp == 1);
 
@@ -105,7 +100,7 @@ bool Object::load (TiXmlDocument& doc)
 	halfY = height * 0.5f;
 
 	// load texture data
-	tex = (TiXmlElement*)object->FirstChild ("texture");
+	TiXmlElement* tex = (TiXmlElement*)object->FirstChild ("texture");
 	if ( tex == NULL )
    {
 		console.print("Object.load: object has no texture");
@@ -221,10 +216,7 @@ void Object::move(float delta)
  */
 void Object::applyGravity()
 {
-	if ( hasMass() )
-   {
-		vel.y += 1;
-	}
+	vel.y += 1;
 }
 
 /*!

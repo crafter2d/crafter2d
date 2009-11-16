@@ -25,7 +25,9 @@
 class CollisionBox : public CollisionShape
 {
 public:
-   CollisionBox();
+   static CollisionBox* construct(const Vector& halfsize);
+
+   CollisionBox(const Vector& halfsize);
    ~CollisionBox();
 
 private:

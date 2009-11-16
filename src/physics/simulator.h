@@ -22,6 +22,8 @@
 
 #include "bodies.h"
 
+class CollisionShape;
+
 class Simulator
 {
 public:
@@ -31,13 +33,18 @@ public:
    void addBody(Body& body);
    void removeBody(Body& body);
 
+   void addWorldShape(CollisionShape* pshape);
+
    virtual void run(float timestep) = 0;
 
 protected:
    Bodies&  getBodies();
 
 private:
-   Bodies   mBodies;
+   void destroyWorldShapes();
+
+   Bodies          mBodies;
+   CollisionShape* mpWorldShapes;
 };
 
 #endif

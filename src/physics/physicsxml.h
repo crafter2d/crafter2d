@@ -17,71 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "simulator.h"
+#ifndef PHYSICS_XML_H_
+#define PHYSICS_XML_H_
 
-#include "../defines.h"
+class Body;
+class TiXmlElement;
 
-#include "collisionshape.h"
-
-Simulator::Simulator():
-   mBodies(),
-   mpWorldShapes(NULL)
+namespace PhysicsXML
 {
-}
+   Body* parseXML(TiXmlElement& object);
+};
 
-Simulator::~Simulator()
-{
-   destroyWorldShapes();
-}
-
-// ----------------------------------
-// -- Body interface
-// ----------------------------------
-
-Bodies& Simulator::getBodies()
-{
-   return mBodies;
-}
-
-void Simulator::addBody(Body& body)
-{
-   mBodies.add(body);
-}
-
-void Simulator::removeBody(Body& body)
-{
-   mBodies.remove(body);
-}
-
-// ----------------------------------
-// -- World body interface
-// ----------------------------------
-
-void Simulator::addWorldShape(CollisionShape* pshape)
-{
-   if ( mpWorldShapes != NULL )
-   {
-      pshape->setNext(mpWorldShapes);
-   }
-
-   mpWorldShapes = pshape;
-}
-
-void Simulator::destroyWorldShapes()
-{
-   while ( mpWorldShapes != NULL )
-   {
-      CollisionShape* pshape = mpWorldShapes->getNext();
-      delete mpWorldShapes;
-      mpWorldShapes = pshape;
-   }
-}
-
-// ----------------------------------
-// -- Run
-// ----------------------------------
-
-void Simulator::run(float timestep)
-{
-   PURE_VIRTUAL;
-}
+#endif

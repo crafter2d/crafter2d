@@ -22,6 +22,8 @@
 #  include "state.inl"
 #endif
 
+#include "system/timer.h" 
+
 #include "object.h"
 
 /*********************************************************
@@ -62,7 +64,7 @@ LocationState::LocationState(const Vector& location):
 {
 }
 
-bool LocationState::update(Uint32 tick)
+bool LocationState::update(float timestep)
 {
    object()->setPosition(location());
    return true;
@@ -95,7 +97,7 @@ void MoveState::initialize()
    destination(destination() + pos);
 }
 
-bool MoveState::update( Uint32 tick )
+bool MoveState::update(float timestep)
 {
    if (object()->getPosition() == destination())
    {
@@ -106,7 +108,7 @@ bool MoveState::update( Uint32 tick )
    }
    else
    {
-      object()->move(tick);
+      object()->move(timestep);
    }
    return false;
 }
@@ -140,12 +142,12 @@ void RotateState::initialize()
 
    float steps = duration() / (float)object()->getMoveSpeed();
    rotation(rotation() / steps);
-   lastupdate = SDL_GetTicks();
+   lastupdate = Timer::getInstance().getTick();
 
    object()->rotate(rotation());
 }
 
-bool RotateState::update( Uint32 tick )
+bool RotateState::update(float timestep)
 {
    float rot = object()->getRotation();
    if (fabs( finalRotation-rot ) < 0.001)
@@ -157,10 +159,10 @@ bool RotateState::update( Uint32 tick )
    else
    {
       // update the rotation angle at normal speed
-      if (tick - lastupdate >= object()->getMoveSpeed())
+      if (timestep - lastupdate >= object()->getMoveSpeed())
       {
          object()->rotate(rotation());
-         lastupdate = tick;
+         lastupdate = timestep;
       }
    }
    return false;

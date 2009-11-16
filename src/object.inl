@@ -145,16 +145,6 @@ INLINE const Texture& Object::getTexture() const
    return *texture;
 }
 
-INLINE void Object::setMass(bool mass)
-{
-   mMass = mass;
-}
-
-INLINE bool Object::hasMass() const
-{
-   return mMass;
-}
-
 /// \fn Object::filename() const
 /// \brief Returns the name of the XML file for this object.
 INLINE const std::string& Object::filename() const
@@ -167,3 +157,12 @@ INLINE Animator& Object::getAnimator()
    return *mpAnimator;
 }
 
+INLINE bool Object::hasBody() const
+{
+   return mpBody != NULL;
+}
+
+INLINE Body& Object::getBody()
+{
+   return *mpBody;
+}

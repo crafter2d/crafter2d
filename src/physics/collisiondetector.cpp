@@ -46,12 +46,10 @@ bool CollisionDetector::circleAndCircle(CollisionData& data, const CollisionCirc
       return false;
    }
 
-   Contact& contact     = data[0];
+   Contact& contact     = data.getNext();
    contact.mPoint       = posOne + (diff * 0.5);
    contact.mNormal      = diff * (1.0f / distance);
    contact.mPenetration = one.getRadius() + two.getRadius() - distance;
-
-   data.increaseContactCount();
 
    return true;
 }
@@ -63,17 +61,15 @@ bool CollisionDetector::circleAndPlane(CollisionData& data, const CollisionCircl
    float distance = plane.getNormal().dot(position)
                   - circle.getRadius()
                   - plane.getOffset();
-   if ( distance >= 0 )
+   if ( distance >= 0.0f )
    {
       return false;
    }
 
-   Contact& contact     = data[0];
+   Contact& contact     = data.getNext();
    contact.mPoint       = position - plane.getNormal() * (distance + circle.getRadius());
    contact.mNormal      = plane.getNormal();
    contact.mPenetration = -distance;
-
-   data.increaseContactCount();
 
    return true;
 }

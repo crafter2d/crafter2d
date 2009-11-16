@@ -34,7 +34,6 @@ public:
 
  // Overloads
    virtual void visitObject(Object* object);
-   virtual void visitAnimObject(AnimObject* object);
    virtual void visitCreature(Creature* object);
 
 private:

@@ -42,6 +42,11 @@ const CollisionShape* CollisionShape::getNext() const
    return mpNext;
 }
 
+CollisionShape* CollisionShape::getNext()
+{
+   return mpNext;
+}
+
 void CollisionShape::setNext(CollisionShape* pshape)
 {
    mpNext = pshape;

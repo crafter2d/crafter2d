@@ -23,7 +23,6 @@
 class SceneObject;
 class World;
 class Object;
-class AnimObject;
 class Creature;
 
 /// Use a scene traverser to walk through the scenegraph and perform
@@ -40,7 +39,6 @@ public:
    virtual void   visitSceneObject(SceneObject* object);
    virtual void   visitWorld(World* object);
    virtual void   visitObject(Object* object);
-   virtual void   visitAnimObject(AnimObject* object);
    virtual void   visitCreature(Creature* object);
 };
 

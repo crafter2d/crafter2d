@@ -45,11 +45,6 @@ void IsometricRenderVisitor::visitObject(Object* object)
    _objects.add(*object);
 }
 
-void IsometricRenderVisitor::visitAnimObject(AnimObject* object)
-{
-   _objects.add(*object);
-}
-
 void IsometricRenderVisitor::visitCreature(Creature* object)
 {
    _objects.add(*object);

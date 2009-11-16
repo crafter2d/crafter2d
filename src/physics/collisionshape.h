@@ -34,6 +34,7 @@ public:
    void setBody(Body& body);
 
    const CollisionShape*   getNext() const;
+         CollisionShape*   getNext();
    void                    setNext(CollisionShape* pshape);
 
  // query

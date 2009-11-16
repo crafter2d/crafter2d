@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "collisiondata.h"
 
+#include "../defines.h"
+
 CollisionData::CollisionData():
    mContacts(),
    mContactCount(0)
@@ -31,15 +33,21 @@ CollisionData::~CollisionData()
 
 Contact& CollisionData::operator[](int index)
 {
+   ASSERT(index < mContactCount)
    return mContacts[index];
 }
 
-void CollisionData::increaseContactCount()
+Contact& CollisionData::getNext()
 {
+   ASSERT(mContactCount < sMaxContacts)
+
+   Contact& contact = mContacts[mContactCount];
    mContactCount++;
+
+   return contact;
 }
 
-void CollisionData::resetContactCount()
+void CollisionData::reset()
 {
    mContactCount = 0;
 }

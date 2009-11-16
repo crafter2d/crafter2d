@@ -73,8 +73,8 @@ public:
 	bool              isVisible() const;
    const Texture&    getTexture() const;
 
-   void              setMass(bool mass);
-   bool              hasMass() const;
+   bool              hasBody() const;
+   Body&             getBody();
 
    int               getAnimation() const;
 	void              setAnimation(int anim);
@@ -109,7 +109,7 @@ protected:
 	Uint32 moveSpeed;
 	bool visible;
    bool dir;
-   bool mMass;
+   Body* mpBody;
 };
 
 #ifdef JENGINE_INLINE

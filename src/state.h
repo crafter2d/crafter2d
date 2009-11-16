@@ -39,7 +39,7 @@ public:
    virtual        ~State();
 
    virtual void   initialize();
-   virtual bool   update(Uint32 tick) = 0;
+   virtual bool   update(float timestep) = 0;
 
    void           object(Object* obj);
    Object*        object() const;
@@ -62,7 +62,7 @@ public:
                   LocationState();
    explicit       LocationState( const Vector& location );
 
-   virtual bool   update( Uint32 tick );
+   virtual bool   update(float timestep);
 
    void           location(const Vector& loc);
    Vector         location() const;
@@ -78,7 +78,7 @@ public:
                   MoveState( int duration, const Vector& dest );
 
    virtual void   initialize();
-   virtual bool   update( Uint32 tick );
+   virtual bool   update(float timestep);
 
    void           destination(const Vector& d);
    Vector         destination() const;
@@ -94,7 +94,7 @@ public:
                   RotateState(int duration, float rotation);
 
    virtual void   initialize();
-   virtual bool   update(Uint32 tick);
+   virtual bool   update(float timestep);
 
    void           rotation(float r);
    float          rotation() const;
@@ -102,7 +102,7 @@ public:
 protected:
    float _rotation;
    float finalRotation;
-   Uint32 lastupdate;
+   float lastupdate;
 };
 
 #ifdef JENGINE_INLINE

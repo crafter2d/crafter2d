@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,71 +17,40 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "simulationfiller.h"
+
+#include "../world/world.h"
+#include "../world/bound.h"
+
+#include "../object.h"
+
+#include "collisionplane.h"
 #include "simulator.h"
 
-#include "../defines.h"
-
-#include "collisionshape.h"
-
-Simulator::Simulator():
-   mBodies(),
-   mpWorldShapes(NULL)
+SimulationFiller::SimulationFiller(Simulator& simulator):
+   NodeVisitor(),
+   mSimulator(simulator)
 {
 }
 
-Simulator::~Simulator()
+SimulationFiller::~SimulationFiller()
 {
-   destroyWorldShapes();
 }
 
-// ----------------------------------
-// -- Body interface
-// ----------------------------------
-
-Bodies& Simulator::getBodies()
+void SimulationFiller::visitWorld(World* pworld)
 {
-   return mBodies;
-}
-
-void Simulator::addBody(Body& body)
-{
-   mBodies.add(body);
-}
-
-void Simulator::removeBody(Body& body)
-{
-   mBodies.remove(body);
-}
-
-// ----------------------------------
-// -- World body interface
-// ----------------------------------
-
-void Simulator::addWorldShape(CollisionShape* pshape)
-{
-   if ( mpWorldShapes != NULL )
+   ASSERT_PTR(pworld)
+   int bounds = pworld->getBoundCount();
+   for ( int index = 0; index < bounds; index++ )
    {
-      pshape->setNext(mpWorldShapes);
-   }
-
-   mpWorldShapes = pshape;
-}
-
-void Simulator::destroyWorldShapes()
-{
-   while ( mpWorldShapes != NULL )
-   {
-      CollisionShape* pshape = mpWorldShapes->getNext();
-      delete mpWorldShapes;
-      mpWorldShapes = pshape;
+      Bound& bound = pworld->getBound(index);
+      CollisionPlane* pplane = CollisionPlane::construct(bound.getLeft(), bound.getRight());
+      mSimulator.addWorldShape(pplane);
    }
 }
 
-// ----------------------------------
-// -- Run
-// ----------------------------------
-
-void Simulator::run(float timestep)
+void SimulationFiller::visitObject(Object* pobject)
 {
-   PURE_VIRTUAL;
+   ASSERT_PTR(pobject)
+   mSimulator.addBody(pobject->getBody());
 }

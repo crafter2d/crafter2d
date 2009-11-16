@@ -31,10 +31,6 @@ void NodeVisitor::visitObject(Object* object)
 {
 }
 
-void NodeVisitor::visitAnimObject(AnimObject* object)
-{
-}
-
 void NodeVisitor::visitCreature(Creature* object)
 {
 }
