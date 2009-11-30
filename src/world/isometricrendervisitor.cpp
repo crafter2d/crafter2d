@@ -23,7 +23,6 @@
 #  include "isometricrendervisitor.inl"
 #endif
 
-#include "../animatable.h"
 #include "../creature.h"
 
 IsometricRenderVisitor::IsometricRenderVisitor():
@@ -42,10 +41,10 @@ IsometricRenderVisitor::~IsometricRenderVisitor()
 
 void IsometricRenderVisitor::visitObject(Object* object)
 {
-   _objects.add(*object);
+   _objects.add(object);
 }
 
 void IsometricRenderVisitor::visitCreature(Creature* object)
 {
-   _objects.add(*object);
+   _objects.add(object);
 }

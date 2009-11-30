@@ -29,7 +29,8 @@
 #include "collisioncircle.h"
 #include "collisionplane.h"
 
-const std::string sSIMULATIONELEMENT = "simulation";
+const std::string sSIMULATIONELEMENT = "simulationbody";
+const std::string sBODYELEMENT       = "body";
 const std::string sSHAPEELEMENT      = "shape";
 const std::string sTYPE              = "type";
 
@@ -46,7 +47,7 @@ Body* PhysicsXML::parseXML(TiXmlElement& object)
    const std::string* psimulationtype = pphysics->Attribute(sTYPE);
    if ( psimulationtype != NULL )
    {
-      if ( psimulationtype->compare("physics") )
+      if ( psimulationtype->compare("physics") == 0 )
       {
          PhysicsBody* pbody = new PhysicsBody();
 

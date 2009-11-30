@@ -24,7 +24,6 @@
 #include "nodevisitor.h"
 
 class Creature;
-class AnimObject;
 class Object;
 
 /// Implements the pick visitor. Use it to determine if the cursor is above
@@ -39,7 +38,6 @@ public:
             Object*  getPicked();
 
    virtual  void     visitCreature(Creature* object);
-   virtual  void     visitAnimObject(AnimObject* object);
    virtual  void     visitObject(Object* object);
 
 protected:

@@ -26,7 +26,7 @@ CollisionBox* CollisionBox::construct(const Vector& halfsize)
 }
 
 CollisionBox::CollisionBox(const Vector& halfsize):
-   CollisionShape(),
+   CollisionShape(CollisionShape::eBox),
    mHalfSize(halfsize)
 {
 }

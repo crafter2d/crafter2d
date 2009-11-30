@@ -27,6 +27,13 @@
 #include "collisionplane.h"
 #include "simulator.h"
 
+// static 
+void SimulationFiller::add(Simulator& simulator, SceneObject& object)
+{
+   SimulationFiller filler(simulator);
+   filler.traverse(object);
+}
+
 SimulationFiller::SimulationFiller(Simulator& simulator):
    NodeVisitor(),
    mSimulator(simulator)

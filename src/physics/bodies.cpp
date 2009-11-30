@@ -21,6 +21,9 @@
 
 #include <algorithm>
 
+#include "body.h"
+#include "collisiondetector.h"
+
 Bodies::Bodies():
    BodiesImp()
 {
@@ -47,4 +50,32 @@ void Bodies::remove(Body& body)
 Bodies::iterator Bodies::find(Body* pbody)
 {
    return std::find(begin(), end(), pbody);
+}
+
+void Bodies::integrate(float timestep)
+{
+   for ( size_type index = 0; index < size(); ++index )
+   {
+      Body* pbody = operator[](index);
+      pbody->integrate(timestep);
+   }
+}
+
+void Bodies::collectContactData(CollisionData& data, const CollisionShapes& worldshapes) const
+{
+   CollisionDetector detector(data);
+
+   for ( size_type index = 0; index < size(); ++index )
+   {
+      const Body& body = *(operator[](index));
+
+      detector.collectContactData(body, worldshapes);
+
+      for ( size_type other = index+1; other < size(); ++other )
+      {
+         const Body& otherbody = *(operator[](index));
+
+         detector.collectContactData(body, otherbody);
+      }
+   }
 }

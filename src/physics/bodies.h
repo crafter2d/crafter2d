@@ -22,7 +22,9 @@
 
 #include <vector>
 
-#include "body.h"
+class Body;
+class CollisionData;
+class CollisionShapes;
 
 class Bodies : public std::vector<Body*>
 {
@@ -34,6 +36,9 @@ public:
 
    void add(Body& body);
    void remove(Body& body);
+
+   void integrate(float timestep);
+   void collectContactData(CollisionData& data, const CollisionShapes& worldshapes) const;
 
 private:
    iterator find(Body* pbody);

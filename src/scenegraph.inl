@@ -48,3 +48,19 @@ INLINE Object* SceneGraph::getControler()
 {
    return controler;
 }
+
+INLINE bool SceneGraph::hasSimulator() const
+{
+   return mpSimulator != NULL;
+}
+
+INLINE Simulator& SceneGraph::getSimulator()
+{
+   ASSERT_PTR(mpSimulator)
+   return *mpSimulator;
+}
+
+INLINE void SceneGraph::setSimulator(Simulator* psimulator)
+{
+   mpSimulator = psimulator;
+}

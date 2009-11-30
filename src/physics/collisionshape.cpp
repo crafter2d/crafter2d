@@ -23,13 +23,20 @@
 
 #include "body.h"
 
-CollisionShape::CollisionShape():
-   mpNext(NULL)
+CollisionShape::CollisionShape(Type type):
+   mpNext(NULL),
+   mpBody(NULL),
+   mType(type)
 {
 }
 
 CollisionShape::~CollisionShape()
 {
+}
+
+CollisionShape::Type CollisionShape::getType() const
+{
+   return mType;
 }
 
 void CollisionShape::setBody(Body& body)

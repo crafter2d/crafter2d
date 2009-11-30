@@ -28,9 +28,7 @@ public:
    Contact();
    ~Contact();
 
-   Vector   mPoint;
-   Vector   mNormal;
-   float    mPenetration;
+   
 };
 
 #endif

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,32 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TREE_ITERATOR_H_
-#define TREE_ITERATOR_H_
+#include "collisionshapes.h"
 
-#include "iterator.h"
-#include "listiterator.h"
-#include "treenode.h"
-#include "tree.h"
+#include "collisionshape.h"
 
-/**
-@author Jeroen Broekhuizen
-*/
-template <class E>
-class TreeIterator : public Iterator<E>
+CollisionShapes::CollisionShapes():
+   CollisionShapesImp()
 {
-public:
-   typedef TreeNode<E>* TreeHandle;
+}
 
-   explicit TreeIterator(Tree<E>& tree);
+CollisionShapes::~CollisionShapes()
+{
+}
 
-protected:
-   Tree<E>&       _tree;
-
-private:
-   TreeIterator();
-};
-
-#include "treeiterator.inl"
-
-#endif
+void CollisionShapes::removeAll()
+{
+   for ( size_type index = 0; index < size(); ++index )
+   {
+      CollisionShape* pshape = operator[](index);
+      delete pshape;
+   }
+}

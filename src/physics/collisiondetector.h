@@ -20,18 +20,31 @@
 #ifndef COLLISION_DETECTOR_H_
 #define COLLISION_DETECTOR_H_
 
+#include "collisionshape.h"
+
+class Body;
 class CollisionData;
-class CollisionCircle;
-class CollisionPlane;
+class CollisionContactGenerator;
+class CollisionShapes;
 
 class CollisionDetector
 {
 public:
-   CollisionDetector();
+ // statics
+   static void initRegistry();
+
+   CollisionDetector(CollisionData& data);
    ~CollisionDetector();
 
-   bool circleAndCircle(CollisionData& data, const CollisionCircle& one, const CollisionCircle& two);
-   bool circleAndPlane(CollisionData& data, const CollisionCircle& circle, const CollisionPlane& plane);
+   void collectContactData(const Body& left, const Body& right);
+   void collectContactData(const Body& body, const CollisionShapes& shapes);
+
+private:
+   static CollisionContactGenerator* mRegistry[CollisionShape::eTypeCount][CollisionShape::eTypeCount];
+
+   bool collideShapes(const CollisionShape& one, const CollisionShape& two);
+
+   CollisionData& mData;
 };
 
 #endif

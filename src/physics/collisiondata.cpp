@@ -21,33 +21,25 @@
 
 #include "../defines.h"
 
+#include "../containers/listalgorithms.h"
+#include "../containers/listiterator.h"
+
 CollisionData::CollisionData():
-   mContacts(),
-   mContactCount(0)
+   mContacts()
 {
 }
 
 CollisionData::~CollisionData()
 {
+   FlushOwnedList<CollisionContact> owned(mContacts);
 }
 
-Contact& CollisionData::operator[](int index)
+void CollisionData::addContact(CollisionContact* pcontact)
 {
-   ASSERT(index < mContactCount)
-   return mContacts[index];
+   mContacts.addTail(pcontact);
 }
 
-Contact& CollisionData::getNext()
+CollisionData::ContactIterator CollisionData::getIterator()
 {
-   ASSERT(mContactCount < sMaxContacts)
-
-   Contact& contact = mContacts[mContactCount];
-   mContactCount++;
-
-   return contact;
-}
-
-void CollisionData::reset()
-{
-   mContactCount = 0;
+   return ListIterator<CollisionContact>(mContacts);
 }

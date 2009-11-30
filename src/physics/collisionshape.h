@@ -27,11 +27,19 @@ class Body;
 class CollisionShape
 {
 public:
-   CollisionShape();
+   enum Type {
+      eUnknown = -1,
+      eCircle,
+      eBox,
+      ePlane,
+      eTypeCount
+   };
+
    virtual ~CollisionShape();
 
  // get/set
    void setBody(Body& body);
+   Type getType() const;
 
    const CollisionShape*   getNext() const;
          CollisionShape*   getNext();
@@ -40,9 +48,13 @@ public:
  // query
    const Vector& getPosition() const;
 
+protected:
+   CollisionShape(Type type);
+
 private:
    CollisionShape* mpNext;
    Body*           mpBody;
+   Type            mType;
 };
 
 #endif

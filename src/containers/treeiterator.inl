@@ -31,30 +31,3 @@ TreeIterator<E>::TreeIterator(Tree<E>& tree):
 {
    //reset();
 }
-
-template <class E>
-void TreeIterator<E>::reset()
-{
-}
-
-template <class E>
-void TreeIterator<E>::operator++()
-{
-}
-
-template <class E>
-bool TreeIterator<E>::isValid()
-{
-   return false;
-}
-
-template <class E>
-E& TreeIterator<E>::item()
-{
-}
-
-template <class E>
-void* TreeIterator<E>::key()
-{
-   return NULL;
-}

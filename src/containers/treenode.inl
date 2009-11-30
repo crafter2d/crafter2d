@@ -27,7 +27,7 @@ INLINE TreeNode<E>::TreeNode(E* pdata, TreeNode<E>* pparent):
    _expanded(true)
 {
    if ( hasParent() )
-      getParent().add(*this);
+      getParent().add(this);
 }
 
 template<class E>
@@ -103,9 +103,9 @@ int TreeNode<E>::getDepth() const
 //////////////////////////////////////////////////////////////////////////
 
 template<class E>
-INLINE void TreeNode<E>::add(TreeNode<E>& child)
+INLINE void TreeNode<E>::add(TreeNode<E>* pchild)
 {
-   _children.addTail(child);
+   _children.addTail(pchild);
 }
 
 template <class E>

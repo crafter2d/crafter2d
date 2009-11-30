@@ -17,32 +17,5 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TREE_ITERATOR_H_
-#define TREE_ITERATOR_H_
+#include "listalgorithms.h"
 
-#include "iterator.h"
-#include "listiterator.h"
-#include "treenode.h"
-#include "tree.h"
-
-/**
-@author Jeroen Broekhuizen
-*/
-template <class E>
-class TreeIterator : public Iterator<E>
-{
-public:
-   typedef TreeNode<E>* TreeHandle;
-
-   explicit TreeIterator(Tree<E>& tree);
-
-protected:
-   Tree<E>&       _tree;
-
-private:
-   TreeIterator();
-};
-
-#include "treeiterator.inl"
-
-#endif

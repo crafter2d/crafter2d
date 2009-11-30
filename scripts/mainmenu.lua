@@ -1,4 +1,4 @@
--- File: main.lua
+-- File: mainmenu.lua
 -- Copyright (c) Jeroen Broekhuizen, 2006
 --
 -- Main menu script for Pong

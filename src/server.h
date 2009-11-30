@@ -80,10 +80,10 @@ public:
    virtual bool   destroy();
    void           shutdown();
 
-   void           setWorld(World* world);
    void           addPlayer(int client, Player* player);
 
    void           sendToAllClients(BitStream& stream);
+   void           sendToAllClients(NetObject& object);
    void           sendScriptEventToAllClients(BitStream* stream);
 
    virtual int    onClientEvent(int client, const NetEvent& event);
@@ -91,14 +91,14 @@ public:
    virtual void   update(float delta);
 
 protected:
-   void           sendToAllClients(NetObject& object);
    void           sendToActiveClient(NetObject& stream);
 
    void handleConnectEvent(const ConnectEvent& event);
    void handleViewportEvent(const ViewportEvent& event);
 
-   ClientMap clients;
-   int mActiveClient;
+   ClientMap   clients;
+   Simulator*  mpSimulator;
+   int         mActiveClient;
 };
 
 #endif

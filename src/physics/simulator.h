@@ -21,6 +21,7 @@
 #define SIMULATOR_H_
 
 #include "bodies.h"
+#include "collisionshapes.h"
 
 class CollisionShape;
 
@@ -38,13 +39,14 @@ public:
    virtual void run(float timestep) = 0;
 
 protected:
-   Bodies&  getBodies();
+         Bodies&           getBodies();
+   const CollisionShapes&  getWorldShapes() const;
 
 private:
    void destroyWorldShapes();
 
    Bodies          mBodies;
-   CollisionShape* mpWorldShapes;
+   CollisionShapes mWorldShapes; // owned
 };
 
 #endif

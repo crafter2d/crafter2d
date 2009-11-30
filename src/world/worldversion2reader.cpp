@@ -179,7 +179,6 @@ bool WorldVersion2Reader::loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, con
 BitStream& operator>>(BitStream& in, Layer& layer)
 {
    Vector dimensions, scroll;
-   int tilewidth, tileheight, tilecount;
 
    char* pname = in.readString();
    char* peffect = in.readString();

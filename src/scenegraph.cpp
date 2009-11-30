@@ -17,11 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 #include "scenegraph.h"
 #ifndef JENGINE_INLINE
 #  include "scenegraph.inl"
@@ -31,6 +26,9 @@
 
 #include "net/newobjectevent.h"
 #include "net/events/deleteobjectevent.h"
+
+#include "physics/simulator.h"
+#include "physics/simulationfiller.h"
 
 #include "world/world.h"
 
@@ -44,6 +42,7 @@ SceneGraph::SceneGraph():
    root(),
    controler(NULL),
    world(NULL),
+   mpSimulator(NULL),
    notifyClients(false)
 {
    objects["root"] = &root;
@@ -65,6 +64,9 @@ void SceneGraph::setWorld(World* w)
 
 void SceneGraph::update(DirtySet& dirtyset, float delta)
 {
+   if ( hasSimulator() )
+      getSimulator().run(delta);
+
    root.update(dirtyset, delta);
 }
 
@@ -93,14 +95,13 @@ void SceneGraph::addObject(SceneObject* obj)
    // add object to the hash table
    objects[obj->getName()] = obj;
 
-   if (notifyClients)
+   if ( notifyClients )
    {
-      BitStream stream;
       NewObjectEvent event(*obj);
-      stream << &event;
+      Game::getInstance().getServer().sendToAllClients(event);
 
-      // notify the clients that a new object is added
-      Game::getInstance().getServer().sendToAllClients(stream);
+      if ( hasSimulator() )
+         SimulationFiller::add(getSimulator(), *obj);
    }
 }
 
@@ -116,11 +117,7 @@ void SceneGraph::removeObject(const std::string& name)
    if ( notifyClients )
    {
       DeleteObjectEvent event(name);
-
-      // let the clients know that the object has been removed
-      BitStream stream;
-      stream << &event << name;
-      Game::getInstance().getServer().sendToAllClients(stream);
+      Game::getInstance().getServer().sendToAllClients(event);
    }
 }
 

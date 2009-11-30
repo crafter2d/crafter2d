@@ -28,7 +28,7 @@ Body::Body():
    mTransform(),
    mPosition(),
    mAngle(0.0f),
-   mpShape(NULL)
+   mShapes()
 {
 }
 
@@ -42,13 +42,9 @@ Body::~Body()
 
 void Body::addShape(CollisionShape* pshape)
 {
-   if ( mpShape != NULL )
-   {
-      pshape->setNext(mpShape);
-   }
+   pshape->setBody(*this);
 
-   mpShape = pshape;
-   mpShape->setBody(*this);
+   mShapes.push_back(pshape);
 }
 
 // ----------------------------------

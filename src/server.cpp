@@ -26,6 +26,8 @@
 #include "net/events/viewportevent.h"
 #include "net/newobjectevent.h"
 
+#include "physics/simulationfiller.h"
+
 #include "actionmap.h"
 #include "autoptr.h"
 #include "console.h"
@@ -33,6 +35,7 @@
 #include "script.h"
 #include "scriptmanager.h"
 #include "sceneobjectdirtyset.h"
+#include "scopedvalue.h"
 
 IMPLEMENT_REPLICATABLE(JoinEventId, JoinEvent, NetEvent)
 
@@ -173,6 +176,10 @@ void Server::update(float delta)
    }
 }
 
+// ----------------------------------
+// -- Sending
+// ----------------------------------
+
 void Server::sendToAllClients(NetObject& object)
 {
    BitStream stream;
@@ -207,11 +214,15 @@ void Server::sendScriptEventToAllClients(BitStream* pstream)
    sendToAllClients(stream);
 }
 
+// ----------------------------------
+// -- Event handling
+// ----------------------------------
+
 /// \fn Server::onClientEvent(int client, const NetEvent& event)
 /// \brief Handles the incomming events.
 int Server::onClientEvent(int client, const NetEvent& event)
 {
-   mActiveClient = client;
+   ScopedValue<int> value(mActiveClient, client, -1);
 
    switch ( event.getType() )
    {
@@ -292,8 +303,6 @@ int Server::onClientEvent(int client, const NetEvent& event)
          Console::getInstance().print("Server: Received an unknown message.");
          break;
    }
-
-   mActiveClient = -1;
 
    return 0;
 }

@@ -35,13 +35,13 @@ INLINE void SortedList<E>::setCompareFnc(CompareFnc pcomparefunction)
 }
 
 template <class E>
-INLINE void SortedList<E>::add(E& element)
+INLINE void SortedList<E>::add(E* pelement)
 {
    ListIterator<E> it(*this);
-   for ( ; it.isValid() && (*_pcomparefnc)(it.item(), element) < 0; ++it );
+   for ( ; it.isValid() && (*_pcomparefnc)(it.item(), *pelement) < 0; ++it );
    
    if ( it.isValid() )
-      insert(it, element);
+      insert(it, pelement);
    else
-      addTail(element);
+      addTail(pelement);
 }

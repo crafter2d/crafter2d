@@ -57,10 +57,19 @@ typedef void*        handle;
 
 // Debugging macros
 
+/*
 #define ASSERT(cond)          assert(cond);
 #define ASSERT_MSG(cond,msg)  assert(cond && msg);
 #define ASSERT_PTR(ptr)       assert(ptr != NULL);
 #define PURE_VIRTUAL          assert(false && "Pure virtual!");
 #define UNREACHABLE(msg)      assert(false && msg);
+*/
+
+#define ASSERT(cond)        ;
+#define ASSERT_MSG(cond,msg) ;
+#define ASSERT_PTR(ptr)     ;
+#define PURE_VIRTUAL        ;
+#define UNREACHABLE(msg)    ;
+
 
 #endif

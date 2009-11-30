@@ -20,7 +20,7 @@
 #ifndef _CREATURE_H_
 #define _CREATURE_H_
 
-#include "animatable.h"
+#include "object.h"
 
 class BitStream;
 class Weapon;

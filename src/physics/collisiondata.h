@@ -20,24 +20,29 @@
 #ifndef COLLISION_DATA_H_
 #define COLLISION_DATA_H_
 
-#include "contact.h"
+#include "collisioncontact.h"
 
-class CollisionData
+#include "../containers/list.h"
+#include "../containers/listiterator.h"
+
+class CollisionData 
 {
 public:
-   static const int sMaxContacts = 2;
+   typedef Iterator<CollisionContact> ContactIterator;
 
    CollisionData();
    ~CollisionData();
 
-   Contact& operator[](int index);
+ // insertion
+   void addContact(CollisionContact* pcontact);
 
-   Contact& getNext();
-   void     reset();
+ // iteration
+   ContactIterator getIterator();
 
 private:
-   Contact  mContacts[sMaxContacts];
-   int      mContactCount;
+   typedef List<CollisionContact> ContactList;
+
+   ContactList mContacts;
 };
 
 #endif

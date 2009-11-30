@@ -19,6 +19,9 @@
  ***************************************************************************/
 #include "physicssimulator.h"
 
+#include "collisiondata.h"
+#include "collisiondetector.h"
+
 PhysicsSimulator::PhysicsSimulator():
    Simulator()
 {
@@ -31,9 +34,8 @@ PhysicsSimulator::~PhysicsSimulator()
 void PhysicsSimulator::run(float timestep)
 {
    Bodies& bodies = getBodies();
-   for ( Bodies::size_type index = 0; index < bodies.size(); index++ )
-   {
-      Body& body = *bodies[index];
-      body.integrate(timestep);
-   }
+   bodies.integrate(timestep);
+
+   CollisionData data;
+   bodies.collectContactData(data, getWorldShapes());
 }

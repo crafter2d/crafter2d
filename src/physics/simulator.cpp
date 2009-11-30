@@ -25,7 +25,7 @@
 
 Simulator::Simulator():
    mBodies(),
-   mpWorldShapes(NULL)
+   mWorldShapes()
 {
 }
 
@@ -59,22 +59,17 @@ void Simulator::removeBody(Body& body)
 
 void Simulator::addWorldShape(CollisionShape* pshape)
 {
-   if ( mpWorldShapes != NULL )
-   {
-      pshape->setNext(mpWorldShapes);
-   }
-
-   mpWorldShapes = pshape;
+   mWorldShapes.push_back(pshape);
 }
 
 void Simulator::destroyWorldShapes()
 {
-   while ( mpWorldShapes != NULL )
-   {
-      CollisionShape* pshape = mpWorldShapes->getNext();
-      delete mpWorldShapes;
-      mpWorldShapes = pshape;
-   }
+   mWorldShapes.removeAll();
+}
+
+const CollisionShapes& Simulator::getWorldShapes() const
+{
+   return mWorldShapes;
 }
 
 // ----------------------------------

@@ -32,11 +32,13 @@ public:
    TreeDepthFirstIterator(Tree<E>& tree);
 
  // overloads
+   virtual void     operator++();
+
    virtual void* key();
    virtual void  reset();
-   virtual void  operator++();
-   virtual bool  isValid();
    virtual E&    item();
+
+   virtual bool  isValid() const;
 
  // operations
    void skipBranch();

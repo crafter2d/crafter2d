@@ -49,7 +49,7 @@ public:
    int            getDepth() const;
 
  // operations
-   void           add(TreeNode<E>& child);
+   void           add(TreeNode<E>* pchild);
    void           expand();
    void           collapse();
 

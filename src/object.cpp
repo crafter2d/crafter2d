@@ -26,6 +26,8 @@
 #include <GL/glu.h>
 #include <tinyxml.h>
 
+#include "physics/physicsxml.h"
+
 #include "world/world.h"
 
 #include "animator.h"
@@ -120,6 +122,12 @@ bool Object::load (TiXmlDocument& doc)
    // load animation stuff
    mpAnimator = Animator::construct(object, *this);
 
+   Body* pbody = PhysicsXML::parseXML(*object);
+   if ( pbody != NULL )
+   {
+      mpBody = pbody;
+   }
+
 	return true;
 }
 
@@ -132,7 +140,7 @@ void Object::doUpdate(float delta)
    }
    else
    {
-      move(delta);
+      //move(delta);
    }
 }
 

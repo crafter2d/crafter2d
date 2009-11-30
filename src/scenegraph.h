@@ -35,16 +35,8 @@ class SceneObject;
 class SceneGraph;
 class NetConnection;
 class NodeVisitor;
+class Simulator;
 class TiXmlDocument;
-
-/*
-struct ltstr
-{
-   bool operator()(const std::string s1, const char* s2) const
-  {
-    return strcmp(s1, s2) < 0;
-  }
-}; */
 
 /**
 @author Jeroen Broekhuizen
@@ -60,6 +52,11 @@ public:
 
                      SceneGraph();
                      ~SceneGraph();
+
+  // get/set
+   bool           hasSimulator() const;
+   Simulator&     getSimulator();
+   void           setSimulator(Simulator* psimulator);
 
    void              update(DirtySet& dirtyset, float delta);
    void              updateClient(float delta);
@@ -86,6 +83,7 @@ protected:
    SceneRoot root;
    Object* controler;
    World* world;
+   Simulator* mpSimulator;
    bool notifyClients;
 };
 

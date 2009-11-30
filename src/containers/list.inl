@@ -61,29 +61,29 @@ ListNode<E>* List<E>::get(int index)
 }
 
 template <class E>
-void List<E>::addFront(E& element)
+void List<E>::addFront(E* pelement)
 {
    if ( _phead == NULL )
    {
-      _ptail = _phead = new ListNode<E>(&element, NULL, NULL);
+      _ptail = _phead = new ListNode<E>(pelement, NULL, NULL);
    }
    else
    {
-      _phead->prev( new ListNode<E>(&element, NULL, _phead) );
+      _phead->prev( new ListNode<E>(pelement, NULL, _phead) );
       _phead = _phead->prevptr();
    }
 }
 
 template <class E>
-void List<E>::addTail(E& element)
+void List<E>::addTail(E* pelement)
 {
    if ( _ptail == NULL )
    {
-      _ptail = _phead = new ListNode<E>(&element, NULL, NULL);
+      _ptail = _phead = new ListNode<E>(pelement, NULL, NULL);
    }
    else
    {
-      _ptail->next( new ListNode<E>(&element, _ptail, NULL) );
+      _ptail->next( new ListNode<E>(pelement, _ptail, NULL) );
       _ptail = _ptail->nextptr();
    }
    
@@ -91,28 +91,28 @@ void List<E>::addTail(E& element)
 }
 
 template <class E>
-void List<E>::insert(Iterator<E>& it, E& element)
+void List<E>::insert(Iterator<E>& it, E* pelement)
 {
    ListNode<E>* node = (ListNode<E>*)it.key();
    ASSERT_PTR(node);
    
    if ( _ptail == NULL )
    {
-      _phead = _ptail = new ListNode<E>(&element, NULL, NULL);
+      _phead = _ptail = new ListNode<E>(pelement, NULL, NULL);
    }
    else if ( !node->hasPrev() )
    {
-      addFront(element);
+      addFront(pelement);
    }
    else if ( !node->hasNext() )
    {
-      addTail(element);
+      addTail(pelement);
    }
    else
    {
       ASSERT(node->hasPrev() && node->hasNext());
       
-      ListNode<E>* pnode = new ListNode<E>(&element, node->prevptr(), node->nextptr());
+      ListNode<E>* pnode = new ListNode<E>(pelement, node->prevptr(), node->nextptr());
       node->prevptr()->next(pnode);
       node->nextptr()->prev(pnode);
    }

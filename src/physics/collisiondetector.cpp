@@ -24,9 +24,36 @@
 #include "collisioncircle.h"
 #include "collisionplane.h"
 #include "collisiondata.h"
+
+#include "collisioncirclecirclecontactgenerator.h"
+#include "collisioncircleplanecontactgenerator.h"
+
+#include "body.h"
 #include "contact.h"
 
-CollisionDetector::CollisionDetector()
+// ----------------------------------
+// -- Generator registry
+// ----------------------------------
+
+CollisionContactGenerator* CollisionDetector::mRegistry[CollisionShape::eTypeCount][CollisionShape::eTypeCount] = {
+   { NULL, NULL },
+   { NULL, NULL }, 
+   { NULL, NULL }
+};
+
+void CollisionDetector::initRegistry()
+{
+   mRegistry[CollisionShape::eCircle][CollisionShape::eCircle] = new CollisionCircleCircleContactGenerator();
+   mRegistry[CollisionShape::eCircle][CollisionShape::ePlane]  = new CollisionCirclePlaneContactGenerator();
+   mRegistry[CollisionShape::ePlane][CollisionShape::eCircle]  = new CollisionCirclePlaneContactGenerator();
+}
+
+// ----------------------------------
+// -- Detector
+// ----------------------------------
+
+CollisionDetector::CollisionDetector(CollisionData& data):
+   mData(data)
 {
 }
 
@@ -34,42 +61,38 @@ CollisionDetector::~CollisionDetector()
 {
 }
 
-bool CollisionDetector::circleAndCircle(CollisionData& data, const CollisionCircle& one, const CollisionCircle& two)
+void CollisionDetector::collectContactData(const Body& left, const Body& right)
 {
-   const Vector& posOne = one.getPosition();
-   const Vector& posTwo = two.getPosition();
-
-   Vector diff = posOne - posTwo;
-   float distance = diff.length();
-   if ( distance <= 0.0f || distance > one.getRadius() + two.getRadius() )
-   {
-      return false;
-   }
-
-   Contact& contact     = data.getNext();
-   contact.mPoint       = posOne + (diff * 0.5);
-   contact.mNormal      = diff * (1.0f / distance);
-   contact.mPenetration = one.getRadius() + two.getRadius() - distance;
-
-   return true;
+   collectContactData(left, right.getShapes());
 }
 
-bool CollisionDetector::circleAndPlane(CollisionData& data, const CollisionCircle& circle, const CollisionPlane& plane)
+void CollisionDetector::collectContactData(const Body& body, const CollisionShapes& shapes)
 {
-   const Vector& position = circle.getPosition();
+   const CollisionShapes& bodyshapes = body.getShapes(); 
+   CollisionShapes::ConstIterator it = bodyshapes.begin();
 
-   float distance = plane.getNormal().dot(position)
-                  - circle.getRadius()
-                  - plane.getOffset();
-   if ( distance >= 0.0f )
+   for ( ; it != shapes.end(); ++it )
    {
-      return false;
+      const CollisionShape& bodyshape = *(*it);
+
+      CollisionShapes::ConstIterator sit = shapes.begin();
+      for ( ; sit != shapes.end(); ++it )
+      {
+         const CollisionShape& shape = *(*it);
+
+         collideShapes(bodyshape, shape);
+      }
+   }
+}
+
+bool CollisionDetector::collideShapes(const CollisionShape& one, const CollisionShape& two)
+{
+   CollisionContactGenerator* pgenerator = mRegistry[one.getType()][two.getType()];
+
+   if ( pgenerator != NULL )
+   {
+      return pgenerator->collide(mData, one, two);
    }
 
-   Contact& contact     = data.getNext();
-   contact.mPoint       = position - plane.getNormal() * (distance + circle.getRadius());
-   contact.mNormal      = plane.getNormal();
-   contact.mPenetration = -distance;
-
-   return true;
+   return false;
 }

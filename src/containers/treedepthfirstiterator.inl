@@ -73,20 +73,20 @@ void TreeDepthFirstIterator<E>::operator++()
 }
 
 template<class E>
-bool TreeDepthFirstIterator<E>::isValid()
-{
-   if ( _stack.empty() || ( _stack.size() == 1 && _stack.top().child >= _stack.top().pnode->getChildren().size() ) )
-      return false;
-   else
-      return true;
-}
-
-template<class E>
 E& TreeDepthFirstIterator<E>::item()
 {
    ASSERT(!_stack.empty());
    StackNode& node = _stack.top();
    return node.pnode->getData();
+}
+
+template<class E>
+bool TreeDepthFirstIterator<E>::isValid() const
+{
+   if ( _stack.empty() || ( _stack.size() == 1 && _stack.top().child >= _stack.top().pnode->getChildren().size() ) )
+      return false;
+   else
+      return true;
 }
 
 template<class E>

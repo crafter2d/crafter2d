@@ -22,6 +22,8 @@
 
 #include "..\math\xform.h"
 
+#include "collisionshapes.h"
+
 class CollisionShape;
 
 class Body
@@ -38,6 +40,7 @@ public:
 
   // shapes
    void  addShape(CollisionShape* pshape);
+   const CollisionShapes& getShapes() const;
 
   // integration
    virtual void integrate(float timestep) = 0;
@@ -52,8 +55,8 @@ protected:
 private:
    void calculateDerivedData();
 
-   XForm    mTransform;
-   CollisionShape*  mpShape;
+   XForm             mTransform;
+   CollisionShapes   mShapes;
 };
 
 #ifdef JENGINE_INLINE

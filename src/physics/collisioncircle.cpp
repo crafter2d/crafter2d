@@ -28,7 +28,7 @@ CollisionCircle* CollisionCircle::construct(float radius)
 }
 
 CollisionCircle::CollisionCircle():
-   CollisionShape(),
+   CollisionShape(CollisionShape::eCircle),
    mRadius(0.0f)
 {
 }

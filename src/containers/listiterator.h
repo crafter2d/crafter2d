@@ -33,11 +33,13 @@ class ListIterator : public Iterator<E>
 public:
    explicit ListIterator(List<E>& list);
 
+   virtual void     operator++();
+
    virtual void* key();
    virtual void  reset();
-   virtual void  operator++();
-   virtual bool  isValid();
    virtual E&    item();
+
+   virtual bool  isValid() const;
 
 private:
    ListIterator();

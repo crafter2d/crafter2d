@@ -34,21 +34,15 @@ ListIterator<E>::ListIterator(List<E>& list):
 }
 
 template <class E>
-void ListIterator<E>::reset()
-{
-   _pnode = _list.getHead();
-}
-
-template <class E>
 void ListIterator<E>::operator++()
 {
    _pnode = _pnode->nextptr();
 }
 
 template <class E>
-bool ListIterator<E>::isValid()
+void ListIterator<E>::reset()
 {
-   return _pnode != NULL;
+   _pnode = _list.getHead();
 }
 
 template <class E>
@@ -62,4 +56,10 @@ template <class E>
 void* ListIterator<E>::key()
 {
    return (void*)_pnode;
+}
+
+template <class E>
+bool ListIterator<E>::isValid() const
+{
+   return _pnode != NULL;
 }

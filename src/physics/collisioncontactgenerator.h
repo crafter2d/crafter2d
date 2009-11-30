@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,32 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TREE_ITERATOR_H_
-#define TREE_ITERATOR_H_
+#ifndef COLLISION_CONTACT_GENERATOR_H_
+#define COLLISION_CONTACT_GENERATOR_H_
 
-#include "iterator.h"
-#include "listiterator.h"
-#include "treenode.h"
-#include "tree.h"
+class CollisionData;
+class CollisionShape;
 
-/**
-@author Jeroen Broekhuizen
-*/
-template <class E>
-class TreeIterator : public Iterator<E>
+class CollisionContactGenerator
 {
 public:
-   typedef TreeNode<E>* TreeHandle;
+   CollisionContactGenerator();
+   virtual ~CollisionContactGenerator() = 0;
 
-   explicit TreeIterator(Tree<E>& tree);
-
-protected:
-   Tree<E>&       _tree;
-
-private:
-   TreeIterator();
+   virtual bool collide(CollisionData& data, const CollisionShape& one, const CollisionShape& two) = 0;
 };
-
-#include "treeiterator.inl"
 
 #endif

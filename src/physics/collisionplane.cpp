@@ -34,7 +34,7 @@ CollisionPlane* CollisionPlane::construct(const Vector& left, const Vector& righ
 }
 
 CollisionPlane::CollisionPlane():
-   CollisionShape(),
+   CollisionShape(CollisionShape::ePlane),
    mNormal(),
    mOffset(0.0f)
 {

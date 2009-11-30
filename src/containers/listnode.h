@@ -45,6 +45,6 @@ private:
    ListNode* _pprev;
 };
 
-#include "listnode.h"
+#include "listnode.inl"
 
 #endif

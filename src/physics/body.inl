@@ -38,3 +38,8 @@ INLINE void Body::setAngle(float angle)
 {
    mAngle = angle;
 }
+
+INLINE const CollisionShapes& Body::getShapes() const
+{
+   return mShapes;
+}

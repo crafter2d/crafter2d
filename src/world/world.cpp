@@ -145,7 +145,7 @@ void World::loadObjects(const char* filename)
 
       // create the new object
       //Creature* obj = new Creature();
-      AnimObject* obj = new AnimObject();
+      Object* obj = new Object();
       obj->create(path.c_str());
       obj->setPosition(Vector(x,y));
       obj->setRotation(rotation);

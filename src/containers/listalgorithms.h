@@ -17,32 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TREE_ITERATOR_H_
-#define TREE_ITERATOR_H_
+#ifndef LIST_ALGORITHMS_H_
+#define LIST_ALGORITHMS_H_
 
-#include "iterator.h"
-#include "listiterator.h"
-#include "treenode.h"
-#include "tree.h"
+#include "list.h"
 
-/**
-@author Jeroen Broekhuizen
-*/
 template <class E>
-class TreeIterator : public Iterator<E>
+class FlushOwnedList
 {
 public:
-   typedef TreeNode<E>* TreeHandle;
-
-   explicit TreeIterator(Tree<E>& tree);
-
-protected:
-   Tree<E>&       _tree;
-
-private:
-   TreeIterator();
+   FlushOwnedList(List<E>& list);
 };
 
-#include "treeiterator.inl"
+#include "listalgorithms.inl"
 
 #endif

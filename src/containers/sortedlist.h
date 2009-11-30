@@ -36,7 +36,7 @@ public:
    void setCompareFnc(CompareFnc comparefunction);
 
  // operations
-   void add(E& element);
+   void add(E* pelement);
 
 private:
    CompareFnc  _pcomparefnc;

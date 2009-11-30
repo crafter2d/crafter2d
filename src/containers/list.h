@@ -25,6 +25,8 @@
 
 /**
 @author Jeroen Broekhuizen
+
+The list never owns any of the elements added to it.
 */
 
 template <class E>
@@ -40,10 +42,10 @@ public:
    ListNode<E>*   get(int index);
 
  // Operations
-   void  addFront(E& element);
-   void  addTail(E& element);
+   void  addFront(E* pelement);
+   void  addTail(E* pelement);
    
-   void  insert(Iterator<E>& it, E& element);
+   void  insert(Iterator<E>& it, E* pelement);
    
    int   size() const;
 
@@ -54,7 +56,6 @@ private:
    int            _size;
 };
 
-#include "listnode.inl"
 #include "list.inl"
 
 #endif

@@ -23,7 +23,6 @@
 #endif
 
 #include "object.h"
-#include "animatable.h"
 #include "creature.h"
 
 PickVisitor::PickVisitor(): 
@@ -48,13 +47,6 @@ void PickVisitor::visitObject(Object* object)
       (pickPos.y >= (pos.y-size.y) && pickPos.y < (pos.y+size.y))) {
       picked = object;
    }
-}
-
-/// \fn PickVisitor::visitAnimObject(AnimObject* object) 
-/// \brief Tries to pick the given object.
-void PickVisitor::visitAnimObject(AnimObject* object)
-{
-   visitObject(object);
 }
 
 /// \fn PickVisitor::visitCreature(Creature* object) 
