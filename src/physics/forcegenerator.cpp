@@ -17,53 +17,16 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef PHYSICS_BODY_H_
-#define PHYSICS_BODY_H_
+#include "forcegenerator.h"
 
-#include "body.h"
-#include "forcegenerators.h"
-
-class PhysicsBody : public Body
+ForceGenerator::ForceGenerator()
 {
-public:
-   PhysicsBody();
-   virtual ~PhysicsBody();
+}
 
-  // get/set
-   float getMass() const;
-   void  setMass(float mass);
+ForceGenerator::~ForceGenerator()
+{
+}
 
-   float getInertia() const;
-   void  setInertia(float inertia);
-
-  // forces
-   void  addForce(const Vector& force);
-   void  addForce(const Vector& force, const Vector& location);
-   void  addWorldForce(const Vector& force, const Vector& location);
-   void  addTorque(float torque);
-
-  // generators
-   void  addForceGenerator(ForceGenerator* pgenerator);
-
-  // integration
-   virtual void integrate(float timestep);
-
-private:
-   void  clearAccumulates();
-
-   ForceGenerators mGenerators;
-
-   Vector   mLinearVelocity;
-   float    mAngularVelocity;
-
-   Vector   mAccumForce;
-   float    mAccumTorque;
-
-   float    mLinearDamping;
-   float    mAngularDamping;
-
-   float    mInverseInertia;
-   float    mInverseMass;
-};
-
-#endif
+void ForceGenerator::applyForce(PhysicsBody& body) const
+{
+}

@@ -24,6 +24,7 @@
 
 PhysicsBody::PhysicsBody():
    Body(),
+   mGenerators(),
    mLinearVelocity(),
    mAngularVelocity(0.0f),
    mAccumForce(),
@@ -58,11 +59,22 @@ void PhysicsBody::addWorldForce(const Vector& force, const Vector& location)
 }
 
 // ----------------------------------
+// -- Force Generators
+// ----------------------------------
+
+void PhysicsBody::addForceGenerator(ForceGenerator* pgenerator)
+{
+   mGenerators.push_back(pgenerator);
+}
+
+// ----------------------------------
 // -- Integration
 // ----------------------------------
 
 void PhysicsBody::integrate(float timestep)
 {
+   mGenerators.applyForces(*this);
+
    mLinearVelocity  += timestep * (mAccumForce * mInverseMass);
    mAngularVelocity += timestep * (mAccumTorque * mInverseInertia);
 
