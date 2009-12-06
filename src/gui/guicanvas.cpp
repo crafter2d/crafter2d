@@ -117,7 +117,7 @@ void GuiCanvas::onMouseMove(const GuiPoint& point, const GuiPoint& rel, const in
          GuiFocus::getInstance().getFocus().onMouseMove(p, rel, flag);
       }
    }
-   else
+   else if ( GuiFocus::getInstance().hasFocus() )
    {
       GuiWnd* wnd = (*it);
       GuiPoint p(point);

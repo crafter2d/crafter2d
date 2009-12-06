@@ -64,8 +64,8 @@ void SceneGraph::setWorld(World* w)
 
 void SceneGraph::update(DirtySet& dirtyset, float delta)
 {
-   //if ( hasSimulator() )
-   //   getSimulator().run(delta);
+   if ( hasSimulator() )
+      getSimulator().run(delta);
 
    root.update(dirtyset, delta);
 }

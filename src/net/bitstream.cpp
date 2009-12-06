@@ -107,7 +107,7 @@ void BitStream::readRaw(char* data, int amount)
 
 BitStream& BitStream::operator<<(const Vector& v)
 {
-   int len = sizeof(float)*3;
+   int len = sizeof(float) * 2;
    ensureFits(len);
 
    memcpy(&(buf[size]), &v.x, len);
@@ -199,8 +199,9 @@ BitStream& BitStream::operator<<(const BitStream* stream)
 
 BitStream& BitStream::operator>>(Vector& v)
 {
-   memcpy(&v.x, &buf[pos], sizeof(float)*3);
-   pos += sizeof(float) * 3;
+   int len = sizeof(float) * 2;
+   memcpy(&v.x, &buf[pos], len);
+   pos += sizeof(float) * 2;
    return *this;
 }
 
@@ -272,6 +273,7 @@ BitStream& BitStream::operator>>(NetObject** obj)
    int type;
    *this >> type;
    (*obj) = NetObjectFactory::getInstance().createObject(type);
+   (*obj)->setReplica();
    (*obj)->unpack(*this);
    return *this;
 }

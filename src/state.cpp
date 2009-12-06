@@ -90,7 +90,7 @@ void MoveState::initialize()
    Vector diff( destination() );
    Vector pos( object()->getPosition() );
 
-   diff /= (duration() / (float)object()->getMoveSpeed());
+   diff /= (duration());// / (float)object()->getMoveSpeed());
    object()->setVelocity(diff);
    object()->setPosition(pos + diff);
 
@@ -140,7 +140,7 @@ void RotateState::initialize()
    else if (finalRotation >= 360)
       finalRotation -= 360;
 
-   float steps = duration() / (float)object()->getMoveSpeed();
+   float steps = duration(); // / (float)object()->getMoveSpeed();
    rotation(rotation() / steps);
    lastupdate = Timer::getInstance().getTick();
 
@@ -159,7 +159,7 @@ bool RotateState::update(float timestep)
    else
    {
       // update the rotation angle at normal speed
-      if (timestep - lastupdate >= object()->getMoveSpeed())
+      // if (timestep - lastupdate >= object()->getMoveSpeed())
       {
          object()->rotate(rotation());
          lastupdate = timestep;

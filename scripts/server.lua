@@ -70,7 +70,7 @@ function Server_onClientConnect(player)
 	console:print("Server: " .. player.name .. " has joined the game.")
 
 	-- start the game, as this is a single player demo only
-	Server_startGame("world", player)
+	Server_startGame("map1", player)
 end
 
 -- A client has disconnected, remove him from the game
@@ -137,7 +137,7 @@ function Server_startGame(worldFile, player)
 
 	controler:setName(player.name)
 	controler:setPosition(Vector:new(400, 300))
-	controler:setMoveSpeed(25)
+	-- controler:setMoveSpeed(25)
 	controler:setAnimation(1)
 	
 	world:add(controler)

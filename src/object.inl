@@ -44,22 +44,13 @@ INLINE void Object::rotate(float degree)
    setRotation(angle+degree); 
 }
 
-/// \fn Object::setPosition(const Vector& p)
-/// \brief Set the position of the object in world coordinates.
-/// \param p the new position of the object
-INLINE void Object::setPosition(const Vector& p)
-{
-	pos = p;
-   setDirty(ePositionDirty);
-}
-
 /// \fn Object::setVelocity (const Vector& v)
 /// \brief Set the velocity of the object. The velocity should be measured in seconds,
 /// as the engine will interpolate it between the frames displayed.
 /// \param v the new velocity in distance/second
 INLINE void Object::setVelocity (const Vector& v)
 {
-	vel = v;
+	mVel = v;
    setDirty(ePositionDirty);
 }
 
@@ -94,20 +85,11 @@ INLINE bool Object::isVisible() const
 	return visible;
 }
 
-/// \fn Object::setMoveSpeed (int msec)
-/// \brief Set the movement rate in milliseconds. Every msec milliseconds the object
-/// will be moved using the velocity vector.
-/// \param msec the new rate in milli seconds
-INLINE void Object::setMoveSpeed(int msec)
+/// \fn Object::isStatic() const
+/// \brief Check if this is a static object.
+INLINE bool Object::isStatic() const
 {
-	moveSpeed = msec;
-}
-
-/// \fn Object::getMoveSpeed ()
-/// \brief Get the movement rate in milliseconds.
-INLINE int Object::getMoveSpeed() const
-{
-	return moveSpeed;
+   return mStatic;
 }
 
 /// \fn Object::getRadius() const
@@ -130,7 +112,7 @@ INLINE float Object::getRotation() const
 /// \returns current velocity of the object
 INLINE Vector Object::getVelocity() const
 {
-	return vel;
+	return mVel;
 }
 
 /// \fn Object::getSize()

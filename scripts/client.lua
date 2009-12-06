@@ -127,7 +127,7 @@ function Client_onEvent(stream)
 		graph:setControler(object)
 
 		world:setScrollMode(0)
-            world:setObjectLayer(1)
+        world:setObjectLayer(0)
 		world:setFollowObject(object)
 		world:setFollowBorders(150, 650, 100, 500)
 	end

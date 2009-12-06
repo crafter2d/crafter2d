@@ -81,7 +81,6 @@ public:
 
    bool                 isDirty() const;
    bool                 isReplica() const;
-   bool                 isStatic() const;
 
    virtual void         pack(BitStream& stream) const;
    virtual void         unpack(BitStream& stream);
@@ -89,7 +88,6 @@ public:
 protected:
    int dirtyFlag;
    bool replica;
-   bool statik;
 };
 
 #ifdef JENGINE_INLINE

@@ -53,9 +53,3 @@ bool NetObject::isReplica() const
    return replica;
 }
 
-/// \fn NetObject::isStatic() const
-/// \brief Check if this is a static object.
-bool NetObject::isStatic() const
-{
-   return statik;
-}

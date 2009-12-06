@@ -76,12 +76,14 @@ bool Creature::load(TiXmlDocument& doc)
 
 void Creature::draw()
 {
-   if (weapon) {
+   if ( weapon != NULL )
+   {
       glPushMatrix();
-      // (3D only: negate the y coord)
-      glTranslatef(pos.x, pos.y, 0);
+
+      glTranslatef(mPos.x, mPos.y, 0);
       glRotatef(angle, 0, 0, 1);
       weapon->draw();
+
       glPopMatrix();
    }
 
@@ -98,10 +100,10 @@ void Creature::update(DirtySet& dirtyset, float delta)
 
 	if ( target != NULL ) 
    {
-		vel = target->getPosition () - pos;
-		vel.normalize ();
-		vel.x *= 4;
-		vel.y = 0;
+		mVel = target->getPosition () - mPos;
+		mVel.normalize ();
+		mVel.x *= 4;
+		mVel.y = 0;
 	}
 }
 

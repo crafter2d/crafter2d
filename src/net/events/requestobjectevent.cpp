@@ -25,13 +25,13 @@
 IMPLEMENT_REPLICATABLE(RequestObjectEventId, RequestObjectEvent, NetEvent)
 
 RequestObjectEvent::RequestObjectEvent():
-   NetEvent(delobjectEvent),
+   NetEvent(reqobjectEvent),
    mName()
 {
 }
 
 RequestObjectEvent::RequestObjectEvent(const std::string& name):
-   NetEvent(delobjectEvent),
+   NetEvent(reqobjectEvent),
    mName(name)
 {
 }

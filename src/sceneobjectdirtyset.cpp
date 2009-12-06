@@ -56,7 +56,7 @@ void SceneObjectDirtySet::send(NetConnection& conn)
    {
       SceneObject& object = *(*it);
 
-      if ( object.isDirty() && !object.isStatic() )
+      if ( object.isDirty() )
       {
          UpdateObjectEvent event(object);
          conn.send(&event);

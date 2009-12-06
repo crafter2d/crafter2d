@@ -142,10 +142,10 @@ class Object: public SceneObject
 	void flip ();
 	bool direction ();
    void rotate(float deg);
+
    void setPosition(const Vector& pos);
    void setVelocity(const Vector& vel);
    void setRotation(const float deg);
-   void setMoveSpeed(int speed);
 
 	Vector getPosition ();
    Vector getVelocity();

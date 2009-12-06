@@ -26,6 +26,7 @@
 #include <GL/glu.h>
 #include <tinyxml.h>
 
+#include "physics/body.h"
 #include "physics/physicsxml.h"
 
 #include "world/world.h"
@@ -43,6 +44,7 @@ IMPLEMENT_REPLICATABLE(ObjectId, Object, SceneObject)
 Object::Object():
    SceneObject(),
    texture(),
+   mpBody(NULL),
    mpAnimator(NULL),
 	width(0),
    height(0),
@@ -51,9 +53,8 @@ Object::Object():
    angle(.0f),
    dir(true),
    radius(.0f),
-	moveSpeed(0),
 	visible(true),
-   mpBody(NULL)
+   mStatic(false)
 {
 }
 
@@ -81,7 +82,7 @@ bool Object::load (TiXmlDocument& doc)
 	}
 
 	// find the name and dimensions of the object
-	name = object->Attribute("name");
+	mName = object->Attribute("name");
 	if (object->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
 		object->QueryIntAttribute ("height", &height) != TIXML_SUCCESS)
    {
@@ -92,7 +93,7 @@ bool Object::load (TiXmlDocument& doc)
    // see whether or not the object is static
    int temp = 0;
    if ( object->QueryIntAttribute("static", &temp) == TIXML_SUCCESS )
-      statik = (temp == 1);
+      mStatic = (temp == 1);
 
 	// determine radius of object
 	radius = height * 0.5f;
@@ -133,6 +134,9 @@ bool Object::load (TiXmlDocument& doc)
 
 void Object::doUpdate(float delta)
 {
+   setDirty(ePositionDirty);
+
+   /*
    if ( states.size() > 0 )
    {
       if ( states.front()->update(delta) )
@@ -142,6 +146,7 @@ void Object::doUpdate(float delta)
    {
       //move(delta);
    }
+   */
 }
 
 void Object::doUpdateClient(float delta)
@@ -203,28 +208,15 @@ void Object::move(float delta)
 {
    ASSERT(!isReplica())
 
-   applyGravity();
-
-   if ( vel != Vector::zero() ) 
+   if ( mVel != Vector::zero() ) 
    {
       SceneGraph& graph = Game::getInstance().getServer().getSceneGraph();
-      graph.getWorld()->collide(*this, pos);
+      graph.getWorld()->collide(*this, mPos);
 
       //pos += vel;
       
       setDirty(ePositionDirty);
    }
-}
-
-/*!
-    \fn Object::applyGravity()
-	 \brief At the same rate as the movement the engine can add gravity to your object. This
-	 means that the velocity becomes larger downwards.
-	 \param tick the time tick of this frame (in milliseconds)
- */
-void Object::applyGravity()
-{
-	vel.y += 1;
 }
 
 /*!
@@ -250,7 +242,25 @@ void Object::addState(State* state)
 /// \returns current position of object
 const Vector& Object::getPosition() const
 {
-   return pos;
+   if ( isReplica() )
+      return mPos;
+   else
+      return mpBody->getPosition();
+}
+
+/// \fn Object::setPosition(const Vector& p)
+/// \brief Set the position of the object in world coordinates.
+/// \param p the new position of the object
+void Object::setPosition(const Vector& p)
+{
+   if ( isReplica() )
+      mPos = p;
+   else
+   {
+      mpBody->setPosition(p);
+
+      setDirty(ePositionDirty);
+   }
 }
 
 int Object::getAnimation() const
@@ -287,7 +297,7 @@ void Object::pack(BitStream& stream) const
    stream << dirtyFlag;
 
    if ( IS_SET(dirtyFlag, ePositionDirty) )
-      stream << pos << vel << angle << dir;
+      stream << getPosition() << mVel << angle << dir;
 
    if ( IS_SET(dirtyFlag, eAnimationDirty) )
       stream << mpAnimator->getAnimation();
@@ -295,13 +305,17 @@ void Object::pack(BitStream& stream) const
 
 void Object::unpack(BitStream& stream)
 {
-   char filen[256];
    int flag;
    SceneObject::unpack(stream);
    stream >> flag;
 
    if ( IS_SET(flag, ePositionDirty) )
-      stream >> pos >> vel >> angle >> dir;
+   {
+      Vector pos;
+      stream >> pos >> mVel >> angle >> dir;
+
+      setPosition(pos);
+   }
 
    if ( IS_SET(flag, eAnimationDirty) )
    {
@@ -312,6 +326,4 @@ void Object::unpack(BitStream& stream)
       if ( mpAnimator != NULL )
          mpAnimator->setAnimation(anim);
    }
-
-   xmlfile = filen;
 }

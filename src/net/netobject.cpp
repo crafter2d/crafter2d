@@ -28,8 +28,7 @@ IMPLEMENT_REPLICATABLE(NetObjectId, NetObject, )
 
 NetObject::NetObject():
    dirtyFlag(0),
-   replica(false),
-   statik(false)
+   replica(false)
 {
 }
 

@@ -50,14 +50,12 @@ public:
 	virtual Object*   clone ();
 
    void              addState(State* state);
-	void              applyGravity();
 	void              move(float tick);
    void              rotate(float deg);
 	void              flip();
 	bool              direction() const;
 	
  // get/set interface
-	void              setMoveSpeed(int msec);
 	void              setPosition(const Vector& vec);
 	void              setVelocity(const Vector& vec);
    void              setRotation(const float deg);
@@ -68,9 +66,9 @@ public:
 	Vector            getVelocity() const;
    float             getRadius() const;
    float             getRotation() const;
-	int               getMoveSpeed() const;
    Vector            getSize() const;
 	bool              isVisible() const;
+   bool              isStatic() const;
    const Texture&    getTexture() const;
 
    bool              hasBody() const;
@@ -97,19 +95,19 @@ protected:
    virtual void      doUpdateClient(float delta);
 	virtual void      doDraw();
 	 
-   std::string name;
-	TexturePtr texture;
-   Animator*    mpAnimator;
+	TexturePtr     texture;
+   Body*          mpBody;
+   Animator*      mpAnimator;
    std::queue<State*> states;
-	Vector pos, vel;
+	Vector mPos;
+   Vector mVel;
    int width, height;
 	float halfX, halfY;
    float angle;
 	float radius;
-	Uint32 moveSpeed;
 	bool visible;
    bool dir;
-   Body* mpBody;
+   bool mStatic;
 };
 
 #ifdef JENGINE_INLINE
