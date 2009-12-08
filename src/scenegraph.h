@@ -23,6 +23,7 @@
 #include <SDL/SDL.h>
 #include <list>
 #include <map>
+
 #include "defines.h"
 #include "hashtable.h"
 #include "sceneobject.h"
@@ -76,6 +77,9 @@ public:
    bool              getNotify();
    World*            getWorld();
    SceneObject&      getRoot();
+
+  // notifications
+   void notifyNameChanged(SceneObject& object, const std::string& oldname);
 
 protected:
 

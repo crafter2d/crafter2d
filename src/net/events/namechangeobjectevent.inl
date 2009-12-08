@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,14 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "contact.h"
+#include "../../defines.h"
 
-Contact::Contact():
-   mPoint(),
-   mNormal()
+INLINE const std::string& NameChangeObjectEvent::getOldName() const
 {
+   return mOldName;
 }
 
-Contact::~Contact()
+INLINE const std::string& NameChangeObjectEvent::getNewName() const
 {
+   return mNewName;
 }

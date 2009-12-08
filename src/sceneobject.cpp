@@ -158,6 +158,22 @@ const Vector& SceneObject::getPosition() const
    return Vector::zero();
 }
 
+/// \fn SceneObject::setName(const char* newName)
+/// \brief Sets the name of this object.
+/// \param n the new name for this object
+void SceneObject::setName(const std::string& name)
+{
+   std::string oldname = mName;
+
+   mName = name;
+
+   if ( !oldname.empty() )
+   {
+      // dont send initial setting of name
+      getSceneGraph(this).notifyNameChanged(*this, oldname);
+   }
+}
+
 /// \fn SceneObject::update(float delta)
 /// \brief Update mechanism for the derived nodes of the SceneObject class.
 /// \param tick current tick in the game (in msecs)

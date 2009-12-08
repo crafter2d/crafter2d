@@ -134,19 +134,18 @@ function Server_startGame(worldFile, player)
 		console:print("Failed to load character.")
 		return
 	end
-
-	controler:setName(player.name)
-	controler:setPosition(Vector:new(400, 300))
-	-- controler:setMoveSpeed(25)
-	controler:setAnimation(1)
 	
 	world:add(controler)
 	player.controler = controler
+	
+	controler:setName(player.name)
+	controler:setPosition(Vector:new(400, 300))
+	controler:setAnimation(1)
 	
 	-- notify the client
 	local stream = server.stream
 	stream:clear()
 	stream:writeInt(PLAYER_CONTROLER_EVENT)
-	stream:writeString(player.name)
+	stream:writeString(controler:getName())
 	server:sendScriptEvent(stream, player.client)
 end

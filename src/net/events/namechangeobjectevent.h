@@ -17,55 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef NAME_CHANGE_OBJECT_EVENT_H_
+#define NAME_CHANGE_OBJECT_EVENT_H_
 
-#ifndef _NETEVENT_H_
-#define _NETEVENT_H_
+#include "../netevent.h"
 
-#include "netobject.h"
-
-class BitStream;
-
-enum EventType {
-   connectEvent      = 0x0000,
-   connectReplyEvent = 0x0001,
-   disconnectEvent   = 0x0002,
-   joinEvent         = 0x0003,
-   serverdownEvent   = 0x0004,
-
-   // game events
-   inputEvent        = 0x0020,
-   scriptEvent       = 0x0023,
-   newobjectEvent    = 0x0024,
-   delobjectEvent    = 0x0025,
-   updobjectEvent    = 0x0021,
-   reqobjectEvent    = 0x0022,
-   viewportEvent     = 0x0026,
-   namechangeEvent   = 0x0027,
-
-   generalEvent      = 0x1000
-};
-
-/// NetEvent
-/// The base class for events that should be sended to the client or server.
-class NetEvent: public NetObject
+/**
+@author Jeroen Broekhuizen
+*/
+class NameChangeObjectEvent : public NetEvent
 {
 public:
-   DEFINE_REPLICATABLE(NetEvent)
+   DEFINE_REPLICATABLE(NameChangeObjectEvent)
 
-   explicit       NetEvent(EventType _type = generalEvent);
+            NameChangeObjectEvent();
+   explicit NameChangeObjectEvent(const std::string& old, const std::string& newname);
+   
+   const std::string&   getOldName() const;
+   const std::string&   getNewName() const;
 
    virtual void   pack(BitStream& stream) const;
    virtual void   unpack(BitStream& stream);
 
-   void           setType(EventType t);
-   EventType      getType() const;
-
-protected:
-   EventType type;
+private:
+   std::string    mOldName;
+   std::string    mNewName;
 };
 
 #ifdef JENGINE_INLINE
-#  include "netevent.inl"
+#  include "namechangeobjectevent.inl"
 #endif
 
 #endif

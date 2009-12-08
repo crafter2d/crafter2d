@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,18 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef CONTACT_H_
-#define CONTACT_H_
-
-#include "../math/vector.h"
-
-class Contact
-{
-public:
-   Contact();
-   ~Contact();
-
-   
-};
-
+#include "namechangeobjectevent.h"
+#ifndef JENGINE_INLINE
+#  include "namechangeobjectevent.inl"
 #endif
+
+IMPLEMENT_REPLICATABLE(NameChangeObjectEventId, NameChangeObjectEvent, NetEvent)
+
+NameChangeObjectEvent::NameChangeObjectEvent():
+   NetEvent(namechangeEvent),
+   mOldName(),
+   mNewName()
+{
+}
+
+NameChangeObjectEvent::NameChangeObjectEvent(const std::string& oldname, const std::string& newname):
+   NetEvent(namechangeEvent),
+   mOldName(oldname),
+   mNewName(newname)
+{
+}
+
+void NameChangeObjectEvent::pack(BitStream& stream) const
+{
+   NetEvent::pack(stream);
+   stream << mOldName << mNewName;
+}
+
+void NameChangeObjectEvent::unpack(BitStream& stream)
+{
+   NetEvent::unpack(stream);
+   stream >> mOldName >> mNewName;
+}

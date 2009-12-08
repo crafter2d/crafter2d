@@ -36,6 +36,7 @@ enum NetObjectId
    RequestObjectEventId    = 11,
    UpdateObjectEventId     = 12,
    ScriptEventId           = 13,
+   NameChangeObjectEventId = 14,
 
    SceneObjectId           = 101,
    ObjectId                = 102,

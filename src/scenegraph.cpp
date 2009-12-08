@@ -26,6 +26,7 @@
 
 #include "net/newobjectevent.h"
 #include "net/events/deleteobjectevent.h"
+#include "net/events/namechangeobjectevent.h"
 
 #include "physics/simulator.h"
 #include "physics/simulationfiller.h"
@@ -110,14 +111,15 @@ void SceneGraph::addObject(SceneObject* obj)
 void SceneGraph::removeObject(const std::string& name)
 {
    ObjectMap::iterator it = objects.find(name);
-   if (it != objects.end()) {
-      objects.erase(it);
-   }
-
-   if ( notifyClients )
+   if (it != objects.end())
    {
-      DeleteObjectEvent event(name);
-      Game::getInstance().getServer().sendToAllClients(event);
+      objects.erase(it);
+
+      if ( notifyClients )
+      {
+         DeleteObjectEvent event(name);
+         Game::getInstance().getServer().sendToAllClients(event);
+      }
    }
 }
 
@@ -132,4 +134,21 @@ void SceneGraph::removeAll()
 
    controler = 0;
    world = 0;
+}
+
+void SceneGraph::notifyNameChanged(SceneObject& object, const std::string& oldname)
+{
+   ObjectMap::iterator it = objects.find(oldname);
+   if ( it != objects.end() )
+   {
+      objects.erase(it);
+
+      objects[object.getName()] = &object;
+
+      if ( notifyClients )
+      {
+         NameChangeObjectEvent event(oldname, object.getName());
+         Game::getInstance().getServer().sendToAllClients(event);
+      }
+   }
 }

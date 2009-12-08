@@ -30,6 +30,7 @@ class JoinEvent;
 class NewObjectEvent;
 class DeleteObjectEvent;
 class UpdateObjectEvent;
+class NameChangeObjectEvent;
 class ScriptEvent;
 
 class Player;
@@ -65,6 +66,7 @@ private:
    void  handleNewObjectEvent(const NewObjectEvent& event);
    void  handleDeleteObjectEvent(const DeleteObjectEvent& event);
    void  handleUpdateObjectEvent(const UpdateObjectEvent& event);
+   void  handleNameChangeEvent(const NameChangeObjectEvent& event);
    void  handleScriptEvent(const ScriptEvent& event);
 
    Player*  mpPlayer;

@@ -25,14 +25,6 @@ INLINE void SceneObject::setParent(SceneObject* p)
    parent = p;
 }
 
-/// \fn SceneObject::setName(const char* newName)
-/// \brief Sets the name of this object.
-/// \param n the new name for this object
-INLINE void SceneObject::setName(const std::string& name)
-{
-   mName = name;
-}
-
 INLINE void SceneObject::setFilename(const std::string& filename)
 {
    xmlfile = filename;

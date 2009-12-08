@@ -24,6 +24,7 @@
 #include "net/events/deleteobjectevent.h"
 #include "net/events/updateobjectevent.h"
 #include "net/events/requestobjectevent.h"
+#include "net/events/namechangeobjectevent.h"
 #include "net/events/scriptevent.h"
 
 #include "world/world.h"
@@ -147,6 +148,12 @@ int Client::onClientEvent(int client, const NetEvent& event)
             handleUpdateObjectEvent(updateobjectevent);
             break;
          }
+      case namechangeEvent:
+         {
+            const NameChangeObjectEvent& namechangeevent = dynamic_cast<const NameChangeObjectEvent&>(event);
+            handleNameChangeEvent(namechangeevent);
+            break;
+         }
    }
    
    return 0;
@@ -259,7 +266,7 @@ void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
 void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
 {
    const std::string& objectname = event.getName();
-   SceneObject* pobject = graph.find(objectname.c_str());
+   SceneObject* pobject = graph.find(objectname);
    if ( pobject == NULL )
    {
       if ( requests.find(objectname.c_str()) == requests.end() )
@@ -275,6 +282,15 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
    {
       event.update(*pobject);
    }
+}
+
+void Client::handleNameChangeEvent(const NameChangeObjectEvent& event)
+{
+   const std::string& objectname = event.getOldName();
+   SceneObject* pobject = graph.find(event.getOldName());
+   ASSERT_PTR(pobject)
+
+   pobject->setName(event.getNewName());
 }
 
 void Client::handleScriptEvent(const ScriptEvent& event)

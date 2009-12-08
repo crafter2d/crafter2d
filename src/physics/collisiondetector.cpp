@@ -29,7 +29,6 @@
 #include "collisioncircleplanecontactgenerator.h"
 
 #include "body.h"
-#include "contact.h"
 
 // ----------------------------------
 // -- Generator registry
