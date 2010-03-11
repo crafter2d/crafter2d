@@ -46,8 +46,12 @@ public:
 
    virtual SDL_RWops*      asRWops() = 0;
 
-   virtual int read(void* ptr, int size) = 0;
-   virtual int write(void* ptr, int size) = 0;
+   virtual int  read(void* ptr, int size) = 0;
+   virtual int  write(void* ptr, int size) = 0;
+   virtual char getc() = 0;
+   virtual void seek(int pos, int mode) = 0;
+   virtual int  tell() const = 0;
+   virtual bool eof() const = 0;
 
    virtual int size() = 0;
 

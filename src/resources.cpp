@@ -19,6 +19,9 @@
  ***************************************************************************/
 #include "resources.h"
 
+#include <IL/il.h>
+#include <IL/ilu.h>
+
 #include "vfs/unzipfile.h"
 
 #include "autoptr.h"
@@ -28,7 +31,10 @@
 ResourceManager::ResourceManager():
    textures()
 {
-	textures.create (256);
+  ilInit();
+  iluInit();
+
+	textures.create(256);
 }
 
 ResourceManager& ResourceManager::operator=(const ResourceManager& mgr)

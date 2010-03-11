@@ -17,49 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MEMORY_BUFFER_H_
-#define MEMORY_BUFFER_H_
+#ifndef TEXTURE_LOADER_BMP_H_
+#define TEXTURE_LOADER_BMP_H_
 
-#include "buffer.h"
+#include "abstracttextureloader.h"
 
-class MemoryBuffer : public Buffer
+class TextureLoaderDevil : public AbstractTextureLoader
 {
 public:
-            MemoryBuffer();
-   explicit MemoryBuffer(void* pdata, int size);
-   virtual ~MemoryBuffer(void);
+   TextureLoaderDevil();
+   virtual ~TextureLoaderDevil();
 
- // get/set
-           Uint8*          getData();
-           int             getDataSize();
-
- // query
-   virtual bool            isMemoryBuffer() const;
-   virtual MemoryBuffer&   asMemoryBuffer();
-
- // operations
-   virtual SDL_RWops*   asRWops();
-
-   virtual int          read(void* ptr, int size);
-   virtual int          write(void* ptr, int size);
-   virtual char         getc();
-   virtual void         seek(int pos, int mode);
-   virtual int          tell() const;
-   virtual bool         eof() const;
-
-   virtual int          size();
-
-private:
-           void assign(void* pdata, int size);
-           void free();
-
-   Uint8*   mpData;
-   int      mDataSize;
-   int      mCursor;
+protected:
+   virtual bool virLoad(File& file, TextureInfo& info);
 };
 
-#ifdef JENGINE_INLINE
-#  include "memorybuffer.inl"
-#endif
-
-#endif // MEMORY_BUFFER_H_
+#endif // TEXTURE_LOADER_BMP_H_

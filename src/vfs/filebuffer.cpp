@@ -73,3 +73,23 @@ int FileBuffer::size()
 
    return size;
 }
+
+char FileBuffer::getc()
+{
+  return fgetc(mpFile);
+}
+
+void FileBuffer::seek(int pos, int mode)
+{
+  fseek(mpFile, pos, mode);
+}
+
+int FileBuffer::tell() const
+{
+  return ftell(mpFile);
+}
+
+bool FileBuffer::eof() const
+{
+  return feof(mpFile) != 0;
+}

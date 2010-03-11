@@ -63,7 +63,8 @@ if ( OS == "windows" ) then
                             libdir .. "/lua/include", 
                             libdir .. "/tolua++/include",
                             libdir .. "/glslang/include",
-                            libdir .. "/freetype2/include" }
+                            libdir .. "/freetype2/include",
+                            libdir .. "/devil/include" }
 
    package.libpaths = { libdir .. "/sdl/lib",
                         libdir .. "/glee/lib",
@@ -77,14 +78,15 @@ if ( OS == "windows" ) then
                         libdir .. "/lua/lib", 
                         libdir .. "/tolua++/lib",
                         libdir .. "/glslang/lib",
-                        libdir .. "/freetype2/lib" }
+                        libdir .. "/freetype2/lib",
+                        libdir .. "/devil/lib" }
 
    -- set the ignoring libs for studio
    package.ignorelinks = { "LIBC.lib", "msvcrt.lib" }
 
    -- set the libraries to link against
    package.links = { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32",
-                     "OpenAL32", "ALut", "GLee", "cg", "cgGL", "lua5.1", "tolua++"  }
+                     "OpenAL32", "ALut", "GLee", "cg", "cgGL", "lua5.1", "tolua++", "devil", "ilu"  }
 
    -- set IDE specific settings
    if ( target == "cb-gcc" ) then

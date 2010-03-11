@@ -50,7 +50,7 @@ bool File::open(const std::string& filename, int modus)
 {
    if ( virOpen(filename, modus) )
    {
-      mpBuffer->isWritting(modus & File::ERead);
+      mpBuffer->isWritting((modus & File::ERead) == File::ERead);
 
       return true;
    }

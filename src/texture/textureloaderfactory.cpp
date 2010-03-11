@@ -19,25 +19,20 @@
  ***************************************************************************/
 #include "textureloaderfactory.h"
 
-#include "textureloaderbmp.h"
-#include "textureloaderpng.h"
+#include "textureloaderdevil.h"
 #include "textureloadertma.h"
 
 AbstractTextureLoader* TextureLoaderFactory::constructLoader(const std::string& filename)
 {
    AbstractTextureLoader* ploader = NULL;
 
-   if ( filename.rfind("bmp") != filename.npos )
-   {
-		ploader = new TextureLoaderBmp();
-   }
-   else if ( filename.rfind("png") != filename.npos )
-   {
-      ploader = new TextureLoaderPng();
-   }
-   else if ( filename.rfind("tma") != filename.npos )
+   if ( filename.rfind("tma") != filename.npos )
    {
 		ploader = new TextureLoaderTma();
+   }
+   else
+   {
+      ploader = new TextureLoaderDevil();
    }
 
    return ploader;

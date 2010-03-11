@@ -73,3 +73,26 @@ int Buffer::size()
    PURE_VIRTUAL
    return -1;
 }
+
+char Buffer::getc()
+{
+  PURE_VIRTUAL
+  return 0;
+}
+
+void Buffer::seek(int pos, int mode)
+{
+  PURE_VIRTUAL
+}
+
+int Buffer::tell() const
+{
+  PURE_VIRTUAL
+  return 0;
+}
+
+bool Buffer::eof() const
+{
+  PURE_VIRTUAL
+  return true;
+}

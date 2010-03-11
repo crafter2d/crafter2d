@@ -119,3 +119,37 @@ int MemoryBuffer::size()
 {
    return mDataSize;
 }
+
+char MemoryBuffer::getc()
+{
+  char data = mpData[mCursor];
+  mCursor++;
+
+  return data;
+}
+
+void MemoryBuffer::seek(int pos, int mode)
+{
+  switch ( mode )
+  {
+  case SEEK_CUR:
+    mCursor += pos;
+    break;
+  case SEEK_SET:
+    mCursor = pos;
+    break;
+  case SEEK_END:
+    mCursor -= pos;
+    break;
+  }
+}
+
+int MemoryBuffer::tell() const
+{
+  return mCursor;
+}
+
+bool MemoryBuffer::eof() const
+{
+  return mCursor == mDataSize;
+}
