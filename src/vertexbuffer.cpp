@@ -82,25 +82,26 @@ void VertexBuffer::release()
 int VertexBuffer::getFVFSize(int fvf)
 {
 	int size = 0;
-	for (int i = 1; i < fvf; i<<=1) {
+	for ( int i = 1; i < fvf; i<<=1 )
+  {
 		switch (fvf & i) {
-		case FVF_XYZW:
-		case FVF_DIFFUSE:
-		case FVF_SPECULAR:
+		case eXYZW:
+		case eDiffuse:
+		case eSpecular:
 			size += sizeof(float) * 4;
 			break;
-		case FVF_XYZ:
-		case FVF_NORMAL:
-		case FVF_TANGENT:
-		case FVF_BINORMAL:
+		case eXYZ:
+		case eNormal:
+		case eTangent:
+		case eBinormal:
 			size += sizeof(float) * 3;
 			break;
-		case FVF_XY:
-		case FVF_TEX0:
-		case FVF_TEX1:
-		case FVF_TEX2:
-		case FVF_TEX3:
-		case FVF_TEX4:
+		case eXY:
+		case eTex0:
+		case eTex1:
+		case eTex2:
+		case eTex3:
+		case eTex4:
 			size += sizeof(float) * 2;
 			break;
 		default:
@@ -151,56 +152,57 @@ void VertexBuffer::fillDescription (int fvf)
 
 		field.pos = pos;
 		field.flags = i;
-		switch (fvf & i) {
-		case FVF_XY:
+		switch ( fvf & i )
+    {
+		case eXY:
 			field.index = 0;
 			field.size = 2;
 			break;
-		case FVF_XYZ:
+		case eXYZ:
 			field.index = 0;
 			field.size = 3;
 			break;
-		case FVF_XYZW:
+		case eXYZW:
 			field.index = 0;
 			field.size = 4;
 			break;
-		case FVF_NORMAL:
+		case eNormal:
 			field.index = 2;
 			field.size = 3;
 			break;
-		case FVF_DIFFUSE:
+		case eDiffuse:
 			field.index = 3;
 			field.size = 4;
 			break;
-		case FVF_SPECULAR:
+		case eSpecular:
 			field.index = 4;
 			field.size = 4;
 			break;
-		case FVF_TEX0:
+		case eTex0:
 			field.index = 8;
 			field.size = 2;
 			break;
-		case FVF_TEX1:
+		case eTex1:
 			field.index = 9;
 			field.size = 2;
 			break;
-		case FVF_TEX2:
+		case eTex2:
 			field.index = 10;
 			field.size = 2;
 			break;
-		case FVF_TEX3:
+		case eTex3:
 			field.index = 11;
 			field.size = 2;
 			break;
-		case FVF_TEX4:
+		case eTex4:
 			field.index = 12;
 			field.size = 2;
 			break;
-		case FVF_TANGENT:
+		case eTangent:
 			field.index = 14;
 			field.size = 3;
 			break;
-		case FVF_BINORMAL:
+		case eBinormal:
 			field.index = 15;
 			field.size = 3;
 			break;

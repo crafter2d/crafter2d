@@ -17,11 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 #include <GL/GLee.h>
 #include <GL/glu.h>
 
@@ -87,36 +82,36 @@ void VertexBufferArray::enable()
 
       switch ( field.flags )
       {
-      case FVF_XY:
-	   case FVF_XYZ:
-	   case FVF_XYZW:
+      case eXY:
+	   case eXYZ:
+	   case eXYZW:
          glEnableClientState(GL_VERTEX_ARRAY);
          glVertexPointer(field.size, GL_FLOAT, mStride, &mpData[0]);
 		   break;
-	   case FVF_NORMAL:
+	   case eNormal:
          glEnableClientState(GL_NORMAL_ARRAY);
          glNormalPointer(GL_FLOAT, mStride, &mpData[field.pos / sizeof(float)]);
 		   break;
-	   case FVF_DIFFUSE:
+	   case eDiffuse:
 		   break;
-	   case FVF_SPECULAR:
+	   case eSpecular:
 		   break;
-	   case FVF_TEX0:
+	   case eTex0:
          glClientActiveTexture(GL_TEXTURE0);
          glEnableClientState(GL_TEXTURE_COORD_ARRAY);
          glTexCoordPointer(field.size, GL_FLOAT, mStride, &mpData[field.pos / sizeof(float)]);
 		   break;
-	   case FVF_TEX1:
+	   case eTex1:
 		   break;
-	   case FVF_TEX2:
+	   case eTex2:
 		   break;
-	   case FVF_TEX3:
+	   case eTex3:
 		   break;
-	   case FVF_TEX4:
+	   case eTex4:
 		   break;
-	   case FVF_TANGENT:
+	   case eTangent:
 		   break;
-	   case FVF_BINORMAL:
+	   case eBinormal:
 		   break;
 	   default:
 		   break;
@@ -132,33 +127,33 @@ void VertexBufferArray::disable()
 
       switch ( field.flags )
       {
-      case FVF_XY:
-	   case FVF_XYZ:
-	   case FVF_XYZW:
+      case eXY:
+	   case eXYZ:
+	   case eXYZW:
          glDisableClientState(GL_VERTEX_ARRAY);
 		   break;
-	   case FVF_NORMAL:
+	   case eNormal:
          glDisableClientState(GL_NORMAL_ARRAY);
 		   break;
-	   case FVF_DIFFUSE:
+	   case eDiffuse:
 		   break;
-	   case FVF_SPECULAR:
+	   case eSpecular:
 		   break;
-	   case FVF_TEX0:
+	   case eTex0:
          glClientActiveTexture(GL_TEXTURE0);
          glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		   break;
-	   case FVF_TEX1:
+	   case eTex1:
 		   break;
-	   case FVF_TEX2:
+	   case eTex2:
 		   break;
-	   case FVF_TEX3:
+	   case eTex3:
 		   break;
-	   case FVF_TEX4:
+	   case eTex4:
 		   break;
-	   case FVF_TANGENT:
+	   case eTangent:
 		   break;
-	   case FVF_BINORMAL:
+	   case eBinormal:
 		   break;
 	   default:
 		   break;

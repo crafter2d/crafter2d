@@ -53,13 +53,14 @@ bool OpenGL::initialize ()
    Log& log = Console::getLog();
 	GLint units;
 
-	if (!GLEE_VERSION_1_3) {
-      log << "OpenGL version 1.3 is required to run this application.\n";
-		return false;
-	}
-
    log << "Graphics card:\t\t" << (char*)glGetString(GL_VENDOR) << "\n";
    log << "OpenGL version:\t\t" << (char*)glGetString(GL_VERSION) << "\n";
+
+   if ( !GLEE_VERSION_1_3 )
+   {
+      log << "OpenGL version 1.3 is required to run this application.\n";
+      return false;
+   }
 
 	// make sure that there are enough texture units
 	glGetIntegerv (GL_MAX_TEXTURE_UNITS, &units);

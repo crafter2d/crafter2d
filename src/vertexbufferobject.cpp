@@ -17,17 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
 
 #include "vertexbufferobject.h"
-#include <iostream>
-#include <assert.h>
+
 #include <GL/GLee.h>
-#include <GL/glu.h>
-#include <SDL/SDL.h>
 
 #include "console.h"
 #include "opengl.h"
@@ -67,38 +60,42 @@ bool VertexBufferObject::create(const Effect& effect, int length, int usage, int
 	GLuint flag = 0;
 
 	// see what usage is required on this buffer
-	if (usage & USAGE_STATIC) {
-		if (usage & USAGE_WRITEONLY)
+	if ( IS_SET(usage, eStatic) )
+  {
+		if ( IS_SET(usage, eWriteOnly) )
 			flag = GL_STATIC_DRAW_ARB;
-		else if (usage & USAGE_READ)
+		else if ( IS_SET(usage, eRead) )
 			flag = GL_STATIC_READ_ARB;
 		else
 			flag = GL_STATIC_COPY_ARB;
 	}
-	else if (usage & USAGE_DYNAMIC) {
-		if (usage & USAGE_WRITEONLY)
+	else if ( IS_SET(usage, eDynamic) )
+  {
+		if ( IS_SET(usage, eWriteOnly) )
 			flag = GL_DYNAMIC_DRAW_ARB;
-		else if (usage & USAGE_READ)
+		else if ( IS_SET(usage, eRead) )
 			flag = GL_DYNAMIC_READ_ARB;
 		else
 			flag = GL_DYNAMIC_COPY_ARB;
 	}
-	else if (usage & USAGE_STREAM) {
-		if (usage & USAGE_WRITEONLY)
+	else if ( IS_SET(usage, eStream) )
+  {
+		if ( IS_SET(usage, eWriteOnly) )
 			flag = GL_STREAM_DRAW_ARB;
-		else if (usage & USAGE_READ)
+		else if ( IS_SET(usage, eRead) )
 			flag = GL_STREAM_READ_ARB;
 		else
 			flag = GL_STREAM_COPY_ARB;
 	}
-	else {
+	else 
+  {
       Console::getInstance().print("VBO Error - Invalid usage flag.\n");
-		return false;
-	}
+      return false;
+   }
 
-	glGenBuffersARB (1, &buffer);
-	glBindBufferARB (GL_ARRAY_BUFFER_ARB, buffer);
-	glBufferDataARB (GL_ARRAY_BUFFER_ARB, mStride * length, 0, flag);
+   glGenBuffersARB (1, &buffer);
+   glBindBufferARB (GL_ARRAY_BUFFER_ARB, buffer);
+   glBufferDataARB (GL_ARRAY_BUFFER_ARB, mStride * length, 0, flag);
 
    if ( effect.hasPath() )
    {
@@ -178,36 +175,36 @@ void VertexBufferObject::enableArrays()
 
       switch ( field.flags )
       {
-      case FVF_XY:
-	   case FVF_XYZ:
-	   case FVF_XYZW:
+      case eXY:
+	   case eXYZ:
+	   case eXYZW:
          glEnableClientState(GL_VERTEX_ARRAY);
          glVertexPointer(field.size, GL_FLOAT, mStride, 0);
 		   break;
-	   case FVF_NORMAL:
+	   case eNormal:
          glEnableClientState(GL_NORMAL_ARRAY);
          glNormalPointer(GL_FLOAT, mStride, (void*)(field.pos));
 		   break;
-	   case FVF_DIFFUSE:
+	   case eDiffuse:
 		   break;
-	   case FVF_SPECULAR:
+	   case eSpecular:
 		   break;
-	   case FVF_TEX0:
+	   case eTex0:
          glClientActiveTexture(GL_TEXTURE0);
          glEnableClientState(GL_TEXTURE_COORD_ARRAY);
          glTexCoordPointer(field.size, GL_FLOAT, mStride, (void*)(field.pos));
 		   break;
-	   case FVF_TEX1:
+	   case eTex1:
 		   break;
-	   case FVF_TEX2:
+	   case eTex2:
 		   break;
-	   case FVF_TEX3:
+	   case eTex3:
 		   break;
-	   case FVF_TEX4:
+	   case eTex4:
 		   break;
-	   case FVF_TANGENT:
+	   case eTangent:
 		   break;
-	   case FVF_BINORMAL:
+	   case eBinormal:
 		   break;
 	   default:
 		   break;
@@ -239,33 +236,33 @@ void VertexBufferObject::disableArrays()
 
       switch ( field.flags )
       {
-      case FVF_XY:
-	   case FVF_XYZ:
-	   case FVF_XYZW:
+      case eXY:
+	   case eXYZ:
+	   case eXYZW:
          glDisableClientState(GL_VERTEX_ARRAY);
 		   break;
-	   case FVF_NORMAL:
+	   case eNormal:
          glDisableClientState(GL_NORMAL_ARRAY);
 		   break;
-	   case FVF_DIFFUSE:
+	   case eDiffuse:
 		   break;
-	   case FVF_SPECULAR:
+	   case eSpecular:
 		   break;
-	   case FVF_TEX0:
+	   case eTex0:
          glClientActiveTexture(GL_TEXTURE0);
          glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		   break;
-	   case FVF_TEX1:
+	   case eTex1:
 		   break;
-	   case FVF_TEX2:
+	   case eTex2:
 		   break;
-	   case FVF_TEX3:
+	   case eTex3:
 		   break;
-	   case FVF_TEX4:
+	   case eTex4:
 		   break;
-	   case FVF_TANGENT:
+	   case eTangent:
 		   break;
-	   case FVF_BINORMAL:
+	   case eBinormal:
 		   break;
 	   default:
 		   break;

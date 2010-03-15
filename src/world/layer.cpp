@@ -221,7 +221,10 @@ VertexBuffer* Layer::createVertexBuffer(int width, int height, int vertexcount)
       return NULL;
    }
 
-   if ( !pvb->create (effect, width*height*vertexcount, USAGE_DYNAMIC|USAGE_WRITEONLY, FVF_XY|FVF_TEX0) )
+   int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
+   int format = VertexBuffer::eXY | VertexBuffer::eTex0;
+
+   if ( !pvb->create (effect, width*height*vertexcount, usage, format) )
    {
 		Console::getInstance().print("Could not create the vertex buffer.");
 

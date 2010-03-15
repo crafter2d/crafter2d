@@ -131,9 +131,12 @@ bool ParticleSystem::prepare()
    Effect effect;
    effect.setPath(path);
 
+   int usage  = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
+   int format = VertexBuffer::eXY | VertexBuffer::eDiffuse | VertexBuffer::eTex0 | VertexBuffer::eTex1;
+
 	// generate the vertex buffer
 	buffer = OpenGL::createVertexBuffer ();
-	if (!buffer->create(effect, maxBufferSize*4, USAGE_STREAM|USAGE_WRITEONLY, FVF_XY|FVF_DIFFUSE|FVF_TEX0|FVF_TEX1))
+	if (!buffer->create(effect, maxBufferSize*4, usage, format))
 		return false;
 
 	srand (SDL_GetTicks ());
