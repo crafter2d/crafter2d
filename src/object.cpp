@@ -82,9 +82,11 @@ bool Object::load (TiXmlDocument& doc)
 	}
 
 	// find the name and dimensions of the object
-	mName = object->Attribute("name");
-	if (object->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
-		object->QueryIntAttribute ("height", &height) != TIXML_SUCCESS)
+   if ( mName.empty() )
+	   mName = object->Attribute("name");
+
+	if ( object->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
+		  object->QueryIntAttribute ("height", &height) != TIXML_SUCCESS )
    {
       console.print("Object.load: object needs to have dimensions.\n");
 		return false;
