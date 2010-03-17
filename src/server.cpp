@@ -269,7 +269,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             script.run (2);
             break;
          }
-      case inputEvent: 
+      case actionEvent: 
          {
             // find the player object
             Player* player = clients[client];
@@ -277,7 +277,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
                Console::getInstance().print("Invalid player input event.");
             else
             {
-               const InputEvent& inputevent = dynamic_cast<const InputEvent&>(event);
+               const ActionEvent& inputevent = dynamic_cast<const ActionEvent&>(event);
                actionMap->process(inputevent, (Object*)player->controler);
             }
             break;

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,59 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef DEFINES_OF_JENGINE_H_
-#define DEFINES_OF_JENGINE_H_
+#ifndef INPUT_EVENT_H
+#define INPUT_EVENT_H
 
-#include <assert.h>
+class InputEvent
+{
+public:
+  // statics
+   static int getModifiers();
 
-#ifndef NULL
-#define NULL 0
-#endif
+  // enums
+   enum KeyModifiers {
+      eNone  = 0,
+      eShift = 1,
+      eCtrl  = 2,
+      eAlt   = 4
+   };
 
-// Uncomment next line to enable auto disconnecting after timeout
-//#define JENGINE_AUTODISCONNECT
+   explicit InputEvent(int keymodifiers);
+   virtual ~InputEvent() = 0;
 
-// Uncomment the next line to disable inlining.
-//#define JENGINE_INLINE
-
-#define JENGINE_STATISTICS_LIMIT    250
-
-#define JENGINE_MSG_HANDLED         0
-#define JENGINE_MSG_UNHANDLED       1
-
-#ifdef JENGINE_INLINE
-#  define INLINE inline
-#else
-#  define INLINE
-#endif
-
-typedef unsigned int uint;
-typedef void*        handle;
-
-#define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
-
-#define MIN(x,y) ( x<y ? x : y )
-#define MAX(x,y) ( x>y ? x : y )
-
-#define IS_SET(container,flag)((container & flag) == flag)
-#define SET_FLAG(container,flag)   container |= flag
-#define CLEAR_FLAG(container,flag) container &= ~flag
-
-// Debugging macros
-
-/*
-#define ASSERT(cond)          assert(cond);
-#define ASSERT_MSG(cond,msg)  assert(cond && msg);
-#define ASSERT_PTR(ptr)       assert(ptr != NULL);
-#define PURE_VIRTUAL          assert(false && "Pure virtual!");
-#define UNREACHABLE(msg)      assert(false && msg);
-*/
-
-#define ASSERT(cond)        ;
-#define ASSERT_MSG(cond,msg) ;
-#define ASSERT_PTR(ptr)     ;
-#define PURE_VIRTUAL        ;
-#define UNREACHABLE(msg)    ;
-
+  // query
+   bool isShiftDown() const;
+   bool isCtrlDown() const;
+   bool isAltDown() const;
+   
+private:
+   int mKeyModifiers;
+};
 
 #endif

@@ -40,13 +40,13 @@ enum Action {
 };
 
 /// InputEvent
-class InputEvent: public NetEvent
+class ActionEvent: public NetEvent
 {
 public:
-   DEFINE_REPLICATABLE(InputEvent)
+   DEFINE_REPLICATABLE(ActionEvent)
 
-                  InputEvent();
-                  InputEvent(Action act, bool dwn);
+                  ActionEvent();
+                  ActionEvent(Action act, bool dwn);
 
            Action getAction() const;
            bool   isDown() const;
@@ -67,7 +67,7 @@ public:
    void bind(int key, const char* function);
 
    bool process(int key, bool down=true);
-   bool process(const InputEvent& event, Object* obj);
+   bool process(const ActionEvent& event, Object* obj);
 
 private:
    std::map<Action, const char*> actions;

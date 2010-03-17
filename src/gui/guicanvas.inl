@@ -53,3 +53,14 @@ INLINE GuiColor GuiCanvas::getDefaultColor(GuiStandardColor color) const
 {
    return defaultColors[color];
 }
+
+INLINE bool GuiCanvas::isDesigning() const
+{
+   return mpDesigner != NULL;
+}
+
+INLINE GuiDesigner& GuiCanvas::getDesigner()
+{
+   ASSERT_PTR(mpDesigner);
+   return *mpDesigner;
+}

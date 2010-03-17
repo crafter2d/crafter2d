@@ -19,22 +19,14 @@
  ***************************************************************************/
 #include "defines.h"
 
-INLINE bool Game::designing() const
-{
-   return mDesigning;
-}
-
-/// \fn Game::designing(bool designing)
-/// \brief Sets the desiging flag.
-/// \param designing if true then the designer is started, closed otherwise
-INLINE void Game::designing(bool designing)
-{
-   mDesigning = designing;
-}
-
 INLINE const GameConfiguration& Game::getConfiguration() const
 {
    return *mpConfiguration;
+}
+
+INLINE GameWindow& Game::getGameWindow()
+{
+  return mWindow;
 }
 
 /// \fn Game::setActive(bool act)
@@ -69,7 +61,7 @@ INLINE Client& Game::getClient()
 /// \brief Returns a reference to the canvas.
 INLINE GuiCanvas& Game::getCanvas()
 {
-   return canvas;
+   return mCanvas;
 }
 
 INLINE TimerData& Game::getTimerData()
@@ -80,18 +72,12 @@ INLINE TimerData& Game::getTimerData()
 
 INLINE int Game::getScreenWidth() const
 {
-   return width;
+   return mWindow.getWidth();
 }
 
 INLINE int Game::getScreenHeight() const
 {
-   return height;
-}
-
-INLINE GuiDesigner& Game::designer()
-{
-   ASSERT_PTR(mpDesigner)
-   return *mpDesigner;
+   return mWindow.getHeight();
 }
 
 /// \fn Game::setTitle(const char* _title)

@@ -22,7 +22,8 @@
 
 #include <list>
 #include <vector>
-#include "guidialog.h"
+
+#include "gui/guidialog/guidialog.h"
 
 class GuiDesignDecorator;
 class GuiPopupDecorator;

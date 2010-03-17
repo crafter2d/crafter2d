@@ -67,9 +67,9 @@ INLINE void GuiWnd::setFont (GuiFont* f)
 INLINE void GuiWnd::setTopmost(bool topmost)
 {
    if ( topmost )
-      SET_FLAG(m_style, GUI_TOPMOST)
+      SET_FLAG(m_style, GUI_TOPMOST);
    else
-      CLEAR_FLAG(m_style, GUI_TOPMOST)
+      CLEAR_FLAG(m_style, GUI_TOPMOST);
 }
 
 INLINE bool GuiWnd::isTopmost() const

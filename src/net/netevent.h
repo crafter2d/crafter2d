@@ -33,7 +33,7 @@ enum EventType {
    serverdownEvent   = 0x0004,
 
    // game events
-   inputEvent        = 0x0020,
+   actionEvent       = 0x0020,
    scriptEvent       = 0x0023,
    newobjectEvent    = 0x0024,
    delobjectEvent    = 0x0025,

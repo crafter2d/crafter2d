@@ -35,7 +35,9 @@
 #include "../script.h"
 #include "../scriptmanager.h"
 
-#include "../vfs/unzipfile.h"
+#include "vfs/unzipfile.h"
+
+#include "guidialog/guidialog.h"
 
 #include "guitext.h"
 #include "guibutton.h"
@@ -43,7 +45,6 @@
 #include "guiedit.h"
 #include "guifont.h"
 #include "guistatic.h"
-#include "guidialog.h"
 #include "guieventhandler.h"
 #include "guieventhandlers.h"
 #include "guieventhandlerdefinitions.h"

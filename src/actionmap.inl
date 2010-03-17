@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "defines.h"
 
-INLINE Action InputEvent::getAction() const
+INLINE Action ActionEvent::getAction() const
 {
    return action; 
 }
 
-INLINE bool InputEvent::isDown() const
+INLINE bool ActionEvent::isDown() const
 {
    return down; 
 }

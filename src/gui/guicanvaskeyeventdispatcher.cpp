@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,23 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "point.h"
 
-// static
-Point& Point::zero()
+#include "guicanvaskeyeventdispatcher.h"
+
+#include "input/keyevent.h"
+
+#include "guicanvas.h"
+#include "guifocus.h"
+
+GuiCanvasKeyEventDispatcher::GuiCanvasKeyEventDispatcher(GuiCanvas& canvas):
+   KeyEventDispatcher(),
+   mCanvas(canvas)
 {
-  static Point sZero;
-  return sZero;
 }
 
-Point::Point():
-   mX(0),
-   mY(0)
+GuiCanvasKeyEventDispatcher::~GuiCanvasKeyEventDispatcher()
 {
 }
 
-Point::Point(int x, int y):
-   mX(x),
-   mY(y)
+//-----------------------------------
+// - Dispatching
+//-----------------------------------
+
+void GuiCanvasKeyEventDispatcher::dispatch(const KeyEvent& keyevent)
 {
+   if ( GuiFocus::getInstance().hasFocus() )
+   {
+      GuiWnd& focussed = GuiFocus::getInstance().getFocus();
+      focussed.fireKeyEvent(keyevent);
+   }
+
+   // for not converted windows
+   if ( keyevent.getEventType() == KeyEvent::ePressed )
+   {
+     mCanvas.onKeyDown(keyevent.getKey(), keyevent.isShiftDown(), keyevent.isCtrlDown(), keyevent.isAltDown());
+   }
+   else
+   {
+     mCanvas.onKeyUp(keyevent.getKey());
+   }
 }

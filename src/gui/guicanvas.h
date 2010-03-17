@@ -22,6 +22,10 @@
 
 #include "guiwnd.h"
 #include "guiwndreference.h"
+#include "guicanvaskeyeventdispatcher.h"
+#include "guicanvasmouseeventdispatcher.h"
+
+class GuiDesigner;
 
 /**
 @author Jeroen Broekhuizen
@@ -47,6 +51,9 @@ public:
                   GuiCanvas();
    virtual        ~GuiCanvas();
 
+   void              create(GuiId id, const GuiRect& rect, const char* caption = "", GuiStyle style=0, GuiWnd* parent=NULL);
+   virtual void      destroy();
+
    void           quit();
 
    void           render(Uint32 tick);
@@ -57,6 +64,9 @@ public:
    void           popWindow();
    void           popWindow(GuiWnd* wnd);
    void           popAll();
+
+   bool           isDesigning() const;
+   GuiDesigner&   getDesigner();
 
    void           changeDefaultColor(GuiStandardColor color, const GuiColor& newColor);
    void           changeDefaultColor(int color, const GuiColor& newColor);
@@ -78,6 +88,10 @@ protected:
    void           setFocus(GuiWnd* pwnd);
    void           findFocusUnderCursor(const GuiPoint& point);
 
+  // build-in apps
+   void           switchDesigner();
+   void           switchEditor();
+
 private:
    void           doPopWindow(GuiList::Iterator it);
 
@@ -87,6 +101,11 @@ private:
    GuiList           windows;
    GuiList           modal;
    GuiWndReference   activeWnd;
+
+   GuiDesigner*      mpDesigner;
+
+   GuiCanvasKeyEventDispatcher   mKeyDispatcher;
+   GuiCanvasMouseEventDispatcher mMouseDispatcher;
 };
 
 #ifdef JENGINE_INLINE

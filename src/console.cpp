@@ -24,8 +24,9 @@
 
 #include <fstream>
 
+#include "gui/guidialog/guidialog.h"
+
 #include "gui/guicanvas.h"
-#include "gui/guidialog.h"
 #include "gui/guiedit.h"
 #include "gui/guilistbox.h"
 

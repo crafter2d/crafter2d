@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,23 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "point.h"
 
-// static
-Point& Point::zero()
+#include "guidialogkeylistener.h"
+
+#include <SDL/SDL.h>
+
+#include "../input/keyevent.h"
+
+#include "guidialog.h"
+
+GuiDialogKeyListener::GuiDialogKeyListener(GuiDialog& dialog):
+   KeyListener(),
+   mDialog(dialog)
 {
-  static Point sZero;
-  return sZero;
 }
 
-Point::Point():
-   mX(0),
-   mY(0)
+GuiDialogKeyListener::~GuiDialogKeyListener()
 {
 }
 
-Point::Point(int x, int y):
-   mX(x),
-   mY(y)
+void GuiDialogKeyListener::onKeyReleased(const KeyEvent& event)
 {
+   switch ( event.getKey() )
+   {
+   case SDLK_RETURN:
+      mDialog.close(true);
+      break;
+   case SDLK_ESCAPE:
+      mDialog.close(false);
+      break;
+   default:
+      break;
+   }
 }

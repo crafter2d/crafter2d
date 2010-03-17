@@ -101,7 +101,7 @@ int GuiDesignDecorator::onLButtonDown (const GuiPoint& point, int flags)
    if ( !IS_SET(flags,GuiCtrl) )
    {
       dynamic_cast<GuiDesignWnd*>(getParent())->unselectAll();
-      Game::getInstance().designer().focusChanged(control());
+      Game::getInstance().getCanvas().getDesigner().focusChanged(control());
 
       hasSelection = false;
    }

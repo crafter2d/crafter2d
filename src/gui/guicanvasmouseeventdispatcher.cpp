@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,23 +17,48 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "point.h"
 
-// static
-Point& Point::zero()
-{
-  static Point sZero;
-  return sZero;
-}
+#include "guicanvasmouseeventdispatcher.h"
 
-Point::Point():
-   mX(0),
-   mY(0)
+#include "input/mouseevent.h"
+
+#include "guicanvas.h"
+
+GuiCanvasMouseEventDispatcher::GuiCanvasMouseEventDispatcher(GuiCanvas& canvas):
+   MouseEventDispatcher(),
+   mCanvas(canvas)
 {
 }
 
-Point::Point(int x, int y):
-   mX(x),
-   mY(y)
+GuiCanvasMouseEventDispatcher::~GuiCanvasMouseEventDispatcher()
 {
+}
+
+void GuiCanvasMouseEventDispatcher::dispatch(const MouseEvent& event)
+{
+   GuiPoint point = GuiPoint(event.getLocation());
+
+   switch ( event.getEventType() )
+   {
+      case MouseEvent::ePressed:
+         if ( event.isLeftButtonDown() )
+            mCanvas.onLButtonDown(point, event.getModifiers());
+         else if ( event.isRightButtonDown() )
+            mCanvas.onRButtonDown(point, event.getModifiers());
+         break;
+      case MouseEvent::eReleased:
+         if ( event.isLeftButtonDown() )
+            mCanvas.onLButtonUp(point, event.getModifiers());
+         else if ( event.isWheelUp() )
+            mCanvas.onMouseWheel(point, -1, event.getModifiers());
+         else if ( event.isWheelDown() )
+            mCanvas.onMouseWheel(point, 1, event.getModifiers());
+         break;
+      case MouseEvent::eMotion:
+         {
+            GuiPoint rel = GuiPoint(event.getRelative());
+            mCanvas.onMouseMove(point, rel, event.getModifiers());
+         }
+         break;
+   }
 }

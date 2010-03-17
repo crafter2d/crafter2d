@@ -278,6 +278,10 @@ GuiWnd* GuiWnd::getItemById (GuiId id) const
 	return NULL;
 }
 
+//-----------------------------------
+// - Rendering
+//-----------------------------------
+
 void GuiWnd::render(Uint32 tick, const GuiGraphics& graphics)
 {
    if ( getVisible() )
@@ -392,9 +396,28 @@ void GuiWnd::validate()
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------
+// - Listeners
+//-----------------------------------
+
+void GuiWnd::addKeyListener(KeyListener& listener)
+{
+  mKeyListeners.addListener(listener);
+}
+
+void GuiWnd::removeKeyListener(const KeyListener& listener)
+{
+  mKeyListeners.removeListener(listener);
+}
+
+void GuiWnd::fireKeyEvent(const KeyEvent& event)
+{
+  mKeyListeners.fireKeyEvent(event);
+}
+
+//-----------------------------------
 // - Notification interface
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------
 
 void GuiWnd::attach(GuiWndObserver& observer)
 {
@@ -423,9 +446,9 @@ void GuiWnd::notifyDestroyed()
    }
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------
 // - Input interface
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------
 
 void GuiWnd::onMouseMove (const GuiPoint& point, const GuiPoint& rel, int flags)
 {

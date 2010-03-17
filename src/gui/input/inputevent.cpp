@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,59 +17,57 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef DEFINES_OF_JENGINE_H_
-#define DEFINES_OF_JENGINE_H_
 
-#include <assert.h>
+#include "inputevent.h"
 
-#ifndef NULL
-#define NULL 0
-#endif
+#include <SDL/SDL.h>
 
-// Uncomment next line to enable auto disconnecting after timeout
-//#define JENGINE_AUTODISCONNECT
+#include "../../defines.h"
 
-// Uncomment the next line to disable inlining.
-//#define JENGINE_INLINE
+// - Statics
 
-#define JENGINE_STATISTICS_LIMIT    250
+// static
+int InputEvent::getModifiers()
+{
+   int mode = SDL_GetModState();
+   int modifiers = eNone;
 
-#define JENGINE_MSG_HANDLED         0
-#define JENGINE_MSG_UNHANDLED       1
+   if ( IS_SET(mode, KMOD_SHIFT) )
+      SET_FLAG(modifiers, eShift);
 
-#ifdef JENGINE_INLINE
-#  define INLINE inline
-#else
-#  define INLINE
-#endif
+   if ( IS_SET(mode, KMOD_CTRL) )
+      SET_FLAG(modifiers, eCtrl);
 
-typedef unsigned int uint;
-typedef void*        handle;
+   if ( IS_SET(mode, KMOD_ALT) )
+      SET_FLAG(modifiers, eAlt);
 
-#define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
+   return modifiers;
+}
 
-#define MIN(x,y) ( x<y ? x : y )
-#define MAX(x,y) ( x>y ? x : y )
+// - Construction
 
-#define IS_SET(container,flag)((container & flag) == flag)
-#define SET_FLAG(container,flag)   container |= flag
-#define CLEAR_FLAG(container,flag) container &= ~flag
+InputEvent::InputEvent(int keymodifiers):
+   mKeyModifiers(keymodifiers)
+{
+}
 
-// Debugging macros
+InputEvent::~InputEvent()
+{
+}
 
-/*
-#define ASSERT(cond)          assert(cond);
-#define ASSERT_MSG(cond,msg)  assert(cond && msg);
-#define ASSERT_PTR(ptr)       assert(ptr != NULL);
-#define PURE_VIRTUAL          assert(false && "Pure virtual!");
-#define UNREACHABLE(msg)      assert(false && msg);
-*/
+// - Query
 
-#define ASSERT(cond)        ;
-#define ASSERT_MSG(cond,msg) ;
-#define ASSERT_PTR(ptr)     ;
-#define PURE_VIRTUAL        ;
-#define UNREACHABLE(msg)    ;
+bool InputEvent::isShiftDown() const
+{
+   return IS_SET(mKeyModifiers, eShift);
+}
 
+bool InputEvent::isCtrlDown() const
+{
+   return IS_SET(mKeyModifiers, eCtrl);
+}
 
-#endif
+bool InputEvent::isAltDown() const
+{
+   return IS_SET(mKeyModifiers, eAlt);
+}

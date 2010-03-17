@@ -20,9 +20,10 @@
 #ifndef _GUIDIALOG_H_
 #define _GUIDIALOG_H_
 
-#include "../resources.h"
-#include "guiwindow.h"
-#include "guiimagebutton.h"
+#include "../../resources.h"
+
+#include "../guiwindow.h"
+#include "../guiimagebutton.h"
 
 /*! @author Jeroen Broekhuizen
  
@@ -37,20 +38,24 @@ public:
    virtual void   onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag);
    virtual int    onLButtonDown(const GuiPoint& point, int flags);
    virtual int    onLButtonUp(const GuiPoint& point, int flags);
-   virtual void   onKeyDown(int which, bool shift, bool ctrl, bool alt);
 
    bool  isModal() const;
    int   doModal();
    void  endModal(int retValue);
 
 protected:
+   friend class GuiDialogKeyListener;
+
+  // overloads
    virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
    virtual void   onRender(Uint32 tick, const GuiGraphics& graphics);
    virtual void   initializeEventHandlerDefinitions();
 
+  // operations
    bool           isAboveCloseButton(const GuiPoint& point) const;
    void           close(bool ok);
 
+  // rendering
    void           renderCaption(const GuiGraphics& graphics);
 
    DECLARE_PROPERTIES

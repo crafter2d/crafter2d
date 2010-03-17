@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,59 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef DEFINES_OF_JENGINE_H_
-#define DEFINES_OF_JENGINE_H_
+#ifndef GUICANVAS_MOUSEEVENT_DISPATCHER_H
+#define GUICANVAS_MOUSEEVENT_DISPATCHER_H
 
-#include <assert.h>
+#include "input/mouseeventdispatcher.h"
 
-#ifndef NULL
-#define NULL 0
-#endif
+class GuiCanvas;
 
-// Uncomment next line to enable auto disconnecting after timeout
-//#define JENGINE_AUTODISCONNECT
+class GuiCanvasMouseEventDispatcher : public MouseEventDispatcher
+{
+public:
+   explicit GuiCanvasMouseEventDispatcher(GuiCanvas& canvas);
+   virtual ~GuiCanvasMouseEventDispatcher();
 
-// Uncomment the next line to disable inlining.
-//#define JENGINE_INLINE
+   virtual void dispatch(const MouseEvent& event);
 
-#define JENGINE_STATISTICS_LIMIT    250
-
-#define JENGINE_MSG_HANDLED         0
-#define JENGINE_MSG_UNHANDLED       1
-
-#ifdef JENGINE_INLINE
-#  define INLINE inline
-#else
-#  define INLINE
-#endif
-
-typedef unsigned int uint;
-typedef void*        handle;
-
-#define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
-
-#define MIN(x,y) ( x<y ? x : y )
-#define MAX(x,y) ( x>y ? x : y )
-
-#define IS_SET(container,flag)((container & flag) == flag)
-#define SET_FLAG(container,flag)   container |= flag
-#define CLEAR_FLAG(container,flag) container &= ~flag
-
-// Debugging macros
-
-/*
-#define ASSERT(cond)          assert(cond);
-#define ASSERT_MSG(cond,msg)  assert(cond && msg);
-#define ASSERT_PTR(ptr)       assert(ptr != NULL);
-#define PURE_VIRTUAL          assert(false && "Pure virtual!");
-#define UNREACHABLE(msg)      assert(false && msg);
-*/
-
-#define ASSERT(cond)        ;
-#define ASSERT_MSG(cond,msg) ;
-#define ASSERT_PTR(ptr)     ;
-#define PURE_VIRTUAL        ;
-#define UNREACHABLE(msg)    ;
-
+private:
+   GuiCanvas& mCanvas;
+};
 
 #endif

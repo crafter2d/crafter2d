@@ -29,6 +29,8 @@
 #include "server.h"
 #include "client.h"
 #include "gamesettings.h"
+#include "gamewindow.h"
+#include "defaultgamewindowlistener.h"
 
 #define DECLARE_APPLICATION(title) \
    const char* getTitle() { return title; }
@@ -60,11 +62,10 @@ public:
    virtual              ~Game() = 0;
 
  // get/set interface
-         bool                 designing() const;
-         void                 designing(bool designing);
-
    const GameConfiguration&   getConfiguration() const;
          void                 setConfiguration(const GameConfiguration& pconfiguration);
+
+         GameWindow&          getGameWindow();
 
          void                 setActive(bool act=true);
          bool                 isActive() const;
@@ -75,7 +76,6 @@ public:
          Server&              getServer();
          Client&              getClient();
          GuiCanvas&           getCanvas();
-         GuiDesigner&         designer();
 
  // operations
    bool                 create();
@@ -89,6 +89,10 @@ public:
    int                  getScreenWidth() const;
    int                  getScreenHeight() const;
 
+  // notifications
+   void onWindowResized();
+   void onWindowClosed();
+
  // overloads
    virtual void         loadCustomScriptLibraries();
 
@@ -99,42 +103,27 @@ protected:
  // overloadables
    virtual bool         initGame();
    virtual void         endGame();
-   virtual void         updateFrame(Uint8* keys);
    virtual void         drawFrame(Uint32 tick) = 0;
-
-   virtual bool         onResize(int width, int height);
 
    void                 onKeyboardEvent(const SDL_KeyboardEvent& event);
    void                 onMouseButtonEvent(const SDL_MouseButtonEvent& event);
    void                 onMouseMoveEvent(const SDL_MouseMotionEvent& event);
 
    bool        active;
-   bool        keyboardEventsEnabled;
-   int         width;
-   int         height;
-   GuiCanvas   canvas;
    Server      server;
    Client      client;
 
 private:
    void                 initOpenGL();
-   int                  preConfigScreen();
    void                 runFrame();
-   int                  mouseKeyFlags();
 
-   void                 switchDesigner();
-   void                 switchEditor();
-
-   GameSettings         mSettings;
-   GuiColor             mGlClearColor;
-   std::string          mTitle;
-   GameConfiguration*   mpConfiguration;     // owned
-   SDL_Surface*         window;
-   GuiDesigner*         mpDesigner;
-   TimerData*           mpTimerData;
-   int                  bitdepth;
-   int                  videoFlags;
-   bool                 mDesigning;
+   GameSettings              mSettings;
+   GameConfiguration*        mpConfiguration;     // owned
+   GameWindow                mWindow;
+   DefaultGameWindowListener mWindowListener;
+   std::string               mTitle;
+   GuiCanvas                 mCanvas;
+   TimerData*                mpTimerData;
 };
 
 #ifdef JENGINE_INLINE

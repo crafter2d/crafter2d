@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "gameconfigurationselector.h"
 
-#include "gui/guidialog.h"
+#include "gui/guidialog/guidialog.h"
 #include "gui/guilistbox.h"
 #include "gui/guimanager.h"
 

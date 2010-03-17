@@ -35,11 +35,10 @@
 #include "tools/profiler/profiler.h"
 #include "tools/profiler/profilerinstance.h"
 
-#include "gui/guimanager.h"
-#include "gui/guidesigner.h"
 #include "gui/guifocus.h"
-#include "gui/guidialog.h"
+#include "gui/guidialog/guidialog.h"
 #include "gui/guifont.h"
+#include "gui/guimanager.h"
 
 #include "net/netobjectfactory.h"
 
@@ -75,22 +74,15 @@ int main(int argc, char *argv[])
  */
 Game::Game():
    active(true),
-   keyboardEventsEnabled(true),
-   width(800),
-   height(600),
-   canvas(),
    server(),
    client(),
    mSettings(),
-   mGlClearColor(),
-   mTitle(),
    mpConfiguration(NULL),
-   window(NULL),
-   mpDesigner(NULL),
-   mpTimerData(NULL),
-   bitdepth(32),
-   videoFlags(0),
-   mDesigning(false)
+   mWindow(),
+   mWindowListener(*this),
+   mTitle(),
+   mCanvas(),
+   mpTimerData(NULL)
 {
 }
 
@@ -101,8 +93,6 @@ Game::Game():
 Game::~Game()
 {
 }
-
-#include "physics/collisionplane.h"
 
 /*!
     \fn Game::create(char* caption, int w, int h, int bd)
@@ -115,8 +105,6 @@ Game::~Game()
  */
 bool Game::create()
 {
-   CollisionPlane::construct(Vector(4,1), Vector(4,3));
-
    Log& log = Console::getLog();
    log << "JEngine SSE V0.4.4 - Copyright 2006 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
@@ -135,7 +123,7 @@ bool Game::create()
    scriptMgr.initialize ();
    loadCustomScriptLibraries();
 
-   scriptMgr.setObject(&canvas, "GuiCanvas", "canvas");
+   scriptMgr.setObject(&mCanvas, "GuiCanvas", "canvas");
    scriptMgr.setObject(&server, "Server", "server");
    scriptMgr.setObject(&client, "Client", "client");
    scriptMgr.setObject(&Console::getInstance(), "Console", "console");
@@ -149,20 +137,14 @@ bool Game::create()
 
    log << "\n-- Initializing Graphics --\n\n";
 
-   int videoFlags = preConfigScreen();
-   if (videoFlags == 0)
+   mWindow.addListener(mWindowListener);
+   if ( !mWindow.create(mTitle, mSettings.getWidth(), mSettings.getHeight(), mSettings.getBitDepth(), mSettings.getFullScreen()) )
+   {
       return false;
-
-   // set up opengl viewport & matrices
-   if ( !onResize(mSettings.getWidth(), mSettings.getHeight()) )
-      return false;
-
-   // set the caption of the window
-   SDL_WM_SetCaption(mTitle.c_str(), mTitle.c_str());
-   SDL_EnableUNICODE(1);
+   }
 
    // now initialize OpenGL for rendering
-   initOpenGL ();
+   initOpenGL();
 
    // initialize the window manager
    GuiManager& manager = GuiManager::getInstance();
@@ -179,9 +161,9 @@ bool Game::create()
    console.create ();
 
    // create the gui canvas
-   canvas.create(0, GuiRect(0, mSettings.getWidth(), 0, mSettings.getHeight()));
-   canvas.changeDefaultColor(GuiCanvas::GuiWindowColor, mSettings.getWindowColor());
-   canvas.changeDefaultColor(GuiCanvas::GuiBorderColor, mSettings.getBorderColor());
+   mCanvas.create(0, GuiRect(0, mWindow.getWidth(), 0, mWindow.getHeight()));
+   mCanvas.changeDefaultColor(GuiCanvas::GuiWindowColor, mSettings.getWindowColor());
+   mCanvas.changeDefaultColor(GuiCanvas::GuiBorderColor, mSettings.getBorderColor());
 
 #ifdef WIN32
    NetConnection::initialize();
@@ -244,12 +226,7 @@ void Game::destroy()
    AVIFileExit();
 #endif
 
-	if ( window != NULL )
-   {
-		// release main window
-		SDL_FreeSurface (window);
-		window = NULL;
-	}
+   mWindow.destroy();
 
 	// finish of SDL
 	SDL_Quit ();
@@ -261,55 +238,26 @@ void Game::loadCustomScriptLibraries()
 {
 }
 
-int Game::preConfigScreen()
+//////////////////////////////////////////////////////////////////////////
+// - Notifications
+//////////////////////////////////////////////////////////////////////////
+
+void Game::onWindowResized()
 {
-   Log& log = Console::getLog();
+   // set the new opengl states
+   glViewport(0, 0, mWindow.getWidth(), mWindow.getHeight());
 
-	const SDL_VideoInfo *videoInfo;
-	videoInfo = SDL_GetVideoInfo();
-	if (videoInfo == NULL)
-   {
-      log << "Can't get video information about graphics card.";
-		return 0;
-	}
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrtho(0, mWindow.getWidth(), mWindow.getHeight(), 0, 0, 1000);
 
-	// set up initial flags
-	videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER;
-   if ( mSettings.getFullScreen() )
-      videoFlags |= SDL_FULLSCREEN;
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+}
 
-	// try to use hardware surface (in videomemory)
-	if (videoInfo->hw_available)
-   {
-		videoFlags |= SDL_HWSURFACE;
-      log << "Hardware rendering is supported\n";
-	}
-	else
-   {
-      log << "Switching to software rendering mode\n";
-		videoFlags |= SDL_SWSURFACE;
-	}
-
-	// see if hardware blitting is supported on the platform
-	if (videoInfo->blit_hw)
-		videoFlags |= SDL_HWACCEL;
-
-   int width    = mSettings.getWidth();
-   int height   = mSettings.getHeight();
-   int bitdepth = mSettings.getBitDepth();
-
-	// make sure that the bitdepth is valid
-   bitdepth = SDL_VideoModeOK(width, height, bitdepth, videoFlags);
-	if (bitdepth == 0)
-   {
-      log << "Bitdepth is not supported with resolution " << width << "x" << height << "\n";
-		return 0;
-	}
-	else
-      log << "Screen resolution:\t" << width << "x" << height << "x" << bitdepth << "\n";
-
-	SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1);
-	return videoFlags;
+void Game::onWindowClosed()
+{
+  active = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -358,148 +306,9 @@ void Game::run()
 
 void Game::processFrame()
 {
-   SDL_Event event;
+   mWindow.handleEvents();
 
-	while (SDL_PollEvent (&event))
-   {
-		switch (event.type) {
-		case SDL_VIDEORESIZE:
-  		   if (!onResize (event.resize.w, event.resize.h))
-				active = false;
-			break;
-      case SDL_KEYDOWN:
-      case SDL_KEYUP:
-         onKeyboardEvent(event.key);
-         break;
-      case SDL_MOUSEMOTION:
-         onMouseMoveEvent(event.motion);
-         break;
-      case SDL_MOUSEBUTTONDOWN:
-      case SDL_MOUSEBUTTONUP:
-         onMouseButtonEvent (event.button);
-         break;
-		case SDL_QUIT:
-			active = false;
-			break;
-		}
-	}
-
-	// get the keystate
-	Uint8* keys = SDL_GetKeyState (NULL);
-
-	// do a frame
-	//updateFrame (keys);
-	runFrame ();
-}
-
-void Game::onKeyboardEvent (const SDL_KeyboardEvent& event)
-{
-   SDLMod mode = SDL_GetModState();
-
-   bool shift = IS_SET(mode, KMOD_SHIFT);
-   bool ctrl  = IS_SET(mode, KMOD_CTRL);
-   bool alt   = IS_SET(mode, KMOD_ALT);
-
-   if (event.type == SDL_KEYDOWN)
-   {
-      canvas.onKeyDown (event.keysym.unicode == 0 ? event.keysym.sym : event.keysym.unicode & 0x7F, shift, ctrl ,alt);
-   }
-   else
-   {
-      switch ( event.keysym.sym )
-      {
-      case SDLK_F3:
-         switchDesigner();
-         break;
-      case SDLK_F4:
-         switchEditor();
-         break;
-      default:
-         canvas.onKeyUp (event.keysym.unicode == 0 ? event.keysym.sym : event.keysym.unicode & 0x7F);
-         break;
-      }
-   }
-}
-
-void Game::onMouseButtonEvent (const SDL_MouseButtonEvent& event)
-{
-   int flags = mouseKeyFlags();
-
-   switch (event.type) {
-      case SDL_MOUSEBUTTONUP:
-         if (event.button == SDL_BUTTON_LEFT)
-            canvas.onLButtonUp(GuiPoint(event.x, event.y), flags);
-         else if (event.button == SDL_BUTTON_WHEELUP)
-            canvas.onMouseWheel(GuiPoint(event.x, event.y), -1, flags);
-         else if (event.button == SDL_BUTTON_WHEELDOWN)
-            canvas.onMouseWheel(GuiPoint(event.x, event.y), 1, flags);
-         break;
-      case SDL_MOUSEBUTTONDOWN:
-         if (event.button == SDL_BUTTON_LEFT)
-            canvas.onLButtonDown(GuiPoint(event.x, event.y), flags);
-         else if (event.button == SDL_BUTTON_RIGHT)
-            canvas.onRButtonDown(GuiPoint(event.x, event.y), flags);
-         break;
-   }
-}
-
-void Game::onMouseMoveEvent (const SDL_MouseMotionEvent& event)
-{
-   int flag = mouseKeyFlags();
-   if (event.state == SDL_BUTTON(1))
-      flag |= GuiLButton;
-   canvas.onMouseMove (GuiPoint(event.x, event.y), GuiPoint(event.xrel, event.yrel), flag);
-}
-
-int Game::mouseKeyFlags()
-{
-   Uint8* keys;
-   keys = SDL_GetKeyState (NULL);
-
-   int flags = 0;
-   if ( keys[SDLK_LCTRL] || keys[SDLK_RCTRL] )
-   {
-      flags = GuiCtrl;
-   }
-   if ( keys[SDLK_LALT] || keys[SDLK_RALT] )
-   {
-      flags |= GuiAlt;
-   }
-   if ( keys[SDLK_LSHIFT] || keys[SDLK_RSHIFT] )
-   {
-      flags |= GuiShift;
-   }
-
-   return flags;
-}
-
-/*!
-    \fn Game::onResize(int width, int height)
-	 Called when the windows size has changed.
-	 \param[in] width new width of the window
-	 \param[in] height new height of the window
-	 \return Nothing
- */
-bool Game::onResize(int width, int height)
-{
-   // try to set the new video mode
-   window = SDL_SetVideoMode (width, height, bitdepth, videoFlags);
-   if ( window == NULL )
-   {
-      Console::getLog() << "Could not resize window to " << width << "x" << height << ": " << SDL_GetError();
-      return false;
-   }
-
-   // set the new opengl states
-   glViewport (0, 0, width, height);
-
-   glMatrixMode (GL_PROJECTION);
-   glLoadIdentity ();
-   glOrtho (0,width,height,0,0,1000);
-
-   glMatrixMode (GL_MODELVIEW);
-   glLoadIdentity ();
-   return true;
+   runFrame();
 }
 
 /*!
@@ -510,8 +319,8 @@ bool Game::onResize(int width, int height)
 */
 void Game::getWindowDimensions(int& w, int& h)
 {
-   w = width;
-   h = height;
+   w = mWindow.getWidth();
+   h = mWindow.getHeight();
 }
 
 /*!
@@ -551,21 +360,6 @@ void Game::endGame()
 }
 
 /*!
-    \fn Game::updateFrame()
-	 \brief Called when next frame should be prepared. Overload it to handle key actions etc before next
-	 frame is rendered.
-	 \returns Nothing
- */
-void Game::updateFrame(Uint8* keys)
-{
-   if (keys[SDLK_F1])
-      //SDL_WM_ToggleFullScreen (window);
-
-   if (keys[SDLK_PRINT])
-      SDL_SaveBMP (window, "screen1");
-}
-
-/*!
     \fn Game::runFrame()
 	 \brief Called when next frame should be rendered. Overload it to render your own custom objects.
 	 \returns Nothing
@@ -593,7 +387,7 @@ void Game::runFrame()
    glEnable (GL_ALPHA_TEST);
 
    // call overloaded function
-   canvas.render(tick);
+   mCanvas.render(tick);
    drawFrame(tick);
    
    //glDisable(GL_MULTISAMPLE);
@@ -605,33 +399,3 @@ void Game::runFrame()
    SDL_GL_SwapBuffers ();
 }
 
-void Game::switchDesigner()
-{
-   if ( !designing() )
-   {
-      designing(true);
-
-      mpDesigner = new GuiDesigner();
-      mpDesigner->create(1, GuiRect(0,300,0,300), "Designer", 1420, &canvas);
-      mpDesigner->center();
-
-      canvas.pushWindow(mpDesigner);
-   }
-   else if ( designing() )
-   {
-      designing(false);
-      canvas.popWindow(mpDesigner);
-
-      mpDesigner->destroy();
-      delete mpDesigner;
-      mpDesigner = NULL;
-   }
-}
-
-void Game::switchEditor()
-{
-   GuiDialog* peditor = GuiManager::getInstance().loadDialogFromXML("te_editor");
-   peditor->center();
-
-   canvas.pushWindow(peditor);
-}

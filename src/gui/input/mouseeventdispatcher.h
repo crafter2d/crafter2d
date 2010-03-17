@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,23 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "point.h"
+#ifndef MOUSE_EVENT_DISPATCHER
+#define MOUSE_EVENT_DISPATCHER
 
-// static
-Point& Point::zero()
-{
-  static Point sZero;
-  return sZero;
-}
+class MouseEvent;
 
-Point::Point():
-   mX(0),
-   mY(0)
+class MouseEventDispatcher
 {
-}
+public:
+   MouseEventDispatcher();
+   virtual ~MouseEventDispatcher();
 
-Point::Point(int x, int y):
-   mX(x),
-   mY(y)
-{
-}
+   virtual void dispatch(const MouseEvent& event) = 0;
+};
+
+#endif

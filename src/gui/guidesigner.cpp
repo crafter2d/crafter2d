@@ -32,7 +32,7 @@
 #include "guidesignwnd.h"
 #include "guidesigndecorator.h"
 #include "guidesignmenu.h"
-#include "guidialog.h"
+#include "guidialog/guidialog.h"
 #include "guiedit.h"
 #include "guilist.h"
 #include "guimenu.h"

@@ -24,11 +24,13 @@
 #  include "guicanvas.inl"
 #endif
 
-#include "../game.h"
+#include "game.h"
 
 #include "guifocus.h"
-#include "guidialog.h"
+#include "guidialog/guidialog.h"
 #include "guiclipper.h"
+#include "guidesigner.h"
+#include "guimanager.h"
 
 GuiColor GuiCanvas::defaultColors[GuiCanvas::MaxGuiColors];
 
@@ -37,7 +39,10 @@ GuiCanvas::GuiCanvas():
    graphics(),
    windows(),
    modal(),
-   activeWnd()
+   activeWnd(),
+   mpDesigner(NULL),
+   mKeyDispatcher(*this),
+   mMouseDispatcher(*this)
 {
    graphics.canvas(this);
 }
@@ -72,6 +77,20 @@ bool GuiCanvas::isCtrl()
 // - Construction
 //////////////////////////////////////////////////////////////////////////
 
+
+void GuiCanvas::create(GuiId id, const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
+{
+   GuiWnd::create(id, rect, caption, style, parent);
+
+   GameWindow& window = Game::getInstance().getGameWindow();
+   window.setKeyEventDispatcher(mKeyDispatcher);
+   window.setMouseEventDispatcher(mMouseDispatcher);
+}
+
+void GuiCanvas::destroy()
+{
+   GuiWnd::destroy();
+}
 
 //////////////////////////////////////////////////////////////////////////
 // - Painting
@@ -220,10 +239,22 @@ void GuiCanvas::onKeyDown(int which, bool shift, bool ctrl, bool alt)
 
 void GuiCanvas::onKeyUp (int which)
 {
-   GuiFocus& focus = GuiFocus::getInstance();
-   if ( focus.hasFocus() )
+   switch ( which )
    {
-      focus.getFocus().onKeyUp(which);
+   case SDLK_F3:
+      switchDesigner();
+      break;
+   case SDLK_F4:
+      switchEditor();
+      break;
+   default:
+      {
+         GuiFocus& focus = GuiFocus::getInstance();
+         if ( focus.hasFocus() )
+         {
+            focus.getFocus().onKeyUp(which);
+         }
+      }
    }
 }
 
@@ -362,3 +393,34 @@ void GuiCanvas::quit()
    Game::getInstance().setActive(false);
 }
 
+// - Build-in applications
+
+void GuiCanvas::switchDesigner()
+{
+   if ( isDesigning() )
+   {
+      mpDesigner = new GuiDesigner();
+      mpDesigner->create(1, GuiRect(0,300,0,300), "Designer", 1420, this);
+      mpDesigner->center();
+
+      pushWindow(mpDesigner);
+   }
+   else
+   {
+      ASSERT_PTR(mpDesigner);
+
+      popWindow(mpDesigner);
+
+      mpDesigner->destroy();
+      delete mpDesigner;
+      mpDesigner = NULL;
+   }
+}
+
+void GuiCanvas::switchEditor()
+{
+   GuiDialog* peditor = GuiManager::getInstance().loadDialogFromXML("te_editor");
+   peditor->center();
+
+   pushWindow(peditor);
+}

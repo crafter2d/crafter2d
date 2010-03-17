@@ -27,29 +27,29 @@
 #include "scriptmanager.h"
 #include "object.h"
 
-IMPLEMENT_REPLICATABLE(InputEventId, InputEvent, NetEvent)
+IMPLEMENT_REPLICATABLE(ActionEventId, ActionEvent, NetEvent)
 
-InputEvent::InputEvent(): 
-   NetEvent(inputEvent),
+ActionEvent::ActionEvent(): 
+   NetEvent(actionEvent),
    action(none),
    down(false)
 {
 }
 
-InputEvent::InputEvent(Action act, bool dwn): 
-   NetEvent(inputEvent), 
+ActionEvent::ActionEvent(Action act, bool dwn): 
+   NetEvent(actionEvent), 
    action(act), 
    down(dwn)
 {
 }
 
-void InputEvent::pack(BitStream& stream) const
+void ActionEvent::pack(BitStream& stream) const
 {
    NetEvent::pack(stream);
    stream << action << down;
 }
 
-void InputEvent::unpack(BitStream& stream)
+void ActionEvent::unpack(BitStream& stream)
 {
    NetEvent::unpack(stream);
    stream >> (int&)action >> down;
@@ -77,7 +77,7 @@ bool ActionMap::process (int key, bool down)
    return true;
 }
 
-bool ActionMap::process(const InputEvent& event, Object* obj)
+bool ActionMap::process(const ActionEvent& event, Object* obj)
 {
    Action action = event.getAction();
    if (actions.find(action) == actions.end())
@@ -117,10 +117,11 @@ bool KeyMap::process(int key, bool down)
       ActionMap* map = Game::getInstance().getClient().getActionMap();
       if (map) map->process(action, down);
    }
-   else {
+   else
+   {
       // set up an input event
       BitStream stream;
-      InputEvent event(static_cast<Action>(action), down);
+      ActionEvent event(static_cast<Action>(action), down);
       stream << &event;
 
       // send the event to the server

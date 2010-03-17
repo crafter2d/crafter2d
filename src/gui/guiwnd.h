@@ -22,6 +22,8 @@
 
 #include "../texture.h"
 
+#include "input/keylisteners.h"
+
 #include "guigraphics.h"
 #include "guilist.h"
 #include "guidefines.h"
@@ -38,6 +40,8 @@ class GuiEventHandlers;
 class GuiFont;
 
 class LayoutManager;
+
+class KeyListener;
 
 /*! @author Jeroen Broekhuizen
  
@@ -82,87 +86,99 @@ public:
  // statics
    static void onBackgroundChanged(GuiWnd* pwnd);
 
-	                  GuiWnd();
-	virtual           ~GuiWnd();
+	                    GuiWnd();
+   virtual           ~GuiWnd();
 
    void              create(GuiId id, const GuiRect& rect, const char* caption = "", GuiStyle style=0, GuiWnd* parent=NULL);
-	virtual void      destroy();
+   virtual void      destroy();
  
-	void              render(Uint32 tick, const GuiGraphics& graphics);
+  // rendering
+   void              render(Uint32 tick, const GuiGraphics& graphics);
 
+   void              invalidate();
+   void              validate();
+
+  // maintenance
    void              addChild(GuiWnd* wnd);
    bool              isChild(GuiWnd* pwnd) const;
    GuiWnd*           findChildByName(const std::string& name);
-   void              removeChild(GuiWnd* wnd);
-
-   bool              hasParent() const;
-   bool              isTopmost() const;
-	
-	void              setParent(GuiWnd* p);
-   void              setTopmost(bool topmost);
-	void              setFont(GuiFont* f);
-   void              setWindowRect(const GuiRect& rect);
-	
-   void              setWindowPos(int x, int y);
-   void              resizeWindow(int w, int h);
-   void              moveWindow(int x, int y);
-   void              center();
-	
+   void              removeChild(GuiWnd* wnd);   
+   
+  // get/set
    GuiId              getId() const;
    GuiStyle           getStyle() const;
-	GuiWnd*            getItemById(GuiId id) const;
-	const GuiRect&     getWindowRect() const;
-	GuiFont*           getFont() const;
+   GuiWnd*            getItemById(GuiId id) const;
+
+   const GuiRect&     getWindowRect() const;
+   void               setWindowRect(const GuiRect& rect);
+   
+   GuiFont*           getFont() const;
+   void               setFont(GuiFont* f);
+
+   bool               hasParent() const;
    GuiWnd*            getParent() const;
+   void               setParent(GuiWnd* p);
 
    virtual bool       isBoundaryWnd() const;
    virtual GuiWnd*    getBoundaryParent();
 
- // Get/set interface
-   bool              hasFocus() const;
-   void              setFocus();
+   bool               hasFocus() const;
+   void               setFocus();
+
+   bool               isTopmost() const;
+   void               setTopmost(bool topmost);
 
    GuiEventHandlerDefinitions&   getEventHandlerDefinitions();
    GuiEventHandlers&             getEventHandlers();
    GuiProperties&                getProperties();
 
- // observers
+  // observers
    void attach(GuiWndObserver& observer);
    void detach(GuiWndObserver& observer);
 
- // Operations
+  // listeners
+   void addKeyListener(KeyListener& listener);
+   void removeKeyListener(const KeyListener& listener);
+
+   void fireKeyEvent(const KeyEvent& event);
+
+  // coordinate conversions
    void              clientToWindow(GuiRect& rect) const;
    void              windowToClient(GuiRect& rect) const;
    void              windowToClient(GuiPoint& point);
+
+  // operations
+   void              setWindowPos(int x, int y);
+   void              resizeWindow(int w, int h);
+   void              moveWindow(int x, int y);
+   void              center();
+
+   void              loadBackgroundImage(const char* name);
 
    void              registerEventHandler(GuiEventHandler* phandler);
 
    virtual void      sendMessage(GuiId, GuiEvent event, int param1=0);
 	
+  // callbacks
    virtual void      onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
    virtual void      onMouseWheel(const GuiPoint& point, int direction, int flags);
-	virtual int       onLButtonDown(const GuiPoint& point, int flags);
+   virtual int       onLButtonDown(const GuiPoint& point, int flags);
    virtual int       onLButtonUp(const GuiPoint& point, int flags);
    virtual int       onRButtonDown(const GuiPoint& point, int flags);
-	virtual void      onKeyDown(int which, bool shift, bool ctrl, bool alt);
+   virtual void      onKeyDown(int which, bool shift, bool ctrl, bool alt);
    virtual void      onKeyUp(int which);
-	virtual void      onActivate(bool active, GuiWnd* oldWnd);
+   virtual void      onActivate(bool active, GuiWnd* oldWnd);
    virtual void      onSetFocus(GuiWnd* oldCtrl);
    virtual void      onKillFocus(GuiWnd* newCtrl);
    virtual bool      onContextMenu(const GuiPoint& point);
    virtual void      onCommand(int cmd);
 
-	virtual GuiWnd*   hitTest(const GuiPoint& point);
+   virtual GuiWnd*   hitTest(const GuiPoint& point);
    virtual int       getTypeId() const;
-
-   void              loadBackgroundImage(const char* name);
 
  // layout
    GuiSize           getMinimumSize() const;
    GuiSize           getPreferredSize() const;
-
-   void              invalidate();
-   void              validate();
 
 protected:
    virtual void      onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
@@ -193,14 +209,16 @@ protected:
    GuiEventHandlerDefinitions*   _peventhandlerdefinitions;
    GuiEventHandlers*             _peventhandlers;
 
+   KeyListeners   mKeyListeners;
+
    Observers      mObservers;
    LayoutManager* mpLayoutManager;
-	GuiRect        m_frameRect;
-	GuiWnd*        parent;
-	GuiList        childs;
-	GuiStyle       m_style;
-	GuiId          m_id;
-	GuiFont*       font;
+   GuiRect        m_frameRect;
+   GuiWnd*        parent;
+   GuiList        childs;
+   GuiStyle       m_style;
+   GuiId          m_id;
+   GuiFont*       font;
    Texture        background;
 };
 

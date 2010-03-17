@@ -23,6 +23,8 @@
 class Point
 {
 public:
+   static Point& zero();
+
    Point();
    Point(int x, int y);
 

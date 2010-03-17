@@ -29,7 +29,7 @@ enum NetObjectId
    ConnectReplyEventId     = 4,
    JoinEventId             = 5,
    DisconnectEventId       = 6,
-   InputEventId            = 7,
+   ActionEventId           = 7,
    ViewportEventId         = 8,
    NewObjectEventId        = 9,
    DeleteObjectEventId     = 10,

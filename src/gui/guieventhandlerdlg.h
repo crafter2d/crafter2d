@@ -20,7 +20,7 @@
 #ifndef GUIEVENT_HANDLER_DLG_H_
 #define GUIEVENT_HANDLER_DLG_H_
 
-#include "guidialog.h"
+#include "guidialog/guidialog.h"
 
 class GuiEventHandlerDlg : public GuiDialog
 {

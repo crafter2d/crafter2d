@@ -20,11 +20,12 @@
 #include <sstream>
 #include <tinyxml.h>
 
-#include "../game.h"
+#include "game.h"
+
+#include "gui/guidialog/guidialog.h"
 
 #include "guiedit.h"
 #include "guimanager.h"
-#include "guidialog.h"
 #include "guidesigner.h"
 #include "guieventhandlerdefinitions.h"
 
@@ -92,7 +93,7 @@ void GuiDesignMenu::onSetFocus(GuiWnd* oldCtrl)
 {
    GuiMenu::onSetFocus(oldCtrl);
 
-   Game::getInstance().designer().focusChanged(*this);
+   Game::getInstance().getCanvas().getDesigner().focusChanged(*this);
 }
 
 //////////////////////////////////////////////////////////////////////////

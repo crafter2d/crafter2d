@@ -21,14 +21,14 @@
 
 #include <string.h>
 
-#include "../game.h"
+#include "gui/guiclipper.h"
+#include "gui/guifont.h"
+#include "gui/guigraphics.h"
+#include "gui/guieventhandlerdefinition.h"
+#include "gui/guieventhandlerdefinitions.h"
+#include "gui/guitext.h"
 
-#include "guiclipper.h"
-#include "guifont.h"
-#include "guigraphics.h"
-#include "guieventhandlerdefinition.h"
-#include "guieventhandlerdefinitions.h"
-#include "guitext.h"
+#include "game.h"
 
 IMPLEMENT_PROPERTIES(GuiDialog, GuiWindow)
    CONSTRUCT_BOOL_PROPERTY(Center, "Center", true)
@@ -169,15 +169,6 @@ void GuiDialog::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag
          _hoverClose = false;
          GuiWindow::onMouseMove(point, rel, flag);
       }
-   }
-}
-
-void GuiDialog::onKeyDown(int which, bool shift, bool ctrl, bool alt)
-{
-   switch ( which )
-   {
-   case SDLK_RETURN: close(true);   break;
-   case SDLK_ESCAPE: close(false);  break;
    }
 }
 

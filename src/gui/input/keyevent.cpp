@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,59 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef DEFINES_OF_JENGINE_H_
-#define DEFINES_OF_JENGINE_H_
 
-#include <assert.h>
+#include "keyevent.h"
 
-#ifndef NULL
-#define NULL 0
-#endif
+#include <SDL/SDL.h>
 
-// Uncomment next line to enable auto disconnecting after timeout
-//#define JENGINE_AUTODISCONNECT
+// - Statics
 
-// Uncomment the next line to disable inlining.
-//#define JENGINE_INLINE
+KeyEvent KeyEvent::FromSDL(const SDL_KeyboardEvent& event)
+{
+   int key       = event.keysym.unicode == 0 ? event.keysym.sym : event.keysym.unicode & 0x7F;
+   int modifiers = getModifiers();
 
-#define JENGINE_STATISTICS_LIMIT    250
+   EventType type = (event.type == SDL_PRESSED) ? ePressed : eReleased;
 
-#define JENGINE_MSG_HANDLED         0
-#define JENGINE_MSG_UNHANDLED       1
+   return KeyEvent(key, type, modifiers);
+}
 
-#ifdef JENGINE_INLINE
-#  define INLINE inline
-#else
-#  define INLINE
-#endif
+// - Construction
 
-typedef unsigned int uint;
-typedef void*        handle;
+KeyEvent::KeyEvent(int key, EventType type, int keymodifiers):
+   InputEvent(keymodifiers),
+   mKey(keymodifiers),
+   mType(type)
+{
+}
 
-#define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
-
-#define MIN(x,y) ( x<y ? x : y )
-#define MAX(x,y) ( x>y ? x : y )
-
-#define IS_SET(container,flag)((container & flag) == flag)
-#define SET_FLAG(container,flag)   container |= flag
-#define CLEAR_FLAG(container,flag) container &= ~flag
-
-// Debugging macros
-
-/*
-#define ASSERT(cond)          assert(cond);
-#define ASSERT_MSG(cond,msg)  assert(cond && msg);
-#define ASSERT_PTR(ptr)       assert(ptr != NULL);
-#define PURE_VIRTUAL          assert(false && "Pure virtual!");
-#define UNREACHABLE(msg)      assert(false && msg);
-*/
-
-#define ASSERT(cond)        ;
-#define ASSERT_MSG(cond,msg) ;
-#define ASSERT_PTR(ptr)     ;
-#define PURE_VIRTUAL        ;
-#define UNREACHABLE(msg)    ;
-
-
-#endif
+KeyEvent::~KeyEvent()
+{
+}
