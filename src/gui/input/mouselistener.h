@@ -20,11 +20,21 @@
 #ifndef MOUSE_LISTENER_H
 #define MOUSE_LISTENER_H
 
+class MouseEvent;
+
 class MouseListener
 {
 public:
    MouseListener();
    virtual ~MouseListener();
+
+   /// \fn MouseListener::onMouseButton(const MouseEvent& event)
+   /// Called when a button is pressed or released
+   virtual void onMouseButton(const MouseEvent& event);
+
+   /// \fn MouseListener::onMouseClick(const MouseEvent& event)
+   /// Called when a click with a button is detected
+   virtual void onMouseClick(const MouseEvent& event);
 };
 
 #endif

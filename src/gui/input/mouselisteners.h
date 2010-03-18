@@ -17,33 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUICANVAS_MOUSEEVENT_DISPATCHER_H
-#define GUICANVAS_MOUSEEVENT_DISPATCHER_H
+#ifndef MOUSE_LISTENER_H
+#define MOUSE_LISTENER_H
 
-#include "input/mouseeventdispatcher.h"
-#include "input/mouseevent.h"
+#include <vector>
 
-class GuiCanvas;
-class GuiWnd;
+class MouseEvent;
+class MouseListener;
 
-class GuiCanvasMouseEventDispatcher : public MouseEventDispatcher
+class MouseListeners : private std::vector<MouseListener*>
 {
 public:
-   static float sClickSpeed;
+   typedef std::vector<MouseListener*> MouseListenersImp;
 
-   explicit GuiCanvasMouseEventDispatcher(GuiCanvas& canvas);
-   virtual ~GuiCanvasMouseEventDispatcher();
+   MouseListeners();
+   ~MouseListeners();
 
-   virtual void dispatch(const MouseEvent& event);
+  // container
+   void addListener(MouseListener& listener);
+   void removeListener(const MouseListener& listener);
 
-private:
-   void dispatchButtonPressed(GuiWnd& wnd, const MouseEvent& event);
-   void dispatchButtonReleased(GuiWnd& wnd, const MouseEvent& event);
-   void dispatchMouseMotion(GuiWnd& wnd, const MouseEvent& event);
+  // notifications
+   void fireMouseClickEvent(const MouseEvent& event);
+   void fireMouseButtonEvent(const MouseEvent& event);
 
-   GuiCanvas&         mCanvas;
-   float              mClickTimer;
-   MouseEvent::Button mClickButton;
+protected:
 };
 
 #endif

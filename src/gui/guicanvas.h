@@ -51,8 +51,8 @@ public:
                   GuiCanvas();
    virtual        ~GuiCanvas();
 
-   void              create(GuiId id, const GuiRect& rect, const char* caption = "", GuiStyle style=0, GuiWnd* parent=NULL);
-   virtual void      destroy();
+   void           create(GuiId id, const GuiRect& rect, const char* caption = "", GuiStyle style=0, GuiWnd* parent=NULL);
+   virtual void   destroy();
 
    void           quit();
 

@@ -131,9 +131,9 @@ void GuiCanvas::onMouseMove(const GuiPoint& point, const GuiPoint& rel, const in
       {
          GuiPoint p(point);
          GuiWnd& focusWnd = GuiFocus::getInstance().getFocus();
-         focusWnd.windowToClient(p);
 
-         GuiFocus::getInstance().getFocus().onMouseMove(p, rel, flag);
+         focusWnd.windowToClient(p);
+         focusWnd.onMouseMove(p, rel, flag);
       }
    }
    else if ( GuiFocus::getInstance().hasFocus() )
@@ -141,8 +141,8 @@ void GuiCanvas::onMouseMove(const GuiPoint& point, const GuiPoint& rel, const in
       GuiWnd* wnd = (*it);
       GuiPoint p(point);
       GuiWnd& focusWnd = GuiFocus::getInstance().getFocus();
-      focusWnd.windowToClient(p);
 
+      focusWnd.windowToClient(p);
       focusWnd.onMouseMove(p, rel, flag);
    }
 }

@@ -68,6 +68,8 @@ GuiWnd::GuiWnd():
    INIT_PROPERTY(Visible),
    _peventhandlerdefinitions(NULL),
    _peventhandlers(NULL),
+   mKeyListeners(),
+   mMouseListeners(),
    mObservers(),
    mpLayoutManager(NULL),
    m_frameRect(),
@@ -397,7 +399,7 @@ void GuiWnd::validate()
 }
 
 //-----------------------------------
-// - Listeners
+// - Key listeners
 //-----------------------------------
 
 void GuiWnd::addKeyListener(KeyListener& listener)
@@ -413,6 +415,48 @@ void GuiWnd::removeKeyListener(const KeyListener& listener)
 void GuiWnd::fireKeyEvent(const KeyEvent& event)
 {
   mKeyListeners.fireKeyEvent(event);
+}
+
+//-----------------------------------
+// - Mouse listeners
+//-----------------------------------
+
+void GuiWnd::addMouseListener(MouseListener& listener)
+{
+  mMouseListeners.addListener(listener);
+}
+
+void GuiWnd::removeMouseListener(const MouseListener& listener)
+{
+  mMouseListeners.removeListener(listener);
+}
+
+void GuiWnd::fireMouseClickEvent(const MouseEvent& event)
+{
+  mMouseListeners.fireMouseClickEvent(event);
+}
+
+void GuiWnd::fireMouseButtonEvent(const MouseEvent& event)
+{
+  mMouseListeners.fireMouseButtonEvent(event);
+}
+
+//-----------------------------------
+// - Mouse motion listeners
+//-----------------------------------
+
+void GuiWnd::fireMouseMotionEvent(const MouseEvent& event)
+{
+   // fire motion event
+}
+
+//-----------------------------------
+// - Mouse wheel listeners
+//-----------------------------------
+
+void GuiWnd::fireMouseWheelEvent(const MouseEvent& event)
+{
+   // fire wheel event
 }
 
 //-----------------------------------

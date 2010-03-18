@@ -17,33 +17,56 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUICANVAS_MOUSEEVENT_DISPATCHER_H
-#define GUICANVAS_MOUSEEVENT_DISPATCHER_H
 
-#include "input/mouseeventdispatcher.h"
-#include "input/mouseevent.h"
+#include "mouselisteners.h"
 
-class GuiCanvas;
-class GuiWnd;
+#include <algorithm>
 
-class GuiCanvasMouseEventDispatcher : public MouseEventDispatcher
+#include "mouseevent.h"
+#include "mouselistener.h"
+
+MouseListeners::MouseListeners()
 {
-public:
-   static float sClickSpeed;
+}
 
-   explicit GuiCanvasMouseEventDispatcher(GuiCanvas& canvas);
-   virtual ~GuiCanvasMouseEventDispatcher();
+MouseListeners::~MouseListeners()
+{
+}
 
-   virtual void dispatch(const MouseEvent& event);
+//=============================================================================
+//== container ================================================================
+//=============================================================================
 
-private:
-   void dispatchButtonPressed(GuiWnd& wnd, const MouseEvent& event);
-   void dispatchButtonReleased(GuiWnd& wnd, const MouseEvent& event);
-   void dispatchMouseMotion(GuiWnd& wnd, const MouseEvent& event);
+void MouseListeners::addListener(MouseListener& listener)
+{
+  push_back(&listener);
+}
 
-   GuiCanvas&         mCanvas;
-   float              mClickTimer;
-   MouseEvent::Button mClickButton;
-};
+void MouseListeners::removeListener(const MouseListener& listener)
+{
+  iterator it = std::find(begin(), end(), &listener);
+  if ( it != end() )
+  {
+    erase(it);
+  }
+}
 
-#endif
+//=============================================================================
+//== notifications ============================================================
+//=============================================================================
+
+void MouseListeners::fireMouseButtonEvent(const MouseEvent& event)
+{
+   for ( iterator it = begin(); it != end(); ++it )
+   {
+      (*it)->onMouseButton(event);
+   }
+}
+
+void MouseListeners::fireMouseClickEvent(const MouseEvent& event)
+{
+  for ( iterator it = begin(); it != end(); ++it )
+  {
+     (*it)->onMouseClick(event);
+  }
+}

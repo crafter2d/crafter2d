@@ -27,3 +27,11 @@ MouseListener::MouseListener()
 MouseListener::~MouseListener()
 {
 }
+
+void MouseListener::onMouseButton(const MouseEvent& event)
+{
+}
+
+void MouseListener::onMouseClick(const MouseEvent& event)
+{
+}

@@ -23,6 +23,7 @@
 #include "../texture.h"
 
 #include "input/keylisteners.h"
+#include "input/mouselisteners.h"
 
 #include "guigraphics.h"
 #include "guilist.h"
@@ -40,8 +41,6 @@ class GuiEventHandlers;
 class GuiFont;
 
 class LayoutManager;
-
-class KeyListener;
 
 /*! @author Jeroen Broekhuizen
  
@@ -136,11 +135,24 @@ public:
    void attach(GuiWndObserver& observer);
    void detach(GuiWndObserver& observer);
 
-  // listeners
+  // key listeners
    void addKeyListener(KeyListener& listener);
    void removeKeyListener(const KeyListener& listener);
 
    void fireKeyEvent(const KeyEvent& event);
+
+  // mouse listeners
+   void addMouseListener(MouseListener& listener);
+   void removeMouseListener(const MouseListener& listener);
+
+   void fireMouseClickEvent(const MouseEvent& event);
+   void fireMouseButtonEvent(const MouseEvent& event);
+
+  // mouse motion listeners
+   void fireMouseMotionEvent(const MouseEvent& event);
+
+  // mouse wheel listeners
+   void fireMouseWheelEvent(const MouseEvent& event);
 
   // coordinate conversions
    void              clientToWindow(GuiRect& rect) const;
@@ -210,6 +222,7 @@ protected:
    GuiEventHandlers*             _peventhandlers;
 
    KeyListeners   mKeyListeners;
+   MouseListeners mMouseListeners;
 
    Observers      mObservers;
    LayoutManager* mpLayoutManager;
