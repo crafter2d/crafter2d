@@ -17,29 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef KEYBOARD_LISTENER_H
-#define KEYBOARD_LISTENER_H
+#include "guicanvasfocuslistener.h"
 
-#include "containers/listeners.h"
-
-class KeyEvent;
-class KeyListener;
-
-class KeyListeners : public Listeners<KeyListener>
+GuiCanvasFocusListener::GuiCanvasFocusListener(GuiCanvas& canvas):
+   mCanvas(canvas)
 {
-public:
-   typedef Listeners<KeyListener> KeyListenersImp;
+}
 
-   KeyListeners();
-   ~KeyListeners();
+GuiCanvasFocusListener::~GuiCanvasFocusListener()
+{
+}
 
-  // notifications
-   void fireKeyEvent(const KeyEvent& event);
+//-----------------------------
+// - Virtuals
+//-----------------------------
 
-protected:
-  // notifications
-   void fireKeyPressed(const KeyEvent& event);
-   void fireKeyReleased(const KeyEvent& event);
-};
-
-#endif
+void GuiCanvasFocusListener::onFocusChanged(GuiWnd& newFocus, GuiWnd* poldFocus)
+{
+}

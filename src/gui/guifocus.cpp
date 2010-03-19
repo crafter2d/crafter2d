@@ -24,7 +24,12 @@
 #  include "guifocus.inl"
 #endif
 
+#include "scopedvalue.h"
+
+#include "guifocuslistener.h"
+
 GuiFocus::GuiFocus():
+   mListeners(),
    _focusWnd(),
    _changing(false)
 {
@@ -40,20 +45,53 @@ void GuiFocus::setFocus(GuiWnd* pfocus)
 {
    if ( !_changing )
    {
-      _changing = true;
+      ScopedValue<bool> value(_changing, true, false);
 
       GuiWnd* poldWnd = _focusWnd.instancePtr();
 
       if ( poldWnd != pfocus )
       {
+         fireFocusChanged(*pfocus, poldWnd);
+
+         /*
          if ( poldWnd != NULL )
             poldWnd->onKillFocus(pfocus);
 
          _focusWnd = pfocus;
          if ( _focusWnd.isAlive() )
             _focusWnd->onSetFocus(poldWnd);
+         */
       }
+   }
+}
 
-      _changing = false;
+//-----------------------------------
+// - Listeners
+//-----------------------------------
+
+void GuiFocus::addListener(GuiFocusListener& listener)
+{
+   mListeners.push_back(&listener);
+}
+
+void GuiFocus::removeListener(const GuiFocusListener& listener)
+{
+   Listeners::iterator it = std::find(mListeners.begin(), mListeners.end(), &listener);
+   if ( it != mListeners.end() )
+   {
+      mListeners.erase(it);
+   }
+}
+
+//-----------------------------------
+// - Signaling
+//-----------------------------------
+
+void GuiFocus::fireFocusChanged(GuiWnd& newfocus, GuiWnd* poldfocus)
+{
+   for ( Listeners::size_type index = 0; index < mListeners.size(); ++index )
+   {
+      GuiFocusListener* plistener = mListeners[index];
+      plistener->onFocusChanged(newfocus, poldfocus);
    }
 }

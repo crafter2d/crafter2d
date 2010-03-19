@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MOUSE_LISTENER_H
-#define MOUSE_LISTENER_H
+#ifndef MOUSE_MOTION_LISTENER_H
+#define MOUSE_MOTION_LISTENER_H
 
 class MouseEvent;
 
@@ -28,7 +28,7 @@ public:
    MouseMotionListener();
    virtual ~MouseMotionListener();
 
-   virtual void onMouseMove(const MouseEvent& event);
+   virtual void onMouseMotion(const MouseEvent& event);
 };
 
 #endif

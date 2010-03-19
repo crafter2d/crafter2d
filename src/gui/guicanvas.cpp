@@ -41,6 +41,7 @@ GuiCanvas::GuiCanvas():
    modal(),
    activeWnd(),
    mpDesigner(NULL),
+   mFocusListener(*this),
    mKeyDispatcher(*this),
    mMouseDispatcher(*this)
 {
@@ -81,6 +82,8 @@ bool GuiCanvas::isCtrl()
 void GuiCanvas::create(GuiId id, const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
 {
    GuiWnd::create(id, rect, caption, style, parent);
+
+   GuiFocus::getInstance().addListener(mFocusListener);
 
    GameWindow& window = Game::getInstance().getGameWindow();
    window.setKeyEventDispatcher(mKeyDispatcher);
@@ -258,6 +261,10 @@ void GuiCanvas::onKeyUp (int which)
    }
 }
 
+//-----------------------------------------------
+// - Searching
+//-----------------------------------------------
+
 void GuiCanvas::findFocusUnderCursor(const GuiPoint& point)
 {
    GuiFocus& focus = GuiFocus::getInstance();
@@ -283,9 +290,26 @@ void GuiCanvas::findFocusUnderCursor(const GuiPoint& point)
    }
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------
+// - Notifications
+//-----------------------------------------------
+
+void GuiCanvas::notifyFocusChanged(GuiWnd& newfocus, GuiWnd* poldfocus)
+{
+   if ( poldfocus != NULL )
+   {
+      poldfocus->onKillFocus(&newfocus);
+   }
+
+   newfocus.onSetFocus(poldfocus);
+
+   setActiveWnd(newfocus.getBoundaryParent());
+}
+
+
+//-----------------------------------------------
 // - Interface methods
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------
 
 /// \fn GuiCanvas::pushWindow(GuiWnd* pwnd)
 /// \brief Pushes the g:iven window to the top of the stack (window does not
@@ -393,7 +417,50 @@ void GuiCanvas::quit()
    Game::getInstance().setActive(false);
 }
 
+//----------------------------------
+// - Finding
+//----------------------------------
+
+GuiWnd* GuiCanvas::findWindowAtLocation(const Point& point)
+{
+   GuiWnd* pwindow = NULL;
+   GuiPoint guipoint(point);
+   GuiFocus& focus = GuiFocus::getInstance();
+
+   if ( focus.hasFocus() )
+   {
+      GuiWnd& focussed = focus.getFocus();
+      if ( focussed.hitTest(guipoint) )
+      {
+         return &focussed;
+      }
+   }
+   
+   if ( modal.empty() )
+   {
+      GuiList::Iterator it(windows.begin());
+      for ( ; it.valid(); ++it )
+      {
+         GuiWnd* pwnd = (*it)->hitTest(guipoint);
+         if ( pwnd != NULL )
+         {
+            pwindow = pwnd;
+            break;
+         }
+      }
+   }
+   else
+   {
+      GuiWnd* pmodelWnd = *modal.begin();
+      pwindow = pmodelWnd->hitTest(point);
+   }
+
+   return pwindow;
+}
+
+//----------------------------------
 // - Build-in applications
+//----------------------------------
 
 void GuiCanvas::switchDesigner()
 {

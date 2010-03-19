@@ -22,6 +22,7 @@
 
 #include "guiwnd.h"
 #include "guiwndreference.h"
+#include "canvas/guicanvasfocuslistener.h"
 #include "guicanvaskeyeventdispatcher.h"
 #include "guicanvasmouseeventdispatcher.h"
 
@@ -84,6 +85,12 @@ public:
    virtual void   onKeyDown(int which, bool shift, bool ctrl, bool alt);
    virtual void   onKeyUp (int which);
 
+  // notifications
+   void           notifyFocusChanged(GuiWnd& newfocus, GuiWnd* poldfocus);
+
+  // searching
+   GuiWnd*        findWindowAtLocation(const Point& point);
+
 protected:
    void           setFocus(GuiWnd* pwnd);
    void           findFocusUnderCursor(const GuiPoint& point);
@@ -103,6 +110,8 @@ private:
    GuiWndReference   activeWnd;
 
    GuiDesigner*      mpDesigner;
+
+   GuiCanvasFocusListener        mFocusListener;
 
    GuiCanvasKeyEventDispatcher   mKeyDispatcher;
    GuiCanvasMouseEventDispatcher mMouseDispatcher;

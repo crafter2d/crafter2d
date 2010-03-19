@@ -37,13 +37,14 @@ public:
    virtual void dispatch(const MouseEvent& event);
 
 private:
-   void dispatchButtonPressed(GuiWnd& wnd, const MouseEvent& event);
-   void dispatchButtonReleased(GuiWnd& wnd, const MouseEvent& event);
-   void dispatchMouseMotion(GuiWnd& wnd, const MouseEvent& event);
+   void dispatchButtonPressed(const MouseEvent& event);
+   void dispatchButtonReleased(const MouseEvent& event);
+   void dispatchMouseMotion(const MouseEvent& event);
 
    GuiCanvas&         mCanvas;
    float              mClickTimer;
    MouseEvent::Button mClickButton;
+   GuiWnd*            mpWindow;
 };
 
 #endif

@@ -24,6 +24,7 @@
 
 #include "input/keylisteners.h"
 #include "input/mouselisteners.h"
+#include "input/mousemotionlisteners.h"
 
 #include "guigraphics.h"
 #include "guilist.h"
@@ -149,6 +150,9 @@ public:
    void fireMouseButtonEvent(const MouseEvent& event);
 
   // mouse motion listeners
+   void addMouseMotionListener(MouseMotionListener& listener);
+   void removeMouseMotionListener(MouseMotionListener& listener);
+
    void fireMouseMotionEvent(const MouseEvent& event);
 
   // mouse wheel listeners
@@ -221,8 +225,9 @@ protected:
    GuiEventHandlerDefinitions*   _peventhandlerdefinitions;
    GuiEventHandlers*             _peventhandlers;
 
-   KeyListeners   mKeyListeners;
-   MouseListeners mMouseListeners;
+   KeyListeners         mKeyListeners;
+   MouseListeners       mMouseListeners;
+   MouseMotionListeners mMouseMotionListeners;
 
    Observers      mObservers;
    LayoutManager* mpLayoutManager;

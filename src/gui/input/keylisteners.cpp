@@ -25,30 +25,13 @@
 #include "keyevent.h"
 #include "keylistener.h"
 
-KeyListeners::KeyListeners()
+KeyListeners::KeyListeners():
+   KeyListenersImp()
 {
 }
 
 KeyListeners::~KeyListeners()
 {
-}
-
-//=============================================================================
-//== container ================================================================
-//=============================================================================
-
-void KeyListeners::addListener(KeyListener& listener)
-{
-  push_back(&listener);
-}
-
-void KeyListeners::removeListener(const KeyListener& listener)
-{
-  iterator it = std::find(begin(), end(), &listener);
-  if ( it != end() )
-  {
-    erase(it);
-  }
 }
 
 //=============================================================================

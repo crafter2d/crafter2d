@@ -28,6 +28,6 @@ MouseMotionListener::~MouseMotionListener()
 {
 }
 
-void MouseMotionListener::onMouseMove(const MouseEvent& event)
+void MouseMotionListener::onMouseMotion(const MouseEvent& event)
 {
 }

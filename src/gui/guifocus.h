@@ -22,6 +22,7 @@
 
 #include "guiwndreference.h"
 
+class GuiFocusListener;
 class GuiWnd;
 
 class GuiFocus
@@ -34,9 +35,18 @@ public:
    GuiWnd&  getFocus();
    void     setFocus(GuiWnd* pfocus);
 
+  // listeners
+   void addListener(GuiFocusListener& listener);
+   void removeListener(const GuiFocusListener& listener);
+
 private:
+   typedef std::vector<GuiFocusListener*> Listeners;
+
    GuiFocus();
 
+   void fireFocusChanged(GuiWnd& newfocus, GuiWnd* poldfocus);
+
+   Listeners       mListeners;
    GuiWndReference _focusWnd;
    bool            _changing;
 };

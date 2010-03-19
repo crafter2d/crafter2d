@@ -445,9 +445,19 @@ void GuiWnd::fireMouseButtonEvent(const MouseEvent& event)
 // - Mouse motion listeners
 //-----------------------------------
 
+void GuiWnd::addMouseMotionListener(MouseMotionListener& listener)
+{
+   mMouseMotionListeners.addListener(listener);
+}
+
+void GuiWnd::removeMouseMotionListener(MouseMotionListener& listener)
+{
+   mMouseMotionListeners.removeListener(listener);
+}
+
 void GuiWnd::fireMouseMotionEvent(const MouseEvent& event)
 {
-   // fire motion event
+   mMouseMotionListeners.fireMouseMotionEvent(event);
 }
 
 //-----------------------------------

@@ -17,29 +17,53 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef KEYBOARD_LISTENER_H
-#define KEYBOARD_LISTENER_H
+#ifndef LISTENERS_H
+#define LISTENERS_H
 
-#include "containers/listeners.h"
+#include <vector>
+#include <algorithm>
 
-class KeyEvent;
-class KeyListener;
-
-class KeyListeners : public Listeners<KeyListener>
+template <class T>
+class Listeners : protected std::vector<T*>
 {
 public:
-   typedef Listeners<KeyListener> KeyListenersImp;
+   typedef std::vector<T*> ListenersImp;
 
-   KeyListeners();
-   ~KeyListeners();
+   Listeners();
+   virtual ~Listeners();
 
-  // notifications
-   void fireKeyEvent(const KeyEvent& event);
-
-protected:
-  // notifications
-   void fireKeyPressed(const KeyEvent& event);
-   void fireKeyReleased(const KeyEvent& event);
+  // maintenance
+   void addListener(T& listener);
+   void removeListener(const T& listener);
 };
+
+template<class T>
+Listeners<T>::Listeners():
+   ListenersImp()
+{
+}
+
+template<class T>
+Listeners<T>::~Listeners()
+{
+}
+
+// maintenance
+
+template<class T>
+void Listeners<T>::addListener(T& listener)
+{
+   push_back(&listener);
+}
+
+template<class T>
+void Listeners<T>::removeListener(const T& listener)
+{
+   iterator it = std::find(begin(), end(), &listener);
+   if ( it != end() )
+   {
+      erase(it);
+   }
+}
 
 #endif

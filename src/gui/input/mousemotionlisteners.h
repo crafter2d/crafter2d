@@ -17,29 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef KEYBOARD_LISTENER_H
-#define KEYBOARD_LISTENER_H
+#ifndef MOUSE_MOTION_LISTENERS_H
+#define MOUSE_MOTION_LISTENERS_H
 
 #include "containers/listeners.h"
 
-class KeyEvent;
-class KeyListener;
+class MouseEvent;
+class MouseMotionListener;
 
-class KeyListeners : public Listeners<KeyListener>
+class MouseMotionListeners : public Listeners<MouseMotionListener>
 {
 public:
-   typedef Listeners<KeyListener> KeyListenersImp;
+   typedef Listeners<MouseMotionListener> MouseMotionListenersImp;
 
-   KeyListeners();
-   ~KeyListeners();
+   MouseMotionListeners();
+   virtual ~MouseMotionListeners();
 
-  // notifications
-   void fireKeyEvent(const KeyEvent& event);
-
-protected:
-  // notifications
-   void fireKeyPressed(const KeyEvent& event);
-   void fireKeyReleased(const KeyEvent& event);
+  // firing interface
+   void fireMouseMotionEvent(const MouseEvent& event);
 };
 
 #endif

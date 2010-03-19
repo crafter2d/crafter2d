@@ -25,30 +25,13 @@
 #include "mouseevent.h"
 #include "mouselistener.h"
 
-MouseListeners::MouseListeners()
+MouseListeners::MouseListeners():
+   MouseListenersImp()
 {
 }
 
 MouseListeners::~MouseListeners()
 {
-}
-
-//=============================================================================
-//== container ================================================================
-//=============================================================================
-
-void MouseListeners::addListener(MouseListener& listener)
-{
-  push_back(&listener);
-}
-
-void MouseListeners::removeListener(const MouseListener& listener)
-{
-  iterator it = std::find(begin(), end(), &listener);
-  if ( it != end() )
-  {
-    erase(it);
-  }
 }
 
 //=============================================================================

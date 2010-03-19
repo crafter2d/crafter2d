@@ -17,25 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MOUSE_LISTENER_H
-#define MOUSE_LISTENER_H
+#ifndef MOUSE_LISTENERS_H
+#define MOUSE_LISTENERS_H
 
-#include <vector>
+#include "containers/listeners.h"
 
 class MouseEvent;
 class MouseListener;
 
-class MouseListeners : private std::vector<MouseListener*>
+class MouseListeners : public Listeners<MouseListener>
 {
 public:
-   typedef std::vector<MouseListener*> MouseListenersImp;
+   typedef Listeners<MouseListener> MouseListenersImp;
 
    MouseListeners();
    ~MouseListeners();
-
-  // container
-   void addListener(MouseListener& listener);
-   void removeListener(const MouseListener& listener);
 
   // notifications
    void fireMouseClickEvent(const MouseEvent& event);
