@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,41 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#ifndef COLOR_COMBOBOX_H
+#define COLOR_COMBOBOX_H
 
-INLINE void GuiComboBox::setCallback(const char* fnc)
+#include "gui/guicombobox.h"
+
+/// @author Jeroen Broekhuizen
+///
+/// Represents a color combo box which can be used to select certain colors
+/// which can be added using the addColor function. No strings should be added
+/// to the combobox.
+class GuiColorComboBox: public GuiComboBox
 {
-   callbackFnc = fnc;
-}
+public:
+                  GuiColorComboBox();
 
-INLINE void GuiComboBox::setItemText(int index, const char* text)
-{
-   options->setItemText(index, text);
-}
+   void           addColor(GuiColor color);
 
-INLINE void GuiComboBox::setItemData(int index, Uint32 data)
-{
-   options->setItemData(index, data);
-}
+protected:
+   virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
+   virtual void   paint(Uint32 tick, const GuiGraphics& graphics);
+};
 
-INLINE void GuiComboBox::setCurSel(int index)
-{
-   options->setCurSel(index);
-}
-
-INLINE const char* GuiComboBox::getItemText(int index) const
-{
-   return options->getItemText(index);
-}
-
-INLINE Uint32 GuiComboBox::getItemData(int index) const
-{
-   return options->getItemData(index);
-}
-
-INLINE int GuiComboBox::getCurSel() const
-{
-   return options->getCurSel();
-}
-
-
+#endif

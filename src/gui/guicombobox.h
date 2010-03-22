@@ -23,11 +23,12 @@
 #include <vector>
 #include <string>
 
-#include "gui/button/guibutton.h"
-
 #include "guicontrol.h"
 #include "guilistbox.h"
 
+#include "gui/combobox/guicomboboxkeylistener.h"
+
+class GuiButton;
 class GuiPopupDecorator;
 
 /// @author Jeroen Broekhuizen
@@ -52,8 +53,6 @@ public:
    int               getCurSel() const;
 
    virtual void      sendMessage(GuiId, GuiEvent event, int param1=0);
-
-   virtual void      onKeyDown (int which, bool shift, bool ctrl, bool alt);
    virtual void      onKillFocus(GuiWnd* newCtrl);
 
    void              removeAll();
@@ -71,46 +70,13 @@ protected:
    void              onSelChange(int newSel);
    void              onListLostFocus();
 
+   GuiComboBoxKeyListener mKeyListener;
    GuiListBox*          options;
    GuiButton*           drop;
    GuiPopupDecorator*   _list;
    bool                 _listvisible;
    std::string          callbackFnc;
    GuiRect              selectionbox;
-};
-
-/// @author Jeroen Broekhuizen
-///
-/// Represents a color combo box which can be used to select certain colors
-/// which can be added using the addColor function. No strings should be added
-/// to the combobox.
-class GuiColorComboBox: public GuiComboBox
-{
-protected:
-   class GuiColorListBox: public GuiListBox
-   {
-   public:
-      typedef std::vector<GuiColor> Colors;
-
-      GuiColorListBox() : colors() {}
-
-      void              addColor(GuiColor color);
-      const GuiColor&   getColor(int idx) const;
-
-   protected:
-      virtual void      drawItem(int idx, int posX, int posY, const GuiGraphics& graphics);
-
-      Colors colors;
-   };
-
-public:
-                  GuiColorComboBox();
-
-   void           addColor(GuiColor color);
-
-protected:
-   virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
-   virtual void   paint(Uint32 tick, const GuiGraphics& graphics);
 };
 
 #ifdef JENGINE_INLINE

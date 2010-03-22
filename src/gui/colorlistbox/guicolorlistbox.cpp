@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,41 +17,41 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
 
-INLINE void GuiComboBox::setCallback(const char* fnc)
+#include "guicolorlistbox.h"
+
+#ifndef JENGINE_INLINE
+#  include "guicolorlistbox.inl"
+#endif
+
+#include "gui/guigraphics.h"
+#include "gui/guifont.h"
+
+GuiColorListBox::GuiColorListBox():
+   GuiListBox()
 {
-   callbackFnc = fnc;
 }
 
-INLINE void GuiComboBox::setItemText(int index, const char* text)
+GuiColorListBox::~GuiColorListBox()
 {
-   options->setItemText(index, text);
 }
 
-INLINE void GuiComboBox::setItemData(int index, Uint32 data)
+void GuiColorListBox::addColor(GuiColor color)
 {
-   options->setItemData(index, data);
+   colors.push_back(color);
+   addString(" ");
 }
 
-INLINE void GuiComboBox::setCurSel(int index)
+void GuiColorListBox::drawItem(int idx, int posX, int posY, const GuiGraphics& graphics)
 {
-   options->setCurSel(index);
+   // calculate the corner coordinates
+   float pLX = posX + 5;
+   float pRX = pLX + (m_frameRect.getWidth() - 16 - 10);
+   float pUY = posY + 2;
+   float pBY = pUY + font->getHeight() - 4;
+
+   graphics.setColor(colors[idx]);
+   graphics.drawRect(GuiRect(pLX, pRX, pUY, pBY));
+
+   drawSelection(idx, posX, posY);
 }
-
-INLINE const char* GuiComboBox::getItemText(int index) const
-{
-   return options->getItemText(index);
-}
-
-INLINE Uint32 GuiComboBox::getItemData(int index) const
-{
-   return options->getItemData(index);
-}
-
-INLINE int GuiComboBox::getCurSel() const
-{
-   return options->getCurSel();
-}
-
-

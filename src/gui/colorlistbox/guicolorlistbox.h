@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,41 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#ifndef COLOR_LISTBOX_H
+#define COLOR_LISTBOX_H
 
-INLINE void GuiComboBox::setCallback(const char* fnc)
+#include <vector>
+
+#include "gui/guilistbox.h"
+
+class GuiColorListBox: public GuiListBox
 {
-   callbackFnc = fnc;
-}
+public:
+   typedef std::vector<GuiColor> Colors;
 
-INLINE void GuiComboBox::setItemText(int index, const char* text)
-{
-   options->setItemText(index, text);
-}
+   GuiColorListBox();
+   virtual ~GuiColorListBox();
 
-INLINE void GuiComboBox::setItemData(int index, Uint32 data)
-{
-   options->setItemData(index, data);
-}
+   const GuiColor&   getColor(int idx) const;
+   void              addColor(GuiColor color);
 
-INLINE void GuiComboBox::setCurSel(int index)
-{
-   options->setCurSel(index);
-}
+protected:
+   virtual void      drawItem(int idx, int posX, int posY, const GuiGraphics& graphics);
 
-INLINE const char* GuiComboBox::getItemText(int index) const
-{
-   return options->getItemText(index);
-}
+   Colors colors;
+};
 
-INLINE Uint32 GuiComboBox::getItemData(int index) const
-{
-   return options->getItemData(index);
-}
+#ifdef JENGINE_INLINE
+#  include "guicolorlistbox.inl"
+#endif
 
-INLINE int GuiComboBox::getCurSel() const
-{
-   return options->getCurSel();
-}
-
-
+#endif
