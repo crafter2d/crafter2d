@@ -20,6 +20,8 @@
 #ifndef GUI_FOCUS_H_
 #define GUI_FOCUS_H_
 
+#include <vector>
+
 #include "guiwndreference.h"
 
 class GuiFocusListener;

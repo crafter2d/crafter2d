@@ -17,43 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef GUICANVAS_KEY_EVENT_DISPATCHER_H
+#define GUICANVAS_KEY_EVENT_DISPATCHER_H
 
-#include "guicanvaskeyeventdispatcher.h"
+#include "gui/input/keyeventdispatcher.h"
 
-#include "input/keyevent.h"
+class GuiCanvas;
 
-#include "guicanvas.h"
-#include "guifocus.h"
-
-GuiCanvasKeyEventDispatcher::GuiCanvasKeyEventDispatcher(GuiCanvas& canvas):
-   KeyEventDispatcher(),
-   mCanvas(canvas)
+class GuiCanvasKeyEventDispatcher : public KeyEventDispatcher
 {
-}
+public:
+   explicit GuiCanvasKeyEventDispatcher(GuiCanvas& canvas);
+   virtual ~GuiCanvasKeyEventDispatcher();
 
-GuiCanvasKeyEventDispatcher::~GuiCanvasKeyEventDispatcher()
-{
-}
+  // dispatching
+   virtual void dispatch(const KeyEvent& event);
 
-//-----------------------------------
-// - Dispatching
-//-----------------------------------
+private:
+   GuiCanvas& mCanvas;
+};
 
-void GuiCanvasKeyEventDispatcher::dispatch(const KeyEvent& keyevent)
-{
-   if ( GuiFocus::getInstance().hasFocus() )
-   {
-      GuiWnd& focussed = GuiFocus::getInstance().getFocus();
-      focussed.fireKeyEvent(keyevent);
-   }
-
-   // for not converted windows
-   if ( keyevent.getEventType() == KeyEvent::ePressed )
-   {
-     mCanvas.onKeyDown(keyevent.getKey(), keyevent.isShiftDown(), keyevent.isCtrlDown(), keyevent.isAltDown());
-   }
-   else
-   {
-     mCanvas.onKeyUp(keyevent.getKey());
-   }
-}
+#endif

@@ -26,7 +26,6 @@
 
 #include "gui/guidialog/guidialog.h"
 
-#include "gui/guicanvas.h"
 #include "gui/guiedit.h"
 #include "gui/guilistbox.h"
 

@@ -17,20 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../script.h"
-
 #include "guicanvas.h"
 #ifndef JENGINE_INLINE
 #  include "guicanvas.inl"
 #endif
 
 #include "game.h"
+#include "script.h"
 
-#include "guifocus.h"
-#include "guidialog/guidialog.h"
-#include "guiclipper.h"
-#include "guidesigner.h"
-#include "guimanager.h"
+#include "gui/guifocus.h"
+#include "gui/guidialog/guidialog.h"
+#include "gui/guiclipper.h"
+#include "gui/guidesigner.h"
+#include "gui/guimanager.h"
 
 GuiColor GuiCanvas::defaultColors[GuiCanvas::MaxGuiColors];
 

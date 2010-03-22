@@ -28,7 +28,6 @@
 #include "../game.h"
 #include "../scriptmanager.h"
 
-#include "guicanvas.h"
 #include "guidesigner.h"
 #include "guiclipper.h"
 #include "guieventhandler.h"

@@ -22,10 +22,10 @@
 
 #include "system/timer.h"
 
-#include "input/mouseevent.h"
+#include "gui/input/mouseevent.h"
+#include "gui/guifocus.h"
 
 #include "guicanvas.h"
-#include "guifocus.h"
 
 float GuiCanvasMouseEventDispatcher::sClickSpeed = 0.8f;
 

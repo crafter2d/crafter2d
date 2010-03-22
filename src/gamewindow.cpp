@@ -25,6 +25,7 @@
 
 #include "gui/input/keyeventdispatcher.h"
 #include "gui/input/keyevent.h"
+#include "gui/input/mouseeventdispatcher.h"
 #include "gui/input/mouseevent.h"
 
 #include "console.h"

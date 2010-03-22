@@ -25,7 +25,6 @@
 #include "../script.h"
 #include "../scriptmanager.h"
 
-#include "guicanvas.h"
 #include "guiclipper.h"
 #include "guifont.h"
 #include "guimanager.h"

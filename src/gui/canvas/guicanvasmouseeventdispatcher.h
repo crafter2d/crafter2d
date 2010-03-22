@@ -17,24 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUICANVAS_KEY_EVENT_DISPATCHER_H
-#define GUICANVAS_KEY_EVENT_DISPATCHER_H
+#ifndef GUICANVAS_MOUSEEVENT_DISPATCHER_H
+#define GUICANVAS_MOUSEEVENT_DISPATCHER_H
 
-#include "input/keyeventdispatcher.h"
+#include "gui/input/mouseeventdispatcher.h"
 
 class GuiCanvas;
+class GuiWnd;
+class MouseEvent;
 
-class GuiCanvasKeyEventDispatcher : public KeyEventDispatcher
+class GuiCanvasMouseEventDispatcher : public MouseEventDispatcher
 {
 public:
-   explicit GuiCanvasKeyEventDispatcher(GuiCanvas& canvas);
-   virtual ~GuiCanvasKeyEventDispatcher();
+   static float sClickSpeed;
 
-  // dispatching
-   virtual void dispatch(const KeyEvent& event);
+   explicit GuiCanvasMouseEventDispatcher(GuiCanvas& canvas);
+   virtual ~GuiCanvasMouseEventDispatcher();
+
+   virtual void dispatch(const MouseEvent& event);
 
 private:
+   void dispatchButtonPressed(const MouseEvent& event);
+   void dispatchButtonReleased(const MouseEvent& event);
+   void dispatchMouseMotion(const MouseEvent& event);
+
    GuiCanvas& mCanvas;
+   GuiWnd*    mpWindow;
+   float      mClickTimer;
+   int        mClickButton;
+   GuiWnd*    mpClickWindow;
 };
 
 #endif

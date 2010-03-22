@@ -23,8 +23,6 @@
 #include <string>
 #include <vector>
 
-#include "gui/guicanvas.h"
-
 struct SDL_KeyboardEvent;
 struct SDL_MouseMotionEvent;
 struct SDL_MouseButtonEvent;

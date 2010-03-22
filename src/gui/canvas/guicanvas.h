@@ -20,9 +20,10 @@
 #ifndef _GUICANVAS_H_
 #define _GUICANVAS_H_
 
-#include "guiwnd.h"
-#include "guiwndreference.h"
-#include "canvas/guicanvasfocuslistener.h"
+#include "gui/guiwnd.h"
+#include "gui/guiwndreference.h"
+
+#include "guicanvasfocuslistener.h"
 #include "guicanvaskeyeventdispatcher.h"
 #include "guicanvasmouseeventdispatcher.h"
 

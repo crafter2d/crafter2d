@@ -17,35 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUICANVAS_MOUSEEVENT_DISPATCHER_H
-#define GUICANVAS_MOUSEEVENT_DISPATCHER_H
 
-#include "input/mouseeventdispatcher.h"
+#include "guicanvaskeyeventdispatcher.h"
 
-class GuiCanvas;
-class GuiWnd;
-class MouseEvent;
+#include "gui/input/keyevent.h"
+#include "gui/guifocus.h"
 
-class GuiCanvasMouseEventDispatcher : public MouseEventDispatcher
+#include "guicanvas.h"
+
+GuiCanvasKeyEventDispatcher::GuiCanvasKeyEventDispatcher(GuiCanvas& canvas):
+   KeyEventDispatcher(),
+   mCanvas(canvas)
 {
-public:
-   static float sClickSpeed;
+}
 
-   explicit GuiCanvasMouseEventDispatcher(GuiCanvas& canvas);
-   virtual ~GuiCanvasMouseEventDispatcher();
+GuiCanvasKeyEventDispatcher::~GuiCanvasKeyEventDispatcher()
+{
+}
 
-   virtual void dispatch(const MouseEvent& event);
+//-----------------------------------
+// - Dispatching
+//-----------------------------------
 
-private:
-   void dispatchButtonPressed(const MouseEvent& event);
-   void dispatchButtonReleased(const MouseEvent& event);
-   void dispatchMouseMotion(const MouseEvent& event);
+void GuiCanvasKeyEventDispatcher::dispatch(const KeyEvent& keyevent)
+{
+   if ( GuiFocus::getInstance().hasFocus() )
+   {
+      GuiWnd& focussed = GuiFocus::getInstance().getFocus();
+      focussed.fireKeyEvent(keyevent);
+   }
 
-   GuiCanvas& mCanvas;
-   GuiWnd*    mpWindow;
-   float      mClickTimer;
-   int        mClickButton;
-   GuiWnd*    mpClickWindow;
-};
-
-#endif
+   // for not converted windows
+   if ( keyevent.getEventType() == KeyEvent::ePressed )
+   {
+     mCanvas.onKeyDown(keyevent.getKey(), keyevent.isShiftDown(), keyevent.isCtrlDown(), keyevent.isAltDown());
+   }
+   else
+   {
+     mCanvas.onKeyUp(keyevent.getKey());
+   }
+}

@@ -23,7 +23,7 @@
 #include <SDL/SDL.h>
 #include <string>
 
-#include "gui/guicanvas.h"
+#include "gui/canvas/guicanvas.h"
 
 #include "actionmap.h"
 #include "server.h"
