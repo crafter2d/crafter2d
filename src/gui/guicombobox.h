@@ -22,8 +22,10 @@
 
 #include <vector>
 #include <string>
+
+#include "gui/button/guibutton.h"
+
 #include "guicontrol.h"
-#include "guibutton.h"
 #include "guilistbox.h"
 
 class GuiPopupDecorator;

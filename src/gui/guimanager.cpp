@@ -37,10 +37,10 @@
 
 #include "vfs/unzipfile.h"
 
-#include "guidialog/guidialog.h"
+#include "gui/guidialog/guidialog.h"
+#include "gui/button/guibutton.h"
 
 #include "guitext.h"
-#include "guibutton.h"
 #include "guidesigner.h"
 #include "guiedit.h"
 #include "guifont.h"

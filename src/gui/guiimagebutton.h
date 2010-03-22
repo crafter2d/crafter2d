@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "guibutton.h"
+#include "gui/button/guibutton.h"
 
 /// @author Jeroen Broekhuizen
 /// \brief Implementation of an image based button

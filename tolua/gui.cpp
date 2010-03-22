@@ -24,7 +24,7 @@
 
 $#include "gui/guicontrol.h"
 $#include "gui/guiheadercontrol.h"
-$#include "gui/guibutton.h"
+$#include "gui/button/guibutton.h"
 $#include "gui/guiimagebutton.h"
 $#include "gui/guicanvas.h"
 $#include "gui/guidialog/guidialog.h"

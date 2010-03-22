@@ -20,8 +20,9 @@
 #ifndef _GUISCROLLBAR_H_
 #define _GUISCROLLBAR_H_
 
+#include "gui/button/guibutton.h"
+
 #include "guicontrol.h"
-#include "guibutton.h"
 
 class GuiScrollBar : public GuiControl
 {

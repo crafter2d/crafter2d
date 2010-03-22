@@ -24,18 +24,18 @@
 
 #include <SDL/SDL.h>
 
-#include "../script.h"
-#include "../scriptmanager.h"
+#include "script.h"
+#include "scriptmanager.h"
 
-#include "guigraphics.h"
-#include "guimanager.h"
-#include "guidesigner.h"
-#include "guifont.h"
-#include "guieventhandler.h"
-#include "guieventhandlers.h"
-#include "guieventhandlerdefinition.h"
-#include "guieventhandlerdefinitions.h"
-#include "guitext.h"
+#include "gui/guigraphics.h"
+#include "gui/guimanager.h"
+#include "gui/guidesigner.h"
+#include "gui/guifont.h"
+#include "gui/guieventhandler.h"
+#include "gui/guieventhandlers.h"
+#include "gui/guieventhandlerdefinition.h"
+#include "gui/guieventhandlerdefinitions.h"
+#include "gui/guitext.h"
 
 REGISTER_DESIGNER(GuiButton, GuiButtonId, "Button", 40, 15, 264)
 

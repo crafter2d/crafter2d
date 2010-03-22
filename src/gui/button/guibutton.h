@@ -21,14 +21,15 @@
 #define _GUIBUTTON_H_
 
 #include <string>
-#include "../math/vector.h"
 
-#include "../texture.h"
-#include "../resources.h"
+#include "math/vector.h"
 
-#include "button/buttonmouselistener.h"
+#include "gui/guicontrol.h"
 
-#include "guicontrol.h"
+#include "texture.h"
+#include "resources.h"
+
+#include "buttonmouselistener.h"
 
 /*!
 @author Jeroen Broekhuizen
