@@ -18,28 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "mouselistener.h"
+#include "mousewheellisteners.h"
 
-MouseListener::MouseListener()
+#include "mousewheellistener.h"
+
+MouseWheelListeners::MouseWheelListeners():
+   Listeners()
 {
 }
 
-MouseListener::~MouseListener()
+MouseWheelListeners::~MouseWheelListeners()
 {
 }
 
-void MouseListener::onMouseButton(const MouseEvent& event)
-{
-}
+//-----------------------------------
+// - Notifications
+//-----------------------------------
 
-void MouseListener::onMouseClick(const MouseEvent& event)
+void MouseWheelListeners::fireMouseWheelEvent(const MouseEvent& event)
 {
-}
-
-void MouseListener::onMouseEntered(const MouseEvent& event)
-{
-}
-
-void MouseListener::onMouseExited(const MouseEvent& event)
-{
+   for ( iterator it = begin(); it != end(); ++it )
+   {
+     (*it)->onMouseWheel(event);
+   }
 }

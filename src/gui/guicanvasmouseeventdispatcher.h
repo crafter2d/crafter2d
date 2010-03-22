@@ -21,10 +21,10 @@
 #define GUICANVAS_MOUSEEVENT_DISPATCHER_H
 
 #include "input/mouseeventdispatcher.h"
-#include "input/mouseevent.h"
 
 class GuiCanvas;
 class GuiWnd;
+class MouseEvent;
 
 class GuiCanvasMouseEventDispatcher : public MouseEventDispatcher
 {
@@ -41,10 +41,11 @@ private:
    void dispatchButtonReleased(const MouseEvent& event);
    void dispatchMouseMotion(const MouseEvent& event);
 
-   GuiCanvas&         mCanvas;
-   float              mClickTimer;
-   MouseEvent::Button mClickButton;
-   GuiWnd*            mpWindow;
+   GuiCanvas& mCanvas;
+   GuiWnd*    mpWindow;
+   float      mClickTimer;
+   int        mClickButton;
+   GuiWnd*    mpClickWindow;
 };
 
 #endif

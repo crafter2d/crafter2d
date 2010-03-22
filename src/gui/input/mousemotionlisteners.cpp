@@ -31,7 +31,9 @@ MouseMotionListeners::~MouseMotionListeners()
 {
 }
 
-// firing interface
+//-----------------------------------
+// - Notifications
+//-----------------------------------
 
 void MouseMotionListeners::fireMouseMotionEvent(const MouseEvent& event)
 {

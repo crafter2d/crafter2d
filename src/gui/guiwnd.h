@@ -25,6 +25,7 @@
 #include "input/keylisteners.h"
 #include "input/mouselisteners.h"
 #include "input/mousemotionlisteners.h"
+#include "input/mousewheellisteners.h"
 
 #include "guigraphics.h"
 #include "guilist.h"
@@ -143,19 +144,20 @@ public:
    void fireKeyEvent(const KeyEvent& event);
 
   // mouse listeners
-   void addMouseListener(MouseListener& listener);
-   void removeMouseListener(const MouseListener& listener);
-
-   void fireMouseClickEvent(const MouseEvent& event);
-   void fireMouseButtonEvent(const MouseEvent& event);
+   void            addMouseListener(MouseListener& listener);
+   void            removeMouseListener(const MouseListener& listener);
+   MouseListeners& getMouseListeners() { return mMouseListeners; }
 
   // mouse motion listeners
    void addMouseMotionListener(MouseMotionListener& listener);
-   void removeMouseMotionListener(MouseMotionListener& listener);
+   void removeMouseMotionListener(const MouseMotionListener& listener);
 
    void fireMouseMotionEvent(const MouseEvent& event);
 
   // mouse wheel listeners
+   void addMouseWheelListener(MouseWheelListener& listener);
+   void removeMouseWheelListener(const MouseWheelListener& listener);
+
    void fireMouseWheelEvent(const MouseEvent& event);
 
   // coordinate conversions
@@ -228,6 +230,7 @@ protected:
    KeyListeners         mKeyListeners;
    MouseListeners       mMouseListeners;
    MouseMotionListeners mMouseMotionListeners;
+   MouseWheelListeners  mMouseWheelListeners;
 
    Observers      mObservers;
    LayoutManager* mpLayoutManager;

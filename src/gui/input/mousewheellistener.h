@@ -17,29 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef MOUSE_WHEEL_LISTENER_H
+#define MOUSE_WHEEL_LISTENER_H
 
-#include "mouselistener.h"
+class MouseEvent;
 
-MouseListener::MouseListener()
+class MouseWheelListener
 {
-}
+public:
+   MouseWheelListener();
+   virtual ~MouseWheelListener();
 
-MouseListener::~MouseListener()
-{
-}
+   /// \fn MouseWheelListener::onMouseWheel(const MouseEvent& event)
+   /// Called when the user scrolls with the mouse wheel.
+   virtual void onMouseWheel(const MouseEvent& event);
+};
 
-void MouseListener::onMouseButton(const MouseEvent& event)
-{
-}
-
-void MouseListener::onMouseClick(const MouseEvent& event)
-{
-}
-
-void MouseListener::onMouseEntered(const MouseEvent& event)
-{
-}
-
-void MouseListener::onMouseExited(const MouseEvent& event)
-{
-}
+#endif

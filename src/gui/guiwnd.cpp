@@ -431,16 +431,6 @@ void GuiWnd::removeMouseListener(const MouseListener& listener)
   mMouseListeners.removeListener(listener);
 }
 
-void GuiWnd::fireMouseClickEvent(const MouseEvent& event)
-{
-  mMouseListeners.fireMouseClickEvent(event);
-}
-
-void GuiWnd::fireMouseButtonEvent(const MouseEvent& event)
-{
-  mMouseListeners.fireMouseButtonEvent(event);
-}
-
 //-----------------------------------
 // - Mouse motion listeners
 //-----------------------------------
@@ -450,7 +440,7 @@ void GuiWnd::addMouseMotionListener(MouseMotionListener& listener)
    mMouseMotionListeners.addListener(listener);
 }
 
-void GuiWnd::removeMouseMotionListener(MouseMotionListener& listener)
+void GuiWnd::removeMouseMotionListener(const MouseMotionListener& listener)
 {
    mMouseMotionListeners.removeListener(listener);
 }
@@ -464,9 +454,19 @@ void GuiWnd::fireMouseMotionEvent(const MouseEvent& event)
 // - Mouse wheel listeners
 //-----------------------------------
 
+void GuiWnd::addMouseWheelListener(MouseWheelListener& listener)
+{
+   mMouseWheelListeners.addListener(listener);
+}
+
+void GuiWnd::removeMouseWheelListener(const MouseWheelListener& listener)
+{
+   mMouseWheelListeners.removeListener(listener);
+}
+
 void GuiWnd::fireMouseWheelEvent(const MouseEvent& event)
 {
-   // fire wheel event
+   mMouseWheelListeners.fireMouseWheelEvent(event);
 }
 
 //-----------------------------------

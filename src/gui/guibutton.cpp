@@ -23,6 +23,7 @@
 #endif
 
 #include <SDL/SDL.h>
+
 #include "../script.h"
 #include "../scriptmanager.h"
 
@@ -35,8 +36,6 @@
 #include "guieventhandlerdefinition.h"
 #include "guieventhandlerdefinitions.h"
 #include "guitext.h"
-
-#define CLICK_TIMEINTERVAL  800
 
 REGISTER_DESIGNER(GuiButton, GuiButtonId, "Button", 40, 15, 264)
 
@@ -61,9 +60,11 @@ void GuiButton::initializeEventHandlerDefinitions()
 }
 
 GuiButton::GuiButton():
-   pos(),
-   pressTime(0),
-   command()
+   mTextPos(),
+   mMouseListener(*this),
+   mIcon(),
+   mIconRect(),
+   mCommand()
 {
 }
 
@@ -79,9 +80,15 @@ void GuiButton::onCreate (const GuiRect& rect, const char* caption, GuiStyle sty
 
    onResize(rect.getWidth(), rect.getHeight());
 
+   addMouseListener(mMouseListener);
+
    // make sure we are not pressed
-   m_style &= ~GUI_PRESSED;
+   CLEAR_FLAG(m_style, GUI_PRESSED);
 }
+
+//-----------------------------------
+// - Overloads
+//-----------------------------------
 
 void GuiButton::onResize(int width, int height)
 {
@@ -93,17 +100,72 @@ void GuiButton::onResize(int width, int height)
 
    if ( len == 0 )
    {
-      _iconRect.set(x - 8, x + 8, y - 8, y + 8);
+      mIconRect.set(x - 8, x + 8, y - 8, y + 8);
    }
    else
    {
       Vector size = font->getTextSize(getCaption());
-      pos.x = x - (size.x / 2);
-      pos.y = y + (size.y / 2);
+      mTextPos.x = x - (size.x / 2);
+      mTextPos.y = y + (size.y / 2);
 
-      _iconRect.set(pos.x - 20, pos.x - 4, y - 8, y + 8);
+      mIconRect.set(mTextPos.x - 20, mTextPos.x - 4, y - 8, y + 8);
    }
 }
+
+void GuiButton::onKillFocus(GuiControl* newCtrl)
+{
+   GuiControl::onKillFocus(newCtrl);
+   if ( isPressed() )
+   {
+      m_style ^= GUI_PRESSED;
+   }
+}
+
+/// \fn GuiButton::paint(Uint32 tick)
+/// \brief Draws the button.
+void GuiButton::paint(Uint32 tick, const GuiGraphics& graphics)
+{
+   if ( getBackground() )
+   {
+      if ( isPressed() )
+      {
+         graphics.drawSunkenRect(m_frameRect);
+      }
+      else
+      {
+         if ( getDefault() )
+            graphics.drawDefaultRect(m_frameRect);
+         else
+            graphics.drawRaisedRect(m_frameRect);
+
+         if ( isHoovering() )
+         {
+            GuiRect rect(m_frameRect.left()+2, m_frameRect.right()-2, m_frameRect.top()+2, m_frameRect.bottom()-2);
+            graphics.setColor(GuiColor(213, 150, 2));
+            graphics.drawWireRect(rect);
+         }
+      }
+   }
+
+   if ( mIcon.valid() )
+   {
+      graphics.setColor(1,1,1);
+      graphics.drawImage(*mIcon, mIconRect);
+   }
+
+   // draw the text
+   if ( !getCaption().empty() )
+   {
+      GuiFont* font = parent->getFont ();
+      GuiColor color(GuiManager::getInstance().getDefaultTextColor());
+      glColor3fv(&color.r);
+      GuiText::printfn(*font, mTextPos.x, mTextPos.y, getCaption());
+   }
+}
+
+//-----------------------------------
+// - Operations
+//-----------------------------------
 
 /// \fn GuiButton::setCommand(const char* cmd)
 /// \brief Sets the command to be executed when the user clicks on it.
@@ -115,66 +177,15 @@ void GuiButton::onResize(int width, int height)
 /// See \ref guiWnd_lua for more information and an example implementation.
 void GuiButton::setCommand (const char* cmd)
 {
-   command = cmd;
+   mCommand = cmd;
 }
 
-/// \fn GuiButton::paint(Uint32 tick)
-/// \brief Draws the button.
-void GuiButton::paint(Uint32 tick, const GuiGraphics& graphics)
+void GuiButton::pressed(bool press)
 {
-   if ( getBackground() )
-   {
-      if ( IS_SET(m_style, GUI_PRESSED) )
-         graphics.drawSunkenRect(m_frameRect);
-      else if ( getDefault() )
-         graphics.drawDefaultRect(m_frameRect);
-      else
-         graphics.drawRaisedRect(m_frameRect);
-   }
-
-   if ( _icon.valid() )
-   {
-      graphics.setColor(1,1,1);
-      graphics.drawImage(*_icon, _iconRect);
-   }
-
-   // draw the text
-   if ( !getCaption().empty() )
-   {
-      GuiFont* font = parent->getFont ();
-      GuiColor color(GuiManager::getInstance().getDefaultTextColor());
-      glColor3fv(&color.r);
-      GuiText::printfn(*font, pos.x, pos.y, getCaption());
-   }
-}
-
-int GuiButton::onLButtonDown (const GuiPoint& point, int flag)
-{
-   m_style |= GUI_PRESSED;
-   pressTime = SDL_GetTicks();
-
-   return JENGINE_MSG_HANDLED;
-}
-
-int GuiButton::onLButtonUp (const GuiPoint& point, int flag)
-{
-   m_style ^= GUI_PRESSED;
-   Uint32 releaseTime = SDL_GetTicks();
-   if (releaseTime - pressTime < CLICK_TIMEINTERVAL)
-   {
-      click();
-   }
-
-   return JENGINE_MSG_HANDLED;
-}
-
-void GuiButton::onKillFocus(GuiControl* newCtrl)
-{
-   GuiControl::onKillFocus(newCtrl);
-   if ( isPressed() )
-   {
-      m_style ^= GUI_PRESSED;
-   }
+   if ( press )
+      SET_FLAG(m_style, GUI_PRESSED);
+   else
+      CLEAR_FLAG(m_style, GUI_PRESSED);
 }
 
 void GuiButton::click()
@@ -187,11 +198,11 @@ void GuiButton::click()
       script.prepareCall(phandler->getFunctionName().c_str());
       script.run(0);
    }
-   else if (!command.empty())
+   else if (!mCommand.empty())
    {
       ScriptManager& mgr = ScriptManager::getInstance();
       mgr.setObject(this, "GuiButton", "self");
-      mgr.executeLine(command.c_str());
+      mgr.executeLine(mCommand.c_str());
    }
    else if (parent)
    {
@@ -204,6 +215,6 @@ void GuiButton::loadIcon(const std::string& icon)
 {
    if ( !icon.empty() )
    {
-      _icon = ResourceManager::getInstance().loadTexture(icon.c_str());
+      mIcon = ResourceManager::getInstance().loadTexture(icon.c_str());
    }
 }

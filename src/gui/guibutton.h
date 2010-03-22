@@ -26,6 +26,8 @@
 #include "../texture.h"
 #include "../resources.h"
 
+#include "button/buttonmouselistener.h"
+
 #include "guicontrol.h"
 
 /*!
@@ -48,12 +50,14 @@ public:
 
    void           setCommand (const char* command);
 
-   virtual int    onLButtonDown (const GuiPoint& point, int flag);
-   virtual int    onLButtonUp (const GuiPoint& point, int flag);
    virtual void   onKillFocus(GuiControl* newCtrl);
    virtual void   onResize(int width, int height);
 
+   bool isHoovering() const { return IS_SET(m_style, GUI_HOOVER); }
+   void setHoover(bool hoover) { hoover ? SET_FLAG(m_style, GUI_HOOVER) : CLEAR_FLAG(m_style, GUI_HOOVER); }
+
    bool           isPressed() const;
+   void           pressed(bool press);
 
    void           click();
    void           loadIcon(const std::string& icon);
@@ -69,15 +73,15 @@ protected:
    STR_PROPERTY(Icon)
 
 private:
-   GuiPoint    pos;
-   Uint32      pressTime;
-   TexturePtr  _icon;
-   GuiRect     _iconRect;
-   std::string command;
+   GuiPoint            mTextPos;
+   ButtonMouseListener mMouseListener;
+   TexturePtr          mIcon;
+   GuiRect             mIconRect;
+   std::string         mCommand;
 };
 
 #ifdef JENGINE_INLINE
-#  include "guibutton.h"
+#  include "guibutton.inl"
 #endif
 
 #endif

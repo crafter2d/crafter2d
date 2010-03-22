@@ -18,28 +18,63 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "mouselistener.h"
+#include "buttonmouselistener.h"
 
-MouseListener::MouseListener()
+#include "gui/input/mouseevent.h"
+
+#include "gui/guibutton.h"
+
+ButtonMouseListener::ButtonMouseListener(GuiButton& button):
+   MouseListener(),
+   mButton(button),
+   mClicking(false)
 {
 }
 
-MouseListener::~MouseListener()
+//-----------------------------------
+// - Notifications
+//-----------------------------------
+
+void ButtonMouseListener::onMouseButton(const MouseEvent& event)
 {
+   if ( event.getEventType() == MouseEvent::ePressed )
+   {
+      mButton.pressed(true);
+
+      mClicking = true;
+   }
 }
 
-void MouseListener::onMouseButton(const MouseEvent& event)
+void ButtonMouseListener::onMouseClick(const MouseEvent& event)
 {
+   if ( event.getButtons() == MouseEvent::eLeft )
+   {
+      mButton.click();
+
+      mClicking = false;
+   }
 }
 
-void MouseListener::onMouseClick(const MouseEvent& event)
+void ButtonMouseListener::onMouseEntered(const MouseEvent& event)
 {
+   if ( mClicking )
+   {
+      mButton.pressed(true);
+   }
+   else
+   {
+      mButton.setHoover(true);
+   }
 }
 
-void MouseListener::onMouseEntered(const MouseEvent& event)
+void ButtonMouseListener::onMouseExited(const MouseEvent& event)
 {
-}
-
-void MouseListener::onMouseExited(const MouseEvent& event)
-{
+   if ( mClicking )
+   {
+      mButton.pressed(false);
+   }
+   else
+   {
+      mButton.setHoover(false);
+   }
 }

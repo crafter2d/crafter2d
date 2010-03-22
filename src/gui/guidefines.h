@@ -37,7 +37,8 @@ enum GuiStyles {
    GUI_CAPTION       = 1024,
    GUI_LIST_HEADER   = 2048,
    GUI_HORZ_SCROLL   = 4096,
-   GUI_POPUP         = 8192
+   GUI_POPUP         = 8192,
+   GUI_HOOVER        = 16384
 };
 
 enum GuiState {

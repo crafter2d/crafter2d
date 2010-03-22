@@ -37,6 +37,9 @@ public:
    void fireMouseClickEvent(const MouseEvent& event);
    void fireMouseButtonEvent(const MouseEvent& event);
 
+   void fireMouseEnterEvent(const MouseEvent& event);
+   void fireMouseExitEvent(const MouseEvent& event);
+
 protected:
 };
 

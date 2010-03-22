@@ -17,29 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef MOUSE_WHEEL_LISTENERS_H
+#define MOUSE_WHEEL_LISTENERS_H
 
-#include "mouselistener.h"
+#include "containers/listeners.h"
 
-MouseListener::MouseListener()
+class MouseEvent;
+class MouseWheelListener;
+
+class MouseWheelListeners : public Listeners<MouseWheelListener>
 {
-}
+public:
+   MouseWheelListeners();
+   virtual ~MouseWheelListeners();
 
-MouseListener::~MouseListener()
-{
-}
+   void fireMouseWheelEvent(const MouseEvent& event);
+};
 
-void MouseListener::onMouseButton(const MouseEvent& event)
-{
-}
-
-void MouseListener::onMouseClick(const MouseEvent& event)
-{
-}
-
-void MouseListener::onMouseEntered(const MouseEvent& event)
-{
-}
-
-void MouseListener::onMouseExited(const MouseEvent& event)
-{
-}
+#endif

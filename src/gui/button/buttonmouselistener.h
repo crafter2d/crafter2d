@@ -17,29 +17,28 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef BUTTON_MOUSE_LISTENER_H
+#define BUTTON_MOUSE_LISTENER_H
 
-#include "mouselistener.h"
+#include "gui/input/mouselistener.h"
 
-MouseListener::MouseListener()
+class GuiButton;
+
+class ButtonMouseListener : public MouseListener
 {
-}
+public:
+   ButtonMouseListener(GuiButton& button);
 
-MouseListener::~MouseListener()
-{
-}
+  // notifications
+   virtual void onMouseButton(const MouseEvent& event);
+   virtual void onMouseClick(const MouseEvent& event);
 
-void MouseListener::onMouseButton(const MouseEvent& event)
-{
-}
+   virtual void onMouseEntered(const MouseEvent& event);
+   virtual void onMouseExited(const MouseEvent& event);
 
-void MouseListener::onMouseClick(const MouseEvent& event)
-{
-}
+private:
+   GuiButton& mButton;
+   bool       mClicking;
+};
 
-void MouseListener::onMouseEntered(const MouseEvent& event)
-{
-}
-
-void MouseListener::onMouseExited(const MouseEvent& event)
-{
-}
+#endif

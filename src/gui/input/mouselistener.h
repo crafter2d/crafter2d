@@ -35,6 +35,12 @@ public:
    /// \fn MouseListener::onMouseClick(const MouseEvent& event)
    /// Called when a click with a button is detected
    virtual void onMouseClick(const MouseEvent& event);
+
+
+   virtual void onMouseEntered(const MouseEvent& event);
+
+
+   virtual void onMouseExited(const MouseEvent& event);
 };
 
 #endif

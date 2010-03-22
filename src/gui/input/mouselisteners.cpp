@@ -34,9 +34,9 @@ MouseListeners::~MouseListeners()
 {
 }
 
-//=============================================================================
-//== notifications ============================================================
-//=============================================================================
+//-----------------------------------
+// - Notifications
+//-----------------------------------
 
 void MouseListeners::fireMouseButtonEvent(const MouseEvent& event)
 {
@@ -48,8 +48,24 @@ void MouseListeners::fireMouseButtonEvent(const MouseEvent& event)
 
 void MouseListeners::fireMouseClickEvent(const MouseEvent& event)
 {
-  for ( iterator it = begin(); it != end(); ++it )
-  {
-     (*it)->onMouseClick(event);
-  }
+   for ( iterator it = begin(); it != end(); ++it )
+   {
+      (*it)->onMouseClick(event);
+   }
+}
+
+void MouseListeners::fireMouseEnterEvent(const MouseEvent& event)
+{
+   for ( iterator it = begin(); it != end(); ++it )
+   {
+      (*it)->onMouseEntered(event);
+   }
+}
+
+void MouseListeners::fireMouseExitEvent(const MouseEvent& event)
+{
+   for ( iterator it = begin(); it != end(); ++it )
+   {
+      (*it)->onMouseExited(event);
+   }
 }

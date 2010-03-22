@@ -22,6 +22,8 @@
 
 #include "system/timer.h"
 
+#include "input/mouseevent.h"
+
 #include "guicanvas.h"
 #include "guifocus.h"
 
@@ -30,9 +32,10 @@ float GuiCanvasMouseEventDispatcher::sClickSpeed = 0.8f;
 GuiCanvasMouseEventDispatcher::GuiCanvasMouseEventDispatcher(GuiCanvas& canvas):
    MouseEventDispatcher(),
    mCanvas(canvas),
+   mpWindow(NULL),
    mClickTimer(0.0f),
    mClickButton(MouseEvent::eInvalid),
-   mpWindow(NULL)
+   mpClickWindow(NULL)
 {
 }
 
@@ -65,13 +68,13 @@ void GuiCanvasMouseEventDispatcher::dispatchButtonPressed(const MouseEvent& even
          GuiFocus::getInstance().getFocus().fireMouseWheelEvent(event);
       }
    }
-   else
+   else if ( mpWindow != NULL )
    {
-      mpWindow = mCanvas.findWindowAtLocation(event.getLocation());
-      ASSERT_PTR(mpWindow);
-
       mpWindow->setFocus();
-      mpWindow->fireMouseButtonEvent(event);
+      mpWindow->getMouseListeners().fireMouseButtonEvent(event);
+
+      mClickButton  = event.getButtons();
+      mpClickWindow = mpWindow;
    }
    
    // convenience calls as long as not all controls have been converted
@@ -84,20 +87,21 @@ void GuiCanvasMouseEventDispatcher::dispatchButtonPressed(const MouseEvent& even
 
 void GuiCanvasMouseEventDispatcher::dispatchButtonReleased(const MouseEvent& event)
 {
-   GuiPoint point = GuiPoint(event.getLocation());
-
-   GuiWnd* pwindow = mCanvas.findWindowAtLocation(event.getLocation());
-   ASSERT_PTR(pwindow);
-
-   pwindow->fireMouseButtonEvent(event);
-
-   if ( pwindow == mpWindow )
+   if ( mpWindow != NULL )
    {
-      // same window --> click
-      pwindow->fireMouseClickEvent(event);
+      MouseListeners& listeners = mpWindow->getMouseListeners();
+      listeners.fireMouseButtonEvent(event);
+
+      if ( mpWindow == mpClickWindow )
+      {
+         listeners.fireMouseClickEvent(event);
+
+         mpClickWindow = NULL;
+      }
    }
-   
+
    // convenience calls as long as not all controls have been converted
+   GuiPoint point = GuiPoint(event.getLocation());
    if ( event.isLeftButtonDown() )
       mCanvas.onLButtonUp(point, event.getModifiers());
    else if ( event.isWheelUp() )
@@ -112,9 +116,39 @@ void GuiCanvasMouseEventDispatcher::dispatchMouseMotion(const MouseEvent& event)
    GuiPoint rel = GuiPoint(event.getRelative());
 
    GuiWnd* pwindow = mCanvas.findWindowAtLocation(event.getLocation());
-   ASSERT_PTR(pwindow);
+   if ( mpWindow != pwindow )
+   {
+      if ( mpClickWindow != NULL )
+      {
+         // when clicking, only send enter/exit events to click window
+         if ( pwindow != mpClickWindow )
+         {
+            mpClickWindow->getMouseListeners().fireMouseExitEvent(event);
+            mpWindow = NULL;
+         }
+         else if ( mpWindow == NULL )
+         {
+           mpClickWindow->getMouseListeners().fireMouseEnterEvent(event);
+           mpWindow = mpClickWindow;
+         }
+      }
+      else
+      {
+         // send enter/exit events to the windows
+         if ( mpWindow != NULL )
+            mpWindow->getMouseListeners().fireMouseExitEvent(event);
+         if ( pwindow != NULL )
+            pwindow->getMouseListeners().fireMouseEnterEvent(event);
 
-   pwindow->fireMouseMotionEvent(event);
+         mpWindow = pwindow;
+      }
+   }
 
+   if ( mpWindow != NULL )
+   {
+      mpWindow->fireMouseMotionEvent(event);
+   }
+
+   // convenience call during conversion
    mCanvas.onMouseMove(point, rel, event.getModifiers());
 }
