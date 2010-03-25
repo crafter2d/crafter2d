@@ -17,6 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+#include "guidesignmenu.h"
+#ifndef JENGINE_INLINE
+#  include "guidesignmenu.inl"
+#endif
+
 #include <sstream>
 #include <tinyxml.h>
 
@@ -29,13 +35,9 @@
 #include "guidesigner.h"
 #include "guieventhandlerdefinitions.h"
 
-#include "guidesignmenu.h"
-#ifndef JENGINE_INLINE
-#  include "guidesignmenu.inl"
-#endif
-
 GuiDesignMenu::GuiDesignMenu():
    GuiMenu(),
+   _filename(),
    _movingItem(false)
 {
 }

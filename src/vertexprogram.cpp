@@ -23,7 +23,10 @@
 
 /// \fn VertexProgram::VertexProgram()
 /// \brief Creates a vertex program
-VertexProgram::VertexProgram()
+VertexProgram::VertexProgram():
+   program(0),
+   source(NULL),
+   length(0)
 {
 }
 
@@ -34,12 +37,14 @@ VertexProgram::~VertexProgram()
 
 void VertexProgram::release ()
 {
-   if( program != 0 ) {
-	   glDeleteProgramsARB (1, &program);
+   if ( program != NULL ) 
+   {
+      glDeleteProgramsARB (1, &program);
       program = 0;
    }
 
-   if( source != 0 ) {
+   if ( source != NULL )
+   {
       delete[] source;
       source = 0;
       length = 0;
@@ -79,37 +84,37 @@ bool VertexProgram::compile(const char* filename)
 
 bool VertexProgram::compile(const char* code, int length)
 {
-   save( code, length );
+   save(code, length);
 
-	// see if we must convert the code to ASM
-   if ( !OpenGL::supportsGLSL() && strstr (source, "!!ARBvp1.0") == NULL )
+   // see if we must convert the code to ASM
+   if ( !OpenGL::supportsGLSL() && strstr(source, "!!ARBvp1.0") == NULL )
    {
-		if ((length = OpenGL::glslToASM (&source)) == -1)
-			return false;
-	}
+      if ( (length = OpenGL::glslToASM (&source)) == -1 )
+         return false;
+   }
 
-   glGenProgramsARB (1, &program);
-   if( program == 0 ) {
+   glGenProgramsARB(1, &program);
+   if ( program == 0 ) 
+   {
       Console::getInstance().print( "VertexProgram.compile(): Can not create a program." );
       return false;
    }
 
-	glBindProgramARB (GL_VERTEX_PROGRAM_ARB, program);
-	glProgramStringARB (GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, length, source);
+   glBindProgramARB (GL_VERTEX_PROGRAM_ARB, program);
+   glProgramStringARB (GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, length, source);
 	
-	if (glGetError() == GL_INVALID_OPERATION) {
-		GLint pos;
-		// get the error message and position
-		glGetIntegerv ( GL_PROGRAM_ERROR_POSITION_ARB, &pos );
-		const GLubyte* msg = glGetString( GL_PROGRAM_ERROR_STRING_ARB );
+   if ( glGetError() == GL_INVALID_OPERATION )
+   {
+      GLint pos;
+      glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &pos);
+      const GLubyte* msg = glGetString(GL_PROGRAM_ERROR_STRING_ARB);
 
       Console& console = Console::getInstance();
       console.printf("VertexProgram.compile: error during compilation '%s'", (char*)msg);
-		console.printf("Shader (len=%d)", length);
 
       release();
       return false;
-	}
+   }
 	
    return true;
 }
@@ -118,38 +123,44 @@ bool VertexProgram::save( const char* code, int len )
 {
    length = len;
    source = new GLcharARB[length+1];
-	if (source != NULL)
+   if (source != NULL)
    {
-	   strcpy (source, code);
+      strcpy (source, code);
    }
 
-   return (source != 0);
+   return (source != NULL);
 }
 
 void VertexProgram::enable() const
 {
-	glBindProgramARB (GL_VERTEX_PROGRAM_ARB, program);
-	glEnable(GL_VERTEX_PROGRAM_ARB);
+   glBindProgramARB(GL_VERTEX_PROGRAM_ARB, program);
+   glEnable(GL_VERTEX_PROGRAM_ARB);
 }
 
 void VertexProgram::disable() const
 {
-    glDisable(GL_VERTEX_PROGRAM_ARB);
+   glDisable(GL_VERTEX_PROGRAM_ARB);
 }
 
 GLint VertexProgram::getUniformLocation (const char* name) const
 {
-	const char* pos = strstr (source, name);
-	if (pos) {
-		std::string num;
-		// we assume here that it is a PARAM with program.local[n]
-		while (*pos != '[') ++pos;
-		while (*pos != ']') {
-			num += *pos;
-			++pos;
-		}
-		// convert the n to a number
-		return (GLint)atoi (num.c_str());
+	const char* pos = strstr(source, name);
+	if ( pos != NULL )
+  {
+     std::string num;
+
+     // we assume here that it is a PARAM with program.local[n]
+     pos = strchr(pos, '[');
+
+     while (*pos != ']')
+     {
+        num += *pos;
+        ++pos;
+     }
+     
+     // convert the n to a number
+     return (GLint)atoi (num.c_str());
 	}
+
 	return -1;
 }

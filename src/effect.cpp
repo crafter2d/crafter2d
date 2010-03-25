@@ -38,6 +38,8 @@
 	 \brief initializes internal member variables (by default texture combiners are not used).
  */
 Effect::Effect():
+   name(),
+   stages(),
    path(NULL),
    useCombiners(false)
 {
@@ -71,17 +73,19 @@ bool Effect::load( const char* file )
 
 	// get the root element from the file
 	TiXmlElement* effect = (TiXmlElement*)doc.FirstChild("effect");
-	if (!effect) {
+	if ( effect == NULL )
+  {
 		console.printf ("Effect.load: %s is not an effect file.", file);
 		return false;
 	}
-	else
-	    // save the name (if supplied)
-		name = effect->Attribute ("name");
+
+   // save the name (if supplied)
+   name = effect->Attribute ("name");
 
 	// try to load in the textures
 	if (!processTextures (effect))
 		return false;
+
 	// process the vertex program
 	if (!processCode (effect))
 	    return false;
@@ -98,7 +102,7 @@ bool Effect::load( const char* file )
  */
 void Effect::destroy ()
 {
-	if( path )
+   if( path == NULL )
    {
 		// release the path
 		path->release ();
@@ -168,18 +172,15 @@ bool Effect::processTextures( const TiXmlElement* effect )
  */
 bool Effect::postprocessTextures ()
 {
-	// get the uniform locations of the textures in the fragment shader
-   if ( hasPath() )
+   // get the uniform locations of the textures in the fragment shader
+   for ( Stages::size_type s = 0; s < stages.size(); ++s)
    {
-	   int size = stages.size();
-	   for (int s = 0; s < size; ++s)
+      stages[s].index = getPath().getUniformLocation(stages[s].uniform.c_str());
+      if (stages[s].index == -1) 
       {
-		   stages[s].index = getPath().getUniformLocation(stages[s].uniform.c_str());
-		   if (stages[s].index == -1) {
-            Console::getInstance().printf ("Can not find %s", stages[s].uniform.c_str());
-			   return false;
-		   }
-	   }
+         Console::getInstance().printf ("Can not find %s", stages[s].uniform.c_str());
+         return false;
+      }
    }
 
 	return true;
@@ -235,7 +236,7 @@ bool Effect::processCode( const TiXmlElement* effect )
 
    // now load the codepath
    path = OpenGL::createCodePath(pathtype);
-   if ( !path->load(vertexfile.c_str(), fragmentfile.c_str()) )
+   if ( path == NULL || !path->load(vertexfile.c_str(), fragmentfile.c_str()) )
        return false;
 
    // is no fragment shader or not supported, look for combiners
@@ -261,7 +262,7 @@ bool Effect::processCombiners( const TiXmlElement* shader_part )
    if (!combiner_part)
    {
       Console::getInstance().print("Effect.processCombiners: could not find combiner for effect.");
-      return false;
+      return true;
    }
 
 	char stagebuf[100];
@@ -369,10 +370,11 @@ const Texture& Effect::resolveTexture (const char* uniform) const
 
 const Texture* Effect::findTexture(const char* uniform) const
 {
-   for (int s = 0; s < stages.size(); ++s)
+   for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
-      if ( strcmp (uniform, stages[s].uniform.c_str()) == 0 )
-         return stages[s].tex;
+      const TexStage& stage = stages[s];
+      if ( strcmp (uniform, stage.uniform.c_str()) == 0 )
+         return stage.tex;
    }
 
    return NULL;
@@ -384,10 +386,9 @@ const Texture* Effect::findTexture(const char* uniform) const
  */
 void Effect::enable () const
 {
-   if ( hasPath() )
-      getPath().enable();
+   getPath().enable();
 
-   for (int s = 0; s < stages.size(); ++s)
+   for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
 	   const TexStage& stage = stages[s];
 	   stage.tex->enable ();
@@ -417,16 +418,17 @@ void Effect::enable () const
  */
 void Effect::disable () const
 {
-   if ( hasPath() )
-	   getPath().disable();
+   getPath().disable();
 
-	// disable the textures and reset their environment
-	for (int s = 0; s < stages.size(); ++s)
+   // disable the textures and reset their environment
+   for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
       const TexStage& stage = stages[s];
-		stage.tex->disable ();
+      stage.tex->disable ();
 
-		if ( useCombiners )
-			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	}
+      if ( useCombiners )
+      {
+         glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+      }
+   }
 }

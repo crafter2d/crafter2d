@@ -66,7 +66,10 @@ public:
 	void              enable () const;
 	void              disable () const;
 	
-protected:
+private:
+  // types
+   typedef std::vector<TexStage> Stages;
+
 	bool              processTextures( const TiXmlElement* effect );
 	bool              processCode( const TiXmlElement* effect );
 	bool              processCombiners( const TiXmlElement* shader_part );
@@ -75,11 +78,10 @@ protected:
 	GLint             getCombinerValue( const char* str );
 	GLint             getSourceValue( const char* str );
 	
-private:
-	CodePath* path;
-   bool useCombiners;
-   std::vector<TexStage> stages;
    std::string name;
+   Stages      stages;
+   CodePath*   path;
+   bool        useCombiners;  
 };
 
 #ifdef JENGINE_INLINE

@@ -113,6 +113,8 @@ vertex and fragment shaders are supported on the target hardware.
 class ShaderPath: public CodePath
 {
 public:
+   ShaderPath();
+
 	virtual bool     load(const char* vertex, const char* fragment);
 	virtual void     release();
 

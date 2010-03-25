@@ -17,18 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
+#include "codepath.h"
 
 #include <algorithm>
 #include <tinyxml.h>
+
 #include "console.h"
-#include "codepath.h"
 #include "opengl.h"
 #include "texture.h"
 #include "defines.h"
+
+ShaderPath::ShaderPath():
+   CodePath(),
+   shader()
+{
+}
 
 /*!
     \fn ShaderPath::load (const char* vertex, const char* fragment)

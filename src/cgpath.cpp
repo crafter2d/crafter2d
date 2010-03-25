@@ -24,6 +24,7 @@
 #include "defines.h"
 
 CGPath::CGPath(): 
+   CodePath(),
    vp(0),
    fp(0),
    _mvpMatrix(0),
