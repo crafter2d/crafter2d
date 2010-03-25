@@ -22,20 +22,19 @@
 #  include "guicombobox.inl"
 #endif
 
-#include "../script.h"
-#include "../scriptmanager.h"
+#include "script.h"
+#include "scriptmanager.h"
 
 #include "gui/button/guibutton.h"
-#include "gui/colorlistbox/guicolorlistbox.h"
 
-#include "guiclipper.h"
-#include "guifont.h"
-#include "guimanager.h"
-#include "guidesigner.h"
-#include "guilistbox.h"
-#include "guipopupdecorator.h"
-#include "guifocus.h"
-#include "guitext.h"
+#include "gui/guiclipper.h"
+#include "gui/guifont.h"
+#include "gui/guimanager.h"
+#include "gui/guidesigner.h"
+#include "gui/guilistbox.h"
+#include "gui/guipopupdecorator.h"
+#include "gui/guifocus.h"
+#include "gui/guitext.h"
 
 EVENT_MAP_BEGIN(GuiComboBox)
    ON_LIST_SELCHANGE(1,onSelChange)
@@ -100,8 +99,8 @@ void GuiComboBox::paint(Uint32 tick, const GuiGraphics& graphics)
 {
    graphics.setColor(GuiManager::getInstance().getDefaultTextColor());
 
-   int posX = m_frameRect.left() + 5;
-   int posY = m_frameRect.top() + font->getBaseHeight();
+   float posX = m_frameRect.left() + 5;
+   float posY = m_frameRect.top() + font->getBaseHeight();
    GuiText::printfn(*font, posX, posY, getCaption());
 }
 

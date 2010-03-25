@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "guicheckbox.h"
 
-#include "guidesigner.h"
-#include "guifont.h"
-#include "guimanager.h"
-#include "guitext.h"
+#include "gui/guidesigner.h"
+#include "gui/guifont.h"
+#include "gui/guimanager.h"
+#include "gui/guitext.h"
 
-#include "../defines.h"
+#include "defines.h"
 
 REGISTER_DESIGNER(GuiCheckBox, GuiCheckBoxId, "Checkbox", 40, 15, 264)
 
@@ -45,10 +45,9 @@ bool GuiCheckBox::isChecked() const
    return IS_SET(m_style, GUI_PRESSED);
 }
 
-int GuiCheckBox::onLButtonUp (const GuiPoint& point, int flag)
+void GuiCheckBox::swapChecked()
 {
-   m_style ^= GUI_PRESSED;
-   return 0;
+   SWAP_FLAG(m_style, GUI_PRESSED);
 }
 
 void GuiCheckBox::paint(Uint32 tick, const GuiGraphics& graphics)

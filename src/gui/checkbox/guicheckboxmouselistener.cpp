@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,41 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#include "guicheckboxmouselistener.h"
 
-INLINE void GuiComboBox::setCallback(const char* fnc)
+#include "guicheckbox.h"
+
+GuiCheckBoxMouseListener::GuiCheckBoxMouseListener(GuiCheckBox& checkbox):
+   MouseListener(),
+   mCheckBox(checkbox)
 {
-   callbackFnc = fnc;
 }
 
-INLINE void GuiComboBox::setItemText(int index, const char* text)
+// mouse click
+
+void GuiCheckBoxMouseListener::onMouseClick(const MouseEvent& event)
 {
-   options->setItemText(index, text);
+   mCheckBox.swapChecked();
 }
-
-INLINE void GuiComboBox::setItemData(int index, Uint32 data)
-{
-   options->setItemData(index, data);
-}
-
-INLINE void GuiComboBox::setCurSel(int index)
-{
-   options->setCurSel(index);
-}
-
-INLINE const char* GuiComboBox::getItemText(int index) const
-{
-   return options->getItemText(index);
-}
-
-INLINE Uint32 GuiComboBox::getItemData(int index) const
-{
-   return options->getItemData(index);
-}
-
-INLINE int GuiComboBox::getCurSel() const
-{
-   return options->getCurSel();
-}
-
-

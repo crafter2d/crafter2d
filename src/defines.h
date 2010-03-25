@@ -54,6 +54,7 @@ typedef void*        handle;
 #define IS_SET(container,flag)((container & flag) == flag)
 #define SET_FLAG(container,flag)   container |= flag
 #define CLEAR_FLAG(container,flag) container &= ~flag
+#define SWAP_FLAG(container,flag) container ^= flag
 
 // Debugging macros
 

@@ -17,41 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#ifndef GUI_CHECKBOX_H
+#define GUI_CHECKBOX_H
 
-INLINE void GuiComboBox::setCallback(const char* fnc)
+#include "gui/guicontrol.h"
+
+class GuiCheckBox : public GuiControl
 {
-   callbackFnc = fnc;
-}
+public:
+   DESIGNER_REGISTRATION(GuiCheckBox)
 
-INLINE void GuiComboBox::setItemText(int index, const char* text)
-{
-   options->setItemText(index, text);
-}
+   GuiCheckBox();
 
-INLINE void GuiComboBox::setItemData(int index, Uint32 data)
-{
-   options->setItemData(index, data);
-}
+   bool           isChecked() const;
+   void           swapChecked();
 
-INLINE void GuiComboBox::setCurSel(int index)
-{
-   options->setCurSel(index);
-}
+   virtual void   onResize(int width, int height);
 
-INLINE const char* GuiComboBox::getItemText(int index) const
-{
-   return options->getItemText(index);
-}
+protected:
+   virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
+   virtual void   paint(Uint32 tick, const GuiGraphics& graphics);
 
-INLINE Uint32 GuiComboBox::getItemData(int index) const
-{
-   return options->getItemData(index);
-}
+   GuiPoint pos;
+   GuiRect box;
+};
 
-INLINE int GuiComboBox::getCurSel() const
-{
-   return options->getCurSel();
-}
-
-
+#endif

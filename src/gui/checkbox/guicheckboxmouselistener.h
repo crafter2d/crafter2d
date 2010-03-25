@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,24 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "guicontrol.h"
+#ifndef GUI_CHECKBOX_MOUSE_LISTENER_H
+#define GUI_CHECKBOX_MOUSE_LISTENER_H
 
-class GuiCheckBox : public GuiControl
+#include "gui/input/mouselistener.h"
+
+class GuiCheckBox;
+
+class GuiCheckBoxMouseListener : public MouseListener
 {
 public:
-   DESIGNER_REGISTRATION(GuiCheckBox)
+   GuiCheckBoxMouseListener(GuiCheckBox& checkbox);
 
-   GuiCheckBox();
+  // mouse click
+   virtual void onMouseClick(const MouseEvent& event);
 
-   bool           isChecked() const;
-
-   virtual void   onResize(int width, int height);
-   virtual int    onLButtonUp (const GuiPoint& point, int flag);
-
-protected:
-   virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
-   virtual void   paint(Uint32 tick, const GuiGraphics& graphics);
-
-   GuiPoint pos;
-   GuiRect box;
+private:
+   GuiCheckBox& mCheckBox;
 };
+
+#endif
+

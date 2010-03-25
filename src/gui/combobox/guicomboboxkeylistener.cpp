@@ -24,7 +24,7 @@
 
 #include "gui/input/keyevent.h"
 
-#include "gui/guicombobox.h"
+#include "guicombobox.h"
 
 GuiComboBoxKeyListener::GuiComboBoxKeyListener(GuiComboBox& combobox):
    KeyListener(),

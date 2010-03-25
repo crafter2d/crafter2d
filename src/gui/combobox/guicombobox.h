@@ -23,10 +23,10 @@
 #include <vector>
 #include <string>
 
-#include "guicontrol.h"
-#include "guilistbox.h"
+#include "gui/guicontrol.h"
+#include "gui/guilistbox.h"
 
-#include "gui/combobox/guicomboboxkeylistener.h"
+#include "guicomboboxkeylistener.h"
 
 class GuiButton;
 class GuiPopupDecorator;
