@@ -29,11 +29,13 @@
 #include "../script.h"
 #include "../scriptmanager.h"
 
+#include "guidialog/guidialog.h"
+#include "edit/guiedit.h"
+#include "headercontrol/guiheadercolumn.h"
+
 #include "guidesignwnd.h"
 #include "guidesigndecorator.h"
 #include "guidesignmenu.h"
-#include "guidialog/guidialog.h"
-#include "guiedit.h"
 #include "guilist.h"
 #include "guimenu.h"
 #include "guipropertylist.h"
@@ -41,7 +43,6 @@
 #include "guipopupdecorator.h"
 #include "guimanager.h"
 #include "guiclipper.h"
-#include "guiheadercolumn.h"
 
 //DEFINE_CONSTRUCTOR(GuiDesigner)
 //

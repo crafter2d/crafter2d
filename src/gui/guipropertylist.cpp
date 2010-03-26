@@ -17,9 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "guicombobox.h"
 #include "guipropertylist.h"
-#include "../defines.h"
+
+#include "defines.h"
+
+#include "gui/combobox/guicombobox.h"
 
 GuiPropertyList::GuiPropertyList():
    GuiListBox(),

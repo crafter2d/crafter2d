@@ -23,8 +23,9 @@
 #include <vector>
 #include <string>
 
+#include "gui/headercontrol/guiheadercontrol.h"
+
 #include "guicontrol.h"
-#include "guiheadercontrol.h"
 #include "guilistboxitem.h"
 #include "guilistboxsubitem.h"
 

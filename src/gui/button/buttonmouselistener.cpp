@@ -22,7 +22,7 @@
 
 #include "gui/input/mouseevent.h"
 
-#include "gui/guibutton.h"
+#include "guibutton.h"
 
 ButtonMouseListener::ButtonMouseListener(GuiButton& button):
    MouseListener(),

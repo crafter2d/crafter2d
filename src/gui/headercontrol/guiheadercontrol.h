@@ -17,52 +17,56 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUI_HEADER_COLUMN_H_
-#define GUI_HEADER_COLUMN_H_
+#ifndef GUIHEADERCTRL_H_
+#define GUIHEADERCTRL_H_
 
-#include <string>
-#include "guihelpers.h"
+#include <vector>
 
-class GuiHeaderCtrl;
-class GuiGraphics;
+#include "gui/guicontrol.h"
 
-class GuiHeaderColumn
+class GuiHeaderColumn;
+
+class GuiHeaderCtrl : public GuiControl
 {
 public:
-                           GuiHeaderColumn(GuiHeaderCtrl* header, int pixels);
-                           GuiHeaderColumn(GuiHeaderCtrl* header, int left, int pixels);
+   typedef std::vector<GuiHeaderColumn*> Columns;
 
-   void                    header(GuiHeaderCtrl* control);
-   const GuiHeaderCtrl&    header() const;
-   GuiHeaderCtrl&          header();
+                           GuiHeaderCtrl();
+   virtual                 ~GuiHeaderCtrl();
 
-   const std::string&      title() const;
-   void                    title(const std::string& text);
+   static int              height();
 
-   void                    editable(bool edit);
-   bool                    editable() const;
+   bool                    create (GuiId id, GuiStyle style, GuiWnd* parent);
 
- // operations
-   void                    paint(const GuiGraphics& graphics);
-   void                    resize(int relx);
+   int                     count() const;
 
-   int                     width() const;
+   int                     addColumn(int width);
+   void                    remove(int index);
 
-   GuiRect&                rect();
+   const GuiHeaderColumn&  operator[](int index) const;
+   GuiHeaderColumn&        operator[](int index);
+
+   virtual void            onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
+   virtual int             onLButtonDown(const GuiPoint& point, int flags);
+   virtual int             onLButtonUp(const GuiPoint& point, int flags);
 
 protected:
-   const GuiHeaderColumn&  me();
+   virtual void            paint(Uint32 tick, const GuiGraphics& graphics);
+
+   bool                    isDragPoint(const GuiPoint& point);
+   void                    dragging(bool drag);
+   bool                    dragging() const;
+
+   int                     calculateNewLeftSize();
 
 private:
-   GuiHeaderCtrl* _header;
-   std::string    _text;
-   GuiRect        _rect;
-   int            _width;
-   bool           _editable;
+   Columns   columns;
+   bool     _dragging;
+   int      _dragcolumn;
 };
 
 #ifdef JENGINE_INLINE
-#  include "guiheadercolumn.inl"
+#  include "guiheadercontrol.inl"
 #endif
 
 #endif

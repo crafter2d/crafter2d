@@ -17,16 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <GL/GLee.h>
-#include "../texture.h"
-
-#include "guiwnd.h"
-#include "guicanvas.h"
 
 #include "guigraphics.h"
 #ifndef JENGINE_INLINE
 # include "guigraphics.inl"
 #endif
+
+#include <GL/GLee.h>
+
+#include "texture.h"
+
+#include "gui/canvas/guicanvas.h"
+
+#include "guiwnd.h"
 
 GuiGraphics::GuiGraphics():
    MPCanvas(NULL)

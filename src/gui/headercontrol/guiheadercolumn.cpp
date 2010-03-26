@@ -17,54 +17,50 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#include "guiheadercolumn.h"
+#ifndef JENGINE_INLINE
+#  include "guiheadercolumn.inl"
+#endif
 
-INLINE void GuiHeaderColumn::header(GuiHeaderCtrl* control)
+#include "gui/guifont.h"
+#include "gui/guigraphics.h"
+#include "gui/guimanager.h"
+#include "gui/guitext.h"
+
+#include "guiheadercontrol.h"
+
+GuiHeaderColumn::GuiHeaderColumn(GuiHeaderCtrl* parent, int pixels):
+   _header(parent),
+   _text(),
+   _width(pixels),
+   _editable(false)
 {
-   _header = control;
+   const GuiRect& frame = header().getWindowRect();
+   _rect.set(frame.left(), frame.left()+pixels, frame.top(), frame.bottom());
 }
 
-INLINE const GuiHeaderCtrl& GuiHeaderColumn::header() const
+GuiHeaderColumn::GuiHeaderColumn(GuiHeaderCtrl* parent, int left, int pixels):
+   _header(parent),
+   _text(),
+   _width(pixels),
+   _editable(false)
 {
-   return *_header;
+   const GuiRect& frame = header().getWindowRect();
+   _rect.set(left+frame.left(), left+frame.left()+pixels, frame.top(), frame.bottom());
 }
 
-INLINE GuiHeaderCtrl& GuiHeaderColumn::header()
+void GuiHeaderColumn::paint(const GuiGraphics& graphics)
 {
-   return const_cast<GuiHeaderCtrl&>(me().header());
+   graphics.drawSunkenRect(_rect);
+
+   const GuiFont& font = *header().getFont();
+   int y = _rect.top() + font.getBaseHeight();
+
+   graphics.setColor(GuiManager::getInstance().getDefaultTextColor());
+   GuiText::printf(font, _rect.left()+3, y, _text.c_str());
 }
 
-INLINE void GuiHeaderColumn::editable(bool edit)
+void GuiHeaderColumn::resize(int relx)
 {
-   _editable = edit;
-}
-
-INLINE bool GuiHeaderColumn::editable() const
-{
-   return _editable;
-}
-
-INLINE const std::string& GuiHeaderColumn::title() const
-{
-   return _text;
-}
-
-INLINE void GuiHeaderColumn::title(const std::string& text)
-{
-   _text = text;
-}
-
-INLINE int GuiHeaderColumn::width() const
-{
-   return _rect.getWidth();
-}
-
-INLINE GuiRect& GuiHeaderColumn::rect()
-{
-   return _rect;
-}
-
-INLINE const GuiHeaderColumn& GuiHeaderColumn::me()
-{
-   return static_cast<const GuiHeaderColumn&>(*this);
+   _rect.resize(_rect.getWidth()+relx, _rect.getHeight());
 }

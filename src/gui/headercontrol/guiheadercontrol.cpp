@@ -17,13 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <algorithm>
-#include "guiheadercolumn.h"
 
 #include "guiheadercontrol.h"
 #ifndef JENGINE_INLINE
 #  include "guiheadercontrol.inl"
 #endif
+
+#include <algorithm>
+
+#include "guiheadercolumn.h"
 
 GuiHeaderCtrl::GuiHeaderCtrl():
    _dragging(false),

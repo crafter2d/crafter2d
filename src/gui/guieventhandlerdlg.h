@@ -22,6 +22,9 @@
 
 #include "guidialog/guidialog.h"
 
+class GuiEditBox;
+class GuiListBox;
+
 class GuiEventHandlerDlg : public GuiDialog
 {
 public:

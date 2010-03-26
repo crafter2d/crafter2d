@@ -17,18 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "guiclipper.h"
-#include "guigraphics.h"
-#include "guiheadercontrol.h"
-#include "guiheadercolumn.h"
-#include "guilistbox.h"
-#include "guilistboxitem.h"
-#include "guitextblock.h"
 
 #include "guilistboxsubitem.h"
 #ifndef JENGINE_INLINE
 #  include "guilistboxsubitem.inl"
 #endif
+
+#include "gui/headercontrol/guiheadercontrol.h"
+#include "gui/headercontrol/guiheadercolumn.h"
+
+#include "guiclipper.h"
+#include "guigraphics.h"
+#include "guilistbox.h"
+#include "guilistboxitem.h"
+#include "guitextblock.h"
 
 GuiListBoxSubItem::GuiListBoxSubItem(const GuiListBoxItem& i, const std::string& str):
    _item(i),

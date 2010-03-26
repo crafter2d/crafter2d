@@ -17,15 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "guieventhandlerdefinition.h"
-#include "guieventhandlerdefinitions.h"
-#include "guilistbox.h"
-#include "guiedit.h"
 
 #include "guieventhandlerdlg.h"
 #ifndef JENGINE_INLINE
 #  include "guieventhandlerdlg.inl"
 #endif
+
+#include "gui/edit/guiedit.h"
+
+#include "guieventhandlerdefinition.h"
+#include "guieventhandlerdefinitions.h"
+#include "guilistbox.h"
 
 EVENT_MAP_BEGIN(GuiEventHandlerDlg)
    ON_LIST_SELCHANGE(1, onSelChanged)

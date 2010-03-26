@@ -69,9 +69,9 @@ void GuiEditBoxKeyListener::onKeyPressed(const KeyEvent& event)
          mEditBox.doTab();
          break;
       default:
-         if ( which >= 0 && which < 256 )
+         if ( event.getKey() >= 0 && event.getKey() < 256 )
          {
-            mEditBox.doInsert(which);
+            mEditBox.doInsert(event.getKey());
          }
          break;
    }

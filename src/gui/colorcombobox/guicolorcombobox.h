@@ -20,7 +20,7 @@
 #ifndef COLOR_COMBOBOX_H
 #define COLOR_COMBOBOX_H
 
-#include "gui/guicombobox.h"
+#include "gui/combobox/guicombobox.h"
 
 /// @author Jeroen Broekhuizen
 ///
