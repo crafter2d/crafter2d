@@ -21,7 +21,10 @@
 #ifndef _GUIEDIT_H_
 #define _GUIEDIT_H_
 
-#include "guicontrol.h"
+#include "gui/guicontrol.h"
+
+#include "guieditkeylistener.h"
+#include "guieditmouselistener.h"
 
 class GuiScrollBar;
 
@@ -29,7 +32,7 @@ class GuiScrollBar;
  *
  * class GuiEditBox, implements a basic edit control window with user input.
  */
-class GuiEditBox: public GuiControl
+class GuiEditBox : public GuiControl
 {
 public:
    static void onCaptionChanged(GuiEditBox* pwnd);
@@ -38,7 +41,7 @@ public:
 
    DESIGNER_REGISTRATION(GuiEditBox)
  
-	               GuiEditBox();
+   GuiEditBox();
 
  // Get/set interface
    void handleCaptionChanged();
@@ -47,10 +50,10 @@ public:
 
    virtual void   sendMessage(GuiId id, GuiEvent event, int param1);
 
-   virtual int    onLButtonDown(const GuiPoint& point, int flags);
-	virtual void   onKeyDown (int which, bool shift, bool ctrl, bool alt);
-
 protected:
+   friend class GuiEditBoxKeyListener;
+   friend class GuiEditBoxMouseListener;
+
    virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
    virtual void   onResize(int width, int height);
    virtual void   onSetFocus(GuiControl* oldCtrl);
@@ -76,6 +79,9 @@ protected:
    void  doDelete();
    void  doTab();
 
+   void  moveCarret(Point pos);
+   void  moveHome();
+   void  moveEnd();
    void  moveUp();
    void  moveDown();
    void  moveLeft(bool ctrl);
@@ -88,6 +94,9 @@ protected:
    GuiScrollBar* _pvertscrollbar;
 
    std::vector< std::string > _lines;
+
+   GuiEditBoxMouseListener mMouseListener;
+   GuiEditBoxKeyListener   mKeyListener;
 
    int      maxChars;
    int      maxLines;

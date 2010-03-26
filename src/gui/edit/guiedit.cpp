@@ -17,14 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../script.h"
-#include "../defines.h"
-
 #include "guiedit.h"
-#include "guidesigner.h"
-#include "guifont.h"
-#include "guiscrollbar.h"
-#include "guitext.h"
+
+#include "script.h"
+#include "defines.h"
+
+#include "gui/guidesigner.h"
+#include "gui/guifont.h"
+#include "gui/guiscrollbar.h"
+#include "gui/guitext.h"
 
 REGISTER_DESIGNER(GuiEditBox, GuiEditBoxId, "Editbox", 40, 15, 392)
 
@@ -61,6 +62,8 @@ GuiEditBox::GuiEditBox():
    INIT_PROPERTY(WordWrap),
    _pvertscrollbar(NULL),
    _lines(),
+   mMouseListener(*this),
+   mKeyListener(*this),
    maxChars(0),
    maxLines(0),
    scrollPos(0),
@@ -73,7 +76,7 @@ GuiEditBox::GuiEditBox():
 
 void GuiEditBox::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
 {
-	GuiControl::onCreate(rect, caption, style, parent);
+   GuiControl::onCreate(rect, caption, style, parent);
 
    onResize(getWindowRect().getWidth(), getWindowRect().getHeight());
 
@@ -93,7 +96,7 @@ void GuiEditBox::initializeScrollbar()
 
    int flags = GUI_BACKGROUND;
    if ( getMultiLine() )
-      flags |= GUI_VISIBLE;
+      SET_FLAG(flags, GUI_VISIBLE);
 
    _pvertscrollbar = new GuiScrollBar();
    _pvertscrollbar->create(1, GuiRect(w-15, w, 1, rect.getHeight()-2), "", flags, this);
@@ -286,78 +289,6 @@ void GuiEditBox::paintText()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// - Input interface
-//////////////////////////////////////////////////////////////////////////
-
-int GuiEditBox::onLButtonDown(const GuiPoint& point, int flags)
-{
-   if ( GuiControl::onLButtonDown(point, flags) == JENGINE_MSG_UNHANDLED )
-   {
-      GuiPoint loc(point);
-
-      GuiFont& font = *getParent()->getFont();
-      carretPos.x = loc.x / font.getAverageWidth() + scrollPos;
-      carretPos.y = loc.y / font.getHeight() + scrollPosY;
-
-      if ( carretPos.y >= getLineCount() )
-         carretPos.y = getLineCount() - 1;
-
-      int linelength = getLineLength(carretPos.y);
-      if ( carretPos.x >= linelength )
-         carretPos.x = linelength;
-   }
-
-   return JENGINE_MSG_HANDLED;
-}
-
-void GuiEditBox::onKeyDown (int which, bool shift, bool ctrl, bool alt)
-{
-   lastTick = SDL_GetTicks();
-   showCarret = true;
-
-	switch (which) {
-	case SDLK_BACKSPACE:
-		doBackspace();
-      break;
-   case SDLK_DELETE:
-      doDelete();
-      break;
-   case SDLK_HOME:
-      carretPos.x = 0;
-      scrollPos   = 0;
-      break;
-   case SDLK_END:
-      carretPos.x = getLineLength(carretPos.y);
-      scrollPos   = MAX(carretPos.x - maxChars, 0);
-      break;
-   case SDLK_LEFT:
-      moveLeft(ctrl);
-      break;
-   case SDLK_RIGHT:
-      moveRight(ctrl);
-      break;
-   case SDLK_UP:
-      moveUp();
-      break;
-   case SDLK_DOWN:
-      moveDown();
-      break;
-   case SDLK_RETURN:
-      doReturn(shift, ctrl, alt);
-      break;
-   case SDLK_TAB:
-      doTab();
-      break;
-	default:
-      if ( which >= 0 && which < 256 )
-         doInsert(which);
-		break;
-	}
-
-   ensureVisible();
-}
-
-//////////////////////////////////////////////////////////////////////////
 // - Queries
 //////////////////////////////////////////////////////////////////////////
 
@@ -498,6 +429,34 @@ void GuiEditBox::doTab()
 {
    getCaption().insert(carretToStringPos(), "   ");
    carretPos.x += 3;
+}
+
+void GuiEditBox::moveCarret(Point pos)
+{
+   GuiPoint loc(pos);
+
+   GuiFont& font = *getParent()->getFont();
+   carretPos.x = loc.x / font.getAverageWidth() + scrollPos;
+   carretPos.y = loc.y / font.getHeight() + scrollPosY;
+
+   if ( carretPos.y >= getLineCount() )
+      carretPos.y = getLineCount() - 1;
+
+   int linelength = getLineLength(carretPos.y);
+   if ( carretPos.x >= linelength )
+      carretPos.x = linelength;
+}
+
+void GuiEditBox::moveHome()
+{
+   carretPos.x = 0;
+   scrollPos   = 0;
+}
+
+void GuiEditBox::moveEnd()
+{
+   carretPos.x = getLineLength(carretPos.y);
+   scrollPos   = MAX(carretPos.x - maxChars, 0);
 }
 
 void GuiEditBox::moveLeft(bool ctrl)
