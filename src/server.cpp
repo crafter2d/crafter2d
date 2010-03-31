@@ -27,6 +27,7 @@
 #include "net/newobjectevent.h"
 
 #include "physics/simulationfiller.h"
+#include "physics/Simulator.h"
 
 #include "actionmap.h"
 #include "autoptr.h"
@@ -105,6 +106,7 @@ void DisconnectEvent::unpack(BitStream& stream)
 
 Server::Server():
    clients(),
+   mpSimulator(NULL),
    mActiveClient(-1)
 {
 }
@@ -113,10 +115,14 @@ Server::~Server()
 {
 }
 
+#include "physics/physicssimulator.h"
+
 bool Server::create()
 {
    Process::create();
    graph.setNotify();
+
+   mpSimulator = new PhysicsSimulator();
    return true;
 }
 
@@ -166,6 +172,12 @@ void Server::update(float delta)
    // update the graph
    SceneObjectDirtySet dirtyset;
    graph.update(dirtyset, delta);
+
+   // run the simulator
+   if ( mpSimulator != NULL )
+   {
+      mpSimulator->run(delta);
+   }
 
    // send changes to the clients
    ClientMap::iterator it = clients.begin();

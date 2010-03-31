@@ -97,7 +97,6 @@ protected:
    void handleViewportEvent(const ViewportEvent& event);
 
    ClientMap   clients;
-   Simulator*  mpSimulator;
    int         mActiveClient;
 };
 

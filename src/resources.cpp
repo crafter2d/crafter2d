@@ -31,10 +31,10 @@
 ResourceManager::ResourceManager():
    textures()
 {
-  ilInit();
-  iluInit();
+   ilInit();
+   iluInit();
 
-	textures.create(256);
+   textures.create(256);
 }
 
 ResourceManager& ResourceManager::operator=(const ResourceManager& mgr)

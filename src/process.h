@@ -27,6 +27,8 @@
 class ActionMap;
 class BitStream;
 class NetEvent;
+class SimulatorFactory;
+class Simulator;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -59,6 +61,8 @@ protected:
    NetConnection  conn;
    SceneGraph     graph;
    ActionMap*     actionMap;
+   SimulatorFactory* mpSimulatorFactory;
+   Simulator*        mpSimulator;
    bool           initialized;
 };
 

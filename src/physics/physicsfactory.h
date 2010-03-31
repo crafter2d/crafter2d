@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,60 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "net/netevent.h"
-#include "net/events/scriptevent.h"
+#ifndef PHYSICS_FACTORY_H_
+#define PHYSICS_FACTORY_H_
 
-#include "actionmap.h"
-#include "scenegraph.h"
+#include "simulationfactory.h"
 
-#include "process.h"
-#ifndef JENGINE_INLINE
-#  include "process.inl"
+class PhysicsFactory : public SimulationFactory
+{
+public:
+   PhysicsFactory();
+   virtual ~PhysicsFactory();
+
+   virtual const std::string& getName() const;
+
+   virtual Simulator* createSimulator();
+
+   virtual Body* createBody();
+};
+
 #endif
-
-Process::Process(void):
-   conn(),
-   graph(),
-   actionMap(NULL),
-   mpSimulatorFactory(NULL),
-   mpSimulator(NULL),
-   initialized(false)
-{
-   conn.attachProcess(this);
-}
-
-Process::~Process(void)
-{
-}
-
-bool Process::create()
-{
-   return true;
-}
-
-bool Process::destroy()
-{
-   conn.disconnect();
-
-   graph.setNotify(false);
-   graph.removeAll();
-
-   return true;
-}
-
-void Process::update(float tick)
-{
-   if ( conn.isConnected() )
-      conn.update();
-}
-
-void Process::sendScriptEvent(BitStream* pstream, Uint32 client)
-{
-   if ( conn.isConnected() )
-   {
-      ScriptEvent event(pstream);
-      if (client != INVALID_CLIENTID)
-         conn.setClientId(client);
-      conn.send(&event);
-   }
-}

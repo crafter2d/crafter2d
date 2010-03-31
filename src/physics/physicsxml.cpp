@@ -29,14 +29,13 @@
 #include "collisioncircle.h"
 #include "collisionplane.h"
 
-const std::string sSIMULATIONELEMENT = "simulationbody";
 const std::string sBODYELEMENT       = "body";
 const std::string sSHAPEELEMENT      = "shape";
 const std::string sTYPE              = "type";
 
 Body* PhysicsXML::parseXML(TiXmlElement& object)
 {
-   TiXmlElement* pphysics = dynamic_cast<TiXmlElement*>(object.FirstChild(sSIMULATIONELEMENT));
+   TiXmlElement* pphysics = dynamic_cast<TiXmlElement*>(object.FirstChild(sBODYELEMENT));
    if ( pphysics == NULL )
    {
       return NULL;

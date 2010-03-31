@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,60 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "net/netevent.h"
-#include "net/events/scriptevent.h"
 
-#include "actionmap.h"
-#include "scenegraph.h"
+#include "physicsfactory.h"
 
-#include "process.h"
-#ifndef JENGINE_INLINE
-#  include "process.inl"
-#endif
+#include "physicsbody.h"
+#include "physicssimulator.h"
 
-Process::Process(void):
-   conn(),
-   graph(),
-   actionMap(NULL),
-   mpSimulatorFactory(NULL),
-   mpSimulator(NULL),
-   initialized(false)
-{
-   conn.attachProcess(this);
-}
+static const std::string sFactoryName = "physics";
 
-Process::~Process(void)
+PhysicsFactory::PhysicsFactory():
+   SimulationFactory()
 {
 }
 
-bool Process::create()
+PhysicsFactory::~PhysicsFactory()
 {
-   return true;
 }
 
-bool Process::destroy()
+const std::string& PhysicsFactory::getName() const
 {
-   conn.disconnect();
-
-   graph.setNotify(false);
-   graph.removeAll();
-
-   return true;
+   return sFactoryName;
 }
 
-void Process::update(float tick)
+Simulator* PhysicsFactory::createSimulator()
 {
-   if ( conn.isConnected() )
-      conn.update();
+   return new PhysicsSimulator();
 }
 
-void Process::sendScriptEvent(BitStream* pstream, Uint32 client)
+Body* PhysicsFactory::createBody()
 {
-   if ( conn.isConnected() )
-   {
-      ScriptEvent event(pstream);
-      if (client != INVALID_CLIENTID)
-         conn.setClientId(client);
-      conn.send(&event);
-   }
+   return new PhysicsBody();
 }

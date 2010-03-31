@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,60 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "net/netevent.h"
-#include "net/events/scriptevent.h"
 
-#include "actionmap.h"
-#include "scenegraph.h"
+#include "simulationfactoryregistry.h"
 
-#include "process.h"
-#ifndef JENGINE_INLINE
-#  include "process.inl"
-#endif
+#include "simulationfactory.h"
 
-Process::Process(void):
-   conn(),
-   graph(),
-   actionMap(NULL),
-   mpSimulatorFactory(NULL),
-   mpSimulator(NULL),
-   initialized(false)
-{
-   conn.attachProcess(this);
-}
-
-Process::~Process(void)
+SimulationFactoryRegistry::SimulationFactoryRegistry():
+   mFactories()
 {
 }
 
-bool Process::create()
+SimulationFactoryRegistry& SimulationFactoryRegistry::getInstance()
 {
-   return true;
+   static SimulationFactoryRegistry registry;
+   return registry;
 }
 
-bool Process::destroy()
+void SimulationFactoryRegistry::addFactory(SimulationFactory* pfactory)
 {
-   conn.disconnect();
-
-   graph.setNotify(false);
-   graph.removeAll();
-
-   return true;
+   mFactories[pfactory->getName()] = pfactory;
 }
 
-void Process::update(float tick)
+SimulationFactory* SimulationFactoryRegistry::findFactory(const std::string& name)
 {
-   if ( conn.isConnected() )
-      conn.update();
-}
-
-void Process::sendScriptEvent(BitStream* pstream, Uint32 client)
-{
-   if ( conn.isConnected() )
-   {
-      ScriptEvent event(pstream);
-      if (client != INVALID_CLIENTID)
-         conn.setClientId(client);
-      conn.send(&event);
-   }
+   FactoryMap::iterator it = mFactories.find(name);
+   return ( it != mFactories.end() ) ? it->second : NULL;
 }
