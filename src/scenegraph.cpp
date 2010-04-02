@@ -22,71 +22,60 @@
 #  include "scenegraph.inl"
 #endif
 
-#include <tinyxml.h>
-
 #include "net/newobjectevent.h"
 #include "net/events/deleteobjectevent.h"
 #include "net/events/namechangeobjectevent.h"
-
-#include "physics/simulator.h"
-#include "physics/simulationfiller.h"
 
 #include "world/world.h"
 
 #include "game.h"
 #include "object.h"
 #include "console.h"
-#include "nodevisitor.h"
 
 SceneGraph::SceneGraph():
-   objects(),
-   root(),
-   controler(NULL),
-   world(NULL),
-   mpSimulator(NULL),
-   notifyClients(false)
+   mObjects(),
+   mRoot(),
+   mpControler(NULL),
+   mpWorld(NULL),
+   mNotifyClients(false)
 {
-   objects["root"] = &root;
+   mObjects["root"] = &mRoot;
 }
 
 SceneGraph::~SceneGraph()
 {
-   world = 0;
-   controler = 0;
+   mpControler = NULL;
+   mpWorld     = NULL;
 }
 
 void SceneGraph::setWorld(World* w)
 {
-   world = w;
-   world->setName("world");
-   if (!w->isReplica() || !objects[w->getName()])
-      root.add(world);
+   mpWorld = w;
+   mpWorld->setName("world");
+
+   if ( !mRoot.contains(*mpWorld) )
+      mRoot.add(mpWorld);
 }
 
 void SceneGraph::update(DirtySet& dirtyset, float delta)
 {
-   if ( hasSimulator() )
-      getSimulator().run(delta);
-
-   root.update(dirtyset, delta);
+   mRoot.update(dirtyset, delta);
 }
 
 void SceneGraph::updateClient(float delta)
 {
-   root.updateClient(delta);
+   mRoot.updateClient(delta);
 }
 
 void SceneGraph::draw()
 {
-   root.draw();
+   mRoot.draw();
 }
 
 SceneObject* SceneGraph::find(const std::string& node)
 {
-   if (objects.find(node) == objects.end())
-      return 0;
-   else
-      return objects[node];
+   ObjectMap::iterator it = mObjects.find(node);
+   return (it != mObjects.end()) ? it->second : NULL;
 }
 
 /// \fn SceneGraph::addObject(SceneObject* obj, const char* name)
@@ -94,15 +83,12 @@ SceneObject* SceneGraph::find(const std::string& node)
 void SceneGraph::addObject(SceneObject* obj)
 {
    // add object to the hash table
-   objects[obj->getName()] = obj;
+   mObjects[obj->getName()] = obj;
 
-   if ( notifyClients )
+   if ( mNotifyClients )
    {
       NewObjectEvent event(*obj);
       Game::getInstance().getServer().sendToAllClients(event);
-
-      if ( hasSimulator() )
-         SimulationFiller::add(getSimulator(), *obj);
    }
 }
 
@@ -110,12 +96,12 @@ void SceneGraph::addObject(SceneObject* obj)
 /// \brief Remove a scene node from the scene graph (optionally inform clients about removal).
 void SceneGraph::removeObject(const std::string& name)
 {
-   ObjectMap::iterator it = objects.find(name);
-   if (it != objects.end())
+   ObjectMap::iterator it = mObjects.find(name);
+   if (it != mObjects.end())
    {
-      objects.erase(it);
+      mObjects.erase(it);
 
-      if ( notifyClients )
+      if ( mNotifyClients )
       {
          DeleteObjectEvent event(name);
          Game::getInstance().getServer().sendToAllClients(event);
@@ -127,25 +113,25 @@ void SceneGraph::removeObject(const std::string& name)
 /// \fn Brief removes all scene graph nodes.
 void SceneGraph::removeAll()
 {
-   root.removeAll();
+   mRoot.removeAll();
 
-   objects.clear();
-   objects["root"] = &root;
+   mObjects.clear();
+   mObjects["root"] = &mRoot;
 
-   controler = 0;
-   world = 0;
+   mpControler = NULL;
+   mpWorld     = NULL;
 }
 
 void SceneGraph::notifyNameChanged(SceneObject& object, const std::string& oldname)
 {
-   ObjectMap::iterator it = objects.find(oldname);
-   if ( it != objects.end() )
+   ObjectMap::iterator it = mObjects.find(oldname);
+   if ( it != mObjects.end() )
    {
-      objects.erase(it);
+      mObjects.erase(it);
 
-      objects[object.getName()] = &object;
+      mObjects[object.getName()] = &object;
 
-      if ( notifyClients )
+      if ( mNotifyClients )
       {
          NameChangeObjectEvent event(oldname, object.getName());
          Game::getInstance().getServer().sendToAllClients(event);

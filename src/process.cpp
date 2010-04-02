@@ -17,23 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "net/netevent.h"
-#include "net/events/scriptevent.h"
-
-#include "actionmap.h"
-#include "scenegraph.h"
 
 #include "process.h"
 #ifndef JENGINE_INLINE
 #  include "process.inl"
 #endif
 
+#include "net/netevent.h"
+#include "net/events/scriptevent.h"
+
+#include "actionmap.h"
+#include "scenegraph.h"
+
 Process::Process(void):
    conn(),
    graph(),
    actionMap(NULL),
-   mpSimulatorFactory(NULL),
-   mpSimulator(NULL),
    initialized(false)
 {
    conn.attachProcess(this);
@@ -58,11 +57,15 @@ bool Process::destroy()
    return true;
 }
 
+// - Updating
+
 void Process::update(float tick)
 {
    if ( conn.isConnected() )
       conn.update();
 }
+
+// - Events
 
 void Process::sendScriptEvent(BitStream* pstream, Uint32 client)
 {

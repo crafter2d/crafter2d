@@ -27,7 +27,8 @@
 #include <tinyxml.h>
 
 #include "physics/body.h"
-#include "physics/physicsxml.h"
+#include "physics/simulator.h"
+#include "physics/simulationfactory.h"
 
 #include "world/world.h"
 
@@ -125,10 +126,15 @@ bool Object::load (TiXmlDocument& doc)
    // load animation stuff
    mpAnimator = Animator::construct(object, *this);
 
-   Body* pbody = PhysicsXML::parseXML(*object);
-   if ( pbody != NULL )
+   // load simulation info
+   if ( Body::hasInfo(*object) )
    {
-      mpBody = pbody;
+      World& world = *(getSceneGraph().getWorld());
+
+      mpBody = world.getSimulationFactory().createBody();
+      mpBody->load(*object);
+
+      world.getSimulator().addBody(*mpBody);
    }
 
 	return true;
@@ -212,7 +218,7 @@ void Object::move(float delta)
 
    if ( mVel != Vector::zero() ) 
    {
-      SceneGraph& graph = Game::getInstance().getServer().getSceneGraph();
+      SceneGraph& graph = getSceneGraph();
       graph.getWorld()->collide(*this, mPos);
 
       //pos += vel;

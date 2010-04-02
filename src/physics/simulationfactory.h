@@ -20,6 +20,8 @@
 #ifndef SIMULATION_FACTORY_H
 #define SIMULATION_FACTORY_H
 
+#include <string>
+
 class Simulator;
 class Body;
 

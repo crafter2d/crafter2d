@@ -39,10 +39,10 @@
 
 #include "gui/guidialog/guidialog.h"
 #include "gui/button/guibutton.h"
+#include "gui/edit/guiedit.h"
 
 #include "guitext.h"
 #include "guidesigner.h"
-#include "guiedit.h"
 #include "guifont.h"
 #include "guistatic.h"
 #include "guieventhandler.h"

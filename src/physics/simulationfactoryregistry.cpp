@@ -22,15 +22,37 @@
 
 #include "simulationfactory.h"
 
-SimulationFactoryRegistry::SimulationFactoryRegistry():
-   mFactories()
-{
-}
+// - Statics
 
 SimulationFactoryRegistry& SimulationFactoryRegistry::getInstance()
 {
    static SimulationFactoryRegistry registry;
    return registry;
+}
+
+// ----------------------------------
+// - Factory registry
+// ----------------------------------
+
+SimulationFactoryRegistry::SimulationFactoryRegistry():
+   mFactories()
+{
+}
+
+SimulationFactoryRegistry::~SimulationFactoryRegistry()
+{
+   destroy();
+}
+
+void SimulationFactoryRegistry::destroy()
+{
+   FactoryMap::iterator it = mFactories.begin();
+   for ( ; it != mFactories.end(); ++it )
+   {
+      delete it->second;
+   }
+
+   mFactories.clear();
 }
 
 void SimulationFactoryRegistry::addFactory(SimulationFactory* pfactory)

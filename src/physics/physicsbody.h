@@ -36,6 +36,9 @@ public:
    float getInertia() const;
    void  setInertia(float inertia);
 
+  // loading
+   virtual void load(const TiXmlElement& element);
+
   // forces
    void  addForce(const Vector& force);
    void  addForce(const Vector& force, const Vector& location);

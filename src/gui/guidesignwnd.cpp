@@ -22,13 +22,14 @@
 #include "../defines.h"
 #include "../game.h"
 
+#include "gui/edit/guiedit.h"
+
 #include "guidesigner.h"
 #include "guidesigndecorator.h"
 #include "guidesignselection.h"
 #include "guieventhandlerdefinitions.h"
 #include "guidesignwnd.h"
 #include "guicontrol.h"
-#include "guiedit.h"
 #include "guimanager.h"
 #include "guimenu.h"
 #include "guipopupdecorator.h"

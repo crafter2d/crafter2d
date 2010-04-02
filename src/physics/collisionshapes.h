@@ -28,8 +28,6 @@ class CollisionShapes : public std::vector<CollisionShape*>
 {
 public:
    typedef std::vector<CollisionShape*> CollisionShapesImp;
-   typedef CollisionShapesImp::iterator Iterator;
-   typedef CollisionShapesImp::const_iterator ConstIterator;
 
    CollisionShapes();
    ~CollisionShapes();

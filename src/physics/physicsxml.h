@@ -20,12 +20,12 @@
 #ifndef PHYSICS_XML_H_
 #define PHYSICS_XML_H_
 
-class Body;
+class PhysicsBody;
 class TiXmlElement;
 
 namespace PhysicsXML
 {
-   Body* parseXML(TiXmlElement& object);
+   bool parseXML(PhysicsBody& body, const TiXmlElement& object);
 };
 
 #endif

@@ -58,12 +58,13 @@ public:
    virtual bool            load(TiXmlElement& element);
    virtual bool            save(TiXmlElement& element);
 
+   bool                    contains(const SceneObject& child) const;
    void                    add(SceneObject* child);
    void                    remove(SceneObject* child);
    void                    removeAll();
 
    SceneObject*            find(const std::string& node, bool recurse = true);
-	void                    update(DirtySet& dirtyset, float delta);
+   void                    update(DirtySet& dirtyset, float delta);
    void                    updateClient(float delta);
    void                    draw(bool traverse = true);
 
@@ -76,6 +77,8 @@ public:
    const std::string&      getName() const;
    const std::string&      getFilename() const;
    const SceneObjectList&  getChildren() const;
+
+   SceneGraph&             getSceneGraph();
    SceneObject*            getParent();
 
    virtual const Vector&   getPosition() const = 0;
@@ -94,9 +97,6 @@ protected:
    std::string       xmlfile;
    SceneObjectList   children;
    SceneObject*      parent;
-
-private:
-   static SceneGraph&      getSceneGraph(SceneObject* obj);
 };
 
 #ifdef JENGINE_INLINE

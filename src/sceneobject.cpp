@@ -96,11 +96,18 @@ void SceneObject::destroy ()
    }
 
    // remove the object from the scenegraph
-   SceneGraph& graph = getSceneGraph(this);
+   SceneGraph& graph = getSceneGraph();
    graph.removeObject(mName);
 
 	// destroy the children
    removeAll();
+}
+
+/// \fn SceneObject::contains(const SceneObject& object) const
+/// \returns True when object is a child of this instance. False otherwise.
+bool SceneObject::contains(const SceneObject& object) const
+{
+  return std::find(children.begin(), children.end(), &object) != children.end();
 }
 
 /// \fn SceneObject::add(SceneObject* child)
@@ -112,16 +119,16 @@ void SceneObject::add(SceneObject* child)
    child->parent = this;
 
    // add object to the scenegraph list
-   SceneGraph& graph = getSceneGraph(child);
+   SceneGraph& graph = getSceneGraph();
    graph.addObject(child);
 
    // add new child to the back of the list
    children.push_back (child);
 }
 
-SceneGraph& SceneObject::getSceneGraph(SceneObject* obj)
+SceneGraph& SceneObject::getSceneGraph()
 {
-   if (obj->isReplica())
+   if ( isReplica() )
       return Game::getInstance().getClient().getSceneGraph();
    else
       return Game::getInstance().getServer().getSceneGraph();
@@ -131,7 +138,6 @@ void SceneObject::removeAll()
 {
    while (children.size() > 0) {
       SceneObject* child = children.front();
-      child->removeAll();
       child->destroy();
       delete child;
    }
@@ -163,14 +169,13 @@ const Vector& SceneObject::getPosition() const
 /// \param n the new name for this object
 void SceneObject::setName(const std::string& name)
 {
-   std::string oldname = mName;
-
-   mName = name;
-
-   if ( !oldname.empty() )
+   if ( name != mName )
    {
-      // dont send initial setting of name
-      getSceneGraph(this).notifyNameChanged(*this, oldname);
+      std::string previousName = mName;
+
+      mName = name;
+
+      getSceneGraph().notifyNameChanged(*this, previousName);
    }
 }
 
@@ -185,12 +190,12 @@ void SceneObject::update(DirtySet& dirtyset, float delta)
       dirtyset.reportDirty(*this);
 
    // update the children
-	SceneObjectList::iterator it = children.begin();
+   SceneObjectList::iterator it = children.begin();
    for (; it != children.end(); it++)
    {
       SceneObject& sceneobject = *(*it);
       sceneobject.setDirty(false);
-		sceneobject.update(dirtyset, delta);
+      sceneobject.update(dirtyset, delta);
    }
 }
 
@@ -199,7 +204,7 @@ void SceneObject::updateClient(float delta)
    doUpdateClient(delta);
 
    // update the children
-	SceneObjectList::iterator it = children.begin();
+   SceneObjectList::iterator it = children.begin();
    for (; it != children.end(); it++)
    {
       SceneObject& sceneobject = *(*it);

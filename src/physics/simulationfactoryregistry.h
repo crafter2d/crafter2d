@@ -28,7 +28,9 @@ class SimulationFactory;
 class SimulationFactoryRegistry
 {
 public:
-   SimulationFactoryRegistry& getInstance();
+   static SimulationFactoryRegistry& getInstance();
+
+   ~SimulationFactoryRegistry();
 
    void addFactory(SimulationFactory* pfactory);
 
@@ -38,6 +40,8 @@ private:
    typedef std::map<std::string, SimulationFactory*> FactoryMap;
 
    SimulationFactoryRegistry();
+
+   void destroy();
 
    FactoryMap mFactories;
 };

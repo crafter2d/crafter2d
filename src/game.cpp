@@ -35,6 +35,9 @@
 #include "tools/profiler/profiler.h"
 #include "tools/profiler/profilerinstance.h"
 
+#include "physics/physicsfactory.h"
+#include "physics/simulationfactoryregistry.h"
+
 #include "gui/guifocus.h"
 #include "gui/guidialog/guidialog.h"
 #include "gui/guifont.h"
@@ -134,6 +137,9 @@ bool Game::create()
 
    // load the engine settings
    mSettings.initialize();
+
+   // register the physics factory
+   SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
 
    log << "\n-- Initializing Graphics --\n\n";
 

@@ -27,8 +27,6 @@
 class ActionMap;
 class BitStream;
 class NetEvent;
-class SimulatorFactory;
-class Simulator;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -45,25 +43,26 @@ public:
    virtual bool   destroy();
    virtual void   update (float delta);
 
+  // get/set
+   NetConnection* getConnection();
+   SceneGraph&    getSceneGraph();
+
+   ActionMap*     getActionMap();
+   void           setActionMap(ActionMap* map);
+
+   bool           isInitialized();
+   void           setInitialized(bool init);
+
+  // events
    void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
 
    virtual int    onClientEvent(int client, const NetEvent& event) = 0;
 
-   void           setActionMap(ActionMap* map);
-   void           setInitialized(bool init);
-
-   NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
-   ActionMap*     getActionMap();
-   bool           isInitialized();
-
 protected:
-   NetConnection  conn;
-   SceneGraph     graph;
-   ActionMap*     actionMap;
-   SimulatorFactory* mpSimulatorFactory;
-   Simulator*        mpSimulator;
-   bool           initialized;
+   NetConnection     conn;
+   SceneGraph        graph;
+   ActionMap*        actionMap;
+   bool              initialized;
 };
 
 #ifdef JENGINE_INLINE

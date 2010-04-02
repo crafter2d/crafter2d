@@ -230,7 +230,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       {
          mpPlayer->initialize((World&)*obj);
 
-         getSceneGraph().setWorld((World*)obj.release());
+         graph.setWorld((World*)obj.release());
    
          // run the onWorldChanged script
          Script& script = ScriptManager::getInstance().getTemporaryScript();

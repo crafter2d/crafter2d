@@ -29,39 +29,26 @@
 #include "collisioncircle.h"
 #include "collisionplane.h"
 
-const std::string sBODYELEMENT       = "body";
-const std::string sSHAPEELEMENT      = "shape";
-const std::string sTYPE              = "type";
+static const std::string sBODYELEMENT       = "body";
+static const std::string sSHAPEELEMENT      = "shape";
+static const std::string sTYPE              = "type";
 
-Body* PhysicsXML::parseXML(TiXmlElement& object)
+bool PhysicsXML::parseXML(PhysicsBody& body, const TiXmlElement& object)
 {
-   TiXmlElement* pphysics = dynamic_cast<TiXmlElement*>(object.FirstChild(sBODYELEMENT));
+   const TiXmlElement* pphysics = dynamic_cast<const TiXmlElement*>(object.FirstChild(sBODYELEMENT));
    if ( pphysics == NULL )
    {
-      return NULL;
+      return false;
    }
 
-   AutoPtr<Body> body = NULL;
+   float mass, inertia;
+   pphysics->QueryFloatAttribute("mass", &mass);
+   pphysics->QueryFloatAttribute("inertia", &inertia);
 
-   const std::string* psimulationtype = pphysics->Attribute(sTYPE);
-   if ( psimulationtype != NULL )
-   {
-      if ( psimulationtype->compare("physics") == 0 )
-      {
-         PhysicsBody* pbody = new PhysicsBody();
+   body.setMass(mass);
+   body.setInertia(inertia);
 
-         float mass, inertia;
-         pphysics->QueryFloatAttribute("mass", &mass);
-         pphysics->QueryFloatAttribute("inertia", &inertia);
-
-         pbody->setMass(mass);
-         pbody->setInertia(inertia);
-
-         body = pbody;
-      }
-   }
-
-   TiXmlElement* pshapeelement = dynamic_cast<TiXmlElement*>(pphysics->FirstChild(sSHAPEELEMENT));
+   const TiXmlElement* pshapeelement = dynamic_cast<const TiXmlElement*>(pphysics->FirstChild(sSHAPEELEMENT));
    if ( pshapeelement != NULL )
    {
       const std::string* pshapetype = pshapeelement->Attribute(sTYPE);
@@ -83,9 +70,9 @@ Body* PhysicsXML::parseXML(TiXmlElement& object)
             pshape = CollisionCircle::construct(radius);
          }
 
-         body->addShape(pshape);
+         body.addShape(pshape);
       }
    }
 
-   return body.release();
+   return true;
 }

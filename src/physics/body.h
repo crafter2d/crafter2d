@@ -25,10 +25,13 @@
 #include "collisionshapes.h"
 
 class CollisionShape;
+class TiXmlElement;
 
 class Body
 {
 public:
+   static bool hasInfo(const TiXmlElement& element);
+
    Body();
    virtual ~Body();
 
@@ -37,6 +40,9 @@ public:
 
    float getAngle() const;
    void  setAngle(float angle);
+
+  // loading
+   virtual void load(const TiXmlElement& element);
 
   // shapes
    void  addShape(CollisionShape* pshape);

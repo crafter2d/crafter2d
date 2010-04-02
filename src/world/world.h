@@ -33,6 +33,8 @@
 class BitStream;
 class Layer;
 class Bound;
+class SimulationFactory;
+class Simulator;
 
 /**
 @author Jeroen Broekhuizen
@@ -99,6 +101,10 @@ public:
    LayerType      getLayerType() const;
    void           setLayerType(int type);
 
+   SimulationFactory& getSimulationFactory();
+   void               setSimulationFactory(SimulationFactory& factory);
+   Simulator&         getSimulator();
+
  // observer interface
    void           attach(WorldObserver& observer);
    void           detach(WorldObserver& observer);
@@ -137,6 +143,9 @@ protected:
    Layers      layers;
    Bounds      bounds;
    Observers   _observers;
+
+   SimulationFactory* mpSimulationFactory;
+   Simulator*         mpSimulator;
 
    LayerType _layerType;
    bool autoFollow;

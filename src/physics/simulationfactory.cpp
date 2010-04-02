@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,32 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef WORLDVERSION2READER_H
-#define WORLDVERSION2READER_H
 
-#include "abstractworldversionreader.h"
+#include "simulationfactory.h"
 
-class UnzipFile;
-class TiXmlDocument;
-
-class WorldVersion2Reader : public AbstractWorldVersionReader
+SimulationFactory::SimulationFactory()
 {
-public:
-   static int getVersion();
+}
 
-   WorldVersion2Reader(World& world);
-   virtual ~WorldVersion2Reader();
-
-protected:
-   virtual bool virRead();
-
-   bool readHeader(UnzipFile& zip);
-   bool readSimulator(UnzipFile& zip);
-   bool readLayers(UnzipFile& zip);
-   bool readBounds(UnzipFile& zip);
-   bool readObjects(UnzipFile& zip);
-
-   bool loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, const std::string& filename);
-};
-
-#endif // WORLDVERSION2READER_H
+SimulationFactory::~SimulationFactory()
+{
+}

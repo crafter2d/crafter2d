@@ -110,6 +110,18 @@ INLINE void World::setLayerType(int type)
    _layerType = (LayerType)type;
 }
 
+INLINE SimulationFactory& World::getSimulationFactory()
+{
+   ASSERT_PTR(mpSimulationFactory);
+   return *mpSimulationFactory;
+}
+
+INLINE Simulator& World::getSimulator()
+{
+   ASSERT_PTR(mpSimulator);
+   return *mpSimulator;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // - Self
 //////////////////////////////////////////////////////////////////////////

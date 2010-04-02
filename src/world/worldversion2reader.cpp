@@ -21,6 +21,8 @@
 
 #include <tinyxml.h>
 
+#include "physics/simulationfactoryregistry.h"
+
 #include "../vfs/unzipfile.h"
 
 #include "bound.h"
@@ -60,7 +62,8 @@ bool WorldVersion2Reader::virRead()
 {
    UnzipFile zip(getFilename());
 
-   return readHeader(zip) 
+   return readHeader(zip)
+       && readSimulator(zip)
        && readLayers(zip)
        && readBounds(zip);
        //&& readObjects(zip);
@@ -82,6 +85,34 @@ bool WorldVersion2Reader::readHeader(UnzipFile& zip)
 
    int version = stream.readInt();
    return getVersion() == version;
+}
+
+bool WorldVersion2Reader::readSimulator(UnzipFile& zip)
+{
+   TiXmlDocument doc;
+
+   if ( loadXmlFromZip(zip, doc, "simulator.xml") )
+   {
+      TiXmlElement* psimulator = doc.FirstChildElement("simulator");
+      if ( psimulator == NULL )
+      {
+         // illegal file format
+         return false;
+      }
+
+      std::string type = psimulator->Attribute("type");
+
+      SimulationFactory* pfactory = SimulationFactoryRegistry::getInstance().findFactory(type);
+      if ( pfactory == NULL )
+      {
+         // simulator factory is not known
+         return false;
+      }
+
+      getWorld().setSimulationFactory(*pfactory);
+   }
+
+   return true;
 }
 
 bool WorldVersion2Reader::readLayers(UnzipFile& zip)

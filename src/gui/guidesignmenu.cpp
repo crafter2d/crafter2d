@@ -29,8 +29,8 @@
 #include "game.h"
 
 #include "gui/guidialog/guidialog.h"
+#include "gui/edit/guiedit.h"
 
-#include "guiedit.h"
 #include "guimanager.h"
 #include "guidesigner.h"
 #include "guieventhandlerdefinitions.h"

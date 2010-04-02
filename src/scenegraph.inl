@@ -21,46 +21,30 @@
 
 INLINE void SceneGraph::setNotify(bool notify)
 {
-   notifyClients = notify;
+   mNotifyClients = notify;
 }
 
 INLINE bool SceneGraph::getNotify()
 {
-   return notifyClients;
+   return mNotifyClients;
 }
 
 INLINE World* SceneGraph::getWorld()
 {
-   return world;
+   return mpWorld;
 }
 
 INLINE SceneObject& SceneGraph::getRoot()
 {
-   return root;
+   return mRoot;
 }
 
 INLINE void SceneGraph::setControler(Object* c)
 {
-   controler = c;
+   mpControler = c;
 }
 
 INLINE Object* SceneGraph::getControler()
 {
-   return controler;
-}
-
-INLINE bool SceneGraph::hasSimulator() const
-{
-   return mpSimulator != NULL;
-}
-
-INLINE Simulator& SceneGraph::getSimulator()
-{
-   ASSERT_PTR(mpSimulator)
-   return *mpSimulator;
-}
-
-INLINE void SceneGraph::setSimulator(Simulator* psimulator)
-{
-   mpSimulator = psimulator;
+   return mpControler;
 }

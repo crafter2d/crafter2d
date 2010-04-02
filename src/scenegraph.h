@@ -35,9 +35,6 @@ class DirtySet;
 class SceneObject;
 class SceneGraph;
 class NetConnection;
-class NodeVisitor;
-class Simulator;
-class TiXmlDocument;
 
 /**
 @author Jeroen Broekhuizen
@@ -54,21 +51,20 @@ public:
                      SceneGraph();
                      ~SceneGraph();
 
-  // get/set
-   bool           hasSimulator() const;
-   Simulator&     getSimulator();
-   void           setSimulator(Simulator* psimulator);
-
+  // operations
    void              update(DirtySet& dirtyset, float delta);
    void              updateClient(float delta);
    void              draw();
 
+  // maintenance
    void              addObject(SceneObject* obj);
    void              removeObject(const std::string& name);
    void              removeAll();
 
+  // searching
    SceneObject*      find(const std::string& node);
 
+  // get/set
    void              setNotify(bool notify = true);
    void              setControler(Object* c);
    void              setWorld(World* w);
@@ -81,14 +77,13 @@ public:
   // notifications
    void notifyNameChanged(SceneObject& object, const std::string& oldname);
 
-protected:
+private:
 
-   ObjectMap objects;
-   SceneRoot root;
-   Object* controler;
-   World* world;
-   Simulator* mpSimulator;
-   bool notifyClients;
+   ObjectMap mObjects;
+   SceneRoot mRoot;
+   Object*   mpControler;
+   World*    mpWorld;
+   bool      mNotifyClients;
 };
 
 #ifdef JENGINE_INLINE

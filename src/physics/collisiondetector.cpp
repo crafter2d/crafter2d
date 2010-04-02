@@ -68,13 +68,13 @@ void CollisionDetector::collectContactData(const Body& left, const Body& right)
 void CollisionDetector::collectContactData(const Body& body, const CollisionShapes& shapes)
 {
    const CollisionShapes& bodyshapes = body.getShapes(); 
-   CollisionShapes::ConstIterator it = bodyshapes.begin();
+   CollisionShapes::const_iterator it = bodyshapes.begin();
 
-   for ( ; it != shapes.end(); ++it )
+   for ( ; it != bodyshapes.end(); ++it )
    {
       const CollisionShape& bodyshape = *(*it);
 
-      CollisionShapes::ConstIterator sit = shapes.begin();
+      CollisionShapes::const_iterator sit = shapes.begin();
       for ( ; sit != shapes.end(); ++it )
       {
          const CollisionShape& shape = *(*it);

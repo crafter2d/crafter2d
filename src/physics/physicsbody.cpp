@@ -22,6 +22,8 @@
 #  include "physicsbody.inl"
 #endif
 
+#include "physicsxml.h"
+
 PhysicsBody::PhysicsBody():
    Body(),
    mGenerators(),
@@ -38,6 +40,17 @@ PhysicsBody::PhysicsBody():
 
 PhysicsBody::~PhysicsBody()
 {
+}
+
+// ----------------------------------
+// - Loading
+// ----------------------------------
+
+void PhysicsBody::load(const TiXmlElement& element)
+{
+   Body::load(element);
+
+   PhysicsXML::parseXML(*this, element);
 }
 
 // ----------------------------------

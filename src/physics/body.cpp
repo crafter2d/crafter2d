@@ -22,7 +22,22 @@
 #  include "body.inl"
 #endif
 
+#include <tinyxml.h>
+
 #include "collisionshape.h"
+
+// ----------------------------------
+// - Static
+// ----------------------------------
+
+bool Body::hasInfo(const TiXmlElement& element)
+{
+   return element.FirstChildElement("body") != NULL;
+}
+
+// ----------------------------------
+// - Body
+// ----------------------------------
 
 Body::Body():
    mTransform(),
@@ -34,6 +49,15 @@ Body::Body():
 
 Body::~Body()
 {
+}
+
+// ----------------------------------
+// - Loading
+// ----------------------------------
+
+void Body::load(const TiXmlElement& element)
+{
+   // nothing to be done
 }
 
 // ----------------------------------

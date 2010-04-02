@@ -27,7 +27,10 @@
 #include <algorithm>
 #include <functional>
 
-#include "../net/bitstream.h"
+#include "physics/simulationfactory.h"
+#include "physics/simulator.h"
+
+#include "net/bitstream.h"
 
 #include "../log.h"
 #include "../game.h"
@@ -174,7 +177,11 @@ bool World::save()
 void World::destroy()
 {
    SceneObject::destroy();
+
    followObject = 0;
+
+   delete mpSimulator;
+   mpSimulator = NULL;
 
    if ( layers.size() > 0 )
    {
@@ -192,6 +199,8 @@ void World::destroy()
       bounds.clear();
    }
 }
+
+// - Get/set
 
 /// \fn World::getFilename() const
 /// \brief Constructs complete filename including path and extension
@@ -230,8 +239,17 @@ void World::setObjectLayer(int objectlayerid)
    }
 }
 
+void World::setSimulationFactory(SimulationFactory& factory)
+{
+   mpSimulationFactory = &factory;
+   mpSimulator = factory.createSimulator();
+}
+
+// - Operations
+
 void World::doUpdate(float delta)
 {
+   getSimulator().run(delta);
 }
 
 void World::doUpdateClient(float delta)
