@@ -57,6 +57,10 @@ void Simulator::removeBody(Body& body)
 // -- World body interface
 // ----------------------------------
 
+void Simulator::generateWorldShapes(const World& world)
+{
+}
+
 void Simulator::addWorldShape(CollisionShape* pshape)
 {
    mWorldShapes.push_back(pshape);

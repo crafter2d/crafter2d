@@ -23,6 +23,7 @@
 #include "bodies.h"
 #include "collisionshapes.h"
 
+class World;
 class CollisionShape;
 
 class Simulator
@@ -35,6 +36,8 @@ public:
    void removeBody(Body& body);
 
    void addWorldShape(CollisionShape* pshape);
+
+   virtual void generateWorldShapes(const World& world);
 
    virtual void run(float timestep) = 0;
 

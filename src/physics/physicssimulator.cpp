@@ -21,6 +21,10 @@
 
 #include "collisiondata.h"
 #include "collisiondetector.h"
+#include "collisionplane.h"
+
+#include "world/bound.h"
+#include "world/world.h"
 
 PhysicsSimulator::PhysicsSimulator():
    Simulator()
@@ -29,6 +33,16 @@ PhysicsSimulator::PhysicsSimulator():
 
 PhysicsSimulator::~PhysicsSimulator()
 {
+}
+
+void PhysicsSimulator::generateWorldShapes(const World& world)
+{
+   for ( int index = 0; index < world.getBoundCount(); ++index )
+   {
+      const Bound& bound = world.getBound(index);
+
+      addWorldShape(CollisionPlane::construct(bound.getLeft(), bound.getRight()));
+   }
 }
 
 void PhysicsSimulator::run(float timestep)

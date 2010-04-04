@@ -31,8 +31,8 @@ PhysicsBody::PhysicsBody():
    mAngularVelocity(0.0f),
    mAccumForce(),
    mAccumTorque(0.0f),
-   mLinearDamping(0.0f),
-   mAngularDamping(0.0f),
+   mLinearDamping(1.0f),
+   mAngularDamping(1.0f),
    mInverseInertia(0.0f),
    mInverseMass(0.0f)
 {

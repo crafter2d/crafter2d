@@ -142,7 +142,11 @@ bool Object::load (TiXmlDocument& doc)
 
 void Object::doUpdate(float delta)
 {
-   setDirty(ePositionDirty);
+   if ( mpBody != NULL && mpBody->getPosition() != mPos )
+   {
+      mPos = mpBody->getPosition();
+      setDirty(ePositionDirty);
+   }
 
    /*
    if ( states.size() > 0 )

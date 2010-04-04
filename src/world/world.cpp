@@ -103,6 +103,9 @@ bool World::create (const char* filename)
       return false;
 
    initializeBorders();
+
+   mpSimulator->generateWorldShapes(*this);
+
    return true;
 }
 

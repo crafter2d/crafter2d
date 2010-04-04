@@ -36,6 +36,7 @@
 #include "tolua_general.h"
 #include "tolua_gui.h"
 #include "tolua_network.h"
+#include "tolua_physics.h"
 
 //////////////////////////////////////////////////////////////////////////
 // - Lua error interface
@@ -101,6 +102,7 @@ bool ScriptManager::initialize()
    tolua_gui_open(luaState);
    tolua_network_open(luaState);
    tolua_editor_open(luaState);
+   tolua_physics_open(luaState);
 
    initializeCollections();
 

@@ -151,6 +151,8 @@ class Object: public SceneObject
    Vector getVelocity();
    float getRotation();
 
+   Body& getBody();
+
    int getAnimation() const;
 	void setAnimation (int anim);
 

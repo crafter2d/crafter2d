@@ -35,6 +35,7 @@
 #include "tools/profiler/profiler.h"
 #include "tools/profiler/profilerinstance.h"
 
+#include "physics/collisiondetector.h"
 #include "physics/physicsfactory.h"
 #include "physics/simulationfactoryregistry.h"
 
@@ -140,6 +141,7 @@ bool Game::create()
 
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
+   CollisionDetector::initRegistry();
 
    log << "\n-- Initializing Graphics --\n\n";
 
