@@ -175,7 +175,10 @@ void SceneObject::setName(const std::string& name)
 
       mName = name;
 
-      getSceneGraph().notifyNameChanged(*this, previousName);
+      if ( hasParent() )
+      {
+         getSceneGraph().notifyNameChanged(*this, previousName);
+      }
    }
 }
 

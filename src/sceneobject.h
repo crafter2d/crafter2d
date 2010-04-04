@@ -70,7 +70,10 @@ public:
 
    virtual void            accept(NodeVisitor& nv);
 
+   bool                    hasParent() const;
+   SceneObject*            getParent();
    void                    setParent(SceneObject* p);
+
    void                    setName(const std::string& name);
    void                    setFilename(const std::string& filename);
 
@@ -79,7 +82,6 @@ public:
    const SceneObjectList&  getChildren() const;
 
    SceneGraph&             getSceneGraph();
-   SceneObject*            getParent();
 
    virtual const Vector&   getPosition() const = 0;
 

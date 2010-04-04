@@ -57,8 +57,11 @@ bool Client::connect(const char* server, int port, const char* name)
    conn.create();
    if (!conn.connect(server, port))
       return false;
+
    conn.setSendAliveMessages(false);
    conn.setAccepting(false);
+
+   graph.getRoot().setReplica();
 
    mpPlayer = new Player();
 
@@ -240,7 +243,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       }
       else
       {
-         SceneObject* pparent = graph.find(event.getParent().c_str());
+         SceneObject* pparent = graph.find(event.getParent());
          if ( pparent != NULL )
          {
             pparent->add(obj.release());
@@ -287,7 +290,7 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
 void Client::handleNameChangeEvent(const NameChangeObjectEvent& event)
 {
    const std::string& objectname = event.getOldName();
-   SceneObject* pobject = graph.find(event.getOldName());
+   SceneObject* pobject = graph.find(objectname);
    ASSERT_PTR(pobject)
 
    pobject->setName(event.getNewName());

@@ -42,6 +42,11 @@ INLINE const std::string& SceneObject::getFilename() const
    return xmlfile;
 }
 
+INLINE bool SceneObject::hasParent() const
+{
+   return parent != NULL;
+}
+
 /// \fn SceneObject::getParent() const
 /// \brief Returns the parent object of this node.
 SceneObject* SceneObject::getParent()
