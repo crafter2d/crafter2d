@@ -38,7 +38,8 @@ public:
    virtual ~CollisionShape();
 
  // get/set
-   void setBody(Body& body);
+   Body* getBody() const;
+   void  setBody(Body& body);
    Type getType() const;
 
    const CollisionShape*   getNext() const;

@@ -19,6 +19,10 @@
  ***************************************************************************/
 #include "../defines.h"
 
+INLINE float PhysicsBody::getInverseMass() const
+{
+   return mInverseMass;
+}
 
 INLINE float PhysicsBody::getMass() const
 {
@@ -28,6 +32,11 @@ INLINE float PhysicsBody::getMass() const
 INLINE void PhysicsBody::setMass(float mass)
 {
    mInverseMass = 1.0f / mass;
+}
+
+INLINE float PhysicsBody::getInverseInertia() const
+{
+   return mInverseInertia;
 }
 
 INLINE float PhysicsBody::getInertia() const

@@ -28,7 +28,7 @@
 class CollisionData 
 {
 public:
-   typedef Iterator<CollisionContact> ContactIterator;
+   typedef ListIterator<CollisionContact> ContactIterator;
 
    CollisionData();
    ~CollisionData();

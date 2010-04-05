@@ -21,6 +21,7 @@
 
 #include "collisiondata.h"
 #include "collisiondetector.h"
+#include "collisionresolver.h"
 #include "collisionplane.h"
 
 #include "world/bound.h"
@@ -52,4 +53,6 @@ void PhysicsSimulator::run(float timestep)
 
    CollisionData data;
    bodies.collectContactData(data, getWorldShapes());
+
+   CollisionResolver::resolve(data);
 }

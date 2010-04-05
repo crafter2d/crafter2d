@@ -39,6 +39,11 @@ CollisionShape::Type CollisionShape::getType() const
    return mType;
 }
 
+Body* CollisionShape::getBody() const
+{
+   return mpBody;
+}
+
 void CollisionShape::setBody(Body& body)
 {
    mpBody = &body;

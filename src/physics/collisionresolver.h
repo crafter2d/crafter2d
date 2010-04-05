@@ -17,19 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "collisioncontact.h"
+#ifndef COLLISION_RESOLVER_H
+#define COLLISION_RESOLVER_H
 
-#include "defines.h"
+class CollisionContact;
+class CollisionData;
+class PhysicsBody;
 
-CollisionContact::CollisionContact():
-   mpLeft(NULL),
-   mpRight(NULL),
-   mPoint(),
-   mNormal(),
-   mPenetration(0)
+class CollisionResolver
 {
-}
+public:
+   static void resolve(CollisionData& collisiondata);
 
-CollisionContact::~CollisionContact()
-{
-}
+private:
+   CollisionResolver();
+
+   void doResolve(CollisionData& collisiondata);
+
+   void resolveContact(CollisionContact& contact);
+
+   void calculateInertia(PhysicsBody& body, float& linearInertia, float& angularInertia);
+};
+
+#endif

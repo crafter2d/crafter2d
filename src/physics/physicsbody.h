@@ -30,9 +30,11 @@ public:
    virtual ~PhysicsBody();
 
   // get/set
+   float getInverseMass() const;
    float getMass() const;
    void  setMass(float mass);
 
+   float getInverseInertia() const;
    float getInertia() const;
    void  setInertia(float inertia);
 

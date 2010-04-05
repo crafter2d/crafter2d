@@ -22,12 +22,16 @@
 
 #include "../math/vector.h"
 
+class Body;
+
 class CollisionContact
 {
 public:
    CollisionContact();
    ~CollisionContact();
 
+   Body*    mpLeft;
+   Body*    mpRight;
    Vector   mPoint;
    Vector   mNormal;
    float    mPenetration;
