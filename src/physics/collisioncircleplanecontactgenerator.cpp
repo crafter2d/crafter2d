@@ -36,10 +36,16 @@ bool CollisionCirclePlaneContactGenerator::docollide(CollisionData& data, const 
       return false;
    }
 
+   Vector collisionpoint = position - plane.getNormal() * (distance + circle.getRadius());
+   if ( !plane.hitTest(collisionpoint) )
+   {
+      return false;
+   }
+
    CollisionContact* pcontact = new CollisionContact();
    pcontact->mpLeft       = circle.getBody();
    pcontact->mpRight      = plane.getBody();
-   pcontact->mPoint       = position - plane.getNormal() * (distance + circle.getRadius());
+   pcontact->mPoint       = collisionpoint;
    pcontact->mNormal      = plane.getNormal();
    pcontact->mPenetration = -distance;
 

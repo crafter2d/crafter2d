@@ -28,6 +28,8 @@ CollisionPlane* CollisionPlane::construct(const Vector& left, const Vector& righ
    AutoPtr<CollisionPlane> plane = new CollisionPlane();
    plane->mNormal.set(-diff.y, diff.x);
    plane->mNormal.normalize();
+   plane->mLeft = left;
+   plane->mRight = right;
    plane->mOffset = plane->mNormal.dot(left);
 
    return plane.release();
@@ -36,7 +38,9 @@ CollisionPlane* CollisionPlane::construct(const Vector& left, const Vector& righ
 CollisionPlane::CollisionPlane():
    CollisionShape(CollisionShape::ePlane),
    mNormal(),
-   mOffset(0.0f)
+   mOffset(0.0f),
+   mLeft(),
+   mRight()
 {
 }
 
@@ -52,4 +56,18 @@ const Vector& CollisionPlane::getNormal() const
 float CollisionPlane::getOffset() const
 {
    return mOffset;
+}
+
+bool CollisionPlane::hitTest(const Vector& point) const
+{
+   float linelength = mLeft.distance(mRight);
+
+   float u = ( ( ( point.x - mLeft.x ) * ( mRight.x - mLeft.x ) ) +
+               ( ( point.y - mLeft.y ) * ( mRight.y - mLeft.y ) ) ) /
+            ( linelength * linelength );
+
+   if ( u < -0.001f || u > 1.001f )
+     return false;
+
+   return true;
 }

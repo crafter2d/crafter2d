@@ -35,8 +35,12 @@ public:
    const Vector& getNormal() const;
    float         getOffset() const;
 
+   bool hitTest(const Vector& point) const;
+
 private:
    Vector mNormal;
+   Vector mLeft;
+   Vector mRight;
    float  mOffset;
 };
 
