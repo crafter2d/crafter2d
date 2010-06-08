@@ -2,6 +2,7 @@
 
 #include "collisiondata.h"
 #include "collisioncircle.h"
+#include "collisioncontactbody.h"
 
 CollisionCircleCircleContactGenerator::CollisionCircleCircleContactGenerator()
 {
@@ -30,6 +31,9 @@ bool CollisionCircleCircleContactGenerator::collide(CollisionData& data, const C
    }
 
    CollisionContact* pcontact = new CollisionContact();
+   pcontact->setLeft(new CollisionContactBody(*circleone.getBody()));
+   pcontact->setRight(new CollisionContactBody(*circletwo.getBody()));
+
    pcontact->mPoint       = posOne + (diff * 0.5);
    pcontact->mNormal      = diff * (1.0f / distance);
    pcontact->mPenetration = circleone.getRadius() + circletwo.getRadius() - distance;

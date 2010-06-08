@@ -31,7 +31,8 @@ PhysicsBody::PhysicsBody():
    mAngularVelocity(0.0f),
    mAccumForce(),
    mAccumTorque(0.0f),
-   mLinearDamping(1.0f),
+   mAcceleration(),
+   mLinearDamping(0.95f),
    mAngularDamping(1.0f),
    mInverseInertia(0.0f),
    mInverseMass(0.0f)
@@ -88,18 +89,23 @@ void PhysicsBody::integrate(float timestep)
 {
    mGenerators.applyForces(*this);
 
-   mLinearVelocity  += timestep * (mAccumForce * mInverseMass);
+   Vector acceleration = mAcceleration + (mAccumForce * mInverseMass);
+
+   mLinearVelocity  += timestep * acceleration;
    mAngularVelocity += timestep * (mAccumTorque * mInverseInertia);
 
    mLinearVelocity  *= powf(mLinearDamping, timestep);
    mAngularVelocity *= powf(mAngularDamping, timestep);
 
-   mPosition += mLinearVelocity;
-   mAngle    += mAngularVelocity;
+   mPosition += mLinearVelocity * timestep;
+   mAngle    += mAngularVelocity * timestep;
+
+   mLinearVelocity  *= powf(mLinearDamping, timestep);
+   mAngularVelocity *= powf(mAngularDamping, timestep);
+
+   calculateDerivedData();
 
    clearAccumulates();
-
-   Body::integrate(timestep);
 }
 
 void PhysicsBody::clearAccumulates()

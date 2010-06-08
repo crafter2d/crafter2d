@@ -86,7 +86,7 @@ Vector Body::localToWorld(const Vector& vector) const
 
 void Body::integrate(float timestep)
 {
-   calculateDerivedData();
+   PURE_VIRTUAL
 }
 
 void Body::calculateDerivedData()

@@ -38,6 +38,8 @@ public:
    float getInertia() const;
    void  setInertia(float inertia);
 
+   void setAcceleration(const Vector& acc);
+
   // loading
    virtual void load(const TiXmlElement& element);
 
@@ -63,6 +65,8 @@ private:
 
    Vector   mAccumForce;
    float    mAccumTorque;
+
+   Vector   mAcceleration;
 
    float    mLinearDamping;
    float    mAngularDamping;

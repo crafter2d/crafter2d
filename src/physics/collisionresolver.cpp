@@ -22,19 +22,30 @@
 
 #include "collisiondata.h"
 #include "physicsbody.h"
+#include "collisioncontactbody.h"
 
-void CollisionResolver::resolve(CollisionData& collisiondata)
+// ----------------------------------
+// -- Statics
+// ----------------------------------
+
+void CollisionResolver::resolve(CollisionData& collisiondata, float timestep)
 {
    CollisionResolver resolver;
-   resolver.doResolve(collisiondata);
+   resolver.doResolve(collisiondata, timestep);
 }
+
+// ----------------------------------
+// -- Resolver
+// ----------------------------------
 
 CollisionResolver::CollisionResolver()
 {
 }
 
-void CollisionResolver::doResolve(CollisionData& collisiondata)
+void CollisionResolver::doResolve(CollisionData& collisiondata, float timestep)
 {
+   collisiondata.prepare(timestep);
+
    CollisionData::ContactIterator iterator = collisiondata.getIterator();
 
    while ( iterator.isValid() )
@@ -43,7 +54,7 @@ void CollisionResolver::doResolve(CollisionData& collisiondata)
 
       resolveContact(contact);
 
-      iterator++;
+      ++iterator;
    }
 }
 
@@ -52,11 +63,10 @@ void CollisionResolver::resolveContact(CollisionContact& contact)
    float linearInertiaLeft = 0, angularInertiaLeft = 0;
    float linearInertiaRight = 0, angularInertiaRight = 0;
 
-   if ( contact.mpLeft != NULL )
-      calculateInertia(*dynamic_cast<PhysicsBody*>(contact.mpLeft), linearInertiaLeft, angularInertiaLeft);
+   calculateInertia(dynamic_cast<PhysicsBody&>(contact.getLeft().getBody()), linearInertiaLeft, angularInertiaLeft);
 
-   if ( contact.mpRight != NULL )
-      calculateInertia(*dynamic_cast<PhysicsBody*>(contact.mpRight), linearInertiaRight, angularInertiaRight);
+   if ( contact.hasRight() )
+      calculateInertia(dynamic_cast<PhysicsBody&>(contact.getRight().getBody()), linearInertiaRight, angularInertiaRight);
 
    float totalInertia = linearInertiaLeft  + angularInertiaLeft
                       + linearInertiaRight + angularInertiaRight;
@@ -65,11 +75,16 @@ void CollisionResolver::resolveContact(CollisionContact& contact)
    float linearMoveLeft  =  contact.mPenetration * linearInertiaLeft * invIntertia;
    float linearMoveRight = -contact.mPenetration * linearInertiaRight * invIntertia;
 
-   if ( contact.mpLeft != NULL )
-      contact.mpLeft->setPosition(contact.mpLeft->getPosition() + contact.mNormal * linearMoveLeft);
+   {
+      Body& body = contact.getLeft().getBody();
+      body.setPosition(body.getPosition() + contact.mNormal * linearMoveLeft);
+   }
 
-   if ( contact.mpRight != NULL )
-      contact.mpLeft->setPosition(contact.mpRight->getPosition() + contact.mNormal * linearMoveRight);
+   if ( contact.hasRight() != NULL )
+   {
+      Body& body = contact.getRight().getBody();
+      body.setPosition(body.getPosition() + contact.mNormal * linearMoveRight);
+   }
 }
 
 void CollisionResolver::calculateInertia(PhysicsBody& body, float& linearInertia, float& angularInertia)

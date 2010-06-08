@@ -27,15 +27,16 @@ class PhysicsBody;
 class CollisionResolver
 {
 public:
-   static void resolve(CollisionData& collisiondata);
+   static void resolve(CollisionData& collisiondata, float timestep);
 
 private:
    CollisionResolver();
 
-   void doResolve(CollisionData& collisiondata);
-
+ // resolving
+   void doResolve(CollisionData& collisiondata, float timestep);
    void resolveContact(CollisionContact& contact);
 
+ // helpers
    void calculateInertia(PhysicsBody& body, float& linearInertia, float& angularInertia);
 };
 

@@ -39,5 +39,5 @@ void InputForceGenerator::setVelocity(const Vector& vel)
 
 void InputForceGenerator::applyForce(PhysicsBody& body) const
 {
-   body.addForce(mVelocity);
+   body.setAcceleration(mVelocity);
 }

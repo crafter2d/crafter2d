@@ -3,6 +3,7 @@
 #include "collisiondata.h"
 #include "collisioncircle.h"
 #include "collisionplane.h"
+#include "collisioncontactbody.h"
 
 CollisionCirclePlaneContactGenerator::CollisionCirclePlaneContactGenerator(void)
 {
@@ -43,8 +44,10 @@ bool CollisionCirclePlaneContactGenerator::docollide(CollisionData& data, const 
    }
 
    CollisionContact* pcontact = new CollisionContact();
-   pcontact->mpLeft       = circle.getBody();
-   pcontact->mpRight      = plane.getBody();
+   pcontact->setLeft(new CollisionContactBody(*circle.getBody()));
+   if ( plane.getBody() != NULL )
+      pcontact->setRight(new CollisionContactBody(*plane.getBody()));
+
    pcontact->mPoint       = collisionpoint;
    pcontact->mNormal      = plane.getNormal();
    pcontact->mPenetration = -distance;

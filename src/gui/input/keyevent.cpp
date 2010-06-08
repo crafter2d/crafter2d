@@ -29,7 +29,7 @@ KeyEvent KeyEvent::FromSDL(const SDL_KeyboardEvent& event)
    int key       = event.keysym.unicode == 0 ? event.keysym.sym : event.keysym.unicode & 0x7F;
    int modifiers = getModifiers();
 
-   EventType type = (event.type == SDL_PRESSED) ? ePressed : eReleased;
+   EventType type = (event.type == SDL_KEYDOWN) ? ePressed : eReleased;
 
    return KeyEvent(key, type, modifiers);
 }
@@ -38,7 +38,7 @@ KeyEvent KeyEvent::FromSDL(const SDL_KeyboardEvent& event)
 
 KeyEvent::KeyEvent(int key, EventType type, int keymodifiers):
    InputEvent(keymodifiers),
-   mKey(keymodifiers),
+   mKey(key),
    mType(type)
 {
 }

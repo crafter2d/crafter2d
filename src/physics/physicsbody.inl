@@ -58,3 +58,8 @@ INLINE void PhysicsBody::addTorque(float torque)
 {
    mAccumTorque += torque;
 }
+
+void PhysicsBody::setAcceleration(const Vector& acc)
+{
+   mAcceleration = acc;
+}

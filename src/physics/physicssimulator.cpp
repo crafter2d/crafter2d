@@ -54,5 +54,5 @@ void PhysicsSimulator::run(float timestep)
    CollisionData data;
    bodies.collectContactData(data, getWorldShapes());
 
-   CollisionResolver::resolve(data);
+   CollisionResolver::resolve(data, timestep);
 }

@@ -34,6 +34,8 @@ CollisionData::~CollisionData()
    FlushOwnedList<CollisionContact> owned(mContacts);
 }
 
+// maintenance
+
 void CollisionData::addContact(CollisionContact* pcontact)
 {
    mContacts.addTail(pcontact);
@@ -42,4 +44,17 @@ void CollisionData::addContact(CollisionContact* pcontact)
 CollisionData::ContactIterator CollisionData::getIterator()
 {
    return ListIterator<CollisionContact>(mContacts);
+}
+
+// resolve preparation
+
+void CollisionData::prepare(float timestep)
+{
+   ContactIterator it(mContacts);
+   while ( it.isValid() )
+   {
+      CollisionContact& contact = *it;
+      contact.prepare(timestep);
+      it++;
+   }
 }

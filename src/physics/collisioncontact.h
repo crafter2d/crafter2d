@@ -23,6 +23,7 @@
 #include "../math/vector.h"
 
 class Body;
+class CollisionContactBody;
 
 class CollisionContact
 {
@@ -30,11 +31,24 @@ public:
    CollisionContact();
    ~CollisionContact();
 
-   Body*    mpLeft;
-   Body*    mpRight;
+   bool hasLeft();
+   CollisionContactBody& getLeft();
+   void setLeft(CollisionContactBody* left);
+
+   bool hasRight();
+   CollisionContactBody& getRight();
+   void setRight(CollisionContactBody* right);
+
+   void prepare(float timestep);
+
    Vector   mPoint;
    Vector   mNormal;
+   Vector   mVelocity;
    float    mPenetration;
+
+private:
+   CollisionContactBody* mpLeft;
+   CollisionContactBody* mpRight;
 };
 
 #endif

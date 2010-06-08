@@ -53,6 +53,7 @@ void GuiFocus::setFocus(GuiWnd* pfocus)
       {
          fireFocusChanged(*pfocus, poldWnd);
 
+         _focusWnd = pfocus;
          /*
          if ( poldWnd != NULL )
             poldWnd->onKillFocus(pfocus);

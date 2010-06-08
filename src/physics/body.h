@@ -55,12 +55,12 @@ public:
    Vector localToWorld(const Vector& vector) const;
 
 protected:
+   void calculateDerivedData();
+
    Vector   mPosition;
    float    mAngle;
 
 private:
-   void calculateDerivedData();
-
    XForm             mTransform;
    CollisionShapes   mShapes;
 };

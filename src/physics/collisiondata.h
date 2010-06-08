@@ -39,6 +39,9 @@ public:
  // iteration
    ContactIterator getIterator();
 
+ // resolver
+   void prepare(float timestep);
+
 private:
    typedef List<CollisionContact> ContactList;
 

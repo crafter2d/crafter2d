@@ -142,9 +142,12 @@ function Server_startGame(worldFile, player)
 	controler:setPosition(Vector:new(400, 300))
 	controler:setAnimation(1)
 
-    local gravity = GravityForceGenerator:new(Vector:new(0, 1));
-    local body = tolua.cast(controler:getBody(), "PhysicsBody");
-    body:addForceGenerator(gravity);
+	local gravity = GravityForceGenerator:new(Vector:new(0, 9.81));
+	local body = tolua.cast(controler:getBody(), "PhysicsBody");
+	body:addForceGenerator(gravity);
+	
+	controler.input = InputForceGenerator:new();
+	body:addForceGenerator(controler.input);
 	
 	-- notify the client
 	local stream = server.stream
