@@ -41,6 +41,8 @@ public:
 
  // resolver
    void prepare(float timestep);
+   void adjustPositions(float timestep);
+   void adjustVelocities(float timestep);
 
 private:
    typedef List<CollisionContact> ContactList;

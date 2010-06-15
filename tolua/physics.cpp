@@ -29,16 +29,15 @@ $#include "physics/inputforcegenerator.h"
 
 class PhysicsSimulator
 {
-   void addBody(PhysicsBody& body);
 };
 
 class Body
 {
+   void addForceGenerator(ForceGenerator* pgenerator);
 };
 
 class PhysicsBody
 {
-   void addForceGenerator(ForceGenerator* pgenerator);
 };
 
 class ForceGenerator
@@ -53,6 +52,9 @@ class GravityForceGenerator : public ForceGenerator
 class InputForceGenerator : public ForceGenerator
 {
    InputForceGenerator();
+
    const Vector& getVelocity() const;
    void setVelocity(const Vector& vel);
+   
+   void setImpulse(const Vector& vel);
 };

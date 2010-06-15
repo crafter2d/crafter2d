@@ -24,14 +24,14 @@
 
 #include "physicsxml.h"
 
-PhysicsBody::PhysicsBody():
-   Body(),
-   mGenerators(),
+PhysicsBody::PhysicsBody(Object& object):
+   Body(object),
    mLinearVelocity(),
    mAngularVelocity(0.0f),
    mAccumForce(),
    mAccumTorque(0.0f),
    mAcceleration(),
+   mLastFrameAcceleration(),
    mLinearDamping(0.95f),
    mAngularDamping(1.0f),
    mInverseInertia(0.0f),
@@ -73,25 +73,16 @@ void PhysicsBody::addWorldForce(const Vector& force, const Vector& location)
 }
 
 // ----------------------------------
-// -- Force Generators
-// ----------------------------------
-
-void PhysicsBody::addForceGenerator(ForceGenerator* pgenerator)
-{
-   mGenerators.push_back(pgenerator);
-}
-
-// ----------------------------------
 // -- Integration
 // ----------------------------------
 
 void PhysicsBody::integrate(float timestep)
 {
-   mGenerators.applyForces(*this);
+   getForceGenerators().applyForces(*this);
 
-   Vector acceleration = mAcceleration + (mAccumForce * mInverseMass);
+   mLastFrameAcceleration = mAcceleration + (mAccumForce * mInverseMass);
 
-   mLinearVelocity  += timestep * acceleration;
+   mLinearVelocity  += timestep * mLastFrameAcceleration;
    mAngularVelocity += timestep * (mAccumTorque * mInverseInertia);
 
    mLinearVelocity  *= powf(mLinearDamping, timestep);
@@ -100,12 +91,13 @@ void PhysicsBody::integrate(float timestep)
    mPosition += mLinearVelocity * timestep;
    mAngle    += mAngularVelocity * timestep;
 
-   mLinearVelocity  *= powf(mLinearDamping, timestep);
-   mAngularVelocity *= powf(mAngularDamping, timestep);
-
    calculateDerivedData();
 
    clearAccumulates();
+}
+
+void PhysicsBody::finalize()
+{
 }
 
 void PhysicsBody::clearAccumulates()

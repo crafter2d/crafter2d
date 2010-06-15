@@ -131,10 +131,8 @@ bool Object::load (TiXmlDocument& doc)
    {
       World& world = *(getSceneGraph().getWorld());
 
-      mpBody = world.getSimulationFactory().createBody();
+      mpBody = &world.getSimulator().createBody(*this);
       mpBody->load(*object);
-
-      world.getSimulator().addBody(*mpBody);
    }
 
 	return true;
@@ -142,23 +140,6 @@ bool Object::load (TiXmlDocument& doc)
 
 void Object::doUpdate(float delta)
 {
-   if ( mpBody != NULL && mpBody->getPosition() != mPos )
-   {
-      mPos = mpBody->getPosition();
-      setDirty(ePositionDirty);
-   }
-
-   /*
-   if ( states.size() > 0 )
-   {
-      if ( states.front()->update(delta) )
-         states.pop();
-   }
-   else
-   {
-      //move(delta);
-   }
-   */
 }
 
 void Object::doUpdateClient(float delta)
@@ -220,15 +201,17 @@ void Object::move(float delta)
 {
    ASSERT(!isReplica())
 
+   /*
    if ( mVel != Vector::zero() ) 
    {
       SceneGraph& graph = getSceneGraph();
       graph.getWorld()->collide(*this, mPos);
 
-      //pos += vel;
+      pos += vel;
       
       setDirty(ePositionDirty);
    }
+   */
 }
 
 /*!
@@ -254,10 +237,7 @@ void Object::addState(State* state)
 /// \returns current position of object
 const Vector& Object::getPosition() const
 {
-   if ( isReplica() )
-      return mPos;
-   else
-      return mpBody->getPosition();
+   return mPos;
 }
 
 /// \fn Object::setPosition(const Vector& p)
@@ -269,7 +249,10 @@ void Object::setPosition(const Vector& p)
       mPos = p;
    else
    {
-      mpBody->setPosition(p);
+      if ( mpBody != NULL )
+         mpBody->setPosition(p);
+      else
+         mPos = p;
 
       setDirty(ePositionDirty);
    }
@@ -297,6 +280,18 @@ void Object::setAnimation(int anim)
 void Object::accept(NodeVisitor& nv)
 {
    nv.visitObject(this);
+}
+
+// simulator interface
+
+void Object::updateState()
+{
+   ASSERT_PTR(mpBody);
+
+   mPos  = mpBody->getPosition();
+   angle = mpBody->getAngle();
+
+   setDirty(ePositionDirty);
 }
 
 //////////////////////////////////////////////////////////////////////////

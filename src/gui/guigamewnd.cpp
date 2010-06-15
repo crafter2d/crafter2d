@@ -72,8 +72,9 @@ void GuiGameWnd::onRender (Uint32 tick, const GuiGraphics& graphics)
 
 void GuiGameWnd::renderWorld(SceneGraph& graph)
 {
-   graph.getWorld()->draw(false);
+   graph.getWorld()->draw(true);
 
+   /*
    IsometricRenderVisitor visitor;
    visitor.traverse(graph.getRoot());
 
@@ -83,6 +84,7 @@ void GuiGameWnd::renderWorld(SceneGraph& graph)
       Object& object = it.item();
       object.draw();
    }
+   */
 }
 
 int GuiGameWnd::onLButtonUp(const GuiPoint& point, int flags)

@@ -27,6 +27,6 @@ ForceGenerator::~ForceGenerator()
 {
 }
 
-void ForceGenerator::applyForce(PhysicsBody& body) const
+void ForceGenerator::applyForce(Body& body) const
 {
 }

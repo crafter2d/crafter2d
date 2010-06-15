@@ -17,27 +17,37 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MATRIX_2x2_H_
-#define MATRIX_2x2_H_
+#ifndef BOX2D_SIMULATOR_H_
+#define BOX2D_SIMULATOR_H_
 
-#include "vector.h"
+#include "../simulator.h"
 
-class Matrix2x2
+class b2World;
+struct b2Vec2;
+
+class Object;
+class Vector;
+
+class Box2DSimulator : public Simulator
 {
 public:
-   Matrix2x2();
-   ~Matrix2x2();
+   static Vector b2ToVector(const b2Vec2& b2);
+   static b2Vec2 vectorToB2(const Vector& v);
 
-   void setComponents(const Vector& one, const Vector& two);
-   void setRotation(float deg);
-   void setScale(float x, float y);
+   Box2DSimulator();
+   virtual ~Box2DSimulator();
 
-   Vector transform(const Vector& point) const;
-   Vector transformTranspose(const Vector& point) const;
+ // maintenance
+   virtual Body& createBody(Object& object);
+   virtual void  removeBody(Body& body);
+
+   virtual void generateWorldShapes(const World& world);
+
+   virtual void run(float timestep);
 
 private:
-   float m11, m12;
-   float m21, m22;
+   b2World* mpWorld;
+   int x;
 };
 
 #endif

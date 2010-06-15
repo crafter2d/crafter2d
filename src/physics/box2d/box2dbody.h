@@ -17,27 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MATRIX_2x2_H_
-#define MATRIX_2x2_H_
+#ifndef BOX2D_BODY_H_
+#define BOX2D_BODY_H_
 
-#include "vector.h"
+#include "physics/body.h"
 
-class Matrix2x2
+class b2Body;
+
+class Box2DBody : public Body
 {
 public:
-   Matrix2x2();
-   ~Matrix2x2();
+   explicit Box2DBody(Object& object, b2Body& body);
 
-   void setComponents(const Vector& one, const Vector& two);
-   void setRotation(float deg);
-   void setScale(float x, float y);
+ // loading
+   virtual void load(const TiXmlElement& element);
 
-   Vector transform(const Vector& point) const;
-   Vector transformTranspose(const Vector& point) const;
+ // forces
+   virtual void applyForce(const Vector& force);
+   virtual void applyForce(const Vector& force, const Vector& pos);
+
+   virtual void applyImpulse(const Vector& impulse);
+
+ // integration
+   virtual void integrate(float timestep);
+   virtual void finalize();
 
 private:
-   float m11, m12;
-   float m21, m22;
+   b2Body& mBody;
 };
 
 #endif

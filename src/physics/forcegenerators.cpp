@@ -30,7 +30,7 @@ ForceGenerators::~ForceGenerators()
 {
 }
 
-void ForceGenerators::applyForces(PhysicsBody& body) const
+void ForceGenerators::applyForces(Body& body) const
 {
   for ( ForceGeneratorsImp::size_type index = 0; index < size(); ++index )
   {

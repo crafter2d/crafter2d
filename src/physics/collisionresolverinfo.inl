@@ -17,27 +17,5 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MATRIX_2x2_H_
-#define MATRIX_2x2_H_
 
-#include "vector.h"
-
-class Matrix2x2
-{
-public:
-   Matrix2x2();
-   ~Matrix2x2();
-
-   void setComponents(const Vector& one, const Vector& two);
-   void setRotation(float deg);
-   void setScale(float x, float y);
-
-   Vector transform(const Vector& point) const;
-   Vector transformTranspose(const Vector& point) const;
-
-private:
-   float m11, m12;
-   float m21, m22;
-};
-
-#endif
+#include "defines.h"

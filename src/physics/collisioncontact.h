@@ -20,7 +20,8 @@
 #ifndef COLLISION_CONTACT_H_
 #define COLLISION_CONTACT_H_
 
-#include "../math/vector.h"
+#include "math/vector.h"
+#include "math/matrix2x2.h"
 
 class Body;
 class CollisionContactBody;
@@ -45,10 +46,20 @@ public:
    Vector   mNormal;
    Vector   mVelocity;
    float    mPenetration;
+   float    mRestitution;
 
 private:
+ // operations
+   void   calculateContactBasis();
+   Vector calculateLocalVelocity(const CollisionContactBody& contactbody, float timestep);
+   void   calculateDesiredDeltaVelocity(float timestep);
+
+ // members
    CollisionContactBody* mpLeft;
    CollisionContactBody* mpRight;
+   Matrix2x2             mContactBasis;
+   Vector                mContactVelocity;
+   float                 mDesiredDeltaVelocity;
 };
 
 #endif

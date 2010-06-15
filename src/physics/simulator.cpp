@@ -43,9 +43,9 @@ Bodies& Simulator::getBodies()
    return mBodies;
 }
 
-void Simulator::addBody(Body& body)
+void Simulator::addBody(Body* pbody)
 {
-   mBodies.add(body);
+   mBodies.push_back(pbody);
 }
 
 void Simulator::removeBody(Body& body)

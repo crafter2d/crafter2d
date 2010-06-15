@@ -37,6 +37,7 @@ public:
    float distance(const Vector& that) const;
 
 	inline void set (float _x, float _y);
+   inline void addScaled(const Vector& v, float scale);
 	inline float dot (const Vector& v) const;
    inline float cross(const Vector& v) const;
 
@@ -60,6 +61,12 @@ public:
 
 	float x, y;
 };
+
+inline void Vector::addScaled(const Vector& v, float scale)
+{
+   x += v.x * scale;
+   y += v.y * scale;
+}
 
 inline float Vector::dot (const Vector& v) const {
 	return (x * v.x + y * v.y);

@@ -61,6 +61,15 @@ void Bodies::integrate(float timestep)
    }
 }
 
+void Bodies::finalize()
+{
+   for ( size_type index = 0; index < size(); ++index )
+   {
+      Body* pbody = operator[](index);
+      pbody->finalize();
+   }
+}
+
 void Bodies::collectContactData(CollisionData& data, const CollisionShapes& worldshapes) const
 {
    CollisionDetector detector(data);

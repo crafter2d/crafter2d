@@ -24,7 +24,7 @@
 
 class GuiEditBox;
 
-class GuiEditBoxMouseListener : MouseListener
+class GuiEditBoxMouseListener : public MouseListener
 {
 public:
    explicit GuiEditBoxMouseListener(GuiEditBox& editbox);

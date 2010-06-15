@@ -20,9 +20,11 @@
 #ifndef _GUISCROLLBAR_H_
 #define _GUISCROLLBAR_H_
 
-#include "gui/button/guibutton.h"
-
 #include "guicontrol.h"
+
+#include "scrollbar/scrollbarmouselistener.h"
+
+class GuiButton;
 
 class GuiScrollBar : public GuiControl
 {
@@ -63,6 +65,8 @@ protected:
    int      scrollPos;
    int      scrollPage;
    int      moveSpeed;
+
+   GuiScrollBarMouseListener mMouseListener;
 };
 
 #ifdef JENGINE_INLINE

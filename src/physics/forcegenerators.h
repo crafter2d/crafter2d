@@ -22,7 +22,7 @@
 
 #include <vector>
 
-class PhysicsBody;
+class Body;
 class ForceGenerator;
 
 class ForceGenerators : public std::vector<ForceGenerator*>
@@ -33,7 +33,7 @@ public:
    ForceGenerators();
    virtual ~ForceGenerators();
 
-   void applyForces(PhysicsBody& body) const;
+   void applyForces(Body& body) const;
 };
 
 #endif

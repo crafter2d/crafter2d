@@ -17,27 +17,37 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MATRIX_2x2_H_
-#define MATRIX_2x2_H_
+#ifndef COLLISION_RESOLVER_INFO_H_
+#define COLLISION_RESOLVER_INFO_H_
 
-#include "vector.h"
-
-class Matrix2x2
+class CollisionResolverInfo
 {
 public:
-   Matrix2x2();
-   ~Matrix2x2();
+   CollisionResolverInfo();
+   CollisionResolverInfo(const CollisionResolverInfo& that);
+   CollisionResolverInfo& operator=(const CollisionResolverInfo& that);
 
-   void setComponents(const Vector& one, const Vector& two);
-   void setRotation(float deg);
-   void setScale(float x, float y);
+   int  getMaxPositionIterations() const;
+   void setMaxPositionIterations(int max);
 
-   Vector transform(const Vector& point) const;
-   Vector transformTranspose(const Vector& point) const;
+   int  getMaxVelocityIterations() const;
+   void setMaxVelocityIterations(int max);
+
+   float getPositionEpsilon() const;
+   void  setPositionEpsilon(float epsilon);
+
+   float getVelocityEpsilon() const;
+   void  setVelocityEpsilon(float epsilon);
 
 private:
-   float m11, m12;
-   float m21, m22;
+   int   mMaxPositionIterations;
+   int   mMaxVelocityIterations;
+   float mPositionEpsilon;
+   float mVelocityEpsilon;
 };
+
+#ifdef JENGINE_INLINE
+#  include "collisionresolverinfo.inl"
+#endif
 
 #endif

@@ -55,6 +55,32 @@ void CollisionData::prepare(float timestep)
    {
       CollisionContact& contact = *it;
       contact.prepare(timestep);
-      it++;
+      ++it;
    }
+}
+
+void CollisionData::adjustPositions(float timestep)
+{
+   int iterations = 1;
+
+   /*
+   int usediterations = 0;
+   while ( usediterations < iterations )
+   {
+      max = positionEpsilon;
+      index = numContacts;
+      for ( int i=0; i<numContacts; i++ )
+      {
+         if (c[i].penetration > max)
+         {
+             max = c[i].penetration;
+             index = i;
+         }
+      }
+      if (index == numContacts) break;
+   }*/
+}
+
+void CollisionData::adjustVelocities(float timestep)
+{
 }

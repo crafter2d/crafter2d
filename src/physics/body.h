@@ -23,35 +23,52 @@
 #include "..\math\xform.h"
 
 #include "collisionshapes.h"
+#include "forcegenerators.h"
 
+class Object;
 class CollisionShape;
 class TiXmlElement;
+class ForceGenerator;
 
 class Body
 {
 public:
    static bool hasInfo(const TiXmlElement& element);
 
-   Body();
+   explicit Body(Object& object);
    virtual ~Body();
 
+   const Object& getObject() const;
+         Object& getObject();
+
    const Vector& getPosition() const;
-   void          setPosition(const Vector& position);
+   void          setPosition(const Vector& pos);
 
-   float getAngle() const;
-   void  setAngle(float angle);
+   float         getAngle() const;
+   void          setAngle(float angle);
+   
+   ForceGenerators& getForceGenerators();
 
-  // loading
+ // loading
    virtual void load(const TiXmlElement& element);
 
-  // shapes
+ // shapes
    void  addShape(CollisionShape* pshape);
    const CollisionShapes& getShapes() const;
 
-  // integration
-   virtual void integrate(float timestep) = 0;
+ // generators
+   void  addForceGenerator(ForceGenerator* pgenerator);
 
-  // space conversion
+   virtual void applyForce(const Vector& force);
+   virtual void applyForce(const Vector& force, const Vector& pos);
+
+   virtual void applyImpulse(const Vector& impulse);
+
+ // integration
+   virtual void integrate(float timestep) = 0;
+   virtual void finalize() = 0;
+
+ // space conversion
    Vector localToWorld(const Vector& vector) const;
 
 protected:
@@ -61,8 +78,10 @@ protected:
    float    mAngle;
 
 private:
+   Object&           mObject;
    XForm             mTransform;
    CollisionShapes   mShapes;
+   ForceGenerators   mForceGenerators;
 };
 
 #ifdef JENGINE_INLINE

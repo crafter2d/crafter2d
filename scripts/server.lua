@@ -127,9 +127,38 @@ function Server_startGame(worldFile, player)
 	-- insert the world in the scenegraph
 	local graph = server:getSceneGraph()
 	graph:setWorld(world)
+	
+	-- create the box
+	local box = Creature:new()
+	box:setPosition(Vector:new(200, 100))
+	box:create("box.xml")
+	box:setName("box")
+	world:add(box)
+	
+	-- create another box
+	box = Creature:new()
+	box:setPosition(Vector:new(200, 60));
+	box:create("box.xml")
+	box:setName("box2")
+	world:add(box)
+	
+	-- create another box
+	box = Creature:new()
+	box:setPosition(Vector:new(200, 20));
+	box:create("box.xml")
+	box:setName("box3")
+	world:add(box)
 
+	-- create another box
+	box = Creature:new()
+	box:setPosition(Vector:new(200, -20));
+	box:create("box.xml")
+	box:setName("box4")
+	world:add(box)
+	
 	-- create the controler for the player
 	local controler = Creature:new()
+	controler:setPosition(Vector:new(250, 60))
 	if not controler:create("char.xml") then
 		console:print("Failed to load character.")
 		return
@@ -139,15 +168,14 @@ function Server_startGame(worldFile, player)
 	player.controler = controler
 	
 	controler:setName(player.name)
-	controler:setPosition(Vector:new(400, 300))
 	controler:setAnimation(1)
 
-	local gravity = GravityForceGenerator:new(Vector:new(0, 9.81));
-	local body = tolua.cast(controler:getBody(), "PhysicsBody");
-	body:addForceGenerator(gravity);
+	--local gravity = GravityForceGenerator:new(Vector:new(0, 9.81));
+	--local body = tolua.cast(controler:getBody(), "PhysicsBody");
+	--body:addForceGenerator(gravity);
 	
 	controler.input = InputForceGenerator:new();
-	body:addForceGenerator(controler.input);
+	controler:getBody():addForceGenerator(controler.input);
 	
 	-- notify the client
 	local stream = server.stream

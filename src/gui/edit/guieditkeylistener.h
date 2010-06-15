@@ -24,7 +24,7 @@
 
 class GuiEditBox;
 
-class GuiEditBoxKeyListener : KeyListener
+class GuiEditBoxKeyListener : public KeyListener
 {
 public:
    explicit GuiEditBoxKeyListener(GuiEditBox& editbox);

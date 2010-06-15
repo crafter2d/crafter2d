@@ -31,8 +31,6 @@ public:
    virtual const std::string& getName() const;
 
    virtual Simulator* createSimulator();
-
-   virtual Body* createBody();
 };
 
 #endif

@@ -33,6 +33,14 @@ Matrix2x2::~Matrix2x2()
 {
 }
 
+void Matrix2x2::setComponents(const Vector& one, const Vector& two)
+{
+   m11 = one.x;
+   m12 = one.y;
+   m21 = two.x;
+   m22 = two.y;
+}
+
 void Matrix2x2::setRotation(float deg)
 {
    float cos = cosf(deg);
@@ -56,4 +64,10 @@ Vector Matrix2x2::transform(const Vector& point) const
 {
    return Vector(point.x * m11 + point.y * m21,
                  point.x * m12 + point.y * m22);
+}
+
+Vector Matrix2x2::transformTranspose(const Vector& point) const
+{
+   return Vector(point.x * m11 + point.y * m12,
+                 point.x * m21 + point.y * m22);
 }

@@ -23,7 +23,8 @@
 
 InputForceGenerator::InputForceGenerator():
    ForceGenerator(),
-   mVelocity()
+   mVelocity(),
+   mImpulse()
 {
 }
 
@@ -37,7 +38,15 @@ void InputForceGenerator::setVelocity(const Vector& vel)
    mVelocity = vel;
 }
 
-void InputForceGenerator::applyForce(PhysicsBody& body) const
+void InputForceGenerator::setImpulse(const Vector& impulse)
 {
-   body.setAcceleration(mVelocity);
+   mImpulse = impulse;
+}
+
+void InputForceGenerator::applyForce(Body& body) const
+{
+   body.applyForce(mVelocity);
+   body.applyImpulse(mImpulse);
+
+   const_cast<Vector&>(mImpulse) = Vector::zero();
 }

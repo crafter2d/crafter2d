@@ -44,7 +44,3 @@ Simulator* PhysicsFactory::createSimulator()
    return new PhysicsSimulator();
 }
 
-Body* PhysicsFactory::createBody()
-{
-   return new PhysicsBody();
-}

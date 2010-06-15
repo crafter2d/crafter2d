@@ -24,14 +24,12 @@
 
 #include "forcegenerator.h"
 
-class PhysicsBody;
-
 class GravityForceGenerator : public ForceGenerator
 {
 public:
    GravityForceGenerator(const Vector& gravity);
 
-   virtual void applyForce(PhysicsBody& body) const;
+   virtual void applyForce(Body& body) const;
    
 private:
    Vector mGravity;

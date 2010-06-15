@@ -43,21 +43,3 @@ SimulationFiller::SimulationFiller(Simulator& simulator):
 SimulationFiller::~SimulationFiller()
 {
 }
-
-void SimulationFiller::visitWorld(World* pworld)
-{
-   ASSERT_PTR(pworld)
-   int bounds = pworld->getBoundCount();
-   for ( int index = 0; index < bounds; index++ )
-   {
-      Bound& bound = pworld->getBound(index);
-      CollisionPlane* pplane = CollisionPlane::construct(bound.getLeft(), bound.getRight());
-      mSimulator.addWorldShape(pplane);
-   }
-}
-
-void SimulationFiller::visitObject(Object* pobject)
-{
-   ASSERT_PTR(pobject)
-   mSimulator.addBody(pobject->getBody());
-}

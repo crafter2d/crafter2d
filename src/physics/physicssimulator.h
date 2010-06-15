@@ -28,6 +28,8 @@ public:
    PhysicsSimulator();
    virtual ~PhysicsSimulator();
 
+   virtual Body& createBody(Object& object);
+
    virtual void generateWorldShapes(const World& world);
 
    virtual void run(float timestep);

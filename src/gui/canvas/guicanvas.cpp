@@ -429,29 +429,34 @@ GuiWnd* GuiCanvas::findWindowAtLocation(const Point& point)
    if ( focus.hasFocus() )
    {
       GuiWnd& focussed = focus.getFocus();
-      if ( focussed.hitTest(guipoint) )
-      {
-         return &focussed;
-      }
+      GuiPoint focuspoint(guipoint);
+      
+      if ( focussed.hasParent() )
+         focussed.getParent()->windowToClient(focuspoint);
+
+      pwindow = focussed.hitTest(focuspoint);
    }
    
-   if ( modal.empty() )
+   if ( pwindow == NULL )
    {
-      GuiList::Iterator it(windows.begin());
-      for ( ; it.valid(); ++it )
+      if ( modal.empty() )
       {
-         GuiWnd* pwnd = (*it)->hitTest(guipoint);
-         if ( pwnd != NULL )
+         GuiList::Iterator it(windows.begin());
+         for ( ; it.valid(); ++it )
          {
-            pwindow = pwnd;
-            break;
+            GuiWnd* pwnd = (*it)->hitTest(guipoint);
+            if ( pwnd != NULL )
+            {
+               pwindow = pwnd;
+               break;
+            }
          }
       }
-   }
-   else
-   {
-      GuiWnd* pmodelWnd = *modal.begin();
-      pwindow = pmodelWnd->hitTest(point);
+      else
+      {
+         GuiWnd* pmodelWnd = *modal.begin();
+         pwindow = pmodelWnd->hitTest(point);
+      }
    }
 
    return pwindow;

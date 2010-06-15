@@ -21,7 +21,7 @@
 
 #include "defines.h"
 
-#include "body.h"
+#include "physicsbody.h"
 #include "collisioncontactbody.h"
 
 CollisionContact::CollisionContact():
@@ -37,6 +37,8 @@ CollisionContact::CollisionContact():
 CollisionContact::~CollisionContact()
 {
 }
+
+// - get/set
 
 bool CollisionContact::hasLeft()
 {
@@ -78,6 +80,8 @@ void CollisionContact::setRight(CollisionContactBody* pright)
    }
 }
 
+// - resolving
+
 void CollisionContact::prepare(float timestep)
 {
    if ( mpLeft == NULL )
@@ -88,4 +92,51 @@ void CollisionContact::prepare(float timestep)
    mpLeft->prepare(mPoint);
    if ( mpRight != NULL )
       mpRight->prepare(mPoint);
+
+   calculateContactBasis();
+
+   mContactVelocity = calculateLocalVelocity(*mpLeft, timestep);
+   if ( mpRight != NULL )
+      mContactVelocity -= calculateLocalVelocity(*mpRight, timestep);
+
+   calculateDesiredDeltaVelocity(timestep);
+}
+
+void CollisionContact::calculateContactBasis()
+{
+   Vector axis(mNormal.y, -mNormal.x);
+
+   mContactBasis.setComponents(mNormal, axis);
+}
+
+Vector cross(const Vector& point, float angle)
+{
+   return Vector(-angle * point.y, angle * point.x);
+}
+
+Vector CollisionContact::calculateLocalVelocity(const CollisionContactBody& contactbody, float timestep)
+{
+   const PhysicsBody& body = static_cast<const PhysicsBody&>(contactbody.getBody());
+
+   Vector velocity = cross(contactbody.getRelativeContact(), body.getAngle());
+   velocity += body.getVelocity();
+
+   Vector contactvelocity = mContactBasis.transformTranspose(velocity);
+
+   return contactvelocity;
+}
+
+void CollisionContact::calculateDesiredDeltaVelocity(float timestep)
+{
+   const static float velocityLimit = 0.25f;
+
+   float velocityfromacc = (mpLeft->getRelativeContact() * timestep).dot(mNormal);
+   if ( mpRight != NULL )
+      velocityfromacc -= (mpRight->getRelativeContact() * timestep).dot(mNormal);
+
+   float restitution = mRestitution;
+   if ( fabs(mContactVelocity.x) < velocityLimit )
+      restitution = 0.0f;
+
+   mDesiredDeltaVelocity = -mContactVelocity.x - restitution * (mContactVelocity.x - velocityfromacc);
 }

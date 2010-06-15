@@ -32,9 +32,6 @@ public:
    SimulationFiller(Simulator& simulator);
    ~SimulationFiller();
 
-   virtual void   visitWorld(World* object);
-   virtual void   visitObject(Object* object);
-
 private:
    Simulator& mSimulator;
 };

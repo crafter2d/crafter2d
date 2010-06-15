@@ -38,6 +38,8 @@ public:
    void remove(Body& body);
 
    void integrate(float timestep);
+   void finalize();
+
    void collectContactData(CollisionData& data, const CollisionShapes& worldshapes) const;
 
 private:

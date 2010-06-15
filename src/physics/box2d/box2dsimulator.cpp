@@ -17,51 +17,90 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "physicssimulator.h"
+#include "box2dsimulator.h"
 
-#include "collisiondata.h"
-#include "collisiondetector.h"
-#include "collisionresolver.h"
-#include "collisionplane.h"
-#include "physicsbody.h"
+#include <Box2D.h>
 
-#include "world/bound.h"
 #include "world/world.h"
+#include "world/bound.h"
 
-PhysicsSimulator::PhysicsSimulator():
-   Simulator()
+#include "object.h"
+
+#include "box2dbody.h"
+
+// static 
+Vector Box2DSimulator::b2ToVector(const b2Vec2& b2)
+{
+   return Vector(b2.x * 30, b2.y * 30);
+}
+
+// static 
+b2Vec2 Box2DSimulator::vectorToB2(const Vector& v)
+{
+   return b2Vec2(v.x / 30, v.y / 30);
+}
+
+Box2DSimulator::Box2DSimulator():
+   Simulator(),
+   mpWorld(NULL),
+   x(200)
 {
 }
 
-PhysicsSimulator::~PhysicsSimulator()
+Box2DSimulator::~Box2DSimulator()
 {
 }
 
-Body& PhysicsSimulator::createBody(Object& object)
+Body& Box2DSimulator::createBody(Object& object)
 {
-   PhysicsBody* pbody = new PhysicsBody(object);
+   b2BodyDef bodydef;
+   bodydef.position = vectorToB2(object.getPosition());
+   bodydef.angle = object.getRotation();
+   bodydef.type = b2_dynamicBody;
+
+   b2Body* pboxbody = mpWorld->CreateBody(&bodydef);
+
+   Box2DBody* pbody = new Box2DBody(object, *pboxbody);
+
    addBody(pbody);
+
    return *pbody;
 }
 
-void PhysicsSimulator::generateWorldShapes(const World& world)
+void Box2DSimulator::removeBody(Body& body)
 {
+}
+
+void Box2DSimulator::generateWorldShapes(const World& world)
+{
+   b2Vec2 gravity(0, 9);
+   mpWorld = new b2World(gravity, true);
+
+   b2BodyDef def;
+   def.position.Set(0,0);
+   b2Body* pbody = mpWorld->CreateBody(&def);
+
    for ( int index = 0; index < world.getBoundCount(); ++index )
    {
       const Bound& bound = world.getBound(index);
 
-      addWorldShape(CollisionPlane::construct(bound.getLeft(), bound.getRight()));
+      b2PolygonShape ground;
+      ground.SetAsEdge(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
+
+      b2Fixture* pfixture = pbody->CreateFixture(&ground, 0);
+      pfixture->SetFriction(.3f);
    }
 }
 
-void PhysicsSimulator::run(float timestep)
+void Box2DSimulator::run(float timestep)
 {
-   Bodies& bodies = getBodies();
-   bodies.integrate(timestep);
+   int velocityIterations = 6;
+   int positionIterations = 2;
 
-   CollisionData data;
-   bodies.collectContactData(data, getWorldShapes());
+   getBodies().integrate(timestep);
 
-   CollisionResolverInfo info;
-   CollisionResolver::resolve(data, info, timestep);
+   mpWorld->Step(timestep, velocityIterations, positionIterations);
+   mpWorld->ClearForces();
+
+   getBodies().finalize();
 }

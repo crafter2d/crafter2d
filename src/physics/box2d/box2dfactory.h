@@ -17,27 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MATRIX_2x2_H_
-#define MATRIX_2x2_H_
+#ifndef BOX2D_FACTORY_H_
+#define BOX2D_FACTORY_H_
 
-#include "vector.h"
+#include "physics/simulationfactory.h"
 
-class Matrix2x2
+class Box2DFactory : public SimulationFactory
 {
 public:
-   Matrix2x2();
-   ~Matrix2x2();
+   Box2DFactory();
+   virtual ~Box2DFactory();
 
-   void setComponents(const Vector& one, const Vector& two);
-   void setRotation(float deg);
-   void setScale(float x, float y);
+   virtual const std::string& getName() const;
 
-   Vector transform(const Vector& point) const;
-   Vector transformTranspose(const Vector& point) const;
-
-private:
-   float m11, m12;
-   float m21, m22;
+   virtual Simulator* createSimulator();
 };
 
 #endif

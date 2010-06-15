@@ -38,10 +38,6 @@ public:
    /// \fn SimulationFactory::createSimulator()
    /// Creates the simulator object used by the engine for updating the objects position and rotation.
    virtual Simulator* createSimulator() = 0;
-
-   /// \fn SimulationFactory::createBody()
-   /// Creates the body that matches the simulator constructed by this factory.
-   virtual Body* createBody() = 0;
 };
 
 #endif

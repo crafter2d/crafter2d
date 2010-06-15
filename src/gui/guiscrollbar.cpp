@@ -22,6 +22,8 @@
 #  include "guiscrollbar.inl"
 #endif
 
+#include "gui/button/guibutton.h"
+
 GuiScrollBar::GuiScrollBar(void): 
    top(0),
    bottom(0),
@@ -29,7 +31,8 @@ GuiScrollBar::GuiScrollBar(void):
    scrollRange(0),
    scrollPos(0),
    scrollPage(0),
-   moveSpeed(0)
+   moveSpeed(0),
+   mMouseListener(*this)
 {
 }
 
@@ -64,6 +67,8 @@ void GuiScrollBar::onCreate(const GuiRect &rect, const char* caption, GuiStyle s
       bottom->create(2, GuiRect(0,w,h-15,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
       scroller->create(3, GuiRect(0,w,17,23), "", GUI_VISIBLE|GUI_BACKGROUND, this);
    }
+
+   addMouseListener(mMouseListener);
 }
 
 void GuiScrollBar::destroy()

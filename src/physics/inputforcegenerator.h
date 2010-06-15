@@ -31,11 +31,13 @@ public:
 
    const Vector& getVelocity() const;
    void setVelocity(const Vector& vel);
+   void setImpulse(const Vector& impulse);
   
-   virtual void applyForce(PhysicsBody& body) const;
+   virtual void applyForce(Body& body) const;
 
 private:
    Vector mVelocity;
+   Vector mImpulse;
 };
 
 #endif

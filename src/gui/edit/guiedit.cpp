@@ -58,6 +58,7 @@ void GuiEditBox::onWordWrapChanged(GuiEditBox* pedit)
 }
 
 GuiEditBox::GuiEditBox():
+   GuiControl(),
    INIT_PROPERTY(MultiLine),
    INIT_PROPERTY(WordWrap),
    _pvertscrollbar(NULL),
@@ -81,6 +82,9 @@ void GuiEditBox::onCreate(const GuiRect& rect, const char* caption, GuiStyle sty
    onResize(getWindowRect().getWidth(), getWindowRect().getHeight());
 
    initializeScrollbar();
+
+   addKeyListener(mKeyListener);
+   addMouseListener(mMouseListener);
 }
 
 void GuiEditBox::initializeScrollbar()

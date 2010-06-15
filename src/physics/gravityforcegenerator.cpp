@@ -27,7 +27,7 @@ GravityForceGenerator::GravityForceGenerator(const Vector& gravity):
 {
 }
 
-void GravityForceGenerator::applyForce(PhysicsBody& body) const
+void GravityForceGenerator::applyForce(Body& body) const
 {
-   body.addForce(mGravity * body.getMass());
+   //body.addForce(mGravity * body.getMass());
 }

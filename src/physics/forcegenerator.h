@@ -20,7 +20,7 @@
 #ifndef FORCE_GENERATOR_H_
 #define FORCE_GENERATOR_H_
 
-class PhysicsBody;
+class Body;
 
 class ForceGenerator
 {
@@ -28,7 +28,7 @@ public:
    ForceGenerator();
    virtual ~ForceGenerator() = 0;
 
-   virtual void applyForce(PhysicsBody& body) const = 0;
+   virtual void applyForce(Body& body) const = 0;
 };
 
 #endif

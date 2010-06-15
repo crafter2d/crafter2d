@@ -19,14 +19,24 @@
  ***************************************************************************/
 #include "../defines.h"
 
+INLINE const Object& Body::getObject() const
+{
+   return mObject;
+}
+
+INLINE Object& Body::getObject()
+{
+   return mObject;
+}
+
 INLINE const Vector& Body::getPosition() const
 {
    return mPosition;
 }
 
-INLINE void Body::setPosition(const Vector& position)
+INLINE void Body::setPosition(const Vector& pos)
 {
-   mPosition = position;
+   mPosition = pos;
 }
 
 INLINE float Body::getAngle() const
@@ -42,4 +52,9 @@ INLINE void Body::setAngle(float angle)
 INLINE const CollisionShapes& Body::getShapes() const
 {
    return mShapes;
+}
+
+INLINE ForceGenerators& Body::getForceGenerators()
+{
+   return mForceGenerators;
 }

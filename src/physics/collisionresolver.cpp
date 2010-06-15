@@ -28,9 +28,10 @@
 // -- Statics
 // ----------------------------------
 
-void CollisionResolver::resolve(CollisionData& collisiondata, float timestep)
+void CollisionResolver::resolve(CollisionData& collisiondata, const CollisionResolverInfo& info, float timestep)
 {
    CollisionResolver resolver;
+   resolver.setInfo(info);
    resolver.doResolve(collisiondata, timestep);
 }
 
@@ -42,9 +43,25 @@ CollisionResolver::CollisionResolver()
 {
 }
 
+// - get/set
+   
+const CollisionResolverInfo& CollisionResolver::getInfo() const
+{
+   return mInfo;
+}
+
+void CollisionResolver::setInfo(const CollisionResolverInfo& info)
+{
+   mInfo = info;
+}
+
+// - operations
+
 void CollisionResolver::doResolve(CollisionData& collisiondata, float timestep)
 {
    collisiondata.prepare(timestep);
+
+   collisiondata.adjustPositions(timestep);
 
    CollisionData::ContactIterator iterator = collisiondata.getIterator();
 

@@ -86,6 +86,9 @@ public:
    virtual void      pack(BitStream& stream) const;
    virtual void      unpack(BitStream& stream);
 
+ // simulator interface
+   void updateState();
+
 protected:
    Animator&         getAnimator();
 

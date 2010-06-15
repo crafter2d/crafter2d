@@ -17,27 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MATRIX_2x2_H_
-#define MATRIX_2x2_H_
 
-#include "vector.h"
+#include "collisioncontactbody.h"
 
-class Matrix2x2
+#include "body.h"
+
+CollisionContactBody::CollisionContactBody(Body &body):
+   mBody(body),
+   mRelativeContact()
 {
-public:
-   Matrix2x2();
-   ~Matrix2x2();
+}
 
-   void setComponents(const Vector& one, const Vector& two);
-   void setRotation(float deg);
-   void setScale(float x, float y);
+Body& CollisionContactBody::getBody()
+{
+   return mBody;
+}
 
-   Vector transform(const Vector& point) const;
-   Vector transformTranspose(const Vector& point) const;
+const Body& CollisionContactBody::getBody() const
+{
+   return mBody;
+}
 
-private:
-   float m11, m12;
-   float m21, m22;
-};
+const Vector& CollisionContactBody::getRelativeContact() const
+{
+   return mRelativeContact;
+}
 
-#endif
+// methods
+
+void CollisionContactBody::prepare(const Vector& collisionpoint)
+{
+   mRelativeContact = collisionpoint - mBody.getPosition();
+}

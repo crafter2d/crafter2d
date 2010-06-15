@@ -20,6 +20,8 @@
 #ifndef COLLISION_RESOLVER_H
 #define COLLISION_RESOLVER_H
 
+#include "collisionresolverinfo.h"
+
 class CollisionContact;
 class CollisionData;
 class PhysicsBody;
@@ -27,10 +29,14 @@ class PhysicsBody;
 class CollisionResolver
 {
 public:
-   static void resolve(CollisionData& collisiondata, float timestep);
+   static void resolve(CollisionData& collisiondata, const CollisionResolverInfo& info, float timestep);
 
 private:
    CollisionResolver();
+
+ // get/set
+   const CollisionResolverInfo& getInfo() const;
+   void setInfo(const CollisionResolverInfo& info);
 
  // resolving
    void doResolve(CollisionData& collisiondata, float timestep);
@@ -38,6 +44,9 @@ private:
 
  // helpers
    void calculateInertia(PhysicsBody& body, float& linearInertia, float& angularInertia);
+
+ // members
+   CollisionResolverInfo   mInfo;
 };
 
 #endif

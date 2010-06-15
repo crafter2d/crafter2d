@@ -37,6 +37,7 @@
 
 #include "physics/collisiondetector.h"
 #include "physics/physicsfactory.h"
+#include "physics/box2d/box2dfactory.h"
 #include "physics/simulationfactoryregistry.h"
 
 #include "gui/guifocus.h"
@@ -141,6 +142,7 @@ bool Game::create()
 
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
+   SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
    CollisionDetector::initRegistry();
 
    log << "\n-- Initializing Graphics --\n\n";

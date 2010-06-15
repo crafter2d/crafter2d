@@ -137,10 +137,11 @@ void GuiCanvasMouseEventDispatcher::dispatchMouseMotion(const MouseEvent& event)
          // send enter/exit events to the windows
          if ( mpWindow != NULL )
             mpWindow->getMouseListeners().fireMouseExitEvent(event);
-         if ( pwindow != NULL )
-            pwindow->getMouseListeners().fireMouseEnterEvent(event);
 
          mpWindow = pwindow;
+
+         if ( mpWindow != NULL )
+            mpWindow->getMouseListeners().fireMouseEnterEvent(event);
       }
    }
 

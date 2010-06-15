@@ -26,6 +26,7 @@
 #include <tinyxml.h>
 #include <algorithm>
 #include <functional>
+#include <Box2D.h>
 
 #include "physics/simulationfactory.h"
 #include "physics/simulator.h"

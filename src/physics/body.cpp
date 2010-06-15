@@ -24,6 +24,8 @@
 
 #include <tinyxml.h>
 
+#include "object.h"
+
 #include "collisionshape.h"
 
 // ----------------------------------
@@ -39,11 +41,13 @@ bool Body::hasInfo(const TiXmlElement& element)
 // - Body
 // ----------------------------------
 
-Body::Body():
+Body::Body(Object& object):
+   mPosition(object.getPosition()),
+   mAngle(object.getRotation()),
+   mObject(object),
    mTransform(),
-   mPosition(),
-   mAngle(0.0f),
-   mShapes()
+   mShapes(),
+   mForceGenerators()
 {
 }
 
@@ -81,12 +85,38 @@ Vector Body::localToWorld(const Vector& vector) const
 }
 
 // ----------------------------------
+// -- Force Generators
+// ----------------------------------
+
+void Body::addForceGenerator(ForceGenerator* pgenerator)
+{
+   mForceGenerators.push_back(pgenerator);
+}
+
+void Body::applyForce(const Vector& force)
+{
+}
+
+void Body::applyForce(const Vector& force, const Vector& pos)
+{
+}
+
+void Body::applyImpulse(const Vector& impulse)
+{
+}
+
+// ----------------------------------
 // -- Integration
 // ----------------------------------
 
 void Body::integrate(float timestep)
 {
    PURE_VIRTUAL
+}
+
+void Body::finalize()
+{
+   mObject.updateState();
 }
 
 void Body::calculateDerivedData()

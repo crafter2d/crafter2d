@@ -49,6 +49,28 @@ INLINE void PhysicsBody::setInertia(float inertia)
    mInverseInertia = 1.0f / inertia;
 }
 
+INLINE const Vector& PhysicsBody::getVelocity() const
+{
+   return mLinearVelocity;
+}
+
+INLINE const Vector& PhysicsBody::getAcceleration() const
+{
+   return mAcceleration;
+}
+
+INLINE void PhysicsBody::setAcceleration(const Vector& acc)
+{
+   mAcceleration = acc;
+}
+
+INLINE const Vector& PhysicsBody::getLastFrameAcceleration() const
+{
+   return mLastFrameAcceleration;
+}
+
+// Operations
+
 INLINE void PhysicsBody::addForce(const Vector& force)
 {
    mAccumForce += force;
@@ -57,9 +79,4 @@ INLINE void PhysicsBody::addForce(const Vector& force)
 INLINE void PhysicsBody::addTorque(float torque)
 {
    mAccumTorque += torque;
-}
-
-void PhysicsBody::setAcceleration(const Vector& acc)
-{
-   mAcceleration = acc;
 }

@@ -26,7 +26,7 @@
 class PhysicsBody : public Body
 {
 public:
-   PhysicsBody();
+   explicit PhysicsBody(Object& object);
    virtual ~PhysicsBody();
 
   // get/set
@@ -38,27 +38,29 @@ public:
    float getInertia() const;
    void  setInertia(float inertia);
 
+   const Vector& getVelocity() const;
+
+   const Vector& getAcceleration() const;
    void setAcceleration(const Vector& acc);
+
+   const Vector& getLastFrameAcceleration() const;
 
   // loading
    virtual void load(const TiXmlElement& element);
 
   // forces
-   void  addForce(const Vector& force);
-   void  addForce(const Vector& force, const Vector& location);
+   virtual void  addForce(const Vector& force);
+   virtual void  addForce(const Vector& force, const Vector& location);
+
    void  addWorldForce(const Vector& force, const Vector& location);
    void  addTorque(float torque);
 
-  // generators
-   void  addForceGenerator(ForceGenerator* pgenerator);
-
   // integration
    virtual void integrate(float timestep);
+   virtual void finalize();
 
 private:
    void  clearAccumulates();
-
-   ForceGenerators mGenerators;
 
    Vector   mLinearVelocity;
    float    mAngularVelocity;
@@ -67,6 +69,7 @@ private:
    float    mAccumTorque;
 
    Vector   mAcceleration;
+   Vector   mLastFrameAcceleration;
 
    float    mLinearDamping;
    float    mAngularDamping;
