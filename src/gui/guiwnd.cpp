@@ -155,6 +155,8 @@ void GuiWnd::destroy()
       }
    }
 
+   setParent(NULL);
+
    notifyDestroyed();
 }
 

@@ -66,7 +66,7 @@ bool WorldWriter::write(const World& world, const std::string& filename)
 
    ZipFile zip;
    if ( zip.create(filename) )
-      return writeHeader(zip) && writeLayers(zip) && writeBounds(zip);
+      return writeHeader(zip) && writeSimulator(zip) && writeLayers(zip) && writeBounds(zip);
    else
       return false;
 }
@@ -79,6 +79,22 @@ bool WorldWriter::writeHeader(ZipFile& zip)
    stream << version;
 
    zip.addFile("header", (void*)stream.getBuf(), stream.getSize());
+
+   return true;
+}
+
+bool WorldWriter::writeSimulator(ZipFile& zip)
+{
+   TiXmlDocument doc;
+   TiXmlElement* pboundselement = new TiXmlElement("simulator");
+   pboundselement->SetAttribute("type", "box2d");
+   doc.LinkEndChild(pboundselement);
+
+   std::stringstream stream;
+   stream << doc;
+   std::string data = stream.str();
+
+   zip.addFile("simulator.xml", (void*)data.c_str(), data.length());
 
    return true;
 }

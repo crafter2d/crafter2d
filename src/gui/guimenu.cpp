@@ -33,19 +33,23 @@
 #include "guieventhandlerdefinition.h"
 #include "guieventhandlerdefinitions.h"
 #include "guitext.h"
+#include "guifocus.h"
 
 GuiMenu::GuiMenu():
    GuiControl(),
+   GuiFocusListener(),
    MItems(),
    _name(),
    _popupLocation(),
    _selection(-1),
    _processing(false)
 {
+   GuiFocus::getInstance().addListener(*this);
 }
 
 GuiMenu::~GuiMenu()
 {
+   GuiFocus::getInstance().removeListener(*this);
 }
 
 void GuiMenu::initializeEventHandlerDefinitions()
@@ -107,6 +111,8 @@ int GuiMenu::onLButtonUp(const GuiPoint& point, int flag)
 
    if ( _selection != -1 )
    {
+      setVisible(false);
+
       int id = MItems[_selection].getId();
 
       GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiContextMenuEvent);
@@ -120,7 +126,7 @@ int GuiMenu::onLButtonUp(const GuiPoint& point, int flag)
          script.addParam(id);
          script.run(1);
       }
-
+      
       parent->onCommand(id);
    }
 
@@ -130,14 +136,6 @@ int GuiMenu::onLButtonUp(const GuiPoint& point, int flag)
 //////////////////////////////////////////////////////////////////////////
 // - Operations
 //////////////////////////////////////////////////////////////////////////
-
-void GuiMenu::onKillFocus(GuiWnd* newCtrl)
-{
-   GuiControl::onKillFocus(newCtrl);
-
-   if ( hasParent() && !_processing )
-      getParent()->sendMessage(getId(), GuiLostFocusEvent);
-}
 
 void GuiMenu::addItem(int id, const std::string& item)
 {
@@ -173,4 +171,16 @@ void GuiMenu::selectItem(const GuiPoint& point)
    }
    else
       _selection = -1;
+}
+
+// notifications
+
+void GuiMenu::onFocusChanged(GuiWnd& newFocus, GuiWnd* poldFocus)
+{
+   if ( !_processing && poldFocus == this )
+   {
+      GuiControl::onKillFocus(&newFocus);
+
+      getParent()->sendMessage(getId(), GuiLostFocusEvent);
+   }
 }

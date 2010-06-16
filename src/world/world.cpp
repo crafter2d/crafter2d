@@ -64,6 +64,8 @@ World::World():
    layers(),
    bounds(),
    _observers(),
+   mpSimulationFactory(NULL),
+   mpSimulator(NULL),
    _layerType(ETopDown),
    autoFollow(true),
    followBorderWidth(5),

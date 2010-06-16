@@ -38,6 +38,8 @@
 #include "guieventhandlerdefinitions.h"
 #include "guiscopedtransform.h"
 
+#include "input/mouseevent.h"
+
 REGISTER_DESIGNER(GuiTileEditor, GuiTileEditorId, "Tile Editor" , 40, 15, 264)
 
 EVENT_MAP_BEGIN(GuiTileEditor)
@@ -55,6 +57,8 @@ GuiTileEditor::GuiTileEditor():
    MPHorzScrollBar(NULL),
    MPVertScrollBar(NULL),
    _worldObserver(*this),
+   mMouseListener(*this),
+   mMouseMotionListener(*this),
    _highlightTile(),
    MXScrollPos(0),
    MYScrollPos(0),
@@ -70,6 +74,9 @@ GuiTileEditor::GuiTileEditor():
 void GuiTileEditor::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
 {
    GuiControl::onCreate(rect, caption, style, parent);
+
+   addMouseListener(mMouseListener);
+   addMouseMotionListener(mMouseMotionListener);
 
    initializeScrollbars();
 }
@@ -279,6 +286,7 @@ void GuiTileEditor::onResize(int width, int height)
 // - Input interface
 //////////////////////////////////////////////////////////////////////////
 
+/*
 int GuiTileEditor::onLButtonDown(const GuiPoint& point, int flags)
 {
    GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiTileEditorMouseDownEvent);
@@ -313,7 +321,6 @@ int GuiTileEditor::onLButtonUp(const GuiPoint& point, int flags)
 
 void GuiTileEditor::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags)
 {
-   _highlightTile = PointToTile(point);
 
    GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiTileEditorMouseMoveEvent);
    if ( phandler != NULL )
@@ -324,10 +331,11 @@ void GuiTileEditor::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int 
       script.prepareCall(phandler->getFunctionName().c_str());
       script.addParam((void*)&point, "GuiPoint");
       script.addParam((void*)&rel, "GuiPoint");
-      script.addParam((bool)(flags & GuiLButton));
+      script.addParam(IS_SET(flags, MouseEvent::eLeft));
       script.run(3);
    }
 }
+*/
 
 void GuiTileEditor::onKeyUp(int which)
 {

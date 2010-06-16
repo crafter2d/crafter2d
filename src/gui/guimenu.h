@@ -21,13 +21,15 @@
 #define GUIMENU_H
 
 #include <vector>
+
+#include "guifocuslistener.h"
 #include "guicontrol.h"
 #include "guimenuitem.h"
 
 /**
 @author Jeroen Broekhuizen
 */
-class GuiMenu : public GuiControl
+class GuiMenu : public GuiControl, public GuiFocusListener
 {
 public:
    typedef std::vector<GuiMenuItem> GuiMenuItems;
@@ -48,9 +50,11 @@ public:
    virtual void     addItem(int id, const std::string& item);
    void             calculateSize();
    
-   virtual void   onKillFocus(GuiWnd* newCtrl);
    virtual void   onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
    virtual int    onLButtonUp(const GuiPoint& point, int flag);
+
+ // notifications
+   virtual void onFocusChanged(GuiWnd& newFocus, GuiWnd* poldFocus);
 
 protected:
    virtual void   onRender(Uint32 tick, const GuiGraphics& graphics);

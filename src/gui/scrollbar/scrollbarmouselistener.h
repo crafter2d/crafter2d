@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,49 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#ifndef GUI_SCROLLBAR_MOUSE_LISTENER_H
+#define GUI_SCROLLBAR_MOUSE_LISTENER_H
 
-INLINE bool GuiWndReference::isAlive() const
-{
-   return _pwnd != NULL;
-}
+#include "gui/input/mouselistener.h"
 
-INLINE GuiWnd& GuiWndReference::instance()
-{
-   ASSERT_PTR(_pwnd);
-   return *_pwnd;
-}
+class GuiScrollBar;
 
-INLINE GuiWnd* GuiWndReference::instancePtr()
+class GuiScrollBarMouseListener : public MouseListener
 {
-   return _pwnd;
-}
+public:
+   explicit GuiScrollBarMouseListener(GuiScrollBar& scrollbar);
+   virtual ~GuiScrollBarMouseListener();
 
-//////////////////////////////////////////////////////////////////////////
-// - Operations
-//////////////////////////////////////////////////////////////////////////
+   virtual void onMouseButton(const MouseEvent& event);
 
-INLINE GuiWnd& GuiWndReference::operator* () const
-{
-   return *_pwnd;
-}
+private:
+   GuiScrollBar& mScrollbar;
+};
 
-INLINE GuiWnd* GuiWndReference::operator-> () const
-{
-   return _pwnd;
-}
-
-INLINE bool GuiWndReference::operator==(const GuiWndReference& reference) const
-{
-   return _pwnd == reference._pwnd;
-}
-   
-INLINE bool GuiWndReference::operator==(const GuiWnd& wnd) const
-{
-   return _pwnd == &wnd;
-}
-
-INLINE void GuiWndReference::clear()
-{
-   _pwnd = NULL;
-}
+#endif

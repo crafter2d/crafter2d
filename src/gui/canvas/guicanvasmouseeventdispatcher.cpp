@@ -32,10 +32,10 @@ float GuiCanvasMouseEventDispatcher::sClickSpeed = 0.8f;
 GuiCanvasMouseEventDispatcher::GuiCanvasMouseEventDispatcher(GuiCanvas& canvas):
    MouseEventDispatcher(),
    mCanvas(canvas),
-   mpWindow(NULL),
+   mWindow(),
    mClickTimer(0.0f),
    mClickButton(MouseEvent::eInvalid),
-   mpClickWindow(NULL)
+   mClickWindow()
 {
 }
 
@@ -68,13 +68,13 @@ void GuiCanvasMouseEventDispatcher::dispatchButtonPressed(const MouseEvent& even
          GuiFocus::getInstance().getFocus().fireMouseWheelEvent(event);
       }
    }
-   else if ( mpWindow != NULL )
+   else if ( mWindow.isAlive() )
    {
-      mpWindow->setFocus();
-      mpWindow->getMouseListeners().fireMouseButtonEvent(event);
+      mWindow->setFocus();
+      mWindow->getMouseListeners().fireMouseButtonEvent(event);
 
-      mClickButton  = event.getButtons();
-      mpClickWindow = mpWindow;
+      mClickButton = event.getButtons();
+      mClickWindow = mWindow;
    }
    
    // convenience calls as long as not all controls have been converted
@@ -87,16 +87,20 @@ void GuiCanvasMouseEventDispatcher::dispatchButtonPressed(const MouseEvent& even
 
 void GuiCanvasMouseEventDispatcher::dispatchButtonReleased(const MouseEvent& event)
 {
-   if ( mpWindow != NULL )
+   if ( mWindow.isAlive() )
    {
-      MouseListeners& listeners = mpWindow->getMouseListeners();
+      bool fireclick = (mWindow == mClickWindow);
+      if ( fireclick )
+      {
+         mClickWindow.clear();
+      }
+
+      MouseListeners& listeners = mWindow->getMouseListeners();
       listeners.fireMouseButtonEvent(event);
 
-      if ( mpWindow == mpClickWindow )
+      if ( fireclick )
       {
          listeners.fireMouseClickEvent(event);
-
-         mpClickWindow = NULL;
       }
    }
 
@@ -116,38 +120,38 @@ void GuiCanvasMouseEventDispatcher::dispatchMouseMotion(const MouseEvent& event)
    GuiPoint rel = GuiPoint(event.getRelative());
 
    GuiWnd* pwindow = mCanvas.findWindowAtLocation(event.getLocation());
-   if ( mpWindow != pwindow )
+   if ( mWindow.instancePtr() != pwindow )
    {
-      if ( mpClickWindow != NULL )
+      if ( mClickWindow.isAlive() )
       {
          // when clicking, only send enter/exit events to click window
-         if ( pwindow != mpClickWindow )
+         if ( mClickWindow == *pwindow )
          {
-            mpClickWindow->getMouseListeners().fireMouseExitEvent(event);
-            mpWindow = NULL;
+            mClickWindow->getMouseListeners().fireMouseExitEvent(event);
+            mWindow.clear();
          }
-         else if ( mpWindow == NULL )
+         else if ( mWindow.isAlive() )
          {
-           mpClickWindow->getMouseListeners().fireMouseEnterEvent(event);
-           mpWindow = mpClickWindow;
+           mClickWindow->getMouseListeners().fireMouseEnterEvent(event);
+           mWindow = mClickWindow;
          }
       }
       else
       {
          // send enter/exit events to the windows
-         if ( mpWindow != NULL )
-            mpWindow->getMouseListeners().fireMouseExitEvent(event);
+         if ( mWindow.isAlive() )
+            mWindow->getMouseListeners().fireMouseExitEvent(event);
 
-         mpWindow = pwindow;
+         mWindow = pwindow;
 
-         if ( mpWindow != NULL )
-            mpWindow->getMouseListeners().fireMouseEnterEvent(event);
+         if ( mWindow.isAlive() )
+            mWindow->getMouseListeners().fireMouseEnterEvent(event);
       }
    }
 
-   if ( mpWindow != NULL )
+   if ( mWindow.isAlive() )
    {
-      mpWindow->fireMouseMotionEvent(event);
+      mWindow->fireMouseMotionEvent(event);
    }
 
    // convenience call during conversion

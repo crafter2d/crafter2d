@@ -44,8 +44,7 @@ GuiPopupDecorator::~GuiPopupDecorator()
 {
    if ( _ppopup != NULL )
    {
-      _ppopup->setParent(NULL);
-      _ppopup = NULL;
+      hide();
    }
 }
 
@@ -93,11 +92,9 @@ void GuiPopupDecorator::hide()
 
    if ( _owning )
    {
-      removeChild(_ppopup);
-
       _ppopup->destroy();
-      delete _ppopup;
 
+      delete _ppopup;
       _ppopup = NULL;
    }
 }

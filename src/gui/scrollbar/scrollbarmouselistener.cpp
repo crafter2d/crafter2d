@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,49 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
 
-INLINE bool GuiWndReference::isAlive() const
+#include "scrollbarmouselistener.h"
+
+#include "gui/input/mouseevent.h"
+
+#include "gui/guiscrollbar.h"
+
+GuiScrollBarMouseListener::GuiScrollBarMouseListener(GuiScrollBar& scrollbar):
+   MouseListener(),
+   mScrollbar(scrollbar)
 {
-   return _pwnd != NULL;
 }
 
-INLINE GuiWnd& GuiWndReference::instance()
+GuiScrollBarMouseListener::~GuiScrollBarMouseListener()
 {
-   ASSERT_PTR(_pwnd);
-   return *_pwnd;
 }
 
-INLINE GuiWnd* GuiWndReference::instancePtr()
-{
-   return _pwnd;
-}
+//-----------------------------------
+// - Notifications
+//-----------------------------------
 
-//////////////////////////////////////////////////////////////////////////
-// - Operations
-//////////////////////////////////////////////////////////////////////////
 
-INLINE GuiWnd& GuiWndReference::operator* () const
+void GuiScrollBarMouseListener::onMouseButton(const MouseEvent& event)
 {
-   return *_pwnd;
-}
-
-INLINE GuiWnd* GuiWndReference::operator-> () const
-{
-   return _pwnd;
-}
-
-INLINE bool GuiWndReference::operator==(const GuiWndReference& reference) const
-{
-   return _pwnd == reference._pwnd;
-}
-   
-INLINE bool GuiWndReference::operator==(const GuiWnd& wnd) const
-{
-   return _pwnd == &wnd;
-}
-
-INLINE void GuiWndReference::clear()
-{
-   _pwnd = NULL;
+   if ( event.getButtons() == MouseEvent::eLeft && event.getEventType() == MouseEvent::ePressed )
+   {
+      mScrollbar.onLButtonUp(event.getLocation(), 0);
+   }
 }

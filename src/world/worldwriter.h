@@ -42,6 +42,7 @@ public:
 
 private:
    bool writeHeader(ZipFile& zip);
+   bool writeSimulator(ZipFile& zip);
    bool writeLayers(ZipFile& zip);
    bool writeBounds(ZipFile& zip);
    bool writeObjects(ZipFile& zip);

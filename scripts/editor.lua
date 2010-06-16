@@ -70,8 +70,9 @@ function Editor:getSelectedBound()
 end
 
 function Editor:addBound(point)
-	local left  = Vector:new(point.x, point.y)
-	local right = Vector:new(point.x + 10, point.y)
+	local p     = Vector:new(point.x, point.y)
+	local left  = self.control:world():getLayer(0):screenToLayer(p)
+	local right = Vector:new(left.x + 10, left.y)
 	
 	self.bound = self.control:world():addBound(left, right)
 	self.boundpoint = 1
@@ -91,6 +92,7 @@ function Editor:selectBound(point)
 end
 
 function Editor:moveBound(offset)
+    console:print("moving the bound")
 	local pos = Vector:new(offset.x, offset.y)
 	if self.boundpoint >= 0 then
 		self.bound:movePoint(self.boundpoint, pos)

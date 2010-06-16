@@ -46,6 +46,8 @@ public:
    bool operator==(const GuiWndReference& reference) const;
    bool operator==(const GuiWnd& wnd) const;
 
+   void clear();
+
  // notifications
    virtual void notifyDestroyed(GuiWnd& wnd);
 

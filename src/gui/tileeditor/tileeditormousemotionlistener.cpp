@@ -17,37 +17,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUICANVAS_MOUSEEVENT_DISPATCHER_H
-#define GUICANVAS_MOUSEEVENT_DISPATCHER_H
 
-#include "gui/input/mouseeventdispatcher.h"
+#include "tileeditormousemotionlistener.h"
 
-#include "gui/guiwndreference.h"
+#include "script.h"
+#include "scriptmanager.h"
 
-class GuiCanvas;
-class GuiWnd;
-class MouseEvent;
+#include "gui/guitileeditor.h"
+#include "gui/guieventhandler.h"
+#include "gui/guieventhandlers.h"
 
-class GuiCanvasMouseEventDispatcher : public MouseEventDispatcher
+#include "gui/input/mouseevent.h"
+
+TileEditorMouseMotionListener::TileEditorMouseMotionListener(GuiTileEditor& tileeditor):
+   MouseMotionListener(),
+   mTileEditor(tileeditor)
 {
-public:
-   static float sClickSpeed;
+}
 
-   explicit GuiCanvasMouseEventDispatcher(GuiCanvas& canvas);
-   virtual ~GuiCanvasMouseEventDispatcher();
+// notifications
 
-   virtual void dispatch(const MouseEvent& event);
+void TileEditorMouseMotionListener::onMouseMotion(const MouseEvent& event)
+{
+   GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseMoveEvent);
+   if ( phandler != NULL )
+   {
+      GuiPoint location = event.getLocation();
+      GuiPoint relative = event.getRelative();
+      bool pressed = IS_SET(event.getButtons(), MouseEvent::eLeft);
 
-private:
-   void dispatchButtonPressed(const MouseEvent& event);
-   void dispatchButtonReleased(const MouseEvent& event);
-   void dispatchMouseMotion(const MouseEvent& event);
-
-   GuiCanvas& mCanvas;
-   GuiWndReference    mWindow;
-   float      mClickTimer;
-   int        mClickButton;
-   GuiWndReference mClickWindow;
-};
-
-#endif
+      ScriptManager& mgr = ScriptManager::getInstance();
+      Script& script = mgr.getTemporaryScript();
+      script.setSelf(&mTileEditor, "GuiTileEditor");
+      script.prepareCall(phandler->getFunctionName().c_str());
+      script.addParam((void*)&location, "GuiPoint");
+      script.addParam((void*)&relative, "GuiPoint");
+      script.addParam(pressed);
+      script.run(3);
+   }
+}
