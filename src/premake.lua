@@ -110,8 +110,8 @@ if ( OS == "windows" ) then
       "..\\tolua\\tolua++ -o ..\\src\\tolua_editor.cpp -H ..\\src\\tolua_editor.h -n editor ..\\tolua\\editor.cpp",
       "..\\tolua\\tolua++ -o ..\\src\\tolua_general.cpp -H ..\\src\\tolua_general.h -n general ..\\tolua\\general.cpp",
       "..\\tolua\\tolua++ -o ..\\src\\tolua_gui.cpp -H ..\\src\\tolua_gui.h -n gui ..\\tolua\\gui.cpp",
-      "..\\tolua\\tolua++ -o ..\\src\\tolua_network.cpp -H ..\\src\\tolua_network.h -n network ..\\tolua\\network.cpp"
-      "..\\tolua\\tolua++ -o ..\\src\\tolua_physics.cpp -H ..\\src\\tolua_physics.h -n network ..\\tolua\\physics.cpp" }
+      "..\\tolua\\tolua++ -o ..\\src\\tolua_network.cpp -H ..\\src\\tolua_network.h -n network ..\\tolua\\network.cpp",
+      "..\\tolua\\tolua++ -o ..\\src\\tolua_physics.cpp -H ..\\src\\tolua_physics.h -n physics ..\\tolua\\physics.cpp" }
 
 elseif ( OS == "linux" ) then
    package.buildoptions = { "-W -Wall -O0" }
@@ -129,7 +129,7 @@ elseif ( OS == "linux" ) then
       "tolua++ -o ../src/tolua_editor.cpp -H ../src/tolua_editor.h -n editor ../tolua/editor.cpp",
       "tolua++ -o ../src/tolua_general.cpp -H ../src/tolua_general.h -n general ../tolua/general.cpp",
       "tolua++ -o ../src/tolua_gui.cpp -H ../src/tolua_gui.h -n gui ../tolua/gui.cpp",
-      "tolua++ -o ../src/tolua_network.cpp -H ../src/tolua_network.h -n network ../tolua/network.cpp"
+      "tolua++ -o ../src/tolua_network.cpp -H ../src/tolua_network.h -n network ../tolua/network.cpp",
       "tolua++ -o ../src/tolua_physics.cpp -H ../src/tolua_physics.h -n physics ../tolua/physics.cpp" }
 
 end

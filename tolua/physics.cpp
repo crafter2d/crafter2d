@@ -26,6 +26,8 @@ $#include "physics/physicssimulator.h"
 $#include "physics/physicsbody.h"
 $#include "physics/gravityforcegenerator.h"
 $#include "physics/inputforcegenerator.h"
+$#include "physics/box2d/box2dsimulator.h"
+$#include "physics/box2d/box2dbody.h"
 $#include "physics/box2d/box2drevolutejoint.h"
 
 class PhysicsSimulator
