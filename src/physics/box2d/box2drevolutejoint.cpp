@@ -20,6 +20,15 @@
 
 #include "box2drevolutejoint.h"
 
+#include "defines.h"
+
+Box2DRevoluteJointDefinition::Box2DRevoluteJointDefinition():
+   pleft(NULL),
+   pright(NULL),
+   anchor()
+{
+}
+
 Box2DRevoluteJoint::Box2DRevoluteJoint(b2RevoluteJoint& joint):
    mJoint(joint)
 {

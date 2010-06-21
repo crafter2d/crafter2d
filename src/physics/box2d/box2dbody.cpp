@@ -53,6 +53,15 @@ void Box2DBody::load(const TiXmlElement& element)
       return;
    }
 
+   int isstatic = 0;
+   pphysics->QueryIntAttribute("static", &isstatic);
+   if ( isstatic > 0 )
+      mBody.SetType(b2_staticBody);
+
+   int rotate = 1;
+   if ( pphysics->QueryIntAttribute("rotate", &rotate) == TIXML_SUCCESS && rotate == 0 )
+      mBody.SetFixedRotation(true);
+
    const TiXmlElement* pshapeelement = dynamic_cast<const TiXmlElement*>(pphysics->FirstChild(sSHAPEELEMENT));
    if ( pshapeelement != NULL )
    {
@@ -110,10 +119,14 @@ void Box2DBody::integrate(float timestep)
    getForceGenerators().applyForces(*this);
 }
 
+#define PI 3.14159265358979323846
+#define RAD2DEG(rad)(rad * 180 / PI)
+
+
 void Box2DBody::finalize()
 {
    setPosition(Box2DSimulator::b2ToVector(mBody.GetPosition()));
-   setAngle(mBody.GetAngle());
+   setAngle(RAD2DEG(mBody.GetAngle()));
 
    Body::finalize();
 }

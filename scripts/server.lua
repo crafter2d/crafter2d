@@ -159,7 +159,7 @@ function Server_startGame(worldFile, player)
 	
 	-- create bridge
 	local bridge = Bridge:new()
-	bridge:create(Vector:new(714, 20), Vector:new(714, -20))
+	bridge:create(world, Vector:new(727, 420), Vector:new(943, 420))
 	
 	-- create the controler for the player
 	local controler = Creature:new()

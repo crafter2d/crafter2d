@@ -7,7 +7,7 @@
       <anim1 length=1>0</anim1>
       <anim2 length=7>1 2 3 4 5 6 7</anim2>
    </animations>
-   <body inertia="1" mass="80">
+   <body inertia="1" mass="80" rotate="0">
       <shape type="box" halfx="24" halfy="30" />
    </body>
 </object>

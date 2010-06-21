@@ -77,6 +77,8 @@ class Box2DRevoluteJoint
 
 class Box2DRevoluteJointDefinition
 {
+   Box2DRevoluteJointDefinition();
+
    Box2DBody* pleft;
    Box2DBody* pright;
    Vector anchor;
