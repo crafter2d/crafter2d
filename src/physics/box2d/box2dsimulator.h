@@ -28,6 +28,9 @@ struct b2Vec2;
 class Object;
 class Vector;
 
+class Box2DRevoluteJoint;
+class Box2DRevoluteJointDefinition;
+
 class Box2DSimulator : public Simulator
 {
 public:
@@ -41,13 +44,16 @@ public:
    virtual Body& createBody(Object& object);
    virtual void  removeBody(Body& body);
 
+   Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);
+
    virtual void generateWorldShapes(const World& world);
 
    virtual void run(float timestep);
 
 private:
    b2World* mpWorld;
-   int x;
+
+   std::vector<Box2DRevoluteJoint*> mJoints;
 };
 
 #endif

@@ -1,0 +1,12 @@
+<?xml version="1.0">
+<!-- char sprite -->
+
+<object name="bridgepart" width=12 height=8>
+   <texture>bridgepart.png</texture>
+   <animations count=1 speed=125>
+      <anim1 length=1>0</anim1>
+   </animations>
+   <body inertia="1" mass="80">
+      <shape type="box" halfx="6" halfy="4" />
+   </body>
+</object>

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,36 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef BOX2D_BODY_H_
-#define BOX2D_BODY_H_
 
-#include "physics/body.h"
+#include "box2drevolutejoint.h"
 
-class b2Body;
-
-class Box2DBody : public Body
+Box2DRevoluteJoint::Box2DRevoluteJoint(b2RevoluteJoint& joint):
+   mJoint(joint)
 {
-public:
-   explicit Box2DBody(Object& object, b2Body& body);
-
- // get/set
-   b2Body& getBody();
-
- // loading
-   virtual void load(const TiXmlElement& element);
-
- // forces
-   virtual void applyForce(const Vector& force);
-   virtual void applyForce(const Vector& force, const Vector& pos);
-
-   virtual void applyImpulse(const Vector& impulse);
-
- // integration
-   virtual void integrate(float timestep);
-   virtual void finalize();
-
-private:
-   b2Body& mBody;
-};
-
-#endif
+}

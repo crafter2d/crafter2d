@@ -254,6 +254,8 @@ class World: public SceneObject
    void setFollowBorderWidth(int width);
    void setFollowBorders(int left, int right, int top, int bottom);
    void setObjectLayer(int index);
+
+   Simulator& getSimulator();
 };
 
 class SceneGraph

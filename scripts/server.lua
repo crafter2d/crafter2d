@@ -4,6 +4,7 @@
 -- Server scripts
 
 include('actionmap.lua')
+include('bridge.lua')
 
 -- initialize the server connection
 function Server_startup()
@@ -155,6 +156,10 @@ function Server_startGame(worldFile, player)
 	box:create("box.xml")
 	box:setName("box4")
 	world:add(box)
+	
+	-- create bridge
+	local bridge = Bridge:new()
+	bridge:create(Vector:new(714, 20), Vector:new(714, -20))
 	
 	-- create the controler for the player
 	local controler = Creature:new()

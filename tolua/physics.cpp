@@ -26,6 +26,7 @@ $#include "physics/physicssimulator.h"
 $#include "physics/physicsbody.h"
 $#include "physics/gravityforcegenerator.h"
 $#include "physics/inputforcegenerator.h"
+$#include "physics/box2d/box2drevolutejoint.h"
 
 class PhysicsSimulator
 {
@@ -57,4 +58,24 @@ class InputForceGenerator : public ForceGenerator
    void setVelocity(const Vector& vel);
    
    void setImpulse(const Vector& vel);
+};
+
+class Box2DSimulator : public Simulator
+{
+   Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);
+};
+
+class Box2DBody : public Body
+{
+};
+
+class Box2DRevoluteJoint
+{
+};
+
+class Box2DRevoluteJointDefinition
+{
+   Box2DBody* pleft;
+   Box2DBody* pright;
+   Vector anchor;
 };

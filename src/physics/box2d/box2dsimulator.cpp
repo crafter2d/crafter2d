@@ -27,6 +27,7 @@
 #include "object.h"
 
 #include "box2dbody.h"
+#include "box2drevolutejoint.h"
 
 // static 
 Vector Box2DSimulator::b2ToVector(const b2Vec2& b2)
@@ -43,7 +44,7 @@ b2Vec2 Box2DSimulator::vectorToB2(const Vector& v)
 Box2DSimulator::Box2DSimulator():
    Simulator(),
    mpWorld(NULL),
-   x(200)
+   mJoints()
 {
 }
 
@@ -69,6 +70,20 @@ Body& Box2DSimulator::createBody(Object& object)
 
 void Box2DSimulator::removeBody(Body& body)
 {
+}
+
+Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefinition& definition)
+{
+   b2RevoluteJointDef jd;
+   jd.Initialize(&definition.pleft->getBody(), &definition.pright->getBody(), vectorToB2(definition.anchor));
+
+   b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpWorld->CreateJoint(&jd));
+
+   Box2DRevoluteJoint* pjoint = new Box2DRevoluteJoint(*pb2joint);
+
+   mJoints.push_back(pjoint);
+
+   return *pjoint;
 }
 
 void Box2DSimulator::generateWorldShapes(const World& world)

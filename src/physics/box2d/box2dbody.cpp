@@ -34,6 +34,13 @@ Box2DBody::Box2DBody(Object& object, b2Body& body):
 {
 }
 
+// get/set
+
+b2Body& Box2DBody::getBody()
+{
+   return mBody;
+}
+
 // loading
 
 void Box2DBody::load(const TiXmlElement& element)
