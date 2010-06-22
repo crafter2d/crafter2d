@@ -62,8 +62,8 @@ bool TopDownLayer::prepare(int screenWidth, int screenHeight)
    if ( vb == NULL )
       return false;
 
-   int nX = diffuse.getWidth() / tileWidth;
-   int nY = diffuse.getHeight() / tileHeight;
+   float nX = diffuse.getWidth() / tileWidth;
+   float nY = diffuse.getHeight() / tileHeight;
 
    texTileWidth  = diffuse.getSourceWidth() / nX;
    texTileHeight = diffuse.getSourceHeight() / nY;
@@ -74,7 +74,7 @@ bool TopDownLayer::prepare(int screenWidth, int screenHeight)
 	for (int tc = 0; tc < tileCount; tc++)
    {
 		// calculate starting texture coordinates
-		texcoordLookup[tc+1].x = static_cast<float>((tc % maxTilesOnRow) * texTileWidth);
+		texcoordLookup[tc+1].x = static_cast<float>(tc % maxTilesOnRow) * texTileWidth;
 		texcoordLookup[tc+1].y = floorf ((float)tc / maxTilesOnRow) * texTileHeight;
 	}
 
