@@ -45,9 +45,11 @@ LayerType TopDownLayer::getType() const
 
 bool TopDownLayer::prepare(int screenWidth, int screenHeight)
 {
+   int border = 0;
+
    // get number of tiles on one row in the diffuseMap
 	const Texture& diffuse = effect.resolveTexture("diffuseMap");
-	maxTilesOnRow = diffuse.getWidth() / tileWidth;
+	maxTilesOnRow = diffuse.getWidth() / (tileWidth + border*2);
 
 	// calculate the maximum number of tiles on the screen
 	maxTilesX = MIN(screenWidth  / mTileSet.getTileWidth() , width);
@@ -62,11 +64,17 @@ bool TopDownLayer::prepare(int screenWidth, int screenHeight)
    if ( vb == NULL )
       return false;
 
-   float nX = diffuse.getWidth() / tileWidth;
-   float nY = diffuse.getHeight() / tileHeight;
+   float dx = diffuse.getSourceWidth() / diffuse.getWidth();
+   float dy = diffuse.getSourceHeight() / diffuse.getHeight();
 
-   texTileWidth  = diffuse.getSourceWidth() / nX;
-   texTileHeight = diffuse.getSourceHeight() / nY;
+   texTileWidth  = dx * tileWidth;
+   texTileHeight = dy * tileHeight;
+
+   float borderx = dx * (tileWidth + border*2);
+   float bordery = dy * (tileHeight + border*2);
+
+   float offsetx = (borderx - texTileWidth) / 2;
+   float offsety = (bordery - texTileHeight) / 2;
 
    // build the texture coord lookup table
    delete[] texcoordLookup;
@@ -74,9 +82,12 @@ bool TopDownLayer::prepare(int screenWidth, int screenHeight)
 	for (int tc = 0; tc < tileCount; tc++)
    {
 		// calculate starting texture coordinates
-		texcoordLookup[tc+1].x = static_cast<float>(tc % maxTilesOnRow) * texTileWidth;
-		texcoordLookup[tc+1].y = floorf ((float)tc / maxTilesOnRow) * texTileHeight;
+		texcoordLookup[tc+1].x = offsetx + static_cast<float>(tc % maxTilesOnRow) * borderx;
+		texcoordLookup[tc+1].y = offsety + floorf ((float)tc / maxTilesOnRow) * bordery;
 	}
+
+   texTileWidth -= 0.001;
+   texTileHeight -= 0.001;
 
 	return true;
 }
@@ -137,10 +148,10 @@ void TopDownLayer::draw ()
 					float texY = texcoordLookup[texId].y;
 
 					// insert the vertices
-					setVertex (&data, xpos                          , ypos                          , texX, texY);
-               setVertex (&data, xpos+tileset().getTileWidth() , ypos                          , texX+texTileWidth, texY);
-               setVertex (&data, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), texX+texTileWidth, texY+texTileHeight);
-               setVertex (&data, xpos                          , ypos+tileset().getTileHeight(), texX, texY+texTileHeight);
+					setVertex (&data, xpos                          , ypos                          , 0.0005+texX, texY);
+               setVertex (&data, xpos+tileset().getTileWidth() , ypos                          , 0.0005+texX+texTileWidth, texY);
+               setVertex (&data, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), 0.0005+texX+texTileWidth, texY+texTileHeight);
+               setVertex (&data, xpos                          , ypos+tileset().getTileHeight(), 0.0005+texX, texY+texTileHeight);
 
 					// keep track of number of vertices
 					verts_to_render += 4;

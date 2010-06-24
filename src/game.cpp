@@ -291,13 +291,10 @@ void Game::initOpenGL()
 {
    const GuiColor& clearcolor = mSettings.getClearColor();
    glClearColor(clearcolor.r, clearcolor.g, clearcolor.b, 0.0f);
-	glClearDepth(1.0f);
+	//glClearDepth(1.0f);
 
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glShadeModel (GL_SMOOTH);
-
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 	OpenGL::initialize ();
 }
