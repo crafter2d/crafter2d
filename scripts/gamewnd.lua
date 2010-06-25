@@ -20,7 +20,7 @@ local rect = canvas:getWindowRect()
 -- create the main game window
 gamewnd = GuiGameWnd:new()
 gamewnd:create(1, rect, "Main view")
-gamewnd:setVisible(false)
+gamewnd:setVisible(true)
 
 -- show it by default
 canvas:pushWindow(gamewnd)

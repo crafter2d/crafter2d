@@ -44,15 +44,16 @@ GuiGameWnd::GuiGameWnd(void):
 void GuiGameWnd::onRender (Uint32 tick, const GuiGraphics& graphics)
 {
    Client& client = Game::getInstance().getClient();
-   if ( client.isInitialized() )
+   //if ( client.isInitialized() )
    {
       SceneGraph& graph = client.getSceneGraph();
-      Object* pcontroler = graph.getControler();
 
-      if ( pcontroler != NULL )
+      if ( graph.hasWorld() )
       {
          // set the sound of the player
-         SoundManager::setPlayerPosition( pcontroler->getPosition() );
+         Object* pcontroler = graph.getControler();
+         if ( pcontroler != NULL )
+            SoundManager::setPlayerPosition( pcontroler->getPosition() );
 
          // draw the scenegraph
          glColor4f(1,1,1,1);

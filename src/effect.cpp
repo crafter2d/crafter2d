@@ -102,18 +102,12 @@ bool Effect::load( const char* file )
  */
 void Effect::destroy ()
 {
-   if( path == NULL )
+   if( path != NULL )
    {
 		// release the path
 		path->release ();
 		delete path;
 		path = NULL;
-	}
-
-	// release the textures
-	for( Uint32 s = 0; s < stages.size(); ++s )
-   {
-		stages[s].tex->release ();
 	}
 
 	stages.clear ();

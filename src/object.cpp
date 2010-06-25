@@ -28,7 +28,6 @@
 
 #include "physics/body.h"
 #include "physics/simulator.h"
-#include "physics/simulationfactory.h"
 
 #include "world/world.h"
 
@@ -136,6 +135,14 @@ bool Object::load (TiXmlDocument& doc)
    }
 
 	return true;
+}
+
+void Object::destroy()
+{
+   SceneObject::destroy();
+
+   delete mpBody;
+   mpBody = NULL;
 }
 
 void Object::doUpdate(float delta)

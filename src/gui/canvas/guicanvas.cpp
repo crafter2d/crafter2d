@@ -468,7 +468,7 @@ GuiWnd* GuiCanvas::findWindowAtLocation(const Point& point)
 
 void GuiCanvas::switchDesigner()
 {
-   if ( isDesigning() )
+   if ( !isDesigning() )
    {
       mpDesigner = new GuiDesigner();
       mpDesigner->create(1, GuiRect(0,300,0,300), "Designer", 1420, this);

@@ -50,6 +50,8 @@ Box2DSimulator::Box2DSimulator():
 
 Box2DSimulator::~Box2DSimulator()
 {
+   delete mpWorld;
+   mpWorld = NULL;
 }
 
 Body& Box2DSimulator::createBody(Object& object)

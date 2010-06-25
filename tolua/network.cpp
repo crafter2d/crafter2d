@@ -79,6 +79,8 @@ class Process
 
    void setActionMap(ActionMap* map);
    void sendScriptEvent(BitStream* stream, int client=-1);
+   
+   bool loadWorld(const std::string& filename, const std::string& name);
 };
 
 class Server: public Process

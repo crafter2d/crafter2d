@@ -169,11 +169,11 @@ void TopDownLayer::draw ()
 	}
 
    // draw layer at onces
-	vb->enable ();
-	glDrawArrays (GL_QUADS, 0, verts_to_render);
-	vb->disable ();
+	vb->enable();
+	glDrawArrays(GL_QUADS, 0, verts_to_render);
+	vb->disable();
 
-	glPopMatrix ();
+	glPopMatrix();
 }
 
 void TopDownLayer::drawHighlight(const Vector& point)

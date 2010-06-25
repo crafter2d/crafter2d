@@ -34,6 +34,14 @@ Box2DBody::Box2DBody(Object& object, b2Body& body):
 {
 }
 
+Box2DBody::~Box2DBody()
+{
+   if ( mBody.GetWorld() != NULL )
+   {
+      mBody.GetWorld()->DestroyBody(&mBody);
+   }
+}
+
 // get/set
 
 b2Body& Box2DBody::getBody()

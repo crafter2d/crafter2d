@@ -47,6 +47,7 @@ public:
 	                  Object();
 	virtual           ~Object();
 
+   virtual void      destroy();
 	virtual Object*   clone ();
 
    void              addState(State* state);

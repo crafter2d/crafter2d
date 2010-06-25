@@ -47,16 +47,18 @@ public:
    virtual        ~Client();
 
    virtual bool   destroy();
+   virtual void   update(float delta);
 
+ // get/set
    Player&        getPlayer();
+
+ // operations
+   virtual bool loadWorld(const std::string& filename, const std::string& name);
 
    bool           connect(const char* server, int port, const char* name);
    void           disconnect();
 
    virtual int    onClientEvent(int client, const NetEvent& event);
-
-   virtual void   update(float delta);
-
 private:
    void  handleConnectReplyEvent(const ConnectReplyEvent& event);
    void  handleDisconnectEvent(const DisconnectEvent& event);

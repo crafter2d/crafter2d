@@ -21,6 +21,8 @@ end
 -- Show or hide the main menu
 function MM_show(show)
 	if show then
+		client:loadWorld("intro", "intro")
+		
 		canvas:pushWindow(mm_wnd)
 	else
 		canvas:popWindow(mm_wnd)
@@ -35,6 +37,5 @@ function MM_startGame()
 
 	Client_startup(true)
 
-	gamewnd:setVisible(true);
 	MM_show(false)
 end

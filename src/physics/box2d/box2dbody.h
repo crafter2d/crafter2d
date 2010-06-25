@@ -28,6 +28,7 @@ class Box2DBody : public Body
 {
 public:
    explicit Box2DBody(Object& object, b2Body& body);
+   virtual ~Box2DBody();
 
  // get/set
    b2Body& getBody();

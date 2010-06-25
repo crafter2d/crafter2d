@@ -100,6 +100,21 @@ Player& Client::getPlayer()
    return *mpPlayer;
 }
 
+// - Operations
+
+bool Client::loadWorld(const std::string& filename, const std::string& name)
+{
+   if ( Process::loadWorld(filename, name) )
+   {
+      graph.getWorld()->setReplica();
+      return true;
+   }
+
+   return false;
+}
+
+// - Events
+
 int Client::onClientEvent(int client, const NetEvent& event)
 {
    switch ( event.getType() )
@@ -227,31 +242,31 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
    obj->setReplica();
    obj->create();
 
-   if ( graph.find(obj->getName().c_str()) == 0 )
+   if ( World::isWorld(*obj) )
    {
-      if ( World::isWorld(*obj) )
-      {
-         mpPlayer->initialize((World&)*obj);
+      if ( graph.hasWorld() )
+         graph.getWorld()->destroy();
 
-         graph.setWorld((World*)obj.release());
-   
-         // run the onWorldChanged script
-         Script& script = ScriptManager::getInstance().getTemporaryScript();
-         script.setSelf(this, "Client");
-         script.prepareCall("Client_onWorldChanged");
-         script.run(0);
+      mpPlayer->initialize((World&)*obj);
+
+      graph.setWorld((World*)obj.release());
+
+      // run the onWorldChanged script
+      Script& script = ScriptManager::getInstance().getTemporaryScript();
+      script.setSelf(this, "Client");
+      script.prepareCall("Client_onWorldChanged");
+      script.run(0);
+   }
+   else if ( graph.find(obj->getName().c_str()) == 0 )
+   {
+      SceneObject* pparent = graph.find(event.getParent());
+      if ( pparent != NULL )
+      {
+         pparent->add(obj.release());
       }
       else
       {
-         SceneObject* pparent = graph.find(event.getParent());
-         if ( pparent != NULL )
-         {
-            pparent->add(obj.release());
-         }
-         else
-         {
-            UNREACHABLE("Parent of object not found.")
-         }
+         UNREACHABLE("Parent of object not found.")
       }
    }
 }

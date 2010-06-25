@@ -67,11 +67,13 @@ public:
   // get/set
    void              setNotify(bool notify = true);
    void              setControler(Object* c);
+
+   bool              hasWorld() const;
+   World*            getWorld();
    void              setWorld(World* w);
 
    Object*           getControler();
    bool              getNotify();
-   World*            getWorld();
    SceneObject&      getRoot();
 
   // notifications

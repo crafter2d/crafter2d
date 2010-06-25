@@ -26,10 +26,12 @@
 #include "net/netevent.h"
 #include "net/events/scriptevent.h"
 
+#include "world/world.h"
+
 #include "actionmap.h"
 #include "scenegraph.h"
 
-Process::Process(void):
+Process::Process():
    conn(),
    graph(),
    actionMap(NULL),
@@ -38,7 +40,7 @@ Process::Process(void):
    conn.attachProcess(this);
 }
 
-Process::~Process(void)
+Process::~Process()
 {
 }
 
@@ -55,6 +57,26 @@ bool Process::destroy()
    graph.removeAll();
 
    return true;
+}
+
+// - Operations
+
+bool Process::loadWorld(const std::string& filename, const std::string& name)
+{
+   World* pworld = new World();
+   if ( pworld->create(filename.c_str()) )
+   {
+      pworld->setName(name);
+
+      graph.setWorld(pworld);
+   }
+   else
+   {
+      delete pworld;
+      pworld = NULL;
+   }
+
+   return pworld != NULL;
 }
 
 // - Updating

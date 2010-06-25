@@ -29,6 +29,11 @@ INLINE bool SceneGraph::getNotify()
    return mNotifyClients;
 }
 
+INLINE bool SceneGraph::hasWorld() const
+{
+   return mpWorld != NULL;
+}
+
 INLINE World* SceneGraph::getWorld()
 {
    return mpWorld;

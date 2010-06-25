@@ -119,15 +119,12 @@ end
 function Server_startGame(worldFile, player)
 	server.gameStarted = true
 
-	world = World:new()
-	world:setName("world")
-	if not world:create(worldFile) then
+	if not server:loadWorld(worldFile, "world") then
 		return
 	end
 
-	-- insert the world in the scenegraph
 	local graph = server:getSceneGraph()
-	graph:setWorld(world)
+	world = graph:getWorld()
 	
 	-- create the box
 	local box = Creature:new()

@@ -63,29 +63,29 @@ bool VertexBufferObject::create(const Effect& effect, int length, int usage, int
 	if ( IS_SET(usage, eStatic) )
   {
 		if ( IS_SET(usage, eWriteOnly) )
-			flag = GL_STATIC_DRAW_ARB;
+			flag = GL_STATIC_DRAW;
 		else if ( IS_SET(usage, eRead) )
-			flag = GL_STATIC_READ_ARB;
+			flag = GL_STATIC_READ;
 		else
-			flag = GL_STATIC_COPY_ARB;
+			flag = GL_STATIC_COPY;
 	}
 	else if ( IS_SET(usage, eDynamic) )
   {
 		if ( IS_SET(usage, eWriteOnly) )
-			flag = GL_DYNAMIC_DRAW_ARB;
+			flag = GL_DYNAMIC_DRAW;
 		else if ( IS_SET(usage, eRead) )
-			flag = GL_DYNAMIC_READ_ARB;
+			flag = GL_DYNAMIC_READ;
 		else
-			flag = GL_DYNAMIC_COPY_ARB;
+			flag = GL_DYNAMIC_COPY;
 	}
 	else if ( IS_SET(usage, eStream) )
   {
 		if ( IS_SET(usage, eWriteOnly) )
-			flag = GL_STREAM_DRAW_ARB;
+			flag = GL_STREAM_DRAW;
 		else if ( IS_SET(usage, eRead) )
-			flag = GL_STREAM_READ_ARB;
+			flag = GL_STREAM_READ;
 		else
-			flag = GL_STREAM_COPY_ARB;
+			flag = GL_STREAM_COPY;
 	}
 	else 
   {
@@ -93,9 +93,9 @@ bool VertexBufferObject::create(const Effect& effect, int length, int usage, int
       return false;
    }
 
-   glGenBuffersARB (1, &buffer);
-   glBindBufferARB (GL_ARRAY_BUFFER_ARB, buffer);
-   glBufferDataARB (GL_ARRAY_BUFFER_ARB, mStride * length, 0, flag);
+   glGenBuffers(1, &buffer);
+   glBindBuffer(GL_ARRAY_BUFFER, buffer);
+   glBufferData(GL_ARRAY_BUFFER, mStride * length, 0, flag);
 
    if ( effect.hasPath() )
    {
@@ -116,8 +116,9 @@ bool VertexBufferObject::create(const Effect& effect, int length, int usage, int
  */
 void VertexBufferObject::release()
 {
-	// destroy the gl VBO
-	glDeleteBuffersARB (1, &buffer);
+	disable();
+
+	glDeleteBuffers(1, &buffer);
 
 	VertexBuffer::release();
 }
@@ -127,8 +128,8 @@ void VertexBufferObject::release()
  */
 float* VertexBufferObject::lock(int fvf)
 {
-	glBindBufferARB (GL_ARRAY_BUFFER_ARB, buffer);
-	float* pointer = (float*)glMapBufferARB (GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	float* pointer = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	if (pointer != NULL)
 		locked = true;
 	return pointer;
@@ -140,8 +141,8 @@ float* VertexBufferObject::lock(int fvf)
 void VertexBufferObject::unlock()
 {
 	if (locked) {
-		glBindBufferARB (GL_ARRAY_BUFFER_ARB, buffer);
-		glUnmapBufferARB (GL_ARRAY_BUFFER_ARB);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glUnmapBuffer(GL_ARRAY_BUFFER);
 		locked = false;
 	}
 }
@@ -156,13 +157,13 @@ void VertexBufferObject::enable()
 
 void VertexBufferObject::enableBuffers()
 {
-   glBindBufferARB (GL_ARRAY_BUFFER_ARB, buffer);
+   glBindBuffer(GL_ARRAY_BUFFER, buffer);
    for ( int i = mFieldCount - 1; i >= 0; --i )
    {
       VertexBufferDesc& field = mFields[i];
 
-		glEnableVertexAttribArrayARB (field.index);
-	   glVertexAttribPointerARB (field.index, field.size, GL_FLOAT, GL_FALSE, mStride, (void*)(field.pos));
+		glEnableVertexAttribArray(field.index);
+	   glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, mStride, (void*)(field.pos));
    }
 }
 
@@ -224,7 +225,7 @@ void VertexBufferObject::disableBuffers()
 {
    for (int i = 0; i < 16; i++)
    {
-	   glDisableVertexAttribArrayARB (i);
+	   glDisableVertexAttribArray(i);
    }
 }
 
