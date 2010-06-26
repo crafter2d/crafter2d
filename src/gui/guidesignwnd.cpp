@@ -148,8 +148,6 @@ void GuiDesignWnd::onSetFocus(GuiWnd* oldCtrl)
    unselectAll();
 
    _pselectionctrl->setVisible(true);
-
-   Game::getInstance().getCanvas().getDesigner().focusChanged(*this);
 }
 
 void GuiDesignWnd::onKillFocus(GuiWnd* newCtrl)

@@ -83,11 +83,14 @@ void GuiPopupDecorator::popup()
 {
    Game::getInstance().getCanvas().pushWindow(this);
 
+   getPopup().setVisible(true);
    getPopup().setFocus();
 }
 
 void GuiPopupDecorator::hide()
 {
+   getPopup().setVisible(false);
+
    Game::getInstance().getCanvas().popWindow(this);
 
    if ( _owning )

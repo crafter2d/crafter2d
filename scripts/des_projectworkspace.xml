@@ -35,7 +35,7 @@
                 <property name="Border" value="false" />
                 <property name="Visible" value="true" />
                 <property name="Default" value="false" />
-                <property name="Icon" value="../images/application_form_add.png" />
+                <property name="Icon" value="application_form_add.png" />
             </properties>
             <eventhandlers />
         </child>
@@ -48,7 +48,7 @@
                 <property name="Border" value="false" />
                 <property name="Visible" value="true" />
                 <property name="Default" value="false" />
-                <property name="Icon" value="../images/application_form_delete.png" />
+                <property name="Icon" value="application_form_delete.png" />
             </properties>
             <eventhandlers />
         </child>

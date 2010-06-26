@@ -22,8 +22,12 @@
 
 #include <string>
 #include <vector>
-#include "../script/scriptdefines.h"
+
+#include "script/scriptdefines.h"
+
 #include "guiwindow.h"
+
+#include "designer/designerfocuslistener.h" 
 
 class GuiDesignWnd;
 class GuiEventHandlerDlg;
@@ -130,10 +134,10 @@ private:
    GuiDialog*           _pprojectWorkspace;
    GuiDialog*           _ppropertyDlg;
    GuiDialog*           _peventhandlerdlg;
-   //GuiEventHandlerDlg*  _peventhandlerdlg;
    GuiMenu*             _pdesignerPopup;
    GuiMenu*             _pwindowPopup;
    GuiPopupDecorator*   _popupMenu;
+   DesignerFocusListener mFocusListener;
 };
 
 #ifdef JENGINE_INLINE

@@ -58,11 +58,13 @@ void GuiFont::initialize (const char* name, int size)
 	   return;
 	}
 
-	FT_Set_Char_Size(mFace, size << 6, size << 6, 96, 96);
+	FT_Set_Char_Size(mFace, 0, size << 6, 72, 72);
 
-   averageWidth = 10;
-   maxWidth     = 10;
-   height       = size;
+   Vector textsize = getTextSize("W");
+   
+   averageWidth = textsize.x;
+   maxWidth     = textsize.x;
+   height       = mFace->height / 64;
    baseHeight   = 10;
 }
 
@@ -113,7 +115,6 @@ void GuiFont::drawGlyph(char ch) const
 
    FT_Glyph glyph;
    error = FT_Get_Glyph(slot, &glyph);
-
    error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_MONO, NULL, true);
    if ( error != 0 )
    {

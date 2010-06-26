@@ -93,7 +93,7 @@
                 <property name="Border" value="false" />
                 <property name="Visible" value="true" />
                 <property name="Default" value="false" />
-                <property name="Icon" value="../images/go-up.png" />
+                <property name="Icon" value="go-up.png" />
             </properties>
             <eventhandlers>
                 <eventhandler name="onClick">
@@ -110,7 +110,7 @@
                 <property name="Border" value="false" />
                 <property name="Visible" value="true" />
                 <property name="Default" value="false" />
-                <property name="Icon" value="../images/go-down.png" />
+                <property name="Icon" value="go-down.png" />
             </properties>
             <eventhandlers />
         </child>

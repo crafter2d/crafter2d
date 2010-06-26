@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,48 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "designerfocuslistener.h"
 
-#include "guilistboxitem.h"
-#ifndef JENGINE_INLINE
-#  include "guilistboxitem.inl"
-#endif
+#include "gui/guidesigner.h"
+#include "gui/guidesignwnd.h"
+#include "gui/guidesignmenu.h"
 
-#include "gui/headercontrol/guiheadercontrol.h"
-#include "gui/headercontrol/guiheadercolumn.h"
-
-#include "guigraphics.h"
-#include "guilistbox.h"
-#include "guilistboxsubitem.h"
-#include "guitextblock.h"
-
-
-GuiListBoxItem::GuiListBoxItem(const GuiListBox* own, const std::string& str):
-   _box(own),
-   _items(),
-   _data(0),
-   _selected(false)
+DesignerFocusListener::DesignerFocusListener(GuiDesigner& designer):
+   GuiFocusListener(),
+   mDesigner(designer)
 {
-   _items.push_back(new GuiListBoxSubItem(*this, str));
 }
 
-void GuiListBoxItem::resize(int newsize)
+void DesignerFocusListener::onFocusChanged(GuiWnd& newFocus, GuiWnd* poldFocus)
 {
-   if ( newsize > count() )
+   GuiWnd* pwindow = dynamic_cast<GuiDesignWnd*>(&newFocus);
+   if ( pwindow == NULL )
    {
-      for (int i = count(); i < newsize; ++i)
+      pwindow = dynamic_cast<GuiDesignWnd*>(newFocus.getBoundaryParent());
+
+      if ( pwindow == NULL )
       {
-         _items.push_back(new GuiListBoxSubItem(*this));
+         pwindow = dynamic_cast<GuiDesignMenu*>(&newFocus);
       }
    }
-}
 
-void GuiListBoxItem::paint(const GuiPoint& pos, const GuiGraphics& graphics)
-{
-   GuiPoint p(pos);
-   const GuiHeaderCtrl& header = listbox().header();
-   for (int i=0; i < count(); ++i)
+   if ( pwindow != NULL )
    {
-      _items[i]->paint(i, p, graphics);
-      p.x += header[i].width();
+      mDesigner.focusChanged(*pwindow);
    }
 }

@@ -43,6 +43,7 @@
 #include "guipopupdecorator.h"
 #include "guimanager.h"
 #include "guiclipper.h"
+#include "guifocus.h"
 
 //DEFINE_CONSTRUCTOR(GuiDesigner)
 //
@@ -84,7 +85,7 @@ GuiControl* GuiDesigner::createControl(int controlid, int id, const GuiPoint& lo
 
 GuiRegisteredControl* GuiDesigner::findControl(int id)
 {
-   for ( int index = 0; index < registeredControls().size(); ++index )
+   for ( GuiRegisteredControls::size_type index = 0; index < registeredControls().size(); ++index )
    {
       GuiRegisteredControl& control = registeredControls()[index];
       if ( control._id == id )
@@ -131,7 +132,8 @@ GuiDesigner::GuiDesigner():
    _peventhandlerdlg(NULL),
    _pdesignerPopup(NULL),
    _pwindowPopup(NULL),
-   _popupMenu(NULL)
+   _popupMenu(NULL),
+   mFocusListener(*this)
 {
 }
 
@@ -153,6 +155,8 @@ void GuiDesigner::onCreate(const GuiRect& rect, const char* caption, GuiStyle st
    createPropertyWnd();
    createEventHandlerWnd();
    createWindow();
+
+   GuiFocus::getInstance().addListener(mFocusListener);
 }
 
 void GuiDesigner::createDesignerPopup()
@@ -296,29 +300,16 @@ void GuiDesigner::focusChanged(GuiWnd& wnd)
    ppropertylist->Properties(wnd.getProperties());
    ppropertylist->window(&wnd);
 
-   GuiWnd* pwindow = dynamic_cast<GuiDesignWnd*>(&wnd);
-   if ( pwindow == NULL )
-   {
-      pwindow = dynamic_cast<GuiDesignWnd*>(wnd.getBoundaryParent());
-
-      if ( pwindow == NULL )
-      {
-         pwindow = dynamic_cast<GuiDesignMenu*>(&wnd);
-      }
-   }
-
-   ASSERT_PTR(pwindow);
-
    {
       // move the window to the front
-      GuiList::Iterator it = childs.find(pwindow);
+      GuiList::Iterator it = childs.find(&wnd);
       childs.removeAt(it);
 
       it = childs.begin();
       while ( it.valid() && (*it)->isTopmost() )
          ++it;
 
-      childs.insert(it, pwindow);
+      childs.insert(it, &wnd);
    }
 
    Script& script = ScriptManager::getInstance().getTemporaryScript();
