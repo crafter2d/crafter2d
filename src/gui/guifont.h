@@ -50,6 +50,8 @@ public:
 private:
    void     drawGlyph(char ch) const;
 
+   FT_BBox  measure(char c);
+
    FT_Face  mFace;
 	GLuint   base;
 	GLuint*  mTextures;

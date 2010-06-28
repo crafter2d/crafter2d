@@ -95,8 +95,8 @@ void GuiButton::onResize(int width, int height)
    // calculate the position for the text
    const GuiRect& rect = getWindowRect();
    int len = getCaption().length();
-   int x   = rect.left() + (width / 2);
-   int y   = rect.top() + (height / 2);
+   float x   = rect.left() + ((float)width / 2);
+   float y   = rect.top() + ((float)height / 2);
 
    if ( len == 0 )
    {
@@ -107,7 +107,7 @@ void GuiButton::onResize(int width, int height)
       Vector size = font->getTextSize(getCaption());
       mTextPos.x = x - (size.x / 2);
       mTextPos.y = y + (size.y / 2);
-
+      
       mIconRect.set(mTextPos.x - 20, mTextPos.x - 4, y - 8, y + 8);
    }
 }

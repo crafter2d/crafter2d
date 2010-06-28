@@ -161,7 +161,7 @@ bool Game::create()
    manager.initialize();
 
    GuiFont* font = new GuiFont ();
-   font->initialize ("amersn.ttf", 8);
+   font->initialize ("amersn.ttf", 10);
 
    manager.setDefaultFont (font);
    manager.setDefaultTextColor(mSettings.getTextColor());

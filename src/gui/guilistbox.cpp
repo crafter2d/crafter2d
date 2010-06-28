@@ -327,16 +327,17 @@ int GuiListBox::onLButtonUp (const GuiPoint& point, int flags)
       if ( !lines.empty() )
       {
          int item = calculateItemUnderCursor(point);
+
+         if ( isEditing() && item != getCurSel() )
+         {
+            if ( editType(getCurSel()) == EEditBox )
+               onEditLostFocus();
+            else
+               onComboLostFocus();
+         }
+
          if ( item != -1 )
          {
-            if ( isEditing() && item != getCurSel() )
-            {
-               if ( editType(item) == EEditBox )
-                  onEditLostFocus();
-               else
-                  onComboLostFocus();
-            }
-
             setCurSel(item);
             selectColumn(item, point.x);
 

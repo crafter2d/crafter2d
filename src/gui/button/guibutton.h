@@ -74,7 +74,7 @@ protected:
    STR_PROPERTY(Icon)
 
 private:
-   GuiPoint            mTextPos;
+   Vector              mTextPos;
    ButtonMouseListener mMouseListener;
    TexturePtr          mIcon;
    GuiRect             mIconRect;

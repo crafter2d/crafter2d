@@ -30,10 +30,10 @@ class GuiFont;
 class GuiText{
 public:
    static bool init ();
-   static void printf (const GuiFont& font, int x, int y, const char* line, ...);
-   static void printfn (const GuiFont& font, int x, int y, const char* line, int length);
+   static void printf (const GuiFont& font, float x, float y, const char* line, ...);
+   static void printfn (const GuiFont& font, float x, float y, const char* line, int length);
 
-   static void printfn(const GuiFont& font, int x, int y, const std::string& str);
+   static void printfn(const GuiFont& font, float x, float y, const std::string& str);
 };
 
 #endif

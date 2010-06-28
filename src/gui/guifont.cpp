@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <GL/glu.h>
 
 #include FT_GLYPH_H
 
@@ -58,14 +59,35 @@ void GuiFont::initialize (const char* name, int size)
 	   return;
 	}
 
+   if ( mFace->charmap == 0 && mFace->num_charmaps > 0 )
+      FT_Select_Charmap(mFace, mFace->charmaps[0]->encoding );
+ 
 	FT_Set_Char_Size(mFace, 0, size << 6, 72, 72);
 
-   Vector textsize = getTextSize("W");
+   if ( !FT_IS_SCALABLE(mFace) )
+   {
+      FT_BBox textsize1 = measure('W');
+      FT_BBox textsize2 = measure('M');
+      FT_BBox textsize3 = measure('g');
+
+      int max = textsize1.yMax > textsize2.yMax ? textsize1.yMax : textsize2.yMax;
+      
+      averageWidth = textsize1.xMax / 64;
+      maxWidth     = textsize1.xMax / 64;
+      height       = (max - textsize3.yMin) / 64;
+      baseHeight   = height + (textsize3.yMin / 64);
+   }
+   else
+   {
+      FT_Size_Metrics& metrics = mFace->size->metrics;
+
+      averageWidth = metrics.max_advance / 64;
+      maxWidth     = metrics.max_advance / 64;
+      height       = metrics.height / 64;
+      baseHeight   = height + (metrics.descender / 64);
+   }
    
-   averageWidth = textsize.x;
-   maxWidth     = textsize.x;
-   height       = mFace->height / 64;
-   baseHeight   = 10;
+   
 }
 
 void GuiFont::draw(const std::string& text) const
@@ -149,33 +171,21 @@ void GuiFont::destroy()
 Vector GuiFont::getTextSize(const std::string& text)
 {
    FT_BBox bbox;
-   int error = 0;
-   int posx  = 0;
-   int posy  = 0;
-
-   bbox.xMin = bbox.yMin = 32000;
-   bbox.xMax = bbox.yMax = -32000;
+   bbox.xMin = bbox.yMin = 0;
+   bbox.xMax = bbox.yMax = 0;
 
    for ( std::string::size_type index = 0; index < text.length(); ++index )
    {
-      int glyph_index = FT_Get_Char_Index(mFace, text[index]);
+      FT_BBox glyph_bbox = measure(text[index]);
 
-      error = FT_Load_Glyph(mFace, glyph_index, FT_LOAD_DEFAULT );
-      if ( error )
-         break;
-
-      FT_Glyph glyph;
-      error = FT_Get_Glyph(mFace->glyph, &glyph );
-      if ( error )
-         break;
-
-      FT_BBox glyph_bbox;
-      FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_PIXELS, &glyph_bbox);
-
-      glyph_bbox.xMin += posx;
-      glyph_bbox.xMax += posx;
-      glyph_bbox.yMin += posy;
-      glyph_bbox.yMax += posy;
+      FT_Vector advance = mFace->glyph->advance;
+      if (  index > 0 )
+      {
+         bbox.xMin += advance.x;
+         bbox.xMax += advance.x;
+         bbox.yMin += advance.y;
+         bbox.yMax += advance.y;
+      }
 
       if ( glyph_bbox.xMin < bbox.xMin )
          bbox.xMin = glyph_bbox.xMin;
@@ -185,9 +195,35 @@ Vector GuiFont::getTextSize(const std::string& text)
          bbox.xMax = glyph_bbox.xMax;
       if ( glyph_bbox.yMax > bbox.yMax )
          bbox.yMax = glyph_bbox.yMax;
-
-      posx += mFace->glyph->advance.x >> 6;
    }
 
-   return Vector(bbox.xMax - bbox.xMin, bbox.yMax - bbox.yMin);
+   return Vector((bbox.xMax - bbox.xMin) / 64, (bbox.yMax - bbox.yMin) / 64);
+}
+
+FT_BBox GuiFont::measure(char c)
+{
+   FT_BBox bbox;
+
+   bbox.xMin = bbox.yMin = bbox.xMax = bbox.yMax = 0;
+
+   // For starters, just get the unscaled glyph bounding box
+ 
+   FT_UInt glyph_index = FT_Get_Char_Index(mFace, c );
+   if ( glyph_index == 0 ) 
+      return bbox;
+
+   FT_Error error = FT_Load_Glyph(mFace, glyph_index, FT_LOAD_DEFAULT);
+ 
+   if ( error != 0 )
+      return bbox;
+ 
+   FT_Glyph glyph;
+   error = FT_Get_Glyph(mFace->glyph, &glyph );
+   if ( error != 0 )
+      return bbox;
+
+   FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_GRIDFIT, &bbox );
+   FT_Done_Glyph( glyph );
+ 
+   return bbox;
 }

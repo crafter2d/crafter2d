@@ -24,7 +24,7 @@
 
 #include "guifont.h"
 
-void GuiText::printf (const GuiFont& font, int x, int y, const char* line, ...)
+void GuiText::printf (const GuiFont& font, float x, float y, const char* line, ...)
 {
 	char text[256];
 	va_list ap;
@@ -36,19 +36,19 @@ void GuiText::printf (const GuiFont& font, int x, int y, const char* line, ...)
 	vsprintf (text, line, ap);
 	va_end (ap);
 
-	glRasterPos2i (x, y);
+	glRasterPos2i(x, y);
 
 	font.draw(text);
 }
 
-void GuiText::printfn (const GuiFont& font, int x, int y, const char* line, int length)
+void GuiText::printfn (const GuiFont& font, float x, float y, const char* line, int length)
 {
 	glRasterPos2i (x, y);
 
 	font.draw(line, length);
 }
 
-void GuiText::printfn(const GuiFont& font, int x, int y, const std::string& str)
+void GuiText::printfn(const GuiFont& font, float x, float y, const std::string& str)
 {
    printfn(font, x, y, str.c_str(), str.length());
 }
