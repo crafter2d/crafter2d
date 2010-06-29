@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#ifndef DESIGNER_MOUSE_MOTION_LISTENER
+#define DESIGNER_MOUSE_MOTION_LISTENER
 
-const GuiControl& GuiDesignDecorator::control() const
+#include "gui/input/mousemotionlistener.h"
+
+class GuiDesignWnd;
+
+class DesignWndMouseMotionListener : public MouseMotionListener
 {
-   ASSERT_PTR(MPControl)
-   return *MPControl;
-}
+public:
+   DesignWndMouseMotionListener(GuiDesignWnd& designwnd);
 
-GuiControl& GuiDesignDecorator::control()
-{
-   return const_cast<GuiControl&>(me().control());
-}
+   virtual void onMouseMotion(const MouseEvent& event);
 
-INLINE GuiDesignSelection& GuiDesignDecorator::selectionCtrl()
-{
-   ASSERT_PTR(_selectionCtrl)
-   return *_selectionCtrl;
-}
+private:
+   GuiDesignWnd& mDesignWnd;
+};
 
-//////////////////////////////////////////////////////////////////////////
-// - Self
-//////////////////////////////////////////////////////////////////////////
-
-INLINE const GuiDesignDecorator& GuiDesignDecorator::me()
-{
-   return static_cast<const GuiDesignDecorator&>(*this);
-}
+#endif

@@ -17,16 +17,16 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "guiclipper.h"
-#include "guigraphics.h"
-#include "guicontrol.h"
-
 #include "guiwindow.h"
 #ifndef JENGINE_INLINE
 #  include "guiwindow.inl"
 #endif
 
 #include "../game.h"
+
+#include "guiclipper.h"
+#include "guigraphics.h"
+#include "guicontrol.h"
 
 GuiWindow::GuiWindow():
    GuiWnd()

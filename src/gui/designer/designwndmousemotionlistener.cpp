@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
 
-const GuiControl& GuiDesignDecorator::control() const
+#include "designwndmousemotionlistener.h"
+
+#include "gui/input/mouseevent.h"
+
+#include "gui/guidesignwnd.h"
+
+DesignWndMouseMotionListener::DesignWndMouseMotionListener(GuiDesignWnd& designwnd):
+   MouseMotionListener(),
+   mDesignWnd(designwnd)
 {
-   ASSERT_PTR(MPControl)
-   return *MPControl;
 }
 
-GuiControl& GuiDesignDecorator::control()
+void DesignWndMouseMotionListener::onMouseMotion(const MouseEvent& event)
 {
-   return const_cast<GuiControl&>(me().control());
-}
-
-INLINE GuiDesignSelection& GuiDesignDecorator::selectionCtrl()
-{
-   ASSERT_PTR(_selectionCtrl)
-   return *_selectionCtrl;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Self
-//////////////////////////////////////////////////////////////////////////
-
-INLINE const GuiDesignDecorator& GuiDesignDecorator::me()
-{
-   return static_cast<const GuiDesignDecorator&>(*this);
+   if ( event.isLeftButtonDown() )
+   {
+      mDesignWnd.onMouseMove(event.getLocation(), event.getRelative(), event.getModifiers());
+   }
 }

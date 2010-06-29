@@ -42,6 +42,7 @@ GuiDesignWnd::GuiDesignWnd():
    GuiDialog(),
    _pselectionctrl(NULL),
    _popupMenu(NULL),
+   mMotionListener(*this),
    _functions(),
    _filename(),
    _selected(false)
@@ -68,6 +69,8 @@ void GuiDesignWnd::onCreate(const GuiRect& rect, const char* caption, GuiStyle s
    _pselectionctrl = new GuiDesignSelection();
    _pselectionctrl->create(0, selrect, "", 0, this);
    _pselectionctrl->setVisible(false);
+
+   addMouseMotionListener(mMotionListener);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -122,7 +125,7 @@ bool GuiDesignWnd::onContextMenu(const GuiPoint& point)
 
 void GuiDesignWnd::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag)
 {
-   if ( flag & GuiLButton )
+   //if ( IS_SET(flag, GuiLButton) )
    {
       GuiDialog::onMouseMove(point, rel, flag);
 

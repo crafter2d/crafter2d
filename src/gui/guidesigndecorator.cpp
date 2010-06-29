@@ -17,8 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "guidesignselection.h"
-
 #include "guidesigndecorator.h"
 #ifndef JENGINE_INLINE
 #  include "guidesigndecorator.inl"
@@ -26,7 +24,10 @@
 
 #include "../game.h"
 
+#include "input/mouseevent.h"
+
 #include "guidesigner.h"
+#include "guidesignselection.h"
 #include "guidesignwnd.h"
 #include "guiwindow.h"
 #include "guimanager.h"
@@ -76,6 +77,11 @@ void GuiDesignDecorator::control(GuiControl* pcontrol)
    _selectionCtrl->setWindowRect(newrect);
 }
 
+INLINE bool GuiDesignDecorator::selected() const
+{
+   return _selectionCtrl->getVisible();
+}
+
 //////////////////////////////////////////////////////////////////////////
 // - Painting interface
 //////////////////////////////////////////////////////////////////////////
@@ -98,7 +104,7 @@ int GuiDesignDecorator::onLButtonDown (const GuiPoint& point, int flags)
 
    bool hasSelection = selectionCtrl().getVisible();
 
-   if ( !IS_SET(flags,GuiCtrl) )
+   if ( !IS_SET(flags, MouseEvent::eCtrl) )
    {
       dynamic_cast<GuiDesignWnd*>(getParent())->unselectAll();
       Game::getInstance().getCanvas().getDesigner().focusChanged(control());

@@ -25,6 +25,8 @@
 
 #include "gui/guidialog/guidialog.h"
 
+#include "designer/designwndmousemotionlistener.h"
+
 class GuiDesignDecorator;
 class GuiPopupDecorator;
 class GuiDesignSelection;
@@ -79,6 +81,7 @@ private:
 
    GuiDesignSelection*  _pselectionctrl;
    GuiPopupDecorator*   _popupMenu;
+   DesignWndMouseMotionListener mMotionListener;
    Functions            _functions;
    std::string          _filename;
    bool                 _selected;

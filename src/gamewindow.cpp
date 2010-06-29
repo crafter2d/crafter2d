@@ -198,6 +198,7 @@ void GameWindow::removeListener(GameWindowListener& listener)
 void GameWindow::handleEvents()
 {
    SDL_Event event;
+   SDL_PumpEvents();
    while (SDL_PollEvent (&event))
    {
       switch (event.type)

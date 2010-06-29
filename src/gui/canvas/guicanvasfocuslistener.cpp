@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "guicanvasfocuslistener.h"
 
+#include "guicanvas.h"
+
 GuiCanvasFocusListener::GuiCanvasFocusListener(GuiCanvas& canvas):
    mCanvas(canvas)
 {
@@ -34,4 +36,5 @@ GuiCanvasFocusListener::~GuiCanvasFocusListener()
 
 void GuiCanvasFocusListener::onFocusChanged(GuiWnd& newFocus, GuiWnd* poldFocus)
 {
+   mCanvas.notifyFocusChanged(newFocus, poldFocus);
 }
