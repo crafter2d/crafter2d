@@ -57,12 +57,12 @@ JoinEvent::JoinEvent(int i, const std::string& name):
 void JoinEvent::pack(BitStream& stream) const
 {
    NetEvent::pack(stream);
-   stream << id << playerName.c_str();
+   stream << id << playerName;
 }
 
 void JoinEvent::unpack(BitStream& stream)
 {
-   char name[256];
+   std::string name;
 
    NetEvent::unpack(stream);
    stream >> id >> name;

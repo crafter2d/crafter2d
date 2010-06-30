@@ -44,15 +44,14 @@ void NewObjectEvent::pack(BitStream& stream) const
 {
    NetEvent::pack(stream);
    
-   stream << _parent.c_str() << (NetObject*)_pobject << _pobject->getFilename().c_str();
+   stream << _parent << (NetObject*)_pobject << _pobject->getFilename();
 }
 
 void NewObjectEvent::unpack(BitStream& stream)
 {
    NetEvent::unpack(stream);
    
-   char parent[256] = {0};
-   char filename[256] = {0};
+   std::string parent, filename;
    
    stream >> parent >> (NetObject**)&_pobject >> filename;
    

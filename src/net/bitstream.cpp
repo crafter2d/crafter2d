@@ -115,17 +115,6 @@ BitStream& BitStream::operator<<(const Vector& v)
    return *this;
 }
 
-BitStream& BitStream::operator<<(const char* s)
-{
-   int len = strlen(s);
-   ensureFits(len);
-
-   *this << len;
-   memcpy(&buf[size], s, len);
-   size += len;
-   return *this;
-}
-
 BitStream& BitStream::operator<<(float f)
 {
    int len = sizeof(float);
@@ -176,7 +165,13 @@ BitStream& BitStream::operator<<(char c)
 
 BitStream& BitStream::operator<<(const std::string& text)
 {
-   return operator<<(text.c_str());
+   int len = text.length();
+   ensureFits(len);
+
+   *this << len;
+   memcpy(&buf[size], text.c_str(), len);
+   size += len;
+   return *this;
 }
 
 BitStream& BitStream::operator<<(const NetObject* obj)
@@ -223,16 +218,6 @@ BitStream& BitStream::operator>>(Uint32& i)
 {
    memcpy (&i, &buf[pos], sizeof(Uint32));
    pos += sizeof(Uint32);
-   return *this;
-}
-
-BitStream& BitStream::operator>>(char* s)
-{
-   int len;
-   *this >> len;
-   memcpy (s, &buf[pos], len);
-   s[len] = 0;
-   pos += len;
    return *this;
 }
 

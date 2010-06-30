@@ -65,6 +65,7 @@ if ( OS == "windows" ) then
                             libdir .. "/glslang/include",
                             libdir .. "/freetype2/include",
                             libdir .. "/devil/include",
+							libdir .. "/box2d/include",
                             "../src" }
 
    package.libpaths = { libdir .. "/sdl/lib",
@@ -80,14 +81,15 @@ if ( OS == "windows" ) then
                         libdir .. "/tolua++/lib",
                         libdir .. "/glslang/lib",
                         libdir .. "/freetype2/lib",
-                        libdir .. "/devil/lib" }
+                        libdir .. "/devil/lib",
+						libdir .. "/box2d/lib" }
 
    -- set the ignoring libs for studio
    package.ignorelinks = { "LIBC.lib", "msvcrt.lib" }
 
    -- set the libraries to link against
    package.links = { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32",
-                     "OpenAL32", "ALut", "GLee", "cg", "cgGL", "lua5.1", "tolua++", "devil", "ilu"  }
+                     "OpenAL32", "ALut", "GLee", "cg", "cgGL", "lua5.1", "tolua++", "devil", "ilu", "box2d"  }
 
    -- set IDE specific settings
    if ( target == "cb-gcc" ) then
@@ -122,7 +124,7 @@ elseif ( OS == "linux" ) then
    package.includepaths = { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
    package.links = { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL",
                      "lua", "tolua++-5.1", "openal", "alut",
-                     "png", "vorbisfile", "tinyxml", "minizip", "freetype" }
+                     "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d" }
 
    -- set the pre-build event
    package.prebuildcommands = {

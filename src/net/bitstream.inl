@@ -55,11 +55,11 @@ INLINE bool BitStream::end() const
    return (pos >= size);
 }
 
-INLINE char* BitStream::readString()
+INLINE std::string BitStream::readString()
 { 
-   char buf[256]; 
-   *this >> buf;
-   return strdup(buf); 
+  std::string str;
+   *this >> str;
+   return str; 
 }
 
 INLINE int BitStream::readInt()
@@ -78,12 +78,7 @@ INLINE bool BitStream::readBool()
 
 INLINE void BitStream::writeString(const std::string& s)
 {
-   *this << s.c_str();
-}
-
-INLINE void BitStream::writeString(const char* string)
-{
-   *this << string;
+   *this << s;
 }
 
 INLINE void BitStream::writeInt(int i)

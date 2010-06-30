@@ -211,15 +211,12 @@ BitStream& operator>>(BitStream& in, Layer& layer)
 {
    Vector dimensions, scroll;
 
-   char* pname = in.readString();
-   char* peffect = in.readString();
+   std::string name = in.readString();
+   std::string effect = in.readString();
 
    in >> dimensions;
 
-   layer.create(pname, dimensions.x, dimensions.y, peffect);
-
-   free(pname);
-   free(peffect);
+   layer.create(name, dimensions.x, dimensions.y, effect);
 
    for ( int y = 0; y < dimensions.y; ++y )
    {

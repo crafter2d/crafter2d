@@ -38,12 +38,11 @@ class BitStream
 
    void clear();
 
-   char* readString();
+   std::string readString();
    int readInt();
    bool readBool();
 
    void writeInt(int i);
-   void writeString(const char* s);
    void writeString(const std::string& s);
    void writeBool(bool b);
 };

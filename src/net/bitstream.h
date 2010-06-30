@@ -51,19 +51,17 @@ public:
    int         getLen() const;
    bool        end() const;
 
-   char*       readString();
+   std::string readString();
    int         readInt();
    bool        readBool();
    void        readRaw(char* data, int amount);
 
    void        writeString(const std::string& s);
-   void        writeString(const char* string);
    void        writeInt(int i);
    void        writeBool(bool b);
    void        writeRaw(const char* data, int size);
 
    BitStream&  operator<<(const Vector& v);
-   BitStream&  operator<<(const char* s);
    BitStream&  operator<<(float f);
    BitStream&  operator<<(int i);
    BitStream&  operator<<(Uint32 i);
@@ -74,7 +72,6 @@ public:
    BitStream&  operator<<(const BitStream* stream);
 
    BitStream&  operator>>(Vector& v);
-   BitStream&  operator>>(char* s);
    BitStream&  operator>>(float& f);
    BitStream&  operator>>(int& i);
    BitStream&  operator>>(Uint32& i);
