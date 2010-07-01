@@ -55,10 +55,10 @@
                     <code>if editor:isBoundMode() then&#x0A; editor:selectBound(point)&#x0A;end&#x0A;</code>
                 </eventhandler>
                 <eventhandler name="onClick">
-                    <code>if editor:getMode() == EDIT_MODE_TILE then&#x0A; -- tile edit mode&#x0A; local layerpoint = te_edit:PointToTile(point)&#x0A; if te_world ~= nil and te_world:getLayerCount() &gt; 0 then&#x0A; local layer = te_world:getLayer(0)&#x0A; if layer ~= nil then&#x0A;  if GuiCanvas:isShift() then&#x0A;   layer:setTile(layerpoint.x, layerpoint.y, 0)&#x0A;  else&#x0A;   layer:setTile(layerpoint.x, layerpoint.y, te_selection+1)&#x0A;  end&#x0A; end&#x0A; end&#x0A;elseif editor:getMode() == EDIT_MODE_BOUND then&#x0A; -- bound edit mode&#x0A; if GuiCanvas:isCtrl() then&#x0A; editor:addBound(point)&#x0A; else&#x0A; editor:selectBound(point)&#x0A; end&#x0A;else&#x0A; -- object mode&#x0A; local object = editor:pickObject(point)&#x0A; if object ~= nil then&#x0A; Object_edit(object)&#x0A; else&#x0A; console:print(&quot;could not find entity&quot;)&#x0A; end&#x0A;end</code>
+                    <code>if editor:getMode() == EDIT_MODE_TILE then&#x0A; -- tile edit mode&#x0A; TE_setTile(point)&#x0A;elseif editor:getMode() == EDIT_MODE_BOUND then&#x0A; -- bound edit mode&#x0A; if GuiCanvas:isCtrl() then&#x0A; editor:addBound(point)&#x0A; else&#x0A; editor:selectBound(point)&#x0A; end&#x0A;else&#x0A; -- object mode&#x0A; local object = editor:pickObject(point)&#x0A; if object ~= nil then&#x0A; Object_edit(object)&#x0A; else&#x0A; console:print(&quot;could not find entity&quot;)&#x0A; end&#x0A;end</code>
                 </eventhandler>
                 <eventhandler name="onMouseMove">
-                    <code>if pressed and editor:getMode() == EDIT_MODE_BOUND then&#x0A; editor:moveBound(relative)&#x0A;end</code>
+                    <code>if pressed then&#x0A; if editor:getMode() == EDIT_MODE_TILE then&#x0A; TE_setTile(point)&#x0A; elseif editor:getMode() == EDIT_MODE_BOUND then&#x0A;  editor:moveBound(relative)&#x0A; end&#x0A;end</code>
                 </eventhandler>
                 <eventhandler name="onKeyPress">
                     <code>if key == SDLK_DELETE and te_editbound ~= nil then&#x0A; te_world:removeBound(te_editbound)&#x0A;&#x0A; te_editbound = nil&#x0A; te_editboundpoint = -1&#x0A;end</code>
@@ -115,4 +115,21 @@
             <eventhandlers />
         </child>
     </children>
+<functions>
+    <function>
+	function TE_setTile(point)&#x0A;
+		local layerpoint = te_edit:PointToTile(point)&#x0A;
+    	if te_world ~= nil and te_world:getLayerCount() &gt; 0 then&#x0A;
+			local layer = te_world:getLayer(0)&#x0A;
+			if layer ~= nil then&#x0A; 
+				if GuiCanvas:isShift() then&#x0A;
+					layer:setTile(layerpoint.x, layerpoint.y, 0)&#x0A;
+				else&#x0A;
+					layer:setTile(layerpoint.x, layerpoint.y, te_selection+1)&#x0A;
+				end&#x0A;
+			end&#x0A;
+		end&#x0A;
+	end
+    </function>
+</functions>
 </dialog>

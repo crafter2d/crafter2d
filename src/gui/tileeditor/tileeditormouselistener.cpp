@@ -39,7 +39,7 @@ TileEditorMouseListener::TileEditorMouseListener(GuiTileEditor& tileeditor):
    
 void TileEditorMouseListener::onMouseButton(const MouseEvent& event)
 {
-   if ( IS_SET(event.getButtons(), MouseEvent::eLeft) )
+   if ( event.isLeftButtonDown() )
    {
       GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseDownEvent);
       if ( phandler != NULL )
@@ -59,17 +59,20 @@ void TileEditorMouseListener::onMouseButton(const MouseEvent& event)
 
 void TileEditorMouseListener::onMouseClick(const MouseEvent& event)
 {
-   GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseClickEvent);
-   if ( phandler != NULL )
+   if ( event.isLeftButtonDown() )
    {
-      GuiPoint point = event.getLocation();
-      mTileEditor.windowToClient(point);
+      GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseClickEvent);
+      if ( phandler != NULL )
+      {
+         GuiPoint point = event.getLocation();
+         mTileEditor.windowToClient(point);
 
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(this, "GuiTileEditor");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam((void*)&point, "GuiPoint");
-      script.run(1);
+         ScriptManager& mgr = ScriptManager::getInstance();
+         Script& script = mgr.getTemporaryScript();
+         script.setSelf(this, "GuiTileEditor");
+         script.prepareCall(phandler->getFunctionName().c_str());
+         script.addParam((void*)&point, "GuiPoint");
+         script.run(1);
+      }
    }
 }

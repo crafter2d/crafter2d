@@ -181,6 +181,7 @@ void GuiMenu::onFocusChanged(GuiWnd& newFocus, GuiWnd* poldFocus)
    {
       GuiControl::onKillFocus(&newFocus);
 
-      getParent()->sendMessage(getId(), GuiLostFocusEvent);
+      if ( hasParent() )
+         getParent()->sendMessage(getId(), GuiLostFocusEvent);
    }
 }

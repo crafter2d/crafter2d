@@ -34,6 +34,8 @@ public:
    int   y() const;
    void  y(int yvalue);
 
+   void offset(int dx, int dy);
+
 private:
    int mX;
    int mY;

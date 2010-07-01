@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,44 +17,51 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-#include "tileeditormousemotionlistener.h"
-
-#include "script.h"
-#include "scriptmanager.h"
-
-#include "gui/guitileeditor.h"
-#include "gui/guieventhandler.h"
-#include "gui/guieventhandlers.h"
+#include "guidialogmouselistener.h"
 
 #include "gui/input/mouseevent.h"
 
-TileEditorMouseMotionListener::TileEditorMouseMotionListener(GuiTileEditor& tileeditor):
-   MouseMotionListener(),
-   mTileEditor(tileeditor)
+#include "guidialog.h"
+
+GuiDialogMouseListener::GuiDialogMouseListener(GuiDialog& dialog):
+   MouseListener(),
+   mDialog(dialog)
 {
 }
 
 // notifications
 
-void TileEditorMouseMotionListener::onMouseMotion(const MouseEvent& event)
+void GuiDialogMouseListener::onMouseButton(const MouseEvent& event)
 {
-   GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseMoveEvent);
-   if ( phandler != NULL )
+   if ( event.isLeftButtonDown() )
    {
-      GuiPoint location = event.getLocation();
-      GuiPoint relative = event.getRelative();
-      bool pressed      = event.isLeftButtonDown();
+      Point location = event.getLocation();
+      mDialog.windowToClient(location);
 
-      mTileEditor.windowToClient(location);
+      switch ( event.getEventType() )
+      { 
+      case MouseEvent::ePressed:
+         if ( mDialog.isAboveTitleBar(location) && !mDialog.isAboveCloseButton(location) )
+         {
+            mDialog.setDragging(true);
+         }
+         break;
+      case MouseEvent::eReleased:
+         mDialog.setDragging(false);
+         break;
+      default:
+         break;
+      }
+   }
+}
 
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(&mTileEditor, "GuiTileEditor");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam((void*)&location, "GuiPoint");
-      script.addParam((void*)&relative, "GuiPoint");
-      script.addParam(pressed);
-      script.run(3);
+void GuiDialogMouseListener::onMouseClick(const MouseEvent& event)
+{
+   Point point = event.getLocation();
+   mDialog.windowToClient(point);
+
+   if ( event.isLeftButtonDown() && mDialog.isAboveCloseButton(point) )
+   {
+      mDialog.close(false);
    }
 }

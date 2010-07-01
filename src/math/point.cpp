@@ -37,3 +37,9 @@ Point::Point(int x, int y):
    mY(y)
 {
 }
+
+void Point::offset(int dx, int dy)
+{
+   mX += dx;
+   mY += dy;
+}

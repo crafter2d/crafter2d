@@ -257,6 +257,10 @@ bool GuiDesigner::onContextMenu(const GuiPoint& point)
 
       getDesignerPopup().setParent(_popupMenu);
    }
+   else
+   {
+      _popupMenu->setWindowPos(point.x, point.y);
+   }
 
    _popupMenu->popup();
 

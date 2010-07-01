@@ -47,10 +47,11 @@ GuiStatic::GuiStatic():
 }
 
 GuiStatic::GuiStatic(int id, const GuiRect& rect, const char* caption, int style, GuiWnd* parent):
+   
    maxLines(-1),
    maxChars(0)
 {
-   //create(id, rect, caption, style, parent);
+   create(id, rect, caption, style, parent);
 }
 
 void GuiStatic::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)

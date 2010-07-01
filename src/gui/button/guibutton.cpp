@@ -140,7 +140,7 @@ void GuiButton::paint(Uint32 tick, const GuiGraphics& graphics)
 
          if ( isHoovering() )
          {
-            GuiRect rect(m_frameRect.left()+2, m_frameRect.right()-2, m_frameRect.top()+2, m_frameRect.bottom()-2);
+            GuiRect rect(m_frameRect.left()+3, m_frameRect.right()-2, m_frameRect.top()+2, m_frameRect.bottom()-3);
             graphics.setColor(GuiColor(213, 150, 2));
             graphics.drawWireRect(rect);
          }

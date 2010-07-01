@@ -38,6 +38,7 @@ GuiPopupDecorator::GuiPopupDecorator(GuiWnd& popup):
    _powner(NULL),
    _owning(false)
 {
+//   popup.setParent(this);
 }
 
 GuiPopupDecorator::~GuiPopupDecorator()
@@ -83,6 +84,7 @@ void GuiPopupDecorator::popup()
 {
    Game::getInstance().getCanvas().pushWindow(this);
 
+   getPopup().setParent(this);
    getPopup().setVisible(true);
    getPopup().setFocus();
 }
@@ -90,6 +92,7 @@ void GuiPopupDecorator::popup()
 void GuiPopupDecorator::hide()
 {
    getPopup().setVisible(false);
+   getPopup().setParent(NULL);
 
    Game::getInstance().getCanvas().popWindow(this);
 

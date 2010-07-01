@@ -25,6 +25,10 @@
 #include "../guiwindow.h"
 #include "../guiimagebutton.h"
 
+#include "guidialogkeylistener.h"
+#include "guidialogmouselistener.h"
+#include "guidialogmousemotionlistener.h"
+
 /*! @author Jeroen Broekhuizen
  
 @section guiDialog_intro Introduction
@@ -35,16 +39,26 @@ class GuiDialog : public GuiWindow
 public:
                   GuiDialog();
 
-   virtual void   onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag);
-   virtual int    onLButtonDown(const GuiPoint& point, int flags);
-   virtual int    onLButtonUp(const GuiPoint& point, int flags);
+ // query interface
+   bool isAboveTitleBar(const Point& point) const;
+   bool isAboveCloseButton(const Point& point) const;
 
+ // modal
    bool  isModal() const;
    int   doModal();
    void  endModal(int retValue);
 
 protected:
    friend class GuiDialogKeyListener;
+   friend class GuiDialogMouseListener;
+   friend class GuiDialogMouseMotionListener;
+
+ // get/set
+   bool isDragging() const;
+   void setDragging(bool dragging);
+
+   bool isHoveringCloseButton() const;
+   void setHoverCloseButton(bool hoover);
 
   // overloads
    virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
@@ -52,7 +66,6 @@ protected:
    virtual void   initializeEventHandlerDefinitions();
 
   // operations
-   bool           isAboveCloseButton(const GuiPoint& point) const;
    void           close(bool ok);
 
   // rendering
@@ -66,10 +79,15 @@ protected:
    TexturePtr  _tex;
    TexturePtr  _close;
    TexturePtr  _closepressed;
-   bool        _hoverClose;
+
+   GuiDialogKeyListener         mKeyListener;
+   GuiDialogMouseListener       mMouseListener;
+   GuiDialogMouseMotionListener mMouseMotionListener;
+
+   bool        mHoverClose;
    int         _modalResult;
    bool        _modal;
-   bool        _dragging;
+   bool        mDragging;
 };
 
 #endif

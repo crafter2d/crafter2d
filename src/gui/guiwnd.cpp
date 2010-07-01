@@ -145,10 +145,13 @@ void GuiWnd::destroy()
 
    if ( !IS_SET(m_style, GUI_NODESTROY) )
    {
-	   GuiList::Iterator it = childs.begin();
-      for ( ; it.valid(); ++it)
+	   GuiList::Iterator it = childs.end();
+      while ( it.valid() )
       {
-         GuiWnd* pwnd = (*it);
+         GuiList::Iterator cur = it;
+         ++it;
+
+         GuiWnd* pwnd = (*cur);
 
          pwnd->destroy();
 		   delete pwnd;
@@ -171,7 +174,8 @@ void GuiWnd::setParent (GuiWnd* p)
 {
 	if ( p != parent )
    {
-		if (parent) {
+		if ( parent != NULL )
+      {
 			// remove old reference
          parent->removeChild(this);
 		}
@@ -639,6 +643,19 @@ void GuiWnd::windowToClient(GuiPoint& point)
       point.y -= pr.top();
       p = p->parent;
    } while ( p );
+}
+
+void GuiWnd::windowToClient(Point& point) const
+{
+   const GuiWnd* pwnd = this;
+   do
+   {
+      const GuiRect& pr = pwnd->getWindowRect();
+      point.offset(-pr.left(), -pr.top());
+
+      pwnd = pwnd->parent;
+   }
+   while ( pwnd != NULL );
 }
 
 bool GuiWnd::isBoundaryWnd() const

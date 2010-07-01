@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,44 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef GUIDIALOG_MOUSE_MOTION_LISTENER_H
+#define GUIDIALOG_MOUSE_MOTION_LISTENER_H
 
-#include "tileeditormousemotionlistener.h"
+#include "gui/input/mousemotionlistener.h"
 
-#include "script.h"
-#include "scriptmanager.h"
+class GuiDialog;
 
-#include "gui/guitileeditor.h"
-#include "gui/guieventhandler.h"
-#include "gui/guieventhandlers.h"
-
-#include "gui/input/mouseevent.h"
-
-TileEditorMouseMotionListener::TileEditorMouseMotionListener(GuiTileEditor& tileeditor):
-   MouseMotionListener(),
-   mTileEditor(tileeditor)
+class GuiDialogMouseMotionListener : public MouseMotionListener
 {
-}
+public:
+   GuiDialogMouseMotionListener(GuiDialog& dialog);
 
-// notifications
+  // notifications
+   virtual void onMouseMotion(const MouseEvent& event);
 
-void TileEditorMouseMotionListener::onMouseMotion(const MouseEvent& event)
-{
-   GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseMoveEvent);
-   if ( phandler != NULL )
-   {
-      GuiPoint location = event.getLocation();
-      GuiPoint relative = event.getRelative();
-      bool pressed      = event.isLeftButtonDown();
+private:
+   GuiDialog& mDialog;
+};
 
-      mTileEditor.windowToClient(location);
-
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(&mTileEditor, "GuiTileEditor");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam((void*)&location, "GuiPoint");
-      script.addParam((void*)&relative, "GuiPoint");
-      script.addParam(pressed);
-      script.run(3);
-   }
-}
+#endif

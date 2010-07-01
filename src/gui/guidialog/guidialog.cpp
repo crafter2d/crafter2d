@@ -44,10 +44,13 @@ GuiDialog::GuiDialog():
    _tex(),
    _close(),
    _closepressed(),
-   _hoverClose(false),
+   mKeyListener(*this),
+   mMouseListener(*this),
+   mMouseMotionListener(*this),
+   mHoverClose(false),
    _modalResult(0),
    _modal(false),
-   _dragging(false)
+   mDragging(false)
 {
 }
 
@@ -62,6 +65,10 @@ void GuiDialog::onCreate (const GuiRect& rect, const char* caption, GuiStyle sty
 
    if ( getCenter() )
       center();
+
+   addKeyListener(mKeyListener);
+   addMouseListener(mMouseListener);
+   addMouseMotionListener(mMouseMotionListener);
 }
 
 void GuiDialog::initializeEventHandlerDefinitions()
@@ -71,6 +78,44 @@ void GuiDialog::initializeEventHandlerDefinitions()
    GuiEventHandlerDefinition* pdefinition = new GuiEventHandlerDefinition(GuiDialogLoadedEvent, "onLoaded");
 
    getEventHandlerDefinitions().add(pdefinition);
+}
+
+// - Get/set interface
+
+bool GuiDialog::isDragging() const
+{
+   return mDragging;
+}
+
+void GuiDialog::setDragging(bool dragging)
+{
+   mDragging = dragging;
+}
+
+bool GuiDialog::isHoveringCloseButton() const
+{
+   return mHoverClose;
+}
+   
+void GuiDialog::setHoverCloseButton(bool hover)
+{
+   mHoverClose = hover;
+}
+
+// - Query interface
+
+bool GuiDialog::isAboveTitleBar(const Point& point) const
+{
+   int right = getWindowRect().getWidth() - 10;
+   GuiRect rect(10, right, -7, 9);
+   return rect.pointInRect(GuiPoint(point));
+}
+
+bool GuiDialog::isAboveCloseButton(const Point& point) const
+{
+   int right = getWindowRect().getWidth() - 10;
+   GuiRect btn(right-14, right-2, -5, 7);
+   return btn.pointInRect(GuiPoint(point));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,7 +150,7 @@ void GuiDialog::renderCaption(const GuiGraphics& graphics)
    glRectf(left+8,top+16,right-8,top);
    graphics.drawImage(*_tex, righthalf, GuiRect(right-8,right, top,top+16));
 
-   if ( _hoverClose )
+   if ( mHoverClose )
       graphics.drawImage(*_closepressed, GuiRect(right-14, right-2, top+2, top+14));
    else
       graphics.drawImage(*_close, GuiRect(right-14, right-2, top+2, top+14));
@@ -113,63 +158,6 @@ void GuiDialog::renderCaption(const GuiGraphics& graphics)
    // draw the caption
    glColor3f(0,0,0);
    GuiText::printfn(*font, left+5, top+font->getBaseHeight(), getCaption());
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Input interface
-//////////////////////////////////////////////////////////////////////////
-
-int GuiDialog::onLButtonDown(const GuiPoint& point, int flags)
-{
-   int right = getWindowRect().getWidth() - 10;
-
-   // test if we are inside the caption
-   GuiRect rect(10, right, -7, 9);
-   if ( rect.pointInRect(point) && !isAboveCloseButton(point) )
-   {
-      _dragging = true;
-      return 0;
-   }
-   else
-   {
-      return GuiWindow::onLButtonDown(point, flags);
-   }
-}
-
-int GuiDialog::onLButtonUp(const GuiPoint& point, int flags)
-{
-   if ( _dragging == true )
-   {
-      _dragging = false;
-      return JENGINE_MSG_HANDLED;
-   }
-   else
-   {
-      if ( isAboveCloseButton(point) )
-         close(false);
-      else
-         return GuiWindow::onLButtonUp(point, flags);
-   }
-
-   return JENGINE_MSG_UNHANDLED;
-}
-
-void GuiDialog::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag)
-{
-   if ( _dragging )
-   {
-      moveWindow(rel.x, rel.y);
-   }
-   else
-   {
-      if ( isAboveCloseButton(point) )
-         _hoverClose = true;
-      else
-      {
-         _hoverClose = false;
-         GuiWindow::onMouseMove(point, rel, flag);
-      }
-   }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -206,13 +194,6 @@ void GuiDialog::endModal(int retValue)
       _modalResult = retValue;
       _modal       = false;
    }
-}
-
-bool GuiDialog::isAboveCloseButton(const GuiPoint& point) const
-{
-   int right = getWindowRect().getWidth() - 10;
-   GuiRect btn(right-14, right-2, -5, 7);
-   return btn.pointInRect(point);
 }
 
 void GuiDialog::close(bool ok)

@@ -164,6 +164,7 @@ public:
    void              clientToWindow(GuiRect& rect) const;
    void              windowToClient(GuiRect& rect) const;
    void              windowToClient(GuiPoint& point);
+   void              windowToClient(Point& point) const;
 
   // operations
    void              setWindowPos(int x, int y);
