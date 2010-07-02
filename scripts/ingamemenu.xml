@@ -15,7 +15,7 @@
         <eventhandlers />
     </self>
     <children>
-        <child type="2" x="22" y="30" width="149" height="15">
+        <child type="2" x="22" y="30" width="150" height="15">
             <properties>
                 <property name="Name" value="" />
                 <property name="Caption" value="Resume" />

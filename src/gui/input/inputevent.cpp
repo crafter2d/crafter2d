@@ -32,13 +32,13 @@ int InputEvent::getModifiers()
    int mode = SDL_GetModState();
    int modifiers = eNone;
 
-   if ( IS_SET(mode, KMOD_SHIFT) )
+   if ( mode & KMOD_SHIFT )
       SET_FLAG(modifiers, eShift);
 
-   if ( IS_SET(mode, KMOD_CTRL) )
+   if ( mode & KMOD_CTRL )
       SET_FLAG(modifiers, eCtrl);
 
-   if ( IS_SET(mode, KMOD_ALT) )
+   if ( mode & KMOD_ALT )
       SET_FLAG(modifiers, eAlt);
 
    return modifiers;
