@@ -44,7 +44,7 @@ void GuiDialogKeyListener::onKeyReleased(const KeyEvent& event)
       mDialog.close(true);
       break;
    case SDLK_ESCAPE:
-      mDialog.close(false);
+      //mDialog.close(false);
       break;
    default:
       break;

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,65 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef SERVER_DOWN_EVENT_H_
+#define SERVER_DOWN_EVENT_H_
 
-#include "buttonmouselistener.h"
+#include "../netevent.h"
 
-#include "gui/input/mouseevent.h"
-
-#include "guibutton.h"
-
-ButtonMouseListener::ButtonMouseListener(GuiButton& button):
-   MouseListener(),
-   mButton(button),
-   mClicking(false)
+/**
+@author Jeroen Broekhuizen
+*/
+class ServerDownEvent : public NetEvent
 {
-}
+public:
+   DEFINE_REPLICATABLE(ServerDownEvent)
 
-//-----------------------------------
-// - Notifications
-//-----------------------------------
+            ServerDownEvent();
+   
+   virtual void   pack(BitStream& stream) const;
+   virtual void   unpack(BitStream& stream);
 
-void ButtonMouseListener::onMouseButton(const MouseEvent& event)
-{
-   if ( event.getEventType() == MouseEvent::ePressed )
-   {
-      mButton.pressed(true);
+private:
+};
 
-      mClicking = true;
-   }
-}
+#ifdef JENGINE_INLINE
+#  include "serverdownevent.inl"
+#endif
 
-void ButtonMouseListener::onMouseClick(const MouseEvent& event)
-{
-   if ( event.getButtons() == MouseEvent::eLeft )
-   {
-      mButton.pressed(false);
-      mButton.click();
-
-      mClicking = false;
-   }
-}
-
-void ButtonMouseListener::onMouseEntered(const MouseEvent& event)
-{
-   if ( mClicking )
-   {
-      mButton.pressed(true);
-   }
-   else
-   {
-      mButton.setHoover(true);
-   }
-}
-
-void ButtonMouseListener::onMouseExited(const MouseEvent& event)
-{
-   if ( mClicking )
-   {
-      mButton.pressed(false);
-   }
-   else
-   {
-      mButton.setHoover(false);
-   }
-}
+#endif

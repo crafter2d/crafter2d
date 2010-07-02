@@ -56,9 +56,8 @@ end
 
 -- shut the application down
 function quitGame(val)
-	if val == 1 then
-		MsgBox("Are you sure you want to quit the game?", "gotoMainMenu()", "")
-	end
+	local dialog = guimanager:loadFromXML("ingamemenu")
+	dialog:doModal()
 end
 
 -- create new action map and bind

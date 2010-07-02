@@ -88,16 +88,17 @@ function Client_onServerDown()
 		-- display message, and leave the game
 		MsgBox("The server has disconnected. You will be returned to the menu.", "Client_onShutdown()", "Client_onShutdown()")
 	else
+		console:print("Client - server closed, closing aswell")
 		Client_onShutdown()
 	end
 end
 
 -- Called whenever the client must shutdown
 function Client_onShutdown()
+	console:print("Client - shutdown")
 	Client_shutdown()
 
-	-- hide the game window
-	gamewnd:setVisible(false)
+	MM_show(true)
 end
 
 -- Called by JEngine when a user clicks on the field

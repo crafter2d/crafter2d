@@ -24,6 +24,7 @@
 #include "net/events/scriptevent.h"
 #include "net/events/requestobjectevent.h"
 #include "net/events/viewportevent.h"
+#include "net/events/serverdownevent.h"
 #include "net/newobjectevent.h"
 
 #include "physics/simulationfiller.h"
@@ -125,16 +126,11 @@ bool Server::destroy()
 {
    if (conn.isConnected())
    {
-      NetEvent event(serverdownEvent);
-      BitStream stream;
-
-      // let all connected people know that the server is going down
-      stream << &event;
-      sendToAllClients(stream);
+      ServerDownEvent event;
+      sendToAllClients(event);
    }
 
-   Process::destroy();
-   return true;
+   return Process::destroy();
 }
 
 void Server::shutdown()

@@ -139,6 +139,7 @@ GuiDesigner::GuiDesigner():
 
 GuiDesigner::~GuiDesigner()
 {
+   GuiFocus::getInstance().removeListener(mFocusListener);
 }
 
 void GuiDesigner::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
