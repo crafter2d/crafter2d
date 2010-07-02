@@ -30,6 +30,7 @@ REGISTER_DESIGNER(GuiCheckBox, GuiCheckBoxId, "Checkbox", 40, 15, 264)
 
 GuiCheckBox::GuiCheckBox():
    GuiControl(),
+   mMouseListener(*this),
    pos(),
    box()
 {
@@ -38,6 +39,8 @@ GuiCheckBox::GuiCheckBox():
 void GuiCheckBox::onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
 {
    GuiControl::onCreate(rect, caption, style, parent);
+
+   addMouseListener(mMouseListener);
 }
 
 bool GuiCheckBox::isChecked() const

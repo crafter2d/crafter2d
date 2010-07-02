@@ -76,6 +76,7 @@ void GuiList::addTail(GuiWnd* wnd)
       n = new GuiNode(wnd, 0, temp);
       temp->next = n;
    }
+   size++;
 }
 
 void GuiList::insert(const Iterator& it, GuiWnd* wnd, bool before)

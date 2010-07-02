@@ -22,6 +22,8 @@
 
 #include "gui/guicontrol.h"
 
+#include "guicheckboxmouselistener.h"
+
 class GuiCheckBox : public GuiControl
 {
 public:
@@ -38,6 +40,7 @@ protected:
    virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
    virtual void   paint(Uint32 tick, const GuiGraphics& graphics);
 
+   GuiCheckBoxMouseListener mMouseListener;
    GuiPoint pos;
    GuiRect box;
 };
