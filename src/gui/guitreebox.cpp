@@ -81,15 +81,15 @@ void GuiTreeBox::onCreate (const GuiRect& rect, const char* caption, GuiStyle st
 
    GuiTreeBoxItem* pitem = new GuiTreeBoxItem();
    pitem->setText("'Designer'");
-   pitem->setIcon("../images/folder.png");
+   pitem->setIcon("folder.png");
 
    GuiTreeBoxItem* pchild = new GuiTreeBoxItem();
    pchild->setText("Dialogs");
-   pchild->setIcon("../images/application_double.png");
+   pchild->setIcon("application_double.png");
 
    GuiTreeBoxItem* pdialog = new GuiTreeBoxItem();
    pdialog->setText("des_openfile");
-   pdialog->setIcon("../images/application_form.png");
+   pdialog->setIcon("application_form.png");
 
    _items.insert(NULL, *pitem);
 
