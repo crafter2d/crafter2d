@@ -23,14 +23,26 @@
 #include "guidesigndecorator.h"
 #include "guidesignwnd.h"
 
-GuiDesignSelection::GuiDesignSelection()
- : GuiControl(),
-   _border(ENone)
+GuiDesignSelection::GuiDesignSelection():
+   GuiControl(),
+   mMouseListener(*this),
+   mMouseMotionListener(*this),
+   mBorders(eNone)
 {
 }
 
 GuiDesignSelection::~GuiDesignSelection()
 {
+}
+
+// - Creation
+
+void GuiDesignSelection::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
+{
+   GuiControl::onCreate(rect, caption, style, parent);
+
+   addMouseListener(mMouseListener);
+   addMouseMotionListener(mMouseMotionListener);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -61,44 +73,6 @@ GuiWnd* GuiDesignSelection::hitTest(const GuiPoint& point)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// - Input interface
-//////////////////////////////////////////////////////////////////////////
-
-int GuiDesignSelection::onLButtonDown(const GuiPoint& point, int flags)
-{
-   _border = determineBorder(point);
-   return _border != ENone ? JENGINE_MSG_HANDLED : JENGINE_MSG_UNHANDLED;
-}
-
-int GuiDesignSelection::onLButtonUp(const GuiPoint& point, int flag)
-{
-   if ( _border != ENone )
-   {
-      _border = ENone;
-
-      return JENGINE_MSG_HANDLED;
-   }
-   else
-      return JENGINE_MSG_UNHANDLED;
-}
-
-void GuiDesignSelection::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag)
-{
-   if ( _border != ENone )
-   {
-      GuiDesignDecorator* pdecorator = dynamic_cast<GuiDesignDecorator*>(getParent());
-      if ( pdecorator )
-      {
-         dynamic_cast<GuiDesignWnd*>(pdecorator->getParent())->resizeSelected(rel, _border);
-      }
-      else
-      {
-         resize(rel, _border);
-      }
-   }
-}
-
-//////////////////////////////////////////////////////////////////////////
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
@@ -114,58 +88,31 @@ GuiDesignWnd* GuiDesignSelection::getDesignWnd() const
    return dynamic_cast<GuiDesignWnd*>(pwnd);
 }
 
-int GuiDesignSelection::determineBorder(const GuiPoint& point) const
-{
-   const GuiRect rect(getWindowRect());
-   int sides = ENone;
-
-   if ( point.x == rect.left() || point.x - rect.left() <= 2 )
-   {
-      sides = ELeft;
-   }
-   else if ( point.x == rect.right() || abs(rect.right() - point.x)  <= 2 )
-   {
-      sides = ERight;
-   }
-   
-   if ( point.y == rect.top() || point.y - rect.top() <= 2 )
-   {
-      sides |= ETop;
-   }
-   else if ( point.y == rect.bottom() || abs(rect.bottom() - point.y) <= 2 )
-   {
-      sides |= EBottom;
-   }
-   
-   return sides;
-}
-
 void GuiDesignSelection::resize(const GuiPoint& rel, int borders)
 {
    int modifier = 1;
-   if ( borders & ELeft )
+   if ( IS_SET(borders, eLeft) )
    {
       getParent()->moveWindow(rel.x, 0);
       modifier = -1;
    }
-   if ( borders & ETop )
+   if ( IS_SET(borders, eTop) )
    {
       getParent()->moveWindow(0, rel.y);
       modifier = -1;
    }
 
    int width = getWindowRect().getWidth();
-   if ( borders & ELeft || borders & ERight )
+   if ( IS_SET(borders, eLeft) || IS_SET(borders, eRight) )
    {
       width += (rel.x * modifier);
    }
 
    int height = getWindowRect().getHeight();
-   if ( borders & ETop || borders & EBottom )
+   if ( IS_SET(borders, eTop) || IS_SET(borders, eBottom) )
    {
       height += (rel.y * modifier);
    }
 
    getParent()->resizeWindow(width, height);
 }
-

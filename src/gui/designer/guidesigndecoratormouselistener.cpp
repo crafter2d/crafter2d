@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,26 +17,63 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#include "guidesigndecoratormouselistener.h"
 
-// - Get/set
+#include "gui/input/mouseevent.h"
 
-INLINE const GuiControl& GuiDesignDecorator::control() const
+#include "gui/guidesigner.h"
+#include "gui/guidesigndecorator.h"
+#include "gui/guidesignselection.h"
+#include "gui/guidesignwnd.h"
+
+#include "game.h"
+
+GuiDesignDecoratorMouseListener::GuiDesignDecoratorMouseListener(GuiDesignDecorator& decorator):
+   MouseListener(),
+   mDecorator(decorator)
 {
-   ASSERT_PTR(mpControl)
-   return *mpControl;
 }
 
-INLINE GuiControl& GuiDesignDecorator::control()
+// - Notification
+
+void GuiDesignDecoratorMouseListener::onMouseButton(const MouseEvent& event)
 {
-   return const_cast<GuiControl&>(me().control());
+   if ( !event.isLeftButtonDown() )
+   {
+      // only respond on left button
+      return;
+   }
+
+   mDecorator.mpSelectionCtrl->getMouseListeners().fireMouseButtonEvent(event);
+
+   if ( event.getEventType() == MouseEvent::ePressed )
+   {
+      select(event.isCtrlDown());
+
+      if ( !event.isConsumed() )
+      {
+        mDecorator.mDragging = true;
+      }
+   }
+   else if ( event.getEventType() == MouseEvent::eReleased )
+   {
+      mDecorator.mDragging = false;
+   }
 }
 
-//////////////////////////////////////////////////////////////////////////
-// - Self
-//////////////////////////////////////////////////////////////////////////
-
-INLINE const GuiDesignDecorator& GuiDesignDecorator::me()
+// - helpers
+ 
+void GuiDesignDecoratorMouseListener::select(bool addSelection)
 {
-   return static_cast<const GuiDesignDecorator&>(*this);
+   bool selected = mDecorator.isSelected();
+
+   if ( !addSelection )
+   {
+      dynamic_cast<GuiDesignWnd*>(mDecorator.getParent())->unselectAll();
+      Game::getInstance().getCanvas().getDesigner().focusChanged(mDecorator.control());
+
+      selected = false;
+   }
+
+   mDecorator.setSelected(!selected);
 }

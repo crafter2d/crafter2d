@@ -86,10 +86,18 @@ MouseEvent::MouseEvent(int buttons, EventType eventtype, int keymodifiers, const
    mButtons(buttons),
    mEventType(eventtype),
    mLocation(location),
-   mRelative(relative)
+   mRelative(relative),
+   mConsumed(false)
 {
 }
 
 MouseEvent::~MouseEvent()
 {
+}
+
+// - Operations
+
+void MouseEvent::consume() const
+{
+   const_cast<MouseEvent&>(*this).mConsumed = true;
 }

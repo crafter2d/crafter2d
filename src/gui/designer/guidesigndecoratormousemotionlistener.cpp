@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,25 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "designwndmousemotionlistener.h"
+#include "guidesigndecoratormousemotionlistener.h"
 
 #include "gui/input/mouseevent.h"
 
+#include "gui/guidesigndecorator.h"
 #include "gui/guidesignselection.h"
 #include "gui/guidesignwnd.h"
 
-DesignWndMouseMotionListener::DesignWndMouseMotionListener(GuiDesignWnd& designwnd):
+GuiDesignDecoratorMouseMotionListener::GuiDesignDecoratorMouseMotionListener(GuiDesignDecorator& decorator):
    MouseMotionListener(),
-   mDesignWnd(designwnd)
+   mDecorator(decorator)
 {
 }
 
 // - Notifications
 
-void DesignWndMouseMotionListener::onMouseMotion(const MouseEvent& event)
+void GuiDesignDecoratorMouseMotionListener::onMouseMotion(const MouseEvent& event)
 {
-   if ( event.isLeftButtonDown() )
+   if ( !event.isLeftButtonDown() )
    {
-      mDesignWnd._pselectionctrl->fireMouseMotionEvent(event);
+     return;
+   }
+
+   if ( mDecorator.mDragging )
+   {
+      dynamic_cast<GuiDesignWnd*>(mDecorator.getParent())->moveSelected(event.getRelative());
+   }
+   else
+   {
+      mDecorator.mpSelectionCtrl->fireMouseMotionEvent(event);
    }
 }

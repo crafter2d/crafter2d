@@ -42,7 +42,11 @@ void MouseListeners::fireMouseButtonEvent(const MouseEvent& event)
 {
    for ( iterator it = begin(); it != end(); ++it )
    {
-      (*it)->onMouseButton(event);
+      MouseListener* plistener = (*it);
+      plistener->onMouseButton(event);
+
+      if ( event.isConsumed() )
+        break;
    }
 }
 

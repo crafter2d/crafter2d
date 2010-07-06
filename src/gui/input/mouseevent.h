@@ -46,28 +46,31 @@ public:
       eMotion
    };
 
-  // statics
+ // statics
    static MouseEvent FromSDL(SDL_MouseButtonEvent& event);
    static MouseEvent FromSDL(SDL_MouseMotionEvent& event);
 
-  // construction
+ // construction
    MouseEvent(int buttons, EventType eventtype, int keymodifiers, const Point& location, const Point& relative = Point::zero());
    virtual ~MouseEvent();
 
-  // get/set
+ // get/set
          int       getButtons() const   { return mButtons; }
          EventType getEventType() const { return mEventType; }
    const Point&    getLocation() const  { return mLocation; }
    const Point&    getRelative() const  { return mRelative; }
-         
+         bool      isConsumed() const   { return mConsumed; }        
 
-  // query
+ // query
    bool isLeftButtonDown() const { return IS_SET(mButtons, eLeft); }
    bool isRightButtonDown() const { return IS_SET(mButtons, eRight); }
    bool isMiddleButtonDown() const { return IS_SET(mButtons, eMiddle); }
 
    bool isWheelUp() const   { return mButtons == eWheelUp;   }
    bool isWheelDown() const { return mButtons == eWheelDown; }
+
+ // operations
+   void consume() const;
 
 private:
   // statics
@@ -77,6 +80,7 @@ private:
    EventType mEventType;
    Point     mLocation;
    Point     mRelative;
+   bool      mConsumed;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,25 +18,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "designwndmousemotionlistener.h"
+#include "guidesignselectionmousemotionlistener.h"
 
 #include "gui/input/mouseevent.h"
 
+#include "gui/guidesigndecorator.h"
 #include "gui/guidesignselection.h"
 #include "gui/guidesignwnd.h"
 
-DesignWndMouseMotionListener::DesignWndMouseMotionListener(GuiDesignWnd& designwnd):
+GuiDesignSelectionMouseMotionListener::GuiDesignSelectionMouseMotionListener(GuiDesignSelection& selection):
    MouseMotionListener(),
-   mDesignWnd(designwnd)
+   mSelector(selection)
 {
 }
 
-// - Notifications
+// - Notification
 
-void DesignWndMouseMotionListener::onMouseMotion(const MouseEvent& event)
+void GuiDesignSelectionMouseMotionListener::onMouseMotion(const MouseEvent& event)
 {
-   if ( event.isLeftButtonDown() )
+   if ( !event.isLeftButtonDown() && event.getEventType() == MouseEvent::ePressed )
    {
-      mDesignWnd._pselectionctrl->fireMouseMotionEvent(event);
+     return;
+   }
+
+   if ( mSelector.mBorders != GuiDesignSelection::eNone )
+   {
+      GuiDesignDecorator* pdecorator = dynamic_cast<GuiDesignDecorator*>(mSelector.getParent());
+      if ( pdecorator )
+      {
+         dynamic_cast<GuiDesignWnd*>(pdecorator->getParent())->resizeSelected(event.getRelative(), mSelector.mBorders);
+      }
+      else
+      {
+         mSelector.resize(event.getRelative(), mSelector.mBorders);
+      }
+
+      event.consume();
    }
 }

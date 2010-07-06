@@ -22,6 +22,9 @@
 
 #include "guicontrol.h"
 
+#include "designer/guidesignselectionmouselistener.h"
+#include "designer/guidesignselectionmousemotionlistener.h"
+
 class GuiDesignWnd;
 
 /**
@@ -30,28 +33,36 @@ class GuiDesignWnd;
 class GuiDesignSelection : public GuiControl
 {
 public:
-   enum Sides { ELeft=1, ERight=2, ETop=4, EBottom=8, ENone=0 };
+   enum Sides { eLeft=1, eRight=2, eTop=4, eBottom=8, eNone=0 };
 
    GuiDesignSelection();
    virtual ~GuiDesignSelection();
 
  // Operations
    void  resize(const GuiPoint& rel, int borders);
-   int   determineBorder(const GuiPoint& point) const;
-
- // Input interface
-   virtual int    onLButtonDown(const GuiPoint& point, int flags);
-   virtual int    onLButtonUp(const GuiPoint& point, int flag);
-   virtual void   onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag);
     
  // Overloads
-   virtual void      onRender(Uint32 tick, const GuiGraphics& graphics);
    virtual GuiWnd*   hitTest(const GuiPoint& point);
 
+protected:
+ // creation
+   virtual void   onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
+
+ // rendering
+   virtual void   onRender(Uint32 tick, const GuiGraphics& graphics);
+
 private:
+   friend class GuiDesignWnd;
+   friend class GuiDesignDecorator;
+   friend class GuiDesignSelectionMouseListener;
+   friend class GuiDesignSelectionMouseMotionListener;
+
    GuiDesignWnd*  getDesignWnd() const;
 
-   int _border;
+   GuiDesignSelectionMouseListener       mMouseListener;
+   GuiDesignSelectionMouseMotionListener mMouseMotionListener;
+
+   int mBorders;
 };
 
 #endif

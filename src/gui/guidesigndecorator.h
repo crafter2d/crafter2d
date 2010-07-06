@@ -20,6 +20,9 @@
 #ifndef GUIDESIGNDECORATOR_H
 #define GUIDESIGNDECORATOR_H
 
+#include "designer/guidesigndecoratormouselistener.h"
+#include "designer/guidesigndecoratormousemotionlistener.h"
+
 #include "guicontrol.h"
 
 class GuiDesignSelection;
@@ -38,22 +41,23 @@ public:
          GuiControl&    control();
    void                 control(GuiControl* pcontrol);
 
-   GuiDesignSelection&  selectionCtrl();
-
-   bool                 selected() const;
-   void                 selected(bool select);
+   bool                 isSelected() const;
+   void                 setSelected(bool selected);
 
  // Overloads
    virtual GuiWnd*   hitTest(const GuiPoint &point);
 
-   virtual void      onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
-   virtual int       onLButtonDown (const GuiPoint& point, int flags);
-   virtual int       onLButtonUp (const GuiPoint& point, int flags);
+   //virtual void      onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
+   //virtual int       onLButtonDown (const GuiPoint& point, int flags);
+   //virtual int       onLButtonUp (const GuiPoint& point, int flags);
    
    virtual void      onKeyUp(int which);
 
    virtual bool      onContextMenu(const GuiPoint& point);
    virtual void      onCommand(int cmd);
+
+ // operations
+   void resize(const GuiPoint& rel, int borders);
 
 protected:
    virtual void   onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
@@ -61,15 +65,24 @@ protected:
    virtual void   onResize(int width, int height);
 
 private:
+   friend class GuiDesignDecoratorMouseListener;
+   friend class GuiDesignDecoratorMouseMotionListener;
+
+ // drawing
+   void renderSelected(const GuiGraphics& graphics);
+
    const GuiDesignDecorator& me();
 
-   GuiControl*          MPControl;
-   GuiDesignSelection*  _selectionCtrl;
-   bool                 MDragging;
+   GuiDesignDecoratorMouseListener       mMouseListener;
+   GuiDesignDecoratorMouseMotionListener mMouseMotionListener;
+
+   GuiDesignSelection* mpSelectionCtrl;
+   GuiControl*         mpControl;
+   bool                mDragging;
 };
 
 #ifdef JENGINE_INLINE
-#  include "guidesigndecorator.h"
+#  include "guidesigndecorator.inl"
 #endif
 
 #endif

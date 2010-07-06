@@ -25,6 +25,7 @@
 
 #include "gui/guidialog/guidialog.h"
 
+#include "designer/guidesignwndmouselistener.h"
 #include "designer/designwndmousemotionlistener.h"
 
 class GuiDesignDecorator;
@@ -59,9 +60,6 @@ public:
    void  sameSize(GuiWnd& main, GuiDesignSize how);
 
  // Overloads
-   virtual int       onLButtonDown(const GuiPoint& point, int flags);
-   virtual int       onLButtonUp(const GuiPoint& point, int flag);
-   virtual void      onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag);
    virtual void      onSetFocus(GuiWnd* oldCtrl);
    virtual void      onKillFocus(GuiWnd* newCtrl);
    virtual bool      onContextMenu(const GuiPoint& point);
@@ -76,11 +74,15 @@ protected:
    void  onMenuLostFocus();
 
 private:
+   friend class GuiDesignWndMouseListener;
+   friend class DesignWndMouseMotionListener;
+
    void  createMenu();
    void  doSave();
 
    GuiDesignSelection*  _pselectionctrl;
    GuiPopupDecorator*   _popupMenu;
+   GuiDesignWndMouseListener    mMouseListener;
    DesignWndMouseMotionListener mMotionListener;
    Functions            _functions;
    std::string          _filename;

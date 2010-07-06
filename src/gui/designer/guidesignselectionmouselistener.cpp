@@ -17,55 +17,70 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "guidialogmouselistener.h"
+
+#include "guidesignselectionmouselistener.h"
 
 #include "gui/input/mouseevent.h"
 
-#include "guidialog.h"
+#include "gui/guidesignselection.h"
 
-GuiDialogMouseListener::GuiDialogMouseListener(GuiDialog& dialog):
+GuiDesignSelectionMouseListener::GuiDesignSelectionMouseListener(GuiDesignSelection& selection):
    MouseListener(),
-   mDialog(dialog)
+   mSelector(selection)
 {
 }
 
-// notifications
+// - Notifications
 
-void GuiDialogMouseListener::onMouseButton(const MouseEvent& event)
+void GuiDesignSelectionMouseListener::onMouseButton(const MouseEvent& event)
 {
-   if ( event.isLeftButtonDown() )
+   if ( !event.isLeftButtonDown() )
    {
-      Point location = event.getLocation();
-      mDialog.windowToClient(location);
+     return;
+   }
 
-      switch ( event.getEventType() )
-      { 
-      case MouseEvent::ePressed:
-         if ( mDialog.isAboveTitleBar(location) && !mDialog.isAboveCloseButton(location) )
-         {
-            mDialog.setDragging(true);
-            event.consume();
-         }
-         break;
-      case MouseEvent::eReleased:
-         mDialog.setDragging(false);
+   if ( event.getEventType() == MouseEvent::ePressed )
+   {
+      Point point = event.getLocation();
+
+      mSelector.windowToClient(point);
+      mSelector.mBorders = determineBorder(point);
+
+      if ( mSelector.mBorders != GuiDesignSelection::eNone )
+      {
          event.consume();
-         break;
-      default:
-         break;
       }
    }
+   else
+   {
+      mSelector.mBorders = GuiDesignSelection::eNone;
+   }
 }
 
-void GuiDialogMouseListener::onMouseClick(const MouseEvent& event)
+// - Operations
+
+int GuiDesignSelectionMouseListener::determineBorder(const Point& point) const
 {
-   Point point = event.getLocation();
-   mDialog.windowToClient(point);
+   const GuiRect& rect = mSelector.getWindowRect();
+   int borders = GuiDesignSelection::eNone;
 
-   if ( event.isLeftButtonDown() && mDialog.isAboveCloseButton(point) )
+   if ( point.x() == rect.left() || point.x() - rect.left() <= 2 )
    {
-      mDialog.close(false);
-
-      event.consume();
+      borders = GuiDesignSelection::eLeft;
    }
+   else if ( point.x() == rect.right() || abs(rect.right() - point.x())  <= 2 )
+   {
+      borders = GuiDesignSelection::eRight;
+   }
+   
+   if ( point.y() == rect.top() || point.y() - rect.top() <= 2 )
+   {
+      SET_FLAG(borders, GuiDesignSelection::eTop);
+   }
+   else if ( point.y() == rect.bottom() || abs(rect.bottom() - point.y()) <= 2 )
+   {
+      SET_FLAG(borders, GuiDesignSelection::eBottom);
+   }
+   
+   return borders;
 }

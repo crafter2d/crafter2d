@@ -27,19 +27,20 @@
 #include "input/mouseevent.h"
 
 #include "guidesigner.h"
-#include "guidesignselection.h"
 #include "guidesignwnd.h"
+#include "guidesignselection.h"
 #include "guiwindow.h"
 #include "guimanager.h"
 
 GuiDesignDecorator::GuiDesignDecorator():
    GuiControl(),
-   MPControl(NULL),
-   _selectionCtrl(NULL),
-   MDragging(false)
+   mMouseListener(*this),
+   mMouseMotionListener(*this),
+   mpSelectionCtrl(NULL),
+   mpControl(NULL),
+   mDragging(false)
 {
 }
-
 
 GuiDesignDecorator::~GuiDesignDecorator()
 {
@@ -53,10 +54,13 @@ void GuiDesignDecorator::onCreate(const GuiRect& rect, const char* caption, GuiS
 {
    GuiControl::onCreate(rect, caption, style, parent);
 
-   _selectionCtrl = new GuiDesignSelection();
-   _selectionCtrl->create(0, GuiRect(), "", 0, this);
-   _selectionCtrl->setVisible(false);
-   
+   addMouseListener(mMouseListener);
+   addMouseMotionListener(mMouseMotionListener);
+
+   mpSelectionCtrl = new GuiDesignSelection();
+   mpSelectionCtrl->create(0, GuiRect(), "", 0, this);
+   mpSelectionCtrl->setVisible(false);
+
    setFont(parent->getFont());
    setParent(parent);
 }
@@ -67,19 +71,24 @@ void GuiDesignDecorator::onCreate(const GuiRect& rect, const char* caption, GuiS
 
 void GuiDesignDecorator::control(GuiControl* pcontrol)
 {
-   MPControl = pcontrol;
+   mpControl = pcontrol;
    
    const GuiRect& rect = control().getWindowRect();
    setWindowRect(rect);
    
    GuiRect newrect(0, rect.getWidth(), 0, rect.getHeight());
    control().setWindowRect(newrect);
-   _selectionCtrl->setWindowRect(newrect);
+   mpSelectionCtrl->setWindowRect(newrect);
 }
 
-INLINE bool GuiDesignDecorator::selected() const
+INLINE bool GuiDesignDecorator::isSelected() const
 {
-   return _selectionCtrl->getVisible();
+   return mpSelectionCtrl->getVisible();
+}
+
+INLINE void GuiDesignDecorator::setSelected(bool selected)
+{
+   mpSelectionCtrl->setVisible(selected);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,13 +97,13 @@ INLINE bool GuiDesignDecorator::selected() const
 
 void GuiDesignDecorator::onRender(Uint32 tick, const GuiGraphics& graphics)
 {
-   int i = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
+/*
 int GuiDesignDecorator::onLButtonDown (const GuiPoint& point, int flags)
 {
    if ( _selectionCtrl->onLButtonDown(point, flags) == JENGINE_MSG_UNHANDLED )
@@ -129,6 +138,19 @@ int GuiDesignDecorator::onLButtonUp (const GuiPoint& point, int flags)
    return _selectionCtrl->onLButtonUp(point, flags);
 }
 
+void GuiDesignDecorator::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags)
+{
+   if ( mDragging )
+   {
+      dynamic_cast<GuiDesignWnd*>(getParent())->moveSelected(rel);
+   }
+   else
+   {
+      _selectionCtrl->onMouseMove(point, rel, flags);
+   }
+}
+*/
+
 void GuiDesignDecorator::onKeyUp(int which)
 {
    GuiDesignWnd* pwnd = dynamic_cast<GuiDesignWnd*>(getParent());
@@ -162,22 +184,10 @@ void GuiDesignDecorator::onCommand(int cmd)
    }
 }
 
-void GuiDesignDecorator::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags)
-{
-   if ( MDragging )
-   {
-      dynamic_cast<GuiDesignWnd*>(getParent())->moveSelected(rel);
-   }
-   else
-   {
-      _selectionCtrl->onMouseMove(point, rel, flags);
-   }
-}
-
 void GuiDesignDecorator::onResize(int width, int height)
 {
    control().resizeWindow(width, height);
-   _selectionCtrl->resizeWindow(width, height);
+   mpSelectionCtrl->resizeWindow(width, height);
 }
 
 GuiWnd* GuiDesignDecorator::hitTest(const GuiPoint &point)
@@ -185,11 +195,7 @@ GuiWnd* GuiDesignDecorator::hitTest(const GuiPoint &point)
    return m_frameRect.pointInRect(point) ? this : NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// - Operations
-//////////////////////////////////////////////////////////////////////////
-
-void GuiDesignDecorator::selected(bool select)
+void GuiDesignDecorator::resize(const GuiPoint& rel, int borders)
 {
-   _selectionCtrl->setVisible(select);
+  mpSelectionCtrl->resize(rel, borders);
 }

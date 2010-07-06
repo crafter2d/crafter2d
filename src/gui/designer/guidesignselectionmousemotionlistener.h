@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,26 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef GUIDESIGN_SELECTION_MOUSE_MOTION_LISTENER_H
+#define GUIDESIGN_SELECTION_MOUSE_MOTION_LISTENER_H
 
-#include "designwndmousemotionlistener.h"
+#include "gui/input/mousemotionlistener.h"
 
-#include "gui/input/mouseevent.h"
+class GuiDesignSelection;
 
-#include "gui/guidesignselection.h"
-#include "gui/guidesignwnd.h"
-
-DesignWndMouseMotionListener::DesignWndMouseMotionListener(GuiDesignWnd& designwnd):
-   MouseMotionListener(),
-   mDesignWnd(designwnd)
+class GuiDesignSelectionMouseMotionListener : public MouseMotionListener
 {
-}
+public:
+   GuiDesignSelectionMouseMotionListener(GuiDesignSelection& decorator);
 
-// - Notifications
+ // notifications
+   virtual void onMouseMotion(const MouseEvent& event);
 
-void DesignWndMouseMotionListener::onMouseMotion(const MouseEvent& event)
-{
-   if ( event.isLeftButtonDown() )
-   {
-      mDesignWnd._pselectionctrl->fireMouseMotionEvent(event);
-   }
-}
+private:
+
+   GuiDesignSelection& mSelector;
+};
+
+#endif

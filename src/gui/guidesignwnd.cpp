@@ -42,6 +42,7 @@ GuiDesignWnd::GuiDesignWnd():
    GuiDialog(),
    _pselectionctrl(NULL),
    _popupMenu(NULL),
+   mMouseListener(*this),
    mMotionListener(*this),
    _functions(),
    _filename(),
@@ -70,32 +71,13 @@ void GuiDesignWnd::onCreate(const GuiRect& rect, const char* caption, GuiStyle s
    _pselectionctrl->create(0, selrect, "", 0, this);
    _pselectionctrl->setVisible(false);
 
+   addMouseListener(mMouseListener);
    addMouseMotionListener(mMotionListener);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // - Input interface
 //////////////////////////////////////////////////////////////////////////
-
-int GuiDesignWnd::onLButtonDown(const GuiPoint& point, int flags)
-{
-   if ( GuiDialog::onLButtonDown(point, flags) == JENGINE_MSG_UNHANDLED )
-   {
-      _pselectionctrl->onLButtonDown(point, flags);
-   }
-
-   return JENGINE_MSG_HANDLED;
-}
-
-int GuiDesignWnd::onLButtonUp(const GuiPoint& point, int flag)
-{
-   if ( GuiDialog::onLButtonUp(point, flag) == JENGINE_MSG_UNHANDLED )
-   {
-      _pselectionctrl->onLButtonUp(point, flag);
-   }
-
-   return JENGINE_MSG_UNHANDLED;
-}
 
 bool GuiDesignWnd::onContextMenu(const GuiPoint& point)
 {
@@ -120,16 +102,6 @@ bool GuiDesignWnd::onContextMenu(const GuiPoint& point)
    _popupMenu->popup();
 
    return true;
-}
-
-void GuiDesignWnd::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flag)
-{
-   //if ( IS_SET(flag, GuiLButton) )
-   {
-      GuiDialog::onMouseMove(point, rel, flag);
-
-      _pselectionctrl->onMouseMove(point, rel, flag);
-   }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -202,7 +174,7 @@ int GuiDesignWnd::selectionSize() const
    for ( ; it.valid(); ++it )
    {
       GuiDesignDecorator* pcontrol = dynamic_cast<GuiDesignDecorator*>(*it);
-      if ( pcontrol && pcontrol->selected() )
+      if ( pcontrol && pcontrol->isSelected() )
          ++count;
    }
    return count;
@@ -215,7 +187,7 @@ void GuiDesignWnd::unselectAll()
    {
       GuiDesignDecorator* pcontrol = dynamic_cast<GuiDesignDecorator*>(*it);
       if ( pcontrol != NULL )
-         pcontrol->selected(false);
+         pcontrol->setSelected(false);
    }
 
    _pselectionctrl->setVisible(false);
@@ -227,7 +199,7 @@ void GuiDesignWnd::deleteSelected()
    for ( ; it.valid(); ++it )
    {
       GuiDesignDecorator* pcontrol = dynamic_cast<GuiDesignDecorator*>(*it);
-      if ( pcontrol && pcontrol->selected() )
+      if ( pcontrol && pcontrol->isSelected() )
       {
          if ( pcontrol->hasFocus() )
             setFocus();
@@ -244,7 +216,7 @@ void GuiDesignWnd::moveSelected(const GuiPoint& rel)
    for ( ; it.valid(); ++it )
    {
       GuiDesignDecorator* pcontrol = dynamic_cast<GuiDesignDecorator*>(*it);
-      if ( pcontrol && pcontrol->selected() )
+      if ( pcontrol && pcontrol->isSelected() )
          pcontrol->moveWindow(rel.x, rel.y);
    }
 }
@@ -257,8 +229,8 @@ void GuiDesignWnd::resizeSelected(const GuiPoint& rel, int borders)
       for ( ; it.valid(); ++it )
       {
          GuiDesignDecorator* pcontrol = dynamic_cast<GuiDesignDecorator*>(*it);
-         if ( pcontrol && pcontrol->selected() )
-            pcontrol->selectionCtrl().resize(rel, borders);
+         if ( pcontrol && pcontrol->isSelected() )
+            pcontrol->resize(rel, borders);
       }
    }
 }
@@ -279,7 +251,7 @@ void GuiDesignWnd::align(GuiWnd& main, GuiDesignAlign how)
    for ( ; it.valid(); ++it )
    {
       GuiDesignDecorator* pcontrol = dynamic_cast<GuiDesignDecorator*>(*it);
-      if ( pcontrol && pcontrol->selected() && pcontrol != &main )
+      if ( pcontrol && pcontrol->isSelected() && pcontrol != &main )
       {
          const GuiRect& rect = pcontrol->getWindowRect();
          switch ( how )
@@ -302,7 +274,7 @@ void GuiDesignWnd::sameSize(GuiWnd& main, GuiDesignSize how)
    for ( ; it.valid(); ++it )
    {
       GuiDesignDecorator* pcontrol = dynamic_cast<GuiDesignDecorator*>(*it);
-      if ( pcontrol && pcontrol->selected() && pcontrol != &main )
+      if ( pcontrol && pcontrol->isSelected() && pcontrol != &main )
       {
          const GuiRect& rect = pcontrol->getWindowRect();
          switch ( how )
