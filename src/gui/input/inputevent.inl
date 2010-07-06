@@ -17,43 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef INPUT_EVENT_H
-#define INPUT_EVENT_H
+#include "defines.h"
 
-class InputEvent
+// - Query
+
+INLINE bool InputEvent::isShiftDown() const
 {
-public:
- // statics
-   static int getModifiers();
+   return IS_SET(mKeyModifiers, eShift);
+}
 
- // enums
-   enum KeyModifiers {
-      eNone  = 0,
-      eShift = 1,
-      eCtrl  = 2,
-      eAlt   = 4
-   };
+INLINE bool InputEvent::isCtrlDown() const
+{
+   return IS_SET(mKeyModifiers, eCtrl);
+}
 
-   explicit InputEvent(int keymodifiers);
-   virtual ~InputEvent() = 0;
+INLINE bool InputEvent::isAltDown() const
+{
+   return IS_SET(mKeyModifiers, eAlt);
+}
 
- // query
-   bool isShiftDown() const;
-   bool isCtrlDown() const;
-   bool isAltDown() const;
+INLINE bool InputEvent::isConsumed() const
+{
+   return mConsumed;
+}
 
-   bool isConsumed() const;
+// - Operations
 
- // operations
-   void consume() const;
-   
-private:
-   int  mKeyModifiers;
-   bool mConsumed;
-};
-
-#ifdef JENGINE_INLINE
-#  include "inputevent.inl"
-#endif
-
-#endif
+INLINE void InputEvent::consume() const
+{
+   const_cast<InputEvent&>(*this).mConsumed = true;
+}

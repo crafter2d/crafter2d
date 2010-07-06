@@ -58,8 +58,7 @@ public:
          int       getButtons() const   { return mButtons; }
          EventType getEventType() const { return mEventType; }
    const Point&    getLocation() const  { return mLocation; }
-   const Point&    getRelative() const  { return mRelative; }
-         bool      isConsumed() const   { return mConsumed; }        
+   const Point&    getRelative() const  { return mRelative; }        
 
  // query
    bool isLeftButtonDown() const { return IS_SET(mButtons, eLeft); }
@@ -69,9 +68,6 @@ public:
    bool isWheelUp() const   { return mButtons == eWheelUp;   }
    bool isWheelDown() const { return mButtons == eWheelDown; }
 
- // operations
-   void consume() const;
-
 private:
   // statics
    static Button toMouseEventButton(int sdlbutton);
@@ -80,7 +76,6 @@ private:
    EventType mEventType;
    Point     mLocation;
    Point     mRelative;
-   bool      mConsumed;
 };
 
 #endif

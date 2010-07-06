@@ -19,6 +19,9 @@
  ***************************************************************************/
 
 #include "inputevent.h"
+#ifndef JENGINE_INLINE
+#  include "inputevent.inl"
+#endif
 
 #include <SDL/SDL.h>
 
@@ -47,27 +50,11 @@ int InputEvent::getModifiers()
 // - Construction
 
 InputEvent::InputEvent(int keymodifiers):
-   mKeyModifiers(keymodifiers)
+   mKeyModifiers(keymodifiers),
+   mConsumed(false)
 {
 }
 
 InputEvent::~InputEvent()
 {
-}
-
-// - Query
-
-bool InputEvent::isShiftDown() const
-{
-   return IS_SET(mKeyModifiers, eShift);
-}
-
-bool InputEvent::isCtrlDown() const
-{
-   return IS_SET(mKeyModifiers, eCtrl);
-}
-
-bool InputEvent::isAltDown() const
-{
-   return IS_SET(mKeyModifiers, eAlt);
 }
