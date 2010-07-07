@@ -29,6 +29,8 @@
 #include "guilistboxitem.h"
 #include "guilistboxsubitem.h"
 
+#include "listbox/guilistboxmouselistener.h"
+
 class GuiEditBox;
 class GuiComboBox;
 class GuiScrollBar;
@@ -50,8 +52,6 @@ public:
    virtual void   sendMessage(GuiId id, GuiEvent event, int param1);
 
    virtual void   onMouseWheel(const GuiPoint& point, int direction, int flags);
-   virtual void   onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
-   virtual int    onLButtonUp (const GuiPoint& point, int flags);
    virtual void   onKeyDown (int which, bool shift, bool ctrl, bool alt);
    virtual void   onKeyUp(int which);
 
@@ -79,6 +79,8 @@ public:
 
    void           scrollTo(int idx);
 
+   void selectItem(const Point& location);
+
 protected:
    virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
    virtual void   paint(Uint32 tick, const GuiGraphics& graphics);
@@ -103,6 +105,8 @@ protected:
    void           onComboLostFocus();
 
 private:
+   friend class GuiListBoxMouseListener;
+
    void           initializeHeader();
    void           initializeScrollbar();
 
@@ -117,6 +121,7 @@ private:
    static void    initializeControls();
 
 protected:
+
    Items          lines;
    int            maxLines;
    int            maxChars;
@@ -135,6 +140,9 @@ protected:
 private:
    DECLARE_PROPERTIES
    BOOL_PROPERTY(Linebreak)
+
+
+   GuiListBoxMouseListener mMouseListener;
 };
 
 #ifdef JENGINE_INLINE

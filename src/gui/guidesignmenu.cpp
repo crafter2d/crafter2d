@@ -37,31 +37,25 @@
 
 GuiDesignMenu::GuiDesignMenu():
    GuiMenu(),
+   mKeyListener(*this),
+   mMouseListener(*this),
    _filename(),
    _movingItem(false)
 {
 }
 
+
+void GuiDesignMenu::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
+{
+   addKeyListener(mKeyListener);
+   addMouseListener(mMouseListener);
+
+   GuiMenu::onCreate(rect, caption, style, parent);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // - Input interface
 //////////////////////////////////////////////////////////////////////////
-
-int GuiDesignMenu::onLButtonUp(const GuiPoint& point, int flag)
-{
-   return JENGINE_MSG_HANDLED;
-}
-
-void GuiDesignMenu::onKeyUp(int which)
-{
-   SDLMod mode = SDL_GetModState();
-   if ( (mode & KMOD_CTRL) != 0 )
-   {
-      if ( which == SDLK_UP )
-         moveSelectionUp();
-      else if ( which == SDLK_DOWN )
-         moveSelectionDown();
-   }
-}
 
 bool GuiDesignMenu::onContextMenu(const GuiPoint& point)
 {

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,24 +17,27 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MOUSE_MOTION_LISTENERS_H
-#define MOUSE_MOTION_LISTENERS_H
+#include "guidesignmenukeylistener.h"
 
-#include "containers/listeners.h"
+#include "gui/input/keyevent.h"
 
-class MouseEvent;
-class MouseMotionListener;
+#include "gui/guidesignmenu.h"
 
-class MouseMotionListeners : public Listeners<MouseMotionListener>
+GuiDesignMenuKeyListener::GuiDesignMenuKeyListener(GuiDesignMenu& menu):
+   KeyListener(),
+   mMenu(menu)
 {
-public:
-   typedef Listeners<MouseMotionListener> MouseMotionListenersImp;
+}
 
-   MouseMotionListeners();
-   virtual ~MouseMotionListeners();
+// - Notifications
 
-  // firing interface
-   void fireMouseMotionEvent(const MouseEvent& event);
-};
-
-#endif
+void GuiDesignMenuKeyListener::onKeyReleased(const KeyEvent& event)
+{
+   if ( event.isCtrlDown() )
+   {
+      if ( event.getKey() == SDLK_UP )
+         mMenu.moveSelectionUp();
+      else if ( event.getKey() == SDLK_DOWN )
+         mMenu.moveSelectionDown();
+   }
+}

@@ -25,7 +25,8 @@
 
 GuiDialogMouseListener::GuiDialogMouseListener(GuiDialog& dialog):
    MouseListener(),
-   mDialog(dialog)
+   mDialog(dialog),
+   mDragging(false)
 {
 }
 
@@ -43,12 +44,12 @@ void GuiDialogMouseListener::onMouseButton(const MouseEvent& event)
       case MouseEvent::ePressed:
          if ( mDialog.isAboveTitleBar(location) && !mDialog.isAboveCloseButton(location) )
          {
-            mDialog.setDragging(true);
+            mDragging = true;
             event.consume();
          }
          break;
       case MouseEvent::eReleased:
-         mDialog.setDragging(false);
+         mDragging = false;
          event.consume();
          break;
       default:
@@ -67,5 +68,20 @@ void GuiDialogMouseListener::onMouseClick(const MouseEvent& event)
       mDialog.close(false);
 
       event.consume();
+   }
+}
+
+void GuiDialogMouseListener::onMouseMotion(const MouseEvent& event)
+{
+   if ( mDragging )
+   {
+      mDialog.moveWindow(event.getRelative().x(), event.getRelative().y());
+   }
+   else
+   {
+      Point point = event.getLocation();
+
+      mDialog.windowToClient(point);
+      mDialog.setHoverCloseButton(mDialog.isAboveCloseButton(point));
    }
 }

@@ -24,7 +24,6 @@
 
 #include "input/keylisteners.h"
 #include "input/mouselisteners.h"
-#include "input/mousemotionlisteners.h"
 #include "input/mousewheellisteners.h"
 
 #include "guigraphics.h"
@@ -148,12 +147,6 @@ public:
    void            removeMouseListener(const MouseListener& listener);
    MouseListeners& getMouseListeners() { return mMouseListeners; }
 
-  // mouse motion listeners
-   void addMouseMotionListener(MouseMotionListener& listener);
-   void removeMouseMotionListener(const MouseMotionListener& listener);
-
-   void fireMouseMotionEvent(const MouseEvent& event);
-
   // mouse wheel listeners
    void addMouseWheelListener(MouseWheelListener& listener);
    void removeMouseWheelListener(const MouseWheelListener& listener);
@@ -230,7 +223,6 @@ protected:
 
    KeyListeners         mKeyListeners;
    MouseListeners       mMouseListeners;
-   MouseMotionListeners mMouseMotionListeners;
    MouseWheelListeners  mMouseWheelListeners;
 
    Observers      mObservers;

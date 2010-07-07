@@ -18,35 +18,58 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "guidesigndecoratormousemotionlistener.h"
+#include "gui/menu/guimenumouselistener.h"
 
 #include "gui/input/mouseevent.h"
 
-#include "gui/guidesigndecorator.h"
-#include "gui/guidesignselection.h"
-#include "gui/guidesignwnd.h"
+#include "gui/guimenu.h"
+#include "gui/guieventhandler.h"
+#include "gui/guieventhandlers.h"
 
-GuiDesignDecoratorMouseMotionListener::GuiDesignDecoratorMouseMotionListener(GuiDesignDecorator& decorator):
-   MouseMotionListener(),
-   mDecorator(decorator)
+#include "scriptmanager.h"
+#include "scopedvalue.h"
+
+GuiMenuMouseListener::GuiMenuMouseListener(GuiMenu& menu):
+   MouseListener(),
+   mMenu(menu)
 {
 }
 
 // - Notifications
 
-void GuiDesignDecoratorMouseMotionListener::onMouseMotion(const MouseEvent& event)
+void GuiMenuMouseListener::onMouseButton(const MouseEvent& event)
 {
-   if ( !event.isLeftButtonDown() )
-   {
-     return;
-   }
+   GuiPoint point = event.getLocation();
 
-   if ( mDecorator.mDragging )
+   mMenu.windowToClient(point);
+   mMenu.selectItem(point);
+
+   if ( mMenu.getSelection() != -1 )
    {
-      dynamic_cast<GuiDesignWnd*>(mDecorator.getParent())->moveSelected(event.getRelative());
+      mMenu.setVisible(false);
+
+      int id = mMenu.getItems()[mMenu.getSelection()].getId();
+
+      GuiEventHandler* phandler = mMenu.getEventHandlers().findByEventType(GuiContextMenuEvent);
+      if ( phandler != NULL )
+      {
+         ScopedValue<bool> value(mMenu._processing, true, false);
+
+         ScriptManager& mgr = ScriptManager::getInstance();
+         Script& script = mgr.getTemporaryScript();
+         script.prepareCall(phandler->getFunctionName().c_str());
+         script.addParam(id);
+         script.run(1);
+      }
+      
+      mMenu.getParent()->onCommand(id);
    }
-   else
-   {
-      mDecorator.mpSelectionCtrl->fireMouseMotionEvent(event);
-   }
+}
+
+void GuiMenuMouseListener::onMouseMotion(const MouseEvent& event)
+{
+   GuiPoint point = event.getLocation();
+
+   mMenu.windowToClient(point);
+   mMenu.selectItem(point);
 }

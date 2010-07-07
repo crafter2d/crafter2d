@@ -30,7 +30,8 @@
 
 GuiDesignDecoratorMouseListener::GuiDesignDecoratorMouseListener(GuiDesignDecorator& decorator):
    MouseListener(),
-   mDecorator(decorator)
+   mDecorator(decorator),
+   mDragging(false)
 {
 }
 
@@ -44,7 +45,7 @@ void GuiDesignDecoratorMouseListener::onMouseButton(const MouseEvent& event)
       return;
    }
 
-   mDecorator.mpSelectionCtrl->getMouseListeners().fireMouseButtonEvent(event);
+   mDecorator.getSelectionCtrl().getMouseListeners().fireMouseButtonEvent(event);
 
    if ( event.getEventType() == MouseEvent::ePressed )
    {
@@ -52,12 +53,29 @@ void GuiDesignDecoratorMouseListener::onMouseButton(const MouseEvent& event)
 
       if ( !event.isConsumed() )
       {
-        mDecorator.mDragging = true;
+        mDragging = true;
       }
    }
    else if ( event.getEventType() == MouseEvent::eReleased )
    {
-      mDecorator.mDragging = false;
+      mDragging = false;
+   }
+}
+
+void GuiDesignDecoratorMouseListener::onMouseMotion(const MouseEvent& event)
+{
+   if ( !event.isLeftButtonDown() )
+   {
+     return;
+   }
+
+   if ( mDragging )
+   {
+      dynamic_cast<GuiDesignWnd*>(mDecorator.getParent())->moveSelected(event.getRelative());
+   }
+   else
+   {
+      mDecorator.getSelectionCtrl().getMouseListeners().fireMouseMotionEvent(event);
    }
 }
 
@@ -70,7 +88,7 @@ void GuiDesignDecoratorMouseListener::select(bool addSelection)
    if ( !addSelection )
    {
       dynamic_cast<GuiDesignWnd*>(mDecorator.getParent())->unselectAll();
-      Game::getInstance().getCanvas().getDesigner().focusChanged(mDecorator.control());
+      Game::getInstance().getCanvas().getDesigner().focusChanged(mDecorator.getControl());
 
       selected = false;
    }

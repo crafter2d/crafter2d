@@ -49,7 +49,7 @@ void TileEditorMouseListener::onMouseButton(const MouseEvent& event)
 
          ScriptManager& mgr = ScriptManager::getInstance();
          Script& script = mgr.getTemporaryScript();
-         script.setSelf(this, "GuiTileEditor");
+         script.setSelf(&mTileEditor, "GuiTileEditor");
          script.prepareCall(phandler->getFunctionName().c_str());
          script.addParam((void*)&point, "GuiPoint");
          script.run(1);
@@ -69,10 +69,32 @@ void TileEditorMouseListener::onMouseClick(const MouseEvent& event)
 
          ScriptManager& mgr = ScriptManager::getInstance();
          Script& script = mgr.getTemporaryScript();
-         script.setSelf(this, "GuiTileEditor");
+         script.setSelf(&mTileEditor, "GuiTileEditor");
          script.prepareCall(phandler->getFunctionName().c_str());
          script.addParam((void*)&point, "GuiPoint");
          script.run(1);
       }
+   }
+}
+
+void TileEditorMouseListener::onMouseMotion(const MouseEvent& event)
+{
+   GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseMoveEvent);
+   if ( phandler != NULL )
+   {
+      GuiPoint location = event.getLocation();
+      GuiPoint relative = event.getRelative();
+      bool pressed      = event.isLeftButtonDown();
+
+      mTileEditor.windowToClient(location);
+
+      ScriptManager& mgr = ScriptManager::getInstance();
+      Script& script = mgr.getTemporaryScript();
+      script.setSelf(&mTileEditor, "GuiTileEditor");
+      script.prepareCall(phandler->getFunctionName().c_str());
+      script.addParam((void*)&location, "GuiPoint");
+      script.addParam((void*)&relative, "GuiPoint");
+      script.addParam(pressed);
+      script.run(3);
    }
 }

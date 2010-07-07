@@ -20,8 +20,8 @@
 #ifndef GUIDESIGNDECORATOR_H
 #define GUIDESIGNDECORATOR_H
 
+#include "designer/guidesigndecoratorkeylistener.h"
 #include "designer/guidesigndecoratormouselistener.h"
-#include "designer/guidesigndecoratormousemotionlistener.h"
 
 #include "guicontrol.h"
 
@@ -37,24 +37,21 @@ public:
    virtual ~GuiDesignDecorator();
 
  // Get/set interface
-   const GuiControl&    control() const;
-         GuiControl&    control();
-   void                 control(GuiControl* pcontrol);
+   const GuiControl&    getControl() const;
+         GuiControl&    getControl();
+   void                 setControl(GuiControl* pcontrol);
 
    bool                 isSelected() const;
    void                 setSelected(bool selected);
 
+   const GuiDesignSelection& getSelectionCtrl() const;
+         GuiDesignSelection& getSelectionCtrl();
+
  // Overloads
    virtual GuiWnd*   hitTest(const GuiPoint &point);
-
-   //virtual void      onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
-   //virtual int       onLButtonDown (const GuiPoint& point, int flags);
-   //virtual int       onLButtonUp (const GuiPoint& point, int flags);
-   
-   virtual void      onKeyUp(int which);
+   virtual void      onCommand(int cmd);
 
    virtual bool      onContextMenu(const GuiPoint& point);
-   virtual void      onCommand(int cmd);
 
  // operations
    void resize(const GuiPoint& rel, int borders);
@@ -66,19 +63,17 @@ protected:
 
 private:
    friend class GuiDesignDecoratorMouseListener;
-   friend class GuiDesignDecoratorMouseMotionListener;
 
  // drawing
    void renderSelected(const GuiGraphics& graphics);
 
    const GuiDesignDecorator& me();
 
-   GuiDesignDecoratorMouseListener       mMouseListener;
-   GuiDesignDecoratorMouseMotionListener mMouseMotionListener;
+   GuiDesignDecoratorKeyListener   mKeyListener;
+   GuiDesignDecoratorMouseListener mMouseListener;
 
    GuiDesignSelection* mpSelectionCtrl;
    GuiControl*         mpControl;
-   bool                mDragging;
 };
 
 #ifdef JENGINE_INLINE

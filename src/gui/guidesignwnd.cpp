@@ -43,7 +43,6 @@ GuiDesignWnd::GuiDesignWnd():
    _pselectionctrl(NULL),
    _popupMenu(NULL),
    mMouseListener(*this),
-   mMotionListener(*this),
    _functions(),
    _filename(),
    _selected(false)
@@ -72,7 +71,6 @@ void GuiDesignWnd::onCreate(const GuiRect& rect, const char* caption, GuiStyle s
    _pselectionctrl->setVisible(false);
 
    addMouseListener(mMouseListener);
-   addMouseMotionListener(mMotionListener);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -163,7 +161,7 @@ void GuiDesignWnd::onCommand(int id)
 
       GuiControl* pcontrol = GuiDesigner::createControl(id, 0, p, pdec);
       ASSERT_PTR(pcontrol)
-      pdec->control(pcontrol);
+      pdec->setControl(pcontrol);
    }
 }
 
@@ -335,7 +333,7 @@ void GuiDesignWnd::doSave()
       GuiDesignDecorator* pcontrol = dynamic_cast<GuiDesignDecorator*>(*it);
       if ( pcontrol != NULL )
       {
-         GuiControl& actualcontrol = pcontrol->control();
+         GuiControl& actualcontrol = pcontrol->getControl();
 
          int type_id = actualcontrol.getTypeId();
          pchild->SetAttribute("type", type_id);
@@ -411,11 +409,11 @@ void GuiDesignWnd::load(const std::string& file)
          GuiPoint p(x,y);
          GuiDesignDecorator* pdec = new GuiDesignDecorator();
          pdec->create(3, GuiRect(), "decorator", 8, this);
-         pdec->control(GuiDesigner::createControl(type, 0, p, pdec));
+         pdec->setControl(GuiDesigner::createControl(type, 0, p, pdec));
          pdec->resizeWindow(width, height);
 
-         pdec->control().getProperties().fromXML(pchild);
-         pdec->control().getEventHandlerDefinitions().fromXML(pchild);
+         pdec->getControl().getProperties().fromXML(pchild);
+         pdec->getControl().getEventHandlerDefinitions().fromXML(pchild);
 
          pchild = (TiXmlElement*)pchildren->IterateChildren("child", pchild);
       }

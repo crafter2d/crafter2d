@@ -17,26 +17,72 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-#include "designwndmousemotionlistener.h"
+#include "guiheadercontrolmouselistener.h"
 
 #include "gui/input/mouseevent.h"
 
-#include "gui/guidesignselection.h"
-#include "gui/guidesignwnd.h"
+#include "guiheadercontrol.h"
+#include "guiheadercolumn.h"
 
-DesignWndMouseMotionListener::DesignWndMouseMotionListener(GuiDesignWnd& designwnd):
-   MouseMotionListener(),
-   mDesignWnd(designwnd)
+GuiHeaderControlMouseListener::GuiHeaderControlMouseListener(GuiHeaderCtrl& header):
+   MouseListener(),
+   mHeader(header),
+   mColumn(-1)
 {
 }
 
 // - Notifications
 
-void DesignWndMouseMotionListener::onMouseMotion(const MouseEvent& event)
+void GuiHeaderControlMouseListener::onMouseButton(const MouseEvent& event)
 {
-   if ( event.isLeftButtonDown() )
+   if ( !event.isLeftButtonDown() )
    {
-      mDesignWnd._pselectionctrl->fireMouseMotionEvent(event);
+      return;
    }
+
+   if ( event.getEventType() == MouseEvent::ePressed )
+   {
+      Point point = event.getLocation();
+
+      mHeader.windowToClient(point);
+      mColumn = findColumn(point);
+   }
+   else
+   {
+      mColumn = -1;
+   }
+}
+
+void GuiHeaderControlMouseListener::onMouseMotion(const MouseEvent& event)
+{
+   if ( mColumn > -1 )
+   {
+      GuiHeaderColumn& column = *mHeader.getColumns()[mColumn];
+      column.resize(event.getRelative().x());
+
+      for ( int index = mColumn+1; index < mHeader.getColumns().size(); index++ )
+      {
+         GuiHeaderColumn& column = *mHeader.getColumns()[index];
+         column.rect().offset(event.getRelative().x(), 0);
+      }
+   }
+}
+
+// - Utility functions
+
+int GuiHeaderControlMouseListener::findColumn(const Point& point) const
+{
+   const GuiHeaderCtrl::Columns& columns = mHeader.getColumns();
+   for ( int n = 0, x = 0; n < columns.size(); ++n )
+   {
+      const GuiHeaderColumn& column = *columns[n];
+      x += column.width();
+
+      if ( abs(point.x() - x) < 4 )
+      {
+         return n;
+      }
+   }
+
+   return -1;
 }

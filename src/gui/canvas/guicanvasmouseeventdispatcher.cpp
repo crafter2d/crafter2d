@@ -151,7 +151,7 @@ void GuiCanvasMouseEventDispatcher::dispatchMouseMotion(const MouseEvent& event)
 
    if ( mWindow.isAlive() )
    {
-      mWindow->fireMouseMotionEvent(event);
+      mWindow->getMouseListeners().fireMouseMotionEvent(event);
    }
 
    // convenience call during conversion

@@ -27,7 +27,6 @@
 
 #include "guidialogkeylistener.h"
 #include "guidialogmouselistener.h"
-#include "guidialogmousemotionlistener.h"
 
 /*! @author Jeroen Broekhuizen
  
@@ -51,12 +50,8 @@ public:
 protected:
    friend class GuiDialogKeyListener;
    friend class GuiDialogMouseListener;
-   friend class GuiDialogMouseMotionListener;
 
  // get/set
-   bool isDragging() const;
-   void setDragging(bool dragging);
-
    bool isHoveringCloseButton() const;
    void setHoverCloseButton(bool hoover);
 
@@ -82,12 +77,10 @@ protected:
 
    GuiDialogKeyListener         mKeyListener;
    GuiDialogMouseListener       mMouseListener;
-   GuiDialogMouseMotionListener mMouseMotionListener;
 
    bool        mHoverClose;
    int         _modalResult;
    bool        _modal;
-   bool        mDragging;
 };
 
 #endif

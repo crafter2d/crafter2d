@@ -34,11 +34,10 @@
 
 GuiDesignDecorator::GuiDesignDecorator():
    GuiControl(),
+   mKeyListener(*this),
    mMouseListener(*this),
-   mMouseMotionListener(*this),
    mpSelectionCtrl(NULL),
-   mpControl(NULL),
-   mDragging(false)
+   mpControl(NULL)
 {
 }
 
@@ -54,8 +53,8 @@ void GuiDesignDecorator::onCreate(const GuiRect& rect, const char* caption, GuiS
 {
    GuiControl::onCreate(rect, caption, style, parent);
 
+   addKeyListener(mKeyListener);
    addMouseListener(mMouseListener);
-   addMouseMotionListener(mMouseMotionListener);
 
    mpSelectionCtrl = new GuiDesignSelection();
    mpSelectionCtrl->create(0, GuiRect(), "", 0, this);
@@ -69,26 +68,26 @@ void GuiDesignDecorator::onCreate(const GuiRect& rect, const char* caption, GuiS
 // - Get/set interface
 //////////////////////////////////////////////////////////////////////////
 
-void GuiDesignDecorator::control(GuiControl* pcontrol)
+void GuiDesignDecorator::setControl(GuiControl* pcontrol)
 {
    mpControl = pcontrol;
    
-   const GuiRect& rect = control().getWindowRect();
+   const GuiRect& rect = getControl().getWindowRect();
    setWindowRect(rect);
    
    GuiRect newrect(0, rect.getWidth(), 0, rect.getHeight());
-   control().setWindowRect(newrect);
-   mpSelectionCtrl->setWindowRect(newrect);
+   getControl().setWindowRect(newrect);
+   getSelectionCtrl().setWindowRect(newrect);
 }
 
 INLINE bool GuiDesignDecorator::isSelected() const
 {
-   return mpSelectionCtrl->getVisible();
+   return getSelectionCtrl().getVisible();
 }
 
 INLINE void GuiDesignDecorator::setSelected(bool selected)
 {
-   mpSelectionCtrl->setVisible(selected);
+   getSelectionCtrl().setVisible(selected);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -102,66 +101,6 @@ void GuiDesignDecorator::onRender(Uint32 tick, const GuiGraphics& graphics)
 //////////////////////////////////////////////////////////////////////////
 // - Operations
 //////////////////////////////////////////////////////////////////////////
-
-/*
-int GuiDesignDecorator::onLButtonDown (const GuiPoint& point, int flags)
-{
-   if ( _selectionCtrl->onLButtonDown(point, flags) == JENGINE_MSG_UNHANDLED )
-   {
-      MDragging = true;
-   }
-
-   bool hasSelection = selectionCtrl().getVisible();
-
-   if ( !IS_SET(flags, MouseEvent::eCtrl) )
-   {
-      dynamic_cast<GuiDesignWnd*>(getParent())->unselectAll();
-      Game::getInstance().getCanvas().getDesigner().focusChanged(control());
-
-      hasSelection = false;
-   }
-
-   selectionCtrl().setVisible(!hasSelection);
-
-   return JENGINE_MSG_HANDLED;
-}
-
-int GuiDesignDecorator::onLButtonUp (const GuiPoint& point, int flags)
-{
-   if ( MDragging )
-   {
-      MDragging = false;
-
-      return JENGINE_MSG_HANDLED;
-   }
-
-   return _selectionCtrl->onLButtonUp(point, flags);
-}
-
-void GuiDesignDecorator::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags)
-{
-   if ( mDragging )
-   {
-      dynamic_cast<GuiDesignWnd*>(getParent())->moveSelected(rel);
-   }
-   else
-   {
-      _selectionCtrl->onMouseMove(point, rel, flags);
-   }
-}
-*/
-
-void GuiDesignDecorator::onKeyUp(int which)
-{
-   GuiDesignWnd* pwnd = dynamic_cast<GuiDesignWnd*>(getParent());
-   
-   switch ( which )
-   {
-   case SDLK_DELETE:
-      pwnd->deleteSelected();
-      break;
-   }
-}
 
 bool GuiDesignDecorator::onContextMenu(const GuiPoint& point)
 {
@@ -186,8 +125,8 @@ void GuiDesignDecorator::onCommand(int cmd)
 
 void GuiDesignDecorator::onResize(int width, int height)
 {
-   control().resizeWindow(width, height);
-   mpSelectionCtrl->resizeWindow(width, height);
+   getControl().resizeWindow(width, height);
+   getSelectionCtrl().resizeWindow(width, height);
 }
 
 GuiWnd* GuiDesignDecorator::hitTest(const GuiPoint &point)
@@ -197,5 +136,5 @@ GuiWnd* GuiDesignDecorator::hitTest(const GuiPoint &point)
 
 void GuiDesignDecorator::resize(const GuiPoint& rel, int borders)
 {
-  mpSelectionCtrl->resize(rel, borders);
+   getSelectionCtrl().resize(rel, borders);
 }

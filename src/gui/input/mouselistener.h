@@ -36,10 +36,16 @@ public:
    /// Called when a click with a button is detected
    virtual void onMouseClick(const MouseEvent& event);
 
+   /// \fn onMouseMotion(const MouseEvent& event);
+   /// Called when the mouse moves
+   virtual void onMouseMotion(const MouseEvent& event);
 
+   // \fn onMouseEntered(const MouseEvent& event);
+   // Called when the mouse enters the window
    virtual void onMouseEntered(const MouseEvent& event);
 
-
+   // \fn onMouseExited(const MouseEvent& event);
+   // Called when the mouse leaves the window
    virtual void onMouseExited(const MouseEvent& event);
 };
 

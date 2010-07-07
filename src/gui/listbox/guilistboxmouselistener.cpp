@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,24 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUIDESIGN_SELECTION_MOUSE_MOTION_LISTENER_H
-#define GUIDESIGN_SELECTION_MOUSE_MOTION_LISTENER_H
 
-#include "gui/input/mousemotionlistener.h"
+#include "guilistboxmouselistener.h"
 
-class GuiDesignSelection;
+#include "gui/input/mouseevent.h"
 
-class GuiDesignSelectionMouseMotionListener : public MouseMotionListener
+#include "gui/guilistbox.h"
+
+GuiListBoxMouseListener::GuiListBoxMouseListener(GuiListBox& listbox):
+   MouseListener(),
+   mListBox(listbox)
 {
-public:
-   GuiDesignSelectionMouseMotionListener(GuiDesignSelection& decorator);
+}
 
- // notifications
-   virtual void onMouseMotion(const MouseEvent& event);
+// - Notifications
 
-private:
+void GuiListBoxMouseListener::onMouseClick(const MouseEvent& event)
+{
+   Point location = event.getLocation();
 
-   GuiDesignSelection& mSelector;
-};
-
-#endif
+   mListBox.windowToClient(location);
+   mListBox.selectItem(location);
+}

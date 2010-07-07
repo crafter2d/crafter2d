@@ -46,11 +46,9 @@ GuiDialog::GuiDialog():
    _closepressed(),
    mKeyListener(*this),
    mMouseListener(*this),
-   mMouseMotionListener(*this),
    mHoverClose(false),
    _modalResult(0),
-   _modal(false),
-   mDragging(false)
+   _modal(false)
 {
 }
 
@@ -68,7 +66,6 @@ void GuiDialog::onCreate (const GuiRect& rect, const char* caption, GuiStyle sty
 
    addKeyListener(mKeyListener);
    addMouseListener(mMouseListener);
-   addMouseMotionListener(mMouseMotionListener);
 }
 
 void GuiDialog::initializeEventHandlerDefinitions()
@@ -81,16 +78,6 @@ void GuiDialog::initializeEventHandlerDefinitions()
 }
 
 // - Get/set interface
-
-bool GuiDialog::isDragging() const
-{
-   return mDragging;
-}
-
-void GuiDialog::setDragging(bool dragging)
-{
-   mDragging = dragging;
-}
 
 bool GuiDialog::isHoveringCloseButton() const
 {

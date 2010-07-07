@@ -17,18 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MOUSE_MOTION_LISTENER_H
-#define MOUSE_MOTION_LISTENER_H
+#ifndef TILE_EDITOR_KEY_LISTENER_H
+#define TILE_EDITOR_KEY_LISTENER_H
 
-class MouseEvent;
+#include "gui/input/keylistener.h"
 
-class MouseMotionListener
+class GuiTileEditor;
+
+class TileEditorKeyListener : public KeyListener
 {
 public:
-   MouseMotionListener();
-   virtual ~MouseMotionListener();
+   explicit TileEditorKeyListener(GuiTileEditor& tileeditor);
 
-   virtual void onMouseMotion(const MouseEvent& event);
+  // notifications
+   virtual void onKeyReleased(const KeyEvent& event);
+
+private:
+   GuiTileEditor& mTileEditor;
 };
 
 #endif

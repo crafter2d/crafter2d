@@ -25,6 +25,7 @@
 #include "guifocuslistener.h"
 #include "guicontrol.h"
 #include "guimenuitem.h"
+#include "menu/guimenumouselistener.h"
 
 /**
 @author Jeroen Broekhuizen
@@ -50,22 +51,23 @@ public:
    virtual void     addItem(int id, const std::string& item);
    void             calculateSize();
    
-   virtual void   onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
-   virtual int    onLButtonUp(const GuiPoint& point, int flag);
-
  // notifications
    virtual void onFocusChanged(GuiWnd& newFocus, GuiWnd* poldFocus);
 
 protected:
-   virtual void   onRender(Uint32 tick, const GuiGraphics& graphics);
+   virtual void onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
+   virtual void onRender(Uint32 tick, const GuiGraphics& graphics);
 
-   virtual void   initializeEventHandlerDefinitions();
+   virtual void initializeEventHandlerDefinitions();
 
    void selectItem(const GuiPoint& point);
 
 private:
+   friend class GuiMenuMouseListener;
+
    GuiMenuItems MItems;
    std::string  _name;
+   GuiMenuMouseListener mMouseListener;
    GuiPoint     _popupLocation;
    int          _selection;
    bool         _processing;

@@ -22,6 +22,9 @@
 
 #include "guimenu.h"
 
+#include "gui/designer/guidesignmenukeylistener.h"
+#include "gui/designer/guidesignmenumouselistener.h"
+
 class GuiDesignMenu : public GuiMenu
 {
 public:
@@ -32,13 +35,13 @@ public:
    bool load(const std::string& name);
    void save();
 
-   virtual int  onLButtonUp(const GuiPoint& point, int flag);
-   virtual void onKeyUp(int which);
    virtual bool onContextMenu(const GuiPoint& point);
    virtual void onCommand(int cmd);
    virtual void onSetFocus(GuiWnd* oldCtrl);
 
 protected:
+ // overloads
+   void onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
 
    void editItem(int item);
    void deleteItem(int item);
@@ -48,6 +51,11 @@ protected:
    void close();
 
 private:
+   friend class GuiDesignMenuKeyListener;
+
+   GuiDesignMenuKeyListener   mKeyListener;
+   GuiDesignMenuMouseListener mMouseListener;
+
    std::string _filename;
    bool        _movingItem;
 };

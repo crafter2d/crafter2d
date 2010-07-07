@@ -54,7 +54,23 @@ void MouseListeners::fireMouseClickEvent(const MouseEvent& event)
 {
    for ( iterator it = begin(); it != end(); ++it )
    {
-      (*it)->onMouseClick(event);
+      MouseListener* plistener = (*it);
+      plistener->onMouseClick(event);
+
+      if ( event.isConsumed() )
+        break;
+   }
+}
+
+void MouseListeners::fireMouseMotionEvent(const MouseEvent& event)
+{
+   for ( iterator it = begin(); it != end(); ++it )
+   {
+      MouseListener* plistener = (*it);
+      plistener->onMouseMotion(event);
+
+      if ( event.isConsumed() )
+        break;
    }
 }
 

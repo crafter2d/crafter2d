@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,42 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef GUI_LISTBOX_MOUSE_LISTENER_H
+#define GUI_LISTBOX_MOUSE_LISTENER_H
 
-#include "guidesignselectionmousemotionlistener.h"
+#include "gui/input/mouselistener.h"
 
-#include "gui/input/mouseevent.h"
+class GuiListBox;
 
-#include "gui/guidesigndecorator.h"
-#include "gui/guidesignselection.h"
-#include "gui/guidesignwnd.h"
-
-GuiDesignSelectionMouseMotionListener::GuiDesignSelectionMouseMotionListener(GuiDesignSelection& selection):
-   MouseMotionListener(),
-   mSelector(selection)
+class GuiListBoxMouseListener : public MouseListener
 {
-}
+public:
+   GuiListBoxMouseListener(GuiListBox& listbox);
 
-// - Notification
+  // mouse click
+   virtual void onMouseClick(const MouseEvent& event);
 
-void GuiDesignSelectionMouseMotionListener::onMouseMotion(const MouseEvent& event)
-{
-   if ( !event.isLeftButtonDown() && event.getEventType() == MouseEvent::ePressed )
-   {
-     return;
-   }
+private:
+   GuiListBox& mListBox;
+};
 
-   if ( mSelector.mBorders != GuiDesignSelection::eNone )
-   {
-      GuiDesignDecorator* pdecorator = dynamic_cast<GuiDesignDecorator*>(mSelector.getParent());
-      if ( pdecorator )
-      {
-         dynamic_cast<GuiDesignWnd*>(pdecorator->getParent())->resizeSelected(event.getRelative(), mSelector.mBorders);
-      }
-      else
-      {
-         mSelector.resize(event.getRelative(), mSelector.mBorders);
-      }
-
-      event.consume();
-   }
-}
+#endif

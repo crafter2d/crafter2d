@@ -17,23 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUIDIALOG_MOUSE_MOTION_LISTENER_H
-#define GUIDIALOG_MOUSE_MOTION_LISTENER_H
+#ifndef GUIDESIGN_DECORATOR_KEY_LISTENER_H
+#define GUIDESIGN_DECORATOR_KEY_LISTENER_H
 
-#include "gui/input/mousemotionlistener.h"
+#include "gui/input/keylistener.h"
 
-class GuiDialog;
+class GuiDesignDecorator;
 
-class GuiDialogMouseMotionListener : public MouseMotionListener
+class GuiDesignDecoratorKeyListener : public KeyListener
 {
 public:
-   GuiDialogMouseMotionListener(GuiDialog& dialog);
+   GuiDesignDecoratorKeyListener(GuiDesignDecorator& decorator);
 
-  // notifications
-   virtual void onMouseMotion(const MouseEvent& event);
-
+ // notifications
+   virtual void onKeyReleased(const KeyEvent& event);
+   
 private:
-   GuiDialog& mDialog;
+   GuiDesignDecorator& mDecorator;
 };
 
 #endif

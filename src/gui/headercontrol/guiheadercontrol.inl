@@ -24,27 +24,12 @@ INLINE int GuiHeaderCtrl::height()
    return 16;
 }
 
-INLINE int GuiHeaderCtrl::count() const
+INLINE const GuiHeaderCtrl::Columns& GuiHeaderCtrl::getColumns() const
 {
-   return columns.size();
+  return columns;
 }
 
-INLINE const GuiHeaderColumn& GuiHeaderCtrl::operator[](int index) const
+INLINE GuiHeaderCtrl::Columns& GuiHeaderCtrl::getColumns()
 {
-   return *columns[index];
-}
-
-GuiHeaderColumn& GuiHeaderCtrl::operator[](int index)
-{
-   return *columns[index];
-}
-
-INLINE void GuiHeaderCtrl::dragging(bool drag)
-{
-   _dragging = drag;
-}
-
-INLINE bool GuiHeaderCtrl::dragging() const
-{
-   return _dragging;
+   return columns;
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,27 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "mousemotionlisteners.h"
+#include "guidesignmenumouselistener.h"
 
-#include "mousemotionlistener.h"
+#include "gui/input/mouseevent.h"
 
-MouseMotionListeners::MouseMotionListeners():
-   MouseMotionListenersImp()
+GuiDesignMenuMouseListener::GuiDesignMenuMouseListener(GuiDesignMenu& menu):
+   MouseListener(),
+   mMenu(menu)
 {
 }
 
-MouseMotionListeners::~MouseMotionListeners()
-{
-}
-
-//-----------------------------------
 // - Notifications
-//-----------------------------------
 
-void MouseMotionListeners::fireMouseMotionEvent(const MouseEvent& event)
+void GuiDesignMenuMouseListener::onMouseButton(const MouseEvent& event)
 {
-   for ( iterator it = begin(); it != end(); ++it )
-   {
-      (*it)->onMouseMotion(event);
-   }
+   event.consume();
 }

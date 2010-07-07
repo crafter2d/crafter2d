@@ -32,6 +32,7 @@ public:
 
  // notifications
    virtual void onMouseButton(const MouseEvent& event);
+   virtual void onMouseMotion(const MouseEvent& event);
 
 private:
  // helpers
@@ -39,6 +40,7 @@ private:
    int  determineBorder(const Point& point) const;
 
    GuiDesignDecorator& mDecorator;
+   bool                mDragging;
 };
 
 #endif

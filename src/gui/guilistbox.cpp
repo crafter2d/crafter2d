@@ -83,7 +83,8 @@ GuiListBox::GuiListBox():
    curSelColumn(-1),
    visibleItemCount(0),
    dirty(true),
-   _editing(false)
+   _editing(false),
+   mMouseListener(*this)
 {
 }
 
@@ -104,6 +105,8 @@ void GuiListBox::onCreate(const GuiRect& rect, const char* caption, GuiStyle sty
    initializeControls();
    initializeHeader();
    initializeScrollbar();
+
+   addMouseListener(mMouseListener);
 }
 
 void GuiListBox::initializeControls()
@@ -266,7 +269,7 @@ void GuiListBox::setCurSel(int sel)
 void GuiListBox::setItemText(int index, const char* text, int subitem)
 {
    assert(index >= 0 && index < lines.size() && "setItemText: Invalid item index.");
-   assert(subitem >= 0 && subitem < header().count() && "setItemText: invalid subitem index.");
+   assert(subitem >= 0 && subitem < header().getColumnCount() && "setItemText: invalid subitem index.");
 
    GuiListBoxItem& item = *(lines[index]);
    if ( item.count() <= subitem )
@@ -279,8 +282,8 @@ void GuiListBox::setItemText(int index, const char* text, int subitem)
 
 void GuiListBox::setEditableColumn(int column)
 {
-   assert( column >= 0 && column < header().count() && "GuiListBox.setEditableColumn: invalid column number." );
-   header()[column].editable(true);
+   assert( column >= 0 && column < header().getColumnCount() && "GuiListBox.setEditableColumn: invalid column number." );
+   header().setColumnEditable(column, true);
 }
 
 void GuiListBox::scrollTo(int idx)
@@ -315,67 +318,6 @@ void GuiListBox::removeAll()
 //////////////////////////////////////////////////////////////////////////
 // - Input messages
 //////////////////////////////////////////////////////////////////////////
-
-int GuiListBox::onLButtonUp (const GuiPoint& point, int flags)
-{
-   if ( GuiControl::onLButtonUp(point, flags) == JENGINE_MSG_HANDLED )
-   {
-      return JENGINE_MSG_HANDLED;
-   }
-   else
-   {
-      if ( !lines.empty() )
-      {
-         int item = calculateItemUnderCursor(point);
-
-         if ( isEditing() && item != getCurSel() )
-         {
-            if ( editType(getCurSel()) == EEditBox )
-               onEditLostFocus();
-            else
-               onComboLostFocus();
-         }
-
-         if ( item != -1 )
-         {
-            setCurSel(item);
-            selectColumn(item, point.x);
-
-            GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiListSelChangeEvent);
-            if ( phandler != NULL )
-            {
-               ScriptManager& mgr = ScriptManager::getInstance();
-               Script& script = mgr.getTemporaryScript();
-               script.setSelf(this, "GuiListBox");
-               script.prepareCall(phandler->getFunctionName().c_str());
-               script.addParam(item);
-               script.run(1);
-            }
-            else
-               parent->sendMessage(m_id, GuiListSelChangeEvent, item);
-         }
-         else
-         {
-            setCurSel(-1);
-         }
-      }
-
-      return JENGINE_MSG_HANDLED;
-   }
-
-   return JENGINE_MSG_UNHANDLED;
-}
-
-void GuiListBox::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags)
-{
-   GuiPoint p(point);
-   windowToClient(p);
-
-   if ( header().hitTest(p) )
-   {
-      header().onMouseMove(point, rel, flags);
-   }
-}
 
 void GuiListBox::onMouseWheel(const GuiPoint& point, int direction, int flags)
 {
@@ -452,11 +394,51 @@ void GuiListBox::onComboLostFocus()
 
 void GuiListBox::applyChange(const std::string& text)
 {
+   
 }
 
 //////////////////////////////////////////////////////////////////////////
 // - Helper functions
 //////////////////////////////////////////////////////////////////////////
+
+void GuiListBox::selectItem(const Point& location)
+{
+   if ( !lines.empty() )
+   {
+      int item = calculateItemUnderCursor(location);
+
+      if ( isEditing() && item != getCurSel() )
+      {
+         if ( editType(getCurSel()) == EEditBox )
+            onEditLostFocus();
+         else
+            onComboLostFocus();
+      }
+
+      if ( item != -1 )
+      {
+         setCurSel(item);
+         selectColumn(item, location.x());
+
+         GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiListSelChangeEvent);
+         if ( phandler != NULL )
+         {
+            ScriptManager& mgr = ScriptManager::getInstance();
+            Script& script = mgr.getTemporaryScript();
+            script.setSelf(this, "GuiListBox");
+            script.prepareCall(phandler->getFunctionName().c_str());
+            script.addParam(item);
+            script.run(1);
+         }
+         else
+            parent->sendMessage(m_id, GuiListSelChangeEvent, item);
+      }
+      else
+      {
+         setCurSel(-1);
+      }
+   }
+}
 
 void GuiListBox::selectColumn(int row, int x)
 {
@@ -616,7 +598,7 @@ GuiRect GuiListBox::getSubItemBounds(int row, int column)
    int x = 0;
    for (int i=0; i < column; ++i)
    {
-      x += header()[i].width();
+      x += header().getColumnWidth(i);
    }
 
    int y = 0;
@@ -630,7 +612,7 @@ GuiRect GuiListBox::getSubItemBounds(int row, int column)
       y += 16;
    }
 
-   return GuiRect(x, x+header()[column].width(), y+2, y+2+(*lines[row])[0].block().height());
+   return GuiRect(x, x+header().getColumnWidth(column), y+2, y+2+(*lines[row])[0].block().height());
 }
 
 int GuiListBox::calculateItemUnderCursor(const GuiPoint& point)

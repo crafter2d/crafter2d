@@ -24,8 +24,8 @@
 #include "guitileeditorlayer.h"
 #include "guitileeditorworldobserver.h"
 
+#include "tileeditor/tileeditorkeylistener.h"
 #include "tileeditor/tileeditormouselistener.h"
-#include "tileeditor/tileeditormousemotionlistener.h"
 
 class GuiScrollBar;
 class World;
@@ -65,21 +65,17 @@ protected:
    virtual void paint (Uint32 tick, const GuiGraphics& graphics);
    virtual void onResize(int width, int height);
 
-   //virtual int  onLButtonDown(const GuiPoint& point, int flags);
-   //virtual int  onLButtonUp(const GuiPoint& point, int flags);
-   //virtual void onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
-   virtual void onKeyUp(int which);
-
+ // event handlers
    virtual void initializeEventHandlerDefinitions();
 
-  // messages
+ // messages
    void         onHorzScroll(int pos);
    void         onVertScroll(int pos);
 
-  // initialization
+ // initialization
    void         initializeScrollbars();
 
-  // painting
+ // painting
    void         paintLayer(Layer& layer);
    void         paintBounds(const GuiGraphics& graphics);
    void         paintObjects();
@@ -99,8 +95,8 @@ private:
    
    GuiTileEditorWorldObserver _worldObserver;
    
-   TileEditorMouseListener       mMouseListener;
-   TileEditorMouseMotionListener mMouseMotionListener;
+   TileEditorKeyListener   mKeyListener;
+   TileEditorMouseListener mMouseListener;
 
    GuiPoint       _highlightTile;
    int            MXScrollPos;

@@ -36,6 +36,10 @@ void MouseListener::onMouseClick(const MouseEvent& event)
 {
 }
 
+void MouseListener::onMouseMotion(const MouseEvent& event)
+{
+}
+
 void MouseListener::onMouseEntered(const MouseEvent& event)
 {
 }

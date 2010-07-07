@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,38 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#include "guidesigndecoratorkeylistener.h"
 
-// - Get/set
+#include "gui/input/keyevent.h"
 
-INLINE const GuiControl& GuiDesignDecorator::getControl() const
+#include "gui/guidesigndecorator.h"
+#include "gui/guidesignwnd.h"
+
+GuiDesignDecoratorKeyListener::GuiDesignDecoratorKeyListener(GuiDesignDecorator& decorator):
+   KeyListener(),
+   mDecorator(decorator)
 {
-   ASSERT_PTR(mpControl)
-   return *mpControl;
 }
 
-INLINE GuiControl& GuiDesignDecorator::getControl()
-{
-   return const_cast<GuiControl&>(me().getControl());
-}
+// - Notifications
 
-INLINE const GuiDesignSelection& GuiDesignDecorator::getSelectionCtrl() const
+void GuiDesignDecoratorKeyListener::onKeyReleased(const KeyEvent& event)
 {
-   ASSERT_PTR(mpSelectionCtrl)
-   return *mpSelectionCtrl;
-}
-
-INLINE GuiDesignSelection& GuiDesignDecorator::getSelectionCtrl()
-{
-   ASSERT_PTR(mpSelectionCtrl)
-   return *mpSelectionCtrl;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Self
-//////////////////////////////////////////////////////////////////////////
-
-INLINE const GuiDesignDecorator& GuiDesignDecorator::me()
-{
-   return static_cast<const GuiDesignDecorator&>(*this);
+   GuiDesignWnd* pwnd = dynamic_cast<GuiDesignWnd*>(mDecorator.getParent());
+   
+   switch ( event.getKey() )
+   {
+   case SDLK_DELETE:
+      pwnd->deleteSelected();
+      break;
+   }
 }

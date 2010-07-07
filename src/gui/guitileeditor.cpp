@@ -57,8 +57,8 @@ GuiTileEditor::GuiTileEditor():
    MPHorzScrollBar(NULL),
    MPVertScrollBar(NULL),
    _worldObserver(*this),
+   mKeyListener(*this),
    mMouseListener(*this),
-   mMouseMotionListener(*this),
    _highlightTile(),
    MXScrollPos(0),
    MYScrollPos(0),
@@ -75,8 +75,8 @@ void GuiTileEditor::onCreate(const GuiRect& rect, const char* caption, GuiStyle 
 {
    GuiControl::onCreate(rect, caption, style, parent);
 
+   addKeyListener(mKeyListener);
    addMouseListener(mMouseListener);
-   addMouseMotionListener(mMouseMotionListener);
 
    initializeScrollbars();
 }
@@ -280,75 +280,6 @@ void GuiTileEditor::onVertScroll(int pos)
 void GuiTileEditor::onResize(int width, int height)
 {
    initializeScrollbars();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Input interface
-//////////////////////////////////////////////////////////////////////////
-
-/*
-int GuiTileEditor::onLButtonDown(const GuiPoint& point, int flags)
-{
-   GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiTileEditorMouseDownEvent);
-   if ( phandler != NULL )
-   {
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(this, "GuiTileEditor");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam((void*)&point, "GuiPoint");
-      script.run(1);
-   }
-
-   return JENGINE_MSG_HANDLED;
-}
-
-int GuiTileEditor::onLButtonUp(const GuiPoint& point, int flags)
-{
-   GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiTileEditorMouseClickEvent);
-   if ( phandler != NULL )
-   {
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(this, "GuiTileEditor");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam((void*)&point, "GuiPoint");
-      script.run(1);
-   }
-
-   return JENGINE_MSG_HANDLED;
-}
-
-void GuiTileEditor::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags)
-{
-
-   GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiTileEditorMouseMoveEvent);
-   if ( phandler != NULL )
-   {
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(this, "GuiTileEditor");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam((void*)&point, "GuiPoint");
-      script.addParam((void*)&rel, "GuiPoint");
-      script.addParam(IS_SET(flags, MouseEvent::eLeft));
-      script.run(3);
-   }
-}
-*/
-
-void GuiTileEditor::onKeyUp(int which)
-{
-   GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiTileEditorKeyPressEvent);
-   if ( phandler != NULL )
-   {
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(this, "GuiTileEditor");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam(which);
-      script.run(1);
-   }
 }
 
 //////////////////////////////////////////////////////////////////////////

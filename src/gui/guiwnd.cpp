@@ -437,25 +437,6 @@ void GuiWnd::removeMouseListener(const MouseListener& listener)
 }
 
 //-----------------------------------
-// - Mouse motion listeners
-//-----------------------------------
-
-void GuiWnd::addMouseMotionListener(MouseMotionListener& listener)
-{
-   mMouseMotionListeners.addListener(listener);
-}
-
-void GuiWnd::removeMouseMotionListener(const MouseMotionListener& listener)
-{
-   mMouseMotionListeners.removeListener(listener);
-}
-
-void GuiWnd::fireMouseMotionEvent(const MouseEvent& event)
-{
-   mMouseMotionListeners.fireMouseMotionEvent(event);
-}
-
-//-----------------------------------
 // - Mouse wheel listeners
 //-----------------------------------
 

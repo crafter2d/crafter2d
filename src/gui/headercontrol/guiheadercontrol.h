@@ -24,6 +24,8 @@
 
 #include "gui/guicontrol.h"
 
+#include "guiheadercontrolmouselistener.h"
+
 class GuiHeaderColumn;
 
 class GuiHeaderCtrl : public GuiControl
@@ -38,31 +40,31 @@ public:
 
    bool                    create (GuiId id, GuiStyle style, GuiWnd* parent);
 
-   int                     count() const;
+ // query
+   int                     getColumnCount() const;
+   int                     getColumnWidth(int column) const;
 
+ // column maintenance
    int                     addColumn(int width);
-   void                    remove(int index);
-
-   const GuiHeaderColumn&  operator[](int index) const;
-   GuiHeaderColumn&        operator[](int index);
-
-   virtual void            onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
-   virtual int             onLButtonDown(const GuiPoint& point, int flags);
-   virtual int             onLButtonUp(const GuiPoint& point, int flags);
+   void                    removeColumn(int colum);
+   void                    setColumnEditable(int colum, bool editable);
 
 protected:
+ // get/set
+   const Columns&          getColumns() const;
+         Columns&          getColumns();
+
+ // rendering
    virtual void            paint(Uint32 tick, const GuiGraphics& graphics);
 
-   bool                    isDragPoint(const GuiPoint& point);
-   void                    dragging(bool drag);
-   bool                    dragging() const;
-
+ // operations
    int                     calculateNewLeftSize();
 
 private:
+   friend class GuiHeaderControlMouseListener;
+
+   GuiHeaderControlMouseListener mMouseListener;
    Columns   columns;
-   bool     _dragging;
-   int      _dragcolumn;
 };
 
 #ifdef JENGINE_INLINE

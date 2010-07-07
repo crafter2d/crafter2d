@@ -59,6 +59,6 @@ void GuiListBoxItem::paint(const GuiPoint& pos, const GuiGraphics& graphics)
    for (int i=0; i < count(); ++i)
    {
       _items[i]->paint(i, p, graphics);
-      p.x += header[i].width();
+      p.x += header.getColumnWidth(i);
    }
 }

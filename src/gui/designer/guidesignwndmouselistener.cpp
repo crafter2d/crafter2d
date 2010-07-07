@@ -42,3 +42,11 @@ void GuiDesignWndMouseListener::onMouseButton(const MouseEvent& event)
 
    mWindow._pselectionctrl->getMouseListeners().fireMouseButtonEvent(event);
 }
+
+void GuiDesignWndMouseListener::onMouseMotion(const MouseEvent& event)
+{
+   if ( event.isLeftButtonDown() )
+   {
+      mWindow._pselectionctrl->getMouseListeners().fireMouseMotionEvent(event);
+   }
+}

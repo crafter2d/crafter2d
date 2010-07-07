@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,24 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUIDESIGN_DECORATOR_MOTION_LISTENER_H
-#define GUIDESIGN_DECORATOR_MOTION_LISTENER_H
 
-#include "gui/input/mousemotionlistener.h"
+#include "tileeditorkeylistener.h"
 
-class GuiDesignDecorator;
+#include "script.h"
+#include "scriptmanager.h"
 
-class GuiDesignDecoratorMouseMotionListener : public MouseMotionListener
+#include "gui/guitileeditor.h"
+#include "gui/guieventhandler.h"
+#include "gui/guieventhandlers.h"
+
+#include "gui/input/keyevent.h"
+
+TileEditorKeyListener::TileEditorKeyListener(GuiTileEditor& tileeditor):
+   KeyListener(),
+   mTileEditor(tileeditor)
 {
-public:
-   GuiDesignDecoratorMouseMotionListener(GuiDesignDecorator& decorator);
+}
 
- // notifications
-   virtual void onMouseMotion(const MouseEvent& event);
+// notifications
 
-private:
-
-   GuiDesignDecorator& mDecorator;
-};
-
-#endif
+void TileEditorKeyListener::onKeyReleased(const KeyEvent& event)
+{
+   GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorKeyPressEvent);
+   if ( phandler != NULL )
+   {
+      ScriptManager& mgr = ScriptManager::getInstance();
+      Script& script = mgr.getTemporaryScript();
+      script.setSelf(&mTileEditor, "GuiTileEditor");
+      script.prepareCall(phandler->getFunctionName().c_str());
+      script.addParam(event.getKey());
+      script.run(1);
+   }
+}

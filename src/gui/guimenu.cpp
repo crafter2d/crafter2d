@@ -40,6 +40,7 @@ GuiMenu::GuiMenu():
    GuiFocusListener(),
    MItems(),
    _name(),
+   mMouseListener(*this),
    _popupLocation(),
    _selection(-1),
    _processing(false)
@@ -50,6 +51,15 @@ GuiMenu::GuiMenu():
 GuiMenu::~GuiMenu()
 {
    GuiFocus::getInstance().removeListener(*this);
+}
+
+// - Initialization
+
+void GuiMenu::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
+{
+   GuiWnd::onCreate(rect, caption, style, parent);
+
+   addMouseListener(mMouseListener);
 }
 
 void GuiMenu::initializeEventHandlerDefinitions()
@@ -94,43 +104,6 @@ void GuiMenu::onRender(Uint32 tick, const GuiGraphics& graphics)
 
    if ( enabled )
       glEnable(GL_SCISSOR_TEST);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Input interface
-//////////////////////////////////////////////////////////////////////////
-
-void GuiMenu::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags)
-{
-   selectItem(point);
-}
-
-int GuiMenu::onLButtonUp(const GuiPoint& point, int flag)
-{
-   selectItem(point);
-
-   if ( _selection != -1 )
-   {
-      setVisible(false);
-
-      int id = MItems[_selection].getId();
-
-      GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiContextMenuEvent);
-      if ( phandler != NULL )
-      {
-         ScopedValue<bool> value(_processing, true, false);
-
-         ScriptManager& mgr = ScriptManager::getInstance();
-         Script& script = mgr.getTemporaryScript();
-         script.prepareCall(phandler->getFunctionName().c_str());
-         script.addParam(id);
-         script.run(1);
-      }
-      
-      parent->onCommand(id);
-   }
-
-   return JENGINE_MSG_HANDLED;
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,7 @@ public:
 
  // notifications
    virtual void onMouseButton(const MouseEvent& event);
+   virtual void onMouseMotion(const MouseEvent& event);
 
 private:
  // helpers

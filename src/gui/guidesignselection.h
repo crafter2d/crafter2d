@@ -23,7 +23,6 @@
 #include "guicontrol.h"
 
 #include "designer/guidesignselectionmouselistener.h"
-#include "designer/guidesignselectionmousemotionlistener.h"
 
 class GuiDesignWnd;
 
@@ -55,12 +54,10 @@ private:
    friend class GuiDesignWnd;
    friend class GuiDesignDecorator;
    friend class GuiDesignSelectionMouseListener;
-   friend class GuiDesignSelectionMouseMotionListener;
 
    GuiDesignWnd*  getDesignWnd() const;
 
    GuiDesignSelectionMouseListener       mMouseListener;
-   GuiDesignSelectionMouseMotionListener mMouseMotionListener;
 
    int mBorders;
 };

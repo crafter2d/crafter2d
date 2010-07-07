@@ -26,7 +26,6 @@
 GuiDesignSelection::GuiDesignSelection():
    GuiControl(),
    mMouseListener(*this),
-   mMouseMotionListener(*this),
    mBorders(eNone)
 {
 }
@@ -42,7 +41,6 @@ void GuiDesignSelection::onCreate(const GuiRect& rect, const char* caption, GuiS
    GuiControl::onCreate(rect, caption, style, parent);
 
    addMouseListener(mMouseListener);
-   addMouseMotionListener(mMouseMotionListener);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,9 @@
 
 #include "gui/input/mouseevent.h"
 
+#include "gui/guidesigndecorator.h"
 #include "gui/guidesignselection.h"
+#include "gui/guidesignwnd.h"
 
 GuiDesignSelectionMouseListener::GuiDesignSelectionMouseListener(GuiDesignSelection& selection):
    MouseListener(),
@@ -83,4 +85,27 @@ int GuiDesignSelectionMouseListener::determineBorder(const Point& point) const
    }
    
    return borders;
+}
+
+void GuiDesignSelectionMouseListener::onMouseMotion(const MouseEvent& event)
+{
+   if ( !event.isLeftButtonDown() && event.getEventType() == MouseEvent::ePressed )
+   {
+     return;
+   }
+
+   if ( mSelector.mBorders != GuiDesignSelection::eNone )
+   {
+      GuiDesignDecorator* pdecorator = dynamic_cast<GuiDesignDecorator*>(mSelector.getParent());
+      if ( pdecorator )
+      {
+         dynamic_cast<GuiDesignWnd*>(pdecorator->getParent())->resizeSelected(event.getRelative(), mSelector.mBorders);
+      }
+      else
+      {
+         mSelector.resize(event.getRelative(), mSelector.mBorders);
+      }
+
+      event.consume();
+   }
 }

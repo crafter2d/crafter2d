@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,31 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "guidialogmousemotionlistener.h"
+#ifndef GUI_HEADER_MOUSE_LISTENER_H
+#define GUI_HEADER_MOUSE_LISTENER_H
 
-#include "gui/input/mouseevent.h"
+#include "gui/input/mouselistener.h"
 
-#include "guidialog.h"
+class GuiHeaderCtrl;
+class Point;
 
-GuiDialogMouseMotionListener::GuiDialogMouseMotionListener(GuiDialog& dialog):
-   MouseMotionListener(),
-   mDialog(dialog)
+class GuiHeaderControlMouseListener : public MouseListener
 {
-}
+public:
+   GuiHeaderControlMouseListener(GuiHeaderCtrl& header);
 
-// - Notifications
-   
-void GuiDialogMouseMotionListener::onMouseMotion(const MouseEvent& event)
-{
-   if ( mDialog.isDragging() )
-   {
-      mDialog.moveWindow(event.getRelative().x(), event.getRelative().y());
-   }
-   else
-   {
-      Point point = event.getLocation();
+ // mouse click
+   virtual void onMouseButton(const MouseEvent& event);
+   virtual void onMouseMotion(const MouseEvent& event);
 
-      mDialog.windowToClient(point);
-      mDialog.setHoverCloseButton(mDialog.isAboveCloseButton(point));
-   }
-}
+private:
+ // utility functions
+   int findColumn(const Point& point) const;
+
+   GuiHeaderCtrl& mHeader;
+   int            mColumn;
+};
+
+#endif

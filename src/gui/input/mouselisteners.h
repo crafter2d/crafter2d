@@ -36,6 +36,7 @@ public:
   // notifications
    void fireMouseClickEvent(const MouseEvent& event);
    void fireMouseButtonEvent(const MouseEvent& event);
+   void fireMouseMotionEvent(const MouseEvent& event);
 
    void fireMouseEnterEvent(const MouseEvent& event);
    void fireMouseExitEvent(const MouseEvent& event);

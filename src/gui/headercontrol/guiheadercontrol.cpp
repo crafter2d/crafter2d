@@ -28,8 +28,8 @@
 #include "guiheadercolumn.h"
 
 GuiHeaderCtrl::GuiHeaderCtrl():
-   _dragging(false),
-   _dragcolumn(0)
+   GuiControl(),
+   mMouseListener(*this)
 {
 }
 
@@ -51,8 +51,26 @@ bool GuiHeaderCtrl::create (GuiId id, GuiStyle style, GuiWnd* parent)
 
    GuiWnd::create(id, rect, "", style, parent);
 
+   addMouseListener(mMouseListener);
+
    return true;
 }
+
+// - Query
+
+int GuiHeaderCtrl::getColumnCount() const
+{
+  return columns.size();
+}
+
+int GuiHeaderCtrl::getColumnWidth(int column) const
+{
+   ASSERT(column >= 0)
+   ASSERT(column < columns.size())
+
+   return columns[column]->width();
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // - Painting
@@ -90,71 +108,18 @@ int GuiHeaderCtrl::addColumn(int width)
    return columns.size() - 1;
 }
 
-void GuiHeaderCtrl::remove(int index)
+void GuiHeaderCtrl::removeColumn(int index)
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// - Input messages
-//////////////////////////////////////////////////////////////////////////
-
-int GuiHeaderCtrl::onLButtonDown(const GuiPoint& point, int flags)
+void GuiHeaderCtrl::setColumnEditable(int column, bool editable)
 {
-   if ( isDragPoint(point) )
-   {
-      dragging(true);
-   }
-
-   return 0;
-}
-
-int GuiHeaderCtrl::onLButtonUp(const GuiPoint& point, int flags)
-{
-   if ( dragging() )
-   {
-      dragging(false);
-   }
-
-   return 0;
-}
-
-void GuiHeaderCtrl::onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags)
-{
-   if ( dragging() )
-   {
-      Columns::iterator it = columns.begin() + _dragcolumn;
-      (*(*it)).resize(rel.x);
-
-      for (++it ; it != columns.end(); ++it)
-      {
-         GuiHeaderColumn& column = *(*it);
-         column.rect().offset(rel.x, 0);
-      }
-   }
+   columns[column]->editable(editable);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // - Helper functions
 //////////////////////////////////////////////////////////////////////////
-
-bool GuiHeaderCtrl::isDragPoint(const GuiPoint& point)
-{
-   int x = 0;
-   Columns::const_iterator it = columns.begin();
-   for (int n = 0 ; it != columns.end(); ++it, ++n)
-   {
-      const GuiHeaderColumn& column = *(*it);
-      x += column.width();
-
-      if ( abs(point.x - x) < 4 )
-      {
-         _dragcolumn = n;
-         return true;
-      }
-   }
-
-   return false;
-}
 
 int GuiHeaderCtrl::calculateNewLeftSize()
 {
