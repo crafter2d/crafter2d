@@ -82,5 +82,5 @@ void GuiListBoxSubItem::paint(int column, const GuiPoint& pos, const GuiGraphics
 GuiRect GuiListBoxSubItem::calculateVisibleRect(int column, const GuiPoint& pos)
 {
    const GuiHeaderCtrl& header = item().listbox().header();
-   return GuiRect(pos.x, pos.x + header.getColumnWidth(column), pos.y, pos.y + block().height());
+   return GuiRect(pos.x, pos.x + header.getColumns()[column]->width(), pos.y, pos.y + block().height());
 }

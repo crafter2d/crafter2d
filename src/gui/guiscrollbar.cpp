@@ -113,6 +113,18 @@ void GuiScrollBar::setScrollPosition(int pos)
    }
 }
 
+void GuiScrollBar::scroll(int amount)
+{
+   int newpos = scrollPos + amount;
+
+   if ( newpos < 0 )
+      newpos = 0;
+   else if ( newpos > scrollRange )
+      newpos = scrollRange;
+
+   setScrollPosition(newpos);
+}
+
 void GuiScrollBar::paint(Uint32 tick, const GuiGraphics& graphics)
 {
    graphics.setColor(0.37f, 0.639f, 0.674f);

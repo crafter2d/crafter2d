@@ -42,6 +42,9 @@ public:
 
    bool           isHorizontal() const;
 
+ // operations
+   void           scroll(int amount);
+
    virtual void   sendMessage(GuiId, GuiEvent event, int param1);
    virtual int    onLButtonUp (const GuiPoint& point, int flags);
 

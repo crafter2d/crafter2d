@@ -34,12 +34,12 @@ INLINE GuiHeaderCtrl& GuiHeaderColumn::header()
    return const_cast<GuiHeaderCtrl&>(me().header());
 }
 
-INLINE void GuiHeaderColumn::editable(bool edit)
+INLINE void GuiHeaderColumn::setEditable(bool edit)
 {
    _editable = edit;
 }
 
-INLINE bool GuiHeaderColumn::editable() const
+INLINE bool GuiHeaderColumn::isEditable() const
 {
    return _editable;
 }

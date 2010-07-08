@@ -213,8 +213,8 @@ void GuiDesigner::createPropertyWnd()
    int col1idx = plist->header().addColumn(100);
    int col2idx = plist->header().addColumn(100);
 
-   plist->header()[col1idx].title("Attributes");
-   plist->header()[col2idx].title("Values");
+   plist->header().getColumns()[col1idx]->title("Attributes");
+   plist->header().getColumns()[col2idx]->title("Values");
 
    plist->setEditableColumn(1);
 }

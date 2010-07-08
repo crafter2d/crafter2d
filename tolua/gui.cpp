@@ -243,8 +243,9 @@ class GuiHeaderCtrl: public GuiControl
    GuiHeaderCtrl();
 
    bool create (int id, int style, GuiWnd* parent);
+
    void addColumn(int width);
-   void remove(int index);
+   void removeColumn(int index);
 };
 
 class GuiListBox: public GuiControl

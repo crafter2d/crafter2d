@@ -56,22 +56,6 @@ bool GuiHeaderCtrl::create (GuiId id, GuiStyle style, GuiWnd* parent)
    return true;
 }
 
-// - Query
-
-int GuiHeaderCtrl::getColumnCount() const
-{
-  return columns.size();
-}
-
-int GuiHeaderCtrl::getColumnWidth(int column) const
-{
-   ASSERT(column >= 0)
-   ASSERT(column < columns.size())
-
-   return columns[column]->width();
-}
-
-
 //////////////////////////////////////////////////////////////////////////
 // - Painting
 //////////////////////////////////////////////////////////////////////////
@@ -110,11 +94,6 @@ int GuiHeaderCtrl::addColumn(int width)
 
 void GuiHeaderCtrl::removeColumn(int index)
 {
-}
-
-void GuiHeaderCtrl::setColumnEditable(int column, bool editable)
-{
-   columns[column]->editable(editable);
 }
 
 //////////////////////////////////////////////////////////////////////////

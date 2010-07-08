@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,53 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUIHEADERCTRL_H_
-#define GUIHEADERCTRL_H_
+#ifndef GUI_LISTBOX_MOUSE_WHEEL_LISTENER_H
+#define GUI_LISTBOX_MOUSE_WHEEL_LISTENER_H
 
-#include <vector>
+#include "gui/input/mousewheellistener.h"
 
-#include "gui/guicontrol.h"
+class GuiListBox;
 
-#include "guiheadercontrolmouselistener.h"
-
-class GuiHeaderColumn;
-
-class GuiHeaderCtrl : public GuiControl
+class GuiListBoxMouseWheelListener : public MouseWheelListener
 {
 public:
-   typedef std::vector<GuiHeaderColumn*> Columns;
+   explicit GuiListBoxMouseWheelListener(GuiListBox& listbox);
 
-                           GuiHeaderCtrl();
-   virtual                 ~GuiHeaderCtrl();
-
-   static int              height();
-
-   bool                    create (GuiId id, GuiStyle style, GuiWnd* parent);
-
- // get/set
-   const Columns&          getColumns() const;
-         Columns&          getColumns();
-
- // column maintenance
-   int                     addColumn(int width);
-   void                    removeColumn(int colum);
-
-protected:
- // rendering
-   virtual void            paint(Uint32 tick, const GuiGraphics& graphics);
-
- // operations
-   int                     calculateNewLeftSize();
+   virtual void onMouseWheel(const MouseEvent& event);
 
 private:
-   friend class GuiHeaderControlMouseListener;
-
-   GuiHeaderControlMouseListener mMouseListener;
-   Columns   columns;
+   GuiListBox& mListbox;
 };
-
-#ifdef JENGINE_INLINE
-#  include "guiheadercontrol.inl"
-#endif
 
 #endif

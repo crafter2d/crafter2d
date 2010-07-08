@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,53 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUIHEADERCTRL_H_
-#define GUIHEADERCTRL_H_
 
-#include <vector>
+#include "guilistboxkeylistener.h"
 
-#include "gui/guicontrol.h"
+#include "gui/input/keyevent.h"
 
-#include "guiheadercontrolmouselistener.h"
+#include "gui/guilistbox.h"
+#include "gui/guieventhandler.h"
+#include "gui/guieventhandlers.h"
 
-class GuiHeaderColumn;
+#include "scriptmanager.h"
 
-class GuiHeaderCtrl : public GuiControl
+GuiListBoxKeyListener::GuiListBoxKeyListener(GuiListBox& listbox):
+   KeyListener(),
+   mListbox(listbox)
 {
-public:
-   typedef std::vector<GuiHeaderColumn*> Columns;
+}
 
-                           GuiHeaderCtrl();
-   virtual                 ~GuiHeaderCtrl();
+// - Notifications
 
-   static int              height();
-
-   bool                    create (GuiId id, GuiStyle style, GuiWnd* parent);
-
- // get/set
-   const Columns&          getColumns() const;
-         Columns&          getColumns();
-
- // column maintenance
-   int                     addColumn(int width);
-   void                    removeColumn(int colum);
-
-protected:
- // rendering
-   virtual void            paint(Uint32 tick, const GuiGraphics& graphics);
-
- // operations
-   int                     calculateNewLeftSize();
-
-private:
-   friend class GuiHeaderControlMouseListener;
-
-   GuiHeaderControlMouseListener mMouseListener;
-   Columns   columns;
-};
-
-#ifdef JENGINE_INLINE
-#  include "guiheadercontrol.inl"
-#endif
-
-#endif
+void GuiListBoxKeyListener::onKeyReleased(const KeyEvent& event)
+{
+   GuiEventHandler* phandler = mListbox.getEventHandlers().findByEventType(GuiListKeyPressEvent);
+   if ( phandler != NULL )
+   {
+      ScriptManager& mgr = ScriptManager::getInstance();
+      Script& script = mgr.getTemporaryScript();
+      script.setSelf(this, "GuiListBox");
+      script.prepareCall(phandler->getFunctionName().c_str());
+      script.addParam(event.getKey());
+      script.run(1);
+   }
+}

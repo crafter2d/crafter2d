@@ -40,8 +40,8 @@ public:
    const std::string&      title() const;
    void                    title(const std::string& text);
 
-   void                    editable(bool edit);
-   bool                    editable() const;
+   void                    setEditable(bool edit);
+   bool                    isEditable() const;
 
  // operations
    void                    paint(const GuiGraphics& graphics);

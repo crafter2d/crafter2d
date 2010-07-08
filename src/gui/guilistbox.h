@@ -29,7 +29,9 @@
 #include "guilistboxitem.h"
 #include "guilistboxsubitem.h"
 
+#include "listbox/guilistboxkeylistener.h"
 #include "listbox/guilistboxmouselistener.h"
+#include "listbox/guilistboxmousewheellistener.h"
 
 class GuiEditBox;
 class GuiComboBox;
@@ -50,10 +52,6 @@ public:
    void           setEditing(bool editing);
 
    virtual void   sendMessage(GuiId id, GuiEvent event, int param1);
-
-   virtual void   onMouseWheel(const GuiPoint& point, int direction, int flags);
-   virtual void   onKeyDown (int which, bool shift, bool ctrl, bool alt);
-   virtual void   onKeyUp(int which);
 
    bool           hasCurSel() const;
    void           setCurSel(int sel);
@@ -106,6 +104,7 @@ protected:
 
 private:
    friend class GuiListBoxMouseListener;
+   friend class GuiListBoxMouseWheelListener;
 
    void           initializeHeader();
    void           initializeScrollbar();
@@ -141,8 +140,9 @@ private:
    DECLARE_PROPERTIES
    BOOL_PROPERTY(Linebreak)
 
-
-   GuiListBoxMouseListener mMouseListener;
+   GuiListBoxKeyListener        mKeyListener;
+   GuiListBoxMouseListener      mMouseListener;
+   GuiListBoxMouseWheelListener mMouseWheelListener;
 };
 
 #ifdef JENGINE_INLINE

@@ -50,6 +50,7 @@ REGISTER_DESIGNER(GuiListBox, GuiListBoxId, "Listbox", 40, 30, 392)
 EVENT_MAP_BEGIN(GuiListBox)
    ON_SB_UP(1, onScroll)
    ON_SB_DOWN(1, onScroll)
+   ON_SB_POSCHANGED(1, onScroll)
    ON_LOST_FOCUS(11, onComboLostFocus)
    ON_LOST_FOCUS(12, onEditLostFocus)
 EVENT_MAP_END()
@@ -84,7 +85,9 @@ GuiListBox::GuiListBox():
    visibleItemCount(0),
    dirty(true),
    _editing(false),
-   mMouseListener(*this)
+   mKeyListener(*this),
+   mMouseListener(*this),
+   mMouseWheelListener(*this)
 {
 }
 
@@ -106,7 +109,9 @@ void GuiListBox::onCreate(const GuiRect& rect, const char* caption, GuiStyle sty
    initializeHeader();
    initializeScrollbar();
 
+   addKeyListener(mKeyListener);
    addMouseListener(mMouseListener);
+   addMouseWheelListener(mMouseWheelListener);
 }
 
 void GuiListBox::initializeControls()
@@ -269,7 +274,7 @@ void GuiListBox::setCurSel(int sel)
 void GuiListBox::setItemText(int index, const char* text, int subitem)
 {
    assert(index >= 0 && index < lines.size() && "setItemText: Invalid item index.");
-   assert(subitem >= 0 && subitem < header().getColumnCount() && "setItemText: invalid subitem index.");
+   assert(subitem >= 0 && subitem < header().getColumns().size() && "setItemText: invalid subitem index.");
 
    GuiListBoxItem& item = *(lines[index]);
    if ( item.count() <= subitem )
@@ -282,8 +287,8 @@ void GuiListBox::setItemText(int index, const char* text, int subitem)
 
 void GuiListBox::setEditableColumn(int column)
 {
-   assert( column >= 0 && column < header().getColumnCount() && "GuiListBox.setEditableColumn: invalid column number." );
-   header().setColumnEditable(column, true);
+   assert( column >= 0 && column < header().getColumns().size() && "GuiListBox.setEditableColumn: invalid column number." );
+   header().getColumns()[column]->setEditable(true);
 }
 
 void GuiListBox::scrollTo(int idx)
@@ -298,7 +303,8 @@ void GuiListBox::onResize(int width, int height)
    if ( !hasHeader() )
    {
       GuiHeaderCtrl* pheader = dynamic_cast<GuiHeaderCtrl*>(getItemById(2));
-      (*pheader)[0].resize(width);
+      ASSERT_PTR(pheader)
+      pheader->getColumns()[0]->resize(width);
    }
 }
 
@@ -318,45 +324,6 @@ void GuiListBox::removeAll()
 //////////////////////////////////////////////////////////////////////////
 // - Input messages
 //////////////////////////////////////////////////////////////////////////
-
-void GuiListBox::onMouseWheel(const GuiPoint& point, int direction, int flags)
-{
-   int pos = vertBar->getScrollPosition();
-   if ( direction < 0 )
-   {
-      if ( scrollPos > 0 )
-         scrollPos--;
-   }
-   else
-   {
-      if ( ++scrollPos > vertBar->getScrollRange() )
-         scrollPos = vertBar->getScrollRange();
-   }
-   vertBar->setScrollPosition(scrollPos);
-}
-
-void GuiListBox::onKeyDown (int which, bool shift, bool ctrl, bool alt)
-{
-   if ( which == SDLK_RETURN && _edit->getVisible() )
-   {
-      // stop editing
-      setFocus();
-   }
-}
-
-void GuiListBox::onKeyUp(int which)
-{
-   GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiListKeyPressEvent);
-   if ( phandler != NULL )
-   {
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(this, "GuiListBox");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam(which);
-      script.run(1);
-   }
-}
 
 void GuiListBox::onEditLostFocus()
 {
@@ -443,10 +410,10 @@ void GuiListBox::selectItem(const Point& location)
 void GuiListBox::selectColumn(int row, int x)
 {
    int pos = 0;
-   for (int i=0; i < header().count(); ++i)
+   for ( int i = 0; i < header().getColumns().size(); ++i )
    {
-      const GuiHeaderColumn& column = header()[i];
-      if ( column.editable() )
+      const GuiHeaderColumn& column = *header().getColumns()[i];
+      if ( column.isEditable() )
       {
          if ( x >= pos && x < pos+column.width() )
          {
@@ -598,7 +565,7 @@ GuiRect GuiListBox::getSubItemBounds(int row, int column)
    int x = 0;
    for (int i=0; i < column; ++i)
    {
-      x += header().getColumnWidth(i);
+      x += header().getColumns()[i]->width();
    }
 
    int y = 0;
@@ -612,7 +579,7 @@ GuiRect GuiListBox::getSubItemBounds(int row, int column)
       y += 16;
    }
 
-   return GuiRect(x, x+header().getColumnWidth(column), y+2, y+2+(*lines[row])[0].block().height());
+   return GuiRect(x, x+header().getColumns()[column]->width(), y+2, y+2+(*lines[row])[0].block().height());
 }
 
 int GuiListBox::calculateItemUnderCursor(const GuiPoint& point)
