@@ -78,6 +78,7 @@ public:
    GuiWnd&        getActiveWnd() const;
    void           setActiveWnd(GuiWnd* wnd);
 
+   /*
    virtual void   onMouseMove (const GuiPoint& point, const GuiPoint& rel, int flag);
    virtual void   onMouseWheel (const GuiPoint& point, int direction, int flag);
    virtual int    onLButtonDown (const GuiPoint& point, int flag);
@@ -85,6 +86,7 @@ public:
    virtual int    onRButtonDown (const GuiPoint& point, int flag);
    virtual void   onKeyDown(int which, bool shift, bool ctrl, bool alt);
    virtual void   onKeyUp (int which);
+   */
 
   // notifications
    void           notifyFocusChanged(GuiWnd& newfocus, GuiWnd* poldfocus);

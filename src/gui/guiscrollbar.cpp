@@ -24,11 +24,12 @@
 
 #include "gui/button/guibutton.h"
 
-GuiScrollBar::GuiScrollBar(void): 
-   top(0),
-   bottom(0),
-   scroller(0),
+GuiScrollBar::GuiScrollBar(): 
+   mpTop(NULL),
+   mpBottom(NULL),
+   mpScroller(NULL),
    scrollRange(0),
+   mScrollPage(8),
    scrollPos(0),
    scrollPage(0),
    moveSpeed(0),
@@ -51,21 +52,21 @@ void GuiScrollBar::onCreate(const GuiRect &rect, const char* caption, GuiStyle s
    // we don't have a border
    style &= ~GUI_BORDER;
 
-   top = new GuiButton();
-   bottom = new GuiButton();
-   scroller = new GuiButton();
+   mpTop = new GuiButton();
+   mpBottom = new GuiButton();
+   mpScroller = new GuiButton();
 
    if ( isHorizontal() )
    {
-      top->create(1, GuiRect(0,15,0,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
-      bottom->create(2, GuiRect(w-15,w,0,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
-      scroller->create(3, GuiRect(17,23,0,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
+      mpTop->create(1, GuiRect(0,15,0,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
+      mpBottom->create(2, GuiRect(w-15,w,0,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
+      mpScroller->create(3, GuiRect(17,23,0,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
    }
    else
    {
-      top->create(1, GuiRect(0,w,0,15), "", GUI_VISIBLE|GUI_BACKGROUND, this);
-      bottom->create(2, GuiRect(0,w,h-15,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
-      scroller->create(3, GuiRect(0,w,17,23), "", GUI_VISIBLE|GUI_BACKGROUND, this);
+      mpTop->create(1, GuiRect(0,w,0,15), "", GUI_VISIBLE|GUI_BACKGROUND, this);
+      mpBottom->create(2, GuiRect(0,w,h-15,h), "", GUI_VISIBLE|GUI_BACKGROUND, this);
+      mpScroller->create(3, GuiRect(0,w,17,23), "", GUI_VISIBLE|GUI_BACKGROUND, this);
    }
 
    addMouseListener(mMouseListener);
@@ -75,8 +76,19 @@ void GuiScrollBar::destroy()
 {
    GuiWnd::destroy();
 
-   top = bottom = scroller = 0;
+   mpTop = mpBottom = mpScroller = NULL;
 }
+
+// - Rendering
+
+void GuiScrollBar::paint(Uint32 tick, const GuiGraphics& graphics)
+{
+   graphics.setColor(0.37f, 0.639f, 0.674f);
+   graphics.drawRect(m_frameRect);
+   graphics.setColor(1,1,1);
+}
+
+// - Operations
 
 void GuiScrollBar::setScrollRange(int range)
 {
@@ -89,126 +101,90 @@ void GuiScrollBar::setScrollRange(int range)
       // determine how much the button will move per tick
       moveSpeed = static_cast<int>(height / range);
 
-      if ( scrollPos > scrollRange )
-         scrollPos = scrollRange;
-
       setScrollPosition(scrollPos);
    }
 }
 
 void GuiScrollBar::setScrollPosition(int pos)
 {
-   if (pos <= scrollRange)
-   {
-      scrollPos = pos;
+   scrollPos = pos;
+   if (scrollPos > scrollRange)
+      scrollPos = scrollRange;
+   else if ( scrollPos < 0 )
+      scrollPos = 0;
 
-      int linepos = 17 + pos*moveSpeed;
+   int linepos = 17 + scrollPos*moveSpeed;
 
-      if ( isHorizontal() )
-         scroller->setWindowPos(linepos, 0);
-      else
-         scroller->setWindowPos(0, linepos);
+   if ( isHorizontal() )
+      mpScroller->setWindowPos(linepos, 0);
+   else
+      mpScroller->setWindowPos(0, linepos);
 
-      parent->sendMessage(m_id, GuiScrollPosChangedEvent, scrollPos);
-   }
+   parent->sendMessage(m_id, GuiScrollPosChangedEvent, scrollPos);
 }
 
-void GuiScrollBar::scroll(int amount)
+void GuiScrollBar::scroll(ScrollType type, int amount)
 {
-   int newpos = scrollPos + amount;
+   int newpos = scrollPos;
 
-   if ( newpos < 0 )
-      newpos = 0;
-   else if ( newpos > scrollRange )
-      newpos = scrollRange;
+   if ( type == eLine )
+   {
+      newpos = scrollPos + amount;
+   }
+   else if ( type == ePage )
+   {
+      newpos = scrollPos + amount * mScrollPage;
+   }
 
    setScrollPosition(newpos);
-}
-
-void GuiScrollBar::paint(Uint32 tick, const GuiGraphics& graphics)
-{
-   graphics.setColor(0.37f, 0.639f, 0.674f);
-   graphics.drawRect(m_frameRect);
-   graphics.setColor(1,1,1);
-}
-
-int GuiScrollBar::onLButtonUp (const GuiPoint& point, int flags)
-{
-   GuiControl::onLButtonUp(point, flags);
-
-   GuiPoint p(point);
-   windowToClient(p);
-   if ( top->hitTest(p) || scroller->hitTest(p) || bottom->hitTest(p) )
-      return 0;
-
-   if ( isUpperPart(p) )
-   {
-      // scroll up a page
-      int move = (scrollPos > 8 ? 8 : scrollPos);
-      if (move > 0)
-      {
-         moveScroller(-moveSpeed*move);
-         scrollPos -= move;
-         parent->sendMessage(m_id,GuiScrollUpEvent,scrollPos);
-      }
-   }
-   else if ( isLowerPart(p) )
-   {
-      // scroll down a page
-      int move = ((scrollRange-scrollPos) > 8 ? 8 : (scrollRange-scrollPos));
-      if (move > 0)
-      {
-         moveScroller(moveSpeed*move);
-         scrollPos += move;
-         parent->sendMessage(m_id,GuiScrollDownEvent,scrollPos);
-      }
-   }
-
-   return 0;
-}
-
-void GuiScrollBar::onScrollUp()
-{
-   if (scrollPos > 0) {
-      moveScroller(-moveSpeed);
-      scrollPos--;
-
-      parent->sendMessage(m_id,GuiScrollUpEvent,scrollPos);
-   }
-}
-
-void GuiScrollBar::onScrollDown()
-{
-   if (scrollPos < scrollRange) {
-      moveScroller(moveSpeed);
-      scrollPos++;
-
-      parent->sendMessage(m_id, GuiScrollDownEvent, scrollPos);
-   }
 }
 
 void GuiScrollBar::moveScroller(int pos)
 {
    if ( isHorizontal() )
-      scroller->moveWindow(pos, 0);
+      mpScroller->moveWindow(pos, 0);
    else
-      scroller->moveWindow(0, pos);
+      mpScroller->moveWindow(0, pos);
 }
 
-bool GuiScrollBar::isUpperPart(const GuiPoint& point)
+bool GuiScrollBar::isUpperPart(const Point& point)
 {
-   const GuiRect& rect = scroller->getWindowRect();
+   const GuiRect& rect = mpScroller->getWindowRect();
    if ( isHorizontal() )
-      return point.x > 16 && point.x < rect.left();
+      return point.x() > 16 && point.x() < rect.left();
    else
-      return point.y > 16 && point.y < rect.top();
+      return point.y() > 16 && point.y() < rect.top();
 }
 
-bool GuiScrollBar::isLowerPart(const GuiPoint& point)
+bool GuiScrollBar::isLowerPart(const Point& point)
 {
-   const GuiRect& rect = scroller->getWindowRect();
+   const GuiRect& rect = mpScroller->getWindowRect();
    if ( isHorizontal() )
-      return point.x > rect.right() && point.x < m_frameRect.getWidth();
+      return point.x() > rect.right() && point.x() < m_frameRect.getWidth();
    else
-      return point.y > rect.bottom() && point.y < m_frameRect.getHeight();
+      return point.y() > rect.bottom() && point.y() < m_frameRect.getHeight();
+}
+
+// - Callbacks
+
+void GuiScrollBar::onScrollUp()
+{
+   if (scrollPos > 0)
+   {
+      moveScroller(-moveSpeed);
+      scrollPos--;
+
+      parent->sendMessage(m_id, GuiScrollUpEvent, scrollPos);
+   }
+}
+
+void GuiScrollBar::onScrollDown()
+{
+   if (scrollPos < scrollRange)
+   {
+      moveScroller(moveSpeed);
+      scrollPos++;
+
+      parent->sendMessage(m_id, GuiScrollDownEvent, scrollPos);
+   }
 }

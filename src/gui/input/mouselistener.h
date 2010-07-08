@@ -36,9 +36,13 @@ public:
    /// Called when a click with a button is detected
    virtual void onMouseClick(const MouseEvent& event);
 
-   /// \fn onMouseMotion(const MouseEvent& event);
+   /// \fn onMouseMotion(const MouseEvent& event)
    /// Called when the mouse moves
    virtual void onMouseMotion(const MouseEvent& event);
+
+   /// \fn onMouseContext(const MouseEvent& event)
+   /// Called when a right click was detected. Can be used to popup a context menu. 
+   virtual void onMouseContext(const MouseEvent& event);
 
    // \fn onMouseEntered(const MouseEvent& event);
    // Called when the mouse enters the window

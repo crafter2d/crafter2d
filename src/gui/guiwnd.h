@@ -172,13 +172,6 @@ public:
    virtual void      sendMessage(GuiId, GuiEvent event, int param1=0);
 	
   // callbacks
-   virtual void      onMouseMove(const GuiPoint& point, const GuiPoint& rel, int flags);
-   virtual void      onMouseWheel(const GuiPoint& point, int direction, int flags);
-   virtual int       onLButtonDown(const GuiPoint& point, int flags);
-   virtual int       onLButtonUp(const GuiPoint& point, int flags);
-   virtual int       onRButtonDown(const GuiPoint& point, int flags);
-   virtual void      onKeyDown(int which, bool shift, bool ctrl, bool alt);
-   virtual void      onKeyUp(int which);
    virtual void      onActivate(bool active, GuiWnd* oldWnd);
    virtual void      onSetFocus(GuiWnd* oldCtrl);
    virtual void      onKillFocus(GuiWnd* newCtrl);

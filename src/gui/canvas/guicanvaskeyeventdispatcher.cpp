@@ -21,9 +21,9 @@
 #include "guicanvaskeyeventdispatcher.h"
 
 #include "gui/input/keyevent.h"
-#include "gui/guifocus.h"
 
-#include "guicanvas.h"
+#include "gui/guifocus.h"
+#include "gui/guiwnd.h"
 
 GuiCanvasKeyEventDispatcher::GuiCanvasKeyEventDispatcher(GuiCanvas& canvas):
    KeyEventDispatcher(),
@@ -45,15 +45,5 @@ void GuiCanvasKeyEventDispatcher::dispatch(const KeyEvent& keyevent)
    {
       GuiWnd& focussed = GuiFocus::getInstance().getFocus();
       focussed.fireKeyEvent(keyevent);
-   }
-
-   // for not converted windows
-   if ( keyevent.getEventType() == KeyEvent::ePressed )
-   {
-     mCanvas.onKeyDown(keyevent.getKey(), keyevent.isShiftDown(), keyevent.isCtrlDown(), keyevent.isAltDown());
-   }
-   else
-   {
-     mCanvas.onKeyUp(keyevent.getKey());
    }
 }

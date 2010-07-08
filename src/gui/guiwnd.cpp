@@ -490,37 +490,6 @@ void GuiWnd::notifyDestroyed()
 // - Input interface
 //-----------------------------------
 
-void GuiWnd::onMouseMove (const GuiPoint& point, const GuiPoint& rel, int flags)
-{
-}
-
-void GuiWnd::onMouseWheel (const GuiPoint& point, int direction, int flags)
-{
-}
-
-int GuiWnd::onLButtonDown (const GuiPoint& point, int flags)
-{
-   return JENGINE_MSG_UNHANDLED;
-}
-
-int GuiWnd::onLButtonUp (const GuiPoint& point, int flags)
-{
-   return JENGINE_MSG_UNHANDLED;
-}
-
-int GuiWnd::onRButtonDown(const GuiPoint& point, int flags)
-{
-   return JENGINE_MSG_UNHANDLED;
-}
-
-void GuiWnd::onKeyDown (int which, bool shift, bool ctrl, bool alt)
-{
-}
-
-void GuiWnd::onKeyUp (int which)
-{
-}
-
 void GuiWnd::onActivate (bool active, GuiWnd* oldWnd)
 {
 	if (active)

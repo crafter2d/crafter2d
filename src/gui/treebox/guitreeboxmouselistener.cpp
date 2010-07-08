@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,28 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#include "guitreeboxmouselistener.h"
 
-INLINE void GuiScriptWnd::setMouseMoveFnc(const char* fnc)
+#include "gui/input/mouseevent.h"
+
+#include "gui/guitreebox.h"
+
+GuiTreeBoxMouseListener::GuiTreeBoxMouseListener(GuiTreeBox& treebox):
+   MouseListener(),
+   mTreebox(treebox)
 {
-   if ( fnc )
-      fncMouseMove = fnc;
-   else 
-      fncMouseMove.clear();
 }
 
-INLINE void GuiScriptWnd::setLButtonDownFnc(const char* fnc)
-{
-   if ( fnc )
-      fncLButtonDown = fnc;
-   else
-      fncLButtonDown.clear();
-}
+// - Notifications
 
-INLINE void GuiScriptWnd::setKeyDownFnc(const char* fnc)
+void GuiTreeBoxMouseListener::onMouseClick(const MouseEvent& event)
 {
-   if ( fnc )
-      fncKeyDown = fnc;
-   else
-      fncKeyDown.clear();
+   Point point = event.getLocation();
+
+   mTreebox.windowToClient(point);
+   mTreebox.select(point);
 }

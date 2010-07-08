@@ -34,5 +34,5 @@ GuiListBoxMouseWheelListener::GuiListBoxMouseWheelListener(GuiListBox& listbox):
 
 void GuiListBoxMouseWheelListener::onMouseWheel(const MouseEvent& event)
 {
-  mListbox.vertBar->scroll(event.getEventType() == MouseEvent::eWheelDown ? 1 : -1);
+  mListbox.vertBar->scroll(GuiScrollBar::eLine, event.getEventType() == MouseEvent::eWheelDown ? 1 : -1);
 }

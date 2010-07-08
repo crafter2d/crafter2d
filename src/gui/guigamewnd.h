@@ -23,7 +23,7 @@
 #include <stack>
 #include "../actionmap.h"
 
-#include "guiscriptwnd.h"
+#include "guiwindow.h"
 
 class SceneGraph;
 
@@ -31,7 +31,7 @@ class SceneGraph;
 ///
 /// Displays the actual game content and handles input using an ActionMap
 /// which can be set in script.
-class GuiGameWnd : public GuiScriptWnd
+class GuiGameWnd : public GuiWindow
 {
 public:
    typedef std::stack<KeyMap*> KeyMaps;
@@ -42,7 +42,6 @@ public:
    void           popMap();
 
    virtual int    onLButtonUp(const GuiPoint& point, int flags);
-   virtual void   onMouseWheel (const GuiPoint& point, int direction, int flags);
 
    void           onKeyDown(int which, bool shift, bool ctrl, bool alt);
    void           onKeyUp(int which);

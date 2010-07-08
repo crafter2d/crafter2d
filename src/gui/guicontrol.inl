@@ -19,11 +19,6 @@
  ***************************************************************************/
 #include "../defines.h"
 
-INLINE void GuiControl::setCallback(int type, const char* fnc)
-{
-   callbacks[type] = fnc;
-}
-
 INLINE void GuiControl::paint(Uint32 tick, const GuiGraphics& graphics)
 {
 }

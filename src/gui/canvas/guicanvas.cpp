@@ -124,6 +124,7 @@ void GuiCanvas::render(Uint32 tick)
 // - Input messages
 //////////////////////////////////////////////////////////////////////////
 
+/*
 void GuiCanvas::onMouseMove(const GuiPoint& point, const GuiPoint& rel, const int flag)
 {
    GuiList::Iterator it = modal.begin();
@@ -259,6 +260,7 @@ void GuiCanvas::onKeyUp (int which)
       }
    }
 }
+*/
 
 //-----------------------------------------------
 // - Searching

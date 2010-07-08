@@ -24,15 +24,6 @@
 #include "guiwnd.h"
 #include "guigraphics.h"
 
-enum ControlCallback {
-   CB_SETFOCUS       = 1,
-   CB_KILLFOCUS      = 2,
-
-   LB_SELCHANGE      = 3,
-
-   CTRL_LBUTTONUP    = 400
-};
-
 /*! @author Jeroen Broekhuizen
 
 @section guiControl_intro Introduction
@@ -77,19 +68,12 @@ GuiEditBox::GuiEditBox() {
 class GuiControl: public GuiWnd
 {
 public:
-   typedef std::map<int, std::string> CallbackMap;
-
                      GuiControl();
    virtual           ~GuiControl();
 
-	virtual void      destroy();
-
-           void      setCallback(int type, const char* fnc);
+   virtual void      destroy();
 
    virtual int       getTypeId() const;
-
- // Input interface
-   virtual int       onLButtonUp(const GuiPoint& point, int flag);
 
  // layout
    virtual float     getPreferredWidth() const;
@@ -104,10 +88,8 @@ protected:
    virtual void      paint(Uint32 tick, const GuiGraphics& graphics);
 
    GuiColor          backgroundColor() const;
-   void              callback(int type);
 
 private:
-   CallbackMap callbacks;
    GuiColor    _background;
 };
 

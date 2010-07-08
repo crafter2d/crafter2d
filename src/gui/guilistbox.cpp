@@ -259,8 +259,6 @@ void GuiListBox::setCurSel(int sel)
 
          lines[sel]->selected(true);
          curSel = sel;
-
-         callback(LB_SELCHANGE);
       }
       else
       {

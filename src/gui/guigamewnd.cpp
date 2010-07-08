@@ -36,7 +36,8 @@
 #include "../player.h"
 #include "../game.h"
 
-GuiGameWnd::GuiGameWnd(void):
+GuiGameWnd::GuiGameWnd():
+   GuiWindow(),
    zoom(300.0f)
 {
 }
@@ -94,14 +95,6 @@ int GuiGameWnd::onLButtonUp(const GuiPoint& point, int flags)
    doPick(graph, true);
 
    return JENGINE_MSG_HANDLED;
-}
-
-void GuiGameWnd::onMouseWheel (const GuiPoint& point, int direction, int flags)
-{
-   if (direction == -1)
-      zoom -= 10;
-   else
-      zoom += 10;
 }
 
 void GuiGameWnd::onActivate (bool active, GuiWnd* oldWnd)

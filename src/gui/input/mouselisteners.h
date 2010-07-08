@@ -38,6 +38,8 @@ public:
    void fireMouseButtonEvent(const MouseEvent& event);
    void fireMouseMotionEvent(const MouseEvent& event);
 
+   void fireMouseContextEvent(const MouseEvent& event);
+
    void fireMouseEnterEvent(const MouseEvent& event);
    void fireMouseExitEvent(const MouseEvent& event);
 

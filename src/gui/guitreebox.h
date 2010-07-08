@@ -22,6 +22,8 @@
 
 #include "../containers/tree.h"
 
+#include "treebox/guitreeboxmouselistener.h"
+
 #include "guicontrol.h"
 #include "guitreeboxitem.h"
 
@@ -37,9 +39,6 @@ public:
 
    GuiTreeBox();
    virtual ~GuiTreeBox();
-
- // input interface
-   virtual int onLButtonUp (const GuiPoint& point, int flag);
 
  // operations
    void insert(HandlePtr position, GuiTreeBoxItem& item);
@@ -78,6 +77,9 @@ protected:
            int       findIndex(HandlePtr pitem);
 
 private:
+   friend class GuiTreeBoxMouseListener;
+
+   GuiTreeBoxMouseListener mMouseListener;
    Items          _items;
    SelectionList  _selections;
 };

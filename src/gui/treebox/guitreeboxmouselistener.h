@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,33 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _GUISCRIPTWND_H_
-#define _GUISCRIPTWND_H_
+#ifndef GUI_TREEBOX_MOUSE_LISTENER_H
+#define GUI_TREEBOX_MOUSE_LISTENER_H
 
-#include <string>
-#include "guiwindow.h"
+#include "gui/input/mouselistener.h"
 
-class GuiScriptWnd : public GuiWindow
+class GuiTreeBox;
+
+class GuiTreeBoxMouseListener : public MouseListener
 {
 public:
-   GuiScriptWnd();
+   GuiTreeBoxMouseListener(GuiTreeBox& treebox);
 
-   virtual void   onMouseMove (const GuiPoint& point, const GuiPoint& rel, int flags);
-   virtual int    onLButtonUp (const GuiPoint& point, int flags);
-   virtual void   onKeyDown (int which, bool shift, bool ctrl, bool alt);
+  // mouse click
+   virtual void onMouseClick(const MouseEvent& event);
 
-   void           setMouseMoveFnc(const char* fnc = 0);
-   void           setLButtonDownFnc(const char* fnc = 0);
-   void           setKeyDownFnc(const char* fnc = 0);
-
-protected:
-   std::string fncMouseMove;
-   std::string fncLButtonDown;
-   std::string fncKeyDown;
+private:
+   GuiTreeBox& mTreebox;
 };
-
-#ifdef JENGINE_INLINE
-#  include "guiscriptwnd.inl"
-#endif
 
 #endif

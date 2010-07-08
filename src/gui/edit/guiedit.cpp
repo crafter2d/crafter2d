@@ -373,8 +373,8 @@ void GuiEditBox::doReturn(bool shift, bool ctrl, bool alt)
    }
    else
    {
-      if ( hasParent() )
-         getParent()->onKeyDown(SDLK_RETURN, shift, ctrl, alt);
+      //if ( hasParent() )
+      //   getParent()->onKeyDown(SDLK_RETURN, shift, ctrl, alt);
    }
 }
 

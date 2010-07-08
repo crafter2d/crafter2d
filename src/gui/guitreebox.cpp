@@ -41,6 +41,7 @@ REGISTER_DESIGNER(GuiTreeBox, GuiTreeBoxId, "Treebox", 40, 15, 392)
 
 GuiTreeBox::GuiTreeBox():
    GuiControl(),
+   mMouseListener(*this),
    _items(),
    _selections()
 {
@@ -98,6 +99,8 @@ void GuiTreeBox::onCreate (const GuiRect& rect, const char* caption, GuiStyle st
 
    pnode = _items.findElement(*pchild);
    _items.insert(pnode, *pdialog);
+   
+   addMouseListener(mMouseListener);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -194,16 +197,6 @@ void GuiTreeBox::initializeEventHandlerDefinitions()
    GuiEventHandlerDefinition* pdefinition = new GuiEventHandlerDefinition(GuiTreeSelChangeEvent, "onSelectionChanged");
    pdefinition->addArgument("selection");
    getEventHandlerDefinitions().add(pdefinition);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - input interface
-//////////////////////////////////////////////////////////////////////////
-
-int GuiTreeBox::onLButtonUp (const GuiPoint& point, int flag)
-{
-   select(point);
-   return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -76,13 +76,6 @@ void GuiCanvasMouseEventDispatcher::dispatchButtonPressed(const MouseEvent& even
       mClickButton = event.getButtons();
       mClickWindow = mWindow;
    }
-   
-   // convenience calls as long as not all controls have been converted
-   GuiPoint point = GuiPoint(event.getLocation());
-   if ( event.isLeftButtonDown() )
-      mCanvas.onLButtonDown(point, event.getModifiers());
-   else if ( event.isRightButtonDown() )
-      mCanvas.onRButtonDown(point, event.getModifiers());
 }
 
 void GuiCanvasMouseEventDispatcher::dispatchButtonReleased(const MouseEvent& event)
@@ -100,18 +93,13 @@ void GuiCanvasMouseEventDispatcher::dispatchButtonReleased(const MouseEvent& eve
 
       if ( fireclick )
       {
+         if ( event.isRightButtonDown() )
+         {
+            listeners.fireMouseContextEvent(event);
+         }
          listeners.fireMouseClickEvent(event);
       }
    }
-
-   // convenience calls as long as not all controls have been converted
-   GuiPoint point = GuiPoint(event.getLocation());
-   if ( event.isLeftButtonDown() )
-      mCanvas.onLButtonUp(point, event.getModifiers());
-   else if ( event.isWheelUp() )
-      mCanvas.onMouseWheel(point, -1, event.getModifiers());
-   else if ( event.isWheelDown() )
-      mCanvas.onMouseWheel(point, 1, event.getModifiers());
 }
 
 void GuiCanvasMouseEventDispatcher::dispatchMouseMotion(const MouseEvent& event)
@@ -153,7 +141,4 @@ void GuiCanvasMouseEventDispatcher::dispatchMouseMotion(const MouseEvent& event)
    {
       mWindow->getMouseListeners().fireMouseMotionEvent(event);
    }
-
-   // convenience call during conversion
-   mCanvas.onMouseMove(point, rel, event.getModifiers());
 }

@@ -149,7 +149,6 @@ void Console::display()
 
 void Console::onKeyDown (int which, bool shift, bool ctrl, bool alt)
 {
-   GuiWindow::onKeyDown(which, shift, ctrl, alt);
    if ( which == SDLK_RETURN )
    {
       // execute the command

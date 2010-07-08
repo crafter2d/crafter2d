@@ -30,7 +30,6 @@
 #include "guiwindow.h"
 
 GuiControl::GuiControl():
-   callbacks(),
    _background()
 {
 }
@@ -88,25 +87,6 @@ void GuiControl::onRender (Uint32 tick, const GuiGraphics& graphics)
 
    // draw the children
    renderChildren(tick, graphics);
-}
-
-int GuiControl::onLButtonUp (const GuiPoint& point, int flag)
-{
-   callback(CTRL_LBUTTONUP);
-   return JENGINE_MSG_UNHANDLED;
-}
-
-void GuiControl::callback(int type)
-{
-   CallbackMap::iterator it = callbacks.find(type);
-   if ( it != callbacks.end() )
-   {
-      const std::string& callback = (*it).second;
-
-      ScriptManager& mgr = ScriptManager::getInstance();
-      mgr.setObject(this, "GuiControl", "self");
-      mgr.executeLine(callback.c_str());
-   }
 }
 
 int GuiControl::getTypeId() const

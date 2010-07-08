@@ -35,7 +35,6 @@ $#include "gui/guistatic.h"
 $#include "gui/guilistbox.h"
 $#include "gui/checkbox/guicheckbox.h"
 $#include "gui/combobox/guicombobox.h"
-$#include "gui/guiscriptwnd.h"
 $#include "gui/guiimage.h"
 $#include "gui/guifocus.h"
 $#include "gui/guimanager.h"
@@ -58,11 +57,6 @@ enum GuiStyles {
    GUI_TOPMOST       = 64,
    GUI_BORDER        = 128,
    GUI_BACKGROUND    = 256
-};
-
-enum ControlCallback {
-   CB_SETFOCUS       = 1,
-   CB_KILLFOCUS      = 2
 };
 
 class GuiFocus
@@ -155,17 +149,7 @@ class GuiWindow: public GuiWnd
    void setActive(bool active);
 };
 
-class GuiScriptWnd: public GuiWindow
-{
-   GuiScriptWnd();
-   ~GuiScriptWnd();
-
-   void setMouseMoveFnc(const char* fnc);
-   void setLButtonDownFnc(const char* fnc);
-   void setKeyDownFnc(const char* fnc);
-};
-
-class GuiGameWnd: public GuiScriptWnd
+class GuiGameWnd: public GuiWindow
 {
    GuiGameWnd();
 
@@ -177,8 +161,6 @@ class GuiControl: public GuiWnd
 {
    GuiControl();
    ~GuiControl();
-
-   void setCallback(int type, const char* fnc);
 };
 
 class GuiDialog: public GuiWnd

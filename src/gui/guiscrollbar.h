@@ -29,6 +29,8 @@ class GuiButton;
 class GuiScrollBar : public GuiControl
 {
 public:
+  enum ScrollType { eLine, ePage };
+
                   GuiScrollBar();
 
    virtual void   destroy();
@@ -43,28 +45,31 @@ public:
    bool           isHorizontal() const;
 
  // operations
-   void           scroll(int amount);
+   void           scroll(ScrollType type, int amount);
 
+ // messaging
    virtual void   sendMessage(GuiId, GuiEvent event, int param1);
-   virtual int    onLButtonUp (const GuiPoint& point, int flags);
 
 protected:
+   friend class GuiScrollBarMouseListener;
+
    virtual void   onCreate (const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
    virtual void   paint(Uint32 tick, const GuiGraphics& graphics);
 
-   bool           isUpperPart(const GuiPoint& point);
-   bool           isLowerPart(const GuiPoint& point);
+   bool           isUpperPart(const Point& point);
+   bool           isLowerPart(const Point& point);
 
    void           moveScroller(int pos);
 
    void           onScrollUp();
    void           onScrollDown();
 
-   GuiButton   *top;
-   GuiButton   *bottom;
-   GuiButton   *scroller;
+   GuiButton   *mpTop;
+   GuiButton   *mpBottom;
+   GuiButton   *mpScroller;
 
    int      scrollRange;
+   int      mScrollPage;
    int      scrollPos;
    int      scrollPage;
    int      moveSpeed;

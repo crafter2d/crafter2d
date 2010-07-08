@@ -41,8 +41,19 @@ GuiScrollBarMouseListener::~GuiScrollBarMouseListener()
 
 void GuiScrollBarMouseListener::onMouseButton(const MouseEvent& event)
 {
-   if ( event.getButtons() == MouseEvent::eLeft && event.getEventType() == MouseEvent::ePressed )
+   if ( event.isLeftButtonDown() && event.getEventType() == MouseEvent::ePressed )
    {
-      mScrollbar.onLButtonUp(event.getLocation(), 0);
+      Point point = event.getLocation();
+
+      mScrollbar.windowToClient(point);
+
+      if ( mScrollbar.isUpperPart(point) )
+      {
+         mScrollbar.scroll(GuiScrollBar::ePage, -1);
+      }
+      else if ( mScrollbar.isLowerPart(point) )
+      {
+         mScrollbar.scroll(GuiScrollBar::ePage, 1);
+      }
    }
 }
