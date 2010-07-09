@@ -43,7 +43,7 @@ protected:
 	virtual bool   initGame();
    virtual void   loadCustomScriptLibraries();
 
-	virtual void   drawFrame (Uint32 tick);
+	virtual void   drawFrame (float delta);
 };
 
 #endif

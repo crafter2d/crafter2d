@@ -92,4 +92,6 @@ class Client: public Process
 {
    bool connect(const char* serverName, int port, const char* name);
    void disconnect();
+   
+   void setKeyMap(KeyMap* pkeymap);
 };

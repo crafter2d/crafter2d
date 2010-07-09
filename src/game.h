@@ -46,6 +46,7 @@ class GuiDesigner;
 class GameConfiguration;
 class Timer;
 class TimerData;
+class WorldRenderer;
 
 /**
 @author Jeroen Broekhuizen
@@ -103,7 +104,7 @@ protected:
  // overloadables
    virtual bool         initGame();
    virtual void         endGame();
-   virtual void         drawFrame(Uint32 tick) = 0;
+   virtual void         drawFrame(float delta) = 0;
 
    void                 onKeyboardEvent(const SDL_KeyboardEvent& event);
    void                 onMouseButtonEvent(const SDL_MouseButtonEvent& event);

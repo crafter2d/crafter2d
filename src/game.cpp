@@ -397,6 +397,7 @@ void Game::runFrame()
    glEnable (GL_ALPHA_TEST);
 
    // call overloaded function
+   client.render(delta);
    mCanvas.render(tick);
    drawFrame(tick);
    
@@ -409,3 +410,6 @@ void Game::runFrame()
    SDL_GL_SwapBuffers ();
 }
 
+void Game::drawFrame(float delta)
+{
+}

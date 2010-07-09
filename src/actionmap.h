@@ -80,15 +80,21 @@ class KeyMap
 public:
    void bind(int key, int action, bool local=false);
 
-   bool process(int key, bool down=true);
+   void update();
 
 private:
-   struct KeyInfo {
+   struct KeyInfo
+   {
       int action;
+      bool state;
       bool local;
    };
 
-   std::map<int, KeyInfo> keys;
+   typedef std::map<int, KeyInfo> KeyInfos;
+
+   bool process(int key, bool down=true);
+
+   KeyInfos keys;
 };
 
 #ifdef JENGINE_INLINE

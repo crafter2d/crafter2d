@@ -30,6 +30,7 @@
 #include "guiwindow.h"
 
 GuiControl::GuiControl():
+   GuiWnd(),
    _background()
 {
 }
@@ -44,11 +45,6 @@ void GuiControl::onCreate(const GuiRect& rect, const char* caption, GuiStyle sty
 
    GuiCanvas& canvas = Game::getInstance().getCanvas();
    _background = canvas.getDefaultColor(GuiCanvas::GuiWindowColor);
-}
-
-void GuiControl::destroy ()
-{
-   GuiWnd::destroy();
 }
 
 void GuiControl::onRender (Uint32 tick, const GuiGraphics& graphics)
@@ -69,14 +65,13 @@ void GuiControl::onRender (Uint32 tick, const GuiGraphics& graphics)
       }
    }
 
-   if ( getBorder() ) {
+   if ( getBorder() )
+   {
       graphics.setColor(graphics.canvas().getDefaultColor(GuiCanvas::GuiBorderColor));
       graphics.drawWireRect(m_frameRect);
-   }
 
-   // make sure the children do not overwrite the border
-   if ( getBorder() )
       glScissor(windowRect.left()+1,600-windowRect.bottom()+1, windowRect.getWidth()-2, windowRect.getHeight()-2);
+   }
    else
       glScissor(windowRect.left(),600-windowRect.bottom(), windowRect.getWidth()+1, windowRect.getHeight()+1);
 

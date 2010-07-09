@@ -41,6 +41,6 @@ void MyGame::loadCustomScriptLibraries()
    Game::loadCustomScriptLibraries();
 }
 
-void MyGame::drawFrame(Uint32 tick)
+void MyGame::drawFrame(float delta)
 {
 }

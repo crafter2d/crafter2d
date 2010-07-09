@@ -35,6 +35,7 @@ class Layer;
 class Bound;
 class SimulationFactory;
 class Simulator;
+class WorldRenderer;
 
 /**
 @author Jeroen Broekhuizen
@@ -71,7 +72,7 @@ public:
                   World();
    virtual        ~World();
 
-	virtual bool   create(const char* filename=NULL);
+   virtual bool   create(const char* filename=NULL);
    void           createEmpty(const std::string& name);
    void           destroy();
    bool           save();
@@ -121,6 +122,10 @@ public:
    Bound&         addBound(const Vector& p1, const Vector& p2);
    void           removeBound(Bound& bound);
 
+ // rendering
+   WorldRenderer* createRenderer();
+
+ // streaming
    virtual void   pack(BitStream& stream) const;
    virtual void   unpack(BitStream& stream);
 

@@ -40,12 +40,14 @@
 #include "../console.h"
 #include "../creature.h"
 #include "../nodevisitor.h"
+#include "../defines.h"
 
 #include "layer.h"
 #include "bound.h"
 #include "layerfactory.h"
 #include "worldreader.h"
 #include "worldwriter.h"
+#include "topdownworldrenderer.h"
 
 static const std::string WORLD_EXTENSION = ".jwl";
 
@@ -490,6 +492,21 @@ void World::removeBound(Bound& bound)
    Bounds::iterator it = std::find(bounds.begin(), bounds.end(), &bound);
    if ( it != bounds.end() )
       bounds.erase(it);
+}
+
+WorldRenderer* World::createRenderer()
+{
+   switch ( _layerType )
+   {
+      case LayerType::ETopDown:
+         return new TopDownWorldRenderer(*this);
+      case LayerType::EIsoDiamond:
+         return NULL;
+
+      case LayerType::EInvalidLayerType:
+      default:
+         return NULL;
+   }
 }
 
 //////////////////////////////////////////////////////////////////////////

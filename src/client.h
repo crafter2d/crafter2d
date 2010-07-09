@@ -33,6 +33,8 @@ class UpdateObjectEvent;
 class NameChangeObjectEvent;
 class ScriptEvent;
 
+class KeyMap;
+class WorldRenderer;
 class Player;
 
 /// @author Jeroen Broekhuizen
@@ -48,17 +50,23 @@ public:
 
    virtual bool   destroy();
    virtual void   update(float delta);
+           void   render(float delta);
 
  // get/set
    Player&        getPlayer();
 
+   bool           hasKeyMap() const;
+   KeyMap&        getKeyMap();
+   void           setKeyMap(KeyMap* pkeymap);
+
  // operations
    virtual bool loadWorld(const std::string& filename, const std::string& name);
 
-   bool           connect(const char* server, int port, const char* name);
-   void           disconnect();
+   bool         connect(const char* server, int port, const char* name);
+   void         disconnect();
 
-   virtual int    onClientEvent(int client, const NetEvent& event);
+   virtual int  onClientEvent(int client, const NetEvent& event);
+
 private:
    void  handleConnectReplyEvent(const ConnectReplyEvent& event);
    void  handleDisconnectEvent(const DisconnectEvent& event);
@@ -71,8 +79,10 @@ private:
    void  handleNameChangeEvent(const NameChangeObjectEvent& event);
    void  handleScriptEvent(const ScriptEvent& event);
 
-   Player*  mpPlayer;
-   Requests requests;
+   WorldRenderer* mpWorldRenderer;
+   Player*        mpPlayer;
+   KeyMap*        mpKeyMap;
+   Requests       requests;
 };
 
 #endif

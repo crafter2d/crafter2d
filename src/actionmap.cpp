@@ -99,9 +99,36 @@ void KeyMap::bind(int key, int action, bool local)
 {
    KeyInfo info;
    info.action = (Action)action;
-   info.local  = local;
+   info.state  = false;
+   info.local  = local;   
 
    keys[key] = info;
+}
+
+void KeyMap::update()
+{
+   Uint8* pkeys = SDL_GetKeyState(NULL);
+
+   KeyInfos::iterator it = keys.begin();
+   for ( ; it != keys.end(); ++it )
+   {
+      int key = it->first;
+      KeyInfo& info = it->second;
+
+      if ( pkeys[key] )
+      {
+         if ( !info.state )
+         {
+            info.state = true;
+            process(key, true);
+         }
+      }
+      else if ( info.state )
+      {
+         info.state = false;
+         process(key, false);
+      }
+   }
 }
 
 bool KeyMap::process(int key, bool down)

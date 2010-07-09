@@ -4,11 +4,11 @@
 -- Script file for the games splash screen
 
 function Splash_create()
-	splashScreen = GuiScriptWnd:new()
+	splashScreen = GuiWindow:new()
 	splashScreen:create(1, GuiRect:new(0,800,0,600), "", 264)
 	splashScreen:setBackgroundImage("../images/splash.png")
-	splashScreen:setKeyDownFnc("Splash_keydown")
-	splashScreen:setLButtonDownFnc("Splash_click")
+	--splashScreen:setKeyDownFnc("Splash_keydown")
+	--splashScreen:setLButtonDownFnc("Splash_click")
 
 	canvas:pushWindow(splashScreen)
 end

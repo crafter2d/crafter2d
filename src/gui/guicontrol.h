@@ -71,9 +71,7 @@ public:
                      GuiControl();
    virtual           ~GuiControl();
 
-   virtual void      destroy();
-
-   virtual int       getTypeId() const;
+    virtual int       getTypeId() const;
 
  // layout
    virtual float     getPreferredWidth() const;

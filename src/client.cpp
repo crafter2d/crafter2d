@@ -17,6 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "client.h"
+
 #include "net/netevent.h"
 #include "net/newobjectevent.h"
 #include "net/events/connectevent.h"
@@ -28,20 +30,25 @@
 #include "net/events/scriptevent.h"
 
 #include "world/world.h"
+#include "world/worldrenderer.h"
 
 #include "autoptr.h"
 #include "console.h"
-#include "client.h"
 #include "player.h"
 #include "script.h"
 #include "scriptmanager.h"
+#include "sound.h"
 #include "creature.h"
 #include "server.h"
 #include "defines.h"
+#include "sceneobject.h"
+#include "actionmap.h"
 
 Client::Client(void):
    Process(),
+   mpWorldRenderer(NULL),
    mpPlayer(NULL),
+   mpKeyMap(NULL),
    requests()
 {
 }
@@ -91,13 +98,49 @@ void Client::update(float delta)
 {
    Process::update(delta);
 
+   if ( mpKeyMap != NULL )
+   {
+      mpKeyMap->update();
+   }
+
    graph.updateClient(delta);
 }
 
-Player& Client::getPlayer()
+void Client::render(float delta)
+{
+   if ( mpWorldRenderer != NULL )
+   {
+      // set the sound of the player
+      Object* pcontroler = graph.getControler();
+      if ( pcontroler != NULL )
+         SoundManager::setPlayerPosition(pcontroler->getPosition());
+
+      mpWorldRenderer->render(delta);
+   }
+}
+
+// - Get/set
+
+INLINE Player& Client::getPlayer()
 {
    ASSERT_PTR(mpPlayer);
    return *mpPlayer;
+}
+
+INLINE bool Client::hasKeyMap() const
+{
+   return mpKeyMap != NULL;
+}
+
+INLINE KeyMap& Client::getKeyMap()
+{
+   ASSERT_PTR(mpKeyMap)
+   return *mpKeyMap;
+}
+
+INLINE void Client::setKeyMap(KeyMap* pkeymap)
+{
+   mpKeyMap = pkeymap;
 }
 
 // - Operations
@@ -107,6 +150,9 @@ bool Client::loadWorld(const std::string& filename, const std::string& name)
    if ( Process::loadWorld(filename, name) )
    {
       graph.getWorld()->setReplica();
+
+      mpWorldRenderer = graph.getWorld()->createRenderer();
+
       return true;
    }
 
@@ -244,10 +290,13 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
 
    if ( World::isWorld(*obj) )
    {
+      World& world = dynamic_cast<World&>(*obj);
+
       if ( graph.hasWorld() )
          graph.getWorld()->destroy();
 
-      mpPlayer->initialize((World&)*obj);
+      mpWorldRenderer = world.createRenderer();
+      mpPlayer->initialize(world);
 
       graph.setWorld((World*)obj.release());
 

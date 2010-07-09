@@ -29,7 +29,6 @@ $#include "gui/guiimagebutton.h"
 $#include "gui/canvas/guicanvas.h"
 $#include "gui/guidialog/guidialog.h"
 $#include "gui/colorcombobox/guicolorcombobox.h"
-$#include "gui/guigamewnd.h"
 $#include "gui/edit/guiedit.h"
 $#include "gui/guistatic.h"
 $#include "gui/guilistbox.h"
@@ -147,14 +146,6 @@ class GuiWindow: public GuiWnd
    GuiWindow();
 
    void setActive(bool active);
-};
-
-class GuiGameWnd: public GuiWindow
-{
-   GuiGameWnd();
-
-   void pushMap(KeyMap* map);
-   void popMap();
 };
 
 class GuiControl: public GuiWnd

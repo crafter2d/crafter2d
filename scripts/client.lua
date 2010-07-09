@@ -4,6 +4,7 @@
 -- In this file you can add functionality for the client.
 
 include('editor.lua')
+include('keymap.lua')
 
 -- Start up the client
 -- host	: true is this client is host, false otherwise
@@ -35,6 +36,7 @@ end
 -- Sets up the client
 function Client_setup()
 	client:setActionMap(clientMap)
+	client:setKeyMap(keymap)
 
 	-- set the client states
 	client.id = -1

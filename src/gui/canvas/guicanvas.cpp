@@ -31,29 +31,11 @@
 #include "gui/guidesigner.h"
 #include "gui/guimanager.h"
 
+//-----------------------------------------------
+// - Statics
+//-----------------------------------------------
+
 GuiColor GuiCanvas::defaultColors[GuiCanvas::MaxGuiColors];
-
-GuiCanvas::GuiCanvas():
-   GuiWnd(),
-   graphics(),
-   windows(),
-   modal(),
-   activeWnd(),
-   mpDesigner(NULL),
-   mFocusListener(*this),
-   mKeyDispatcher(*this),
-   mMouseDispatcher(*this)
-{
-   graphics.canvas(this);
-}
-
-GuiCanvas::~GuiCanvas()
-{
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Static interface
-//////////////////////////////////////////////////////////////////////////
 
 // static
 bool GuiCanvas::isShift()
@@ -73,9 +55,31 @@ bool GuiCanvas::isCtrl()
    return (SDL_GetModState() & KMOD_CTRL);
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------
+// - Class
+//-----------------------------------------------
+
+GuiCanvas::GuiCanvas():
+   GuiWnd(),
+   graphics(),
+   windows(),
+   modal(),
+   activeWnd(),
+   mpDesigner(NULL),
+   mFocusListener(*this),
+   mKeyDispatcher(*this),
+   mMouseDispatcher(*this)
+{
+   graphics.canvas(this);
+}
+
+GuiCanvas::~GuiCanvas()
+{
+}
+
+//-----------------------------------------------
 // - Construction
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------
 
 
 void GuiCanvas::create(GuiId id, const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
@@ -94,9 +98,9 @@ void GuiCanvas::destroy()
    GuiWnd::destroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// - Painting
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------
+// - Rendering
+//-----------------------------------------------
 
 /// \fn GuiCanvas::render(Uint32 tick)
 /// \brief Render all windows on this canvas.
@@ -119,148 +123,6 @@ void GuiCanvas::render(Uint32 tick)
       pwnd->render(tick, graphics);
    }
 }
-
-//////////////////////////////////////////////////////////////////////////
-// - Input messages
-//////////////////////////////////////////////////////////////////////////
-
-/*
-void GuiCanvas::onMouseMove(const GuiPoint& point, const GuiPoint& rel, const int flag)
-{
-   GuiList::Iterator it = modal.begin();
-   if ( !it.valid() )
-   {
-      if ( GuiFocus::getInstance().hasFocus() )
-      {
-         GuiPoint p(point);
-         GuiWnd& focusWnd = GuiFocus::getInstance().getFocus();
-
-         focusWnd.windowToClient(p);
-         focusWnd.onMouseMove(p, rel, flag);
-      }
-   }
-   else if ( GuiFocus::getInstance().hasFocus() )
-   {
-      GuiWnd* wnd = (*it);
-      GuiPoint p(point);
-      GuiWnd& focusWnd = GuiFocus::getInstance().getFocus();
-
-      focusWnd.windowToClient(p);
-      focusWnd.onMouseMove(p, rel, flag);
-   }
-}
-
-void GuiCanvas::onMouseWheel(const GuiPoint& point, int direction, int flag)
-{
-   if ( modal.empty() )
-   {
-      // no modal dialog on top
-      GuiList::Iterator it = windows.begin();
-      for (; it.valid(); ++it) {
-         GuiWnd* wnd = (*it)->hitTest (point);
-         if (wnd)
-         {
-            wnd->onMouseWheel(point, direction, flag);
-            break;
-         }
-      }
-   }
-   else
-   {
-      // redirect input directly to modal dialog
-      GuiWnd* pmodelWnd = *modal.begin();
-      GuiWnd* pwnd = pmodelWnd->hitTest(point);
-      if ( pwnd != NULL )
-         return pwnd->onMouseWheel(point, direction, flag);
-   }
-}
-
-int GuiCanvas::onLButtonDown(const GuiPoint& point, int flag)
-{
-   findFocusUnderCursor(point);
-
-   GuiFocus& focus = GuiFocus::getInstance();
-   if ( focus.hasFocus() )
-   {
-      GuiPoint p(point);
-      GuiWnd& focusWnd = focus.getFocus();
-      focusWnd.windowToClient(p);
-
-      return focusWnd.onLButtonDown(p, flag);
-   }
-
-   return JENGINE_MSG_UNHANDLED;
-}
-
-int GuiCanvas::onLButtonUp(const GuiPoint& point, int flag)
-{
-   GuiFocus& focus = GuiFocus::getInstance();
-
-   if ( !focus.hasFocus() || !focus.getFocus().hitTest(point) )
-   {
-      // if the currently focused window is not selected anymore with the mouse,
-      // try to find the new window
-      findFocusUnderCursor(point);
-   }
-
-   if ( focus.hasFocus() )
-   {
-      GuiPoint p(point);
-      GuiWnd& focusWnd = focus.getFocus();
-      focusWnd.windowToClient(p);
-
-      return focusWnd.onLButtonUp(p, flag);
-   }
-
-   return JENGINE_MSG_UNHANDLED;
-}
-
-int GuiCanvas::onRButtonDown (const GuiPoint& point, int flag)
-{
-   findFocusUnderCursor(point);
-
-   GuiFocus& focus = GuiFocus::getInstance();
-   if ( focus.hasFocus() )
-   {
-      if ( !focus.getFocus().onContextMenu(point) )
-         return focus.getFocus().onRButtonDown(point, flag);
-      else
-         return JENGINE_MSG_HANDLED;
-   }
-
-   return JENGINE_MSG_UNHANDLED;
-}
-
-void GuiCanvas::onKeyDown(int which, bool shift, bool ctrl, bool alt)
-{
-   GuiFocus& focus = GuiFocus::getInstance();
-   if ( focus.hasFocus() )
-   {
-      focus.getFocus().onKeyDown(which, shift, ctrl, alt);
-   }
-}
-
-void GuiCanvas::onKeyUp (int which)
-{
-   switch ( which )
-   {
-   case SDLK_F3:
-      switchDesigner();
-      break;
-   case SDLK_F4:
-      switchEditor();
-      break;
-   default:
-      {
-         GuiFocus& focus = GuiFocus::getInstance();
-         if ( focus.hasFocus() )
-         {
-            focus.getFocus().onKeyUp(which);
-         }
-      }
-   }
-}
-*/
 
 //-----------------------------------------------
 // - Searching
@@ -418,9 +280,9 @@ void GuiCanvas::quit()
    Game::getInstance().setActive(false);
 }
 
-//----------------------------------
+//-----------------------------------------------
 // - Finding
-//----------------------------------
+//-----------------------------------------------
 
 GuiWnd* GuiCanvas::findWindowAtLocation(const Point& point)
 {

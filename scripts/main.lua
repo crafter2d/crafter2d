@@ -7,7 +7,6 @@ PLAYER_CONTROLER_EVENT = 1
 
 include('config.lua')
 include('console.lua')
-include('gamewnd.lua')
 include('msgbox.lua')
 include('server.lua')
 include('client.lua')
