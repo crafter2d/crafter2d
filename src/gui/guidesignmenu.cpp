@@ -57,12 +57,6 @@ void GuiDesignMenu::onCreate(const GuiRect& rect, const char* caption, GuiStyle 
 // - Input interface
 //////////////////////////////////////////////////////////////////////////
 
-bool GuiDesignMenu::onContextMenu(const GuiPoint& point)
-{
-   GuiManager::getInstance().showPopup(*this, point, "des_menudesign_popup");
-   return true;
-}
-
 void GuiDesignMenu::onCommand(int cmd)
 {
    switch ( cmd )

@@ -51,8 +51,6 @@ public:
    virtual GuiWnd*   hitTest(const GuiPoint &point);
    virtual void      onCommand(int cmd);
 
-   virtual bool      onContextMenu(const GuiPoint& point);
-
  // operations
    void resize(const GuiPoint& rel, int borders);
 

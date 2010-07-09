@@ -22,6 +22,9 @@
 
 #include "gui/input/mouseevent.h"
 
+#include "gui/guidesignmenu.h" 
+#include "gui/guimanager.h"
+
 GuiDesignMenuMouseListener::GuiDesignMenuMouseListener(GuiDesignMenu& menu):
    MouseListener(),
    mMenu(menu)
@@ -32,5 +35,12 @@ GuiDesignMenuMouseListener::GuiDesignMenuMouseListener(GuiDesignMenu& menu):
 
 void GuiDesignMenuMouseListener::onMouseButton(const MouseEvent& event)
 {
+   event.consume();
+}
+
+void GuiDesignMenuMouseListener::onMouseContext(const MouseEvent& event)
+{
+   GuiManager::getInstance().showPopup(mMenu, event.getLocation(), "des_menudesign_popup");
+
    event.consume();
 }

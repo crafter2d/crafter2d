@@ -106,11 +106,11 @@ protected:
 // Overloads
    virtual void      onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
 
-// Input interface
-   virtual bool      onContextMenu(const GuiPoint& point);
-
 private:
+   friend class GuiDesignerMouseListener;
+
    static GuiRegisteredControl*  findControl(int id);
+
 // Operations
    void           createDesignerPopup();
    void           createWindowPopup();

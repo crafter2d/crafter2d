@@ -61,7 +61,6 @@ public:
  // Overloads
    virtual void      onSetFocus(GuiWnd* oldCtrl);
    virtual void      onKillFocus(GuiWnd* newCtrl);
-   virtual bool      onContextMenu(const GuiPoint& point);
    virtual void      onCommand(int id);
    virtual void      sendMessage(GuiId id, GuiEvent event, int param1);
 

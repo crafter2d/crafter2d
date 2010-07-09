@@ -243,32 +243,6 @@ GuiDesignMenu* GuiDesigner::createMenu()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// - Input interface
-//////////////////////////////////////////////////////////////////////////
-
-bool GuiDesigner::onContextMenu(const GuiPoint& point)
-{
-   const GuiRect& rect = getDesignerPopup().getWindowRect();
-
-   if ( _popupMenu == NULL )
-   {
-      _popupMenu = new GuiPopupDecorator(getDesignerPopup());
-      _popupMenu->create(100, GuiRect(point.x, point.x + rect.getWidth(), point.y, point.y + rect.getHeight()), "", GUI_VISIBLE, NULL);
-      _popupMenu->setOwner(*this);
-
-      getDesignerPopup().setParent(_popupMenu);
-   }
-   else
-   {
-      _popupMenu->setWindowPos(point.x, point.y);
-   }
-
-   _popupMenu->popup();
-
-   return true;
-}
-
-//////////////////////////////////////////////////////////////////////////
 // - Context menu
 //////////////////////////////////////////////////////////////////////////
 

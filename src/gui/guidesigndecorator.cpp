@@ -102,12 +102,6 @@ void GuiDesignDecorator::onRender(Uint32 tick, const GuiGraphics& graphics)
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-bool GuiDesignDecorator::onContextMenu(const GuiPoint& point)
-{
-   GuiManager::getInstance().showPopup(*this, point, "des_control_layout_popup");
-   return true;
-}
-
 void GuiDesignDecorator::onCommand(int cmd)
 {
    GuiDesignWnd* pwnd = dynamic_cast<GuiDesignWnd*>(getParent());

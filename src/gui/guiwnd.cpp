@@ -352,10 +352,6 @@ void GuiWnd::initializeEventHandlerDefinitions()
    GuiEventHandlerDefinition* pdefinition = new GuiEventHandlerDefinition(GuiWndCreatedEvent, "onCreated");
    _peventhandlerdefinitions->add(pdefinition);
 
-   pdefinition = new GuiEventHandlerDefinition(GuiWndContextMenuEvent, "onContextMenu");
-   pdefinition->addArgument("point");
-   _peventhandlerdefinitions->add(pdefinition);
-
    pdefinition = new GuiEventHandlerDefinition(GuiWndContextCommandEvent, "onCommand");
    pdefinition->addArgument("id");
    _peventhandlerdefinitions->add(pdefinition);
@@ -524,24 +520,6 @@ GuiWnd* GuiWnd::hitTest (const GuiPoint& point)
 	}
 
 	return NULL;
-}
-
-bool GuiWnd::onContextMenu(const GuiPoint& point)
-{
-   GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiWndContextMenuEvent);
-   if ( phandler != NULL )
-   {
-      ScriptManager& mgr = ScriptManager::getInstance();
-      Script& script = mgr.getTemporaryScript();
-      script.setSelf(this, "GuiWnd");
-      script.prepareCall(phandler->getFunctionName().c_str());
-      script.addParam((void*)&point, "GuiPoint");
-      script.run(1, 1);
-
-      return script.getBoolean();
-   }
-
-   return false;
 }
 
 void GuiWnd::onCommand(int cmd)

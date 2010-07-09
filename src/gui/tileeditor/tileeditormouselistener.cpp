@@ -77,6 +77,28 @@ void TileEditorMouseListener::onMouseClick(const MouseEvent& event)
    }
 }
 
+void TileEditorMouseListener::onMouseContext(const MouseEvent& event)
+{
+   GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiWndContextMenuEvent);
+   if ( phandler != NULL )
+   {
+      GuiPoint point = event.getLocation();
+      mTileEditor.windowToClient(point);
+
+      ScriptManager& mgr = ScriptManager::getInstance();
+      Script& script = mgr.getTemporaryScript();
+      script.setSelf(&mTileEditor, "GuiTileEditor");
+      script.prepareCall(phandler->getFunctionName().c_str());
+      script.addParam((void*)&point, "GuiPoint");
+      script.run(1, 1);
+
+      if ( script.getBoolean() )
+      {
+         event.consume();
+      }
+   }
+}
+
 void TileEditorMouseListener::onMouseMotion(const MouseEvent& event)
 {
    GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseMoveEvent);

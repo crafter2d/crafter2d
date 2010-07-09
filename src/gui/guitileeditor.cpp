@@ -99,6 +99,10 @@ void GuiTileEditor::initializeEventHandlerDefinitions()
    pdefinition->addArgument("pressed");
    getEventHandlerDefinitions().add(pdefinition);
 
+   pdefinition = new GuiEventHandlerDefinition(GuiWndContextMenuEvent, "onContextMenu");
+   pdefinition->addArgument("point");
+   _peventhandlerdefinitions->add(pdefinition);
+
    pdefinition = new GuiEventHandlerDefinition(GuiTileEditorKeyPressEvent, "onKeyPress");
    pdefinition->addArgument("key");
    getEventHandlerDefinitions().add(pdefinition);

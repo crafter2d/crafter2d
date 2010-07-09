@@ -35,7 +35,6 @@ public:
    bool load(const std::string& name);
    void save();
 
-   virtual bool onContextMenu(const GuiPoint& point);
    virtual void onCommand(int cmd);
    virtual void onSetFocus(GuiWnd* oldCtrl);
 

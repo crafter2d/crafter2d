@@ -25,6 +25,7 @@
 #include "gui/guidesigndecorator.h"
 #include "gui/guidesignselection.h"
 #include "gui/guidesignwnd.h"
+#include "gui/guimanager.h"
 
 #include "game.h"
 
@@ -60,6 +61,13 @@ void GuiDesignDecoratorMouseListener::onMouseButton(const MouseEvent& event)
    {
       mDragging = false;
    }
+}
+
+void GuiDesignDecoratorMouseListener::onMouseContext(const MouseEvent& event)
+{
+   GuiManager::getInstance().showPopup(mDecorator, event.getLocation(), "des_control_layout_popup"); 
+
+   event.consume();
 }
 
 void GuiDesignDecoratorMouseListener::onMouseMotion(const MouseEvent& event)

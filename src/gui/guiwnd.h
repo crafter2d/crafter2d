@@ -175,7 +175,6 @@ public:
    virtual void      onActivate(bool active, GuiWnd* oldWnd);
    virtual void      onSetFocus(GuiWnd* oldCtrl);
    virtual void      onKillFocus(GuiWnd* newCtrl);
-   virtual bool      onContextMenu(const GuiPoint& point);
    virtual void      onCommand(int cmd);
 
    virtual GuiWnd*   hitTest(const GuiPoint& point);

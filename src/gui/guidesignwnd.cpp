@@ -74,35 +74,6 @@ void GuiDesignWnd::onCreate(const GuiRect& rect, const char* caption, GuiStyle s
 }
 
 //////////////////////////////////////////////////////////////////////////
-// - Input interface
-//////////////////////////////////////////////////////////////////////////
-
-bool GuiDesignWnd::onContextMenu(const GuiPoint& point)
-{
-   GuiDesigner* pdesigner = dynamic_cast<GuiDesigner*>(getParent());
-   ASSERT_PTR(pdesigner)
-   
-   if ( _popupMenu == NULL )
-   {
-            GuiMenu& menu = pdesigner->getWindowPopup();
-      const GuiRect& rect = menu.getWindowRect();
-
-      _popupMenu = new GuiPopupDecorator(menu);
-      _popupMenu->create(100, GuiRect(point.x, point.x + rect.getWidth(), point.y, point.y + rect.getHeight()), "", GUI_VISIBLE, NULL);
-      _popupMenu->setOwner(*this);
-   }
-   else
-   {
-      _popupMenu->setWindowPos(point.x, point.y);
-   }
-
-   //_popupMenu->setParent(this);
-   _popupMenu->popup();
-
-   return true;
-}
-
-//////////////////////////////////////////////////////////////////////////
 // - Overloaded operations
 //////////////////////////////////////////////////////////////////////////
 

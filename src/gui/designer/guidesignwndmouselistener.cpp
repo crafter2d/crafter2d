@@ -22,8 +22,11 @@
 
 #include "gui/input/mouseevent.h"
 
+#include "gui/guidesigner.h"
 #include "gui/guidesignselection.h"
 #include "gui/guidesignwnd.h"
+#include "gui/guimenu.h"
+#include "gui/guipopupdecorator.h"
 
 GuiDesignWndMouseListener::GuiDesignWndMouseListener(GuiDesignWnd& window):
    MouseListener(),
@@ -41,6 +44,36 @@ void GuiDesignWndMouseListener::onMouseButton(const MouseEvent& event)
    }
 
    mWindow._pselectionctrl->getMouseListeners().fireMouseButtonEvent(event);
+}
+
+void GuiDesignWndMouseListener::onMouseContext(const MouseEvent& event)
+{
+   GuiDesigner* pdesigner = dynamic_cast<GuiDesigner*>(mWindow.getParent());
+   ASSERT_PTR(pdesigner)
+   
+   GuiPopupDecorator* ppopup = mWindow._popupMenu;
+
+   const Point& location = event.getLocation();
+
+   if ( ppopup == NULL )
+   {
+            GuiMenu& menu = pdesigner->getWindowPopup();
+      const GuiRect& rect = menu.getWindowRect();
+
+      ppopup = new GuiPopupDecorator(menu);
+      ppopup->create(100, GuiRect(location.x(), location.x() + rect.getWidth(), location.y(), location.y() + rect.getHeight()), "", GUI_VISIBLE, NULL);
+      ppopup->setOwner(mWindow);
+
+      mWindow._popupMenu = ppopup;
+   }
+   else
+   {
+      ppopup->setWindowPos(location.x(), location.y());
+   }
+
+   ppopup->popup();
+
+   event.consume();
 }
 
 void GuiDesignWndMouseListener::onMouseMotion(const MouseEvent& event)
