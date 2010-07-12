@@ -24,15 +24,29 @@ INLINE uint SceneObject::getId() const
    return mId;
 }
 
-/// \fn SceneObject::setParent(SceneObject* p)
-INLINE void SceneObject::setParent(SceneObject* p)
+INLINE void SceneObject::setId(Id id)
 {
-   parent = p;
+   mId = id;
+}
+
+INLINE bool SceneObject::hasFilename() const
+{
+   return !mXmlFile.empty();
+}
+
+INLINE const std::string& SceneObject::getFilename() const
+{
+   return mXmlFile;
 }
 
 INLINE void SceneObject::setFilename(const std::string& filename)
 {
-   xmlfile = filename;
+   mXmlFile = filename;
+}
+
+INLINE bool SceneObject::hasName() const
+{
+   return !mName.empty();
 }
 
 /// \fn SceneObject::getName()
@@ -40,11 +54,6 @@ INLINE void SceneObject::setFilename(const std::string& filename)
 INLINE const std::string& SceneObject::getName() const
 {
    return mName;
-}
-
-INLINE const std::string& SceneObject::getFilename() const
-{
-   return xmlfile;
 }
 
 INLINE bool SceneObject::hasParent() const
@@ -57,4 +66,10 @@ INLINE bool SceneObject::hasParent() const
 SceneObject* SceneObject::getParent()
 {
    return parent;
+}
+
+/// \fn SceneObject::setParent(SceneObject* p)
+INLINE void SceneObject::setParent(SceneObject* p)
+{
+   parent = p;
 }

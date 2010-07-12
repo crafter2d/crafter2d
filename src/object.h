@@ -78,8 +78,6 @@ public:
    int               getAnimation() const;
 	void              setAnimation(int anim);
 
-   const std::string& filename() const;
-
  // visitor interface
    virtual void      accept(NodeVisitor& nv);
 

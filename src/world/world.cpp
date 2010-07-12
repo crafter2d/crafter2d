@@ -95,13 +95,13 @@ World::~World()
 /// \brief Loads world information from a file and preprocesses this information for use during the game
 bool World::create (const char* filename)
 {
-   if ( filename == NULL && xmlfile.empty() )
+   if ( filename == NULL && !hasFilename() )
       return false;
 
    if ( filename != NULL )
-      xmlfile = filename;
+      setFilename(filename);
 
-   std::string path = getFilename();
+   std::string path = getPath();
 
    WorldReader reader;
    if ( !reader.read(*this, path) )
@@ -118,7 +118,7 @@ bool World::create (const char* filename)
 /// \brief Initializes & saves this world as new file
 void World::createEmpty(const std::string& name)
 {
-   xmlfile = name;
+   setFilename(name);
    save();
 
    initializeBorders();
@@ -174,7 +174,7 @@ void World::loadObjects(const char* filename)
 /// \brief Writes this world to its file
 bool World::save()
 {
-   std::string path = getFilename();
+   std::string path = getPath();
 
    WorldWriter writer;
    return writer.write(*this, path);
@@ -210,12 +210,12 @@ void World::destroy()
 
 // - Get/set
 
-/// \fn World::getFilename() const
+/// \fn World::getPath() const
 /// \brief Constructs complete filename including path and extension
-std::string World::getFilename() const
+std::string World::getPath() const
 {
    const std::string& path = Game::getInstance().getConfiguration().getWorldPath();
-   return path + xmlfile + WORLD_EXTENSION;
+   return path + getFilename() + WORLD_EXTENSION;
 }
 
 /// \fn World::setObjectLayer(int layer)

@@ -44,17 +44,20 @@ void NewObjectEvent::pack(BitStream& stream) const
 {
    NetEvent::pack(stream);
    
-   stream << mParentId << (NetObject*)mpObject << mpObject->getFilename();
+   stream << mParentId << mpObject->getId() << (NetObject*)mpObject << mpObject->getFilename();
 }
 
 void NewObjectEvent::unpack(BitStream& stream)
 {
    NetEvent::unpack(stream);
    
+   Id id;
    std::string filename;
    
-   stream >> mParentId >> (NetObject**)&mpObject >> filename;
+   stream >> mParentId >> id >> (NetObject**)&mpObject >> filename;
    
+   mpObject->setReplica();
+   mpObject->setId(id);
    mpObject->setFilename(filename);
 }
 

@@ -133,7 +133,7 @@ protected:
    void           scroll();
    void           initializeBorders();
 
-   std::string    getFilename() const;
+   std::string    getPath() const;
 
    virtual void   doUpdate(float delta);
    virtual void   doUpdateClient(float delta);

@@ -127,13 +127,6 @@ INLINE const Texture& Object::getTexture() const
    return *texture;
 }
 
-/// \fn Object::filename() const
-/// \brief Returns the name of the XML file for this object.
-INLINE const std::string& Object::filename() const
-{
-   return xmlfile;
-}
-
 INLINE Animator& Object::getAnimator()
 {
    return *mpAnimator;

@@ -37,6 +37,7 @@ public:
             NewObjectEvent();
    explicit NewObjectEvent(SceneObject& object);
    
+   Id           getObjectId() const;
    SceneObject* getObject() const;
    Id           getParent() const;
 

@@ -285,7 +285,6 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
    // a new object has been made on the server and 
    // is now also known on the client
    AutoPtr<SceneObject> obj = event.getObject();
-   obj->setReplica();
    obj->create();
 
    if ( World::isWorld(*obj) )
@@ -318,6 +317,11 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
          UNREACHABLE("Parent of object not found.")
       }
    }
+
+   // remove the request
+   Requests::iterator it = requests.find(obj->getId());
+   if ( it != requests.end() )
+      requests.erase(it);
 }
 
 void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)

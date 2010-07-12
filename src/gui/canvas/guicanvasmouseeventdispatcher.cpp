@@ -104,9 +104,6 @@ void GuiCanvasMouseEventDispatcher::dispatchButtonReleased(const MouseEvent& eve
 
 void GuiCanvasMouseEventDispatcher::dispatchMouseMotion(const MouseEvent& event)
 {
-   GuiPoint point = GuiPoint(event.getLocation());
-   GuiPoint rel = GuiPoint(event.getRelative());
-
    GuiWnd* pwindow = mCanvas.findWindowAtLocation(event.getLocation());
    if ( mWindow.instancePtr() != pwindow )
    {

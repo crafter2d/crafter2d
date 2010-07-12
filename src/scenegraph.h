@@ -58,7 +58,7 @@ public:
    void              draw();
 
   // maintenance
-   void              addObject(SceneObject* obj);
+   void              addObject(SceneObject& object);
    void              removeObject(const SceneObject& object);
    void              removeAll();
 

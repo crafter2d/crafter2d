@@ -78,11 +78,14 @@ public:
    SceneObject*            getParent();
    void                    setParent(SceneObject* p);
 
-   void                    setName(const std::string& name);
+   bool                    hasFilename() const;
+   const std::string&      getFilename() const;
    void                    setFilename(const std::string& filename);
 
+   bool                    hasName() const;
    const std::string&      getName() const;
-   const std::string&      getFilename() const;
+   void                    setName(const std::string& name);
+
    const SceneObjectList&  getChildren() const;
 
    SceneGraph&             getSceneGraph();
@@ -93,15 +96,20 @@ public:
    virtual void            unpack(BitStream& stream);
    
 protected:
+   friend class NewObjectEvent;
+
    virtual bool            load(TiXmlDocument& doc);
 
    virtual void            doUpdate(float delta) = 0;
    virtual void            doUpdateClient(float delta) = 0;
    virtual void            doDraw() = 0;
 
+private:
+   void setId(Id id);
+
    Id                mId;
    std::string       mName;
-   std::string       xmlfile;
+   std::string       mXmlFile;
    SceneObjectList   children;
    SceneObject*      parent;
 };

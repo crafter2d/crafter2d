@@ -121,11 +121,10 @@ function Client_onEvent(stream)
 
 	if type == PLAYER_CONTROLER_EVENT then
 		local graph = client:getSceneGraph()
-		local world = tolua.cast(graph:find("world"), "World")
-		graph:setWorld(world)
+		local world = graph:getWorld()
 
 		-- received the clients controler name
-		local controler = stream:readString()
+		local controler = stream:readInt()
 		local object    = tolua.cast(graph:find(controler), "Object")
 		graph:setControler(object)
 

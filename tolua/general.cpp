@@ -127,8 +127,10 @@ class RotateState: public State
 class SceneObject
 {
    void add(SceneObject* child);
+   
+   unsigned int getId();
 
-   SceneObject* find(const Id& id);
+   SceneObject* find(const unsigned int& id);
 
    void setName(const std::string& name);
    const std::string& getName();
@@ -269,7 +271,7 @@ class SceneGraph
 
    void removeAll();
 
-   SceneObject* find(const Id& id);
+   SceneObject* find(const unsigned int& id);
 };
 
 class Console

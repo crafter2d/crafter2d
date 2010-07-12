@@ -78,21 +78,21 @@ SceneObject* SceneGraph::find(const Id& id)
    return (it != mObjects.end()) ? it->second : NULL;
 }
 
-/// \fn SceneGraph::addObject(SceneObject* obj, const char* name)
+/// \fn SceneGraph::addObject(SceneObject& object)
 /// \brief Inserts the object in the hashtable.
-void SceneGraph::addObject(SceneObject* obj)
+void SceneGraph::addObject(SceneObject& object)
 {
    // add object to the hash table
-   mObjects[obj->getId()] = obj;
+   mObjects[object.getId()] = &object;
 
    if ( mNotifyClients )
    {
-      NewObjectEvent event(*obj);
+      NewObjectEvent event(object);
       Game::getInstance().getServer().sendToAllClients(event);
    }
 }
 
-/// \fn removeObject(const char* name)
+/// \fn removeObject(const SceneObject& object)
 /// \brief Remove a scene node from the scene graph (optionally inform clients about removal).
 void SceneGraph::removeObject(const SceneObject& object)
 {
@@ -127,8 +127,6 @@ void SceneGraph::notifyNameChanged(const SceneObject& object)
    ObjectMap::iterator it = mObjects.find(object.getId());
    if ( it != mObjects.end() )
    {
-      mObjects.erase(it);
-
       if ( mNotifyClients )
       {
          NameChangeObjectEvent event(object);

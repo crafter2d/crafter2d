@@ -126,6 +126,16 @@ function Server_startGame(worldFile, player)
 	local graph = server:getSceneGraph()
 	world = graph:getWorld()
 	
+	-- create the controler for the player
+	local controler = Creature:new()
+	controler:setPosition(Vector:new(250, 60))
+	if not controler:create("char.xml") then
+		console:print("Failed to load character.")
+		return
+	end
+	
+	world:add(controler)
+	
 	-- create the box
 	local box = Creature:new()
 	box:setPosition(Vector:new(180, 100))
@@ -158,15 +168,7 @@ function Server_startGame(worldFile, player)
 	local bridge = Bridge:new()
 	bridge:create(world, Vector:new(727, 422), Vector:new(943, 422))
 	
-	-- create the controler for the player
-	local controler = Creature:new()
-	controler:setPosition(Vector:new(250, 60))
-	if not controler:create("char.xml") then
-		console:print("Failed to load character.")
-		return
-	end
 	
-	world:add(controler)
 	player.controler = controler
 	
 	controler:setName(player.name)
@@ -183,6 +185,6 @@ function Server_startGame(worldFile, player)
 	local stream = server.stream
 	stream:clear()
 	stream:writeInt(PLAYER_CONTROLER_EVENT)
-	stream:writeString(controler:getName())
+	stream:writeInt(controler:getId())
 	server:sendScriptEvent(stream, player.client)
 end

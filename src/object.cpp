@@ -82,8 +82,8 @@ bool Object::load (TiXmlDocument& doc)
 	}
 
 	// find the name and dimensions of the object
-   if ( mName.empty() )
-	   mName = object->Attribute("name");
+   if ( !hasName() )
+	   setName(object->Attribute("name"));
 
 	if ( object->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
 		  object->QueryIntAttribute ("height", &height) != TIXML_SUCCESS )

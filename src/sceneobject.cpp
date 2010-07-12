@@ -36,7 +36,7 @@ ABSTRACT_IMPLEMENT_REPLICATABLE(SceneObjectId, SceneObject, NetObject)
 SceneObject::SceneObject():
    mId(IdManager::getInstance().getNextId()),
    mName(),
-   xmlfile(),
+   mXmlFile(),
    children(),
    parent(NULL)
 {
@@ -58,11 +58,11 @@ bool SceneObject::create(const char* file)
 {
    if ( file != NULL )
    {
-      xmlfile = file;
+      mXmlFile = file;
    }
 
    const std::string& objectpath = Game::getInstance().getConfiguration().getObjectPath();
-   std::string path = objectpath + xmlfile;
+   std::string path = objectpath + mXmlFile;
 
    TiXmlDocument doc(path);
    return doc.LoadFile() && load(doc);
@@ -119,12 +119,12 @@ void SceneObject::add(SceneObject* child)
    // copy the name
    child->parent = this;
 
+   // add new child to the back of the list
+   children.push_back(child);
+
    // add object to the scenegraph list
    SceneGraph& graph = getSceneGraph();
-   graph.addObject(child);
-
-   // add new child to the back of the list
-   children.push_back (child);
+   graph.addObject(*child);
 }
 
 SceneGraph& SceneObject::getSceneGraph()

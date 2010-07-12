@@ -284,9 +284,15 @@ int Server::onClientEvent(int client, const NetEvent& event)
             const RequestObjectEvent& request = dynamic_cast<const RequestObjectEvent&>(event);
             
             SceneObject* obj = graph.find(request.getId());
-
-            NewObjectEvent event(*obj);
-            sendToActiveClient(event);
+            if ( obj == NULL )
+            {
+               Console::getInstance().print("Server - Could not find matching object for request");
+            }
+            else
+            {
+               NewObjectEvent event(*obj);
+               sendToActiveClient(event);
+            }
             break;
          }
       case viewportEvent:

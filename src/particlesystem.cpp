@@ -80,7 +80,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
    }
 
    // load information
-   mName = psystem->Attribute("name");
+   setName(psystem->Attribute("name"));
    if ( psystem->QueryIntAttribute ("emitrate", &emitRate) != TIXML_SUCCESS ||
 		  psystem->QueryIntAttribute ("emitcount", &emitCount) != TIXML_SUCCESS)
    {
