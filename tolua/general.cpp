@@ -37,6 +37,7 @@ $#include "state.h"
 $#include "script.h"
 $#include "scriptmanager.h"
 $#include "sound.h"
+$#include "idmanager.h"
 
 enum LayerType { ETopDown, EIsoDiamond };
 
@@ -127,7 +128,7 @@ class SceneObject
 {
    void add(SceneObject* child);
 
-   SceneObject* find(const std::string& name);
+   SceneObject* find(const Id& id);
 
    void setName(const std::string& name);
    const std::string& getName();
@@ -268,7 +269,7 @@ class SceneGraph
 
    void removeAll();
 
-   SceneObject* find(const std::string& name);
+   SceneObject* find(const Id& id);
 };
 
 class Console

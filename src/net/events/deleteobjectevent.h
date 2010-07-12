@@ -22,6 +22,10 @@
 
 #include "../netevent.h"
 
+#include "idmanager.h"
+
+class SceneObject;
+
 /**
 @author Jeroen Broekhuizen
 */
@@ -31,15 +35,15 @@ public:
    DEFINE_REPLICATABLE(DeleteObjectEvent)
 
             DeleteObjectEvent();
-   explicit DeleteObjectEvent(const std::string& name);
+   explicit DeleteObjectEvent(const SceneObject& object);
    
-   const std::string&   getName() const;
+   Id getId() const;
 
    virtual void   pack(BitStream& stream) const;
    virtual void   unpack(BitStream& stream);
 
 private:
-   std::string    mName;
+   Id mId;
 };
 
 #ifdef JENGINE_INLINE

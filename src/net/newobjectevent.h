@@ -22,6 +22,8 @@
 
 #include "netevent.h"
 
+#include "idmanager.h"
+
 class SceneObject;
 
 /**
@@ -35,15 +37,15 @@ public:
             NewObjectEvent();
    explicit NewObjectEvent(SceneObject& object);
    
-   SceneObject*         getObject() const;
-   const std::string&   getParent() const;
+   SceneObject* getObject() const;
+   Id           getParent() const;
 
    virtual void   pack(BitStream& stream) const;
    virtual void   unpack(BitStream& stream);
 
 private:
-   std::string    _parent;
-   SceneObject*   _pobject;
+   Id           mParentId;
+   SceneObject* mpObject;
 };
 
 #ifdef JENGINE_INLINE

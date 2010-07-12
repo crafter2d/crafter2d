@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "../../defines.h"
 
-INLINE const std::string& NameChangeObjectEvent::getOldName() const
+INLINE Id NameChangeObjectEvent::getId() const
 {
-   return mOldName;
+   return mId;
 }
 
-INLINE const std::string& NameChangeObjectEvent::getNewName() const
+INLINE const std::string& NameChangeObjectEvent::getName() const
 {
-   return mNewName;
+   return mName;
 }

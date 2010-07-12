@@ -306,7 +306,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       script.prepareCall("Client_onWorldChanged");
       script.run(0);
    }
-   else if ( graph.find(obj->getName().c_str()) == 0 )
+   else if ( graph.find(obj->getId()) == 0 )
    {
       SceneObject* pparent = graph.find(event.getParent());
       if ( pparent != NULL )
@@ -322,7 +322,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
 
 void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
 {
-   SceneObject* node = graph.find(event.getName().c_str());
+   SceneObject* node = graph.find(event.getId());
    if ( node != NULL )
    {
       node->destroy();
@@ -332,17 +332,16 @@ void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
 
 void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
 {
-   const std::string& objectname = event.getName();
-   SceneObject* pobject = graph.find(objectname);
+   SceneObject* pobject = graph.find(event.getId());
    if ( pobject == NULL )
    {
-      if ( requests.find(objectname.c_str()) == requests.end() )
+      if ( requests.find(event.getId()) == requests.end() )
       {
          // unknown object, must have been generated before the player entered the game
-         RequestObjectEvent event(objectname);
+         RequestObjectEvent event(event.getId());
          getConnection()->send(&event);
 
-         requests[objectname.c_str()] = true;
+         requests[event.getId()] = true;
       }
    }
    else
@@ -353,11 +352,10 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
 
 void Client::handleNameChangeEvent(const NameChangeObjectEvent& event)
 {
-   const std::string& objectname = event.getOldName();
-   SceneObject* pobject = graph.find(objectname);
+   SceneObject* pobject = graph.find(event.getId());
    ASSERT_PTR(pobject)
 
-   pobject->setName(event.getNewName());
+   pobject->setName(event.getName());
 }
 
 void Client::handleScriptEvent(const ScriptEvent& event)

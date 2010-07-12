@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "../../defines.h"
 
-INLINE const std::string& DeleteObjectEvent::getName() const
+INLINE Id DeleteObjectEvent::getId() const
 {
-  return mName;
+  return mId;
 }

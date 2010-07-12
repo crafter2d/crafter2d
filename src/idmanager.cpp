@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,33 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "requestobjectevent.h"
-#ifndef JENGINE_INLINE
-#  include "requestobjectevent.inl"
-#endif
 
-IMPLEMENT_REPLICATABLE(RequestObjectEventId, RequestObjectEvent, NetEvent)
+#include "idmanager.h"
 
-RequestObjectEvent::RequestObjectEvent():
-   NetEvent(reqobjectEvent),
-   mId()
+IdManager& IdManager::getInstance()
+{
+   static IdManager manager;
+   return manager;
+}
+
+IdManager::IdManager():
+   mNextId(1)
 {
 }
 
-RequestObjectEvent::RequestObjectEvent(const Id& id):
-   NetEvent(reqobjectEvent),
-   mId(id)
-{
-}
+// - Operations
 
-void RequestObjectEvent::pack(BitStream& stream) const
+Id IdManager::getNextId()
 {
-   NetEvent::pack(stream);
-   stream << mId;
-}
+   Id id = mNextId;
+   mNextId++;
 
-void RequestObjectEvent::unpack(BitStream& stream)
-{
-   NetEvent::pack(stream);
-   stream >> mId;
+   return id;
 }

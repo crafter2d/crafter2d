@@ -22,30 +22,32 @@
 #  include "namechangeobjectevent.inl"
 #endif
 
+#include "sceneobject.h"
+
 IMPLEMENT_REPLICATABLE(NameChangeObjectEventId, NameChangeObjectEvent, NetEvent)
 
 NameChangeObjectEvent::NameChangeObjectEvent():
    NetEvent(namechangeEvent),
-   mOldName(),
-   mNewName()
+   mId(),
+   mName()
 {
 }
 
-NameChangeObjectEvent::NameChangeObjectEvent(const std::string& oldname, const std::string& newname):
+NameChangeObjectEvent::NameChangeObjectEvent(const SceneObject& object):
    NetEvent(namechangeEvent),
-   mOldName(oldname),
-   mNewName(newname)
+   mId(object.getId()),
+   mName(object.getName())
 {
 }
 
 void NameChangeObjectEvent::pack(BitStream& stream) const
 {
    NetEvent::pack(stream);
-   stream << mOldName << mNewName;
+   stream << mId << mName;
 }
 
 void NameChangeObjectEvent::unpack(BitStream& stream)
 {
    NetEvent::unpack(stream);
-   stream >> mOldName >> mNewName;
+   stream >> mId >> mName;
 }

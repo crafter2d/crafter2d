@@ -19,9 +19,9 @@
  ***************************************************************************/
 #include "../../defines.h"
 
-INLINE const std::string& UpdateObjectEvent::getName() const
+INLINE Id UpdateObjectEvent::getId() const
 {
-   return mName;
+   return mId;
 }
 
 INLINE const BitStream& UpdateObjectEvent::getDataStream() const

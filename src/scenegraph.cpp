@@ -39,7 +39,7 @@ SceneGraph::SceneGraph():
    mpWorld(NULL),
    mNotifyClients(false)
 {
-   mObjects["root"] = &mRoot;
+   mObjects[mRoot.getId()] = &mRoot;
 }
 
 SceneGraph::~SceneGraph()
@@ -72,9 +72,9 @@ void SceneGraph::draw()
    mRoot.draw();
 }
 
-SceneObject* SceneGraph::find(const std::string& node)
+SceneObject* SceneGraph::find(const Id& id)
 {
-   ObjectMap::iterator it = mObjects.find(node);
+   ObjectMap::iterator it = mObjects.find(id);
    return (it != mObjects.end()) ? it->second : NULL;
 }
 
@@ -83,7 +83,7 @@ SceneObject* SceneGraph::find(const std::string& node)
 void SceneGraph::addObject(SceneObject* obj)
 {
    // add object to the hash table
-   mObjects[obj->getName()] = obj;
+   mObjects[obj->getId()] = obj;
 
    if ( mNotifyClients )
    {
@@ -94,16 +94,16 @@ void SceneGraph::addObject(SceneObject* obj)
 
 /// \fn removeObject(const char* name)
 /// \brief Remove a scene node from the scene graph (optionally inform clients about removal).
-void SceneGraph::removeObject(const std::string& name)
+void SceneGraph::removeObject(const SceneObject& object)
 {
-   ObjectMap::iterator it = mObjects.find(name);
+   ObjectMap::iterator it = mObjects.find(object.getId());
    if (it != mObjects.end())
    {
       mObjects.erase(it);
 
       if ( mNotifyClients )
       {
-         DeleteObjectEvent event(name);
+         DeleteObjectEvent event(object);
          Game::getInstance().getServer().sendToAllClients(event);
       }
    }
@@ -116,24 +116,22 @@ void SceneGraph::removeAll()
    mRoot.removeAll();
 
    mObjects.clear();
-   mObjects["root"] = &mRoot;
+   mObjects[mRoot.getId()] = &mRoot;
 
    mpControler = NULL;
    mpWorld     = NULL;
 }
 
-void SceneGraph::notifyNameChanged(SceneObject& object, const std::string& oldname)
+void SceneGraph::notifyNameChanged(const SceneObject& object)
 {
-   ObjectMap::iterator it = mObjects.find(oldname);
+   ObjectMap::iterator it = mObjects.find(object.getId());
    if ( it != mObjects.end() )
    {
       mObjects.erase(it);
 
-      mObjects[object.getName()] = &object;
-
       if ( mNotifyClients )
       {
-         NameChangeObjectEvent event(oldname, object.getName());
+         NameChangeObjectEvent event(object);
          Game::getInstance().getServer().sendToAllClients(event);
       }
    }

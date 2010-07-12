@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "../../defines.h"
 
-INLINE const std::string& RequestObjectEvent::getName() const
+INLINE Id RequestObjectEvent::getId() const
 {
-  return mName;
+  return mId;
 }

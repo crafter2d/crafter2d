@@ -21,6 +21,8 @@
 #define _CLIENT_H_
 
 #include <map>
+
+#include "idmanager.h"
 #include "object.h"
 #include "process.h"
 
@@ -43,7 +45,7 @@ class Player;
 class Client: public Process
 {
 public:
-   typedef std::map<const char*, bool> Requests;
+   typedef std::map<Id, bool> Requests;
 
                   Client();
    virtual        ~Client();

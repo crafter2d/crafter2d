@@ -20,7 +20,9 @@
 #ifndef REQUEST_OBJECT_EVENT_H_
 #define REQUEST_OBJECT_EVENT_H_
 
-#include "../netevent.h"
+#include "net/netevent.h"
+
+#include "idmanager.h"
 
 /**
 @author Jeroen Broekhuizen
@@ -31,15 +33,15 @@ public:
    DEFINE_REPLICATABLE(RequestObjectEvent)
 
             RequestObjectEvent();
-   explicit RequestObjectEvent(const std::string& name);
+   explicit RequestObjectEvent(const Id& id);
    
-   const std::string&   getName() const;
+   Id   getId() const;
 
    virtual void   pack(BitStream& stream) const;
    virtual void   unpack(BitStream& stream);
 
 private:
-   std::string    mName;
+   Id mId;
 };
 
 #ifdef JENGINE_INLINE

@@ -34,6 +34,7 @@
 ABSTRACT_IMPLEMENT_REPLICATABLE(SceneObjectId, SceneObject, NetObject)
 
 SceneObject::SceneObject():
+   mId(IdManager::getInstance().getNextId()),
    mName(),
    xmlfile(),
    children(),
@@ -95,12 +96,12 @@ void SceneObject::destroy ()
       parent = NULL;
    }
 
+   // destroy the children
+   removeAll();
+
    // remove the object from the scenegraph
    SceneGraph& graph = getSceneGraph();
-   graph.removeObject(mName);
-
-	// destroy the children
-   removeAll();
+   graph.removeObject(*this);
 }
 
 /// \fn SceneObject::contains(const SceneObject& object) const
@@ -171,13 +172,11 @@ void SceneObject::setName(const std::string& name)
 {
    if ( name != mName )
    {
-      std::string previousName = mName;
-
       mName = name;
 
       if ( hasParent() )
       {
-         getSceneGraph().notifyNameChanged(*this, previousName);
+         getSceneGraph().notifyNameChanged(*this);
       }
    }
 }
@@ -254,14 +253,14 @@ void SceneObject::doDraw()
    PURE_VIRTUAL;
 }
 
-/// \fn SceneObject::find(const char* node, bool recurse)
+/// \fn SceneObject::find(const Id& node, bool recurse)
 /// \brief Searches for a node with name 'node' and optionally recurses into the children.
 /// \param node name of the node to find
 /// \param recurse recurce into the children
-SceneObject* SceneObject::find(const std::string& node, bool recurse)
+SceneObject* SceneObject::find(const Id& id, bool recurse)
 {
    // see if this node is the one were looking for
-   if ( mName == node )
+   if ( mId == id )
       return this;
 
    if ( recurse )
@@ -270,7 +269,7 @@ SceneObject* SceneObject::find(const std::string& node, bool recurse)
       SceneObjectList::iterator it = children.begin();
       for (; it != children.end(); it++)
       {
-         SceneObject* n = (*it)->find(node, recurse);
+         SceneObject* n = (*it)->find(id, recurse);
          if ( n != NULL )
             return n;
       }
@@ -280,10 +279,10 @@ SceneObject* SceneObject::find(const std::string& node, bool recurse)
 
 void SceneObject::pack(BitStream& stream) const
 {
-   stream << mName;
+   stream << mId;
 }
 
 void SceneObject::unpack(BitStream& stream)
 {
-   stream >> mName;
+   stream >> mId;
 }

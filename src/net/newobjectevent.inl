@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "../defines.h"
 
-SceneObject* NewObjectEvent::getObject() const
+INLINE SceneObject* NewObjectEvent::getObject() const
 {
-   return _pobject;
+   return mpObject;
 }
 
-INLINE const std::string& NewObjectEvent::getParent() const
+INLINE Id NewObjectEvent::getParent() const
 {
-   return _parent;
+   return mParentId;
 }

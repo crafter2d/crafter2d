@@ -19,6 +19,11 @@
  ***************************************************************************/
 #include "defines.h"
 
+INLINE uint SceneObject::getId() const
+{
+   return mId;
+}
+
 /// \fn SceneObject::setParent(SceneObject* p)
 INLINE void SceneObject::setParent(SceneObject* p)
 {

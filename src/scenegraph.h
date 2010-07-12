@@ -28,6 +28,7 @@
 #include "hashtable.h"
 #include "sceneobject.h"
 #include "sceneroot.h"
+#include "idmanager.h"
 
 class Object;
 class World;
@@ -46,7 +47,7 @@ Every object that is drawn on screen is stored in this scene graph.
 class SceneGraph
 {
 public:
-   typedef std::map<std::string, SceneObject*> ObjectMap;
+   typedef std::map<Id, SceneObject*> ObjectMap;
 
                      SceneGraph();
                      ~SceneGraph();
@@ -58,11 +59,11 @@ public:
 
   // maintenance
    void              addObject(SceneObject* obj);
-   void              removeObject(const std::string& name);
+   void              removeObject(const SceneObject& object);
    void              removeAll();
 
   // searching
-   SceneObject*      find(const std::string& node);
+   SceneObject*      find(const Id& id);
 
   // get/set
    void              setNotify(bool notify = true);
@@ -77,7 +78,7 @@ public:
    SceneObject&      getRoot();
 
   // notifications
-   void notifyNameChanged(SceneObject& object, const std::string& oldname);
+   void notifyNameChanged(const SceneObject& object);
 
 private:
 

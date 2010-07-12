@@ -22,6 +22,8 @@
 
 #include "../netevent.h"
 
+#include "idmanager.h"
+
 class SceneObject;
 
 /**
@@ -33,10 +35,10 @@ public:
    DEFINE_REPLICATABLE(UpdateObjectEvent)
 
             UpdateObjectEvent();
-   explicit UpdateObjectEvent(SceneObject& object);
+   explicit UpdateObjectEvent(const SceneObject& object);
    
-   const std::string&   getName() const;
-   const BitStream&     getDataStream() const;
+   Id               getId() const;
+   const BitStream& getDataStream() const;
 
    void update(SceneObject& object) const;
 
@@ -44,7 +46,7 @@ public:
    virtual void   unpack(BitStream& stream);
 
 private:
-   std::string mName;
+   Id          mId;
    BitStream   mDataStream;
 };
 

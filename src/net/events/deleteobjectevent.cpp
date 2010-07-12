@@ -22,28 +22,30 @@
 #  include "deleteobjectevent.inl"
 #endif
 
+#include "sceneobject.h"
+
 IMPLEMENT_REPLICATABLE(DeleteObjectEventId, DeleteObjectEvent, NetEvent)
 
 DeleteObjectEvent::DeleteObjectEvent():
    NetEvent(delobjectEvent),
-   mName()
+   mId()
 {
 }
 
-DeleteObjectEvent::DeleteObjectEvent(const std::string& name):
+DeleteObjectEvent::DeleteObjectEvent(const SceneObject& object):
    NetEvent(delobjectEvent),
-   mName(name)
+   mId(object.getId())
 {
 }
 
 void DeleteObjectEvent::pack(BitStream& stream) const
 {
    NetEvent::pack(stream);
-   stream << mName;
+   stream << mId;
 }
 
 void DeleteObjectEvent::unpack(BitStream& stream)
 {
    NetEvent::unpack(stream);
-   stream >> mName;
+   stream >> mId;
 }

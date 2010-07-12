@@ -22,6 +22,10 @@
 
 #include "../netevent.h"
 
+#include "idmanager.h"
+
+class SceneObject;
+
 /**
 @author Jeroen Broekhuizen
 */
@@ -31,17 +35,17 @@ public:
    DEFINE_REPLICATABLE(NameChangeObjectEvent)
 
             NameChangeObjectEvent();
-   explicit NameChangeObjectEvent(const std::string& old, const std::string& newname);
+   explicit NameChangeObjectEvent(const SceneObject& object);
    
-   const std::string&   getOldName() const;
-   const std::string&   getNewName() const;
+   Id                 getId() const;
+   const std::string& getName() const;
 
    virtual void   pack(BitStream& stream) const;
    virtual void   unpack(BitStream& stream);
 
 private:
-   std::string    mOldName;
-   std::string    mNewName;
+   Id          mId;
+   std::string mName;
 };
 
 #ifdef JENGINE_INLINE

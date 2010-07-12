@@ -28,14 +28,14 @@ IMPLEMENT_REPLICATABLE(UpdateObjectEventId, UpdateObjectEvent, NetEvent)
 
 UpdateObjectEvent::UpdateObjectEvent():
    NetEvent(updobjectEvent),
-   mName(),
+   mId(),
    mDataStream()
 {
 }
 
-UpdateObjectEvent::UpdateObjectEvent(SceneObject& object):
+UpdateObjectEvent::UpdateObjectEvent(const SceneObject& object):
    NetEvent(updobjectEvent),
-   mName(object.getName()),
+   mId(object.getId()),
    mDataStream()
 {
    object.pack(mDataStream);
@@ -50,12 +50,12 @@ void UpdateObjectEvent::pack(BitStream& stream) const
 {
    NetEvent::pack(stream);
 
-   stream << mName << &mDataStream;
+   stream << mId << &mDataStream;
 }
 
 void UpdateObjectEvent::unpack(BitStream& stream)
 {
    NetEvent::unpack(stream);
 
-   stream >> mName >> mDataStream;
+   stream >> mId >> mDataStream;
 }

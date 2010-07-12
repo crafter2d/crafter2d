@@ -25,6 +25,8 @@
 
 #include "net/netobject.h"
 
+#include "idmanager.h"
+
 class Body;
 class DirtySet;
 class NodeVisitor;
@@ -49,8 +51,8 @@ public:
 
    DEFINE_REPLICATABLE(SceneObject)
 
-	                        SceneObject();
-	virtual                 ~SceneObject();
+                           SceneObject();
+   virtual                 ~SceneObject();
 
    virtual bool            create(const char* filename=NULL);
    virtual void            destroy ();
@@ -63,12 +65,14 @@ public:
    void                    remove(SceneObject* child);
    void                    removeAll();
 
-   SceneObject*            find(const std::string& node, bool recurse = true);
+   SceneObject*            find(const Id& id, bool recurse = true);
    void                    update(DirtySet& dirtyset, float delta);
    void                    updateClient(float delta);
    void                    draw(bool traverse = true);
 
    virtual void            accept(NodeVisitor& nv);
+
+   uint                    getId() const;
 
    bool                    hasParent() const;
    SceneObject*            getParent();
@@ -95,6 +99,7 @@ protected:
    virtual void            doUpdateClient(float delta) = 0;
    virtual void            doDraw() = 0;
 
+   Id                mId;
    std::string       mName;
    std::string       xmlfile;
    SceneObjectList   children;
