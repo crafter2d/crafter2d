@@ -43,6 +43,7 @@
 #include "../defines.h"
 
 #include "layer.h"
+#include "layertype.h"
 #include "bound.h"
 #include "layerfactory.h"
 #include "worldreader.h"
@@ -53,7 +54,7 @@ static const std::string WORLD_EXTENSION = ".jwl";
 
 IMPLEMENT_REPLICATABLE(WorldId, World, SceneObject)
 
-// static 
+// static
 bool World::isWorld(NetObject& object)
 {
    return object.getRuntimeInfo().getName() == "World";
@@ -498,12 +499,12 @@ WorldRenderer* World::createRenderer()
 {
    switch ( _layerType )
    {
-      case LayerType::ETopDown:
+      case ETopDown:
          return new TopDownWorldRenderer(*this);
-      case LayerType::EIsoDiamond:
+      case EIsoDiamond:
          return NULL;
 
-      case LayerType::EInvalidLayerType:
+      case EInvalidLayerType:
       default:
          return NULL;
    }

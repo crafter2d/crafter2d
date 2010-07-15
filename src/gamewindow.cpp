@@ -106,7 +106,7 @@ int GameWindow::getWindowFlags(bool fullscreen)
 
    const SDL_VideoInfo *videoInfo;
    videoInfo = SDL_GetVideoInfo();
-   
+
    if (videoInfo == NULL)
    {
       log << "Can't get video information about graphics card.";
@@ -129,7 +129,7 @@ int GameWindow::getWindowFlags(bool fullscreen)
       log << "Switching to software rendering mode\n";
       flags |= SDL_SWSURFACE;
    }
-   
+
    // see if hardware blitting is supported on the platform
    if (videoInfo->blit_hw)
       flags |= SDL_HWACCEL;
@@ -160,7 +160,9 @@ void GameWindow::resize(int width, int height)
       Console::getLog() << "Could not resize window to " << width << "x" << height << ": " << SDL_GetError();
    }
 
-   CALL(Listeners, mListeners, onWindowResized);
+   //CALL(Listeners, mListeners, onWindowResized);
+   for ( Listeners::iterator it = mListeners.begin(); it != mListeners.end(); ++it )
+      (*it)->onWindowResized();
 }
 
 void GameWindow::toggleFullscreen()
@@ -256,5 +258,7 @@ void GameWindow::onQuit()
     }
   }
 
-  CALL(Listeners, mListeners, onWindowClosed);
+  //CALL(Listeners, mListeners, onWindowClosed);
+  for ( Listeners::iterator it = mListeners.begin(); it != mListeners.end(); ++it )
+     (*it)->onWindowClosed();
 }

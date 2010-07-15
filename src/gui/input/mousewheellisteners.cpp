@@ -23,7 +23,7 @@
 #include "mousewheellistener.h"
 
 MouseWheelListeners::MouseWheelListeners():
-   Listeners()
+   MouseWheelListenersImp()
 {
 }
 

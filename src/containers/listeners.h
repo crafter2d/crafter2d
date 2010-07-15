@@ -59,8 +59,8 @@ void Listeners<T>::addListener(T& listener)
 template<class T>
 void Listeners<T>::removeListener(const T& listener)
 {
-   iterator it = std::find(begin(), end(), &listener);
-   if ( it != end() )
+   typename ListenersImp::iterator it = std::find(this->begin(), this->end(), &listener);
+   if ( it != this->end() )
    {
       erase(it);
    }

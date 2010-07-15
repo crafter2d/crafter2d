@@ -28,6 +28,8 @@ class MouseWheelListener;
 class MouseWheelListeners : public Listeners<MouseWheelListener>
 {
 public:
+   typedef Listeners<MouseWheelListener> MouseWheelListenersImp;
+
    MouseWheelListeners();
    virtual ~MouseWheelListeners();
 

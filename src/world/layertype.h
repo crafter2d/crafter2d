@@ -20,6 +20,6 @@
 #ifndef GUI_LAYER_TYPE_H_
 #define GUI_LAYER_TYPE_H_
 
-typedef enum { ETopDown, EIsoDiamond, EInvalidLayerType } LayerType;
+enum LayerType { ETopDown, EIsoDiamond, EInvalidLayerType };
 
 #endif

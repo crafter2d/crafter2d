@@ -20,6 +20,7 @@
 #ifndef GUILISTBOXITEM_H_
 #define GUILISTBOXITEM_H_
 
+#include <string>
 #include <vector>
 #include <SDL/SDL.h>
 
