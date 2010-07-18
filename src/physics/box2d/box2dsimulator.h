@@ -22,6 +22,8 @@
 
 #include "../simulator.h"
 
+#include "box2dcontactlistener.h"
+
 class b2World;
 struct b2Vec2;
 
@@ -51,7 +53,8 @@ public:
    virtual void run(float timestep);
 
 private:
-   b2World* mpWorld;
+   b2World*             mpWorld;
+   Box2DContactListener mContactListener;
 
    std::vector<Box2DRevoluteJoint*> mJoints;
 };

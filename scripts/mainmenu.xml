@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <dialog>
-    <self x="260" y="160" width="220" height="76">
+    <self x="260" y="160" width="216" height="96">
         <properties>
             <property name="Name" value="" />
             <property name="Caption" value="Main menu" />
@@ -28,11 +28,11 @@
             </properties>
             <eventhandlers>
                 <eventhandler name="onClick">
-                    <code>if not Server_startup() then&#x0A;   return&#x0A;end&#x0A;&#x0A;Client_startup(true)&#x0A;&#x0A;MM_show(false)</code>
+                    <code>if not Server_startup() then&#x0A; return&#x0A;end&#x0A;&#x0A;Client_startup(true)&#x0A;&#x0A;MM_show(false)</code>
                 </eventhandler>
             </eventhandlers>
         </child>
-        <child type="2" x="23" y="47" width="169" height="15">
+        <child type="2" x="23" y="65" width="169" height="15">
             <properties>
                 <property name="Name" value="" />
                 <property name="Caption" value="Quit" />
@@ -46,6 +46,23 @@
             <eventhandlers>
                 <eventhandler name="onClick">
                     <code>canvas:quit()</code>
+                </eventhandler>
+            </eventhandlers>
+        </child>
+        <child type="2" x="23" y="44" width="169" height="15">
+            <properties>
+                <property name="Name" value="" />
+                <property name="Caption" value="Load World" />
+                <property name="Background image" value="" />
+                <property name="Background" value="true" />
+                <property name="Border" value="false" />
+                <property name="Visible" value="true" />
+                <property name="Default" value="false" />
+                <property name="Icon" value="" />
+            </properties>
+            <eventhandlers>
+                <eventhandler name="onClick">
+                    <code>local dialog = guimanager:loadFromXML(&quot;openfile&quot; )&#x0A;if dialog:doModal() == 0 then&#x0A;  Server_startup()&#x0A;  Server_setMap(dialog:findChildByName(&quot;edtFile&quot;):getCaption())&#x0A;  Client_startup(true)&#x0A;&#x0A;  MM_show(false)&#x0A;end</code>
                 </eventhandler>
             </eventhandlers>
         </child>

@@ -92,6 +92,7 @@ void Box2DSimulator::generateWorldShapes(const World& world)
 {
    b2Vec2 gravity(0, 9);
    mpWorld = new b2World(gravity, true);
+   mpWorld->SetContactListener(&mContactListener);
 
    b2BodyDef def;
    def.position.Set(0,0);

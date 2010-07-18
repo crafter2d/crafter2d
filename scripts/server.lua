@@ -27,6 +27,7 @@ function Server_startup()
 	server.maxPlayers = 1
 	server.gameStarted = false
 	server.stream = BitStream:new()
+	server.map = "map1"
 
 	console:print("Server: ready")
 
@@ -71,7 +72,7 @@ function Server_onClientConnect(player)
 	console:print("Server: " .. player.name .. " has joined the game.")
 
 	-- start the game, as this is a single player demo only
-	Server_startGame("map1", player)
+	Server_startGame(server.map, player)
 end
 
 -- A client has disconnected, remove him from the game
@@ -106,6 +107,11 @@ function Server_getControlerAt(x,y)
 	end
 
 	return nil
+end
+
+-- Set the map that is run by the server
+function Server_setMap(map)
+	server.map = map
 end
 
 -- Called when a scriptEvent is received from a client
