@@ -44,6 +44,7 @@ b2Vec2 Box2DSimulator::vectorToB2(const Vector& v)
 Box2DSimulator::Box2DSimulator():
    Simulator(),
    mpWorld(NULL),
+   mContactListener(*this),
    mJoints()
 {
 }
@@ -107,6 +108,7 @@ void Box2DSimulator::generateWorldShapes(const World& world)
 
       b2Fixture* pfixture = pbody->CreateFixture(&ground, 0);
       pfixture->SetFriction(.3f);
+      pfixture->SetUserData(const_cast<Bound*>(&bound));
    }
 }
 

@@ -121,6 +121,11 @@ function Server_onEvent(player, stream)
 	-- handle the event
 end
 
+-- Called when the object collides (or leaves) a bound
+function Server_onCollisionObjectWorld(object, bound, overlap)
+   object.onground = overlap
+end
+
 -- This is an example script which can be used during start up of the game
 function Server_startGame(worldFile, player)
 	server.gameStarted = true
@@ -141,40 +146,6 @@ function Server_startGame(worldFile, player)
 	end
 	
 	world:add(controler)
-	
-	-- create the box
-	local box = Creature:new()
-	box:setPosition(Vector:new(180, 100))
-	box:create("box.xml")
-	box:setName("box")
-	world:add(box)
-	
-	-- create another box
-	box = Creature:new()
-	box:setPosition(Vector:new(180, 60));
-	box:create("box.xml")
-	box:setName("box2")
-	world:add(box)
-	
-	-- create another box
-	box = Creature:new()
-	box:setPosition(Vector:new(180, 20));
-	box:create("box.xml")
-	box:setName("box3")
-	world:add(box)
-
-	-- create another box
-	box = Creature:new()
-	box:setPosition(Vector:new(180, -20));
-	box:create("box.xml")
-	box:setName("box4")
-	world:add(box)
-	
-	-- create bridge
-	local bridge = Bridge:new()
-	bridge:create(world, Vector:new(727, 422), Vector:new(943, 422))
-	
-	
 	player.controler = controler
 	
 	controler:setName(player.name)
@@ -184,8 +155,9 @@ function Server_startGame(worldFile, player)
 	--local body = tolua.cast(controler:getBody(), "PhysicsBody");
 	--body:addForceGenerator(gravity);
 	
-	controler.input = InputForceGenerator:new();
-	controler:getBody():addForceGenerator(controler.input);
+	controler.onground = false
+	controler.input = InputForceGenerator:new()
+	controler:getBody():addForceGenerator(controler.input)
 	
 	-- notify the client
 	local stream = server.stream

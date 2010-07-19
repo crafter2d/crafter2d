@@ -111,6 +111,7 @@ bool World::create (const char* filename)
    initializeBorders();
 
    mpSimulator->generateWorldShapes(*this);
+   mpSimulator->setListener(mSimulatorListener);
 
    return true;
 }

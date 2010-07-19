@@ -32,7 +32,6 @@ Box2DBody::Box2DBody(Object& object, b2Body& body):
    Body(object),
    mBody(body)
 {
-   body.SetUserData(this);
 }
 
 Box2DBody::~Box2DBody()

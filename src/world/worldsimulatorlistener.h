@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,48 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SIMULATOR_H_
-#define SIMULATOR_H_
+#ifndef WORLD_SIMULATOR_LISTENER_H_
+#define WORLD_SIMULATOR_LISTENER_H_
 
-#include "bodies.h"
-#include "collisionshapes.h"
+#include "physics/simulatorlistener.h"
 
-class Object;
-class World;
-class CollisionShape;
-class SimulatorListener;
-
-class Simulator
+class WorldSimulatorListener : public SimulatorListener
 {
 public:
-   Simulator();
-   virtual ~Simulator() = 0;
+   WorldSimulatorListener();
+   virtual ~WorldSimulatorListener();
 
-   bool hasListener() const;
-   SimulatorListener& getListener();
-   void setListener(SimulatorListener& listener);
-
- // maintenance
-   virtual Body& createBody(Object& object) = 0;
-   virtual void  removeBody(Body& body);
-
-   virtual void generateWorldShapes(const World& world);
-
-   virtual void run(float timestep) = 0;
-
-protected:
-   void addBody(Body* body);
-   void addWorldShape(CollisionShape* pshape);
-
-         Bodies&           getBodies();
-   const CollisionShapes&  getWorldShapes() const;
-
-private:
-   void destroyWorldShapes();
-
-   Bodies             mBodies;
-   CollisionShapes    mWorldShapes; // owned
-   SimulatorListener* mpListener;
+   virtual void collideObjectWorld(Object& object, Bound& bound, bool overlap);
 };
 
 #endif

@@ -29,6 +29,7 @@
 
 #include "bounds.h"
 #include "layertype.h"
+#include "worldsimulatorlistener.h"
 
 class BitStream;
 class Layer;
@@ -149,8 +150,9 @@ protected:
    Bounds      bounds;
    Observers   _observers;
 
-   SimulationFactory* mpSimulationFactory;
-   Simulator*         mpSimulator;
+   SimulationFactory*     mpSimulationFactory;
+   Simulator*             mpSimulator;
+   WorldSimulatorListener mSimulatorListener;
 
    LayerType _layerType;
    bool autoFollow;

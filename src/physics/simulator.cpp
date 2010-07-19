@@ -38,6 +38,26 @@ Simulator::~Simulator()
 // -- Body interface
 // ----------------------------------
 
+bool Simulator::hasListener() const
+{
+   return mpListener != NULL;
+}
+
+SimulatorListener& Simulator::getListener()
+{
+   ASSERT_PTR(mpListener);
+   return *mpListener;
+}
+
+void Simulator::setListener(SimulatorListener& listener)
+{
+   mpListener = &listener;
+}
+
+// ----------------------------------
+// -- Body interface
+// ----------------------------------
+
 Bodies& Simulator::getBodies()
 {
    return mBodies;

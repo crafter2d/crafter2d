@@ -39,7 +39,7 @@ end
 
 function goJump(obj, pressed)
 	local vel = obj:getVelocity()
- 	if pressed == 1 then
+ 	if pressed == 1 and obj.onground then
 		vel.y = -25
 		--obj:setVelocity(vel)
 		obj.input:setImpulse(vel);

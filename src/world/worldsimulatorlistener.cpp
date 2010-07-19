@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,48 +17,27 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SIMULATOR_H_
-#define SIMULATOR_H_
+#include "worldsimulatorlistener.h"
 
-#include "bodies.h"
-#include "collisionshapes.h"
+#include "script.h"
+#include "scriptmanager.h"
 
-class Object;
-class World;
-class CollisionShape;
-class SimulatorListener;
-
-class Simulator
+WorldSimulatorListener::WorldSimulatorListener():
+   SimulatorListener()
 {
-public:
-   Simulator();
-   virtual ~Simulator() = 0;
+}
 
-   bool hasListener() const;
-   SimulatorListener& getListener();
-   void setListener(SimulatorListener& listener);
+WorldSimulatorListener::~WorldSimulatorListener()
+{
+}
 
- // maintenance
-   virtual Body& createBody(Object& object) = 0;
-   virtual void  removeBody(Body& body);
-
-   virtual void generateWorldShapes(const World& world);
-
-   virtual void run(float timestep) = 0;
-
-protected:
-   void addBody(Body* body);
-   void addWorldShape(CollisionShape* pshape);
-
-         Bodies&           getBodies();
-   const CollisionShapes&  getWorldShapes() const;
-
-private:
-   void destroyWorldShapes();
-
-   Bodies             mBodies;
-   CollisionShapes    mWorldShapes; // owned
-   SimulatorListener* mpListener;
-};
-
-#endif
+void WorldSimulatorListener::collideObjectWorld(Object& object, Bound& bound, bool overlap)
+{
+   ScriptManager& mgr = ScriptManager::getInstance();
+   Script& script = mgr.getTemporaryScript();
+   script.prepareCall("Server_onCollisionObjectWorld");
+   script.addParam((void*)&object, "Object");
+   script.addParam((void*)&bound, "Bound");
+   script.addParam(overlap);
+   script.run(3);
+}
