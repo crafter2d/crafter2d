@@ -28,7 +28,7 @@ public:
    WorldSimulatorListener();
    virtual ~WorldSimulatorListener();
 
-   virtual void collideObjectWorld(Object& object, Bound& bound, bool overlap);
+   virtual void collideObjectWorld(Object& object, Bound& bound, int side, bool begin);
 };
 
 #endif

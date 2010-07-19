@@ -15,8 +15,8 @@ public:
    virtual void EndContact(b2Contact* pcontact);
 
 private:
-   void collisionObjectWorld(b2Contact* pcontact, b2Fixture& object, b2Fixture& bound);
-   void finishCollisionObjectWorld(b2Contact* pcontact, b2Fixture& object, b2Fixture& bound);
+   void collision(b2Contact* pcontact, bool begin);
+   void collisionObjectWorld(b2Contact* pcontact, b2Fixture& object, b2Fixture& bound, bool begin);
 
    Box2DSimulator& mSimulator;
 };

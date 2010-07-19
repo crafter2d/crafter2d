@@ -23,6 +23,8 @@
 #include "physics/body.h"
 
 class b2Body;
+class b2Fixture;
+struct b2Vec2;
 
 class Box2DBody : public Body
 {
@@ -32,6 +34,9 @@ public:
 
  // get/set
    b2Body& getBody();
+
+ // query
+   int getSide(const b2Fixture& sensor) const;
 
  // loading
    virtual void load(const TiXmlElement& element);
@@ -47,7 +52,13 @@ public:
    virtual void finalize();
 
 private:
+   b2Fixture* createSensor(float halfx, float halfy, const b2Vec2& center);
+
    b2Body& mBody;
+
+   b2Fixture* mpBottomSensor;
+   b2Fixture* mpLeftSensor;
+   b2Fixture* mpRightSensor;
 };
 
 #endif

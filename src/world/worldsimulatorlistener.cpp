@@ -31,13 +31,14 @@ WorldSimulatorListener::~WorldSimulatorListener()
 {
 }
 
-void WorldSimulatorListener::collideObjectWorld(Object& object, Bound& bound, bool overlap)
+void WorldSimulatorListener::collideObjectWorld(Object& object, Bound& bound, int side, bool begin)
 {
    ScriptManager& mgr = ScriptManager::getInstance();
    Script& script = mgr.getTemporaryScript();
    script.prepareCall("Server_onCollisionObjectWorld");
    script.addParam((void*)&object, "Object");
    script.addParam((void*)&bound, "Bound");
-   script.addParam(overlap);
-   script.run(3);
+   script.addParam(side);
+   script.addParam(begin);
+   script.run(4);
 }

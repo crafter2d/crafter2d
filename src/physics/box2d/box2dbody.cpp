@@ -30,7 +30,10 @@ static const std::string sTYPE              = "type";
 
 Box2DBody::Box2DBody(Object& object, b2Body& body):
    Body(object),
-   mBody(body)
+   mBody(body),
+   mpBottomSensor(NULL),
+   mpLeftSensor(NULL),
+   mpRightSensor(NULL)
 {
 }
 
@@ -47,6 +50,20 @@ Box2DBody::~Box2DBody()
 b2Body& Box2DBody::getBody()
 {
    return mBody;
+}
+
+// query
+   
+int Box2DBody::getSide(const b2Fixture& sensor) const
+{
+   if ( &sensor == mpBottomSensor )
+      return 1;
+   else if ( &sensor == mpLeftSensor )
+      return 2;
+   else if ( &sensor == mpRightSensor )
+      return 3;
+   else
+      return 0;
 }
 
 // loading
@@ -82,11 +99,18 @@ void Box2DBody::load(const TiXmlElement& element)
             pshapeelement->QueryFloatAttribute("halfx", &halfsize.x);
             pshapeelement->QueryFloatAttribute("halfy", &halfsize.y);
 
+            float halfx = halfsize.x / 30.0f;
+            float halfy = halfsize.y / 30.0f;
+
             b2PolygonShape shape;
             shape.SetAsBox(halfsize.x / 30, halfsize.y / 30);
 
             b2Fixture* pfixture = mBody.CreateFixture(&shape, 1);
             pfixture->SetFriction(.3f);
+            
+            mpBottomSensor = createSensor(halfx, 0.1f, b2Vec2(0, halfy));
+            mpLeftSensor   = createSensor(0.1f, halfy, b2Vec2(-halfx, 0));
+            mpRightSensor  = createSensor(0.1f, halfy, b2Vec2(halfx, 0));
          }
          else if ( pshapetype->compare("circle") == 0 )
          {
@@ -101,6 +125,19 @@ void Box2DBody::load(const TiXmlElement& element)
          }
       }
    }
+}
+
+b2Fixture* Box2DBody::createSensor(float halfx, float halfy, const b2Vec2& center)
+{
+   b2PolygonShape sensor;
+   sensor.SetAsBox(halfx, halfy, center, 0);
+
+   b2FixtureDef sensordef;
+   sensordef.isSensor = true;
+   sensordef.shape = &sensor;
+   sensordef.userData = this;
+
+   return mBody.CreateFixture(&sensordef);
 }
 
 // forces

@@ -16,66 +16,38 @@ Box2DContactListener::Box2DContactListener(Box2DSimulator& simulator):
 
 void Box2DContactListener::BeginContact(b2Contact* pcontact)
 {
-   const b2Manifold* pmanifold = pcontact->GetManifold();
-   if ( pmanifold->pointCount == 0 )
-      return;
-
-   b2Body* pbodyA = pcontact->GetFixtureA()->GetBody();
-   b2Body* pbodyB = pcontact->GetFixtureB()->GetBody();
-
-   if ( pbodyA->GetUserData() == NULL && pbodyB->GetUserData() != NULL )
-   {
-      collisionObjectWorld(pcontact, *pcontact->GetFixtureB(), *pcontact->GetFixtureA());
-   }
-   else if ( pbodyA->GetUserData() != NULL && pbodyB->GetUserData() == NULL )
-   {
-      collisionObjectWorld(pcontact, *pcontact->GetFixtureA(), *pcontact->GetFixtureB());
-   }
+   collision(pcontact, true);
 }
 
 void Box2DContactListener::EndContact(b2Contact* pcontact)
 {
-   // no manifold information, we will have to do with contact & fixtures
-   b2Body* pbodyA = pcontact->GetFixtureA()->GetBody();
-   b2Body* pbodyB = pcontact->GetFixtureB()->GetBody();
+   collision(pcontact, false);
+}
 
-   if ( pbodyA->GetUserData() == NULL && pbodyB->GetUserData() != NULL )
+void Box2DContactListener::collision(b2Contact* pcontact, bool begin)
+{
+   b2Fixture* pa = pcontact->GetFixtureA();
+   b2Fixture* pb = pcontact->GetFixtureB();
+
+   if ( pa->IsSensor() && !pb->IsSensor() )
    {
-      finishCollisionObjectWorld(pcontact, *pcontact->GetFixtureB(), *pcontact->GetFixtureA());
+      collisionObjectWorld(pcontact, *pa, *pb, begin);
    }
-   else if ( pbodyA->GetUserData() != NULL && pbodyB->GetUserData() == NULL )
+   else if ( !pa->IsSensor() && pb->IsSensor() )
    {
-      finishCollisionObjectWorld(pcontact, *pcontact->GetFixtureA(), *pcontact->GetFixtureB());
+      collisionObjectWorld(pcontact, *pb, *pa, begin);
    }
 }
 
-void Box2DContactListener::collisionObjectWorld(b2Contact* pcontact, b2Fixture& object, b2Fixture& bound)
+void Box2DContactListener::collisionObjectWorld(b2Contact* pcontact, b2Fixture& sensor, b2Fixture& bound, bool begin)
 {
    // collision between a object(A) && bound(B)
 
-   b2WorldManifold worldManifold;
-   pcontact->GetWorldManifold(&worldManifold);
-
-   b2Vec2 vel = object.GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-   if ( vel.y > 0 )
+   Box2DBody* pbody = (Box2DBody*)sensor.GetUserData();
+   int side = pbody->getSide(sensor);
+   
+   if ( side > 0 && mSimulator.hasListener() )
    {
-      if ( mSimulator.hasListener() )
-      {
-         Box2DBody* pbody = (Box2DBody*)object.GetBody()->GetUserData();
-         Bound* pbound    = (Bound*)bound.GetUserData();
-
-         mSimulator.getListener().collideObjectWorld(pbody->getObject(), *pbound, true);
-      }
-   }
-}
-
-void Box2DContactListener::finishCollisionObjectWorld(b2Contact* pcontact, b2Fixture& object, b2Fixture& bound)
-{
-   if ( mSimulator.hasListener() )
-   {
-      Box2DBody* pbody = (Box2DBody*)object.GetBody()->GetUserData();
-      Bound* pbound    = (Bound*)bound.GetUserData();
-
-      mSimulator.getListener().collideObjectWorld(pbody->getObject(), *pbound, false);
+      mSimulator.getListener().collideObjectWorld(pbody->getObject(), *(Bound*)bound.GetUserData(), side, begin);
    }
 }

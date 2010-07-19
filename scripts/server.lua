@@ -122,8 +122,13 @@ function Server_onEvent(player, stream)
 end
 
 -- Called when the object collides (or leaves) a bound
-function Server_onCollisionObjectWorld(object, bound, overlap)
-   object.onground = overlap
+function Server_onCollisionObjectWorld(object, bound, side, on)
+	if side == 1 and on then
+		console:print("on floor")
+		object.onground = true
+	elseif side == 1 then
+		object.onground = false
+	end
 end
 
 -- This is an example script which can be used during start up of the game

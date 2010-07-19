@@ -28,7 +28,7 @@ SimulatorListener::~SimulatorListener()
 {
 }
 
-void SimulatorListener::collideObjectWorld(Object& object, Bound& bound, bool overlap)
+void SimulatorListener::collideObjectWorld(Object& object, Bound& bound, int side, bool begin)
 {
 }
 

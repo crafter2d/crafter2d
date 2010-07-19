@@ -29,7 +29,7 @@ public:
    SimulatorListener();
    virtual ~SimulatorListener() = 0;
 
-   virtual void collideObjectWorld(Object& object, Bound& bound, bool overlap);
+   virtual void collideObjectWorld(Object& object, Bound& bound, int side, bool begin);
    virtual void collideObjectObject(Object& objectA, Object& objectB);
 };
 
