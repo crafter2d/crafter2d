@@ -64,7 +64,7 @@ if ( OS == "windows" ) then
                             libdir .. "/tolua++/include",
                             libdir .. "/glslang/include",
                             libdir .. "/freetype2/include",
-                            libdir .. "/devil/include",
+                            libdir .. "/soil/include",
 							libdir .. "/box2d/include",
                             "../src" }
 
@@ -81,27 +81,40 @@ if ( OS == "windows" ) then
                         libdir .. "/tolua++/lib",
                         libdir .. "/glslang/lib",
                         libdir .. "/freetype2/lib",
-                        libdir .. "/devil/lib",
+                        libdir .. "/soil/lib",
 						libdir .. "/box2d/lib" }
 
    -- set the ignoring libs for studio
    package.ignorelinks = { "LIBC.lib", "msvcrt.lib" }
 
    -- set the libraries to link against
-   package.links = { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32",
-                     "OpenAL32", "ALut", "GLee", "cg", "cgGL", "lua5.1", "tolua++", "devil", "ilu", "box2d"  }
+   
 
    -- set IDE specific settings
    if ( target == "cb-gcc" ) then
-      -- deal with the MingW stuff
-      table.insert(package.links, 1, "mingw32")
-	tinsert(package.links, {"vorbisfile", "tinyxml_STL", "libpng13", "minizip", "zlib1", "freetype" })
-
+      -- no devil support yet in cb
+      tinsert(package.excludes,  { "../src/texture/textureloaderdevil.cpp", "../src/texture/textureloaderdevil.h" })
+	  
+	  package.config["Debug"].links = { 
+	     "GLee_d", "SOIL_d", "mingw32", "SDLmain", "SDL", "opengl32", "glu32", "gdi32", 
+		 "user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
+		 "minizip_d", "zlib1", "lua", "tolua++_d", "box2d_d", "freetype241MT_D", "tinyxmld_STL"  } 
+		 
+      package.config["Release"].links = { 
+	     "GLee_d", "SOIL", "mingw32", "SDLmain", "SDL", "opengl32", "glu32", "gdi32", 
+		 "user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
+		 "minizip", "zlib1", "lua", "tolua++", "box2d", "freetype241MT", "tinyxml_STL"  } 
+	  
       package.buildoptions = { "-W -Wall -O0" }
       package.linkoptions  = { "--allow-multiple-definition" }
    else
-      tinsert(package.config["Debug"].links, { "vorbisfile_d", "tinyxmld_STL", "zlib1d", "libpng13d", "minizip_d", "freetyped" })
-      tinsert(package.config["Release"].links, { "vorbisfile", "tinyxml_STL", "zlib1", "libpng13", "minizip", "freetype" })
+      package.links = { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32",
+                     "vfw32", "ws2_32", "OpenAL32", "ALut", "cg", "cgGL", "ilu",
+ 					 "box2d", "tolua++", "lua5.1", "GLee", "soil" }
+					 
+      tinsert(package.config["Debug"].links, { "vorbisfile_d", "tinyxmld_STL", "zlib1d", "minizip_d", "freetyped" })
+      tinsert(package.config["Release"].links, { "vorbisfile", "tinyxml_STL", "zlib1", "minizip", "freetype" })
+	  
       if ( target == "vs2008" ) then
          tinsert(package.ignorelinks, { "libcmt.lib" })
       end

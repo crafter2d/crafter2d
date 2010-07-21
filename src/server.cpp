@@ -33,6 +33,8 @@
 #include "actionmap.h"
 #include "autoptr.h"
 #include "console.h"
+#include "game.h"
+#include "gameconfiguration.h"
 #include "player.h"
 #include "script.h"
 #include "scriptmanager.h"
@@ -77,7 +79,7 @@ void JoinEvent::unpack(BitStream& stream)
 
 IMPLEMENT_REPLICATABLE(DisconnectEventId, DisconnectEvent, NetEvent)
 
-DisconnectEvent::DisconnectEvent(): 
+DisconnectEvent::DisconnectEvent():
    NetEvent(disconnectEvent),
    _id(-1)
 {
@@ -211,6 +213,19 @@ void Server::sendScriptEventToAllClients(BitStream* pstream)
    sendToAllClients(stream);
 }
 
+bool Server::loadWorld(const std::string& filename, const std::string& name)
+{
+   bool success = Process::loadWorld(filename, name);
+
+   if ( success )
+   {
+      std::string path = filename + ".lua";
+      ScriptManager::getInstance().executeScript(path);
+   }
+
+   return success;
+}
+
 // ----------------------------------
 // -- Event handling
 // ----------------------------------
@@ -266,7 +281,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             script.run (2);
             break;
          }
-      case actionEvent: 
+      case actionEvent:
          {
             // find the player object
             Player* player = clients[client];
@@ -282,7 +297,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
       case reqobjectEvent:
          {
             const RequestObjectEvent& request = dynamic_cast<const RequestObjectEvent&>(event);
-            
+
             SceneObject* obj = graph.find(request.getId());
             if ( obj == NULL )
             {
@@ -299,7 +314,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
          {
             const ViewportEvent& viewportevent = dynamic_cast<const ViewportEvent&>(event);
             handleViewportEvent(viewportevent);
-            
+
             break;
          }
       default:

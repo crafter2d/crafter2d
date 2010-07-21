@@ -62,21 +62,29 @@ bool Script::load (const std::string& file)
    AutoPtr<File> pfile = FileSystem::getInstance().open(file);
    ASSERT(pfile.hasPointer());
 
-   int size = pfile->size();
-   char* pdata = new char[size+1];
-   memset(pdata, 0, size+1);
-   pfile->read(pdata, size);
-
-   if ( luaL_dostring(childState, pdata) != 0 )
+   if ( pfile->isValid() )
    {
-      delete[] pdata;
+      int size = pfile->size();
+      char* pdata = new char[size+1];
+      memset(pdata, 0, size+1);
+      pfile->read(pdata, size);
 
-      Console::getLog() << lua_tostring(childState, -1);
+      if ( luaL_dostring(childState, pdata) != 0 )
+      {
+         delete[] pdata;
+
+         Console::getLog() << lua_tostring(childState, -1);
+         return false;
+      }
+
+      delete[] pdata;
+      return true;
+   }
+   else
+   {
+      Console::getLog() << "Could not load script file " << file.c_str();
       return false;
    }
-
-   delete[] pdata;
-   return true;
 }
 
 /// \fn Script::loadString(const std::string& code)

@@ -28,6 +28,8 @@ public:
    StdioFile();
    virtual ~StdioFile();
 
+   virtual bool isValid() const;
+
 protected:
    virtual bool   virOpen(const std::string& filename, int modus);
    virtual void   virClose();

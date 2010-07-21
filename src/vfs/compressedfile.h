@@ -30,6 +30,8 @@ public:
    CompressedFile();
    virtual ~CompressedFile();
 
+   virtual bool isValid() const;
+
 protected:
  // operations
    virtual bool  virOpen(const std::string& filename, int modus);

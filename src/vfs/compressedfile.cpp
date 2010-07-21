@@ -68,12 +68,17 @@ void CompressedFile::virClose()
    if ( getBuffer().isWritting() )
    {
       MemoryBuffer& buffer = getBuffer().asMemoryBuffer();
-      
+
       ZipFile zipfile(mZipFile);
       zipfile.addFile(mFile, buffer.getData(), buffer.getDataSize());
    }
 
    File::virClose();
+}
+
+bool CompressedFile::isValid() const
+{
+   return true;
 }
 
 void CompressedFile::decode(const std::string& filename)

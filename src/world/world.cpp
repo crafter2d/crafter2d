@@ -220,6 +220,12 @@ std::string World::getPath() const
    return path + getFilename() + WORLD_EXTENSION;
 }
 
+std::string World::getScriptPath() const
+{
+   const std::string& path = Game::getInstance().getConfiguration().getWorldPath();
+   return path + getFilename() + ".lua";
+}
+
 /// \fn World::setObjectLayer(int layer)
 /// \brief Set the layer on which the objects live.
 void World::setObjectLayer(int objectlayerid)

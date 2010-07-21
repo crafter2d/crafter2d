@@ -124,7 +124,6 @@ end
 -- Called when the object collides (or leaves) a bound
 function Server_onCollisionObjectWorld(object, bound, side, on)
 	if side == 1 and on then
-		console:print("on floor")
 		object.onground = true
 	elseif side == 1 then
 		object.onground = false
@@ -141,6 +140,8 @@ function Server_startGame(worldFile, player)
 
 	local graph = server:getSceneGraph()
 	world = graph:getWorld()
+	
+	include(worldFile .. ".lua")
 	
 	-- create the controler for the player
 	local controler = Creature:new()

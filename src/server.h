@@ -90,6 +90,8 @@ public:
 
    virtual void   update(float delta);
 
+   virtual bool   loadWorld(const std::string& filename, const std::string& name);
+
 protected:
    void           sendToActiveClient(NetObject& stream);
 

@@ -48,6 +48,8 @@ public:
 
    int size();
 
+   virtual bool isValid() const = 0;
+
 protected:
    void     setBuffer(Buffer* pbuffer);
 
