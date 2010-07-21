@@ -115,7 +115,7 @@ protected:
    Client      client;
 
 private:
-   void                 initOpenGL();
+   bool                 initOpenGL();
    void                 runFrame();
 
    GameSettings              mSettings;

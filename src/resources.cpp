@@ -19,9 +19,6 @@
  ***************************************************************************/
 #include "resources.h"
 
-#include <IL/il.h>
-#include <IL/ilu.h>
-
 #include "vfs/unzipfile.h"
 
 #include "autoptr.h"
@@ -31,9 +28,6 @@
 ResourceManager::ResourceManager():
    textures()
 {
-   ilInit();
-   iluInit();
-
    textures.create(256);
 }
 
@@ -74,7 +68,7 @@ TexturePtr ResourceManager::loadSystemTexture(const std::string& filename)
 TexturePtr ResourceManager::doLoadTexture(const std::string& path)
 {
    TexturePtr* ptr = static_cast<TexturePtr*>(textures.lookup(path));
-	if ( !ptr != NULL ) 
+	if ( !ptr != NULL )
    {
       Texture* ptexture = new Texture();
       if ( !ptexture->load(path) )

@@ -154,7 +154,10 @@ bool Game::create()
    }
 
    // now initialize OpenGL for rendering
-   initOpenGL();
+   if ( !initOpenGL() )
+   {
+      return false;
+   }
 
    // initialize the window manager
    GuiManager& manager = GuiManager::getInstance();
@@ -287,7 +290,7 @@ void Game::setConfiguration(const GameConfiguration& configuration)
 /*!
     \fn Game::initOpenGL()
  */
-void Game::initOpenGL()
+bool Game::initOpenGL()
 {
    const GuiColor& clearcolor = mSettings.getClearColor();
    glClearColor(clearcolor.r, clearcolor.g, clearcolor.b, 0.0f);
@@ -296,7 +299,7 @@ void Game::initOpenGL()
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glShadeModel (GL_SMOOTH);
 
-	OpenGL::initialize ();
+	return OpenGL::initialize ();
 }
 
 /*!
@@ -400,7 +403,7 @@ void Game::runFrame()
    client.render(delta);
    mCanvas.render(tick);
    drawFrame(tick);
-   
+
    //glDisable(GL_MULTISAMPLE);
    glDisable (GL_ALPHA_TEST);
 

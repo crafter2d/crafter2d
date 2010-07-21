@@ -19,21 +19,13 @@
  ***************************************************************************/
 #include "textureloaderfactory.h"
 
-#include "textureloaderdevil.h"
-#include "textureloadertma.h"
+#include "textureloadersoil.h"
 
 AbstractTextureLoader* TextureLoaderFactory::constructLoader(const std::string& filename)
 {
    AbstractTextureLoader* ploader = NULL;
 
-   if ( filename.rfind("tma") != filename.npos )
-   {
-		ploader = new TextureLoaderTma();
-   }
-   else
-   {
-      ploader = new TextureLoaderDevil();
-   }
+   ploader = new TextureLoaderSoil();
 
    return ploader;
 }
