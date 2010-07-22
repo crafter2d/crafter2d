@@ -108,12 +108,14 @@ if ( OS == "windows" ) then
       package.buildoptions = { "-W -Wall -O0" }
       package.linkoptions  = { "--allow-multiple-definition" }
    else
+      tinsert(package.includepaths, { libdir .. "/devil/include" })
+	  tinsert(package.libpaths, { libdir .. "/devil/lib" })
+	  
       package.links = { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32",
-                     "vfw32", "ws2_32", "OpenAL32", "ALut", "cg", "cgGL", "ilu",
- 					 "box2d", "tolua++", "lua5.1", "GLee", "soil" }
+                     "vfw32", "ws2_32", "OpenAL32", "ALut", "cg", "cgGL", "devil", "ilu"  }
 					 
-      tinsert(package.config["Debug"].links, { "vorbisfile_d", "tinyxmld_STL", "zlib1d", "minizip_d", "freetyped" })
-      tinsert(package.config["Release"].links, { "vorbisfile", "tinyxml_STL", "zlib1", "minizip", "freetype" })
+      tinsert(package.config["Debug"].links, { "GLee_d", "box2d_d", "tolua++_d", " lua5.1_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", "minizip_d", "freetype241MT_D" })
+      tinsert(package.config["Release"].links, { "GLee", "box2d", "tolua++", "lua5.1", "soil", "vorbisfile", "tinyxml_STL", "zlib1", "minizip", "freetype241MT" })
 	  
       if ( target == "vs2008" ) then
          tinsert(package.ignorelinks, { "libcmt.lib" })
