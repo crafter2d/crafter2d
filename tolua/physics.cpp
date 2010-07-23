@@ -69,6 +69,7 @@ class Box2DSimulator : public Simulator
 
 class Box2DBody : public Body
 {
+   void generateSensors();
 };
 
 class Box2DRevoluteJoint

@@ -35,17 +35,13 @@ public:
    Buffer();
    virtual ~Buffer();
 
+ // get/set
    bool  isWritting() const;
-   void  isWritting(bool writting);
-
-   virtual bool            isFileBuffer() const;
-   virtual FileBuffer&     asFileBuffer();
-
-   virtual bool            isMemoryBuffer() const;
-   virtual MemoryBuffer&   asMemoryBuffer();
+   void  setWritting(bool writting);
 
    virtual SDL_RWops*      asRWops() = 0;
 
+ // modification
    virtual int  read(void* ptr, int size) = 0;
    virtual int  write(void* ptr, int size) = 0;
    virtual char getc() = 0;
@@ -54,6 +50,13 @@ public:
    virtual bool eof() const = 0;
 
    virtual int size() = 0;
+
+ // casting
+   virtual bool            isFileBuffer() const;
+   virtual FileBuffer&     asFileBuffer();
+
+   virtual bool            isMemoryBuffer() const;
+   virtual MemoryBuffer&   asMemoryBuffer();
 
 private:
    bool  mWritting;

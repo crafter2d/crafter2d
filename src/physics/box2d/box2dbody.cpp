@@ -31,6 +31,8 @@ static const std::string sTYPE              = "type";
 Box2DBody::Box2DBody(Object& object, b2Body& body):
    Body(object),
    mBody(body),
+   mHalfWidth(0),
+   mHalfHeight(0),
    mpBottomSensor(NULL),
    mpLeftSensor(NULL),
    mpRightSensor(NULL)
@@ -95,22 +97,17 @@ void Box2DBody::load(const TiXmlElement& element)
       {
          if ( pshapetype->compare("box") == 0 )
          {
-            Vector halfsize;
-            pshapeelement->QueryFloatAttribute("halfx", &halfsize.x);
-            pshapeelement->QueryFloatAttribute("halfy", &halfsize.y);
+            pshapeelement->QueryFloatAttribute("halfx", &mHalfWidth);
+            pshapeelement->QueryFloatAttribute("halfy", &mHalfHeight);
 
-            float halfx = halfsize.x / 30.0f;
-            float halfy = halfsize.y / 30.0f;
+            mHalfWidth /= 30.0f;
+            mHalfHeight /= 30.0f;
 
             b2PolygonShape shape;
-            shape.SetAsBox(halfsize.x / 30, halfsize.y / 30);
+            shape.SetAsBox(mHalfWidth, mHalfHeight);
 
             b2Fixture* pfixture = mBody.CreateFixture(&shape, 1);
-            pfixture->SetFriction(.3f);
-            
-            mpBottomSensor = createSensor(halfx, 0.1f, b2Vec2(0, halfy));
-            mpLeftSensor   = createSensor(0.1f, halfy, b2Vec2(-halfx, 0));
-            mpRightSensor  = createSensor(0.1f, halfy, b2Vec2(halfx, 0));
+            pfixture->SetFriction(.3f);            
          }
          else if ( pshapetype->compare("circle") == 0 )
          {
@@ -125,6 +122,15 @@ void Box2DBody::load(const TiXmlElement& element)
          }
       }
    }
+}
+
+// operations
+   
+void Box2DBody::generateSensors()
+{
+   mpBottomSensor = createSensor(mHalfWidth, 0.1f, b2Vec2(0, mHalfHeight));
+   mpLeftSensor   = createSensor(0.1f, mHalfHeight, b2Vec2(-mHalfWidth, 0));
+   mpRightSensor  = createSensor(0.1f, mHalfHeight, b2Vec2(mHalfWidth, 0));
 }
 
 b2Fixture* Box2DBody::createSensor(float halfx, float halfy, const b2Vec2& center)

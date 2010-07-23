@@ -50,7 +50,7 @@ bool File::open(const std::string& filename, int modus)
 {
    if ( virOpen(filename, modus) )
    {
-      mpBuffer->isWritting((modus & File::ERead) == File::ERead);
+      getBuffer().setWritting(!IS_SET(modus, File::ERead));
 
       return true;
    }
@@ -65,12 +65,12 @@ void File::close()
 
 int File::read(void* ptr, int size)
 {
-   return mpBuffer->read(ptr, size);
+   return getBuffer().read(ptr, size);
 }
 
 int File::size()
 {
-   return mpBuffer->size();
+   return getBuffer().size();
 }
 
 bool File::virOpen(const std::string& filename, int modus)

@@ -2,7 +2,7 @@
 <dialog>
     <self x="260" y="160" width="216" height="96">
         <properties>
-            <property name="Name" value="" />
+            <property name="Name" value="MainMenu" />
             <property name="Caption" value="Main menu" />
             <property name="Background image" value="" />
             <property name="Background" value="true" />
@@ -17,7 +17,7 @@
     <children>
         <child type="2" x="23" y="23" width="169" height="15">
             <properties>
-                <property name="Name" value="" />
+                <property name="Name" value="btnStart" />
                 <property name="Caption" value="Start game" />
                 <property name="Background image" value="" />
                 <property name="Background" value="true" />
@@ -34,7 +34,7 @@
         </child>
         <child type="2" x="23" y="65" width="169" height="15">
             <properties>
-                <property name="Name" value="" />
+                <property name="Name" value="btnQuit" />
                 <property name="Caption" value="Quit" />
                 <property name="Background image" value="" />
                 <property name="Background" value="true" />
@@ -51,7 +51,7 @@
         </child>
         <child type="2" x="23" y="44" width="169" height="15">
             <properties>
-                <property name="Name" value="" />
+                <property name="Name" value="btnLoadWorld" />
                 <property name="Caption" value="Load World" />
                 <property name="Background image" value="" />
                 <property name="Background" value="true" />

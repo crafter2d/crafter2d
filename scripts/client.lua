@@ -45,10 +45,10 @@ end
 
 -- Disconnect and shutdown the client
 function Client_shutdown()
-	console:print("Client shutdown...")
+	console:print("Client: shutdown...")
 	client:disconnect()
 	client:destroy()
-	console:print("Client shutdown complete.")
+	console:print("Client: shutdown complete.")
 end
 
 -- When the client is connected to the server, this script is called
@@ -90,7 +90,7 @@ function Client_onServerDown()
 		-- display message, and leave the game
 		MsgBox("The server has disconnected. You will be returned to the menu.", "Client_onShutdown()", "Client_onShutdown()")
 	else
-		console:print("Client - server closed, closing aswell")
+		console:print("Client: server connection closed gracefully")
 		Client_onShutdown()
 	end
 end

@@ -41,6 +41,9 @@ public:
  // loading
    virtual void load(const TiXmlElement& element);
 
+ // operations
+   void generateSensors();
+
  // forces
    virtual void applyForce(const Vector& force);
    virtual void applyForce(const Vector& force, const Vector& pos);
@@ -55,6 +58,8 @@ private:
    b2Fixture* createSensor(float halfx, float halfy, const b2Vec2& center);
 
    b2Body& mBody;
+   float   mHalfWidth;
+   float   mHalfHeight;
 
    b2Fixture* mpBottomSensor;
    b2Fixture* mpLeftSensor;

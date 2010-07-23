@@ -249,11 +249,24 @@ static int include(lua_State* L)
    return 0;
 }
 
+static int runscript(lua_State* L)
+{
+   ASSERT(lua_gettop(L) == 1);
+
+   const char* pfile = luaL_checkstring(L, 1);
+   bool success = ScriptManager::getInstance().executeScript(pfile, false);
+
+   lua_pushboolean(L, success);
+
+   return 1;
+}
+
 void ScriptManager::registerGlobals()
 {
    lua_register(luaState, "schedule", schedule);
    lua_register(luaState, "unschedule", unschedule);
    lua_register(luaState, "include", include);
+   lua_register(luaState, "runscript", runscript);
 }
 
 //////////////////////////////////////////////////////////////////////////

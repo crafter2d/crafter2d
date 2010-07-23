@@ -13,7 +13,6 @@ function goLeft(obj, pressed)
 	end
 	
 	obj.input:setVelocity(vel)
-	--obj:setVelocity(vel)
 
 	if obj:direction() then
 		obj:flip()
@@ -29,8 +28,8 @@ function goRight(obj, pressed)
 		obj:setAnimation(1)
 		vel.x = 0
 	end
+	
 	obj.input:setVelocity(vel);
-	--obj:setVelocity(vel)
 
 	if not obj:direction() then
 		obj:flip()
@@ -39,9 +38,8 @@ end
 
 function goJump(obj, pressed)
 	local vel = obj:getVelocity()
- 	if pressed == 1 and obj.onground then
+ 	if pressed == 1 and obj.onground > 0 then
 		vel.y = -25
-		--obj:setVelocity(vel)
 		obj.input:setImpulse(vel);
 	end
 end

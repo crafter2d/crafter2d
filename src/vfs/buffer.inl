@@ -24,7 +24,7 @@ bool Buffer::isWritting() const
    return mWritting;
 }
 
-void Buffer::isWritting(bool writting)
+void Buffer::setWritting(bool writting)
 {
    mWritting = writting;
 }

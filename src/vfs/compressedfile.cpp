@@ -43,7 +43,7 @@ bool CompressedFile::virOpen(const std::string& filename, int modus)
 {
    decode(filename);
 
-   if ( modus & File::ERead )
+   if ( IS_SET(modus, File::ERead) )
    {
       void* pdata = NULL;
       int size = 0;

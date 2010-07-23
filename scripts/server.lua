@@ -37,9 +37,9 @@ end
 -- when the server should shutdown, call this function
 function Server_shutdown()
 	-- disconnect the connection
-	console:print("Server shutdown...")
+	console:print("Server: shutdown...")
 	server:destroy()
-	console:print("Server shutdown complete.")
+	console:print("Server: shutdown complete.")
 end
 
 -- Called by the JEngine SSE framework during shutdown
@@ -69,7 +69,7 @@ function Server_onClientConnect(player)
 	table.insert(server.players, player)
 
 	-- print message to the console
-	console:print("Server: " .. player.name .. " has joined the game.")
+	console:print("Server: player '" .. player.name .. "' has joined the game.")
 
 	-- start the game, as this is a single player demo only
 	Server_startGame(server.map, player)
@@ -123,10 +123,12 @@ end
 
 -- Called when the object collides (or leaves) a bound
 function Server_onCollisionObjectWorld(object, bound, side, on)
-	if side == 1 and on then
-		object.onground = true
-	elseif side == 1 then
-		object.onground = false
+	if side == 1 then
+	    if on then
+			object.onground = object.onground + 1
+		else
+			object.onground = object.onground - 1
+		end
 	end
 end
 
@@ -135,13 +137,18 @@ function Server_startGame(worldFile, player)
 	server.gameStarted = true
 
 	if not server:loadWorld(worldFile, "world") then
+		console:print("Server: could not load world '" .. worldFile .. "'")
 		return
+	else
+		console:print("Server: loaded world '" .. worldFile .. "'")
 	end
 
 	local graph = server:getSceneGraph()
-	world = graph:getWorld()
+	server.world = graph:getWorld()
 	
-	include(worldFile .. ".lua")
+	if runscript(worldFile .. ".lua") then
+		createObjects(server.world)
+	end
 	
 	-- create the controler for the player
 	local controler = Creature:new()
@@ -151,19 +158,17 @@ function Server_startGame(worldFile, player)
 		return
 	end
 	
-	world:add(controler)
+	server.world:add(controler)
 	player.controler = controler
 	
 	controler:setName(player.name)
 	controler:setAnimation(1)
-
-	--local gravity = GravityForceGenerator:new(Vector:new(0, 9.81));
-	--local body = tolua.cast(controler:getBody(), "PhysicsBody");
-	--body:addForceGenerator(gravity);
-	
-	controler.onground = false
+	controler.onground = 0
 	controler.input = InputForceGenerator:new()
-	controler:getBody():addForceGenerator(controler.input)
+	
+	local body = box2d_getBody(controler)
+	body:addForceGenerator(controler.input)
+	body:generateSensors()
 	
 	-- notify the client
 	local stream = server.stream

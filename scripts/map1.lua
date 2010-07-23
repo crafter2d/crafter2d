@@ -1,6 +1,6 @@
 -- World1 objects
 
-function createObjectsMap1()
+function createObjects(world)
     -- create the box
 	local box = Creature:new()
 	box:setPosition(Vector:new(180, 100))
@@ -33,5 +33,3 @@ function createObjectsMap1()
 	local bridge = Bridge:new()
 	bridge:create(world, Vector:new(727, 422), Vector:new(943, 422))
 end
-
-createObjectsMap1()

@@ -1,6 +1,14 @@
-JEngine SSE, version 0.4.4, Jeroen Broekhuizen
+JEngine SSE, version 0.4.5, Jeroen Broekhuizen
 
 Change log
 ----------
 
-Pre-0.4.4 has no change log
+* Added physics support through Box2D
+* Added support for many image formats by using DevIL and SOIL
+* Upgraded most libraries to latest version, including Lua, Tolua, FreeType and TinyXML
+* Fixed many bugs
+
+Older versions
+--------------
+
+Pre-0.4.5 has no change log

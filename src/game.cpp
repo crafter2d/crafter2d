@@ -111,7 +111,7 @@ Game::~Game()
 bool Game::create()
 {
    Log& log = Console::getLog();
-   log << "JEngine SSE V0.4.4 - Copyright 2006 - Jeroen Broekhuizen\n";
+   log << "JEngine SSE V0.4.5 - Copyright 2006 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 

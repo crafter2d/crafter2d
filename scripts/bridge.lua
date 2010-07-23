@@ -18,6 +18,8 @@ end
 function Bridge:create(world, p1, p2)
 	local simulator = box2d_getSimulator(world)
 	
+	self.world = world
+	
 	local jointdef = Box2DRevoluteJointDefinition:new()
 	jointdef.pleft = self:createSide(p1, 0)
 	jointdef.anchor:set(p1.x + 6.0, p1.y)
@@ -50,7 +52,7 @@ function Bridge:createPart(point, index)
 	box:create("bridgepart.xml")
 	box:setName("bridgepart" .. index)
 	
-	world:add(box)
+	self.world:add(box)
 	
 	return box2d_getBody(box)
 end
@@ -62,7 +64,7 @@ function Bridge:createSide(point, index)
 	box:create("bridgeside.xml")
 	box:setName("bridgepart" .. index)
 	
-	world:add(box)
+	self.world:add(box)
 	
 	return box2d_getBody(box)
 end
