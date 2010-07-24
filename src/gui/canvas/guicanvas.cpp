@@ -174,6 +174,12 @@ void GuiCanvas::notifyFocusChanged(GuiWnd& newfocus, GuiWnd* poldfocus)
 // - Interface methods
 //-----------------------------------------------
 
+bool GuiCanvas::isWindowDisplayed(GuiWnd* pwnd)
+{
+   GuiList::Iterator it = windows.find(pwnd);
+   return it.valid();
+}
+
 /// \fn GuiCanvas::pushWindow(GuiWnd* pwnd)
 /// \brief Pushes the g:iven window to the top of the stack (window does not
 /// have to be visible.

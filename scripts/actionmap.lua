@@ -44,18 +44,12 @@ function goJump(obj, pressed)
 	end
 end
 
-function gotoMainMenu()
-	if client.isHost then
-		Server_onShutdown()
-	else
-		Client_onShutdown()
-	end
-end
-
 -- shut the application down
-function quitGame(val)
-	local dialog = guimanager:loadFromXML("ingamemenu")
-	dialog:doModal()
+function quitGame(pressed)
+    if pressed then
+		local dialog = guimanager:loadFromXML("ingamemenu")
+		dialog:doModal()
+	end
 end
 
 -- create new action map and bind
@@ -66,5 +60,5 @@ actionmap:bind(jump, "goJump")
 
 -- create action map for client-side actions
 clientMap = ActionMap:new()
-clientMap:bind(swapConsole, "displayConsole")
+clientMap:bind(swapConsole, "console_toggle")
 clientMap:bind(quit, "quitGame")

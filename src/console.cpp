@@ -142,9 +142,14 @@ void Console::print(const char* msg)
    log << msg << '\n';
 }
 
-void Console::display()
+void Console::show()
 {
-   Game::getInstance().getCanvas().doModal(this);
+   Game::getInstance().getCanvas().pushWindow(this);
+}
+
+void Console::hide()
+{
+   Game::getInstance().getCanvas().popWindow(this);
 }
 
 void Console::onKeyDown (int which, bool shift, bool ctrl, bool alt)

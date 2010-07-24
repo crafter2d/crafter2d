@@ -37,7 +37,9 @@ public:
 
    void              create();
    void              reload();
-   void              display();
+
+   void              show();
+   void              hide();
 
    void              print(const std::string& msg);
    void              print(const char* msg);

@@ -32,7 +32,6 @@ $#include "actionmap.h"
 $#include "creature.h"
 $#include "particlesystem.h"
 $#include "weapon.h"
-$#include "console.h"
 $#include "state.h"
 $#include "script.h"
 $#include "scriptmanager.h"
@@ -272,12 +271,6 @@ class SceneGraph
    void removeAll();
 
    SceneObject* find(const unsigned int& id);
-};
-
-class Console
-{
-   void print(const char* str);
-   void display();
 };
 
 class ActionMap

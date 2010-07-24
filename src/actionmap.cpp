@@ -72,7 +72,7 @@ bool ActionMap::process (int key, bool down)
 
    Script& script = ScriptManager::getInstance().getTemporaryScript();
    script.prepareCall (actions[action]);
-   script.addParam ((int)down);
+   script.addParam(down);
    script.run(1);
    return true;
 }

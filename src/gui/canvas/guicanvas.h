@@ -62,6 +62,7 @@ public:
 
    void           doModal(GuiWnd* wnd);
    void           endModal(int retValue);
+   bool           isWindowDisplayed(GuiWnd* pwnd);
    void           pushWindow(GuiWnd* wnd);
    void           popWindow();
    void           popWindow(GuiWnd* wnd);

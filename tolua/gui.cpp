@@ -42,6 +42,7 @@ $#include "gui/guieventhandlerdefinition.h"
 $#include "gui/guieventhandlerdefinitions.h"
 $#include "gui/guifilelistbox.h"
 $#include "gui/guitreebox.h"
+$#include "console.h"
 $#include <SDL/SDL.h>
 
 int SDL_EnableKeyRepeat(int delay, int interval);
@@ -281,6 +282,14 @@ class GuiMenu : public GuiControl
    void addItem(int id, const std::string& name);
 };
 
+class Console : public GuiWindow
+{
+   void print(const char* str);
+   
+   void show();
+   void hide();
+};
+
 class GuiCanvas: public GuiWnd
 {
    enum GuiStandardColor {
@@ -301,6 +310,8 @@ class GuiCanvas: public GuiWnd
    void pushWindow(GuiWnd* wnd);
    void popWindow(GuiWnd* wnd);
    void popWindow();
+   
+   bool isWindowDisplayed(GuiWnd* pwnd);
 
    void changeDefaultColor(int color, const GuiColor& newColor);
 
