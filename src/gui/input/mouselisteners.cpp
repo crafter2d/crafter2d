@@ -79,7 +79,7 @@ void MouseListeners::fireMouseContextEvent(const MouseEvent& event)
    for ( iterator it = begin(); it != end(); ++it )
    {
       MouseListener* plistener = (*it);
-      plistener->onMouseMotion(event);
+      plistener->onMouseContext(event);
 
       if ( event.isConsumed() )
         break;

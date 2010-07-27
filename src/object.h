@@ -27,6 +27,7 @@
 #include "math/vector.h"
 #include "scenegraph.h"
 #include "resources.h"
+#include "modifier.h"
 
 class TiXmlDocument;
 
@@ -44,31 +45,33 @@ public:
 
    enum { ePositionDirty = 2, eAnimationDirty = 4 };
 
+   typedef std::vector<Modifier*> Modifiers;
+
 	                  Object();
-	virtual           ~Object();
+   virtual           ~Object();
 
    virtual void      destroy();
-	virtual Object*   clone ();
+   virtual Object*   clone ();
 
    void              addState(State* state);
-	void              move(float tick);
+   void              move(float tick);
    void              rotate(float deg);
-	void              flip();
-	bool              direction() const;
+   void              flip();
+   bool              direction() const;
 	
  // get/set interface
-	void              setPosition(const Vector& vec);
-	void              setVelocity(const Vector& vec);
+   void              setPosition(const Vector& vec);
+   void              setVelocity(const Vector& vec);
    void              setRotation(const float deg);
-	void              setVisible(bool vis = true);
+   void              setVisible(bool vis = true);
 
-	virtual const Vector& getPosition() const;
+   virtual const Vector& getPosition() const;
 
-	Vector            getVelocity() const;
+   Vector            getVelocity() const;
    float             getRadius() const;
    float             getRotation() const;
    Vector            getSize() const;
-	bool              isVisible() const;
+   bool              isVisible() const;
    bool              isStatic() const;
    const Texture&    getTexture() const;
 
@@ -76,7 +79,10 @@ public:
    Body&             getBody();
 
    int               getAnimation() const;
-	void              setAnimation(int anim);
+   void              setAnimation(int anim);
+
+ // modifier interface
+   void              addModifier(Modifier* pmodifier);
 
  // visitor interface
    virtual void      accept(NodeVisitor& nv);
@@ -95,19 +101,20 @@ protected:
 
    virtual void      doUpdate(float delta);
    virtual void      doUpdateClient(float delta);
-	virtual void      doDraw();
+   virtual void      doDraw();
 	 
-	TexturePtr     texture;
+   TexturePtr     texture;
    Body*          mpBody;
    Animator*      mpAnimator;
    std::queue<State*> states;
-	Vector mPos;
+   Modifiers      mModifiers;
+   Vector mPos;
    Vector mVel;
    int width, height;
-	float halfX, halfY;
+   float halfX, halfY;
    float angle;
-	float radius;
-	bool visible;
+   float radius;
+   bool visible;
    bool dir;
    bool mStatic;
 };

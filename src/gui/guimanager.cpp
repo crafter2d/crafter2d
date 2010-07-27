@@ -308,7 +308,10 @@ void GuiManager::showPopup(GuiWnd& owner, const GuiPoint& point, const std::stri
          mpPopup->create(100, GuiRect(0, 0, 0, 0), "", GUI_VISIBLE, NULL);
       }
 
-      mpPopup->setWindowPos(point.x, point.y);
+      GuiPoint localpoint = point;
+      owner.clientToWindow(localpoint);
+
+      mpPopup->setWindowPos(localpoint.x, localpoint.y);
       mpPopup->resizeWindow(rect.getWidth(), rect.getHeight());
       mpPopup->setPopup(*pmenu, true);
       mpPopup->setOwner(owner);

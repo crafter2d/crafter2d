@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,54 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "physicssimulator.h"
+#ifndef MODIFIER_H_
+#define MODIFIER_H_
 
-#include "collisiondata.h"
-#include "collisiondetector.h"
-#include "collisionresolver.h"
-#include "collisionplane.h"
-#include "physicsbody.h"
+class Object;
 
-#include "world/bound.h"
-#include "world/world.h"
-
-PhysicsSimulator::PhysicsSimulator():
-   Simulator(),
-   mWorldShapes()
+class Modifier
 {
-}
+public:
+   Modifier();
+   virtual ~Modifier() = 0;
 
-PhysicsSimulator::~PhysicsSimulator()
-{
-   mWorldShapes.removeAll();
-}
+ // updating
+   virtual void update(Object& object, float delta) = 0;
+};
 
-Body& PhysicsSimulator::createBody(Object& object)
-{
-   PhysicsBody* pbody = new PhysicsBody(object);
-   addBody(pbody);
-   return *pbody;
-}
-
-void PhysicsSimulator::worldChanged()
-{
-   const Bounds& bounds = getWorld().getBounds();
-   for ( Bounds::size_type index = 0; index < bounds.size(); ++index )
-   {
-      const Bound& bound = *bounds[index];
-
-      mWorldShapes.push_back(CollisionPlane::construct(bound.getLeft(), bound.getRight()));
-   }
-}
-
-void PhysicsSimulator::run(float timestep)
-{
-   Bodies& bodies = getBodies();
-   bodies.integrate(timestep);
-
-   CollisionData data;
-   bodies.collectContactData(data, mWorldShapes);
-
-   CollisionResolverInfo info;
-   CollisionResolver::resolve(data, info, timestep);
-}
+#endif

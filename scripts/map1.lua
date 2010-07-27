@@ -1,5 +1,7 @@
 -- World1 objects
 
+include("grudge.lua") 
+
 function createObjects(world)
     -- create the box
 	local box = Creature:new()
@@ -32,4 +34,9 @@ function createObjects(world)
 	-- create bridge
 	local bridge = Bridge:new()
 	bridge:create(world, Vector:new(727, 422), Vector:new(943, 422))
+	
+	-- create grudge
+	local grudge = Grudge:new()
+	grudge:create(world, Vector:new(1500, 10))
+
 end

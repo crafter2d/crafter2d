@@ -86,6 +86,8 @@ public:
    GuiWnd*        findWindowAtLocation(const Point& point);
 
 protected:
+   friend class GuiCanvasKeyEventDispatcher;
+
    void           setFocus(GuiWnd* pwnd);
    void           findFocusUnderCursor(const GuiPoint& point);
 

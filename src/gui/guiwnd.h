@@ -26,6 +26,8 @@
 #include "input/mouselisteners.h"
 #include "input/mousewheellisteners.h"
 
+#include "wnd/guiwndmouselistener.h"
+
 #include "guigraphics.h"
 #include "guilist.h"
 #include "guidefines.h"
@@ -155,6 +157,7 @@ public:
 
   // coordinate conversions
    void              clientToWindow(GuiRect& rect) const;
+   void              clientToWindow(GuiPoint& point) const;
    void              windowToClient(GuiRect& rect) const;
    void              windowToClient(GuiPoint& point);
    void              windowToClient(Point& point) const;
@@ -216,6 +219,8 @@ protected:
    KeyListeners         mKeyListeners;
    MouseListeners       mMouseListeners;
    MouseWheelListeners  mMouseWheelListeners;
+
+   GuiWndMouseListener  mwndMouseListener;
 
    Observers      mObservers;
    LayoutManager* mpLayoutManager;

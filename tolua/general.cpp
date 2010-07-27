@@ -37,6 +37,7 @@ $#include "script.h"
 $#include "scriptmanager.h"
 $#include "sound.h"
 $#include "idmanager.h"
+$#include "modifierai.h"
 
 enum LayerType { ETopDown, EIsoDiamond };
 
@@ -85,6 +86,15 @@ class Particle
 	Color color;
 	int life;
 	int state;
+};
+
+class Modifier
+{
+};
+
+class ModifierAI : public Modifier
+{
+	ModifierAI(const std::string& function);
 };
 
 class State
@@ -159,6 +169,7 @@ class Object: public SceneObject
 	void setAnimation (int anim);
 
    void addState(State* state);
+   void addModifier(Modifier* pmodifier);
 };
 
 class Creature: public Object

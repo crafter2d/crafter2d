@@ -17,54 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "physicssimulator.h"
+#ifndef GUIWND_MOUSE_LISTENER_H_
+#define GUIWND_MOUSE_LISTENER_H_
 
-#include "collisiondata.h"
-#include "collisiondetector.h"
-#include "collisionresolver.h"
-#include "collisionplane.h"
-#include "physicsbody.h"
+#include "gui/input/mouselistener.h"
 
-#include "world/bound.h"
-#include "world/world.h"
+class GuiWnd;
 
-PhysicsSimulator::PhysicsSimulator():
-   Simulator(),
-   mWorldShapes()
+class GuiWndMouseListener : public MouseListener
 {
-}
+public:
+   GuiWndMouseListener(GuiWnd& wnd);
 
-PhysicsSimulator::~PhysicsSimulator()
-{
-   mWorldShapes.removeAll();
-}
+   virtual void onMouseContext(const MouseEvent& event);
 
-Body& PhysicsSimulator::createBody(Object& object)
-{
-   PhysicsBody* pbody = new PhysicsBody(object);
-   addBody(pbody);
-   return *pbody;
-}
+private:
+   GuiWnd& mWnd;
+};
 
-void PhysicsSimulator::worldChanged()
-{
-   const Bounds& bounds = getWorld().getBounds();
-   for ( Bounds::size_type index = 0; index < bounds.size(); ++index )
-   {
-      const Bound& bound = *bounds[index];
-
-      mWorldShapes.push_back(CollisionPlane::construct(bound.getLeft(), bound.getRight()));
-   }
-}
-
-void PhysicsSimulator::run(float timestep)
-{
-   Bodies& bodies = getBodies();
-   bodies.integrate(timestep);
-
-   CollisionData data;
-   bodies.collectContactData(data, mWorldShapes);
-
-   CollisionResolverInfo info;
-   CollisionResolver::resolve(data, info, timestep);
-}
+#endif

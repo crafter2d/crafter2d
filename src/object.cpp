@@ -145,8 +145,23 @@ void Object::destroy()
    mpBody = NULL;
 }
 
+// - Modifier interface
+
+void Object::addModifier(Modifier* pmodifier)
+{
+   ASSERT_PTR(pmodifier)
+   mModifiers.push_back(pmodifier);
+}
+
+// - Updating
+
 void Object::doUpdate(float delta)
 {
+   for ( Modifiers::size_type index = 0; index < mModifiers.size(); index++ )
+   {
+      Modifier* pmodifier = mModifiers[index];
+      pmodifier->update(*this, delta);
+   }
 }
 
 void Object::doUpdateClient(float delta)

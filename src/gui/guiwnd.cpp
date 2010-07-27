@@ -69,6 +69,8 @@ GuiWnd::GuiWnd():
    _peventhandlers(NULL),
    mKeyListeners(),
    mMouseListeners(),
+   mMouseWheelListeners(),
+   mwndMouseListener(*this),
    mObservers(),
    mpLayoutManager(NULL),
    m_frameRect(),
@@ -101,20 +103,23 @@ GuiWnd::~GuiWnd()
 void GuiWnd::create (GuiId id, const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
 {
    font = GuiManager::getInstance().getDefaultFont();
-	m_id = id;
+	 m_id = id;
 
    initializeProperties();
    initializeEventHandlerDefinitions();
 
    _peventhandlerdefinitions->registerAll(*this);
 
-	onCreate(rect, caption, style, parent);
+	 onCreate(rect, caption, style, parent);
+
+   addMouseListener(mwndMouseListener);
 
    GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiWndCreatedEvent);
    if ( phandler != NULL )
    {
       ScriptManager& mgr = ScriptManager::getInstance();
       Script& script = mgr.getTemporaryScript();
+      script.setSelf(this, "GuiWnd");
       script.prepareCall(phandler->getFunctionName().c_str());
       script.run(0);
    }
@@ -130,7 +135,7 @@ void GuiWnd::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, 
    setVisible(IS_SET(style, GUI_VISIBLE));
 
    setCaption(caption);
-	setParent(parent);
+	 setParent(parent);
 }
 
 /*! \fn GuiWnd::destroy()
@@ -352,7 +357,11 @@ void GuiWnd::initializeEventHandlerDefinitions()
    GuiEventHandlerDefinition* pdefinition = new GuiEventHandlerDefinition(GuiWndCreatedEvent, "onCreated");
    _peventhandlerdefinitions->add(pdefinition);
 
-   pdefinition = new GuiEventHandlerDefinition(GuiWndContextCommandEvent, "onCommand");
+   pdefinition = new GuiEventHandlerDefinition(GuiWndContextMenuEvent, "onContextMenu");
+   pdefinition->addArgument("point");
+   _peventhandlerdefinitions->add(pdefinition);
+
+   pdefinition = new GuiEventHandlerDefinition(GuiWndCommandEvent, "onCommand");
    pdefinition->addArgument("id");
    _peventhandlerdefinitions->add(pdefinition);
 }
@@ -527,7 +536,7 @@ void GuiWnd::onCommand(int cmd)
    std::string name = GuiDesigner::controlName(this);
    if ( !name.empty() )
    {
-      GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiWndContextCommandEvent);
+      GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiWndCommandEvent);
       if ( phandler != NULL )
       {
          ScriptManager& mgr = ScriptManager::getInstance();
@@ -548,6 +557,18 @@ void GuiWnd::clientToWindow(GuiRect& rect) const
       rect.offset(pr.left(), pr.top());
       p = p->parent;
    }
+}
+
+void GuiWnd::clientToWindow(GuiPoint& point) const
+{
+   GuiWnd* p = parent;
+   do
+   {
+      const GuiRect& pr = p->getWindowRect();
+      point.x += pr.left();
+      point.y += pr.top();
+      p = p->parent;
+   } while ( p );
 }
 
 void GuiWnd::windowToClient(GuiRect& rect) const

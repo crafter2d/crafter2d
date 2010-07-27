@@ -48,15 +48,17 @@ public:
 
    Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);
 
-   virtual void generateWorldShapes(const World& world);
-
    virtual void run(float timestep);
 
-private:
-   b2World*             mpWorld;
-   Box2DContactListener mContactListener;
+protected:
+   virtual void worldChanged();
 
-   std::vector<Box2DRevoluteJoint*> mJoints;
+private:
+   typedef std::vector<Box2DRevoluteJoint*> Joints;
+
+   b2World*             mpb2World;
+   Box2DContactListener mContactListener;
+   Joints               mJoints;
 };
 
 #endif

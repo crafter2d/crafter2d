@@ -17,54 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "physicssimulator.h"
+#include "guiwndmouselistener.h"
 
-#include "collisiondata.h"
-#include "collisiondetector.h"
-#include "collisionresolver.h"
-#include "collisionplane.h"
-#include "physicsbody.h"
+#include "gui/input/mouseevent.h"
 
-#include "world/bound.h"
-#include "world/world.h"
+#include "gui/guieventhandler.h"
+#include "gui/guieventhandlers.h"
+#include "gui/guiwnd.h"
 
-PhysicsSimulator::PhysicsSimulator():
-   Simulator(),
-   mWorldShapes()
+#include "script.h"
+#include "scriptmanager.h"
+
+GuiWndMouseListener::GuiWndMouseListener(GuiWnd& wnd):
+   mWnd(wnd)
 {
 }
 
-PhysicsSimulator::~PhysicsSimulator()
+void GuiWndMouseListener::onMouseContext(const MouseEvent& event)
 {
-   mWorldShapes.removeAll();
-}
+   GuiEventHandler* phandler = mWnd.getEventHandlers().findByEventType(GuiWndContextMenuEvent);
 
-Body& PhysicsSimulator::createBody(Object& object)
-{
-   PhysicsBody* pbody = new PhysicsBody(object);
-   addBody(pbody);
-   return *pbody;
-}
-
-void PhysicsSimulator::worldChanged()
-{
-   const Bounds& bounds = getWorld().getBounds();
-   for ( Bounds::size_type index = 0; index < bounds.size(); ++index )
+   if ( phandler != NULL )
    {
-      const Bound& bound = *bounds[index];
+      GuiPoint point = event.getLocation();
+      mWnd.windowToClient(point);
 
-      mWorldShapes.push_back(CollisionPlane::construct(bound.getLeft(), bound.getRight()));
+      ScriptManager& mgr = ScriptManager::getInstance();
+      Script& script = mgr.getTemporaryScript();
+      script.setSelf(&mWnd, "GuiWnd");
+      script.prepareCall(phandler->getFunctionName().c_str());
+      script.addParam((void*)&point, "GuiPoint");
+      script.run(1, 1);
+
+      if ( script.getBoolean() )
+        event.consume();
    }
-}
-
-void PhysicsSimulator::run(float timestep)
-{
-   Bodies& bodies = getBodies();
-   bodies.integrate(timestep);
-
-   CollisionData data;
-   bodies.collectContactData(data, mWorldShapes);
-
-   CollisionResolverInfo info;
-   CollisionResolver::resolve(data, info, timestep);
 }

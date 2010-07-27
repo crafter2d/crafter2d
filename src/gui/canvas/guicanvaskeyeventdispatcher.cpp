@@ -25,6 +25,8 @@
 #include "gui/guifocus.h"
 #include "gui/guiwnd.h"
 
+#include "guicanvas.h"
+
 GuiCanvasKeyEventDispatcher::GuiCanvasKeyEventDispatcher(GuiCanvas& canvas):
    KeyEventDispatcher(),
    mCanvas(canvas)
@@ -41,6 +43,20 @@ GuiCanvasKeyEventDispatcher::~GuiCanvasKeyEventDispatcher()
 
 void GuiCanvasKeyEventDispatcher::dispatch(const KeyEvent& keyevent)
 {
+   if ( keyevent.getEventType() == KeyEvent::eReleased )
+   {
+      switch ( keyevent.getKey() )
+      {
+      case SDLK_F3:
+         mCanvas.switchDesigner();
+         break;
+
+      case SDLK_F4:
+         mCanvas.switchEditor();
+         break;
+      }
+   }
+
    if ( GuiFocus::getInstance().hasFocus() )
    {
       GuiWnd& focussed = GuiFocus::getInstance().getFocus();

@@ -23,6 +23,7 @@
 
 #include "world/world.h"
 #include "world/bound.h"
+#include "world/bounds.h"
 
 #include "object.h"
 
@@ -43,7 +44,7 @@ b2Vec2 Box2DSimulator::vectorToB2(const Vector& v)
 
 Box2DSimulator::Box2DSimulator():
    Simulator(),
-   mpWorld(NULL),
+   mpb2World(NULL),
    mContactListener(*this),
    mJoints()
 {
@@ -51,8 +52,8 @@ Box2DSimulator::Box2DSimulator():
 
 Box2DSimulator::~Box2DSimulator()
 {
-   delete mpWorld;
-   mpWorld = NULL;
+   delete mpb2World;
+   mpb2World = NULL;
 }
 
 Body& Box2DSimulator::createBody(Object& object)
@@ -62,7 +63,7 @@ Body& Box2DSimulator::createBody(Object& object)
    bodydef.angle = object.getRotation();
    bodydef.type = b2_dynamicBody;
 
-   b2Body* pboxbody = mpWorld->CreateBody(&bodydef);
+   b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
 
    Box2DBody* pbody = new Box2DBody(object, *pboxbody);
 
@@ -80,7 +81,7 @@ Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefini
    b2RevoluteJointDef jd;
    jd.Initialize(&definition.pleft->getBody(), &definition.pright->getBody(), vectorToB2(definition.anchor));
 
-   b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpWorld->CreateJoint(&jd));
+   b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpb2World->CreateJoint(&jd));
 
    Box2DRevoluteJoint* pjoint = new Box2DRevoluteJoint(*pb2joint);
 
@@ -89,19 +90,21 @@ Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefini
    return *pjoint;
 }
 
-void Box2DSimulator::generateWorldShapes(const World& world)
+void Box2DSimulator::worldChanged()
 {
    b2Vec2 gravity(0, 9);
-   mpWorld = new b2World(gravity, true);
-   mpWorld->SetContactListener(&mContactListener);
+   mpb2World = new b2World(gravity, true);
+   mpb2World->SetContactListener(&mContactListener);
 
    b2BodyDef def;
    def.position.Set(0,0);
-   b2Body* pbody = mpWorld->CreateBody(&def);
+   b2Body* pbody = mpb2World->CreateBody(&def);
 
-   for ( int index = 0; index < world.getBoundCount(); ++index )
+   const Bounds& bounds = getWorld().getBounds();
+
+   for ( Bounds::size_type index = 0; index < bounds.size(); ++index )
    {
-      const Bound& bound = world.getBound(index);
+      const Bound& bound = *bounds[index];
 
       b2PolygonShape ground;
       ground.SetAsEdge(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
@@ -119,8 +122,8 @@ void Box2DSimulator::run(float timestep)
 
    getBodies().integrate(timestep);
 
-   mpWorld->Step(timestep, velocityIterations, positionIterations);
-   mpWorld->ClearForces();
+   mpb2World->Step(timestep, velocityIterations, positionIterations);
+   mpb2World->ClearForces();
 
    getBodies().finalize();
 }

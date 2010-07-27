@@ -21,17 +21,15 @@
 
 #include "../defines.h"
 
-#include "collisionshape.h"
-
 Simulator::Simulator():
+   mpWorld(NULL),
    mBodies(),
-   mWorldShapes()
+   mpListener(NULL)
 {
 }
 
 Simulator::~Simulator()
 {
-   destroyWorldShapes();
 }
 
 // ----------------------------------
@@ -77,23 +75,24 @@ void Simulator::removeBody(Body& body)
 // -- World body interface
 // ----------------------------------
 
-void Simulator::generateWorldShapes(const World& world)
+const World& Simulator::getWorld() const
 {
+   ASSERT_PTR(mpWorld);
+   return *mpWorld;
 }
 
-void Simulator::addWorldShape(CollisionShape* pshape)
+void Simulator::setWorld(const World& world)
 {
-   mWorldShapes.push_back(pshape);
+   if ( mpWorld != &world )
+   {
+      mpWorld = &world;
+
+      worldChanged();
+   }
 }
 
-void Simulator::destroyWorldShapes()
+void Simulator::worldChanged()
 {
-   mWorldShapes.removeAll();
-}
-
-const CollisionShapes& Simulator::getWorldShapes() const
-{
-   return mWorldShapes;
 }
 
 // ----------------------------------

@@ -57,6 +57,8 @@ GuiMenu::~GuiMenu()
 
 void GuiMenu::onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent)
 {
+   CLEAR_FLAG(style, GUI_NOTIFYPARENT);
+
    GuiWnd::onCreate(rect, caption, style, parent);
 
    addMouseListener(mMouseListener);
@@ -150,11 +152,10 @@ void GuiMenu::selectItem(const GuiPoint& point)
 
 void GuiMenu::onFocusChanged(GuiWnd& newFocus, GuiWnd* poldFocus)
 {
+   GuiControl::onKillFocus(&newFocus);
+
    if ( !_processing && poldFocus == this )
    {
-      GuiControl::onKillFocus(&newFocus);
-
-      if ( hasParent() )
-         getParent()->sendMessage(getId(), GuiLostFocusEvent);
+      getParent()->sendMessage(getId(), GuiLostFocusEvent);
    }
 }

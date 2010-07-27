@@ -1,0 +1,13 @@
+<?xml version="1.0">
+<!-- char sprite -->
+
+<object name="char" width=58 height=58>
+   <texture>grudge.png</texture>
+   <animations count=2 speed=125>
+      <anim1 length=1>2</anim1>
+      <anim2 length=7>0 1 2 3</anim2>
+   </animations>
+   <body inertia="1" mass="80" rotate="0">
+      <shape type="box" halfx="24" halfy="30" />
+   </body>
+</object>

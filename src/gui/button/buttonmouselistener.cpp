@@ -53,6 +53,8 @@ void ButtonMouseListener::onMouseClick(const MouseEvent& event)
       mButton.click();
 
       mClicking = false;
+
+      event.consume();
    }
 }
 

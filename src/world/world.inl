@@ -77,6 +77,13 @@ INLINE int World::getBoundCount() const
    return bounds.size();
 }
 
+/// \fn World::getBounds() const
+/// \brief Returns the bounds of this world.
+INLINE const Bounds& World::getBounds() const
+{
+   return bounds;
+}
+
 /// \fn World::getLayer(int index)
 /// \brief Returns a specific layer.
 INLINE Layer* World::getLayer(int index)

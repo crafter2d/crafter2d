@@ -21,12 +21,22 @@
 #define SIMULATOR_H_
 
 #include "bodies.h"
-#include "collisionshapes.h"
 
 class Object;
 class World;
-class CollisionShape;
 class SimulatorListener;
+
+/**
+@author Jeroen Broekhuizen
+\brief A simulator is the engine which performs collision detection and positioning of
+all objects in the current game world.
+
+The task of the Simulator is to update the state of the bodies (see class Body). Like the
+scenegraph a simulator can have multiple bodies it should take care of. The update takes
+place each frame through a call to the run method.
+
+At startup the generateWorldShapes method is called so that the 
+*/
 
 class Simulator
 {
@@ -34,30 +44,32 @@ public:
    Simulator();
    virtual ~Simulator() = 0;
 
+ // listener interface
    bool hasListener() const;
    SimulatorListener& getListener();
    void setListener(SimulatorListener& listener);
+
+ // get/set
+   const World& getWorld() const;
+   void         setWorld(const World& world);
 
  // maintenance
    virtual Body& createBody(Object& object) = 0;
    virtual void  removeBody(Body& body);
 
-   virtual void generateWorldShapes(const World& world);
-
+ // operations
    virtual void run(float timestep) = 0;
 
 protected:
-   void addBody(Body* body);
-   void addWorldShape(CollisionShape* pshape);
+   Bodies& getBodies();
+   void    addBody(Body* body);
 
-         Bodies&           getBodies();
-   const CollisionShapes&  getWorldShapes() const;
+   virtual void worldChanged();
 
 private:
-   void destroyWorldShapes();
 
+   const World*       mpWorld;
    Bodies             mBodies;
-   CollisionShapes    mWorldShapes; // owned
    SimulatorListener* mpListener;
 };
 

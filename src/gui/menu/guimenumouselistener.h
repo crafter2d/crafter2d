@@ -30,7 +30,7 @@ public:
    GuiMenuMouseListener(GuiMenu& menu);
 
  // notifications
-   virtual void onMouseButton(const MouseEvent& event);
+   virtual void onMouseClick(const MouseEvent& event);
    virtual void onMouseMotion(const MouseEvent& event);
 
 private:

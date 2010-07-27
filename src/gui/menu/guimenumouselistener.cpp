@@ -37,7 +37,7 @@ GuiMenuMouseListener::GuiMenuMouseListener(GuiMenu& menu):
 
 // - Notifications
 
-void GuiMenuMouseListener::onMouseButton(const MouseEvent& event)
+void GuiMenuMouseListener::onMouseClick(const MouseEvent& event)
 {
    GuiPoint point = event.getLocation();
 
@@ -63,6 +63,8 @@ void GuiMenuMouseListener::onMouseButton(const MouseEvent& event)
       }
       
       mMenu.getParent()->onCommand(id);
+      
+      event.consume();
    }
 }
 

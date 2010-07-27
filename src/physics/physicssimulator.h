@@ -21,6 +21,7 @@
 #define PHYSICS_SIMULATOR_H_
 
 #include "simulator.h"
+#include "collisionshapes.h"
 
 class PhysicsSimulator : public Simulator
 {
@@ -30,9 +31,14 @@ public:
 
    virtual Body& createBody(Object& object);
 
-   virtual void generateWorldShapes(const World& world);
+   virtual void  run(float timestep);
 
-   virtual void run(float timestep);
+protected:
+  virtual void worldChanged();
+
+private:
+
+   CollisionShapes mWorldShapes; // owned
 };
 
 #endif

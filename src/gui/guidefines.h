@@ -53,7 +53,7 @@ enum GuiState {
 enum GuiEvent {
    GuiWndCreatedEvent         = 0,
    GuiWndContextMenuEvent     = 11,
-   GuiWndContextCommandEvent  = 13,
+   GuiWndCommandEvent         = 13,
    GuiButtonClickEvent        = 1,
    GuiScrollUpEvent           = 2,
    GuiScrollDownEvent         = 3,
@@ -65,7 +65,7 @@ enum GuiEvent {
    GuiHeaderResizeEvent       = 8,
    GuiContextMenuEvent        = 9,
    GuiDialogLoadedEvent       = 10,
-   GuiTreeSelChangeEvent      = 14,
+   GuiTreeSelChangeEvent      = 14, 
 
    GuiTileEditorMouseDownEvent  = 15,
    GuiTileEditorMouseClickEvent = 16,

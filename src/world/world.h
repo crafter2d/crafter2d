@@ -93,6 +93,8 @@ public:
          Bound&   getBound(int index);
          int      getBoundCount() const;
 
+   const Bounds&  getBounds() const;
+
    int            getLayerCount() const;
    Layer*         getLayer(int index);
    const Layer*   getLayer(int index) const;
