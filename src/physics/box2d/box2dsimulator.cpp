@@ -60,8 +60,8 @@ Body& Box2DSimulator::createBody(Object& object)
 {
    b2BodyDef bodydef;
    bodydef.position = vectorToB2(object.getPosition());
-   bodydef.angle = object.getRotation();
-   bodydef.type = b2_dynamicBody;
+   bodydef.angle    = object.getRotation();
+   bodydef.type     = b2_dynamicBody;
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
 
@@ -96,22 +96,28 @@ void Box2DSimulator::worldChanged()
    mpb2World = new b2World(gravity, true);
    mpb2World->SetContactListener(&mContactListener);
 
-   b2BodyDef def;
-   def.position.Set(0,0);
-   b2Body* pbody = mpb2World->CreateBody(&def);
-
    const Bounds& bounds = getWorld().getBounds();
 
    for ( Bounds::size_type index = 0; index < bounds.size(); ++index )
    {
       const Bound& bound = *bounds[index];
 
+      b2BodyDef def;
+      def.position.Set(0,0);
+      def.type     = b2_staticBody;
+      def.userData = const_cast<Bound*>(&bound);
+      b2Body* pbody = mpb2World->CreateBody(&def);
+
       b2PolygonShape ground;
       ground.SetAsEdge(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
 
-      b2Fixture* pfixture = pbody->CreateFixture(&ground, 0);
-      pfixture->SetFriction(.3f);
-      pfixture->SetUserData(const_cast<Bound*>(&bound));
+      b2FixtureDef fixturedef;
+      fixturedef.shape    = &ground;
+      fixturedef.density  = 1;
+      fixturedef.friction = 0.3f;
+      fixturedef.userData = (void*)eBound;
+
+      pbody->CreateFixture(&fixturedef);
    }
 }
 

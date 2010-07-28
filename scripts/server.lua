@@ -5,6 +5,7 @@
 
 include('actionmap.lua')
 include('bridge.lua')
+include('defines.lua')
 
 -- initialize the server connection
 function Server_startup()
@@ -123,12 +124,16 @@ end
 
 -- Called when the object collides (or leaves) a bound
 function Server_onCollisionObjectWorld(object, bound, side, on)
-	if side == 1 then
-	    if on then
-			object.onground = object.onground + 1
-		else
-			object.onground = object.onground - 1
+	if object.type == OBJ_PLAYER then
+		if side == COL_SIDE_BOTTOM then
+			if on then
+				object.onground = object.onground + 1
+			else
+				object.onground = object.onground - 1
+			end
 		end
+	elseif object.type == OBJ_GRUDGE then
+		object.grudge:handleCollision(bound, side, on)
 	end
 end
 
@@ -152,7 +157,7 @@ function Server_startGame(worldFile, player)
 	
 	-- create the controler for the player
 	local controler = Creature:new()
-	controler:setPosition(Vector:new(250, 60))
+	controler:setPosition(Vector:new(1400, 30))
 	if not controler:create("char.xml") then
 		console:print("Failed to load character.")
 		return
@@ -164,7 +169,8 @@ function Server_startGame(worldFile, player)
 	controler:setName(player.name)
 	controler:setAnimation(1)
 	controler.onground = 0
-	controler.input = InputForceGenerator:new()
+	controler.input    = InputForceGenerator:new()
+	controler.type     = OBJ_PLAYER
 	
 	local body = box2d_getBody(controler)
 	body:addForceGenerator(controler.input)

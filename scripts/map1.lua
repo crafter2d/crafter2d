@@ -37,6 +37,6 @@ function createObjects(world)
 	
 	-- create grudge
 	local grudge = Grudge:new()
-	grudge:create(world, Vector:new(1500, 10))
+	grudge:create(world, Vector:new(1500, 50))
 
 end

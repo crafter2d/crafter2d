@@ -39,6 +39,14 @@ public:
    static Vector b2ToVector(const b2Vec2& b2);
    static b2Vec2 vectorToB2(const Vector& v);
 
+   enum BodyType { eBound, eObject };
+
+   struct BodyInfo {
+      BodyInfo(BodyType type): mType(type) {}
+
+      BodyType mType;
+   };
+
    Box2DSimulator();
    virtual ~Box2DSimulator();
 

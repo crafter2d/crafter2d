@@ -1,4 +1,22 @@
-
+/***************************************************************************
+ *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "box2dcontactlistener.h"
 
 #include "physics/simulatorlistener.h"
@@ -29,11 +47,14 @@ void Box2DContactListener::collision(b2Contact* pcontact, bool begin)
    b2Fixture* pa = pcontact->GetFixtureA();
    b2Fixture* pb = pcontact->GetFixtureB();
 
-   if ( pa->IsSensor() && !pb->IsSensor() )
+   int typeA = (int)pa->GetUserData();
+   int typeB = (int)pb->GetUserData();
+
+   if ( pa->IsSensor() && typeB == Box2DSimulator::eBound )
    {
       collisionObjectWorld(pcontact, *pa, *pb, begin);
    }
-   else if ( !pa->IsSensor() && pb->IsSensor() )
+   else if ( pb->IsSensor() && typeA == Box2DSimulator::eBound )
    {
       collisionObjectWorld(pcontact, *pb, *pa, begin);
    }
@@ -43,11 +64,11 @@ void Box2DContactListener::collisionObjectWorld(b2Contact* pcontact, b2Fixture& 
 {
    // collision between a object(A) && bound(B)
 
-   Box2DBody* pbody = (Box2DBody*)sensor.GetUserData();
+   Box2DBody* pbody = (Box2DBody*)sensor.GetBody()->GetUserData();
    int side = pbody->getSide(sensor);
    
    if ( side > 0 && mSimulator.hasListener() )
    {
-      mSimulator.getListener().collideObjectWorld(pbody->getObject(), *(Bound*)bound.GetUserData(), side, begin);
+      mSimulator.getListener().collideObjectWorld(pbody->getObject(), *(Bound*)bound.GetBody()->GetUserData(), side, begin);
    }
 }

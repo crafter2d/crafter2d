@@ -37,6 +37,7 @@ Box2DBody::Box2DBody(Object& object, b2Body& body):
    mpLeftSensor(NULL),
    mpRightSensor(NULL)
 {
+   mBody.SetUserData(this);
 }
 
 Box2DBody::~Box2DBody()
@@ -106,8 +107,13 @@ void Box2DBody::load(const TiXmlElement& element)
             b2PolygonShape shape;
             shape.SetAsBox(mHalfWidth, mHalfHeight);
 
-            b2Fixture* pfixture = mBody.CreateFixture(&shape, 1);
-            pfixture->SetFriction(.3f);            
+            b2FixtureDef fixturedef;
+            fixturedef.density  = 1;
+            fixturedef.friction = 0.3f;
+            fixturedef.shape    = &shape;
+            fixturedef.userData = (void*)Box2DSimulator::eObject;
+            
+            mBody.CreateFixture(&fixturedef);
          }
          else if ( pshapetype->compare("circle") == 0 )
          {
@@ -117,8 +123,13 @@ void Box2DBody::load(const TiXmlElement& element)
             b2CircleShape shape;
             shape.m_radius = radius / 30;
 
-            b2Fixture* pfixture = mBody.CreateFixture(&shape, 1);
-            pfixture->SetFriction(1);
+            b2FixtureDef fixturedef;
+            fixturedef.density  = 1;
+            fixturedef.friction = 1;
+            fixturedef.shape    = &shape;
+            fixturedef.userData = (void*)Box2DSimulator::eObject;
+
+            mBody.CreateFixture(&fixturedef);
          }
       }
    }
@@ -140,8 +151,8 @@ b2Fixture* Box2DBody::createSensor(float halfx, float halfy, const b2Vec2& cente
 
    b2FixtureDef sensordef;
    sensordef.isSensor = true;
-   sensordef.shape = &sensor;
-   sensordef.userData = this;
+   sensordef.shape    = &sensor;
+   sensordef.userData = (void*)Box2DSimulator::eObject;
 
    return mBody.CreateFixture(&sensordef);
 }
