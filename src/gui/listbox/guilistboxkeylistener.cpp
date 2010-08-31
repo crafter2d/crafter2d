@@ -43,7 +43,7 @@ void GuiListBoxKeyListener::onKeyReleased(const KeyEvent& event)
    {
       ScriptManager& mgr = ScriptManager::getInstance();
       Script& script = mgr.getTemporaryScript();
-      script.setSelf(this, "GuiListBox");
+      script.setSelf(this, &mListbox);
       script.prepareCall(phandler->getFunctionName().c_str());
       script.addParam(event.getKey());
       script.run(1);
