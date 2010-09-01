@@ -46,6 +46,8 @@ void GuiMenuMouseListener::onMouseClick(const MouseEvent& event)
 
    if ( mMenu.getSelection() != -1 )
    {
+      ScopedValue<bool> value(mMenu._processing, true, false);
+
       mMenu.setVisible(false);
 
       int id = mMenu.getItems()[mMenu.getSelection()].getId();
@@ -53,8 +55,6 @@ void GuiMenuMouseListener::onMouseClick(const MouseEvent& event)
       GuiEventHandler* phandler = mMenu.getEventHandlers().findByEventType(GuiContextMenuEvent);
       if ( phandler != NULL )
       {
-         ScopedValue<bool> value(mMenu._processing, true, false);
-
          ScriptManager& mgr = ScriptManager::getInstance();
          Script& script = mgr.getTemporaryScript();
          script.prepareCall(phandler->getFunctionName().c_str());

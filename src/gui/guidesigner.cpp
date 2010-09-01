@@ -133,7 +133,8 @@ GuiDesigner::GuiDesigner():
    _pdesignerPopup(NULL),
    _pwindowPopup(NULL),
    _popupMenu(NULL),
-   mFocusListener(*this)
+   mFocusListener(*this),
+   mMouseListener(*this)
 {
 }
 
@@ -156,6 +157,8 @@ void GuiDesigner::onCreate(const GuiRect& rect, const char* caption, GuiStyle st
    createPropertyWnd();
    createEventHandlerWnd();
    createWindow();
+
+   addMouseListener(mMouseListener);
 
    GuiFocus::getInstance().addListener(mFocusListener);
 }

@@ -31,7 +31,6 @@ $#include "world/bound.h"
 $#include "actionmap.h"
 $#include "creature.h"
 $#include "particlesystem.h"
-$#include "weapon.h"
 $#include "state.h"
 $#include "script.h"
 $#include "scriptmanager.h"
@@ -178,9 +177,6 @@ class Creature: public Object
 
 	bool create(const char* filename);
 	void moveto (Creature* t);
-
-   void setWeapon(Weapon* w);
-   Weapon* getWeapon();
 };
 
 class ParticleSystem: public Object
@@ -189,14 +185,6 @@ class ParticleSystem: public Object
 
    void setEmitRate(int rate);
    void setEmitCount(int count);
-};
-
-class Weapon
-{
-   Weapon(Object* owner);
-
-   void fireAt(Object* target, int duration);
-   void setOwner(Object* owner);
 };
 
 class Layer

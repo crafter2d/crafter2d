@@ -9,8 +9,10 @@ if "%1" == "--help" goto Help
 if not "%1" == "cb-gcc" (
    if not "%1" == "vs2005" (
       if not "%1" == "vs2008" ( 
-         echo "%1" is not a valid target, check help for supported targets.
-         goto End )
+         if not "%1" == "vs2010" (
+            echo "%1" is not a valid target, check help for supported targets.
+            goto End )
+      )
    )
 )
 
@@ -29,7 +31,8 @@ tolua\tolua++.exe -o src\tolua_gui.cpp -H src\tolua_gui.h -n gui tolua\gui.cpp
 tolua\tolua++.exe -o src\tolua_network.cpp -H src\tolua_network.h -n network tolua\network.cpp
 
 echo -- Building project
-premake --target %1 --silent
+echo.
+premake4 %1
 
 echo.
 echo Finished

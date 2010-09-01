@@ -17,27 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
-#include <tinyxml.h>
-
-#include "creature.h"
+ #include "creature.h"
 #ifndef JENGINE_INLINE
 #  include "creature.inl"
 #endif
- 
+
+#include <tinyxml.h>
+
 #include "net/bitstream.h"
 
 #include "console.h"
 #include "nodevisitor.h"
 #include "script.h"
-#include "weapon.h"
 
 IMPLEMENT_REPLICATABLE(CreatureId, Creature, Object)
 
 Creature::Creature():
    Object(),
-   target(0),
-   weapon(0)
+   target(NULL)
 {
 }
 
@@ -54,40 +51,9 @@ bool Creature::load(TiXmlDocument& doc)
    TiXmlElement *pobject = doc.FirstChildElement("object");
    if ( pobject != NULL )
    {
-      TiXmlElement* pweapon = pobject->FirstChildElement("weapon");
-      if ( pweapon != NULL )
-      {
-         TiXmlText* pweaponname = (TiXmlText*)pweapon->FirstChild();
-         if ( pweaponname != NULL )
-         {
-            std::string weaponname = pweaponname->Value();
-            setWeapon(dynamic_cast<Weapon*>(NetObjectFactory::getInstance().createObject(weaponname.c_str())));
-            getWeapon()->setOwner(this);
-         }
-      }
    }
 
    return Object::load(doc);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Painting interface
-//////////////////////////////////////////////////////////////////////////
-
-void Creature::draw()
-{
-   if ( weapon != NULL )
-   {
-      glPushMatrix();
-
-      glTranslatef(mPos.x, mPos.y, 0);
-      glRotatef(angle, 0, 0, 1);
-      weapon->draw();
-
-      glPopMatrix();
-   }
-
-   Object::draw();
 }
 
 //////////////////////////////////////////////////////////////////////////

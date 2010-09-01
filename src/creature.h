@@ -23,7 +23,6 @@
 #include "object.h"
 
 class BitStream;
-class Weapon;
 class NodeVisitor;
 class TiXmlDocument;
 
@@ -40,12 +39,7 @@ public:
 	                  Creature();
 	virtual           ~Creature();
 
-   const Weapon*        getWeapon() const;
-         Weapon*        getWeapon();
-   void                 setWeapon(Weapon* w);
-
    virtual void      update(DirtySet& dirtyset, float delta);
-   virtual void      draw();
 
 	void              moveto(Creature* t);
 
@@ -64,7 +58,10 @@ protected:
 
 private:
 	Creature*       target;
-   Weapon*         weapon;
 };
+
+#ifdef JENGINE_INLINE
+#  include "creature.inl"
+#endif
 
 #endif

@@ -27,7 +27,8 @@
 
 #include "guiwindow.h"
 
-#include "designer/designerfocuslistener.h" 
+#include "designer/designerfocuslistener.h"
+#include "designer/guidesignermouselistener.h"
 
 class GuiDesignWnd;
 class GuiEventHandlerDlg;
@@ -137,7 +138,9 @@ private:
    GuiMenu*             _pdesignerPopup;
    GuiMenu*             _pwindowPopup;
    GuiPopupDecorator*   _popupMenu;
-   DesignerFocusListener mFocusListener;
+
+   DesignerFocusListener    mFocusListener;
+   GuiDesignerMouseListener mMouseListener;
 };
 
 #ifdef JENGINE_INLINE
