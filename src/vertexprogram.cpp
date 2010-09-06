@@ -86,13 +86,6 @@ bool VertexProgram::compile(const char* code, int length)
 {
    save(code, length);
 
-   // see if we must convert the code to ASM
-   if ( !OpenGL::supportsGLSL() && strstr(source, "!!ARBvp1.0") == NULL )
-   {
-      if ( (length = OpenGL::glslToASM (&source)) == -1 )
-         return false;
-   }
-
    glGenProgramsARB(1, &program);
    if ( program == 0 ) 
    {

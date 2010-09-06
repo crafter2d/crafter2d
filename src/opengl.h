@@ -20,10 +20,6 @@
 #ifndef OPENGL_H
 #define OPENGL_H
 
-#ifdef WIN32
-#include "shaderlang.h"
-#endif
-
 #include "codepath.h"
 
 class VertexBuffer;
@@ -51,13 +47,7 @@ public:
    static bool          supportsVertexShader(CodePath::PathType pathtype);
 	static bool          supportsFragmentShader(CodePath::PathType pathtype);
 
-	static int           glslToASM (char** code);
-
 private:
-
-#ifdef WIN32
-	static ShHandle vertexCompiler;
-#endif
 };
 
 #endif

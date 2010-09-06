@@ -24,13 +24,11 @@ if ( os.is("windows") ) then
                     libdir .. "cg/include",
 					libdir .. "openal/include",
 					libdir .. "zlib/include",
-					libdir .. "png/include",
 					libdir .. "ogg/include",
 					libdir .. "vorbis/include",
 					libdir .. "tinyxml/include",
 					libdir .. "lua/include", 
 					libdir .. "tolua++/include",
-					libdir .. "glslang/include",
 					libdir .. "freetype2/include",
 					libdir .. "soil/include",
 					libdir .. "box2d/include",
@@ -41,13 +39,11 @@ if ( os.is("windows") ) then
 				libdir .. "cg/lib",
 				libdir .. "openal/lib",
 				libdir .. "zlib/lib",
-				libdir .. "png/lib",
 				libdir .. "ogg/lib",
 				libdir .. "vorbis/lib",
 				libdir .. "tinyxml/lib",
 				libdir .. "lua/lib", 
 				libdir .. "tolua++/lib",
-				libdir .. "glslang/lib",
 				libdir .. "freetype2/lib",
 				libdir .. "soil/lib",
 				libdir .. "box2d/lib" }
@@ -94,11 +90,11 @@ if ( os.is("windows") ) then
 		
 		configuration "Debug"
 			links { "GLee_d", "box2d_d", "tolua++_d", " lua5.1_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
-	                "minizip_d", "freetype241MT_D" }
+	                "minizip_d", "freetype242MT_D" }
 					
 		configuration "Release"
 			links { "GLee", "box2d", "tolua++", "lua5.1", "soil", "vorbisfile", "tinyxml_STL", "zlib1", 
-					"minizip", "freetype241MT" }
+					"minizip", "freetype242MT" }
    end -- win32
    
 elseif ( os.is("linux") ) then

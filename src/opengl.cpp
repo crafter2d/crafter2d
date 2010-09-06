@@ -39,10 +39,6 @@
 #include "texture.h"
 #include "particlesystem.h"
 
-#ifdef WIN32
-ShHandle OpenGL::vertexCompiler = 0;
-#endif
-
 /*!
     \fn OpenGL::initialize()
 	 \brief Initializes the extensions neccessary for the engine to function correctly.
@@ -160,52 +156,3 @@ bool OpenGL::supportsGLSL ()
 	return (GLEE_ARB_shading_language_100 && GLEE_ARB_shader_objects && GLEE_ARB_vertex_shader);
 }
 
-#ifdef Win32
-void GenerateResources(TBuiltInResource& resources)
-{
-    resources.maxLights = 32;
-    resources.maxClipPlanes = 6;
-    resources.maxTextureUnits = 32;
-    resources.maxTextureCoords = 32;
-    resources.maxVertexAttribs = 64;
-    resources.maxVertexUniformComponents = 4096;
-    resources.maxVaryingFloats = 64;
-    resources.maxVertexTextureImageUnits = 32;
-    resources.maxCombinedTextureImageUnits = 32;
-    resources.maxTextureImageUnits = 32;
-    resources.maxFragmentUniformComponents = 4096;
-    resources.maxDrawBuffers = 32;
-}
-#endif
-
-int OpenGL::glslToASM (char** code)
-{
-	int length = -1;
-   /*
-	const char* asmCode = NULL;
-	TBuiltInResource resources;
-	GenerateResources (resources);
-
-	// construct a vertex compiler object
-	vertexCompiler = ShConstructCompiler (EShLangVertex, EDebugOpAssembly);
-
-	// try to compiler the given code
-	if (ShCompile (vertexCompiler, code, 1, EShOptNone, &resources, EDebugOpAssembly)) {
-		asmCode = ShGetInfoLog (vertexCompiler);
-      Console::getInstance().print("OpenGL.glslToASM: converted GLSL to ASM.");
-
-		length = (int)strlen (asmCode);
-		delete[] (*code);
-		(*code) = new char[length+1];
-		strcpy ((*code), asmCode);
-	}
-	else {
-		// report an error
-      Console::getInstance().print("OpenGL.glslToASM: failed to compiler shader.");
-      Console::getInstance().printf("%s", ShGetInfoLog (vertexCompiler));
-	}
-
-	ShDestruct(vertexCompiler);
-   */
-	return length;
-}
