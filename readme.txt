@@ -1,4 +1,4 @@
-JEngine SSE, version 0.4.4, Jeroen Broekhuizen
+JEngine SSE, version 0.4.5, Jeroen Broekhuizen
 
 Thank you for using JEngine SSE. To start the demo application, enter the 
 bin directory and execute the jengine.exe file by double clicking on it on windows
@@ -8,8 +8,8 @@ BUILDING:
 
 Windows
 From the command prompt launch gen.bat file with the target IDE you want to
-use. Valid options are: cb-gcc (Code::Blocks), vs2005 and vs2008 for the
-Visual Studio 2005 and 2008 IDE's (express editions are also supported).
+use. Valid options are: cb-gcc (Code::Blocks), vs2005, vs2008 and vs2010 for the
+Visual Studio IDE's (express editions are also supported).
 
 Linux
 From the console launch gen.sh with a target. Currently only the
@@ -20,7 +20,7 @@ The generated project files can be found in the build directory.
 More information about the engine can be found on the documentation pages
 of the JEngine SSE website at: 
 
-http://jengine.homedns.org/index.php?page=10
+https://sourceforge.net/apps/mediawiki/jenginesse
 
 
 TROUBLESHOOTING:
@@ -29,15 +29,12 @@ If for some reason the application does not start, first check your log file loc
 in the bin directory. It might contain an error which you can solve, like unsupported
 hardware.
 
-If it is a software problem, please check whether your issue is already reported
-in Mantis. If is not reported yet, please file a new issue, so that I can solve
-the problem as soon as possible.
+In case you find a software bug in the engine, please report them on in the bug tracker
+application of the sourceforge website (http://sourceforge.com/projects/jenginesse). Please
+fill in as many fields as possible and a clear description of what is wrong. A reproduction
+scenario would also be very helpfull.
 
-In case you have a functionality request, please report them in the mantis system as well
-(if you are unsure, you can first make a post on the forums).
-
-http://jengine.homedns.org/mantis
-http://jengine.homedns.org/forum
+For questions or functionality requests you can move to the forums.
 
 FAQ:
 

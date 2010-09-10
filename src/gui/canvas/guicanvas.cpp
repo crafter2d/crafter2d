@@ -181,7 +181,7 @@ bool GuiCanvas::isWindowDisplayed(GuiWnd* pwnd)
 }
 
 /// \fn GuiCanvas::pushWindow(GuiWnd* pwnd)
-/// \brief Pushes the g:iven window to the top of the stack (window does not
+/// \brief Pushes the given window to the top of the stack (window does not
 /// have to be visible.
 void GuiCanvas::pushWindow(GuiWnd* wnd)
 {
@@ -216,9 +216,18 @@ void GuiCanvas::doPopWindow(GuiList::Iterator it)
 {
    if ( it.valid() )
    {
+      GuiWnd* pwnd = (*it);
+      ASSERT_PTR(pwnd);
+      if ( pwnd->getDestroyOnClose() )
+      {
+         pwnd->destroy();
+         delete pwnd;
+      }
+
       windows.removeAt(it);
 
-      setActiveWnd(*windows.begin());
+      GuiWnd* pactive = *windows.begin();
+      setActiveWnd(pactive);
    }
 }
 
@@ -268,7 +277,10 @@ void GuiCanvas::setActiveWnd(GuiWnd* pwnd)
 
       activeWnd = pwnd;
       if ( activeWnd.isAlive() )
+      {
          activeWnd->onActivate(true, pold);
+         activeWnd->setFocus();
+      }
    }
 }
 
@@ -361,6 +373,7 @@ void GuiCanvas::switchDesigner()
 void GuiCanvas::switchEditor()
 {
    GuiDialog* peditor = GuiManager::getInstance().loadDialogFromXML("te_editor");
+   peditor->setDestroyOnClose(true);
    peditor->center();
 
    pushWindow(peditor);

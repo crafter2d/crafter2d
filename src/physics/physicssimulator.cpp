@@ -32,6 +32,7 @@ PhysicsSimulator::PhysicsSimulator():
    Simulator(),
    mWorldShapes()
 {
+   CollisionDetector::initRegistry();
 }
 
 PhysicsSimulator::~PhysicsSimulator()

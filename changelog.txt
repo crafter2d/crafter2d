@@ -5,8 +5,13 @@ Change log
 
 * Added physics support through Box2D
 * Added support for many image formats by using DevIL and SOIL
+* Added support for MS Visual Studio 2010
+* Added NSIS installer for distribution
+* Added Doxygen configuration for easy documentation generation
 * Upgraded most libraries to latest version, including Lua, Tolua, FreeType and TinyXML
-* Fixed many bugs
+* Fixed bug 3053316 - wrong arguments in the list mouselistener
+* Fixed bug 3053359 - crash after focus change with recently closed popup menu
+* Fixed many other bugs
 
 Older versions
 --------------

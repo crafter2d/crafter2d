@@ -47,9 +47,6 @@ if ( os.is("windows") ) then
 				libdir .. "freetype2/lib",
 				libdir .. "soil/lib",
 				libdir .. "box2d/lib" }
-
-	-- set the ignoring libs for studio
-	ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 	
 	-- set the pre-build event
 	prebuildcommands {
@@ -91,6 +88,7 @@ if ( os.is("windows") ) then
 		configuration "Debug"
 			links { "GLee_d", "box2d_d", "tolua++_d", " lua5.1_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
 	                "minizip_d", "freetype242MT_D" }
+			ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 					
 		configuration "Release"
 			links { "GLee", "box2d", "tolua++", "lua5.1", "soil", "vorbisfile", "tinyxml_STL", "zlib1", 

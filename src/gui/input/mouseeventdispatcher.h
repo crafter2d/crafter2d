@@ -22,6 +22,14 @@
 
 class MouseEvent;
 
+/*! 
+\brief Event dispatcher from game to user interface.
+\author Jeroen Broekhuizen
+
+The mouse event dispatcher is an abstract base class used for routing input gathered
+by the GameWindow to e.g. the UI system of JEngine SSE. Note that the game input is
+handled differently in the KeyMap.
+*/
 class MouseEventDispatcher
 {
 public:

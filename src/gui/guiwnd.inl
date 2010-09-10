@@ -109,3 +109,13 @@ INLINE GuiEventHandlers& GuiWnd::getEventHandlers()
    ASSERT_PTR(_peventhandlers)
    return *_peventhandlers;
 }
+
+INLINE bool GuiWnd::getDestroyOnClose() const
+{
+   return mDestroyOnClose;
+}
+
+INLINE void GuiWnd::setDestroyOnClose(bool destroy)
+{
+   mDestroyOnClose = destroy;
+}

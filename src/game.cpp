@@ -35,7 +35,6 @@
 #include "tools/profiler/profiler.h"
 #include "tools/profiler/profilerinstance.h"
 
-#include "physics/collisiondetector.h"
 #include "physics/physicsfactory.h"
 #include "physics/box2d/box2dfactory.h"
 #include "physics/simulationfactoryregistry.h"
@@ -111,7 +110,7 @@ Game::~Game()
 bool Game::create()
 {
    Log& log = Console::getLog();
-   log << "JEngine SSE V0.4.5 - Copyright 2006 - Jeroen Broekhuizen\n";
+   log << "JEngine SSE V0.4.5 - Copyright 2010 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
@@ -143,7 +142,6 @@ bool Game::create()
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
    SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
-   CollisionDetector::initRegistry();
 
    log << "\n-- Initializing Graphics --\n\n";
 

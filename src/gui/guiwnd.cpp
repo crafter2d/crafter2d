@@ -79,7 +79,8 @@ GuiWnd::GuiWnd():
    m_style(0),
    m_id(0),
    font(NULL),
-   background()
+   background(),
+   mDestroyOnClose(false)
 {
    MProperties.setOwner(this);
 }

@@ -88,8 +88,9 @@ Section "Source" SecSource
   File gen.bat
   File gen.sh
   File installer.nsi
-  File premake.exe
-  File premake.lua
+  File premake4.exe
+  File premake4.lua
+  File proj-jengine.lua
   
   SetOutPath "$INSTDIR\src"
   File /r /x .svn src\*.*

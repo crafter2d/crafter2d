@@ -130,6 +130,9 @@ public:
    bool               isTopmost() const;
    void               setTopmost(bool topmost);
 
+   bool               getDestroyOnClose() const;
+   void               setDestroyOnClose(bool destroy);
+
    GuiEventHandlerDefinitions&   getEventHandlerDefinitions();
    GuiEventHandlers&             getEventHandlers();
    GuiProperties&                getProperties();
@@ -231,6 +234,8 @@ protected:
    GuiId          m_id;
    GuiFont*       font;
    Texture        background;
+
+   bool mDestroyOnClose;
 };
 
 #ifdef JENGINE_INLINE

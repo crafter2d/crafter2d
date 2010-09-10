@@ -48,14 +48,20 @@ private:
 	ALuint buffer, source;
 };
 
-/*!
-@author Jeroen Broekhuizen
-\brief Manager for sound objects.
-
-This class manages the sound objects in your game. Loading sounds must be done
-via the load function. Currently only wave files are supported.
-
-\todo Extra support for other sound formats
+/**
+ * \author Jeroen Broekhuizen
+ * \brief Manager for sound objects.
+ *
+ * This class manages the sound objects in your game. Loading sounds must be done
+ * via the load function. Currently only wave files are supported. An example usage
+ * is demonstrated below.
+ *
+ * @code
+ * AutoPtr<Sound> sound = SoundManager::getInstance().load("mysound");
+ * sound->play();
+ * @endcode
+ *
+ * \todo Extra support for other sound formats
  */
 class SoundManager
 {
