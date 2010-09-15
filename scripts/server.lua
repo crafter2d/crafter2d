@@ -157,7 +157,7 @@ function Server_startGame(worldFile, player)
 	
 	-- create the controler for the player
 	local controler = Creature:new()
-	controler:setPosition(Vector:new(1400, 30))
+	controler:setPosition(Vector:new(100, 30))
 	if not controler:create("char.xml") then
 		console:print("Failed to load character.")
 		return
