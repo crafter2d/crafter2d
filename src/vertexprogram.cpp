@@ -20,6 +20,7 @@
 #include "console.h"
 #include "opengl.h"
 #include "vertexprogram.h"
+#include "autoptr.h"
 
 /// \fn VertexProgram::VertexProgram()
 /// \brief Creates a vertex program
@@ -63,21 +64,28 @@ bool VertexProgram::compile(const char* filename)
 	file.seekg (0, std::ios::end);
 	length = file.tellg();
    file.seekg (0, std::ios::beg);
-	
-	// read in the complete data
-	GLcharARB* code = new GLcharARB[length+1];
-	if (!source) {
-      Console::getInstance().print("VertexProgram.compile: No memory available for vertex program code.");
-		return false;
-	}
 
-	memset (code, 0, length+1);
-	file.read (code, length);
-	file.close ();
+   bool success = false;
+   if ( length > 0 )
+   {
+	   // read in the complete data
+	   char* pcode = new char[length+1];
+	   if (!source) {
+         Console::getInstance().print("VertexProgram.compile: No memory available for vertex program code.");
+		   success = false;
+	   }
+      else
+      {
+	      memset(pcode, 0, length+1);
+	      file.read(pcode, length);
+	      file.close ();
 
-   // perform the actual code
-   bool success = compile( code, length );
-   delete[] code;
+         // perform the actual code
+         success = compile(pcode, length );
+      }
+
+      delete[] pcode;
+   }
 
    return success;
 }
