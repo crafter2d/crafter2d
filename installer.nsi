@@ -91,6 +91,7 @@ Section "Source" SecSource
   File premake4.exe
   File premake4.lua
   File proj-jengine.lua
+  File yasca.bat
   
   SetOutPath "$INSTDIR\src"
   File /r /x .svn src\*.*

@@ -1,4 +1,4 @@
-echo off
+@echo off
 echo JEngine SSE Static source code analysis launcher.
 
 if "%1" == "" goto Help
@@ -8,15 +8,13 @@ echo Running analysis, this may take a couple of minutes...
 
 set CURDIR=%CD%
 chdir /d %1
-yasca -s -o jenginesse_yasca.html "%CURDIR%\src"
+yasca -o "%CURDIR%\yasca_report.html" "%CURDIR%\src"
 chdir /d %CURDIR%
 
 echo Finished.
 
-cp %1\jenginesse_yasca.html .
-del %1\jenginesse_yasca.html
-
-if "%2" == "--show" goto Show
+if "%2" == "--noshow" goto End
+start yasca_report.html
 goto End
 
 :Help
@@ -25,11 +23,8 @@ echo http://www.scovetta.com/yasca.html
 echo.
 echo Usage: yasca "path-to-yasca" [options]
 echo  path-to-yasca : the full path to the yasca directory.
-echo  --show : show the analysis report
+echo  --noshow : only generate the analysis report
 echo  --help : show this help information
 goto End
-
-:Show
-start jenginesse_yasca.html
 
 :End
