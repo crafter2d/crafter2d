@@ -5,4 +5,12 @@ solution "JEngine"
 	configurations { "Debug", "Release" }
 	location "build"
 
+if ( os.is("windows") ) then
+	defines { "WIN32" }
+elseif ( os.is("linux") ) then
+	defines { "LINUX" }
+end
+	
+require "proj-math"
+require "proj-engine"
 require "proj-jengine"

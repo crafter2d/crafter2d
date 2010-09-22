@@ -25,10 +25,14 @@ echo -- Setting up bin directory
 cp %1
 
 echo -- Building tolua files
-tolua\tolua++.exe -o src\tolua_editor.cpp -H src\tolua_editor.h -n editor tolua\editor.cpp
-tolua\tolua++.exe -o src\tolua_general.cpp -H src\tolua_general.h -n general tolua\general.cpp
-tolua\tolua++.exe -o src\tolua_gui.cpp -H src\tolua_gui.h -n gui tolua\gui.cpp
-tolua\tolua++.exe -o src\tolua_network.cpp -H src\tolua_network.h -n network tolua\network.cpp
+rem tolua\tolua++.exe -o src\tolua_editor.cpp -H src\tolua_editor.h -n editor tolua\editor.cpp
+rem tolua\tolua++.exe -o src\tolua_general.cpp -H src\tolua_general.h -n general tolua\general.cpp
+rem tolua\tolua++.exe -o src\tolua_gui.cpp -H src\tolua_gui.h -n gui tolua\gui.cpp
+rem tolua\tolua++.exe -o src\tolua_network.cpp -H src\tolua_network.h -n network tolua\network.cpp
+pushd .
+chdir tolua
+call run.bat --silent
+popd
 
 echo -- Building project
 echo.
@@ -47,6 +51,7 @@ echo  target can be
 echo     - cb-gcc (default)
 echo     - vc2005
 echo     - vc2008
+echo     - vs2010
 echo  --help
 echo     Display this help information
 echo.

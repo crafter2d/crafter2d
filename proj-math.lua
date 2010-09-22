@@ -2,12 +2,13 @@
 -- Copyright 2010, Jeroen Broekhuizen
 
 -- create the project
-project "JEngineSSE"
-	kind "ConsoleApp"
+project "Math"
+	kind "SharedLib"
 	language "C++"
 	targetdir "bin"
 	flags { "NoPCH" }
+	location "build/math"
 	debugworkingdir "$(TargetDir)"
 	
 -- set project files
-files { "src/*.cpp", "src/*.h", "src/*.inl" }
+files { "src/math/**.cpp", "src/math/**.h", "src/math/**.inl" }
