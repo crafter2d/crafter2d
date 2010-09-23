@@ -20,10 +20,12 @@
 #ifndef XFORM_H_
 #define XFORM_H_
 
+#include "math_base.h"
+
 #include "matrix2x2.h"
 #include "vector.h"
 
-class XForm
+class MATH_API XForm
 {
 public:
    XForm();

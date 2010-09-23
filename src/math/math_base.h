@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,32 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef POINT_H_
-#define POINT_H_
+#ifndef MATH_BASE_H_
+#define MATH_BASE_H_
 
-#include "math_base.h"
-
-class MATH_API Point
-{
-public:
-   static Point& zero();
-
-   Point();
-   Point(int x, int y);
-
-   int   x() const;
-   void  x(int xvalue);
-
-   int   y() const;
-   void  y(int yvalue);
-
-   void offset(int dx, int dy);
-
-private:
-   int mX;
-   int mY;
-};
-
-#include "point.inl"
+#ifdef MATH_EXPORTS
+#define MATH_API __declspec(dllexport)
+#else
+#define MATH_API __declspec(dllimport)
+#endif
 
 #endif

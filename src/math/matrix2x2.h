@@ -20,9 +20,11 @@
 #ifndef MATRIX_2x2_H_
 #define MATRIX_2x2_H_
 
+#include "math_base.h"
+
 #include "vector.h"
 
-class Matrix2x2
+class MATH_API Matrix2x2
 {
 public:
    Matrix2x2();

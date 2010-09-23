@@ -20,7 +20,9 @@
 #ifndef COLOR_H_
 #define COLOR_H_
 
-class Color
+#include "math_base.h"
+
+class MATH_API Color
 {
 public:
 	Color();
