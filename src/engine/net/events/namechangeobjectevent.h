@@ -20,9 +20,8 @@
 #ifndef NAME_CHANGE_OBJECT_EVENT_H_
 #define NAME_CHANGE_OBJECT_EVENT_H_
 
-#include "../netevent.h"
-
-#include "idmanager.h"
+#include "engine/net/netevent.h"
+#include "engine/idmanager.h"
 
 class SceneObject;
 

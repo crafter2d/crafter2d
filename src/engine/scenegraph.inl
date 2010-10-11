@@ -19,16 +19,6 @@
  ***************************************************************************/
 #include "defines.h"
 
-INLINE void SceneGraph::setNotify(bool notify)
-{
-   mNotifyClients = notify;
-}
-
-INLINE bool SceneGraph::getNotify()
-{
-   return mNotifyClients;
-}
-
 INLINE bool SceneGraph::hasWorld() const
 {
    return mpWorld != NULL;
@@ -42,6 +32,27 @@ INLINE World* SceneGraph::getWorld()
 INLINE SceneObject& SceneGraph::getRoot()
 {
    return mRoot;
+}
+
+INLINE bool SceneGraph::hasListener() const
+{
+   return mpListener != NULL;
+}
+
+INLINE SceneGraphListener& SceneGraph::getListener()
+{
+   ASSERT_PTR(mpListener)
+   return *mpListener;
+}
+
+INLINE void SceneGraph::setListener(SceneGraphListener& listener)
+{
+   mpListener = &listener; 
+}
+
+INLINE void SceneGraph::clearListener()
+{
+   mpListener = NULL;
 }
 
 INLINE void SceneGraph::setControler(Object* c)

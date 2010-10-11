@@ -8,6 +8,7 @@ project "Engine"
 	targetdir "bin"
 	flags { "NoPCH" }
 	location "build/engine"
+	defines { "ENGINE_EXPORTS" }
 	debugworkingdir "$(TargetDir)"
 	
 -- set project files
@@ -15,10 +16,10 @@ files { "src/engine/**.cpp", "src/engine/**.h", "src/engine/**.inl" }
 
 -- set the include and library
 if ( os.is("windows") ) then
-	libdir = "../externallibs/" .. _ACTION .. "/"
-	defines { "WIN32" }
+	libdir = "../../externallibs/" .. _ACTION .. "/"
+	defines { "WIN32", "ENGINE_EXPORTS" }
 	
-	excludes { "src/vfs/linux*.*", "src/system/linux*.*" }
+	excludes { "src/engine/vfs/linux*.*", "src/engine/system/linux*.*" }
 
 	includedirs { libdir .. "sdl/include",
                     libdir .. "glee/include",
@@ -51,17 +52,17 @@ if ( os.is("windows") ) then
 	
 	-- set the pre-build event
 	prebuildcommands {
-		"..\\tolua\\tolua++ -o ..\\src\\engine\\tolua_editor.cpp -H ..\\src\\tolua_editor.h -n editor ..\\tolua\\engine\\editor.cpp",
-		"..\\tolua\\tolua++ -o ..\\src\\engine\\tolua_general.cpp -H ..\\src\\tolua_general.h -n general ..\\tolua\\engine\\general.cpp",
-		"..\\tolua\\tolua++ -o ..\\src\\engine\\tolua_gui.cpp -H ..\\src\\tolua_gui.h -n gui ..\\tolua\\engine\\gui.cpp",
-		"..\\tolua\\tolua++ -o ..\\src\\engine\\tolua_network.cpp -H ..\\src\\tolua_network.h -n network ..\\tolua\\engine\\network.cpp",
-		"..\\tolua\\tolua++ -o ..\\src\\engine\\tolua_physics.cpp -H ..\\src\\tolua_physics.h -n physics ..\\tolua\\engine\\physics.cpp" }
+		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_editor.cpp -H ..\\..\\src\\tolua_editor.h -n editor ..\\..\\tolua\\editor.cpp",
+		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_general.cpp -H ..\\..\\src\\tolua_general.h -n general ..\\..\\tolua\\general.cpp",
+		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_gui.cpp -H ..\\..\\src\\tolua_gui.h -n gui ..\\..\\tolua\\gui.cpp",
+		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_network.cpp -H ..\\..\\src\\tolua_network.h -n network ..\\..\\tolua\\network.cpp",
+		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_physics.cpp -H ..\\..\\src\\tolua_physics.h -n physics ..\\..\\tolua\\physics.cpp" }
 
 	-- set IDE specific settings
 	if ( _ACTION == "cb-gcc" ) then
 	
 		-- no devil support yet in cb
-		excludes { "src/texture/textureloaderdevil.cpp", "src/texture/textureloaderdevil.h" }
+		excludes { "src/engine/texture/textureloaderdevil.cpp", "src/engine/texture/textureloaderdevil.h" }
 		
 		buildoptions { "-W", "-Wall", "-O0" }
 		linkoptions { "--allow-multiple-definition" }
@@ -105,7 +106,7 @@ elseif ( os.is("linux") ) then
    
 	defines { "LINUX" }
    
-	excludes { "src/vfs/win*.*", "src/system/win*.*" }
+	excludes { "src/engine/vfs/win*.*", "src/engine/system/win*.*" }
 	
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL",
@@ -114,11 +115,11 @@ elseif ( os.is("linux") ) then
 
 	-- set the pre-build event
 	prebuildcommands {
-		"tolua++ -o ../src/engine/tolua_editor.cpp -H ../src/tolua_editor.h -n editor ../tolua/engine/editor.cpp",
-		"tolua++ -o ../src/engine/tolua_general.cpp -H ../src/tolua_general.h -n general ../tolua/engine/general.cpp",
-		"tolua++ -o ../src/engine/tolua_gui.cpp -H ../src/tolua_gui.h -n gui ../tolua/engine/gui.cpp",
-		"tolua++ -o ../src/engine/tolua_network.cpp -H ../src/tolua_network.h -n network ../tolua/engine/network.cpp",
-		"tolua++ -o ../src/engine/tolua_physics.cpp -H ../src/tolua_physics.h -n physics ../tolua/engine/physics.cpp" }
+		"tolua++ -o ../src/engine/tolua_editor.cpp -H ../src/tolua_editor.h -n editor ../tolua/editor.cpp",
+		"tolua++ -o ../src/engine/tolua_general.cpp -H ../src/tolua_general.h -n general ../tolua/general.cpp",
+		"tolua++ -o ../src/engine/tolua_gui.cpp -H ../src/tolua_gui.h -n gui ../tolua/gui.cpp",
+		"tolua++ -o ../src/engine/tolua_network.cpp -H ../src/tolua_network.h -n network ../tolua/network.cpp",
+		"tolua++ -o ../src/engine/tolua_physics.cpp -H ../src/tolua_physics.h -n physics ../tolua/physics.cpp" }
 
 end
 

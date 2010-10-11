@@ -25,6 +25,7 @@
 #include "idmanager.h"
 #include "object.h"
 #include "process.h"
+#include "sound.h"
 
 class ConnectReplyEvent;
 class DisconnectEvent;
@@ -50,6 +51,7 @@ public:
                   Client();
    virtual        ~Client();
 
+   virtual bool   create();
    virtual bool   destroy();
    virtual void   update(float delta);
            void   render(float delta);
@@ -81,6 +83,7 @@ private:
    void  handleNameChangeEvent(const NameChangeObjectEvent& event);
    void  handleScriptEvent(const ScriptEvent& event);
 
+   SoundManager   mSoundManager;
    WorldRenderer* mpWorldRenderer;
    Player*        mpPlayer;
    KeyMap*        mpKeyMap;

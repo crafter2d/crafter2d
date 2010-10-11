@@ -20,9 +20,11 @@
 
 #include "topdownlayer.h"
 
-#include "../opengl.h"
-#include "../console.h"
-#include "../vertexbuffer.h"
+#include "math/point.h"
+
+#include "engine/opengl.h"
+#include "engine/console.h"
+#include "engine/vertexbuffer.h"
 
 #include "layertype.h"
 #include "tile.h"

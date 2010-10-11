@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "worldsimulatorlistener.h"
 
-#include "script.h"
-#include "scriptmanager.h"
+#include "engine/script.h"
+#include "engine/scriptmanager.h"
 
 WorldSimulatorListener::WorldSimulatorListener():
    SimulatorListener()

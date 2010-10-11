@@ -37,15 +37,15 @@
 #include "player.h"
 #include "script.h"
 #include "scriptmanager.h"
-#include "sound.h"
 #include "creature.h"
 #include "server.h"
 #include "defines.h"
 #include "sceneobject.h"
 #include "actionmap.h"
 
-Client::Client(void):
+Client::Client():
    Process(),
+   mSoundManager(),
    mpWorldRenderer(NULL),
    mpPlayer(NULL),
    mpKeyMap(NULL),
@@ -53,7 +53,7 @@ Client::Client(void):
 {
 }
 
-Client::~Client(void)
+Client::~Client()
 {
    disconnect();
 }
@@ -87,10 +87,21 @@ void Client::disconnect()
    }
 }
 
+bool Client::create()
+{
+    // initialize the sound system
+   mSoundManager.initialize();
+
+   return Process::create();
+}
+
 bool Client::destroy()
 {
    Process::destroy();
-   conn.setAccepting(true);
+   conn.setAccepting(false);
+
+   mSoundManager.destroy ();
+
    return true;
 }
 
@@ -113,13 +124,15 @@ void Client::render(float delta)
       // set the sound of the player
       Object* pcontroler = graph.getControler();
       if ( pcontroler != NULL )
-         SoundManager::setPlayerPosition(pcontroler->getPosition());
+         mSoundManager.setPlayerPosition(pcontroler->getPosition());
 
       mpWorldRenderer->render(delta);
    }
 }
 
+//---------------------------------------------
 // - Get/set
+//---------------------------------------------
 
 INLINE Player& Client::getPlayer()
 {
@@ -143,7 +156,9 @@ INLINE void Client::setKeyMap(KeyMap* pkeymap)
    mpKeyMap = pkeymap;
 }
 
+//---------------------------------------------
 // - Operations
+//---------------------------------------------
 
 bool Client::loadWorld(const std::string& filename, const std::string& name)
 {
@@ -159,7 +174,9 @@ bool Client::loadWorld(const std::string& filename, const std::string& name)
    return false;
 }
 
+//---------------------------------------------
 // - Events
+//---------------------------------------------
 
 int Client::onClientEvent(int client, const NetEvent& event)
 {
@@ -225,7 +242,7 @@ int Client::onClientEvent(int client, const NetEvent& event)
 
 void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 {
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
 
    switch ( event.getReply() )
@@ -253,7 +270,7 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
    script.prepareCall("Client_onPlayerLeft");
    script.addParam(event.getId()+1);
@@ -263,7 +280,7 @@ void Client::handleDisconnectEvent(const DisconnectEvent& event)
 void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
    script.prepareCall("Client_onJoined");
    script.addParam(event.getId()+1);
@@ -274,7 +291,7 @@ void Client::handleJoinEvent(const JoinEvent& event)
 void Client::handleServerdownEvent()
 {
    // server went down, run the onClientConnect script
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
    script.prepareCall ("Client_onServerDown");
    script.run (0);
@@ -300,14 +317,14 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       graph.setWorld((World*)obj.release());
 
       // run the onWorldChanged script
-      Script& script = ScriptManager::getInstance().getTemporaryScript();
+      Script& script = mScriptManager.getTemporaryScript();
       script.setSelf(this, "Client");
       script.prepareCall("Client_onWorldChanged");
       script.run(0);
    }
    else if ( graph.find(obj->getId()) == 0 )
    {
-      SceneObject* pparent = graph.find(event.getParent());
+      SceneObject* pparent = graph.find(event.getParentId());
       if ( pparent != NULL )
       {
          pparent->add(obj.release());
@@ -367,7 +384,7 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    AutoPtr<BitStream> stream(event.getStream());
 
    // run the onClientConnect script
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
    script.prepareCall ("Client_onEvent");
    script.addParam(stream.getPointer(), "BitStream");

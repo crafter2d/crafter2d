@@ -29,34 +29,37 @@ IMPLEMENT_REPLICATABLE(NewObjectEventId, NewObjectEvent, NetEvent)
 NewObjectEvent::NewObjectEvent():
    NetEvent(newobjectEvent),
    mParentId(),
-   mpObject(NULL)
+   mpObject()
 {
 }
 
-NewObjectEvent::NewObjectEvent(SceneObject& object):
+NewObjectEvent::NewObjectEvent(const SceneObject& object):
    NetEvent(newobjectEvent),
-   mParentId(object.getParent()->getId()),
-   mpObject(&object)
+   mParentId(object.getParent().getId()),
+   mpObject(const_cast<SceneObject*>(&object))
 {
 }
 
 void NewObjectEvent::pack(BitStream& stream) const
 {
+   ASSERT_PTR(mpObject)
+
    NetEvent::pack(stream);
    
-   stream << mParentId << mpObject->getId() << (NetObject*)mpObject << mpObject->getFilename();
+   stream << mParentId << mpObject << mpObject->getFilename();
 }
 
 void NewObjectEvent::unpack(BitStream& stream)
 {
+   ASSERT(mpObject == NULL)
+
    NetEvent::unpack(stream);
-   
+
    Id id;
    std::string filename;
    
    stream >> mParentId >> id >> (NetObject**)&mpObject >> filename;
    
-   mpObject->setReplica();
    mpObject->setId(id);
    mpObject->setFilename(filename);
 }

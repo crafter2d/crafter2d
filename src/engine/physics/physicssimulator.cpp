@@ -19,14 +19,14 @@
  ***************************************************************************/
 #include "physicssimulator.h"
 
+#include "engine/world/bound.h"
+#include "engine/world/world.h"
+
 #include "collisiondata.h"
 #include "collisiondetector.h"
 #include "collisionresolver.h"
 #include "collisionplane.h"
 #include "physicsbody.h"
-
-#include "world/bound.h"
-#include "world/world.h"
 
 PhysicsSimulator::PhysicsSimulator():
    Simulator(),

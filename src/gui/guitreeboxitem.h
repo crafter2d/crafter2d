@@ -21,7 +21,7 @@
 #define GUI_TREEBOX_ITEM_H_
 
 #include <string>
-#include "../resources.h"
+#include "engine/resources.h"
 
 class GuiTreeBoxItem
 {

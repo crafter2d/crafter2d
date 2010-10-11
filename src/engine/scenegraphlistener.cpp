@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,25 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
 
-/// \fn ScriptManager::createScript(ScriptManager::Kind k)
-/// \brief Creates a new script object. This script has its own stack, but also has access to
-/// the world variable (if its set).
-/// \returns a pointer to the new script object, or NULL if k was invalid
-INLINE Script* ScriptManager::createScript (bool child)
+#include "scenegraphlistener.h"
+
+SceneGraphListener::SceneGraphListener()
 {
-   return new Script (luaState, child);
 }
 
-/// \fn ScriptManager::getTemporaryScript()
-/// \brief Returns a tempory script instance. It should not be destroyed.
-INLINE Script& ScriptManager::getTemporaryScript()
+SceneGraphListener::~SceneGraphListener()
 {
-   return tempScript;
 }
 
-INLINE bool ScriptManager::executeScript(const std::string& path)
+//-----------------------------------------
+// - Notifications
+//-----------------------------------------
+
+void SceneGraphListener::notifyObjectAdded(const SceneObject& object)
 {
-   return executeScript(path.c_str());
+}
+
+void SceneGraphListener::notifyObjectRemoved(const SceneObject& object)
+{
+}
+
+void SceneGraphListener::notifyObjectNameChanged(const SceneObject& object)
+{
 }

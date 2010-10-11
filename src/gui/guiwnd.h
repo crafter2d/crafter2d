@@ -20,11 +20,11 @@
 #ifndef GUIWND_H_
 #define GUIWND_H_
 
-#include "../texture.h"
+#include "engine/texture.h"
 
-#include "input/keylisteners.h"
-#include "input/mouselisteners.h"
-#include "input/mousewheellisteners.h"
+#include "gui/input/keylisteners.h"
+#include "gui/input/mouselisteners.h"
+#include "gui/input/mousewheellisteners.h"
 
 #include "wnd/guiwndmouselistener.h"
 

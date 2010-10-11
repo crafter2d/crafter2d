@@ -12,3 +12,8 @@ project "Math"
 	
 -- set project files
 files { "src/math/**.cpp", "src/math/**.h", "src/math/**.inl" }
+
+if ( os.is("windows") )
+	-- this is an export dll
+	defines { "MATH_EXPORTS" }
+end

@@ -20,7 +20,7 @@
 #ifndef WORLD_SIMULATOR_LISTENER_H_
 #define WORLD_SIMULATOR_LISTENER_H_
 
-#include "physics/simulatorlistener.h"
+#include "engine/physics/simulatorlistener.h"
 
 class WorldSimulatorListener : public SimulatorListener
 {

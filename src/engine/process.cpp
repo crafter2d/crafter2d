@@ -35,6 +35,7 @@ Process::Process():
    conn(),
    graph(),
    actionMap(NULL),
+   mScriptManager(),
    initialized(false)
 {
    conn.attachProcess(this);
@@ -46,14 +47,13 @@ Process::~Process()
 
 bool Process::create()
 {
-   return true;
+   return mScriptManager.initialize();
 }
 
 bool Process::destroy()
 {
    conn.disconnect();
 
-   graph.setNotify(false);
    graph.removeAll();
 
    return true;

@@ -23,12 +23,12 @@
 #include <string>
 #include <fstream>
 
-#include "../math/vector.h"
+#include "math/vector.h"
 
-#include "../defines.h"
-#include "../shader.h"
-#include "../texture.h"
-#include "../effect.h"
+#include "engine/defines.h"
+#include "engine/shader.h"
+#include "engine/texture.h"
+#include "engine/effect.h"
 
 #include "tileset.h"
 #include "layertype.h"

@@ -105,11 +105,9 @@ class ScriptManager
 
 public:
    typedef int(*initializer)(lua_State* tolua_S);
-   typedef std::vector<ScriptCollection*> Collections;
    typedef std::list<Request> Requests;
-
-   static ScriptManager&    getInstance();
-   static ScriptCollection* registerCollection(std::string name, initializer function);
+   
+   ScriptManager();
 
    bool                    initialize();
    void                    destroy();
@@ -119,13 +117,7 @@ public:
    bool                    loadString(const std::string& code);
 
    void                    setObject( void* obj, const char* type, const char* var );
-
- // collection interface
-   ScriptCollection&       activeCollection();
-   void                    activeCollection(ScriptCollection* pcollection);
-
-   Collections&            collections();
-
+   
  // execution
    bool                    executeScript(const std::string& path);
    bool                    executeScript( const char* script, bool child = false );
@@ -148,15 +140,12 @@ public:
    void*                   getClass(const char* var);
 
 private:
-                           ScriptManager();
    void                    operator=( const ScriptManager& mgr );
 
    void                    registerGlobals();
 
    void                    initializeCollections();
-
-   static Collections*  MPCollections;
-
+   
    lua_State*           luaState;
    Script               tempScript;
    Requests             requests;

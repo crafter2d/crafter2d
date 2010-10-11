@@ -61,11 +61,18 @@ INLINE bool SceneObject::hasParent() const
    return parent != NULL;
 }
 
+INLINE const SceneObject& SceneObject::getParent() const
+{
+   ASSERT_PTR(parent)
+   return *parent;
+}
+
 /// \fn SceneObject::getParent() const
 /// \brief Returns the parent object of this node.
-SceneObject* SceneObject::getParent()
+SceneObject& SceneObject::getParent()
 {
-   return parent;
+   ASSERT_PTR(parent)
+   return *parent;
 }
 
 /// \fn SceneObject::setParent(SceneObject* p)

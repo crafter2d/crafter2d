@@ -19,11 +19,10 @@
  ***************************************************************************/
 #include "profiler.h"
 
-#include "..\..\defines.h"
+#include "engine/defines.h"
+#include "engine/system/timer.h"
 
-#include "..\..\system\timer.h"
-
-#include "..\..\gui\guitext.h"
+#include "gui/guitext.h"
 
 #include "profileritem.h"
 

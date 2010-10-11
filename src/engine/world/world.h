@@ -22,10 +22,10 @@
 
 #include <vector>
 
-#include "../math/vector.h"
+#include "math/vector.h"
 
-#include "../scenegraph.h"
-#include "../worldobserver.h"
+#include "engine/scenegraph.h"
+#include "engine/worldobserver.h"
 
 #include "bounds.h"
 #include "layertype.h"
@@ -77,8 +77,6 @@ public:
    void           createEmpty(const std::string& name);
    void           destroy();
    bool           save();
-
-   int            collide(Object& object, Vector& newpos) const;
 
    void           loadObjects(const char* filename);
 

@@ -23,11 +23,6 @@
 #  include "layer.inl"
 #endif
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 #include <fstream>
 #include <string>
 #include <cstdlib>
@@ -36,11 +31,11 @@
 #include <SDL/SDL.h>
 #include <math.h>
 
-#include "../game.h"
-#include "../gameconfiguration.h"
-#include "../opengl.h"
-#include "../console.h"
-#include "../vertexbuffer.h"
+#include "engine/game.h"
+#include "engine/gameconfiguration.h"
+#include "engine/opengl.h"
+#include "engine/console.h"
+#include "engine/vertexbuffer.h"
 
 #include "tile.h"
 #include "tilerow.h"

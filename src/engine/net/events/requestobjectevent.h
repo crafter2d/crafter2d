@@ -20,9 +20,8 @@
 #ifndef REQUEST_OBJECT_EVENT_H_
 #define REQUEST_OBJECT_EVENT_H_
 
-#include "net/netevent.h"
-
-#include "idmanager.h"
+#include "engine/net/netevent.h"
+#include "engine/idmanager.h"
 
 /**
 @author Jeroen Broekhuizen

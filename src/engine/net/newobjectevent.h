@@ -22,7 +22,7 @@
 
 #include "netevent.h"
 
-#include "idmanager.h"
+#include "engine/idmanager.h"
 
 class SceneObject;
 
@@ -35,11 +35,10 @@ public:
    DEFINE_REPLICATABLE(NewObjectEvent)
 
             NewObjectEvent();
-   explicit NewObjectEvent(SceneObject& object);
+   explicit NewObjectEvent(const SceneObject& object);
    
-   Id           getObjectId() const;
-   SceneObject* getObject() const;
-   Id           getParent() const;
+   Id             getParentId() const;
+   SceneObject*   getObject() const;
 
    virtual void   pack(BitStream& stream) const;
    virtual void   unpack(BitStream& stream);

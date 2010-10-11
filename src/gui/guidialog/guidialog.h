@@ -20,10 +20,10 @@
 #ifndef _GUIDIALOG_H_
 #define _GUIDIALOG_H_
 
-#include "../../resources.h"
+#include "engine/resources.h"
 
-#include "../guiwindow.h"
-#include "../guiimagebutton.h"
+#include "gui/guiwindow.h"
+#include "gui/guiimagebutton.h"
 
 #include "guidialogkeylistener.h"
 #include "guidialogmouselistener.h"

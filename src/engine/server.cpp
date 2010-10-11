@@ -108,8 +108,10 @@ void DisconnectEvent::unpack(BitStream& stream)
  */
 
 Server::Server():
+   Process(),
    clients(),
-   mActiveClient(-1)
+   mActiveClient(-1),
+   mGraphListener(*this)
 {
 }
 
@@ -119,9 +121,16 @@ Server::~Server()
 
 bool Server::create()
 {
-   Process::create();
-   graph.setNotify();
-   return true;
+   if ( Process::create() )
+   {
+      mScriptManager.initialize();
+
+      graph.setListener(mGraphListener);
+
+      return true;
+   }
+
+   return false;
 }
 
 bool Server::destroy()
@@ -131,6 +140,8 @@ bool Server::destroy()
       ServerDownEvent event;
       sendToAllClients(event);
    }
+
+   graph.clearListener();
 
    return Process::destroy();
 }
@@ -143,7 +154,7 @@ void Server::shutdown()
       conn.setAccepting(false);
 
       // call the shutdown function
-      Script& script = ScriptManager::getInstance().getTemporaryScript();
+      Script& script = mScriptManager.getTemporaryScript();
       script.setSelf (this, "Server");
       script.prepareCall ("Server_onShutdown");
       script.run();
@@ -220,7 +231,7 @@ bool Server::loadWorld(const std::string& filename, const std::string& name)
    if ( success )
    {
       std::string path = filename + ".lua";
-      ScriptManager::getInstance().executeScript(path);
+      mScriptManager.executeScript(path);
    }
 
    return success;
@@ -249,7 +260,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             AutoPtr<Player> player = clients[client];
 
             // run the onClientConnect script
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
+            Script& script = mScriptManager.getTemporaryScript();
             script.setSelf(this, "Server");
             script.prepareCall("Server_onClientDisconnect");
             script.addParam((int)client);
@@ -273,7 +284,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
 
             // run the onClientConnect script
             Player* player = clients[client];
-            Script& script = ScriptManager::getInstance().getTemporaryScript();
+            Script& script = mScriptManager.getTemporaryScript();
             script.setSelf (this, "Server");
             script.prepareCall ("Server_onEvent");
             script.addParam(player, "Player");
@@ -369,7 +380,7 @@ void Server::handleConnectEvent(const ConnectEvent& event)
    addPlayer(mActiveClient, player);
 
    // run the onClientConnect script
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Server");
    script.prepareCall ("Server_onClientConnect");
    script.addParam(player, "Player");

@@ -22,7 +22,7 @@
 #  include "deleteobjectevent.inl"
 #endif
 
-#include "sceneobject.h"
+#include "engine/sceneobject.h"
 
 IMPLEMENT_REPLICATABLE(DeleteObjectEventId, DeleteObjectEvent, NetEvent)
 

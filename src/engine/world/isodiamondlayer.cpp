@@ -20,9 +20,9 @@
 
 #include "isodiamondlayer.h"
 
-#include "../math/point.h"
+#include "math/point.h"
 
-#include "../vertexbuffer.h"
+#include "engine/vertexbuffer.h"
 
 #include "isodiamondtilerow.h"
 #include "layertype.h"

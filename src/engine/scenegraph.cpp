@@ -22,13 +22,8 @@
 #  include "scenegraph.inl"
 #endif
 
-#include "net/newobjectevent.h"
-#include "net/events/deleteobjectevent.h"
-#include "net/events/namechangeobjectevent.h"
-
 #include "world/world.h"
 
-#include "game.h"
 #include "object.h"
 #include "console.h"
 
@@ -36,8 +31,7 @@ SceneGraph::SceneGraph():
    mObjects(),
    mRoot(),
    mpControler(NULL),
-   mpWorld(NULL),
-   mNotifyClients(false)
+   mpWorld(NULL)
 {
    mObjects[mRoot.getId()] = &mRoot;
 }
@@ -85,10 +79,9 @@ void SceneGraph::addObject(SceneObject& object)
    // add object to the hash table
    mObjects[object.getId()] = &object;
 
-   if ( mNotifyClients )
+   if ( mpListener != NULL )
    {
-      NewObjectEvent event(object);
-      Game::getInstance().getServer().sendToAllClients(event);
+      mpListener->notifyObjectAdded(object);
    }
 }
 
@@ -101,10 +94,9 @@ void SceneGraph::removeObject(const SceneObject& object)
    {
       mObjects.erase(it);
 
-      if ( mNotifyClients )
+      if ( mpListener != NULL )
       {
-         DeleteObjectEvent event(object);
-         Game::getInstance().getServer().sendToAllClients(event);
+         mpListener->notifyObjectRemoved(object);
       }
    }
 }
@@ -127,10 +119,9 @@ void SceneGraph::notifyNameChanged(const SceneObject& object)
    ObjectMap::iterator it = mObjects.find(object.getId());
    if ( it != mObjects.end() )
    {
-      if ( mNotifyClients )
+      if ( mpListener != NULL )
       {
-         NameChangeObjectEvent event(object);
-         Game::getInstance().getServer().sendToAllClients(event);
+         mpListener->notifyObjectNameChanged(object);
       }
    }
 }

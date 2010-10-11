@@ -22,7 +22,7 @@
 #  include "namechangeobjectevent.inl"
 #endif
 
-#include "sceneobject.h"
+#include "engine/sceneobject.h"
 
 IMPLEMENT_REPLICATABLE(NameChangeObjectEventId, NameChangeObjectEvent, NetEvent)
 

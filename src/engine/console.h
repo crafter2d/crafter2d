@@ -20,14 +20,14 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
-#include "gui/guiwindow.h"
+//#include "gui/guiwindow.h"
 
-#include "log.h"
+#include "engine/log.h"
 
 class GuiEditBox;
 class GuiListBox;
 
-class Console : public GuiWindow
+class Console // : public GuiWindow
 {
 public:
    ~Console(void);
@@ -55,8 +55,8 @@ protected:
    void              operator=(const Console& con);
 
 private:
-   GuiListBox *lines;
-   GuiEditBox *input;
+   //GuiListBox *lines;
+   //GuiEditBox *input;
    static Log log;
 };
 

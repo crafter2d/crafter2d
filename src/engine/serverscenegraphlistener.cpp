@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,25 +17,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
 
-/// \fn ScriptManager::createScript(ScriptManager::Kind k)
-/// \brief Creates a new script object. This script has its own stack, but also has access to
-/// the world variable (if its set).
-/// \returns a pointer to the new script object, or NULL if k was invalid
-INLINE Script* ScriptManager::createScript (bool child)
+#include "serverscenegraphlistener.h"
+
+#include "net/newobjectevent.h"
+#include "net/events/deleteobjectevent.h"
+#include "net/events/namechangeobjectevent.h"
+
+#include "server.h"
+
+ServerSceneGraphListener::ServerSceneGraphListener(Server& server):
+   mServer(server)
 {
-   return new Script (luaState, child);
 }
 
-/// \fn ScriptManager::getTemporaryScript()
-/// \brief Returns a tempory script instance. It should not be destroyed.
-INLINE Script& ScriptManager::getTemporaryScript()
+ServerSceneGraphListener::~ServerSceneGraphListener()
 {
-   return tempScript;
 }
 
-INLINE bool ScriptManager::executeScript(const std::string& path)
+//-----------------------------------------
+// - Notifications
+//-----------------------------------------
+
+void ServerSceneGraphListener::notifyObjectAdded(const SceneObject& object)
 {
-   return executeScript(path.c_str());
+   NewObjectEvent event(object);
+   mServer.sendToAllClients(event);
+}
+
+void ServerSceneGraphListener::notifyObjectRemoved(const SceneObject& object)
+{
+   DeleteObjectEvent event(object);
+   mServer.sendToAllClients(event);
+}
+
+void ServerSceneGraphListener::notifyObjectNameChanged(const SceneObject& object)
+{
+   NameChangeObjectEvent event(object);
+   mServer.sendToAllClients(event);
 }

@@ -28,19 +28,19 @@
 #include <functional>
 #include <Box2D.h>
 
-#include "physics/simulationfactory.h"
-#include "physics/simulator.h"
+#include "engine/physics/simulationfactory.h"
+#include "engine/physics/simulator.h"
 
-#include "net/bitstream.h"
+#include "engine/net/bitstream.h"
 
-#include "../log.h"
-#include "../game.h"
-#include "../gameconfiguration.h"
-#include "../scenegraph.h"
-#include "../console.h"
-#include "../creature.h"
-#include "../nodevisitor.h"
-#include "../defines.h"
+#include "engine/log.h"
+#include "engine/game.h"
+#include "engine/gameconfiguration.h"
+#include "engine/scenegraph.h"
+#include "engine/console.h"
+#include "engine/creature.h"
+#include "engine/nodevisitor.h"
+#include "engine/defines.h"
 
 #include "layer.h"
 #include "layertype.h"
@@ -305,80 +305,6 @@ void World::doDraw ()
    glTranslatef(-scroll.x, -scroll.y, 0);
 }
 
-/// \fn World::collide(Object& object)
-/// \brief Performs collision detection with the object against the bounds
-/// \param object Object to test for collisions with the bounds
-int World::collide (Object& object, Vector& newpos) const
-{
-	Vector p3, p4, ip, vel;
-	int collided = 0;
-
-	float radius = object.getRadius ();
-	vel = object.getVelocity ();
-
-	p3 = object.getPosition ();
-	p4.set (p3.x+vel.x, p3.y+vel.y);
-
-	Vector extra(vel);
-	extra.normalize ();
-	extra *= radius;
-	p4 += extra;
-
-	// perform collision detection for side movement
-   for ( Bounds::size_type i = 0; i < bounds.size(); ++i )
-   {
-      Bound& bound = *bounds[i];
-		Vector normal = bound.getNormal ();
-		//if (normal.x != 0)
-      {
-         if ( bound.intersect(p3, p4, ip) == Bound::eCollision )
-         {
-				Vector normal = bound.getNormal();
-				//if (normal.x != 0)
-				//	vel.x = 0;
-
-				normal *= radius;
-				ip += normal;
-				object.setPosition(ip);
-				object.setVelocity(vel);
-				p3 = ip;
-				collided = 1;
-			}
-		}
-	}
-
-   newpos = p3;
-
-   /*
-	p4.set (p3.x, p3.y + vel.y);
-	extra.set (0, vel.y);
-	extra.normalize ();
-	extra *= radius;
-	p4 += extra;
-
-	// now perform collision detection for grafity
-	for (Bounds::size_type i = 0; i < bounds.size(); ++i)
-   {
-      Bound& bound = *bounds[i];
-		if ( bound.intersect(p3, p4, ip) == Bound::eCollision )
-      {
-			Vector normal = bound.getNormal();
-			ip += (normal * radius);
-			vel.y = 0;
-
-         p3.y = ip.y;
-			object.setPosition(p3);
-			object.setVelocity(vel);
-
-			//p3 = ip;
-			collided = 2;
-			break;
-		}
-	}
-   */
-	return collided;
-}
-
 /// \fn World::scroll()
 /// \brief Scrolls the layers based on the follow mode given by the application
 void World::scroll ()
@@ -409,18 +335,19 @@ void World::scroll ()
    else if ( followMode == FollowMouse )
    {
       int x, y;
+      int width, height;
       SDL_GetMouseState(&x, &y);
-      const GuiRect& rect = Game::getInstance().getCanvas().getWindowRect();
+      Game::getInstance().getWindowDimensions(width, height);
 
       // get the window bounds
       if (x < followBorderWidth)
          xScroll = -1;
-      else if (x > rect.getWidth() - followBorderWidth)
+      else if (x > width - followBorderWidth)
          xScroll = 1;
 
       if (y < followBorderWidth)
          yScroll = -1;
-      else if (y > rect.getHeight() - followBorderWidth)
+      else if (y > height - followBorderWidth)
          yScroll = 1;
    }
 
@@ -443,11 +370,12 @@ void World::scroll ()
 void World::initializeBorders()
 {
    // set the follow object borders default values
-   const GuiRect& rect = Game::getInstance().getCanvas().getWindowRect();
-   leftBorder = rect.left() + 50;
-   rightBorder = rect.right() - 50;
-   topBorder = rect.top() + 50;
-   bottomBorder = rect.bottom() - 50;
+   int width, height;
+   Game::getInstance().getWindowDimensions(width, height);
+   leftBorder = 50;
+   rightBorder = width - 50;
+   topBorder = 50;
+   bottomBorder = height - 50;
 }
 
 Layer* World::createLayer()

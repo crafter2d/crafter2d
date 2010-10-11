@@ -20,7 +20,7 @@
 #ifndef BODY_H_
 #define BODY_H_
 
-#include "..\math\xform.h"
+#include "math\xform.h"
 
 #include "collisionshapes.h"
 #include "forcegenerators.h"

@@ -48,6 +48,11 @@ INLINE SceneGraph& Process::getSceneGraph()
    return graph;
 }
 
+INLINE ScriptManager& Process::getScriptManager()
+{
+   return mScriptManager;
+}
+
 /// \fn Process::getActionMap()
 /// \brief Returns the current actionmap of this process.
 INLINE ActionMap* Process::getActionMap()

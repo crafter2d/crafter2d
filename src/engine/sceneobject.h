@@ -75,7 +75,8 @@ public:
    uint                    getId() const;
 
    bool                    hasParent() const;
-   SceneObject*            getParent();
+   const SceneObject&      getParent() const;
+   SceneObject&            getParent();
    void                    setParent(SceneObject* p);
 
    bool                    hasFilename() const;

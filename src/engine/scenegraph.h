@@ -25,17 +25,15 @@
 #include <map>
 
 #include "defines.h"
-#include "hashtable.h"
-#include "sceneobject.h"
 #include "sceneroot.h"
 #include "idmanager.h"
+#include "scenegraphlistener.h"
 
 class Object;
 class World;
 class DirtySet;
 class SceneObject;
 class SceneGraph;
-class NetConnection;
 
 /**
 @author Jeroen Broekhuizen
@@ -66,15 +64,18 @@ public:
    SceneObject*      find(const Id& id);
 
   // get/set
-   void              setNotify(bool notify = true);
    void              setControler(Object* c);
+
+   bool                 hasListener() const;
+   SceneGraphListener&  getListener();
+   void                 setListener(SceneGraphListener& listener);
+   void                 clearListener();
 
    bool              hasWorld() const;
    World*            getWorld();
    void              setWorld(World* w);
 
    Object*           getControler();
-   bool              getNotify();
    SceneObject&      getRoot();
 
   // notifications
@@ -82,11 +83,11 @@ public:
 
 private:
 
-   ObjectMap mObjects;
-   SceneRoot mRoot;
-   Object*   mpControler;
-   World*    mpWorld;
-   bool      mNotifyClients;
+   ObjectMap            mObjects;
+   SceneRoot            mRoot;
+   SceneGraphListener*  mpListener;
+   Object*              mpControler;
+   World*               mpWorld;
 };
 
 #ifdef JENGINE_INLINE

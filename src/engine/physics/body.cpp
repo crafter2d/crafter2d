@@ -24,7 +24,7 @@
 
 #include <tinyxml.h>
 
-#include "object.h"
+#include "engine/object.h"
 
 #include "collisionshape.h"
 

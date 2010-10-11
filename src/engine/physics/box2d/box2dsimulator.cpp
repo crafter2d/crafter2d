@@ -21,11 +21,10 @@
 
 #include <Box2D.h>
 
-#include "world/world.h"
-#include "world/bound.h"
-#include "world/bounds.h"
-
-#include "object.h"
+#include "engine/world/world.h"
+#include "engine/world/bound.h"
+#include "engine/world/bounds.h"
+#include "engine/object.h"
 
 #include "box2dbody.h"
 #include "box2drevolutejoint.h"

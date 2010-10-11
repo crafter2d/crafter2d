@@ -23,14 +23,11 @@
 #include <SDL/SDL.h>
 #include <string>
 
-#include "gui/canvas/guicanvas.h"
-
 #include "actionmap.h"
-#include "server.h"
-#include "client.h"
 #include "gamesettings.h"
 #include "gamewindow.h"
 #include "defaultgamewindowlistener.h"
+#include "scriptmanager.h"
 
 #define DECLARE_APPLICATION(title) \
    const char* getTitle() { return title; }
@@ -56,9 +53,6 @@ complete rendering and event loop. See the initGame, endGame and runFrame functi
 class Game
 {
 public:
- // static interface
-   static Game&         getInstance();
-
                         Game();
    virtual              ~Game() = 0;
 
@@ -73,10 +67,6 @@ public:
 
          void                 setTitle(const std::string& title);
    const std::string&         getTitle() const;
-
-         Server&              getServer();
-         Client&              getClient();
-         GuiCanvas&           getCanvas();
 
  // operations
    bool                 create();
@@ -93,10 +83,7 @@ public:
   // notifications
    void onWindowResized();
    void onWindowClosed();
-
- // overloads
-   virtual void         loadCustomScriptLibraries();
-
+   
 protected:
  // get/set
    TimerData&           getTimerData();
@@ -110,10 +97,6 @@ protected:
    void                 onMouseButtonEvent(const SDL_MouseButtonEvent& event);
    void                 onMouseMoveEvent(const SDL_MouseMotionEvent& event);
 
-   bool        active;
-   Server      server;
-   Client      client;
-
 private:
    bool                 initOpenGL();
    void                 runFrame();
@@ -123,8 +106,9 @@ private:
    GameWindow                mWindow;
    DefaultGameWindowListener mWindowListener;
    std::string               mTitle;
-   GuiCanvas                 mCanvas;
    TimerData*                mpTimerData;
+   ScriptManager             mScriptManager;
+   bool                      mActive;
 };
 
 #ifdef JENGINE_INLINE

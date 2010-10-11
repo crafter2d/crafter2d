@@ -20,8 +20,8 @@
 #ifndef GUIIMAGE_H_
 #define GUIIMAGE_H_
 
-#include "../texture.h"
-#include "../movie.h"
+#include "engine/texture.h"
+#include "engine/movie.h"
 
 #include "guicontrol.h"
 

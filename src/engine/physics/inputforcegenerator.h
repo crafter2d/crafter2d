@@ -20,7 +20,7 @@
 #ifndef INPUT_FORCE_GENERATOR_H_
 #define INPUT_FORCE_GENERATOR_H_
 
-#include "../math/vector.h"
+#include "math/vector.h"
 
 #include "forcegenerator.h"
 

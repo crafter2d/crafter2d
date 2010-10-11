@@ -19,9 +19,9 @@
  ***************************************************************************/
 #include "box2dcontactlistener.h"
 
-#include "physics/simulatorlistener.h"
+#include "engine/physics/simulatorlistener.h"
 
-#include "world/bound.h"
+#include "engine/world/bound.h"
 
 #include "box2dbody.h"
 #include "box2dsimulator.h"

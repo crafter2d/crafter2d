@@ -20,6 +20,12 @@
 
 #include "dlgapp.h"
 
+#include "gui/guimanager.h"
+#include "gui/guifont.h"
+#include "gui/guifocus.h"
+
+#include "engine/scriptmanager.h"
+
 IMPLEMENT_APPLICATION(MyGame)
 
 MyGame::MyGame():
@@ -33,7 +39,32 @@ MyGame::~MyGame()
 
 bool MyGame::initGame()
 {
+   // initialize the window manager
+   GuiManager& manager = GuiManager::getInstance();
+   manager.initialize();
+
+   GuiFont* font = new GuiFont ();
+   font->initialize ("amersn.ttf", 10);
+
+   manager.setDefaultFont (font);
+   manager.setDefaultTextColor(mSettings.getTextColor());
+
+   // create the gui canvas
+   mCanvas.create(0, GuiRect(0, mWindow.getWidth(), 0, mWindow.getHeight()));
+   mCanvas.changeDefaultColor(GuiCanvas::GuiWindowColor, mSettings.getWindowColor());
+   mCanvas.changeDefaultColor(GuiCanvas::GuiBorderColor, mSettings.getBorderColor());
+
+   ScriptManager& scriptMgr = ScriptManager::getInstance ();
+   scriptMgr.setObject(&GuiManager::getInstance(), "GuiManager", "guimanager");
+   scriptMgr.setObject(&GuiFocus::getInstance(), "GuiFocus", "focus");
+
 	return Game::initGame();
+}
+
+void MyGame::endGame()
+{
+   // destroy the gui manager
+	GuiManager::getInstance().destroy();
 }
 
 void MyGame::loadCustomScriptLibraries()
@@ -43,4 +74,7 @@ void MyGame::loadCustomScriptLibraries()
 
 void MyGame::drawFrame(float delta)
 {
+   Game::drawFrame(delta);
+
+   mCanvas.render(delta);   
 }

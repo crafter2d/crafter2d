@@ -27,6 +27,8 @@
 #include <windows.h>
 #endif
 
+#include "dlgapp.h"
+
 /*!
  	\mainpage JEngine SSE - 2D Side Scoller Documentation
  	\section intro_sec Introduction
@@ -58,3 +60,15 @@
 	<li>TinyXML, http://www.grinninglizard.com/tinyxml
 	</ul>
  */
+
+int main(int argc, char *argv[])
+{
+   AutoPtr<Game> game = new MyGame();
+   if ( game->create() )
+   {
+      game->run ();
+      game->destroy ();
+   }
+
+   return EXIT_SUCCESS;
+}

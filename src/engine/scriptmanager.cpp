@@ -31,12 +31,15 @@
 #include "console.h"
 #include "game.h"
 #include "gameconfiguration.h"
+#include "process.h"
 
 #include "tolua_editor.h"
 #include "tolua_general.h"
 #include "tolua_gui.h"
 #include "tolua_network.h"
 #include "tolua_physics.h"
+
+#define LUA_SCRIPTLIBNAME "script"
 
 //////////////////////////////////////////////////////////////////////////
 // - Lua error interface
@@ -58,27 +61,12 @@ int onLuaPanic (lua_State *L)
 // - ScriptManager stuff
 //////////////////////////////////////////////////////////////////////////
 
-ScriptManager::Collections* ScriptManager::MPCollections = NULL;
-
 ScriptManager::ScriptManager():
    luaState(NULL),
    tempScript(),
    requests(),
-   MPActiveCollection(NULL),
    job(0)
 {
-}
-
-/// \fn ScriptManager::registerCollection(std::string name, initializer function)
-/// \brief Registers a collection of script functions.
-ScriptCollection* ScriptManager::registerCollection(std::string name, initializer function)
-{
-   if ( MPCollections == NULL )
-      MPCollections = new Collections();
-
-   ScriptCollection* pcollection = new ScriptCollection(name, function);
-   Collections().push_back(pcollection);
-   return pcollection;
 }
 
 /// \fn ScriptManager::initialize()
@@ -110,19 +98,6 @@ bool ScriptManager::initialize()
 
    tempScript.setState(luaState);
 	return true;
-}
-
-/// \fn ScriptManager::initializeCollections()
-/// \brief Initialize all registered collections in lua.
-void ScriptManager::initializeCollections()
-{
-   for ( Collections::size_type idx = 0; idx < Collections().size(); ++idx )
-   {
-      ScriptCollection* pcollection = Collections()[idx];
-      activeCollection(pcollection);
-
-      pcollection->initialize(luaState);
-   }
 }
 
 /// \fn ScriptManager::destroy()
@@ -215,26 +190,47 @@ void ScriptManager::setObject(void* obj, const char* type, const char* var)
 // - Registered functions
 //////////////////////////////////////////////////////////////////////////
 
-static int schedule(lua_State* L)
+static ScriptManager* getScriptManager(lua_State* L)
+{
+   lua_getglobal(L, LUA_SCRIPTLIBNAME);
+   ScriptManager* pmanager = reinterpret_cast<ScriptManager*>(lua_touserdata(L,-1));
+   return pmanager;
+}
+
+static int script_run(lua_State* L)
+{
+   ASSERT(lua_gettop(L) == 1);
+
+   const char* pfile = luaL_checkstring(L, 1);
+   bool success = false;
+
+   getScriptManager(L)->executeScript(pfile, false);
+
+   lua_pushboolean(L, success);
+
+   return 1;
+}
+
+static int script_schedule(lua_State* L)
 {
    ASSERT(lua_gettop(L) == 2);
 
    const char* pfunction = luaL_checkstring(L, 1);
    int delay             = luaL_checkint(L, 2);
 
-   int jobid = ScriptManager::getInstance().addRequest(pfunction, 1, delay);
-
+   int jobid = getScriptManager(L)->addRequest(pfunction, 1, delay);
+   
    lua_pushnumber(L, jobid);
 
    return 1;
 }
 
-static int unschedule(lua_State* L)
+static int script_unschedule(lua_State* L)
 {
    ASSERT(lua_gettop(L) == 1);
 
    int jobid = luaL_checkint(L, 1);
-   ScriptManager::getInstance().removeRequest(jobid);
+   getScriptManager(L)->removeRequest(jobid);
 
    return 0;
 }
@@ -244,29 +240,24 @@ static int include(lua_State* L)
    ASSERT(lua_gettop(L) == 1);
 
    const char* pfile = luaL_checkstring(L, 1);
-   ScriptManager::getInstance().executeScript(pfile, false);
+   getScriptManager(L)->executeScript(pfile, false);
 
    return 0;
 }
 
-static int runscript(lua_State* L)
-{
-   ASSERT(lua_gettop(L) == 1);
-
-   const char* pfile = luaL_checkstring(L, 1);
-   bool success = ScriptManager::getInstance().executeScript(pfile, false);
-
-   lua_pushboolean(L, success);
-
-   return 1;
-}
-
 void ScriptManager::registerGlobals()
 {
-   lua_register(luaState, "schedule", schedule);
-   lua_register(luaState, "unschedule", unschedule);
+   setObject(this, "ScriptManager", "script");
+
+   static const luaL_reg scriptlib[] = {
+      {"schedule", script_schedule},
+      {"unschedule", script_unschedule},
+      {"run", script_run},
+      {NULL, NULL}
+   };
+
    lua_register(luaState, "include", include);
-   lua_register(luaState, "runscript", runscript);
+   luaL_openlib(luaState, LUA_SCRIPTLIBNAME, scriptlib, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////

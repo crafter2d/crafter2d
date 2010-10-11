@@ -33,35 +33,14 @@ INLINE GameWindow& Game::getGameWindow()
 /// \brief Set the activity flag of the application.
 INLINE void Game::setActive(bool act)
 {
-   active = act;
+   mActive = act;
 }
 
 /// \fn Game::isActive() const
 /// \brief Returns the active flag.
 INLINE bool Game::isActive() const
 {
-   return active;
-}
-
-/// \fn Game::getServer() 
-/// \brief Returns a reference to the current server.
-INLINE Server& Game::getServer()
-{
-   return server;
-}
-
-/// \fn Game::getClient()
-/// \brief Returns a reference to the local client.
-INLINE Client& Game::getClient()
-{
-   return client;
-}
-
-/// \fn Game::getCanvas()
-/// \brief Returns a reference to the canvas.
-INLINE GuiCanvas& Game::getCanvas()
-{
-   return mCanvas;
+   return mActive;
 }
 
 INLINE TimerData& Game::getTimerData()

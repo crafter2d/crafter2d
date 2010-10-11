@@ -24,14 +24,15 @@
 
 #include <fstream>
 
+/*
 #include "gui/guidialog/guidialog.h"
 #include "gui/edit/guiedit.h"
-
 #include "gui/guilistbox.h"
+*/
 
+#include "game.h"
 #include "script.h"
 #include "scriptmanager.h"
-#include "game.h"
 
 Log Console::log;
 
@@ -42,8 +43,8 @@ Console::Console(void)
 Console::~Console(void)
 {
    // controls will be automatically be released.
-   lines = 0;
-   input = 0;
+   //lines = 0;
+   //input = 0;
 }
 
 Console& Console::getInstance()
@@ -54,6 +55,7 @@ Console& Console::getInstance()
 
 void Console::create()
 {
+   /*
 	GuiRect rect(0, 450, 0, 300);
 	GuiStyle style = GUI_NODESTROY | GUI_BORDER | GUI_BACKGROUND | GUI_VISIBLE;
    GuiWnd::create(0x03000, rect, "Console", style);
@@ -65,10 +67,12 @@ void Console::create()
 	rect.set(5, 440, 280, 295);
    input = new GuiEditBox();
    input->create(0x03002, rect, "", GUI_BORDER | GUI_BACKGROUND|GUI_VISIBLE, this);
+   */
 }
 
 void Console::reload()
 {
+   /*
    lines->removeAll();
    std::ifstream file("log.txt");
    while (!file.eof()) {
@@ -76,11 +80,12 @@ void Console::reload()
       file.getline(line, 1024);
       lines->addString(line);
    }
+   */
 }
 
 void Console::printf (const char* msg, ...)
 {
-   assert(lines && "Console.print: the console has not be created yet.");
+   //assert(lines && "Console.print: the console has not be created yet.");
 
    char text[256];
 	va_list ap;
@@ -92,7 +97,7 @@ void Console::printf (const char* msg, ...)
 	vsprintf (text, msg, ap);
 	va_end (ap);
 
-   lines->addString(text);
+   //lines->addString(text);
    log << text << '\n';
 }
 
@@ -111,7 +116,7 @@ void Console::error(const char* msg, ...)
    std::string errormsg = "ERROR - ";
    errormsg += text;
 
-   lines->addString(errormsg.c_str());
+   //lines->addString(errormsg.c_str());
    log << errormsg.c_str() << '\n';
 }
 
@@ -130,7 +135,7 @@ void Console::warning(const char* msg, ...)
    std::string errormsg = "WARNING - ";
    errormsg += text;
 
-   lines->addString(errormsg.c_str());
+   //lines->addString(errormsg.c_str());
    log << errormsg.c_str() << '\n';
 }
 
@@ -138,18 +143,18 @@ void Console::print(const char* msg)
 {
    ASSERT_MSG(lines, "Console.print: the console has not be created yet.");
 
-   lines->addString(msg);
+   //lines->addString(msg);
    log << msg << '\n';
 }
 
 void Console::show()
 {
-   Game::getInstance().getCanvas().pushWindow(this);
+   //Game::getInstance().getCanvas().pushWindow(this);
 }
 
 void Console::hide()
 {
-   Game::getInstance().getCanvas().popWindow(this);
+   //Game::getInstance().getCanvas().popWindow(this);
 }
 
 void Console::onKeyDown (int which, bool shift, bool ctrl, bool alt)
@@ -157,13 +162,13 @@ void Console::onKeyDown (int which, bool shift, bool ctrl, bool alt)
    if ( which == SDLK_RETURN )
    {
       // execute the command
-      ScriptManager::getInstance().executeLine(input->getCaption().c_str());
-      input->setCaption("");
+      //ScriptManager::getInstance().executeLine(input->getCaption().c_str());
+      //input->setCaption("");
    }
    else if (which == SDLK_BACKQUOTE)
    {
       // hide the console
-      Game& game = Game::getInstance();
-      game.getCanvas().endModal(0);
+      //Game& game = Game::getInstance();
+      //game.getCanvas().endModal(0);
    }
 }

@@ -22,6 +22,8 @@
 
 #include "math/point.h"
 
+#include "engine/defines.h"
+
 #include "inputevent.h"
 
 struct SDL_MouseButtonEvent;

@@ -39,12 +39,8 @@
 #include "physics/box2d/box2dfactory.h"
 #include "physics/simulationfactoryregistry.h"
 
-#include "gui/guifocus.h"
-#include "gui/guidialog/guidialog.h"
-#include "gui/guifont.h"
-#include "gui/guimanager.h"
-
 #include "net/netobjectfactory.h"
+#include "net/netconnection.h"
 
 #include "system/platform.h"
 #include "system/timer.h"
@@ -53,40 +49,24 @@
 #include "console.h"
 #include "opengl.h"
 #include "scriptmanager.h"
-#include "sound.h"
-#include "object3d.h"
 #include "creature.h"
 #include "gameconfiguration.h"
 #include "gameconfigurationselector.h"
 #include "gamesettings.h"
-
-int main(int argc, char *argv[])
-{
-   Game& game = Game::getInstance();
-   if ( game.create() )
-   {
-      game.run ();
-      game.destroy ();
-   }
-
-   return EXIT_SUCCESS;
-}
 
 /*!
     \fn Game::Game()
 	 \brief Initialized member variables
  */
 Game::Game():
-   active(true),
-   server(),
-   client(),
    mSettings(),
    mpConfiguration(NULL),
    mWindow(),
    mWindowListener(*this),
    mTitle(),
-   mCanvas(),
-   mpTimerData(NULL)
+   mpTimerData(NULL),
+   mScriptManager(),
+   mActive(true)
 {
 }
 
@@ -123,18 +103,8 @@ bool Game::create()
    mpTimerData = TIMER.createData();
 
    // initialize the Lua scripting environment
-   ScriptManager& scriptMgr = ScriptManager::getInstance ();
-   scriptMgr.initialize ();
-   loadCustomScriptLibraries();
-
-   scriptMgr.setObject(&mCanvas, "GuiCanvas", "canvas");
-   scriptMgr.setObject(&server, "Server", "server");
-   scriptMgr.setObject(&client, "Client", "client");
-   scriptMgr.setObject(&Console::getInstance(), "Console", "console");
-   scriptMgr.setObject(&SoundManager::getInstance(), "SoundManager", "SoundSystem");
-   scriptMgr.setObject(&scriptMgr, "ScriptManager", "scriptmgr");
-   scriptMgr.setObject(&GuiManager::getInstance(), "GuiManager", "guimanager");
-   scriptMgr.setObject(&GuiFocus::getInstance(), "GuiFocus", "focus");
+   mScriptManager.initialize ();
+   mScriptManager.setObject(&Console::getInstance(), "Console", "console");
 
    // load the engine settings
    mSettings.initialize();
@@ -155,26 +125,11 @@ bool Game::create()
    if ( !initOpenGL() )
    {
       return false;
-   }
-
-   // initialize the window manager
-   GuiManager& manager = GuiManager::getInstance();
-   manager.initialize();
-
-   GuiFont* font = new GuiFont ();
-   font->initialize ("amersn.ttf", 10);
-
-   manager.setDefaultFont (font);
-   manager.setDefaultTextColor(mSettings.getTextColor());
+   }   
 
    // initialize the console
    Console& console = Console::getInstance();
    console.create ();
-
-   // create the gui canvas
-   mCanvas.create(0, GuiRect(0, mWindow.getWidth(), 0, mWindow.getHeight()));
-   mCanvas.changeDefaultColor(GuiCanvas::GuiWindowColor, mSettings.getWindowColor());
-   mCanvas.changeDefaultColor(GuiCanvas::GuiBorderColor, mSettings.getBorderColor());
 
 #ifdef WIN32
    NetConnection::initialize();
@@ -186,9 +141,6 @@ bool Game::create()
    NetObjectFactory::getInstance().initialize();
 
    log << "\n-- Initializing Sound --\n\n";
-
-   // initialize the sound system
-   SoundManager::getInstance().initialize();
 
    log << "\n-- Running Game --\n\n";
 
@@ -203,7 +155,7 @@ bool Game::create()
       return false;
    }
 
-   scriptMgr.executeScript("main.lua");
+   mScriptManager.executeScript("main.lua");
 
    return true;
 }
@@ -215,19 +167,13 @@ bool Game::create()
  */
 void Game::destroy()
 {
-   server.shutdown();
-
    // free the game resources
 	endGame ();
 
 	// release the Lua scripting environment
-	ScriptManager::getInstance().destroy ();
+	mScriptManager.destroy ();
 
-	// release the sound system
-	SoundManager::getInstance().destroy ();
-
-	// destroy the gui manager
-	GuiManager::getInstance().destroy();
+	// release the sound syste
 
    // release timer data
    TIMER.releaseData(mpTimerData);
@@ -241,12 +187,6 @@ void Game::destroy()
 
 	// finish of SDL
 	SDL_Quit ();
-}
-
-/// \fn Game::loadCustomScriptLibraries()
-/// \brief Called by the game framework when custom script libraries should be loaded.
-void Game::loadCustomScriptLibraries()
-{
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -268,7 +208,7 @@ void Game::onWindowResized()
 
 void Game::onWindowClosed()
 {
-  active = false;
+  setActive(false);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -309,7 +249,7 @@ void Game::run()
 {
    TIMER.start(getTimerData());
 
-	while ( active )
+	while ( mActive )
    {
 		processFrame();
 	}
@@ -356,7 +296,7 @@ bool Game::initGame()
       return false;
    }
 
-	return active;
+	return mActive;
 }
 
 /*!
@@ -384,13 +324,16 @@ void Game::runFrame()
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
-   ScriptManager::getInstance().update(tick);
+   mScriptManager.update(tick);
    if ( !isActive() )
       return;
 
-   server.update(delta);
-   client.update(delta);
-
+   Script& script = mScriptManager.getTemporaryScript();
+   script.prepareCall("game_run");
+   script.setSelf(this, "Game");
+   script.addParam(delta);
+   script.run(1);
+   
    // here also nothing happens (should be overloaded)
    glLoadIdentity ();
    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -398,15 +341,13 @@ void Game::runFrame()
    glEnable (GL_ALPHA_TEST);
 
    // call overloaded function
-   client.render(delta);
-   mCanvas.render(tick);
-   drawFrame(tick);
+   drawFrame(delta);
 
    //glDisable(GL_MULTISAMPLE);
    glDisable (GL_ALPHA_TEST);
 
    Profiler::getInstance().end();
-   Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());
+   // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());
 
    SDL_GL_SwapBuffers ();
 }

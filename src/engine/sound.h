@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #ifndef _SOUND_H_
-#define _SOUND_H
+#define _SOUND_H_
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -66,10 +66,9 @@ private:
 class SoundManager
 {
 public:
-   static SoundManager& getInstance();
-   static void          setPlayerPosition(const Vector& pos);
    
-	                     ~SoundManager();
+   SoundManager();
+   ~SoundManager();
 
 	bool                 initialize();
 	void                 destroy();
@@ -81,8 +80,9 @@ public:
    void                 enable();
    void                 disable();
 
+   void                 setPlayerPosition(const Vector& pos);
+
 private:
-	                     SoundManager();
    void                 operator=( const SoundManager& mgr );
 
 private:

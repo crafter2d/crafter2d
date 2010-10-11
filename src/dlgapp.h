@@ -21,7 +21,9 @@
 #ifndef _DLGAPP_H_
 #define _DLGAPP_H_
 
-#include "game.h"
+#include "gui/canvas/guicanvas.h"
+
+#include "engine/game.h"
 
 /**
 @author Jeroen Broekhuizen
@@ -41,9 +43,13 @@ public:
 
 protected:
 	virtual bool   initGame();
+   virtual void   endGame();
    virtual void   loadCustomScriptLibraries();
 
 	virtual void   drawFrame (float delta);
+
+private:
+   GuiCanvas mCanvas;
 };
 
 #endif

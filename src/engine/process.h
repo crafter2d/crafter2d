@@ -23,6 +23,7 @@
 #include "net/netconnection.h"
 
 #include "scenegraph.h"
+#include "scriptmanager.h"
 
 class ActionMap;
 class BitStream;
@@ -46,6 +47,7 @@ public:
   // get/set
    NetConnection* getConnection();
    SceneGraph&    getSceneGraph();
+   ScriptManager& getScriptManager();
 
    ActionMap*     getActionMap();
    void           setActionMap(ActionMap* map);
@@ -65,6 +67,7 @@ protected:
    NetConnection     conn;
    SceneGraph        graph;
    ActionMap*        actionMap;
+   ScriptManager     mScriptManager;
    bool              initialized;
 };
 

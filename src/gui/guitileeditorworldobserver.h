@@ -20,7 +20,7 @@
 #ifndef GUI_TILEEDITOR_WORLD_OBSERVER_H_
 #define GUI_TILEEDITOR_WORLD_OBSERVER_H_
 
-#include "../worldobserver.h"
+#include "engine/worldobserver.h"
 
 class GuiTileEditor;
 

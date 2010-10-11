@@ -113,16 +113,6 @@ SoundManager::~SoundManager()
 	}
 }
 
-/// \fn SoundManager::getInstance()
-/// \brief There can be only one sound manager during a game. You can retreive a reference to
-/// it via this function.
-/// \returns reference to the global sound manager
-SoundManager& SoundManager::getInstance()
-{
-   static SoundManager mgr;
-   return mgr;
-}
-
 /// \fn SoundManager::setPlayerPosition(const Vector& pos)
 /// \brief Sets the listener position of OpenAL. This position is used for sounds that have
 /// a fixed position in world space.

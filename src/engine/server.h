@@ -21,8 +21,11 @@
 #define _SERVER_H_
 
 #include <map>
-#include "process.h"
+
 #include "net/netevent.h"
+
+#include "process.h"
+#include "serverscenegraphlistener.h"
 
 class ConnectEvent;
 class ViewportEvent;
@@ -98,8 +101,9 @@ protected:
    void handleConnectEvent(const ConnectEvent& event);
    void handleViewportEvent(const ViewportEvent& event);
 
-   ClientMap   clients;
-   int         mActiveClient;
+   ClientMap                clients;
+   int                      mActiveClient;
+   ServerSceneGraphListener mGraphListener;
 };
 
 #endif

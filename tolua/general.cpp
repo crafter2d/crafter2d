@@ -240,8 +240,6 @@ class World: public SceneObject
    Bound& addBound(const Vector& p1, const Vector& p2);
    void   removeBound(Bound& bound);
 
-   int collide(Object& object, Vector& newpos);
-
    bool create(const char* filename);
    void createEmpty(const std::string& name);
    void destroy();
@@ -295,13 +293,6 @@ class Sound
 class SoundManager
 {
    Sound* load (const char* file);
-};
-
-class ScriptManager
-{
-   int addRequest(const char* cmd, int type, int time);
-   void removeRequest(const int jobid);
-   void removeAllRequests();
 };
 
 enum {

@@ -24,7 +24,7 @@
 
 #include <tinyxml.h>
 
-#include "../console.h"
+#include "engine/console.h"
 
 #include "tile.h"
 

@@ -22,7 +22,7 @@
 
 #include "../netevent.h"
 
-#include "idmanager.h"
+#include "engine/idmanager.h"
 
 class SceneObject;
 
