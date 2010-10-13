@@ -274,14 +274,14 @@ class ActionMap
 {
    ActionMap();
 
-   void bind(int key, const char* function);
+   void bind(int action, const char* function);
 };
 
 class KeyMap
 {
    KeyMap();
 
-   void bind(int key, int action, bool local=false);
+   void bind(int key, int action);
 };
 
 class Sound
@@ -293,19 +293,6 @@ class Sound
 class SoundManager
 {
    Sound* load (const char* file);
-};
-
-enum {
-   /* the actions to be send to the player */
-   moveLeft,
-   moveRight,
-   moveUp,
-   moveDown,
-
-   jump,
-
-   swapConsole,
-   quit
 };
 
 enum {
