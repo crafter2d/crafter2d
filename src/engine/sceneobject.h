@@ -36,14 +36,11 @@ class TiXmlElement;
 
 #define MAX_NAME_LEN    64
 
-/**
-@author Jeroen Broekhuizen
+/// @section sceneobject_intro Using the SceneObject class
+///
+/// All objects which will be added to the scenegraph must be derived from the
+/// SceneObject class. 
 
-@section sceneobject_intro Using the SceneObject class
-
-All objects which will be added to the scenegraph must be derived from the
-SceneObject class. 
-*/
 class SceneObject: public NetObject
 {
 public:
@@ -89,7 +86,7 @@ public:
 
    const SceneObjectList&  getChildren() const;
 
-   SceneGraph&             getSceneGraph();
+   virtual SceneGraph&     getSceneGraph();
 
    virtual const Vector&   getPosition() const = 0;
 

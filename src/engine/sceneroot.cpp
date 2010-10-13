@@ -21,14 +21,20 @@
 
 #include "math/vector.h"
 
-SceneRoot::SceneRoot():
-   SceneObject()
+SceneRoot::SceneRoot(SceneGraph& scenegraph):
+   SceneObject(),
+   mSceneGraph(scenegraph)
 {
    setName("root");
 }
 
 SceneRoot::~SceneRoot()
 {
+}
+
+SceneGraph& SceneRoot::getSceneGraph()
+{
+   return mSceneGraph;
 }
 
 const Vector& SceneRoot::getPosition() const

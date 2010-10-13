@@ -28,8 +28,6 @@
 #include "math/vector.h"
 
 #include "dirtyset.h"
-#include "game.h"
-#include "gameconfiguration.h"
 #include "nodevisitor.h"
 #include "scenegraph.h"
 #include "scopedtransform.h"
@@ -64,10 +62,7 @@ bool SceneObject::create(const char* file)
       mXmlFile = file;
    }
 
-   const std::string& objectpath = Game::getInstance().getConfiguration().getObjectPath();
-   std::string path = objectpath + mXmlFile;
-
-   TiXmlDocument doc(path);
+   TiXmlDocument doc(mXmlFile);
    return doc.LoadFile() && load(doc);
 }
 
@@ -132,10 +127,8 @@ void SceneObject::add(SceneObject* child)
 
 SceneGraph& SceneObject::getSceneGraph()
 {
-   if ( isReplica() )
-      return Game::getInstance().getClient().getSceneGraph();
-   else
-      return Game::getInstance().getServer().getSceneGraph();
+   ASSERT_PTR(parent)
+   return parent->getSceneGraph();
 }
 
 void SceneObject::removeAll()

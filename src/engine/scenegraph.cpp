@@ -29,7 +29,7 @@
 
 SceneGraph::SceneGraph():
    mObjects(),
-   mRoot(),
+   mRoot(*this),
    mpControler(NULL),
    mpWorld(NULL)
 {

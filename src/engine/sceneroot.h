@@ -22,18 +22,24 @@
 
 #include "sceneobject.h"
 
+/// \brief Represents the root node of the scenegraph.
+
 class SceneRoot : public SceneObject
 {
 public:
-   SceneRoot();
+   explicit SceneRoot(SceneGraph& graph);
    virtual ~SceneRoot();
 
+   virtual SceneGraph&     getSceneGraph();
    virtual const Vector&   getPosition() const;
 
 protected:
    virtual void            doUpdate(float delta);
    virtual void            doUpdateClient(float delta);
    virtual void            doDraw();
+
+private:
+   SceneGraph& mSceneGraph;
 };
 
 #endif
