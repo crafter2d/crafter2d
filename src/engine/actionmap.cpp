@@ -22,138 +22,62 @@
 #  include "actionmap.inl"
 #endif
 
-#include "game.h"
+#include "net/events/actionevent.h"
+
+#include "client.h"
 #include "script.h"
 #include "scriptmanager.h"
 #include "object.h"
+#include "process.h"
 
-IMPLEMENT_REPLICATABLE(ActionEventId, ActionEvent, NetEvent)
-
-ActionEvent::ActionEvent(): 
-   NetEvent(actionEvent),
-   action(none),
-   down(false)
+ActionMap::ActionMap():
+   mActions()
 {
 }
 
-ActionEvent::ActionEvent(Action act, bool dwn): 
-   NetEvent(actionEvent), 
-   action(act), 
-   down(dwn)
+ActionMap::~ActionMap()
 {
+   mpProcess = NULL;
 }
 
-void ActionEvent::pack(BitStream& stream) const
+// - operations
+
+void ActionMap::bind(int action, const char* function)
 {
-   NetEvent::pack(stream);
-   stream << action << down;
+   mActions[action] = function;
 }
 
-void ActionEvent::unpack(BitStream& stream)
+void ActionMap::process(int action, bool down)
 {
-   NetEvent::unpack(stream);
-   stream >> (int&)action >> down;
-}
+   Client& client = dynamic_cast<Client&>(getProcess());
 
-/******************************************************
- * KeyMap class
- */
-
-void ActionMap::bind(int key, const char* function)
-{
-   actions[(Action)key] = function;
-}
-
-bool ActionMap::process (int key, bool down)
-{
-   Action action = (Action)key;
-   if (actions.find(action) == actions.end())
-      return false;
-
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
-   script.prepareCall (actions[action]);
-   script.addParam(down);
-   script.run(1);
-   return true;
-}
-
-bool ActionMap::process(const ActionEvent& event, Object* obj)
-{
-   Action action = event.getAction();
-   if (actions.find(action) == actions.end())
-      return false;
-
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
-   script.prepareCall (actions[action]);
-   script.addParam(obj, "Object");
-   script.addParam((int)event.isDown());
-   script.run(2);
-   return true;
-}
-
-/******************************************************
- * KeyMap class
- */
-
-void KeyMap::bind(int key, int action, bool local)
-{
-   KeyInfo info;
-   info.action = (Action)action;
-   info.state  = false;
-   info.local  = local;   
-
-   keys[key] = info;
-}
-
-void KeyMap::update()
-{
-   Uint8* pkeys = SDL_GetKeyState(NULL);
-
-   KeyInfos::iterator it = keys.begin();
-   for ( ; it != keys.end(); ++it )
+   Actions::const_iterator it = mActions.find(action);
+   if ( it == mActions.end() )
    {
-      int key = it->first;
-      KeyInfo& info = it->second;
-
-      if ( pkeys[key] )
-      {
-         if ( !info.state )
-         {
-            info.state = true;
-            process(key, true);
-         }
-      }
-      else if ( info.state )
-      {
-         info.state = false;
-         process(key, false);
-      }
-   }
-}
-
-bool KeyMap::process(int key, bool down)
-{
-   // get the action for this key
-   if (keys.find(key) == keys.end())
-      return false;
-   int action = keys[key].action;
-
-   if (keys[key].local)
-   {
-      // process action local
-      ActionMap* map = Game::getInstance().getClient().getActionMap();
-      if (map) map->process(action, down);
+      ActionEvent event(action, down);
+      client.sendToServer(event);
    }
    else
    {
-      // set up an input event
-      BitStream stream;
-      ActionEvent event(static_cast<Action>(action), down);
-      stream << &event;
+      const char* pfunction = it->second;
 
-      // send the event to the server
-      NetConnection* conn = Game::getInstance().getClient().getConnection();
-      conn->send(&stream);
+      Script& script = client.getScriptManager().getTemporaryScript();
+      script.prepareCall (pfunction);
+      script.addParam(down);
+      script.run(1);
    }
-   return true;
+}
+
+void ActionMap::processRemote(const ActionEvent& event, Object& object)
+{
+   int action = event.getAction();
+   Actions::const_iterator it = mActions.find(action);
+   if ( it != mActions.end() )
+   {
+      Script& script = mpProcess->getScriptManager().getTemporaryScript();
+      script.prepareCall(it->second);
+      script.addParam(&object, "Object");
+      script.addParam(event.isDown());
+      script.run(2);
+   }
 }

@@ -56,11 +56,11 @@ public:
    void           setInitialized(bool init);
 
  // operations
-   virtual bool loadWorld(const std::string& filename, const std::string& name);
+   virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
-  // events
    void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
 
+  // events
    virtual int    onClientEvent(int client, const NetEvent& event) = 0;
 
 protected:

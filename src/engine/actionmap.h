@@ -21,80 +21,54 @@
 #define _ACTIONMAP_H
 
 #include <map>
-#include "net/netevent.h"
 
+#include "net/events/actionevent.h"
+
+class ActionEvent;
 class Object;
+class Process;
 
-enum Action {
-   moveLeft,
-   moveRight,
-   moveUp,
-   moveDown,
+/// \brief The mapping of actions to Lua functions.
+///
+/// An ActionMap is used to map actions to Lua functions. It can be assigned to both the client and
+/// the server processes. By adding actions to the ActionMap that is assigned to the client will run
+/// local functions (thus in the client Lua state). In case an action is not present an action message
+/// will be send to the server which then takes care of the action.
+///
+/// Server side actions have a slightly different argument count than the client side actions.
+/// <code>function jumpAction(object, down)
+///   -- do something
+/// end</code>
+/// And client side:
+/// <code>function screenshotAction(down)
+///   -- take screenshot
+/// end</code>
+/// As you see there is no object available in the client side. To adjust the object, you need to
+/// define the action at the server side.
 
-   jump,
-
-   runFunction,
-   swapConsole,
-   none,
-   quit
-};
-
-/// InputEvent
-class ActionEvent: public NetEvent
-{
-public:
-   DEFINE_REPLICATABLE(ActionEvent)
-
-                  ActionEvent();
-                  ActionEvent(Action act, bool dwn);
-
-           Action getAction() const;
-           bool   isDown() const;
-
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
-
-protected:
-   Action action;
-   bool down;
-};
-
-/// ActionMap
-/// Server-side action map to perform the actual actions
 class ActionMap
 {
 public:
-   void bind(int key, const char* function);
+   ActionMap();
+   ~ActionMap();
 
-   bool process(int key, bool down=true);
-   bool process(const ActionEvent& event, Object* obj);
+ // get/set
+   bool     hasProcess() const;
+   Process& getProcess();
+   void     setProcess(Process& process);
 
-private:
-   std::map<Action, const char*> actions;
-};
+ // operations
+   void bind(int action, const char* function);
 
-/// KeyMap
-/// Client-side mapping of the keys to actions
-class KeyMap
-{
-public:
-   void bind(int key, int action, bool local=false);
-
-   void update();
+ // processing
+   void process(int action, bool down);
+   void processRemote(const ActionEvent& event, Object& object);
 
 private:
-   struct KeyInfo
-   {
-      int action;
-      bool state;
-      bool local;
-   };
+   typedef std::map<int, const char*> Actions;
 
-   typedef std::map<int, KeyInfo> KeyInfos;
-
-   bool process(int key, bool down=true);
-
-   KeyInfos keys;
+   Process* mpProcess;
+   Actions  mActions;
 };
 
 #ifdef JENGINE_INLINE

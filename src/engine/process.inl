@@ -19,13 +19,6 @@
  ***************************************************************************/
 #include "defines.h"
 
-/// \fn Process::setActionMap(ActionMap* map)
-/// \brief Attach the new action map for this process.
-INLINE void Process::setActionMap(ActionMap* map)
-{
-   actionMap = map;
-}
-
 /// \fn Process::setInitialized(bool init)
 /// \brief Set the initialized flag to signal that the process has started 
 /// up correctly.

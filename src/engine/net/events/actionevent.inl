@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,13 +19,12 @@
  ***************************************************************************/
 #include "defines.h"
 
-INLINE Viewport& Player::getViewport()
+INLINE int ActionEvent::getAction() const
 {
-   return _viewport;
+   return mAction; 
 }
 
-INLINE Object& Player::getControler()
+INLINE bool ActionEvent::isDown() const
 {
-   ASSERT_PTR(controler)
-   return *controler;
+   return mDown; 
 }

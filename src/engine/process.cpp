@@ -59,6 +59,17 @@ bool Process::destroy()
    return true;
 }
 
+// - Get/set
+
+/// \fn Process::setActionMap(ActionMap* map)
+/// \brief Attach the new action map for this process.
+void Process::setActionMap(ActionMap* map)
+{
+   actionMap = map;
+   if ( actionMap != NULL )
+      actionMap->setProcess(*this);
+}
+
 // - Operations
 
 bool Process::loadWorld(const std::string& filename, const std::string& name)

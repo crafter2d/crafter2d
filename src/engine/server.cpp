@@ -295,13 +295,15 @@ int Server::onClientEvent(int client, const NetEvent& event)
       case actionEvent:
          {
             // find the player object
-            Player* player = clients[client];
-            if (player == NULL)
+            Player* pplayer = clients[client];
+            if ( pplayer == NULL )
+            {
                Console::getInstance().print("Invalid player input event.");
+            }
             else
             {
                const ActionEvent& inputevent = dynamic_cast<const ActionEvent&>(event);
-               actionMap->process(inputevent, (Object*)player->controler);
+               actionMap->processRemote(inputevent, pplayer->getControler());
             }
             break;
          }

@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _CLIENT_H_
-#define _CLIENT_H_
+#ifndef CLIENT_H_
+#define CLIENT_H_
 
 #include <map>
 
@@ -40,9 +40,10 @@ class KeyMap;
 class WorldRenderer;
 class Player;
 
-/// @author Jeroen Broekhuizen
+/// \brief The client side process. It handles user input and rendering of the server objects.
 ///
-/// Implement the client process of the Client/Server model.
+/// The Client class implements the client process of the Client/Server model this engine is build
+/// upon.
 class Client: public Process
 {
 public:
@@ -64,14 +65,18 @@ public:
    void           setKeyMap(KeyMap* pkeymap);
 
  // operations
-   virtual bool loadWorld(const std::string& filename, const std::string& name);
+   virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
-   bool         connect(const char* server, int port, const char* name);
-   void         disconnect();
+   bool           connect(const char* server, int port, const char* name);
+   void           disconnect();
 
-   virtual int  onClientEvent(int client, const NetEvent& event);
+   void           sendToServer(NetObject& object);
+
+ // network event callback
+   virtual int    onClientEvent(int client, const NetEvent& event);
 
 private:
+ // event handlers
    void  handleConnectReplyEvent(const ConnectReplyEvent& event);
    void  handleDisconnectEvent(const DisconnectEvent& event);
    void  handleJoinEvent(const JoinEvent& event);

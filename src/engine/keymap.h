@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,15 +17,44 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#ifndef KEY_MAP_H_
+#define KEY_MAP_H_
 
-INLINE Viewport& Player::getViewport()
-{
-   return _viewport;
-}
+#include <map>
 
-INLINE Object& Player::getControler()
+class ActionMap;
+class Client;
+
+/// /brief Client-side mapping of the keys to actions
+///
+/// The KeyMap is is used by the client to map key events to actions. These actions should be
+/// defines in the Lua code and also known on the server side.
+
+class KeyMap
 {
-   ASSERT_PTR(controler)
-   return *controler;
-}
+public:
+   KeyMap();
+
+ // get/set
+   void setClient(Client& client);
+   void setLocalActionMap(ActionMap& actionmap);
+
+ // operations
+   void bind(int key, int action);
+   void update();
+
+private:
+   struct KeyInfo
+   {
+      int action;
+      bool state;
+   };
+
+   typedef std::map<int, KeyInfo> KeyInfos;
+
+   Client*    mpClient;
+   ActionMap* mpLocalActionMap;
+   KeyInfos   mKeys;
+};
+
+#endif // KEY_MAP_H_

@@ -42,6 +42,7 @@
 #include "defines.h"
 #include "sceneobject.h"
 #include "actionmap.h"
+#include "keymap.h"
 
 Client::Client():
    Process(),
@@ -154,6 +155,8 @@ INLINE KeyMap& Client::getKeyMap()
 INLINE void Client::setKeyMap(KeyMap* pkeymap)
 {
    mpKeyMap = pkeymap;
+   if ( mpKeyMap != NULL )
+      mpKeyMap->setClient(*this);
 }
 
 //---------------------------------------------
@@ -172,6 +175,11 @@ bool Client::loadWorld(const std::string& filename, const std::string& name)
    }
 
    return false;
+}
+
+void Client::sendToServer(NetObject& object)
+{
+   conn.send(&object);
 }
 
 //---------------------------------------------

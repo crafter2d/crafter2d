@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,15 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#include "actionevent.h"
 
-INLINE Viewport& Player::getViewport()
+IMPLEMENT_REPLICATABLE(ActionEventId, ActionEvent, NetEvent)
+
+ActionEvent::ActionEvent(): 
+   NetEvent(actionEvent),
+   mAction(0),
+   mDown(false)
 {
-   return _viewport;
 }
 
-INLINE Object& Player::getControler()
+ActionEvent::ActionEvent(int action, bool down): 
+   NetEvent(actionEvent), 
+   mAction(action), 
+   mDown(down)
 {
-   ASSERT_PTR(controler)
-   return *controler;
+}
+
+//--------------------------------------------
+// - Streaming
+//--------------------------------------------
+
+void ActionEvent::pack(BitStream& stream) const
+{
+   NetEvent::pack(stream);
+   stream << mAction << mDown;
+}
+
+void ActionEvent::unpack(BitStream& stream)
+{
+   NetEvent::unpack(stream);
+   stream >> mAction >> mDown;
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,45 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _PLAYER_H_
-#define _PLAYER_H_
+#ifndef ACTION_EVENT_H_
+#define ACTION_EVENT_H_
 
-#include <string>
-#include "object.h"
-#include "playerworldobserver.h"
-#include "viewport.h"
-#include "net/netconnection.h"
+#include "../netevent.h"
 
-/// @author Jeroen Broekhuizen
-/// 
-/// A player is represented by this class on the server.
-class Player
+class ActionEvent: public NetEvent
 {
 public:
-   Player();
-   ~Player();
+   DEFINE_REPLICATABLE(ActionEvent)
 
- // get/set interface
-   Viewport&   getViewport();
-   Object&     getControler();
+                  ActionEvent();
+                  ActionEvent(int action, bool down);
 
- // initialization
-   void  initialize(World& world);
+           int    getAction() const;
+           bool   isDown() const;
 
- // notifications
-   void  notifyScrollChange(const Vector& scrollposition);
-
-   Object*     controler;
-   std::string name;
-   int         client;
+   virtual void   pack(BitStream& stream) const;
+   virtual void   unpack(BitStream& stream);
 
 private:
-   Viewport             _viewport;
-   PlayerWorldObserver  _worldobserver;
+   int  mAction;
+   bool mDown;
 };
 
 #ifdef JENGINE_INLINE
-#  include "player.inl"
+#  include "actionevent.inl"
 #endif
 
-#endif
+#endif // ACTION_EVENT_H_

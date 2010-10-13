@@ -23,8 +23,10 @@
 #include <queue>
 #include <string>
 #include <SDL/SDL.h>
-#include "texture.h"
+
 #include "math/vector.h"
+
+#include "texture.h"
 #include "scenegraph.h"
 #include "resources.h"
 #include "modifier.h"

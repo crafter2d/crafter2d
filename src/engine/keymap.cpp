@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,15 +17,72 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
 
-INLINE Viewport& Player::getViewport()
+#include "keymap.h"
+
+#include <SDL/SDL.h>
+
+#include "actionmap.h"
+#include "client.h"
+
+KeyMap::KeyMap():
+   mpClient(NULL),
+   mpLocalActionMap(NULL),
+   mKeys()
 {
-   return _viewport;
 }
 
-INLINE Object& Player::getControler()
+// - Get/set
+
+void KeyMap::setClient(Client& client)
 {
-   ASSERT_PTR(controler)
-   return *controler;
+   mpClient = &client;
+}
+
+void KeyMap::setLocalActionMap(ActionMap& actionmap)
+{
+   mpLocalActionMap = &actionmap;
+}
+
+// - Operations
+
+void KeyMap::bind(int key, int action)
+{
+   KeyInfo info;
+   info.action = action;
+   info.state  = false;   
+
+   mKeys[key] = info;
+}
+
+void KeyMap::update()
+{
+   ASSERT_PTR(mpClient)
+
+   ActionMap* pactionmap = mpClient->getActionMap();
+   if ( pactionmap != NULL )
+   {
+      Uint8* pkeys = SDL_GetKeyState(NULL);
+
+      KeyInfos::iterator it = mKeys.begin();
+      for ( ; it != mKeys.end(); ++it )
+      {
+         int key = it->first;
+         KeyInfo& info = it->second;
+
+         if ( pkeys[key] )
+         {
+            if ( !info.state )
+            {
+               info.state = true;
+               pactionmap->process(info.action, true);
+            }
+         }
+         else if ( info.state )
+         {
+            info.state = false;
+            pactionmap->process(info.action, false);
+         }
+      }
+   }
 }

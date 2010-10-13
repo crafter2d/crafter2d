@@ -19,12 +19,18 @@
  ***************************************************************************/
 #include "defines.h"
 
-INLINE Action ActionEvent::getAction() const
+INLINE bool ActionMap::hasProcess() const
 {
-   return action; 
+   return mpProcess != NULL;
 }
 
-INLINE bool ActionEvent::isDown() const
+INLINE Process& ActionMap::getProcess()
 {
-   return down; 
+   ASSERT(hasProcess)
+   return *mpProcess;
+}
+
+INLINE void ActionMap::setProcess(Process& process)
+{
+   mpProcess = &process;
 }
