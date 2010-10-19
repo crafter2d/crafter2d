@@ -39,7 +39,6 @@ public:
    static ResourceManager& getInstance();
 
    TexturePtr loadTexture (const std::string& file);
-   TexturePtr loadSystemTexture(const std::string& filename);
 
 private:
    explicit ResourceManager();

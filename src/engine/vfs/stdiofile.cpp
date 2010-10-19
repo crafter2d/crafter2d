@@ -23,6 +23,17 @@
 
 #include "buffer.h"
 
+// static 
+bool StdioFile::exists(const std::string& file)
+{
+   bool result = false;
+   FILE* pfile = fopen(file.c_str(), "r");
+   if ( pfile != NULL )
+      result = true;
+   fclose(pfile);
+   return result;
+}
+
 StdioFile::StdioFile():
    File(),
    mpFile(NULL)

@@ -42,7 +42,7 @@ public:
 	CGPath();
 	~CGPath();
 
-	virtual bool     load (const char* vertex, const char* fragment);
+	virtual bool     load (const std::string& vertex, const std::string& fragment);
 	virtual void     release ();
 
 	virtual void     enable() const;
@@ -56,10 +56,10 @@ public:
 	virtual void     setUniform4f (int index, float x, float y, float z, float w);
 
 private:
-   bool  loadVertexProgram(const char* vertexfile);
-   bool  loadFragmentProgram(const char* fragmentfile);
+   bool  loadVertexProgram(const std::string& vertexfile);
+   bool  loadFragmentProgram(const std::string& fragmentfile);
 
-   void  CGCompileError(CGcontext context, const char* type, const char* file);
+   void  CGCompileError(CGcontext context, const std::string& type, const std::string& file);
 
    CGprogram   vp, fp;
    CGparameter _mvpMatrix;

@@ -36,6 +36,8 @@ public:
                EBinary = 4,
                EText = 8 };
 
+   static std::string extractPath(const std::string& filepath);
+
    File();
    virtual ~File();
 

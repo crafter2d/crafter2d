@@ -24,6 +24,8 @@
 
 #include <GL/GLee.h>
 
+#include "vfs/file.h"
+
 #include "codepath.h"
 #include "console.h"
 #include "game.h"
@@ -40,7 +42,7 @@
 Effect::Effect():
    name(),
    stages(),
-   path(NULL),
+   mCodePath(NULL),
    useCombiners(false)
 {
 }
@@ -61,12 +63,15 @@ Effect::~Effect()
 	 \retval true the effect file is loaded correctly.
 	 \retval false an error occured (look in the log file for a message).
  */
-bool Effect::load( const char* file )
+bool Effect::load(const std::string& file)
 {
 	Console& console = Console::getInstance();
 
-   TiXmlDocument doc (file);
-	if (!doc.LoadFile()) {
+   std::string path = File::extractPath(file);
+
+   TiXmlDocument doc(file);
+	if ( !doc.LoadFile() )
+   {
       console.printf("Effect.load: can not load '%s'", file);
 		return false;
 	}
@@ -87,7 +92,7 @@ bool Effect::load( const char* file )
 		return false;
 
 	// process the vertex program
-	if (!processCode (effect))
+	if (!processCode (effect, path))
 	    return false;
 
 	// find the uniform indices of the texture
@@ -102,12 +107,12 @@ bool Effect::load( const char* file )
  */
 void Effect::destroy ()
 {
-   if( path != NULL )
+   if( mCodePath != NULL )
    {
 		// release the path
-		path->release ();
-		delete path;
-		path = NULL;
+		mCodePath->release ();
+		delete mCodePath;
+		mCodePath = NULL;
 	}
 
 	stages.clear ();
@@ -187,7 +192,7 @@ bool Effect::postprocessTextures ()
 	 part is loaded and automatically converted.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::processCode( const TiXmlElement* effect )
+bool Effect::processCode(const TiXmlElement* effect, const std::string& path)
 {
    const char* vertex = NULL, *fragment = NULL;
 
@@ -224,13 +229,13 @@ bool Effect::processCode( const TiXmlElement* effect )
 	   fragment = psource->Value ();
    }
 
-   const std::string& shaderpath = Game::getInstance().getConfiguration().getShaderPath();
-   std::string vertexfile   = shaderpath + vertex;
-   std::string fragmentfile = shaderpath + fragment;
+   // files should be in same directory
+   std::string vertexfile   = path + vertex;
+   std::string fragmentfile = path + fragment;
 
    // now load the codepath
-   path = OpenGL::createCodePath(pathtype);
-   if ( path == NULL || !path->load(vertexfile.c_str(), fragmentfile.c_str()) )
+   mCodePath = OpenGL::createCodePath(pathtype);
+   if ( mCodePath == NULL || !mCodePath->load(vertexfile, fragmentfile) )
        return false;
 
    // is no fragment shader or not supported, look for combiners
@@ -400,8 +405,8 @@ void Effect::enable () const
 	   else
       {
 		   // set textures for GLSL language
-         if ( OpenGL::supportsFragmentShader(path->getType()) )
-            path->setUniform1i (stage.index, s);
+         if ( OpenGL::supportsFragmentShader(mCodePath->getType()) )
+            mCodePath->setUniform1i (stage.index, s);
 	   }
    }
 }

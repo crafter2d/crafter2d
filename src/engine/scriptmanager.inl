@@ -34,8 +34,3 @@ INLINE Script& ScriptManager::getTemporaryScript()
 {
    return tempScript;
 }
-
-INLINE bool ScriptManager::executeScript(const std::string& path)
-{
-   return executeScript(path.c_str());
-}

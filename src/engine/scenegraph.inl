@@ -19,6 +19,11 @@
  ***************************************************************************/
 #include "defines.h"
 
+INLINE Process& SceneGraph::getProcess()
+{
+   return mProcess;
+}
+
 INLINE bool SceneGraph::hasWorld() const
 {
    return mpWorld != NULL;

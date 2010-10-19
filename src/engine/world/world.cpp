@@ -34,8 +34,6 @@
 #include "engine/net/bitstream.h"
 
 #include "engine/log.h"
-#include "engine/game.h"
-#include "engine/gameconfiguration.h"
 #include "engine/scenegraph.h"
 #include "engine/console.h"
 #include "engine/creature.h"
@@ -69,6 +67,7 @@ World::World():
    _observers(),
    mpSimulationFactory(NULL),
    mpSimulator(NULL),
+   mSimulatorListener(*this),
    _layerType(ETopDown),
    autoFollow(true),
    followBorderWidth(5),
@@ -102,7 +101,7 @@ bool World::create (const char* filename)
    if ( filename != NULL )
       setFilename(filename);
 
-   std::string path = getPath();
+   std::string path = getFilename();
 
    WorldReader reader;
    if ( !reader.read(*this, path) )
@@ -212,29 +211,14 @@ void World::destroy()
 
 // - Get/set
 
-/// \fn World::getPath() const
-/// \brief Constructs complete filename including path and extension
-std::string World::getPath() const
-{
-   const std::string& path = Game::getInstance().getConfiguration().getWorldPath();
-   return path + getFilename() + WORLD_EXTENSION;
-}
-
-std::string World::getScriptPath() const
-{
-   const std::string& path = Game::getInstance().getConfiguration().getWorldPath();
-   return path + getFilename() + ".lua";
-}
-
 /// \fn World::setObjectLayer(int layer)
 /// \brief Set the layer on which the objects live.
 void World::setObjectLayer(int objectlayerid)
 {
    if ( objectlayerid < layers.size() )
    {
-      Game& game = Game::getInstance();
-      int screenWidth = game.getScreenWidth();
-      int screenHeight = game.getScreenHeight();
+      int screenWidth = 800;
+      int screenHeight = 600;
 
       _objectLayer = objectlayerid;
       Layer* pobjectlayer = layers[objectlayerid];
@@ -335,10 +319,9 @@ void World::scroll ()
    else if ( followMode == FollowMouse )
    {
       int x, y;
-      int width, height;
+      int width =800, height=600;
       SDL_GetMouseState(&x, &y);
-      Game::getInstance().getWindowDimensions(width, height);
-
+      
       // get the window bounds
       if (x < followBorderWidth)
          xScroll = -1;
@@ -370,8 +353,8 @@ void World::scroll ()
 void World::initializeBorders()
 {
    // set the follow object borders default values
-   int width, height;
-   Game::getInstance().getWindowDimensions(width, height);
+   int width = 800, height = 600;
+   
    leftBorder = 50;
    rightBorder = width - 50;
    topBorder = 50;

@@ -241,6 +241,18 @@ bool Server::loadWorld(const std::string& filename, const std::string& name)
 // -- Event handling
 // ----------------------------------
 
+int Server::allowNewConnection()
+{
+   // check if the script allows this new player
+   Script& script = getScriptManager().getTemporaryScript();
+   script.prepareCall("Server_onClientConnecting");
+   script.run(0,1);
+
+   // the script should return true to allow the new client
+   int reason = script.getInteger();
+   return reason;
+}
+
 /// \fn Server::onClientEvent(int client, const NetEvent& event)
 /// \brief Handles the incomming events.
 int Server::onClientEvent(int client, const NetEvent& event)

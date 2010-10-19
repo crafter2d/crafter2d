@@ -17,58 +17,62 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "scriptfunction.h"
 
-#include "../scriptmanager.h"
+#include "filesystempaths.h"
 
-#include "scriptcollection.h"
+#include <algorithm>
 
-ScriptFunction::ScriptFunction(std::string name):
-   MName(name),
-   MArguments()
+FileSystemPaths::FileSystemPaths():
+   mPaths()
 {
-   ScriptManager::getInstance().collections().back()->add(this);
 }
 
-ScriptFunction::ScriptFunction(std::string name, std::string arg1):
-   MName(name),
-   MArguments()
+const std::string& FileSystemPaths::operator[](int index) const
 {
-   ScriptManager::getInstance().collections().back()->add(this);
-   MArguments.push_back(arg1);
+   return mPaths[index]->getPath();
 }
 
-ScriptFunction::ScriptFunction(std::string name, std::string arg1, std::string arg2):
-   MName(name),
-   MArguments()
+// - Query
+
+class Pred
 {
-   ScriptManager::getInstance().collections().back()->add(this);
-   MArguments.push_back(arg1);
-   MArguments.push_back(arg2);
+public:
+   Pred(const std::string& path): mPath(path) {}
+
+   bool operator()(FileSystemPath* ppath) {
+      return (*ppath) == mPath;
+   }
+
+private:
+   const std::string& mPath;
+};
+
+bool FileSystemPaths::contains(const std::string& path) const
+{
+   return std::find_if(mPaths.begin(), mPaths.end(), Pred(path)) != mPaths.end();
 }
 
-ScriptFunction::ScriptFunction(std::string name, std::string arg1, std::string arg2, std::string arg3):
-   MName(name),
-   MArguments()
+int FileSystemPaths::size() const
 {
-   ScriptManager::getInstance().collections().back()->add(this);
-   MArguments.push_back(arg1);
-   MArguments.push_back(arg2);
-   MArguments.push_back(arg3);
+   return mPaths.size();
 }
 
-ScriptFunction::ScriptFunction(std::string name, std::string arg1, std::string arg2,
-                                                 std::string arg3, std::string arg4):
-   MName(name),
-   MArguments()
+// - Operations
+
+void FileSystemPaths::add(const std::string& path)
 {
-   ScriptManager::getInstance().collections().back()->add(this);
-   MArguments.push_back(arg1);
-   MArguments.push_back(arg2);
-   MArguments.push_back(arg3);
-   MArguments.push_back(arg4);
+   if ( !contains(path) )
+   {
+      FileSystemPath* ppath = new FileSystemPath(path);
+      mPaths.push_back(ppath);
+   }
 }
 
-ScriptFunction::~ScriptFunction()
+void FileSystemPaths::remove(const std::string& path)
 {
+   Paths::iterator it = std::find_if(mPaths.begin(), mPaths.end(), Pred(path));
+   if ( it != mPaths.end() )
+   {
+      mPaths.erase(it);
+   }
 }

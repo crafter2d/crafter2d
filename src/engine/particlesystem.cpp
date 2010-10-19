@@ -34,6 +34,7 @@
 #include "scriptmanager.h"
 #include "vertexbuffer.h"
 #include "effect.h"
+#include "process.h"
 
 struct ParticleVertex {
 	Vector pos;
@@ -108,7 +109,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
    if ( pelement != NULL )
    {
       TiXmlText* value = (TiXmlText*)pelement->FirstChild();
-      ScriptManager& mgr = ScriptManager::getInstance();
+      ScriptManager& mgr = getSceneGraph().getProcess().getScriptManager();
 	   updateScript = mgr.createScript();
       if ( !updateScript->load(value->Value()) )
          return false;
@@ -126,7 +127,7 @@ bool ParticleSystem::prepare()
 
 	// create & initialize the code path
    path = OpenGL::createCodePath(CodePath::ECG);
-	path->load ("../shaders/pointsprite.cg");
+	path->load("../shaders/pointsprite.cg", "");
 
    Effect effect;
    effect.setPath(path);
@@ -189,7 +190,7 @@ void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
 		   while ( *part != NULL)
          {
 			   Particle *curpart = *part;
-			   Uint32 lifetime = curpart->initTime;
+			   float lifetime = curpart->initTime;
 
 			   if (lifetime >= curpart->life)
             {
@@ -236,7 +237,7 @@ void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
 			   part->vel = Vector (0, -1.0f-rand()%2);
 			   part->color = Color(1,1,0);
 			   part->initTime = 0;
-			   part->life = rand()%2000;
+			   part->life = (rand()%2000) / 1000.0f;
 			   part->state = 0;
 			   part->size = 20;
 

@@ -25,11 +25,11 @@
 #include <SDL/SDL.h>
 #include <memory>
 
-#include "../defines.h"
-#include "../autoptr.h"
+#include "engine/vfs/file.h"
+#include "engine/vfs/filesystem.h"
 
-#include "../vfs/file.h"
-#include "../vfs/filesystem.h"
+#include "engine/defines.h"
+#include "engine/autoptr.h"
 
 AbstractTextureLoader::AbstractTextureLoader():
    mTextureInfo()
@@ -42,7 +42,7 @@ AbstractTextureLoader::~AbstractTextureLoader()
 
 bool AbstractTextureLoader::load(const std::string& filename)
 {
-   AutoPtr<File> pfile = FileSystem::getInstance().open(filename);
+   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
 
    bool success = virLoad(*pfile, mTextureInfo);
 

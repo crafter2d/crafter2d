@@ -89,11 +89,13 @@ public:
    void           sendToAllClients(NetObject& object);
    void           sendScriptEventToAllClients(BitStream* stream);
 
-   virtual int    onClientEvent(int client, const NetEvent& event);
-
    virtual void   update(float delta);
 
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
+
+ // network events
+   virtual int    allowNewConnection();
+   virtual int    onClientEvent(int client, const NetEvent& event);
 
 protected:
    void           sendToActiveClient(NetObject& stream);

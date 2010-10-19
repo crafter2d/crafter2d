@@ -52,6 +52,11 @@ bool UnzipFile::open(const std::string& path)
    return _zip != NULL;
 }
 
+bool UnzipFile::contains(const std::string& name) const
+{
+
+}
+
 bool UnzipFile::readFile(const std::string& name, void*& pdata, int &size, bool casesensitive)
 {
    if ( _zip == NULL )

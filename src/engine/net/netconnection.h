@@ -79,7 +79,7 @@ typedef std::vector<NetAddress*> AdressList;
 class NetConnection
 {
 public:
-               NetConnection();
+   explicit    NetConnection(Process& process);
                ~NetConnection();
 
 #ifdef WIN32
@@ -91,7 +91,6 @@ public:
    void        disconnect();
    void        update();
 
-   void        attachProcess(Process* proc);
    void        setAccepting(bool a);
    bool        isConnected();
 
@@ -113,7 +112,7 @@ public:
          NetAddress& resolveClient(int idx);
 
 protected:
-   bool        addNewClient(NetAddress& address, bool connecting = false);
+   bool        addNewClient(NetAddress& address);
    int         findClient(const NetAddress& address) const;
 
    void        send(NetAddress& client, BitStream* stream, NetPackage::Reliability reliability);
@@ -133,15 +132,14 @@ protected:
    int         getErrorNumber();
 
 private:
-   AdressList clients;
-   bool mSendAliveMsg;
-   bool connected;
-   Uint32 lastSendAlive;
-   Uint32 clientid;
-   int sock;
-
-   Process* process;
-   bool accept;
+   Process&    mProcess;
+   AdressList  clients;
+   Uint32      lastSendAlive;
+   Uint32      clientid;
+   int         sock;
+   bool        mSendAliveMsg;
+   bool        connected;
+   bool        accept;
 };
 
 #ifdef JENGINE_INLINE

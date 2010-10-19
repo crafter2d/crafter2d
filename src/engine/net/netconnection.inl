@@ -55,11 +55,6 @@ NetAddress::NetAddress(sockaddr_in adr):
  * NetConnection structure
  */
 
-INLINE void NetConnection::attachProcess(Process* proc)
-{
-   process = proc;
-}
-
 INLINE void NetConnection::setAccepting(bool a)
 {
    accept = a; 

@@ -19,12 +19,6 @@
  ***************************************************************************/
 #include "resources.h"
 
-#include "vfs/unzipfile.h"
-
-#include "autoptr.h"
-#include "game.h"
-#include "gameconfiguration.h"
-
 ResourceManager::ResourceManager():
    textures()
 {
@@ -46,37 +40,17 @@ ResourceManager& ResourceManager::getInstance()
 /// \brief Returns a texture from a the given file.
 TexturePtr ResourceManager::loadTexture (const std::string& file)
 {
-	const std::string& imagepath = Game::getInstance().getConfiguration().getImagePath();
-   std::string path = imagepath + file;
-
-	return doLoadTexture(path);
-}
-
-/// \fn ResourceManager::loadSystemTexture (const std::string& file)
-/// \brief Returns a system texture.
-TexturePtr ResourceManager::loadSystemTexture(const std::string& filename)
-{
-   const std::string& imagepath = "data.zip/images/";
-   std::string path = imagepath + filename;
-
-   return doLoadTexture(path);
-}
-
-/// \fn ResourceManager::doLoadTexture (const std::string& path)
-/// \brief If texture is already loaded, returns a reference. Otherwise it loads the texture
-///        and stores it in the hashtable.
-TexturePtr ResourceManager::doLoadTexture(const std::string& path)
-{
-   TexturePtr* ptr = static_cast<TexturePtr*>(textures.lookup(path));
+	TexturePtr* ptr = static_cast<TexturePtr*>(textures.lookup(file));
 	if ( !ptr != NULL )
    {
       Texture* ptexture = new Texture();
-      if ( !ptexture->load(path) )
+      if ( !ptexture->load(file) )
          return TexturePtr();
 
 		ptr = new TexturePtr(ptexture);
-		textures.insert(path, static_cast<void*>(ptr));
+		textures.insert(file, static_cast<void*>(ptr));
 	}
 
 	return TexturePtr(*ptr);
 }
+

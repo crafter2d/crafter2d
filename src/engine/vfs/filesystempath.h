@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,43 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "scriptcollection.h"
-#include "../script.h"
-#include "scriptfunction.h"
+#ifndef FILESYSTEM_PATH_H_
+#define FILESYSTEM_PATH_H_
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-}
+#include "unzipfile.h"
 
-ScriptCollection::ScriptCollection(std::string name, initializer function):
-   MName(name),
-   MInitFunction(function),
-   MFunctions()
+class FileSystemPath
 {
-}
+public:
+   explicit FileSystemPath(const std::string& path);
+           ~FileSystemPath();
 
-ScriptCollection::~ScriptCollection()
-{
-   destroy();
-}
+ // get/set
+   const std::string& getPath() const;
 
-void ScriptCollection::initialize(lua_State* tolua_S)
-{
-   (*MInitFunction)(tolua_S);
-}
+   bool             hasUnzip() const;
+   const UnzipFile& getUnzip() const;
 
-void ScriptCollection::destroy()
-{
-   for ( int idx = 0; idx < MFunctions.size(); ++idx )
-   {
-      delete MFunctions[idx];
-   }
-   MFunctions.clear();
-}
+ // comparison
+   bool operator==(const std::string& path) const;
 
-void ScriptCollection::add(ScriptFunction* pfunction)
-{
-   MFunctions.push_back(pfunction);
-}
+private:
+   void fillInfo(const std::string& path);
+
+   std::string mPath;
+   UnzipFile*  mpUnzip;
+};
+
+#endif // FILESYSTEM_PATH_H_

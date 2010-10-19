@@ -27,6 +27,9 @@
 class CompressedFile : public File
 {
 public:
+   static bool isCompressedFile(const std::string& file);
+   static bool exists(const std::string& path, const std::string& file);
+
    CompressedFile();
    virtual ~CompressedFile();
 

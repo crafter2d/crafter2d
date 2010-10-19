@@ -31,11 +31,12 @@ public:
    explicit UnzipFile(const std::string& path);
             ~UnzipFile();
 
+   bool contains(const std::string& name) const;
+
    bool readFile(const std::string& name, void*& pdata, int& size, bool casesensitive = true);
 
 private:
    UnzipFile();
-
    bool open(const std::string& path);
 
    unzFile _zip;

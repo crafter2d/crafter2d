@@ -33,7 +33,7 @@ class Object;
 class World;
 class DirtySet;
 class SceneObject;
-class SceneGraph;
+class Process;
 
 /**
 @author Jeroen Broekhuizen
@@ -47,7 +47,7 @@ class SceneGraph
 public:
    typedef std::map<Id, SceneObject*> ObjectMap;
 
-                     SceneGraph();
+   explicit          SceneGraph(Process& process);
                      ~SceneGraph();
 
   // operations
@@ -66,6 +66,8 @@ public:
   // get/set
    void              setControler(Object* c);
 
+   Process&          getProcess();
+
    bool                 hasListener() const;
    SceneGraphListener&  getListener();
    void                 setListener(SceneGraphListener& listener);
@@ -83,6 +85,7 @@ public:
 
 private:
 
+   Process&             mProcess;
    ObjectMap            mObjects;
    SceneRoot            mRoot;
    SceneGraphListener*  mpListener;

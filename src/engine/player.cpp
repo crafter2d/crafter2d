@@ -66,5 +66,5 @@ void Player::notifyScrollChange(const Vector& scrollposition)
 {
    ViewportEvent event(_viewport);
 
-   Game::getInstance().getClient().getConnection()->send(&event);
+   // Game::getInstance().getClient().getConnection()->send(&event);
 }

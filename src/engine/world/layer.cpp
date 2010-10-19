@@ -31,8 +31,6 @@
 #include <SDL/SDL.h>
 #include <math.h>
 
-#include "engine/game.h"
-#include "engine/gameconfiguration.h"
 #include "engine/opengl.h"
 #include "engine/console.h"
 #include "engine/vertexbuffer.h"
@@ -93,9 +91,7 @@ bool Layer::create(const std::string& layername, int w, int h, const std::string
 
    field = createTileRows(width, height);
 
-   const std::string& effectpath = Game::getInstance().getConfiguration().getShaderPath();
-   std::string effectPath = effectpath + effectFile + ".xml";
-   if ( !effect.load(effectPath.c_str()) )
+   if ( !effect.load(effectFile.c_str()) )
    {
       Console::getInstance().printf("Can not load effect file '%s'.", effectFile.c_str());
       return false;

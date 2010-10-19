@@ -53,7 +53,7 @@ public:
 	                  Effect();
 	                  ~Effect();
 	
-	bool              load(const char* file);
+	bool              load(const std::string& file);
 	void              destroy();
 	
 	const Texture&    resolveTexture(const char* uniform) const;
@@ -70,17 +70,17 @@ private:
   // types
    typedef std::vector<TexStage> Stages;
 
-	bool              processTextures( const TiXmlElement* effect );
-	bool              processCode( const TiXmlElement* effect );
-	bool              processCombiners( const TiXmlElement* shader_part );
+	bool              processTextures(const TiXmlElement* effect);
+	bool              processCode(const TiXmlElement* effect, const std::string& path);
+	bool              processCombiners(const TiXmlElement* shader_part);
 	bool              postprocessTextures();
 	
-	GLint             getCombinerValue( const char* str );
-	GLint             getSourceValue( const char* str );
+	GLint             getCombinerValue(const char* str);
+	GLint             getSourceValue(const char* str);
 	
    std::string name;
    Stages      stages;
-   CodePath*   path;
+   CodePath*   mCodePath;
    bool        useCombiners;  
 };
 

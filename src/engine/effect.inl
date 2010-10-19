@@ -21,7 +21,7 @@
 
 bool Effect::hasPath() const
 {
-   return path != NULL;
+   return mCodePath != NULL;
 }
 
 /// \fn Effect::getPath()
@@ -29,11 +29,11 @@ bool Effect::hasPath() const
 /// \returns a pointer to the code path, NULL if the object is not loaded correctly.
 INLINE const CodePath& Effect::getPath() const
 {
-   ASSERT_PTR(path)
-   return *path;
+   ASSERT_PTR(mCodePath)
+   return *mCodePath;
 }
 
 INLINE void Effect::setPath(CodePath* ppath)
 {
-   path = ppath;
+   mCodePath = ppath;
 }

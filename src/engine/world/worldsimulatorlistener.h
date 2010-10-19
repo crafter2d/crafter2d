@@ -22,13 +22,18 @@
 
 #include "engine/physics/simulatorlistener.h"
 
+class World;
+
 class WorldSimulatorListener : public SimulatorListener
 {
 public:
-   WorldSimulatorListener();
+   WorldSimulatorListener(World& world);
    virtual ~WorldSimulatorListener();
 
    virtual void collideObjectWorld(Object& object, Bound& bound, int side, bool begin);
+
+private:
+   World& mWorld;
 };
 
 #endif

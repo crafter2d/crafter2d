@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,37 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SCRIPTCOLLECTION_H
-#define SCRIPTCOLLECTION_H
+#ifndef FILESYSTEM_PATHS_H_
+#define FILESYSTEM_PATHS_H_
 
 #include <string>
 #include <vector>
 
-class ScriptFunction;
-struct lua_State;
+#include "filesystempath.h"
 
-/**
-@author Jeroen Broekhuizen
-*/
-class ScriptCollection
+class FileSystemPaths
 {
 public:
-   typedef int (*initializer)(lua_State* tolua_S);
-   typedef std::vector<ScriptFunction*> Functions;
+   FileSystemPaths();
 
-   ScriptCollection(std::string name, initializer function);
-   ~ScriptCollection();
+   const std::string& operator[](int index) const;
 
-// Operations
-   void initialize(lua_State* tolua_S);
-   void destroy();
-   
-   void add(ScriptFunction* pfunction);
+ // query
+   bool contains(const std::string& path) const;
+   int  size() const;
+
+ // operations
+   void add(const std::string& path);
+   void remove(const std::string& path);
 
 private:
-   std::string MName;
-   initializer MInitFunction;
-   Functions   MFunctions;
+   typedef std::vector<FileSystemPath*> Paths;
+
+   Paths mPaths;
 };
 
-#endif
+#endif // FILESYSTEM_PATHS_H_

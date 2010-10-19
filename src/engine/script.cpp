@@ -24,16 +24,11 @@
 
 #include <SDL/SDL.h>
 
-#include "gui/guidesigner.h"
-#include "script/scriptdefines.h"
 #include "vfs/file.h"
 #include "vfs/filesystem.h"
 
 #include "autoptr.h"
 #include "console.h"
-#include "game.h"
-#include "gameconfiguration.h"
-#include "gameconfigurationmanager.h"
 
 Script::Script():
    childState(0),
@@ -59,7 +54,7 @@ Script::Script(lua_State* l, bool c):
 /// \returns true is loading was successfull, false otherwise
 bool Script::load (const std::string& file)
 {
-   AutoPtr<File> pfile = FileSystem::getInstance().open(file);
+   AutoPtr<File> pfile = FileSystem::getInstance().open(file, File::ERead);
    ASSERT(pfile.hasPointer());
 
    if ( pfile->isValid() )

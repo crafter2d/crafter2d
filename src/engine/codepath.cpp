@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <tinyxml.h>
 
+#include "autoptr.h"
 #include "console.h"
 #include "opengl.h"
 #include "texture.h"
@@ -47,29 +48,35 @@ ShaderPath::ShaderPath():
 	\retval true the shader objects have been successfully linked.
 	\retval false otherwise, consult the log file for compiler/linker specific errors.
  */
-bool ShaderPath::load (const char* vertex, const char* fragment)
+bool ShaderPath::load(const std::string& vertex, const std::string& fragment)
 {
 	Console& console = Console::getInstance ();
 	shader.create();
 
 	// try to load and add the vertex shader
-	if (vertex) {
-		VertexShader *vs = new VertexShader();
-		if (!vs->compile (vertex)) {
+   if ( !vertex.empty() )
+   {
+		AutoPtr<VertexShader> vs = new VertexShader();
+      if ( !vs->compile(vertex.c_str()) )
+      {
          console.printf("GLSLPath.load: Failed to load or compile vertex shader '%s'", vertex);
 			return false;
 		}
-		shader.addShader(vs);
+
+      shader.addShader(vs.release());
 	}
 
 	// try to load and add the fragment shader
-	if (fragment) {
-		FragmentShader *fs = new FragmentShader();
-		if (!fs->compile( fragment ) ) {
+   if ( !fragment.empty() )
+   {
+		AutoPtr<FragmentShader> fs = new FragmentShader();
+      if ( !fs->compile(fragment.c_str()) )
+      {
          console.printf("GLSLPath.load: Failed to load or compile fragment shader '%s'", fragment);
 			return false;
 		}
-		shader.addShader(fs);
+
+      shader.addShader(fs.release());
 	}
 
 	// link the shader
@@ -126,11 +133,12 @@ ProgramPath::~ProgramPath()
 {
 }
 
-bool ProgramPath::load (const char* vertex, const char* fragment)
+bool ProgramPath::load (const std::string& vertex, const std::string& fragment)
 {
 	// forget about the fragment shader, it is not supported
-	if (!program.compile(vertex))
+	if ( !program.compile(vertex.c_str()) )
 		return false;
+
 	return true;
 }
 

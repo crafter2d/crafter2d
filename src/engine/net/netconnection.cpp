@@ -53,21 +53,20 @@
  * NetConnection class
  */
 
-NetConnection::NetConnection():
+NetConnection::NetConnection(Process& process):
+   mProcess(process),
    clients(),
-   mSendAliveMsg(false),
-   connected(false),
    lastSendAlive(0),
    clientid(0),
    sock(-1),
-   process(NULL),
+   mSendAliveMsg(false),
+   connected(false),
    accept(true)
 {
 }
 
 NetConnection::~NetConnection()
 {
-   process = NULL;
 }
 
 #ifdef WIN32
@@ -167,7 +166,7 @@ bool NetConnection::connect(const char* serverName, Uint32 port)
 		memcpy (&address.addr.sin_addr, host_info->h_addr, host_info->h_length);
 	}
 
-   addNewClient(address, true);
+   addNewClient(address);
    connected = true;
    return true;
 }
@@ -439,7 +438,7 @@ void NetConnection::recv()
       client.lastPackageNumber = package.getNumber();
 
       AutoPtr<NetObject> event = package.getObject();
-      process->onClientEvent(clientid, dynamic_cast<NetEvent&>(*event));
+      mProcess.onClientEvent(clientid, dynamic_cast<NetEvent&>(*event));
    }
 }
 
@@ -479,30 +478,22 @@ bool NetConnection::select(bool read, bool write)
 
 /// \fn NetConnection::addNewClient(const NetAddress& address)
 /// \brief Add new client to the client list.
-bool NetConnection::addNewClient(NetAddress& address, bool connecting)
+/// \param address Address of the new client thats connected
+bool NetConnection::addNewClient(NetAddress& address)
 {
    // see if the process wants to accept a connection from this client
    if ( accept )
    {
-      if (!connecting)
+      int reason = mProcess.allowNewConnection();
+      if ( reason != 0 )
       {
-         // check if the script allows this new player
-         Script& script = ScriptManager::getInstance().getTemporaryScript();
-         script.prepareCall("Server_onClientConnecting");
-         script.run(0,1);
+         ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
 
-         // the script should return true to allow the new client
-         int reason = script.getInteger();
-         if ( reason < 0 )
-         {
-            ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
+         BitStream stream;
+         stream << &event;
 
-            BitStream stream;
-            stream << &event;
-
-            send(address, &stream, NetPackage::eUnreliable);
-            return false;
-         }
+         send(address, &stream, NetPackage::eUnreliable);
+         return false;
       }
 
       // build the new address structure

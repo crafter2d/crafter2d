@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "modifierai.h"
 
+#include "object.h"
+#include "process.h"
 #include "script.h"
 #include "scriptmanager.h"
 
@@ -34,7 +36,9 @@ ModifierAI::~ModifierAI()
 
 void ModifierAI::update(Object& object, float delta)
 {
-   Script& script = ScriptManager::getInstance().getTemporaryScript();
+   Process& process = object.getSceneGraph().getProcess();
+
+   Script& script = process.getScriptManager().getTemporaryScript();
    script.setSelf(&object, "Object");
    script.prepareCall(mFunction.c_str());
    script.addParam(&object, "Object");

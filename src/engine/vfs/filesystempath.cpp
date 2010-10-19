@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,54 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SCRIPTFUNCTION_H
-#define SCRIPTFUNCTION_H
 
-#include <string>
-#include <vector>
+#include "filesystempath.h"
 
-/**
-@author Jeroen Broekhuizen
-*/
-class ScriptFunction
+FileSystemPath::FileSystemPath(const std::string& path):
+   mPath(path),
+   mpUnzip(NULL)
 {
-public:
-   typedef std::vector<std::string> Arguments;
+   fillInfo(path);
+}
 
-    ScriptFunction(std::string name);
-    ScriptFunction(std::string name, std::string arg1);
-    ScriptFunction(std::string name, std::string arg1, std::string arg2);
-    ScriptFunction(std::string name, std::string arg1, std::string arg2, std::string arg3);
-    ScriptFunction(std::string name, std::string arg1, std::string arg2, std::string arg3, std::string arg4);
-    ~ScriptFunction();
+FileSystemPath::~FileSystemPath()
+{
+   delete mpUnzip;
+   mpUnzip = NULL;
+}
 
-private:
-   std::string MName;
-   Arguments   MArguments;
-};
+void FileSystemPath::fillInfo(const std::string& path)
+{
+   if ( UnzipFile::isZip(path) )
+   {
+      mpUnzip = new UnzipFile(path);
+   }
+}
 
-#endif
+//---------------------------------------
+// - Get/set
+//---------------------------------------
+
+const std::string& FileSystemPath::getPath() const
+{
+   return mPath;
+}
+
+bool FileSystemPath::hasUnzip() const
+{
+   return mpUnzip != NULL;
+}
+
+const UnzipFile& FileSystemPath::getUnzip() const
+{
+   return *mpUnzip;
+}
+
+//---------------------------------------
+// - Comparison
+//---------------------------------------
+   
+bool FileSystemPath::operator==(const std::string& path) const
+{
+   return mPath == path;
+}

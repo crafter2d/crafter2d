@@ -44,7 +44,7 @@ public:
 	     \retval true if the vertex shader is loaded correctly
 		  \retval false loading failed, consult the log file for possible reasons.
     */
-	virtual bool load (const char* vertex, const char* fragment=NULL) = 0;
+	virtual bool load(const std::string& vertex, const std::string& fragment) = 0;
 
 	/*!
         \fn CodePath::release()
@@ -115,7 +115,7 @@ class ShaderPath: public CodePath
 public:
    ShaderPath();
 
-	virtual bool     load(const char* vertex, const char* fragment);
+	virtual bool     load(const std::string& vertex, const std::string& fragment);
 	virtual void     release();
 
 	virtual void     enable() const;
@@ -145,7 +145,7 @@ public:
    ProgramPath();
    virtual ~ProgramPath();
 
-	virtual bool     load (const char* vertex, const char* fragment);
+	virtual bool     load (const std::string& vertex, const std::string& fragment);
 	virtual void     release ();
 
 	virtual void     enable () const;

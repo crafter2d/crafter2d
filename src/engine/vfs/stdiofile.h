@@ -25,6 +25,8 @@
 class StdioFile : public File
 {
 public:
+   static bool exists(const std::string& file);
+
    StdioFile();
    virtual ~StdioFile();
 

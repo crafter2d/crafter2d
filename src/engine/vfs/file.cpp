@@ -25,6 +25,23 @@
 
 #include "buffer.h"
 
+// static 
+std::string File::extractPath(const std::string& filepath)
+{
+   std::size_t pos = filepath.rfind('/');
+   if ( pos == std::string::npos )
+   {
+      pos = filepath.rfind('\\');
+   }
+
+   if ( pos != std::string::npos )
+   {
+      return filepath.substr(0, pos);
+   }
+
+   return "";
+}
+
 File::File():
    mpBuffer(NULL)
 {

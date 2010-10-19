@@ -32,13 +32,12 @@
 #include "scenegraph.h"
 
 Process::Process():
-   conn(),
-   graph(),
+   conn(*this),
+   graph(*this),
    actionMap(NULL),
    mScriptManager(),
    initialized(false)
 {
-   conn.attachProcess(this);
 }
 
 Process::~Process()
@@ -100,6 +99,11 @@ void Process::update(float tick)
 
 // - Events
 
+int Process::allowNewConnection()
+{
+   return 0;
+}
+
 void Process::sendScriptEvent(BitStream* pstream, Uint32 client)
 {
    if ( conn.isConnected() )
@@ -110,3 +114,4 @@ void Process::sendScriptEvent(BitStream* pstream, Uint32 client)
       conn.send(&event);
    }
 }
+

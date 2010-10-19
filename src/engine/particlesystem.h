@@ -46,7 +46,7 @@ public:
 
 	Vector pos, vel;
 	Color color;
-	Uint32 initTime, life, state;
+	float initTime, life, state;
 	float size;
 	Particle *next;
 };

@@ -119,8 +119,7 @@ public:
    void                    setObject( void* obj, const char* type, const char* var );
    
  // execution
-   bool                    executeScript(const std::string& path);
-   bool                    executeScript( const char* script, bool child = false );
+   bool                    executeScript( const std::string& script, bool child = false );
    bool                    executeLine( const char* line);
    Script*                 createScript( bool child = false );
    Script&                 getTemporaryScript();

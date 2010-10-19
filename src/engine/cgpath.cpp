@@ -36,18 +36,18 @@ CGPath::~CGPath()
 {
 }
 
-bool CGPath::load (const char* vertex, const char* fragment)
+bool CGPath::load (const std::string& vertex, const std::string& fragment)
 {
    return loadVertexProgram(vertex) && loadFragmentProgram(fragment);
 }
 
-bool CGPath::loadVertexProgram(const char* vertexfile)
+bool CGPath::loadVertexProgram(const std::string& vertexfile)
 {
    CGEngine& cg = CGEngine::getInstance();
 
    vp = cgCreateProgramFromFile(cg.context(), 
                                 CG_SOURCE, 
-                                vertexfile, 
+                                vertexfile.c_str(), 
                                 cg.getVertexProfile(), 
                                 "main", 
                                 cg.getVertexProfileArguments());
@@ -69,13 +69,13 @@ bool CGPath::loadVertexProgram(const char* vertexfile)
    return true;
 }
 
-bool CGPath::loadFragmentProgram(const char* fragmentfile)
+bool CGPath::loadFragmentProgram(const std::string& fragmentfile)
 {
    CGEngine& cg = CGEngine::getInstance();
    
    fp = cgCreateProgramFromFile(cg.context(), 
                                 CG_SOURCE,
-                                fragmentfile, 
+                                fragmentfile.c_str(), 
                                 cg.getFragmentProfile(), 
                                 "main", 
                                 NULL);
@@ -91,12 +91,12 @@ bool CGPath::loadFragmentProgram(const char* fragmentfile)
    return true;
 }
 
-void CGPath::CGCompileError(CGcontext context, const char* type, const char* file)
+void CGPath::CGCompileError(CGcontext context, const std::string& type, const std::string& file)
 {
    Console& console = Console::getInstance();
    const char* list = cgGetLastListing(context);
 
-   console.printf ("CG Path - Could not load %s program: %s", type, file);
+   console.printf ("CG Path - Could not load %s program: %s", type.c_str(), file.c_str());
    if ( list != NULL )
       console.printf("%s", list);
 }

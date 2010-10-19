@@ -25,8 +25,29 @@
 #  include "linuxfilesystem.h"
 #endif
 
+#include <vector>
+
 #include "compressedfile.h"
 #include "stdiofile.h"
+
+void tokenize(std::vector<std::string>& tokens, const std::string& str, char delimitor)
+{
+   std::size_t start = 0;
+   std::size_t pos = str.find(delimitor);
+
+   do 
+   {
+      std::string token = str.substr(start, pos - start);
+      tokens.push_back(token);
+
+      start = pos + 1;
+      pos = str.find(delimitor, start);
+   }
+   while ( pos != std::string::npos );
+
+   std::string token = str.substr(start, str.size() - start);
+   tokens.push_back(token);
+}
 
 // static 
 FileSystem& FileSystem::getInstance()
@@ -40,7 +61,8 @@ FileSystem& FileSystem::getInstance()
    return filesystem;
 }
 
-FileSystem::FileSystem()
+FileSystem::FileSystem():
+   mPaths()
 {
 }
 
@@ -48,29 +70,100 @@ FileSystem::~FileSystem()
 {
 }
 
-File* FileSystem::open(const std::string& filename)
+void FileSystem::addPath(const std::string& path)
 {
-   bool compressed = false;
-   int index = 0;
-   if ( filename.compare(0, 2, "..") == 0 )
+   mPaths.add(path);
+}
+
+void FileSystem::removePath(const std::string& path)
+{
+   mPaths.remove(path);
+}
+
+File* FileSystem::open(const std::string& filename, int modus) const
+{
+   std::string file = expand(filename);
+
+   for ( int index = 0; index < mPaths.size(); index++ )
    {
-      index = 2;
-   }
-   
-   index = filename.find('.', index);
-   if ( index != filename.npos )
-   {
-      if ( filename.find('.', index + 1) != filename.npos )
-         compressed = true;
+      const std::string& path = mPaths[index];
+
+      File* pfile = tryOpen(path, file, modus);
+      if ( pfile != NULL )
+      {
+         return pfile;
+      }
    }
 
+   return NULL;
+}
+
+File* FileSystem::tryOpen(const std::string& path, const std::string& file, int modus) const
+{
    File* pfile = NULL;
-   if ( compressed )
-      pfile = new CompressedFile();
-   else
-      pfile = new StdioFile();
 
-   pfile->open(filename);
+   std::string pathfile = path + '/' + file;
+
+   if ( CompressedFile::isCompressedFile(path) )
+   {
+      if ( CompressedFile::exists(path, file) )
+      {
+         pfile = new CompressedFile();
+      }
+   }
+   else if ( StdioFile::exists(pathfile) )
+   {
+      pfile = new StdioFile();
+   }
+
+   if ( pfile != NULL )
+   {
+      pfile->open(pathfile, modus);
+   }
 
    return pfile;
+}
+
+typedef std::vector<std::string> Tokens;
+
+static void strip(Tokens& tokens)
+{
+   int count = 0;
+   Tokens::iterator it = tokens.begin();
+   while ( it != tokens.end() )
+   {
+      const std::string& token = *it;
+      if ( token.compare("..") == 0 )
+      {
+         count++;
+      }
+   }
+
+   tokens.erase(tokens.begin(), tokens.begin() + count);
+}
+
+std::string FileSystem::expand(const std::string& path) const
+{
+   Tokens tokens;
+   tokenize(tokens, path, '/');
+   strip(tokens);
+   
+   Tokens::iterator it = tokens.begin();
+   while ( it != tokens.end() )
+   {
+      const std::string& token = (*it);
+      Tokens::iterator next = it + 1;
+
+      if ( next != tokens.end() )
+      {
+         const std::string& s = (*next);
+         if ( s.compare("..") == 0 )
+         {
+            tokens.erase(it,next);
+            it = tokens.begin();
+         }
+      }
+   }
+   
+   return "";
 }

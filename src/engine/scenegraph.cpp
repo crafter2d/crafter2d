@@ -27,7 +27,8 @@
 #include "object.h"
 #include "console.h"
 
-SceneGraph::SceneGraph():
+SceneGraph::SceneGraph(Process& process):
+   mProcess(process),
    mObjects(),
    mRoot(*this),
    mpControler(NULL),

@@ -61,6 +61,7 @@ public:
    void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
 
   // events
+   virtual int    allowNewConnection();
    virtual int    onClientEvent(int client, const NetEvent& event) = 0;
 
 protected:

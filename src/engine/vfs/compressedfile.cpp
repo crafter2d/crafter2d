@@ -27,6 +27,28 @@
 #include "unzipfile.h"
 #include "zipfile.h"
 
+// static 
+bool CompressedFile::isCompressedFile(const std::string& file)
+{
+   int dot = file.find('.');
+   int slash = file.find('/');
+
+   if ( dot < slash )
+   {
+      std::string zip = file.substr(0, dot+3);
+      return UnzipFile::isZip(zip);
+   }
+
+   return false;
+}
+
+// static 
+bool CompressedFile::exists(const std::string& path, const std::string& file)
+{
+    UnzipFile zipfile(path);
+    return zipfile.contains(file);
+}
+
 CompressedFile::CompressedFile():
    File(),
    mZipFile(),

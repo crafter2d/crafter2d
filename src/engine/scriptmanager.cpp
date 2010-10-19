@@ -26,8 +26,6 @@
 #include <sstream>
 #include <tolua++.h>
 
-#include "script/scriptcollection.h"
-
 #include "console.h"
 #include "game.h"
 #include "gameconfiguration.h"
@@ -150,17 +148,14 @@ void ScriptManager::loadModule (initializer module)
 	(*module)(luaState);
 }
 
-/// \fn ScriptManager::executeScript(const char* script)
+/// \fn ScriptManager::executeScript(const std::string& script)
 /// \brief Runs a script once in either the main lua state, or a child state.
 /// \param script Name of the script file
 /// \param child Flag which should be set if the script should be run in a child state (default is false)
-bool ScriptManager::executeScript(const char* script, bool child)
+bool ScriptManager::executeScript(const std::string& script, bool child)
 {
-   const std::string& scriptpath = Game::getInstance().getConfiguration().getScriptPath();
-   std::string filename = scriptpath + script;
-
    Script luaScript(luaState, child);
-   return luaScript.load(filename);
+   return luaScript.load(script);
 }
 
 /// \fn ScriptManager::executeLine(const char* line, bool child)
@@ -239,8 +234,8 @@ static int include(lua_State* L)
 {
    ASSERT(lua_gettop(L) == 1);
 
-   const char* pfile = luaL_checkstring(L, 1);
-   getScriptManager(L)->executeScript(pfile, false);
+   const std::string file = luaL_checkstring(L, 1);
+   getScriptManager(L)->executeScript(file, false);
 
    return 0;
 }
