@@ -76,6 +76,14 @@ Game::Game():
  */
 Game::~Game()
 {
+   try
+   {
+      destroy();
+   }
+   catch (...)
+   {
+      // ignore, we are shutting down anyways
+   }
 }
 
 /*!

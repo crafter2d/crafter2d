@@ -134,9 +134,6 @@ protected:
    void           scroll();
    void           initializeBorders();
 
-   std::string    getPath() const;
-   std::string    getScriptPath() const;
-
    virtual void   doUpdate(float delta);
    virtual void   doUpdateClient(float delta);
    virtual void   doDraw();

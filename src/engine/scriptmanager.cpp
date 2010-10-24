@@ -27,13 +27,9 @@
 #include <tolua++.h>
 
 #include "console.h"
-#include "game.h"
-#include "gameconfiguration.h"
 #include "process.h"
 
-#include "tolua_editor.h"
 #include "tolua_general.h"
-#include "tolua_gui.h"
 #include "tolua_network.h"
 #include "tolua_physics.h"
 
@@ -85,13 +81,9 @@ bool ScriptManager::initialize()
 
    tolua_open(luaState);
 	tolua_general_open(luaState);
-   tolua_gui_open(luaState);
    tolua_network_open(luaState);
-   tolua_editor_open(luaState);
    tolua_physics_open(luaState);
-
-   initializeCollections();
-
+   
    registerGlobals();
 
    tempScript.setState(luaState);

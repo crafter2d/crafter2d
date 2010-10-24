@@ -33,8 +33,6 @@
 #include "actionmap.h"
 #include "autoptr.h"
 #include "console.h"
-#include "game.h"
-#include "gameconfiguration.h"
 #include "player.h"
 #include "script.h"
 #include "scriptmanager.h"

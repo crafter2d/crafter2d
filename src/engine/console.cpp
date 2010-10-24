@@ -30,7 +30,6 @@
 #include "gui/guilistbox.h"
 */
 
-#include "game.h"
 #include "script.h"
 #include "scriptmanager.h"
 

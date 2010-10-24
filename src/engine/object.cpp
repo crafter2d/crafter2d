@@ -33,7 +33,6 @@
 
 #include "animator.h"
 #include "scenegraph.h"
-#include "game.h"
 #include "console.h"
 #include "state.h"
 #include "nodevisitor.h"

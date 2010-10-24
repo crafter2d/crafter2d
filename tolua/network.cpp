@@ -49,9 +49,6 @@ class BitStream
 
 class NetConnection
 {
-   NetConnection();
-   ~NetConnection();
-
    bool create(int port=0);
    void disconnect();
 

@@ -22,8 +22,6 @@
 #include "engine/defines.h"
 #include "engine/system/timer.h"
 
-#include "gui/guitext.h"
-
 #include "profileritem.h"
 
 // singleton instance
@@ -111,20 +109,8 @@ void Profiler::end()
 
 // drawing
 
-void Profiler::draw(GuiFont& font)
+void Profiler::render()
 {
-   char line[512];
-   int y = 25;
-
-   ItemMap::iterator it = mItems.begin();
-   for ( ; it != mItems.end(); it++ )
-   {
-      ProfilerItem* pitem = it->second;
-      pitem->asString(line);
-
-      GuiText::printf(font, 25, y, line);
-      y += 12;
-   }
 }
 
 // Searching

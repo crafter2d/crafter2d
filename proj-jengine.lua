@@ -2,7 +2,7 @@
 -- Copyright 2010, Jeroen Broekhuizen
 
 -- create the project
-project "JEngineSSE"
+project "Game"
 	kind "ConsoleApp"
 	language "C++"
 	targetdir "bin"
@@ -10,4 +10,4 @@ project "JEngineSSE"
 	debugworkingdir "$(TargetDir)"
 	
 -- set project files
-files { "src/*.cpp", "src/*.h", "src/*.inl" }
+files { "src/game/**.cpp", "src/game/**.h", "src/game/**.inl" }

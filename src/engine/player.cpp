@@ -28,7 +28,6 @@
 #include "world/world.h"
 
 #include "client.h"
-#include "game.h"
 
 Player::Player():
    controler(NULL),

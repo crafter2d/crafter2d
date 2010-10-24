@@ -142,9 +142,7 @@ private:
    void                    operator=( const ScriptManager& mgr );
 
    void                    registerGlobals();
-
-   void                    initializeCollections();
-   
+  
    lua_State*           luaState;
    Script               tempScript;
    Requests             requests;

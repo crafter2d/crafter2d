@@ -28,8 +28,6 @@
 
 #include "codepath.h"
 #include "console.h"
-#include "game.h"
-#include "gameconfiguration.h"
 #include "opengl.h"
 #include "texture.h"
 #include "tinyxml.h"

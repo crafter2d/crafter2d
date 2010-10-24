@@ -175,10 +175,8 @@ void World::loadObjects(const char* filename)
 /// \brief Writes this world to its file
 bool World::save()
 {
-   std::string path = getPath();
-
    WorldWriter writer;
-   return writer.write(*this, path);
+   return writer.write(*this, getFilename());
 }
 
 /// \fn World::destroy()

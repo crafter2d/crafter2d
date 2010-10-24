@@ -25,10 +25,6 @@ echo -- Setting up bin directory
 cp %1
 
 echo -- Building tolua files
-rem tolua\tolua++.exe -o src\tolua_editor.cpp -H src\tolua_editor.h -n editor tolua\editor.cpp
-rem tolua\tolua++.exe -o src\tolua_general.cpp -H src\tolua_general.h -n general tolua\general.cpp
-rem tolua\tolua++.exe -o src\tolua_gui.cpp -H src\tolua_gui.h -n gui tolua\gui.cpp
-rem tolua\tolua++.exe -o src\tolua_network.cpp -H src\tolua_network.h -n network tolua\network.cpp
 pushd .
 chdir tolua
 call run.bat --silent

@@ -63,11 +63,10 @@
 
 int main(int argc, char *argv[])
 {
-   AutoPtr<Game> game = new MyGame();
+   AutoPtr<Game> game = new Game();
    if ( game->create() )
    {
       game->run ();
-      game->destroy ();
    }
 
    return EXIT_SUCCESS;

@@ -20,12 +20,10 @@
 #ifndef PROFILER_H_
 #define PROFILER_H_
 
-#include <SDL/SDL.h>
 #include <map>
 #include <string>
 #include <stack>
 
-class GuiFont;
 class ProfilerItem;
 class TimerData;
 
@@ -53,7 +51,7 @@ public:
    void end();
 
  // drawing
-   void draw(GuiFont& font);
+   void render();
 
  // searching
    ProfilerItem*  findOrCreateItem(const std::string& name);
