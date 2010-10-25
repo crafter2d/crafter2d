@@ -30,6 +30,8 @@
 
 #include "core/autoptr.h"
 
+#include "scriptcontext.h"
+
 Script::Script():
    childState(0),
    child(false)
@@ -52,7 +54,7 @@ Script::Script(lua_State* l, bool c):
 /// \fn Script::load(const char* file)
 /// \brief Loads a script file into the lua state and prepares it to run.
 /// \returns true is loading was successfull, false otherwise
-bool Script::load(const std::string& filename)
+bool Script::load(ScriptContext& context, const std::string& filename)
 {
    AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead);
    
@@ -60,19 +62,15 @@ bool Script::load(const std::string& filename)
    {
       int size = file->size();
       AutoPtr<char> data = new char[size+1];
-      memset(data.getPointer(), 0, size+1);
       file->read(data.getPointer(), size);
+      std::string code = data.getPointer();
 
-      if ( luaL_dostring(childState, data.getPointer()) != 0 )
-      {
-         std::string error = "While running script " + filename + " an error occured: " + lua_tostring(childState, -1);
-         throw std::exception(error.c_str());
-      }
+      return loadString(context, code);
    }
    else
    {
       std::string error = "Could not load script file " + filename;
-      throw std::exception(error.c_str());
+      context.setError(error);
    }
 
    return true;
@@ -82,7 +80,7 @@ bool Script::load(const std::string& filename)
 /// \brief Loads the given code string into the lua state. When using this function, you must
 /// call run to execute the code.
 /// \returns true is successfull, false otherwise
-bool Script::loadString(const std::string& code)
+bool Script::loadString(ScriptContext& context, const std::string& code)
 {
    if ( luaL_loadbuffer(childState, code.c_str(), code.length(), NULL) != 0 )
    {
@@ -116,13 +114,13 @@ int Script::getInteger()
 /// \brief Runs the script. You must first call prepareCall and optionaly the addParam functions
 /// to set up the function name and arguments.
 /// \returns always returns true
-void Script::run (int params, int returns)
+void Script::run(ScriptContext& context, int params, int returns)
 {
 	// call the function
    if ( lua_pcall(childState, params, returns, 0) != 0 ) 
    {
       std::string error = std::string("An error occured while running script: ") + lua_tostring(childState, -1);
-      throw std::string(error.c_str());
+      context.setError(error);
    }
 }
 

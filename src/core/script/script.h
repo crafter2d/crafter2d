@@ -34,6 +34,8 @@ extern "C" {
 #include <string>
 #include <tolua++.h>
 
+class ScriptContext;
+
 /**
 @author Jeroen Broekhuizen
 \brief Implements a general script object.
@@ -49,8 +51,8 @@ public:
                Script();
    explicit    Script(lua_State* l, bool c=false);
 
-   bool        load (const std::string& file);
-   bool        loadString(const std::string& code);
+   bool        load(ScriptContext& context, const std::string& file);
+   bool        loadString(ScriptContext& context, const std::string& code);
 
    void        addParam (int val);
    void        addParam (float val);
@@ -62,7 +64,7 @@ public:
    int         getInteger();
 
    void        prepareCall(const char* function);
-   void        run(int params=0, int returns=0);
+   void        run(ScriptContext& context, int params=0, int returns=0);
 
    void        setSelf(void* p, const char* typeName);
    void        setState(lua_State* l);

@@ -35,6 +35,8 @@ extern "C" {
 
 #include "script.h"
 
+class ScriptContext;
+
 // Module prototype
 extern int (*tolua_Module) (lua_State* tolua_S);
 
@@ -112,16 +114,16 @@ public:
 
    bool                    initialize();
    void                    destroy();
-   void                    update( Uint32 tick );
+   void                    update(ScriptContext& context, Uint32 tick);
 
    void                    loadModule(initializer module);
-   bool                    loadString(const std::string& code);
 
    void                    setObject( void* obj, const char* type, const char* var );
    
  // execution
-   bool                    executeScript( const std::string& script, bool child = false );
-   bool                    executeLine( const char* line);
+   bool                    executeScript(ScriptContext& context, const std::string& script, bool child = false );
+   bool                    executeLine(ScriptContext& context, const char* line);
+
    Script*                 createScript( bool child = false );
    Script&                 getTemporaryScript();
 
