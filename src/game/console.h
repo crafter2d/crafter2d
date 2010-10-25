@@ -17,63 +17,51 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _SCRIPTMANAGER_H_
-#define _SCRIPTMANAGER_H_
+#ifndef CONSOLE_H_
+#define CONSOLE_H_
 
-#include "engine_base.h"
+//#include "gui/guiwindow.h"
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-}
+#include "engine/log.h"
 
-#include <SDL/SDL.h>
-#include <list>
-#include <vector>
-#include <string>
-#include <tolua++.h>
+class GuiEditBox;
+class GuiListBox;
 
-/**
-@author Jeroen Broekhuizen
-\brief Implements a general script object.
-
-This class implements a basic script object. It has its own Lua child state in which you
-can run this script. Creating this script object should be done with the
-ScriptManager::createScript() function. Currently the update function is not yet
-implemented and therefor shouldn't be used.
-*/
-class ENGINE_API Script
+class Console // : public GuiWindow
 {
 public:
-               Script();
-   explicit    Script(lua_State* l, bool c=false);
+   ~Console(void);
 
-   bool        load (const std::string& file);
-   bool        loadString(const std::string& code);
+   static Console&   getInstance();
+   static Log&       getLog();
 
-   void        addParam (int val);
-   void        addParam (float val);
-   void        addParam (bool val);
-   void        addParam (const char* str);
-   void        addParam (void* object, const char* typeName);
+   void              create();
+   void              reload();
 
-   bool        getBoolean();
-   int         getInteger();
+   void              show();
+   void              hide();
 
-   void        prepareCall(const char* function);
-   bool        run(int params=0, int returns=0);
+   void              print(const std::string& msg);
+   void              print(const char* msg);
+   void              printf(const char* msg, ...);
 
-   void        setSelf(void* p, const char* typeName);
-   void        setState(lua_State* l);
+   void              error(const char* msg, ...);
+   void              warning(const char* msg, ...);
+
+   void              onKeyDown(int which, bool shift, bool ctrl, bool alt);
+
+protected:
+                     Console();
+   void              operator=(const Console& con);
 
 private:
-   lua_State *childState; /**< Lua state of this object */
-   bool child;
+   //GuiListBox *lines;
+   //GuiEditBox *input;
+   static Log log;
 };
 
 #ifdef JENGINE_INLINE
-#  include "script.inl"
+#  include "console.inl"
 #endif
 
 #endif

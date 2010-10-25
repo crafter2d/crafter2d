@@ -39,6 +39,7 @@ GameWindow::GameWindow():
    mpKeyDispatcher(NULL),
    mpMouseDispatcher(NULL),
    mpWindow(NULL),
+   mBackgroundColor(),
    mBitDepth(32),
    mFlags(0)
 {
@@ -94,6 +95,16 @@ void GameWindow::setKeyEventDispatcher(KeyEventDispatcher& dispatcher)
 void GameWindow::setMouseEventDispatcher(MouseEventDispatcher& dispatcher)
 {
   mpMouseDispatcher = &dispatcher;
+}
+
+const GuiColor& GameWindow::getBackgroundColor() const
+{
+   return mBackgroundColor;
+}
+   
+void GameWindow::setBackgroundColor(const GuiColor& color)
+{
+   mBackgroundColor;
 }
 
 //-----------------------------------

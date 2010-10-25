@@ -17,63 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _SCRIPTMANAGER_H_
-#define _SCRIPTMANAGER_H_
+#include "defines.h"
 
-#include "engine_base.h"
-
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+INLINE Log& Console::getLog()
+{
+   return log;
 }
 
-#include <SDL/SDL.h>
-#include <list>
-#include <vector>
-#include <string>
-#include <tolua++.h>
-
-/**
-@author Jeroen Broekhuizen
-\brief Implements a general script object.
-
-This class implements a basic script object. It has its own Lua child state in which you
-can run this script. Creating this script object should be done with the
-ScriptManager::createScript() function. Currently the update function is not yet
-implemented and therefor shouldn't be used.
-*/
-class ENGINE_API Script
+void Console::print(const std::string& msg)
 {
-public:
-               Script();
-   explicit    Script(lua_State* l, bool c=false);
-
-   bool        load (const std::string& file);
-   bool        loadString(const std::string& code);
-
-   void        addParam (int val);
-   void        addParam (float val);
-   void        addParam (bool val);
-   void        addParam (const char* str);
-   void        addParam (void* object, const char* typeName);
-
-   bool        getBoolean();
-   int         getInteger();
-
-   void        prepareCall(const char* function);
-   bool        run(int params=0, int returns=0);
-
-   void        setSelf(void* p, const char* typeName);
-   void        setState(lua_State* l);
-
-private:
-   lua_State *childState; /**< Lua state of this object */
-   bool child;
-};
-
-#ifdef JENGINE_INLINE
-#  include "script.inl"
-#endif
-
-#endif
+   print(msg.c_str());
+}

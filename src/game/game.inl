@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#include "engine/defines.h"
 
 INLINE const GameConfiguration& Game::getConfiguration() const
 {
@@ -47,16 +47,6 @@ INLINE TimerData& Game::getTimerData()
 {
    ASSERT_PTR(mpTimerData);
    return *mpTimerData;
-}
-
-INLINE int Game::getScreenWidth() const
-{
-   return mWindow.getWidth();
-}
-
-INLINE int Game::getScreenHeight() const
-{
-   return mWindow.getHeight();
 }
 
 /// \fn Game::setTitle(const char* _title)

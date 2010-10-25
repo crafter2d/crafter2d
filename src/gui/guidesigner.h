@@ -23,8 +23,6 @@
 #include <string>
 #include <vector>
 
-#include "script/scriptdefines.h"
-
 #include "guiwindow.h"
 
 #include "designer/designerfocuslistener.h"
@@ -37,8 +35,6 @@ class GuiPoint;
 class GuiMenu;
 class GuiDesignMenu;
 class GuiPopupDecorator;
-
-DEFINE_MODULE(GuiDesigner)
 
 typedef GuiControl* (*createControlFnc)(int id, const GuiPoint& pos, GuiWnd* pparent);
 

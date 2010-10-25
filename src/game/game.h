@@ -23,11 +23,10 @@
 #include <SDL/SDL.h>
 #include <string>
 
-#include "actionmap.h"
-#include "gamesettings.h"
+#include "engine/scriptmanager.h"
+
 #include "gamewindow.h"
 #include "defaultgamewindowlistener.h"
-#include "scriptmanager.h"
 
 #define DECLARE_APPLICATION(title) \
    const char* getTitle() { return title; }
@@ -77,9 +76,6 @@ public:
  // query
    void                 getWindowDimensions(int& width, int& height);
 
-   int                  getScreenWidth() const;
-   int                  getScreenHeight() const;
-
   // notifications
    void onWindowResized();
    void onWindowClosed();
@@ -101,7 +97,6 @@ private:
    bool                 initOpenGL();
    void                 runFrame();
 
-   GameSettings              mSettings;
    GameConfiguration*        mpConfiguration;     // owned
    GameWindow                mWindow;
    DefaultGameWindowListener mWindowListener;

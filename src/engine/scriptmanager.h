@@ -20,6 +20,8 @@
 #ifndef SCRIPT_MANAGER_H_
 #define SCRIPT_MANAGER_H_
 
+#include "engine_base.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -94,7 +96,7 @@ method uses the getTemporaryScript to retreive a temporary script object (which 
 in the global enviroment). This call is much cheaper then the previous method, as the object
 always exists (it returns a reference to the script object).
 */
-class ScriptManager
+class ENGINE_API ScriptManager
 {
    struct Request {
       const char* fnc;

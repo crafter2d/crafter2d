@@ -31,6 +31,7 @@ struct SDL_Surface;
 class GameWindowListener;
 class KeyEventDispatcher;
 class MouseEventDispatcher;
+class GuiColor;
 
 class GameWindow
 {
@@ -45,6 +46,9 @@ public:
   // get/set
    void setKeyEventDispatcher(KeyEventDispatcher& dispatcher);
    void setMouseEventDispatcher(MouseEventDispatcher& dispatcher);
+
+   const GuiColor& getBackgroundColor() const;
+   void            setBackgroundColor(const GuiColor& color);
 
   // query
    int getWidth() const;
@@ -79,6 +83,7 @@ private:
    KeyEventDispatcher*   mpKeyDispatcher;
    MouseEventDispatcher* mpMouseDispatcher;
    SDL_Surface*          mpWindow;
+   GuiColor              mBackgroundColor;
    int                   mBitDepth;
    int                   mFlags;
 };
