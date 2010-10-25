@@ -51,7 +51,7 @@ if ( os.is("windows") ) then
 	-- set the pre-build event
 	prebuildcommands {
 		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_editor.cpp -H ..\\..\\src\\engine\\tolua_editor.h -n editor ..\\..\\tolua\\editor.cpp",
-		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_gui.cpp -H ..\\..\\src\\engine\\tolua_gui.h -n gui ..\\..\\tolua\\gui.cpp",
+		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_gui.cpp -H ..\\..\\src\\engine\\tolua_gui.h -n gui ..\\..\\tolua\\gui.cpp" }
 
 	-- set IDE specific settings
 	if ( _ACTION == "cb-gcc" ) then
@@ -105,7 +105,7 @@ elseif ( os.is("linux") ) then
 	-- set the pre-build event
 	prebuildcommands {
 		"tolua++ -o ../src/engine/tolua_gui.cpp -H ../src/tolua_gui.h -n gui ../tolua/gui.cpp",
-		"tolua++ -o ../src/engine/tolua_editor.cpp -H ../src/tolua_editor.h -n editor ../tolua/editor.cpp",
+		"tolua++ -o ../src/engine/tolua_editor.cpp -H ../src/tolua_editor.h -n editor ../tolua/editor.cpp" }
 
 end
 

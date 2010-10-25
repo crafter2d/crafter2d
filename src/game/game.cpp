@@ -149,6 +149,8 @@ bool Game::create()
    // reload the contents of the log file for the console
    console.reload();
 
+   mScriptManager.executeScript("main.lua");
+
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
    if ( !initGame () )
@@ -156,8 +158,6 @@ bool Game::create()
       console.error("Aborted after failed game initialization.");
       return false;
    }
-
-   mScriptManager.executeScript("main.lua");
 
    return true;
 }

@@ -68,12 +68,12 @@ if ( os.is("windows") ) then
 		configuration "Debug"
 			links { "GLee_d", "SOIL_d", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"minizip_d", "zlib1", "lua", "tolua++_d", "box2d_d", "freetype241MT_D", "tinyxmld_STL", "Math"  } 
+					"minizip_d", "zlib1", "lua", "tolua++_d", "box2d_d", "freetype241MT_D", "tinyxmld_STL", "Core"  } 
 		 
 		configuration "Release"
 			links { "GLee_d", "SOIL", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"minizip", "zlib1", "lua", "tolua++", "box2d", "freetype241MT", "tinyxml_STL", "Math"  } 
+					"minizip", "zlib1", "lua", "tolua++", "box2d", "freetype241MT", "tinyxml_STL", "Core"  } 
 
 	else
 		if ( _ACTION > "vs2005" ) then
@@ -87,12 +87,12 @@ if ( os.is("windows") ) then
 		
 		configuration "Debug"
 			links { "GLee_d", "box2d_d", "tolua++_d", " lua5.1_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
-	                "minizip_d", "freetype242MT_D", "Math" }
+	                "minizip_d", "freetype242MT_D", "Core" }
 			ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 					
 		configuration "Release"
 			links { "GLee", "box2d", "tolua++", "lua5.1", "soil", "vorbisfile", "tinyxml_STL", "zlib1", 
-					"minizip", "freetype242MT", "Math" }
+					"minizip", "freetype242MT", "Core" }
    end -- win32
    
 elseif ( os.is("linux") ) then
@@ -109,7 +109,7 @@ elseif ( os.is("linux") ) then
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL",
            "lua", "tolua++-5.1", "openal", "alut",
-           "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d" }
+           "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d", "Core" }
 
 	-- set the pre-build event
 	prebuildcommands {

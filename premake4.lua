@@ -11,6 +11,7 @@ elseif ( os.is("linux") ) then
 	defines { "LINUX" }
 end
 	
-require "proj-math"
+require "proj-core"
 require "proj-engine"
-require "proj-jengine"
+require "proj-gui"
+require "proj-game"
