@@ -26,7 +26,7 @@
 #include <sstream>
 #include <tolua++.h>
 
-#include "console.h"
+#include "log.h"
 #include "process.h"
 
 #include "tolua_general.h"
@@ -41,13 +41,13 @@
 
 int onLuaAlert(lua_State *L)
 {
-   Console::getLog() << "Lua error: " << lua_tostring(L, -1) << "\n";
+   Log::getInstance() << "Lua error: " << lua_tostring(L, -1) << "\n";
    return 0;
 }
 
 int onLuaPanic (lua_State *L)
 {
-   Console::getLog() << "Lua error: " << lua_tostring(L, -1) << "\n";
+   Log::getInstance() << "Lua error: " << lua_tostring(L, -1) << "\n";
    return 0;
 }
 
@@ -156,7 +156,7 @@ bool ScriptManager::executeLine(const char* line)
 {
    if ( luaL_dostring(luaState, line) != 0 )
    {
-      Console::getInstance().printf("%s", lua_tostring(luaState, -1));
+      Log::getInstance().error("%s", lua_tostring(luaState, -1));
       return false;
    }
    return true;

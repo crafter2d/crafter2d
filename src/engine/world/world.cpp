@@ -35,7 +35,7 @@
 
 #include "engine/log.h"
 #include "engine/scenegraph.h"
-#include "engine/console.h"
+#include "engine/log.h"
 #include "engine/creature.h"
 #include "engine/nodevisitor.h"
 #include "engine/defines.h"
@@ -233,7 +233,7 @@ void World::setObjectLayer(int objectlayerid)
    }
    else
    {
-      Console::getInstance().printf("World.setObjectLayer: trying to set invalid object layer (%d)", objectlayerid);
+      Log::getInstance().warning("World.setObjectLayer: trying to set invalid object layer (%d)", objectlayerid);
    }
 }
 

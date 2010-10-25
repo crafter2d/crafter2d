@@ -33,7 +33,7 @@
 
 #include "animator.h"
 #include "scenegraph.h"
-#include "console.h"
+#include "log.h"
 #include "state.h"
 #include "nodevisitor.h"
 #include "texturecoordinate.h"
@@ -70,13 +70,13 @@ Object::~Object()
  */
 bool Object::load (TiXmlDocument& doc)
 {
-	Console& console = Console::getInstance();
+	Log& log = Log::getInstance();
 
 	// try to find the object in the file
 	TiXmlElement* object = (TiXmlElement*)doc.FirstChild ("object");
 	if (object == NULL)
    {
-      console.print("Object.load: Invalid XML file format, object expected.\n");
+      log.error("Object.load: Invalid XML file format, object expected.\n");
 		return false;
 	}
 
@@ -87,7 +87,7 @@ bool Object::load (TiXmlDocument& doc)
 	if ( object->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
 		  object->QueryIntAttribute ("height", &height) != TIXML_SUCCESS )
    {
-      console.print("Object.load: object needs to have dimensions.\n");
+      log.error("Object.load: object needs to have dimensions.\n");
 		return false;
 	}
 
@@ -107,7 +107,7 @@ bool Object::load (TiXmlDocument& doc)
 	TiXmlElement* tex = (TiXmlElement*)object->FirstChild ("texture");
 	if ( tex == NULL )
    {
-		console.print("Object.load: object has no texture");
+		log.error("Object.load: object has no texture");
 		return false;
 	}
 	else
@@ -116,7 +116,7 @@ bool Object::load (TiXmlDocument& doc)
       texture = ResourceManager::getInstance().loadTexture(value->Value());
       if ( !texture.valid() )
       {
-         console.printf("Object.load: can not load %s", value->Value());
+         log.error("Object.load: can not load %s", value->Value());
          return false;
       }
 	}

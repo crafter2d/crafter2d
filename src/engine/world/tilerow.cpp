@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "tilerow.h"
 
-#include "../console.h"
-#include "../defines.h"
+#include "engine/log.h"
+#include "engine/defines.h"
 
 #include "tile.h"
 
@@ -67,7 +67,7 @@ bool TileRow::create(int width)
 	_ptiles = createTiles(width);
 	if ( _ptiles == NULL )
    {
-		Console::getInstance().print("TileRow.Create: out of memory.");
+		Log::getInstance().error("TileRow.Create: out of memory.");
 		return false;
 	}
 

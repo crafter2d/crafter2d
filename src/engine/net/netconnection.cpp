@@ -27,7 +27,7 @@
 #include "../system/timer.h"
 
 #include "../autoptr.h"
-#include "../console.h"
+#include "../log.h"
 #include "../process.h"
 #include "../script.h"
 #include "../scriptmanager.h"
@@ -85,13 +85,15 @@ bool NetConnection::initialize()
     
    wVersionRequested = MAKEWORD( 2, 2 );
    err = WSAStartup( wVersionRequested, &wsaData );
-   if (err != 0) {
-      Console::getInstance().print("Could not initialize WinSock 2.");
+   if ( err != 0 )
+   {
+      Log::getInstance().error("Could not initialize WinSock 2.");
       return false;
    }
 
-   if (LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 ) {
-      Console::getInstance().print("WinSock 2.2 is not supported.");
+   if ( LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 ) 
+   {
+      Log::getInstance().error("WinSock 2.2 is not supported.");
       WSACleanup( );
       return false;
    }
@@ -107,8 +109,9 @@ bool NetConnection::initialize()
 bool NetConnection::create(Uint32 port)
 {
    sock = (int)socket(AF_INET, SOCK_DGRAM, 0);
-   if (sock == -1) {
-      Console::getInstance().print("Could not create socket.");
+   if ( sock == -1 )
+   {
+      Log::getInstance().error("Could not create socket.");
       return false;
    }
 
@@ -127,8 +130,9 @@ bool NetConnection::create(Uint32 port)
       sa.sin_port = htons(port);
       sa.sin_addr.s_addr = htonl(INADDR_ANY);
 
-      if (bind (sock, (sockaddr*)&sa, sizeof(sa)) < 0) {
-         Console::getInstance().printf("Could not bind socket to port %d.", port);
+      if ( bind (sock, (sockaddr*)&sa, sizeof(sa)) < 0 ) 
+      {
+         Log::getInstance().error("Could not bind socket to port %d.", port);
          return false;
       }
 
@@ -148,8 +152,9 @@ bool NetConnection::connect(const char* serverName, Uint32 port)
    client.sin_family = AF_INET;
    client.sin_port = 0;
    client.sin_addr.s_addr = htonl(INADDR_ANY);
-   if (bind(sock, (sockaddr*)&client, sizeof client) < 0) {
-      Console::getInstance().print("Can not bind client socket.");
+   if ( bind(sock, (sockaddr*)&client, sizeof client) < 0 )
+   {
+      Log::getInstance().error("Can not bind client socket.");
       return false;
    }
 
@@ -257,7 +262,7 @@ void NetConnection::update()
             {
                package.setTimeStamp(tick);
 
-               Console::getInstance().printf("Resending package number for client %d: %d", i, package.getNumber());
+               Log::getInstance().info("Resending package number for client %d: %d", i, package.getNumber());
                resend(*pclient, package);
             }
          }
@@ -315,7 +320,7 @@ void NetConnection::doSend(NetAddress& client, const BitStream& stream)
    int err = sendto (sock, stream.getBuf(), stream.getSize(), 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
    if (err == SOCKET_ERROR)
    {
-      Console::getInstance().printf ("NetConnection.resend : error during sending(%d)", getErrorNumber());
+      Log::getInstance().error("NetConnection.resend : error during sending(%d)", getErrorNumber());
    }
    else
    {
@@ -450,7 +455,7 @@ bool NetConnection::doReceive(NetAddress& address, BitStream& recvStream)
    int size = recvfrom(sock, buffer, MAX_BITSTREAM_BUFSIZE, 0, (struct sockaddr*)&address.addr, (socklen_t*)&addrLen);
    if ( size == SOCKET_ERROR )
    {
-      Console::getInstance().printf("Error during receiving (%d)", getErrorNumber());
+      Log::getInstance().error("An error occured while receiving a package (%d)", getErrorNumber());
       return false;
    }
    else
@@ -589,15 +594,15 @@ void NetConnection::removePackageFromResendQueue(NetAddress& client, Uint32 pack
    if (packageNumber > client.lastPackageNumber)
    {
       // this is not possible!
-      Console::getInstance().printf("Received an ACK with an invalid package number (max = %d)!", client.lastPackageNumber);
+      Log::getInstance().error("Received an ACK with an invalid package number (max = %d)!", client.lastPackageNumber);
    }
    else
    {
       // if we get here the package wasn't found!
-      Console::getInstance().print("Received an ACK for a non-existing package!");
+      Log::getInstance().error("Received an ACK for a non-existing package!");
    }
 
-   Console::getInstance().printf("Received package number: %d", packageNumber);
+   Log::getInstance().info("Received package number: %d", packageNumber);
 }
 
 /// \fn NetConnection::insertOrderedPackage(NetAddress& client, const NetPackage& package)

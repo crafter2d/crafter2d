@@ -22,7 +22,7 @@
 
 #include <GL/GLee.h>
 
-#include "console.h"
+#include "log.h"
 #include "opengl.h"
 #include "effect.h"
 
@@ -61,7 +61,7 @@ bool VertexBufferObject::create(const Effect& effect, int length, int usage, int
 
 	// see what usage is required on this buffer
 	if ( IS_SET(usage, eStatic) )
-  {
+   {
 		if ( IS_SET(usage, eWriteOnly) )
 			flag = GL_STATIC_DRAW;
 		else if ( IS_SET(usage, eRead) )
@@ -70,7 +70,7 @@ bool VertexBufferObject::create(const Effect& effect, int length, int usage, int
 			flag = GL_STATIC_COPY;
 	}
 	else if ( IS_SET(usage, eDynamic) )
-  {
+   {
 		if ( IS_SET(usage, eWriteOnly) )
 			flag = GL_DYNAMIC_DRAW;
 		else if ( IS_SET(usage, eRead) )
@@ -79,7 +79,7 @@ bool VertexBufferObject::create(const Effect& effect, int length, int usage, int
 			flag = GL_DYNAMIC_COPY;
 	}
 	else if ( IS_SET(usage, eStream) )
-  {
+   {
 		if ( IS_SET(usage, eWriteOnly) )
 			flag = GL_STREAM_DRAW;
 		else if ( IS_SET(usage, eRead) )
@@ -88,8 +88,8 @@ bool VertexBufferObject::create(const Effect& effect, int length, int usage, int
 			flag = GL_STREAM_COPY;
 	}
 	else 
-  {
-      Console::getInstance().print("VBO Error - Invalid usage flag.\n");
+   {
+      Log::getInstance().error("VBO Error - Invalid usage flag.\n");
       return false;
    }
 

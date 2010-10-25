@@ -21,7 +21,7 @@
 
 #include <iostream>
 
-#include "../console.h"
+#include "engine/log.h"
 
 #include "bound.h"
 #include "layer.h"
@@ -46,7 +46,7 @@ bool WorldVersion1Reader::virRead()
    std::ifstream stream (getFilename().c_str(), std::ios_base::in | std::ios_base::binary);
    if ( !stream.is_open () )
    {
-      Console::getInstance().printf("World:create : Can not open file %s", getFilename().c_str());
+      Log::getInstance().error("World:create : Can not open file %s", getFilename().c_str());
       return false;
    }
 
@@ -71,7 +71,7 @@ bool WorldVersion1Reader::readLayers(std::ifstream& stream)
 
       if ( !readLayer(stream, *player) || !player->prepare() )
       {
-         Console::getInstance().printf("World:create : loading layer %d from %s failed.", i, getFilename().c_str());
+         Log::getInstance().error("World:create : loading layer %d from %s failed.", i, getFilename().c_str());
          getWorld().destroy ();
          return false;
       }
@@ -116,14 +116,15 @@ bool WorldVersion1Reader::readLayer(std::ifstream& stream, Layer& layer)
 	stream.read ((char*)&scrollSpeedX, sizeof (int));
 	stream.read ((char*)&scrollSpeedY, sizeof (int));
 
-	if (width <= 0 || height <= 0) {
-      Console::getInstance().printf("World:create : Invalid layer size!");
+	if ( width <= 0 || height <= 0 )
+   {
+      Log::getInstance().error("World:create : Invalid layer size!");
 		return false;
 	}
 
    if ( !layer.create(name, width, height, effectName) )
    {
-      Console::getInstance().printf("World:create : Can not create layer!");
+      Log::getInstance().error("World:create : Can not create layer!");
       return false;
    }
 

@@ -18,9 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "cgpath.h"
+#ifndef JENGINE_INLINE
+#  include "cgpath.inl"
+#endif
 
 #include "cgengine.h"
-#include "console.h"
+#include "log.h"
 #include "defines.h"
 
 CGPath::CGPath(): 
@@ -93,12 +96,12 @@ bool CGPath::loadFragmentProgram(const std::string& fragmentfile)
 
 void CGPath::CGCompileError(CGcontext context, const std::string& type, const std::string& file)
 {
-   Console& console = Console::getInstance();
+   Log& log = Log::getInstance();
    const char* list = cgGetLastListing(context);
 
-   console.printf ("CG Path - Could not load %s program: %s", type.c_str(), file.c_str());
+   log.error("CG Path - Could not load %s program: %s", type.c_str(), file.c_str());
    if ( list != NULL )
-      console.printf("%s", list);
+      log.info("%s", list);
 }
 
 void CGPath::release()

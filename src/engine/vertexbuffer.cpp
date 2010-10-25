@@ -22,7 +22,7 @@
 #include <windows.h>
 #endif
 
-#include "console.h"
+#include "log.h"
 #include "defines.h"
 #include "vertexbuffer.h"
 
@@ -55,7 +55,7 @@ bool VertexBuffer::create(const Effect& effect, int length, int usage, int fvf)
 	mFields = new VertexBufferDesc[mFieldCount];
 	if ( mFields == NULL )
 	{
-      Console::getInstance().print("VBO Critical Error - out of memory.\n");
+      Log::getInstance().error("VBO Critical Error - out of memory.\n");
 		return false;
 	}
 
@@ -153,7 +153,7 @@ void VertexBuffer::fillDescription (int fvf)
 		field.pos = pos;
 		field.flags = i;
 		switch ( fvf & i )
-    {
+      {
 		case eXY:
 			field.index = 0;
 			field.size = 2;

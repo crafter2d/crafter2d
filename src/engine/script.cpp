@@ -28,7 +28,7 @@
 #include "vfs/filesystem.h"
 
 #include "autoptr.h"
-#include "console.h"
+#include "log.h"
 
 Script::Script():
    childState(0),
@@ -52,32 +52,28 @@ Script::Script(lua_State* l, bool c):
 /// \fn Script::load(const char* file)
 /// \brief Loads a script file into the lua state and prepares it to run.
 /// \returns true is loading was successfull, false otherwise
-bool Script::load (const std::string& file)
+bool Script::load (const std::string& filename)
 {
-   AutoPtr<File> pfile = FileSystem::getInstance().open(file, File::ERead);
-   ASSERT(pfile.hasPointer());
-
-   if ( pfile->isValid() )
+   AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead);
+   
+   if ( file.hasPointer() && file->isValid() )
    {
-      int size = pfile->size();
-      char* pdata = new char[size+1];
-      memset(pdata, 0, size+1);
-      pfile->read(pdata, size);
+      int size = file->size();
+      AutoPtr<char> data = new char[size+1];
+      memset(data.getPointer(), 0, size+1);
+      file->read(data.getPointer(), size);
 
-      if ( luaL_dostring(childState, pdata) != 0 )
+      if ( luaL_dostring(childState, data.getPointer()) != 0 )
       {
-         delete[] pdata;
-
-         Console::getLog() << lua_tostring(childState, -1);
+         Log::getInstance().error("While running script %s an error occured: %s", filename.c_str(), lua_tostring(childState, -1));
          return false;
       }
 
-      delete[] pdata;
       return true;
    }
    else
    {
-      Console::getLog() << "Could not load script file " << file.c_str();
+      Log::getInstance().error("Could not load script file %s", filename.c_str());
       return false;
    }
 }
@@ -90,7 +86,7 @@ bool Script::loadString(const std::string& code)
 {
    if ( luaL_loadbuffer(childState, code.c_str(), code.length(), NULL) != 0 )
    {
-      Console::getLog() << lua_tostring(childState, -1);
+      Log::getInstance() << lua_tostring(childState, -1);
       return false;
    }
 
@@ -124,8 +120,9 @@ int Script::getInteger()
 bool Script::run (int params, int returns)
 {
 	// call the function
-   if (lua_pcall(childState, params, returns, 0) != 0) {
-      Console::getInstance().printf("%s", lua_tostring(childState, -1));
+   if ( lua_pcall(childState, params, returns, 0) != 0 ) 
+   {
+      Log::getInstance().error("An error occured while running script: %s", lua_tostring(childState, -1));
       return false;
    }
    return true;

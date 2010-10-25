@@ -25,7 +25,7 @@
 #include <tinyxml.h>
 
 #include "animation.h"
-#include "console.h"
+#include "log.h"
 #include "object.h"
 
 Animator* Animator::construct(TiXmlElement* pXmlObject, Object& object)
@@ -89,7 +89,7 @@ bool Animator::loadFromXML(TiXmlElement* pXmlAnimation, Object& object)
 	else
    {
 		// found an animation object without animations, better use Object class then
-      Console::getInstance().print ("Warning: found animatable object without animations.");
+      Log::getInstance().warning("Found animatable object without animations.");
 	}
 
    const Texture& texture = object.getTexture();
@@ -110,7 +110,7 @@ bool Animator::parseAnimations(TiXmlElement* pxmlAnimations, int count)
 		TiXmlElement* pxmlAnim = (TiXmlElement*)pxmlAnimations->FirstChild(buffer);
 		if ( pxmlAnim == NULL )
       {
-         Console::getInstance().printf ("AnimObject.create: can not find %s", buffer);
+         Log::getInstance().error("AnimObject.create: can not find %s", buffer);
 			return false;
 		}
 		else

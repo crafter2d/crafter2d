@@ -25,7 +25,6 @@
 #include "world/world.h"
 
 #include "object.h"
-#include "console.h"
 
 SceneGraph::SceneGraph(Process& process):
    mProcess(process),

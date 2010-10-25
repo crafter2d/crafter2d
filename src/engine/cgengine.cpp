@@ -17,12 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "console.h"
-
 #include "cgengine.h"
 #ifndef JENGINE_INLINE
 #  include "cgengine.inl"
 #endif
+
+#include "log.h"
 
 static void CGEngine_ErrorHandler(CGcontext context, CGerror error, void *data)
 {
@@ -55,7 +55,7 @@ bool CGEngine::initialize()
 	cgContext = cgCreateContext ();
 	if (cgContext == NULL)
    {
-      Console::getLog() << "CG Error - Could not create a context.\n";
+      Log::getInstance().error("CG Error - Could not create a context");
 		return false;
    }
 
@@ -66,7 +66,7 @@ bool CGEngine::initialize()
 		vertexProfile = cgGLGetLatestProfile(CG_GL_VERTEX);
 		if ( !cgGLIsProfileSupported(vertexProfile) )
       {
-         Console::getLog() << "CG Warning - Vertex program is not supported on this system.\n";
+         Log::getInstance().error("CG Warning - Vertex program is not supported on this system.");
          supportsVertexShader(false);
       }
       else
@@ -83,7 +83,7 @@ bool CGEngine::initialize()
 		fragmentProfile = cgGLGetLatestProfile(CG_GL_FRAGMENT);
 		if ( !cgGLIsProfileSupported(fragmentProfile) )
       {
-         Console::getLog() << "CG Warning - Fragment program is not supported on this system.\n";
+         Log::getInstance().warning("CG Warning - Fragment program is not supported on this system.");
          supportsFragmentShader(false);
       }
 	}
@@ -97,7 +97,7 @@ bool CGEngine::initialize()
 void CGEngine::handleError(CGcontext& context, CGerror error)
 {
    ASSERT_MSG(context == cgContext, "Error of unknown context!")
-   Console::getInstance().printf("%s\n", cgGetErrorString(error));
+   Log::getInstance().error("%s", cgGetErrorString(error));
 }
 
 const char** CGEngine::getVertexProfileArguments()

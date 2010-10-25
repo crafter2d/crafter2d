@@ -29,7 +29,7 @@
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
 
-#include "console.h"
+#include "log.h"
 #include "opengl.h"
 
 /*!
@@ -60,7 +60,8 @@ bool Shader::compile( const char* filename )
 {
    int length = 0;
    GLcharARB* code = load( filename, length );
-   if( code != 0 ) {
+   if( code != NULL )
+   {
       bool suc = compile( code, length );
       delete[] code;
       return suc;
@@ -80,12 +81,13 @@ bool Shader::compile( const char* source, int length )
 	// see if the code was compiled successfully
    GLint compiled;
 	glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
-	if (compiled != GL_TRUE) {
+	if ( compiled != GL_TRUE )
+   {
 		GLint maxLength = 0;
 		glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &maxLength);
 		GLcharARB *log = new GLcharARB[maxLength];
 		glGetInfoLogARB(shader, maxLength, &length, log);
-      Console::getInstance().printf("Compiler log: %s", log);
+      Log::getInstance().info("Compiler log: %s", log);
 		delete[] log;
 		return false;
 	}
@@ -100,8 +102,9 @@ bool Shader::compile( const char* source, int length )
 GLcharARB* Shader::load (const char* filename, int& length)
 {
    std::ifstream file (filename, std::ios::binary );
-	if (!file.is_open ()) {
-      Console::getInstance().printf("Shader.load: Can not open shader file: %s", filename);
+	if ( !file.is_open() )
+   {
+      Log::getInstance().error("Shader.load: Can not open shader file: %s", filename);
 		return false;
 	}
 
@@ -112,8 +115,9 @@ GLcharARB* Shader::load (const char* filename, int& length)
 
 	// read in the complete data
 	GLcharARB* source = new GLcharARB[length+1];
-	if (!source) {
-      Console::getInstance().print("Shader.load: No memory available for source.");
+	if ( source == NULL )
+   {
+      Log::getInstance().error("Shader.load: No memory available for source.");
 		return false;
 	}
 
@@ -144,8 +148,9 @@ void Shader::release()
 VertexShader::VertexShader()
 {
 	handle( glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB) );
-	if (handle() == 0) {
-      Console::getInstance().print("VertexShader: Can not create shader object.");
+	if ( handle() == NULL )
+   {
+      Log::getInstance().error("VertexShader: Can not create shader object.");
    }
 }
 
@@ -156,8 +161,9 @@ VertexShader::VertexShader()
 FragmentShader::FragmentShader()
 {
 	handle( glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB) );
-	if (handle() == 0) {
-      Console::getInstance().print("FragmentShader: Can not create shader object.");
+	if ( handle() == NULL ) 
+   {
+      Log::getInstance().error("FragmentShader: Can not create shader object.");
    }
 }
 
@@ -188,8 +194,9 @@ ShaderObject::~ ShaderObject()
 bool ShaderObject::create()
 {
 	program = glCreateProgramObjectARB();
-	if (!program) {
-      Console::getInstance().printf("ShaderObject.create: Could not create program object.");
+	if ( program == NULL ) 
+   {
+      Log::getInstance().error("ShaderObject.create: Could not create program object.");
 		return false;
 	}
 	return true;
@@ -217,7 +224,7 @@ bool ShaderObject::link()
 
 	if (shaders.size() == 0)
    {
-		Console::getInstance().printf("ShaderObject.link: there are no shaders to link.");
+		Log::getInstance().error("ShaderObject.link: there are no shaders to link.");
 		return false;
 	}
 	glGetError();
@@ -237,20 +244,20 @@ bool ShaderObject::link()
 	glErr = glGetError();
    while (glErr != GL_NO_ERROR)
    {
-	   Console::getInstance().printf("GLerror: %s", (char*)gluErrorString(glErr));
+	   Log::getInstance().error("GLerror: %s", (char*)gluErrorString(glErr));
       retCode = 1;
       glErr = glGetError();
    }
 
 	glGetObjectParameterivARB (program, GL_OBJECT_LINK_STATUS_ARB, (GLint*)&linked);
-	if (linked != GL_TRUE)
+	if ( linked != GL_TRUE )
    {
 		// display linker error message
 		GLint length;
 		glGetObjectParameterivARB (program, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
 		GLcharARB *log = new GLcharARB[length];
 		glGetInfoLogARB (program, length, &length, log);
-		Console::getInstance().printf("Linker log: %s", log);
+		Log::getInstance().error("Linker log: %s", log);
 		delete[] log;
 		return false;
 	}
@@ -265,7 +272,7 @@ bool ShaderObject::valid() const
    glValidateProgramARB( program );
    glGetObjectParameterivARB( program, GL_OBJECT_VALIDATE_STATUS_ARB, (GLint*)&valid );
 
-   if (valid != GL_TRUE)
+   if ( valid != GL_TRUE )
 	{
       GLint length;
 
@@ -273,7 +280,7 @@ bool ShaderObject::valid() const
       glGetObjectParameterivARB( program, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length );
       GLcharARB *log = new GLcharARB[length];
       glGetInfoLogARB( program, length, &length, log );
-      Console::getInstance().printf( "Validate log: %s", log );
+      Log::getInstance().error( "Validate log: %s", log );
       delete[] log;
    }
 

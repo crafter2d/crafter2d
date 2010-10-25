@@ -66,4 +66,8 @@ private:
    mutable std::vector<CGparameter> _userparams;
 };
 
+#ifdef JENGINE_INLINE
+#  include "cgpath.inl"
+#endif
+
 #endif

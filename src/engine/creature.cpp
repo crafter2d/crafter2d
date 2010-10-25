@@ -26,7 +26,6 @@
 
 #include "net/bitstream.h"
 
-#include "console.h"
 #include "nodevisitor.h"
 #include "script.h"
 

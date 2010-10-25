@@ -24,10 +24,10 @@
 
 #include <AL/alut.h>
 
-#include "console.h"
-
 #include "sound/soundloaderfactory.h"
 #include "sound/soundloader.h"
+
+#include "log.h"
 
 /// \fn Sound::Sound(ALuint buf,ALuint src)
 /// \brief initializes internal member variables. Remember to load the sounds via the
@@ -50,8 +50,9 @@ Sound* Sound::clone()
 {
 	ALuint osource;
 	alGenSources(1, &osource);
-	if(alGetError() != AL_NO_ERROR) {
-      Console::getInstance().print("Sound.clone: Can not generate a source object.");
+	if( alGetError() != AL_NO_ERROR )
+   {
+      Log::getInstance().error("Sound.clone: Can not generate a source object.");
 		return NULL;
 	}
 
@@ -131,31 +132,34 @@ void SoundManager::setPlayerPosition (const Vector& pos)
 /// \retval false failed to initialize the sound system, see log file for reason
 bool SoundManager::initialize ()
 {
-   Console& console = Console::getInstance();
-	//alGetError ();
+   Log& log = Log::getInstance();
 
 	// try to open the device
 	device = alcOpenDevice(NULL);
-	if (device == NULL) {
-      console.print("OpenAL: Could not open default device.");
+	if ( device == NULL )
+   {
+      log.error("OpenAL: Could not open default device.");
 		return false;
 	}
-	else {
+	else 
+   {
 		const char* spec = (const char*)alcGetString (device, ALC_DEVICE_SPECIFIER);
-      console.printf("OpenAL: using %s", spec);
+      log.info("OpenAL: using %s", spec);
 	}
 
 	// try to create a context
 	context = alcCreateContext (device, NULL);
-	if (context == NULL) {
-      console.print("OpenAL: Could not create a context.");
+	if ( context == NULL )
+   {
+      log.error("OpenAL: Could not create a context.");
 		return false;
 	}
 
 	// activate the context
 	alcMakeContextCurrent (context);
-	if (alGetError () != AL_NO_ERROR) {
-      console.print("OpenAL: Could not make the context current.");
+	if ( alGetError () != AL_NO_ERROR ) 
+   {
+      log.error("OpenAL: Could not make the context current.");
 		return false;
 	}
 
@@ -208,17 +212,18 @@ Sound* SoundManager::load (const char* file)
          alGetError();
 
          alGenSources(1, &source);
-         if(alGetError() != AL_NO_ERROR) {
-            Console::getInstance().print("OpenAL: Can not generate a source object.");
+         if( alGetError() != AL_NO_ERROR )
+         {
+            Log::getInstance().error("OpenAL: Can not generate a source object.");
             return NULL;
          }
 
          // load the sound
          SoundLoader& loader = SoundLoaderFactory::getInstance().resolveLoader(file);
          buffer = loader.load(file);
-         if(buffer == 0)
+         if( buffer == 0 )
          {
-            Console::getInstance().printf("OpenAL: could not load %s\n", file);
+            Log::getInstance().error("OpenAL: could not load %s\n", file);
             return 0;
          }
 

@@ -27,7 +27,7 @@
 #include "vfs/file.h"
 
 #include "codepath.h"
-#include "console.h"
+#include "log.h"
 #include "opengl.h"
 #include "texture.h"
 #include "tinyxml.h"
@@ -63,22 +63,22 @@ Effect::~Effect()
  */
 bool Effect::load(const std::string& file)
 {
-	Console& console = Console::getInstance();
+	Log& log = Log::getInstance();
 
    std::string path = File::extractPath(file);
 
    TiXmlDocument doc(file);
 	if ( !doc.LoadFile() )
    {
-      console.printf("Effect.load: can not load '%s'", file);
+      log.error("Effect.load: can not load '%s'", file);
 		return false;
 	}
 
 	// get the root element from the file
 	TiXmlElement* effect = (TiXmlElement*)doc.FirstChild("effect");
 	if ( effect == NULL )
-  {
-		console.printf ("Effect.load: %s is not an effect file.", file);
+   {
+		log.error("Effect.load: %s is not an effect file.", file);
 		return false;
 	}
 
@@ -145,7 +145,7 @@ bool Effect::processTextures( const TiXmlElement* effect )
          stage.tex = ResourceManager::getInstance().loadTexture(file->Value());
          if ( !(stage.tex) )
          {
-            Console::getInstance().printf ("Effect.processTextures: could not load texture %s", file->Value());
+            Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());
 				return false;
 			}
 		}
@@ -175,7 +175,7 @@ bool Effect::postprocessTextures ()
       stages[s].index = getPath().getUniformLocation(stages[s].uniform.c_str());
       if (stages[s].index == -1) 
       {
-         Console::getInstance().printf ("Can not find %s", stages[s].uniform.c_str());
+         Log::getInstance().error("Can not find %s", stages[s].uniform.c_str());
          return false;
       }
    }
@@ -195,8 +195,9 @@ bool Effect::processCode(const TiXmlElement* effect, const std::string& path)
    const char* vertex = NULL, *fragment = NULL;
 
    TiXmlElement* code_part = (TiXmlElement*)effect->FirstChild("code");
-   if (!code_part) {
-      Console::getInstance().print ("Effect.processCode: effect file doesn't contain a code block!");
+   if ( code_part == NULL )
+   {
+      Log::getInstance().error("Effect.processCode: effect file doesn't contain a code block!");
 		return false;
    }
 
@@ -256,9 +257,9 @@ bool Effect::processCode(const TiXmlElement* effect, const std::string& path)
 bool Effect::processCombiners( const TiXmlElement* shader_part )
 {
 	TiXmlElement* combiner_part = (TiXmlElement*)shader_part->FirstChild("combiner");
-   if (!combiner_part)
+   if ( combiner_part == NULL )
    {
-      Console::getInstance().print("Effect.processCombiners: could not find combiner for effect.");
+      Log::getInstance().error("Effect.processCombiners: could not find combiner for effect.");
       return true;
    }
 
@@ -269,7 +270,7 @@ bool Effect::processCombiners( const TiXmlElement* shader_part )
    {
 		if ( stage_part == NULL )
       {
-			Console::getInstance().printf ("Effect.processCombiners: there is no combiner for stage %d", i);
+			Log::getInstance().error("Effect.processCombiners: there is no combiner for stage %d", i);
 			return false;
 		}
 

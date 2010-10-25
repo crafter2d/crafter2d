@@ -24,7 +24,7 @@
 
 #include <tinyxml.h>
 
-#include "engine/console.h"
+#include "engine/log.h"
 
 #include "tile.h"
 
@@ -60,23 +60,26 @@ TileSet::TileSet():
 bool TileSet::create(const char* filename)
 {
    int thisTile, val;
-   Console& console = Console::getInstance();
+   Log& log = Log::getInstance();
    TiXmlDocument doc(filename);
-   if (!doc.LoadFile()) {
-      console.printf("TileSet.create: can not load '%s'", filename);
+   if ( !doc.LoadFile() )
+   {
+      log.error("TileSet.create: can not load '%s'", filename);
 		return false;
 	}
 
    // find the tileset information element
    TiXmlElement* set = (TiXmlElement*)doc.FirstChild("tileset");
-   if (set == NULL) {
-      console.printf ("TileSet.create: %s is not an tileset information file.", filename);
+   if ( set == NULL )
+   {
+      log.error("TileSet.create: %s is not an tileset information file.", filename);
 		return false;
    }
 
    set->QueryIntAttribute("count", &mTileCount);
-   if (mTileCount <= 0) {
-      console.printf ("TileSet.create: %s contains invalid tileset size.", filename);
+   if ( mTileCount <= 0 )
+   {
+      log.error("TileSet.create: %s contains invalid tileset size.", filename);
       return false;
    }
    mTileCount ++; // tile engine starts at 1
@@ -86,7 +89,7 @@ bool TileSet::create(const char* filename)
 
    if ( mTileWidth == 0 || mTileHeight == 0 )
    {
-      console.printf("TileSet.create: invalid tile dimensions (in file %s)", filename);
+      log.error("TileSet.create: invalid tile dimensions (in file %s)", filename);
       return false;
    }
 

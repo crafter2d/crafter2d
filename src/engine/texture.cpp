@@ -31,9 +31,9 @@
 #include <SDL/SDL.h>
 #include <SOIL.h>
 
-#include "opengl.h"
-#include "console.h"
 #include "autoptr.h"
+#include "opengl.h"
+#include "log.h"
 
 #include "texture/abstracttextureloader.h"
 #include "texture/textureloaderfactory.h"
@@ -341,7 +341,7 @@ Uint8* Texture::ensureProperSize(int bytes, Uint8* pdata, Uint32 width, Uint32 h
 
    if ( _actualwidth > 1024 || _actualheight > 1024 )
    {
-      Console::getInstance().print("Image size of " + filename + " is too big!");
+      Log::getInstance().error("Image size of %s is too big!", filename.c_str());
       delete[] pdata;
       return NULL;
    }

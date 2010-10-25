@@ -17,9 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "console.h"
-#include "opengl.h"
 #include "vertexprogram.h"
+
+#include "log.h"
+#include "opengl.h"
 #include "autoptr.h"
 
 /// \fn VertexProgram::VertexProgram()
@@ -55,8 +56,9 @@ void VertexProgram::release ()
 bool VertexProgram::compile(const char* filename)
 {
    std::ifstream file (filename, std::ios::binary );
-	if (!file.is_open ()) {
-      Console::getInstance().printf("VertexProgram.compile: Can not open vertex assembly file '%s'", filename);
+	if ( !file.is_open() )
+   {
+      Log::getInstance().error("VertexProgram.compile: Can not open vertex assembly file '%s'", filename);
 		return false;
 	}
 
@@ -70,8 +72,9 @@ bool VertexProgram::compile(const char* filename)
    {
 	   // read in the complete data
 	   char* pcode = new char[length+1];
-	   if (!source) {
-         Console::getInstance().print("VertexProgram.compile: No memory available for vertex program code.");
+	   if ( source == NULL )
+      {
+         Log::getInstance().error("VertexProgram.compile: No memory available for vertex program code.");
 		   success = false;
 	   }
       else
@@ -97,7 +100,7 @@ bool VertexProgram::compile(const char* code, int length)
    glGenProgramsARB(1, &program);
    if ( program == 0 ) 
    {
-      Console::getInstance().print( "VertexProgram.compile(): Can not create a program." );
+      Log::getInstance().error( "VertexProgram.compile(): Can not create a program." );
       return false;
    }
 
@@ -110,8 +113,7 @@ bool VertexProgram::compile(const char* code, int length)
       glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &pos);
       const GLubyte* msg = glGetString(GL_PROGRAM_ERROR_STRING_ARB);
 
-      Console& console = Console::getInstance();
-      console.printf("VertexProgram.compile: error during compilation '%s'", (char*)msg);
+      Log::getInstance().error("VertexProgram.compile: error during compilation '%s'", (char*)msg);
 
       release();
       return false;

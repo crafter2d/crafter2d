@@ -23,7 +23,6 @@
 #include "math/point.h"
 
 #include "engine/opengl.h"
-#include "engine/console.h"
 #include "engine/vertexbuffer.h"
 
 #include "layertype.h"

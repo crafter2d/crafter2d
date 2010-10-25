@@ -22,6 +22,19 @@
 #  include "log.inl"
 #endif
 
+#include <stdarg.h>
+
+static const std::string SInfo    = "Info";
+static const std::string SWarning = "Warning";
+static const std::string SError   = "Error";
+
+// static 
+Log& Log::getInstance()
+{
+   static Log log;
+   return log;
+}
+
 Log::Log()
 {
 	file.open ("log.txt");
@@ -39,3 +52,49 @@ Log::~Log()
    }
 }
 
+void Log::info(const char* msg, ...)
+{
+   ASSERT_PTR(msg);
+
+   char text[256];
+
+   va_list ap;
+	va_start (ap, msg);
+	vsprintf (text, msg, ap);
+	va_end (ap);
+
+   writeInfo(SInfo, text);
+}
+
+void Log::warning(const char* msg, ...)
+{
+   ASSERT_PTR(msg);
+
+   char text[256];
+
+   va_list ap;
+	va_start (ap, msg);
+	vsprintf (text, msg, ap);
+	va_end (ap);
+
+   writeInfo(SWarning, text);
+}
+
+void Log::error(const char* msg, ...)
+{
+   ASSERT_PTR(msg);
+
+   char text[256];
+
+   va_list ap;
+	va_start (ap, msg);
+	vsprintf (text, msg, ap);
+	va_end (ap);
+
+   writeInfo(SError, text);
+}
+
+void Log::writeInfo(const std::string& type, const char* msg)
+{
+   *this << type.c_str() << " - " << msg << '\n';
+}

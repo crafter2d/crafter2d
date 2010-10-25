@@ -31,8 +31,9 @@
 #include <SDL/SDL.h>
 #include <math.h>
 
+#include "engine/autoptr.h"
 #include "engine/opengl.h"
-#include "engine/console.h"
+#include "engine/log.h"
 #include "engine/vertexbuffer.h"
 
 #include "tile.h"
@@ -84,8 +85,9 @@ bool Layer::create(const std::string& layername, int w, int h, const std::string
    width       = w;
    height      = h;
 
-   if (width <= 0 || height <= 0) {
-      Console::getInstance().printf("Layer.create: Invalid layer size!");
+   if (width <= 0 || height <= 0) 
+   {
+      Log::getInstance().error("Layer.create: Invalid layer size!");
 		return false;
 	}
 
@@ -93,7 +95,7 @@ bool Layer::create(const std::string& layername, int w, int h, const std::string
 
    if ( !effect.load(effectFile.c_str()) )
    {
-      Console::getInstance().printf("Can not load effect file '%s'.", effectFile.c_str());
+      Log::getInstance().error("Can not load effect file '%s'.", effectFile.c_str());
       return false;
    }
 
@@ -205,25 +207,23 @@ TileRow* Layer::createTileRows(int width, int height)
 VertexBuffer* Layer::createVertexBuffer(int width, int height, int vertexcount)
 {
    // create the vertex buffer for this layer
-	VertexBuffer* pvb = OpenGL::createVertexBuffer();
-   if ( pvb == NULL )
+	AutoPtr<VertexBuffer> vb = OpenGL::createVertexBuffer();
+   if ( vb.hasPointer() )
    {
-      Console::getInstance().print("Not enough memory available for vertex buffer.");
+      Log::getInstance().error("Not enough memory available for vertex buffer.");
       return NULL;
    }
 
    int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
    int format = VertexBuffer::eXY | VertexBuffer::eTex0;
 
-   if ( !pvb->create (effect, width*height*vertexcount, usage, format) )
+   if ( !vb->create (effect, width*height*vertexcount, usage, format) )
    {
-		Console::getInstance().print("Could not create the vertex buffer.");
-
-      delete pvb;
+		Log::getInstance().error("Could not create the vertex buffer.");
 		return NULL;
 	}
 
-   return pvb;
+   return vb.release();
 }
 
 /// \fn Layer::scroll(float x, float y)

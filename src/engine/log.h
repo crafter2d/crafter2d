@@ -25,7 +25,8 @@
 class Log
 {
 public:
-         Log();
+   static Log& getInstance();
+
 	      ~Log();
 
    Log&  operator<< (int i);
@@ -37,9 +38,17 @@ public:
    Log&  put(char c);
 	Log&  put(char* str);
 
+   void  info(const char* msg, ...);
+   void  warning(const char* msg, ...);
+   void  error(const char* msg, ...);
+
 	void  flush();
 
 private:
+   Log();
+
+   void writeInfo(const std::string& type, const char* msg);
+
    std::ofstream file;
 };
 

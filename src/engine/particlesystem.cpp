@@ -27,7 +27,7 @@
 #include <tinyxml.h>
 
 #include "codepath.h"
-#include "console.h"
+#include "log.h"
 #include "object.h"
 #include "opengl.h"
 #include "script.h"
@@ -70,13 +70,13 @@ ParticleSystem::~ParticleSystem()
 
 bool ParticleSystem::load(TiXmlDocument& doc)
 {
-   Console& console = Console::getInstance();
+   Log& log = Log::getInstance();
 
    // find particle information
    TiXmlElement* psystem = (TiXmlElement*)doc.FirstChild ("particlesystem");
 	if ( psystem == NULL )
    {
-      console.print("ParticleSystem.load: Invalid XML file format, particle system expected.\n");
+      log.error("ParticleSystem.load: Invalid XML file format, particle system expected.\n");
 		return false;
    }
 
@@ -85,7 +85,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
    if ( psystem->QueryIntAttribute ("emitrate", &emitRate) != TIXML_SUCCESS ||
 		  psystem->QueryIntAttribute ("emitcount", &emitCount) != TIXML_SUCCESS)
    {
-      console.print("ParticleSystem.load: object needs to have emitrate and count.\n");
+      log.error("ParticleSystem.load: object needs to have emitrate and count.\n");
 		return false;
 	}
 
@@ -93,7 +93,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
 	TiXmlElement* pelement = (TiXmlElement*)psystem->FirstChild ("texture");
 	if ( pelement == NULL )
    {
-		console.print("ParticleSystem.load: object has no texture.\n");
+		log.error("ParticleSystem.load: object has no texture.\n");
 		return false;
 	}
 	else

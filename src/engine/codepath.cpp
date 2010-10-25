@@ -23,7 +23,7 @@
 #include <tinyxml.h>
 
 #include "autoptr.h"
-#include "console.h"
+#include "log.h"
 #include "opengl.h"
 #include "texture.h"
 #include "defines.h"
@@ -50,7 +50,7 @@ ShaderPath::ShaderPath():
  */
 bool ShaderPath::load(const std::string& vertex, const std::string& fragment)
 {
-	Console& console = Console::getInstance ();
+	Log& log = Log::getInstance ();
 	shader.create();
 
 	// try to load and add the vertex shader
@@ -59,7 +59,7 @@ bool ShaderPath::load(const std::string& vertex, const std::string& fragment)
 		AutoPtr<VertexShader> vs = new VertexShader();
       if ( !vs->compile(vertex.c_str()) )
       {
-         console.printf("GLSLPath.load: Failed to load or compile vertex shader '%s'", vertex);
+         log.error("GLSLPath.load: Failed to load or compile vertex shader '%s'", vertex);
 			return false;
 		}
 
@@ -72,7 +72,7 @@ bool ShaderPath::load(const std::string& vertex, const std::string& fragment)
 		AutoPtr<FragmentShader> fs = new FragmentShader();
       if ( !fs->compile(fragment.c_str()) )
       {
-         console.printf("GLSLPath.load: Failed to load or compile fragment shader '%s'", fragment);
+         log.error("GLSLPath.load: Failed to load or compile fragment shader '%s'", fragment);
 			return false;
 		}
 

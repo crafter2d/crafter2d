@@ -18,7 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "movie.h"
-#include "console.h"
+
+#include "log.h"
 
 #ifdef WIN32
 HDC Movie::hdc = CreateCompatibleDC(0);
@@ -68,8 +69,9 @@ bool Movie::load(const char* file)
    target = getRenderTarget ();
    if (strstr(file, "avi") != NULL)
       ok = loadAVI(file);
-	else {
-      Console::getInstance().printf("Movie.load: unknown movie format (%s)", file);
+	else 
+   {
+      Log::getInstance().error("Movie.load: unknown movie format (%s)", file);
 		return false;
 	}
 	
@@ -83,14 +85,16 @@ bool Movie::load(const char* file)
 bool Movie::loadAVI(const char* filename)
 {
 #ifdef WIN32
-   Console& console = Console::getInstance();
+   Log& log = Log::getInstance();
 
    // try to open the avi file
-   if (AVIStreamOpenFromFile(&pavi, filename, streamtypeVIDEO, 0, OF_READ, NULL) !=0) {
-      console.printf("Can not open %s movie file.", filename);   
+   if ( AVIStreamOpenFromFile(&pavi, filename, streamtypeVIDEO, 0, OF_READ, NULL) != 0 )
+   {
+      log.error("Can not open %s movie file.", filename);   
       return false;
    }
-   else {
+   else 
+   {
       // get avi dimensions and length
       AVISTREAMINFO psi;
       AVIStreamInfo(pavi, &psi, sizeof(psi));
@@ -118,8 +122,9 @@ bool Movie::loadAVI(const char* filename)
 
       // get the AVI frame pointer
       pgf = AVIStreamGetFrameOpen(pavi, NULL);
-      if (pgf == NULL) {
-         console.printf("Can not open the stream frame of %s.", filename);
+      if ( pgf == NULL )
+      {
+         log.error("Can not open the stream frame of %s.", filename);
          return false;
       }
 

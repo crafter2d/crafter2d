@@ -33,7 +33,7 @@
 #include "world/worldrenderer.h"
 
 #include "autoptr.h"
-#include "console.h"
+#include "log.h"
 #include "player.h"
 #include "script.h"
 #include "scriptmanager.h"
@@ -90,6 +90,9 @@ void Client::disconnect()
 
 bool Client::create()
 {
+   Log& log = Log::getInstance();
+   log << "\n-- Initializing Sound --\n\n";
+
     // initialize the sound system
    mSoundManager.initialize();
 

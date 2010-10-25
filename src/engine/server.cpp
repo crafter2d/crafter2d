@@ -32,7 +32,7 @@
 
 #include "actionmap.h"
 #include "autoptr.h"
-#include "console.h"
+#include "log.h"
 #include "player.h"
 #include "script.h"
 #include "scriptmanager.h"
@@ -308,7 +308,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             Player* pplayer = clients[client];
             if ( pplayer == NULL )
             {
-               Console::getInstance().print("Invalid player input event.");
+               Log::getInstance().error("Invalid player input event.");
             }
             else
             {
@@ -324,7 +324,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             SceneObject* obj = graph.find(request.getId());
             if ( obj == NULL )
             {
-               Console::getInstance().print("Server - Could not find matching object for request");
+               Log::getInstance().error("Server - Could not find matching object for request");
             }
             else
             {
@@ -341,7 +341,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             break;
          }
       default:
-         Console::getInstance().print("Server: Received an unknown message.");
+         Log::getInstance().error("Server: Received an unknown message.");
          break;
    }
 

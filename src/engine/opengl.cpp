@@ -28,7 +28,7 @@
 #include <iostream>
 #include <string.h>
 
-#include "console.h"
+#include "log.h"
 #include "cgengine.h"
 #include "cgpath.h"
 #include "codepath.h"
@@ -46,7 +46,7 @@
  */
 bool OpenGL::initialize ()
 {
-   Log& log = Console::getLog();
+   Log& log = Log::getInstance();
 	GLint units;
 
    log << "Graphics card:\t\t" << (char*)glGetString(GL_VENDOR) << "\n";
