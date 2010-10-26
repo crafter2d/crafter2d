@@ -23,8 +23,6 @@
 #endif
 
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <vfw.h>
 #endif
 
@@ -34,31 +32,34 @@
 #include <GL/glu.h>
 #include <tolua++.h>
 
-#include "engine/tools/profiler/profiler.h"
-#include "engine/tools/profiler/profilerinstance.h"
+#include "tools/profiler/profiler.h"
+#include "tools/profiler/profilerinstance.h"
 
-//#include "engine/physics/physicsfactory.h"
-//#include "engine/physics/box2d/box2dfactory.h"
-//#include "engine/physics/simulationfactoryregistry.h"
+#include "physics/physicsfactory.h"
+#include "physics/box2d/box2dfactory.h"
+#include "physics/simulationfactoryregistry.h"
 
-#include "engine/net/netobjectfactory.h"
-#include "engine/net/netconnection.h"
+#include "net/netobjectfactory.h"
+#include "net/netconnection.h"
 
-#include "engine/system/platform.h"
-#include "engine/system/timer.h"
-#include "engine/system/timerdelta.h"
-
-#include "engine/opengl.h"
+#include "system/platform.h"
+#include "system/timer.h"
+#include "system/timerdelta.h"
 
 #include "console.h"
+#include "opengl.h"
+#include "scriptmanager.h"
+#include "creature.h"
 #include "gameconfiguration.h"
 #include "gameconfigurationselector.h"
+#include "gamesettings.h"
 
 /*!
     \fn Game::Game()
 	 \brief Initialized member variables
  */
 Game::Game():
+   mSettings(),
    mpConfiguration(NULL),
    mWindow(),
    mWindowListener(*this),
@@ -113,9 +114,12 @@ bool Game::create()
    mScriptManager.initialize ();
    mScriptManager.setObject(&Console::getInstance(), "Console", "console");
 
+   // load the engine settings
+   mSettings.initialize();
+
    // register the physics factory
-   //SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
-   //SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
+   SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
+   SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
 
    log << "\n-- Initializing Graphics --\n\n";
 
@@ -144,12 +148,12 @@ bool Game::create()
 
    NetObjectFactory::getInstance().initialize();
 
+   log << "\n-- Initializing Sound --\n\n";
+
    log << "\n-- Running Game --\n\n";
 
    // reload the contents of the log file for the console
    console.reload();
-
-   mScriptManager.executeScript("main.lua");
 
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
@@ -158,6 +162,8 @@ bool Game::create()
       console.error("Aborted after failed game initialization.");
       return false;
    }
+
+   mScriptManager.executeScript("main.lua");
 
    return true;
 }
@@ -284,6 +290,12 @@ void Game::getWindowDimensions(int& w, int& h)
  */
 bool Game::initGame()
 {
+   Script& script = mScriptManager.getTemporaryScript();
+   script.prepareCall("game_initialize");
+   script.setSelf(this, "Game");
+   script.addParam(delta);
+   script.run(1);
+
    // select the configuration
    GameConfigurationSelector selector(*this);
    if ( selector.select() )

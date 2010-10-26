@@ -15,7 +15,9 @@ files { "src/core/**.cpp", "src/core/**.h", "src/core/**.inl" }
 
 if ( os.is("windows") ) then
 	-- this is an export dll
-	defines { "CORE_EXPORTS" }
+	defines { "WIN32", "CORE_EXPORTS" }
+	
+	excludes { "src/core/vfs/linux*.*" }
 	
 	libdir = "../externallibs/" .. _ACTION .. "/"
 	
@@ -35,4 +37,45 @@ if ( os.is("windows") ) then
 				libdir .. "tinyxml/lib",
 				libdir .. "lua/lib", 
 				libdir .. "tolua++/lib" }
+				
+	-- set IDE specific settings
+	if ( _ACTION == "cb-gcc" ) then
+	
+		buildoptions { "-W", "-Wall", "-O0" }
+		linkoptions { "--allow-multiple-definition" }
+	  
+		configuration "Debug"
+			links { "GLee_d", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
+					"user32", "vfw32", "ws2_32",  "cg", "cgGL",
+					"minizip_d", "zlib1", "lua", "tolua++_d", "tinyxmld_STL"  } 
+		 
+		configuration "Release"
+			links { "GLee_d", "SOIL", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
+					"user32", "vfw32", "ws2_32", "cg", "cgGL",
+					"minizip", "zlib1", "lua", "tolua++", "tinyxml_STL"  } 
+	else
+		if ( _ACTION > "vs2005" ) then
+			ignoredefaultlibs { "libcmt.lib" }
+		end
+		
+		links { "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL"  }
+		
+		configuration "Debug"
+			links { "GLee_d", "tolua++_d", " lua5.1_d", "tinyxmld_STL", "zlib1_d", "minizip_d" }
+			ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
+					
+		configuration "Release"
+			links { "GLee", "tolua++", "lua5.1", "tinyxml_STL", "zlib1", "minizip" }
+	end
+elseif ( os.is("linux") ) then
+
+	defines { "LINUX" }
+	
+	buildoptions { "-W", "-Wall", "-O0" }
+	if ( _ACTION == "cb-gcc" ) then
+		linkoptions { "-Xlinker", "-zmuldefs" }
+	end
+
+	excludes { "src/core/vfs/win*.*" }
+		
 end

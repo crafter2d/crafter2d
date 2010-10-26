@@ -22,10 +22,9 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
-#include "../vfs/file.h"
-#include "../vfs/buffer.h"
+#include "core/vfs/file.h"
 
-#include "../autoptr.h"
+#include "core/autoptr.h"
 
 // -- statics
 
@@ -40,34 +39,34 @@ static void ILAPIENTRY closeProc(ILHANDLE handle)
 
 static ILboolean ILAPIENTRY eofProc(ILHANDLE handle)
 {
-  Buffer* pbuffer = (Buffer*)handle;
-  return pbuffer->eof();
+  File* pfile = (File*)handle;
+  return pfile->eof();
 }
 
 static ILint ILAPIENTRY getcProc(ILHANDLE handle)
 {
-  Buffer* pbuffer = (Buffer*)handle;
-  return pbuffer->getc();
+  File* pfile = (File*)handle;
+  return pfile->getc();
 }
 
 static ILint ILAPIENTRY readProc(void* buffer, ILuint typesize, ILuint datasize, ILHANDLE handle)
 {
   ILuint readsize = typesize * datasize;
-  Buffer* pbuffer = (Buffer*)handle;
-  return pbuffer->read(buffer, readsize);
+  File* pfile = (File*)handle;
+  return pfile->read(buffer, readsize);
 }
 
 static ILint ILAPIENTRY seekProc(ILHANDLE handle, ILint skip, ILint mode)
 {
-  Buffer* pbuffer = (Buffer*)handle;
-  pbuffer->seek(skip, mode);
+  File* pfile = (File*)handle;
+  pfile->seek(skip, mode);
   return 0;
 }
 
 static ILint ILAPIENTRY tellProc(ILHANDLE handle)
 {
-  Buffer* pbuffer = (Buffer*)handle;
-  return pbuffer->tell();
+  File* pfile = (File*)handle;
+  return pfile->tell();
 }
 
 // -- loader
@@ -90,7 +89,7 @@ bool TextureLoaderDevil::virLoad(File& file, TextureInfo& info)
    ILuint handle = ilGenImage();
    ilBindImage(handle);
 
-   ILHANDLE bufferHandle = (ILHANDLE)&file.getBuffer();
+   ILHANDLE bufferHandle = (ILHANDLE)&file;
 
    ILenum type = ilDetermineTypeF(bufferHandle);
    if ( !ilLoadF(type, bufferHandle) )

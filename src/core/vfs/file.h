@@ -20,6 +20,8 @@
 #ifndef FILE_H
 #define FILE_H
 
+#include "core/core_base.h"
+
 #include <stdio.h>
 #include <string>
 
@@ -28,7 +30,7 @@ class Buffer;
 /**
    @author Jeroen Broekhuizen <jeroen@jengine.homedns.org>
 */
-class File
+class CORE_API File
 {
 public:
    enum Mode { ERead = 1,
@@ -41,18 +43,25 @@ public:
    File();
    virtual ~File();
 
-   Buffer&  getBuffer();
-
    bool open(const std::string& filename, int modus = ERead | EBinary);
    void close();
 
-   int read(void* ptr, int size);
+ // reading
+   int  read(void* ptr, int size);
+   int  write(void* ptr, int size);
+   char getc();
 
+ // search & positioning
+   void seek(int pos, int mode);
+   int  tell() const;
+   bool eof() const;
+  
+ // query
    int size();
-
    virtual bool isValid() const = 0;
 
 protected:
+   Buffer&  getBuffer();
    void     setBuffer(Buffer* pbuffer);
 
    virtual bool   virOpen(const std::string& filename, int modus) = 0;

@@ -80,10 +80,41 @@ void File::close()
    virClose();
 }
 
+// - Reading & writting
+
 int File::read(void* ptr, int size)
 {
    return getBuffer().read(ptr, size);
 }
+
+int File::write(void* ptr, int size)
+{
+   return getBuffer().write(ptr, size);
+}
+
+char File::getc()
+{
+   return getBuffer().getc();
+}
+
+// Search & positioning
+
+void File::seek(int pos, int mode)
+{
+   return getBuffer().seek(pos, mode);
+}
+
+int File::tell() const
+{
+   return mpBuffer->tell();
+}
+
+bool File::eof() const
+{
+   return mpBuffer != NULL ? mpBuffer->eof() : true;
+}
+
+// - Query
 
 int File::size()
 {

@@ -20,9 +20,9 @@
 #ifndef VECTOR3_H_
 #define VECTOR3_H_
 
-#include "math_base.h"
+#include "core/core_base.h"
 
-class MATH_API Vector3
+class CORE_API Vector3
 {
 public:
    Vector3();

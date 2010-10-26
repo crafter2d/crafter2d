@@ -19,8 +19,6 @@ if ( os.is("windows") ) then
 	libdir = "../externallibs/" .. _ACTION .. "/"
 	defines { "WIN32", "ENGINE_EXPORTS" }
 	
-	excludes { "src/engine/vfs/linux*.*", "src/engine/system/linux*.*" }
-
 	includedirs { libdir .. "sdl/include",
                     libdir .. "glee/include",
                     libdir .. "cg/include",
@@ -103,8 +101,6 @@ elseif ( os.is("linux") ) then
 	end
    
 	defines { "LINUX" }
-   
-	excludes { "src/engine/vfs/win*.*", "src/engine/system/win*.*" }
 	
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL",

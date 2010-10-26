@@ -20,9 +20,9 @@
 #ifndef POINT_H_
 #define POINT_H_
 
-#include "math_base.h"
+#include "core/core_base.h"
 
-class MATH_API Point
+class CORE_API Point
 {
 public:
    static Point& zero();

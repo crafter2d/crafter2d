@@ -23,7 +23,8 @@
 #endif
 
 #include <SDL/SDL.h>
-#include <exception>
+
+#include "core/log/log.h"
 
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"
@@ -50,6 +51,9 @@ Script::Script(lua_State* l, bool c):
    //else childState = l;
 }
 
+//-----------------------------------------
+// - Load & run
+//-----------------------------------------
 
 /// \fn Script::load(const char* file)
 /// \brief Loads a script file into the lua state and prepares it to run.
@@ -70,7 +74,7 @@ bool Script::load(ScriptContext& context, const std::string& filename)
    else
    {
       std::string error = "Could not load script file " + filename;
-      context.setError(error);
+      context.info(Log::eError, error);
    }
 
    return true;
@@ -89,6 +93,24 @@ bool Script::loadString(ScriptContext& context, const std::string& code)
 
    return true;
 }
+
+/// \fn Script::run(int params=0, int returns=0)
+/// \brief Runs the script. You must first call prepareCall and optionaly the addParam functions
+/// to set up the function name and arguments.
+/// \returns always returns true
+void Script::run(ScriptContext& context, int params, int returns)
+{
+	// call the function
+   if ( lua_pcall(childState, params, returns, 0) != 0 ) 
+   {
+      std::string error = std::string("An error occured while running script: ") + lua_tostring(childState, -1);
+      context.info(Log::eError, error);
+   }
+}
+
+//-----------------------------------------
+// - Retreival
+//-----------------------------------------
 
 bool Script::getBoolean()
 {
@@ -109,18 +131,3 @@ int Script::getInteger()
    lua_pop(childState, 1);
    return ret;
 }
-
-/// \fn Script::run(int params=0, int returns=0)
-/// \brief Runs the script. You must first call prepareCall and optionaly the addParam functions
-/// to set up the function name and arguments.
-/// \returns always returns true
-void Script::run(ScriptContext& context, int params, int returns)
-{
-	// call the function
-   if ( lua_pcall(childState, params, returns, 0) != 0 ) 
-   {
-      std::string error = std::string("An error occured while running script: ") + lua_tostring(childState, -1);
-      context.setError(error);
-   }
-}
-

@@ -20,11 +20,11 @@
 #ifndef _VECTOR_H_
 #define _VECTOR_H_
 
-#include "math_base.h"
+#include "core/core_base.h"
 
 #include <math.h>
 
-class MATH_API Vector
+class CORE_API Vector
 {
 public:
    static Vector& zero();

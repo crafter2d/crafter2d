@@ -20,6 +20,8 @@
 #ifndef FILESYSTEM_H_
 #define FILESYSTEM_H_
 
+#include "core/core_base.h"
+
 #include <string>
 
 #include "filesystempaths.h" 
@@ -28,7 +30,7 @@ class File;
 
 /// \brief Abstract base class of the virtual file system.
 
-class FileSystem
+class CORE_API FileSystem
 {
 public:
    typedef void(*Callback)(const char* name, bool isdir, void* pdata);

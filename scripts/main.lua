@@ -13,6 +13,18 @@ include('client.lua')
 include('splash.lua')
 include('mainmenu.lua')
 
+-- called by engine initialization
+function game_initialize()
+end
+
+-- called when the game is shutdown
+function game_shutdown()
+end
+
+-- called each frame
+function game_run()
+end
+
 function showMenu()
 	canvas:setCaption("JEngine SSE Framework")
 

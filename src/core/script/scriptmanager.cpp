@@ -26,13 +26,11 @@
 #include <sstream>
 #include <tolua++.h>
 
+#include "core/log/log.h"
+
 #include "scriptcontext.h"
 
 #define LUA_SCRIPTLIBNAME "script"
-
-//////////////////////////////////////////////////////////////////////////
-// - ScriptManager stuff
-//////////////////////////////////////////////////////////////////////////
 
 ScriptManager::ScriptManager():
    luaState(NULL),
@@ -77,32 +75,6 @@ void ScriptManager::destroy()
 	}
 }
 
-/// \fn ScriptManager::update(Uint32 tick)
-/// \brief Checks the request list and executes scripts when necessary.
-void ScriptManager::update(ScriptContext& context, Uint32 tick)
-{
-   Requests::iterator it = requests.begin();
-   while ( it != requests.end() )
-   {
-      Requests::iterator next = it;
-      Request& request = *it;
-      ++next;
-
-      if ( tick >= request.startTime )
-      {
-         // execute the function
-         Script& script = getTemporaryScript();
-         script.prepareCall(request.fnc);
-         script.run(context);
-
-         // remove request from the list
-         requests.erase(it);
-      }
-
-      it = next;
-   }
-}
-
 /// \fn ScriptManager::loadModule(int (*tolua_Module)(lua_State* tolua_S))
 /// \brief Calls the function tolua_Module to load it in the global Lua state. These tolua_Module
 /// functions are generated automatically by tolua.
@@ -129,7 +101,7 @@ bool ScriptManager::executeLine(ScriptContext& context, const char* line)
 {
    if ( luaL_dostring(luaState, line) != 0 )
    {
-      context.setError(lua_tostring(luaState, -1));
+      context.info(Log::eError, lua_tostring(luaState, -1));
       return false;
    }
    return true;
@@ -146,61 +118,21 @@ void ScriptManager::setObject(void* obj, const char* type, const char* var)
 	lua_setglobal (luaState, var);
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------
 // - Registered functions
-//////////////////////////////////////////////////////////////////////////
-
-static ScriptManager* getScriptManager(lua_State* L)
-{
-   lua_getglobal(L, LUA_SCRIPTLIBNAME);
-   ScriptManager* pmanager = static_cast<ScriptManager*>(lua_touserdata(L,-1));
-   return pmanager;
-}
-
-static int script_run(lua_State* L)
-{
-   ASSERT(lua_gettop(L) == 1);
-
-   const char* pfile = luaL_checkstring(L, 1);
-   bool success = false;
-
-   getScriptManager(L)->executeScript(pfile, false);
-
-   lua_pushboolean(L, success);
-
-   return 1;
-}
-
-static int script_schedule(lua_State* L)
-{
-   ASSERT(lua_gettop(L) == 2);
-
-   const char* pfunction = luaL_checkstring(L, 1);
-   int delay             = luaL_checkint(L, 2);
-
-   int jobid = getScriptManager(L)->addRequest(pfunction, 1, delay);
-   
-   lua_pushnumber(L, jobid);
-
-   return 1;
-}
-
-static int script_unschedule(lua_State* L)
-{
-   ASSERT(lua_gettop(L) == 1);
-
-   int jobid = luaL_checkint(L, 1);
-   getScriptManager(L)->removeRequest(jobid);
-
-   return 0;
-}
+//-----------------------------------------
 
 static int include(lua_State* L)
 {
    ASSERT(lua_gettop(L) == 1);
 
    const std::string file = luaL_checkstring(L, 1);
-   getScriptManager(L)->executeScript(file, false);
+
+   ScriptContext context;
+
+   lua_getglobal(L, LUA_SCRIPTLIBNAME);
+   ScriptManager* pmanager = static_cast<ScriptManager*>(lua_touserdata(L,-1));
+   pmanager->executeScript(context, file, false);
 
    return 0;
 }
@@ -209,60 +141,78 @@ void ScriptManager::registerGlobals()
 {
    setObject(this, "ScriptManager", "script");
 
-   static const luaL_reg scriptlib[] = {
-      {"schedule", script_schedule},
-      {"unschedule", script_unschedule},
-      {"run", script_run},
-      {NULL, NULL}
-   };
-
    lua_register(luaState, "include", include);
-   luaL_openlib(luaState, LUA_SCRIPTLIBNAME, scriptlib, 0);
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------
 // - Scheduling interface
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------
 
-/// \fn ScriptManager::addRequest(const char* fnc, int type, int time)
-/// \brief Add a script request to the list. Will be executed after a certain
-/// time interval.
-Uint32 ScriptManager::addRequest(const char* fnc, int type, int time)
+/// \fn ScriptManager::update(Uint32 tick)
+/// \brief Checks the request list and executes scripts when necessary.
+void ScriptManager::update(ScriptContext& context, Uint32 tick)
+{
+   Requests::iterator it = requests.begin();
+   while ( it != requests.end() )
+   {
+      Requests::iterator next = it;
+      Request& request = *it;
+      ++next;
+
+      if ( tick >= request.mStartTime )
+      {
+         // execute the function
+         Script& script = getTemporaryScript();
+         script.prepareCall(request.mFunction.c_str());
+         script.run(context);
+
+         // remove request from the list
+         requests.erase(it);
+      }
+
+      it = next;
+   }
+}
+
+/// \fn ScriptManager::schedule(const std::string& fnc, int time)
+/// \brief Schedules a script for running after time milli seconds passed.
+Uint32 ScriptManager::schedule(const std::string& fnc, int time)
 {
    Request req;
-   req.job = job;
-   req.fnc = fnc;
-   req.type = type;
-   req.startTime = SDL_GetTicks() + time;
+   req.mJobId     = job++;
+   req.mFunction  = fnc;
+   req.mStartTime = SDL_GetTicks() + time;
    requests.push_back(req);
-   job++;
 
-   return req.job;
+   return req.mJobId;
 }
 
-/// \fn ScriptManager::removeRequest(const int jobid)
+/// \fn ScriptManager::unschedule(const int jobid)
 /// \brief Removes a job from the request list.
-void ScriptManager::removeRequest(const Uint32 jobid)
+void ScriptManager::unschedule(const Uint32 jobid)
 {
-   std::list<Request>::iterator it = requests.begin();
-   for (; it != requests.end(); ++it) {
-      if ((*it).job == jobid) {
+   Requests::iterator it = requests.begin();
+   for ( ; it != requests.end(); ++it )
+   {
+      Request& request = *it;
+      if ( request.mJobId == jobid)
+      {
          requests.erase(it);
-         return;
+         break;
       }
    }
 }
 
-/// \fn ScriptManager::removeAllRequests()
+/// \fn ScriptManager::unscheduleAll()
 /// \brief Removes all requests from the list.
-void ScriptManager::removeAllRequests()
+void ScriptManager::unscheduleAll()
 {
    requests.clear();
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------
 // - Function interface
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------
 
 bool ScriptManager::hasFunction(const std::string& name) const
 {
@@ -290,9 +240,9 @@ std::string ScriptManager::generateUniqueFunctionName(const std::string& name)
    return uniquename.str();
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------
 // - Global retreival
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------
 
 int ScriptManager::getInt(const char* var)
 {

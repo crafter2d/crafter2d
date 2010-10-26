@@ -22,17 +22,21 @@
 
 #include "core/core_base.h"
 
+#include "core/log/log.h"
+
 class CORE_API ScriptContext
 {
 public:
    ScriptContext();
 
  // get/set
-   const std::string& getError() const;
-   void               setError(const std::string& error);
+   void setLog(Log& log);
+
+ // information
+   void info(Log::Type type, const std::string& message);
 
 private:
-   std::string mError;
+   Log* mpLog;
 };
 
 #endif // SCRIPT_CONTEXT_H_

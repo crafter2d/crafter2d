@@ -68,12 +68,7 @@ void MyGame::loadCustomScriptLibraries()
 @endcode
 
 Finally you can set up some default objects during initialization of your game. JEngine SSE
-default loads in the canvas, client, server, etc in thstruct Request {
-      const char* fnc;
-      Uint32 job;
-      int type;
-      int startTime;
-   };e Lua environment for easy access in
+default loads in the canvas, client, server, etc in the Lua environment for easy access in
 your scripts.
 
 @code
@@ -99,10 +94,9 @@ always exists (it returns a reference to the script object).
 class CORE_API ScriptManager
 {
    struct Request {
-      const char* fnc;
-      Uint32 job;
-      Uint32 startTime;
-      int type;
+      std::string mFunction;
+      Uint32      mJobId;
+      Uint32      mStartTime;
    };
 
    typedef std::list<Request> Requests;
@@ -128,9 +122,9 @@ public:
    Script&                 getTemporaryScript();
 
  // requests
-   Uint32                  addRequest( const char* cmd, int type, int time );
-   void                    removeRequest( const Uint32 jobid );
-   void                    removeAllRequests();
+   Uint32                  schedule(const std::string& cmd, int time);
+   void                    unschedule(const Uint32 jobid);
+   void                    unscheduleAll();
 
  // function interface
    bool                    hasFunction(const std::string& name) const;

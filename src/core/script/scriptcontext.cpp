@@ -20,17 +20,27 @@
 #include "scriptcontext.h" 
 
 ScriptContext::ScriptContext():
-   mError()
+   mpLog(NULL)
 {
 }
 
- // get/set
-const std::string& ScriptContext::getError() const
+//-----------------------------------------
+// - Get/set
+//-----------------------------------------
+
+void ScriptContext::setLog(Log& log)
 {
-   return mError;
+   mpLog = &log;
 }
 
-void ScriptContext::setError(const std::string& error)
+//-----------------------------------------
+// - Information
+//-----------------------------------------
+
+void ScriptContext::info(Log::Type type, const std::string& message)
 {
-   mError = error;
+   if ( mpLog != NULL )
+   {
+      mpLog->info(message.c_str());
+   }
 }

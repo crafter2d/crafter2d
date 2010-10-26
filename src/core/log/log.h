@@ -17,19 +17,47 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TEXTURE_LOADER_BMP_H_
-#define TEXTURE_LOADER_BMP_H_
+#ifndef _LOG_H_
+#define _LOG_H_
 
-#include "abstracttextureloader.h"
+#include "core/core_base.h"
 
-class TextureLoaderBmp : public AbstractTextureLoader
+#include <fstream>
+
+class CORE_API Log
 {
 public:
-   TextureLoaderBmp();
-   virtual ~TextureLoaderBmp();
+   static Log& getInstance();
 
-protected:
-   virtual bool virLoad(File& file, TextureInfo& info);
+   enum Type { eInfo, eWarning, eError };
+
+	      ~Log();
+
+   Log&  operator<< (int i);
+	Log&  operator<< (char c);
+	Log&  operator<< (unsigned char u);
+	Log&  operator<< (const char* s);
+   Log&  operator<< (float f);
+
+   Log&  put(char c);
+	Log&  put(char* str);
+
+   void  info(const char* msg, ...);
+   void  warning(const char* msg, ...);
+   void  error(const char* msg, ...);
+
+	void  flush();
+
+private:
+   Log();
+
+   void writeInfo(const std::string& type, const char* msg);
+
+   std::ofstream file;
 };
 
-#endif // TEXTURE_LOADER_BMP_H_
+#ifdef JENGINE_INLINE
+#  include "log.inl"
+#endif
+
+#endif 
