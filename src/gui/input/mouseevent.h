@@ -20,9 +20,8 @@
 #ifndef MOUSE_EVENT_H
 #define MOUSE_EVENT_H
 
-#include "math/point.h"
-
-#include "engine/defines.h"
+#include "core/math/point.h"
+#include "core/defines.h"
 
 #include "inputevent.h"
 

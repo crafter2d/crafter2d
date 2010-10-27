@@ -20,7 +20,7 @@
 #ifndef GUI_SCOPED_TRANSFORM_H
 #define GUI_SCOPED_TRANSFORM_H
 
-#include "../scopedtransform.h"
+#include "engine/scopedtransform.h"
 
 class GuiWnd;
 

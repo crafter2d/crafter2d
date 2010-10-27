@@ -23,6 +23,8 @@
 #endif
 
 #ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #include <vfw.h>
 #endif
 
@@ -32,24 +34,26 @@
 #include <GL/glu.h>
 #include <tolua++.h>
 
-#include "tools/profiler/profiler.h"
-#include "tools/profiler/profilerinstance.h"
+#include "core/script/scriptcontext.h"
+#include "core/script/scriptmanager.h"
 
-#include "physics/physicsfactory.h"
-#include "physics/box2d/box2dfactory.h"
-#include "physics/simulationfactoryregistry.h"
+#include "engine/tools/profiler/profiler.h"
+#include "engine/tools/profiler/profilerinstance.h"
 
-#include "net/netobjectfactory.h"
-#include "net/netconnection.h"
+#include "engine/physics/physicsfactory.h"
+#include "engine/physics/box2d/box2dfactory.h"
+#include "engine/physics/simulationfactoryregistry.h"
 
-#include "system/platform.h"
-#include "system/timer.h"
-#include "system/timerdelta.h"
+#include "engine/net/netobjectfactory.h"
+#include "engine/net/netconnection.h"
+
+#include "engine/system/platform.h"
+#include "engine/system/timer.h"
+#include "engine/system/timerdelta.h"
+
+#include "engine/opengl.h"
 
 #include "console.h"
-#include "opengl.h"
-#include "scriptmanager.h"
-#include "creature.h"
 #include "gameconfiguration.h"
 #include "gameconfigurationselector.h"
 #include "gamesettings.h"
@@ -59,7 +63,6 @@
 	 \brief Initialized member variables
  */
 Game::Game():
-   mSettings(),
    mpConfiguration(NULL),
    mWindow(),
    mWindowListener(*this),
@@ -97,7 +100,7 @@ Game::~Game()
  */
 bool Game::create()
 {
-   Log& log = Console::getLog();
+   Log& log = Log::getInstance();
    log << "JEngine SSE V0.4.5 - Copyright 2010 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
@@ -114,9 +117,6 @@ bool Game::create()
    mScriptManager.initialize ();
    mScriptManager.setObject(&Console::getInstance(), "Console", "console");
 
-   // load the engine settings
-   mSettings.initialize();
-
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
    SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
@@ -124,7 +124,7 @@ bool Game::create()
    log << "\n-- Initializing Graphics --\n\n";
 
    mWindow.addListener(mWindowListener);
-   if ( !mWindow.create(mTitle, mSettings.getWidth(), mSettings.getHeight(), mSettings.getBitDepth(), mSettings.getFullScreen()) )
+   if ( !mWindow.create(mTitle, 800, 600, 32, false) )
    {
       return false;
    }
@@ -163,7 +163,8 @@ bool Game::create()
       return false;
    }
 
-   mScriptManager.executeScript("main.lua");
+   ScriptContext context;
+   mScriptManager.executeScript(context, "main.lua");
 
    return true;
 }
@@ -238,10 +239,7 @@ void Game::setConfiguration(const GameConfiguration& configuration)
  */
 bool Game::initOpenGL()
 {
-   const GuiColor& clearcolor = mSettings.getClearColor();
-   glClearColor(clearcolor.r, clearcolor.g, clearcolor.b, 0.0f);
-	//glClearDepth(1.0f);
-
+   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glShadeModel (GL_SMOOTH);
 
@@ -290,11 +288,11 @@ void Game::getWindowDimensions(int& w, int& h)
  */
 bool Game::initGame()
 {
+   ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    script.prepareCall("game_initialize");
    script.setSelf(this, "Game");
-   script.addParam(delta);
-   script.run(1);
+   script.run(context);
 
    // select the configuration
    GameConfigurationSelector selector(*this);
@@ -338,7 +336,8 @@ void Game::runFrame()
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
-   mScriptManager.update(tick);
+   ScriptContext context;
+   mScriptManager.update(context, delta);
    if ( !isActive() )
       return;
 
@@ -346,16 +345,13 @@ void Game::runFrame()
    script.prepareCall("game_run");
    script.setSelf(this, "Game");
    script.addParam(delta);
-   script.run(1);
+   script.run(context, 1);
    
    // here also nothing happens (should be overloaded)
    glLoadIdentity ();
    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glAlphaFunc (GL_GREATER, 0.1f);
    glEnable (GL_ALPHA_TEST);
-
-   // call overloaded function
-   drawFrame(delta);
 
    //glDisable(GL_MULTISAMPLE);
    glDisable (GL_ALPHA_TEST);
@@ -364,8 +360,4 @@ void Game::runFrame()
    // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());
 
    SDL_GL_SwapBuffers ();
-}
-
-void Game::drawFrame(float delta)
-{
 }

@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "tilerow.h"
 
-#include "engine/log.h"
-#include "engine/defines.h"
+#include "core/log/log.h"
+#include "core/defines.h"
 
 #include "tile.h"
 

@@ -20,8 +20,6 @@
 #ifndef _REFCOUNT_H_
 #define _REFCOUNT_H_
 
-#include "defines.h"
-
 // Low Latency Garbage Collection via Reference Counting, Photon, Mar 17, 2000
 // http://www.gamedev.net/reference/articles/article1060.asp
 

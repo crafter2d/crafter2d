@@ -17,12 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
-
-INLINE Log& Console::getLog()
-{
-   return log;
-}
+#include "core/defines.h"
 
 void Console::print(const std::string& msg)
 {

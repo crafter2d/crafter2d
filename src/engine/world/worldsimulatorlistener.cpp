@@ -19,9 +19,11 @@
  ***************************************************************************/
 #include "worldsimulatorlistener.h"
 
+#include "core/script/script.h"
+#include "core/script/scriptcontext.h"
+#include "core/script/scriptmanager.h"
+
 #include "engine/process.h"
-#include "engine/script.h"
-#include "engine/scriptmanager.h"
 
 #include "world.h"
 
@@ -37,6 +39,7 @@ WorldSimulatorListener::~WorldSimulatorListener()
 
 void WorldSimulatorListener::collideObjectWorld(Object& object, Bound& bound, int side, bool begin)
 {
+   ScriptContext context;
    ScriptManager& mgr = mWorld.getSceneGraph().getProcess().getScriptManager();
    Script& script = mgr.getTemporaryScript();
    script.prepareCall("Server_onCollisionObjectWorld");
@@ -44,5 +47,5 @@ void WorldSimulatorListener::collideObjectWorld(Object& object, Bound& bound, in
    script.addParam((void*)&bound, "Bound");
    script.addParam(side);
    script.addParam(begin);
-   script.run(4);
+   script.run(context, 4);
 }

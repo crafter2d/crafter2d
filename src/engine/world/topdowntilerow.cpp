@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "topdowntilerow.h"
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "tile.h"
 

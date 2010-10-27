@@ -23,7 +23,7 @@
 #include <SDL/SDL.h>
 #include <string>
 
-#include "engine/scriptmanager.h"
+#include "core/script/scriptmanager.h"
 
 #include "gamewindow.h"
 #include "defaultgamewindowlistener.h"
@@ -53,7 +53,7 @@ class Game
 {
 public:
                         Game();
-   virtual              ~Game() = 0;
+   virtual              ~Game();
 
  // get/set interface
    const GameConfiguration&   getConfiguration() const;
@@ -87,11 +87,6 @@ protected:
  // overloadables
    virtual bool         initGame();
    virtual void         endGame();
-   virtual void         drawFrame(float delta) = 0;
-
-   void                 onKeyboardEvent(const SDL_KeyboardEvent& event);
-   void                 onMouseButtonEvent(const SDL_MouseButtonEvent& event);
-   void                 onMouseMoveEvent(const SDL_MouseMotionEvent& event);
 
 private:
    bool                 initOpenGL();

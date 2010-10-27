@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "guipropertylist.h"
 
-#include "defines.h"
+#include "core/defines.h"
 
 #include "gui/combobox/guicombobox.h"
 

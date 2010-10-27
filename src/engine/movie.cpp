@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "movie.h"
 
-#include "log.h"
+#include "core/log/log.h"
 
 #ifdef WIN32
 HDC Movie::hdc = CreateCompatibleDC(0);

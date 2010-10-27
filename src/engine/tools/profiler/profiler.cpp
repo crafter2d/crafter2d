@@ -19,7 +19,8 @@
  ***************************************************************************/
 #include "profiler.h"
 
-#include "engine/defines.h"
+#include "core/defines.h"
+
 #include "engine/system/timer.h"
 
 #include "profileritem.h"

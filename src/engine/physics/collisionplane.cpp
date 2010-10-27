@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "collisionplane.h"
 
-#include "../autoptr.h"
+#include "core/autoptr.h"
 
 CollisionPlane* CollisionPlane::construct(const Vector& left, const Vector& right)
 {

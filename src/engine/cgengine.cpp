@@ -22,7 +22,7 @@
 #  include "cgengine.inl"
 #endif
 
-#include "log.h"
+#include "core/log/log.h"
 
 static void CGEngine_ErrorHandler(CGcontext context, CGerror error, void *data)
 {

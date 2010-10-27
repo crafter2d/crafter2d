@@ -23,7 +23,7 @@
 #include <tinyxml.h>
 
 #include "../console.h"
-#include "../defines.h"
+#include "core/defines.h"
 #include "../script.h"
 #include "../scriptmanager.h"
 

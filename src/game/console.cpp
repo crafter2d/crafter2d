@@ -30,17 +30,17 @@
 #include "gui/guilistbox.h"
 */
 
+#include "core/log/log.h"
+#include "core/script/script.h"
+#include "core/script/scriptmanager.h"
+
 #include "game.h"
-#include "script.h"
-#include "scriptmanager.h"
 
-Log Console::log;
-
-Console::Console(void)
+Console::Console()
 {
 }
 
-Console::~Console(void)
+Console::~Console()
 {
    // controls will be automatically be released.
    //lines = 0;
@@ -98,7 +98,7 @@ void Console::printf (const char* msg, ...)
 	va_end (ap);
 
    //lines->addString(text);
-   log << text << '\n';
+   Log::getInstance() << text << '\n';
 }
 
 void Console::error(const char* msg, ...)
@@ -117,7 +117,7 @@ void Console::error(const char* msg, ...)
    errormsg += text;
 
    //lines->addString(errormsg.c_str());
-   log << errormsg.c_str() << '\n';
+   Log::getInstance() << errormsg.c_str() << '\n';
 }
 
 void Console::warning(const char* msg, ...)
@@ -136,7 +136,7 @@ void Console::warning(const char* msg, ...)
    errormsg += text;
 
    //lines->addString(errormsg.c_str());
-   log << errormsg.c_str() << '\n';
+   Log::getInstance() << errormsg.c_str() << '\n';
 }
 
 void Console::print(const char* msg)
@@ -144,7 +144,7 @@ void Console::print(const char* msg)
    ASSERT_MSG(lines, "Console.print: the console has not be created yet.");
 
    //lines->addString(msg);
-   log << msg << '\n';
+   Log::getInstance() << msg << '\n';
 }
 
 void Console::show()

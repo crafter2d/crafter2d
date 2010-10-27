@@ -21,6 +21,7 @@
 #define SCRIPT_MANAGER_H_
 
 #include "core/core_base.h"
+#include "core/defines.h"
 
 extern "C" {
 #include <lua.h>
@@ -28,7 +29,6 @@ extern "C" {
 #include <lualib.h>
 }
 
-#include <SDL/SDL.h>
 #include <list>
 #include <string>
 #include <vector>
@@ -95,8 +95,9 @@ class CORE_API ScriptManager
 {
    struct Request {
       std::string mFunction;
-      Uint32      mJobId;
-      Uint32      mStartTime;
+      uint        mJobId;
+      float       mStartTime;
+      float       mCurrentTime;
    };
 
    typedef std::list<Request> Requests;
@@ -108,11 +109,10 @@ public:
 
    bool                    initialize();
    void                    destroy();
-   void                    update(ScriptContext& context, Uint32 tick);
-
+   
    void                    loadModule(initializer module);
 
-   void                    setObject( void* obj, const char* type, const char* var );
+   void                    setObject(void* obj, const char* type, const char* var);
    
  // execution
    bool                    executeScript(ScriptContext& context, const std::string& script, bool child = false );
@@ -122,8 +122,9 @@ public:
    Script&                 getTemporaryScript();
 
  // requests
-   Uint32                  schedule(const std::string& cmd, int time);
-   void                    unschedule(const Uint32 jobid);
+   void                    update(ScriptContext& context, float delta);
+   uint                    schedule(const std::string& cmd, float time);
+   void                    unschedule(const uint jobid);
    void                    unscheduleAll();
 
  // function interface
@@ -143,7 +144,7 @@ private:
    lua_State*           luaState;
    Script               tempScript;
    Requests             requests;
-   Uint32               job;
+   uint                 job;
 };
 
 #endif // SCRIPT_MANAGER_H_

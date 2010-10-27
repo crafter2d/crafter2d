@@ -25,7 +25,7 @@
 #include <tinyxml.h>
 #include <algorithm>
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 #include "dirtyset.h"
 #include "nodevisitor.h"

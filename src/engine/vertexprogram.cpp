@@ -19,9 +19,10 @@
  ***************************************************************************/
 #include "vertexprogram.h"
 
-#include "log.h"
+#include "core/log/log.h"
+#include "core/autoptr.h"
+
 #include "opengl.h"
-#include "autoptr.h"
 
 /// \fn VertexProgram::VertexProgram()
 /// \brief Creates a vertex program

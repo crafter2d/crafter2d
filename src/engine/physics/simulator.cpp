@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "simulator.h"
 
-#include "../defines.h"
+#include "core/defines.h"
 
 Simulator::Simulator():
    mpWorld(NULL),

@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 #include "engine/scenegraph.h"
 #include "engine/worldobserver.h"

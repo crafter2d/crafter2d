@@ -20,7 +20,23 @@ if ( os.is("windows") ) then
 					libdir .. "glee/include",
 					libdir .. "lua/include", 
 					libdir .. "tolua++/include",
+					libdir .. "tinyxml/include",
 					"src" }
 	
 	links { "SDLmain", "SDL", "Math", "Engine" }
+	
+	configuration "Debug"
+		links { "GLee_d", "tolua++_d", " lua5.1_d", "tinyxmld_STL" }
+		ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
+			
+	configuration "Release"
+		links { "GLee", "tolua++", "lua5.1", "tinyxml_STL" }
 end
+
+configuration "Debug"
+	defines { "_DEBUG", "TIXML_USE_STL" }
+	flags { "Symbols" }
+	
+configuration "Release"
+	defines { "NDEBUG", "TIXML_USE_STL" }
+	flags { "Optimize" }

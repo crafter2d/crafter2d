@@ -24,10 +24,10 @@
 
 #include <AL/alut.h>
 
+#include "core/log/log.h"
+
 #include "sound/soundloaderfactory.h"
 #include "sound/soundloader.h"
-
-#include "log.h"
 
 /// \fn Sound::Sound(ALuint buf,ALuint src)
 /// \brief initializes internal member variables. Remember to load the sounds via the

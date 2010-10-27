@@ -28,17 +28,17 @@
 #include <functional>
 #include <Box2D.h>
 
+#include "core/log/log.h"
+#include "core/defines.h"
+
 #include "engine/physics/simulationfactory.h"
 #include "engine/physics/simulator.h"
 
 #include "engine/net/bitstream.h"
 
-#include "engine/log.h"
 #include "engine/scenegraph.h"
-#include "engine/log.h"
 #include "engine/creature.h"
 #include "engine/nodevisitor.h"
-#include "engine/defines.h"
 
 #include "layer.h"
 #include "layertype.h"

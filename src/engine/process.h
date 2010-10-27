@@ -20,10 +20,11 @@
 #ifndef _PROCESS_H_
 #define _PROCESS_H_
 
+#include "core/script/scriptmanager.h"
+
 #include "net/netconnection.h"
 
 #include "scenegraph.h"
-#include "scriptmanager.h"
 
 class ActionMap;
 class BitStream;

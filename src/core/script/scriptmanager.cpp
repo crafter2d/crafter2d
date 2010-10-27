@@ -150,7 +150,7 @@ void ScriptManager::registerGlobals()
 
 /// \fn ScriptManager::update(Uint32 tick)
 /// \brief Checks the request list and executes scripts when necessary.
-void ScriptManager::update(ScriptContext& context, Uint32 tick)
+void ScriptManager::update(ScriptContext& context, float delta)
 {
    Requests::iterator it = requests.begin();
    while ( it != requests.end() )
@@ -159,7 +159,9 @@ void ScriptManager::update(ScriptContext& context, Uint32 tick)
       Request& request = *it;
       ++next;
 
-      if ( tick >= request.mStartTime )
+      request.mCurrentTime += delta;
+
+      if ( request.mCurrentTime >= request.mStartTime )
       {
          // execute the function
          Script& script = getTemporaryScript();
@@ -174,22 +176,23 @@ void ScriptManager::update(ScriptContext& context, Uint32 tick)
    }
 }
 
-/// \fn ScriptManager::schedule(const std::string& fnc, int time)
+/// \fn ScriptManager::schedule(const std::string& fnc, float time)
 /// \brief Schedules a script for running after time milli seconds passed.
-Uint32 ScriptManager::schedule(const std::string& fnc, int time)
+uint ScriptManager::schedule(const std::string& fnc, float time)
 {
    Request req;
-   req.mJobId     = job++;
-   req.mFunction  = fnc;
-   req.mStartTime = SDL_GetTicks() + time;
+   req.mJobId       = job++;
+   req.mFunction    = fnc;
+   req.mStartTime   = time;
+   req.mCurrentTime = 0;
    requests.push_back(req);
 
    return req.mJobId;
 }
 
-/// \fn ScriptManager::unschedule(const int jobid)
+/// \fn ScriptManager::unschedule(uint jobid)
 /// \brief Removes a job from the request list.
-void ScriptManager::unschedule(const Uint32 jobid)
+void ScriptManager::unschedule(uint jobid)
 {
    Requests::iterator it = requests.begin();
    for ( ; it != requests.end(); ++it )

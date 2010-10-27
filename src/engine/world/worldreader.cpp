@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "worldreader.h"
 
-#include "../vfs/unzipfile.h"
+#include "core/vfs/unzipfile.h"
 
 #include "worldversion1reader.h"
 #include "worldversion2reader.h"

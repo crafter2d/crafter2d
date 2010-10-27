@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "sceneroot.h"
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 SceneRoot::SceneRoot(SceneGraph& scenegraph):
    SceneObject(),

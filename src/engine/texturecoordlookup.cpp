@@ -19,9 +19,9 @@
  ***************************************************************************/
 #include "texture.h"
 
-#include "math/vector.h"
+#include "core/math/vector.h"
+#include "core/defines.h"
 
-#include "defines.h"
 #include "texturecoordlookup.h"
 
 TextureCoordLookup::TextureCoordLookup():

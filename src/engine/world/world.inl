@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include <assert.h>
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "layer.h"
 

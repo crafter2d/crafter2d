@@ -20,7 +20,7 @@
 #ifndef _TEXTURE_COORDINATE
 #define _TEXTURE_COORDINATE
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 class TextureCoordLookup;
 

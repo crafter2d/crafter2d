@@ -18,8 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "rendervisitor.h"
+
+#include "core/defines.h"
+
 #include "viewport.h"
-#include "defines.h"
 
 RenderVisitor::RenderVisitor():
    _pviewport(NULL)

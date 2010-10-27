@@ -57,12 +57,12 @@ bool GameWindow::create(const std::string& title, int width, int height, int bit
    bitdepth = SDL_VideoModeOK(width, height, bitdepth, mFlags);
    if (bitdepth == 0)
    {
-      Console::getLog() << "Bitdepth is not supported with resolution " << width << "x" << height << "\n";
+      Log::getInstance() << "Bitdepth is not supported with resolution " << width << "x" << height << "\n";
       return false;
    }
    else
    {
-      Console::getLog() << "Screen resolution:\t" << width << "x" << height << "x" << bitdepth << "\n";
+      Log::getInstance() << "Screen resolution:\t" << width << "x" << height << "x" << bitdepth << "\n";
    }
 
    resize(width, height);
@@ -97,12 +97,12 @@ void GameWindow::setMouseEventDispatcher(MouseEventDispatcher& dispatcher)
   mpMouseDispatcher = &dispatcher;
 }
 
-const GuiColor& GameWindow::getBackgroundColor() const
+const Color& GameWindow::getBackgroundColor() const
 {
    return mBackgroundColor;
 }
    
-void GameWindow::setBackgroundColor(const GuiColor& color)
+void GameWindow::setBackgroundColor(const Color& color)
 {
    mBackgroundColor;
 }
@@ -113,7 +113,7 @@ void GameWindow::setBackgroundColor(const GuiColor& color)
 
 int GameWindow::getWindowFlags(bool fullscreen)
 {
-   Log& log = Console::getLog();
+   Log& log = Log::getInstance();
 
    const SDL_VideoInfo *videoInfo;
    videoInfo = SDL_GetVideoInfo();
@@ -168,7 +168,7 @@ void GameWindow::resize(int width, int height)
    mpWindow = SDL_SetVideoMode(width, height, mBitDepth, mFlags);
    if ( mpWindow == NULL )
    {
-      Console::getLog() << "Could not resize window to " << width << "x" << height << ": " << SDL_GetError();
+      Log::getInstance() << "Could not resize window to " << width << "x" << height << ": " << SDL_GetError();
    }
 
    //CALL(Listeners, mListeners, onWindowResized);

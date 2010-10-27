@@ -20,20 +20,7 @@
 #ifndef GUIHELPERS_H_
 #define GUIHELPERS_H_
 
-#include "../math/point.h"
-
-class GuiPoint
-{
-public:
-   GuiPoint();
-   GuiPoint(int _x, int _y);
-   GuiPoint(const GuiPoint& p);
-   GuiPoint(const Point& p);
-
-   operator Point() const;
-
-   int x, y;
-};
+#include "core/math/point.h"
 
 class GuiSize
 {
@@ -51,24 +38,6 @@ public:
 private:
    int mWidth;
    int mHeight;
-};
-
-class GuiColor
-{
-public:
-   static const GuiColor&  white();
-   static const GuiColor&  black();
-   static const GuiColor&  red();
-   static const GuiColor&  green();
-   static const GuiColor&  blue();
-
-         GuiColor();
-         GuiColor(float _r, float _g, float _b, float _a=1.0f);
-         GuiColor(int _r, int _g, int _b, int _a=255);
-
-   void  set(float _r, float _g, float _b, float _a=1.0f);
-
-   float r,g,b,a;
 };
 
 class GuiRect

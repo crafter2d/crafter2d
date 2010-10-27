@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "modifier.h"
 
-#include "defines.h"
+#include "core/defines.h"
 
 Modifier::Modifier()
 {

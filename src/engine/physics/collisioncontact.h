@@ -20,8 +20,8 @@
 #ifndef COLLISION_CONTACT_H_
 #define COLLISION_CONTACT_H_
 
-#include "math/vector.h"
-#include "math/matrix2x2.h"
+#include "core/math/vector.h"
+#include "core/math/matrix2x2.h"
 
 class Body;
 class CollisionContactBody;

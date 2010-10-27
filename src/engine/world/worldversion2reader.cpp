@@ -21,9 +21,9 @@
 
 #include <tinyxml.h>
 
-#include "engine/physics/simulationfactoryregistry.h"
+#include "core/vfs/unzipfile.h"
 
-#include "engine/vfs/unzipfile.h"
+#include "engine/physics/simulationfactoryregistry.h"
 
 #include "bound.h"
 #include "layer.h"

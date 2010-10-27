@@ -31,9 +31,10 @@
 #include <SDL/SDL.h>
 #include <math.h>
 
-#include "engine/autoptr.h"
+#include "core/autoptr.h"
+#include "core/log/log.h"
+
 #include "engine/opengl.h"
-#include "engine/log.h"
 #include "engine/vertexbuffer.h"
 
 #include "tile.h"

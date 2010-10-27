@@ -20,7 +20,8 @@
 #ifndef _PICKVISITOR_H_
 #define _PICKVISITOR_H_
 
-#include "math/vector.h"
+#include "core/math/vector.h"
+
 #include "nodevisitor.h"
 
 class Creature;

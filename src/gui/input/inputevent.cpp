@@ -25,7 +25,7 @@
 
 #include <SDL/SDL.h>
 
-#include "../../defines.h"
+#include "core/defines.h"
 
 // - Statics
 

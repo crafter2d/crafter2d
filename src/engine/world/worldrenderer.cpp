@@ -20,7 +20,7 @@
 
 #include "worldrenderer.h"
 
-#include "engine/defines.h"
+#include "core/defines.h"
 
 WorldRenderer::WorldRenderer(World& world):
    mWorld(world)

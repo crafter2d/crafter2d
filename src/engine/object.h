@@ -24,7 +24,7 @@
 #include <string>
 #include <SDL/SDL.h>
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 #include "texture.h"
 #include "scenegraph.h"

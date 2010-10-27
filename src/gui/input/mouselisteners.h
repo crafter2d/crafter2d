@@ -20,7 +20,7 @@
 #ifndef MOUSE_LISTENERS_H
 #define MOUSE_LISTENERS_H
 
-#include "containers/listeners.h"
+#include "core/containers/listeners.h"
 
 class MouseEvent;
 class MouseListener;

@@ -22,7 +22,7 @@
 
 //#include "gui/guiwindow.h"
 
-#include "engine/log.h"
+#include "core/log/log.h"
 
 class GuiEditBox;
 class GuiListBox;
@@ -33,7 +33,6 @@ public:
    ~Console(void);
 
    static Console&   getInstance();
-   static Log&       getLog();
 
    void              create();
    void              reload();
@@ -57,7 +56,6 @@ protected:
 private:
    //GuiListBox *lines;
    //GuiEditBox *input;
-   static Log log;
 };
 
 #ifdef JENGINE_INLINE

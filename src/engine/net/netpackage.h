@@ -20,7 +20,7 @@
 #ifndef _NETPACKAGE_H_
 #define _NETPACKAGE_H_
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "bitstream.h"
 

@@ -22,11 +22,12 @@
 #include <algorithm>
 #include <tinyxml.h>
 
-#include "autoptr.h"
-#include "log.h"
+#include "core/autoptr.h"
+#include "core/defines.h"
+#include "core/log/log.h"
+
 #include "opengl.h"
 #include "texture.h"
-#include "defines.h"
 
 ShaderPath::ShaderPath():
    CodePath(),

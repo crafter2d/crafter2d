@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "collisionshape.h"
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "body.h"
 

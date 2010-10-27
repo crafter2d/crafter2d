@@ -22,15 +22,17 @@
 
 #include "buffer.h"
 
+#include "core/defines.h"
+
 class MemoryBuffer : public Buffer
 {
 public:
             MemoryBuffer();
    explicit MemoryBuffer(void* pdata, int size);
-   virtual ~MemoryBuffer(void);
+   virtual ~MemoryBuffer();
 
  // get/set
-           Uint8*          getData();
+           uchar*          getData();
            int             getDataSize();
 
  // query
@@ -38,8 +40,6 @@ public:
    virtual MemoryBuffer&   asMemoryBuffer();
 
  // operations
-   virtual SDL_RWops*   asRWops();
-
    virtual int          read(void* ptr, int size);
    virtual int          write(void* ptr, int size);
    virtual char         getc();
@@ -53,7 +53,7 @@ private:
            void assign(void* pdata, int size);
            void free();
 
-   Uint8*   mpData;
+   uchar*   mpData;
    int      mDataSize;
    int      mCursor;
 };

@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#include "core/defines.h"
 
 /// \fn Bound::getNormal()
 /// \brief Use this function to get the normal of this bound. The normal can be used for collision

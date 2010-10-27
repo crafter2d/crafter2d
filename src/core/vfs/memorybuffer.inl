@@ -17,9 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
+#include "core/defines.h"
 
-INLINE Uint8* MemoryBuffer::getData()
+INLINE uchar* MemoryBuffer::getData()
 {
    return mpData;
 }

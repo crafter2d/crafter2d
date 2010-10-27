@@ -20,7 +20,7 @@
 #ifndef GUI_TREEBOX_H_
 #define GUI_TREEBOX_H_
 
-#include "engine/containers/tree.h"
+#include "core/containers/tree.h"
 
 #include "treebox/guitreeboxmouselistener.h"
 

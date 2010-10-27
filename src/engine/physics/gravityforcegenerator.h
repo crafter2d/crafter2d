@@ -20,7 +20,7 @@
 #ifndef GRAVITY_FORCE_GENERATOR_H_
 #define GRAVITY_FORCE_GENERATOR_H_
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 #include "forcegenerator.h"
 

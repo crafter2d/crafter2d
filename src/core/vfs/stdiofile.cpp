@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "stdiofile.h"
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "buffer.h"
 

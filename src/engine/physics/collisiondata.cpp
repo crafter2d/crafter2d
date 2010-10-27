@@ -19,10 +19,9 @@
  ***************************************************************************/
 #include "collisiondata.h"
 
-#include "../defines.h"
-
-#include "../containers/listalgorithms.h"
-#include "../containers/listiterator.h"
+#include "core/defines.h"
+#include "core/containers/listalgorithms.h"
+#include "core/containers/listiterator.h"
 
 CollisionData::CollisionData():
    mContacts()

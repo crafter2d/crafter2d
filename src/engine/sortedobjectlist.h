@@ -20,7 +20,7 @@
 #ifndef SORTED_OBJECT_LIST_H_
 #define SORTED_OBJECT_LIST_H_
 
-#include "containers/sortedlist.h"
+#include "core/containers/sortedlist.h"
 
 class Object;
 

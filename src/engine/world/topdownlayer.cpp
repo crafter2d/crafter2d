@@ -20,7 +20,7 @@
 
 #include "topdownlayer.h"
 
-#include "math/point.h"
+#include "core/math/point.h"
 
 #include "engine/opengl.h"
 #include "engine/vertexbuffer.h"

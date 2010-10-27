@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include <tinyxml.h>
 
-#include "../defines.h"
+#include "core/defines.h"
 #include "../game.h"
 
 #include "gui/edit/guiedit.h"

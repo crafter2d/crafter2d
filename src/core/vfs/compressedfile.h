@@ -20,8 +20,6 @@
 #ifndef COMPRESSED_FILE_H_
 #define COMPRESSED_FILE_H_
 
-#include <SDL/SDL.h>
-
 #include "file.h"
 
 class CompressedFile : public File

@@ -24,13 +24,13 @@
 
 #include <string.h>
 
-#include "../system/timer.h"
+#include "core/autoptr.h"
+#include "core/log/log.h"
+#include "core/script/script.h"
+#include "core/script/scriptmanager.h"
 
-#include "../autoptr.h"
-#include "../log.h"
-#include "../process.h"
-#include "../script.h"
-#include "../scriptmanager.h"
+#include "engine/system/timer.h"
+#include "engine/process.h"
 
 #include "events/connectreplyevent.h"
 

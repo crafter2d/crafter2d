@@ -24,7 +24,7 @@
 #include "gui/guimanager.h"
 #include "gui/guitext.h"
 
-#include "defines.h"
+#include "core/defines.h"
 
 REGISTER_DESIGNER(GuiCheckBox, GuiCheckBoxId, "Checkbox", 40, 15, 264)
 

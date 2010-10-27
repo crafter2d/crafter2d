@@ -24,7 +24,7 @@
 #endif
 #include <GL/gl.h>
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 ScopedTransform::ScopedTransform(const Vector& vector)
 {

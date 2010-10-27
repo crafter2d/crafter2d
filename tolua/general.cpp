@@ -22,7 +22,8 @@
  * classes to Lua.
  */
 
-$#include "math/vector.h"
+$#include "core/math/vector.h"
+
 $#include "world/world.h"
 $#include "world/layer.h"
 $#include "world/isodiamondlayer.h"

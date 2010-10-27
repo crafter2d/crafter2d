@@ -17,14 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _SCENEGRAPH_H__jengine
-#define _SCENEGRAPH_H__jengine
+#ifndef SCENEGRAPH_H_
+#define SCENEGRAPH_H_
 
 #include <SDL/SDL.h>
 #include <list>
 #include <map>
 
-#include "defines.h"
+#include "core/defines.h"
+
 #include "sceneroot.h"
 #include "idmanager.h"
 #include "scenegraphlistener.h"
@@ -97,4 +98,4 @@ private:
 #  include "scenegraph.inl"
 #endif
 
-#endif
+#endif // SCENEGRAPH_H_

@@ -20,10 +20,12 @@
 #ifndef UNZIPFILE_H
 #define UNZIPFILE_H
 
+#include "core/core_base.h"
+
 #include <string>
 #include <unzip.h>
 
-class UnzipFile
+class CORE_API UnzipFile
 {
 public:
    static bool isZip(const std::string& path);

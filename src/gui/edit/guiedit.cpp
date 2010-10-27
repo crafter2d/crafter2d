@@ -20,7 +20,7 @@
 #include "guiedit.h"
 
 #include "script.h"
-#include "defines.h"
+#include "core/defines.h"
 
 #include "gui/guidesigner.h"
 #include "gui/guifont.h"

@@ -20,7 +20,7 @@
 
 #include "isodiamondtilerow.h"
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "isodiamondtile.h"
 

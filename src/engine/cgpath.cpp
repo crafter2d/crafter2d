@@ -22,9 +22,10 @@
 #  include "cgpath.inl"
 #endif
 
+#include "core/log/log.h"
+#include "core/defines.h"
+
 #include "cgengine.h"
-#include "log.h"
-#include "defines.h"
 
 CGPath::CGPath(): 
    CodePath(),

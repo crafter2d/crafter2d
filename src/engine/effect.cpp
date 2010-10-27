@@ -24,14 +24,14 @@
 
 #include <GL/GLee.h>
 
-#include "vfs/file.h"
+#include "core/vfs/file.h"
+#include "core/log/log.h"
+#include "core/defines.h"
 
 #include "codepath.h"
-#include "log.h"
 #include "opengl.h"
 #include "texture.h"
 #include "tinyxml.h"
-#include "defines.h"
 
 /*!
     \fn Effect::Effect(void)

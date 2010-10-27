@@ -23,7 +23,7 @@
 
 #include "gui/canvas/guicanvas.h"
 
-#include "engine/game.h"
+#include "game.h"
 
 /**
 @author Jeroen Broekhuizen

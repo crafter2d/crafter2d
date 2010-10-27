@@ -22,8 +22,9 @@
 
 #include <string>
 
+#include "core/script/script.h"
+
 #include "hashtable.h"
-#include "script.h"
 #include "texture.h"
 
 typedef RefPointer<Script> ScriptPtr;

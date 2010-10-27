@@ -25,11 +25,10 @@
 #include <SDL/SDL.h>
 #include <memory>
 
-#include "engine/vfs/file.h"
-#include "engine/vfs/filesystem.h"
-
-#include "engine/defines.h"
-#include "engine/autoptr.h"
+#include "core/vfs/file.h"
+#include "core/vfs/filesystem.h"
+#include "core/defines.h"
+#include "core/autoptr.h"
 
 AbstractTextureLoader::AbstractTextureLoader():
    mTextureInfo()

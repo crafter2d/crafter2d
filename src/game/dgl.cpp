@@ -27,6 +27,8 @@
 #include <windows.h>
 #endif
 
+#include "core/autoptr.h"
+
 #include "dlgapp.h"
 
 /*!

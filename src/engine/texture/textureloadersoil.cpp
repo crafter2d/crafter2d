@@ -22,8 +22,8 @@
 
 #include <SOIL.h>
 
-#include "engine/vfs/file.h"
-#include "engine/autoptr.h"
+#include "core/vfs/file.h"
+#include "core/autoptr.h"
 
 TextureLoaderSoil::TextureLoaderSoil():
    AbstractTextureLoader()

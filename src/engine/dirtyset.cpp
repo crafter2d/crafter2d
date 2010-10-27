@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "dirtyset.h"
 
-#include "defines.h"
+#include "core/defines.h"
 
 DirtySet::DirtySet()
 {

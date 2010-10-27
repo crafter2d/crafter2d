@@ -20,7 +20,7 @@
 
 #include "box2drevolutejoint.h"
 
-#include "engine/defines.h"
+#include "core/defines.h"
 
 Box2DRevoluteJointDefinition::Box2DRevoluteJointDefinition():
    pleft(NULL),

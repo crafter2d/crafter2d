@@ -22,8 +22,8 @@
 
 #include "collisioncontact.h"
 
-#include "../containers/list.h"
-#include "../containers/listiterator.h"
+#include "core/containers/list.h"
+#include "core/containers/listiterator.h"
 
 class CollisionData 
 {

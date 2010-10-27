@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "gui/guihelpers.h"
+#include "core/math/color.h"
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -38,11 +38,11 @@ public:
    int                  getHeight() const;
    int                  getBitDepth() const;
    bool                 getFullScreen() const;
-   GuiColor             getClearColor() const;
+   const Color&         getClearColor() const;
 
-   GuiColor             getTextColor() const;
-   GuiColor             getWindowColor() const;
-   GuiColor             getBorderColor() const;
+   const Color&         getTextColor() const;
+   const Color&         getWindowColor() const;
+   const Color&         getBorderColor() const;
 
    const std::string&   getName() const;
    const std::string&   getIP() const;
@@ -63,18 +63,18 @@ private:
    int         queryInt(TiXmlElement& element, const std::string& name, int value);
    bool        queryBool(TiXmlElement& element, const std::string& name, bool value);
    std::string queryString(TiXmlElement& element, const std::string& name, const std::string& value);
-   GuiColor    queryColor(TiXmlElement& element, const std::string& name, const GuiColor& value);
+   Color       queryColor(TiXmlElement& element, const std::string& name, const Color& value);
 
  // members
    int         mWidth;
    int         mHeight;
    int         mBitDepth;
    bool        mFullScreen;
-   GuiColor    mClearColor;
+   Color       mClearColor;
 
-   GuiColor    mTextColor;
-   GuiColor    mWindowColor;
-   GuiColor    mBorderColor;
+   Color       mTextColor;
+   Color       mWindowColor;
+   Color       mBorderColor;
 
    std::string mName;
    std::string mIP;

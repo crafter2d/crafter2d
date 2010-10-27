@@ -22,8 +22,8 @@
 
 #include <SDL/SDL.h>
 
-#include "math/vector.h"
-#include "math/color.h"
+#include "core/math/vector.h"
+#include "core/math/color.h"
 
 #include "texture.h"
 #include "object.h"

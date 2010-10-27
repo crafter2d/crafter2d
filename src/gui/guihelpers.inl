@@ -17,12 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "../defines.h"
-
-GuiPoint::operator Point() const
-{
-   return Point(x, y);
-}
+#include "core/defines.h"
 
 GuiSize::GuiSize():
    mWidth(0),
@@ -59,14 +54,6 @@ INLINE int GuiSize::getHeight() const
 INLINE void GuiSize::setHeight(int height)
 {
    mHeight = height;
-}
-
-INLINE void GuiColor::set(float _r, float _g, float _b, float _a)
-{
-   r = _r;
-   g = _g;
-   b = _b;
-   a = _a;
 }
 
 INLINE void GuiRect::top(float t)

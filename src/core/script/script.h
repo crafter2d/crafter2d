@@ -28,11 +28,9 @@ extern "C" {
 #include <lualib.h>
 }
 
-#include <SDL/SDL.h>
-#include <list>
-#include <vector>
-#include <string>
 #include <tolua++.h>
+
+#include <string>
 
 class ScriptContext;
 

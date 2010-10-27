@@ -24,7 +24,7 @@
 
 #include <stdexcept>
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "filebuffer.h"
 #include "memorybuffer.h"

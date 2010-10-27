@@ -33,8 +33,6 @@ public:
    virtual bool          isFileBuffer() const;
    virtual FileBuffer&   asFileBuffer();
 
-   virtual SDL_RWops*    asRWops();
-
  // read/write
    virtual int  read(void* ptr, int size);
    virtual int  write(void* ptr, int size);

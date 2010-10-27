@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../defines.h"
+#include "core/defines.h"
 
 const std::string& AbstractWorldVersionReader::getFilename() const
 {

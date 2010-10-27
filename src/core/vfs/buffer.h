@@ -21,7 +21,6 @@
 #define BUFFER_H_
 
 #include <string>
-#include <SDL/SDL.h>
 
 class FileBuffer;
 class MemoryBuffer;
@@ -38,9 +37,7 @@ public:
  // get/set
    bool  isWritting() const;
    void  setWritting(bool writting);
-
-   virtual SDL_RWops*      asRWops() = 0;
-
+   
  // modification
    virtual int  read(void* ptr, int size) = 0;
    virtual int  write(void* ptr, int size) = 0;

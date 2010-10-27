@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 
+#include "core/math/color.h"
+
 struct SDL_KeyboardEvent;
 struct SDL_MouseMotionEvent;
 struct SDL_MouseButtonEvent;
@@ -31,7 +33,6 @@ struct SDL_Surface;
 class GameWindowListener;
 class KeyEventDispatcher;
 class MouseEventDispatcher;
-class GuiColor;
 
 class GameWindow
 {
@@ -47,8 +48,8 @@ public:
    void setKeyEventDispatcher(KeyEventDispatcher& dispatcher);
    void setMouseEventDispatcher(MouseEventDispatcher& dispatcher);
 
-   const GuiColor& getBackgroundColor() const;
-   void            setBackgroundColor(const GuiColor& color);
+   const Color& getBackgroundColor() const;
+   void         setBackgroundColor(const Color& color);
 
   // query
    int getWidth() const;
@@ -83,7 +84,7 @@ private:
    KeyEventDispatcher*   mpKeyDispatcher;
    MouseEventDispatcher* mpMouseDispatcher;
    SDL_Surface*          mpWindow;
-   GuiColor              mBackgroundColor;
+   Color                 mBackgroundColor;
    int                   mBitDepth;
    int                   mFlags;
 };

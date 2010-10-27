@@ -20,6 +20,8 @@
 #ifndef _SERVER_H_
 #define _SERVER_H_
 
+#include "engine_base.h"
+
 #include <map>
 
 #include "net/netevent.h"
@@ -32,46 +34,10 @@ class ViewportEvent;
 class World;
 class Player;
 
-class JoinEvent: public NetEvent
-{
-public:
-   DEFINE_REPLICATABLE(JoinInfo)
-
-   JoinEvent();
-   JoinEvent(int id, const std::string& name);
-
-   int getId() const { return id; }
-   const char* getPlayerName() const { return playerName.c_str(); }
-
-   virtual void pack(BitStream& stream) const;
-   virtual void unpack(BitStream& stream);
-
-private:
-   std::string playerName;
-   int id;
-};
-
-class DisconnectEvent: public NetEvent
-{
-public:
-   DEFINE_REPLICATABLE(DisconnectInfo)
-
-            DisconnectEvent();
-   explicit DisconnectEvent(int id);
-
-   int getId() const { return _id; }
-
-   virtual void pack(BitStream& stream) const;
-   virtual void unpack(BitStream& stream);
-
-private:
-   int         _id;
-};
-
 /// @author Jeroen Broekhuizen
 ///
 /// Implement the server process of the Client/Server model.
-class Server: public Process
+class ENGINE_API Server: public Process
 {
 public:
    typedef std::map<Uint32, Player*> ClientMap;

@@ -22,7 +22,9 @@
 
 #include <GL/GLee.h>
 
-#include "log.h"
+#include "core/log/log.h"
+#include "core/defines.h"
+
 #include "opengl.h"
 #include "effect.h"
 

@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "defines.h"
+#include "core/defines.h"
 
 INLINE int GameSettings::getWidth() const
 {
@@ -39,22 +39,22 @@ INLINE bool GameSettings::getFullScreen() const
    return mFullScreen;
 }
 
-INLINE GuiColor GameSettings::getClearColor() const
+INLINE const Color& GameSettings::getClearColor() const
 {
    return mClearColor;
 }
 
-INLINE GuiColor GameSettings::getTextColor() const
+INLINE const Color& GameSettings::getTextColor() const
 {
    return mTextColor;
 }
 
-INLINE GuiColor GameSettings::getWindowColor() const
+INLINE const Color& GameSettings::getWindowColor() const
 {
    return mWindowColor;
 }
 
-INLINE GuiColor GameSettings::getBorderColor() const
+INLINE const Color& GameSettings::getBorderColor() const
 {
    return mBorderColor;
 }
@@ -72,5 +72,4 @@ INLINE const std::string& GameSettings::getIP() const
 INLINE int GameSettings::getPort() const
 {
    return mPort;
-
 }

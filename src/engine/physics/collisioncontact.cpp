@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "collisioncontact.h"
 
-#include "engine/defines.h"
+#include "core/defines.h"
 
 #include "physicsbody.h"
 #include "collisioncontactbody.h"

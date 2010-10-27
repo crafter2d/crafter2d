@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "collisiondetector.h"
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 #include "collisioncircle.h"
 #include "collisionplane.h"

@@ -28,7 +28,8 @@
 #include <iostream>
 #include <string.h>
 
-#include "log.h"
+#include "core/log/log.h"
+
 #include "cgengine.h"
 #include "cgpath.h"
 #include "codepath.h"

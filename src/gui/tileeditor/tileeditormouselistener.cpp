@@ -20,8 +20,10 @@
 
 #include "tileeditormouselistener.h"
 
-#include "script.h"
-#include "scriptmanager.h"
+#include "core/script/script.h"
+#include "core/script/scriptcontext.h"
+#include "core/script/scriptmanager.h"
+#include "core/math/point.h"
 
 #include "gui/guitileeditor.h"
 #include "gui/guieventhandler.h"
@@ -47,12 +49,13 @@ void TileEditorMouseListener::onMouseButton(const MouseEvent& event)
          GuiPoint point = event.getLocation();
          mTileEditor.windowToClient(point);
 
+         ScriptContext context;
          ScriptManager& mgr = ScriptManager::getInstance();
          Script& script = mgr.getTemporaryScript();
          script.setSelf(&mTileEditor, "GuiTileEditor");
          script.prepareCall(phandler->getFunctionName().c_str());
          script.addParam((void*)&point, "GuiPoint");
-         script.run(1);
+         script.run(context, 1);
       }
    }
 }
@@ -64,15 +67,16 @@ void TileEditorMouseListener::onMouseClick(const MouseEvent& event)
       GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorMouseClickEvent);
       if ( phandler != NULL )
       {
-         GuiPoint point = event.getLocation();
+         Point point = event.getLocation();
          mTileEditor.windowToClient(point);
 
+         ScriptContext context;
          ScriptManager& mgr = ScriptManager::getInstance();
          Script& script = mgr.getTemporaryScript();
          script.setSelf(&mTileEditor, "GuiTileEditor");
          script.prepareCall(phandler->getFunctionName().c_str());
          script.addParam((void*)&point, "GuiPoint");
-         script.run(1);
+         script.run(context, 1);
       }
    }
 }

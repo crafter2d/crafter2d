@@ -22,8 +22,6 @@
 #  include "script.inl"
 #endif
 
-#include <SDL/SDL.h>
-
 #include "core/log/log.h"
 
 #include "core/vfs/file.h"

@@ -26,7 +26,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 #include "netobject.h"
 #include "netobjectfactory.h"

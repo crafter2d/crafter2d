@@ -20,7 +20,7 @@
 
 #include "mouseeventdispatcher.h"
 
-#include "defines.h"
+#include "core/defines.h"
 
 MouseEventDispatcher::MouseEventDispatcher()
 {

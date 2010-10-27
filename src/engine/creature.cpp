@@ -24,10 +24,10 @@
 
 #include <tinyxml.h>
 
-#include "net/bitstream.h"
+#include "core/script/script.h"
 
+#include "net/bitstream.h"
 #include "nodevisitor.h"
-#include "script.h"
 
 IMPLEMENT_REPLICATABLE(CreatureId, Creature, Object)
 

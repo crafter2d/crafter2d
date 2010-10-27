@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "timer.h"
 
-#include "../autoptr.h"
-#include "../defines.h"
+#include "core/autoptr.h"
+#include "core/defines.h"
 
 #include "platform.h"
 

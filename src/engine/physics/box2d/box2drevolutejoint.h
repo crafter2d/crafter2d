@@ -20,7 +20,7 @@
 #ifndef BOX2D_REVOLUTE_JOINT_H_
 #define BOX2D_REVOLUTE_JOINT_H_
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 class Box2DBody;
 class b2RevoluteJoint;

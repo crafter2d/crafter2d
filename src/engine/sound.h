@@ -22,7 +22,9 @@
 
 #include <AL/al.h>
 #include <AL/alc.h>
-#include "math/vector.h"
+
+#include "core/math/vector.h"
+
 #include "hashtable.h"
 
 /*!

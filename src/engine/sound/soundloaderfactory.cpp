@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "soundloaderal.h"
 #include "soundloaderogg.h"

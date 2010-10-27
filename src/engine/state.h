@@ -21,7 +21,8 @@
 #define _STATE_H_
 
 #include <SDL/SDL.h>
-#include "math/vector.h"
+
+#include "core/math/vector.h"
 
 class Object;
 

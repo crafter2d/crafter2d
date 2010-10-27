@@ -20,14 +20,10 @@
 #ifndef _NETOBJECT_H_
 #define _NETOBJECT_H_
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 #include <map>
 #include <string>
-#include "../defines.h"
+
+#include "core/defines.h"
 
 #include "netdefines.h"
 #include "bitstream.h"

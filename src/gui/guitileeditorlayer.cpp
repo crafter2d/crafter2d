@@ -24,7 +24,7 @@
 
 #include "../world/layer.h"
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #include "guitileeditorisodiamondlayer.h"
 #include "guitileeditortopdownlayer.h"

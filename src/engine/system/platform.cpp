@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "platform.h"
 
-#include "../defines.h"
+#include "core/defines.h"
 
 #ifdef WIN32
 #  include "winplatform.h"

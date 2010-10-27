@@ -24,7 +24,7 @@
 
 #include <tinyxml.h>
 
-#include "engine/log.h"
+#include "core/log/log.h"
 
 #include "tile.h"
 

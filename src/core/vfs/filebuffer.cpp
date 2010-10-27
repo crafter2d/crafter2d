@@ -21,7 +21,7 @@
 
 #include <string.h>
 
-#include "../defines.h"
+#include "core/defines.h"
 
 FileBuffer::FileBuffer():
    Buffer(),
@@ -47,11 +47,6 @@ bool FileBuffer::isFileBuffer() const
 FileBuffer& FileBuffer::asFileBuffer()
 {
    return *this;
-}
-
-SDL_RWops* FileBuffer::asRWops()
-{
-   return SDL_RWFromFP(mpFile, 0);
 }
 
 int FileBuffer::read(void* ptr, int size)

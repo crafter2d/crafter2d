@@ -29,7 +29,8 @@
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
 
-#include "log.h"
+#include "core/log/log.h"
+
 #include "opengl.h"
 
 /*!

@@ -24,9 +24,9 @@
 
 #include <tinyxml.h>
 
-#include "../vfs/zipfile.h"
+#include "core/vfs/zipfile.h"
 
-#include "../sceneobject.h"
+#include "engine/sceneobject.h"
 
 #include "bound.h"
 #include "layer.h"

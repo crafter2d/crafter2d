@@ -21,8 +21,8 @@
 
 #include <tinyxml.h>
 
-#include "../autoptr.h"
-#include "../defines.h"
+#include "core/autoptr.h"
+#include "core/defines.h"
 
 #include "physicsbody.h"
 #include "collisionbox.h"

@@ -20,6 +20,8 @@
 #ifndef CLIENT_H_
 #define CLIENT_H_
 
+#include "engine_base.h"
+
 #include <map>
 
 #include "idmanager.h"
@@ -44,7 +46,7 @@ class Player;
 ///
 /// The Client class implements the client process of the Client/Server model this engine is build
 /// upon.
-class Client: public Process
+class ENGINE_API Client: public Process
 {
 public:
    typedef std::map<Id, bool> Requests;

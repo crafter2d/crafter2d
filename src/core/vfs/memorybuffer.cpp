@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include "../defines.h"
-
 MemoryBuffer::MemoryBuffer():
    Buffer(),
    mpData(NULL),
@@ -58,15 +56,10 @@ MemoryBuffer& MemoryBuffer::asMemoryBuffer()
    return *this;
 }
 
-SDL_RWops* MemoryBuffer::asRWops()
-{
-   return SDL_RWFromMem(mpData, mDataSize);
-}
-
 void MemoryBuffer::assign(void* pdata, int size)
 {
    delete[] mpData;
-   mpData = new Uint8[size];
+   mpData = new uchar[size];
    memcpy(mpData, pdata, size);
    mDataSize = size;
 }
@@ -101,7 +94,7 @@ int MemoryBuffer::write(void* ptr, int size)
    if ( mCursor + size >= mDataSize )
    {
       int buffersize = mCursor + size;
-      Uint8* pbuffer = new Uint8[buffersize];
+      uchar* pbuffer = new uchar[buffersize];
       memmove(pbuffer, mpData, mDataSize);
 
       delete[] mpData;

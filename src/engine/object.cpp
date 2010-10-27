@@ -26,6 +26,8 @@
 #include <GL/glu.h>
 #include <tinyxml.h>
 
+#include "core/log/log.h"
+
 #include "physics/body.h"
 #include "physics/simulator.h"
 
@@ -33,7 +35,6 @@
 
 #include "animator.h"
 #include "scenegraph.h"
-#include "log.h"
 #include "state.h"
 #include "nodevisitor.h"
 #include "texturecoordinate.h"

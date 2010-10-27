@@ -74,16 +74,16 @@ void GameSettings::loadScreenSettings(TiXmlDocument& doc)
    mHeight     = queryInt(*pscreen, "height", 600);
    mBitDepth   = queryInt(*pscreen, "bitdepth", 32);
    mFullScreen = queryBool(*pscreen, "fullscreen", false);
-   mClearColor = queryColor(*pscreen, "clearcolor", GuiColor::black());
+   mClearColor = queryColor(*pscreen, "clearcolor", Color::black());
 }
 
 void GameSettings::loadGuiSettings(TiXmlDocument& doc)
 {
    TiXmlElement* pgui = doc.FirstChildElement("gui");
 
-   mTextColor    = queryColor(*pgui, "textcolor", GuiColor::red());
-   mWindowColor  = queryColor(*pgui, "windowcolor", GuiColor::blue());
-   mBorderColor  = queryColor(*pgui, "bordercolor", GuiColor::blue());
+   mTextColor    = queryColor(*pgui, "textcolor", Color::red());
+   mWindowColor  = queryColor(*pgui, "windowcolor", Color::blue());
+   mBorderColor  = queryColor(*pgui, "bordercolor", Color::blue());
 }
 
 void GameSettings::loadMultiplayerSettings(TiXmlDocument& doc)
@@ -129,7 +129,7 @@ std::string GameSettings::queryString(TiXmlElement& element, const std::string& 
    return pchild->GetText();
 }
 
-GuiColor GameSettings::queryColor(TiXmlElement& element, const std::string& name, const GuiColor& defaultvalue)
+Color GameSettings::queryColor(TiXmlElement& element, const std::string& name, const Color& defaultvalue)
 {
    TiXmlElement* pchild = element.FirstChildElement(name);
    if ( pchild == NULL )
@@ -146,5 +146,5 @@ GuiColor GameSettings::queryColor(TiXmlElement& element, const std::string& name
    std::string green = value.substr(redindex+1, blueindex - redindex - 1);
    std::string blue  = value.substr(blueindex+1, value.length() - blueindex);
 
-   return GuiColor(atoi(red.c_str()), atoi(green.c_str()), atoi(blue.c_str()), 255);
+   return Color(atoi(red.c_str()), atoi(green.c_str()), atoi(blue.c_str()), 255);
 }

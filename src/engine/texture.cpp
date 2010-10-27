@@ -31,9 +31,10 @@
 #include <SDL/SDL.h>
 #include <SOIL.h>
 
-#include "autoptr.h"
+#include "core/autoptr.h"
+#include "core/log/log.h"
+
 #include "opengl.h"
-#include "log.h"
 
 #include "texture/abstracttextureloader.h"
 #include "texture/textureloaderfactory.h"

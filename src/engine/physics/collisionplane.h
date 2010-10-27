@@ -22,7 +22,7 @@
 
 #include "collisionshape.h"
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 class CollisionPlane : public CollisionShape
 {

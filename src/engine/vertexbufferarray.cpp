@@ -17,11 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "vertexbufferarray.h"
+
 #include <GL/GLee.h>
 #include <GL/glu.h>
 
-#include "defines.h"
-#include "vertexbufferarray.h"
+#include "core/defines.h"
 
 VertexBufferArray::VertexBufferArray():
    VertexBuffer(),

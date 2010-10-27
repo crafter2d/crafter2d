@@ -20,7 +20,7 @@
 #ifndef _BOUND_H_
 #define _BOUND_H_
 
-#include "math/vector.h"
+#include "core/math/vector.h"
 
 /**
 @author Jeroen Broekhuizen

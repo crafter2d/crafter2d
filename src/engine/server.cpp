@@ -19,8 +19,16 @@
  ***************************************************************************/
 #include "server.h"
 
+#include "core/autoptr.h"
+#include "core/log/log.h"
+#include "core/script/script.h"
+#include "core/script/scriptcontext.h"
+#include "core/script/scriptmanager.h"
+
 #include "net/events/connectevent.h"
 #include "net/events/connectreplyevent.h"
+#include "net/events/disconnectevent.h"
+#include "net/events/joinevent.h"
 #include "net/events/scriptevent.h"
 #include "net/events/requestobjectevent.h"
 #include "net/events/viewportevent.h"
@@ -31,79 +39,9 @@
 #include "physics/Simulator.h"
 
 #include "actionmap.h"
-#include "autoptr.h"
-#include "log.h"
 #include "player.h"
-#include "script.h"
-#include "scriptmanager.h"
 #include "sceneobjectdirtyset.h"
 #include "scopedvalue.h"
-
-IMPLEMENT_REPLICATABLE(JoinEventId, JoinEvent, NetEvent)
-
-JoinEvent::JoinEvent():
-   NetEvent(joinEvent),
-   playerName(),
-   id(-1)
-{
-}
-
-JoinEvent::JoinEvent(int i, const std::string& name):
-   NetEvent(joinEvent),
-   playerName(name),
-   id(i)
-{
-}
-
-void JoinEvent::pack(BitStream& stream) const
-{
-   NetEvent::pack(stream);
-   stream << id << playerName;
-}
-
-void JoinEvent::unpack(BitStream& stream)
-{
-   std::string name;
-
-   NetEvent::unpack(stream);
-   stream >> id >> name;
-
-   playerName = name;
-}
-
-/******************************************************
- * Disconnect class
- */
-
-IMPLEMENT_REPLICATABLE(DisconnectEventId, DisconnectEvent, NetEvent)
-
-DisconnectEvent::DisconnectEvent():
-   NetEvent(disconnectEvent),
-   _id(-1)
-{
-}
-
-DisconnectEvent::DisconnectEvent(int id):
-   NetEvent(disconnectEvent),
-   _id(id)
-{
-}
-
-void DisconnectEvent::pack(BitStream& stream) const
-{
-   NetEvent::pack(stream);
-   stream << _id;
-}
-
-void DisconnectEvent::unpack(BitStream& stream)
-{
-   NetEvent::unpack(stream);
-   stream >> _id;
-}
-
-/******************************************************
- * Server class
- */
 
 Server::Server():
    Process(),
@@ -151,11 +89,13 @@ void Server::shutdown()
       // prevent clients from connecting
       conn.setAccepting(false);
 
+      ScriptContext context;
+
       // call the shutdown function
       Script& script = mScriptManager.getTemporaryScript();
       script.setSelf (this, "Server");
       script.prepareCall ("Server_onShutdown");
-      script.run();
+      script.run(context);
    }
 }
 
@@ -228,8 +168,11 @@ bool Server::loadWorld(const std::string& filename, const std::string& name)
 
    if ( success )
    {
+      ScriptContext context;
+      context.setLog(Log::getInstance());
+
       std::string path = filename + ".lua";
-      mScriptManager.executeScript(path);
+      mScriptManager.executeScript(context, path);
    }
 
    return success;
@@ -241,10 +184,12 @@ bool Server::loadWorld(const std::string& filename, const std::string& name)
 
 int Server::allowNewConnection()
 {
+   ScriptContext context;
+
    // check if the script allows this new player
    Script& script = getScriptManager().getTemporaryScript();
    script.prepareCall("Server_onClientConnecting");
-   script.run(0,1);
+   script.run(context, 0,1);
 
    // the script should return true to allow the new client
    int reason = script.getInteger();
@@ -256,6 +201,7 @@ int Server::allowNewConnection()
 int Server::onClientEvent(int client, const NetEvent& event)
 {
    ScopedValue<int> value(mActiveClient, client, -1);
+   ScriptContext context;
 
    switch ( event.getType() )
    {
@@ -275,7 +221,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             script.prepareCall("Server_onClientDisconnect");
             script.addParam((int)client);
             script.addParam(player.getPointer(), "Player");
-            script.run(2);
+            script.run(context, 2);
 
             // remove the player from the client list
             ClientMap::iterator it = clients.find(client);
@@ -299,7 +245,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             script.prepareCall ("Server_onEvent");
             script.addParam(player, "Player");
             script.addParam(&stream, "BitStream");
-            script.run (2);
+            script.run(context, 2);
             break;
          }
       case actionEvent:
@@ -392,11 +338,12 @@ void Server::handleConnectEvent(const ConnectEvent& event)
    addPlayer(mActiveClient, player);
 
    // run the onClientConnect script
+   ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Server");
    script.prepareCall ("Server_onClientConnect");
    script.addParam(player, "Player");
-   script.run (1);
+   script.run(context, 1);
 }
 
 void Server::handleViewportEvent(const ViewportEvent& event)

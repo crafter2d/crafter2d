@@ -20,7 +20,7 @@
 #ifndef COLLISION_CONTACT_BODY_H_
 #define COLLISION_CONTACT_BODY_H_
 
-#include "math\vector.h"
+#include "core/math/vector.h"
 
 class Body;
 

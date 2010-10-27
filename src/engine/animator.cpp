@@ -24,8 +24,9 @@
 
 #include <tinyxml.h>
 
+#include "core/log/log.h"
+
 #include "animation.h"
-#include "log.h"
 #include "object.h"
 
 Animator* Animator::construct(TiXmlElement* pXmlObject, Object& object)

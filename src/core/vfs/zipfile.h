@@ -20,10 +20,12 @@
 #ifndef ZIPFILE_H
 #define ZIPFILE_H
 
+#include "core/core_base.h"
+
 #include <string>
 #include <zip.h>
 
-class ZipFile
+class CORE_API ZipFile
 {
 public:
             ZipFile();

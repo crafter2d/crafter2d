@@ -21,8 +21,7 @@ if ( os.is("windows") ) then
 	
 	libdir = "../externallibs/" .. _ACTION .. "/"
 	
-	includedirs { libdir .. "sdl/include",
-                    libdir .. "glee/include",
+	includedirs { libdir .. "glee/include",
                     libdir .. "cg/include",
 					libdir .. "zlib/include",
 					libdir .. "tinyxml/include",
@@ -30,8 +29,7 @@ if ( os.is("windows") ) then
 					libdir .. "tolua++/include",
 					"src" }
 					
-	libdirs { libdir .. "sdl/lib",
-				libdir .. "glee/lib",
+	libdirs { libdir .. "glee/lib",
 				libdir .. "cg/lib",
 				libdir .. "zlib/lib",
 				libdir .. "tinyxml/lib",
@@ -45,12 +43,12 @@ if ( os.is("windows") ) then
 		linkoptions { "--allow-multiple-definition" }
 	  
 		configuration "Debug"
-			links { "GLee_d", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
+			links { "GLee_d", "mingw32", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "cg", "cgGL",
 					"minizip_d", "zlib1", "lua", "tolua++_d", "tinyxmld_STL"  } 
 		 
 		configuration "Release"
-			links { "GLee_d", "SOIL", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
+			links { "GLee_d", "SOIL", "mingw32", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32", "cg", "cgGL",
 					"minizip", "zlib1", "lua", "tolua++", "tinyxml_STL"  } 
 	else
@@ -58,7 +56,7 @@ if ( os.is("windows") ) then
 			ignoredefaultlibs { "libcmt.lib" }
 		end
 		
-		links { "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL"  }
+		links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL"  }
 		
 		configuration "Debug"
 			links { "GLee_d", "tolua++_d", " lua5.1_d", "tinyxmld_STL", "zlib1_d", "minizip_d" }

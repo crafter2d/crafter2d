@@ -24,11 +24,12 @@
 
 #include "net/events/actionevent.h"
 
+#include "core/script/script.h"
+#include "core/script/scriptcontext.h"
+#include "core/script/scriptmanager.h"
+
 #include "client.h"
-#include "script.h"
-#include "scriptmanager.h"
 #include "object.h"
-#include "process.h"
 
 ActionMap::ActionMap():
    mActions()
@@ -61,10 +62,12 @@ void ActionMap::process(int action, bool down)
    {
       const char* pfunction = it->second;
 
+      ScriptContext context;
+
       Script& script = client.getScriptManager().getTemporaryScript();
       script.prepareCall (pfunction);
       script.addParam(down);
-      script.run(1);
+      script.run(context, 1);
    }
 }
 
@@ -74,10 +77,12 @@ void ActionMap::processRemote(const ActionEvent& event, Object& object)
    Actions::const_iterator it = mActions.find(action);
    if ( it != mActions.end() )
    {
+      ScriptContext context;
+
       Script& script = mpProcess->getScriptManager().getTemporaryScript();
       script.prepareCall(it->second);
       script.addParam(&object, "Object");
       script.addParam(event.isDown());
-      script.run(2);
+      script.run(context, 2);
    }
 }

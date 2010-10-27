@@ -20,8 +20,9 @@
 
 #include "tileeditorkeylistener.h"
 
-#include "script.h"
-#include "scriptmanager.h"
+#include "core/script/script.h"
+#include "core/script/scriptcontext.h"
+#include "core/script/scriptmanager.h"
 
 #include "gui/guitileeditor.h"
 #include "gui/guieventhandler.h"
@@ -42,11 +43,12 @@ void TileEditorKeyListener::onKeyReleased(const KeyEvent& event)
    GuiEventHandler* phandler = mTileEditor.getEventHandlers().findByEventType(GuiTileEditorKeyPressEvent);
    if ( phandler != NULL )
    {
+      ScriptContext context;
       ScriptManager& mgr = ScriptManager::getInstance();
       Script& script = mgr.getTemporaryScript();
       script.setSelf(&mTileEditor, "GuiTileEditor");
       script.prepareCall(phandler->getFunctionName().c_str());
       script.addParam(event.getKey());
-      script.run(1);
+      script.run(context, 1);
    }
 }
