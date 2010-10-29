@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "precisetimer.h"
+#include "wintimer.h"
 
 #include <windows.h>
 
@@ -28,9 +28,9 @@
 
 #define INTERVAL(start,end) (float)((double)(end.QuadPart - start.QuadPart) / (double)mpData->mFreq.QuadPart);
 
-struct PreciseTimerData
+struct QueryData
 {
-   PreciseTimerData();
+   QueryData();
 
    LARGE_INTEGER mFreq;
    LARGE_INTEGER mStart;
@@ -48,7 +48,7 @@ PreciseTimer::PreciseTimer():
    Timer(),
    mpData(NULL)
 {
-   mpData = new PreciseTimerData();
+   mpData = new WinTimerData();
 }
 
 PreciseTimer::~PreciseTimer()

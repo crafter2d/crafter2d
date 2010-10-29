@@ -17,18 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef PRECISION_TIMER_H_
-#define PRECISION_TIMER_H_
+#ifndef WIN_TIMER_H_
+#define WIN_TIMER_H_
 
 #include "timer.h"
 
-struct PreciseTimerData;
+struct QueryData;
 
-class PreciseTimer : public Timer
+class WinTimer : public Timer
 {
 public:
-   PreciseTimer();
-   virtual ~PreciseTimer();
+   WinTimer();
+   virtual ~WinTimer();
 
    virtual TimerData*   createData() const;
    virtual void         releaseData(TimerData*& pdata);
@@ -38,7 +38,7 @@ public:
    virtual float        getTick() const;
 
 private:
-   PreciseTimerData* mpData;
+   QueryData* mpData;
 };
 
 #endif

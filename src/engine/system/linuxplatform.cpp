@@ -32,5 +32,5 @@ LinuxPlatform::~LinuxPlatform()
 
 Timer* LinuxPlatform::createTimer()
 {
-   return new SDLTimer();
+   return NULL;
 }
