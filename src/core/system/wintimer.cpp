@@ -28,6 +28,10 @@
 
 #define INTERVAL(start,end) (float)((double)(end.QuadPart - start.QuadPart) / (double)mpData->mFreq.QuadPart);
 
+//------------------------------------------------
+// - Internal bookkeeping
+//------------------------------------------------
+
 struct QueryData
 {
    QueryData();
@@ -36,7 +40,7 @@ struct QueryData
    LARGE_INTEGER mStart;
 };
 
-PreciseTimerData::PreciseTimerData():
+QueryData::QueryData():
    mFreq(),
    mStart()
 {
@@ -44,25 +48,29 @@ PreciseTimerData::PreciseTimerData():
    QueryPerformanceCounter(&mStart);
 }
 
-PreciseTimer::PreciseTimer():
+//------------------------------------------------
+// - Internal bookkeeping
+//------------------------------------------------
+
+WinTimer::WinTimer():
    Timer(),
    mpData(NULL)
 {
-   mpData = new WinTimerData();
+   mpData = new QueryData();
 }
 
-PreciseTimer::~PreciseTimer()
+WinTimer::~WinTimer()
 {
    delete mpData;
    mpData = NULL;
 }
 
-TimerData* PreciseTimer::createData() const
+TimerData* WinTimer::createData() const
 {
    return new TimerDataImpl<LARGE_INTEGER>();
 }
 
-void PreciseTimer::releaseData(TimerData*& pdata)
+void WinTimer::releaseData(TimerData*& pdata)
 {
    TimerDataImpl<LARGE_INTEGER>* pmydata = dynamic_cast< TimerDataImpl<LARGE_INTEGER>* >(pdata);
 
@@ -70,14 +78,14 @@ void PreciseTimer::releaseData(TimerData*& pdata)
    pdata = NULL;
 }
 
-void PreciseTimer::start(TimerData& info)
+void WinTimer::start(TimerData& info)
 {
    TIMERDATA1(thedata, info);
    LARGE_INTEGER& start = thedata.getData();
    QueryPerformanceCounter(&start);
 }
 
-float PreciseTimer::getInterval(const TimerData& info)
+float WinTimer::getInterval(const TimerData& info)
 {
    LARGE_INTEGER end;
    QueryPerformanceCounter(&end);
@@ -88,7 +96,7 @@ float PreciseTimer::getInterval(const TimerData& info)
    return INTERVAL(start, end);
 }
 
-float PreciseTimer::getTick() const
+float WinTimer::getTick() const
 {
    LARGE_INTEGER end;
    QueryPerformanceCounter(&end);

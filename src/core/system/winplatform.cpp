@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "winplatform.h"
 
-#include "precisetimer.h"
+#include "wintimer.h"
 
 WinPlatform::WinPlatform():
    Platform()
@@ -32,5 +32,5 @@ WinPlatform::~WinPlatform()
 
 Timer* WinPlatform::createTimer()
 {
-   return new PreciseTimer();
+   return new WinTimer();
 }
