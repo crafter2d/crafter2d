@@ -24,12 +24,12 @@ INLINE void Texture::setStage(int stage)
    texStage = stage;
 }
 
-INLINE Uint32 Texture::getWidth() const
+INLINE int Texture::getWidth() const
 {
    return _width; 
 }
 
-INLINE Uint32 Texture::getHeight() const
+INLINE int Texture::getHeight() const
 {
    return _height;
 }

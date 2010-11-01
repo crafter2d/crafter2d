@@ -101,7 +101,7 @@ bool TextureLoaderDevil::virLoad(File& file, TextureInfo& info)
    ILinfo ilinfo;
    iluGetImageInfo(&ilinfo);
 
-   AutoPtr<Uint8> pdata = new Uint8[ilinfo.SizeOfData];
+   AutoPtr<uchar> pdata = new uchar[ilinfo.SizeOfData];
    memcpy(pdata.getPointer(), ilinfo.Data, ilinfo.SizeOfData);
 
    TextureInfo::Format format;

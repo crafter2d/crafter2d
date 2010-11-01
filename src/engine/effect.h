@@ -21,6 +21,7 @@
 #define EFFECT_H_
 
 #include <string>
+#include <vector>
 
 #include "resources.h"
 

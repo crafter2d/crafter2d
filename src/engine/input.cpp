@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,24 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#include "input.h"
 
-INLINE void NetStatisticsItem::addPackageSend()
+Input::Input()
 {
-   ++MPackagesPerSecondSend;
 }
 
-INLINE void NetStatisticsItem::addPackageReceived()
+bool Input::isKeyDown(int key)
 {
-   ++MPackagesPerSecondRecv;
+   return false;
 }
 
-INLINE void NetStatisticsItem::addBytesSend(uint size)
+bool Input::isMouseButtonDown(MouseButton button)
 {
-   MBytesPerSecondSend += size;
-}
-
-INLINE void NetStatisticsItem::addBytesReceived(uint size)
-{
-   MBytesPerSecondRecv += size;
+   return false;
 }

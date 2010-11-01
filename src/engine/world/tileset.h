@@ -20,8 +20,6 @@
 #ifndef TILESET_H_
 #define TILESET_H_
 
-#include <SDL/SDL.h>
-
 enum TileInfoFlag {
    TileAnimate    = 1,
    TileSolid      = 2
@@ -29,11 +27,11 @@ enum TileInfoFlag {
 
 /// Structure contains animation information for a tile. Every tile can have a certain amount of information.
 struct TileInfo {
-   Uint32 flag;
-   Uint32 anim_index;
-   Uint32 anim_length;
-   Uint32 anim_speed;
-   Uint32 anim_update;
+   int   flag;
+   int   anim_index;
+   int   anim_length;
+   float anim_speed;
+   float anim_update;
 
    TileInfo();
 };
@@ -45,7 +43,7 @@ public:
    TileSet();
 
    bool create(const char* filename);
-   bool update(Uint32 tick);
+   bool update(float tick);
 
  // operator overloads
    TileInfo& operator[](int idx);

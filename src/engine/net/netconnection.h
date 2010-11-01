@@ -30,7 +30,7 @@
 
 #include <list>
 #include <vector>
-#include <SDL/SDL.h>
+
 #include "bitstream.h"
 #include "netobject.h"
 #include "netpackage.h"
@@ -42,7 +42,7 @@ const int   MAX_PACKAGE_NUMBER            = 0xAFFFFFFF;
 const int   MIN_PACKAGE_NUMBER_DIFFERENCE = 0xAFFFF000;
 const int   RESET_DIFFERENCE              = 0x1FFFFFFF;
 const float MAX_TIME_BETWEEN_RECV         = 3.0f;
-const int   HEADER_SIZE                   = sizeof(Uint32)*2 + 2;
+const int   HEADER_SIZE                   = sizeof(uint)*2 + 2;
 const int   SOCKADDR_SIZE                 = sizeof(sockaddr_in);
 const int   INVALID_CLIENTID              = -1;
 const char  ALIVE_MSG_ID                  = 0xF;
@@ -59,10 +59,10 @@ struct NetAddress {
 
    sockaddr_in addr;
 
-   Uint32 packageNumber;
-   Uint32 lastPackageNumber;
-   float  lastTimeRecv;
-   float  lastTimeSend;
+   uint  packageNumber;
+   uint  lastPackageNumber;
+   float lastTimeRecv;
+   float lastTimeSend;
 
    PackageList orderQueue;
    PackageQueue resendQueue;
@@ -86,8 +86,8 @@ public:
    static bool initialize();
 #endif
 
-   bool        create(Uint32 port=0);
-   bool        connect(const char* serverName, Uint32 port);
+   bool        create(int port=0);
+   bool        connect(const char* serverName, int port);
    void        disconnect();
    void        update();
 
@@ -127,15 +127,15 @@ protected:
    bool        isValidSequencedPackage(const NetAddress& client, const NetPackage& package);
 
    void        insertOrderedPackage(NetAddress& client, const NetPackage& package);
-   void        removePackageFromResendQueue(NetAddress& client, Uint32 packageNumber);
+   void        removePackageFromResendQueue(NetAddress& client, uint packageNumber);
 
    int         getErrorNumber();
 
 private:
    Process&    mProcess;
    AdressList  clients;
-   Uint32      lastSendAlive;
-   Uint32      clientid;
+   uint        lastSendAlive;
+   uint        clientid;
    int         sock;
    bool        mSendAliveMsg;
    bool        connected;

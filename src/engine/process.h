@@ -20,6 +20,8 @@
 #ifndef _PROCESS_H_
 #define _PROCESS_H_
 
+#include "engine/engine_base.h"
+
 #include "core/script/scriptmanager.h"
 
 #include "net/netconnection.h"
@@ -35,7 +37,7 @@ class NetEvent;
 ///
 /// Abstract base class for processes. This class provides the common functionality 
 /// needed for client and server processes.
-class Process
+class ENGINE_API Process
 {
 public:
                   Process();
@@ -59,7 +61,7 @@ public:
  // operations
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
-   void           sendScriptEvent(BitStream* stream, Uint32 client=INVALID_CLIENTID);
+   void           sendScriptEvent(BitStream* stream, uint client=INVALID_CLIENTID);
 
   // events
    virtual int    allowNewConnection();

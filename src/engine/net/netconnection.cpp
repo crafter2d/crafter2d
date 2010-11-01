@@ -101,12 +101,12 @@ bool NetConnection::initialize()
 }
 #endif
 
-/// \fn NetConnection::create()
+/// \fn NetConnection::create(int port)
 /// \brief Creates and binds a socket to port
 /// \param port [Optional] port number to bind to
 ///
 /// This method creates a socket and optionaly binds it to a port.
-bool NetConnection::create(Uint32 port)
+bool NetConnection::create(int port)
 {
    sock = (int)socket(AF_INET, SOCK_DGRAM, 0);
    if ( sock == -1 )
@@ -144,9 +144,9 @@ bool NetConnection::create(Uint32 port)
    return true;
 }
 
-/// \fn NetConnection::connect(const char* server, Uint32 port)
+/// \fn NetConnection::connect(const char* server, int port)
 /// \brief Set up this connection for communication with a server.
-bool NetConnection::connect(const char* serverName, Uint32 port)
+bool NetConnection::connect(const char* serverName, int port)
 {
    sockaddr_in client;
    client.sin_family = AF_INET;
@@ -575,9 +575,9 @@ void NetConnection::sendAck(NetAddress& client, const NetPackage& package)
    doSend(client, stream);
 }
 
-/// \fn NetConnection::removePackageFromResendQueue(NetAddress& client, Uint32 packageNumber)
+/// \fn NetConnection::removePackageFromResendQueue(NetAddress& client, int packageNumber)
 /// \brief Removes an acknowledged package from the resend queue.
-void NetConnection::removePackageFromResendQueue(NetAddress& client, Uint32 packageNumber)
+void NetConnection::removePackageFromResendQueue(NetAddress& client, uint packageNumber)
 {
    PackageQueue::iterator it = client.resendQueue.begin();
    for ( ; it != client.resendQueue.end(); ++it)

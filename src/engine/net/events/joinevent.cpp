@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,38 +17,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "abstracttextureloader.h"
-#ifndef JENGINE_INLINE
-#  include "abstracttextureloader.inl"
-#endif
+#include "joinevent.h"
 
-#include <memory>
+IMPLEMENT_REPLICATABLE(JoinEventId, JoinEvent, NetEvent)
 
-#include "core/vfs/file.h"
-#include "core/vfs/filesystem.h"
-#include "core/defines.h"
-#include "core/autoptr.h"
-
-AbstractTextureLoader::AbstractTextureLoader():
-   mTextureInfo()
+JoinEvent::JoinEvent():
+   NetEvent(joinEvent),
+   playerName(),
+   id(-1)
 {
 }
 
-AbstractTextureLoader::~AbstractTextureLoader()
+JoinEvent::JoinEvent(int i, const std::string& name):
+   NetEvent(joinEvent),
+   playerName(name),
+   id(i)
 {
 }
 
-bool AbstractTextureLoader::load(const std::string& filename)
+int JoinEvent::getId() const
 {
-   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
-
-   bool success = virLoad(*pfile, mTextureInfo);
-
-   return success;
+   return id;
 }
 
-bool AbstractTextureLoader::virLoad(File& file, TextureInfo& info)
+const std::string& JoinEvent::getPlayerName() const
 {
-   PURE_VIRTUAL
-   return false;
+   return playerName;
+}
+   
+void JoinEvent::pack(BitStream& stream) const
+{
+   NetEvent::pack(stream);
+   stream << id << playerName;
+}
+
+void JoinEvent::unpack(BitStream& stream)
+{
+   NetEvent::unpack(stream);
+   stream >> id >> playerName;
 }

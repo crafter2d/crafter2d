@@ -37,6 +37,10 @@
 #include "core/script/scriptcontext.h"
 #include "core/script/scriptmanager.h"
 
+#include "core/system/platform.h"
+#include "core/system/timer.h"
+#include "core/system/timerdelta.h"
+
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"
 
@@ -46,10 +50,6 @@
 
 #include "engine/net/netobjectfactory.h"
 #include "engine/net/netconnection.h"
-
-#include "engine/system/platform.h"
-#include "engine/system/timer.h"
-#include "engine/system/timerdelta.h"
 
 #include "engine/opengl.h"
 

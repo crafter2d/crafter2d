@@ -17,7 +17,7 @@ if ( os.is("windows") ) then
 	-- this is an export dll
 	defines { "WIN32", "CORE_EXPORTS" }
 	
-	excludes { "src/core/vfs/linux*.*" }
+	excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*" }
 	
 	libdir = "../externallibs/" .. _ACTION .. "/"
 	

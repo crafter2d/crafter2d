@@ -20,8 +20,6 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include <SDL/SDL.h>
-
 /**
 @author Jeroen Broekhuizen
 \brief Implements one tile on a layer.

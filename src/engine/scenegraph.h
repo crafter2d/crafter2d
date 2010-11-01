@@ -20,7 +20,6 @@
 #ifndef SCENEGRAPH_H_
 #define SCENEGRAPH_H_
 
-#include <SDL/SDL.h>
 #include <list>
 #include <map>
 

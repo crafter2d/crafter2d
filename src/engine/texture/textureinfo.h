@@ -20,7 +20,7 @@
 #ifndef TEXTURE_INFO_H_
 #define TEXTURE_INFO_H_
 
-#include <SDL/SDL.h>
+#include "core/defines.h"
 
 class TextureInfo
 {
@@ -36,8 +36,8 @@ public:
    int      getHeight() const;
    void     setHeight(int height);
 
-   Uint8*   getData() const;
-   void     setData(Uint8* pdata);
+   uchar*   getData() const;
+   void     setData(uchar* pdata);
 
    int      getDataSize() const;
    void     setDataSize(int size);
@@ -48,7 +48,7 @@ public:
 private:
    int      mWidth;
    int      mHeight;
-   Uint8*   mpData;
+   uchar*   mpData;
    int      mDataSize;
    Format   mFormat;
 };

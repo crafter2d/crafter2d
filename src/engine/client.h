@@ -38,6 +38,7 @@ class UpdateObjectEvent;
 class NameChangeObjectEvent;
 class ScriptEvent;
 
+class Input;
 class KeyMap;
 class WorldRenderer;
 class Player;
@@ -65,6 +66,10 @@ public:
    bool           hasKeyMap() const;
    KeyMap&        getKeyMap();
    void           setKeyMap(KeyMap* pkeymap);
+
+   bool           hasInput() const;
+   Input&         getInput();
+   void           setInput(Input& input);
 
  // operations
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
@@ -94,6 +99,7 @@ private:
    WorldRenderer* mpWorldRenderer;
    Player*        mpPlayer;
    KeyMap*        mpKeyMap;
+   Input*         mpInput;
    Requests       requests;
 };
 

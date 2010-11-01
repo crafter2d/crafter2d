@@ -23,7 +23,8 @@
 #define MAX_BITSTREAM_BUFSIZE 1500
 
 #include <string>
-#include <SDL/SDL.h>
+
+#include "core/defines.h"
 
 class NetObject;
 class Vector;
@@ -64,7 +65,7 @@ public:
    BitStream&  operator<<(const Vector& v);
    BitStream&  operator<<(float f);
    BitStream&  operator<<(int i);
-   BitStream&  operator<<(Uint32 i);
+   BitStream&  operator<<(uint i);
    BitStream&  operator<<(bool b);
    BitStream&  operator<<(char c);
    BitStream&  operator<<(const std::string& text);
@@ -74,7 +75,7 @@ public:
    BitStream&  operator>>(Vector& v);
    BitStream&  operator>>(float& f);
    BitStream&  operator>>(int& i);
-   BitStream&  operator>>(Uint32& i);
+   BitStream&  operator>>(uint& i);
    BitStream&  operator>>(bool& b);
    BitStream&  operator>>(char& c);
    BitStream&  operator>>(std::string& str);

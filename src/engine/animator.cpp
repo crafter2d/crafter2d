@@ -134,11 +134,11 @@ bool Animator::parseAnimations(TiXmlElement* pxmlAnimations, int count)
 void Animator::parseAnimation (const char* sequence, Animation *panimation)
 {
 	char number[10] = "";
-	Uint32 length = (Uint32)strlen (sequence);
-	Uint32 anim = 0, j = 0;
+	int length = strlen (sequence);
+	int anim = 0, j = 0;
 
 	// parse the sequence
-	for ( Uint32 i = 0; i < length; ++i )
+	for ( int i = 0; i < length; ++i )
    {
 		if (isdigit (sequence[i]))
 			number[j++] = sequence[i];

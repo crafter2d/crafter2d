@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,38 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "abstracttextureloader.h"
-#ifndef JENGINE_INLINE
-#  include "abstracttextureloader.inl"
-#endif
+#include "disconnectevent.h"
 
-#include <memory>
+IMPLEMENT_REPLICATABLE(DisconnectEventId, DisconnectEvent, NetEvent)
 
-#include "core/vfs/file.h"
-#include "core/vfs/filesystem.h"
-#include "core/defines.h"
-#include "core/autoptr.h"
-
-AbstractTextureLoader::AbstractTextureLoader():
-   mTextureInfo()
+DisconnectEvent::DisconnectEvent():
+   NetEvent(disconnectEvent),
+   _id(-1)
 {
 }
 
-AbstractTextureLoader::~AbstractTextureLoader()
+DisconnectEvent::DisconnectEvent(int id):
+   NetEvent(disconnectEvent),
+   _id(id)
 {
 }
 
-bool AbstractTextureLoader::load(const std::string& filename)
+int DisconnectEvent::getId() const
 {
-   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
-
-   bool success = virLoad(*pfile, mTextureInfo);
-
-   return success;
+   return _id;
 }
 
-bool AbstractTextureLoader::virLoad(File& file, TextureInfo& info)
+void DisconnectEvent::pack(BitStream& stream) const
 {
-   PURE_VIRTUAL
-   return false;
+   NetEvent::pack(stream);
+   stream << _id;
+}
+
+void DisconnectEvent::unpack(BitStream& stream)
+{
+   NetEvent::unpack(stream);
+   stream >> _id;
 }

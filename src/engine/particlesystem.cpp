@@ -27,6 +27,7 @@
 #include <tinyxml.h>
 
 #include "core/log/log.h"
+#include "core/system/timer.h"
 #include "core/script/script.h"
 #include "core/script/scriptcontext.h"
 #include "core/script/scriptmanager.h"
@@ -131,7 +132,7 @@ bool ParticleSystem::prepare()
 
 	// create & initialize the code path
    path = OpenGL::createCodePath(CodePath::ECG);
-	path->load("../shaders/pointsprite.cg", "");
+	path->load("shaders/pointsprite.cg", "");
 
    Effect effect;
    effect.setPath(path);
@@ -144,7 +145,7 @@ bool ParticleSystem::prepare()
 	if (!buffer->create(effect, maxBufferSize*4, usage, format))
 		return false;
 
-	srand (SDL_GetTicks ());
+	srand(TIMER.getTick() * 1000);
 	return true;
 }
 
@@ -271,7 +272,7 @@ void ParticleSystem::doDraw ()
 
       texture->enable ();
 
-	   Uint32 num = 0;
+	   uint num = 0;
 	   Particle* part = activeList;
 	   ParticleVertex* verts = (ParticleVertex*)buffer->lock (0);
 

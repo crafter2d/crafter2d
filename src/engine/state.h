@@ -20,8 +20,6 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
-#include <SDL/SDL.h>
-
 #include "core/math/vector.h"
 
 class Object;
@@ -45,16 +43,16 @@ public:
    void           object(Object* obj);
    Object*        object() const;
 
-   void           start(Uint32 start);
-   Uint32         start() const;
+   void           start(float start);
+   float          start() const;
 
-   void           duration(Uint32 t);
-   Uint32         duration() const;
+   void           duration(float t);
+   float          duration() const;
 
 protected:
    Object* _object;
-   Uint32 _start;
-   Uint32 _duration;
+   float _start;
+   float _duration;
 };
 
 class LocationState: public State

@@ -20,7 +20,8 @@
 #ifndef _MOVIE_H_
 #define _MOVIE_H_
 
-#include <SDL/SDL.h>
+#include "core/defines.h"
+
 #include "texture.h"
 
 #ifdef WIN32
@@ -35,22 +36,26 @@ public:
 
    virtual bool   load(const char* file);
    virtual void   release();
-   virtual void   update(Uint32 tick);
+   virtual void   update(float delta);
 
 protected:
    bool           loadAVI(const char* filename);
 
 #ifdef WIN32
-   PAVISTREAM pavi;
-   PGETFRAME pgf;
-   BITMAPINFOHEADER bmih;
-   Uint32 lastframe, frame, next, mpf;
-
-   HDRAWDIB hdd;
-   HBITMAP hBitmap;
    static HDC hdc;
-   unsigned char* data;
+
+   PAVISTREAM        mpStream;
+   PGETFRAME         mpFramePointer;
+   HDRAWDIB          mDIB;
+   HBITMAP           mBitmap;
 #endif
+
+   uint     mNumberOfFrames;
+   uint     mFramesPerSecond;
+   uint     mCurrentFrame;
+   float    mUpdateRate;
+   float    mFrameTime;
+   uchar*   mpData;
 };
 
 #endif

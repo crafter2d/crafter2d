@@ -40,7 +40,7 @@ class Player;
 class ENGINE_API Server: public Process
 {
 public:
-   typedef std::map<Uint32, Player*> ClientMap;
+   typedef std::map<uint, Player*> ClientMap;
 
                   Server();
    virtual        ~Server();

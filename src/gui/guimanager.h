@@ -20,10 +20,12 @@
 #ifndef GUIMANAGER_H_
 #define GUIMANAGER_H_
 
-#include <SDL/SDL.h>
 #include <string>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
+#include "core/math/point.h"
+#include "core/math/color.h"
 
 #include "guidefines.h"
 #include "guihelpers.h"
@@ -46,7 +48,7 @@ public:
 
    FT_Library           getFreeTypeLib();
 
-   void                 showPopup(GuiWnd& owner, const GuiPoint& point, const std::string& name);
+   void                 showPopup(GuiWnd& owner, const Point& point, const std::string& name);
 
    bool                 isDialog(const std::string& name);
    bool                 isMenu(const std::string& name);
@@ -59,8 +61,8 @@ public:
 	void                 setDefaultFont(GuiFont* f);
    GuiFont*             getDefaultFont() const;
 
-   void                 setDefaultTextColor(const GuiColor& color);
-   const GuiColor&      getDefaultTextColor() const;
+   void                 setDefaultTextColor(const Color& color);
+   const Color&         getDefaultTextColor() const;
 
 protected:
 	                     GuiManager();
@@ -72,7 +74,7 @@ private:
    std::string constructPath(const std::string& filename);
 
 	FT_Library           mFreeTypeLib;
-   GuiColor             mTextColor;
+   Color                mTextColor;
    GuiFont*             mpFont;
    GuiPopupDecorator*   mpPopup;
 };

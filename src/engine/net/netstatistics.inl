@@ -48,12 +48,12 @@ INLINE void NetStatistics::currentItem(NetStatisticsItem* pcurrent)
    MPCurrentItem = pcurrent;
 }
 
-INLINE Uint32 NetStatistics::lastUpdate()
+INLINE uint NetStatistics::lastUpdate() const
 {
    return MLastUpdate;
 }
 
-INLINE void NetStatistics::lastUpdate(Uint32 tick)
+INLINE void NetStatistics::lastUpdate(uint tick)
 {
    MLastUpdate = tick;
 }

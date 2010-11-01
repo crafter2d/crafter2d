@@ -24,7 +24,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <SDL/SDL.h>
 #include <GL/glu.h>
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>

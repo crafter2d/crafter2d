@@ -28,7 +28,6 @@
 #include <math.h>
 #include <GL/GLee.h>
 #include <GL/glu.h>
-#include <SDL/SDL.h>
 #include <SOIL.h>
 
 #include "core/autoptr.h"
@@ -123,7 +122,7 @@ bool Texture::generateTexture(const TextureInfo& info)
       break;
    }
 
-   Uint8* pdata = ensureProperSize(interval, info.getData(), _width, _height);
+   uchar* pdata = ensureProperSize(interval, info.getData(), _width, _height);
    if ( pdata != NULL )
    {
       target = getRenderTarget();
@@ -171,7 +170,7 @@ GLenum Texture::getRenderTarget()
 	return GL_TEXTURE_2D;
 }
 
-bool Texture::createNormalizingCube(Uint32 size)
+bool Texture::createNormalizingCube(int size)
 {
 	target = GL_TEXTURE_CUBE_MAP;
 
@@ -335,7 +334,7 @@ bool Texture::createNormalizingCube(Uint32 size)
 	return true;
 }
 
-Uint8* Texture::ensureProperSize(int bytes, Uint8* pdata, Uint32 width, Uint32 height)
+uchar* Texture::ensureProperSize(int bytes, uchar* pdata, int width, int height)
 {
    _actualwidth  = findNextPowerOfTwo(width);
    _actualheight = findNextPowerOfTwo(height);
@@ -356,16 +355,16 @@ Uint8* Texture::ensureProperSize(int bytes, Uint8* pdata, Uint32 width, Uint32 h
    _sourceWidth  = static_cast<float>(width) / _actualwidth;
    _sourceHeight = static_cast<float>(height) / _actualheight;
 
-   Uint32 size = _actualwidth * _actualheight * bytes;
-   Uint8* pnewdata = new Uint8[size];
+   int size = _actualwidth * _actualheight * bytes;
+   uchar* pnewdata = new uchar[size];
    memset(pnewdata, 0, width);
 
-   Uint32 rowwidth    = _actualwidth * bytes;
-   Uint32 orgrowwidth = width * bytes;
+   int rowwidth    = _actualwidth * bytes;
+   int orgrowwidth = width * bytes;
 
-   Uint8* pactual  = pnewdata;
-   Uint8* porginal = pdata;
-   for ( Uint32 y = 0; y < height; ++y )
+   uchar* pactual  = pnewdata;
+   uchar* porginal = pdata;
+   for ( int y = 0; y < height; ++y )
    {
       memcpy(pactual, porginal, orgrowwidth);
 
@@ -376,9 +375,9 @@ Uint8* Texture::ensureProperSize(int bytes, Uint8* pdata, Uint32 width, Uint32 h
    return pnewdata;
 }
 
-Uint32 Texture::findNextPowerOfTwo(Uint32 size)
+int Texture::findNextPowerOfTwo(int size)
 {
-   Uint32 newsize = 1;
+   int newsize = 1;
    while ( newsize < size )
       newsize <<= 1;
 

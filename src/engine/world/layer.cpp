@@ -28,7 +28,6 @@
 #include <cstdlib>
 #include <GL/GLee.h>
 #include <GL/glu.h>
-#include <SDL/SDL.h>
 #include <math.h>
 
 #include "core/autoptr.h"
@@ -166,6 +165,14 @@ void Layer::release()
 	delete[] texcoordLookup;
 	delete[] field;
 	delete vb;
+}
+
+void Layer::update(float delta)
+{
+   if ( animateTiles )
+   {
+      dirty |= mTileSet.update(delta);
+   }
 }
 
 //////////////////////////////////////////////////////////////////////////

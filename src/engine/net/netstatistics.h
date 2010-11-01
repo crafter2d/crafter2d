@@ -20,8 +20,9 @@
 #ifndef NETSTATISTICS_H_
 #define NETSTATISTICS_H_
 
-#include <SDL/SDL.h>
 #include <vector>
+
+#include "core/defines.h"
 
 class NetStatisticsItem;
 
@@ -46,13 +47,13 @@ public:
       NetStatisticsItem&      currentItem();
       void                    currentItem(NetStatisticsItem* pcurrent);
 
-      Uint32                  lastUpdate();
-      void                    lastUpdate(Uint32 tick);
+      uint                    lastUpdate() const;
+      void                    lastUpdate(uint tick);
 
    // operations
-      void addPackageSend(Uint32 size);
-      void addPackageReceived(Uint32 size);
-      void update(Uint32 tick);
+      void addPackageSend(uint size);
+      void addPackageReceived(uint size);
+      void update(uint tick);
 
 private:
    // Get/set interface
@@ -65,8 +66,8 @@ private:
    // Members
       StatisticsItems      MItems;
       NetStatisticsItem*   MPCurrentItem;
-      Uint32               MLastUpdate;
-      Uint32               MLimit;
+      uint                 MLastUpdate;
+      uint                 MLimit;
 };
 
 #ifdef JENGINE_INLINE

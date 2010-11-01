@@ -20,9 +20,10 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <SDL/SDL.h>
 #include <GL/GLee.h>
 #include <string>
+
+#include "core/defines.h"
 
 #include "refcount.h"
 
@@ -38,7 +39,7 @@ public:
    explicit       Texture();
    virtual        ~Texture();
 
-   bool           createNormalizingCube(Uint32 size = 128);
+   bool           createNormalizingCube(int size = 128);
    virtual void   release();
 
    virtual bool   load(const std::string& file);
@@ -48,8 +49,8 @@ public:
 
    void           setStage (int stage);
 
-   Uint32         getWidth() const;
-   Uint32         getHeight() const;
+   int            getWidth() const;
+   int            getHeight() const;
    float          getSourceWidth() const;
    float          getSourceHeight() const;
    std::string    getFileName() const;
@@ -57,17 +58,17 @@ public:
 
 protected:
    bool           generateTexture(const TextureInfo& info);
-   Uint8*         ensureProperSize(int bytes, Uint8* data, Uint32 width, Uint32 height);
+   uchar*         ensureProperSize(int bytes, uchar* data, int width, int height);
    void           flipIt(unsigned char* buffer);
-   Uint32         findNextPowerOfTwo(Uint32 size);
+   int            findNextPowerOfTwo(int size);
 
    static GLenum  getRenderTarget();
 
 protected:
-   Uint32 _width;
-   Uint32 _height;
-   Uint32 _actualwidth;
-   Uint32 _actualheight;
+   int _width;
+   int _height;
+   int _actualwidth;
+   int _actualheight;
    float  _sourceWidth;
    float  _sourceHeight;
    GLuint tex;

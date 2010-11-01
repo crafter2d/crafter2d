@@ -101,12 +101,6 @@ void TopDownLayer::draw ()
    glPushMatrix ();
 	glTranslatef (-xscroll, -yscroll, 0);
 
-   if (animateTiles )
-   {
-      // update the tileset
-      dirty |= tileset().update (SDL_GetTicks());
-   }
-
 	if ( dirty )
    {
 		// determine the tile we are in

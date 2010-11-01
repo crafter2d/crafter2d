@@ -22,7 +22,6 @@
 
 #include <queue>
 #include <string>
-#include <SDL/SDL.h>
 
 #include "core/math/vector.h"
 

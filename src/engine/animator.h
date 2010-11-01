@@ -20,8 +20,6 @@
 #ifndef ANIMATOR_H_
 #define ANIMATOR_H_
 
-#include <SDL/SDL.h>
-
 #include "animationset.h"
 #include "texturecoordlookup.h"
 
@@ -59,14 +57,14 @@ private:
 
    TextureCoordLookup        mTextureCoords;
    RefPointer<AnimationSet>  mAnimations;
-	float   mAnimationSpeed;
-	float   mAnimationDelta;
-   float  _animFrameWidth;
-   int    _animFrameCount;
-	int mCurrentAnimation;
-	int animIndex;
-	int animFrame;
-   bool   _animChanged;
+	float    mAnimationSpeed;
+	float    mAnimationDelta;
+   float    _animFrameWidth;
+   int      _animFrameCount;
+	int      mCurrentAnimation;
+	int      animIndex;
+	int      animFrame;
+   bool     _animChanged;
 };
 
 #ifdef JENGINE_INLINE

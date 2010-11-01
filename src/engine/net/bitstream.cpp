@@ -23,7 +23,6 @@
 #  include "bitstream.inl"
 #endif
 
-#include <assert.h>
 #include <string.h>
 
 #include "core/math/vector.h"
@@ -126,9 +125,9 @@ BitStream& BitStream::operator<<(float f)
    return *this;
 }
 
-BitStream& BitStream::operator<<(Uint32 i)
+BitStream& BitStream::operator<<(uint i)
 {
-   int len = sizeof(Uint32);
+   int len = sizeof(uint);
    ensureFits(len);
 
    memcpy(&buf[size], &i, len);
@@ -215,10 +214,10 @@ BitStream& BitStream::operator>>(int& i)
    return *this;
 }
 
-BitStream& BitStream::operator>>(Uint32& i)
+BitStream& BitStream::operator>>(uint& i)
 {
-   memcpy (&i, &buf[pos], sizeof(Uint32));
-   pos += sizeof(Uint32);
+   memcpy (&i, &buf[pos], sizeof(uint));
+   pos += sizeof(uint);
    return *this;
 }
 

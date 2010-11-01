@@ -61,12 +61,12 @@ if ( os.is("windows") ) then
 	  
 		configuration "Debug"
 			links { "GLee_d", "SOIL_d", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
-					"user32", "vfw32", "ws2_32", "ilu", "lua", "tolua++_d", "freetype241MT_D" } 
+					"user32", "vfw32", "ws2_32", "ilu", "lua", "tolua++_d", "freetype241MT_D", "Core" } 
 		 
 		configuration "Release"
 			links { "GLee_d", "SOIL", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"lua", "tolua++", "freetype241MT"  } 
+					"lua", "tolua++", "freetype241MT", "Core" } 
 
 	else
 		if ( _ACTION > "vs2005" ) then
@@ -74,7 +74,7 @@ if ( os.is("windows") ) then
 		end
 		
 		links { "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", 
-				"OpenAL32", "ALut", "cg", "cgGL", "devil", "ilu"  }
+				"OpenAL32", "ALut", "cg", "cgGL", "devil", "ilu", "Core"  }
 		
 		configuration "Debug"
 			links { "GLee_d", "box2d_d", "tolua++_d", " lua5.1_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
@@ -94,13 +94,11 @@ elseif ( os.is("linux") ) then
 	end
    
 	defines { "LINUX" }
-   
-	excludes { "src/engine/vfs/win*.*", "src/engine/system/win*.*" }
-	
+   	
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL",
            "lua", "tolua++-5.1", "openal", "alut",
-           "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d" }
+           "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d", "Core" }
 
 	-- set the pre-build event
 	prebuildcommands {

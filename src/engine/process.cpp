@@ -104,7 +104,7 @@ int Process::allowNewConnection()
    return 0;
 }
 
-void Process::sendScriptEvent(BitStream* pstream, Uint32 client)
+void Process::sendScriptEvent(BitStream* pstream, uint client)
 {
    if ( conn.isConnected() )
    {

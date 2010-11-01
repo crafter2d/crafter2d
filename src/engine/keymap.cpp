@@ -17,17 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
 #include "keymap.h"
-
-#include <SDL/SDL.h>
 
 #include "actionmap.h"
 #include "client.h"
+#include "input.h"
 
 KeyMap::KeyMap():
    mpClient(NULL),
-   mpLocalActionMap(NULL),
    mKeys()
 {
 }
@@ -37,11 +34,6 @@ KeyMap::KeyMap():
 void KeyMap::setClient(Client& client)
 {
    mpClient = &client;
-}
-
-void KeyMap::setLocalActionMap(ActionMap& actionmap)
-{
-   mpLocalActionMap = &actionmap;
 }
 
 // - Operations
@@ -62,7 +54,7 @@ void KeyMap::update()
    ActionMap* pactionmap = mpClient->getActionMap();
    if ( pactionmap != NULL )
    {
-      Uint8* pkeys = SDL_GetKeyState(NULL);
+      Input& input = mpClient->getInput();
 
       KeyInfos::iterator it = mKeys.begin();
       for ( ; it != mKeys.end(); ++it )
@@ -70,7 +62,7 @@ void KeyMap::update()
          int key = it->first;
          KeyInfo& info = it->second;
 
-         if ( pkeys[key] )
+         if ( input.isKeyDown(key) )
          {
             if ( !info.state )
             {

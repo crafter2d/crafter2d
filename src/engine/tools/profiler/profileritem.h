@@ -20,7 +20,6 @@
 #ifndef PROFILER_ITEM_H_
 #define PROFILER_ITEM_H_
 
-#include <SDL/SDL.h>
 #include <string>
 
 class TimerData;

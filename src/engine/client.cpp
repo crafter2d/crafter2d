@@ -116,7 +116,7 @@ void Client::update(float delta)
 {
    Process::update(delta);
 
-   if ( mpKeyMap != NULL )
+   if ( hasKeyMap() && hasInput() )
    {
       mpKeyMap->update();
    }

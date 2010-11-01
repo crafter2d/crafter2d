@@ -22,6 +22,8 @@
 
 #include <map>
 
+#include "core/defines.h"
+
 class ActionMap;
 class Client;
 
@@ -37,7 +39,6 @@ public:
 
  // get/set
    void setClient(Client& client);
-   void setLocalActionMap(ActionMap& actionmap);
 
  // operations
    void bind(int key, int action);
@@ -46,14 +47,13 @@ public:
 private:
    struct KeyInfo
    {
-      int action;
+      uint action;
       bool state;
    };
 
    typedef std::map<int, KeyInfo> KeyInfos;
 
    Client*    mpClient;
-   ActionMap* mpLocalActionMap;
    KeyInfos   mKeys;
 };
 

@@ -20,8 +20,6 @@
 #ifndef PARTICLESYSTEM_H
 #define PARTICLESYSTEM_H
 
-#include <SDL/SDL.h>
-
 #include "core/math/vector.h"
 #include "core/math/color.h"
 
@@ -82,11 +80,14 @@ protected:
 
 	Particle* activeList;
 	Particle* freeList;
-	Uint32 maxBufferSize;
+	uint      maxBufferSize;
 	
-	int emitRate, emitCount;
-	int active, maxActive;
-	int lastUpdate, lastInit;
+	int emitRate;
+   int emitCount;
+	int active;
+   int maxActive;
+	int lastUpdate;
+   int lastInit;
 
 	Script* updateScript;
 	

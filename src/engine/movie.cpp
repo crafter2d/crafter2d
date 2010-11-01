@@ -27,15 +27,16 @@ HDC Movie::hdc = CreateCompatibleDC(0);
 
 Movie::Movie()
 #ifdef WIN32
- : pavi(0),
-   pgf(0),
-   lastframe(0),
-   frame(0),
-   next(0),
-   mpf(0),
-   hdd(0),
-   hBitmap(0),
-   data(0)
+ : mpStream(NULL),
+   mpFramePointer(NULL),
+   mDIB(NULL),
+   mBitmap(NULL),
+   mNumberOfFrames(0),
+   mFramesPerSecond(0),
+   mCurrentFrame(0),
+   mUpdateRate(0.0f),
+   mFrameTime(0.0f),
+   mpData(0)
 #endif
 {
 }
@@ -48,13 +49,17 @@ void Movie::release()
 {
    Texture::release();
 #ifdef WIN32
-   if (pavi != 0) {
-      DeleteObject(hBitmap);
-	   DrawDibClose(hdd);
-	   AVIStreamGetFrameClose(pgf);
-	   AVIStreamRelease(pavi);
-      pgf = 0;
-      pavi = 0;
+   if ( mpStream != NULL )
+   {
+      DeleteObject(mBitmap);
+	   DrawDibClose(mDIB);
+
+	   AVIStreamGetFrameClose(mpFramePointer);
+	   AVIStreamRelease(mpStream);
+      mpFramePointer = NULL;
+      mpStream = NULL;
+
+      mpData = NULL;
    }
 #endif
 }
@@ -88,7 +93,7 @@ bool Movie::loadAVI(const char* filename)
    Log& log = Log::getInstance();
 
    // try to open the avi file
-   if ( AVIStreamOpenFromFile(&pavi, filename, streamtypeVIDEO, 0, OF_READ, NULL) != 0 )
+   if ( AVIStreamOpenFromFile(&mpStream, filename, streamtypeVIDEO, 0, OF_READ, NULL) != 0 )
    {
       log.error("Can not open %s movie file.", filename);   
       return false;
@@ -97,32 +102,34 @@ bool Movie::loadAVI(const char* filename)
    {
       // get avi dimensions and length
       AVISTREAMINFO psi;
-      AVIStreamInfo(pavi, &psi, sizeof(psi));
+      AVIStreamInfo(mpStream, &psi, sizeof(psi));
       _width = psi.rcFrame.right-psi.rcFrame.left;
       _height = psi.rcFrame.bottom-psi.rcFrame.top;
-      lastframe = AVIStreamLength(pavi);
+      mNumberOfFrames = AVIStreamLength(mpStream);
 
       _actualwidth = findNextPowerOfTwo(_width);
       _actualheight = findNextPowerOfTwo(_height);
 
-      hdd = DrawDibOpen();
+      mDIB = DrawDibOpen();
 
       // calculate how much frame per second must be displayed
-      mpf = psi.dwRate / psi.dwScale;
+      mFramesPerSecond = psi.dwRate / psi.dwScale;
+      mUpdateRate = 1.0f / mFramesPerSecond;
 
       // create bitmap info
+      BITMAPINFOHEADER  bmih;
       bmih.biSize = sizeof (BITMAPINFOHEADER);
 	   bmih.biPlanes = 1;
 	   bmih.biBitCount = 24;
       bmih.biWidth = _actualwidth;//getWidth();
       bmih.biHeight = _actualheight;// getHeight();
 	   bmih.biCompression = BI_RGB;
-	   hBitmap = CreateDIBSection (hdc, (BITMAPINFO*)(&bmih), DIB_RGB_COLORS, (void**)(&data), NULL, 0);
-	   SelectObject (hdc, hBitmap);
+	   mBitmap = CreateDIBSection (hdc, (BITMAPINFO*)(&bmih), DIB_RGB_COLORS, (void**)(&mpData), NULL, 0);
+	   SelectObject (hdc, mBitmap);
 
       // get the AVI frame pointer
-      pgf = AVIStreamGetFrameOpen(pavi, NULL);
-      if ( pgf == NULL )
+      mpFramePointer = AVIStreamGetFrameOpen(mpStream, NULL);
+      if ( mpFramePointer == NULL )
       {
          log.error("Can not open the stream frame of %s.", filename);
          return false;
@@ -130,42 +137,41 @@ bool Movie::loadAVI(const char* filename)
 
       target = getRenderTarget ();
 
-      glGenTextures (1, &tex);
-	   glBindTexture (target, tex);
-      update(SDL_GetTicks());
+      glGenTextures(1, &tex);
+	   glBindTexture(target, tex);
+      update(0);
       
-      //Uint8* pdata = ensureProperSize(3, data, _width, _height);
-      glTexImage2D (target, 0, 3, _actualwidth, _actualheight, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-
-      //glTexImage2D (target, 0, 3, getWidth(), getHeight(), 0, GL_BGR, GL_UNSIGNED_BYTE, data);
       return true;
    }
 #endif
 	return true;
 }
 
-void Movie::update(Uint32 tick)
+void Movie::update(float delta)
 {
 #ifdef WIN32
    LPBITMAPINFOHEADER lpbi;
 
    // get the frame data
-   lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(pgf, frame);
-   char* pdata = (char*)lpbi+lpbi->biSize+lpbi->biClrUsed * sizeof(RGBQUAD);
+   lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(mpFramePointer, mCurrentFrame);
+   uchar* pdata = (uchar*)lpbi+lpbi->biSize+lpbi->biClrUsed * sizeof(RGBQUAD);
 
-   // copy the data to our buffer and flip the G and B bytes
-   DrawDibDraw (hdd, hdc, 0, 0, _actualwidth, _actualheight, lpbi, pdata, 0, 0, getWidth(), getHeight(), 0);
+   // copy the data to our buffer
+   DrawDibDraw (mDIB, hdc, 0, 0, _actualwidth, _actualheight, lpbi, pdata, 0, 0, getWidth(), getHeight(), 0);
 
-   // update the texture
+   // update the texture (flipping r and b channel)
    glBindTexture (target, tex);
-   glTexImage2D (target, 0, 3, _actualwidth, _actualheight, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+   glTexImage2D (target, 0, 3, _actualwidth, _actualheight, 0, GL_BGR, GL_UNSIGNED_BYTE, mpData);
    //glTexSubImage2D (target, 0, 0, 0, getWidth(), getHeight(), GL_BGR, GL_UNSIGNED_BYTE, data);
 
    // go to next frame
-   if (tick - next > mpf) {
-	   if (++frame == lastframe)
-		   frame=0;
-		next = tick;
+   mFrameTime += delta;
+   if ( mFrameTime > mUpdateRate )
+   {
+	   if ( ++mCurrentFrame == mNumberOfFrames )
+		   mCurrentFrame=0;
+
+      mFrameTime = 0.0f;
 	}
 #endif
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,38 +17,28 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "abstracttextureloader.h"
-#ifndef JENGINE_INLINE
-#  include "abstracttextureloader.inl"
-#endif
+#ifndef JOIN_EVENT_H_
+#define JOIN_EVENT_H_
 
-#include <memory>
+#include "../netevent.h"
 
-#include "core/vfs/file.h"
-#include "core/vfs/filesystem.h"
-#include "core/defines.h"
-#include "core/autoptr.h"
-
-AbstractTextureLoader::AbstractTextureLoader():
-   mTextureInfo()
+class JoinEvent: public NetEvent
 {
-}
+public:
+   DEFINE_REPLICATABLE(JoinInfo)
 
-AbstractTextureLoader::~AbstractTextureLoader()
-{
-}
+   JoinEvent();
+   JoinEvent(int id, const std::string& name);
 
-bool AbstractTextureLoader::load(const std::string& filename)
-{
-   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
+   int getId() const;
+   const std::string& getPlayerName() const;
 
-   bool success = virLoad(*pfile, mTextureInfo);
+   virtual void pack(BitStream& stream) const;
+   virtual void unpack(BitStream& stream);
 
-   return success;
-}
+private:
+   std::string playerName;
+   int id;
+};
 
-bool AbstractTextureLoader::virLoad(File& file, TextureInfo& info)
-{
-   PURE_VIRTUAL
-   return false;
-}
+#endif // JOIN_EVENT_H_

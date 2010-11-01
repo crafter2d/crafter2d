@@ -28,14 +28,12 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include "../autoptr.h"
-#include "../console.h"
-#include "../game.h"
-#include "../gameconfiguration.h"
-#include "../script.h"
-#include "../scriptmanager.h"
+#include "core/autoptr.h"
+#include "core/script/script.h"
+#include "core/script/scriptmanager.h"
+#include "core/vfs/unzipfile.h"
 
-#include "vfs/unzipfile.h"
+#include "engine/console.h"
 
 #include "gui/guidialog/guidialog.h"
 #include "gui/button/guibutton.h"
@@ -295,7 +293,7 @@ GuiMenu* GuiManager::loadMenuFromXML(TiXmlElement& menu)
    return pmenu.release();
 }
 
-void GuiManager::showPopup(GuiWnd& owner, const GuiPoint& point, const std::string& name)
+void GuiManager::showPopup(GuiWnd& owner, const Point& point, const std::string& name)
 {
    GuiMenu* pmenu = dynamic_cast<GuiMenu*>(loadFromXML(name));
    if ( pmenu != NULL )
@@ -308,7 +306,7 @@ void GuiManager::showPopup(GuiWnd& owner, const GuiPoint& point, const std::stri
          mpPopup->create(100, GuiRect(0, 0, 0, 0), "", GUI_VISIBLE, NULL);
       }
 
-      GuiPoint localpoint = point;
+      Point localpoint = point;
       owner.clientToWindow(localpoint);
 
       mpPopup->setWindowPos(localpoint.x, localpoint.y);

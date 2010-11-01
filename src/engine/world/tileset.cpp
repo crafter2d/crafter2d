@@ -114,7 +114,9 @@ bool TileSet::create(const char* filename)
 
          if (anim->QueryIntAttribute("length", &val) == TIXML_SUCCESS)
             info.anim_length = val;
-         if (anim->QueryIntAttribute("speed", &val) == TIXML_SUCCESS)
+
+         float speed = 0.0f;
+         if (anim->QueryFloatAttribute("speed", &speed) == TIXML_SUCCESS)
             info.anim_speed = val;
       }
 
@@ -124,7 +126,7 @@ bool TileSet::create(const char* filename)
    return true;
 }
 
-bool TileSet::update(Uint32 tick)
+bool TileSet::update(float tick)
 {
    bool dirty = false;
 

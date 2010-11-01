@@ -20,7 +20,6 @@
 #ifndef SCENE_OBJECT_H_
 #define SCENE_OBJECT_H_
 
-#include <SDL/SDL.h>
 #include <list>
 
 #include "net/netobject.h"

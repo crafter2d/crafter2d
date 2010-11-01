@@ -20,7 +20,7 @@
 #ifndef NETSTATISTICS_ITEM_H_
 #define NETSTATISTICS_ITEM_H_
 
-#include <SDL/SDL.h>
+#include "core/defines.h"
 
 class NetStatisticsItem
 {
@@ -32,15 +32,15 @@ public:
       void addPackageSend();
       void addPackageReceived();
 
-      void addBytesSend(Uint32 size);
-      void addBytesReceived(Uint32 size);
+      void addBytesSend(uint size);
+      void addBytesReceived(uint size);
 
 private:
-   Uint32 MBytesPerSecondRecv;
-   Uint32 MBytesPerSecondSend;
+   uint MBytesPerSecondRecv;
+   uint MBytesPerSecondSend;
 
-   Uint32 MPackagesPerSecondRecv;
-   Uint32 MPackagesPerSecondSend;
+   uint MPackagesPerSecondRecv;
+   uint MPackagesPerSecondSend;
 };
 
 #ifdef JENGINE_INLINE

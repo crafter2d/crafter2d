@@ -114,6 +114,7 @@ public:
 
    void           scroll(float x, float y);
    void           resize(int newwidth, int newheight);
+   void           update(float delta);
 
    void           calculateScrollSpeed(const Vector& area, int screenWidth, int screenHeight);
 

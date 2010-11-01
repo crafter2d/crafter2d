@@ -23,22 +23,22 @@ INLINE void State::initialize()
 {
 }
 
-INLINE void State::start(Uint32 start)
+INLINE void State::start(float start)
 {
    _start = start;
 }
 
-INLINE Uint32 State::start() const
+INLINE float State::start() const
 {
    return _start;
 }
 
-INLINE void State::duration(Uint32 dur)
+INLINE void State::duration(float dur)
 {
    _duration = dur;
 }
 
-INLINE Uint32 State::duration() const
+INLINE float State::duration() const
 {
    return _duration;
 }

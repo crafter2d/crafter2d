@@ -22,7 +22,6 @@
 #  include "world.inl"
 #endif
 
-#include <SDL/SDL.h>
 #include <tinyxml.h>
 #include <algorithm>
 #include <functional>
@@ -257,6 +256,12 @@ void World::doUpdateClient(float delta)
    {
       scroll();
    }
+
+   for ( int i = 0; i < layers.size(); i++ )
+   {
+      Layer& layer = *layers[i];
+      layer.update(delta);
+   }
 }
 
 const Vector& World::getPosition() const
@@ -289,6 +294,8 @@ void World::doDraw ()
 
 /// \fn World::scroll()
 /// \brief Scrolls the layers based on the follow mode given by the application
+
+// Move to the viewport!
 void World::scroll ()
 {
    float xScroll = 0;
@@ -318,7 +325,7 @@ void World::scroll ()
    {
       int x, y;
       int width =800, height=600;
-      SDL_GetMouseState(&x, &y);
+      // SDL_GetMouseState(&x, &y); <-- get it from the input of the client
       
       // get the window bounds
       if (x < followBorderWidth)

@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#include "../system/timer.h"
+#include "core/system/timer.h"
 
 #include "bitstream.h"
 #include "netevent.h"
