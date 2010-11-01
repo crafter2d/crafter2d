@@ -20,7 +20,9 @@
 #ifndef TIMER_DATA_H_
 #define TIMER_DATA_H_
 
-class TimerData
+#include "core/core_base.h"
+
+class CORE_API TimerData
 {
 public:
    TimerData();

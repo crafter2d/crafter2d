@@ -25,8 +25,8 @@
 #include <GL/GLee.h>
 #include <algorithm>
 
-#include "../game.h"
-#include "../scriptmanager.h"
+#include "core/script/scriptcontext.h"
+#include "core/script/scriptmanager.h"
 
 #include "guidesigner.h"
 #include "guiclipper.h"
@@ -118,11 +118,12 @@ void GuiWnd::create (GuiId id, const GuiRect& rect, const char* caption, GuiStyl
    GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiWndCreatedEvent);
    if ( phandler != NULL )
    {
-      ScriptManager& mgr = ScriptManager::getInstance();
+      ScriptContext context;
+      ScriptManager& mgr = getScriptManager();
       Script& script = mgr.getTemporaryScript();
       script.setSelf(this, "GuiWnd");
       script.prepareCall(phandler->getFunctionName().c_str());
-      script.run(0);
+      script.run(context);
    }
 }
 
@@ -292,21 +293,31 @@ GuiWnd* GuiWnd::getItemById (GuiId id) const
 }
 
 //-----------------------------------
+// - Query
+//-----------------------------------
+
+ScriptManager& GuiWnd::getScriptManager()
+{
+   ASSERT(hasParent());
+   return getParent()->getScriptManager();
+}
+
+//-----------------------------------
 // - Rendering
 //-----------------------------------
 
-void GuiWnd::render(Uint32 tick, const GuiGraphics& graphics)
+void GuiWnd::render(float delta, const GuiGraphics& graphics)
 {
    if ( getVisible() )
    {
-      onRender(tick, graphics);
-      renderChildren(tick, graphics);
+      onRender(delta, graphics);
+      renderChildren(delta, graphics);
    }
 }
 
-/// GuiWnd::onRender(Uint32 tick, const GuiGraphics& graphics)
+/// GuiWnd::onRender(float delta, const GuiGraphics& graphics)
 /// \brief Called during the rendering of a window or control
-void GuiWnd::onRender(Uint32 tick, const GuiGraphics& graphics)
+void GuiWnd::onRender(float delta, const GuiGraphics& graphics)
 {
    const GuiCanvas& canvas = graphics.canvas();
    if ( getBackground() )
@@ -329,9 +340,9 @@ void GuiWnd::onRender(Uint32 tick, const GuiGraphics& graphics)
    graphics.setColor(1,1,1);
 }
 
-/// \fn GuiWnd::renderChildren(Uint32 tick, const GuiGraphics& graphics)
+/// \fn GuiWnd::renderChildren(float delta, const GuiGraphics& graphics)
 /// \brief Render the child windows of this window.
-void GuiWnd::renderChildren(Uint32 tick, const GuiGraphics& graphics)
+void GuiWnd::renderChildren(float delta, const GuiGraphics& graphics)
 {
    GuiScopedTransform transform(*this);
 
@@ -339,7 +350,7 @@ void GuiWnd::renderChildren(Uint32 tick, const GuiGraphics& graphics)
    for ( ; it.valid(); --it)
    {
       GuiWnd* pwnd = (*it);
-	   pwnd->render (tick, graphics);
+	   pwnd->render(delta, graphics);
    }
 }
 
@@ -504,12 +515,12 @@ void GuiWnd::onActivate (bool active, GuiWnd* oldWnd)
 		m_style &= ~GUI_ACTIVE;
 }
 
-GuiWnd* GuiWnd::hitTest (const GuiPoint& point)
+GuiWnd* GuiWnd::hitTest (const Point& point)
 {
    if ( getVisible() && getWindowRect().pointInRect(point) )
    {
 		GuiWnd* pwnd = this;
-      GuiPoint cs(point);
+      Point cs(point);
 		cs.x -= m_frameRect.left();
 		cs.y -= m_frameRect.top();
 
@@ -540,7 +551,7 @@ void GuiWnd::onCommand(int cmd)
       GuiEventHandler* phandler = getEventHandlers().findByEventType(GuiWndCommandEvent);
       if ( phandler != NULL )
       {
-         ScriptManager& mgr = ScriptManager::getInstance();
+         ScriptManager& mgr = getScriptManager();
          Script& script = mgr.getTemporaryScript();
          script.setSelf(this, name.c_str());
          script.prepareCall(phandler->getFunctionName().c_str());
@@ -560,7 +571,7 @@ void GuiWnd::clientToWindow(GuiRect& rect) const
    }
 }
 
-void GuiWnd::clientToWindow(GuiPoint& point) const
+void GuiWnd::clientToWindow(Point& point) const
 {
    GuiWnd* p = parent;
    do
@@ -583,7 +594,7 @@ void GuiWnd::windowToClient(GuiRect& rect) const
    while (p);
 }
 
-void GuiWnd::windowToClient(GuiPoint& point)
+void GuiWnd::windowToClient(Point& point)
 {
    GuiWnd* p = this;
    do

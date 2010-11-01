@@ -37,7 +37,7 @@ public:
            void      setActive(bool active);
 
 protected:
-   virtual void      onRender(Uint32 tick, const GuiGraphics& graphics);
+   virtual void      onRender(float delta, const GuiGraphics& graphics);
 };
 
 #ifdef JENGINE_INLINE

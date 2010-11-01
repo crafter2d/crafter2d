@@ -44,6 +44,7 @@ class GuiEventHandlers;
 class GuiFont;
 
 class LayoutManager;
+class ScriptManager;
 
 /*! @author Jeroen Broekhuizen
  
@@ -95,7 +96,7 @@ public:
    virtual void      destroy();
  
   // rendering
-   void              render(Uint32 tick, const GuiGraphics& graphics);
+   void              render(float delta, const GuiGraphics& graphics);
 
    void              invalidate();
    void              validate();
@@ -137,6 +138,9 @@ public:
    GuiEventHandlers&             getEventHandlers();
    GuiProperties&                getProperties();
 
+ // query
+   virtual ScriptManager& getScriptManager();
+
   // observers
    void attach(GuiWndObserver& observer);
    void detach(GuiWndObserver& observer);
@@ -160,10 +164,9 @@ public:
 
   // coordinate conversions
    void              clientToWindow(GuiRect& rect) const;
-   void              clientToWindow(GuiPoint& point) const;
+   void              clientToWindow(Point& point) const;
    void              windowToClient(GuiRect& rect) const;
-   void              windowToClient(GuiPoint& point);
-   void              windowToClient(Point& point) const;
+   void              windowToClient(Point& point);
 
   // operations
    void              setWindowPos(int x, int y);
@@ -192,9 +195,9 @@ public:
 
 protected:
    virtual void      onCreate(const GuiRect& rect, const char* caption, GuiStyle style, GuiWnd* parent);
-   virtual void      onRender(Uint32 tick, const GuiGraphics& graphics);
    virtual void      onResize(int width, int height);
-   virtual void      renderChildren(Uint32 tick, const GuiGraphics& graphics);
+   virtual void      onRender(float delta, const GuiGraphics& graphics);
+   virtual void      renderChildren(float delta, const GuiGraphics& graphics);
    
    virtual void      initializeProperties();
    virtual void      initializeEventHandlerDefinitions();

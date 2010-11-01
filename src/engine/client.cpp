@@ -18,6 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "client.h"
+#ifndef JENGINE_INLINE
+#  include "client.inl"
+#endif
 
 #include "core/autoptr.h"
 #include "core/log/log.h"

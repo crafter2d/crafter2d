@@ -46,10 +46,10 @@ void GuiWindow::destroy()
 // - Painting
 //////////////////////////////////////////////////////////////////////////
 
-void GuiWindow::onRender(Uint32 tick, const GuiGraphics& graphics)
+void GuiWindow::onRender(float delta, const GuiGraphics& graphics)
 {
    GuiClipper clipper(m_frameRect);
-   GuiWnd::onRender(tick, graphics);
+   GuiWnd::onRender(delta, graphics);
 }
 
 //////////////////////////////////////////////////////////////////////////

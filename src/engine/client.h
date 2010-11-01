@@ -103,4 +103,8 @@ private:
    Requests       requests;
 };
 
+#ifdef JENGINE_INLINE
+#  include "client.inl"
+#endif
+
 #endif

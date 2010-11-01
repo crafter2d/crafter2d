@@ -20,11 +20,13 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
+#include "core/core_base.h"
+
 #define TIMER Timer::getInstance()
 
 class TimerData;
 
-class Timer
+class CORE_API Timer
 {
 public:
    static Timer&  getInstance();
