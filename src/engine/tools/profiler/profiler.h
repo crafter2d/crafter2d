@@ -20,6 +20,8 @@
 #ifndef PROFILER_H_
 #define PROFILER_H_
 
+#include "engine/engine_base.h"
+
 #include <map>
 #include <string>
 #include <stack>
@@ -27,7 +29,7 @@
 class ProfilerItem;
 class TimerData;
 
-class Profiler
+class ENGINE_API Profiler
 {
 public:
    typedef std::map<std::string, ProfilerItem*> ItemMap;

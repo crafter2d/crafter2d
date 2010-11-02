@@ -20,9 +20,11 @@
 #ifndef BOX2D_FACTORY_H_
 #define BOX2D_FACTORY_H_
 
+#include "engine/engine_base.h"
+
 #include "engine/physics/simulationfactory.h"
 
-class Box2DFactory : public SimulationFactory
+class ENGINE_API Box2DFactory : public SimulationFactory
 {
 public:
    Box2DFactory();

@@ -20,9 +20,11 @@
 #ifndef PHYSICS_FACTORY_H_
 #define PHYSICS_FACTORY_H_
 
+#include "engine/engine_base.h"
+
 #include "simulationfactory.h"
 
-class PhysicsFactory : public SimulationFactory
+class ENGINE_API PhysicsFactory : public SimulationFactory
 {
 public:
    PhysicsFactory();

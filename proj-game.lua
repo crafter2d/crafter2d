@@ -22,8 +22,16 @@ if ( os.is("windows") ) then
 					libdir .. "tolua++/include",
 					libdir .. "tinyxml/include",
 					"src" }
+					
+	libdirs { libdir .. "glee/lib",
+				libdir .. "sdl/lib",
+				libdir .. "cg/lib",
+				libdir .. "zlib/lib",
+				libdir .. "tinyxml/lib",
+				libdir .. "lua/lib", 
+				libdir .. "tolua++/lib" }
 	
-	links { "SDLmain", "SDL", "Math", "Engine" }
+	links { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "Core", "Engine" }
 	
 	configuration "Debug"
 		links { "GLee_d", "tolua++_d", " lua5.1_d", "tinyxmld_STL" }

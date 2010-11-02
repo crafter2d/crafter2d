@@ -24,8 +24,8 @@
 
 #include "core/log/log.h"
 
-class GuiEditBox;
-class GuiListBox;
+//class GuiEditBox;
+//class GuiListBox;
 
 class Console // : public GuiWindow
 {

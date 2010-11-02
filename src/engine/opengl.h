@@ -20,6 +20,8 @@
 #ifndef OPENGL_H
 #define OPENGL_H
 
+#include "engine/engine_base.h"
+
 #include "codepath.h"
 
 class VertexBuffer;
@@ -32,7 +34,7 @@ To enable programmers to use an easy way to create OpenGL objects this class was
 the you basic functions to create the objects supported on the graphics card, so it save you from the troubles
 of checking whether an extension is supported or not.Make sure to call initialize before any of the other functions.
 */
-class OpenGL
+class ENGINE_API OpenGL
 {
 public:
 	static bool          initialize();

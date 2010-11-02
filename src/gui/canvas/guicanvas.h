@@ -58,7 +58,7 @@ public:
 
    void           quit();
 
-   void           render(Uint32 tick);
+   void           render(float delta);
 
    void           doModal(GuiWnd* wnd);
    void           endModal(int retValue);

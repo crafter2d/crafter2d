@@ -28,8 +28,8 @@
 #include "core/log/log.h"
 #include "core/script/script.h"
 #include "core/script/scriptmanager.h"
+#include "core/system/timer.h"
 
-#include "engine/system/timer.h"
 #include "engine/process.h"
 
 #include "events/connectreplyevent.h"
@@ -140,7 +140,7 @@ bool NetConnection::create(int port)
       connected = true;
    }
 
-   lastSendAlive = SDL_GetTicks();
+   lastSendAlive = TIMER.getTick();
    return true;
 }
 
@@ -192,7 +192,7 @@ void NetConnection::disconnect()
 #endif
 
       // remove the clients
-      for ( Uint32 i=0; i < clients.size(); ++i )
+      for ( int i=0; i < clients.size(); ++i )
       {
          delete clients[i];
       }
@@ -216,7 +216,7 @@ int NetConnection::getErrorNumber()
 /// \brief Updates the message queues etc.
 void NetConnection::update()
 {
-   Timer& timer = Timer::getInstance();
+   Timer& timer = TIMER;
 
    if ( mSendAliveMsg )
    {
@@ -338,7 +338,7 @@ void NetConnection::sendAliveMessages(float tick)
    NetPackage package(NetPackage::eAlive, NetPackage::eUnreliable, 0);
    package >> stream;
 
-   for ( Uint32 i = 0; i < clients.size(); ++i )
+   for ( int i = 0; i < clients.size(); ++i )
    {
       NetAddress& client = *clients[i];
 
@@ -508,7 +508,7 @@ bool NetConnection::addNewClient(NetAddress& address)
       // create new statistics
       // addr->pstatistics = new NetStatistics();
 
-      Uint32 i = 0;
+      int i = 0;
       for (; i < clients.size(); ++i)
       {
          if (clients[i] == NULL)
@@ -537,7 +537,7 @@ bool NetConnection::addNewClient(NetAddress& address)
 /// \brief Searches for the client id, given a network address structure.
 int NetConnection::findClient(const NetAddress& address) const
 {
-   for ( Uint32 i = 0 ; i < clients.size(); ++i )
+   for ( int i = 0 ; i < clients.size(); ++i )
    {
       const NetAddress& client = resolveClient(i);
 #ifdef WIN32

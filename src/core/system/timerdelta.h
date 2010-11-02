@@ -20,6 +20,8 @@
 #ifndef TIMER_DELTA_H_
 #define TIMER_DELTA_H_
 
+#include "core/core_base"
+
 class TimerData;
 
 /**
@@ -28,7 +30,7 @@ class TimerData;
 \brief Use this class to get the time delta between 2 frames. It updates the data for the next frame.
 */
 
-class TimerDelta
+class CORE_API TimerDelta
 {
 public:
    TimerDelta(TimerData& data);

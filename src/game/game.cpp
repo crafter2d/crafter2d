@@ -54,8 +54,6 @@
 #include "engine/opengl.h"
 
 #include "console.h"
-#include "gameconfiguration.h"
-#include "gameconfigurationselector.h"
 #include "gamesettings.h"
 
 /*!
@@ -63,7 +61,6 @@
 	 \brief Initialized member variables
  */
 Game::Game():
-   mpConfiguration(NULL),
    mWindow(),
    mWindowListener(*this),
    mTitle(),
@@ -221,16 +218,6 @@ void Game::onWindowClosed()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// - get/set
-//////////////////////////////////////////////////////////////////////////
-
-void Game::setConfiguration(const GameConfiguration& configuration)
-{
-   delete mpConfiguration;
-   mpConfiguration = configuration.clone();
-}
-
-//////////////////////////////////////////////////////////////////////////
 // - operations
 //////////////////////////////////////////////////////////////////////////
 
@@ -294,19 +281,26 @@ bool Game::initGame()
    script.setSelf(this, "Game");
    script.run(context);
 
-   // select the configuration
-   GameConfigurationSelector selector(*this);
-   if ( selector.select() )
-   {
-      setConfiguration(selector.getSelectedConfiguration());
+   /*
+   // initialize the window manager
+   GuiManager& manager = GuiManager::getInstance();
+   manager.initialize();
 
-      Console::getInstance().printf("Using configuration %s", getConfiguration().getName().c_str());
-   }
-   else
-   {
-      Console::getInstance().error("No configuration selected, aborting engine.");
-      return false;
-   }
+   GuiFont* font = new GuiFont ();
+   font->initialize ("amersn.ttf", 10);
+
+   manager.setDefaultFont (font);
+   manager.setDefaultTextColor(mSettings.getTextColor());
+
+   // create the gui canvas
+   mCanvas.create(0, GuiRect(0, mWindow.getWidth(), 0, mWindow.getHeight()));
+   mCanvas.changeDefaultColor(GuiCanvas::GuiWindowColor, mSettings.getWindowColor());
+   mCanvas.changeDefaultColor(GuiCanvas::GuiBorderColor, mSettings.getBorderColor());
+
+   ScriptManager& scriptMgr = ScriptManager::getInstance ();
+   scriptMgr.setObject(&GuiManager::getInstance(), "GuiManager", "guimanager");
+   scriptMgr.setObject(&GuiFocus::getInstance(), "GuiFocus", "focus");
+   */
 
 	return mActive;
 }

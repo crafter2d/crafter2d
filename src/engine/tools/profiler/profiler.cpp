@@ -20,7 +20,6 @@
 #include "profiler.h"
 
 #include "core/defines.h"
-
 #include "core/system/timer.h"
 
 #include "profileritem.h"

@@ -20,12 +20,14 @@
 #ifndef SIMULATION_FACTORY_H
 #define SIMULATION_FACTORY_H
 
+#include "engine/engine_base.h"
+
 #include <string>
 
 class Simulator;
 class Body;
 
-class SimulationFactory
+class ENGINE_API SimulationFactory
 {
 public:
    SimulationFactory();

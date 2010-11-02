@@ -20,6 +20,8 @@
 #ifndef _NETCONNECTION_H_
 #define _NETCONNECTION_H_
 
+#include "engine/engine_base.h"
+
 #ifdef WIN32
 #include <winsock2.h>
 #else
@@ -76,7 +78,7 @@ typedef std::vector<NetAddress*> AdressList;
 /// Handles the socket connections for the server and the clients. A NetConnection instance
 /// can handle one or more simultanious connections with other NetConnection instances via
 /// both Internet and a local network.
-class NetConnection
+class ENGINE_API NetConnection
 {
 public:
    explicit    NetConnection(Process& process);
@@ -134,7 +136,7 @@ protected:
 private:
    Process&    mProcess;
    AdressList  clients;
-   uint        lastSendAlive;
+   float       lastSendAlive;
    uint        clientid;
    int         sock;
    bool        mSendAliveMsg;

@@ -20,13 +20,15 @@
 #ifndef NETOBJECTFACTORY_H_
 #define NETOBJECTFACTORY_H_
 
+#include "engine/engine_base.h"
+
 #include <string>
 #include <map>
 
 class RuntimeInfo;
 class NetObject;
 
-class NetObjectFactory
+class ENGINE_API NetObjectFactory
 {
 public:
    static NetObjectFactory& getInstance();

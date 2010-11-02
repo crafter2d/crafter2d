@@ -37,9 +37,6 @@
       return game;                       \
    }
 
-
-class GuiDesigner;
-class GameConfiguration;
 class Timer;
 class TimerData;
 class WorldRenderer;
@@ -56,9 +53,6 @@ public:
    virtual              ~Game();
 
  // get/set interface
-   const GameConfiguration&   getConfiguration() const;
-         void                 setConfiguration(const GameConfiguration& pconfiguration);
-
          GameWindow&          getGameWindow();
 
          void                 setActive(bool act=true);
@@ -92,7 +86,6 @@ private:
    bool                 initOpenGL();
    void                 runFrame();
 
-   GameConfiguration*        mpConfiguration;     // owned
    GameWindow                mWindow;
    DefaultGameWindowListener mWindowListener;
    std::string               mTitle;

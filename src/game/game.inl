@@ -19,11 +19,6 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE const GameConfiguration& Game::getConfiguration() const
-{
-   return *mpConfiguration;
-}
-
 INLINE GameWindow& Game::getGameWindow()
 {
   return mWindow;
