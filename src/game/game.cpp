@@ -55,6 +55,7 @@
 
 #include "console.h"
 #include "gamesettings.h"
+#include "tolua_game.h"
 
 /*!
     \fn Game::Game()
@@ -112,7 +113,7 @@ bool Game::create()
 
    // initialize the Lua scripting environment
    mScriptManager.initialize ();
-   mScriptManager.setObject(&Console::getInstance(), "Console", "console");
+   mScriptManager.loadModule(tolua_game_open);
 
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());

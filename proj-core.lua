@@ -77,3 +77,11 @@ elseif ( os.is("linux") ) then
 	excludes { "src/core/vfs/win*.*" }
 		
 end
+
+configuration "Debug"
+	defines { "_DEBUG", "TIXML_USE_STL" }
+	flags { "Symbols" }
+	
+configuration "Release"
+	defines { "NDEBUG", "TIXML_USE_STL" }
+	flags { "Optimize" }

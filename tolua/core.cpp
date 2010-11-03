@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,22 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GUIWND_MOUSE_LISTENER_H_
-#define GUIWND_MOUSE_LISTENER_H_
 
-#include "core/input/mouselistener.h"
-
-class GuiWnd;
-
-class GuiWndMouseListener : public MouseListener
+/* This file contains the prototypes for the toLua program to bind these
+ * classes to Lua.
+ */
+ 
+$#include "core/script/scriptmanager.h"
+ 
+class ScriptManager
 {
-public:
-   GuiWndMouseListener(GuiWnd& wnd);
-
-   virtual void onMouseContext(const MouseEvent& event);
-
-private:
-   GuiWnd& mWnd;
+   uint schedule(const std::string& cmd, float time);
+   void unschedule(const uint jobid);
 };
-
-#endif

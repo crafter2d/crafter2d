@@ -23,29 +23,7 @@
 #  include "inputevent.inl"
 #endif
 
-#include <SDL/SDL.h>
-
 #include "core/defines.h"
-
-// - Statics
-
-// static
-int InputEvent::getModifiers()
-{
-   int mode = SDL_GetModState();
-   int modifiers = eNone;
-
-   if ( mode & KMOD_SHIFT )
-      SET_FLAG(modifiers, eShift);
-
-   if ( mode & KMOD_CTRL )
-      SET_FLAG(modifiers, eCtrl);
-
-   if ( mode & KMOD_ALT )
-      SET_FLAG(modifiers, eAlt);
-
-   return modifiers;
-}
 
 // - Construction
 

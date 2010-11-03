@@ -28,15 +28,6 @@
 #include "gamewindow.h"
 #include "defaultgamewindowlistener.h"
 
-#define DECLARE_APPLICATION(title) \
-   const char* getTitle() { return title; }
-
-#define IMPLEMENT_APPLICATION(className) \
-   Game& Game::getInstance() {           \
-      static className game;             \
-      return game;                       \
-   }
-
 class Timer;
 class TimerData;
 class WorldRenderer;

@@ -28,6 +28,7 @@
 
 #include "core/log/log.h"
 
+#include "tolua_core.h"
 #include "scriptcontext.h"
 
 #define LUA_SCRIPTLIBNAME "script"
@@ -139,6 +140,8 @@ static int include(lua_State* L)
 
 void ScriptManager::registerGlobals()
 {
+   tolua_core_open(luaState);
+
    setObject(this, "ScriptManager", "script");
 
    lua_register(luaState, "include", include);

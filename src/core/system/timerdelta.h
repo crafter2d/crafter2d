@@ -20,7 +20,7 @@
 #ifndef TIMER_DELTA_H_
 #define TIMER_DELTA_H_
 
-#include "core/core_base"
+#include "core/core_base.h"
 
 class TimerData;
 
@@ -41,4 +41,4 @@ private:
    float mDelta;
 };
 
-#endif
+#endif // TIMER_DELTA_H_

@@ -22,9 +22,9 @@
 
 #include "engine/texture.h"
 
-#include "gui/input/keylisteners.h"
-#include "gui/input/mouselisteners.h"
-#include "gui/input/mousewheellisteners.h"
+#include "core/input/keylisteners.h"
+#include "core/input/mouselisteners.h"
+#include "core/input/mousewheellisteners.h"
 
 #include "wnd/guiwndmouselistener.h"
 

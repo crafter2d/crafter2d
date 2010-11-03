@@ -20,12 +20,11 @@
 #ifndef INPUT_EVENT_H
 #define INPUT_EVENT_H
 
-class InputEvent
+#include "core/core_base.h"
+
+class CORE_API InputEvent
 {
 public:
- // statics
-   static int getModifiers();
-
  // enums
    enum KeyModifiers {
       eNone  = 0,

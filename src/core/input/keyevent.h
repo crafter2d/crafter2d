@@ -20,16 +20,13 @@
 #ifndef KEY_EVENT_H
 #define KEY_EVENT_H
 
+#include "core/core_base.h"
+
 #include "inputevent.h"
 
-struct SDL_KeyboardEvent;
-
-class KeyEvent : public InputEvent
+class CORE_API KeyEvent : public InputEvent
 {
 public:
-  // statics
-   static KeyEvent FromSDL(const SDL_KeyboardEvent& event);
-
   // enums
    enum EventType {
       ePressed,

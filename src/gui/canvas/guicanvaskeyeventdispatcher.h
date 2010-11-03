@@ -20,7 +20,7 @@
 #ifndef GUICANVAS_KEY_EVENT_DISPATCHER_H
 #define GUICANVAS_KEY_EVENT_DISPATCHER_H
 
-#include "gui/input/keyeventdispatcher.h"
+#include "core/input/keyeventdispatcher.h"
 
 class GuiCanvas;
 

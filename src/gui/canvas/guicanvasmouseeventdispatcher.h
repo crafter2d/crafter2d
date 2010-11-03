@@ -20,7 +20,7 @@
 #ifndef GUICANVAS_MOUSEEVENT_DISPATCHER_H
 #define GUICANVAS_MOUSEEVENT_DISPATCHER_H
 
-#include "gui/input/mouseeventdispatcher.h"
+#include "core/input/mouseeventdispatcher.h"
 
 #include "gui/guiwndreference.h"
 

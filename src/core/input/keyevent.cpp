@@ -20,21 +20,9 @@
 
 #include "keyevent.h"
 
-#include <SDL/SDL.h>
-
-// - Statics
-
-KeyEvent KeyEvent::FromSDL(const SDL_KeyboardEvent& event)
-{
-   int key       = event.keysym.unicode == 0 ? event.keysym.sym : event.keysym.unicode & 0x7F;
-   int modifiers = getModifiers();
-
-   EventType type = (event.type == SDL_KEYDOWN) ? ePressed : eReleased;
-
-   return KeyEvent(key, type, modifiers);
-}
-
+//----------------------------------------------
 // - Construction
+//----------------------------------------------
 
 KeyEvent::KeyEvent(int key, EventType type, int keymodifiers):
    InputEvent(keymodifiers),

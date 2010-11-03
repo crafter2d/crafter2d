@@ -22,10 +22,9 @@ if ( os.is("windows") ) then
 					libdir .. "tolua++/include",
 					libdir .. "tinyxml/include",
 					"src" }
-					
-	libdirs { libdir .. "glee/lib",
-				libdir .. "sdl/lib",
-				libdir .. "cg/lib",
+
+	libdirs { libdir .. "sdl/lib",
+				libdir .. "glee/lib",
 				libdir .. "zlib/lib",
 				libdir .. "tinyxml/lib",
 				libdir .. "lua/lib", 

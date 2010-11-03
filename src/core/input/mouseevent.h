@@ -20,6 +20,8 @@
 #ifndef MOUSE_EVENT_H
 #define MOUSE_EVENT_H
 
+#include "core/core_base.h"
+
 #include "core/math/point.h"
 #include "core/defines.h"
 
@@ -28,7 +30,7 @@
 struct SDL_MouseButtonEvent;
 struct SDL_MouseMotionEvent;
 
-class MouseEvent : public InputEvent
+class CORE_API MouseEvent : public InputEvent
 {
 public:
   // enums
