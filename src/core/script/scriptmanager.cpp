@@ -93,7 +93,7 @@ void ScriptManager::loadModule(initializer module)
 bool ScriptManager::executeScript(ScriptContext& context, const std::string& script, bool child)
 {
    Script luaScript(luaState, child);
-   return luaScript.load(context, script);
+   return luaScript.load(context, script) && luaScript.run(context);
 }
 
 /// \fn ScriptManager::executeLine(const char* line, bool child)
@@ -131,9 +131,15 @@ static int include(lua_State* L)
 
    ScriptContext context;
 
+   /*
    lua_getglobal(L, LUA_SCRIPTLIBNAME);
    ScriptManager* pmanager = static_cast<ScriptManager*>(lua_touserdata(L,-1));
    pmanager->executeScript(context, file, false);
+   */
+
+   Script script(L);
+   script.load(context, file);
+   script.run(context);
 
    return 0;
 }

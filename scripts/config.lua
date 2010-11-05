@@ -5,5 +5,5 @@
 
 name = "Playername"
 port = 6400
-ip   = "192.168.1.9"
+ip   = "localhost"
 

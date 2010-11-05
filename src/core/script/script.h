@@ -61,8 +61,8 @@ public:
    bool        getBoolean();
    int         getInteger();
 
-   void        prepareCall(const char* function);
-   void        run(ScriptContext& context, int params=0, int returns=0);
+   bool        prepareCall(const char* function);
+   bool        run(ScriptContext& context, int params=0, int returns=0);
 
    void        setSelf(void* p, const char* typeName);
    void        setState(lua_State* l);

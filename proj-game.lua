@@ -21,6 +21,8 @@ if ( os.is("windows") ) then
 					libdir .. "lua/include", 
 					libdir .. "tolua++/include",
 					libdir .. "tinyxml/include",
+					libdir .. "openal/include",
+					libdir .. "zlib/include",
 					"src" }
 
 	libdirs { libdir .. "sdl/lib",

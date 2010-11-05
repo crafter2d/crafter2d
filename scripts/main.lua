@@ -5,35 +5,53 @@
 
 PLAYER_CONTROLER_EVENT = 1
 
-include('config.lua')
-include('console.lua')
-include('msgbox.lua')
-include('server.lua')
-include('client.lua')
-include('splash.lua')
-include('mainmenu.lua')
+include('scripts/config.lua')
+--include('console.lua')
+--include('msgbox.lua')
+--include('server.lua')
+--include('client.lua')
+--include('splash.lua')
+--include('mainmenu.lua')
 
 -- called by engine initialization
-function game_initialize()
+function Game_initialize()
+	server = Server:new()
+	server:create()
+	server:listen(port)
+	
+	client = Client:new()
+	client:create()
+	client:connect(ip, port, name)
+	
+	self:setActive(true)
 end
 
 -- called when the game is shutdown
-function game_shutdown()
+function Game_shutdown()
+	client:disconnect()
+	client:destroy()
+	
+	server:shutdown()
+	server:destroy()
 end
 
 -- called each frame
-function game_run()
+function Game_run(delta)
+	server:update(delta)
+	client:update(delta)
+	
+	-- game:setActive(false)
 end
 
-function showMenu()
-	canvas:setCaption("JEngine SSE Framework")
+--function showMenu()
+--	canvas:setCaption("JEngine SSE Framework")
+--
+--	Splash_hide()
+--
+--	MM_show(true)
+--end
 
-	Splash_hide()
+--MM_create()
+--Splash_create()
 
-	MM_show(true)
-end
-
-MM_create()
-Splash_create()
-
-splashId = schedule("showMenu", 2000)
+--splashId = schedule("showMenu", 2000)

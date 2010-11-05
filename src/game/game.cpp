@@ -41,6 +41,10 @@
 #include "core/system/timer.h"
 #include "core/system/timerdelta.h"
 
+#include "core/vfs/filesystem.h"
+
+#include "core/autoptr.h"
+
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"
 
@@ -50,6 +54,8 @@
 
 #include "engine/net/netobjectfactory.h"
 #include "engine/net/netconnection.h"
+
+#include "engine/client.h"
 
 #include "engine/opengl.h"
 
@@ -153,6 +159,11 @@ bool Game::create()
    // reload the contents of the log file for the console
    console.reload();
 
+   FileSystem::getInstance().addPath("..");
+
+   ScriptContext context;
+   mScriptManager.executeScript(context, "scripts/main.lua");
+
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
    if ( !initGame () )
@@ -160,9 +171,6 @@ bool Game::create()
       console.error("Aborted after failed game initialization.");
       return false;
    }
-
-   ScriptContext context;
-   mScriptManager.executeScript(context, "main.lua");
 
    return true;
 }
@@ -278,9 +286,11 @@ bool Game::initGame()
 {
    ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
-   script.prepareCall("game_initialize");
-   script.setSelf(this, "Game");
-   script.run(context);
+   if ( script.prepareCall("Game_initialize") )
+   {
+      //script.setSelf(this, "Game");
+      script.run(context);
+   }
 
    /*
    // initialize the window manager
@@ -314,7 +324,14 @@ bool Game::initGame()
  */
 void Game::endGame()
 {
-	// do nothing (should be overloaded)
+   Client client;
+
+	ScriptContext context;
+   Script& script = mScriptManager.getTemporaryScript();
+   script.setSelf(&client, "Client");
+   script.prepareCall("Game_shutdown");
+   script.setSelf(this, "Game");
+   script.run(context);
 }
 
 /*!
@@ -324,8 +341,6 @@ void Game::endGame()
  */
 void Game::runFrame()
 {
-   Uint32 tick = SDL_GetTicks ();
-
    Profiler::getInstance().begin();
 
    TimerDelta timerdelta(getTimerData());
@@ -337,8 +352,7 @@ void Game::runFrame()
       return;
 
    Script& script = mScriptManager.getTemporaryScript();
-   script.prepareCall("game_run");
-   script.setSelf(this, "Game");
+   script.prepareCall("Game_run");
    script.addParam(delta);
    script.run(context, 1);
    

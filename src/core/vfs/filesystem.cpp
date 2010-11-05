@@ -35,7 +35,7 @@ void tokenize(std::vector<std::string>& tokens, const std::string& str, char del
    std::size_t start = 0;
    std::size_t pos = str.find(delimitor);
 
-   do 
+   while ( pos != std::string::npos )
    {
       std::string token = str.substr(start, pos - start);
       tokens.push_back(token);
@@ -43,7 +43,7 @@ void tokenize(std::vector<std::string>& tokens, const std::string& str, char del
       start = pos + 1;
       pos = str.find(delimitor, start);
    }
-   while ( pos != std::string::npos );
+   
 
    std::string token = str.substr(start, str.size() - start);
    tokens.push_back(token);
@@ -82,7 +82,7 @@ void FileSystem::removePath(const std::string& path)
 
 File* FileSystem::open(const std::string& filename, int modus) const
 {
-   std::string file = expand(filename);
+   std::string file = filename; // expand(filename);
 
    for ( int index = 0; index < mPaths.size(); index++ )
    {

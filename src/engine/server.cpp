@@ -82,12 +82,22 @@ bool Server::destroy()
    return Process::destroy();
 }
 
+void Server::listen(int port)
+{
+   if ( !conn.isConnected() )
+   {
+      conn.create(port);
+      conn.setAccepting(true);
+   }
+}
+
 void Server::shutdown()
 {
    if ( conn.isConnected() )
    {
       // prevent clients from connecting
       conn.setAccepting(false);
+      conn.disconnect();
 
       ScriptContext context;
 

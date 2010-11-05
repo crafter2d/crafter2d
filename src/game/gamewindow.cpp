@@ -280,7 +280,8 @@ void GameWindow::onKeyboardEvent(SDL_KeyboardEvent& event)
   KeyEvent::EventType type = (event.type == SDL_KEYDOWN) ? KeyEvent::ePressed : KeyEvent::eReleased;
   KeyEvent keyevent(key, type, modifiers);
   
-  mpKeyDispatcher->dispatch(keyevent);
+   if ( mpKeyDispatcher != NULL )
+      mpKeyDispatcher->dispatch(keyevent);
 }
 
 void GameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
@@ -299,7 +300,8 @@ void GameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
 
    MouseEvent mouseevent(buttons, MouseEvent::eMotion, keymodifiers, location, relative);
 
-   mpMouseDispatcher->dispatch(mouseevent);
+   if ( mpMouseDispatcher != NULL )
+      mpMouseDispatcher->dispatch(mouseevent);
 }
 
 void GameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
@@ -321,7 +323,8 @@ void GameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
 
    MouseEvent mouseevent(button, eventtype, keymodifiers, location);
 
-   mpMouseDispatcher->dispatch(mouseevent);
+   if ( mpMouseDispatcher != NULL )
+      mpMouseDispatcher->dispatch(mouseevent);
 }
 
 void GameWindow::onQuit()

@@ -29,9 +29,11 @@
 
 #include "client.h"
 
+static const std::string SName = "Player";
+
 Player::Player():
    controler(NULL),
-   name(),
+   name(SName),
    client(0),
    _viewport(),
    _worldobserver(*this)
@@ -40,7 +42,7 @@ Player::Player():
 
 Player::~Player()
 {
-   if (controler)
+   if ( controler != NULL )
    {
       controler->destroy();
       delete controler;

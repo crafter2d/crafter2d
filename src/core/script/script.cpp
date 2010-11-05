@@ -64,6 +64,7 @@ bool Script::load(ScriptContext& context, const std::string& filename)
    {
       int size = file->size();
       AutoPtr<char> data = new char[size+1];
+      memset(data.getPointer(), 0, size);
       file->read(data.getPointer(), size);
       std::string code = data.getPointer();
 
@@ -96,14 +97,16 @@ bool Script::loadString(ScriptContext& context, const std::string& code)
 /// \brief Runs the script. You must first call prepareCall and optionaly the addParam functions
 /// to set up the function name and arguments.
 /// \returns always returns true
-void Script::run(ScriptContext& context, int params, int returns)
+bool Script::run(ScriptContext& context, int params, int returns)
 {
 	// call the function
    if ( lua_pcall(childState, params, returns, 0) != 0 ) 
    {
       std::string error = std::string("An error occured while running script: ") + lua_tostring(childState, -1);
       context.info(Log::eError, error);
+      return false;
    }
+   return true;
 }
 
 //-----------------------------------------

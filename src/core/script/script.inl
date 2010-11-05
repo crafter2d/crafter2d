@@ -27,9 +27,15 @@ INLINE void Script::setState(lua_State* l)
 /// \fn Script::prepareCall(const char* function)
 /// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
 /// \param val a floating point value
-INLINE void Script::prepareCall (const char* function)
+INLINE bool Script::prepareCall (const char* function)
 {
-	lua_getglobal (childState, function);
+	lua_getglobal(childState, function);
+   if ( !lua_isfunction(childState, -1) )
+   {
+      lua_pop(childState, 1);
+      return false;
+   }
+   return true;
 }
 
 /// \fn Script::addParam(int val)

@@ -65,35 +65,6 @@ Client::~Client()
    disconnect();
 }
 
-bool Client::connect(const char* server, int port, const char* name)
-{
-   // setup connection to the server
-   conn.create();
-   if (!conn.connect(server, port))
-      return false;
-
-   conn.setSendAliveMessages(false);
-   conn.setAccepting(false);
-
-   graph.getRoot().setReplica();
-
-   mpPlayer = new Player();
-
-   // send login command
-   ConnectEvent event(name);
-   conn.send (&event);
-   return true;
-}
-
-void Client::disconnect()
-{
-   if ( conn.isConnected() )
-   {
-      DisconnectEvent event;
-      conn.send(&event);
-   }
-}
-
 bool Client::create()
 {
    Log& log = Log::getInstance();
@@ -107,12 +78,44 @@ bool Client::create()
 
 bool Client::destroy()
 {
-   Process::destroy();
    conn.setAccepting(false);
 
-   mSoundManager.destroy ();
+   mSoundManager.destroy();
 
+   return Process::destroy();
+}
+
+bool Client::connect(const char* server, int port, const char* name)
+{
+   // setup connection to the server
+   conn.create();
+   if (!conn.connect(server, port))
+      return false;
+
+   conn.setSendAliveMessages(false);
+   conn.setAccepting(false);
+
+   graph.getRoot().setReplica();
+
+   mpPlayer = new Player();
+   if ( name != NULL )
+   {
+      mpPlayer->setName(name);
+   }
+
+   // send login command
+   ConnectEvent event(mpPlayer->getName());
+   conn.send (&event);
    return true;
+}
+
+void Client::disconnect()
+{
+   if ( conn.isConnected() )
+   {
+      DisconnectEvent event;
+      conn.send(&event);
+   }
 }
 
 void Client::update(float delta)

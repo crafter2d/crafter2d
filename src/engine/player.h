@@ -39,6 +39,9 @@ public:
    Viewport&   getViewport();
    Object&     getControler();
 
+   const std::string& getName() const;
+   void               setName(const std::string& name);
+
  // initialization
    void  initialize(World& world);
 

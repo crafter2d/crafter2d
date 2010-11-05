@@ -29,3 +29,13 @@ INLINE Object& Player::getControler()
    ASSERT_PTR(controler)
    return *controler;
 }
+
+INLINE const std::string& Player::getName() const
+{
+   return name;
+}
+   
+INLINE void Player::setName(const std::string& _name)
+{
+   name = _name;
+}
