@@ -22,10 +22,10 @@
  * classes to Lua.
  */
  
-$#include "engine/client.h"
-$#include "engine/server.h"
+#include "engine/client.h"
+#include "engine/server.h"
  
-$#include "game.h"
+#include "game.h"
  
 class Game
 {

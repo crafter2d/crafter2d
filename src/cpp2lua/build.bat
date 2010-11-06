@@ -2,5 +2,5 @@
 @echo off
 echo "building language parser..."
 
-bison -d language.bison -o language.c
-flex -I language.flex
+bison --defines=language.h language.bison -o language.cpp
+flex -I -olanguage.lex.cpp language.flex 

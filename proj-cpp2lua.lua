@@ -13,6 +13,8 @@ project "Cpp2Lua"
 -- set project files
 files { "src/cpp2lua/**.cpp", "src/cpp2lua/**.h", "src/cpp2lua/**.inl" }
 
+includedirs { "src" }
+
 if ( os.is("windows") ) then
 	
 	links { "Core" }
