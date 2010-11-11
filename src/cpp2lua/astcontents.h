@@ -26,7 +26,6 @@ class ASTContents : public ASTNode
 {
 public:
    ASTContents() {}
-
 };
 
 #endif // AST_CONTENTS_H_

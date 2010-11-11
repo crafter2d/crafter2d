@@ -20,20 +20,105 @@
 #ifndef AST_NODE_H_
 #define AST_NODE_H_
 
-#include "../core/containers/list.h"
+#include <vector>
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 class ASTNode
 {
 public:
-   typedef List<ASTNode> Children;
+   typedef std::vector<ASTNode*> Children;
 
-   ASTNode(): mChildren() {}
-   virtual ~ASTNode() {}
+   enum CodePhase
+   {
+      eFirst,
+      eSecond,
+      eFinalize
+   };
 
-   void add(ASTNode* pchild) { mChildren.addTail(pchild); }
+   ASTNode():
+      mChildren(),
+      mpParent(0)
+   {
+   }
+
+   virtual ~ASTNode()
+   {
+      for ( int index = 0; index < mChildren.size(); index++ )
+      {
+         ASTNode* pchild = mChildren[index];
+         delete pchild;
+      }
+      mChildren.clear();
+
+      mpParent = 0;
+   }
+
+   void add(ASTNode* pchild)
+   {
+      mChildren.push_back(pchild);
+      pchild->mpParent = this;
+   }
+
+   Children& getChildren() { return mChildren; }
+   ASTNode&  getParent() { return *mpParent; }
+
+   void prettyPrint() 
+   {
+      doPrettyPrint();
+      for ( int index = 0; index < mChildren.size(); index++ )
+      {
+         ASTNode* pchild = mChildren[index];
+         pchild->prettyPrint();
+
+         doPrettyBetween(index+1 == mChildren.size());
+      }
+      doPrettyEnd();
+   }
+
+   bool validate()
+   {
+      if ( !doValidate() )
+         return false;
+
+      for ( int index = 0; index < mChildren.size(); index++ )
+      {
+         ASTNode* pchild = mChildren[index];
+         if ( !pchild->validate() )
+            return false;
+      }
+      return true;
+   }
+
+   void generateCode(FILE* out, CodePhase phase)
+   {
+      doGenerateCodeBegin(out, phase);
+
+      for ( int index = 0; index < mChildren.size(); index++ )
+      {
+         ASTNode* pchild = mChildren[index];
+         pchild->generateCode(out, phase);
+      }
+
+      doGenerateCodeEnd(out, phase);
+   }
+
+protected:
+
+   virtual void doPrettyPrint() {}
+   virtual void doPrettyBetween(bool last) {}
+   virtual void doPrettyEnd() {}
+
+   virtual bool doValidate() { return true; }
+
+   virtual void doGenerateCodeBegin(FILE* out, CodePhase phase) {}
+   virtual void doGenerateCodeEnd(FILE* out, CodePhase phase) {}
 
 private:
    Children mChildren;
+   ASTNode* mpParent;
 };
 
 #endif // AST_NODE_H_

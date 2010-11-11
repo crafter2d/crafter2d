@@ -17,54 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef AST_CLASS_H_
-#define AST_CLASS_H_
+#ifndef AST_ARGUMENT_H_
+#define AST_ARGUMENT_H_
 
 #include <string>
 
 #include "astnode.h"
+#include "asttype.h"
 
-class ASTClass : public ASTNode
+class ASTInclude : public ASTNode
 {
 public:
-   ASTClass(std::string* pname): mName(*pname), mBase() {}
-   ASTClass(std::string* pname, std::string* pbase): mName(*pname), mBase(*pbase) {}
-
-
-   const std::string& getName() const { return mName; }
+   ASTInclude(ASTType* ptype, std::string* pvariable): mpType(ptype), mVariable(*pvariable) {}
+   virtual ~ASTInclude() { delete mpType; }
 
 protected:
-   virtual void doPrettyPrint() {
-      cout << "class " << mName;
-      if ( mBase.length() > 0 )
-         cout << " : public " << mBase;
-      cout << endl;
-   }
-
-   virtual void doPrettyEnd() {
-      cout << ";" << endl;
-   }
-
-   virtual void doGenerateCodeBegin(FILE* out, CodePhase phase)
+   virtual void doPrettyPrint()
    {
-      if ( phase == eSecond )
-      {
-         fprintf(out, "{\n");
-         fprintf(out, "   ScriptClass theclass(scriptlib, \"%s\", \"%s\");\n", mName.c_str(), mBase.c_str());
-      }
-   }
-
-   virtual void doGenerateCodeEnd(FILE* out, CodePhase phase)
-   {
-      if ( phase == eSecond )
-      {
-         fprintf(out, "}\n");
-      }
+      mpType->prettyPrint();
+      cout << " " << mVariable << endl;
    }
 
 private:
-   std::string mName;
-   std::string mBase;
+   ASTType*    mpType;
+   std::string mVariable;
 };
 
-#endif // AST_CLASS_H_
+#endif // AST_ARGUMENT_H_
+
