@@ -123,10 +123,10 @@ expr:
 type:
 		type_id	{ $$ = $1; }
 	|	CONST type_id { $$ = $2; $$->isConst(true); }
-	|	type_id REFERENCE	{ $$ = $1; $$->isReference(); }
-	|	type_id POINTER		{ $$ = $1; $$->isPointer(); }
-	| 	CONST type_id REFERENCE	{ $$ = $2; $$->isConst(true); $$->isReference(); }
-	| 	CONST type_id POINTER	{ $$ = $2; $$->isConst(true); $$->isPointer(); }
+	|	type_id REFERENCE	{ $$ = $1; $$->setReference(); }
+	|	type_id POINTER		{ $$ = $1; $$->setPointer(); }
+	| 	CONST type_id REFERENCE	{ $$ = $2; $$->isConst(true); $$->setReference(); }
+	| 	CONST type_id POINTER	{ $$ = $2; $$->isConst(true); $$->setPointer(); }
 	;
 	
 type_id:

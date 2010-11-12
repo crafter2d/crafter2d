@@ -42,6 +42,9 @@ public:
       delete mpType;
    }
 
+   const std::string& getName() const { return mName; }
+   ASTType& getType() { return *mpType; }
+
 protected:
    virtual void doPrettyPrint()
    {
@@ -53,6 +56,11 @@ protected:
          cout << "=";
          mpAssignment->prettyPrint();
       }
+   }
+
+   virtual bool doValidate()
+   {
+      return mpType != NULL && mName.length() > 0;
    }
 
 private:

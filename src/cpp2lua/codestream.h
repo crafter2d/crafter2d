@@ -17,58 +17,38 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef AST_CLASS_H_
-#define AST_CLASS_H_
+#ifndef CODE_STREAM_H_
+#define CODE_STREAM_H_
 
-#include <string>
+#include <fstream>
 
-#include "astnode.h"
-
-#include "codestream.h"
-#include "codeblock.h"
-
-class ASTClass : public ASTNode
+class CodeStream
 {
 public:
-   ASTClass(std::string* pname): mName(*pname), mBase() {}
-   ASTClass(std::string* pname, std::string* pbase): mName(*pname), mBase(*pbase) {}
+   typedef CodeStream&(*pstreamfnc)(CodeStream&);
 
-
-   const std::string& getName() const { return mName; }
-
-protected:
-   virtual void doPrettyPrint() {
-      cout << "class " << mName;
-      if ( mBase.length() > 0 )
-         cout << " : public " << mBase;
-      cout << endl;
-   }
-
-   virtual void doPrettyEnd() {
-      cout << ";" << endl;
-   }
-
-   virtual void doGenerateCodeBegin(CodeStream& stream, CodePhase phase)
+   static CodeStream& endl(CodeStream& stream)
    {
-      if ( phase == eSecondPhase )
-      {
-         stream << "{";
-         CodeBlock block;
-         stream << CodeBlock::endl << "ScriptClass theclass(scriptlib, \"" << mName << "\", \"" << mBase << "\");" << CodeStream::endl;
-      }
+      stream << "\n";
+      return stream;
    }
 
-   virtual void doGenerateCodeEnd(CodeStream& stream, CodePhase phase)
+   CodeStream():
+      mStream()
    {
-      if ( phase == eSecondPhase )
-      {
-         stream << "}" << CodeStream::endl;
-      }
    }
+
+   CodeStream(const std::string& filename):
+      mStream(filename)
+   {
+   }
+
+   CodeStream& operator<<(const std::string& text) { mStream << text.c_str(); return *this; }
+   CodeStream& operator<<(int value) { mStream << value; return *this; }
+   CodeStream& operator<<(pstreamfnc fnc) { fnc(*this); return *this; }
 
 private:
-   std::string mName;
-   std::string mBase;
+   std::ofstream mStream;
 };
 
-#endif // AST_CLASS_H_
+#endif // CODE_STREAM_H_

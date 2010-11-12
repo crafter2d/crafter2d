@@ -54,46 +54,68 @@ public:
    ASTType(std::string* pcustom, std::string* pnamespace = 0):
       mType(eCustom),
       mPassBy(eValue),
-      mNamespace(*pnamespace),
+      mNamespace(),
       mCustom(*pcustom),
       mConst(false)
    {
+      if ( pnamespace != 0 )
+         mNamespace = *pnamespace;
+   }
+
+   Type getType() { return mType; }
+   std::string getCustomType() { 
+      std::string result;
+      if ( mNamespace.length() > 0 )
+         result = mNamespace + "::";
+      result += mCustom;
+      return result;
    }
 
    void isConst(bool isconst) { mConst = isconst; }
-   void isReference() { mPassBy = eReference; }
-   void isPointer() { mPassBy = ePointer; }
+   void setReference() { mPassBy = eReference; }
+   void setPointer() { mPassBy = ePointer; }
+   bool isPointer() const { return mPassBy == ePointer; }
 
-protected:
-   virtual void doPrettyPrint() {
+   std::string asString() const
+   {
+      std::string result;
       if ( mConst )
-         cout << "const ";
+         result = "const ";
 
       switch ( mType )
       {
-         case eVoid:       cout << "void";         break;
-         case eInt:        cout << "int";          break;
-         case eFloat:      cout << "float";        break;
-         case eBool:       cout << "bool";         break;
-         case eChar:       cout << "char";         break;
+         case eVoid:       result += "void";         break;
+         case eInt:        result += "int";          break;
+         case eFloat:      result += "float";        break;
+         case eBool:       result += "bool";         break;
+         case eChar:       result += "char";         break;
          case eCustom:
             {
                if ( mNamespace.length() > 0 )
-                  cout << mNamespace << "::";
-               cout << mCustom;
+                  result += mNamespace + "::";
+               result += mCustom;
             }
             break;
-         default:          cout << "<unknown>";    break;
-      };
-
+         default:
+            break;
+      }
       switch ( mPassBy )
       {
-         case eReference:  cout << "&";   break;
-         case ePointer:    cout << "*";   break;
-         case eValue:                     break;
+         case eReference:  result += "&";   break;
+         case ePointer:    result += "*";   break;
+         case eValue:                       break;
       }
+      return result;
    }
 
+protected:
+   virtual void doPrettyPrint() {
+      std::string representation = asString();
+      cout << representation;
+
+      
+   }
+   
 private:
    Type        mType;
    PassBy      mPassBy;

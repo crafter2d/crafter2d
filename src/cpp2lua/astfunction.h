@@ -93,9 +93,12 @@ protected:
    
    virtual bool doValidate();
 
-   virtual void doGenerateCodeBegin(FILE* out, CodePhase phase);
+   virtual void doGenerateCodeBegin(CodeStream& stream, CodePhase phase);
 
 private:
+   void generateDeclaration(CodeStream& stream);
+   void generateImplementation(CodeStream& stream);
+
    Type           mType;
    ASTType*       mpType;
    ASTVariables*  mpArguments;

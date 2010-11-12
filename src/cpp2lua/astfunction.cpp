@@ -4,6 +4,9 @@
 
 #include "astclass.h"
 
+#include "codestream.h"
+#include "codeblock.h"
+
 bool ASTFunction::doValidate()
 {
    bool valid = false;
@@ -29,41 +32,117 @@ bool ASTFunction::doValidate()
    return valid;
 }
 
-void ASTFunction::doGenerateCodeBegin(FILE* out, CodePhase phase)
+void ASTFunction::doGenerateCodeBegin(CodeStream& stream, CodePhase phase)
 {
-   if ( phase == eFirst )
+   if ( phase == eFirstPhase )
    {
-      std::string classname = (dynamic_cast<ASTClass&>(getParent().getParent())).getName();
-      std::string name;
-
-      switch ( mType )
-      {
-         case eConstructor:   name = "new";     break;
-         case eDestructor:    name = "destroy"; break;
-         case eMember:        name = mName;     break;
-      }
-
-      mFunction = "cpplua_" + classname + "_" + name;
-
-      fprintf(out, "void %s(ScriptLibContext& context)\n{\n", mFunction.c_str());
-      fprintf(out, "}\n");
+      generateImplementation(stream);
    }
    else
    {
-      switch ( mType )
+      generateDeclaration(stream);  
+   }
+}
+
+void ASTFunction::generateDeclaration(CodeStream& stream)
+{
+   switch ( mType )
+   {
+      case eConstructor:
+         stream << "theclass.addFunction(\"new\", " << mFunction << ");";
+         break;
+      case eDestructor:
+         stream << "theclass.addFunction(\"destroy\", " << mFunction << ");";
+         return;
+      case eMember:
+         stream << "theclass.addFunction(\"" << mName << "\", " << mFunction << ");";
+         break;
+   }
+
+   stream << CodeBlock::endl;
+}
+
+void ASTFunction::generateImplementation(CodeStream& stream)
+{
+   std::string classname = (dynamic_cast<ASTClass&>(getParent().getParent())).getName();
+   std::string name;
+
+   switch ( mType )
+   {
+      case eConstructor:   name = "new";     break;
+      case eDestructor:    name = "destroy"; break;
+      case eMember:        name = mName;     break;
+   }
+
+   mFunction = "cpplua_" + classname + "_" + name;
+
+   stream << "void " << mFunction << "(ScriptLibContext& context)" << CodeBlock::endl << "{";
+   {
+      CodeBlock block;
+      stream << CodeBlock::endl;
+
+      if ( mConst )
+         stream << "const ";
+
+      stream << classname << "* self = (" << classname << "*)context.getUserArgument(1);" << CodeBlock::endl;
+   
+      ASTNode::Children& children = mpArguments->getChildren();
+      for ( int index = 0; index < children.size(); index++ )
       {
-         case eConstructor:
-            fprintf(out, "   theclass.addFunction(\"new\", %s);\n", mFunction.c_str());
-            break;
-         case eDestructor:
-            fprintf(out, "   theclass.addFunction(\"destroy\", %s\n);\n", mFunction.c_str());
-            return;
-         case eMember:
-            fprintf(out, "   theclass.addFunction(\"%s\", %s);\n", mName.c_str(), mFunction.c_str());
-            break;
-         default:
-            cout << "<unknown function>";
-            break;
+         ASTVariable* pvariable = dynamic_cast<ASTVariable*>(children[index]);
+         ASTType& type = pvariable->getType();
+
+         switch ( type.getType() )
+         {
+            case ASTType::eInt:     
+               stream << "int " << pvariable->getName() << " = context.getIntArgument(";
+               break;
+            case ASTType::eFloat:
+               stream << "float " << pvariable->getName() << " = context.getFloatArgument(";
+               break;
+            case ASTType::eBool:
+               stream << "bool " << pvariable->getName() << " = context.getBoolArgument(";
+               break;
+         }
+
+         stream << index+1 << ");" << CodeBlock::endl;
+      }
+
+      bool hasresult = mpType != 0 && mpType->getType() != ASTType::eVoid;
+      if ( hasresult )
+      {
+         std::string type = mpType->asString();
+         stream << type << " result = ";
+      }
+
+      stream << "self->" << mName << "(";
+
+      for ( int index = 0; index < children.size(); index++ )
+      {
+         ASTVariable* pvariable = dynamic_cast<ASTVariable*>(children[index]);
+         stream << pvariable->getName();
+         if ( index < children.size() - 1 )
+            stream << ", ";
+      }
+
+      stream << ");" << CodeBlock::endl;
+
+      if ( hasresult )
+      {
+         switch ( mpType->getType() )
+         {
+            case ASTType::eInt:
+            case ASTType::eFloat:
+            case ASTType::eBool:
+            case ASTType::eChar:
+               stream << "context.setResult(result);";
+               break;
+            case ASTType::eCustom:
+               stream << "context.setResult(" << (mpType->isPointer() ? "" : "&") << "result, \"" << mpType->getCustomType() << "\");";
+               break;
+         }
       }
    }
+
+   stream << CodeBlock::endl << "}" << CodeBlock::endl;
 }

@@ -26,6 +26,8 @@
 using std::cout;
 using std::endl;
 
+class CodeStream;
+
 class ASTNode
 {
 public:
@@ -33,9 +35,8 @@ public:
 
    enum CodePhase
    {
-      eFirst,
-      eSecond,
-      eFinalize
+      eFirstPhase,
+      eSecondPhase
    };
 
    ASTNode():
@@ -92,17 +93,17 @@ public:
       return true;
    }
 
-   void generateCode(FILE* out, CodePhase phase)
+   void generateCode(CodeStream& stream, CodePhase phase)
    {
-      doGenerateCodeBegin(out, phase);
+      doGenerateCodeBegin(stream, phase);
 
       for ( int index = 0; index < mChildren.size(); index++ )
       {
          ASTNode* pchild = mChildren[index];
-         pchild->generateCode(out, phase);
+         pchild->generateCode(stream, phase);
       }
 
-      doGenerateCodeEnd(out, phase);
+      doGenerateCodeEnd(stream, phase);
    }
 
 protected:
@@ -113,8 +114,8 @@ protected:
 
    virtual bool doValidate() { return true; }
 
-   virtual void doGenerateCodeBegin(FILE* out, CodePhase phase) {}
-   virtual void doGenerateCodeEnd(FILE* out, CodePhase phase) {}
+   virtual void doGenerateCodeBegin(CodeStream& stream, CodePhase phase) {}
+   virtual void doGenerateCodeEnd(CodeStream& stream, CodePhase phase) {}
 
 private:
    Children mChildren;
