@@ -5,32 +5,37 @@
 
 #include "codestream.h"
 
-
-class CodeBlock
+class CodeBlockedStream : public CodeStream
 {
 public:
-   static CodeStream& endl(CodeStream& stream)
+   static CodeStream& endline(CodeStream& stream)
    {
+      sNewLine = true;
       stream << CodeStream::endl;
-      for ( int i = 1; i < sDepth; i++ )
-      {
-         stream << "   ";
-      }
       return stream;
    }
 
-   CodeBlock()
+   CodeBlockedStream(CodeStream& stream):
+      mStream(stream)
    {
       sDepth++;
    }
 
-   ~CodeBlock()
+   ~CodeBlockedStream()
    {
       sDepth--;
    }
 
+   virtual CodeStream& operator<<(const std::string& text);
+   virtual CodeStream& operator<<(int value);
+
 private:
-   static int sDepth;
+   void writeIndentation();
+
+   static int  sDepth;
+   static bool sNewLine;
+
+   CodeStream& mStream;
 };
 
 #endif // CODE_BLOCKED_STREAM_H_

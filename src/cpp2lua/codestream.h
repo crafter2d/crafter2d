@@ -20,7 +20,7 @@
 #ifndef CODE_STREAM_H_
 #define CODE_STREAM_H_
 
-#include <fstream>
+#include <string
 
 class CodeStream
 {
@@ -33,22 +33,20 @@ public:
       return stream;
    }
 
-   CodeStream():
-      mStream()
+   CodeStream()
    {
    }
 
-   CodeStream(const std::string& filename):
-      mStream(filename)
+   virtual ~CodeStream()
    {
    }
 
-   CodeStream& operator<<(const std::string& text) { mStream << text.c_str(); return *this; }
-   CodeStream& operator<<(int value) { mStream << value; return *this; }
+   virtual CodeStream& operator<<(const std::string& text) = 0;
+   virtual CodeStream& operator<<(int value) = 0;
+
    CodeStream& operator<<(pstreamfnc fnc) { fnc(*this); return *this; }
 
 private:
-   std::ofstream mStream;
 };
 
 #endif // CODE_STREAM_H_

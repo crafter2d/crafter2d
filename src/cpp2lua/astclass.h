@@ -52,9 +52,9 @@ protected:
    {
       if ( phase == eSecondPhase )
       {
-         stream << "{";
-         CodeBlock block;
-         stream << CodeBlock::endl << "ScriptClass theclass(scriptlib, \"" << mName << "\", \"" << mBase << "\");" << CodeStream::endl;
+         stream << "{" << CodeBlockedStream::endline;
+         CodeBlockedStream block(stream);
+         block << "ScriptClass theclass(scriptlib, \"" << mName << "\", \"" << mBase << "\");" << CodeBlockedStream::endline;
       }
    }
 
@@ -62,7 +62,7 @@ protected:
    {
       if ( phase == eSecondPhase )
       {
-         stream << "}" << CodeStream::endl;
+         stream << "}" << CodeBlockedStream::endline;
       }
    }
 

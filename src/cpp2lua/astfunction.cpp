@@ -59,7 +59,7 @@ void ASTFunction::generateDeclaration(CodeStream& stream)
          break;
    }
 
-   stream << CodeBlock::endl;
+   stream << CodeBlockedStream::endline;
 }
 
 void ASTFunction::generateImplementation(CodeStream& stream)
@@ -76,15 +76,14 @@ void ASTFunction::generateImplementation(CodeStream& stream)
 
    mFunction = "cpplua_" + classname + "_" + name;
 
-   stream << "void " << mFunction << "(ScriptLibContext& context)" << CodeBlock::endl << "{";
+   stream << "void " << mFunction << "(ScriptLibContext& context)" << CodeBlockedStream::endline << "{" << CodeBlockedStream::endline;
    {
-      CodeBlock block;
-      stream << CodeBlock::endl;
+      CodeBlockedStream block(stream);
 
       if ( mConst )
-         stream << "const ";
+         block << "const ";
 
-      stream << classname << "* self = (" << classname << "*)context.getUserArgument(1);" << CodeBlock::endl;
+      block << classname << "* self = (" << classname << "*)context.getUserArgument(1);" << CodeBlockedStream::endline;
    
       ASTNode::Children& children = mpArguments->getChildren();
       for ( int index = 0; index < children.size(); index++ )
@@ -95,37 +94,37 @@ void ASTFunction::generateImplementation(CodeStream& stream)
          switch ( type.getType() )
          {
             case ASTType::eInt:     
-               stream << "int " << pvariable->getName() << " = context.getIntArgument(";
+               block << "int " << pvariable->getName() << " = context.getIntArgument(";
                break;
             case ASTType::eFloat:
-               stream << "float " << pvariable->getName() << " = context.getFloatArgument(";
+               block << "float " << pvariable->getName() << " = context.getFloatArgument(";
                break;
             case ASTType::eBool:
-               stream << "bool " << pvariable->getName() << " = context.getBoolArgument(";
+               block << "bool " << pvariable->getName() << " = context.getBoolArgument(";
                break;
          }
 
-         stream << index+1 << ");" << CodeBlock::endl;
+         block << index+1 << ");" << CodeBlockedStream::endline;
       }
 
       bool hasresult = mpType != 0 && mpType->getType() != ASTType::eVoid;
       if ( hasresult )
       {
          std::string type = mpType->asString();
-         stream << type << " result = ";
+         block << type << " result = ";
       }
 
-      stream << "self->" << mName << "(";
+      block << "self->" << mName << "(";
 
       for ( int index = 0; index < children.size(); index++ )
       {
          ASTVariable* pvariable = dynamic_cast<ASTVariable*>(children[index]);
-         stream << pvariable->getName();
+         block << pvariable->getName();
          if ( index < children.size() - 1 )
-            stream << ", ";
+            block << ", ";
       }
 
-      stream << ");" << CodeBlock::endl;
+      block << ");" << CodeBlockedStream::endline;
 
       if ( hasresult )
       {
@@ -135,14 +134,16 @@ void ASTFunction::generateImplementation(CodeStream& stream)
             case ASTType::eFloat:
             case ASTType::eBool:
             case ASTType::eChar:
-               stream << "context.setResult(result);";
+               block << "context.setResult(result);";
                break;
             case ASTType::eCustom:
-               stream << "context.setResult(" << (mpType->isPointer() ? "" : "&") << "result, \"" << mpType->getCustomType() << "\");";
+               block << "context.setResult(" << (mpType->isPointer() ? "" : "&") << "result, \"" << mpType->getCustomType() << "\");";
                break;
          }
+
+         block << "" << CodeBlockedStream::endline;
       }
    }
 
-   stream << CodeBlock::endl << "}" << CodeBlock::endl;
+   stream << "}" << CodeBlockedStream::endline;
 }
