@@ -76,7 +76,8 @@ void ASTFunction::generateImplementation(CodeStream& stream)
 
    mFunction = "cpplua_" + classname + "_" + name;
 
-   stream << "void " << mFunction << "(ScriptLibContext& context)" << CodeBlockedStream::endline << "{" << CodeBlockedStream::endline;
+   stream << "void " << mFunction << "(lua_State* pstate)" << CodeBlockedStream::endline << "{" << CodeBlockedStream::endline;
+   stream << "ScriptLibContext context(pstate);" << CodeBlockedStream::endline;
    {
       CodeBlockedStream block(stream);
 

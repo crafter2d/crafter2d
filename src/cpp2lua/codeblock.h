@@ -10,8 +10,8 @@ class CodeBlockedStream : public CodeStream
 public:
    static CodeStream& endline(CodeStream& stream)
    {
-      sNewLine = true;
       stream << CodeStream::endl;
+      sNewLine = true;
       return stream;
    }
 

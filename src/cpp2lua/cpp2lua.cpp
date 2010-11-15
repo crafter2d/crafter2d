@@ -37,6 +37,9 @@ int main(int argc, char *argv[])
       pcontents->generateCode(stream, ASTNode::eFirstPhase);
 
       stream << "void register(ScriptLib& scriptlib)" << CodeStream::endl << "{" << CodeStream::endl;
+
+      // collect the user types used (uint, classes, etc)
+
       {
          CodeBlockedStream block(stream);
          pcontents->generateCode(block, ASTNode::eSecondPhase);

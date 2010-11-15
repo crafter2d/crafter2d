@@ -17,36 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef CODE_STREAM_H_
-#define CODE_STREAM_H_
+#include "scriptclass.h"
 
-#include <string>
+#include <tolua++.h>
 
-class CodeStream
+#include "scriptlib.h"
+
+ScriptClass::ScriptClass(ScriptLib& lib, const std::string& name, const std::string& base):
+   mLib(lib)
 {
-public:
-   typedef CodeStream&(*pstreamfnc)(CodeStream&);
+   tolua_cclass(mLib.getLuaState(), name.c_str(), name.c_str(), base.c_str(), NULL);
+   tolua_beginmodule(mLib.getLuaState(), name.c_str());
+}
 
-   static CodeStream& endl(CodeStream& stream)
-   {
-      stream << "\n";
-      return stream;
-   }
+ScriptClass::~ScriptClass()
+{
+   tolua_endmodule(mLib.getLuaState());
+}
 
-   CodeStream()
-   {
-   }
-
-   virtual ~CodeStream()
-   {
-   }
-
-   virtual CodeStream& operator<<(const std::string& text) = 0;
-   virtual CodeStream& operator<<(int value) = 0;
-
-   CodeStream& operator<<(pstreamfnc fnc) { fnc(*this); return *this; }
-
-private:
-};
-
-#endif // CODE_STREAM_H_
+void ScriptClass::addFunction(const std::string& name, pLuaFunction function)
+{
+   tolua_function(mLib.getLuaState(), name.c_str(), (lua_CFunction)function);
+}

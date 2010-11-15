@@ -17,36 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef CODE_STREAM_H_
-#define CODE_STREAM_H_
+#ifndef SCRIPT_CLASS_H_
+#define SCRIPT_CLASS_H_
+
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
 
 #include <string>
 
-class CodeStream
+class ScriptLib;
+class ScriptLibContext;
+
+class ScriptClass
 {
 public:
-   typedef CodeStream&(*pstreamfnc)(CodeStream&);
+   typedef void(*pLuaFunction)(lua_State*);
 
-   static CodeStream& endl(CodeStream& stream)
-   {
-      stream << "\n";
-      return stream;
-   }
+   ScriptClass(ScriptLib& lib, const std::string& name, const std::string& base);
+   ~ScriptClass();
 
-   CodeStream()
-   {
-   }
-
-   virtual ~CodeStream()
-   {
-   }
-
-   virtual CodeStream& operator<<(const std::string& text) = 0;
-   virtual CodeStream& operator<<(int value) = 0;
-
-   CodeStream& operator<<(pstreamfnc fnc) { fnc(*this); return *this; }
+   void addFunction(const std::string& name, pLuaFunction function);
 
 private:
+   ScriptLib&  mLib;
 };
 
-#endif // CODE_STREAM_H_
+#endif // SCRIPT_LIB_H_
