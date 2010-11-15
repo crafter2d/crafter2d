@@ -103,6 +103,12 @@ void ASTFunction::generateImplementation(CodeStream& stream)
             case ASTType::eBool:
                block << "bool " << pvariable->getName() << " = context.getBoolArgument(";
                break;
+            case ASTType::eCustom:
+               {
+                  std::string classtype = pvariable->getType().getCustomType();
+                  block << classtype << "* " << pvariable->getName() << " = (" << classtype << "*)context.getUserArgument(";
+               }
+               break;
          }
 
          block << index+1 << ");" << CodeBlockedStream::endline;
