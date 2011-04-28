@@ -8,45 +8,43 @@ project "Engine"
 	targetdir "bin"
 	flags { "NoPCH" }
 	location "build/engine"
-	defines { "ENGINE_EXPORTS" }
 	debugworkingdir "$(TargetDir)"
 	
 -- set project files
 files { "src/engine/**.cpp", "src/engine/**.h", "src/engine/**.inl" }
+includedirs { "src" }
 
 -- set the include and library
 if ( os.is("windows") ) then
-	libdir = "../externallibs/" .. _ACTION .. "/"
 	defines { "WIN32", "ENGINE_EXPORTS" }
 	
-	includedirs { libdir .. "sdl/include",
-                    libdir .. "glee/include",
-                    libdir .. "cg/include",
-					libdir .. "openal/include",
-					libdir .. "zlib/include",
-					libdir .. "ogg/include",
-					libdir .. "vorbis/include",
-					libdir .. "tinyxml/include",
-					libdir .. "lua/include", 
-					libdir .. "tolua++/include",
-					libdir .. "freetype2/include",
-					libdir .. "soil/include",
-					libdir .. "box2d/include",
-					"src" }
+	includedirs { 	path.join(libdir, "sdl/include"),
+                    path.join(libdir, "glee/include"),
+                    path.join(libdir, "cg/include"),
+					path.join(libdir, "openal/include"),
+					path.join(libdir, "zlib/include"),
+					path.join(libdir, "ogg/include"),
+					path.join(libdir, "vorbis/include"),
+					path.join(libdir, "tinyxml/include"),
+					path.join(libdir, "lua/include"), 
+					path.join(libdir, "tolua++/include"),
+					path.join(libdir, "freetype2/include"),
+					path.join(libdir, "soil/include"),
+					path.join(libdir, "box2d/include") }
 
-    libdirs { libdir .. "sdl/lib",
-				libdir .. "glee/lib",
-				libdir .. "cg/lib",
-				libdir .. "openal/lib",
-				libdir .. "zlib/lib",
-				libdir .. "ogg/lib",
-				libdir .. "vorbis/lib",
-				libdir .. "tinyxml/lib",
-				libdir .. "lua/lib", 
-				libdir .. "tolua++/lib",
-				libdir .. "freetype2/lib",
-				libdir .. "soil/lib",
-				libdir .. "box2d/lib" }
+    libdirs { 	path.join(libdir, "sdl/lib"),
+				path.join(libdir, "glee/lib"),
+				path.join(libdir, "cg/lib"),
+				path.join(libdir, "openal/lib"),
+				path.join(libdir, "zlib/lib"),
+				path.join(libdir, "ogg/lib"),
+				path.join(libdir, "vorbis/lib"),
+				path.join(libdir, "tinyxml/lib"),
+				path.join(libdir, "lua/lib"), 
+				path.join(libdir, "tolua++/lib"),
+				path.join(libdir, "freetype2/lib"),
+				path.join(libdir, "soil/lib"),
+				path.join(libdir, "box2d/lib") }
 	
 	-- set the pre-build event
 	prebuildcommands {

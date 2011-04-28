@@ -118,7 +118,7 @@ void GuiRect::offset(float x, float y)
    _bottom += y;
 }
 
-bool GuiRect::pointInRect (const GuiPoint& point) const
+bool GuiRect::pointInRect (const Point& point) const
 {
 	return (point.x >= _left && point.x <= _right && point.y >= _top && point.y <= _bottom);
 }

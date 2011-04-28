@@ -102,12 +102,17 @@ Game::~Game()
 	 \param[in] bd color bitdepht of screen (16,24,32)
 	 \return true if initialized successfull, false otherwise
  */
+
+#include "script/as.h"
+
 bool Game::create()
 {
    Log& log = Log::getInstance();
    log << "JEngine SSE V0.4.5 - Copyright 2010 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
+
+   runScript();
 
    // initialize the video library
    if (SDL_Init (SDL_INIT_VIDEO) < 0) {

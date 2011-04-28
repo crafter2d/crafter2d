@@ -51,7 +51,7 @@ public:
 	void  offset(float x, float y);
    void  resize(float w, float h);
 	void  adjustBase (float width, float height);
-	bool  pointInRect (const GuiPoint& point) const;
+	bool  pointInRect (const Point& point) const;
 
    void  top(float t);
    float top() const;

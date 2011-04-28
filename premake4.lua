@@ -10,9 +10,11 @@ if ( os.is("windows") ) then
 elseif ( os.is("linux") ) then
 	defines { "LINUX" }
 end
+
+libdir = "d:/development/jengine sse/externallibs/" .. _ACTION .. "/"
 	
-require "proj-core"
-require "proj-engine"
-require "proj-gui"
-require "proj-game"
-require "proj-cpp2lua"
+require "projects/proj-core"
+require "projects/proj-script"
+require "projects/proj-engine"
+require "projects/proj-gui"
+require "projects/proj-game"

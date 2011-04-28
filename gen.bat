@@ -16,7 +16,7 @@ if not "%1" == "cb-gcc" (
    )
 )
 
-if not exist "..\externallibs" (
+if not exist "..\..\externallibs" (
    echo "Make sure you also check out the externallibs directory"
    goto End
 )

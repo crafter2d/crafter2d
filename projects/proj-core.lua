@@ -18,23 +18,21 @@ if ( os.is("windows") ) then
 	defines { "WIN32", "CORE_EXPORTS" }
 	
 	excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*" }
-	
-	libdir = "../externallibs/" .. _ACTION .. "/"
-	
-	includedirs { libdir .. "glee/include",
-                    libdir .. "cg/include",
-					libdir .. "zlib/include",
-					libdir .. "tinyxml/include",
-					libdir .. "lua/include", 
-					libdir .. "tolua++/include",
+		
+	includedirs { 	path.join(libdir, "glee/include"),
+                    path.join(libdir, "cg/include"),
+					path.join(libdir, "zlib/include"),
+					path.join(libdir, "tinyxml/include"),
+					path.join(libdir, "lua/include"), 
+					path.join(libdir, "tolua++/include"),
 					"src" }
 					
-	libdirs { libdir .. "glee/lib",
-				libdir .. "cg/lib",
-				libdir .. "zlib/lib",
-				libdir .. "tinyxml/lib",
-				libdir .. "lua/lib", 
-				libdir .. "tolua++/lib" }
+	libdirs { 	path.join(libdir, "glee/lib"),
+				path.join(libdir, "cg/lib"),
+				path.join(libdir, "zlib/lib"),
+				path.join(libdir, "tinyxml/lib"),
+				path.join(libdir, "lua/lib"), 
+				path.join(libdir, "tolua++/lib") }
 				
 	-- set IDE specific settings
 	if ( _ACTION == "cb-gcc" ) then

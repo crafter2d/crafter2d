@@ -14,23 +14,21 @@ project "Game"
 files { "src/game/**.cpp", "src/game/**.h", "src/game/**.inl" }
 
 if ( os.is("windows") ) then
-	libdir = "../externallibs/" .. _ACTION .. "/"
-
-	includedirs { libdir .. "sdl/include",
-					libdir .. "glee/include",
-					libdir .. "lua/include", 
-					libdir .. "tolua++/include",
-					libdir .. "tinyxml/include",
-					libdir .. "openal/include",
-					libdir .. "zlib/include",
+	includedirs { 	path.join(libdir, "sdl/include"),
+					path.join(libdir, "glee/include"),
+					path.join(libdir, "lua/include"), 
+					path.join(libdir, "tolua++/include"),
+					path.join(libdir, "tinyxml/include"),
+					path.join(libdir, "openal/include"),
+					path.join(libdir, "zlib/include"),
 					"src" }
 
-	libdirs { libdir .. "sdl/lib",
-				libdir .. "glee/lib",
-				libdir .. "zlib/lib",
-				libdir .. "tinyxml/lib",
-				libdir .. "lua/lib", 
-				libdir .. "tolua++/lib" }
+	libdirs { 	path.join(libdir, "sdl/lib"),
+				path.join(libdir, "glee/lib"),
+				path.join(libdir, "zlib/lib"),
+				path.join(libdir, "tinyxml/lib"),
+				path.join(libdir, "lua/lib"), 
+				path.join(libdir, "tolua++/lib") }
 	
 	links { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "Core", "Engine" }
 	

@@ -22,10 +22,7 @@
  * classes to Lua.
  */
  
-#include "engine/client.h"
-#include "engine/server.h"
- 
-#include "game.h"
+$#include "game.h"
  
 class Game
 {
@@ -36,25 +33,3 @@ class Game
    const std::string&   getTitle() const;
 };
 
-class Process
-{
-   bool create();
-   void destroy();
-   void update(float delta);
-};
-
-class Server: public Process
-{
-   Server();
-   
-   void listen(int port);
-   void shutdown();
-};
-
-class Client: public Process
-{
-   Client();
-   
-   bool connect(const char* serverName, int port, const char* name);
-   void disconnect();
-};
