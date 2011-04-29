@@ -1,7 +1,7 @@
 
 #include "astunary.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
 #include "astaccess.h"
 #include "astvisitor.h"
@@ -52,7 +52,7 @@ void ASTUnary::addPart(ASTExpressionPart* ppart)
 
    if ( mpAccess != NULL )
    {
-      BOOST_ASSERT(paccess);
+      ASSERT_PTR(paccess);
 
       mpAccess->setNext(*paccess);
       paccess->setPrevious(*mpAccess);

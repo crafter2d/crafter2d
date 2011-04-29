@@ -23,7 +23,7 @@
 #include <SOIL.h>
 
 #include "core/vfs/file.h"
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 
 TextureLoaderSoil::TextureLoaderSoil():
    AbstractTextureLoader()

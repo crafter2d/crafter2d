@@ -1,7 +1,7 @@
 
 #include "asttypevariables.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
 #include "asttypevariable.h"
 
@@ -26,7 +26,7 @@ int ASTTypeVariables::size() const
 
 void ASTTypeVariables::append(ASTTypeVariable* pvariable)
 {
-   BOOST_ASSERT(!contains(*pvariable));
+   ASSERT(!contains(*pvariable));
    pvariable->setIndex(mTypeVariables.size());
    mTypeVariables[pvariable->getIdentifier()] = pvariable;
 }

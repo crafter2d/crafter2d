@@ -3,7 +3,9 @@
 
 #include <iostream>
 
-#include "core/autoptr.h"
+#include "core/string/string.h"
+#include "core/conv/lexical.h"
+#include "core/smartptr/autoptr.h"
 
 #include "script/antlr/antlrinterface.h"
 #include "script/antlr/antlrstream.h"
@@ -53,7 +55,15 @@ const Literal& Compiler::lookupLiteral(int index) const
 
 bool Compiler::compile(const std::string& classname)
 {
-   bool loaded = mContext.hasClass(classname);
+   String s = String(classname.c_str()).toLower();
+   std::string lowercase = s.toStdString();
+
+   if ( lowercase == "classloader" )
+   {
+      int aap = 0;
+   }
+
+   bool loaded = mContext.hasClass(lowercase);
    if ( !loaded )
    {
       AntlrParser parser(mContext);

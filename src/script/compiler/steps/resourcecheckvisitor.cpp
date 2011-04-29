@@ -1,9 +1,8 @@
 
 #include "resourcecheckvisitor.h"
 
-#include "ast/ast.h"
-
-#include "compiler/compilecontext.h"
+#include "script/ast/ast.h"
+#include "script/compiler/compilecontext.h"
 
 ResourceCheckVisitor::ResourceCheckVisitor(CompileContext& context):
    CompileStep(),

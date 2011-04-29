@@ -43,7 +43,7 @@
 
 #include "core/vfs/filesystem.h"
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"
@@ -104,9 +104,13 @@ Game::~Game()
  */
 
 #include "script/as.h"
+#include "core/string/string.h"
 
 bool Game::create()
 {
+   String s("hoi");
+   std::string m = s.toStdString();
+
    Log& log = Log::getInstance();
    log << "JEngine SSE V0.4.5 - Copyright 2010 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";

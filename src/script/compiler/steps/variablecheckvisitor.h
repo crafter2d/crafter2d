@@ -2,7 +2,7 @@
 #ifndef VARIABLE_CHECK_VISITOR_H_
 #define VARIABLE_CHECK_VISITOR_H_
 
-#include "ast/astvisitor.h"
+#include "script/ast/astvisitor.h"
 
 class VariableCheckVisitor : public ASTVisitor
 {

@@ -30,7 +30,7 @@ if ( os.is("windows") ) then
 				path.join(libdir, "lua/lib"), 
 				path.join(libdir, "tolua++/lib") }
 	
-	links { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "Core", "Engine" }
+	links { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "Core", "Engine", "Script" }
 	
 	configuration "Debug"
 		links { "GLee_d", "tolua++_d", " lua5.1_d", "tinyxmld_STL" }

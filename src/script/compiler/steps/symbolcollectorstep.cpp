@@ -1,11 +1,9 @@
 
 #include "symbolcollectorstep.h"
 
-#include "compiler/compilecontext.h"
+#include "script/compiler/compilecontext.h"
 
-#include "ast/ast.h"
-#include "ast/astvariable.h"
-#include "ast/astexpression.h"
+#include "script/ast/ast.h"
 
 SymbolCollectorVisitor::SymbolCollectorVisitor(CompileContext& context):
    CompileStep(),

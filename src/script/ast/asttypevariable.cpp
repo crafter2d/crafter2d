@@ -1,7 +1,7 @@
 
 #include "asttypevariable.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
 #include "asttype.h"
 
@@ -42,7 +42,7 @@ void ASTTypeVariable::setMode(Mode mode)
 
 const ASTType& ASTTypeVariable::getOther() const
 {
-   BOOST_ASSERT(mpOther != NULL);
+   ASSERT_PTR(mpOther);
    return *mpOther;
 }
 
@@ -54,7 +54,7 @@ void ASTTypeVariable::setOther(ASTType* ptype)
 
 int ASTTypeVariable::getIndex() const
 {
-   BOOST_ASSERT(mIndex >= 0);
+   ASSERT(mIndex >= 0);
    return mIndex;
 }
 

@@ -1,9 +1,9 @@
 
 #include "asttype.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
-#include "compiler/compilecontext.h"
+#include "script/compiler/compilecontext.h"
 
 #include "astclass.h"
 #include "asttypevariable.h"
@@ -117,7 +117,7 @@ bool ASTType::hasObjectClass() const
 
 const ASTClass& ASTType::getObjectClass() const
 {
-   BOOST_ASSERT(mpObjectClass != NULL);
+   ASSERT(mpObjectClass != NULL);
    return *mpObjectClass;
 }
 
@@ -143,8 +143,8 @@ void ASTType::setArrayDimension(int dimension)
 
 const ASTType& ASTType::getArrayType() const
 {
-   BOOST_ASSERT(isArray());
-   BOOST_ASSERT(mpArrayType != NULL);
+   ASSERT(isArray());
+   ASSERT_PTR(mpArrayType);
    return *mpArrayType;
 }
 
@@ -161,7 +161,7 @@ const ASTTypeList& ASTType::getTypeArguments() const
 
 const ASTTypeVariable& ASTType::getTypeVariable() const
 {
-   BOOST_ASSERT(isGeneric());
+   ASSERT(isGeneric());
    return *mpTypeVariable;
 }
 

@@ -1,7 +1,7 @@
 
 #include "virtualfunctiontable.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
 #include "virtualfunctiontableentry.h"
 
@@ -49,7 +49,7 @@ void VirtualFunctionTable::clear()
 
 void VirtualFunctionTable::merge(const VirtualFunctionTable& that)
 {
-   BOOST_ASSERT(that.mEntries.size() <= mEntries.size());
+   ASSERT(that.mEntries.size() <= mEntries.size());
 
    for ( std::size_t index = 0; index < that.mEntries.size(); index++ )
    {

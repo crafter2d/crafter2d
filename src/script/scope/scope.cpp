@@ -1,8 +1,6 @@
 
 #include "scope.h"
 
-#include <boost/foreach.hpp>
-
 #include "scopevariable.h"
 
 Scope::Scope():
@@ -23,8 +21,9 @@ void Scope::add(ScopeVariable* pvariable)
 
 void Scope::clear()
 {
-   BOOST_FOREACH(ScopeVariable* pvariable, mVariables)
+   for ( std::size_t index = 0; index < mVariables.size(); index++ )
    {
+      ScopeVariable* pvariable = mVariables[index];
       delete pvariable;
    }
 }

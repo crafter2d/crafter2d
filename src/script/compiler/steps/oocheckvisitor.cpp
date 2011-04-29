@@ -1,14 +1,12 @@
 
 #include "oocheckvisitor.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
-#include "ast/ast.h"
-
-#include "compiler/compilecontext.h"
-
-#include "scope/scopevariable.h"
-#include "scope/scopedscope.h"
+#include "script/ast/ast.h"
+#include "script/compiler/compilecontext.h"
+#include "script/scope/scopevariable.h"
+#include "script/scope/scopedscope.h"
 
 #include "variablecheckvisitor.h"
 
@@ -40,7 +38,7 @@ void OOCheckVisitor::visit(ASTRoot& ast)
 void OOCheckVisitor::visit(ASTClass& ast)
 {
    mpClass = &ast;
-   BOOST_ASSERT(mpClass != NULL);
+   ASSERT_PTR(mpClass);
 
    if ( mpClass->getKind() == ASTClass::eClass )
    {
@@ -90,7 +88,7 @@ void OOCheckVisitor::visit(ASTFunction& ast)
    }
    else
    {
-      BOOST_ASSERT(ast.hasBody());
+      ASSERT(ast.hasBody());
       ast.getBody().accept(*this);
    }
 }
@@ -264,7 +262,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
          {
             if ( mpCurrentType != NULL )
             {
-               BOOST_ASSERT(mpCurrentType->isObject() || mpCurrentType->isArray());
+               ASSERT(mpCurrentType->isObject() || mpCurrentType->isArray());
 
                const ASTVariable& var = ast.getVariable();
 

@@ -1,8 +1,8 @@
 
 #include "scopevariable.h"
 
-#include "ast/astvariable.h"
-#include "ast/asttype.h"
+#include "script/ast/astvariable.h"
+#include "script/ast/asttype.h"
 
 // static 
 ScopeVariable* ScopeVariable::fromVariable(const ASTVariable& variable)

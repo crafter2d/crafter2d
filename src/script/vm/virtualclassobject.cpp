@@ -1,9 +1,9 @@
 
 #include "virtualclassobject.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
-#include "common/variant.h"
+#include "script/common/variant.h"
 
 VirtualClassObject::VirtualClassObject():
    VirtualObject(),
@@ -19,8 +19,8 @@ VirtualClassObject::~VirtualClassObject()
 
 Variant& VirtualClassObject::operator[](int index)
 {
-   BOOST_ASSERT(index >= 0);
-   BOOST_ASSERT(index < mMemberCount);
+   ASSERT(index >= 0);
+   ASSERT(index < mMemberCount);
    return mpMembers[index];
 }
 
@@ -37,8 +37,8 @@ void VirtualClassObject::initialize(int variables)
 
 void VirtualClassObject::setMember(int index, const Variant& value)
 {
-   BOOST_ASSERT(mpMembers != NULL);
-   BOOST_ASSERT(index < mMemberCount);
+   ASSERT_PTR(mpMembers);
+   ASSERT(index < mMemberCount);
 
    mpMembers[index] = value;
 }

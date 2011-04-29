@@ -1,7 +1,7 @@
 
 #include "aststream.h"
 
-#include "ast/ast.h"
+#include "script/ast/ast.h"
 
 ASTStream::ASTStream(std::stringstream& stream):
    mStream(stream)

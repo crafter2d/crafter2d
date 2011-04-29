@@ -3,7 +3,7 @@
 
 #include <exception>
 
-#include "common/variant.h"
+#include "script/common/variant.h"
 
 VirtualArrayObject::VirtualArrayObject():
    mpArray(0)

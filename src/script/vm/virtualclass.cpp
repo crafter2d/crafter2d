@@ -1,9 +1,10 @@
 
 #include "virtualclass.h"
 
-#include "ast/astclass.h"
+#include "core/defines.h"
 
-#include "common/variant.h"
+#include "script/ast/astclass.h"
+#include "script/common/variant.h"
 
 #include "virtualclassobject.h"
 #include "virtualarrayobject.h"
@@ -115,7 +116,7 @@ int VirtualClass::getStaticCount() const
    
 void VirtualClass::setStaticCount(int count)
 {
-   BOOST_ASSERT(mpStatics == NULL);
+   ASSERT_PTR(mpStatics);
 
    mStaticCount = count;
    
@@ -182,18 +183,18 @@ VirtualArrayObject* VirtualClass::instantiateArray() const
 
 const Variant& VirtualClass::getStatic(int index) const
 {
-   BOOST_ASSERT(mpStatics != NULL);
-   BOOST_ASSERT(index >= 0);
-   BOOST_ASSERT(index < mStaticCount);
+   ASSERT_PTR(mpStatics);
+   ASSERT(index >= 0);
+   ASSERT(index < mStaticCount);
 
    return mpStatics[index];
 }
 
 void VirtualClass::setStatic(int index, const Variant& value)
 {
-   BOOST_ASSERT(mpStatics != NULL);
-   BOOST_ASSERT(index >= 0);
-   BOOST_ASSERT(index < mStaticCount);
+   ASSERT_PTR(mpStatics);
+   ASSERT(index >= 0);
+   ASSERT(index < mStaticCount);
 
    mpStatics[index] = value;
 }

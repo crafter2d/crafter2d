@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "server.h"
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/script/script.h"
 #include "core/script/scriptcontext.h"

@@ -1,11 +1,11 @@
 
 #include "Variant.h"
 
-#include <boost/assert.hpp>
-#include <boost/lexical_cast.hpp>
+#include "core/defines.h"
+#include "core/conv/lexical.h"
 
-#include "vm/virtualobjectreference.h"
-#include "vm/virtualarrayreference.h"
+#include "script/vm/virtualobjectreference.h"
+#include "script/vm/virtualarrayreference.h"
 
 // - Variant
 
@@ -99,8 +99,8 @@ bool Variant::operator!=(const Variant& that) const
 
 bool Variant::operator<=(const Variant& that) const
 {
-   BOOST_ASSERT(!isArray() && !isObject() && !isBool());
-   BOOST_ASSERT(mType == that.mType);
+   ASSERT(!isArray() && !isObject() && !isBool());
+   ASSERT(mType == that.mType);
   
    switch ( mType )
    {
@@ -119,8 +119,8 @@ bool Variant::operator<=(const Variant& that) const
 
 bool Variant::operator<(const Variant& that) const
 {
-   BOOST_ASSERT(!isArray() && !isObject() && !isBool());
-   BOOST_ASSERT(mType == that.mType);
+   ASSERT(!isArray() && !isObject() && !isBool());
+   ASSERT(mType == that.mType);
   
    switch ( mType )
    {
@@ -139,8 +139,8 @@ bool Variant::operator<(const Variant& that) const
 
 bool Variant::operator>(const Variant& that) const
 {
-   BOOST_ASSERT(!isArray() && !isObject() && !isBool());
-   BOOST_ASSERT(mType == that.mType);
+   ASSERT(!isArray() && !isObject() && !isBool());
+   ASSERT(mType == that.mType);
   
    switch ( mType )
    {
@@ -159,8 +159,8 @@ bool Variant::operator>(const Variant& that) const
 
 bool Variant::operator>=(const Variant& that) const
 {
-   BOOST_ASSERT(!isArray() && !isObject() && !isBool());
-   BOOST_ASSERT(mType == that.mType);
+   ASSERT(!isArray() && !isObject() && !isBool());
+   ASSERT(mType == that.mType);
   
    switch ( mType )
    {
@@ -307,9 +307,9 @@ std::string Variant::toString() const
       case eString:
          return asString();
       case eInt:
-         return boost::lexical_cast<std::string>(asInt());
+         return lexical_cast<std::string>(asInt());
       case eReal:
-         return boost::lexical_cast<std::string>(asReal());
+         return lexical_cast<std::string>(asReal());
       case eBool:
          return asBool() ? std::string("true") : std::string("false");
       case eArray:
@@ -341,18 +341,18 @@ double Variant::toReal() const
 
 void Variant::int2real()
 {
-   BOOST_ASSERT(isInt());
+   ASSERT(isInt());
    setReal((double)asInt());
 }
 
 void Variant::int2string()
 {
-   BOOST_ASSERT(isInt());
-   setString(boost::lexical_cast<std::string>(asInt()));
+   ASSERT(isInt());
+   setString(lexical_cast<std::string>(asInt()));
 }
 
 void Variant::real2string()
 {
-   BOOST_ASSERT(isReal());
-   setString(boost::lexical_cast<std::string>(asReal()));
+   ASSERT(isReal());
+   setString(lexical_cast<std::string>(asReal()));
 }

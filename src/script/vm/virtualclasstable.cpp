@@ -1,12 +1,13 @@
 
 #include "virtualclasstable.h"
 
+#include "core/defines.h"
+
 #include "virtualclass.h"
 
 #include <iostream>
 #include <algorithm>
 
-#include <boost/assert.hpp>
 
 VirtualClassTable::VirtualClassTable():
    mClasses()
@@ -52,7 +53,7 @@ const VirtualClass& VirtualClassTable::resolve(const std::string& name) const
 VirtualClass& VirtualClassTable::resolve(const std::string& name)
 {
    VirtualClass* pclass = find(name);
-   BOOST_ASSERT(pclass != NULL);
+   ASSERT_PTR(pclass);
    return *pclass;
 }
 

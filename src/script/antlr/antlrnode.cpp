@@ -1,7 +1,7 @@
 
 #include "antlrnode.h"
 
-#include "output/asParser.h"
+#include "script/output/asParser.h"
 
 AntlrNode::AntlrNode(ANTLR3_BASE_TREE_struct* pnode):
    mpNode(pnode)

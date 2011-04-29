@@ -1,10 +1,11 @@
 
 #include "compilecontext.h"
 
-#include <boost/algorithm/string.hpp>
+#include "core/string/string.h"
+#include "core/conv/lexical.h"
 
-#include "ast/astclass.h"
-#include "ast/astvariable.h"
+#include "script/ast/astclass.h"
+#include "script/ast/astvariable.h"
 
 CompileContext::CompileContext():
    mClasses(),
@@ -52,9 +53,9 @@ bool CompileContext::hasClass(const std::string& classname) const
 
 void CompileContext::addClass(ASTClass* pclass)
 {
-   std::string name = pclass->getName();
-   boost::to_lower(name);
-   mClasses[name] = pclass;
+   String s = String(pclass->getName().c_str()).toLower();
+   std::string lowercasename = s.toStdString();
+   mClasses[lowercasename] = pclass;
 }
 
 // - Search
@@ -66,7 +67,7 @@ const ASTClass* CompileContext::findClass(const std::string& classname) const
 
 ASTClass* CompileContext::findClass(const std::string& name)
 {
-   std::string lowercasename = name;
-   boost::to_lower(lowercasename);
+   String s = String(name.c_str()).toLower();
+   std::string lowercasename = s.toStdString();
    return mClasses.find(lowercasename) != mClasses.end() ? mClasses[lowercasename] : NULL;
 }

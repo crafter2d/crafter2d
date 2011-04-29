@@ -1,10 +1,10 @@
 
 #include "astfunction.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 #include <exception>
 
-#include "../compiler/signature.h"
+#include "script/compiler/signature.h"
 
 #include "astblock.h"
 #include "astfunctionargument.h"
@@ -112,7 +112,7 @@ void ASTFunction::setResourceIndex(int index)
 
 const ASTClass& ASTFunction::getClass() const
 {
-   BOOST_ASSERT(mpClass != NULL);
+   ASSERT_PTR(mpClass);
    return *mpClass;
 }
    
@@ -144,7 +144,7 @@ void ASTFunction::setBody(ASTBlock* pbody)
 
 const Signature& ASTFunction::getSignature() const
 {
-   BOOST_ASSERT(mpSignature != NULL);
+   ASSERT(mpSignature);
    return *mpSignature;
 }
 

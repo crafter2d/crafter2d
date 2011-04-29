@@ -3,9 +3,9 @@
 
 #include <sstream>
 
-#include "common/variant.h"
-#include "common/literaltable.h"
-#include "common/literal.h"
+#include "script/common/variant.h"
+#include "script/common/literaltable.h"
+#include "script/common/literal.h"
 
 VirtualInstructionTable::VirtualInstructionTable():
    mInstructions()

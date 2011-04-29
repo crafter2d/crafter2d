@@ -4,18 +4,15 @@
 // undefine the 'emit' define of Qt as ANTLR needs it
 #undef emit
 
-#include <boost/assert.hpp>
-#include <boost/lexical_cast.hpp>
+#include "core/defines.h"
+#include "core/conv/lexical.h"
 
-#include "output/asLexer.h"
-#include "output/asParser.h"
-
-#include "ast/astannotation.h"
-
-#include "compiler/compilecontext.h"
-
-#include "common/literal.h"
-#include "common/variant.h" 
+#include "script/output/asLexer.h"
+#include "script/output/asParser.h"
+#include "script/ast/astannotation.h"
+#include "script/compiler/compilecontext.h"
+#include "script/common/literal.h"
+#include "script/common/variant.h" 
 
 #include "antlrnode.h"
 #include "antlrstream.h"
@@ -90,7 +87,7 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
 
 ASTType* AntlrParser::getType(const AntlrNode& node)
 {
-   BOOST_ASSERT(node.getType() == TYPE);
+   ASSERT(node.getType() == TYPE);
 
    AntlrNode typenode = node.getChild(0);
 
@@ -158,7 +155,7 @@ ASTType* AntlrParser::getType(const AntlrNode& node)
 
 ASTNode* AntlrParser::handleTree(const AntlrNode& node)
 {
-   BOOST_ASSERT(!node.isNil());
+   ASSERT(!node.isNil());
    
    int nodetype = node.getType();
    switch ( nodetype )
@@ -217,7 +214,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
       case LITERAL:           return handleLiteral(node);
 
       case TYPE:
-      default:                BOOST_ASSERT(false);
+      default:                UNREACHABLE("Should not get here");
          break;
    }
 
@@ -268,7 +265,7 @@ ASTNode* AntlrParser::handleUse(const AntlrNode& node)
 
 void AntlrParser::handleModifiers(const AntlrNode& node, ASTModifiers& modifiers)
 {
-   BOOST_ASSERT(node.getType() == MODIFIERS);
+   ASSERT(node.getType() == MODIFIERS);
 
    int count = node.getChildCount();
    for ( int index = 0; index < count; index++ )
@@ -412,7 +409,7 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
             AntlrNode member = node.getChild(index);
          
             ASTMember* pmember = dynamic_cast<ASTMember*>(handleTree(member));
-            BOOST_ASSERT(pmember != NULL);
+            ASSERT_PTR(pmember);
          
             pclass->addMember(pmember);
          }
@@ -451,7 +448,7 @@ ASTMember* AntlrParser::handleVarDecl(const AntlrNode& node)
 
 void AntlrParser::handleFuncArguments(const AntlrNode& node, ASTFunction& function)
 {
-   BOOST_ASSERT(node.getType() == FUNCTION_ARGUMENTS);
+   ASSERT(node.getType() == FUNCTION_ARGUMENTS);
 
    int count = node.getChildCount();
    int index = 0;
@@ -494,7 +491,7 @@ ASTMember* AntlrParser::handleConstructor(const AntlrNode& node)
       pfunction->setBody(pbody);
    }
    else
-      BOOST_ASSERT(nodetype == SEP);
+      ASSERT(nodetype == SEP);
 
    return pfunction;
 }
@@ -535,7 +532,7 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
       {
          AntlrNode exprnode = node.getChild(4);
          ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(exprnode));
-         BOOST_ASSERT(pexpression != NULL);
+         ASSERT_PTR(pexpression);
 
          pvariable->setExpression(pexpression);
       }
@@ -571,7 +568,7 @@ ASTMember* AntlrParser::handleFuncDecl(const AntlrNode& node)
       pfunction->setBody(pbody);
    }
    else
-      BOOST_ASSERT(nodetype == SEP);
+      ASSERT(nodetype == SEP);
                
    return pfunction;
 }
@@ -601,7 +598,7 @@ ASTMember* AntlrParser::handleVoidFuncDecl(const AntlrNode& node)
       pfunction->setBody(pbody);
    }
    else
-      BOOST_ASSERT(nodetype == SEP);
+      ASSERT(nodetype == SEP);
                
    return pfunction;
 }
@@ -618,7 +615,7 @@ ASTAnnotations* AntlrParser::handleAnnotations(const AntlrNode& node)
       for ( int index = 0; index < count; index++ )
       {
          AntlrNode child = node.getChild(index);
-         BOOST_ASSERT(child.getType() == ANNOTATION);
+         ASSERT(child.getType() == ANNOTATION);
 
          AntlrNode namenode = child.getChild(0);
          ASTAnnotation* pannotation = new ASTAnnotation;
@@ -633,7 +630,7 @@ ASTAnnotations* AntlrParser::handleAnnotations(const AntlrNode& node)
 
 ASTBlock* AntlrParser::handleBlock(const AntlrNode& node)
 {
-   BOOST_ASSERT(node.getType() == BLOCK);
+   ASSERT(node.getType() == BLOCK);
 
    ASTBlock* pblock = new ASTBlock();
 
@@ -642,7 +639,7 @@ ASTBlock* AntlrParser::handleBlock(const AntlrNode& node)
    {
       AntlrNode member = node.getChild(index);
       ASTNode* pnode = handleTree(member);
-      BOOST_ASSERT(pnode != NULL);
+      ASSERT_PTR(pnode);
 
       ASTStatement* pstatement = dynamic_cast<ASTStatement*>(pnode);
       pblock->addChild(pstatement);
@@ -682,7 +679,7 @@ ASTIf* AntlrParser::handleIf(const AntlrNode& node)
 
    AntlrNode statement = node.getChild(1);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(statement));
-   BOOST_VERIFY(pstatement != NULL);
+   ASSERT_PTR(pstatement);
    pif->setStatement(pstatement);
 
    int count = node.getChildCount();
@@ -690,7 +687,7 @@ ASTIf* AntlrParser::handleIf(const AntlrNode& node)
    {
       statement = node.getChild(2);
       pstatement = dynamic_cast<ASTStatement*>(handleTree(statement));
-      BOOST_VERIFY(pstatement != NULL);
+      ASSERT_PTR(pstatement);
       pif->setElseStatement(pstatement);
    }
 
@@ -703,7 +700,7 @@ ASTFor* AntlrParser::handleFor(const AntlrNode& node)
 
    AntlrNode stmtnode = node.getChild(0);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(stmtnode));
-   BOOST_ASSERT(pstatement != NULL);
+   ASSERT_PTR(pstatement);
    pfor->setBody(pstatement);
 
    AntlrNode child = node.getChild(1);
@@ -752,12 +749,12 @@ ASTForeach* AntlrParser::handleForeach(const AntlrNode& node)
 
    AntlrNode exprnode = node.getChild(2);
    ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(exprnode));
-   BOOST_ASSERT(pexpression != NULL);
+   ASSERT_PTR(pexpression);
    pvariable->setExpression(pexpression);
 
    AntlrNode statement = node.getChild(3);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(statement));
-   BOOST_ASSERT(pstatement != NULL);
+   ASSERT_PTR(pstatement);
 
    ASTForeach* pforeach = new ASTForeach();
    pforeach->setVariable(pvariable);
@@ -775,7 +772,7 @@ ASTWhile* AntlrParser::handleWhile(const AntlrNode& node)
 
    AntlrNode body = node.getChild(1);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(body));
-   BOOST_ASSERT(pstatement != NULL);
+   ASSERT_PTR(pstatement);
    pwhile->setBody(pstatement);
 
    return pwhile;
@@ -787,7 +784,7 @@ ASTDo* AntlrParser::handleDo(const AntlrNode& node)
 
    AntlrNode body = node.getChild(0);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(body));
-   BOOST_ASSERT(pstatement != NULL);
+   ASSERT_PTR(pstatement);
    pdo->setBody(pstatement);
 
    AntlrNode condition = node.getChild(1);
@@ -876,7 +873,7 @@ ASTExpressionStatement* AntlrParser::handleExpressionStatement(const AntlrNode& 
 {
    AntlrNode exprnode = node.getChild(0);
    ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(exprnode));
-   BOOST_ASSERT(pexpression != NULL);
+   ASSERT_PTR(pexpression);
 
    ASTExpressionStatement* pstatement = new ASTExpressionStatement();
    pstatement->setExpression(pexpression);
@@ -896,7 +893,7 @@ ASTCompound* AntlrParser::handleCompound(const AntlrNode& node)
 
 ASTExpression* AntlrParser::handleExpression(const AntlrNode& node)
 {
-   BOOST_ASSERT(node.getType() == EXPRESSION);
+   ASSERT(node.getType() == EXPRESSION);
 
    ASTExpression* pexpression = new ASTExpression();
 
@@ -1060,7 +1057,7 @@ ASTUnary* AntlrParser::handleUnary(const AntlrNode& node)
       child = node.getChild(index);
 
       ASTExpressionPart* ppart = dynamic_cast<ASTExpressionPart*>(handleTree(child));
-      BOOST_ASSERT(ppart != NULL);
+      ASSERT_PTR(ppart);
 
       punary->addPart(ppart);
    }
@@ -1075,7 +1072,7 @@ ASTUnary* AntlrParser::handleUnary(const AntlrNode& node)
    else
    {
       ASTExpressionPart* ppart = dynamic_cast<ASTExpressionPart*>(handleTree(child));
-      BOOST_ASSERT(ppart != NULL);
+      ASSERT_PTR(ppart);
 
       punary->addPart(ppart);
    }
@@ -1121,7 +1118,7 @@ ASTNew* AntlrParser::handleNew(const AntlrNode& node)
    }
    else
    {
-      BOOST_ASSERT(false);
+      UNREACHABLE("Invalid type for new");
    }
 
    pnew->setType(ptype);
@@ -1229,11 +1226,11 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
    {
       case INT:
          kind = ASTType::eInt;
-         value.setInt(boost::lexical_cast<int>(valuestr));
+         value.setInt(lexical_cast<int>(valuestr));
          break;
       case FLOAT:
          kind = ASTType::eReal;
-         value.setReal(boost::lexical_cast<double>(valuestr));
+         value.setReal(lexical_cast<double>(valuestr));
          break;
       case STRING:
          kind = ASTType::eString;
@@ -1260,7 +1257,7 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
       mContext.getLiteralTable().insert(pliteral);
    }
 
-   BOOST_ASSERT(pliteral->getTableIndex() >= 0);
+   ASSERT(pliteral->getTableIndex() >= 0);
 
    ASTLiteral* pastliteral = new ASTLiteral(*pliteral, kind);
    return pastliteral;

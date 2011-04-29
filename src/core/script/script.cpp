@@ -27,7 +27,7 @@
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 
 #include "scriptcontext.h"
 

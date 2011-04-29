@@ -1,28 +1,26 @@
 
 #include "codegeneratorvisitor.h"
 
-#include "ast/ast.h"
+#include "core/defines.h"
 
-#include "vm/virtualarrayobject.h"
-#include "vm/virtualclass.h"
-#include "vm/virtualclassobject.h"
-#include "vm/virtualinstruction.h"
-#include "vm/virtualinstructiontable.h"
-#include "vm/virtualclasstable.h"
-#include "vm/virtualmachine.h"
-#include "vm/virtualfunctiontable.h"
-#include "vm/virtualfunctiontableentry.h"
-#include "vm/virtualarrayreference.h"
-
-#include "common/literal.h"
-#include "common/variant.h"
-
-#include "scope/scope.h"
-#include "scope/scopevariable.h"
-#include "scope/scopedscope.h"
-
-#include "compiler/compilecontext.h"
-#include "compiler/signature.h"
+#include "script/ast/ast.h"
+#include "script/vm/virtualarrayobject.h"
+#include "script/vm/virtualclass.h"
+#include "script/vm/virtualclassobject.h"
+#include "script/vm/virtualinstruction.h"
+#include "script/vm/virtualinstructiontable.h"
+#include "script/vm/virtualclasstable.h"
+#include "script/vm/virtualmachine.h"
+#include "script/vm/virtualfunctiontable.h"
+#include "script/vm/virtualfunctiontableentry.h"
+#include "script/vm/virtualarrayreference.h"
+#include "script/common/literal.h"
+#include "script/common/variant.h"
+#include "script/scope/scope.h"
+#include "script/scope/scopevariable.h"
+#include "script/scope/scopedscope.h"
+#include "script/compiler/compilecontext.h"
+#include "script/compiler/signature.h"
 
 const int labelID = 1000;
 
@@ -73,7 +71,7 @@ void CodeGeneratorVisitor::fillInstructionList()
    convertLabels();
 
    VirtualInstructionTable& instructions = mpVClass->getInstructions();
-   for ( int index = 0; index < mInstructions.size(); index++ )
+   for ( std::size_t index = 0; index < mInstructions.size(); index++ )
    {
       Inst& inst = mInstructions[index];
       instructions.add((VirtualInstruction::Instruction)inst.instruction, inst.arg);
@@ -82,7 +80,7 @@ void CodeGeneratorVisitor::fillInstructionList()
 
 int CodeGeneratorVisitor::findLabel(int label) const
 {
-   int index = 0;
+   std::size_t index = 0;
    for ( ; index < mInstructions.size(); index++ )
    {
       const Inst& inst = mInstructions[index];
@@ -101,7 +99,7 @@ void CodeGeneratorVisitor::convertLabels()
    {
       int firstline = mInstructions[0].linenr;
 
-      for ( int index = 0; index < mInstructions.size(); index++ )
+      for ( std::size_t index = 0; index < mInstructions.size(); index++ )
       {
          Inst& inst = mInstructions[index];
 
@@ -1137,7 +1135,7 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
       case ASTAccess::eFunction:
          {
             // we should never get here
-            BOOST_ASSERT(false);
+            UNREACHABLE("");
          }
          break;
    }
@@ -1216,7 +1214,7 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
    int lit = allocateLiteral(ast.getName());
 
    const ASTClass::Fields& fields = ast.getStatics();
-   for ( int index = 0; index < fields.size(); index++ )
+   for ( std::size_t index = 0; index < fields.size(); index++ )
    {
       const ASTField* pfield = fields[index];
       const ASTVariable& variable = pfield->getVariable();
@@ -1277,7 +1275,7 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
    }
 
    const ASTClass::Fields& fields = ast.getFields();
-   for ( int index = 0; index < fields.size(); index++ )
+   for ( std::size_t index = 0; index < fields.size(); index++ )
    {
       const ASTField* pfield = fields[index];
       const ASTVariable& variable = pfield->getVariable();

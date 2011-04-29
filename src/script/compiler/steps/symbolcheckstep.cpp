@@ -1,18 +1,15 @@
 
 #include "symbolcheckstep.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
-#include "ast/ast.h"
-
-#include "scope/scope.h"
-#include "scope/scopevariable.h"
-#include "scope/scopedscope.h"
-
-#include "common/literal.h"
-
-#include "compiler/compilecontext.h"
-#include "compiler/signature.h"
+#include "script/ast/ast.h"
+#include "script/scope/scope.h"
+#include "script/scope/scopevariable.h"
+#include "script/scope/scopedscope.h"
+#include "script/common/literal.h"
+#include "script/compiler/compilecontext.h"
+#include "script/compiler/signature.h"
 
 #include "variablecheckvisitor.h"
 
@@ -690,7 +687,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                {
                   if ( mCurrentType.isObject() )
                   {
-                     BOOST_ASSERT(mCurrentType.hasObjectClass());
+                     ASSERT(mCurrentType.hasObjectClass());
 
                      const ASTClass& type = mCurrentType.getObjectClass();
                      checkFunction(type, ast, wasstatic);

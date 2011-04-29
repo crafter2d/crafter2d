@@ -2,10 +2,9 @@
 #ifndef AST_STREAM_H_
 #define AST_STREAM_H_
 
-#include "ast/astvisitor.h"
-
 #include <sstream>
 
+class ASTClass;
 class ASTField;
 class ASTFunction;
 class ASTModifiers;

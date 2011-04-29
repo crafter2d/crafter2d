@@ -180,7 +180,7 @@ stmt	:	block
 	|	RETURN expression? ';'							-> ^(RETURN expression?)
 	|	TRY block catch_block* finally_block?					-> ^(TRY block catch_block* finally_block?)
 	|	THROW expression ';'							-> ^(THROW expression)
-	|	ASSERT expression (':' expression)?					-> ^(ASSERT expression expression?)
+	|	T_ASSERT expression (':' expression)?					-> ^(T_ASSERT expression expression?)
 	|	BREAK^ ';'
 	|	CONTINUE^ ';'
 	|	stmt_expression
@@ -397,7 +397,7 @@ EXTENDS	:	'extends';
 IMPL	:	'implements';
 NEW	:	'new';
 INST_OF	:	'instanceof';
-ASSERT	:	'assert';
+T_ASSERT:	'assert';
 FOR	:	'for';
 FOREACH	:	'foreach';
 WHILE	:	'while';

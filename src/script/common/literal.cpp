@@ -1,7 +1,7 @@
 
 #include "literal.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
 Literal::Literal():
    mValue(),
@@ -45,7 +45,7 @@ int Literal::getTableIndex() const
 
 void Literal::setTableIndex(int index)
 {
-   BOOST_ASSERT(index >= 0);
+   ASSERT(index >= 0);
    mTableIndex = index;
 }
 

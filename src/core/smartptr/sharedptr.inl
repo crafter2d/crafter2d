@@ -7,7 +7,9 @@ SharedPtr<T>::SharedPtr(T* pointer):
 }
 
 template<class T>
-SharedPtr<T>::SharedPtr(const SharedPtr<T>& that)
+SharedPtr<T>::SharedPtr(const SharedPtr<T>& that):
+   mCount(that.mCount),
+   mpPointer(that.mpPointer)
 {
 }
 
@@ -18,6 +20,14 @@ SharedPtr<T>::~SharedPtr()
    {
       delete mpPointer;
    }
+}
+
+template<class T>
+const SharedPtr<T>& SharedPtr<T>::operator=(const SharedPtr<T>& that)
+{
+   mCount = that.mCount;
+   mpPointer = that.mpPointer;
+   return *this;
 }
 
 // pointer access

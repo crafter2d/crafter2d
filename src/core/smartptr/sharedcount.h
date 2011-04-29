@@ -2,12 +2,16 @@
 #ifndef SHARED_COUNT_H_
 #define SHARED_COUNT_H_
 
-class SharedCount
+#include "core/core_base.h"
+
+class CORE_API SharedCount
 {
 public:
    SharedCount();
    SharedCount(const SharedCount& that);
    ~SharedCount();
+
+   const SharedCount& operator=(const SharedCount& that);
 
  // query
    bool isUnique() const;
@@ -16,7 +20,9 @@ public:
    void reset();
 
 private:
-   void init();
+ // operations
+   void inc();
+   void dec();
 
    int*  mpCounter;
 };

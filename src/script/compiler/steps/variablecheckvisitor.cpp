@@ -1,8 +1,7 @@
 
 #include "variablecheckvisitor.h"
 
-#include "ast/ast.h"
-#include "ast/astvisitor.h"
+#include "script/ast/ast.h"
 
 // static 
 bool VariableCheckVisitor::isVariable(const ASTNode& node)

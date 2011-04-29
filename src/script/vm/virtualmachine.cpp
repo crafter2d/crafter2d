@@ -350,8 +350,8 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
 
       case VirtualInstruction::eAddInt:
          {
-            int right = mStack.back().toInt();
-            int left  = mStack.back().toInt();
+            int right = mStack.back().toInt(); mStack.pop_back();
+            int left  = mStack.back().toInt(); mStack.pop_back();
 
             mStack.push_back(Variant(left + right));
          }

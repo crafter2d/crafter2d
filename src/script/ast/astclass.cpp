@@ -1,12 +1,11 @@
 
 #include "astclass.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
-#include "scope/scope.h"
-#include "scope/scopevariable.h"
-
-#include "compiler/signature.h"
+#include "script/scope/scope.h"
+#include "script/scope/scopevariable.h"
+#include "script/compiler/signature.h"
 
 #include "astfunction.h"
 #include "asttype.h"
@@ -76,19 +75,19 @@ bool ASTClass::hasBaseClass() const
    
 const ASTClass& ASTClass::getBaseClass() const
 {
-   BOOST_ASSERT(mpBaseType != NULL);
+   ASSERT_PTR(mpBaseType);
    return mpBaseType->getObjectClass();
 }
 
 ASTClass& ASTClass::getBaseClass()
 {
-   BOOST_ASSERT(mpBaseType != NULL);
+   ASSERT_PTR(mpBaseType);
    return mpBaseType->getObjectClass();
 }
 
 void ASTClass::setBaseClass(ASTClass& baseclass)
 {
-   BOOST_ASSERT(mpBaseType != NULL);
+   ASSERT_PTR(mpBaseType);
    mpBaseType->setObjectClass(baseclass);
 }
 
@@ -114,13 +113,13 @@ ASTModifiers& ASTClass::getModifiers()
 
 const ASTTypeVariables& ASTClass::getTypeVariables() const
 {
-   BOOST_ASSERT(mpTypeVariables != NULL);
+   ASSERT_PTR(mpTypeVariables);
    return *mpTypeVariables;
 }
 
 ASTTypeVariables& ASTClass::getTypeVariables()
 {
-   BOOST_ASSERT(mpTypeVariables != NULL);
+   ASSERT_PTR(mpTypeVariables);
    return *mpTypeVariables;
 }
 
@@ -391,14 +390,17 @@ const ASTFunction* ASTClass::findBestMatch(const std::string& name, const Signat
 ASTFunction* ASTClass::findBestMatch(const std::string& name, const Signature& signature, const ASTTypeList& types)
 {
    Functions::iterator it = mFunctions.find(name);
-   Functions::iterator end = mFunctions.upper_bound(name);
-
-   for ( ; it != end; it++ )
+   if ( it != mFunctions.end() )
    {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getSignature().bestMatch(signature, types) )
+      Functions::iterator end = mFunctions.upper_bound(name);
+
+      for ( ; it != end; it++ )
       {
-         return pfunction;
+         ASTFunction* pfunction = it->second;
+         if ( pfunction->getSignature().bestMatch(signature, types) )
+         {
+            return pfunction;
+         }
       }
    }
 
@@ -423,14 +425,17 @@ ASTFunction* ASTClass::findExactMatch(const std::string& name, const Signature& 
 ASTFunction* ASTClass::findExactMatchLocal(const std::string& name, const Signature& signature)
 {
    Functions::iterator it = mFunctions.find(name);
-   Functions::iterator end = mFunctions.upper_bound(name);
-
-   for ( ; it != end; it++ )
+   if ( it != mFunctions.end() )
    {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getSignature().exactMatch(signature) )
+      Functions::iterator end = mFunctions.upper_bound(name);
+
+      for ( ; it != end; it++ )
       {
-         return pfunction;
+         ASTFunction* pfunction = it->second;
+         if ( pfunction->getSignature().exactMatch(signature) )
+         {
+            return pfunction;
+         }
       }
    }
    return NULL;
@@ -443,7 +448,7 @@ const ASTFunction* ASTClass::findInterfaceFunction(const ASTFunction& function) 
       const ASTType& type = mInterfaces[index];
 
       const ASTClass& c = type.getObjectClass();
-      BOOST_ASSERT(c.getKind() == ASTClass::eInterface);
+      ASSERT(c.getKind() == ASTClass::eInterface);
 
       const ASTFunction* pifunc = c.findExactMatch(function.getName(), function.getSignature());
       if ( pifunc != NULL )

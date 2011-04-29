@@ -30,7 +30,7 @@
 #include <GL/glu.h>
 #include <math.h>
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 
 #include "engine/opengl.h"

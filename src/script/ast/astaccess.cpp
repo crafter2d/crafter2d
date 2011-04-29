@@ -1,7 +1,7 @@
 
 #include "astaccess.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
 #include "astvisitor.h"
 #include "astexpression.h"
@@ -79,7 +79,7 @@ bool ASTAccess::hasPrevious() const
 
 ASTAccess& ASTAccess::getPrevious()
 {
-   BOOST_ASSERT(mpPrevious != NULL);
+   ASSERT_PTR(mpPrevious);
    return *mpPrevious;
 }
 

@@ -20,7 +20,7 @@
 #include "vertexprogram.h"
 
 #include "core/log/log.h"
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 
 #include "opengl.h"
 

@@ -1,7 +1,7 @@
 
 #include "antlrstream.h"
 
-#include "output/asLexer.h"
+#include "script/output/asLexer.h"
 
 // static
 AntlrStream* AntlrStream::fromFile(const std::string& filename)

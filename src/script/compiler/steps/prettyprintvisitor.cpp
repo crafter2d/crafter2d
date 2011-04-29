@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "ast\ast.h"
+#include "script/ast/ast.h"
 
 using std::cout;
 using std::cerr;

@@ -2,7 +2,7 @@
 #ifndef PRETTY_PRINT_VISITOR_H_
 #define PRETTY_PRINT_VISITOR_H_
 
-#include "ast\astvisitor.h"
+#include "script/ast/astvisitor.h"
 
 class PrettyPrintVisitor : public ASTVisitor
 {

@@ -2,6 +2,8 @@
 #ifndef SHARED_PTR_H_
 #define SHARED_PTR_H_
 
+#include "core/core_base.h"
+
 #include "sharedcount.h"
 
 template<class T>
@@ -11,6 +13,8 @@ public:
    explicit SharedPtr(T* pointer = NULL);
             SharedPtr(const SharedPtr<T>& that);
            ~SharedPtr();
+
+   const SharedPtr<T>& operator=(const SharedPtr<T>& that);
 
  // pointer access
    const T& operator*() const;

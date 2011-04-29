@@ -1,7 +1,7 @@
 
 #include "compilestep.h"
 
-#include <boost/assert.hpp>
+#include "core/defines.h"
 
 CompileStep::CompileStep()
 {
@@ -16,6 +16,6 @@ bool CompileStep::step(ASTRoot& root)
 
 bool CompileStep::performStep(ASTRoot& root)
 {
-   BOOST_ASSERT(false);
+   UNREACHABLE("");
    return false;
 }
