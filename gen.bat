@@ -24,12 +24,6 @@ if not exist "..\..\externallibs" (
 echo -- Setting up bin directory
 cp %1
 
-echo -- Building tolua files
-pushd .
-chdir tolua
-call run.bat --silent
-popd
-
 echo -- Building project
 echo.
 premake4 %1

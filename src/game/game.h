@@ -23,7 +23,7 @@
 #include <SDL/SDL.h>
 #include <string>
 
-#include "core/script/scriptmanager.h"
+#include "engine/script/scriptmanager.h"
 
 #include "gamewindow.h"
 #include "defaultgamewindowlistener.h"
@@ -44,13 +44,13 @@ public:
    virtual              ~Game();
 
  // get/set interface
-         GameWindow&          getGameWindow();
+         GameWindow&    getGameWindow();
 
-         void                 setActive(bool act=true);
-         bool                 isActive() const;
+         void           setActive(bool act=true);
+         bool           isActive() const;
 
-         void                 setTitle(const std::string& title);
-   const std::string&         getTitle() const;
+         void           setTitle(const std::string& title);
+   const std::string&   getTitle() const;
 
  // operations
    bool                 create();

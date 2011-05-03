@@ -22,7 +22,7 @@
 
 #include "engine/engine_base.h"
 
-#include "core/script/scriptmanager.h"
+#include "engine/script/scriptmanager.h"
 
 #include "net/netconnection.h"
 

@@ -34,8 +34,7 @@
 #include <GL/glu.h>
 #include <tolua++.h>
 
-#include "core/script/scriptcontext.h"
-#include "core/script/scriptmanager.h"
+#include "engine/script/scriptmanager.h"
 
 #include "core/system/platform.h"
 #include "core/system/timer.h"
@@ -104,13 +103,9 @@ Game::~Game()
  */
 
 #include "script/as.h"
-#include "core/string/string.h"
 
 bool Game::create()
 {
-   String s("hoi");
-   std::string m = s.toStdString();
-
    Log& log = Log::getInstance();
    log << "JEngine SSE V0.4.5 - Copyright 2010 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
@@ -128,7 +123,6 @@ bool Game::create()
 
    // initialize the Lua scripting environment
    mScriptManager.initialize ();
-   mScriptManager.loadModule(tolua_game_open);
 
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
@@ -170,8 +164,7 @@ bool Game::create()
 
    FileSystem::getInstance().addPath("..");
 
-   ScriptContext context;
-   mScriptManager.executeScript(context, "scripts/main.lua");
+   mScriptManager.executeScript("scripts/main.lua");
 
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
@@ -293,12 +286,11 @@ void Game::getWindowDimensions(int& w, int& h)
  */
 bool Game::initGame()
 {
-   ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    if ( script.prepareCall("Game_initialize") )
    {
       //script.setSelf(this, "Game");
-      script.run(context);
+      script.run();
    }
 
    /*
@@ -335,12 +327,11 @@ void Game::endGame()
 {
    Client client;
 
-	ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    script.setSelf(&client, "Client");
    script.prepareCall("Game_shutdown");
    script.setSelf(this, "Game");
-   script.run(context);
+   script.run();
 }
 
 /*!
@@ -355,15 +346,14 @@ void Game::runFrame()
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
-   ScriptContext context;
-   mScriptManager.update(context, delta);
+   mScriptManager.update(delta);
    if ( !isActive() )
       return;
 
    Script& script = mScriptManager.getTemporaryScript();
    script.prepareCall("Game_run");
    script.addParam(delta);
-   script.run(context, 1);
+   script.run(1);
    
    // here also nothing happens (should be overloaded)
    glLoadIdentity ();

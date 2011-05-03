@@ -28,9 +28,6 @@
 
 #include "core/log/log.h"
 
-#include "tolua_core.h"
-#include "scriptcontext.h"
-
 #define LUA_SCRIPTLIBNAME "script"
 
 ScriptManager::ScriptManager():
@@ -90,19 +87,19 @@ void ScriptManager::loadModule(initializer module)
 /// \brief Runs a script once in either the main lua state, or a child state.
 /// \param script Name of the script file
 /// \param child Flag which should be set if the script should be run in a child state (default is false)
-bool ScriptManager::executeScript(ScriptContext& context, const std::string& script, bool child)
+bool ScriptManager::executeScript(const std::string& script, bool child)
 {
    Script luaScript(luaState, child);
-   return luaScript.load(context, script) && luaScript.run(context);
+   return luaScript.load(script) && luaScript.run();
 }
 
 /// \fn ScriptManager::executeLine(const char* line, bool child)
 /// \brief Executes a line of Lua code.
-bool ScriptManager::executeLine(ScriptContext& context, const char* line)
+bool ScriptManager::executeLine(const char* line)
 {
    if ( luaL_dostring(luaState, line) != 0 )
    {
-      context.info(Log::eError, lua_tostring(luaState, -1));
+      // context.info(Log::eError, lua_tostring(luaState, -1));
       return false;
    }
    return true;
@@ -128,26 +125,22 @@ static int include(lua_State* L)
    ASSERT(lua_gettop(L) == 1);
 
    const std::string file = luaL_checkstring(L, 1);
-
-   ScriptContext context;
-
+   
    /*
    lua_getglobal(L, LUA_SCRIPTLIBNAME);
    ScriptManager* pmanager = static_cast<ScriptManager*>(lua_touserdata(L,-1));
-   pmanager->executeScript(context, file, false);
+   pmanager->executeScript(file, false);
    */
 
    Script script(L);
-   script.load(context, file);
-   script.run(context);
+   script.load(file);
+   script.run();
 
    return 0;
 }
 
 void ScriptManager::registerGlobals()
 {
-   tolua_core_open(luaState);
-
    setObject(this, "ScriptManager", "script");
 
    lua_register(luaState, "include", include);
@@ -159,7 +152,7 @@ void ScriptManager::registerGlobals()
 
 /// \fn ScriptManager::update(Uint32 tick)
 /// \brief Checks the request list and executes scripts when necessary.
-void ScriptManager::update(ScriptContext& context, float delta)
+void ScriptManager::update(float delta)
 {
    Requests::iterator it = requests.begin();
    while ( it != requests.end() )
@@ -175,7 +168,7 @@ void ScriptManager::update(ScriptContext& context, float delta)
          // execute the function
          Script& script = getTemporaryScript();
          script.prepareCall(request.mFunction.c_str());
-         script.run(context);
+         script.run();
 
          // remove request from the list
          requests.erase(it);

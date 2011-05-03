@@ -20,7 +20,7 @@
 #ifndef SCRIPT_H_
 #define SCRIPT_H_
 
-#include "core/core_base.h"
+#include "engine/engine_base.h"
 
 extern "C" {
 #include <lua.h>
@@ -32,8 +32,6 @@ extern "C" {
 
 #include <string>
 
-class ScriptContext;
-
 /**
 @author Jeroen Broekhuizen
 \brief Implements a general script object.
@@ -43,14 +41,14 @@ can run this script. Creating this script object should be done with the
 ScriptManager::createScript() function. Currently the update function is not yet
 implemented and therefor shouldn't be used.
 */
-class CORE_API Script
+class ENGINE_API Script
 {
 public:
                Script();
    explicit    Script(lua_State* l, bool c=false);
 
-   bool        load(ScriptContext& context, const std::string& file);
-   bool        loadString(ScriptContext& context, const std::string& code);
+   bool        load(const std::string& file);
+   bool        loadString(const std::string& code);
 
    void        addParam (int val);
    void        addParam (float val);
@@ -62,7 +60,7 @@ public:
    int         getInteger();
 
    bool        prepareCall(const char* function);
-   bool        run(ScriptContext& context, int params=0, int returns=0);
+   bool        run(int params=0, int returns=0);
 
    void        setSelf(void* p, const char* typeName);
    void        setState(lua_State* l);

@@ -12,6 +12,7 @@ project "Core"
 	
 -- set project files
 files { "src/core/**.cpp", "src/core/**.h", "src/core/**.inl" }
+includedirs { "src" }
 
 if ( os.is("windows") ) then
 	-- this is an export dll
@@ -23,16 +24,13 @@ if ( os.is("windows") ) then
                     path.join(libdir, "cg/include"),
 					path.join(libdir, "zlib/include"),
 					path.join(libdir, "tinyxml/include"),
-					path.join(libdir, "lua/include"), 
-					path.join(libdir, "tolua++/include"),
-					"src" }
+					path.join(libdir, "icu/include") }
 					
 	libdirs { 	path.join(libdir, "glee/lib"),
 				path.join(libdir, "cg/lib"),
 				path.join(libdir, "zlib/lib"),
 				path.join(libdir, "tinyxml/lib"),
-				path.join(libdir, "lua/lib"), 
-				path.join(libdir, "tolua++/lib") }
+				path.join(libdir, "icu/lib") }
 				
 	-- set IDE specific settings
 	if ( _ACTION == "cb-gcc" ) then
@@ -43,25 +41,25 @@ if ( os.is("windows") ) then
 		configuration "Debug"
 			links { "GLee_d", "mingw32", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "cg", "cgGL",
-					"minizip_d", "zlib1", "lua", "tolua++_d", "tinyxmld_STL"  } 
+					"minizip_d", "zlib1", "tinyxmld_STL"  } 
 		 
 		configuration "Release"
 			links { "GLee_d", "SOIL", "mingw32", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32", "cg", "cgGL",
-					"minizip", "zlib1", "lua", "tolua++", "tinyxml_STL"  } 
+					"minizip", "zlib1", "tinyxml_STL"  } 
 	else
 		if ( _ACTION > "vs2005" ) then
 			ignoredefaultlibs { "libcmt.lib" }
 		end
 		
-		links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL"  }
+		links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL", "icuuc" }
 		
 		configuration "Debug"
-			links { "GLee_d", "tolua++_d", " lua5.1_d", "tinyxmld_STL", "zlib1_d", "minizip_d" }
+			links { "GLee_d", "tinyxmld_STL", "zlib1_d", "minizip_d" }
 			ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 					
 		configuration "Release"
-			links { "GLee", "tolua++", "lua5.1", "tinyxml_STL", "zlib1", "minizip" }
+			links { "GLee", "tinyxml_STL", "zlib1", "minizip" }
 	end
 elseif ( os.is("linux") ) then
 
@@ -78,6 +76,7 @@ end
 
 configuration "Debug"
 	defines { "_DEBUG", "TIXML_USE_STL" }
+	targetsuffix "d"
 	flags { "Symbols" }
 	
 configuration "Release"

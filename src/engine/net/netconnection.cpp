@@ -26,8 +26,6 @@
 
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
-#include "core/script/script.h"
-#include "core/script/scriptmanager.h"
 #include "core/system/timer.h"
 
 #include "engine/process.h"

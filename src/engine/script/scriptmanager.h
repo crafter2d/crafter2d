@@ -20,7 +20,7 @@
 #ifndef SCRIPT_MANAGER_H_
 #define SCRIPT_MANAGER_H_
 
-#include "core/core_base.h"
+#include "engine/engine_base.h"
 #include "core/defines.h"
 
 extern "C" {
@@ -35,11 +35,8 @@ extern "C" {
 
 #include "script.h"
 
-class ScriptContext;
-
 // Module prototype
 extern int (*tolua_Module) (lua_State* tolua_S);
-
 
 /**
 @author Jeroen Broekhuizen
@@ -91,7 +88,7 @@ method uses the getTemporaryScript to retreive a temporary script object (which 
 in the global enviroment). This call is much cheaper then the previous method, as the object
 always exists (it returns a reference to the script object).
 */
-class CORE_API ScriptManager
+class ENGINE_API ScriptManager
 {
    struct Request {
       std::string mFunction;
@@ -115,14 +112,14 @@ public:
    void                    setObject(void* obj, const char* type, const char* var);
    
  // execution
-   bool                    executeScript(ScriptContext& context, const std::string& script, bool child = false );
-   bool                    executeLine(ScriptContext& context, const char* line);
+   bool                    executeScript(const std::string& script, bool child = false );
+   bool                    executeLine(const char* line);
 
    Script*                 createScript( bool child = false );
    Script&                 getTemporaryScript();
 
  // requests
-   void                    update(ScriptContext& context, float delta);
+   void                    update(float delta);
    uint                    schedule(const std::string& cmd, float time);
    void                    unschedule(const uint jobid);
    void                    unscheduleAll();

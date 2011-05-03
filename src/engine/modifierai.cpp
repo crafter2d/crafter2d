@@ -19,9 +19,8 @@
  ***************************************************************************/
 #include "modifierai.h"
 
-#include "core/script/script.h"
-#include "core/script/scriptcontext.h"
-#include "core/script/scriptmanager.h"
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
 
 #include "object.h"
 #include "process.h"
@@ -40,11 +39,10 @@ void ModifierAI::update(Object& object, float delta)
 {
    Process& process = object.getSceneGraph().getProcess();
 
-   ScriptContext context;
    Script& script = process.getScriptManager().getTemporaryScript();
    script.setSelf(&object, "Object");
    script.prepareCall(mFunction.c_str());
    script.addParam(&object, "Object");
    script.addParam(delta);
-   script.run(context, 2);
+   script.run(2);
 }

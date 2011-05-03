@@ -12,6 +12,7 @@ project "Game"
 	
 -- set project files
 files { "src/game/**.cpp", "src/game/**.h", "src/game/**.inl" }
+includedirs { "src" }
 
 if ( os.is("windows") ) then
 	includedirs { 	path.join(libdir, "sdl/include"),
@@ -20,8 +21,7 @@ if ( os.is("windows") ) then
 					path.join(libdir, "tolua++/include"),
 					path.join(libdir, "tinyxml/include"),
 					path.join(libdir, "openal/include"),
-					path.join(libdir, "zlib/include"),
-					"src" }
+					path.join(libdir, "zlib/include") }
 
 	libdirs { 	path.join(libdir, "sdl/lib"),
 				path.join(libdir, "glee/lib"),
@@ -30,7 +30,7 @@ if ( os.is("windows") ) then
 				path.join(libdir, "lua/lib"), 
 				path.join(libdir, "tolua++/lib") }
 	
-	links { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "Core", "Engine", "Script" }
+	links { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32" }
 	
 	configuration "Debug"
 		links { "GLee_d", "tolua++_d", " lua5.1_d", "tinyxmld_STL" }
@@ -42,8 +42,11 @@ end
 
 configuration "Debug"
 	defines { "_DEBUG", "TIXML_USE_STL" }
+	targetsuffix "d"
 	flags { "Symbols" }
+	links { "Core", "Engine", "Script" }
 	
 configuration "Release"
 	defines { "NDEBUG", "TIXML_USE_STL" }
 	flags { "Optimize" }
+	links { "Core", "Engine", "Script" }

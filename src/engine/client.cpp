@@ -24,9 +24,9 @@
 
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
-#include "core/script/script.h"
-#include "core/script/scriptcontext.h"
-#include "core/script/scriptmanager.h"
+
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
 
 #include "net/netevent.h"
 #include "net/newobjectevent.h"
@@ -262,7 +262,6 @@ int Client::onClientEvent(int client, const NetEvent& event)
 
 void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 {
-   ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
 
@@ -272,7 +271,7 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
          {
             // run the onConnected script
             script.prepareCall ("Client_onConnected");
-            script.run(context, 0);
+            script.run(0);
 
             initialized = true;
             break;
@@ -282,7 +281,7 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
              // run the Client_onConnectionDenite script
              script.prepareCall ("Client_onConnectionDenite");
              script.addParam(event.getReason());
-             script.run(context, 1);
+             script.run(1);
              break;
          }
    }
@@ -291,34 +290,31 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
-   ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
    script.prepareCall("Client_onPlayerLeft");
    script.addParam(event.getId()+1);
-   script.run(context, 1);
+   script.run(1);
 }
 
 void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
-   ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
    script.prepareCall("Client_onJoined");
    script.addParam(event.getId()+1);
    script.addParam(event.getPlayerName().c_str());
-   script.run(context, 2);
+   script.run(2);
 }
 
 void Client::handleServerdownEvent()
 {
    // server went down, run the onClientConnect script
-   ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
    script.prepareCall ("Client_onServerDown");
-   script.run(context);
+   script.run();
 }
 
 void Client::handleNewObjectEvent(const NewObjectEvent& event)
@@ -341,11 +337,10 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       graph.setWorld((World*)obj.release());
 
       // run the onWorldChanged script
-      ScriptContext context;
       Script& script = mScriptManager.getTemporaryScript();
       script.setSelf(this, "Client");
       script.prepareCall("Client_onWorldChanged");
-      script.run(context);
+      script.run();
    }
    else if ( graph.find(obj->getId()) == 0 )
    {
@@ -409,10 +404,9 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    AutoPtr<BitStream> stream(event.getStream());
 
    // run the onClientConnect script
-   ScriptContext context;
    Script& script = mScriptManager.getTemporaryScript();
    script.setSelf (this, "Client");
    script.prepareCall ("Client_onEvent");
    script.addParam(stream.getPointer(), "BitStream");
-   script.run(context, 1);
+   script.run(1);
 }
