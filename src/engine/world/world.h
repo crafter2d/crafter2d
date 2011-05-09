@@ -20,6 +20,7 @@
 #ifndef WORLD_H_
 #define WORLD_H_
 
+#include <string>
 #include <vector>
 
 #include "core/math/vector.h"
@@ -74,7 +75,6 @@ public:
                   World();
    virtual        ~World();
 
-   virtual bool   create(const char* filename=NULL);
    void           createEmpty(const std::string& name);
    void           destroy();
    bool           save();
@@ -135,6 +135,8 @@ public:
    virtual void   unpack(BitStream& stream);
 
 protected:
+   virtual bool   doCreate(const std::string& filename);
+
    void           scroll();
    void           initializeBorders();
 

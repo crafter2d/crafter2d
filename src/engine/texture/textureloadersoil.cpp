@@ -60,6 +60,6 @@ bool TextureLoaderSoil::virLoad(File& file, TextureInfo& info)
    info.setWidth(width);
    info.setHeight(height);
 
-   delete pdata;
+   delete[] pdata;
    return true;
 }

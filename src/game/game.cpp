@@ -101,16 +101,12 @@ Game::~Game()
 	 \return true if initialized successfull, false otherwise
  */
 
-#include "script/as.h"
-
 bool Game::create()
 {
    Log& log = Log::getInstance();
    log << "JEngine SSE V0.4.5 - Copyright 2010 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
-
-   //runScript();
 
    // initialize the video library
    if (SDL_Init (SDL_INIT_VIDEO) < 0) {
@@ -340,16 +336,16 @@ void Game::runFrame()
    mScriptManager.update(delta);
    if ( !isActive() )
       return;
-
-   ASSERT_PTR(mpScript);
-   mpScript->addParam(delta);
-   mpScript->run("run");
    
    // here also nothing happens (should be overloaded)
    glLoadIdentity ();
    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glAlphaFunc (GL_GREATER, 0.1f);
    glEnable (GL_ALPHA_TEST);
+
+   ASSERT_PTR(mpScript);
+   mpScript->addParam(delta);
+   mpScript->run("run");
 
    //glDisable(GL_MULTISAMPLE);
    glDisable (GL_ALPHA_TEST);

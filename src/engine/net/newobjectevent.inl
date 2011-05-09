@@ -29,3 +29,7 @@ INLINE SceneObject* NewObjectEvent::getObject() const
    return mpObject;
 }
 
+INLINE const std::string& NewObjectEvent::getFileName() const
+{
+   return mFileName;
+}

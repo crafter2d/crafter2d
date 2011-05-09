@@ -5,13 +5,15 @@
 
 VirtualNativeObject::VirtualNativeObject():
    VirtualObject(),
-   mpObject(NULL)
+   mpObject(NULL),
+   mOwned(true)
 {
 }
 
 VirtualNativeObject::VirtualNativeObject(void* pobject):
    VirtualObject(),
-   mpObject(pobject)
+   mpObject(pobject),
+   mOwned(true)
 {
 }
 
@@ -29,8 +31,14 @@ void* VirtualNativeObject::getObject()
 
 void VirtualNativeObject::setObject(void* pobject)
 {
-   delete mpObject;
+   if ( mOwned )
+      delete mpObject;
    mpObject = pobject;
+}
+
+void VirtualNativeObject::setOwned(bool owned)
+{
+   mOwned = owned;
 }
 
 // - Downcasting

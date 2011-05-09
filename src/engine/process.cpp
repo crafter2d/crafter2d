@@ -95,7 +95,7 @@ void Process::setActionMap(ActionMap* map)
 bool Process::loadWorld(const std::string& filename, const std::string& name)
 {
    World* pworld = new World();
-   if ( pworld->create(filename.c_str()) )
+   if ( pworld->create(getSceneGraph().getRoot(), filename) )
    {
       pworld->setName(name);
 

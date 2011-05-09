@@ -145,6 +145,10 @@ void Object::destroy()
    mpBody = NULL;
 }
 
+void Object::parentChanged()
+{
+}
+
 // - Modifier interface
 
 void Object::addModifier(Modifier* pmodifier)

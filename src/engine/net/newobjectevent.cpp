@@ -29,14 +29,16 @@ IMPLEMENT_REPLICATABLE(NewObjectEventId, NewObjectEvent, NetEvent)
 NewObjectEvent::NewObjectEvent():
    NetEvent(newobjectEvent),
    mParentId(),
-   mpObject()
+   mpObject(),
+   mFileName()
 {
 }
 
 NewObjectEvent::NewObjectEvent(const SceneObject& object):
    NetEvent(newobjectEvent),
    mParentId(object.getParent().getId()),
-   mpObject(const_cast<SceneObject*>(&object))
+   mpObject(const_cast<SceneObject*>(&object)),
+   mFileName(mpObject->getFilename())
 {
 }
 
@@ -46,7 +48,7 @@ void NewObjectEvent::pack(BitStream& stream) const
 
    NetEvent::pack(stream);
    
-   stream << mParentId << mpObject << mpObject->getFilename();
+   stream << mParentId << mpObject << mFileName;
 }
 
 void NewObjectEvent::unpack(BitStream& stream)
@@ -54,12 +56,8 @@ void NewObjectEvent::unpack(BitStream& stream)
    ASSERT(mpObject == NULL)
 
    NetEvent::unpack(stream);
-
-   std::string filename;
-   
-   stream >> mParentId >> (NetObject**)&mpObject >> filename;
-
-   mpObject->setFilename(filename);
+      
+   stream >> mParentId >> (NetObject**)&mpObject >> mFileName;
 }
 
 

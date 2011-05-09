@@ -17,12 +17,15 @@ public:
    void* getObject();
    void  setObject(void* pobject);
 
+   void setOwned(bool owned);
+
  // downcasting
    virtual bool isNative() const;
    virtual VirtualNativeObject& asNative();
 
 private:
    void* mpObject;
+   bool  mOwned;
 };
 
 #endif // VIRTUAL_NATIVE_OBJECT_H_

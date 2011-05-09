@@ -311,10 +311,24 @@ void Client::handleServerdownEvent()
 
 void Client::handleNewObjectEvent(const NewObjectEvent& event)
 {
+   SceneObject* pparent = graph.find(event.getParentId());
+   if ( pparent == NULL )
+   {
+      UNREACHABLE("Parent of object not found.")
+   }
+
    // a new object has been made on the server and 
    // is now also known on the client
    AutoPtr<SceneObject> obj = event.getObject();
-   obj->create();
+   if ( obj->create(*pparent, event.getFileName()) )
+   {
+      obj.release();
+   }
+   else
+   {
+      // meh
+      return;
+   }
 
    if ( World::isWorld(*obj) )
    {
@@ -326,14 +340,14 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       mpWorldRenderer = world.createRenderer();
       mpPlayer->initialize(world);
 
-      graph.setWorld((World*)obj.release());
+      graph.setWorld((World*)obj.getPointer());
 
       // run the onWorldChanged script
       mpScript->run("onWorldChanged");
    }
+   /*
    else if ( graph.find(obj->getId()) == 0 )
    {
-      SceneObject* pparent = graph.find(event.getParentId());
       if ( pparent != NULL )
       {
          pparent->add(obj.release());
@@ -343,6 +357,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
          UNREACHABLE("Parent of object not found.")
       }
    }
+   */
 
    // remove the request
    Requests::iterator it = requests.find(obj->getId());

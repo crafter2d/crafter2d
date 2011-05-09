@@ -95,14 +95,8 @@ World::~World()
 
 /// \fn World::create(const char* filename)
 /// \brief Loads world information from a file and preprocesses this information for use during the game
-bool World::create (const char* filename)
+bool World::doCreate(const std::string& filename)
 {
-   if ( filename == NULL && !hasFilename() )
-      return false;
-
-   if ( filename != NULL )
-      setFilename(filename);
-
    std::string path = getFilename();
 
    WorldReader reader;
@@ -114,8 +108,8 @@ bool World::create (const char* filename)
    mpSimulator->setWorld(*this);
    mpSimulator->setListener(mSimulatorListener);
 
-   //mpScript = getSceneGraph().getProcess().getScriptManager().loadClass("World");
-   //mpScript->setThis(this);
+   mpScript = getSceneGraph().getProcess().getScriptManager().loadClass("World");
+   mpScript->setThis(this);
 
    return true;
 }
@@ -163,7 +157,7 @@ void World::loadObjects(const char* filename)
       // create the new object
       //Creature* obj = new Creature();
       Object* obj = new Object();
-      obj->create(path.c_str());
+      obj->create(*this, path);
       obj->setPosition(Vector(x,y));
       obj->setRotation(rotation);
       obj->setName(name.c_str());

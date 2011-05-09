@@ -105,9 +105,9 @@ configuration "Debug"
 	defines { "_DEBUG", "TIXML_USE_STL" }
 	targetsuffix "d"
 	flags { "Symbols" }
-	links { "Core" }
+	links { "Core", "Script" }
 	
 configuration "Release"
 	defines { "NDEBUG", "TIXML_USE_STL" }
 	flags { "Optimize" }
-	links { "Core" }
+	links { "Core", "Script" }
