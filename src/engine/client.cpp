@@ -51,7 +51,7 @@
 #include "keymap.h"
 
 Client::Client():
-   Process(),
+   Process("Client"),
    mSoundManager(),
    mpWorldRenderer(NULL),
    mpPlayer(NULL),
@@ -67,13 +67,17 @@ Client::~Client()
 
 bool Client::create()
 {
-   Log& log = Log::getInstance();
-   log << "\n-- Initializing Sound --\n\n";
+   bool success = Process::create();
+   if ( success )
+   {
+      Log& log = Log::getInstance();
+      log << "\n-- Initializing Sound --\n\n";
 
-    // initialize the sound system
-   mSoundManager.initialize();
+      // initialize the sound system
+      mSoundManager.initialize();
+   }
 
-   return Process::create();
+   return success;
 }
 
 bool Client::destroy()
@@ -262,27 +266,24 @@ int Client::onClientEvent(int client, const NetEvent& event)
 
 void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 {
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
+   ASSERT_PTR(mpScript);
 
    switch ( event.getReply() )
    {
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
-            script.prepareCall ("Client_onConnected");
-            script.run(0);
+            mpScript->run("onConnected");
 
             initialized = true;
             break;
          }
       case ConnectReplyEvent::eDenite:
          {
-             // run the Client_onConnectionDenite script
-             script.prepareCall ("Client_onConnectionDenite");
-             script.addParam(event.getReason());
-             script.run(1);
-             break;
+            // run the Client_onConnectionDenite script
+            mpScript->addParam(event.getReason());
+            mpScript->run("onConnectionDenite");
+            break;
          }
    }
 }
@@ -290,31 +291,22 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
-   script.prepareCall("Client_onPlayerLeft");
-   script.addParam(event.getId()+1);
-   script.run(1);
+   mpScript->addParam(event.getId()+1);
+   mpScript->run("onPlayerLeft");
 }
 
 void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
-   script.prepareCall("Client_onJoined");
-   script.addParam(event.getId()+1);
-   script.addParam(event.getPlayerName().c_str());
-   script.run(2);
+   mpScript->addParam(event.getId()+1);
+   mpScript->addParam(event.getPlayerName().c_str());
+   mpScript->run("onJoined");
 }
 
 void Client::handleServerdownEvent()
 {
    // server went down, run the onClientConnect script
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
-   script.prepareCall ("Client_onServerDown");
-   script.run();
+   mpScript->run("onServerDown");
 }
 
 void Client::handleNewObjectEvent(const NewObjectEvent& event)
@@ -337,10 +329,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       graph.setWorld((World*)obj.release());
 
       // run the onWorldChanged script
-      Script& script = mScriptManager.getTemporaryScript();
-      script.setSelf(this, "Client");
-      script.prepareCall("Client_onWorldChanged");
-      script.run();
+      mpScript->run("onWorldChanged");
    }
    else if ( graph.find(obj->getId()) == 0 )
    {
@@ -404,9 +393,6 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    AutoPtr<BitStream> stream(event.getStream());
 
    // run the onClientConnect script
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
-   script.prepareCall ("Client_onEvent");
-   script.addParam(stream.getPointer(), "BitStream");
-   script.run(1);
+   mpScript->addParam("BitStream", stream.getPointer());
+   mpScript->run("onEvent");
 }

@@ -4,10 +4,12 @@
 
 #include <string>
 
+#include "script/script_base.h"
+
 class VirtualObjectReference;
 class VirtualArrayReference;
 
-class Variant
+class SCRIPT_API Variant
 {
 public:
             Variant();

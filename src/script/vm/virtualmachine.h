@@ -6,6 +6,8 @@
 #include <map>
 #include <stack>
 
+#include "script/script_base.h"
+
 #include "core/defines.h"
 
 #include "script/common/variant.h"
@@ -32,7 +34,7 @@ public:
  // query
    VirtualObjectReference getThis() const
    {
-      return getObject(mSize);
+      return getObject(0);
    }
 
    int getInt(int argument) const {
@@ -43,7 +45,15 @@ public:
       return value.asInt();
    }
 
-   std::string getString(int argument) const {
+   double getReal(int argument) const {
+      Variant& value = getArgument(argument);
+      if ( !value.isReal() )
+         throw std::exception();
+            
+      return value.asReal();
+   }
+
+   const std::string& getString(int argument) const {
       Variant& value = getArgument(argument);
       if ( !value.isString() )
          throw std::exception();
@@ -51,7 +61,7 @@ public:
       return value.asString();
    }
 
-   VirtualObjectReference getObject(int argument) const {
+   VirtualObjectReference& getObject(int argument) const {
       Variant& value = getArgument(argument);
 
       if ( !value.isObject() )
@@ -73,6 +83,10 @@ public:
       mResult = Variant(object);
    }
 
+   void setResult(bool value) {
+      mResult = Variant(value);
+   }
+
    void setResult(const std::string& value) {
       mResult = Variant(value);
    }
@@ -84,7 +98,9 @@ public:
 private:
    Variant& getArgument(int index) const {
       ASSERT(index <= mSize);
-      return mStack[mStack.size() - index];
+      return mStack[mStack.size() - mSize + index]; 
+      // 0 1 2 3 -> ssize = 4; size = 3
+      // index 0 -> 4 - 3 = 1
    }
 
    Stack&   mStack;
@@ -92,15 +108,36 @@ private:
    int      mSize;
 };
 
-class VirtualMachine
+class SCRIPT_API VirtualMachine
 {
 public:
    VirtualMachine();
 
    typedef void (*callbackfnc)(VirtualMachine& machine, VirtualStackAccessor& accessor);
 
+ // initialization
+   void initialize();
+
+ // loading
+   bool loadClass(const std::string& classname);
+   bool loadExpression(const std::string& expression);
+
+   void registerCallback(const std::string& name, callbackfnc callback);
+
+ // stack access
+   int popInt();
+   double popReal();
+   bool popBoolean();
+   std::string popString();
+
+   void push(int value);
+   void push(double value);
+   void push(bool value);
+   void push(const std::string& value);
+   void push(const VirtualObjectReference& object);
+
  // execution
-   void execute(const std::string& classname, const std::string& function);
+   bool execute(const std::string& classname, const std::string& function);
    void execute(const VirtualObjectReference& object, const std::string function);
 
  // object instantation
@@ -168,7 +205,6 @@ private:
    bool handleException(const VirtualException& e);
 
  // class loading
-   VirtualClass* loadClass(const std::string& name);
    void classLoaded(VirtualClass* pclass);
    void createClass(const VirtualClass& aclass);
 

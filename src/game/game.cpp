@@ -60,7 +60,6 @@
 
 #include "console.h"
 #include "gamesettings.h"
-#include "tolua_game.h"
 
 /*!
     \fn Game::Game()
@@ -111,7 +110,7 @@ bool Game::create()
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
-   runScript();
+   //runScript();
 
    // initialize the video library
    if (SDL_Init (SDL_INIT_VIDEO) < 0) {
@@ -121,9 +120,11 @@ bool Game::create()
 
    mpTimerData = TIMER.createData();
 
-   // initialize the Lua scripting environment
-   mScriptManager.initialize ();
+   FileSystem::getInstance().addPath("..");
 
+   // initialize scripting engine
+   mScriptManager.initialize ();
+   
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
    SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
@@ -161,11 +162,7 @@ bool Game::create()
 
    // reload the contents of the log file for the console
    console.reload();
-
-   FileSystem::getInstance().addPath("..");
-
-   mScriptManager.executeScript("scripts/main.lua");
-
+   
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
    if ( !initGame () )
@@ -286,12 +283,11 @@ void Game::getWindowDimensions(int& w, int& h)
  */
 bool Game::initGame()
 {
-   Script& script = mScriptManager.getTemporaryScript();
-   if ( script.prepareCall("Game_initialize") )
-   {
-      //script.setSelf(this, "Game");
-      script.run();
-   }
+   mpScript = mScriptManager.loadClass("Game");
+   ASSERT_PTR(mpScript);
+
+   mpScript->setThis(this);
+   mpScript->run("initialize");
 
    /*
    // initialize the window manager
@@ -325,13 +321,8 @@ bool Game::initGame()
  */
 void Game::endGame()
 {
-   Client client;
-
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf(&client, "Client");
-   script.prepareCall("Game_shutdown");
-   script.setSelf(this, "Game");
-   script.run();
+   ASSERT_PTR(mpScript);
+   mpScript->run("shutdown");
 }
 
 /*!
@@ -350,10 +341,9 @@ void Game::runFrame()
    if ( !isActive() )
       return;
 
-   Script& script = mScriptManager.getTemporaryScript();
-   script.prepareCall("Game_run");
-   script.addParam(delta);
-   script.run(1);
+   ASSERT_PTR(mpScript);
+   mpScript->addParam(delta);
+   mpScript->run("run");
    
    // here also nothing happens (should be overloaded)
    glLoadIdentity ();

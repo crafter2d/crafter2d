@@ -14,6 +14,9 @@ class VirtualClassTable
 
 public:
    VirtualClassTable();
+
+ // query
+   bool contains(const std::string& name) const;
    
  // operations
    void insert(VirtualClass* ptype);

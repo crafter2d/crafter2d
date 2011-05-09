@@ -40,7 +40,9 @@ AbstractTextureLoader::~AbstractTextureLoader()
 
 bool AbstractTextureLoader::load(const std::string& filename)
 {
-   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
+   std::string path = "images/" + filename;
+
+   AutoPtr<File> pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
 
    bool success = virLoad(*pfile, mTextureInfo);
 

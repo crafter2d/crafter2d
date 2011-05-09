@@ -19,31 +19,17 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE void Script::setState(lua_State* l)
-{
-   childState = l;
-}
+#include "script/vm/virtualmachine.h"
 
-/// \fn Script::prepareCall(const char* function)
-/// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
-/// \param val a floating point value
-INLINE bool Script::prepareCall (const char* function)
-{
-	lua_getglobal(childState, function);
-   if ( !lua_isfunction(childState, -1) )
-   {
-      lua_pop(childState, 1);
-      return false;
-   }
-   return true;
-}
+#include "scriptmanager.h"
+#include "scriptobject.h"
 
 /// \fn Script::addParam(int val)
 /// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
 /// \param val a numerical value
 INLINE void Script::addParam(int val)
 {
-	lua_pushnumber(childState, val);
+   mScriptManager.mpVirtualMachine->push(val);
 }
 
 /// \fn Script::addParam(float val)
@@ -51,37 +37,21 @@ INLINE void Script::addParam(int val)
 /// \param val a floating point value
 INLINE void Script::addParam(float val)
 {
-	lua_pushnumber(childState, val);
+   mScriptManager.mpVirtualMachine->push(val);
 }
 
+/// \fn Script::addParam(bool val)
+/// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
+/// \param val a floating point value
 INLINE void Script::addParam(bool val)
 {
-   lua_pushboolean(childState, val);
+   mScriptManager.mpVirtualMachine->push(val);
 }
 
 /// \fn Script::addParam(const char* val)
 /// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
 /// \param val a pointer to a character string
-INLINE void Script::addParam(const char* val)
+INLINE void Script::addParam(const std::string& val)
 {
-	lua_pushstring(childState, val);
-}
-
-/// \fn Script::addParam(void* object, const char* typeName)
-/// \brief Pushes a custom type parameter on top of the stack which will be use by Lua as a parameter to the
-/// function.
-/// \param object a pointer to an object
-/// \param typeName the type name of the object (class name)
-INLINE void Script::addParam(void* object, const char* typeName)
-{
-	tolua_pushusertype(childState, object, typeName);
-}
-
-/// \fn Script::setSelf(void* object, const char* typeName)
-/// \brief Set the global 'self' variable of type typeName for this script. When setting this
-/// variable, scripters can use the self variable as object in their scripts.
-INLINE void Script::setSelf (void* object, const char* typeName)
-{
-	tolua_pushusertype (childState, object, typeName);
-	lua_setglobal (childState, "self");
+   mScriptManager.mpVirtualMachine->push(val);
 }

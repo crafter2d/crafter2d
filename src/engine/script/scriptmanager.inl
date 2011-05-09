@@ -17,20 +17,3 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
-
-/// \fn ScriptManager::createScript(ScriptManager::Kind k)
-/// \brief Creates a new script object. This script has its own stack, but also has access to
-/// the world variable (if its set).
-/// \returns a pointer to the new script object, or NULL if k was invalid
-INLINE Script* ScriptManager::createScript (bool child)
-{
-   return new Script (luaState, child);
-}
-
-/// \fn ScriptManager::getTemporaryScript()
-/// \brief Returns a tempory script instance. It should not be destroyed.
-INLINE Script& ScriptManager::getTemporaryScript()
-{
-   return tempScript;
-}

@@ -22,15 +22,12 @@
 
 #include "engine/engine_base.h"
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-}
-
-#include <tolua++.h>
+#include "script/vm/virtualobjectreference.h"
 
 #include <string>
+
+class ScriptManager;
+class ScriptObject;
 
 /**
 @author Jeroen Broekhuizen
@@ -44,30 +41,25 @@ implemented and therefor shouldn't be used.
 class ENGINE_API Script
 {
 public:
-               Script();
-   explicit    Script(lua_State* l, bool c=false);
-
-   bool        load(const std::string& file);
-   bool        loadString(const std::string& code);
-
+   explicit    Script(ScriptManager& manager, const std::string& name = "");
+   
    void        addParam (int val);
    void        addParam (float val);
    void        addParam (bool val);
-   void        addParam (const char* str);
-   void        addParam (void* object, const char* typeName);
+   void        addParam (const std::string& val);
+   void        addParam (const std::string& classname, void* pobject);
 
    bool        getBoolean();
    int         getInteger();
 
-   bool        prepareCall(const char* function);
-   bool        run(int params=0, int returns=0);
+   void        setThis(void* pthis);
 
-   void        setSelf(void* p, const char* typeName);
-   void        setState(lua_State* l);
+   bool        run(const std::string& function);
 
 private:
-   lua_State *childState; /**< Lua state of this object */
-   bool child;
+   ScriptManager&          mScriptManager;
+   std::string             mClassName;
+   VirtualObjectReference  mObject;
 };
 
 #ifdef JENGINE_INLINE

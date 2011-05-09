@@ -114,9 +114,9 @@ bool ParticleSystem::load(TiXmlDocument& doc)
       TiXmlText* value = (TiXmlText*)pelement->FirstChild();
       ScriptManager& mgr = getSceneGraph().getProcess().getScriptManager();
 
-	   updateScript = mgr.createScript();
-      if ( !updateScript->load(value->Value()) )
-         return false;
+	   //updateScript = mgr.createScript();
+      //if ( !updateScript->load(value->Value()) )
+      //   return false;
    }
 
    return prepare();
@@ -211,10 +211,8 @@ void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
 				   curpart->pos += curpart->vel;
                
 				   // run the particle script
-				   updateScript->setSelf (curpart, "Particle");
-				   updateScript->prepareCall("updateParticle");
 				   updateScript->addParam((int)lifetime);
-				   updateScript->run(1);
+				   updateScript->run("updateParticle");
 
 				   part = &curpart->next;
 			   }

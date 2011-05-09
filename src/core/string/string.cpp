@@ -38,6 +38,24 @@ const String& String::operator=(const String& that)
    return *this;
 }
 
+// - Query
+
+int String::length() const
+{
+   return mpData->mString.length();
+}
+
+char* String::toUtf8(int& length) const
+{
+   length = mpData->mString.length();
+   char* pdata = new char[length];
+
+   CheckedArrayByteSink sink(pdata, length);
+   mpData->mString.toUTF8(sink);
+
+   return pdata;
+}
+
 // - Operations
 
 const String& String::toLower()

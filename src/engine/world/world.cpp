@@ -38,6 +38,9 @@
 #include "engine/scenegraph.h"
 #include "engine/creature.h"
 #include "engine/nodevisitor.h"
+#include "engine/process.h"
+#include "engine/script/scriptmanager.h"
+#include "engine/script/script.h"
 
 #include "layer.h"
 #include "layertype.h"
@@ -110,6 +113,9 @@ bool World::create (const char* filename)
 
    mpSimulator->setWorld(*this);
    mpSimulator->setListener(mSimulatorListener);
+
+   //mpScript = getSceneGraph().getProcess().getScriptManager().loadClass("World");
+   //mpScript->setThis(this);
 
    return true;
 }
@@ -323,7 +329,7 @@ void World::scroll ()
    }
    else if ( followMode == FollowMouse )
    {
-      int x, y;
+      int x = 0, y = 0;
       int width =800, height=600;
       // SDL_GetMouseState(&x, &y); <-- get it from the input of the client
       
@@ -496,6 +502,16 @@ private:
 void World::notifyScrollChange(const Vector& scrollposition)
 {
    std::for_each(_observers.begin(), _observers.end(), WorldScrollNotify(scrollposition));
+}
+
+void World::notifyObjectWorldCollision(Object& object, Bound& bound, int side, bool begin)
+{
+   ASSERT_PTR(mpScript);
+   mpScript->addParam("Actor", &object);
+   mpScript->addParam("Bound", &bound);
+   mpScript->addParam(side);
+   mpScript->addParam(begin);
+   mpScript->run("onObjectWorldCollision");
 }
 
 //////////////////////////////////////////////////////////////////////////

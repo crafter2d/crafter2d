@@ -23,6 +23,11 @@
 #  include "process.inl"
 #endif
 
+#include "core/log/log.h"
+
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
+
 #include "net/netevent.h"
 #include "net/events/scriptevent.h"
 
@@ -31,11 +36,13 @@
 #include "actionmap.h"
 #include "scenegraph.h"
 
-Process::Process():
+Process::Process(const std::string& name):
+   mProcessName(name),
    conn(*this),
    graph(*this),
-   actionMap(NULL),
    mScriptManager(),
+   mpScript(NULL),
+   actionMap(NULL),
    initialized(false)
 {
 }
@@ -46,7 +53,7 @@ Process::~Process()
 
 bool Process::create()
 {
-   return mScriptManager.initialize();
+   return mScriptManager.initialize() && initializeScript();
 }
 
 bool Process::destroy()
@@ -55,6 +62,20 @@ bool Process::destroy()
 
    graph.removeAll();
 
+   return true;
+}
+
+bool Process::initializeScript()
+{
+   mpScript = mScriptManager.loadClass(mProcessName);
+   if ( mpScript == NULL )
+   {
+      Log& log = Log::getInstance();
+      log << "Failed to load the " << mProcessName.c_str() << " class.";
+      return false;
+   }
+
+   mpScript->setThis(this);
    return true;
 }
 

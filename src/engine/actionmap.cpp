@@ -31,6 +31,8 @@
 #include "object.h"
 
 ActionMap::ActionMap():
+   mpProcess(NULL),
+   mpScript(NULL),
    mActions()
 {
 }
@@ -40,7 +42,17 @@ ActionMap::~ActionMap()
    mpProcess = NULL;
 }
 
-// - operations
+// - Get/set
+
+void ActionMap::setProcess(Process& process)
+{
+   mpProcess = &process;
+
+   mpScript = process.getScriptManager().loadClass("ActionMap");
+   ASSERT_PTR(mpScript);
+}
+
+// - Operations
 
 void ActionMap::bind(int action, const char* function)
 {
@@ -49,22 +61,20 @@ void ActionMap::bind(int action, const char* function)
 
 void ActionMap::process(int action, bool down)
 {
-   Client& client = dynamic_cast<Client&>(getProcess());
-
    Actions::const_iterator it = mActions.find(action);
    if ( it == mActions.end() )
    {
       ActionEvent event(action, down);
+      Client& client = dynamic_cast<Client&>(getProcess());
       client.sendToServer(event);
    }
    else
    {
-      const char* pfunction = it->second;
+      std::string function = it->second;
       
-      Script& script = client.getScriptManager().getTemporaryScript();
-      script.prepareCall (pfunction);
-      script.addParam(down);
-      script.run(1);
+      ASSERT_PTR(mpScript);
+      mpScript->addParam(down);
+      mpScript->run(function);
    }
 }
 
@@ -74,10 +84,9 @@ void ActionMap::processRemote(const ActionEvent& event, Object& object)
    Actions::const_iterator it = mActions.find(action);
    if ( it != mActions.end() )
    {
-      Script& script = mpProcess->getScriptManager().getTemporaryScript();
-      script.prepareCall(it->second);
-      script.addParam(&object, "Object");
-      script.addParam(event.isDown());
-      script.run(2);
+      ASSERT_PTR(mpScript);
+      mpScript->addParam("Actor", &object);
+      mpScript->addParam(event.isDown());
+      mpScript->run(it->second);
    }
 }

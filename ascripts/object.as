@@ -1,0 +1,7 @@
+
+class Object
+{
+	public Object()
+	{
+	}
+}

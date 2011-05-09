@@ -20,8 +20,9 @@
 #ifndef _PROCESS_H_
 #define _PROCESS_H_
 
-#include "engine/engine_base.h"
+#include <string>
 
+#include "engine/engine_base.h"
 #include "engine/script/scriptmanager.h"
 
 #include "net/netconnection.h"
@@ -31,6 +32,7 @@
 class ActionMap;
 class BitStream;
 class NetEvent;
+class Script;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -40,7 +42,7 @@ class NetEvent;
 class ENGINE_API Process
 {
 public:
-                  Process();
+   explicit       Process(const std::string& name);
    virtual        ~Process();
 
    virtual bool   create();
@@ -68,11 +70,16 @@ public:
    virtual int    onClientEvent(int client, const NetEvent& event) = 0;
 
 protected:
+   std::string       mProcessName;
    NetConnection     conn;
    SceneGraph        graph;
-   ActionMap*        actionMap;
    ScriptManager     mScriptManager;
+   Script*           mpScript;
+   ActionMap*        actionMap;
    bool              initialized;
+
+private:
+   bool initializeScript();
 };
 
 #ifdef JENGINE_INLINE

@@ -44,7 +44,7 @@
 #include "scopedvalue.h"
 
 Server::Server():
-   Process(),
+   Process("Server"),
    clients(),
    mActiveClient(-1),
    mGraphListener(*this)
@@ -59,8 +59,6 @@ bool Server::create()
 {
    if ( Process::create() )
    {
-      mScriptManager.initialize();
-
       graph.setListener(mGraphListener);
 
       return true;
@@ -100,10 +98,7 @@ void Server::shutdown()
       conn.disconnect();
 
       // call the shutdown function
-      Script& script = mScriptManager.getTemporaryScript();
-      script.setSelf (this, "Server");
-      script.prepareCall ("Server_onShutdown");
-      script.run();
+      mpScript->run("onShutdown");
    }
 }
 
@@ -176,8 +171,8 @@ bool Server::loadWorld(const std::string& filename, const std::string& name)
 
    if ( success )
    {
-      std::string path = filename + ".lua";
-      mScriptManager.executeScript(path);
+      //std::string path = filename + ".lua";
+      //mScriptManager.executeScript(path);
    }
 
    return success;
@@ -190,12 +185,10 @@ bool Server::loadWorld(const std::string& filename, const std::string& name)
 int Server::allowNewConnection()
 {
    // check if the script allows this new player
-   Script& script = getScriptManager().getTemporaryScript();
-   script.prepareCall("Server_onClientConnecting");
-   script.run(0, 1);
+   mpScript->run("onClientConnecting");
 
    // the script should return true to allow the new client
-   int reason = script.getInteger();
+   int reason = mpScript->getInteger();
    return reason;
 }
 
@@ -218,12 +211,9 @@ int Server::onClientEvent(int client, const NetEvent& event)
             AutoPtr<Player> player = clients[client];
 
             // run the onClientConnect script
-            Script& script = mScriptManager.getTemporaryScript();
-            script.setSelf(this, "Server");
-            script.prepareCall("Server_onClientDisconnect");
-            script.addParam((int)client);
-            script.addParam(player.getPointer(), "Player");
-            script.run(2);
+            mpScript->addParam((int)client);
+            mpScript->addParam("Player", player.getPointer());
+            mpScript->run("onClientDisconnect");
 
             // remove the player from the client list
             ClientMap::iterator it = clients.find(client);
@@ -242,12 +232,9 @@ int Server::onClientEvent(int client, const NetEvent& event)
 
             // run the onClientConnect script
             Player* player = clients[client];
-            Script& script = mScriptManager.getTemporaryScript();
-            script.setSelf (this, "Server");
-            script.prepareCall ("Server_onEvent");
-            script.addParam(player, "Player");
-            script.addParam(&stream, "BitStream");
-            script.run(2);
+            mpScript->addParam("Player", player);
+            mpScript->addParam("BitStream", &stream);
+            mpScript->run("onEvent");
             break;
          }
       case actionEvent:
@@ -340,11 +327,8 @@ void Server::handleConnectEvent(const ConnectEvent& event)
    addPlayer(mActiveClient, player);
 
    // run the onClientConnect script
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Server");
-   script.prepareCall ("Server_onClientConnect");
-   script.addParam(player, "Player");
-   script.run(1);
+   mpScript->addParam("Player", player);
+   mpScript->run("onClientConnect");
 }
 
 void Server::handleViewportEvent(const ViewportEvent& event)

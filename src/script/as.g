@@ -225,7 +225,7 @@ compound_expression
 	;
 	
 expression_list
-	:	expression (',' expression)?
+	:	expression (',' expression)*
 	;
 	
 expression

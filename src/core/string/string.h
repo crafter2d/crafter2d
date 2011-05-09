@@ -18,6 +18,10 @@ public:
 
    const String& operator=(const String& that);
 
+ // query
+   int length() const;
+   char* toUtf8(int& length) const;
+
  // operations
    const String& toLower();
    const String& toUpper();

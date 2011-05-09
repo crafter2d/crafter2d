@@ -29,8 +29,3 @@ INLINE Process& ActionMap::getProcess()
    ASSERT(hasProcess)
    return *mpProcess;
 }
-
-INLINE void ActionMap::setProcess(Process& process)
-{
-   mpProcess = &process;
-}

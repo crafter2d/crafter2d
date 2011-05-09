@@ -58,9 +58,9 @@ public:
 private:
    void  calculateNormal();
 
-	Vector mLeft;
-   Vector mRight;
-	Vector mNormal;
+	Vector        mLeft;
+   Vector        mRight;
+	Vector        mNormal;
 };
 
 #ifdef JENGINE_INLINE

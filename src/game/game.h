@@ -82,6 +82,7 @@ private:
    std::string               mTitle;
    TimerData*                mpTimerData;
    ScriptManager             mScriptManager;
+   Script*                   mpScript;
    bool                      mActive;
 };
 

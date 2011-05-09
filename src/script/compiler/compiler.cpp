@@ -68,7 +68,7 @@ bool Compiler::compile(const std::string& classname)
    {
       AntlrParser parser(mContext);
 
-      std::string filename = "..\\ascripts\\" + classname + ".as";
+      std::string filename = "ascripts/" + classname + ".as";
       mContext.getLog().info("> " + filename);
 
       AutoPtr<AntlrStream> stream(AntlrStream::fromFile(filename));
@@ -96,6 +96,11 @@ bool Compiler::compile(const std::string& classname)
       }
       else
       {
+         const CompileLog::StringList& log = mContext.getLog().getLog();
+         for ( std::size_t index = 0; index < log.size(); index++ )
+         {
+            std::cout << log[index] << std::endl;
+         }
          loaded = false;
       }
    }

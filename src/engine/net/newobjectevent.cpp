@@ -55,12 +55,10 @@ void NewObjectEvent::unpack(BitStream& stream)
 
    NetEvent::unpack(stream);
 
-   Id id;
    std::string filename;
    
-   stream >> mParentId >> id >> (NetObject**)&mpObject >> filename;
-   
-   mpObject->setId(id);
+   stream >> mParentId >> (NetObject**)&mpObject >> filename;
+
    mpObject->setFilename(filename);
 }
 

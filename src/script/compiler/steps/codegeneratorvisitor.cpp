@@ -875,6 +875,7 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
 
                addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
                addInstruction(VirtualInstruction::eCallNative, resource);
+               addInstruction(VirtualInstruction::eNewNative);
             }
             else
             {

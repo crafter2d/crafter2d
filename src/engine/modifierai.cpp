@@ -37,12 +37,16 @@ ModifierAI::~ModifierAI()
 
 void ModifierAI::update(Object& object, float delta)
 {
-   Process& process = object.getSceneGraph().getProcess();
+   ScriptManager& scriptmanager = object.getSceneGraph().getProcess().getScriptManager();
 
-   Script& script = process.getScriptManager().getTemporaryScript();
-   script.setSelf(&object, "Object");
-   script.prepareCall(mFunction.c_str());
+   /*
+   if ( mpScript == NULL )
+   {
+      mpScript = scriptmanager.loadClass("");
+   }
+
    script.addParam(&object, "Object");
    script.addParam(delta);
-   script.run(2);
+   script.run(mFunction.c_str());
+   */
 }

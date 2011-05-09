@@ -65,9 +65,9 @@ bool Effect::load(const std::string& file)
 {
 	Log& log = Log::getInstance();
 
-   std::string path = File::extractPath(file);
+   std::string path = "../shaders/" + file + ".xml";
 
-   TiXmlDocument doc(file);
+   TiXmlDocument doc(path);
 	if ( !doc.LoadFile() )
    {
       log.error("Effect.load: can not load '%s'", file);
@@ -90,7 +90,7 @@ bool Effect::load(const std::string& file)
 		return false;
 
 	// process the vertex program
-	if (!processCode (effect, path))
+	if (!processCode (effect, "../shaders/"))
 	    return false;
 
 	// find the uniform indices of the texture

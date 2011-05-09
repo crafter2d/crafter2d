@@ -30,6 +30,7 @@ SceneGraph::SceneGraph(Process& process):
    mProcess(process),
    mObjects(),
    mRoot(*this),
+   mpListener(NULL),
    mpControler(NULL),
    mpWorld(NULL)
 {

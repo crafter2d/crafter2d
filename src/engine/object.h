@@ -103,7 +103,7 @@ protected:
    virtual void      doUpdate(float delta);
    virtual void      doUpdateClient(float delta);
    virtual void      doDraw();
-	 
+	
    TexturePtr     texture;
    Body*          mpBody;
    Animator*      mpAnimator;

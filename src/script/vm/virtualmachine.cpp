@@ -20,14 +20,6 @@
 #include "virtualfunctiontableentry.h"
 #include "virtualnativeobject.h"
 
-class World
-{
-public:
-   World(const std::string& name): mName(name) {}
-
-   std::string mName;
-};
-
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    std::cout << accessor.getString(1);
@@ -54,6 +46,15 @@ void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.execute(instance, fncname);
 }
 
+/*
+class World
+{
+public:
+   World(const std::string& name): mName(name) {}
+
+   std::string mName;
+};
+
 void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    World* pworld = new World("joop");
@@ -65,11 +66,12 @@ void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void World_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference thisobject = accessor.getThis();
+   VirtualObjectReference& thisobject = accessor.getThis();
    World* pworld = (World*) thisobject->asNative().getObject();
 
    accessor.setResult(pworld->mName);
 }
+*/
 
 VirtualMachine::VirtualMachine():
    mContext(),
@@ -85,32 +87,110 @@ VirtualMachine::VirtualMachine():
 {
    mCompiler.setCallback(mCallback);
 
+   mNatives.insert(std::pair<std::string, callbackfnc>("Console_println", Console_println));
+   mNatives.insert(std::pair<std::string, callbackfnc>("Class_doNewInstance", Class_doNewInstance));
+   mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
+   //mNatives.insert(std::pair<std::string, callbackfnc>("World_init", World_init));
+   //mNatives.insert(std::pair<std::string, callbackfnc>("World_getName", World_getName));
+}
+
+// - Initialization
+
+void VirtualMachine::initialize()
+{
    loadClass("Object");
    loadClass("InternalArray");
    loadClass("ClassLoader");
    loadClass("System");
 
-   mNatives.insert(std::pair<std::string, callbackfnc>("Console_println", Console_println));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Class_doNewInstance", Class_doNewInstance));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
-   mNatives.insert(std::pair<std::string, callbackfnc>("World_init", World_init));
-   mNatives.insert(std::pair<std::string, callbackfnc>("World_getName", World_getName));
-
    mState = eRunning;
    mLoaded = true;
 }
 
+// - Loading
+   
+bool VirtualMachine::loadClass(const std::string& classname)
+{
+   bool isloaded = mContext.mClassTable.contains(classname);
+   if ( !isloaded )
+   {
+      isloaded = mCompiler.compile(classname);
+   }
+   return isloaded;
+}
+
+bool VirtualMachine::loadExpression(const std::string& expression)
+{
+   return true;
+}
+
+void VirtualMachine::registerCallback(const std::string& name, callbackfnc callback)
+{
+   mNatives.insert(std::pair<std::string, callbackfnc>(name, callback));
+}
+
+// - Stack access
+
+int VirtualMachine::popInt()
+{
+   int value = mStack.back().asInt();
+   mStack.pop_back();
+   return value;
+}
+
+double VirtualMachine::popReal()
+{
+   double value = mStack.back().asReal();
+   mStack.pop_back();
+   return value;
+}
+
+bool VirtualMachine::popBoolean()
+{
+   bool value = mStack.back().asBool(); 
+   mStack.pop_back();
+   return value;
+}
+
+std::string VirtualMachine::popString()
+{
+   std::string value = mStack.back().asString();
+   mStack.pop_back();
+   return value;
+}
+
+void VirtualMachine::push(int value)
+{
+   mStack.push_back(Variant(value));
+}
+
+void VirtualMachine::push(double value)
+{
+   mStack.push_back(Variant(value));
+}
+
+void VirtualMachine::push(bool value)
+{
+   mStack.push_back(Variant(value));
+}
+
+void VirtualMachine::push(const std::string& value)
+{
+   mStack.push_back(Variant(value));
+}
+
+void VirtualMachine::push(const VirtualObjectReference& object)
+{
+  mStack.push_back(Variant(object));
+}
+
 // - Execution
 
-void VirtualMachine::execute(const std::string& classname, const std::string& function)
+bool VirtualMachine::execute(const std::string& classname, const std::string& function)
 {
    VirtualClass* pclass = mContext.mClassTable.find(classname);
-   if ( pclass == NULL )
-   {
-      pclass = loadClass(classname);
-   }
-
    ASSERT_PTR(pclass);
+   
    const VirtualFunctionTableEntry* pentry = pclass->getVirtualFunctionTable().findByName(function);
    if ( pentry != NULL )
    {
@@ -123,11 +203,16 @@ void VirtualMachine::execute(const std::string& classname, const std::string& fu
       catch ( VirtualException* pexception )
       {
          std::cout << "Unhandled exception: " << pexception->getException()->getClass().getName() << std::endl;
+         return false;
       }
       catch (...)
       {
       }
+
+      return true;
    }
+
+   return false;
 }
 
 void VirtualMachine::execute(const VirtualObjectReference& object, const std::string function)
@@ -139,7 +224,11 @@ void VirtualMachine::execute(const VirtualObjectReference& object, const std::st
       throw std::exception();
    }
 
-   mStack.push_back(Variant(object));
+   Variant objectvariant(object);
+   if ( pentry->mArguments > 1 )
+      mStack.insert(mStack.begin() + mStack.size() - (pentry->mArguments - 1), objectvariant);
+   else
+      mStack.push_back(objectvariant);
 
    execute(vclass, *pentry);
 }
@@ -237,6 +326,7 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
          break;
       case VirtualInstruction::eNewNative:
          {
+            /*
             int type = mStack.back().asInt();
             mStack.pop_back();
 
@@ -244,6 +334,17 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
             const VirtualClass& vclass = mContext.mClassTable.resolve(classname);
             const VirtualFunctionTableEntry& entry = vclass.getVirtualFunctionTable()[instruction.getArgument()];
 
+            execute(vclass, entry);
+            */
+
+            VirtualObjectReference ref = mStack.back().asObject();
+            const VirtualClass& vclass = ref->getClass();
+
+            ref->initialize(vclass.getVariableCount());
+            
+            // run field initialization expressions
+            mStack.push_back(mStack.back());
+            const VirtualFunctionTableEntry& entry = vclass.getVirtualFunctionTable()[1];
             execute(vclass, entry);
          }
          break;
@@ -467,8 +568,8 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
          break;
       case VirtualInstruction::eRemReal:
          {
-            int right = mStack.back().asReal(); mStack.pop_back();
-            int left  = mStack.back().asReal(); mStack.pop_back();
+            int right = (int) mStack.back().asReal(); mStack.pop_back();
+            int left  = (int) mStack.back().asReal(); mStack.pop_back();
 
             mStack.push_back(Variant((double)(left % right)));
          }
@@ -690,7 +791,7 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
             mStack.pop_back();
             
             if ( obj.isObject() )
-               mStack.push_back((*obj.asObject()).asInstance()[instruction.getArgument()]);
+               mStack.push_back((*obj.asObject()).getMember(instruction.getArgument()));
             else if ( obj.isArray() )
                mStack.push_back(Variant(obj.asArray().ptr()->size()));
          }
@@ -704,7 +805,7 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
             Variant value = mStack.back();
             mStack.pop_back();
 
-            obj.asObject()->asInstance()[instruction.getArgument()] = value;
+            obj.asObject()->setMember(instruction.getArgument(), value);
          }
          break;
       case VirtualInstruction::eLoadLocal:
@@ -897,8 +998,22 @@ VirtualObjectReference VirtualMachine::instantiate(const std::string& classname,
 
 VirtualObjectReference VirtualMachine::instantiateNative(const std::string& classname, void* pobject)
 {
+   VirtualClass* pclass = mContext.mClassTable.find(classname);
+   if ( pclass == NULL )
+   {
+      throw std::exception();
+   }
+
    VirtualObjectReference object(new VirtualNativeObject(pobject));
-   object->setClass(mContext.mClassTable.resolve(classname));
+   object->setClass(*pclass);
+   object->initialize(pclass->getVariableCount());
+
+   // run field initialization expressions
+   Variant objectvariant(object);
+   const VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[1];
+   mStack.push_back(objectvariant);
+   execute(*pclass, entry);
+
    return object;
 }
 
@@ -910,17 +1025,7 @@ VirtualArrayReference VirtualMachine::instantiateArray()
    return ref;
 }
 
-// - Loading
-
-VirtualClass* VirtualMachine::loadClass(const std::string& classname)
-{
-   if ( !mCompiler.compile(classname) )
-   {
-      throwException("ClassNotFoundException");
-   }
-
-   return mContext.mClassTable.find(classname);
-}
+// - Callbacks
 
 void VirtualMachine::classLoaded(VirtualClass* pclass)
 {
@@ -952,7 +1057,7 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
             lookback++;
 
          case VirtualInstruction::eNew:
-         case VirtualInstruction::eNewNative:
+         //case VirtualInstruction::eNewNative:
          case VirtualInstruction::eLoadClass:
          case VirtualInstruction::eLoadStatic:
          case VirtualInstruction::eStoreStatic:

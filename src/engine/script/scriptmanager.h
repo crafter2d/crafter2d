@@ -20,23 +20,16 @@
 #ifndef SCRIPT_MANAGER_H_
 #define SCRIPT_MANAGER_H_
 
-#include "engine/engine_base.h"
 #include "core/defines.h"
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-}
+#include "engine/engine_base.h"
 
 #include <list>
 #include <string>
 #include <vector>
 
-#include "script.h"
-
-// Module prototype
-extern int (*tolua_Module) (lua_State* tolua_S);
+class Script;
+class VirtualMachine;
 
 /**
 @author Jeroen Broekhuizen
@@ -99,25 +92,21 @@ class ENGINE_API ScriptManager
 
    typedef std::list<Request> Requests;
 
-public:
-   typedef int(*initializer)(lua_State* tolua_S);
-   
+public:   
    ScriptManager();
 
    bool                    initialize();
    void                    destroy();
    
-   void                    loadModule(initializer module);
-
    void                    setObject(void* obj, const char* type, const char* var);
+
+ // loading
+   Script*                 loadClass(const std::string& classname);
+   Script*                 loadExpression(const std::string& expression);
    
  // execution
-   bool                    executeScript(const std::string& script, bool child = false );
-   bool                    executeLine(const char* line);
-
-   Script*                 createScript( bool child = false );
-   Script&                 getTemporaryScript();
-
+   bool                    executeScript(const std::string& classname, const std::string& function);
+   
  // requests
    void                    update(float delta);
    uint                    schedule(const std::string& cmd, float time);
@@ -134,14 +123,17 @@ public:
    void*                   getClass(const char* var);
 
 private:
+   friend class Script;
+   friend class ScriptRegistrator;
+
    void                    operator=( const ScriptManager& mgr );
 
    void                    registerGlobals();
   
-   lua_State*           luaState;
-   Script               tempScript;
-   Requests             requests;
-   uint                 job;
+   VirtualMachine*   mpVirtualMachine;
+   Script*           mpScript;
+   Requests          requests;
+   uint              job;
 };
 
 #endif // SCRIPT_MANAGER_H_

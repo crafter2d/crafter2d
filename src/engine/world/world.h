@@ -34,6 +34,7 @@
 class BitStream;
 class Layer;
 class Bound;
+class Script;
 class SimulationFactory;
 class Simulator;
 class WorldRenderer;
@@ -123,6 +124,9 @@ public:
    Bound&         addBound(const Vector& p1, const Vector& p2);
    void           removeBound(Bound& bound);
 
+ // notification
+   void notifyObjectWorldCollision(Object& object, Bound& bound, int side, bool begin);
+
  // rendering
    WorldRenderer* createRenderer();
 
@@ -151,6 +155,8 @@ protected:
    SimulationFactory*     mpSimulationFactory;
    Simulator*             mpSimulator;
    WorldSimulatorListener mSimulatorListener;
+
+   Script* mpScript;
 
    LayerType _layerType;
    bool autoFollow;

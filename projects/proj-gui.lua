@@ -13,6 +13,7 @@ project "GUI"
 	
 -- set project files
 files { "src/gui/**.cpp", "src/gui/**.h", "src/gui/**.inl" }
+includedirs { "src" }
 
 -- set the include and library
 if ( os.is("windows") ) then
@@ -30,8 +31,7 @@ if ( os.is("windows") ) then
 					path.join(libdir, "tolua++/include"),
 					path.join(libdir, "freetype2/include"),
 					path.join(libdir, "soil/include"),
-					path.join(libdir, "box2d/include"),
-					"src" }
+					path.join(libdir, "box2d/include") }
 
     libdirs { 	path.join(libdir, "sdl/lib"),
 				path.join(libdir, "glee/lib"),
@@ -47,11 +47,6 @@ if ( os.is("windows") ) then
 				path.join(libdir, "soil/lib"),
 				path.join(libdir, "box2d/lib") }
 	
-	-- set the pre-build event
-	prebuildcommands {
-		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_editor.cpp -H ..\\..\\src\\engine\\tolua_editor.h -n editor ..\\..\\tolua\\editor.cpp",
-		"..\\..\\tolua\\tolua++ -o ..\\..\\src\\engine\\tolua_gui.cpp -H ..\\..\\src\\engine\\tolua_gui.h -n gui ..\\..\\tolua\\gui.cpp" }
-
 	-- set IDE specific settings
 	if ( _ACTION == "cb-gcc" ) then
 		
@@ -60,12 +55,12 @@ if ( os.is("windows") ) then
 	  
 		configuration "Debug"
 			links { "GLee_d", "SOIL_d", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
-					"user32", "vfw32", "ws2_32", "ilu", "lua", "tolua++_d", "freetype241MT_D", "Core" } 
+					"user32", "vfw32", "ws2_32", "ilu", "lua", "tolua++_d", "freetype241MT_D" } 
 		 
 		configuration "Release"
 			links { "GLee_d", "SOIL", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"lua", "tolua++", "freetype241MT", "Core" } 
+					"lua", "tolua++", "freetype241MT" } 
 
 	else
 		if ( _ACTION > "vs2005" ) then
@@ -73,7 +68,7 @@ if ( os.is("windows") ) then
 		end
 		
 		links { "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", 
-				"OpenAL32", "ALut", "cg", "cgGL", "devil", "ilu", "Core"  }
+				"OpenAL32", "ALut", "cg", "cgGL", "devil", "ilu" }
 		
 		configuration "Debug"
 			links { "GLee_d", "box2d_d", "tolua++_d", " lua5.1_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
@@ -97,19 +92,16 @@ elseif ( os.is("linux") ) then
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL",
            "lua", "tolua++-5.1", "openal", "alut",
-           "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d", "Core" }
-
-	-- set the pre-build event
-	prebuildcommands {
-		"tolua++ -o ../src/engine/tolua_gui.cpp -H ../src/tolua_gui.h -n gui ../tolua/gui.cpp",
-		"tolua++ -o ../src/engine/tolua_editor.cpp -H ../src/tolua_editor.h -n editor ../tolua/editor.cpp" }
-
+           "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d" }
+		   
 end
 
 configuration "Debug"
 	defines { "_DEBUG", "TIXML_USE_STL" }
 	flags { "Symbols" }
+	links { "Core" }
 	
 configuration "Release"
 	defines { "NDEBUG", "TIXML_USE_STL" }
 	flags { "Optimize" }
+	links { "Core" }

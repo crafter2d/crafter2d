@@ -23,108 +23,62 @@
 #endif
 
 #include "core/log/log.h"
-
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"
-
 #include "core/smartptr/autoptr.h"
 
-Script::Script():
-   childState(0),
-   child(false)
+Script::Script(ScriptManager& manager, const std::string& name):
+   mScriptManager(manager),
+   mClassName(name),
+   mObject()
 {
 }
 
-/*!
-	\fn Script::Script(lua_State* l)
-	\brief Initializes member variables
-*/
-Script::Script(lua_State* l, bool c):
-   childState(l),
-   child(c)
+// - Get/set
+
+void Script::setThis(void* pthis)
 {
-   //if (child) childState = lua_newthread(l);
-   //else childState = l;
+   if ( !mClassName.empty() )
+   {
+      mObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis);
+   }
 }
 
 //-----------------------------------------
-// - Load & run
+// - Run
 //-----------------------------------------
 
-/// \fn Script::load(const char* file)
-/// \brief Loads a script file into the lua state and prepares it to run.
-/// \returns true is loading was successfull, false otherwise
-bool Script::load(const std::string& filename)
-{
-   AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead);
-   
-   if ( file.hasPointer() && file->isValid() )
-   {
-      int size = file->size();
-      AutoPtr<char> data = new char[size+1];
-      memset(data.getPointer(), 0, size);
-      file->read(data.getPointer(), size);
-      std::string code = data.getPointer();
-
-      return loadString(code);
-   }
-   else
-   {
-      std::string error = "Could not load script file " + filename;
-   }
-
-   return true;
-}
-
-/// \fn Script::loadString(const std::string& code)
-/// \brief Loads the given code string into the lua state. When using this function, you must
-/// call run to execute the code.
-/// \returns true is successfull, false otherwise
-bool Script::loadString(const std::string& code)
-{
-   if ( luaL_loadbuffer(childState, code.c_str(), code.length(), NULL) != 0 )
-   {
-      return false;
-   }
-
-   return true;
-}
-
-/// \fn Script::run(int params=0, int returns=0)
+/// \fn Script::run(int params=0)
 /// \brief Runs the script. You must first call prepareCall and optionaly the addParam functions
 /// to set up the function name and arguments.
 /// \returns always returns true
-bool Script::run(int params, int returns)
+bool Script::run(const std::string& function)
 {
-	// call the function
-   if ( lua_pcall(childState, params, returns, 0) != 0 ) 
-   {
-      std::string error = std::string("An error occured while running script: ") + lua_tostring(childState, -1);
-      return false;
-   }
+   mScriptManager.mpVirtualMachine->execute(mObject, function);
    return true;
 }
 
 //-----------------------------------------
-// - Retreival
+// - Retrieval
 //-----------------------------------------
 
 bool Script::getBoolean()
 {
-   bool ret = false;
-   if ( lua_isboolean(childState, -1) )
-      ret = static_cast<bool>(lua_toboolean(childState, -1));
-
-   lua_pop(childState, 1);
-   return ret;
+   return mScriptManager.mpVirtualMachine->popBoolean();
 }
 
 int Script::getInteger()
 {
-   int ret = 0;
-   if ( lua_isnumber(childState, -1) )
-      ret = static_cast<int>(lua_tonumber(childState, -1));
+   return mScriptManager.mpVirtualMachine->popInt();
+}
 
-   lua_pop(childState, 1);
-   return ret;
+/// \fn Script::addParam(const std::string& classname, void* pobject)
+/// \brief Pushes a custom type parameter on top of the stack which will be use by Lua as a parameter to the
+/// function.
+/// \param object a pointer to an object
+/// \param typeName the type name of the object (class name)
+void Script::addParam(const std::string& classname, void* pobject)
+{
+   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject));
+   mScriptManager.mpVirtualMachine->push(ref);
 }
