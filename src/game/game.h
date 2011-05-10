@@ -27,6 +27,7 @@
 
 #include "gamewindow.h"
 #include "defaultgamewindowlistener.h"
+#include "gamesettings.h"
 
 class Timer;
 class TimerData;
@@ -79,6 +80,7 @@ private:
 
    GameWindow                mWindow;
    DefaultGameWindowListener mWindowListener;
+   GameSettings              mSettings;
    std::string               mTitle;
    TimerData*                mpTimerData;
    ScriptManager             mScriptManager;

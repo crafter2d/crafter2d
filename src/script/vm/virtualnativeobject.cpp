@@ -3,15 +3,11 @@
 
 #include "core/defines.h"
 
-VirtualNativeObject::VirtualNativeObject():
-   VirtualObject(),
-   mpObject(NULL),
-   mOwned(true)
-{
-}
+#include "virtualmachine.h"
 
-VirtualNativeObject::VirtualNativeObject(void* pobject):
+VirtualNativeObject::VirtualNativeObject(VirtualMachine& machine, void* pobject):
    VirtualObject(),
+   mMachine(machine),
    mpObject(pobject),
    mOwned(true)
 {
@@ -19,6 +15,8 @@ VirtualNativeObject::VirtualNativeObject(void* pobject):
 
 VirtualNativeObject::~VirtualNativeObject()
 {
+   mMachine.deleteNative(mpObject);
+
    setObject(NULL);
 }
 

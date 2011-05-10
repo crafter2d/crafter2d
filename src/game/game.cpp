@@ -68,6 +68,7 @@
 Game::Game():
    mWindow(),
    mWindowListener(*this),
+   mSettings(),
    mTitle(),
    mpTimerData(NULL),
    mScriptManager(),
@@ -127,8 +128,10 @@ bool Game::create()
 
    log << "\n-- Initializing Graphics --\n\n";
 
+   mSettings.initialize();
+
    mWindow.addListener(mWindowListener);
-   if ( !mWindow.create(mTitle, 800, 600, 32, false) )
+   if ( !mWindow.create(mTitle, mSettings.getWidth(), mSettings.getHeight(), mSettings.getBitDepth(), false) )
    {
       return false;
    }
@@ -230,7 +233,9 @@ void Game::onWindowClosed()
  */
 bool Game::initOpenGL()
 {
-   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+   const Color& color = mSettings.getClearColor();
+   glClearColor(color.getRed(), color.getGreen(), color.getBlue(), 0.0f);
+
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glShadeModel (GL_SMOOTH);
 

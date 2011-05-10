@@ -501,7 +501,7 @@ void World::notifyScrollChange(const Vector& scrollposition)
 void World::notifyObjectWorldCollision(Object& object, Bound& bound, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("Actor", &object);
+   mpScript->addParam("Creature", &object);
    mpScript->addParam("Bound", &bound);
    mpScript->addParam(side);
    mpScript->addParam(begin);

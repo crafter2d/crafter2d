@@ -50,6 +50,7 @@ void ActionMap::setProcess(Process& process)
 
    mpScript = process.getScriptManager().loadClass("ActionMap");
    ASSERT_PTR(mpScript);
+   mpScript->setThis(this);
 }
 
 // - Operations
@@ -80,13 +81,12 @@ void ActionMap::process(int action, bool down)
 
 void ActionMap::processRemote(const ActionEvent& event, Object& object)
 {
-   int action = event.getAction();
-   Actions::const_iterator it = mActions.find(action);
-   if ( it != mActions.end() )
-   {
-      ASSERT_PTR(mpScript);
-      mpScript->addParam("Actor", &object);
-      mpScript->addParam(event.isDown());
-      mpScript->run(it->second);
-   }
+   ASSERT_PTR(mpScript);
+   mpScript->addParam("Creature", &object);
+   mpScript->addParam(event.getAction());
+
+   if ( event.isDown() )
+      mpScript->run("onKeyDown");
+   else
+      mpScript->run("onKeyUp");
 }

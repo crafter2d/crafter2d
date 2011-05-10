@@ -31,6 +31,7 @@ public:
 
 	Color();
    Color(const Color& color);
+   Color(int red, int green, int blue, int alpha);
 	Color(float red, float green, float blue, float alpha=1.0f);
 	~Color();
 

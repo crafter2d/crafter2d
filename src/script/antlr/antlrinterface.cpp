@@ -797,8 +797,11 @@ ASTReturn* AntlrParser::handleReturn(const AntlrNode& node)
 {
    ASTReturn* preturn = new ASTReturn();
 
-   AntlrNode expression = node.getChild(0);
-   preturn->setExpression(handleExpression(expression));
+   if ( node.getChildCount() == 1 )
+   {
+      AntlrNode expression = node.getChild(0);
+      preturn->setExpression(handleExpression(expression));
+   }
                
    return preturn;
 }

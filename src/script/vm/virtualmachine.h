@@ -83,6 +83,14 @@ public:
       mResult = Variant(object);
    }
 
+   void setResult(int value) {
+      mResult = Variant(value);
+   }
+
+   void setResult(double value) {
+      mResult = Variant(value);
+   }
+
    void setResult(bool value) {
       mResult = Variant(value);
    }
@@ -145,6 +153,8 @@ public:
    VirtualObjectReference instantiateNative(const std::string& classname, void* pobject);
    VirtualArrayReference  instantiateArray();
 
+   void deleteNative(void* pobject);
+
 private:
    friend class VirtualCompileCallback;
 
@@ -191,6 +201,7 @@ private:
    
    typedef std::stack<VirtualCall> CallStack;
    typedef std::map<std::string, callbackfnc> Natives;
+   typedef std::map<void*, VirtualObjectReference> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn };
    
@@ -216,6 +227,7 @@ private:
    VirtualCall            mCall;
    VirtualObjectReference mException;
    Natives                mNatives;
+   NativeObjectMap        mNativeObjects;
    State                  mState;
    bool                   mRetVal;
    bool                   mLoaded;

@@ -58,7 +58,7 @@ SceneObject::~SceneObject()
 bool SceneObject::create(SceneObject& parent, const std::string filename)
 {
    setFilename(filename);
-   if ( mId != -1 )
+   if ( ((int)mId) == -1 )
       setId(IdManager::getInstance().getNextId());
 
    parent.add(this);

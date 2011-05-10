@@ -110,7 +110,7 @@ INLINE float Object::getRotation() const
 /// \fn Object::getVelocity ()
 /// \brief Returns the current velocity of the object
 /// \returns current velocity of the object
-INLINE Vector Object::getVelocity() const
+INLINE const Vector& Object::getVelocity() const
 {
 	return mVel;
 }

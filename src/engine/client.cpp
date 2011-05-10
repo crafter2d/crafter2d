@@ -409,5 +409,5 @@ void Client::handleScriptEvent(const ScriptEvent& event)
 
    // run the onClientConnect script
    mpScript->addParam("BitStream", stream.getPointer());
-   mpScript->run("onEvent");
+   mpScript->run("onScriptEvent");
 }

@@ -2,16 +2,22 @@
 use player;
 use scenegraph;
 use inputforcegenerator;
+use actionmap;
+use bitstream;
 
 class Server
 {
 	private boolean mStarted = false;
+	private Player mPlayer;
+	private BitStream mStream = new BitStream();
 	
 	public native Server();
 	public native boolean create();
 	public native void listen(int port);
 	public native void update(real delta);
 	public native SceneGraph getSceneGraph();
+	public native void setActionMap(ActionMap map);
+	public native void sendScriptEvent(BitStream stream, int client);
 
 	private native boolean loadWorld(string filename, string name);
 	
@@ -28,6 +34,7 @@ class Server
 	private void start(Player player)
 	{
 		mStarted = true;
+		mPlayer = player;
 		
 		if ( !loadWorld("../worlds/map1.jwl", "World") )
 		{
@@ -37,6 +44,8 @@ class Server
 		Vector2D position = new Vector2D();
 		position.setX(100.0);
 		position.setY(30.0);
+		
+		setActionMap(new ActionMap());
 		
 		World world = getSceneGraph().getWorld();
 		
@@ -50,6 +59,13 @@ class Server
 		
 		controller.setForceGenerator(new InputForceGenerator());
 		
-		player.setController(controller);
+		player.setCreature(controller);
+		
+		// notify the client
+		mStream.clear();
+		mStream.writeInt(1);
+		mStream.writeInt(controller.getId());
+		
+		sendScriptEvent(mStream, player.getClient());
 	}
 }

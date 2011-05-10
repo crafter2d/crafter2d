@@ -68,7 +68,7 @@ public:
 
    virtual const Vector& getPosition() const;
 
-   Vector            getVelocity() const;
+   const Vector&     getVelocity() const;
    float             getRadius() const;
    float             getRotation() const;
    Vector            getSize() const;

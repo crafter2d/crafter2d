@@ -6,17 +6,19 @@
 
 #include "virtualobject.h"
 
+class VirtualMachine;
+
 class SCRIPT_API VirtualNativeObject : public VirtualObject
 {
 public:
-            VirtualNativeObject();
-   explicit VirtualNativeObject(void* pobject);
+   VirtualNativeObject(VirtualMachine& machine, void* pobject);
    virtual ~VirtualNativeObject();
 
  // get/set
    void* getObject();
    void  setObject(void* pobject);
 
+   //void setVirtualMachine(VirtualMachine& machine);
    void setOwned(bool owned);
 
  // downcasting
@@ -24,6 +26,7 @@ public:
    virtual VirtualNativeObject& asNative();
 
 private:
+   VirtualMachine& mMachine;
    void* mpObject;
    bool  mOwned;
 };

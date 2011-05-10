@@ -27,6 +27,8 @@
 #include "core/vfs/filesystem.h"
 #include "core/smartptr/autoptr.h"
 
+#include "script/vm/virtualnativeobject.h"
+
 Script::Script(ScriptManager& manager, const std::string& name):
    mScriptManager(manager),
    mClassName(name),
@@ -80,5 +82,7 @@ int Script::getInteger()
 void Script::addParam(const std::string& classname, void* pobject)
 {
    VirtualObjectReference ref(mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject));
+   ref->asNative().setOwned(false);
+
    mScriptManager.mpVirtualMachine->push(ref);
 }

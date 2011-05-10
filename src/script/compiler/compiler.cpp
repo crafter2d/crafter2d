@@ -83,6 +83,7 @@ bool Compiler::compile(const std::string& classname)
          }
          else if ( !loaded)
          {
+            std::cout << "Error while compiling " << filename << std::endl;
             const CompileLog::StringList& log = mContext.getLog().getLog();
             for ( std::size_t index = 0; index < log.size(); index++ )
             {
@@ -96,6 +97,7 @@ bool Compiler::compile(const std::string& classname)
       }
       else
       {
+         std::cout << "Error while compiling " << filename << std::endl;
          const CompileLog::StringList& log = mContext.getLog().getLog();
          for ( std::size_t index = 0; index < log.size(); index++ )
          {

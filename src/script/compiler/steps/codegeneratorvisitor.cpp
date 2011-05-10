@@ -184,7 +184,7 @@ void CodeGeneratorVisitor::visit(const ASTRoot& root)
 void CodeGeneratorVisitor::visit(const ASTClass& ast)
 {
    mpClass = &ast;
-
+   
    ScopedScope scope(mScopeStack);
 
    mpVClass = new VirtualClass();
@@ -1033,12 +1033,6 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                int resource = allocateLiteral(fncname);
 
                addInstruction(VirtualInstruction::eCallNative, resource);
-
-               /*
-               // native constructors return the new object
-               int retval = function.isConstructor() ? 1 : (function.getType().isVoid() ? 0 : 1);
-               addInstruction(VirtualInstruction::eRet, retval);
-               */
             }
             else
             {
