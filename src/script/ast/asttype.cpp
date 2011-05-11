@@ -316,6 +316,10 @@ void ASTType::replaceArgument(const ASTType& type)
 
 bool ASTType::resolveType(CompileContext& context, const ASTClass& aclass)
 {
+   if ( mObjectName == "T" )
+   {
+      int aap = 4;
+   }
    const ASTTypeVariable* ptypevariable = aclass.isGeneric() ? aclass.getTypeVariables().find(mObjectName) : NULL;
    if ( ptypevariable != NULL )
    {

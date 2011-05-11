@@ -14,9 +14,9 @@ ResourceCheckVisitor::ResourceCheckVisitor(CompileContext& context):
 
 // - Overloads
 
-bool ResourceCheckVisitor::performStep(ASTRoot& root)
+bool ResourceCheckVisitor::performStep(ASTNode& node)
 {
-   visit(root);
+   node.accept(*this);
    return true;
 }
 

@@ -8,7 +8,7 @@
 #include "compilecontext.h"
 
 class AntlrStream;
-class ASTRoot;
+class ASTNode;
 class CompileStep;
 class CompileCallback;
 
@@ -30,13 +30,26 @@ public:
    bool compile(const std::string& classname);
 
 private:
+   friend class CompileContext;
+
+   enum Phase { eLoad, eLoading, eCompile };
+
  // operations
-   void createSteps();
-   bool performSteps(ASTRoot& root);
+   void createLoadSteps();
+   void createCompileSteps();
+
+   void displayErrors(const std::string& currentfile);
+   bool loadClass(const std::string& classname);
+
+   void save(ASTClass& ast);
+
+   bool performSteps(ASTNode& node, Steps& steps);
 
    CompileContext    mContext;
    CompileCallback*  mpCallback;
+   Steps             mLoadSteps;
    Steps             mSteps;
+   Phase             mPhase;
 };
 
 #endif // COMPILER_H_

@@ -9,12 +9,12 @@ CompileStep::CompileStep()
 
 // operations
    
-bool CompileStep::step(ASTRoot& root)
+bool CompileStep::step(ASTNode& node)
 {
-   return performStep(root);
+   return performStep(node);
 }
 
-bool CompileStep::performStep(ASTRoot& root)
+bool CompileStep::performStep(ASTNode& node)
 {
    UNREACHABLE("");
    return false;

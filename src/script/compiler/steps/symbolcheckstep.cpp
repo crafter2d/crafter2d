@@ -36,9 +36,9 @@ SymbolCheckVisitor::SymbolCheckVisitor(CompileContext& context):
 
 // - Overloads
 
-bool SymbolCheckVisitor::performStep(ASTRoot& root)
+bool SymbolCheckVisitor::performStep(ASTNode& node)
 {
-   visit(root);
+   node.accept(*this);
    return true;
 }
 

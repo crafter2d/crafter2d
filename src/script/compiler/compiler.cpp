@@ -19,12 +19,24 @@
 
 #include "compilecallback.h"
 
+/// Compilation will be split up in two phases in order to support multiple files to point to each other.
+/// During this change the usage of the use keyword will also change. These will be stored in a table and
+/// be used as a full path for the class. The first 'use' that matches, will be used to load the class.
+/// 
+/// 1e Phase: load AST of all required classes -> SymbolCollectorStep becomes phase 1
+/// 2e Phase: compile each class that is loaded -> Other steps are part of phase 2
+///
+/// So, only after phase 1 is complete the other steps are performed for each class. By using the collector
+/// step the preloader is not required anymore.
+
 Compiler::Compiler():
-   mContext(),
+   mContext(*this),
    mpCallback(NULL),
-   mSteps()
+   mSteps(),
+   mPhase(eLoad)
 {
-   createSteps();
+   createLoadSteps();
+   createCompileSteps();
 }
 
 // - Get/set
@@ -55,55 +67,24 @@ const Literal& Compiler::lookupLiteral(int index) const
 
 bool Compiler::compile(const std::string& classname)
 {
-   String s = String(classname.c_str()).toLower();
-   std::string lowercase = s.toStdString();
-
-   if ( lowercase == "classloader" )
-   {
-      int aap = 0;
-   }
-
-   bool loaded = mContext.hasClass(lowercase);
+   bool loaded = mContext.hasClass(classname);
    if ( !loaded )
    {
-      AntlrParser parser(mContext);
-
-      std::string filename = "ascripts/" + classname + ".as";
-      mContext.getLog().info("> " + filename);
-
-      AutoPtr<AntlrStream> stream(AntlrStream::fromFile(filename));
-      AutoPtr<ASTRoot> root(parser.parse(*stream));
-      if ( root.hasPointer() )
+      loaded = loadClass(classname);
+      if ( loaded )
       {
-         loaded = performSteps(*root);
+         ASTClass* pclass = mContext.findClass(classname);
+         performSteps(*pclass, mSteps);
 
-         if ( loaded && hasCallback() )
-         {
+         if ( hasCallback() )
             mpCallback->notify(mContext.getResult());
-         }
-         else if ( !loaded)
-         {
-            std::cout << "Error while compiling " << filename << std::endl;
-            const CompileLog::StringList& log = mContext.getLog().getLog();
-            for ( std::size_t index = 0; index < log.size(); index++ )
-            {
-               std::cout << log[index] << std::endl;
-            }
-         }
-         else
-         {
-            // save the file
-         }
+
+         save(*pclass);
       }
-      else
+      
+      if ( !loaded )
       {
-         std::cout << "Error while compiling " << filename << std::endl;
-         const CompileLog::StringList& log = mContext.getLog().getLog();
-         for ( std::size_t index = 0; index < log.size(); index++ )
-         {
-            std::cout << log[index] << std::endl;
-         }
-         loaded = false;
+         displayErrors(classname);
       }
    }
 
@@ -111,26 +92,64 @@ bool Compiler::compile(const std::string& classname)
 }
 
 // - Operations
-   
-void Compiler::createSteps()
+
+void Compiler::createLoadSteps()
 {
-   mSteps.push_back(new PreloaderVisitor(*this));
-   mSteps.push_back(new SymbolCollectorVisitor(mContext));
+   mLoadSteps.push_back(new SymbolCollectorVisitor(mContext));
+}
+
+void Compiler::createCompileSteps()
+{
    mSteps.push_back(new SymbolCheckVisitor(mContext));
    mSteps.push_back(new ResourceCheckVisitor(mContext));
    mSteps.push_back(new OOCheckVisitor(mContext));
    mSteps.push_back(new CodeGeneratorVisitor(mContext));
 }
 
-bool Compiler::performSteps(ASTRoot& root)
+bool Compiler::loadClass(const std::string& classname)
 {
-   for ( std::size_t index = 0; index < mSteps.size(); index++ )
+   AntlrParser parser(mContext);
+
+   std::string filename = "ascripts/" + classname + ".as";
+   mContext.getLog().info("> " + filename);
+
+   AutoPtr<AntlrStream> stream(AntlrStream::fromFile(filename));
+   if ( stream.hasPointer() )
    {
-      CompileStep* pstep = mSteps[index];
-      if ( !pstep->step(root) || mContext.getLog().hasErrors() )
+      AutoPtr<ASTRoot> root(parser.parse(*stream));
+      if ( root.hasPointer() )
+      {
+         return performSteps(*root, mLoadSteps);
+      }
+   }
+
+   return false;
+}
+
+bool Compiler::performSteps(ASTNode& node, Steps& steps)
+{
+   for ( std::size_t index = 0; index < steps.size(); index++ )
+   {
+      CompileStep* pstep = steps[index];
+      if ( !pstep->step(node) || mContext.getLog().hasErrors() )
       {
          return false;
       }
    }
    return true;
+}
+
+void Compiler::save(ASTClass& ast)
+{
+   // do some interesting saving stuff here
+}
+
+void Compiler::displayErrors(const std::string& currentfile)
+{
+   std::cout << "Error while compiling " << currentfile << std::endl;
+   const CompileLog::StringList& log = mContext.getLog().getLog();
+   for ( std::size_t index = 0; index < log.size(); index++ )
+   {
+      std::cout << log[index] << std::endl;
+   }
 }

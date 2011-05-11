@@ -216,8 +216,9 @@ private:
    bool handleException(const VirtualException& e);
 
  // class loading
-   void classLoaded(VirtualClass* pclass);
-   void createClass(const VirtualClass& aclass);
+   VirtualClass* doLoadClass(const std::string& classname);
+   void          classLoaded(VirtualClass* pclass);
+   void          createClass(const VirtualClass& aclass);
 
    VirtualContext         mContext;
    VirtualCompileCallback mCallback;

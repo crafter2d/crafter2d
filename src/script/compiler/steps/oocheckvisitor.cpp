@@ -22,9 +22,9 @@ OOCheckVisitor::OOCheckVisitor(CompileContext& context):
 
 // - Overloads
 
-bool OOCheckVisitor::performStep(ASTRoot& root)
+bool OOCheckVisitor::performStep(ASTNode& node)
 {
-   visit(root);
+   node.accept(*this);
    return true;
 }
 

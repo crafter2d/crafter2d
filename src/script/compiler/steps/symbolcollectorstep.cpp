@@ -17,9 +17,9 @@ SymbolCollectorVisitor::~SymbolCollectorVisitor()
 
 // - Overloads
 
-bool SymbolCollectorVisitor::performStep(ASTRoot& root)
+bool SymbolCollectorVisitor::performStep(ASTNode& node)
 {
-   root.accept(*this);
+   node.accept(*this);
 
    return true;
 }
@@ -48,6 +48,11 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
       }
    }
 
+   if ( ast.getName() == "ArrayList" )
+   {
+      int aap = 4;
+   }
+
    ASTTypeList& intrfaces = ast.getInterfaces();
    for ( int index = 0; index < intrfaces.size(); index++ )
    {
@@ -57,7 +62,7 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
          mContext.getLog().error("Can not resolve type " + type.toString());
       }
    }
-
+   
    mContext.addClass(&ast);
 
    mpClass = &ast;

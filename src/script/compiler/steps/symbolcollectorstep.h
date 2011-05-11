@@ -41,7 +41,7 @@ public:
 
 protected:
  // overloads
-   virtual bool performStep(ASTRoot& root);
+   virtual bool performStep(ASTNode& node);
 
 private:
  // operations

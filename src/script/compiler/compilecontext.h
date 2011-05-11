@@ -12,6 +12,7 @@
 
 #include "compilelog.h"
 
+class Compiler;
 class ASTClass;
 class VirtualClass;
 
@@ -20,7 +21,7 @@ class CompileContext
    typedef std::map<std::string, ASTClass*> Classes;
 
 public:
-   CompileContext();
+   explicit CompileContext(Compiler& compiler);
 
  // get/set
    CompileLog& getLog();
@@ -44,6 +45,7 @@ public:
 private:
    void insertInternalTypes();
 
+   Compiler&      mCompiler;
    Classes        mClasses;
    LiteralTable   mLiteralTable;
    CompileLog     mLog;

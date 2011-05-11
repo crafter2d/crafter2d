@@ -46,14 +46,14 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
 
 // - Overloads
 
-bool CodeGeneratorVisitor::performStep(ASTRoot& root)
+bool CodeGeneratorVisitor::performStep(ASTNode& node)
 {
    mInstructions.clear();
    mLineNr = 0;
 
-   visit(root);
+   ((const ASTNode&)node).accept(*this);
 
-   root.detachChild(*mpClass);
+   //root.detachChild(*mpClass);
 
    mContext.setResult(mpVClass);
 

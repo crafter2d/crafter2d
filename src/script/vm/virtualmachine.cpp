@@ -46,33 +46,6 @@ void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.execute(instance, fncname);
 }
 
-/*
-class World
-{
-public:
-   World(const std::string& name): mName(name) {}
-
-   std::string mName;
-};
-
-void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   World* pworld = new World("joop");
-
-   VirtualObjectReference ref = machine.instantiateNative("World", pworld);
-
-   accessor.setResult(ref);
-}
-
-void World_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
-
-   accessor.setResult(pworld->mName);
-}
-*/
-
 VirtualMachine::VirtualMachine():
    mContext(),
    mCallback(*this),
@@ -90,8 +63,6 @@ VirtualMachine::VirtualMachine():
    mNatives.insert(std::pair<std::string, callbackfnc>("Console_println", Console_println));
    mNatives.insert(std::pair<std::string, callbackfnc>("Class_doNewInstance", Class_doNewInstance));
    mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
-   //mNatives.insert(std::pair<std::string, callbackfnc>("World_init", World_init));
-   //mNatives.insert(std::pair<std::string, callbackfnc>("World_getName", World_getName));
 }
 
 // - Initialization
@@ -111,12 +82,7 @@ void VirtualMachine::initialize()
    
 bool VirtualMachine::loadClass(const std::string& classname)
 {
-   bool isloaded = mContext.mClassTable.contains(classname);
-   if ( !isloaded )
-   {
-      isloaded = mCompiler.compile(classname);
-   }
-   return isloaded;
+   return doLoadClass(classname) != NULL;
 }
 
 bool VirtualMachine::loadExpression(const std::string& expression)
@@ -188,7 +154,7 @@ void VirtualMachine::push(const VirtualObjectReference& object)
 
 bool VirtualMachine::execute(const std::string& classname, const std::string& function)
 {
-   VirtualClass* pclass = mContext.mClassTable.find(classname);
+   VirtualClass* pclass = doLoadClass(classname);
    ASSERT_PTR(pclass);
    
    const VirtualFunctionTableEntry* pentry = pclass->getVirtualFunctionTable().findByName(function);
@@ -962,7 +928,7 @@ bool VirtualMachine::handleException(const VirtualException& e)
 
 VirtualObjectReference VirtualMachine::instantiate(const std::string& classname, int constructor)
 {
-   VirtualClass* pclass = mContext.mClassTable.find(classname);
+   VirtualClass* pclass = doLoadClass(classname);
    ASSERT_PTR(pclass);
             
    VirtualObjectReference object(pclass->instantiate());
@@ -994,7 +960,7 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
    }
    else
    {
-      VirtualClass* pclass = mContext.mClassTable.find(classname);
+      VirtualClass* pclass = doLoadClass(classname);
       if ( pclass == NULL )
       {
          throw std::exception();
@@ -1033,6 +999,19 @@ void VirtualMachine::deleteNative(void* pobject)
 
 // - Callbacks
 
+VirtualClass* VirtualMachine::doLoadClass(const std::string& classname)
+{
+   VirtualClass* pclass = mContext.mClassTable.find(classname);
+   if ( pclass == NULL )
+   {
+      if ( mCompiler.compile(classname) )
+      {
+         pclass = mContext.mClassTable.find(classname);
+      }
+   }
+   return pclass;
+}
+
 void VirtualMachine::classLoaded(VirtualClass* pclass)
 {
    int offset = mContext.mInstructions.size();
@@ -1063,7 +1042,6 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
             lookback++;
 
          case VirtualInstruction::eNew:
-         //case VirtualInstruction::eNewNative:
          case VirtualInstruction::eLoadClass:
          case VirtualInstruction::eLoadStatic:
          case VirtualInstruction::eStoreStatic:

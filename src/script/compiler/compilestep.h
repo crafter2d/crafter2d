@@ -4,8 +4,7 @@
 
 #include "../ast/astvisitor.h"
 
-class ASTRoot;
-class QStringList;
+class ASTNode;
 
 class CompileStep : public ASTVisitor
 {
@@ -13,10 +12,10 @@ public:
    CompileStep();
 
  // operations
-   bool step(ASTRoot& root);
+   bool step(ASTNode& node);
 
 protected:
-   virtual bool performStep(ASTRoot& root) = 0;
+   virtual bool performStep(ASTNode& node) = 0;
 };
 
 #endif // COMPILE_STEP_H_
