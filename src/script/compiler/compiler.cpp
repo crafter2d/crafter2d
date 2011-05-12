@@ -67,6 +67,8 @@ const Literal& Compiler::lookupLiteral(int index) const
 
 bool Compiler::compile(const std::string& classname)
 {
+   mContext.resetCollection();
+
    bool loaded = mContext.hasClass(classname) || loadClass(classname);
    if ( !loaded )
    {
@@ -117,7 +119,14 @@ bool Compiler::loadClass(const std::string& classname)
 {
    AntlrParser parser(mContext);
 
-   std::string filename = "ascripts/" + classname + ".as";
+   std::string fullname = mContext.getFullName(classname);
+   if ( fullname.empty() )
+      return false;
+
+   String name(fullname.c_str());
+   name.replace('.', '/');
+
+   std::string filename = "ascripts/" + name.toStdString() + ".as";
    mContext.getLog().info("> " + filename);
 
    AutoPtr<AntlrStream> stream(AntlrStream::fromFile(filename));

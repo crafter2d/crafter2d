@@ -54,6 +54,9 @@ public:
    const std::string& getName() const;
    void               setName(const std::string& name);
 
+   const std::string& getFullName() const;
+   void               setFullName(const std::string& name);
+
    const ASTModifiers& getModifiers() const;
          ASTModifiers& getModifiers();
 
@@ -122,6 +125,7 @@ private:
    ASTType*          mpBaseType;
    ASTTypeList       mInterfaces;
    std::string       mName;
+   std::string       mFullName;
    ASTTypeVariables* mpTypeVariables;
    FunctionTable     mTable;
    Fields            mStatics;

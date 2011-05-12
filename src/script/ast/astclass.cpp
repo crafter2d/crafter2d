@@ -21,6 +21,7 @@ ASTClass::ASTClass():
    mpBaseType(NULL),
    mInterfaces(),
    mName(),
+   mFullName(),
    mpTypeVariables(NULL),
    mTable(),
    mStatics(),
@@ -99,6 +100,16 @@ const std::string& ASTClass::getName() const
 void ASTClass::setName(const std::string& name)
 {
    mName = name;
+}
+
+const std::string& ASTClass::getFullName() const
+{
+   return mFullName;
+}
+
+void ASTClass::setFullName(const std::string& name)
+{
+   mFullName = name;
 }
 
 const ASTModifiers& ASTClass::getModifiers() const

@@ -72,6 +72,7 @@ Game::Game():
    mTitle(),
    mpTimerData(NULL),
    mScriptManager(),
+   mpScript(NULL),
    mActive(true)
 {
 }
@@ -322,8 +323,10 @@ bool Game::initGame()
  */
 void Game::endGame()
 {
-   ASSERT_PTR(mpScript);
-   mpScript->run("shutdown");
+   if ( mpScript != NULL )
+   {
+      mpScript->run("shutdown");
+   }
 }
 
 /*!

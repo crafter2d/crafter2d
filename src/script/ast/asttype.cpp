@@ -4,7 +4,6 @@
 #include "core/defines.h"
 
 #include "script/compiler/compilecontext.h"
-#include "script/compiler/classresolver.h"
 
 #include "astclass.h"
 #include "asttypevariable.h"
@@ -315,7 +314,7 @@ void ASTType::replaceArgument(const ASTType& type)
    mTypeArguments[0] = type;
 }
 
-bool ASTType::resolveType(CompileContext& context, const ClassResolver& resolver, const ASTClass& aclass)
+bool ASTType::resolveType(CompileContext& context, const ASTClass& aclass)
 {
    const ASTTypeVariable* ptypevariable = aclass.isGeneric() ? aclass.getTypeVariables().find(mObjectName) : NULL;
    if ( ptypevariable != NULL )
@@ -327,36 +326,27 @@ bool ASTType::resolveType(CompileContext& context, const ClassResolver& resolver
    {
       for ( int index = 0; index < mTypeArguments.size(); index++ )
       {
-         if ( !mTypeArguments[index].resolveType(context, resolver, aclass) )
+         if ( !mTypeArguments[index].resolveType(context, aclass) )
          {
             return false;
          }
       }
 
-      if ( mObjectName == aclass.getName() )
+      if ( mObjectName == aclass.getFullName() )
       {
          mpObjectClass = const_cast<ASTClass*>(&aclass);
          return true;
       }
-      else
+      else if ( mpObjectClass == NULL )
       {
-         std::string fullname = resolver.resolve(mObjectName);
-         if ( fullname.empty() )
-         {
-            return false;
-         }
-
-         if ( mpObjectClass == NULL )
-         {
-            mpObjectClass = context.findClass(fullname);
-            return mpObjectClass != NULL;
-         }
+         mpObjectClass = context.findClass(mObjectName);
+         return mpObjectClass != NULL;
       }
    }
    else if ( mKind == eArray )
    {
       mpObjectClass = context.findClass("InternalArray");
-      return mpArrayType->resolveType(context, resolver, aclass);
+      return mpArrayType->resolveType(context, aclass);
    }
 
    return true;

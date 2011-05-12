@@ -68,6 +68,7 @@ private:
    ASTLiteral*             handleLiteral(const AntlrNode& node);
 
    CompileContext& mContext;
+   std::string     mPackage;
    ASTClass*       mpClass;
 };
 

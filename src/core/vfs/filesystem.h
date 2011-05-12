@@ -39,6 +39,10 @@ public:
 
    virtual ~FileSystem();
 
+ // query
+   bool exists(const std::string& filename) const;
+
+ // operations
    File* open(const std::string& filename, int modus) const;
 
    void addPath(const std::string& path);

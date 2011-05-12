@@ -15,8 +15,11 @@ CompileContext::CompileContext(Compiler& compiler):
    mClasses(),
    mLiteralTable(),
    mLog(),
-   mpResult(NULL)
+   mpResult(NULL),
+   mCollect(true)
 {
+   mResolver.insert("System.*");
+   mResolver.insert(".*");
 }
 
 // - Get/set
@@ -46,30 +49,50 @@ void CompileContext::setResult(VirtualClass* pclass)
    mpResult = pclass;
 }
 
+void CompileContext::resetCollection()
+{
+   mCollect = true;
+}
+
 // - Query
 
 bool CompileContext::hasClass(const std::string& classname) const
 {
-   String s = String(classname.c_str()).toLower();
+   std::string fullname = mResolver.resolve(classname);
+   if ( fullname.empty() )
+      return NULL;
+
+   String s = String(fullname.c_str()).toLower();
    std::string lowercasename = s.toStdString();
 
    return mClasses.find(lowercasename) != mClasses.end();
 }
 
+std::string CompileContext::getFullName(const std::string& classname) const
+{
+   if ( classname.find('.') == std::string::npos )
+      return mResolver.resolve(classname);
+   else
+      return classname;
+}
+
 // - Operations
 
-void CompileContext::addClass(ASTClass* pclass, const std::string& package)
+void CompileContext::addClass(ASTClass* pclass)
 {
-   std::string full;
-   if ( package.empty() )
-      full = pclass->getName();
-   else
-      full = package + '/' + pclass->getName();
-
-   String s = String(full.c_str()).toLower();
+   String s = String(pclass->getFullName().c_str()).toLower();
    std::string lowercasename = s.toStdString();
    
    mClasses[lowercasename] = pclass;
+   mCollect = false;
+}
+
+void CompileContext::addPath(const std::string& path)
+{
+   if ( mCollect )
+   {
+      mResolver.insert(path);
+   }
 }
 
 // - Search
@@ -81,20 +104,20 @@ const ASTClass* CompileContext::findClass(const std::string& classname) const
 
 ASTClass* CompileContext::findClass(const std::string& name)
 {
-   String s = String(name.c_str()).toLower();
+   std::string fullname = mResolver.resolve(name);
+   if ( fullname.empty() )
+      return NULL;
+
+   String s = String(fullname.c_str()).toLower();
    std::string lowercasename = s.toStdString();
 
    Classes::iterator it = mClasses.find(lowercasename);
    if ( it == mClasses.end() )
    {
-      std::string path = name;
-      if ( lowercasename == "box2dbody" )
+      if ( mCompiler.loadClass(fullname) )
       {
-         path = "box2d/" + name;
+         it = mClasses.find(lowercasename);
       }
-
-      mCompiler.loadClass(path);
-      it = mClasses.find(lowercasename);
    }
 
    return it != mClasses.end() ? it->second : NULL;

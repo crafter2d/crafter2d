@@ -3,11 +3,11 @@
 #define CLASS_RESOLVER_H_
 
 #include <string>
-#include <set>
+#include <vector>
 
 class ClassResolver
 {
-   typedef std::set<std::string> Paths;
+   typedef std::vector<std::string> Paths;
 
 public:
    ClassResolver();
@@ -18,7 +18,7 @@ public:
    std::string resolve(const std::string& classname) const;
 
 private:
-   bool checkFileExists(const std::string& file) const;
+   bool checkClassExists(const std::string& classname) const;
 
    Paths mPaths;
 };

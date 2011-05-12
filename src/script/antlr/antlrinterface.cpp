@@ -18,7 +18,9 @@
 #include "antlrstream.h"
 
 AntlrParser::AntlrParser(CompileContext& context):
-   mContext(context)
+   mContext(context),
+   mPackage(),
+   mpClass(NULL)
 {
 }
 
@@ -232,12 +234,14 @@ ASTNode* AntlrParser::handlePackage(const AntlrNode& node)
 
       if ( index < count - 1 )
       {
-         identifier += '\\';
+         identifier += '.';
       }
    }
 
    ASTPackage* ppackage = new ASTPackage();
    ppackage->setName(identifier);
+
+   mPackage = identifier;
 
    return ppackage;
 }
@@ -253,7 +257,7 @@ ASTNode* AntlrParser::handleUse(const AntlrNode& node)
 
       if ( index < count - 1 )
       {
-         identifier += '/';
+         identifier += '.';
       }
    }
 
@@ -358,7 +362,11 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
    handleModifiers(modsnode, pclass->getModifiers());
 
    AntlrNode namenode = node.getChild(1);
-   pclass->setName(namenode.toString());
+   std::string name = namenode.toString();
+   std::string fullclassname = mPackage + '.' + name;
+
+   pclass->setName(name);
+   pclass->setFullName(fullclassname);
 
    if ( count > 2 )
    {

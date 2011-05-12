@@ -10,6 +10,7 @@
 
 #include "script/common/literaltable.h"
 
+#include "classresolver.h"
 #include "compilelog.h"
 
 class Compiler;
@@ -32,11 +33,16 @@ public:
    VirtualClass* getResult();
    void          setResult(VirtualClass* pclass);
 
+   void resetCollection();
+
  // query
    bool hasClass(const std::string& classname) const;
 
+   std::string getFullName(const std::string& classname) const;
+
  // operations
-   void addClass(ASTClass* pclass, const std::string& package);
+   void addClass(ASTClass* pclass);
+   void addPath(const std::string& path);
 
  // search
    const ASTClass* findClass(const std::string& classname) const;
@@ -47,9 +53,11 @@ private:
 
    Compiler&      mCompiler;
    Classes        mClasses;
+   ClassResolver  mResolver;
    LiteralTable   mLiteralTable;
    CompileLog     mLog;
    VirtualClass*  mpResult;
+   bool           mCollect;
 };
 
 #endif // COMPILE_CONTEXT_H_

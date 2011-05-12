@@ -1,41 +1,38 @@
 
 #include "classresolver.h"
 
+#include "core/vfs/filesystem.h"
+
 using namespace std;
 
 ClassResolver::ClassResolver():
    mPaths()
 {
-   mPaths.insert("Object");
-   mPaths.insert("InternalArray");
-   mPaths.insert("ClassLoader");
-   mPaths.insert("System");
 }
 
 // - Operations
 
 void ClassResolver::insert(const std::string& path)
 {
-   mPaths.insert(path);
+   mPaths.push_back(path);
 }
 
 std::string ClassResolver::resolve(const std::string& classname) const
 {
-   Paths::iterator it = mPaths.begin();
-   for ( ; it != mPaths.end(); it++ )
+   for ( int index = 0; index < mPaths.size(); ++index )
    {
-      const string& path = *it;
+      const string& path = mPaths[index];
 
-      size_t pos = path.rfind('/');
+      size_t pos = path.rfind('.');
       if ( pos != string::npos )
       {
          string filepart = path.substr(pos+1, path.length());
          if ( filepart == "*" )
          {
-            std::string file = path.substr(0, pos + 1) + classname;
-            if ( checkFileExists(file + ".as") )
+            string fullclassname = path.substr(0, pos + 1) + classname;
+            if ( checkClassExists(fullclassname) )
             {
-               return file;
+               return fullclassname;
             }
          }
          else if ( filepart.compare(classname) == 0 )
@@ -52,7 +49,12 @@ std::string ClassResolver::resolve(const std::string& classname) const
    return "";
 }
 
-bool ClassResolver::checkFileExists(const string& file) const
+#include "core/string/string.h"
+
+bool ClassResolver::checkClassExists(const string& classname) const
 {
-   return true;
+   String name = classname.c_str();
+   name.replace('.', '/');
+
+   return FileSystem::getInstance().exists("ascripts/" + name.toStdString() + ".as");
 }

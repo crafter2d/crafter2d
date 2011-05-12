@@ -64,11 +64,6 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
 
    mpFunction = &ast;
 
-   if ( ast.getName() == "setForceGenerator" )
-   {
-      int aap = 5;
-   }
-
    visitChildren(ast); // <-- arguments
 
    if ( ast.hasBody() )
