@@ -19,14 +19,7 @@ class World
 	{
 		if ( side == 1 ) // bottom
 		{
-			if ( begin )
-			{
-				creature.increaseOnGround();
-			}
-			else
-			{
-				creature.decreaseOnGround();
-			}
+			creature.setOnGround(begin);
 		}
 	}
 }

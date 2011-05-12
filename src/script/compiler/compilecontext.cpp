@@ -89,7 +89,7 @@ void CompileContext::addClass(ASTClass* pclass)
 
 void CompileContext::addPath(const std::string& path)
 {
-   if ( mCollect )
+   //if ( mCollect )
    {
       mResolver.insert(path);
    }
@@ -104,6 +104,11 @@ const ASTClass* CompileContext::findClass(const std::string& classname) const
 
 ASTClass* CompileContext::findClass(const std::string& name)
 {
+   if ( name == "Creature")
+   {
+      int aap =3;
+   }
+   
    std::string fullname = mResolver.resolve(name);
    if ( fullname.empty() )
       return NULL;

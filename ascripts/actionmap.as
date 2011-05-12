@@ -12,8 +12,7 @@ class ActionMap
 		
 		if ( action == 3 ) // jump
 		{
-			velocity.setY(-25.0);
-			object.getForceGenerator().setImpulse(velocity);
+			object.jump();
 		}
 		else
 		{

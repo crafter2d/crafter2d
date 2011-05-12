@@ -2,6 +2,7 @@
 #include "classresolver.h"
 
 #include "core/vfs/filesystem.h"
+#include "core/string/string.h"
 
 using namespace std;
 
@@ -19,6 +20,9 @@ void ClassResolver::insert(const std::string& path)
 
 std::string ClassResolver::resolve(const std::string& classname) const
 {
+   String s = String(classname.c_str()).toLower();
+   string j = s.toStdString();
+
    for ( int index = 0; index < mPaths.size(); ++index )
    {
       const string& path = mPaths[index];
@@ -35,12 +39,12 @@ std::string ClassResolver::resolve(const std::string& classname) const
                return fullclassname;
             }
          }
-         else if ( filepart.compare(classname) == 0 )
+         else if ( filepart.compare(j) == 0 )
          {
             return path;
          }
       }
-      else if ( path.compare(classname) == 0 )
+      else if ( path.compare(j) == 0 )
       {
          return classname;
       }

@@ -8,7 +8,7 @@ use inputforcegenerator;
 class Creature
 {
 	private InputForceGenerator mGenerator;
-	private int mOnGround = 0;
+	private boolean mOnGround = false;
 	
 	public native Creature();
 	public native boolean create(World parent, string file);
@@ -32,22 +32,30 @@ class Creature
 	{
 		mGenerator = generator;
 		
-		getBody().addForceGenerator(generator);
-		getBody().generateSensors();
+		Box2DBody body = getBody();
+		body.addForceGenerator(generator);
+		body.generateSensors();
 	}
 	
 	public boolean isOnGround()
 	{
-		return mOnGround > 0;
+		return mOnGround;
 	}
 	
-	public void increaseOnGround()
+	public void setOnGround(boolean onground)
 	{
-		mOnGround++;
+		mOnGround = onground;
 	}
 	
-	public void decreaseOnGround()
+	public void jump()
 	{
-		mOnGround--;
+		if ( mOnGround )
+		{
+			Vector2D vel = new Vector2D();
+			vel.setY(-25.0);
+			
+			mGenerator.setImpulse(vel);
+			mOnGround = false;
+		}
 	}
 }

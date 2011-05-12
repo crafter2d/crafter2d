@@ -1,4 +1,6 @@
 
+package box2d;
+
 use inputforcegenerator;
 
 class Box2DBody
