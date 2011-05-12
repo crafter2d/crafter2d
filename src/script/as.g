@@ -54,7 +54,12 @@ package_decl
 	:	PACKAGE identifier ('.' identifier)* ';'					-> ^(PACKAGE identifier+)
 	;
 	
-use_decl:	USE identifier ('.' identifier)* ';' 						-> ^(USE identifier+)
+use_decl:	USE identifier ('.' identifier)* ('.' use_identifier)? ';' 			-> ^(USE identifier+ use_identifier?)
+	;
+	
+use_identifier
+	:	identifier
+	|	MUL
 	;
 	
 type_decl

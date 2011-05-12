@@ -3,6 +3,9 @@
 #define SYMBOL_COLLECTOR_VISITOR_H_
 
 #include "../compilestep.h"
+#include "../classresolver.h"
+
+#include <vector>
 
 class ASTClass;
 class CompileContext;
@@ -15,6 +18,8 @@ public:
    
  // visitor
    virtual void visit(ASTRoot& ast);
+   virtual void visit(ASTPackage& ast);
+   virtual void visit(ASTUse& ast);
    virtual void visit(ASTClass& ast);
    virtual void visit(ASTFunction& ast);
    virtual void visit(ASTFunctionArgument& ast);
@@ -44,10 +49,14 @@ protected:
    virtual bool performStep(ASTNode& node);
 
 private:
+   typedef std::vector<std::string> Paths;
+
  // operations
    void createDefaultConstructor(ASTClass& ast);
 
    CompileContext&  mContext;
+   std::string      mPackage;
+   ClassResolver    mResolver;
    ASTClass*        mpClass;
 };
 

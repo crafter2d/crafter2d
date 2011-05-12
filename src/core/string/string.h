@@ -26,6 +26,8 @@ public:
    const String& toLower();
    const String& toUpper();
 
+   void replace(int original, int newtext);
+
  // conversion
    std::string toStdString() const;
 

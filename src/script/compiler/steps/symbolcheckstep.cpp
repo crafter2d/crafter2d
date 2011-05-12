@@ -54,7 +54,6 @@ void SymbolCheckVisitor::visit(ASTClass& ast)
    ScopedScope scope(mScopeStack);
 
    mpClass = &ast;
-   mpClass->calculateResources();
 
    visitChildren(ast);
 }
@@ -64,6 +63,11 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
    ScopedScope scope(mScopeStack);
 
    mpFunction = &ast;
+
+   if ( ast.getName() == "setForceGenerator" )
+   {
+      int aap = 5;
+   }
 
    visitChildren(ast); // <-- arguments
 

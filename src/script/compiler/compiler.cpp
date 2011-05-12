@@ -67,28 +67,35 @@ const Literal& Compiler::lookupLiteral(int index) const
 
 bool Compiler::compile(const std::string& classname)
 {
-   bool loaded = mContext.hasClass(classname);
+   bool loaded = mContext.hasClass(classname) || loadClass(classname);
    if ( !loaded )
    {
-      loaded = loadClass(classname);
-      if ( loaded )
-      {
-         ASTClass* pclass = mContext.findClass(classname);
-         performSteps(*pclass, mSteps);
+      displayErrors(classname);
+      return false;
+   }
 
-         if ( hasCallback() )
-            mpCallback->notify(mContext.getResult());
-
-         save(*pclass);
-      }
-      
-      if ( !loaded )
+   for ( int index = 0; index < mFiles.size(); index++ )
+   {
+      if ( mFiles[index] == classname )
       {
-         displayErrors(classname);
+         return true;
       }
    }
 
-   return loaded;
+   ASTClass* pclass = mContext.findClass(classname);
+   if ( performSteps(*pclass, mSteps) )
+   {
+      if ( hasCallback() )
+         mpCallback->notify(mContext.getResult());
+
+      mFiles.push_back(classname);
+
+      save(*pclass);
+
+      return true;
+   }
+   
+   return false;
 }
 
 // - Operations

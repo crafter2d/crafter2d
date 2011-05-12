@@ -1,5 +1,5 @@
 
-use console;
+package System;
 
 public class System
 {

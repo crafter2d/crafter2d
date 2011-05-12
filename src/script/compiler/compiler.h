@@ -15,6 +15,7 @@ class CompileCallback;
 class Compiler
 {
    typedef std::vector<CompileStep*> Steps;
+   typedef std::vector<std::string> Files;
 
 public:
    Compiler();
@@ -49,6 +50,7 @@ private:
    CompileCallback*  mpCallback;
    Steps             mLoadSteps;
    Steps             mSteps;
+   Files             mFiles;
    Phase             mPhase;
 };
 

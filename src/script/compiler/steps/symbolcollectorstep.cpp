@@ -7,7 +7,10 @@
 
 SymbolCollectorVisitor::SymbolCollectorVisitor(CompileContext& context):
    CompileStep(),
-   mContext(context)
+   mContext(context),
+   mPackage(),
+   mResolver(),
+   mpClass(NULL)
 {
 }
 
@@ -19,7 +22,11 @@ SymbolCollectorVisitor::~SymbolCollectorVisitor()
 
 bool SymbolCollectorVisitor::performStep(ASTNode& node)
 {
+   ASTClass* pcurrent = mpClass;
+
    node.accept(*this);
+
+   mpClass = pcurrent;
 
    return true;
 }
@@ -30,9 +37,27 @@ void SymbolCollectorVisitor::visit(ASTRoot& ast)
 {
    visitChildren(ast);
 }
-   
+
+void SymbolCollectorVisitor::visit(ASTPackage& ast)
+{
+   mPackage = ast.getName();
+}
+
+void SymbolCollectorVisitor::visit(ASTUse& ast)
+{
+   mResolver.insert(ast.getIdentifier());
+}
+
 void SymbolCollectorVisitor::visit(ASTClass& ast)
 {
+   mpClass = &ast;
+   mContext.addClass(&ast, mPackage);
+
+   if ( ast.getName() == "ClassNotFoundException" )
+   {
+      int aap = 4;
+   }
+
    if ( ast.getName().compare("Object") != 0 )
    {
       if ( !ast.hasBaseType() )
@@ -42,30 +67,21 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
          ast.setBaseType(ptype);
       }
 
-      if ( !ast.getBaseType().resolveType(mContext, ast) )
+      if ( !ast.getBaseType().resolveType(mContext, mResolver, ast) )
       {
          // meh, class unknown!
       }
-   }
-
-   if ( ast.getName() == "ArrayList" )
-   {
-      int aap = 4;
    }
 
    ASTTypeList& intrfaces = ast.getInterfaces();
    for ( int index = 0; index < intrfaces.size(); index++ )
    {
       ASTType& type = intrfaces[index];
-      if ( !type.resolveType(mContext, ast) )
+      if ( !type.resolveType(mContext, mResolver, ast) )
       {
          mContext.getLog().error("Can not resolve type " + type.toString());
       }
    }
-   
-   mContext.addClass(&ast);
-
-   mpClass = &ast;
 
    if ( !ast.hasConstructor() )
    {
@@ -73,11 +89,13 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
    }
 
    visitChildren(ast);
+
+   mpClass->calculateResources();
 }
 
 void SymbolCollectorVisitor::visit(ASTFunction& ast)
 {
-   if ( !ast.getType().resolveType(mContext, *mpClass) )
+   if ( !ast.getType().resolveType(mContext, mResolver, *mpClass) )
    {
       // type is not known :(
    }
@@ -98,7 +116,7 @@ void SymbolCollectorVisitor::visit(ASTFunctionArgument& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( !var.getType().resolveType(mContext, *mpClass) ) // <-- need to give class as param so the previous typevariable stuff can be moved there
+   if ( !var.getType().resolveType(mContext, mResolver, *mpClass) ) // <-- need to give class as param so the previous typevariable stuff can be moved there
    {
       // complain!
    }
@@ -113,7 +131,7 @@ void SymbolCollectorVisitor::visit(ASTField& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( !var.getType().resolveType(mContext, *mpClass) )
+   if ( !var.getType().resolveType(mContext, mResolver, *mpClass) )
    {
       // complain!
    }
@@ -133,7 +151,7 @@ void SymbolCollectorVisitor::visit(ASTLocalVariable& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( !var.getType().resolveType(mContext, *mpClass) )
+   if ( !var.getType().resolveType(mContext, mResolver, *mpClass) )
    {
       // complain
    }
@@ -184,7 +202,7 @@ void SymbolCollectorVisitor::visit(ASTForeach& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( !var.getType().resolveType(mContext, *mpClass) )
+   if ( !var.getType().resolveType(mContext, mResolver, *mpClass) )
    {
       // complain
    }
@@ -263,7 +281,7 @@ void SymbolCollectorVisitor::visit(ASTUnary& ast)
 
 void SymbolCollectorVisitor::visit(ASTNew& ast)
 {
-   if ( !ast.getType().resolveType(mContext, *mpClass) )
+   if ( !ast.getType().resolveType(mContext, mResolver, *mpClass) )
    {
       // complain!
    }
@@ -273,7 +291,7 @@ void SymbolCollectorVisitor::visit(ASTNew& ast)
 
 void SymbolCollectorVisitor::visit(ASTCast& ast)
 {
-   if ( !ast.getType().resolveType(mContext, *mpClass) )
+   if ( !ast.getType().resolveType(mContext, mResolver, *mpClass) )
    {
       // complain!
    }

@@ -58,11 +58,17 @@ bool CompileContext::hasClass(const std::string& classname) const
 
 // - Operations
 
-void CompileContext::addClass(ASTClass* pclass)
+void CompileContext::addClass(ASTClass* pclass, const std::string& package)
 {
-   String s = String(pclass->getName().c_str()).toLower();
-   std::string lowercasename = s.toStdString();
+   std::string full;
+   if ( package.empty() )
+      full = pclass->getName();
+   else
+      full = package + '/' + pclass->getName();
 
+   String s = String(full.c_str()).toLower();
+   std::string lowercasename = s.toStdString();
+   
    mClasses[lowercasename] = pclass;
 }
 
@@ -81,7 +87,13 @@ ASTClass* CompileContext::findClass(const std::string& name)
    Classes::iterator it = mClasses.find(lowercasename);
    if ( it == mClasses.end() )
    {
-      mCompiler.loadClass(name);
+      std::string path = name;
+      if ( lowercasename == "box2dbody" )
+      {
+         path = "box2d/" + name;
+      }
+
+      mCompiler.loadClass(path);
       it = mClasses.find(lowercasename);
    }
 

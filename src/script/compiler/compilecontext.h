@@ -36,7 +36,7 @@ public:
    bool hasClass(const std::string& classname) const;
 
  // operations
-   void addClass(ASTClass* pclass);
+   void addClass(ASTClass* pclass, const std::string& package);
 
  // search
    const ASTClass* findClass(const std::string& classname) const;

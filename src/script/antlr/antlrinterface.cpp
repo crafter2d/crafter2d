@@ -253,7 +253,7 @@ ASTNode* AntlrParser::handleUse(const AntlrNode& node)
 
       if ( index < count - 1 )
       {
-         identifier += '\\';
+         identifier += '/';
       }
    }
 
@@ -416,7 +416,7 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
       }
    }
 
-   mContext.addClass(pclass);
+   //mContext.addClass(pclass);
 
    return pclass;
 }

@@ -1,7 +1,5 @@
 
-use arraylist;
-use Class;
-use classnotfoundexception;
+package System;
 
 class ClassLoader
 {

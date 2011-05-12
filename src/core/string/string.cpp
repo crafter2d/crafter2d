@@ -70,6 +70,11 @@ const String& String::toUpper()
    return *this;
 }
 
+void String::replace(int original, int newtext)
+{
+   mpData->mString.findAndReplace(original, newtext);
+}
+
 // - Conversion
 
 std::string String::toStdString() const

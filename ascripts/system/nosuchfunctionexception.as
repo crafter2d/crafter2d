@@ -1,5 +1,5 @@
 
-use throwable;
+package System;
 
 class NoSuchFunctionException extends Throwable
 {

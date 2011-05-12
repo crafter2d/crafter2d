@@ -1,4 +1,6 @@
 
+package System;
+
 public class Function
 {
 	private string mName;

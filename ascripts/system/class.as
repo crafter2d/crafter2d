@@ -1,6 +1,5 @@
 
-use function;
-use nosuchfunctionexception;
+package System;
 
 class Class
 {

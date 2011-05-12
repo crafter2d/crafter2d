@@ -19,7 +19,6 @@ class World
 	{
 		if ( side == 1 ) // bottom
 		{
-			/*
 			if ( begin )
 			{
 				creature.increaseOnGround();
@@ -28,7 +27,6 @@ class World
 			{
 				creature.decreaseOnGround();
 			}
-			*/
 		}
 	}
 }
