@@ -96,6 +96,10 @@ bool Compiler::compile(const std::string& classname)
 
       return true;
    }
+   else
+   {
+      displayErrors(classname);
+   }
    
    return false;
 }
@@ -139,6 +143,7 @@ bool Compiler::loadClass(const std::string& classname)
       }
    }
 
+   displayErrors(classname);
    return false;
 }
 

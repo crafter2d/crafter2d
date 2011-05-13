@@ -351,6 +351,12 @@ void Variant::int2string()
    setString(lexical_cast<std::string>(asInt()));
 }
 
+void Variant::real2int()
+{
+   ASSERT(isReal());
+   setInt((int)asReal());
+}
+
 void Variant::real2string()
 {
    ASSERT(isReal());

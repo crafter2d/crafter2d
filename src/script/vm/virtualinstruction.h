@@ -23,6 +23,7 @@ public:
       eRet,
       eInt2Real,
       eInt2String,
+      eReal2Int,
       eReal2String,
       eInt0,
       eInt1,

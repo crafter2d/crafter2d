@@ -67,6 +67,7 @@ public:
  // conversion
    void int2real();
    void int2string();
+   void real2int();
    void real2string();
 
 private:

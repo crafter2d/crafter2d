@@ -564,11 +564,6 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
    bool wasstatic = mStatic;
    mStatic = false;
 
-   if ( name == "addForceGenerator" )
-   {
-      int aap = 45;
-   }
-
    switch ( ast.getKind() )
    {
       case ASTAccess::eVariable:

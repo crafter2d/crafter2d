@@ -396,6 +396,11 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
             mStack.back().int2string();
          }
          break;
+      case VirtualInstruction::eReal2Int:
+         {
+            mStack.back().real2int();
+         }
+         break;
       case VirtualInstruction::eReal2String:
          {
             mStack.back().real2string();

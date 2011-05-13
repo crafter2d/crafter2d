@@ -1,4 +1,5 @@
 
+use bridge;
 use player;
 use scenegraph;
 use inputforcegenerator;
@@ -61,11 +62,25 @@ class Server
 		
 		player.setCreature(controller);
 		
+		createObjects(world);
+		
 		// notify the client
 		mStream.clear();
 		mStream.writeInt(1);
 		mStream.writeInt(controller.getId());
 		
 		sendScriptEvent(mStream, player.getClient());
+	}
+	
+	private void createObjects(World world)
+	{
+		Vector2D left = new Vector2D();
+		left.set(727.0, 422.0);
+		
+		Vector2D right = new Vector2D();
+		right.set(943.0, 422.0);
+		
+		Bridge bridge = new Bridge();
+		bridge.create(world, left, right);
 	}
 }

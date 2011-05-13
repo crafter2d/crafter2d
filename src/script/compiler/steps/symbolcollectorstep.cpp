@@ -41,6 +41,8 @@ void SymbolCollectorVisitor::visit(ASTRoot& ast)
 void SymbolCollectorVisitor::visit(ASTPackage& ast)
 {
    mPackage = ast.getName();
+
+   mContext.addPath(mPackage + ".*");
 }
 
 void SymbolCollectorVisitor::visit(ASTUse& ast)

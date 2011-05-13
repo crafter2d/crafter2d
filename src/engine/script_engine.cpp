@@ -10,6 +10,8 @@
 
 #include "physics/inputforcegenerator.h"
 #include "physics/box2d/box2dbody.h"
+#include "physics/box2d/box2dsimulator.h"
+#include "physics/box2d/box2drevolutejoint.h"
 
 #include "net/bitstream.h"
 
@@ -530,6 +532,17 @@ void World_setFollowObject(VirtualMachine& machine, VirtualStackAccessor& access
    pworld->setFollowObject(pcreature);
 }
 
+void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   World* pworld = (World*) thisobject->asNative().getObject();
+
+   VirtualObjectReference& object = machine.instantiateNative("Box2DSimulator", &(Box2DSimulator&)pworld->getSimulator());
+   object->asNative().setOwned(false);
+
+   accessor.setResult(object);
+}
+
 void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -572,6 +585,16 @@ void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccesso
    pgenerator->setImpulse(*pvel);
 }
 
+void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Box2DSimulator* psimulator = (Box2DSimulator*) thisobject->asNative().getObject();
+
+   Box2DRevoluteJointDefinition* pjointdef = (Box2DRevoluteJointDefinition*) accessor.getObject(1)->asNative().getObject();
+   
+   psimulator->createRevoluteJoint(*pjointdef);
+}
+
 void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -590,6 +613,78 @@ void Box2DBody_generateSensors(VirtualMachine& machine, VirtualStackAccessor& ac
    Box2DBody* pbody = (Box2DBody*) thisobject->asNative().getObject();
 
    pbody->generateSensors();
+}
+
+void Box2DRevoluteJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   Box2DRevoluteJointDefinition* pjointdef = new Box2DRevoluteJointDefinition();
+   
+   VirtualObjectReference ref = machine.instantiateNative("Box2DRevoluteJointDefinition", pjointdef);
+
+   accessor.setResult(ref);
+}
+
+void Box2DRevoluteJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+
+   VirtualObjectReference object = machine.instantiateNative("Box2DBody", pjoint->pleft);
+   object->asNative().setOwned(false);
+
+   accessor.setResult(object);
+}
+
+void Box2DRevoluteJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+
+   VirtualObjectReference& left = accessor.getObject(1);
+
+   pjoint->pleft = (Box2DBody*)left->asNative().getObject();
+}
+
+void Box2DRevoluteJointDefinition_getRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+
+   VirtualObjectReference object = machine.instantiateNative("Box2DBody", pjoint->pright);
+   object->asNative().setOwned(false);
+
+   accessor.setResult(object);
+}
+
+void Box2DRevoluteJointDefinition_setRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+
+   VirtualObjectReference& right = accessor.getObject(1);
+
+   pjoint->pright = (Box2DBody*)right->asNative().getObject();
+}
+
+void Box2DRevoluteJointDefinition_getAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+
+   VirtualObjectReference object = machine.instantiateNative("Vector2D", &pjoint->anchor);
+   object->asNative().setOwned(false);
+
+   accessor.setResult(object);
+}
+
+void Box2DRevoluteJointDefinition_setAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+
+   VirtualObjectReference& anchor = accessor.getObject(1);
+
+   pjoint->anchor = *(Vector*)anchor->asNative().getObject();
 }
 
 void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -685,13 +780,24 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("World_setFollowMode", World_setFollowMode);
    registrator.addCallback("World_setFollowObject", World_setFollowObject);
    registrator.addCallback("World_setFollowBorders", World_setFollowBorders);
+   registrator.addCallback("World_getSimulator", World_getSimulator);
 
    registrator.addCallback("InputForceGenerator_init", InputForceGenerator_init);
    registrator.addCallback("InputForceGenerator_setVelocity", InputForceGenerator_setVelocity);
    registrator.addCallback("InputForceGenerator_setImpulse", InputForceGenerator_setImpulse);
 
+   registrator.addCallback("Box2DSimulator_createRevoluteJoint", Box2DSimulator_createRevoluteJoint);
+
    registrator.addCallback("Box2DBody_addForceGenerator", Box2DBody_addForceGenerator);
    registrator.addCallback("Box2DBody_generateSensors", Box2DBody_generateSensors);
+
+   registrator.addCallback("Box2DRevoluteJointDefinition_init", Box2DRevoluteJointDefinition_init);
+   registrator.addCallback("Box2DRevoluteJointDefinition_getLeft", Box2DRevoluteJointDefinition_getLeft);
+   registrator.addCallback("Box2DRevoluteJointDefinition_setLeft", Box2DRevoluteJointDefinition_setLeft);
+   registrator.addCallback("Box2DRevoluteJointDefinition_getRight", Box2DRevoluteJointDefinition_getRight);
+   registrator.addCallback("Box2DRevoluteJointDefinition_setRight", Box2DRevoluteJointDefinition_setRight);
+   registrator.addCallback("Box2DRevoluteJointDefinition_getAnchor", Box2DRevoluteJointDefinition_getAnchor);
+   registrator.addCallback("Box2DRevoluteJointDefinition_setAnchor", Box2DRevoluteJointDefinition_setAnchor);
 
    registrator.addCallback("ActionMap_init", ActionMap_init);
 
