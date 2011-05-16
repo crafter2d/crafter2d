@@ -82,6 +82,12 @@ GameWindow::~GameWindow()
 
 bool GameWindow::create(const std::string& title, int width, int height, int bitdepth, bool fullscreen)
 {
+   if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
+   {
+      //log << "Couldn't initialize the SDL library!";
+      return false;
+   }
+
    mFlags = getWindowFlags(fullscreen);
 
    // make sure that the bitdepth is valid
@@ -112,6 +118,21 @@ void GameWindow::destroy()
       SDL_FreeSurface (mpWindow);
       mpWindow = NULL;
    }
+
+   if ( SDL_WasInit(SDL_INIT_VIDEO) )
+   {
+	   SDL_Quit ();
+   }
+}
+
+void GameWindow::update()
+{
+   handleEvents();
+}
+
+void GameWindow::display()
+{
+   SDL_GL_SwapBuffers();
 }
 
 //-----------------------------------

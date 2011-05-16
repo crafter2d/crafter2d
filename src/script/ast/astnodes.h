@@ -17,6 +17,7 @@ public:
    ~ASTNodes();
 
    void add(ASTNode* pnode);
+   void set(int index, ASTNode* pnode);
    void remove(ASTNode** pnode);
    void detach(const ASTNode& node);
 

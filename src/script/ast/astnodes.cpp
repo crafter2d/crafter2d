@@ -29,6 +29,11 @@ void ASTNodes::add(ASTNode* pnode)
    mNodes.push_back(pnode);
 }
 
+void ASTNodes::set(int index, ASTNode* pnode)
+{
+   mNodes[index] = pnode;
+}
+
 void ASTNodes::remove(ASTNode** pnode)
 {
    int index = indexOf(**pnode);

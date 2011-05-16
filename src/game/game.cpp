@@ -32,9 +32,6 @@
 #include <cstdlib>
 #include <GL/GLee.h>
 #include <GL/glu.h>
-#include <tolua++.h>
-
-#include "engine/script/scriptmanager.h"
 
 #include "core/system/platform.h"
 #include "core/system/timer.h"
@@ -43,6 +40,8 @@
 #include "core/vfs/filesystem.h"
 
 #include "core/smartptr/autoptr.h"
+
+#include "engine/script/scriptmanager.h"
 
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"
@@ -55,7 +54,6 @@
 #include "engine/net/netconnection.h"
 
 #include "engine/client.h"
-
 #include "engine/opengl.h"
 
 #include "console.h"
@@ -110,18 +108,9 @@ bool Game::create()
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
-   // initialize the video library
-   if (SDL_Init (SDL_INIT_VIDEO) < 0) {
-      log << "Couldn't initialize the SDL library!";
-      return false;
-   }
-
    mpTimerData = TIMER.createData();
 
    FileSystem::getInstance().addPath("..");
-
-   // initialize scripting engine
-   mScriptManager.initialize ();
    
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
@@ -141,7 +130,10 @@ bool Game::create()
    if ( !initOpenGL() )
    {
       return false;
-   }   
+   }
+
+   // initialize scripting engine
+   mScriptManager.initialize();
 
    // initialize the console
    Console& console = Console::getInstance();
@@ -156,16 +148,14 @@ bool Game::create()
 
    NetObjectFactory::getInstance().initialize();
 
-   log << "\n-- Initializing Sound --\n\n";
-
-   log << "\n-- Running Game --\n\n";
-
    // reload the contents of the log file for the console
    console.reload();
+
+   log << "\n-- Running Game --\n\n";
    
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
-   if ( !initGame () )
+   if ( !initGame() )
    {
       console.error("Aborted after failed game initialization.");
       return false;
@@ -187,8 +177,6 @@ void Game::destroy()
 	// release the Lua scripting environment
 	mScriptManager.destroy ();
 
-	// release the sound syste
-
    // release timer data
    TIMER.releaseData(mpTimerData);
 
@@ -198,9 +186,6 @@ void Game::destroy()
 #endif
 
    mWindow.destroy();
-
-	// finish of SDL
-	SDL_Quit ();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -218,6 +203,10 @@ void Game::onWindowResized()
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
+}
+
+void Game::onWindowClosing()
+{
 }
 
 void Game::onWindowClosed()
@@ -254,15 +243,10 @@ void Game::run()
 
 	while ( mActive )
    {
-		processFrame();
+		mWindow.update();
+
+      runFrame();
 	}
-}
-
-void Game::processFrame()
-{
-   mWindow.handleEvents();
-
-   runFrame();
 }
 
 /*!
@@ -306,10 +290,6 @@ bool Game::initGame()
    mCanvas.create(0, GuiRect(0, mWindow.getWidth(), 0, mWindow.getHeight()));
    mCanvas.changeDefaultColor(GuiCanvas::GuiWindowColor, mSettings.getWindowColor());
    mCanvas.changeDefaultColor(GuiCanvas::GuiBorderColor, mSettings.getBorderColor());
-
-   ScriptManager& scriptMgr = ScriptManager::getInstance ();
-   scriptMgr.setObject(&GuiManager::getInstance(), "GuiManager", "guimanager");
-   scriptMgr.setObject(&GuiFocus::getInstance(), "GuiFocus", "focus");
    */
 
 	return mActive;
@@ -361,5 +341,5 @@ void Game::runFrame()
    Profiler::getInstance().end();
    // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());
 
-   SDL_GL_SwapBuffers ();
+   mWindow.display();
 }

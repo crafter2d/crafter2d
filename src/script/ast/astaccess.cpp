@@ -136,6 +136,11 @@ void ASTAccess::addArgument(ASTExpression* pexpression)
    addChild(pexpression);
 }
 
+void ASTAccess::replaceArgument(int index, ASTNode* pnode)
+{
+   getChildren().set(index, pnode);
+}
+
 // - Visitor
 
 ACCEPT_IMPL(ASTAccess)

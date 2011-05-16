@@ -7,8 +7,14 @@ class Game
 	private Server mServer;
 	private Client mClient;
 	
+	private void blaat(string joop)
+	{
+	}
+	
 	public void initialize()
 	{
+		blaat("Joop" + 5);
+		
 		mServer = new Server();
 		mServer.create();
 		mServer.listen(7000);

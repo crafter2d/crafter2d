@@ -20,7 +20,6 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <SDL/SDL.h>
 #include <string>
 
 #include "engine/script/scriptmanager.h"
@@ -56,7 +55,6 @@ public:
  // operations
    bool                 create();
    void                 destroy();
-   void                 processFrame();
    void                 run();
 
  // query
@@ -64,6 +62,7 @@ public:
 
   // notifications
    void onWindowResized();
+   void onWindowClosing();
    void onWindowClosed();
    
 protected:

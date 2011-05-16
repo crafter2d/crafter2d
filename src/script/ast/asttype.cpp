@@ -22,9 +22,9 @@ ASTType ASTType::SVoidType(eVoid);
 ASTType ASTType::greaterType(const ASTType& left, const ASTType& right)
 {
    if ( left.greater(right) )
-      return left;
-   else if ( right.greater(left) )
       return right;
+   else if ( right.greater(left) )
+      return left;
 
    return ASTType();
 }
@@ -248,11 +248,12 @@ bool ASTType::equals(const ASTType& that) const
        && (isObject() ? mpObjectClass == that.mpObjectClass : true);
 }
 
+/// \brief Test whether that is greater than this type
 bool ASTType::greater(const ASTType& that) const
 {
    if ( isObject() && that.isObject() )
    {
-      // check if 'that' is a base class or implemented class
+      // check if 'that' is a extending or implemented this
       const ASTClass& thatclass = that.getObjectClass();
 
       if ( !(mTypeArguments == that.mTypeArguments) )
@@ -279,21 +280,19 @@ bool ASTType::greater(const ASTType& that) const
    }
    else if ( !isObject() && !that.isObject() )
    {
-      Kind kind = that.mKind;
-
-      switch ( mKind )
+      switch ( that.mKind )
       {
          case eBoolean:
-            return kind == eBoolean;
+            return mKind == eBoolean;
             
          case eInt:
-            return kind == eInt;
+            return mKind == eInt;
 
          case eReal:
-            return kind == eInt || kind == eReal;
+            return mKind == eInt || mKind == eReal;
 
          case eString:
-            return kind == eString || kind == eInt || kind == eReal;
+            return mKind == eString || mKind == eInt || mKind == eReal;
       }
    }
 

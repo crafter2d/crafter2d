@@ -75,12 +75,36 @@ class Server
 	private void createObjects(World world)
 	{
 		Vector2D left = new Vector2D();
-		left.set(727.0, 422.0);
+		left.set(727, 422);
 		
 		Vector2D right = new Vector2D();
-		right.set(943.0, 422.0);
+		right.set(943, 422);
 		
 		Bridge bridge = new Bridge();
 		bridge.create(world, left, right);
+		
+		left.set(180.0, 100.0);
+		Creature box = new Creature();
+		box.setPosition(left);
+		box.setName("Box1");
+		box.create(world, "../objects/box.xml");
+		
+		left.set(180.0, 60.0);
+		box = new Creature();
+		box.setPosition(left);
+		box.setName("Box2");
+		box.create(world, "../objects/box.xml");
+		
+		left.set(180.0, 40.0);
+		box = new Creature();
+		box.setPosition(left);
+		box.setName("Box3");
+		box.create(world, "../objects/box.xml");
+		
+		left.set(180.0, 20.0);
+		box = new Creature();
+		box.setPosition(left);
+		box.setName("Box4");
+		box.create(world, "../objects/box.xml");
 	}
 }

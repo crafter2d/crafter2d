@@ -53,6 +53,7 @@ public:
 
  // operations
    void addArgument(ASTExpression* pexpression);
+   void replaceArgument(int index, ASTNode* pnode);
 
  // visitor
    ACCEPT;

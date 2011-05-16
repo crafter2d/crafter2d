@@ -38,7 +38,7 @@ class Bridge
 			jointdef.getAnchor().offsetX(12.0);
 		}
 		
-		jointdef.setRight(createSide(world, right, num+1));
+		jointdef.setRight(createSide(world, right, (int) num+1));
 		simulator.createRevoluteJoint(jointdef);
 	}
 	

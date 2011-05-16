@@ -788,7 +788,7 @@ bool SymbolCheckVisitor::isVariable(const ASTNode& node) const
 void SymbolCheckVisitor::checkFunction(const ASTClass& aclass, ASTAccess& access, bool isstatic)
 {
    ASTType before = mCurrentType;
-   
+
    Signature signature;
    ASTNodes& arguments = access.getArguments();
    for ( int index = 0; index < arguments.size(); index++ )
@@ -803,6 +803,24 @@ void SymbolCheckVisitor::checkFunction(const ASTClass& aclass, ASTAccess& access
 
    if ( pfunction != NULL )
    {
+      const Signature& funcsig = pfunction->getSignature();
+
+      // check if cast is required
+      for ( int index = 0; index < signature.size(); index++ )
+      {
+         const ASTType& type = signature[index];
+         const ASTType& fnctype = funcsig[index];
+
+         if ( !fnctype.isGeneric() && !type.equals(fnctype) )
+         {
+            ASTCast* pcast = new ASTCast();
+            pcast->setType(fnctype.clone());
+            pcast->setNode(&access.getArguments()[index]);
+
+            access.replaceArgument(index, pcast);
+         }
+      }
+
       if ( isstatic && !pfunction->getModifiers().isStatic() )
       {
          mContext.getLog().error("Can not call non static function " + pfunction->getName());

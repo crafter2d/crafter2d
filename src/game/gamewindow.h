@@ -40,41 +40,43 @@ public:
    GameWindow();
    ~GameWindow();
 
-  // creation
+ // creation
    bool create(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
    void destroy();
 
-  // get/set
+ // get/set
    void setKeyEventDispatcher(KeyEventDispatcher& dispatcher);
    void setMouseEventDispatcher(MouseEventDispatcher& dispatcher);
 
    const Color& getBackgroundColor() const;
    void         setBackgroundColor(const Color& color);
 
-  // query
+ // query
    int getWidth() const;
    int getHeight() const;
-
-  // event handling
-   void handleEvents();
-
-  // operations
+   
+ // operations
    void resize(int width, int height);
    void toggleFullscreen();
+   void update();
+   void display();
 
    void takeScreenshot();
 
-  // listeners
+ // listeners
    void addListener(GameWindowListener& listener);
    void removeListener(GameWindowListener& listener);
 
 private:
    typedef std::vector<GameWindowListener*> Listeners;
 
-  // query
+ // query
    int getWindowFlags(bool fullscreen);
 
-  // callbacks
+ // event handling
+   void handleEvents();
+
+ // callbacks
    void onKeyboardEvent(SDL_KeyboardEvent& event);
    void onMouseMotionEvent(SDL_MouseMotionEvent& event);
    void onMouseButtonEvent(SDL_MouseButtonEvent& event);
