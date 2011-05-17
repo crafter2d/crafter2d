@@ -23,6 +23,7 @@
 #endif
 
 #include <fstream>
+#include <stdarg.h>
 
 /*
 #include "gui/guidialog/guidialog.h"
@@ -160,16 +161,18 @@ void Console::hide()
 
 void Console::onKeyDown (int which, bool shift, bool ctrl, bool alt)
 {
+   /*
    if ( which == SDLK_RETURN )
    {
       // execute the command
-      //ScriptManager::getInstance().executeLine(input->getCaption().c_str());
-      //input->setCaption("");
+      ScriptManager::getInstance().executeLine(input->getCaption().c_str());
+      input->setCaption("");
    }
    else if (which == SDLK_BACKQUOTE)
    {
       // hide the console
-      //Game& game = Game::getInstance();
-      //game.getCanvas().endModal(0);
+      Game& game = Game::getInstance();
+      game.getCanvas().endModal(0);
    }
+   */
 }
