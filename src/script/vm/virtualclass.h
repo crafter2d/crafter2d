@@ -11,9 +11,11 @@
 class ASTClass;
 class Variant;
 class VirtualArrayObject;
+class VirtualLookupTable;
 
 class VirtualClass
 {
+   typedef std::vector<VirtualLookupTable*> LookupTables;
 public:
    VirtualClass();
    ~VirtualClass();
@@ -51,6 +53,7 @@ public:
 
  // query
    bool isBaseClass(const VirtualClass& base) const;
+   const VirtualLookupTable& getLookupTable(int index) const;
    
  // operations
    VirtualObject*      instantiate() const;
@@ -58,6 +61,10 @@ public:
 
    const Variant& getStatic(int index) const;
    void           setStatic(int index, const Variant& value);
+
+   int addLookupTable(VirtualLookupTable* ptable);
+
+   void offsetCode(int offset);
    
 private:
    std::string             mName;
@@ -67,6 +74,7 @@ private:
    VirtualFunctionTable    mVTable;
    VirtualInstructionTable mInstructions;
    VirtualObjectReference  mClassObject;
+   LookupTables            mLookupTables;
    Variant*                mpStatics;
    int                     mStaticCount;
    int                     mVariableCount;

@@ -16,22 +16,27 @@ class ActionMap
 		}
 		else
 		{
-			if ( action == 1 ) // move left
+			switch ( action )
 			{
-				velocity.setX(-20.0);
-				
-				if ( object.direction() )
+				case 1: // move left
 				{
-					object.flip();
+					velocity.setX(-20.0);
+					
+					if ( object.direction() )
+					{
+						object.flip();
+					}
+					break;
 				}
-			}
-			else if ( action == 2 ) // move right
-			{
-				velocity.setX(20.0);
-				
-				if ( !object.direction() )
+				case 2: // move right
 				{
-					object.flip();
+					velocity.setX(20.0);
+					
+					if ( !object.direction() )
+					{
+						object.flip();
+					}
+					break;
 				}
 			}
 			

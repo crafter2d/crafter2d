@@ -176,6 +176,18 @@ void OOCheckVisitor::visit(ASTDo& ast)
    ast.getCondition().accept(*this);
 }
 
+void OOCheckVisitor::visit(ASTSwitch& ast)
+{
+   ast.getExpression().accept(*this);
+
+   visitChildren(ast);
+}
+
+void OOCheckVisitor::visit(ASTCase& ast)
+{
+   ast.getBody().accept(*this);
+}
+
 void OOCheckVisitor::visit(ASTReturn& ast)
 {
    if ( ast.hasExpression() )

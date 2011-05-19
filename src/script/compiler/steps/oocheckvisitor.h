@@ -27,6 +27,8 @@ public:
    virtual void visit(ASTForeach& ast);
    virtual void visit(ASTWhile& ast);
    virtual void visit(ASTDo& ast);
+   virtual void visit(ASTSwitch& ast);
+   virtual void visit(ASTCase& ast);
    virtual void visit(ASTReturn& ast);
    virtual void visit(ASTExpression& ast);
    virtual void visit(ASTConcatenate& ast);

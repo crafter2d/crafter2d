@@ -49,6 +49,8 @@ private:
    ASTForeach*             handleForeach(const AntlrNode& node);
    ASTWhile*               handleWhile(const AntlrNode& node);
    ASTDo*                  handleDo(const AntlrNode& node);
+   ASTSwitch*              handleSwitch(const AntlrNode& node);
+   ASTCase*                handleCase(const AntlrNode& node);
    ASTReturn*              handleReturn(const AntlrNode& node);
    ASTTry*                 handleTry(const AntlrNode& node);
    ASTCatch*               handleCatch(const AntlrNode& node);

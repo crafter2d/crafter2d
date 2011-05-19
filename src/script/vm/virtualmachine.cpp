@@ -1,4 +1,22 @@
-
+/***************************************************************************
+ *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "virtualmachine.h"
 
 #include <iostream>
@@ -19,6 +37,7 @@
 #include "virtualfunctiontable.h"
 #include "virtualfunctiontableentry.h"
 #include "virtualnativeobject.h"
+#include "virtuallookuptable.h"
 
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -606,6 +625,18 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
 
       // jumps
 
+      case VirtualInstruction::eLookup:
+         {
+            std::string classname = mContext.mLiteralTable[mStack.back().asInt()].getValue().asString();
+            const VirtualLookupTable& table = mContext.mClassTable.resolve(classname).getLookupTable(instruction.getArgument());
+            mStack.pop_back();
+
+            int codeindex = table.lookup(mStack.back());
+            mStack.pop_back();
+
+            mCall.jump(codeindex);
+         }
+         break;
       case VirtualInstruction::eJump:
          {
             mCall.jump(instruction.getArgument());
@@ -1035,6 +1066,8 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
    
    mContext.mInstructions.add(pclass->getInstructions());
 
+   pclass->offsetCode(offset);
+
    int lookback = 0;
 
    for ( int index = offset; index < mContext.mInstructions.size(); index++ )
@@ -1050,10 +1083,11 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
          case VirtualInstruction::eLoadClass:
          case VirtualInstruction::eLoadStatic:
          case VirtualInstruction::eStoreStatic:
+         case VirtualInstruction::eLookup:
             lookback++;
 
          case VirtualInstruction::eCallNative:
-         case VirtualInstruction::eLoadLiteral:
+         case VirtualInstruction::eLoadLiteral:         
             {
                VirtualInstruction& previous = mContext.mInstructions[index - lookback];
                const Literal& literal = mCompiler.lookupLiteral(previous.getArgument());

@@ -224,6 +224,18 @@ void SymbolCollectorVisitor::visit(ASTDo& ast)
    ast.getCondition().accept(*this);
 }
 
+void SymbolCollectorVisitor::visit(ASTSwitch& ast)
+{
+   ast.getExpression().accept(*this);
+
+   visitChildren(ast);
+}
+
+void SymbolCollectorVisitor::visit(ASTCase& ast)
+{
+   ast.getBody().accept(*this);
+}
+
 void SymbolCollectorVisitor::visit(ASTReturn& ast)
 {
    if ( ast.hasExpression() )

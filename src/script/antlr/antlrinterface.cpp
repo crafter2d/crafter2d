@@ -1,11 +1,9 @@
 
 #include "antlrinterface.h"
 
-// undefine the 'emit' define of Qt as ANTLR needs it
-#undef emit
-
 #include "core/defines.h"
 #include "core/conv/lexical.h"
+#include "core/smartptr/autoptr.h"
 
 #include "script/output/asLexer.h"
 #include "script/output/asParser.h"
@@ -179,6 +177,9 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
       case FOREACH:           return handleForeach(node);
       case WHILE:             return handleWhile(node);
       case DO:                return handleDo(node);
+      case SWITCH:            return handleSwitch(node);
+      case CASE:              return handleCase(node);
+      case DEFAULT:           return handleCase(node);
       case RETURN:            return handleReturn(node);
       case TRY:               return handleTry(node);
       case THROW:             return handleThrow(node);
@@ -799,6 +800,90 @@ ASTDo* AntlrParser::handleDo(const AntlrNode& node)
    pdo->setCondition(handleCompound(condition));
 
    return pdo;
+}
+
+ASTSwitch* AntlrParser::handleSwitch(const AntlrNode& node)
+{
+   ASTSwitch* pswitch = new ASTSwitch();
+
+   AntlrNode condition = node.getChild(0);
+   ASTNode* pexpr = handleTree(condition);
+   ASSERT_PTR(pexpr);
+   pswitch->setExpression(pexpr);
+   
+   int count = node.getChildCount();
+   for ( int index = 1; index < count; index++ )
+   {
+      AntlrNode child = node.getChild(index);
+      ASTCase* pcase = dynamic_cast<ASTCase*>(handleTree(child));
+      ASSERT_PTR(pcase);
+
+      pswitch->addChild(pcase);
+   }
+
+   return pswitch;
+}
+
+ASTCase* AntlrParser::handleCase(const AntlrNode& node)
+{
+   ASTCase* pcase = new ASTCase();
+
+   int bodyindex = 0;
+   if ( node.getType() == CASE )
+   {
+      pcase->setKind(ASTCase::eCase);
+
+      AntlrNode valuenode = node.getChild(0);
+      std::string valuestr = valuenode.toString();
+
+      Variant value;
+      ANTLR3_UINT32 valuetype = valuenode.getType();
+      switch ( valuetype )
+      {
+         case INT:
+            value.setInt(lexical_cast<int>(valuestr));
+            break;
+         case FLOAT:
+            value.setReal(lexical_cast<double>(valuestr));
+            break;
+      }
+
+      pcase->setValue(value);
+
+      bodyindex++;
+   }
+   else // default
+   {
+      pcase->setKind(ASTCase::eDefault);
+   }
+
+   ASTNode* pbody = NULL;
+   AntlrNode bodynode = node.getChild(bodyindex);
+   if ( node.getChildCount() == (bodyindex + 1) )
+   {
+      pbody = handleTree(bodynode);
+      if ( bodynode.getType() != BLOCK )
+      {
+         ASTBlock* pblock = new ASTBlock();
+         pblock->addChild(pbody);
+
+         pbody = pblock;
+      }
+   }
+   else
+   {
+      pbody = new ASTBlock();
+      for ( int index = bodyindex; index < node.getChildCount(); index++ )
+      {
+         bodynode = node.getChild(index);
+         ASTNode* pnode = handleTree(bodynode);
+         pbody->addChild(pnode);
+      }
+   }
+
+   pcase->setBody(pbody); // <-- always a block
+
+   return pcase;
 }
 
 ASTReturn* AntlrParser::handleReturn(const AntlrNode& node)

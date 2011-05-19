@@ -9,6 +9,7 @@
 #include "virtualclassobject.h"
 #include "virtualarrayobject.h"
 #include "virtualfunctiontable.h"
+#include "virtuallookuptable.h"
 
 VirtualClass::VirtualClass():
    mName(),
@@ -160,6 +161,28 @@ bool VirtualClass::isBaseClass(const VirtualClass& base) const
       }
 
       return false;
+   }
+}
+
+const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
+{
+   ASSERT(index >= 0 && index < mLookupTables.size());
+   return *mLookupTables[index];
+}
+
+// - Operations
+
+int VirtualClass::addLookupTable(VirtualLookupTable* ptable)
+{
+   mLookupTables.push_back(ptable);
+   return mLookupTables.size() - 1;
+}
+
+void VirtualClass::offsetCode(int offset)
+{
+   for ( std::size_t index = 0; index < mLookupTables.size(); index++ )
+   {
+      mLookupTables[index]->offsetCode(offset);
    }
 }
 

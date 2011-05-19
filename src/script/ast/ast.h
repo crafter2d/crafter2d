@@ -22,6 +22,8 @@
 #include "astforeach.h"
 #include "astwhile.h"
 #include "astdo.h"
+#include "astswitch.h"
+#include "astcase.h"
 #include "astreturn.h"
 #include "asttry.h"
 #include "astcatch.h"

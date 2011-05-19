@@ -181,7 +181,7 @@ stmt	:	block
 	|	FOREACH '(' type identifier ':' expression ')' stmt			-> ^(FOREACH type identifier expression stmt)
 	|	WHILE compound_expression stmt						-> ^(WHILE compound_expression stmt)
 	|	DO stmt WHILE compound_expression					-> ^(DO stmt compound_expression)
-	|	SWITCH compound_expression switch_body					-> ^(SWITCH compound_expression switch_body)
+	|	SWITCH compound_expression '{' switch_case* '}'				-> ^(SWITCH compound_expression switch_case*)
 	|	RETURN expression? ';'							-> ^(RETURN expression?)
 	|	TRY block catch_block* finally_block?					-> ^(TRY block catch_block* finally_block?)
 	|	THROW expression ';'							-> ^(THROW expression)
@@ -206,13 +206,9 @@ finally_block
 	:	FINALLY block								-> ^(FINALLY block)
 	;
 	
-switch_body
-	:	'{' switch_case* '}'
-	;
-	
 switch_case
-	:	CASE numeric_literal ':' stmt						-> ^(CASE numeric_literal stmt)
-	|	DEFAULT ':'stmt								-> ^(DEFAULT stmt)
+	:	CASE numeric_literal ':' block_stmt*					-> ^(CASE numeric_literal block_stmt*)
+	|	DEFAULT ':' block_stmt*							-> ^(DEFAULT block_stmt*)
 	;
 	
 local_var_decl

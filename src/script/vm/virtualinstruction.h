@@ -56,6 +56,7 @@ public:
       eCmpSmaller,
       eCmpGreater,
       eCmpGEqual,
+      eLookup,
       eJump,
       eJumpTrue,
       eJumpFalse,

@@ -17,6 +17,7 @@ class CompileContext;
 class VirtualClass;
 class VirtualFunction;
 class VirtualProgram;
+class VirtualLookupTable;
 
 class CodeGeneratorVisitor : public CompileStep
 {
@@ -38,6 +39,8 @@ public:
    virtual void visit(const ASTForeach& ast);
    virtual void visit(const ASTWhile& ast);
    virtual void visit(const ASTDo& ast);
+   virtual void visit(const ASTSwitch& ast);
+   virtual void visit(const ASTCase& ast);
    virtual void visit(const ASTReturn& ast);
    virtual void visit(const ASTTry& ast);
    virtual void visit(const ASTThrow& ast);
@@ -106,7 +109,8 @@ private:
    VirtualClass*        mpVClass;
    InstructionList      mInstructions;
    ScopeStack           mScopeStack;
-   LoopFlowStack        mLoopFlowStack;        
+   LoopFlowStack        mLoopFlowStack;
+   VirtualLookupTable*  mpLookupTable;
    int                  mLabel;
    int                  mLineNr;
    int                  mLoadFlags;

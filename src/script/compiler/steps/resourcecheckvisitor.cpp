@@ -103,6 +103,18 @@ void ResourceCheckVisitor::visit(ASTDo& ast)
    ast.getCondition().accept(*this);
 }
 
+void ResourceCheckVisitor::visit(ASTSwitch& ast)
+{
+   ast.getExpression().accept(*this);
+
+   visitChildren(ast);
+}
+   
+void ResourceCheckVisitor::visit(ASTCase& ast)
+{
+   ast.getBody().accept(*this);
+}
+
 void ResourceCheckVisitor::visit(ASTTry& ast)
 {
    ast.getBody().accept(*this);

@@ -220,6 +220,25 @@ void SymbolCheckVisitor::visit(ASTDo& ast)
    }
 }
 
+void SymbolCheckVisitor::visit(ASTSwitch& ast)
+{
+   ast.getExpression().accept(*this);
+   
+   if ( ast.getDefaultCount() > 1 )
+   {
+      mContext.getLog().error("Too many 'default' statements in switch statement (one is max).");
+   }
+
+   ast.validateCaseTypes(mContext, mCurrentType);
+
+   visitChildren(ast);
+}
+
+void SymbolCheckVisitor::visit(ASTCase& ast)
+{
+   ast.getBody().accept(*this);
+}
+
 void SymbolCheckVisitor::visit(ASTReturn& ast)
 {
    if ( ast.hasExpression() )

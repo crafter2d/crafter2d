@@ -18,6 +18,8 @@ class ASTFor;
 class ASTForeach;
 class ASTWhile;
 class ASTDo;
+class ASTSwitch;
+class ASTCase;
 class ASTReturn;
 class ASTTry;
 class ASTCatch;
@@ -63,6 +65,8 @@ public:
    VISIT(ASTForeach);
    VISIT(ASTWhile);
    VISIT(ASTDo);
+   VISIT(ASTSwitch);
+   VISIT(ASTCase);
    VISIT(ASTReturn);
    VISIT(ASTTry);
    VISIT(ASTCatch);

@@ -14,6 +14,8 @@
 #include "script/vm/virtualfunctiontable.h"
 #include "script/vm/virtualfunctiontableentry.h"
 #include "script/vm/virtualarrayreference.h"
+#include "script/vm/virtuallookuptable.h"
+
 #include "script/common/literal.h"
 #include "script/common/variant.h"
 #include "script/scope/scope.h"
@@ -22,7 +24,7 @@
 #include "script/compiler/compilecontext.h"
 #include "script/compiler/signature.h"
 
-const int labelID = 1000;
+const int labelID = 0xF000;
 
 CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    CompileStep(),
@@ -33,6 +35,8 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mpVClass(NULL),
    mInstructions(),
    mScopeStack(),
+   mLoopFlowStack(),
+   mpLookupTable(NULL),
    mLabel(0),
    mLineNr(0),
    mLoadFlags(0),
@@ -462,6 +466,48 @@ void CodeGeneratorVisitor::visit(const ASTDo& ast)
    addLabel(flow.end);
 
    mLoopFlowStack.pop();
+}
+
+void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
+{
+   LoopFlow flow;
+   flow.start = -1;
+   flow.end  = allocateLabel();
+   mLoopFlowStack.push(flow);
+
+   // create a lookup table for the values (filled by the cases)
+   mpLookupTable = new VirtualLookupTable();
+   int tableidx = mpVClass->addLookupTable(mpLookupTable);
+
+   ast.getExpression().accept(*this);
+
+   // lookup the value in the table and jump there
+   // if not found -> jump to default or skip in case no default is present
+   addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getName()));
+   addInstruction(VirtualInstruction::eLookup, tableidx);
+
+   visitChildren(ast);
+
+   mpLookupTable->setEnd(mLineNr);
+   addLabel(flow.end);
+
+   mLoopFlowStack.pop();
+}
+
+void CodeGeneratorVisitor::visit(const ASTCase& ast)
+{
+   ASSERT_PTR(mpLookupTable);
+
+   if ( ast.isCase() )
+   {
+      mpLookupTable->add(ast.getValue(), mLineNr);
+   }
+   else
+   {
+      mpLookupTable->setDefault(mLineNr);
+   }
+
+   ast.getBody().accept(*this);
 }
 
 void CodeGeneratorVisitor::visit(const ASTReturn& ast)
