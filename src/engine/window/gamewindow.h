@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2011 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,55 +17,54 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#ifndef GAME_WINDOW_H_
+#define GAME_WINDOW_H_
 
-/// \fn Process::setInitialized(bool init)
-/// \brief Set the initialized flag to signal that the process has started 
-/// up correctly.
-INLINE void Process::setInitialized(bool init)
+#include "engine/engine_base.h"
+
+#include <vector>
+
+class GameWindowListener;
+
+class ENGINE_API GameWindow
 {
-   initialized = init;
-}
+   typedef std::vector<GameWindowListener*> Listeners;
 
-/// \fn Process::getConnection()
-/// \brief Returns the net connection of this process.
-INLINE NetConnection* Process::getConnection()
-{ 
-   return &conn; 
-}
+public:
+   GameWindow();
+   virtual ~GameWindow() = 0;
 
-/// \fn Process::getSceneGraph()
-/// \brief Returns the scenegraph of this process.
-INLINE SceneGraph& Process::getSceneGraph()
-{ 
-   return graph;
-}
+ // creation
+   bool create(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
+   void destroy();
 
-INLINE ScriptManager& Process::getScriptManager()
-{
-   return mScriptManager;
-}
+ // query
+   virtual int getWidth() const;
+   virtual int getHeight() const;
 
-/// \fn Process::getActionMap()
-/// \brief Returns the current actionmap of this process.
-INLINE ActionMap* Process::getActionMap()
-{
-   return actionMap; 
-}
+ // operations
+   virtual void resize(int width, int height) = 0;
+   virtual void toggleFullscreen() = 0;
+   virtual void update() = 0;
+   virtual void display() = 0;
 
-/// \fn Process::isInitialized()
-/// \brief Returns the initialize flag.
-INLINE bool Process::isInitialized()
-{
-   return initialized;
-}
+ // listeners
+   void addListener(GameWindowListener& listener);
+   void removeListener(GameWindowListener& listener);
 
-INLINE bool Process::isActive() const
-{
-   return mActive;
-}
+protected:
+ // creation
+   virtual bool doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
+   virtual void doDestroy();
 
-INLINE void Process::setActive(bool active)
-{
-   mActive = active;
-}
+ // listener notification
+   void fireWindowClosed();
+   void fireWindowResized();
+
+private:
+
+ // members
+   Listeners mListeners;
+};
+
+#endif // GAME_WINDOW_H_

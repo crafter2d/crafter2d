@@ -60,6 +60,9 @@ public:
    bool           isInitialized();
    void           setInitialized(bool init);
 
+   bool isActive() const;
+   void setActive(bool active);
+
  // operations
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
@@ -80,6 +83,9 @@ protected:
 
 private:
    bool initializeScript();
+
+ // members
+   bool mActive;
 };
 
 #ifdef JENGINE_INLINE

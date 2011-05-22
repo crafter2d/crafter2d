@@ -84,6 +84,14 @@ VirtualMachine::VirtualMachine():
    mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
 }
 
+VirtualMachine::~VirtualMachine()
+{
+   // set destruct state, native object notifies vm when it is destructed 
+   // resulting in double delete.
+   mState = eDestruct;
+   mNativeObjects.clear();
+}
+
 // - Initialization
 
 void VirtualMachine::initialize()
@@ -1028,9 +1036,12 @@ VirtualArrayReference VirtualMachine::instantiateArray()
 
 void VirtualMachine::deleteNative(void* pobject)
 {
-   NativeObjectMap::iterator it = mNativeObjects.find(pobject);
-   if ( it != mNativeObjects.end() )
-      mNativeObjects.erase(it);
+   if ( mState != eDestruct )
+   {
+      NativeObjectMap::iterator it = mNativeObjects.find(pobject);
+      if ( it != mNativeObjects.end() )
+         mNativeObjects.erase(it);
+   }
 }
 
 // - Callbacks

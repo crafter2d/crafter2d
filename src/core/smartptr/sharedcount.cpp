@@ -16,6 +16,12 @@ SharedCount::SharedCount(const SharedCount& that):
 SharedCount::~SharedCount()
 {
    dec();
+
+   if ( (*mpCounter) == 0 )
+   {
+      delete mpCounter;
+      mpCounter = NULL;
+   }
 }
 
 const SharedCount& SharedCount::operator=(const SharedCount& that)

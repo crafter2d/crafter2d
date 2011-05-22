@@ -1,4 +1,22 @@
-
+/***************************************************************************
+ *   Copyright (C) 2011 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "core/math/vector.h"
 
 #include "script/vm/virtualnativeobject.h"
@@ -12,6 +30,8 @@
 #include "physics/box2d/box2dbody.h"
 #include "physics/box2d/box2dsimulator.h"
 #include "physics/box2d/box2drevolutejoint.h"
+
+#include "window/gamewindowfactory.h"
 
 #include "net/bitstream.h"
 
@@ -155,6 +175,14 @@ void Client_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
    pclient->render(delta);
 }
 
+void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Client* pclient = (Client*) thisobject->asNative().getObject();
+
+   accessor.setResult(pclient->isActive());
+}
+
 void Client_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -164,6 +192,18 @@ void Client_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accesso
    ref->asNative().setOwned(false);
 
    accessor.setResult(ref);
+}
+
+void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Client* pclient = (Client*) thisobject->asNative().getObject();
+
+   VirtualNativeObject& object = accessor.getObject(1)->asNative();
+   GameWindow* pwindow = (GameWindow*) object.getObject();
+   object.setOwned(false);
+
+   pclient->setWindow(pwindow);
 }
 
 void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -188,6 +228,17 @@ void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
    object.setOwned(false);
 
    pclient->setKeyMap(pmap);
+}
+
+void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   GameWindowFactory* pfactory = (GameWindowFactory*) thisobject->asNative().getObject();
+
+   VirtualObjectReference ref = machine.instantiateNative("GameWindow", pfactory->createWindow());
+   ref->asNative().setOwned(false);
+
+   accessor.setResult(ref);
 }
 
 void BitStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -721,6 +772,7 @@ void KeyMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void script_engine_register(ScriptManager& manager)
 {
    ScriptRegistrator registrator;
+
    registrator.addCallback("Server_init", Server_init);
    registrator.addCallback("Server_create", Server_create);
    registrator.addCallback("Server_listen", Server_listen);
@@ -735,9 +787,13 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Client_connect", Client_connect);
    registrator.addCallback("Client_update", Client_update);
    registrator.addCallback("Client_render", Client_render);
+   registrator.addCallback("Client_isActive", Client_isActive);
+   registrator.addCallback("Client_setWindow", Client_setWindow);
    registrator.addCallback("Client_getSceneGraph", Client_getSceneGraph);
    registrator.addCallback("Client_setActionMap", Client_setActionMap);
    registrator.addCallback("Client_setKeyMap", Client_setKeyMap);
+
+   registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
 
    registrator.addCallback("BitStream_init", BitStream_init);
    registrator.addCallback("BitStream_writeInt", BitStream_writeInt);

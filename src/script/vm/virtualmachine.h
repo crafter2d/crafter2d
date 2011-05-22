@@ -79,6 +79,14 @@ public:
       return value.asString();
    }
 
+   bool getBoolean(int argument) const {
+      Variant& value = getArgument(argument);
+      if ( !value.isBool() )
+         throw std::exception();
+
+      return value.asBool();
+   }
+
    VirtualObjectReference& getObject(int argument) const {
       Variant& value = getArgument(argument);
 
@@ -138,6 +146,7 @@ class SCRIPT_API VirtualMachine
 {
 public:
    VirtualMachine();
+   ~VirtualMachine();
 
    typedef void (*callbackfnc)(VirtualMachine& machine, VirtualStackAccessor& accessor);
 
@@ -221,7 +230,7 @@ private:
    typedef std::map<std::string, callbackfnc> Natives;
    typedef std::map<void*, VirtualObjectReference> NativeObjectMap;
 
-   enum State { eInit, eRunning, eFinalizing, eReturn };
+   enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
    
  // execution
    void execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry);

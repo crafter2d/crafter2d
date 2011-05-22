@@ -17,33 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "clientgamewindowlistener.h"
 
-#include "defaultgamewindowlistener.h"
+#include "client.h"
 
-#include "game.h"
-
-DefaultGameWindowListener::DefaultGameWindowListener(Game& game):
-   mGame(game)
+ClientGameWindowListener::ClientGameWindowListener(Client& client):
+   mClient(client)
 {
 }
 
-DefaultGameWindowListener::~DefaultGameWindowListener()
+ClientGameWindowListener::~ClientGameWindowListener()
 {
 }
 
 // - Notifications
 
-void DefaultGameWindowListener::onWindowResized()
+void ClientGameWindowListener::onWindowResized()
 {
-   mGame.onWindowResized();
+   mClient.onWindowResized();
 }
 
-bool DefaultGameWindowListener::onWindowClosing()
+bool ClientGameWindowListener::onWindowClosing()
 {
    return true;
 }
 
-void DefaultGameWindowListener::onWindowClosed()
+void ClientGameWindowListener::onWindowClosed()
 {
-   mGame.onWindowClosed();
+   mClient.onWindowClosed();
 }

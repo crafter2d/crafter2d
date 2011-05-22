@@ -24,6 +24,8 @@
 
 #include <map>
 
+#include "window/gamewindow.h"
+#include "clientgamewindowlistener.h"
 #include "idmanager.h"
 #include "object.h"
 #include "process.h"
@@ -39,6 +41,7 @@ class NameChangeObjectEvent;
 class ScriptEvent;
 
 class Input;
+class GameWindow;
 class KeyMap;
 class WorldRenderer;
 class Player;
@@ -71,6 +74,8 @@ public:
    Input&         getInput();
    void           setInput(Input& input);
 
+   void           setWindow(GameWindow* pwindow);
+
  // operations
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
@@ -79,10 +84,18 @@ public:
 
    void           sendToServer(NetObject& object);
 
+ // notifications
+   void onWindowResized();
+   void onWindowClosing();
+   void onWindowClosed();
+
  // network event callback
    virtual int    onClientEvent(int client, const NetEvent& event);
 
 private:
+ // initialization
+   bool initOpenGL();
+
  // event handlers
    void  handleConnectReplyEvent(const ConnectReplyEvent& event);
    void  handleDisconnectEvent(const DisconnectEvent& event);
@@ -95,12 +108,14 @@ private:
    void  handleNameChangeEvent(const NameChangeObjectEvent& event);
    void  handleScriptEvent(const ScriptEvent& event);
 
-   SoundManager   mSoundManager;
-   WorldRenderer* mpWorldRenderer;
-   Player*        mpPlayer;
-   KeyMap*        mpKeyMap;
-   Input*         mpInput;
-   Requests       requests;
+   GameWindow*                mpWindow;
+   ClientGameWindowListener   mWindowListener;
+   SoundManager               mSoundManager;
+   WorldRenderer*             mpWorldRenderer;
+   Player*                    mpPlayer;
+   KeyMap*                    mpKeyMap;
+   Input*                     mpInput;
+   Requests                   mRequests;
 };
 
 #ifdef JENGINE_INLINE

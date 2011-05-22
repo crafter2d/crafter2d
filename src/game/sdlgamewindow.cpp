@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "gamewindow.h"
+#include "sdlgamewindow.h"
 
 #include <SDL/SDL.h>
 
@@ -29,10 +29,6 @@
 #include "core/input/mouseevent.h"
 
 #include "console.h"
-#include "gamewindowlistener.h"
-
-#define CALL(type,array,method) \
-  for ( type::iterator it = array.begin(); it != array.end(); ++it ) (*it)->##method()
 
 static int getModifiers()
 {
@@ -65,8 +61,8 @@ static MouseEvent::Button toMouseEventButton(int sdlbutton)
    return MouseEvent::eInvalid;
 }
 
-GameWindow::GameWindow():
-   mListeners(),
+SDLGameWindow::SDLGameWindow():
+   GameWindow(),
    mpKeyDispatcher(NULL),
    mpMouseDispatcher(NULL),
    mpWindow(NULL),
@@ -76,11 +72,11 @@ GameWindow::GameWindow():
 {
 }
 
-GameWindow::~GameWindow()
+SDLGameWindow::~SDLGameWindow()
 {
 }
 
-bool GameWindow::create(const std::string& title, int width, int height, int bitdepth, bool fullscreen)
+bool SDLGameWindow::doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen)
 {
    if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
    {
@@ -110,7 +106,7 @@ bool GameWindow::create(const std::string& title, int width, int height, int bit
    return true;
 }
 
-void GameWindow::destroy()
+void SDLGameWindow::doDestroy()
 {
    if ( mpWindow != NULL )
    {
@@ -125,12 +121,12 @@ void GameWindow::destroy()
    }
 }
 
-void GameWindow::update()
+void SDLGameWindow::update()
 {
    handleEvents();
 }
 
-void GameWindow::display()
+void SDLGameWindow::display()
 {
    SDL_GL_SwapBuffers();
 }
@@ -139,22 +135,22 @@ void GameWindow::display()
 // - Get/set
 //-----------------------------------
 
-void GameWindow::setKeyEventDispatcher(KeyEventDispatcher& dispatcher)
+void SDLGameWindow::setKeyEventDispatcher(KeyEventDispatcher& dispatcher)
 {
   mpKeyDispatcher = &dispatcher;
 }
 
-void GameWindow::setMouseEventDispatcher(MouseEventDispatcher& dispatcher)
+void SDLGameWindow::setMouseEventDispatcher(MouseEventDispatcher& dispatcher)
 {
   mpMouseDispatcher = &dispatcher;
 }
 
-const Color& GameWindow::getBackgroundColor() const
+const Color& SDLGameWindow::getBackgroundColor() const
 {
    return mBackgroundColor;
 }
    
-void GameWindow::setBackgroundColor(const Color& color)
+void SDLGameWindow::setBackgroundColor(const Color& color)
 {
    mBackgroundColor;
 }
@@ -163,7 +159,7 @@ void GameWindow::setBackgroundColor(const Color& color)
 // - Query
 //-----------------------------------
 
-int GameWindow::getWindowFlags(bool fullscreen)
+int SDLGameWindow::getWindowFlags(bool fullscreen)
 {
    Log& log = Log::getInstance();
 
@@ -200,12 +196,12 @@ int GameWindow::getWindowFlags(bool fullscreen)
   return flags;
 }
 
-int GameWindow::getWidth() const
+int SDLGameWindow::getWidth() const
 {
    return mpWindow->w;
 }
 
-int GameWindow::getHeight() const
+int SDLGameWindow::getHeight() const
 {
    return mpWindow->h;
 }
@@ -214,7 +210,7 @@ int GameWindow::getHeight() const
 // - Operations
 //-----------------------------------
 
-void GameWindow::resize(int width, int height)
+void SDLGameWindow::resize(int width, int height)
 {
   // try to set the new video mode
    mpWindow = SDL_SetVideoMode(width, height, mBitDepth, mFlags);
@@ -223,44 +219,24 @@ void GameWindow::resize(int width, int height)
       Log::getInstance() << "Could not resize window to " << width << "x" << height << ": " << SDL_GetError();
    }
 
-   //CALL(Listeners, mListeners, onWindowResized);
-   for ( Listeners::iterator it = mListeners.begin(); it != mListeners.end(); ++it )
-      (*it)->onWindowResized();
+   fireWindowResized();
 }
 
-void GameWindow::toggleFullscreen()
+void SDLGameWindow::toggleFullscreen()
 {
   // not yet supported
 }
 
-void GameWindow::takeScreenshot()
+void SDLGameWindow::takeScreenshot()
 {
   SDL_SaveBMP(mpWindow, "screen1");
-}
-
-//-----------------------------------
-// - Listeners
-//-----------------------------------
-
-void GameWindow::addListener(GameWindowListener& listener)
-{
-  mListeners.push_back(&listener);
-}
-
-void GameWindow::removeListener(GameWindowListener& listener)
-{
-   Listeners::iterator it = std::find(mListeners.begin(), mListeners.end(), &listener);
-   if ( it != mListeners.end() )
-   {
-      mListeners.erase(it);
-   }
 }
 
 //-----------------------------------
 // - Event Handling
 //-----------------------------------
 
-void GameWindow::handleEvents()
+void SDLGameWindow::handleEvents()
 {
    SDL_Event event;
    SDL_PumpEvents();
@@ -291,7 +267,7 @@ void GameWindow::handleEvents()
    }
 }
 
-void GameWindow::onKeyboardEvent(SDL_KeyboardEvent& event)
+void SDLGameWindow::onKeyboardEvent(SDL_KeyboardEvent& event)
 {
   ASSERT_PTR(mpKeyDispatcher);
 
@@ -305,7 +281,7 @@ void GameWindow::onKeyboardEvent(SDL_KeyboardEvent& event)
       mpKeyDispatcher->dispatch(keyevent);
 }
 
-void GameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
+void SDLGameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
 {
    int buttons = 0;
    if ( event.state & SDL_BUTTON(SDL_BUTTON_LEFT) )
@@ -325,7 +301,7 @@ void GameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
       mpMouseDispatcher->dispatch(mouseevent);
 }
 
-void GameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
+void SDLGameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
 {
    Point location(event.x, event.y);
    MouseEvent::Button button = toMouseEventButton(event.button);
@@ -348,17 +324,15 @@ void GameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
       mpMouseDispatcher->dispatch(mouseevent);
 }
 
-void GameWindow::onQuit()
+void SDLGameWindow::onQuit()
 {
-  for ( Listeners::iterator it = mListeners.begin(); it != mListeners.end(); ++it )
+  /*for ( Listeners::iterator it = mListeners.begin(); it != mListeners.end(); ++it )
   {
     if ( !(*it)->onWindowClosing() )
     {
       return;
     }
-  }
+  }*/
 
-  //CALL(Listeners, mListeners, onWindowClosed);
-  for ( Listeners::iterator it = mListeners.begin(); it != mListeners.end(); ++it )
-     (*it)->onWindowClosed();
+  fireWindowClosed();
 }

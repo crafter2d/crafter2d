@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2011 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,55 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#include "sdlgamewindowfactory.h"
 
-/// \fn Process::setInitialized(bool init)
-/// \brief Set the initialized flag to signal that the process has started 
-/// up correctly.
-INLINE void Process::setInitialized(bool init)
+#include "sdlgamewindow.h"
+
+GameWindow* SDLGameWindowFactory::createWindow()
 {
-   initialized = init;
-}
-
-/// \fn Process::getConnection()
-/// \brief Returns the net connection of this process.
-INLINE NetConnection* Process::getConnection()
-{ 
-   return &conn; 
-}
-
-/// \fn Process::getSceneGraph()
-/// \brief Returns the scenegraph of this process.
-INLINE SceneGraph& Process::getSceneGraph()
-{ 
-   return graph;
-}
-
-INLINE ScriptManager& Process::getScriptManager()
-{
-   return mScriptManager;
-}
-
-/// \fn Process::getActionMap()
-/// \brief Returns the current actionmap of this process.
-INLINE ActionMap* Process::getActionMap()
-{
-   return actionMap; 
-}
-
-/// \fn Process::isInitialized()
-/// \brief Returns the initialize flag.
-INLINE bool Process::isInitialized()
-{
-   return initialized;
-}
-
-INLINE bool Process::isActive() const
-{
-   return mActive;
-}
-
-INLINE void Process::setActive(bool active)
-{
-   mActive = active;
+   return new SDLGameWindow();
 }

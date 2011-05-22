@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2011 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,6 +25,8 @@
 
 #include "core/math/color.h"
 
+#include "engine/window/gamewindow.h"
+
 struct SDL_KeyboardEvent;
 struct SDL_MouseMotionEvent;
 struct SDL_MouseButtonEvent;
@@ -34,15 +36,11 @@ class GameWindowListener;
 class KeyEventDispatcher;
 class MouseEventDispatcher;
 
-class GameWindow
+class SDLGameWindow : public GameWindow
 {
 public:
-   GameWindow();
-   ~GameWindow();
-
- // creation
-   bool create(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
-   void destroy();
+   SDLGameWindow();
+   ~SDLGameWindow();
 
  // get/set
    void setKeyEventDispatcher(KeyEventDispatcher& dispatcher);
@@ -63,13 +61,12 @@ public:
 
    void takeScreenshot();
 
- // listeners
-   void addListener(GameWindowListener& listener);
-   void removeListener(GameWindowListener& listener);
+protected:
+ // creation
+   bool doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
+   void doDestroy();
 
 private:
-   typedef std::vector<GameWindowListener*> Listeners;
-
  // query
    int getWindowFlags(bool fullscreen);
 
@@ -82,7 +79,6 @@ private:
    void onMouseButtonEvent(SDL_MouseButtonEvent& event);
    void onQuit();
 
-   Listeners             mListeners;
    KeyEventDispatcher*   mpKeyDispatcher;
    MouseEventDispatcher* mpMouseDispatcher;
    SDL_Surface*          mpWindow;

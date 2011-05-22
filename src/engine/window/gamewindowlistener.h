@@ -17,26 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef DEFAULT_GAME_WINDOW_LISTENER_H
-#define DEFAULT_GAME_WINDOW_LISTENER_H
+#ifndef GAME_WINDOW_LISTENER_H
+#define GAME_WINDOW_LISTENER_H
 
-#include "gamewindowlistener.h"
+#include "engine/engine_base.h"
 
-class Game;
-
-class DefaultGameWindowListener : public GameWindowListener
+class ENGINE_API GameWindowListener
 {
 public:
-   explicit DefaultGameWindowListener(Game& game);
-   virtual ~DefaultGameWindowListener();
+   GameWindowListener();
+   virtual ~GameWindowListener() = 0;
 
-  // notifications
+   /// \fn GameWindowListener::onWindowResized()
+   /// Called when game window is resized
    virtual void onWindowResized();
-   virtual bool onWindowClosing();
-   virtual void onWindowClosed();
 
-private:
-   Game& mGame;
+   /// \fn GameWindowListener::onWindowClosing()
+   /// Called when user is closing the game window
+   /// \return true when game may close, false otherwise
+   virtual bool onWindowClosing();
+
+   /// \fn GameWindowListener::onWindowClosed
+   /// Called when the game window is closed.
+   virtual void onWindowClosed();
 };
 
 #endif

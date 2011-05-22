@@ -43,6 +43,7 @@ void Script::setThis(void* pthis)
    if ( !mClassName.empty() )
    {
       mObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis);
+      mObject->asNative().setOwned(false);
    }
 }
 

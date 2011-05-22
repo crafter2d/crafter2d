@@ -36,41 +36,33 @@
 #include "core/system/platform.h"
 #include "core/system/timer.h"
 #include "core/system/timerdelta.h"
-
 #include "core/vfs/filesystem.h"
-
 #include "core/smartptr/autoptr.h"
 
-#include "engine/script/scriptmanager.h"
-
+#include "engine/script/script.h"
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"
-
 #include "engine/physics/physicsfactory.h"
 #include "engine/physics/box2d/box2dfactory.h"
 #include "engine/physics/simulationfactoryregistry.h"
-
 #include "engine/net/netobjectfactory.h"
 #include "engine/net/netconnection.h"
 
-#include "engine/client.h"
-#include "engine/opengl.h"
-
 #include "console.h"
 #include "gamesettings.h"
+#include "script_game.h"
 
 /*!
     \fn Game::Game()
 	 \brief Initialized member variables
  */
 Game::Game():
-   mWindow(),
-   mWindowListener(*this),
    mSettings(),
    mTitle(),
-   mpTimerData(NULL),
    mScriptManager(),
    mpScript(NULL),
+   mpWindowFactory(NULL),
+   mpTimerData(NULL),
    mActive(true)
 {
 }
@@ -120,20 +112,9 @@ bool Game::create()
 
    mSettings.initialize();
 
-   mWindow.addListener(mWindowListener);
-   if ( !mWindow.create(mTitle, mSettings.getWidth(), mSettings.getHeight(), mSettings.getBitDepth(), false) )
-   {
-      return false;
-   }
-
-   // now initialize OpenGL for rendering
-   if ( !initOpenGL() )
-   {
-      return false;
-   }
-
    // initialize scripting engine
    mScriptManager.initialize();
+   script_game_register(mScriptManager);
 
    // initialize the console
    Console& console = Console::getInstance();
@@ -184,53 +165,11 @@ void Game::destroy()
    // release the avi library
    AVIFileExit();
 #endif
-
-   mWindow.destroy();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Notifications
-//////////////////////////////////////////////////////////////////////////
-
-void Game::onWindowResized()
-{
-   // set the new opengl states
-   glViewport(0, 0, mWindow.getWidth(), mWindow.getHeight());
-
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   glOrtho(0, mWindow.getWidth(), mWindow.getHeight(), 0, 0, 1000);
-
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-}
-
-void Game::onWindowClosing()
-{
-}
-
-void Game::onWindowClosed()
-{
-  setActive(false);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // - operations
 //////////////////////////////////////////////////////////////////////////
-
-/*!
-    \fn Game::initOpenGL()
- */
-bool Game::initOpenGL()
-{
-   const Color& color = mSettings.getClearColor();
-   glClearColor(color.getRed(), color.getGreen(), color.getBlue(), 0.0f);
-
-	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glShadeModel (GL_SMOOTH);
-
-	return OpenGL::initialize ();
-}
 
 /*!
     \fn Game::run()
@@ -243,22 +182,8 @@ void Game::run()
 
 	while ( mActive )
    {
-		mWindow.update();
-
-      runFrame();
+		runFrame();
 	}
-}
-
-/*!
-   \fn Game::getWindowDimensions(int& w, int& h)
-   \brief Returns the current dimensions of the window.
-   \param w The width of the window
-   \param h The height of the window
-*/
-void Game::getWindowDimensions(int& w, int& h)
-{
-   w = mWindow.getWidth();
-   h = mWindow.getHeight();
 }
 
 /*!
@@ -324,22 +249,11 @@ void Game::runFrame()
    mScriptManager.update(delta);
    if ( !isActive() )
       return;
-   
-   // here also nothing happens (should be overloaded)
-   glLoadIdentity ();
-   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glAlphaFunc (GL_GREATER, 0.1f);
-   glEnable (GL_ALPHA_TEST);
 
    ASSERT_PTR(mpScript);
    mpScript->addParam(delta);
    mpScript->run("run");
 
-   //glDisable(GL_MULTISAMPLE);
-   glDisable (GL_ALPHA_TEST);
-
    Profiler::getInstance().end();
    // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());
-
-   mWindow.display();
 }

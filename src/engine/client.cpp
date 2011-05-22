@@ -24,6 +24,7 @@
 
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
+#include "core/math/color.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
@@ -49,14 +50,18 @@
 #include "sceneobject.h"
 #include "actionmap.h"
 #include "keymap.h"
+#include "opengl.h"
 
 Client::Client():
    Process("Client"),
+   mpWindow(NULL),
+   mWindowListener(*this),
    mSoundManager(),
    mpWorldRenderer(NULL),
    mpPlayer(NULL),
    mpKeyMap(NULL),
-   requests()
+   mpInput(NULL),
+   mRequests()
 {
 }
 
@@ -65,11 +70,26 @@ Client::~Client()
    disconnect();
 }
 
+// - Creation
+
 bool Client::create()
 {
    bool success = Process::create();
    if ( success )
    {
+      ASSERT_PTR(mpWindow);
+
+      mpWindow->addListener(mWindowListener);
+      if ( !mpWindow->create("GameWindow", 800, 600, 32, false) )
+      {
+         return false;
+      }
+
+      if ( !initOpenGL() )
+      {
+         return false;
+      }
+
       Log& log = Log::getInstance();
       log << "\n-- Initializing Sound --\n\n";
 
@@ -85,6 +105,9 @@ bool Client::destroy()
    conn.setAccepting(false);
 
    mSoundManager.destroy();
+
+   delete mpWindow;
+   mpWindow = NULL;
 
    return Process::destroy();
 }
@@ -126,7 +149,9 @@ void Client::update(float delta)
 {
    Process::update(delta);
 
-   if ( hasKeyMap() && hasInput() )
+   mpWindow->update();
+
+   if ( hasKeyMap() )
    {
       mpKeyMap->update();
    }
@@ -136,6 +161,11 @@ void Client::update(float delta)
 
 void Client::render(float delta)
 {
+   glLoadIdentity ();
+   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glAlphaFunc (GL_GREATER, 0.1f);
+   glEnable (GL_ALPHA_TEST);
+
    if ( mpWorldRenderer != NULL )
    {
       // set the sound of the player
@@ -144,7 +174,11 @@ void Client::render(float delta)
          mSoundManager.setPlayerPosition(pcontroler->getPosition());
 
       mpWorldRenderer->render(delta);
+
+      mpWindow->display();
    }
+
+   glDisable (GL_ALPHA_TEST);
 }
 
 //---------------------------------------------
@@ -175,9 +209,27 @@ INLINE void Client::setKeyMap(KeyMap* pkeymap)
       mpKeyMap->setClient(*this);
 }
 
+void Client::setWindow(GameWindow* pwindow)
+{
+   delete mpWindow;
+   mpWindow = pwindow;
+}
+
 //---------------------------------------------
 // - Operations
 //---------------------------------------------
+
+bool Client::initOpenGL()
+{
+   //const Color& color = mSettings.getClearColor();
+   const Color color(75, 150, 230, 255);
+   glClearColor(color.getRed(), color.getGreen(), color.getBlue(), 0.0f);
+
+	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glShadeModel (GL_SMOOTH);
+
+	return OpenGL::initialize ();
+}
 
 bool Client::loadWorld(const std::string& filename, const std::string& name)
 {
@@ -360,9 +412,9 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
    */
 
    // remove the request
-   Requests::iterator it = requests.find(obj->getId());
-   if ( it != requests.end() )
-      requests.erase(it);
+   Requests::iterator it = mRequests.find(obj->getId());
+   if ( it != mRequests.end() )
+      mRequests.erase(it);
 }
 
 void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
@@ -380,13 +432,13 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
    SceneObject* pobject = graph.find(event.getId());
    if ( pobject == NULL )
    {
-      if ( requests.find(event.getId()) == requests.end() )
+      if ( mRequests.find(event.getId()) == mRequests.end() )
       {
          // unknown object, must have been generated before the player entered the game
          RequestObjectEvent event(event.getId());
          getConnection()->send(&event);
 
-         requests[event.getId()] = true;
+         mRequests[event.getId()] = true;
       }
    }
    else
@@ -410,4 +462,28 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    // run the onClientConnect script
    mpScript->addParam("BitStream", stream.getPointer());
    mpScript->run("onScriptEvent");
+}
+
+// - Notifications
+
+void Client::onWindowResized()
+{
+   // set the new opengl states
+   glViewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
+
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrtho(0, mpWindow->getWidth(), mpWindow->getHeight(), 0, 0, 1000);
+
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+}
+
+void Client::onWindowClosing()
+{
+}
+
+void Client::onWindowClosed()
+{
+   setActive(false);
 }

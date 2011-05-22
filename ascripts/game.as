@@ -1,4 +1,7 @@
 
+use system.gamewindowfactory;
+use system.gamewindow;
+
 use client;
 use server;
 
@@ -7,19 +10,17 @@ class Game
 	private Server mServer;
 	private Client mClient;
 	
-	private void blaat(string joop)
-	{
-	}
+	public native GameWindowFactory getWindowFactory();
+	public native void setActive(boolean active);
 	
 	public void initialize()
 	{
-		blaat("Joop" + 5);
-		
 		mServer = new Server();
 		mServer.create();
 		mServer.listen(7000);
 		
 		mClient = new Client();
+		mClient.setWindow(getWindowFactory().createWindow());
 		mClient.create();
 		mClient.connect("localhost", 7000, "player");
 	}
@@ -34,5 +35,10 @@ class Game
 		
 		mClient.update(delta);
 		mClient.render(delta);
+		
+		if ( !mClient.isActive() )
+		{
+			setActive(false);
+		}
 	}
 }

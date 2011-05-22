@@ -43,7 +43,8 @@ Process::Process(const std::string& name):
    mScriptManager(),
    mpScript(NULL),
    actionMap(NULL),
-   initialized(false)
+   initialized(false),
+   mActive(true)
 {
 }
 

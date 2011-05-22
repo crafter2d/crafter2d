@@ -1,4 +1,6 @@
 
+use system.gamewindow;
+
 use actionmap;
 use bitstream;
 use keymap;
@@ -12,8 +14,10 @@ class Client
 	public native void update(real delta);
 	public native void render(real delta);
 	public native SceneGraph getSceneGraph();
+	public native void setWindow(GameWindow window);
 	public native void setActionMap(ActionMap map);
 	public native void setKeyMap(KeyMap map);
+	public native boolean isActive();
 	
 	public void onConnected()
 	{

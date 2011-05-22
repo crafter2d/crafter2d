@@ -15,8 +15,6 @@ VirtualNativeObject::VirtualNativeObject(VirtualMachine& machine, void* pobject)
 
 VirtualNativeObject::~VirtualNativeObject()
 {
-   mMachine.deleteNative(mpObject);
-
    setObject(NULL);
 }
 
@@ -29,9 +27,18 @@ void* VirtualNativeObject::getObject()
 
 void VirtualNativeObject::setObject(void* pobject)
 {
-   if ( mOwned )
-      delete mpObject;
-   mpObject = pobject;
+   if ( mpObject != pobject )
+   {
+      mMachine.deleteNative(mpObject);
+
+      if ( mOwned )
+      {
+         delete mpObject;
+         mpObject = NULL;
+      }
+
+      mpObject = pobject;
+   }
 }
 
 void VirtualNativeObject::setOwned(bool owned)
