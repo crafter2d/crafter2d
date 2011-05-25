@@ -49,7 +49,7 @@ private:
    void validateClass(const ASTClass& aclass);
 
    CompileContext&      mContext;
-   const ASTClass*      mpClass;
+   ASTClass*            mpClass;
    const ASTVariable*   mpVariable;
    const ASTType*       mpCurrentType;
    ScopeStack           mScopeStack;

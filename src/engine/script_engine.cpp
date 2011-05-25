@@ -46,17 +46,20 @@
 
 void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   VirtualObjectReference& thisobject = accessor.getThis();
+   
    Server* pserver = new Server();
+   thisobject->setNativeObject(pserver);
 
-   VirtualObjectReference ref = machine.instantiateNative("Server", pserver);
+   //VirtualObjectReference ref = machine.instantiateNative("Server", pserver);
 
-   accessor.setResult(ref);
+   //accessor.setResult(ref);
 }
 
 void Server_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->asNative().getObject();
+   Server* pserver = (Server*) thisobject->getNativeObject();
 
    accessor.setResult(pserver->create());
 }
@@ -64,7 +67,7 @@ void Server_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->asNative().getObject();
+   Server* pserver = (Server*) thisobject->getNativeObject();
 
    int port = accessor.getInt(1);
 
@@ -74,11 +77,9 @@ void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Server_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->asNative().getObject();
+   Server* pserver = (Server*) thisobject->getNativeObject();
 
-   VirtualNativeObject& object = accessor.getObject(1)->asNative();
-   ActionMap* pmap = (ActionMap*) object.getObject();
-   object.setOwned(false);
+   ActionMap* pmap = (ActionMap*) accessor.getObject(1)->useNativeObject();
 
    pserver->setActionMap(pmap);
 }
@@ -86,7 +87,7 @@ void Server_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor
 void Server_loadWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->asNative().getObject();
+   Server* pserver = (Server*) thisobject->getNativeObject();
 
    std::string worldfile = accessor.getString(1);
    std::string objectname = accessor.getString(2);
@@ -97,9 +98,9 @@ void Server_loadWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->asNative().getObject();
+   Server* pserver = (Server*) thisobject->getNativeObject();
 
-   BitStream* pstream = (BitStream*) accessor.getObject(1)->asNative().getObject();
+   BitStream* pstream = (BitStream*) accessor.getObject(1)->getNativeObject();
    int client = accessor.getInt(2);
 
    pserver->sendScriptEvent(pstream, client);
@@ -108,10 +109,9 @@ void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& acces
 void Server_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->asNative().getObject();
+   Server* pserver = (Server*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pserver->getSceneGraph());
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pserver->getSceneGraph(), false);
 
    accessor.setResult(ref);
 }
@@ -119,7 +119,7 @@ void Server_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accesso
 void Server_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->asNative().getObject();
+   Server* pserver = (Server*) thisobject->getNativeObject();
 
    float delta = accessor.getReal(1);
 
@@ -128,17 +128,20 @@ void Server_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void Client_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   VirtualObjectReference& thisobject = accessor.getThis();
+
    Client* pclient = new Client();
+   thisobject->setNativeObject(pclient);
 
-   VirtualObjectReference ref = machine.instantiateNative("Client", pclient);
+   //VirtualObjectReference ref = machine.instantiateNative("Client", pclient);
 
-   accessor.setResult(ref);
+   //accessor.setResult(ref);
 }
 
 void Client_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
    accessor.setResult(pclient->create());
 }
@@ -146,7 +149,7 @@ void Client_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
    std::string ip = accessor.getString(1);
    int port = accessor.getInt(2);
@@ -158,7 +161,7 @@ void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Client_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
    float delta = accessor.getReal(1);
 
@@ -168,7 +171,7 @@ void Client_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Client_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
    float delta = accessor.getReal(1);
 
@@ -178,7 +181,7 @@ void Client_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
    accessor.setResult(pclient->isActive());
 }
@@ -186,10 +189,9 @@ void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Client_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pclient->getSceneGraph());
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pclient->getSceneGraph(), false);
 
    accessor.setResult(ref);
 }
@@ -197,23 +199,19 @@ void Client_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accesso
 void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
-   VirtualNativeObject& object = accessor.getObject(1)->asNative();
-   GameWindow* pwindow = (GameWindow*) object.getObject();
-   object.setOwned(false);
-
+   GameWindow* pwindow = (GameWindow*) accessor.getObject(1)->useNativeObject();
+   
    pclient->setWindow(pwindow);
 }
 
 void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
-   VirtualNativeObject& object = accessor.getObject(1)->asNative();
-   ActionMap* pmap = (ActionMap*) object.getObject();
-   object.setOwned(false);
+   ActionMap* pmap = (ActionMap*) accessor.getObject(1)->useNativeObject();
 
    pclient->setActionMap(pmap);
 }
@@ -221,11 +219,9 @@ void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor
 void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->asNative().getObject();
+   Client* pclient = (Client*) thisobject->getNativeObject();
 
-   VirtualNativeObject& object = accessor.getObject(1)->asNative();
-   KeyMap* pmap = (KeyMap*) object.getObject();
-   object.setOwned(false);
+   KeyMap* pmap = (KeyMap*) accessor.getObject(1)->useNativeObject();
 
    pclient->setKeyMap(pmap);
 }
@@ -233,27 +229,29 @@ void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   GameWindowFactory* pfactory = (GameWindowFactory*) thisobject->asNative().getObject();
+   GameWindowFactory* pfactory = (GameWindowFactory*) thisobject->getNativeObject();
 
    VirtualObjectReference ref = machine.instantiateNative("GameWindow", pfactory->createWindow());
-   ref->asNative().setOwned(false);
 
    accessor.setResult(ref);
 }
 
 void BitStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   BitStream* pstream = new BitStream();
-   
-   VirtualObjectReference ref = machine.instantiateNative("BitStream", pstream);
+   VirtualObjectReference& thisobject = accessor.getThis();
 
-   accessor.setResult(ref);
+   BitStream* pstream = new BitStream();
+   thisobject->setNativeObject(pstream);
+
+   //VirtualObjectReference ref = machine.instantiateNative("BitStream", pstream);
+
+   //accessor.setResult(ref);
 }
 
 void BitStream_writeInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   BitStream* pstream = (BitStream*) thisobject->asNative().getObject();
+   BitStream* pstream = (BitStream*) thisobject->getNativeObject();
 
    int value = accessor.getInt(1);
 
@@ -263,7 +261,7 @@ void BitStream_writeInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void BitStream_readInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   BitStream* pstream = (BitStream*) thisobject->asNative().getObject();
+   BitStream* pstream = (BitStream*) thisobject->getNativeObject();
 
    accessor.setResult(pstream->readInt());
 }
@@ -271,26 +269,30 @@ void BitStream_readInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void BitStream_clear(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   BitStream* pstream = (BitStream*) thisobject->asNative().getObject();
+   BitStream* pstream = (BitStream*) thisobject->getNativeObject();
 
    pstream->clear();
 }
 
 void Creature_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   VirtualObjectReference& thisobject = accessor.getThis();
+
    Creature* pcreature = new Creature();
+   thisobject->setNativeObject(pcreature);
 
-   VirtualObjectReference ref = machine.instantiateNative("Creature", pcreature);
+   //VirtualObjectReference ref = machine.instantiateNative("Creature", pcreature);
 
-   accessor.setResult(ref);
+   //accessor.setResult(ref);
 }
 
 void Creature_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   thisobject->setOwner(false);
 
-   World* pworld = (World*) accessor.getObject(1)->asNative().getObject();
+   World* pworld = (World*) accessor.getObject(1)->getNativeObject();
    const std::string& file = accessor.getString(2);
 
    accessor.setResult(pcreature->create(*pworld, file));
@@ -299,7 +301,7 @@ void Creature_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Creature_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
    accessor.setResult((int)pcreature->getId());
 }
@@ -307,10 +309,9 @@ void Creature_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Creature_getPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pcreature->getPosition()));
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pcreature->getPosition()), false);
 
    accessor.setResult(ref);
 }
@@ -318,9 +319,9 @@ void Creature_getPosition(VirtualMachine& machine, VirtualStackAccessor& accesso
 void Creature_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
-   Vector* ppos = (Vector*) accessor.getObject(1)->asNative().getObject();
+   Vector* ppos = (Vector*) accessor.getObject(1)->getNativeObject();
 
    pcreature->setPosition(*ppos);
 }
@@ -328,10 +329,9 @@ void Creature_setPosition(VirtualMachine& machine, VirtualStackAccessor& accesso
 void Creature_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pcreature->getVelocity()));
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pcreature->getVelocity()), false);
 
    accessor.setResult(ref);
 }
@@ -339,9 +339,9 @@ void Creature_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accesso
 void Creature_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
-   Vector* ppos = (Vector*) accessor.getObject(1)->asNative().getObject();
+   Vector* ppos = (Vector*) accessor.getObject(1)->getNativeObject();
 
    pcreature->setVelocity(*ppos);
 }
@@ -349,7 +349,7 @@ void Creature_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accesso
 void Creature_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
    const std::string& name = accessor.getString(1);
 
@@ -359,7 +359,7 @@ void Creature_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Creature_setAnimation(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
    int index = accessor.getInt(1);
 
@@ -369,7 +369,7 @@ void Creature_setAnimation(VirtualMachine& machine, VirtualStackAccessor& access
 void Creature_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
    accessor.setResult(pcreature->direction());
 }
@@ -377,7 +377,7 @@ void Creature_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Creature_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
    pcreature->flip();
 }
@@ -385,10 +385,9 @@ void Creature_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Creature_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->asNative().getObject();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("Box2DBody", &pcreature->getBody());
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("Box2DBody", &pcreature->getBody(), false);
 
    accessor.setResult(ref);
 }
@@ -396,7 +395,7 @@ void Creature_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Player_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Player* pplayer = (Player*) thisobject->asNative().getObject();
+   Player* pplayer = (Player*) thisobject->getNativeObject();
 
    accessor.setResult(pplayer->getName());
 }
@@ -404,7 +403,7 @@ void Player_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Player_getClient(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Player* pplayer = (Player*) thisobject->asNative().getObject();
+   Player* pplayer = (Player*) thisobject->getNativeObject();
 
    accessor.setResult(pplayer->client);
 }
@@ -412,10 +411,9 @@ void Player_getClient(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Player_getController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Player* pplayer = (Player*) thisobject->asNative().getObject();
+   Player* pplayer = (Player*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("Creature", pplayer->controler);
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("Creature", pplayer->controler, false);
 
    accessor.setResult(ref);
 }
@@ -423,28 +421,29 @@ void Player_getController(VirtualMachine& machine, VirtualStackAccessor& accesso
 void Player_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Player* pplayer = (Player*) thisobject->asNative().getObject();
+   Player* pplayer = (Player*) thisobject->getNativeObject();
 
-   VirtualNativeObject& object = accessor.getObject(1)->asNative();
-   Creature* pcreature = (Creature*) object.getObject();
-   object.setOwned(false);
+   Creature* pcreature = (Creature*) accessor.getObject(1)->useNativeObject();
 
    pplayer->controler = pcreature;
 }
 
 void Vector2D_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   VirtualObjectReference& thisobject = accessor.getThis();
+
    Vector* pvector = new Vector();
+   thisobject->setNativeObject(pvector);
 
-   VirtualObjectReference ref = machine.instantiateNative("Vector2D", pvector);
+   //VirtualObjectReference ref = machine.instantiateNative("Vector2D", pvector);
 
-   accessor.setResult(ref);
+   //accessor.setResult(ref);
 }
 
 void Vector2D_getX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Vector* pvector = (Vector*) thisobject->asNative().getObject();
+   Vector* pvector = (Vector*) thisobject->getNativeObject();
 
    accessor.setResult(pvector->x);
 }
@@ -452,7 +451,7 @@ void Vector2D_getX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Vector2D_setX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Vector* pvector = (Vector*) thisobject->asNative().getObject();
+   Vector* pvector = (Vector*) thisobject->getNativeObject();
 
    float x = accessor.getReal(1);
 
@@ -462,7 +461,7 @@ void Vector2D_setX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Vector2D_getY(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Vector* pvector = (Vector*) thisobject->asNative().getObject();
+   Vector* pvector = (Vector*) thisobject->getNativeObject();
 
    accessor.setResult(pvector->y);
 }
@@ -470,7 +469,7 @@ void Vector2D_getY(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Vector2D_setY(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Vector* pvector = (Vector*) thisobject->asNative().getObject();
+   Vector* pvector = (Vector*) thisobject->getNativeObject();
 
    float y = accessor.getReal(1);
 
@@ -480,10 +479,9 @@ void Vector2D_setY(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void SceneGraph_getWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   SceneGraph* pgraph = (SceneGraph*) thisobject->asNative().getObject();
+   SceneGraph* pgraph = (SceneGraph*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("World", pgraph->getWorld());
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("World", pgraph->getWorld(), false);
 
    accessor.setResult(ref);
 }
@@ -491,12 +489,11 @@ void SceneGraph_getWorld(VirtualMachine& machine, VirtualStackAccessor& accessor
 void SceneGraph_find(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   SceneGraph* pgraph = (SceneGraph*) thisobject->asNative().getObject();
+   SceneGraph* pgraph = (SceneGraph*) thisobject->getNativeObject();
 
    int id = accessor.getInt(1);
 
-   VirtualObjectReference ref = machine.instantiateNative("Creature", pgraph->find(id));
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("Creature", pgraph->find(id), false);
 
    accessor.setResult(ref);
 }
@@ -504,26 +501,29 @@ void SceneGraph_find(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void SceneGraph_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   SceneGraph* pgraph = (SceneGraph*) thisobject->asNative().getObject();
+   SceneGraph* pgraph = (SceneGraph*) thisobject->getNativeObject();
 
-   Object* pobject = (Object*) accessor.getObject(1)->asNative().getObject();
+   Object* pobject = (Object*) accessor.getObject(1)->useNativeObject();
 
    pgraph->setControler(pobject);
 }
 
 void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   World* pworld = new World();
-   
-   VirtualObjectReference ref = machine.instantiateNative("World", pworld);
+   VirtualObjectReference& thisobject = accessor.getThis();
 
-   accessor.setResult(ref);
+   World* pworld = new World();
+   thisobject->setNativeObject(pworld);
+   
+   //VirtualObjectReference ref = machine.instantiateNative("World", pworld);
+
+   //accessor.setResult(ref);
 }
 
 void World_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
+   World* pworld = (World*) thisobject->getNativeObject();
 
    accessor.setResult(pworld->getName());
 }
@@ -531,10 +531,9 @@ void World_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void World_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
+   World* pworld = (World*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pworld->getSceneGraph());
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pworld->getSceneGraph(), false);
 
    accessor.setResult(ref);
 }
@@ -542,11 +541,9 @@ void World_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor
 void World_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
+   World* pworld = (World*) thisobject->getNativeObject();
 
-   VirtualNativeObject& object = accessor.getObject(1)->asNative();
-   Creature* pcreature = (Creature*) object.getObject();
-   object.setOwned(false);
+   Creature* pcreature = (Creature*) accessor.getObject(1)->useNativeObject();
 
    pworld->add(pcreature);
 }
@@ -554,7 +551,7 @@ void World_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void World_setObjectLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
+   World* pworld = (World*) thisobject->getNativeObject();
 
    int layer = accessor.getInt(1);
 
@@ -564,7 +561,7 @@ void World_setObjectLayer(VirtualMachine& machine, VirtualStackAccessor& accesso
 void World_setFollowMode(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
+   World* pworld = (World*) thisobject->getNativeObject();
 
    int mode = accessor.getInt(1);
 
@@ -574,22 +571,19 @@ void World_setFollowMode(VirtualMachine& machine, VirtualStackAccessor& accessor
 void World_setFollowObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
+   World* pworld = (World*) thisobject->getNativeObject();
 
-   VirtualNativeObject& object = accessor.getObject(1)->asNative();
-   Creature* pcreature = (Creature*) object.getObject();
-   object.setOwned(false);
-
+   Creature* pcreature = (Creature*) accessor.getObject(1)->useNativeObject();
+   
    pworld->setFollowObject(pcreature);
 }
 
 void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
+   World* pworld = (World*) thisobject->getNativeObject();
 
-   VirtualObjectReference& object = machine.instantiateNative("Box2DSimulator", &(Box2DSimulator&)pworld->getSimulator());
-   object->asNative().setOwned(false);
+   VirtualObjectReference& object = machine.instantiateNative("Box2DSimulator", &(Box2DSimulator&)pworld->getSimulator(), false);
 
    accessor.setResult(object);
 }
@@ -597,7 +591,7 @@ void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->asNative().getObject();
+   World* pworld = (World*) thisobject->getNativeObject();
 
    int left = accessor.getInt(1);
    int right = accessor.getInt(2);
@@ -609,19 +603,22 @@ void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& acces
 
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   VirtualObjectReference& thisobject = accessor.getThis();
+
    InputForceGenerator* pgenerator = new InputForceGenerator();
+   thisobject->setNativeObject(pgenerator);
 
-   VirtualObjectReference ref = machine.instantiateNative("InputForceGenerator", pgenerator);
+   //VirtualObjectReference ref = machine.instantiateNative("InputForceGenerator", pgenerator);
 
-   accessor.setResult(ref);
+   //accessor.setResult(ref);
 }
 
 void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   InputForceGenerator* pgenerator = (InputForceGenerator*) thisobject->asNative().getObject();
+   InputForceGenerator* pgenerator = (InputForceGenerator*) thisobject->getNativeObject();
 
-   Vector* pvel = (Vector*) accessor.getObject(1)->asNative().getObject();
+   Vector* pvel = (Vector*) accessor.getObject(1)->getNativeObject();
 
    pgenerator->setVelocity(*pvel);
 }
@@ -629,9 +626,9 @@ void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccess
 void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   InputForceGenerator* pgenerator = (InputForceGenerator*) thisobject->asNative().getObject();
+   InputForceGenerator* pgenerator = (InputForceGenerator*) thisobject->getNativeObject();
 
-   Vector* pvel = (Vector*) accessor.getObject(1)->asNative().getObject();
+   Vector* pvel = (Vector*) accessor.getObject(1)->getNativeObject();
 
    pgenerator->setImpulse(*pvel);
 }
@@ -639,9 +636,9 @@ void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccesso
 void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DSimulator* psimulator = (Box2DSimulator*) thisobject->asNative().getObject();
+   Box2DSimulator* psimulator = (Box2DSimulator*) thisobject->getNativeObject();
 
-   Box2DRevoluteJointDefinition* pjointdef = (Box2DRevoluteJointDefinition*) accessor.getObject(1)->asNative().getObject();
+   Box2DRevoluteJointDefinition* pjointdef = (Box2DRevoluteJointDefinition*) accessor.getObject(1)->getNativeObject();
    
    psimulator->createRevoluteJoint(*pjointdef);
 }
@@ -649,39 +646,39 @@ void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAcc
 void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DBody* pbody = (Box2DBody*) thisobject->asNative().getObject();
+   Box2DBody* pbody = (Box2DBody*) thisobject->getNativeObject();
 
-   VirtualNativeObject& object = accessor.getObject(1)->asNative();
-   InputForceGenerator* pgenerator = (InputForceGenerator*) object.getObject();
-   object.setOwned(false);
-
+   InputForceGenerator* pgenerator = (InputForceGenerator*) accessor.getObject(1)->useNativeObject();
+   
    pbody->addForceGenerator(pgenerator);
 }
 
 void Box2DBody_generateSensors(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DBody* pbody = (Box2DBody*) thisobject->asNative().getObject();
+   Box2DBody* pbody = (Box2DBody*) thisobject->getNativeObject();
 
    pbody->generateSensors();
 }
 
 void Box2DRevoluteJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   Box2DRevoluteJointDefinition* pjointdef = new Box2DRevoluteJointDefinition();
-   
-   VirtualObjectReference ref = machine.instantiateNative("Box2DRevoluteJointDefinition", pjointdef);
+   VirtualObjectReference& thisobject = accessor.getThis();
 
-   accessor.setResult(ref);
+   Box2DRevoluteJointDefinition* pjointdef = new Box2DRevoluteJointDefinition();
+   thisobject->setNativeObject(pjointdef);
+
+   //VirtualObjectReference ref = machine.instantiateNative("Box2DRevoluteJointDefinition", pjointdef);
+
+   //accessor.setResult(ref);
 }
 
 void Box2DRevoluteJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
 
-   VirtualObjectReference object = machine.instantiateNative("Box2DBody", pjoint->pleft);
-   object->asNative().setOwned(false);
+   VirtualObjectReference object = machine.instantiateNative("Box2DBody", pjoint->pleft, false);
 
    accessor.setResult(object);
 }
@@ -689,20 +686,19 @@ void Box2DRevoluteJointDefinition_getLeft(VirtualMachine& machine, VirtualStackA
 void Box2DRevoluteJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
 
    VirtualObjectReference& left = accessor.getObject(1);
 
-   pjoint->pleft = (Box2DBody*)left->asNative().getObject();
+   pjoint->pleft = (Box2DBody*)left->getNativeObject();
 }
 
 void Box2DRevoluteJointDefinition_getRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
 
-   VirtualObjectReference object = machine.instantiateNative("Box2DBody", pjoint->pright);
-   object->asNative().setOwned(false);
+   VirtualObjectReference object = machine.instantiateNative("Box2DBody", pjoint->pright, false);
 
    accessor.setResult(object);
 }
@@ -710,20 +706,19 @@ void Box2DRevoluteJointDefinition_getRight(VirtualMachine& machine, VirtualStack
 void Box2DRevoluteJointDefinition_setRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
 
    VirtualObjectReference& right = accessor.getObject(1);
 
-   pjoint->pright = (Box2DBody*)right->asNative().getObject();
+   pjoint->pright = (Box2DBody*)right->getNativeObject();
 }
 
 void Box2DRevoluteJointDefinition_getAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
 
-   VirtualObjectReference object = machine.instantiateNative("Vector2D", &pjoint->anchor);
-   object->asNative().setOwned(false);
+   VirtualObjectReference object = machine.instantiateNative("Vector2D", &pjoint->anchor, false);
 
    accessor.setResult(object);
 }
@@ -731,35 +726,39 @@ void Box2DRevoluteJointDefinition_getAnchor(VirtualMachine& machine, VirtualStac
 void Box2DRevoluteJointDefinition_setAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->asNative().getObject();
+   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
 
-   VirtualObjectReference& anchor = accessor.getObject(1);
-
-   pjoint->anchor = *(Vector*)anchor->asNative().getObject();
+   pjoint->anchor = *(Vector*)accessor.getObject(1)->getNativeObject();
 }
 
 void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   VirtualObjectReference& thisobject = accessor.getThis();
+
    ActionMap* pmap = new ActionMap();
+   thisobject->setNativeObject(pmap);
 
-   VirtualObjectReference ref = machine.instantiateNative("ActionMap", pmap);
+   //VirtualObjectReference ref = machine.instantiateNative("ActionMap", pmap);
 
-   accessor.setResult(ref);
+   //accessor.setResult(ref);
 }
 
 void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   VirtualObjectReference& thisobject = accessor.getThis();
+
    KeyMap* pmap = new KeyMap();
+   thisobject->setNativeObject(pmap);
 
-   VirtualObjectReference ref = machine.instantiateNative("KeyMap", pmap);
-
-   accessor.setResult(ref);
+   //VirtualObjectReference ref = machine.instantiateNative("KeyMap", pmap);
+   
+   //accessor.setResult(ref);
 }
 
 void KeyMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   KeyMap* pmap = (KeyMap*) thisobject->asNative().getObject();
+   KeyMap* pmap = (KeyMap*) thisobject->getNativeObject();
 
    int key = accessor.getInt(1);
    int action = accessor.getInt(2);

@@ -34,6 +34,7 @@
 #include "virtualcompilecallback.h"
 #include "virtualobjectreference.h"
 #include "virtualfunctiontableentry.h"
+#include "virtualmachineobjectobserver.h"
 #include "virtualcontext.h"
 
 class VirtualInstruction;
@@ -47,7 +48,9 @@ typedef std::deque<Variant> Stack;
 class VirtualStackAccessor
 {
 public:
-   VirtualStackAccessor(Stack& stack, int args): mStack(stack), mSize(args) {}
+   VirtualStackAccessor(Stack& stack): mStack(stack), mSize(stack.back().asInt())
+   {
+   }
 
  // query
    VirtualObjectReference getThis() const
@@ -132,7 +135,7 @@ public:
 private:
    Variant& getArgument(int index) const {
       ASSERT(index <= mSize);
-      return mStack[mStack.size() - mSize + index]; 
+      return mStack[mStack.size() - (mSize + 1) + index]; 
       // 0 1 2 3 -> ssize = 4; size = 3
       // index 0 -> 4 - 3 = 1
    }
@@ -173,14 +176,15 @@ public:
 
  // execution
    bool execute(const std::string& classname, const std::string& function);
-   void execute(const VirtualObjectReference& object, const std::string function);
+   void execute(const VirtualObjectReference& object, const std::string& function);
 
  // object instantation
    VirtualObjectReference instantiate(const std::string& classname, int constructor = 2);
-   VirtualObjectReference instantiateNative(const std::string& classname, void* pobject);
+   VirtualObjectReference instantiateNative(const std::string& classname, void* pobject, bool owned = true);
    VirtualArrayReference  instantiateArray();
 
-   void deleteNative(void* pobject);
+   void insertNative(VirtualObject& object);
+   void deleteNative(VirtualObject& object);
 
 private:
    friend class VirtualCompileCallback;
@@ -247,18 +251,19 @@ private:
    void          classLoaded(VirtualClass* pclass);
    void          createClass(const VirtualClass& aclass);
 
-   VirtualContext         mContext;
-   VirtualCompileCallback mCallback;
-   Compiler               mCompiler;
-   Stack                  mStack;
-   CallStack              mCallStack;
-   VirtualCall            mCall;
-   VirtualObjectReference mException;
-   Natives                mNatives;
-   NativeObjectMap        mNativeObjects;
-   State                  mState;
-   bool                   mRetVal;
-   bool                   mLoaded;
+   VirtualContext                mContext;
+   VirtualCompileCallback        mCallback;
+   Compiler                      mCompiler;
+   Stack                         mStack;
+   CallStack                     mCallStack;
+   VirtualCall                   mCall;
+   VirtualObjectReference        mException;
+   VirtualMachineObjectObserver  mObjectObserver;
+   Natives                       mNatives;
+   NativeObjectMap               mNativeObjects;
+   State                         mState;
+   bool                          mRetVal;
+   bool                          mLoaded;
 };
 
 #endif // VM_H_

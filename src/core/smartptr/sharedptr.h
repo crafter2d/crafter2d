@@ -24,6 +24,9 @@ public:
    const T* getPointer() const;
          T* getPointer();
 
+ // query
+   bool isUnique() const;
+
  // operations
    void reset();
 

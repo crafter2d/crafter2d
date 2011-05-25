@@ -85,6 +85,16 @@ void OOCheckVisitor::visit(ASTFunction& ast)
    }
    else if ( ast.getModifiers().isNative() )
    {
+      if ( ast.isConstructor() )
+      {
+         // mark class native when a it contains a native constructor, it should also not have a native base class
+         if ( mpClass->hasBaseClass() && mpClass->getBaseClass().getModifiers().isNative() )
+         {
+            mContext.getLog().error("Native class + " + mpClass->getName() + " can not have a native base class " + mpClass->getBaseClass().getName() + ".");
+         }
+
+         mpClass->getModifiers().setNative();
+      }
    }
    else
    {

@@ -483,6 +483,11 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
             const ASTClass& newclass = ast.getType().getObjectClass();
             const ASTFunction* pfunction = newclass.findBestMatch(newclass.getName(), signature, before.getTypeArguments());
 
+            if ( pfunction->getModifiers().isNative() && mpClass->getName() == "Server" )
+            {
+               int aap = 5;
+            }
+
             if ( pfunction == NULL )
             {
                if ( signature.size() > 0 )

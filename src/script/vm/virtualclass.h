@@ -54,7 +54,8 @@ public:
  // query
    bool isBaseClass(const VirtualClass& base) const;
    const VirtualLookupTable& getLookupTable(int index) const;
-   
+   const VirtualFunctionTableEntry* getDefaultConstructor() const;
+
  // operations
    VirtualObject*      instantiate() const;
    VirtualArrayObject* instantiateArray() const;

@@ -18,7 +18,7 @@ SharedPtr<T>::~SharedPtr()
 {
    if ( mCount.isUnique() )
    {
-      delete mpPointer;
+      reset();
    }
 }
 
@@ -62,6 +62,14 @@ T* SharedPtr<T>::getPointer()
 {
    ASSERT_PTR(mpPointer);
    return mpPointer;
+}
+
+// query
+
+template<class T>
+bool SharedPtr<T>::isUnique() const
+{
+   return mCount.isUnique();
 }
 
 // - Operations

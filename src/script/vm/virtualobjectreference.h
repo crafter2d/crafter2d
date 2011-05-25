@@ -21,6 +21,7 @@ public:
       return *this;
    }
 
+   bool isUnique() const { return mObject.isUnique(); }
    bool isNull() const { return !mObject.hasPointer(); }
    VirtualObject* ptr() { return mObject.getPointer(); }
    void clear() { mObject.reset(); }

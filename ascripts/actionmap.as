@@ -41,7 +41,10 @@ class ActionMap
 			}
 			
 			object.setAnimation(2);
-			object.getForceGenerator().setVelocity(velocity);
+			object.getForceGenerator().setVelocity(velocity);  
+			
+			// <-- here the virtualobject creature created by the client should be found! 
+			// otherwise the force generator will be non-existing...
 		}
 	}
 	

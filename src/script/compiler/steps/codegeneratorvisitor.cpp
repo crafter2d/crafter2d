@@ -6,7 +6,7 @@
 #include "script/ast/ast.h"
 #include "script/vm/virtualarrayobject.h"
 #include "script/vm/virtualclass.h"
-#include "script/vm/virtualclassobject.h"
+#include "script/vm/virtualobject.h"
 #include "script/vm/virtualinstruction.h"
 #include "script/vm/virtualinstructiontable.h"
 #include "script/vm/virtualclasstable.h"
@@ -56,9 +56,7 @@ bool CodeGeneratorVisitor::performStep(ASTNode& node)
    mLineNr = 0;
 
    ((const ASTNode&)node).accept(*this);
-
-   //root.detachChild(*mpClass);
-
+   
    mContext.setResult(mpVClass);
 
    mpVClass->setDefinition(const_cast<ASTClass*>(mpClass));
@@ -240,6 +238,17 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       pentry->mArguments = ast.getArgumentCount();
 
       mpVClass->getVirtualFunctionTable().append(pentry);
+
+      if ( ast.isConstructor() )
+      {
+         // call the init method -> set the native object
+         std::string fncname = mpClass->getName() + "_init";
+         int resource = allocateLiteral(fncname);
+
+         addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
+         addInstruction(VirtualInstruction::eNewNative, resource);
+         addInstruction(VirtualInstruction::eRet, 0);
+      }
    }
    else if ( ast.getModifiers().isAbstract() )
    {
@@ -914,7 +923,11 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
 
             ast.getArguments().accept(*this);
 
-            if ( ast.getConstructor().getModifiers().isNative() )
+            if ( ast.getConstructor().getName() == "BitStream" && mpClass->getName() == "Server" )
+            {
+               int aap = 5;
+            }
+            /*if ( ast.getConstructor().getModifiers().isNative() )
             {
                std::string fncname = ast.getType().getObjectName() + "_init";
                int resource = allocateLiteral(fncname);
@@ -923,7 +936,7 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
                addInstruction(VirtualInstruction::eCallNative, resource);
                addInstruction(VirtualInstruction::eNewNative);
             }
-            else
+            else*/
             {
                addInstruction(VirtualInstruction::ePush, typenameid);
                addInstruction(VirtualInstruction::eNew, ast.getConstructor().getResourceIndex()); // constructor index as argument
@@ -1086,11 +1099,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             }
             else
             {
-               if ( function.getModifiers().isNative() )
-               {
-                  addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
-               }
-               else if ( function.getModifiers().isStatic() )
+               if ( function.getModifiers().isStatic() )
                {
                   addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
                }
@@ -1394,7 +1403,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
          pannoarray->addLevel(0);
       }
 
-      VirtualClassObject* funcobject = new VirtualClassObject();
+      VirtualObject* funcobject = new VirtualObject();
       funcobject->initialize(2);
       funcobject->setMember(0, Variant(function.getName()));
       funcobject->setMember(1, Variant(VirtualArrayReference(pannoarray)));
@@ -1402,7 +1411,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
       (*pfuncarray)[index] = Variant(VirtualObjectReference(funcobject));
    }
 
-   VirtualClassObject* classobject = new VirtualClassObject();
+   VirtualObject* classobject = new VirtualObject();
    classobject->initialize(2);
    classobject->setMember(0, Variant(ast.getName()));
    classobject->setMember(1, Variant(VirtualArrayReference(pfuncarray)));

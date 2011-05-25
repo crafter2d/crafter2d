@@ -42,8 +42,7 @@ void Script::setThis(void* pthis)
 {
    if ( !mClassName.empty() )
    {
-      mObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis);
-      mObject->asNative().setOwned(false);
+      mObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis, false);
    }
 }
 
@@ -82,8 +81,7 @@ int Script::getInteger()
 /// \param typeName the type name of the object (class name)
 void Script::addParam(const std::string& classname, void* pobject)
 {
-   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject));
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject, false));
 
    mScriptManager.mpVirtualMachine->push(ref);
 }

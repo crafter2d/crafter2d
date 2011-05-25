@@ -29,11 +29,10 @@
 void Game_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Game* pgame = (Game*) thisobject->asNative().getObject();
+   Game* pgame = (Game*) thisobject->getNativeObject();
 
    GameWindowFactory& factory = pgame->getWindowFactory();
-   VirtualObjectReference ref = machine.instantiateNative("GameWindowFactory", &factory);
-   ref->asNative().setOwned(false);
+   VirtualObjectReference ref = machine.instantiateNative("GameWindowFactory", &factory, false);
 
    accessor.setResult(ref);
 }
@@ -41,7 +40,7 @@ void Game_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& access
 void Game_setActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Game* pgame = (Game*) thisobject->asNative().getObject();
+   Game* pgame = (Game*) thisobject->getNativeObject();
 
    bool active = accessor.getBoolean(1);
 

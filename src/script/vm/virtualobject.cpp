@@ -1,4 +1,22 @@
-
+/***************************************************************************
+ *   Copyright (C) 2011 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "virtualobject.h"
 
 #include <exception>
@@ -7,8 +25,13 @@
 
 #include "script/common/variant.h"
 
+#include "virtualobjectobserver.h"
+
 VirtualObject::VirtualObject():
+   mpObserver(NULL),
    mpClass(NULL),
+   mpNativeObject(NULL),
+   mOwnsNative(true),
    mpMembers(NULL),
    mMemberCount(0)
 {
@@ -18,11 +41,60 @@ VirtualObject::~VirtualObject()
 {
    delete[] mpMembers;
    mpMembers = NULL;
+
+   setNativeObject(NULL);
 }
 
-Variant& VirtualObject::operator[](int index)
+// - Get/set
+
+bool VirtualObject::hasNativeObject() const
 {
-   return getMember(index);
+   return mpNativeObject != NULL;
+}
+
+void* VirtualObject::getNativeObject()
+{return mpNativeObject;
+}
+
+void* VirtualObject::useNativeObject()
+{
+   ASSERT(mOwnsNative);
+
+   mOwnsNative = false;
+   return mpNativeObject;
+}
+
+void VirtualObject::setNativeObject(void* pobject)
+{
+   if ( mpNativeObject != pobject )
+   {
+      if ( mpNativeObject != NULL && mpObserver != NULL )
+      {
+         //mpObserver->onDestroyed(*this);
+      }
+
+      if ( mOwnsNative )
+      {
+         delete mpNativeObject;
+      }
+
+      mpNativeObject = pobject;
+
+      if ( mpNativeObject != NULL && mpObserver != NULL)
+      {
+         //mpObserver->onCreated(*this);
+      }
+   }
+}
+
+bool VirtualObject::isOwner() const
+{
+   return mOwnsNative;
+}
+
+void VirtualObject::setOwner(bool owned)
+{
+   mOwnsNative = owned;
 }
 
 // - Query
@@ -63,24 +135,14 @@ void VirtualObject::setMember(int index, const Variant& value)
    mpMembers[index] = value;
 }
 
-// - Downcasting
-
-bool VirtualObject::isNative() const
+// observers
+   
+void VirtualObject::registerObserver(VirtualObjectObserver& observer)
 {
-   return false;
+   mpObserver = &observer;
 }
 
-VirtualNativeObject& VirtualObject::asNative()
+void VirtualObject::unregisterObserver(VirtualObjectObserver& observer)
 {
-   throw new std::exception();
-}
-
-bool VirtualObject::isInstance() const
-{
-   return false;
-}
-
-VirtualClassObject& VirtualObject::asInstance()
-{
-   throw new std::exception();
+   mpObserver = NULL;
 }

@@ -29,7 +29,7 @@ void VirtualNativeObject::setObject(void* pobject)
 {
    if ( mpObject != pobject )
    {
-      mMachine.deleteNative(mpObject);
+      //mMachine.deleteNative(mpObject);
 
       if ( mOwned )
       {

@@ -6,7 +6,7 @@
 #include "script/ast/astclass.h"
 #include "script/common/variant.h"
 
-#include "virtualclassobject.h"
+#include "virtualobject.h"
 #include "virtualarrayobject.h"
 #include "virtualfunctiontable.h"
 #include "virtuallookuptable.h"
@@ -170,6 +170,11 @@ const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
    return *mLookupTables[index];
 }
 
+const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
+{
+   return mVTable.findByName(mName);
+}
+
 // - Operations
 
 int VirtualClass::addLookupTable(VirtualLookupTable* ptable)
@@ -190,7 +195,7 @@ void VirtualClass::offsetCode(int offset)
 
 VirtualObject* VirtualClass::instantiate() const
 {
-   VirtualClassObject* pobject = new VirtualClassObject();
+   VirtualObject* pobject = new VirtualObject();
    pobject->setClass(*this);
    pobject->initialize(mVariableCount);
 
