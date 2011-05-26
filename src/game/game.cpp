@@ -30,49 +30,37 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <GL/GLee.h>
-#include <GL/glu.h>
-#include <tolua++.h>
-
-#include "core/script/scriptcontext.h"
-#include "core/script/scriptmanager.h"
 
 #include "core/system/platform.h"
 #include "core/system/timer.h"
 #include "core/system/timerdelta.h"
-
 #include "core/vfs/filesystem.h"
+#include "core/smartptr/autoptr.h"
 
-#include "core/autoptr.h"
-
+#include "engine/script/script.h"
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"
-
 #include "engine/physics/physicsfactory.h"
 #include "engine/physics/box2d/box2dfactory.h"
 #include "engine/physics/simulationfactoryregistry.h"
-
 #include "engine/net/netobjectfactory.h"
 #include "engine/net/netconnection.h"
 
-#include "engine/client.h"
-
-#include "engine/opengl.h"
-
 #include "console.h"
 #include "gamesettings.h"
-#include "tolua_game.h"
+#include "script_game.h"
 
 /*!
     \fn Game::Game()
 	 \brief Initialized member variables
  */
 Game::Game():
-   mWindow(),
-   mWindowListener(*this),
+   mSettings(),
    mTitle(),
-   mpTimerData(NULL),
    mScriptManager(),
+   mpScript(NULL),
+   mpWindowFactory(NULL),
+   mpTimerData(NULL),
    mActive(true)
 {
 }
@@ -102,6 +90,7 @@ Game::~Game()
 	 \param[in] bd color bitdepht of screen (16,24,32)
 	 \return true if initialized successfull, false otherwise
  */
+
 bool Game::create()
 {
    Log& log = Log::getInstance();
@@ -109,35 +98,21 @@ bool Game::create()
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
-   // initialize the video library
-   if (SDL_Init (SDL_INIT_VIDEO) < 0) {
-      log << "Couldn't initialize the SDL library!";
-      return false;
-   }
-
    mpTimerData = TIMER.createData();
 
-   // initialize the Lua scripting environment
-   mScriptManager.initialize ();
-   mScriptManager.loadModule(tolua_game_open);
-
+   FileSystem::getInstance().addPath("..");
+   
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
    SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
 
    log << "\n-- Initializing Graphics --\n\n";
 
-   mWindow.addListener(mWindowListener);
-   if ( !mWindow.create(mTitle, 800, 600, 32, false) )
-   {
-      return false;
-   }
+   mSettings.initialize();
 
-   // now initialize OpenGL for rendering
-   if ( !initOpenGL() )
-   {
-      return false;
-   }   
+   // initialize scripting engine
+   mScriptManager.initialize();
+   script_game_register(mScriptManager);
 
    // initialize the console
    Console& console = Console::getInstance();
@@ -152,21 +127,14 @@ bool Game::create()
 
    NetObjectFactory::getInstance().initialize();
 
-   log << "\n-- Initializing Sound --\n\n";
-
-   log << "\n-- Running Game --\n\n";
-
    // reload the contents of the log file for the console
    console.reload();
 
-   FileSystem::getInstance().addPath("..");
-
-   ScriptContext context;
-   mScriptManager.executeScript(context, "scripts/main.lua");
-
+   log << "\n-- Running Game --\n\n";
+   
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
-   if ( !initGame () )
+   if ( !initGame() )
    {
       console.error("Aborted after failed game initialization.");
       return false;
@@ -188,8 +156,6 @@ void Game::destroy()
 	// release the Lua scripting environment
 	mScriptManager.destroy ();
 
-	// release the sound syste
-
    // release timer data
    TIMER.releaseData(mpTimerData);
 
@@ -197,50 +163,11 @@ void Game::destroy()
    // release the avi library
    AVIFileExit();
 #endif
-
-   mWindow.destroy();
-
-	// finish of SDL
-	SDL_Quit ();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Notifications
-//////////////////////////////////////////////////////////////////////////
-
-void Game::onWindowResized()
-{
-   // set the new opengl states
-   glViewport(0, 0, mWindow.getWidth(), mWindow.getHeight());
-
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   glOrtho(0, mWindow.getWidth(), mWindow.getHeight(), 0, 0, 1000);
-
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-}
-
-void Game::onWindowClosed()
-{
-  setActive(false);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // - operations
 //////////////////////////////////////////////////////////////////////////
-
-/*!
-    \fn Game::initOpenGL()
- */
-bool Game::initOpenGL()
-{
-   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glShadeModel (GL_SMOOTH);
-
-	return OpenGL::initialize ();
-}
 
 /*!
     \fn Game::run()
@@ -253,27 +180,8 @@ void Game::run()
 
 	while ( mActive )
    {
-		processFrame();
+		runFrame();
 	}
-}
-
-void Game::processFrame()
-{
-   mWindow.handleEvents();
-
-   runFrame();
-}
-
-/*!
-   \fn Game::getWindowDimensions(int& w, int& h)
-   \brief Returns the current dimensions of the window.
-   \param w The width of the window
-   \param h The height of the window
-*/
-void Game::getWindowDimensions(int& w, int& h)
-{
-   w = mWindow.getWidth();
-   h = mWindow.getHeight();
 }
 
 /*!
@@ -284,13 +192,11 @@ void Game::getWindowDimensions(int& w, int& h)
  */
 bool Game::initGame()
 {
-   ScriptContext context;
-   Script& script = mScriptManager.getTemporaryScript();
-   if ( script.prepareCall("Game_initialize") )
-   {
-      //script.setSelf(this, "Game");
-      script.run(context);
-   }
+   mpScript = mScriptManager.loadClass("Game");
+   ASSERT_PTR(mpScript);
+
+   mpScript->setThis(this);
+   mpScript->run("initialize");
 
    /*
    // initialize the window manager
@@ -307,10 +213,6 @@ bool Game::initGame()
    mCanvas.create(0, GuiRect(0, mWindow.getWidth(), 0, mWindow.getHeight()));
    mCanvas.changeDefaultColor(GuiCanvas::GuiWindowColor, mSettings.getWindowColor());
    mCanvas.changeDefaultColor(GuiCanvas::GuiBorderColor, mSettings.getBorderColor());
-
-   ScriptManager& scriptMgr = ScriptManager::getInstance ();
-   scriptMgr.setObject(&GuiManager::getInstance(), "GuiManager", "guimanager");
-   scriptMgr.setObject(&GuiFocus::getInstance(), "GuiFocus", "focus");
    */
 
 	return mActive;
@@ -324,14 +226,10 @@ bool Game::initGame()
  */
 void Game::endGame()
 {
-   Client client;
-
-	ScriptContext context;
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf(&client, "Client");
-   script.prepareCall("Game_shutdown");
-   script.setSelf(this, "Game");
-   script.run(context);
+   if ( mpScript != NULL )
+   {
+      mpScript->run("shutdown");
+   }
 }
 
 /*!
@@ -346,27 +244,14 @@ void Game::runFrame()
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
-   ScriptContext context;
-   mScriptManager.update(context, delta);
+   mScriptManager.update(delta);
    if ( !isActive() )
       return;
 
-   Script& script = mScriptManager.getTemporaryScript();
-   script.prepareCall("Game_run");
-   script.addParam(delta);
-   script.run(context, 1);
-   
-   // here also nothing happens (should be overloaded)
-   glLoadIdentity ();
-   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glAlphaFunc (GL_GREATER, 0.1f);
-   glEnable (GL_ALPHA_TEST);
-
-   //glDisable(GL_MULTISAMPLE);
-   glDisable (GL_ALPHA_TEST);
+   ASSERT_PTR(mpScript);
+   mpScript->addParam(delta);
+   mpScript->run("run");
 
    Profiler::getInstance().end();
    // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());
-
-   SDL_GL_SwapBuffers ();
 }

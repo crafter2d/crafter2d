@@ -22,11 +22,12 @@
 #  include "client.inl"
 #endif
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
-#include "core/script/script.h"
-#include "core/script/scriptcontext.h"
-#include "core/script/scriptmanager.h"
+#include "core/math/color.h"
+
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
 
 #include "net/netevent.h"
 #include "net/newobjectevent.h"
@@ -49,14 +50,18 @@
 #include "sceneobject.h"
 #include "actionmap.h"
 #include "keymap.h"
+#include "opengl.h"
 
 Client::Client():
-   Process(),
+   Process("Client"),
+   mpWindow(NULL),
+   mWindowListener(*this),
    mSoundManager(),
    mpWorldRenderer(NULL),
    mpPlayer(NULL),
    mpKeyMap(NULL),
-   requests()
+   mpInput(NULL),
+   mRequests()
 {
 }
 
@@ -65,15 +70,34 @@ Client::~Client()
    disconnect();
 }
 
+// - Creation
+
 bool Client::create()
 {
-   Log& log = Log::getInstance();
-   log << "\n-- Initializing Sound --\n\n";
+   bool success = Process::create();
+   if ( success )
+   {
+      ASSERT_PTR(mpWindow);
 
-    // initialize the sound system
-   mSoundManager.initialize();
+      mpWindow->addListener(mWindowListener);
+      if ( !mpWindow->create("GameWindow", 800, 600, 32, false) )
+      {
+         return false;
+      }
 
-   return Process::create();
+      if ( !initOpenGL() )
+      {
+         return false;
+      }
+
+      Log& log = Log::getInstance();
+      log << "\n-- Initializing Sound --\n\n";
+
+      // initialize the sound system
+      mSoundManager.initialize();
+   }
+
+   return success;
 }
 
 bool Client::destroy()
@@ -81,6 +105,9 @@ bool Client::destroy()
    conn.setAccepting(false);
 
    mSoundManager.destroy();
+
+   delete mpWindow;
+   mpWindow = NULL;
 
    return Process::destroy();
 }
@@ -122,7 +149,9 @@ void Client::update(float delta)
 {
    Process::update(delta);
 
-   if ( hasKeyMap() && hasInput() )
+   mpWindow->update();
+
+   if ( hasKeyMap() )
    {
       mpKeyMap->update();
    }
@@ -132,6 +161,11 @@ void Client::update(float delta)
 
 void Client::render(float delta)
 {
+   glLoadIdentity ();
+   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glAlphaFunc (GL_GREATER, 0.1f);
+   glEnable (GL_ALPHA_TEST);
+
    if ( mpWorldRenderer != NULL )
    {
       // set the sound of the player
@@ -140,7 +174,11 @@ void Client::render(float delta)
          mSoundManager.setPlayerPosition(pcontroler->getPosition());
 
       mpWorldRenderer->render(delta);
+
+      mpWindow->display();
    }
+
+   glDisable (GL_ALPHA_TEST);
 }
 
 //---------------------------------------------
@@ -171,9 +209,27 @@ INLINE void Client::setKeyMap(KeyMap* pkeymap)
       mpKeyMap->setClient(*this);
 }
 
+void Client::setWindow(GameWindow* pwindow)
+{
+   delete mpWindow;
+   mpWindow = pwindow;
+}
+
 //---------------------------------------------
 // - Operations
 //---------------------------------------------
+
+bool Client::initOpenGL()
+{
+   //const Color& color = mSettings.getClearColor();
+   const Color color(75, 150, 230, 255);
+   glClearColor(color.getRed(), color.getGreen(), color.getBlue(), 0.0f);
+
+	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glShadeModel (GL_SMOOTH);
+
+	return OpenGL::initialize ();
+}
 
 bool Client::loadWorld(const std::string& filename, const std::string& name)
 {
@@ -262,28 +318,24 @@ int Client::onClientEvent(int client, const NetEvent& event)
 
 void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 {
-   ScriptContext context;
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
+   ASSERT_PTR(mpScript);
 
    switch ( event.getReply() )
    {
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
-            script.prepareCall ("Client_onConnected");
-            script.run(context, 0);
+            mpScript->run("onConnected");
 
             initialized = true;
             break;
          }
       case ConnectReplyEvent::eDenite:
          {
-             // run the Client_onConnectionDenite script
-             script.prepareCall ("Client_onConnectionDenite");
-             script.addParam(event.getReason());
-             script.run(context, 1);
-             break;
+            // run the Client_onConnectionDenite script
+            mpScript->addParam(event.getReason());
+            mpScript->run("onConnectionDenite");
+            break;
          }
    }
 }
@@ -291,42 +343,44 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
-   ScriptContext context;
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
-   script.prepareCall("Client_onPlayerLeft");
-   script.addParam(event.getId()+1);
-   script.run(context, 1);
+   mpScript->addParam(event.getId()+1);
+   mpScript->run("onPlayerLeft");
 }
 
 void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
-   ScriptContext context;
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
-   script.prepareCall("Client_onJoined");
-   script.addParam(event.getId()+1);
-   script.addParam(event.getPlayerName().c_str());
-   script.run(context, 2);
+   mpScript->addParam(event.getId()+1);
+   mpScript->addParam(event.getPlayerName().c_str());
+   mpScript->run("onJoined");
 }
 
 void Client::handleServerdownEvent()
 {
    // server went down, run the onClientConnect script
-   ScriptContext context;
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
-   script.prepareCall ("Client_onServerDown");
-   script.run(context);
+   mpScript->run("onServerDown");
 }
 
 void Client::handleNewObjectEvent(const NewObjectEvent& event)
 {
+   SceneObject* pparent = graph.find(event.getParentId());
+   if ( pparent == NULL )
+   {
+      UNREACHABLE("Parent of object not found.")
+   }
+
    // a new object has been made on the server and 
    // is now also known on the client
    AutoPtr<SceneObject> obj = event.getObject();
-   obj->create();
+   if ( obj->create(*pparent, event.getFileName()) )
+   {
+      obj.release();
+   }
+   else
+   {
+      // meh
+      return;
+   }
 
    if ( World::isWorld(*obj) )
    {
@@ -338,18 +392,14 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       mpWorldRenderer = world.createRenderer();
       mpPlayer->initialize(world);
 
-      graph.setWorld((World*)obj.release());
+      graph.setWorld((World*)obj.getPointer());
 
       // run the onWorldChanged script
-      ScriptContext context;
-      Script& script = mScriptManager.getTemporaryScript();
-      script.setSelf(this, "Client");
-      script.prepareCall("Client_onWorldChanged");
-      script.run(context);
+      mpScript->run("onWorldChanged");
    }
+   /*
    else if ( graph.find(obj->getId()) == 0 )
    {
-      SceneObject* pparent = graph.find(event.getParentId());
       if ( pparent != NULL )
       {
          pparent->add(obj.release());
@@ -359,11 +409,12 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
          UNREACHABLE("Parent of object not found.")
       }
    }
+   */
 
    // remove the request
-   Requests::iterator it = requests.find(obj->getId());
-   if ( it != requests.end() )
-      requests.erase(it);
+   Requests::iterator it = mRequests.find(obj->getId());
+   if ( it != mRequests.end() )
+      mRequests.erase(it);
 }
 
 void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
@@ -381,13 +432,13 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
    SceneObject* pobject = graph.find(event.getId());
    if ( pobject == NULL )
    {
-      if ( requests.find(event.getId()) == requests.end() )
+      if ( mRequests.find(event.getId()) == mRequests.end() )
       {
          // unknown object, must have been generated before the player entered the game
          RequestObjectEvent event(event.getId());
          getConnection()->send(&event);
 
-         requests[event.getId()] = true;
+         mRequests[event.getId()] = true;
       }
    }
    else
@@ -409,10 +460,30 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    AutoPtr<BitStream> stream(event.getStream());
 
    // run the onClientConnect script
-   ScriptContext context;
-   Script& script = mScriptManager.getTemporaryScript();
-   script.setSelf (this, "Client");
-   script.prepareCall ("Client_onEvent");
-   script.addParam(stream.getPointer(), "BitStream");
-   script.run(context, 1);
+   mpScript->addParam("BitStream", stream.getPointer());
+   mpScript->run("onScriptEvent");
+}
+
+// - Notifications
+
+void Client::onWindowResized()
+{
+   // set the new opengl states
+   glViewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
+
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrtho(0, mpWindow->getWidth(), mpWindow->getHeight(), 0, 0, 1000);
+
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+}
+
+void Client::onWindowClosing()
+{
+}
+
+void Client::onWindowClosed()
+{
+   setActive(false);
 }

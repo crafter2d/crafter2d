@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "timer.h"
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
 #include "platform.h"

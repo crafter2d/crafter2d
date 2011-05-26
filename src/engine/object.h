@@ -68,7 +68,7 @@ public:
 
    virtual const Vector& getPosition() const;
 
-   Vector            getVelocity() const;
+   const Vector&     getVelocity() const;
    float             getRadius() const;
    float             getRotation() const;
    Vector            getSize() const;
@@ -103,7 +103,9 @@ protected:
    virtual void      doUpdate(float delta);
    virtual void      doUpdateClient(float delta);
    virtual void      doDraw();
-	 
+
+   virtual void      parentChanged();
+	
    TexturePtr     texture;
    Body*          mpBody;
    Animator*      mpAnimator;

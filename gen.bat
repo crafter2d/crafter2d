@@ -16,19 +16,8 @@ if not "%1" == "cb-gcc" (
    )
 )
 
-if not exist "..\externallibs" (
-   echo "Make sure you also check out the externallibs directory"
-   goto End
-)
-
 echo -- Setting up bin directory
 cp %1
-
-echo -- Building tolua files
-pushd .
-chdir tolua
-call run.bat --silent
-popd
 
 echo -- Building project
 echo.

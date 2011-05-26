@@ -23,6 +23,11 @@
 #  include "process.inl"
 #endif
 
+#include "core/log/log.h"
+
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
+
 #include "net/netevent.h"
 #include "net/events/scriptevent.h"
 
@@ -31,12 +36,15 @@
 #include "actionmap.h"
 #include "scenegraph.h"
 
-Process::Process():
+Process::Process(const std::string& name):
+   mProcessName(name),
    conn(*this),
    graph(*this),
-   actionMap(NULL),
    mScriptManager(),
-   initialized(false)
+   mpScript(NULL),
+   actionMap(NULL),
+   initialized(false),
+   mActive(true)
 {
 }
 
@@ -46,7 +54,7 @@ Process::~Process()
 
 bool Process::create()
 {
-   return mScriptManager.initialize();
+   return mScriptManager.initialize() && initializeScript();
 }
 
 bool Process::destroy()
@@ -55,6 +63,20 @@ bool Process::destroy()
 
    graph.removeAll();
 
+   return true;
+}
+
+bool Process::initializeScript()
+{
+   mpScript = mScriptManager.loadClass(mProcessName);
+   if ( mpScript == NULL )
+   {
+      Log& log = Log::getInstance();
+      log << "Failed to load the " << mProcessName.c_str() << " class.";
+      return false;
+   }
+
+   mpScript->setThis(this);
    return true;
 }
 
@@ -74,7 +96,7 @@ void Process::setActionMap(ActionMap* map)
 bool Process::loadWorld(const std::string& filename, const std::string& name)
 {
    World* pworld = new World();
-   if ( pworld->create(filename.c_str()) )
+   if ( pworld->create(getSceneGraph().getRoot(), filename) )
    {
       pworld->setName(name);
 

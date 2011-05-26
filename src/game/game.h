@@ -20,17 +20,14 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <SDL/SDL.h>
 #include <string>
 
-#include "core/script/scriptmanager.h"
+#include "engine/script/scriptmanager.h"
 
-#include "gamewindow.h"
-#include "defaultgamewindowlistener.h"
+#include "gamesettings.h"
 
-class Timer;
+class GameWindowFactory;
 class TimerData;
-class WorldRenderer;
 
 /**
 @author Jeroen Broekhuizen
@@ -44,26 +41,19 @@ public:
    virtual              ~Game();
 
  // get/set interface
-         GameWindow&          getGameWindow();
+         void           setActive(bool act=true);
+         bool           isActive() const;
 
-         void                 setActive(bool act=true);
-         bool                 isActive() const;
+         void           setTitle(const std::string& title);
+   const std::string&   getTitle() const;
 
-         void                 setTitle(const std::string& title);
-   const std::string&         getTitle() const;
+   GameWindowFactory&   getWindowFactory();
+   void                 setWindowFactory(GameWindowFactory& windowfactory);
 
  // operations
    bool                 create();
    void                 destroy();
-   void                 processFrame();
    void                 run();
-
- // query
-   void                 getWindowDimensions(int& width, int& height);
-
-  // notifications
-   void onWindowResized();
-   void onWindowClosed();
    
 protected:
  // get/set
@@ -77,11 +67,12 @@ private:
    bool                 initOpenGL();
    void                 runFrame();
 
-   GameWindow                mWindow;
-   DefaultGameWindowListener mWindowListener;
+   GameSettings              mSettings;
    std::string               mTitle;
-   TimerData*                mpTimerData;
    ScriptManager             mScriptManager;
+   Script*                   mpScript;
+   GameWindowFactory*        mpWindowFactory;
+   TimerData*                mpTimerData;
    bool                      mActive;
 };
 

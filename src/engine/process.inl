@@ -59,3 +59,13 @@ INLINE bool Process::isInitialized()
 {
    return initialized;
 }
+
+INLINE bool Process::isActive() const
+{
+   return mActive;
+}
+
+INLINE void Process::setActive(bool active)
+{
+   mActive = active;
+}

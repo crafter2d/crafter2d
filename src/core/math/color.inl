@@ -34,6 +34,14 @@ inline Color::Color(const Color& color):
 {
 }
 
+inline Color::Color(int red, int green, int blue, int alpha):
+   mRed(red / 255.0f),
+   mGreen(green / 255.0f),
+   mBlue(blue / 255.0f),
+   mAlpha(alpha / 255.0f)
+{
+}
+
 inline Color::Color(float red, float green, float blue, float alpha):
    mRed(red),
    mGreen(green),

@@ -35,7 +35,7 @@
 ABSTRACT_IMPLEMENT_REPLICATABLE(SceneObjectId, SceneObject, NetObject)
 
 SceneObject::SceneObject():
-   mId(IdManager::getInstance().getNextId()),
+   mId(-1),
    mName(),
    mXmlFile(),
    children(),
@@ -55,15 +55,26 @@ SceneObject::~SceneObject()
     \retval true the object is loaded and initialized without errors.
     \retval false there was an error during loading, consult the log file for a reason
  */
-bool SceneObject::create(const char* file)
+bool SceneObject::create(SceneObject& parent, const std::string filename)
 {
-   if ( file != NULL )
-   {
-      mXmlFile = file;
-   }
+   setFilename(filename);
+   if ( ((int)mId) == -1 )
+      setId(IdManager::getInstance().getNextId());
 
+   parent.add(this);
+
+   return doCreate(filename);
+}
+
+bool SceneObject::doCreate(const std::string& filename)
+{
    TiXmlDocument doc(mXmlFile);
-   return doc.LoadFile() && load(doc);
+   if ( doc.LoadFile() )
+   {
+      return load(doc);
+   }
+   
+   return false;
 }
 
 bool SceneObject::load (TiXmlDocument& doc)
@@ -153,6 +164,10 @@ const SceneObject::SceneObjectList& SceneObject::getChildren() const
 void SceneObject::accept(NodeVisitor& nv)
 { 
    nv.visitSceneObject(this); 
+}
+
+void SceneObject::parentChanged()
+{
 }
 
 const Vector& SceneObject::getPosition() const
@@ -272,6 +287,8 @@ SceneObject* SceneObject::find(const Id& id, bool recurse)
    }
    return NULL;
 }
+
+// - Streaming
 
 void SceneObject::pack(BitStream& stream) const
 {

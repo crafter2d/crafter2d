@@ -27,6 +27,7 @@
 class ActionEvent;
 class Object;
 class Process;
+class Script;
 
 /// \brief The mapping of actions to Lua functions.
 ///
@@ -68,6 +69,7 @@ private:
    typedef std::map<int, const char*> Actions;
 
    Process* mpProcess;
+   Script*  mpScript;
    Actions  mActions;
 };
 

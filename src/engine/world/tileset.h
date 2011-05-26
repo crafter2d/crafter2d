@@ -20,6 +20,8 @@
 #ifndef TILESET_H_
 #define TILESET_H_
 
+#include <string>
+
 enum TileInfoFlag {
    TileAnimate    = 1,
    TileSolid      = 2
@@ -42,7 +44,7 @@ class TileSet
 public:
    TileSet();
 
-   bool create(const char* filename);
+   bool create(const std::string& filename);
    bool update(float tick);
 
  // operator overloads

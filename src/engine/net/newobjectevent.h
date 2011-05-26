@@ -39,6 +39,7 @@ public:
    
    Id             getParentId() const;
    SceneObject*   getObject() const;
+   const std::string& getFileName() const;
 
    virtual void   pack(BitStream& stream) const;
    virtual void   unpack(BitStream& stream);
@@ -46,6 +47,7 @@ public:
 private:
    Id           mParentId;
    SceneObject* mpObject;
+   std::string  mFileName;
 };
 
 #ifdef JENGINE_INLINE

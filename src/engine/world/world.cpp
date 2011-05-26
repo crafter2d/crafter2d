@@ -38,6 +38,9 @@
 #include "engine/scenegraph.h"
 #include "engine/creature.h"
 #include "engine/nodevisitor.h"
+#include "engine/process.h"
+#include "engine/script/scriptmanager.h"
+#include "engine/script/script.h"
 
 #include "layer.h"
 #include "layertype.h"
@@ -92,14 +95,8 @@ World::~World()
 
 /// \fn World::create(const char* filename)
 /// \brief Loads world information from a file and preprocesses this information for use during the game
-bool World::create (const char* filename)
+bool World::doCreate(const std::string& filename)
 {
-   if ( filename == NULL && !hasFilename() )
-      return false;
-
-   if ( filename != NULL )
-      setFilename(filename);
-
    std::string path = getFilename();
 
    WorldReader reader;
@@ -110,6 +107,9 @@ bool World::create (const char* filename)
 
    mpSimulator->setWorld(*this);
    mpSimulator->setListener(mSimulatorListener);
+
+   mpScript = getSceneGraph().getProcess().getScriptManager().loadClass("World");
+   mpScript->setThis(this);
 
    return true;
 }
@@ -157,7 +157,7 @@ void World::loadObjects(const char* filename)
       // create the new object
       //Creature* obj = new Creature();
       Object* obj = new Object();
-      obj->create(path.c_str());
+      obj->create(*this, path);
       obj->setPosition(Vector(x,y));
       obj->setRotation(rotation);
       obj->setName(name.c_str());
@@ -323,7 +323,7 @@ void World::scroll ()
    }
    else if ( followMode == FollowMouse )
    {
-      int x, y;
+      int x = 0, y = 0;
       int width =800, height=600;
       // SDL_GetMouseState(&x, &y); <-- get it from the input of the client
       
@@ -496,6 +496,16 @@ private:
 void World::notifyScrollChange(const Vector& scrollposition)
 {
    std::for_each(_observers.begin(), _observers.end(), WorldScrollNotify(scrollposition));
+}
+
+void World::notifyObjectWorldCollision(Object& object, Bound& bound, int side, bool begin)
+{
+   ASSERT_PTR(mpScript);
+   mpScript->addParam("Creature", &object);
+   mpScript->addParam("Bound", &bound);
+   mpScript->addParam(side);
+   mpScript->addParam(begin);
+   mpScript->run("onObjectWorldCollision");
 }
 
 //////////////////////////////////////////////////////////////////////////

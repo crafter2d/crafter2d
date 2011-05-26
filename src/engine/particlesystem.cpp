@@ -28,9 +28,9 @@
 
 #include "core/log/log.h"
 #include "core/system/timer.h"
-#include "core/script/script.h"
-#include "core/script/scriptcontext.h"
-#include "core/script/scriptmanager.h"
+
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
 
 #include "codepath.h"
 #include "object.h"
@@ -114,10 +114,9 @@ bool ParticleSystem::load(TiXmlDocument& doc)
       TiXmlText* value = (TiXmlText*)pelement->FirstChild();
       ScriptManager& mgr = getSceneGraph().getProcess().getScriptManager();
 
-      ScriptContext context;
-	   updateScript = mgr.createScript();
-      if ( !updateScript->load(context, value->Value()) )
-         return false;
+	   //updateScript = mgr.createScript();
+      //if ( !updateScript->load(value->Value()) )
+      //   return false;
    }
 
    return prepare();
@@ -210,14 +209,10 @@ void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
 			   else {
                curpart->initTime += delta;
 				   curpart->pos += curpart->vel;
-
-               ScriptContext context;
-
+               
 				   // run the particle script
-				   updateScript->setSelf (curpart, "Particle");
-				   updateScript->prepareCall("updateParticle");
 				   updateScript->addParam((int)lifetime);
-				   updateScript->run(context, 1);
+				   updateScript->run("updateParticle");
 
 				   part = &curpart->next;
 			   }

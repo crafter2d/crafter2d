@@ -50,11 +50,8 @@ public:
                            SceneObject();
    virtual                 ~SceneObject();
 
-   virtual bool            create(const char* filename=NULL);
+           bool            create(SceneObject& parent, const std::string filename);
    virtual void            destroy ();
-
-   virtual bool            load(TiXmlElement& element);
-   virtual bool            save(TiXmlElement& element);
 
    bool                    contains(const SceneObject& child) const;
    void                    add(SceneObject* child);
@@ -95,11 +92,18 @@ public:
 protected:
    friend class NewObjectEvent;
 
+   virtual bool            doCreate(const std::string& filename);
+
+   virtual bool            load(TiXmlElement& element);
+   virtual bool            save(TiXmlElement& element);
+
    virtual bool            load(TiXmlDocument& doc);
 
    virtual void            doUpdate(float delta) = 0;
    virtual void            doUpdateClient(float delta) = 0;
    virtual void            doDraw() = 0;
+
+   virtual void            parentChanged();
 
 private:
    void setId(Id id);

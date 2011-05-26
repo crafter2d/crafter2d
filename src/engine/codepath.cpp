@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <tinyxml.h>
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 #include "core/log/log.h"
 

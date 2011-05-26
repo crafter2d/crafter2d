@@ -80,6 +80,22 @@ void FileSystem::removePath(const std::string& path)
    mPaths.remove(path);
 }
 
+bool FileSystem::exists(const std::string& filename) const
+{
+   for ( int index = 0; index < mPaths.size(); index++ )
+   {
+      const std::string& path = mPaths[index];
+      std::string pathfile = path + '/' + filename;
+
+      if ( StdioFile::exists(pathfile) )
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
 File* FileSystem::open(const std::string& filename, int modus) const
 {
    std::string file = filename; // expand(filename);

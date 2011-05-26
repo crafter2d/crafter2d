@@ -57,11 +57,13 @@ TileSet::TileSet():
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-bool TileSet::create(const char* filename)
+bool TileSet::create(const std::string& filename)
 {
    int thisTile, val;
    Log& log = Log::getInstance();
-   TiXmlDocument doc(filename);
+
+   std::string path = "../images/" + filename;
+   TiXmlDocument doc(path);
    if ( !doc.LoadFile() )
    {
       log.error("TileSet.create: can not load '%s'", filename);

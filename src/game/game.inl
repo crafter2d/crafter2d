@@ -19,11 +19,6 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE GameWindow& Game::getGameWindow()
-{
-  return mWindow;
-}
-
 /// \fn Game::setActive(bool act)
 /// \brief Set the activity flag of the application.
 INLINE void Game::setActive(bool act)
@@ -56,4 +51,15 @@ INLINE void Game::setTitle(const std::string& title)
 INLINE const std::string& Game::getTitle() const
 {
    return mTitle;
+}
+
+INLINE GameWindowFactory& Game::getWindowFactory()
+{
+   ASSERT_PTR(mpWindowFactory);
+   return *mpWindowFactory;
+}
+
+INLINE void Game::setWindowFactory(GameWindowFactory& windowfactory)
+{
+   mpWindowFactory = &windowfactory;
 }

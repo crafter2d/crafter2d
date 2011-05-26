@@ -23,7 +23,7 @@
 #include <SOIL.h>
 
 #include "core/vfs/file.h"
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 
 TextureLoaderSoil::TextureLoaderSoil():
    AbstractTextureLoader()
@@ -60,6 +60,6 @@ bool TextureLoaderSoil::virLoad(File& file, TextureInfo& info)
    info.setWidth(width);
    info.setHeight(height);
 
-   delete pdata;
+   delete[] pdata;
    return true;
 }

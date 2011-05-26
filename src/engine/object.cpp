@@ -28,13 +28,13 @@
 
 #include "core/log/log.h"
 
-#include "physics/body.h"
-#include "physics/simulator.h"
-
-#include "world/world.h"
+#include "engine/physics/body.h"
+#include "engine/physics/simulator.h"
+#include "engine/world/world.h"
 
 #include "animator.h"
 #include "scenegraph.h"
+#include "process.h"
 #include "state.h"
 #include "nodevisitor.h"
 #include "texturecoordinate.h"
@@ -143,6 +143,10 @@ void Object::destroy()
 
    delete mpBody;
    mpBody = NULL;
+}
+
+void Object::parentChanged()
+{
 }
 
 // - Modifier interface

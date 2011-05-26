@@ -24,8 +24,6 @@
 
 #include <tinyxml.h>
 
-#include "core/script/script.h"
-
 #include "net/bitstream.h"
 #include "nodevisitor.h"
 

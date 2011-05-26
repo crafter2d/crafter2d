@@ -1,0 +1,93 @@
+
+#ifndef AST_VISITOR_H_
+#define AST_VISITOR_H_
+
+class ASTNode;
+class ASTRoot;
+class ASTPackage;
+class ASTUse;
+class ASTClass;
+class ASTField;
+class ASTFunction;
+class ASTFunctionArgument;
+class ASTLocalVariable;
+class ASTAnnotations;
+class ASTBlock;
+class ASTIf;
+class ASTFor;
+class ASTForeach;
+class ASTWhile;
+class ASTDo;
+class ASTSwitch;
+class ASTCase;
+class ASTReturn;
+class ASTTry;
+class ASTCatch;
+class ASTThrow;
+class ASTLoopControl;
+class ASTExpressionStatement;
+class ASTExpression;
+class ASTCast;
+class ASTUnary;
+class ASTNew;
+class ASTSuper;
+class ASTAccess;
+class ASTCompound;
+class ASTConcatenate;
+class ASTLiteral;
+
+#define VISIT(aclass) \
+   virtual void visit(const aclass& ast); \
+   virtual void visit(aclass& ast)
+
+#define VISIT_IMPL(aclass) \
+   void ASTVisitor::visit(const aclass& ast) {} \
+   void ASTVisitor::visit(aclass& ast) {}
+
+class ASTVisitor
+{
+public:
+   ASTVisitor();
+   virtual ~ASTVisitor() = 0;
+
+   VISIT(ASTRoot);
+   VISIT(ASTPackage);
+   VISIT(ASTUse);
+   VISIT(ASTClass);
+   VISIT(ASTField);
+   VISIT(ASTFunction);
+   VISIT(ASTFunctionArgument);
+   VISIT(ASTLocalVariable);
+   VISIT(ASTAnnotations);
+   VISIT(ASTBlock);
+   VISIT(ASTIf);
+   VISIT(ASTFor);
+   VISIT(ASTForeach);
+   VISIT(ASTWhile);
+   VISIT(ASTDo);
+   VISIT(ASTSwitch);
+   VISIT(ASTCase);
+   VISIT(ASTReturn);
+   VISIT(ASTTry);
+   VISIT(ASTCatch);
+   VISIT(ASTThrow);
+   VISIT(ASTLoopControl);
+   VISIT(ASTLiteral);
+   VISIT(ASTExpressionStatement);
+   VISIT(ASTExpression);
+   VISIT(ASTCast);
+   VISIT(ASTUnary);
+   VISIT(ASTNew);
+   VISIT(ASTSuper);
+   VISIT(ASTAccess);
+   VISIT(ASTCompound);
+   VISIT(ASTConcatenate);
+
+protected:
+   void visitChildren(const ASTNode& node);
+   void visitChildren(ASTNode& node);
+
+   void reverseVisitChildren(const ASTNode& node);
+};
+
+#endif // AST_VISITOR_H_

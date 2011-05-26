@@ -79,4 +79,6 @@ SceneObject& SceneObject::getParent()
 INLINE void SceneObject::setParent(SceneObject* p)
 {
    parent = p;
+
+   parentChanged();
 }

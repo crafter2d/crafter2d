@@ -18,9 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 
 #include "game.h"
+#include "sdlgamewindowfactory.h"
 
 /*!
  	\mainpage JEngine SSE - 2D Side Scoller Documentation
@@ -56,7 +57,10 @@
 
 int main(int argc, char *argv[])
 {
+   SDLGameWindowFactory windowfactory;
+
    AutoPtr<Game> game = new Game();
+   game->setWindowFactory(windowfactory);
    if ( game->create() )
    {
       game->run ();

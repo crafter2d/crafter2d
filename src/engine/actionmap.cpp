@@ -24,14 +24,15 @@
 
 #include "net/events/actionevent.h"
 
-#include "core/script/script.h"
-#include "core/script/scriptcontext.h"
-#include "core/script/scriptmanager.h"
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
 
 #include "client.h"
 #include "object.h"
 
 ActionMap::ActionMap():
+   mpProcess(NULL),
+   mpScript(NULL),
    mActions()
 {
 }
@@ -41,7 +42,18 @@ ActionMap::~ActionMap()
    mpProcess = NULL;
 }
 
-// - operations
+// - Get/set
+
+void ActionMap::setProcess(Process& process)
+{
+   mpProcess = &process;
+
+   mpScript = process.getScriptManager().loadClass("ActionMap");
+   ASSERT_PTR(mpScript);
+   mpScript->setThis(this);
+}
+
+// - Operations
 
 void ActionMap::bind(int action, const char* function)
 {
@@ -50,39 +62,31 @@ void ActionMap::bind(int action, const char* function)
 
 void ActionMap::process(int action, bool down)
 {
-   Client& client = dynamic_cast<Client&>(getProcess());
-
    Actions::const_iterator it = mActions.find(action);
    if ( it == mActions.end() )
    {
       ActionEvent event(action, down);
+      Client& client = dynamic_cast<Client&>(getProcess());
       client.sendToServer(event);
    }
    else
    {
-      const char* pfunction = it->second;
-
-      ScriptContext context;
-
-      Script& script = client.getScriptManager().getTemporaryScript();
-      script.prepareCall (pfunction);
-      script.addParam(down);
-      script.run(context, 1);
+      std::string function = it->second;
+      
+      ASSERT_PTR(mpScript);
+      mpScript->addParam(down);
+      mpScript->run(function);
    }
 }
 
 void ActionMap::processRemote(const ActionEvent& event, Object& object)
 {
-   int action = event.getAction();
-   Actions::const_iterator it = mActions.find(action);
-   if ( it != mActions.end() )
-   {
-      ScriptContext context;
+   ASSERT_PTR(mpScript);
+   mpScript->addParam("Creature", &object);
+   mpScript->addParam(event.getAction());
 
-      Script& script = mpProcess->getScriptManager().getTemporaryScript();
-      script.prepareCall(it->second);
-      script.addParam(&object, "Object");
-      script.addParam(event.isDown());
-      script.run(context, 2);
-   }
+   if ( event.isDown() )
+      mpScript->run("onKeyDown");
+   else
+      mpScript->run("onKeyUp");
 }

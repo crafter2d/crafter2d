@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "core/script/script.h"
+#include "engine/script/script.h"
 
 #include "hashtable.h"
 #include "texture.h"

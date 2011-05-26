@@ -30,7 +30,7 @@
 #include <GL/glu.h>
 #include <math.h>
 
-#include "core/autoptr.h"
+#include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 
 #include "engine/opengl.h"
@@ -93,7 +93,7 @@ bool Layer::create(const std::string& layername, int w, int h, const std::string
 
    field = createTileRows(width, height);
 
-   if ( !effect.load(effectFile.c_str()) )
+   if ( !effect.load(effectFile) )
    {
       Log::getInstance().error("Can not load effect file '%s'.", effectFile.c_str());
       return false;
@@ -216,7 +216,7 @@ VertexBuffer* Layer::createVertexBuffer(int width, int height, int vertexcount)
 {
    // create the vertex buffer for this layer
 	AutoPtr<VertexBuffer> vb = OpenGL::createVertexBuffer();
-   if ( vb.hasPointer() )
+   if ( !vb.hasPointer() )
    {
       Log::getInstance().error("Not enough memory available for vertex buffer.");
       return NULL;

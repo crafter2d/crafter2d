@@ -107,11 +107,7 @@ SoundManager::SoundManager():
 /// \brief releases internal member variables.
 SoundManager::~SoundManager()
 {
-	if ( context != NULL )
-	{
-		alcDestroyContext (context);
-		context = NULL;
-	}
+	destroy();
 }
 
 /// \fn SoundManager::setPlayerPosition(const Vector& pos)
@@ -181,10 +177,10 @@ bool SoundManager::initialize ()
 	return true;
 }
 
-/// \fn SoundManager::release()
+/// \fn SoundManager::destroy()
 /// \brief Releases the sound system. After calling this function any calls to other functions
 /// of the sound manager can fail except the initialize function.
-void SoundManager::destroy ()
+void SoundManager::destroy()
 {
    if ( context != NULL )
    {

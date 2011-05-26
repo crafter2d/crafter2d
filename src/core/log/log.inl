@@ -42,8 +42,11 @@ INLINE Log& Log::operator<< (unsigned char u)
 	
 INLINE Log& Log::operator<< (const char* s)
 {
-   file << s;
-   flush ();
+   if ( s != NULL )
+   {
+      file << s;
+      flush ();
+   }
    return *this;
 }
 
