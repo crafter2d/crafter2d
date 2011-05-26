@@ -16,7 +16,14 @@ class VirtualLookupTable;
 class VirtualClass
 {
    typedef std::vector<VirtualLookupTable*> LookupTables;
+
 public:
+   enum Flags {
+      eNone = 0, 
+      eInstantiatable = 1,
+      eNative = 2
+   };
+
    VirtualClass();
    ~VirtualClass();
 
@@ -51,7 +58,14 @@ public:
    const VirtualObjectReference& getClassObject() const;
    void setClassObject(const VirtualObjectReference& object);
 
+   void setFlags(Flags flags);
+
  // query
+   bool isNative() const;
+   bool canInstantiate() const;
+
+   std::string getNativeClassName() const;
+
    bool isBaseClass(const VirtualClass& base) const;
    const VirtualLookupTable& getLookupTable(int index) const;
    const VirtualFunctionTableEntry* getDefaultConstructor() const;
@@ -79,6 +93,7 @@ private:
    Variant*                mpStatics;
    int                     mStaticCount;
    int                     mVariableCount;
+   Flags                   mFlags;
 };
 
 #endif // VIRTUAL_CLASS_H_

@@ -14,10 +14,10 @@ VirtualMachineObjectObserver::VirtualMachineObjectObserver(VirtualMachine& machi
    
 void VirtualMachineObjectObserver::onCreated(VirtualObject& object)
 {
-   mMachine.insertNative(object);
+   //mMachine.insertNative(object);
 }
 
 void VirtualMachineObjectObserver::onDestroyed(VirtualObject& object)
 {
-   mMachine.deleteNative(object);
+   //mMachine.deleteNative(object);
 }

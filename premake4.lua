@@ -11,7 +11,7 @@ elseif ( os.is("linux") ) then
 	defines { "LINUX" }
 end
 
-libdir = "d:/development/jengine sse/externallibs/" .. _ACTION .. "/"
+libdir = "E:/Devel/jengine_sse/externallibs/" .. _ACTION .. "/"
 	
 require "projects/proj-core"
 require "projects/proj-script"

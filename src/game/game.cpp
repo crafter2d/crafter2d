@@ -30,8 +30,6 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <GL/GLee.h>
-#include <GL/glu.h>
 
 #include "core/system/platform.h"
 #include "core/system/timer.h"

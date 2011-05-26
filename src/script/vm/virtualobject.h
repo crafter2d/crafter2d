@@ -24,7 +24,7 @@
 
 class Variant;
 class VirtualClass;
-class VirtualObjectObserver;
+class VirtualObjectReference;
 
 class SCRIPT_API VirtualObject
 {
@@ -50,13 +50,9 @@ public:
    Variant& getMember(int index);
    void setMember(int index, const Variant& value);
 
- // observers
-   void registerObserver(VirtualObjectObserver& observer);
-   void unregisterObserver(VirtualObjectObserver& observer);
-
 private:
 
-   VirtualObjectObserver*  mpObserver;
+ // members
    const VirtualClass*     mpClass;
    void*                   mpNativeObject;
    bool                    mOwnsNative;

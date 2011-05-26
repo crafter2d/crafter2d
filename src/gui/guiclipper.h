@@ -20,16 +20,16 @@
 #ifndef GUI_CLIPPER_H_
 #define GUI_CLIPPER_H_
 
-#include "guihelpers.h"
+#include "core/math/rectangle.h"
 
 class GuiClipper
 {
 public:
-   explicit GuiClipper(const GuiRect& rect);
-            ~GuiClipper();
+   explicit GuiClipper(const Rect& rect);
+           ~GuiClipper();
 
 private:
-   void     setScissorRect(const GuiRect& rect);
+   void     setScissorRect(const Rect& rect);
 
    int scissor[4];
 };

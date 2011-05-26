@@ -25,10 +25,7 @@
 
 #include "script/common/variant.h"
 
-#include "virtualobjectobserver.h"
-
 VirtualObject::VirtualObject():
-   mpObserver(NULL),
    mpClass(NULL),
    mpNativeObject(NULL),
    mOwnsNative(true),
@@ -53,7 +50,8 @@ bool VirtualObject::hasNativeObject() const
 }
 
 void* VirtualObject::getNativeObject()
-{return mpNativeObject;
+{
+   return mpNativeObject;
 }
 
 void* VirtualObject::useNativeObject()
@@ -68,22 +66,12 @@ void VirtualObject::setNativeObject(void* pobject)
 {
    if ( mpNativeObject != pobject )
    {
-      if ( mpNativeObject != NULL && mpObserver != NULL )
-      {
-         //mpObserver->onDestroyed(*this);
-      }
-
       if ( mOwnsNative )
       {
          delete mpNativeObject;
       }
 
       mpNativeObject = pobject;
-
-      if ( mpNativeObject != NULL && mpObserver != NULL)
-      {
-         //mpObserver->onCreated(*this);
-      }
    }
 }
 
@@ -133,16 +121,4 @@ void VirtualObject::setMember(int index, const Variant& value)
    ASSERT(index < mMemberCount);
 
    mpMembers[index] = value;
-}
-
-// observers
-   
-void VirtualObject::registerObserver(VirtualObjectObserver& observer)
-{
-   mpObserver = &observer;
-}
-
-void VirtualObject::unregisterObserver(VirtualObjectObserver& observer)
-{
-   mpObserver = NULL;
 }

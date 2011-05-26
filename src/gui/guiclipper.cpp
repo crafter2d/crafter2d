@@ -21,9 +21,7 @@
 
 #include <GL/GLee.h>
 
-#include "../game.h"
-
-GuiClipper::GuiClipper(const GuiRect& rect):
+GuiClipper::GuiClipper(const Rect& rect):
    scissor()
 {
    glGetIntegerv(GL_SCISSOR_BOX, scissor);
@@ -35,15 +33,16 @@ GuiClipper::~GuiClipper()
    glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 }
 
-void GuiClipper::setScissorRect(const GuiRect& rect)
+void GuiClipper::setScissorRect(const Rect& rect)
 {
-   int screenheight = Game::getInstance().getScreenHeight();
+   //int screenheight = Game::getInstance().getScreenHeight();
+   int screenheight = 600;
 
    // determine the correct clipping rectangle
-   int x = rect.left();
+   int x = rect.getLeft();
    if ( x < scissor[0] )
       x = scissor[0];
-   int y = screenheight - rect.bottom();
+   int y = screenheight - rect.getBottom();
    if ( y < scissor[1] )
       y = scissor[1];
 

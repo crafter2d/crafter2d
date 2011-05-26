@@ -977,9 +977,14 @@ VirtualObjectReference VirtualMachine::instantiate(const std::string& classname,
 {
    VirtualClass* pclass = doLoadClass(classname);
    ASSERT_PTR(pclass);
-            
+
+   if ( !pclass->canInstantiate() )
+   {
+      // not allowed to do instantiate this class (abstract)
+      throw std::exception();
+   }
+
    VirtualObjectReference object(pclass->instantiate());
-   object->registerObserver(mObjectObserver);
    Variant objectvariant(object);
 
    {
@@ -1015,7 +1020,7 @@ VirtualObjectReference VirtualMachine::instantiate(const std::string& classname,
 VirtualObjectReference VirtualMachine::instantiateNative(const std::string& classname, void* pobject, bool owned)
 {
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
-   if ( false && it != mNativeObjects.end() )
+   if ( it != mNativeObjects.end() )
    {
       return it->second;
    }
@@ -1024,6 +1029,8 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
       VirtualObjectReference object(instantiate(classname, -1));
       object->setNativeObject(pobject);
       object->setOwner(owned);
+
+      mNativeObjects[pobject] = object;
 
       return object;
    }
@@ -1037,26 +1044,25 @@ VirtualArrayReference VirtualMachine::instantiateArray()
    return ref;
 }
 
-void VirtualMachine::insertNative(VirtualObject& object)
-{
-   ASSERT(object.hasNativeObject());
+// - Native interface
 
-   NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObject());
+void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnative)
+{
+   NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
    if ( it == mNativeObjects.end() )
    {
-      mNativeObjects[object.getNativeObject()] = VirtualObjectReference(&object);
+      mNativeObjects[pnative] = object;
+
+      object->setNativeObject(pnative);
    }
 }
 
-void VirtualMachine::deleteNative(VirtualObject& object)
+void VirtualMachine::unregisterNative(VirtualObjectReference& object, void* pnative)
 {
-   if ( mState != eDestruct )
+   NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
+   if ( it != mNativeObjects.end() && it->second.isUnique() )
    {
-      NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObject());
-      if ( it != mNativeObjects.end() && it->second.isUnique() )
-      {
-         mNativeObjects.erase(it);
-      }
+      mNativeObjects.erase(it);
    }
 }
 

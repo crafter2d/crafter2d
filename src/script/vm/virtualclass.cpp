@@ -21,7 +21,8 @@ VirtualClass::VirtualClass():
    mClassObject(NULL),
    mpStatics(NULL),
    mStaticCount(0),
-   mVariableCount(0)
+   mVariableCount(0),
+   mFlags(eNone)
 {
 }
 
@@ -145,7 +146,32 @@ void VirtualClass::setClassObject(const VirtualObjectReference& object)
    mClassObject = object;
 }
 
-//  Query
+void VirtualClass::setFlags(Flags flags)
+{
+   mFlags = flags;
+}
+
+// - Query
+
+bool VirtualClass::isNative() const
+{
+   return (mFlags & eNative) == eNative;
+}
+
+bool VirtualClass::canInstantiate() const
+{
+   return (mFlags & eInstantiatable) == eInstantiatable;
+}
+
+std::string VirtualClass::getNativeClassName() const
+{
+   if ( isNative() )
+   {
+      return mName;
+   }
+
+   return hasBaseClass() ? getBaseClass().getNativeClassName() : "";
+}
    
 bool VirtualClass::isBaseClass(const VirtualClass& base) const
 {

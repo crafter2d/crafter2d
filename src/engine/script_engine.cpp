@@ -49,7 +49,7 @@ void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
    
    Server* pserver = new Server();
-   thisobject->setNativeObject(pserver);
+   machine.registerNative(thisobject, pserver);
 
    //VirtualObjectReference ref = machine.instantiateNative("Server", pserver);
 
@@ -131,7 +131,7 @@ void Client_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
 
    Client* pclient = new Client();
-   thisobject->setNativeObject(pclient);
+   machine.registerNative(thisobject, pclient);
 
    //VirtualObjectReference ref = machine.instantiateNative("Client", pclient);
 
@@ -241,7 +241,7 @@ void BitStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
 
    BitStream* pstream = new BitStream();
-   thisobject->setNativeObject(pstream);
+   machine.registerNative(thisobject, pstream);
 
    //VirtualObjectReference ref = machine.instantiateNative("BitStream", pstream);
 
@@ -279,7 +279,7 @@ void Creature_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
 
    Creature* pcreature = new Creature();
-   thisobject->setNativeObject(pcreature);
+   machine.registerNative(thisobject, pcreature);
 
    //VirtualObjectReference ref = machine.instantiateNative("Creature", pcreature);
 
@@ -433,7 +433,7 @@ void Vector2D_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
 
    Vector* pvector = new Vector();
-   thisobject->setNativeObject(pvector);
+   machine.registerNative(thisobject, pvector);
 
    //VirtualObjectReference ref = machine.instantiateNative("Vector2D", pvector);
 
@@ -513,7 +513,7 @@ void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
 
    World* pworld = new World();
-   thisobject->setNativeObject(pworld);
+   machine.registerNative(thisobject, pworld);
    
    //VirtualObjectReference ref = machine.instantiateNative("World", pworld);
 
@@ -606,7 +606,7 @@ void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& acc
    VirtualObjectReference& thisobject = accessor.getThis();
 
    InputForceGenerator* pgenerator = new InputForceGenerator();
-   thisobject->setNativeObject(pgenerator);
+   machine.registerNative(thisobject, pgenerator);
 
    //VirtualObjectReference ref = machine.instantiateNative("InputForceGenerator", pgenerator);
 
@@ -666,7 +666,7 @@ void Box2DRevoluteJointDefinition_init(VirtualMachine& machine, VirtualStackAcce
    VirtualObjectReference& thisobject = accessor.getThis();
 
    Box2DRevoluteJointDefinition* pjointdef = new Box2DRevoluteJointDefinition();
-   thisobject->setNativeObject(pjointdef);
+   machine.registerNative(thisobject, pjointdef);
 
    //VirtualObjectReference ref = machine.instantiateNative("Box2DRevoluteJointDefinition", pjointdef);
 
@@ -736,7 +736,7 @@ void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
 
    ActionMap* pmap = new ActionMap();
-   thisobject->setNativeObject(pmap);
+   machine.registerNative(thisobject, pmap);
 
    //VirtualObjectReference ref = machine.instantiateNative("ActionMap", pmap);
 
@@ -748,7 +748,7 @@ void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
 
    KeyMap* pmap = new KeyMap();
-   thisobject->setNativeObject(pmap);
+   machine.registerNative(thisobject, pmap);
 
    //VirtualObjectReference ref = machine.instantiateNative("KeyMap", pmap);
    

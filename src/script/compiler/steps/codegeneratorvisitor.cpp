@@ -194,6 +194,14 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
    mpVClass->setBaseName(ast.hasBaseClass() ? ast.getBaseClass().getName() : "");
    mpVClass->setVariableCount(ast.getTotalVariables());
 
+   int flags = VirtualClass::eNone;
+   if ( !ast.getModifiers().isAbstract() )
+      flags |= VirtualClass::eInstantiatable;
+   if ( ast.getModifiers().isNative() )
+      flags |= VirtualClass::eNative;
+   mpVClass->setFlags((VirtualClass::Flags)flags);
+
+
    // base class should be set by the VM
    // we don't register the member variables, as they must be loaded/stored differently than locals
    

@@ -62,7 +62,7 @@ class Server
 		
 		player.setCreature(controller);
 		
-		//createObjects(world);
+		createObjects(world);
 		
 		// notify the client
 		mStream.clear();
@@ -71,7 +71,7 @@ class Server
 		
 		sendScriptEvent(mStream, player.getClient());
 	}
-	/*
+
 	private void createObjects(World world)
 	{
 		Vector2D left = new Vector2D();
@@ -107,5 +107,4 @@ class Server
 		box.setName("Box4");
 		box.create(world, "../objects/box.xml");
 	}
-	*/
 }

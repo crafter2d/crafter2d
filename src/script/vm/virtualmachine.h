@@ -183,8 +183,9 @@ public:
    VirtualObjectReference instantiateNative(const std::string& classname, void* pobject, bool owned = true);
    VirtualArrayReference  instantiateArray();
 
-   void insertNative(VirtualObject& object);
-   void deleteNative(VirtualObject& object);
+ // observing
+   void registerNative(VirtualObjectReference& object, void* pnative);
+   void unregisterNative(VirtualObjectReference& object, void* pnative);
 
 private:
    friend class VirtualCompileCallback;
