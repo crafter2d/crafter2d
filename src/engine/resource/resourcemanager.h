@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,19 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MODIFIER_H_
-#define MODIFIER_H_
+#ifndef RESOURCE_MANAGER_H_
+#define RESOURCE_MANAGER_H_
 
-class Object;
+#include <string>
 
-class Modifier
+#include "resourceptr.h"
+
+#include "engine/hashtable.h"
+#include "engine/texture.h"
+
+/**
+@author Jeroen Broekhuizen
+\brief Resource manager.
+*/
+class ResourceManager
 {
 public:
-   Modifier();
-   virtual ~Modifier() = 0;
+   static ResourceManager& getInstance();
 
- // updating
-   virtual void update(Object& object, float delta) = 0;
+   TexturePtr loadTexture (const std::string& file);
+
+ // notifications
+   void notifyResourceDeleted(const Resource& resource);
+
+private:
+   explicit ResourceManager();
+   ResourceManager& operator=(const ResourceManager& mgr);
+
+ // members
+	HashTable mResources;
 };
 
-#endif
+#endif // RESOURCE_MANAGER_H_

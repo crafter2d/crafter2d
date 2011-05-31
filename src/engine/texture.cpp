@@ -147,6 +147,15 @@ bool Texture::generateTexture(const TextureInfo& info)
 	return success;
 }
 
+// - Get/set
+
+const std::string& Texture::getFilename() const
+{
+   return filename; 
+}
+
+// - Operations
+
 /*!
     \fn Texture::enable(bool active=true)
 	 \brief Use this function to either activate or deactivate this texture.

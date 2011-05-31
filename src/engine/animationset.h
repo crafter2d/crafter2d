@@ -21,7 +21,6 @@
 #define ANIMATIONSET_H_
 
 #include <vector>
-#include "refcount.h"
 
 class Animation;
 
@@ -31,13 +30,13 @@ class Animation;
 
 You can use this class for your objects that have a form of animation in it.
 */
-class AnimationSet: public RefCount
+class AnimationSet
 {
 public:
    typedef std::vector<Animation*> Animations;
 
                      AnimationSet();
-	virtual           ~AnimationSet();
+	                  ~AnimationSet();
 
    void              destroy();
 

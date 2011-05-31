@@ -17,8 +17,6 @@ includedirs { "src" }
 if ( os.is("windows") ) then
 	includedirs { 	path.join(libdir, "sdl/include"),
 					path.join(libdir, "glee/include"),
-					path.join(libdir, "lua/include"), 
-					path.join(libdir, "tolua++/include"),
 					path.join(libdir, "tinyxml/include"),
 					path.join(libdir, "openal/include"),
 					path.join(libdir, "zlib/include") }
@@ -26,18 +24,16 @@ if ( os.is("windows") ) then
 	libdirs { 	path.join(libdir, "sdl/lib"),
 				path.join(libdir, "glee/lib"),
 				path.join(libdir, "zlib/lib"),
-				path.join(libdir, "tinyxml/lib"),
-				path.join(libdir, "lua/lib"), 
-				path.join(libdir, "tolua++/lib") }
+				path.join(libdir, "tinyxml/lib") }
 	
 	links { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32" }
 	
 	configuration "Debug"
-		links { "GLee_d", "tolua++_d", " lua5.1_d", "tinyxmld_STL" }
+		links { "GLee_d", "tinyxmld_STL" }
 		ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 			
 	configuration "Release"
-		links { "GLee", "tolua++", "lua5.1", "tinyxml_STL" }
+		links { "GLee", "tinyxml_STL" }
 end
 
 configuration "Debug"

@@ -17,5 +17,74 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "core/defines.h"
 
-#include "sharedptr.h"
+template<class T>
+ResourcePtr<T>::ResourcePtr():
+   mpHandle(NULL)
+{
+}
+   
+template<class T>
+ResourcePtr<T>::ResourcePtr(ResourceHandle* phandle):
+   mpHandle(phandle)
+{
+   if ( mpHandle != NULL )
+   {
+      mpHandle->addRef();
+   }
+}
+ 
+template<class T>
+ResourcePtr<T>::ResourcePtr(const ResourcePtr<T>& that):
+   mpHandle(that.mpHandle)
+{
+   mpHandle->addRef();
+}
+
+// - Operators
+
+template<class T>
+ResourcePtr<T>& ResourcePtr<T>::operator=(const ResourcePtr<T>& that)
+{
+   if ( mpHandle != that.mpHandle )
+   {
+      mpHandle = that.mpHandle;
+      mpHandle->addRef();
+   }
+   return *this;
+}
+
+// query
+
+template<class T>
+INLINE bool ResourcePtr<T>::isValid() const
+{
+   return mpHandle != NULL;
+}
+
+template<class T>
+INLINE const T* ResourcePtr<T>::ptr() const
+{
+   return operator->();
+}
+
+template<class T>
+INLINE T* ResourcePtr<T>::ptr()
+{
+   return operator->();
+}
+
+// - Dereferencing
+
+template<class T>
+T* ResourcePtr<T>::operator->() const
+{
+   return static_cast<T*>(&mpHandle->getResource());
+}
+
+template<class T>
+T& ResourcePtr<T>::operator*() const
+{
+   return *static_cast<T*>(&mpHandle->getResource());
+}

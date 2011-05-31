@@ -20,6 +20,8 @@
 #ifndef ANIMATOR_H_
 #define ANIMATOR_H_
 
+#include "core/smartptr/sharedptr.h"
+
 #include "animationset.h"
 #include "texturecoordlookup.h"
 
@@ -56,7 +58,7 @@ private:
    void determineFrameCount();
 
    TextureCoordLookup        mTextureCoords;
-   RefPointer<AnimationSet>  mAnimations;
+   SharedPtr<AnimationSet>   mAnimations;
 	float    mAnimationSpeed;
 	float    mAnimationDelta;
    float    _animFrameWidth;

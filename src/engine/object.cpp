@@ -30,14 +30,15 @@
 
 #include "engine/physics/body.h"
 #include "engine/physics/simulator.h"
+#include "engine/resource/resourcemanager.h"
 #include "engine/world/world.h"
 
 #include "animator.h"
 #include "scenegraph.h"
 #include "process.h"
-#include "state.h"
 #include "nodevisitor.h"
 #include "texturecoordinate.h"
+#include "controller.h"
 
 IMPLEMENT_REPLICATABLE(ObjectId, Object, SceneObject)
 
@@ -46,6 +47,7 @@ Object::Object():
    texture(),
    mpBody(NULL),
    mpAnimator(NULL),
+   mpController(NULL),
 	width(0),
    height(0),
    halfX(.0f),
@@ -115,7 +117,7 @@ bool Object::load (TiXmlDocument& doc)
    {
 		TiXmlText* value = (TiXmlText*)tex->FirstChild();
       texture = ResourceManager::getInstance().loadTexture(value->Value());
-      if ( !texture.valid() )
+      if ( !texture.isValid() )
       {
          log.error("Object.load: can not load %s", value->Value());
          return false;
@@ -151,21 +153,17 @@ void Object::parentChanged()
 
 // - Modifier interface
 
-void Object::addModifier(Modifier* pmodifier)
+void Object::setController(Controller* pcontroller)
 {
-   ASSERT_PTR(pmodifier)
-   mModifiers.push_back(pmodifier);
+   mpController = pcontroller;
 }
 
 // - Updating
 
 void Object::doUpdate(float delta)
 {
-   for ( Modifiers::size_type index = 0; index < mModifiers.size(); index++ )
-   {
-      Modifier* pmodifier = mModifiers[index];
-      pmodifier->update(*this, delta);
-   }
+   if ( mpController != NULL )
+      mpController->update(delta);
 }
 
 void Object::doUpdateClient(float delta)
@@ -248,14 +246,6 @@ void Object::move(float delta)
 Object* Object::clone ()
 {
 	return NULL;
-}
-
-/// \fn Object:addState(State* state)
-/// \brief Adds a new state to the state list.
-void Object::addState(State* state)
-{
-   state->object(this);
-   states.push(state);
 }
 
 /// \fn Object::getPosition () const

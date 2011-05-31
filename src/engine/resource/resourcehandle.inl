@@ -18,4 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "sharedptr.h"
+// - Get/set
+
+INLINE bool ResourceHandle::hasResource() const
+{
+   return mpResource != NULL;
+}
+
+INLINE const Resource& ResourceHandle::getResource() const
+{
+   ASSERT_PTR(mpResource);
+   return *mpResource;
+}
+
+INLINE Resource& ResourceHandle::getResource()
+{
+   ASSERT_PTR(mpResource);
+   return *mpResource;
+}
+
+INLINE void ResourceHandle::setResource(Resource* presource)
+{
+   mpResource = presource;
+}

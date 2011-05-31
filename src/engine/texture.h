@@ -25,7 +25,8 @@
 
 #include "core/defines.h"
 
-#include "refcount.h"
+#include "engine/resource/resourceptr.h"
+#include "engine/resource/resource.h"
 
 class TextureInfo;
 
@@ -33,7 +34,7 @@ class TextureInfo;
 @author Jeroen Broekhuizen
 \brief Wrapper class around an OpenGL texture. Use this class to load and display textures on your objects.
 */
-class Texture : public RefCount
+class Texture : public Resource
 {
 public:
    explicit       Texture();
@@ -53,8 +54,10 @@ public:
    int            getHeight() const;
    float          getSourceWidth() const;
    float          getSourceHeight() const;
-   std::string    getFileName() const;
    bool           isValid() const;
+
+ // overloads
+   const std::string& getFilename() const;
 
 protected:
    bool           generateTexture(const TextureInfo& info);
@@ -76,6 +79,8 @@ protected:
    int texStage;
    std::string filename;
 };
+
+typedef ResourcePtr<Texture> TexturePtr;
 
 #ifdef JENGINE_INLINE
 #  include "texture.inl"

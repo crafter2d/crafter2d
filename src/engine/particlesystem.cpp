@@ -31,6 +31,7 @@
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
+#include "engine/resource/resourcemanager.h"
 
 #include "codepath.h"
 #include "object.h"
@@ -103,7 +104,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
    {
 		TiXmlText* value = (TiXmlText*)pelement->FirstChild();
       texture = ResourceManager::getInstance().loadTexture(value->Value());
-      if ( !(texture) )
+      if ( texture.isValid() )
          return false;
 	}
 

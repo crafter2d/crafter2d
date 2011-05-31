@@ -28,7 +28,9 @@ class Controller
 {
 public:
    Controller();
-   ~Controller();
+   virtual ~Controller();
+
+   virtual void update(float delta) = 0;
 };
 
 #endif

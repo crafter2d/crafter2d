@@ -17,5 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RESOURCE_HANDLE_H_
+#define RESOURCE_HANDLE_H_
 
-#include "sharedptr.h"
+#include "core/defines.h"
+#include "core/smartptr/refcount.h"
+
+class Resource;
+class ResourceManager;
+
+class ResourceHandle : public RefCount
+{
+public:
+   ResourceHandle(ResourceManager& manager, Resource* presource = NULL);
+   virtual ~ResourceHandle();
+
+ // get/set
+   bool            hasResource() const;
+   const Resource& getResource() const;
+   Resource&       getResource();
+   void            setResource(Resource* presource);
+
+ // operations
+   void release();
+
+private:
+
+ // members
+   ResourceManager& mManager;
+   Resource*        mpResource;
+};
+
+#ifdef JENGINE_INLINE
+#  include "resourcehandle.inl"
+#endif
+
+#endif // RESOURCE_HANDLE_H_

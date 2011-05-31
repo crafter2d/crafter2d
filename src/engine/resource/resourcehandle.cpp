@@ -17,5 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "resourcehandle.h"
+#ifndef JENGINE_INLINE
+#  include "resourcehandle.inl"
+#endif
 
-#include "sharedptr.h"
+#include "resource.h"
+#include "resourcemanager.h"
+
+ResourceHandle::ResourceHandle(ResourceManager& manager, Resource* presource):
+   mManager(manager),
+   mpResource(presource)
+{
+}
+
+ResourceHandle::~ResourceHandle()
+{
+   release();
+}
+
+// - Operations
+   
+void ResourceHandle::release()
+{
+   mManager.notifyResourceDeleted(*mpResource);
+
+   delete mpResource;
+   mpResource = NULL;
+}

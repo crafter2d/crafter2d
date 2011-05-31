@@ -28,6 +28,8 @@
 #include "core/log/log.h"
 #include "core/defines.h"
 
+#include "engine/resource/resourcemanager.h"
+
 #include "codepath.h"
 #include "opengl.h"
 #include "texture.h"
@@ -133,17 +135,17 @@ bool Effect::processTextures( const TiXmlElement* effect )
     	stage.uniform = texture->Attribute("uniform");
     	TiXmlText* file = (TiXmlText*)texture->FirstChild();
 		const char* type = texture->Attribute("type");
-		if (type && strcmp (type, "normcube") == 0)
+		if ( type != NULL && strcmp (type, "normcube") == 0 )
       {
 			// make it a normalizing cube map
-         stage.tex = new Texture();
-			stage.tex->createNormalizingCube();
+         //stage.tex = new Texture();
+			//stage.tex->createNormalizingCube();
 		}
 		else
       {
 			// must be a normal texture
          stage.tex = ResourceManager::getInstance().loadTexture(file->Value());
-         if ( !(stage.tex) )
+         if ( !stage.tex.isValid() )
          {
             Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());
 				return false;
@@ -372,7 +374,7 @@ const Texture* Effect::findTexture(const char* uniform) const
    {
       const TexStage& stage = stages[s];
       if ( strcmp (uniform, stage.uniform.c_str()) == 0 )
-         return stage.tex;
+         return stage.tex.ptr();
    }
 
    return NULL;

@@ -17,5 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RESOURCE_PTR_H_
+#define RESOURCE_PTR_H_
 
-#include "sharedptr.h"
+#include "resourcehandle.h"
+
+template <class T>
+class ResourcePtr
+{
+public:
+            ResourcePtr();
+   explicit ResourcePtr(ResourceHandle* phandle);
+            ResourcePtr(const ResourcePtr<T>& that);
+
+ // operators
+   ResourcePtr<T>& operator=(const ResourcePtr<T>& that);
+   ResourcePtr<T>& operator=(T* presource);
+
+ // query
+   bool isValid() const;
+   
+   const T* ptr() const;
+         T* ptr();
+
+ // dereferencing
+   T* operator->() const;
+   T& operator*() const;
+
+private:
+
+ // members
+   ResourceHandle* mpHandle;
+};
+
+#include "resourceptr.inl"
+
+#endif // RESOURCE_PTR_H_

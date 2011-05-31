@@ -75,16 +75,13 @@ bool Animator::loadFromXML(TiXmlElement* pXmlAnimation, Object& object)
          mAnimationSpeed /= 1000.0f;
 
 			// allocate a new animationset
-			mAnimations = new AnimationSet ();
-         if ( !mAnimations.valid() || !parseAnimations(pXmlAnimation, animCount) )
+			mAnimations = SharedPtr<AnimationSet>(new AnimationSet());
+         if ( !mAnimations.hasPointer() || !parseAnimations(pXmlAnimation, animCount) )
 				return false;
 
          // query the frame count
          if ( pXmlAnimation->QueryIntAttribute("frames", (int*)&_animFrameCount) != TIXML_SUCCESS)
             determineFrameCount();
-
-			// we are using it
-			mAnimations->addRef ();
 		}
 	}
 	else

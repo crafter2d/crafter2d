@@ -20,19 +20,18 @@
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
 
-#include <queue>
 #include <string>
+#include <vector>
 
 #include "core/math/vector.h"
 
 #include "texture.h"
 #include "scenegraph.h"
-#include "resources.h"
-#include "modifier.h"
 
 class TiXmlDocument;
 
 class Animator;
+class Controller;
 class State;
 
 /**
@@ -45,8 +44,6 @@ public:
    DEFINE_REPLICATABLE(Object)
 
    enum { ePositionDirty = 2, eAnimationDirty = 4 };
-
-   typedef std::vector<Modifier*> Modifiers;
 
 	                  Object();
    virtual           ~Object();
@@ -83,7 +80,7 @@ public:
    void              setAnimation(int anim);
 
  // modifier interface
-   void              addModifier(Modifier* pmodifier);
+   void              setController(Controller* pcontroller);
 
  // visitor interface
    virtual void      accept(NodeVisitor& nv);
@@ -109,17 +106,16 @@ protected:
    TexturePtr     texture;
    Body*          mpBody;
    Animator*      mpAnimator;
-   std::queue<State*> states;
-   Modifiers      mModifiers;
-   Vector mPos;
-   Vector mVel;
-   int width, height;
-   float halfX, halfY;
-   float angle;
-   float radius;
-   bool visible;
-   bool dir;
-   bool mStatic;
+   Controller*    mpController;
+   Vector         mPos;
+   Vector         mVel;
+   int            width, height;
+   float          halfX, halfY;
+   float          angle;
+   float          radius;
+   bool           visible;
+   bool           dir;
+   bool           mStatic;
 };
 
 #ifdef JENGINE_INLINE

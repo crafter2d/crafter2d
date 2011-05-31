@@ -44,11 +44,6 @@ INLINE float Texture::getSourceHeight() const
    return _sourceHeight;
 }
 
-INLINE std::string Texture::getFileName() const
-{
-   return filename; 
-}
-
 INLINE bool Texture::isValid() const
 {
    return (tex > 0); 

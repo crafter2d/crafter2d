@@ -22,11 +22,6 @@
 #include <config.h>
 #endif
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 /*!
  	\mainpage JEngine SSE - 2D Side Scoller Documentation
  	\section intro_sec Introduction
@@ -39,8 +34,9 @@
 	<li>%Object oriented design (C++)
 	<li>OpenGL support via SDL
 	<li>Multiplatform: Windows and Linux
+   <li>Multi-player gaming
 	<li>GLSL and CG shading
-	<li>Lua scripting language
+	<li>Custom scripting language
 	<li>and much more.. :)
 	</ul>
 	
@@ -52,9 +48,14 @@
 	
 	JEngine makes use of:
 	<ul>
-	<li>Lua, http://www.lua.org/
-	<li>toLua, http://www.tecgraf.puc-rio.br/~celes/tolua/
+   <li>Antlr, http://www.antlr.org/
+   <li>Box2D, http://www.box2d.org/
+   <li>FreeType2, http://www.freetype.org/freetype2/index.html
+   <li>GLee, http://elf-stone.com/glee.php
+   <li>ICU, http://site.icu-project.org/
+   <li>NVidia CG, http://developer.nvidia.com/cg-toolkit
 	<li>OpenAL, http://www.openal.org/
+   <li>SDL, http://www.libsdl.org/
 	<li>TinyXML, http://www.grinninglizard.com/tinyxml
 	</ul>
  */

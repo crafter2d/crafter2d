@@ -23,10 +23,9 @@
 #include <string>
 #include <vector>
 
-#include "resources.h"
+#include "texture.h"
 
 class CodePath;
-class Texture;
 class TiXmlElement;
 
 /*!

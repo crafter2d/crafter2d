@@ -26,8 +26,6 @@ if ( os.is("windows") ) then
 					path.join(libdir, "ogg/include"),
 					path.join(libdir, "vorbis/include"),
 					path.join(libdir, "tinyxml/include"),
-					path.join(libdir, "lua/include"), 
-					path.join(libdir, "tolua++/include"),
 					path.join(libdir, "freetype2/include"),
 					path.join(libdir, "soil/include"),
 					path.join(libdir, "box2d/include") }
@@ -40,8 +38,6 @@ if ( os.is("windows") ) then
 				path.join(libdir, "ogg/lib"),
 				path.join(libdir, "vorbis/lib"),
 				path.join(libdir, "tinyxml/lib"),
-				path.join(libdir, "lua/lib"), 
-				path.join(libdir, "tolua++/lib"),
 				path.join(libdir, "freetype2/lib"),
 				path.join(libdir, "soil/lib"),
 				path.join(libdir, "box2d/lib") }
@@ -58,12 +54,12 @@ if ( os.is("windows") ) then
 		configuration "Debug"
 			links { "GLee_d", "SOIL_d", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"minizip_d", "zlib1", "lua", "tolua++_d", "box2d_d", "freetype241MT_D", "tinyxmld_STL" } 
+					"minizip_d", "zlib1", "box2d_d", "freetype241MT_D", "tinyxmld_STL" } 
 		 
 		configuration "Release"
 			links { "GLee_d", "SOIL", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"minizip", "zlib1", "lua", "tolua++", "box2d", "freetype241MT", "tinyxml_STL" }
+					"minizip", "zlib1", "box2d", "freetype241MT", "tinyxml_STL" }
 
 	else
 		if ( _ACTION > "vs2005" ) then
@@ -76,12 +72,12 @@ if ( os.is("windows") ) then
 				"OpenAL32", "ALut", "cg", "cgGL", "devil", "ilu"  }
 		
 		configuration "Debug"
-			links { "GLee_d", "box2d_d", "tolua++_d", " lua5.1_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
+			links { "GLee_d", "box2d_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
 	                "minizip_d", "freetype242MT_D" }
 			ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 					
 		configuration "Release"
-			links { "GLee", "box2d", "tolua++", "lua5.1", "soil", "vorbisfile", "tinyxml_STL", "zlib1", 
+			links { "GLee", "box2d", "soil", "vorbisfile", "tinyxml_STL", "zlib1", 
 					"minizip", "freetype242MT" }
    end -- win32
    
@@ -95,8 +91,7 @@ elseif ( os.is("linux") ) then
 	defines { "LINUX" }
 	
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
-	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL",
-           "lua", "tolua++-5.1", "openal", "alut",
+	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL", "openal", "alut",
            "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d" }
 
 end

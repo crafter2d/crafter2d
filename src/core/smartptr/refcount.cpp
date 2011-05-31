@@ -17,40 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "resources.h"
+#include "refcount.h"
 
-ResourceManager::ResourceManager():
-   textures()
+RefCount::RefCount():
+   mCount(0)
 {
-   textures.create(256);
 }
 
-ResourceManager& ResourceManager::operator=(const ResourceManager& mgr)
+RefCount::~RefCount()
 {
-   return *this;
 }
 
-ResourceManager& ResourceManager::getInstance()
+// - Operations
+
+void RefCount::addRef()
 {
-   static ResourceManager manager;
-   return manager;
+   mCount++;
 }
 
-/// \fn ResourceManager::loadTexture (const std::string& file)
-/// \brief Returns a texture from a the given file.
-TexturePtr ResourceManager::loadTexture (const std::string& file)
+int RefCount::subRef()
 {
-	TexturePtr* ptr = static_cast<TexturePtr*>(textures.lookup(file));
-	if ( !ptr != NULL )
+   mCount--;
+   int count = mCount;
+
+   if ( count <= 0 )
    {
-      Texture* ptexture = new Texture();
-      if ( !ptexture->load(file) )
-         return TexturePtr();
+      delete this;
+   }
 
-		ptr = new TexturePtr(ptexture);
-		textures.insert(file, static_cast<void*>(ptr));
-	}
-
-	return TexturePtr(*ptr);
+   return count;
 }
-

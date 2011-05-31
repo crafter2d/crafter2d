@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,23 +17,48 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MODIFIER_AI_H_
-#define MODIFIER_AI_H_
+#include "resourcemanager.h"
 
-#include <vector>
+#include "resourcehandle.h"
 
-#include "modifier.h"
-
-class ModifierAI : public Modifier
+ResourceManager::ResourceManager():
+   mResources()
 {
-public:
-   explicit ModifierAI(const std::string& function);
-   virtual ~ModifierAI();
+   mResources.create(256);
+}
 
-   virtual void update(Object& object, float delta);
+ResourceManager& ResourceManager::operator=(const ResourceManager& mgr)
+{
+   return *this;
+}
 
-private:
-   std::string mFunction;
-};
+ResourceManager& ResourceManager::getInstance()
+{
+   static ResourceManager manager;
+   return manager;
+}
 
-#endif
+/// \fn ResourceManager::loadTexture (const std::string& file)
+/// \brief Returns a texture from a the given file.
+TexturePtr ResourceManager::loadTexture (const std::string& file)
+{
+	ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(file));
+	if ( phandle == NULL )
+   {
+      Texture* ptexture = new Texture();
+      if ( !ptexture->load(file) )
+         return TexturePtr();
+
+      phandle = new ResourceHandle(*this, ptexture);
+		mResources.insert(file, static_cast<void*>(phandle));
+	}
+
+   return TexturePtr(phandle);
+}
+
+// notifications
+
+void ResourceManager::notifyResourceDeleted(const Resource& resource)
+{
+   mResources.remove(resource.getFilename());
+}
