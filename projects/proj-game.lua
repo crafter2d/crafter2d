@@ -8,7 +8,7 @@ project "Game"
 	targetdir "bin"
 	flags { "NoPCH" }
 	location "build/game"
-	debugworkingdir "$(TargetDir)"
+	debugdir "bin"
 	
 -- set project files
 files { "src/game/**.cpp", "src/game/**.h", "src/game/**.inl" }
@@ -30,7 +30,6 @@ if ( os.is("windows") ) then
 	
 	configuration "Debug"
 		links { "GLee_d", "tinyxmld_STL" }
-		ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 			
 	configuration "Release"
 		links { "GLee", "tinyxml_STL" }

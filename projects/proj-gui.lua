@@ -9,7 +9,6 @@ project "GUI"
 	flags { "NoPCH" }
 	location "build/gui"
 	defines { "GUI_EXPORTS" }
-	debugworkingdir "$(TargetDir)"
 	
 -- set project files
 files { "src/gui/**.cpp", "src/gui/**.h", "src/gui/**.inl" }
@@ -63,17 +62,12 @@ if ( os.is("windows") ) then
 					"lua", "tolua++", "freetype241MT" } 
 
 	else
-		if ( _ACTION > "vs2005" ) then
-			ignoredefaultlibs { "libcmt.lib" }
-		end
-		
 		links { "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", 
 				"OpenAL32", "ALut", "cg", "cgGL", "devil", "ilu" }
 		
 		configuration "Debug"
 			links { "GLee_d", "box2d_d", "tolua++_d", " lua5.1_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
 	                "minizip_d", "freetype242MT_D" }
-			ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 					
 		configuration "Release"
 			links { "GLee", "box2d", "tolua++", "lua5.1", "soil", "vorbisfile", "tinyxml_STL", "zlib1", 

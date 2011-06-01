@@ -7,8 +7,7 @@ project "Script"
 	targetdir "bin"
 	flags { "NoPCH" }
 	location "build/script"
-	debugworkingdir "$(TargetDir)"
-
+	
 -- set project files
 files { "src/script/**.cpp", "src/script/**.c", "src/script/**.h", "src/script/**.inl" }
 includedirs { "src" }

@@ -11,7 +11,18 @@ elseif ( os.is("linux") ) then
 	defines { "LINUX" }
 end
 
-libdir = "d:/Development/jengine sse/externallibs/" .. _ACTION .. "/"
+newoption 
+{
+	trigger     = "libdir",
+	value       = "path",
+	description = "Path to the external libraries"
+}
+
+if not _OPTIONS["libdir"] then
+	_OPTIONS["libdir"] = path.join(os.getcwd(), "../externallibs")
+end
+
+libdir = path.join(_OPTIONS["libdir"], _ACTION)
 	
 require "projects/proj-core"
 require "projects/proj-script"

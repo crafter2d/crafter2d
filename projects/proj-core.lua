@@ -8,7 +8,6 @@ project "Core"
 	targetdir "bin"
 	flags { "NoPCH" }
 	location "build/core"
-	debugworkingdir "$(TargetDir)"
 	
 -- set project files
 files { "src/core/**.cpp", "src/core/**.h", "src/core/**.inl" }
@@ -48,15 +47,11 @@ if ( os.is("windows") ) then
 					"user32", "vfw32", "ws2_32", "cg", "cgGL",
 					"minizip", "zlib1", "tinyxml_STL"  } 
 	else
-		if ( _ACTION > "vs2005" ) then
-			ignoredefaultlibs { "libcmt.lib" }
-		end
-		
-		links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL", "icuuc" }
+
+	links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL", "icuuc" }
 		
 		configuration "Debug"
 			links { "GLee_d", "tinyxmld_STL", "zlib1_d", "minizip_d" }
-			ignoredefaultlibs { "LIBC.lib", "msvcrt.lib" }
 					
 		configuration "Release"
 			links { "GLee", "tinyxml_STL", "zlib1", "minizip" }
