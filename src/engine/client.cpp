@@ -53,7 +53,7 @@
 #include "opengl.h"
 
 Client::Client():
-   Process("Client"),
+   Process(),
    mpWindow(NULL),
    mWindowListener(*this),
    mSoundManager(),
@@ -72,9 +72,9 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create()
+bool Client::create(const std::string& name)
 {
-   bool success = Process::create();
+   bool success = Process::create(name);
    if ( success )
    {
       ASSERT_PTR(mpWindow);

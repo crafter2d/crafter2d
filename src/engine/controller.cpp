@@ -26,3 +26,9 @@ Controller::Controller(void)
 Controller::~Controller(void)
 {
 }
+
+// - Operations
+
+void Controller::requestAction(const ActionEvent& action)
+{
+}

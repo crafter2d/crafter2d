@@ -163,7 +163,7 @@ void Object::setController(Controller* pcontroller)
 void Object::doUpdate(float delta)
 {
    if ( mpController != NULL )
-      mpController->update(delta);
+      mpController->performAction(*this);
 }
 
 void Object::doUpdateClient(float delta)

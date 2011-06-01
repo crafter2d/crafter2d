@@ -239,7 +239,7 @@ private:
    
  // execution
    void execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry);
-   void execute(const VirtualInstruction& instruction);
+   void execute(const VirtualClass& vclass, const VirtualInstruction& instruction);
 
    Variant pop();
    

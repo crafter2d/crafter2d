@@ -186,7 +186,7 @@ void CodeGeneratorVisitor::visit(const ASTRoot& root)
 void CodeGeneratorVisitor::visit(const ASTClass& ast)
 {
    mpClass = &ast;
-   
+
    ScopedScope scope(mScopeStack);
 
    mpVClass = new VirtualClass();
@@ -223,7 +223,7 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
       else
       {
          VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-         pentry->mName = ast.getName();
+         pentry->mName = function.getName();
          pentry->mArguments = function.getArgumentCount();
 
          mpVClass->getVirtualFunctionTable().append(pentry);
@@ -931,24 +931,8 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
 
             ast.getArguments().accept(*this);
 
-            if ( ast.getConstructor().getName() == "BitStream" && mpClass->getName() == "Server" )
-            {
-               int aap = 5;
-            }
-            /*if ( ast.getConstructor().getModifiers().isNative() )
-            {
-               std::string fncname = ast.getType().getObjectName() + "_init";
-               int resource = allocateLiteral(fncname);
-
-               addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
-               addInstruction(VirtualInstruction::eCallNative, resource);
-               addInstruction(VirtualInstruction::eNewNative);
-            }
-            else*/
-            {
-               addInstruction(VirtualInstruction::ePush, typenameid);
-               addInstruction(VirtualInstruction::eNew, ast.getConstructor().getResourceIndex()); // constructor index as argument
-            }
+            addInstruction(VirtualInstruction::ePush, typenameid);
+            addInstruction(VirtualInstruction::eNew, ast.getConstructor().getResourceIndex()); // constructor index as argument
          }
          break;
 
@@ -1142,8 +1126,19 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
       case ASTAccess::eClass:
          {
-            // get the class from the classloader
-            addInstruction(VirtualInstruction::eLoadClass);
+            if ( ast.getAccess() == ASTAccess::eField )
+            {
+               addInstruction(VirtualInstruction::eLoadClass, 1);
+            }
+            else
+            {
+               addInstruction(VirtualInstruction::eLoadClass, 0);
+            }
+
+            mCurrentType.clear();
+            mCurrentType.setKind(ASTType::eObject);
+            mCurrentType.setObjectName("Class");
+            mCurrentType.setObjectClass(*mContext.findClass("Class"));
          }
          break;
 

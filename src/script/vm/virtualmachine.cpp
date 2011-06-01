@@ -99,6 +99,8 @@ void VirtualMachine::initialize()
    loadClass("Object");
    loadClass("InternalArray");
    loadClass("ClassLoader");
+   loadClass("Class");
+   loadClass("Function");
    loadClass("System");
 
    mState = eRunning;
@@ -239,7 +241,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
       {
          const VirtualInstruction& inst = instructions[mCall.mInstructionPointer++];
 
-         execute(inst);
+         execute(vclass, inst);
       }
       catch ( VirtualException* pexception )
       {
@@ -277,7 +279,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    mState = eRunning;
 }
 
-void VirtualMachine::execute(const VirtualInstruction& instruction)
+void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstruction& instruction)
 {
    switch ( instruction.getInstruction() )
    {
@@ -337,7 +339,7 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
             const Variant& object = mStack[mStack.size() - arguments];
             ASSERT(object.isObject());
 
-            const VirtualClass& theclass = object.asObject()->getClass().getBaseClass();
+            const VirtualClass& theclass = vclass.getBaseClass();
             const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
 
             execute(theclass, entry);
@@ -913,7 +915,15 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
          break;
       case VirtualInstruction::eLoadClass:
          {
-            const std::string& classname = mContext.mLiteralTable[mStack.back().asInt()].getValue().asString();
+            Variant name;
+            if ( instruction.getArgument() == 1 )
+            {
+               name.setString(mStack.back().asObject()->getClass().getName());
+            }
+            else
+            {
+               name.setString(mContext.mLiteralTable[mStack.back().asInt()].getValue().asString());
+            }
             mStack.pop_back();
             
             const VirtualClass& classloader = mContext.mClassTable.resolve("ClassLoader");
@@ -921,7 +931,7 @@ void VirtualMachine::execute(const VirtualInstruction& instruction)
             const Variant& classloaderobject = classloader.getStatic(0);
 
             mStack.push_back(classloaderobject);
-            mStack.push_back(Variant(classname));
+            mStack.push_back(name);
       
             execute(classloader, *pentry);
          }
@@ -1086,17 +1096,6 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
    int offset = mContext.mInstructions.size();
 
    mContext.mClassTable.insert(pclass);
-
-   if ( pclass->hasBaseName() )
-   {
-      std::string base = pclass->getBaseName();
-      pclass->setBaseClass(mContext.mClassTable.resolve("Object"));
-
-      VirtualFunctionTable& vtable = pclass->getVirtualFunctionTable();
-      vtable.merge(pclass->getBaseClass().getVirtualFunctionTable());
-      vtable.offset(offset);
-   }
-   
    mContext.mInstructions.add(pclass->getInstructions());
 
    pclass->offsetCode(offset);
@@ -1124,15 +1123,18 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
          case VirtualInstruction::eLoadLiteral:         
             {
                VirtualInstruction& previous = mContext.mInstructions[index - lookback];
-               const Literal& literal = mCompiler.lookupLiteral(previous.getArgument());
-
-               int i = mContext.mLiteralTable.indexOf(literal);
-               if ( i == mContext.mLiteralTable.size() )
+               if ( previous.getInstruction() != VirtualInstruction::ePushThis )
                {
-                  i = mContext.mLiteralTable.insert(literal.clone());
-               }
+                  const Literal& literal = mCompiler.lookupLiteral(previous.getArgument());
 
-               previous.setArgument(i);
+                  int i = mContext.mLiteralTable.indexOf(literal);
+                  if ( i == mContext.mLiteralTable.size() )
+                  {
+                     i = mContext.mLiteralTable.insert(literal.clone());
+                  }
+
+                  previous.setArgument(i);
+               }
 
                lookback = 0;
             }
@@ -1141,6 +1143,23 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
          default:
             break;
       }
+   }
+
+   if ( pclass->hasBaseName() )
+   {
+      std::string base = pclass->getBaseName();
+      VirtualClass* pbaseclass = mContext.mClassTable.find(base);
+      if ( pbaseclass == NULL )
+      {
+         pbaseclass = doLoadClass(base);
+      }
+
+      ASSERT_PTR(pbaseclass);
+      pclass->setBaseClass(*pbaseclass);
+
+      VirtualFunctionTable& vtable = pclass->getVirtualFunctionTable();
+      vtable.merge(pclass->getBaseClass().getVirtualFunctionTable());
+      vtable.offset(offset);
    }
 
    createClass(*pclass);

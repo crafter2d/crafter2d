@@ -42,6 +42,7 @@
 #include "creature.h"
 #include "player.h"
 #include "server.h"
+#include "inputcontroller.h"
 
 void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -49,10 +50,6 @@ void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    
    Server* pserver = new Server();
    machine.registerNative(thisobject, pserver);
-
-   //VirtualObjectReference ref = machine.instantiateNative("Server", pserver);
-
-   //accessor.setResult(ref);
 }
 
 void Server_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -60,7 +57,9 @@ void Server_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
    Server* pserver = (Server*) thisobject->getNativeObject();
 
-   accessor.setResult(pserver->create());
+   const std::string& name = accessor.getString(1);
+
+   accessor.setResult(pserver->create(name));
 }
 
 void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -131,10 +130,6 @@ void Client_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Client* pclient = new Client();
    machine.registerNative(thisobject, pclient);
-
-   //VirtualObjectReference ref = machine.instantiateNative("Client", pclient);
-
-   //accessor.setResult(ref);
 }
 
 void Client_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -142,7 +137,9 @@ void Client_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
    Client* pclient = (Client*) thisobject->getNativeObject();
 
-   accessor.setResult(pclient->create());
+   const std::string& name = accessor.getString(1);
+
+   accessor.setResult(pclient->create(name));
 }
 
 void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -241,10 +238,6 @@ void BitStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    BitStream* pstream = new BitStream();
    machine.registerNative(thisobject, pstream);
-
-   //VirtualObjectReference ref = machine.instantiateNative("BitStream", pstream);
-
-   //accessor.setResult(ref);
 }
 
 void BitStream_writeInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -279,10 +272,6 @@ void Creature_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Creature* pcreature = new Creature();
    machine.registerNative(thisobject, pcreature);
-
-   //VirtualObjectReference ref = machine.instantiateNative("Creature", pcreature);
-
-   //accessor.setResult(ref);
 }
 
 void Creature_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -391,6 +380,16 @@ void Creature_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(ref);
 }
 
+void Creature_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+
+   InputController* pcontroller = (InputController*) accessor.getObject(1)->useNativeObject();
+
+   pcreature->setController(pcontroller);
+}
+
 void Player_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -433,10 +432,6 @@ void Vector2D_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Vector* pvector = new Vector();
    machine.registerNative(thisobject, pvector);
-
-   //VirtualObjectReference ref = machine.instantiateNative("Vector2D", pvector);
-
-   //accessor.setResult(ref);
 }
 
 void Vector2D_getX(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -513,10 +508,6 @@ void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    World* pworld = new World();
    machine.registerNative(thisobject, pworld);
-   
-   //VirtualObjectReference ref = machine.instantiateNative("World", pworld);
-
-   //accessor.setResult(ref);
 }
 
 void World_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -606,10 +597,6 @@ void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& acc
 
    InputForceGenerator* pgenerator = new InputForceGenerator();
    machine.registerNative(thisobject, pgenerator);
-
-   //VirtualObjectReference ref = machine.instantiateNative("InputForceGenerator", pgenerator);
-
-   //accessor.setResult(ref);
 }
 
 void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -630,6 +617,24 @@ void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccesso
    Vector* pvel = (Vector*) accessor.getObject(1)->getNativeObject();
 
    pgenerator->setImpulse(*pvel);
+}
+
+void InputController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+
+   InputController* pcontroller = new InputController();
+   machine.registerNative(thisobject, pcontroller);
+}
+
+void InputController_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   InputController* pcontroller = (InputController*) thisobject->getNativeObject();
+
+   ActionMap* pactionmap = (ActionMap*) accessor.getObject(1)->useNativeObject();
+
+   pcontroller->setActionMap(pactionmap);
 }
 
 void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -666,10 +671,6 @@ void Box2DRevoluteJointDefinition_init(VirtualMachine& machine, VirtualStackAcce
 
    Box2DRevoluteJointDefinition* pjointdef = new Box2DRevoluteJointDefinition();
    machine.registerNative(thisobject, pjointdef);
-
-   //VirtualObjectReference ref = machine.instantiateNative("Box2DRevoluteJointDefinition", pjointdef);
-
-   //accessor.setResult(ref);
 }
 
 void Box2DRevoluteJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -736,10 +737,16 @@ void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    ActionMap* pmap = new ActionMap();
    machine.registerNative(thisobject, pmap);
+}
 
-   //VirtualObjectReference ref = machine.instantiateNative("ActionMap", pmap);
+void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   ActionMap* pmap = (ActionMap*) thisobject->getNativeObject();
 
-   //accessor.setResult(ref);
+   Process* pprocess = (Process*) accessor.getObject(1)->getNativeObject();
+
+   pmap->setProcess(*pprocess);
 }
 
 void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -748,10 +755,6 @@ void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    KeyMap* pmap = new KeyMap();
    machine.registerNative(thisobject, pmap);
-
-   //VirtualObjectReference ref = machine.instantiateNative("KeyMap", pmap);
-   
-   //accessor.setResult(ref);
 }
 
 void KeyMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -810,6 +813,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Creature_getBody", Creature_getBody);
    registrator.addCallback("Creature_direction", Creature_direction);
    registrator.addCallback("Creature_flip", Creature_flip);
+   registrator.addCallback("Creature_setController", Creature_setController);
 
    registrator.addCallback("Player_getName", Player_getName);
    registrator.addCallback("Player_getClient", Player_getClient);
@@ -840,6 +844,9 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("InputForceGenerator_setVelocity", InputForceGenerator_setVelocity);
    registrator.addCallback("InputForceGenerator_setImpulse", InputForceGenerator_setImpulse);
 
+   registrator.addCallback("InputController_init", InputController_init);
+   registrator.addCallback("InputController_setActionMap", InputController_setActionMap);
+
    registrator.addCallback("Box2DSimulator_createRevoluteJoint", Box2DSimulator_createRevoluteJoint);
 
    registrator.addCallback("Box2DBody_addForceGenerator", Box2DBody_addForceGenerator);
@@ -854,6 +861,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Box2DRevoluteJointDefinition_setAnchor", Box2DRevoluteJointDefinition_setAnchor);
 
    registrator.addCallback("ActionMap_init", ActionMap_init);
+   registrator.addCallback("ActionMap_setProcess", ActionMap_setProcess);
 
    registrator.addCallback("KeyMap_init", KeyMap_init);
    registrator.addCallback("KeyMap_bind", KeyMap_bind);

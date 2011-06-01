@@ -20,6 +20,9 @@
 #ifndef _CONTROLER_H_
 #define _CONTROLER_H_
 
+class ActionEvent;
+class Object;
+
 /// @author Jeroen Broekhuizen
 ///
 /// The controler is the instance that has control over an object. This
@@ -30,7 +33,9 @@ public:
    Controller();
    virtual ~Controller();
 
-   virtual void update(float delta) = 0;
+ // operations
+   virtual void requestAction(const ActionEvent& action);
+   virtual void performAction(Object& actor) = 0;
 };
 
 #endif

@@ -141,3 +141,8 @@ INLINE Body& Object::getBody()
 {
    return *mpBody;
 }
+
+INLINE Controller& Object::getController()
+{
+   return *mpController;
+}

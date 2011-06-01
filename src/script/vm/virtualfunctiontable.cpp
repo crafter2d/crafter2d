@@ -51,7 +51,7 @@ void VirtualFunctionTable::merge(const VirtualFunctionTable& that)
 {
    ASSERT(that.mEntries.size() <= mEntries.size());
 
-   for ( std::size_t index = 0; index < that.mEntries.size(); index++ )
+   for ( std::size_t index = 2; index < that.mEntries.size(); index++ )
    {
       VirtualFunctionTableEntry* pentry = mEntries[index];
       if ( pentry->mInstruction == -1 )

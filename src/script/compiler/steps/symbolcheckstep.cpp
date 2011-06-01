@@ -483,11 +483,6 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
             const ASTClass& newclass = ast.getType().getObjectClass();
             const ASTFunction* pfunction = newclass.findBestMatch(newclass.getName(), signature, before.getTypeArguments());
 
-            if ( pfunction->getModifiers().isNative() && mpClass->getName() == "Server" )
-            {
-               int aap = 5;
-            }
-
             if ( pfunction == NULL )
             {
                if ( signature.size() > 0 )
@@ -766,14 +761,15 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
 
       case ASTAccess::eClass:
          {
-            if ( !wasstatic )
-            {
-               mContext.getLog().error("The class operator can only be used with named object types.");
-            }
             if ( !mCurrentType.isObject() )
             {
                mContext.getLog().warning("The class operator currently is only supported for objects.");
             }
+
+            if ( !wasstatic )
+               ast.setAccess(ASTAccess::eField);
+            else
+               ast.setAccess(ASTAccess::eRefField);
 
             mCurrentType.clear();
             mCurrentType.setKind(ASTType::eObject);

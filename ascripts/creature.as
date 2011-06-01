@@ -22,6 +22,7 @@ class Creature
 	public native boolean direction();
 	public native void flip();
 	public native Box2DBody getBody();
+	public native void setController(InputController c);
 	
 	public InputForceGenerator getForceGenerator()
 	{

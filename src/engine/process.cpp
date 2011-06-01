@@ -36,8 +36,7 @@
 #include "actionmap.h"
 #include "scenegraph.h"
 
-Process::Process(const std::string& name):
-   mProcessName(name),
+Process::Process():
    conn(*this),
    graph(*this),
    mScriptManager(),
@@ -52,9 +51,9 @@ Process::~Process()
 {
 }
 
-bool Process::create()
+bool Process::create(const std::string& name)
 {
-   return mScriptManager.initialize() && initializeScript();
+   return mScriptManager.initialize() && initializeScript(name);
 }
 
 bool Process::destroy()
@@ -66,13 +65,13 @@ bool Process::destroy()
    return true;
 }
 
-bool Process::initializeScript()
+bool Process::initializeScript(const std::string& name)
 {
-   mpScript = mScriptManager.loadClass(mProcessName);
+   mpScript = mScriptManager.loadClass(name);
    if ( mpScript == NULL )
    {
       Log& log = Log::getInstance();
-      log << "Failed to load the " << mProcessName.c_str() << " class.";
+      log << "Failed to load the " << name.c_str() << " class.";
       return false;
    }
 

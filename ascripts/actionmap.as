@@ -5,6 +5,7 @@ use vector2d;
 class ActionMap
 {
 	public native ActionMap();
+	public native void setProcess(Server server);
 	
 	public void onKeyDown(Creature object, int action)
 	{

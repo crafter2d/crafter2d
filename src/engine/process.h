@@ -42,10 +42,10 @@ class Script;
 class ENGINE_API Process
 {
 public:
-   explicit       Process(const std::string& name);
+   explicit       Process();
    virtual        ~Process();
 
-   virtual bool   create();
+   virtual bool   create(const std::string& name);
    virtual bool   destroy();
    virtual void   update (float delta);
 
@@ -73,7 +73,6 @@ public:
    virtual int    onClientEvent(int client, const NetEvent& event) = 0;
 
 protected:
-   std::string       mProcessName;
    NetConnection     conn;
    SceneGraph        graph;
    ScriptManager     mScriptManager;
@@ -82,7 +81,7 @@ protected:
    bool              initialized;
 
 private:
-   bool initializeScript();
+   bool initializeScript(const std::string& name);
 
  // members
    bool mActive;

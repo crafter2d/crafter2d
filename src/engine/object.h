@@ -80,6 +80,7 @@ public:
    void              setAnimation(int anim);
 
  // modifier interface
+   Controller& getController();
    void              setController(Controller* pcontroller);
 
  // visitor interface

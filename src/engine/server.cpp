@@ -33,18 +33,19 @@
 #include "net/events/requestobjectevent.h"
 #include "net/events/viewportevent.h"
 #include "net/events/serverdownevent.h"
+#include "net/events/actionevent.h"
 #include "net/newobjectevent.h"
 
 #include "physics/simulationfiller.h"
-#include "physics/Simulator.h"
+#include "physics/simulator.h"
 
-#include "actionmap.h"
+#include "controller.h"
 #include "player.h"
 #include "sceneobjectdirtyset.h"
 #include "scopedvalue.h"
 
 Server::Server():
-   Process("Server"),
+   Process(),
    clients(),
    mActiveClient(-1),
    mGraphListener(*this)
@@ -55,9 +56,9 @@ Server::~Server()
 {
 }
 
-bool Server::create()
+bool Server::create(const std::string& name)
 {
-   if ( Process::create() )
+   if ( Process::create(name) )
    {
       graph.setListener(mGraphListener);
 
@@ -241,15 +242,12 @@ int Server::onClientEvent(int client, const NetEvent& event)
          {
             // find the player object
             Player* pplayer = clients[client];
-            if ( pplayer == NULL )
-            {
-               Log::getInstance().error("Invalid player input event.");
-            }
-            else
-            {
-               const ActionEvent& inputevent = dynamic_cast<const ActionEvent&>(event);
-               actionMap->processRemote(inputevent, pplayer->getControler());
-            }
+            ASSERT_PTR(pplayer);
+
+            const ActionEvent& inputevent = dynamic_cast<const ActionEvent&>(event);
+            Controller& controller = pplayer->getControler().getController();
+
+            controller.requestAction(inputevent);
             break;
          }
       case reqobjectEvent:

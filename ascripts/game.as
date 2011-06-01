@@ -2,24 +2,24 @@
 use system.gamewindowfactory;
 use system.gamewindow;
 
-use client;
-use server;
+use gameclient;
+use gameserver;
 
 class Game
 {
-	private Server mServer;
-	private Client mClient;
+	private GameServer mServer;
+	private GameClient mClient;
 	
 	public native GameWindowFactory getWindowFactory();
 	public native void setActive(boolean active);
 	
 	public void initialize()
 	{
-		mServer = new Server();
+		mServer = new GameServer();
 		mServer.create();
 		mServer.listen(7000);
 		
-		mClient = new Client();
+		mClient = new GameClient();
 		mClient.setWindow(getWindowFactory().createWindow());
 		mClient.create();
 		mClient.connect("localhost", 7000, "player");

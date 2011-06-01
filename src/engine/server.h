@@ -45,7 +45,7 @@ public:
                   Server();
    virtual        ~Server();
 
-   virtual bool   create();
+   virtual bool   create(const std::string& name);
    virtual bool   destroy();
 
    void           listen(int port);
