@@ -27,6 +27,7 @@
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 
+#include "script/vm/virtualcontext.h"
 #include "script/vm/virtualmachine.h"
 
 #include "script.h"
@@ -35,7 +36,17 @@
 #include "engine/script_engine.h"
 
 ScriptManager::ScriptManager():
-   mpVirtualMachine(new VirtualMachine()),
+   mpVirtualContext(new VirtualContext()),
+   mpVirtualMachine(new VirtualMachine(*mpVirtualContext)),
+   mpScript(NULL),
+   requests(),
+   job(0)
+{
+}
+
+ScriptManager::ScriptManager(VirtualContext& context):
+   mpVirtualContext(&context),
+   mpVirtualMachine(new VirtualMachine(*mpVirtualContext)),
    mpScript(NULL),
    requests(),
    job(0)
@@ -62,11 +73,14 @@ bool ScriptManager::initialize()
 /// \returns false if the Lua state could not be created, true otherwise
 void ScriptManager::destroy()
 {
-   delete mpVirtualMachine;
-   mpVirtualMachine = NULL;
-   
    delete mpScript;
    mpScript = NULL;
+
+   delete mpVirtualMachine;
+   mpVirtualMachine = NULL;
+
+   delete mpVirtualContext;
+   mpVirtualContext = NULL;
 }
 
 Script* ScriptManager::loadClass(const std::string& classname)
@@ -75,6 +89,7 @@ Script* ScriptManager::loadClass(const std::string& classname)
    if ( !mpVirtualMachine->loadClass(classname) )
    {
       std::string error = "Could not load class " + classname;
+      return NULL;
    }
 
    Script* pscript = new Script(*this, classname);
@@ -174,6 +189,16 @@ void ScriptManager::unschedule(uint jobid)
 void ScriptManager::unscheduleAll()
 {
    requests.clear();
+}
+
+// - Operations
+
+ScriptManager* ScriptManager::spawnChild() const
+{
+   AutoPtr<ScriptManager> manager = new ScriptManager(*mpVirtualContext);
+   script_engine_register(*manager);
+
+   return manager.release();
 }
 
 //-----------------------------------------

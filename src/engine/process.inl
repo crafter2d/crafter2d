@@ -43,7 +43,13 @@ INLINE SceneGraph& Process::getSceneGraph()
 
 INLINE ScriptManager& Process::getScriptManager()
 {
-   return mScriptManager;
+   ASSERT_PTR(mpScriptManager);
+   return *mpScriptManager;
+}
+
+INLINE void Process::setScriptManager(ScriptManager* pscriptmanager)
+{
+   mpScriptManager = pscriptmanager;
 }
 
 /// \fn Process::getActionMap()

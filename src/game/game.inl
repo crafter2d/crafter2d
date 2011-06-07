@@ -53,6 +53,11 @@ INLINE const std::string& Game::getTitle() const
    return mTitle;
 }
 
+INLINE ScriptManager& Game::getScriptManager()
+{
+   return mScriptManager;
+}
+
 INLINE GameWindowFactory& Game::getWindowFactory()
 {
    ASSERT_PTR(mpWindowFactory);

@@ -56,15 +56,7 @@ class GameServer extends Server
 		InputController controller = new InputController();
 		controller.setActionMap(map);
 		
-		Creature creature = new Creature();
-		creature.setPosition(position);
-		creature.setName(player.getName());
-		
-		if ( !creature.create(world, "../objects/char.xml") )
-		{
-			throw new InvalidActorException();
-		}
-		
+		Creature creature = Creature.construct(world, player.getName(), position, "../objects/char.xml");
 		creature.setController(controller);
 		creature.setForceGenerator(new InputForceGenerator());
 		
@@ -82,28 +74,12 @@ class GameServer extends Server
 		Bridge bridge = new Bridge();
 		bridge.create(world, left, right);
 		
-		left.set(180.0, 100.0);
-		Creature box = new Creature();
-		box.setPosition(left);
-		box.setName("Box1");
-		box.create(world, "../objects/box.xml");
-		
-		left.set(180.0, 60.0);
-		box = new Creature();
-		box.setPosition(left);
-		box.setName("Box2");
-		box.create(world, "../objects/box.xml");
-		
-		left.set(180.0, 40.0);
-		box = new Creature();
-		box.setPosition(left);
-		box.setName("Box3");
-		box.create(world, "../objects/box.xml");
-		
-		left.set(180.0, 20.0);
-		box = new Creature();
-		box.setPosition(left);
-		box.setName("Box4");
-		box.create(world, "../objects/box.xml");
+		left.set(180.0, 80.0);
+		for ( int index = 0; index < 4; index++ )
+		{
+			Creature.construct(world, "Box" + index, left, "../objects/box.xml");
+			
+			left.setY(left.getY() - 25.0);
+		}
 	}
 }

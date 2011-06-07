@@ -58,11 +58,6 @@ class Bridge
 	
 	private Creature createBox(World world, Vector2D position, string name, int index)
 	{
-		Creature box = new Creature();
-		box.setPosition(position);
-		box.setName(name + index);
-		box.create(world, "../objects/" + name + ".xml");
-						
-		return box;
+		return Creature.construct(world, name + index, position, "../objects/" + name + ".xml");
 	}
 }

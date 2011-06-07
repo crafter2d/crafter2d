@@ -1,5 +1,5 @@
 
-class Vector2D
+final class Vector2D
 {
 	public native Vector2D();
 	public native real getX();

@@ -53,10 +53,12 @@ public:
   // get/set
    NetConnection* getConnection();
    SceneGraph&    getSceneGraph();
-   ScriptManager& getScriptManager();
 
    ActionMap*     getActionMap();
    void           setActionMap(ActionMap* map);
+
+   ScriptManager& getScriptManager();
+   void           setScriptManager(ScriptManager* pscriptmanager);
 
    bool           isInitialized();
    void           setInitialized(bool init);
@@ -68,6 +70,8 @@ public:
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
    void           sendScriptEvent(BitStream* stream, uint client=INVALID_CLIENTID);
+
+   void setObject(const VirtualObjectReference& object);
    
   // events
    virtual int    allowNewConnection();
@@ -76,7 +80,7 @@ public:
 protected:
    NetConnection     conn;
    SceneGraph        graph;
-   ScriptManager     mScriptManager;
+   ScriptManager*    mpScriptManager;
    Script*           mpScript;
    ActionMap*        actionMap;
    bool              initialized;

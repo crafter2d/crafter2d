@@ -1030,6 +1030,8 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                   break;
 
                case ASTAccess::eRefField:
+                  if ( isstatic )
+                     addInstruction(VirtualInstruction::ePush, allocateLiteral(mCurrentType.getObjectClass().getFullName()));
                   handleVariable(var, false);
                   break;
 
@@ -1091,6 +1093,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             {
                if ( function.getModifiers().isStatic() )
                {
+                  addInstruction(VirtualInstruction::ePush, allocateLiteral(before.getObjectClass().getFullName()));
                   addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
                }
                else if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
@@ -1142,8 +1145,6 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
       case ASTAccess::eStatic:
          {
-            addInstruction(VirtualInstruction::ePush, allocateLiteral(ast.getStaticType().getObjectName()));
-
             mCurrentType = ast.getStaticType();
          }
          break;

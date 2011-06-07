@@ -2,6 +2,7 @@
 #include "compiler.h"
 
 #include <iostream>
+#include <fstream>
 
 #include "core/string/string.h"
 #include "core/conv/lexical.h"
@@ -108,7 +109,6 @@ bool Compiler::compile(const std::string& classname)
    {
       if ( !load(classname) )
       {
-         displayErrors(classname);
          return false;
       }
 
@@ -217,10 +217,14 @@ void Compiler::save(ASTClass& ast)
 
 void Compiler::displayErrors(const std::string& currentfile)
 {
-   std::cout << "Error while compiling " << currentfile << std::endl;
+   std::ofstream outfile("compilelog.txt", std::ios_base::app);
+
+   outfile << "Error while compiling " << currentfile << std::endl;
    const CompileLog::StringList& log = mContext.getLog().getLog();
    for ( std::size_t index = 0; index < log.size(); index++ )
    {
-      std::cout << log[index] << std::endl;
+      outfile << log[index] << std::endl;
    }
+
+   outfile.close();
 }

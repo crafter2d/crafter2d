@@ -47,6 +47,8 @@ public:
          void           setTitle(const std::string& title);
    const std::string&   getTitle() const;
 
+   ScriptManager&       getScriptManager();
+
    GameWindowFactory&   getWindowFactory();
    void                 setWindowFactory(GameWindowFactory& windowfactory);
 

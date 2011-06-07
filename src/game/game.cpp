@@ -193,7 +193,11 @@ void Game::run()
 bool Game::initGame()
 {
    mpScript = mScriptManager.loadClass("Game");
-   ASSERT_PTR(mpScript);
+   if ( mpScript == NULL )
+   {
+      // failed to load the Game class (or any depending class)
+      return false;
+   }
 
    mpScript->setThis(this);
    mpScript->run("initialize");

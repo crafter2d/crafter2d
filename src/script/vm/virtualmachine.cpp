@@ -64,8 +64,8 @@ void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.execute(instance, fncname);
 }
 
-VirtualMachine::VirtualMachine():
-   mContext(),
+VirtualMachine::VirtualMachine(VirtualContext& context):
+   mContext(context),
    mCallback(*this),
    mCompiler(),
    mStack(),
@@ -386,9 +386,9 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCallStatic:
          {
-            int arguments = mStack.back().asInt(); mStack.pop_back();
             int classlit = mStack.back().asInt(); mStack.pop_back();
-
+            int arguments = mStack.back().asInt(); mStack.pop_back();
+            
             std::string classname = mContext.mLiteralTable[classlit].getValue().asString();
 
             const VirtualClass& theclass = mContext.mClassTable.resolve(classname);
@@ -1031,8 +1031,8 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
    if ( it != mNativeObjects.end() )
    {
       // validate that it still is the same pointer
-      ASSERT(it->second->getNativeObject() == pobject);
-      return it->second;
+      if (it->second->getNativeObject() == pobject);
+         return it->second;
    }
    
    {
@@ -1116,8 +1116,6 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
       switch ( instruction.getInstruction() )
       {
          case VirtualInstruction::eCallStatic:
-            lookback++;
-
          case VirtualInstruction::eNew:
          case VirtualInstruction::eLoadClass:
          case VirtualInstruction::eLoadStatic:

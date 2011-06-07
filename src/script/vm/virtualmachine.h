@@ -148,7 +148,7 @@ private:
 class SCRIPT_API VirtualMachine
 {
 public:
-   VirtualMachine();
+   explicit VirtualMachine(VirtualContext& context);
    ~VirtualMachine();
 
    typedef void (*callbackfnc)(VirtualMachine& machine, VirtualStackAccessor& accessor);
@@ -252,7 +252,7 @@ private:
    void          classLoaded(VirtualClass* pclass);
    void          createClass(const VirtualClass& aclass);
 
-   VirtualContext                mContext;
+   VirtualContext&               mContext;
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
    Stack                         mStack;

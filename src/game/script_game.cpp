@@ -26,6 +26,17 @@
 
 #include "game.h"
 
+void Game_getScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Game* pgame = (Game*) thisobject->getNativeObject();
+
+   ScriptManager& scriptmanager = pgame->getScriptManager();
+   VirtualObjectReference ref = machine.instantiateNative("ScriptManager", &scriptmanager, false);
+
+   accessor.setResult(ref);
+}
+
 void Game_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -53,6 +64,7 @@ void script_game_register(ScriptManager& manager)
 {
    ScriptRegistrator registrator;
 
+   registrator.addCallback("Game_getScriptManager", Game_getScriptManager);
    registrator.addCallback("Game_getWindowFactory", Game_getWindowFactory);
    registrator.addCallback("Game_setActive", Game_setActive);
 

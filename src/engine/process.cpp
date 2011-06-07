@@ -37,11 +37,12 @@
 
 #include "actionmap.h"
 #include "scenegraph.h"
+#include "script_engine.h"
 
 Process::Process():
    conn(*this),
    graph(*this),
-   mScriptManager(),
+   mpScriptManager(NULL),
    mpScript(NULL),
    initialized(false),
    mActive(true)
@@ -68,20 +69,23 @@ bool Process::destroy()
 
 bool Process::initializeScript(const std::string& name)
 {
+   ASSERT_PTR(mpScriptManager);
+      
+   mpScript = getScriptManager().loadClass(name);
    if ( mpScript == NULL )
    {
-      mScriptManager.initialize();
-      mpScript = mScriptManager.loadClass(name);
-      if ( mpScript == NULL )
-      {
-         Log& log = Log::getInstance();
-         log << "Failed to load the " << name.c_str() << " class.";
-         return false;
-      }
+      Log& log = Log::getInstance();
+      log << "Failed to load the " << name.c_str() << " class.";
+      return false;
    }
 
-   mpScript->setThis(this);
    return true;
+}
+
+void Process::setObject(const VirtualObjectReference& object)
+{
+   ASSERT_PTR(mpScript);
+   mpScript->setThis(object);
 }
 
 // - Get/set

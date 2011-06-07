@@ -3,11 +3,13 @@
 
 #include "as.h"
 
+#include "vm/virtualcontext.h"
 #include "vm/virtualmachine.h"
 
 void SCRIPT_API runScript()
 {
-   VirtualMachine vm;
+   VirtualContext context;
+   VirtualMachine vm(context);
    vm.execute("Army", "executeTests");
 }
 

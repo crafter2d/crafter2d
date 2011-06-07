@@ -30,6 +30,7 @@
 
 class Script;
 class VirtualMachine;
+class VirtualContext;
 
 /**
 @author Jeroen Broekhuizen
@@ -113,6 +114,9 @@ public:
    void                    unschedule(const uint jobid);
    void                    unscheduleAll();
 
+ // operations
+   ScriptManager*          spawnChild() const;
+
  // function interface
    bool                    hasFunction(const std::string& name) const;
    std::string             generateUniqueFunctionName(const std::string& name);
@@ -126,10 +130,13 @@ private:
    friend class Script;
    friend class ScriptRegistrator;
 
+   explicit ScriptManager(VirtualContext& context);
+
    void                    operator=( const ScriptManager& mgr );
 
    void                    registerGlobals();
   
+   VirtualContext*   mpVirtualContext;
    VirtualMachine*   mpVirtualMachine;
    Script*           mpScript;
    Requests          requests;

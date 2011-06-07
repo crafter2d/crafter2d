@@ -10,6 +10,20 @@ class Creature
 	private InputForceGenerator mGenerator;
 	private boolean mOnGround = false;
 	
+	public static Creature construct(World world, string name, Vector2D position, string file)
+	{
+		Creature object = new Creature();
+		object.setPosition(position);
+		object.setName(name);
+		
+		if ( !object.create(world, file) )
+		{
+			throw new InvalidActorException();
+		}
+		
+		return object;
+	}
+	
 	public native Creature();
 	public native boolean create(World parent, string file);
 	public native int getId();

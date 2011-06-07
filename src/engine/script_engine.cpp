@@ -44,22 +44,52 @@
 #include "server.h"
 #include "inputcontroller.h"
 
+void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = (Process*) thisobject->getNativeObject();
+
+   const std::string& name = accessor.getString(1);
+
+   accessor.setResult(pprocess->create(name));
+}
+
+void Process_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = (Process*) thisobject->getNativeObject();
+
+   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pprocess->getSceneGraph(), false);
+
+   accessor.setResult(ref);
+}
+
+void Process_setScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = (Process*) thisobject->getNativeObject();
+
+   ScriptManager* pscriptmanager = (ScriptManager*) accessor.getObject(1)->useNativeObject();
+
+   pprocess->setScriptManager(pscriptmanager);
+}
+
+void Process_setObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = (Process*) thisobject->getNativeObject();
+
+   VirtualObjectReference& object = accessor.getObject(1);
+
+   pprocess->setObject(object);
+}
+
 void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    
    Server* pserver = new Server();
    machine.registerNative(thisobject, pserver);
-}
-
-void Server_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->getNativeObject();
-
-   const std::string& name = accessor.getString(1);
-
-   accessor.setResult(pserver->create(name));
 }
 
 void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -104,16 +134,6 @@ void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& acces
    pserver->sendScriptEvent(pstream, client);
 }
 
-void Server_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->getNativeObject();
-
-   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pserver->getSceneGraph(), false);
-
-   accessor.setResult(ref);
-}
-
 void Server_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -130,16 +150,6 @@ void Client_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Client* pclient = new Client();
    machine.registerNative(thisobject, pclient);
-}
-
-void Client_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
-
-   const std::string& name = accessor.getString(1);
-
-   accessor.setResult(pclient->create(name));
 }
 
 void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -182,16 +192,6 @@ void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(pclient->isActive());
 }
 
-void Client_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
-
-   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pclient->getSceneGraph(), false);
-
-   accessor.setResult(ref);
-}
-
 void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -220,6 +220,16 @@ void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
    KeyMap* pmap = (KeyMap*) accessor.getObject(1)->useNativeObject();
 
    pclient->setKeyMap(pmap);
+}
+
+void ScriptManager_spawnChild(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   ScriptManager* pscriptmanager = (ScriptManager*) thisobject->getNativeObject();
+
+   VirtualObjectReference ref = machine.instantiateNative("ScriptManager", pscriptmanager->spawnChild());
+
+   accessor.setResult(ref);
 }
 
 void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -774,25 +784,28 @@ void script_engine_register(ScriptManager& manager)
 {
    ScriptRegistrator registrator;
 
+   registrator.addCallback("Process_create", Process_create);
+   registrator.addCallback("Process_getSceneGraph", Process_getSceneGraph);
+   registrator.addCallback("Process_setScriptManager", Process_setScriptManager);
+   registrator.addCallback("Process_setObject", Process_setObject);
+
    registrator.addCallback("Server_init", Server_init);
-   registrator.addCallback("Server_create", Server_create);
    registrator.addCallback("Server_listen", Server_listen);
    registrator.addCallback("Server_update", Server_update);
    registrator.addCallback("Server_setActionMap", Server_setActionMap);
    registrator.addCallback("Server_loadWorld", Server_loadWorld);
-   registrator.addCallback("Server_getSceneGraph", Server_getSceneGraph);
    registrator.addCallback("Server_sendScriptEvent", Server_sendScriptEvent);
 
    registrator.addCallback("Client_init", Client_init);
-   registrator.addCallback("Client_create", Client_create);
    registrator.addCallback("Client_connect", Client_connect);
    registrator.addCallback("Client_update", Client_update);
    registrator.addCallback("Client_render", Client_render);
    registrator.addCallback("Client_isActive", Client_isActive);
    registrator.addCallback("Client_setWindow", Client_setWindow);
-   registrator.addCallback("Client_getSceneGraph", Client_getSceneGraph);
    registrator.addCallback("Client_setActionMap", Client_setActionMap);
    registrator.addCallback("Client_setKeyMap", Client_setKeyMap);
+
+   registrator.addCallback("ScriptManager_spawnChild", ScriptManager_spawnChild);
 
    registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
 
