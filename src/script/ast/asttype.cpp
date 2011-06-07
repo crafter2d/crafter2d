@@ -148,6 +148,13 @@ const ASTType& ASTType::getArrayType() const
    return *mpArrayType;
 }
 
+ASTType& ASTType::getArrayType() 
+{
+   ASSERT(isArray());
+   ASSERT_PTR(mpArrayType);
+   return *mpArrayType;
+}
+
 void ASTType::setArrayType(ASTType* ptype)
 {
    delete mpArrayType;
@@ -212,6 +219,11 @@ bool ASTType::isNumeric() const
    return isInt() || isReal();
 }
 
+bool ASTType::isNull() const
+{
+   return mKind == eNull;
+}
+
 bool ASTType::isArray() const
 {
    return mKind == eArray;
@@ -251,7 +263,11 @@ bool ASTType::equals(const ASTType& that) const
 /// \brief Test whether that is greater than this type
 bool ASTType::greater(const ASTType& that) const
 {
-   if ( isObject() && that.isObject() )
+   if ( isNull() && that.isObject() )
+   {
+      return true;
+   }
+   else if ( isObject() && that.isObject() )
    {
       // check if 'that' is a extending or implemented this
       const ASTClass& thatclass = that.getObjectClass();
@@ -271,7 +287,7 @@ bool ASTType::greater(const ASTType& that) const
    {
       if ( that.isObject() )
       {
-          return that.getObjectName() == "Object"; // object is greater than a generic (its da uber type)
+          return that.getObjectName() == "System.Object"; // object is greater than a generic (its da uber type)
       }
       else if ( that.isGeneric() )
       {
@@ -338,13 +354,13 @@ bool ASTType::resolveType(CompileContext& context, const ASTClass& aclass)
       }
       else if ( mpObjectClass == NULL )
       {
-         mpObjectClass = context.findClass(mObjectName);
+         mpObjectClass = &context.resolveClass(mObjectName);
          return mpObjectClass != NULL;
       }
    }
    else if ( mKind == eArray )
    {
-      mpObjectClass = context.findClass("InternalArray");
+      mpObjectClass = &context.resolveClass("System.InternalArray");
       return mpArrayType->resolveType(context, aclass);
    }
 

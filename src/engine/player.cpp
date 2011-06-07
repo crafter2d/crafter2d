@@ -42,12 +42,14 @@ Player::Player():
 
 Player::~Player()
 {
+   /*
    if ( controler != NULL )
    {
       controler->destroy();
       delete controler;
       controler = 0;
    }
+   */
 }
 
 //////////////////////////////////////////////////////////////////////////

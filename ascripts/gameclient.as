@@ -1,11 +1,20 @@
 
+use engine.ui.*;
+
+use engine.shapes.*;
+
 use client;
 
 class GameClient extends Client
 {
+	private Window mMessage;
+	
 	public GameClient()
 	{
 		super();
+		
+		mMessage = new Window();
+		mMessage.setBounds(new Rectangle(5, 5, 100, 40));
 	}
 	
 	public void onConnected()

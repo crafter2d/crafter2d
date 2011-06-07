@@ -105,7 +105,7 @@ void Console::printf (const char* msg, ...)
 
 void Console::error(const char* msg, ...)
 {
-   ASSERT_MSG(lines, "ERROR - the console has not been created yet.");
+   //ASSERT_MSG(lines, "ERROR - the console has not been created yet.");
    ASSERT_PTR(msg);
 
    char text[256];
@@ -124,7 +124,7 @@ void Console::error(const char* msg, ...)
 
 void Console::warning(const char* msg, ...)
 {
-   ASSERT_MSG(lines, "ERROR - the console has not been created yet.");
+   //ASSERT_MSG(lines, "ERROR - the console has not been created yet.");
    ASSERT_PTR(msg);
 
    char text[256];
@@ -143,7 +143,7 @@ void Console::warning(const char* msg, ...)
 
 void Console::print(const char* msg)
 {
-   ASSERT_MSG(lines, "Console.print: the console has not be created yet.");
+   //ASSERT_MSG(lines, "Console.print: the console has not be created yet.");
 
    //lines->addString(msg);
    Log::getInstance() << msg << '\n';

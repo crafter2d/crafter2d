@@ -15,11 +15,8 @@ CompileContext::CompileContext(Compiler& compiler):
    mClasses(),
    mLiteralTable(),
    mLog(),
-   mpResult(NULL),
-   mCollect(true)
+   mpResult(NULL)
 {
-   mResolver.insert("System.*");
-   mResolver.insert(".*");
 }
 
 // - Get/set
@@ -49,31 +46,14 @@ void CompileContext::setResult(VirtualClass* pclass)
    mpResult = pclass;
 }
 
-void CompileContext::resetCollection()
-{
-   mCollect = true;
-}
-
 // - Query
 
 bool CompileContext::hasClass(const std::string& classname) const
 {
-   std::string fullname = mResolver.resolve(classname);
-   if ( fullname.empty() )
-      return NULL;
-
-   String s = String(fullname.c_str()).toLower();
+   String s = String(classname.c_str()).toLower();
    std::string lowercasename = s.toStdString();
 
    return mClasses.find(lowercasename) != mClasses.end();
-}
-
-std::string CompileContext::getFullName(const std::string& classname) const
-{
-   if ( classname.find('.') == std::string::npos )
-      return mResolver.resolve(classname);
-   else
-      return classname;
 }
 
 // - Operations
@@ -84,14 +64,32 @@ void CompileContext::addClass(ASTClass* pclass)
    std::string lowercasename = s.toStdString();
    
    mClasses[lowercasename] = pclass;
-   mCollect = false;
 }
 
-void CompileContext::addPath(const std::string& path)
+bool CompileContext::loadClass(const std::string& classname)
 {
-   //if ( mCollect )
+   String s = String(classname.c_str()).toLower();
+   std::string lowercasename = s.toStdString();
+
+   ClassMap::iterator it = mClasses.find(lowercasename);
+   if ( it == mClasses.end() )
    {
-      mResolver.insert(path);
+      return mCompiler.load(classname);
+   }
+
+   return true;
+}
+
+void CompileContext::collectCompileClasses(std::vector<ASTClass*>& classes)
+{
+   ClassMap::iterator it = mClasses.begin();
+   for ( ; it != mClasses.end(); it++ )
+   {
+      ASTClass* pclass = it->second;
+      if ( pclass->getState() == ASTClass::eLoaded )
+      {
+         classes.push_back(pclass);
+      }
    }
 }
 
@@ -104,21 +102,24 @@ const ASTClass* CompileContext::findClass(const std::string& classname) const
 
 ASTClass* CompileContext::findClass(const std::string& name)
 {
-   std::string fullname = mResolver.resolve(name);
-   if ( fullname.empty() )
-      return NULL;
-
-   String s = String(fullname.c_str()).toLower();
+   String s = String(name.c_str()).toLower();
    std::string lowercasename = s.toStdString();
 
-   Classes::iterator it = mClasses.find(lowercasename);
-   if ( it == mClasses.end() )
-   {
-      if ( mCompiler.loadClass(fullname) )
-      {
-         it = mClasses.find(lowercasename);
-      }
-   }
-
+   ClassMap::iterator it = mClasses.find(lowercasename);
    return it != mClasses.end() ? it->second : NULL;
+}
+
+const ASTClass& CompileContext::resolveClass(const std::string& classname) const
+{
+   return const_cast<CompileContext*>(this)->resolveClass(classname);
+}
+
+ASTClass& CompileContext::resolveClass(const std::string& classname)
+{
+   ASTClass* pclass = findClass(classname);
+   if ( pclass == NULL )
+   {
+      throw new std::exception();
+   }
+   return *pclass;
 }

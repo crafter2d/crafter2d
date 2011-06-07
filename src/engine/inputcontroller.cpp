@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2011 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,15 +17,56 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#include "inputcontroller.h"
 
-INLINE bool ActionMap::hasProcess() const
+#include "core/smartptr/autoptr.h"
+
+#include "engine/net/events/actionevent.h"
+
+InputController::InputController():
+   Controller(),
+   mActions(),
+   mpActionMap(NULL)
 {
-   return mpProcess != NULL;
 }
 
-INLINE Process& ActionMap::getProcess()
+// - Get/set
+
+void InputController::setActionMap(ActionMap* pactionmap)
 {
-   ASSERT(hasProcess())
-   return *mpProcess;
+   mpActionMap = pactionmap;
+}
+
+// - Operations
+   
+void InputController::queueAction(const ActionEvent& actionevent)
+{
+   mActions.push(actionevent);
+}
+
+// - Overloads
+
+void InputController::requestAction(const ActionEvent& actionevent)
+{
+   queueAction(actionevent);
+}
+
+void InputController::performAction(Object& actor)
+{
+   ASSERT_PTR(mpActionMap)
+
+   while ( !mActions.empty() )
+   {
+      const ActionEvent& actionevent = mActions.front();
+
+      mpActionMap->processRemote(actionevent, actor);
+
+      mActions.pop();
+   }
+}
+
+void InputController::clearActions()
+{
+   while ( !mActions.empty() )
+      mActions.pop();
 }

@@ -52,6 +52,7 @@ public:
    bool        getBoolean();
    int         getInteger();
 
+   void        setThis(const VirtualObjectReference& object);
    void        setThis(void* pthis);
 
    bool        run(const std::string& function);

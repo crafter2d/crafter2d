@@ -4,13 +4,11 @@
 
 #include <map>
 #include <string>
-#include <vector>
 
 #include "script/ast/asttype.h"
 
 #include "script/common/literaltable.h"
 
-#include "classresolver.h"
 #include "compilelog.h"
 
 class Compiler;
@@ -19,7 +17,7 @@ class VirtualClass;
 
 class CompileContext
 {
-   typedef std::map<std::string, ASTClass*> Classes;
+   typedef std::map<std::string, ASTClass*> ClassMap;
 
 public:
    explicit CompileContext(Compiler& compiler);
@@ -32,32 +30,31 @@ public:
 
    VirtualClass* getResult();
    void          setResult(VirtualClass* pclass);
-
-   void resetCollection();
-
+   
  // query
    bool hasClass(const std::string& classname) const;
 
-   std::string getFullName(const std::string& classname) const;
-
  // operations
    void addClass(ASTClass* pclass);
-   void addPath(const std::string& path);
+   bool loadClass(const std::string& classname);
+
+   void collectCompileClasses(std::vector<ASTClass*>& classes);
 
  // search
    const ASTClass* findClass(const std::string& classname) const;
          ASTClass* findClass(const std::string& name);
 
+   const ASTClass& resolveClass(const std::string& classname) const;
+         ASTClass& resolveClass(const std::string& classname);
+
 private:
    void insertInternalTypes();
 
    Compiler&      mCompiler;
-   Classes        mClasses;
-   ClassResolver  mResolver;
+   ClassMap       mClasses;
    LiteralTable   mLiteralTable;
    CompileLog     mLog;
    VirtualClass*  mpResult;
-   bool           mCollect;
 };
 
 #endif // COMPILE_CONTEXT_H_

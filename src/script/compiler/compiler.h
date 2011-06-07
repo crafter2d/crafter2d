@@ -15,7 +15,6 @@ class CompileCallback;
 class Compiler
 {
    typedef std::vector<CompileStep*> Steps;
-   typedef std::vector<std::string> Files;
 
 public:
    Compiler();
@@ -32,25 +31,26 @@ public:
 
 private:
    friend class CompileContext;
+   friend class PreloadVisitor;
 
-   enum Phase { eLoad, eLoading, eCompile };
+   enum Phase { ePreload, eCompile };
 
  // operations
    void createLoadSteps();
+   void createPrecompileSteps();
    void createCompileSteps();
+   bool performSteps(ASTNode& node, Steps& steps);
 
-   void displayErrors(const std::string& currentfile);
-   bool loadClass(const std::string& classname);
-
+   bool load(const std::string& classname);
    void save(ASTClass& ast);
 
-   bool performSteps(ASTNode& node, Steps& steps);
+   void displayErrors(const std::string& currentfile);
 
    CompileContext    mContext;
    CompileCallback*  mpCallback;
    Steps             mLoadSteps;
-   Steps             mSteps;
-   Files             mFiles;
+   Steps             mPrecompileSteps;
+   Steps             mCompileSteps;
    Phase             mPhase;
 };
 

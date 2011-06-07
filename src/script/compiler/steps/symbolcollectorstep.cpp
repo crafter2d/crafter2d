@@ -41,26 +41,23 @@ void SymbolCollectorVisitor::visit(ASTRoot& ast)
 void SymbolCollectorVisitor::visit(ASTPackage& ast)
 {
    mPackage = ast.getName();
-
-   mContext.addPath(mPackage + ".*");
 }
 
 void SymbolCollectorVisitor::visit(ASTUse& ast)
 {
-   mContext.addPath(ast.getIdentifier());
+   // add to the class, so it is local only and correct classes can be resolved
 }
 
 void SymbolCollectorVisitor::visit(ASTClass& ast)
 {
    mpClass = &ast;
-   mContext.addClass(&ast);
 
    if ( ast.getName().compare("Object") != 0 )
    {
       if ( !ast.hasBaseType() )
       {
          ASTType* ptype = new ASTType(ASTType::eObject);
-         ptype->setObjectName("Object");
+         ptype->setObjectName("System.Object");
          ast.setBaseType(ptype);
       }
 
@@ -86,8 +83,6 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
    }
 
    visitChildren(ast);
-
-   mpClass->calculateResources();
 }
 
 void SymbolCollectorVisitor::visit(ASTFunction& ast)

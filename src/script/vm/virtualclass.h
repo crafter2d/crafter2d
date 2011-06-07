@@ -2,6 +2,8 @@
 #ifndef VIRTUAL_CLASS_H_
 #define VIRTUAL_CLASS_H_
 
+#include "script/script_base.h"
+
 #include <string>
 
 #include "virtualinstructiontable.h"
@@ -13,7 +15,7 @@ class Variant;
 class VirtualArrayObject;
 class VirtualLookupTable;
 
-class VirtualClass
+class SCRIPT_API VirtualClass
 {
    typedef std::vector<VirtualLookupTable*> LookupTables;
 

@@ -96,12 +96,10 @@ VirtualMachine::~VirtualMachine()
 
 void VirtualMachine::initialize()
 {
-   loadClass("Object");
-   loadClass("InternalArray");
-   loadClass("ClassLoader");
-   loadClass("Class");
-   loadClass("Function");
-   loadClass("System");
+   loadClass("System.Object");
+   loadClass("System.InternalArray");
+   loadClass("System.ClassLoader");
+   loadClass("System.System");
 
    mState = eRunning;
    mLoaded = true;
@@ -926,7 +924,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             }
             mStack.pop_back();
             
-            const VirtualClass& classloader = mContext.mClassTable.resolve("ClassLoader");
+            const VirtualClass& classloader = mContext.mClassTable.resolve("System.ClassLoader");
             const VirtualFunctionTableEntry* pentry = classloader.getVirtualFunctionTable().findByName("findClass");
             const Variant& classloaderobject = classloader.getStatic(0);
 
@@ -1032,11 +1030,20 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
    if ( it != mNativeObjects.end() )
    {
+      // validate that it still is the same pointer
+      ASSERT(it->second->getNativeObject() == pobject);
       return it->second;
    }
-   else
+   
    {
       VirtualObjectReference object(instantiate(classname, -1));
+      if ( object->hasNativeObject() )
+      {
+         // TODO: currently new native objects can be constructed during native constructors.
+         //       while actually we have an instance already -> waste of CPU & memory
+         unregisterNative(object);
+      }
+      
       object->setNativeObject(pobject);
       object->setOwner(owned);
 
@@ -1048,7 +1055,7 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
 
 VirtualArrayReference VirtualMachine::instantiateArray()
 {
-   VirtualClass& internalarray = mContext.mClassTable.resolve("InternalArray");
+   VirtualClass& internalarray = mContext.mClassTable.resolve("System.InternalArray");
    VirtualArrayReference ref(internalarray.instantiateArray());
 
    return ref;
@@ -1067,7 +1074,7 @@ void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnativ
    }
 }
 
-void VirtualMachine::unregisterNative(VirtualObjectReference& object, void* pnative)
+void VirtualMachine::unregisterNative(VirtualObjectReference& object)
 {
    NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
    if ( it != mNativeObjects.end() && it->second.isUnique() )
@@ -1148,17 +1155,12 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
    if ( pclass->hasBaseName() )
    {
       std::string base = pclass->getBaseName();
-      VirtualClass* pbaseclass = mContext.mClassTable.find(base);
-      if ( pbaseclass == NULL )
-      {
-         pbaseclass = doLoadClass(base);
-      }
-
-      ASSERT_PTR(pbaseclass);
-      pclass->setBaseClass(*pbaseclass);
+      const VirtualClass& baseclass = mContext.mClassTable.resolve(base);
+      
+      pclass->setBaseClass(baseclass);
 
       VirtualFunctionTable& vtable = pclass->getVirtualFunctionTable();
-      vtable.merge(pclass->getBaseClass().getVirtualFunctionTable());
+      vtable.merge(baseclass.getVirtualFunctionTable());
       vtable.offset(offset);
    }
 
@@ -1183,10 +1185,10 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
 
       // resolve the virtual classes
       VirtualObject& object = *objectref;
-      object.setClass(mContext.mClassTable.resolve("Class"));
+      object.setClass(mContext.mClassTable.resolve("System.Class"));
 
       VirtualArrayReference arrayref = object.getMember(1).asArray();
-      const VirtualClass& funcclass = mContext.mClassTable.resolve("Function");
+      const VirtualClass& funcclass = mContext.mClassTable.resolve("System.Function");
       for ( int index = 0; index < arrayref->size(); index++ )
       {
          VirtualObjectReference funcref = (*arrayref)[index].asObject();
@@ -1195,7 +1197,7 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
       }
 
       // notify the ClassLoader to add this class
-      const VirtualClass& classloader = mContext.mClassTable.resolve("ClassLoader");
+      const VirtualClass& classloader = mContext.mClassTable.resolve("System.ClassLoader");
       const VirtualFunctionTableEntry& entry = classloader.getVirtualFunctionTable()[4];
       const Variant& classloaderobject = classloader.getStatic(0);
 

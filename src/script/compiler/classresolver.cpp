@@ -9,13 +9,36 @@ using namespace std;
 ClassResolver::ClassResolver():
    mPaths()
 {
+   mPaths.push_back("*");
+   mPaths.push_back("System.*");
+}
+
+const ClassResolver& ClassResolver::operator=(const ClassResolver& that)
+{
+   mPaths = that.mPaths;
+   return *this;
 }
 
 // - Operations
 
 void ClassResolver::insert(const std::string& path)
 {
-   mPaths.push_back(path);
+   std::string qualifiedpath = path;
+   if ( path.find('*') == std::string::npos )
+   {
+      // no * so replace last part with *
+      std::size_t pos = path.rfind('.');
+      if ( pos == std::string::npos )
+      {
+         return;
+      }
+      else
+      {
+         qualifiedpath.replace(pos+1, path.length(), "*");
+      }
+   }
+
+   mPaths.push_back(qualifiedpath);
 }
 
 std::string ClassResolver::resolve(const std::string& classname) const
@@ -27,21 +50,13 @@ std::string ClassResolver::resolve(const std::string& classname) const
    {
       const string& path = mPaths[index];
 
-      size_t pos = path.rfind('.');
+      size_t pos = path.rfind('*');
       if ( pos != string::npos )
       {
-         string filepart = path.substr(pos+1, path.length());
-         if ( filepart == "*" )
+         string fullclassname = path.substr(0, pos) + classname;
+         if ( checkClassExists(fullclassname) )
          {
-            string fullclassname = path.substr(0, pos + 1) + classname;
-            if ( checkClassExists(fullclassname) )
-            {
-               return fullclassname;
-            }
-         }
-         else if ( filepart.compare(j) == 0 )
-         {
-            return path;
+            return fullclassname;
          }
       }
       else if ( path.compare(j) == 0 )

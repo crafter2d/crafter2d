@@ -12,6 +12,8 @@ class ClassResolver
 public:
    ClassResolver();
 
+   const ClassResolver& operator=(const ClassResolver& that);
+
  // operations
    void insert(const std::string& path);
 

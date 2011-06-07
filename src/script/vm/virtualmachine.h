@@ -185,7 +185,7 @@ public:
 
  // observing
    void registerNative(VirtualObjectReference& object, void* pnative);
-   void unregisterNative(VirtualObjectReference& object, void* pnative);
+   void unregisterNative(VirtualObjectReference& object);
 
 private:
    friend class VirtualCompileCallback;

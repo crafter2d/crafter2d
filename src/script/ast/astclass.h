@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "script/compiler/functiontable.h"
+#include "script/compiler/classresolver.h"
 
 #include "script/common/literaltable.h"
 
@@ -31,6 +32,7 @@ class ASTClass : public ASTNode
 public:
    enum SearchScope { eLocal, eAll };
    enum Kind { eClass, eInterface };
+   enum State { eParsed, eLoaded, eCompiled };
 
    typedef std::vector<ASTField*> Fields;
 
@@ -73,6 +75,9 @@ public:
    const Fields& getStatics() const;
    const Fields& getFields() const;
 
+   State getState() const;
+   void setState(State state) const;
+
  // query
    bool isBase(const ASTClass& base) const;
    bool isImplementing(const ASTClass& intrface) const;
@@ -88,6 +93,9 @@ public:
  // operations
    void addInterface(ASTType* pinterfacetype);
    void addMember(ASTMember* pmember);
+
+   const ClassResolver& getResolver() const;
+   void setResolver(const ClassResolver& resolver);
 
    void registerVariables(Scope& scope) const;
 
@@ -121,6 +129,7 @@ private:
    ASTFunction* findExactMatchLocal(const std::string& name, const Signature& signature);
 
    Kind              mKind;
+   ClassResolver     mResolver;
    ASTModifiers      mModifiers;
    ASTType*          mpBaseType;
    ASTTypeList       mInterfaces;
@@ -131,6 +140,7 @@ private:
    Fields            mStatics;
    Fields            mFields;
    Functions         mFunctions;
+   mutable State     mState;
 };
 
 #endif // AST_CLASS_H_

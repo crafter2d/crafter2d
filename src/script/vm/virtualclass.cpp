@@ -118,7 +118,7 @@ int VirtualClass::getStaticCount() const
    
 void VirtualClass::setStaticCount(int count)
 {
-   ASSERT_PTR(mpStatics);
+   ASSERT(mpStatics == NULL);
 
    mStaticCount = count;
    

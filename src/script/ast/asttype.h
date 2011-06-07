@@ -13,7 +13,7 @@ class CompileContext;
 class ASTType
 {
 public:
-   enum Kind { eBoolean, eInt, eReal, eString, eVoid, eObject, eArray, eGeneric, eInvalid };
+   enum Kind { eNull, eBoolean, eInt, eReal, eString, eVoid, eObject, eArray, eGeneric, eInvalid };
 
    static ASTType SVoidType;
 
@@ -42,6 +42,7 @@ public:
    void setArrayDimension(int dimension);
 
    const ASTType& getArrayType() const;
+         ASTType& getArrayType();
    void           setArrayType(ASTType* ptype);
 
    const ASTTypeList& getTypeArguments() const;
@@ -61,6 +62,7 @@ public:
    bool isVoid() const;
    bool isNumeric() const;
 
+   bool isNull() const;
    bool isArray() const;
    bool isObject() const;
    bool isBoolean() const;

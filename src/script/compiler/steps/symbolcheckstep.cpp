@@ -10,6 +10,7 @@
 #include "script/common/literal.h"
 #include "script/compiler/compilecontext.h"
 #include "script/compiler/signature.h"
+#include "script/compiler/classresolver.h"
 
 #include "variablecheckvisitor.h"
 
@@ -280,7 +281,7 @@ void SymbolCheckVisitor::visit(ASTCatch& ast)
    bool ok = type.isObject();
    if ( ok )
    {
-      ASTClass* pthrowable = mContext.findClass("Throwable");
+      ASTClass* pthrowable = mContext.findClass("System.Throwable");
       if ( pthrowable != NULL )
       {
          if ( !var.getType().getObjectClass().isBase(*pthrowable) )
@@ -308,7 +309,7 @@ void SymbolCheckVisitor::visit(ASTThrow& ast)
 
    if ( mCurrentType.isObject() )
    {
-      const ASTClass* pthrowable = mContext.findClass("Throwable");
+      const ASTClass* pthrowable = mContext.findClass("System.Throwable");
       if ( !mCurrentType.getObjectClass().isBase(*pthrowable) )
       {
          mContext.getLog().error("Throw expression object must be derived from Throwable.");
@@ -338,7 +339,7 @@ void SymbolCheckVisitor::visit(ASTExpression& ast)
 
          if ( !mCurrentType.greater(lefttype) )
          {
-            mContext.getLog().error("Invalid type for assignment. Was " + lefttype.toString() + " and expected " + mCurrentType.toString());
+            mContext.getLog().error("Invalid type for assignment. Can not assign " + mCurrentType.toString() + " to " + lefttype.toString());
          }
       }
       else
@@ -662,8 +663,14 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                   }
                   else
                   {
+                     std::string qualifiedname = mpClass->getResolver().resolve(name);
+                     if ( !qualifiedname.empty() )
+                     {
+                        ast.setName(qualifiedname);
+                     }
+
                      // check if a static is called --> must be a class name
-                     ASTClass* pclass = mContext.findClass(name);
+                     ASTClass* pclass = mContext.findClass(qualifiedname.empty() ? name : qualifiedname);
                      if ( pclass != NULL )
                      {
                         if ( mStatic )
@@ -773,8 +780,8 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
 
             mCurrentType.clear();
             mCurrentType.setKind(ASTType::eObject);
-            mCurrentType.setObjectName("Class");
-            mCurrentType.setObjectClass(*mContext.findClass("Class"));
+            mCurrentType.setObjectName("System.Class");
+            mCurrentType.setObjectClass(*mContext.findClass("System.Class"));
          }
          break;
 

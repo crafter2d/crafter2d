@@ -269,20 +269,23 @@ void SDLGameWindow::handleEvents()
 
 void SDLGameWindow::onKeyboardEvent(SDL_KeyboardEvent& event)
 {
-  ASSERT_PTR(mpKeyDispatcher);
+   /*
+   ASSERT_PTR(mpKeyDispatcher);
 
-  int key       = event.keysym.unicode == 0 ? event.keysym.sym : event.keysym.unicode & 0x7F;
-  int modifiers = getModifiers();
+   int key       = event.keysym.unicode == 0 ? event.keysym.sym : event.keysym.unicode & 0x7F;
+   int modifiers = getModifiers();
 
-  KeyEvent::EventType type = (event.type == SDL_KEYDOWN) ? KeyEvent::ePressed : KeyEvent::eReleased;
-  KeyEvent keyevent(key, type, modifiers);
+   KeyEvent::EventType type = (event.type == SDL_KEYDOWN) ? KeyEvent::ePressed : KeyEvent::eReleased;
+   KeyEvent keyevent(key, type, modifiers);
   
    if ( mpKeyDispatcher != NULL )
       mpKeyDispatcher->dispatch(keyevent);
+      */
 }
 
 void SDLGameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
 {
+   /*
    int buttons = 0;
    if ( event.state & SDL_BUTTON(SDL_BUTTON_LEFT) )
       SET_FLAG(buttons, MouseEvent::eLeft);
@@ -299,10 +302,12 @@ void SDLGameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
 
    if ( mpMouseDispatcher != NULL )
       mpMouseDispatcher->dispatch(mouseevent);
+      */
 }
 
 void SDLGameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
 {
+   /*
    Point location(event.x, event.y);
    MouseEvent::Button button = toMouseEventButton(event.button);
    int keymodifiers = getModifiers();
@@ -321,7 +326,7 @@ void SDLGameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
    MouseEvent mouseevent(button, eventtype, keymodifiers, location);
 
    if ( mpMouseDispatcher != NULL )
-      mpMouseDispatcher->dispatch(mouseevent);
+      mpMouseDispatcher->dispatch(mouseevent); */
 }
 
 void SDLGameWindow::onQuit()

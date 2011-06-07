@@ -190,8 +190,8 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
    ScopedScope scope(mScopeStack);
 
    mpVClass = new VirtualClass();
-   mpVClass->setName(ast.getName());
-   mpVClass->setBaseName(ast.hasBaseClass() ? ast.getBaseClass().getName() : "");
+   mpVClass->setName(ast.getFullName());
+   mpVClass->setBaseName(ast.hasBaseClass() ? ast.getBaseClass().getFullName() : "");
    mpVClass->setVariableCount(ast.getTotalVariables());
 
    int flags = VirtualClass::eNone;
@@ -200,7 +200,6 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
    if ( ast.getModifiers().isNative() )
       flags |= VirtualClass::eNative;
    mpVClass->setFlags((VirtualClass::Flags)flags);
-
 
    // base class should be set by the VM
    // we don't register the member variables, as they must be loaded/stored differently than locals
@@ -216,7 +215,7 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
    for ( int index = 0; index < table.size(); index++ )
    {
       const ASTFunction& function = table[index];
-      if ( ast.isLocal(function) )
+      if ( ast.isLocal(function) && !function.getModifiers().isAbstract() )
       {
          visit(function);
       }
@@ -231,6 +230,8 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
    }
 
    fillInstructionList();
+
+   ast.setState(ASTClass::eCompiled);
 }
 
 void CodeGeneratorVisitor::visit(const ASTFunction& ast)
@@ -257,9 +258,6 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
          addInstruction(VirtualInstruction::eNewNative, resource);
          addInstruction(VirtualInstruction::eRet, 0);
       }
-   }
-   else if ( ast.getModifiers().isAbstract() )
-   {
    }
    else
    {
@@ -1137,8 +1135,8 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             mCurrentType.clear();
             mCurrentType.setKind(ASTType::eObject);
-            mCurrentType.setObjectName("Class");
-            mCurrentType.setObjectClass(*mContext.findClass("Class"));
+            mCurrentType.setObjectName("System.Class");
+            mCurrentType.setObjectClass(*mContext.findClass("System.Class"));
          }
          break;
 
@@ -1268,7 +1266,7 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
    pentry->mOriginalInstruction = pentry->mInstruction;
    pentry->mArguments = 0;
 
-   int lit = allocateLiteral(ast.getName());
+   int lit = allocateLiteral(ast.getFullName());
 
    const ASTClass::Fields& fields = ast.getStatics();
    for ( std::size_t index = 0; index < fields.size(); index++ )

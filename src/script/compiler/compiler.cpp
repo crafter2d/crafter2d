@@ -10,7 +10,7 @@
 #include "script/antlr/antlrinterface.h"
 #include "script/antlr/antlrstream.h"
 
-#include "steps/preloadervisitor.h"
+#include "steps/preloadvisitor.h"
 #include "steps/symbolcollectorstep.h"
 #include "steps/symbolcheckstep.h"
 #include "steps/resourcecheckvisitor.h"
@@ -32,10 +32,13 @@
 Compiler::Compiler():
    mContext(*this),
    mpCallback(NULL),
-   mSteps(),
-   mPhase(eLoad)
+   mLoadSteps(),
+   mPrecompileSteps(),
+   mCompileSteps(),
+   mPhase(ePreload)
 {
    createLoadSteps();
+   createPrecompileSteps();
    createCompileSteps();
 }
 
@@ -65,69 +68,129 @@ const Literal& Compiler::lookupLiteral(int index) const
 
 // - Compilation
 
+bool compare(ASTClass* pleft, ASTClass* pright)
+{
+   return pright->isBase(*pleft);
+}
+
+void sort(std::vector<ASTClass*>& classes, std::vector<ASTClass*>& sorted)
+{
+   for ( std::size_t index = 0; index < classes.size(); index++ )
+   {
+      ASTClass* pleft = classes[index];
+
+      bool inserted = false;
+      std::vector<ASTClass*>::iterator it = sorted.begin();
+      for ( ; it != sorted.end(); it++ )
+      {
+         ASTClass* pright = (*it);
+
+         if ( compare(pleft, pright) )
+         {
+            // pleft = base class
+            sorted.insert(it, pleft);
+            inserted = true;
+            break;
+         }
+      }
+
+      if ( !inserted )
+      {
+         sorted.push_back(pleft);
+      }
+   }
+}
+
 bool Compiler::compile(const std::string& classname)
 {
-   mContext.resetCollection();
-
-   bool loaded = mContext.hasClass(classname) || loadClass(classname);
-   if ( !loaded )
+   ASTClass* pclass = mContext.findClass(classname);
+   if ( pclass == NULL )
    {
-      displayErrors(classname);
-      return false;
-   }
-
-   for ( int index = 0; index < mFiles.size(); index++ )
-   {
-      if ( mFiles[index] == classname )
+      if ( !load(classname) )
       {
-         return true;
+         displayErrors(classname);
+         return false;
+      }
+
+      std::vector<ASTClass*> classes, sorted;
+      mContext.collectCompileClasses(classes);
+      ASSERT(!classes.empty());
+
+      // precompile
+      for ( std::size_t index = 0; index < classes.size(); index++ )
+      {
+         pclass = classes[index];
+         performSteps(*pclass, mPrecompileSteps);
+      }
+
+      // needs to have all types resolved
+      sort(classes, sorted);
+
+      // calculate the resources
+      for ( std::size_t index = 0; index < sorted.size(); index++ )
+      {
+         pclass = sorted[index];
+         pclass->calculateResources();
+      }
+
+      // compile
+      for ( std::size_t index = 0; index < sorted.size(); index++ )
+      {
+         pclass = sorted[index];
+         if ( performSteps(*pclass, mCompileSteps) )
+         {
+            if ( hasCallback() )
+            {
+               mpCallback->notify(mContext.getResult());
+            }
+
+            save(*pclass);
+         }
       }
    }
 
-   ASTClass* pclass = mContext.findClass(classname);
-   if ( performSteps(*pclass, mSteps) )
-   {
-      if ( hasCallback() )
-         mpCallback->notify(mContext.getResult());
-
-      mFiles.push_back(classname);
-
-      save(*pclass);
-
-      return true;
-   }
-   else
-   {
-      displayErrors(classname);
-   }
-   
-   return false;
+   return true;
 }
 
 // - Operations
 
 void Compiler::createLoadSteps()
 {
-   mLoadSteps.push_back(new SymbolCollectorVisitor(mContext));
+   mLoadSteps.push_back(new PreloadVisitor(mContext));
+}
+
+void Compiler::createPrecompileSteps()
+{
+   mPrecompileSteps.push_back(new SymbolCollectorVisitor(mContext));
 }
 
 void Compiler::createCompileSteps()
 {
-   mSteps.push_back(new SymbolCheckVisitor(mContext));
-   mSteps.push_back(new ResourceCheckVisitor(mContext));
-   mSteps.push_back(new OOCheckVisitor(mContext));
-   mSteps.push_back(new CodeGeneratorVisitor(mContext));
+   mCompileSteps.push_back(new SymbolCheckVisitor(mContext));
+   mCompileSteps.push_back(new ResourceCheckVisitor(mContext));
+   mCompileSteps.push_back(new OOCheckVisitor(mContext));
+   mCompileSteps.push_back(new CodeGeneratorVisitor(mContext));
 }
 
-bool Compiler::loadClass(const std::string& classname)
+bool Compiler::performSteps(ASTNode& node, Steps& steps)
+{
+   for ( std::size_t index = 0; index < steps.size(); index++ )
+   {
+      CompileStep* pstep = steps[index];
+      if ( !pstep->step(node) || mContext.getLog().hasErrors() )
+      {
+         displayErrors("blaat");
+         return false;
+      }
+   }
+   return true;
+}
+
+bool Compiler::load(const std::string& classname)
 {
    AntlrParser parser(mContext);
 
-   std::string fullname = mContext.getFullName(classname);
-   if ( fullname.empty() )
-      return false;
-
-   String name(fullname.c_str());
+   String name(classname.c_str());
    name.replace('.', '/');
 
    std::string filename = "ascripts/" + name.toStdString() + ".as";
@@ -145,19 +208,6 @@ bool Compiler::loadClass(const std::string& classname)
 
    displayErrors(classname);
    return false;
-}
-
-bool Compiler::performSteps(ASTNode& node, Steps& steps)
-{
-   for ( std::size_t index = 0; index < steps.size(); index++ )
-   {
-      CompileStep* pstep = steps[index];
-      if ( !pstep->step(node) || mContext.getLog().hasErrors() )
-      {
-         return false;
-      }
-   }
-   return true;
 }
 
 void Compiler::save(ASTClass& ast)

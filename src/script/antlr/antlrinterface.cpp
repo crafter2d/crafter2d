@@ -17,6 +17,7 @@
 
 AntlrParser::AntlrParser(CompileContext& context):
    mContext(context),
+   mClassResolver(),
    mPackage(),
    mpClass(NULL)
 {
@@ -114,9 +115,15 @@ ASTType* AntlrParser::getType(const AntlrNode& node)
       case ID:
          {
             std::string name = typenode.toString();
+            std::string qualifiedname = mClassResolver.resolve(name);
+            if ( qualifiedname == "" )
+            {
+               // can be a type argument!
+               qualifiedname = name;
+            }
 
             ptype->setKind(ASTType::eObject);
-            ptype->setObjectName(name);
+            ptype->setObjectName(qualifiedname);
          }
          break;
    }
@@ -165,6 +172,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
       case CLASS:             return handleClass(node);
       case INTRFACE:          return handleClass(node);
       case IFACE_MEMBER:      return handleInterfaceMember(node);
+      case IFACE_VOID_MEMBER: return handleInterfaceVoidMember(node);
       case VARIABLE_DECL:     return handleVarDecl(node);
       case CONSTRUCTOR_DECL:  return handleConstructor(node);
       case FUNCTION_DECL:     return handleFuncDecl(node);
@@ -243,6 +251,7 @@ ASTNode* AntlrParser::handlePackage(const AntlrNode& node)
    ppackage->setName(identifier);
 
    mPackage = identifier;
+   mClassResolver.insert(mPackage + ".*");
 
    return ppackage;
 }
@@ -264,6 +273,8 @@ ASTNode* AntlrParser::handleUse(const AntlrNode& node)
 
    ASTUse* puse = new ASTUse();
    puse->setIdentifier(identifier);
+
+   mClassResolver.insert(puse->getIdentifier());
    
    return puse;
 }
@@ -364,10 +375,11 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
 
    AntlrNode namenode = node.getChild(1);
    std::string name = namenode.toString();
-   std::string fullclassname = mPackage + '.' + name;
+   std::string qualifiedname = mClassResolver.resolve(name);
 
    pclass->setName(name);
-   pclass->setFullName(fullclassname);
+   pclass->setFullName(qualifiedname);
+   pclass->setResolver(mClassResolver);
 
    if ( count > 2 )
    {
@@ -510,6 +522,8 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
    ASTModifiers modifiers;
    AntlrNode modnode = node.getChild(0);
    handleModifiers(modnode, modifiers);
+   modifiers.setAbstract();
+   modifiers.setVisibility(ASTModifiers::ePublic);
 
    AntlrNode typenode = node.getChild(1);
    ASTType* ptype = getType(typenode);
@@ -540,6 +554,50 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
       if ( type != SEP )
       {
          AntlrNode exprnode = node.getChild(4);
+         ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(exprnode));
+         ASSERT_PTR(pexpression);
+
+         pvariable->setExpression(pexpression);
+      }
+
+      return new ASTField(pvariable);
+   }
+}
+
+ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
+{
+   ASTModifiers modifiers;
+   AntlrNode modnode = node.getChild(0);
+   handleModifiers(modnode, modifiers);
+   modifiers.setAbstract();
+   modifiers.setVisibility(ASTModifiers::ePublic);
+
+   AntlrNode namenode = node.getChild(1);
+   std::string name = namenode.toString();
+
+   AntlrNode argumentnode = node.getChild(2);
+   int type = argumentnode.getType();
+   if ( type == FUNCTION_ARGUMENTS )
+   {
+      ASTFunction* pfunction = new ASTFunction(ASTMember::eFunction);
+      pfunction->setModifiers(modifiers);
+      pfunction->setType(&ASTType::SVoidType);
+      pfunction->setName(name);
+
+      handleFuncArguments(argumentnode, *pfunction);
+
+      return pfunction;
+   }
+   else
+   {
+      ASTVariable* pvariable = new ASTVariable();
+      pvariable->setModifiers(modifiers);
+      pvariable->setType(&ASTType::SVoidType);
+      pvariable->setName(name);
+      
+      if ( type != SEP )
+      {
+         AntlrNode exprnode = node.getChild(3);
          ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(exprnode));
          ASSERT_PTR(pexpression);
 
@@ -1267,7 +1325,7 @@ ASTAccess* AntlrParser::handleAccess(const AntlrNode& node)
    AntlrNode namenode = node.getChild(0);
    paccess->setName(namenode.toString());
    paccess->setKind(count == 1 ? ASTAccess::eVariable : ASTAccess::eFunction);
-   
+      
    if ( count == 2 )
    {
       AntlrNode argsnode = node.getChild(1);
@@ -1339,6 +1397,9 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
       case LITFALSE:
          kind = ASTType::eBoolean;
          value.setBool(false);
+         break;
+      case LITNULL:
+         kind = ASTType::eNull;
          break;
       default:
          break;

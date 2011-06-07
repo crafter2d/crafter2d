@@ -33,6 +33,7 @@ class ActionMap;
 class BitStream;
 class NetEvent;
 class Script;
+class VirtualObjectReference;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -67,7 +68,7 @@ public:
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
    void           sendScriptEvent(BitStream* stream, uint client=INVALID_CLIENTID);
-
+   
   // events
    virtual int    allowNewConnection();
    virtual int    onClientEvent(int client, const NetEvent& event) = 0;

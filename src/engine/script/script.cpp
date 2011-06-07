@@ -36,6 +36,11 @@ Script::Script(ScriptManager& manager, const std::string& name):
 
 // - Get/set
 
+void Script::setThis(const VirtualObjectReference& object)
+{
+   mObject = object;
+}
+
 void Script::setThis(void* pthis)
 {
    if ( !mClassName.empty() )

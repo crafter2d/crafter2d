@@ -5,6 +5,7 @@
 #include <antlr3interfaces.h>
 
 #include "script/ast/ast.h"
+#include "script/compiler/classresolver.h"
 
 class QString;
 class QStringList;
@@ -41,6 +42,7 @@ private:
    ASTMember*              handleVoidFuncDecl(const AntlrNode& node);
    ASTMember*              handleVarDecl(const AntlrNode& node);
    ASTMember*              handleInterfaceMember(const AntlrNode& node);
+   ASTMember*              handleInterfaceVoidMember(const AntlrNode& node);
    ASTAnnotations*         handleAnnotations(const AntlrNode& node);
    ASTBlock*               handleBlock(const AntlrNode& node);
    ASTLocalVariable*       handleLocalVarDecl(const AntlrNode& node);
@@ -70,6 +72,7 @@ private:
    ASTLiteral*             handleLiteral(const AntlrNode& node);
 
    CompileContext& mContext;
+   ClassResolver   mClassResolver;
    std::string     mPackage;
    ASTClass*       mpClass;
 };

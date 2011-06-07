@@ -7,7 +7,10 @@ use creature;
 
 class World
 {
-	public native World();
+	public native World()
+	{
+		super();
+	}
 	
 	public native string getName();
 	public native SceneGraph getSceneGraph();

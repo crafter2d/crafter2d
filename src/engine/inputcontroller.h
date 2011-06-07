@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2011 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,15 +17,40 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#ifndef INPUT_CONTROLLER_H_
+#define INPUT_CONTROLLER_H_
 
-INLINE bool ActionMap::hasProcess() const
-{
-   return mpProcess != NULL;
-}
+#include <queue>
 
-INLINE Process& ActionMap::getProcess()
+#include "actionmap.h"
+#include "controller.h"
+
+class ActionEvent;
+class ActionMap;
+
+class InputController : public Controller
 {
-   ASSERT(hasProcess())
-   return *mpProcess;
-}
+   typedef std::queue<ActionEvent> ActionQueue;
+
+public:
+   InputController();
+
+ // get/set
+   void setActionMap(ActionMap* pactionmap);
+
+ // operations
+   void queueAction(const ActionEvent& actionevent);
+   void clearActions();
+
+ // overloads
+   virtual void requestAction(const ActionEvent& actionevent);
+   virtual void performAction(Object& actor);
+
+private:
+
+ // members
+   ActionQueue mActions;
+   ActionMap*  mpActionMap;
+};
+
+#endif // INPUT_CONTROLLER_H_

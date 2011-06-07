@@ -31,6 +31,8 @@
 #include "net/netevent.h"
 #include "net/events/scriptevent.h"
 
+#include "script/vm/virtualclass.h"
+
 #include "world/world.h"
 
 #include "actionmap.h"
@@ -41,7 +43,6 @@ Process::Process():
    graph(*this),
    mScriptManager(),
    mpScript(NULL),
-   actionMap(NULL),
    initialized(false),
    mActive(true)
 {
@@ -53,7 +54,7 @@ Process::~Process()
 
 bool Process::create(const std::string& name)
 {
-   return mScriptManager.initialize() && initializeScript(name);
+   return initializeScript(name);
 }
 
 bool Process::destroy()
@@ -67,12 +68,16 @@ bool Process::destroy()
 
 bool Process::initializeScript(const std::string& name)
 {
-   mpScript = mScriptManager.loadClass(name);
    if ( mpScript == NULL )
    {
-      Log& log = Log::getInstance();
-      log << "Failed to load the " << name.c_str() << " class.";
-      return false;
+      mScriptManager.initialize();
+      mpScript = mScriptManager.loadClass(name);
+      if ( mpScript == NULL )
+      {
+         Log& log = Log::getInstance();
+         log << "Failed to load the " << name.c_str() << " class.";
+         return false;
+      }
    }
 
    mpScript->setThis(this);

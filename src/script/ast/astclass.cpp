@@ -17,6 +17,7 @@
 ASTClass::ASTClass():
    ASTNode(),
    mKind(eClass),
+   mResolver(),
    mModifiers(),
    mpBaseType(NULL),
    mInterfaces(),
@@ -26,7 +27,8 @@ ASTClass::ASTClass():
    mTable(),
    mStatics(),
    mFields(),
-   mFunctions()
+   mFunctions(),
+   mState(eParsed)
 {
 }
 
@@ -147,6 +149,11 @@ const FunctionTable& ASTClass::getFunctionTable() const
 
 FunctionTable& ASTClass::getFunctionTable()
 {
+   if ( mTable.size() == 0 )
+   {
+      indexFunctions();
+   }
+
    return mTable;
 }
 
@@ -168,6 +175,16 @@ const ASTClass::Fields& ASTClass::getStatics() const
 const ASTClass::Fields& ASTClass::getFields() const
 {
    return mFields;
+}
+
+ASTClass::State ASTClass::getState() const
+{
+   return mState;
+}
+
+void ASTClass::setState(State state) const
+{
+   mState = state;
 }
 
 // - Query
@@ -287,6 +304,16 @@ void ASTClass::addMember(ASTMember* pmember)
    }
 
    addChild(pmember);
+}
+
+const ClassResolver& ASTClass::getResolver() const
+{
+   return mResolver;
+}
+
+void ASTClass::setResolver(const ClassResolver& resolver)
+{
+   mResolver = resolver;
 }
 
 void ASTClass::registerVariables(Scope& scope) const
