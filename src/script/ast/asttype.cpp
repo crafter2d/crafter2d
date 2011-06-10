@@ -403,7 +403,7 @@ std::string ASTType::toString() const
          type = SBool;
          break;
       case eObject:
-         type = mObjectName;
+         type = mpObjectClass != NULL ? mpObjectClass->getFullName() : mObjectName;
          if ( !mTypeArguments.empty() )
          {
             type += "<";

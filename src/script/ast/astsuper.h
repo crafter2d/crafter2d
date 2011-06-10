@@ -25,7 +25,11 @@ public:
    void setCall(bool call);
 
  // query
+   int       getArgumentCount() const;
    ASTNodes& getArguments();
+
+   bool isSuper() const;
+   bool isThis() const;
 
  // visitor
    ACCEPT;

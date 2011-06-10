@@ -42,7 +42,6 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mLoadFlags(0),
    mExpr(0),
    mSuperCall(false),
-   mLocal(false),
    mRightHandSide(false),
    mStore(false)
 {
@@ -257,6 +256,18 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
          addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
          addInstruction(VirtualInstruction::eNewNative, resource);
          addInstruction(VirtualInstruction::eRet, 0);
+      }
+      else
+      {
+         std::string fncname = ast.getClass().getName() + "_" + ast.getName();
+         int resource = allocateLiteral(fncname);
+
+         // the arguments of this function are re-used by the native function,
+         // so no need to push them on the stack again
+
+         addInstruction(VirtualInstruction::ePush, ast.getArgumentCount()); // includes this
+         addInstruction(VirtualInstruction::eCallNative, resource);
+         addInstruction(VirtualInstruction::eRet, ast.getType().isVoid() ? 0 : 1);
       }
    }
    else
@@ -949,16 +960,17 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
 {
    if ( ast.hasConstructor() )
    {
+      addInstruction(VirtualInstruction::ePushThis);
+
       // call to constructor of superclass
       visitChildren(ast);
-
-      addInstruction(VirtualInstruction::ePushThis);
-      addInstruction(VirtualInstruction::ePush, 1);
-      addInstruction(VirtualInstruction::eCallSuper, ast.getConstructor().getResourceIndex());
+            
+      addInstruction(VirtualInstruction::ePush, ast.getArgumentCount() + 1);
+      addInstruction(ast.isSuper() ? VirtualInstruction::eCallSuper : VirtualInstruction::eCall, ast.getConstructor().getResourceIndex());
 
       mNeedPop = false;
    }
-   else if ( ast.getKind() == ASTSuper::eThis )
+   else if ( ast.isThis() )
    {
       addInstruction(VirtualInstruction::ePushThis);
    }
@@ -1022,7 +1034,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             {
                case ASTAccess::eField:
                   if ( isstatic )
-                     addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getName()));
+                     addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getFullName()));
                   else
                      addInstruction(VirtualInstruction::ePushThis);
 
@@ -1067,13 +1079,9 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
          {
             const ASTFunction& function = ast.getFunction();
 
-            mLocal = true;
-
             if ( !mCurrentType.isValid() )
             {
                addInstruction(VirtualInstruction::ePushThis);
-
-               mLocal = mpClass->isLocal(function);
             }
 
             ASTType before = mCurrentType;
@@ -1084,26 +1092,24 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             if ( function.getModifiers().isNative() )
             {
-               std::string fncname = function.getClass().getName() + "_" + function.getName();
-               int resource = allocateLiteral(fncname);
-
-               addInstruction(VirtualInstruction::eCallNative, resource);
+               addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
+            }
+            else if ( function.getModifiers().isStatic() )
+            {
+               addInstruction(VirtualInstruction::ePush, allocateLiteral(before.getObjectClass().getFullName()));
+               addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
+            }
+            else if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
+            {
+               addInstruction(VirtualInstruction::eCallInterface, function.getResourceIndex());
+            }
+            else if ( mSuperCall )
+            {
+               addInstruction(VirtualInstruction::eCallSuper, function.getResourceIndex());
             }
             else
             {
-               if ( function.getModifiers().isStatic() )
-               {
-                  addInstruction(VirtualInstruction::ePush, allocateLiteral(before.getObjectClass().getFullName()));
-                  addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
-               }
-               else if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
-               {
-                  addInstruction(VirtualInstruction::eCallInterface, function.getResourceIndex());
-               }
-               else
-               {
-                  addInstruction(mSuperCall || !mLocal ? VirtualInstruction::eCallSuper: VirtualInstruction::eCall, function.getResourceIndex());
-               }
+               addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
             }
 
             if ( function.getType().isVoid() )
@@ -1204,8 +1210,6 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
    int store = local ? VirtualInstruction::eStoreLocal : (isstatic ? VirtualInstruction::eStoreStatic : VirtualInstruction::eStore);
    int load  = local ? VirtualInstruction::eLoadLocal  : (isstatic ? VirtualInstruction::eLoadStatic : VirtualInstruction::eLoad);
    
-   mLocal = local;
-
    if ( mLoadFlags > 0 )
    {
       // if not local, the object is already on the stack

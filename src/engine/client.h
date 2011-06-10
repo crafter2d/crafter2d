@@ -61,7 +61,9 @@ public:
    virtual bool   create(const std::string& name);
    virtual bool   destroy();
    virtual void   update(float delta);
+
            void   render(float delta);
+           void   display();
 
  // get/set
    Player&        getPlayer();

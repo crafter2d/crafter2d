@@ -2,6 +2,7 @@
 #include "preloadvisitor.h"
 
 #include "script/compiler/compiler.h"
+#include "script/compiler/exceptions/classnotfoundexception.h"
 
 #include "script/ast/ast.h"
 
@@ -55,7 +56,7 @@ void PreloadVisitor::visit(ASTClass& ast)
    }
 
    ASTTypeList& intrfaces = ast.getInterfaces();
-   for ( int index = 0; index < intrfaces.size(); index++ )
+    for ( int index = 0; index < intrfaces.size(); index++ )
    {
       ASTType& type = intrfaces[index];
       if ( !load(type) )
@@ -340,7 +341,10 @@ bool PreloadVisitor::load(ASTType& type)
          return true;
       }
 
-      return mContext.loadClass(type.getObjectName());
+      if ( !mContext.loadClass(type.getObjectName()) )
+      {
+         throw new ClassNotFoundException(type.getObjectName());
+      }
    }
 
    return true;

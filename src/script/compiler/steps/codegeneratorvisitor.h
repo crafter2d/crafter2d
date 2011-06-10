@@ -116,7 +116,6 @@ private:
    int                  mLoadFlags;
    int                  mExpr;
    bool                 mSuperCall;
-   bool                 mLocal;
    bool                 mRightHandSide;
    bool                 mStore;
    bool                 mNeedPop;

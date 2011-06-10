@@ -1291,8 +1291,10 @@ ASTNode* AntlrParser::handleSuper(const AntlrNode& node)
       psuper->setCall(true);
 
       AntlrNode argsnode = node.getChild(0);
+      ASSERT(argsnode.getType() == ARGUMENTS);
+
       count = argsnode.getChildCount();
-      for ( int index = 0; index < count; index++ )
+      for ( int index = 0; index < count; index += 2 ) // skip the ,
       {
          AntlrNode argnode = argsnode.getChild(index);
          ASTExpression* parg = handleExpression(argnode);

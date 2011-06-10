@@ -25,13 +25,34 @@ class ArrayList<T> implements Iterable<T>
 		return (T) mArray[index];
 	}
 	
-	public void add(T t)
+	public void add(T element)
 	{
-		mArray[mElements++] = t;
+		mArray[mElements++] = element;
+	}
+	
+	public void remove(T element)
+	{
+		int index = indexOf(element);
+		if ( index < mElements )
+		{
+			// copy all from index+1 to index
+		}
 	}
 	
 	public int size()
 	{
+		return mElements;
+	}
+	
+	public int indexOf(T element)
+	{
+		for ( int index = 0; index < mElements; index++ )
+		{
+			if ( mArray[index] == element )
+			{
+				return index;
+			}
+		}
 		return mElements;
 	}
 	

@@ -378,8 +378,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             VirtualStackAccessor accessor(mStack);
             (*mNatives[fnc])(*this, accessor);
 
-            int args = mStack.back().asInt();
-            mStack.resize(mStack.size() - (args + 1));
+            mStack.pop_back(); // pop the argument count
             if ( accessor.hasResult() )
                mStack.push_back(accessor.getResult());
          }

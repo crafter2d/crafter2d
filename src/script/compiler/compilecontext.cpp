@@ -8,6 +8,8 @@
 #include "script/ast/astclass.h"
 #include "script/ast/astvariable.h"
 
+#include "exceptions/classnotfoundexception.h"
+
 #include "compiler.h" 
 
 CompileContext::CompileContext(Compiler& compiler):
@@ -119,7 +121,7 @@ ASTClass& CompileContext::resolveClass(const std::string& classname)
    ASTClass* pclass = findClass(classname);
    if ( pclass == NULL )
    {
-      throw new std::exception();
+      throw new ClassNotFoundException(classname);
    }
    return *pclass;
 }

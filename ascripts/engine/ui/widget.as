@@ -7,15 +7,15 @@ use arraylist;
 
 abstract class Widget
 {
-	private Widget            mParent;
-	private ArrayList<Widget> mChildren;
-	private Rectangle		  mBounds;
+	private string				mName;
+	private Widget            	mParent;
+	private ArrayList<Widget> 	mChildren;
+	private Rectangle		  	mBounds;
+	private Border				mBorder;
 	
 	public Widget()
 	{
-		mParent = null;
 		mChildren = new ArrayList<Widget>();
-		mBounds = null;
 	}
 	
 	// - children
@@ -36,14 +36,30 @@ abstract class Widget
 	
 	public void paint(Graphics graphics)
 	{
+		paintBackground(graphics);
+		
+		graphics.translate(getBounds().x, getBounds().y);
+		
+		paintBorder(graphics);
 		paintWidget(graphics);
 		paintChildren(graphics);
+		
+		graphics.translate(-getBounds().x, -getBounds().y);
 	}
 	
+	abstract protected void paintBackground(Graphics graphics);
 	abstract protected void paintWidget(Graphics graphics);
 	
-	protected void paintChildren(Graphics graphics)
+	protected void paintBorder(Graphics graphics)
 	{
+		if ( mBorder != null )
+		{
+			mBorder.paint(graphics);
+		}
+	}
+	
+	protected void paintChildren(Graphics graphics)
+	{		
 		foreach( Widget child : mChildren )
 		{
 			child.paint(graphics);
@@ -61,4 +77,12 @@ abstract class Widget
 	{
 		mBounds = bounds;
 	}
+	
+	// - border
+	
+	public void setBorder(Border border)
+	{
+		mBorder = border;
+	}
+	
 }

@@ -69,6 +69,9 @@ bool Variant::operator==(const Variant& that) const
    {
       switch ( mType )
       {
+         case eEmpty:
+            return true;
+
          case eInt:
             return asInt() == that.asInt();
 

@@ -2,6 +2,7 @@
 #ifndef SIGNATURE_H_
 #define SIGNATURE_H_
 
+#include <string>
 #include <vector>
 
 class ASTType;
@@ -27,6 +28,9 @@ public:
  // operations
    void append(const ASTType& type);
    void append(ASTType* ptype);
+
+ // conversion
+   std::string toString() const;
 
 private:
 

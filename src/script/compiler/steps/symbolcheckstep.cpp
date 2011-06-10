@@ -488,7 +488,8 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
             {
                if ( signature.size() > 0 )
                {
-                  mContext.getLog().error("No constructor defined taking arguments.");
+                  std::string arguments = "(" + signature.toString() + ")";
+                  mContext.getLog().error("Class " + newclass.getFullName() + " has no constructor defined taking arguments " + arguments + ".");
                }
                // else default argument will be created
             }
@@ -554,15 +555,19 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
          signature.append(mCurrentType.clone());
       }
 
+      // use the correct class for this super node
+      ASTClass* psearchclass = ast.getKind() == ASTSuper::eThis ? mpClass : &mpClass->getBaseClass();
+
       ASTTypeList types;
-      ASTFunction* pconstructor = pclass->findBestMatch(mpClass->getBaseClass().getName(), signature, types);
+      ASTFunction* pconstructor = pclass->findBestMatch(psearchclass->getName(), signature, types);
       if ( pconstructor != NULL )
       {
          ast.setConstructor(pconstructor);
       }
       else
       {
-         mContext.getLog().error("Can not find a constructor with the right signature.");
+         std::string arguments = "(" + signature.toString() + ")";
+         mContext.getLog().error("No constructor " + psearchclass->getFullName() + arguments + " defined.");
       }
    }
    else
@@ -878,7 +883,8 @@ void SymbolCheckVisitor::checkFunction(const ASTClass& aclass, ASTAccess& access
    }
    else
    {
-      mContext.getLog().error("No matching function " + access.getName() + " is declared in class " + aclass.getName());
+      std::string arguments = "(" + signature.toString() + ")";
+      mContext.getLog().error("No matching function " + aclass.getName() + "." + access.getName() + arguments + " defined.");
    }
 }
 

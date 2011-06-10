@@ -11,6 +11,8 @@
 #include "script/antlr/antlrinterface.h"
 #include "script/antlr/antlrstream.h"
 
+#include "exceptions/classnotfoundexception.h"
+
 #include "steps/preloadvisitor.h"
 #include "steps/symbolcollectorstep.h"
 #include "steps/symbolcheckstep.h"
@@ -71,7 +73,7 @@ const Literal& Compiler::lookupLiteral(int index) const
 
 bool compare(ASTClass* pleft, ASTClass* pright)
 {
-   return pright->isBase(*pleft);
+   return pright->isBase(*pleft) || pright->isImplementing(*pleft);
 }
 
 void sort(std::vector<ASTClass*>& classes, std::vector<ASTClass*>& sorted)
@@ -107,45 +109,70 @@ bool Compiler::compile(const std::string& classname)
    ASTClass* pclass = mContext.findClass(classname);
    if ( pclass == NULL )
    {
-      if ( !load(classname) )
+      try
       {
+         if ( !load(classname) )
+         {
+            displayErrors(classname);
+            return false;
+         }
+
+         std::vector<ASTClass*> classes, sorted;
+         mContext.collectCompileClasses(classes);
+         ASSERT(!classes.empty());
+
+         // precompile
+         for ( std::size_t index = 0; index < classes.size(); index++ )
+         {
+            pclass = classes[index];
+            if ( !performSteps(*pclass, mPrecompileSteps) )
+            {
+               displayErrors(classname);
+               return false;
+            }
+         }
+
+         // needs to have all types resolved
+         sort(classes, sorted);
+
+         // calculate the resources
+         for ( std::size_t index = 0; index < sorted.size(); index++ )
+         {
+            pclass = sorted[index];
+            pclass->calculateResources();
+         }
+
+         // compile
+         for ( std::size_t index = 0; index < sorted.size(); index++ )
+         {
+            pclass = sorted[index];
+            if ( performSteps(*pclass, mCompileSteps) )
+            {
+               if ( hasCallback() )
+               {
+                  mpCallback->notify(mContext.getResult());
+               }
+
+               save(*pclass);
+            }
+            else
+            {
+               displayErrors(pclass->getFullName());
+               return false;
+            }
+         }
+      }
+      catch ( ClassNotFoundException* e )
+      {
+         mContext.getLog().error("Can not find class " + e->mClass);
+         displayErrors(classname);
          return false;
       }
-
-      std::vector<ASTClass*> classes, sorted;
-      mContext.collectCompileClasses(classes);
-      ASSERT(!classes.empty());
-
-      // precompile
-      for ( std::size_t index = 0; index < classes.size(); index++ )
+      catch ( std::exception& e )
       {
-         pclass = classes[index];
-         performSteps(*pclass, mPrecompileSteps);
-      }
-
-      // needs to have all types resolved
-      sort(classes, sorted);
-
-      // calculate the resources
-      for ( std::size_t index = 0; index < sorted.size(); index++ )
-      {
-         pclass = sorted[index];
-         pclass->calculateResources();
-      }
-
-      // compile
-      for ( std::size_t index = 0; index < sorted.size(); index++ )
-      {
-         pclass = sorted[index];
-         if ( performSteps(*pclass, mCompileSteps) )
-         {
-            if ( hasCallback() )
-            {
-               mpCallback->notify(mContext.getResult());
-            }
-
-            save(*pclass);
-         }
+         mContext.getLog().error(e.what());
+         displayErrors(classname);
+         return false;
       }
    }
 
@@ -179,7 +206,6 @@ bool Compiler::performSteps(ASTNode& node, Steps& steps)
       CompileStep* pstep = steps[index];
       if ( !pstep->step(node) || mContext.getLog().hasErrors() )
       {
-         displayErrors("blaat");
          return false;
       }
    }
@@ -196,17 +222,28 @@ bool Compiler::load(const std::string& classname)
    std::string filename = "ascripts/" + name.toStdString() + ".as";
    mContext.getLog().info("> " + filename);
 
-   AutoPtr<AntlrStream> stream(AntlrStream::fromFile(filename));
-   if ( stream.hasPointer() )
+   try
    {
-      AutoPtr<ASTRoot> root(parser.parse(*stream));
-      if ( root.hasPointer() )
+      AutoPtr<AntlrStream> stream(AntlrStream::fromFile(filename));
+      if ( stream.hasPointer() )
       {
-         return performSteps(*root, mLoadSteps);
+         AutoPtr<ASTRoot> root(parser.parse(*stream));
+         if ( root.hasPointer() )
+         {
+            return performSteps(*root, mLoadSteps);
+         }
       }
    }
+   catch ( ClassNotFoundException* e )
+   {
+      mContext.getLog().error("Can not find class " + e->mClass);
+      throw;
+   }
+   catch ( std::exception& e )
+   {
+      mContext.getLog().error(std::string("Exception: ") + e.what());
+   }
 
-   displayErrors(classname);
    return false;
 }
 

@@ -30,6 +30,8 @@
 #include "physics/box2d/box2dsimulator.h"
 #include "physics/box2d/box2drevolutejoint.h"
 
+#include "ui/graphics.h"
+
 #include "window/gamewindowfactory.h"
 
 #include "net/bitstream.h"
@@ -174,7 +176,7 @@ void Client_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
    pclient->update(delta);
 }
 
-void Client_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_nativeRender(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    Client* pclient = (Client*) thisobject->getNativeObject();
@@ -182,6 +184,14 @@ void Client_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
    float delta = accessor.getReal(1);
 
    pclient->render(delta);
+}
+
+void Client_nativeDisplay(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Client* pclient = (Client*) thisobject->getNativeObject();
+   
+   pclient->display();
 }
 
 void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -778,6 +788,63 @@ void KeyMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
    pmap->bind(key, action);
 }
 
+void EngineGraphics_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+
+   Graphics* pgraphics = new Graphics();
+   machine.registerNative(thisobject, pgraphics);
+}
+
+void EngineGraphics_doSetColor(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+
+   float red = accessor.getReal(1);
+   float green = accessor.getReal(2);
+   float blue = accessor.getReal(3);
+   float alpha = accessor.getReal(4);
+
+   pgraphics->setColor(red, green, blue, alpha);
+}
+
+void EngineGraphics_translate(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+
+   float x = accessor.getInt(1);
+   float y = accessor.getInt(2);
+
+   pgraphics->translate(x, y);
+}
+
+void EngineGraphics_drawText(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+
+   float x = accessor.getInt(1);
+   float y = accessor.getInt(2);
+   const std::string& text = accessor.getString(3);
+
+   pgraphics->drawText(x, y, text);
+}
+
+void EngineGraphics_doFillRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+
+   float x = accessor.getInt(1);
+   float y = accessor.getInt(2);
+   float width = accessor.getInt(3);
+   float height = accessor.getInt(4);
+
+   pgraphics->fillRect(x, y, width, height);
+}
+
 // - Registration
 
 void script_engine_register(ScriptManager& manager)
@@ -799,7 +866,8 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Client_init", Client_init);
    registrator.addCallback("Client_connect", Client_connect);
    registrator.addCallback("Client_update", Client_update);
-   registrator.addCallback("Client_render", Client_render);
+   registrator.addCallback("Client_nativeRender", Client_nativeRender);
+   registrator.addCallback("Client_nativeDisplay", Client_nativeDisplay);
    registrator.addCallback("Client_isActive", Client_isActive);
    registrator.addCallback("Client_setWindow", Client_setWindow);
    registrator.addCallback("Client_setActionMap", Client_setActionMap);
@@ -878,6 +946,12 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("KeyMap_init", KeyMap_init);
    registrator.addCallback("KeyMap_bind", KeyMap_bind);
+
+   registrator.addCallback("EngineGraphics_init", EngineGraphics_init);
+   registrator.addCallback("EngineGraphics_doSetColor", EngineGraphics_doSetColor);
+   registrator.addCallback("EngineGraphics_translate", EngineGraphics_translate);
+   registrator.addCallback("EngineGraphics_drawText", EngineGraphics_drawText);
+   registrator.addCallback("EngineGraphics_doFillRect", EngineGraphics_doFillRect);
 
    registrator.registerCallbacks(manager);
 }

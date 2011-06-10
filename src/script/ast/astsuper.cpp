@@ -50,9 +50,24 @@ void ASTSuper::setCall(bool call)
 
 // - Query
 
+int ASTSuper::getArgumentCount() const
+{
+   return getChildren().size();
+}
+
 ASTNodes& ASTSuper::getArguments()
 {
    return getChildren();
+}
+
+bool ASTSuper::isSuper() const
+{
+   return mKind == eSuper;
+}
+
+bool ASTSuper::isThis() const
+{
+   return mKind == eThis;
 }
 
 // - Visitor

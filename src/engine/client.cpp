@@ -174,11 +174,14 @@ void Client::render(float delta)
          mSoundManager.setPlayerPosition(pcontroler->getPosition());
 
       mpWorldRenderer->render(delta);
-
-      mpWindow->display();
    }
 
    glDisable (GL_ALPHA_TEST);
+}
+
+void Client::display()
+{
+   mpWindow->display();
 }
 
 //---------------------------------------------
@@ -397,20 +400,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       // run the onWorldChanged script
       mpScript->run("onWorldChanged");
    }
-   /*
-   else if ( graph.find(obj->getId()) == 0 )
-   {
-      if ( pparent != NULL )
-      {
-         pparent->add(obj.release());
-      }
-      else
-      {
-         UNREACHABLE("Parent of object not found.")
-      }
-   }
-   */
-
+   
    // remove the request
    Requests::iterator it = mRequests.find(obj->getId());
    if ( it != mRequests.end() )

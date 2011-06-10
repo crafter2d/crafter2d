@@ -2,6 +2,7 @@
 #include "signature.h"
 
 #include "../ast/asttype.h"
+#include "../ast/astclass.h"
 #include "../ast/asttypevariable.h"
 #include "../ast/asttypevariables.h"
 
@@ -64,7 +65,7 @@ bool Signature::bestMatch(const Signature& that, const ASTTypeList& types) const
       const ASTType* ptype = mTypes[index];
       const ASTType& thattype = *that.mTypes[index];
       
-      if ( ptype->isGeneric() )
+      if ( ptype->isGeneric() && !thattype.isGeneric() )
       {
          ptype = &types[ptype->getTypeVariable().getIndex()];
       }
@@ -90,4 +91,22 @@ void Signature::append(ASTType* ptype)
 {
    mTypes.push_back(ptype);
    mOwning = true;
+}
+
+// conversion
+   
+std::string Signature::toString() const
+{
+   std::string result;
+   for ( std::size_t index = 0; index < mTypes.size(); index++ )
+   {
+      const ASTType* ptype = mTypes[index];
+      result += ptype->toString();
+
+      if ( index < mTypes.size() - 1 )
+      {
+         result += ", ";
+      }
+   }
+   return result;
 }

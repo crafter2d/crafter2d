@@ -6,14 +6,17 @@ use client;
 
 class GameClient extends Client
 {
-	private Window mMessage;
+	private Dialog mMessageBox;
 	
 	public GameClient()
 	{
 		super();
 		
-		mMessage = new Window();
-		mMessage.setBounds(new Rectangle(5, 5, 100, 40));
+		mMessageBox = new Dialog("Message");
+		mMessageBox.setBounds(new Rectangle(5, 5, 100, 40));
+		
+		Canvas canvas = Canvas.getInstance();
+		canvas.add(mMessageBox);  // <-- crashes.. :-(
 	}
 	
 	public void onConnected()
