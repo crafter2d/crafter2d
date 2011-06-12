@@ -1030,7 +1030,7 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
    if ( it != mNativeObjects.end() )
    {
       // validate that it still is the same pointer
-      if (it->second->getNativeObject() == pobject);
+      if ( it->second->getNativeObject() == pobject )
          return it->second;
    }
    
@@ -1045,6 +1045,8 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
       
       object->setNativeObject(pobject);
       object->setOwner(owned);
+
+      ASSERT(object->getNativeObject() == pobject);
 
       mNativeObjects[pobject] = object;
 
@@ -1064,13 +1066,22 @@ VirtualArrayReference VirtualMachine::instantiateArray()
 
 void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnative)
 {
+   ASSERT(!object->hasNativeObject());
+
    NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
    if ( it == mNativeObjects.end() )
    {
-      mNativeObjects[pnative] = object;
+      std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObjectReference>(pnative, object));
+      ASSERT(ret.second);
 
       object->setNativeObject(pnative);
    }
+#ifdef _DEBUG
+   else
+   {
+      ASSERT(it->second->getNativeObject() == pnative);
+   }
+#endif
 }
 
 void VirtualMachine::unregisterNative(VirtualObjectReference& object)
