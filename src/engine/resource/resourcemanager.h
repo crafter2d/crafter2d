@@ -21,11 +21,18 @@
 #define RESOURCE_MANAGER_H_
 
 #include <string>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include "resourceptr.h"
 
 #include "engine/hashtable.h"
-#include "engine/texture.h"
+
+class Font;
+class Texture;
+
+typedef ResourcePtr<Font> FontPtr;
+typedef ResourcePtr<Texture> TexturePtr;
 
 /**
 @author Jeroen Broekhuizen
@@ -36,7 +43,14 @@ class ResourceManager
 public:
    static ResourceManager& getInstance();
 
-   TexturePtr loadTexture (const std::string& file);
+   ~ResourceManager();
+
+ // resource retreival
+   TexturePtr getTexture(const std::string& file);
+   FontPtr    getFont(const std::string& name);
+
+ // initialization
+   bool initialize();
 
  // notifications
    void notifyResourceDeleted(const Resource& resource);
@@ -45,8 +59,11 @@ private:
    explicit ResourceManager();
    ResourceManager& operator=(const ResourceManager& mgr);
 
+   void destroy();
+
  // members
-	HashTable mResources;
+   FT_Library  mFreeTypeLib;
+	HashTable   mResources;
 };
 
 #endif // RESOURCE_MANAGER_H_

@@ -6,7 +6,13 @@ abstract class Client extends Process
 {
 	private EngineGraphics mGraphics = new EngineGraphics();
 	
-	public native Client();
+	public native Client()
+	{
+		super();
+		
+		FontManager mgr = FontManager.getInstance();
+		mgr.setProcess(this);
+	}
 	
 	private native void nativeRender(real delta);
 	private native void nativeDisplay();
@@ -17,6 +23,18 @@ abstract class Client extends Process
 	public native void setActionMap(ActionMap map);
 	public native void setKeyMap(KeyMap map);
 	public native boolean isActive();
+	
+	public boolean create()
+	{
+		if ( super.create() )
+		{
+			FontManager mgr = FontManager.getInstance();
+			mgr.setProcess(this);
+			
+			return true;
+		}
+		return false;
+	}
 	
 	public EngineGraphics getGraphics()
 	{

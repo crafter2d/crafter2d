@@ -25,8 +25,8 @@
 
 #include "core/defines.h"
 
-#include "engine/resource/resourceptr.h"
 #include "engine/resource/resource.h"
+#include "engine/resource/resourceptr.h"
 
 class TextureInfo;
 
@@ -56,9 +56,6 @@ public:
    float          getSourceHeight() const;
    bool           isValid() const;
 
- // overloads
-   const std::string& getFilename() const;
-
 protected:
    bool           generateTexture(const TextureInfo& info);
    uchar*         ensureProperSize(int bytes, uchar* data, int width, int height);
@@ -80,10 +77,10 @@ protected:
    std::string filename;
 };
 
-typedef ResourcePtr<Texture> TexturePtr;
-
 #ifdef JENGINE_INLINE
 #  include "texture.inl"
 #endif
+
+typedef ResourcePtr<Texture> TexturePtr;
 
 #endif

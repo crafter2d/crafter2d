@@ -1,4 +1,6 @@
 
+use engine.ui.*;
+
 // Class : Process
 // Abstract base class for the client and server processes
 
@@ -9,9 +11,10 @@ abstract class Process
 	
 	public native void setScriptManager(ScriptManager manager);
 	public native SceneGraph getSceneGraph();
+	public native Font getFont(string name, int size);
 	
 	public boolean create()
-	{
+	{		
 		string classname = this.class.getName();
 		boolean success = create(classname);
 		if ( success )

@@ -116,7 +116,7 @@ bool Object::load (TiXmlDocument& doc)
 	else
    {
 		TiXmlText* value = (TiXmlText*)tex->FirstChild();
-      texture = ResourceManager::getInstance().loadTexture(value->Value());
+      texture = ResourceManager::getInstance().getTexture(value->Value());
       if ( !texture.isValid() )
       {
          log.error("Object.load: can not load %s", value->Value());

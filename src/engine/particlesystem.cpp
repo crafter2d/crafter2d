@@ -103,7 +103,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
 	else
    {
 		TiXmlText* value = (TiXmlText*)pelement->FirstChild();
-      texture = ResourceManager::getInstance().loadTexture(value->Value());
+      texture = ResourceManager::getInstance().getTexture(value->Value());
       if ( texture.isValid() )
          return false;
 	}

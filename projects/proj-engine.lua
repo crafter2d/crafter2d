@@ -53,12 +53,12 @@ if ( os.is("windows") ) then
 		configuration "Debug"
 			links { "GLee_d", "SOIL_d", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"minizip_d", "zlib1", "box2d_d", "freetype241MT_D", "tinyxmld_STL" } 
+					"minizip_d", "zlib1", "box2d_d", "freetype242MT_D", "tinyxmld_STL" } 
 		 
 		configuration "Release"
 			links { "GLee_d", "SOIL", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"minizip", "zlib1", "box2d", "freetype241MT", "tinyxml_STL" }
+					"minizip", "zlib1", "box2d", "freetype242MT", "tinyxml_STL" }
 
 	else
 		includedirs { path.join(libdir, "devil/include") }

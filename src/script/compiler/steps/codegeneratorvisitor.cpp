@@ -255,6 +255,12 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
 
          addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
          addInstruction(VirtualInstruction::eNewNative, resource);
+
+         if ( ast.hasBody() )
+         {
+            ast.getBody().accept(*this);
+         }
+
          addInstruction(VirtualInstruction::eRet, 0);
       }
       else

@@ -29,6 +29,7 @@ public:
             ResourcePtr();
    explicit ResourcePtr(ResourceHandle* phandle);
             ResourcePtr(const ResourcePtr<T>& that);
+            ~ResourcePtr();
 
  // operators
    ResourcePtr<T>& operator=(const ResourcePtr<T>& that);

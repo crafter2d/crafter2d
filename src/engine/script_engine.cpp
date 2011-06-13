@@ -31,6 +31,9 @@
 #include "physics/box2d/box2drevolutejoint.h"
 
 #include "ui/graphics.h"
+#include "ui/font.h"
+
+#include "resource/resourcemanager.h"
 
 #include "window/gamewindowfactory.h"
 
@@ -84,6 +87,18 @@ void Process_setObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& object = accessor.getObject(1);
 
    pprocess->setObject(object);
+}
+
+void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = (Process*) thisobject->getNativeObject();
+
+   const std::string& name = accessor.getString(1);
+   int size = accessor.getInt(2);
+
+   FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name));
+   accessor.setResult(machine.instantiateNative("engine.ui.Font", pfont, true)); // take ownership of this handle
 }
 
 void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -809,6 +824,16 @@ void EngineGraphics_doSetColor(VirtualMachine& machine, VirtualStackAccessor& ac
    pgraphics->setColor(red, green, blue, alpha);
 }
 
+void EngineGraphics_nativeSetFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+
+   FontPtr* pfont = (FontPtr*)accessor.getObject(1)->getNativeObject();
+
+   pgraphics->setFont(*(pfont->ptr()));
+}
+
 void EngineGraphics_translate(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -845,6 +870,16 @@ void EngineGraphics_doFillRect(VirtualMachine& machine, VirtualStackAccessor& ac
    pgraphics->fillRect(x, y, width, height);
 }
 
+void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   FontPtr* pfont = (FontPtr*) thisobject->getNativeObject();
+
+   const std::string& text = accessor.getString(1);
+
+   (*pfont)->render(text);
+}
+
 // - Registration
 
 void script_engine_register(ScriptManager& manager)
@@ -855,6 +890,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Process_getSceneGraph", Process_getSceneGraph);
    registrator.addCallback("Process_setScriptManager", Process_setScriptManager);
    registrator.addCallback("Process_setObject", Process_setObject);
+   registrator.addCallback("Process_getFont", Process_getFont);
 
    registrator.addCallback("Server_init", Server_init);
    registrator.addCallback("Server_listen", Server_listen);
@@ -949,9 +985,12 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("EngineGraphics_init", EngineGraphics_init);
    registrator.addCallback("EngineGraphics_doSetColor", EngineGraphics_doSetColor);
+   registrator.addCallback("EngineGraphics_nativeSetFont", EngineGraphics_nativeSetFont);
    registrator.addCallback("EngineGraphics_translate", EngineGraphics_translate);
    registrator.addCallback("EngineGraphics_drawText", EngineGraphics_drawText);
    registrator.addCallback("EngineGraphics_doFillRect", EngineGraphics_doFillRect);
+
+   registrator.addCallback("Font_render", Font_render);
 
    registrator.registerCallbacks(manager);
 }

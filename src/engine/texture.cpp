@@ -84,12 +84,13 @@ void Texture::release()
 /// \retval false not supported file format (see the loadBitmap and loadPicture functions for more information)
 bool Texture::load(const std::string& file)
 {
-   filename = file;
-   if ( filename.empty() )
+   if ( file.empty() )
       return false;
 
-   AutoPtr<AbstractTextureLoader> ploader = TextureLoaderFactory::constructLoader(filename);
-   ploader->load(filename);
+   setName(file);
+
+   AutoPtr<AbstractTextureLoader> ploader = TextureLoaderFactory::constructLoader(file);
+   ploader->load(file);
 
    return generateTexture(ploader->getTextureInfo());
 }
@@ -145,13 +146,6 @@ bool Texture::generateTexture(const TextureInfo& info)
    }
 
 	return success;
-}
-
-// - Get/set
-
-const std::string& Texture::getFilename() const
-{
-   return filename; 
 }
 
 // - Operations

@@ -144,7 +144,7 @@ bool Effect::processTextures( const TiXmlElement* effect )
 		else
       {
 			// must be a normal texture
-         stage.tex = ResourceManager::getInstance().loadTexture(file->Value());
+         stage.tex = ResourceManager::getInstance().getTexture(file->Value());
          if ( !stage.tex.isValid() )
          {
             Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());

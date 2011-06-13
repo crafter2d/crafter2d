@@ -7,7 +7,15 @@
 class Resource
 {
 public:
-   virtual const std::string& getFilename() const = 0;
+   Resource();
+   Resource(const std::string& name);
+
+ // get/set
+   const std::string& getName() const;
+   void               setName(const std::string name);
+
+private:
+   std::string mName;
 };
 
 #endif // RESOURCE_H_

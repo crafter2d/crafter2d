@@ -19,12 +19,25 @@
  ***************************************************************************/
 #include "resourcemanager.h"
 
+#include "core/smartptr/autoptr.h"
+
+#include "engine/ui/font.h"
+
 #include "resourcehandle.h"
 
+#include "engine/texture.h"
+
 ResourceManager::ResourceManager():
+   mFreeTypeLib(NULL),
    mResources()
 {
    mResources.create(256);
+   initialize();
+}
+
+ResourceManager::~ResourceManager()
+{
+   destroy();
 }
 
 ResourceManager& ResourceManager::operator=(const ResourceManager& mgr)
@@ -38,27 +51,59 @@ ResourceManager& ResourceManager::getInstance()
    return manager;
 }
 
+// - Initialization
+   
+bool ResourceManager::initialize()
+{
+   if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
+      return false;
+
+   return true;
+}
+
+void ResourceManager::destroy()
+{
+   FT_Done_FreeType(mFreeTypeLib);
+}
+
 /// \fn ResourceManager::loadTexture (const std::string& file)
 /// \brief Returns a texture from a the given file.
-TexturePtr ResourceManager::loadTexture (const std::string& file)
+TexturePtr ResourceManager::getTexture(const std::string& file)
 {
 	ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(file));
 	if ( phandle == NULL )
    {
-      Texture* ptexture = new Texture();
-      if ( !ptexture->load(file) )
+      AutoPtr<Texture> texture = new Texture();
+      if ( !texture.hasPointer() || !texture->load(file) )
          return TexturePtr();
 
-      phandle = new ResourceHandle(*this, ptexture);
+      phandle = new ResourceHandle(*this, texture.release());
 		mResources.insert(file, static_cast<void*>(phandle));
 	}
 
    return TexturePtr(phandle);
 }
 
+FontPtr ResourceManager::getFont(const std::string& name)
+{
+   ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(name));
+	if ( phandle == NULL )
+   {
+      AutoPtr<Font> font = new Font();
+      if ( !font.hasPointer() || !font->load(mFreeTypeLib, name) )
+      {
+         return FontPtr();
+      }
+
+      phandle = new ResourceHandle(*this, font.release());
+      mResources.insert(name, phandle);
+   }
+   return FontPtr(phandle);
+}
+
 // notifications
 
 void ResourceManager::notifyResourceDeleted(const Resource& resource)
 {
-   mResources.remove(resource.getFilename());
+   mResources.remove(resource.getName());
 }

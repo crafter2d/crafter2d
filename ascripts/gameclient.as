@@ -16,7 +16,7 @@ class GameClient extends Client
 		mMessageBox.setBounds(new Rectangle(5, 5, 100, 40));
 		
 		Canvas canvas = Canvas.getInstance();
-		canvas.add(mMessageBox);  // <-- crashes.. :-(
+		canvas.add(mMessageBox);
 	}
 	
 	public void onConnected()

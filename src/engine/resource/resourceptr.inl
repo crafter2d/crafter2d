@@ -42,6 +42,13 @@ ResourcePtr<T>::ResourcePtr(const ResourcePtr<T>& that):
    mpHandle->addRef();
 }
 
+template<class T>
+ResourcePtr<T>::~ResourcePtr()
+{
+   mpHandle->subRef();
+   mpHandle = NULL;
+}
+
 // - Operators
 
 template<class T>

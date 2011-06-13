@@ -13,4 +13,5 @@ abstract class Graphics
 	
 	abstract public Color getColor();
 	abstract public void setColor(Color color);
+	abstract public void setFont(Font font);
 }

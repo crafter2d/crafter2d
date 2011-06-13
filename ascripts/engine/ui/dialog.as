@@ -4,16 +4,18 @@ package engine.ui;
 class Dialog extends Widget
 {
 	private string	mTitle;
+	private Font    mFont;
 	
 	public Dialog()
 	{
-		super();
+		this("<no title>");
 	}
 	
 	public Dialog(string title)
 	{
 		super();
 		mTitle = title;
+		mFont = FontManager.getInstance().getFont("amersn.ttf", 10);
 	}
 	
 	protected void paintBackground(Graphics graphics)
@@ -25,6 +27,8 @@ class Dialog extends Widget
 	
 	protected void paintWidget(Graphics graphics)
 	{
+		graphics.setFont(mFont);
+		graphics.setColor(new Color(255,255,255,0));
 		graphics.drawText(10, 10, mTitle);
 	}
 }

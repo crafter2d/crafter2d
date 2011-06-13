@@ -5,6 +5,9 @@ use engine.shapes.*;
 
 class EngineGraphics extends Graphics
 {
+	private Font  mFont;
+	private Color mColor;
+	
 	public native EngineGraphics()
 	{
 		super();
@@ -15,8 +18,7 @@ class EngineGraphics extends Graphics
 
 	private native void doFillRect(int x, int y, int width, int height);	
 	private native void doSetColor(real r, real g, real b, real a);
-	
-	private Color mColor;
+	private native void nativeSetFont(Font font);
 	
 	public void fillRect(Rectangle rect)
 	{
@@ -32,5 +34,11 @@ class EngineGraphics extends Graphics
 	{
 		mColor = color;
 		doSetColor(mColor.getRed(), mColor.getGreen(), mColor.getBlue(), mColor.getAlpha());
+	}
+	
+	public void setFont(Font font)
+	{
+		mFont = font;
+		nativeSetFont(mFont);
 	}
 }
