@@ -9,6 +9,8 @@ class ArrayIterator<T> extends Iterator<T>
 	
 	public ArrayIterator(Object[] array, int size)
 	{
+		super();
+		
 		mArray = array;
 		mSize  = size;
 		mIndex = 0;

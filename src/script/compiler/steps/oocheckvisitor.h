@@ -45,6 +45,7 @@ protected:
 private:
  // operations
    bool isFinal(ASTNode& expr);
+   bool hasSuperCall(const ASTFunction& function) const;
 
    void validateClass(const ASTClass& aclass);
 

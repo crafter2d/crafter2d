@@ -9,6 +9,9 @@ class ASTBlock : public ASTStatement
 public:
    ASTBlock();
 
+ // query
+   const ASTStatement& getStatement(int index) const;
+
  // operations
    void addStatement(ASTStatement* pstatement);
 

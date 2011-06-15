@@ -342,7 +342,12 @@ void SymbolCollectorVisitor::createDefaultConstructor(ASTClass& ast)
    ASTSuper* psuper = new ASTSuper();
    psuper->setCall(true);
    psuper->setKind(ASTSuper::eSuper);
-   pbody->addChild(psuper);
+   ASTUnary* punary = new ASTUnary();
+   punary->addPart(psuper);
+   ASTExpression* pexpression = new ASTExpression();
+   pexpression->setLeft(punary);
+   ASTExpressionStatement* pexprstmt = new ASTExpressionStatement(pexpression);
+   pbody->addChild(pexprstmt);
    
    ASTFunction* pconstructor = new ASTFunction(ASTMember::eConstructor);
    pconstructor->setName(ast.getName());

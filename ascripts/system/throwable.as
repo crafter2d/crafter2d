@@ -8,11 +8,13 @@ class Throwable
 	
 	public Throwable()
 	{
-		//this("");
+		this("");
 	}
 	
 	public Throwable(string cause)
 	{
+		super();
+		
 		//fillCallStack();
 		
 		mCause = cause;

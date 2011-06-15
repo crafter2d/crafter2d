@@ -12,8 +12,12 @@ class GameClient extends Client
 	{
 		super();
 		
+		Button button = new Button("Ok");
+		button.setBounds(new Rectangle(40, 40, 120, 20));
+		
 		mMessageBox = new Dialog("Message");
-		mMessageBox.setBounds(new Rectangle(5, 5, 100, 40));
+		mMessageBox.setBounds(new Rectangle(5, 5, 200, 100));
+		mMessageBox.add(button);
 		
 		Canvas canvas = Canvas.getInstance();
 		canvas.add(mMessageBox);

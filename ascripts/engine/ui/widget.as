@@ -9,27 +9,24 @@ abstract class Widget
 {
 	private string				mName;
 	private Widget            	mParent;
-	private ArrayList<Widget> 	mChildren;
 	private Rectangle		  	mBounds;
 	private Border				mBorder;
 	
 	public Widget()
 	{
-		mChildren = new ArrayList<Widget>();
+		super();
 	}
 	
-	// - children
+	// - Get/set
+	
+	public Widget getParent()
+	{
+		return mParent;
+	}
 	
 	public void setParent(Widget parent)
 	{
 		mParent = parent;
-	}
-	
-	public void add(Widget child)
-	{
-		child.setParent(this);
-		
-		mChildren.add(child);
 	}
 	
 	// - painting
@@ -42,7 +39,6 @@ abstract class Widget
 		
 		paintBorder(graphics);
 		paintWidget(graphics);
-		paintChildren(graphics);
 		
 		graphics.translate(-getBounds().x, -getBounds().y);
 	}
@@ -55,14 +51,6 @@ abstract class Widget
 		if ( mBorder != null )
 		{
 			mBorder.paint(graphics);
-		}
-	}
-	
-	protected void paintChildren(Graphics graphics)
-	{		
-		foreach( Widget child : mChildren )
-		{
-			child.paint(graphics);
 		}
 	}
 	

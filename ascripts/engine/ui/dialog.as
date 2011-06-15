@@ -1,7 +1,7 @@
 
 package engine.ui;
 
-class Dialog extends Widget
+class Dialog extends Container
 {
 	private string	mTitle;
 	private Font    mFont;
@@ -14,21 +14,25 @@ class Dialog extends Widget
 	public Dialog(string title)
 	{
 		super();
+		
 		mTitle = title;
 		mFont = FontManager.getInstance().getFont("amersn.ttf", 10);
+		
+		setBorder(new DialogBorder(this));
 	}
 	
 	protected void paintBackground(Graphics graphics)
 	{
-		Color color = new Color(255, 0, 0, 255);
-		graphics.setColor(color);
+		graphics.setColor(Color.white);
 		graphics.fillRect(getBounds());
 	}
 	
 	protected void paintWidget(Graphics graphics)
 	{
 		graphics.setFont(mFont);
-		graphics.setColor(new Color(255,255,255,0));
-		graphics.drawText(10, 10, mTitle);
+		graphics.setColor(Color.white);
+		graphics.drawText(10, 11, mTitle);
+		
+		super.paintWidget(graphics);
 	}
 }

@@ -43,6 +43,11 @@ const ASTNodes& ASTNode::getChildren() const
 
 // - Children
 
+bool ASTNode::hasChildren() const
+{
+   return !mChildren.isEmpty();
+}
+
 void ASTNode::addChild(ASTNode* pchild)
 {
    mChildren.add(pchild);

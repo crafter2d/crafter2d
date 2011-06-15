@@ -5,6 +5,7 @@
 
 #include "script/ast/ast.h"
 #include "script/compiler/compilecontext.h"
+#include "script/compiler/signature.h"
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"
 
@@ -80,10 +81,16 @@ void OOCheckVisitor::visit(ASTFunction& ast)
       }
    }
 
-   if ( ast.getModifiers().isAbstract() )
+   if ( ast.isConstructor() )
    {
+      if ( !hasSuperCall(ast) )
+      {
+         std::string constructor = mpClass->getFullName() + "." + ast.getName() + "(" + ast.getSignature().toString() + ")";
+         mContext.getLog().error("Constructor " + constructor + " must call super.");
+      }
    }
-   else if ( ast.getModifiers().isNative() )
+   
+   if ( ast.getModifiers().isNative() )
    {
       if ( ast.isConstructor() )
       {
@@ -96,9 +103,9 @@ void OOCheckVisitor::visit(ASTFunction& ast)
          mpClass->getModifiers().setNative();
       }
    }
-   else
+   
+   if ( ast.hasBody() )
    {
-      ASSERT(ast.hasBody());
       ast.getBody().accept(*this);
    }
 }
@@ -350,13 +357,48 @@ bool OOCheckVisitor::isFinal(ASTNode& expr)
    return false;
 }
 
+bool OOCheckVisitor::hasSuperCall(const ASTFunction& function) const
+{
+   if ( function.hasBody() && mpClass->hasBaseClass() )
+   {
+      // ensure that there is a call to super
+      const ASTBlock& block = function.getBody();
+      if ( block.hasChildren() )
+      {
+         const ASTStatement& statement = function.getBody().getStatement(0);
+         const ASTExpressionStatement* pexprstmt = dynamic_cast<const ASTExpressionStatement*>(&statement);
+         if ( pexprstmt != NULL )
+         {
+            const ASTUnary* punary = dynamic_cast<const ASTUnary*>(&pexprstmt->getExpression().getLeft());
+            if ( punary != NULL )
+            {
+               ASSERT(!punary->getParts().isEmpty());
+               const ASTExpressionPart* ppart = dynamic_cast<const ASTExpressionPart*>(&punary->getParts()[0]);
+               if ( ppart != NULL )
+               {
+                  return dynamic_cast<const ASTSuper*>(ppart) != NULL;
+               }
+            }
+         }
+      }
+
+      return false;
+   }
+   return true;
+}
+
 void OOCheckVisitor::validateClass(const ASTClass& aclass)
 {
    // check if all base class functions are implemented
    // does not have to be a direct class: abstract classes do not have to implement the abstract methods of their base
    // (abstract methods shouldnt be stored in the function table, but as they are its making life much easier)
 
-   if ( aclass.hasBaseClass() )
+   if ( aclass.getName() == "ContainerWidget" )
+   {
+      int aap = 5;
+   }
+
+   if ( !aclass.getModifiers().isAbstract() && aclass.hasBaseClass() )
    {
       const FunctionTable& functions = aclass.getFunctionTable();
 

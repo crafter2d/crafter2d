@@ -9,6 +9,8 @@ class ClassLoader
 	
 	private ClassLoader()
 	{
+		super();
+		
 		mClasses = new ArrayList<Class>();
 	}
 	

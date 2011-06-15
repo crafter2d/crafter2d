@@ -6,6 +6,11 @@ class Color
 	private real mBlue;
 	private real mAlpha;
 	
+	static public Color white 		= new Color(255, 255, 255, 0);
+	static public Color lightgray  	= new Color(192, 192, 192, 0);
+	static public Color red   		= new Color(255, 0, 0, 0);
+	static public Color black 		= new Color(0, 0, 0, 0);
+	
 	public Color()
 	{
 		this(1.0, 1.0, 1.0, 0.0);

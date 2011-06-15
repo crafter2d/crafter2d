@@ -21,6 +21,7 @@ public:
    void setPos(int pos);
 
  // children
+   bool hasChildren() const;
    void addChild(ASTNode* pchild);
    void removeChild(ASTNode** pchild);
    void detachChild(const ASTNode& child);

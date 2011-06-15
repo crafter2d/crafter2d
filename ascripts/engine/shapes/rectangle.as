@@ -10,9 +10,17 @@ class Rectangle
 	
 	public Rectangle()
 	{
+		this(0, 0, 0, 0);
 	}
 	
 	public Rectangle(int ix, int iy, int w, int h)
+	{
+		super();
+		
+		set(ix, iy, w, h);
+	}
+	
+	public void set(int ix, int iy, int w, int h)
 	{
 		x = ix;
 		y = iy;
