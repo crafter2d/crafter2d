@@ -6,10 +6,13 @@ class Color
 	private real mBlue;
 	private real mAlpha;
 	
-	static public Color white 		= new Color(255, 255, 255, 0);
-	static public Color lightgray  	= new Color(192, 192, 192, 0);
-	static public Color red   		= new Color(255, 0, 0, 0);
-	static public Color black 		= new Color(0, 0, 0, 0);
+	static public Color buttonface  = new Color(230, 230, 230, 255);
+	static public Color white 		= new Color(255, 255, 255, 255);
+	static public Color gray  	    = new Color(192, 192, 192, 255);
+	static public Color lightgray   = new Color(226, 226, 226, 255);
+	static public Color darkgray    = new Color(116, 116, 116, 255);
+	static public Color red   		= new Color(255, 0, 0, 255);
+	static public Color black 		= new Color(0, 0, 0, 255);
 	
 	public Color()
 	{

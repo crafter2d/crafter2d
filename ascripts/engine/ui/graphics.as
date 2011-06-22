@@ -8,6 +8,8 @@ abstract class Graphics
 	abstract public void fillRect(Rectangle rect);
 	
 	abstract public void drawText(int x, int y, string text);
+	abstract public void drawRect(Rectangle rect);
+	abstract public void drawRoundedRect(Rectangle rect);
 	
 	abstract public void translate(int x, int y);
 	

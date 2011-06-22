@@ -6,6 +6,7 @@
 
 #include "script/vm/virtualobjectreference.h"
 #include "script/vm/virtualarrayreference.h"
+#include "script/vm/virtualclass.h"
 
 // - Variant
 
@@ -303,6 +304,26 @@ bool Variant::isArray() const
 
 // - Display
 
+std::string Variant::typeAsString() const
+{
+   switch ( mType )
+   {
+      case eString:
+         return "string";
+      case eInt:
+         return "int";
+      case eReal:
+         return "real";
+      case eBool:
+         return "boolean";
+      case eObject:
+         return "object";
+      case eArray:
+         return "array";
+   }
+   return "";
+}
+
 std::string Variant::toString() const
 {
    switch ( mType )
@@ -315,6 +336,8 @@ std::string Variant::toString() const
          return lexical_cast<std::string>(asReal());
       case eBool:
          return asBool() ? std::string("true") : std::string("false");
+      case eObject:
+         return asObject()->getClass().getName();
       case eArray:
          return "array";
    }

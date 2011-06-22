@@ -16,13 +16,25 @@ class EngineGraphics extends Graphics
 	public native void drawText(int x, int y, string text);
 	public native void translate(int x, int y);
 
-	private native void doFillRect(int x, int y, int width, int height);	
+	private native void native_drawRect(int x, int y, int width, int height);
+	private native void native_drawRoundedRect(int x, int y, int width, int height);
+	private native void native_fillRect(int x, int y, int width, int height);
 	private native void doSetColor(real r, real g, real b, real a);
 	private native void nativeSetFont(Font font);
 	
 	public void fillRect(Rectangle rect)
 	{
-		doFillRect(rect.x, rect.y, rect.width, rect.height);
+		native_fillRect(rect.x, rect.y, rect.width, rect.height);
+	}
+	
+	public void drawRect(Rectangle rect)
+	{
+		native_drawRect(rect.x, rect.y, rect.width, rect.height);
+	}
+	
+	public void drawRoundedRect(Rectangle rect)
+	{
+		native_drawRoundedRect(rect.x, rect.y, rect.width, rect.height);
 	}
 	
 	public Color getColor()

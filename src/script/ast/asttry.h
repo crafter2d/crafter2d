@@ -28,6 +28,9 @@ public:
 
    const ASTNodes& getCatches() const;
 
+ // query
+   bool hasReturn(bool& hasunreachablecode) const;
+
  // operations
    void addCatch(ASTCatch* pcatch);
 

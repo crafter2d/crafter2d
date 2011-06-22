@@ -62,6 +62,13 @@ void ASTForeach::setResourceIndex(int index)
    mResourceIndex = index;
 }
 
+// - Query
+   
+bool ASTForeach::hasReturn(bool& hasunreachablecode) const
+{
+   return getBody().hasReturn(hasunreachablecode);
+}
+
 // - Visit
 
 ACCEPT_IMPL(ASTForeach)

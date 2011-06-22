@@ -1,9 +1,25 @@
-
+/***************************************************************************
+ *   Copyright (C) 2011 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "font.h"
 
 #include FT_GLYPH_H
-
-#include <GL/GLee.h>
 
 #include "core/defines.h"
 
@@ -14,6 +30,7 @@
 Font::Font():
    Resource(),
    mFace(NULL),
+   mCharacters(),
    mWidth(0),
    mHeight(0),
    mBaseHeight(0)
@@ -31,7 +48,7 @@ bool Font::load(FT_Library lib, const std::string& name, int size)
    if ( mFace->charmap == 0 && mFace->num_charmaps > 0 )
       FT_Select_Charmap(mFace, mFace->charmaps[0]->encoding );
  
-	FT_Set_Char_Size(mFace, 0, size << 6, 72, 72);
+	FT_Set_Char_Size(mFace, 0, size << 6, 96, 96);
 
    if ( !FT_IS_SCALABLE(mFace) )
    {
@@ -41,17 +58,17 @@ bool Font::load(FT_Library lib, const std::string& name, int size)
 
       int max = textsize1.yMax > textsize2.yMax ? textsize1.yMax : textsize2.yMax;
       
-      mWidth      = textsize1.xMax / 64;
-      mHeight     = (max - textsize3.yMin) / 64;
-      mBaseHeight = mHeight + (textsize3.yMin / 64);
+      mWidth      = textsize1.xMax >> 6;
+      mHeight     = (max - textsize3.yMin) >> 6;
+      mBaseHeight = mHeight + (textsize3.yMin >> 6);
    }
    else
    {
       FT_Size_Metrics& metrics = mFace->size->metrics;
 
-      mWidth      = metrics.max_advance / 64;
-      mHeight     = metrics.height / 64;
-      mBaseHeight = mHeight + (metrics.descender / 64);
+      mWidth      = metrics.max_advance >> 6;
+      mHeight     = metrics.height >> 6;
+      mBaseHeight = mHeight + (metrics.descender >> 6);
    }
 
    return true;
@@ -80,7 +97,7 @@ FontChar* Font::loadGlyph(char character)
 
    FT_Glyph glyph;
    error = FT_Get_Glyph(slot, &glyph);
-   error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_MONO, NULL, true);
+   error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, true);
    if ( error != 0 )
    {
       FT_Done_Glyph(glyph);
@@ -89,28 +106,65 @@ FontChar* Font::loadGlyph(char character)
 
    FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)glyph;
 
-   GLubyte* pdata = invertMonoBitmap(bitmap_glyph->bitmap);          
-
    FontChar* pfontchar = new FontChar(-bitmap_glyph->left,
                                        bitmap_glyph->bitmap.rows - bitmap_glyph->top,
                                        bitmap_glyph->bitmap.width,
                                        bitmap_glyph->bitmap.rows,
                                        slot->advance.x >> 6,
-                                       slot->advance.y >> 6,
-                                       pdata);
-   ASSERT_PTR(pfontchar);
+                                       slot->advance.y >> 6);
 
+   ASSERT_PTR(pfontchar);
+   pfontchar->fromBitmap(bitmap_glyph->bitmap);
+   
    mCharacters[character] = pfontchar;
 
+   FT_Done_Glyph(glyph);
+
    return pfontchar;
+}
+
+// - Query
+   
+int Font::getBaseLine() const
+{
+   return mBaseHeight;
+}
+
+// - Size calculation
+
+int Font::getTextWidth(const std::string& text) const
+{
+   int result = 0;
+   FontChar* pfontchar = NULL;
+
+   for ( std::size_t index = 0; index < text.length(); ++index )
+   {
+      char character = text[index];
+      Characters::const_iterator it = mCharacters.find(character);
+      if ( it == mCharacters.end() )
+      {
+         pfontchar = const_cast<Font*>(this)->loadGlyph(character);
+      }
+      else
+      {
+         pfontchar = it->second;
+      }
+
+      result += pfontchar->getAdvanceX();
+   }
+
+   return result;
+}
+
+int Font::getTextHeight(const std::string& text) const
+{
+   return mHeight;
 }
 
 // - Rendering
 
 void Font::render(const std::string& text)
 {
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
    FontChar* pfontchar = NULL;
 
    for ( std::size_t index = 0; index < text.length(); ++index )
@@ -158,22 +212,4 @@ FT_BBox Font::measure(char c)
    FT_Done_Glyph( glyph );
  
    return bbox;
-}
-
-uchar* Font::invertMonoBitmap(FT_Bitmap& bitmap)
-{
-   int width = bitmap.width / 8 + ( ( bitmap.width & 7 ) > 0 ? 1 : 0 );
-
-    uchar* inverse = new uchar[ bitmap.rows * width ];
-    uchar* inverse_ptr = inverse;
-
-    for ( int r = 0; r < bitmap.rows; r++ ) {
-
-      uchar* bitmap_ptr = &bitmap.buffer[bitmap.pitch * ( bitmap.rows - r - 1 )];
-
-      for ( int p = 0; p < width; p++ )
-         *inverse_ptr++ = *bitmap_ptr++;
-    }
-
-    return inverse;
 }

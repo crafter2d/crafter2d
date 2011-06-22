@@ -4,6 +4,8 @@
 
 #include "aststatement.h"
 
+class CompileContext;
+
 class ASTBlock : public ASTStatement
 {
 public:
@@ -11,6 +13,8 @@ public:
 
  // query
    const ASTStatement& getStatement(int index) const;
+
+   virtual bool hasReturn(bool& hasunreachablecode) const;
 
  // operations
    void addStatement(ASTStatement* pstatement);

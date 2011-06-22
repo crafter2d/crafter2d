@@ -64,6 +64,15 @@ void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.execute(instance, fncname);
 }
 
+void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference thisobject = accessor.getThis();
+
+   std::string callstack = machine.buildCallStack();
+
+   accessor.setResult(callstack);
+}
+
 VirtualMachine::VirtualMachine(VirtualContext& context):
    mContext(context),
    mCallback(*this),
@@ -82,6 +91,7 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mNatives.insert(std::pair<std::string, callbackfnc>("Console_println", Console_println));
    mNatives.insert(std::pair<std::string, callbackfnc>("Class_doNewInstance", Class_doNewInstance));
    mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
+   mNatives.insert(std::pair<std::string, callbackfnc>("Throwable_fillCallStack", Throwable_fillCallStack));
 }
 
 VirtualMachine::~VirtualMachine()
@@ -223,13 +233,35 @@ void VirtualMachine::execute(const VirtualObjectReference& object, const std::st
    else
       mStack.push_back(objectvariant);
 
-   execute(vclass, *pentry);
+   try
+   {
+      execute(vclass, *pentry);
+   }
+   catch ( VirtualException* pexception )
+   {
+      const VirtualObjectReference& exceptionobject = pexception->getException();
+
+      execute(exceptionobject, "getCause");
+      execute(exceptionobject, "getCallStack");
+
+      std::string callstack = mStack.back().asString();
+      mStack.pop_back();
+
+      std::string cause = mStack.back().asString();
+      mStack.pop_back();
+
+      std::cout << cause << std::endl << callstack;
+   }
+   catch (...)
+   {
+      // oi
+   }
 }
 
 void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry)
 {
    mCallStack.push(mCall);
-   mCall.start(entry, mStack.size());
+   mCall.start(vclass, entry, mStack.size());
 
    const VirtualInstructionTable& instructions = mContext.mInstructions;
 
@@ -374,9 +406,15 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
       case VirtualInstruction::eCallNative:
          {
             const std::string& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
+
+            Natives::iterator it = mNatives.find(fnc);
+            if ( it == mNatives.end() )
+            {
+               throwException("System.NativeFunctionNotFoundException", fnc); 
+            }
             
             VirtualStackAccessor accessor(mStack);
-            (*mNatives[fnc])(*this, accessor);
+            (*it->second)(*this, accessor);
 
             mStack.pop_back(); // pop the argument count
             if ( accessor.hasResult() )
@@ -942,11 +980,46 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
 // - Exception
 
-void VirtualMachine::throwException(const std::string& exceptionname)
+std::string VirtualMachine::buildCallStack() const
 {
-   const VirtualClass& excclass = mContext.mClassTable.resolve(exceptionname);
+   CallStack dump = mCallStack;
 
-   VirtualObjectReference exception(excclass.instantiate());
+   std::string result = "Call stack:\n";
+   while ( dump.size() > 1 )
+   {
+      const VirtualCall& call = dump.top();
+
+      ASSERT_PTR(call.mpEntry);
+      result += "- " + call.mpClass->getName() + '.' + call.mpEntry->mName + '(';
+
+      for ( int index = 0; index < call.mpEntry->mArguments; index++ )
+      {
+         const Variant& value = mStack[call.mStackBase + index];
+         result += value.typeAsString() + " = " + value.toString();
+         
+         if ( index < call.mpEntry->mArguments - 1 )
+         {
+            result += ", ";
+         }
+      }
+
+      result += ")\n";
+
+      dump.pop();
+   }
+
+   return result;
+}
+
+void VirtualMachine::throwException(const std::string& exceptionname, const std::string& reason)
+{
+   VirtualObjectReference exception(instantiate(exceptionname, -1));
+
+   if ( reason.length() > 0 )
+   {
+      mStack.push_back(Variant(reason));
+      execute(exception, "setCause");
+   }
 
    throw new VirtualException(exception);
 } 

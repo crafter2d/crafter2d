@@ -84,13 +84,13 @@ TexturePtr ResourceManager::getTexture(const std::string& file)
    return TexturePtr(phandle);
 }
 
-FontPtr ResourceManager::getFont(const std::string& name)
+FontPtr ResourceManager::getFont(const std::string& name, int size)
 {
    ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(name));
 	if ( phandle == NULL )
    {
       AutoPtr<Font> font = new Font();
-      if ( !font.hasPointer() || !font->load(mFreeTypeLib, name) )
+      if ( !font.hasPointer() || !font->load(mFreeTypeLib, name, size) )
       {
          return FontPtr();
       }

@@ -17,69 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GAME_WINDOW_H
-#define GAME_WINDOW_H
+#include "core/defines.h"
 
-#include <string>
-#include <vector>
+// - Get/set
 
-#include "core/math/color.h"
-
-#include "engine/window/gamewindow.h"
-
-struct SDL_KeyboardEvent;
-struct SDL_MouseMotionEvent;
-struct SDL_MouseButtonEvent;
-struct SDL_Surface;
-
-class GameWindowListener;
-class KeyEventDispatcher;
-class MouseEventDispatcher;
-
-class SDLGameWindow : public GameWindow
+INLINE int FontChar::getLeft() const
 {
-public:
-   SDLGameWindow();
-   ~SDLGameWindow();
+   return mLeft;
+}
 
- // get/set
-   const Color& getBackgroundColor() const;
-   void         setBackgroundColor(const Color& color);
+INLINE int FontChar::getTop() const
+{
+   return mTop;
+}
 
- // query
-   int getWidth() const;
-   int getHeight() const;
-   
- // operations
-   void resize(int width, int height);
-   void toggleFullscreen();
-   void update();
-   void display();
+INLINE int FontChar::getWidth() const
+{
+   return mWidth;
+}
 
-   void takeScreenshot();
+INLINE int FontChar::getHeight() const
+{
+   return mHeight;
+}
 
-protected:
- // creation
-   bool doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
-   void doDestroy();
+INLINE int FontChar::getAdvanceX() const
+{
+   return mAdvanceX;
+}
 
-private:
- // query
-   int getWindowFlags(bool fullscreen);
-
- // event handling
-   void handleEvents();
-
- // callbacks
-   void onKeyboardEvent(SDL_KeyboardEvent& event);
-   void onMouseMotionEvent(SDL_MouseMotionEvent& event);
-   void onMouseButtonEvent(SDL_MouseButtonEvent& event);
-   void onQuit();
-
-   SDL_Surface*          mpWindow;
-   Color                 mBackgroundColor;
-   int                   mBitDepth;
-   int                   mFlags;
-};
-
-#endif
+INLINE int FontChar::getAdvanceY() const
+{
+   return mAdvanceY;
+}

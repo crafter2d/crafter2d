@@ -178,6 +178,9 @@ public:
    bool execute(const std::string& classname, const std::string& function);
    void execute(const VirtualObjectReference& object, const std::string& function);
 
+ // exception handling
+   std::string buildCallStack() const;
+
  // object instantation
    VirtualObjectReference instantiate(const std::string& classname, int constructor = 2);
    VirtualObjectReference instantiateNative(const std::string& classname, void* pobject, bool owned = true);
@@ -205,19 +208,23 @@ private:
 
       typedef std::deque<VirtualGuard> Guards;
 
-      VirtualCall(): mInstructionPointer(0), mStackBase(0)
+      VirtualCall(): mpClass(NULL), mpEntry(NULL), mInstructionPointer(0), mStackBase(0)
       {
       }
 
       const VirtualCall& operator=(const VirtualCall& that) {
+         mpClass = that.mpClass;
+         mpEntry = that.mpEntry;
          mInstructionPointer = that.mInstructionPointer;
          mStackBase = that.mStackBase;
          mGuards = that.mGuards;
          return *this;
       }
 
-      void start(const VirtualFunctionTableEntry& entry, int stack) {
+      void start(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry, int stack) {
          mGuards.clear();
+         mpClass             = &vclass;
+         mpEntry             = &entry;
          mInstructionPointer = entry.mInstruction;
          mStackBase          = stack - entry.mArguments;
       }
@@ -226,9 +233,11 @@ private:
          mInstructionPointer = address;
       }
 
-      Guards mGuards;      
-      int    mInstructionPointer;
-      int    mStackBase;
+      Guards                           mGuards;
+      const VirtualClass*              mpClass;
+      const VirtualFunctionTableEntry* mpEntry;
+      int                              mInstructionPointer;
+      int                              mStackBase;
    };
    
    typedef std::stack<VirtualCall> CallStack;
@@ -244,7 +253,7 @@ private:
    Variant pop();
    
  // exception
-   void throwException(const std::string& exceptionname);
+   void throwException(const std::string& exceptionname, const std::string& reason = "");
    bool handleException(const VirtualException& e);
 
  // class loading

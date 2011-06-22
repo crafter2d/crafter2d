@@ -47,7 +47,7 @@ public:
 
  // resource retreival
    TexturePtr getTexture(const std::string& file);
-   FontPtr    getFont(const std::string& name);
+   FontPtr    getFont(const std::string& name, int size);
 
  // initialization
    bool initialize();

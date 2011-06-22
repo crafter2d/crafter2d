@@ -24,6 +24,9 @@ public:
    int  getResourceIndex() const;
    void setResourceIndex(int index);
 
+ // query
+   virtual bool hasReturn(bool& hasunreachablecode) const;
+
  // visit
    ACCEPT;
 

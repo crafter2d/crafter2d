@@ -60,6 +60,7 @@ public:
    bool isArray() const;
 
  // display
+   std::string typeAsString() const;
    std::string toString() const;
    int     toInt() const;
    double  toReal() const;

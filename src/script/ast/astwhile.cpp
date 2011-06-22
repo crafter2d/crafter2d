@@ -1,6 +1,8 @@
 
 #include "astwhile.h"
 
+#include "core/defines.h"
+
 #include "astcompound.h"
 #include "aststatement.h"
 #include "astvisitor.h"
@@ -50,6 +52,14 @@ void ASTWhile::setBody(ASTStatement* pbody)
 {
    delete mpBody;
    mpBody = pbody;
+}
+
+// - Query
+   
+bool ASTWhile::hasReturn(bool& hasunreachablecode) const
+{
+   ASSERT_PTR(mpBody);
+   return mpBody->hasReturn(hasunreachablecode);
 }
 
 // - Visitor

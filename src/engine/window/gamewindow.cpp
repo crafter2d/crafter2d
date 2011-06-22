@@ -24,7 +24,9 @@
 #include "gamewindowlistener.h"
 
 GameWindow::GameWindow():
-   mListeners()
+   mListeners(),
+   mpKeyDispatcher(NULL),
+   mpMouseDispatcher(NULL)
 {
 }
 
@@ -63,6 +65,18 @@ int GameWindow::getWidth() const
 int GameWindow::getHeight() const
 {
    return 0;
+}
+
+// - Dispatchers
+
+void GameWindow::setKeyEventDispatcher(KeyEventDispatcher& dispatcher)
+{
+  mpKeyDispatcher = &dispatcher;
+}
+
+void GameWindow::setMouseEventDispatcher(MouseEventDispatcher& dispatcher)
+{
+  mpMouseDispatcher = &dispatcher;
 }
 
 // - Listeners

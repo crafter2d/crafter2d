@@ -18,6 +18,9 @@ public:
          ASTExpression& getExpression();
    void                 setExpression(ASTExpression* pexpression);
 
+ // query
+   virtual bool hasReturn(bool& hasunreachablecode) const;
+
  // visitor
    ACCEPT;
 

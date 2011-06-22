@@ -15,9 +15,8 @@ class Throwable
 	{
 		super();
 		
-		//fillCallStack();
-		
 		mCause = cause;
+		mCallStack = fillCallStack();		
 	}
 	
 	public string getCause()
@@ -25,5 +24,15 @@ class Throwable
 		return mCause;
 	}
 	
-	//private native void fillCallStack();
+	public string getCallStack()
+	{
+		return mCallStack;
+	}
+	
+	public void setCause(string cause)
+	{
+		mCause = cause;
+	}
+	
+	private native string fillCallStack();
 }

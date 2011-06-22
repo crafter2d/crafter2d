@@ -69,6 +69,8 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
 
    if ( ast.hasBody() )
    {
+      checkReturn(ast);
+
       ast.getBody().accept(*this);
    }
 
@@ -816,6 +818,23 @@ bool SymbolCheckVisitor::isVariable(const ASTNode& node) const
 }
 
 // - Operations
+
+void SymbolCheckVisitor::checkReturn(const ASTFunction& function)
+{
+   if ( !function.getType().isVoid() )
+   {
+      // ensure that we have a return statement
+      bool hasunreachablecode = false;
+      if ( !function.getBody().hasReturn(hasunreachablecode) )
+      {
+         mContext.getLog().error("Function " + function.getName() + " should return a value of type " + function.getType().toString());
+      }
+      else if ( hasunreachablecode )
+      {
+         mContext.getLog().warning("Unreachable code in " + function.getName());
+      }
+   }
+}
 
 void SymbolCheckVisitor::checkFunction(const ASTClass& aclass, ASTAccess& access, bool isstatic)
 {

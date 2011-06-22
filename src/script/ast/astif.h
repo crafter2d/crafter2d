@@ -27,6 +27,9 @@ public:
          ASTStatement& getElseStatement();
    void setElseStatement(ASTStatement* pstatement);
 
+ // query
+   virtual bool hasReturn(bool& hasunreachablecode) const;
+
  // visitor
    ACCEPT;
 

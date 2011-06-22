@@ -75,6 +75,17 @@ void ASTIf::setElseStatement(ASTStatement* pstatement)
    mpElseStatement = pstatement;
 }
 
+// - Query
+
+bool ASTIf::hasReturn(bool& hasunreachablecode) const
+{
+   if ( hasElseStatement() )
+   {
+      return mpStatement->hasReturn(hasunreachablecode) && mpElseStatement->hasReturn(hasunreachablecode);
+   }
+   return false;
+}
+
 // - Visitor
 
 ACCEPT_IMPL(ASTIf)

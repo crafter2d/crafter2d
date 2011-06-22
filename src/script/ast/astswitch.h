@@ -21,6 +21,8 @@ public:
  // query
    int getDefaultCount() const;
 
+   virtual bool hasReturn(bool& hasunreachablecode) const;
+
  // operations
    void validateCaseTypes(CompileContext& context, ASTType& expectedtype);
 

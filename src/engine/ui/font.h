@@ -38,6 +38,13 @@ public:
    bool     load(FT_Library lib, const std::string& name, int size = 10);
    void     destroy();
 
+ // query
+   int      getBaseLine() const;
+
+ // sizes
+   int      getTextWidth(const std::string& text) const;
+   int      getTextHeight(const std::string& text) const;
+
  // rendering
    void     render(const std::string& text);
    
@@ -49,7 +56,9 @@ private:
    
  // helpers
    FT_BBox        measure(char c);
+
    unsigned char* invertMonoBitmap(FT_Bitmap& bitmap);
+   unsigned char* invertBitmap(FT_Bitmap& bitmap, int width, int height);
 
  // members
    FT_Face     mFace;

@@ -21,7 +21,7 @@ class Canvas
 		super();
 	}
 	
-	// maintenance
+	// - Maintenance
 	
 	public void add(Widget widget)
 	{
@@ -33,7 +33,7 @@ class Canvas
 		mWidgets.remove(widget);
 	}
 	
-	// painting
+	// - Painting
 	
 	public void paint(Graphics graphics)
 	{
@@ -41,5 +41,19 @@ class Canvas
 		{
 			w.paint(graphics);
 		}
+	}
+	
+	// - Searching
+	
+	Widget findWidget(Point location)
+	{
+		foreach( Widget w : mWidgets )
+		{
+			if ( w.hitTest(location) )
+			{
+				return w;
+			}
+		}
+		return null;
 	}
 }

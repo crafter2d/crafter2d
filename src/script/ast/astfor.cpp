@@ -79,6 +79,13 @@ void ASTFor::setBody(ASTStatement* pbody)
    mpBody = pbody;
 }
 
+// - Query
+   
+bool ASTFor::hasReturn(bool& hasunreachablecode) const
+{
+   return getBody().hasReturn(hasunreachablecode);
+}
+
 // - Operations
 
 void ASTFor::addLoop(ASTExpression* pexpression)

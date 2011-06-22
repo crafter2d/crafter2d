@@ -28,6 +28,9 @@ public:
    const ASTStatement& getBody() const;
          ASTStatement& getBody();
    void                setBody(ASTStatement* pbody);
+
+ // query
+   virtual bool hasReturn(bool& hasunreachablecode) const;
    
  // operations
    void addLoop(ASTExpression* pexpression);

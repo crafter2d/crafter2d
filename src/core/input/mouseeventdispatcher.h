@@ -20,6 +20,8 @@
 #ifndef MOUSE_EVENT_DISPATCHER
 #define MOUSE_EVENT_DISPATCHER
 
+#include "core/core_base.h"
+
 class MouseEvent;
 
 /*! 
@@ -30,7 +32,7 @@ The mouse event dispatcher is an abstract base class used for routing input gath
 by the GameWindow to e.g. the UI system of JEngine SSE. Note that the game input is
 handled differently in the KeyMap.
 */
-class MouseEventDispatcher
+class CORE_API MouseEventDispatcher
 {
 public:
    MouseEventDispatcher();

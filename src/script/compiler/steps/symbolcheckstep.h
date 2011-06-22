@@ -59,6 +59,7 @@ private:
    bool isVariable(const ASTNode& node) const;
 
  // operations
+   void checkReturn(const ASTFunction& function);
    void checkFunction(const ASTClass& aclass, ASTAccess& access, bool isstatic);
    void checkOperator(ASTUnary::Operator op);
 

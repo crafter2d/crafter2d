@@ -38,6 +38,13 @@ void ASTReturn::setExpression(ASTExpression* pexpression)
    mpExpression = pexpression;
 }
 
+// - Query
+
+bool ASTReturn::hasReturn(bool& hasunreachablecode) const
+{
+   return true;
+}
+
 // - Visitor
    
 ACCEPT_IMPL(ASTReturn)

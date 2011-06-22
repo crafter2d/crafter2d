@@ -11,16 +11,26 @@ class GameClient extends Client
 	public GameClient()
 	{
 		super();
+	}
+	
+	public boolean create()
+	{
+		if ( super.create() )
+		{
+			Button button = new Button("Ok");
+			button.setBounds(new Rectangle(40, 40, 120, 20));
+			
+			mMessageBox = new Dialog("Message");
+			mMessageBox.setBounds(new Rectangle(5, 5, 200, 100));
+			mMessageBox.add(button);
+			
+			Canvas canvas = Canvas.getInstance();
+			canvas.add(mMessageBox);
+			
+			return true;
+		}
 		
-		Button button = new Button("Ok");
-		button.setBounds(new Rectangle(40, 40, 120, 20));
-		
-		mMessageBox = new Dialog("Message");
-		mMessageBox.setBounds(new Rectangle(5, 5, 200, 100));
-		mMessageBox.add(button);
-		
-		Canvas canvas = Canvas.getInstance();
-		canvas.add(mMessageBox);
+		return false;
 	}
 	
 	public void onConnected()

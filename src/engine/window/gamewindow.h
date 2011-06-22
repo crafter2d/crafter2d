@@ -25,6 +25,8 @@
 #include <vector>
 
 class GameWindowListener;
+class MouseEventDispatcher;
+class KeyEventDispatcher;
 
 class ENGINE_API GameWindow
 {
@@ -48,6 +50,10 @@ public:
    virtual void update() = 0;
    virtual void display() = 0;
 
+ // dispatchers
+   void setKeyEventDispatcher(KeyEventDispatcher& dispatcher);
+   void setMouseEventDispatcher(MouseEventDispatcher& dispatcher);
+
  // listeners
    void addListener(GameWindowListener& listener);
    void removeListener(GameWindowListener& listener);
@@ -64,7 +70,9 @@ protected:
 private:
 
  // members
-   Listeners mListeners;
+   Listeners               mListeners;
+   KeyEventDispatcher*     mpKeyDispatcher;
+   MouseEventDispatcher*   mpMouseDispatcher;
 };
 
 #endif // GAME_WINDOW_H_

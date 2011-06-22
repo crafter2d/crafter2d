@@ -2,15 +2,18 @@
 package engine.ui;
 
 use engine.shapes.rectangle;
+use engine.input.*;
 
 use arraylist;
 
 abstract class Widget
 {
-	private string				mName;
-	private Widget            	mParent;
-	private Rectangle		  	mBounds;
-	private Border				mBorder;
+	private string						mName;
+	private Font    					mFont;
+	private Widget            			mParent;
+	private Rectangle		  			mBounds;
+	private Border						mBorder;
+	private ArrayList<MouseListener> 	mMouseListeners;
 	
 	public Widget()
 	{
@@ -27,6 +30,25 @@ abstract class Widget
 	public void setParent(Widget parent)
 	{
 		mParent = parent;
+	}
+	
+	public Font getFont()
+	{
+		if ( mFont == null && mParent != null )
+		{
+			return mParent.getFont();
+		}
+		return mFont;
+	}
+	
+	public void setFont(Font font)
+	{
+		mFont = font;
+	}
+	
+	public boolean hitTest(Point point)
+	{
+		return false;
 	}
 	
 	// - painting
@@ -64,13 +86,26 @@ abstract class Widget
 	public void setBounds(Rectangle bounds)
 	{
 		mBounds = bounds;
+		boundsChanged();
 	}
 	
-	// - border
+	protected void boundsChanged()
+	{
+		// placeholder for overloads
+	}
+	
+	// - Border
 	
 	public void setBorder(Border border)
 	{
 		mBorder = border;
+		mBorder.setWidget(this);
 	}
 	
+	// - Listeners
+	
+	public void addMouseListener(MouseListener listener)
+	{
+		mMouseListeners.add(listener);
+	}
 }

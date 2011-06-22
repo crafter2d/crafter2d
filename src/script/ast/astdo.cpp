@@ -52,6 +52,13 @@ void ASTDo::setBody(ASTStatement* pbody)
    mpBody = pbody;
 }
 
+// - Query
+   
+bool ASTDo::hasReturn(bool& hasunreachablecode) const
+{
+   return getBody().hasReturn(hasunreachablecode);
+}
+
 // - Visit
 
 ACCEPT_IMPL(ASTDo)

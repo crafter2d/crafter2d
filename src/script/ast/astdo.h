@@ -22,6 +22,9 @@ public:
          ASTStatement& getBody();
    void                setBody(ASTStatement* pbody);
 
+ // query
+   virtual bool hasReturn(bool& hasunreachablecode) const;
+
  // visit
    ACCEPT;
 

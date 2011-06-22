@@ -393,11 +393,6 @@ void OOCheckVisitor::validateClass(const ASTClass& aclass)
    // does not have to be a direct class: abstract classes do not have to implement the abstract methods of their base
    // (abstract methods shouldnt be stored in the function table, but as they are its making life much easier)
 
-   if ( aclass.getName() == "ContainerWidget" )
-   {
-      int aap = 5;
-   }
-
    if ( !aclass.getModifiers().isAbstract() && aclass.hasBaseClass() )
    {
       const FunctionTable& functions = aclass.getFunctionTable();

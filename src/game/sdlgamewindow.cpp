@@ -63,8 +63,6 @@ static MouseEvent::Button toMouseEventButton(int sdlbutton)
 
 SDLGameWindow::SDLGameWindow():
    GameWindow(),
-   mpKeyDispatcher(NULL),
-   mpMouseDispatcher(NULL),
    mpWindow(NULL),
    mBackgroundColor(),
    mBitDepth(32),
@@ -134,16 +132,6 @@ void SDLGameWindow::display()
 //-----------------------------------
 // - Get/set
 //-----------------------------------
-
-void SDLGameWindow::setKeyEventDispatcher(KeyEventDispatcher& dispatcher)
-{
-  mpKeyDispatcher = &dispatcher;
-}
-
-void SDLGameWindow::setMouseEventDispatcher(MouseEventDispatcher& dispatcher)
-{
-  mpMouseDispatcher = &dispatcher;
-}
 
 const Color& SDLGameWindow::getBackgroundColor() const
 {

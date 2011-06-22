@@ -59,6 +59,25 @@ int ASTSwitch::getDefaultCount() const
    return count;
 }
 
+
+bool ASTSwitch::hasReturn(bool& hasunreachablecode) const
+{
+   bool result = true;
+   const ASTNodes& cases = getChildren();
+   for ( int index = 0; index < cases.size(); index++ )
+   {
+      const ASTCase& ast = dynamic_cast<const ASTCase&>(cases[index]);
+      const ASTStatement& statement = static_cast<const ASTStatement&>(ast.getBody());
+      
+      if ( !statement.hasReturn(hasunreachablecode) )
+      {
+         result = false;
+      }
+   }
+
+   return result;
+}
+
 // - Operations
    
 void ASTSwitch::validateCaseTypes(CompileContext& context, ASTType& expectedtype)

@@ -22,6 +22,8 @@
 #  include "client.inl"
 #endif
 
+#include <GL/GLU.h>
+
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
@@ -224,14 +226,18 @@ void Client::setWindow(GameWindow* pwindow)
 
 bool Client::initOpenGL()
 {
-   //const Color& color = mSettings.getClearColor();
-   const Color color(75, 150, 230, 255);
-   glClearColor(color.getRed(), color.getGreen(), color.getBlue(), 0.0f);
+   bool success = OpenGL::initialize ();
+   if ( success )
+   {
+      //const Color& color = mSettings.getClearColor();
+      const Color color(75, 150, 230, 255);
+      glClearColor(color.getRed(), color.getGreen(), color.getBlue(), 0.0f);
 
-	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glShadeModel (GL_SMOOTH);
+	   glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+      glShadeModel (GL_SMOOTH);
+   }
 
-	return OpenGL::initialize ();
+	return success;
 }
 
 bool Client::loadWorld(const std::string& filename, const std::string& name)
@@ -463,7 +469,7 @@ void Client::onWindowResized()
 
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-   glOrtho(0, mpWindow->getWidth(), mpWindow->getHeight(), 0, 0, 1000);
+   gluOrtho2D(0, mpWindow->getWidth(), mpWindow->getHeight(), 0);
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();

@@ -198,7 +198,14 @@ const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
 
 const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
 {
-   return mVTable.findByName(mName);
+   std::string name = mName;
+   std::size_t pos = mName.find('.');
+   if ( pos != std::string::npos )
+   {
+      name.erase(0, pos + 1);
+   }
+
+   return mVTable.findByName(name);
 }
 
 // - Operations

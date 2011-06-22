@@ -97,7 +97,7 @@ void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
    const std::string& name = accessor.getString(1);
    int size = accessor.getInt(2);
 
-   FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name));
+   FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
    accessor.setResult(machine.instantiateNative("engine.ui.Font", pfont, true)); // take ownership of this handle
 }
 
@@ -857,7 +857,7 @@ void EngineGraphics_drawText(VirtualMachine& machine, VirtualStackAccessor& acce
    pgraphics->drawText(x, y, text);
 }
 
-void EngineGraphics_doFillRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_native_fillRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
@@ -870,6 +870,32 @@ void EngineGraphics_doFillRect(VirtualMachine& machine, VirtualStackAccessor& ac
    pgraphics->fillRect(x, y, width, height);
 }
 
+void EngineGraphics_native_drawRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+
+   float x = accessor.getInt(1);
+   float y = accessor.getInt(2);
+   float width = accessor.getInt(3);
+   float height = accessor.getInt(4);
+
+   pgraphics->drawRect(x, y, width, height);
+}
+
+void EngineGraphics_native_drawRoundedRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+
+   float x = accessor.getInt(1);
+   float y = accessor.getInt(2);
+   float width = accessor.getInt(3);
+   float height = accessor.getInt(4);
+
+   pgraphics->drawRoundedRect(x, y, width, height);
+}
+
 void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -878,6 +904,34 @@ void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
    const std::string& text = accessor.getString(1);
 
    (*pfont)->render(text);
+}
+
+void Font_native_textWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   FontPtr* pfont = (FontPtr*) thisobject->getNativeObject();
+
+   const std::string& text = accessor.getString(1);
+
+   accessor.setResult((*pfont)->getTextWidth(text));
+}
+
+void Font_native_textHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   FontPtr* pfont = (FontPtr*) thisobject->getNativeObject();
+
+   const std::string& text = accessor.getString(1);
+
+   accessor.setResult((*pfont)->getTextHeight(text));
+}
+
+void Font_getBaseLine(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   FontPtr* pfont = (FontPtr*) thisobject->getNativeObject();
+
+   accessor.setResult((*pfont)->getBaseLine());
 }
 
 // - Registration
@@ -988,9 +1042,14 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("EngineGraphics_nativeSetFont", EngineGraphics_nativeSetFont);
    registrator.addCallback("EngineGraphics_translate", EngineGraphics_translate);
    registrator.addCallback("EngineGraphics_drawText", EngineGraphics_drawText);
-   registrator.addCallback("EngineGraphics_doFillRect", EngineGraphics_doFillRect);
+   registrator.addCallback("EngineGraphics_native_fillRect", EngineGraphics_native_fillRect);
+   registrator.addCallback("EngineGraphics_native_drawRect", EngineGraphics_native_drawRect);
+   registrator.addCallback("EngineGraphics_native_drawRoundedRect", EngineGraphics_native_drawRoundedRect);
 
    registrator.addCallback("Font_render", Font_render);
+   registrator.addCallback("Font_getBaseLine", Font_getBaseLine);
+   registrator.addCallback("Font_native_textWidth", Font_native_textWidth);
+   registrator.addCallback("Font_native_textHeight", Font_native_textHeight);
 
    registrator.registerCallbacks(manager);
 }

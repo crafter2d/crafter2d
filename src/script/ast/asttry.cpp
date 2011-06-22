@@ -73,6 +73,26 @@ const ASTNodes& ASTTry::getCatches() const
    return getChildren();
 }
 
+// - Query
+   
+bool ASTTry::hasReturn(bool& hasunreachablecode) const
+{
+   if ( getBody().hasReturn(hasunreachablecode) )
+   {
+      const ASTNodes& catches = getChildren();
+      for ( int index = 0; index < catches.size(); index++ )
+      {
+         const ASTCatch& astcatch = static_cast<const ASTCatch&>(catches[index]);
+         if ( !astcatch.getBody().hasReturn(hasunreachablecode) )
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+   return false;
+}
+
 // - Operations
    
 void ASTTry::addCatch(ASTCatch* pcatch)
