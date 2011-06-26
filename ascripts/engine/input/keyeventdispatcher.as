@@ -3,10 +3,13 @@ package engine.input;
 
 class KeyEventDispatcher extends InputEventDispatcher
 {
-	public native KeyEventDispatcher();
+	public KeyEventDispatcher()
+	{
+		super();
+	}
 	
 	// called by the VM
-	protected void onMouseEvent(int key, boolean pressed)
+	public void dispatch(int key, boolean pressed)
 	{
 		// build event
 		

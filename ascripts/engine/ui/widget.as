@@ -46,9 +46,18 @@ abstract class Widget
 		mFont = font;
 	}
 	
-	public boolean hitTest(Point point)
+	public void setName(string name)
 	{
-		return false;
+		mName = name;
+	}
+	
+	public Widget hitTest(Point point)
+	{
+		if ( mBounds.contains(point) )
+		{
+			return this;
+		}
+		return null;
 	}
 	
 	// - painting
@@ -107,5 +116,13 @@ abstract class Widget
 	public void addMouseListener(MouseListener listener)
 	{
 		mMouseListeners.add(listener);
+	}
+	
+	public void fireMouseEvent(MouseEvent event)
+	{
+		if ( event.isLeftButton() && event.isDown() )
+		{
+			System.console.println("Left click on " + mName);
+		}
 	}
 }

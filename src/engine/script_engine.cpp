@@ -217,7 +217,7 @@ void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(pclient->isActive());
 }
 
-void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_native_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    Client* pclient = (Client*) thisobject->getNativeObject();
@@ -959,14 +959,14 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Client_nativeRender", Client_nativeRender);
    registrator.addCallback("Client_nativeDisplay", Client_nativeDisplay);
    registrator.addCallback("Client_isActive", Client_isActive);
-   registrator.addCallback("Client_setWindow", Client_setWindow);
+   registrator.addCallback("Client_native_setWindow", Client_native_setWindow);
    registrator.addCallback("Client_setActionMap", Client_setActionMap);
    registrator.addCallback("Client_setKeyMap", Client_setKeyMap);
 
    registrator.addCallback("ScriptManager_spawnChild", ScriptManager_spawnChild);
 
    registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
-
+   
    registrator.addCallback("BitStream_init", BitStream_init);
    registrator.addCallback("BitStream_writeInt", BitStream_writeInt);
    registrator.addCallback("BitStream_readInt", BitStream_readInt);

@@ -27,6 +27,8 @@
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
+#include "core/input/keyevent.h"
+#include "core/input/mouseevent.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
@@ -58,6 +60,8 @@ Client::Client():
    Process(),
    mpWindow(NULL),
    mWindowListener(*this),
+   mKeyEventDispatcher(*this),
+   mMouseEventDispatcher(*this),
    mSoundManager(),
    mpWorldRenderer(NULL),
    mpPlayer(NULL),
@@ -82,6 +86,9 @@ bool Client::create(const std::string& name)
       ASSERT_PTR(mpWindow);
 
       mpWindow->addListener(mWindowListener);
+      mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
+      mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
+
       if ( !mpWindow->create("GameWindow", 800, 600, 32, false) )
       {
          return false;
@@ -216,8 +223,11 @@ INLINE void Client::setKeyMap(KeyMap* pkeymap)
 
 void Client::setWindow(GameWindow* pwindow)
 {
-   delete mpWindow;
-   mpWindow = pwindow;
+   if ( mpWindow != pwindow )
+   {
+      delete mpWindow;
+      mpWindow = pwindow;
+   }
 }
 
 //---------------------------------------------
@@ -483,3 +493,20 @@ void Client::onWindowClosed()
 {
    setActive(false);
 }
+
+void Client::onKeyEvent(const KeyEvent& event)
+{
+   mpScript->addParam(event.getKey());
+   mpScript->addParam(event.getEventType() == KeyEvent::ePressed);
+   mpScript->run("onKeyEvent");
+}
+
+void Client::onMouseEvent(const MouseEvent& event)
+{
+   mpScript->addParam(event.getLocation().x());
+   mpScript->addParam(event.getLocation().y());
+   mpScript->addParam(event.getButtons());
+   mpScript->addParam(event.getEventType());
+   mpScript->run("onMouseEvent");
+}
+

@@ -20,9 +20,11 @@
 #ifndef KEY_EVENT_DISPATCHER_H
 #define KEY_EVENT_DISPATCHER_H
 
+#include "core/core_base.h"
+
 class KeyEvent;
 
-class KeyEventDispatcher
+class CORE_API KeyEventDispatcher
 {
 public:
    KeyEventDispatcher();

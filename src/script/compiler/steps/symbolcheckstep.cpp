@@ -488,15 +488,13 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
 
             if ( pfunction == NULL )
             {
-               if ( signature.size() > 0 )
-               {
-                  std::string arguments = "(" + signature.toString() + ")";
-                  mContext.getLog().error("Class " + newclass.getFullName() + " has no constructor defined taking arguments " + arguments + ".");
-               }
-               // else default argument will be created
+               std::string arguments = "(" + signature.toString() + ")";
+               mContext.getLog().error("No matching constructor " + newclass.getFullName() + arguments + " defined.");
             }
-
-            ast.setConstructor(*pfunction);
+            else
+            {
+               ast.setConstructor(*pfunction);
+            }
 
             mCurrentType = ast.getType();
          }

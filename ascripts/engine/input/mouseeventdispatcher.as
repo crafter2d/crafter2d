@@ -5,14 +5,17 @@ use engine.ui.*;
 
 class MouseEventDispatcher extends InputEventDispatcher
 {
-	public native MouseEventDispatcher();
+	public MouseEventDispatcher()
+	{
+		super();
+	}
 	
 	// called by the VM
-	protected void onMouseEvent(int button, int x, int y, boolean pressed)
+	public void dispatch(int x, int y, int button, int event)
 	{
 		// build event
 		Point location = new Point(x, y);
-		MouseEvent event = new MouseEvent(button, location, pressed);
+		MouseEvent event = new MouseEvent(button, location, event);
 		
 		// search for the widget
 		Canvas canvas = Canvas.getInstance();

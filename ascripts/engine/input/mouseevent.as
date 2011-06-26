@@ -1,21 +1,26 @@
 
-package engine.input
+package engine.input;
 
 class MouseEvent
 {
 	static public int LEFT_BUTTON = 1;
 	static public int RIGHT_BUTTON = 2;
 	static public int MIDDLE_BUTTON = 4;
+	
+	static public int ePressed = 0;
+	static public int eReleased = 1;
+	static public int eMotion = 2;
 
 	private int 	mButton;
 	private Point	mLocation;
-	private boolean mDown;
+	private int	 	mEvent;
 	
-	public MouseEvent(int button, Point location, boolean down)
+	public MouseEvent(int button, Point location, int event)
 	{
+		super();
 		mButton = button;
 		mLocation = location;
-		mDown = down;
+		mEvent = event;
 	}
 	
 	// - Get/set
@@ -37,6 +42,6 @@ class MouseEvent
 	
 	public boolean isDown()
 	{
-		return mDown;
+		return mEvent == ePressed;
 	}
 }

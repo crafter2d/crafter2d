@@ -21,6 +21,9 @@
 
 #include <algorithm>
 
+#include "core/input/mouseeventdispatcher.h"
+#include "core/input/keyeventdispatcher.h"
+
 #include "gamewindowlistener.h"
 
 GameWindow::GameWindow():
@@ -77,6 +80,18 @@ void GameWindow::setKeyEventDispatcher(KeyEventDispatcher& dispatcher)
 void GameWindow::setMouseEventDispatcher(MouseEventDispatcher& dispatcher)
 {
   mpMouseDispatcher = &dispatcher;
+}
+
+void GameWindow::dispatch(const MouseEvent& mouseevent)
+{
+   if ( mpMouseDispatcher != NULL )
+   {
+      mpMouseDispatcher->dispatch(mouseevent);
+   }
+}
+
+void GameWindow::dispatch(const KeyEvent& keyevent)
+{
 }
 
 // - Listeners

@@ -1,10 +1,13 @@
 
 use system.*;
 use engine.ui.*;
+use engine.input.*;
 
 abstract class Client extends Process
 {
-	private EngineGraphics mGraphics = new EngineGraphics();
+	private EngineGraphics 			mGraphics = new EngineGraphics();
+	private MouseEventDispatcher 	mMouseDispatcher;
+	private KeyEventDispatcher		mKeyDispatcher;
 	
 	public native Client()
 	{
@@ -12,14 +15,17 @@ abstract class Client extends Process
 		
 		FontManager mgr = FontManager.getInstance();
 		mgr.setProcess(this);
+		
+		mMouseDispatcher = new MouseEventDispatcher();
+		mKeyDispatcher = new KeyEventDispatcher();
 	}
 	
 	private native void nativeRender(real delta);
 	private native void nativeDisplay();
+	private native void native_setWindow(GameWindow window);
 	
 	public native void connect(string host, int port, string name);
 	public native void update(real delta);
-	public native void setWindow(GameWindow window);
 	public native void setActionMap(ActionMap map);
 	public native void setKeyMap(KeyMap map);
 	public native boolean isActive();
@@ -36,6 +42,11 @@ abstract class Client extends Process
 		return false;
 	}
 	
+	public void setWindow(GameWindow window)
+	{
+		native_setWindow(window);
+	}
+	
 	public EngineGraphics getGraphics()
 	{
 		return mGraphics;
@@ -49,5 +60,15 @@ abstract class Client extends Process
 		canvas.paint(mGraphics);
 		
 		nativeDisplay();
+	}
+	
+	private void onKeyEvent(int key, boolean pressed)
+	{
+		mKeyDispatcher.dispatch(key, pressed);
+	}
+	
+	private void onMouseEvent(int x, int y, int buttons, int event)
+	{
+		mMouseDispatcher.dispatch(x, y, buttons, event);
 	}
 }

@@ -26,6 +26,8 @@
 
 #include "window/gamewindow.h"
 #include "clientgamewindowlistener.h"
+#include "clientkeyeventdispatcher.h"
+#include "clientmouseeventdispatcher.h"
 #include "idmanager.h"
 #include "object.h"
 #include "process.h"
@@ -41,6 +43,8 @@ class NameChangeObjectEvent;
 class ScriptEvent;
 
 class Input;
+class KeyEvent;
+class MouseEvent;
 class GameWindow;
 class KeyMap;
 class WorldRenderer;
@@ -91,10 +95,16 @@ public:
    void onWindowClosing();
    void onWindowClosed();
 
+   void onKeyEvent(const KeyEvent& event);
+   void onMouseEvent(const MouseEvent& event);
+
  // network event callback
    virtual int    onClientEvent(int client, const NetEvent& event);
 
 private:
+   friend class ClientMouseEventListener;
+   friend class ClientKeyEventListener;
+
  // initialization
    bool initOpenGL();
 
@@ -112,6 +122,8 @@ private:
 
    GameWindow*                mpWindow;
    ClientGameWindowListener   mWindowListener;
+   ClientKeyEventDispatcher   mKeyEventDispatcher;
+   ClientMouseEventDispatcher mMouseEventDispatcher;
    SoundManager               mSoundManager;
    WorldRenderer*             mpWorldRenderer;
    Player*                    mpPlayer;

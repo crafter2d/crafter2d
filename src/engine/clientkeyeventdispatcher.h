@@ -17,68 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GAME_WINDOW_H_
-#define GAME_WINDOW_H_
+#ifndef CLIENT_KEY_EVENT_LISTENER_H_
+#define CLIENT_KEY_EVENT_LISTENER_H_
 
-#include "engine/engine_base.h"
+#include "core/input/keyeventdispatcher.h"
 
-#include <vector>
+class Client;
 
-class GameWindowListener;
-class MouseEventDispatcher;
-class MouseEvent;
-class KeyEventDispatcher;
-class KeyEvent;
-
-class ENGINE_API GameWindow
+class ClientKeyEventDispatcher : public KeyEventDispatcher
 {
-   typedef std::vector<GameWindowListener*> Listeners;
-
 public:
-   GameWindow();
-   virtual ~GameWindow() = 0;
-
- // creation
-   bool create(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
-   void destroy();
-
- // query
-   virtual int getWidth() const;
-   virtual int getHeight() const;
-
- // operations
-   virtual void resize(int width, int height) = 0;
-   virtual void toggleFullscreen() = 0;
-   virtual void update() = 0;
-   virtual void display() = 0;
-
- // dispatchers
-   void setKeyEventDispatcher(KeyEventDispatcher& dispatcher);
-   void setMouseEventDispatcher(MouseEventDispatcher& dispatcher);
-
- // listeners
-   void addListener(GameWindowListener& listener);
-   void removeListener(GameWindowListener& listener);
-
-protected:
- // creation
-   virtual bool doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
-   virtual void doDestroy();
-
- // listener notification
-   void fireWindowClosed();
-   void fireWindowResized();
-
+   explicit ClientKeyEventDispatcher(Client& client);
+ 
  // dispatch
-   void dispatch(const MouseEvent& mouseevent);
-   void dispatch(const KeyEvent& keyevent);
+   virtual void dispatch(const KeyEvent& event);
 
 private:
 
  // members
-   Listeners               mListeners;
-   KeyEventDispatcher*     mpKeyDispatcher;
-   MouseEventDispatcher*   mpMouseDispatcher;
+   Client& mClient;
 };
 
-#endif // GAME_WINDOW_H_
+#endif // CLIENT_KEY_EVENT_LISTENER_H_

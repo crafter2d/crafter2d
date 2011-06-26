@@ -49,9 +49,10 @@ class Canvas
 	{
 		foreach( Widget w : mWidgets )
 		{
-			if ( w.hitTest(location) )
+			Widget focus = w.hitTest(location);
+			if ( focus != null )
 			{
-				return w;
+				return focus;
 			}
 		}
 		return null;
