@@ -61,6 +61,7 @@ private:
    ASTExpressionStatement* handleExpressionStatement(const AntlrNode& node);
    ASTCompound*            handleCompound(const AntlrNode& node);
    ASTExpression*          handleExpression(const AntlrNode& node);
+   ASTNode*                handleInstanceOf(const AntlrNode& node);
    ASTUnary*               handleUnary(const AntlrNode& node);
    ASTNew*                 handleNew(const AntlrNode& node);
    ASTNode*                handleSuper(const AntlrNode& node);

@@ -256,6 +256,11 @@ bool ASTType::isString() const
 
 bool ASTType::equals(const ASTType& that) const
 {
+   if ( (isObject() || isArray()) && that.isNull() )
+   {
+      return true;
+   }
+
    return mKind == that.mKind
        && (isObject() ? mpObjectClass == that.mpObjectClass : true);
 }

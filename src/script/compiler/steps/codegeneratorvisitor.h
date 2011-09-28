@@ -49,6 +49,7 @@ public:
    virtual void visit(const ASTExpression& ast);
    virtual void visit(const ASTConcatenate& concatenate);
    virtual void visit(const ASTUnary& ast);
+   virtual void visit(const ASTInstanceOf& ast);
    virtual void visit(const ASTNew& ast);
    virtual void visit(const ASTSuper& ast);
    virtual void visit(const ASTCast& ast);

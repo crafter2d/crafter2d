@@ -8,6 +8,8 @@
 
 #include "asttype.h"
 
+class ASTUnary;
+
 class ASTCase : public ASTNode
 {
 public:
@@ -19,14 +21,21 @@ public:
  // get/set
    void setKind(Kind kind);
 
+   bool           hasValue() const;
    const Variant& getValue() const;
    void           setValue(const Variant& value);
+
+   bool            hasValueExpression() const;
+   const ASTUnary& getValueExpression() const;
+         ASTUnary& getValueExpression();
+   void            setValueExpression(ASTUnary* pvalueexpr);
 
    const ASTNode& getBody() const;
          ASTNode& getBody();
    void           setBody(ASTNode* pbody);
 
    const ASTType& getType() const;
+   void           setType(ASTType* ptype);
 
  // query
    bool isCase() const;
@@ -36,13 +45,11 @@ public:
    ACCEPT;
 
 private:
- // get/set
-   void setType(ASTType* ptype);
-
    Kind     mKind;
    ASTType* mpType;
-   ASTNode* mpBody;
    Variant  mValue;
+   ASTUnary* mpValueExpression;
+   ASTNode*  mpBody;
 };
 
 #endif // AST_CASE_H_

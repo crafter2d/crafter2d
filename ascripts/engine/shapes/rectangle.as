@@ -20,6 +20,15 @@ class Rectangle
 		set(ix, iy, w, h);
 	}
 	
+	public Rectangle(Rectangle other)
+	{
+		super();
+		
+		set(other.x, other.y, other.width, other.height);
+	}
+	
+	// - Get/set
+	
 	public void set(int ix, int iy, int w, int h)
 	{
 		x = ix;
@@ -27,6 +36,18 @@ class Rectangle
 		width = w;
 		height = h;
 	}
+	
+	public int getRight()
+	{
+		return x + width;
+	}
+		
+	public int getBottom()
+	{
+		return y + height;
+	}
+	
+	// - Query
 	
 	public boolean contains(Point point)
 	{

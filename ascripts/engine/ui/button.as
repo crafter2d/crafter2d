@@ -3,6 +3,8 @@ package engine.ui;
 
 use engine.shapes.*;
 
+use size;
+
 class Button extends Widget
 {
 	private string mText;
@@ -25,9 +27,9 @@ class Button extends Widget
 	{
 		Font f = getFont();
 		Rectangle bounds = getBounds();
-		Rectangle r = f.getTextSize(mText);
-		mX = (bounds.width / 2) - (r.width / 2);
-		mY = (bounds.height / 2) - (r.height / 2) + f.getBaseLine();
+		Size textsize = f.getTextSize(mText);
+		mX = (bounds.width / 2) - (textsize.width / 2);
+		mY = (bounds.height / 2) - (textsize.height / 2) + f.getBaseLine();
 	}
 	
 	// - painting
@@ -42,5 +44,15 @@ class Button extends Widget
 	{
 		graphics.setColor(Color.black);
 		graphics.drawText(mX, mY, mText);
+	}
+	
+	// - Sizes
+	
+	public Size getPreferredSize()
+	{
+		Size result = getFont().getTextSize(mText);
+		result.extend(getBorder().getMargins());
+		result.extend(3, 2);
+		return result;
 	}
 }

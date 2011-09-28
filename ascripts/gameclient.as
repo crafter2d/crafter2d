@@ -19,12 +19,13 @@ class GameClient extends Client
 		{
 			Button button = new Button("Ok");
 			button.setName("btnName");
-			button.setBounds(new Rectangle(40, 40, 120, 20));
 			
 			mMessageBox = new Dialog("Message");
 			mMessageBox.setName("dlgMessage");
 			mMessageBox.setBounds(new Rectangle(5, 5, 200, 100));
-			mMessageBox.add(button);
+			mMessageBox.setLayout(new BorderLayout());
+			mMessageBox.add(button, BorderLayoutSide.bottom);
+			mMessageBox.validate();
 			
 			Canvas canvas = Canvas.getInstance();
 			canvas.add(mMessageBox);

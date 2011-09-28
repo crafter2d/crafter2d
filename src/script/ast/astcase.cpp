@@ -3,14 +3,16 @@
 
 #include "core/defines.h"
 
+#include "astunary.h"
 #include "astvisitor.h"
 
 ASTCase::ASTCase():
    ASTNode(),
    mKind(eCase),
    mpType(NULL),
-   mpBody(NULL),
-   mValue()
+   mValue(),
+   mpValueExpression(NULL),
+   mpBody(NULL)
 {
 }
 
@@ -18,6 +20,7 @@ ASTCase::~ASTCase()
 {
    delete mpType;
 
+   setValueExpression(NULL);
    setBody(NULL);
 }
 
@@ -28,6 +31,11 @@ void ASTCase::setKind(Kind kind)
    mKind = kind;
 }
 
+bool ASTCase::hasValue() const
+{
+   return !mValue.isEmpty();
+}
+
 const Variant& ASTCase::getValue() const
 {
    return mValue;
@@ -36,15 +44,29 @@ const Variant& ASTCase::getValue() const
 void ASTCase::setValue(const Variant& value)
 {
    mValue = value;
+}
 
-   if ( mValue.isInt() )
-   {
-      setType(new ASTType(ASTType::eInt));
-   }
-   else if ( mValue.isReal() )
-   {
-      setType(new ASTType(ASTType::eReal));
-   }
+bool ASTCase::hasValueExpression() const
+{
+   return mpValueExpression != NULL;
+}
+
+const ASTUnary& ASTCase::getValueExpression() const
+{
+   ASSERT_PTR(mpValueExpression);
+   return *mpValueExpression;
+}
+
+ASTUnary& ASTCase::getValueExpression()
+{
+   ASSERT_PTR(mpValueExpression);
+   return *mpValueExpression;
+}
+
+void ASTCase::setValueExpression(ASTUnary* pvalueexpr)
+{
+   delete mpValueExpression;
+   mpValueExpression = pvalueexpr;
 }
 
 const ASTNode& ASTCase::getBody() const

@@ -12,6 +12,8 @@ class DialogBorder extends Border
 		super();
 		
 		mDialog = dialog;
+		
+		getMargins().set(2, 15, 2, 2);
 	}
 	
 	public void paint(Graphics graphics)

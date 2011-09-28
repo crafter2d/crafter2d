@@ -207,7 +207,7 @@ finally_block
 	;
 	
 switch_case
-	:	CASE numeric_literal ':' block_stmt*					-> ^(CASE numeric_literal block_stmt*)
+	:	CASE unary_expression ':' block_stmt*					-> ^(CASE unary_expression block_stmt*)
 	|	DEFAULT ':' block_stmt*							-> ^(DEFAULT block_stmt*)
 	;
 	

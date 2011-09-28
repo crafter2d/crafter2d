@@ -833,6 +833,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
                mStack.push_back((*obj.asObject()).getMember(instruction.getArgument()));
             else if ( obj.isArray() )
                mStack.push_back(Variant(obj.asArray().ptr()->size()));
+            else if ( obj.isEmpty() )
+            {
+               // error!!
+               throw std::exception("null object!");
+            }
          }
          break;
       case VirtualInstruction::eStore:
@@ -1208,7 +1213,8 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
 
          case VirtualInstruction::eNewNative:
          case VirtualInstruction::eCallNative:
-         case VirtualInstruction::eLoadLiteral:         
+         case VirtualInstruction::eLoadLiteral:
+         case VirtualInstruction::eInstanceOf:
             {
                VirtualInstruction& previous = mContext.mInstructions[index - lookback];
                if ( previous.getInstruction() != VirtualInstruction::ePushThis )

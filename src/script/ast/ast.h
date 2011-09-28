@@ -32,6 +32,7 @@
 #include "astliteral.h"
 #include "astexpression.h"
 #include "astunary.h"
+#include "astinstanceof.h"
 #include "astnew.h"
 #include "astsuper.h"
 #include "astcast.h"

@@ -226,19 +226,38 @@ void SymbolCheckVisitor::visit(ASTDo& ast)
 void SymbolCheckVisitor::visit(ASTSwitch& ast)
 {
    ast.getExpression().accept(*this);
+   ast.setType(mCurrentType.clone());
    
    if ( ast.getDefaultCount() > 1 )
    {
       mContext.getLog().error("Too many 'default' statements in switch statement (one is max).");
    }
 
-   ast.validateCaseTypes(mContext, mCurrentType);
-
    visitChildren(ast);
+
+   ast.validateCaseTypes(mContext);
 }
 
 void SymbolCheckVisitor::visit(ASTCase& ast)
 {
+   mCurrentType.clear();
+
+   ast.getValueExpression().accept(*this);
+   ast.setType(mCurrentType.clone());
+
+   // convert the value expression to a value for the lookup table
+   ASTUnary& expressionnode = ast.getValueExpression();
+   const ASTLiteral* pliteral = dynamic_cast<const ASTLiteral*>(&expressionnode.getParts()[0]);
+   if ( pliteral != NULL )
+   {
+      // we can use a lookup table for fast lookup
+      ast.setValue(pliteral->getLiteral().getValue());
+   }
+   else
+   {
+      // code generator will insert if statements to compare with the values
+   }
+
    ast.getBody().accept(*this);
 }
 
@@ -465,6 +484,18 @@ void SymbolCheckVisitor::visit(ASTUnary& ast)
    checkOperator(ast.getPost());
 }
 
+void SymbolCheckVisitor::visit(ASTInstanceOf& ast)
+{
+   ast.getObject().accept(*this);
+
+   if ( !(mCurrentType.isObject() || mCurrentType.isArray()) )
+   {
+      mContext.getLog().error("Operator instanceof can only be called against objects/arrays.");
+   }
+
+   mCurrentType = ASTType(ASTType::eBoolean);
+}
+
 void SymbolCheckVisitor::visit(ASTNew& ast)
 {
    switch ( ast.getKind() )
@@ -634,37 +665,37 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
             }
             else
             {
-               // variable access on own class or local variable
-               ASTField* pfield = mpClass->findField(name);
-               if ( pfield == NULL )
-                  pfield = mpClass->findStatic(name);
-
-               if ( pfield != NULL )
+               //
+               // local variable
+               const ScopeVariable* pvariable = mScopeStack.find(name);
+               if ( pvariable != NULL )
                {
-                  const ASTVariable& var = pfield->getVariable();
-
-                  if ( mpFunction->getModifiers().isStatic() && !var.getModifiers().isStatic() )
-                  {
-                     mContext.getLog().error("Can not access instance member " + var.getName());
-                  }
-
-                  // variable access on current class
-                  ast.setAccess(ASTAccess::eField);
-                  ast.setVariable(pfield->getVariable());
-
-                  mCurrentType = pfield->getVariable().getType();
+                  ast.setAccess(ASTAccess::eLocal);
+                  ast.setVariable(pvariable->getVariable());
+                  
+                  mCurrentType = pvariable->getType();
                }
                else
                {
-                  //
-                  // local variable
-                  const ScopeVariable* pvariable = mScopeStack.find(name);
-                  if ( pvariable != NULL )
+                  // variable access on own class or local variable
+                  ASTField* pfield = mpClass->findField(name);
+                  if ( pfield == NULL )
+                     pfield = mpClass->findStatic(name);
+
+                  if ( pfield != NULL )
                   {
-                     ast.setAccess(ASTAccess::eLocal);
-                     ast.setVariable(pvariable->getVariable());
-                  
-                     mCurrentType = pvariable->getType();
+                     const ASTVariable& var = pfield->getVariable();
+
+                     if ( mpFunction->getModifiers().isStatic() && !var.getModifiers().isStatic() )
+                     {
+                        mContext.getLog().error("Can not access instance member " + var.getName());
+                     }
+
+                     // variable access on current class
+                     ast.setAccess(ASTAccess::eField);
+                     ast.setVariable(pfield->getVariable());
+
+                     mCurrentType = pfield->getVariable().getType();
                   }
                   else
                   {

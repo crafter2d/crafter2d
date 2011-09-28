@@ -13,13 +13,15 @@
 
 ASTSwitch::ASTSwitch():
    ASTStatement(),
-   mpExpression(NULL)
+   mpExpression(NULL),
+   mpType(NULL)
 {
 }
 
 ASTSwitch::~ASTSwitch()
 {
    setExpression(NULL);
+   setType(NULL);
 }
 
 // - Get/set
@@ -42,6 +44,24 @@ void ASTSwitch::setExpression(ASTNode* pexpression)
    mpExpression = pexpression;
 }
 
+const ASTCase& ASTSwitch::getCase(int index) const
+{
+   ASSERT(index < getChildren().size());
+   return dynamic_cast<const ASTCase&>(getChildren()[index]);
+}
+
+const ASTType& ASTSwitch::getType() const
+{
+   ASSERT_PTR(mpType);
+   return *mpType;
+}
+
+void ASTSwitch::setType(ASTType* ptype)
+{
+   delete mpType;
+   mpType = ptype;
+}
+
 // - Query
    
 int ASTSwitch::getDefaultCount() const
@@ -59,6 +79,29 @@ int ASTSwitch::getDefaultCount() const
    return count;
 }
 
+int ASTSwitch::getTotalCount() const
+{
+   return getChildren().size();
+}
+
+bool ASTSwitch::hasDefault() const
+{
+   return getDefaultCount() != 0;
+}
+
+bool ASTSwitch::canLookup() const
+{
+   const ASTNodes& cases = getChildren();
+   for ( int index = 0; index < cases.size(); index++ )
+   {
+      const ASTCase& ast = dynamic_cast<const ASTCase&>(cases[index]);
+      if ( !ast.isDefault() && !ast.hasValue() )
+      {
+         return false;
+      }
+   }
+   return true;
+}
 
 bool ASTSwitch::hasReturn(bool& hasunreachablecode) const
 {
@@ -80,18 +123,19 @@ bool ASTSwitch::hasReturn(bool& hasunreachablecode) const
 
 // - Operations
    
-void ASTSwitch::validateCaseTypes(CompileContext& context, ASTType& expectedtype)
+void ASTSwitch::validateCaseTypes(CompileContext& context)
 {
-   ASSERT(expectedtype.isInt() || expectedtype.isReal());
+   ASSERT_PTR(mpType);
+   ASSERT(mpType->isInt() || mpType->isReal());
 
    const ASTNodes& cases = getChildren();
    for ( int index = 0; index < cases.size(); index++ )
    {
       const ASTCase& ast = dynamic_cast<const ASTCase&>(cases[index]);
-      if ( ast.isCase() && !expectedtype.greater(ast.getType()) )
+      if ( ast.isCase() && !mpType->greater(ast.getType()) )
       {
          std::stringstream ss;
-         ss << "Case " << index << " should be of type " << expectedtype.toString();
+         ss << "Case " << index << " should be of type " << mpType->toString();
          context.getLog().error(ss.str());
       }
    }

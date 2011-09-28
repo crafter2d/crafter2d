@@ -43,6 +43,7 @@ public:
    virtual void visit(ASTExpression& ast);
    virtual void visit(ASTConcatenate& ast);
    virtual void visit(ASTUnary& ast);
+   virtual void visit(ASTInstanceOf& ast);
    virtual void visit(ASTNew& ast);
    virtual void visit(ASTSuper& ast);
    virtual void visit(ASTLiteral& ast);

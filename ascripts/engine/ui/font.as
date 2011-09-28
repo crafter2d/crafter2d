@@ -10,12 +10,12 @@ final class Font
 		super();
 	}
 	
-	public Rectangle getTextSize(string text)
+	public Size getTextSize(string text)
 	{
-		Rectangle r = new Rectangle();
-		r.width = native_textWidth(text);
-		r.height = native_textHeight(text);
-		return r;
+		Size result = new Size();
+		result.width = native_textWidth(text);
+		result.height = native_textHeight(text);
+		return result;
 	}
 	
 	private native int native_textHeight(string text);

@@ -61,20 +61,14 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
          ast.setBaseType(ptype);
       }
 
-      if ( !ast.getBaseType().resolveType(mContext, ast) )
-      {
-         // meh, class unknown!
-      }
+      resolveType(ast.getBaseType());
    }
 
    ASTTypeList& intrfaces = ast.getInterfaces();
    for ( int index = 0; index < intrfaces.size(); index++ )
    {
       ASTType& type = intrfaces[index];
-      if ( !type.resolveType(mContext, ast) )
-      {
-         mContext.getLog().error("Can not resolve type " + type.toString());
-      }
+      resolveType(type);
    }
 
    if ( !ast.hasConstructor() )
@@ -87,10 +81,7 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
 
 void SymbolCollectorVisitor::visit(ASTFunction& ast)
 {
-   if ( !ast.getType().resolveType(mContext, *mpClass) )
-   {
-      // type is not known :(
-   }
+   resolveType(ast.getType());
 
    visitChildren(ast); // <-- arguments
 
@@ -100,7 +91,7 @@ void SymbolCollectorVisitor::visit(ASTFunction& ast)
    }
    else if ( !ast.getModifiers().isAbstract() && !ast.getModifiers().isNative() )
    {
-      mContext.getLog().error("expecting a body for function " + mpClass->getName() + "." + ast.getName());
+      mContext.getLog().error("Function " + mpClass->getName() + "." + ast.getName() + " requires a body.");
    }
 }
 
@@ -108,10 +99,7 @@ void SymbolCollectorVisitor::visit(ASTFunctionArgument& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( !var.getType().resolveType(mContext, *mpClass) ) // <-- need to give class as param so the previous typevariable stuff can be moved there
-   {
-      // complain!
-   }
+   resolveType(var.getType());
 
    if ( var.hasExpression() )
    {
@@ -123,10 +111,7 @@ void SymbolCollectorVisitor::visit(ASTField& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( !var.getType().resolveType(mContext, *mpClass) )
-   {
-      // complain!
-   }
+   resolveType(var.getType());
 
    if ( var.hasExpression() )
    {
@@ -143,10 +128,7 @@ void SymbolCollectorVisitor::visit(ASTLocalVariable& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( !var.getType().resolveType(mContext, *mpClass) )
-   {
-      // complain
-   }
+   resolveType(var.getType());
 
    if ( var.hasExpression() )
    {
@@ -194,10 +176,7 @@ void SymbolCollectorVisitor::visit(ASTForeach& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( !var.getType().resolveType(mContext, *mpClass) )
-   {
-      // complain
-   }
+   resolveType(var.getType());
 
    if ( var.hasExpression() )
    {
@@ -283,23 +262,24 @@ void SymbolCollectorVisitor::visit(ASTUnary& ast)
    visitChildren(ast);
 }
 
+void SymbolCollectorVisitor::visit(ASTInstanceOf& ast)
+{
+   resolveType(ast.getInstanceType());
+
+   ast.getObject().accept(*this);
+}
+
 void SymbolCollectorVisitor::visit(ASTNew& ast)
 {
-   if ( !ast.getType().resolveType(mContext, *mpClass) )
-   {
-      // complain!
-   }
+   resolveType(ast.getType());
 
    visitChildren(ast);
 }
 
 void SymbolCollectorVisitor::visit(ASTCast& ast)
 {
-   if ( !ast.getType().resolveType(mContext, *mpClass) )
-   {
-      // complain!
-   }
-
+   resolveType(ast.getType());
+   
    ast.getNode().accept(*this);
 }
 
@@ -355,4 +335,13 @@ void SymbolCollectorVisitor::createDefaultConstructor(ASTClass& ast)
    pconstructor->setType(new ASTType(ASTType::eVoid));
 
    ast.addMember(pconstructor);
+}
+
+/// Resolve the type, if resolving fails, a message is logged
+void SymbolCollectorVisitor::resolveType(ASTType& type)
+{
+   if ( !type.resolveType(mContext, *mpClass) )
+   {
+      mContext.getLog().error("Can not resolve type " + type.toString());
+   }
 }

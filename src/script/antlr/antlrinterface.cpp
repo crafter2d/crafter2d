@@ -194,6 +194,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
       case STMT_EXPR:         return handleExpressionStatement(node);
       case COMPOUNT:          return handleCompound(node);
       case EXPRESSION:        return handleExpression(node);
+      case INST_OF:           return handleInstanceOf(node);
       case UNARY:             return handleUnary(node);
       case NEW:               return handleNew(node);
       case SUPER:             return handleSuper(node);
@@ -892,6 +893,10 @@ ASTCase* AntlrParser::handleCase(const AntlrNode& node)
       pcase->setKind(ASTCase::eCase);
 
       AntlrNode valuenode = node.getChild(0);
+      ASTUnary* pnode = handleUnary(valuenode);
+      pcase->setValueExpression(pnode);
+
+      /*
       std::string valuestr = valuenode.toString();
 
       Variant value;
@@ -907,6 +912,7 @@ ASTCase* AntlrParser::handleCase(const AntlrNode& node)
       }
 
       pcase->setValue(value);
+      */
 
       bodyindex++;
    }
@@ -1163,6 +1169,21 @@ ASTNode* AntlrParser::handleConcatenate(const AntlrNode& node)
    }
 
    return presult;
+}
+
+ASTNode* AntlrParser::handleInstanceOf(const AntlrNode& node)
+{
+   ASTInstanceOf* pinstanceof = new ASTInstanceOf();
+
+   AntlrNode left = node.getChild(0);
+   ASTNode* pnode = handleTree(left);
+   pinstanceof->setObject(pnode);
+
+   AntlrNode right = node.getChild(1);
+   ASTType* ptype = getType(right);
+   pinstanceof->setInstanceType(ptype);
+
+   return pinstanceof;
 }
 
 ASTUnary::Operator handleUnaryOperator(const AntlrNode& node)

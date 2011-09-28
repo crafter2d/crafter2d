@@ -6,6 +6,7 @@ use engine.shapes.*;
 abstract class Container extends Widget
 {
 	private ArrayList<Widget> 	mChildren;
+	private LayoutManager		mLayout;
 	
 	public Container()
 	{
@@ -14,7 +15,27 @@ abstract class Container extends Widget
 		mChildren = new ArrayList<Widget>();
 	}
 	
+	// - Get/set
+	
+	public LayoutManager getLayout()
+	{
+		return mLayout;
+	}
+	
+	public void setLayout(LayoutManager layout)
+	{
+		mLayout = layout;
+	}
+	
 	// - Operations
+	
+	public void validate()
+	{
+		if ( mLayout != null )
+		{
+			mLayout.layout(this);
+		}
+	}
 	
 	public Widget hitTest(Point location)
 	{
@@ -40,13 +61,17 @@ abstract class Container extends Widget
 		return null;
 	}
 	
-	// - children
+	// - Children
 	
-	public void add(Widget child)
+	public void add(Widget child, Object constraints)
 	{
 		child.setParent(this);
 		
 		mChildren.add(child);
+		
+		if ( mLayout != null ) {
+			mLayout.addWidget(child, constraints);
+		}
 	}
 	
 	// - Painting

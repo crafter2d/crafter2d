@@ -60,6 +60,11 @@ abstract class Widget
 		return null;
 	}
 	
+	public Size getPreferredSize()
+	{
+		return new Size(10, 10);
+	}
+	
 	// - painting
 	
 	public void paint(Graphics graphics)
@@ -86,10 +91,15 @@ abstract class Widget
 	}
 	
 	// - size & movement
-	
+
 	public Rectangle getBounds()
 	{
 		return mBounds;
+	}
+	
+	public void setBounds(int left, int top, int width, int height)
+	{
+		setBounds(new Rectangle(left, top, width, height));
 	}
 	
 	public void setBounds(Rectangle bounds)
@@ -104,6 +114,11 @@ abstract class Widget
 	}
 	
 	// - Border
+	
+	public Border getBorder()
+	{
+		return mBorder;
+	}
 	
 	public void setBorder(Border border)
 	{

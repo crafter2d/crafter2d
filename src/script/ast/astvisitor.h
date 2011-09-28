@@ -29,6 +29,7 @@ class ASTExpressionStatement;
 class ASTExpression;
 class ASTCast;
 class ASTUnary;
+class ASTInstanceOf;
 class ASTNew;
 class ASTSuper;
 class ASTAccess;
@@ -77,6 +78,7 @@ public:
    VISIT(ASTExpression);
    VISIT(ASTCast);
    VISIT(ASTUnary);
+   VISIT(ASTInstanceOf);
    VISIT(ASTNew);
    VISIT(ASTSuper);
    VISIT(ASTAccess);

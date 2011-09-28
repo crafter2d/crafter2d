@@ -507,27 +507,77 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
    flow.end  = allocateLabel();
    mLoopFlowStack.push(flow);
 
-   // create a lookup table for the values (filled by the cases)
-   mpLookupTable = new VirtualLookupTable();
-   int tableidx = mpVClass->addLookupTable(mpLookupTable);
+   if ( ast.canLookup() )
+   {
+      // create a lookup table for the values (filled by the cases)
+      mpLookupTable = new VirtualLookupTable();
+      int tableidx = mpVClass->addLookupTable(mpLookupTable);
 
-   ast.getExpression().accept(*this);
+      ast.getExpression().accept(*this);
 
-   // lookup the value in the table and jump there
-   // if not found -> jump to default or skip in case no default is present
-   addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getName()));
-   addInstruction(VirtualInstruction::eLookup, tableidx);
+      // lookup the value in the table and jump there
+      // if not found -> jump to default or skip in case no default is present
+      addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getName()));
+      addInstruction(VirtualInstruction::eLookup, tableidx);
 
-   visitChildren(ast);
+      visitChildren(ast);
 
-   mpLookupTable->setEnd(mLineNr);
+      mpLookupTable->setEnd(mLineNr);
+   }
+   else
+   {
+      // build all checks & jump to matching case/default statement
+      int count = ast.getTotalCount();
+      std::vector<int> labels;
+      for ( int index = 0; index < count; index++ )
+      {
+         const ASTCase& astcase = ast.getCase(index);
+
+         int label = allocateLabel();
+         labels.push_back(label);
+
+         if ( astcase.isDefault() )
+         {
+            addInstruction(VirtualInstruction::eJump, label);
+
+            // we break here as the other tests will never be executed
+            // though the code can still fall through
+            break;
+         }
+         else
+         {
+            ast.getExpression().accept(*this);
+            astcase.getValueExpression().accept(*this);
+
+            addInstruction(VirtualInstruction::eCmpEqual);
+            addInstruction(VirtualInstruction::eJumpTrue, label);
+         }
+      }
+
+      if ( !ast.hasDefault() )
+      {
+         // if no default and none matched -> jump out
+         addInstruction(VirtualInstruction::eJump, flow.end);
+      }
+
+      // generate code for all bodies, with the correct labels before them
+      for ( int index = 0; index < count; index++ )
+      {
+         const ASTCase& astcase = ast.getCase(index);
+
+         addLabel(labels[index]);
+
+         astcase.getBody().accept(*this);
+      }
+   }
+
    addLabel(flow.end);
-
    mLoopFlowStack.pop();
 }
 
 void CodeGeneratorVisitor::visit(const ASTCase& ast)
 {
+   ASSERT(ast.hasValue());
    ASSERT_PTR(mpLookupTable);
 
    if ( ast.isCase() )
@@ -932,6 +982,14 @@ void CodeGeneratorVisitor::visit(const ASTUnary& ast)
             break;
       }
    }
+}
+
+void CodeGeneratorVisitor::visit(const ASTInstanceOf& ast)
+{
+   ast.getObject().accept(*this);
+
+   int typenameid = allocateLiteral(ast.getInstanceType().getObjectName());
+   addInstruction(VirtualInstruction::eInstanceOf, typenameid);
 }
 
 void CodeGeneratorVisitor::visit(const ASTNew& ast)

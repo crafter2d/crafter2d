@@ -7,6 +7,13 @@ class SimpleBorder extends Border
 {
 	private Rectangle mBorderRect = new Rectangle();
 	
+	public SimpleBorder()
+	{
+		super();
+		
+		getMargins().set(2);
+	}
+	
 	public void paint(Graphics graphics)
 	{
 		Rectangle rect = getWidget().getBounds();
