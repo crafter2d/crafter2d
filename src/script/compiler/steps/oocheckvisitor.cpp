@@ -240,9 +240,16 @@ void OOCheckVisitor::visit(ASTConcatenate& ast)
    ast.getLeft().accept(*this);
    if ( ast.hasRight() )
    {
+      const ASTType* plefttype = mpCurrentType;
+
       mpCurrentType = NULL;
 
       ast.getRight().accept(*this);
+
+      if ( plefttype != NULL && mpCurrentType != NULL )
+      {
+         validateNullConcatenate(ast, *plefttype, *mpCurrentType);
+      }
    }
 }
 
@@ -410,5 +417,30 @@ void OOCheckVisitor::validateClass(const ASTClass& aclass)
             mContext.getLog().error("Function " + aclass.getName() + "." + function.getName() + " must be implemented.");
          }
       }
+   }
+}
+
+void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right)
+{
+   bool error = false;
+
+   if ( left.isNull() )
+   {
+      error = ( !right.isObject() && !right.isArray() );
+
+      if ( concatenate.getMode() == ASTConcatenate::eEquals || concatenate.getMode() == ASTConcatenate::eUnequals )
+      {
+         // swap left/right side so null is always on righthand side (easier for code generation)
+         concatenate.swapSides();
+      }
+   }
+   else if ( right.isNull() )
+   {
+      error = ( !left.isObject() && !left.isArray() );
+   }
+
+   if ( error )
+   {
+      mContext.getLog().error("Invalid concatenation with null operator! Only == and != are supported.");
    }
 }

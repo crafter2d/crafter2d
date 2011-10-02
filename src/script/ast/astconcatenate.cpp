@@ -76,6 +76,15 @@ void ASTConcatenate::setRight(ASTNode* pright)
    mpRight = pright;
 }
 
+// - Operations
+
+void ASTConcatenate::swapSides()
+{
+   ASTNode* pnode = mpLeft;
+   mpLeft = mpRight;
+   mpRight = pnode;
+}
+
 // - Visiting
 
 ACCEPT_IMPL(ASTConcatenate)

@@ -265,6 +265,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
 
    const VirtualInstructionTable& instructions = mContext.mInstructions;
 
+   if ( vclass.getName() == "engine.ui.BorderLayout" )
+   {
+      int aap = 54;
+   }
+
    while ( mState != eReturn )
    {
       try
@@ -469,7 +474,26 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          }
          break;
 
-      // arithmatics
+      // - Boolean interface
+
+      case VirtualInstruction::eCmpEqBool:
+         {
+            bool right = mStack.back().asInt(); mStack.pop_back();
+            bool left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left == right));
+         }
+         break;
+      case VirtualInstruction::eCmpNeqBool:
+         {
+            bool right = mStack.back().asInt(); mStack.pop_back();
+            bool left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left != right));
+         }
+         break;
+
+      // - Integer interface
 
       case VirtualInstruction::eAddInt:
          {
@@ -556,6 +580,57 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             mStack.push_back(Variant(left % right));
          }
          break;
+      case VirtualInstruction::eCmpEqInt:
+         {
+            int right = mStack.back().asInt(); mStack.pop_back();
+            int left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left == right));
+         }
+         break;
+      case VirtualInstruction::eCmpNeqInt:
+         {
+            int right = mStack.back().asInt(); mStack.pop_back();
+            int left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left != right));
+         }
+         break;
+      case VirtualInstruction::eCmpLtInt:
+         {
+            int right = mStack.back().asInt(); mStack.pop_back();
+            int left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left < right));
+         }
+         break;
+      case VirtualInstruction::eCmpLeInt:
+         {
+            int right = mStack.back().asInt(); mStack.pop_back();
+            int left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left <= right));
+         }
+         break;
+      case VirtualInstruction::eCmpGtInt:
+         {
+            int right = mStack.back().asInt(); mStack.pop_back();
+            int left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left > right));
+         }
+         break;
+      case VirtualInstruction::eCmpGeInt:
+         {
+            int right = mStack.back().asInt(); mStack.pop_back();
+            int left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left >= right));
+         }
+         break;
+
+      // - Real interface
+
       case VirtualInstruction::eAddReal:
          {
             double right = mStack.back().asReal(); mStack.pop_back();
@@ -603,6 +678,57 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             mStack.push_back(Variant(-top));
          }
          break;
+      case VirtualInstruction::eCmpEqReal:
+         {
+            double right = mStack.back().asReal(); mStack.pop_back();
+            double left  = mStack.back().asReal(); mStack.pop_back();
+
+            mStack.push_back(Variant(left == right));
+         }
+         break;
+      case VirtualInstruction::eCmpNeqReal:
+         {
+            double right = mStack.back().asReal(); mStack.pop_back();
+            double left  = mStack.back().asReal(); mStack.pop_back();
+
+            mStack.push_back(Variant(left != right));
+         }
+         break;
+      case VirtualInstruction::eCmpLtReal:
+         {
+            double right = mStack.back().asReal(); mStack.pop_back();
+            double left  = mStack.back().asReal(); mStack.pop_back();
+
+            mStack.push_back(Variant(left < right));
+         }
+         break;
+      case VirtualInstruction::eCmpLeReal:
+         {
+            double right = mStack.back().asReal(); mStack.pop_back();
+            double left  = mStack.back().asReal(); mStack.pop_back();
+
+            mStack.push_back(Variant(left <= right));
+         }
+         break;
+      case VirtualInstruction::eCmpGtReal:
+         {
+            int right = mStack.back().asReal(); mStack.pop_back();
+            int left  = mStack.back().asReal(); mStack.pop_back();
+
+            mStack.push_back(Variant(left > right));
+         }
+         break;
+      case VirtualInstruction::eCmpGeReal:
+         {
+            double right = mStack.back().asInt(); mStack.pop_back();
+            double left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(left >= right));
+         }
+         break;
+
+      // - String interface
+
       case VirtualInstruction::eAddStr:
          {
             std::string right = mStack.back().asString(); mStack.pop_back();
@@ -611,58 +737,97 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             mStack.push_back(Variant(left + right));
          }
          break;
-
-      // comparing
-
-      case VirtualInstruction::eCmpEqual:
+      case VirtualInstruction::eCmpEqStr:
          {
-            Variant right = mStack.back(); mStack.pop_back();
-            Variant left  = mStack.back(); mStack.pop_back();
+            std::string right = mStack.back().asString(); mStack.pop_back();
+            std::string left  = mStack.back().asString(); mStack.pop_back();
 
             mStack.push_back(Variant(left == right));
          }
          break;
-      case VirtualInstruction::eCmpNotEqual:
+      case VirtualInstruction::eCmpNeqStr:
          {
-            Variant right = mStack.back(); mStack.pop_back();
-            Variant left  = mStack.back(); mStack.pop_back();
+            std::string right = mStack.back().asString(); mStack.pop_back();
+            std::string left  = mStack.back().asString(); mStack.pop_back();
 
             mStack.push_back(Variant(left != right));
          }
          break;
-      case VirtualInstruction::eCmpSEqual:
+      case VirtualInstruction::eCmpLeStr:
          {
-            Variant right = mStack.back(); mStack.pop_back();
-            Variant left  = mStack.back(); mStack.pop_back();
+            std::string right = mStack.back().asString(); mStack.pop_back();
+            std::string left  = mStack.back().asString(); mStack.pop_back();
 
             mStack.push_back(Variant(left <= right));
          }
          break;
-
-      case VirtualInstruction::eCmpSmaller:
+      case VirtualInstruction::eCmpLtStr:
          {
-            Variant right = mStack.back(); mStack.pop_back();
-            Variant left  = mStack.back(); mStack.pop_back();
+            std::string right = mStack.back().asString(); mStack.pop_back();
+            std::string left  = mStack.back().asString(); mStack.pop_back();
 
             mStack.push_back(Variant(left < right));
          }
          break;
-
-      case VirtualInstruction::eCmpGreater:
+      case VirtualInstruction::eCmpGeStr:
          {
-            Variant right = mStack.back(); mStack.pop_back();
-            Variant left  = mStack.back(); mStack.pop_back();
+            std::string right = mStack.back().asString(); mStack.pop_back();
+            std::string left  = mStack.back().asString(); mStack.pop_back();
 
             mStack.push_back(Variant(left > right));
          }
          break;
-
-      case VirtualInstruction::eCmpGEqual:
+      case VirtualInstruction::eCmpGtStr:
          {
-            Variant right = mStack.back(); mStack.pop_back();
-            Variant left  = mStack.back(); mStack.pop_back();
+            std::string right = mStack.back().asString(); mStack.pop_back();
+            std::string left  = mStack.back().asString(); mStack.pop_back();
 
             mStack.push_back(Variant(left >= right));
+         }
+         break;
+
+      // Object/array interface
+
+      case VirtualInstruction::eCmpEqObj:
+         {
+            VirtualObjectReference right = mStack.back().asObject(); mStack.pop_back();
+            VirtualObjectReference left  = mStack.back().asObject(); mStack.pop_back();
+
+            mStack.push_back(Variant(left.ptr() == right.ptr()));
+         }
+         break;
+      case VirtualInstruction::eCmpNeqObj:
+         {
+            VirtualObjectReference right = mStack.back().asObject(); mStack.pop_back();
+            VirtualObjectReference left  = mStack.back().asObject(); mStack.pop_back();
+
+            mStack.push_back(Variant(left.ptr() != right.ptr()));
+         }
+         break;
+      case VirtualInstruction::eCmpEqAr:
+         {
+            VirtualArrayReference right = mStack.back().asArray(); mStack.pop_back();
+            VirtualArrayReference left  = mStack.back().asArray(); mStack.pop_back();
+
+            mStack.push_back(Variant(left.ptr() == right.ptr()));
+         }
+         break;
+      case VirtualInstruction::eCmpNeqAr:
+         {
+            VirtualArrayReference right = mStack.back().asArray(); mStack.pop_back();
+            VirtualArrayReference left  = mStack.back().asArray(); mStack.pop_back();
+
+            mStack.push_back(Variant(left.ptr() != right.ptr()));
+         }
+         break;
+
+      // nullekes
+
+      case VirtualInstruction::eIsNull:
+         {
+            bool empty = mStack.back().isEmpty(); mStack.pop_back();
+            
+            mStack.push_back(Variant(empty));
          }
          break;
 
@@ -720,6 +885,9 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             const Variant& value = mStack[mCall.mStackBase];
             mStack.push_back(value);
          }
+         break;
+      case VirtualInstruction::ePushNull:
+         mStack.push_back(Variant());
          break;
       case VirtualInstruction::eInt0:
          mStack.push_back(Variant(0));

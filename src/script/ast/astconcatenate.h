@@ -30,6 +30,9 @@ public:
          ASTNode& getRight();
          ASTNode* useRight();
    void           setRight(ASTNode* pright);
+
+ // Operations
+   void swapSides();
    
  // visitor
    ACCEPT;

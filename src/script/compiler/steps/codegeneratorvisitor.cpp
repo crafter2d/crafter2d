@@ -341,6 +341,12 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
       mCurrentType.clear();
 
       var.getExpression().accept(*this);
+      
+      if ( mCurrentType.isNull() )
+      {
+         addInstruction(VirtualInstruction::ePushNull);
+      }
+
       addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
    }
 
@@ -549,7 +555,19 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
             ast.getExpression().accept(*this);
             astcase.getValueExpression().accept(*this);
 
-            addInstruction(VirtualInstruction::eCmpEqual);
+            switch ( astcase.getType().getKind() )
+            {
+               case ASTType::eInt:
+                  addInstruction(VirtualInstruction::eCmpEqInt);
+                  break;
+               case ASTType::eReal:
+                  addInstruction(VirtualInstruction::eCmpEqReal);
+                  break;
+               case ASTType::eString:
+                  addInstruction(VirtualInstruction::eCmpEqStr);
+                  break;
+            }
+
             addInstruction(VirtualInstruction::eJumpTrue, label);
          }
       }
@@ -688,6 +706,11 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
       mExpr++;
 
       ast.getRight().accept(*this);
+
+      if ( mCurrentType.isNull() )
+      {
+         addInstruction(VirtualInstruction::ePushNull);
+      }
 
       mStore = true;
 
@@ -843,7 +866,30 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eCmpEqual);
+            switch ( mCurrentType.getKind() )
+            {
+               case ASTType::eBoolean:
+                  addInstruction(VirtualInstruction::eCmpEqBool);
+                  break;
+               case ASTType::eInt:
+                  addInstruction(VirtualInstruction::eCmpEqInt);
+                  break;
+               case ASTType::eReal:
+                  addInstruction(VirtualInstruction::eCmpEqReal);
+                  break;
+               case ASTType::eString:
+                  addInstruction(VirtualInstruction::eCmpEqStr);
+                  break;
+               case ASTType::eObject:
+                  addInstruction(VirtualInstruction::eCmpEqObj);
+                  break;
+               case ASTType::eArray:
+                  addInstruction(VirtualInstruction::eCmpEqAr);
+                  break;
+               case ASTType::eNull:
+                  addInstruction(VirtualInstruction::eIsNull);
+                  break;
+            }
          }
          break;
 
@@ -851,7 +897,31 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eCmpNotEqual);
+            switch ( mCurrentType.getKind() )
+            {
+               case ASTType::eBoolean:
+                  addInstruction(VirtualInstruction::eCmpNeqBool);
+                  break;
+               case ASTType::eInt:
+                  addInstruction(VirtualInstruction::eCmpNeqInt);
+                  break;
+               case ASTType::eReal:
+                  addInstruction(VirtualInstruction::eCmpNeqReal);
+                  break;
+               case ASTType::eString:
+                  addInstruction(VirtualInstruction::eCmpNeqStr);
+                  break;
+               case ASTType::eObject:
+                  addInstruction(VirtualInstruction::eCmpNeqObj);
+                  break;
+               case ASTType::eArray:
+                  addInstruction(VirtualInstruction::eCmpNeqAr);
+                  break;
+               case ASTType::eNull:
+                  addInstruction(VirtualInstruction::eIsNull);
+                  addInstruction(VirtualInstruction::eNot);
+                  break;
+            }
          }
          break;
 
@@ -859,7 +929,18 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eCmpSEqual);
+            switch ( mCurrentType.getKind() )
+            {
+               case ASTType::eInt:
+                  addInstruction(VirtualInstruction::eCmpLeInt);
+                  break;
+               case ASTType::eReal:
+                  addInstruction(VirtualInstruction::eCmpLeReal);
+                  break;
+               case ASTType::eString:
+                  addInstruction(VirtualInstruction::eCmpLeStr);
+                  break;
+            }
          }
          break;
 
@@ -867,7 +948,18 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eCmpSmaller);
+            switch ( mCurrentType.getKind() )
+            {
+               case ASTType::eInt:
+                  addInstruction(VirtualInstruction::eCmpLtInt);
+                  break;
+               case ASTType::eReal:
+                  addInstruction(VirtualInstruction::eCmpLtReal);
+                  break;
+               case ASTType::eString:
+                  addInstruction(VirtualInstruction::eCmpLtStr);
+                  break;
+            }
          }
          break;
 
@@ -875,7 +967,18 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eCmpGreater);
+            switch ( mCurrentType.getKind() )
+            {
+               case ASTType::eInt:
+                  addInstruction(VirtualInstruction::eCmpGtInt);
+                  break;
+               case ASTType::eReal:
+                  addInstruction(VirtualInstruction::eCmpGtReal);
+                  break;
+               case ASTType::eString:
+                  addInstruction(VirtualInstruction::eCmpGtStr);
+                  break;
+            }
          }
          break;
 
@@ -883,7 +986,18 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eCmpGEqual);
+            switch ( mCurrentType.getKind() )
+            {
+               case ASTType::eInt:
+                  addInstruction(VirtualInstruction::eCmpGeInt);
+                  break;
+               case ASTType::eReal:
+                  addInstruction(VirtualInstruction::eCmpGeReal);
+                  break;
+               case ASTType::eString:
+                  addInstruction(VirtualInstruction::eCmpGeStr);
+                  break;
+            }
          }
          break;
 
@@ -1227,7 +1341,15 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 {
    int index = ast.getLiteral().getTableIndex();
 
-   addInstruction(VirtualInstruction::eLoadLiteral, index);
+   if ( ast.getType().isNull() )
+   {
+      // don't generate code, the other side will generate it
+      int aap = 5;
+   }
+   else
+   {
+      addInstruction(VirtualInstruction::eLoadLiteral, index);
+   }
 
    mCurrentType = ast.getType();
 }

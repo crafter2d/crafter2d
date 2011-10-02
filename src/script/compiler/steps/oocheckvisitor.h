@@ -48,6 +48,7 @@ private:
    bool hasSuperCall(const ASTFunction& function) const;
 
    void validateClass(const ASTClass& aclass);
+   void validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right);
 
    CompileContext&      mContext;
    ASTClass*            mpClass;
