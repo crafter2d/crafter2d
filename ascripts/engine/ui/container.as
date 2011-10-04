@@ -69,7 +69,8 @@ abstract class Container extends Widget
 		
 		mChildren.add(child);
 		
-		if ( mLayout != null ) {
+		if ( mLayout != null )
+		{
 			mLayout.addWidget(child, constraints);
 		}
 	}

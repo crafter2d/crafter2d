@@ -224,9 +224,16 @@ bool Variant::asBool() const
 
 void Variant::setBool(bool value)
 {
-   mType = eBool;
-   delete mpHolder;
-   mpHolder = new DataHolder<bool>(value);
+   if ( mType == eBool )
+   {
+      ((DataHolder<bool>*)mpHolder)->mData = value;
+   }
+   else
+   {
+      mType = eBool;
+      delete mpHolder;
+      mpHolder = new DataHolder<bool>(value);
+   }
 }
 
 const std::string& Variant::asString() const

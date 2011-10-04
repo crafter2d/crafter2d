@@ -23,7 +23,6 @@ class Bridge
 		real x = left.getX() + 12.0;
 		
 		int count = (int)num;
-		System.console.println("Num = " + count);
 		for ( int index = 1; index < count; ++index )
 		{
 			pos.setX(x);

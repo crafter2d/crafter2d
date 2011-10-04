@@ -41,6 +41,7 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mLineNr(0),
    mLoadFlags(0),
    mExpr(0),
+   mState(0),
    mSuperCall(false),
    mRightHandSide(false),
    mStore(false)
@@ -342,11 +343,6 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
 
       var.getExpression().accept(*this);
       
-      if ( mCurrentType.isNull() )
-      {
-         addInstruction(VirtualInstruction::ePushNull);
-      }
-
       addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
    }
 
@@ -707,11 +703,6 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
 
       ast.getRight().accept(*this);
 
-      if ( mCurrentType.isNull() )
-      {
-         addInstruction(VirtualInstruction::ePushNull);
-      }
-
       mStore = true;
 
       ast.getLeft().accept(*this);
@@ -864,7 +855,11 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
       case ASTConcatenate::eEquals:
          {
+            SET_FLAG(mState, eStateNoNull);
+
             concatenate.getRight().accept(*this);
+
+            CLEAR_FLAG(mState, eStateNoNull);
 
             switch ( mCurrentType.getKind() )
             {
@@ -895,7 +890,11 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
       case ASTConcatenate::eUnequals:
          {
+            SET_FLAG(mState, eStateNoNull);
+
             concatenate.getRight().accept(*this);
+
+            CLEAR_FLAG(mState, eStateNoNull);
 
             switch ( mCurrentType.getKind() )
             {
@@ -1343,8 +1342,10 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 
    if ( ast.getType().isNull() )
    {
-      // don't generate code, the other side will generate it
-      int aap = 5;
+      if ( !IS_SET(mState, eStateNoNull) )
+      {
+         addInstruction(VirtualInstruction::ePushNull);
+      }
    }
    else
    {
@@ -1531,6 +1532,7 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          mCurrentType.clear();
 
          variable.getExpression().accept(*this);
+
          addInstruction(VirtualInstruction::ePushThis, variable.getResourceIndex());
          addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
       }

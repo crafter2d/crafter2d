@@ -74,6 +74,11 @@ private:
       int end;
    };
 
+   enum State
+   {
+      eStateNoNull = 1
+   };
+
    typedef std::stack<LoopFlow> LoopFlowStack;
    typedef std::map<std::string, const ASTLocalVariable*> VariableMap;
    typedef std::vector<Inst> InstructionList;
@@ -116,6 +121,7 @@ private:
    int                  mLineNr;
    int                  mLoadFlags;
    int                  mExpr;
+   int                  mState;
    bool                 mSuperCall;
    bool                 mRightHandSide;
    bool                 mStore;

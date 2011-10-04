@@ -914,7 +914,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          {
             //Variant value = Variant(!mStack.back().asBool()); mStack.pop_back();
             //mStack.push_back(value);
-            mStack.back() = Variant(!mStack.back().asBool());
+            mStack.back().setBool(!mStack.back().asBool());
          }
          break;
 
