@@ -437,9 +437,9 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    addInstruction(VirtualInstruction::eCall, piterator->getResourceIndex());
    addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
 
-   const ASTClass* piteratorclass = mContext.findClass("Iterator");
-   const ASTFunction* phasnext = piteratorclass->findBestMatch("hasNext", signature, list);
-   const ASTFunction* pnext = piteratorclass->findBestMatch("next", signature, list);
+   const ASTClass& iteratorclass = mContext.resolveClass("engine.collections.Iterator");
+   const ASTFunction* phasnext = iteratorclass.findBestMatch("hasNext", signature, list);
+   const ASTFunction* pnext = iteratorclass.findBestMatch("next", signature, list);
 
    addLabel(flow.start);
 

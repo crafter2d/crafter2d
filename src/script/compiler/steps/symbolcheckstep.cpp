@@ -187,9 +187,9 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
    {
       var.getExpression().accept(*this);
 
-      const ASTClass* piterableclass = mContext.findClass("Iterable");
+      const ASTClass& iterableclass = mContext.resolveClass("engine.collections.Iterable");
 
-      if ( mCurrentType.isObject() && !mCurrentType.getObjectClass().isImplementing(*piterableclass) )
+      if ( mCurrentType.isObject() && !mCurrentType.getObjectClass().isImplementing(iterableclass) )
       {
          mContext.getLog().error("Container must be iterable.");
       }
@@ -755,8 +755,8 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                   }
                   else if ( mCurrentType.isArray() )
                   {
-                     const ASTClass* parrayclass = mContext.findClass("InternalArray");
-                     checkFunction(*parrayclass, ast, wasstatic);
+                     const ASTClass& arrayclass = mContext.resolveClass("System.InternalArray");
+                     checkFunction(arrayclass, ast, wasstatic);
                   }
                   else
                   {

@@ -48,6 +48,7 @@
 #include "player.h"
 #include "server.h"
 #include "inputcontroller.h"
+#include "texture.h"
 
 void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -99,6 +100,17 @@ void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
    accessor.setResult(machine.instantiateNative("engine.ui.Font", pfont, true)); // take ownership of this handle
+}
+
+void Process_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = (Process*) thisobject->getNativeObject();
+
+   const std::string& name = accessor.getString(1);
+
+   TexturePtr* pfont = new TexturePtr(ResourceManager::getInstance().getTexture(name));
+   accessor.setResult(machine.instantiateNative("engine.core.Texture", pfont, true)); // take ownership of this handle
 }
 
 void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -857,6 +869,20 @@ void EngineGraphics_drawText(VirtualMachine& machine, VirtualStackAccessor& acce
    pgraphics->drawText(x, y, text);
 }
 
+void EngineGraphics_native_drawTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+
+   TexturePtr* ptexture = (TexturePtr*) accessor.getObject(1)->getNativeObject();
+   int x      = accessor.getInt(2);
+   int y      = accessor.getInt(3);
+   int width  = accessor.getInt(4);
+   int height = accessor.getInt(5);
+
+   pgraphics->drawTexture(**ptexture, x, y, 16, 16);//width, height);
+}
+
 void EngineGraphics_native_fillRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -934,6 +960,22 @@ void Font_getBaseLine(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult((*pfont)->getBaseLine());
 }
 
+void Texture_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   TexturePtr* ptexture = (TexturePtr*) thisobject->getNativeObject();
+
+   accessor.setResult((*ptexture)->getWidth());
+}
+
+void Texture_getHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   TexturePtr* ptexture = (TexturePtr*) thisobject->getNativeObject();
+
+   accessor.setResult((*ptexture)->getHeight());
+}
+
 // - Registration
 
 void script_engine_register(ScriptManager& manager)
@@ -945,6 +987,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Process_setScriptManager", Process_setScriptManager);
    registrator.addCallback("Process_setObject", Process_setObject);
    registrator.addCallback("Process_getFont", Process_getFont);
+   registrator.addCallback("Process_getTexture", Process_getTexture);
 
    registrator.addCallback("Server_init", Server_init);
    registrator.addCallback("Server_listen", Server_listen);
@@ -1045,11 +1088,15 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("EngineGraphics_native_fillRect", EngineGraphics_native_fillRect);
    registrator.addCallback("EngineGraphics_native_drawRect", EngineGraphics_native_drawRect);
    registrator.addCallback("EngineGraphics_native_drawRoundedRect", EngineGraphics_native_drawRoundedRect);
+   registrator.addCallback("EngineGraphics_native_drawTexture", EngineGraphics_native_drawTexture);
 
    registrator.addCallback("Font_render", Font_render);
    registrator.addCallback("Font_getBaseLine", Font_getBaseLine);
    registrator.addCallback("Font_native_textWidth", Font_native_textWidth);
    registrator.addCallback("Font_native_textHeight", Font_native_textHeight);
+
+   registrator.addCallback("Texture_getWidth", Texture_getWidth);
+   registrator.addCallback("Texture_getHeight", Texture_getHeight);
 
    registrator.registerCallbacks(manager);
 }

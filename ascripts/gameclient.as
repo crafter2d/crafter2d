@@ -20,11 +20,15 @@ class GameClient extends Client
 			Button button = new Button("Ok");
 			button.setName("btnName");
 			
+			Image image = new Image("cancel.png");
+			image.setName("imgInfo");
+			
 			mMessageBox = new Dialog("Message");
 			mMessageBox.setName("dlgMessage");
 			mMessageBox.setBounds(new Rectangle(5, 5, 200, 100));
 			mMessageBox.setLayout(new BorderLayout());
 			mMessageBox.add(button, BorderLayoutSide.bottom);
+			mMessageBox.add(image, BorderLayoutSide.left);
 			mMessageBox.validate();
 			
 			Canvas canvas = Canvas.getInstance();

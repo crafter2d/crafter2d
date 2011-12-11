@@ -1,4 +1,6 @@
 
+package engine.core;
+
 class Point
 {
 	public int x;

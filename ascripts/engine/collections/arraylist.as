@@ -1,4 +1,6 @@
 
+package engine.collections;
+
 use iterable;
 use arrayiterator;
 use arrayindexoutofboundsexception;

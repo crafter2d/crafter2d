@@ -1,6 +1,8 @@
 
 package System;
 
+use engine.collections.*;
+
 class ClassLoader
 {
 	private static ClassLoader mLoader = new ClassLoader();

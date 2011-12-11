@@ -1,6 +1,7 @@
 
 package engine.ui;
 
+use engine.core.*;
 use engine.shapes.*;
 
 /**

@@ -1,6 +1,8 @@
 
 package engine.shapes;
 
+use engine.core.*;
+
 class Rectangle
 {
 	public int x;

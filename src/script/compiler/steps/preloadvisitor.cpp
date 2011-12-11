@@ -56,7 +56,7 @@ void PreloadVisitor::visit(ASTClass& ast)
    }
 
    ASTTypeList& intrfaces = ast.getInterfaces();
-    for ( int index = 0; index < intrfaces.size(); index++ )
+   for ( int index = 0; index < intrfaces.size(); index++ )
    {
       ASTType& type = intrfaces[index];
       if ( !load(type) )

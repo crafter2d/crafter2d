@@ -56,6 +56,8 @@ public:
    float          getSourceHeight() const;
    bool           isValid() const;
 
+   GLuint getId() const { return tex; }
+
 protected:
    bool           generateTexture(const TextureInfo& info);
    uchar*         ensureProperSize(int bytes, uchar* data, int width, int height);

@@ -1,9 +1,8 @@
 
 package engine.ui;
 
+use engine.core.*;
 use engine.shapes.*;
-
-use size;
 
 class Button extends Widget
 {
@@ -51,8 +50,11 @@ class Button extends Widget
 	public Size getPreferredSize()
 	{
 		Size result = getFont().getTextSize(mText);
-		result.extend(getBorder().getMargins());
-		result.extend(3, 2);
+		
+		Margins margins = getBorder().getMargins();
+		result.width = result.width + margins.left + margins.right + 3;
+		result.height = result.height + margins.top + margins.bottom + 2;
+		
 		return result;
 	}
 }

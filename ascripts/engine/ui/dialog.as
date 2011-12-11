@@ -1,6 +1,8 @@
 
 package engine.ui;
 
+use engine.core.Color;
+
 class Dialog extends Container
 {
 	private string	mTitle;

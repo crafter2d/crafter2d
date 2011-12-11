@@ -1,4 +1,6 @@
 
+package engine.collections;
+
 use Iterator;
 
 class ArrayIterator<T> extends Iterator<T>

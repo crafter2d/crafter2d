@@ -3,6 +3,8 @@ package engine.ui;
 
 use engine.shapes.rectangle;
 use engine.input.*;
+use engine.collections.ArrayList;
+use engine.core.*;
 
 use arraylist;
 
@@ -70,7 +72,7 @@ abstract class Widget
 	public void paint(Graphics graphics)
 	{
 		paintBackground(graphics);
-		
+				
 		graphics.translate(getBounds().x, getBounds().y);
 		
 		paintBorder(graphics);

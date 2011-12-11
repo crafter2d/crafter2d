@@ -2,6 +2,7 @@
 use system.*;
 use engine.ui.*;
 use engine.input.*;
+use engine.core.*;
 
 abstract class Client extends Process
 {
@@ -15,6 +16,9 @@ abstract class Client extends Process
 		
 		FontManager mgr = FontManager.getInstance();
 		mgr.setProcess(this);
+		
+		TextureManager tmgr = TextureManager.getInstance();
+		tmgr.setProcess(this);
 		
 		mMouseDispatcher = new MouseEventDispatcher();
 		mKeyDispatcher = new KeyEventDispatcher();

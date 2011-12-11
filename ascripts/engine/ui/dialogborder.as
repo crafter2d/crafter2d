@@ -1,6 +1,7 @@
 
 package engine.ui;
 
+use engine.core.Color;
 use engine.shapes.*;
 
 class DialogBorder extends Border

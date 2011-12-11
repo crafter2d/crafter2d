@@ -1,5 +1,5 @@
 
-package engine.ui;
+package engine.core;
 
 class Size
 {
@@ -16,12 +16,6 @@ class Size
 		super();
 		width = w;
 		height = h;
-	}
-	
-	public void extend(Margins margins)
-	{
-		width = width + margins.left + margins.right;
-		height = height + margins.top + margins.bottom;
 	}
 	
 	public void extend(int horiz, int vert)

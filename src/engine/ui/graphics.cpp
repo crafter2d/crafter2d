@@ -6,6 +6,7 @@
 #include "core/defines.h"
 
 #include "font.h"
+#include "engine/texture.h"
 
 Graphics::Graphics():
    mpFont(NULL)
@@ -59,6 +60,21 @@ void Graphics::drawText(int x, int y, const std::string& text)
    glPopMatrix();
 
    glPopAttrib();
+}
+
+void Graphics::drawTexture(const Texture& texture, int x, int y, int width, int height)
+{
+   texture.enable();
+
+   glColor3f (1,1,1);
+   glBegin( GL_QUADS );
+   glMultiTexCoord2f (GL_TEXTURE0_ARB, 0.0f, 0.0f); glVertex2i(x, y+height);
+   glMultiTexCoord2f (GL_TEXTURE0_ARB, 1.0f, 0.0f); glVertex2i(x, y);
+   glMultiTexCoord2f (GL_TEXTURE0_ARB, 1.0f, 1.0f); glVertex2i(x+width, y);
+   glMultiTexCoord2f (GL_TEXTURE0_ARB, 0.0f, 1.0f); glVertex2i(x+width, y+height);
+   glEnd();
+
+   texture.disable();
 }
 
 void Graphics::translate(float x, float y)

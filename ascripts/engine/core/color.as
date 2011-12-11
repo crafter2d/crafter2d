@@ -1,4 +1,6 @@
 
+package engine.core;
+
 class Color
 {
 	private real mRed;

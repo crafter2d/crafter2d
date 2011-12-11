@@ -1,6 +1,9 @@
 
 package engine.ui;
 
+use engine.collections.*;
+use engine.core.*;
+
 class Canvas
 {
 	private static Canvas mInstance = new Canvas();

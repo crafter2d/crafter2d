@@ -1,6 +1,7 @@
 
 package engine.input;
 
+use engine.core.*;
 use engine.ui.*;
 
 class MouseEventDispatcher extends InputEventDispatcher

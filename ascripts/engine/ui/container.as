@@ -1,6 +1,8 @@
 
 package engine.ui;
 
+use engine.collections.ArrayList;
+use engine.core.*;
 use engine.shapes.*;
 
 abstract class Container extends Widget

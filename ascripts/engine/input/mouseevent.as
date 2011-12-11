@@ -1,6 +1,8 @@
 
 package engine.input;
 
+use engine.core.*;
+
 class MouseEvent
 {
 	static public int LEFT_BUTTON = 1;

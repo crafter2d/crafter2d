@@ -265,11 +265,6 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
 
    const VirtualInstructionTable& instructions = mContext.mInstructions;
 
-   if ( vclass.getName() == "engine.ui.BorderLayout" )
-   {
-      int aap = 54;
-   }
-
    while ( mState != eReturn )
    {
       try
@@ -578,6 +573,13 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             int left  = mStack.back().asInt(); mStack.pop_back();
 
             mStack.push_back(Variant(left % right));
+         }
+         break;
+      case VirtualInstruction::eIntNegate:
+         {
+            int left  = mStack.back().asInt(); mStack.pop_back();
+
+            mStack.push_back(Variant(-left));
          }
          break;
       case VirtualInstruction::eCmpEqInt:
