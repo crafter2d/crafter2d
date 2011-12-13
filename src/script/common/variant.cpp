@@ -354,6 +354,19 @@ std::string Variant::toString() const
 
 int Variant::toInt() const
 {
+   switch ( mType )
+   {
+   case eInt:
+      break;
+   case eReal:
+      return static_cast<int>(asReal());
+   case eString:
+      return lexical_cast<int>(asString());
+
+   default:
+      UNREACHABLE("Can not convert this type to int!");
+   }
+
    return asInt(); // currently no other int types
 }
 

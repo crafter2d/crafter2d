@@ -75,5 +75,5 @@ bool ClassResolver::checkClassExists(const string& classname) const
    String name = classname.c_str();
    name.replace('.', '/');
 
-   return FileSystem::getInstance().exists("ascripts/" + name.toStdString() + ".as");
+   return FileSystem::getInstance().exists(name.toStdString() + ".as");
 }

@@ -219,7 +219,7 @@ bool Compiler::load(const std::string& classname)
    String name(classname.c_str());
    name.replace('.', '/');
 
-   std::string filename = "ascripts/" + name.toStdString() + ".as";
+   std::string filename = name.toStdString() + ".as";
    mContext.getLog().info("> " + filename);
 
    try

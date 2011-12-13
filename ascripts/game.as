@@ -14,18 +14,26 @@ class Game
 	public native GameWindowFactory getWindowFactory();
 	public native void setActive(boolean active);
 	
-	public void initialize()
+	public boolean initialize()
 	{
 		mServer = new GameServer();
 		mServer.setScriptManager(getScriptManager().spawnChild());
-		mServer.create();
+		if ( !mServer.create() )
+		{
+			return false;
+		}
 		mServer.listen(7000);
 		
 		mClient = new GameClient();
 		mClient.setScriptManager(getScriptManager().spawnChild());
 		mClient.setWindow(getWindowFactory().createWindow());
-		mClient.create();
+		if ( !mClient.create() )
+		{
+			return false;
+		}
 		mClient.connect("localhost", 7000, "player");
+		
+		return true;
 	}
    
 	public void shutdown()

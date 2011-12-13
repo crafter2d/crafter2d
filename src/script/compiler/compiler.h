@@ -2,6 +2,8 @@
 #ifndef COMPILER_H_
 #define COMPILER_H_
 
+#include "script/script_base.h"
+
 #include <string>
 #include <vector>
 
@@ -12,7 +14,7 @@ class ASTNode;
 class CompileStep;
 class CompileCallback;
 
-class Compiler
+class SCRIPT_API Compiler
 {
    typedef std::vector<CompileStep*> Steps;
 

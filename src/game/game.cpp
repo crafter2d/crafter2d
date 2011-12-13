@@ -100,7 +100,8 @@ bool Game::create()
 
    mpTimerData = TIMER.createData();
 
-   FileSystem::getInstance().addPath("..");
+   FileSystem::getInstance().addPath("../ascripts");
+   FileSystem::getInstance().addPath("../images");
    
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
@@ -201,6 +202,10 @@ bool Game::initGame()
 
    mpScript->setThis(this);
    mpScript->run("initialize");
+   if ( !mpScript->getBoolean() )
+   {
+      mActive = false;
+   }
 
    /*
    // initialize the window manager
