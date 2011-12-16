@@ -80,6 +80,11 @@ void FileSystem::removePath(const std::string& path)
    mPaths.remove(path);
 }
 
+void FileSystem::removeAll()
+{
+   mPaths.removeAll();
+}
+
 bool FileSystem::exists(const std::string& filename) const
 {
    for ( int index = 0; index < mPaths.size(); index++ )

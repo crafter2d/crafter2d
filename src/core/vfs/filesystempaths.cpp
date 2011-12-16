@@ -76,3 +76,9 @@ void FileSystemPaths::remove(const std::string& path)
       mPaths.erase(it);
    }
 }
+
+void FileSystemPaths::removeAll()
+{
+   mPaths.clear();
+}
+

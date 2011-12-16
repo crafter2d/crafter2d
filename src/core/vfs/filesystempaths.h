@@ -39,6 +39,7 @@ public:
  // operations
    void add(const std::string& path);
    void remove(const std::string& path);
+   void removeAll();
 
 private:
    typedef std::vector<FileSystemPath*> Paths;

@@ -53,4 +53,17 @@ public:
  void runTest() { suite_TestVariant.testAssignment(); }
 } testDescription_TestVariant_testAssignment;
 
+#include "E:/Devel/jengine_sse/trunk/src/unittest/testvirtualmachine.h"
+
+static TestVirtualMachine suite_TestVirtualMachine;
+
+static CxxTest::List Tests_TestVirtualMachine = { 0, 0 };
+CxxTest::StaticSuiteDescription suiteDescription_TestVirtualMachine( "E:/Devel/jengine_sse/trunk/src/unittest/testvirtualmachine.h", 11, "TestVirtualMachine", suite_TestVirtualMachine, Tests_TestVirtualMachine );
+
+static class TestDescription_TestVirtualMachine_testRun : public CxxTest::RealTestDescription {
+public:
+ TestDescription_TestVirtualMachine_testRun() : CxxTest::RealTestDescription( Tests_TestVirtualMachine, suiteDescription_TestVirtualMachine, 15, "testRun" ) {}
+ void runTest() { suite_TestVirtualMachine.testRun(); }
+} testDescription_TestVirtualMachine_testRun;
+
 #include <cxxtest/Root.cpp>

@@ -641,10 +641,16 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
 
       int labelNext = allocateLabel();
 
-      int lit = allocateLiteral(c.getVariable().getVariable().getType().getObjectName());
+      const ASTVariable& var = c.getVariable().getVariable();
+
+      int lit = allocateLiteral(var.getType().getObjectName());
       addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
       addInstruction(VirtualInstruction::eInstanceOf, lit);
       addInstruction(VirtualInstruction::eJumpFalse, labelNext);
+
+      // make sure the exception variable can be resolved (is a variable after all)
+      ScopedScope scope(mScopeStack);
+      mScopeStack.add(ScopeVariable::fromVariable(var));
 
       c.getBody().accept(*this);
 

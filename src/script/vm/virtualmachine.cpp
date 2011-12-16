@@ -191,31 +191,15 @@ void VirtualMachine::push(const VirtualObjectReference& object)
 
 bool VirtualMachine::execute(const std::string& classname, const std::string& function)
 {
-   VirtualClass* pclass = doLoadClass(classname);
-   ASSERT_PTR(pclass);
-   
-   const VirtualFunctionTableEntry* pentry = pclass->getVirtualFunctionTable().findByName(function);
-   if ( pentry != NULL )
+   VirtualObjectReference object = instantiate(classname);
+   if ( object.isNull() )
    {
-      mStack.clear();
-      
-      try
-      {
-         execute(*pclass, *pentry);
-      }
-      catch ( VirtualException* pexception )
-      {
-         std::cout << "Unhandled exception: " << pexception->getException()->getClass().getName() << std::endl;
-         return false;
-      }
-      catch (...)
-      {
-      }
-
-      return true;
+      return false;
    }
 
-   return false;
+   execute(object, function);
+
+   return true;
 }
 
 void VirtualMachine::execute(const VirtualObjectReference& object, const std::string& function)
@@ -277,7 +261,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
       {
          if ( handleException(*pexception) )
          {
-            mException.clear();
+            mException.release();
          }
          else
          {
@@ -381,12 +365,18 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             mStack.pop_back();
 
             const Variant& object = mStack[mStack.size() - arguments]; // find the object to call the method on
-            ASSERT(object.isObject());
+            if ( object.isObject() )
+            {
+               const VirtualClass& theclass = object.asObject()->getClass();
+               const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
 
-            const VirtualClass& theclass = object.asObject()->getClass();
-            const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
-
-            execute(theclass, entry);
+               execute(theclass, entry);
+            }
+            else
+            {
+               ASSERT(object.isEmpty());
+               throwException("System.NullPointerException");
+            }
          }
          break;
       case VirtualInstruction::eCallInterface:
@@ -521,7 +511,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
             if ( right == 0 )
             {
-               throwException("DivideByZeroException");
+               throwException("System.DivideByZeroException");
             }
 
             mStack.push_back(Variant(left / right));
@@ -1006,7 +996,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             else if ( obj.isEmpty() )
             {
                // error!!
-               throw std::exception("null object!");
+               throwException("System.NullPointerException");
             }
          }
          break;
@@ -1231,7 +1221,10 @@ bool VirtualMachine::handleException(const VirtualException& e)
 VirtualObjectReference VirtualMachine::instantiate(const std::string& classname, int constructor)
 {
    VirtualClass* pclass = doLoadClass(classname);
-   ASSERT_PTR(pclass);
+   if ( pclass == NULL )
+   {
+      return VirtualObjectReference();
+   }
 
    if ( !pclass->canInstantiate() )
    {

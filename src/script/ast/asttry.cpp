@@ -4,6 +4,8 @@
 #include "astblock.h"
 #include "astcatch.h"
 #include "astvisitor.h"
+#include "astlocalvariable.h"
+#include "astvariable.h"
 
 ASTTry::ASTTry():
    ASTStatement(),
@@ -63,9 +65,16 @@ int ASTTry::getResourceIndex() const
    return mResourceIndex;
 }
 
-void ASTTry::setResourceIndex(int index)
+void ASTTry::setResourceIndex(int resourceindex)
 {
-   mResourceIndex = index;
+   mResourceIndex = resourceindex;
+
+   // also set the resource index on the variables of the catch statements
+   for ( int index = 0; index < getChildren().size(); index++ )
+   {
+      ASTCatch& c = static_cast<ASTCatch&>(getChildren()[index]);
+      c.getVariable().getVariable().setResourceIndex(resourceindex);
+   }
 }
 
 const ASTNodes& ASTTry::getCatches() const

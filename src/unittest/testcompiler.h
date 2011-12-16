@@ -16,10 +16,13 @@ public:
    {
       Compiler compiler;
 
-      FileSystem::getInstance().addPath("../ascripts");
-      FileSystem::getInstance().addPath("../src/unittest/tests");
+      FileSystem& fs = FileSystem::getInstance();
+      fs.removeAll();
+      fs.addPath("../ascripts");
+      fs.addPath("../src/unittest/tests");
       
       TS_ASSERT(compiler.compile("System.Object"));
+      TS_ASSERT(compiler.compile("System.System"));
       TS_ASSERT(compiler.compile("Test"));
    }
 };

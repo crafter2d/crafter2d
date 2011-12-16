@@ -47,6 +47,7 @@ public:
 
    void addPath(const std::string& path);
    void removePath(const std::string& path);
+   void removeAll();
 
    virtual bool recurseDirectory(const std::string& dir, Callback callback, void* pdata = NULL) = 0;
    virtual bool find(const std::string& mask, Callback callback, void* pdata = NULL) = 0;
