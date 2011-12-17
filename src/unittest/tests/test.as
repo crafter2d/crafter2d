@@ -2,21 +2,14 @@
 // c++ unittest test class
 
 use System.*;
+use UnitTest.*;
 
 class Test
-{
-	TestException te;
-	
+{	
 	public void run()
 	{
-		try
-		{
-			te.run(); // null pointer exception, not initialized
-		}
-		catch ( NullPointerException e )
-		{
-			System.console.println(e.getCallStack());
-		}
+		TestRunner tr = TestRunner.getInstance();
+		tr.run(TestException.class);
 	}
 }
  

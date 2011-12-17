@@ -5,12 +5,15 @@
 #include "script/compiler/exceptions/classnotfoundexception.h"
 
 #include "script/ast/ast.h"
+#include "script/scope/scopedscope.h"
+#include "script/scope/scopevariable.h"
 
 PreloadVisitor::PreloadVisitor(CompileContext& context):
    CompileStep(),
    mContext(context),
    mClassResolver(),
-   mPackage()
+   mPackage(),
+   mScopeStack()
 {
 }
 
@@ -48,6 +51,8 @@ void PreloadVisitor::visit(ASTUse& ast)
 
 void PreloadVisitor::visit(ASTClass& ast)
 {
+   ScopedScope scope(mScopeStack);
+
    mContext.addClass(&ast);
 
    if ( ast.hasBaseType() && !load(ast.getBaseType()) )
@@ -72,17 +77,19 @@ void PreloadVisitor::visit(ASTClass& ast)
 
 void PreloadVisitor::visit(ASTFunction& ast)
 {
+   ScopedScope scope(mScopeStack);
+
    if ( !load(ast.getType()) )
    {
       // type is not known :(
    }
 
+   visitChildren(ast); // <-- arguments
+
    if ( ast.hasBody() )
    {
       ast.getBody().accept(*this);
    }
-
-   visitChildren(ast); // <-- arguments
 }
 
 void PreloadVisitor::visit(ASTFunctionArgument& ast)
@@ -98,6 +105,9 @@ void PreloadVisitor::visit(ASTFunctionArgument& ast)
    {
       var.getExpression().accept(*this);
    }
+
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
+   mScopeStack.add(pvariable);
 }
 
 void PreloadVisitor::visit(ASTField& ast)
@@ -113,10 +123,15 @@ void PreloadVisitor::visit(ASTField& ast)
    {
       var.getExpression().accept(*this);
    }
+
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
+   mScopeStack.add(pvariable);
 }
 
 void PreloadVisitor::visit(ASTBlock& ast)
 {
+   ScopedScope scope(mScopeStack);
+
    visitChildren(ast);
 }
 
@@ -133,6 +148,9 @@ void PreloadVisitor::visit(ASTLocalVariable& ast)
    {
       var.getExpression().accept(*this);
    }
+
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
+   mScopeStack.add(pvariable);
 }
 
 void PreloadVisitor::visit(ASTExpressionStatement& ast)
@@ -156,6 +174,8 @@ void PreloadVisitor::visit(ASTIf& ast)
 
 void PreloadVisitor::visit(ASTFor& ast)
 {
+   ScopedScope scope(mScopeStack);
+
    if ( ast.hasInitializer() )
    {
       ast.getInitializer().accept(*this);
@@ -185,17 +205,24 @@ void PreloadVisitor::visit(ASTForeach& ast)
       var.getExpression().accept(*this);
    }
 
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
+   mScopeStack.add(pvariable);
+
    ast.getBody().accept(*this);
 }
 
 void PreloadVisitor::visit(ASTWhile& ast)
 {
+   ScopedScope scope(mScopeStack);
+
    ast.getCondition().accept(*this);
    ast.getBody().accept(*this);
 }
 
 void PreloadVisitor::visit(ASTDo& ast)
 {
+   ScopedScope scope(mScopeStack);
+
    ast.getBody().accept(*this);
    ast.getCondition().accept(*this);
 }
@@ -290,6 +317,15 @@ void PreloadVisitor::visit(ASTAccess& ast)
    {
       case ASTAccess::eVariable:
          {
+            ScopeVariable* pvariable = mScopeStack.find(ast.getName());
+            if ( pvariable == NULL )
+            {
+               // not a variable, so see if it is a static class
+               ASTType type(ASTType::eObject);
+               type.setObjectName(ast.getName());
+               
+               tryLoad(type);
+            }
          }
          break;
 
@@ -341,11 +377,16 @@ bool PreloadVisitor::load(ASTType& type)
          return true;
       }
 
-      if ( !mContext.loadClass(type.getObjectName()) )
+      if ( !tryLoad(type) )
       {
          throw new ClassNotFoundException(type.getObjectName());
       }
    }
 
    return true;
+}
+
+bool PreloadVisitor::tryLoad(ASTType& type)
+{
+   return mContext.loadClass(type.getObjectName());
 }

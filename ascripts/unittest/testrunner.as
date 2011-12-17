@@ -12,6 +12,7 @@ class TestRunner
 	
 	private TestRunner()
 	{
+		super();
 	}
 	
 	public void run(Class c)
@@ -58,11 +59,10 @@ class TestRunner
 		{
 			test.invoke(instance);
 		}
-		/*catch ( NoSuchFunctionException e )
+		catch ( NoSuchFunctionException e )
 		{
 			System.console.println("Could not find function " + test.getName());
 		}
-		*/
 		catch ( Throwable e )
 		{
 		}

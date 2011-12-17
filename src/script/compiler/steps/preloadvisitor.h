@@ -6,6 +6,7 @@
 
 #include "script/compiler/compilestep.h"
 #include "script/compiler/classresolver.h"
+#include "script/scope/scopestack.h"
 
 class ASTType;
 class CompileContext;
@@ -52,10 +53,12 @@ protected:
 
 private:
    bool load(ASTType& type);
+   bool tryLoad(ASTType& type);
 
    CompileContext&   mContext;
    ClassResolver     mClassResolver;
    std::string       mPackage;
+   ScopeStack        mScopeStack;
 };
 
 #endif // PRELOAD_VISITOR_H_
