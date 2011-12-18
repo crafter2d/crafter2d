@@ -52,13 +52,18 @@ protected:
    virtual bool performStep(ASTNode& node);
 
 private:
+ // class loading
    bool load(ASTType& type);
    bool tryLoad(ASTType& type);
+
+ // operations
+   void checkStaticAccess(ASTUnary& unary);
 
    CompileContext&   mContext;
    ClassResolver     mClassResolver;
    std::string       mPackage;
    ScopeStack        mScopeStack;
+   ASTClass*         mpClass;
 };
 
 #endif // PRELOAD_VISITOR_H_

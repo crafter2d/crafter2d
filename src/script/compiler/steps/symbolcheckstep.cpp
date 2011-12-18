@@ -699,36 +699,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                   }
                   else
                   {
-                     std::string qualifiedname = mpClass->getResolver().resolve(name);
-                     if ( !qualifiedname.empty() )
-                     {
-                        ast.setName(qualifiedname);
-                     }
-
-                     // check if a static is called --> must be a class name
-                     ASTClass* pclass = mContext.findClass(qualifiedname.empty() ? name : qualifiedname);
-                     if ( pclass != NULL )
-                     {
-                        if ( mStatic )
-                        {
-                           mContext.getLog().error("Can not access " + name + " from a static");
-                        }
-
-                        ASTType* ptype = new ASTType(ASTType::eObject);
-                        ptype->setObjectName(name);
-                        ptype->setObjectClass(*pclass);
-                        
-                        ast.setKind(ASTAccess::eStatic);
-                        ast.setStaticType(ptype);
-
-                        mCurrentType = *ptype;
-
-                        mStatic = true;
-                     }
-                     else
-                     {
-                        mContext.getLog().error("Identifier " + name + " is not defined.");
-                     }
+                     mContext.getLog().error("Identifier " + name + " is not defined.");
                   }
                }
             }
@@ -802,6 +773,11 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
          }
          break;
 
+      case ASTAccess::eStatic:
+         mCurrentType = ast.getStaticType();
+         mStatic = true;
+         break;
+
       case ASTAccess::eClass:
          {
             if ( !mCurrentType.isObject() )
@@ -817,12 +793,8 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
             mCurrentType.clear();
             mCurrentType.setKind(ASTType::eObject);
             mCurrentType.setObjectName("System.Class");
-            mCurrentType.setObjectClass(*mContext.findClass("System.Class"));
+            mCurrentType.setObjectClass(mContext.resolveClass("System.Class"));
          }
-         break;
-
-      case ASTAccess::eStatic:
-         mStatic = true;
          break;
 
       case ASTAccess::eInvalid:

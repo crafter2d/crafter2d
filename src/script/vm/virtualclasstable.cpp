@@ -44,6 +44,20 @@ void VirtualClassTable::print(const LiteralTable& literals)
    }
 }
 
+// - Conversion
+
+std::vector<VirtualClass*> VirtualClassTable::asArray()
+{
+   std::vector<VirtualClass*> array;
+   Classes::iterator it = mClasses.begin();
+   for ( ; it != mClasses.end(); it++ )
+   {
+      VirtualClass* pclass = it->second;
+      array.push_back(pclass);
+   }
+   return array;
+}
+
 // - Search
 
 VirtualClass* VirtualClassTable::find(const std::string& name) const

@@ -46,7 +46,7 @@ class TestRunner
 			Function f = functions[index];
 			if ( f.hasAnnotation("test") )
 			{
-				System.console.println("Testing " + f.getName() + "\n");
+				System.console.println("Testing " + f.getName());
 				
 				f.invoke(instance);
 			}

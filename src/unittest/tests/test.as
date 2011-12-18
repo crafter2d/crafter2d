@@ -8,6 +8,7 @@ class Test
 {	
 	public void run()
 	{
+		Class cl = engine.collections.ArrayList.class;
 		TestRunner tr = TestRunner.getInstance();
 		tr.run(TestException.class);
 	}

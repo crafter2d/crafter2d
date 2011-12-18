@@ -22,8 +22,8 @@ if ( os.is("windows") ) then
 	
 	local sln = solution()
 	local srcdir = path.join(sln.basedir, "src/unittest");
-	local gencmd = path.join(libdir, "cxxtest/cxxtestgen.pl")
-	prebuildcommands { gencmd .. " --gui=Win32Gui -o " .. path.join(srcdir, "runner.cpp") .. " "  .. path.join(srcdir, "*.h") }
+	local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
+	prebuildcommands { gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }
 end
 
 configuration "Debug"

@@ -40,6 +40,11 @@
 
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   std::cout << accessor.getString(1) << std::endl;
+}
+
+void Console_print(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
    std::cout << accessor.getString(1);
 }
 
@@ -89,6 +94,7 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mCompiler.setCallback(mCallback);
 
    mNatives.insert(std::pair<std::string, callbackfnc>("Console_println", Console_println));
+   mNatives.insert(std::pair<std::string, callbackfnc>("Console_print", Console_print));
    mNatives.insert(std::pair<std::string, callbackfnc>("Class_doNewInstance", Class_doNewInstance));
    mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
    mNatives.insert(std::pair<std::string, callbackfnc>("Throwable_fillCallStack", Throwable_fillCallStack));
@@ -106,6 +112,7 @@ VirtualMachine::~VirtualMachine()
 
 void VirtualMachine::initialize()
 {
+   // preload some common classes
    loadClass("System.Object");
    loadClass("System.InternalArray");
    loadClass("System.ClassLoader");
@@ -113,6 +120,14 @@ void VirtualMachine::initialize()
 
    mState = eRunning;
    mLoaded = true;
+
+   // register the loaded classes with the ClassLoader instance
+   std::vector<VirtualClass*> array = mContext.mClassTable.asArray();
+   for ( std::size_t index = 0; index < array.size(); index++ )
+   {
+      VirtualClass* pclass = array[index];
+      createClass(*pclass);
+   }
 }
 
 // - Loading

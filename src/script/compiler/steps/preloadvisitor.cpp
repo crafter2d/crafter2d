@@ -13,7 +13,8 @@ PreloadVisitor::PreloadVisitor(CompileContext& context):
    mContext(context),
    mClassResolver(),
    mPackage(),
-   mScopeStack()
+   mScopeStack(),
+   mpClass(NULL)
 {
 }
 
@@ -53,13 +54,21 @@ void PreloadVisitor::visit(ASTClass& ast)
 {
    ScopedScope scope(mScopeStack);
 
+   mpClass = &ast;
    mContext.addClass(&ast);
 
-   if ( ast.hasBaseType() && !load(ast.getBaseType()) )
+   if ( ast.hasBaseType() )
    {
-      return;
+      if ( load(ast.getBaseType()) )
+      {
+         ast.setBaseClass(mContext.resolveClass(ast.getBaseType().getObjectName()));
+      }
+      else
+      {
+         return;
+      }
    }
-
+   
    ASTTypeList& intrfaces = ast.getInterfaces();
    for ( int index = 0; index < intrfaces.size(); index++ )
    {
@@ -123,9 +132,6 @@ void PreloadVisitor::visit(ASTField& ast)
    {
       var.getExpression().accept(*this);
    }
-
-   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
-   mScopeStack.add(pvariable);
 }
 
 void PreloadVisitor::visit(ASTBlock& ast)
@@ -288,6 +294,8 @@ void PreloadVisitor::visit(ASTConcatenate& ast)
 
 void PreloadVisitor::visit(ASTUnary& ast)
 {
+   checkStaticAccess(ast);
+
    visitChildren(ast);
 }
 
@@ -315,20 +323,6 @@ void PreloadVisitor::visit(ASTAccess& ast)
 {
    switch ( ast.getKind() )
    {
-      case ASTAccess::eVariable:
-         {
-            ScopeVariable* pvariable = mScopeStack.find(ast.getName());
-            if ( pvariable == NULL )
-            {
-               // not a variable, so see if it is a static class
-               ASTType type(ASTType::eObject);
-               type.setObjectName(ast.getName());
-               
-               tryLoad(type);
-            }
-         }
-         break;
-
       case ASTAccess::eFunction:
          {
             ASTNodes& args = ast.getArguments();
@@ -339,6 +333,13 @@ void PreloadVisitor::visit(ASTAccess& ast)
       case ASTAccess::eArray:
          {
             visitChildren(ast);
+         }
+         break;
+
+      case ASTAccess::eVariable:
+      case ASTAccess::eStatic:
+      case ASTAccess::eClass:
+         {
          }
          break;
    }
@@ -389,4 +390,82 @@ bool PreloadVisitor::load(ASTType& type)
 bool PreloadVisitor::tryLoad(ASTType& type)
 {
    return mContext.loadClass(type.getObjectName());
+}
+
+// - Operations
+
+void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
+{
+   ASTAccess* paccess = dynamic_cast<ASTAccess*>(&unary.getParts()[0]);
+   if ( paccess != NULL )
+   {
+      ASTField* pfield = mpClass->findField(paccess->getName());
+      if ( pfield != NULL )
+      {
+         // it's a member field, so nothing to do here
+         return;
+      }
+
+      ScopeVariable* pvariable = mScopeStack.find(paccess->getName());
+      if ( pvariable == NULL )
+      {
+         std::string name;
+         std::string qualifiedname;
+         ASTAccess* pcurrent = paccess;
+         ASTType type(ASTType::eObject);
+         int count = 0;
+         bool done = false;
+
+         do
+         {
+            name += pcurrent->getName();
+
+            // build full path
+            qualifiedname = mClassResolver.resolve(name);
+            if ( qualifiedname.length() == 0 )
+            {
+               qualifiedname = name;
+            }
+
+            // not a variable, so see if it is a static class
+            type.setObjectName(qualifiedname);
+               
+            done = tryLoad(type);
+            if ( !done )
+            {
+               pcurrent = pcurrent->hasNext() ? &pcurrent->getNext() : NULL;
+               name += '.';
+               count++;
+            }
+         }
+         while ( !done && pcurrent != NULL );
+
+         if ( done )
+         {
+            if ( pcurrent != paccess )
+            {
+               // add to class path
+               std::size_t pos = qualifiedname.rfind('.');
+               if ( pos != std::string::npos )
+               {
+                  std::string path = qualifiedname.substr(0, pos) + ".*";
+                  mClassResolver.insert(path);
+               }
+
+               // remove the path nodes
+               ASTNodes& nodes = unary.getParts();
+               nodes.erase(0, count);
+            }
+            
+            ASTType* ptype = new ASTType(ASTType::eObject);
+            ptype->setObjectName(pcurrent->getName());
+            ptype->setObjectClass(mContext.resolveClass(qualifiedname));
+
+            // make it a static access
+            pcurrent->setName(qualifiedname);
+            pcurrent->setKind(ASTAccess::eStatic);
+            pcurrent->setStaticType(ptype);
+         }
+      }
+   }
 }

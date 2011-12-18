@@ -287,11 +287,6 @@ void SymbolCollectorVisitor::visit(ASTAccess& ast)
 {
    switch ( ast.getKind() )
    {
-      case ASTAccess::eVariable:
-         {
-         }
-         break;
-
       case ASTAccess::eFunction:
          {
             ASTNodes& args = ast.getArguments();
@@ -302,6 +297,12 @@ void SymbolCollectorVisitor::visit(ASTAccess& ast)
       case ASTAccess::eArray:
          {
             visitChildren(ast);
+         }
+         break;
+
+      case ASTAccess::eVariable:
+      case ASTAccess::eStatic:
+         {
          }
          break;
    }

@@ -79,6 +79,7 @@ bool ASTClass::hasBaseClass() const
 const ASTClass& ASTClass::getBaseClass() const
 {
    ASSERT_PTR(mpBaseType);
+   ASSERT(mpBaseType->hasObjectClass());
    return mpBaseType->getObjectClass();
 }
 

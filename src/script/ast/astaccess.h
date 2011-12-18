@@ -16,7 +16,12 @@ class ASTAccess : public ASTExpressionPart
 public:
    enum Kind { eVariable, eFunction, eArray, eStatic, eClass, eInvalid };
 
-   enum VarAccess { eField, eRefField, eLocal, eInvalidAccess };
+   enum VarAccess { 
+      eField,           // access field, pushes the class(name) first on stack
+      eRefField,        // field of topmost object on stack
+      eLocal,           // local variable, space is on stack
+      eInvalidAccess
+   };
 
    ASTAccess();
    virtual ~ASTAccess();

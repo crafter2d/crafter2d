@@ -26,6 +26,7 @@ public:
    const ASTAccess* asVariable() const;
 
    const ASTNodes& getParts() const;
+         ASTNodes& getParts();
 
  // operations
    void addPart(ASTExpressionPart* ppart);

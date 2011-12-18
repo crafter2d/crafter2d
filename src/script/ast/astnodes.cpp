@@ -29,6 +29,11 @@ void ASTNodes::add(ASTNode* pnode)
    mNodes.push_back(pnode);
 }
 
+void ASTNodes::insert(int index, ASTNode* pnode)
+{
+   mNodes.insert(mNodes.begin() + index, pnode);
+}
+
 void ASTNodes::set(int index, ASTNode* pnode)
 {
    mNodes[index] = pnode;
@@ -85,4 +90,11 @@ void ASTNodes::accept(ASTVisitor& visitor)
       ASTNode* pnode = mNodes[index];
       pnode->accept(visitor);
    }
+}
+
+// operations
+
+void ASTNodes::erase(int pos, int count)
+{
+   mNodes.erase(mNodes.begin() + pos, mNodes.begin() + count);
 }

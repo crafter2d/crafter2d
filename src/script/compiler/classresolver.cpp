@@ -9,8 +9,8 @@ using namespace std;
 ClassResolver::ClassResolver():
    mPaths()
 {
-   mPaths.push_back("*");
-   mPaths.push_back("System.*");
+   mPaths.insert("*");
+   mPaths.insert("System.*");
 }
 
 const ClassResolver& ClassResolver::operator=(const ClassResolver& that)
@@ -38,7 +38,7 @@ void ClassResolver::insert(const std::string& path)
       }
    }
 
-   mPaths.push_back(qualifiedpath);
+   mPaths.insert(qualifiedpath);
 }
 
 std::string ClassResolver::resolve(const std::string& classname) const
@@ -46,9 +46,10 @@ std::string ClassResolver::resolve(const std::string& classname) const
    String s = String(classname.c_str()).toLower();
    string j = s.toStdString();
 
-   for ( int index = 0; index < mPaths.size(); ++index )
+   Paths::const_iterator it = mPaths.begin();
+   for ( ; it != mPaths.end(); ++it )
    {
-      const string& path = mPaths[index];
+      const string& path = (*it);
 
       size_t pos = path.rfind('*');
       if ( pos != string::npos )
@@ -67,8 +68,6 @@ std::string ClassResolver::resolve(const std::string& classname) const
 
    return "";
 }
-
-#include "core/string/string.h"
 
 bool ClassResolver::checkClassExists(const string& classname) const
 {

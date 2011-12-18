@@ -17,6 +17,7 @@ public:
    ~ASTNodes();
 
    void add(ASTNode* pnode);
+   void insert(int index, ASTNode* pnode);
    void set(int index, ASTNode* pnode);
    void remove(ASTNode** pnode);
    void detach(const ASTNode& node);
@@ -33,6 +34,9 @@ public:
  // visitor
    void accept(ASTVisitor& visitor) const;
    void accept(ASTVisitor& visitor);
+
+ // operations
+   void erase(int pos, int count);
 
 private:
    Nodes mNodes;

@@ -3,11 +3,11 @@
 #define CLASS_RESOLVER_H_
 
 #include <string>
-#include <vector>
+#include <set>
 
 class ClassResolver
 {
-   typedef std::vector<std::string> Paths;
+   typedef std::set<std::string> Paths;
 
 public:
    ClassResolver();

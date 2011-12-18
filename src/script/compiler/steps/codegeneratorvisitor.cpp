@@ -185,9 +185,9 @@ void CodeGeneratorVisitor::visit(const ASTRoot& root)
 
 void CodeGeneratorVisitor::visit(const ASTClass& ast)
 {
-   mpClass = &ast;
-
    ScopedScope scope(mScopeStack);
+
+   mpClass = &ast;
 
    mpVClass = new VirtualClass();
    mpVClass->setName(ast.getFullName());
@@ -716,7 +716,7 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
       mStore = false;
       mNeedPop = false;
 
-      int local = mpAccess->getAccess() == ASTAccess::eLocal;
+      bool local = mpAccess->getAccess() == ASTAccess::eLocal;
 
       if ( mpAccess->getAccess() == ASTAccess::eField )
          addInstruction(VirtualInstruction::ePushThis);
@@ -1328,13 +1328,15 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             mCurrentType.clear();
             mCurrentType.setKind(ASTType::eObject);
             mCurrentType.setObjectName("System.Class");
-            mCurrentType.setObjectClass(*mContext.findClass("System.Class"));
+            mCurrentType.setObjectClass(mContext.resolveClass("System.Class"));
          }
          break;
 
       case ASTAccess::eStatic:
          {
             mCurrentType = ast.getStaticType();
+
+            addInstruction(VirtualInstruction::ePush, allocateLiteral(mCurrentType.getObjectClass().getName()));
          }
          break;
    }

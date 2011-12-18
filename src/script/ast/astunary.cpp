@@ -72,6 +72,11 @@ const ASTNodes& ASTUnary::getParts() const
    return getChildren();
 }
 
+ASTNodes& ASTUnary::getParts()
+{
+   return getChildren();
+}
+
 // - Visitor
 
 ACCEPT_IMPL(ASTUnary)

@@ -4,6 +4,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 class LiteralTable;
 class VirtualClass;
@@ -27,6 +28,9 @@ public:
 
    const VirtualClass& resolve(const std::string& name) const;
          VirtualClass& resolve(const std::string& name);
+
+ // conversion
+   std::vector<VirtualClass*> asArray();
    
 private:
    void resolveTypes();
