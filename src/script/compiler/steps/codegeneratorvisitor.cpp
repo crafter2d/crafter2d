@@ -1217,16 +1217,26 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             {
                case ASTAccess::eField:
                   if ( isstatic )
-                     addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getFullName()));
+                  {
+                     // use one of the two
+                     // - mCurrentType : call static of other class
+                     // - mpClass : access static field of this class
+                     int classlit = allocateLiteral(mCurrentType.isValid() ? mCurrentType.getObjectClass().getFullName() : mpClass->getFullName());
+                     addInstruction(VirtualInstruction::ePush, classlit);
+                  }
                   else
+                  {
                      addInstruction(VirtualInstruction::ePushThis);
+                  }
 
                   handleVariable(var, false);
                   break;
 
                case ASTAccess::eRefField:
                   if ( isstatic )
+                  {
                      addInstruction(VirtualInstruction::ePush, allocateLiteral(mCurrentType.getObjectClass().getFullName()));
+                  }
                   handleVariable(var, false);
                   break;
 
@@ -1336,9 +1346,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
          {
             mCurrentType = ast.getStaticType();
 
-            // TODO: have to determine how to do static calls on variables!
-
-            addInstruction(VirtualInstruction::ePush, allocateLiteral(mCurrentType.getObjectClass().getName()));
+            // the function/variable access pushes it's own label.
          }
          break;
    }
