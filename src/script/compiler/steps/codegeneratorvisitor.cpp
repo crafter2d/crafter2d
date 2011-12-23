@@ -1336,6 +1336,8 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
          {
             mCurrentType = ast.getStaticType();
 
+            // TODO: have to determine how to do static calls on variables!
+
             addInstruction(VirtualInstruction::ePush, allocateLiteral(mCurrentType.getObjectClass().getName()));
          }
          break;

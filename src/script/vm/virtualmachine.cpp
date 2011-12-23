@@ -428,8 +428,8 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCallStatic:
          {
-            int classlit = mStack.back().asInt(); mStack.pop_back();
             int arguments = mStack.back().asInt(); mStack.pop_back();
+            int classlit = mStack.back().asInt(); mStack.pop_back();
             
             std::string classname = mContext.mLiteralTable[classlit].getValue().asString();
 

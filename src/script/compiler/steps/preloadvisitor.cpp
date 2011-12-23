@@ -242,6 +242,10 @@ void PreloadVisitor::visit(ASTSwitch& ast)
 
 void PreloadVisitor::visit(ASTCase& ast)
 {
+   if ( ast.hasValueExpression() )
+   {
+      ast.getValueExpression().accept(*this);
+   }
    ast.getBody().accept(*this);
 }
 
