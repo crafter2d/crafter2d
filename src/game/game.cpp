@@ -100,7 +100,7 @@ bool Game::create()
 
    mpTimerData = TIMER.createData();
 
-   FileSystem::getInstance().addPath("../ascripts");
+   FileSystem::getInstance().addPath("../scripts");
    FileSystem::getInstance().addPath("../images");
    
    // register the physics factory

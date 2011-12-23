@@ -37,6 +37,7 @@ public:
    virtual void* key() = 0;
    virtual void  reset() = 0;
    virtual E&    item() = 0;
+           E*    ptr();
 
    virtual bool  isValid() const = 0;
 

@@ -30,7 +30,7 @@ CollisionData::CollisionData():
 
 CollisionData::~CollisionData()
 {
-   FlushOwnedList<CollisionContact> owned(mContacts);
+   ListAlgorithms::Flush<CollisionContact>(mContacts);
 }
 
 // maintenance

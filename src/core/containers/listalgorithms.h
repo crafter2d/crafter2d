@@ -22,12 +22,11 @@
 
 #include "list.h"
 
-template <class E>
-class FlushOwnedList
+namespace ListAlgorithms
 {
-public:
-   FlushOwnedList(List<E>& list);
-};
+   template <class E>
+   void Flush(List<E>& list);
+}
 
 #include "listalgorithms.inl"
 

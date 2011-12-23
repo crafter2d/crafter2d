@@ -121,7 +121,30 @@ void List<E>::insert(Iterator<E>& it, E* pelement)
 }
 
 template <class E>
+void List<E>::clear()
+{
+   ListNode<E>* pcurrent = _phead;
+   while ( pcurrent != NULL )
+   {
+      ListNode<E>* pnext = pcurrent->nextptr();
+      delete pcurrent;
+      pcurrent = pnext;
+   }
+
+   _phead = _ptail = NULL;
+   _size = 0;
+}
+
+// - Query
+
+template <class E>
 int List<E>::size() const
 {
    return _size;
+}
+
+template <class E>
+bool List<E>::isEmpty() const
+{
+   return _size == 0;
 }

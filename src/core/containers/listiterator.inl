@@ -36,7 +36,10 @@ ListIterator<E>::ListIterator(List<E>& list):
 template <class E>
 void ListIterator<E>::operator++()
 {
-   _pnode = _pnode->nextptr();
+   if ( _pnode != NULL )
+   {
+      _pnode = _pnode->nextptr();
+   }
 }
 
 template <class E>

@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<menu id="1" name="te_layer_popup">
-    <menuitems>
-        <item id="0" text="New" />
-        <item id="1" text="Delete" />
-        <item id="2" text="Show All" />
-        <item id="3" text="Resize" />
-    </menuitems>
-</menu>

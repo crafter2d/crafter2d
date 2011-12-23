@@ -33,7 +33,7 @@ public:
 
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();
-      fs.addPath("../ascripts");
+      fs.addPath("../scripts");
       fs.addPath("../src/unittest/tests");
       
       // compiler required classes

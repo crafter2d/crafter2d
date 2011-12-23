@@ -21,7 +21,7 @@
 #include "listiterator.h"
 
 template <class E>
-FlushOwnedList<E>::FlushOwnedList(List<E>& list)
+void ListAlgorithms::Flush(List<E>& list)
 {
    ListIterator<E> it(list);
    for ( ; it.isValid(); ++it )
@@ -29,4 +29,5 @@ FlushOwnedList<E>::FlushOwnedList(List<E>& list)
       E* pelement = &(*it);
       delete pelement;
    }
+   list.clear();
 }

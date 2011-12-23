@@ -41,13 +41,16 @@ public:
    ListNode<E>*   getTail() const;
    ListNode<E>*   get(int index);
 
+ // Query
+   int   size() const;
+   bool  isEmpty() const;
+
  // Operations
    void  addFront(E* pelement);
    void  addTail(E* pelement);
    
    void  insert(Iterator<E>& it, E* pelement);
-   
-   int   size() const;
+   void  clear();
 
 private:
 

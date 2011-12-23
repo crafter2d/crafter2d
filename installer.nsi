@@ -90,17 +90,16 @@ Section "Source" SecSource
   File installer.nsi
   File premake4.exe
   File premake4.lua
-  File proj-jengine.lua
   File yasca.bat
   
   SetOutPath "$INSTDIR\src"
   File /r /x .svn src\*.*
   
+  SetOutPath "$INSTDIR\projects"
+  File /r /x .svn projects\*.*
+  
   SetOutPath "$INSTDIR\docs"
   File docs\manual.chm
-  
-  SetOutPath "$INSTDIR\tolua"
-  File /x .svn tolua\*.*
   
 SectionEnd
 
