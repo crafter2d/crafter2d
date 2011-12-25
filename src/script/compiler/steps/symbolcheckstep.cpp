@@ -415,7 +415,7 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
             else
             {
                std::string op = "+";
-               mContext.getLog().error("Can not execute operator " + op + " on types " + lefttype.toString() + " and " + mCurrentType.toString());
+               mContext.getLog().error("Can not execute operator " + op + " on types " + lefttype.toString() + " and " + righttype.toString());
             }
          }
          break;

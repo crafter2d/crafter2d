@@ -313,7 +313,7 @@ bool ASTType::greater(const ASTType& that) const
             return mKind == eInt || mKind == eReal;
 
          case eString:
-            return mKind == eString || mKind == eInt || mKind == eReal;
+            return mKind == eString || mKind == eInt || mKind == eReal || mKind == eBoolean;
       }
    }
 

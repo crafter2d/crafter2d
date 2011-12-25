@@ -473,6 +473,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             mStack.back().real2string();
          }
          break;
+      case VirtualInstruction::eBoolean2String:
+         {
+            mStack.back().boolean2string();
+         }
+         break;
 
       // - Boolean interface
 

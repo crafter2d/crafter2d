@@ -1199,6 +1199,8 @@ void CodeGeneratorVisitor::visit(const ASTCast& ast)
                addInstruction(VirtualInstruction::eInt2String);
             else if ( from.isReal() )
                addInstruction(VirtualInstruction::eReal2String);
+            else if ( from.isBoolean() )
+               addInstruction(VirtualInstruction::eBoolean2String);
             break;
       }
    }

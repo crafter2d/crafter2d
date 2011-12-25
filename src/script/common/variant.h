@@ -70,6 +70,7 @@ public:
    void int2string();
    void real2int();
    void real2string();
+   void boolean2string();
 
 private:
    enum MetaType

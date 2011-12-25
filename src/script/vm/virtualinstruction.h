@@ -25,6 +25,7 @@ public:
       eInt2String,
       eReal2Int,
       eReal2String,
+      eBoolean2String,
       eNot,
       eCmpEqBool,
       eCmpNeqBool,

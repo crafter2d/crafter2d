@@ -408,3 +408,9 @@ void Variant::real2string()
    ASSERT(isReal());
    setString(lexical_cast<std::string>(asReal()));
 }
+
+void Variant::boolean2string()
+{
+   ASSERT(isBool());
+   setString(asBool() ? "true" : "false");
+}
