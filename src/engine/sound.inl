@@ -39,9 +39,3 @@ INLINE void SoundManager::disable()
    _enabled = false;
 }
 
-/// \fn SoundManager::operator=(const SoundManager& mgr)
-/// \brief Copy constructor must not be used, use the getInstance function to get a reference
-/// to the sound manager.
-INLINE void SoundManager::operator= (const SoundManager& mgr)
-{
-}

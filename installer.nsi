@@ -98,8 +98,8 @@ Section "Source" SecSource
   SetOutPath "$INSTDIR\projects"
   File /r /x .svn projects\*.*
   
-  SetOutPath "$INSTDIR\docs"
-  File docs\manual.chm
+  ;SetOutPath "$INSTDIR\docs"
+  ;File docs\manual.chm
   
 SectionEnd
 

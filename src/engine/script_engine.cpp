@@ -93,7 +93,6 @@ void Process_setObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = (Process*) thisobject->getNativeObject();
 
    const std::string& name = accessor.getString(1);
    int size = accessor.getInt(2);
@@ -105,7 +104,6 @@ void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Process_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = (Process*) thisobject->getNativeObject();
 
    const std::string& name = accessor.getString(1);
 
@@ -880,7 +878,7 @@ void EngineGraphics_native_drawTexture(VirtualMachine& machine, VirtualStackAcce
    int width  = accessor.getInt(4);
    int height = accessor.getInt(5);
 
-   pgraphics->drawTexture(**ptexture, x, y, 16, 16);//width, height);
+   pgraphics->drawTexture(**ptexture, x, y, width, height);
 }
 
 void EngineGraphics_native_fillRect(VirtualMachine& machine, VirtualStackAccessor& accessor)

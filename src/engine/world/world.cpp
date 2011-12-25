@@ -508,6 +508,16 @@ void World::notifyObjectWorldCollision(Object& object, Bound& bound, int side, b
    mpScript->run("onObjectWorldCollision");
 }
 
+void World::notifyObjectObjectCollision(Object& source, Object& target, int side, bool begin)
+{
+   ASSERT_PTR(mpScript);
+   mpScript->addParam("Creature", &source);
+   mpScript->addParam("Creature", &target);
+   mpScript->addParam(side);
+   mpScript->addParam(begin);
+   mpScript->run("onObjectObjectCollision");
+}
+
 //////////////////////////////////////////////////////////////////////////
 // - Serialization interface
 //////////////////////////////////////////////////////////////////////////

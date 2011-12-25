@@ -36,7 +36,7 @@ class VertexBuffer;
 class Particle 
 {
 public:
-	Particle(): next(NULL) {}
+	Particle();
 
 	void setColor (float r, float g, float b) {
 		color.set (r,g,b);

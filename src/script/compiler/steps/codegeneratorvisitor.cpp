@@ -1289,7 +1289,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             }
             else if ( function.getModifiers().isStatic() )
             {
-               addInstruction(VirtualInstruction::ePush, allocateLiteral(before.getObjectClass().getFullName()));
+               addInstruction(VirtualInstruction::ePush, allocateLiteral(before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()));
                addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
             }
             else if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )

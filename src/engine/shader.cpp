@@ -220,7 +220,6 @@ bool ShaderObject::link()
 {
 	GLint linked;
 	GLenum glErr;
-    int    retCode = 0;
 
 	if (shaders.size() == 0)
    {
@@ -231,12 +230,14 @@ bool ShaderObject::link()
 
 	// add the shaders to the program
    std::vector<Shader*>::iterator it = shaders.begin();
-	for (; it != shaders.end(); it++)
+	for ( ; it != shaders.end(); ++it )
    {
-		glAttachObjectARB (program, (*it)->handle());
-		(*it)->release ();
+      Shader* pshader = *it;
+		glAttachObjectARB (program, pshader->handle());
+		pshader->release();
+      delete pshader;
 	}
-	shaders.clear ();
+	shaders.clear();
 
 	// now link them & make sure it went ok
 	glLinkProgramARB (program);
@@ -245,7 +246,6 @@ bool ShaderObject::link()
    while (glErr != GL_NO_ERROR)
    {
 	   Log::getInstance().error("GLerror: %s", (char*)gluErrorString(glErr));
-      retCode = 1;
       glErr = glGetError();
    }
 
@@ -269,15 +269,15 @@ bool ShaderObject::link()
 bool ShaderObject::valid() const
 {
 	int valid;
-   glValidateProgramARB( program );
-   glGetObjectParameterivARB( program, GL_OBJECT_VALIDATE_STATUS_ARB, (GLint*)&valid );
+   glValidateProgramARB(program);
+   glGetObjectParameterivARB(program, GL_OBJECT_VALIDATE_STATUS_ARB, (GLint*)&valid);
 
    if ( valid != GL_TRUE )
 	{
       GLint length;
 
       // display linker error message
-      glGetObjectParameterivARB( program, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length );
+      glGetObjectParameterivARB(program, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
       GLcharARB *log = new GLcharARB[length];
       glGetInfoLogARB( program, length, &length, log );
       Log::getInstance().error( "Validate log: %s", log );

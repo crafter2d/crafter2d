@@ -85,10 +85,11 @@ public:
    void                 setPlayerPosition(const Vector& pos);
 
 private:
-   void                 operator=( const SoundManager& mgr );
 
-private:
-	ALCdevice *device;
+   SoundManager(const SoundManager& mgr);
+   void operator=( const SoundManager& mgr );
+
+   ALCdevice *device;
 	ALCcontext *context;
 	HashTable dict;
    bool      _initialized;

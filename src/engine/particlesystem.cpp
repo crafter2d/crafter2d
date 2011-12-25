@@ -47,6 +47,22 @@ struct ParticleVertex {
 	Vector offset;
 };
 
+// - Particle
+
+Particle::Particle():
+   pos(),
+   vel(),
+   color(),
+   initTime(0),
+   life(0),
+   state(0),
+   size(0),
+   next(NULL)
+{
+}
+
+// - ParticleSystem
+
 IMPLEMENT_REPLICATABLE(ParticleSystemId, ParticleSystem, Object)
 
 /// \fn ParticleSystem::ParticleSystem()
@@ -77,7 +93,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
    Log& log = Log::getInstance();
 
    // find particle information
-   TiXmlElement* psystem = (TiXmlElement*)doc.FirstChild ("particlesystem");
+   const TiXmlElement* psystem = static_cast<const TiXmlElement*>(doc.FirstChild ("particlesystem"));
 	if ( psystem == NULL )
    {
       log.error("ParticleSystem.load: Invalid XML file format, particle system expected.\n");
@@ -94,25 +110,23 @@ bool ParticleSystem::load(TiXmlDocument& doc)
 	}
 
    // load texture data
-	TiXmlElement* pelement = (TiXmlElement*)psystem->FirstChild ("texture");
+	const TiXmlElement* pelement = static_cast<const TiXmlElement*>(psystem->FirstChild ("texture"));
 	if ( pelement == NULL )
    {
 		log.error("ParticleSystem.load: object has no texture.\n");
 		return false;
 	}
-	else
-   {
-		TiXmlText* value = (TiXmlText*)pelement->FirstChild();
-      texture = ResourceManager::getInstance().getTexture(value->Value());
-      if ( texture.isValid() )
-         return false;
-	}
+
+   const TiXmlText* value = static_cast<const TiXmlText*>(pelement->FirstChild());
+   texture = ResourceManager::getInstance().getTexture(value->Value());
+   if ( texture.isValid() )
+      return false;
 
    // load the update script
-   pelement = (TiXmlElement*)psystem->FirstChild("update_script");
+   pelement = static_cast<const TiXmlElement*>(psystem->FirstChild("update_script"));
    if ( pelement != NULL )
    {
-      TiXmlText* value = (TiXmlText*)pelement->FirstChild();
+      const TiXmlText* value = static_cast<const TiXmlText*>(pelement->FirstChild());
       ScriptManager& mgr = getSceneGraph().getProcess().getScriptManager();
 
 	   //updateScript = mgr.createScript();

@@ -88,7 +88,7 @@ Script* ScriptManager::loadClass(const std::string& classname)
    ASSERT_PTR(mpVirtualMachine);
    if ( !mpVirtualMachine->loadClass(classname) )
    {
-      std::string error = "Could not load class " + classname;
+      // std::string error = "Could not load class " + classname;
       return NULL;
    }
 

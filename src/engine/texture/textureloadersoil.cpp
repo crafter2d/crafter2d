@@ -44,7 +44,7 @@ bool TextureLoaderSoil::virLoad(File& file, TextureInfo& info)
    unsigned char* pimage = SOIL_load_image_from_memory(pdata, size, &width, &height, &channels, SOIL_LOAD_AUTO);
    if ( pimage == NULL )
    {
-      delete pdata;
+      delete[] pdata;
       return false;
    }
 

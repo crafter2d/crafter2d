@@ -6,6 +6,7 @@ class TestException
 	@test
 	public void testNullPointer()
 	{
+		boolean handled = false;
 		try
 		{
 			TestException te;
@@ -13,8 +14,10 @@ class TestException
 		}
 		catch ( NullPointerException e )
 		{
-			System.console.println(e.getCallStack());
+			handled = true;
 		}
+		
+		// assert handled;
 	}
 	
 	private void run()

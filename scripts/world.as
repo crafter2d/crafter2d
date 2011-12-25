@@ -28,4 +28,12 @@ class World
 			creature.setOnGround(begin);
 		}
 	}
+	
+	public void onObjectObjectCollision(Creature source, Creature target, int side, boolean begin)
+	{
+		if ( side == 1 ) // bottom
+		{
+			source.setOnGround(begin);
+		}
+	}
 }

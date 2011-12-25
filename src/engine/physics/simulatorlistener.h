@@ -29,8 +29,8 @@ public:
    SimulatorListener();
    virtual ~SimulatorListener() = 0;
 
-   virtual void collideObjectWorld(Object& object, Bound& bound, int side, bool begin);
-   virtual void collideObjectObject(Object& objectA, Object& objectB);
+   virtual void collideObjectWorld(Object& source, Bound& bound, int side, bool begin);
+   virtual void collideObjectObject(Object& source, Object& target, int side, bool begin);
 };
 
 #endif

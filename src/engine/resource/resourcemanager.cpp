@@ -40,11 +40,6 @@ ResourceManager::~ResourceManager()
    destroy();
 }
 
-ResourceManager& ResourceManager::operator=(const ResourceManager& mgr)
-{
-   return *this;
-}
-
 ResourceManager& ResourceManager::getInstance()
 {
    static ResourceManager manager;

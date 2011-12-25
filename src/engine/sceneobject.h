@@ -50,7 +50,7 @@ public:
                            SceneObject();
    virtual                 ~SceneObject();
 
-           bool            create(SceneObject& parent, const std::string filename);
+           bool            create(SceneObject& parent, const std::string& filename);
    virtual void            destroy ();
 
    bool                    contains(const SceneObject& child) const;

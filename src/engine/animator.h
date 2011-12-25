@@ -31,12 +31,12 @@ class TiXmlElement;
 class Animator
 {
 public:
-   static Animator* construct(TiXmlElement* pXmlObject, Object& object);
+   static Animator* construct(const TiXmlElement& xmlObject, Object& object);
 
    Animator();
    ~Animator();
 
-   bool loadFromXML(TiXmlElement* panimation, Object& object);
+   bool loadFromXML(const TiXmlElement& xmlanimation, Object& object);
 
   // Animation
    void animate(float delta);
@@ -52,7 +52,7 @@ private:
    AnimationSet&  getAnimations();
 
   // parsing
-   bool parseAnimations(TiXmlElement* pxmlAnimations, int count);
+   bool parseAnimations(const TiXmlElement& xmlanimations, int count);
    void parseAnimation(const char* sequence, Animation *animation);
 
    void determineFrameCount();
@@ -61,12 +61,12 @@ private:
    SharedPtr<AnimationSet>   mAnimations;
 	float    mAnimationSpeed;
 	float    mAnimationDelta;
-   float    _animFrameWidth;
-   int      _animFrameCount;
+   float    mAnimFrameWidth;
+   int      mAnimFrameCount;
 	int      mCurrentAnimation;
-	int      animIndex;
-	int      animFrame;
-   bool     _animChanged;
+	int      mAnimIndex;
+	int      mAnimFrame;
+   bool     mAnimChanged;
 };
 
 #ifdef JENGINE_INLINE

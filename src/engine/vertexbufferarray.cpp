@@ -79,7 +79,7 @@ void VertexBufferArray::enable()
 {
    for ( int i = mFieldCount - 1; i >= 0; --i )
    {
-      VertexBufferDesc& field = mFields[i];
+      VertexBufferDesc& field = mpFields[i];
 
       switch ( field.flags )
       {
@@ -124,7 +124,7 @@ void VertexBufferArray::disable()
 {
    for ( int i = 0; i < mFieldCount; ++i )
    {
-      VertexBufferDesc& field = mFields[i];
+      VertexBufferDesc& field = mpFields[i];
 
       switch ( field.flags )
       {

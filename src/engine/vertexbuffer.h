@@ -125,7 +125,7 @@ protected:
    // operation
    void fillDescription (int fvf);
 
-   VertexBufferDesc* mFields;
+   VertexBufferDesc* mpFields;
    int               mFieldCount;
    int               mStride;
 };

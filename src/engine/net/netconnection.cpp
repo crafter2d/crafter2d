@@ -619,11 +619,11 @@ void NetConnection::insertOrderedPackage(NetAddress& client, const NetPackage& p
 
       NetPackage& savedpackage = *it;
 
-      if (it != client.orderQueue.end())
+      if ( it != client.orderQueue.end() )
       {
          // note that eventually the package could already been there (if for example
          // the ACK got lost), so make sure the new package number is smaller
-         if ( package.getNumber() < (*it).getNumber() )
+         if ( package.getNumber() < savedpackage.getNumber() )
          {
             client.orderQueue.insert(it, package);
          }

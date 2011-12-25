@@ -31,6 +31,7 @@ public:
    virtual ~WorldSimulatorListener();
 
    virtual void collideObjectWorld(Object& object, Bound& bound, int side, bool begin);
+   virtual void collideObjectObject(Object& object, Object& target, int side, bool begin);
 
 private:
    World& mWorld;

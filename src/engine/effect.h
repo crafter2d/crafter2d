@@ -70,9 +70,9 @@ private:
   // types
    typedef std::vector<TexStage> Stages;
 
-	bool              processTextures(const TiXmlElement* effect);
-	bool              processCode(const TiXmlElement* effect, const std::string& path);
-	bool              processCombiners(const TiXmlElement* shader_part);
+	bool              processTextures(const TiXmlElement& effect);
+	bool              processCode(const TiXmlElement& effect, const std::string& path);
+	bool              processCombiners(const TiXmlElement& shader_part);
 	bool              postprocessTextures();
 	
 	GLint             getCombinerValue(const char* str);

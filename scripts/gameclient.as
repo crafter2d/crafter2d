@@ -1,13 +1,10 @@
 
 use engine.ui.*;
-use engine.shapes.*;
 
 use client;
 
 class GameClient extends Client
 {
-	private Dialog mMessageBox;
-	
 	public GameClient()
 	{
 		super();
@@ -16,23 +13,8 @@ class GameClient extends Client
 	public boolean create()
 	{
 		if ( super.create() )
-		{
-			Button button = new Button("Ok");
-			button.setName("btnName");
-			
-			Image image = new Image("cancel.png");
-			image.setName("imgInfo");
-			
-			mMessageBox = new Dialog("Message");
-			mMessageBox.setName("dlgMessage");
-			mMessageBox.setBounds(new Rectangle(5, 5, 200, 100));
-			mMessageBox.setLayout(new BorderLayout());
-			mMessageBox.add(button, BorderLayoutSide.bottom);
-			mMessageBox.add(image, BorderLayoutSide.left);
-			mMessageBox.validate();
-			
-			Canvas canvas = Canvas.getInstance();
-			canvas.add(mMessageBox);
+		{			
+			MessageBox.showInformation("This is a messagebox!");
 			
 			return true;
 		}

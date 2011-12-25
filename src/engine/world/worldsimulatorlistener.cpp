@@ -35,3 +35,8 @@ void WorldSimulatorListener::collideObjectWorld(Object& object, Bound& bound, in
 {
    mWorld.notifyObjectWorldCollision(object, bound, side, begin);
 }
+
+void WorldSimulatorListener::collideObjectObject(Object& object, Object& target, int side, bool begin)
+{
+   mWorld.notifyObjectObjectCollision(object, target, side, begin);
+}

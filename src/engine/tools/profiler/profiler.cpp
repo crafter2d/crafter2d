@@ -100,7 +100,7 @@ void Profiler::end()
       elapsedtime = 0.001f;
 
    ItemMap::iterator it = mItems.begin();
-   for ( ; it != mItems.end(); it++ )
+   for ( ; it != mItems.end(); ++it )
    {
       ProfilerItem* pitem = it->second;
       pitem->updateHistory(mDamping, elapsedtime);

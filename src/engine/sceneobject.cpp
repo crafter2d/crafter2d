@@ -55,7 +55,7 @@ SceneObject::~SceneObject()
     \retval true the object is loaded and initialized without errors.
     \retval false there was an error during loading, consult the log file for a reason
  */
-bool SceneObject::create(SceneObject& parent, const std::string filename)
+bool SceneObject::create(SceneObject& parent, const std::string& filename)
 {
    setFilename(filename);
    if ( ((int)mId) == -1 )
@@ -144,7 +144,8 @@ SceneGraph& SceneObject::getSceneGraph()
 
 void SceneObject::removeAll()
 {
-   while (children.size() > 0) {
+   while ( !children.empty() )
+   {
       SceneObject* child = children.front();
       child->destroy();
       delete child;
@@ -204,7 +205,7 @@ void SceneObject::update(DirtySet& dirtyset, float delta)
 
    // update the children
    SceneObjectList::iterator it = children.begin();
-   for (; it != children.end(); it++)
+   for ( ; it != children.end(); ++it )
    {
       SceneObject& sceneobject = *(*it);
       sceneobject.setDirty(false);
@@ -218,7 +219,7 @@ void SceneObject::updateClient(float delta)
 
    // update the children
    SceneObjectList::iterator it = children.begin();
-   for (; it != children.end(); it++)
+   for ( ; it != children.end(); ++it )
    {
       SceneObject& sceneobject = *(*it);
       sceneobject.setDirty(false);
@@ -250,7 +251,7 @@ void SceneObject::draw(bool traverse)
    {
       // draw the children
 	   SceneObjectList::iterator it = children.begin();
-	   for ( ; it != children.end(); it++ )
+	   for ( ; it != children.end(); ++it )
       {
          SceneObject& sceneobject = *(*it);
 		   sceneobject.draw();
@@ -278,7 +279,7 @@ SceneObject* SceneObject::find(const Id& id, bool recurse)
    {
       // recursively search the children for the node
       SceneObjectList::iterator it = children.begin();
-      for (; it != children.end(); it++)
+      for ( ; it != children.end(); ++it )
       {
          SceneObject* n = (*it)->find(id, recurse);
          if ( n != NULL )

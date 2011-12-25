@@ -46,6 +46,7 @@ public:
 
 private:
 	                  CGEngine();
+                     CGEngine(const CGEngine& that);
    void              operator=(const CGEngine& e);
 
    void              supportsVertexShader(bool support);

@@ -76,8 +76,8 @@ bool Object::load (TiXmlDocument& doc)
 	Log& log = Log::getInstance();
 
 	// try to find the object in the file
-	TiXmlElement* object = (TiXmlElement*)doc.FirstChild ("object");
-	if (object == NULL)
+	const TiXmlElement* pobject = static_cast<const TiXmlElement*>(doc.FirstChild ("object"));
+	if ( pobject == NULL )
    {
       log.error("Object.load: Invalid XML file format, object expected.\n");
 		return false;
@@ -85,10 +85,10 @@ bool Object::load (TiXmlDocument& doc)
 
 	// find the name and dimensions of the object
    if ( !hasName() )
-	   setName(object->Attribute("name"));
+	   setName(pobject->Attribute("name"));
 
-	if ( object->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
-		  object->QueryIntAttribute ("height", &height) != TIXML_SUCCESS )
+	if ( pobject->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
+		  pobject->QueryIntAttribute ("height", &height) != TIXML_SUCCESS )
    {
       log.error("Object.load: object needs to have dimensions.\n");
 		return false;
@@ -96,7 +96,7 @@ bool Object::load (TiXmlDocument& doc)
 
    // see whether or not the object is static
    int temp = 0;
-   if ( object->QueryIntAttribute("static", &temp) == TIXML_SUCCESS )
+   if ( pobject->QueryIntAttribute("static", &temp) == TIXML_SUCCESS )
       mStatic = (temp == 1);
 
 	// determine radius of object
@@ -107,15 +107,10 @@ bool Object::load (TiXmlDocument& doc)
 	halfY = height * 0.5f;
 
 	// load texture data
-	TiXmlElement* tex = (TiXmlElement*)object->FirstChild ("texture");
-	if ( tex == NULL )
+	const TiXmlElement* ptex = static_cast<const TiXmlElement*>(pobject->FirstChild ("texture"));
+	if ( ptex != NULL )
    {
-		log.error("Object.load: object has no texture");
-		return false;
-	}
-	else
-   {
-		TiXmlText* value = (TiXmlText*)tex->FirstChild();
+		TiXmlText* value = (TiXmlText*)ptex->FirstChild();
       texture = ResourceManager::getInstance().getTexture(value->Value());
       if ( !texture.isValid() )
       {
@@ -123,17 +118,22 @@ bool Object::load (TiXmlDocument& doc)
          return false;
       }
 	}
+   else
+   {
+		log.error("Object.load: object has no texture");
+		return false;
+	}
 
    // load animation stuff
-   mpAnimator = Animator::construct(object, *this);
+   mpAnimator = Animator::construct(*pobject, *this);
 
    // load simulation info
-   if ( Body::hasInfo(*object) )
+   if ( Body::hasInfo(*pobject) )
    {
       World& world = *(getSceneGraph().getWorld());
 
       mpBody = &world.getSimulator().createBody(*this);
-      mpBody->load(*object);
+      mpBody->load(*pobject);
    }
 
 	return true;

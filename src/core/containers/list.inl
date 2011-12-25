@@ -93,7 +93,7 @@ void List<E>::addTail(E* pelement)
 template <class E>
 void List<E>::insert(Iterator<E>& it, E* pelement)
 {
-   ListNode<E>* node = (ListNode<E>*)it.key();
+   ListNode<E>* node = static_cast<ListNode<E>*>(it.key());
    ASSERT_PTR(node);
    
    if ( _ptail == NULL )

@@ -45,6 +45,8 @@ Layer::Layer():
    tileWidth(0),
    tileHeight(0),
    tileCount(0),
+   texTileWidth(0),
+   texTileHeight(0),
    maxTilesOnRow(0),
    width(0),
    height(0),

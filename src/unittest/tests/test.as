@@ -10,7 +10,9 @@ class Test
 	{
 		Class cl = engine.collections.ArrayList.class;
 		TestRunner tr = TestRunner.getInstance();
+		
 		tr.run(TestException.class);
+		tr.run(TestLoops.class);
 	}
 }
  

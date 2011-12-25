@@ -37,6 +37,7 @@
 VertexBufferObject::VertexBufferObject()
  : VertexBuffer(),
    buffer(0),
+   locked(false),
    _enableFnc(NULL),
    _disableFnc(NULL)
 {
@@ -162,7 +163,7 @@ void VertexBufferObject::enableBuffers()
    glBindBuffer(GL_ARRAY_BUFFER, buffer);
    for ( int i = mFieldCount - 1; i >= 0; --i )
    {
-      VertexBufferDesc& field = mFields[i];
+      VertexBufferDesc& field = mpFields[i];
 
 		glEnableVertexAttribArray(field.index);
 	   glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, mStride, (void*)(field.pos));
@@ -174,7 +175,7 @@ void VertexBufferObject::enableArrays()
    glBindBuffer(GL_ARRAY_BUFFER, buffer);
    for ( int i = mFieldCount- 1; i >= 0; --i )
    {
-      VertexBufferDesc& field = mFields[i];
+      VertexBufferDesc& field = mpFields[i];
 
       switch ( field.flags )
       {
@@ -235,7 +236,7 @@ void VertexBufferObject::disableArrays()
 {
    for ( int i = 0; i < mFieldCount; ++i )
    {
-      VertexBufferDesc& field = mFields[i];
+      VertexBufferDesc& field = mpFields[i];
 
       switch ( field.flags )
       {

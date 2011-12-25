@@ -411,7 +411,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       mpWorldRenderer = world.createRenderer();
       mpPlayer->initialize(world);
 
-      graph.setWorld((World*)obj.getPointer());
+      graph.setWorld(&world);
 
       // run the onWorldChanged script
       mpScript->run("onWorldChanged");

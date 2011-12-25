@@ -80,7 +80,12 @@ INLINE TreeNode<E>* Tree<E>::findElement(TreeNode<E>& node, const E& element)
       ListIterator< TreeNode<E> > it(node.getChildren());
       while ( it.isValid() )
       {
-         return findElement(it.item(), element);
+         TreeNode<E>* pnode = findElement(it.item(), element);
+         if ( pnode != NULL )
+         {
+            return pnode;
+         }
+
          ++it;
       }
    }

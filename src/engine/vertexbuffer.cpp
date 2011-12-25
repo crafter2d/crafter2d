@@ -22,7 +22,10 @@
 #include "core/log/log.h"
 #include "core/defines.h"
 
-VertexBuffer::VertexBuffer()
+VertexBuffer::VertexBuffer():
+   mpFields(NULL),
+   mFieldCount(0),
+   mStride(0)
 {
 }
 
@@ -48,8 +51,8 @@ bool VertexBuffer::create(const Effect& effect, int length, int usage, int fvf)
 	mStride     = getFVFSize (fvf);
 
 	// allocate memory & fill field descriptions
-	mFields = new VertexBufferDesc[mFieldCount];
-	if ( mFields == NULL )
+	mpFields = new VertexBufferDesc[mFieldCount];
+	if ( mpFields == NULL )
 	{
       Log::getInstance().error("VBO Critical Error - out of memory.\n");
 		return false;
@@ -62,11 +65,8 @@ bool VertexBuffer::create(const Effect& effect, int length, int usage, int fvf)
 
 void VertexBuffer::release()
 {
-   if ( mFields != NULL )
-   {
-	   delete[] mFields;
-      mFields = 0;
-   }
+   delete[] mpFields;
+   mpFields = NULL;
 }
 
 /*!
@@ -144,7 +144,7 @@ void VertexBuffer::fillDescription (int fvf)
 			continue;
 		}
 
-		VertexBufferDesc& field = mFields[cnt];
+		VertexBufferDesc& field = mpFields[cnt];
 
 		field.pos = pos;
 		field.flags = i;

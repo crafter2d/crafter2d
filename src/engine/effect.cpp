@@ -77,7 +77,7 @@ bool Effect::load(const std::string& file)
 	}
 
 	// get the root element from the file
-	TiXmlElement* effect = (TiXmlElement*)doc.FirstChild("effect");
+	const TiXmlElement* effect = static_cast<TiXmlElement*>(doc.FirstChild("effect"));
 	if ( effect == NULL )
    {
 		log.error("Effect.load: %s is not an effect file.", file);
@@ -88,12 +88,8 @@ bool Effect::load(const std::string& file)
    name = effect->Attribute ("name");
 
 	// try to load in the textures
-	if (!processTextures (effect))
+	if ( !processTextures(*effect) || !processCode(*effect, "../shaders/") )
 		return false;
-
-	// process the vertex program
-	if (!processCode (effect, "../shaders/"))
-	    return false;
 
 	// find the uniform indices of the texture
 	postprocessTextures();
@@ -124,18 +120,18 @@ void Effect::destroy ()
 	 various stages neccessary for this effect.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::processTextures( const TiXmlElement* effect )
+bool Effect::processTextures(const TiXmlElement& effect)
 {
-   TiXmlElement* texture = (TiXmlElement*)effect->FirstChild("texture");
-   while (texture)
+   const TiXmlElement* ptexture = static_cast<const TiXmlElement*>(effect.FirstChild("texture"));
+   while ( ptexture != NULL )
    {
       TexStage stage;
 
 		// process this texture
-    	stage.uniform = texture->Attribute("uniform");
-    	TiXmlText* file = (TiXmlText*)texture->FirstChild();
-		const char* type = texture->Attribute("type");
-		if ( type != NULL && strcmp (type, "normcube") == 0 )
+    	stage.uniform = ptexture->Attribute("uniform");
+    	const TiXmlText* file = static_cast<const TiXmlText*>(ptexture->FirstChild());
+      const char* ptype = ptexture->Attribute("type");
+		if ( ptype != NULL && strcmp(ptype, "normcube") == 0 )
       {
 			// make it a normalizing cube map
          //stage.tex = new Texture();
@@ -156,11 +152,11 @@ bool Effect::processTextures( const TiXmlElement* effect )
 		stage.tex->setStage(static_cast<int>(stages.size()-1));
 
 		// now iterate over the rest of the textures
-		texture = (TiXmlElement*)effect->IterateChildren ("texture", texture);
+		ptexture = static_cast<const TiXmlElement*>(effect.IterateChildren ("texture", ptexture));
 	}
 
 	// we need at least one texture
-	return (stages.size() > 0);
+   return !stages.empty();
 }
 
 /*!
@@ -192,12 +188,12 @@ bool Effect::postprocessTextures ()
 	 part is loaded and automatically converted.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::processCode(const TiXmlElement* effect, const std::string& path)
+bool Effect::processCode(const TiXmlElement& effect, const std::string& path)
 {
    const char* vertex = NULL, *fragment = NULL;
 
-   TiXmlElement* code_part = (TiXmlElement*)effect->FirstChild("code");
-   if ( code_part == NULL )
+   const TiXmlElement* pcode_part = static_cast<const TiXmlElement*>(effect.FirstChild("code"));
+   if ( pcode_part == NULL )
    {
       Log::getInstance().error("Effect.processCode: effect file doesn't contain a code block!");
 		return false;
@@ -205,26 +201,28 @@ bool Effect::processCode(const TiXmlElement* effect, const std::string& path)
 
    // get the code type
    CodePath::PathType pathtype = CodePath::ECG;
-   const char* ptype = code_part->Attribute("type");
-   if ( strcmp(ptype, "glsl") == 0 || strcmp(ptype, "GLSL") == 0 )
+   const char* ptype = pcode_part->Attribute("type");
+   if ( _stricmp(ptype, "glsl") == 0 )
+   {
       pathtype = CodePath::EGLSL;
+   }
 
    // load the vertex shader
-   TiXmlElement* shader_part = (TiXmlElement*)code_part->FirstChild("vertex");
-   if ( shader_part != NULL && OpenGL::supportsVertexShader(pathtype) )
+   const TiXmlElement* pshader_part = static_cast<const TiXmlElement*>(pcode_part->FirstChild("vertex"));
+   if ( pshader_part != NULL && OpenGL::supportsVertexShader(pathtype) )
    {
-      TiXmlText* psource = (TiXmlText*)shader_part->FirstChild();
+      const TiXmlText* psource = static_cast<const TiXmlText*>(pshader_part->FirstChild());
       ASSERT_PTR(psource);
 
 	   vertex = psource->Value ();
    }
 
    // load the fragment shader
-   shader_part = (TiXmlElement*)code_part->FirstChild("fragment");
-   if ( shader_part && OpenGL::supportsFragmentShader(pathtype) )
+   pshader_part = static_cast<const TiXmlElement*>(pcode_part->FirstChild("fragment"));
+   if ( pshader_part && OpenGL::supportsFragmentShader(pathtype) )
    {
 	   // see if there is a GLSL shader available
-      TiXmlText* psource = (TiXmlText*)shader_part->FirstChild();
+      const TiXmlText* psource = static_cast<const TiXmlText*>(pshader_part->FirstChild());
       ASSERT_PTR(psource);
 
 	   fragment = psource->Value ();
@@ -244,7 +242,7 @@ bool Effect::processCode(const TiXmlElement* effect, const std::string& path)
    {
       useCombiners = true;
 
-      if ( stages.size() > 0 && !processCombiners(code_part) )
+      if ( !stages.empty() && !processCombiners(*pcode_part) )
          return false;
    }
 
@@ -256,10 +254,10 @@ bool Effect::processCode(const TiXmlElement* effect, const std::string& path)
 	 \brief Loads in the texture combiner setup per stage.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::processCombiners( const TiXmlElement* shader_part )
+bool Effect::processCombiners(const TiXmlElement& shader_part)
 {
-	TiXmlElement* combiner_part = (TiXmlElement*)shader_part->FirstChild("combiner");
-   if ( combiner_part == NULL )
+	const TiXmlElement* pcombiner_part = static_cast<const TiXmlElement*>(shader_part.FirstChild("combiner"));
+   if ( pcombiner_part == NULL )
    {
       Log::getInstance().error("Effect.processCombiners: could not find combiner for effect.");
       return true;
@@ -267,23 +265,23 @@ bool Effect::processCombiners( const TiXmlElement* shader_part )
 
 	char stagebuf[100];
 	sprintf (stagebuf, "stage0");
-	TiXmlElement* stage_part = (TiXmlElement*)combiner_part->FirstChild(stagebuf);
-	for (int i = 0; i < stages.size(); ++i)
+	const TiXmlElement* pstage_part = static_cast<const TiXmlElement*>(pcombiner_part->FirstChild(stagebuf));
+   for ( std::size_t i = 0; i < stages.size(); ++i )
    {
-		if ( stage_part == NULL )
+		if ( pstage_part == NULL )
       {
 			Log::getInstance().error("Effect.processCombiners: there is no combiner for stage %d", i);
 			return false;
 		}
 
 		// get the text with the combiner, source0 and source1
-		stages[i].combiner = getCombinerValue (stage_part->Attribute("combiner"));
-		stages[i].source0 = getSourceValue (stage_part->Attribute("source0"));
-		stages[i].source1 = getSourceValue (stage_part->Attribute("source1"));
+		stages[i].combiner = getCombinerValue(pstage_part->Attribute("combiner"));
+		stages[i].source0 = getSourceValue   (pstage_part->Attribute("source0"));
+		stages[i].source1 = getSourceValue   (pstage_part->Attribute("source1"));
 
 		// get next stage
 		sprintf (stagebuf, "stage%d", i+1);
-		stage_part = (TiXmlElement*)combiner_part->IterateChildren (stagebuf, stage_part);
+		pstage_part = static_cast<const TiXmlElement*>(pcombiner_part->IterateChildren (stagebuf, pstage_part));
 	}
 
 	return true;

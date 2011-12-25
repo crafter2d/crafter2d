@@ -19,10 +19,6 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE void CGEngine::operator=( const CGEngine& e )
-{
-}
-
 INLINE bool CGEngine::hasContext()
 {
    return cgContext != 0;

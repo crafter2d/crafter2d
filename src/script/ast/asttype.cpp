@@ -268,7 +268,7 @@ bool ASTType::equals(const ASTType& that) const
 /// \brief Test whether that is greater than this type
 bool ASTType::greater(const ASTType& that) const
 {
-   if ( isNull() && that.isObject() )
+   if ( isNull() && (that.isObject()  || that.isString()) )
    {
       return true;
    }

@@ -126,6 +126,7 @@ public:
 
  // notification
    void notifyObjectWorldCollision(Object& object, Bound& bound, int side, bool begin);
+   void notifyObjectObjectCollision(Object& object, Object& target, int side, bool begin);
 
  // rendering
    WorldRenderer* createRenderer();

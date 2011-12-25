@@ -29,14 +29,14 @@
 #include "animation.h"
 #include "object.h"
 
-Animator* Animator::construct(TiXmlElement* pXmlObject, Object& object)
+Animator* Animator::construct(const TiXmlElement& xmlObject, Object& object)
 {
    Animator* panimator = NULL;
-   TiXmlElement* pXmlAnimation = (TiXmlElement*)pXmlObject->FirstChild("animations");
+   const TiXmlElement* pXmlAnimation = static_cast<const TiXmlElement*>(xmlObject.FirstChild("animations"));
 	if ( pXmlAnimation != NULL )
    {
       panimator = new Animator();
-      panimator->loadFromXML(pXmlAnimation, object);
+      panimator->loadFromXML(*pXmlAnimation, object);
    }
 
    return panimator;
@@ -47,12 +47,12 @@ Animator::Animator():
    mAnimations(),
    mAnimationSpeed(0),
    mAnimationDelta(0),
-   _animFrameWidth(0),
-   _animFrameCount(0),
+   mAnimFrameWidth(0),
+   mAnimFrameCount(0),
    mCurrentAnimation(0),
-   animIndex(0),
-   animFrame(0),
-   _animChanged(false)
+   mAnimIndex(0),
+   mAnimFrame(0),
+   mAnimChanged(false)
 {
 }
 
@@ -60,68 +60,64 @@ Animator::~Animator()
 {
 }
 
-bool Animator::loadFromXML(TiXmlElement* pXmlAnimation, Object& object)
+bool Animator::loadFromXML(const TiXmlElement& xmlanimation, Object& object)
 {
 	// try to load the animation sequences
    int animCount = 0;
-	if ( pXmlAnimation->QueryIntAttribute("count", &animCount) == TIXML_SUCCESS )
-   {
-		if ( animCount > 0 )
-      {
-			// query the animation speed (in mm)
-			if (pXmlAnimation->QueryFloatAttribute("speed", &mAnimationSpeed) != TIXML_SUCCESS)
-				mAnimationSpeed = 100;
-
-         mAnimationSpeed /= 1000.0f;
-
-			// allocate a new animationset
-			mAnimations = SharedPtr<AnimationSet>(new AnimationSet());
-         if ( !mAnimations.hasPointer() || !parseAnimations(pXmlAnimation, animCount) )
-				return false;
-
-         // query the frame count
-         if ( pXmlAnimation->QueryIntAttribute("frames", (int*)&_animFrameCount) != TIXML_SUCCESS)
-            determineFrameCount();
-		}
-	}
-	else
+	if ( xmlanimation.QueryIntAttribute("count", &animCount) != TIXML_SUCCESS )
    {
 		// found an animation object without animations, better use Object class then
       Log::getInstance().warning("Found animatable object without animations.");
 	}
+   
+   if ( animCount > 0 )
+   {
+		// query the animation speed (in mm)
+		if ( xmlanimation.QueryFloatAttribute("speed", &mAnimationSpeed) != TIXML_SUCCESS )
+			mAnimationSpeed = 100;
 
+      mAnimationSpeed /= 1000.0f;
+
+		// allocate a new animationset
+		mAnimations = SharedPtr<AnimationSet>(new AnimationSet());
+      if ( !mAnimations.hasPointer() || !parseAnimations(xmlanimation, animCount) )
+			return false;
+
+      // query the frame count
+      if ( xmlanimation.QueryIntAttribute("frames", (int*)mAnimFrameCount) != TIXML_SUCCESS)
+         determineFrameCount();
+	}
+	
    const Texture& texture = object.getTexture();
    const Vector& size     = object.getSize();
-   _animFrameWidth = texture.getWidth() / size.x;
-   mTextureCoords.generateFromTexture(texture, size.x, size.y, _animFrameCount);
+   mAnimFrameWidth = texture.getWidth() / size.x;
+   mTextureCoords.generateFromTexture(texture, size.x, size.y, mAnimFrameCount);
 
 	return true;
 }
 
-bool Animator::parseAnimations(TiXmlElement* pxmlAnimations, int count)
+bool Animator::parseAnimations(const TiXmlElement& xmlanimations, int count)
 {
    char buffer[50];
 
    for ( int i = 1; i <= count; i++ )
    {
 		sprintf (buffer, "anim%d", i);
-		TiXmlElement* pxmlAnim = (TiXmlElement*)pxmlAnimations->FirstChild(buffer);
+		const TiXmlElement* pxmlAnim = static_cast<const TiXmlElement*>(xmlanimations.FirstChild(buffer));
 		if ( pxmlAnim == NULL )
       {
          Log::getInstance().error("AnimObject.create: can not find %s", buffer);
 			return false;
 		}
-		else
-      {
-			// parse the comma seperated string
-			TiXmlText* xmlValue = (TiXmlText*)pxmlAnim->FirstChild();
-			Animation *panim = new Animation();
-			getAnimations().add(panim);
 
-			// now parse the animation sequence
-			parseAnimation(xmlValue->Value(), panim);
-			panim->add(-1);
-		}
+      // parse the comma seperated string
+		const TiXmlText* xmlValue = static_cast<const TiXmlText*>(pxmlAnim->FirstChild());
+		Animation *panim = new Animation();
+		getAnimations().add(panim);
+
+		// now parse the animation sequence
+		parseAnimation(xmlValue->Value(), panim);
+		panim->add(-1);
 	}
 
    return true;
@@ -158,20 +154,20 @@ void Animator::parseAnimation (const char* sequence, Animation *panimation)
 
 void Animator::determineFrameCount()
 {
-   _animFrameCount = 0;
+   mAnimFrameCount = 0;
    for ( int anim = 0; anim < getAnimations().size(); ++anim )
    {
       const Animation& animation = getAnimations()[anim];
       for ( Animation::size_type frameindex = 0; frameindex < animation.size(); ++frameindex )
       {
          int frame = animation[frameindex];
-         if ( frame > _animFrameCount )
-            _animFrameCount = frame;
+         if ( frame > mAnimFrameCount )
+            mAnimFrameCount = frame;
       }
    }
 
    // make sure that the count is max + 1 (otherwise the last frame gets no texture coordinates.
-   ++_animFrameCount;
+   ++mAnimFrameCount;
 }
 
 //--------------
@@ -194,15 +190,15 @@ void Animator::nextFrame()
    if ( getAnimations().size() > 0 )
    {
 	   // move to next frame
-	   animIndex++;
+	   mAnimIndex++;
       const Animation& animation = getAnimations()[mCurrentAnimation];
-	   animFrame = animation[animIndex];
+	   mAnimFrame = animation[mAnimIndex];
 
 	   // wrap if neccessary
-	   if (animFrame == -1)
+	   if (mAnimFrame == -1)
       {
-		   animIndex = 0;
-		   animFrame = animation[animIndex];
+		   mAnimIndex = 0;
+		   mAnimFrame = animation[mAnimIndex];
 	   }
    }
 }
@@ -219,14 +215,14 @@ void Animator::setAnimation(int animation)
 	if ( animation != mCurrentAnimation )
    {
 		mCurrentAnimation = animation;
-		animIndex = 0;
-      animFrame = 0;
+		mAnimIndex = 0;
+      mAnimFrame = 0;
 
-      _animChanged = true;
+      mAnimChanged = true;
 	}
 }
 
 const TextureCoordinate& Animator::getTextureCoordinate()
 {
-   return mTextureCoords[animFrame];
+   return mTextureCoords[mAnimFrame];
 }

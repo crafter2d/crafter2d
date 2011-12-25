@@ -18,7 +18,7 @@ const std::string& Resource::getName() const
    return mName;
 }
 
-void Resource::setName(const std::string name)
+void Resource::setName(const std::string& name)
 {
    mName = name;
 }

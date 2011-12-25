@@ -26,18 +26,19 @@ HDC Movie::hdc = CreateCompatibleDC(0);
 #endif
 
 Movie::Movie()
+ : 
 #ifdef WIN32
- : mpStream(NULL),
+   mpStream(NULL),
    mpFramePointer(NULL),
    mDIB(NULL),
    mBitmap(NULL),
+#endif
    mNumberOfFrames(0),
    mFramesPerSecond(0),
    mCurrentFrame(0),
    mUpdateRate(0.0f),
    mFrameTime(0.0f),
-   mpData(0)
-#endif
+   mpData(NULL)
 {
 }
 
@@ -66,14 +67,17 @@ void Movie::release()
 
 bool Movie::load(const char* file)
 {
+   bool ok = false;
+
 #ifdef WIN32
-	bool ok = false;
    filename = file;
    tex = 0;
 
    target = getRenderTarget ();
    if (strstr(file, "avi") != NULL)
+   {
       ok = loadAVI(file);
+   }
 	else 
    {
       Log::getInstance().error("Movie.load: unknown movie format (%s)", file);
@@ -82,9 +86,9 @@ bool Movie::load(const char* file)
 	
 	glTexParameteri (target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri (target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	return ok;
 #endif
-	return true;
+
+	return ok;
 }
 
 bool Movie::loadAVI(const char* filename)

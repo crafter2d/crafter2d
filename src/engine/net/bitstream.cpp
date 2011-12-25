@@ -39,7 +39,11 @@ BitStream::BitStream():
    buf = new char[1024];
 }
 
-BitStream::BitStream(int reserve)
+BitStream::BitStream(int reserve):
+   buf(NULL),
+   pos(0),
+   size(0),
+   bufsize(0)
 {
 }
 

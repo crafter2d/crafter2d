@@ -12,7 +12,7 @@ public:
 
  // get/set
    const std::string& getName() const;
-   void               setName(const std::string name);
+   void               setName(const std::string& name);
 
 private:
    std::string mName;
