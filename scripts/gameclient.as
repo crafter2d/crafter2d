@@ -1,8 +1,6 @@
 
 use engine.ui.*;
 
-use client;
-
 class GameClient extends Client
 {
 	public GameClient()
@@ -14,7 +12,7 @@ class GameClient extends Client
 	{
 		if ( super.create() )
 		{			
-			MessageBox.showInformation("This is a messagebox!");
+			//MessageBox.showInformation("This is a messagebox!");
 			
 			return true;
 		}

@@ -1,16 +1,25 @@
 
 use box2d.box2dsimulator;
 
-use bound;
-use scenegraph;
-use creature;
-
 class World
 {
 	public native World()
 	{
 		super();
 	}
+	
+	// Collision detection
+	
+	public void onObjectCollision(Object source, Object target, int side, boolean begin)
+	{
+		if ( source instanceof Collidable )
+		{
+			Collidable col = (Collidable) source;
+			col.collide(target, side, begin);
+		}
+	}
+	
+	// Natives
 	
 	public native string getName();
 	public native SceneGraph getSceneGraph();
@@ -20,20 +29,4 @@ class World
 	public native void setFollowObject(Creature creature);
 	public native void setFollowBorders(int left, int right, int top, int bottom);
 	public native Box2DSimulator getSimulator();
-	
-	public void onObjectWorldCollision(Creature creature, Bound bound, int side, boolean begin)
-	{
-		if ( side == 1 ) // bottom
-		{
-			creature.setOnGround(begin);
-		}
-	}
-	
-	public void onObjectObjectCollision(Creature source, Creature target, int side, boolean begin)
-	{
-		if ( side == 1 ) // bottom
-		{
-			source.setOnGround(begin);
-		}
-	}
 }

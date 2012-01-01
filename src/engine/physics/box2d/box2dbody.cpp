@@ -139,7 +139,7 @@ void Box2DBody::load(const TiXmlElement& element)
    
 void Box2DBody::generateSensors()
 {
-   mpBottomSensor = createSensor(mHalfWidth, 0.1f, b2Vec2(0, mHalfHeight));
+   mpBottomSensor = createSensor(mHalfWidth, 0.2f, b2Vec2(0, mHalfHeight));
    mpLeftSensor   = createSensor(0.1f, mHalfHeight, b2Vec2(-mHalfWidth, 0));
    mpRightSensor  = createSensor(0.1f, mHalfHeight, b2Vec2(mHalfWidth, 0));
 }

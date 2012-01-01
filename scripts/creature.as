@@ -1,14 +1,12 @@
 
 use box2d.box2dbody;
 
-use vector2d;
-use world;
-use inputforcegenerator;
-
-class Creature
+class Creature implements Collidable
 {
 	private InputForceGenerator mGenerator;
-	private boolean mOnGround = false;
+	private int mOnGround = 0;
+	
+	// Static interface
 	
 	public static Creature construct(World world, string name, Vector2D position, string file)
 	{
@@ -24,19 +22,7 @@ class Creature
 		return object;
 	}
 	
-	public native Creature();
-	public native boolean create(World parent, string file);
-	public native int getId();
-	public native Vector2D getPosition();
-	public native void setPosition(Vector2D position);
-	public native Vector2D getVelocity();
-	public native void setVelocity(Vector2D vel);
-	public native void setName(string name);
-	public native void setAnimation(int index);
-	public native boolean direction();
-	public native void flip();
-	public native Box2DBody getBody();
-	public native void setController(InputController c);
+	// Operations
 	
 	public InputForceGenerator getForceGenerator()
 	{
@@ -54,23 +40,48 @@ class Creature
 	
 	public boolean isOnGround()
 	{
-		return mOnGround;
+		return mOnGround > 0;
 	}
 	
-	public void setOnGround(boolean onground)
+	public void collide(Object target, int side, boolean begin)
 	{
-		mOnGround = onground;
+		if ( side == 1 ) // bottom sensor
+		{
+			if ( begin )
+			{
+				mOnGround++;
+			}
+			else
+			{
+				mOnGround--;
+			}
+		}
 	}
 	
 	public void jump()
 	{
-		if ( mOnGround )
+		if ( isOnGround() )
 		{
 			Vector2D vel = new Vector2D();
 			vel.setY(-25.0);
 			
 			mGenerator.setImpulse(vel);
-			mOnGround = false;
 		}
 	}
+	
+	// Natives
+	
+	public native Creature();
+	public native boolean create(World parent, string file);
+	public native int getId();
+	public native Vector2D getPosition();
+	public native void setPosition(Vector2D position);
+	public native Vector2D getVelocity();
+	public native void setVelocity(Vector2D vel);
+	public native void setName(string name);
+	public native void setAnimation(int index);
+	public native boolean direction();
+	public native void flip();
+	public native Box2DBody getBody();
+	public native void setController(InputController c);
 }

@@ -69,6 +69,8 @@ public:
    std::string getNativeClassName() const;
 
    bool isBaseClass(const VirtualClass& base) const;
+   bool implements(const VirtualClass& interfce) const;
+
    const VirtualLookupTable& getLookupTable(int index) const;
    const VirtualFunctionTableEntry* getDefaultConstructor() const;
 

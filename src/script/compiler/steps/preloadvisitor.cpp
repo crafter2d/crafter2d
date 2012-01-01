@@ -2,6 +2,7 @@
 #include "preloadvisitor.h"
 
 #include "script/compiler/compiler.h"
+#include "script/compiler/compilecontext.h"
 #include "script/compiler/exceptions/classnotfoundexception.h"
 
 #include "script/ast/ast.h"
@@ -57,15 +58,22 @@ void PreloadVisitor::visit(ASTClass& ast)
    mpClass = &ast;
    mContext.addClass(&ast);
 
-   if ( ast.hasBaseType() )
+   if ( ast.getName() != "Object" )
    {
-      if ( load(ast.getBaseType()) )
+      if ( !ast.hasBaseType() )
       {
-         ast.setBaseClass(mContext.resolveClass(ast.getBaseType().getObjectName()));
+         ASTType* ptype = new ASTType(ASTType::eObject);
+         ptype->setObjectName("System.Object");
+         ast.setBaseType(ptype);
+      }
+
+      if ( !ast.hasBaseType() || !load(ast.getBaseType()) )
+      {
+         mContext.getLog().error("Can not determine base type of " + ast.getFullName());
       }
       else
       {
-         return;
+         ast.setBaseClass(mContext.resolveClass(ast.getBaseType().getObjectName()));
       }
    }
    

@@ -1,9 +1,6 @@
 
 use box2d.*;
 
-use vector2d;
-use world;
-
 class Bridge
 {
 	public void create(World world, Vector2D left, Vector2D right)

@@ -1,6 +1,4 @@
 
-use vector2d;
-
 class InputForceGenerator
 {
 	public native InputForceGenerator();

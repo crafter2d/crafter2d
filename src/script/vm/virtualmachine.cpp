@@ -945,7 +945,8 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             Variant object = mStack.back();  mStack.pop_back();
             ASSERT(object.isObject());
 
-            if ( object.asObject()->getClass().isBaseClass(*pcompareclass) )
+            if ( object.asObject()->getClass().isBaseClass(*pcompareclass) 
+              || object.asObject()->getClass().implements(*pcompareclass) )
             {
                mStack.push_back(Variant(true));
             }

@@ -190,6 +190,19 @@ bool VirtualClass::isBaseClass(const VirtualClass& base) const
    }
 }
 
+bool VirtualClass::implements(const VirtualClass& interfce) const
+{
+   if ( mpDefinition->getInterfaces().contains(interfce.getDefinition()) )
+   {
+      return true;
+   }
+   else if ( hasBaseClass() )
+   {
+      return getBaseClass().implements(interfce);
+   }
+   return false;
+}
+
 const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
 {
    ASSERT(index >= 0 && index < mLookupTables.size());

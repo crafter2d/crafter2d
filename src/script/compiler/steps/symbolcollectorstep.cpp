@@ -54,13 +54,6 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
 
    if ( ast.getName().compare("Object") != 0 )
    {
-      if ( !ast.hasBaseType() )
-      {
-         ASTType* ptype = new ASTType(ASTType::eObject);
-         ptype->setObjectName("System.Object");
-         ast.setBaseType(ptype);
-      }
-
       resolveType(ast.getBaseType());
    }
 
