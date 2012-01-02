@@ -30,6 +30,7 @@
 
 #include "script/common/variant.h"
 #include "script/compiler/compiler.h"
+#include "script/gc/garbagecollector.h"
 
 #include "virtualcompilecallback.h"
 #include "virtualobjectreference.h"
@@ -254,16 +255,21 @@ private:
    
  // exception
    void throwException(const std::string& exceptionname, const std::string& reason = "");
-   bool handleException(const VirtualException& e);
+   bool handleException(const VirtualException& exception);
+   void displayException(const VirtualException& exception);
 
  // class loading
    VirtualClass* doLoadClass(const std::string& classname);
    void          classLoaded(VirtualClass* pclass);
    void          createClass(const VirtualClass& aclass);
 
+ // stack operations
+   void shrinkStack(int newsize);
+
    VirtualContext&               mContext;
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
+   GarbageCollector              mGC;
    Stack                         mStack;
    CallStack                     mCallStack;
    VirtualCall                   mCall;

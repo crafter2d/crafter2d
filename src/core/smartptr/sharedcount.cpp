@@ -59,6 +59,12 @@ bool SharedCount::isUnique() const
    return (*mpCounter) == 1;
 }
 
+int SharedCount::count() const
+{
+   ASSERT_PTR(mpCounter);
+   return (*mpCounter);
+}
+
 // - Operations
 
 void SharedCount::reset()

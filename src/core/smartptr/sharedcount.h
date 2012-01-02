@@ -33,6 +33,7 @@ public:
 
  // query
    bool isUnique() const;
+   int count() const;
 
  // operations
    void reset();

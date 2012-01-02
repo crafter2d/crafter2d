@@ -238,23 +238,15 @@ void VirtualMachine::execute(const VirtualObjectReference& object, const std::st
    }
    catch ( VirtualException* pexception )
    {
-      const VirtualObjectReference& exceptionobject = pexception->getException();
-
-      execute(exceptionobject, "getCause");
-      execute(exceptionobject, "getCallStack");
-
-      std::string callstack = mStack.back().asString();
-      mStack.pop_back();
-
-      std::string cause = mStack.back().asString();
-      mStack.pop_back();
-
-      std::cout << cause << std::endl << callstack;
+      displayException(*pexception);
    }
    catch (...)
    {
       // oi
    }
+
+   // for now run the garbage collector here. have to find the right spot for it.
+   mGC.gc(*this);
 }
 
 void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry)
@@ -294,12 +286,12 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    if ( mRetVal )
    {
       Variant result = mStack.back();
-      mStack.resize(mCall.mStackBase);
+      shrinkStack(mCall.mStackBase);
       mStack.push_back(result);
    }
    else
    {
-      mStack.resize(mCall.mStackBase);
+      shrinkStack(mCall.mStackBase);
    }
 
    mCall = mCallStack.top();
@@ -931,10 +923,13 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
 
       case VirtualInstruction::ePop:
+         shrinkStack(mStack.size() - instruction.getArgument());
+         /*
          for ( int index = 0; index < instruction.getArgument(); index++ )
          {
             mStack.pop_back();
          }
+         */
          break;
 
       case VirtualInstruction::eInstanceOf:
@@ -1210,14 +1205,14 @@ void VirtualMachine::throwException(const std::string& exceptionname, const std:
    throw new VirtualException(exception);
 } 
 
-bool VirtualMachine::handleException(const VirtualException& e)
+bool VirtualMachine::handleException(const VirtualException& exception)
 {
    if ( mCall.mGuards.size() > 0 )
    {
       VirtualCall::VirtualGuard& guard = mCall.mGuards.back();
       if ( mCall.mInstructionPointer <= guard.mJumpTo )
       {
-         mException = e.getException();
+         mException = exception.getException();
 
          mStack.push_back(Variant(mException));
 
@@ -1230,11 +1225,27 @@ bool VirtualMachine::handleException(const VirtualException& e)
          // exception within a catch handler, so see if there is another try/catch around this one
          mCall.mGuards.pop_back();
          
-         return handleException(e);
+         return handleException(exception);
       }
    }
    
    return false;
+}
+
+void VirtualMachine::displayException(const VirtualException& exception)
+{
+   const VirtualObjectReference& exceptionobject = exception.getException();
+
+   execute(exceptionobject, "getCause");
+   execute(exceptionobject, "getCallStack");
+
+   std::string callstack = mStack.back().asString();
+   mStack.pop_back();
+
+   std::string cause = mStack.back().asString();
+   mStack.pop_back();
+
+   std::cout << cause << std::endl << callstack;
 }
 
 // - Object creation
@@ -1291,29 +1302,25 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
    if ( it != mNativeObjects.end() )
    {
-      // validate that it still is the same pointer
-      if ( it->second->getNativeObject() == pobject )
-         return it->second;
+      ASSERT(it->second->getNativeObject() == pobject);
+      return it->second;
    }
    
+   VirtualObjectReference object(instantiate(classname, -1));
+   if ( object->hasNativeObject() )
    {
-      VirtualObjectReference object(instantiate(classname, -1));
-      if ( object->hasNativeObject() )
-      {
-         // TODO: currently new native objects can be constructed during native constructors.
-         //       while actually we have an instance already -> waste of CPU & memory
-         unregisterNative(object);
-      }
-      
-      object->setNativeObject(pobject);
-      object->setOwner(owned);
-
-      ASSERT(object->getNativeObject() == pobject);
-
-      mNativeObjects[pobject] = object;
-
-      return object;
+      // TODO: currently new native objects can be constructed during native constructors.
+      //       while actually we have an instance already -> waste of CPU & memory
+      unregisterNative(object);
    }
+      
+   object->setNativeObject(pobject);
+   object->setOwner(owned);
+
+   ASSERT(object->getNativeObject() == pobject);
+   mNativeObjects[pobject] = object;
+
+   return object;
 }
 
 VirtualArrayReference VirtualMachine::instantiateArray()
@@ -1338,19 +1345,17 @@ void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnativ
 
       object->setNativeObject(pnative);
    }
-#ifdef _DEBUG
-   else
-   {
-      ASSERT(it->second->getNativeObject() == pnative);
-   }
-#endif
 }
 
 void VirtualMachine::unregisterNative(VirtualObjectReference& object)
 {
-   NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
-   if ( it != mNativeObjects.end() && it->second.isUnique() )
+   if ( object.uses() == 2 )
    {
+      ASSERT(object->hasNativeObject());
+
+      NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
+      ASSERT(it != mNativeObjects.end());
+      
       mNativeObjects.erase(it);
    }
 }
@@ -1477,4 +1482,30 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
       
       execute(classloader, entry);
    }
+}
+
+// - Stack operations
+
+void VirtualMachine::shrinkStack(int newsize)
+{
+   int diff = mStack.size() - newsize;
+   ASSERT(diff >= 0);
+
+   if ( diff > 0 )
+   {
+      Stack::iterator it = mStack.begin() + newsize;
+      for ( ; it != mStack.end(); ++it )
+      {
+         if ( mStack.back().isObject() )
+         {
+            VirtualObjectReference& ref = mStack.back().asObject();
+            if ( ref.isUnique() || (ref->hasNativeObject() && ref.uses() == 2) )
+            {
+               mGC.collect(ref);
+            }
+         }
+      }
+
+      mStack.resize(newsize);
+   }   
 }

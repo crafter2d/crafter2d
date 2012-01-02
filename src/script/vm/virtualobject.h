@@ -25,6 +25,7 @@
 class Variant;
 class VirtualClass;
 class VirtualObjectReference;
+class VirtualMachine;
 
 class SCRIPT_API VirtualObject
 {

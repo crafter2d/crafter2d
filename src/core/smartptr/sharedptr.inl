@@ -72,6 +72,12 @@ bool SharedPtr<T>::isUnique() const
    return mCount.isUnique();
 }
 
+template<class T>
+int SharedPtr<T>::uses() const
+{
+   return mCount.count();
+}
+
 // - Operations
 
 template<class T>

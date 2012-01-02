@@ -25,6 +25,8 @@
 
 #include "script/common/variant.h"
 
+#include "virtualmachine.h"
+
 VirtualObject::VirtualObject():
    mpClass(NULL),
    mpNativeObject(NULL),

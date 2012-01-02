@@ -23,6 +23,8 @@ public:
 
    bool isUnique() const { return mObject.isUnique(); }
    bool isNull() const { return !mObject.hasPointer(); }
+   int uses() const { return mObject.uses(); }
+
    VirtualObject* ptr() { return mObject.getPointer(); }
    void release() { mObject = SharedPtr<VirtualObject>(); }
    void clear() { mObject.reset(); }

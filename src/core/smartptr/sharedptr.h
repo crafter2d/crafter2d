@@ -44,6 +44,7 @@ public:
 
  // query
    bool isUnique() const;
+   int uses() const;
 
  // operations
    void reset();
