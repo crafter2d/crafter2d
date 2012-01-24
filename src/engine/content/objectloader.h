@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,29 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _OBJECT3D_H_
-#define _OBJECT3D_H_
+#ifndef ACTOR_LOADER_H
+#define ACTOR_LOADER_H
 
-#include <vector>
+#include <string>
 
-#include "object.h"
-#include "vertexbufferobject.h"
+#include "contentloader.h"
 
-struct Mesh;
+class Actor;
 
-class Object3D : public Object
+class ActorLoader : public ContentLoader
 {
 public:
-   Object3D();
-   virtual ~Object3D();
+   ActorLoader();
 
-   bool create(const char* filename=NULL);
-   
-   virtual void pack(BitStream& stream) const;
-
-protected:
-   VertexBufferObject vbo;
-   std::vector<Mesh*> meshes;
+   Actor* load(const std::string& filename);
 };
 
-#endif
+#endif // OBJECT_LOADER_H

@@ -22,7 +22,7 @@
 
 #include "core/math/vector.h"
 
-class Object;
+class Actor;
 
 /// @author Jeroen Broekhuizen
 /// \brief State in which object remains
@@ -40,8 +40,8 @@ public:
    virtual void   initialize();
    virtual bool   update(float timestep) = 0;
 
-   void           object(Object* obj);
-   Object*        object() const;
+   void           object(Actor* obj);
+   Actor*         object() const;
 
    void           start(float start);
    float          start() const;
@@ -50,7 +50,7 @@ public:
    float          duration() const;
 
 protected:
-   Object* _object;
+   Actor* _object;
    float _start;
    float _duration;
 };

@@ -23,11 +23,9 @@
 #  include "isometricrendervisitor.inl"
 #endif
 
-#include "../creature.h"
-
 IsometricRenderVisitor::IsometricRenderVisitor():
    RenderVisitor(),
-   _objects()
+   mObjects()
 {
 }
 
@@ -39,12 +37,8 @@ IsometricRenderVisitor::~IsometricRenderVisitor()
 // - Overloads
 //////////////////////////////////////////////////////////////////////////
 
-void IsometricRenderVisitor::visitObject(Object* object)
+void IsometricRenderVisitor::visitActor(Actor* object)
 {
-   _objects.add(object);
+   mObjects.add(object);
 }
 
-void IsometricRenderVisitor::visitCreature(Creature* object)
-{
-   _objects.add(object);
-}

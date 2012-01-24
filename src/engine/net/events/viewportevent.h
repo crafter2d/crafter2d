@@ -37,8 +37,10 @@ public:
 
    void update(Viewport& viewport) const;
    
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
+protected:
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
 
 private:
    int   mX;

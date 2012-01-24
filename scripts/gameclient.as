@@ -12,7 +12,7 @@ class GameClient extends Client
 	{
 		if ( super.create() )
 		{			
-			//MessageBox.showInformation("This is a messagebox!");
+			// MessageBox.showInformation("This is a messagebox!");
 			
 			return true;
 		}
@@ -37,16 +37,15 @@ class GameClient extends Client
 		
 		if ( event == 1 ) // player controller
 		{
+			World world = getWorld();
+			
 			int controllerid = stream.readInt();
+			Actor controller = (Actor) world.findEntity(controllerid);
+			getPlayer().setController(controller);
 			
-			SceneGraph graph = getSceneGraph();
-			Creature creature = graph.find(controllerid);
-			graph.setController(creature);
-			
-			World world = graph.getWorld();
 			world.setFollowMode(0);
 			world.setObjectLayer(0);
-			world.setFollowObject(creature);
+			world.setFollowObject(controller);
 			world.setFollowBorders(150, 650, 100, 500);
 		}
 	}

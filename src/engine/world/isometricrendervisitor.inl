@@ -21,5 +21,5 @@
 
 INLINE SortedObjectList& IsometricRenderVisitor::getObjects()
 {
-   return _objects;
+   return mObjects;
 }

@@ -1,23 +1,23 @@
 
 use box2d.box2dbody;
 
-class Creature implements Collidable
+class Actor extends Entity implements Collidable
 {
 	private InputForceGenerator mGenerator;
 	private int mOnGround = 0;
 	
 	// Static interface
 	
-	public static Creature construct(World world, string name, Vector2D position, string file)
+	public static Actor construct(Process process, string name, Vector2D position, string file)
 	{
-		Creature object = new Creature();
+		ContentManager contentmgr = process.getContentManager();
+	
+		Actor object = (Actor)contentmgr.loadEntity(file);
 		object.setPosition(position);
 		object.setName(name);
 		
-		if ( !object.create(world, file) )
-		{
-			throw new InvalidActorException();
-		}
+		World world = process.getWorld();
+		world.add(object);
 		
 		return object;
 	}
@@ -71,9 +71,8 @@ class Creature implements Collidable
 	
 	// Natives
 	
-	public native Creature();
-	public native boolean create(World parent, string file);
-	public native int getId();
+	private native Actor();
+	
 	public native Vector2D getPosition();
 	public native void setPosition(Vector2D position);
 	public native Vector2D getVelocity();

@@ -19,14 +19,14 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE const Object& Body::getObject() const
+INLINE const Actor& Body::getActor() const
 {
-   return mObject;
+   return mActor;
 }
 
-INLINE Object& Body::getObject()
+INLINE Actor& Body::getActor()
 {
-   return mObject;
+   return mActor;
 }
 
 INLINE const Vector& Body::getPosition() const
@@ -37,6 +37,7 @@ INLINE const Vector& Body::getPosition() const
 INLINE void Body::setPosition(const Vector& pos)
 {
    mPosition = pos;
+   notifyPositionChanged();
 }
 
 INLINE float Body::getAngle() const

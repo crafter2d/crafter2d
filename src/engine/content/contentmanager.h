@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,27 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef CONTENT_MANAGER_H
+#define CONTENT_MANAGER_H
 
-#ifndef SERVER_SCENEGRAPH_LISTENER_H_
-#define SERVER_SCENEGRAPH_LISTENER_H_
+#include <map>
+#include <string>
 
-#include "scenegraphlistener.h"
+#include "engine/idmanager.h"
 
-class Server;
+class Entity;
+class Process;
+class World;
 
-class ServerSceneGraphListener : public SceneGraphListener
+class ContentManager
 {
 public:
-   explicit ServerSceneGraphListener(Server& server);
-   virtual ~ServerSceneGraphListener();
+   ContentManager(Process& process);
 
- // notifications
-   virtual void notifyObjectAdded(const SceneObject& object);
-   virtual void notifyObjectRemoved(const SceneObject& object);
-   virtual void notifyObjectNameChanged(const SceneObject& object);
+ // loading
+   Entity*  loadEntity(const std::string& filename);
+   World*   load(const std::string& filename);
 
 private:
-   Server& mServer;
+
+   Process& mProcess;
 };
 
-#endif // SCENEGRAPH_LISTENER_H
+#endif // CONTENT_MANAGER_H

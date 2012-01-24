@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,38 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef NAME_CHANGE_OBJECT_EVENT_H_
-#define NAME_CHANGE_OBJECT_EVENT_H_
+#ifndef CONTENT_LOADER_H
+#define CONTENT_LOADER_H
 
-#include "engine/net/netevent.h"
-#include "engine/idmanager.h"
+class Simulator;
 
-class SceneObject;
-
-/**
-@author Jeroen Broekhuizen
-*/
-class NameChangeObjectEvent : public NetEvent
+class ContentLoader
 {
 public:
-   DEFINE_REPLICATABLE(NameChangeObjectEvent)
 
-            NameChangeObjectEvent();
-   explicit NameChangeObjectEvent(const SceneObject& object);
-   
-   Id                 getId() const;
-   const std::string& getName() const;
-
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
+   Simulator& getSimulator() { return *mpSimulator; }
+   void       setSimulator(Simulator& simulator) { mpSimulator = &simulator; }
 
 private:
-   Id          mId;
-   std::string mName;
+   Simulator* mpSimulator;
 };
 
-#ifdef JENGINE_INLINE
-#  include "namechangeobjectevent.inl"
-#endif
-
-#endif
+#endif // CONTENT_LOADER_H

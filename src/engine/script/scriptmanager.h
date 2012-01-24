@@ -104,6 +104,7 @@ public:
  // loading
    Script*                 loadClass(const std::string& classname);
    Script*                 loadExpression(const std::string& expression);
+   Script*                 nativeScript(const std::string& classname, void* pobject);
    
  // execution
    bool                    executeScript(const std::string& classname, const std::string& function);

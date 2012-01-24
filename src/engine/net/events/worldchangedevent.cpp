@@ -17,22 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "worldchangedevent.h"
+#ifndef JENGINE_INLINE
+#  include "worldchangedevent.inl"
+#endif
 
-#ifndef SCENEGRAPH_LISTENER_H_
-#define SCENEGRAPH_LISTENER_H_
+#include "engine/world/world.h"
 
-class SceneObject;
+IMPLEMENT_REPLICATABLE(WorldChangedEventId, WorldChangedEvent, NetEvent)
 
-class SceneGraphListener
+WorldChangedEvent::WorldChangedEvent():
+   NetEvent(worldchangedEvent),
+   mFilename()
 {
-public:
-   SceneGraphListener();
-   virtual ~SceneGraphListener();
+}
 
- // notifications
-   virtual void notifyObjectAdded(const SceneObject& object);
-   virtual void notifyObjectRemoved(const SceneObject& object);
-   virtual void notifyObjectNameChanged(const SceneObject& object);
-};
+WorldChangedEvent::WorldChangedEvent(const World& world):
+   NetEvent(worldchangedEvent),
+   mFilename(world.getFilename())
+{
+}
 
-#endif // SCENEGRAPH_LISTENER_H
+// - Streaming
+
+void WorldChangedEvent::doPack(BitStream& stream) const
+{
+   NetEvent::doPack(stream);
+
+   stream << mFilename;
+}
+
+void WorldChangedEvent::doUnpack(BitStream& stream, int dirtyflag)
+{
+   NetEvent::doUnpack(stream, dirtyflag);
+
+   stream >> mFilename;
+}

@@ -27,6 +27,9 @@ class IdManager
 public:
    static IdManager& getInstance();
 
+   static Id maxId;
+   static Id invalidId;
+
    Id getNextId();
 
 private:

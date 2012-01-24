@@ -19,19 +19,17 @@
  ***************************************************************************/
 #include "simulationfiller.h"
 
-#include "../world/world.h"
-#include "../world/bound.h"
-
-#include "../object.h"
+#include "engine/world/world.h"
+#include "engine/world/bound.h"
 
 #include "collisionplane.h"
 #include "simulator.h"
 
 // static 
-void SimulationFiller::add(Simulator& simulator, SceneObject& object)
+void SimulationFiller::add(Simulator& simulator, Entity& entity)
 {
    SimulationFiller filler(simulator);
-   filler.traverse(object);
+   filler.traverse(entity);
 }
 
 SimulationFiller::SimulationFiller(Simulator& simulator):

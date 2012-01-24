@@ -27,25 +27,28 @@ class GameServer extends Server
 		mStarted = true;
 		mPlayer = player;
 		
-		if ( !loadWorld("../worlds/map1.jwl", "World") )
+		World world = getContentManager().load("../worlds/map1.jwl");
+		if ( world == null )
 		{
-			// complain!
+			// meh, something went terribly wrong..
 		}
 		
-		World world = getSceneGraph().getWorld();
-		player.setCreature(createPlayer(player, world));
+		setWorld(world);
 		
-		createObjects(world);
+		Actor controller = createPlayer(player);
+		player.setController(controller);
+		
+		createObjects();
 		
 		// notify the client
 		mStream.clear();
 		mStream.writeInt(1);
-		mStream.writeInt(player.getCreature().getId());
+		mStream.writeInt(controller.getId());
 		
-		sendScriptEvent(mStream, player.getClient());
+		sendScriptEvent(mStream, player.getClientId());
 	}
 	
-	private Creature createPlayer(Player player, World world)
+	private Actor createPlayer(Player player)
 	{
 		Vector2D position = new Vector2D();
 		position.set(100, 30);
@@ -56,14 +59,14 @@ class GameServer extends Server
 		InputController controller = new InputController();
 		controller.setActionMap(map);
 		
-		Creature creature = Creature.construct(world, player.getName(), position, "../objects/char.xml");
-		creature.setController(controller);
-		creature.setForceGenerator(new InputForceGenerator());
+		Actor actor = Actor.construct(this, player.getName(), position, "../objects/char.xml");
+		actor.setController(controller);
+		actor.setForceGenerator(new InputForceGenerator());
 		
-		return creature;
+		return actor;
 	}
 
-	private void createObjects(World world)
+	private void createObjects()
 	{
 		Vector2D left = new Vector2D();
 		left.set(727, 422);
@@ -72,12 +75,12 @@ class GameServer extends Server
 		right.set(943, 422);
 		
 		Bridge bridge = new Bridge();
-		bridge.create(world, left, right);
+		bridge.create(this, left, right);
 		
 		left.set(180.0, 80.0);
 		for ( int index = 0; index < 4; index++ )
 		{
-			Creature.construct(world, "Box" + index, left, "../objects/box.xml");
+			Actor.construct(this, "Box" + index, left, "../objects/box.xml");
 			
 			left.setY(left.getY() - 25.0);
 		}

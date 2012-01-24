@@ -45,16 +45,18 @@ void ViewportEvent::update(Viewport& viewport) const
    viewport.setPosition(mX, mY);
 }
 
-void ViewportEvent::pack(BitStream& stream) const
+// - Streaming
+
+void ViewportEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
 
    stream << mX << mY;
 }
 
-void ViewportEvent::unpack(BitStream& stream)
+void ViewportEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
 
    stream >> mX >> mY;
 }

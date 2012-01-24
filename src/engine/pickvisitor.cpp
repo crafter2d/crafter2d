@@ -22,8 +22,7 @@
 #  include "pickvisitor.inl"
 #endif
 
-#include "object.h"
-#include "creature.h"
+#include "actor.h"
 
 PickVisitor::PickVisitor(): 
    picked(0) 
@@ -36,22 +35,15 @@ PickVisitor::PickVisitor(const Vector& pos):
 {
 }
 
-/// \fn PickVisitor::apply(Object* object) 
+/// \fn PickVisitor::apply(Actor* pactor) 
 /// \brief Tries to pick the given object.
-void PickVisitor::visitObject(Object* object) 
+void PickVisitor::visitActor(Actor* pactor) 
 {
-   Vector pos  = object->getPosition();
-   Vector size = (object->getSize() / 2);
+   Vector pos  = pactor->getPosition();
+   Vector size = (pactor->getSize() / 2);
 
    if ((pickPos.x >= (pos.x-size.x) && pickPos.x < (pos.x+size.x)) &&
       (pickPos.y >= (pos.y-size.y) && pickPos.y < (pos.y+size.y))) {
-      picked = object;
+      picked = pactor;
    }
-}
-
-/// \fn PickVisitor::visitCreature(Creature* object) 
-/// \brief Tries to pick the given object.
-void PickVisitor::visitCreature(Creature* object)
-{
-   visitObject(object);
 }

@@ -42,14 +42,14 @@ ActionEvent::ActionEvent(int action, bool down):
 // - Streaming
 //--------------------------------------------
 
-void ActionEvent::pack(BitStream& stream) const
+void ActionEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
    stream << mAction << mDown;
 }
 
-void ActionEvent::unpack(BitStream& stream)
+void ActionEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
    stream >> mAction >> mDown;
 }

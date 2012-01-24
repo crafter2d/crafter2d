@@ -24,9 +24,6 @@
 
 #include "nodevisitor.h"
 
-class Creature;
-class Object;
-
 /// Implements the pick visitor. Use it to determine if the cursor is above
 /// an object.
 class PickVisitor: public NodeVisitor
@@ -36,13 +33,12 @@ public:
    explicit          PickVisitor(const Vector& pos);
 
             void     setPickPos(Vector pos);
-            Object*  getPicked();
+            Actor*   getPicked();
 
-   virtual  void     visitCreature(Creature* object);
-   virtual  void     visitObject(Object* object);
+   virtual  void     visitActor(Actor* pactor);
 
 protected:
-   Object* picked;
+   Actor* picked;
    Vector pickPos;
 };
 

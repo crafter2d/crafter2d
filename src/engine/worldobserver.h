@@ -20,6 +20,7 @@
 #ifndef WORLD_OBSERVER_H_
 #define WORLD_OBSERVER_H_
 
+class Entity;
 class Layer;
 class Vector;
 
@@ -31,6 +32,9 @@ public:
 
    virtual void notifyLayerAdded(Layer& layer);
    virtual void notifyScrollChange(const Vector& scrollposition);
+
+   virtual void notifyEntityAdded(const Entity& entity);
+   virtual void notifyEntityRemoved(const Entity& entity);
 };
 
 #endif

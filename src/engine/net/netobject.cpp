@@ -22,11 +22,11 @@
 #  include "netobject.inl"
 #endif
 
-IMPLEMENT_REPLICATABLE(NetObjectId, NetObject, )
+ABSTRACT_IMPLEMENT_REPLICATABLE(NetObjectId, NetObject, )
 
 NetObject::NetObject():
-   dirtyFlag(0),
-   replica(false)
+   mDirtyFlag(0),
+   mIsReplica(false)
 {
 }
 
@@ -34,10 +34,27 @@ NetObject::~NetObject()
 {
 }
 
+// - Streaming
+
 void NetObject::pack(BitStream& stream) const
+{
+   stream << mDirtyFlag;
+
+   doPack(stream);
+}
+
+void NetObject::doPack(BitStream& stream) const
 {
 }
 
 void NetObject::unpack(BitStream& stream)
+{
+   int dirtyflag = 0;
+   stream >> dirtyflag;
+
+   doUnpack(stream, dirtyflag);
+}
+
+void NetObject::doUnpack(BitStream& stream, int dirtyflag)
 {
 }

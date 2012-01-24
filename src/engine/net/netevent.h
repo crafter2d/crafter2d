@@ -41,6 +41,7 @@ enum EventType {
    reqobjectEvent    = 0x0022,
    viewportEvent     = 0x0026,
    namechangeEvent   = 0x0027,
+   worldchangedEvent = 0x0028,
 
    generalEvent      = 0x1000
 };
@@ -54,13 +55,15 @@ public:
 
    explicit       NetEvent(EventType _type = generalEvent);
 
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
-
+ // get/set 
    void           setType(EventType t);
    EventType      getType() const;
 
 protected:
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
+
    EventType type;
 };
 

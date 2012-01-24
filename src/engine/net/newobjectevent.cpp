@@ -22,7 +22,7 @@
 #  include "newobjectevent.inl"
 #endif
 
-#include "../scenegraph.h"
+#include "engine/entity.h"
 
 IMPLEMENT_REPLICATABLE(NewObjectEventId, NewObjectEvent, NetEvent)
 
@@ -34,28 +34,30 @@ NewObjectEvent::NewObjectEvent():
 {
 }
 
-NewObjectEvent::NewObjectEvent(const SceneObject& object):
+NewObjectEvent::NewObjectEvent(const Entity& entity):
    NetEvent(newobjectEvent),
-   mParentId(object.getParent().getId()),
-   mpObject(const_cast<SceneObject*>(&object)),
+   mParentId(entity.hasParent() ? entity.getParent().getId() : IdManager::invalidId),
+   mpObject(const_cast<Entity*>(&entity)),
    mFileName(mpObject->getFilename())
 {
 }
 
-void NewObjectEvent::pack(BitStream& stream) const
+// - Streaming
+
+void NewObjectEvent::doPack(BitStream& stream) const
 {
    ASSERT_PTR(mpObject)
 
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
    
    stream << mParentId << mpObject << mFileName;
 }
 
-void NewObjectEvent::unpack(BitStream& stream)
+void NewObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
    ASSERT(mpObject == NULL)
 
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
       
    stream >> mParentId >> (NetObject**)&mpObject >> mFileName;
 }

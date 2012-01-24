@@ -29,7 +29,7 @@ struct b2Vec2;
 class Box2DBody : public Body
 {
 public:
-   explicit Box2DBody(Object& object, b2Body& body);
+   explicit Box2DBody(Actor& actor, b2Body& body);
    virtual ~Box2DBody();
 
  // get/set
@@ -53,6 +53,10 @@ public:
  // integration
    virtual void integrate(float timestep);
    virtual void finalize();
+
+protected:
+ // notifications
+   virtual void notifyPositionChanged();
 
 private:
    b2Fixture* createSensor(float halfx, float halfy, const b2Vec2& center);

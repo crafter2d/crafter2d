@@ -27,7 +27,7 @@ class Simulator;
 class SimulationFiller : public NodeVisitor
 {
 public:
-   static void add(Simulator& simulator, SceneObject& object);
+   static void add(Simulator& simulator, Entity& entity);
 
    SimulationFiller(Simulator& simulator);
    ~SimulationFiller();

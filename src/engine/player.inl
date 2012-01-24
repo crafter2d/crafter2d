@@ -19,23 +19,43 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE Viewport& Player::getViewport()
+INLINE int Player::getClientId() const
 {
-   return _viewport;
+   return mClientId;
 }
 
-INLINE Object& Player::getControler()
+INLINE void Player::setClientId(int clientid)
 {
-   ASSERT_PTR(controler)
-   return *controler;
+   mClientId = clientid;
 }
 
 INLINE const std::string& Player::getName() const
 {
-   return name;
+   return mName;
 }
-   
-INLINE void Player::setName(const std::string& _name)
+
+INLINE void Player::setName(const std::string& name)
 {
-   name = _name;
+   mName = name;
+}
+
+INLINE Viewport& Player::getViewport()
+{
+   return mViewport;
+}
+
+INLINE bool Player::hasController() const
+{
+   return mpController != NULL;
+}
+
+INLINE Actor& Player::getController()
+{
+   ASSERT_PTR(mpController)
+   return *mpController;
+}
+
+INLINE void Player::setController(Actor& actor)
+{
+   mpController = &actor;
 }

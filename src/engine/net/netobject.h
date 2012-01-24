@@ -68,22 +68,31 @@ class NetObject
 public:
    DEFINE_REPLICATABLE(NetObject);
 
-                        NetObject();
-   virtual              ~NetObject();
+            NetObject();
+   virtual  ~NetObject();
 
-   void                 setReplica(bool replica=true);
-   void                 setDirty(int flag);
-   void                 resetDirty();
+ // get/set
+   bool     isReplica() const;
+   void     setReplica(bool replica=true);
 
-   bool                 isDirty() const;
-   bool                 isReplica() const;
-
-   virtual void         pack(BitStream& stream) const;
-   virtual void         unpack(BitStream& stream);
+   bool     isDirty() const;
+   bool     isDirty(int flag) const;
+   void     setDirty(int flag);
+   void     resetDirty();
+   
+ // streaming
+   void     pack(BitStream& stream) const;
+   void     unpack(BitStream& stream);
 
 protected:
-   int dirtyFlag;
-   bool replica;
+ // streaming
+   virtual void doPack(BitStream& stream) const;
+   virtual void doUnpack(BitStream& stream, int dirtyflag);
+
+private:
+
+   int   mDirtyFlag;
+   bool  mIsReplica;
 };
 
 #ifdef JENGINE_INLINE

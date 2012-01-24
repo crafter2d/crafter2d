@@ -27,8 +27,8 @@ INLINE void PickVisitor::setPickPos(Vector pos)
 }
 
 /// \fn PickVisitor::getPicked()
-/// \brief Returns the object which was picked.
-INLINE Object* PickVisitor::getPicked()
+/// \brief Returns the actor which was picked.
+INLINE Actor* PickVisitor::getPicked()
 {
    return picked;
 }

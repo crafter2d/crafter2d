@@ -26,8 +26,8 @@
 
 #include "net/netevent.h"
 
+#include "serverworldobserver.h"
 #include "process.h"
-#include "serverscenegraphlistener.h"
 
 class ConnectEvent;
 class ViewportEvent;
@@ -59,21 +59,25 @@ public:
 
    virtual void   update(float delta);
 
-   virtual bool   loadWorld(const std::string& filename, const std::string& name);
-
  // network events
    virtual int    allowNewConnection();
    virtual int    onClientEvent(int client, const NetEvent& event);
 
 protected:
-   void           sendToActiveClient(NetObject& stream);
+ // notifications
+   virtual void notifyWorldChanged();
+
+ // networking
+   void sendToActiveClient(NetObject& stream);
 
    void handleConnectEvent(const ConnectEvent& event);
    void handleViewportEvent(const ViewportEvent& event);
 
+private:
+
    ClientMap                clients;
+   ServerWorldObserver      mWorldObserver;
    int                      mActiveClient;
-   ServerSceneGraphListener mGraphListener;
 };
 
 #endif

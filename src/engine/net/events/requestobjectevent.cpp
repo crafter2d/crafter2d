@@ -36,14 +36,16 @@ RequestObjectEvent::RequestObjectEvent(const Id& id):
 {
 }
 
-void RequestObjectEvent::pack(BitStream& stream) const
+// - Streaming
+
+void RequestObjectEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
    stream << mId;
 }
 
-void RequestObjectEvent::unpack(BitStream& stream)
+void RequestObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::pack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
    stream >> mId;
 }

@@ -39,7 +39,7 @@ void TopDownWorldRenderer::render(float delta)
    // draw the scenegraph
    glColor4f(1,1,1,1);
  
-   getWorld().draw(true);
+   getWorld().draw();
 
    // see if there is any creature under the mouse
    //pick(tick, graph);

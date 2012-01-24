@@ -22,7 +22,7 @@
 #  include "deleteobjectevent.inl"
 #endif
 
-#include "engine/sceneobject.h"
+#include "engine/entity.h"
 
 IMPLEMENT_REPLICATABLE(DeleteObjectEventId, DeleteObjectEvent, NetEvent)
 
@@ -32,20 +32,22 @@ DeleteObjectEvent::DeleteObjectEvent():
 {
 }
 
-DeleteObjectEvent::DeleteObjectEvent(const SceneObject& object):
+DeleteObjectEvent::DeleteObjectEvent(const Entity& entity):
    NetEvent(delobjectEvent),
-   mId(object.getId())
+   mId(entity.getId())
 {
 }
 
-void DeleteObjectEvent::pack(BitStream& stream) const
+// - Streaming
+
+void DeleteObjectEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
    stream << mId;
 }
 
-void DeleteObjectEvent::unpack(BitStream& stream)
+void DeleteObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
    stream >> mId;
 }

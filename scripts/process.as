@@ -11,9 +11,11 @@ abstract class Process
 	private native void setObject(Object self);
 	
 	public native void setScriptManager(ScriptManager manager);
-	public native SceneGraph getSceneGraph();
 	public native Font getFont(string name, int size);
 	public native Texture getTexture(string name);
+	public native ContentManager getContentManager();
+	public native World getWorld();
+	public native void setWorld(World world);
 	
 	public boolean create()
 	{		

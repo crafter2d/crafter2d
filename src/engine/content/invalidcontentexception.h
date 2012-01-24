@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,42 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef INVALID_CONTENT_EXCEPTION_H
+#define INVALID_CONTENT_EXCEPTION_H
 
-#include "serverscenegraphlistener.h"
+#include <string>
 
-#include "net/newobjectevent.h"
-#include "net/events/deleteobjectevent.h"
-#include "net/events/namechangeobjectevent.h"
-
-#include "server.h"
-
-ServerSceneGraphListener::ServerSceneGraphListener(Server& server):
-   mServer(server)
+class InvalidContentException
 {
-}
+public:
+   InvalidContentException();
+   InvalidContentException(const std::string& reason);
+   InvalidContentException(const InvalidContentException& that);
 
-ServerSceneGraphListener::~ServerSceneGraphListener()
-{
-}
+   const std::string& getReason() const;
 
-//-----------------------------------------
-// - Notifications
-//-----------------------------------------
+private:
+   std::string mReason;
+};
 
-void ServerSceneGraphListener::notifyObjectAdded(const SceneObject& object)
-{
-   NewObjectEvent event(object);
-   mServer.sendToAllClients(event);
-}
-
-void ServerSceneGraphListener::notifyObjectRemoved(const SceneObject& object)
-{
-   DeleteObjectEvent event(object);
-   mServer.sendToAllClients(event);
-}
-
-void ServerSceneGraphListener::notifyObjectNameChanged(const SceneObject& object)
-{
-   NameChangeObjectEvent event(object);
-   mServer.sendToAllClients(event);
-}
+#endif // INVALID_CONTENT_EXCEPTION_H

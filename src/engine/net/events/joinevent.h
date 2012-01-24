@@ -30,15 +30,18 @@ public:
    JoinEvent();
    JoinEvent(int id, const std::string& name);
 
+ // get/set
    int getId() const;
    const std::string& getPlayerName() const;
 
-   virtual void pack(BitStream& stream) const;
-   virtual void unpack(BitStream& stream);
+protected:
+ // streaming
+   virtual void doPack(BitStream& stream) const;
+   virtual void doUnpack(BitStream& stream, int dirtyflag);
 
 private:
-   std::string playerName;
-   int id;
+   std::string mPlayerName;
+   int         mId;
 };
 
 #endif // JOIN_EVENT_H_

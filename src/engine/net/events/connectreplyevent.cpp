@@ -38,14 +38,16 @@ ConnectReplyEvent::ConnectReplyEvent(Reply reply, int reason):
 {
 }
 
-void ConnectReplyEvent::pack(BitStream& stream) const
+// - Streaming
+
+void ConnectReplyEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
    stream << mReply << mReason;
 }
 
-void ConnectReplyEvent::unpack(BitStream& stream)
+void ConnectReplyEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
    stream >> (int&)mReply << mReason;
 }

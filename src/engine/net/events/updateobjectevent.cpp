@@ -22,7 +22,7 @@
 #  include "updateobjectevent.inl"
 #endif
 
-#include "../../object.h"
+#include "engine/actor.h"
 
 IMPLEMENT_REPLICATABLE(UpdateObjectEventId, UpdateObjectEvent, NetEvent)
 
@@ -33,7 +33,7 @@ UpdateObjectEvent::UpdateObjectEvent():
 {
 }
 
-UpdateObjectEvent::UpdateObjectEvent(const SceneObject& object):
+UpdateObjectEvent::UpdateObjectEvent(const Entity& object):
    NetEvent(updobjectEvent),
    mId(object.getId()),
    mDataStream()
@@ -41,21 +41,23 @@ UpdateObjectEvent::UpdateObjectEvent(const SceneObject& object):
    object.pack(mDataStream);
 }
 
-void UpdateObjectEvent::update(SceneObject& object) const
+void UpdateObjectEvent::update(Entity& entity) const
 {
-   object.unpack(const_cast<BitStream&>(mDataStream));
+   entity.unpack(const_cast<BitStream&>(mDataStream));
 }
 
-void UpdateObjectEvent::pack(BitStream& stream) const
+// - Streaming
+
+void UpdateObjectEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
 
    stream << mId << &mDataStream;
 }
 
-void UpdateObjectEvent::unpack(BitStream& stream)
+void UpdateObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
 
    stream >> mId >> mDataStream;
 }

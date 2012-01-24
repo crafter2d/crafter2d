@@ -44,7 +44,7 @@ public:
 
  // overloads
    virtual void requestAction(const ActionEvent& actionevent);
-   virtual void performAction(Object& actor);
+   virtual void performAction(Actor& actor);
 
 private:
 

@@ -19,37 +19,45 @@
  ***************************************************************************/
 #include "core/defines.h"
 
+/// \fn NetObject::isReplica() const
+/// \brief Checks if this object is a replica.
+bool NetObject::isReplica() const
+{
+   return mIsReplica;
+}
+
 /// \fn NetObject::setReplica(bool rep)
 /// \brief Set the replica flag of this network object.
 void NetObject::setReplica(bool rep)
 {
-   replica = rep;
-}
-
-/// \fn NetObject::setDirty(bool dirt)
-/// \brief Set the dirty flag.
-void NetObject::setDirty(int flag)
-{
-   SET_FLAG(dirtyFlag, flag);
+   mIsReplica = rep;
 }
 
 /// \fn NetObject::isDirty() const
 /// \brief Checks if this object is dirty.
 bool NetObject::isDirty() const
 { 
-   return dirtyFlag > 0; 
+   return mDirtyFlag > 0; 
+}
+
+/// \fn NetObject::isDirty(int flag) const
+/// \brief Checks if this dirty flag is set.
+bool NetObject::isDirty(int flag) const
+{
+   return IS_SET(mDirtyFlag, flag);
+}
+
+/// \fn NetObject::setDirty(bool dirt)
+/// \brief Set the dirty flag.
+void NetObject::setDirty(int flag)
+{
+   SET_FLAG(mDirtyFlag, flag);
 }
 
 /// \fn NetObject::resetDirty()
 void NetObject::resetDirty()
 {
-   dirtyFlag = 0;
+   mDirtyFlag = 0;
 }
 
-/// \fn NetObject::isReplica() const
-/// \brief Checks if this object is a replica.
-bool NetObject::isReplica() const
-{
-   return replica;
-}
 

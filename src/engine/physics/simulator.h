@@ -22,7 +22,7 @@
 
 #include "bodies.h"
 
-class Object;
+class Actor;
 class World;
 class SimulatorListener;
 
@@ -54,17 +54,19 @@ public:
    void         setWorld(const World& world);
 
  // maintenance
-   virtual Body& createBody(Object& object) = 0;
+   virtual Body& createBody(Actor& actor) = 0;
    virtual void  removeBody(Body& body);
 
  // operations
    virtual void run(float timestep) = 0;
 
 protected:
+ // get/set
    Bodies& getBodies();
    void    addBody(Body* body);
 
-   virtual void worldChanged();
+ // notifications
+   virtual void notifyWorldChanged();
 
 private:
 

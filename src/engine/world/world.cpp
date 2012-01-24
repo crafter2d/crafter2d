@@ -22,7 +22,6 @@
 #  include "world.inl"
 #endif
 
-#include <tinyxml.h>
 #include <algorithm>
 #include <functional>
 #include <Box2D.h>
@@ -35,12 +34,12 @@
 
 #include "engine/net/bitstream.h"
 
-#include "engine/scenegraph.h"
-#include "engine/creature.h"
+#include "engine/actor.h"
 #include "engine/nodevisitor.h"
 #include "engine/process.h"
 #include "engine/script/scriptmanager.h"
 #include "engine/script/script.h"
+#include "engine/dirtyset.h"
 
 #include "layer.h"
 #include "layertype.h"
@@ -52,24 +51,19 @@
 
 static const std::string WORLD_EXTENSION = ".jwl";
 
-IMPLEMENT_REPLICATABLE(WorldId, World, SceneObject)
-
-// static
-bool World::isWorld(NetObject& object)
-{
-   return object.getRuntimeInfo().getName() == "World";
-}
-
 /// fn World::World
 /// brief Currently does nothing
 World::World():
-   SceneObject(),
    layers(),
    bounds(),
-   _observers(),
+   mEntities(),
+   mObservers(),
+   mName(),
+   mFilename(),
    mpSimulationFactory(NULL),
    mpSimulator(NULL),
    mSimulatorListener(*this),
+   mpScript(NULL),
    _layerType(ETopDown),
    autoFollow(true),
    followBorderWidth(5),
@@ -79,9 +73,10 @@ World::World():
    bottomBorder(0),
    _objectLayer(0),
    followMode(FollowMouse),
-   followObject(0)
+   followObject(NULL)
 
 {
+   initializeBorders();
 }
 
 /*!
@@ -93,81 +88,10 @@ World::~World()
    destroy();
 }
 
-/// \fn World::create(const char* filename)
+/// \fn World::initialize()
 /// \brief Loads world information from a file and preprocesses this information for use during the game
-bool World::doCreate(const std::string& filename)
+void World::initialize()
 {
-   std::string path = getFilename();
-
-   WorldReader reader;
-   if ( !reader.read(*this, path) )
-      return false;
-
-   initializeBorders();
-
-   mpSimulator->setWorld(*this);
-   mpSimulator->setListener(mSimulatorListener);
-
-   mpScript = getSceneGraph().getProcess().getScriptManager().loadClass("World");
-   mpScript->setThis(this);
-
-   return true;
-}
-
-/// \fn World::createEmpty(const std::string& name)
-/// \brief Initializes & saves this world as new file
-void World::createEmpty(const std::string& name)
-{
-   setFilename(name);
-   save();
-
-   initializeBorders();
-}
-
-void World::loadObjects(const char* filename)
-{
-   TiXmlElement* xmlElement;
-   TiXmlText* xmlText;
-   int rotation, x, y;
-
-   // open the XML file
-   TiXmlDocument doc(filename);
-   if (!doc.LoadFile())
-      return;
-
-   TiXmlElement* object = (TiXmlElement*)doc.FirstChild("instance");
-   while (object)
-   {
-      // load the blueprint
-      xmlElement = (TiXmlElement*)object->FirstChild("blueprint");
-      xmlText = (TiXmlText*)xmlElement->FirstChild();
-      std::string blueprint = xmlText->Value();
-      std::string path = blueprint + ".xml";
-
-      // get the name of this object
-      xmlElement = (TiXmlElement*)object->FirstChild("name");
-      xmlText = (TiXmlText*)xmlElement->FirstChild();
-      std::string name = xmlText->Value();
-
-      // query the attributes of the object
-      object->QueryIntAttribute("x", (int*)&x);
-      object->QueryIntAttribute("y", (int*)&y);
-      object->QueryIntAttribute("rot", &rotation);
-
-      // create the new object
-      //Creature* obj = new Creature();
-      Object* obj = new Object();
-      obj->create(*this, path);
-      obj->setPosition(Vector(x,y));
-      obj->setRotation(rotation);
-      obj->setName(name.c_str());
-      obj->setAnimation(1);
-
-      // insert the object in the scenegraph
-      add(obj);
-
-      object = (TiXmlElement*)doc.IterateChildren("instance", object);
-   }
 }
 
 /// \fn Worl::save()
@@ -182,9 +106,7 @@ bool World::save()
 /// \brief Destroys the world object
 void World::destroy()
 {
-   SceneObject::destroy();
-
-   followObject = 0;
+   followObject = NULL;
 
    delete mpSimulator;
    mpSimulator = NULL;
@@ -204,6 +126,9 @@ void World::destroy()
 
       bounds.clear();
    }
+
+   delete mpScript;
+   mpScript = NULL;
 }
 
 // - Get/set
@@ -240,16 +165,34 @@ void World::setSimulationFactory(SimulationFactory& factory)
 {
    mpSimulationFactory = &factory;
    mpSimulator = factory.createSimulator();
+   mpSimulator->setWorld(*this);
+   mpSimulator->setListener(mSimulatorListener);
 }
 
 // - Operations
 
-void World::doUpdate(float delta)
+void World::update(DirtySet& set, float delta)
 {
+   EntityMap::iterator it = mEntities.begin();
+   for ( ; it != mEntities.end(); ++it )
+   {
+      Entity* pentity = it->second;
+      pentity->update(delta);
+   }
+
    getSimulator().run(delta);
+
+   for ( it = mEntities.begin(); it != mEntities.end(); ++it )
+   {
+      Entity* pentity = it->second;
+      if ( pentity->isDirty() )
+      {
+         set.reportDirty(*pentity);
+      }
+   }
 }
 
-void World::doUpdateClient(float delta)
+void World::updateClient(float delta)
 {
    // scroll if necessary
    if (autoFollow && followMode != NoFollow)
@@ -262,16 +205,18 @@ void World::doUpdateClient(float delta)
       Layer& layer = *layers[i];
       layer.update(delta);
    }
-}
 
-const Vector& World::getPosition() const
-{
-   return Vector::zero();
+   EntityMap::iterator it = mEntities.begin();
+   for ( ; it != mEntities.end(); ++it )
+   {
+      Entity* pentity = it->second;
+      pentity->updateClient(delta);
+   }
 }
 
 /// \fn World::doDraw()
 /// \brief Draws the world on screen
-void World::doDraw ()
+void World::draw () const
 {
    // render the layers
    for ( int i = 0; i < layers.size(); i++ )
@@ -290,6 +235,13 @@ void World::doDraw ()
    // scroll the viewpoint to the right position
    Vector scroll = layers[getObjectLayer()]->getScroll ();
    glTranslatef(-scroll.x, -scroll.y, 0);
+
+   EntityMap::const_iterator it = mEntities.begin();
+   for ( ; it != mEntities.end(); ++it )
+   {
+      Entity* pentity = it->second;
+      pentity->draw();
+   }
 }
 
 /// \fn World::scroll()
@@ -433,13 +385,47 @@ WorldRenderer* World::createRenderer()
    }
 }
 
+//-----------------------------------
+// - Entities
+//-----------------------------------
+
+Entity* World::findEntity(Id id)
+{
+   EntityMap::iterator it = mEntities.find(id);
+   return it != mEntities.end() ? it->second : NULL;
+}
+
+Entity& World::resolveEntity(Id id)
+{
+   Entity* pentity = findEntity(id);
+   ASSERT_PTR(pentity);
+   return *pentity;
+}
+
+void World::addEntity(Entity* pentity)
+{
+   mEntities[pentity->getId()] = pentity;
+
+   notifyEntityAdded(*pentity);
+}
+
+void World::removeEntity(Id id)
+{
+   EntityMap::iterator it = mEntities.find(id);
+   ASSERT(it != mEntities.end());
+
+   notifyEntityRemoved(*(it->second));
+
+   mEntities.erase(it);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // - (De)registration
 //////////////////////////////////////////////////////////////////////////
 
 void World::attach(WorldObserver& observer)
 {
-   _observers.push_back(&observer);
+   mObservers.push_back(&observer);
 }
 
 void World::detach(WorldObserver& observer)
@@ -476,7 +462,7 @@ private:
 
 void World::notifyLayerAdded(Layer& layer)
 {
-   std::for_each(_observers.begin(), _observers.end(), WorldLayerAddedNotify(layer));
+   std::for_each(mObservers.begin(), mObservers.end(), WorldLayerAddedNotify(layer));
 }
 
 class WorldScrollNotify : public std::unary_function<WorldObserver*, void>
@@ -495,39 +481,45 @@ private:
 
 void World::notifyScrollChange(const Vector& scrollposition)
 {
-   std::for_each(_observers.begin(), _observers.end(), WorldScrollNotify(scrollposition));
+   std::for_each(mObservers.begin(), mObservers.end(), WorldScrollNotify(scrollposition));
 }
 
-void World::notifyObjectWorldCollision(Object& object, Bound& bound, int side, bool begin)
+void World::notifyEntityAdded(const Entity& entity)
+{
+   Observers::iterator it = mObservers.begin();
+   for ( ; it != mObservers.end(); ++it )
+   {
+      WorldObserver* pobserver = *it;
+      pobserver->notifyEntityAdded(entity);
+   }
+}
+
+void World::notifyEntityRemoved(const Entity& entity)
+{
+   Observers::iterator it = mObservers.begin();
+   for ( ; it != mObservers.end(); ++it )
+   {
+      WorldObserver* pobserver = *it;
+      pobserver->notifyEntityRemoved(entity);
+   }
+}
+
+void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("System.Object", &object);
+   mpScript->addParam("Actor", &object);
    mpScript->addParam("System.Object", &bound);
    mpScript->addParam(side);
    mpScript->addParam(begin);
    mpScript->run("onObjectCollision");
 }
 
-void World::notifyObjectObjectCollision(Object& source, Object& target, int side, bool begin)
+void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("System.Object", &source);
+   mpScript->addParam("Actor", &source);
    mpScript->addParam("System.Object", &target);
    mpScript->addParam(side);
    mpScript->addParam(begin);
    mpScript->run("onObjectCollision");
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Serialization interface
-//////////////////////////////////////////////////////////////////////////
-
-void World::pack(BitStream& stream) const
-{
-   SceneObject::pack(stream);
-}
-
-void World::unpack(BitStream& stream)
-{
-   SceneObject::unpack(stream);
 }

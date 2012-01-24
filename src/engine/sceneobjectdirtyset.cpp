@@ -25,7 +25,7 @@
 #include "net/netevent.h"
 #include "net/netconnection.h"
 
-#include "sceneobject.h"
+#include "entity.h"
 
 SceneObjectDirtySet::SceneObjectDirtySet():
    DirtySet(),
@@ -42,7 +42,7 @@ SceneObjectDirtySet::~SceneObjectDirtySet()
 
 void SceneObjectDirtySet::reportDirty(NetObject& object)
 {
-   SceneObject* psceneobject = dynamic_cast<SceneObject*>(&object);
+   Entity* psceneobject = dynamic_cast<Entity*>(&object);
    if ( psceneobject != NULL )
    {
       mObjects.push_back(psceneobject);
@@ -54,7 +54,7 @@ void SceneObjectDirtySet::send(NetConnection& conn)
    Objects::iterator it = mObjects.begin();
    for ( ; it != mObjects.end(); ++it )
    {
-      SceneObject& object = *(*it);
+      Entity& object = *(*it);
 
       if ( object.isDirty() )
       {
@@ -69,7 +69,7 @@ void SceneObjectDirtySet::resetDirty()
    Objects::iterator it = mObjects.begin();
    for ( ; it != mObjects.end(); ++it )
    {
-      SceneObject& object = *(*it);
+      Entity& object = *(*it);
       object.resetDirty();
    }
 }

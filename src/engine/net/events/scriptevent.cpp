@@ -35,21 +35,25 @@ ScriptEvent::ScriptEvent(BitStream* pstream):
 {
 }
 
+// - Get/set
+
 BitStream* ScriptEvent::getStream() const
 {
    return mpStream;
 }
 
-void ScriptEvent::pack(BitStream& stream) const
+// - Streaming
+
+void ScriptEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
 
    stream << mpStream;
 }
 
-void ScriptEvent::unpack(BitStream& stream)
+void ScriptEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
    
    mpStream = new BitStream();
    stream >> *mpStream;

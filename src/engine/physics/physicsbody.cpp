@@ -24,8 +24,8 @@
 
 #include "physicsxml.h"
 
-PhysicsBody::PhysicsBody(Object& object):
-   Body(object),
+PhysicsBody::PhysicsBody(Actor& actor):
+   Body(actor),
    mLinearVelocity(),
    mAngularVelocity(0.0f),
    mAccumForce(),

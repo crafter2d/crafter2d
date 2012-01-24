@@ -32,24 +32,16 @@
 static const std::string SName = "Player";
 
 Player::Player():
-   controler(NULL),
-   name(SName),
-   client(0),
-   _viewport(),
-   _worldobserver(*this)
+   mViewport(),
+   mWorldObserver(*this),
+   mName(),
+   mpController(NULL),
+   mClientId(0)
 {
 }
 
 Player::~Player()
 {
-   /*
-   if ( controler != NULL )
-   {
-      controler->destroy();
-      delete controler;
-      controler = 0;
-   }
-   */
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -58,7 +50,7 @@ Player::~Player()
 
 void Player::initialize(World& world)
 {
-   world.attach(_worldobserver);
+   world.attach(mWorldObserver);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -67,7 +59,5 @@ void Player::initialize(World& world)
 
 void Player::notifyScrollChange(const Vector& scrollposition)
 {
-   ViewportEvent event(_viewport);
-
-   // Game::getInstance().getClient().getConnection()->send(&event);
+   ViewportEvent event(mViewport);
 }

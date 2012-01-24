@@ -22,20 +22,24 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "core/math/vector.h"
 
-#include "engine/scenegraph.h"
+#include "engine/idmanager.h"
 #include "engine/worldobserver.h"
+#include "engine/script/script.h"
 
 #include "bounds.h"
 #include "layertype.h"
 #include "worldsimulatorlistener.h"
 
 class BitStream;
+class DirtySet;
+class Entity;
 class Layer;
 class Bound;
-class Script;
+class NodeVisitor;
 class SimulationFactory;
 class Simulator;
 class WorldRenderer;
@@ -60,33 +64,35 @@ By using the World::setScrollMode function you can change the behaviour of the e
 When using the FollowObject modus you must also set the object to follow with the
 setFollowObject function.
 */
-class World: public SceneObject
+class World
 {
 public:
-   DEFINE_REPLICATABLE(World)
-
    enum FollowMode { FollowObject=0, FollowMouse=1, NoFollow=2 };
 
    typedef std::vector<Layer*> Layers;
    typedef std::vector<WorldObserver*> Observers;
+   typedef std::map<Id, Entity*> EntityMap;
+   
+   World();
+   ~World();
 
-   static bool isWorld(NetObject& object);
+   void  initialize();
+   void  destroy();
+   bool  save();
 
-                  World();
-   virtual        ~World();
-
-   void           createEmpty(const std::string& name);
-   void           destroy();
-   bool           save();
-
-   void           loadObjects(const char* filename);
-
+ // get/set
    void           setAutoFollow(bool enabled=true);
-   void           setFollowObject(Object* obj);
+   void           setFollowObject(Actor* obj);
    void           setScrollMode(int fm);
    void           setFollowBorderWidth(int width);
    void           setFollowBorders(int left, int right, int top, int bottom);
    void           setObjectLayer(int layer);
+
+   const std::string&   getName() const;
+   void                 setName(const std::string& name);
+
+   const std::string&   getFilename() const;
+   void                 setFilename(const std::string& filename);
 
    const Bound&   getBound(int index) const;
          Bound&   getBound(int index);
@@ -98,9 +104,7 @@ public:
    Layer*         getLayer(int index);
    const Layer*   getLayer(int index) const;
    int            getObjectLayer() const;
-
-   virtual const Vector& getPosition() const;
-
+   
    LayerType      getLayerType() const;
    void           setLayerType(int type);
 
@@ -108,52 +112,64 @@ public:
    void               setSimulationFactory(SimulationFactory& factory);
    Simulator&         getSimulator();
 
+   bool     hasScript() const;
+   Script&  getScript();
+   void     setScript(Script* pscript);
+
  // observer interface
-   void           attach(WorldObserver& observer);
-   void           detach(WorldObserver& observer);
+   void  attach(WorldObserver& observer);
+   void  detach(WorldObserver& observer);
 
  // visitor interface
-   virtual void   accept(NodeVisitor& nv);
+   void   accept(NodeVisitor& nv);
+
+ // update & drawing
+   void   update(DirtySet& set, float delta);
+   void   updateClient(float delta);
+   void   draw() const;
 
  // operations
-   Layer*         createLayer();
-   int            addLayer(Layer* player);
-   int            layerIndex(const Layer& layer);
-   void           moveLayer(Layer* player, int offset);
+   Layer* createLayer();
+   int    addLayer(Layer* player);
+   int    layerIndex(const Layer& layer);
+   void   moveLayer(Layer* player, int offset);
 
-   Bound&         addBound(const Vector& p1, const Vector& p2);
-   void           removeBound(Bound& bound);
+   Bound& addBound(const Vector& p1, const Vector& p2);
+   void   removeBound(Bound& bound);
+
+   void     addEntity(Entity* pentity);
+   void     removeEntity(Id id);
+   Entity*  findEntity(Id id);
+   Entity&  resolveEntity(Id id);
 
  // notification
-   void notifyObjectWorldCollision(Object& object, Bound& bound, int side, bool begin);
-   void notifyObjectObjectCollision(Object& object, Object& target, int side, bool begin);
+   void notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin);
+   void notifyObjectObjectCollision(Actor& object, Actor& target, int side, bool begin);
 
  // rendering
    WorldRenderer* createRenderer();
 
- // streaming
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
-
 protected:
-   virtual bool   doCreate(const std::string& filename);
 
    void           scroll();
    void           initializeBorders();
-
-   virtual void   doUpdate(float delta);
-   virtual void   doUpdateClient(float delta);
-   virtual void   doDraw();
-
+   
  // notifications
    void notifyLayerAdded(Layer& layer);
    void notifyScrollChange(const Vector& scrollposition);
+   void notifyEntityAdded(const Entity& entity);
+   void notifyEntityRemoved(const Entity& entity);
 
    const World&   me();
 
+private:
+
    Layers      layers;
    Bounds      bounds;
-   Observers   _observers;
+   EntityMap   mEntities;
+   Observers   mObservers;
+   std::string mName;
+   std::string mFilename;
 
    SimulationFactory*     mpSimulationFactory;
    Simulator*             mpSimulator;
@@ -167,7 +183,7 @@ protected:
    int leftBorder, rightBorder, topBorder, bottomBorder;
    int _objectLayer;
    FollowMode followMode;
-   Object* followObject;
+   Actor* followObject;
 };
 
 #ifdef JENGINE_INLINE

@@ -94,7 +94,7 @@ Game::~Game()
 bool Game::create()
 {
    Log& log = Log::getInstance();
-   log << "JEngine SSE V0.4.5 - Copyright 2010 - Jeroen Broekhuizen\n";
+   log << "JEngine SSE V0.4.6 - Copyright 2010 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
@@ -206,23 +206,6 @@ bool Game::initGame()
    {
       mActive = false;
    }
-
-   /*
-   // initialize the window manager
-   GuiManager& manager = GuiManager::getInstance();
-   manager.initialize();
-
-   GuiFont* font = new GuiFont ();
-   font->initialize ("amersn.ttf", 10);
-
-   manager.setDefaultFont (font);
-   manager.setDefaultTextColor(mSettings.getTextColor());
-
-   // create the gui canvas
-   mCanvas.create(0, GuiRect(0, mWindow.getWidth(), 0, mWindow.getHeight()));
-   mCanvas.changeDefaultColor(GuiCanvas::GuiWindowColor, mSettings.getWindowColor());
-   mCanvas.changeDefaultColor(GuiCanvas::GuiBorderColor, mSettings.getBorderColor());
-   */
 
 	return mActive;
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,14 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#ifndef SERVER_WORLD_OBSERVER_H
+#define SERVER_WORLD_OBSERVER_H
 
-INLINE Id NameChangeObjectEvent::getId() const
-{
-   return mId;
-}
+#include "worldobserver.h"
 
-INLINE const std::string& NameChangeObjectEvent::getName() const
+class Server;
+
+class ServerWorldObserver : public WorldObserver
 {
-   return mName;
-}
+public:
+   ServerWorldObserver(Server& server);
+
+ // notifications
+   virtual void notifyEntityAdded(const Entity& entity);
+   virtual void notifyEntityRemoved(const Entity& entity);
+
+private:
+
+   Server& mServer;
+};
+
+#endif // SERVER_WORLD_OBSERVER_H

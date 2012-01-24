@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,29 +17,68 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SCENE_ROOT_H_
-#define SCENE_ROOT_H_
+#include "core/defines.h"
 
-#include "sceneobject.h"
-
-/// \brief Represents the root node of the scenegraph.
-
-class SceneRoot : public SceneObject
+INLINE uint Entity::getId() const
 {
-public:
-   explicit SceneRoot(SceneGraph& graph);
-   virtual ~SceneRoot();
+   return mId;
+}
 
-   virtual SceneGraph&     getSceneGraph();
-   virtual const Vector&   getPosition() const;
+INLINE void Entity::setId(uint id)
+{
+   mId = id;
+}
 
-protected:
-   virtual void            doUpdate(float delta);
-   virtual void            doUpdateClient(float delta);
-   virtual void            doDraw();
+INLINE bool Entity::hasParent() const
+{
+   return mpParent != NULL;
+}
 
-private:
-   SceneGraph& mSceneGraph;
-};
+INLINE const Entity& Entity::getParent() const
+{
+   ASSERT(hasParent());
+   return *mpParent;
+}
 
-#endif
+INLINE Entity& Entity::getParent()
+{
+   ASSERT(hasParent());
+   return *mpParent;
+}
+
+INLINE void Entity::setParent(Entity& parent)
+{
+   mpParent = &parent;
+}
+
+INLINE Entities& Entity::getChildren()
+{
+   return mChildren;
+}
+
+INLINE bool Entity::hasFilename() const
+{
+   return !mXmlFile.empty();
+}
+
+INLINE const std::string& Entity::getFilename() const
+{
+   return mXmlFile;
+}
+
+INLINE void Entity::setFilename(const std::string& filename)
+{
+   mXmlFile = filename;
+}
+
+INLINE bool Entity::hasName() const
+{
+   return !mName.empty();
+}
+
+/// \fn SceneObject::getName()
+/// \brief Returns the name of this object.
+INLINE const std::string& Entity::getName() const
+{
+   return mName;
+}

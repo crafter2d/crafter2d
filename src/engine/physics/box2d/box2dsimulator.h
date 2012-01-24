@@ -51,7 +51,7 @@ public:
    virtual ~Box2DSimulator();
 
  // maintenance
-   virtual Body& createBody(Object& object);
+   virtual Body& createBody(Actor& actor);
    virtual void  removeBody(Body& body);
 
    Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);
@@ -59,7 +59,8 @@ public:
    virtual void run(float timestep);
 
 protected:
-   virtual void worldChanged();
+ // notifications
+   virtual void notifyWorldChanged();
 
 private:
    typedef std::vector<Box2DRevoluteJoint*> Joints;

@@ -22,8 +22,7 @@
 #  include "nodevisitor.inl"
 #endif
 
-#include "creature.h"
-#include "sceneobject.h"
+#include "entity.h"
 
 NodeVisitor::NodeVisitor()
 {
@@ -33,17 +32,12 @@ NodeVisitor::~NodeVisitor()
 {
 }
 
-void NodeVisitor::traverse(SceneObject& node)
+void NodeVisitor::traverse(Entity& node)
 {
    // let the specialized traverser handle this node
    node.accept(*this);
 
    // traverse the children of this node
-   const SceneObject::SceneObjectList& children = node.getChildren();
-   SceneObject::SceneObjectList::const_iterator it = children.begin();
-   for ( ; it != children.end(); ++it )
-   {
-      SceneObject* pobject = (*it);
-      traverse(*pobject);
-   }
+   Entities& children = node.getChildren();
+   children.traverse(*this);
 }

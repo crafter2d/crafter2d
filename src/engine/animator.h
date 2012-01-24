@@ -25,18 +25,16 @@
 #include "animationset.h"
 #include "texturecoordlookup.h"
 
-class Object;
+class Actor;
 class TiXmlElement;
 
 class Animator
 {
 public:
-   static Animator* construct(const TiXmlElement& xmlObject, Object& object);
+   static Animator* construct(const TiXmlElement& xmlObject, Actor& actor);
 
    Animator();
    ~Animator();
-
-   bool loadFromXML(const TiXmlElement& xmlanimation, Object& object);
 
   // Animation
    void animate(float delta);
@@ -52,6 +50,7 @@ private:
    AnimationSet&  getAnimations();
 
   // parsing
+   bool loadFromXML(const TiXmlElement& xmlanimation, Actor& actor);
    bool parseAnimations(const TiXmlElement& xmlanimations, int count);
    void parseAnimation(const char* sequence, Animation *animation);
 

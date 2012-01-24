@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,21 +17,40 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SORTED_OBJECT_LIST_H_
-#define SORTED_OBJECT_LIST_H_
+#ifndef ENTITIES_H
+#define ENTITIES_H
 
-#include "core/containers/sortedlist.h"
+#include <map>
 
-class Actor;
+#include "idmanager.h"
 
-class SortedObjectList : public SortedList<Actor>
+class Entity;
+class NodeVisitor;
+
+class Entities
 {
+   typedef std::map<Id, Entity*> EntityMap;
+
 public:
-   SortedObjectList();
+   Entities();
+   ~Entities();
+
+ // get/set
+
+ // maintenance
+   void add(Entity& entity);
+   void remove(Entity& entity);
+
+ // update & drawing
+   void update(float delta);
+   void draw() const;
+
+ // visitor
+   void traverse(NodeVisitor& visitor);
+
+private:
+
+   EntityMap mEntities; // not owning
 };
 
-#ifdef JENGINE_INLINE
-#  include "sortedobjectlist.inl"
-#endif
-
-#endif
+#endif // ENTITIES_H

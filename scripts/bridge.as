@@ -3,16 +3,16 @@ use box2d.*;
 
 class Bridge
 {
-	public void create(World world, Vector2D left, Vector2D right)
+	public void create(Process process, Vector2D left, Vector2D right)
 	{
-		Box2DSimulator simulator = world.getSimulator();
+		Box2DSimulator simulator = process.getWorld().getSimulator();
 		
 		Vector2D pos = new Vector2D();
 		pos.setX(left.getX() + 6.0);
 		pos.setY(left.getY());
 
 		Box2DRevoluteJointDefinition jointdef = new Box2DRevoluteJointDefinition();
-		jointdef.setLeft(createSide(world, left, 0));
+		jointdef.setLeft(createSide(process, left, 0));
 		jointdef.setAnchor(pos);
 		
 		real diff = right.getX() - left.getX();
@@ -24,7 +24,7 @@ class Bridge
 		{
 			pos.setX(x);
 			
-			jointdef.setRight(createPart(world, pos, index));
+			jointdef.setRight(createPart(process, pos, index));
 			
 			simulator.createRevoluteJoint(jointdef);
 			
@@ -34,26 +34,26 @@ class Bridge
 			jointdef.getAnchor().offsetX(12.0);
 		}
 		
-		jointdef.setRight(createSide(world, right, (int) num+1));
+		jointdef.setRight(createSide(process, right, (int) num+1));
 		simulator.createRevoluteJoint(jointdef);
 	}
 	
-	private Box2DBody createSide(World world, Vector2D position, int index)
+	private Box2DBody createSide(Process process, Vector2D position, int index)
 	{
-		Creature box = createBox(world, position, "bridgeside", index);
+		Actor box = createBox(process, position, "bridgeside", index);
 		
 		return box.getBody();
 	}
 	
-	private Box2DBody createPart(World world, Vector2D position, int index)
+	private Box2DBody createPart(Process process, Vector2D position, int index)
 	{
-		Creature box = createBox(world, position, "bridgepart", index);
+		Actor box = createBox(process, position, "bridgepart", index);
 		
 		return box.getBody();
 	}
 	
-	private Creature createBox(World world, Vector2D position, string name, int index)
+	private Actor createBox(Process process, Vector2D position, string name, int index)
 	{
-		return Creature.construct(world, name + index, position, "../objects/" + name + ".xml");
+		return Actor.construct(process, name + index, position, "../objects/" + name + ".xml");
 	}
 }

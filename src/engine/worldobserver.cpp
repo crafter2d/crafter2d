@@ -27,10 +27,20 @@ WorldObserver::~WorldObserver()
 {
 }
 
+// - Notifications
+
 void WorldObserver::notifyLayerAdded(Layer& layer)
 {
 }
 
 void WorldObserver::notifyScrollChange(const Vector& scrollposition)
+{
+}
+
+void WorldObserver::notifyEntityAdded(const Entity& entity)
+{
+}
+
+void WorldObserver::notifyEntityRemoved(const Entity& entity)
 {
 }

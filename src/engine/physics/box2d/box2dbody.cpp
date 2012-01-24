@@ -28,8 +28,8 @@ static const std::string sBODYELEMENT       = "body";
 static const std::string sSHAPEELEMENT      = "shape";
 static const std::string sTYPE              = "type";
 
-Box2DBody::Box2DBody(Object& object, b2Body& body):
-   Body(object),
+Box2DBody::Box2DBody(Actor& actor, b2Body& body):
+   Body(actor),
    mBody(body),
    mHalfWidth(0),
    mHalfHeight(0),
@@ -172,6 +172,13 @@ void Box2DBody::applyForce(const Vector& force, const Vector& pos)
 void Box2DBody::applyImpulse(const Vector& impulse)
 {
    mBody.ApplyLinearImpulse(b2Vec2(impulse.x, impulse.y), mBody.GetWorldCenter());
+}
+
+// - Notifications
+
+void Box2DBody::notifyPositionChanged()
+{
+   mBody.SetTransform(Box2DSimulator::vectorToB2(mPosition), mBody.GetAngle());
 }
 
 // integration

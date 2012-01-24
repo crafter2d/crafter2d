@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,51 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _CREATURE_H_
-#define _CREATURE_H_
+#include "invalidcontentexception.h"
 
-#include "object.h"
-
-class BitStream;
-class NodeVisitor;
-class TiXmlDocument;
-
-/**
-@author Jeroen Broekhuizen
-\brief Interface for all creatures.
-
-Creatures can be implemented using the Creature class. It currently supports only the moveto
-function, which makes this creature follow another creature.
-*/
-class Creature: public Object
+InvalidContentException::InvalidContentException():
+   mReason()
 {
-public:
-	                  Creature();
-	virtual           ~Creature();
+}
 
-   virtual void      update(DirtySet& dirtyset, float delta);
+InvalidContentException::InvalidContentException(const std::string& reason):
+   mReason(reason)
+{
+}
 
-	void              moveto(Creature* t);
+InvalidContentException::InvalidContentException(const InvalidContentException& that):
+   mReason(that.mReason)
+{
+}
 
- // visitor interface
-   void              accept(NodeVisitor& nv);
+// - Get/set
 
- // serialization interface
-   virtual void      pack(BitStream& stream);
-   virtual void      unpack(BitStream& stream);
-
-   DEFINE_REPLICATABLE(Creature)
-
-protected:
-   virtual bool      load(TiXmlDocument& doc);
-   const Creature&   me();
-
-private:
-	Creature*       target;
-};
-
-#ifdef JENGINE_INLINE
-#  include "creature.inl"
-#endif
-
-#endif
+const std::string& InvalidContentException::getReason() const
+{
+   return mReason;
+}

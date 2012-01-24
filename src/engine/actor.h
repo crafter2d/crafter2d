@@ -17,42 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _OBJECT_H_
-#define _OBJECT_H_
+#ifndef _ACTOR_H_
+#define _ACTOR_H_
 
 #include <string>
 #include <vector>
 
 #include "core/math/vector.h"
 
+#include "entity.h"
 #include "texture.h"
-#include "scenegraph.h"
 
 class TiXmlDocument;
 
 class Animator;
+class Body;
 class Controller;
+class NodeVisitor;
 class State;
 
 /**
 @author Jeroen Broekhuizen
 \brief Implements a base interface for objects in the game
 */
-class Object: public SceneObject
+class Actor: public Entity
 {
 public:
    DEFINE_REPLICATABLE(Object)
 
    enum { ePositionDirty = 2, eAnimationDirty = 4 };
 
-	                  Object();
-   virtual           ~Object();
+	                  Actor();
+   virtual           ~Actor();
 
    virtual void      destroy();
-   virtual Object*   clone ();
+   virtual Actor*    clone ();
 
    void              addState(State* state);
-   void              move(float tick);
    void              rotate(float deg);
    void              flip();
    bool              direction() const;
@@ -61,10 +62,14 @@ public:
    void              setPosition(const Vector& vec);
    void              setVelocity(const Vector& vec);
    void              setRotation(const float deg);
+   void              setSize(int width, int height);
    void              setVisible(bool vis = true);
+   void              setStatic(bool isstatic);
+   void              setTexture(TexturePtr texture);
+   void              setAnimator(Animator* panimator);
+   void              setBody(Body& body);
 
-   virtual const Vector& getPosition() const;
-
+   const Vector&     getPosition() const;
    const Vector&     getVelocity() const;
    float             getRadius() const;
    float             getRotation() const;
@@ -80,37 +85,37 @@ public:
    void              setAnimation(int anim);
 
  // modifier interface
-   Controller& getController();
+   Controller&       getController();
    void              setController(Controller* pcontroller);
 
  // visitor interface
    virtual void      accept(NodeVisitor& nv);
 
- // streaming
-   virtual void      pack(BitStream& stream) const;
-   virtual void      unpack(BitStream& stream);
-
  // simulator interface
    void updateState();
 
 protected:
+ // get/set
    Animator&         getAnimator();
 
-   virtual bool      load(TiXmlDocument& doc);
-
+ // update & drawing
    virtual void      doUpdate(float delta);
    virtual void      doUpdateClient(float delta);
-   virtual void      doDraw();
+   virtual void      doDraw() const;
 
-   virtual void      parentChanged();
+ // streaming
+   virtual void      doPack(BitStream& stream) const;
+   virtual void      doUnpack(BitStream& stream, int dirtyflag);
 	
+private:
+
    TexturePtr     texture;
    Body*          mpBody;
-   Animator*      mpAnimator;
+   Animator*      mpAnimator; // owned
    Controller*    mpController;
    Vector         mPos;
    Vector         mVel;
-   int            width, height;
+   int            mWidth, mHeight;
    float          halfX, halfY;
    float          angle;
    float          radius;
@@ -120,7 +125,7 @@ protected:
 };
 
 #ifdef JENGINE_INLINE
-#  include "object.inl"
+#  include "actor.inl"
 #endif
 
 #endif

@@ -32,14 +32,12 @@ public:
 
             ServerDownEvent();
    
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
+protected:
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
 
 private:
 };
-
-#ifdef JENGINE_INLINE
-#  include "serverdownevent.inl"
-#endif
 
 #endif

@@ -45,8 +45,11 @@ ResourcePtr<T>::ResourcePtr(const ResourcePtr<T>& that):
 template<class T>
 ResourcePtr<T>::~ResourcePtr()
 {
-   mpHandle->subRef();
-   mpHandle = NULL;
+   if ( mpHandle != NULL )
+   {
+      mpHandle->subRef();
+      mpHandle = NULL;
+   }
 }
 
 // - Operators

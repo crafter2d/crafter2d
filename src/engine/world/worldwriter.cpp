@@ -26,7 +26,7 @@
 
 #include "core/vfs/zipfile.h"
 
-#include "engine/sceneobject.h"
+#include "engine/net/bitstream.h"
 
 #include "bound.h"
 #include "layer.h"
@@ -155,6 +155,7 @@ bool WorldWriter::writeObjects(ZipFile& zip)
    TiXmlElement* pobjects = new TiXmlElement("objects");
    doc.LinkEndChild(pobjects);
 
+   /*
    std::list<SceneObject*>::const_iterator it = getWorld().getChildren().begin();
    for (; it != getWorld().getChildren().end(); it++)
    {
@@ -166,6 +167,7 @@ bool WorldWriter::writeObjects(ZipFile& zip)
 
       pobjects->LinkEndChild(pobject);
    }
+   */
 
    std::stringstream stream;
    stream << doc;

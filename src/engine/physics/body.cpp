@@ -24,7 +24,7 @@
 
 #include <tinyxml.h>
 
-#include "engine/object.h"
+#include "engine/actor.h"
 
 #include "collisionshape.h"
 
@@ -41,13 +41,13 @@ bool Body::hasInfo(const TiXmlElement& element)
 // - Body
 // ----------------------------------
 
-Body::Body(Object& object):
-   mPosition(object.getPosition()),
-   mAngle(object.getRotation()),
-   mObject(object),
+Body::Body(Actor& actor):
+   mActor(actor),
    mTransform(),
    mShapes(),
-   mForceGenerators()
+   mForceGenerators(),
+   mPosition(actor.getPosition()),
+   mAngle(actor.getRotation())
 {
 }
 
@@ -106,6 +106,14 @@ void Body::applyImpulse(const Vector& impulse)
 }
 
 // ----------------------------------
+// -- Notifications
+// ----------------------------------
+
+void Body::notifyPositionChanged()
+{
+}
+
+// ----------------------------------
 // -- Integration
 // ----------------------------------
 
@@ -116,7 +124,7 @@ void Body::integrate(float timestep)
 
 void Body::finalize()
 {
-   mObject.updateState();
+   mActor.updateState();
 }
 
 void Body::calculateDerivedData()

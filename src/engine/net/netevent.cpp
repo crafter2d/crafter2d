@@ -31,12 +31,12 @@ NetEvent::NetEvent(EventType _type):
 {
 }
 
-void NetEvent::pack(BitStream& stream) const
+void NetEvent::doPack(BitStream& stream) const
 {
    //stream << (int)type;
 }
 
-void NetEvent::unpack(BitStream& stream)
+void NetEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
    //stream >> (int&)type;
 }

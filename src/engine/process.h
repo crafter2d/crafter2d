@@ -20,14 +20,14 @@
 #ifndef _PROCESS_H_
 #define _PROCESS_H_
 
+#include <map>
 #include <string>
 
 #include "engine/engine_base.h"
 #include "engine/script/scriptmanager.h"
 
+#include "content/contentmanager.h"
 #include "net/netconnection.h"
-
-#include "scenegraph.h"
 
 class ActionMap;
 class BitStream;
@@ -52,13 +52,19 @@ public:
 
   // get/set
    NetConnection* getConnection();
-   SceneGraph&    getSceneGraph();
+
+   ContentManager& getContentManager();
 
    ActionMap*     getActionMap();
    void           setActionMap(ActionMap* map);
 
    ScriptManager& getScriptManager();
    void           setScriptManager(ScriptManager* pscriptmanager);
+
+   bool           hasWorld() const;
+   const World&   getWorld() const;
+         World&   getWorld();
+   void           setWorld(World* pworld);
 
    bool           isInitialized();
    void           setInitialized(bool init);
@@ -67,9 +73,7 @@ public:
    void setActive(bool active);
 
  // operations
-   virtual bool   loadWorld(const std::string& filename, const std::string& name);
-
-   void           sendScriptEvent(BitStream* stream, uint client=INVALID_CLIENTID);
+   void sendScriptEvent(BitStream* stream, uint client=INVALID_CLIENTID);
 
    void setObject(const VirtualObjectReference& object);
    
@@ -78,8 +82,11 @@ public:
    virtual int    onClientEvent(int client, const NetEvent& event) = 0;
 
 protected:
+ // notifications
+   virtual void notifyWorldChanged();
+
    NetConnection     conn;
-   SceneGraph        graph;
+   ContentManager    mContentManager;
    ScriptManager*    mpScriptManager;
    Script*           mpScript;
    ActionMap*        actionMap;
@@ -89,7 +96,8 @@ private:
    bool initializeScript(const std::string& name);
 
  // members
-   bool mActive;
+   World*      mpWorld;
+   bool        mActive;
 };
 
 #ifdef JENGINE_INLINE

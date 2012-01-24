@@ -24,6 +24,8 @@
 
 #include <string>
 
+#include "world.h"
+
 AbstractWorldVersionReader::AbstractWorldVersionReader(World& world):
    mFilename(),
    mWorld(world)
@@ -41,5 +43,6 @@ AbstractWorldVersionReader::~AbstractWorldVersionReader()
 bool AbstractWorldVersionReader::read(const std::string& filename)
 {
    mFilename = filename;
+   mWorld.setFilename(filename);
    return virRead();
 }

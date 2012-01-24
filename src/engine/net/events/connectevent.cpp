@@ -36,14 +36,16 @@ ConnectEvent::ConnectEvent(const std::string& name):
 {
 }
 
-void ConnectEvent::pack(BitStream& stream) const
+// - Streaming
+
+void ConnectEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
    stream << mName;
 }
 
-void ConnectEvent::unpack(BitStream& stream)
+void ConnectEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
    stream >> mName;
 }

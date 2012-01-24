@@ -36,15 +36,15 @@
 #include "world/world.h"
 
 #include "actionmap.h"
-#include "scenegraph.h"
 #include "script_engine.h"
 
 Process::Process():
    conn(*this),
-   graph(*this),
+   mContentManager(*this),
    mpScriptManager(NULL),
    mpScript(NULL),
    initialized(false),
+   mpWorld(NULL),
    mActive(true)
 {
 }
@@ -52,6 +52,25 @@ Process::Process():
 Process::~Process()
 {
 }
+
+// - Get/set
+
+void Process::setWorld(World* pworld)
+{
+   if ( mpWorld != pworld )
+   {
+      mpWorld = pworld;
+
+      if ( mpWorld != NULL )
+      {
+         pworld->setScript(getScriptManager().nativeScript("World", pworld));
+      }
+
+      notifyWorldChanged();
+   }
+}
+
+// - Operations
 
 bool Process::create(const std::string& name)
 {
@@ -61,9 +80,7 @@ bool Process::create(const std::string& name)
 bool Process::destroy()
 {
    conn.disconnect();
-
-   graph.removeAll();
-
+   
    return true;
 }
 
@@ -82,6 +99,12 @@ bool Process::initializeScript(const std::string& name)
    return true;
 }
 
+// - Notifications
+
+void Process::notifyWorldChanged()
+{
+}
+
 void Process::setObject(const VirtualObjectReference& object)
 {
    ASSERT_PTR(mpScript);
@@ -97,26 +120,6 @@ void Process::setActionMap(ActionMap* map)
    actionMap = map;
    if ( actionMap != NULL )
       actionMap->setProcess(*this);
-}
-
-// - Operations
-
-bool Process::loadWorld(const std::string& filename, const std::string& name)
-{
-   World* pworld = new World();
-   if ( pworld->create(getSceneGraph().getRoot(), filename) )
-   {
-      pworld->setName(name);
-
-      graph.setWorld(pworld);
-   }
-   else
-   {
-      delete pworld;
-      pworld = NULL;
-   }
-
-   return pworld != NULL;
 }
 
 // - Updating

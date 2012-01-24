@@ -28,7 +28,6 @@
 #include "engine/script/scriptmanager.h"
 
 #include "client.h"
-#include "object.h"
 
 ActionMap::ActionMap():
    mpProcess(NULL),
@@ -79,10 +78,10 @@ void ActionMap::process(int action, bool down)
    }
 }
 
-void ActionMap::processRemote(const ActionEvent& event, Object& object)
+void ActionMap::processRemote(const ActionEvent& event, Actor& object)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("Creature", &object);
+   mpScript->addParam("Actor", &object);
    mpScript->addParam(event.getAction());
 
    if ( event.isDown() )

@@ -23,7 +23,7 @@
 #include "engine/net/netevent.h"
 #include "engine/idmanager.h"
 
-class SceneObject;
+class Entity;
 
 /**
 @author Jeroen Broekhuizen
@@ -34,12 +34,14 @@ public:
    DEFINE_REPLICATABLE(DeleteObjectEvent)
 
             DeleteObjectEvent();
-   explicit DeleteObjectEvent(const SceneObject& object);
+   explicit DeleteObjectEvent(const Entity& entity);
    
    Id getId() const;
 
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
+protected:
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
 
 private:
    Id mId;

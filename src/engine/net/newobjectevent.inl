@@ -24,7 +24,7 @@ INLINE Id NewObjectEvent::getParentId() const
    return mParentId;
 }
 
-INLINE SceneObject* NewObjectEvent::getObject() const
+INLINE Entity* NewObjectEvent::getObject() const
 {
    return mpObject;
 }

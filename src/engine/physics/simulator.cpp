@@ -33,7 +33,7 @@ Simulator::~Simulator()
 }
 
 // ----------------------------------
-// -- Body interface
+// - Body interface
 // ----------------------------------
 
 bool Simulator::hasListener() const
@@ -53,7 +53,7 @@ void Simulator::setListener(SimulatorListener& listener)
 }
 
 // ----------------------------------
-// -- Body interface
+// - Body interface
 // ----------------------------------
 
 Bodies& Simulator::getBodies()
@@ -72,7 +72,7 @@ void Simulator::removeBody(Body& body)
 }
 
 // ----------------------------------
-// -- World body interface
+// - World body interface
 // ----------------------------------
 
 const World& Simulator::getWorld() const
@@ -87,16 +87,20 @@ void Simulator::setWorld(const World& world)
    {
       mpWorld = &world;
 
-      worldChanged();
+      notifyWorldChanged();
    }
 }
 
-void Simulator::worldChanged()
+// ----------------------------------
+// - Notifications
+// ----------------------------------
+
+void Simulator::notifyWorldChanged()
 {
 }
 
 // ----------------------------------
-// -- Run
+// - Run
 // ----------------------------------
 
 void Simulator::run(float timestep)

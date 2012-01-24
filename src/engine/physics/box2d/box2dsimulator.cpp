@@ -24,7 +24,7 @@
 #include "engine/world/world.h"
 #include "engine/world/bound.h"
 #include "engine/world/bounds.h"
-#include "engine/object.h"
+#include "engine/actor.h"
 
 #include "box2dbody.h"
 #include "box2drevolutejoint.h"
@@ -55,16 +55,16 @@ Box2DSimulator::~Box2DSimulator()
    mpb2World = NULL;
 }
 
-Body& Box2DSimulator::createBody(Object& object)
+Body& Box2DSimulator::createBody(Actor& actor)
 {
    b2BodyDef bodydef;
-   bodydef.position = vectorToB2(object.getPosition());
-   bodydef.angle    = object.getRotation();
+   bodydef.position = vectorToB2(actor.getPosition());
+   bodydef.angle    = actor.getRotation();
    bodydef.type     = b2_dynamicBody;
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
 
-   Box2DBody* pbody = new Box2DBody(object, *pboxbody);
+   Box2DBody* pbody = new Box2DBody(actor, *pboxbody);
 
    addBody(pbody);
 
@@ -89,7 +89,9 @@ Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefini
    return *pjoint;
 }
 
-void Box2DSimulator::worldChanged()
+// - Notifications
+
+void Box2DSimulator::notifyWorldChanged()
 {
    b2Vec2 gravity(0, 9);
    mpb2World = new b2World(gravity, true);

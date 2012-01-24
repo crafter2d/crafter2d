@@ -24,7 +24,7 @@
 
 #include "engine/idmanager.h"
 
-class SceneObject;
+class Entity;
 
 /**
 @author Jeroen Broekhuizen
@@ -35,19 +35,22 @@ public:
    DEFINE_REPLICATABLE(NewObjectEvent)
 
             NewObjectEvent();
-   explicit NewObjectEvent(const SceneObject& object);
+   explicit NewObjectEvent(const Entity& entity);
    
-   Id             getParentId() const;
-   SceneObject*   getObject() const;
+ // get/set
+   Id                 getParentId() const;
+   Entity*            getObject() const;
    const std::string& getFileName() const;
 
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
+protected:
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
 
 private:
-   Id           mParentId;
-   SceneObject* mpObject;
-   std::string  mFileName;
+   Id          mParentId;
+   Entity*     mpObject;
+   std::string mFileName;
 };
 
 #ifdef JENGINE_INLINE

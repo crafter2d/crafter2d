@@ -22,8 +22,10 @@
 #  include "client.inl"
 #endif
 
+#include <GL/GLee.h>
 #include <GL/GLU.h>
 
+#include "core/defines.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
@@ -42,16 +44,14 @@
 #include "net/events/joinevent.h"
 #include "net/events/updateobjectevent.h"
 #include "net/events/requestobjectevent.h"
-#include "net/events/namechangeobjectevent.h"
+#include "net/events/worldchangedevent.h"
 #include "net/events/scriptevent.h"
 
 #include "world/world.h"
 #include "world/worldrenderer.h"
 
 #include "player.h"
-#include "creature.h"
-#include "core/defines.h"
-#include "sceneobject.h"
+#include "entity.h"
 #include "actionmap.h"
 #include "keymap.h"
 #include "opengl.h"
@@ -131,8 +131,6 @@ bool Client::connect(const char* server, int port, const char* name)
    conn.setSendAliveMessages(false);
    conn.setAccepting(false);
 
-   graph.getRoot().setReplica();
-
    mpPlayer = new Player();
    if ( name != NULL )
    {
@@ -165,7 +163,7 @@ void Client::update(float delta)
       mpKeyMap->update();
    }
 
-   graph.updateClient(delta);
+   getWorld().updateClient(delta);
 }
 
 void Client::render(float delta)
@@ -175,12 +173,11 @@ void Client::render(float delta)
    glAlphaFunc (GL_GREATER, 0.1f);
    glEnable (GL_ALPHA_TEST);
 
-   if ( mpWorldRenderer != NULL )
+   if ( mpWorldRenderer != NULL && mpPlayer->hasController() )
    {
       // set the sound of the player
-      Object* pcontroler = graph.getControler();
-      if ( pcontroler != NULL )
-         mSoundManager.setPlayerPosition(pcontroler->getPosition());
+      Actor& controler = mpPlayer->getController();
+      mSoundManager.setPlayerPosition(controler.getPosition());
 
       mpWorldRenderer->render(delta);
    }
@@ -252,16 +249,13 @@ bool Client::initOpenGL()
 
 bool Client::loadWorld(const std::string& filename, const std::string& name)
 {
-   if ( Process::loadWorld(filename, name) )
+   World* pworld = getContentManager().load(filename);
+   if ( pworld != NULL )
    {
-      graph.getWorld()->setReplica();
-
-      mpWorldRenderer = graph.getWorld()->createRenderer();
-
-      return true;
+      mpWorldRenderer = pworld->createRenderer();
    }
 
-   return false;
+   return pworld != NULL;
 }
 
 void Client::sendToServer(NetObject& object)
@@ -306,6 +300,12 @@ int Client::onClientEvent(int client, const NetEvent& event)
             handleScriptEvent(scriptevent);
             break;
          }
+      case worldchangedEvent:
+         {
+            const WorldChangedEvent& worldchangedevent = static_cast<const WorldChangedEvent&>(event);
+            handleWorldChangedEvent(worldchangedevent);
+            break;
+         }
       case newobjectEvent:
          {
             const NewObjectEvent& newobjectevent = dynamic_cast<const NewObjectEvent&>(event);
@@ -322,12 +322,6 @@ int Client::onClientEvent(int client, const NetEvent& event)
          {
             const UpdateObjectEvent& updateobjectevent = dynamic_cast<const UpdateObjectEvent&>(event);
             handleUpdateObjectEvent(updateobjectevent);
-            break;
-         }
-      case namechangeEvent:
-         {
-            const NameChangeObjectEvent& namechangeevent = dynamic_cast<const NameChangeObjectEvent&>(event);
-            handleNameChangeEvent(namechangeevent);
             break;
          }
    }
@@ -380,43 +374,53 @@ void Client::handleServerdownEvent()
    mpScript->run("onServerDown");
 }
 
-void Client::handleNewObjectEvent(const NewObjectEvent& event)
+void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
 {
-   SceneObject* pparent = graph.find(event.getParentId());
-   if ( pparent == NULL )
+   World* pworld = getContentManager().load(event.getFilename());
+   if ( pworld == NULL )
    {
-      UNREACHABLE("Parent of object not found.")
-   }
-
-   // a new object has been made on the server and 
-   // is now also known on the client
-   AutoPtr<SceneObject> obj = event.getObject();
-   if ( obj->create(*pparent, event.getFileName()) )
-   {
-      obj.release();
-   }
-   else
-   {
-      // meh
+      // ee boehhh
       return;
    }
 
-   if ( World::isWorld(*obj) )
-   {
-      World& world = dynamic_cast<World&>(*obj);
+   setWorld(pworld);
 
-      if ( graph.hasWorld() )
-         graph.getWorld()->destroy();
+   mpWorldRenderer = pworld->createRenderer();
+   mpPlayer->initialize(*pworld);
 
-      mpWorldRenderer = world.createRenderer();
-      mpPlayer->initialize(world);
+   // run the onWorldChanged script
+   mpScript->run("onWorldChanged");
+}
 
-      graph.setWorld(&world);
+void Client::handleNewObjectEvent(const NewObjectEvent& event)
+{
+   ASSERT(hasWorld());
 
-      // run the onWorldChanged script
-      mpScript->run("onWorldChanged");
-   }
+   // a new object has been made on the server and 
+   // is now also known on the client
+   AutoPtr<Entity> obj = event.getObject();
    
+   Entity* pentity = getContentManager().loadEntity(event.getFileName());
+   if ( pentity == NULL )
+   {
+      UNREACHABLE("Could not create the entity!");
+   }
+
+   pentity->setId(obj->getId());
+   pentity->setReplica();
+
+   getWorld().addEntity(pentity);
+
+   if ( event.getParentId() != IdManager::invalidId )
+   {
+      Entity* pparent = getWorld().findEntity(event.getParentId());
+      if ( pparent == NULL )
+      {
+         UNREACHABLE("Could not find the parent!!");
+      }
+      pparent->add(*pentity);
+   }
+  
    // remove the request
    Requests::iterator it = mRequests.find(obj->getId());
    if ( it != mRequests.end() )
@@ -425,18 +429,13 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
 
 void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
 {
-   SceneObject* node = graph.find(event.getId());
-   if ( node != NULL )
-   {
-      node->destroy();
-      delete node;
-   }
+   getWorld().removeEntity(event.getId());
 }
 
 void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
 {
-   SceneObject* pobject = graph.find(event.getId());
-   if ( pobject == NULL )
+   Entity* pentity = getWorld().findEntity(event.getId());
+   if ( pentity == NULL )
    {
       if ( mRequests.find(event.getId()) == mRequests.end() )
       {
@@ -449,16 +448,8 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
    }
    else
    {
-      event.update(*pobject);
+      event.update(*pentity);
    }
-}
-
-void Client::handleNameChangeEvent(const NameChangeObjectEvent& event)
-{
-   SceneObject* pobject = graph.find(event.getId());
-   ASSERT_PTR(pobject)
-
-   pobject->setName(event.getName());
 }
 
 void Client::handleScriptEvent(const ScriptEvent& event)

@@ -17,9 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "object.h"
+#include "actor.h"
 #ifndef JENGINE_INLINE
-#  include "object.inl"
+#  include "actor.inl"
 #endif
 
 #include <GL/GLee.h>
@@ -34,22 +34,22 @@
 #include "engine/world/world.h"
 
 #include "animator.h"
-#include "scenegraph.h"
 #include "process.h"
 #include "nodevisitor.h"
 #include "texturecoordinate.h"
 #include "controller.h"
+#include "scopedtransform.h"
 
-IMPLEMENT_REPLICATABLE(ObjectId, Object, SceneObject)
+IMPLEMENT_REPLICATABLE(ActorId, Actor, Entity)
 
-Object::Object():
-   SceneObject(),
+Actor::Actor():
+   Entity(),
    texture(),
    mpBody(NULL),
    mpAnimator(NULL),
    mpController(NULL),
-	width(0),
-   height(0),
+	mWidth(0),
+   mHeight(0),
    halfX(.0f),
    halfY(.0f),
    angle(.0f),
@@ -60,113 +60,39 @@ Object::Object():
 {
 }
 
-Object::~Object()
+Actor::~Actor()
 {
 }
 
-/*!
-    \fn Object::load (TiXmlDocument& doc)
-	 \brief Loads the object from the XML document (using the TinyXML library).
-	 \param doc an open XML document to load from
-	 \retval true no errors occured during load
-	 \retval false invalid file format, consult the log file for the missing part
- */
-bool Object::load (TiXmlDocument& doc)
+// - Operations
+
+void Actor::destroy()
 {
-	Log& log = Log::getInstance();
-
-	// try to find the object in the file
-	const TiXmlElement* pobject = static_cast<const TiXmlElement*>(doc.FirstChild ("object"));
-	if ( pobject == NULL )
-   {
-      log.error("Object.load: Invalid XML file format, object expected.\n");
-		return false;
-	}
-
-	// find the name and dimensions of the object
-   if ( !hasName() )
-	   setName(pobject->Attribute("name"));
-
-	if ( pobject->QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
-		  pobject->QueryIntAttribute ("height", &height) != TIXML_SUCCESS )
-   {
-      log.error("Object.load: object needs to have dimensions.\n");
-		return false;
-	}
-
-   // see whether or not the object is static
-   int temp = 0;
-   if ( pobject->QueryIntAttribute("static", &temp) == TIXML_SUCCESS )
-      mStatic = (temp == 1);
-
-	// determine radius of object
-	radius = height * 0.5f;
-
-	// determine upper left corner
-	halfX = width * 0.5f;
-	halfY = height * 0.5f;
-
-	// load texture data
-	const TiXmlElement* ptex = static_cast<const TiXmlElement*>(pobject->FirstChild ("texture"));
-	if ( ptex != NULL )
-   {
-		TiXmlText* value = (TiXmlText*)ptex->FirstChild();
-      texture = ResourceManager::getInstance().getTexture(value->Value());
-      if ( !texture.isValid() )
-      {
-         log.error("Object.load: can not load %s", value->Value());
-         return false;
-      }
-	}
-   else
-   {
-		log.error("Object.load: object has no texture");
-		return false;
-	}
-
-   // load animation stuff
-   mpAnimator = Animator::construct(*pobject, *this);
-
-   // load simulation info
-   if ( Body::hasInfo(*pobject) )
-   {
-      World& world = *(getSceneGraph().getWorld());
-
-      mpBody = &world.getSimulator().createBody(*this);
-      mpBody->load(*pobject);
-   }
-
-	return true;
-}
-
-void Object::destroy()
-{
-   SceneObject::destroy();
-
    delete mpBody;
    mpBody = NULL;
-}
 
-void Object::parentChanged()
-{
+   delete mpAnimator;
+   mpAnimator = NULL;
+
+   Entity::destroy();
 }
 
 // - Modifier interface
 
-void Object::setController(Controller* pcontroller)
+void Actor::setController(Controller* pcontroller)
 {
    mpController = pcontroller;
 }
 
 // - Updating
 
-void Object::doUpdate(float delta)
+void Actor::doUpdate(float delta)
 {
    if ( mpController != NULL )
       mpController->performAction(*this);
 }
 
-void Object::doUpdateClient(float delta)
+void Actor::doUpdateClient(float delta)
 {
    // perform client side predictions
    if ( mpAnimator != NULL )
@@ -174,11 +100,13 @@ void Object::doUpdateClient(float delta)
 }
 
 /*!
-    \fn Object::draw()
+    \fn Actor::draw()
 	 \brief Draws the object on the screen.
  */
-void Object::doDraw()
+void Actor::doDraw() const
 {
+   ScopedTransform transform(mPos);
+
 	texture->enable();
 
    TextureCoordinate texcoord = mpAnimator->getTextureCoordinate();
@@ -214,52 +142,26 @@ void Object::doDraw()
    glPopMatrix();
 }
 
-/*!
-    \fn Object::move(float delta)
-	 \brief If the difference between this call and the previous call to this function
-	 is larger than the movement rate, the position of the object is updated using the
-	 objects velocity.
-	 \param tick the time tick of this frame (in milliseconds)
- */
-void Object::move(float delta)
-{
-   ASSERT(!isReplica())
-
-   /*
-   if ( mVel != Vector::zero() ) 
-   {
-      SceneGraph& graph = getSceneGraph();
-      graph.getWorld()->collide(*this, mPos);
-
-      pos += vel;
-      
-      setDirty(ePositionDirty);
-   }
-   */
-}
-
-/*!
-    \fn Object::clone ()
-	 \brief Currently not implemented yet!
-	 \returns always NULL
- */
-Object* Object::clone ()
+/// \fn Actor::clone ()
+/// \brief Currently not implemented yet!
+/// \returns always NULL
+Actor* Actor::clone ()
 {
 	return NULL;
 }
 
-/// \fn Object::getPosition () const
+/// \fn Actor::getPosition () const
 /// \brief Returns the current position of the object
 /// \returns current position of object
-const Vector& Object::getPosition() const
+const Vector& Actor::getPosition() const
 {
    return mPos;
 }
 
-/// \fn Object::setPosition(const Vector& p)
+/// \fn Actor::setPosition(const Vector& p)
 /// \brief Set the position of the object in world coordinates.
 /// \param p the new position of the object
-void Object::setPosition(const Vector& p)
+void Actor::setPosition(const Vector& p)
 {
    if ( isReplica() )
       mPos = p;
@@ -274,12 +176,25 @@ void Object::setPosition(const Vector& p)
    }
 }
 
-int Object::getAnimation() const
+void Actor::setSize(int width, int height)
+{
+   mWidth = width;
+   mHeight = height;
+
+   // set the half size as well
+   halfX = width * 0.5f;
+   halfY = height * 0.5f;
+
+   // determine radius of object
+	radius = MAX(width, height) * 0.5f;
+}
+
+int Actor::getAnimation() const
 {
    return mpAnimator != NULL ? mpAnimator->getAnimation() : 0;
 }
 
-void Object::setAnimation(int anim)
+void Actor::setAnimation(int anim)
 {
    if ( mpAnimator != NULL )
    {
@@ -293,14 +208,14 @@ void Object::setAnimation(int anim)
 // - Visitor interface
 //////////////////////////////////////////////////////////////////////////
 
-void Object::accept(NodeVisitor& nv)
+void Actor::accept(NodeVisitor& nv)
 {
-   nv.visitObject(this);
+   nv.visitActor(this);
 }
 
 // simulator interface
 
-void Object::updateState()
+void Actor::updateState()
 {
    ASSERT_PTR(mpBody);
 
@@ -314,25 +229,26 @@ void Object::updateState()
 // - Packing & unpacking
 //////////////////////////////////////////////////////////////////////////
 
-void Object::pack(BitStream& stream) const
+void Actor::doPack(BitStream& stream) const
 {
-   SceneObject::pack(stream);
-   stream << dirtyFlag;
+   Entity::doPack(stream);
 
-   if ( IS_SET(dirtyFlag, ePositionDirty) )
+   if ( isDirty(ePositionDirty) )
+   {
       stream << getPosition() << mVel << angle << dir;
+   }
 
-   if ( IS_SET(dirtyFlag, eAnimationDirty) )
+   if ( isDirty(eAnimationDirty) )
+   {
       stream << mpAnimator->getAnimation();
+   }
 }
 
-void Object::unpack(BitStream& stream)
+void Actor::doUnpack(BitStream& stream, int dirtyflag)
 {
-   int flag;
-   SceneObject::unpack(stream);
-   stream >> flag;
+   Entity::doUnpack(stream, dirtyflag);
 
-   if ( IS_SET(flag, ePositionDirty) )
+   if ( IS_SET(dirtyflag, ePositionDirty) )
    {
       Vector pos;
       stream >> pos >> mVel >> angle >> dir;
@@ -340,7 +256,7 @@ void Object::unpack(BitStream& stream)
       setPosition(pos);
    }
 
-   if ( IS_SET(flag, eAnimationDirty) )
+   if ( IS_SET(dirtyflag, eAnimationDirty) )
    {
       int anim;
 

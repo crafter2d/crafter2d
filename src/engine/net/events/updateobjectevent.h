@@ -24,7 +24,7 @@
 
 #include "engine/idmanager.h"
 
-class SceneObject;
+class Entity;
 
 /**
 @author Jeroen Broekhuizen
@@ -35,15 +35,19 @@ public:
    DEFINE_REPLICATABLE(UpdateObjectEvent)
 
             UpdateObjectEvent();
-   explicit UpdateObjectEvent(const SceneObject& object);
+   explicit UpdateObjectEvent(const Entity& entity);
    
+ // get/set
    Id               getId() const;
    const BitStream& getDataStream() const;
 
-   void update(SceneObject& object) const;
+ // update
+   void update(Entity& entity) const;
 
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
+protected:
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
 
 private:
    Id          mId;

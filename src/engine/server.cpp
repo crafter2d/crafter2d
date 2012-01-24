@@ -34,10 +34,13 @@
 #include "net/events/viewportevent.h"
 #include "net/events/serverdownevent.h"
 #include "net/events/actionevent.h"
+#include "net/events/worldchangedevent.h"
 #include "net/newobjectevent.h"
 
 #include "physics/simulationfiller.h"
 #include "physics/simulator.h"
+
+#include "world/world.h"
 
 #include "controller.h"
 #include "player.h"
@@ -47,8 +50,8 @@
 Server::Server():
    Process(),
    clients(),
-   mActiveClient(-1),
-   mGraphListener(*this)
+   mWorldObserver(*this),
+   mActiveClient(-1)
 {
 }
 
@@ -58,14 +61,7 @@ Server::~Server()
 
 bool Server::create(const std::string& name)
 {
-   if ( Process::create(name) )
-   {
-      graph.setListener(mGraphListener);
-
-      return true;
-   }
-
-   return false;
+   return Process::create(name);
 }
 
 bool Server::destroy()
@@ -75,9 +71,7 @@ bool Server::destroy()
       ServerDownEvent event;
       sendToAllClients(event);
    }
-
-   graph.clearListener();
-
+   
    return Process::destroy();
 }
 
@@ -116,20 +110,35 @@ void Server::update(float delta)
    conn.update();
 
    // update the graph
-   SceneObjectDirtySet dirtyset;
-   graph.update(dirtyset, delta);
-
-   // send changes to the clients
-   ClientMap::iterator it = clients.begin();
-   for ( ; it != clients.end(); ++it)
+   if ( hasWorld() )
    {
-      conn.setClientId(it->first);
-      dirtyset.send(conn);
+      SceneObjectDirtySet dirtyset;
+      getWorld().update(dirtyset, delta);
+
+      // send changes to the clients
+      ClientMap::iterator it = clients.begin();
+      for ( ; it != clients.end(); ++it )
+      {
+         conn.setClientId(it->first);
+         dirtyset.send(conn);
+      }
    }
 }
 
 // ----------------------------------
-// -- Sending
+// - Notifications
+// ----------------------------------
+
+void Server::notifyWorldChanged()
+{
+   getWorld().attach(mWorldObserver);
+
+   WorldChangedEvent event(getWorld());
+   sendToAllClients(event);
+}
+
+// ----------------------------------
+// - Sending
 // ----------------------------------
 
 void Server::sendToAllClients(NetObject& object)
@@ -164,19 +173,6 @@ void Server::sendScriptEventToAllClients(BitStream* pstream)
    stream << &event;
 
    sendToAllClients(stream);
-}
-
-bool Server::loadWorld(const std::string& filename, const std::string& name)
-{
-   bool success = Process::loadWorld(filename, name);
-
-   if ( success )
-   {
-      //std::string path = filename + ".lua";
-      //mScriptManager.executeScript(path);
-   }
-
-   return success;
 }
 
 // ----------------------------------
@@ -245,7 +241,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
             ASSERT_PTR(pplayer);
 
             const ActionEvent& inputevent = dynamic_cast<const ActionEvent&>(event);
-            Controller& controller = pplayer->getControler().getController();
+            Controller& controller = pplayer->getController().getController();
 
             controller.requestAction(inputevent);
             break;
@@ -254,14 +250,14 @@ int Server::onClientEvent(int client, const NetEvent& event)
          {
             const RequestObjectEvent& request = dynamic_cast<const RequestObjectEvent&>(event);
 
-            SceneObject* obj = graph.find(request.getId());
-            if ( obj == NULL )
+            Entity* pentity = getWorld().findEntity(request.getId());
+            if ( pentity == NULL )
             {
                Log::getInstance().error("Server - Could not find matching object for request");
             }
             else
             {
-               NewObjectEvent event(*obj);
+               NewObjectEvent event(*pentity);
                sendToActiveClient(event);
             }
             break;
@@ -281,37 +277,30 @@ int Server::onClientEvent(int client, const NetEvent& event)
    return 0;
 }
 
-/// \fn Server::addPlayer(NetAddress* client, Player* player)
+/// \fn Server::addPlayer(int client, Player* pplayer)
 /// \brief Adds a new player to the client list
-void Server::addPlayer(int client, Player* player)
+void Server::addPlayer(int clientid, Player* pplayer)
 {
-   clients[client] = player;
-   player->client = client;
-   if ( player->name.empty() )
-   {
-      char name[32];
-
-      sprintf (name, "player%d", clients.size());
-      player->name = name;
-   }
+   clients[clientid] = pplayer;
+   pplayer->setClientId(clientid);
 
    // send the reply to the connecting client
    ConnectReplyEvent event(ConnectReplyEvent::eAccepted);
-   conn.setClientId(client);
+   conn.setClientId(clientid);
    conn.send(&event);
 
    // notify other players about the new player
-   JoinEvent join(player->client, player->name);
+   JoinEvent join(clientid, pplayer->getName());
 
    BitStream stream;
    stream << &join;
    ClientMap::iterator it = clients.begin();
    for ( ; it != clients.end(); ++it)
    {
-      Player* otherPlayer = it->second;
-      if (otherPlayer != player)
+      Player* pother = it->second;
+      if (pother!= pplayer)
       {
-         conn.setClientId(otherPlayer->client);
+         conn.setClientId(pother->getClientId());
          conn.send(&stream);
       }
    }
@@ -320,12 +309,12 @@ void Server::addPlayer(int client, Player* player)
 void Server::handleConnectEvent(const ConnectEvent& event)
 {
    // create the player object
-   Player* player = new Player();
-   player->name = event.getName();
-   addPlayer(mActiveClient, player);
+   Player* pplayer = new Player();
+   pplayer->setName(event.getName());
+   addPlayer(mActiveClient, pplayer);
 
    // run the onClientConnect script
-   mpScript->addParam("Player", player);
+   mpScript->addParam("Player", pplayer);
    mpScript->run("onClientConnect");
 }
 

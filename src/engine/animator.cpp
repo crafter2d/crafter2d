@@ -27,16 +27,16 @@
 #include "core/log/log.h"
 
 #include "animation.h"
-#include "object.h"
+#include "actor.h"
 
-Animator* Animator::construct(const TiXmlElement& xmlObject, Object& object)
+Animator* Animator::construct(const TiXmlElement& xmlObject, Actor& actor)
 {
    Animator* panimator = NULL;
    const TiXmlElement* pXmlAnimation = static_cast<const TiXmlElement*>(xmlObject.FirstChild("animations"));
 	if ( pXmlAnimation != NULL )
    {
       panimator = new Animator();
-      panimator->loadFromXML(*pXmlAnimation, object);
+      panimator->loadFromXML(*pXmlAnimation, actor);
    }
 
    return panimator;
@@ -60,7 +60,7 @@ Animator::~Animator()
 {
 }
 
-bool Animator::loadFromXML(const TiXmlElement& xmlanimation, Object& object)
+bool Animator::loadFromXML(const TiXmlElement& xmlanimation, Actor& actor)
 {
 	// try to load the animation sequences
    int animCount = 0;
@@ -88,8 +88,8 @@ bool Animator::loadFromXML(const TiXmlElement& xmlanimation, Object& object)
          determineFrameCount();
 	}
 	
-   const Texture& texture = object.getTexture();
-   const Vector& size     = object.getSize();
+   const Texture& texture = actor.getTexture();
+   const Vector& size     = actor.getSize();
    mAnimFrameWidth = texture.getWidth() / size.x;
    mTextureCoords.generateFromTexture(texture, size.x, size.y, mAnimFrameCount);
 

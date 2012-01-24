@@ -30,13 +30,16 @@ public:
             DisconnectEvent();
    explicit DisconnectEvent(int id);
 
+ // get/set
    int getId() const;
 
-   virtual void pack(BitStream& stream) const;
-   virtual void unpack(BitStream& stream);
+protected:
+ // streaming
+   virtual void doPack(BitStream& stream) const;
+   virtual void doUnpack(BitStream& stream, int dirtyflag);
 
 private:
-   int         _id;
+   int mId;
 };
 
 #endif // DISCONNECT_EVENT_H_

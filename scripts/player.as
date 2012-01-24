@@ -1,25 +1,25 @@
 
-use creature;
-
 class Player
 {
-	private Creature mController;
+	private Actor mController;
 	
-	public native string getName();
-	public native int getClient();
-	
-	private native Creature getController();
-	private native void setController(Creature creature);
-	
-	public Creature getCreature()
+	public Actor getController()
 	{
 		return mController;
 	}
 	
-	public void setCreature(Creature creature)
+	public void setController(Actor actor)
 	{
-		mController = creature;
+		mController = actor;
 		
-		setController(creature);
+		native_setController(actor);
 	}
+	
+	// Natives
+	
+	public native string getName();
+	public native int getClientId();
+	
+	private native Actor native_getController();
+	private native void native_setController(Actor actor);
 }

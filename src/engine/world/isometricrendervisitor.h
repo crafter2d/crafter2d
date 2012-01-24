@@ -33,11 +33,10 @@ public:
    SortedObjectList& getObjects();
 
  // Overloads
-   virtual void visitObject(Object* object);
-   virtual void visitCreature(Creature* object);
+   virtual void visitActor(Actor* object);
 
 private:
-   SortedObjectList _objects;
+   SortedObjectList mObjects;
 };
 
 #ifdef JENGINE_INLINE

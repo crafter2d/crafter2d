@@ -29,7 +29,7 @@ public:
    PhysicsSimulator();
    virtual ~PhysicsSimulator();
 
-   virtual Body& createBody(Object& object);
+   virtual Body& createBody(Actor& actor);
 
    virtual void  run(float timestep);
 

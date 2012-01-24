@@ -21,10 +21,13 @@
 #define _PLAYER_H_
 
 #include <string>
-#include "object.h"
+
+#include "actor.h"
 #include "playerworldobserver.h"
 #include "viewport.h"
 #include "net/netconnection.h"
+
+class World;
 
 /// @author Jeroen Broekhuizen
 /// 
@@ -36,11 +39,17 @@ public:
    ~Player();
 
  // get/set interface
-   Viewport&   getViewport();
-   Object&     getControler();
+   int                  getClientId() const;
+   void                 setClientId(int clientid);
 
-   const std::string& getName() const;
-   void               setName(const std::string& name);
+   const std::string&   getName() const;
+   void                 setName(const std::string& name);
+
+   Viewport&            getViewport();
+
+   bool                 hasController() const;
+   Actor&               getController();
+   void                 setController(Actor& actor);
 
  // initialization
    void  initialize(World& world);
@@ -48,13 +57,13 @@ public:
  // notifications
    void  notifyScrollChange(const Vector& scrollposition);
 
-   Object*     controler;
-   std::string name;
-   int         client;
-
 private:
-   Viewport             _viewport;
-   PlayerWorldObserver  _worldobserver;
+
+   Viewport             mViewport;
+   PlayerWorldObserver  mWorldObserver;
+   std::string          mName;
+   Actor*               mpController;
+   int                  mClientId;
 };
 
 #ifdef JENGINE_INLINE

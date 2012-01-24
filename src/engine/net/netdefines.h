@@ -38,9 +38,10 @@ enum NetObjectId
    ScriptEventId           = 13,
    NameChangeObjectEventId = 14,
    ServerDownEventId       = 15,
+   WorldChangedEventId     = 16,
 
-   SceneObjectId           = 101,
-   ObjectId                = 102,
+   EntityId                = 101,
+   ActorId                 = 102,
    AnimObjectId            = 103,
    CreatureId              = 104,
    WorldId                 = 105,

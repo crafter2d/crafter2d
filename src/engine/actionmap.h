@@ -25,7 +25,7 @@
 #include "net/events/actionevent.h"
 
 class ActionEvent;
-class Object;
+class Actor;
 class Process;
 class Script;
 
@@ -63,7 +63,7 @@ public:
 
  // processing
    void process(int action, bool down);
-   void processRemote(const ActionEvent& event, Object& object);
+   void processRemote(const ActionEvent& event, Actor& object);
 
 private:
    typedef std::map<int, const char*> Actions;

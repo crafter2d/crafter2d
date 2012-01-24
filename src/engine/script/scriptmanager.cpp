@@ -105,6 +105,17 @@ Script* ScriptManager::loadExpression(const std::string& expression)
    return script.release();
 }
 
+Script* ScriptManager::nativeScript(const std::string& classname, void* pobject)
+{
+   AutoPtr<Script> script(new Script(*this));
+
+   VirtualObjectReference object = mpVirtualMachine->instantiateNative(classname, pobject, false);
+
+   script->setThis(object);
+
+   return script.release();
+}
+
 /// \fn ScriptManager::executeScript(const std::string& classname, const std::string& function)
 /// \brief Runs a class function once. The function must be a static function.
 /// \param classname Name of the class

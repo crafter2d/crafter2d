@@ -20,6 +20,9 @@
 
 #include "idmanager.h"
 
+Id IdManager::maxId = 0xfffffffe;
+Id IdManager::invalidId = 0xffffffff;
+
 IdManager& IdManager::getInstance()
 {
    static IdManager manager;

@@ -34,22 +34,37 @@ INLINE NetConnection* Process::getConnection()
    return &conn; 
 }
 
-/// \fn Process::getSceneGraph()
-/// \brief Returns the scenegraph of this process.
-INLINE SceneGraph& Process::getSceneGraph()
-{ 
-   return graph;
-}
-
 INLINE ScriptManager& Process::getScriptManager()
 {
    ASSERT_PTR(mpScriptManager);
    return *mpScriptManager;
 }
-
+ 
 INLINE void Process::setScriptManager(ScriptManager* pscriptmanager)
 {
    mpScriptManager = pscriptmanager;
+}
+
+INLINE ContentManager& Process::getContentManager()
+{
+   return mContentManager;
+}
+
+INLINE bool Process::hasWorld() const
+{
+   return mpWorld != NULL;
+}
+
+INLINE const World& Process::getWorld() const
+{
+   ASSERT_PTR(mpWorld);
+   return *mpWorld;
+}
+         
+INLINE World& Process::getWorld()
+{
+   ASSERT_PTR(mpWorld);
+   return *mpWorld;
 }
 
 /// \fn Process::getActionMap()

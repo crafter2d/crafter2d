@@ -20,10 +20,10 @@
 #ifndef _NODEVISITOR_H_
 #define _NODEVISITOR_H_
 
-class SceneObject;
+class Actor;
+class Entity;
 class World;
-class Object;
-class Creature;
+class ParticleSystem;
 
 /// Use a scene traverser to walk through the scenegraph and perform
 /// some operation on it. The specialized traverser should overload the
@@ -34,12 +34,11 @@ public:
                   NodeVisitor();
    virtual        ~NodeVisitor();
 
-           void   traverse(SceneObject& node);
+           void   traverse(Entity& node);
 
-   virtual void   visitSceneObject(SceneObject* object);
    virtual void   visitWorld(World* object);
-   virtual void   visitObject(Object* object);
-   virtual void   visitCreature(Creature* object);
+   virtual void   visitActor(Actor* object);
+   virtual void   visitParticleSystem(ParticleSystem* pobject);
 };
 
 #ifdef JENGINE_INLINE

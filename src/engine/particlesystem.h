@@ -23,8 +23,10 @@
 #include "core/math/vector.h"
 #include "core/math/color.h"
 
+#include "engine/texture.h"
+
 #include "texture.h"
-#include "object.h"
+#include "entity.h"
 
 class CodePath;
 class Script;
@@ -52,7 +54,7 @@ public:
 /**
 @author Jeroen Broekhuizen
 */
-class ParticleSystem: public Object
+class ParticleSystem : public Entity
 {	
 public:
    DEFINE_REPLICATABLE(ParticleSystem)
@@ -67,17 +69,24 @@ public:
 
 	int            getEmitRate() const;
 
-   virtual void   pack(BitStream& stream) const;
-   virtual void   unpack(BitStream& stream);
+ // visitor
+   virtual void accept(NodeVisitor& visitor);
 	
 protected:
-   virtual bool   load(TiXmlDocument& doc);
+   //virtual bool   load(TiXmlDocument& doc);
 
-   virtual void   doUpdate(DirtySet& dirtyset, float delta);
-	virtual void   doDraw();
+ // update & drawing
+   virtual void   doUpdate(float delta);
+	virtual void   doDraw() const;
 
    bool           prepare();
 
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
+
+   Vector    position;
+   TexturePtr texture;
 	Particle* activeList;
 	Particle* freeList;
 	uint      maxBufferSize;

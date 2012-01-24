@@ -51,7 +51,7 @@ void InputController::requestAction(const ActionEvent& actionevent)
    queueAction(actionevent);
 }
 
-void InputController::performAction(Object& actor)
+void InputController::performAction(Actor& actor)
 {
    ASSERT_PTR(mpActionMap)
 

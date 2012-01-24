@@ -19,36 +19,36 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-/// \fn Object::flip()
+/// \fn Actor::flip()
 /// \brief Flip the direction the object is looking at.
-INLINE void Object::flip ()
+INLINE void Actor::flip ()
 {
    dir = !dir;
 
    setDirty(ePositionDirty);
 }
 
-/// \fn Object::direction()
+/// \fn Actor::direction()
 /// \brief Returns the direction the object is looking at.
 /// \retval true the object is facing to the right
 /// \retval false the object is facing to the left
-INLINE bool Object::direction() const
+INLINE bool Actor::direction() const
 {
    return dir;
 }
 
-/// \fn Object::rotate(float degree)
+/// \fn Actor::rotate(float degree)
 /// \brief Rotate the object by degree degrees.
-INLINE void Object::rotate(float degree)
+INLINE void Actor::rotate(float degree)
 {
    setRotation(angle+degree); 
 }
 
-/// \fn Object::setVelocity (const Vector& v)
+/// \fn Actor::setVelocity (const Vector& v)
 /// \brief Set the velocity of the object. The velocity should be measured in seconds,
 /// as the engine will interpolate it between the frames displayed.
 /// \param v the new velocity in distance/second
-INLINE void Object::setVelocity (const Vector& v)
+INLINE void Actor::setVelocity (const Vector& v)
 {
 	mVel = v;
    setDirty(ePositionDirty);
@@ -57,7 +57,7 @@ INLINE void Object::setVelocity (const Vector& v)
 /// \fn void setRotation(const float deg)
 /// \brief Sets the new degree of rotation of this object.
 /// \param deg the new rotation degree
-INLINE void Object::setRotation(const float deg) 
+INLINE void Actor::setRotation(const float deg) 
 {
    angle = deg;
    setDirty(ePositionDirty);
@@ -68,81 +68,103 @@ INLINE void Object::setRotation(const float deg)
       angle -= 360;
 }
 
-/// \fn Object::setVisible (bool vis = true)
+/// \fn Actor::setVisible (bool vis = true)
 /// \brief Set the visibility status of this object.
 /// \param vis the visibility flag for this object
-INLINE void Object::setVisible(bool vis)
+INLINE void Actor::setVisible(bool vis)
 {
 	visible = vis;
 }
 
-/// \fn Object::isVisible ()
+/// \fn Actor::isVisible ()
 /// \brief Returns the current visibility status of this object.
 /// \retval true the object is visible
 /// \retval false the object is invisible
-INLINE bool Object::isVisible() const
+INLINE bool Actor::isVisible() const
 {
 	return visible;
 }
 
-/// \fn Object::isStatic() const
+/// \fn Actor::isStatic() const
 /// \brief Check if this is a static object.
-INLINE bool Object::isStatic() const
+INLINE bool Actor::isStatic() const
 {
    return mStatic;
 }
 
-/// \fn Object::getRadius() const
+/// \fn Actor::setStatic() const
+/// \brief Set the static object flag.
+INLINE void Actor::setStatic(bool isstatic)
+{
+   mStatic = isstatic;
+}
+
+/// \fn Actor::getRadius() const
 /// \brief Returns the radius of the object.
 /// \returns the radius of the object
-INLINE float Object::getRadius() const
+INLINE float Actor::getRadius() const
 {
    return radius; 
 }
 
-/// \fn Object::getRotation() const
+/// \fn Actor::getRotation() const
 /// \brief Returns the rotation in degrees of the object.
-INLINE float Object::getRotation() const
+INLINE float Actor::getRotation() const
 {
    return angle;
 }
 
-/// \fn Object::getVelocity ()
+/// \fn Actor::getVelocity ()
 /// \brief Returns the current velocity of the object
 /// \returns current velocity of the object
-INLINE const Vector& Object::getVelocity() const
+INLINE const Vector& Actor::getVelocity() const
 {
 	return mVel;
 }
 
-/// \fn Object::getSize()
+/// \fn Actor::getSize()
 /// \brief Returns the size of this object.
-INLINE Vector Object::getSize() const
+INLINE Vector Actor::getSize() const
 {
-   return Vector(static_cast<float>(width), static_cast<float>(height)); 
+   return Vector(static_cast<float>(mWidth), static_cast<float>(mHeight)); 
 }
 
-INLINE const Texture& Object::getTexture() const
+INLINE const Texture& Actor::getTexture() const
 {
    return *texture;
 }
 
-INLINE Animator& Object::getAnimator()
+INLINE Animator& Actor::getAnimator()
 {
    return *mpAnimator;
 }
 
-INLINE bool Object::hasBody() const
+INLINE bool Actor::hasBody() const
 {
    return mpBody != NULL;
 }
 
-INLINE Body& Object::getBody()
+INLINE Body& Actor::getBody()
 {
    return *mpBody;
 }
 
-INLINE Controller& Object::getController()
+INLINE Controller& Actor::getController()
 {
    return *mpController;
+}
+
+INLINE void Actor::setTexture(TexturePtr texture)
+{
+   this->texture = texture;
+}
+
+INLINE void Actor::setAnimator(Animator* panimator)
+{
+   mpAnimator = panimator;
+}
+
+INLINE void Actor::setBody(Body& body)
+{
+   mpBody = &body;
 }

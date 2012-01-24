@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,17 +17,38 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#ifndef WORLD_CHANGED_EVENT_H
+#define WORLD_CHANGED_EVENT_H
 
-//////////////////////////////////////////////////////////////////////////
-// - Get/set interface
-//////////////////////////////////////////////////////////////////////////
+#include <string>
 
-//////////////////////////////////////////////////////////////////////////
-// - Self
-//////////////////////////////////////////////////////////////////////////
+#include "engine/net/netevent.h"
 
-INLINE const Creature& Creature::me()
+class World;
+
+class WorldChangedEvent : public NetEvent
 {
-   return static_cast<const Creature&>(*this);
-}
+public:
+   DEFINE_REPLICATABLE(WorldChangedEvent)
+
+   WorldChangedEvent();
+   WorldChangedEvent(const World& world);
+
+ // get/set
+   const std::string& getFilename() const;
+
+protected:
+ // streaming
+   virtual void doPack(BitStream& stream) const;
+   virtual void doUnpack(BitStream& stream, int dirtyflag);
+
+private:
+
+   std::string mFilename;
+};
+
+#ifdef JENGINE_INLINE
+#  include "worldchangedevent.inl"
+#endif
+
+#endif // WORLD_CHANGED_EVENT_H

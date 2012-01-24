@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/math/vector.h"
+#include "core/defines.h"
 
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualobjectreference.h"
@@ -40,11 +41,12 @@
 #include "net/bitstream.h"
 
 #include "world/world.h"
+#include "engine/content/contentmanager.h"
 
 #include "actionmap.h"
+#include "entity.h"
 #include "keymap.h"
 #include "client.h"
-#include "creature.h"
 #include "player.h"
 #include "server.h"
 #include "inputcontroller.h"
@@ -58,16 +60,6 @@ void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
    const std::string& name = accessor.getString(1);
 
    accessor.setResult(pprocess->create(name));
-}
-
-void Process_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = (Process*) thisobject->getNativeObject();
-
-   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pprocess->getSceneGraph(), false);
-
-   accessor.setResult(ref);
 }
 
 void Process_setScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -111,6 +103,31 @@ void Process_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(machine.instantiateNative("engine.core.Texture", pfont, true)); // take ownership of this handle
 }
 
+void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = static_cast<Process*>(thisobject->getNativeObject());
+
+   accessor.setResult(machine.instantiateNative("ContentManager", &pprocess->getContentManager(), false));
+}
+
+void Process_getWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = static_cast<Process*>(thisobject->getNativeObject());
+
+   accessor.setResult(machine.instantiateNative("World", &pprocess->getWorld(), false));
+}
+
+void Process_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Process* pprocess = static_cast<Process*>(thisobject->getNativeObject());
+
+   World* pworld = static_cast<World*>(accessor.getObject(1)->useNativeObject());
+   pprocess->setWorld(pworld);
+}
+
 void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -137,17 +154,6 @@ void Server_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor
    ActionMap* pmap = (ActionMap*) accessor.getObject(1)->useNativeObject();
 
    pserver->setActionMap(pmap);
-}
-
-void Server_loadWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->getNativeObject();
-
-   std::string worldfile = accessor.getString(1);
-   std::string objectname = accessor.getString(2);
-
-   accessor.setResult(pserver->loadWorld(worldfile, objectname));
 }
 
 void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -237,6 +243,15 @@ void Client_native_setWindow(VirtualMachine& machine, VirtualStackAccessor& acce
    pclient->setWindow(pwindow);
 }
 
+void Client_getPlayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Client* pclient = (Client*) thisobject->getNativeObject();
+
+   Player& player = pclient->getPlayer();
+   accessor.setResult(machine.instantiateNative("Player", &player, false));
+}
+
 void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -265,6 +280,28 @@ void ScriptManager_spawnChild(VirtualMachine& machine, VirtualStackAccessor& acc
    VirtualObjectReference ref = machine.instantiateNative("ScriptManager", pscriptmanager->spawnChild());
 
    accessor.setResult(ref);
+}
+
+void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   ContentManager* pmanager = static_cast<ContentManager*>(thisobject->getNativeObject());
+
+   const std::string& filename = accessor.getString(1);
+
+   Entity* presult = pmanager->loadEntity(filename);
+   accessor.setResult(machine.instantiateNative("Actor", presult, true));
+}
+
+void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   ContentManager* pmanager = static_cast<ContentManager*>(thisobject->getNativeObject());
+
+   const std::string& filename = accessor.getString(1);
+
+   World* presult = pmanager->load(filename);
+   accessor.setResult(machine.instantiateNative("World", presult, true));
 }
 
 void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -311,128 +348,126 @@ void BitStream_clear(VirtualMachine& machine, VirtualStackAccessor& accessor)
    pstream->clear();
 }
 
-void Creature_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
+   Entity* pentity = (Entity*) thisobject->getNativeObject();
 
-   Creature* pcreature = new Creature();
-   machine.registerNative(thisobject, pcreature);
+   accessor.setResult((int)pentity->getId());
 }
 
-void Creature_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
-   thisobject->setOwner(false);
 
-   World* pworld = (World*) accessor.getObject(1)->getNativeObject();
-   const std::string& file = accessor.getString(2);
-
-   accessor.setResult(pcreature->create(*pworld, file));
+   Actor* pactor = new Actor();
+   machine.registerNative(thisobject, pactor);
 }
 
-void Creature_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_getPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
-   accessor.setResult((int)pcreature->getId());
-}
-
-void Creature_getPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
-
-   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pcreature->getPosition()), false);
+   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pactor->getPosition()), false);
 
    accessor.setResult(ref);
 }
 
-void Creature_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
    Vector* ppos = (Vector*) accessor.getObject(1)->getNativeObject();
 
-   pcreature->setPosition(*ppos);
+   pactor->setPosition(*ppos);
 }
 
-void Creature_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pcreature->getVelocity()), false);
+   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pactor->getVelocity()), false);
 
    accessor.setResult(ref);
 }
 
-void Creature_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
    Vector* ppos = (Vector*) accessor.getObject(1)->getNativeObject();
 
-   pcreature->setVelocity(*ppos);
+   pactor->setVelocity(*ppos);
 }
 
-void Creature_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
    const std::string& name = accessor.getString(1);
 
-   pcreature->setName(name);
+   pactor->setName(name);
 }
 
-void Creature_setAnimation(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_setAnimation(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
    int index = accessor.getInt(1);
 
-   pcreature->setAnimation(index);
+   pactor->setAnimation(index);
 }
 
-void Creature_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
-   accessor.setResult(pcreature->direction());
+   accessor.setResult(pactor->direction());
 }
 
-void Creature_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
-   pcreature->flip();
+   pactor->flip();
 }
 
-void Creature_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("box2d.Box2DBody", &pcreature->getBody(), false);
+   VirtualObjectReference ref = machine.instantiateNative("box2d.Box2DBody", &pactor->getBody(), false);
 
    accessor.setResult(ref);
 }
 
-void Creature_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   Creature* pcreature = (Creature*) thisobject->getNativeObject();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
 
    InputController* pcontroller = (InputController*) accessor.getObject(1)->useNativeObject();
 
-   pcreature->setController(pcontroller);
+   pactor->setController(pcontroller);
+}
+
+void Actor_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   Actor* pactor = (Actor*) thisobject->getNativeObject();
+
+   Actor* pchild = (Actor*) accessor.getObject(1)->getNativeObject();
+
+   pactor->add(*pchild);
 }
 
 void Player_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -443,32 +478,32 @@ void Player_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(pplayer->getName());
 }
 
-void Player_getClient(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Player_getClientId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    Player* pplayer = (Player*) thisobject->getNativeObject();
 
-   accessor.setResult(pplayer->client);
+   accessor.setResult(pplayer->getClientId());
 }
 
-void Player_getController(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Player_native_getController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    Player* pplayer = (Player*) thisobject->getNativeObject();
 
-   VirtualObjectReference ref = machine.instantiateNative("Creature", pplayer->controler, false);
+   VirtualObjectReference ref = machine.instantiateNative("Actor", &pplayer->getController(), false);
 
    accessor.setResult(ref);
 }
 
-void Player_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Player_native_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    Player* pplayer = (Player*) thisobject->getNativeObject();
 
-   Creature* pcreature = (Creature*) accessor.getObject(1)->getNativeObject();
+   Actor* pentity = static_cast<Actor*>(accessor.getObject(1)->getNativeObject());
 
-   pplayer->controler = pcreature;
+   pplayer->setController(*pentity);
 }
 
 void Vector2D_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -515,38 +550,6 @@ void Vector2D_setY(VirtualMachine& machine, VirtualStackAccessor& accessor)
    pvector->y = y;
 }
 
-void SceneGraph_getWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   SceneGraph* pgraph = (SceneGraph*) thisobject->getNativeObject();
-
-   VirtualObjectReference ref = machine.instantiateNative("World", pgraph->getWorld(), false);
-
-   accessor.setResult(ref);
-}
-
-void SceneGraph_find(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   SceneGraph* pgraph = (SceneGraph*) thisobject->getNativeObject();
-
-   int id = accessor.getInt(1);
-
-   VirtualObjectReference ref = machine.instantiateNative("Creature", pgraph->find(id), false);
-
-   accessor.setResult(ref);
-}
-
-void SceneGraph_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   SceneGraph* pgraph = (SceneGraph*) thisobject->getNativeObject();
-
-   Object* pobject = (Object*) accessor.getObject(1)->getNativeObject();
-
-   pgraph->setControler(pobject);
-}
-
 void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -563,24 +566,14 @@ void World_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(pworld->getName());
 }
 
-void World_getSceneGraph(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
-
-   VirtualObjectReference ref = machine.instantiateNative("SceneGraph", &pworld->getSceneGraph(), false);
-
-   accessor.setResult(ref);
-}
-
 void World_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    World* pworld = (World*) thisobject->getNativeObject();
 
-   Creature* pcreature = (Creature*) accessor.getObject(1)->useNativeObject();
+   Actor* pentity = static_cast<Actor*>(accessor.getObject(1)->useNativeObject());
 
-   pworld->add(pcreature);
+   pworld->addEntity(pentity);
 }
 
 void World_setObjectLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -608,9 +601,9 @@ void World_setFollowObject(VirtualMachine& machine, VirtualStackAccessor& access
    VirtualObjectReference& thisobject = accessor.getThis();
    World* pworld = (World*) thisobject->getNativeObject();
 
-   Creature* pcreature = (Creature*) accessor.getObject(1)->getNativeObject();
+   Actor* pentity = static_cast<Actor*>(accessor.getObject(1)->getNativeObject());
    
-   pworld->setFollowObject(pcreature);
+   pworld->setFollowObject(pentity);
 }
 
 void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -634,6 +627,17 @@ void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& acces
    int bottom = accessor.getInt(4);
 
    pworld->setFollowBorders(left, right, top, bottom);
+}
+
+void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   World* pworld = (World*) thisobject->getNativeObject();
+
+   int controllerid = accessor.getInt(1);
+   Entity* pentity = pworld->findEntity(Id(controllerid));
+
+   accessor.setResult(machine.instantiateNative("Actor", pentity, false));
 }
 
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -981,17 +985,18 @@ void script_engine_register(ScriptManager& manager)
    ScriptRegistrator registrator;
 
    registrator.addCallback("Process_create", Process_create);
-   registrator.addCallback("Process_getSceneGraph", Process_getSceneGraph);
    registrator.addCallback("Process_setScriptManager", Process_setScriptManager);
    registrator.addCallback("Process_setObject", Process_setObject);
    registrator.addCallback("Process_getFont", Process_getFont);
    registrator.addCallback("Process_getTexture", Process_getTexture);
+   registrator.addCallback("Process_getContentManager", Process_getContentManager);
+   registrator.addCallback("Process_getWorld", Process_getWorld);
+   registrator.addCallback("Process_setWorld", Process_setWorld);
 
    registrator.addCallback("Server_init", Server_init);
    registrator.addCallback("Server_listen", Server_listen);
    registrator.addCallback("Server_update", Server_update);
    registrator.addCallback("Server_setActionMap", Server_setActionMap);
-   registrator.addCallback("Server_loadWorld", Server_loadWorld);
    registrator.addCallback("Server_sendScriptEvent", Server_sendScriptEvent);
 
    registrator.addCallback("Client_init", Client_init);
@@ -1003,6 +1008,10 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Client_native_setWindow", Client_native_setWindow);
    registrator.addCallback("Client_setActionMap", Client_setActionMap);
    registrator.addCallback("Client_setKeyMap", Client_setKeyMap);
+   registrator.addCallback("Client_getPlayer", Client_getPlayer);
+
+   registrator.addCallback("ContentManager_loadEntity", ContentManager_loadEntity);
+   registrator.addCallback("ContentManager_load", ContentManager_load);
 
    registrator.addCallback("ScriptManager_spawnChild", ScriptManager_spawnChild);
 
@@ -1013,44 +1022,41 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("BitStream_readInt", BitStream_readInt);
    registrator.addCallback("BitStream_clear", BitStream_clear);
 
-   registrator.addCallback("Creature_init", Creature_init);
-   registrator.addCallback("Creature_create", Creature_create);
-   registrator.addCallback("Creature_getId", Creature_getId);
-   registrator.addCallback("Creature_getPosition", Creature_getPosition);
-   registrator.addCallback("Creature_setPosition", Creature_setPosition);
-   registrator.addCallback("Creature_getVelocity", Creature_getVelocity);
-   registrator.addCallback("Creature_setVelocity", Creature_setVelocity);
-   registrator.addCallback("Creature_setName", Creature_setName);
-   registrator.addCallback("Creature_setAnimation", Creature_setAnimation);
-   registrator.addCallback("Creature_getBody", Creature_getBody);
-   registrator.addCallback("Creature_direction", Creature_direction);
-   registrator.addCallback("Creature_flip", Creature_flip);
-   registrator.addCallback("Creature_setController", Creature_setController);
+   registrator.addCallback("Entity_getId", Entity_getId);
+
+   registrator.addCallback("Actor_init", Actor_init);
+   registrator.addCallback("Actor_getPosition", Actor_getPosition);
+   registrator.addCallback("Actor_setPosition", Actor_setPosition);
+   registrator.addCallback("Actor_getVelocity", Actor_getVelocity);
+   registrator.addCallback("Actor_setVelocity", Actor_setVelocity);
+   registrator.addCallback("Actor_setName", Actor_setName);
+   registrator.addCallback("Actor_setAnimation", Actor_setAnimation);
+   registrator.addCallback("Actor_getBody", Actor_getBody);
+   registrator.addCallback("Actor_direction", Actor_direction);
+   registrator.addCallback("Actor_flip", Actor_flip);
+   registrator.addCallback("Actor_setController", Actor_setController);
+   registrator.addCallback("Actor_add", Actor_add);
 
    registrator.addCallback("Player_getName", Player_getName);
-   registrator.addCallback("Player_getClient", Player_getClient);
-   registrator.addCallback("Player_getController", Player_getController);
-   registrator.addCallback("Player_setController", Player_setController);
+   registrator.addCallback("Player_getClientId", Player_getClientId);
+   registrator.addCallback("Player_native_getController", Player_native_getController);
+   registrator.addCallback("Player_native_setController", Player_native_setController);
 
    registrator.addCallback("Vector2D_init", Vector2D_init);
    registrator.addCallback("Vector2D_getX", Vector2D_getX);
    registrator.addCallback("Vector2D_setX", Vector2D_setX);
    registrator.addCallback("Vector2D_getY", Vector2D_getY);
    registrator.addCallback("Vector2D_setY", Vector2D_setY);
-
-   registrator.addCallback("SceneGraph_setController", SceneGraph_setController);
-   registrator.addCallback("SceneGraph_getWorld", SceneGraph_getWorld);
-   registrator.addCallback("SceneGraph_find", SceneGraph_find);
-
+   
    registrator.addCallback("World_init", World_init);
    registrator.addCallback("World_getName", World_getName);
-   registrator.addCallback("World_getSceneGraph", World_getSceneGraph);
    registrator.addCallback("World_add", World_add);
    registrator.addCallback("World_setObjectLayer", World_setObjectLayer);
    registrator.addCallback("World_setFollowMode", World_setFollowMode);
    registrator.addCallback("World_setFollowObject", World_setFollowObject);
    registrator.addCallback("World_setFollowBorders", World_setFollowBorders);
    registrator.addCallback("World_getSimulator", World_getSimulator);
+   registrator.addCallback("World_findEntity", World_findEntity);
 
    registrator.addCallback("InputForceGenerator_init", InputForceGenerator_init);
    registrator.addCallback("InputForceGenerator_setVelocity", InputForceGenerator_setVelocity);

@@ -25,7 +25,7 @@
 #include "collisionshapes.h"
 #include "forcegenerators.h"
 
-class Object;
+class Actor;
 class CollisionShape;
 class TiXmlElement;
 class ForceGenerator;
@@ -35,11 +35,11 @@ class Body
 public:
    static bool hasInfo(const TiXmlElement& element);
 
-   explicit Body(Object& object);
+   explicit Body(Actor& actor);
    virtual ~Body();
 
-   const Object& getObject() const;
-         Object& getObject();
+   const Actor&  getActor() const;
+         Actor&  getActor();
 
    const Vector& getPosition() const;
    void          setPosition(const Vector& pos);
@@ -74,11 +74,13 @@ public:
 protected:
    void calculateDerivedData();
 
-   Vector   mPosition;
-   float    mAngle;
+   virtual void notifyPositionChanged();
+
+   Vector            mPosition;
+   float             mAngle;
 
 private:
-   Object&           mObject;
+   Actor&            mActor;
    XForm             mTransform;
    CollisionShapes   mShapes;
    ForceGenerators   mForceGenerators;

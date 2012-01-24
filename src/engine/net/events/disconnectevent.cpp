@@ -23,29 +23,33 @@ IMPLEMENT_REPLICATABLE(DisconnectEventId, DisconnectEvent, NetEvent)
 
 DisconnectEvent::DisconnectEvent():
    NetEvent(disconnectEvent),
-   _id(-1)
+   mId(-1)
 {
 }
 
 DisconnectEvent::DisconnectEvent(int id):
    NetEvent(disconnectEvent),
-   _id(id)
+   mId(id)
 {
 }
+
+// - Get/set
 
 int DisconnectEvent::getId() const
 {
-   return _id;
+   return mId;
 }
 
-void DisconnectEvent::pack(BitStream& stream) const
+// - Streaming
+
+void DisconnectEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
-   stream << _id;
+   NetEvent::doPack(stream);
+   stream << mId;
 }
 
-void DisconnectEvent::unpack(BitStream& stream)
+void DisconnectEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
-   stream >> _id;
+   NetEvent::doUnpack(stream, dirtyflag);
+   stream >> mId;
 }

@@ -29,7 +29,6 @@
 #include "clientkeyeventdispatcher.h"
 #include "clientmouseeventdispatcher.h"
 #include "idmanager.h"
-#include "object.h"
 #include "process.h"
 #include "sound.h"
 
@@ -41,6 +40,7 @@ class DeleteObjectEvent;
 class UpdateObjectEvent;
 class NameChangeObjectEvent;
 class ScriptEvent;
+class WorldChangedEvent;
 
 class Input;
 class KeyEvent;
@@ -114,10 +114,10 @@ private:
    void  handleJoinEvent(const JoinEvent& event);
    void  handleServerdownEvent();
 
+   void  handleWorldChangedEvent(const WorldChangedEvent& event);
    void  handleNewObjectEvent(const NewObjectEvent& event);
    void  handleDeleteObjectEvent(const DeleteObjectEvent& event);
    void  handleUpdateObjectEvent(const UpdateObjectEvent& event);
-   void  handleNameChangeEvent(const NameChangeObjectEvent& event);
    void  handleScriptEvent(const ScriptEvent& event);
 
    GameWindow*                mpWindow;

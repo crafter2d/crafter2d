@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,37 +17,53 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "namechangeobjectevent.h"
-#ifndef JENGINE_INLINE
-#  include "namechangeobjectevent.inl"
-#endif
+#include "contentmanager.h"
 
-#include "engine/sceneobject.h"
+#include "core/smartptr/autoptr.h"
 
-IMPLEMENT_REPLICATABLE(NameChangeObjectEventId, NameChangeObjectEvent, NetEvent)
+#include "engine/actor.h"
+#include "engine/process.h"
 
-NameChangeObjectEvent::NameChangeObjectEvent():
-   NetEvent(namechangeEvent),
-   mId(),
-   mName()
+#include "engine/world/world.h"
+#include "engine/world/worldreader.h"
+
+#include "objectloader.h"
+
+ContentManager::ContentManager(Process& process):
+   mProcess(process)
 {
 }
 
-NameChangeObjectEvent::NameChangeObjectEvent(const SceneObject& object):
-   NetEvent(namechangeEvent),
-   mId(object.getId()),
-   mName(object.getName())
+//---------------------------------
+// - Loading
+//---------------------------------
+
+Entity* ContentManager::loadEntity(const std::string& filename)
 {
+   if ( !mProcess.hasWorld() )
+   {
+      // need a world first!
+      return NULL;
+   }
+
+   ActorLoader loader;
+   loader.setSimulator(mProcess.getWorld().getSimulator());
+
+   return loader.load(filename);
 }
 
-void NameChangeObjectEvent::pack(BitStream& stream) const
+World* ContentManager::load(const std::string& filename)
 {
-   NetEvent::pack(stream);
-   stream << mId << mName;
-}
+   AutoPtr<World> world = new World();
+   if ( world.hasPointer() )
+   {
+      WorldReader reader;
+      if ( !reader.read(*world, filename) )
+      {
+         // failed, throw an exception
+         return NULL;
+      }
+   }
 
-void NameChangeObjectEvent::unpack(BitStream& stream)
-{
-   NetEvent::unpack(stream);
-   stream >> mId >> mName;
+   return world.release();
 }

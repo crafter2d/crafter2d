@@ -21,7 +21,7 @@
 #define _CONTROLER_H_
 
 class ActionEvent;
-class Object;
+class Actor;
 
 /// @author Jeroen Broekhuizen
 ///
@@ -35,7 +35,7 @@ public:
 
  // operations
    virtual void requestAction(const ActionEvent& action);
-   virtual void performAction(Object& actor) = 0;
+   virtual void performAction(Actor& actor) = 0;
 };
 
 #endif

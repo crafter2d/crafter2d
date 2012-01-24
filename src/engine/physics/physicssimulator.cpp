@@ -39,9 +39,9 @@ PhysicsSimulator::~PhysicsSimulator()
    mWorldShapes.removeAll();
 }
 
-Body& PhysicsSimulator::createBody(Object& object)
+Body& PhysicsSimulator::createBody(Actor& actor)
 {
-   PhysicsBody* pbody = new PhysicsBody(object);
+   PhysicsBody* pbody = new PhysicsBody(actor);
    addBody(pbody);
    return *pbody;
 }

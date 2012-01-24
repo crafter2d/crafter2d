@@ -34,11 +34,11 @@
 #include "engine/resource/resourcemanager.h"
 
 #include "codepath.h"
-#include "object.h"
 #include "opengl.h"
 #include "vertexbuffer.h"
 #include "effect.h"
 #include "process.h"
+#include "nodevisitor.h"
 
 struct ParticleVertex {
 	Vector pos;
@@ -63,7 +63,7 @@ Particle::Particle():
 
 // - ParticleSystem
 
-IMPLEMENT_REPLICATABLE(ParticleSystemId, ParticleSystem, Object)
+IMPLEMENT_REPLICATABLE(ParticleSystemId, ParticleSystem, Entity)
 
 /// \fn ParticleSystem::ParticleSystem()
 /// \brief Initializes member variables.
@@ -88,6 +88,7 @@ ParticleSystem::~ParticleSystem()
    destroy();
 }
 
+/*
 bool ParticleSystem::load(TiXmlDocument& doc)
 {
    Log& log = Log::getInstance();
@@ -136,6 +137,7 @@ bool ParticleSystem::load(TiXmlDocument& doc)
 
    return prepare();
 }
+*/
 
 /// \fn ParticleSystem::prepare()
 /// \brief Creates and initializes the particle system components neccessary for rendering.
@@ -167,8 +169,6 @@ bool ParticleSystem::prepare()
 /// \brief Release all dynamic objects inside this particle system.
 void ParticleSystem::destroy()
 {
-   Object::destroy();
-
    if (path != 0) {
       delete path;
       path = 0;
@@ -195,11 +195,11 @@ void ParticleSystem::destroy()
    }
 }
 
-/// \fn ParticleSystem::doUpdate (DirtySet& dirtyset, float delta)
+/// \fn ParticleSystem::doUpdate (float delta)
 /// \brief Fires the particle update script for every particle. After that the system
 /// checks if there are still enough particles alive. If not, new particles are initialized
 /// and put in the active list.
-void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
+void ParticleSystem::doUpdate(float delta)
 {
    if ( isReplica() )
    {
@@ -248,7 +248,7 @@ void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
 			   activeList = part;
 
 			   // initialize the particle
-			   part->pos = getPosition();
+			   part->pos = position;
 			   part->pos.x += rand()%6;
 			   part->pos.y += rand()%4;
 			   part->vel = Vector (0, -1.0f-rand()%2);
@@ -271,90 +271,96 @@ void ParticleSystem::doUpdate(DirtySet& dirtyset, float delta)
 /// \fn ParticleSystem::doDraw ()
 /// \brief Draw the particles to the screen buffer via a vertex buffer and
 /// vertex shader for rendering speed.
-void ParticleSystem::doDraw ()
+void ParticleSystem::doDraw() const
 {
-   if ( isReplica() )
+   glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+   texture->enable ();
+
+	uint num = 0;
+	Particle* part = activeList;
+	ParticleVertex* verts = (ParticleVertex*)buffer->lock (0);
+
+	path->enable();
+	while (part)
    {
-      glDisable(GL_DEPTH_TEST);
-	   //glDisable(GL_ALPHA_TEST);
-	   glEnable(GL_BLEND);
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		float halfSize = part->size * 0.5f;
 
-      texture->enable ();
+		// create the quad
+		verts[0].pos = part->pos;
+		verts[0].diffuse = part->color;
+		verts[0].tex.set (0,0);
+		verts[0].offset.set (-halfSize,-halfSize);
 
-	   uint num = 0;
-	   Particle* part = activeList;
-	   ParticleVertex* verts = (ParticleVertex*)buffer->lock (0);
+		verts[1].pos = part->pos;
+		verts[1].diffuse = part->color;
+		verts[1].tex.set (0,1);
+		verts[1].offset.set (-halfSize,halfSize);
 
-	   path->enable();
-	   while (part)
-      {
-		   float halfSize = part->size * 0.5f;
+		verts[2].pos = part->pos;
+		verts[2].diffuse = part->color;
+		verts[2].tex.set (1,1);
+		verts[2].offset.set (halfSize,halfSize);
 
-		   // create the quad
-		   verts[0].pos = part->pos;
-		   verts[0].diffuse = part->color;
-		   verts[0].tex.set (0,0);
-		   verts[0].offset.set (-halfSize,-halfSize);
+		verts[3].pos = part->pos;
+		verts[3].diffuse = part->color;
+		verts[3].tex.set (1,0);
+		verts[3].offset.set (halfSize,-halfSize);
 
-		   verts[1].pos = part->pos;
-		   verts[1].diffuse = part->color;
-		   verts[1].tex.set (0,1);
-		   verts[1].offset.set (-halfSize,halfSize);
+		verts += 4;
 
-		   verts[2].pos = part->pos;
-		   verts[2].diffuse = part->color;
-		   verts[2].tex.set (1,1);
-		   verts[2].offset.set (halfSize,halfSize);
+		// check buffer limit
+		if (++num >= maxBufferSize) {
+			// buffer full -> render contents and continue
+			buffer->unlock ();
 
-		   verts[3].pos = part->pos;
-		   verts[3].diffuse = part->color;
-		   verts[3].tex.set (1,0);
-		   verts[3].offset.set (halfSize,-halfSize);
+			buffer->enable ();
+			glDrawArrays (GL_QUADS, 0, num*4);
+			buffer->disable ();
 
-		   verts += 4;
+			verts = (ParticleVertex*)buffer->lock (0);
+			num = 0;
+		}
 
-		   // check buffer limit
-		   if (++num >= maxBufferSize) {
-			   // buffer full -> render contents and continue
-			   buffer->unlock ();
+		part = part->next;
+	}
 
-			   buffer->enable ();
-			   glDrawArrays (GL_QUADS, 0, num*4);
-			   buffer->disable ();
+	// render any remaining particles
+	buffer->unlock ();
+	if (num != 0) {
+		buffer->enable ();
+		glDrawArrays (GL_QUADS, 0, num*4);
+		buffer->disable ();
+	}
+	path->disable();
 
-			   verts = (ParticleVertex*)buffer->lock (0);
-			   num = 0;
-		   }
+	glDisable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
 
-		   part = part->next;
-	   }
-
-	   // render any remaining particles
-	   buffer->unlock ();
-	   if (num != 0) {
-		   buffer->enable ();
-		   glDrawArrays (GL_QUADS, 0, num*4);
-		   buffer->disable ();
-	   }
-	   path->disable();
-
-	   glDisable(GL_BLEND);
-	   glEnable(GL_ALPHA_TEST);
-
-	   texture->disable();
-   }
+	texture->disable();
 }
 
-void ParticleSystem::pack(BitStream& stream) const
+// - Visitor
+
+void ParticleSystem::accept(NodeVisitor& visitor)
 {
-   Object::pack(stream);
+   visitor.visitParticleSystem(this);
+}
+
+// - Streaming 
+
+void ParticleSystem::doPack(BitStream& stream) const
+{
+   Entity::doPack(stream);
    stream << true;
 }
 
-void ParticleSystem::unpack(BitStream& stream)
+void ParticleSystem::doUnpack(BitStream& stream, int dirtyflag)
 {
-   Object::unpack(stream);
+   Entity::doUnpack(stream, dirtyflag);
 
    bool dirty;
    stream >> dirty;

@@ -1,5 +1,4 @@
 
-use creature;
 use vector2d;
 
 class ActionMap
@@ -7,7 +6,7 @@ class ActionMap
 	public native ActionMap();
 	public native void setProcess(Server server);
 	
-	public void onKeyDown(Creature object, int action)
+	public void onKeyDown(Actor object, int action)
 	{
 		Vector2D velocity = object.getVelocity();
 		
@@ -49,7 +48,7 @@ class ActionMap
 		}
 	}
 	
-	public void onKeyUp(Creature object, int action)
+	public void onKeyUp(Actor object, int action)
 	{
 		Vector2D velocity = object.getVelocity();
 		

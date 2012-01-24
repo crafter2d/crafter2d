@@ -24,7 +24,7 @@
 
 #include "core/system/timer.h" 
 
-#include "object.h"
+#include "actor.h"
 
 /*********************************************************
  * State class
@@ -108,7 +108,7 @@ bool MoveState::update(float timestep)
    }
    else
    {
-      object()->move(timestep);
+      //object()->move(timestep);
    }
    return false;
 }

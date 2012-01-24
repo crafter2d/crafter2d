@@ -24,6 +24,7 @@
 #include "core/vfs/unzipfile.h"
 
 #include "engine/physics/simulationfactoryregistry.h"
+#include "engine/net/bitstream.h"
 
 #include "bound.h"
 #include "layer.h"
@@ -63,9 +64,9 @@ bool WorldVersion2Reader::virRead()
    UnzipFile zip(getFilename());
 
    return readHeader(zip)
-       && readSimulator(zip)
        && readLayers(zip)
-       && readBounds(zip);
+       && readBounds(zip)
+       && readSimulator(zip);
        //&& readObjects(zip);
 }
 

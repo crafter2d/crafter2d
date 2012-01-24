@@ -17,8 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <assert.h>
-
 #include "core/defines.h"
 
 #include "layer.h"
@@ -30,9 +28,9 @@ INLINE void World::setAutoFollow(bool enabled)
    autoFollow = enabled;
 }
 
-/// \fn World::setFollowObject(Object* obj)
+/// \fn World::setFollowObject(Actor* obj)
 /// \brief Set the object which should be followed when in auto modus.
-INLINE void World::setFollowObject(Object* obj)
+INLINE void World::setFollowObject(Actor* obj)
 {
    followObject = obj;
 }
@@ -59,6 +57,26 @@ INLINE void World::setFollowBorders(int left, int right, int top, int bottom)
    rightBorder = right;
    topBorder = top;
    bottomBorder = bottom;
+}
+
+INLINE const std::string& World::getName() const
+{
+   return mName;
+}
+   
+INLINE void World::setName(const std::string& name)
+{
+   mName = name;
+}
+
+INLINE const std::string& World::getFilename() const
+{
+   return mFilename;
+}
+
+INLINE void World::setFilename(const std::string& filename)
+{
+   mFilename = filename;
 }
 
 INLINE const Bound& World::getBound(int index) const
@@ -127,6 +145,22 @@ INLINE Simulator& World::getSimulator()
 {
    ASSERT_PTR(mpSimulator);
    return *mpSimulator;
+}
+
+INLINE bool World::hasScript() const
+{
+   return mpScript != NULL;
+}
+
+INLINE Script& World::getScript()
+{
+   ASSERT_PTR(mpScript);
+   return *mpScript;
+}
+   
+INLINE void World::setScript(Script* pscript)
+{
+   mpScript = pscript;
 }
 
 //////////////////////////////////////////////////////////////////////////

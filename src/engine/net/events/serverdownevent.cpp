@@ -10,12 +10,14 @@ ServerDownEvent::ServerDownEvent():
 {
 }
 
-void ServerDownEvent::pack(BitStream& stream) const
+// - Streaming
+
+void ServerDownEvent::doPack(BitStream& stream) const
 {
-   NetEvent::pack(stream);
+   NetEvent::doPack(stream);
 }
 
-void ServerDownEvent::unpack(BitStream& stream)
+void ServerDownEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   NetEvent::unpack(stream);
+   NetEvent::doUnpack(stream, dirtyflag);
 }

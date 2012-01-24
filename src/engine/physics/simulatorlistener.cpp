@@ -28,10 +28,10 @@ SimulatorListener::~SimulatorListener()
 {
 }
 
-void SimulatorListener::collideObjectWorld(Object& source, Bound& bound, int side, bool begin)
+void SimulatorListener::collideObjectWorld(Actor& source, Bound& bound, int side, bool begin)
 {
 }
 
-void SimulatorListener::collideObjectObject(Object& source, Object& target, int side, bool begin)
+void SimulatorListener::collideObjectObject(Actor& source, Actor& target, int side, bool begin)
 {
 }

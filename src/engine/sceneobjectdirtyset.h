@@ -25,12 +25,12 @@
 #include "dirtyset.h"
 
 class NetConnection;
-class SceneObject;
+class Entity;
 
 class SceneObjectDirtySet : public DirtySet
 {
 public:
-   typedef std::list<SceneObject*> Objects;
+   typedef std::list<Entity*> Objects;
 
    SceneObjectDirtySet();
    virtual ~SceneObjectDirtySet();
