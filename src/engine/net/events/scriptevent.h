@@ -34,9 +34,10 @@ public:
 
             ScriptEvent();
    explicit ScriptEvent(BitStream* pstream);
+   virtual ~ScriptEvent();
 
  // get/set
-   BitStream* getStream() const;
+   BitStream* useStream() const;
 
 protected:
  // streaming
@@ -44,7 +45,8 @@ protected:
    virtual void   doUnpack(BitStream& stream, int dirtyflag);
 
 private:
-   BitStream*  mpStream;   // not owning
+   mutable BitStream*  mpStream;
+           bool        mOwned;
 };
 
 #endif

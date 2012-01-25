@@ -28,17 +28,17 @@ IMPLEMENT_REPLICATABLE(NewObjectEventId, NewObjectEvent, NetEvent)
 
 NewObjectEvent::NewObjectEvent():
    NetEvent(newobjectEvent),
+   mId(),
    mParentId(),
-   mpObject(),
    mFileName()
 {
 }
 
 NewObjectEvent::NewObjectEvent(const Entity& entity):
    NetEvent(newobjectEvent),
+   mId(entity.getId()),
    mParentId(entity.hasParent() ? entity.getParent().getId() : IdManager::invalidId),
-   mpObject(const_cast<Entity*>(&entity)),
-   mFileName(mpObject->getFilename())
+   mFileName(entity.getFilename())
 {
 }
 
@@ -46,20 +46,16 @@ NewObjectEvent::NewObjectEvent(const Entity& entity):
 
 void NewObjectEvent::doPack(BitStream& stream) const
 {
-   ASSERT_PTR(mpObject)
-
    NetEvent::doPack(stream);
    
-   stream << mParentId << mpObject << mFileName;
+   stream << mId << mParentId << mFileName;
 }
 
 void NewObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
-   ASSERT(mpObject == NULL)
-
    NetEvent::doUnpack(stream, dirtyflag);
       
-   stream >> mParentId >> (NetObject**)&mpObject >> mFileName;
+   stream >> mId >> mParentId >> mFileName;
 }
 
 

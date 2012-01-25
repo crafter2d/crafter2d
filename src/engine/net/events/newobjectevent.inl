@@ -19,14 +19,14 @@
  ***************************************************************************/
 #include "core/defines.h"
 
+INLINE Id NewObjectEvent::getId() const
+{
+   return mId;
+}
+
 INLINE Id NewObjectEvent::getParentId() const
 {
    return mParentId;
-}
-
-INLINE Entity* NewObjectEvent::getObject() const
-{
-   return mpObject;
 }
 
 INLINE const std::string& NewObjectEvent::getFileName() const

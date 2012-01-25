@@ -82,6 +82,7 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mContext(context),
    mCallback(*this),
    mCompiler(),
+   mGC(),
    mStack(),
    mCallStack(),
    mCall(),

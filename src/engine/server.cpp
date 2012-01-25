@@ -44,7 +44,7 @@
 
 #include "controller.h"
 #include "player.h"
-#include "sceneobjectdirtyset.h"
+#include "serverdirtyset.h"
 #include "scopedvalue.h"
 
 Server::Server():
@@ -112,7 +112,7 @@ void Server::update(float delta)
    // update the graph
    if ( hasWorld() )
    {
-      SceneObjectDirtySet dirtyset;
+      ServerDirtySet dirtyset;
       getWorld().update(dirtyset, delta);
 
       // send changes to the clients
@@ -225,7 +225,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
          {
             const ScriptEvent& scriptevent = dynamic_cast<const ScriptEvent&>(event);
 
-            AutoPtr<BitStream> stream = scriptevent.getStream();
+            AutoPtr<BitStream> stream = scriptevent.useStream();
 
             // run the onClientConnect script
             Player* player = clients[client];

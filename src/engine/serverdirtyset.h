@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SCENEOBJECT_DIRTY_SET_H_
-#define SCENEOBJECT_DIRTY_SET_H_
+#ifndef SERVER_DIRTY_SET_H_
+#define SERVER_DIRTY_SET_H_
 
 #include <list>
 
@@ -27,22 +27,23 @@
 class NetConnection;
 class Entity;
 
-class SceneObjectDirtySet : public DirtySet
+class ServerDirtySet : public DirtySet
 {
 public:
-   typedef std::list<Entity*> Objects;
+   ServerDirtySet();
+   virtual ~ServerDirtySet();
 
-   SceneObjectDirtySet();
-   virtual ~SceneObjectDirtySet();
-
-   virtual void reportDirty(NetObject& object);
-
+ // transmission
    void send(NetConnection& conn);
 
+ // reporting
+   virtual void reportDirty(Entity& entity);
+
 private:
-   void resetDirty();
+ // typedefs
+   typedef std::list<Entity*> Objects;
 
    Objects mObjects;
 };
 
-#endif
+#endif // SERVER_DIRTY_SET_H_

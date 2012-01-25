@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "sceneobjectdirtyset.h"
+#include "serverdirtyset.h"
 
 #include "net/events/updateobjectevent.h"
 
@@ -26,49 +26,32 @@
 
 #include "entity.h"
 
-SceneObjectDirtySet::SceneObjectDirtySet():
+ServerDirtySet::ServerDirtySet():
    DirtySet(),
    mObjects()
 {
 }
 
-SceneObjectDirtySet::~SceneObjectDirtySet()
+ServerDirtySet::~ServerDirtySet()
 {
-   resetDirty();
 }
 
 // - operations
 
-void SceneObjectDirtySet::reportDirty(NetObject& object)
+void ServerDirtySet::reportDirty(Entity& entity)
 {
-   Entity* psceneobject = dynamic_cast<Entity*>(&object);
-   if ( psceneobject != NULL )
-   {
-      mObjects.push_back(psceneobject);
-   }
+   mObjects.push_back(&entity);
 }
 
-void SceneObjectDirtySet::send(NetConnection& conn)
+void ServerDirtySet::send(NetConnection& conn)
 {
    Objects::iterator it = mObjects.begin();
    for ( ; it != mObjects.end(); ++it )
    {
       Entity& object = *(*it);
 
-      if ( object.isDirty() )
-      {
-         UpdateObjectEvent event(object);
-         conn.send(&event);
-      }
+      UpdateObjectEvent event(object);
+      conn.send(&event);
    }
 }
 
-void SceneObjectDirtySet::resetDirty()
-{
-   Objects::iterator it = mObjects.begin();
-   for ( ; it != mObjects.end(); ++it )
-   {
-      Entity& object = *(*it);
-      object.resetDirty();
-   }
-}

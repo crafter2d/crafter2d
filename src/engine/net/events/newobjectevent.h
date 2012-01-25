@@ -38,8 +38,8 @@ public:
    explicit NewObjectEvent(const Entity& entity);
    
  // get/set
+   Id                 getId() const;
    Id                 getParentId() const;
-   Entity*            getObject() const;
    const std::string& getFileName() const;
 
 protected:
@@ -48,8 +48,8 @@ protected:
    virtual void   doUnpack(BitStream& stream, int dirtyflag);
 
 private:
+   Id          mId;
    Id          mParentId;
-   Entity*     mpObject;
    std::string mFileName;
 };
 

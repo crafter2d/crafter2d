@@ -25,21 +25,33 @@ IMPLEMENT_REPLICATABLE(ScriptEventId, ScriptEvent, NetEvent)
 
 ScriptEvent::ScriptEvent():
    NetEvent(scriptEvent),
-   mpStream(NULL)
+   mpStream(NULL),
+   mOwned(false)
 {
 }
 
 ScriptEvent::ScriptEvent(BitStream* pstream):
    NetEvent(scriptEvent),
-   mpStream(pstream)
+   mpStream(pstream),
+   mOwned(false)
 {
+}
+
+ScriptEvent::~ScriptEvent()
+{
+   if ( mOwned )
+   {
+      ASSERT_MSG(mpStream == NULL, "The stream should have been used by now!");
+   }
 }
 
 // - Get/set
 
-BitStream* ScriptEvent::getStream() const
+BitStream* ScriptEvent::useStream() const
 {
-   return mpStream;
+   BitStream* pstream = mpStream;
+   mpStream = NULL;
+   return pstream;
 }
 
 // - Streaming
@@ -55,6 +67,7 @@ void ScriptEvent::doUnpack(BitStream& stream, int dirtyflag)
 {
    NetEvent::doUnpack(stream, dirtyflag);
    
+   mOwned = true;
    mpStream = new BitStream();
    stream >> *mpStream;
 }

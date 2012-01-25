@@ -20,7 +20,7 @@
 #ifndef DIRTY_SET_H_
 #define DIRTY_SET_H_
 
-class NetObject;
+class Entity;
 
 class DirtySet
 {
@@ -28,7 +28,7 @@ public:
    DirtySet();
    virtual ~DirtySet();
 
-   virtual void reportDirty(NetObject& object) = 0;
+   virtual void reportDirty(Entity& entity) = 0;
 };
 
 #endif

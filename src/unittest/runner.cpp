@@ -15,12 +15,12 @@
 int main( int argc, char *argv[] ) {
  return CxxTest::GuiTuiRunner<CxxTest::Win32Gui, CxxTest::StdioPrinter>( argc, argv ).run();
 }
-#include "D:/Devel/jenginesse/trunk/src/unittest/testcompiler.h"
+#include "E:/Devel/jengine_sse/trunk/src/unittest/testcompiler.h"
 
 static TestCompiler suite_TestCompiler;
 
 static CxxTest::List Tests_TestCompiler = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestCompiler( "D:/Devel/jenginesse/trunk/src/unittest/testcompiler.h", 12, "TestCompiler", suite_TestCompiler, Tests_TestCompiler );
+CxxTest::StaticSuiteDescription suiteDescription_TestCompiler( "E:/Devel/jengine_sse/trunk/src/unittest/testcompiler.h", 12, "TestCompiler", suite_TestCompiler, Tests_TestCompiler );
 
 static class TestDescription_TestCompiler_testCompilation : public CxxTest::RealTestDescription {
 public:
@@ -34,12 +34,12 @@ public:
  void runTest() { suite_TestCompiler.testCallback(); }
 } testDescription_TestCompiler_testCallback;
 
-#include "D:/Devel/jenginesse/trunk/src/unittest/testlist.h"
+#include "E:/Devel/jengine_sse/trunk/src/unittest/testlist.h"
 
 static TestList suite_TestList;
 
 static CxxTest::List Tests_TestList = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestList( "D:/Devel/jenginesse/trunk/src/unittest/testlist.h", 9, "TestList", suite_TestList, Tests_TestList );
+CxxTest::StaticSuiteDescription suiteDescription_TestList( "E:/Devel/jengine_sse/trunk/src/unittest/testlist.h", 9, "TestList", suite_TestList, Tests_TestList );
 
 static class TestDescription_TestList_testSize : public CxxTest::RealTestDescription {
 public:
@@ -59,12 +59,12 @@ public:
  void runTest() { suite_TestList.testClear(); }
 } testDescription_TestList_testClear;
 
-#include "D:/Devel/jenginesse/trunk/src/unittest/testvariant.h"
+#include "E:/Devel/jengine_sse/trunk/src/unittest/testvariant.h"
 
 static TestVariant suite_TestVariant;
 
 static CxxTest::List Tests_TestVariant = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestVariant( "D:/Devel/jenginesse/trunk/src/unittest/testvariant.h", 9, "TestVariant", suite_TestVariant, Tests_TestVariant );
+CxxTest::StaticSuiteDescription suiteDescription_TestVariant( "E:/Devel/jengine_sse/trunk/src/unittest/testvariant.h", 9, "TestVariant", suite_TestVariant, Tests_TestVariant );
 
 static class TestDescription_TestVariant_testInt : public CxxTest::RealTestDescription {
 public:
@@ -84,12 +84,12 @@ public:
  void runTest() { suite_TestVariant.testAssignment(); }
 } testDescription_TestVariant_testAssignment;
 
-#include "D:/Devel/jenginesse/trunk/src/unittest/testvirtualmachine.h"
+#include "E:/Devel/jengine_sse/trunk/src/unittest/testvirtualmachine.h"
 
 static TestVirtualMachine suite_TestVirtualMachine;
 
 static CxxTest::List Tests_TestVirtualMachine = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestVirtualMachine( "D:/Devel/jenginesse/trunk/src/unittest/testvirtualmachine.h", 11, "TestVirtualMachine", suite_TestVirtualMachine, Tests_TestVirtualMachine );
+CxxTest::StaticSuiteDescription suiteDescription_TestVirtualMachine( "E:/Devel/jengine_sse/trunk/src/unittest/testvirtualmachine.h", 11, "TestVirtualMachine", suite_TestVirtualMachine, Tests_TestVirtualMachine );
 
 static class TestDescription_TestVirtualMachine_testRun : public CxxTest::RealTestDescription {
 public:

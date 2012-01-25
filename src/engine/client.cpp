@@ -395,9 +395,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
 {
    ASSERT(hasWorld());
 
-   // a new object has been made on the server and 
-   // is now also known on the client
-   AutoPtr<Entity> obj = event.getObject();
+   // a new object has been made on the server and is now also known on the client
    
    Entity* pentity = getContentManager().loadEntity(event.getFileName());
    if ( pentity == NULL )
@@ -405,10 +403,8 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       UNREACHABLE("Could not create the entity!");
    }
 
-   pentity->setId(obj->getId());
+   pentity->setId(event.getId());
    pentity->setReplica();
-
-   getWorld().addEntity(pentity);
 
    if ( event.getParentId() != IdManager::invalidId )
    {
@@ -421,9 +417,12 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
    }
   
    // remove the request
-   Requests::iterator it = mRequests.find(obj->getId());
+   Requests::iterator it = mRequests.find(pentity->getId());
    if ( it != mRequests.end() )
       mRequests.erase(it);
+
+   // add the entity to the world
+   getWorld().addEntity(pentity);
 }
 
 void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
@@ -453,7 +452,7 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
 
 void Client::handleScriptEvent(const ScriptEvent& event)
 {
-   AutoPtr<BitStream> stream(event.getStream());
+   AutoPtr<BitStream> stream(event.useStream());
 
    // run the onClientConnect script
    mpScript->addParam("BitStream", stream.getPointer());
