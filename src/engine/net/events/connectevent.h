@@ -20,7 +20,7 @@
 #ifndef CONNECTEVENT_H_
 #define CONNECTEVENT_H_
 
-#include "../netevent.h"
+#include "netevent.h"
 
 /**
 @author Jeroen Broekhuizen

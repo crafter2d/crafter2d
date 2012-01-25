@@ -32,7 +32,6 @@
 
 #include "events/connectreplyevent.h"
 
-#include "netevent.h"
 #include "netstatistics.h"
 
 #ifdef WIN32

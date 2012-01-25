@@ -35,8 +35,7 @@
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
 
-#include "net/netevent.h"
-#include "net/newobjectevent.h"
+#include "net/events/newobjectevent.h"
 #include "net/events/connectevent.h"
 #include "net/events/connectreplyevent.h"
 #include "net/events/deleteobjectevent.h"

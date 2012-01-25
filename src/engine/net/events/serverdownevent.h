@@ -20,7 +20,7 @@
 #ifndef SERVER_DOWN_EVENT_H_
 #define SERVER_DOWN_EVENT_H_
 
-#include "../netevent.h"
+#include "netevent.h"
 
 /**
 @author Jeroen Broekhuizen

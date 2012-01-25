@@ -17,26 +17,59 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "bitstream.h"
 
-#include "netevent.h"
-#ifndef JENGINE_INLINE
+#ifndef _NETEVENT_H_
+#define _NETEVENT_H_
+
+#include "engine/net/netobject.h"
+
+class BitStream;
+
+enum EventType {
+   connectEvent      = 0x0000,
+   connectReplyEvent = 0x0001,
+   disconnectEvent   = 0x0002,
+   joinEvent         = 0x0003,
+   serverdownEvent   = 0x0004,
+
+   // game events
+   actionEvent       = 0x0020,
+   scriptEvent       = 0x0023,
+   newobjectEvent    = 0x0024,
+   delobjectEvent    = 0x0025,
+   updobjectEvent    = 0x0021,
+   reqobjectEvent    = 0x0022,
+   viewportEvent     = 0x0026,
+   namechangeEvent   = 0x0027,
+   worldchangedEvent = 0x0028,
+
+   generalEvent      = 0x1000
+};
+
+/// NetEvent
+/// The base class for events that should be sended to the client or server.
+class NetEvent: public NetObject
+{
+public:
+   DEFINE_REPLICATABLE(NetEvent)
+
+   explicit       NetEvent(EventType _type = generalEvent);
+
+ // get/set 
+   void           setType(EventType eventtype);
+   EventType      getType() const;
+
+protected:
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
+
+private:
+   EventType mType;
+};
+
+#ifdef JENGINE_INLINE
 #  include "netevent.inl"
 #endif
 
-IMPLEMENT_REPLICATABLE(NetEventId, NetEvent, NetObject)
-
-NetEvent::NetEvent(EventType _type): 
-   type(_type)
-{
-}
-
-void NetEvent::doPack(BitStream& stream) const
-{
-   //stream << (int)type;
-}
-
-void NetEvent::doUnpack(BitStream& stream, int dirtyflag)
-{
-   //stream >> (int&)type;
-}
+#endif

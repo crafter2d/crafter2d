@@ -24,7 +24,7 @@
 
 #include <map>
 
-#include "net/netevent.h"
+#include "engine/net/events/netevent.h"
 
 #include "serverworldobserver.h"
 #include "process.h"

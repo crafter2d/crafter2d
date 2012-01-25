@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "serverworldobserver.h"
 
-#include "engine/net/newobjectevent.h"
+#include "engine/net/events/newobjectevent.h"
 #include "engine/net/events/deleteobjectevent.h"
 
 #include "server.h"

@@ -20,7 +20,7 @@
 #ifndef ACTION_EVENT_H_
 #define ACTION_EVENT_H_
 
-#include "../netevent.h"
+#include "netevent.h"
 
 class ActionEvent: public NetEvent
 {

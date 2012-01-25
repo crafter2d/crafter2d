@@ -20,7 +20,7 @@
 #ifndef VIEWPORT_EVENT_H_
 #define VIEWPORT_EVENT_H_
 
-#include "../netevent.h"
+#include "netevent.h"
 
 class Viewport;
 

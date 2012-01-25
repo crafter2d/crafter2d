@@ -20,7 +20,7 @@
 #ifndef SCRIPT_EVENT_H_
 #define SCRIPT_EVENT_H_
 
-#include "../netevent.h"
+#include "netevent.h"
 
 class BitStream;
 

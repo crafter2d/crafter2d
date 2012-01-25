@@ -17,19 +17,44 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <assert.h>
-#include "core/defines.h"
+#ifndef NEWOBJECTEVENT_H_
+#define NEWOBJECTEVENT_H_
 
-/// \fn NetEvent::setType(EventType t)
-/// \brief Set the type of this event.
-INLINE void NetEvent::setType(EventType t)
-{
-   type = t; 
-}
+#include "engine/idmanager.h"
 
-/// \fn NetEvent::getType() const
-/// \brief Returns the type of this event.
-INLINE EventType NetEvent::getType() const
+#include "netevent.h"
+
+class Entity;
+
+/**
+@author Jeroen Broekhuizen
+*/
+class NewObjectEvent : public NetEvent
 {
-   return type; 
-}
+public:
+   DEFINE_REPLICATABLE(NewObjectEvent)
+
+            NewObjectEvent();
+   explicit NewObjectEvent(const Entity& entity);
+   
+ // get/set
+   Id                 getParentId() const;
+   Entity*            getObject() const;
+   const std::string& getFileName() const;
+
+protected:
+ // streaming
+   virtual void   doPack(BitStream& stream) const;
+   virtual void   doUnpack(BitStream& stream, int dirtyflag);
+
+private:
+   Id          mParentId;
+   Entity*     mpObject;
+   std::string mFileName;
+};
+
+#ifdef JENGINE_INLINE
+#  include "newobjectevent.inl"
+#endif
+
+#endif

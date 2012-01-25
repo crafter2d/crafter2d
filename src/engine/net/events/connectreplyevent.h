@@ -20,7 +20,7 @@
 #ifndef CONNECT_REPLY_EVENT_H_
 #define CONNECT_REPLY_EVENT_H_
 
-#include "../netevent.h"
+#include "netevent.h"
 
 /**
 @author Jeroen Broekhuizen

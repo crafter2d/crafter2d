@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "engine/net/netevent.h"
+#include "netevent.h"
 
 class World;
 

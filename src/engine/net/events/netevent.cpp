@@ -17,44 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef NEWOBJECTEVENT_H_
-#define NEWOBJECTEVENT_H_
-
 #include "netevent.h"
+#ifndef JENGINE_INLINE
+#  include "netevent.inl"
+#endif
 
-#include "engine/idmanager.h"
+#include "engine/net/bitstream.h"
 
-class Entity;
+IMPLEMENT_REPLICATABLE(NetEventId, NetEvent, NetObject)
 
-/**
-@author Jeroen Broekhuizen
-*/
-class NewObjectEvent : public NetEvent
+NetEvent::NetEvent(EventType type): 
+   mType(type)
 {
-public:
-   DEFINE_REPLICATABLE(NewObjectEvent)
+}
 
-            NewObjectEvent();
-   explicit NewObjectEvent(const Entity& entity);
-   
- // get/set
-   Id                 getParentId() const;
-   Entity*            getObject() const;
-   const std::string& getFileName() const;
+void NetEvent::doPack(BitStream& stream) const
+{
+   //stream << (int)type;
+}
 
-protected:
- // streaming
-   virtual void   doPack(BitStream& stream) const;
-   virtual void   doUnpack(BitStream& stream, int dirtyflag);
-
-private:
-   Id          mParentId;
-   Entity*     mpObject;
-   std::string mFileName;
-};
-
-#ifdef JENGINE_INLINE
-#  include "newobjectevent.inl"
-#endif
-
-#endif
+void NetEvent::doUnpack(BitStream& stream, int dirtyflag)
+{
+   //stream >> (int&)type;
+}

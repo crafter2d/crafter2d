@@ -30,12 +30,12 @@
 #include "net/events/disconnectevent.h"
 #include "net/events/joinevent.h"
 #include "net/events/scriptevent.h"
+#include "net/events/newobjectevent.h"
 #include "net/events/requestobjectevent.h"
 #include "net/events/viewportevent.h"
 #include "net/events/serverdownevent.h"
 #include "net/events/actionevent.h"
 #include "net/events/worldchangedevent.h"
-#include "net/newobjectevent.h"
 
 #include "physics/simulationfiller.h"
 #include "physics/simulator.h"

@@ -20,9 +20,9 @@
 #ifndef UPDATE_OBJECT_EVENT_H_
 #define UPDATE_OBJECT_EVENT_H_
 
-#include "../netevent.h"
-
 #include "engine/idmanager.h"
+
+#include "netevent.h"
 
 class Entity;
 

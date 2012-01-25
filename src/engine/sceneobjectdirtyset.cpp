@@ -22,7 +22,6 @@
 #include "net/events/updateobjectevent.h"
 
 #include "net/bitstream.h"
-#include "net/netevent.h"
 #include "net/netconnection.h"
 
 #include "entity.h"

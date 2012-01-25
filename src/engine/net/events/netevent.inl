@@ -17,58 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "core/defines.h"
 
-#ifndef _NETEVENT_H_
-#define _NETEVENT_H_
-
-#include "netobject.h"
-
-class BitStream;
-
-enum EventType {
-   connectEvent      = 0x0000,
-   connectReplyEvent = 0x0001,
-   disconnectEvent   = 0x0002,
-   joinEvent         = 0x0003,
-   serverdownEvent   = 0x0004,
-
-   // game events
-   actionEvent       = 0x0020,
-   scriptEvent       = 0x0023,
-   newobjectEvent    = 0x0024,
-   delobjectEvent    = 0x0025,
-   updobjectEvent    = 0x0021,
-   reqobjectEvent    = 0x0022,
-   viewportEvent     = 0x0026,
-   namechangeEvent   = 0x0027,
-   worldchangedEvent = 0x0028,
-
-   generalEvent      = 0x1000
-};
-
-/// NetEvent
-/// The base class for events that should be sended to the client or server.
-class NetEvent: public NetObject
+/// \fn NetEvent::setType(EventType t)
+/// \brief Set the type of this event.
+INLINE void NetEvent::setType(EventType eventtype)
 {
-public:
-   DEFINE_REPLICATABLE(NetEvent)
+   mType = eventtype; 
+}
 
-   explicit       NetEvent(EventType _type = generalEvent);
-
- // get/set 
-   void           setType(EventType t);
-   EventType      getType() const;
-
-protected:
- // streaming
-   virtual void   doPack(BitStream& stream) const;
-   virtual void   doUnpack(BitStream& stream, int dirtyflag);
-
-   EventType type;
-};
-
-#ifdef JENGINE_INLINE
-#  include "netevent.inl"
-#endif
-
-#endif
+/// \fn NetEvent::getType() const
+/// \brief Returns the type of this event.
+INLINE EventType NetEvent::getType() const
+{
+   return mType; 
+}

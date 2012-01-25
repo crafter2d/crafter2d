@@ -20,7 +20,7 @@
 #ifndef JOIN_EVENT_H_
 #define JOIN_EVENT_H_
 
-#include "../netevent.h"
+#include "netevent.h"
 
 class JoinEvent: public NetEvent
 {

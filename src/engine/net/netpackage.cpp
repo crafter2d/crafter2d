@@ -5,7 +5,6 @@
 #include "core/system/timer.h"
 
 #include "bitstream.h"
-#include "netevent.h"
 
 NetPackage::NetPackage():
    mType(eInvalid),

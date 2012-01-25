@@ -25,15 +25,12 @@
 
 #include "core/log/log.h"
 
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
-
-#include "net/netevent.h"
-#include "net/events/scriptevent.h"
-
 #include "script/vm/virtualclass.h"
 
-#include "world/world.h"
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
+#include "engine/net/events/scriptevent.h"
+#include "engine/world/world.h"
 
 #include "actionmap.h"
 #include "script_engine.h"
