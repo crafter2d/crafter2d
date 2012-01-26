@@ -48,7 +48,8 @@ int String::length() const
 char* String::toUtf8(int& length) const
 {
    length = mpData->mString.length();
-   char* pdata = new char[length];
+   char* pdata = new char[length+1];
+   memset(pdata, 0, length + 1);
 
    CheckedArrayByteSink sink(pdata, length);
    mpData->mString.toUTF8(sink);

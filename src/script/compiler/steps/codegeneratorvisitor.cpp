@@ -236,6 +236,11 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
 
 void CodeGeneratorVisitor::visit(const ASTFunction& ast)
 {
+   if ( ast.getName() == "run" )
+   {
+      int aap = 5;
+   }
+
    if ( ast.getModifiers().isNative() )
    {
       // here a native method should be invoked
@@ -1334,6 +1339,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             }
             else
             {
+               addInstruction(VirtualInstruction::ePush, allocateLiteral(mCurrentType.getObjectClass().getFullName()));
                addInstruction(VirtualInstruction::eLoadClass, 0);
             }
 
