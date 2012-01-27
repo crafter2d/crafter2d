@@ -26,10 +26,12 @@
 ;--------------------------------
 ;Pages
 
+  !insertmacro MUI_PAGE_WELCOME
   !insertmacro MUI_PAGE_LICENSE "license.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
+  !insertmacro MUI_PAGE_FINISH
   
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
@@ -37,7 +39,8 @@
 ;--------------------------------
 ;Languages
  
-  !insertmacro MUI_LANGUAGE "English"
+  !insertmacro MUI_LANGUAGE English
+  !insertmacro MUI_LANGUAGE Dutch
 
 ;--------------------------------
 ;Installer Sections
@@ -53,25 +56,24 @@ Section "Engine" SecEngine
   File changelog.txt
   File license.txt
   File readme.txt
-  File releasenotes.txt
 
   SetOutPath "$INSTDIR\bin"
-  File /x .svn bin\*.*
+  File /x .svn bin\*
   
   SetOutPath "$INSTDIR\images"
-  File /x .svn /x original images\*.*
+  File /x .svn /x original images\*
   
   SetOutPath "$INSTDIR\objects"
-  File /x .svn objects\*.*
+  File /x .svn objects\*
   
   SetOutPath "$INSTDIR\scripts"
-  File /x .svn scripts\*.*
+  File /r /x .svn scripts\*
   
   SetOutPath "$INSTDIR\shaders"
-  File /x .svn shaders\*.*
+  File /x .svn shaders\*
   
   SetOutPath "$INSTDIR\worlds"
-  File /x .svn worlds\*.*
+  File /x .svn worlds\*
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -98,9 +100,6 @@ Section "Source" SecSource
   SetOutPath "$INSTDIR\projects"
   File /r /x .svn projects\*.*
   
-  ;SetOutPath "$INSTDIR\docs"
-  ;File docs\manual.chm
-  
 SectionEnd
 
 ;--------------------------------
@@ -108,7 +107,10 @@ SectionEnd
 
   ;Language strings
   LangString DESC_SecEngine ${LANG_ENGLISH} "Required engine files needed to run JEngine SSE based games. Includes demo game showing the capabilities of the engine."
-  LangString DESC_SecSource ${LANG_SOURCE} "Full source code of the engine and demo."
+  LangString DESC_SecSource ${LANG_ENGLISH} "Full source code of the engine and demo."
+  
+  LangString DESC_SecEngine ${LANG_DUTCH} "Vereiste bestanden voor de engine inclusief een demo spel."
+  LangString DESC_SecSource ${LANG_DUTCH} "Volledige source code van de engine en het demo spel."
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -116,6 +118,7 @@ SectionEnd
     !insertmacro MUI_DESCRIPTION_TEXT ${SecSource} $(DESC_SecSource)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
+;--------------------------------
 ;Uninstaller Section
 
 Section "Uninstall"
@@ -125,3 +128,10 @@ Section "Uninstall"
   DeleteRegKey /ifempty HKCU "Software\JEngine SSE"
 
 SectionEnd
+
+;--------------------------------
+;Installer functions
+Function .onInit
+    InitPluginsDir
+    !insertmacro MUI_LANGDLL_DISPLAY
+FunctionEnd

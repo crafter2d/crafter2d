@@ -1,8 +1,20 @@
-JEngine SSE, version 0.4.5, Jeroen Broekhuizen
+JEngine SSE, version 0.4.6, Jeroen Broekhuizen
+Copyright 2009-2012
 
-Change log
-----------
+Change log 0.4.6
+----------------
+* Added entirely new object oriented scripting engine!
+* Added DLLs -> code base been split up in modules
+* Added first unit tests
+* Removed support for Lua entirely
+* Removed support for external libraries (no longer updates)
+* Fixed cppcheck errors/warnings
+* Fixed character jumping problems
+* Fixed many other bugs 
 
+
+Change log 0.4.5
+----------------
 * Added physics support through Box2D
 * Added support for many image formats by using DevIL and SOIL
 * Added support for MS Visual Studio 2010
@@ -15,5 +27,4 @@ Change log
 
 Older versions
 --------------
-
 Pre-0.4.5 has no change log
