@@ -1,12 +1,17 @@
 
 use engine.ui.*;
 use engine.core.*;
+use engine.messages.*;
 
 // Class : Process
 // Abstract base class for the client and server processes
 
 abstract class Process
 {
+	protected BitStream mStream = new BitStream();
+	
+	// natives
+	
 	private native boolean create(string name);
 	private native void setObject(Object self);
 	
@@ -28,5 +33,24 @@ abstract class Process
 			setObject(this);
 		}
 		return success;
+	}
+	
+	public void onScriptEvent(BitStream stream)
+	{
+		int msgid = stream.readInt();
+		Message message = null;
+		
+		if ( msgid == ControllerMessage.ID )
+		{
+			message = new ControllerMessage();
+		}
+		
+		message.read(stream);
+			
+		onMessageReceived(message);
+	}
+	
+	protected void onMessageReceived(Message message)
+	{
 	}
 }

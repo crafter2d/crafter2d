@@ -1,5 +1,6 @@
 
 use engine.ui.*;
+use engine.messages.*;
 
 class GameClient extends Client
 {
@@ -31,15 +32,14 @@ class GameClient extends Client
 		setKeyMap(map);
 	}
 	
-	public void onScriptEvent(BitStream stream)
-	{
-		int event = stream.readInt();
-		
-		if ( event == 1 ) // player controller
+	protected void onMessageReceived(Message message)
+	{	
+		if ( message instanceof ControllerMessage ) // player controller
 		{
+			ControllerMessage msg = (ControllerMessage)message;
 			World world = getWorld();
 			
-			int controllerid = stream.readInt();
+			int controllerid = msg.getControllerId();
 			Actor controller = (Actor) world.findEntity(controllerid);
 			getPlayer().setController(controller);
 			

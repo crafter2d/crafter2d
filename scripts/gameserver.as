@@ -1,11 +1,11 @@
 
 use server;
+use engine.messages.*;
 
 class GameServer extends Server
 {
 	private boolean mStarted = false;
 	private Player mPlayer;
-	private BitStream mStream = new BitStream();
 	
 	public GameServer()
 	{
@@ -39,13 +39,6 @@ class GameServer extends Server
 		player.setController(controller);
 		
 		createObjects();
-		
-		// notify the client
-		mStream.clear();
-		mStream.writeInt(1);
-		mStream.writeInt(controller.getId());
-		
-		sendScriptEvent(mStream, player.getClientId());
 	}
 	
 	private Actor createPlayer(Player player)
@@ -62,6 +55,10 @@ class GameServer extends Server
 		Actor actor = Actor.construct(this, player.getName(), position, "../objects/char.xml");
 		actor.setController(controller);
 		actor.setForceGenerator(new InputForceGenerator());
+		
+		// notify the client
+		ControllerMessage message = new ControllerMessage(actor.getId());
+		sendMessage(message, player.getClientId());
 		
 		return actor;
 	}
