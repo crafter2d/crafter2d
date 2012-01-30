@@ -82,7 +82,9 @@ public:
    bool isBase(const ASTClass& base) const;
    bool isImplementing(const ASTClass& intrface) const;
    bool isLocal(const ASTFunction& function) const;
+
    bool isGeneric() const;
+   bool isTypeName(const std::string& name) const;
 
    bool hasConstructor() const;
    bool hasAbstractFunction() const;

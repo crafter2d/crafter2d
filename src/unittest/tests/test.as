@@ -11,5 +11,6 @@ class Test
 		TestRunner tr = TestRunner.getInstance();
 		tr.run(TestException.class);
 		tr.run(TestLoops.class);
+		tr.run(TestGenerics.class);
 	}
 }

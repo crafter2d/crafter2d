@@ -1,5 +1,25 @@
-
+/***************************************************************************
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "preloadvisitor.h"
+
+#include "core/smartptr/scopedvalue.h"
 
 #include "script/compiler/compiler.h"
 #include "script/compiler/compilecontext.h"
@@ -55,7 +75,7 @@ void PreloadVisitor::visit(ASTClass& ast)
 {
    ScopedScope scope(mScopeStack);
 
-   mpClass = &ast;
+   ScopedValue<ASTClass*> scopedclass(&mpClass, &ast, mpClass);
    mContext.addClass(&ast);
 
    if ( ast.getName() != "Object" )
@@ -81,10 +101,7 @@ void PreloadVisitor::visit(ASTClass& ast)
    for ( int index = 0; index < intrfaces.size(); index++ )
    {
       ASTType& type = intrfaces[index];
-      if ( !load(type) )
-      {
-         // could not load type
-      }
+      load(type);
    }
    
    visitChildren(ast);
@@ -374,19 +391,9 @@ bool PreloadVisitor::load(ASTType& type)
    {
       const std::string& name = type.getObjectName();
 
-      /*
-      // check the type arguments
-      const ASTTypeList& typearguments = type.getTypeArguments();
-      for ( int index = 0; index < typearguments.size(); index++ )
+      if ( mpClass->isTypeName(name) )
       {
-         if ( !mTypeArguments[index].resolveType(context, aclass) )
-         {
-            return false;
-         }
-      }
-      */
-      if ( type.getObjectName() == "T" )
-      {
+         // name is not a type for the typename of this generic class
          return true;
       }
 

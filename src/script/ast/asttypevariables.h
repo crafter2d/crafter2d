@@ -15,6 +15,7 @@ public:
    ASTTypeVariables();
 
  // query
+   bool contains(const std::string& name) const;
    bool contains(const ASTTypeVariable& variable) const;
    int size() const;
 

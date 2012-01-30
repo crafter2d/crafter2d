@@ -236,6 +236,11 @@ bool ASTClass::isGeneric() const
    return mpTypeVariables != NULL;
 }
 
+bool ASTClass::isTypeName(const std::string& name) const
+{
+   return isGeneric() && mpTypeVariables->contains(name);
+}
+
 bool ASTClass::hasConstructor() const
 {
    Functions::const_iterator it = mFunctions.begin();

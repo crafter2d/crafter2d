@@ -12,6 +12,19 @@ ASTTypeVariables::ASTTypeVariables():
 
 // - Query
 
+bool ASTTypeVariables::contains(const std::string& name) const
+{
+   TypeVariableMap::const_iterator it = mTypeVariables.begin();
+   for ( ; it != mTypeVariables.end(); it++ )
+   {
+      if ( it->first == name )
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
 bool ASTTypeVariables::contains(const ASTTypeVariable& variable) const
 {
    return mTypeVariables.find(variable.getIdentifier()) != mTypeVariables.end();

@@ -20,16 +20,17 @@
 #ifndef SCOPED_VALUE_H_
 #define SCOPED_VALUE_H_
 
+#include "core/core_base.h"
+
 template<class T>
-class ScopedValue
+class CORE_API ScopedValue
 {
 public:
-   ScopedValue(T& value, T start, T end): _value(value), _start(start), _end(end) { _value = _start; }
-   ~ScopedValue() { _value = _end; }
+   ScopedValue(T* value, T start, T end): _value(value), _end(end) { (*_value) = start; }
+   ~ScopedValue() { (*_value) = _end; }
 
 private:
-   T& _value;
-   T  _start;
+   T*  _value;
    T  _end;
 };
 
