@@ -157,6 +157,9 @@ public:
  // initialization
    void initialize();
 
+ // query
+   const VirtualObjectReference& getNativeObject(void* pobject) const;
+
  // loading
    bool loadClass(const std::string& classname);
    bool loadExpression(const std::string& expression);
@@ -188,6 +191,7 @@ public:
    VirtualArrayReference  instantiateArray();
 
  // observing
+   VirtualObjectReference lookupNative(void* pobject);
    void registerNative(VirtualObjectReference& object, void* pnative);
    void unregisterNative(VirtualObjectReference& object);
 

@@ -82,5 +82,5 @@ class Actor extends Entity implements Collidable
 	public native boolean direction();
 	public native void flip();
 	public native Box2DBody getBody();
-	public native void setController(InputController c);
+	public native void setController(Controller c);
 }

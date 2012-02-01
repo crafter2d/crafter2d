@@ -39,6 +39,15 @@ void VirtualFunctionTable::append(VirtualFunctionTableEntry* pentry)
    mEntries.push_back(pentry);
 }
 
+void VirtualFunctionTable::append(const VirtualFunctionTable& vtable)
+{
+   for ( std::size_t index = 2; index < vtable.mEntries.size(); index++ )
+   {
+      VirtualFunctionTableEntry* pentry = mEntries[index];
+      append(pentry->clone());
+   }
+}
+
 void VirtualFunctionTable::clear()
 {
    for ( std::size_t index = 0; index < mEntries.size(); index++ )
@@ -57,6 +66,10 @@ void VirtualFunctionTable::merge(const VirtualFunctionTable& that)
       if ( pentry->mInstruction == -1 )
       {
          pentry->mInstruction = that.mEntries[index]->mInstruction;
+      }
+      if ( pentry->mInterface == -1 )
+      {
+         pentry->mInterface = that.mEntries[index]->mInterface;
       }
    }
 }

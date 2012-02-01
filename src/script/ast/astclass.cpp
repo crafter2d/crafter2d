@@ -501,7 +501,7 @@ const ASTFunction* ASTClass::findInterfaceFunction(const ASTFunction& function) 
       }
    }
 
-   return NULL;
+   return hasBaseClass() ? getBaseClass().findInterfaceFunction(function) : NULL;
 }
 
 // - Visitor

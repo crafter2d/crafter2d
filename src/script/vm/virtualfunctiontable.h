@@ -23,6 +23,7 @@ public:
 
  // operations
    void append(VirtualFunctionTableEntry* pentry);
+   void append(const VirtualFunctionTable& table);
    void clear();
 
    void merge(const VirtualFunctionTable& that);

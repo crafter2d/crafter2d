@@ -508,7 +508,7 @@ void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bo
 {
    ASSERT_PTR(mpScript);
    mpScript->addParam("Actor", &object);
-   mpScript->addParam("System.Object", &bound);
+   mpScript->addParam("Bound", &bound);
    mpScript->addParam(side);
    mpScript->addParam(begin);
    mpScript->run("onObjectCollision");

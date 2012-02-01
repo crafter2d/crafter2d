@@ -131,6 +131,18 @@ void VirtualMachine::initialize()
    }
 }
 
+// - Query
+   
+const VirtualObjectReference& VirtualMachine::getNativeObject(void* pobject) const
+{
+   NativeObjectMap::const_iterator it = mNativeObjects.find(pobject);
+   if ( it != mNativeObjects.end() )
+   {
+      return it->second;
+   }
+   return VirtualObjectReference();
+}
+
 // - Loading
    
 bool VirtualMachine::loadClass(const std::string& classname)
@@ -1324,6 +1336,17 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
    return object;
 }
 
+VirtualObjectReference VirtualMachine::lookupNative(void* pobject)
+{
+   NativeObjectMap::iterator it = mNativeObjects.find(pobject);
+   if ( it != mNativeObjects.end() )
+   {
+      ASSERT(it->second->getNativeObject() == pobject);
+      return it->second;
+   }
+   return VirtualObjectReference();
+}
+
 VirtualArrayReference VirtualMachine::instantiateArray()
 {
    VirtualClass& internalarray = mContext.mClassTable.resolve("System.InternalArray");
@@ -1443,13 +1466,7 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
 
    createClass(*pclass);
 
-   /*
-   std::string code = pclass->getInstructions().toString(mContext.mLiteralTable);
-
-   std::cout << "=====================================" << std::endl;
-   std::cout << qPrintable(pclass->getName()) << std::endl;
-   std::cout << qPrintable(code) << std::endl << std::endl;*/
-
+   // execute the static initialization body
    VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[0];
    execute(*pclass, entry);
 }

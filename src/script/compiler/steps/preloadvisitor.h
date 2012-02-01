@@ -60,6 +60,7 @@ public:
    virtual void visit(ASTExpression& ast);
    virtual void visit(ASTConcatenate& ast);
    virtual void visit(ASTUnary& ast);
+   virtual void visit(ASTInstanceOf& ast);
    virtual void visit(ASTNew& ast);
    virtual void visit(ASTCast& ast);
    virtual void visit(ASTAccess& ast);

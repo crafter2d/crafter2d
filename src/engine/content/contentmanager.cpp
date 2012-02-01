@@ -46,7 +46,7 @@ Entity* ContentManager::loadEntity(const std::string& filename)
       return NULL;
    }
 
-   ActorLoader loader;
+   ActorLoader loader(mProcess);
    loader.setSimulator(mProcess.getWorld().getSimulator());
 
    return loader.load(filename);

@@ -20,17 +20,23 @@
 #ifndef CONTENT_LOADER_H
 #define CONTENT_LOADER_H
 
+class Process;
 class Simulator;
 
 class ContentLoader
 {
 public:
+   ContentLoader(Process& process): mProcess(process) {}
 
    Simulator& getSimulator() { return *mpSimulator; }
    void       setSimulator(Simulator& simulator) { mpSimulator = &simulator; }
 
+protected:
+   Process& getProcess() { return mProcess; }
+
 private:
    Simulator* mpSimulator;
+   Process& mProcess;
 };
 
 #endif // CONTENT_LOADER_H

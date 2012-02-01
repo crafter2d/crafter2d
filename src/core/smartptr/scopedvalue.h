@@ -23,7 +23,7 @@
 #include "core/core_base.h"
 
 template<class T>
-class CORE_API ScopedValue
+class ScopedValue
 {
 public:
    ScopedValue(T* value, T start, T end): _value(value), _end(end) { (*_value) = start; }

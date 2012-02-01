@@ -397,14 +397,14 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
 
    // a new object has been made on the server and is now also known on the client
    
-   Entity* pentity = getContentManager().loadEntity(event.getFileName());
-   if ( pentity == NULL )
+   AutoPtr<Entity> entity = getContentManager().loadEntity(event.getFileName());
+   if ( !entity.hasPointer() )
    {
       UNREACHABLE("Could not create the entity!");
    }
 
-   pentity->setId(event.getId());
-   pentity->setReplica();
+   entity->setId(event.getId());
+   entity->setReplica();
 
    if ( event.getParentId() != IdManager::invalidId )
    {
@@ -413,16 +413,16 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       {
          UNREACHABLE("Could not find the parent!!");
       }
-      pparent->add(*pentity);
+      pparent->add(*entity);
    }
   
    // remove the request
-   Requests::iterator it = mRequests.find(pentity->getId());
+   Requests::iterator it = mRequests.find(entity->getId());
    if ( it != mRequests.end() )
       mRequests.erase(it);
 
    // add the entity to the world
-   getWorld().addEntity(pentity);
+   getWorld().addEntity(entity.release());
 }
 
 void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)

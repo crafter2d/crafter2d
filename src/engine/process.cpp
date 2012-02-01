@@ -60,7 +60,7 @@ void Process::setWorld(World* pworld)
 
       if ( mpWorld != NULL )
       {
-         pworld->setScript(getScriptManager().nativeScript("World", pworld));
+         pworld->setScript(getScriptManager().loadNative("World", pworld, false));
       }
 
       notifyWorldChanged();

@@ -29,7 +29,7 @@ class Actor;
 class ActorLoader : public ContentLoader
 {
 public:
-   ActorLoader();
+   ActorLoader(Process& process);
 
    Actor* load(const std::string& filename);
 };

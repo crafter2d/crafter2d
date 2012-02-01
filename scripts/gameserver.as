@@ -52,7 +52,7 @@ class GameServer extends Server
 		InputController controller = new InputController();
 		controller.setActionMap(map);
 		
-		Actor actor = Actor.construct(this, player.getName(), position, "../objects/char.xml");
+		Hero actor = (Hero)Actor.construct(this, player.getName(), position, "../objects/char.xml");
 		actor.setController(controller);
 		actor.setForceGenerator(new InputForceGenerator());
 		
@@ -74,6 +74,7 @@ class GameServer extends Server
 		Bridge bridge = new Bridge();
 		bridge.create(this, left, right);
 		
+		/*
 		left.set(180.0, 80.0);
 		for ( int index = 0; index < 4; index++ )
 		{
@@ -81,5 +82,11 @@ class GameServer extends Server
 			
 			left.setY(left.getY() - 25.0);
 		}
+		*/
+		
+		Vector2D pos = new Vector2D();
+		pos.set(180.0, 30);
+		Grudge grudge = (Grudge) Actor.construct(this, "grudge1", pos, "../objects/grudge.xml");
+		grudge.setController(new AIController(this));
 	}
 }

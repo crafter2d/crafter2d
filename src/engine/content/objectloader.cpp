@@ -26,13 +26,19 @@
 
 #include "engine/physics/body.h"
 #include "engine/physics/simulator.h"
+#include "engine/script/script.h"
+#include "engine/script/scriptmanager.h"
 #include "engine/resource/resourcemanager.h"
 #include "engine/animator.h"
 #include "engine/actor.h"
 
+#include "engine/process.h"
+#include "engine/script/scriptmanager.h"
+
 #include "invalidcontentexception.h"
 
-ActorLoader::ActorLoader()
+ActorLoader::ActorLoader(Process& process):
+   ContentLoader(process)
 {
 }
 
@@ -110,6 +116,15 @@ Actor* ActorLoader::load(const std::string& filename)
 
       actor->setBody(body);
    }
+
+   // create the actual scripted object
+   const std::string* pclasstype = pobject->Attribute(std::string("type"));
+   AutoPtr<Script> script = getProcess().getScriptManager().loadNative(pclasstype != NULL ? *pclasstype : "Actor", actor.getPointer(), true);
+   if ( !script.hasPointer() )
+   {
+      throw new InvalidContentException("Type " + *pclasstype + " is not a valid class name.");
+   }
+   script->run("onCreated");
 
    return actor.release();
 }

@@ -31,6 +31,7 @@
 class Script;
 class VirtualMachine;
 class VirtualContext;
+class VirtualObjectReference;
 
 /**
 @author Jeroen Broekhuizen
@@ -99,12 +100,13 @@ public:
    bool                    initialize();
    void                    destroy();
    
-   void                    setObject(void* obj, const char* type, const char* var);
+ // query
+   const VirtualObjectReference& getObject(const void* pobject) const;
 
  // loading
    Script*                 loadClass(const std::string& classname);
    Script*                 loadExpression(const std::string& expression);
-   Script*                 nativeScript(const std::string& classname, void* pobject);
+   Script*                 loadNative(const std::string& classname, void* pobject, bool owned);
    
  // execution
    bool                    executeScript(const std::string& classname, const std::string& function);

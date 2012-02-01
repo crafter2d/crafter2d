@@ -50,6 +50,7 @@
 #include "player.h"
 #include "server.h"
 #include "inputcontroller.h"
+#include "aicontroller.h"
 #include "texture.h"
 
 void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -290,7 +291,7 @@ void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& ac
    const std::string& filename = accessor.getString(1);
 
    Entity* presult = pmanager->loadEntity(filename);
-   accessor.setResult(machine.instantiateNative("Actor", presult, true));
+   accessor.setResult(machine.lookupNative(presult));
 }
 
 void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -455,7 +456,7 @@ void Actor_setController(VirtualMachine& machine, VirtualStackAccessor& accessor
    VirtualObjectReference& thisobject = accessor.getThis();
    Actor* pactor = (Actor*) thisobject->getNativeObject();
 
-   InputController* pcontroller = (InputController*) accessor.getObject(1)->useNativeObject();
+   Controller* pcontroller = (Controller*) accessor.getObject(1)->useNativeObject();
 
    pactor->setController(pcontroller);
 }
@@ -684,6 +685,16 @@ void InputController_setActionMap(VirtualMachine& machine, VirtualStackAccessor&
    ActionMap* pactionmap = (ActionMap*) accessor.getObject(1)->useNativeObject();
 
    pcontroller->setActionMap(pactionmap);
+}
+
+void AIController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+
+   Process* pprocess = (Process*) accessor.getObject(1)->getNativeObject();
+
+   AIController* pcontroller = new AIController(*pprocess);
+   machine.registerNative(thisobject, pcontroller);
 }
 
 void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1064,6 +1075,8 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("InputController_init", InputController_init);
    registrator.addCallback("InputController_setActionMap", InputController_setActionMap);
+
+   registrator.addCallback("AIController_init", AIController_init);
 
    registrator.addCallback("Box2DSimulator_createRevoluteJoint", Box2DSimulator_createRevoluteJoint);
 

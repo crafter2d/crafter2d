@@ -328,6 +328,13 @@ void PreloadVisitor::visit(ASTUnary& ast)
    visitChildren(ast);
 }
 
+void PreloadVisitor::visit(ASTInstanceOf& ast)
+{
+   ast.getObject().accept(*this);
+
+   load(ast.getInstanceType());
+}
+
 void PreloadVisitor::visit(ASTNew& ast)
 {
    if ( !load(ast.getType()) )

@@ -83,6 +83,16 @@ void ScriptManager::destroy()
    mpVirtualContext = NULL;
 }
 
+// - Query
+
+const VirtualObjectReference& ScriptManager::getObject(const void* pobject) const
+{
+   ASSERT_PTR(mpVirtualMachine);
+   return mpVirtualMachine->getNativeObject(const_cast<void*>(pobject));
+}
+
+// - Loading
+
 Script* ScriptManager::loadClass(const std::string& classname)
 {
    ASSERT_PTR(mpVirtualMachine);
@@ -105,11 +115,11 @@ Script* ScriptManager::loadExpression(const std::string& expression)
    return script.release();
 }
 
-Script* ScriptManager::nativeScript(const std::string& classname, void* pobject)
+Script* ScriptManager::loadNative(const std::string& classname, void* pobject, bool owned)
 {
    AutoPtr<Script> script(new Script(*this));
 
-   VirtualObjectReference object = mpVirtualMachine->instantiateNative(classname, pobject, false);
+   VirtualObjectReference object = mpVirtualMachine->instantiateNative(classname, pobject, owned);
 
    script->setThis(object);
 
@@ -124,15 +134,6 @@ bool ScriptManager::executeScript(const std::string& classname, const std::strin
 {
    ASSERT_PTR(mpVirtualMachine);
    return mpVirtualMachine->execute(classname, function);
-}
-
-/// \fn ScriptManager::setObject(void* obj, const char* type, const char* var)
-/// \brief Sets a global variable in the Lua scripting environment with name 'var'.
-/// \param obj pointer to a valid object
-/// \param type type of the object (must be a valid type specifier)
-/// \param var name of the variable as known within Lua
-void ScriptManager::setObject(void* obj, const char* type, const char* var)
-{
 }
 
 //-----------------------------------------

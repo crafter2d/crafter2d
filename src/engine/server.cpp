@@ -21,31 +21,28 @@
 
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
+#include "core/smartptr/scopedvalue.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
-
-#include "net/events/connectevent.h"
-#include "net/events/connectreplyevent.h"
-#include "net/events/disconnectevent.h"
-#include "net/events/joinevent.h"
-#include "net/events/scriptevent.h"
-#include "net/events/newobjectevent.h"
-#include "net/events/requestobjectevent.h"
-#include "net/events/viewportevent.h"
-#include "net/events/serverdownevent.h"
-#include "net/events/actionevent.h"
-#include "net/events/worldchangedevent.h"
-
-#include "physics/simulationfiller.h"
-#include "physics/simulator.h"
-
-#include "world/world.h"
+#include "engine/net/events/connectevent.h"
+#include "engine/net/events/connectreplyevent.h"
+#include "engine/net/events/disconnectevent.h"
+#include "engine/net/events/joinevent.h"
+#include "engine/net/events/scriptevent.h"
+#include "engine/net/events/newobjectevent.h"
+#include "engine/net/events/requestobjectevent.h"
+#include "engine/net/events/viewportevent.h"
+#include "engine/net/events/serverdownevent.h"
+#include "engine/net/events/actionevent.h"
+#include "engine/net/events/worldchangedevent.h"
+#include "engine/physics/simulationfiller.h"
+#include "engine/physics/simulator.h"
+#include "engine/world/world.h"
 
 #include "controller.h"
 #include "player.h"
 #include "serverdirtyset.h"
-#include "scopedvalue.h"
 
 Server::Server():
    Process(),
@@ -193,7 +190,7 @@ int Server::allowNewConnection()
 /// \brief Handles the incomming events.
 int Server::onClientEvent(int client, const NetEvent& event)
 {
-   ScopedValue<int> value(mActiveClient, client, -1);
+   ScopedValue<int> value(&mActiveClient, client, -1);
 
    switch ( event.getType() )
    {
