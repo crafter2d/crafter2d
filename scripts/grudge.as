@@ -5,10 +5,13 @@ use box2d.box2dbody;
 
 class Grudge extends Actor
 {
+	private AIState mState;
+
 	public void onCreated()
 	{
-		Box2DBody body = getBody();
-		body.generateSensors();
+		mState = new PatrolState();
+	
+		setForceGenerator(new InputForceGenerator());
 	}
 
 	public void collide(Object target, int side, boolean begin)
@@ -17,14 +20,21 @@ class Grudge extends Actor
 		
 		if ( target instanceof Bound )
 		{
-			if ( side == 2 || side == 3 )
+			if ( (side == 2 && direction()) || (side == 3 && !direction()) )
 			{
 				flip();
+			}
+			
+			if ( isOnGround() )
+			{
+				// when on the ground, start the walking animation
+				setAnimation(2);
 			}
 		}
 	}
 	
 	public void updateAI()
 	{
+		mState = mState.perform(this);
 	}
 }

@@ -22,6 +22,33 @@ class Actor extends Entity implements Collidable
 		return object;
 	}
 	
+	public static int FACE_LEFT  = 1;
+	public static int FACE_RIGHT = 2;
+	
+	// Get/set
+	
+	public int getFaceDirection()
+	{
+		if ( direction() )
+		{
+			return FACE_LEFT;
+		}
+		
+		return FACE_RIGHT;
+	}
+	
+	public void setFaceDirection(int direction)
+	{
+		if ( direction() && direction == FACE_RIGHT )
+		{
+			flip();
+		}
+		else if ( !direction() && direction == FACE_LEFT )
+		{
+			flip();
+		}
+	}
+	
 	// Operations
 	
 	public InputForceGenerator getForceGenerator()
