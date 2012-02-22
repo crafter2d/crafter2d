@@ -24,6 +24,7 @@ class ASTReturn;
 class ASTTry;
 class ASTCatch;
 class ASTThrow;
+class ASTAssert;
 class ASTLoopControl;
 class ASTExpressionStatement;
 class ASTExpression;
@@ -72,6 +73,7 @@ public:
    VISIT(ASTTry);
    VISIT(ASTCatch);
    VISIT(ASTThrow);
+   VISIT(ASTAssert);
    VISIT(ASTLoopControl);
    VISIT(ASTLiteral);
    VISIT(ASTExpressionStatement);

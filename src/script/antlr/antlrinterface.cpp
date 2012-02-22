@@ -1,6 +1,8 @@
 
 #include "antlrinterface.h"
 
+#include <iostream>
+
 #include "core/defines.h"
 #include "core/conv/lexical.h"
 #include "core/smartptr/autoptr.h"
@@ -12,8 +14,11 @@
 #include "script/common/literal.h"
 #include "script/common/variant.h" 
 
+#include "antlrexception.h"
 #include "antlrnode.h"
 #include "antlrstream.h"
+
+static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * tokenNames);
 
 AntlrParser::AntlrParser(CompileContext& context):
    mContext(context),
@@ -30,60 +35,72 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
    pasLexer lexer = asLexerNew(stream.getStream());
    if ( lexer == NULL )
    {
-      mContext.getLog().error("failed to instantiate lexer");
-      return 0;
+      throw new AntlrException("failed to instantiate lexer");
    }
 
    pANTLR3_COMMON_TOKEN_STREAM tstream;
    tstream = antlr3CommonTokenStreamSourceNew(ANTLR3_SIZE_HINT, TOKENSOURCE(lexer));
    if ( tstream == NULL )
    {
-      mContext.getLog().error("can't open token stream");
       lexer->free(lexer);
-      return 0;
+      
+      throw new AntlrException("Can not open token stream");
    }
 
    pasParser parser = asParserNew(tstream);
    if ( parser == NULL )
    {
-      mContext.getLog().error("failed to instantiate parser");
       lexer->free(lexer);
       tstream->free(tstream);
-      return 0;
+      
+      throw new AntlrException("Failed to instantiate parser");
    }
 
-   ASTRoot* proot = NULL;
-   asParser_script_return ast = parser->script(parser);
-   if ( parser->pParser->rec->state->errorCount > 0 )
+   try
    {
-      mContext.getLog().error("errors while parsing input");
-   }
-   else
-   {
-      proot = new ASTRoot();
+      parser->pParser->rec->displayRecognitionError = reportError;
+      asParser_script_return ast = parser->script(parser);
 
-      AntlrNode root(ast.tree);
-
-      if ( !root.isNil() )
+      if ( parser->pParser->rec->state->errorCount > 0 )
       {
-         proot->addChild(handleTree(root));
+         throw new AntlrException("Errors while parsing input");
       }
       else
       {
-         int count = root.getChildCount();
-         for ( int index = 0; index < count; index++ )
+         AutoPtr<ASTRoot> astroot(new ASTRoot());
+
+         AntlrNode root(ast.tree);
+         if ( !root.isNil() )
          {
-            AntlrNode declnode = root.getChild(index);
-            proot->addChild(handleTree(declnode));
+            astroot->addChild(handleTree(root));
          }
+         else
+         {
+            int count = root.getChildCount();
+            for ( int index = 0; index < count; index++ )
+            {
+               AntlrNode declnode = root.getChild(index);
+               astroot->addChild(handleTree(declnode));
+            }
+         }
+
+         parser->free(parser);
+         tstream->free(tstream);
+         lexer->free(lexer);
+
+         return astroot.release();
       }
    }
+   catch ( AntlrException* pexception )
+   {
+      parser->free(parser);
+      tstream->free(tstream);
+      lexer->free(lexer);
 
-   parser->free(parser);
-   tstream->free(tstream);
-   lexer->free(lexer);
+      throw;
+   }  
 
-   return proot;
+   return NULL;
 }
 
 ASTType* AntlrParser::getType(const AntlrNode& node)
@@ -191,6 +208,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
       case RETURN:            return handleReturn(node);
       case TRY:               return handleTry(node);
       case THROW:             return handleThrow(node);
+      case T_ASSERT:          return handleAssert(node);
       case STMT_EXPR:         return handleExpressionStatement(node);
       case COMPOUNT:          return handleCompound(node);
       case EXPRESSION:        return handleExpression(node);
@@ -1023,6 +1041,18 @@ ASTThrow* AntlrParser::handleThrow(const AntlrNode& node)
    return pthrow;
 }
 
+ASTAssert* AntlrParser::handleAssert(const AntlrNode& node)
+{
+   AntlrNode child = node.getChild(0);
+
+   ASTAssert* passert = new ASTAssert();
+   passert->setCondition(handleExpression(child));
+   passert->setLine(node.getLine());
+   passert->setPos(node.getPosition());
+
+   return passert;
+}
+
 ASTLoopControl* AntlrParser::handleLoopControl(const AntlrNode& node)
 {
    ASTLoopControl* pcontrol = new ASTLoopControl(node.getType() == BREAK ? ASTLoopControl::eBreak : ASTLoopControl::eContinue);
@@ -1441,4 +1471,197 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
 
    ASTLiteral* pastliteral = new ASTLiteral(*pliteral, kind);
    return pastliteral;
+}
+
+// - Error reporting
+
+// This method is taken from antlr3baserecognizer.c and adapted to throw an exception
+// instread of reporting it to the console.
+
+static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * tokenNames)
+{
+   pANTLR3_EXCEPTION	ex = recognizer->state->exception;
+
+   if ( ex->streamName == NULL )
+   {
+      if	( ((pANTLR3_COMMON_TOKEN)(ex->token))->type == ANTLR3_TOKEN_EOF )
+		{
+			// ANTLR3_FPRINTF(stderr, "-end of input-(");
+		}
+		else
+		{
+			//ANTLR3_FPRINTF(stderr, "-unknown source-(");
+		}
+   }
+
+   int linenr = ex->line;
+   int charpos = ex->charPositionInLine;
+   std::stringstream message;
+
+   switch ( ex->type )
+   {
+      case ANTLR3_UNWANTED_TOKEN_EXCEPTION:
+
+         // Indicates that the recognizer was fed a token which seesm to be
+		   // spurious input. We can detect this when the token that follows
+		   // this unwanted token would normally be part of the syntactically
+		   // correct stream. Then we can see that the token we are looking at
+		   // is just something that should not be there and throw this exception.
+		   //
+         if ( tokenNames == NULL )
+         {
+            message << "Extraneous input...";
+         }
+         else
+         {
+            if	(ex->expecting == ANTLR3_TOKEN_EOF)
+			   {
+				   message << "Extraneous input - expected <EOF>";
+			   }
+			   else
+			   {
+				   message << "Extraneous input - expected " << (const char*)tokenNames[ex->expecting];
+			   }
+         }
+         break;
+      case ANTLR3_MISSING_TOKEN_EXCEPTION:
+
+         // Indicates that the recognizer detected that the token we just
+		   // hit would be valid syntactically if preceeded by a particular 
+		   // token. Perhaps a missing ';' at line end or a missing ',' in an
+		   // expression list, and such like.
+		   //
+         if ( tokenNames == NULL )
+         {
+            message << "Missing token...";
+         }
+         else
+         {
+            if	(ex->expecting == ANTLR3_TOKEN_EOF)
+			   {
+				   message << "Missing <EOF>";
+			   }
+			   else
+			   {
+				   message << "Missing " << (const char*)tokenNames[ex->expecting];
+			   }
+         }
+         break;
+
+      case ANTLR3_RECOGNITION_EXCEPTION:
+         
+         // Indicates that the recognizer received a token
+		   // in the input that was not predicted. This is the basic exception type 
+		   // from which all others are derived. So we assume it was a syntax error.
+		   // You may get this if there are not more tokens and more are needed
+		   // to complete a parse for instance.
+		   //
+         message << "Syntax error...";
+         break;
+
+      case ANTLR3_MISMATCHED_TOKEN_EXCEPTION:
+
+         // We were expecting to see one thing and got another. This is the
+		   // most common error if we coudl not detect a missing or unwanted token.
+		   // Here you can spend your efforts to
+		   // derive more useful error messages based on the expected
+		   // token set and the last token and so on. The error following
+		   // bitmaps do a good job of reducing the set that we were looking
+		   // for down to something small. Knowing what you are parsing may be
+		   // able to allow you to be even more specific about an error.
+		   //
+         if ( tokenNames == NULL )
+         {
+            message << "Syntax error...";
+         }
+         else
+         {
+            if	(ex->expecting == ANTLR3_TOKEN_EOF)
+			   {
+				   message << "Expected <EOF>";
+			   }
+			   else
+			   {
+				   message << "Expected " << (const char*)tokenNames[ex->expecting];
+			   }
+         }
+         break;
+      case ANTLR3_NO_VIABLE_ALT_EXCEPTION:
+
+         // We could not pick any alt decision from the input given
+		   // so god knows what happened - however when you examine your grammar,
+		   // you should. It means that at the point where the current token occurred
+		   // that the DFA indicates nowhere to go from here.
+		   //
+         message << "Can not match to any predicted input";
+         break;
+      case ANTLR3_MISMATCHED_SET_EXCEPTION:
+         {
+			   ANTLR3_UINT32	  count;
+			   ANTLR3_UINT32	  bit;
+			   ANTLR3_UINT32	  size;
+			   ANTLR3_UINT32	  numbits;
+			   pANTLR3_BITSET	  errBits;
+
+			   // This means we were able to deal with one of a set of
+			   // possible tokens at this point, but we did not see any
+			   // member of that set.
+			   //
+			   message << "Unexpected input." << std::endl <<  "Expected one of : ";
+
+			   // What tokens could we have accepted at this point in the
+			   // parse?
+			   //
+			   count   = 0;
+			   errBits = antlr3BitsetLoad		(ex->expectingSet);
+			   numbits = errBits->numBits		(errBits);
+			   size    = errBits->size			(errBits);
+
+			   if  (size > 0)
+			   {
+				   // However many tokens we could have dealt with here, it is usually
+				   // not useful to print ALL of the set here. I arbitrarily chose 8
+				   // here, but you should do whatever makes sense for you of course.
+				   // No token number 0, so look for bit 1 and on.
+				   //
+				   for	(bit = 1; bit < numbits && count < 8 && count < size; bit++)
+				   {
+					   // TODO: This doesn;t look right - should be asking if the bit is set!!
+					   //
+					   if  (tokenNames[bit])
+					   {
+						   message << (count > 0 ? ", " : "") << tokenNames[bit]; 
+						   count++;
+					   }
+				   }
+			   }
+			   else
+			   {
+				   message << "Actually dude, we didn't seem to be expecting anything here, or at least" << std::endl
+				           << "I could not work out what I was expecting, like so many of us these days!";
+			   }
+		   }
+         break;
+
+      case ANTLR3_EARLY_EXIT_EXCEPTION:
+
+         // We entered a loop requiring a number of token sequences
+		   // but found a token that ended that sequence earlier than
+		   // we should have done.
+		   //
+         message << "Missing elements...";
+         break;
+      default:
+
+         // We don't handle any other exceptions here, but you can
+		   // if you wish. If we get an exception that hits this point
+		   // then we are just going to report what we know about the
+		   // token.
+		   //
+
+         message << "Syntax not recognised.";
+         break;
+   }
+
+   throw new AntlrException(message.str(), linenr, charpos);
 }

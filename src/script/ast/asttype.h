@@ -13,7 +13,7 @@ class CompileContext;
 class ASTType
 {
 public:
-   enum Kind { eNull, eBoolean, eInt, eReal, eString, eVoid, eObject, eArray, eGeneric, eInvalid };
+   enum Kind { eNull, eBoolean, eInt, eReal, eString, eVoid, eObject, eArray, eGeneric, eUnknown, eInvalid };
 
    static ASTType SVoidType;
 
@@ -61,7 +61,8 @@ public:
    bool isGeneric() const;
    bool isVoid() const;
    bool isNumeric() const;
-
+   bool isUnknown() const;
+   
    bool isNull() const;
    bool isArray() const;
    bool isObject() const;
@@ -72,6 +73,8 @@ public:
 
    bool equals(const ASTType& that) const;
    bool greater(const ASTType& that) const;
+
+   bool isDerivedFrom(const ASTType& that) const;
 
  // operations
    void addTypeArgument(ASTType* ptype);

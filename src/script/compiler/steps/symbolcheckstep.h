@@ -1,4 +1,22 @@
-
+/***************************************************************************
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #ifndef SYMBOL_CHECK_VISITOR_H_
 #define SYMBOL_CHECK_VISITOR_H_
 
@@ -40,6 +58,7 @@ public:
    virtual void visit(ASTTry& ast);
    virtual void visit(ASTCatch& ast);
    virtual void visit(ASTThrow& ast);
+   virtual void visit(ASTAssert& ast);
    virtual void visit(ASTExpression& ast);
    virtual void visit(ASTConcatenate& ast);
    virtual void visit(ASTUnary& ast);
@@ -61,8 +80,9 @@ private:
 
  // operations
    void checkReturn(const ASTFunction& function);
-   void checkFunction(const ASTClass& aclass, ASTAccess& access, bool isstatic);
+   void checkFunctionAccess(const ASTClass& aclass, ASTAccess& access, bool isstatic);
    void checkOperator(ASTUnary::Operator op);
+   void checkUnknown(const ASTType& type);
 
    CompileContext& mContext;
    ASTClass*       mpClass;

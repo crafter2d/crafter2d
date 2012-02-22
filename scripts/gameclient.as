@@ -1,6 +1,7 @@
 
 use engine.ui.*;
 use engine.messages.*;
+use engine.collections.*;
 
 class GameClient extends Client
 {
@@ -32,8 +33,17 @@ class GameClient extends Client
 		setKeyMap(map);
 	}
 	
+	protected void registerMessages(MessageMap messagemap)
+	{
+		//super.registerMessages(messagemap);
+		
+		messagemap.register(ControllerMessage.ID, ControllerMessage.class);
+	}
+	
 	protected void onMessageReceived(Message message)
-	{	
+	{
+		Map<int, Message> messagemap;
+		
 		if ( message instanceof ControllerMessage ) // player controller
 		{
 			ControllerMessage msg = (ControllerMessage)message;

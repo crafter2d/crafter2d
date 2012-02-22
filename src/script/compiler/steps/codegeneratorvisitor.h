@@ -44,6 +44,7 @@ public:
    virtual void visit(const ASTReturn& ast);
    virtual void visit(const ASTTry& ast);
    virtual void visit(const ASTThrow& ast);
+   virtual void visit(const ASTAssert& ast);
    virtual void visit(const ASTLoopControl& ast);
    virtual void visit(const ASTCompound& compound);
    virtual void visit(const ASTExpression& ast);

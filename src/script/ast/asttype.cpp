@@ -219,6 +219,11 @@ bool ASTType::isNumeric() const
    return isInt() || isReal();
 }
 
+bool ASTType::isUnknown() const
+{
+   return mKind == eUnknown;
+}
+
 bool ASTType::isNull() const
 {
    return mKind == eNull;
@@ -268,7 +273,7 @@ bool ASTType::equals(const ASTType& that) const
 /// \brief Test whether that is greater than this type
 bool ASTType::greater(const ASTType& that) const
 {
-   if ( isNull() && (that.isObject()  || that.isString()) )
+   if ( isNull() && (that.isObject()  || that.isString() || that.isGeneric()) )
    {
       return true;
    }
@@ -318,6 +323,17 @@ bool ASTType::greater(const ASTType& that) const
    }
 
    // no implicit primitive to basic or vs yet
+
+   return false;
+}
+
+bool ASTType::isDerivedFrom(const ASTType& that) const
+{
+   if ( !isUnknown() && !that.isUnknown() )
+   {
+      return that.getObjectClass().isBase(getObjectClass())
+          || that.getObjectClass().isImplementing(getObjectClass());
+   }
 
    return false;
 }

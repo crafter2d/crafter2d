@@ -10,6 +10,8 @@ abstract class Process
 {
 	protected BitStream mStream = new BitStream();
 	
+	private MessageMap mMessageMap = new MessageMap();
+	
 	// natives
 	
 	private native boolean create(string name);
@@ -31,6 +33,9 @@ abstract class Process
 			// Let the process now this object so it can be used in
 			// both the process space as in the game space.
 			setObject(this);
+			
+			// Register the messages
+			registerMessages(mMessageMap);
 		}
 		return success;
 	}
@@ -38,16 +43,14 @@ abstract class Process
 	public void onScriptEvent(BitStream stream)
 	{
 		int msgid = stream.readInt();
-		Message message = null;
-		
-		if ( msgid == ControllerMessage.ID )
-		{
-			message = new ControllerMessage();
-		}
-		
+		Message message = mMessageMap.getMessage(msgid);
 		message.read(stream);
 			
 		onMessageReceived(message);
+	}
+	
+	protected void registerMessages(MessageMap messagemap)
+	{
 	}
 	
 	protected void onMessageReceived(Message message)

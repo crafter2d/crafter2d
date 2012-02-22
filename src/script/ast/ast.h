@@ -28,6 +28,7 @@
 #include "asttry.h"
 #include "astcatch.h"
 #include "astthrow.h"
+#include "astassert.h"
 #include "astloopcontrol.h"
 #include "astliteral.h"
 #include "astexpression.h"

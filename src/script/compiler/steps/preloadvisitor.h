@@ -57,6 +57,7 @@ public:
    virtual void visit(ASTTry& ast);
    virtual void visit(ASTCatch& ast);
    virtual void visit(ASTThrow& ast);
+   virtual void visit(ASTAssert& ast);
    virtual void visit(ASTExpression& ast);
    virtual void visit(ASTConcatenate& ast);
    virtual void visit(ASTUnary& ast);

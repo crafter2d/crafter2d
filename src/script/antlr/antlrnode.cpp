@@ -34,3 +34,13 @@ std::string AntlrNode::toString() const
 {
    return std::string((char*)mpNode->toString(mpNode)->chars);
 }
+
+int AntlrNode::getLine() const
+{
+   return mpNode->getLine(mpNode);
+}
+
+int AntlrNode::getPosition() const
+{
+   return mpNode->getCharPositionInLine(mpNode);
+}

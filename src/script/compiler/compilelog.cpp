@@ -37,3 +37,11 @@ void CompileLog::error(const std::string& error)
 
    mErrorCount++;
 }
+
+// operations
+
+void CompileLog::clear()
+{
+   mLog.clear();
+   mErrorCount = 0;
+}

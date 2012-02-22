@@ -199,7 +199,7 @@ const ASTFunctionArgument& ASTFunction::resolveArgument(const std::string& name)
       }
    }
 
-   throw std::exception("unreachable!");
+   UNREACHABLE("unreachable!");
 }
 
 // - Visitor

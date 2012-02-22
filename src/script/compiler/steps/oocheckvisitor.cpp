@@ -213,6 +213,11 @@ void OOCheckVisitor::visit(ASTReturn& ast)
    }
 }
 
+void  OOCheckVisitor::visit(ASTAssert& ast)
+{
+   ast.getCondition().accept(*this);
+}
+
 void OOCheckVisitor::visit(ASTExpression& ast)
 {
    mpCurrentType = NULL;

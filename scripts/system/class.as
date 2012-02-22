@@ -13,9 +13,8 @@ class Class
 	
 	public Function getFunction(string name)
 	{
-		for ( int index = 0; index < mFunctions.length; index++ )
+		foreach ( Function f : mFunctions )
 		{
-			Function f = mFunctions[index];
 			if ( f.getName() == name )
 			{
 				return f;

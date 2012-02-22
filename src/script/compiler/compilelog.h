@@ -21,6 +21,9 @@ public:
    void warning(const std::string& warning);
    void error(const std::string& error);
 
+ // operations
+   void clear();
+
 private:
    StringList mLog;
    int        mErrorCount;

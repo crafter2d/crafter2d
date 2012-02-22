@@ -17,6 +17,9 @@ public:
    int       getChildCount() const;
    AntlrNode getChild(int index) const;
 
+   int getLine() const;
+   int getPosition() const;
+
    std::string toString() const;
    int getType() const;
 

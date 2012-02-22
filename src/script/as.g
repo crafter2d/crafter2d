@@ -185,7 +185,7 @@ stmt	:	block
 	|	RETURN expression? ';'							-> ^(RETURN expression?)
 	|	TRY block catch_block* finally_block?					-> ^(TRY block catch_block* finally_block?)
 	|	THROW expression ';'							-> ^(THROW expression)
-	|	T_ASSERT expression (':' expression)?					-> ^(T_ASSERT expression expression?)
+	|	T_ASSERT expression (':' expression)? ';'				-> ^(T_ASSERT expression expression?)
 	|	BREAK^ ';'
 	|	CONTINUE^ ';'
 	|	stmt_expression

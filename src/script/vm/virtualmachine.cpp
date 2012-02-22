@@ -225,7 +225,18 @@ bool VirtualMachine::execute(const std::string& classname, const std::string& fu
       return false;
    }
 
-   execute(object, function);
+   try
+   {
+      execute(object, function);
+   }
+   catch ( VirtualException* pexception )
+   {
+      displayException(*pexception);
+   }
+   catch (...)
+   {
+      // oi
+   }
 
    return true;
 }
@@ -245,18 +256,7 @@ void VirtualMachine::execute(const VirtualObjectReference& object, const std::st
    else
       mStack.push_back(objectvariant);
 
-   try
-   {
-      execute(vclass, *pentry);
-   }
-   catch ( VirtualException* pexception )
-   {
-      displayException(*pexception);
-   }
-   catch (...)
-   {
-      // oi
-   }
+   execute(vclass, *pentry);
 
    // for now run the garbage collector here. have to find the right spot for it.
    mGC.gc(*this);

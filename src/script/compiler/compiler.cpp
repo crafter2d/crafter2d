@@ -8,11 +8,11 @@
 #include "core/conv/lexical.h"
 #include "core/smartptr/autoptr.h"
 
+#include "script/antlr/antlrexception.h"
 #include "script/antlr/antlrinterface.h"
 #include "script/antlr/antlrstream.h"
 
 #include "exceptions/classnotfoundexception.h"
-
 #include "steps/preloadvisitor.h"
 #include "steps/symbolcollectorstep.h"
 #include "steps/symbolcheckstep.h"
@@ -71,63 +71,32 @@ const Literal& Compiler::lookupLiteral(int index) const
 
 // - Compilation
 
-bool compare(ASTClass* pleft, ASTClass* pright)
-{
-   return pright->isBase(*pleft) || pright->isImplementing(*pleft);
-}
-
-void sort(std::vector<ASTClass*>& classes, std::vector<ASTClass*>& sorted)
-{
-   for ( std::size_t index = 0; index < classes.size(); index++ )
-   {
-      ASTClass* pleft = classes[index];
-
-      bool inserted = false;
-      std::vector<ASTClass*>::iterator it = sorted.begin();
-      for ( ; it != sorted.end(); it++ )
-      {
-         ASTClass* pright = (*it);
-
-         if ( compare(pleft, pright) )
-         {
-            // pleft = base class
-            sorted.insert(it, pleft);
-            inserted = true;
-            break;
-         }
-      }
-
-      if ( !inserted )
-      {
-         sorted.push_back(pleft);
-      }
-   }
-}
-
 bool Compiler::compile(const std::string& classname)
 {
+   bool success = true;
    ASTClass* pclass = mContext.findClass(classname);
    if ( pclass == NULL )
    {
       try
       {
+         // STEP 1: load the file(s)
          if ( !load(classname) )
          {
-            displayErrors(classname);
             return false;
          }
 
-         std::vector<ASTClass*> classes, sorted;
+         ASTClasses classes, sorted;
          mContext.collectCompileClasses(classes);
-         ASSERT(!classes.empty());
+         ASSERT_MSG(!classes.empty(), "There should at least be one class to compile!?");
 
-         // precompile
+         // STEP 2: precompile & sort the loaded files
          for ( std::size_t index = 0; index < classes.size(); index++ )
          {
             pclass = classes[index];
-            if ( !performSteps(*pclass, mPrecompileSteps) )
+            performSteps(*pclass, mPrecompileSteps);
+            if ( mContext.getLog().hasErrors() )
             {
-               displayErrors(classname);
+               displayErrors(pclass->getFullName());
                return false;
             }
          }
@@ -135,19 +104,20 @@ bool Compiler::compile(const std::string& classname)
          // needs to have all types resolved
          sort(classes, sorted);
 
-         // calculate the resources
+         // STEP 3: calculate the resources
          for ( std::size_t index = 0; index < sorted.size(); index++ )
          {
             pclass = sorted[index];
             pclass->calculateResources();
          }
 
-         // compile
+         // STEP 4: compile the classes
          for ( std::size_t index = 0; index < sorted.size(); index++ )
          {
             pclass = sorted[index];
             if ( performSteps(*pclass, mCompileSteps) )
             {
+               
                if ( hasCallback() )
                {
                   mpCallback->notify(mContext.getResult());
@@ -157,26 +127,20 @@ bool Compiler::compile(const std::string& classname)
             }
             else
             {
+               ASSERT(mContext.getLog().hasErrors());
                displayErrors(pclass->getFullName());
-               return false;
+               success = false;
             }
          }
       }
-      catch ( ClassNotFoundException* e )
+      catch ( CompileException* pexception )
       {
-         mContext.getLog().error("Can not find class " + e->mClass);
-         displayErrors(classname);
-         return false;
-      }
-      catch ( std::exception& e )
-      {
-         mContext.getLog().error(e.what());
-         displayErrors(classname);
-         return false;
+         reportError(*pexception);
+         success = false;
       }
    }
 
-   return true;
+   return success;
 }
 
 // - Operations
@@ -209,6 +173,7 @@ bool Compiler::performSteps(ASTNode& node, Steps& steps)
          return false;
       }
    }
+   
    return true;
 }
 
@@ -218,9 +183,7 @@ bool Compiler::load(const std::string& classname)
 
    String name(classname.c_str());
    name.replace('.', '/');
-
    std::string filename = name.toStdString() + ".as";
-   mContext.getLog().info("> " + filename);
 
    try
    {
@@ -234,14 +197,10 @@ bool Compiler::load(const std::string& classname)
          }
       }
    }
-   catch ( ClassNotFoundException* e )
+   catch ( CompileException* pexception )
    {
-      mContext.getLog().error("Can not find class " + e->mClass);
-      throw;
-   }
-   catch ( std::exception& e )
-   {
-      mContext.getLog().error(std::string("Exception: ") + e.what());
+      pexception->setFilename(filename);
+      reportError(*pexception);
    }
 
    return false;
@@ -252,16 +211,57 @@ void Compiler::save(ASTClass& ast)
    // do some interesting saving stuff here
 }
 
+static bool compare(ASTClass* pleft, ASTClass* pright)
+{
+   return pright->isBase(*pleft) || pright->isImplementing(*pleft);
+}
+
+void Compiler::sort(ASTClasses& classes, ASTClasses& sorted)
+{
+   for ( std::size_t index = 0; index < classes.size(); index++ )
+   {
+      ASTClass* pleft = classes[index];
+
+      bool inserted = false;
+      std::vector<ASTClass*>::iterator it = sorted.begin();
+      for ( ; it != sorted.end(); it++ )
+      {
+         ASTClass* pright = (*it);
+
+         if ( compare(pleft, pright) )
+         {
+            // pleft = base class
+            sorted.insert(it, pleft);
+            inserted = true;
+            break;
+         }
+      }
+
+      if ( !inserted )
+      {
+         sorted.push_back(pleft);
+      }
+   }
+}
+
+void Compiler::reportError(CompileException& exception)
+{
+   std::ofstream outfile("compilelog.txt", std::ios_base::app);
+
+   outfile << "> " << exception.getFilename() << "(" << exception.getLine() << "): " << exception.asString() << std::endl;
+}
+
 void Compiler::displayErrors(const std::string& currentfile)
 {
    std::ofstream outfile("compilelog.txt", std::ios_base::app);
 
-   outfile << "Error while compiling " << currentfile << std::endl;
    const CompileLog::StringList& log = mContext.getLog().getLog();
    for ( std::size_t index = 0; index < log.size(); index++ )
    {
-      outfile << log[index] << std::endl;
+      outfile << "> " << currentfile << ": " << log[index] << std::endl;
    }
 
    outfile.close();
+
+   mContext.getLog().clear();
 }

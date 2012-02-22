@@ -13,6 +13,7 @@ class AntlrStream;
 class ASTNode;
 class CompileStep;
 class CompileCallback;
+class CompileException;
 
 class SCRIPT_API Compiler
 {
@@ -35,6 +36,8 @@ private:
    friend class CompileContext;
    friend class PreloadVisitor;
 
+   typedef std::vector<ASTClass*> ASTClasses;
+
    enum Phase { ePreload, eCompile };
 
  // operations
@@ -42,10 +45,12 @@ private:
    void createPrecompileSteps();
    void createCompileSteps();
    bool performSteps(ASTNode& node, Steps& steps);
+   void sort(ASTClasses& classes, ASTClasses& sorted);
 
    bool load(const std::string& classname);
    void save(ASTClass& ast);
 
+   void reportError(CompileException& exception);
    void displayErrors(const std::string& currentfile);
 
    CompileContext    mContext;

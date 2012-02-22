@@ -21,11 +21,11 @@
 
 #include "core/smartptr/scopedvalue.h"
 
+#include "script/antlr/antlrexception.h"
+#include "script/ast/ast.h"
 #include "script/compiler/compiler.h"
 #include "script/compiler/compilecontext.h"
 #include "script/compiler/exceptions/classnotfoundexception.h"
-
-#include "script/ast/ast.h"
 #include "script/scope/scopedscope.h"
 #include "script/scope/scopevariable.h"
 
@@ -305,6 +305,11 @@ void PreloadVisitor::visit(ASTThrow& ast)
    ast.getExpression().accept(*this);
 }
 
+void PreloadVisitor::visit(ASTAssert& ast)
+{
+   ast.getCondition().accept(*this);
+}
+
 void PreloadVisitor::visit(ASTExpression& ast)
 {
    ast.getLeft().accept(*this);
@@ -406,7 +411,8 @@ bool PreloadVisitor::load(ASTType& type)
 
       if ( !tryLoad(type) )
       {
-         throw new ClassNotFoundException(type.getObjectName());
+         //throw new ClassNotFoundException(type.getObjectName());
+         type.setKind(ASTType::eUnknown);
       }
    }
 

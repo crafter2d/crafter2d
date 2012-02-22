@@ -1,4 +1,22 @@
-
+/***************************************************************************
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #ifndef SYMBOL_COLLECTOR_VISITOR_H_
 #define SYMBOL_COLLECTOR_VISITOR_H_
 
@@ -11,6 +29,9 @@ class ASTClass;
 class ASTType;
 class CompileContext;
 
+/// \brief Resolves all types in an AST tree. Types which can not be resolved 
+/// are marked as unknown. This step will not log any failures.
+
 class SymbolCollectorVisitor : public CompileStep
 {
 public:
@@ -19,8 +40,6 @@ public:
    
  // visitor
    virtual void visit(ASTRoot& ast);
-   virtual void visit(ASTPackage& ast);
-   virtual void visit(ASTUse& ast);
    virtual void visit(ASTClass& ast);
    virtual void visit(ASTFunction& ast);
    virtual void visit(ASTFunctionArgument& ast);
@@ -39,6 +58,7 @@ public:
    virtual void visit(ASTTry& ast);
    virtual void visit(ASTCatch& ast);
    virtual void visit(ASTThrow& ast);
+   virtual void visit(ASTAssert& ast);
    virtual void visit(ASTExpression& ast);
    virtual void visit(ASTConcatenate& ast);
    virtual void visit(ASTUnary& ast);
@@ -53,14 +73,11 @@ protected:
    virtual bool performStep(ASTNode& node);
 
 private:
-   typedef std::vector<std::string> Paths;
-
  // operations
    void createDefaultConstructor(ASTClass& ast);
    void resolveType(ASTType& type);
 
    CompileContext&  mContext;
-   std::string      mPackage;
    ClassResolver    mResolver;
    ASTClass*        mpClass;
 };

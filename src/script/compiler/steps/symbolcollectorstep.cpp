@@ -1,4 +1,22 @@
-
+/***************************************************************************
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "symbolcollectorstep.h"
 
 #include "script/compiler/compilecontext.h"
@@ -8,7 +26,6 @@
 SymbolCollectorVisitor::SymbolCollectorVisitor(CompileContext& context):
    CompileStep(),
    mContext(context),
-   mPackage(),
    mResolver(),
    mpClass(NULL)
 {
@@ -38,21 +55,11 @@ void SymbolCollectorVisitor::visit(ASTRoot& ast)
    visitChildren(ast);
 }
 
-void SymbolCollectorVisitor::visit(ASTPackage& ast)
-{
-   mPackage = ast.getName();
-}
-
-void SymbolCollectorVisitor::visit(ASTUse& ast)
-{
-   // add to the class, so it is local only and correct classes can be resolved
-}
-
 void SymbolCollectorVisitor::visit(ASTClass& ast)
 {
    mpClass = &ast;
 
-   if ( ast.getName().compare("Object") != 0 )
+   if ( ast.hasBaseType() )
    {
       resolveType(ast.getBaseType());
    }
@@ -81,10 +88,6 @@ void SymbolCollectorVisitor::visit(ASTFunction& ast)
    if ( ast.hasBody() )
    {
       ast.getBody().accept(*this);
-   }
-   else if ( !ast.getModifiers().isAbstract() && !ast.getModifiers().isNative() )
-   {
-      mContext.getLog().error("Function " + mpClass->getName() + "." + ast.getName() + " requires a body.");
    }
 }
 
@@ -234,6 +237,11 @@ void SymbolCollectorVisitor::visit(ASTThrow& ast)
    ast.getExpression().accept(*this);
 }
 
+void SymbolCollectorVisitor::visit(ASTAssert& ast)
+{
+   ast.getCondition().accept(*this);
+}
+
 void SymbolCollectorVisitor::visit(ASTExpression& ast)
 {
    ast.getLeft().accept(*this);
@@ -331,11 +339,12 @@ void SymbolCollectorVisitor::createDefaultConstructor(ASTClass& ast)
    ast.addMember(pconstructor);
 }
 
-/// Resolve the type, if resolving fails, a message is logged
+/// Resolve the type, if resolving fails the type is marked as unknown so other 
+/// compilation errors can be found earlier.
 void SymbolCollectorVisitor::resolveType(ASTType& type)
 {
    if ( !type.resolveType(mContext, *mpClass) )
    {
-      mContext.getLog().error("Can not resolve type " + type.toString());
+      type.setKind(ASTType::eUnknown);
    }
 }

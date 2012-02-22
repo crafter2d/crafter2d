@@ -1,7 +1,26 @@
-
+/***************************************************************************
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "symbolcheckstep.h"
 
 #include "core/defines.h"
+#include "core/smartptr/scopedvalue.h"
 
 #include "script/ast/ast.h"
 #include "script/scope/scope.h"
@@ -62,20 +81,28 @@ void SymbolCheckVisitor::visit(ASTClass& ast)
 void SymbolCheckVisitor::visit(ASTFunction& ast)
 {
    ScopedScope scope(mScopeStack);
-
-   mpFunction = &ast;
+   ScopedValue<ASTFunction*> scopedfunction(&mpFunction, &ast, mpFunction);
 
    visitChildren(ast); // <-- arguments
 
    if ( ast.hasBody() )
    {
-      checkReturn(ast);
+      if ( ast.getModifiers().isAbstract() )
+      {
+         mContext.getLog().error("Abstract function " + mpClass->getName() + "." + ast.getName() + " should not have a body.");
+      }
+      else
+      {
+         checkReturn(ast);
 
-      ast.getBody().accept(*this);
+         ast.getBody().accept(*this);
+      }
    }
-
-   // check if there was a return in the body
-
+   else if ( !ast.getModifiers().isAbstract() && !ast.getModifiers().isNative() )
+   {
+      mContext.getLog().error("Function " + mpClass->getName() + "." + ast.getName() + " requires a body.");
+   }
+   
    mCurrentType.clear();
 }
 
@@ -90,6 +117,7 @@ void SymbolCheckVisitor::visit(ASTFunctionArgument& ast)
 void SymbolCheckVisitor::visit(ASTField& ast)
 {
    ASTVariable& var = ast.getVariable();
+   checkUnknown(var.getType());
 
    if ( var.hasExpression() )
    {
@@ -112,6 +140,8 @@ void SymbolCheckVisitor::visit(ASTBlock& ast)
 void SymbolCheckVisitor::visit(ASTLocalVariable& ast)
 {
    ASTVariable& var = ast.getVariable();
+   checkUnknown(var.getType());
+
    if ( var.hasExpression() )
    {
       var.getExpression().accept(*this);
@@ -274,6 +304,10 @@ void SymbolCheckVisitor::visit(ASTReturn& ast)
          ast.getExpression().accept(*this);
       }
    }
+   else if ( !mpFunction->getType().isVoid() )
+   {
+      mContext.getLog().error("Function " + mpFunction->getName() + " should return a value of type " + mpFunction->getType().toString());
+   }
 
    if ( !mCurrentType.greater(mpFunction->getType()) )
    {
@@ -339,6 +373,18 @@ void SymbolCheckVisitor::visit(ASTThrow& ast)
    else
    {
       mContext.getLog().error("Throw requires an expression resulting in a throwable object.");
+   }
+}
+
+void SymbolCheckVisitor::visit(ASTAssert& ast)
+{
+   mCurrentType.clear();
+
+   ast.getCondition().accept(*this);
+
+   if ( !mCurrentType.isBoolean() )
+   {
+      mContext.getLog().error("The assert condition expression must be of type boolean.");
    }
 }
 
@@ -486,11 +532,19 @@ void SymbolCheckVisitor::visit(ASTUnary& ast)
 
 void SymbolCheckVisitor::visit(ASTInstanceOf& ast)
 {
+   mCurrentType.clear();
+
+   checkUnknown(ast.getInstanceType());
+
    ast.getObject().accept(*this);
 
    if ( !(mCurrentType.isObject() || mCurrentType.isArray()) )
    {
       mContext.getLog().error("Operator instanceof can only be called against objects/arrays.");
+   }
+   else if ( !mCurrentType.isDerivedFrom(ast.getInstanceType()) )
+   {
+      mContext.getLog().error("Instanceof operator can never be true for " + mCurrentType.toString() + " and " + ast.getInstanceType().toString());
    }
 
    mCurrentType = ASTType(ASTType::eBoolean);
@@ -514,17 +568,22 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
                signature.append(mCurrentType.clone());
             }
 
-            const ASTClass& newclass = ast.getType().getObjectClass();
-            const ASTFunction* pfunction = newclass.findBestMatch(newclass.getName(), signature, before.getTypeArguments());
+            checkUnknown(ast.getType());
 
-            if ( pfunction == NULL )
+            if ( ast.getType().hasObjectClass() )
             {
-               std::string arguments = "(" + signature.toString() + ")";
-               mContext.getLog().error("No matching constructor " + newclass.getFullName() + arguments + " defined.");
-            }
-            else
-            {
-               ast.setConstructor(*pfunction);
+               const ASTClass& newclass = ast.getType().getObjectClass();
+               const ASTFunction* pfunction = newclass.findBestMatch(newclass.getName(), signature, before.getTypeArguments());
+
+               if ( pfunction == NULL )
+               {
+                  std::string arguments = "(" + signature.toString() + ")";
+                  mContext.getLog().error("No matching constructor " + newclass.getFullName() + arguments + " defined.");
+               }
+               else
+               {
+                  ast.setConstructor(*pfunction);
+               }
             }
 
             mCurrentType = ast.getType();
@@ -715,33 +774,36 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
          {
             if ( mCurrentType.isValid() )
             {
-               if ( !mCurrentType.isVoid() )
+               switch ( mCurrentType.getKind() )
                {
-                  if ( mCurrentType.isObject() )
-                  {
-                     ASSERT(mCurrentType.hasObjectClass());
-
-                     const ASTClass& type = mCurrentType.getObjectClass();
-                     checkFunction(type, ast, wasstatic);
-                  }
-                  else if ( mCurrentType.isArray() )
-                  {
-                     const ASTClass& arrayclass = mContext.resolveClass("System.InternalArray");
-                     checkFunction(arrayclass, ast, wasstatic);
-                  }
-                  else
-                  {
-                     mContext.getLog().error("Can not invoke method on basic types.");
-                  }
-               }
-               else
-               {
-                  mContext.getLog().error("Can not invoke a method on a void object.");
+                  case ASTType::eObject:
+                     {
+                        ASSERT(mCurrentType.hasObjectClass());
+                        const ASTClass& type = mCurrentType.getObjectClass();
+                        checkFunctionAccess(type, ast, wasstatic);
+                     }
+                     break;
+                  case ASTType::eArray:
+                     {
+                        const ASTClass& arrayclass = mContext.resolveClass("System.InternalArray");
+                        checkFunctionAccess(arrayclass, ast, wasstatic);
+                     }
+                     break;
+                  case ASTType::eVoid:
+                     {
+                        mContext.getLog().error("Can not invoke a method on a void object.");
+                     }
+                     break;
+                  default:
+                     {
+                        mContext.getLog().error("Can not invoke method on basic types.");
+                     }
+                     break;
                }
             }
             else
             {
-               checkFunction(*mpClass, ast, wasstatic);
+               checkFunctionAccess(*mpClass, ast, wasstatic);
             }
          }
          break;
@@ -822,6 +884,8 @@ bool SymbolCheckVisitor::isVariable(const ASTNode& node) const
 
 void SymbolCheckVisitor::checkReturn(const ASTFunction& function)
 {
+   checkUnknown(function.getType());
+
    if ( !function.getType().isVoid() )
    {
       // ensure that we have a return statement
@@ -837,7 +901,7 @@ void SymbolCheckVisitor::checkReturn(const ASTFunction& function)
    }
 }
 
-void SymbolCheckVisitor::checkFunction(const ASTClass& aclass, ASTAccess& access, bool isstatic)
+void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& access, bool isstatic)
 {
    ASTType before = mCurrentType;
 
@@ -932,4 +996,12 @@ void SymbolCheckVisitor::checkOperator(ASTUnary::Operator op)
          }
          break;
       }
+}
+
+void SymbolCheckVisitor::checkUnknown(const ASTType& type)
+{
+   if ( type.isUnknown() )
+   {
+      mContext.getLog().error("Unknown class type " + type.getObjectName());
+   }
 }

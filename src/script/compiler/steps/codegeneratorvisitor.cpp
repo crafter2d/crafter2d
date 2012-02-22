@@ -113,11 +113,10 @@ void CodeGeneratorVisitor::convertLabels()
            || instruction == VirtualInstruction::eEnterGuardF )
          {
             int labelindex = findLabel(inst.arg);
-            if ( labelindex != mInstructions.size() )
-            {
-               const Inst& labelinst = mInstructions[labelindex];
-               inst.arg = labelinst.linenr - firstline;
-            }
+            ASSERT(labelindex != mInstructions.size());
+            
+            const Inst& labelinst = mInstructions[labelindex];
+            inst.arg = labelinst.linenr - firstline;
          }
       }
 
@@ -236,11 +235,6 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
 
 void CodeGeneratorVisitor::visit(const ASTFunction& ast)
 {
-   if ( ast.getName() == "run" )
-   {
-      int aap = 5;
-   }
-
    if ( ast.getModifiers().isNative() )
    {
       // here a native method should be invoked
@@ -436,34 +430,75 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
 
    mCurrentType.clear();
    var.getExpression().accept(*this);
-   const ASTFunction* piterator = mCurrentType.getObjectClass().findBestMatch("iterator", signature, list);
 
-   addInstruction(VirtualInstruction::ePush, 1);
-   addInstruction(VirtualInstruction::eCall, piterator->getResourceIndex());
-   addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
+   if ( mCurrentType.isArray() )
+   {
+      // index = 0
+      addInstruction(VirtualInstruction::eInt0);
+      addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
 
-   const ASTClass& iteratorclass = mContext.resolveClass("engine.collections.Iterator");
-   const ASTFunction* phasnext = iteratorclass.findBestMatch("hasNext", signature, list);
-   const ASTFunction* pnext = iteratorclass.findBestMatch("next", signature, list);
+      const ASTClass& arrayclass = mContext.resolveClass("System.InternalArray");
+      const ASTField* pfield = arrayclass.findField("length", ASTClass::eLocal);
 
-   addLabel(flow.start);
+      // check for the size ( index < array.length )
+      addLabel(flow.start);
+      addInstruction(VirtualInstruction::eDup);
+      addInstruction(VirtualInstruction::eLoad, pfield->getVariable().getResourceIndex());
+      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
+      addInstruction(VirtualInstruction::eCmpEqInt);
+      addInstruction(VirtualInstruction::eJumpTrue, flow.end);
 
-   // is there still an item
-   addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-   addInstruction(VirtualInstruction::ePush, 1);
-   addInstruction(VirtualInstruction::eCall, phasnext->getResourceIndex());
-   addInstruction(VirtualInstruction::eJumpFalse, flow.end);
+      // get item & execute body ( var = array[index]; )
+      addInstruction(VirtualInstruction::eDup);
+      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
+      addInstruction(VirtualInstruction::eLoadArray, 1);
+      addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+
+      ast.getBody().accept(*this);
+
+      // increment iteration ( index++; )
+      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
+      addInstruction(VirtualInstruction::eInt1);
+      addInstruction(VirtualInstruction::eAddInt);
+      addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
+      addInstruction(VirtualInstruction::eJump, flow.start);
+      mExpr = 0;
+
+      // and of loop (pop array from stack)
+      addLabel(flow.end);
+      addInstruction(VirtualInstruction::ePop, 1);
+   }
+   else
+   {
+      const ASTFunction* piterator = mCurrentType.getObjectClass().findBestMatch("iterator", signature, list);
+
+      addInstruction(VirtualInstruction::ePush, 1);
+      addInstruction(VirtualInstruction::eCall, piterator->getResourceIndex());
+      addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
+
+      addLabel(flow.start);
+
+      const ASTClass& iteratorclass = mContext.resolveClass("engine.collections.Iterator");
+      const ASTFunction* phasnext = iteratorclass.findBestMatch("hasNext", signature, list);
+      const ASTFunction* pnext = iteratorclass.findBestMatch("next", signature, list);
+
+      // is there still an item
+      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
+      addInstruction(VirtualInstruction::ePush, 1);
+      addInstruction(VirtualInstruction::eCall, phasnext->getResourceIndex());
+      addInstruction(VirtualInstruction::eJumpFalse, flow.end);
    
-   // store the next item from the list
-   addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-   addInstruction(VirtualInstruction::ePush, 1);
-   addInstruction(VirtualInstruction::eCall, pnext->getResourceIndex());
-   addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+      // store the next item from the list
+      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
+      addInstruction(VirtualInstruction::ePush, 1);
+      addInstruction(VirtualInstruction::eCall, pnext->getResourceIndex());
+      addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
 
-   ast.getBody().accept(*this);
+      ast.getBody().accept(*this);
 
-   addInstruction(VirtualInstruction::eJump, flow.start);
-   addLabel(flow.end);
+      addInstruction(VirtualInstruction::eJump, flow.start);
+      addLabel(flow.end);
+   }
 }
 
 void CodeGeneratorVisitor::visit(const ASTWhile& ast)
@@ -682,6 +717,21 @@ void CodeGeneratorVisitor::visit(const ASTThrow& ast)
    ast.getExpression().accept(*this);
 
    addInstruction(VirtualInstruction::eThrow);
+}
+
+void CodeGeneratorVisitor::visit(const ASTAssert& ast)
+{
+   ast.getCondition().accept(*this);
+
+   int labelend = allocateLabel();
+   int errorlit = allocateLiteral("System.AssertionError");
+
+   addInstruction(VirtualInstruction::eJumpTrue, labelend);
+   addInstruction(VirtualInstruction::ePush, errorlit);
+   addInstruction(VirtualInstruction::eNew, -1);
+   addInstruction(VirtualInstruction::eThrow);
+   
+   addLabel(labelend);
 }
 
 void CodeGeneratorVisitor::visit(const ASTLoopControl& ast)
@@ -1633,7 +1683,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
 
    VirtualObject* classobject = new VirtualObject();
    classobject->initialize(2);
-   classobject->setMember(0, Variant(ast.getName()));
+   classobject->setMember(0, Variant(ast.getFullName()));
    classobject->setMember(1, Variant(VirtualArrayReference(pfuncarray)));
 
    mpVClass->setClassObject(VirtualObjectReference(classobject));
