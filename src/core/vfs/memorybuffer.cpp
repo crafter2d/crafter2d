@@ -23,6 +23,7 @@
 #endif
 
 #include <string.h>
+#include <stdio.h>
 
 MemoryBuffer::MemoryBuffer():
    Buffer(),
@@ -113,7 +114,7 @@ int MemoryBuffer::size()
    return mDataSize;
 }
 
-char MemoryBuffer::getc()
+char MemoryBuffer::getchar()
 {
   char data = mpData[mCursor];
   mCursor++;

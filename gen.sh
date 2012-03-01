@@ -22,7 +22,7 @@ if [ "$1" == "--help" ]; then
 fi
 
 echo - Building project
-premake --target $1 --silent
+premake4 --target $1
 
 echo
 echo Finished

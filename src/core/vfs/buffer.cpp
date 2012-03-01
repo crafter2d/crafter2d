@@ -74,13 +74,13 @@ int Buffer::size()
    return -1;
 }
 
-char Buffer::getc()
+char Buffer::getchar()
 {
   PURE_VIRTUAL
   return 0;
 }
 
-void Buffer::seek(int pos, int mode)
+void Buffer::seek(int , int )
 {
   PURE_VIRTUAL
 }

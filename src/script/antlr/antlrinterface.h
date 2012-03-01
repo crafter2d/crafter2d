@@ -53,7 +53,7 @@ private:
    ASTNode*                handlePackage(const AntlrNode& node);
    ASTNode*                handleUse(const AntlrNode& node);
    ASTTypeVariables*       handleTypeVariables(const AntlrNode& node);
-   
+
    ASTNode*                handleClass(const AntlrNode& node);
    ASTMember*              handleConstructor(const AntlrNode& node);
    ASTMember*              handleFuncDecl(const AntlrNode& node);

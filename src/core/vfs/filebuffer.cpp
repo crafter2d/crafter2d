@@ -20,6 +20,8 @@
 #include "filebuffer.h"
 
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "core/defines.h"
 
@@ -69,7 +71,7 @@ int FileBuffer::size()
    return size;
 }
 
-char FileBuffer::getc()
+char FileBuffer::getchar()
 {
   return fgetc(mpFile);
 }

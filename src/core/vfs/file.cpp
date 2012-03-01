@@ -23,7 +23,7 @@
 
 #include "buffer.h"
 
-// static 
+// static
 std::string File::extractPath(const std::string& filepath)
 {
    std::size_t pos = filepath.rfind('/');
@@ -92,7 +92,7 @@ int File::write(void* ptr, int size)
 
 char File::getc()
 {
-   return getBuffer().getc();
+   return getBuffer().getchar();
 }
 
 // Search & positioning
@@ -119,7 +119,7 @@ int File::size()
    return getBuffer().size();
 }
 
-bool File::virOpen(const std::string& filename, int modus)
+bool File::virOpen(const std::string& , int)
 {
    PURE_VIRTUAL
    return false;

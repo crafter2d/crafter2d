@@ -2,6 +2,7 @@
 #include "string.h"
 
 #include <unicode/unistr.h>
+#include <string.h>
 
 class StringData
 {
@@ -95,6 +96,6 @@ std::string String::toStdString() const
    pdata[ln] = 0;
    std::string result = pdata;
    delete[] pdata;
-   
+
    return result;
 }

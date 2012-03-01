@@ -42,7 +42,7 @@ public:
  // operations
    virtual int          read(void* ptr, int size);
    virtual int          write(void* ptr, int size);
-   virtual char         getc();
+   virtual char         getchar();
    virtual void         seek(int pos, int mode);
    virtual int          tell() const;
    virtual bool         eof() const;

@@ -27,7 +27,7 @@
 #include "unzipfile.h"
 #include "zipfile.h"
 
-// static 
+// static
 bool CompressedFile::isCompressedFile(const std::string& file)
 {
    int dot = file.find('.');
@@ -42,7 +42,7 @@ bool CompressedFile::isCompressedFile(const std::string& file)
    return false;
 }
 
-// static 
+// static
 bool CompressedFile::exists(const std::string& path, const std::string& file)
 {
     UnzipFile zipfile(path);
@@ -67,7 +67,7 @@ bool CompressedFile::virOpen(const std::string& filename, int modus)
 
    if ( IS_SET(modus, File::ERead) )
    {
-      void* pdata = NULL;
+      char* pdata = NULL;
       int size = 0;
 
       UnzipFile zipfile(mZipFile);

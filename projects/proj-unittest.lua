@@ -8,7 +8,7 @@ project "UnitTest"
 	targetdir "bin"
 	flags { "NoPCH" }
 	location "build/unittest"
-	debugdir "bin"
+	--debugdir "bin"
 	
 -- set project files
 files { "src/unittest/**.cpp", "src/unittest/**.h", "src/unittest/**.inl" }

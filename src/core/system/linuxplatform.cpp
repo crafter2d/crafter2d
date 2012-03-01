@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "linuxplatform.h"
 
-#include "sdltimer.h"
+#include <SDL/SDL_timer.h>
 
 LinuxPlatform::LinuxPlatform():
    Platform()

@@ -43,13 +43,13 @@ void tokenize(std::vector<std::string>& tokens, const std::string& str, char del
       start = pos + 1;
       pos = str.find(delimitor, start);
    }
-   
+
 
    std::string token = str.substr(start, str.size() - start);
    tokens.push_back(token);
 }
 
-// static 
+// static
 FileSystem& FileSystem::getInstance()
 {
 #ifdef _WIN32
@@ -168,11 +168,11 @@ std::string FileSystem::expand(const std::string& path) const
    Tokens tokens;
    tokenize(tokens, path, '/');
    strip(tokens);
-   
+
    Tokens::iterator it = tokens.begin();
    while ( it != tokens.end() )
    {
-      const std::string& token = (*it);
+      //const std::string& token = (*it);
       Tokens::iterator next = it + 1;
 
       if ( next != tokens.end() )
@@ -185,6 +185,6 @@ std::string FileSystem::expand(const std::string& path) const
          }
       }
    }
-   
+
    return "";
 }
