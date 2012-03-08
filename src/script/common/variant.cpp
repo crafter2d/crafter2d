@@ -1,5 +1,5 @@
 
-#include "Variant.h"
+#include "variant.h"
 
 #include "core/defines.h"
 #include "core/conv/lexical.h"
@@ -105,7 +105,7 @@ bool Variant::operator<=(const Variant& that) const
 {
    ASSERT(!isArray() && !isObject() && !isBool());
    ASSERT(mType == that.mType);
-  
+
    switch ( mType )
    {
       case eInt:
@@ -117,7 +117,7 @@ bool Variant::operator<=(const Variant& that) const
       case eString:
          return asString().compare(that.asString()) <= 0;
    }
-   
+
    return false;
 }
 
@@ -125,7 +125,7 @@ bool Variant::operator<(const Variant& that) const
 {
    ASSERT(!isArray() && !isObject() && !isBool());
    ASSERT(mType == that.mType);
-  
+
    switch ( mType )
    {
       case eInt:
@@ -137,7 +137,7 @@ bool Variant::operator<(const Variant& that) const
       case eString:
          return asString().compare(that.asString()) <= 0;
    }
-   
+
    return false;
 }
 
@@ -145,7 +145,7 @@ bool Variant::operator>(const Variant& that) const
 {
    ASSERT(!isArray() && !isObject() && !isBool());
    ASSERT(mType == that.mType);
-  
+
    switch ( mType )
    {
       case eInt:
@@ -157,7 +157,7 @@ bool Variant::operator>(const Variant& that) const
       case eString:
          return asString().compare(that.asString()) > 0;
    }
-   
+
    return false;
 }
 
@@ -165,7 +165,7 @@ bool Variant::operator>=(const Variant& that) const
 {
    ASSERT(!isArray() && !isObject() && !isBool());
    ASSERT(mType == that.mType);
-  
+
    switch ( mType )
    {
       case eInt:
@@ -379,7 +379,7 @@ double Variant::toReal() const
       case eReal:
          return asReal();
    }
-   
+
    return 0.0;
 }
 

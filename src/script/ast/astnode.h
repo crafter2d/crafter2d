@@ -2,6 +2,7 @@
 #ifndef AST_NODE_H_
 #define AST_NODE_H_
 
+#include "core/defines.h"
 #include "astnodes.h"
 
 class ASTVisitor;

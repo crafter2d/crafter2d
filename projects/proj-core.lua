@@ -10,7 +10,7 @@ project "Core"
 	location "build/core"
 	
 -- set project files
-files { "src/core/**.cpp", "src/core/**.h", "src/core/**.inl" }
+files { "src/core/**.cpp", "src/core/**.c", "src/core/**.h", "src/core/**.inl" }
 includedirs { "src" }
 
 if ( os.is("windows") ) then
@@ -60,12 +60,12 @@ elseif ( os.is("linux") ) then
 
 	defines { "LINUX" }
 	
-	buildoptions { "-W", "-Wall", "-O0" }
+	buildoptions { "-W", "-Wall", "-O0", "-Wunused-parameter" }
 	if ( _ACTION == "cb-gcc" ) then
 		linkoptions { "-Xlinker", "-zmuldefs" }
 	end
 
-	excludes { "src/core/vfs/win*.*" }
+	excludes { "src/core/vfs/win*.*", "src/core/system/win*.*", "src/core/vfs/zip/*32.*" }
 		
 end
 

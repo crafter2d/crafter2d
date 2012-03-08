@@ -23,7 +23,7 @@
 #include "core/core_base.h"
 
 #include <string>
-#include "unzip.h"
+#include "zip/unzip.h"
 
 class CORE_API UnzipFile
 {

@@ -49,8 +49,10 @@ typedef void*           handle;
 
 #define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
 
-#define MIN(x,y) ( x<y ? x : y )
-#define MAX(x,y) ( x>y ? x : y )
+#ifndef MIN
+#  define MIN(x,y) ( x<y ? x : y )
+#  define MAX(x,y) ( x>y ? x : y )
+#endif
 
 #define IS_SET(container,flag)((container & flag) == flag)
 #define SET_FLAG(container,flag)   container |= flag

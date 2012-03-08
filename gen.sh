@@ -22,7 +22,7 @@ if [ "$1" == "--help" ]; then
 fi
 
 echo - Building project
-premake4 --target $1
+./premake4 --platform=x32 $1
 
 echo
 echo Finished

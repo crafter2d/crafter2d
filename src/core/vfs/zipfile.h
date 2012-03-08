@@ -23,7 +23,7 @@
 #include "core/core_base.h"
 
 #include <string>
-#include "zip.h"
+#include "zip/zip.h"
 
 class CORE_API ZipFile
 {

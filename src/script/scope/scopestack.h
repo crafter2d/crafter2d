@@ -2,6 +2,7 @@
 #ifndef SCOPE_STACK_H_
 #define SCOPE_STACK_H_
 
+#include <string>
 #include <deque>
 
 class Scope;

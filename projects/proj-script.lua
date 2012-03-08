@@ -28,9 +28,9 @@ configuration "Debug"
 	defines { "_DEBUG" }
 	targetsuffix "d"
     flags { "Symbols" }
-	links { "antlr3cd", "minizip_d", "Core" }
+	links { "antlr3c", "Core" }
  
 configuration "Release"
 	defines { "NDEBUG" }
 	flags { "Optimize" }
-	links { "antlr3c", "minizip", "Core" }
+	links { "antlr3c", "Core" }

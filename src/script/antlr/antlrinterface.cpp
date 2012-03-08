@@ -12,7 +12,7 @@
 #include "script/ast/astannotation.h"
 #include "script/compiler/compilecontext.h"
 #include "script/common/literal.h"
-#include "script/common/variant.h" 
+#include "script/common/variant.h"
 
 #include "antlrexception.h"
 #include "antlrnode.h"
@@ -43,7 +43,7 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
    if ( tstream == NULL )
    {
       lexer->free(lexer);
-      
+
       throw new AntlrException("Can not open token stream");
    }
 
@@ -52,7 +52,7 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
    {
       lexer->free(lexer);
       tstream->free(tstream);
-      
+
       throw new AntlrException("Failed to instantiate parser");
    }
 
@@ -98,7 +98,7 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
       lexer->free(lexer);
 
       throw;
-   }  
+   }
 
    return NULL;
 }
@@ -149,7 +149,7 @@ ASTType* AntlrParser::getType(const AntlrNode& node)
    if ( count > 1 )
    {
       AntlrNode restnode = node.getChild(1);
-      
+
       nodetype = restnode.getType();
       if ( nodetype == TYPEARGUMENT )
       {
@@ -180,11 +180,11 @@ ASTType* AntlrParser::getType(const AntlrNode& node)
 ASTNode* AntlrParser::handleTree(const AntlrNode& node)
 {
    ASSERT(!node.isNil());
-   
+
    int nodetype = node.getType();
    switch ( nodetype )
    {
-      case PACKAGE:           return handlePackage(node);
+      case T_PACKAGE:         return handlePackage(node);
       case USE:               return handleUse(node);
       case CLASS:             return handleClass(node);
       case INTRFACE:          return handleClass(node);
@@ -294,7 +294,7 @@ ASTNode* AntlrParser::handleUse(const AntlrNode& node)
    puse->setIdentifier(identifier);
 
    mClassResolver.insert(puse->getIdentifier());
-   
+
    return puse;
 }
 
@@ -423,7 +423,7 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
 
          index += 2; // extends & id
       }
-   
+
       // check for implementing interfaces
       member = node.getChild(index);
       if ( !member.isNil() )
@@ -447,10 +447,10 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
          for ( ; index < count; index++ )
          {
             AntlrNode member = node.getChild(index);
-         
+
             ASTMember* pmember = dynamic_cast<ASTMember*>(handleTree(member));
             ASSERT_PTR(pmember);
-         
+
             pclass->addMember(pmember);
          }
       }
@@ -467,10 +467,10 @@ ASTMember* AntlrParser::handleVarDecl(const AntlrNode& node)
 
    AntlrNode modnode = node.getChild(0);
    handleModifiers(modnode, pvariable->getModifiers());
-                 
+
    AntlrNode typenode = node.getChild(1);
    pvariable->setType(getType(typenode));
-               
+
    AntlrNode namenode = node.getChild(2);
    pvariable->setName(namenode.toString());
 
@@ -569,7 +569,7 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
       pvariable->setModifiers(modifiers);
       pvariable->setType(ptype);
       pvariable->setName(name);
-      
+
       if ( type != SEP )
       {
          AntlrNode exprnode = node.getChild(4);
@@ -613,7 +613,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
       pvariable->setModifiers(modifiers);
       pvariable->setType(&ASTType::SVoidType);
       pvariable->setName(name);
-      
+
       if ( type != SEP )
       {
          AntlrNode exprnode = node.getChild(3);
@@ -639,7 +639,7 @@ ASTMember* AntlrParser::handleFuncDecl(const AntlrNode& node)
 
    AntlrNode typenode = node.getChild(2);
    pfunction->setType(getType(typenode));
-               
+
    AntlrNode namenode = node.getChild(3);
    pfunction->setName(namenode.toString());
 
@@ -655,7 +655,7 @@ ASTMember* AntlrParser::handleFuncDecl(const AntlrNode& node)
    }
    else
       ASSERT(nodetype == SEP);
-               
+
    return pfunction;
 }
 
@@ -669,7 +669,7 @@ ASTMember* AntlrParser::handleVoidFuncDecl(const AntlrNode& node)
 
    AntlrNode modnode = node.getChild(1);
    handleModifiers(modnode, pfunction->getModifiers());
-              
+
    AntlrNode namenode = node.getChild(2);
    pfunction->setName(namenode.toString());
 
@@ -685,7 +685,7 @@ ASTMember* AntlrParser::handleVoidFuncDecl(const AntlrNode& node)
    }
    else
       ASSERT(nodetype == SEP);
-               
+
    return pfunction;
 }
 
@@ -740,7 +740,7 @@ ASTLocalVariable* AntlrParser::handleLocalVarDecl(const AntlrNode& node)
 
    AntlrNode typenode = node.getChild(0);
    pvariable->setType(getType(typenode));
-               
+
    AntlrNode namenode = node.getChild(1);
    pvariable->setName(namenode.toString());
 
@@ -801,7 +801,7 @@ ASTFor* AntlrParser::handleFor(const AntlrNode& node)
    }
 
    child = node.getChild(index);
-      
+
    if ( child.getType() != SEP )
    {
       pfor->setCondition(handleExpression(child));
@@ -819,7 +819,7 @@ ASTFor* AntlrParser::handleFor(const AntlrNode& node)
          pfor->addLoop(handleExpression(child));
       }
    }
-   
+
    return pfor;
 }
 
@@ -887,7 +887,7 @@ ASTSwitch* AntlrParser::handleSwitch(const AntlrNode& node)
    ASTNode* pexpr = handleTree(condition);
    ASSERT_PTR(pexpr);
    pswitch->setExpression(pexpr);
-   
+
    int count = node.getChildCount();
    for ( int index = 1; index < count; index++ )
    {
@@ -977,7 +977,7 @@ ASTReturn* AntlrParser::handleReturn(const AntlrNode& node)
       AntlrNode expression = node.getChild(0);
       preturn->setExpression(handleExpression(expression));
    }
-               
+
    return preturn;
 }
 
@@ -1016,15 +1016,15 @@ ASTTry* AntlrParser::handleTry(const AntlrNode& node)
 ASTCatch* AntlrParser::handleCatch(const AntlrNode& node)
 {
    ASTVariable* pvariable = new ASTVariable();
-   
+
    AntlrNode typenode = node.getChild(0);
    pvariable->setType(getType(typenode));
-               
+
    AntlrNode namenode = node.getChild(1);
    pvariable->setName(namenode.toString());
 
    AntlrNode bodynode = node.getChild(2);
-   
+
    ASTCatch* pcatch = new ASTCatch();
    pcatch->setVariable(new ASTLocalVariable(pvariable));
    pcatch->setBody(handleBlock(bodynode));
@@ -1077,7 +1077,7 @@ ASTCompound* AntlrParser::handleCompound(const AntlrNode& node)
 
    ASTCompound* pnode = new ASTCompound();
    pnode->setExpression(pexpression);
-               
+
    return pnode;
 }
 
@@ -1131,7 +1131,7 @@ ASTNode* AntlrParser::handleConcatenate(const AntlrNode& node)
    {
       AntlrNode right = node.getChild(1);
       ASTNode* pright = handleTree(right);
-      
+
       ASTConcatenate::Mode mode = ASTConcatenate::eInvalid;
       switch ( node.getType() )
       {
@@ -1221,7 +1221,7 @@ ASTUnary::Operator handleUnaryOperator(const AntlrNode& node)
    ASTUnary::Operator op = ASTUnary::eNone;
    switch ( node.getType() )
    {
-      case PLUS:  
+      case PLUS:
          op = ASTUnary::ePos;
          break;
       case MINUS:
@@ -1291,7 +1291,7 @@ ASTNew* AntlrParser::handleNew(const AntlrNode& node)
 
    AntlrNode typenode = node.getChild(0);
    ASTType* ptype = getType(typenode);
-   
+
    AntlrNode argsnode = node.getChild(1);
    int argstype = argsnode.getType();
    if ( argstype == ARGUMENTS )
@@ -1378,7 +1378,7 @@ ASTAccess* AntlrParser::handleAccess(const AntlrNode& node)
    AntlrNode namenode = node.getChild(0);
    paccess->setName(namenode.toString());
    paccess->setKind(count == 1 ? ASTAccess::eVariable : ASTAccess::eFunction);
-      
+
    if ( count == 2 )
    {
       AntlrNode argsnode = node.getChild(1);
@@ -1392,7 +1392,7 @@ ASTAccess* AntlrParser::handleAccess(const AntlrNode& node)
          paccess->addArgument(parg);
       }
    }
-               
+
    return paccess;
 }
 
@@ -1457,13 +1457,13 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
       default:
          break;
    }
-   
+
    Literal* pliteral = mContext.getLiteralTable().find(value);
    if ( pliteral == NULL )
    {
       pliteral = new Literal();
       pliteral->setValue(value);
-      
+
       mContext.getLiteralTable().insert(pliteral);
    }
 
@@ -1527,7 +1527,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
       case ANTLR3_MISSING_TOKEN_EXCEPTION:
 
          // Indicates that the recognizer detected that the token we just
-		   // hit would be valid syntactically if preceeded by a particular 
+		   // hit would be valid syntactically if preceeded by a particular
 		   // token. Perhaps a missing ';' at line end or a missing ',' in an
 		   // expression list, and such like.
 		   //
@@ -1549,9 +1549,9 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
          break;
 
       case ANTLR3_RECOGNITION_EXCEPTION:
-         
+
          // Indicates that the recognizer received a token
-		   // in the input that was not predicted. This is the basic exception type 
+		   // in the input that was not predicted. This is the basic exception type
 		   // from which all others are derived. So we assume it was a syntax error.
 		   // You may get this if there are not more tokens and more are needed
 		   // to complete a parse for instance.
@@ -1630,7 +1630,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 					   //
 					   if  (tokenNames[bit])
 					   {
-						   message << (count > 0 ? ", " : "") << tokenNames[bit]; 
+						   message << (count > 0 ? ", " : "") << tokenNames[bit];
 						   count++;
 					   }
 				   }

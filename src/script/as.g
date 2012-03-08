@@ -51,7 +51,7 @@ declaration
 	;
 	
 package_decl
-	:	PACKAGE identifier ('.' identifier)* ';'					-> ^(PACKAGE identifier+)
+	:	T_PACKAGE identifier ('.' identifier)* ';'			-> ^(T_PACKAGE identifier+)
 	;
 	
 use_decl:	USE identifier ('.' identifier)* ('.' use_identifier)? ';' 			-> ^(USE identifier+ use_identifier?)
@@ -388,7 +388,7 @@ identifier
 	:	ID
 	;
 
-PACKAGE	:	'package';
+T_PACKAGE	:	'package';
 USE	:	'use';
 CLASS	:	'class';
 INTRFACE:	'interface';
