@@ -29,10 +29,10 @@
 
 class FontChar;
 
-class Font : public Resource
+class UIFont : public Resource
 {
 public:
-   Font();
+   UIFont();
 
  // initialization
    bool     load(FT_Library lib, const std::string& name, int size = 10);
@@ -47,13 +47,13 @@ public:
 
  // rendering
    void     render(const std::string& text);
-   
+
 private:
    typedef std::map<char, FontChar*> Characters;
 
  // loading
    FontChar* loadGlyph(char character);
-   
+
  // helpers
    FT_BBox        measure(char c);
 

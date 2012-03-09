@@ -19,16 +19,6 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE void BitStream::setBuffer(const char* data, int _size)
-{
-   ASSERT_MSG(data != NULL, "BitStream::setBuf : data pointer is null");
-
-   ensureFits(_size);
-
-   size = _size;
-   memcpy(buf, data, size);
-}
-
 INLINE void BitStream::reset()
 {
    pos = 0;
@@ -50,15 +40,15 @@ INLINE int BitStream::getLen() const
 }
 
 INLINE bool BitStream::end() const
-{ 
+{
    return (pos >= size);
 }
 
 INLINE std::string BitStream::readString()
-{ 
+{
   std::string str;
    *this >> str;
-   return str; 
+   return str;
 }
 
 INLINE int BitStream::readInt()
@@ -70,7 +60,7 @@ INLINE int BitStream::readInt()
 
 INLINE bool BitStream::readBool()
 {
-   bool b; 
+   bool b;
    *this >> b;
    return b;
 }
@@ -86,6 +76,6 @@ INLINE void BitStream::writeInt(int i)
 }
 
 INLINE void BitStream::writeBool(bool b)
-{ 
+{
    *this << b;
 }

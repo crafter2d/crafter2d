@@ -23,6 +23,7 @@
 #  include "bitstream.inl"
 #endif
 
+#include <stdio.h>
 #include <string.h>
 
 #include "core/math/vector.h"
@@ -30,9 +31,9 @@
 #include "netobject.h"
 #include "netobjectfactory.h"
 
-BitStream::BitStream(): 
+BitStream::BitStream():
    buf(NULL),
-   pos(0), 
+   pos(0),
    size(0),
    bufsize(1024)
 {
@@ -76,13 +77,23 @@ void BitStream::ensureFits(int datasize)
          bufsize *= 2;
       }
       while ( newsize >= bufsize );
-      
+
       char* pnewbuf = new char[bufsize];
       memmove(pnewbuf, buf, size);
 
       delete[] buf;
       buf = pnewbuf;
    }
+}
+
+void BitStream::setBuffer(const char* data, int _size)
+{
+   ASSERT_MSG(data != NULL, "BitStream::setBuf : data pointer is null");
+
+   ensureFits(_size);
+
+   size = _size;
+   memcpy(buf, data, size);
 }
 
 void BitStream::clear()

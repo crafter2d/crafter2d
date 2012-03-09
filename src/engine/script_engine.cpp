@@ -132,7 +132,7 @@ void Process_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
-   
+
    Server* pserver = new Server();
    machine.registerNative(thisobject, pserver);
 }
@@ -222,7 +222,7 @@ void Client_nativeDisplay(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    VirtualObjectReference& thisobject = accessor.getThis();
    Client* pclient = (Client*) thisobject->getNativeObject();
-   
+
    pclient->display();
 }
 
@@ -240,7 +240,7 @@ void Client_native_setWindow(VirtualMachine& machine, VirtualStackAccessor& acce
    Client* pclient = (Client*) thisobject->getNativeObject();
 
    GameWindow* pwindow = (GameWindow*) accessor.getObject(1)->useNativeObject();
-   
+
    pclient->setWindow(pwindow);
 }
 
@@ -603,7 +603,7 @@ void World_setFollowObject(VirtualMachine& machine, VirtualStackAccessor& access
    World* pworld = (World*) thisobject->getNativeObject();
 
    Actor* pentity = static_cast<Actor*>(accessor.getObject(1)->getNativeObject());
-   
+
    pworld->setFollowObject(pentity);
 }
 
@@ -612,7 +612,7 @@ void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
    World* pworld = (World*) thisobject->getNativeObject();
 
-   VirtualObjectReference& object = machine.instantiateNative("box2d.Box2DSimulator", &(Box2DSimulator&)pworld->getSimulator(), false);
+   VirtualObjectReference object = machine.instantiateNative("box2d.Box2DSimulator", &(Box2DSimulator&)pworld->getSimulator(), false);
 
    accessor.setResult(object);
 }
@@ -703,7 +703,7 @@ void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAcc
    Box2DSimulator* psimulator = (Box2DSimulator*) thisobject->getNativeObject();
 
    Box2DRevoluteJointDefinition* pjointdef = (Box2DRevoluteJointDefinition*) accessor.getObject(1)->getNativeObject();
-   
+
    psimulator->createRevoluteJoint(*pjointdef);
 }
 
@@ -713,7 +713,7 @@ void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& 
    Box2DBody* pbody = (Box2DBody*) thisobject->getNativeObject();
 
    InputForceGenerator* pgenerator = (InputForceGenerator*) accessor.getObject(1)->useNativeObject();
-   
+
    pbody->addForceGenerator(pgenerator);
 }
 
@@ -1027,7 +1027,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("ScriptManager_spawnChild", ScriptManager_spawnChild);
 
    registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
-   
+
    registrator.addCallback("BitStream_init", BitStream_init);
    registrator.addCallback("BitStream_writeInt", BitStream_writeInt);
    registrator.addCallback("BitStream_readInt", BitStream_readInt);
@@ -1058,7 +1058,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Vector2D_setX", Vector2D_setX);
    registrator.addCallback("Vector2D_getY", Vector2D_getY);
    registrator.addCallback("Vector2D_setY", Vector2D_setY);
-   
+
    registrator.addCallback("World_init", World_init);
    registrator.addCallback("World_getName", World_getName);
    registrator.addCallback("World_add", World_add);

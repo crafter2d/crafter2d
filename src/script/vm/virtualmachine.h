@@ -54,7 +54,7 @@ public:
    }
 
  // query
-   VirtualObjectReference getThis() const
+   VirtualObjectReference& getThis() const
    {
       return getObject(0);
    }
@@ -63,7 +63,7 @@ public:
       Variant& value = getArgument(argument);
       if ( !value.isInt() )
          throw std::exception();
-            
+
       return value.asInt();
    }
 
@@ -71,7 +71,7 @@ public:
       Variant& value = getArgument(argument);
       if ( !value.isReal() )
          throw std::exception();
-            
+
       return value.asReal();
    }
 
@@ -136,7 +136,7 @@ public:
 private:
    Variant& getArgument(int index) const {
       ASSERT(index <= mSize);
-      return mStack[mStack.size() - (mSize + 1) + index]; 
+      return mStack[mStack.size() - (mSize + 1) + index];
       // 0 1 2 3 -> ssize = 4; size = 3
       // index 0 -> 4 - 3 = 1
    }
@@ -244,19 +244,19 @@ private:
       int                              mInstructionPointer;
       int                              mStackBase;
    };
-   
+
    typedef std::stack<VirtualCall> CallStack;
    typedef std::map<std::string, callbackfnc> Natives;
    typedef std::map<void*, VirtualObjectReference> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
-   
+
  // execution
    void execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry);
    void execute(const VirtualClass& vclass, const VirtualInstruction& instruction);
 
    Variant pop();
-   
+
  // exception
    void throwException(const std::string& exceptionname, const std::string& reason = "");
    bool handleException(const VirtualException& exception);

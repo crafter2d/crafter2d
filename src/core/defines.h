@@ -22,9 +22,9 @@
 
 #include <cassert>
 
-#ifndef NULL
+#undef NULL
 #define NULL 0
-#endif
+//#endif
 
 // Uncomment next line to enable auto disconnecting after timeout
 //#define JENGINE_AUTODISCONNECT

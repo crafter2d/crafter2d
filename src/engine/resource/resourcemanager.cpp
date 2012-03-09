@@ -47,7 +47,7 @@ ResourceManager& ResourceManager::getInstance()
 }
 
 // - Initialization
-   
+
 bool ResourceManager::initialize()
 {
    if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
@@ -84,7 +84,7 @@ FontPtr ResourceManager::getFont(const std::string& name, int size)
    ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(name));
 	if ( phandle == NULL )
    {
-      AutoPtr<Font> font = new Font();
+      AutoPtr<UIFont> font = new UIFont();
       if ( !font.hasPointer() || !font->load(mFreeTypeLib, name, size) )
       {
          return FontPtr();

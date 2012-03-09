@@ -4,7 +4,7 @@
 
 #include <string>
 
-class Font;
+class UIFont;
 class Texture;
 
 class Graphics
@@ -18,14 +18,14 @@ public:
    void drawRoundedRect(int x, int y, int width, int height);
 	void drawText(int x, int y, const std::string& text);
    void drawTexture(const Texture& texture, int x, int y, int width, int height);
-	
+
    void translate(float x, float y);
 
-   void setFont(Font& font);
+   void setFont(UIFont& font);
    void setColor(float r, float g, float b, float a);
 
 private:
-   Font* mpFont;
+   UIFont* mpFont;
 };
 
 #endif // ENGINE_GRAPHICS_H_

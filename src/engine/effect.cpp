@@ -72,7 +72,7 @@ bool Effect::load(const std::string& file)
    TiXmlDocument doc(path);
 	if ( !doc.LoadFile() )
    {
-      log.error("Effect.load: can not load '%s'", file);
+      log.error("Effect.load: can not load '%s'", file.c_str());
 		return false;
 	}
 
@@ -80,7 +80,7 @@ bool Effect::load(const std::string& file)
 	const TiXmlElement* effect = static_cast<TiXmlElement*>(doc.FirstChild("effect"));
 	if ( effect == NULL )
    {
-		log.error("Effect.load: %s is not an effect file.", file);
+		log.error("Effect.load: %s is not an effect file.", file.c_str());
 		return false;
 	}
 
@@ -171,7 +171,7 @@ bool Effect::postprocessTextures ()
    for ( Stages::size_type s = 0; s < stages.size(); ++s)
    {
       stages[s].index = getPath().getUniformLocation(stages[s].uniform.c_str());
-      if (stages[s].index == -1) 
+      if (stages[s].index == -1)
       {
          Log::getInstance().error("Can not find %s", stages[s].uniform.c_str());
          return false;
@@ -202,7 +202,7 @@ bool Effect::processCode(const TiXmlElement& effect, const std::string& path)
    // get the code type
    CodePath::PathType pathtype = CodePath::ECG;
    const char* ptype = pcode_part->Attribute("type");
-   if ( _stricmp(ptype, "glsl") == 0 )
+   if ( strcasecmp(ptype, "glsl") == 0 )
    {
       pathtype = CodePath::EGLSL;
    }

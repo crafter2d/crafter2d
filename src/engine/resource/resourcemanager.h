@@ -28,10 +28,10 @@
 
 #include "engine/hashtable.h"
 
-class Font;
+class UIFont;
 class Texture;
 
-typedef ResourcePtr<Font> FontPtr;
+typedef ResourcePtr<UIFont> FontPtr;
 typedef ResourcePtr<Texture> TexturePtr;
 
 /**

@@ -22,6 +22,7 @@
 
 #include "engine/engine_base.h"
 
+#include <string>
 #include <vector>
 
 class GameWindowListener;

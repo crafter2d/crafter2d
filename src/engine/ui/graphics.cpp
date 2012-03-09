@@ -38,11 +38,11 @@ void Graphics::drawText(int x, int y, const std::string& text)
 {
    ASSERT_PTR(mpFont);
 
-   glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT); 
+   glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
    glMatrixMode(GL_MODELVIEW);
    glEnable(GL_TEXTURE_2D);
    glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
    float modelview_matrix[16];
    glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
@@ -83,7 +83,7 @@ void Graphics::translate(float x, float y)
    glTranslatef(x, y, 0);
 }
 
-void Graphics::setFont(Font& font)
+void Graphics::setFont(UIFont& font)
 {
    mpFont = &font;
 }

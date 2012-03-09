@@ -29,13 +29,13 @@
 #include "box2dbody.h"
 #include "box2drevolutejoint.h"
 
-// static 
+// static
 Vector Box2DSimulator::b2ToVector(const b2Vec2& b2)
 {
    return Vector(b2.x * 30, b2.y * 30);
 }
 
-// static 
+// static
 b2Vec2 Box2DSimulator::vectorToB2(const Vector& v)
 {
    return b2Vec2(v.x / 30, v.y / 30);
@@ -94,7 +94,7 @@ Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefini
 void Box2DSimulator::notifyWorldChanged()
 {
    b2Vec2 gravity(0, 9);
-   mpb2World = new b2World(gravity, true);
+   mpb2World = new b2World(gravity);
    mpb2World->SetContactListener(&mContactListener);
 
    const Bounds& bounds = getWorld().getBounds();
@@ -109,8 +109,8 @@ void Box2DSimulator::notifyWorldChanged()
       def.userData = const_cast<Bound*>(&bound);
       b2Body* pbody = mpb2World->CreateBody(&def);
 
-      b2PolygonShape ground;
-      ground.SetAsEdge(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
+      b2EdgeShape ground;
+      ground.Set(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
 
       b2FixtureDef fixturedef;
       fixturedef.shape    = &ground;

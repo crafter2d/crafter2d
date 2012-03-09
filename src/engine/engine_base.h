@@ -20,10 +20,14 @@
 #ifndef ENGINE_BASE_H_
 #define ENGINE_BASE_H_
 
+#ifdef WIN32
 #ifdef ENGINE_EXPORTS
 #define ENGINE_API __declspec(dllexport)
 #else
 #define ENGINE_API __declspec(dllimport)
+#endif
+#else
+#define ENGINE_API
 #endif
 
 #endif // ENGINE_BASE_H_

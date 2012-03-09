@@ -37,6 +37,7 @@
 #ifdef WIN32
 #include <ws2tcpip.h>
 #else
+#include <unistd.h>
 #include <fcntl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -72,14 +73,14 @@ NetConnection::~NetConnection()
 /// socket functions can be used.
 ///
 /// Windows platforms use the Winsock 2 library for sockets. Before any socket operation
-/// can be performed the library must be initialized. Initialization is done in this 
+/// can be performed the library must be initialized. Initialization is done in this
 /// function, were also is ensured that version 2.2 is supported.
 bool NetConnection::initialize()
 {
    WORD wVersionRequested;
    WSADATA wsaData;
    int err;
-    
+
    wVersionRequested = MAKEWORD( 2, 2 );
    err = WSAStartup( wVersionRequested, &wsaData );
    if ( err != 0 )
@@ -88,7 +89,7 @@ bool NetConnection::initialize()
       return false;
    }
 
-   if ( LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 ) 
+   if ( LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 )
    {
       Log::getInstance().error("WinSock 2.2 is not supported.");
       WSACleanup( );
@@ -127,7 +128,7 @@ bool NetConnection::create(int port)
       sa.sin_port = htons(port);
       sa.sin_addr.s_addr = htonl(INADDR_ANY);
 
-      if ( bind (sock, (sockaddr*)&sa, sizeof(sa)) < 0 ) 
+      if ( bind (sock, (sockaddr*)&sa, sizeof(sa)) < 0 )
       {
          Log::getInstance().error("Could not bind socket to port %d.", port);
          return false;
@@ -228,7 +229,7 @@ void NetConnection::update()
 
    // resend messages if necessary
    AdressList::iterator it = clients.begin();
-   for(int i = 0; it != clients.end(); ++it, ++i) 
+   for(int i = 0; it != clients.end(); ++it, ++i)
    {
       NetAddress* pclient = (*it);
 
@@ -246,11 +247,11 @@ void NetConnection::update()
          delete pclient;
          pclient = NULL;
       }
-      else 
+      else
 #endif
       {
          PackageQueue::iterator pit = pclient->resendQueue.begin();
-         for (; pit != pclient->resendQueue.end(); ++pit) 
+         for (; pit != pclient->resendQueue.end(); ++pit)
          {
             NetPackage& package = *(*pit);
             const float tick = timer.getTick();
@@ -518,7 +519,7 @@ bool NetConnection::addNewClient(NetAddress& address)
          clients[i] = addr;
          clientid = i;
       }
-      else 
+      else
       {
          clients.push_back(addr);
          clientid = clients.size()-1;
@@ -603,7 +604,7 @@ void NetConnection::removePackageFromResendQueue(NetAddress& client, uint packag
 }
 
 /// \fn NetConnection::insertOrderedPackage(NetAddress& client, const NetPackage& package)
-/// \brief Inserts a package in the order list for a client. We assume that the clientid 
+/// \brief Inserts a package in the order list for a client. We assume that the clientid
 /// contains the right index to the client for which this package was meant
 void NetConnection::insertOrderedPackage(NetAddress& client, const NetPackage& package)
 {

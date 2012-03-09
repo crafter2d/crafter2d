@@ -22,6 +22,7 @@
 #  include "shader.inl"
 #endif
 
+#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <GL/glu.h>
@@ -161,7 +162,7 @@ VertexShader::VertexShader()
 FragmentShader::FragmentShader()
 {
 	handle( glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB) );
-	if ( handle() == NULL ) 
+	if ( handle() == NULL )
    {
       Log::getInstance().error("FragmentShader: Can not create shader object.");
    }
@@ -194,7 +195,7 @@ ShaderObject::~ ShaderObject()
 bool ShaderObject::create()
 {
 	program = glCreateProgramObjectARB();
-	if ( program == NULL ) 
+	if ( program == NULL )
    {
       Log::getInstance().error("ShaderObject.create: Could not create program object.");
 		return false;

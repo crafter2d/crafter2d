@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <assert.h>
+#include <string.h>
+
 #include "core/defines.h"
 
 /******************************************************
@@ -57,7 +59,7 @@ NetAddress::NetAddress(sockaddr_in adr):
 
 INLINE void NetConnection::setAccepting(bool a)
 {
-   accept = a; 
+   accept = a;
 }
 
 INLINE void NetConnection::setClientId(const int client)
@@ -66,21 +68,21 @@ INLINE void NetConnection::setClientId(const int client)
 }
 
 INLINE int NetConnection::getClientId()
-{ 
-   return clientid; 
+{
+   return clientid;
 }
 
-INLINE bool NetConnection::isConnected() 
-{ 
+INLINE bool NetConnection::isConnected()
+{
    return connected;
 }
 
-INLINE void NetConnection::setSendAliveMessages(bool yes) 
+INLINE void NetConnection::setSendAliveMessages(bool yes)
 {
-   mSendAliveMsg = yes; 
+   mSendAliveMsg = yes;
 }
 
-INLINE 
+INLINE
 const NetAddress& NetConnection::resolveClient(int idx) const
 {
    ASSERT(idx >= 0 && idx < clients.size())

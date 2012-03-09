@@ -53,9 +53,9 @@ Actor::Actor():
    halfX(.0f),
    halfY(.0f),
    angle(.0f),
-   dir(true),
    radius(.0f),
-	visible(true),
+   visible(true),
+   dir(true),
    mStatic(false)
 {
 }
@@ -96,7 +96,7 @@ void Actor::doUpdateClient(float delta)
 {
    // perform client side predictions
    if ( mpAnimator != NULL )
-      mpAnimator->animate(delta);  
+      mpAnimator->animate(delta);
 }
 
 /*!

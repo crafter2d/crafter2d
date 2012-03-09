@@ -27,7 +27,7 @@
 
 #define CHECK_ERROR(msg) if ( error != 0 ) return false
 
-Font::Font():
+UIFont::UIFont():
    Resource(),
    mFace(NULL),
    mCharacters(),
@@ -39,7 +39,7 @@ Font::Font():
 
 // - Initialization
 
-bool Font::load(FT_Library lib, const std::string& name, int size)
+bool UIFont::load(FT_Library lib, const std::string& name, int size)
 {
    FT_Error error = FT_New_Face(lib, name.c_str(), 0, &mFace);
 	CHECK_ERROR("Not valid!");
@@ -47,7 +47,7 @@ bool Font::load(FT_Library lib, const std::string& name, int size)
 
    if ( mFace->charmap == 0 && mFace->num_charmaps > 0 )
       FT_Select_Charmap(mFace, mFace->charmaps[0]->encoding );
- 
+
 	FT_Set_Char_Size(mFace, 0, size << 6, 96, 96);
 
    if ( !FT_IS_SCALABLE(mFace) )
@@ -57,7 +57,7 @@ bool Font::load(FT_Library lib, const std::string& name, int size)
       FT_BBox textsize3 = measure('g');
 
       int max = textsize1.yMax > textsize2.yMax ? textsize1.yMax : textsize2.yMax;
-      
+
       mWidth      = textsize1.xMax >> 6;
       mHeight     = (max - textsize3.yMin) >> 6;
       mBaseHeight = mHeight + (textsize3.yMin >> 6);
@@ -74,7 +74,7 @@ bool Font::load(FT_Library lib, const std::string& name, int size)
    return true;
 }
 
-void Font::destroy()
+void UIFont::destroy()
 {
    FT_Done_Face(mFace);
    mFace = NULL;
@@ -82,7 +82,7 @@ void Font::destroy()
 
 // - Loading
 
-FontChar* Font::loadGlyph(char character)
+FontChar* UIFont::loadGlyph(char character)
 {
    ASSERT_PTR(mFace);
 
@@ -115,7 +115,7 @@ FontChar* Font::loadGlyph(char character)
 
    ASSERT_PTR(pfontchar);
    pfontchar->fromBitmap(bitmap_glyph->bitmap);
-   
+
    mCharacters[character] = pfontchar;
 
    FT_Done_Glyph(glyph);
@@ -124,15 +124,15 @@ FontChar* Font::loadGlyph(char character)
 }
 
 // - Query
-   
-int Font::getBaseLine() const
+
+int UIFont::getBaseLine() const
 {
    return mBaseHeight;
 }
 
 // - Size calculation
 
-int Font::getTextWidth(const std::string& text) const
+int UIFont::getTextWidth(const std::string& text) const
 {
    int result = 0;
    FontChar* pfontchar = NULL;
@@ -143,7 +143,7 @@ int Font::getTextWidth(const std::string& text) const
       Characters::const_iterator it = mCharacters.find(character);
       if ( it == mCharacters.end() )
       {
-         pfontchar = const_cast<Font*>(this)->loadGlyph(character);
+         pfontchar = const_cast<UIFont*>(this)->loadGlyph(character);
       }
       else
       {
@@ -156,14 +156,14 @@ int Font::getTextWidth(const std::string& text) const
    return result;
 }
 
-int Font::getTextHeight(const std::string& text) const
+int UIFont::getTextHeight(const std::string& text) const
 {
    return mHeight;
 }
 
 // - Rendering
 
-void Font::render(const std::string& text)
+void UIFont::render(const std::string& text)
 {
    FontChar* pfontchar = NULL;
 
@@ -186,23 +186,23 @@ void Font::render(const std::string& text)
 
 // - Helpers
 
-FT_BBox Font::measure(char c)
+FT_BBox UIFont::measure(char c)
 {
    FT_BBox bbox;
 
    bbox.xMin = bbox.yMin = bbox.xMax = bbox.yMax = 0;
 
    // For starters, just get the unscaled glyph bounding box
- 
+
    FT_UInt glyph_index = FT_Get_Char_Index(mFace, c );
-   if ( glyph_index == 0 ) 
+   if ( glyph_index == 0 )
       return bbox;
 
    FT_Error error = FT_Load_Glyph(mFace, glyph_index, FT_LOAD_DEFAULT);
- 
+
    if ( error != 0 )
       return bbox;
- 
+
    FT_Glyph glyph;
    error = FT_Get_Glyph(mFace->glyph, &glyph );
    if ( error != 0 )
@@ -210,6 +210,6 @@ FT_BBox Font::measure(char c)
 
    FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_GRIDFIT, &bbox );
    FT_Done_Glyph( glyph );
- 
+
    return bbox;
 }

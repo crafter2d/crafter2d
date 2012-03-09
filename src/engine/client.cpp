@@ -23,7 +23,7 @@
 #endif
 
 #include <GL/GLee.h>
-#include <GL/GLU.h>
+#include <GL/glu.h>
 
 #include "core/defines.h"
 #include "core/smartptr/autoptr.h"
@@ -273,7 +273,7 @@ int Client::onClientEvent(int client, const NetEvent& event)
       case connectReplyEvent:
          {
             const ConnectReplyEvent& crevent = dynamic_cast<const ConnectReplyEvent&>(event);
-            handleConnectReplyEvent(crevent);           
+            handleConnectReplyEvent(crevent);
             break;
          };
       case joinEvent:
@@ -311,20 +311,20 @@ int Client::onClientEvent(int client, const NetEvent& event)
             handleNewObjectEvent(newobjectevent);
             break;
          }
-      case delobjectEvent: 
+      case delobjectEvent:
          {
             const DeleteObjectEvent& delobjectevent = dynamic_cast<const DeleteObjectEvent&>(event);
             handleDeleteObjectEvent(delobjectevent);
             break;
          }
-      case updobjectEvent: 
+      case updobjectEvent:
          {
             const UpdateObjectEvent& updateobjectevent = dynamic_cast<const UpdateObjectEvent&>(event);
             handleUpdateObjectEvent(updateobjectevent);
             break;
          }
    }
-   
+
    return 0;
 }
 
@@ -396,7 +396,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
    ASSERT(hasWorld());
 
    // a new object has been made on the server and is now also known on the client
-   
+
    AutoPtr<Entity> entity = getContentManager().loadEntity(event.getFileName());
    if ( !entity.hasPointer() )
    {
@@ -415,7 +415,7 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
       }
       pparent->add(*entity);
    }
-  
+
    // remove the request
    Requests::iterator it = mRequests.find(entity->getId());
    if ( it != mRequests.end() )
