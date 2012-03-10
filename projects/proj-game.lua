@@ -8,7 +8,7 @@ project "Game"
 	targetdir "bin"
 	flags { "NoPCH" }
 	location "build/game"
-	--debugdir "bin"
+	debugdir "bin"
 	
 -- set project files
 files { "src/game/**.cpp", "src/game/**.h", "src/game/**.inl" }

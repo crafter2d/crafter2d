@@ -54,6 +54,10 @@ typedef void*           handle;
 #  define MAX(x,y) ( x>y ? x : y )
 #endif
 
+#ifdef LINUX
+#define stricmp strcasecmp
+#endif
+
 #define IS_SET(container,flag)((container & flag) == flag)
 #define SET_FLAG(container,flag)   container |= flag
 #define CLEAR_FLAG(container,flag) container &= ~flag

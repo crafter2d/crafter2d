@@ -82,6 +82,7 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
 {
    ScopedScope scope(mScopeStack);
    ScopedValue<ASTFunction*> scopedfunction(&mpFunction, &ast, mpFunction);
+   ASSERT_PTR(mpFunction);
 
    visitChildren(ast); // <-- arguments
 
@@ -745,11 +746,13 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                   {
                      const ASTVariable& var = pfield->getVariable();
 
-                     if ( mpFunction->getModifiers().isStatic() && !var.getModifiers().isStatic() )
+                     // if in a function (not the case for member intialization) check if we aren't accessing
+                     // none static members from a static function.
+                     if ( mpFunction != NULL && (mpFunction->getModifiers().isStatic() && !var.getModifiers().isStatic()) )
                      {
                         mContext.getLog().error("Can not access instance member " + var.getName());
                      }
-
+                     
                      // variable access on current class
                      ast.setAccess(ASTAccess::eField);
                      ast.setVariable(pfield->getVariable());

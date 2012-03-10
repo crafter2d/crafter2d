@@ -53,12 +53,12 @@ if ( os.is("windows") ) then
 		configuration "Debug"
 			links { "GLee_d", "SOIL_d", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"minizip_d", "zlib1", "box2d_d", "freetype242MT_D", "tinyxmld_STL" } 
+					"zlib1", "box2d_d", "freetype242MT_D", "tinyxmld_STL" } 
 		 
 		configuration "Release"
 			links { "GLee_d", "SOIL", "mingw32", "SDL", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "OpenAL32", "ALut", "cg", "cgGL", "ilu", "vorbisfile",
-					"minizip", "zlib1", "box2d", "freetype242MT", "tinyxml_STL" }
+					"zlib1", "box2d", "freetype242MT", "tinyxml_STL" }
 
 	else
 		includedirs { path.join(libdir, "devil/include") }
@@ -69,11 +69,11 @@ if ( os.is("windows") ) then
 		
 		configuration "Debug"
 			links { "GLee_d", "box2d_d", "soil_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
-	                "minizip_d", "freetype242MT_D" }
+	                "freetype242MT_D" }
 					
 		configuration "Release"
 			links { "GLee", "box2d", "soil", "vorbisfile", "tinyxml_STL", "zlib1", 
-					"minizip", "freetype242MT" }
+					"freetype242MT" }
    end -- win32
    
 elseif ( os.is("linux") ) then
@@ -87,7 +87,7 @@ elseif ( os.is("linux") ) then
 	
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL", "openal", "alut",
-           "png", "vorbisfile", "tinyxml", "minizip", "freetype", "box2d" }
+           "png", "vorbisfile", "tinyxml", "freetype", "box2d" }
 
 end
 

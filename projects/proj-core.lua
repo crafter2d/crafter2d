@@ -40,21 +40,21 @@ if ( os.is("windows") ) then
 		configuration "Debug"
 			links { "GLee_d", "mingw32", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32",  "cg", "cgGL",
-					"minizip_d", "zlib1", "tinyxmld_STL"  } 
+					"zlib1", "tinyxmld_STL"  } 
 		 
 		configuration "Release"
 			links { "GLee_d", "SOIL", "mingw32", "opengl32", "glu32", "gdi32", 
 					"user32", "vfw32", "ws2_32", "cg", "cgGL",
-					"minizip", "zlib1", "tinyxml_STL"  } 
+					"zlib1", "tinyxml_STL"  } 
 	else
 
 	links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL", "icuuc" }
 		
 		configuration "Debug"
-			links { "GLee_d", "tinyxmld_STL", "zlib1_d", "minizip_d" }
+			links { "GLee_d", "tinyxmld_STL", "zlib1_d" }
 					
 		configuration "Release"
-			links { "GLee", "tinyxml_STL", "zlib1", "minizip" }
+			links { "GLee", "tinyxml_STL", "zlib1" }
 	end
 elseif ( os.is("linux") ) then
 

@@ -14,7 +14,7 @@ class GameClient extends Client
 	{
 		if ( super.create() )
 		{			
-			// MessageBox.showInformation("This is a messagebox!");
+			MessageBox.showInformation("This is a messagebox!");
 			
 			return true;
 		}

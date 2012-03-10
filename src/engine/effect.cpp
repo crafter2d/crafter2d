@@ -202,7 +202,7 @@ bool Effect::processCode(const TiXmlElement& effect, const std::string& path)
    // get the code type
    CodePath::PathType pathtype = CodePath::ECG;
    const char* ptype = pcode_part->Attribute("type");
-   if ( strcasecmp(ptype, "glsl") == 0 )
+   if ( stricmp(ptype, "glsl") == 0 )
    {
       pathtype = CodePath::EGLSL;
    }

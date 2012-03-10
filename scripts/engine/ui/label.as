@@ -40,7 +40,6 @@ class Label extends Widget
 	
 	protected void paintBackground(Graphics graphics)
 	{
-		// super.paintBackground(graphics);
 	}
 	
 	protected void paintWidget(Graphics graphics)
