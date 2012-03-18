@@ -28,7 +28,7 @@
 #include <math.h>
 #include <GL/GLee.h>
 #include <GL/glu.h>
-#include <SOIL.h>
+#include <SOIL/SOIL.h>
 
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"

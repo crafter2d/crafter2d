@@ -66,6 +66,8 @@ elseif ( os.is("linux") ) then
 	end
 
 	excludes { "src/core/vfs/win*.*", "src/core/system/win*.*", "src/core/vfs/zip/*32.*" }
+	
+	links { "icuuc" }
 		
 end
 

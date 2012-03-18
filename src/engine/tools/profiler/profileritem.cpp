@@ -19,6 +19,9 @@
  ***************************************************************************/
 #include "profileritem.h"
 
+#include <cstdio>
+#include <cstring>
+
 #include "core/defines.h"
 
 #include "core/system/timer.h"

@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "textureloaderdevil.h"
 
+#include <cstring>
 #include <IL/il.h>
 #include <IL/ilu.h>
 

@@ -44,7 +44,7 @@ public:
    void render();
 
 private:
-   friend class Font;
+   friend class UIFont;
 
    int            mLeft;
    int            mTop;

@@ -20,6 +20,7 @@
 #include "worldversion1reader.h"
 
 #include <iostream>
+#include <cstring>
 
 #include "core/log/log.h"
 

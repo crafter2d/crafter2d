@@ -87,7 +87,7 @@ elseif ( os.is("linux") ) then
 	
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 	links { "SDL", "GL", "GLU", "GLee", "Cg", "CgGL", "openal", "alut",
-           "png", "vorbisfile", "tinyxml", "freetype", "box2d" }
+           "png", "vorbisfile", "tinyxml", "freetype", "Box2D", "SOIL", "IL", "ILU" }
 
 end
 

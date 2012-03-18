@@ -19,6 +19,9 @@
  ***************************************************************************/
 #include "vertexprogram.h"
 
+#include <cstring>
+#include <cstdlib>
+
 #include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
 
@@ -40,7 +43,7 @@ VertexProgram::~VertexProgram()
 
 void VertexProgram::release ()
 {
-   if ( program != NULL ) 
+   if ( program != NULL )
    {
       glDeleteProgramsARB (1, &program);
       program = 0;
@@ -99,7 +102,7 @@ bool VertexProgram::compile(const char* code, int length)
    save(code, length);
 
    glGenProgramsARB(1, &program);
-   if ( program == 0 ) 
+   if ( program == 0 )
    {
       Log::getInstance().error( "VertexProgram.compile(): Can not create a program." );
       return false;
@@ -107,7 +110,7 @@ bool VertexProgram::compile(const char* code, int length)
 
    glBindProgramARB (GL_VERTEX_PROGRAM_ARB, program);
    glProgramStringARB (GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, length, source);
-	
+
    if ( glGetError() == GL_INVALID_OPERATION )
    {
       GLint pos;
@@ -119,7 +122,7 @@ bool VertexProgram::compile(const char* code, int length)
       release();
       return false;
    }
-	
+
    return true;
 }
 
@@ -161,7 +164,7 @@ GLint VertexProgram::getUniformLocation (const char* name) const
         num += *pos;
         ++pos;
      }
-     
+
      // convert the n to a number
      return (GLint)atoi (num.c_str());
 	}

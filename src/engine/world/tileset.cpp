@@ -66,7 +66,7 @@ bool TileSet::create(const std::string& filename)
    TiXmlDocument doc(path);
    if ( !doc.LoadFile() )
    {
-      log.error("TileSet.create: can not load '%s'", filename);
+      log.error("TileSet.create: can not load '%s'", filename.c_str());
 		return false;
 	}
 
@@ -74,14 +74,14 @@ bool TileSet::create(const std::string& filename)
    TiXmlElement* set = (TiXmlElement*)doc.FirstChild("tileset");
    if ( set == NULL )
    {
-      log.error("TileSet.create: %s is not an tileset information file.", filename);
+      log.error("TileSet.create: %s is not an tileset information file.", filename.c_str());
 		return false;
    }
 
    set->QueryIntAttribute("count", &mTileCount);
    if ( mTileCount <= 0 )
    {
-      log.error("TileSet.create: %s contains invalid tileset size.", filename);
+      log.error("TileSet.create: %s contains invalid tileset size.", filename.c_str());
       return false;
    }
    mTileCount ++; // tile engine starts at 1
@@ -91,7 +91,7 @@ bool TileSet::create(const std::string& filename)
 
    if ( mTileWidth == 0 || mTileHeight == 0 )
    {
-      log.error("TileSet.create: invalid tile dimensions (in file %s)", filename);
+      log.error("TileSet.create: invalid tile dimensions (in file %s)", filename.c_str());
       return false;
    }
 

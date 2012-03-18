@@ -33,6 +33,18 @@ if ( os.is("windows") ) then
 			
 	configuration "Release"
 		links { "GLee", "tinyxml_STL" }
+elseif ( os.is("linux") ) then
+	
+	buildoptions { "-W", "-Wall", "-O0" }
+	if ( _ACTION == "cb-gcc" ) then
+		linkoptions { "-Xlinker", "-zmuldefs" }
+	end
+   
+	defines { "LINUX" }
+	
+	links { "SDL", "tinyxml" }
+
+end
 end
 
 configuration "Debug"
