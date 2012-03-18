@@ -1,6 +1,7 @@
 
 #include "compiler.h"
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 
@@ -25,7 +26,7 @@
 /// Compilation will be split up in two phases in order to support multiple files to point to each other.
 /// During this change the usage of the use keyword will also change. These will be stored in a table and
 /// be used as a full path for the class. The first 'use' that matches, will be used to load the class.
-/// 
+///
 /// 1e Phase: load AST of all required classes -> SymbolCollectorStep becomes phase 1
 /// 2e Phase: compile each class that is loaded -> Other steps are part of phase 2
 ///
@@ -117,7 +118,7 @@ bool Compiler::compile(const std::string& classname)
             pclass = sorted[index];
             if ( performSteps(*pclass, mCompileSteps) )
             {
-               
+
                if ( hasCallback() )
                {
                   mpCallback->notify(mContext.getResult());
@@ -173,7 +174,7 @@ bool Compiler::performSteps(ASTNode& node, Steps& steps)
          return false;
       }
    }
-   
+
    return true;
 }
 
@@ -184,6 +185,7 @@ bool Compiler::load(const std::string& classname)
    String name(classname.c_str());
    name.replace('.', '/');
    std::string filename = name.toStdString() + ".as";
+   std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
    try
    {

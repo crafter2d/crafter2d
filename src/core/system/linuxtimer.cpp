@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,20 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "linuxplatform.h"
-
 #include "linuxtimer.h"
 
-LinuxPlatform::LinuxPlatform():
-   Platform()
+#include <SDL/SDL_timer.h>
+
+LinuxTimer::LinuxTimer():
+   Timer()
 {
+
 }
 
-LinuxPlatform::~LinuxPlatform()
+// - Overloads
+
+TimerData* LinuxTimer::createData() const
 {
+   return 0;
 }
 
-Timer* LinuxPlatform::createTimer()
+void LinuxTimer::releaseData(TimerData*& pdata)
 {
-   return new LinuxTimer();
+
+}
+
+void LinuxTimer::start(TimerData& info)
+{
+
+}
+
+float LinuxTimer::getInterval(const TimerData& info)
+{
+   return 0;
 }
