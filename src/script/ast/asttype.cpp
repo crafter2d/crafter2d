@@ -148,7 +148,7 @@ const ASTType& ASTType::getArrayType() const
    return *mpArrayType;
 }
 
-ASTType& ASTType::getArrayType() 
+ASTType& ASTType::getArrayType()
 {
    ASSERT(isArray());
    ASSERT_PTR(mpArrayType);
@@ -286,7 +286,7 @@ bool ASTType::greater(const ASTType& that) const
       {
          return false;
       }
-      
+
       return getObjectClass().isBase(thatclass) || getObjectClass().isImplementing(thatclass);
    }
    else if ( isArray() && that.isArray() )
@@ -297,7 +297,7 @@ bool ASTType::greater(const ASTType& that) const
    {
       if ( that.isObject() )
       {
-          return that.getObjectName() == "System.Object"; // object is greater than a generic (its da uber type)
+          return that.getObjectName() == "system.Object"; // object is greater than a generic (its da uber type)
       }
       else if ( that.isGeneric() )
       {
@@ -310,7 +310,7 @@ bool ASTType::greater(const ASTType& that) const
       {
          case eBoolean:
             return mKind == eBoolean;
-            
+
          case eInt:
             return mKind == eInt;
 
@@ -381,7 +381,7 @@ bool ASTType::resolveType(CompileContext& context, const ASTClass& aclass)
    }
    else if ( mKind == eArray )
    {
-      mpObjectClass = &context.resolveClass("System.InternalArray");
+      mpObjectClass = &context.resolveClass("system.InternalArray");
       return mpArrayType->resolveType(context, aclass);
    }
 
@@ -404,7 +404,7 @@ ASTType* ASTType::clone() const
 }
 
 // - Conversion
-   
+
 std::string ASTType::toString() const
 {
    std::string type;

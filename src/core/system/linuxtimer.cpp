@@ -21,6 +21,11 @@
 
 #include <SDL/SDL_timer.h>
 
+#include "timerdataimpl.h"
+
+#define TIMERDATA(var,data)   TimerDataImpl<Uint32>& var = static_cast<TimerDataImpl<Uint32>&>(data)
+#define CTIMERDATA(var,data)  const TimerDataImpl<Uint32>& var = static_cast<const TimerDataImpl<Uint32>&>(data)
+
 LinuxTimer::LinuxTimer():
    Timer()
 {
@@ -31,20 +36,31 @@ LinuxTimer::LinuxTimer():
 
 TimerData* LinuxTimer::createData() const
 {
-   return 0;
+   return new TimerDataImpl<Uint32>();
 }
 
 void LinuxTimer::releaseData(TimerData*& pdata)
 {
+   TimerDataImpl<Uint32>* pmydata = static_cast< TimerDataImpl<Uint32>* >(pdata);
 
+   delete pmydata;
+   pdata = NULL;
 }
 
 void LinuxTimer::start(TimerData& info)
 {
-
+   TIMERDATA(data, info);
+   Uint32& start = data.getData();
+   start = SDL_GetTicks();
 }
 
 float LinuxTimer::getInterval(const TimerData& info)
 {
-   return 0;
+   CTIMERDATA(data, info);
+   return (SDL_GetTicks() - data.getData()) / 1000.0f;
+}
+
+float LinuxTimer::getTick() const
+{
+   return SDL_GetTicks() / 1000;
 }

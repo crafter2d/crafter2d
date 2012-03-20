@@ -15,7 +15,7 @@ VirtualClassTable::VirtualClassTable():
 }
 
 // - Query
-   
+
 bool VirtualClassTable::contains(const std::string& name) const
 {
    return find(name) != NULL;

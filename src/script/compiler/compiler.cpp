@@ -1,7 +1,6 @@
 
 #include "compiler.h"
 
-#include <algorithm>
 #include <iostream>
 #include <fstream>
 
@@ -185,7 +184,6 @@ bool Compiler::load(const std::string& classname)
    String name(classname.c_str());
    name.replace('.', '/');
    std::string filename = name.toStdString() + ".as";
-   std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
    try
    {

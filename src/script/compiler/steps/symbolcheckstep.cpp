@@ -35,8 +35,8 @@
 
 /*
 
-ScopedTable : 
-- when entering a block add push scope 
+ScopedTable :
+- when entering a block add push scope
 - leaving block pop scope
 
 Member variables are at top level scope
@@ -103,7 +103,7 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
    {
       mContext.getLog().error("Function " + mpClass->getName() + "." + ast.getName() + " requires a body.");
    }
-   
+
    mCurrentType.clear();
 }
 
@@ -258,7 +258,7 @@ void SymbolCheckVisitor::visit(ASTSwitch& ast)
 {
    ast.getExpression().accept(*this);
    ast.setType(mCurrentType.clone());
-   
+
    if ( ast.getDefaultCount() > 1 )
    {
       mContext.getLog().error("Too many 'default' statements in switch statement (one is max).");
@@ -337,7 +337,7 @@ void SymbolCheckVisitor::visit(ASTCatch& ast)
    bool ok = type.isObject();
    if ( ok )
    {
-      ASTClass* pthrowable = mContext.findClass("System.Throwable");
+      ASTClass* pthrowable = mContext.findClass("system.Throwable");
       if ( pthrowable != NULL )
       {
          if ( !var.getType().getObjectClass().isBase(*pthrowable) )
@@ -365,7 +365,7 @@ void SymbolCheckVisitor::visit(ASTThrow& ast)
 
    if ( mCurrentType.isObject() )
    {
-      const ASTClass* pthrowable = mContext.findClass("System.Throwable");
+      const ASTClass* pthrowable = mContext.findClass("system.Throwable");
       if ( !mCurrentType.getObjectClass().isBase(*pthrowable) )
       {
          mContext.getLog().error("Throw expression object must be derived from Throwable.");
@@ -709,7 +709,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
 
                   const ASTType& type = var.getType();
                   if ( type.isGeneric() )
-                  {                     
+                  {
                      const ASTTypeVariable& typevariable = type.getTypeVariable();
                      mCurrentType = mCurrentType.getTypeArguments()[typevariable.getIndex()];
                   }
@@ -732,7 +732,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                {
                   ast.setAccess(ASTAccess::eLocal);
                   ast.setVariable(pvariable->getVariable());
-                  
+
                   mCurrentType = pvariable->getType();
                }
                else
@@ -752,7 +752,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                      {
                         mContext.getLog().error("Can not access instance member " + var.getName());
                      }
-                     
+
                      // variable access on current class
                      ast.setAccess(ASTAccess::eField);
                      ast.setVariable(pfield->getVariable());
@@ -788,7 +788,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                      break;
                   case ASTType::eArray:
                      {
-                        const ASTClass& arrayclass = mContext.resolveClass("System.InternalArray");
+                        const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
                         checkFunctionAccess(arrayclass, ast, wasstatic);
                      }
                      break;
@@ -857,8 +857,8 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
 
             mCurrentType.clear();
             mCurrentType.setKind(ASTType::eObject);
-            mCurrentType.setObjectName("System.Class");
-            mCurrentType.setObjectClass(mContext.resolveClass("System.Class"));
+            mCurrentType.setObjectName("system.Class");
+            mCurrentType.setObjectClass(mContext.resolveClass("system.Class"));
          }
          break;
 

@@ -56,7 +56,7 @@ bool CodeGeneratorVisitor::performStep(ASTNode& node)
    mLineNr = 0;
 
    ((const ASTNode&)node).accept(*this);
-   
+
    mContext.setResult(mpVClass);
 
    mpVClass->setDefinition(const_cast<ASTClass*>(mpClass));
@@ -106,7 +106,7 @@ void CodeGeneratorVisitor::convertLabels()
          Inst& inst = mInstructions[index];
 
          VirtualInstruction::Instruction instruction = (VirtualInstruction::Instruction)inst.instruction;
-         if ( instruction == VirtualInstruction::eJump 
+         if ( instruction == VirtualInstruction::eJump
            || instruction == VirtualInstruction::eJumpTrue
            || instruction == VirtualInstruction::eJumpFalse
            || instruction == VirtualInstruction::eEnterGuard
@@ -114,7 +114,7 @@ void CodeGeneratorVisitor::convertLabels()
          {
             int labelindex = findLabel(inst.arg);
             ASSERT(labelindex != mInstructions.size());
-            
+
             const Inst& labelinst = mInstructions[labelindex];
             inst.arg = labelinst.linenr - firstline;
          }
@@ -142,7 +142,7 @@ void CodeGeneratorVisitor::addInstruction(int instruction, int argument)
    inst.instruction = instruction;
    inst.arg         = argument;
    inst.linenr      = mLineNr++;
-   
+
    mInstructions.push_back(inst);
 }
 
@@ -152,7 +152,7 @@ void CodeGeneratorVisitor::addLabel(int id)
    inst.instruction = labelID;
    inst.arg         = id;
    inst.linenr      = mLineNr;
-   
+
    mInstructions.push_back(inst);
 }
 
@@ -202,12 +202,12 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
 
    // base class should be set by the VM
    // we don't register the member variables, as they must be loaded/stored differently than locals
-   
+
    handleStaticBlock(ast);
    handleFieldBlock(ast);
    handleClassObject(ast);
 
-   // maybe we should also let the loader fill in the virtual function table... 
+   // maybe we should also let the loader fill in the virtual function table...
    // so for now just compile the functions
 
    const FunctionTable& table = ast.getFunctionTable();
@@ -281,7 +281,7 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       ScopedScope scope(mScopeStack);
 
       const ASTFunction* pinterfacefnc = mpClass->findInterfaceFunction(ast);
-      
+
       VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
       pentry->mName = ast.getName();
       pentry->mInstruction = mInstructions.empty() ? 0 : mInstructions.back().linenr + 1;
@@ -292,7 +292,7 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       mpVClass->getVirtualFunctionTable().append(pentry);
 
       mpFunction = &ast;
-      
+
       // reserve space on the stack for arguments & local variables
       int varcount = ast.getLocalVariableCount();
       if ( varcount > 1 )
@@ -341,7 +341,7 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
       mCurrentType.clear();
 
       var.getExpression().accept(*this);
-      
+
       addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
    }
 
@@ -437,7 +437,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       addInstruction(VirtualInstruction::eInt0);
       addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
 
-      const ASTClass& arrayclass = mContext.resolveClass("System.InternalArray");
+      const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
       const ASTField* pfield = arrayclass.findField("length", ASTClass::eLocal);
 
       // check for the size ( index < array.length )
@@ -487,7 +487,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       addInstruction(VirtualInstruction::ePush, 1);
       addInstruction(VirtualInstruction::eCall, phasnext->getResourceIndex());
       addInstruction(VirtualInstruction::eJumpFalse, flow.end);
-   
+
       // store the next item from the list
       addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
       addInstruction(VirtualInstruction::ePush, 1);
@@ -724,13 +724,13 @@ void CodeGeneratorVisitor::visit(const ASTAssert& ast)
    ast.getCondition().accept(*this);
 
    int labelend = allocateLabel();
-   int errorlit = allocateLiteral("System.AssertionError");
+   int errorlit = allocateLiteral("system.AssertionError");
 
    addInstruction(VirtualInstruction::eJumpTrue, labelend);
    addInstruction(VirtualInstruction::ePush, errorlit);
    addInstruction(VirtualInstruction::eNew, -1);
    addInstruction(VirtualInstruction::eThrow);
-   
+
    addLabel(labelend);
 }
 
@@ -790,7 +790,7 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
    {
       mpExpression = &ast;
       mNeedPop = true;
-      
+
       ast.getLeft().accept(*this);
    }
 
@@ -1081,7 +1081,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
       case ASTConcatenate::eAnd:
          {
             addInstruction(VirtualInstruction::eJumpFalse, labelResult);   // false
-      
+
             concatenate.getRight().accept(*this);
 
             addInstruction(VirtualInstruction::eJumpFalse, labelResult);   // false
@@ -1134,7 +1134,7 @@ void CodeGeneratorVisitor::visit(const ASTUnary& ast)
       {
          mLoadFlags |= eKeep; // determine if the result is still used!!
       }
-      
+
       children[index].accept(*this);
 
       mLoadFlags = 0;
@@ -1202,7 +1202,7 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
 
       // call to constructor of superclass
       visitChildren(ast);
-            
+
       addInstruction(VirtualInstruction::ePush, ast.getArgumentCount() + 1);
       addInstruction(ast.isSuper() ? VirtualInstruction::eCallSuper : VirtualInstruction::eCall, ast.getConstructor().getResourceIndex());
 
@@ -1223,7 +1223,7 @@ void CodeGeneratorVisitor::visit(const ASTCast& ast)
    ast.getNode().accept(*this);
 
    ASTType from = mCurrentType;
-   mCurrentType = ast.getType(); 
+   mCurrentType = ast.getType();
 
    // add cast instruction
    if ( mCurrentType.isObject() )
@@ -1304,7 +1304,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             const ASTType& type = var.getType();
             if ( mCurrentType.isValid() && type.isGeneric() )
-            {                     
+            {
                const ASTTypeVariable& typevariable = type.getTypeVariable();
                mCurrentType = mCurrentType.getTypeArguments()[typevariable.getIndex()];
             }
@@ -1372,7 +1372,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             const ASTType& type = function.getType();
             if ( type.isGeneric() )
-            {                     
+            {
                const ASTTypeVariable& typevariable = type.getTypeVariable();
                mCurrentType = before.getTypeArguments()[typevariable.getIndex()];
             }
@@ -1395,8 +1395,8 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             mCurrentType.clear();
             mCurrentType.setKind(ASTType::eObject);
-            mCurrentType.setObjectName("System.Class");
-            mCurrentType.setObjectClass(mContext.resolveClass("System.Class"));
+            mCurrentType.setObjectName("system.Class");
+            mCurrentType.setObjectClass(mContext.resolveClass("system.Class"));
          }
          break;
 
@@ -1472,7 +1472,7 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
 
    int store = local ? VirtualInstruction::eStoreLocal : (isstatic ? VirtualInstruction::eStoreStatic : VirtualInstruction::eStore);
    int load  = local ? VirtualInstruction::eLoadLocal  : (isstatic ? VirtualInstruction::eLoadStatic : VirtualInstruction::eLoad);
-   
+
    if ( mLoadFlags > 0 )
    {
       // if not local, the object is already on the stack

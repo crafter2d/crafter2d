@@ -34,6 +34,7 @@ public:
 
    virtual void         start(TimerData& info);
    virtual float        getInterval(const TimerData& info);
+   virtual float        getTick() const;
 };
 
 #endif // LINUX_TIMER_H

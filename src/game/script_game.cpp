@@ -43,7 +43,7 @@ void Game_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& access
    Game* pgame = (Game*) thisobject->getNativeObject();
 
    GameWindowFactory& factory = pgame->getWindowFactory();
-   VirtualObjectReference ref = machine.instantiateNative("System.GameWindowFactory", &factory, false);
+   VirtualObjectReference ref = machine.instantiateNative("system.GameWindowFactory", &factory, false);
 
    accessor.setResult(ref);
 }

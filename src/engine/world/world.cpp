@@ -278,7 +278,7 @@ void World::scroll ()
       int x = 0, y = 0;
       int width =800, height=600;
       // SDL_GetMouseState(&x, &y); <-- get it from the input of the client
-      
+
       // get the window bounds
       if (x < followBorderWidth)
          xScroll = -1;
@@ -311,7 +311,7 @@ void World::initializeBorders()
 {
    // set the follow object borders default values
    int width = 800, height = 600;
-   
+
    leftBorder = 50;
    rightBorder = width - 50;
    topBorder = 50;
@@ -518,7 +518,7 @@ void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, 
 {
    ASSERT_PTR(mpScript);
    mpScript->addParam("Actor", &source);
-   mpScript->addParam("System.Object", &target);
+   mpScript->addParam("system.Object", &target);
    mpScript->addParam(side);
    mpScript->addParam(begin);
    mpScript->run("onObjectCollision");

@@ -10,7 +10,7 @@ ClassResolver::ClassResolver():
    mPaths()
 {
    mPaths.insert("*");
-   mPaths.insert("System.*");
+   mPaths.insert("system.*");
 }
 
 const ClassResolver& ClassResolver::operator=(const ClassResolver& that)

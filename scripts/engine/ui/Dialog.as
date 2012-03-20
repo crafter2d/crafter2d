@@ -17,7 +17,7 @@ class Dialog extends Container
 		super();
 		
 		mTitle = title;
-		setFont(FontManager.getInstance().getFont("c:\\windows\\fonts\\segoeui.ttf", 9));
+		setFont(FontManager.getInstance().getFont("amersn.ttf", 9));
 		
 		setBorder(new DialogBorder(this));
 	}

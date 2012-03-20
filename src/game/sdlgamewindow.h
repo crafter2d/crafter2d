@@ -49,7 +49,7 @@ public:
  // query
    int getWidth() const;
    int getHeight() const;
-   
+
  // operations
    void resize(int width, int height);
    void toggleFullscreen();
@@ -79,7 +79,7 @@ private:
    SDL_Surface*          mpWindow;
    Color                 mBackgroundColor;
    int                   mBitDepth;
-   int                   mFlags;
+   unsigned int          mFlags;
 };
 
 #endif

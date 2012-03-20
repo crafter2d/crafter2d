@@ -35,10 +35,10 @@ public:
 
    virtual TimerData*   createData() const = 0;
    virtual void         releaseData(TimerData*& pdata) = 0;
-   
+
    virtual void         start(TimerData& info) = 0;
    virtual float        getInterval(const TimerData& info) = 0;
-   virtual float        getTick() const;
+   virtual float        getTick() const = 0;
 
 protected:
    Timer();

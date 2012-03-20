@@ -35,13 +35,13 @@ public:
       fs.removeAll();
       fs.addPath("../scripts");
       fs.addPath("../src/unittest/tests");
-      
+
       // compiler required classes
-      TS_ASSERT(compiler.compile("System.Object"));
-      TS_ASSERT(compiler.compile("System.System"));
-      TS_ASSERT(compiler.compile("System.InternalArray"));
-      TS_ASSERT(compiler.compile("System.ClassLoader"));
-      
+      TS_ASSERT(compiler.compile("system.Object"));
+      TS_ASSERT(compiler.compile("system.System"));
+      TS_ASSERT(compiler.compile("system.InternalArray"));
+      TS_ASSERT(compiler.compile("system.ClassLoader"));
+
       // do the actual test
       TS_ASSERT(compiler.compile("Test"));
    }
@@ -54,7 +54,7 @@ public:
 
       Compiler compiler;
       compiler.setCallback(callback);
-      compiler.compile("System.Object");
+      compiler.compile("system.Object");
 
       TS_ASSERT(mLoaded);
    }

@@ -83,7 +83,7 @@ void PreloadVisitor::visit(ASTClass& ast)
       if ( !ast.hasBaseType() )
       {
          ASTType* ptype = new ASTType(ASTType::eObject);
-         ptype->setObjectName("System.Object");
+         ptype->setObjectName("system.Object");
          ast.setBaseType(ptype);
       }
 
@@ -96,14 +96,14 @@ void PreloadVisitor::visit(ASTClass& ast)
          ast.setBaseClass(mContext.resolveClass(ast.getBaseType().getObjectName()));
       }
    }
-   
+
    ASTTypeList& intrfaces = ast.getInterfaces();
    for ( int index = 0; index < intrfaces.size(); index++ )
    {
       ASTType& type = intrfaces[index];
       load(type);
    }
-   
+
    visitChildren(ast);
 
    ast.setState(ASTClass::eLoaded);
@@ -461,7 +461,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
 
             // not a variable, so see if it is a static class
             type.setObjectName(qualifiedname);
-               
+
             done = tryLoad(type);
             if ( !done )
             {
@@ -488,7 +488,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
                ASTNodes& nodes = unary.getParts();
                nodes.erase(0, count);
             }
-            
+
             ASTType* ptype = new ASTType(ASTType::eObject);
             ptype->setObjectName(pcurrent->getName());
             ptype->setObjectClass(mContext.resolveClass(qualifiedname));

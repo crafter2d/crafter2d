@@ -16,7 +16,7 @@ class Button extends Widget
 		
 		mText = text;
 		
-		setFont(FontManager.getInstance().getFont("c:\\windows\\fonts\\segoeui.ttf", 9)); //"amersn.ttf", 10));
+		setFont(FontManager.getInstance().getFont("amersn.ttf", 9)); //"amersn.ttf", 10));
 		setBorder(new SimpleBorder());
 	}
 	
