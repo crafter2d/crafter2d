@@ -17,7 +17,6 @@ public:
 
 private:
    Process& mProcess;
-   Script*  mpScript;
 };
 
 #endif // AI_CONTROLLER_H

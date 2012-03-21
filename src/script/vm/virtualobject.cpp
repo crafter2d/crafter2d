@@ -41,7 +41,7 @@ VirtualObject::~VirtualObject()
    delete[] mpMembers;
    mpMembers = NULL;
 
-   setNativeObject(NULL);
+   ASSERT(!mOwnsNative || mpNativeObject == NULL);
 }
 
 // - Get/set
@@ -66,15 +66,8 @@ void* VirtualObject::useNativeObject()
 
 void VirtualObject::setNativeObject(void* pobject)
 {
-   if ( mpNativeObject != pobject )
-   {
-      if ( mOwnsNative )
-      {
-         delete mpNativeObject;
-      }
-
-      mpNativeObject = pobject;
-   }
+   ASSERT(mpNativeObject == NULL);
+   mpNativeObject = pobject;
 }
 
 bool VirtualObject::isOwner() const

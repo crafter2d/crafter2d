@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,57 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef DEFINES_OF_JENGINE_H_
-#define DEFINES_OF_JENGINE_H_
+#include "box2draycastcallback.h"
 
-#include <cassert>
+#include "box2dsimulator.h"
 
-#undef NULL
-#define NULL 0
+Box2DRayCastCallback::Box2DRayCastCallback():
+   b2RayCastCallback(),
+   mpObject(NULL),
+   mPos(),
+   mDistance(0)
+{
+}
 
-// Uncomment next line to enable auto disconnecting after timeout
-//#define JENGINE_AUTODISCONNECT
+// query
+   
+bool Box2DRayCastCallback::hasCollision() const
+{
+   return mpObject != NULL;
+}
 
-// Uncomment the next line to disable inlining.
-//#define JENGINE_INLINE
+// - Collision reporting
+   
+float32 Box2DRayCastCallback::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+{
+   mpObject = fixture;
+   mPos = Box2DSimulator::b2ToVector(point);
+   mDistance = fraction;
 
-#define JENGINE_STATISTICS_LIMIT    250
-
-#define JENGINE_MSG_HANDLED         0
-#define JENGINE_MSG_UNHANDLED       1
-
-#ifdef JENGINE_INLINE
-#  define INLINE inline
-#else
-#  define INLINE
-#endif
-
-typedef unsigned int    uint;
-typedef unsigned char   uchar;
-typedef void*           handle;
-
-#define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
-
-#ifndef MIN
-#  define MIN(x,y) ( x<y ? x : y )
-#  define MAX(x,y) ( x>y ? x : y )
-#endif
-
-#ifdef LINUX
-#define stricmp strcasecmp
-#endif
-
-#define IS_SET(container,flag)((container & flag) == flag)
-#define SET_FLAG(container,flag)   container |= flag
-#define CLEAR_FLAG(container,flag) container &= ~flag
-#define SWAP_FLAG(container,flag) container ^= flag
-
-// Debugging macros
-
-#define ASSERT(cond)          assert(cond);
-#define ASSERT_MSG(cond,msg)  assert(cond && msg);
-#define ASSERT_PTR(ptr)       assert(ptr != NULL);
-#define PURE_VIRTUAL          assert(false && "Pure virtual!");
-#define UNREACHABLE(msg)      assert(false && msg);
-
-#endif
+   return fraction; // clip and continue, find closest intersection
+}

@@ -29,6 +29,7 @@
 ABSTRACT_IMPLEMENT_REPLICATABLE(EntityId, Entity, NetObject)
 
 Entity::Entity():
+   NetObject(),
    mId(-1),
    mpParent(NULL),
    mChildren(),

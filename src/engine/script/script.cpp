@@ -88,3 +88,8 @@ void Script::addParam(const std::string& classname, void* pobject)
 
    mScriptManager.mpVirtualMachine->push(ref);
 }
+
+void Script::addParam(const VirtualObjectReference& object)
+{
+   mScriptManager.mpVirtualMachine->push(object);
+}

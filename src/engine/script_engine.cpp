@@ -53,80 +53,79 @@
 #include "aicontroller.h"
 #include "texture.h"
 
+#define GET_THIS(type, variable)                   type& variable = *static_cast<type*>(accessor.getThis()->getNativeObject())
+#define DESTRUCT_THIS(type)                        delete static_cast<type*>(accessor.getThis()->useNativeObject());
+
+#define RETURN(type, pointer)                      accessor.setResult(machine.instantiateNative(#type, pointer, false))
+#define RETURN_OWNED(type, pointer)                accessor.setResult(machine.instantiateNative(#type, pointer, true))
+
+#define RETURN_CLASS(class, type, pointer)         accessor.setResult(machine.instantiateNative(class, pointer, false))
+#define RETURN_CLASS_OWNED(class, type, pointer)   accessor.setResult(machine.instantiateNative(class, pointer, true))
+
 void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = (Process*) thisobject->getNativeObject();
-
+   GET_THIS(Process, process);
+   
    const std::string& name = accessor.getString(1);
 
-   accessor.setResult(pprocess->create(name));
+   accessor.setResult(process.create(name));
 }
 
 void Process_setScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = (Process*) thisobject->getNativeObject();
+   GET_THIS(Process, process);
 
-   ScriptManager* pscriptmanager = (ScriptManager*) accessor.getObject(1)->useNativeObject();
+   ScriptManager* pscriptmanager = (ScriptManager*) accessor.getObject(1)->getNativeObject();
 
-   pprocess->setScriptManager(pscriptmanager);
+   process.setScriptManager(pscriptmanager);
 }
 
 void Process_setObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = (Process*) thisobject->getNativeObject();
+   GET_THIS(Process, process);
 
    VirtualObjectReference& object = accessor.getObject(1);
 
-   pprocess->setObject(object);
+   process.setObject(object);
 }
 
 void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-
    const std::string& name = accessor.getString(1);
    int size = accessor.getInt(2);
 
    FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
-   accessor.setResult(machine.instantiateNative("engine.ui.Font", pfont, true)); // take ownership of this handle
+   RETURN_CLASS_OWNED("engine.ui.Font", FontPtr, pfont);
 }
 
 void Process_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-
    const std::string& name = accessor.getString(1);
 
-   TexturePtr* pfont = new TexturePtr(ResourceManager::getInstance().getTexture(name));
-   accessor.setResult(machine.instantiateNative("engine.core.Texture", pfont, true)); // take ownership of this handle
+   TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(name));
+   RETURN_CLASS_OWNED("engine.core.Texture", TexturePtr, ptexture);
 }
 
 void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = static_cast<Process*>(thisobject->getNativeObject());
+   GET_THIS(Process, process);
 
-   accessor.setResult(machine.instantiateNative("ContentManager", &pprocess->getContentManager(), false));
+   RETURN(ContentManager, &process.getContentManager());
 }
 
 void Process_getWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = static_cast<Process*>(thisobject->getNativeObject());
+   GET_THIS(Process, process);
 
-   accessor.setResult(machine.instantiateNative("World", &pprocess->getWorld(), false));
+   RETURN(World, &process.getWorld());
 }
 
 void Process_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Process* pprocess = static_cast<Process*>(thisobject->getNativeObject());
+   GET_THIS(Process, process);
 
    World* pworld = static_cast<World*>(accessor.getObject(1)->useNativeObject());
-   pprocess->setWorld(pworld);
+   process.setWorld(pworld);
 }
 
 void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -135,47 +134,49 @@ void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Server* pserver = new Server();
    machine.registerNative(thisobject, pserver);
+   thisobject->setOwner(true);
+}
+
+void Server_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(Server);
 }
 
 void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->getNativeObject();
+   GET_THIS(Server, server);
 
    int port = accessor.getInt(1);
 
-   pserver->listen(port);
+   server.listen(port);
 }
 
 void Server_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->getNativeObject();
+   GET_THIS(Server, server);
 
    ActionMap* pmap = (ActionMap*) accessor.getObject(1)->useNativeObject();
 
-   pserver->setActionMap(pmap);
+   server.setActionMap(pmap);
 }
 
 void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->getNativeObject();
+   GET_THIS(Server, server);
 
    BitStream* pstream = (BitStream*) accessor.getObject(1)->getNativeObject();
    int client = accessor.getInt(2);
 
-   pserver->sendScriptEvent(pstream, client);
+   server.sendScriptEvent(pstream, client);
 }
 
 void Server_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Server* pserver = (Server*) thisobject->getNativeObject();
+   GET_THIS(Server, server);
 
    float delta = accessor.getReal(1);
 
-   pserver->update(delta);
+   server.update(delta);
 }
 
 void Client_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -184,135 +185,128 @@ void Client_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Client* pclient = new Client();
    machine.registerNative(thisobject, pclient);
+   thisobject->setOwner(true);
+}
+
+void Client_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(Client);
 }
 
 void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
    std::string ip = accessor.getString(1);
    int port = accessor.getInt(2);
    std::string name = accessor.getString(3);
 
-   pclient->connect(ip.c_str(), port, name.c_str());
+   client.connect(ip.c_str(), port, name.c_str());
 }
 
 void Client_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
    float delta = accessor.getReal(1);
 
-   pclient->update(delta);
+   client.update(delta);
 }
 
 void Client_nativeRender(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
    float delta = accessor.getReal(1);
 
-   pclient->render(delta);
+   client.render(delta);
 }
 
 void Client_nativeDisplay(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
-   pclient->display();
+   client.display();
 }
 
 void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
-   accessor.setResult(pclient->isActive());
+   accessor.setResult(client.isActive());
 }
 
 void Client_native_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
    GameWindow* pwindow = (GameWindow*) accessor.getObject(1)->useNativeObject();
 
-   pclient->setWindow(pwindow);
+   client.setWindow(pwindow);
 }
 
 void Client_getPlayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
-   Player& player = pclient->getPlayer();
-   accessor.setResult(machine.instantiateNative("Player", &player, false));
+   Player& player = client.getPlayer();
+   RETURN(Player, &player);
 }
 
 void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
    ActionMap* pmap = (ActionMap*) accessor.getObject(1)->useNativeObject();
 
-   pclient->setActionMap(pmap);
+   client.setActionMap(pmap);
 }
 
 void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Client* pclient = (Client*) thisobject->getNativeObject();
+   GET_THIS(Client, client);
 
    KeyMap* pmap = (KeyMap*) accessor.getObject(1)->useNativeObject();
 
-   pclient->setKeyMap(pmap);
+   client.setKeyMap(pmap);
 }
 
 void ScriptManager_spawnChild(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   ScriptManager* pscriptmanager = (ScriptManager*) thisobject->getNativeObject();
+   GET_THIS(ScriptManager, scriptmanager);
 
-   VirtualObjectReference ref = machine.instantiateNative("ScriptManager", pscriptmanager->spawnChild());
-
-   accessor.setResult(ref);
+   RETURN(ScriptManager, scriptmanager.spawnChild());
 }
 
 void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   ContentManager* pmanager = static_cast<ContentManager*>(thisobject->getNativeObject());
+   GET_THIS(ContentManager, contentmanager);
 
    const std::string& filename = accessor.getString(1);
 
-   Entity* presult = pmanager->loadEntity(filename);
-   accessor.setResult(machine.lookupNative(presult));
+   Entity* presult = contentmanager.loadEntity(filename);
+   RETURN_OWNED(Entity, presult);
+   //VirtualObjectReference ref(machine.lookupNative(presult));
+   //ref->setOwner(true);
+
+   //accessor.setResult(ref);
 }
 
 void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   ContentManager* pmanager = static_cast<ContentManager*>(thisobject->getNativeObject());
+   GET_THIS(ContentManager, contentmanager);
 
    const std::string& filename = accessor.getString(1);
 
-   World* presult = pmanager->load(filename);
-   accessor.setResult(machine.instantiateNative("World", presult, true));
+   World* presult = contentmanager.load(filename);
+   RETURN_OWNED(World, presult);
 }
 
 void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   GameWindowFactory* pfactory = (GameWindowFactory*) thisobject->getNativeObject();
+   GET_THIS(GameWindowFactory, factory);
 
-   VirtualObjectReference ref = machine.instantiateNative("system.GameWindow", pfactory->createWindow());
-
-   accessor.setResult(ref);
+   RETURN_CLASS_OWNED("system.GameWindow", GameWindow, factory.createWindow());
 }
 
 void BitStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -321,40 +315,42 @@ void BitStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    BitStream* pstream = new BitStream();
    machine.registerNative(thisobject, pstream);
+   thisobject->setOwner(true);
+}
+
+void BitStream_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(BitStream);
 }
 
 void BitStream_writeInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   BitStream* pstream = (BitStream*) thisobject->getNativeObject();
+   GET_THIS(BitStream, stream);
 
    int value = accessor.getInt(1);
 
-   pstream->writeInt(value);
+   stream.writeInt(value);
 }
 
 void BitStream_readInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   BitStream* pstream = (BitStream*) thisobject->getNativeObject();
+   GET_THIS(BitStream, stream);
 
-   accessor.setResult(pstream->readInt());
+   accessor.setResult(stream.readInt());
 }
 
 void BitStream_clear(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   BitStream* pstream = (BitStream*) thisobject->getNativeObject();
+   GET_THIS(BitStream, stream);
 
-   pstream->clear();
+   stream.clear();
 }
 
 void Entity_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Entity* pentity = (Entity*) thisobject->getNativeObject();
+   GET_THIS(Entity, entity);
 
-   accessor.setResult((int)pentity->getId());
+   accessor.setResult((int)entity.getId());
 }
 
 void Actor_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -363,148 +359,131 @@ void Actor_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Actor* pactor = new Actor();
    machine.registerNative(thisobject, pactor);
+   thisobject->setOwner(true);
+}
+
+void Actor_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(Actor);
 }
 
 void Actor_getPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
-   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pactor->getPosition()), false);
-
-   accessor.setResult(ref);
+   RETURN_CLASS("Vector2D", Vector, const_cast<Vector*>(&actor.getPosition()));
 }
 
 void Actor_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
    Vector* ppos = (Vector*) accessor.getObject(1)->getNativeObject();
 
-   pactor->setPosition(*ppos);
+   actor.setPosition(*ppos);
 }
 
 void Actor_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
-   VirtualObjectReference ref = machine.instantiateNative("Vector2D", const_cast<Vector*>(&pactor->getVelocity()), false);
-
-   accessor.setResult(ref);
+   RETURN_CLASS("Vector2D", Vector, const_cast<Vector*>(&actor.getVelocity()));
 }
 
 void Actor_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
    Vector* ppos = (Vector*) accessor.getObject(1)->getNativeObject();
 
-   pactor->setVelocity(*ppos);
+   actor.setVelocity(*ppos);
 }
 
 void Actor_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
    const std::string& name = accessor.getString(1);
 
-   pactor->setName(name);
+   actor.setName(name);
 }
 
 void Actor_setAnimation(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
    int index = accessor.getInt(1);
 
-   pactor->setAnimation(index);
+   actor.setAnimation(index);
 }
 
 void Actor_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
-   accessor.setResult(pactor->direction());
+   accessor.setResult(actor.direction());
 }
 
 void Actor_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
-   pactor->flip();
+   actor.flip();
 }
 
 void Actor_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
-   VirtualObjectReference ref = machine.instantiateNative("box2d.Box2DBody", &pactor->getBody(), false);
-
-   accessor.setResult(ref);
+   RETURN_CLASS("box2d.Box2DBody", Body, &actor.getBody());
 }
 
 void Actor_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
    Controller* pcontroller = (Controller*) accessor.getObject(1)->useNativeObject();
 
-   pactor->setController(pcontroller);
+   actor.setController(pcontroller);
 }
 
 void Actor_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Actor* pactor = (Actor*) thisobject->getNativeObject();
+   GET_THIS(Actor, actor);
 
    Actor* pchild = (Actor*) accessor.getObject(1)->getNativeObject();
 
-   pactor->add(*pchild);
+   actor.add(*pchild);
 }
 
 void Player_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Player* pplayer = (Player*) thisobject->getNativeObject();
+   GET_THIS(Player, player);
 
-   accessor.setResult(pplayer->getName());
+   accessor.setResult(player.getName());
 }
 
 void Player_getClientId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Player* pplayer = (Player*) thisobject->getNativeObject();
+   GET_THIS(Player, player);
 
-   accessor.setResult(pplayer->getClientId());
+   accessor.setResult(player.getClientId());
 }
 
 void Player_native_getController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Player* pplayer = (Player*) thisobject->getNativeObject();
+   GET_THIS(Player, player);
 
-   VirtualObjectReference ref = machine.instantiateNative("Actor", &pplayer->getController(), false);
-
-   accessor.setResult(ref);
+   RETURN(Actor, &player.getController());
 }
 
 void Player_native_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Player* pplayer = (Player*) thisobject->getNativeObject();
+   GET_THIS(Player, player);
 
-   Actor* pentity = static_cast<Actor*>(accessor.getObject(1)->getNativeObject());
+   Actor& entity = *static_cast<Actor*>(accessor.getObject(1)->getNativeObject());
 
-   pplayer->setController(*pentity);
+   player.setController(entity);
 }
 
 void Vector2D_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -513,42 +492,44 @@ void Vector2D_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Vector* pvector = new Vector();
    machine.registerNative(thisobject, pvector);
+   thisobject->setOwner(true);
+}
+
+void Vector2D_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(Vector);
 }
 
 void Vector2D_getX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Vector* pvector = (Vector*) thisobject->getNativeObject();
+   GET_THIS(Vector, vector);
 
-   accessor.setResult(pvector->x);
+   accessor.setResult(vector.x);
 }
 
 void Vector2D_setX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Vector* pvector = (Vector*) thisobject->getNativeObject();
+   GET_THIS(Vector, vector);
 
    float x = accessor.getReal(1);
 
-   pvector->x = x;
+   vector.x = x;
 }
 
 void Vector2D_getY(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Vector* pvector = (Vector*) thisobject->getNativeObject();
+   GET_THIS(Vector, vector);
 
-   accessor.setResult(pvector->y);
+   accessor.setResult(vector.y);
 }
 
 void Vector2D_setY(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Vector* pvector = (Vector*) thisobject->getNativeObject();
+   GET_THIS(Vector, vector);
 
    float y = accessor.getReal(1);
 
-   pvector->y = y;
+   vector.y = y;
 }
 
 void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -557,88 +538,91 @@ void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    World* pworld = new World();
    machine.registerNative(thisobject, pworld);
+   thisobject->setOwner(true);
+}
+
+void World_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(World);
 }
 
 void World_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
+   GET_THIS(World, world);
 
-   accessor.setResult(pworld->getName());
+   accessor.setResult(world.getName());
 }
 
 void World_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
+   GET_THIS(World, world);
 
    Actor* pentity = static_cast<Actor*>(accessor.getObject(1)->useNativeObject());
 
-   pworld->addEntity(pentity);
+   world.addEntity(pentity);
 }
 
 void World_setObjectLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
+   GET_THIS(World, world);
 
    int layer = accessor.getInt(1);
 
-   pworld->setObjectLayer(layer);
+   world.setObjectLayer(layer);
 }
 
 void World_setFollowMode(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
+   GET_THIS(World, world);
 
    int mode = accessor.getInt(1);
 
-   pworld->setScrollMode(mode);
+   world.setScrollMode(mode);
 }
 
-void World_setFollowObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_getFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
+   GET_THIS(World, world);
+
+   RETURN(Actor, world.getFollowObject());
+}
+
+void World_setFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(World, world);
 
    Actor* pentity = static_cast<Actor*>(accessor.getObject(1)->getNativeObject());
 
-   pworld->setFollowObject(pentity);
+   world.setFollowObject(pentity);
 }
 
 void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
+   GET_THIS(World, world);
 
-   VirtualObjectReference object = machine.instantiateNative("box2d.Box2DSimulator", &(Box2DSimulator&)pworld->getSimulator(), false);
-
-   accessor.setResult(object);
+   RETURN_CLASS("box2d.Box2DSimulator", Box2DSimulator, &(Box2DSimulator&)world.getSimulator());
 }
 
 void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
+   GET_THIS(World, world);
 
    int left = accessor.getInt(1);
    int right = accessor.getInt(2);
    int top = accessor.getInt(3);
    int bottom = accessor.getInt(4);
 
-   pworld->setFollowBorders(left, right, top, bottom);
+   world.setFollowBorders(left, right, top, bottom);
 }
 
 void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   World* pworld = (World*) thisobject->getNativeObject();
+   GET_THIS(World, world);
 
    int controllerid = accessor.getInt(1);
-   Entity* pentity = pworld->findEntity(Id(controllerid));
+   Entity* pentity = world.findEntity(Id(controllerid));
 
-   accessor.setResult(machine.instantiateNative("Actor", pentity, false));
+   RETURN(Actor, static_cast<Actor*>(pentity));
 }
 
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -647,26 +631,30 @@ void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& acc
 
    InputForceGenerator* pgenerator = new InputForceGenerator();
    machine.registerNative(thisobject, pgenerator);
+   thisobject->setOwner(true);
+}
+
+void InputForceGenerator_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(InputForceGenerator);
 }
 
 void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   InputForceGenerator* pgenerator = (InputForceGenerator*) thisobject->getNativeObject();
+   GET_THIS(InputForceGenerator, generator);
 
    Vector* pvel = (Vector*) accessor.getObject(1)->getNativeObject();
 
-   pgenerator->setVelocity(*pvel);
+   generator.setVelocity(*pvel);
 }
 
 void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   InputForceGenerator* pgenerator = (InputForceGenerator*) thisobject->getNativeObject();
+   GET_THIS(InputForceGenerator, generator);
 
    Vector* pvel = (Vector*) accessor.getObject(1)->getNativeObject();
 
-   pgenerator->setImpulse(*pvel);
+   generator.setImpulse(*pvel);
 }
 
 void InputController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -675,16 +663,21 @@ void InputController_init(VirtualMachine& machine, VirtualStackAccessor& accesso
 
    InputController* pcontroller = new InputController();
    machine.registerNative(thisobject, pcontroller);
+   thisobject->setOwner(true);
+}
+
+void InputController_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(InputController);
 }
 
 void InputController_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   InputController* pcontroller = (InputController*) thisobject->getNativeObject();
+   GET_THIS(InputController, controller);
 
-   ActionMap* pactionmap = (ActionMap*) accessor.getObject(1)->useNativeObject();
+   ActionMap* pactionmap = (ActionMap*) accessor.getObject(1)->getNativeObject();
 
-   pcontroller->setActionMap(pactionmap);
+   controller.setActionMap(pactionmap);
 }
 
 void AIController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -695,34 +688,47 @@ void AIController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    AIController* pcontroller = new AIController(*pprocess);
    machine.registerNative(thisobject, pcontroller);
+   thisobject->setOwner(true);
+}
+
+void AIController_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(AIController);
+}
+
+void Box2DSimulator_lineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DSimulator, simulator);
+
+   const Actor& from = *(Actor*) accessor.getObject(1)->getNativeObject();
+   const Actor& to = *(Actor*) accessor.getObject(2)->getNativeObject();
+
+   accessor.setResult(simulator.lineOfSight(from, to));
 }
 
 void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DSimulator* psimulator = (Box2DSimulator*) thisobject->getNativeObject();
+   GET_THIS(Box2DSimulator, simulator);
 
    Box2DRevoluteJointDefinition* pjointdef = (Box2DRevoluteJointDefinition*) accessor.getObject(1)->getNativeObject();
 
-   psimulator->createRevoluteJoint(*pjointdef);
+   simulator.createRevoluteJoint(*pjointdef);
 }
 
 void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DBody* pbody = (Box2DBody*) thisobject->getNativeObject();
+   GET_THIS(Box2DBody, body);
 
    InputForceGenerator* pgenerator = (InputForceGenerator*) accessor.getObject(1)->useNativeObject();
 
-   pbody->addForceGenerator(pgenerator);
+   body.addForceGenerator(pgenerator);
 }
 
 void Box2DBody_generateSensors(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DBody* pbody = (Box2DBody*) thisobject->getNativeObject();
+   GET_THIS(Box2DBody, body);
 
-   pbody->generateSensors();
+   body.generateSensors();
 }
 
 void Box2DRevoluteJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -731,64 +737,58 @@ void Box2DRevoluteJointDefinition_init(VirtualMachine& machine, VirtualStackAcce
 
    Box2DRevoluteJointDefinition* pjointdef = new Box2DRevoluteJointDefinition();
    machine.registerNative(thisobject, pjointdef);
+   thisobject->setOwner(true);
+}
+
+void Box2DRevoluteJointDefinition_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(Box2DRevoluteJointDefinition);
 }
 
 void Box2DRevoluteJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
+   GET_THIS(Box2DRevoluteJointDefinition, joint);
 
-   VirtualObjectReference object = machine.instantiateNative("box2d.Box2DBody", pjoint->pleft, false);
-
-   accessor.setResult(object);
+   RETURN_CLASS("box2d.Box2DBody", Box2DBody, joint.pleft);
 }
 
 void Box2DRevoluteJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
+   GET_THIS(Box2DRevoluteJointDefinition, joint);
 
    VirtualObjectReference& left = accessor.getObject(1);
 
-   pjoint->pleft = (Box2DBody*)left->getNativeObject();
+   joint.pleft = (Box2DBody*)left->getNativeObject();
 }
 
 void Box2DRevoluteJointDefinition_getRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
+   GET_THIS(Box2DRevoluteJointDefinition, joint);
 
-   VirtualObjectReference object = machine.instantiateNative("box2d.Box2DBody", pjoint->pright, false);
-
-   accessor.setResult(object);
+   RETURN_CLASS("box2d.Box2DBody", Box2DBody, joint.pright);
 }
 
 void Box2DRevoluteJointDefinition_setRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
+   GET_THIS(Box2DRevoluteJointDefinition, joint);
 
    VirtualObjectReference& right = accessor.getObject(1);
 
-   pjoint->pright = (Box2DBody*)right->getNativeObject();
+   joint.pright = (Box2DBody*)right->getNativeObject();
 }
 
 void Box2DRevoluteJointDefinition_getAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
+   GET_THIS(Box2DRevoluteJointDefinition, joint);
 
-   VirtualObjectReference object = machine.instantiateNative("Vector2D", &pjoint->anchor, false);
-
-   accessor.setResult(object);
+   RETURN_CLASS("Vector2D", Vector, &joint.anchor);
 }
 
 void Box2DRevoluteJointDefinition_setAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Box2DRevoluteJointDefinition* pjoint = (Box2DRevoluteJointDefinition*) thisobject->getNativeObject();
+   GET_THIS(Box2DRevoluteJointDefinition, joint);
 
-   pjoint->anchor = *(Vector*)accessor.getObject(1)->getNativeObject();
+   joint.anchor = *(Vector*)accessor.getObject(1)->getNativeObject();
 }
 
 void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -797,16 +797,21 @@ void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    ActionMap* pmap = new ActionMap();
    machine.registerNative(thisobject, pmap);
+   thisobject->setOwner(true);
+}
+
+void ActionMap_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(ActionMap);
 }
 
 void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   ActionMap* pmap = (ActionMap*) thisobject->getNativeObject();
+   GET_THIS(ActionMap, map);
 
    Process* pprocess = (Process*) accessor.getObject(1)->getNativeObject();
 
-   pmap->setProcess(*pprocess);
+   map.setProcess(*pprocess);
 }
 
 void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -815,17 +820,22 @@ void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    KeyMap* pmap = new KeyMap();
    machine.registerNative(thisobject, pmap);
+   thisobject->setOwner(true);
+}
+
+void KeyMap_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(KeyMap);
 }
 
 void KeyMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   KeyMap* pmap = (KeyMap*) thisobject->getNativeObject();
+   GET_THIS(KeyMap, map);
 
    int key = accessor.getInt(1);
    int action = accessor.getInt(2);
 
-   pmap->bind(key, action);
+   map.bind(key, action);
 }
 
 void EngineGraphics_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -834,58 +844,59 @@ void EngineGraphics_init(VirtualMachine& machine, VirtualStackAccessor& accessor
 
    Graphics* pgraphics = new Graphics();
    machine.registerNative(thisobject, pgraphics);
+   thisobject->setOwner(true);
+}
+
+void EngineGraphics_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(Graphics)
 }
 
 void EngineGraphics_doSetColor(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+   GET_THIS(Graphics, graphics);
 
    float red = accessor.getReal(1);
    float green = accessor.getReal(2);
    float blue = accessor.getReal(3);
    float alpha = accessor.getReal(4);
 
-   pgraphics->setColor(red, green, blue, alpha);
+   graphics.setColor(red, green, blue, alpha);
 }
 
 void EngineGraphics_nativeSetFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+   GET_THIS(Graphics, graphics);
 
    FontPtr* pfont = (FontPtr*)accessor.getObject(1)->getNativeObject();
 
-   pgraphics->setFont(*(pfont->ptr()));
+   graphics.setFont(*(pfont->ptr()));
 }
 
 void EngineGraphics_translate(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+   GET_THIS(Graphics, graphics);
 
    float x = accessor.getInt(1);
    float y = accessor.getInt(2);
 
-   pgraphics->translate(x, y);
+   graphics.translate(x, y);
 }
 
 void EngineGraphics_drawText(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+   GET_THIS(Graphics, graphics);
 
    float x = accessor.getInt(1);
    float y = accessor.getInt(2);
    const std::string& text = accessor.getString(3);
 
-   pgraphics->drawText(x, y, text);
+   graphics.drawText(x, y, text);
 }
 
 void EngineGraphics_native_drawTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+   GET_THIS(Graphics, graphics);
 
    TexturePtr* ptexture = (TexturePtr*) accessor.getObject(1)->getNativeObject();
    int x      = accessor.getInt(2);
@@ -893,100 +904,91 @@ void EngineGraphics_native_drawTexture(VirtualMachine& machine, VirtualStackAcce
    int width  = accessor.getInt(4);
    int height = accessor.getInt(5);
 
-   pgraphics->drawTexture(**ptexture, x, y, width, height);
+   graphics.drawTexture(**ptexture, x, y, width, height);
 }
 
 void EngineGraphics_native_fillRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+   GET_THIS(Graphics, graphics);
 
    float x = accessor.getInt(1);
    float y = accessor.getInt(2);
    float width = accessor.getInt(3);
    float height = accessor.getInt(4);
 
-   pgraphics->fillRect(x, y, width, height);
+   graphics.fillRect(x, y, width, height);
 }
 
 void EngineGraphics_native_drawRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+   GET_THIS(Graphics, graphics);
 
    float x = accessor.getInt(1);
    float y = accessor.getInt(2);
    float width = accessor.getInt(3);
    float height = accessor.getInt(4);
 
-   pgraphics->drawRect(x, y, width, height);
+   graphics.drawRect(x, y, width, height);
 }
 
 void EngineGraphics_native_drawRoundedRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Graphics* pgraphics = (Graphics*) thisobject->getNativeObject();
+   GET_THIS(Graphics, graphics);
 
    float x = accessor.getInt(1);
    float y = accessor.getInt(2);
    float width = accessor.getInt(3);
    float height = accessor.getInt(4);
 
-   pgraphics->drawRoundedRect(x, y, width, height);
+   graphics.drawRoundedRect(x, y, width, height);
 }
 
 void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   FontPtr* pfont = (FontPtr*) thisobject->getNativeObject();
+   GET_THIS(FontPtr, font);
 
    const std::string& text = accessor.getString(1);
 
-   (*pfont)->render(text);
+   font->render(text);
 }
 
 void Font_native_textWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   FontPtr* pfont = (FontPtr*) thisobject->getNativeObject();
+   GET_THIS(FontPtr, font);
 
    const std::string& text = accessor.getString(1);
 
-   accessor.setResult((*pfont)->getTextWidth(text));
+   accessor.setResult(font->getTextWidth(text));
 }
 
 void Font_native_textHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   FontPtr* pfont = (FontPtr*) thisobject->getNativeObject();
+   GET_THIS(FontPtr, font);
 
    const std::string& text = accessor.getString(1);
 
-   accessor.setResult((*pfont)->getTextHeight(text));
+   accessor.setResult(font->getTextHeight(text));
 }
 
 void Font_getBaseLine(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   FontPtr* pfont = (FontPtr*) thisobject->getNativeObject();
+   GET_THIS(FontPtr, font);
 
-   accessor.setResult((*pfont)->getBaseLine());
+   accessor.setResult(font->getBaseLine());
 }
 
 void Texture_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   TexturePtr* ptexture = (TexturePtr*) thisobject->getNativeObject();
+   GET_THIS(TexturePtr, texture);
 
-   accessor.setResult((*ptexture)->getWidth());
+   accessor.setResult(texture->getWidth());
 }
 
 void Texture_getHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   TexturePtr* ptexture = (TexturePtr*) thisobject->getNativeObject();
+   GET_THIS(TexturePtr, texture);
 
-   accessor.setResult((*ptexture)->getHeight());
+   accessor.setResult(texture->getHeight());
 }
 
 // - Registration
@@ -1005,6 +1007,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Process_setWorld", Process_setWorld);
 
    registrator.addCallback("Server_init", Server_init);
+   registrator.addCallback("Server_destruct", Server_destruct);
    registrator.addCallback("Server_listen", Server_listen);
    registrator.addCallback("Server_update", Server_update);
    registrator.addCallback("Server_setActionMap", Server_setActionMap);
@@ -1036,6 +1039,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Entity_getId", Entity_getId);
 
    registrator.addCallback("Actor_init", Actor_init);
+   registrator.addCallback("Actor_destruct", Actor_destruct);
    registrator.addCallback("Actor_getPosition", Actor_getPosition);
    registrator.addCallback("Actor_setPosition", Actor_setPosition);
    registrator.addCallback("Actor_getVelocity", Actor_getVelocity);
@@ -1064,7 +1068,8 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("World_add", World_add);
    registrator.addCallback("World_setObjectLayer", World_setObjectLayer);
    registrator.addCallback("World_setFollowMode", World_setFollowMode);
-   registrator.addCallback("World_setFollowObject", World_setFollowObject);
+   registrator.addCallback("World_getFollowActor", World_getFollowActor);
+   registrator.addCallback("World_setFollowActor", World_setFollowActor);
    registrator.addCallback("World_setFollowBorders", World_setFollowBorders);
    registrator.addCallback("World_getSimulator", World_getSimulator);
    registrator.addCallback("World_findEntity", World_findEntity);
@@ -1077,13 +1082,16 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("InputController_setActionMap", InputController_setActionMap);
 
    registrator.addCallback("AIController_init", AIController_init);
+   registrator.addCallback("AIController_destruct", AIController_destruct);
 
+   registrator.addCallback("Box2DSimulator_lineOfSight", Box2DSimulator_lineOfSight);
    registrator.addCallback("Box2DSimulator_createRevoluteJoint", Box2DSimulator_createRevoluteJoint);
 
    registrator.addCallback("Box2DBody_addForceGenerator", Box2DBody_addForceGenerator);
    registrator.addCallback("Box2DBody_generateSensors", Box2DBody_generateSensors);
 
    registrator.addCallback("Box2DRevoluteJointDefinition_init", Box2DRevoluteJointDefinition_init);
+   registrator.addCallback("Box2DRevoluteJointDefinition_destruct", Box2DRevoluteJointDefinition_destruct);
    registrator.addCallback("Box2DRevoluteJointDefinition_getLeft", Box2DRevoluteJointDefinition_getLeft);
    registrator.addCallback("Box2DRevoluteJointDefinition_setLeft", Box2DRevoluteJointDefinition_setLeft);
    registrator.addCallback("Box2DRevoluteJointDefinition_getRight", Box2DRevoluteJointDefinition_getRight);
@@ -1092,12 +1100,15 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Box2DRevoluteJointDefinition_setAnchor", Box2DRevoluteJointDefinition_setAnchor);
 
    registrator.addCallback("ActionMap_init", ActionMap_init);
+   registrator.addCallback("ActionMap_destruct", ActionMap_destruct);
    registrator.addCallback("ActionMap_setProcess", ActionMap_setProcess);
 
    registrator.addCallback("KeyMap_init", KeyMap_init);
+   registrator.addCallback("KeyMap_destruct", KeyMap_destruct);
    registrator.addCallback("KeyMap_bind", KeyMap_bind);
 
    registrator.addCallback("EngineGraphics_init", EngineGraphics_init);
+   registrator.addCallback("EngineGraphics_destruct", EngineGraphics_destruct);
    registrator.addCallback("EngineGraphics_doSetColor", EngineGraphics_doSetColor);
    registrator.addCallback("EngineGraphics_nativeSetFont", EngineGraphics_nativeSetFont);
    registrator.addCallback("EngineGraphics_translate", EngineGraphics_translate);

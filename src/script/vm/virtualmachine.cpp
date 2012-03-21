@@ -337,15 +337,21 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          }
          break;
       case VirtualInstruction::eNewNative:
-         {
-            const std::string& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
+         {            
+            int arguments = mStack.back().asInt();
 
-            int args = mStack.back().asInt();
+            const Variant& object = mStack[mStack.size() - arguments - 1];
+            ASSERT(object.isObject());
 
-            VirtualStackAccessor accessor(mStack);
-            (*mNatives[fnc])(*this, accessor);
+            if ( !object.asObject()->hasNativeObject() )
+            {
+               const std::string& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
 
-            mStack.pop_back(); // pop argument count
+               VirtualStackAccessor accessor(mStack);
+               (*mNatives[fnc])(*this, accessor);
+
+               mStack.pop_back(); // pop argument count
+            }
          }
          break;
       case VirtualInstruction::eNewArray:
@@ -1263,7 +1269,7 @@ void VirtualMachine::displayException(const VirtualException& exception)
 
 // - Object creation
 
-VirtualObjectReference VirtualMachine::instantiate(const std::string& classname, int constructor)
+VirtualObjectReference VirtualMachine::instantiate(const std::string& classname, int constructor, void* pnativeobject)
 {
    VirtualClass* pclass = doLoadClass(classname);
    if ( pclass == NULL )
@@ -1278,6 +1284,7 @@ VirtualObjectReference VirtualMachine::instantiate(const std::string& classname,
    }
 
    VirtualObjectReference object(pclass->instantiate());
+   object->setNativeObject(pnativeobject);
    Variant objectvariant(object);
 
    {
@@ -1312,25 +1319,27 @@ VirtualObjectReference VirtualMachine::instantiate(const std::string& classname,
 
 VirtualObjectReference VirtualMachine::instantiateNative(const std::string& classname, void* pobject, bool owned)
 {
+   if ( pobject == NULL )
+   {
+      // TODO: a native object is now still being created, need to prefend that some way
+      return VirtualObjectReference(instantiate(classname, -1));
+   }
+
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
    if ( it != mNativeObjects.end() )
    {
+      // already constructed this object earlier
       ASSERT(it->second->getNativeObject() == pobject);
-      return it->second;
+      VirtualObjectReference& ref = it->second;
+      ref->setOwner(owned);
+      return ref;
    }
 
-   VirtualObjectReference object(instantiate(classname, -1));
-   if ( object->hasNativeObject() )
-   {
-      // TODO: currently new native objects can be constructed during native constructors.
-      //       while actually we have an instance already -> waste of CPU & memory
-      unregisterNative(object);
-   }
-
-   object->setNativeObject(pobject);
+   // construct new instance & remember it
+   VirtualObjectReference object(instantiate(classname, -1, pobject));
+   ASSERT(pobject == NULL || (object->hasNativeObject() && object->getNativeObject() == pobject));
    object->setOwner(owned);
 
-   ASSERT(object->getNativeObject() == pobject);
    mNativeObjects[pobject] = object;
 
    return object;
@@ -1377,10 +1386,25 @@ void VirtualMachine::unregisterNative(VirtualObjectReference& object)
    {
       ASSERT(object->hasNativeObject());
 
+      // remove the object from the map
       NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
       ASSERT(it != mNativeObjects.end());
-
       mNativeObjects.erase(it);
+
+      if ( object->isOwner() )
+      {
+         const std::string& classname = object->getClass().getNativeClassName();
+         std::string fnc = classname + "_destruct";
+
+         mStack.push_back(Variant(object));
+         mStack.push_back(Variant(1));
+
+         VirtualStackAccessor accessor(mStack);
+         (*mNatives[fnc])(*this, accessor);
+
+         mStack.pop_back();
+         mStack.pop_back();
+      }
    }
 }
 

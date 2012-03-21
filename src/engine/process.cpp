@@ -40,6 +40,7 @@ Process::Process():
    mContentManager(*this),
    mpScriptManager(NULL),
    mpScript(NULL),
+   actionMap(NULL),
    initialized(false),
    mpWorld(NULL),
    mActive(true)

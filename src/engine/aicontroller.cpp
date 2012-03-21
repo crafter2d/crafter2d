@@ -10,8 +10,7 @@
 
 AIController::AIController(Process& process):
    Controller(),
-   mProcess(process),
-   mpScript(NULL)
+   mProcess(process)
 {
 }
 
@@ -20,5 +19,7 @@ AIController::AIController(Process& process):
 void AIController::performAction(Actor& actor)
 {
    AutoPtr<Script> script = mProcess.getScriptManager().loadNative("Actor", &actor, false);
+
+   script->addParam(mProcess.getScriptManager().getObject(&mProcess.getWorld()));
    script->run("updateAI");
 }

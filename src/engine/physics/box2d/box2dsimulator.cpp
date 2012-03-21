@@ -27,6 +27,7 @@
 #include "engine/actor.h"
 
 #include "box2dbody.h"
+#include "box2draycastcallback.h"
 #include "box2drevolutejoint.h"
 
 // static
@@ -54,6 +55,19 @@ Box2DSimulator::~Box2DSimulator()
    delete mpb2World;
    mpb2World = NULL;
 }
+
+// - Query
+
+bool Box2DSimulator::lineOfSight(const Actor& from, const Actor& to) const
+{
+   Box2DRayCastCallback callback;
+   b2Vec2 point1 = vectorToB2(from.getPosition());
+   b2Vec2 point2 = vectorToB2(to.getPosition());
+   mpb2World->RayCast(&callback, point1, point2);
+   return callback.hasCollision();
+}
+
+// - Maintenance
 
 Body& Box2DSimulator::createBody(Actor& actor)
 {

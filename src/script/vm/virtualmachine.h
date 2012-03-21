@@ -186,7 +186,7 @@ public:
    std::string buildCallStack() const;
 
  // object instantation
-   VirtualObjectReference instantiate(const std::string& classname, int constructor = 2);
+   VirtualObjectReference instantiate(const std::string& classname, int constructor = 2, void* pobject = NULL);
    VirtualObjectReference instantiateNative(const std::string& classname, void* pobject, bool owned = true);
    VirtualArrayReference  instantiateArray();
 

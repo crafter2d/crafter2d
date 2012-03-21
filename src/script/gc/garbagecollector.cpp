@@ -27,7 +27,7 @@ void GarbageCollector::gc(VirtualMachine& vm)
       }
    }
 
-   // the objects will delete the native objects they own themselfs
+   // the vm will delete the native objects by calling the appropriate method
 
    mObjects.clear();
 }

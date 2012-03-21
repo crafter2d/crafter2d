@@ -48,6 +48,7 @@ public:
    void        addParam (bool val);
    void        addParam (const std::string& val);
    void        addParam (const std::string& classname, void* pobject);
+   void        addParam(const VirtualObjectReference& object);
 
    bool        getBoolean();
    int         getInteger();

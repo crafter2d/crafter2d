@@ -28,6 +28,11 @@ INLINE void World::setAutoFollow(bool enabled)
    autoFollow = enabled;
 }
 
+INLINE Actor* World::getFollowObject()
+{
+   return followObject;
+}
+
 /// \fn World::setFollowObject(Actor* obj)
 /// \brief Set the object which should be followed when in auto modus.
 INLINE void World::setFollowObject(Actor* obj)

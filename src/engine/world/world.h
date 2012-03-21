@@ -82,6 +82,7 @@ public:
 
  // get/set
    void           setAutoFollow(bool enabled=true);
+   Actor*         getFollowObject();
    void           setFollowObject(Actor* obj);
    void           setScrollMode(int fm);
    void           setFollowBorderWidth(int width);

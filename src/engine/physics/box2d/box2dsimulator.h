@@ -50,12 +50,16 @@ public:
    Box2DSimulator();
    virtual ~Box2DSimulator();
 
+ // query
+   bool lineOfSight(const Actor& from, const Actor& to) const;
+
  // maintenance
    virtual Body& createBody(Actor& actor);
    virtual void  removeBody(Body& body);
 
    Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);
 
+ // update
    virtual void run(float timestep);
 
 protected:

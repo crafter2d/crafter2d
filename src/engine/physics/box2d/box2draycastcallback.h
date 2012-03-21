@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,57 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef DEFINES_OF_JENGINE_H_
-#define DEFINES_OF_JENGINE_H_
+#ifndef BOX2D_RAYCAST_CALLBACK_H
+#define BOX2D_RAYCAST_CALLBACK_H
 
-#include <cassert>
+#include <Box2D.h>
 
-#undef NULL
-#define NULL 0
+#include "core/math/vector.h"
 
-// Uncomment next line to enable auto disconnecting after timeout
-//#define JENGINE_AUTODISCONNECT
+class Box2DRayCastCallback : public b2RayCastCallback
+{
+public:
+   Box2DRayCastCallback();
 
-// Uncomment the next line to disable inlining.
-//#define JENGINE_INLINE
+ // query
+   bool hasCollision() const;
 
-#define JENGINE_STATISTICS_LIMIT    250
+ // collision reporting
+   virtual float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction);
 
-#define JENGINE_MSG_HANDLED         0
-#define JENGINE_MSG_UNHANDLED       1
+private:
 
-#ifdef JENGINE_INLINE
-#  define INLINE inline
-#else
-#  define INLINE
-#endif
+   b2Fixture* mpObject;
+   Vector     mPos;
+   float32    mDistance;
+};
 
-typedef unsigned int    uint;
-typedef unsigned char   uchar;
-typedef void*           handle;
-
-#define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
-
-#ifndef MIN
-#  define MIN(x,y) ( x<y ? x : y )
-#  define MAX(x,y) ( x>y ? x : y )
-#endif
-
-#ifdef LINUX
-#define stricmp strcasecmp
-#endif
-
-#define IS_SET(container,flag)((container & flag) == flag)
-#define SET_FLAG(container,flag)   container |= flag
-#define CLEAR_FLAG(container,flag) container &= ~flag
-#define SWAP_FLAG(container,flag) container ^= flag
-
-// Debugging macros
-
-#define ASSERT(cond)          assert(cond);
-#define ASSERT_MSG(cond,msg)  assert(cond && msg);
-#define ASSERT_PTR(ptr)       assert(ptr != NULL);
-#define PURE_VIRTUAL          assert(false && "Pure virtual!");
-#define UNREACHABLE(msg)      assert(false && msg);
-
-#endif
+#endif // BOX2D_RAYCAST_CALLBACK_H

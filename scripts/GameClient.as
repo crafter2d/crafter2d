@@ -55,7 +55,7 @@ class GameClient extends Client
 			
 			world.setFollowMode(0);
 			world.setObjectLayer(0);
-			world.setFollowObject(controller);
+			world.setFollowActor(controller);
 			world.setFollowBorders(150, 650, 100, 500);
 		}
 	}

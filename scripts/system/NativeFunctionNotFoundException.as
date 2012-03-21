@@ -1,5 +1,5 @@
 
-package System;
+package system;
 
 class NativeFunctionNotFoundException extends Throwable
 {

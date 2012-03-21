@@ -407,6 +407,9 @@ void World::addEntity(Entity* pentity)
    mEntities[pentity->getId()] = pentity;
 
    notifyEntityAdded(*pentity);
+
+   mpScript->addParam("Entity", pentity);
+   mpScript->run("onEntityAdded");
 }
 
 void World::removeEntity(Id id)
