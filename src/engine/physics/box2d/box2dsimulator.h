@@ -30,8 +30,11 @@ struct b2Vec2;
 class Object;
 class Vector;
 
+class Box2DJoint;
 class Box2DRevoluteJoint;
 class Box2DRevoluteJointDefinition;
+class Box2DRopeJoint;
+class Box2DRopeJointDefinition;
 
 class Box2DSimulator : public Simulator
 {
@@ -58,6 +61,7 @@ public:
    virtual void  removeBody(Body& body);
 
    Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);
+   Box2DRopeJoint&     createRopeJoint(Box2DRopeJointDefinition& definition);
 
  // update
    virtual void run(float timestep);
@@ -67,7 +71,7 @@ protected:
    virtual void notifyWorldChanged();
 
 private:
-   typedef std::vector<Box2DRevoluteJoint*> Joints;
+   typedef std::vector<Box2DJoint*> Joints;
 
    b2World*             mpb2World;
    Box2DContactListener mContactListener;

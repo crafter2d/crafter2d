@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,34 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef BOX2D_REVOLUTE_JOINT_H_
-#define BOX2D_REVOLUTE_JOINT_H_
+#ifndef BOX2D_ROPE_JOINT_H_
+#define BOX2D_ROPE_JOINT_H_
 
 #include "core/math/vector.h"
 
 #include "box2djoint.h"
 
 class Box2DBody;
-class b2RevoluteJoint;
+class b2RopeJoint;
 
-class Box2DRevoluteJointDefinition
+class Box2DRopeJointDefinition
 {
 public:
-   Box2DRevoluteJointDefinition();
+   Box2DRopeJointDefinition();
 
    Box2DBody* pleft;
    Box2DBody* pright;
-   Vector anchor;
+   Vector     anchorLeft;
+   Vector     anchorRight;
 };
 
-
-class Box2DRevoluteJoint : public Box2DJoint
+class Box2DRopeJoint : public Box2DJoint
 {
 public:
-   Box2DRevoluteJoint(b2RevoluteJoint& joint);
+   Box2DRopeJoint(b2RopeJoint& joint);
 
 private:
-   b2RevoluteJoint& mJoint;
+   b2RopeJoint& mJoint;
 };
 
-#endif
+#endif // BOX2D_ROPE_JOINT_H_

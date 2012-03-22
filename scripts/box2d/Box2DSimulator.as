@@ -7,4 +7,5 @@ public class Box2DSimulator
    public native boolean lineOfSight(Actor from, Actor to);
    
    public native void createRevoluteJoint(Box2DRevoluteJointDefinition definition);
+   public native void createRopeJoint(Box2DRopeJointDefinition definition);
 }

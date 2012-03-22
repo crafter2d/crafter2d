@@ -236,6 +236,9 @@ void Game::runFrame()
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
+   static float start = 0;
+   static unsigned int frame = 0;
+
    mScriptManager.update(delta);
    if ( !isActive() )
       return;
@@ -243,6 +246,15 @@ void Game::runFrame()
    ASSERT_PTR(mpScript);
    mpScript->addParam(delta);
    mpScript->run("run");
+
+   frame++;
+   start += timerdelta.getDelta();
+   if ( start >= 1.0f )
+   {
+      std::cout << "Fps: " << frame << std::endl;
+      start = 0;
+      frame = 0;
+   }
 
    Profiler::getInstance().end();
    // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());

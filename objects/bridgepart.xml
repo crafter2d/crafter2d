@@ -6,7 +6,7 @@
    <animations count=1 speed=125>
       <anim1 length=1>0</anim1>
    </animations>
-   <body inertia="1" mass="80">
+   <body inertia="1" mass="1">
       <shape type="box" halfx="6" halfy="4" />
    </body>
 </object>

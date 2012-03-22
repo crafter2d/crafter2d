@@ -30,6 +30,7 @@
 #include "physics/box2d/box2dbody.h"
 #include "physics/box2d/box2dsimulator.h"
 #include "physics/box2d/box2drevolutejoint.h"
+#include "physics/box2d/box2dropejoint.h"
 
 #include "ui/graphics.h"
 #include "ui/font.h"
@@ -715,6 +716,15 @@ void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAcc
    simulator.createRevoluteJoint(*pjointdef);
 }
 
+void Box2DSimulator_createRopeJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DSimulator, simulator);
+
+   Box2DRopeJointDefinition* pjointdef = (Box2DRopeJointDefinition*) accessor.getObject(1)->getNativeObject();
+
+   simulator.createRopeJoint(*pjointdef);
+}
+
 void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Box2DBody, body);
@@ -789,6 +799,80 @@ void Box2DRevoluteJointDefinition_setAnchor(VirtualMachine& machine, VirtualStac
    GET_THIS(Box2DRevoluteJointDefinition, joint);
 
    joint.anchor = *(Vector*)accessor.getObject(1)->getNativeObject();
+}
+
+void Box2DRopeJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+
+   Box2DRopeJointDefinition* pjointdef = new Box2DRopeJointDefinition();
+   machine.registerNative(thisobject, pjointdef);
+   thisobject->setOwner(true);
+}
+
+void Box2DRopeJointDefinition_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(Box2DRopeJointDefinition);
+}
+
+void Box2DRopeJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   RETURN_CLASS("box2d.Box2DBody", Box2DBody, joint.pleft);
+}
+
+void Box2DRopeJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   VirtualObjectReference& left = accessor.getObject(1);
+
+   joint.pleft = (Box2DBody*)left->getNativeObject();
+}
+
+void Box2DRopeJointDefinition_getRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   RETURN_CLASS("box2d.Box2DBody", Box2DBody, joint.pright);
+}
+
+void Box2DRopeJointDefinition_setRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   VirtualObjectReference& right = accessor.getObject(1);
+
+   joint.pright = (Box2DBody*)right->getNativeObject();
+}
+
+void Box2DRopeJointDefinition_getLocalAnchorLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   RETURN_CLASS("Vector2D", Vector, &joint.anchorLeft);
+}
+
+void Box2DRopeJointDefinition_setLocalAnchorLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   joint.anchorLeft = *(Vector*)accessor.getObject(1)->getNativeObject();
+}
+
+void Box2DRopeJointDefinition_getLocalAnchorRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   RETURN_CLASS("Vector2D", Vector, &joint.anchorRight);
+}
+
+void Box2DRopeJointDefinition_setLocalAnchorRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   joint.anchorRight = *(Vector*)accessor.getObject(1)->getNativeObject();
 }
 
 void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1058,12 +1142,14 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Player_native_setController", Player_native_setController);
 
    registrator.addCallback("Vector2D_init", Vector2D_init);
+   registrator.addCallback("Vector2D_destruct", Vector2D_destruct);
    registrator.addCallback("Vector2D_getX", Vector2D_getX);
    registrator.addCallback("Vector2D_setX", Vector2D_setX);
    registrator.addCallback("Vector2D_getY", Vector2D_getY);
    registrator.addCallback("Vector2D_setY", Vector2D_setY);
 
    registrator.addCallback("World_init", World_init);
+   registrator.addCallback("World_destruct", World_destruct);
    registrator.addCallback("World_getName", World_getName);
    registrator.addCallback("World_add", World_add);
    registrator.addCallback("World_setObjectLayer", World_setObjectLayer);
@@ -1075,10 +1161,12 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("World_findEntity", World_findEntity);
 
    registrator.addCallback("InputForceGenerator_init", InputForceGenerator_init);
+   registrator.addCallback("InputForceGenerator_destruct", InputForceGenerator_destruct);
    registrator.addCallback("InputForceGenerator_setVelocity", InputForceGenerator_setVelocity);
    registrator.addCallback("InputForceGenerator_setImpulse", InputForceGenerator_setImpulse);
 
    registrator.addCallback("InputController_init", InputController_init);
+   registrator.addCallback("InputController_destruct", InputController_destruct);
    registrator.addCallback("InputController_setActionMap", InputController_setActionMap);
 
    registrator.addCallback("AIController_init", AIController_init);
@@ -1086,6 +1174,7 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("Box2DSimulator_lineOfSight", Box2DSimulator_lineOfSight);
    registrator.addCallback("Box2DSimulator_createRevoluteJoint", Box2DSimulator_createRevoluteJoint);
+   registrator.addCallback("Box2DSimulator_createRopeJoint", Box2DSimulator_createRopeJoint);
 
    registrator.addCallback("Box2DBody_addForceGenerator", Box2DBody_addForceGenerator);
    registrator.addCallback("Box2DBody_generateSensors", Box2DBody_generateSensors);
@@ -1098,6 +1187,17 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Box2DRevoluteJointDefinition_setRight", Box2DRevoluteJointDefinition_setRight);
    registrator.addCallback("Box2DRevoluteJointDefinition_getAnchor", Box2DRevoluteJointDefinition_getAnchor);
    registrator.addCallback("Box2DRevoluteJointDefinition_setAnchor", Box2DRevoluteJointDefinition_setAnchor);
+
+   registrator.addCallback("Box2DRopeJointDefinition_init", Box2DRopeJointDefinition_init);
+   registrator.addCallback("Box2DRopeJointDefinition_destruct", Box2DRopeJointDefinition_destruct);
+   registrator.addCallback("Box2DRopeJointDefinition_getLeft", Box2DRopeJointDefinition_getLeft);
+   registrator.addCallback("Box2DRopeJointDefinition_setLeft", Box2DRopeJointDefinition_setLeft);
+   registrator.addCallback("Box2DRopeJointDefinition_getRight", Box2DRopeJointDefinition_getRight);
+   registrator.addCallback("Box2DRopeJointDefinition_setRight", Box2DRopeJointDefinition_setRight);
+   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorLeft", Box2DRopeJointDefinition_getLocalAnchorLeft);
+   registrator.addCallback("Box2DRopeJointDefinition_setLocalAnchorLeft", Box2DRopeJointDefinition_setLocalAnchorLeft);
+   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorRight", Box2DRopeJointDefinition_getLocalAnchorRight);
+   registrator.addCallback("Box2DRopeJointDefinition_setLocalAnchorRight", Box2DRopeJointDefinition_setLocalAnchorRight);
 
    registrator.addCallback("ActionMap_init", ActionMap_init);
    registrator.addCallback("ActionMap_destruct", ActionMap_destruct);

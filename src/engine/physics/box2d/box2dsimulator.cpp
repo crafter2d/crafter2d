@@ -29,6 +29,7 @@
 #include "box2dbody.h"
 #include "box2draycastcallback.h"
 #include "box2drevolutejoint.h"
+#include "box2dropejoint.h"
 
 // static
 Vector Box2DSimulator::b2ToVector(const b2Vec2& b2)
@@ -97,6 +98,24 @@ Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefini
    b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpb2World->CreateJoint(&jd));
 
    Box2DRevoluteJoint* pjoint = new Box2DRevoluteJoint(*pb2joint);
+
+   mJoints.push_back(pjoint);
+
+   return *pjoint;
+}
+
+Box2DRopeJoint& Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& definition)
+{
+   b2RopeJointDef jd;
+   jd.bodyA = &definition.pleft->getBody();
+   jd.bodyB = &definition.pright->getBody();
+   jd.localAnchorA = vectorToB2(definition.anchorLeft);
+   jd.localAnchorB = vectorToB2(definition.anchorRight);
+   jd.maxLength = 0.06f; // == 2 pixels (> b2_linearSlop)
+
+   b2RopeJoint* pb2joint = static_cast<b2RopeJoint*>(mpb2World->CreateJoint(&jd));
+
+   Box2DRopeJoint* pjoint = new Box2DRopeJoint(*pb2joint);
 
    mJoints.push_back(pjoint);
 
