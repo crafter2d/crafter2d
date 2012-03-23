@@ -30,6 +30,7 @@ Box2DRevoluteJointDefinition::Box2DRevoluteJointDefinition():
 }
 
 Box2DRevoluteJoint::Box2DRevoluteJoint(b2RevoluteJoint& joint):
+   Box2DJoint(),
    mJoint(joint)
 {
 }

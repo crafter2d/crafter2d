@@ -167,7 +167,8 @@ std::string VirtualClass::getNativeClassName() const
 {
    if ( isNative() )
    {
-      return mName;
+      // we are only interested in the name of the class, not the package as well
+      return mpDefinition->getName();
    }
 
    return hasBaseClass() ? getBaseClass().getNativeClassName() : "";

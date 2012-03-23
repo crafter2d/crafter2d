@@ -1369,20 +1369,15 @@ VirtualArrayReference VirtualMachine::instantiateArray()
 void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnative)
 {
    ASSERT(!object->hasNativeObject());
+   object->setNativeObject(pnative);
 
-   NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
-   if ( it == mNativeObjects.end() )
-   {
-      std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObjectReference>(pnative, object));
-      ASSERT(ret.second);
-
-      object->setNativeObject(pnative);
-   }
+   std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObjectReference>(pnative, object));
+   ASSERT(ret.second);
 }
 
 void VirtualMachine::unregisterNative(VirtualObjectReference& object)
 {
-   if ( object.uses() == 2 )
+   if ( object.uses() <= 2 )
    {
       ASSERT(object->hasNativeObject());
 
@@ -1535,12 +1530,13 @@ void VirtualMachine::shrinkStack(int newsize)
 
    if ( diff > 0 )
    {
-      Stack::iterator it = mStack.begin() + newsize;
+      Stack::iterator it = mStack.begin() + newsize + 1;
       for ( ; it != mStack.end(); ++it )
       {
-         if ( mStack.back().isObject() )
+         Variant& variant = *it;
+         if ( variant.isObject() )
          {
-            VirtualObjectReference& ref = mStack.back().asObject();
+            VirtualObjectReference& ref = variant.asObject();
             if ( ref.isUnique() || (ref->hasNativeObject() && ref.uses() == 2) )
             {
                mGC.collect(ref);
