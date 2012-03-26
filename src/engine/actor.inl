@@ -154,6 +154,16 @@ INLINE Controller& Actor::getController()
    return *mpController;
 }
 
+const std::string& Actor::getType() const
+{
+   return mType;
+}
+
+void Actor::setType(const std::string& type)
+{
+   mType = type;
+}
+
 INLINE void Actor::setTexture(TexturePtr texture)
 {
    this->texture = texture;

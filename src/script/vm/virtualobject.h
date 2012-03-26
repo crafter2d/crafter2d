@@ -30,7 +30,8 @@ class VirtualMachine;
 class SCRIPT_API VirtualObject
 {
 public:
-   explicit VirtualObject();
+   VirtualObject();
+   VirtualObject(const VirtualObject& that);
    ~VirtualObject();
    
  // get/set
@@ -42,12 +43,16 @@ public:
    bool isOwner() const;
    void setOwner(bool owned);
 
+   bool isShared() const;
+   void setShared(bool shared);
+
  // query
    const VirtualClass& getClass() const;
    void                setClass(const VirtualClass& definition);
 
  // operation
    void initialize(int variables);
+   VirtualObject* clone() const;
    Variant& getMember(int index);
    void setMember(int index, const Variant& value);
 
@@ -56,9 +61,10 @@ private:
  // members
    const VirtualClass*     mpClass;
    void*                   mpNativeObject;
-   bool                    mOwnsNative;
    Variant*                mpMembers;
    int                     mMemberCount;
+   bool                    mOwnsNative;
+   bool                    mShared;
 };
 
 #endif // VIRTUAL_OBJECT_H_

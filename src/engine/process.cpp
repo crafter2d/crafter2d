@@ -49,6 +49,14 @@ Process::Process():
 
 Process::~Process()
 {
+   delete mpScript;
+   mpScript = NULL;
+
+   delete mpScriptManager;
+   mpScriptManager = NULL;
+
+   delete actionMap;
+   actionMap = NULL;
 }
 
 // - Get/set
@@ -70,9 +78,18 @@ void Process::setWorld(World* pworld)
 
 // - Operations
 
-bool Process::create(const std::string& name)
+bool Process::create(const VirtualObjectReference& self)
 {
-   return initializeScript(name);
+   if ( mpScriptManager == NULL )
+   {
+      // throw exception with warning that the scriptmanager must be set first
+      return false;
+   }
+
+   mpScript = new Script(getScriptManager());
+   mpScript->setThis(getScriptManager().shareObject(self));
+   
+   return true;
 }
 
 bool Process::destroy()
@@ -82,31 +99,10 @@ bool Process::destroy()
    return true;
 }
 
-bool Process::initializeScript(const std::string& name)
-{
-   ASSERT_PTR(mpScriptManager);
-      
-   mpScript = getScriptManager().loadClass(name);
-   if ( mpScript == NULL )
-   {
-      Log& log = Log::getInstance();
-      log << "Failed to load the " << name.c_str() << " class.";
-      return false;
-   }
-
-   return true;
-}
-
 // - Notifications
 
 void Process::notifyWorldChanged()
 {
-}
-
-void Process::setObject(const VirtualObjectReference& object)
-{
-   ASSERT_PTR(mpScript);
-   mpScript->setThis(object);
 }
 
 // - Get/set

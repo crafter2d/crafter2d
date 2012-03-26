@@ -119,12 +119,14 @@ Actor* ActorLoader::load(const std::string& filename)
 
    // create the actual scripted object
    const std::string* pclasstype = pobject->Attribute(std::string("type"));
-   AutoPtr<Script> script = getProcess().getScriptManager().loadNative(pclasstype != NULL ? *pclasstype : "Actor", actor.getPointer(), false);
+   actor->setType(pclasstype != NULL ? *pclasstype : "Actor");
+
+   AutoPtr<Script> script = getProcess().getScriptManager().loadNative(actor->getType(), actor.getPointer(), false);
    if ( !script.hasPointer() )
    {
       throw new InvalidContentException("Type " + *pclasstype + " is not a valid class name.");
    }
    script->run("onCreated");
-
+   
    return actor.release();
 }

@@ -46,7 +46,7 @@ public:
    explicit       Process();
    virtual        ~Process();
 
-   virtual bool   create(const std::string& name);
+   virtual bool   create(const VirtualObjectReference& self);
    virtual bool   destroy();
    virtual void   update (float delta);
 
@@ -74,8 +74,6 @@ public:
 
  // operations
    void sendScriptEvent(BitStream* stream, uint client=INVALID_CLIENTID);
-
-   void setObject(const VirtualObjectReference& object);
    
   // events
    virtual int    allowNewConnection();
@@ -93,7 +91,6 @@ protected:
    bool              initialized;
 
 private:
-   bool initializeScript(const std::string& name);
 
  // members
    World*      mpWorld;

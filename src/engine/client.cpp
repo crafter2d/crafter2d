@@ -77,9 +77,9 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create(const std::string& name)
+bool Client::create(const VirtualObjectReference& self)
 {
-   bool success = Process::create(name);
+   bool success = Process::create(self);
    if ( success )
    {
       ASSERT_PTR(mpWindow);

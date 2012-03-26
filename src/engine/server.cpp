@@ -56,11 +56,6 @@ Server::~Server()
 {
 }
 
-bool Server::create(const std::string& name)
-{
-   return Process::create(name);
-}
-
 bool Server::destroy()
 {
    if (conn.isConnected())

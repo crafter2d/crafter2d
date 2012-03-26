@@ -47,9 +47,8 @@ void ActionMap::setProcess(Process& process)
 {
    mpProcess = &process;
 
-   mpScript = process.getScriptManager().loadClass("ActionMap");
+   mpScript = process.getScriptManager().loadNative("ActionMap", this, false);
    ASSERT_PTR(mpScript);
-   mpScript->setThis(this);
 }
 
 // - Operations

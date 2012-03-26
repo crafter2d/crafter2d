@@ -67,27 +67,25 @@ void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Process, process);
    
-   const std::string& name = accessor.getString(1);
+   const VirtualObjectReference& self = accessor.getObject(1);
 
-   accessor.setResult(process.create(name));
+   accessor.setResult(process.create(self));
+}
+
+void Process_getScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Process, process);
+
+   RETURN(ScriptManager, &process.getScriptManager());
 }
 
 void Process_setScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Process, process);
 
-   ScriptManager* pscriptmanager = (ScriptManager*) accessor.getObject(1)->getNativeObject();
+   ScriptManager* pscriptmanager = static_cast<ScriptManager*>(accessor.getObject(1)->useNativeObject());
 
    process.setScriptManager(pscriptmanager);
-}
-
-void Process_setObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-
-   VirtualObjectReference& object = accessor.getObject(1);
-
-   process.setObject(object);
 }
 
 void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -276,7 +274,16 @@ void ScriptManager_spawnChild(VirtualMachine& machine, VirtualStackAccessor& acc
 {
    GET_THIS(ScriptManager, scriptmanager);
 
-   RETURN(ScriptManager, scriptmanager.spawnChild());
+   RETURN_OWNED(ScriptManager, scriptmanager.spawnChild());
+}
+
+void ScriptManager_shareObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(ScriptManager, scriptmanager);
+
+   VirtualObjectReference& object = accessor.getObject(1);
+
+   scriptmanager.shareObject(object);
 }
 
 void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -287,10 +294,6 @@ void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& ac
 
    Entity* presult = contentmanager.loadEntity(filename);
    RETURN_OWNED(Entity, presult);
-   //VirtualObjectReference ref(machine.lookupNative(presult));
-   //ref->setOwner(true);
-
-   //accessor.setResult(ref);
 }
 
 void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1082,8 +1085,8 @@ void script_engine_register(ScriptManager& manager)
    ScriptRegistrator registrator;
 
    registrator.addCallback("Process_create", Process_create);
+   registrator.addCallback("Process_getScriptManager", Process_getScriptManager);
    registrator.addCallback("Process_setScriptManager", Process_setScriptManager);
-   registrator.addCallback("Process_setObject", Process_setObject);
    registrator.addCallback("Process_getFont", Process_getFont);
    registrator.addCallback("Process_getTexture", Process_getTexture);
    registrator.addCallback("Process_getContentManager", Process_getContentManager);
@@ -1112,6 +1115,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("ContentManager_load", ContentManager_load);
 
    registrator.addCallback("ScriptManager_spawnChild", ScriptManager_spawnChild);
+   registrator.addCallback("ScriptManager_shareObject", ScriptManager_shareObject);
 
    registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
 

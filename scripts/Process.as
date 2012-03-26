@@ -14,10 +14,10 @@ abstract class Process
 	
 	// natives
 	
-	private native boolean create(string name);
-	private native void setObject(Object self);
+	private native boolean create(Object self);
 	
-	public native void setScriptManager(ScriptManager manager);
+	public native ScriptManager getScriptManager();
+	public native void setScriptManager(ScriptManager scriptmanager);
 	public native Font getFont(string name, int size);
 	public native Texture getTexture(string name);
 	public native ContentManager getContentManager();
@@ -26,14 +26,9 @@ abstract class Process
 	
 	public boolean create()
 	{		
-		string classname = this.class.getName();
-		boolean success = create(classname);
+		boolean success = create(this);
 		if ( success )
-		{
-			// Let the process now this object so it can be used in
-			// both the process space as in the game space.
-			setObject(this);
-			
+		{	
 			// Register the messages
 			registerMessages(mMessageMap);
 		}

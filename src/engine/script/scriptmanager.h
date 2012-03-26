@@ -96,6 +96,7 @@ class ENGINE_API ScriptManager
 
 public:   
    ScriptManager();
+   ~ScriptManager();
 
    bool                    initialize();
    void                    destroy();
@@ -104,8 +105,6 @@ public:
    const VirtualObjectReference& getObject(const void* pobject) const;
 
  // loading
-   Script*                 loadClass(const std::string& classname);
-   Script*                 loadExpression(const std::string& expression);
    Script*                 loadNative(const std::string& classname, void* pobject, bool owned);
    
  // execution
@@ -118,7 +117,8 @@ public:
    void                    unscheduleAll();
 
  // operations
-   ScriptManager*          spawnChild() const;
+   ScriptManager*          spawnChild();
+   VirtualObjectReference  shareObject(const VirtualObjectReference& origin);
 
  // function interface
    bool                    hasFunction(const std::string& name) const;
@@ -144,6 +144,7 @@ private:
    Script*           mpScript;
    Requests          requests;
    uint              job;
+   bool              mChild;
 };
 
 #endif // SCRIPT_MANAGER_H_

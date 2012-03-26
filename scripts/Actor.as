@@ -96,6 +96,11 @@ class Actor extends Entity implements Collidable
 		}
 	}
 	
+	// called from the AIController
+	public void updateAI(World world)
+	{
+	}
+	
 	// Natives
 	
 	private native Actor();

@@ -6,6 +6,7 @@
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
 
+#include "actor.h"
 #include "process.h"
 
 AIController::AIController(Process& process):
@@ -18,7 +19,7 @@ AIController::AIController(Process& process):
 
 void AIController::performAction(Actor& actor)
 {
-   AutoPtr<Script> script = mProcess.getScriptManager().loadNative("Actor", &actor, false);
+   AutoPtr<Script> script = mProcess.getScriptManager().loadNative(actor.getType(), &actor, false);
 
    script->addParam(mProcess.getScriptManager().getObject(&mProcess.getWorld()));
    script->run("updateAI");

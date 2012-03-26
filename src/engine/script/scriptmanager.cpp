@@ -37,20 +37,37 @@
 
 ScriptManager::ScriptManager():
    mpVirtualContext(new VirtualContext()),
-   mpVirtualMachine(new VirtualMachine(*mpVirtualContext)),
+   mpVirtualMachine(NULL),
    mpScript(NULL),
    requests(),
-   job(0)
+   job(0),
+   mChild(false)
 {
 }
 
 ScriptManager::ScriptManager(VirtualContext& context):
    mpVirtualContext(&context),
-   mpVirtualMachine(new VirtualMachine(*mpVirtualContext)),
+   mpVirtualMachine(NULL),
    mpScript(NULL),
    requests(),
-   job(0)
+   job(0),
+   mChild(true)
 {
+}
+
+ScriptManager::~ScriptManager()
+{
+   delete mpScript;
+   mpScript = NULL;
+
+   delete mpVirtualMachine;
+   mpVirtualMachine = NULL;
+
+   if ( !mChild )
+   {
+      delete mpVirtualContext;
+      mpVirtualContext = NULL;
+   }
 }
 
 /// \fn ScriptManager::initialize()
@@ -59,11 +76,13 @@ ScriptManager::ScriptManager(VirtualContext& context):
 /// \returns false if the Lua state could not be created, true otherwise
 bool ScriptManager::initialize()
 {
+   ASSERT_PTR(mpVirtualContext);
+   mpVirtualMachine = new VirtualMachine(*mpVirtualContext);
    mpVirtualMachine->initialize();
 
    script_engine_register(*this);
 
-   mpScript = loadClass("ScriptManager");
+   mpScript = loadNative("ScriptManager", this, false);
 	return mpScript != NULL;
 }
 
@@ -93,37 +112,37 @@ const VirtualObjectReference& ScriptManager::getObject(const void* pobject) cons
 
 // - Loading
 
-Script* ScriptManager::loadClass(const std::string& classname)
+Script* ScriptManager::loadNative(const std::string& classname, void* pobject, bool owned)
 {
-   ASSERT_PTR(mpVirtualMachine);
-   if ( !mpVirtualMachine->loadClass(classname) )
+   VirtualObjectReference object = mpVirtualMachine->instantiateNative(classname, pobject, owned);
+   if ( object.isNull() )
    {
-      // std::string error = "Could not load class " + classname;
       return NULL;
    }
 
-   Script* pscript = new Script(*this, classname);
+   Script* pscript(new Script(*this));
+   pscript->setThis(object);
    return pscript;
 }
 
-Script* ScriptManager::loadExpression(const std::string& expression)
+
+// - Operations
+
+ScriptManager*  ScriptManager::spawnChild()
 {
-   AutoPtr<Script> script(new Script(*this));
-
-   mpVirtualMachine->loadExpression(expression);
-
-   return script.release();
+   ASSERT_PTR(mpVirtualContext);
+   ScriptManager* pmanager = new ScriptManager(*mpVirtualContext);
+   if ( !pmanager->initialize() )
+   {
+      delete pmanager;
+      pmanager = NULL;
+   }
+   return pmanager;
 }
 
-Script* ScriptManager::loadNative(const std::string& classname, void* pobject, bool owned)
+VirtualObjectReference ScriptManager::shareObject(const VirtualObjectReference& origin)
 {
-   AutoPtr<Script> script(new Script(*this));
-
-   VirtualObjectReference object = mpVirtualMachine->instantiateNative(classname, pobject, owned);
-
-   script->setThis(object);
-
-   return script.release();
+   return mpVirtualMachine->instantiateShare(origin);
 }
 
 /// \fn ScriptManager::executeScript(const std::string& classname, const std::string& function)
@@ -201,16 +220,6 @@ void ScriptManager::unschedule(uint jobid)
 void ScriptManager::unscheduleAll()
 {
    requests.clear();
-}
-
-// - Operations
-
-ScriptManager* ScriptManager::spawnChild() const
-{
-   AutoPtr<ScriptManager> manager = new ScriptManager(*mpVirtualContext);
-   script_engine_register(*manager);
-
-   return manager.release();
 }
 
 //-----------------------------------------

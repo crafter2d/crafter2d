@@ -39,9 +39,10 @@ INLINE ScriptManager& Process::getScriptManager()
    ASSERT_PTR(mpScriptManager);
    return *mpScriptManager;
 }
- 
+
 INLINE void Process::setScriptManager(ScriptManager* pscriptmanager)
 {
+   delete mpScriptManager;
    mpScriptManager = pscriptmanager;
 }
 

@@ -6,6 +6,8 @@ class GameServer extends Server
 {
 	private boolean mStarted = false;
 	private Player mPlayer;
+	private Hero   mHero;
+	private Grudge mGrudge;
 	
 	public GameServer()
 	{
@@ -35,13 +37,13 @@ class GameServer extends Server
 		
 		setWorld(world);
 		
-		Actor controller = createPlayer(player);
-		player.setController(controller);
+		mHero = createPlayer(player);
+		player.setController(mHero);
 		
 		createObjects();
 	}
 	
-	private Actor createPlayer(Player player)
+	private Hero createPlayer(Player player)
 	{
 		Vector2D position = new Vector2D();
 		position.set(100, 30);
@@ -86,7 +88,8 @@ class GameServer extends Server
 		
 		Vector2D pos = new Vector2D();
 		pos.set(180.0, 30);
-		Grudge grudge = (Grudge) Actor.construct(this, "grudge1", pos, "../objects/grudge.xml");
-		grudge.setController(new AIController(this));
+		
+		mGrudge = (Grudge) Actor.construct(this, "grudge1", pos, "../objects/grudge.xml");
+		mGrudge.setController(new AIController(this));
 	}
 }

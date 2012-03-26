@@ -14,7 +14,7 @@ class ArrayList<T> implements Iterable<T>
 	{
 		super();
 		
-		mArray = new Object[100];
+		mArray = new Object[16];
 		mElements = 0;
 	}
 	
@@ -29,6 +29,10 @@ class ArrayList<T> implements Iterable<T>
 	
 	public void add(T element)
 	{
+		if ( mElements >= mArray.length )
+		{
+			mArray.resize(mArray.length * 2);
+		}
 		mArray[mElements++] = element;
 	}
 	

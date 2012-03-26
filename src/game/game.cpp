@@ -193,14 +193,13 @@ void Game::run()
  */
 bool Game::initGame()
 {
-   mpScript = mScriptManager.loadClass("Game");
+   mpScript = mScriptManager.loadNative("Game", this, false);
    if ( mpScript == NULL )
    {
       // failed to load the Game class (or any depending class)
       return false;
    }
 
-   mpScript->setThis(this);
    mpScript->run("initialize");
    if ( !mpScript->getBoolean() )
    {

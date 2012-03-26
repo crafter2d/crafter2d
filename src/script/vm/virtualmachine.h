@@ -100,6 +100,15 @@ public:
       return value.asObject();
    }
 
+   VirtualArrayReference& getArray(int argument) const {
+      Variant& value = getArgument(argument);
+
+      if ( !value.isArray() )
+         throw std::exception();
+
+      return value.asArray();
+   }
+
  // return value
    bool hasResult() {
       return !mResult.isEmpty();
@@ -110,7 +119,10 @@ public:
    }
 
    void setResult(const VirtualObjectReference& object) {
-      mResult = Variant(object);
+      if ( !object.isNull() )
+      {
+         mResult = Variant(object);
+      }
    }
 
    void setResult(int value) {
@@ -162,7 +174,6 @@ public:
 
  // loading
    bool loadClass(const std::string& classname);
-   bool loadExpression(const std::string& expression);
 
    void registerCallback(const std::string& name, callbackfnc callback);
 
@@ -188,6 +199,7 @@ public:
  // object instantation
    VirtualObjectReference instantiate(const std::string& classname, int constructor = 2, void* pobject = NULL);
    VirtualObjectReference instantiateNative(const std::string& classname, void* pobject, bool owned = true);
+   VirtualObjectReference instantiateShare(const VirtualObjectReference& origin);
    VirtualArrayReference  instantiateArray();
 
  // observing

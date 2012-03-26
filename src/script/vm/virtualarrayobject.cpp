@@ -3,6 +3,8 @@
 
 #include <exception>
 
+#include "core/defines.h"
+
 #include "script/common/variant.h"
 
 VirtualArrayObject::VirtualArrayObject():
@@ -52,6 +54,24 @@ void VirtualArrayObject::addLevel(int size)
 {
    mpArray = new Variant[size];
    mSize   = size;
+}
+
+void VirtualArrayObject::resize(int newsize)
+{
+   if ( mSize != newsize )
+   {
+      int count = MIN(mSize, newsize);
+
+      Variant* parray = new Variant[newsize];
+      for ( int index = 0; index < count; index++ )
+      {
+         parray[index] = mpArray[index];
+      }
+
+      delete[] mpArray;
+      mpArray = parray;
+      mSize   = newsize;
+   }
 }
 
 // - Downcast

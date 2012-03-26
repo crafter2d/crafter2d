@@ -50,8 +50,8 @@ void Console_print(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference thisobject = accessor.getThis();
-   VirtualObjectReference classobject = accessor.getObject(1);
+   VirtualObjectReference& thisobject = accessor.getThis();
+   VirtualObjectReference& classobject = accessor.getObject(1);
 
    std::string name = classobject->getMember(0).asString();
    VirtualObjectReference object = machine.instantiate(name);
@@ -61,8 +61,8 @@ void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor
 
 void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference thisobject = accessor.getThis();
-   VirtualObjectReference instance = accessor.getObject(1);
+   VirtualObjectReference& thisobject = accessor.getThis();
+   VirtualObjectReference& instance = accessor.getObject(1);
 
    std::string fncname = thisobject->getMember(0).asString();
 
@@ -71,11 +71,20 @@ void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference thisobject = accessor.getThis();
+   VirtualObjectReference& thisobject = accessor.getThis();
 
    std::string callstack = machine.buildCallStack();
 
    accessor.setResult(callstack);
+}
+
+void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualArrayReference& thisobject = accessor.getArray(0);
+
+   int newsize = accessor.getInt(1);
+
+   thisobject->resize(newsize);
 }
 
 VirtualMachine::VirtualMachine(VirtualContext& context):
@@ -99,6 +108,7 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mNatives.insert(std::pair<std::string, callbackfnc>("Class_doNewInstance", Class_doNewInstance));
    mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
    mNatives.insert(std::pair<std::string, callbackfnc>("Throwable_fillCallStack", Throwable_fillCallStack));
+   mNatives.insert(std::pair<std::string, callbackfnc>("InternalArray_resize", InternalArray_resize));
 }
 
 VirtualMachine::~VirtualMachine()
@@ -123,10 +133,10 @@ void VirtualMachine::initialize()
    mLoaded = true;
 
    // register the loaded classes with the ClassLoader instance
-   std::vector<VirtualClass*> array = mContext.mClassTable.asArray();
-   for ( std::size_t index = 0; index < array.size(); index++ )
+   std::vector<VirtualClass*> classes = mContext.mClassTable.asArray();
+   for ( std::size_t index = 0; index < classes.size(); index++ )
    {
-      VirtualClass* pclass = array[index];
+      VirtualClass* pclass = classes[index];
       createClass(*pclass);
    }
 }
@@ -148,11 +158,6 @@ const VirtualObjectReference& VirtualMachine::getNativeObject(void* pobject) con
 bool VirtualMachine::loadClass(const std::string& classname)
 {
    return doLoadClass(classname) != NULL;
-}
-
-bool VirtualMachine::loadExpression(const std::string& expression)
-{
-   return true;
 }
 
 void VirtualMachine::registerCallback(const std::string& name, callbackfnc callback)
@@ -256,7 +261,18 @@ void VirtualMachine::execute(const VirtualObjectReference& object, const std::st
    else
       mStack.push_back(objectvariant);
 
-   execute(vclass, *pentry);
+   try
+   {
+      execute(vclass, *pentry);
+   }
+   catch ( VirtualException* pexception )
+   {
+      displayException(*pexception);
+   }
+   catch ( ... )
+   {
+      // ooops
+   }
 
    // for now run the garbage collector here. have to find the right spot for it.
    mGC.gc(*this);
@@ -397,6 +413,13 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
                const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
 
                execute(theclass, entry);
+            }
+            else if ( object.isArray() )
+            {
+               const VirtualClass& theclass = mContext.mClassTable.resolve("system.InternalArray");
+               const VirtualFunctionTableEntry* pentry = theclass.getVirtualFunctionTable().findByName("resize");
+
+               execute(theclass, *pentry);
             }
             else
             {
@@ -1321,8 +1344,7 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
 {
    if ( pobject == NULL )
    {
-      // TODO: a native object is now still being created, need to prefend that some way
-      return VirtualObjectReference(instantiate(classname, -1));
+      return VirtualObjectReference();
    }
 
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
@@ -1343,6 +1365,15 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
    mNativeObjects[pobject] = object;
 
    return object;
+}
+
+VirtualObjectReference VirtualMachine::instantiateShare(const VirtualObjectReference& origin)
+{
+   VirtualObjectReference share = origin->clone();
+
+   mNativeObjects[share->getNativeObject()] = share;
+
+   return share;
 }
 
 VirtualObjectReference VirtualMachine::lookupNative(void* pobject)

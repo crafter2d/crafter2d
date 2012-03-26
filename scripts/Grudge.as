@@ -36,6 +36,6 @@ class Grudge extends Actor
 	// called from the AIController
 	public void updateAI(World world)
 	{
-		mState = mState.perform(this, world.getFollowActor());
+		mState = mState.perform(this, null); // world.getFollowActor());
 	}
 }

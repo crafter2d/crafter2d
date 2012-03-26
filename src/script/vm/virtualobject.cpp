@@ -30,16 +30,30 @@
 VirtualObject::VirtualObject():
    mpClass(NULL),
    mpNativeObject(NULL),
-   mOwnsNative(true),
    mpMembers(NULL),
-   mMemberCount(0)
+   mMemberCount(0),
+   mOwnsNative(true),
+   mShared(false)
+{
+}
+
+VirtualObject::VirtualObject(const VirtualObject& that):
+   mpClass(that.mpClass),
+   mpNativeObject(that.mpNativeObject),
+   mpMembers(that.mpMembers),
+   mMemberCount(that.mMemberCount),
+   mOwnsNative(false),
+   mShared(true)
 {
 }
 
 VirtualObject::~VirtualObject()
 {
-   delete[] mpMembers;
-   mpMembers = NULL;
+   if ( !mShared )
+   {
+      delete[] mpMembers;
+      mpMembers = NULL;
+   }
 
    ASSERT(!mOwnsNative || mpNativeObject == NULL);
 }
@@ -80,6 +94,16 @@ void VirtualObject::setOwner(bool owned)
    mOwnsNative = owned;
 }
 
+bool VirtualObject::isShared() const
+{
+   return mShared;
+}
+
+void VirtualObject::setShared(bool shared)
+{
+   mShared = shared;
+}
+
 // - Query
 
 const VirtualClass& VirtualObject::getClass() const
@@ -101,6 +125,11 @@ void VirtualObject::initialize(int variables)
       mpMembers = new Variant[variables];
       mMemberCount = variables;
    }
+}
+
+VirtualObject* VirtualObject::clone() const
+{
+   return new VirtualObject(*this);
 }
 
 Variant& VirtualObject::getMember(int index)
