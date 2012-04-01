@@ -230,7 +230,7 @@ void Game::endGame()
  */
 void Game::runFrame()
 {
-   Profiler::getInstance().begin();
+   //Profiler::getInstance().begin();
 
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
@@ -250,11 +250,11 @@ void Game::runFrame()
    start += timerdelta.getDelta();
    if ( start >= 1.0f )
    {
-      std::cout << "Fps: " << frame << std::endl;
+      //std::cout << "Fps: " << frame << std::endl;
       start = 0;
       frame = 0;
    }
 
-   Profiler::getInstance().end();
+   // Profiler::getInstance().end();
    // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());
 }

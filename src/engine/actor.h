@@ -50,6 +50,7 @@ public:
 	                  Actor();
    virtual           ~Actor();
 
+ // maintenance
    virtual void      destroy();
    virtual Actor*    clone ();
 
@@ -82,10 +83,14 @@ public:
    void               setType(const std::string& type);
 
    bool              hasBody() const;
-   Body&             getBody();
+   const Body&       getBody() const;
+         Body&       getBody();
 
    int               getAnimation() const;
    void              setAnimation(int anim);
+
+ // query interface
+   bool hasLineOfSight(const Actor& that) const;
 
  // modifier interface
    Controller&       getController();

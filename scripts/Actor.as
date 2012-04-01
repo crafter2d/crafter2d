@@ -4,6 +4,7 @@ use box2d.box2dbody;
 class Actor extends Entity implements Collidable
 {
 	private InputForceGenerator mGenerator;
+	private Controller mController;
 	private int mOnGround = 0;
 	
 	// Static interface
@@ -49,7 +50,27 @@ class Actor extends Entity implements Collidable
 		}
 	}
 	
+	public void setLocalController(Controller c)
+	{
+		setController(c);
+		
+		mController = c;
+	}
+	
 	// Operations
+	
+	public boolean isFacing(Actor other)
+	{
+		Vector2D pos = getPosition();
+		Vector2D otherpos = other.getPosition();
+		
+		if ( getFaceDirection() == FACE_RIGHT )
+		{
+			return pos.getX() < otherpos.getX();
+		}
+		
+		return pos.getX() > otherpos.getX();
+	}
 	
 	public InputForceGenerator getForceGenerator()
 	{
@@ -97,7 +118,7 @@ class Actor extends Entity implements Collidable
 	}
 	
 	// called from the AIController
-	public void updateAI(World world)
+	public void updateAI(Actor player)
 	{
 	}
 	
@@ -114,5 +135,7 @@ class Actor extends Entity implements Collidable
 	public native boolean direction();
 	public native void flip();
 	public native Box2DBody getBody();
-	public native void setController(Controller c);
+	public native boolean hasLineOfSight(Actor to);
+	
+	private native void setController(Controller c);
 }

@@ -23,9 +23,12 @@
 #endif
 
 #include "physicsxml.h"
+#include "collisionshape.h"
 
-PhysicsBody::PhysicsBody(Actor& actor):
-   Body(actor),
+PhysicsBody::PhysicsBody(Simulator& simulator, Actor& actor):
+   Body(simulator, actor),
+   mTransform(),
+   mShapes(),
    mLinearVelocity(),
    mAngularVelocity(0.0f),
    mAccumForce(),
@@ -52,6 +55,26 @@ void PhysicsBody::load(const TiXmlElement& element)
    Body::load(element);
 
    PhysicsXML::parseXML(*this, element);
+}
+
+// ----------------------------------
+// -- Space conversion
+// ----------------------------------
+
+Vector PhysicsBody::localToWorld(const Vector& vector) const
+{
+   return mTransform.transform(vector);
+}
+
+// ----------------------------------
+// -- Shapes
+// ----------------------------------
+
+void PhysicsBody::addShape(CollisionShape* pshape)
+{
+   pshape->setBody(*this);
+
+   mShapes.push_back(pshape);
 }
 
 // ----------------------------------
@@ -104,4 +127,9 @@ void PhysicsBody::clearAccumulates()
 {
    mAccumForce  = Vector::zero();
    mAccumTorque = 0.0f;
+}
+
+void PhysicsBody::calculateDerivedData()
+{
+   mTransform.set(mPosition, mAngle);
 }

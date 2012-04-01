@@ -26,8 +26,8 @@ class GameServer extends Server
 	
 	private void start(Player player)
 	{
+		addPlayer(player);
 		mStarted = true;
-		mPlayer = player;
 		
 		World world = getContentManager().load("../worlds/map1.jwl");
 		if ( world == null )
@@ -55,7 +55,7 @@ class GameServer extends Server
 		controller.setActionMap(map);
 		
 		Hero actor = (Hero)Actor.construct(this, player.getName(), position, "../objects/char.xml");
-		actor.setController(controller);
+		actor.setLocalController(controller);
 		actor.setForceGenerator(new InputForceGenerator());
 		
 		// notify the client
@@ -90,6 +90,6 @@ class GameServer extends Server
 		pos.set(180.0, 30);
 		
 		mGrudge = (Grudge) Actor.construct(this, "grudge1", pos, "../objects/grudge.xml");
-		mGrudge.setController(new AIController(this));
+		mGrudge.setLocalController(new AIController(this));
 	}
 }

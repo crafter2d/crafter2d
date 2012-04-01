@@ -32,6 +32,15 @@ Simulator::~Simulator()
 {
 }
 
+
+// - Query interface
+
+bool Simulator::lineOfSight(const Body& from, const Body& to) const
+{
+   PURE_VIRTUAL;
+   return false;
+}
+
 // ----------------------------------
 // - Body interface
 // ----------------------------------

@@ -14,6 +14,11 @@ VirtualClassTable::VirtualClassTable():
 {
 }
 
+VirtualClassTable::~VirtualClassTable()
+{
+   clear();
+}
+
 // - Query
 
 bool VirtualClassTable::contains(const std::string& name) const
@@ -22,6 +27,17 @@ bool VirtualClassTable::contains(const std::string& name) const
 }
 
 // - Operations
+
+void VirtualClassTable::clear()
+{
+   Classes::iterator it = mClasses.begin();
+   for ( ; it != mClasses.end(); it++ )
+   {
+      delete it->second;
+   }
+
+   mClasses.clear();
+}
 
 void VirtualClassTable::insert(VirtualClass* ptype)
 {

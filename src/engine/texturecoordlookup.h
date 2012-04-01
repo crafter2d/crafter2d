@@ -29,6 +29,7 @@ class TextureCoordLookup
 {
 public:
    TextureCoordLookup();
+   ~TextureCoordLookup();
 
  // Get/set interface
    float getFrameWidth() const;

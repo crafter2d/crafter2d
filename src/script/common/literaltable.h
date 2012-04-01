@@ -13,6 +13,7 @@ class LiteralTable
 
 public:
    LiteralTable();
+   ~LiteralTable();
 
    const Literal& operator[](int index) const;
 
@@ -26,6 +27,7 @@ public:
 
  // maintenance
    int insert(Literal* pliteral);
+   void clear();
 
  // search
    const Literal* find(const Variant& value) const;

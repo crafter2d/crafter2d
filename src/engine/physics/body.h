@@ -20,7 +20,7 @@
 #ifndef BODY_H_
 #define BODY_H_
 
-#include "core/math/xform.h"
+#include "core/math/vector.h"
 
 #include "collisionshapes.h"
 #include "forcegenerators.h"
@@ -29,14 +29,19 @@ class Actor;
 class CollisionShape;
 class TiXmlElement;
 class ForceGenerator;
+class Simulator;
 
 class Body
 {
 public:
    static bool hasInfo(const TiXmlElement& element);
 
-   explicit Body(Actor& actor);
+   explicit Body(Simulator& simulator, Actor& actor);
    virtual ~Body();
+
+ // get/set
+   const Simulator& getSimulator() const;
+         Simulator& getSimulator();
 
    const Actor&  getActor() const;
          Actor&  getActor();
@@ -49,12 +54,11 @@ public:
    
    ForceGenerators& getForceGenerators();
 
+ // query
+   bool hasLineOfSight(const Body& that) const;
+
  // loading
    virtual void load(const TiXmlElement& element);
-
- // shapes
-   void  addShape(CollisionShape* pshape);
-   const CollisionShapes& getShapes() const;
 
  // generators
    void  addForceGenerator(ForceGenerator* pgenerator);
@@ -68,21 +72,19 @@ public:
    virtual void integrate(float timestep) = 0;
    virtual void finalize() = 0;
 
- // space conversion
-   Vector localToWorld(const Vector& vector) const;
-
 protected:
-   void calculateDerivedData();
-
+ // notification
    virtual void notifyPositionChanged();
-
+   
    Vector            mPosition;
    float             mAngle;
 
 private:
+ // operations
+   void cleanUp();
+
+   Simulator&        mSimulator;
    Actor&            mActor;
-   XForm             mTransform;
-   CollisionShapes   mShapes;
    ForceGenerators   mForceGenerators;
 };
 

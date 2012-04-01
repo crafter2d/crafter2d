@@ -18,7 +18,9 @@ class PatrolState extends AIState
 	
 	private boolean checkSight(Actor actor, Actor player)
 	{
-		return false;
+		return 	actor.isFacing(player) && 
+				actor.getPosition().distance(player.getPosition()) < 50 && 
+				actor.hasLineOfSight(player);
 	}
 	
 	private void move(Actor actor)

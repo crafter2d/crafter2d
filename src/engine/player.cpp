@@ -42,6 +42,7 @@ Player::Player():
 
 Player::~Player()
 {
+   mWorldObserver.detach();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -50,7 +51,7 @@ Player::~Player()
 
 void Player::initialize(World& world)
 {
-   world.attach(mWorldObserver);
+   mWorldObserver.attach(world);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -41,7 +41,7 @@ PhysicsSimulator::~PhysicsSimulator()
 
 Body& PhysicsSimulator::createBody(Actor& actor)
 {
-   PhysicsBody* pbody = new PhysicsBody(actor);
+   PhysicsBody* pbody = new PhysicsBody(*this, actor);
    addBody(pbody);
    return *pbody;
 }
@@ -57,13 +57,20 @@ void PhysicsSimulator::worldChanged()
    }
 }
 
+// query
+
+bool PhysicsSimulator::lineOfSight(const Body& from, const Body& to) const
+{
+   return false;
+}
+
 void PhysicsSimulator::run(float timestep)
 {
    Bodies& bodies = getBodies();
    bodies.integrate(timestep);
 
    CollisionData data;
-   bodies.collectContactData(data, mWorldShapes);
+   // bodies.collectContactData(data, mWorldShapes);
 
    CollisionResolverInfo info;
    CollisionResolver::resolve(data, info, timestep);

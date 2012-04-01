@@ -10,6 +10,7 @@ Scope::Scope():
 
 Scope::~Scope()
 {
+   clear();
 }
 
 // - Operations

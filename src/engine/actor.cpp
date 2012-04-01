@@ -78,6 +78,13 @@ void Actor::destroy()
    Entity::destroy();
 }
 
+// - Query interface
+
+bool Actor::hasLineOfSight(const Actor& that) const
+{
+   return getBody().hasLineOfSight(that.getBody());
+}
+
 // - Modifier interface
 
 void Actor::setController(Controller* pcontroller)

@@ -144,6 +144,11 @@ INLINE bool Actor::hasBody() const
    return mpBody != NULL;
 }
 
+INLINE const Body& Actor::getBody() const
+{
+   return *mpBody;
+}
+
 INLINE Body& Actor::getBody()
 {
    return *mpBody;

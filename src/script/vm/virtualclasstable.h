@@ -15,11 +15,13 @@ class VirtualClassTable
 
 public:
    VirtualClassTable();
+   ~VirtualClassTable();
 
  // query
    bool contains(const std::string& name) const;
    
  // operations
+   void clear();
    void insert(VirtualClass* ptype);
    void print(const LiteralTable& literals);
 

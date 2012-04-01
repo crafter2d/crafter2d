@@ -8,6 +8,11 @@ LiteralTable::LiteralTable():
 {
 }
 
+LiteralTable::~LiteralTable()
+{
+   clear();
+}
+
 const Literal& LiteralTable::operator[](int index) const
 {
    return *mLiterals[index];
@@ -56,6 +61,15 @@ int LiteralTable::insert(Literal* pliteral)
       pliteral->setTableIndex(index);
    }
    return index;
+}
+
+void LiteralTable::clear()
+{
+   for ( std::size_t index = 0; index < mLiterals.size(); index++ )
+   {
+      delete mLiterals[index];
+   }
+   mLiterals.clear();
 }
 
 // - Search

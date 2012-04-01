@@ -1,6 +1,7 @@
 
 use engine.ui.*;
 use engine.core.*;
+use engine.collections.*;
 use engine.messages.*;
 
 // Class : Process
@@ -10,12 +11,14 @@ abstract class Process
 {
 	protected BitStream mStream = new BitStream();
 	
-	private MessageMap mMessageMap = new MessageMap();
+	private MessageMap mMessageMap     = new MessageMap();
+	private ArrayList<Player> mPlayers = new ArrayList<Player>();
 	
 	// natives
 	
 	private native boolean create(Object self);
 	
+	public native void destroy();
 	public native ScriptManager getScriptManager();
 	public native void setScriptManager(ScriptManager scriptmanager);
 	public native Font getFont(string name, int size);
@@ -43,6 +46,20 @@ abstract class Process
 			
 		onMessageReceived(message);
 	}
+	
+	// - Get/set
+	
+	public void addPlayer(Player player)
+	{
+		mPlayers.add(player);
+	}
+	
+	public Player getPlayers()
+	{
+		return mPlayers.get(0);
+	}
+	
+	// - Overloadables
 	
 	protected void registerMessages(MessageMap messagemap)
 	{

@@ -70,6 +70,7 @@ void Bodies::finalize()
    }
 }
 
+/*
 void Bodies::collectContactData(CollisionData& data, const CollisionShapes& worldshapes) const
 {
    CollisionDetector detector(data);
@@ -88,3 +89,4 @@ void Bodies::collectContactData(CollisionData& data, const CollisionShapes& worl
       }
    }
 }
+*/

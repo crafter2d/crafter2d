@@ -72,7 +72,6 @@ Client::Client():
 
 Client::~Client()
 {
-   disconnect();
 }
 
 // - Creation
@@ -114,8 +113,18 @@ bool Client::destroy()
 
    mSoundManager.destroy();
 
+   mpWindow->destroy();
    delete mpWindow;
    mpWindow = NULL;
+
+   delete mpPlayer;
+   mpPlayer = NULL;
+
+   delete mpKeyMap;
+   mpKeyMap = NULL;
+
+   delete mpWorldRenderer;
+   mpWorldRenderer = NULL;
 
    return Process::destroy();
 }
@@ -337,6 +346,7 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
+            mpScript->addParam("Player", mpPlayer);
             mpScript->run("onConnected");
 
             initialized = true;

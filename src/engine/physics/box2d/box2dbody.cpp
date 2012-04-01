@@ -28,8 +28,8 @@ static const std::string sBODYELEMENT       = "body";
 static const std::string sSHAPEELEMENT      = "shape";
 static const std::string sTYPE              = "type";
 
-Box2DBody::Box2DBody(Actor& actor, b2Body& body):
-   Body(actor),
+Box2DBody::Box2DBody(Simulator& simulator, Actor& actor, b2Body& body):
+   Body(simulator, actor),
    mBody(body),
    mHalfWidth(0),
    mHalfHeight(0),

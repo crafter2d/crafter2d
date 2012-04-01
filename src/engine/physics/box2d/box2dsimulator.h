@@ -54,7 +54,7 @@ public:
    virtual ~Box2DSimulator();
 
  // query
-   bool lineOfSight(const Actor& from, const Actor& to) const;
+   virtual bool lineOfSight(const Body& from, const Body& to) const;
 
  // maintenance
    virtual Body& createBody(Actor& actor);
@@ -72,6 +72,9 @@ protected:
 
 private:
    typedef std::vector<Box2DJoint*> Joints;
+
+ // operations
+   void cleanUp();
 
    b2World*             mpb2World;
    Box2DContactListener mContactListener;

@@ -31,6 +31,9 @@ public:
 
    virtual Body& createBody(Actor& actor);
 
+ // query
+   virtual bool lineOfSight(const Body& from, const Body& to) const;
+
    virtual void  run(float timestep);
 
 protected:

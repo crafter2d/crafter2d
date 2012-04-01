@@ -1,4 +1,4 @@
-/***************************************************************************
+/******************************************************************* ********
  *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
@@ -51,7 +51,10 @@ public:
 
  // get/set
    const World& getWorld() const;
-   void         setWorld(const World& world);
+   void         setWorld(const World& world);\
+      
+ // query
+   virtual bool lineOfSight(const Body& from, const Body& to) const = 0;
 
  // maintenance
    virtual Body& createBody(Actor& actor) = 0;

@@ -21,6 +21,7 @@ public:
    void set(int index, ASTNode* pnode);
    void remove(ASTNode** pnode);
    void detach(const ASTNode& node);
+   void clear();
 
  // query
    bool isEmpty() const;

@@ -22,8 +22,10 @@ class GameClient extends Client
 		return false;
 	}
 	
-	public void onConnected()
+	public void onConnected(Player player)
 	{
+		addPlayer(player);
+		
 		setActionMap(new ActionMap());
 		
 		KeyMap map = new KeyMap();

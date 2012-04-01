@@ -19,12 +19,33 @@
  ***************************************************************************/
 #include "worldobserver.h"
 
-WorldObserver::WorldObserver()
+#include "core/defines.h"
+
+#include "engine/world/world.h"
+
+WorldObserver::WorldObserver():
+   mpWorld(NULL)
 {
 }
 
 WorldObserver::~WorldObserver()
 {
+}
+
+// - Observer methods
+
+void WorldObserver::attach(World& world)
+{
+   ASSERT_MSG(mpWorld == NULL, "Can not attach to a world. First detach from current!");
+   mpWorld = & world;
+
+   mpWorld->attach(*this);
+}
+   
+void WorldObserver::detach()
+{
+   ASSERT_PTR(mpWorld);
+   mpWorld->detach(*this);
 }
 
 // - Notifications

@@ -23,6 +23,7 @@
 class Entity;
 class Layer;
 class Vector;
+class World;
 
 class WorldObserver
 {
@@ -30,11 +31,19 @@ public:
            WorldObserver();
    virtual ~WorldObserver() = 0;
 
+ // observer methods
+   void attach(World& world);
+   void detach();
+
+ // notifications
    virtual void notifyLayerAdded(Layer& layer);
    virtual void notifyScrollChange(const Vector& scrollposition);
 
    virtual void notifyEntityAdded(const Entity& entity);
    virtual void notifyEntityRemoved(const Entity& entity);
+
+private:
+   World* mpWorld;
 };
 
 #endif

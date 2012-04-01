@@ -19,6 +19,7 @@ public:
 
  // operators
    void addUse(const std::string& use);
+   void detachClasses();
 
  // visitor
    ACCEPT;

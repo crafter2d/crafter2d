@@ -433,6 +433,11 @@ void World::attach(WorldObserver& observer)
 
 void World::detach(WorldObserver& observer)
 {
+   Observers::iterator it = std::find(mObservers.begin(), mObservers.end(), &observer);
+   if ( it != mObservers.end() )
+   {
+      mObservers.erase(it);
+   }
    // remove observer from the array
 }
 

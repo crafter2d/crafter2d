@@ -32,6 +32,12 @@ TextureCoordLookup::TextureCoordLookup():
 {
 }
 
+TextureCoordLookup::~TextureCoordLookup()
+{
+   delete[] _lookupTable;
+   _lookupTable = NULL;
+}
+
 void TextureCoordLookup::generateFromTexture(const Texture& texture, float framewidth, float frameheight, int framecount)
 {
    _frameCount = framecount;

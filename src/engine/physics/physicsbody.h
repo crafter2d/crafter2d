@@ -20,13 +20,15 @@
 #ifndef PHYSICS_BODY_H_
 #define PHYSICS_BODY_H_
 
+#include "core/math/xform.h"
+
 #include "body.h"
 #include "forcegenerators.h"
 
 class PhysicsBody : public Body
 {
 public:
-   explicit PhysicsBody(Actor& actor);
+   PhysicsBody(Simulator& simulator, Actor& actor);
    virtual ~PhysicsBody();
 
   // get/set
@@ -45,6 +47,10 @@ public:
 
    const Vector& getLastFrameAcceleration() const;
 
+ // shapes
+   void  addShape(CollisionShape* pshape);
+   const CollisionShapes& getShapes() const;
+
   // loading
    virtual void load(const TiXmlElement& element);
 
@@ -55,12 +61,19 @@ public:
    void  addWorldForce(const Vector& force, const Vector& location);
    void  addTorque(float torque);
 
+ // space conversion
+   Vector localToWorld(const Vector& vector) const;
+
   // integration
    virtual void integrate(float timestep);
    virtual void finalize();
 
 private:
+   void  calculateDerivedData();
    void  clearAccumulates();
+
+   XForm             mTransform;
+   CollisionShapes   mShapes;
 
    Vector   mLinearVelocity;
    float    mAngularVelocity;

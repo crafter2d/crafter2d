@@ -53,13 +53,12 @@ Box2DSimulator::Box2DSimulator():
 
 Box2DSimulator::~Box2DSimulator()
 {
-   delete mpb2World;
-   mpb2World = NULL;
+   cleanUp();
 }
 
 // - Query
 
-bool Box2DSimulator::lineOfSight(const Actor& from, const Actor& to) const
+bool Box2DSimulator::lineOfSight(const Body& from, const Body& to) const
 {
    Box2DRayCastCallback callback;
    b2Vec2 point1 = vectorToB2(from.getPosition());
@@ -70,6 +69,19 @@ bool Box2DSimulator::lineOfSight(const Actor& from, const Actor& to) const
 
 // - Maintenance
 
+void Box2DSimulator::cleanUp()
+{
+   for ( int index = 0; index < mJoints.size(); index++ )
+   {
+      Box2DJoint* pjoint = mJoints[index];
+      delete pjoint;
+   }
+   mJoints.clear();
+
+   delete mpb2World;
+   mpb2World = NULL;
+}
+
 Body& Box2DSimulator::createBody(Actor& actor)
 {
    b2BodyDef bodydef;
@@ -79,7 +91,7 @@ Body& Box2DSimulator::createBody(Actor& actor)
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
 
-   Box2DBody* pbody = new Box2DBody(actor, *pboxbody);
+   Box2DBody* pbody = new Box2DBody(*this, actor, *pboxbody);
 
    addBody(pbody);
 

@@ -28,7 +28,7 @@
 #include "collisioncirclecirclecontactgenerator.h"
 #include "collisioncircleplanecontactgenerator.h"
 
-#include "body.h"
+#include "physicsbody.h"
 
 // ----------------------------------
 // -- Generator registry
@@ -60,12 +60,12 @@ CollisionDetector::~CollisionDetector()
 {
 }
 
-void CollisionDetector::collectContactData(const Body& left, const Body& right)
+void CollisionDetector::collectContactData(const PhysicsBody& left, const PhysicsBody& right)
 {
    collectContactData(left, right.getShapes());
 }
 
-void CollisionDetector::collectContactData(const Body& body, const CollisionShapes& shapes)
+void CollisionDetector::collectContactData(const PhysicsBody& body, const CollisionShapes& shapes)
 {
    const CollisionShapes& bodyshapes = body.getShapes();
 

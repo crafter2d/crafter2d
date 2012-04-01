@@ -512,7 +512,7 @@ void AntlrParser::handleFuncArguments(const AntlrNode& node, ASTFunction& functi
 ASTMember* AntlrParser::handleConstructor(const AntlrNode& node)
 {
    ASTFunction* pfunction = new ASTFunction(ASTMember::eConstructor);
-   pfunction->setType(&ASTType::SVoidType); // <-- invalid type, constructors do not have return types
+   pfunction->setType(ASTType::SVoidType.clone()); // <-- invalid type, constructors do not have return types
 
    AntlrNode modnode = node.getChild(0);
    handleModifiers(modnode, pfunction->getModifiers());
@@ -600,7 +600,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
    {
       ASTFunction* pfunction = new ASTFunction(ASTMember::eFunction);
       pfunction->setModifiers(modifiers);
-      pfunction->setType(&ASTType::SVoidType);
+      pfunction->setType(ASTType::SVoidType.clone());
       pfunction->setName(name);
 
       handleFuncArguments(argumentnode, *pfunction);
@@ -611,7 +611,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
    {
       ASTVariable* pvariable = new ASTVariable();
       pvariable->setModifiers(modifiers);
-      pvariable->setType(&ASTType::SVoidType);
+      pvariable->setType(ASTType::SVoidType.clone());
       pvariable->setName(name);
 
       if ( type != SEP )
@@ -662,7 +662,7 @@ ASTMember* AntlrParser::handleFuncDecl(const AntlrNode& node)
 ASTMember* AntlrParser::handleVoidFuncDecl(const AntlrNode& node)
 {
    ASTFunction* pfunction = new ASTFunction(ASTMember::eFunction);
-   pfunction->setType(&ASTType::SVoidType);
+   pfunction->setType(ASTType::SVoidType.clone());
 
    AntlrNode annotationnode = node.getChild(0);
    pfunction->setAnnotations(dynamic_cast<ASTAnnotations*>(handleTree(annotationnode)));

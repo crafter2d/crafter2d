@@ -72,6 +72,13 @@ void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(process.create(self));
 }
 
+void Process_destroy(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Process, process);
+
+   process.destroy();
+}
+
 void Process_getScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Process, process);
@@ -460,6 +467,15 @@ void Actor_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
    actor.add(*pchild);
 }
 
+void Actor_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Actor, actor);
+
+   Actor* pto = (Actor*) accessor.getObject(1)->getNativeObject();
+
+   accessor.setResult(actor.hasLineOfSight(*pto));
+}
+
 void Player_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Player, player);
@@ -534,6 +550,15 @@ void Vector2D_setY(VirtualMachine& machine, VirtualStackAccessor& accessor)
    float y = accessor.getReal(1);
 
    vector.y = y;
+}
+
+void Vector2D_distance(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Vector, vector);
+
+   Vector* pto = static_cast<Vector*>(accessor.getObject(1)->getNativeObject());
+
+   accessor.setResult(vector.distance(*pto));
 }
 
 void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -707,7 +732,7 @@ void Box2DSimulator_lineOfSight(VirtualMachine& machine, VirtualStackAccessor& a
    const Actor& from = *(Actor*) accessor.getObject(1)->getNativeObject();
    const Actor& to = *(Actor*) accessor.getObject(2)->getNativeObject();
 
-   accessor.setResult(simulator.lineOfSight(from, to));
+   accessor.setResult(simulator.lineOfSight(from.getBody(), to.getBody()));
 }
 
 void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1085,6 +1110,7 @@ void script_engine_register(ScriptManager& manager)
    ScriptRegistrator registrator;
 
    registrator.addCallback("Process_create", Process_create);
+   registrator.addCallback("Process_destroy", Process_destroy);
    registrator.addCallback("Process_getScriptManager", Process_getScriptManager);
    registrator.addCallback("Process_setScriptManager", Process_setScriptManager);
    registrator.addCallback("Process_getFont", Process_getFont);
@@ -1139,6 +1165,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Actor_flip", Actor_flip);
    registrator.addCallback("Actor_setController", Actor_setController);
    registrator.addCallback("Actor_add", Actor_add);
+   registrator.addCallback("Actor_hasLineOfSight", Actor_hasLineOfSight);
 
    registrator.addCallback("Player_getName", Player_getName);
    registrator.addCallback("Player_getClientId", Player_getClientId);
@@ -1151,6 +1178,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Vector2D_setX", Vector2D_setX);
    registrator.addCallback("Vector2D_getY", Vector2D_getY);
    registrator.addCallback("Vector2D_setY", Vector2D_setY);
+   registrator.addCallback("Vector2D_distance", Vector2D_distance);
 
    registrator.addCallback("World_init", World_init);
    registrator.addCallback("World_destruct", World_destruct);

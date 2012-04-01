@@ -47,6 +47,11 @@ void Script::setThis(void* pthis)
    {
       mObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis, false);
    }
+   else
+   {
+      mObject = mScriptManager.mpVirtualMachine->lookupNative(pthis);
+      ASSERT(!mObject.isNull());
+   }
 }
 
 //-----------------------------------------
@@ -75,6 +80,14 @@ bool Script::getBoolean()
 int Script::getInteger()
 {
    return mScriptManager.mpVirtualMachine->popInt();
+}
+
+void Script::addParam(void* pobject)
+{
+   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->lookupNative(pobject));
+   ASSERT_MSG(!ref.isNull(), "Object should have been registered already when using this method.");
+
+   mScriptManager.mpVirtualMachine->push(ref);
 }
 
 /// \fn Script::addParam(const std::string& classname, void* pobject)

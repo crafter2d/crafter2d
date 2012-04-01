@@ -12,6 +12,7 @@ ASTNodes::ASTNodes()
 
 ASTNodes::~ASTNodes()
 {
+   clear();
 }
 
 const ASTNode& ASTNodes::operator[](int index) const
@@ -23,6 +24,8 @@ ASTNode& ASTNodes::operator[](int index)
 {
    return *mNodes[index];
 }
+
+// - Maintenance
 
 void ASTNodes::add(ASTNode* pnode)
 {
@@ -52,6 +55,15 @@ void ASTNodes::detach(const ASTNode& node)
 {
    int index = indexOf(node);
    mNodes.erase(mNodes.begin() + index);
+}
+
+void ASTNodes::clear()
+{
+   for ( std::size_t index = 0; index < mNodes.size(); index++ )
+   {
+      delete mNodes[index];
+   }
+   mNodes.clear();
 }
 
 // - Query

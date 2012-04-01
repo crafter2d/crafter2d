@@ -69,6 +69,11 @@ INLINE const Vector& PhysicsBody::getLastFrameAcceleration() const
    return mLastFrameAcceleration;
 }
 
+INLINE const CollisionShapes& PhysicsBody::getShapes() const
+{
+   return mShapes;
+}
+
 // Operations
 
 INLINE void PhysicsBody::addForce(const Vector& force)

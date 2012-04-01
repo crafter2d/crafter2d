@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "virtualmachine.h"
 
+// When testing with Visual Leak Detecter, uncomment the next line
+// #include <vld.h>
 #include <iostream>
 
 #include "core/defines.h"
@@ -117,6 +119,8 @@ VirtualMachine::~VirtualMachine()
    // resulting in double delete.
    mState = eDestruct;
    mNativeObjects.clear();
+   mNatives.clear();
+   mCompiler.cleanUp();
 }
 
 // - Initialization
@@ -417,9 +421,9 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             else if ( object.isArray() )
             {
                const VirtualClass& theclass = mContext.mClassTable.resolve("system.InternalArray");
-               const VirtualFunctionTableEntry* pentry = theclass.getVirtualFunctionTable().findByName("resize");
+               const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
 
-               execute(theclass, *pentry);
+               execute(theclass, entry);
             }
             else
             {
@@ -957,21 +961,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          mStack.push_back(mStack.back());
          break;
       case VirtualInstruction::eNot:
-         {
-            //Variant value = Variant(!mStack.back().asBool()); mStack.pop_back();
-            //mStack.push_back(value);
-            mStack.back().setBool(!mStack.back().asBool());
-         }
+         mStack.back().setBool(!mStack.back().asBool());
          break;
 
       case VirtualInstruction::ePop:
          shrinkStack(mStack.size() - instruction.getArgument());
-         /*
-         for ( int index = 0; index < instruction.getArgument(); index++ )
-         {
-            mStack.pop_back();
-         }
-         */
          break;
 
       case VirtualInstruction::eInstanceOf:

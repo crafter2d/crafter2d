@@ -19,6 +19,16 @@
  ***************************************************************************/
 #include "core/defines.h"
 
+INLINE const Simulator& Body::getSimulator() const
+{
+   return mSimulator;
+}
+
+INLINE Simulator& Body::getSimulator()
+{
+   return mSimulator;
+}
+
 INLINE const Actor& Body::getActor() const
 {
    return mActor;
@@ -48,11 +58,6 @@ INLINE float Body::getAngle() const
 INLINE void Body::setAngle(float angle)
 {
    mAngle = angle;
-}
-
-INLINE const CollisionShapes& Body::getShapes() const
-{
-   return mShapes;
 }
 
 INLINE ForceGenerators& Body::getForceGenerators()

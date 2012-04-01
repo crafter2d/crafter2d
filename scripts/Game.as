@@ -38,6 +38,8 @@ class Game
    
 	public void shutdown()
 	{
+		mClient.destroy();
+		mServer.destroy();
 	}
    
 	public void run(real delta)

@@ -69,6 +69,26 @@ const Literal& Compiler::lookupLiteral(int index) const
    return mContext.getLiteralTable()[index];
 }
 
+// - Operations
+
+void Compiler::cleanUp()
+{
+   for ( std::size_t index = 0; index < mLoadSteps.size(); index++ )
+   {
+      delete mLoadSteps[index];
+   }
+
+   for ( std::size_t index = 0; index < mPrecompileSteps.size(); index++ )
+   {
+      delete mPrecompileSteps[index];
+   }
+
+   for ( std::size_t index = 0; index < mCompileSteps.size(); index++ )
+   {
+      delete mCompileSteps[index];
+   }
+}
+
 // - Compilation
 
 bool Compiler::compile(const std::string& classname)
@@ -117,7 +137,6 @@ bool Compiler::compile(const std::string& classname)
             pclass = sorted[index];
             if ( performSteps(*pclass, mCompileSteps) )
             {
-
                if ( hasCallback() )
                {
                   mpCallback->notify(mContext.getResult());
@@ -191,9 +210,10 @@ bool Compiler::load(const std::string& classname)
       if ( stream.hasPointer() )
       {
          AutoPtr<ASTRoot> root(parser.parse(*stream));
-         if ( root.hasPointer() )
+         if ( root.hasPointer() && performSteps(*root, mLoadSteps) )
          {
-            return performSteps(*root, mLoadSteps);
+            root->detachClasses();
+            return true;
          }
       }
    }

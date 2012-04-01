@@ -22,7 +22,7 @@
 
 #include "collisionshape.h"
 
-class Body;
+class PhysicsBody;
 class CollisionData;
 class CollisionContactGenerator;
 class CollisionShapes;
@@ -36,8 +36,8 @@ public:
    CollisionDetector(CollisionData& data);
    ~CollisionDetector();
 
-   void collectContactData(const Body& left, const Body& right);
-   void collectContactData(const Body& body, const CollisionShapes& shapes);
+   void collectContactData(const PhysicsBody& left, const PhysicsBody& right);
+   void collectContactData(const PhysicsBody& body, const CollisionShapes& shapes);
 
 private:
    static CollisionContactGenerator* mRegistry[CollisionShape::eTypeCount][CollisionShape::eTypeCount];

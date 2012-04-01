@@ -23,8 +23,8 @@
 #  include "bitstream.inl"
 #endif
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #include "core/math/vector.h"
 
@@ -37,15 +37,16 @@ BitStream::BitStream():
    size(0),
    bufsize(1024)
 {
-   buf = new char[1024];
+   buf = static_cast<char*>(malloc(sizeof(char) * bufsize));
 }
 
 BitStream::BitStream(int reserve):
    buf(NULL),
    pos(0),
    size(0),
-   bufsize(0)
+   bufsize(reserve)
 {
+   buf = static_cast<char*>(malloc(sizeof(char) * bufsize));
 }
 
 BitStream::BitStream(const BitStream& that):
@@ -54,7 +55,7 @@ BitStream::BitStream(const BitStream& that):
    size(that.size),
    bufsize(that.bufsize)
 {
-   buf = new char[bufsize];
+   buf = static_cast<char*>(malloc(sizeof(char) * bufsize));
    memcpy(buf, that.buf, size);
 }
 
@@ -62,7 +63,7 @@ BitStream::~BitStream()
 {
    try
    {
-      delete[] buf;
+      free(buf);
    }
    catch (...) {}
 }
@@ -78,11 +79,15 @@ void BitStream::ensureFits(int datasize)
       }
       while ( newsize >= bufsize );
 
+      /*
       char* pnewbuf = new char[bufsize];
       memmove(pnewbuf, buf, size);
 
       delete[] buf;
       buf = pnewbuf;
+      */
+
+      buf = static_cast<char*>(realloc(buf, sizeof(char) * bufsize));
    }
 }
 

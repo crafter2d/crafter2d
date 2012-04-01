@@ -18,6 +18,7 @@ class CompileException;
 class SCRIPT_API Compiler
 {
    typedef std::vector<CompileStep*> Steps;
+   typedef std::vector<ASTClass*> ASTClasses;
 
 public:
    Compiler();
@@ -31,12 +32,11 @@ public:
 
  // compilation
    bool compile(const std::string& classname);
+   void cleanUp();
 
 private:
    friend class CompileContext;
    friend class PreloadVisitor;
-
-   typedef std::vector<ASTClass*> ASTClasses;
 
    enum Phase { ePreload, eCompile };
 

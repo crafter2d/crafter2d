@@ -16,7 +16,7 @@ public:
    virtual void performAction(Actor& actor);
 
 private:
-   Process& mProcess;
+   Script* mpScript;
 };
 
 #endif // AI_CONTROLLER_H

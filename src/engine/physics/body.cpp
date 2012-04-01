@@ -27,6 +27,8 @@
 #include "engine/actor.h"
 
 #include "collisionshape.h"
+#include "simulator.h"
+#include "forcegenerator.h"
 
 // ----------------------------------
 // - Static
@@ -41,18 +43,18 @@ bool Body::hasInfo(const TiXmlElement& element)
 // - Body
 // ----------------------------------
 
-Body::Body(Actor& actor):
-   mActor(actor),
-   mTransform(),
-   mShapes(),
-   mForceGenerators(),
+Body::Body(Simulator& simulator, Actor& actor):
    mPosition(actor.getPosition()),
-   mAngle(actor.getRotation())
+   mAngle(actor.getRotation()),
+   mSimulator(simulator),
+   mActor(actor),
+   mForceGenerators()
 {
 }
 
 Body::~Body()
 {
+   cleanUp();
 }
 
 // ----------------------------------
@@ -65,23 +67,23 @@ void Body::load(const TiXmlElement& element)
 }
 
 // ----------------------------------
-// -- Shapes
+// -- Query interface
 // ----------------------------------
 
-void Body::addShape(CollisionShape* pshape)
+bool Body::hasLineOfSight(const Body& that) const
 {
-   pshape->setBody(*this);
-
-   mShapes.push_back(pshape);
+   return mSimulator.lineOfSight(*this, that);
 }
 
-// ----------------------------------
-// -- Space conversion
-// ----------------------------------
+// - Operations
 
-Vector Body::localToWorld(const Vector& vector) const
+void Body::cleanUp()
 {
-   return mTransform.transform(vector);
+   for ( std::size_t index = 0; index < mForceGenerators.size(); index++ )
+   {
+      delete mForceGenerators[index];
+   }
+   mForceGenerators.clear();
 }
 
 // ----------------------------------
@@ -125,9 +127,4 @@ void Body::integrate(float timestep)
 void Body::finalize()
 {
    mActor.updateState();
-}
-
-void Body::calculateDerivedData()
-{
-   mTransform.set(mPosition, mAngle);
 }

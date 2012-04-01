@@ -40,7 +40,7 @@ public:
    void integrate(float timestep);
    void finalize();
 
-   void collectContactData(CollisionData& data, const CollisionShapes& worldshapes) const;
+   //void collectContactData(CollisionData& data, const CollisionShapes& worldshapes) const;
 
 private:
    iterator find(Body* pbody);
