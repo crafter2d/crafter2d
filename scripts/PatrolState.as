@@ -1,25 +1,25 @@
 
 class PatrolState extends AIState
 {
-	public AIState perform(Actor actor, Actor player)
+	public void perform(Actor actor, Actor player)
 	{
 		if ( actor.isOnGround() )
 		{
 			if ( checkSight(actor, player) )
 			{
-				// go 
+				attack(actor, player);
 			}
-		
-			move(actor);
+			else
+			{
+				move(actor);
+			}
 		}
-		
-		return this;
 	}
 	
 	private boolean checkSight(Actor actor, Actor player)
 	{
-		return 	actor.isFacing(player) && 
-				actor.getPosition().distance(player.getPosition()) < 50 && 
+		return 	actor.isLookingAt(player) && 
+				actor.getPosition().distance(player.getPosition()) < 100.0 && 
 				actor.hasLineOfSight(player);
 	}
 	
@@ -36,5 +36,13 @@ class PatrolState extends AIState
 		}
 		
 		actor.getForceGenerator().setVelocity(velocity);
+	}
+	
+	private void attack(Actor actor, Actor player)
+	{
+		System.console.println("Moving attack state!");
+		actor.getForceGenerator().setVelocity(new Vector2D());
+		actor.lookAt(player);
+		actor.setState(actor.getAttackState());
 	}
 }

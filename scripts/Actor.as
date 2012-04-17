@@ -5,6 +5,9 @@ class Actor extends Entity implements Collidable
 {
 	private InputForceGenerator mGenerator;
 	private Controller mController;
+	private AIState mState;
+	
+	private int mDirection = FACE_LEFT;
 	private int mOnGround = 0;
 	
 	// Static interface
@@ -30,22 +33,19 @@ class Actor extends Entity implements Collidable
 	
 	public int getFaceDirection()
 	{
-		if ( direction() )
-		{
-			return FACE_LEFT;
-		}
-		
-		return FACE_RIGHT;
+		return mDirection;
+	}
+	
+	public void setInitialFaceDirection(int direction)
+	{
+		mDirection = direction;
 	}
 	
 	public void setFaceDirection(int direction)
 	{
-		if ( direction() && direction == FACE_RIGHT )
+		if ( mDirection != direction )
 		{
-			flip();
-		}
-		else if ( !direction() && direction == FACE_LEFT )
-		{
+			mDirection = direction;
 			flip();
 		}
 	}
@@ -57,19 +57,67 @@ class Actor extends Entity implements Collidable
 		mController = c;
 	}
 	
+	public AIState getState()
+	{
+		return mState;
+	}
+	
+	public void setState(AIState state)
+	{
+		mState = state;
+	}
+	
 	// Operations
 	
-	public boolean isFacing(Actor other)
+	public boolean isLookingLeft()
+	{
+		return mDirection == FACE_LEFT;
+	}
+	
+	public boolean isLookingRight()
+	{
+		return mDirection == FACE_RIGHT;
+	}
+	
+	public boolean isLookingAt(Actor other)
 	{
 		Vector2D pos = getPosition();
 		Vector2D otherpos = other.getPosition();
 		
-		if ( getFaceDirection() == FACE_RIGHT )
+		if ( mDirection == FACE_RIGHT )
 		{
 			return pos.getX() < otherpos.getX();
 		}
 		
 		return pos.getX() > otherpos.getX();
+	}
+	
+	public void lookAt(Actor other)
+	{
+		Vector2D pos = getPosition();
+		Vector2D otherpos = other.getPosition();
+		
+		if ( pos.getX() > otherpos.getX() )
+		{
+			setFaceDirection(FACE_LEFT);
+		}
+		else
+		{
+			setFaceDirection(FACE_RIGHT);
+		}
+	}
+	
+	public void turnAround()
+	{
+		if ( mDirection == FACE_LEFT )
+		{
+			mDirection = FACE_RIGHT;
+		}
+		else
+		{
+			mDirection = FACE_LEFT;
+		}
+		flip();
 	}
 	
 	public InputForceGenerator getForceGenerator()
@@ -120,9 +168,20 @@ class Actor extends Entity implements Collidable
 	// called from the AIController
 	public void updateAI(Actor player)
 	{
+		if ( mState != null )
+		{
+			mState.perform(this, player);
+		}
 	}
 	
-	// Natives
+	// - State
+	
+	public AttackState getAttackState()
+	{
+		return null;
+	}
+	
+	// - Natives
 	
 	private native Actor();
 	

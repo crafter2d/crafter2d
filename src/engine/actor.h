@@ -72,7 +72,6 @@ public:
 
    const Vector&     getPosition() const;
    const Vector&     getVelocity() const;
-   float             getRadius() const;
    float             getRotation() const;
    Vector            getSize() const;
    bool              isVisible() const;
@@ -127,7 +126,6 @@ private:
    int            mWidth, mHeight;
    float          halfX, halfY;
    float          angle;
-   float          radius;
    bool           visible;
    bool           dir;
    bool           mStatic;

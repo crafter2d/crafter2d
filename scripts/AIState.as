@@ -1,5 +1,5 @@
 
 abstract class AIState
 {
-	public abstract AIState perform(Actor actor, Actor player);
+	public abstract void perform(Actor actor, Actor player);
 }

@@ -51,7 +51,7 @@ private:
 
   // parsing
    bool loadFromXML(const TiXmlElement& xmlanimation, Actor& actor);
-   bool parseAnimations(const TiXmlElement& xmlanimations, int count);
+   void parseAnimations(const TiXmlElement& xmlanimator);
    void parseAnimation(const char* sequence, Animation *animation);
 
    void determineFrameCount();

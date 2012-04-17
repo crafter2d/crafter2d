@@ -1,11 +1,12 @@
 <?xml version="1.0">
 <!-- char sprite -->
 
-<object type="Grudge" name="char" width=58 height=58>
+<object type="Grudge" name="char" width=102 height=60>
    <texture>grudge.png</texture>
-   <animations count=2 speed=125>
-      <anim1 length=1>2</anim1>
-      <anim2 length=7>0 1 2 3</anim2>
+   <animations speed=125>
+      <anim type="stand" length=1>2</anim>
+      <anim type="walk" length=7>0 1 2 3</anim>
+	  <anim type="hit" length=3>4 5 6</anim>
    </animations>
    <body inertia="1" mass="90" rotate="0">
       <shape type="box" halfx="24" halfy="30" />

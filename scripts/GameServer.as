@@ -87,7 +87,7 @@ class GameServer extends Server
 		*/
 		
 		Vector2D pos = new Vector2D();
-		pos.set(180.0, 30);
+		pos.set(190.0, 30);
 		
 		mGrudge = (Grudge) Actor.construct(this, "grudge1", pos, "../objects/grudge.xml");
 		mGrudge.setLocalController(new AIController(this));

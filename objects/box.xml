@@ -3,8 +3,8 @@
 
 <object name="box" width=32 height=32>
    <texture>box.png</texture>
-   <animations count=1 speed=125>
-      <anim1 length=1>0</anim1>
+   <animations speed=125>
+      <anim length=1>0</anim>
    </animations>
    <body inertia="1" mass="80">
       <shape type="box" halfx="16" halfy="16" />

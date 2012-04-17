@@ -5,13 +5,18 @@ use box2d.box2dbody;
 
 class Grudge extends Actor
 {
-	private AIState mState;
-
+	private static int WEAPON_CLUB = 1;
+	private static int WEAPON_SPEAR = 2;
+	
+	private int mWeapon;
+	
 	public void onCreated()
 	{
-		mState = new PatrolState();
-	
+		mWeapon = WEAPON_CLUB;
+		
+		setState(new PatrolState());
 		setForceGenerator(new InputForceGenerator());
+		setInitialFaceDirection(Actor.FACE_LEFT);
 	}
 
 	public void collide(Object target, int side, boolean begin)
@@ -20,9 +25,9 @@ class Grudge extends Actor
 		
 		if ( target instanceof Bound )
 		{
-			if ( (side == 2 && direction()) || (side == 3 && !direction()) )
+			if ( (side == 2 && isLookingLeft()) || (side == 3 && isLookingRight()) )
 			{
-				flip();
+				turnAround();
 			}
 			
 			if ( isOnGround() )
@@ -33,10 +38,15 @@ class Grudge extends Actor
 		}
 	}
 	
-	// called from the AIController
-	public void updateAI(Actor player)
+	// - State
+	
+	public AttackState getAttackState()
 	{
-		assert player != null;
-		mState = mState.perform(this, player);
+		if ( mWeapon == WEAPON_CLUB )
+		{
+			return new ClubAttackState();
+		}
+		
+		return null;
 	}
 }

@@ -5,5 +5,6 @@ class Hero extends Actor
 {
 	public void onCreated()
 	{
+		setInitialFaceDirection(Actor.FACE_RIGHT);
 	}
 }

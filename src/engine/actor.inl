@@ -99,14 +99,6 @@ INLINE void Actor::setStatic(bool isstatic)
    mStatic = isstatic;
 }
 
-/// \fn Actor::getRadius() const
-/// \brief Returns the radius of the object.
-/// \returns the radius of the object
-INLINE float Actor::getRadius() const
-{
-   return radius; 
-}
-
 /// \fn Actor::getRotation() const
 /// \brief Returns the rotation in degrees of the object.
 INLINE float Actor::getRotation() const

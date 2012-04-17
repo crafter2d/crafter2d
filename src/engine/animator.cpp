@@ -60,34 +60,30 @@ Animator::~Animator()
 {
 }
 
-bool Animator::loadFromXML(const TiXmlElement& xmlanimation, Actor& actor)
+bool Animator::loadFromXML(const TiXmlElement& xmlanimator, Actor& actor)
 {
 	// try to load the animation sequences
    int animCount = 0;
-	if ( xmlanimation.QueryIntAttribute("count", &animCount) != TIXML_SUCCESS )
+	if ( xmlanimator.QueryIntAttribute("count", &animCount) != TIXML_SUCCESS )
    {
 		// found an animation object without animations, better use Object class then
       Log::getInstance().warning("Found animatable object without animations.");
 	}
+
+   // query the animation speed (in mm)
+	if ( xmlanimator.QueryFloatAttribute("speed", &mAnimationSpeed) != TIXML_SUCCESS )
+		mAnimationSpeed = 100;
+   mAnimationSpeed /= 1000.0f;
    
-   if ( animCount > 0 )
+   // allocate the memory set
+   mAnimations = SharedPtr<AnimationSet>(new AnimationSet());
+   if ( !mAnimations.hasPointer() )
    {
-		// query the animation speed (in mm)
-		if ( xmlanimation.QueryFloatAttribute("speed", &mAnimationSpeed) != TIXML_SUCCESS )
-			mAnimationSpeed = 100;
+      return false;
+   }
 
-      mAnimationSpeed /= 1000.0f;
+   parseAnimations(xmlanimator);
 
-		// allocate a new animationset
-		mAnimations = SharedPtr<AnimationSet>(new AnimationSet());
-      if ( !mAnimations.hasPointer() || !parseAnimations(xmlanimation, animCount) )
-			return false;
-
-      // query the frame count
-      if ( xmlanimation.QueryIntAttribute("frames", (int*)mAnimFrameCount) != TIXML_SUCCESS)
-         determineFrameCount();
-	}
-	
    const Texture& texture = actor.getTexture();
    const Vector& size     = actor.getSize();
    mAnimFrameWidth = texture.getWidth() / size.x;
@@ -96,31 +92,22 @@ bool Animator::loadFromXML(const TiXmlElement& xmlanimation, Actor& actor)
 	return true;
 }
 
-bool Animator::parseAnimations(const TiXmlElement& xmlanimations, int count)
+void Animator::parseAnimations(const TiXmlElement& xmlanimator)
 {
-   char buffer[50];
-
-   for ( int i = 1; i <= count; i++ )
+   TiXmlElement* pxmlanimation = (TiXmlElement*)xmlanimator.FirstChild("anim");
+   while ( pxmlanimation != NULL )
    {
-		sprintf (buffer, "anim%d", i);
-		const TiXmlElement* pxmlAnim = static_cast<const TiXmlElement*>(xmlanimations.FirstChild(buffer));
-		if ( pxmlAnim == NULL )
-      {
-         Log::getInstance().error("AnimObject.create: can not find %s", buffer);
-			return false;
-		}
-
-      // parse the comma seperated string
-		const TiXmlText* xmlValue = static_cast<const TiXmlText*>(pxmlAnim->FirstChild());
 		Animation *panim = new Animation();
 		getAnimations().add(panim);
 
 		// now parse the animation sequence
+      const TiXmlText* xmlValue = static_cast<const TiXmlText*>(pxmlanimation->FirstChild());
 		parseAnimation(xmlValue->Value(), panim);
-		panim->add(-1);
-	}
 
-   return true;
+      pxmlanimation = (TiXmlElement*)xmlanimator.IterateChildren ("anim", pxmlanimation);
+   }
+
+   determineFrameCount();
 }
 
 /// \fn AnimObject::parseAnimation (const char* animation)
@@ -150,6 +137,8 @@ void Animator::parseAnimation (const char* sequence, Animation *panimation)
 	// see if there is still a number in the buffer
 	if (j > 0)
       panimation->add (atoi (number));
+
+   panimation->add(-1);
 }
 
 void Animator::determineFrameCount()
