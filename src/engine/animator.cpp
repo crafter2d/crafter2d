@@ -62,14 +62,6 @@ Animator::~Animator()
 
 bool Animator::loadFromXML(const TiXmlElement& xmlanimator, Actor& actor)
 {
-	// try to load the animation sequences
-   int animCount = 0;
-	if ( xmlanimator.QueryIntAttribute("count", &animCount) != TIXML_SUCCESS )
-   {
-		// found an animation object without animations, better use Object class then
-      Log::getInstance().warning("Found animatable object without animations.");
-	}
-
    // query the animation speed (in mm)
 	if ( xmlanimator.QueryFloatAttribute("speed", &mAnimationSpeed) != TIXML_SUCCESS )
 		mAnimationSpeed = 100;
