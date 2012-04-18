@@ -26,7 +26,7 @@
 #include "sdlgamewindowfactory.h"
 
 /*!
- 	\mainpage JEngine SSE - 2D Side Scoller Documentation
+ 	\mainpage JEngine SE - 2D Smart Scoll Engine Documentation
  	\section intro_sec Introduction
  	These pages contain the complete documentation of the JEngine sources. You will find here
 	all information about the classes, structures, etc used to implement the engine.
@@ -38,7 +38,7 @@
 	<li>OpenGL support via SDL
 	<li>Multiplatform: Windows and Linux
 	<li>GLSL and CG shading
-	<li>Lua scripting language
+	<li>Scripting language
 	<li>and much more.. :)
 	</ul>
 
@@ -48,12 +48,22 @@
 	This software is provided 'as-is' without any express or implied warranty. In no event will
 	the authors be held liable for any damages arising from the use of this software.
 
-	JEngine makes use of:
+	JEngine supports/uses the following libraries:
 	<ul>
-	<li>Lua, http://www.lua.org/
-	<li>toLua, http://www.tecgraf.puc-rio.br/~celes/tolua/
+   <li>Antlr, http://antlr.org/
+   <li>Box2D, http://box2d.org/
+   <li>CxxTest, http://cxxtest.tigris.org/
+   <li>DevIL, http://openil.sourceforge.net/
+   <li>FreeType2, http://freetype.org/
+   <li>GLee, http://elf-stone.com/glee.php
+   <li>ICU, http://site.icu-project.org/
+   <li>NVidia Cg, http://developer.nvidia.com/
+   <li>Ogg/Vorbis, http://xiph.org/
 	<li>OpenAL, http://www.openal.org/
+   <li>SDL, http://libsdl.org/
+   <li>SOIL, http://www.lonesock.net/soil.html
 	<li>TinyXML, http://www.grinninglizard.com/tinyxml
+   <li>Zlib, http://zlib.net/
 	</ul>
  */
 

@@ -1,23 +1,22 @@
-JEngine SSE, version 0.4.6, Jeroen Broekhuizen
+JEngine SSE, version 0.4.7, Jeroen Broekhuizen
 Copyright 2009-2012
 
-Thanks for downloading this latest version of the JEngine SSE. This latest version
-comes with many improvements over the previous version. The biggest change is the
-introduction of the brand scripting language! This object oriented language is based
-on the familiar Java and C#. In later versions many new features will be added to
-make it easier to use this language in a gaming environment.
+Thanks for downloading this latest version of the JEngine SSE. The biggest change
+in this new version, which is released earlier than planned, finally fully supports 
+the Linux operating system again!
 
-Besides the new scripting language the old Lua language support has been removed
-completely. This unfortunately means that you must port your Lua scripts to the new
-language.
-
-Note that the engine still in development and parts can be changed or removed. This
-software currently is not bug free. Please submit all bugs you find in the bug tracker.
-For questions, feature requests, etc. you can post a message on the forum.
+Besides the Linux compatibility also the demo has gotten some attention. The enemy
+model, called Grudge, is now running around and when close to the user hitting him.
+In later versions this demo will be extended further to an actual simple game
+showing the capabilities of the engine.
 
 To run the demo application, navigate to the bin directory and execute the game.exe 
 file by double clicking on it on windows or by running ./game in the bin directory
 on Linux.
+
+Note that the engine still in development and parts can be changed or removed. This
+software currently is not bug free. Please submit all bugs you find in the bug tracker.
+For questions, feature requests, etc. you can post a message on the forum.
 
 Future plans:
 The previous plan was to work hard on version 0.5. But new insights in for example
@@ -42,12 +41,11 @@ use. Valid options are: cb-gcc (Code::Blocks), vs2005, vs2008 and vs2010 for the
 Visual Studio IDE's (express editions are also supported).
 
 Linux
-As I currently do not have a Linux machine available, version 0.4.6 has not been
-tested on Linux! To generate the project files, in the console launch gen.sh with
-a target. Currently only the cb-gcc (Code::Blocks) and gnu (generated makefile)
-targets are supported.
+Use the gen shell script to generate the project files for the supported IDE or make
+platform you use. Then follow the instructions of your IDE or default makefile
+commands to build the engine.
 
-The generated project files can be found in the build directory.
+The generated project files can be found in the 'build' directory.
 
 More information about the engine can be found on the documentation pages
 of the JEngine SSE website at: 
@@ -72,8 +70,8 @@ For questions or functionality requests you can move to the forums.
 
 KNOWN BUGS:
 
-* When using generics you need to use T as argument! Otherwise the compiler might crash.
-* Compilelog.txt might contain many non-existing filenames. Will be solved in next version.
+* There are still some (major) memory leaks in the engine
+* Bugs/compile errors in scripts might crash the engine (not fool proof yet)
 
 FAQ:
 
@@ -110,8 +108,8 @@ about how to program using this language.
 
 Editing
 -----------------
-General note: this only applies for version 0.4.5. This latest release does not contain
-a World Editor, but supports the files created by 0.4.5.
+General note:
+You should use the world editor as supplied in version 0.4.5 to make your levels.
 
 * How do I start the world editor?
 From version 0.4.3 JEngine SSE comes with an in-game world editor. You can start 

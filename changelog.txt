@@ -1,5 +1,15 @@
-JEngine SSE, version 0.4.6, Jeroen Broekhuizen
+JEngine SSE, version 0.4.7, Jeroen Broekhuizen
 Copyright 2009-2012
+
+Change log 0.4.7
+----------------
+* Linux compatibility!
+* Added rope joint
+* Added resize function to arrays
+* Added support for assert in scripts
+* Improved the demo
+* Improved script handling
+* Fixed some memory leaks
 
 Change log 0.4.6
 ----------------
