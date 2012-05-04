@@ -16,7 +16,11 @@ class GameServer extends Server
 	
 	public int onClientConnecting()
 	{
-		return 0;
+		if ( mStarted )
+		{
+			return Process.CONNECT_DENY_STARTED;
+		}
+		return Process.CONNECT_ALLOW;
 	}
 	
 	public void onClientConnect(Player player)

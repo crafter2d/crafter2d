@@ -34,7 +34,6 @@
 #include "layertype.h"
 #include "worldsimulatorlistener.h"
 
-class BitStream;
 class DirtySet;
 class Entity;
 class Layer;

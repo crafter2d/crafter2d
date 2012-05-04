@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,59 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#include "arraystream.h"
 
-INLINE int GameSettings::getWidth() const
+ArrayStream::ArrayStream(const char* pstream, int length):
+   DataStream(),
+   mpStream(pstream),
+   mLength(length),
+   mPos(0)
 {
-   return mWidth;
 }
 
-INLINE int GameSettings::getHeight() const
+// - Overloadable Interface
+
+void ArrayStream::reset()
 {
-   return mHeight;
+   mPos = 0;
 }
 
-INLINE int GameSettings::getBitDepth() const
+void ArrayStream::readBytes(void* pbuffer, int amount)
 {
-   return mBitDepth;
+   memcpy(pbuffer, mpStream + mPos, amount);
+   mPos += amount;
 }
 
-INLINE bool GameSettings::getFullScreen() const
+char ArrayStream::readByte()
 {
-   return mFullScreen;
-}
-
-INLINE const Color& GameSettings::getBackgroundColor() const
-{
-   return mClearColor;
-}
-
-INLINE const Color& GameSettings::getTextColor() const
-{
-   return mTextColor;
-}
-
-INLINE const Color& GameSettings::getWindowColor() const
-{
-   return mWindowColor;
-}
-
-INLINE const Color& GameSettings::getBorderColor() const
-{
-   return mBorderColor;
-}
-
-INLINE const std::string& GameSettings::getName() const
-{
-   return mName;
-}
-
-INLINE const std::string& GameSettings::getIP() const
-{
-   return mIP;
-}
-
-INLINE int GameSettings::getPort() const
-{
-   return mPort;
+   return mpStream[mPos++];
 }

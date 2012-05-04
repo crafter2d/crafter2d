@@ -276,9 +276,9 @@ void NetConnection::send(NetAddress& client, BitStream* stream, NetPackage::Reli
    if (++client.packageNumber > MAX_PACKAGE_NUMBER)
       client.packageNumber = 0;
 
-   BitStream packageStream;
-   *package >> packageStream;
-   doSend(client, packageStream);
+   //BitStream packageStream;
+   //*package >> packageStream;
+   doSend(client, *package);
 
    // when reliability is requested, save the package in the resend queue
    if ( reliability >= NetPackage::eReliableSequenced )
@@ -306,16 +306,17 @@ void NetConnection::send(NetObject* obj, NetPackage::Reliability reliability)
 
 void NetConnection::resend(NetAddress& client, const NetPackage& package)
 {
-   BitStream stream;
-   package >> stream;
+   //BitStream stream;
+   //package >> stream;
 
    // resend the package to the client
-   doSend(client, stream);
+   doSend(client, package);
 }
 
-void NetConnection::doSend(NetAddress& client, const BitStream& stream)
+void NetConnection::doSend(NetAddress& client, const NetPackage& package) //const BitStream& stream)
 {
-   int err = sendto (sock, stream.getBuf(), stream.getSize(), 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
+   //int err = sendto (sock, stream.getBuf(), stream.getSize(), 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
+   int err = sendto (sock, (char*)&package, package.getSize(), 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
    if (err == SOCKET_ERROR)
    {
       Log::getInstance().error("NetConnection.resend : error during sending(%d)", getErrorNumber());
@@ -325,16 +326,16 @@ void NetConnection::doSend(NetAddress& client, const BitStream& stream)
       client.lastTimeSend = Timer::getInstance().getTick();
       if ( client.pstatistics )
       {
-         client.pstatistics->addPackageSend(stream.getSize());
+         client.pstatistics->addPackageSend(package.getDataSize());
       }
    }
 }
 
 void NetConnection::sendAliveMessages(float tick)
 {
-   BitStream stream;
+   //BitStream stream;
    NetPackage package(NetPackage::eAlive, NetPackage::eUnreliable, 0);
-   package >> stream;
+   //package >> stream;
 
    for ( int i = 0; i < clients.size(); ++i )
    {
@@ -342,7 +343,7 @@ void NetConnection::sendAliveMessages(float tick)
 
       if ( tick - client.lastTimeSend > 1.0f )
       {
-		   doSend(client, stream);
+		   doSend(client, package);
 	   }
    }
 }
@@ -351,10 +352,10 @@ void NetConnection::sendAliveMessages(float tick)
 /// \brief Receive data from the socket
 void NetConnection::recv()
 {
-   BitStream recvStream;
    NetAddress address;
+   NetPackage package;
 
-   if ( !doReceive(address, recvStream) )
+   if ( !doReceive(address, package) )
    {
       return;
    }
@@ -370,12 +371,8 @@ void NetConnection::recv()
    client.lastTimeRecv = Timer::getInstance().getTick();
    if ( client.pstatistics )
    {
-      client.pstatistics->addPackageSend(recvStream.getSize());
+      client.pstatistics->addPackageSend(package.getDataSize());
    }
-
-   // convert package into a header and stream
-   NetPackage package;
-   package << recvStream;
 
    if ( package.getType() == NetPackage::eAck )
    {
@@ -440,27 +437,30 @@ void NetConnection::recv()
       // of processing the messages.
       client.lastPackageNumber = package.getNumber();
 
-      AutoPtr<NetObject> event = package.getObject();
-      mProcess.onClientEvent(clientid, dynamic_cast<NetEvent&>(*event));
+      BitStream stream;
+      stream.setBuffer(package.getData(), package.getDataSize());
+
+      NetObject* pobject = NULL;
+      stream >> &pobject;
+
+      AutoPtr<NetObject> event(pobject);
+      mProcess.onClientEvent(clientid, dynamic_cast<NetEvent&>(*pobject));
    }
 }
 
-bool NetConnection::doReceive(NetAddress& address, BitStream& recvStream)
+bool NetConnection::doReceive(NetAddress& address, NetPackage& package)
 {
-   int addrLen = SOCKADDR_SIZE;
+   static const int addrLen = SOCKADDR_SIZE;
    char buffer[MAX_BITSTREAM_BUFSIZE];
 
-   int size = recvfrom(sock, buffer, MAX_BITSTREAM_BUFSIZE, 0, (struct sockaddr*)&address.addr, (socklen_t*)&addrLen);
+   int size = recvfrom(sock, (char*)&package, MAX_BITSTREAM_BUFSIZE, 0, (struct sockaddr*)&address.addr, (socklen_t*)&addrLen);
    if ( size == SOCKET_ERROR )
    {
       Log::getInstance().error("An error occured while receiving a package (%d)", getErrorNumber());
       return false;
    }
-   else
-   {
-      recvStream.setBuffer(buffer, size);
-      return true;
-   }
+
+   return true;
 }
 
 /// \fn NetConnection::select(bool read, bool write)
@@ -484,6 +484,8 @@ bool NetConnection::select(bool read, bool write)
 /// \param address Address of the new client thats connected
 bool NetConnection::addNewClient(NetAddress& address)
 {
+   bool result = false;
+
    // see if the process wants to accept a connection from this client
    if ( accept )
    {
@@ -496,39 +498,40 @@ bool NetConnection::addNewClient(NetAddress& address)
          stream << &event;
 
          send(address, &stream, NetPackage::eUnreliable);
-         return false;
-      }
-
-      // build the new address structure
-      NetAddress* addr = new NetAddress(address.addr);
-      addr->lastTimeRecv = Timer::getInstance().getTick();
-
-      // create new statistics
-      // addr->pstatistics = new NetStatistics();
-
-      int i = 0;
-      for (; i < clients.size(); ++i)
-      {
-         if (clients[i] == NULL)
-            break;
-      }
-
-      // insert it in the list
-      if (i < clients.size())
-      {
-         clients[i] = addr;
-         clientid = i;
       }
       else
       {
-         clients.push_back(addr);
-         clientid = clients.size()-1;
-      }
+         // build the new address structure
+         NetAddress* addr = new NetAddress(address.addr);
+         addr->lastTimeRecv = Timer::getInstance().getTick();
 
-      return true;
+         // create new statistics
+         // addr->pstatistics = new NetStatistics();
+
+         int i = 0;
+         for (; i < clients.size(); ++i)
+         {
+            if (clients[i] == NULL)
+               break;
+         }
+
+         // insert it in the list
+         if (i < clients.size())
+         {
+            clients[i] = addr;
+            clientid = i;
+         }
+         else
+         {
+            clients.push_back(addr);
+            clientid = clients.size()-1;
+         }
+
+         result = true;
+      }
    }
-   else
-      return false;
+
+   return result;
 }
 
 /// \fn NetConnection::findClient(const NetAddress& address)
@@ -566,11 +569,11 @@ bool NetConnection::isValidSequencedPackage(const NetAddress& client, const NetP
 /// \brief Send an acknowledgement back to the sender of a reliable package.
 void NetConnection::sendAck(NetAddress& client, const NetPackage& package)
 {
-   BitStream stream;
+   //BitStream stream;
    NetPackage ackPackage(NetPackage::eAck, NetPackage::eUnreliable, package.getNumber());
-   ackPackage >> stream;
+   //ackPackage >> stream;
 
-   doSend(client, stream);
+   doSend(client, ackPackage);
 }
 
 /// \fn NetConnection::removePackageFromResendQueue(NetAddress& client, int packageNumber)

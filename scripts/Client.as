@@ -28,7 +28,7 @@ abstract class Client extends Process
 	private native void nativeDisplay();
 	private native void native_setWindow(GameWindow window);
 	
-	public native void connect(string host, int port, string name);
+	public native boolean connect(string host, int port, string name);
 	public native void update(real delta);
 	public native void setActionMap(ActionMap map);
 	public native void setKeyMap(KeyMap map);

@@ -154,7 +154,7 @@ void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    int port = accessor.getInt(1);
 
-   server.listen(port);
+   accessor.setResult(server.listen(port));
 }
 
 void Server_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -207,7 +207,7 @@ void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
    int port = accessor.getInt(2);
    std::string name = accessor.getString(3);
 
-   client.connect(ip.c_str(), port, name.c_str());
+   accessor.setResult(client.connect(ip.c_str(), port, name.c_str()));
 }
 
 void Client_update(VirtualMachine& machine, VirtualStackAccessor& accessor)

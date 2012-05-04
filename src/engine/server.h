@@ -47,7 +47,7 @@ public:
 
    virtual bool   destroy();
 
-   void           listen(int port);
+   bool           listen(int port);
    void           shutdown();
 
    void           addPlayer(int client, Player* player);

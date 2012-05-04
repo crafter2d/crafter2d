@@ -38,7 +38,7 @@ public:
    int                  getHeight() const;
    int                  getBitDepth() const;
    bool                 getFullScreen() const;
-   const Color&         getClearColor() const;
+   const Color&         getBackgroundColor() const;
 
    const Color&         getTextColor() const;
    const Color&         getWindowColor() const;

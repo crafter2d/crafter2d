@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,57 +19,76 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE int GameSettings::getWidth() const
+// - Operators
+
+INLINE DataStream& DataStream::operator<<(float value)
 {
-   return mWidth;
+   write(value);
+   return *this;
 }
 
-INLINE int GameSettings::getHeight() const
+INLINE DataStream& DataStream::operator<<(int value)
 {
-   return mHeight;
+   write(value);
+   return *this;
 }
 
-INLINE int GameSettings::getBitDepth() const
+INLINE DataStream& DataStream::operator<<(unsigned int value)
 {
-   return mBitDepth;
+   write(value);
+   return *this;
 }
 
-INLINE bool GameSettings::getFullScreen() const
+INLINE DataStream& DataStream::operator<<(bool value)
 {
-   return mFullScreen;
+   write(value);
+   return *this;
 }
 
-INLINE const Color& GameSettings::getBackgroundColor() const
+INLINE DataStream& DataStream::operator<<(char value)
 {
-   return mClearColor;
+   write(value);
+   return *this;
 }
 
-INLINE const Color& GameSettings::getTextColor() const
+INLINE DataStream& DataStream::operator<<(const std::string& value)
 {
-   return mTextColor;
+   write(value);
+   return *this;
 }
 
-INLINE const Color& GameSettings::getWindowColor() const
+INLINE DataStream& DataStream::operator>>(float& value)
 {
-   return mWindowColor;
+   read(value);
+   return *this;
 }
 
-INLINE const Color& GameSettings::getBorderColor() const
+INLINE DataStream& DataStream::operator>>(int& value)
 {
-   return mBorderColor;
+   read(value);
+   return *this;
 }
 
-INLINE const std::string& GameSettings::getName() const
+INLINE DataStream& DataStream::operator>>(unsigned int& value)
 {
-   return mName;
+   read(value);
+   return *this;
 }
 
-INLINE const std::string& GameSettings::getIP() const
+INLINE DataStream& DataStream::operator>>(bool& value)
 {
-   return mIP;
+   read(value);
+   return *this;
 }
 
-INLINE int GameSettings::getPort() const
+INLINE DataStream& DataStream::operator>>(char& value)
 {
-   return mPort;
+   read(value);
+   return *this;
+}
+
+INLINE DataStream& DataStream::operator>>(std::string& value)
+{
+   read(value);
+   return *this;
 }

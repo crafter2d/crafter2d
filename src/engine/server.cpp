@@ -70,13 +70,17 @@ bool Server::destroy()
    return Process::destroy();
 }
 
-void Server::listen(int port)
+bool Server::listen(int port)
 {
    if ( !conn.isConnected() )
    {
-      conn.create(port);
+      if ( !conn.create(port) )
+      {
+         return false;
+      }
       conn.setAccepting(true);
    }
+   return true;
 }
 
 void Server::shutdown()

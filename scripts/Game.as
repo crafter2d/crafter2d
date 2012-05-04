@@ -16,24 +16,7 @@ class Game
 	
 	public boolean initialize()
 	{
-		mServer = new GameServer();
-		mServer.setScriptManager(getScriptManager().spawnChild());
-		if ( !mServer.create() )
-		{
-			return false;
-		}
-		mServer.listen(7000);
-		
-		mClient = new GameClient();
-		mClient.setScriptManager(getScriptManager().spawnChild());
-		mClient.setWindow(getWindowFactory().createWindow());
-		if ( !mClient.create() )
-		{
-			return false;
-		}
-		mClient.connect("localhost", 7000, "player");
-		
-		return true;
+		return createServer() && createClient();
 	}
    
 	public void shutdown()
@@ -53,5 +36,30 @@ class Game
 		{
 			setActive(false);
 		}
+	}
+	
+	private boolean createServer()
+	{
+		mServer = new GameServer();
+		mServer.setScriptManager(getScriptManager().spawnChild());
+		if ( !mServer.create() )
+		{
+			return false;
+		}
+		
+		return mServer.listen(7000);
+	}
+	
+	private boolean createClient()
+	{
+		mClient = new GameClient();
+		mClient.setScriptManager(getScriptManager().spawnChild());
+		mClient.setWindow(getWindowFactory().createWindow());
+		if ( !mClient.create() )
+		{
+			return false;
+		}
+		
+		return mClient.connect("localhost", 7000, "player");
 	}
 }

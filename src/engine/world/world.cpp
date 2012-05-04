@@ -32,8 +32,6 @@
 #include "engine/physics/simulationfactory.h"
 #include "engine/physics/simulator.h"
 
-#include "engine/net/bitstream.h"
-
 #include "engine/actor.h"
 #include "engine/nodevisitor.h"
 #include "engine/process.h"

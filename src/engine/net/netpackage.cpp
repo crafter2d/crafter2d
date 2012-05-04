@@ -6,74 +6,119 @@
 
 #include "bitstream.h"
 
-NetPackage::NetPackage():
+NetPackage::NetHeader::NetHeader():
    mType(eInvalid),
    mReliability(eUnreliable),
    mNumber(0),
-   mTimeStamp(0.0f),
-   mDataStream()
+   mTimeStamp(0.0f)
+{
+}
+
+NetPackage::NetHeader::NetHeader(const NetHeader& that):
+   mType(that.mType),
+   mReliability(that.mReliability),
+   mNumber(that.mNumber),
+   mTimeStamp(Timer::getInstance().getTick())
+{
+}
+
+NetPackage::NetHeader::NetHeader(Type type, Reliability reliability, int packagenr):
+   mType(type),
+   mReliability(reliability),
+   mNumber(packagenr),
+   mTimeStamp(Timer::getInstance().getTick())
+{
+}
+
+NetPackage::NetPackage():
+   mHeader(),
+   mDataSize(0),
+   mpData(NULL)
 {
 }
 
 NetPackage::NetPackage(Type type, Reliability reliability, int packagenr, int datasize, const char* pdata):
-   mType(type),
-   mReliability(reliability),
-   mNumber(packagenr),
-   mTimeStamp(Timer::getInstance().getTick()),
-   mDataStream()
+   mHeader(type, reliability, packagenr),
+   mDataSize(0),
+   mpData(NULL)
 {
    if ( datasize > 0 )
    {
-      mDataStream.setBuffer(pdata, datasize);
+      setData(datasize, pdata);
    }
 }
 
 NetPackage::NetPackage(const NetPackage& that):
-   mType(that.mType),
-   mReliability(that.mReliability),
-   mNumber(that.mNumber),
-   mTimeStamp(that.mTimeStamp),
-   mDataStream(that.mDataStream)
+   mHeader(that.mHeader),
+   mDataSize(0),
+   mpData(NULL)
 {
+   if ( that.getDataSize() > 0 )
+   {
+      setData(that.getDataSize(), that.getData());
+   }
 }
 
 NetPackage::~NetPackage()
 {
 }
 
+// - Get/set
+
 NetPackage::Type NetPackage::getType() const
 {
-   return (Type)mType;
+   return (Type)mHeader.mType;
 }
 
 NetPackage::Reliability NetPackage::getReliability() const
 {
-   return (Reliability)mReliability;
+   return (Reliability)mHeader.mReliability;
 }
 
 float NetPackage::getTimeStamp() const
 {
-   return mTimeStamp;
+   return mHeader.mTimeStamp;
 }
 
 void NetPackage::setTimeStamp(float timestamp)
 {
-   mTimeStamp = timestamp;
+   mHeader.mTimeStamp = timestamp;
 }
 
 uint NetPackage::getNumber() const
 {
-   return mNumber;
+   return mHeader.mNumber;
 }
 
-NetObject* NetPackage::getObject()
+int NetPackage::getDataSize() const
 {
-   NetObject* pobject = NULL;
-
-   mDataStream >> &pobject;
-
-   return pobject;
+   return mDataSize;
 }
+
+char* NetPackage::getData() const
+{
+   return mpData;
+}
+
+void NetPackage::setData(int datasize, const char* pdata)
+{
+   ASSERT(mpData == NULL);
+
+   mDataSize = datasize;
+   mpData = new char[datasize];
+   memmove(mpData, pdata, datasize);
+}
+
+// - Query
+
+int NetPackage::getSize() const
+{
+   return sizeof(NetHeader) + sizeof(int) + (mDataSize * sizeof(char));
+}
+
+// - Streaming
+
+/*
 
 NetPackage& NetPackage::operator<<(BitStream& stream)
 {
@@ -88,3 +133,4 @@ const NetPackage& NetPackage::operator>>(BitStream& stream) const
 
    return *this;
 }
+*/

@@ -74,7 +74,7 @@ void GameSettings::loadScreenSettings(TiXmlDocument& doc)
    mHeight     = queryInt(*pscreen, "height", 600);
    mBitDepth   = queryInt(*pscreen, "bitdepth", 32);
    mFullScreen = queryBool(*pscreen, "fullscreen", false);
-   mClearColor = queryColor(*pscreen, "clearcolor", Color::black());
+   mClearColor = queryColor(*pscreen, "bgcolor", Color::black());
 }
 
 void GameSettings::loadGuiSettings(TiXmlDocument& doc)

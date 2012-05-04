@@ -14,6 +14,9 @@ abstract class Process
 	private MessageMap mMessageMap     = new MessageMap();
 	private ArrayList<Player> mPlayers = new ArrayList<Player>();
 	
+	public static int CONNECT_ALLOW = 0;
+	public static int CONNECT_DENY_STARTED = 1;
+	
 	// natives
 	
 	private native boolean create(Object self);

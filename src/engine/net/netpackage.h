@@ -49,24 +49,41 @@ public:
    NetPackage(Type type, Reliability reliability, int packagenr, int datasize = 0, const char* pdata = NULL);
    ~NetPackage();
 
+ // get/set
    Type        getType() const;
    Reliability getReliability() const;
    uint        getNumber() const;
    float       getTimeStamp() const;
    void        setTimeStamp(float timestamp);
 
-   NetObject*  getObject();
+   int         getDataSize() const;
+   char*       getData() const;
+   void        setData(int datasize, const char* pdata);
 
-         NetPackage& operator<<(BitStream& stream);
-   const NetPackage& operator>>(BitStream& stream) const;
+ // query
+   int         getSize() const;
+   
+ // streaming
+   //      NetPackage& operator<<(BitStream& stream);
+   //const NetPackage& operator>>(BitStream& stream) const;
 
 private:
 
-   char        mType;
-   char        mReliability;
-   uint        mNumber;
-   float       mTimeStamp;
-   BitStream   mDataStream;
+   struct NetHeader
+   {
+      char        mType;
+      char        mReliability;
+      uint        mNumber;
+      float       mTimeStamp;
+
+      NetHeader();
+      NetHeader(const NetHeader& that);
+      NetHeader(Type type, Reliability reliability, int packagenr);
+   };
+
+   NetHeader   mHeader;
+   int         mDataSize;
+   char*       mpData;
 };
 
 #endif

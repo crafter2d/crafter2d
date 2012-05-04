@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,59 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#include "bufferedstream.h"
 
-INLINE int GameSettings::getWidth() const
+BufferedStream::BufferedStream():
+   DataStream()
 {
-   return mWidth;
-}
-
-INLINE int GameSettings::getHeight() const
-{
-   return mHeight;
-}
-
-INLINE int GameSettings::getBitDepth() const
-{
-   return mBitDepth;
-}
-
-INLINE bool GameSettings::getFullScreen() const
-{
-   return mFullScreen;
-}
-
-INLINE const Color& GameSettings::getBackgroundColor() const
-{
-   return mClearColor;
-}
-
-INLINE const Color& GameSettings::getTextColor() const
-{
-   return mTextColor;
-}
-
-INLINE const Color& GameSettings::getWindowColor() const
-{
-   return mWindowColor;
-}
-
-INLINE const Color& GameSettings::getBorderColor() const
-{
-   return mBorderColor;
-}
-
-INLINE const std::string& GameSettings::getName() const
-{
-   return mName;
-}
-
-INLINE const std::string& GameSettings::getIP() const
-{
-   return mIP;
-}
-
-INLINE int GameSettings::getPort() const
-{
-   return mPort;
 }

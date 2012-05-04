@@ -121,8 +121,8 @@ protected:
    void        sendAck(NetAddress& client, const NetPackage& package);
    void        sendAliveMessages(float tick);
 
-   void        doSend(NetAddress& client, const BitStream& stream);
-   bool        doReceive(NetAddress& address, BitStream& recvStream);
+   void        doSend(NetAddress& client, const NetPackage& package); //, const BitStream& stream);
+   bool        doReceive(NetAddress& address, NetPackage& package);
 
    void        resend(NetAddress& client, const NetPackage& package);
 
