@@ -45,7 +45,6 @@ elseif ( os.is("linux") ) then
 	links { "SDL", "tinyxml" }
 
 end
-end
 
 configuration "Debug"
 	defines { "_DEBUG", "TIXML_USE_STL" }
