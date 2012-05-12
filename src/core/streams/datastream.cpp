@@ -30,6 +30,17 @@ DataStream::~DataStream()
 {
 }
 
+// - Query
+int DataStream::getDataSize() const
+{
+   return 0;
+}
+
+const char* DataStream::getData() const
+{
+   return NULL;
+}
+
 // - Reading
 
 void DataStream::read(int& value)

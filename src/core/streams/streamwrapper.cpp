@@ -17,79 +17,46 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "bufferedstream.h"
+#include "streamwrapper.h"
+#ifndef JENGINE_INLINE
+#  include "streamwrapper.inl"
+#endif
 
-#include "core/defines.h"
-
-BufferedStream::BufferedStream():
-   DataStream()
+StreamWrapper::StreamWrapper(DataStream& stream):
+   mStream(stream)
 {
-}
-
-BufferedStream::BufferedStream(int reservesize):
-   DataStream(),
-   mpBuffer(NULL),
-   mSize(0),
-   mPos(0)
-{
-   reserve(reservesize);
-}
-
-BufferedStream::~BufferedStream()
-{
-   free(mpBuffer);
-   mpBuffer = NULL;
-}
-
-// - Allocation
-
-void BufferedStream::reserve(int size)
-{
-   if ( mSize < size )
-   {
-      realloc(mpBuffer, size);
-   }
 }
 
 // - Query
 
-int BufferedStream::size() const
+int StreamWrapper::getDataSize() const
 {
-   return mSize;
+   return mStream.getDataSize();
 }
 
-// - Operations
-
-void BufferedStream::reset()
+const char* StreamWrapper::getData() const
 {
-   mPos = 0;
+   return mStream.getData();
 }
 
-// - Reading
+// - Overloads
 
-void BufferedStream::readBytes(void* pbuffer, int amount)
+void StreamWrapper::readBytes(void* pbuffer, int amount)
 {
-   ASSERT(mSize > 0);
-   ASSERT(mPos + amount < mSize);
-
-   memcpy(pbuffer, &mpBuffer[mPos], amount);
-   mPos += amount;
+   mStream.readBytes(pbuffer, amount);
 }
 
-char BufferedStream::readByte()
+const char* StreamWrapper::readBytes(int amount)
 {
-   ASSERT(mSize > 0 && mPos < mSize);
-   return mpBuffer[mPos++];
+   return mStream.readBytes(amount);
 }
 
-// - Writting
-
-void BufferedStream::writeBytes(const void* pbuffer, int amount)
+char StreamWrapper::readByte()
 {
-   if ( mSize <= mPos + amount )
-   {
-      reserve(mSize * 2);
-   }
-   memmove(&mpBuffer[mPos], pbuffer, amount);
-   mPos += amount;
+   return mStream.readByte();
+}
+
+void StreamWrapper::writeBytes(const void* pbuffer, int amount)
+{
+   mStream.writeBytes(pbuffer, amount);
 }

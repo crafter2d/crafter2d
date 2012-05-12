@@ -30,6 +30,9 @@ class NetObject;
 class NetPackage
 {
 public:
+   static const int MaxDataSize = 1500;
+   static const int MaxPackageSize;
+
    enum Type {
       eEvent,
       eAck,
@@ -57,7 +60,7 @@ public:
    void        setTimeStamp(float timestamp);
 
    int         getDataSize() const;
-   char*       getData() const;
+   const char* getData() const;
    void        setData(int datasize, const char* pdata);
 
  // query
@@ -83,7 +86,7 @@ private:
 
    NetHeader   mHeader;
    int         mDataSize;
-   char*       mpData;
+   char        mData[MaxDataSize];
 };
 
-#endif
+#endif // _NETPACKAGE_H_

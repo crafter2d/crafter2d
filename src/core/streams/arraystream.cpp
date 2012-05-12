@@ -27,6 +27,13 @@ ArrayStream::ArrayStream(const char* pstream, int length):
 {
 }
 
+// query
+
+int ArrayStream::size() const
+{
+   return mLength;
+}
+
 // - Overloadable Interface
 
 void ArrayStream::reset()

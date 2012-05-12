@@ -22,10 +22,13 @@
 
 #include "datastream.h"
 
-class ArrayStream : public DataStream
+class CORE_API ArrayStream : public DataStream
 {
 public:
    ArrayStream(const char* pstream, int length);
+
+ // query
+   virtual int size() const;
 
 protected:
  // overloads

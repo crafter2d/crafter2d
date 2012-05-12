@@ -1,3 +1,22 @@
+/***************************************************************************
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "netpackage.h"
 
 #include <string.h>
@@ -5,6 +24,8 @@
 #include "core/system/timer.h"
 
 #include "bitstream.h"
+
+const int NetPackage::MaxPackageSize = sizeof(NetHeader) + sizeof(int) + MaxDataSize;
 
 NetPackage::NetHeader::NetHeader():
    mType(eInvalid),
@@ -33,14 +54,14 @@ NetPackage::NetHeader::NetHeader(Type type, Reliability reliability, int package
 NetPackage::NetPackage():
    mHeader(),
    mDataSize(0),
-   mpData(NULL)
+   mData()
 {
 }
 
 NetPackage::NetPackage(Type type, Reliability reliability, int packagenr, int datasize, const char* pdata):
    mHeader(type, reliability, packagenr),
    mDataSize(0),
-   mpData(NULL)
+   mData()
 {
    if ( datasize > 0 )
    {
@@ -51,7 +72,7 @@ NetPackage::NetPackage(Type type, Reliability reliability, int packagenr, int da
 NetPackage::NetPackage(const NetPackage& that):
    mHeader(that.mHeader),
    mDataSize(0),
-   mpData(NULL)
+   mData()
 {
    if ( that.getDataSize() > 0 )
    {
@@ -95,18 +116,18 @@ int NetPackage::getDataSize() const
    return mDataSize;
 }
 
-char* NetPackage::getData() const
+const char* NetPackage::getData() const
 {
-   return mpData;
+   return mData;
 }
 
 void NetPackage::setData(int datasize, const char* pdata)
 {
-   ASSERT(mpData == NULL);
+   ASSERT(datasize > 0);
+   ASSERT(datasize < MaxDataSize);
 
    mDataSize = datasize;
-   mpData = new char[datasize];
-   memmove(mpData, pdata, datasize);
+   memmove(mData, pdata, datasize);
 }
 
 // - Query

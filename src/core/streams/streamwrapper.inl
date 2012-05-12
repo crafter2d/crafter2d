@@ -17,79 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "bufferedstream.h"
-
 #include "core/defines.h"
 
-BufferedStream::BufferedStream():
-   DataStream()
+// - Get/set
+
+INLINE DataStream& StreamWrapper::getStream()
 {
-}
-
-BufferedStream::BufferedStream(int reservesize):
-   DataStream(),
-   mpBuffer(NULL),
-   mSize(0),
-   mPos(0)
-{
-   reserve(reservesize);
-}
-
-BufferedStream::~BufferedStream()
-{
-   free(mpBuffer);
-   mpBuffer = NULL;
-}
-
-// - Allocation
-
-void BufferedStream::reserve(int size)
-{
-   if ( mSize < size )
-   {
-      realloc(mpBuffer, size);
-   }
-}
-
-// - Query
-
-int BufferedStream::size() const
-{
-   return mSize;
-}
-
-// - Operations
-
-void BufferedStream::reset()
-{
-   mPos = 0;
-}
-
-// - Reading
-
-void BufferedStream::readBytes(void* pbuffer, int amount)
-{
-   ASSERT(mSize > 0);
-   ASSERT(mPos + amount < mSize);
-
-   memcpy(pbuffer, &mpBuffer[mPos], amount);
-   mPos += amount;
-}
-
-char BufferedStream::readByte()
-{
-   ASSERT(mSize > 0 && mPos < mSize);
-   return mpBuffer[mPos++];
-}
-
-// - Writting
-
-void BufferedStream::writeBytes(const void* pbuffer, int amount)
-{
-   if ( mSize <= mPos + amount )
-   {
-      reserve(mSize * 2);
-   }
-   memmove(&mpBuffer[mPos], pbuffer, amount);
-   mPos += amount;
+   return mStream;
 }

@@ -22,10 +22,32 @@
 
 #include "datastream.h"
 
-class BufferedStream : public DataStream
+class CORE_API BufferedStream : public DataStream
 {
 public:
-   BufferedStream();
+            BufferedStream();
+   explicit BufferedStream(int reserve);
+            ~BufferedStream();
+
+ // query
+   virtual int size() const;
+
+ // operations
+   void reserve(int size);
+
+protected:
+ // overloads
+   virtual void reset();
+
+   virtual void readBytes(void* pbuffer, int amount);
+   virtual char readByte();
+
+   virtual void writeBytes(const void* pbuffer, int amount);
+
+private:
+   char* mpBuffer;
+   int   mSize;
+   int   mPos;
 };
 
 #endif // BUFFERED_STREAM_H

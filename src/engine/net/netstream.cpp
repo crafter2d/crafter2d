@@ -17,79 +17,37 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "bufferedstream.h"
+#include "netstream.h"
 
-#include "core/defines.h"
+#ifdef WIN32
+#  include <winsock2.h>
+#endif
 
-BufferedStream::BufferedStream():
-   DataStream()
+NetStream::NetStream(DataStream& stream):
+   StreamWrapper(stream)
 {
 }
 
-BufferedStream::BufferedStream(int reservesize):
-   DataStream(),
-   mpBuffer(NULL),
-   mSize(0),
-   mPos(0)
+// read/write
+
+void NetStream::write(int value)
 {
-   reserve(reservesize);
+   getStream().write((int)htonl(value));
 }
 
-BufferedStream::~BufferedStream()
+void NetStream::write(unsigned int value)
 {
-   free(mpBuffer);
-   mpBuffer = NULL;
+   getStream().write((unsigned int)htonl(value));
 }
 
-// - Allocation
-
-void BufferedStream::reserve(int size)
+void NetStream::read(int& value)
 {
-   if ( mSize < size )
-   {
-      realloc(mpBuffer, size);
-   }
+    getStream().read(value);
+    value = ntohl(value);
 }
 
-// - Query
-
-int BufferedStream::size() const
+void NetStream::read(unsigned int& value)
 {
-   return mSize;
-}
-
-// - Operations
-
-void BufferedStream::reset()
-{
-   mPos = 0;
-}
-
-// - Reading
-
-void BufferedStream::readBytes(void* pbuffer, int amount)
-{
-   ASSERT(mSize > 0);
-   ASSERT(mPos + amount < mSize);
-
-   memcpy(pbuffer, &mpBuffer[mPos], amount);
-   mPos += amount;
-}
-
-char BufferedStream::readByte()
-{
-   ASSERT(mSize > 0 && mPos < mSize);
-   return mpBuffer[mPos++];
-}
-
-// - Writting
-
-void BufferedStream::writeBytes(const void* pbuffer, int amount)
-{
-   if ( mSize <= mPos + amount )
-   {
-      reserve(mSize * 2);
-   }
-   memmove(&mpBuffer[mPos], pbuffer, amount);
-   mPos += amount;
+   getStream().read(value);
+   value = ntohl(value);
 }

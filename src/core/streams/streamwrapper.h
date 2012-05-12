@@ -17,79 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "bufferedstream.h"
+#ifndef STREAM_WRAPPED_H_
+#define STREAM_WRAPPED_H_
 
-#include "core/defines.h"
+#include "core/core_base.h"
 
-BufferedStream::BufferedStream():
-   DataStream()
+#include "datastream.h"
+
+class CORE_API StreamWrapper : public DataStream
 {
-}
+public:
+   StreamWrapper(DataStream& stream);
 
-BufferedStream::BufferedStream(int reservesize):
-   DataStream(),
-   mpBuffer(NULL),
-   mSize(0),
-   mPos(0)
-{
-   reserve(reservesize);
-}
+ // query
+   virtual int         getDataSize() const;
+   virtual const char* getData() const;
 
-BufferedStream::~BufferedStream()
-{
-   free(mpBuffer);
-   mpBuffer = NULL;
-}
+protected:
+ // get/set
+   DataStream& getStream();
 
-// - Allocation
+ // overloads
+   virtual       void  readBytes(void* pbuffer, int amount);
+   virtual const char* readBytes(int amount);
+   virtual       char  readByte();
 
-void BufferedStream::reserve(int size)
-{
-   if ( mSize < size )
-   {
-      realloc(mpBuffer, size);
-   }
-}
+   virtual       void  writeBytes(const void* pbuffer, int amount);
 
-// - Query
+private:
+   DataStream& mStream;
+};
 
-int BufferedStream::size() const
-{
-   return mSize;
-}
+#ifdef JENGINE_INLINE
+#  include "streamwrapper.inl"
+#endif
 
-// - Operations
-
-void BufferedStream::reset()
-{
-   mPos = 0;
-}
-
-// - Reading
-
-void BufferedStream::readBytes(void* pbuffer, int amount)
-{
-   ASSERT(mSize > 0);
-   ASSERT(mPos + amount < mSize);
-
-   memcpy(pbuffer, &mpBuffer[mPos], amount);
-   mPos += amount;
-}
-
-char BufferedStream::readByte()
-{
-   ASSERT(mSize > 0 && mPos < mSize);
-   return mpBuffer[mPos++];
-}
-
-// - Writting
-
-void BufferedStream::writeBytes(const void* pbuffer, int amount)
-{
-   if ( mSize <= mPos + amount )
-   {
-      reserve(mSize * 2);
-   }
-   memmove(&mpBuffer[mPos], pbuffer, amount);
-   mPos += amount;
-}
+#endif // STREAM_WRAPPED_H_

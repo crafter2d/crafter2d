@@ -20,13 +20,19 @@
 #ifndef DATA_STREAM_H
 #define DATA_STREAM_H
 
+#include "core/core_base.h"
+
 #include <string>
 
-class DataStream
+class CORE_API DataStream
 {
 public:
             DataStream();
    virtual ~DataStream() = 0;
+
+ // query
+   virtual int         getDataSize() const = 0;
+   virtual const char* getData() const = 0;
 
  // operators
    DataStream&  operator<<(float f);
@@ -44,21 +50,23 @@ public:
    DataStream&  operator>>(std::string& str);
 
  // overloadables
-   void write(int value);
-   void write(unsigned int value);
-   void write(float value);
-   void write(bool value);
-   void write(char c);
-   void write(const std::string& text);
+   virtual void write(int value);
+   virtual void write(unsigned int value);
+   virtual void write(float value);
+   virtual void write(bool value);
+   virtual void write(char c);
+   virtual void write(const std::string& text);
    
-   void read(int& value);
-   void read(unsigned int& value);
-   void read(float& value);
-   void read(bool& value);
-   void read(char& value);
-   void read(std::string& value);
+   virtual void read(int& value);
+   virtual void read(unsigned int& value);
+   virtual void read(float& value);
+   virtual void read(bool& value);
+   virtual void read(char& value);
+   virtual void read(std::string& value);
 
 protected:
+   friend class StreamWrapper;
+
    virtual       void  readBytes(void* pbuffer, int amount);
    virtual const char* readBytes(int amount);
    virtual       char  readByte();

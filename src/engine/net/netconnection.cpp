@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "core/smartptr/autoptr.h"
+#include "core/streams/arraystream.h"
 #include "core/log/log.h"
 #include "core/system/timer.h"
 
@@ -33,6 +34,7 @@
 #include "events/connectreplyevent.h"
 
 #include "netstatistics.h"
+#include "netstream.h"
 
 #ifdef WIN32
 #include <ws2tcpip.h>
@@ -268,25 +270,6 @@ void NetConnection::update()
    }
 }
 
-void NetConnection::send(NetAddress& client, BitStream* stream, NetPackage::Reliability reliability)
-{
-   AutoPtr<NetPackage> package = new NetPackage(NetPackage::eEvent, reliability, client.packageNumber, stream->getSize(), stream->getBuf());
-
-   // update the package numbering
-   if (++client.packageNumber > MAX_PACKAGE_NUMBER)
-      client.packageNumber = 0;
-
-   //BitStream packageStream;
-   //*package >> packageStream;
-   doSend(client, *package);
-
-   // when reliability is requested, save the package in the resend queue
-   if ( reliability >= NetPackage::eReliableSequenced )
-   {
-      client.resendQueue.push_back(package.release());
-   }
-}
-
 /// \fn NetConnection::send(BitStream& stream)
 /// \brief Sends the data from the bitstream to the client/server
 void NetConnection::send(BitStream* stream, NetPackage::Reliability reliability)
@@ -299,24 +282,39 @@ void NetConnection::send(BitStream* stream, NetPackage::Reliability reliability)
 /// \brief Transmits a NetObject to the current client.
 void NetConnection::send(NetObject* obj, NetPackage::Reliability reliability)
 {
+   NetAddress& client = *clients[clientid];
    BitStream stream;
    stream << obj;
-   send(&stream, reliability);
+
+   send(client, &stream, reliability);
+}
+
+void NetConnection::send(NetAddress& client, BitStream* stream, NetPackage::Reliability reliability)
+{
+   AutoPtr<NetPackage> package = new NetPackage(NetPackage::eEvent, reliability, client.packageNumber, stream->getSize(), stream->getBuf());
+
+   // update the package numbering
+   if (++client.packageNumber > MAX_PACKAGE_NUMBER)
+      client.packageNumber = 0;
+
+   doSend(client, *package);
+
+   // when reliability is requested, save the package in the resend queue
+   if ( reliability >= NetPackage::eReliableSequenced )
+   {
+      client.resendQueue.push_back(package.release());
+   }
 }
 
 void NetConnection::resend(NetAddress& client, const NetPackage& package)
 {
-   //BitStream stream;
-   //package >> stream;
-
-   // resend the package to the client
    doSend(client, package);
 }
 
 void NetConnection::doSend(NetAddress& client, const NetPackage& package) //const BitStream& stream)
 {
-   //int err = sendto (sock, stream.getBuf(), stream.getSize(), 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
-   int err = sendto (sock, (char*)&package, package.getSize(), 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
+   int size = package.getSize();
+   int err = sendto (sock, (const char*)&package, size, 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
    if (err == SOCKET_ERROR)
    {
       Log::getInstance().error("NetConnection.resend : error during sending(%d)", getErrorNumber());
@@ -333,9 +331,7 @@ void NetConnection::doSend(NetAddress& client, const NetPackage& package) //cons
 
 void NetConnection::sendAliveMessages(float tick)
 {
-   //BitStream stream;
    NetPackage package(NetPackage::eAlive, NetPackage::eUnreliable, 0);
-   //package >> stream;
 
    for ( int i = 0; i < clients.size(); ++i )
    {
@@ -450,10 +446,8 @@ void NetConnection::recv()
 
 bool NetConnection::doReceive(NetAddress& address, NetPackage& package)
 {
-   static const int addrLen = SOCKADDR_SIZE;
-   char buffer[MAX_BITSTREAM_BUFSIZE];
-
-   int size = recvfrom(sock, (char*)&package, MAX_BITSTREAM_BUFSIZE, 0, (struct sockaddr*)&address.addr, (socklen_t*)&addrLen);
+   int addrLen = SOCKADDR_SIZE;
+   int size = recvfrom(sock, (char*)&package, NetPackage::MaxPackageSize, 0, (struct sockaddr*)&(address.addr), (socklen_t*)&addrLen);
    if ( size == SOCKET_ERROR )
    {
       Log::getInstance().error("An error occured while receiving a package (%d)", getErrorNumber());
@@ -569,9 +563,7 @@ bool NetConnection::isValidSequencedPackage(const NetAddress& client, const NetP
 /// \brief Send an acknowledgement back to the sender of a reliable package.
 void NetConnection::sendAck(NetAddress& client, const NetPackage& package)
 {
-   //BitStream stream;
    NetPackage ackPackage(NetPackage::eAck, NetPackage::eUnreliable, package.getNumber());
-   //ackPackage >> stream;
 
    doSend(client, ackPackage);
 }
