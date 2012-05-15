@@ -34,7 +34,7 @@ public:
 protected:
  // overloads
    virtual void reset();
-   virtual void readBytes(void* pbuffer, int amount);
+   virtual const char* readBytes(int amount);
    virtual char readByte();
 
 private:

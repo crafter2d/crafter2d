@@ -467,7 +467,7 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    NetStream stream(datastream);
 
    // run the onClientConnect script
-   mpScript->addParam("NetStream", &stream);
+   mpScript->addParam("engine.net.NetStream", &stream);
    mpScript->run("onScriptEvent");
 }
 

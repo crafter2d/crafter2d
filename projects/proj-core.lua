@@ -48,7 +48,7 @@ if ( os.is("windows") ) then
 					"zlib1", "tinyxml_STL"  } 
 	else
 
-	links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL", "icuuc" }
+		links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL", "icuuc" }
 		
 		configuration "Debug"
 			links { "GLee_d", "tinyxmld_STL", "zlib1_d" }

@@ -105,7 +105,7 @@ char BufferedStream::readByte()
 
 void BufferedStream::writeBytes(const void* pbuffer, int amount)
 {
-   if ( mSize <= mPos + amount )
+   if ( mSize < mPos + amount )
    {
       reserve(mSize * 2);
    }

@@ -46,10 +46,11 @@ void ArrayStream::reset()
    mPos = 0;
 }
 
-void ArrayStream::readBytes(void* pbuffer, int amount)
+const char* ArrayStream::readBytes(int amount)
 {
-   memcpy(pbuffer, mpStream + mPos, amount);
+   int pos = mPos;
    mPos += amount;
+   return &mpStream[pos];
 }
 
 char ArrayStream::readByte()
