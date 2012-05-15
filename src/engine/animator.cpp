@@ -161,7 +161,7 @@ void Animator::animate(float delta)
    {
       nextFrame();
 
-      mAnimationDelta -= mAnimationSpeed;
+      mAnimationDelta = 0;
    }
 }
 

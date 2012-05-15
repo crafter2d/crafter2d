@@ -47,8 +47,12 @@ protected:
    virtual void writeBytes(const void* pbuffer, int amount);
 
 private:
+ // operations
+   void ensureFits(int datasize);
+
    char* mpBuffer;
    int   mSize;
+   int   mLength;
    int   mPos;
 };
 

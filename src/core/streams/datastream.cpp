@@ -145,7 +145,7 @@ void DataStream::read(DataStream& that)
 {
    int size = 0;
    readInt(size);
-   that.writeBytes(getData(), size);
+   that.writeBytes(readBytes(size), size);
 }
 
 // - Operations

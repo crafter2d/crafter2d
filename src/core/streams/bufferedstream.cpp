@@ -25,6 +25,7 @@ BufferedStream::BufferedStream():
    DataStream(),
    mpBuffer(NULL),
    mSize(0),
+   mLength(0),
    mPos(0)
 {
    reserve(128);
@@ -34,15 +35,17 @@ BufferedStream::BufferedStream(const DataStream& that):
    DataStream(that),
    mpBuffer((char*)malloc(that.getDataSize())),
    mSize(that.getDataSize()),
+   mLength(that.getDataSize()),
    mPos(0)
 {
-   memmove(mpBuffer, that.getData(), mSize);
+   memmove(mpBuffer, that.getData(), mLength);
 }
 
 BufferedStream::BufferedStream(int reservesize):
    DataStream(),
    mpBuffer(NULL),
    mSize(0),
+   mLength(0),
    mPos(0)
 {
    reserve(reservesize);
@@ -65,11 +68,26 @@ void BufferedStream::reserve(int size)
    }
 }
 
+void BufferedStream::ensureFits(int datasize)
+{
+   int newsize = mLength + datasize;
+   if ( mSize < newsize )
+   {
+      do
+      {
+         mSize *= 2;
+      }
+      while ( mSize < newsize );
+
+      mpBuffer = (char*) realloc(mpBuffer, mSize);
+   }
+}
+
 // - Query
 
 int BufferedStream::getDataSize() const
 {
-   return mSize;
+   return mLength;
 }
 
 const char* BufferedStream::getData() const
@@ -89,7 +107,7 @@ void BufferedStream::reset()
 void BufferedStream::readBytes(void* pbuffer, int amount)
 {
    ASSERT(mSize > 0);
-   ASSERT(mPos + amount < mSize);
+   ASSERT(mPos + amount <= mLength);
 
    memcpy(pbuffer, &mpBuffer[mPos], amount);
    mPos += amount;
@@ -105,10 +123,7 @@ char BufferedStream::readByte()
 
 void BufferedStream::writeBytes(const void* pbuffer, int amount)
 {
-   if ( mSize < mPos + amount )
-   {
-      reserve(mSize * 2);
-   }
-   memmove(&mpBuffer[mPos], pbuffer, amount);
-   mPos += amount;
+   ensureFits(amount);
+   memmove(&mpBuffer[mLength], pbuffer, amount);
+   mLength += amount;
 }
