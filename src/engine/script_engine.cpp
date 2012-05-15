@@ -18,7 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/math/vector.h"
+#include "core/streams/datastream.h"
+#include "core/streams/bufferedstream.h"
 #include "core/defines.h"
+
+#include "net/netstream.h"
 
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualobjectreference.h"
@@ -38,8 +42,6 @@
 #include "resource/resourcemanager.h"
 
 #include "window/gamewindowfactory.h"
-
-#include "net/bitstream.h"
 
 #include "world/world.h"
 #include "engine/content/contentmanager.h"
@@ -170,10 +172,10 @@ void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& acces
 {
    GET_THIS(Server, server);
 
-   BitStream* pstream = (BitStream*) accessor.getObject(1)->getNativeObject();
+   NetStream* pstream = (NetStream*) accessor.getObject(1)->getNativeObject();
    int client = accessor.getInt(2);
 
-   server.sendScriptEvent(pstream, client);
+   server.sendScriptEvent(*pstream, client);
 }
 
 void Server_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -320,39 +322,58 @@ void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccesso
    RETURN_CLASS_OWNED("system.GameWindow", GameWindow, factory.createWindow());
 }
 
-void BitStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void BufferedStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
 
-   BitStream* pstream = new BitStream();
+   BufferedStream* pstream = new BufferedStream();
    machine.registerNative(thisobject, pstream);
    thisobject->setOwner(true);
 }
 
-void BitStream_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void BufferedStream_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   DESTRUCT_THIS(BitStream);
+   DESTRUCT_THIS(BufferedStream);
 }
 
-void BitStream_writeInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NetStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(BitStream, stream);
+   VirtualObjectReference& thisobject = accessor.getThis();
+
+   BufferedStream* pbufferedstream = (BufferedStream*) accessor.getObject(1)->getNativeObject();
+
+   NetStream* pstream = new NetStream(*pbufferedstream);
+   machine.registerNative(thisobject, pstream);
+   thisobject->setOwner(true);
+}
+
+void NetStream_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(NetStream);
+}
+
+void NetStream_writeInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(NetStream, stream);
 
    int value = accessor.getInt(1);
 
    stream.writeInt(value);
 }
 
-void BitStream_readInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NetStream_readInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(BitStream, stream);
+   GET_THIS(NetStream, stream);
 
-   accessor.setResult(stream.readInt());
+   int value;
+   stream.readInt(value);
+
+   accessor.setResult(value);
 }
 
-void BitStream_clear(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NetStream_clear(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(BitStream, stream);
+   GET_THIS(NetStream, stream);
 
    stream.clear();
 }
@@ -1145,10 +1166,14 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
 
-   registrator.addCallback("BitStream_init", BitStream_init);
-   registrator.addCallback("BitStream_writeInt", BitStream_writeInt);
-   registrator.addCallback("BitStream_readInt", BitStream_readInt);
-   registrator.addCallback("BitStream_clear", BitStream_clear);
+   registrator.addCallback("BufferedStream_init", BufferedStream_init);
+   registrator.addCallback("BufferedStream_destruct", BufferedStream_destruct);
+
+   registrator.addCallback("NetStream_init", NetStream_init);
+   registrator.addCallback("NetStream_destruct", NetStream_destruct);
+   registrator.addCallback("NetStream_writeInt", NetStream_writeInt);
+   registrator.addCallback("NetStream_readInt", NetStream_readInt);
+   registrator.addCallback("NetStream_clear", NetStream_clear);
 
    registrator.addCallback("Entity_getId", Entity_getId);
 

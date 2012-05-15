@@ -22,6 +22,8 @@
 #  include "deleteobjectevent.inl"
 #endif
 
+#include "core/streams/datastream.h"
+
 #include "engine/entity.h"
 
 IMPLEMENT_REPLICATABLE(DeleteObjectEventId, DeleteObjectEvent, NetEvent)
@@ -40,14 +42,14 @@ DeleteObjectEvent::DeleteObjectEvent(const Entity& entity):
 
 // - Streaming
 
-void DeleteObjectEvent::doPack(BitStream& stream) const
+void DeleteObjectEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
-   stream << mId;
+   stream.writeUint(mId);
 }
 
-void DeleteObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
+void DeleteObjectEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
-   stream >> mId;
+   NetEvent::doUnpack(stream);
+   stream.readUint(mId);
 }

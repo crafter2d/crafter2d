@@ -22,6 +22,7 @@
 #  include "newobjectevent.inl"
 #endif
 
+#include "core/streams/datastream.h"
 #include "engine/entity.h"
 
 IMPLEMENT_REPLICATABLE(NewObjectEventId, NewObjectEvent, NetEvent)
@@ -44,18 +45,22 @@ NewObjectEvent::NewObjectEvent(const Entity& entity):
 
 // - Streaming
 
-void NewObjectEvent::doPack(BitStream& stream) const
+void NewObjectEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
    
-   stream << mId << mParentId << mFileName;
+   stream.writeUint(mId);
+   stream.writeUint(mParentId);
+   stream.writeString(mFileName);
 }
 
-void NewObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
+void NewObjectEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
+   NetEvent::doUnpack(stream);
       
-   stream >> mId >> mParentId >> mFileName;
+   stream.readUint(mId);
+   stream.readUint(mParentId);
+   stream.readString(mFileName);
 }
 
 

@@ -23,7 +23,7 @@
 
 #include "engine/net/netobject.h"
 
-class BitStream;
+class DataStream;
 
 enum EventType {
    connectEvent      = 0x0000,
@@ -61,8 +61,8 @@ public:
 
 protected:
  // streaming
-   virtual void   doPack(BitStream& stream) const;
-   virtual void   doUnpack(BitStream& stream, int dirtyflag);
+   virtual void   doPack(DataStream& stream) const;
+   virtual void   doUnpack(DataStream& stream);
 
 private:
    EventType mType;

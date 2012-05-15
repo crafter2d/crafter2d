@@ -135,6 +135,23 @@ void List<E>::clear()
    _size = 0;
 }
 
+template <class E>
+void List<E>::remove(Iterator<E>& it)
+{
+   ListNode<E>* pnode = static_cast<ListNode<E>*>(it.key());
+   if ( pnode == _phead )
+   {
+      _phead = _phead->nextptr();
+   }
+   else if ( pnode == _ptail )
+   {
+      _ptail = _ptail->prevptr();
+   }
+
+   delete pnode;
+   _size--;
+}
+
 // - Query
 
 template <class E>

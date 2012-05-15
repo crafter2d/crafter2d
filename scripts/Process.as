@@ -3,13 +3,16 @@ use engine.ui.*;
 use engine.core.*;
 use engine.collections.*;
 use engine.messages.*;
+use engine.net.*;
+use engine.streams.*;
 
 // Class : Process
 // Abstract base class for the client and server processes
 
 abstract class Process
 {
-	protected BitStream mStream = new BitStream();
+	protected BufferedStream mBufferedStream = new BufferedStream();
+	protected NetStream mStream = new NetStream(mBufferedStream);
 	
 	private MessageMap mMessageMap     = new MessageMap();
 	private ArrayList<Player> mPlayers = new ArrayList<Player>();
@@ -41,7 +44,7 @@ abstract class Process
 		return success;
 	}
 	
-	public void onScriptEvent(BitStream stream)
+	public void onScriptEvent(NetStream stream)
 	{
 		int msgid = stream.readInt();
 		Message message = mMessageMap.getMessage(msgid);

@@ -22,7 +22,7 @@
 
 #include "netevent.h"
 
-class BitStream;
+#include "core/streams/bufferedstream.h"
 
 /**
 @author Jeroen Broekhuizen
@@ -33,20 +33,19 @@ public:
    DEFINE_REPLICATABLE(ScriptEvent)
 
             ScriptEvent();
-   explicit ScriptEvent(BitStream* pstream);
+   explicit ScriptEvent(const DataStream& stream);
    virtual ~ScriptEvent();
 
  // get/set
-   BitStream* useStream() const;
+   const DataStream& getStream() const;
 
 protected:
  // streaming
-   virtual void   doPack(BitStream& stream) const;
-   virtual void   doUnpack(BitStream& stream, int dirtyflag);
+   virtual void   doPack(DataStream& stream) const;
+   virtual void   doUnpack(DataStream& stream);
 
 private:
-   mutable BitStream*  mpStream;
-           bool        mOwned;
+   BufferedStream mStream;
 };
 
 #endif

@@ -194,13 +194,6 @@ BitStream& BitStream::operator<<(const std::string& text)
    return *this;
 }
 
-BitStream& BitStream::operator<<(const NetObject* obj)
-{
-   *this << obj->getRuntimeInfo().getId();
-   obj->pack(*this);
-   return *this;
-}
-
 BitStream& BitStream::operator<<(const BitStream* stream)
 {
    int totalsize = stream->size + sizeof(int);
@@ -270,15 +263,5 @@ BitStream& BitStream::operator>>(BitStream& stream)
    stream.writeRaw(&buf[pos], streamsize);
    pos += streamsize;
 
-   return *this;
-}
-
-BitStream& BitStream::operator>>(NetObject** obj)
-{
-   int type;
-   *this >> type;
-   (*obj) = NetObjectFactory::getInstance().createObject(type);
-   (*obj)->setReplica();
-   (*obj)->unpack(*this);
    return *this;
 }

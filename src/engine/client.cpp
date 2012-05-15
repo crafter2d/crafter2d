@@ -45,6 +45,7 @@
 #include "net/events/requestobjectevent.h"
 #include "net/events/worldchangedevent.h"
 #include "net/events/scriptevent.h"
+#include "net/netstream.h"
 
 #include "world/world.h"
 #include "world/worldrenderer.h"
@@ -147,7 +148,7 @@ bool Client::connect(const char* server, int port, const char* name)
 
    // send login command
    ConnectEvent event(mpPlayer->getName());
-   conn.send (&event);
+   conn.send(event);
    return true;
 }
 
@@ -156,7 +157,7 @@ void Client::disconnect()
    if ( conn.isConnected() )
    {
       DisconnectEvent event;
-      conn.send(&event);
+      conn.send(event);
    }
 }
 
@@ -268,7 +269,7 @@ bool Client::loadWorld(const std::string& filename, const std::string& name)
 
 void Client::sendToServer(NetObject& object)
 {
-   conn.send(&object);
+   conn.send(object);
 }
 
 //---------------------------------------------
@@ -373,7 +374,7 @@ void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
    mpScript->addParam(event.getId()+1);
-   mpScript->addParam(event.getPlayerName().c_str());
+   mpScript->addParam(event.getPlayerName());
    mpScript->run("onJoined");
 }
 
@@ -449,7 +450,7 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
       {
          // unknown object, must have been generated before the player entered the game
          RequestObjectEvent event(event.getId());
-         getConnection()->send(&event);
+         conn.send(event);
 
          mRequests[event.getId()] = true;
       }
@@ -462,10 +463,11 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
 
 void Client::handleScriptEvent(const ScriptEvent& event)
 {
-   AutoPtr<BitStream> stream(event.useStream());
+   DataStream& datastream = const_cast<DataStream&>(event.getStream());
+   NetStream stream(datastream);
 
    // run the onClientConnect script
-   mpScript->addParam("BitStream", stream.getPointer());
+   mpScript->addParam("NetStream", &stream);
    mpScript->run("onScriptEvent");
 }
 

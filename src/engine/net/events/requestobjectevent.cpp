@@ -22,6 +22,8 @@
 #  include "requestobjectevent.inl"
 #endif
 
+#include "core/streams/datastream.h"
+
 IMPLEMENT_REPLICATABLE(RequestObjectEventId, RequestObjectEvent, NetEvent)
 
 RequestObjectEvent::RequestObjectEvent():
@@ -38,14 +40,14 @@ RequestObjectEvent::RequestObjectEvent(const Id& id):
 
 // - Streaming
 
-void RequestObjectEvent::doPack(BitStream& stream) const
+void RequestObjectEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
-   stream << mId;
+   stream.writeUint(mId);
 }
 
-void RequestObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
+void RequestObjectEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
-   stream >> mId;
+   NetEvent::doUnpack(stream);
+   stream.readUint(mId);
 }

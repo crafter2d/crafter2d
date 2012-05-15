@@ -23,72 +23,60 @@
 
 INLINE DataStream& DataStream::operator<<(float value)
 {
-   write(value);
+   writeFloat(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator<<(int value)
 {
-   write(value);
-   return *this;
-}
-
-INLINE DataStream& DataStream::operator<<(unsigned int value)
-{
-   write(value);
+   writeInt(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator<<(bool value)
 {
-   write(value);
+   writeBool(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator<<(char value)
 {
-   write(value);
+   writeChar(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator<<(const std::string& value)
 {
-   write(value);
+   writeString(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator>>(float& value)
 {
-   read(value);
+   readFloat(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator>>(int& value)
 {
-   read(value);
-   return *this;
-}
-
-INLINE DataStream& DataStream::operator>>(unsigned int& value)
-{
-   read(value);
+   readInt(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator>>(bool& value)
 {
-   read(value);
+   readBool(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator>>(char& value)
 {
-   read(value);
+   readChar(value);
    return *this;
 }
 
 INLINE DataStream& DataStream::operator>>(std::string& value)
 {
-   read(value);
+   readString(value);
    return *this;
 }

@@ -33,6 +33,7 @@ class ConnectEvent;
 class ViewportEvent;
 class World;
 class Player;
+class NetStream;
 
 /// @author Jeroen Broekhuizen
 ///
@@ -52,9 +53,9 @@ public:
 
    void           addPlayer(int client, Player* player);
 
-   void           sendToAllClients(BitStream& stream);
-   void           sendToAllClients(NetObject& object);
-   void           sendScriptEventToAllClients(BitStream* stream);
+   void           sendToAllClients(const NetStream& stream);
+   void           sendToAllClients(const NetObject& object);
+   void           sendScriptEventToAllClients(const NetStream& stream);
 
    virtual void   update(float delta);
 
@@ -67,7 +68,7 @@ protected:
    virtual void notifyWorldChanged();
 
  // networking
-   void sendToActiveClient(NetObject& stream);
+   void sendToActiveClient(const NetObject& stream);
 
    void handleConnectEvent(const ConnectEvent& event);
    void handleViewportEvent(const ViewportEvent& event);

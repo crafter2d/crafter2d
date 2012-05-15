@@ -19,55 +19,45 @@
  ***************************************************************************/
 #include "scriptevent.h"
 
-#include "../bitstream.h"
+#include "engine/net/netstream.h"
 
 IMPLEMENT_REPLICATABLE(ScriptEventId, ScriptEvent, NetEvent)
 
 ScriptEvent::ScriptEvent():
    NetEvent(scriptEvent),
-   mpStream(NULL),
-   mOwned(false)
+   mStream()
 {
 }
 
-ScriptEvent::ScriptEvent(BitStream* pstream):
+ScriptEvent::ScriptEvent(const DataStream& stream):
    NetEvent(scriptEvent),
-   mpStream(pstream),
-   mOwned(false)
+   mStream(stream)
 {
 }
 
 ScriptEvent::~ScriptEvent()
 {
-   if ( mOwned )
-   {
-      ASSERT_MSG(mpStream == NULL, "The stream should have been used by now!");
-   }
 }
 
 // - Get/set
 
-BitStream* ScriptEvent::useStream() const
+const DataStream& ScriptEvent::getStream() const
 {
-   BitStream* pstream = mpStream;
-   mpStream = NULL;
-   return pstream;
+   return mStream;
 }
 
 // - Streaming
 
-void ScriptEvent::doPack(BitStream& stream) const
+void ScriptEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
 
-   stream << mpStream;
+   stream.write(mStream);
 }
 
-void ScriptEvent::doUnpack(BitStream& stream, int dirtyflag)
+void ScriptEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
+   NetEvent::doUnpack(stream);
    
-   mOwned = true;
-   mpStream = new BitStream();
-   stream >> *mpStream;
+   stream.read(mStream);
 }

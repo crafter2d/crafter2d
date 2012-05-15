@@ -33,6 +33,9 @@ public:
    virtual int         getDataSize() const;
    virtual const char* getData() const;
 
+ // operations
+   virtual void clear();
+
 protected:
  // get/set
    DataStream& getStream();

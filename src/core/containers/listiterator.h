@@ -38,6 +38,7 @@ public:
    virtual void* key();
    virtual void  reset();
    virtual E&    item();
+           void  remove();
 
    virtual bool  isValid() const;
 

@@ -22,8 +22,21 @@
 #include "core/defines.h"
 
 BufferedStream::BufferedStream():
-   DataStream()
+   DataStream(),
+   mpBuffer(NULL),
+   mSize(0),
+   mPos(0)
 {
+   reserve(128);
+}
+
+BufferedStream::BufferedStream(const DataStream& that):
+   DataStream(that),
+   mpBuffer((char*)malloc(that.getDataSize())),
+   mSize(that.getDataSize()),
+   mPos(0)
+{
+   memmove(mpBuffer, that.getData(), mSize);
 }
 
 BufferedStream::BufferedStream(int reservesize):
@@ -47,15 +60,21 @@ void BufferedStream::reserve(int size)
 {
    if ( mSize < size )
    {
-      realloc(mpBuffer, size);
+      mpBuffer = (char*) realloc(mpBuffer, size);
+      mSize = size;
    }
 }
 
 // - Query
 
-int BufferedStream::size() const
+int BufferedStream::getDataSize() const
 {
    return mSize;
+}
+
+const char* BufferedStream::getData() const
+{
+   return mpBuffer;
 }
 
 // - Operations

@@ -51,7 +51,7 @@ void ServerDirtySet::send(NetConnection& conn)
       Entity& object = *(*it);
 
       UpdateObjectEvent event(object);
-      conn.send(&event);
+      conn.send(event);
    }
 }
 

@@ -20,6 +20,8 @@
 #ifndef UPDATE_OBJECT_EVENT_H_
 #define UPDATE_OBJECT_EVENT_H_
 
+#include "core/streams/bufferedstream.h"
+
 #include "engine/idmanager.h"
 
 #include "netevent.h"
@@ -38,20 +40,20 @@ public:
    explicit UpdateObjectEvent(const Entity& entity);
    
  // get/set
-   Id               getId() const;
-   const BitStream& getDataStream() const;
+   Id                getId() const;
+   const DataStream& getDataStream() const;
 
  // update
    void update(Entity& entity) const;
 
 protected:
  // streaming
-   virtual void   doPack(BitStream& stream) const;
-   virtual void   doUnpack(BitStream& stream, int dirtyflag);
+   virtual void   doPack(DataStream& stream) const;
+   virtual void   doUnpack(DataStream& stream);
 
 private:
-   Id          mId;
-   BitStream   mDataStream;
+   Id             mId;
+   BufferedStream mDataStream;
 };
 
 #ifdef JENGINE_INLINE

@@ -39,6 +39,8 @@
 #include "engine/net/events/serverdownevent.h"
 #include "engine/net/events/actionevent.h"
 #include "engine/net/events/worldchangedevent.h"
+#include "engine/net/netstream.h"
+#include "engine/net/netobjectstream.h"
 #include "engine/physics/simulationfiller.h"
 #include "engine/physics/simulator.h"
 #include "engine/world/world.h"
@@ -140,38 +142,37 @@ void Server::notifyWorldChanged()
 // - Sending
 // ----------------------------------
 
-void Server::sendToAllClients(NetObject& object)
+void Server::sendToAllClients(const NetObject& object)
 {
-   BitStream stream;
-   stream << &object;
+   // copying a buffer is faster than packaging per client (trade-off)
+   BufferedStream bufstream;
+   NetObjectStream stream(bufstream);
+   stream << object;
+
    sendToAllClients(stream);
 }
 
-void Server::sendToAllClients(BitStream& stream)
+void Server::sendToAllClients(const NetStream& stream)
 {
    // send changes to the clients
    ClientMap::iterator it = clients.begin();
    for ( ; it != clients.end(); ++it)
    {
       conn.setClientId(it->first);
-      conn.send(&stream);
+      conn.send(stream);
    }
 }
 
-void Server::sendToActiveClient(NetObject& object)
+void Server::sendToActiveClient(const NetObject& object)
 {
   conn.setClientId(mActiveClient);
-  conn.send(&object);
+  conn.send(object);
 }
 
-void Server::sendScriptEventToAllClients(BitStream* pstream)
+void Server::sendScriptEventToAllClients(const NetStream& stream)
 {
-   ScriptEvent event(pstream);
-
-   BitStream stream;
-   stream << &event;
-
-   sendToAllClients(stream);
+   ScriptEvent event(stream);
+   sendToAllClients(event);
 }
 
 // ----------------------------------
@@ -224,12 +225,13 @@ int Server::onClientEvent(int client, const NetEvent& event)
          {
             const ScriptEvent& scriptevent = dynamic_cast<const ScriptEvent&>(event);
 
-            AutoPtr<BitStream> stream = scriptevent.useStream();
+            DataStream& datastream = const_cast<DataStream&>(scriptevent.getStream());
+            NetStream stream(datastream);
 
             // run the onClientConnect script
             Player* player = clients[client];
             mpScript->addParam("Player", player);
-            mpScript->addParam("BitStream", &stream);
+            mpScript->addParam("NetStream", &stream);
             mpScript->run("onEvent");
             break;
          }
@@ -286,13 +288,14 @@ void Server::addPlayer(int clientid, Player* pplayer)
    // send the reply to the connecting client
    ConnectReplyEvent event(ConnectReplyEvent::eAccepted);
    conn.setClientId(clientid);
-   conn.send(&event);
+   conn.send(event);
 
    // notify other players about the new player
    JoinEvent join(clientid, pplayer->getName());
+   BufferedStream bufstream;
+   NetObjectStream stream(bufstream);
+   stream << join;
 
-   BitStream stream;
-   stream << &join;
    ClientMap::iterator it = clients.begin();
    for ( ; it != clients.end(); ++it)
    {
@@ -300,7 +303,7 @@ void Server::addPlayer(int clientid, Player* pplayer)
       if (pother!= pplayer)
       {
          conn.setClientId(pother->getClientId());
-         conn.send(&stream);
+         conn.send(stream);
       }
    }
 }

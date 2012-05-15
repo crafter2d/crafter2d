@@ -28,13 +28,10 @@ public:
    NetStream(DataStream& stream);
 
  // writing
-   virtual void write(int value);
-   virtual void write(unsigned int value);
+   virtual void writeInt(int value);
 
  // reading
-   virtual void read(int& value);
-   virtual void read(unsigned int& value);
-
+   virtual void readInt(int& value);
 };
 
 #endif // NET_STREAM_H_

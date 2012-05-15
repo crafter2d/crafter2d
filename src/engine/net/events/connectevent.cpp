@@ -22,6 +22,8 @@
 #  include "connectevent.inl"
 #endif
 
+#include "core/streams/datastream.h"
+
 IMPLEMENT_REPLICATABLE(ConnectEventId, ConnectEvent, NetEvent)
 
 ConnectEvent::ConnectEvent():
@@ -38,14 +40,14 @@ ConnectEvent::ConnectEvent(const std::string& name):
 
 // - Streaming
 
-void ConnectEvent::doPack(BitStream& stream) const
+void ConnectEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
-   stream << mName;
+   stream.writeString(mName);
 }
 
-void ConnectEvent::doUnpack(BitStream& stream, int dirtyflag)
+void ConnectEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
-   stream >> mName;
+   NetEvent::doUnpack(stream);
+   stream.readString(mName);
 }

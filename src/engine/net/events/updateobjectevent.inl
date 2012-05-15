@@ -24,7 +24,7 @@ INLINE Id UpdateObjectEvent::getId() const
    return mId;
 }
 
-INLINE const BitStream& UpdateObjectEvent::getDataStream() const
+INLINE const DataStream& UpdateObjectEvent::getDataStream() const
 {
    return mDataStream;
 }

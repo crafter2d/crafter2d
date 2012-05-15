@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "joinevent.h"
 
+#include "core/streams/datastream.h"
+
 IMPLEMENT_REPLICATABLE(JoinEventId, JoinEvent, NetEvent)
 
 JoinEvent::JoinEvent():
@@ -49,14 +51,14 @@ const std::string& JoinEvent::getPlayerName() const
 
 // - Streaming
    
-void JoinEvent::doPack(BitStream& stream) const
+void JoinEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
    stream << mId << mPlayerName;
 }
 
-void JoinEvent::doUnpack(BitStream& stream, int dirtyflag)
+void JoinEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
+   NetEvent::doUnpack(stream);
    stream >> mId >> mPlayerName;
 }

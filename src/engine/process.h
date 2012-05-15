@@ -73,7 +73,7 @@ public:
    void setActive(bool active);
 
  // operations
-   void sendScriptEvent(BitStream* stream, uint client=INVALID_CLIENTID);
+   void sendScriptEvent(const DataStream& stream, uint client=INVALID_CLIENTID);
    
   // events
    virtual int    allowNewConnection();

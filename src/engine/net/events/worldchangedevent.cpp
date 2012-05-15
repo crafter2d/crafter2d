@@ -22,6 +22,8 @@
 #  include "worldchangedevent.inl"
 #endif
 
+#include "core/streams/datastream.h"
+
 #include "engine/world/world.h"
 
 IMPLEMENT_REPLICATABLE(WorldChangedEventId, WorldChangedEvent, NetEvent)
@@ -40,16 +42,16 @@ WorldChangedEvent::WorldChangedEvent(const World& world):
 
 // - Streaming
 
-void WorldChangedEvent::doPack(BitStream& stream) const
+void WorldChangedEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
 
    stream << mFilename;
 }
 
-void WorldChangedEvent::doUnpack(BitStream& stream, int dirtyflag)
+void WorldChangedEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
+   NetEvent::doUnpack(stream);
 
    stream >> mFilename;
 }

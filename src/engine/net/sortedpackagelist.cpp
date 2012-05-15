@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,41 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "disconnectevent.h"
+#include "sortedpackagelist.h"
 
-#include "core/streams/datastream.h"
+#include "netpackage.h"
 
-IMPLEMENT_REPLICATABLE(DisconnectEventId, DisconnectEvent, NetEvent)
+// - Statics
 
-DisconnectEvent::DisconnectEvent():
-   NetEvent(disconnectEvent),
-   mId(-1)
+static
+int Compare(const NetPackage& left, const NetPackage& right)
 {
+   if ( left.getNumber() < right.getNumber() )
+   {
+      return -1;
+   }
+   else if ( left.getNumber() > right.getNumber() )
+   {
+      return 1;
+   }
+
+   return 0;
 }
 
-DisconnectEvent::DisconnectEvent(int id):
-   NetEvent(disconnectEvent),
-   mId(id)
+// - Sorted Package List implementation
+
+SortedPackageList::SortedPackageList():
+   SortedList<NetPackage>()
 {
-}
-
-// - Get/set
-
-int DisconnectEvent::getId() const
-{
-   return mId;
-}
-
-// - Streaming
-
-void DisconnectEvent::doPack(DataStream& stream) const
-{
-   NetEvent::doPack(stream);
-   stream.writeInt(mId);
-}
-
-void DisconnectEvent::doUnpack(DataStream& stream)
-{
-   NetEvent::doUnpack(stream);
-   stream.writeInt(mId);
+   setCompareFnc((SortedList<NetPackage>::CompareFnc)Compare);
 }

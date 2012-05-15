@@ -22,6 +22,8 @@
 #  include "actionevent.inl"
 #endif
 
+#include "core/streams/datastream.h"
+
 IMPLEMENT_REPLICATABLE(ActionEventId, ActionEvent, NetEvent)
 
 ActionEvent::ActionEvent(): 
@@ -42,14 +44,14 @@ ActionEvent::ActionEvent(int action, bool down):
 // - Streaming
 //--------------------------------------------
 
-void ActionEvent::doPack(BitStream& stream) const
+void ActionEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
    stream << mAction << mDown;
 }
 
-void ActionEvent::doUnpack(BitStream& stream, int dirtyflag)
+void ActionEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
+   NetEvent::doUnpack(stream);
    stream >> mAction >> mDown;
 }

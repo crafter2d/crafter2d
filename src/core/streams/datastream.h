@@ -28,6 +28,7 @@ class CORE_API DataStream
 {
 public:
             DataStream();
+            DataStream(const DataStream& that);
    virtual ~DataStream() = 0;
 
  // query
@@ -37,32 +38,36 @@ public:
  // operators
    DataStream&  operator<<(float f);
    DataStream&  operator<<(int i);
-   DataStream&  operator<<(unsigned int i);
    DataStream&  operator<<(bool b);
    DataStream&  operator<<(char c);
    DataStream&  operator<<(const std::string& text);
 
    DataStream&  operator>>(float& f);
    DataStream&  operator>>(int& i);
-   DataStream&  operator>>(unsigned int& i);
    DataStream&  operator>>(bool& b);
    DataStream&  operator>>(char& c);
    DataStream&  operator>>(std::string& str);
 
  // overloadables
-   virtual void write(int value);
-   virtual void write(unsigned int value);
-   virtual void write(float value);
-   virtual void write(bool value);
-   virtual void write(char c);
-   virtual void write(const std::string& text);
+   virtual void writeInt(int value);
+   virtual void writeUint(unsigned int value);
+   virtual void writeFloat(float value);
+   virtual void writeBool(bool value);
+   virtual void writeChar(char c);
+   virtual void writeString(const std::string& text);
    
-   virtual void read(int& value);
-   virtual void read(unsigned int& value);
-   virtual void read(float& value);
-   virtual void read(bool& value);
-   virtual void read(char& value);
-   virtual void read(std::string& value);
+   virtual void readInt(int& value);
+   virtual void readUint(unsigned int& value);
+   virtual void readFloat(float& value);
+   virtual void readBool(bool& value);
+   virtual void readChar(char& value);
+   virtual void readString(std::string& value);
+
+   void write(const DataStream& that);
+   void read(DataStream& that);
+
+ // operations
+   virtual void clear();
 
 protected:
    friend class StreamWrapper;

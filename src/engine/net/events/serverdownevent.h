@@ -30,14 +30,7 @@ class ServerDownEvent : public NetEvent
 public:
    DEFINE_REPLICATABLE(ServerDownEvent)
 
-            ServerDownEvent();
-   
-protected:
- // streaming
-   virtual void   doPack(BitStream& stream) const;
-   virtual void   doUnpack(BitStream& stream, int dirtyflag);
-
-private:
+   ServerDownEvent();
 };
 
 #endif

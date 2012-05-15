@@ -26,11 +26,13 @@ class CORE_API BufferedStream : public DataStream
 {
 public:
             BufferedStream();
+            BufferedStream(const DataStream& that);
    explicit BufferedStream(int reserve);
             ~BufferedStream();
 
  // query
-   virtual int size() const;
+   virtual int         getDataSize() const;
+   virtual const char* getData() const;
 
  // operations
    void reserve(int size);

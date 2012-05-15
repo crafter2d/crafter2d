@@ -51,6 +51,8 @@ NetPackage::NetHeader::NetHeader(Type type, Reliability reliability, int package
 {
 }
 
+// - NetPackage implementation
+
 NetPackage::NetPackage():
    mHeader(),
    mDataSize(0),
@@ -136,22 +138,3 @@ int NetPackage::getSize() const
 {
    return sizeof(NetHeader) + sizeof(int) + (mDataSize * sizeof(char));
 }
-
-// - Streaming
-
-/*
-
-NetPackage& NetPackage::operator<<(BitStream& stream)
-{
-   stream >> mType >> mReliability >> mNumber >> mDataStream;
-
-   return *this;
-}
-
-const NetPackage& NetPackage::operator>>(BitStream& stream) const
-{
-   stream << mType << mReliability << mNumber << &mDataStream;
-
-   return *this;
-}
-*/

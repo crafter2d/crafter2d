@@ -22,6 +22,8 @@
 #  include "connectreplyevent.inl"
 #endif
 
+#include "core/streams/datastream.h"
+
 IMPLEMENT_REPLICATABLE(ConnectReplyEventId, ConnectReplyEvent, NetEvent)
 
 ConnectReplyEvent::ConnectReplyEvent():
@@ -40,14 +42,16 @@ ConnectReplyEvent::ConnectReplyEvent(Reply reply, int reason):
 
 // - Streaming
 
-void ConnectReplyEvent::doPack(BitStream& stream) const
+void ConnectReplyEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
-   stream << mReply << mReason;
+   stream.writeInt(mReply);
+   stream.writeInt(mReason);
 }
 
-void ConnectReplyEvent::doUnpack(BitStream& stream, int dirtyflag)
+void ConnectReplyEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
-   stream >> (int&)mReply << mReason;
+   NetEvent::doUnpack(stream);
+   stream.readInt((int&)mReply);
+   stream.readInt(mReason);
 }

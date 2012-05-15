@@ -30,24 +30,14 @@ NetStream::NetStream(DataStream& stream):
 
 // read/write
 
-void NetStream::write(int value)
+void NetStream::writeInt(int value)
 {
-   getStream().write((int)htonl(value));
+   //getStream().write((int)htonl(value));
+   getStream().writeInt(value);
 }
 
-void NetStream::write(unsigned int value)
+void NetStream::readInt(int& value)
 {
-   getStream().write((unsigned int)htonl(value));
-}
-
-void NetStream::read(int& value)
-{
-    getStream().read(value);
-    value = ntohl(value);
-}
-
-void NetStream::read(unsigned int& value)
-{
-   getStream().read(value);
-   value = ntohl(value);
+    getStream().readInt(value);
+    //value = ntohl(value);
 }

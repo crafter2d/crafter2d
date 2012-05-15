@@ -30,6 +30,7 @@
 
 #include "engine/physics/body.h"
 #include "engine/physics/simulator.h"
+#include "engine/net/netstream.h"
 #include "engine/resource/resourcemanager.h"
 #include "engine/world/world.h"
 
@@ -233,13 +234,14 @@ void Actor::updateState()
 // - Packing & unpacking
 //////////////////////////////////////////////////////////////////////////
 
-void Actor::doPack(BitStream& stream) const
+void Actor::doPack(DataStream& stream) const
 {
    Entity::doPack(stream);
 
    if ( isDirty(ePositionDirty) )
    {
-      stream << getPosition() << mVel << angle << dir;
+      const Vector& pos = getPosition();
+      stream << pos.x << pos.y << mVel.x << mVel.y << angle << dir;
    }
 
    if ( isDirty(eAnimationDirty) )
@@ -248,22 +250,21 @@ void Actor::doPack(BitStream& stream) const
    }
 }
 
-void Actor::doUnpack(BitStream& stream, int dirtyflag)
+void Actor::doUnpack(DataStream& stream)
 {
-   Entity::doUnpack(stream, dirtyflag);
+   Entity::doUnpack(stream);
 
-   if ( IS_SET(dirtyflag, ePositionDirty) )
+   if ( isDirty(ePositionDirty) )
    {
       Vector pos;
-      stream >> pos >> mVel >> angle >> dir;
+      stream >> pos.x >> pos.y >> mVel.x >> mVel.y >> angle >> dir;
 
       setPosition(pos);
    }
 
-   if ( IS_SET(dirtyflag, eAnimationDirty) )
+   if ( isDirty(eAnimationDirty) )
    {
       int anim;
-
       stream >> anim;
 
       if ( mpAnimator != NULL )

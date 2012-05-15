@@ -66,3 +66,15 @@ bool ListIterator<E>::isValid() const
 {
    return _pnode != NULL;
 }
+
+template <class E>
+void ListIterator<E>::remove()
+{
+   if ( _pnode != NULL )
+   {
+      ListNode<E>* ptemp = _pnode;
+      _pnode = _pnode->nextptr();
+
+      _list.remove(*this);
+   }
+}

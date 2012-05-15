@@ -131,14 +131,11 @@ int Process::allowNewConnection()
    return 0;
 }
 
-void Process::sendScriptEvent(BitStream* pstream, uint client)
+void Process::sendScriptEvent(const DataStream& stream, uint client)
 {
-   if ( conn.isConnected() )
-   {
-      ScriptEvent event(pstream);
-      if (client != INVALID_CLIENTID)
-         conn.setClientId(client);
-      conn.send(&event);
-   }
+   ScriptEvent event(stream);
+
+   conn.setClientId(client);
+   conn.send(event);
 }
 

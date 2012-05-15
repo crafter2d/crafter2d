@@ -23,19 +23,6 @@
 #endif
 
 #include <string.h>
-
-#include "core/smartptr/autoptr.h"
-#include "core/streams/arraystream.h"
-#include "core/log/log.h"
-#include "core/system/timer.h"
-
-#include "engine/process.h"
-
-#include "events/connectreplyevent.h"
-
-#include "netstatistics.h"
-#include "netstream.h"
-
 #ifdef WIN32
 #include <ws2tcpip.h>
 #else
@@ -49,6 +36,20 @@
 #define SOCKET_ERROR -1
 #endif
 
+#include "core/smartptr/autoptr.h"
+#include "core/streams/arraystream.h"
+#include "core/streams/bufferedstream.h"
+#include "core/log/log.h"
+#include "core/system/timer.h"
+
+#include "engine/process.h"
+
+#include "events/connectreplyevent.h"
+
+#include "netstatistics.h"
+#include "netobjectstream.h"
+#include "netstream.h"
+
 /******************************************************
  * NetConnection class
  */
@@ -59,9 +60,7 @@ NetConnection::NetConnection(Process& process):
    lastSendAlive(0),
    clientid(0),
    sock(-1),
-   mSendAliveMsg(false),
-   connected(false),
-   accept(true)
+   mFlags(0)
 {
 }
 
@@ -137,7 +136,7 @@ bool NetConnection::create(int port)
       }
 
       // server is by default connected when created
-      connected = true;
+      SET_FLAG(mFlags, eConnected);
    }
 
    lastSendAlive = TIMER.getTick();
@@ -172,15 +171,15 @@ bool NetConnection::connect(const char* serverName, int port)
 	}
 
    addNewClient(address);
-   connected = true;
+   SET_FLAG(mFlags, eConnected);
    return true;
 }
 
 void NetConnection::disconnect()
 {
-   if ( connected )
+   if ( IS_SET(mFlags, eConnected) )
    {
-      connected = false;
+      CLEAR_FLAG(mFlags, eConnected);
 
       // close the socket connection
 #ifdef WIN32
@@ -192,7 +191,7 @@ void NetConnection::disconnect()
 #endif
 
       // remove the clients
-      for ( int i=0; i < clients.size(); ++i )
+      for ( std::size_t i=0; i < clients.size(); ++i )
       {
          delete clients[i];
       }
@@ -216,9 +215,11 @@ int NetConnection::getErrorNumber()
 /// \brief Updates the message queues etc.
 void NetConnection::update()
 {
+   ASSERT(IS_SET(mFlags, eConnected));
+
    Timer& timer = TIMER;
 
-   if ( mSendAliveMsg )
+   if ( IS_SET(mFlags, eKeepAlive) )
    {
       sendAliveMessages(timer.getTick());
    }
@@ -270,9 +271,9 @@ void NetConnection::update()
    }
 }
 
-/// \fn NetConnection::send(BitStream& stream)
+/// \fn NetConnection::send(DataStream& stream, NetPackage::Reliability reliability)
 /// \brief Sends the data from the bitstream to the client/server
-void NetConnection::send(BitStream* stream, NetPackage::Reliability reliability)
+void NetConnection::send(const NetStream& stream, NetPackage::Reliability reliability)
 {
    NetAddress& client = *clients[clientid];
    send(client, stream, reliability);
@@ -280,18 +281,20 @@ void NetConnection::send(BitStream* stream, NetPackage::Reliability reliability)
 
 /// \fn NetConnection::send(NetObject* obj, PacketReliability reliability)
 /// \brief Transmits a NetObject to the current client.
-void NetConnection::send(NetObject* obj, NetPackage::Reliability reliability)
+void NetConnection::send(const NetObject& object, NetPackage::Reliability reliability)
 {
    NetAddress& client = *clients[clientid];
-   BitStream stream;
-   stream << obj;
 
-   send(client, &stream, reliability);
+   BufferedStream bufferedstream;
+   NetObjectStream stream(bufferedstream);
+   stream << object;
+
+   send(client, stream, reliability);
 }
 
-void NetConnection::send(NetAddress& client, BitStream* stream, NetPackage::Reliability reliability)
+void NetConnection::send(NetAddress& client, const NetStream& stream, NetPackage::Reliability reliability)
 {
-   AutoPtr<NetPackage> package = new NetPackage(NetPackage::eEvent, reliability, client.packageNumber, stream->getSize(), stream->getBuf());
+   AutoPtr<NetPackage> package = new NetPackage(NetPackage::eEvent, reliability, client.packageNumber, stream.getDataSize(), stream.getData());
 
    // update the package numbering
    if (++client.packageNumber > MAX_PACKAGE_NUMBER)
@@ -314,7 +317,7 @@ void NetConnection::resend(NetAddress& client, const NetPackage& package)
 void NetConnection::doSend(NetAddress& client, const NetPackage& package) //const BitStream& stream)
 {
    int size = package.getSize();
-   int err = sendto (sock, (const char*)&package, size, 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
+   int err = sendto(sock, (const char*)&package, size, 0, (struct sockaddr*)&(client.addr), SOCKADDR_SIZE);
    if (err == SOCKET_ERROR)
    {
       Log::getInstance().error("NetConnection.resend : error during sending(%d)", getErrorNumber());
@@ -349,12 +352,13 @@ void NetConnection::sendAliveMessages(float tick)
 void NetConnection::recv()
 {
    NetAddress address;
-   NetPackage package;
-
-   if ( !doReceive(address, package) )
+   AutoPtr<NetPackage> ppackage = doReceive(address);
+   if ( !ppackage.hasPointer() )
    {
       return;
    }
+
+   NetPackage& package = *ppackage;
 
    // see if the connection is already in the list
    if ((clientid = findClient(address)) == -1)
@@ -405,20 +409,22 @@ void NetConnection::recv()
          // the new package is at least 1 bigger than the last received one).
          if ( false && package.getNumber() > (client.lastPackageNumber+1) )
          {
-            insertOrderedPackage(client, package);
+            client.orderQueue.add(ppackage.release());
 
             // check if we have already the package we are waiting for
-            PackageList::iterator it = client.orderQueue.begin();
-            NetPackage& pack = (*it);
-            if ( pack.getNumber() == client.lastPackageNumber )
+            ListIterator<NetPackage> it(client.orderQueue);
+            if ( it.isValid() )
             {
-               // erase the package from the list
-               client.orderQueue.erase(it);
-            }
-            else
-            {
-               // nope, still waiting for the right one
-               return;
+               NetPackage& firstpackage = *it;
+               if ( firstpackage.getNumber() == client.lastPackageNumber )
+               {
+                  it.remove();
+               }
+               else
+               {
+                  // nope, still waiting for the right one
+                  return;
+               }
             }
          }
          break;
@@ -433,10 +439,10 @@ void NetConnection::recv()
       // of processing the messages.
       client.lastPackageNumber = package.getNumber();
 
-      BitStream stream;
-      stream.setBuffer(package.getData(), package.getDataSize());
-
       NetObject* pobject = NULL;
+
+      ArrayStream arraystream(package.getData(), package.getDataSize());
+      NetObjectStream stream(arraystream);
       stream >> &pobject;
 
       AutoPtr<NetObject> event(pobject);
@@ -444,17 +450,19 @@ void NetConnection::recv()
    }
 }
 
-bool NetConnection::doReceive(NetAddress& address, NetPackage& package)
+NetPackage* NetConnection::doReceive(NetAddress& address)
 {
+   AutoPtr<NetPackage> ppackage = new NetPackage();
    int addrLen = SOCKADDR_SIZE;
-   int size = recvfrom(sock, (char*)&package, NetPackage::MaxPackageSize, 0, (struct sockaddr*)&(address.addr), (socklen_t*)&addrLen);
+
+   int size = recvfrom(sock, (char*)ppackage.getPointer(), NetPackage::MaxPackageSize, 0, (struct sockaddr*)&(address.addr), (socklen_t*)&addrLen);
    if ( size == SOCKET_ERROR )
    {
       Log::getInstance().error("An error occured while receiving a package (%d)", getErrorNumber());
-      return false;
+      return NULL;
    }
 
-   return true;
+   return ppackage.release();
 }
 
 /// \fn NetConnection::select(bool read, bool write)
@@ -488,10 +496,11 @@ bool NetConnection::addNewClient(NetAddress& address)
       {
          ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
 
-         BitStream stream;
-         stream << &event;
+         BufferedStream bufferedstream;
+         NetObjectStream stream(bufferedstream);
+         stream << event;
 
-         send(address, &stream, NetPackage::eUnreliable);
+         send(address, stream, NetPackage::eUnreliable);
       }
       else
       {
@@ -598,38 +607,3 @@ void NetConnection::removePackageFromResendQueue(NetAddress& client, uint packag
    Log::getInstance().info("Received package number: %d", packageNumber);
 }
 
-/// \fn NetConnection::insertOrderedPackage(NetAddress& client, const NetPackage& package)
-/// \brief Inserts a package in the order list for a client. We assume that the clientid
-/// contains the right index to the client for which this package was meant
-void NetConnection::insertOrderedPackage(NetAddress& client, const NetPackage& package)
-{
-   if (client.orderQueue.size() > 0)
-   {
-      // find the correct location to put in the package
-      PackageList::iterator it = client.orderQueue.begin();
-      while (it != client.orderQueue.end() && (*it).getNumber() < package.getNumber())
-      {
-         ++it;
-      }
-
-      NetPackage& savedpackage = *it;
-
-      if ( it != client.orderQueue.end() )
-      {
-         // note that eventually the package could already been there (if for example
-         // the ACK got lost), so make sure the new package number is smaller
-         if ( package.getNumber() < savedpackage.getNumber() )
-         {
-            client.orderQueue.insert(it, package);
-         }
-      }
-      else
-         // stupid message is way earlier than the rest! push it at the end of the list
-         client.orderQueue.push_back(package);
-   }
-   else
-   {
-      // first out of order package, just push in in the vector
-      client.orderQueue.push_back(package);
-   }
-}

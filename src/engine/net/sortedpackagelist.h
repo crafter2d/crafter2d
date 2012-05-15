@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,41 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "disconnectevent.h"
+#ifndef SORTED_PACKAGE_LIST_H
+#define SORTED_PACKAGE_LIST_H
 
-#include "core/streams/datastream.h"
+#include "core/containers/sortedlist.h"
 
-IMPLEMENT_REPLICATABLE(DisconnectEventId, DisconnectEvent, NetEvent)
+class NetPackage;
 
-DisconnectEvent::DisconnectEvent():
-   NetEvent(disconnectEvent),
-   mId(-1)
+class SortedPackageList : public SortedList<NetPackage>
 {
-}
+public:
+   SortedPackageList();
+};
 
-DisconnectEvent::DisconnectEvent(int id):
-   NetEvent(disconnectEvent),
-   mId(id)
-{
-}
-
-// - Get/set
-
-int DisconnectEvent::getId() const
-{
-   return mId;
-}
-
-// - Streaming
-
-void DisconnectEvent::doPack(DataStream& stream) const
-{
-   NetEvent::doPack(stream);
-   stream.writeInt(mId);
-}
-
-void DisconnectEvent::doUnpack(DataStream& stream)
-{
-   NetEvent::doUnpack(stream);
-   stream.writeInt(mId);
-}
+#endif // SORTED_PACKAGE_LIST_H

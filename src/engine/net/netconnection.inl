@@ -59,7 +59,7 @@ NetAddress::NetAddress(sockaddr_in adr):
 
 INLINE void NetConnection::setAccepting(bool a)
 {
-   accept = a;
+   SET_FLAG(mFlags, eAccept);
 }
 
 INLINE void NetConnection::setClientId(const int client)
@@ -74,12 +74,15 @@ INLINE int NetConnection::getClientId()
 
 INLINE bool NetConnection::isConnected()
 {
-   return connected;
+   return IS_SET(mFlags, eConnected);
 }
 
 INLINE void NetConnection::setSendAliveMessages(bool yes)
 {
-   mSendAliveMsg = yes;
+   if ( yes )
+      SET_FLAG(mFlags, eKeepAlive);
+   else
+      CLEAR_FLAG(mFlags, eKeepAlive);
 }
 
 INLINE

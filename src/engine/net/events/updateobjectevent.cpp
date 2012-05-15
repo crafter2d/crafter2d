@@ -22,6 +22,7 @@
 #  include "updateobjectevent.inl"
 #endif
 
+#include "engine/net/netstream.h"
 #include "engine/actor.h"
 
 IMPLEMENT_REPLICATABLE(UpdateObjectEventId, UpdateObjectEvent, NetEvent)
@@ -38,26 +39,30 @@ UpdateObjectEvent::UpdateObjectEvent(const Entity& object):
    mId(object.getId()),
    mDataStream()
 {
-   object.pack(mDataStream);
+   NetStream stream(mDataStream);
+   object.pack(stream);
 }
 
 void UpdateObjectEvent::update(Entity& entity) const
 {
-   entity.unpack(const_cast<BitStream&>(mDataStream));
+   NetStream stream(const_cast<BufferedStream&>(mDataStream));
+   entity.unpack(stream);
 }
 
 // - Streaming
 
-void UpdateObjectEvent::doPack(BitStream& stream) const
+void UpdateObjectEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
 
-   stream << mId << &mDataStream;
+   stream.writeUint(mId);
+   stream.write(mDataStream);
 }
 
-void UpdateObjectEvent::doUnpack(BitStream& stream, int dirtyflag)
+void UpdateObjectEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
+   NetEvent::doUnpack(stream);
 
-   stream >> mId >> mDataStream;
+   stream.readUint(mId);
+   stream.read(mDataStream);
 }

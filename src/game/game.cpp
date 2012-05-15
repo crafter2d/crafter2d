@@ -120,7 +120,10 @@ bool Game::create()
    console.create ();
 
 #ifdef WIN32
-   NetConnection::initialize();
+   if ( !NetConnection::initialize() )
+   {
+      return false;
+   }
 
    // initialize the AVI library
    AVIFileInit();

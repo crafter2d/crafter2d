@@ -27,6 +27,7 @@
 #include <tinyxml.h>
 
 #include "core/log/log.h"
+#include "core/streams/datastream.h"
 #include "core/system/timer.h"
 
 #include "engine/script/script.h"
@@ -352,15 +353,15 @@ void ParticleSystem::accept(NodeVisitor& visitor)
 
 // - Streaming 
 
-void ParticleSystem::doPack(BitStream& stream) const
+void ParticleSystem::doPack(DataStream& stream) const
 {
    Entity::doPack(stream);
    stream << true;
 }
 
-void ParticleSystem::doUnpack(BitStream& stream, int dirtyflag)
+void ParticleSystem::doUnpack(DataStream& stream)
 {
-   Entity::doUnpack(stream, dirtyflag);
+   Entity::doUnpack(stream);
 
    bool dirty;
    stream >> dirty;

@@ -65,10 +65,6 @@ public:
 
  // query
    int         getSize() const;
-   
- // streaming
-   //      NetPackage& operator<<(BitStream& stream);
-   //const NetPackage& operator>>(BitStream& stream) const;
 
 private:
 

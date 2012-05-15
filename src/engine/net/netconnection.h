@@ -30,13 +30,13 @@
 #include <netinet/in.h>
 #endif
 
-#include <list>
 #include <vector>
 
-#include "bitstream.h"
 #include "netobject.h"
 #include "netpackage.h"
+#include "sortedpackagelist.h"
 
+class NetStream;
 class NetStatistics;
 class Process;
 
@@ -51,7 +51,6 @@ const char  ALIVE_MSG_ID                  = 0xF;
 const float ALIVE_MSG_INTERVAL            = 1.0f;
 
 typedef std::vector<NetPackage*> PackageQueue;
-typedef std::list<NetPackage> PackageList;
 
 /// NetAddress
 /// \brief Keeps the information about a client or server IP and port.
@@ -66,7 +65,7 @@ struct NetAddress {
    float lastTimeRecv;
    float lastTimeSend;
 
-   PackageList orderQueue;
+   SortedPackageList orderQueue;
    PackageQueue resendQueue;
 
    NetStatistics* pstatistics;
@@ -81,6 +80,13 @@ typedef std::vector<NetAddress*> AdressList;
 class ENGINE_API NetConnection
 {
 public:
+   enum Flags
+   {
+      eConnected = 1,
+      eAccept    = 2,
+      eKeepAlive = 4
+   };
+
    explicit    NetConnection(Process& process);
                ~NetConnection();
 
@@ -98,8 +104,8 @@ public:
 
    bool        select (bool read, bool write);
 
-   void        send(BitStream* stream, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
-   void        send(NetObject* obj, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
+   void        send(const NetStream& stream, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
+   void        send(const NetObject& object, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
    
    void        recv();
 
@@ -117,18 +123,17 @@ protected:
    bool        addNewClient(NetAddress& address);
    int         findClient(const NetAddress& address) const;
 
-   void        send(NetAddress& client, BitStream* stream, NetPackage::Reliability reliability);
+   void        send(NetAddress& client, const NetStream& stream, NetPackage::Reliability reliability);
    void        sendAck(NetAddress& client, const NetPackage& package);
    void        sendAliveMessages(float tick);
 
-   void        doSend(NetAddress& client, const NetPackage& package); //, const BitStream& stream);
-   bool        doReceive(NetAddress& address, NetPackage& package);
+   void        doSend(NetAddress& client, const NetPackage& package);
+   NetPackage* doReceive(NetAddress& address);
 
    void        resend(NetAddress& client, const NetPackage& package);
 
    bool        isValidSequencedPackage(const NetAddress& client, const NetPackage& package);
 
-   void        insertOrderedPackage(NetAddress& client, const NetPackage& package);
    void        removePackageFromResendQueue(NetAddress& client, uint packageNumber);
 
    int         getErrorNumber();
@@ -136,12 +141,10 @@ protected:
 private:
    Process&    mProcess;
    AdressList  clients;
-   float       lastSendAlive;
    uint        clientid;
+   float       lastSendAlive;
    int         sock;
-   bool        mSendAliveMsg;
-   bool        connected;
-   bool        accept;
+   int         mFlags;
 };
 
 #ifdef JENGINE_INLINE

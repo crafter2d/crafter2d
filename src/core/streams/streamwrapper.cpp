@@ -60,3 +60,10 @@ void StreamWrapper::writeBytes(const void* pbuffer, int amount)
 {
    mStream.writeBytes(pbuffer, amount);
 }
+
+// - Operations
+   
+void StreamWrapper::clear()
+{
+   mStream.clear();
+}

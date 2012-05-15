@@ -26,6 +26,10 @@ DataStream::DataStream()
 {
 }
 
+DataStream::DataStream(const DataStream& that)
+{
+}
+
 DataStream::~DataStream()
 {
 }
@@ -43,69 +47,69 @@ const char* DataStream::getData() const
 
 // - Reading
 
-void DataStream::read(int& value)
+void DataStream::readInt(int& value)
 {
    readBytes(&value, sizeof(int));
 }
 
-void DataStream::read(unsigned int& value)
+void DataStream::readUint(unsigned int& value)
 {
    readBytes(&value, sizeof(unsigned int));
 }
 
-void DataStream::read(float& value)
+void DataStream::readFloat(float& value)
 {
    readBytes(&value, sizeof(float));
 }
 
-void DataStream::read(bool& value)
+void DataStream::readBool(bool& value)
 {
    value = static_cast<bool>(readByte());
 }
 
-void DataStream::read(char& value)
+void DataStream::readChar(char& value)
 {
    value = readByte();
 }
 
-void DataStream::read(std::string& value)
+void DataStream::readString(std::string& value)
 {
    int length;
-   read(length);
+   readInt(length);
    const char* pdata = readBytes(length);
    value.assign(pdata, length);
 }
 
 // - Writting
 
-void DataStream::write(int value)
+void DataStream::writeInt(int value)
 {
    writeBytes(&value, sizeof(int));
 }
 
-void DataStream::write(unsigned int value)
+void DataStream::writeUint(unsigned int value)
 {
    writeBytes(&value, sizeof(unsigned int));
 }
 
-void DataStream::write(float value)
+void DataStream::writeFloat(float value)
 {
    writeBytes(&value, sizeof(value));
 }
 
-void DataStream::write(bool value)
+void DataStream::writeBool(bool value)
 {
    writeBytes(&value, 1);
 }
 
-void DataStream::write(char value)
+void DataStream::writeChar(char value)
 {
    writeBytes(&value, 1);
 }
 
-void DataStream::write(const std::string& text)
+void DataStream::writeString(const std::string& text)
 {
-   write(text.length());
+   writeInt(text.length());
    writeBytes(text.data(), text.length());
 }
 
@@ -128,5 +132,24 @@ char DataStream::readByte()
 }
 
 void DataStream::writeBytes(const void* pbuffer, int amount)
+{
+}
+
+void DataStream::write(const DataStream& that)
+{
+   writeInt(that.getDataSize());
+   writeBytes(that.getData(), that.getDataSize());
+}
+
+void DataStream::read(DataStream& that)
+{
+   int size = 0;
+   readInt(size);
+   that.writeBytes(getData(), size);
+}
+
+// - Operations
+   
+void DataStream::clear()
 {
 }

@@ -1,6 +1,8 @@
 
 package engine.messages;
 
+use engine.net.*;
+
 class ControllerMessage extends Message
 {
 	private int mControllerId;
@@ -32,12 +34,12 @@ class ControllerMessage extends Message
 	
 	// streaming
 	
-	public void read(BitStream stream)
+	public void read(NetStream stream)
 	{
 		mControllerId = stream.readInt();
 	}
 	
-	public void write(Bitstream stream)
+	public void write(Netstream stream)
 	{
 		stream.writeInt(mControllerId);
 	}

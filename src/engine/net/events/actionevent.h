@@ -36,8 +36,8 @@ public:
 
 protected:
  // streaming
-   virtual void   doPack(BitStream& stream) const;
-   virtual void   doUnpack(BitStream& stream, int dirtyflag);
+   virtual void   doPack(DataStream& stream) const;
+   virtual void   doUnpack(DataStream& stream);
 
 private:
 

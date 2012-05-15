@@ -52,6 +52,8 @@ public:
    void  insert(Iterator<E>& it, E* pelement);
    void  clear();
 
+   void  remove(Iterator<E>& it);
+
 private:
 
    ListNode<E>*   _phead;

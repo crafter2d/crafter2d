@@ -22,6 +22,8 @@
 #  include "viewportevent.inl"
 #endif
 
+#include "core/streams/datastream.h"
+
 #include "../../viewport.h"
 
 IMPLEMENT_REPLICATABLE(ViewportEventId, ViewportEvent, NetEvent)
@@ -47,16 +49,16 @@ void ViewportEvent::update(Viewport& viewport) const
 
 // - Streaming
 
-void ViewportEvent::doPack(BitStream& stream) const
+void ViewportEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
 
    stream << mX << mY;
 }
 
-void ViewportEvent::doUnpack(BitStream& stream, int dirtyflag)
+void ViewportEvent::doUnpack(DataStream& stream)
 {
-   NetEvent::doUnpack(stream, dirtyflag);
+   NetEvent::doUnpack(stream);
 
    stream >> mX >> mY;
 }

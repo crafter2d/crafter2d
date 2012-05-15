@@ -22,6 +22,10 @@
 #  include "netobject.inl"
 #endif
 
+#include "core/streams/datastream.h"
+
+#include "netstream.h"
+
 ABSTRACT_IMPLEMENT_REPLICATABLE(NetObjectId, NetObject, )
 
 NetObject::NetObject():
@@ -36,25 +40,26 @@ NetObject::~NetObject()
 
 // - Streaming
 
-void NetObject::pack(BitStream& stream) const
+void NetObject::pack(NetStream& stream) const
 {
-   stream << mDirtyFlag;
+   stream.writeInt(mDirtyFlag);
 
    doPack(stream);
 }
 
-void NetObject::doPack(BitStream& stream) const
+void NetObject::doPack(DataStream& stream) const
 {
 }
 
-void NetObject::unpack(BitStream& stream)
+void NetObject::unpack(NetStream& stream)
 {
-   int dirtyflag = 0;
-   stream >> dirtyflag;
+   stream.readInt(mDirtyFlag);
 
-   doUnpack(stream, dirtyflag);
+   doUnpack(stream);
+
+   mDirtyFlag = 0;
 }
 
-void NetObject::doUnpack(BitStream& stream, int dirtyflag)
+void NetObject::doUnpack(DataStream& stream)
 {
 }

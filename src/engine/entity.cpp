@@ -24,6 +24,8 @@
 
 #include "core/defines.h"
 
+#include "engine/net/netstream.h"
+
 #include "scopedtransform.h"
 
 ABSTRACT_IMPLEMENT_REPLICATABLE(EntityId, Entity, NetObject)
@@ -129,11 +131,11 @@ void Entity::accept(NodeVisitor& visitor)
 
 // - Streaming
 
-void Entity::doPack(BitStream& stream) const
+void Entity::doPack(DataStream& stream) const
 {
    NetObject::doPack(stream);
 
-   stream << mId;
+   stream.writeUint(mId);
 
    if ( isDirty(eNameDirty) )
    {
@@ -141,13 +143,13 @@ void Entity::doPack(BitStream& stream) const
    }
 }
 
-void Entity::doUnpack(BitStream& stream, int dirtyflag)
+void Entity::doUnpack(DataStream& stream)
 {
-   NetObject::doUnpack(stream, dirtyflag);
+   NetObject::doUnpack(stream);
 
-   stream >> mId;
+   stream.readUint(mId);
 
-   if ( IS_SET(dirtyflag, eNameDirty) )
+   if ( isDirty(eNameDirty) )
    {
       stream >> mName;
    }

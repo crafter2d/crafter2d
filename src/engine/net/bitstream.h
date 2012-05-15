@@ -69,7 +69,6 @@ public:
    BitStream&  operator<<(bool b);
    BitStream&  operator<<(char c);
    BitStream&  operator<<(const std::string& text);
-   BitStream&  operator<<(const NetObject* obj);
    BitStream&  operator<<(const BitStream* stream);
 
    BitStream&  operator>>(Vector& v);
@@ -80,7 +79,6 @@ public:
    BitStream&  operator>>(char& c);
    BitStream&  operator>>(std::string& str);
    BitStream&  operator>>(BitStream& stream);
-   BitStream&  operator>>(NetObject** obj);
 
 protected:
    void ensureFits(int size);

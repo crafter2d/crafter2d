@@ -26,10 +26,11 @@
 #include "core/defines.h"
 
 #include "netdefines.h"
-#include "bitstream.h"
 #include "netobjectfactory.h"
 #include "runtimeinfo.h"
 
+class DataStream;
+class NetStream;
 class RuntimeInfo;
 
 /*! @author Jeroen Broekhuizen
@@ -81,13 +82,13 @@ public:
    void     resetDirty();
    
  // streaming
-   void     pack(BitStream& stream) const;
-   void     unpack(BitStream& stream);
+   void     pack(NetStream& stream) const;
+   void     unpack(NetStream& stream);
 
 protected:
  // streaming
-   virtual void doPack(BitStream& stream) const;
-   virtual void doUnpack(BitStream& stream, int dirtyflag);
+   virtual void doPack(DataStream& stream) const;
+   virtual void doUnpack(DataStream& stream);
 
 private:
 

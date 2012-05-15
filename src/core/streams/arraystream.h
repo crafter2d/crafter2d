@@ -28,7 +28,8 @@ public:
    ArrayStream(const char* pstream, int length);
 
  // query
-   virtual int size() const;
+   virtual int         getDataSize() const;
+   virtual const char* getData() const;
 
 protected:
  // overloads
