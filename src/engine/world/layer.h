@@ -84,7 +84,8 @@ public:
    Vector         getScroll() const;
    void           setScroll(float x, float y);
 
-   Vector         getDimensions() const;
+   int            getWidth() const;
+   int            getHeight() const;
 
    void           enableTileAnimation( bool enable );
    bool           isTileAnimating() const;

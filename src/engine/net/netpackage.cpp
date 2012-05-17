@@ -23,48 +23,36 @@
 
 #include "core/system/timer.h"
 
-#include "bitstream.h"
+const int NetPackage::HeaderSize     = sizeof(float) + sizeof(int) * 2;
+const int NetPackage::MaxPackageSize = HeaderSize + MaxDataSize;
 
-const int NetPackage::MaxPackageSize = sizeof(NetHeader) + sizeof(int) + MaxDataSize;
+#define TYPE_MASK 0xFF000000
+#define RELI_MASK 0x00FF0000
+#define SIZE_MASK 0x0000FFFF
 
-NetPackage::NetHeader::NetHeader():
-   mType(eInvalid),
-   mReliability(eUnreliable),
-   mNumber(0),
-   mTimeStamp(0.0f)
-{
-}
-
-NetPackage::NetHeader::NetHeader(const NetHeader& that):
-   mType(that.mType),
-   mReliability(that.mReliability),
-   mNumber(that.mNumber),
-   mTimeStamp(Timer::getInstance().getTick())
-{
-}
-
-NetPackage::NetHeader::NetHeader(Type type, Reliability reliability, int packagenr):
-   mType(type),
-   mReliability(reliability),
-   mNumber(packagenr),
-   mTimeStamp(Timer::getInstance().getTick())
-{
-}
+#define TYPE_SHIFT 24
+#define RELI_SHIFT 16
+#define SIZE_SHIFT 0 
 
 // - NetPackage implementation
 
 NetPackage::NetPackage():
-   mHeader(),
-   mDataSize(0),
+   mTimeStamp(Timer::getInstance().getTick()),
+   mNumber(0),
+   mInfo(0),
    mData()
 {
 }
 
-NetPackage::NetPackage(Type type, Reliability reliability, int packagenr, int datasize, const char* pdata):
-   mHeader(type, reliability, packagenr),
-   mDataSize(0),
+NetPackage::NetPackage(PacketType type, Reliability reliability, int packagenr, int datasize, const char* pdata):
+   mTimeStamp(Timer::getInstance().getTick()),
+   mNumber(packagenr),
+   mInfo(0),
    mData()
 {
+   setType(type);
+   setReliability(reliability);
+
    if ( datasize > 0 )
    {
       setData(datasize, pdata);
@@ -72,8 +60,9 @@ NetPackage::NetPackage(Type type, Reliability reliability, int packagenr, int da
 }
 
 NetPackage::NetPackage(const NetPackage& that):
-   mHeader(that.mHeader),
-   mDataSize(0),
+   mTimeStamp(Timer::getInstance().getTick()),
+   mNumber(that.mNumber),
+   mInfo(that.mInfo),
    mData()
 {
    if ( that.getDataSize() > 0 )
@@ -88,34 +77,49 @@ NetPackage::~NetPackage()
 
 // - Get/set
 
-NetPackage::Type NetPackage::getType() const
+NetPackage::PacketType NetPackage::getType() const
 {
-   return (Type)mHeader.mType;
+   return (PacketType)((mInfo & TYPE_MASK) >> TYPE_SHIFT);
+}
+
+void NetPackage::setType(PacketType type)
+{
+   mInfo |= (type << TYPE_SHIFT) & TYPE_MASK;
 }
 
 NetPackage::Reliability NetPackage::getReliability() const
 {
-   return (Reliability)mHeader.mReliability;
+   return (Reliability)((mInfo & RELI_MASK) >> RELI_SHIFT);
+}
+
+void NetPackage::setReliability(Reliability rel)
+{
+   mInfo |= (rel << RELI_SHIFT) & RELI_MASK;
 }
 
 float NetPackage::getTimeStamp() const
 {
-   return mHeader.mTimeStamp;
+   return mTimeStamp;
 }
 
 void NetPackage::setTimeStamp(float timestamp)
 {
-   mHeader.mTimeStamp = timestamp;
+   mTimeStamp = timestamp;
 }
 
 uint NetPackage::getNumber() const
 {
-   return mHeader.mNumber;
+   return mNumber;
 }
 
 int NetPackage::getDataSize() const
 {
-   return mDataSize;
+   return mInfo & SIZE_MASK;
+}
+
+void NetPackage::setDataSize(int size)
+{
+   mInfo |= size & SIZE_MASK;
 }
 
 const char* NetPackage::getData() const
@@ -128,7 +132,7 @@ void NetPackage::setData(int datasize, const char* pdata)
    ASSERT(datasize > 0);
    ASSERT(datasize < MaxDataSize);
 
-   mDataSize = datasize;
+   setDataSize(datasize);
    memmove(mData, pdata, datasize);
 }
 
@@ -136,5 +140,5 @@ void NetPackage::setData(int datasize, const char* pdata)
 
 int NetPackage::getSize() const
 {
-   return sizeof(NetHeader) + sizeof(int) + (mDataSize * sizeof(char));
+   return HeaderSize + (getDataSize() * sizeof(char));
 }

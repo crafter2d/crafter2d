@@ -22,39 +22,41 @@
 
 #include "core/defines.h"
 
-#include "bitstream.h"
-
-class BitStream;
 class NetObject;
 
 class NetPackage
 {
 public:
+   static const int HeaderSize;
    static const int MaxDataSize = 1500;
    static const int MaxPackageSize;
 
-   enum Type {
-      eEvent,
-      eAck,
-      eAlive,
-      eInvalid
+   enum PacketType {
+      eEvent   = 1,
+      eAck     = 2,
+      eAlive   = 3,
+      eInvalid = -1
    };
 
    enum Reliability {
-      eUnreliable = 0,
-      eUnreliableSequenced = 1,
-      eReliableSequenced = 2,
-      eReliableOrdered = 3
+      eUnreliable          = 1,
+      eUnreliableSequenced = 2,
+      eReliableSequenced   = 3,
+      eReliableOrdered     = 4
    };
 
    NetPackage();
    NetPackage(const NetPackage& that);
-   NetPackage(Type type, Reliability reliability, int packagenr, int datasize = 0, const char* pdata = NULL);
+   NetPackage(PacketType type, Reliability reliability, int packagenr, int datasize = 0, const char* pdata = NULL);
    ~NetPackage();
 
  // get/set
-   Type        getType() const;
+   PacketType  getType() const;
+   void        setType(PacketType type);
+
    Reliability getReliability() const;
+   void        setReliability(Reliability rel);
+
    uint        getNumber() const;
    float       getTimeStamp() const;
    void        setTimeStamp(float timestamp);
@@ -67,22 +69,14 @@ public:
    int         getSize() const;
 
 private:
+ // get/set
+   void        setDataSize(int size);
 
-   struct NetHeader
-   {
-      char        mType;
-      char        mReliability;
-      uint        mNumber;
-      float       mTimeStamp;
-
-      NetHeader();
-      NetHeader(const NetHeader& that);
-      NetHeader(Type type, Reliability reliability, int packagenr);
-   };
-
-   NetHeader   mHeader;
-   int         mDataSize;
-   char        mData[MaxDataSize];
+ // data
+   float mTimeStamp;
+   uint  mNumber;
+   uint  mInfo;  // packed info: 4 = type, 3 = reliability, 2&1 = datasize
+   char  mData[MaxDataSize];
 };
 
 #endif // _NETPACKAGE_H_

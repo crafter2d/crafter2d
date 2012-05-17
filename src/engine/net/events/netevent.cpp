@@ -22,8 +22,6 @@
 #  include "netevent.inl"
 #endif
 
-#include "engine/net/bitstream.h"
-
 IMPLEMENT_REPLICATABLE(NetEventId, NetEvent, NetObject)
 
 NetEvent::NetEvent(EventType type): 

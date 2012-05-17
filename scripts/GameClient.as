@@ -35,6 +35,22 @@ class GameClient extends Client
 		setKeyMap(map);
 	}
 	
+	public void onConnectionDenite(int reason)
+	{
+		string message;
+		switch ( reason )
+		{
+		case Process.CONNECT_DENY_STARTED:
+			message = "Server has already started a game.";
+			break;
+		default:
+			message = "Server denied the connection with unknown reason.";
+			break;
+		}
+		
+		MessageBox.showInformation(message);
+	}
+	
 	protected void registerMessages(MessageMap messagemap)
 	{
 		//super.registerMessages(messagemap);

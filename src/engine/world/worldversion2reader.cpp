@@ -22,16 +22,16 @@
 #include <tinyxml.h>
 
 #include "core/vfs/unzipfile.h"
+#include "core/streams/arraystream.h"
 
 #include "engine/physics/simulationfactoryregistry.h"
-#include "engine/net/bitstream.h"
 
 #include "bound.h"
 #include "layer.h"
 #include "world.h"
 #include "worldwriter.h"
 
-BitStream& operator>>(BitStream& in, Layer& layer);
+DataStream& operator>>(DataStream& in, Layer& layer);
 
 //////////////////////////////////////////////////////////////////////////
 // - Static operations
@@ -78,13 +78,12 @@ bool WorldVersion2Reader::readHeader(UnzipFile& zip)
    if ( !zip.readFile("header", (void*&)pdata, size) )
       return false;
 
-   BitStream stream;
-   stream.setBuffer(pdata, size);
+   int version = -1;
+   ArrayStream stream(pdata, size);
+   stream.readInt(version);
 
    delete[] pdata;
-   pdata = NULL;
 
-   int version = stream.readInt();
    return getVersion() == version;
 }
 
@@ -124,10 +123,7 @@ bool WorldVersion2Reader::readLayers(UnzipFile& zip)
    if ( !zip.readFile("data", (void*&)pdata, size) )
       return false;
 
-   BitStream stream;
-   stream.setBuffer(pdata, size);
-
-   delete[] pdata;
+   ArrayStream stream(pdata, size);
 
    int layertype = 0;
    int layercount = 0;
@@ -141,6 +137,8 @@ bool WorldVersion2Reader::readLayers(UnzipFile& zip)
 
       stream >> *player;
    }
+
+   delete[] pdata;
 
    return true;
 }
@@ -208,22 +206,21 @@ bool WorldVersion2Reader::loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, con
 // - Layer stream functions
 //////////////////////////////////////////////////////////////////////////
 
-BitStream& operator>>(BitStream& in, Layer& layer)
+DataStream& operator>>(DataStream& in, Layer& layer)
 {
-   Vector dimensions, scroll;
+   float width, height;
+   std::string name, effect;
 
-   std::string name = in.readString();
-   std::string effect = in.readString();
+   in >> name >> effect >> width >> height;
 
-   in >> dimensions;
+   layer.create(name, width, height, effect);
 
-   layer.create(name, dimensions.x, dimensions.y, effect);
-
-   for ( int y = 0; y < dimensions.y; ++y )
+   for ( int y = 0; y < height; ++y )
    {
-      for ( int x = 0; x < dimensions.x; ++x )
+      for ( int x = 0; x < width; ++x )
       {
-         int textureid = in.readInt();
+         int textureid;
+         in.readInt(textureid);
          layer.setTile(x, y, textureid);
       }
    }

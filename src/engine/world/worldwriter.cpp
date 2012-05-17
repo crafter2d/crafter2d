@@ -25,14 +25,13 @@
 #include <tinyxml.h>
 
 #include "core/vfs/zipfile.h"
-
-#include "engine/net/bitstream.h"
+#include "core/streams/bufferedstream.h"
 
 #include "bound.h"
 #include "layer.h"
 #include "world.h"
 
-BitStream& operator<<(BitStream& in, const Layer& layer);
+DataStream& operator<<(DataStream& in, const Layer& layer);
 
 //////////////////////////////////////////////////////////////////////////
 // - Static operations
@@ -73,12 +72,12 @@ bool WorldWriter::write(const World& world, const std::string& filename)
 
 bool WorldWriter::writeHeader(ZipFile& zip)
 {
-   BitStream stream;
+   BufferedStream stream(4);
 
    const int version = getVersion();
-   stream << version;
+   stream.writeInt(version);
 
-   zip.addFile("header", (void*)stream.getBuf(), stream.getSize());
+   zip.addFile("header", (void*)stream.getData(), stream.getDataSize());
 
    return true;
 }
@@ -101,7 +100,7 @@ bool WorldWriter::writeSimulator(ZipFile& zip)
 
 bool WorldWriter::writeLayers(ZipFile& zip)
 {
-   BitStream stream;
+   BufferedStream stream;
 
    stream << (int)getWorld().getLayerType() << getWorld().getLayerCount();
 
@@ -111,7 +110,7 @@ bool WorldWriter::writeLayers(ZipFile& zip)
       stream << *player;
    }
 
-   zip.addFile("data", (void*)stream.getBuf(), stream.getSize());
+   zip.addFile("data", (void*)stream.getData(), stream.getDataSize());
 
    return true;
 }
@@ -182,17 +181,18 @@ bool WorldWriter::writeObjects(ZipFile& zip)
 // - Layer stream functions
 //////////////////////////////////////////////////////////////////////////
 
-BitStream& operator<<(BitStream& in, const Layer& layer)
+DataStream& operator<<(DataStream& in, const Layer& layer)
 {
    const std::string&   name       = layer.getName();
    const std::string&   effectFile = layer.getEffectFile();
-         Vector         dimensions = layer.getDimensions();
+   int                  width      = layer.getWidth();
+   int                  height     = layer.getHeight();
    
-   in << name << effectFile << dimensions;
+   in << name << effectFile << width << height;
 
-   for ( int y = 0; y < dimensions.y; ++y )
+   for ( int y = 0; y < height; ++y )
    {
-      for ( int x = 0; x < dimensions.x; ++x )
+      for ( int x = 0; x < width; ++x )
       {
          int tile = layer.getTile(x * layer.tilewidth(), y * layer.tileheight());
          in << tile;

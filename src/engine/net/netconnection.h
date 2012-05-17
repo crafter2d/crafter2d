@@ -108,9 +108,7 @@ public:
    void        send(const NetObject& object, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
    
    void        recv();
-
-   bool        getMsg(BitStream& stream);
-
+   
    void        setClientId(const int client);
    int         getClientId();
 

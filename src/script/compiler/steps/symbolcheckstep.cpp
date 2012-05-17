@@ -273,20 +273,23 @@ void SymbolCheckVisitor::visit(ASTCase& ast)
 {
    mCurrentType.clear();
 
-   ast.getValueExpression().accept(*this);
-   ast.setType(mCurrentType.clone());
+   if ( !ast.isDefault() )
+   {
+      ast.getValueExpression().accept(*this);
+      ast.setType(mCurrentType.clone());
 
-   // convert the value expression to a value for the lookup table
-   ASTUnary& expressionnode = ast.getValueExpression();
-   const ASTLiteral* pliteral = dynamic_cast<const ASTLiteral*>(&expressionnode.getParts()[0]);
-   if ( pliteral != NULL )
-   {
-      // we can use a lookup table for fast lookup
-      ast.setValue(pliteral->getLiteral().getValue());
-   }
-   else
-   {
-      // code generator will insert if statements to compare with the values
+      // convert the value expression to a value for the lookup table
+      ASTUnary& expressionnode = ast.getValueExpression();
+      const ASTLiteral* pliteral = dynamic_cast<const ASTLiteral*>(&expressionnode.getParts()[0]);
+      if ( pliteral != NULL )
+      {
+         // we can use a lookup table for fast lookup
+         ast.setValue(pliteral->getLiteral().getValue());
+      }
+      else
+      {
+         // code generator will insert if statements to compare with the values
+      }
    }
 
    ast.getBody().accept(*this);

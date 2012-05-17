@@ -29,11 +29,18 @@ void Layer::setName(const std::string& n)
    name = n;
 }
 
-/// \fn Layer::getDimensions()
-/// \brief Returns the dimensions (width & height) of this layer.
-INLINE Vector Layer::getDimensions() const
+/// \fn Layer::getWidth()
+/// \brief Returns the number of tiles that fit horizontally in this layer.
+INLINE int Layer::getWidth() const
 {
-   return Vector(static_cast<float>(width),static_cast<float>(height));
+   return width;
+}
+
+/// \fn Layer::getHeight()
+/// \brief Returns the number of tiles that fit vertically in this layer.
+INLINE int Layer::getHeight() const
+{
+   return height;
 }
 
 /// \fn Layer::setVertex ()
