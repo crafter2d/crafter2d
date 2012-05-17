@@ -1,4 +1,6 @@
 
+package engine.game;
+
 class Player
 {
 	private Actor mController;

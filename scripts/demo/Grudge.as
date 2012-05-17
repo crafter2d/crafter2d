@@ -1,4 +1,6 @@
 
+package demo;
+
 use box2d.box2dbody;
 
 // grudge enemy

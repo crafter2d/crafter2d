@@ -1,4 +1,6 @@
 
+package demo;
+
 use engine.ui.*;
 use engine.messages.*;
 use engine.collections.*;

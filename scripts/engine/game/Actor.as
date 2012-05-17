@@ -1,4 +1,6 @@
 
+package engine.game;
+
 use box2d.box2dbody;
 
 class Actor extends Entity implements Collidable

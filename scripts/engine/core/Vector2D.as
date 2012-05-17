@@ -1,4 +1,6 @@
 
+package engine.core;
+
 final class Vector2D
 {
 	public native Vector2D();

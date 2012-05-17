@@ -1,4 +1,6 @@
 
+package engine.game;
+
 use ActionMap;
 
 class InputController extends Controller

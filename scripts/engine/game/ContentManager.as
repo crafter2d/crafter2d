@@ -1,5 +1,5 @@
 
-
+package engine.game;
 
 final class ContentManager
 {

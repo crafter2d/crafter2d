@@ -1,4 +1,6 @@
 
+package engine.game;
+
 use system.*;
 use engine.messages.*;
 use engine.net.*;

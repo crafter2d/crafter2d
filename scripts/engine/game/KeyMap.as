@@ -1,4 +1,6 @@
 
+package engine.game;
+
 class KeyMap
 {
 	public native KeyMap();

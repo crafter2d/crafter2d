@@ -1,4 +1,6 @@
 
+package demo;
+
 use box2d.*;
 
 class Bridge

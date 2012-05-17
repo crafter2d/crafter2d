@@ -1,4 +1,6 @@
 
+package engine.game;
+
 use engine.ui.*;
 use engine.core.*;
 use engine.collections.*;

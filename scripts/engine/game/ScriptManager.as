@@ -1,4 +1,6 @@
 
+package engine.game;
+
 final class ScriptManager
 {
 	public native ScriptManager spawnChild();

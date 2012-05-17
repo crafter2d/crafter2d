@@ -1,4 +1,6 @@
 
+package demo;
+
 use server;
 use engine.messages.*;
 

@@ -182,11 +182,14 @@ void Client::render(float delta)
    glAlphaFunc (GL_GREATER, 0.1f);
    glEnable (GL_ALPHA_TEST);
 
-   if ( mpWorldRenderer != NULL && mpPlayer->hasController() )
+   if ( mpWorldRenderer != NULL )
    {
-      // set the sound of the player
-      Actor& controler = mpPlayer->getController();
-      mSoundManager.setPlayerPosition(controler.getPosition());
+      if ( mpPlayer->hasController() )
+      {
+         // set the sound of the player
+         Actor& controler = mpPlayer->getController();
+         mSoundManager.setPlayerPosition(controler.getPosition());
+      }
 
       mpWorldRenderer->render(delta);
    }

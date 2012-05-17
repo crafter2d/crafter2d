@@ -1,4 +1,6 @@
 
+package demo;
+
 abstract class AttackState extends AIState
 {
 	public void perform(Actor actor, Actor player)

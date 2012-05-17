@@ -1,4 +1,6 @@
 
+package engine.game;
+
 use box2d.box2dsimulator;
 use engine.collections.*;
 

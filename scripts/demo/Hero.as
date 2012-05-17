@@ -1,4 +1,6 @@
 
+package demo;
+
 // Hero class
 
 class Hero extends Actor

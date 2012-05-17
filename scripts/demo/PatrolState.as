@@ -1,4 +1,6 @@
 
+package demo;
+
 class PatrolState extends AIState
 {
 	public void perform(Actor actor, Actor player)

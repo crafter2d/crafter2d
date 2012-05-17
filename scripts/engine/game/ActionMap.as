@@ -1,4 +1,6 @@
 
+package engine.game;
+
 use vector2d;
 
 class ActionMap

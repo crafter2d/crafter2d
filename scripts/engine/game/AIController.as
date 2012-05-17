@@ -1,4 +1,6 @@
 
+package engine.game;
+
 use engine.collections.*;
 
 class AIController extends Controller
