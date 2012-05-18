@@ -1,6 +1,8 @@
 
 package demo;
 
+use engine.core.*;
+use engine.game.*;
 use box2d.*;
 
 class Bridge

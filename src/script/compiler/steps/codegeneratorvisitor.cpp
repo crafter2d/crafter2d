@@ -559,7 +559,7 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
 
       // lookup the value in the table and jump there
       // if not found -> jump to default or skip in case no default is present
-      addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getName()));
+      addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getFullName()));
       addInstruction(VirtualInstruction::eLookup, tableidx);
 
       visitChildren(ast);

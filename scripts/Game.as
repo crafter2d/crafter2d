@@ -1,14 +1,15 @@
 
 use system.gamewindowfactory;
 use system.gamewindow;
+use engine.game.*;
+use engine.core.*;
 
-use gameclient;
-use gameserver;
+use demo.GameServer;
 
 class Game
 {
-	private GameServer mServer;
-	private GameClient mClient;
+	private Server mServer;
+	private Client mClient;
 	
 	public native ScriptManager getScriptManager();
 	public native GameWindowFactory getWindowFactory();
@@ -40,9 +41,20 @@ class Game
 	
 	private boolean createServer()
 	{
-		mServer = new GameServer();
-		mServer.setScriptManager(getScriptManager().spawnChild());
-		if ( !mServer.create() )
+		ClassLoader loader = ClassLoader.getInstance();
+		try
+		{
+			loader.loadClass("demo.GameServer");
+			Class serverclass = loader.findClass("demo.GameServer");
+		
+			mServer = (Server) serverclass.newInstance();
+			mServer.setScriptManager(getScriptManager().spawnChild());
+			if ( !mServer.create() )
+			{
+				return false;
+			}
+		}
+		catch ( Throwable e )
 		{
 			return false;
 		}
@@ -52,10 +64,21 @@ class Game
 	
 	private boolean createClient()
 	{
-		mClient = new GameClient();
-		mClient.setScriptManager(getScriptManager().spawnChild());
-		mClient.setWindow(getWindowFactory().createWindow());
-		if ( !mClient.create() )
+		ClassLoader loader = ClassLoader.getInstance();
+		try
+		{
+			loader.loadClass("demo.GameClient");
+			Class clientclass = loader.findClass("demo.GameClient");
+		
+			mClient = (Client) clientclass.newInstance();
+			mClient.setScriptManager(getScriptManager().spawnChild());
+			mClient.setWindow(getWindowFactory().createWindow());
+			if ( !mClient.create() )
+			{
+				return false;
+			}
+		}
+		catch ( Throwable e )
 		{
 			return false;
 		}

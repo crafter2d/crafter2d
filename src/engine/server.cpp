@@ -209,7 +209,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
 
             // run the onClientConnect script
             mpScript->addParam((int)client);
-            mpScript->addParam("Player", player.getPointer());
+            mpScript->addParam("engine.game.Player", player.getPointer());
             mpScript->run("onClientDisconnect");
 
             // remove the player from the client list
@@ -230,8 +230,8 @@ int Server::onClientEvent(int client, const NetEvent& event)
 
             // run the onClientConnect script
             Player* player = clients[client];
-            mpScript->addParam("Player", player);
-            mpScript->addParam("NetStream", &stream);
+            mpScript->addParam("engine.game.Player", player);
+            mpScript->addParam("engine.net.NetStream", &stream);
             mpScript->run("onEvent");
             break;
          }
@@ -316,7 +316,7 @@ void Server::handleConnectEvent(const ConnectEvent& event)
    addPlayer(mActiveClient, pplayer);
 
    // run the onClientConnect script
-   mpScript->addParam("Player", pplayer);
+   mpScript->addParam("engine.game.Player", pplayer);
    mpScript->run("onClientConnect");
 }
 

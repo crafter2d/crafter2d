@@ -1,6 +1,8 @@
 
 package box2d;
 
+use engine.core.*;
+
 public class Box2DRevoluteJointDefinition
 {
 	public native Box2DRevoluteJointDefinition();

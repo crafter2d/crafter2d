@@ -50,6 +50,14 @@ void Console_print(VirtualMachine& machine, VirtualStackAccessor& accessor)
    std::cout << accessor.getString(1);
 }
 
+void ClassLoader_doLoadClass(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObjectReference& thisobject = accessor.getThis();
+   const std::string& classname = accessor.getString(1);
+
+   accessor.setResult(machine.loadClass(classname));
+}
+
 void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObjectReference& thisobject = accessor.getThis();
@@ -107,6 +115,7 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
 
    mNatives.insert(std::pair<std::string, callbackfnc>("Console_println", Console_println));
    mNatives.insert(std::pair<std::string, callbackfnc>("Console_print", Console_print));
+   mNatives.insert(std::pair<std::string, callbackfnc>("ClassLoader_doLoadClass", ClassLoader_doLoadClass));
    mNatives.insert(std::pair<std::string, callbackfnc>("Class_doNewInstance", Class_doNewInstance));
    mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
    mNatives.insert(std::pair<std::string, callbackfnc>("Throwable_fillCallStack", Throwable_fillCallStack));

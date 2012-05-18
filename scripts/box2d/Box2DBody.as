@@ -1,7 +1,7 @@
 
 package box2d;
 
-use inputforcegenerator;
+use engine.game.inputforcegenerator;
 
 class Box2DBody
 {

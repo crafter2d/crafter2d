@@ -1,6 +1,8 @@
 
 package engine.core;
 
+use engine.game.Process;
+
 class TextureManager
 {
 	static private TextureManager mTextureManager = new TextureManager();

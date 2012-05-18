@@ -82,7 +82,7 @@ bool ScriptManager::initialize()
 
    script_engine_register(*this);
 
-   mpScript = loadNative("ScriptManager", this, false);
+   mpScript = loadNative("engine.game.ScriptManager", this, false);
 	return mpScript != NULL;
 }
 

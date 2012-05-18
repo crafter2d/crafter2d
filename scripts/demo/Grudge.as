@@ -1,6 +1,7 @@
 
 package demo;
 
+use engine.game.*;
 use box2d.box2dbody;
 
 // grudge enemy

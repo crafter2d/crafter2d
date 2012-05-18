@@ -1,7 +1,7 @@
 <?xml version="1.0">
 <!-- char sprite -->
 
-<object type="Hero" name="char" width=48 height=62>
+<object type="demo.Hero" name="char" width=48 height=62>
    <texture>char.png</texture>
    <animations speed=125>
       <anim length=1>0</anim>

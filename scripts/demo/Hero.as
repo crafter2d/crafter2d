@@ -1,6 +1,8 @@
 
 package demo;
 
+use engine.game.*;
+
 // Hero class
 
 class Hero extends Actor

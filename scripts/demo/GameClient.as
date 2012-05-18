@@ -1,9 +1,11 @@
 
 package demo;
 
+use engine.core.*;
 use engine.ui.*;
 use engine.messages.*;
 use engine.collections.*;
+use engine.game.*;
 
 class GameClient extends Client
 {

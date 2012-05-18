@@ -1,7 +1,7 @@
 <?xml version="1.0">
 <!-- char sprite -->
 
-<object type="Grudge" name="char" width=102 height=60>
+<object type="demo.Grudge" name="char" width=102 height=60>
    <texture>grudge.png</texture>
    <animations speed=125>
       <anim type="stand" length=1>2</anim>

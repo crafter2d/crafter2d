@@ -1,5 +1,5 @@
 
-package demo;
+package engine.game;
 
 abstract class AttackState extends AIState
 {

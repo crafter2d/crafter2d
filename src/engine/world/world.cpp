@@ -406,7 +406,7 @@ void World::addEntity(Entity* pentity)
 
    notifyEntityAdded(*pentity);
 
-   mpScript->addParam("Entity", pentity);
+   mpScript->addParam("engine.game.Entity", pentity);
    mpScript->run("onEntityAdded");
 }
 
@@ -513,8 +513,8 @@ void World::notifyEntityRemoved(const Entity& entity)
 void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("Actor", &object);
-   mpScript->addParam("Bound", &bound);
+   mpScript->addParam("engine.game.Actor", &object);
+   mpScript->addParam("engine.game.Bound", &bound);
    mpScript->addParam(side);
    mpScript->addParam(begin);
    mpScript->run("onObjectCollision");
@@ -523,7 +523,7 @@ void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bo
 void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("Actor", &source);
+   mpScript->addParam("engine.game.Actor", &source);
    mpScript->addParam("system.Object", &target);
    mpScript->addParam(side);
    mpScript->addParam(begin);

@@ -85,7 +85,7 @@ void Process_getScriptManager(VirtualMachine& machine, VirtualStackAccessor& acc
 {
    GET_THIS(Process, process);
 
-   RETURN(ScriptManager, &process.getScriptManager());
+   RETURN_CLASS("engine.game.ScriptManager", ScriptManager, &process.getScriptManager());
 }
 
 void Process_setScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -118,14 +118,14 @@ void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& ac
 {
    GET_THIS(Process, process);
 
-   RETURN(ContentManager, &process.getContentManager());
+   RETURN_CLASS("engine.game.ContentManager", ContentManager, &process.getContentManager());
 }
 
 void Process_getWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Process, process);
 
-   RETURN(World, &process.getWorld());
+   RETURN_CLASS("engine.game.World", World, &process.getWorld());
 }
 
 void Process_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -258,7 +258,7 @@ void Client_getPlayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
    GET_THIS(Client, client);
 
    Player& player = client.getPlayer();
-   RETURN(Player, &player);
+   RETURN_CLASS("engine.game.Player", Player, &player);
 }
 
 void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -283,7 +283,7 @@ void ScriptManager_spawnChild(VirtualMachine& machine, VirtualStackAccessor& acc
 {
    GET_THIS(ScriptManager, scriptmanager);
 
-   RETURN_OWNED(ScriptManager, scriptmanager.spawnChild());
+   RETURN_CLASS_OWNED("engine.game.ScriptManager", ScriptManager, scriptmanager.spawnChild());
 }
 
 void ScriptManager_shareObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -302,7 +302,7 @@ void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& ac
    const std::string& filename = accessor.getString(1);
 
    Entity* presult = contentmanager.loadEntity(filename);
-   RETURN_OWNED(Entity, presult);
+   RETURN_CLASS_OWNED("engine.game.Entity", Entity, presult);
 }
 
 void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -312,7 +312,7 @@ void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor
    const std::string& filename = accessor.getString(1);
 
    World* presult = contentmanager.load(filename);
-   RETURN_OWNED(World, presult);
+   RETURN_CLASS_OWNED("engine.game.World", World, presult);
 }
 
 void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -403,7 +403,7 @@ void Actor_getPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   RETURN_CLASS("Vector2D", Vector, const_cast<Vector*>(&actor.getPosition()));
+   RETURN_CLASS("engine.core.Vector2D", Vector, const_cast<Vector*>(&actor.getPosition()));
 }
 
 void Actor_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -419,7 +419,7 @@ void Actor_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   RETURN_CLASS("Vector2D", Vector, const_cast<Vector*>(&actor.getVelocity()));
+   RETURN_CLASS("engine.core.Vector2D", Vector, const_cast<Vector*>(&actor.getVelocity()));
 }
 
 void Actor_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -634,7 +634,7 @@ void World_getFollowActor(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(World, world);
 
-   RETURN(Actor, world.getFollowObject());
+   RETURN_CLASS("engine.game.Actor", Actor, world.getFollowObject());
 }
 
 void World_setFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -672,7 +672,7 @@ void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
    int controllerid = accessor.getInt(1);
    Entity* pentity = world.findEntity(Id(controllerid));
 
-   RETURN(Actor, static_cast<Actor*>(pentity));
+   RETURN_CLASS("engine.game.Actor", Actor, static_cast<Actor*>(pentity));
 }
 
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -840,7 +840,7 @@ void Box2DRevoluteJointDefinition_getAnchor(VirtualMachine& machine, VirtualStac
 {
    GET_THIS(Box2DRevoluteJointDefinition, joint);
 
-   RETURN_CLASS("Vector2D", Vector, &joint.anchor);
+   RETURN_CLASS("engine.core.Vector2D", Vector, &joint.anchor);
 }
 
 void Box2DRevoluteJointDefinition_setAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -900,7 +900,7 @@ void Box2DRopeJointDefinition_getLocalAnchorLeft(VirtualMachine& machine, Virtua
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   RETURN_CLASS("Vector2D", Vector, &joint.anchorLeft);
+   RETURN_CLASS("engine.core.Vector2D", Vector, &joint.anchorLeft);
 }
 
 void Box2DRopeJointDefinition_setLocalAnchorLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -914,7 +914,7 @@ void Box2DRopeJointDefinition_getLocalAnchorRight(VirtualMachine& machine, Virtu
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   RETURN_CLASS("Vector2D", Vector, &joint.anchorRight);
+   RETURN_CLASS("engine.core.Vector2D", Vector, &joint.anchorRight);
 }
 
 void Box2DRopeJointDefinition_setLocalAnchorRight(VirtualMachine& machine, VirtualStackAccessor& accessor)

@@ -1,7 +1,7 @@
 
 package engine.game;
 
-use vector2d;
+use engine.core.*;
 
 class ActionMap
 {

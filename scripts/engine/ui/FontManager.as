@@ -1,6 +1,8 @@
 
 package engine.ui;
 
+use engine.game.*;
+
 class FontManager
 {
 	static private FontManager mFontManager = new FontManager();

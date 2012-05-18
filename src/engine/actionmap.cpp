@@ -80,7 +80,7 @@ void ActionMap::process(int action, bool down)
 void ActionMap::processRemote(const ActionEvent& event, Actor& object)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("Actor", &object);
+   mpScript->addParam("engine.game.Actor", &object);
    mpScript->addParam(event.getAction());
 
    if ( event.isDown() )

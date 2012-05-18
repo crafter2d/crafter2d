@@ -1,6 +1,9 @@
 
 package demo;
 
+use engine.core.*;
+use engine.game.*;
+
 class PatrolState extends AIState
 {
 	public void perform(Actor actor, Actor player)

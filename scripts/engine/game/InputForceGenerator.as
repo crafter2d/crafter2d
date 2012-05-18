@@ -1,6 +1,8 @@
 
 package engine.game;
 
+use engine.core.*;
+
 class InputForceGenerator
 {
 	public native InputForceGenerator();
