@@ -71,7 +71,7 @@ std::string ClassResolver::resolve(const std::string& classname) const
 
 bool ClassResolver::checkClassExists(const string& classname) const
 {
-   String name = classname.c_str();
+   String name(classname.c_str());
    name.replace('.', '/');
 
    return FileSystem::getInstance().exists(name.toStdString() + ".as");

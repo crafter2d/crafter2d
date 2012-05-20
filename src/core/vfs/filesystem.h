@@ -58,8 +58,7 @@ protected:
    std::string expand(const std::string& path) const;
       
 private:
-   File* tryOpen(const std::string& path, const std::string& file, int modus) const;
-
+  
    FileSystemPaths mPaths;
 };
 

@@ -8,6 +8,9 @@ use demo.GameServer;
 
 class Game
 {
+	private static string ServerScript = "demo.GameServer";
+	private static string ClientScript = "demo.GameClient";
+	
 	private Server mServer;
 	private Client mClient;
 	
@@ -44,8 +47,7 @@ class Game
 		ClassLoader loader = ClassLoader.getInstance();
 		try
 		{
-			loader.loadClass("demo.GameServer");
-			Class serverclass = loader.findClass("demo.GameServer");
+			Class serverclass = loader.loadClass(ServerScript);
 		
 			mServer = (Server) serverclass.newInstance();
 			mServer.setScriptManager(getScriptManager().spawnChild());
@@ -67,8 +69,7 @@ class Game
 		ClassLoader loader = ClassLoader.getInstance();
 		try
 		{
-			loader.loadClass("demo.GameClient");
-			Class clientclass = loader.findClass("demo.GameClient");
+			Class clientclass = loader.loadClass(ClientScript);
 		
 			mClient = (Client) clientclass.newInstance();
 			mClient.setScriptManager(getScriptManager().spawnChild());

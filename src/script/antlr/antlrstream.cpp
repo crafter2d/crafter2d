@@ -21,7 +21,7 @@ AntlrStream* AntlrStream::fromFile(const std::string& filename)
    AutoPtr<char> data = new char[size+1];
    memset(data.getPointer(), 0, size);
    file->read(data.getPointer(), size);
-   String code = data.getPointer();
+   String code(data.getPointer());
    
    return fromString(code);
 }

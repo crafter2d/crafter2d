@@ -69,6 +69,25 @@ abstract class Client extends Process
 		nativeDisplay();
 	}
 	
+	// - Connection
+	
+	/// called by the engine when a connection has successfully been established
+	/// player : the player object with information about the client
+	public void onConnected(Player player)
+	{
+		addPlayer(player);
+	}
+	
+	/// called by the engine when the connection has been denied by the server.
+	/// reason : the reason given by the server
+	public void onConnectionDenite(int reason)
+	{
+		string message = "Server denied the connection with unknown reason.";
+		MessageBox.showInformation(message);
+	}
+	
+	// - input handling
+	
 	private void onKeyEvent(int key, boolean pressed)
 	{
 		mKeyDispatcher.dispatch(key, pressed);

@@ -20,7 +20,10 @@
 #ifndef FILESYSTEM_PATH_H_
 #define FILESYSTEM_PATH_H_
 
-#include "unzipfile.h"
+#include <string>
+
+class File;
+class UnzipFile;
 
 class FileSystemPath
 {
@@ -31,13 +34,18 @@ public:
  // get/set
    const std::string& getPath() const;
 
-   bool             hasUnzip() const;
-   const UnzipFile& getUnzip() const;
+ // query
+   bool isZipped() const;
+   bool exists(const std::string& filename) const;
+
+ // operations
+   File* open(const std::string& filename, int modus) const;
 
  // comparison
    bool operator==(const std::string& path) const;
 
 private:
+ // initialization
    void fillInfo(const std::string& path);
 
    std::string mPath;

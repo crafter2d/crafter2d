@@ -30,7 +30,7 @@ class FileSystemPaths
 public:
    FileSystemPaths();
 
-   const std::string& operator[](int index) const;
+   const FileSystemPath& operator[](int index) const;
 
  // query
    bool contains(const std::string& path) const;

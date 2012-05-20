@@ -44,8 +44,10 @@ void WorldObserver::attach(World& world)
    
 void WorldObserver::detach()
 {
-   ASSERT_PTR(mpWorld);
-   mpWorld->detach(*this);
+   if ( mpWorld != NULL )
+   {
+      mpWorld->detach(*this);
+   }
 }
 
 // - Notifications

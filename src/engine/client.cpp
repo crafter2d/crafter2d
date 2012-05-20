@@ -172,7 +172,10 @@ void Client::update(float delta)
       mpKeyMap->update();
    }
 
-   getWorld().updateClient(delta);
+   if ( hasWorld() )
+   {
+      getWorld().updateClient(delta);
+   }
 }
 
 void Client::render(float delta)

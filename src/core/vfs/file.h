@@ -38,7 +38,9 @@ public:
                EBinary = 4,
                EText = 8 };
 
+   static std::string concat(const std::string& path, const std::string& filename);
    static std::string extractPath(const std::string& filepath);
+   static bool        exists(const std::string& filepath);
 
    File();
    virtual ~File();
@@ -49,6 +51,7 @@ public:
  // reading
    int  read(void* ptr, int size);
    int  write(void* ptr, int size);
+   int  write(const std::string& text);
    char getc();
 
  // search & positioning

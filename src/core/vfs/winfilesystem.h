@@ -34,9 +34,6 @@ public:
    virtual bool recurseDirectory(const std::string& dir, Callback callback, void* pdata = NULL);
    virtual bool find(const std::string& mask, Callback callback, void* pdata = NULL);
 
-protected:
-   virtual File* doOpen(const std::string& filename);
-
 private:
    friend class FileSystem;
    

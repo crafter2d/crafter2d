@@ -69,8 +69,11 @@ void StdioFile::virClose()
 {
    File::virClose();
 
-   fclose(mpFile);
-   mpFile = NULL;
+   if ( mpFile != NULL )
+   {
+      fclose(mpFile);
+      mpFile = NULL;
+   }   
 }
 
 bool StdioFile::isValid() const

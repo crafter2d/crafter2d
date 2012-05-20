@@ -36,6 +36,13 @@ String::~String()
 
 const String& String::operator=(const String& that)
 {
+   mpData->mString = that.mpData->mString;
+   return *this;
+}
+
+const String& String::operator=(const char* pstring)
+{
+   mpData->mString = pstring;
    return *this;
 }
 
@@ -58,6 +65,13 @@ char* String::toUtf8(int& length) const
    return pdata;
 }
 
+// - Comparison
+
+bool String::operator==(const String& that) const
+{
+   return mpData->mString == that.mpData->mString;
+}
+
 // - Operations
 
 const String& String::toLower()
@@ -72,9 +86,29 @@ const String& String::toUpper()
    return *this;
 }
 
+const String& String::trim()
+{
+   mpData->mString.trim();
+   return *this;
+}
+
 void String::replace(int original, int newtext)
 {
    mpData->mString.findAndReplace(original, newtext);
+}
+
+String String::subStr(int start, int count) const
+{
+   String result;
+   mpData->mString.extract(start, count, result.mpData->mString);
+   return result;
+}
+
+// - Searching
+
+int String::indexOf(char character)
+{
+   return mpData->mString.indexOf(character);
 }
 
 // - Conversion

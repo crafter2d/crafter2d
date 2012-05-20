@@ -23,6 +23,18 @@
 
 #include "buffer.h"
 
+// static 
+std::string File::concat(const std::string& path, const std::string& filename)
+{
+   bool has = path[path.length()-1] == '/' || path[path.length()-1] == '\\'
+           || filename[0] == '/' || filename[0] == '\\';
+   if ( has )
+   {
+      return path + filename;
+   }
+   return path + '/' + filename;
+}
+
 // static
 std::string File::extractPath(const std::string& filepath)
 {
@@ -88,6 +100,11 @@ int File::read(void* ptr, int size)
 int File::write(void* ptr, int size)
 {
    return getBuffer().write(ptr, size);
+}
+
+int File::write(const std::string& text)
+{
+   return getBuffer().write((void*)text.c_str(), text.length());
 }
 
 char File::getc()

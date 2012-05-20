@@ -89,10 +89,8 @@ bool FileSystem::exists(const std::string& filename) const
 {
    for ( int index = 0; index < mPaths.size(); index++ )
    {
-      const std::string& path = mPaths[index];
-      std::string pathfile = path + '/' + filename;
-
-      if ( StdioFile::exists(pathfile) )
+      const FileSystemPath& path = mPaths[index];
+      if ( path.exists(filename) )
       {
          return true;
       }
@@ -103,13 +101,10 @@ bool FileSystem::exists(const std::string& filename) const
 
 File* FileSystem::open(const std::string& filename, int modus) const
 {
-   std::string file = filename; // expand(filename);
-
    for ( int index = 0; index < mPaths.size(); index++ )
    {
-      const std::string& path = mPaths[index];
-
-      File* pfile = tryOpen(path, file, modus);
+      const FileSystemPath& path = mPaths[index];
+      File* pfile = path.open(filename, modus);
       if ( pfile != NULL )
       {
          return pfile;
@@ -117,32 +112,6 @@ File* FileSystem::open(const std::string& filename, int modus) const
    }
 
    return NULL;
-}
-
-File* FileSystem::tryOpen(const std::string& path, const std::string& file, int modus) const
-{
-   File* pfile = NULL;
-
-   std::string pathfile = path + '/' + file;
-
-   if ( CompressedFile::isCompressedFile(path) )
-   {
-      if ( CompressedFile::exists(path, file) )
-      {
-         pfile = new CompressedFile();
-      }
-   }
-   else if ( StdioFile::exists(pathfile) )
-   {
-      pfile = new StdioFile();
-   }
-
-   if ( pfile != NULL )
-   {
-      pfile->open(pathfile, modus);
-   }
-
-   return pfile;
 }
 
 typedef std::vector<std::string> Tokens;

@@ -8,7 +8,7 @@ project "UnitTest"
 	targetdir "bin"
 	flags { "NoPCH" }
 	location "build/unittest"
-	--debugdir "bin"
+	debugdir "bin"
 	
 -- set project files
 files { "src/unittest/**.cpp", "src/unittest/**.h", "src/unittest/**.inl" }
@@ -23,7 +23,7 @@ if ( os.is("windows") ) then
 	local sln = solution()
 	local srcdir = path.join(sln.basedir, "src/unittest");
 	local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
-	prebuildcommands { gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }
+	prebuildcommands { "python " .. gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }
 end
 
 configuration "Debug"

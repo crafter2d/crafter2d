@@ -27,9 +27,9 @@ FileSystemPaths::FileSystemPaths():
 {
 }
 
-const std::string& FileSystemPaths::operator[](int index) const
+const FileSystemPath& FileSystemPaths::operator[](int index) const
 {
-   return mPaths[index]->getPath();
+   return *mPaths[index];
 }
 
 // - Query

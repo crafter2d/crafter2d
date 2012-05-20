@@ -20,6 +20,13 @@
 
 #include "filesystempath.h"
 
+#include "core/defines.h"
+
+#include "compressedfile.h"
+#include "stdiofile.h"
+#include "unzipfile.h"
+#include "zipfile.h"
+
 FileSystemPath::FileSystemPath(const std::string& path):
    mPath(path),
    mpUnzip(NULL)
@@ -50,14 +57,58 @@ const std::string& FileSystemPath::getPath() const
    return mPath;
 }
 
-bool FileSystemPath::hasUnzip() const
+// - Query
+
+bool FileSystemPath::isZipped() const
 {
    return mpUnzip != NULL;
 }
 
-const UnzipFile& FileSystemPath::getUnzip() const
+bool FileSystemPath::exists(const std::string& filename) const
 {
-   return *mpUnzip;
+   if ( isZipped() )
+   {
+      return mpUnzip->contains(filename);
+   }
+   else
+   {
+      return StdioFile::exists(File::concat(mPath, filename));
+   }
+}
+
+// - Operations
+
+File* FileSystemPath::open(const std::string& filename, int modus) const
+{
+   File* presult = NULL;
+   std::string file = File::concat(mPath, filename);
+
+   if ( isZipped() )
+   {
+      ASSERT(IS_SET(modus, File::ERead)); // only read
+
+      if ( mpUnzip->contains(filename) )
+      {
+         presult = new CompressedFile();
+      }
+   }
+   else
+   {
+      if ( IS_SET(modus, File::ERead) && !StdioFile::exists(file) )
+      {
+         // for read-mode the file must exist
+         return NULL;
+      }
+
+      presult = new StdioFile();
+   }
+
+   if ( presult != NULL )
+   {
+      presult->open(file, modus);
+   }
+
+   return presult;
 }
 
 //---------------------------------------

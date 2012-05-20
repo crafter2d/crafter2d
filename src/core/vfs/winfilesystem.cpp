@@ -33,14 +33,6 @@ WinFileSystem::~WinFileSystem()
 {
 }
 
-File* WinFileSystem::doOpen(const std::string& filename)
-{
-   File* pfile = new StdioFile();
-   pfile->open(filename);
-
-   return pfile;
-}
-
 bool WinFileSystem::recurseDirectory(const std::string& dir, Callback callback, void* pdata)
 {
    std::string localdir = dir;

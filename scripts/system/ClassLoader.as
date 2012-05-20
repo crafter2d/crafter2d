@@ -52,12 +52,13 @@ class ClassLoader
 		throw new ClassNotFoundException();
 	}
 	
-	public void loadClass(string name)
+	public Class loadClass(string name)
 	{
 		if ( !doLoadClass(name) )
 		{
 			throw new ClassNotFoundException();
 		}
+		return findClass(name);
 	}
 	
 	private native boolean doLoadClass(string name);
