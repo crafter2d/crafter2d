@@ -30,14 +30,12 @@
 #include <netinet/in.h>
 #endif
 
-#include <vector>
-
-#include "netobject.h"
+#include "netclients.h"
 #include "netpackage.h"
 #include "sortedpackagelist.h"
 
+class NetAddress;
 class NetStream;
-class NetStatistics;
 class Process;
 
 const int   MAX_PACKAGE_NUMBER            = 0xAFFFFFFF;
@@ -45,33 +43,9 @@ const int   MIN_PACKAGE_NUMBER_DIFFERENCE = 0xAFFFF000;
 const int   RESET_DIFFERENCE              = 0x1FFFFFFF;
 const float MAX_TIME_BETWEEN_RECV         = 3.0f;
 const int   HEADER_SIZE                   = sizeof(uint)*2 + 2;
-const int   SOCKADDR_SIZE                 = sizeof(sockaddr_in);
 const int   INVALID_CLIENTID              = -1;
 const char  ALIVE_MSG_ID                  = 0xF;
 const float ALIVE_MSG_INTERVAL            = 1.0f;
-
-typedef std::vector<NetPackage*> PackageQueue;
-
-/// NetAddress
-/// \brief Keeps the information about a client or server IP and port.
-struct NetAddress {
-   NetAddress();
-   NetAddress(sockaddr_in adr);
-
-   sockaddr_in addr;
-
-   uint  packageNumber;
-   uint  lastPackageNumber;
-   float lastTimeRecv;
-   float lastTimeSend;
-
-   SortedPackageList orderQueue;
-   PackageQueue resendQueue;
-
-   NetStatistics* pstatistics;
-};
-
-typedef std::vector<NetAddress*> AdressList;
 
 /// NetConnection
 /// Handles the socket connections for the server and the clients. A NetConnection instance
@@ -94,54 +68,48 @@ public:
    static bool initialize();
 #endif
 
+ // query
+   void        setAccepting(bool a);
+   void        setSendAliveMessages(bool yes);
+
+   bool        isConnected();
+
+ // operations
    bool        create(int port=0);
-   bool        connect(const char* serverName, int port);
+   int         connect(const std::string& serverName, int port);
    void        disconnect();
    void        update();
 
-   void        setAccepting(bool a);
-   bool        isConnected();
+ // sending
+   void        send(int clientid, const NetStream& stream, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
+   void        send(int clientid, const NetObject& object, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
+
+private:
+ // query   
+   int         getErrorNumber();
+   bool        isValidSequencedPackage(const NetAddress& client, const NetPackage& package);
+
+ // operations
+   int         addNewClient(NetAddress& address);
 
    bool        select (bool read, bool write);
-
-   void        send(const NetStream& stream, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
-   void        send(const NetObject& object, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
-   
    void        recv();
-   
-   void        setClientId(const int client);
-   int         getClientId();
-
-   void        setSendAliveMessages(bool yes);
-
-   const NetAddress& resolveClient(int idx) const;
-         NetAddress& resolveClient(int idx);
-
-protected:
-   bool        addNewClient(NetAddress& address);
-   int         findClient(const NetAddress& address) const;
 
    void        send(NetAddress& client, const NetStream& stream, NetPackage::Reliability reliability);
    void        sendAck(NetAddress& client, const NetPackage& package);
    void        sendAliveMessages(float tick);
+   void        resend(NetAddress& client, const NetPackage& package);
 
    void        doSend(NetAddress& client, const NetPackage& package);
    NetPackage* doReceive(NetAddress& address);
-
-   void        resend(NetAddress& client, const NetPackage& package);
-
-   bool        isValidSequencedPackage(const NetAddress& client, const NetPackage& package);
-
+   
    void        removePackageFromResendQueue(NetAddress& client, uint packageNumber);
 
-   int         getErrorNumber();
-
-private:
+ // members
    Process&    mProcess;
-   AdressList  clients;
-   uint        clientid;
-   float       lastSendAlive;
-   int         sock;
+   NetClients  mClients;
+   float       mLastSendAlive;
+   int         mSock;
    int         mFlags;
 };
 

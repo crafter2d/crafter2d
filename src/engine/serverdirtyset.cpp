@@ -42,7 +42,7 @@ void ServerDirtySet::reportDirty(Entity& entity)
    mObjects.push_back(&entity);
 }
 
-void ServerDirtySet::send(NetConnection& conn)
+void ServerDirtySet::send(int clientid, NetConnection& conn)
 {
    Objects::iterator it = mObjects.begin();
    for ( ; it != mObjects.end(); ++it )
@@ -50,7 +50,7 @@ void ServerDirtySet::send(NetConnection& conn)
       Entity& object = *(*it);
 
       UpdateObjectEvent event(object);
-      conn.send(event);
+      conn.send(clientid, event);
    }
 }
 

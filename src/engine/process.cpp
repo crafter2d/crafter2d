@@ -126,16 +126,10 @@ void Process::update(float tick)
 
 // - Events
 
-int Process::allowNewConnection()
-{
-   return 0;
-}
-
-void Process::sendScriptEvent(const DataStream& stream, uint client)
+void Process::sendScriptEvent(int clientid, const DataStream& stream)
 {
    ScriptEvent event(stream);
 
-   conn.setClientId(client);
-   conn.send(event);
+   conn.send(clientid, event);
 }
 

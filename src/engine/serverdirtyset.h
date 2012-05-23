@@ -34,7 +34,7 @@ public:
    virtual ~ServerDirtySet();
 
  // transmission
-   void send(NetConnection& conn);
+   void send(int clientid, NetConnection& conn);
 
  // reporting
    virtual void reportDirty(Entity& entity);

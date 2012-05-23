@@ -67,7 +67,8 @@ Client::Client():
    mpPlayer(NULL),
    mpKeyMap(NULL),
    mpInput(NULL),
-   mRequests()
+   mRequests(),
+   mServerId(-1)
 {
 }
 
@@ -134,8 +135,11 @@ bool Client::connect(const char* server, int port, const char* name)
 {
    // setup connection to the server
    conn.create();
-   if (!conn.connect(server, port))
+   mServerId = conn.connect(server, port);
+   if ( mServerId == -1 )
+   {
       return false;
+   }
 
    conn.setSendAliveMessages(false);
    conn.setAccepting(false);
@@ -148,7 +152,7 @@ bool Client::connect(const char* server, int port, const char* name)
 
    // send login command
    ConnectEvent event(mpPlayer->getName());
-   conn.send(event);
+   conn.send(mServerId, event);
    return true;
 }
 
@@ -157,7 +161,7 @@ void Client::disconnect()
    if ( conn.isConnected() )
    {
       DisconnectEvent event;
-      conn.send(event);
+      conn.send(mServerId, event);
    }
 }
 
@@ -275,14 +279,14 @@ bool Client::loadWorld(const std::string& filename, const std::string& name)
 
 void Client::sendToServer(NetObject& object)
 {
-   conn.send(object);
+   conn.send(mServerId, object);
 }
 
 //---------------------------------------------
 // - Events
 //---------------------------------------------
 
-int Client::onClientEvent(int client, const NetEvent& event)
+bool Client::onClientEvent(int client, const NetEvent& event)
 {
    switch ( event.getType() )
    {
@@ -341,7 +345,7 @@ int Client::onClientEvent(int client, const NetEvent& event)
          }
    }
 
-   return 0;
+   return true;
 }
 
 void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
@@ -456,7 +460,7 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
       {
          // unknown object, must have been generated before the player entered the game
          RequestObjectEvent event(event.getId());
-         conn.send(event);
+         conn.send(mServerId, event);
 
          mRequests[event.getId()] = true;
       }

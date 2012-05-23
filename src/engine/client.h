@@ -99,7 +99,7 @@ public:
    void onMouseEvent(const MouseEvent& event);
 
  // network event callback
-   virtual int    onClientEvent(int client, const NetEvent& event);
+   virtual bool onClientEvent(int client, const NetEvent& event);
 
 private:
    friend class ClientMouseEventListener;
@@ -130,6 +130,7 @@ private:
    KeyMap*                    mpKeyMap;
    Input*                     mpInput;
    Requests                   mRequests;
+   int                        mServerId;
 };
 
 #ifdef JENGINE_INLINE

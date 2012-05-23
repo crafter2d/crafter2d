@@ -23,53 +23,12 @@
 #include "core/defines.h"
 
 /******************************************************
- * NetAddress structure
- */
-
-INLINE
-NetAddress::NetAddress():
-   packageNumber(1),
-   lastPackageNumber(0),
-   lastTimeRecv(0),
-   lastTimeSend(0),
-   orderQueue(),
-   resendQueue(),
-   pstatistics(0)
-{
-   memset(&addr, 0, SOCKADDR_SIZE);
-   addr.sin_family = AF_INET;
-}
-
-INLINE
-NetAddress::NetAddress(sockaddr_in adr):
-   packageNumber(1),
-   lastPackageNumber(0),
-   lastTimeRecv(0),
-   lastTimeSend(0),
-   orderQueue(),
-   resendQueue(),
-   pstatistics(0)
-{
-   memcpy(&addr, &adr, SOCKADDR_SIZE);
-}
-
-/******************************************************
  * NetConnection structure
  */
 
 INLINE void NetConnection::setAccepting(bool a)
 {
    SET_FLAG(mFlags, eAccept);
-}
-
-INLINE void NetConnection::setClientId(const int client)
-{
-   clientid = client;
-}
-
-INLINE int NetConnection::getClientId()
-{
-   return clientid;
 }
 
 INLINE bool NetConnection::isConnected()
@@ -83,18 +42,4 @@ INLINE void NetConnection::setSendAliveMessages(bool yes)
       SET_FLAG(mFlags, eKeepAlive);
    else
       CLEAR_FLAG(mFlags, eKeepAlive);
-}
-
-INLINE
-const NetAddress& NetConnection::resolveClient(int idx) const
-{
-   ASSERT(idx >= 0 && idx < clients.size())
-   return *clients[idx];
-}
-
-INLINE
-NetAddress& NetConnection::resolveClient(int idx)
-{
-   ASSERT(idx >= 0 && idx < clients.size())
-   return *clients[idx];
 }

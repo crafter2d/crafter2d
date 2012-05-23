@@ -120,8 +120,8 @@ void Server::update(float delta)
       ClientMap::iterator it = clients.begin();
       for ( ; it != clients.end(); ++it )
       {
-         conn.setClientId(it->first);
-         dirtyset.send(conn);
+         int clientid = it->first;
+         dirtyset.send(clientid, conn);
       }
    }
 }
@@ -158,15 +158,14 @@ void Server::sendToAllClients(const NetStream& stream)
    ClientMap::iterator it = clients.begin();
    for ( ; it != clients.end(); ++it)
    {
-      conn.setClientId(it->first);
-      conn.send(stream);
+      int clientid = it->first;
+      conn.send(clientid, stream);
    }
 }
 
 void Server::sendToActiveClient(const NetObject& object)
 {
-  conn.setClientId(mActiveClient);
-  conn.send(object);
+  conn.send(mActiveClient, object);
 }
 
 void Server::sendScriptEventToAllClients(const NetStream& stream)
@@ -179,28 +178,19 @@ void Server::sendScriptEventToAllClients(const NetStream& stream)
 // -- Event handling
 // ----------------------------------
 
-int Server::allowNewConnection()
-{
-   // check if the script allows this new player
-   mpScript->run("onClientConnecting");
-
-   // the script should return true to allow the new client
-   int reason = mpScript->getInteger();
-   return reason;
-}
-
 /// \fn Server::onClientEvent(int client, const NetEvent& event)
 /// \brief Handles the incomming events.
-int Server::onClientEvent(int client, const NetEvent& event)
+bool Server::onClientEvent(int client, const NetEvent& event)
 {
    ScopedValue<int> value(&mActiveClient, client, -1);
+   bool result = true;
 
    switch ( event.getType() )
    {
       case connectEvent:
          {
             const ConnectEvent& connectevent = dynamic_cast<const ConnectEvent&>(event);
-            handleConnectEvent(connectevent);
+            result = handleConnectEvent(connectevent);
             break;
          }
       case disconnectEvent:
@@ -275,7 +265,7 @@ int Server::onClientEvent(int client, const NetEvent& event)
          break;
    }
 
-   return 0;
+   return result;
 }
 
 /// \fn Server::addPlayer(int client, Player* pplayer)
@@ -287,8 +277,7 @@ void Server::addPlayer(int clientid, Player* pplayer)
 
    // send the reply to the connecting client
    ConnectReplyEvent event(ConnectReplyEvent::eAccepted);
-   conn.setClientId(clientid);
-   conn.send(event);
+   conn.send(clientid, event);
 
    // notify other players about the new player
    JoinEvent join(clientid, pplayer->getName());
@@ -300,16 +289,25 @@ void Server::addPlayer(int clientid, Player* pplayer)
    for ( ; it != clients.end(); ++it)
    {
       Player* pother = it->second;
-      if (pother!= pplayer)
+      if ( pother!= pplayer )
       {
-         conn.setClientId(pother->getClientId());
-         conn.send(stream);
+         conn.send(pother->getClientId(), stream);
       }
    }
 }
 
-void Server::handleConnectEvent(const ConnectEvent& event)
+bool Server::handleConnectEvent(const ConnectEvent& event)
 {
+   // check if the script allows this new player
+   mpScript->run("onClientConnecting");
+   int reason = mpScript->getInteger();
+   if ( reason != 0 )
+   {
+      ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
+      conn.send(mActiveClient, event);
+      return false;
+   }
+
    // create the player object
    Player* pplayer = new Player();
    pplayer->setName(event.getName());
@@ -318,6 +316,8 @@ void Server::handleConnectEvent(const ConnectEvent& event)
    // run the onClientConnect script
    mpScript->addParam("engine.game.Player", pplayer);
    mpScript->run("onClientConnect");
+
+   return true;
 }
 
 void Server::handleViewportEvent(const ViewportEvent& event)

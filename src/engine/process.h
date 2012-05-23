@@ -30,7 +30,7 @@
 #include "net/netconnection.h"
 
 class ActionMap;
-class BitStream;
+class DataStream;
 class NetEvent;
 class Script;
 class VirtualObjectReference;
@@ -73,11 +73,10 @@ public:
    void setActive(bool active);
 
  // operations
-   void sendScriptEvent(const DataStream& stream, uint client=INVALID_CLIENTID);
+   void sendScriptEvent(int clientid, const DataStream& stream);
    
   // events
-   virtual int    allowNewConnection();
-   virtual int    onClientEvent(int client, const NetEvent& event) = 0;
+   virtual bool   onClientEvent(int clientid, const NetEvent& event) = 0;
 
 protected:
  // notifications

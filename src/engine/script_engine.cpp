@@ -175,7 +175,7 @@ void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& acces
    NetStream* pstream = (NetStream*) accessor.getObject(1)->getNativeObject();
    int client = accessor.getInt(2);
 
-   server.sendScriptEvent(*pstream, client);
+   server.sendScriptEvent(client, *pstream);
 }
 
 void Server_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
