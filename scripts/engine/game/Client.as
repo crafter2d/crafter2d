@@ -86,6 +86,23 @@ abstract class Client extends Process
 		MessageBox.showInformation(message);
 	}
 	
+	/// called by the engine when another player joined the game.
+	/// clientid : the ID of the player
+	public void onPlayerJoined(int clientid)
+	{
+	}
+	
+	/// called by the engine when another player has left the game.
+	/// clientid : the ID of the player
+	public void onPlayerLeft(int clientid)
+	{
+	}
+	
+	/// called by the engine when the server notified that it's shutdown.
+	public void onServerDown()
+	{
+	}
+	
 	// - input handling
 	
 	private void onKeyEvent(int key, boolean pressed)

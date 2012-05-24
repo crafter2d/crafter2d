@@ -29,12 +29,9 @@
 
 #include "client.h"
 
-static const std::string SName = "Player";
-
 Player::Player():
    mViewport(),
    mWorldObserver(*this),
-   mName(),
    mpController(NULL),
    mClientId(0)
 {

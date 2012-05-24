@@ -85,7 +85,7 @@ public:
  // operations
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
-   bool           connect(const char* server, int port, const char* name);
+   bool           connect(const char* server, int port);
    void           disconnect();
 
    void           sendToServer(NetObject& object);

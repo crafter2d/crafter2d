@@ -131,7 +131,7 @@ bool Client::destroy()
    return Process::destroy();
 }
 
-bool Client::connect(const char* server, int port, const char* name)
+bool Client::connect(const char* server, int port)
 {
    // setup connection to the server
    conn.create();
@@ -145,13 +145,9 @@ bool Client::connect(const char* server, int port, const char* name)
    conn.setAccepting(false);
 
    mpPlayer = new Player();
-   if ( name != NULL )
-   {
-      mpPlayer->setName(name);
-   }
 
    // send login command
-   ConnectEvent event(mpPlayer->getName());
+   ConnectEvent event;
    conn.send(mServerId, event);
    return true;
 }
@@ -373,19 +369,18 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
    }
 }
 
+void Client::handleJoinEvent(const JoinEvent& event)
+{
+   // run the onConnected script
+   mpScript->addParam(event.getId()+1);
+   mpScript->run("onPlayerJoined");
+}
+
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
    mpScript->addParam(event.getId()+1);
    mpScript->run("onPlayerLeft");
-}
-
-void Client::handleJoinEvent(const JoinEvent& event)
-{
-   // run the onConnected script
-   mpScript->addParam(event.getId()+1);
-   mpScript->addParam(event.getPlayerName());
-   mpScript->run("onJoined");
 }
 
 void Client::handleServerdownEvent()

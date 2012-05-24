@@ -280,7 +280,7 @@ void Server::addPlayer(int clientid, Player* pplayer)
    conn.send(clientid, event);
 
    // notify other players about the new player
-   JoinEvent join(clientid, pplayer->getName());
+   JoinEvent join(clientid);
    BufferedStream bufstream;
    NetObjectStream stream(bufstream);
    stream << join;
@@ -310,7 +310,6 @@ bool Server::handleConnectEvent(const ConnectEvent& event)
 
    // create the player object
    Player* pplayer = new Player();
-   pplayer->setName(event.getName());
    addPlayer(mActiveClient, pplayer);
 
    // run the onClientConnect script

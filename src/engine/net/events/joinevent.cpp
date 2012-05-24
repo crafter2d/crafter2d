@@ -25,14 +25,12 @@ IMPLEMENT_REPLICATABLE(JoinEventId, JoinEvent, NetEvent)
 
 JoinEvent::JoinEvent():
    NetEvent(joinEvent),
-   mPlayerName(),
    mId(-1)
 {
 }
 
-JoinEvent::JoinEvent(int id, const std::string& name):
+JoinEvent::JoinEvent(int id):
    NetEvent(joinEvent),
-   mPlayerName(name),
    mId(id)
 {
 }
@@ -44,21 +42,16 @@ int JoinEvent::getId() const
    return mId;
 }
 
-const std::string& JoinEvent::getPlayerName() const
-{
-   return mPlayerName;
-}
-
 // - Streaming
    
 void JoinEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
-   stream << mId << mPlayerName;
+   stream.writeInt(mId);
 }
 
 void JoinEvent::doUnpack(DataStream& stream)
 {
    NetEvent::doUnpack(stream);
-   stream >> mId >> mPlayerName;
+   stream.readInt(mId);
 }

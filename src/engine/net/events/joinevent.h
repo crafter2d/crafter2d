@@ -28,11 +28,10 @@ public:
    DEFINE_REPLICATABLE(JoinInfo)
 
    JoinEvent();
-   JoinEvent(int id, const std::string& name);
+   JoinEvent(int id);
 
  // get/set
    int getId() const;
-   const std::string& getPlayerName() const;
 
 protected:
  // streaming
@@ -40,7 +39,6 @@ protected:
    virtual void doUnpack(DataStream& stream);
 
 private:
-   std::string mPlayerName;
    int         mId;
 };
 

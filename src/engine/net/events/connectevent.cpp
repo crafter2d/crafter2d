@@ -27,27 +27,6 @@
 IMPLEMENT_REPLICATABLE(ConnectEventId, ConnectEvent, NetEvent)
 
 ConnectEvent::ConnectEvent():
-   NetEvent(connectEvent),
-   mName()
+   NetEvent(connectEvent)
 {
-}
-
-ConnectEvent::ConnectEvent(const std::string& name):
-   NetEvent(connectEvent),
-   mName(name)
-{
-}
-
-// - Streaming
-
-void ConnectEvent::doPack(DataStream& stream) const
-{
-   NetEvent::doPack(stream);
-   stream.writeString(mName);
-}
-
-void ConnectEvent::doUnpack(DataStream& stream)
-{
-   NetEvent::doUnpack(stream);
-   stream.readString(mName);
 }

@@ -30,18 +30,7 @@ class ConnectEvent : public NetEvent
 public:
    DEFINE_REPLICATABLE(ConnectEvent)
 
-            ConnectEvent();
-   explicit ConnectEvent(const std::string& name);
-   
-   const std::string&   getName() const;
-
-protected:
- // streaming
-   virtual void   doPack(DataStream& stream) const;
-   virtual void   doUnpack(DataStream& stream);
-
-private:
-   std::string    mName;
+   ConnectEvent();
 };
 
 #ifdef JENGINE_INLINE

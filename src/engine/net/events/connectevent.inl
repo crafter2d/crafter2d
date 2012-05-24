@@ -18,8 +18,3 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/defines.h"
-
-INLINE const std::string& ConnectEvent::getName() const
-{
-  return mName;
-}

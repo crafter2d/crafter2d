@@ -172,8 +172,8 @@ void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& acces
 {
    GET_THIS(Server, server);
 
-   NetStream* pstream = (NetStream*) accessor.getObject(1)->getNativeObject();
-   int client = accessor.getInt(2);
+   int client = accessor.getInt(1);
+   NetStream* pstream = (NetStream*) accessor.getObject(2)->getNativeObject();
 
    server.sendScriptEvent(client, *pstream);
 }
@@ -207,9 +207,8 @@ void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    std::string ip = accessor.getString(1);
    int port = accessor.getInt(2);
-   std::string name = accessor.getString(3);
 
-   accessor.setResult(client.connect(ip.c_str(), port, name.c_str()));
+   accessor.setResult(client.connect(ip.c_str(), port));
 }
 
 void Client_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -495,13 +494,6 @@ void Actor_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accesso
    Actor* pto = (Actor*) accessor.getObject(1)->getNativeObject();
 
    accessor.setResult(actor.hasLineOfSight(*pto));
-}
-
-void Player_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Player, player);
-
-   accessor.setResult(player.getName());
 }
 
 void Player_getClientId(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1192,7 +1184,6 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Actor_add", Actor_add);
    registrator.addCallback("Actor_hasLineOfSight", Actor_hasLineOfSight);
 
-   registrator.addCallback("Player_getName", Player_getName);
    registrator.addCallback("Player_getClientId", Player_getClientId);
    registrator.addCallback("Player_native_getController", Player_native_getController);
    registrator.addCallback("Player_native_setController", Player_native_setController);

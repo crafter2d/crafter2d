@@ -19,7 +19,6 @@ class Player
 	
 	// Natives
 	
-	public native string getName();
 	public native int getClientId();
 	
 	private native Actor native_getController();

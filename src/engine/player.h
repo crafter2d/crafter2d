@@ -42,9 +42,6 @@ public:
    int                  getClientId() const;
    void                 setClientId(int clientid);
 
-   const std::string&   getName() const;
-   void                 setName(const std::string& name);
-
    Viewport&            getViewport();
 
    bool                 hasController() const;
@@ -61,7 +58,6 @@ private:
 
    Viewport             mViewport;
    PlayerWorldObserver  mWorldObserver;
-   std::string          mName;
    Actor*               mpController;
    int                  mClientId;
 };

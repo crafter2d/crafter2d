@@ -31,18 +31,18 @@ abstract class Server extends Process
 	/// sends a message to the given client.
 	/// message : the message that will be transmitted
 	/// clientid: the id of the client
-	public void sendMessage(Message message, int clientid)
+	public void sendMessage(int clientid, Message message)
 	{
 		mStream.clear();
 		mStream.writeInt(message.getId());
 		message.write(mStream);
 		
-		sendScriptEvent(mStream, clientid);
+		sendScriptEvent(clientid, mStream);
 	}
 	
 	public native boolean listen(int port);
 	public native void update(real delta);
-	public native void sendScriptEvent(NetStream stream, int client);
+	public native void sendScriptEvent(int clientid, NetStream stream);
 
 	protected native boolean loadWorld(string filename, string name);
 }

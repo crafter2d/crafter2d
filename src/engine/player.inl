@@ -29,16 +29,6 @@ INLINE void Player::setClientId(int clientid)
    mClientId = clientid;
 }
 
-INLINE const std::string& Player::getName() const
-{
-   return mName;
-}
-
-INLINE void Player::setName(const std::string& name)
-{
-   mName = name;
-}
-
 INLINE Viewport& Player::getViewport()
 {
    return mViewport;

@@ -68,7 +68,7 @@ class GameServer extends Server
 		
 		// notify the client
 		ControllerMessage message = new ControllerMessage(actor.getId());
-		sendMessage(message, player.getClientId());
+		sendMessage(player.getClientId(), message);
 		
 		return actor;
 	}
