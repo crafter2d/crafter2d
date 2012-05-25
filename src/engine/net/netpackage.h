@@ -40,9 +40,8 @@ public:
 
    enum Reliability {
       eUnreliable          = 1,
-      eUnreliableSequenced = 2,
-      eReliableSequenced   = 3,
-      eReliableOrdered     = 4
+      eReliableSequenced   = 2,
+      eReliableOrdered     = 3
    };
 
    NetPackage();

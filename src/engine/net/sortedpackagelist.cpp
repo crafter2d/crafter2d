@@ -45,3 +45,18 @@ SortedPackageList::SortedPackageList():
 {
    setCompareFnc((SortedList<NetPackage>::CompareFnc)Compare);
 }
+
+// - Operations
+
+void SortedPackageList::removeOldPackages(uint number)
+{
+   ListIterator<NetPackage> it(*this);
+   while ( it.isValid() )
+   {
+      NetPackage& package = *it;
+      if ( package.getNumber() < number )
+      {
+         it.remove();
+      }
+   }
+}

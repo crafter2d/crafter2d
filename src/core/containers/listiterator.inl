@@ -72,9 +72,9 @@ void ListIterator<E>::remove()
 {
    if ( _pnode != NULL )
    {
-      ListNode<E>* ptemp = _pnode;
-      _pnode = _pnode->nextptr();
-
+      ListNode<E>* ptemp = _pnode->nextptr();
       _list.remove(*this);
+
+      _pnode = ptemp;
    }
 }

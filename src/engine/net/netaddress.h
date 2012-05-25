@@ -15,22 +15,29 @@
 class NetPackage;
 class NetStatistics;
 
-const int   SOCKADDR_SIZE                 = sizeof(sockaddr_in);
-
 class NetAddress
 {
 public:
+   static const int SOCKADDR_SIZE = sizeof(sockaddr_in);
+
    typedef std::vector<NetPackage*> PackageQueue;
 
    NetAddress();
    NetAddress(const sockaddr_in& address);
 
+ // operations
+   void removeAcknowledged(uint number);
+
+ // members
    sockaddr_in addr;
 
    uint  packageNumber;
-   uint  lastPackageNumber;
+   uint  nextPackageNumber;
    float lastTimeRecv;
    float lastTimeSend;
+
+   int   waitAttempt;
+   float waitTimer;
 
    SortedPackageList orderQueue;
    PackageQueue resendQueue;

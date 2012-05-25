@@ -139,7 +139,11 @@ template <class E>
 void List<E>::remove(Iterator<E>& it)
 {
    ListNode<E>* pnode = static_cast<ListNode<E>*>(it.key());
-   if ( pnode == _phead )
+   if ( _phead == _ptail )
+   {
+      _phead = _ptail = NULL;
+   }
+   else if ( pnode == _phead )
    {
       _phead = _phead->nextptr();
    }

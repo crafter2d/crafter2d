@@ -62,7 +62,7 @@ class GameServer extends Server
 		InputController controller = new InputController();
 		controller.setActionMap(map);
 		
-		Hero actor = (Hero)Actor.construct(this, player.getName(), position, "../objects/char.xml");
+		Hero actor = (Hero)Actor.construct(this, "Hero", position, "../objects/char.xml");
 		actor.setLocalController(controller);
 		actor.setForceGenerator(new InputForceGenerator());
 		

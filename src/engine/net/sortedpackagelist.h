@@ -28,6 +28,8 @@ class SortedPackageList : public SortedList<NetPackage>
 {
 public:
    SortedPackageList();
+
+   void removeOldPackages(uint number);
 };
 
 #endif // SORTED_PACKAGE_LIST_H

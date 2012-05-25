@@ -45,7 +45,8 @@ const float MAX_TIME_BETWEEN_RECV         = 3.0f;
 const int   HEADER_SIZE                   = sizeof(uint)*2 + 2;
 const int   INVALID_CLIENTID              = -1;
 const char  ALIVE_MSG_ID                  = 0xF;
-const float ALIVE_MSG_INTERVAL            = 1.0f;
+const float ALIVE_MSG_INTERVAL            = 2.0f;
+const float WAIT_INTERVAL                 = 0.2f;
 
 /// NetConnection
 /// Handles the socket connections for the server and the clients. A NetConnection instance
@@ -53,6 +54,13 @@ const float ALIVE_MSG_INTERVAL            = 1.0f;
 /// both Internet and a local network.
 class ENGINE_API NetConnection
 {
+   enum SocketError
+   {
+      eConnReset,
+      eConnTimeout,
+      eUnsupportedError
+   };
+
 public:
    enum Flags
    {
@@ -64,9 +72,7 @@ public:
    explicit    NetConnection(Process& process);
                ~NetConnection();
 
-#ifdef WIN32
    static bool initialize();
-#endif
 
  // query
    void        setAccepting(bool a);
@@ -81,34 +87,35 @@ public:
    void        update();
 
  // sending
-   void        send(int clientid, const NetStream& stream, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
-   void        send(int clientid, const NetObject& object, NetPackage::Reliability reliability = NetPackage::eReliableSequenced);
+   void        send(int clientid, const NetStream& stream, NetPackage::Reliability reliability = NetPackage::eReliableOrdered);
+   void        send(int clientid, const NetObject& object, NetPackage::Reliability reliability = NetPackage::eReliableOrdered);
 
 private:
  // query   
-   int         getErrorNumber();
-   bool        isValidSequencedPackage(const NetAddress& client, const NetPackage& package);
+   SocketError getErrorNumber() const;
 
  // operations
-   int         addNewClient(NetAddress& address);
+   int         addNewClient(const NetAddress& address);
+   int         findOrCreate(const NetAddress& address);
+
+   void        process(int clientid);
+   void        processPackage(int clientid, NetPackage& package);
 
    bool        select (bool read, bool write);
-   void        recv();
+   void        receive();
 
    void        send(NetAddress& client, const NetStream& stream, NetPackage::Reliability reliability);
-   void        sendAck(NetAddress& client, const NetPackage& package);
-   void        sendAliveMessages(float tick);
-   void        resend(NetAddress& client, const NetPackage& package);
+   void        sendAck(NetAddress& client);
+   void        sendAlive(NetAddress& client, float tick);
 
    void        doSend(NetAddress& client, const NetPackage& package);
    NetPackage* doReceive(NetAddress& address);
-   
-   void        removePackageFromResendQueue(NetAddress& client, uint packageNumber);
+
+   void        handleError(NetAddress& client, SocketError error);
 
  // members
    Process&    mProcess;
    NetClients  mClients;
-   float       mLastSendAlive;
    int         mSock;
    int         mFlags;
 };
