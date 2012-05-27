@@ -30,6 +30,9 @@
 #include <netinet/in.h>
 #endif
 
+#include "core/memory/objectallocator.h"
+#include "core/memory/objecthandle.h"
+
 #include "netclients.h"
 #include "netpackage.h"
 #include "sortedpackagelist.h"
@@ -39,12 +42,7 @@ class NetStream;
 class Process;
 
 const int   MAX_PACKAGE_NUMBER            = 0xAFFFFFFF;
-const int   MIN_PACKAGE_NUMBER_DIFFERENCE = 0xAFFFF000;
-const int   RESET_DIFFERENCE              = 0x1FFFFFFF;
-const float MAX_TIME_BETWEEN_RECV         = 3.0f;
-const int   HEADER_SIZE                   = sizeof(uint)*2 + 2;
 const int   INVALID_CLIENTID              = -1;
-const char  ALIVE_MSG_ID                  = 0xF;
 const float ALIVE_MSG_INTERVAL            = 2.0f;
 const float WAIT_INTERVAL                 = 0.2f;
 
@@ -60,6 +58,8 @@ class ENGINE_API NetConnection
       eConnTimeout,
       eUnsupportedError
    };
+
+   typedef ObjectAllocator<NetPackage> PackageAllocator;
 
 public:
    enum Flags
@@ -108,16 +108,17 @@ private:
    void        sendAck(NetAddress& client);
    void        sendAlive(NetAddress& client, float tick);
 
-   void        doSend(NetAddress& client, const NetPackage& package);
-   NetPackage* doReceive(NetAddress& address);
+   void           doSend(NetAddress& client, const NetPackage& package);
+   PackageHandle  doReceive(NetAddress& address);
 
    void        handleError(NetAddress& client, SocketError error);
 
  // members
-   Process&    mProcess;
-   NetClients  mClients;
-   int         mSock;
-   int         mFlags;
+   Process&          mProcess;
+   NetClients        mClients;
+   PackageAllocator  mAllocator;
+   int               mSock;
+   int               mFlags;
 };
 
 #ifdef JENGINE_INLINE

@@ -20,8 +20,8 @@
 #include "core/defines.h"
 
 template <class N>
-ListNode<N>::ListNode(N* pelement, ListNode<N>* pprev, ListNode<N>* pnext):
-   _pdata(pelement),
+ListNode<N>::ListNode(N& element, ListNode<N>* pprev, ListNode<N>* pnext):
+   _data(element),
    _pprev(pprev),
    _pnext(pnext)
 {
@@ -66,6 +66,5 @@ void ListNode<N>::prev(ListNode<N>* pprev)
 template <class N>
 N& ListNode<N>::data()
 {
-   ASSERT_PTR(_pdata);
-   return *_pdata;
+   return _data;
 }

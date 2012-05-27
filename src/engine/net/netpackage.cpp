@@ -112,6 +112,11 @@ uint NetPackage::getNumber() const
    return mNumber;
 }
 
+void NetPackage::setNumber(uint number)
+{
+   mNumber = number;
+}
+
 int NetPackage::getDataSize() const
 {
    return mInfo & SIZE_MASK;
@@ -141,4 +146,11 @@ void NetPackage::setData(int datasize, const char* pdata)
 int NetPackage::getSize() const
 {
    return HeaderSize + (getDataSize() * sizeof(char));
+}
+
+// - Operations
+
+void NetPackage::reset()
+{
+   mInfo = 0;
 }

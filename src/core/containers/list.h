@@ -46,10 +46,10 @@ public:
    bool  isEmpty() const;
 
  // Operations
-   void  addFront(E* pelement);
-   void  addTail(E* pelement);
+   void  addFront(E& element);
+   void  addTail(E& element);
    
-   void  insert(Iterator<E>& it, E* pelement);
+   void  insert(Iterator<E>& it, E& element);
    void  clear();
 
    void  remove(Iterator<E>& it);

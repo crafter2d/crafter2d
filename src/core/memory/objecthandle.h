@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,21 +17,40 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SORTED_OBJECT_LIST_H_
-#define SORTED_OBJECT_LIST_H_
+#ifndef OBJECT_HANDLE_H
+#define OBJECT_HANDLE_H
 
-#include "core/containers/sortedlist.h"
+#include "objectallocator.h"
 
-class Actor;
-
-class SortedObjectList : public SortedList<Actor*>
+template<class T>
+class ObjectHandle
 {
 public:
-   SortedObjectList();
+            ObjectHandle();
+            ObjectHandle(const ObjectHandle<T>& that);
+   explicit ObjectHandle(ObjectAllocator<T>& allocator);
+           ~ObjectHandle();
+
+   ObjectHandle<T>& operator=(const ObjectHandle& that);
+
+ // query
+   bool hasObject() const;
+
+ // operations
+   const T* operator->() const;
+         T* operator->();
+   T& operator*();
+
+   T* ptr();
+   T* release();
+
+private:
+
+   ObjectAllocator<T>* mpAllocator;
+   T*                  mpObject;
+   mutable bool        mOwned;
 };
 
-#ifdef JENGINE_INLINE
-#  include "sortedobjectlist.inl"
-#endif
+#include "objecthandle.inl"
 
-#endif
+#endif // OBJECT_HANDLE_H

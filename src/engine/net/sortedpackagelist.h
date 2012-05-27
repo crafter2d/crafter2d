@@ -20,12 +20,15 @@
 #ifndef SORTED_PACKAGE_LIST_H
 #define SORTED_PACKAGE_LIST_H
 
+#include "core/memory/objecthandle.h"
 #include "core/containers/sortedlist.h"
 
-class NetPackage;
+#include "netpackage.h"
 
-class SortedPackageList : public SortedList<NetPackage>
+class SortedPackageList : public SortedList< PackageHandle >
 {
+   typedef SortedList<PackageHandle> Impl;
+
 public:
    SortedPackageList();
 

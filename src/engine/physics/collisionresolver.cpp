@@ -67,7 +67,7 @@ void CollisionResolver::doResolve(CollisionData& collisiondata, float timestep)
 
    while ( iterator.isValid() )
    {
-      CollisionContact& contact = (*iterator);
+      CollisionContact& contact = *(*iterator);
 
       resolveContact(contact);
 

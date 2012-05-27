@@ -17,52 +17,91 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef NET_ADDRESS_H
-#define NET_ADDRESS_H
+#include "core/defines.h"
 
-#ifdef WIN32
-#include <winsock2.h>
-#else
-#include <netinet/in.h>
-#endif
-#include <vector>
-
-#include "core/memory/objecthandle.h"
-
-#include "netpackage.h"
-#include "sortedpackagelist.h"
-
-class NetPackage;
-class NetStatistics;
-
-class NetAddress
+template<class T>
+ObjectHandle<T>::ObjectHandle():
+   mpAllocator(NULL),
+   mpObject(NULL),
+   mOwned(false)
 {
-public:
-   static const int SOCKADDR_SIZE = sizeof(sockaddr_in);
+}
 
-   typedef std::vector< ObjectHandle<NetPackage> > PackageQueue;
+template<class T>
+ObjectHandle<T>::ObjectHandle(const ObjectHandle<T>& that):
+   mpAllocator(that.mpAllocator),
+   mpObject(that.mpObject),
+   mOwned(true)
+{
+   that.mOwned = false;
+}
 
-   NetAddress();
-   NetAddress(const sockaddr_in& address);
+template<class T>
+ObjectHandle<T>::ObjectHandle(ObjectAllocator<T>& allocator):
+   mpAllocator(&allocator),
+   mpObject(allocator.get()),
+   mOwned(true)
+{
+}
 
- // operations
-   void removeAcknowledged(uint number);
+template<class T>
+ObjectHandle<T>::~ObjectHandle()
+{
+   if ( mOwned )
+   {
+      ASSERT_PTR(mpAllocator);
+      mpAllocator->release(mpObject);
+   }
+}
 
- // members
-   sockaddr_in addr;
+template<class T>
+ObjectHandle<T>& ObjectHandle<T>::operator=(const ObjectHandle& that)
+{
+   mpAllocator = that.mpAllocator;
+   mpObject = const_cast<ObjectHandle&>(that).release();
+   mOwned = true;
 
-   uint  packageNumber;
-   uint  nextPackageNumber;
-   float lastTimeRecv;
-   float lastTimeSend;
+   return *this;
+}
 
-   int   waitAttempt;
-   float waitTimer;
+// query
 
-   SortedPackageList orderQueue;
-   PackageQueue resendQueue;
+template<class T>
+bool ObjectHandle<T>::hasObject() const
+{
+   return mpObject != NULL;
+}
 
-   NetStatistics* pstatistics;
-};
+// - Operations
 
-#endif // NET_ADDRESS_H
+template<class T>
+const T* ObjectHandle<T>::operator->() const
+{
+   return mpObject;
+}
+
+template<class T>
+T* ObjectHandle<T>::operator->()
+{
+   return mpObject;
+}
+
+template<class T>
+T& ObjectHandle<T>::operator*()
+{
+   ASSERT_PTR(mpObject);
+   return *mpObject;
+}
+
+template<class T>
+T* ObjectHandle<T>::ptr()
+{
+   return mpObject;
+}
+
+template<class T>
+T* ObjectHandle<T>::release()
+{
+   mOwned = false;
+   return mpObject;
+}

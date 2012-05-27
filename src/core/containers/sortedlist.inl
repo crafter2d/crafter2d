@@ -34,14 +34,32 @@ INLINE void SortedList<E>::setCompareFnc(CompareFnc pcomparefunction)
    _pcomparefnc = pcomparefunction;
 }
 
-template <class E>
-INLINE void SortedList<E>::add(E* pelement)
+template<class E>
+INLINE bool SortedList<E>::ensureSorted()
 {
    ListIterator<E> it(*this);
-   for ( ; it.isValid() && (*_pcomparefnc)(it.item(), *pelement) < 0; ++it );
+   while ( it.isValid() )
+   {
+      ListIterator<E> prev = it;
+      ++it;
+      if ( it.isValid() && (*_pcomparefnc)(prev.item(), it.item()) > 0 )
+      {
+         return false;
+      }
+   }
+   return true;
+}
+
+template <class E>
+INLINE void SortedList<E>::add(E& element)
+{
+   ListIterator<E> it(*this);
+   for ( ; it.isValid() && (*_pcomparefnc)(it.item(), element) < 0; ++it );
    
    if ( it.isValid() )
-      insert(it, pelement);
+      insert(it, element);
    else
-      addTail(pelement);
+      addTail(element);
+
+   ASSERT(ensureSorted());
 }

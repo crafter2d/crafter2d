@@ -28,7 +28,8 @@
 class CollisionData 
 {
 public:
-   typedef ListIterator<CollisionContact> ContactIterator;
+   typedef List<CollisionContact*> ContactList;
+   typedef ListIterator<CollisionContact*> ContactIterator;
 
    CollisionData();
    ~CollisionData();
@@ -45,7 +46,6 @@ public:
    void adjustVelocities(float timestep);
 
 private:
-   typedef List<CollisionContact> ContactList;
 
    ContactList mContacts;
 };

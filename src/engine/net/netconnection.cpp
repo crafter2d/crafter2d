@@ -90,6 +90,7 @@ bool NetConnection::initialize()
 NetConnection::NetConnection(Process& process):
    mProcess(process),
    mClients(),
+   mAllocator(),
    mSock(-1),
    mFlags(0)
 {
@@ -175,6 +176,8 @@ int NetConnection::connect(const std::string& serverName, int port)
    return clientid;
 }
 
+/// \fn NetConnection::disconnect()
+/// \brief Closes the connection to all connected clients.
 void NetConnection::disconnect()
 {
    if ( IS_SET(mFlags, eConnected) )
@@ -287,16 +290,15 @@ void NetConnection::process(int clientid)
       }
    }
 
-   ListIterator<NetPackage> it(client.orderQueue);
+   ListIterator<PackageHandle> it(client.orderQueue);
    while ( it.isValid() )
    {
-      NetPackage& package = *it;
+      PackageHandle& handle = *it;
+      NetPackage& package = *handle;
 
       if ( package.getNumber() == client.nextPackageNumber )
       {
          processPackage(clientid, package);
-         
-         it.remove();
       }
       else if ( package.getNumber() > client.nextPackageNumber )
       {
@@ -305,11 +307,8 @@ void NetConnection::process(int clientid)
          client.waitTimer = client.waitAttempt * client.waitAttempt;
          break;
       }
-      else
-      {
-         delete &package;
-         it.remove();
-      }
+
+      it.remove();
    }
 }
 
@@ -322,9 +321,6 @@ void NetConnection::processPackage(int clientid, NetPackage& package)
 
    AutoPtr<NetEvent> event(dynamic_cast<NetEvent*>(pobject));
    mProcess.onClientEvent(clientid, *event);
-
-   // hack : but we know that after this, the package is not used anymore
-   delete &package;
 
    NetAddress& client = mClients[clientid];
    client.nextPackageNumber++;
@@ -353,10 +349,17 @@ void NetConnection::send(int clientid, const NetObject& object, NetPackage::Reli
 
 void NetConnection::send(NetAddress& client, const NetStream& stream, NetPackage::Reliability reliability)
 {
-   AutoPtr<NetPackage> package = new NetPackage(NetPackage::eEvent, reliability, client.packageNumber, stream.getDataSize(), stream.getData());
+   PackageHandle package(mAllocator);
+   package->reset();
+   package->setType(NetPackage::eEvent);
+   package->setReliability(reliability);
+   package->setNumber(client.packageNumber);
+   package->setData(stream.getDataSize(), stream.getData());
+
+   ASSERT(package->getType() == NetPackage::eEvent);
 
    // update the package numbering
-   if (++client.packageNumber > MAX_PACKAGE_NUMBER)
+   if ( ++client.packageNumber > MAX_PACKAGE_NUMBER )
       client.packageNumber = 0;
 
    doSend(client, *package);
@@ -364,7 +367,7 @@ void NetConnection::send(NetAddress& client, const NetStream& stream, NetPackage
    // when reliability is requested, save the package in the resend queue
    if ( reliability >= NetPackage::eReliableSequenced )
    {
-      client.resendQueue.push_back(package.release());
+      client.resendQueue.push_back(package);
    }
 }
 
@@ -377,9 +380,11 @@ void NetConnection::sendAck(NetAddress& client)
    doSend(client, ackPackage);
 }
 
+/// \fn NetConnection::sendAlive(NetAddress& client, float tick)
+/// \brief Sends an alive system message, when no message has been send for some time.
 void NetConnection::sendAlive(NetAddress& client, float tick)
 {
-   if ( IS_SET(mFlags, eKeepAlive) && (tick - client.lastTimeRecv >= ALIVE_MSG_INTERVAL) )
+   if ( IS_SET(mFlags, eKeepAlive) && (tick - client.lastTimeSend >= ALIVE_MSG_INTERVAL) )
    {
       NetPackage package(NetPackage::eAlive, NetPackage::eUnreliable, 0);
       doSend(client, package);
@@ -409,69 +414,68 @@ void NetConnection::doSend(NetAddress& client, const NetPackage& package)
 void NetConnection::receive()
 {
    NetAddress address;
-   AutoPtr<NetPackage> package = doReceive(address);
-   if ( !package.hasPointer() )
+   PackageHandle package(doReceive(address));
+   if ( package.hasObject() )
    {
-      return;
-   }
-
-   // see if the connection is already in the list
-   int clientid = findOrCreate(address); 
-   if ( clientid != INVALID_CLIENTID )
-   {
-      NetAddress& client = mClients[clientid];
-      client.lastTimeRecv = Timer::getInstance().getTick();
-
-      if ( client.pstatistics )
+      // see if the connection is already in the list
+      int clientid = findOrCreate(address); 
+      if ( clientid != INVALID_CLIENTID )
       {
-         client.pstatistics->addPackageSend(package->getDataSize());
-      }
+         NetAddress& client = mClients[clientid];
+         client.lastTimeRecv = Timer::getInstance().getTick();
 
-      switch ( package->getType() )
-      {
-         case NetPackage::eAck:
-            {
-               client.removeAcknowledged(package->getNumber());
-               break;
-            }
-         case NetPackage::eAlive:
-            {
-               // don't do anything with the I'm alive message
-            }
-         case NetPackage::eEvent:
-            {
-               NetPackage::Reliability reliability = package->getReliability();
-               if ( reliability == NetPackage::eReliableSequenced )
+         if ( client.pstatistics )
+         {
+            client.pstatistics->addPackageSend(package->getDataSize());
+         }
+
+         switch ( package->getType() )
+         {
+            case NetPackage::eAck:
                {
-                  // the older packages are no longer valid, can be removed
-                  client.orderQueue.removeOldPackages(package->getNumber());
-                  client.nextPackageNumber = package->getNumber();
+                  client.removeAcknowledged(package->getNumber());
+                  break;
                }
+            case NetPackage::eAlive:
+               {
+                  // don't do anything with the I'm alive message
+                  break;
+               }
+            case NetPackage::eEvent:
+               {
+                  NetPackage::Reliability reliability = package->getReliability();
+                  if ( reliability == NetPackage::eReliableSequenced )
+                  {
+                     // the older packages are no longer valid, can be removed
+                     client.orderQueue.removeOldPackages(package->getNumber());
+                     client.nextPackageNumber = package->getNumber();
+                  }
 
-               client.orderQueue.add(package.release());
+                  client.orderQueue.add(package);
+                  break;
+               }
+            case NetPackage::eInvalid:
+            default:
+               UNREACHABLE("Invalid package type.");
                break;
-            }
-         case NetPackage::eInvalid:
-         default:
-            UNREACHABLE("Invalid package type.");
-            break;
+         }
       }
    }
 }
 
-NetPackage* NetConnection::doReceive(NetAddress& address)
+PackageHandle NetConnection::doReceive(NetAddress& address)
 {
-   AutoPtr<NetPackage> ppackage = new NetPackage();
+   PackageHandle package(mAllocator);
    int addrLen = NetAddress::SOCKADDR_SIZE;
 
-   int size = recvfrom(mSock, (char*)ppackage.getPointer(), NetPackage::MaxPackageSize, 0, (struct sockaddr*)&(address.addr), (socklen_t*)&addrLen);
+   int size = recvfrom(mSock, (char*)package.ptr(), NetPackage::MaxPackageSize, 0, (struct sockaddr*)&(address.addr), (socklen_t*)&addrLen);
    if ( size == SOCKET_ERROR )
    {
       handleError(address, getErrorNumber());
-      return NULL;
+      return PackageHandle();
    }
 
-   return ppackage.release();
+   return package;
 }
 
 /// \fn NetConnection::select(bool read, bool write)

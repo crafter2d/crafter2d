@@ -50,7 +50,7 @@ int Compare(const Actor& left, const Actor& right)
 //////////////////////////////////////////////////////////////////////////
 
 SortedObjectList::SortedObjectList():
-   SortedList<Actor>()
+   SortedList<Actor*>()
 {
-   setCompareFnc((SortedList<Actor>::CompareFnc)Compare);
+   setCompareFnc((SortedList<Actor*>::CompareFnc)Compare);
 }

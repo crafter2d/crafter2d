@@ -21,6 +21,7 @@
 #define _NETPACKAGE_H_
 
 #include "core/defines.h"
+#include "core/memory/objecthandle.h"
 
 class NetObject;
 
@@ -57,6 +58,8 @@ public:
    void        setReliability(Reliability rel);
 
    uint        getNumber() const;
+   void        setNumber(uint number);
+
    float       getTimeStamp() const;
    void        setTimeStamp(float timestamp);
 
@@ -66,6 +69,9 @@ public:
 
  // query
    int         getSize() const;
+
+ // operations
+   void        reset();
 
 private:
  // get/set
@@ -77,5 +83,7 @@ private:
    uint  mInfo;  // packed info: 4 = type, 3 = reliability, 2&1 = datasize
    char  mData[MaxDataSize];
 };
+
+typedef ObjectHandle<NetPackage> PackageHandle;
 
 #endif // _NETPACKAGE_H_

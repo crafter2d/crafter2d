@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,21 +17,4 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SORTED_OBJECT_LIST_H_
-#define SORTED_OBJECT_LIST_H_
-
-#include "core/containers/sortedlist.h"
-
-class Actor;
-
-class SortedObjectList : public SortedList<Actor*>
-{
-public:
-   SortedObjectList();
-};
-
-#ifdef JENGINE_INLINE
-#  include "sortedobjectlist.inl"
-#endif
-
-#endif
+#include "objectallocator.h"

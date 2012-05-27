@@ -19,18 +19,16 @@
  ***************************************************************************/
 #include "sortedpackagelist.h"
 
-#include "netpackage.h"
-
 // - Statics
 
 static
-int Compare(const NetPackage& left, const NetPackage& right)
+int Compare(const PackageHandle& left, const PackageHandle& right)
 {
-   if ( left.getNumber() < right.getNumber() )
+   if ( left->getNumber() < right->getNumber() )
    {
       return -1;
    }
-   else if ( left.getNumber() > right.getNumber() )
+   else if ( left->getNumber() > right->getNumber() )
    {
       return 1;
    }
@@ -41,20 +39,20 @@ int Compare(const NetPackage& left, const NetPackage& right)
 // - Sorted Package List implementation
 
 SortedPackageList::SortedPackageList():
-   SortedList<NetPackage>()
+   Impl()
 {
-   setCompareFnc((SortedList<NetPackage>::CompareFnc)Compare);
+   setCompareFnc((Impl::CompareFnc)Compare);
 }
 
 // - Operations
 
 void SortedPackageList::removeOldPackages(uint number)
 {
-   ListIterator<NetPackage> it(*this);
+   ListIterator<PackageHandle> it(*this);
    while ( it.isValid() )
    {
-      NetPackage& package = *it;
-      if ( package.getNumber() < number )
+      PackageHandle& package = *it;
+      if ( package->getNumber() < number )
       {
          it.remove();
       }

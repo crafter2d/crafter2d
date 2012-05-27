@@ -36,9 +36,11 @@ public:
    void setCompareFnc(CompareFnc comparefunction);
 
  // operations
-   void add(E* pelement);
+   void add(E& element);
 
 private:
+   bool ensureSorted();
+
    CompareFnc  _pcomparefnc;
 };
 
