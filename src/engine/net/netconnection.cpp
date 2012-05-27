@@ -278,6 +278,8 @@ void NetConnection::update()
    }
 }
 
+/// \fn NetConnection::process(int clientid)
+/// \brief Process all pending messages.
 void NetConnection::process(int clientid)
 {
    NetAddress& client = mClients[clientid];
@@ -287,6 +289,13 @@ void NetConnection::process(int clientid)
       if ( client.waitTimer > 0.0f )
       {
          return;
+      }
+      else if ( client.waitTimer <= 0.0f )
+      {
+         sendRequest(client);
+
+         client.waitAttempt++;
+         client.waitTimer = client.waitAttempt * client.waitAttempt;
       }
    }
 
@@ -298,6 +307,11 @@ void NetConnection::process(int clientid)
 
       if ( package.getNumber() == client.nextPackageNumber )
       {
+         if ( client.waitAttempt > 0 )
+         {
+            client.waitAttempt = 0;
+         }
+
          processPackage(clientid, package);
       }
       else if ( package.getNumber() > client.nextPackageNumber )
@@ -380,6 +394,15 @@ void NetConnection::sendAck(NetAddress& client)
    doSend(client, ackPackage);
 }
 
+/// \fn NetConnection::sendRequest(NetAddress& client)
+/// \brief Send a request for the next package of the given client
+void NetConnection::sendRequest(NetAddress& client)
+{
+   NetPackage ackPackage(NetPackage::eRequest, NetPackage::eUnreliable, client.nextPackageNumber);
+
+   doSend(client, ackPackage);
+}
+
 /// \fn NetConnection::sendAlive(NetAddress& client, float tick)
 /// \brief Sends an alive system message, when no message has been send for some time.
 void NetConnection::sendAlive(NetAddress& client, float tick)
@@ -439,6 +462,13 @@ void NetConnection::receive()
             case NetPackage::eAlive:
                {
                   // don't do anything with the I'm alive message
+                  break;
+               }
+            case NetPackage::eRequest:
+               {
+                  // add the requested message at the front of the queue,
+                  // so it gets checked first
+                  client.orderQueue.addFront(package);
                   break;
                }
             case NetPackage::eEvent:

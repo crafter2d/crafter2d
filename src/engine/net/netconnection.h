@@ -106,6 +106,7 @@ private:
 
    void        send(NetAddress& client, const NetStream& stream, NetPackage::Reliability reliability);
    void        sendAck(NetAddress& client);
+   void        sendRequest(NetAddress& client);
    void        sendAlive(NetAddress& client, float tick);
 
    void           doSend(NetAddress& client, const NetPackage& package);

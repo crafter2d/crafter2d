@@ -35,7 +35,8 @@ public:
    enum PacketType {
       eEvent   = 1,
       eAck     = 2,
-      eAlive   = 3,
+      eRequest = 3,
+      eAlive   = 4,
       eInvalid = -1
    };
 
