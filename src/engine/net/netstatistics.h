@@ -51,8 +51,8 @@ public:
       void                    lastUpdate(uint tick);
 
    // operations
-      void addPackageSend(uint size);
-      void addPackageReceived(uint size);
+      void send(uint size);
+      void received(uint size);
       void update(uint tick);
 
 private:

@@ -23,18 +23,6 @@
 #endif
 
 #include <string.h>
-#ifdef WIN32
-#include <ws2tcpip.h>
-#else
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-
-#define SOCKET_ERROR -1
-#endif
 
 #include "core/smartptr/autoptr.h"
 #include "core/streams/arraystream.h"
@@ -91,7 +79,7 @@ NetConnection::NetConnection(Process& process):
    mProcess(process),
    mClients(),
    mAllocator(),
-   mSock(-1),
+   mSocket(),
    mFlags(0)
 {
 }
@@ -100,41 +88,15 @@ NetConnection::~NetConnection()
 {
 }
 
-/// \fn NetConnection::create(int port)
-/// \brief Creates and binds a socket to port
-/// \param port [Optional] port number to bind to
+/// \fn NetConnection::listen(int port)
+/// \brief Sets up a connection to listen to incomming messages on port 'port'
+/// \param port port number to bind to
 ///
 /// This method creates a socket and optionaly binds it to a port.
-bool NetConnection::create(int port)
+bool NetConnection::listen(int port)
 {
-   mSock = (int)socket(AF_INET, SOCK_DGRAM, 0);
-   if ( mSock == -1 )
+   if ( mSocket.bind(port) )
    {
-      Log::getInstance().error("Could not create socket.");
-      return false;
-   }
-
-   // set the socket to non blocking
-#ifdef WIN32
-   unsigned long non_block = 1;
-   ioctlsocket (mSock, FIONBIO, &non_block);
-#else
-   fcntl (mSock, F_SETFL, O_NONBLOCK );
-#endif
-
-   if (port > 0)
-   {
-      sockaddr_in sa;
-      sa.sin_family = AF_INET;
-      sa.sin_port = htons(port);
-      sa.sin_addr.s_addr = htonl(INADDR_ANY);
-
-      if ( bind (mSock, (sockaddr*)&sa, sizeof(sa)) < 0 )
-      {
-         Log::getInstance().error("Could not bind socket to port %d.", port);
-         return false;
-      }
-
       // server is by default connected when created
       SET_FLAG(mFlags, eConnected);
    }
@@ -147,31 +109,15 @@ bool NetConnection::create(int port)
 /// \returns clientid of remote connection
 int NetConnection::connect(const std::string& serverName, int port)
 {
-   sockaddr_in client;
-   client.sin_family = AF_INET;
-   client.sin_port = 0;
-   client.sin_addr.s_addr = htonl(INADDR_ANY);
-   if ( bind(mSock, (sockaddr*)&client, sizeof client) < 0 )
-   {
-      Log::getInstance().error("Can not bind client socket.");
-      return false;
-   }
+   int clientid = -1;
 
    NetAddress address;
-   address.addr.sin_family = AF_INET;
-	address.addr.sin_port = htons ((u_short)port);
-   address.addr.sin_addr.s_addr = inet_addr(serverName.c_str());
-
-	if (address.addr.sin_addr.s_addr == INADDR_NONE)
+   if ( mSocket.resolve(address, serverName)
+     && mSocket.connect(address, port) )
    {
-      hostent *host_info = gethostbyname(serverName.c_str());
-		if (host_info == NULL)
-			return false;
-		memcpy (&address.addr.sin_addr, host_info->h_addr, host_info->h_length);
-	}
-
-   int clientid = addNewClient(address);
-   SET_FLAG(mFlags, eConnected);
+      clientid = addNewClient(address);
+      SET_FLAG(mFlags, eConnected);
+   }
    
    return clientid;
 }
@@ -184,56 +130,12 @@ void NetConnection::disconnect()
    {
       CLEAR_FLAG(mFlags, eConnected);
 
-      // close the socket connection
-#ifdef WIN32
-      shutdown(mSock, SD_BOTH);
-      closesocket(mSock);
-#else
-      shutdown(mSock, SHUT_RDWR);
-      close(mSock);
-#endif
+      mSocket.close();
 
       // remove the clients
       mClients.clear();
    }
 }
-
-/// \fn NetConnection::getErrorNumber()
-/// \brief Returns the error number when a socket function failed. Currently, this function
-/// is only supported on the Windows platform.
-NetConnection::SocketError NetConnection::getErrorNumber() const
-{
-#ifdef WIN32
-   SocketError result = eUnsupportedError;
-   switch ( WSAGetLastError() )
-   {
-   case WSAECONNRESET:
-      result = eConnReset;
-      break;
-   default:
-      break;
-   }
-   return result;
-#else
-   return -1;
-#endif
-}
-
-void NetConnection::handleError(NetAddress& client, SocketError error)
-{
-   switch ( error )
-   {
-   case eConnReset:
-   case eConnTimeout:
-      // connection closed by the other side/timeout
-      break;
-   default:
-      Log::getInstance().error("NetConnection.handleError : unsupported socket error detected!");
-      break;
-   }
-}
-
-#define JENGINE_AUTODISCONNECT
 
 /// \fn NetConnection::update()
 /// \brief Updates the message queues etc.
@@ -244,11 +146,8 @@ void NetConnection::update()
    Timer& timer = TIMER;
    
    // receive pending messages
-   while (select(true, false))
-   {
-      receive();
-   }
-
+   receive();
+   
    // resend messages if necessary
    int size = mClients.size();
    for( int index = 0; index < size; ++index )
@@ -260,7 +159,6 @@ void NetConnection::update()
       {
          // the client has been time out, remove the bastard
          Log::getInstance().error("Player %d has been timed out!", index);
-         handleError(client, eConnTimeout);
       }
       else
 #endif
@@ -307,10 +205,7 @@ void NetConnection::process(int clientid)
 
       if ( package.getNumber() == client.nextPackageNumber )
       {
-         if ( client.waitAttempt > 0 )
-         {
-            client.waitAttempt = 0;
-         }
+         client.waitAttempt = 0;
 
          processPackage(clientid, package);
       }
@@ -376,7 +271,7 @@ void NetConnection::send(NetAddress& client, const NetStream& stream, NetPackage
    if ( ++client.packageNumber > MAX_PACKAGE_NUMBER )
       client.packageNumber = 0;
 
-   doSend(client, *package);
+   send(client, *package);
 
    // when reliability is requested, save the package in the resend queue
    if ( reliability >= NetPackage::eReliableSequenced )
@@ -391,7 +286,7 @@ void NetConnection::sendAck(NetAddress& client)
 {
    NetPackage ackPackage(NetPackage::eAck, NetPackage::eUnreliable, client.nextPackageNumber-1);
 
-   doSend(client, ackPackage);
+   send(client, ackPackage);
 }
 
 /// \fn NetConnection::sendRequest(NetAddress& client)
@@ -400,7 +295,7 @@ void NetConnection::sendRequest(NetAddress& client)
 {
    NetPackage ackPackage(NetPackage::eRequest, NetPackage::eUnreliable, client.nextPackageNumber);
 
-   doSend(client, ackPackage);
+   send(client, ackPackage);
 }
 
 /// \fn NetConnection::sendAlive(NetAddress& client, float tick)
@@ -410,25 +305,18 @@ void NetConnection::sendAlive(NetAddress& client, float tick)
    if ( IS_SET(mFlags, eKeepAlive) && (tick - client.lastTimeSend >= ALIVE_MSG_INTERVAL) )
    {
       NetPackage package(NetPackage::eAlive, NetPackage::eUnreliable, 0);
-      doSend(client, package);
+      send(client, package);
    }
 }
 
-void NetConnection::doSend(NetAddress& client, const NetPackage& package)
+void NetConnection::send(NetAddress& client, const NetPackage& package)
 {
-   int size = package.getSize();
-   int send = sendto(mSock, (const char*)&package, size, 0, (struct sockaddr*)&(client.addr), NetAddress::SOCKADDR_SIZE);
-   if ( send == SOCKET_ERROR )
+   int bytes = mSocket.send(client, package);
+
+   client.lastTimeSend = TIMER.getTick();
+   if ( client.pstatistics )
    {
-      handleError(client, getErrorNumber());
-   }
-   else
-   {
-      client.lastTimeSend = TIMER.getTick();
-      if ( client.pstatistics )
-      {
-         client.pstatistics->addPackageSend(send);
-      }
+      client.pstatistics->send(bytes);
    }
 }
 
@@ -437,91 +325,65 @@ void NetConnection::doSend(NetAddress& client, const NetPackage& package)
 void NetConnection::receive()
 {
    NetAddress address;
-   PackageHandle package(doReceive(address));
-   if ( package.hasObject() )
+   while ( mSocket.select(true, false) )
    {
-      // see if the connection is already in the list
-      int clientid = findOrCreate(address); 
-      if ( clientid != INVALID_CLIENTID )
+      PackageHandle package(mAllocator);
+      mSocket.receive(address, *package);
+
+      if ( package.hasObject() )
       {
-         NetAddress& client = mClients[clientid];
-         client.lastTimeRecv = Timer::getInstance().getTick();
-
-         if ( client.pstatistics )
+         // see if the connection is already in the list
+         int clientid = findOrCreate(address); 
+         if ( clientid != INVALID_CLIENTID )
          {
-            client.pstatistics->addPackageSend(package->getDataSize());
-         }
+            NetAddress& client = mClients[clientid];
+            client.lastTimeRecv = Timer::getInstance().getTick();
 
-         switch ( package->getType() )
-         {
-            case NetPackage::eAck:
-               {
-                  client.removeAcknowledged(package->getNumber());
-                  break;
-               }
-            case NetPackage::eAlive:
-               {
-                  // don't do anything with the I'm alive message
-                  break;
-               }
-            case NetPackage::eRequest:
-               {
-                  // add the requested message at the front of the queue,
-                  // so it gets checked first
-                  client.orderQueue.addFront(package);
-                  break;
-               }
-            case NetPackage::eEvent:
-               {
-                  NetPackage::Reliability reliability = package->getReliability();
-                  if ( reliability == NetPackage::eReliableSequenced )
+            if ( client.pstatistics )
+            {
+               client.pstatistics->received(package->getSize());
+            }
+
+            switch ( package->getType() )
+            {
+               case NetPackage::eAck:
                   {
-                     // the older packages are no longer valid, can be removed
-                     client.orderQueue.removeOldPackages(package->getNumber());
-                     client.nextPackageNumber = package->getNumber();
+                     client.removeAcknowledged(package->getNumber());
+                     break;
                   }
+               case NetPackage::eAlive:
+                  {
+                     // don't do anything with the I'm alive message
+                     break;
+                  }
+               case NetPackage::eRequest:
+                  {
+                     // add the requested message at the front of the queue,
+                     // so it gets checked first
+                     client.orderQueue.addFront(package);
+                     break;
+                  }
+               case NetPackage::eEvent:
+                  {
+                     NetPackage::Reliability reliability = package->getReliability();
+                     if ( reliability == NetPackage::eReliableSequenced )
+                     {
+                        // the older packages are no longer valid, can be removed
+                        client.orderQueue.removeOldPackages(package->getNumber());
+                        client.nextPackageNumber = package->getNumber();
+                     }
 
-                  client.orderQueue.add(package);
+                     client.orderQueue.add(package);
+                     break;
+                  }
+               case NetPackage::eInvalid:
+               default:
+                  UNREACHABLE("Invalid package type.");
                   break;
-               }
-            case NetPackage::eInvalid:
-            default:
-               UNREACHABLE("Invalid package type.");
-               break;
+            }
          }
       }
    }
-}
-
-PackageHandle NetConnection::doReceive(NetAddress& address)
-{
-   PackageHandle package(mAllocator);
-   int addrLen = NetAddress::SOCKADDR_SIZE;
-
-   int size = recvfrom(mSock, (char*)package.ptr(), NetPackage::MaxPackageSize, 0, (struct sockaddr*)&(address.addr), (socklen_t*)&addrLen);
-   if ( size == SOCKET_ERROR )
-   {
-      handleError(address, getErrorNumber());
-      return PackageHandle();
-   }
-
-   return package;
-}
-
-/// \fn NetConnection::select(bool read, bool write)
-/// \brief Checks if the socket is ready for reading/writting
-bool NetConnection::select(bool read, bool write)
-{
-   fd_set readSet;
-   struct timeval timeVal;
-
-   FD_ZERO(&readSet);
-   FD_SET(mSock, &readSet);
-   timeVal.tv_sec = 0;
-   timeVal.tv_usec = 0;
-
-   // poll (non-blocking) if there is data waiting
-   return (::select(mSock+1, &readSet, NULL, NULL, &timeVal) > 0);
 }
 
 /// \fn NetConnection::addNewClient(const NetAddress& address)

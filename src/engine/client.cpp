@@ -134,15 +134,11 @@ bool Client::destroy()
 bool Client::connect(const char* server, int port)
 {
    // setup connection to the server
-   conn.create();
    mServerId = conn.connect(server, port);
    if ( mServerId == -1 )
    {
       return false;
    }
-
-   conn.setSendAliveMessages(false);
-   conn.setAccepting(false);
 
    mpPlayer = new Player();
 

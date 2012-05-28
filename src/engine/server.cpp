@@ -76,7 +76,7 @@ bool Server::listen(int port)
 {
    if ( !conn.isConnected() )
    {
-      if ( !conn.create(port) )
+      if ( !conn.listen(port) )
       {
          return false;
       }

@@ -43,13 +43,13 @@ NetStatistics::~NetStatistics()
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-void NetStatistics::addPackageSend(uint size)
+void NetStatistics::send(uint size)
 {
    currentItem().addPackageSend();
    currentItem().addBytesSend(size);
 }
 
-void NetStatistics::addPackageReceived(uint size)
+void NetStatistics::received(uint size)
 {
    currentItem().addPackageReceived();
    currentItem().addBytesReceived(size);

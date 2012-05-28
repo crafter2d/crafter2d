@@ -35,6 +35,7 @@
 
 #include "netclients.h"
 #include "netpackage.h"
+#include "netsocket.h"
 #include "sortedpackagelist.h"
 
 class NetAddress;
@@ -52,13 +53,6 @@ const float WAIT_INTERVAL                 = 0.2f;
 /// both Internet and a local network.
 class ENGINE_API NetConnection
 {
-   enum SocketError
-   {
-      eConnReset,
-      eConnTimeout,
-      eUnsupportedError
-   };
-
    typedef ObjectAllocator<NetPackage> PackageAllocator;
 
 public:
@@ -81,7 +75,7 @@ public:
    bool        isConnected();
 
  // operations
-   bool        create(int port=0);
+   bool        listen(int port);
    int         connect(const std::string& serverName, int port);
    void        disconnect();
    void        update();
@@ -91,9 +85,6 @@ public:
    void        send(int clientid, const NetObject& object, NetPackage::Reliability reliability = NetPackage::eReliableOrdered);
 
 private:
- // query   
-   SocketError getErrorNumber() const;
-
  // operations
    int         addNewClient(const NetAddress& address);
    int         findOrCreate(const NetAddress& address);
@@ -101,24 +92,19 @@ private:
    void        process(int clientid);
    void        processPackage(int clientid, NetPackage& package);
 
-   bool        select (bool read, bool write);
    void        receive();
 
    void        send(NetAddress& client, const NetStream& stream, NetPackage::Reliability reliability);
    void        sendAck(NetAddress& client);
    void        sendRequest(NetAddress& client);
    void        sendAlive(NetAddress& client, float tick);
-
-   void           doSend(NetAddress& client, const NetPackage& package);
-   PackageHandle  doReceive(NetAddress& address);
-
-   void        handleError(NetAddress& client, SocketError error);
-
+   void        send(NetAddress& client, const NetPackage& package);
+   
  // members
    Process&          mProcess;
    NetClients        mClients;
    PackageAllocator  mAllocator;
-   int               mSock;
+   NetSocket         mSocket;
    int               mFlags;
 };
 
