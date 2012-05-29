@@ -16,14 +16,17 @@ class TestList : public CxxTest::TestSuite
       int value;
    };
 
-   List<Value> list;
+   List<Value*> mList;
 
 public:
    void setUp();
    void tearDown();
-
+   
+   void testAddFront();
+   void testAddTail();
    void testSize();
-   void testIterator();
+   void testIteratorIncrement();
+   void testIteratorRemove();
    void testClear();
 };
 

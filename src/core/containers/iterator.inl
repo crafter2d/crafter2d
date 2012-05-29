@@ -34,9 +34,3 @@ E& Iterator<E>::operator*()
 {
    return item();
 }
-
-template <class E>
-E* Iterator<E>::ptr()
-{
-   return &item();
-}

@@ -26,55 +26,62 @@ ListIterator<E>::ListIterator()
 }
 
 template <class E>
-ListIterator<E>::ListIterator(List<E>& list):
-   _list(list),
-   _pnode(NULL)
+ListIterator<E>::ListIterator(List<E>& list, ListNode<E>* pnode):
+   mpList(&list),
+   mpNode(pnode)
 {
-   reset();
+}
+
+template <class E>
+ListIterator<E>& ListIterator<E>::operator=(const ListIterator& that)
+{
+   mpList = that.mpList;
+   mpNode = that.mpNode;
+   return *this;
 }
 
 template <class E>
 void ListIterator<E>::operator++()
 {
-   if ( _pnode != NULL )
+   if ( mpNode != NULL )
    {
-      _pnode = _pnode->nextptr();
+      mpNode = mpNode->nextptr();
    }
 }
 
 template <class E>
 void ListIterator<E>::reset()
 {
-   _pnode = _list.getHead();
+   mpNode = mpList->_phead;
 }
 
 template <class E>
 E& ListIterator<E>::item()
 {
-   ASSERT_PTR(_pnode);
-   return _pnode->data();
+   ASSERT_PTR(mpNode);
+   return mpNode->data();
 }
 
 template <class E>
 void* ListIterator<E>::key()
 {
-   return (void*)_pnode;
+   return (void*)mpNode;
 }
 
 template <class E>
 bool ListIterator<E>::isValid() const
 {
-   return _pnode != NULL;
+   return mpNode != NULL;
 }
 
 template <class E>
 void ListIterator<E>::remove()
 {
-   if ( _pnode != NULL )
+   if ( mpNode != NULL )
    {
-      ListNode<E>* ptemp = _pnode->nextptr();
-      _list.remove(*this);
+      ListNode<E>* ptemp = mpNode->nextptr();
+      mpList->remove(*this);
 
-      _pnode = ptemp;
+      mpNode = ptemp;
    }
 }

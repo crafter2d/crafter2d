@@ -30,7 +30,7 @@ CollisionData::CollisionData():
 
 CollisionData::~CollisionData()
 {
-   ListAlgorithms::Flush<CollisionContact*>(mContacts);
+   ListAlgorithms::flush<CollisionContact*>(mContacts);
 }
 
 // maintenance
@@ -42,14 +42,14 @@ void CollisionData::addContact(CollisionContact* pcontact)
 
 CollisionData::ContactIterator CollisionData::getIterator()
 {
-   return ContactIterator(mContacts);
+   return mContacts.getFront();
 }
 
 // resolve preparation
 
 void CollisionData::prepare(float timestep)
 {
-   ContactIterator it(mContacts);
+   ContactIterator it = mContacts.getFront();
    while ( it.isValid() )
    {
       CollisionContact* pcontact = *it;

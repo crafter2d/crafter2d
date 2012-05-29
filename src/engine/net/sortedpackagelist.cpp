@@ -48,7 +48,7 @@ SortedPackageList::SortedPackageList():
 
 void SortedPackageList::removeOldPackages(uint number)
 {
-   ListIterator<PackageHandle> it(*this);
+   ListIterator<PackageHandle> it = getFront();
    while ( it.isValid() )
    {
       PackageHandle& package = *it;

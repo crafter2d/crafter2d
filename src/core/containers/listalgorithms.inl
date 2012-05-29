@@ -21,12 +21,12 @@
 #include "listiterator.h"
 
 template <class E>
-void ListAlgorithms::Flush(List<E>& list)
+void ListAlgorithms::flush(List<E>& list)
 {
-   ListIterator<E> it(list);
+   ListIterator<E> it = list.getFront();
    for ( ; it.isValid(); ++it )
    {
-      E* pelement = &(*it);
+      E pelement = it.item();
       delete pelement;
    }
    list.clear();

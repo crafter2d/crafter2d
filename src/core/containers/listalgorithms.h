@@ -25,7 +25,7 @@
 namespace ListAlgorithms
 {
    template <class E>
-   void Flush(List<E>& list);
+   void flush(List<E>& list);
 }
 
 #include "listalgorithms.inl"

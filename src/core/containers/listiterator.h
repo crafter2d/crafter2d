@@ -31,7 +31,7 @@ template <class E>
 class ListIterator : public Iterator<E>
 {
 public:
-   explicit ListIterator(List<E>& list);
+   ListIterator<E>& operator=(const ListIterator& that);
 
    virtual void     operator++();
 
@@ -43,10 +43,14 @@ public:
    virtual bool  isValid() const;
 
 private:
-   ListIterator();
+   friend class List<E>;
 
-   List<E>&       _list;
-   ListNode<E>*   _pnode;
+ // constructors
+   ListIterator();
+   ListIterator(List<E>& list, ListNode<E>* pnode);
+
+   List<E>*       mpList;
+   ListNode<E>*   mpNode;
 };
 
 #include "listiterator.inl"

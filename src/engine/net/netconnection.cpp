@@ -196,7 +196,7 @@ void NetConnection::process(int clientid)
       }
    }
 
-   ListIterator<PackageHandle> it(client.orderQueue);
+   ListIterator<PackageHandle> it = client.orderQueue.getFront();
    while ( it.isValid() )
    {
       PackageHandle& handle = *it;

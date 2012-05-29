@@ -8,33 +8,53 @@
 
 void TestList::setUp() 
 {
-   list.addTail(new Value(3));
-   list.addTail(new Value(5));
+   Value* pvalue = new Value(3);
+   mList.addTail(pvalue);
+   pvalue = new Value(5);
+   mList.addTail(pvalue);
 }
 
 void TestList::tearDown()
 {
-   ListAlgorithms::Flush<Value>(list);
+   ListAlgorithms::flush<Value*>(mList);
 }
 
 // - Tests
 
-void TestList::testSize()
+void TestList::testAddFront()
 {
-   TS_ASSERT_EQUALS(list.size(), 2);
+   Value* pvalue = new Value(1);
+   mList.addFront(pvalue);
+
+   TS_ASSERT(mList.size() == 3);
+   TS_ASSERT(mList.getFront().item()->value == 1);
 }
 
-void TestList::testIterator()
+void TestList::testAddTail()
 {
-   ListIterator<Value> it(list);
+   Value* pvalue = new Value(7);
+   mList.addFront(pvalue);
 
-   TS_ASSERT_EQUALS(it.item().value, 3);
-   TS_ASSERT_EQUALS((*it).value, 3);
+   TS_ASSERT(mList.size() == 3);
+   TS_ASSERT(mList.getTail().item()->value == 1);
+}
+
+void TestList::testSize()
+{
+   TS_ASSERT_EQUALS(mList.size(), 2);
+}
+
+void TestList::testIteratorIncrement()
+{
+   ListIterator<Value*> it = mList.getFront();
+
+   TS_ASSERT_EQUALS(it.item()->value, 3);
+   TS_ASSERT_EQUALS((*it)->value, 3);
 
    ++it;
 
    TS_ASSERT(it.isValid());
-   TS_ASSERT_EQUALS((*it).value, 5);
+   TS_ASSERT_EQUALS((*it)->value, 5);
 
    ++it;
    TS_ASSERT(!it.isValid());
@@ -43,12 +63,25 @@ void TestList::testIterator()
    TS_ASSERT_THROWS_NOTHING(++it);
 }
 
+void TestList::testIteratorRemove()
+{
+   ListIterator<Value*> it = mList.getFront();
+   ++it;
+
+   TS_ASSERT(it.isValid() && it.item()->value == 5);
+
+   it.remove();
+
+   TS_ASSERT(!it.isValid());
+   TS_ASSERT(mList.size() == 1);
+}
+
 void TestList::testClear()
 {
-   TS_ASSERT_EQUALS(list.isEmpty(), false);
+   TS_ASSERT_EQUALS(mList.isEmpty(), false);
 
-   ListAlgorithms::Flush<Value>(list);
+   ListAlgorithms::flush<Value*>(mList);
 
-   TS_ASSERT(list.isEmpty());
-   TS_ASSERT_EQUALS(list.size(), 0);
+   TS_ASSERT(mList.isEmpty());
+   TS_ASSERT_EQUALS(mList.size(), 0);
 }

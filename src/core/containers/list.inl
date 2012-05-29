@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "core/defines.h"
 
+#include "listiterator.h"
+
 template <class E>
 List<E>::List():
    _phead(NULL),
@@ -32,20 +34,22 @@ List<E>::~List()
 {
 }
 
+// - Query
+
 template <class E>
-ListNode<E>* List<E>::getHead() const
+ListIterator<E> List<E>::getFront()
 {
-   return _phead;
+   return ListIterator<E>(*this, _phead);
 }
 
 template <class E>
-ListNode<E>* List<E>::getTail() const
+ListIterator<E> List<E>::getTail()
 {
-   return _ptail;
+   return ListIterator<E>(*this, _ptail);
 }
 
 template <class E>
-ListNode<E>* List<E>::get(int index)
+ListIterator<E> List<E>::get(int index)
 {
    if ( index < size() )
    {
@@ -54,11 +58,13 @@ ListNode<E>* List<E>::get(int index)
       {
          ppos = ppos->nextptr();
       }
-      return ppos;
+      return ListIterator<E>(*this, ppos);
    }
-   else
-      return NULL;
+   
+   return ListIterator<E>();
 }
+
+// - Maintenance
 
 template <class E>
 void List<E>::addFront(E& element)
@@ -72,6 +78,8 @@ void List<E>::addFront(E& element)
       _phead->prev( new ListNode<E>(element, NULL, _phead) );
       _phead = _phead->prevptr();
    }
+
+   ++_size;
 }
 
 template <class E>

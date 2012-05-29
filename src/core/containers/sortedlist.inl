@@ -37,7 +37,7 @@ INLINE void SortedList<E>::setCompareFnc(CompareFnc pcomparefunction)
 template<class E>
 INLINE bool SortedList<E>::ensureSorted()
 {
-   ListIterator<E> it(*this);
+   ListIterator<E> it = getFront();
    while ( it.isValid() )
    {
       ListIterator<E> prev = it;
@@ -53,7 +53,7 @@ INLINE bool SortedList<E>::ensureSorted()
 template <class E>
 INLINE void SortedList<E>::add(E& element)
 {
-   ListIterator<E> it(*this);
+   ListIterator<E> it = getFront();
    for ( ; it.isValid() && (*_pcomparefnc)(it.item(), element) < 0; ++it );
    
    if ( it.isValid() )

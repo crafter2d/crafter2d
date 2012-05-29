@@ -23,6 +23,8 @@
 #include "iterator.h"
 #include "listnode.h"
 
+template <class E> class ListIterator;
+
 /**
 @author Jeroen Broekhuizen
 
@@ -37,9 +39,9 @@ public:
    virtual ~List();
    
  // Get/set interface
-   ListNode<E>*   getHead() const;
-   ListNode<E>*   getTail() const;
-   ListNode<E>*   get(int index);
+   ListIterator<E> getFront();
+   ListIterator<E> getTail();
+   ListIterator<E> get(int index);
 
  // Query
    int   size() const;
@@ -55,6 +57,7 @@ public:
    void  remove(Iterator<E>& it);
 
 private:
+   friend class ListIterator<E>;
 
    ListNode<E>*   _phead;
    ListNode<E>*   _ptail;
