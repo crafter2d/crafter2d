@@ -39,6 +39,7 @@
 #include "sortedpackagelist.h"
 
 class NetAddress;
+class NetObserver;
 class NetStream;
 class Process;
 
@@ -63,7 +64,7 @@ public:
       eKeepAlive = 4
    };
 
-   explicit    NetConnection(Process& process);
+   explicit    NetConnection(NetObserver& observer);
                ~NetConnection();
 
    static bool initialize();
@@ -101,7 +102,7 @@ private:
    void        send(NetAddress& client, const NetPackage& package);
    
  // members
-   Process&          mProcess;
+   NetObserver&      mObserver;
    NetClients        mClients;
    PackageAllocator  mAllocator;
    NetSocket         mSocket;

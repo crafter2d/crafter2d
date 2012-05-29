@@ -178,19 +178,18 @@ void Server::sendScriptEventToAllClients(const NetStream& stream)
 // -- Event handling
 // ----------------------------------
 
-/// \fn Server::onClientEvent(int client, const NetEvent& event)
+/// \fn Server::onNetEvent(int client, const NetEvent& event)
 /// \brief Handles the incomming events.
-bool Server::onClientEvent(int client, const NetEvent& event)
+void Server::onNetEvent(int client, const NetEvent& event)
 {
    ScopedValue<int> value(&mActiveClient, client, -1);
-   bool result = true;
 
    switch ( event.getType() )
    {
       case connectEvent:
          {
             const ConnectEvent& connectevent = dynamic_cast<const ConnectEvent&>(event);
-            result = handleConnectEvent(connectevent);
+            handleConnectEvent(connectevent);
             break;
          }
       case disconnectEvent:
@@ -264,8 +263,6 @@ bool Server::onClientEvent(int client, const NetEvent& event)
          Log::getInstance().error("Server: Received an unknown message.");
          break;
    }
-
-   return result;
 }
 
 /// \fn Server::addPlayer(int client, Player* pplayer)
@@ -296,7 +293,7 @@ void Server::addPlayer(int clientid, Player* pplayer)
    }
 }
 
-bool Server::handleConnectEvent(const ConnectEvent& event)
+void Server::handleConnectEvent(const ConnectEvent& event)
 {
    // check if the script allows this new player
    mpScript->run("onClientConnecting");
@@ -305,18 +302,17 @@ bool Server::handleConnectEvent(const ConnectEvent& event)
    {
       ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
       conn.send(mActiveClient, event);
-      return false;
    }
+   else
+   {
+      // create the player object
+      Player* pplayer = new Player();
+      addPlayer(mActiveClient, pplayer);
 
-   // create the player object
-   Player* pplayer = new Player();
-   addPlayer(mActiveClient, pplayer);
-
-   // run the onClientConnect script
-   mpScript->addParam("engine.game.Player", pplayer);
-   mpScript->run("onClientConnect");
-
-   return true;
+      // run the onClientConnect script
+      mpScript->addParam("engine.game.Player", pplayer);
+      mpScript->run("onClientConnect");
+   }
 }
 
 void Server::handleViewportEvent(const ViewportEvent& event)

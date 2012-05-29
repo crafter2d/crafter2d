@@ -29,6 +29,8 @@
 #include "content/contentmanager.h"
 #include "net/netconnection.h"
 
+#include "processnetobserver.h"
+
 class ActionMap;
 class DataStream;
 class NetEvent;
@@ -69,25 +71,26 @@ public:
    bool           isInitialized();
    void           setInitialized(bool init);
 
-   bool isActive() const;
-   void setActive(bool active);
+   bool           isActive() const;
+   void           setActive(bool active);
 
  // operations
    void sendScriptEvent(int clientid, const DataStream& stream);
    
   // events
-   virtual bool   onClientEvent(int clientid, const NetEvent& event) = 0;
+   virtual void onNetEvent(int clientid, const NetEvent& event) = 0;
 
 protected:
  // notifications
    virtual void notifyWorldChanged();
 
-   NetConnection     conn;
-   ContentManager    mContentManager;
-   ScriptManager*    mpScriptManager;
-   Script*           mpScript;
-   ActionMap*        actionMap;
-   bool              initialized;
+   ProcessNetObserver   mNetObserver;
+   NetConnection        conn;
+   ContentManager       mContentManager;
+   ScriptManager*       mpScriptManager;
+   Script*              mpScript;
+   ActionMap*           actionMap;
+   bool                 initialized;
 
 private:
 

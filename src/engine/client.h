@@ -99,7 +99,7 @@ public:
    void onMouseEvent(const MouseEvent& event);
 
  // network event callback
-   virtual bool onClientEvent(int client, const NetEvent& event);
+   virtual void onNetEvent(int client, const NetEvent& event);
 
 private:
    friend class ClientMouseEventListener;

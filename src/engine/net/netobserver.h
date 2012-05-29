@@ -17,27 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef NET_SOCKET_EXCEPTION_H
-#define NET_SOCKET_EXCEPTION_H
+#ifndef NET_CALLBACK_H
+#define NET_CALLBACK_H
 
-class NetSocketException
+class NetEvent;
+
+/// @author Jeroen Broekhuizen
+/// \brief Observer interface for the network layer. Use this if you want to
+/// be informed when network events occure.
+class NetObserver
 {
 public:
-   enum Error
-   {
-      eConnReset,
-      eUnsupportedError
-   };
-
-   NetSocketException(Error error, int platformerror);
-
- // get/set
-   Error getError() const;
-   int   getPlatformError() const;
-
-private:
-   Error mError;
-   int   mPlatformError;
+   /// \fnc onEvent(int clientid, const NetEvent& event)
+   /// \brief Called by the connection whenever a new event for a client arrives.
+   virtual void onEvent(int clientid, const NetEvent& event) = 0;
 };
 
-#endif // NET_SOCKET_EXCEPTION_H
+#endif // NET_CALLBACK_H

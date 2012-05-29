@@ -278,7 +278,7 @@ void Client::sendToServer(NetObject& object)
 // - Events
 //---------------------------------------------
 
-bool Client::onClientEvent(int client, const NetEvent& event)
+void Client::onNetEvent(int client, const NetEvent& event)
 {
    switch ( event.getType() )
    {
@@ -336,8 +336,6 @@ bool Client::onClientEvent(int client, const NetEvent& event)
             break;
          }
    }
-
-   return true;
 }
 
 void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)

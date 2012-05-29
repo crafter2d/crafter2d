@@ -60,7 +60,7 @@ public:
    virtual void   update(float delta);
 
  // network events
-   virtual bool onClientEvent(int client, const NetEvent& event);
+   virtual void onNetEvent(int client, const NetEvent& event);
 
 protected:
  // notifications
@@ -69,7 +69,7 @@ protected:
  // networking
    void sendToActiveClient(const NetObject& stream);
 
-   bool handleConnectEvent(const ConnectEvent& event);
+   void handleConnectEvent(const ConnectEvent& event);
    void handleViewportEvent(const ViewportEvent& event);
 
 private:

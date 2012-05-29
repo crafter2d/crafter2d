@@ -31,10 +31,9 @@
 #include "core/log/log.h"
 #include "core/system/timer.h"
 
-#include "engine/process.h"
-
 #include "events/netevent.h"
 #include "netaddress.h"
+#include "netobserver.h"
 #include "netstatistics.h"
 #include "netobjectstream.h"
 #include "netstream.h"
@@ -75,8 +74,8 @@ bool NetConnection::initialize()
  * NetConnection class
  */
 
-NetConnection::NetConnection(Process& process):
-   mProcess(process),
+NetConnection::NetConnection(NetObserver& observer):
+   mObserver(observer),
    mClients(),
    mAllocator(),
    mSocket(),
@@ -229,7 +228,7 @@ void NetConnection::processPackage(int clientid, NetPackage& package)
    stream >> &pobject;
 
    AutoPtr<NetEvent> event(dynamic_cast<NetEvent*>(pobject));
-   mProcess.onClientEvent(clientid, *event);
+   mObserver.onEvent(clientid, *event);
 
    NetAddress& client = mClients[clientid];
    client.nextPackageNumber++;

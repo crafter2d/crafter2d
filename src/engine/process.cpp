@@ -36,7 +36,8 @@
 #include "script_engine.h"
 
 Process::Process():
-   conn(*this),
+   mNetObserver(*this),
+   conn(mNetObserver),
    mContentManager(*this),
    mpScriptManager(NULL),
    mpScript(NULL),
