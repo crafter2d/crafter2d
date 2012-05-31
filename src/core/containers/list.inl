@@ -32,6 +32,7 @@ List<E>::List():
 template <class E>
 List<E>::~List()
 {
+   clear();
 }
 
 // - Query
@@ -98,34 +99,35 @@ void List<E>::addTail(E& element)
    ++_size;
 }
 
+/// \fn List<E>::insert(Iterator<E>& it, E& element)
+/// \brief Inserts element in the list. It is inserted in front of the iterator.
 template <class E>
 void List<E>::insert(Iterator<E>& it, E& element)
 {
-   ListNode<E>* node = static_cast<ListNode<E>*>(it.key());
-   ASSERT_PTR(node);
-   
-   if ( _ptail == NULL )
+   if ( it.isValid() )
    {
-      _phead = _ptail = new ListNode<E>(element, NULL, NULL);
-   }
-   else if ( !node->hasPrev() )
-   {
-      addFront(element);
-   }
-   else if ( !node->hasNext() )
-   {
-      addTail(element);
-   }
-   else
-   {
-      ASSERT(node->hasPrev() && node->hasNext());
+      ListNode<E>* pnode = static_cast<ListNode<E>*>(it.key());
+      ASSERT_PTR(pnode);
+
+      if ( _phead == NULL )
+      {
+         _phead = _ptail = new ListNode<E>(element, NULL, NULL);
+      }
+      else if ( !pnode->hasPrev() )
+      {
+         addFront(element);
+      }
+      else
+      {
+         ASSERT(pnode->hasPrev());
       
-      ListNode<E>* pnode = new ListNode<E>(element, node->prevptr(), node->nextptr());
-      node->prevptr()->next(pnode);
-      node->nextptr()->prev(pnode);
-   }
+         ListNode<E>* pnewnode = new ListNode<E>(element, pnode->prevptr(), pnode);
+         pnode->prevptr()->next(pnewnode);
+         pnode->prev(pnewnode);
+      }
    
-   ++_size;
+      ++_size;
+   }
 }
 
 template <class E>
@@ -154,10 +156,12 @@ void List<E>::remove(Iterator<E>& it)
    else if ( pnode == _phead )
    {
       _phead = _phead->nextptr();
+      _phead->prev(NULL);
    }
    else if ( pnode == _ptail )
    {
       _ptail = _ptail->prevptr();
+      _ptail->next(NULL);
    }
 
    delete pnode;
