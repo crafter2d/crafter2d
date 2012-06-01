@@ -49,6 +49,7 @@ public:
    void removeAcknowledged(uint number);
 
  // members
+   int         index;
    sockaddr_in addr;
 
    uint  packageNumber;

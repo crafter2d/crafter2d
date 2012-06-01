@@ -111,8 +111,6 @@ bool Client::create(const VirtualObjectReference& self)
 
 bool Client::destroy()
 {
-   conn.setAccepting(false);
-
    mSoundManager.destroy();
 
    mpWindow->destroy();

@@ -41,7 +41,7 @@ class NetStream;
 class ENGINE_API Server: public Process
 {
 public:
-   typedef std::map<uint, Player*> ClientMap;
+   typedef std::map<int, Player*> ClientMap;
 
                   Server();
    virtual        ~Server();
@@ -49,7 +49,6 @@ public:
    virtual bool   destroy();
 
    bool           listen(int port);
-   void           shutdown();
 
    void           addPlayer(int client, Player* player);
 

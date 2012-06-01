@@ -78,7 +78,8 @@ public:
  // operations
    bool        listen(int port);
    int         connect(const std::string& serverName, int port);
-   void        disconnect();
+   void        shutdown();
+   void        disconnect(int client);
    void        update();
 
  // sending
@@ -87,11 +88,11 @@ public:
 
 private:
  // operations
-   int         addNewClient(const NetAddress& address);
-   int         findOrCreate(const NetAddress& address);
+   NetAddress& addNewClient(const NetAddress& address);
+   NetAddress& findOrCreate(const NetAddress& address);
 
-   void        process(int clientid);
-   void        processPackage(int clientid, NetPackage& package);
+   void        process(NetAddress& client);
+   void        processPackage(NetAddress& client, NetPackage& package);
 
    void        receive();
 

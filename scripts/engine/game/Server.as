@@ -28,6 +28,11 @@ abstract class Server extends Process
 		addPlayer(player);
 	}
 	
+	/// called by the engine when the server shuts down
+	public void onShutdown()
+	{
+	}
+	
 	/// sends a message to the given client.
 	/// message : the message that will be transmitted
 	/// clientid: the id of the client

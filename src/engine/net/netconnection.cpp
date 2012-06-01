@@ -37,6 +37,7 @@
 #include "netstatistics.h"
 #include "netobjectstream.h"
 #include "netstream.h"
+#include "netsocketexception.h"
 
 /// \fn NetConnection::initialize()
 /// \brief On Windows platforms the Winsock 2 library must be initialized before
@@ -114,16 +115,22 @@ int NetConnection::connect(const std::string& serverName, int port)
    if ( mSocket.resolve(address, serverName)
      && mSocket.connect(address, port) )
    {
-      clientid = addNewClient(address);
+      NetAddress& client = addNewClient(address);
       SET_FLAG(mFlags, eConnected);
+      clientid = client.index;
    }
    
    return clientid;
 }
 
-/// \fn NetConnection::disconnect()
-/// \brief Closes the connection to all connected clients.
-void NetConnection::disconnect()
+/// \fn NetConnection::disconnect(int client)
+/// \brief Closes the connection to the given client.
+void NetConnection::disconnect(int client)
+{
+   mClients.remove(client);
+}
+
+void NetConnection::shutdown()
 {
    if ( IS_SET(mFlags, eConnected) )
    {
@@ -148,10 +155,10 @@ void NetConnection::update()
    receive();
    
    // resend messages if necessary
-   int size = mClients.size();
-   for( int index = 0; index < size; ++index )
+   mClients.rewind();
+   while ( mClients.hasNext() )
    {
-      NetAddress& client = mClients[index];
+      NetAddress& client = mClients.getNext();
 
 #ifdef JENGINE_CONNTIMEOUT
       if ((timer.getTick() - client.lastTimeRecv) > MAX_TIME_BETWEEN_RECV)
@@ -162,7 +169,7 @@ void NetConnection::update()
       else
 #endif
       {
-         process(index);
+         process(client);
 
          sendAck(client);
          sendAlive(client, timer.getTick());
@@ -177,9 +184,8 @@ void NetConnection::update()
 
 /// \fn NetConnection::process(int clientid)
 /// \brief Process all pending messages.
-void NetConnection::process(int clientid)
+void NetConnection::process(NetAddress& client)
 {
-   NetAddress& client = mClients[clientid];
    if ( client.waitAttempt > 0 )
    {
       client.waitTimer -= TIMER.getTick();
@@ -206,7 +212,7 @@ void NetConnection::process(int clientid)
       {
          client.waitAttempt = 0;
 
-         processPackage(clientid, package);
+         processPackage(client, package);
       }
       else if ( package.getNumber() > client.nextPackageNumber )
       {
@@ -220,7 +226,7 @@ void NetConnection::process(int clientid)
    }
 }
 
-void NetConnection::processPackage(int clientid, NetPackage& package)
+void NetConnection::processPackage(NetAddress& client, NetPackage& package)
 {
    NetObject* pobject = NULL;
    ArrayStream arraystream(package.getData(), package.getDataSize());
@@ -228,9 +234,8 @@ void NetConnection::processPackage(int clientid, NetPackage& package)
    stream >> &pobject;
 
    AutoPtr<NetEvent> event(dynamic_cast<NetEvent*>(pobject));
-   mObserver.onEvent(clientid, *event);
+   mObserver.onEvent(client.index, *event);
 
-   NetAddress& client = mClients[clientid];
    client.nextPackageNumber++;
 }
 
@@ -270,12 +275,26 @@ void NetConnection::send(NetAddress& client, const NetStream& stream, NetPackage
    if ( ++client.packageNumber > MAX_PACKAGE_NUMBER )
       client.packageNumber = 0;
 
-   send(client, *package);
-
-   // when reliability is requested, save the package in the resend queue
-   if ( reliability >= NetPackage::eReliableSequenced )
+   try
    {
-      client.resendQueue.push_back(package);
+      send(client, *package);
+
+      // when reliability is requested, save the package in the resend queue
+      if ( reliability >= NetPackage::eReliableSequenced )
+      {
+         client.resendQueue.push_back(package);
+      }
+   }
+   catch ( NetSocketException* pexception )
+   {
+      switch ( pexception->getError() )
+      {
+         case NetSocketException::eConnReset:
+            {
+               mClients.remove(client.index);
+            }
+            break;
+      }
    }
 }
 
@@ -326,60 +345,74 @@ void NetConnection::receive()
    NetAddress address;
    while ( mSocket.select(true, false) )
    {
+      int bytes = -1;
       PackageHandle package(mAllocator);
-      mSocket.receive(address, *package);
 
-      if ( package.hasObject() )
+      try
       {
-         // see if the connection is already in the list
-         int clientid = findOrCreate(address); 
-         if ( clientid != INVALID_CLIENTID )
+         bytes = mSocket.receive(address, *package);
+         ASSERT(package.hasObject());
+
+         NetAddress& client = findOrCreate(address); 
+         client.lastTimeRecv = Timer::getInstance().getTick();
+
+         if ( client.pstatistics )
          {
-            NetAddress& client = mClients[clientid];
-            client.lastTimeRecv = Timer::getInstance().getTick();
+            client.pstatistics->received(bytes);
+         }
 
-            if ( client.pstatistics )
-            {
-               client.pstatistics->received(package->getSize());
-            }
-
-            switch ( package->getType() )
-            {
-               case NetPackage::eAck:
-                  {
-                     client.removeAcknowledged(package->getNumber());
-                     break;
-                  }
-               case NetPackage::eAlive:
-                  {
-                     // don't do anything with the I'm alive message
-                     break;
-                  }
-               case NetPackage::eRequest:
-                  {
-                     // add the requested message at the front of the queue,
-                     // so it gets checked first
-                     client.orderQueue.addFront(package);
-                     break;
-                  }
-               case NetPackage::eEvent:
-                  {
-                     NetPackage::Reliability reliability = package->getReliability();
-                     if ( reliability == NetPackage::eReliableSequenced )
-                     {
-                        // the older packages are no longer valid, can be removed
-                        client.orderQueue.removeOldPackages(package->getNumber());
-                        client.nextPackageNumber = package->getNumber();
-                     }
-
-                     client.orderQueue.add(package);
-                     break;
-                  }
-               case NetPackage::eInvalid:
-               default:
-                  UNREACHABLE("Invalid package type.");
+         switch ( package->getType() )
+         {
+            case NetPackage::eAck:
+               {
+                  client.removeAcknowledged(package->getNumber());
                   break;
-            }
+               }
+            case NetPackage::eAlive:
+               {
+                  // don't do anything with the I'm alive message
+                  break;
+               }
+            case NetPackage::eRequest:
+               {
+                  // add the requested message at the front of the queue,
+                  // so it gets checked first
+                  client.orderQueue.addFront(package);
+                  break;
+               }
+            case NetPackage::eEvent:
+               {
+                  NetPackage::Reliability reliability = package->getReliability();
+                  if ( reliability == NetPackage::eReliableSequenced )
+                  {
+                     // the older packages are no longer valid, can be removed
+                     client.orderQueue.removeOldPackages(package->getNumber());
+                     client.nextPackageNumber = package->getNumber();
+                  }
+
+                  client.orderQueue.add(package);
+                  break;
+               }
+            case NetPackage::eInvalid:
+            default:
+               UNREACHABLE("Invalid package type.");
+               break;
+         }
+      }
+      catch ( NetSocketException* pexception )
+      {
+         switch ( pexception->getError() )
+         {
+            case NetSocketException::eConnReset:
+               {
+                  NetAddress *pclient = mClients.find(address); 
+                  if ( pclient != NULL )
+                  {
+                     mClients.remove(pclient->index);
+                  }
+                  // else nothing to close
+                  break;
+               }
          }
       }
    }
@@ -388,28 +421,30 @@ void NetConnection::receive()
 /// \fn NetConnection::addNewClient(const NetAddress& address)
 /// \brief Add new client to the client list.
 /// \param address Address of the new client thats connected
-/// \returns the clientid of the new connection
-int NetConnection::addNewClient(const NetAddress& address)
+/// \returns the address of the new connection
+NetAddress& NetConnection::addNewClient(const NetAddress& address)
 {
    NetAddress* paddr = new NetAddress(address.addr);
    paddr->lastTimeRecv = Timer::getInstance().getTick();
    // paddr->pstatistics = new NetStatistics();
-
+   
    return mClients.add(paddr);
 }
 
 /// \fn NetConnection::findOrCreate(const NetAddress& client)
 /// \brief Finds or creates an address based on the given client info
 /// \return the clientid of the client or INVALID_CLIENTID when not found (e.g. when not accepting)
-int NetConnection::findOrCreate(const NetAddress& client)
+NetAddress& NetConnection::findOrCreate(const NetAddress& client)
 {
-   int clientid = mClients.indexOf(client);
-   if ( clientid == INVALID_CLIENTID )
+   NetAddress* pclient = mClients.find(client);
+   if ( pclient == NULL )
    {
       if ( IS_SET(mFlags, eAccept) )
       {
-         clientid = addNewClient(client);
+         pclient = &addNewClient(client);
       }
    }
-   return clientid;
+   
+   ASSERT_PTR(pclient);
+   return *pclient;
 }

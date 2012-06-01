@@ -4,8 +4,8 @@
 #include "core/commandline/commandline.h"
 #include "core/commandline/commandlineexception.h"
 
-static int   sArgc = 4;
-static char* sArgv[] = { "unittest.exe", "doit", "argument=value", "argument2 = anothervalue" };
+static int   sArgc = 6;
+static char* sArgv[] = { "unittest.exe", "doit", "argument=value", "argument2", "=", "anothervalue" };
 
 TestCommandLine::TestCommandLine():
    mCmdLine(sArgc, sArgv)

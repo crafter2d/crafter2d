@@ -65,8 +65,12 @@ bool Server::destroy()
 {
    if (conn.isConnected())
    {
+      conn.setAccepting(false);
+
       ServerDownEvent event;
       sendToAllClients(event);
+
+      mpScript->run("onShutdown");
    }
    
    return Process::destroy();
@@ -85,19 +89,6 @@ bool Server::listen(int port)
    return true;
 }
 
-void Server::shutdown()
-{
-   if ( conn.isConnected() )
-   {
-      // prevent clients from connecting
-      conn.setAccepting(false);
-      conn.disconnect();
-
-      // call the shutdown function
-      mpScript->run("onShutdown");
-   }
-}
-
 /// \fn Server::update (Uint32 tick)
 /// \brief Main update routine of the server process.
 ///
@@ -105,9 +96,6 @@ void Server::shutdown()
 /// At the end it handles the incomming events.
 void Server::update(float delta)
 {
-   // update the connection
-   if (!conn.isConnected())
-      return;
    conn.update();
 
    // update the graph
@@ -204,6 +192,8 @@ void Server::onNetEvent(int client, const NetEvent& event)
             // remove the player from the client list
             ClientMap::iterator it = clients.find(client);
             clients.erase(it);
+
+            conn.disconnect(client);
 
             // fill in the event and put it in the stream
             DisconnectEvent event(client);

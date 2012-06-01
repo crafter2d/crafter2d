@@ -95,7 +95,7 @@ bool Process::create(const VirtualObjectReference& self)
 
 bool Process::destroy()
 {
-   conn.disconnect();
+   conn.shutdown();
    
    return true;
 }

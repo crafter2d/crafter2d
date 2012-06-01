@@ -32,12 +32,12 @@ public:
    NetSocketException(Error error, int platformerror);
 
  // get/set
-   Error getError() const;
-   int   getPlatformError() const;
+   Error             getError() const;
+   int               getPlatformError() const;
 
 private:
-   Error mError;
-   int   mPlatformError;
+   Error       mError;
+   int         mPlatformError;
 };
 
 #endif // NET_SOCKET_EXCEPTION_H
