@@ -103,6 +103,12 @@ abstract class Client extends Process
 	{
 	}
 	
+	/// called by the engine when a new world has been loaded
+	/// after a server notification.
+	public void onWorldChanged(World world)
+	{
+	}
+	
 	// - input handling
 	
 	private void onKeyEvent(int key, boolean pressed)

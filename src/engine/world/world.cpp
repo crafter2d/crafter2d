@@ -245,6 +245,8 @@ void World::draw () const
 /// \fn World::scroll()
 /// \brief Scrolls the layers based on the follow mode given by the application
 
+#include <SDL/SDL.h>
+
 // Move to the viewport!
 void World::scroll ()
 {
@@ -275,18 +277,18 @@ void World::scroll ()
    {
       int x = 0, y = 0;
       int width =800, height=600;
-      // SDL_GetMouseState(&x, &y); <-- get it from the input of the client
+      SDL_GetMouseState(&x, &y); // <-- get it from the input of the client
 
       // get the window bounds
       if (x < followBorderWidth)
-         xScroll = -1;
+         xScroll = -1 * (followBorderWidth - x);
       else if (x > width - followBorderWidth)
-         xScroll = 1;
+         xScroll = 1 * (followBorderWidth - (width-x));
 
       if (y < followBorderWidth)
-         yScroll = -1;
+         yScroll = -1 * (followBorderWidth - y);
       else if (y > height - followBorderWidth)
-         yScroll = 1;
+         yScroll = 1 * (followBorderWidth - (height-y));
    }
 
    // scroll the layer

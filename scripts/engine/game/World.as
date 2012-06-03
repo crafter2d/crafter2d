@@ -44,5 +44,6 @@ class World
 	public native Actor getFollowActor();
 	public native void setFollowActor(Actor actor);
 	public native void setFollowBorders(int left, int right, int top, int bottom);
+	public native void setFollowBorderWidth(int width);
 	public native Box2DSimulator getSimulator();
 }

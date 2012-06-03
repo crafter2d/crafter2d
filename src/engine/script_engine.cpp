@@ -657,6 +657,15 @@ void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& acces
    world.setFollowBorders(left, right, top, bottom);
 }
 
+void World_setFollowBorderWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(World, world);
+
+   int width = accessor.getInt(1);
+   
+   world.setFollowBorderWidth(width);
+}
+
 void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(World, world);
@@ -1205,6 +1214,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("World_getFollowActor", World_getFollowActor);
    registrator.addCallback("World_setFollowActor", World_setFollowActor);
    registrator.addCallback("World_setFollowBorders", World_setFollowBorders);
+   registrator.addCallback("World_setFollowBorderWidth", World_setFollowBorderWidth);
    registrator.addCallback("World_getSimulator", World_getSimulator);
    registrator.addCallback("World_findEntity", World_findEntity);
 

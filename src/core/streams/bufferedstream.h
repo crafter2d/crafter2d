@@ -35,12 +35,11 @@ public:
    virtual const char* getData() const;
 
  // operations
-   void reserve(int size);
+           void reserve(int size);
+   virtual void clear();
 
 protected:
  // overloads
-   virtual void reset();
-
    virtual void readBytes(void* pbuffer, int amount);
    virtual char readByte();
 

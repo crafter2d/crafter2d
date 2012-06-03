@@ -396,6 +396,7 @@ void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
    mpPlayer->initialize(*pworld);
 
    // run the onWorldChanged script
+   mpScript->addParam("engine.game.World", pworld);
    mpScript->run("onWorldChanged");
 }
 

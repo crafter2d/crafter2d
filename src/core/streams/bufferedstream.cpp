@@ -97,9 +97,10 @@ const char* BufferedStream::getData() const
 
 // - Operations
 
-void BufferedStream::reset()
+void BufferedStream::clear()
 {
    mPos = 0;
+   mLength = 0;
 }
 
 // - Reading

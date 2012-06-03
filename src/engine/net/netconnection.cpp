@@ -206,23 +206,24 @@ void NetConnection::process(NetAddress& client)
    while ( it.isValid() )
    {
       PackageHandle& handle = *it;
-      NetPackage& package = *handle;
 
-      if ( package.getNumber() == client.nextPackageNumber )
+      if ( handle->getNumber() == client.nextPackageNumber )
       {
          client.waitAttempt = 0;
 
-         processPackage(client, package);
+         // first remove it from the pile
+         PackageHandle package(handle);
+         it.remove();
+
+         processPackage(client, *package);
       }
-      else if ( package.getNumber() > client.nextPackageNumber )
+      else if ( handle->getNumber() > client.nextPackageNumber )
       {
          // we miss a package, start the wait timer
          client.waitAttempt++;
          client.waitTimer = client.waitAttempt * client.waitAttempt;
          break;
       }
-
-      it.remove();
    }
 }
 
