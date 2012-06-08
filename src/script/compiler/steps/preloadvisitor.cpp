@@ -135,11 +135,8 @@ void PreloadVisitor::visit(ASTFunctionArgument& ast)
       // complain!
    }
 
-   if ( var.hasExpression() )
-   {
-      var.getExpression().accept(*this);
-   }
-
+   checkVarInit(var, false);
+   
    ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
 }
@@ -153,10 +150,7 @@ void PreloadVisitor::visit(ASTField& ast)
       // complain!
    }
 
-   if ( var.hasExpression() )
-   {
-      var.getExpression().accept(*this);
-   }
+   checkVarInit(var, true);
 }
 
 void PreloadVisitor::visit(ASTBlock& ast)
@@ -175,10 +169,7 @@ void PreloadVisitor::visit(ASTLocalVariable& ast)
       // complain
    }
 
-   if ( var.hasExpression() )
-   {
-      var.getExpression().accept(*this);
-   }
+   checkVarInit(var, true);
 
    ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
@@ -231,10 +222,7 @@ void PreloadVisitor::visit(ASTForeach& ast)
       // complain
    }
 
-   if ( var.hasExpression() )
-   {
-      var.getExpression().accept(*this);
-   }
+   checkVarInit(var, false);
 
    ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
@@ -498,6 +486,34 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
             pcurrent->setKind(ASTAccess::eStatic);
             pcurrent->setStaticType(ptype);
          }
+      }
+   }
+}
+
+void PreloadVisitor::checkVarInit(ASTVariable& var, bool allowarray)
+{
+   if ( var.hasInit() )
+   {
+      ASTVariableInit& varinit = var.getInit();
+
+      if ( varinit.hasArrayInit() )
+      {
+         if ( !allowarray )
+         {
+            mContext.getLog().error("It's not allowed to initialize variable " + var.getName() + " with an array.");
+         }
+         else
+         {
+            varinit.getArrayInit().accept(*this);
+         }
+      }
+      else if ( varinit.hasExpression() )
+      {
+         varinit.getExpression().accept(*this);
+      }
+      else
+      {
+         mContext.getLog().warning("Compiler warning: variable " + var.getName() + " has an empty initializer object.");
       }
    }
 }

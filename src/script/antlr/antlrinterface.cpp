@@ -197,6 +197,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
       case ANNOTATIONS:       return handleAnnotations(node);
       case BLOCK:             return handleBlock(node);
       case LOCALVARDECL:      return handleLocalVarDecl(node);
+      case ARRAYINIT:         return handleArrayInit(node);
       case IF:                return handleIf(node);
       case FOR:               return handleFor(node);
       case FOREACH:           return handleForeach(node);
@@ -477,13 +478,30 @@ ASTMember* AntlrParser::handleVarDecl(const AntlrNode& node)
    if ( node.getChildCount() > 3 )
    {
       // skip the '='
-
       AntlrNode initnode = node.getChild(4);
-      ASTExpression* pexpression = handleExpression(initnode);
-      pvariable->setExpression(pexpression);
+      handleVarInit(initnode, *pvariable);      
    }
 
    return new ASTField(pvariable);
+}
+
+void AntlrParser::handleVarInit(const AntlrNode& node, ASTVariable& variable)
+{
+   ASTVariableInit* pinit = new ASTVariableInit();
+
+   if ( node.getType() == ARRAYINIT )
+   {
+      ASTArrayInit* parrayinit = handleArrayInit(node);
+      pinit->setArrayInit(parrayinit);
+   }
+   else
+   {
+      ASSERT(node.getType() == EXPRESSION);
+      ASTExpression* pexpression = handleExpression(node);
+      pinit->setExpression(pexpression);
+   }
+      
+   variable.setInit(pinit);
 }
 
 void AntlrParser::handleFuncArguments(const AntlrNode& node, ASTFunction& function)
@@ -573,10 +591,7 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
       if ( type != SEP )
       {
          AntlrNode exprnode = node.getChild(4);
-         ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(exprnode));
-         ASSERT_PTR(pexpression);
-
-         pvariable->setExpression(pexpression);
+         handleVarInit(exprnode, *pvariable);
       }
 
       return new ASTField(pvariable);
@@ -617,10 +632,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
       if ( type != SEP )
       {
          AntlrNode exprnode = node.getChild(3);
-         ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(exprnode));
-         ASSERT_PTR(pexpression);
-
-         pvariable->setExpression(pexpression);
+         handleVarInit(exprnode, *pvariable);
       }
 
       return new ASTField(pvariable);
@@ -714,6 +726,12 @@ ASTAnnotations* AntlrParser::handleAnnotations(const AntlrNode& node)
    return pannotations;
 }
 
+ASTArrayInit* AntlrParser::handleArrayInit(const AntlrNode& node)
+{
+   ASTArrayInit* parrayinit = new ASTArrayInit();
+   return parrayinit;
+}
+
 ASTBlock* AntlrParser::handleBlock(const AntlrNode& node)
 {
    ASSERT(node.getType() == BLOCK);
@@ -748,9 +766,7 @@ ASTLocalVariable* AntlrParser::handleLocalVarDecl(const AntlrNode& node)
    if ( count > 2 )
    {
       AntlrNode initnode = node.getChild(2);
-      ASTExpression* pinit = handleExpression(initnode);
-
-      pvariable->setExpression(pinit);
+      handleVarInit(initnode, *pvariable);
    }
 
    return new ASTLocalVariable(pvariable);
@@ -834,9 +850,7 @@ ASTForeach* AntlrParser::handleForeach(const AntlrNode& node)
    pvariable->setName(namenode.toString());
 
    AntlrNode exprnode = node.getChild(2);
-   ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(exprnode));
-   ASSERT_PTR(pexpression);
-   pvariable->setExpression(pexpression);
+   handleVarInit(exprnode, *pvariable);
 
    AntlrNode statement = node.getChild(3);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(statement));

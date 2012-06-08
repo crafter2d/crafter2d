@@ -26,6 +26,7 @@
 #include <vector>
 
 class ASTClass;
+class ASTVariable;
 class ASTType;
 class CompileContext;
 
@@ -76,6 +77,7 @@ private:
  // operations
    void createDefaultConstructor(ASTClass& ast);
    void resolveType(ASTType& type);
+   void checkVarInit(ASTVariable& var);
 
    CompileContext&  mContext;
    ClassResolver    mResolver;

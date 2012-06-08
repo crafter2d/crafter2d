@@ -21,6 +21,8 @@ public:
    virtual void visit(ASTFunction& ast);
    virtual void visit(ASTFunctionArgument& ast);
    virtual void visit(ASTBlock& ast);
+   virtual void visit(ASTField& ast);
+   virtual void visit(ASTLocalVariable& ast);
    virtual void visit(ASTExpressionStatement& ast);
    virtual void visit(ASTIf& ast);
    virtual void visit(ASTFor& ast);
@@ -50,6 +52,8 @@ private:
 
    void validateClass(const ASTClass& aclass);
    void validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right);
+
+   void checkVarInit(ASTVariable& var);
 
    CompileContext&      mContext;
    ASTClass*            mpClass;

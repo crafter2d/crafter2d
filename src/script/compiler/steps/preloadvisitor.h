@@ -26,6 +26,7 @@
 #include "script/compiler/classresolver.h"
 #include "script/scope/scopestack.h"
 
+class ASTVariable;
 class ASTType;
 class CompileContext;
 
@@ -77,6 +78,7 @@ private:
    bool tryLoad(ASTType& type);
 
  // operations
+   void checkVarInit(ASTVariable& var, bool allowarray);
    void checkStaticAccess(ASTUnary& unary);
 
    CompileContext&   mContext;

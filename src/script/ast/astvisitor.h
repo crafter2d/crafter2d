@@ -13,6 +13,7 @@ class ASTFunctionArgument;
 class ASTLocalVariable;
 class ASTAnnotations;
 class ASTBlock;
+class ASTArrayInit;
 class ASTIf;
 class ASTFor;
 class ASTForeach;
@@ -61,6 +62,7 @@ public:
    VISIT(ASTFunctionArgument);
    VISIT(ASTLocalVariable);
    VISIT(ASTAnnotations);
+   VISIT(ASTArrayInit);
    VISIT(ASTBlock);
    VISIT(ASTIf);
    VISIT(ASTFor);

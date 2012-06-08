@@ -109,9 +109,10 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
 
 void SymbolCheckVisitor::visit(ASTFunctionArgument& ast)
 {
-   // check here for initialization expression (should be same type of the argument definition)
+   ASTVariable& var = ast.getVariable();
+   checkVarInit(var);
 
-   ScopeVariable* pvariable = ScopeVariable::fromVariable(ast.getVariable());
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
 }
 
@@ -119,16 +120,7 @@ void SymbolCheckVisitor::visit(ASTField& ast)
 {
    ASTVariable& var = ast.getVariable();
    checkUnknown(var.getType());
-
-   if ( var.hasExpression() )
-   {
-      var.getExpression().accept(*this);
-
-      if ( !var.getType().equals(mCurrentType) )
-      {
-         mContext.getLog().error("Initialization expression is of wrong type. Expected " + var.getType().toString());
-      }
-   }
+   checkVarInit(var);
 }
 
 void SymbolCheckVisitor::visit(ASTBlock& ast)
@@ -142,16 +134,7 @@ void SymbolCheckVisitor::visit(ASTLocalVariable& ast)
 {
    ASTVariable& var = ast.getVariable();
    checkUnknown(var.getType());
-
-   if ( var.hasExpression() )
-   {
-      var.getExpression().accept(*this);
-
-      if ( !mCurrentType.greater(var.getType()) )
-      {
-         mContext.getLog().error("Assigning wrong type to variable " + var.getName() + " was expecting " + var.getType().toString() + " and got " + mCurrentType.toString());
-      }
-   }
+   checkVarInit(var);
 
    ScopeVariable* pvariable = ScopeVariable::fromVariable(ast.getVariable());
    mScopeStack.add(pvariable);
@@ -214,9 +197,10 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
    ScopedScope scope(mScopeStack);
 
    ASTVariable& var = ast.getVariable();
-   if ( var.hasExpression() )
+   if ( var.hasInit() )
    {
-      var.getExpression().accept(*this);
+      ASTVariableInit& varinit = var.getInit();
+      varinit.getExpression().accept(*this);
 
       const ASTClass& iterableclass = mContext.resolveClass("engine.collections.Iterable");
 
@@ -224,6 +208,10 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
       {
          mContext.getLog().error("Container must be iterable.");
       }
+   }
+   else
+   {
+      mContext.getLog().error("Compiler error: missing required initializer for foreach variable " + var.getName());
    }
 
    ScopeVariable* pvariable = ScopeVariable::fromVariable(ast.getVariable());
@@ -887,6 +875,28 @@ bool SymbolCheckVisitor::isVariable(const ASTNode& node) const
 }
 
 // - Operations
+
+void SymbolCheckVisitor::checkVarInit(const ASTVariable& var)
+{
+   if ( var.hasInit() )
+   {
+      const ASTVariableInit& varinit = var.getInit();
+
+      if ( varinit.hasExpression() )
+      {
+         varinit.getExpression().accept(*this);
+      }
+      else
+      {
+         varinit.getArrayInit().accept(*this);
+      }
+
+      if ( !mCurrentType.greater(var.getType()) )
+      {
+         mContext.getLog().error("Assigning wrong type to variable " + var.getName() + " was expecting " + var.getType().toString() + " and got " + mCurrentType.toString());
+      }
+   }
+}
 
 void SymbolCheckVisitor::checkReturn(const ASTFunction& function)
 {

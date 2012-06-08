@@ -116,11 +116,34 @@ void OOCheckVisitor::visit(ASTFunctionArgument& ast)
 
    ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
+
+   mpVariable = &var;
    
-   if ( var.hasExpression() )
-   {
-      var.getExpression().accept(*this);
-   }
+   checkVarInit(var);
+}
+
+void OOCheckVisitor::visit(ASTField& ast)
+{
+   ASTVariable& var = ast.getVariable();
+
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
+   mScopeStack.add(pvariable);
+
+   mpVariable = &var;
+   
+   checkVarInit(var);
+}
+
+void OOCheckVisitor::visit(ASTLocalVariable& ast)
+{
+   ASTVariable& var = ast.getVariable();
+
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
+   mScopeStack.add(pvariable);
+
+   mpVariable = &var;
+   
+   checkVarInit(var);
 }
 
 void OOCheckVisitor::visit(ASTBlock& ast)
@@ -173,10 +196,7 @@ void OOCheckVisitor::visit(ASTForeach& ast)
    ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
    
-   if ( var.hasExpression() )
-   {
-      var.getExpression().accept(*this);
-   }
+   checkVarInit(var);
 
    ast.getBody().accept(*this);
 }
@@ -229,7 +249,7 @@ void OOCheckVisitor::visit(ASTExpression& ast)
       // ensure the variable is not final
       if ( mpVariable != NULL && mpVariable->getModifiers().isFinal() )
       {
-         mContext.getLog().error("Left hand side of expression is final.");
+         mContext.getLog().error("Can not assign a value to final variable " + mpVariable->getName());
       }
 
       mpCurrentType = NULL;
@@ -447,5 +467,22 @@ void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const 
    if ( error )
    {
       mContext.getLog().error("Invalid concatenation with null operator! Only == and != are supported.");
+   }
+}
+
+void OOCheckVisitor::checkVarInit(ASTVariable& var)
+{
+   if ( var.hasInit() )
+   {
+      ASTVariableInit& varinit = var.getInit();
+
+      if ( varinit.hasArrayInit() )
+      {
+         varinit.getArrayInit().accept(*this);
+      }
+      else if ( varinit.hasExpression() )
+      {
+         varinit.getExpression().accept(*this);
+      }
    }
 }

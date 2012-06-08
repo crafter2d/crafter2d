@@ -32,6 +32,7 @@ class ASTClass;
 class ASTClassTable;
 class ASTLiteralTable;
 class ASTFunctionBase;
+class ASTVariable;
 
 class SymbolCheckVisitor : public CompileStep
 {
@@ -79,6 +80,7 @@ private:
    bool isVariable(const ASTNode& node) const;
 
  // operations
+   void checkVarInit(const ASTVariable& var);
    void checkReturn(const ASTFunction& function);
    void checkFunctionAccess(const ASTClass& aclass, ASTAccess& access, bool isstatic);
    void checkOperator(ASTUnary::Operator op);

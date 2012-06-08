@@ -6,7 +6,7 @@
 
 #include "astmodifier.h"
 
-class ASTExpression;
+class ASTVariableInit;
 class ASTType;
 
 class ASTVariable
@@ -27,20 +27,20 @@ public:
          ASTModifiers& getModifiers();
    void                setModifiers(const ASTModifiers& modifiers);
 
-   bool                 hasExpression() const;
-   const ASTExpression& getExpression() const;
-         ASTExpression& getExpression();
-   void                 setExpression(ASTExpression* pexpression);
+   bool                   hasInit() const;
+   const ASTVariableInit& getInit() const;
+         ASTVariableInit& getInit();
+   void                   setInit(ASTVariableInit* pinit);
    
    int  getResourceIndex() const;
    void setResourceIndex(int index);
 
 private:
-   std::string    mName;
-   ASTModifiers   mModifiers;
-   ASTType*       mpType;
-   ASTExpression* mpExpression;
-   int            mResourceIndex;
+   std::string       mName;
+   ASTModifiers      mModifiers;
+   ASTType*          mpType;
+   ASTVariableInit*  mpInit;
+   int               mResourceIndex;
 };
 
 #endif // AST_VARIABLE_H_

@@ -336,11 +336,12 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
 {
    const ASTVariable& var = ast.getVariable();
 
-   if ( var.hasExpression() )
+   if ( var.hasInit() )
    {
       mCurrentType.clear();
 
-      var.getExpression().accept(*this);
+      const ASTVariableInit& varinit = var.getInit();
+      varinit.getExpression().accept(*this);
 
       addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
    }
@@ -424,12 +425,13 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    mLoopFlowStack.push(flow);
 
    const ASTVariable& var = ast.getVariable();
+   const ASTVariableInit& varinit = var.getInit();
 
    ASTTypeList list;
    Signature signature;
 
    mCurrentType.clear();
-   var.getExpression().accept(*this);
+   varinit.getExpression().accept(*this);
 
    if ( mCurrentType.isArray() )
    {
@@ -1542,11 +1544,12 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
       const ASTField* pfield = fields[index];
       const ASTVariable& variable = pfield->getVariable();
 
-      if ( variable.hasExpression() )
+      if ( variable.hasInit() )
       {
          mCurrentType.clear();
 
-         variable.getExpression().accept(*this);
+         const ASTVariableInit& varinit = variable.getInit();
+         varinit.getExpression().accept(*this);
          addInstruction(VirtualInstruction::ePush, lit);
          addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
       }
@@ -1603,11 +1606,12 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
       const ASTField* pfield = fields[index];
       const ASTVariable& variable = pfield->getVariable();
 
-      if ( variable.hasExpression() )
+      if ( variable.hasInit() )
       {
          mCurrentType.clear();
 
-         variable.getExpression().accept(*this);
+         const ASTVariableInit& varinit = variable.getInit();
+         varinit.getExpression().accept(*this);
 
          addInstruction(VirtualInstruction::ePushThis, variable.getResourceIndex());
          addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());

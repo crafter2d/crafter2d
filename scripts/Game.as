@@ -11,6 +11,8 @@ class Game
 	private static string ServerScript = "demo.GameServer";
 	private static string ClientScript = "demo.GameClient";
 	
+	private int[] arraytje = { 1, 2 };
+	
 	private Server mServer;
 	private Client mClient;
 	

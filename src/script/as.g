@@ -22,6 +22,7 @@ tokens
     FUNCTION_ARGUMENTS;
     VOID_FUNCDECL;
     VARIABLE_DECL;
+    ARRAYINIT;
     LOCALVARDECL;
     STMT_EXPR;
     CAST;
@@ -135,7 +136,16 @@ func_arg_decl
 	;
 	
 variables_decl
-	:	identifier ('=' expression)?
+	:	identifier ('=' variable_init)?
+	;
+	
+variable_init
+	:	array_init
+	|	expression
+	;
+	
+array_init
+	:	'{' variable_init (',' variable_init)* '}'				-> ^(ARRAYINIT variable_init+)
 	;
 	
 modifiers
@@ -333,10 +343,6 @@ new_arguments
 	
 array_argument
 	:	('[' expression ']')+							-> ^(ARRAYARGUMENTS expression+)
-	;
-	
-array_initializer
-	:	'=' '{' expression_list '}'
 	;
 		
 arguments

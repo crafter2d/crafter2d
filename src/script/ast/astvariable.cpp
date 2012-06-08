@@ -1,14 +1,14 @@
 
 #include "astvariable.h"
 
-#include "astexpression.h"
+#include "astvariableinit.h"
 #include "asttype.h"
 
 ASTVariable::ASTVariable():
    mName(),
    mModifiers(),
    mpType(NULL),
-   mpExpression(NULL),
+   mpInit(NULL),
    mResourceIndex(-1)
 {
 }
@@ -16,7 +16,7 @@ ASTVariable::ASTVariable():
 ASTVariable::~ASTVariable()
 {
    setType(NULL);
-   setExpression(NULL);
+   setInit(NULL);
 }
 
 // - Get/set
@@ -62,25 +62,25 @@ void ASTVariable::setModifiers(const ASTModifiers& modifiers)
    mModifiers = modifiers;
 }
 
-bool ASTVariable::hasExpression() const
+bool ASTVariable::hasInit() const
 {
-   return mpExpression != NULL;
+   return mpInit != NULL;
 }
 
-const ASTExpression& ASTVariable::getExpression() const
+const ASTVariableInit& ASTVariable::getInit() const
 {
-   return *mpExpression;
+   return *mpInit;
 }
 
-ASTExpression& ASTVariable::getExpression()
+ASTVariableInit& ASTVariable::getInit()
 {
-   return *mpExpression;
+   return *mpInit;
 }
 
-void ASTVariable::setExpression(ASTExpression* pexpression)
+void ASTVariable::setInit(ASTVariableInit* pinit)
 {
-   delete mpExpression;
-   mpExpression = pexpression;
+   delete mpInit;
+   mpInit = pinit;
 }
 
 int ASTVariable::getResourceIndex() const

@@ -44,6 +44,7 @@ public:
 private:
  // helpers
    ASTNode* handleTree(const AntlrNode& node);
+   void     handleVarInit(const AntlrNode& node, ASTVariable& variable);
    void     handleFuncArguments(const AntlrNode& node, ASTFunction& function);
    void     handleModifiers(const AntlrNode& node, ASTModifiers& modifiers);
 
@@ -64,6 +65,7 @@ private:
    ASTAnnotations*         handleAnnotations(const AntlrNode& node);
    ASTBlock*               handleBlock(const AntlrNode& node);
    ASTLocalVariable*       handleLocalVarDecl(const AntlrNode& node);
+   ASTArrayInit*           handleArrayInit(const AntlrNode& node);
    ASTIf*                  handleIf(const AntlrNode& node);
    ASTFor*                 handleFor(const AntlrNode& node);
    ASTForeach*             handleForeach(const AntlrNode& node);
