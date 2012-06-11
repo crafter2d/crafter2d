@@ -34,6 +34,8 @@ public:
    virtual void visit(const ASTBlock& ast);
    virtual void visit(const ASTExpressionStatement& ast);
    virtual void visit(const ASTLocalVariable& ast);
+   virtual void visit(const ASTVariableInit& ast);
+   virtual void visit(const ASTArrayInit& ast);
    virtual void visit(const ASTIf& ast);
    virtual void visit(const ASTFor& ast);
    virtual void visit(const ASTForeach& ast);

@@ -8,7 +8,7 @@ use engine.core.*;
 
 use arraylist;
 
-abstract class Widget
+abstract class Widget implements Focussable
 {
 	private string						mName;
 	private Font    					mFont;
@@ -16,6 +16,7 @@ abstract class Widget
 	private Rectangle		  			mBounds;
 	private Border						mBorder;
 	private ArrayList<MouseListener> 	mMouseListeners;
+	private ArrayList<KeyListener>      mKeyListeners;
 	
 	public Widget()
 	{
@@ -135,11 +136,29 @@ abstract class Widget
 		mMouseListeners.add(listener);
 	}
 	
+	public void addKeyListener(KeyListener listener)
+	{
+		mKeyListeners.add(listener);
+	}
+	
 	public void fireMouseEvent(MouseEvent event)
 	{
 		if ( event.isLeftButton() && event.isDown() )
 		{
 			System.console.println("Left click on " + mName);
+		}
+		
+		foreach ( MouseListener listener : mMouseListeners )
+		{
+			listener.onMouseEvent(event);
+		}
+	}
+	
+	public void fireKeyEvent(KeyEvent event)
+	{
+		foreach ( KeyListener listener : mKeyListeners )
+		{
+			listener.onKeyEvent(event);
 		}
 	}
 }

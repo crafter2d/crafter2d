@@ -12,6 +12,7 @@
 
 static const std::string SInt = "int";
 static const std::string SReal = "real";
+static const std::string SChar = "char";
 static const std::string SString = "string";
 static const std::string SBool = "boolean";
 static const std::string SInvalid = "<unknown>";
@@ -254,6 +255,11 @@ bool ASTType::isReal() const
    return mKind == eReal;
 }
 
+bool ASTType::isChar() const
+{
+   return mKind == eChar;
+}
+
 bool ASTType::isString() const
 {
    return mKind == eString;
@@ -317,8 +323,11 @@ bool ASTType::greater(const ASTType& that) const
          case eReal:
             return mKind == eInt || mKind == eReal;
 
+         case eChar:
+            return mKind == eChar;
+
          case eString:
-            return mKind == eString || mKind == eInt || mKind == eReal || mKind == eBoolean;
+            return mKind == eString || mKind == eInt || mKind == eReal || mKind == eBoolean || mKind == eChar;
       }
    }
 
@@ -357,6 +366,11 @@ bool ASTType::resolveType(CompileContext& context, const ASTClass& aclass)
    {
       mKind = ASTType::eGeneric;
       mpTypeVariable = ptypevariable;
+   }
+   else if ( mKind == eString )
+   {
+      mpObjectClass = &context.resolveClass("system.InternalString");
+      return mpObjectClass != NULL;
    }
    else if ( mKind == eObject )
    {

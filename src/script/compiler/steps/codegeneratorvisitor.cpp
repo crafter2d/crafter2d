@@ -311,6 +311,16 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
    }
 }
 
+void CodeGeneratorVisitor::visit(const ASTVariableInit& ast)
+{
+   visitChildren(ast);
+}
+
+void CodeGeneratorVisitor::visit(const ASTArrayInit& ast)
+{
+   visitChildren(ast);
+}
+
 void CodeGeneratorVisitor::visit(const ASTBlock& ast)
 {
    ScopedScope scope(mScopeStack);
@@ -823,6 +833,8 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
                addInstruction(VirtualInstruction::eAddInt);
             else if ( mCurrentType.isReal() )
                addInstruction(VirtualInstruction::eAddReal);
+            else if ( mCurrentType.isChar() )
+               addInstruction(VirtualInstruction::eAddChar);
             else if ( mCurrentType.isString() )
                addInstruction(VirtualInstruction::eAddStr);
          }
@@ -935,6 +947,9 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
                case ASTType::eReal:
                   addInstruction(VirtualInstruction::eCmpEqReal);
                   break;
+               case ASTType::eChar:
+                  addInstruction(VirtualInstruction::eCmpEqChar);
+                  break;
                case ASTType::eString:
                   addInstruction(VirtualInstruction::eCmpEqStr);
                   break;
@@ -969,6 +984,9 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
                   break;
                case ASTType::eReal:
                   addInstruction(VirtualInstruction::eCmpNeqReal);
+                  break;
+               case ASTType::eChar:
+                  addInstruction(VirtualInstruction::eCmpNeqChar);
                   break;
                case ASTType::eString:
                   addInstruction(VirtualInstruction::eCmpNeqStr);
@@ -1256,6 +1274,8 @@ void CodeGeneratorVisitor::visit(const ASTCast& ast)
                addInstruction(VirtualInstruction::eInt2String);
             else if ( from.isReal() )
                addInstruction(VirtualInstruction::eReal2String);
+            else if ( from.isChar() )
+               addInstruction(VirtualInstruction::eChar2String);
             else if ( from.isBoolean() )
                addInstruction(VirtualInstruction::eBoolean2String);
             break;
@@ -1611,10 +1631,13 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          mCurrentType.clear();
 
          const ASTVariableInit& varinit = variable.getInit();
-         varinit.getExpression().accept(*this);
+         if ( varinit.hasExpression() )
+         {
+            varinit.getExpression().accept(*this);
 
-         addInstruction(VirtualInstruction::ePushThis, variable.getResourceIndex());
-         addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+            addInstruction(VirtualInstruction::ePushThis, variable.getResourceIndex());
+            addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+         }
       }
       else
       {

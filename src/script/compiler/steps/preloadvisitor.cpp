@@ -436,6 +436,11 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
          int count = 0;
          bool done = false;
 
+         if ( pcurrent->getName() == "InputFocusManager" )
+         {
+            int aap = 5;
+         }
+
          do
          {
             name += pcurrent->getName();

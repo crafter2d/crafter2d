@@ -123,6 +123,22 @@ void SymbolCheckVisitor::visit(ASTField& ast)
    checkVarInit(var);
 }
 
+void SymbolCheckVisitor::visit(ASTVariableInit& ast)
+{
+   visitChildren(ast);
+}
+
+void SymbolCheckVisitor::visit(ASTArrayInit& ast)
+{
+   visitChildren(ast);
+
+   ASTType elementtype = mCurrentType;
+
+   mCurrentType.setKind(ASTType::eArray);
+   mCurrentType.setArrayType(elementtype.clone());
+   mCurrentType.setArrayDimension(1); // need to determine the depth of the array!
+}
+
 void SymbolCheckVisitor::visit(ASTBlock& ast)
 {
    ScopedScope scope(mScopeStack);
@@ -432,6 +448,14 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
             if ( mCurrentType.isValid() )
             {
                // optionally add casts if necessary
+
+               if ( mCurrentType.isChar() && lefttype.isString() )
+               {
+                  // add char is now allowed directly:
+                  //  str = str + char  <- no casts
+                  //  str = char + str  <- casts char to string
+                  break;
+               }
 
                if ( !lefttype.equals(mCurrentType) )
                {
@@ -876,11 +900,11 @@ bool SymbolCheckVisitor::isVariable(const ASTNode& node) const
 
 // - Operations
 
-void SymbolCheckVisitor::checkVarInit(const ASTVariable& var)
+void SymbolCheckVisitor::checkVarInit(ASTVariable& var)
 {
    if ( var.hasInit() )
    {
-      const ASTVariableInit& varinit = var.getInit();
+      ASTVariableInit& varinit = var.getInit();
 
       if ( varinit.hasExpression() )
       {

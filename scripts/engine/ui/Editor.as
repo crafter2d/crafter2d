@@ -12,6 +12,9 @@ class Editor extends Widget
 		super();
 		
 		setBorder(new SimpleBorder());
+		
+		addMouseListener(new EditorMouseListener(this));
+		addKeyListener(new EditorKeyListener(this));
 	}
 	
 	// - painting
@@ -32,6 +35,13 @@ class Editor extends Widget
 	
 	public Size getPreferredSize()
 	{
-		return new Size();
+		return new Size(50, 15);
+	}
+	
+	// - text operations
+	
+	public void insert(char character)
+	{
+		mText = mText + character;
 	}
 }

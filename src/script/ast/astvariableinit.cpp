@@ -3,8 +3,10 @@
 
 #include "astarrayinit.h"
 #include "astexpression.h"
+#include "astvisitor.h"
 
 ASTVariableInit::ASTVariableInit():
+   ASTNode(),
    mpExpression(NULL),
    mpArrayInit(NULL)
 {
@@ -12,8 +14,6 @@ ASTVariableInit::ASTVariableInit():
 
 ASTVariableInit::~ASTVariableInit()
 {
-   setArrayInit(NULL);
-   setExpression(NULL);
 }
 
 // - Get/set
@@ -34,8 +34,8 @@ ASTExpression& ASTVariableInit::getExpression()
 
 void ASTVariableInit::setExpression(ASTExpression* pexpression)
 {
-   delete mpExpression;
    mpExpression = pexpression;
+   addChild(pexpression);
 }
 
 bool ASTVariableInit::hasArrayInit() const
@@ -55,6 +55,10 @@ ASTArrayInit& ASTVariableInit::getArrayInit()
 
 void ASTVariableInit::setArrayInit(ASTArrayInit* parrayinit)
 {
-   delete mpArrayInit;
    mpArrayInit = parrayinit;
+   addChild(parrayinit);
 }
+
+// - Visitor
+
+ACCEPT_IMPL(ASTVariableInit);

@@ -2,10 +2,12 @@
 #ifndef AST_VARIABLE_INIT_H
 #define AST_VARIABLE_INIT_H
 
+#include "astnode.h"
+
 class ASTArrayInit;
 class ASTExpression;
 
-class ASTVariableInit
+class ASTVariableInit : public ASTNode
 {
 public:
    ASTVariableInit();
@@ -21,6 +23,9 @@ public:
    const ASTArrayInit&  getArrayInit() const;
          ASTArrayInit&  getArrayInit();
    void                 setArrayInit(ASTArrayInit* parrayinit);
+
+ // visitor
+   ACCEPT;
 
 private:
    ASTExpression* mpExpression;

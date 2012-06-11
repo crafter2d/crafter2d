@@ -13,7 +13,7 @@ class CompileContext;
 class ASTType
 {
 public:
-   enum Kind { eNull, eBoolean, eInt, eReal, eString, eVoid, eObject, eArray, eGeneric, eUnknown, eInvalid };
+   enum Kind { eNull, eBoolean, eInt, eReal, eChar, eString, eVoid, eObject, eArray, eGeneric, eUnknown, eInvalid };
 
    static ASTType SVoidType;
 
@@ -69,6 +69,7 @@ public:
    bool isBoolean() const;
    bool isInt() const;
    bool isReal() const;
+   bool isChar() const;
    bool isString() const;
 
    bool equals(const ASTType& that) const;

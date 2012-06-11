@@ -1,6 +1,7 @@
 
 package engine.input;
 
-class MouseListener
+abstract class MouseListener
 {
+	abstract public void onMouseEvent(MouseEvent event);
 }

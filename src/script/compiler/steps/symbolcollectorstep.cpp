@@ -97,8 +97,10 @@ void SymbolCollectorVisitor::visit(ASTFunctionArgument& ast)
 
    resolveType(var.getType());
 
-   checkVarInit(var);
-   
+   if ( var.hasInit() )
+   {
+      var.getInit().accept(*this);
+   }
 }
 
 void SymbolCollectorVisitor::visit(ASTField& ast)
@@ -107,7 +109,27 @@ void SymbolCollectorVisitor::visit(ASTField& ast)
 
    resolveType(var.getType());
 
-   checkVarInit(var);
+   if ( var.hasInit() )
+   {
+      var.getInit().accept(*this);
+   }
+}
+
+void SymbolCollectorVisitor::visit(ASTVariableInit& ast)
+{
+   if ( ast.hasExpression() )
+   {
+      ast.getExpression().accept(*this);
+   }
+   else if ( ast.hasArrayInit() )
+   {
+      ast.getArrayInit().accept(*this);
+   }
+}
+
+void SymbolCollectorVisitor::visit(ASTArrayInit& ast)
+{
+   visitChildren(ast);
 }
 
 void SymbolCollectorVisitor::visit(ASTBlock& ast)
@@ -121,7 +143,10 @@ void SymbolCollectorVisitor::visit(ASTLocalVariable& ast)
 
    resolveType(var.getType());
 
-   checkVarInit(var);
+   if ( var.hasInit() )
+   {
+      var.getInit().accept(*this);
+   }
 }
 
 void SymbolCollectorVisitor::visit(ASTExpressionStatement& ast)
@@ -166,7 +191,10 @@ void SymbolCollectorVisitor::visit(ASTForeach& ast)
 
    resolveType(var.getType());
 
-   checkVarInit(var);
+   if ( var.hasInit() )
+   {
+      var.getInit().accept(*this);
+   }
 
    ast.getBody().accept(*this);
 }
@@ -335,22 +363,5 @@ void SymbolCollectorVisitor::resolveType(ASTType& type)
    if ( !type.resolveType(mContext, *mpClass) )
    {
       type.setKind(ASTType::eUnknown);
-   }
-}
-
-void SymbolCollectorVisitor::checkVarInit(ASTVariable& var)
-{
-   if ( var.hasInit() )
-   {
-      ASTVariableInit& varinit = var.getInit();
-
-      if ( varinit.hasArrayInit() )
-      {
-         varinit.getArrayInit().accept(*this);
-      }
-      else if ( varinit.hasExpression() )
-      {
-         varinit.getExpression().accept(*this);
-      }
    }
 }

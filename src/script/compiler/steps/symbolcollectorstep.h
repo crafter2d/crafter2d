@@ -46,6 +46,8 @@ public:
    virtual void visit(ASTFunctionArgument& ast);
    virtual void visit(ASTField& ast);
    virtual void visit(ASTBlock& ast);
+   virtual void visit(ASTVariableInit& ast);
+   virtual void visit(ASTArrayInit& ast);
    virtual void visit(ASTLocalVariable& ast);
    virtual void visit(ASTExpressionStatement& ast);
    virtual void visit(ASTIf& ast);
@@ -77,7 +79,6 @@ private:
  // operations
    void createDefaultConstructor(ASTClass& ast);
    void resolveType(ASTType& type);
-   void checkVarInit(ASTVariable& var);
 
    CompileContext&  mContext;
    ClassResolver    mResolver;

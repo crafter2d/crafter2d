@@ -1,6 +1,8 @@
 
 package engine.input;
 
+use engine.ui.InputFocusManager;
+
 class KeyEventDispatcher extends InputEventDispatcher
 {
 	public KeyEventDispatcher()
@@ -11,10 +13,9 @@ class KeyEventDispatcher extends InputEventDispatcher
 	// called by the VM
 	public void dispatch(int key, boolean pressed)
 	{
-		// build event
+		KeyEvent event = new KeyEvent(key, pressed);
 		
-		// search for the widget
-		
-		// dispatch the event
+		Widget widget = InputFocusManager.getInstance().getFocus();
+		widget.fireKeyEvent(event);
 	}
 }

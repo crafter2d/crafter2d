@@ -14,6 +14,7 @@ class ASTLocalVariable;
 class ASTAnnotations;
 class ASTBlock;
 class ASTArrayInit;
+class ASTVariableInit;
 class ASTIf;
 class ASTFor;
 class ASTForeach;
@@ -63,6 +64,7 @@ public:
    VISIT(ASTLocalVariable);
    VISIT(ASTAnnotations);
    VISIT(ASTArrayInit);
+   VISIT(ASTVariableInit);
    VISIT(ASTBlock);
    VISIT(ASTIf);
    VISIT(ASTFor);

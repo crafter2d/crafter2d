@@ -46,6 +46,8 @@ public:
    virtual void visit(ASTFunctionArgument& ast);
    virtual void visit(ASTField& ast);
    virtual void visit(ASTBlock& ast);
+   virtual void visit(ASTVariableInit& ast);
+   virtual void visit(ASTArrayInit& ast);
    virtual void visit(ASTExpressionStatement& ast);
    virtual void visit(ASTLocalVariable& ast);
    virtual void visit(ASTIf& ast);
@@ -80,7 +82,7 @@ private:
    bool isVariable(const ASTNode& node) const;
 
  // operations
-   void checkVarInit(const ASTVariable& var);
+   void checkVarInit(ASTVariable& var);
    void checkReturn(const ASTFunction& function);
    void checkFunctionAccess(const ASTClass& aclass, ASTAccess& access, bool isstatic);
    void checkOperator(ASTUnary::Operator op);

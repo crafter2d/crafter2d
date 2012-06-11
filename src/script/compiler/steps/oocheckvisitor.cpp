@@ -126,9 +126,6 @@ void OOCheckVisitor::visit(ASTField& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
-   mScopeStack.add(pvariable);
-
    mpVariable = &var;
    
    checkVarInit(var);

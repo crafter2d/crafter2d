@@ -41,6 +41,9 @@ public:
    bool asBool() const;
    void setBool(bool value);
 
+   char asChar() const;
+   void setChar(char value);
+
    const std::string& asString() const;
    void setString(const std::string& value);
 
@@ -54,6 +57,7 @@ public:
    bool isEmpty() const;
    bool isInt() const;
    bool isReal() const;
+   bool isChar() const;
    bool isBool() const;
    bool isString() const;
    bool isObject() const;
@@ -70,6 +74,7 @@ public:
    void int2string();
    void real2int();
    void real2string();
+   void char2string();
    void boolean2string();
 
 private:
@@ -79,6 +84,7 @@ private:
       eInt,
       eReal,
       eString,
+      eChar,
       eBool,
       eObject,
       eArray

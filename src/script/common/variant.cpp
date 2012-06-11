@@ -79,6 +79,9 @@ bool Variant::operator==(const Variant& that) const
          case eReal:
             return asReal() == that.asReal();
 
+         case eChar:
+            return asChar() == that.asChar();
+
          case eBool:
             return asBool() == that.asBool();
 
@@ -217,6 +220,18 @@ void Variant::setReal(double value)
    mpHolder = new DataHolder<double>(value);
 }
 
+char Variant::asChar() const
+{
+   return ((DataHolder<char>*)mpHolder)->mData;
+}
+
+void Variant::setChar(char value)
+{
+   mType = eChar;
+   delete mpHolder;
+   mpHolder = new DataHolder<char>(value);
+}
+
 bool Variant::asBool() const
 {
    return ((DataHolder<bool>*)mpHolder)->mData;
@@ -289,6 +304,11 @@ bool Variant::isReal() const
    return mType == eReal;
 }
 
+bool Variant::isChar() const
+{
+   return mType == eChar;
+}
+
 bool Variant::isBool() const
 {
    return mType == eBool;
@@ -321,6 +341,8 @@ std::string Variant::typeAsString() const
          return "int";
       case eReal:
          return "real";
+      case eChar:
+         return "char";
       case eBool:
          return "boolean";
       case eObject:
@@ -341,6 +363,8 @@ std::string Variant::toString() const
          return lexical_cast<std::string>(asInt());
       case eReal:
          return lexical_cast<std::string>(asReal());
+      case eChar:
+         return lexical_cast<std::string>(asChar());
       case eBool:
          return asBool() ? std::string("true") : std::string("false");
       case eObject:
@@ -407,6 +431,12 @@ void Variant::real2string()
 {
    ASSERT(isReal());
    setString(lexical_cast<std::string>(asReal()));
+}
+
+void Variant::char2string()
+{
+   ASSERT(isChar());
+   setString(toString());
 }
 
 void Variant::boolean2string()

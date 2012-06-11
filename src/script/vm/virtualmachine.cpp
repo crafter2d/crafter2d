@@ -139,6 +139,7 @@ void VirtualMachine::initialize()
    // preload some common classes
    loadClass("system.Object");
    loadClass("system.InternalArray");
+   loadClass("system.InternalString");
    loadClass("system.ClassLoader");
    loadClass("system.System");
 
@@ -520,6 +521,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             mStack.back().real2string();
          }
          break;
+      case VirtualInstruction::eChar2String:
+         {
+            mStack.back().char2string();
+         }
+         break;
       case VirtualInstruction::eBoolean2String:
          {
             mStack.back().boolean2string();
@@ -783,6 +789,32 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             double left  = mStack.back().asInt(); mStack.pop_back();
 
             mStack.push_back(Variant(left >= right));
+         }
+         break;
+
+      // - Char interface
+      case VirtualInstruction::eAddChar:
+         {
+            char right = mStack.back().asChar(); mStack.pop_back();
+            std::string left = mStack.back().asString(); mStack.pop_back();
+
+            mStack.push_back(Variant(left + right));
+         }
+         break;
+      case VirtualInstruction::eCmpEqChar:
+         {
+            char right = mStack.back().asChar(); mStack.pop_back();
+            char left  = mStack.back().asChar(); mStack.pop_back();
+
+            mStack.push_back(Variant(left == right));
+         }
+         break;
+      case VirtualInstruction::eCmpNeqChar:
+         {
+            char right = mStack.back().asChar(); mStack.pop_back();
+            char left  = mStack.back().asChar(); mStack.pop_back();
+
+            mStack.push_back(Variant(left == right));
          }
          break;
 

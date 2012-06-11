@@ -120,6 +120,9 @@ ASTType* AntlrParser::getType(const AntlrNode& node)
       case T_REAL:
          ptype->setKind(ASTType::eReal);
          break;
+      case T_CHAR:
+         ptype->setKind(ASTType::eChar);
+         break;
       case T_STRING:
          ptype->setKind(ASTType::eString);
          break;
@@ -395,6 +398,10 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
 
    AntlrNode namenode = node.getChild(1);
    std::string name = namenode.toString();
+   if ( name == "InputFocusManager" )
+   {
+      int aap = 5;
+   }
    std::string qualifiedname = mClassResolver.resolve(name);
 
    pclass->setName(name);
@@ -479,29 +486,10 @@ ASTMember* AntlrParser::handleVarDecl(const AntlrNode& node)
    {
       // skip the '='
       AntlrNode initnode = node.getChild(4);
-      handleVarInit(initnode, *pvariable);      
+      pvariable->setInit(handleVarInit(initnode));      
    }
 
    return new ASTField(pvariable);
-}
-
-void AntlrParser::handleVarInit(const AntlrNode& node, ASTVariable& variable)
-{
-   ASTVariableInit* pinit = new ASTVariableInit();
-
-   if ( node.getType() == ARRAYINIT )
-   {
-      ASTArrayInit* parrayinit = handleArrayInit(node);
-      pinit->setArrayInit(parrayinit);
-   }
-   else
-   {
-      ASSERT(node.getType() == EXPRESSION);
-      ASTExpression* pexpression = handleExpression(node);
-      pinit->setExpression(pexpression);
-   }
-      
-   variable.setInit(pinit);
 }
 
 void AntlrParser::handleFuncArguments(const AntlrNode& node, ASTFunction& function)
@@ -591,7 +579,7 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
       if ( type != SEP )
       {
          AntlrNode exprnode = node.getChild(4);
-         handleVarInit(exprnode, *pvariable);
+         pvariable->setInit(handleVarInit(exprnode));
       }
 
       return new ASTField(pvariable);
@@ -632,7 +620,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
       if ( type != SEP )
       {
          AntlrNode exprnode = node.getChild(3);
-         handleVarInit(exprnode, *pvariable);
+         pvariable->setInit(handleVarInit(exprnode));
       }
 
       return new ASTField(pvariable);
@@ -729,7 +717,35 @@ ASTAnnotations* AntlrParser::handleAnnotations(const AntlrNode& node)
 ASTArrayInit* AntlrParser::handleArrayInit(const AntlrNode& node)
 {
    ASTArrayInit* parrayinit = new ASTArrayInit();
+
+   int count = node.getChildCount();
+   for ( int index = 0; index < count; index++ )
+   {
+      AntlrNode child = node.getChild(index);
+      ASTVariableInit* pinit = handleVarInit(child);
+      parrayinit->addChild(pinit);
+   }
+
    return parrayinit;
+}
+
+ASTVariableInit* AntlrParser::handleVarInit(const AntlrNode& node)
+{
+   ASTVariableInit* pinit = new ASTVariableInit();
+
+   if ( node.getType() == ARRAYINIT )
+   {
+      ASTArrayInit* parrayinit = handleArrayInit(node);
+      pinit->setArrayInit(parrayinit);
+   }
+   else
+   {
+      ASSERT(node.getType() == EXPRESSION);
+      ASTExpression* pexpression = handleExpression(node);
+      pinit->setExpression(pexpression);
+   }
+
+   return pinit;
 }
 
 ASTBlock* AntlrParser::handleBlock(const AntlrNode& node)
@@ -766,7 +782,7 @@ ASTLocalVariable* AntlrParser::handleLocalVarDecl(const AntlrNode& node)
    if ( count > 2 )
    {
       AntlrNode initnode = node.getChild(2);
-      handleVarInit(initnode, *pvariable);
+      pvariable->setInit(handleVarInit(initnode));
    }
 
    return new ASTLocalVariable(pvariable);
@@ -850,7 +866,7 @@ ASTForeach* AntlrParser::handleForeach(const AntlrNode& node)
    pvariable->setName(namenode.toString());
 
    AntlrNode exprnode = node.getChild(2);
-   handleVarInit(exprnode, *pvariable);
+   pvariable->setInit(handleVarInit(exprnode));
 
    AntlrNode statement = node.getChild(3);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(statement));
