@@ -6,6 +6,7 @@
 #include "script/compiler/compilecontext.h"
 
 #include "astclass.h"
+#include "astfunction.h"
 #include "asttypevariable.h"
 #include "asttypevariables.h"
 #include "astvisitor.h"
@@ -118,12 +119,13 @@ bool ASTType::hasObjectClass() const
 
 const ASTClass& ASTType::getObjectClass() const
 {
-   ASSERT(mpObjectClass != NULL);
+   ASSERT_PTR(mpObjectClass);
    return *mpObjectClass;
 }
 
 ASTClass& ASTType::getObjectClass()
 {
+   ASSERT_PTR(mpObjectClass);
    return *mpObjectClass;
 }
 
@@ -170,6 +172,10 @@ const ASTTypeList& ASTType::getTypeArguments() const
 const ASTTypeVariable& ASTType::getTypeVariable() const
 {
    ASSERT(isGeneric());
+   if ( mKind == eArray )
+   {
+      return mpArrayType->getTypeVariable();
+   }
    return *mpTypeVariable;
 }
 
@@ -207,6 +213,10 @@ bool ASTType::isValid() const
 
 bool ASTType::isGeneric() const
 {
+   if ( mKind == eArray )
+   {
+      return mpArrayType->isGeneric();
+   }
    return mKind == eGeneric;
 }
 
@@ -279,7 +289,7 @@ bool ASTType::equals(const ASTType& that) const
 /// \brief Test whether that is greater than this type
 bool ASTType::greater(const ASTType& that) const
 {
-   if ( isNull() && (that.isObject()  || that.isString() || that.isGeneric()) )
+   if ( isNull() && (that.isObject() || that.isArray() || that.isString() || that.isGeneric()) )
    {
       return true;
    }
@@ -359,44 +369,40 @@ void ASTType::replaceArgument(const ASTType& type)
    mTypeArguments[0] = type;
 }
 
-bool ASTType::resolveType(CompileContext& context, const ASTClass& aclass)
+bool ASTType::resolveType(CompileContext& context, const ASTTypeVariables* ptypevariables)
 {
-   const ASTTypeVariable* ptypevariable = aclass.isGeneric() ? aclass.getTypeVariables().find(mObjectName) : NULL;
-   if ( ptypevariable != NULL )
+   if ( ptypevariables != NULL )
    {
-      mKind = ASTType::eGeneric;
-      mpTypeVariable = ptypevariable;
+      const ASTTypeVariable* ptypevariable = ptypevariables->find(mObjectName);
+      if ( ptypevariable != NULL )
+      {
+         mKind = ASTType::eGeneric;
+         mpTypeVariable = ptypevariable;
+
+         return true;
+      }
    }
-   else if ( mKind == eString )
-   {
-      mpObjectClass = &context.resolveClass("system.InternalString");
-      return mpObjectClass != NULL;
-   }
-   else if ( mKind == eObject )
+      
+   if ( mKind == eObject )
    {
       for ( int index = 0; index < mTypeArguments.size(); index++ )
       {
-         if ( !mTypeArguments[index].resolveType(context, aclass) )
+         if ( !mTypeArguments[index].resolveType(context, ptypevariables) )
          {
             return false;
          }
       }
 
-      if ( mObjectName == aclass.getFullName() )
-      {
-         mpObjectClass = const_cast<ASTClass*>(&aclass);
-         return true;
-      }
-      else if ( mpObjectClass == NULL )
-      {
-         mpObjectClass = &context.resolveClass(mObjectName);
-         return mpObjectClass != NULL;
-      }
+      mpObjectClass = &context.resolveClass(mObjectName);
    }
    else if ( mKind == eArray )
    {
       mpObjectClass = &context.resolveClass("system.InternalArray");
-      return mpArrayType->resolveType(context, aclass);
+      return mpArrayType->resolveType(context, ptypevariables);
+   }
+   else if ( mKind == eString )
+   {
+      mpObjectClass = &context.resolveClass("system.InternalString");
    }
 
    return true;
@@ -451,7 +457,7 @@ std::string ASTType::toString() const
          }
          break;
       case eArray:
-         type = "array";
+         type = mpArrayType->toString();
          break;
 
       case eInvalid:

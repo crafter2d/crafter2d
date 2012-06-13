@@ -15,7 +15,7 @@ class KeyEventDispatcher extends InputEventDispatcher
 	{
 		KeyEvent event = new KeyEvent(key, pressed);
 		
-		Widget widget = InputFocusManager.getInstance().getFocus();
+		Widget widget = (Widget) InputFocusManager.getInstance().getFocus();
 		widget.fireKeyEvent(event);
 	}
 }

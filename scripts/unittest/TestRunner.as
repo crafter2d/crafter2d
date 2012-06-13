@@ -86,12 +86,12 @@ class TestRunner
 				}
 				catch ( AssertionError ae )
 				{
-					System.console.println("Test failed.");
+					System.console.println("Test " + f.getName() + " failed.");
 					mFailures++;
 				}
 				catch ( Throwable t )
 				{
-					System.console.println("Exception was thrown.");
+					System.console.println("Caught unhandled exception during executing test " + f.getName());
 					mFailures++;
 				}				
 			}

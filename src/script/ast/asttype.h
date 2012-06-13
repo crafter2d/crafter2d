@@ -7,7 +7,9 @@
 #include "asttypelist.h"
 
 class ASTClass;
+class ASTFunction;
 class ASTTypeVariable;
+class ASTTypeVariables;
 class CompileContext;
 
 class ASTType
@@ -81,7 +83,7 @@ public:
    void addTypeArgument(ASTType* ptype);
    void replaceArgument(const ASTType& type);
 
-   bool resolveType(CompileContext& context, const ASTClass& aclass);
+   bool resolveType(CompileContext& context, const ASTTypeVariables* ptypevariables);
 
    void clear();
 

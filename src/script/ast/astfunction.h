@@ -11,6 +11,7 @@ class ASTAnnotations;
 class ASTBlock;
 class ASTClass;
 class ASTFunctionArgument;
+class ASTTypeVariables;
 class Signature;
 
 class ASTFunction : public ASTMember
@@ -26,6 +27,11 @@ public:
    const ASTType& getType() const;
          ASTType& getType();
    void           setType(ASTType* ptype); 
+
+   bool                    hasTypeVariables() const;
+   const ASTTypeVariables& getTypeVariables() const;
+         ASTTypeVariables& getTypeVariables();
+   void                    setTypeVariables(ASTTypeVariables* ptypes);
 
    bool                  hasAnnotations() const;
    const ASTAnnotations& getAnnotations() const;
@@ -54,6 +60,7 @@ public:
 
  // query
    bool isConstructor() const;
+   bool isGeneric() const;
 
    const ASTNodes& getArguments() const;
 
@@ -72,6 +79,7 @@ private:
    std::string       mName;
    ASTAnnotations*   mpAnnotations;
    ASTModifiers      mModifiers;
+   ASTTypeVariables* mpTypeVariables;
    ASTType*          mpType;
    ASTClass*         mpClass;
    ASTBlock*         mpBody;

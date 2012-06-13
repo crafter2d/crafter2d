@@ -5,6 +5,7 @@
 #include <string>
 
 #include "astexpressionpart.h"
+#include "asttypelist.h"
 
 class ASTExpression;
 class ASTFunction;
@@ -56,6 +57,9 @@ public:
    const ASTType& getStaticType() const;
    void           setStaticType(ASTType* ptype);
 
+   const ASTTypeList& getTypeArguments() const;
+         ASTTypeList& getTypeArguments();
+
  // operations
    void addArgument(ASTExpression* pexpression);
    void replaceArgument(int index, ASTNode* pnode);
@@ -70,6 +74,8 @@ private:
 
    ASTAccess* mpNext;
    ASTAccess* mpPrevious;
+
+   ASTTypeList mTypeArguments;
 
    const ASTFunction* mpFunction;
    const ASTVariable* mpVariable;

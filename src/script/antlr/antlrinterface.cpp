@@ -398,10 +398,6 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
 
    AntlrNode namenode = node.getChild(1);
    std::string name = namenode.toString();
-   if ( name == "InputFocusManager" )
-   {
-      int aap = 5;
-   }
    std::string qualifiedname = mClassResolver.resolve(name);
 
    pclass->setName(name);
@@ -637,16 +633,26 @@ ASTMember* AntlrParser::handleFuncDecl(const AntlrNode& node)
    AntlrNode modnode = node.getChild(1);
    handleModifiers(modnode, pfunction->getModifiers());
 
-   AntlrNode typenode = node.getChild(2);
+   int index = 2;
+   AntlrNode typevarnode = node.getChild(index);
+   if ( typevarnode.getType() == TYPEINFOS )
+   {
+      ASTTypeVariables* ptypes = handleTypeVariables(typevarnode);
+      pfunction->setTypeVariables(ptypes);
+
+      index++;
+   }
+
+   AntlrNode typenode = node.getChild(index++);
    pfunction->setType(getType(typenode));
 
-   AntlrNode namenode = node.getChild(3);
+   AntlrNode namenode = node.getChild(index++);
    pfunction->setName(namenode.toString());
 
-   AntlrNode arguments = node.getChild(4);
+   AntlrNode arguments = node.getChild(index++);
    handleFuncArguments(arguments, *pfunction);
 
-   AntlrNode block = node.getChild(5);
+   AntlrNode block = node.getChild(index++);
    ANTLR3_UINT32 nodetype = block.getType();
    if ( nodetype == BLOCK )
    {
@@ -670,13 +676,23 @@ ASTMember* AntlrParser::handleVoidFuncDecl(const AntlrNode& node)
    AntlrNode modnode = node.getChild(1);
    handleModifiers(modnode, pfunction->getModifiers());
 
-   AntlrNode namenode = node.getChild(2);
+   int index = 2;
+   AntlrNode typenode = node.getChild(index);
+   if ( typenode.getType() == TYPEINFOS )
+   {
+      ASTTypeVariables* ptypes = handleTypeVariables(typenode);
+      pfunction->setTypeVariables(ptypes);
+
+      index++;
+   }
+
+   AntlrNode namenode = node.getChild(index++);
    pfunction->setName(namenode.toString());
 
-   AntlrNode arguments = node.getChild(3);
+   AntlrNode arguments = node.getChild(index++);
    handleFuncArguments(arguments, *pfunction);
 
-   AntlrNode block = node.getChild(4);
+   AntlrNode block = node.getChild(index++);
    int nodetype = block.getType();
    if ( nodetype == BLOCK )
    {
@@ -1409,9 +1425,24 @@ ASTAccess* AntlrParser::handleAccess(const AntlrNode& node)
    paccess->setName(namenode.toString());
    paccess->setKind(count == 1 ? ASTAccess::eVariable : ASTAccess::eFunction);
 
-   if ( count == 2 )
+   if ( count > 1 )
    {
       AntlrNode argsnode = node.getChild(1);
+      if ( argsnode.getType() == TYPEARGUMENT )
+      {
+         int typearguments = argsnode.getChildCount();
+         for ( int index = 0; index < typearguments; index++ )
+         {
+            AntlrNode typeargument = argsnode.getChild(index);
+
+            ASTType* pargumenttype = getType(typeargument);
+
+            paccess->getTypeArguments().append(pargumenttype);
+         }
+
+         argsnode = node.getChild(2);
+      }
+
       count = argsnode.getChildCount();
 
       for ( int index = 0; index < count; index += 2 )  // <-- skip the () and ,

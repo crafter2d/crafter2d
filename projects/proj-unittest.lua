@@ -27,12 +27,12 @@ if ( os.is("windows") ) then
 end
 
 configuration "Debug"
-	defines { "_DEBUG" }
+	defines { "_DEBUG", "_CXXTEST_HAVE_EH" }
 	targetsuffix "d"
 	flags { "Symbols" }
 	links { "Core", "Engine", "Script" }
 	
 configuration "Release"
-	defines { "NDEBUG" }
+	defines { "NDEBUG", "_CXXTEST_HAVE_EH" }
 	flags { "Optimize" }
 	links { "Core", "Engine", "Script" }

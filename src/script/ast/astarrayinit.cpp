@@ -19,6 +19,16 @@ const ASTType& ASTArrayInit::getType() const
    return *mpType;
 }
 
+int ASTArrayInit::getCount() const
+{
+   return getChildren().size();
+}
+
+const ASTVariableInit& ASTArrayInit::getInit(int index) const
+{
+   return static_cast<const ASTVariableInit&>(getChildren()[index]);
+}
+
 // - Operations
 
 // for now a simple array detection: 1 level

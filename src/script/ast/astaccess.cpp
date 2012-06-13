@@ -129,6 +129,16 @@ void ASTAccess::setStaticType(ASTType* ptype)
    mpStaticType = ptype;
 }
 
+const ASTTypeList& ASTAccess::getTypeArguments() const
+{
+   return mTypeArguments;
+}
+
+ASTTypeList& ASTAccess::getTypeArguments()
+{
+   return mTypeArguments;
+}
+
 // operations
    
 void ASTAccess::addArgument(ASTExpression* pexpression)

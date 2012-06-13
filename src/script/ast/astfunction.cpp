@@ -12,12 +12,14 @@
 #include "astvisitor.h"
 #include "astvariable.h"
 #include "astannotations.h"
+#include "asttypevariables.h"
 
 ASTFunction::ASTFunction(ASTMember::Kind kind):
    ASTMember(kind),
    mName(),
    mpAnnotations(NULL),
    mModifiers(),
+   mpTypeVariables(NULL),
    mpType(NULL),
    mpClass(NULL),
    mpBody(NULL),
@@ -61,6 +63,29 @@ void ASTFunction::setType(ASTType* ptype)
 {
    delete mpType;
    mpType = ptype;
+}
+
+bool ASTFunction::hasTypeVariables() const
+{
+   return mpTypeVariables != NULL;
+}
+
+const ASTTypeVariables& ASTFunction::getTypeVariables() const
+{
+   ASSERT_PTR(mpTypeVariables);
+   return *mpTypeVariables;
+}
+
+ASTTypeVariables& ASTFunction::getTypeVariables()
+{
+   ASSERT_PTR(mpTypeVariables);
+   return *mpTypeVariables;
+}
+
+void ASTFunction::setTypeVariables(ASTTypeVariables* ptypes)
+{
+   delete mpTypeVariables;
+   mpTypeVariables = ptypes;
 }
 
 bool ASTFunction::hasAnnotations() const 
@@ -163,6 +188,11 @@ void ASTFunction::setLocalVariableCount(int count)
 bool ASTFunction::isConstructor() const
 {
    return getKind() == eConstructor;
+}
+
+bool ASTFunction::isGeneric() const
+{
+   return mpTypeVariables != NULL && mpTypeVariables->size() > 0;
 }
 
 int ASTFunction::getArgumentCount() const

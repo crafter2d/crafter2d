@@ -38,9 +38,10 @@ public:
 
       // compiler required classes
       TS_ASSERT(compiler.compile("system.Object"));
-      TS_ASSERT(compiler.compile("system.System"));
       TS_ASSERT(compiler.compile("system.InternalArray"));
+      TS_ASSERT(compiler.compile("system.InternalString"));
       TS_ASSERT(compiler.compile("system.ClassLoader"));
+      TS_ASSERT(compiler.compile("system.System"));
 
       // do the actual test
       TS_ASSERT(compiler.compile("Test"));

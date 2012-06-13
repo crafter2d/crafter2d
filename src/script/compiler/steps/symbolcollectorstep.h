@@ -83,6 +83,7 @@ private:
    CompileContext&  mContext;
    ClassResolver    mResolver;
    ASTClass*        mpClass;
+   ASTFunction*     mpFunction;
 };
 
 #endif // SYMBOL_COLLECTOR_VISITOR_H_

@@ -1,6 +1,8 @@
 
 #include "signature.h"
 
+#include "core/smartptr/autoptr.h"
+
 #include "../ast/asttype.h"
 #include "../ast/astclass.h"
 #include "../ast/asttypevariable.h"
@@ -62,12 +64,19 @@ bool Signature::bestMatch(const Signature& that, const ASTTypeList& types) const
 
    for ( int index = 0; index < mTypes.size(); index++ )
    {
-      const ASTType* ptype = mTypes[index];
+      AutoPtr<ASTType> ptype = mTypes[index]->clone();
       const ASTType& thattype = *that.mTypes[index];
       
       if ( ptype->isGeneric() && !thattype.isGeneric() )
       {
-         ptype = &types[ptype->getTypeVariable().getIndex()];
+         if ( ptype->isArray() )
+         {
+            ptype->setArrayType(types[ptype->getTypeVariable().getIndex()].clone());
+         }
+         else
+         {
+            *ptype = (types[ptype->getTypeVariable().getIndex()]);
+         }
       }
 
       if ( !thattype.greater(*ptype) )

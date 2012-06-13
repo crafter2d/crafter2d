@@ -2,6 +2,7 @@
 #include "codegeneratorvisitor.h"
 
 #include "core/defines.h"
+#include "core/smartptr/scopedvalue.h"
 
 #include "script/ast/ast.h"
 #include "script/vm/virtualarrayobject.h"
@@ -318,7 +319,7 @@ void CodeGeneratorVisitor::visit(const ASTVariableInit& ast)
 
 void CodeGeneratorVisitor::visit(const ASTArrayInit& ast)
 {
-   visitChildren(ast);
+   // do nothing, implemented elsewhere
 }
 
 void CodeGeneratorVisitor::visit(const ASTBlock& ast)
@@ -351,9 +352,31 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
       mCurrentType.clear();
 
       const ASTVariableInit& varinit = var.getInit();
-      varinit.getExpression().accept(*this);
+      if ( varinit.hasArrayInit() )
+      {
+         const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-      addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+         addInstruction(VirtualInstruction::ePush, arrayinit.getCount());
+         addInstruction(VirtualInstruction::eNewArray, 1);
+         addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+
+         int count = arrayinit.getCount();
+         for ( int index = 0; index < count; index++ )
+         {
+            const ASTVariableInit& vinit = arrayinit.getInit(index);
+
+            vinit.getExpression().accept(*this);
+
+            addInstruction(VirtualInstruction::eLoadLocal, var.getResourceIndex());
+            addInstruction(VirtualInstruction::ePush, index);
+            addInstruction(VirtualInstruction::eStoreArray, 1);
+         }
+      }
+      else
+      {
+         varinit.getExpression().accept(*this);
+         addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+      }
    }
 
    mScopeStack.add(ScopeVariable::fromVariable(var));
@@ -740,7 +763,7 @@ void CodeGeneratorVisitor::visit(const ASTAssert& ast)
 
    addInstruction(VirtualInstruction::eJumpTrue, labelend);
    addInstruction(VirtualInstruction::ePush, errorlit);
-   addInstruction(VirtualInstruction::eNew, -1);
+   addInstruction(VirtualInstruction::eNew);
    addInstruction(VirtualInstruction::eThrow);
 
    addLabel(labelend);
@@ -778,6 +801,7 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
 
       mStore = true;
 
+      mCurrentType.clear();
       ast.getLeft().accept(*this);
 
       mStore = false;
@@ -1328,7 +1352,14 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             if ( mCurrentType.isValid() && type.isGeneric() )
             {
                const ASTTypeVariable& typevariable = type.getTypeVariable();
-               mCurrentType = mCurrentType.getTypeArguments()[typevariable.getIndex()];
+               if ( ast.getTypeArguments().size() > 0 )
+               {
+                  mCurrentType = ast.getTypeArguments()[typevariable.getIndex()];
+               }
+               else
+               {
+                  mCurrentType = mCurrentType.getTypeArguments()[typevariable.getIndex()];
+               }
             }
             else
                mCurrentType = type;
@@ -1436,8 +1467,6 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
 void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 {
-   int index = ast.getLiteral().getTableIndex();
-
    if ( ast.getType().isNull() )
    {
       if ( !IS_SET(mState, eStateNoNull) )
@@ -1447,7 +1476,7 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
    }
    else
    {
-      addInstruction(VirtualInstruction::eLoadLiteral, index);
+      handleLiteral(ast.getLiteral());
    }
 
    mCurrentType = ast.getType();
@@ -1457,6 +1486,8 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 
 void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
 {
+   ScopedValue<bool> needspop(&mNeedPop, false, mNeedPop);
+
    switch ( access.getKind() )
    {
       case ASTAccess::eField:
@@ -1635,8 +1666,30 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          {
             varinit.getExpression().accept(*this);
 
-            addInstruction(VirtualInstruction::ePushThis, variable.getResourceIndex());
+            addInstruction(VirtualInstruction::ePushThis);
             addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+         }
+         else // array initialization (currently only for one dimensional arrays)
+         {
+            const ASTArrayInit& arrayinit = varinit.getArrayInit();
+
+            addInstruction(VirtualInstruction::ePush, arrayinit.getCount());
+            addInstruction(VirtualInstruction::eNewArray, 1);
+            addInstruction(VirtualInstruction::ePushThis);
+            addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+
+            int count = arrayinit.getCount();
+            for ( int index = 0; index < count; index++ )
+            {
+               const ASTVariableInit& vinit = arrayinit.getInit(index);
+
+               vinit.getExpression().accept(*this);
+
+               addInstruction(VirtualInstruction::ePushThis);
+               addInstruction(VirtualInstruction::eLoad, variable.getResourceIndex());
+               addInstruction(VirtualInstruction::ePush, index);
+               addInstruction(VirtualInstruction::eStoreArray, 1);
+            }
          }
       }
       else
@@ -1714,4 +1767,61 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
    classobject->setMember(1, Variant(VirtualArrayReference(pfuncarray)));
 
    mpVClass->setClassObject(VirtualObjectReference(classobject));
+}
+
+void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
+{
+   int index = literal.getTableIndex();
+   const Variant value = literal.getValue();
+   if ( value.isInt() )
+   {
+      switch ( value.asInt() )
+      {
+      case 0:
+         addInstruction(VirtualInstruction::eInt0);
+         break;
+      case 1:
+         addInstruction(VirtualInstruction::eInt1);
+         break;
+      case 2:
+         addInstruction(VirtualInstruction::eInt2);
+         break;
+      default:
+         addInstruction(VirtualInstruction::eLoadLiteral, index);
+         break;
+      }
+   }
+   else if ( value.isReal() )
+   {
+      switch ( value.asInt() )
+      {
+      case 0:
+         addInstruction(VirtualInstruction::eReal0);
+         break;
+      case 1:
+         addInstruction(VirtualInstruction::eReal1);
+         break;
+      case 2:
+         addInstruction(VirtualInstruction::eReal2);
+         break;
+      default:
+         addInstruction(VirtualInstruction::eLoadLiteral, index);
+         break;
+      }
+   }
+   else if ( value.isBool() )
+   {
+      if ( value.asBool() )
+      {
+         addInstruction(VirtualInstruction::ePushTrue);
+      }
+      else
+      {
+         addInstruction(VirtualInstruction::ePushFalse);
+      }
+   }
+   else
+   {
+      addInstruction(VirtualInstruction::eLoadLiteral, index);
+   }
 }

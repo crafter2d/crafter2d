@@ -27,7 +27,8 @@ SymbolCollectorVisitor::SymbolCollectorVisitor(CompileContext& context):
    CompileStep(),
    mContext(context),
    mResolver(),
-   mpClass(NULL)
+   mpClass(NULL),
+   mpFunction(NULL)
 {
 }
 
@@ -81,6 +82,8 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
 
 void SymbolCollectorVisitor::visit(ASTFunction& ast)
 {
+   mpFunction = &ast;
+
    resolveType(ast.getType());
 
    visitChildren(ast); // <-- arguments
@@ -360,8 +363,21 @@ void SymbolCollectorVisitor::createDefaultConstructor(ASTClass& ast)
 /// compilation errors can be found earlier.
 void SymbolCollectorVisitor::resolveType(ASTType& type)
 {
-   if ( !type.resolveType(mContext, *mpClass) )
+   if ( !type.isVoid() )
    {
-      type.setKind(ASTType::eUnknown);
+      const ASTTypeVariables* ptypevariables = NULL;
+      if ( mpFunction != NULL && mpFunction->hasTypeVariables() )
+      {
+         ptypevariables = &mpFunction->getTypeVariables();
+      }
+      else if ( mpClass->isGeneric() )
+      {
+         ptypevariables = &mpClass->getTypeVariables();
+      }
+
+      if ( !type.resolveType(mContext, ptypevariables) )
+      {
+         type.setKind(ASTType::eUnknown);
+      }
    }
 }

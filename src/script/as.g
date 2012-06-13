@@ -89,8 +89,8 @@ class_var_decl
 	
 class_func_decl
 	:	modifiers identifier member_decl_rest					-> ^(CONSTRUCTOR_DECL modifiers identifier member_decl_rest)
-	|	annotations modifiers type identifier member_decl_rest 			-> ^(FUNCTION_DECL annotations modifiers type identifier member_decl_rest)
-	|	annotations modifiers T_VOID identifier member_decl_rest		-> ^(VOID_FUNCDECL annotations modifiers identifier member_decl_rest)
+	|	annotations modifiers typeinfos? type identifier member_decl_rest 	-> ^(FUNCTION_DECL annotations modifiers typeinfos? type identifier member_decl_rest)
+	|	annotations modifiers typeinfos? T_VOID identifier member_decl_rest	-> ^(VOID_FUNCDECL annotations modifiers typeinfos? identifier member_decl_rest)
 	;
 	
 member_decl_rest
@@ -222,7 +222,7 @@ switch_case
 	;
 	
 local_var_decl
-	:	type identifier ('=' expression)? ';' 					-> ^(LOCALVARDECL type identifier expression?)
+	:	type identifier ('=' variable_init)? ';' 				-> ^(LOCALVARDECL type identifier variable_init?)
 	;
 	
 // expressions
@@ -321,13 +321,13 @@ unary_post_oparator
 
 primary	:	compound_expression
 	|	literal									-> ^(LITERAL literal)
-	|	identifier arguments?							-> ^(ACCESS identifier arguments?)
+	|	identifier type_argument? arguments?					-> ^(ACCESS identifier type_argument? arguments?)
 	|	NEW^ type new_arguments
 	|	SUPER^ arguments?
 	|	THIS^ arguments?
 	;
 	
-selector:	'.' identifier arguments?						-> ^(ACCESS identifier arguments?)
+selector:	'.' identifier type_argument? arguments?				-> ^(ACCESS identifier type_argument? arguments?)
 	|	'.' CLASS								-> ^(CLASSACCESS)
 	|	('[' expression ']')+							-> ^(ARRAYACCESS expression+)
 	;

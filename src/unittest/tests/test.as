@@ -11,6 +11,7 @@ class Test
 	public void run()
 	{
 		TestRunner tr = TestRunner.getInstance();
+		tr.addClass(TestArray.class);
 		tr.addClass(TestMap.class);
 		tr.addClass(TestException.class);
 		tr.addClass(TestLoops.class);

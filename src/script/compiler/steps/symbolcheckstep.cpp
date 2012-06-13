@@ -955,7 +955,8 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
       signature.append(mCurrentType.clone());
    }
 
-   const ASTFunction* pfunction = aclass.findBestMatch(access.getName(), signature, before.getTypeArguments());
+   const ASTTypeList& typelist = access.getTypeArguments().size() > 0 ? access.getTypeArguments() : before.getTypeArguments();
+   const ASTFunction* pfunction = aclass.findBestMatch(access.getName(), signature, typelist);
 
    if ( pfunction != NULL )
    {

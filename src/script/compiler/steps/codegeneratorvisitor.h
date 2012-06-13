@@ -14,6 +14,7 @@
 
 class ASTVariable;
 class CompileContext;
+class Literal;
 class VirtualClass;
 class VirtualFunction;
 class VirtualProgram;
@@ -105,6 +106,7 @@ private:
    void handleStaticBlock(const ASTClass& ast);
    void handleFieldBlock(const ASTClass& ast);
    void handleClassObject(const ASTClass& ast);
+   void handleLiteral(const Literal& literal);
 
    void fillInstructionList();
 

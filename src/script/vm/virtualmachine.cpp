@@ -386,6 +386,9 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eNewArray:
          {
+            // n sizes
+            // NewArray dimension
+
             int arraydimension = instruction.getArgument();
 
             VirtualArrayReference array = instantiateArray();
