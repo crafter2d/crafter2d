@@ -158,14 +158,7 @@ void SymbolCheckVisitor::visit(ASTLocalVariable& ast)
 
 void SymbolCheckVisitor::visit(ASTExpressionStatement& ast)
 {
-   if ( ast.hasExpression() )
-   {
-      ast.getExpression().accept(*this);
-   }
-   else
-   {
-      mContext.getLog().warning("Expression statement without expression.");
-   }
+   ast.getExpression().accept(*this);   
 }
 
 void SymbolCheckVisitor::visit(ASTIf& ast)
@@ -834,6 +827,8 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
             }
             else
             {
+               ast.setAccess(ASTAccess::eArrayAccess);
+
                ASTType before = mCurrentType;
 
                ASTNodes& arguments = ast.getArguments();

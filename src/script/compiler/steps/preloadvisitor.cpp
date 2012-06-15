@@ -181,6 +181,10 @@ void PreloadVisitor::visit(ASTExpressionStatement& ast)
    {
       ast.getExpression().accept(*this);
    }
+   else
+   {
+      mContext.getLog().error("Compiler error: Expression statement without expression.");
+   }
 }
 
 void PreloadVisitor::visit(ASTIf& ast)

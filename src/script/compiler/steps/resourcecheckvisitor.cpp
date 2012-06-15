@@ -34,12 +34,16 @@ void ResourceCheckVisitor::visit(ASTClass& ast)
 
 void ResourceCheckVisitor::visit(ASTFunction& ast)
 {
-   mOffset = ast.getArguments().size();
-   mMaxVariables = mOffset;
-
    if ( !ast.getModifiers().isNative() && !ast.getModifiers().isAbstract() )
    {
-      mOffset++;
+      mOffset = ast.getArguments().size();
+      mMaxVariables = mOffset;
+
+      if ( !ast.getModifiers().isStatic() )
+      {
+         // add the this argument
+         mOffset++;
+      }
       
       ast.getBody().accept(*this);
     

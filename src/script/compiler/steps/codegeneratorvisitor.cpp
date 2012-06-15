@@ -296,7 +296,7 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
 
       // reserve space on the stack for arguments & local variables
       int varcount = ast.getLocalVariableCount();
-      if ( varcount > 1 )
+      if ( varcount >= 1 )
       {
          addInstruction(VirtualInstruction::eReserve, varcount);
       }
@@ -807,6 +807,7 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
       mStore = false;
       mNeedPop = false;
 
+      ASSERT(mpAccess->getAccess() != ASTAccess::eInvalidAccess);
       bool local = mpAccess->getAccess() == ASTAccess::eLocal;
 
       if ( mpAccess->getAccess() == ASTAccess::eField )
@@ -1176,7 +1177,7 @@ void CodeGeneratorVisitor::visit(const ASTUnary& ast)
 
       if ( mLoadFlags != 0 && mExpr > 0 )
       {
-         mLoadFlags |= eKeep; // determine if the result is still used!!
+         SET_FLAG(mLoadFlags, eKeep); // determine if the result is still used!!
       }
 
       children[index].accept(*this);
@@ -1534,12 +1535,12 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
       if ( variable.getType().isInt() )
       {
          addInstruction(VirtualInstruction::eInt1);
-         addInstruction((mLoadFlags & ePreIncr) == ePreIncr ? VirtualInstruction::eAddInt : VirtualInstruction::eSubInt);
+         addInstruction(IS_SET(mLoadFlags, ePreIncr) ? VirtualInstruction::eAddInt : VirtualInstruction::eSubInt);
       }
       else
       {
          addInstruction(VirtualInstruction::eReal1);
-         addInstruction((mLoadFlags & ePreIncr) == ePreIncr ? VirtualInstruction::eAddReal : VirtualInstruction::eSubReal);
+         addInstruction(IS_SET(mLoadFlags, ePreIncr) ? VirtualInstruction::eAddReal : VirtualInstruction::eSubReal);
       }
 
       addInstruction(VirtualInstruction::eDup);
@@ -1563,12 +1564,12 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
          if ( variable.getType().isInt() )
          {
             addInstruction(VirtualInstruction::eInt1);
-            addInstruction((flags & ePostIncr) == ePostIncr ? VirtualInstruction::eSubInt : VirtualInstruction::eAddInt);
+            addInstruction(IS_SET(flags, ePostIncr) ? VirtualInstruction::eSubInt : VirtualInstruction::eAddInt);
          }
          else
          {
             addInstruction(VirtualInstruction::eReal1);
-            addInstruction((flags & ePostIncr) == ePostIncr ? VirtualInstruction::eSubReal : VirtualInstruction::eAddReal);
+            addInstruction(IS_SET(flags, ePostIncr) ? VirtualInstruction::eSubReal : VirtualInstruction::eAddReal);
          }
       }
    }

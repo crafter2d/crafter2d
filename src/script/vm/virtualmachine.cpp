@@ -438,6 +438,13 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
                execute(theclass, entry);
             }
+            else if ( object.isString() )
+            {
+               const VirtualClass& theclass = mContext.mClassTable.resolve("system.InternalString");
+               const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
+
+               execute(theclass, entry);
+            }
             else
             {
                ASSERT(object.isEmpty());

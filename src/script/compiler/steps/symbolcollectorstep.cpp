@@ -154,10 +154,7 @@ void SymbolCollectorVisitor::visit(ASTLocalVariable& ast)
 
 void SymbolCollectorVisitor::visit(ASTExpressionStatement& ast)
 {
-   if ( ast.hasExpression() )
-   {
-      ast.getExpression().accept(*this);
-   }
+   ast.getExpression().accept(*this);
 }
 
 void SymbolCollectorVisitor::visit(ASTIf& ast)
