@@ -1394,14 +1394,14 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
 
-            if ( function.getModifiers().isNative() )
-            {
-               addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
-            }
-            else if ( function.getModifiers().isStatic() )
+            if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
             {
                addInstruction(VirtualInstruction::ePush, allocateLiteral(before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()));
                addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
+            }
+            else if ( function.getModifiers().isNative() )
+            {
+               addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
             }
             else if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
             {

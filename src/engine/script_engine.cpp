@@ -20,12 +20,15 @@
 #include "core/math/vector.h"
 #include "core/streams/datastream.h"
 #include "core/streams/bufferedstream.h"
+#include "core/vfs/file.h"
+#include "core/vfs/filesystem.h"
 #include "core/defines.h"
 
 #include "net/netstream.h"
 
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualobjectreference.h"
+#include "script/vm/virtualarrayreference.h"
 
 #include "script/scriptobject.h"
 #include "script/scriptmanager.h"
@@ -1125,6 +1128,46 @@ void Texture_getHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(texture->getHeight());
 }
 
+void FileSystem_getInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   RETURN_CLASS("engine.io.FileSystem", FileSystem, &FileSystem::getInstance());
+}
+
+void FileSystem_native_open(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(FileSystem, fs);
+
+   const std::string& name = accessor.getString(1);
+   int modus = accessor.getInt(2);
+
+   accessor.setResult(fs.open(name, modus));
+}
+
+void File_length(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(File, file);
+
+   accessor.setResult(file.size());
+}
+
+void File_read(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(File, file);
+
+   VirtualArrayReference& array = accessor.getArray(1);
+
+   int length = array->size();
+   char* pbuffer = new char[array->size()];
+   file.read(pbuffer, length);
+
+   for ( int index = 0; index < length; index++ )
+   {
+      array->at(index).setChar(pbuffer[index]);
+   }
+
+   delete[] pbuffer;
+}
+
 // - Registration
 
 void script_engine_register(ScriptManager& manager)
@@ -1283,6 +1326,12 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("Texture_getWidth", Texture_getWidth);
    registrator.addCallback("Texture_getHeight", Texture_getHeight);
+
+   registrator.addCallback("FileSystem_getInstance", FileSystem_getInstance);
+   registrator.addCallback("FileSystem_native_open", FileSystem_native_open);
+
+   registrator.addCallback("File_length", File_length);
+   registrator.addCallback("File_read", File_read);
 
    registrator.registerCallbacks(manager);
 }

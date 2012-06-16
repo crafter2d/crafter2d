@@ -12,7 +12,12 @@ final class Arrays
 		}
 	}
 	
-	static public <Type> boolean compareN(Type[] left, Type[] right, int length)
+	static public <Type> boolean equals(Type[] left, Type[] right)
+	{
+		return equals(left, right, left.length);
+	}
+	
+	static public <Type> boolean equals(Type[] left, Type[] right, int length)
 	{
 		for ( int index = 0; index < length; index++ )
 		{

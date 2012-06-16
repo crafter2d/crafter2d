@@ -24,10 +24,12 @@
 #include <iostream>
 
 #include "core/defines.h"
+#include "core/smartptr/autoptr.h"
 
 #include "script/compiler/compiler.h"
 #include "script/common/literal.h"
 
+#include "virtualarrayexception.h"
 #include "virtualinstructiontable.h"
 #include "virtualcontext.h"
 #include "virtualobject.h"
@@ -97,6 +99,40 @@ void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accesso
    thisobject->resize(newsize);
 }
 
+void InternalString_equals(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   const std::string& thisstring = accessor.getString(0);
+   const std::string& thatstring = accessor.getString(1);
+
+   accessor.setResult(thisstring == thatstring);
+}
+
+void InternalString_subString(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   const std::string& thisstring = accessor.getString(0);
+   
+   int pos = accessor.getInt(1);
+   int len = accessor.getInt(2);
+
+   accessor.setResult(thisstring.substr(pos, len));
+}
+
+void InternalString_length(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   const std::string& thisstring = accessor.getString(0);
+
+   accessor.setResult((int) thisstring.length());
+}
+
+void InternalString_getChar(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   const std::string& thisstring = accessor.getString(0);
+
+   int index = accessor.getInt(1);
+
+   accessor.setResult(thisstring[index]);
+}
+
 VirtualMachine::VirtualMachine(VirtualContext& context):
    mContext(context),
    mCallback(*this),
@@ -105,9 +141,10 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mStack(),
    mCallStack(),
    mCall(),
-   mException(NULL),
    mObjectObserver(*this),
    mNatives(),
+   mpArrayClass(NULL),
+   mpStringClass(NULL),
    mState(eRunning),
    mLoaded(false)
 {
@@ -120,6 +157,10 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
    mNatives.insert(std::pair<std::string, callbackfnc>("Throwable_fillCallStack", Throwable_fillCallStack));
    mNatives.insert(std::pair<std::string, callbackfnc>("InternalArray_resize", InternalArray_resize));
+   mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_equals", InternalString_equals));
+   mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_length", InternalString_length));
+   mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_subString", InternalString_subString));
+   mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_getChar", InternalString_getChar));
 }
 
 VirtualMachine::~VirtualMachine()
@@ -140,6 +181,12 @@ void VirtualMachine::initialize()
    loadClass("system.Object");
    loadClass("system.InternalArray");
    loadClass("system.InternalString");
+
+   // resolve the internal classes
+   mpArrayClass = &mContext.mClassTable.resolve("system.InternalArray");
+   mpStringClass = &mContext.mClassTable.resolve("system.InternalString");
+
+   // pre-compile utility classes
    loadClass("system.ClassLoader");
    loadClass("system.System");
 
@@ -307,13 +354,13 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
 
          execute(vclass, inst);
       }
+      catch ( VirtualArrayException* pexception )
+      {
+         handleException(*pexception);
+      }
       catch ( VirtualException* pexception )
       {
-         if ( handleException(*pexception) )
-         {
-            mException.release();
-         }
-         else
+         if ( !handleException(*pexception) )
          {
             mCall = mCallStack.top();
             mCallStack.pop();
@@ -433,17 +480,17 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             }
             else if ( object.isArray() )
             {
-               const VirtualClass& theclass = mContext.mClassTable.resolve("system.InternalArray");
-               const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
+               ASSERT_PTR(mpArrayClass);
+               const VirtualFunctionTableEntry& entry = mpArrayClass->getVirtualFunctionTable()[instruction.getArgument()];
 
-               execute(theclass, entry);
+               execute(*mpArrayClass, entry);
             }
             else if ( object.isString() )
             {
-               const VirtualClass& theclass = mContext.mClassTable.resolve("system.InternalString");
-               const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
+               ASSERT_PTR(mpStringClass);
+               const VirtualFunctionTableEntry& entry = mpStringClass->getVirtualFunctionTable()[instruction.getArgument()];
 
-               execute(theclass, entry);
+               execute(*mpStringClass, entry);
             }
             else
             {
@@ -1292,6 +1339,16 @@ void VirtualMachine::throwException(const std::string& exceptionname, const std:
    throw new VirtualException(exception);
 }
 
+bool VirtualMachine::handleException(const VirtualArrayException& arrayexception)
+{
+   VirtualObjectReference exception(instantiate("system.ArrayIndexOutOfBoundsException", -1));
+   AutoPtr<VirtualException> virexception = new VirtualException(exception);
+   if ( !handleException(*virexception) )
+   {
+      throw virexception.release();
+   }
+}
+
 bool VirtualMachine::handleException(const VirtualException& exception)
 {
    if ( mCall.mGuards.size() > 0 )
@@ -1299,9 +1356,7 @@ bool VirtualMachine::handleException(const VirtualException& exception)
       VirtualCall::VirtualGuard& guard = mCall.mGuards.back();
       if ( mCall.mInstructionPointer <= guard.mJumpTo )
       {
-         mException = exception.getException();
-
-         mStack.push_back(Variant(mException));
+         mStack.push_back(Variant(exception.getException()));
 
          mCall.jump(guard.mJumpTo);
 
@@ -1434,8 +1489,8 @@ VirtualObjectReference VirtualMachine::lookupNative(void* pobject)
 
 VirtualArrayReference VirtualMachine::instantiateArray()
 {
-   VirtualClass& internalarray = mContext.mClassTable.resolve("system.InternalArray");
-   VirtualArrayReference ref(internalarray.instantiateArray());
+   ASSERT_PTR(mpArrayClass);
+   VirtualArrayReference ref(mpArrayClass->instantiateArray());
 
    return ref;
 }

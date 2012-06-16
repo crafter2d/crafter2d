@@ -38,6 +38,7 @@
 #include "virtualmachineobjectobserver.h"
 #include "virtualcontext.h"
 
+class VirtualArrayException;
 class VirtualInstruction;
 class VirtualProgram;
 class VirtualFunctionBase;
@@ -134,6 +135,10 @@ public:
    }
 
    void setResult(bool value) {
+      mResult = Variant(value);
+   }
+
+   void setResult(char value) {
       mResult = Variant(value);
    }
 
@@ -271,6 +276,7 @@ private:
 
  // exception
    void throwException(const std::string& exceptionname, const std::string& reason = "");
+   bool handleException(const VirtualArrayException& arrayexception);
    bool handleException(const VirtualException& exception);
    void displayException(const VirtualException& exception);
 
@@ -289,11 +295,12 @@ private:
    Stack                         mStack;
    CallStack                     mCallStack;
    VirtualCall                   mCall;
-   VirtualObjectReference        mException;
    VirtualMachineObjectObserver  mObjectObserver;
    Natives                       mNatives;
    NativeObjectMap               mNativeObjects;
    State                         mState;
+   VirtualClass*                 mpArrayClass;
+   VirtualClass*                 mpStringClass;
    bool                          mRetVal;
    bool                          mLoaded;
 };

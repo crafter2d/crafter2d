@@ -67,7 +67,11 @@ bool Signature::bestMatch(const Signature& that, const ASTTypeList& types) const
       AutoPtr<ASTType> ptype = mTypes[index]->clone();
       const ASTType& thattype = *that.mTypes[index];
       
-      if ( ptype->isGeneric() && !thattype.isGeneric() )
+      if ( ptype->isGeneric() && thattype.isGeneric() )
+      {
+         // both generic, so check if generic types are the same
+      }
+      else if ( ptype->isGeneric() && !thattype.isGeneric() )
       {
          if ( ptype->isArray() )
          {

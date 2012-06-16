@@ -7,6 +7,8 @@
 
 #include "script/common/variant.h"
 
+#include "virtualarrayexception.h"
+
 VirtualArrayObject::VirtualArrayObject():
    mpArray(0)
 {
@@ -38,7 +40,7 @@ Variant& VirtualArrayObject::at(int index)
 {
    if ( index < 0 || index >= mSize )
    {
-      throw std::exception();
+      throw new VirtualArrayException();
    }
    return mpArray[index];
 }

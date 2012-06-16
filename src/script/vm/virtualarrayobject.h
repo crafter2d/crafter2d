@@ -2,9 +2,11 @@
 #ifndef VIRTUAL_ARRAY_OBJECT_H_
 #define VIRTUAL_ARRAY_OBJECT_H_
 
+#include "script/script_base.h"
+
 class Variant;
 
-class VirtualArrayObject
+class SCRIPT_API VirtualArrayObject
 {
 public:
    VirtualArrayObject();

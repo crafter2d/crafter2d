@@ -10,7 +10,7 @@ final class InternalString
 		char[] buffer = new char[length()];
 		for ( int index = 0; index < length(); index++ )
 		{
-			buffer[index] = get(index);
+			buffer[index] = getChar(index);
 		}
 		return buffer;
 	}
@@ -22,7 +22,7 @@ final class InternalString
 	public native int length();
 	
 	/// returns the character at the given index
-	public native char get(int index);
+	public native char getChar(int index);
 	
 	/// returns a sub string of this string starting at character start
 	/// and a length of count

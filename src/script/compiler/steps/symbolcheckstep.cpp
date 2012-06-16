@@ -800,6 +800,12 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                         checkFunctionAccess(arrayclass, ast, wasstatic);
                      }
                      break;
+                  case ASTType::eString:
+                     {
+                        const ASTClass& stringclass = mContext.resolveClass("system.InternalString");
+                        checkFunctionAccess(stringclass, ast, wasstatic);
+                     }
+                     break;
                   case ASTType::eVoid:
                      {
                         mContext.getLog().error("Can not invoke a method on a void object.");
