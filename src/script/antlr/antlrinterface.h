@@ -47,6 +47,9 @@ private:
    void     handleFuncArguments(const AntlrNode& node, ASTFunction& function);
    void     handleModifiers(const AntlrNode& node, ASTModifiers& modifiers);
 
+   std::string parseString(const std::string& value);
+   char        parseChar(const std::string& value);
+
    ASTType* getType(const AntlrNode& node);
 
  // specific

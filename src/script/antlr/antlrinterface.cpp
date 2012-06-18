@@ -6,6 +6,7 @@
 #include "core/defines.h"
 #include "core/conv/lexical.h"
 #include "core/smartptr/autoptr.h"
+#include "core/string/string.h"
 
 #include "script/output/asLexer.h"
 #include "script/output/asParser.h"
@@ -960,24 +961,6 @@ ASTCase* AntlrParser::handleCase(const AntlrNode& node)
       ASTUnary* pnode = handleUnary(valuenode);
       pcase->setValueExpression(pnode);
 
-      /*
-      std::string valuestr = valuenode.toString();
-
-      Variant value;
-      ANTLR3_UINT32 valuetype = valuenode.getType();
-      switch ( valuetype )
-      {
-         case INT:
-            value.setInt(lexical_cast<int>(valuestr));
-            break;
-         case FLOAT:
-            value.setReal(lexical_cast<double>(valuestr));
-            break;
-      }
-
-      pcase->setValue(value);
-      */
-
       bodyindex++;
    }
    else // default
@@ -1500,9 +1483,13 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
          kind = ASTType::eReal;
          value.setReal(lexical_cast<double>(valuestr));
          break;
+      case CHAR:
+         kind = ASTType::eChar;
+         value.setChar(parseChar(valuestr));
+         break;
       case STRING:
          kind = ASTType::eString;
-         value.setString(valuestr.substr(1, valuestr.length() - 2)); // cut the "";
+         value.setString(parseString(valuestr));
          break;
       case LITTRUE:
          kind = ASTType::eBoolean;
@@ -1532,6 +1519,29 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
 
    ASTLiteral* pastliteral = new ASTLiteral(*pliteral, kind);
    return pastliteral;
+}
+
+// - Helpers
+
+char AntlrParser::parseChar(const std::string& value)
+{
+   ASSERT(value[0] == '\'');
+
+   std::string unquoted = value.substr(1, value.length() - 2);
+   String s(unquoted.c_str());
+   std::string unescaped = s.unescape().toStdString();
+
+   return unescaped[0];
+}
+
+std::string AntlrParser::parseString(const std::string& value)
+{
+   ASSERT(value[0] == '\"');
+
+   std::string unquoted = value.substr(1, value.length() - 2);
+   String s(unquoted.c_str());
+   
+   return s.unescape().toStdString();
 }
 
 // - Error reporting

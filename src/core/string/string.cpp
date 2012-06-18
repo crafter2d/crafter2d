@@ -104,6 +104,13 @@ String String::subStr(int start, int count) const
    return result;
 }
 
+String String::unescape() const
+{
+   String result;
+   result.mpData->mString = mpData->mString.unescape();
+   return result;
+}
+
 // - Searching
 
 int String::indexOf(char character)

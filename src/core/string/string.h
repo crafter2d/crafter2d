@@ -34,6 +34,7 @@ public:
    void replace(int original, int newtext);
 
    String subStr(int start, int count) const;
+   String unescape() const;
 
  // searching
    int indexOf(char character);
