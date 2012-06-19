@@ -222,6 +222,7 @@ void Variant::setReal(double value)
 
 char Variant::asChar() const
 {
+   ASSERT(mType == eChar);
    return ((DataHolder<char>*)mpHolder)->mData;
 }
 

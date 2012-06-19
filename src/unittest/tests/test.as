@@ -13,6 +13,7 @@ class Test
 		TestRunner tr = TestRunner.getInstance();
 		//tr.addClass(TestFile.class);
 		tr.addClass(TestString.class);
+		tr.addClass(TestChar.class);
 		tr.addClass(TestArray.class);
 		tr.addClass(TestMap.class);
 		tr.addClass(TestException.class);

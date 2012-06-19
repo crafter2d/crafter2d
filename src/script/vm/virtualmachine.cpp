@@ -25,6 +25,7 @@
 
 #include "core/defines.h"
 #include "core/smartptr/autoptr.h"
+#include "core/string/char.h"
 
 #include "script/compiler/compiler.h"
 #include "script/common/literal.h"
@@ -133,6 +134,34 @@ void InternalString_getChar(VirtualMachine& machine, VirtualStackAccessor& acces
    accessor.setResult(thisstring[index]);
 }
 
+void Char_isAlphaNum(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   char c = accessor.getChar(0);
+
+   accessor.setResult(Char::isAlphaNum(c));
+}
+
+void Char_isAlpha(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   char c = accessor.getChar(0);
+
+   accessor.setResult(Char::isAlpha(c));
+}
+
+void Char_isDigit(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   char c = accessor.getChar(0);
+
+   accessor.setResult(Char::isDigit(c));
+}
+
+void Char_isWhitespace(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   char c = accessor.getChar(0);
+
+   accessor.setResult(Char::isWhitespace(c));
+}
+
 VirtualMachine::VirtualMachine(VirtualContext& context):
    mContext(context),
    mCallback(*this),
@@ -161,6 +190,10 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_length", InternalString_length));
    mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_subString", InternalString_subString));
    mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_getChar", InternalString_getChar));
+   mNatives.insert(std::pair<std::string, callbackfnc>("Char_isAlphaNum", Char_isAlphaNum));
+   mNatives.insert(std::pair<std::string, callbackfnc>("Char_isAlpha", Char_isAlpha));
+   mNatives.insert(std::pair<std::string, callbackfnc>("Char_isDigit", Char_isDigit));
+   mNatives.insert(std::pair<std::string, callbackfnc>("Char_isWhitespace", Char_isWhitespace));
 }
 
 VirtualMachine::~VirtualMachine()

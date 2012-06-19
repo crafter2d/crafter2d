@@ -84,6 +84,11 @@ public:
       return value.asString();
    }
 
+   char getChar(int argument) const {
+      Variant& value = getArgument(argument);
+      return value.asChar();
+   }
+
    bool getBoolean(int argument) const {
       Variant& value = getArgument(argument);
       if ( !value.isBool() )

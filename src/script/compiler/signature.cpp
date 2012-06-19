@@ -73,7 +73,12 @@ bool Signature::bestMatch(const Signature& that, const ASTTypeList& types) const
       }
       else if ( ptype->isGeneric() && !thattype.isGeneric() )
       {
-         if ( ptype->isArray() )
+         if ( types.empty() )
+         {
+            // user probably forgot to specify the type arguments
+            return false;
+         }
+         else if ( ptype->isArray() )
          {
             ptype->setArrayType(types[ptype->getTypeVariable().getIndex()].clone());
          }

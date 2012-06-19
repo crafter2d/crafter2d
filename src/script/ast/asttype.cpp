@@ -437,6 +437,9 @@ std::string ASTType::toString() const
       case eReal:
          type = SReal;
          break;
+      case eChar:
+         type = SChar;
+         break;
       case eString:
          type = SString;
          break;
