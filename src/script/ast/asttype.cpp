@@ -16,6 +16,7 @@ static const std::string SReal = "real";
 static const std::string SChar = "char";
 static const std::string SString = "string";
 static const std::string SBool = "boolean";
+static const std::string SVoid = "void";
 static const std::string SInvalid = "<unknown>";
 
 ASTType ASTType::SVoidType(eVoid);
@@ -461,6 +462,9 @@ std::string ASTType::toString() const
          break;
       case eArray:
          type = mpArrayType->toString();
+         break;
+      case eVoid:
+         type = SVoid;
          break;
 
       case eInvalid:

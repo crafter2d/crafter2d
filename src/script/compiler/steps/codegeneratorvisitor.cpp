@@ -1601,9 +1601,34 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
          mCurrentType.clear();
 
          const ASTVariableInit& varinit = variable.getInit();
-         varinit.getExpression().accept(*this);
-         addInstruction(VirtualInstruction::ePush, lit);
-         addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+         if ( varinit.hasExpression() )
+         {
+            varinit.getExpression().accept(*this);
+            addInstruction(VirtualInstruction::ePush, lit);
+            addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+         }
+         else // array initializer
+         {
+            const ASTArrayInit& arrayinit = varinit.getArrayInit();
+
+            addInstruction(VirtualInstruction::ePush, arrayinit.getCount());
+            addInstruction(VirtualInstruction::eNewArray, 1);
+            addInstruction(VirtualInstruction::ePush, lit);
+            addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+
+            int count = arrayinit.getCount();
+            for ( int index = 0; index < count; index++ )
+            {
+               const ASTVariableInit& vinit = arrayinit.getInit(index);
+
+               vinit.getExpression().accept(*this);
+
+               addInstruction(VirtualInstruction::ePush, lit);
+               addInstruction(VirtualInstruction::eLoadStatic, variable.getResourceIndex());
+               addInstruction(VirtualInstruction::ePush, index);
+               addInstruction(VirtualInstruction::eStoreArray, 1);
+            }
+         }
       }
       else
       {

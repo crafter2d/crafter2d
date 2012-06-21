@@ -16,6 +16,7 @@ public:
             Variant(const Variant& that);
    explicit Variant(int value);
    explicit Variant(double value);
+   explicit Variant(char value);
    explicit Variant(bool value);
    explicit Variant(const std::string& value);
    explicit Variant(const VirtualObjectReference& object);

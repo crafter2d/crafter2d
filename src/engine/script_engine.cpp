@@ -1140,7 +1140,12 @@ void FileSystem_native_open(VirtualMachine& machine, VirtualStackAccessor& acces
    const std::string& name = accessor.getString(1);
    int modus = accessor.getInt(2);
 
-   accessor.setResult(fs.open(name, modus));
+   RETURN_CLASS_OWNED("engine.io.File", File, fs.open(name, modus));
+}
+
+void File_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(File);
 }
 
 void File_length(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1330,6 +1335,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("FileSystem_getInstance", FileSystem_getInstance);
    registrator.addCallback("FileSystem_native_open", FileSystem_native_open);
 
+   registrator.addCallback("File_destruct", File_destruct);
    registrator.addCallback("File_length", File_length);
    registrator.addCallback("File_read", File_read);
 

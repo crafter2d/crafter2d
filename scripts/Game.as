@@ -3,6 +3,8 @@ use system.gamewindowfactory;
 use system.gamewindow;
 use engine.game.*;
 use engine.core.*;
+use engine.xml.*;
+use engine.io.*;
 
 use demo.GameServer;
 
@@ -10,8 +12,6 @@ class Game
 {
 	private static string ServerScript = "demo.GameServer";
 	private static string ClientScript = "demo.GameClient";
-	
-	private int[] arraytje = { 1, 2 };
 	
 	private Server mServer;
 	private Client mClient;
@@ -22,6 +22,10 @@ class Game
 	
 	public boolean initialize()
 	{
+		FileSystem fs = FileSystem.getInstance();
+		File file = fs.open("test.xml", 1);
+		XmlDocument doc = new XmlDocument(file);
+		
 		return createServer() && createClient();
 	}
    

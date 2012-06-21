@@ -34,6 +34,12 @@ Variant::Variant(double value):
 {
 }
 
+Variant::Variant(char value):
+   mType(eChar),
+   mpHolder(new DataHolder<char>(value))
+{
+}
+
 Variant::Variant(bool value):
    mType(eBool),
    mpHolder(new DataHolder<bool>(value))

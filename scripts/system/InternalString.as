@@ -15,6 +15,11 @@ final class InternalString
 		return buffer;
 	}
 	
+	public boolean isEmpty()
+	{
+		return length() == 0;
+	}
+	
 	/// compares the strings, returns true when equal
 	public native boolean equals(string s);
 

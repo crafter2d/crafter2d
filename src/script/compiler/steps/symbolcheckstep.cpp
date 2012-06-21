@@ -303,16 +303,16 @@ void SymbolCheckVisitor::visit(ASTReturn& ast)
       else
       {
          ast.getExpression().accept(*this);
+
+         if ( !mCurrentType.greater(mpFunction->getType()) )
+         {
+            mContext.getLog().error("Return type should be " + mpFunction->getType().toString() + " but is " + mCurrentType.toString());
+         }
       }
    }
    else if ( !mpFunction->getType().isVoid() )
    {
       mContext.getLog().error("Function " + mpFunction->getName() + " should return a value of type " + mpFunction->getType().toString());
-   }
-
-   if ( !mCurrentType.greater(mpFunction->getType()) )
-   {
-      mContext.getLog().error("Return type should be " + mpFunction->getType().toString() + " but is " + mCurrentType.toString());
    }
 }
 

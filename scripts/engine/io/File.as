@@ -1,7 +1,7 @@
 
 package engine.io;
 
-class File
+native class File
 {
 	public native void read(char[] buffer);
 	
