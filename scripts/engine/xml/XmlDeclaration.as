@@ -11,6 +11,8 @@ class XmlDeclaration extends XmlNode
 	
 	protected void parse(XmlStream stream)
 	{
+		XmlAttribute attr = new XmlAttribute();
+		
 		while ( !stream.isEOS() )
 		{
 			stream.skipWhitespace();
@@ -21,19 +23,16 @@ class XmlDeclaration extends XmlNode
 
 			if ( stream.peek("version") )
 			{
-				XmlAttribute attr = new XmlAttribute();
 				attr.parse(stream);
 				mVersion = attr.getValue();
 			}
 			else if ( stream.peek("encoding") )
 			{
-				XmlAttribute attr = new XmlAttribute();
 				attr.parse(stream);
 				mEncoding = attr.getValue();
 			}
 			else if ( stream.peek("standalone") )
 			{
-				XmlAttribute attr = new XmlAttribute();
 				attr.parse(stream);
 				mStandalone = attr.getValue();
 			}
@@ -52,6 +51,6 @@ class XmlDeclaration extends XmlNode
 			}			
 		}
 		
-		stream.get(); // read the end >
+		stream.skip(); // read the end >
 	}
 }

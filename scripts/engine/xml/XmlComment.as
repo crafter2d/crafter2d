@@ -3,8 +3,6 @@ package engine.xml;
 
 class XmlComment extends XmlNode
 {
-	private string mValue;
-	
 	// - Parsing
 	protected void parse(XmlStream stream)
 	{
@@ -15,7 +13,5 @@ class XmlComment extends XmlNode
 		{
 			mValue = mValue + stream.get();
 		}
-		
-		System.console.println("Comment: " + mValue);
 	}
 }

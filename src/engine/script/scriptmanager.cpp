@@ -102,14 +102,6 @@ void ScriptManager::destroy()
    mpVirtualContext = NULL;
 }
 
-// - Query
-
-const VirtualObjectReference& ScriptManager::getObject(const void* pobject) const
-{
-   ASSERT_PTR(mpVirtualMachine);
-   return mpVirtualMachine->getNativeObject(const_cast<void*>(pobject));
-}
-
 // - Loading
 
 Script* ScriptManager::loadNative(const std::string& classname, void* pobject, bool owned)

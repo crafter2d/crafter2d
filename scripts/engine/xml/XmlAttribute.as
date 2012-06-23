@@ -57,7 +57,5 @@ class XmlAttribute extends XmlNode
 				stream.skip();
 			}
 		}
-		
-		System.console.println("Attribute: " + mName + ": "+ mValue);
 	}
 }

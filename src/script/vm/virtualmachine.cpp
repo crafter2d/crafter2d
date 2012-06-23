@@ -31,6 +31,7 @@
 #include "script/common/literal.h"
 
 #include "virtualarrayexception.h"
+#include "virtualfunctionnotfoundexception.h"
 #include "virtualinstructiontable.h"
 #include "virtualcontext.h"
 #include "virtualobject.h"
@@ -235,18 +236,6 @@ void VirtualMachine::initialize()
    }
 }
 
-// - Query
-
-const VirtualObjectReference& VirtualMachine::getNativeObject(void* pobject) const
-{
-   NativeObjectMap::const_iterator it = mNativeObjects.find(pobject);
-   if ( it != mNativeObjects.end() )
-   {
-      return it->second;
-   }
-   return VirtualObjectReference();
-}
-
 // - Loading
 
 bool VirtualMachine::loadClass(const std::string& classname)
@@ -324,18 +313,10 @@ bool VirtualMachine::execute(const std::string& classname, const std::string& fu
       return false;
    }
 
-   try
-   {
-      execute(object, function);
-   }
-   catch ( VirtualException* pexception )
-   {
-      displayException(*pexception);
-   }
-   catch (...)
-   {
-      // oi
-   }
+   execute(object, function);
+   
+   // for now run the garbage collector here. have to find the right spot for it.
+   mGC.gc(*this);
 
    return true;
 }
@@ -346,7 +327,7 @@ void VirtualMachine::execute(const VirtualObjectReference& object, const std::st
    const VirtualFunctionTableEntry* pentry = vclass.getVirtualFunctionTable().findByName(function);
    if ( pentry == NULL )
    {
-      throw std::exception();
+      throw new VirtualFunctionNotFoundException(object->getClass().getName(), function);
    }
 
    Variant objectvariant(object);
@@ -355,19 +336,8 @@ void VirtualMachine::execute(const VirtualObjectReference& object, const std::st
    else
       mStack.push_back(objectvariant);
 
-   try
-   {
-      execute(vclass, *pentry);
-   }
-   catch ( VirtualException* pexception )
-   {
-      displayException(*pexception);
-   }
-   catch ( ... )
-   {
-      // ooops
-   }
-
+   execute(vclass, *pentry);
+   
    // for now run the garbage collector here. have to find the right spot for it.
    mGC.gc(*this);
 }
@@ -387,22 +357,21 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
 
          execute(vclass, inst);
       }
-      catch ( VirtualArrayException* pexception )
+      catch ( VirtualFunctionNotFoundException* pfuncexception)
       {
-         handleException(*pexception);
+         VirtualException* pexception = new VirtualException(instantiate("system.NoSuchFunctionException"));
+      }
+      catch ( VirtualArrayException* parrayexception )
+      {
+         VirtualException* pexception = new VirtualException(instantiateArrayException(*parrayexception));
+
+         handleException(pexception);
+
+         delete pexception;
       }
       catch ( VirtualException* pexception )
       {
-         if ( !handleException(*pexception) )
-         {
-            mCall = mCallStack.top();
-            mCallStack.pop();
-            throw;
-         }
-      }
-      catch ( std::exception& e )
-      {
-         e.what();
+         handleException(pexception);
       }
    }
 
@@ -1372,24 +1341,14 @@ void VirtualMachine::throwException(const std::string& exceptionname, const std:
    throw new VirtualException(exception);
 }
 
-bool VirtualMachine::handleException(const VirtualArrayException& arrayexception)
-{
-   VirtualObjectReference exception(instantiate("system.ArrayIndexOutOfBoundsException", -1));
-   AutoPtr<VirtualException> virexception = new VirtualException(exception);
-   if ( !handleException(*virexception) )
-   {
-      throw virexception.release();
-   }
-}
-
-bool VirtualMachine::handleException(const VirtualException& exception)
+bool VirtualMachine::handleException(VirtualException* pexception)
 {
    if ( mCall.mGuards.size() > 0 )
    {
       VirtualCall::VirtualGuard& guard = mCall.mGuards.back();
       if ( mCall.mInstructionPointer <= guard.mJumpTo )
       {
-         mStack.push_back(Variant(exception.getException()));
+         mStack.push_back(Variant(pexception->getException()));
 
          mCall.jump(guard.mJumpTo);
 
@@ -1400,11 +1359,16 @@ bool VirtualMachine::handleException(const VirtualException& exception)
          // exception within a catch handler, so see if there is another try/catch around this one
          mCall.mGuards.pop_back();
 
-         return handleException(exception);
+         return handleException(pexception);
       }
    }
 
-   return false;
+   // shrink the stack
+   shrinkStack(mCall.mStackBase);
+   mCall = mCallStack.top();
+   mCallStack.pop();
+
+   throw pexception;
 }
 
 void VirtualMachine::displayException(const VirtualException& exception)
@@ -1507,6 +1471,24 @@ VirtualObjectReference VirtualMachine::instantiateShare(const VirtualObjectRefer
    mNativeObjects[share->getNativeObject()] = share;
 
    return share;
+}
+
+VirtualObjectReference VirtualMachine::instantiateArrayException(const VirtualArrayException& e)
+{
+   VirtualObjectReference result;
+
+   switch ( e.getKind() )
+   {
+      case VirtualArrayException::eOutOfBounds: 
+         {
+            result = instantiate("system.ArrayIndexOutOfBoundsException", -1);
+            break;
+         }
+      default:
+         UNREACHABLE("Invalid enum value");
+   }
+   
+   return result;
 }
 
 VirtualObjectReference VirtualMachine::lookupNative(void* pobject)

@@ -17,16 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "virtualarrayexception.h"
-#ifndef JENGINE_INLINE
-#  include "virtualarrayexception.inl"
-#endif
+#ifndef VIRTUAL_FUNCTION_NOT_FOUND_EXCEPTION_H
+#define VIRTUAL_FUNCTION_NOT_FOUND_EXCEPTION_H
 
-#include "virtualexception.h"
+#include <string>
 
-VirtualArrayException::VirtualArrayException(Kind kind):
-   mKind(kind)
+class VirtualFunctionNotFoundException
 {
-}
+public:
+   VirtualFunctionNotFoundException(const std::string& aclass, const std::string& function);
 
-// - Get/set
+ // get/set
+   const std::string& getClassName() const;
+   const std::string& getFunction() const;
+
+private:
+   std::string mClass;
+   std::string mFunction;
+};
+
+#endif //VIRTUAL_FUNCTION_NOT_FOUND_EXCEPTION_H

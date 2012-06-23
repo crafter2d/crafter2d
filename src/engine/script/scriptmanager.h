@@ -101,9 +101,6 @@ public:
    bool                    initialize();
    void                    destroy();
    
- // query
-   const VirtualObjectReference& getObject(const void* pobject) const;
-
  // loading
    Script*                 loadNative(const std::string& classname, void* pobject, bool owned);
    

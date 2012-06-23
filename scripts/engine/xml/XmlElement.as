@@ -2,9 +2,7 @@
 package engine.xml;
 
 class XmlElement extends XmlNode
-{
-	private string mValue;
-	
+{	
 	protected void parse(XmlStream stream)
 	{		
 		mValue = stream.readName();
@@ -12,8 +10,6 @@ class XmlElement extends XmlNode
 		{
 			throw new XmlError("Element without name found");
 		}
-		
-		System.console.println("Element: " + mValue);
 		
 		stream.skipWhitespace();
 		
@@ -47,15 +43,10 @@ class XmlElement extends XmlNode
 				{
 					throw new XmlError("Error reading end tag");
 				}
-				
-				System.console.println("end of element " + mValue);
-				
 				break;
 			}
 			else
 			{
-				System.console.println("Reading attribute...");
-				
 				// try to read an attribute
 				XmlAttribute attr = new XmlAttribute();
 				attr.parse(stream);
@@ -95,8 +86,6 @@ class XmlElement extends XmlNode
 				}
 			}
 		}
-		
-		System.console.println("end of parseValue");
 	}
 }
 	

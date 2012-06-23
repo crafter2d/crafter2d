@@ -40,7 +40,7 @@ Variant& VirtualArrayObject::at(int index)
 {
    if ( index < 0 || index >= mSize )
    {
-      throw new VirtualArrayException();
+      throw new VirtualArrayException(VirtualArrayException::eOutOfBounds);
    }
    return mpArray[index];
 }

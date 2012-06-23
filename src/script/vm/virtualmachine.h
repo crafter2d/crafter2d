@@ -62,25 +62,16 @@ public:
 
    int getInt(int argument) const {
       Variant& value = getArgument(argument);
-      if ( !value.isInt() )
-         throw std::exception();
-
       return value.asInt();
    }
 
    double getReal(int argument) const {
       Variant& value = getArgument(argument);
-      if ( !value.isReal() )
-         throw std::exception();
-
       return value.asReal();
    }
 
    const std::string& getString(int argument) const {
       Variant& value = getArgument(argument);
-      if ( !value.isString() )
-         throw std::exception();
-
       return value.asString();
    }
 
@@ -91,27 +82,16 @@ public:
 
    bool getBoolean(int argument) const {
       Variant& value = getArgument(argument);
-      if ( !value.isBool() )
-         throw std::exception();
-
       return value.asBool();
    }
 
    VirtualObjectReference& getObject(int argument) const {
       Variant& value = getArgument(argument);
-
-      if ( !value.isObject() )
-         throw std::exception();
-
       return value.asObject();
    }
 
    VirtualArrayReference& getArray(int argument) const {
       Variant& value = getArgument(argument);
-
-      if ( !value.isArray() )
-         throw std::exception();
-
       return value.asArray();
    }
 
@@ -178,10 +158,7 @@ public:
 
  // initialization
    void initialize();
-
- // query
-   const VirtualObjectReference& getNativeObject(void* pobject) const;
-
+   
  // loading
    bool loadClass(const std::string& classname);
 
@@ -205,6 +182,7 @@ public:
 
  // exception handling
    std::string buildCallStack() const;
+   void displayException(const VirtualException& exception);
 
  // object instantation
    VirtualObjectReference instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
@@ -280,10 +258,9 @@ private:
    Variant pop();
 
  // exception
-   void throwException(const std::string& exceptionname, const std::string& reason = "");
-   bool handleException(const VirtualArrayException& arrayexception);
-   bool handleException(const VirtualException& exception);
-   void displayException(const VirtualException& exception);
+   VirtualObjectReference  instantiateArrayException(const VirtualArrayException& e);
+   void                    throwException(const std::string& exceptionname, const std::string& reason = "");
+   bool                    handleException(VirtualException* pexception);
 
  // class loading
    VirtualClass* doLoadClass(const std::string& classname);

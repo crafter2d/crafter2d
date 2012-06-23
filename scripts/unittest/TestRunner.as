@@ -47,6 +47,8 @@ class TestRunner
 	
 	public void run()
 	{
+		System.console.println("\nRunning tests");
+		
 		foreach ( Class c : mClasses )
 		{
 			Object instance = c.newInstance();

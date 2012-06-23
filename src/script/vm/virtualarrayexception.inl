@@ -17,16 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "virtualarrayexception.h"
-#ifndef JENGINE_INLINE
-#  include "virtualarrayexception.inl"
-#endif
-
-#include "virtualexception.h"
-
-VirtualArrayException::VirtualArrayException(Kind kind):
-   mKind(kind)
-{
-}
+#include "core/defines.h"
 
 // - Get/set
+
+INLINE VirtualArrayException::Kind VirtualArrayException::getKind() const
+{
+   return mKind;
+}
