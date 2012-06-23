@@ -3,7 +3,7 @@ package engine.io;
 
 native class File
 {
-	public native void read(char[] buffer);
+	public native char[] readText();
 	
 	public native int length();
 }

@@ -5,10 +5,10 @@ use engine.collections.*;
 
 abstract class XmlNode
 {
-	private static char[] xmlHeader = { '<', '?', 'x', 'm', 'l' };
-	private static char[] commentHeader = { '<', '!', '-', '-' };
-	private static char[] dtdHeader = { '<', '!' };
-	private static char[] cdataHeader = { '<', '!', '[', 'C', 'D', 'A', 'T', 'A', '[' };
+	private static char[] xmlHeader = { '?', 'x', 'm', 'l' };
+	private static char[] commentHeader = { '!', '-', '-' };
+	private static char[] dtdHeader = { '!' };
+	private static char[] cdataHeader = { '!', '[', 'C', 'D', 'A', 'T', 'A', '[' };
 	
 	private XmlNode mParent = null;
 	private ArrayList<XmlNode> mChildren = new ArrayList<XmlNode>();
@@ -40,12 +40,16 @@ abstract class XmlNode
 		
 		stream.skipWhitespace();
 		
+		char entry = stream.get();
+		assert entry == '<';
+		
 		if (  stream.read(xmlHeader) )
 		{
 			result = new XmlDeclaration();
 		}
 		else if ( stream.read(commentHeader) )
 		{
+			result = new XmlComment();
 		}
 		else if ( stream.read(cdataHeader) )
 		{
@@ -55,7 +59,7 @@ abstract class XmlNode
 		}
 		else
 		{
-			char next = stream.peek(1);
+			char next = stream.peek();
 			if ( Char.isAlpha(next) || next == '_' )
 			{
 				result = new XmlElement();
@@ -68,6 +72,7 @@ abstract class XmlNode
 		}
 		
 		result.setParent(this);
+		addChild(result);
 		
 		return result;
 	}

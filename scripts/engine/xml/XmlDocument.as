@@ -19,7 +19,12 @@ class XmlDocument extends XmlNode
 	
 	protected void parse(XmlStream stream)
 	{
-		XmlNode node = identify(stream);
-		node.parse(stream);
+		while ( !stream.isEOS() )
+		{
+			XmlNode node = identify(stream);
+			node.parse(stream);
+			
+			stream.skipWhitespace();
+		}
 	}
 }

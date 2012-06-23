@@ -1155,22 +1155,26 @@ void File_length(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(file.size());
 }
 
-void File_read(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void File_readText(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(File, file);
 
-   VirtualArrayReference& array = accessor.getArray(1);
+   int length = file.size();
+   char* pbuffer = new char[length];
+   length = file.read(pbuffer, length);
 
-   int length = array->size();
-   char* pbuffer = new char[array->size()];
-   file.read(pbuffer, length);
-
+   VirtualArrayReference arrayref(machine.instantiateArray());
+   VirtualArrayObject& array = *arrayref;
+   array.addLevel(length);
+   
    for ( int index = 0; index < length; index++ )
    {
-      array->at(index).setChar(pbuffer[index]);
+      array[index].setChar(pbuffer[index]);
    }
 
    delete[] pbuffer;
+
+   accessor.setResult(Variant(arrayref));
 }
 
 // - Registration
@@ -1337,7 +1341,7 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("File_destruct", File_destruct);
    registrator.addCallback("File_length", File_length);
-   registrator.addCallback("File_read", File_read);
+   registrator.addCallback("File_readText", File_readText);
 
    registrator.registerCallbacks(manager);
 }

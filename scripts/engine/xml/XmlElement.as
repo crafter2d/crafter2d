@@ -6,10 +6,7 @@ class XmlElement extends XmlNode
 	private string mValue;
 	
 	protected void parse(XmlStream stream)
-	{
-		char entry = stream.get();
-		assert entry == '<';
-		
+	{		
 		mValue = stream.readName();
 		if ( mValue.length() == 0 )
 		{
@@ -22,14 +19,20 @@ class XmlElement extends XmlNode
 		
 		while ( !stream.isEOS() )
 		{
-			char next = stream.get();
+			char next = stream.peek();
 			
 			if ( next == '/' )
 			{
 				// empty tag
+				stream.skip();
+				stream.skip(); // skip also closing >
+				
+				break;
 			}
 			else if ( next == '>' )
 			{
+				stream.get();
+				
 				// done with attributes, now read the value
 				parseValue(stream);
 				
@@ -59,6 +62,8 @@ class XmlElement extends XmlNode
 				
 				addChild(attr);
 			}
+			
+			stream.skipWhitespace();
 		}
 	}
 	
@@ -66,7 +71,7 @@ class XmlElement extends XmlNode
 	{
 		while ( !stream.isEOS() )
 		{
-			char next = stream.peek(0);
+			char next = stream.peek();
 			if ( next == '<' )
 			{
 				char[] endtag = { '<', '/' };
@@ -78,7 +83,6 @@ class XmlElement extends XmlNode
 				// another element
 				XmlNode node = identify(stream);
 				node.parse(stream);
-				addChild(node);
 			}
 			else
 			{

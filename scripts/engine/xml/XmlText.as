@@ -18,17 +18,5 @@ class XmlText extends XmlNode
 		mText = stream.readText('<', false);
 		
 		System.console.println("Text: " + mText);
-
-		char[] endtag = { '<', '/' };
-		if ( stream.peek(endtag) ) 
-		{
-			System.console.println("end tag detected");
-			// hit a end tag
-			return;
-		}
-		else
-		{
-			// hit new element
-		}
 	}
 }

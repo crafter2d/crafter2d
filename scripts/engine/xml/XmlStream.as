@@ -12,14 +12,7 @@ class XmlStream
 	{
 		super();
 		
-		int length = file.length();
-		if ( length <= 0 )
-		{
-			throw new XmlError("Empty document");
-		}
-		
-		mBuffer = new char[length];
-		file.read(mBuffer);
+		mBuffer = file.readText();
 		mPos = 0;
 	}
 	
@@ -40,13 +33,18 @@ class XmlStream
 		}
 	}
 	
-	public char peek(int dist)
+	public void skip()
 	{
-		return mBuffer[mPos + dist];
+		++mPos;
+	}
+	
+	public char peek()
+	{
+		return mBuffer[mPos];
 	}
 	
 	public char get()
-	{		
+	{
 		return mBuffer[mPos++];
 	}
 	
@@ -80,6 +78,12 @@ class XmlStream
 		}
 		
 		return result;
+	}
+	
+	public boolean peek(string sequence)
+	{
+		char[] seq = sequence.asArray();
+		return peek(seq);
 	}
 	
 	public boolean read(string sequence)

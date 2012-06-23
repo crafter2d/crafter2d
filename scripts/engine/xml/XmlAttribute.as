@@ -6,32 +6,43 @@ class XmlAttribute extends XmlNode
 	private string mName;
 	private string mValue;
 	
+	// - Get/set
+	
+	public string getValue()
+	{
+		return mValue;
+	}
+	
 	// - Parsing
 	
 	protected void parse(XmlStream stream)
 	{
 		mName = stream.readName();
 		
+		stream.skipWhitespace();
+		
 		char assign = stream.get();
 		assert assign == '=';
+		
+		stream.skipWhitespace();
 		
 		char next = stream.get();
 		if ( next == '\'' )
 		{
 			mValue = stream.readText('\'', false);
-			stream.get();
+			stream.skip();
 		}
 		else if  ( next == '\"' )
 		{
 			mValue = stream.readText('\"', false);
-			stream.get();
+			stream.skip();
 		}
 		else
 		{
 			mValue = mValue + next;
 			while ( !stream.isEOS() )
 			{
-				next = stream.get();
+				next = stream.peek();
 				if ( Char.isWhitespace(next) || next == '/' || next == '>' )
 				{
 					// end of the value
@@ -43,6 +54,7 @@ class XmlAttribute extends XmlNode
 				}
 				
 				mValue = mValue + next;
+				stream.skip();
 			}
 		}
 		

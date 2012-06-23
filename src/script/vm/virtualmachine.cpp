@@ -377,13 +377,6 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    mCallStack.push(mCall);
    mCall.start(vclass, entry, mStack.size());
 
-   /*
-   if ( vclass.getName() == "Game" && entry.mName == "initialize" )
-   {
-      int aap = 5;
-   }
-   */
-
    const VirtualInstructionTable& instructions = mContext.mInstructions;
 
    while ( mState != eReturn )
