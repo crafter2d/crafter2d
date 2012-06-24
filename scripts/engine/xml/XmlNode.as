@@ -23,7 +23,7 @@ abstract class XmlNode
 	
 	public void setParent(XmlNode parent)
 	{
-		mParent = parent
+		mParent = parent;
 	}
 	
 	public string getValue()
