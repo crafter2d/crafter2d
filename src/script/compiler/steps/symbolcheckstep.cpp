@@ -633,6 +633,12 @@ void SymbolCheckVisitor::visit(ASTCast& ast)
 void SymbolCheckVisitor::visit(ASTSuper& ast)
 {
    ASTClass* pclass = mpClass;
+   if ( pclass->hasBaseType() && pclass->getBaseType().isUnknown() )
+   {
+      // skip calls to the unknown super class
+      return;
+   }
+
    if ( ast.getKind() == ASTSuper::eSuper )
       pclass = &mpClass->getBaseClass();
 
@@ -918,7 +924,7 @@ void SymbolCheckVisitor::checkVarInit(ASTVariable& var)
 
       if ( !mCurrentType.greater(var.getType()) )
       {
-         mContext.getLog().error("Assigning wrong type to variable " + var.getName() + " was expecting " + var.getType().toString() + " and got " + mCurrentType.toString());
+         mContext.getLog().error("Assigning wrong type to variable '" + var.getName() + "' was expecting " + var.getType().toString() + " and got " + mCurrentType.toString());
       }
    }
 }

@@ -93,7 +93,10 @@ void PreloadVisitor::visit(ASTClass& ast)
       }
       else
       {
-         ast.setBaseClass(mContext.resolveClass(ast.getBaseType().getObjectName()));
+         if ( !ast.getBaseType().isUnknown() )
+         {
+            ast.setBaseClass(mContext.resolveClass(ast.getBaseType().getObjectName()));
+         }
       }
    }
 

@@ -73,7 +73,7 @@ void ASTClass::setBaseType(ASTType* pbasetype)
 
 bool ASTClass::hasBaseClass() const
 {
-   return hasBaseType();
+   return hasBaseType() && !getBaseType().isUnknown();
 }
    
 const ASTClass& ASTClass::getBaseClass() const

@@ -1456,10 +1456,13 @@ VirtualObjectReference VirtualMachine::instantiateNative(const std::string& clas
 
    // construct new instance & remember it
    VirtualObjectReference object(instantiate(classname, -1, pobject));
-   ASSERT(pobject == NULL || (object->hasNativeObject() && object->getNativeObject() == pobject));
-   object->setOwner(owned);
+   if ( !object.isNull() )
+   {
+      ASSERT(object->hasNativeObject() && object->getNativeObject() == pobject);
+      object->setOwner(owned);
 
-   mNativeObjects[pobject] = object;
+      mNativeObjects[pobject] = object;
+   }
 
    return object;
 }
