@@ -1,7 +1,6 @@
 
 #include "garbagecollector.h"
 
-#include "core/smartptr/weakptr.h"
 #include "core/containers/hashmapiterator.h"
 
 #include "script/vm/virtualmachine.h"
@@ -47,14 +46,11 @@ void GarbageCollector::collect(VirtualObjectReference& object)
 
 void GarbageCollector::gc(VirtualMachine& vm)
 {
-   SharedPtr<int> ptr(new int());
-   WeakPtr<int> weakptr(ptr);
-
    HashMapIterator<void*, VirtualObjectReference> it = mObjects.getIterator();
    for ( ; it.isValid(); ++it )
    {
-      VirtualObjectReference ref = it.item();
-      it.remove();
+      VirtualObjectReference& ref = it.item();
+      //it.remove();
 
       if ( ref->hasNativeObject() )
       {
@@ -62,8 +58,8 @@ void GarbageCollector::gc(VirtualMachine& vm)
       }
 
       // do not collect, but try to GC the members directly
-      ref->collect(*this);
-      it.reset();
+      //ref->collect(*this);
+      //it.reset();
    }
 
    mObjects.clear();

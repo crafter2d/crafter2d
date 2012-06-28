@@ -16,10 +16,6 @@ SharedPtr<T>::SharedPtr(const SharedPtr<T>& that):
 template<class T>
 SharedPtr<T>::~SharedPtr()
 {
-   if ( mCount.isUnique() )
-   {
-      reset();
-   }
 }
 
 template<class T>
@@ -83,8 +79,7 @@ int SharedPtr<T>::uses() const
 template<class T>
 void SharedPtr<T>::reset()
 {
-   //mCount.reset();
+   mCount.reset();
 
-   delete mpPointer;
    mpPointer = NULL;
 }

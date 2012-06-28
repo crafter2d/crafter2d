@@ -72,6 +72,14 @@ public:
       return mpCounter == NULL ? 0 : mpCounter->useCount();
    }
 
+ // operations
+
+   void reset()
+   {
+      mpCounter->releaseRef();
+      mpCounter = NULL;
+   }
+
 
 private:
    friend class WeakCount;
