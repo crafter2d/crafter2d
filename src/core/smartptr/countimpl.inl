@@ -1,6 +1,7 @@
 
 template<class T>
-CountImpl<T>::CountImpl(T* pdata)
+CountImpl<T>::CountImpl(T* pdata):
+   mpData(pdata)
 {
 }
 

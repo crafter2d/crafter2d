@@ -2,19 +2,48 @@
 #ifndef WEAK_COUNT_H
 #define WEAK_COUNT_H
 
-#include "countbase.h"
+#include "core/defines.h"
 
-class SharedCount;
+#include "countbase.h"
+#include "sharedcount.h"
 
 class WeakCount
 {
-   WeakCount();
-   WeakCount(const WeakCount& that);
-   WeakCount(const SharedCount& that);
-   ~WeakCount();
+public:
+   WeakCount():
+      mpCounter(NULL)
+   {
+   }
+
+   WeakCount(const WeakCount& that):
+      mpCounter(that.mpCounter)
+   {
+      if ( mpCounter != NULL )
+      {
+         mpCounter->addWeakRef();
+      }
+   }
+
+   WeakCount(const SharedCount& that):
+      mpCounter(that.mpCounter)
+   {
+      if ( mpCounter != NULL )
+      {
+         mpCounter->addWeakRef();
+      }
+   }
+
+   ~WeakCount()
+   {
+      if ( mpCounter != NULL )
+      {
+         mpCounter->releaseWeakRef();
+      }
+   }
 
 private:
    CountBase* mpCounter;
 };
+
 
 #endif // WEAK_COUNT_H

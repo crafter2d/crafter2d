@@ -15,7 +15,9 @@ public:
    WeakPtr(const SharedPtr<T>& ptr);
 
 private:
-   WeakCount* mpCount;
+   WeakCount mCount;
 };
+
+#include "weakptr.inl"
 
 #endif // WEAK_PTR
