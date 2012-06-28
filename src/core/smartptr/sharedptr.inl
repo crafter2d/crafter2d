@@ -1,7 +1,7 @@
 
 template<class T>
 SharedPtr<T>::SharedPtr(T* pointer):
-   mCount(),
+   mCount(pointer),
    mpPointer(pointer)
 {
 }
@@ -83,7 +83,7 @@ int SharedPtr<T>::uses() const
 template<class T>
 void SharedPtr<T>::reset()
 {
-   mCount.reset();
+   //mCount.reset();
 
    delete mpPointer;
    mpPointer = NULL;

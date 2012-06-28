@@ -53,4 +53,12 @@ class XmlDeclaration extends XmlNode
 		
 		stream.skip(); // read the end >
 	}
+	
+	// - Debugging
+	
+	protected void doPrint()
+	{
+		System.console.println("<?xml");
+		System.console.println(">");
+	}
 }

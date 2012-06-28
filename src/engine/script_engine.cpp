@@ -741,6 +741,7 @@ void AIController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    Process* pprocess = (Process*) accessor.getObject(1)->getNativeObject();
 
    AIController* pcontroller = new AIController(*pprocess);
+   pcontroller->setThis(thisobject);
    machine.registerNative(thisobject, pcontroller);
    thisobject->setOwner(true);
 }

@@ -27,4 +27,11 @@ class XmlDocument extends XmlNode
 			stream.skipWhitespace();
 		}
 	}
+	
+	// - Debugging
+	
+	protected void doPrint()
+	{
+		printChildren();
+	}
 }

@@ -43,6 +43,7 @@
 #include "virtualfunctiontable.h"
 #include "virtualfunctiontableentry.h"
 #include "virtuallookuptable.h"
+#include "virtualownednativeobjectstrategy.h"
 
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -199,10 +200,21 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
 
 VirtualMachine::~VirtualMachine()
 {
+   NativeObjectMap::iterator it = mNativeObjects.begin();
+   for ( ; it != mNativeObjects.end(); it++)
+   {
+      VirtualObjectReference& ref = it->second;
+      mGC.collect(it->second);
+   }
+
+   // clear the garbage collector
+   mGC.gc(*this);
+
+   ASSERT(mNativeObjects.empty());
+
    // set destruct state, native object notifies vm when it is destructed
    // resulting in double delete.
    mState = eDestruct;
-   mNativeObjects.clear();
    mNatives.clear();
    mCompiler.cleanUp();
 }
@@ -360,6 +372,10 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
       catch ( VirtualFunctionNotFoundException* pfuncexception)
       {
          VirtualException* pexception = new VirtualException(instantiate("system.NoSuchFunctionException"));
+
+         handleException(pexception);
+
+         delete pexception;
       }
       catch ( VirtualArrayException* parrayexception )
       {
@@ -1524,9 +1540,31 @@ void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnativ
    ASSERT(ret.second);
 }
 
+void VirtualMachine::unregisterNative(void* pnative)
+{
+   VirtualObjectReference& ref = mNativeObjects[pnative];
+   if ( ref->isOwner() )
+   {
+      const std::string& classname = ref->getClass().getNativeClassName();
+      std::string fnc = classname + "_destruct";
+
+      mStack.push_back(Variant(ref));
+      mStack.push_back(Variant(1));
+
+      VirtualStackAccessor accessor(mStack);
+      (*mNatives[fnc])(*this, accessor);
+
+      mStack.pop_back();
+      mStack.pop_back();
+   }
+
+   ASSERT(mNativeObjects.find(pnative) != mNativeObjects.end());
+   mNativeObjects.erase(pnative);
+}
+
 void VirtualMachine::unregisterNative(VirtualObjectReference& object)
 {
-   if ( object.uses() <= 2 )
+   if ( object.uses() <= 2 ) // kept by GC and native object array
    {
       ASSERT(object->hasNativeObject());
 

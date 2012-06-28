@@ -22,6 +22,7 @@
 
 #include "script/script_base.h"
 
+class GarbageCollector;
 class Variant;
 class VirtualClass;
 class VirtualObjectReference;
@@ -39,7 +40,7 @@ public:
    void* getNativeObject();
    void* useNativeObject();
    void  setNativeObject(void* pobject);
-   
+      
    bool isOwner() const;
    void setOwner(bool owned);
 
@@ -56,15 +57,18 @@ public:
    Variant& getMember(int index);
    void setMember(int index, const Variant& value);
 
+ // garbage
+   void collect(GarbageCollector& gc);
+
 private:
 
  // members
-   const VirtualClass*     mpClass;
-   void*                   mpNativeObject;
-   Variant*                mpMembers;
-   int                     mMemberCount;
-   bool                    mOwnsNative;
-   bool                    mShared;
+   const VirtualClass*           mpClass;
+   void*                         mpNativeObject;
+   Variant*                      mpMembers;
+   int                           mMemberCount;
+   bool                          mOwnsNative;
+   bool                          mShared;
 };
 
 #endif // VIRTUAL_OBJECT_H_

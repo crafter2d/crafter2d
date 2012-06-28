@@ -6,11 +6,15 @@
 
 class Process;
 class Script;
+class VirtualObjectReference;
 
 class AIController : public Controller
 {
 public:
    explicit AIController(Process& process);
+
+ // get/set
+   void setThis(const VirtualObjectReference& self);
 
  // operations
    virtual void performAction(Actor& actor);

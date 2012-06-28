@@ -3,7 +3,7 @@
 #ifndef GARBAGE_COLLECTOR_H
 #define GARBAGE_COLLECTOR_H
 
-#include <list>
+#include "core/containers/hashmap.h"
 
 #include "script/vm/virtualobjectreference.h"
 
@@ -13,12 +13,14 @@ class GarbageCollector
 {
 public:
    GarbageCollector();
+   ~GarbageCollector();
 
+ // operations
    void collect(VirtualObjectReference& object);
    void gc(VirtualMachine& vm);
 
 private:
-   typedef std::list<VirtualObjectReference> Objects;
+   typedef HashMap<void*, VirtualObjectReference> Objects;
 
    Objects mObjects;
 };

@@ -14,4 +14,9 @@ class XmlComment extends XmlNode
 			mValue = mValue + stream.get();
 		}
 	}
+	
+	protected void doPrint()
+	{
+		System.console.println("<!-- " + mValue + " -->");
+	}
 }

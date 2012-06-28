@@ -20,7 +20,7 @@
 #ifndef SHARED_PTR_H_
 #define SHARED_PTR_H_
 
-#include "core/core_base.h"
+#include "core/defines.h"
 
 #include "sharedcount.h"
 
@@ -50,6 +50,8 @@ public:
    void reset();
 
 private:
+   template<class T> friend class WeakPtr;
+
    SharedCount mCount;
    T*          mpPointer;
 };

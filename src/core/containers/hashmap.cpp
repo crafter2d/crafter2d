@@ -17,35 +17,4 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "aicontroller.h"
-
-#include "core/defines.h"
-#include "core/smartptr/autoptr.h"
-
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
-
-#include "actor.h"
-#include "process.h"
-
-AIController::AIController(Process& process):
-   Controller(),
-   mpScript(NULL)
-{
-   mpScript = new Script(process.getScriptManager());
-}
-
-// - Get/set
-
-void AIController::setThis(const VirtualObjectReference& self)
-{
-   mpScript->setThis(self);
-}
-
-// - Operations
-
-void AIController::performAction(Actor& actor)
-{
-   mpScript->addParam(&actor);
-   mpScript->run("updateAI");
-}
+#include "hashmap.h"

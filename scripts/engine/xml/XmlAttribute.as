@@ -58,4 +58,11 @@ class XmlAttribute extends XmlNode
 			}
 		}
 	}
+	
+	// - Debugging
+	
+	protected void doPrint()
+	{
+		System.console.println(mName + "= \"" + mValue + "\" ");
+	}
 }

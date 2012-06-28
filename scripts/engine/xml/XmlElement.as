@@ -1,8 +1,12 @@
 
 package engine.xml;
 
+use engine.collections.*;
+
 class XmlElement extends XmlNode
 {	
+	private ArrayList<XmlAttribute> mAttributes = new ArrayList<XmlAttribute>();
+	
 	protected void parse(XmlStream stream)
 	{		
 		mValue = stream.readName();
@@ -51,7 +55,7 @@ class XmlElement extends XmlNode
 				XmlAttribute attr = new XmlAttribute();
 				attr.parse(stream);
 				
-				addChild(attr);
+				mAttributes.add(attr);
 			}
 			
 			stream.skipWhitespace();
@@ -86,6 +90,19 @@ class XmlElement extends XmlNode
 				}
 			}
 		}
+	}
+	
+	protected void doPrint()
+	{
+		System.console.println("<" + mValue + " ");
+		foreach ( XmlAttribute attr : mAttributes )
+		{
+			attr.prettyPrint();
+		}
+		
+		System.console.println(">");
+		
+		printChildren();
 	}
 }
 	

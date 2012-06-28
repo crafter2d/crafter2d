@@ -17,35 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "aicontroller.h"
+#ifndef HASHMAP_H
+#define HASHMAP_H
 
 #include "core/defines.h"
-#include "core/smartptr/autoptr.h"
 
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
+template<typename, class> class HashMapBucket;
+template<typename, class> class HashMapIterator;
 
-#include "actor.h"
-#include "process.h"
-
-AIController::AIController(Process& process):
-   Controller(),
-   mpScript(NULL)
+template <typename K, class E>
+class HashMap
 {
-   mpScript = new Script(process.getScriptManager());
-}
+public:
+   typedef int(*HashFnc)(K key);
 
-// - Get/set
+   HashMap(int size = 256);
 
-void AIController::setThis(const VirtualObjectReference& self)
-{
-   mpScript->setThis(self);
-}
+ // get/set
+   void setHashFunction(HashFnc hashfunc);
 
-// - Operations
+   HashMapIterator<K,E> getIterator();
 
-void AIController::performAction(Actor& actor)
-{
-   mpScript->addParam(&actor);
-   mpScript->run("updateAI");
-}
+ // query
+   bool contains(K key) const;
+
+ // operations
+   void insert(K key, E& element);
+   void remove(HashMapIterator<K,E>& it);
+   void clear();
+
+private:
+   friend class HashMapIterator<K,E>;
+
+   HashFnc              mHashFnc;
+   HashMapBucket<K,E>** mpBuckets;
+   int                  mSize;
+};
+
+#include "hashmap.inl"
+
+#endif // HASHMAP_H

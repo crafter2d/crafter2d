@@ -15,4 +15,11 @@ class XmlText extends XmlNode
 	{
 		mValue = stream.readText('<', false);
 	}
+	
+	// - Debuging
+	
+	protected void doPrint()
+	{
+		System.console.println(mValue);
+	}
 }

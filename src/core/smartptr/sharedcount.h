@@ -21,31 +21,68 @@
 #define SHARED_COUNT_H_
 
 #include "core/core_base.h"
+#include "core/defines.h"
 
-class CORE_API SharedCount
+#include "countimpl.h"
+
+class SharedCount
 {
 public:
-   SharedCount();
-   SharedCount(const SharedCount& that);
-   ~SharedCount();
+   template<class T> SharedCount(T* pdata): mpCounter(NULL)
+   {
+      mpCounter = new CountImpl<T>(pdata);
+   }
 
-   const SharedCount& operator=(const SharedCount& that);
+   SharedCount(const SharedCount& that): mpCounter(that.mpCounter)
+   {
+      if ( mpCounter != NULL )
+      {
+         mpCounter->addRef();
+      }
+   }
+
+   ~SharedCount()
+   {
+      if ( mpCounter != NULL )
+      {
+         mpCounter->releaseRef();
+      }
+   }
+
+   const SharedCount& operator=(const SharedCount& that)
+   {
+       if ( mpCounter != that.mpCounter )
+      {
+         mpCounter->releaseRef();
+         mpCounter = that.mpCounter;
+         mpCounter->addRef();
+      }
+
+      return *this;
+   }
 
  // query
-   bool isUnique() const;
-   int count() const;
+   bool isUnique() const
+   {
+      return count() == 1;
+   }
 
- // operations
-   void reset();
+   int count() const
+   {
+      return mpCounter == NULL ? 0 : mpCounter->useCount();
+   }
+
 
 private:
- // operations
-   void inc();
-   void dec();
+   friend class WeakCount;
 
-   int*  mpCounter;
+ // operations
+   //void inc();
+   //void dec();
+
+   CountBase* mpCounter;
 };
 
-#include "sharedcount.inl"
+//#include "sharedcount.inl"
 
 #endif // SHARED_COUNT_H_

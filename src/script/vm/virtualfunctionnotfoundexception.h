@@ -20,9 +20,11 @@
 #ifndef VIRTUAL_FUNCTION_NOT_FOUND_EXCEPTION_H
 #define VIRTUAL_FUNCTION_NOT_FOUND_EXCEPTION_H
 
+#include "script/script_base.h"
+
 #include <string>
 
-class VirtualFunctionNotFoundException
+class SCRIPT_API VirtualFunctionNotFoundException
 {
 public:
    VirtualFunctionNotFoundException(const std::string& aclass, const std::string& function);

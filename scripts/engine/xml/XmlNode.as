@@ -82,4 +82,21 @@ abstract class XmlNode
 		
 		return result;
 	}
+	
+	// - Debugging
+	
+	public void prettyPrint()
+	{
+		doPrint();
+	}
+	
+	protected void printChildren()
+	{
+		foreach ( XmlNode node : mChildren )
+		{
+			node.doPrint();
+		}
+	}
+	
+	abstract protected void doPrint();
 }

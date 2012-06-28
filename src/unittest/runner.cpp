@@ -15,6 +15,25 @@
 int main( int argc, char *argv[] ) {
  return CxxTest::GuiTuiRunner<CxxTest::Win32Gui, CxxTest::StdioPrinter>( argc, argv ).run();
 }
+#include "D:/Devel/jenginesse/trunk/src/unittest/testbufferedstream.h"
+
+static TestBufferedStream suite_TestBufferedStream;
+
+static CxxTest::List Tests_TestBufferedStream = { 0, 0 };
+CxxTest::StaticSuiteDescription suiteDescription_TestBufferedStream( "D:/Devel/jenginesse/trunk/src/unittest/testbufferedstream.h", 9, "TestBufferedStream", suite_TestBufferedStream, Tests_TestBufferedStream );
+
+static class TestDescription_TestBufferedStream_testReadWriteInt : public CxxTest::RealTestDescription {
+public:
+ TestDescription_TestBufferedStream_testReadWriteInt() : CxxTest::RealTestDescription( Tests_TestBufferedStream, suiteDescription_TestBufferedStream, 15, "testReadWriteInt" ) {}
+ void runTest() { suite_TestBufferedStream.testReadWriteInt(); }
+} testDescription_TestBufferedStream_testReadWriteInt;
+
+static class TestDescription_TestBufferedStream_testReadWriteFloat : public CxxTest::RealTestDescription {
+public:
+ TestDescription_TestBufferedStream_testReadWriteFloat() : CxxTest::RealTestDescription( Tests_TestBufferedStream, suiteDescription_TestBufferedStream, 16, "testReadWriteFloat" ) {}
+ void runTest() { suite_TestBufferedStream.testReadWriteFloat(); }
+} testDescription_TestBufferedStream_testReadWriteFloat;
+
 #include "D:/Devel/jenginesse/trunk/src/unittest/testcommandline.h"
 
 static TestCommandLine suite_TestCommandLine;
@@ -79,7 +98,7 @@ public:
 
 static class TestDescription_TestCompiler_testCallback : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestCompiler_testCallback() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 49, "testCallback" ) {}
+ TestDescription_TestCompiler_testCallback() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 50, "testCallback" ) {}
  void runTest() { suite_TestCompiler.testCallback(); }
 } testDescription_TestCompiler_testCallback;
 

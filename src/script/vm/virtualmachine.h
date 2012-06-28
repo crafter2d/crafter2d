@@ -194,6 +194,7 @@ public:
    VirtualObjectReference lookupNative(void* pobject);
    void registerNative(VirtualObjectReference& object, void* pnative);
    void unregisterNative(VirtualObjectReference& object);
+   void unregisterNative(void* pnative);
 
 private:
    friend class VirtualCompileCallback;

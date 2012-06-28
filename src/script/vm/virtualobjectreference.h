@@ -32,7 +32,7 @@ public:
    const VirtualObject* operator->() const { return mObject.getPointer(); }
    VirtualObject* operator->() { return mObject.getPointer(); }
    VirtualObject& operator*() { return *mObject; }
-
+   
 private:
    SharedPtr<VirtualObject> mObject;
 };

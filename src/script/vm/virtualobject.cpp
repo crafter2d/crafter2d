@@ -24,6 +24,7 @@
 #include "core/defines.h"
 
 #include "script/common/variant.h"
+#include "script/gc/garbagecollector.h"
 
 #include "virtualmachine.h"
 
@@ -145,4 +146,18 @@ void VirtualObject::setMember(int index, const Variant& value)
    ASSERT(index < mMemberCount);
 
    mpMembers[index] = value;
+}
+
+// - Garbage collection
+
+void VirtualObject::collect(GarbageCollector& gc)
+{
+   for ( int index = 0; index < mMemberCount; ++index )
+   {
+      Variant& member = mpMembers[index];
+      if ( member.isObject() )
+      {
+         gc.collect(member.asObject());
+      }
+   }
 }

@@ -27,6 +27,8 @@
 #include "core/vfs/filesystem.h"
 #include "core/smartptr/autoptr.h"
 
+#include "script/vm/virtualfunctionnotfoundexception.h"
+
 Script::Script(ScriptManager& manager, const std::string& name):
    mScriptManager(manager),
    mClassName(name),
@@ -64,7 +66,21 @@ void Script::setThis(void* pthis)
 /// \returns always returns true
 bool Script::run(const std::string& function)
 {
-   mScriptManager.mpVirtualMachine->execute(mObject, function);
+   try
+   {
+      mScriptManager.mpVirtualMachine->execute(mObject, function);
+   }
+   catch ( VirtualFunctionNotFoundException* pe )
+   {
+      Log::getInstance().error("Could not find function %s.%s", pe->getClassName().c_str(), pe->getFunction().c_str());
+      return false;
+   }
+   catch ( VirtualException* pe )
+   {
+      Log::getInstance().error("Unhandled exception");
+      return false;
+   }
+
    return true;
 }
 

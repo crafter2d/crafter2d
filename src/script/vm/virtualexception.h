@@ -4,7 +4,7 @@
 
 #include "virtualobjectreference.h"
 
-class VirtualException
+class SCRIPT_API VirtualException
 {
 public:
    VirtualException();

@@ -61,7 +61,7 @@ Game::Game():
    mpScript(NULL),
    mpWindowFactory(NULL),
    mpTimerData(NULL),
-   mActive(true)
+   mActive(false)
 {
 }
 
@@ -203,10 +203,9 @@ bool Game::initGame()
       return false;
    }
 
-   mpScript->run("initialize");
-   if ( !mpScript->getBoolean() )
+   if ( mpScript->run("initialize") && mpScript->getBoolean() )
    {
-      mActive = false;
+      mActive = true;
    }
 
 	return mActive;
@@ -223,6 +222,7 @@ void Game::endGame()
    if ( mpScript != NULL )
    {
       mpScript->run("shutdown");
+      delete mpScript;
    }
 }
 
