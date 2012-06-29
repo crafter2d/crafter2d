@@ -55,3 +55,10 @@ INLINE void Script::addParam(const std::string& val)
 {
    mScriptManager.mpVirtualMachine->push(val);
 }
+
+/// \fn Script::addParam(const VirtualObjectReference& object)
+/// \brief Pushes the object on the stack as argument to the function
+void Script::addParam(const VirtualObjectReference& object)
+{
+   mScriptManager.mpVirtualMachine->push(object);
+}

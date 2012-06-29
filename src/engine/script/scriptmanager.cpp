@@ -106,11 +106,14 @@ void ScriptManager::destroy()
 
 Script* ScriptManager::loadNative(const std::string& classname, void* pobject, bool owned)
 {
-   VirtualObjectReference object = mpVirtualMachine->instantiateNative(classname, pobject, owned);
+   VirtualObjectReference object = mpVirtualMachine->instantiate(classname);
    if ( object.isNull() )
    {
       return NULL;
    }
+
+   object->setNativeObject(pobject);
+   object->setOwner(owned);
 
    Script* pscript(new Script(*this));
    pscript->setThis(object);

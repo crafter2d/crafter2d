@@ -43,19 +43,6 @@ void Script::setThis(const VirtualObjectReference& object)
    mObject = object;
 }
 
-void Script::setThis(void* pthis)
-{
-   if ( !mClassName.empty() )
-   {
-      mObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis, false);
-   }
-   else
-   {
-      mObject = mScriptManager.mpVirtualMachine->lookupNative(pthis);
-      ASSERT(!mObject.isNull());
-   }
-}
-
 //-----------------------------------------
 // - Run
 //-----------------------------------------
@@ -75,7 +62,7 @@ bool Script::run(const std::string& function)
       Log::getInstance().error("Could not find function %s.%s", pe->getClassName().c_str(), pe->getFunction().c_str());
       return false;
    }
-   catch ( VirtualException* pe )
+   catch ( VirtualException* )
    {
       Log::getInstance().error("Unhandled exception");
       return false;
@@ -96,29 +83,4 @@ bool Script::getBoolean()
 int Script::getInteger()
 {
    return mScriptManager.mpVirtualMachine->popInt();
-}
-
-void Script::addParam(void* pobject)
-{
-   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->lookupNative(pobject));
-   ASSERT_MSG(!ref.isNull(), "Object should have been registered already when using this method.");
-
-   mScriptManager.mpVirtualMachine->push(ref);
-}
-
-/// \fn Script::addParam(const std::string& classname, void* pobject)
-/// \brief Pushes a custom type parameter on top of the stack which will be use by Lua as a parameter to the
-/// function.
-/// \param object a pointer to an object
-/// \param typeName the type name of the object (class name)
-void Script::addParam(const std::string& classname, void* pobject)
-{
-   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject, false));
-
-   mScriptManager.mpVirtualMachine->push(ref);
-}
-
-void Script::addParam(const VirtualObjectReference& object)
-{
-   mScriptManager.mpVirtualMachine->push(object);
 }

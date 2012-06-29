@@ -186,15 +186,12 @@ public:
 
  // object instantation
    VirtualObjectReference instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
-   VirtualObjectReference instantiateNative(const std::string& classname, void* pobject, bool owned = true);
    VirtualObjectReference instantiateShare(const VirtualObjectReference& origin);
    VirtualArrayReference  instantiateArray();
 
  // observing
-   VirtualObjectReference lookupNative(void* pobject);
    void registerNative(VirtualObjectReference& object, void* pnative);
    void unregisterNative(VirtualObjectReference& object);
-   void unregisterNative(void* pnative);
 
 private:
    friend class VirtualCompileCallback;
@@ -248,7 +245,6 @@ private:
 
    typedef std::stack<VirtualCall> CallStack;
    typedef std::map<std::string, callbackfnc> Natives;
-   typedef std::map<void*, VirtualObjectReference> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
 
@@ -280,7 +276,6 @@ private:
    VirtualCall                   mCall;
    VirtualMachineObjectObserver  mObjectObserver;
    Natives                       mNatives;
-   NativeObjectMap               mNativeObjects;
    State                         mState;
    VirtualClass*                 mpArrayClass;
    VirtualClass*                 mpStringClass;
