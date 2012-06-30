@@ -48,12 +48,12 @@ public:
    explicit       Process();
    virtual        ~Process();
 
-   virtual bool   create(const VirtualObjectReference& self);
+   virtual bool   create();
    virtual bool   destroy();
    virtual void   update (float delta);
 
   // get/set
-   NetConnection* getConnection();
+   NetConnection& getConnection();
 
    ContentManager& getContentManager();
 
@@ -61,7 +61,7 @@ public:
    void           setActionMap(ActionMap* map);
 
    ScriptManager& getScriptManager();
-   void           setScriptManager(ScriptManager* pscriptmanager);
+   Script&        getScript();
 
    bool           hasWorld() const;
    const World&   getWorld() const;
@@ -81,22 +81,24 @@ public:
    virtual void onNetEvent(int clientid, const NetEvent& event) = 0;
 
 protected:
+ // initialization
+   virtual Script* createScript() = 0;
+
  // notifications
    virtual void notifyWorldChanged();
-
-   ProcessNetObserver   mNetObserver;
-   NetConnection        conn;
-   ContentManager       mContentManager;
-   ScriptManager*       mpScriptManager;
-   Script*              mpScript;
-   ActionMap*           actionMap;
-   bool                 initialized;
-
+   
 private:
 
  // members
-   World*      mpWorld;
-   bool        mActive;
+   ProcessNetObserver   mNetObserver;
+   NetConnection        mConnection;
+   ContentManager       mContentManager;
+   ScriptManager        mScriptManager;
+   Script*              mpScript;
+   ActionMap*           actionMap;
+   World*               mpWorld;
+   bool                 mInitialized;
+   bool                 mActive;
 };
 
 #ifdef JENGINE_INLINE

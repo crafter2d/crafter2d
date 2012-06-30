@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include "script/scriptable.h"
+
 #include "actor.h"
 #include "playerworldobserver.h"
 #include "viewport.h"
@@ -32,7 +34,7 @@ class World;
 /// @author Jeroen Broekhuizen
 /// 
 /// A player is represented by this class on the server.
-class Player
+class Player : public IScriptable
 {
 public:
    Player();

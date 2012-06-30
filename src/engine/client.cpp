@@ -47,6 +47,10 @@
 #include "net/events/scriptevent.h"
 #include "net/netstream.h"
 
+#include "script/scriptmanager.h"
+
+#include "window/gamewindowfactory.h"
+
 #include "world/world.h"
 #include "world/worldrenderer.h"
 
@@ -56,8 +60,9 @@
 #include "keymap.h"
 #include "opengl.h"
 
-Client::Client():
+Client::Client(GameWindowFactory& factory):
    Process(),
+   mWindowFactory(factory),
    mpWindow(NULL),
    mWindowListener(*this),
    mKeyEventDispatcher(*this),
@@ -78,13 +83,12 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create(const VirtualObjectReference& self)
+bool Client::create()
 {
-   bool success = Process::create(self);
+   bool success = Process::create();
    if ( success )
    {
-      ASSERT_PTR(mpWindow);
-
+      mpWindow = mWindowFactory.createWindow();
       mpWindow->addListener(mWindowListener);
       mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
       mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
@@ -107,6 +111,11 @@ bool Client::create(const VirtualObjectReference& self)
    }
 
    return success;
+}
+
+Script* Client::createScript()
+{
+   return getScriptManager().loadNative("GameClient", this, false);
 }
 
 bool Client::destroy()
@@ -132,7 +141,7 @@ bool Client::destroy()
 bool Client::connect(const char* server, int port)
 {
    // setup connection to the server
-   mServerId = conn.connect(server, port);
+   mServerId = getConnection().connect(server, port);
    if ( mServerId == -1 )
    {
       return false;
@@ -142,16 +151,16 @@ bool Client::connect(const char* server, int port)
 
    // send login command
    ConnectEvent event;
-   conn.send(mServerId, event);
+   getConnection().send(mServerId, event);
    return true;
 }
 
 void Client::disconnect()
 {
-   if ( conn.isConnected() )
+   if ( getConnection().isConnected() )
    {
       DisconnectEvent event;
-      conn.send(mServerId, event);
+      getConnection().send(mServerId, event);
    }
 }
 
@@ -269,7 +278,7 @@ bool Client::loadWorld(const std::string& filename, const std::string& name)
 
 void Client::sendToServer(NetObject& object)
 {
-   conn.send(mServerId, object);
+   getConnection().send(mServerId, object);
 }
 
 //---------------------------------------------
@@ -338,24 +347,22 @@ void Client::onNetEvent(int client, const NetEvent& event)
 
 void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 {
-   ASSERT_PTR(mpScript);
-
    switch ( event.getReply() )
    {
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
-            mpScript->addParam("engine.game.Player", mpPlayer);
-            mpScript->run("onConnected");
+            getScript().addParam("engine.game.Player", mpPlayer);
+            getScript().run("onConnected");
 
-            initialized = true;
+            setInitialized(true);
             break;
          }
       case ConnectReplyEvent::eDenite:
          {
             // run the Client_onConnectionDenite script
-            mpScript->addParam(event.getReason());
-            mpScript->run("onConnectionDenite");
+            getScript().addParam(event.getReason());
+            getScript().run("onConnectionDenite");
             break;
          }
    }
@@ -364,21 +371,21 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
-   mpScript->addParam(event.getId()+1);
-   mpScript->run("onPlayerJoined");
+   getScript().addParam(event.getId()+1);
+   getScript().run("onPlayerJoined");
 }
 
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
-   mpScript->addParam(event.getId()+1);
-   mpScript->run("onPlayerLeft");
+   getScript().addParam(event.getId()+1);
+   getScript().run("onPlayerLeft");
 }
 
 void Client::handleServerdownEvent()
 {
    // server went down, run the onClientConnect script
-   mpScript->run("onServerDown");
+   getScript().run("onServerDown");
 }
 
 void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
@@ -396,8 +403,8 @@ void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
    mpPlayer->initialize(*pworld);
 
    // run the onWorldChanged script
-   mpScript->addParam("engine.game.World", pworld);
-   mpScript->run("onWorldChanged");
+   getScript().addParam("engine.game.World", pworld);
+   getScript().run("onWorldChanged");
 }
 
 void Client::handleNewObjectEvent(const NewObjectEvent& event)
@@ -448,7 +455,7 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
       {
          // unknown object, must have been generated before the player entered the game
          RequestObjectEvent event(event.getId());
-         conn.send(mServerId, event);
+         getConnection().send(mServerId, event);
 
          mRequests[event.getId()] = true;
       }
@@ -465,8 +472,8 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    NetStream stream(datastream);
 
    // run the onClientConnect script
-   mpScript->addParam("engine.net.NetStream", &stream);
-   mpScript->run("onScriptEvent");
+   getScript().addParam("engine.net.NetStream", &stream);
+   getScript().run("onScriptEvent");
 }
 
 // - Notifications
@@ -495,17 +502,17 @@ void Client::onWindowClosed()
 
 void Client::onKeyEvent(const KeyEvent& event)
 {
-   mpScript->addParam(event.getKey());
-   mpScript->addParam(event.getEventType() == KeyEvent::ePressed);
-   mpScript->run("onKeyEvent");
+   getScript().addParam(event.getKey());
+   getScript().addParam(event.getEventType() == KeyEvent::ePressed);
+   getScript().run("onKeyEvent");
 }
 
 void Client::onMouseEvent(const MouseEvent& event)
 {
-   mpScript->addParam(event.getLocation().x());
-   mpScript->addParam(event.getLocation().y());
-   mpScript->addParam(event.getButtons());
-   mpScript->addParam(event.getEventType());
-   mpScript->run("onMouseEvent");
+   getScript().addParam(event.getLocation().x());
+   getScript().addParam(event.getLocation().y());
+   getScript().addParam(event.getButtons());
+   getScript().addParam(event.getEventType());
+   getScript().run("onMouseEvent");
 }
 

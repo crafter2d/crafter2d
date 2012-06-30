@@ -62,6 +62,9 @@ public:
    virtual void onNetEvent(int client, const NetEvent& event);
 
 protected:
+ // initialization
+   virtual Script* createScript();
+
  // notifications
    virtual void notifyWorldChanged();
 

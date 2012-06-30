@@ -45,6 +45,8 @@
 #include "engine/physics/simulationfactoryregistry.h"
 #include "engine/net/netobjectfactory.h"
 #include "engine/net/netconnection.h"
+#include "engine/server.h"
+#include "engine/client.h"
 
 #include "console.h"
 #include "gamesettings.h"
@@ -57,8 +59,6 @@
 Game::Game():
    mSettings(),
    mTitle(),
-   mScriptManager(),
-   mpScript(NULL),
    mpWindowFactory(NULL),
    mpTimerData(NULL),
    mActive(false)
@@ -111,10 +111,6 @@ bool Game::create()
 
    mSettings.initialize();
 
-   // initialize scripting engine
-   mScriptManager.initialize();
-   script_game_register(mScriptManager);
-
    // initialize the console
    Console& console = Console::getInstance();
    console.create ();
@@ -157,9 +153,6 @@ void Game::destroy()
    // free the game resources
 	endGame ();
 
-	// release the Lua scripting environment
-	mScriptManager.destroy ();
-
    // release timer data
    TIMER.releaseData(mpTimerData);
 
@@ -196,19 +189,21 @@ void Game::run()
  */
 bool Game::initGame()
 {
-   mpScript = mScriptManager.loadNative("Game", this, false);
-   if ( mpScript == NULL )
+   const int port = 7000;
+
+   mpServer = new Server();
+   if ( !mpServer->create() || !mpServer->listen(port) )
    {
-      // failed to load the Game class (or any depending class)
       return false;
    }
 
-   if ( mpScript->run("initialize") && mpScript->getBoolean() )
+   mpClient = new Client(*mpWindowFactory);
+   if ( !mpClient->create() && mpClient->connect("localhost", port) )
    {
-      mActive = true;
+      return false;
    }
 
-	return mActive;
+	return true;
 }
 
 /*!

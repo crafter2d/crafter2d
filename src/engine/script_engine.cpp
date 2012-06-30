@@ -31,7 +31,6 @@
 #include "script/vm/virtualarrayreference.h"
 
 #include "script/scriptobject.h"
-#include "script/scriptmanager.h"
 
 #include "physics/inputforcegenerator.h"
 #include "physics/box2d/box2dbody.h"
@@ -43,8 +42,6 @@
 #include "ui/font.h"
 
 #include "resource/resourcemanager.h"
-
-#include "window/gamewindowfactory.h"
 
 #include "world/world.h"
 #include "engine/content/contentmanager.h"
@@ -72,38 +69,6 @@
    ref->setNativeObject(pointer);                              \
    ref->setOwner(true);                                        \
    accessor.setResult(ref)
-
-void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-   
-   const VirtualObjectReference& self = accessor.getObject(1);
-
-   accessor.setResult(process.create(self));
-}
-
-void Process_destroy(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-
-   process.destroy();
-}
-
-void Process_getScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-
-   RETURN_CLASS("engine.game.ScriptManager", &process.getScriptManager());
-}
-
-void Process_setScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-
-   ScriptManager* pscriptmanager = static_cast<ScriptManager*>(accessor.getObject(1)->useNativeObject());
-
-   process.setScriptManager(pscriptmanager);
-}
 
 void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -196,21 +161,6 @@ void Server_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
    server.update(delta);
 }
 
-void Client_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObjectReference& thisobject = accessor.getThis();
-
-   Client* pclient = new Client();
-   
-   thisobject->setNativeObject(pclient);
-   thisobject->setOwner(true);
-}
-
-void Client_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   DESTRUCT_THIS(Client);
-}
-
 void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Client, client);
@@ -288,22 +238,6 @@ void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
    client.setKeyMap(pmap);
 }
 
-void ScriptManager_spawnChild(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(ScriptManager, scriptmanager);
-
-   RETURN_CLASS_OWNED("engine.game.ScriptManager", scriptmanager.spawnChild());
-}
-
-void ScriptManager_shareObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(ScriptManager, scriptmanager);
-
-   VirtualObjectReference& object = accessor.getObject(1);
-
-   scriptmanager.shareObject(object);
-}
-
 void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(ContentManager, contentmanager);
@@ -322,13 +256,6 @@ void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor
 
    World* presult = contentmanager.load(filename);
    RETURN_CLASS_OWNED("engine.game.World", presult);
-}
-
-void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(GameWindowFactory, factory);
-
-   RETURN_CLASS_OWNED("system.GameWindow", factory.createWindow());
 }
 
 void BufferedStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -589,6 +516,7 @@ void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObjectReference& thisobject = accessor.getThis();
 
    World* pworld = new World();
+   pworld->getScript().setThis(thisobject);
    machine.registerNative(thisobject, pworld);
    thisobject->setOwner(true);
 }
@@ -1191,24 +1119,17 @@ void script_engine_register(ScriptManager& manager)
 {
    ScriptRegistrator registrator;
 
-   registrator.addCallback("Process_create", Process_create);
-   registrator.addCallback("Process_destroy", Process_destroy);
-   registrator.addCallback("Process_getScriptManager", Process_getScriptManager);
-   registrator.addCallback("Process_setScriptManager", Process_setScriptManager);
    registrator.addCallback("Process_getFont", Process_getFont);
    registrator.addCallback("Process_getTexture", Process_getTexture);
    registrator.addCallback("Process_getContentManager", Process_getContentManager);
    registrator.addCallback("Process_getWorld", Process_getWorld);
    registrator.addCallback("Process_setWorld", Process_setWorld);
 
-   registrator.addCallback("Server_init", Server_init);
-   registrator.addCallback("Server_destruct", Server_destruct);
    registrator.addCallback("Server_listen", Server_listen);
    registrator.addCallback("Server_update", Server_update);
    registrator.addCallback("Server_setActionMap", Server_setActionMap);
    registrator.addCallback("Server_sendScriptEvent", Server_sendScriptEvent);
 
-   registrator.addCallback("Client_init", Client_init);
    registrator.addCallback("Client_connect", Client_connect);
    registrator.addCallback("Client_update", Client_update);
    registrator.addCallback("Client_nativeRender", Client_nativeRender);
@@ -1221,12 +1142,7 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("ContentManager_loadEntity", ContentManager_loadEntity);
    registrator.addCallback("ContentManager_load", ContentManager_load);
-
-   registrator.addCallback("ScriptManager_spawnChild", ScriptManager_spawnChild);
-   registrator.addCallback("ScriptManager_shareObject", ScriptManager_shareObject);
-
-   registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
-
+   
    registrator.addCallback("BufferedStream_init", BufferedStream_init);
    registrator.addCallback("BufferedStream_destruct", BufferedStream_destruct);
 

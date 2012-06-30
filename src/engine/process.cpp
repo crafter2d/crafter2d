@@ -37,13 +37,13 @@
 
 Process::Process():
    mNetObserver(*this),
-   conn(mNetObserver),
+   mConnection(mNetObserver),
    mContentManager(*this),
-   mpScriptManager(NULL),
+   mScriptManager(),
    mpScript(NULL),
    actionMap(NULL),
-   initialized(false),
    mpWorld(NULL),
+   mInitialized(false),
    mActive(true)
 {
 }
@@ -52,9 +52,6 @@ Process::~Process()
 {
    delete mpScript;
    mpScript = NULL;
-
-   delete mpScriptManager;
-   mpScriptManager = NULL;
 
    delete actionMap;
    actionMap = NULL;
@@ -68,34 +65,21 @@ void Process::setWorld(World* pworld)
    {
       mpWorld = pworld;
 
-      if ( mpWorld != NULL )
-      {
-         pworld->setScript(getScriptManager().loadNative("engine.game.World", pworld, false));
-      }
-
       notifyWorldChanged();
    }
 }
 
 // - Operations
 
-bool Process::create(const VirtualObjectReference& self)
+bool Process::create()
 {
-   if ( mpScriptManager == NULL )
-   {
-      // throw exception with warning that the scriptmanager must be set first
-      return false;
-   }
-
-   mpScript = new Script(getScriptManager());
-   mpScript->setThis(getScriptManager().shareObject(self));
-   
-   return true;
+   mpScript = createScript();   
+   return mpScript != NULL;
 }
 
 bool Process::destroy()
 {
-   conn.shutdown();
+   mConnection.shutdown();
    
    return true;
 }
@@ -121,8 +105,8 @@ void Process::setActionMap(ActionMap* map)
 
 void Process::update(float tick)
 {
-   if ( conn.isConnected() )
-      conn.update();
+   if ( mConnection.isConnected() )
+      mConnection.update();
 }
 
 // - Events
@@ -131,6 +115,6 @@ void Process::sendScriptEvent(int clientid, const DataStream& stream)
 {
    ScriptEvent event(stream);
 
-   conn.send(clientid, event);
+   mConnection.send(clientid, event);
 }
 

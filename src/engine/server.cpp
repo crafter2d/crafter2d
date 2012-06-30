@@ -61,16 +61,23 @@ Server::~Server()
 {
 }
 
+// - Init/destruct
+
+Script* Server::createScript()
+{
+   return getScriptManager().loadNative("GameServer", this, false);
+}
+
 bool Server::destroy()
 {
-   if (conn.isConnected())
+   if ( getConnection().isConnected())
    {
-      conn.setAccepting(false);
+      getConnection().setAccepting(false);
 
       ServerDownEvent event;
       sendToAllClients(event);
 
-      mpScript->run("onShutdown");
+      getScript().run("onShutdown");
    }
    
    return Process::destroy();
@@ -78,13 +85,13 @@ bool Server::destroy()
 
 bool Server::listen(int port)
 {
-   if ( !conn.isConnected() )
+   if ( !getConnection().isConnected() )
    {
-      if ( !conn.listen(port) )
+      if ( !getConnection().listen(port) )
       {
          return false;
       }
-      conn.setAccepting(true);
+      getConnection().setAccepting(true);
    }
    return true;
 }
@@ -96,7 +103,7 @@ bool Server::listen(int port)
 /// At the end it handles the incomming events.
 void Server::update(float delta)
 {
-   conn.update();
+   getConnection().update();
 
    // update the graph
    if ( hasWorld() )
@@ -109,7 +116,7 @@ void Server::update(float delta)
       for ( ; it != clients.end(); ++it )
       {
          int clientid = it->first;
-         dirtyset.send(clientid, conn);
+         dirtyset.send(clientid, getConnection());
       }
    }
 }
@@ -147,13 +154,13 @@ void Server::sendToAllClients(const NetStream& stream)
    for ( ; it != clients.end(); ++it)
    {
       int clientid = it->first;
-      conn.send(clientid, stream);
+      getConnection().send(clientid, stream);
    }
 }
 
 void Server::sendToActiveClient(const NetObject& object)
 {
-  conn.send(mActiveClient, object);
+  getConnection().send(mActiveClient, object);
 }
 
 void Server::sendScriptEventToAllClients(const NetStream& stream)
@@ -185,15 +192,15 @@ void Server::onNetEvent(int client, const NetEvent& event)
             AutoPtr<Player> player = clients[client];
 
             // run the onClientConnect script
-            mpScript->addParam((int)client);
-            mpScript->addParam("engine.game.Player", player.getPointer());
-            mpScript->run("onClientDisconnect");
+            getScript().addParam((int)client);
+            getScript().addParam("engine.game.Player", player.getPointer());
+            getScript().run("onClientDisconnect");
 
             // remove the player from the client list
             ClientMap::iterator it = clients.find(client);
             clients.erase(it);
 
-            conn.disconnect(client);
+            getConnection().disconnect(client);
 
             // fill in the event and put it in the stream
             DisconnectEvent event(client);
@@ -209,9 +216,9 @@ void Server::onNetEvent(int client, const NetEvent& event)
 
             // run the onClientConnect script
             Player* player = clients[client];
-            mpScript->addParam("engine.game.Player", player);
-            mpScript->addParam("engine.net.NetStream", &stream);
-            mpScript->run("onEvent");
+            getScript().addParam("engine.game.Player", player);
+            getScript().addParam("engine.net.NetStream", &stream);
+            getScript().run("onEvent");
             break;
          }
       case actionEvent:
@@ -264,7 +271,7 @@ void Server::addPlayer(int clientid, Player* pplayer)
 
    // send the reply to the connecting client
    ConnectReplyEvent event(ConnectReplyEvent::eAccepted);
-   conn.send(clientid, event);
+   getConnection().send(clientid, event);
 
    // notify other players about the new player
    JoinEvent join(clientid);
@@ -278,7 +285,7 @@ void Server::addPlayer(int clientid, Player* pplayer)
       Player* pother = it->second;
       if ( pother!= pplayer )
       {
-         conn.send(pother->getClientId(), stream);
+         getConnection().send(pother->getClientId(), stream);
       }
    }
 }
@@ -286,12 +293,12 @@ void Server::addPlayer(int clientid, Player* pplayer)
 void Server::handleConnectEvent(const ConnectEvent& event)
 {
    // check if the script allows this new player
-   mpScript->run("onClientConnecting");
-   int reason = mpScript->getInteger();
+   getScript().run("onClientConnecting");
+   int reason = getScript().getInteger();
    if ( reason != 0 )
    {
       ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
-      conn.send(mActiveClient, event);
+      getConnection().send(mActiveClient, event);
    }
    else
    {
@@ -300,8 +307,8 @@ void Server::handleConnectEvent(const ConnectEvent& event)
       addPlayer(mActiveClient, pplayer);
 
       // run the onClientConnect script
-      mpScript->addParam("engine.game.Player", pplayer);
-      mpScript->run("onClientConnect");
+      getScript().addParam("engine.game.Player", pplayer);
+      getScript().run("onClientConnect");
    }
 }
 
