@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
    game->setWindowFactory(windowfactory);
    if ( game->create() )
    {
-      game->run();
+      game->run ();
    }
 
    return EXIT_SUCCESS;

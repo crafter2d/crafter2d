@@ -48,24 +48,10 @@ INLINE void Script::addParam(bool val)
    mScriptManager.mpVirtualMachine->push(val);
 }
 
-/// \fn Script::addParam(IScriptable& val)
-/// \brief Pushes the scriptable object on the top of the stack.
-INLINE void Script::addParam(IScriptable& val)
-{
-   mScriptManager.mpVirtualMachine->push(val.getScript().mObject);
-}
-
 /// \fn Script::addParam(const char* val)
 /// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
 /// \param val a pointer to a character string
 INLINE void Script::addParam(const std::string& val)
 {
    mScriptManager.mpVirtualMachine->push(val);
-}
-
-/// \fn Script::addParam(const VirtualObjectReference& object)
-/// \brief Pushes the object on the stack as argument to the function
-INLINE void Script::addParam(const VirtualObjectReference& object)
-{
-   mScriptManager.mpVirtualMachine->push(object);
 }

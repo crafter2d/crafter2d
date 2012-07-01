@@ -47,10 +47,6 @@
 #include "net/events/scriptevent.h"
 #include "net/netstream.h"
 
-#include "script/scriptmanager.h"
-
-#include "window/gamewindowfactory.h"
-
 #include "world/world.h"
 #include "world/worldrenderer.h"
 
@@ -60,9 +56,8 @@
 #include "keymap.h"
 #include "opengl.h"
 
-Client::Client(GameWindowFactory& factory):
+Client::Client():
    Process(),
-   mWindowFactory(factory),
    mpWindow(NULL),
    mWindowListener(*this),
    mKeyEventDispatcher(*this),
@@ -83,12 +78,13 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create()
+bool Client::create(const VirtualObjectReference& self)
 {
-   bool success = Process::create();
+   bool success = Process::create(self);
    if ( success )
    {
-      mpWindow = mWindowFactory.createWindow();
+      ASSERT_PTR(mpWindow);
+
       mpWindow->addListener(mWindowListener);
       mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
       mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
@@ -111,11 +107,6 @@ bool Client::create()
    }
 
    return success;
-}
-
-Script* Client::createScript()
-{
-   return getScriptManager().loadNative("GameClient", this, false);
 }
 
 bool Client::destroy()
@@ -141,7 +132,7 @@ bool Client::destroy()
 bool Client::connect(const char* server, int port)
 {
    // setup connection to the server
-   mServerId = getConnection().connect(server, port);
+   mServerId = conn.connect(server, port);
    if ( mServerId == -1 )
    {
       return false;
@@ -151,16 +142,16 @@ bool Client::connect(const char* server, int port)
 
    // send login command
    ConnectEvent event;
-   getConnection().send(mServerId, event);
+   conn.send(mServerId, event);
    return true;
 }
 
 void Client::disconnect()
 {
-   if ( getConnection().isConnected() )
+   if ( conn.isConnected() )
    {
       DisconnectEvent event;
-      getConnection().send(mServerId, event);
+      conn.send(mServerId, event);
    }
 }
 
@@ -278,7 +269,7 @@ bool Client::loadWorld(const std::string& filename, const std::string& name)
 
 void Client::sendToServer(NetObject& object)
 {
-   getConnection().send(mServerId, object);
+   conn.send(mServerId, object);
 }
 
 //---------------------------------------------
@@ -347,22 +338,24 @@ void Client::onNetEvent(int client, const NetEvent& event)
 
 void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 {
+   ASSERT_PTR(mpScript);
+
    switch ( event.getReply() )
    {
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
-            getScript().addParam("engine.game.Player", mpPlayer);
-            getScript().run("onConnected");
+            mpScript->addParam("engine.game.Player", mpPlayer);
+            mpScript->run("onConnected");
 
-            setInitialized(true);
+            initialized = true;
             break;
          }
       case ConnectReplyEvent::eDenite:
          {
             // run the Client_onConnectionDenite script
-            getScript().addParam(event.getReason());
-            getScript().run("onConnectionDenite");
+            mpScript->addParam(event.getReason());
+            mpScript->run("onConnectionDenite");
             break;
          }
    }
@@ -371,21 +364,21 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
-   getScript().addParam(event.getId()+1);
-   getScript().run("onPlayerJoined");
+   mpScript->addParam(event.getId()+1);
+   mpScript->run("onPlayerJoined");
 }
 
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
-   getScript().addParam(event.getId()+1);
-   getScript().run("onPlayerLeft");
+   mpScript->addParam(event.getId()+1);
+   mpScript->run("onPlayerLeft");
 }
 
 void Client::handleServerdownEvent()
 {
    // server went down, run the onClientConnect script
-   getScript().run("onServerDown");
+   mpScript->run("onServerDown");
 }
 
 void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
@@ -403,8 +396,8 @@ void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
    mpPlayer->initialize(*pworld);
 
    // run the onWorldChanged script
-   getScript().addParam("engine.game.World", pworld);
-   getScript().run("onWorldChanged");
+   mpScript->addParam("engine.game.World", pworld);
+   mpScript->run("onWorldChanged");
 }
 
 void Client::handleNewObjectEvent(const NewObjectEvent& event)
@@ -455,7 +448,7 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
       {
          // unknown object, must have been generated before the player entered the game
          RequestObjectEvent event(event.getId());
-         getConnection().send(mServerId, event);
+         conn.send(mServerId, event);
 
          mRequests[event.getId()] = true;
       }
@@ -472,8 +465,8 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    NetStream stream(datastream);
 
    // run the onClientConnect script
-   getScript().addParam("engine.net.NetStream", &stream);
-   getScript().run("onScriptEvent");
+   mpScript->addParam("engine.net.NetStream", &stream);
+   mpScript->run("onScriptEvent");
 }
 
 // - Notifications
@@ -502,17 +495,17 @@ void Client::onWindowClosed()
 
 void Client::onKeyEvent(const KeyEvent& event)
 {
-   getScript().addParam(event.getKey());
-   getScript().addParam(event.getEventType() == KeyEvent::ePressed);
-   getScript().run("onKeyEvent");
+   mpScript->addParam(event.getKey());
+   mpScript->addParam(event.getEventType() == KeyEvent::ePressed);
+   mpScript->run("onKeyEvent");
 }
 
 void Client::onMouseEvent(const MouseEvent& event)
 {
-   getScript().addParam(event.getLocation().x());
-   getScript().addParam(event.getLocation().y());
-   getScript().addParam(event.getButtons());
-   getScript().addParam(event.getEventType());
-   getScript().run("onMouseEvent");
+   mpScript->addParam(event.getLocation().x());
+   mpScript->addParam(event.getLocation().y());
+   mpScript->addParam(event.getButtons());
+   mpScript->addParam(event.getEventType());
+   mpScript->run("onMouseEvent");
 }
 

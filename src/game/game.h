@@ -28,8 +28,6 @@
 
 class GameWindowFactory;
 class TimerData;
-class Client;
-class Server;
 
 /**
 @author Jeroen Broekhuizen
@@ -48,6 +46,8 @@ public:
 
          void           setTitle(const std::string& title);
    const std::string&   getTitle() const;
+
+   ScriptManager&       getScriptManager();
 
    GameWindowFactory&   getWindowFactory();
    void                 setWindowFactory(GameWindowFactory& windowfactory);
@@ -69,13 +69,13 @@ private:
    bool                 initOpenGL();
    void                 runFrame();
 
-   GameSettings         mSettings;
-   std::string          mTitle;
-   GameWindowFactory*   mpWindowFactory;
-   TimerData*           mpTimerData;
-   Server*              mpServer;
-   Client*              mpClient;
-   bool                 mActive;
+   GameSettings              mSettings;
+   std::string               mTitle;
+   ScriptManager             mScriptManager;
+   Script*                   mpScript;
+   GameWindowFactory*        mpWindowFactory;
+   TimerData*                mpTimerData;
+   bool                      mActive;
 };
 
 #ifdef JENGINE_INLINE

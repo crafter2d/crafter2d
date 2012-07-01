@@ -19,35 +19,31 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE bool Process::isInitialized()
-{
-   return mInitialized;
-}
-
 /// \fn Process::setInitialized(bool init)
 /// \brief Set the initialized flag to signal that the process has started 
 /// up correctly.
 INLINE void Process::setInitialized(bool init)
 {
-   mInitialized = init;
+   initialized = init;
 }
 
 /// \fn Process::getConnection()
 /// \brief Returns the net connection of this process.
-INLINE NetConnection& Process::getConnection()
+INLINE NetConnection* Process::getConnection()
 { 
-   return mConnection;
+   return &conn; 
 }
 
 INLINE ScriptManager& Process::getScriptManager()
 {
-   return mScriptManager;
+   ASSERT_PTR(mpScriptManager);
+   return *mpScriptManager;
 }
 
-INLINE Script& Process::getScript()
+INLINE void Process::setScriptManager(ScriptManager* pscriptmanager)
 {
-   ASSERT_PTR(mpScript);
-   return *mpScript;
+   delete mpScriptManager;
+   mpScriptManager = pscriptmanager;
 }
 
 INLINE ContentManager& Process::getContentManager()
@@ -77,6 +73,13 @@ INLINE World& Process::getWorld()
 INLINE ActionMap* Process::getActionMap()
 {
    return actionMap; 
+}
+
+/// \fn Process::isInitialized()
+/// \brief Returns the initialize flag.
+INLINE bool Process::isInitialized()
+{
+   return initialized;
 }
 
 INLINE bool Process::isActive() const

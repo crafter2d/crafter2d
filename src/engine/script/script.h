@@ -26,8 +26,6 @@
 
 #include <string>
 
-#include "scriptable.h"
-
 class ScriptManager;
 class ScriptObject;
 
@@ -45,18 +43,20 @@ class ENGINE_API Script
 public:
    explicit    Script(ScriptManager& manager, const std::string& name = "");
    
-   void        addParam(int val);
-   void        addParam(float val);
-   void        addParam(bool val);
-   void        addParam(IScriptable& val);
-   void        addParam(const std::string& val);
+   void        addParam (int val);
+   void        addParam (float val);
+   void        addParam (bool val);
+   void        addParam (const std::string& val);
+   void        addParam(void* pobject);
+   void        addParam (const std::string& classname, void* pobject);
    void        addParam(const VirtualObjectReference& object);
 
    bool        getBoolean();
    int         getInteger();
 
    void        setThis(const VirtualObjectReference& object);
-   
+   void        setThis(void* pthis);
+
    bool        run(const std::string& function);
 
 private:

@@ -43,6 +43,7 @@
 #include "virtualfunctiontable.h"
 #include "virtualfunctiontableentry.h"
 #include "virtuallookuptable.h"
+#include "virtualownednativeobjectstrategy.h"
 
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -176,7 +177,6 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mpArrayClass(NULL),
    mpStringClass(NULL),
    mState(eRunning),
-   mRetVal(false),
    mLoaded(false)
 {
    mCompiler.setCallback(mCallback);
@@ -200,9 +200,18 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
 
 VirtualMachine::~VirtualMachine()
 {
+   NativeObjectMap::iterator it = mNativeObjects.begin();
+   for ( ; it != mNativeObjects.end(); it++)
+   {
+      VirtualObjectReference& ref = it->second;
+      mGC.collect(it->second);
+   }
+
    // clear the garbage collector
    mGC.gc(*this);
-   
+
+   ASSERT(mNativeObjects.empty());
+
    // set destruct state, native object notifies vm when it is destructed
    // resulting in double delete.
    mState = eDestruct;
@@ -1444,18 +1453,42 @@ VirtualObjectReference VirtualMachine::instantiate(const std::string& classname,
    return object;
 }
 
-VirtualArrayReference VirtualMachine::instantiateArray()
+VirtualObjectReference VirtualMachine::instantiateNative(const std::string& classname, void* pobject, bool owned)
 {
-   ASSERT_PTR(mpArrayClass);
-   VirtualArrayReference ref(mpArrayClass->instantiateArray());
+   if ( pobject == NULL )
+   {
+      return VirtualObjectReference();
+   }
 
-   return ref;
+   NativeObjectMap::iterator it = mNativeObjects.find(pobject);
+   if ( it != mNativeObjects.end() )
+   {
+      // already constructed this object earlier
+      ASSERT(it->second->getNativeObject() == pobject);
+      VirtualObjectReference& ref = it->second;
+      ref->setOwner(owned);
+      return ref;
+   }
+
+   // construct new instance & remember it
+   VirtualObjectReference object(instantiate(classname, -1, pobject));
+   if ( !object.isNull() )
+   {
+      ASSERT(object->hasNativeObject() && object->getNativeObject() == pobject);
+      object->setOwner(owned);
+
+      mNativeObjects[pobject] = object;
+   }
+
+   return object;
 }
 
 VirtualObjectReference VirtualMachine::instantiateShare(const VirtualObjectReference& origin)
 {
    VirtualObjectReference share = origin->clone();
-   
+
+   mNativeObjects[share->getNativeObject()] = share;
+
    return share;
 }
 
@@ -1477,12 +1510,56 @@ VirtualObjectReference VirtualMachine::instantiateArrayException(const VirtualAr
    return result;
 }
 
+VirtualObjectReference VirtualMachine::lookupNative(void* pobject)
+{
+   NativeObjectMap::iterator it = mNativeObjects.find(pobject);
+   if ( it != mNativeObjects.end() )
+   {
+      ASSERT(it->second->getNativeObject() == pobject);
+      return it->second;
+   }
+   return VirtualObjectReference();
+}
+
+VirtualArrayReference VirtualMachine::instantiateArray()
+{
+   ASSERT_PTR(mpArrayClass);
+   VirtualArrayReference ref(mpArrayClass->instantiateArray());
+
+   return ref;
+}
+
 // - Native interface
 
 void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnative)
 {
    ASSERT(!object->hasNativeObject());
    object->setNativeObject(pnative);
+
+   std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObjectReference>(pnative, object));
+   ASSERT(ret.second);
+}
+
+void VirtualMachine::unregisterNative(void* pnative)
+{
+   VirtualObjectReference& ref = mNativeObjects[pnative];
+   if ( ref->isOwner() )
+   {
+      const std::string& classname = ref->getClass().getNativeClassName();
+      std::string fnc = classname + "_destruct";
+
+      mStack.push_back(Variant(ref));
+      mStack.push_back(Variant(1));
+
+      VirtualStackAccessor accessor(mStack);
+      (*mNatives[fnc])(*this, accessor);
+
+      mStack.pop_back();
+      mStack.pop_back();
+   }
+
+   ASSERT(mNativeObjects.find(pnative) != mNativeObjects.end());
+   mNativeObjects.erase(pnative);
 }
 
 void VirtualMachine::unregisterNative(VirtualObjectReference& object)
@@ -1492,6 +1569,10 @@ void VirtualMachine::unregisterNative(VirtualObjectReference& object)
       ASSERT(object->hasNativeObject());
 
       // remove the object from the map
+      NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
+      ASSERT(it != mNativeObjects.end());
+      mNativeObjects.erase(it);
+
       if ( object->isOwner() )
       {
          const std::string& classname = object->getClass().getNativeClassName();

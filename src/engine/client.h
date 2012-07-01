@@ -45,7 +45,6 @@ class WorldChangedEvent;
 class Input;
 class KeyEvent;
 class MouseEvent;
-class GameWindowFactory;
 class GameWindow;
 class KeyMap;
 class WorldRenderer;
@@ -60,10 +59,10 @@ class ENGINE_API Client: public Process
 public:
    typedef std::map<Id, bool> Requests;
 
-   explicit       Client(GameWindowFactory& factory);
+                  Client();
    virtual        ~Client();
 
-   virtual bool   create();
+   virtual bool   create(const VirtualObjectReference& name);
    virtual bool   destroy();
    virtual void   update(float delta);
 
@@ -102,10 +101,6 @@ public:
  // network event callback
    virtual void onNetEvent(int client, const NetEvent& event);
 
-protected:
- // initialization
-   virtual Script* createScript();
-
 private:
    friend class ClientMouseEventListener;
    friend class ClientKeyEventListener;
@@ -125,7 +120,6 @@ private:
    void  handleUpdateObjectEvent(const UpdateObjectEvent& event);
    void  handleScriptEvent(const ScriptEvent& event);
 
-   GameWindowFactory&         mWindowFactory;
    GameWindow*                mpWindow;
    ClientGameWindowListener   mWindowListener;
    ClientKeyEventDispatcher   mKeyEventDispatcher;
