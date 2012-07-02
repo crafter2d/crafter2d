@@ -31,14 +31,21 @@ GarbageCollector::GarbageCollector():
 GarbageCollector::~GarbageCollector()
 {
    // the garbage collector should be empty before it is destructed
-   //ASSERT(mObjects.empty());
+   ASSERT(mObjects.isEmpty());
+}
+
+// - Query
+
+bool GarbageCollector::isUnique(const VirtualObjectReference& object) const
+{
+   return object.isUnique() || (object->hasNativeObject() && object.uses() <= 2);
 }
 
 // - Operations
 
 void GarbageCollector::collect(VirtualObjectReference& object)
 {
-   if ( object.uses() <= 2 && !mObjects.contains(object.ptr()) )
+   if ( !mObjects.contains(object.ptr()) )
    {
       mObjects.insert(object.ptr(), object);
    }
@@ -47,20 +54,22 @@ void GarbageCollector::collect(VirtualObjectReference& object)
 void GarbageCollector::gc(VirtualMachine& vm)
 {
    HashMapIterator<void*, VirtualObjectReference> it = mObjects.getIterator();
-   for ( ; it.isValid(); ++it )
+   while ( it.isValid() )
    {
-      VirtualObjectReference& ref = it.item();
-      //it.remove();
+      VirtualObjectReference ref = it.item();
+      it.remove();
 
-      if ( ref->hasNativeObject() )
+      ASSERT(!mObjects.contains(ref.ptr()));
+      
+      if ( isUnique(ref) )
       {
-         vm.unregisterNative(ref);
+         if ( ref->hasNativeObject() )
+         {
+            vm.unregisterNative(ref);
+         }
+
+         ref->collect(*this);
+         it.reset();
       }
-
-      // do not collect, but try to GC the members directly
-      //ref->collect(*this);
-      //it.reset();
    }
-
-   mObjects.clear();
 }

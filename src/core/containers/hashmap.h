@@ -39,6 +39,7 @@ public:
    HashMapIterator<K,E> getIterator();
 
  // query
+   bool isEmpty() const;
    bool contains(K key) const;
 
  // operations
@@ -52,6 +53,7 @@ private:
    HashFnc              mHashFnc;
    HashMapBucket<K,E>** mpBuckets;
    int                  mSize;
+   int                  mCount;
 };
 
 #include "hashmap.inl"

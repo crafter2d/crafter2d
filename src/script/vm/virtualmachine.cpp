@@ -200,22 +200,14 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
 
 VirtualMachine::~VirtualMachine()
 {
-   NativeObjectMap::iterator it = mNativeObjects.begin();
-   for ( ; it != mNativeObjects.end(); it++)
-   {
-      VirtualObjectReference& ref = it->second;
-      mGC.collect(it->second);
-   }
-
    // clear the garbage collector
    mGC.gc(*this);
-
-   ASSERT(mNativeObjects.empty());
 
    // set destruct state, native object notifies vm when it is destructed
    // resulting in double delete.
    mState = eDestruct;
    mNatives.clear();
+   mNativeObjects.clear();
    mCompiler.cleanUp();
 }
 
@@ -611,16 +603,16 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eCmpEqBool:
          {
-            bool right = mStack.back().asInt(); mStack.pop_back();
-            bool left  = mStack.back().asInt(); mStack.pop_back();
+            bool right = mStack.back().asBool(); mStack.pop_back();
+            bool left  = mStack.back().asBool(); mStack.pop_back();
 
             mStack.push_back(Variant(left == right));
          }
          break;
       case VirtualInstruction::eCmpNeqBool:
          {
-            bool right = mStack.back().asInt(); mStack.pop_back();
-            bool left  = mStack.back().asInt(); mStack.pop_back();
+            bool right = mStack.back().asBool(); mStack.pop_back();
+            bool left  = mStack.back().asBool(); mStack.pop_back();
 
             mStack.push_back(Variant(left != right));
          }
@@ -852,8 +844,8 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCmpGtReal:
          {
-            int right = mStack.back().asReal(); mStack.pop_back();
-            int left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.back().asReal(); mStack.pop_back();
+            double left  = mStack.back().asReal(); mStack.pop_back();
 
             mStack.push_back(Variant(left > right));
          }
@@ -1724,10 +1716,7 @@ void VirtualMachine::shrinkStack(int newsize)
          if ( variant.isObject() )
          {
             VirtualObjectReference& ref = variant.asObject();
-            if ( ref.isUnique() || (ref->hasNativeObject() && ref.uses() == 2) )
-            {
-               mGC.collect(ref);
-            }
+            mGC.collect(ref);
          }
       }
 

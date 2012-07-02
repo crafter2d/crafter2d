@@ -23,7 +23,8 @@ template <typename K, class E>
 HashMap<K,E>::HashMap(int size):
    mHashFnc(NULL),
    mpBuckets(NULL),
-   mSize(size)
+   mSize(size),
+   mCount(0)
 {
    mpBuckets = new HashMapBucket<K,E>*[size];
    for ( int index = 0; index < size; index++ )
@@ -47,6 +48,12 @@ HashMapIterator<K,E> HashMap<K,E>::getIterator()
 }
 
 // - Query
+
+template <typename K, class E>
+bool HashMap<K,E>::isEmpty() const
+{
+   return mCount == 0;
+}
 
 template <typename K, class E>
 bool HashMap<K,E>::contains(K key) const
@@ -96,11 +103,40 @@ void HashMap<K,E>::insert(K key, E& element)
       pbucket->setNext(mpBuckets[hash]);
       mpBuckets[hash] = pbucket;
    }
+
+   mCount++;
 }
 
 template <typename K, class E>
 void HashMap<K,E>::remove(HashMapIterator<K,E>& it)
 {
+   unsigned int hash = (*mHashFnc)(it.mpBucket->getKey()) % mSize;
+   HashMapBucket<K,E>* pbucket = mpBuckets[hash];
+   if ( pbucket->getNext() != NULL )
+   {
+      for ( HashMapBucket<K,E>* pprev = NULL; pbucket != NULL; pprev = pbucket, pbucket = pbucket->getNext() )
+      {
+         if ( pbucket == it.mpBucket )
+         {
+            if ( pprev != NULL )
+            {
+               pprev->setNext(pbucket->getNext());
+            }
+            else
+            {
+               mpBuckets[hash] = pbucket->getNext();
+            }
+         }
+      }
+   }
+   else
+   {
+      ASSERT(pbucket == it.mpBucket);
+      mpBuckets[hash] = NULL;
+      delete pbucket;
+   }
+
+   mCount--;
 }
 
 template <typename K, class E>

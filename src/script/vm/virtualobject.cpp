@@ -33,7 +33,7 @@ VirtualObject::VirtualObject():
    mpNativeObject(NULL),
    mpMembers(NULL),
    mMemberCount(0),
-   mOwnsNative(true),
+   mOwnsNative(false),
    mShared(false)
 {
 }

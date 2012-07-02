@@ -22,6 +22,9 @@ public:
 private:
    typedef HashMap<void*, VirtualObjectReference> Objects;
 
+ // query
+   bool isUnique(const VirtualObjectReference& object) const;
+
    Objects mObjects;
 };
 

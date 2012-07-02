@@ -57,16 +57,18 @@ void HashMapIterator<K,E>::initialize()
 template <typename K, class E>
 void HashMapIterator<K,E>::operator++()
 {
-   ASSERT_PTR(mpBucket);
-   mpBucket = mpBucket->getNext();
-   if ( mpBucket == NULL )
+   if ( isValid() )
    {
-      for ( ++mIndex; mIndex < mpHashMap->mSize; ++mIndex )
+      mpBucket = mpBucket->getNext();
+      if ( mpBucket == NULL )
       {
-         if ( mpHashMap->mpBuckets[mIndex] != NULL )
+         for ( ++mIndex; mIndex < mpHashMap->mSize; ++mIndex )
          {
-            mpBucket = mpHashMap->mpBuckets[mIndex];
-            break;
+            if ( mpHashMap->mpBuckets[mIndex] != NULL )
+            {
+               mpBucket = mpHashMap->mpBuckets[mIndex];
+               break;
+            }
          }
       }
    }
