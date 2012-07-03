@@ -24,11 +24,14 @@
 
 #include "sharedcount.h"
 
+template<class T> class WeakPtr;
+
 template<class T>
 class SharedPtr
 {
 public:
    explicit SharedPtr(T* pointer = NULL);
+   explicit SharedPtr(WeakPtr<T>& that);
             SharedPtr(const SharedPtr<T>& that);
            ~SharedPtr();
 
@@ -44,7 +47,7 @@ public:
 
  // query
    bool isUnique() const;
-   int uses() const;
+   int useCount() const;
 
  // operations
    void reset();
@@ -52,7 +55,11 @@ public:
 private:
    template<class T> friend class WeakPtr;
 
-   SharedCount mCount;
+ // operations
+   void inc();
+   void dec();
+
+   CountBase*  mpCount;
    T*          mpPointer;
 };
 

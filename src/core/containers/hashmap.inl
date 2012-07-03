@@ -126,6 +126,9 @@ void HashMap<K,E>::remove(HashMapIterator<K,E>& it)
             {
                mpBuckets[hash] = pbucket->getNext();
             }
+
+            delete pbucket;
+            return;
          }
       }
    }

@@ -5,7 +5,6 @@
 #include "core/defines.h"
 
 #include "countbase.h"
-#include "sharedcount.h"
 
 class WeakCount
 {
@@ -24,8 +23,8 @@ public:
       }
    }
 
-   WeakCount(const SharedCount& that):
-      mpCounter(that.mpCounter)
+   WeakCount(CountBase* pcounter):
+      mpCounter(pcounter)
    {
       if ( mpCounter != NULL )
       {
@@ -42,6 +41,8 @@ public:
    }
 
 private:
+   friend class SharedCount;
+
    CountBase* mpCounter;
 };
 

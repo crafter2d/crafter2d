@@ -1,18 +1,46 @@
 
 template <class T>
 WeakPtr<T>::WeakPtr():
-   mCount()
+   mpCount(NULL),
+   mpPointer(NULL)
 {
 }
 
 template <class T>
 WeakPtr<T>::WeakPtr(const WeakPtr& ptr):
-   mCount(ptr.mCount)
+   mpCount(ptr.mpCount),
+   mpPointer(ptr.mpPointer)
 {
+   if ( mpCount != NULL )
+   {
+      mpCount->addWeakRef();
+   }
 }
 
 template <class T>
-WeakPtr<T>::WeakPtr(const SharedPtr<T>& ptr):
-   mCount(ptr.mCount)
+WeakPtr<T>::WeakPtr(SharedPtr<T>& ptr):
+   mpCount(ptr.mpCount),
+   mpPointer(ptr.mpPointer)
 {
+   if ( mpCount != NULL )
+   {
+      mpCount->addWeakRef();
+   }
+}
+
+template <class T>
+WeakPtr<T>::~WeakPtr()
+{
+   if ( mpCount != NULL )
+   {
+      mpCount->releaseWeakRef();
+   }
+}
+
+// operations
+   
+template <class T>
+SharedPtr<T> WeakPtr<T>::lock()
+{
+   return SharedPtr<T>(*this);
 }

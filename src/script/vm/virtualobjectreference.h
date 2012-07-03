@@ -8,11 +8,14 @@
 
 #include "virtualobject.h"
 
+class VirtualObjectWeakReference;
+
 class VirtualObjectReference
 {
 public:
    VirtualObjectReference(): mObject() {}
    VirtualObjectReference(VirtualObject* pobject): mObject(pobject) {}
+   VirtualObjectReference(VirtualObjectWeakReference& weakref);
    VirtualObjectReference(const VirtualObjectReference& that): mObject(that.mObject) {}
    ~VirtualObjectReference() {}
 
@@ -23,7 +26,7 @@ public:
 
    bool isUnique() const { return mObject.isUnique(); }
    bool isNull() const { return !mObject.hasPointer(); }
-   int uses() const { return mObject.uses(); }
+   int uses() const { return mObject.useCount(); }
 
    VirtualObject* ptr() { return mObject.getPointer(); }
    void release() { mObject = SharedPtr<VirtualObject>(); }
@@ -34,6 +37,8 @@ public:
    VirtualObject& operator*() { return *mObject; }
    
 private:
+   friend class VirtualObjectWeakReference;
+
    SharedPtr<VirtualObject> mObject;
 };
 

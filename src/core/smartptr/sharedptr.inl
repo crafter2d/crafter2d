@@ -1,28 +1,47 @@
 
+#include "countimpl.h"
+
 template<class T>
 SharedPtr<T>::SharedPtr(T* pointer):
-   mCount(pointer),
+   mpCount(NULL),
    mpPointer(pointer)
 {
+   if ( pointer != NULL )
+   {
+      mpCount = new CountImpl<T>(pointer);
+   }
+}
+
+template<class T>
+SharedPtr<T>::SharedPtr(WeakPtr<T>& that):
+   mpCount(that.mpCount),
+   mpPointer(that.mpPointer)
+{
+   inc();
 }
 
 template<class T>
 SharedPtr<T>::SharedPtr(const SharedPtr<T>& that):
-   mCount(that.mCount),
+   mpCount(that.mpCount),
    mpPointer(that.mpPointer)
 {
+   inc();
 }
 
 template<class T>
 SharedPtr<T>::~SharedPtr()
 {
+   dec();
 }
 
 template<class T>
 const SharedPtr<T>& SharedPtr<T>::operator=(const SharedPtr<T>& that)
 {
-   mCount = that.mCount;
+   mpCount = that.mpCount;
    mpPointer = that.mpPointer;
+
+   inc();
+   
    return *this;
 }
 
@@ -65,21 +84,40 @@ T* SharedPtr<T>::getPointer()
 template<class T>
 bool SharedPtr<T>::isUnique() const
 {
-   return mCount.isUnique();
+   return useCount() == 1;
 }
 
 template<class T>
-int SharedPtr<T>::uses() const
+int SharedPtr<T>::useCount() const
 {
-   return mCount.count();
+   return mpCount != NULL ? mpCount->useCount() : 0;
 }
 
 // - Operations
 
 template<class T>
+void SharedPtr<T>::inc()
+{
+   if ( mpCount != NULL )
+   {
+      mpCount->addRef();
+   }
+}
+
+template<class T>
+void SharedPtr<T>::dec()
+{
+   if ( mpCount != NULL )
+   {
+      mpCount->releaseRef();
+   }
+}
+
+template<class T>
 void SharedPtr<T>::reset()
 {
-   mCount.reset();
+   dec();
 
+   mpCount   = NULL;
    mpPointer = NULL;
 }

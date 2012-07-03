@@ -25,6 +25,8 @@
 
 #include "countimpl.h"
 
+class WeakCount;
+
 class SharedCount
 {
 public:
@@ -32,6 +34,8 @@ public:
    {
       mpCounter = new CountImpl<T>(pdata);
    }
+
+   explicit SharedCount(WeakCount& that);
 
    SharedCount(const SharedCount& that): mpCounter(that.mpCounter)
    {
@@ -84,13 +88,9 @@ public:
 private:
    friend class WeakCount;
 
- // operations
-   //void inc();
-   //void dec();
-
    CountBase* mpCounter;
 };
 
-//#include "sharedcount.inl"
+#include "sharedcount.inl"
 
 #endif // SHARED_COUNT_H_

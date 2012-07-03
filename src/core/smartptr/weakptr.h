@@ -12,10 +12,17 @@ class WeakPtr
 public:
    WeakPtr();
    WeakPtr(const WeakPtr& ptr);
-   WeakPtr(const SharedPtr<T>& ptr);
+   WeakPtr(SharedPtr<T>& ptr);
+   ~WeakPtr();
+
+ // operations
+   SharedPtr<T> lock();
 
 private:
-   WeakCount mCount;
+   template<class T> friend class SharedPtr;
+
+   CountBase* mpCount;
+   T*         mpPointer;
 };
 
 #include "weakptr.inl"

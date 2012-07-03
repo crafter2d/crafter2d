@@ -45,6 +45,8 @@ bool GarbageCollector::isUnique(const VirtualObjectReference& object) const
 
 void GarbageCollector::collect(VirtualObjectReference& object)
 {
+   ASSERT(object.uses() > 0);
+
    if ( !mObjects.contains(object.ptr()) )
    {
       mObjects.insert(object.ptr(), object);
