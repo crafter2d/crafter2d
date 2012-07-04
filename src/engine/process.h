@@ -35,7 +35,7 @@ class ActionMap;
 class DataStream;
 class NetEvent;
 class Script;
-class VirtualObjectReference;
+class VirtualObject;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -48,7 +48,7 @@ public:
    explicit       Process();
    virtual        ~Process();
 
-   virtual bool   create(const VirtualObjectReference& self);
+   virtual bool   create(const VirtualObject& self);
    virtual bool   destroy();
    virtual void   update (float delta);
 

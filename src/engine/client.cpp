@@ -78,7 +78,7 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create(const VirtualObjectReference& self)
+bool Client::create(const VirtualObject& self)
 {
    bool success = Process::create(self);
    if ( success )

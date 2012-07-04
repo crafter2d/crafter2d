@@ -6,7 +6,7 @@
 
 class Process;
 class Script;
-class VirtualObjectReference;
+class VirtualObject;
 
 class AIController : public Controller
 {
@@ -14,7 +14,7 @@ public:
    explicit AIController(Process& process);
 
  // get/set
-   void setThis(const VirtualObjectReference& self);
+   void setThis(VirtualObject& self);
 
  // operations
    virtual void performAction(Actor& actor);

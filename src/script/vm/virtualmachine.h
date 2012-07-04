@@ -33,9 +33,7 @@
 #include "script/gc/garbagecollector.h"
 
 #include "virtualcompilecallback.h"
-#include "virtualobjectreference.h"
 #include "virtualfunctiontableentry.h"
-#include "virtualmachineobjectobserver.h"
 #include "virtualcontext.h"
 
 class VirtualArrayException;
@@ -44,6 +42,7 @@ class VirtualProgram;
 class VirtualFunctionBase;
 class VirtualFunctionTableEntry;
 class VirtualException;
+class VirtualObject;
 
 typedef std::deque<Variant> Stack;
 
@@ -55,7 +54,7 @@ public:
    }
 
  // query
-   VirtualObjectReference& getThis() const
+   VirtualObject& getThis() const
    {
       return getObject(0);
    }
@@ -85,7 +84,7 @@ public:
       return value.asBool();
    }
 
-   VirtualObjectReference& getObject(int argument) const {
+   VirtualObject& getObject(int argument) const {
       Variant& value = getArgument(argument);
       return value.asObject();
    }
@@ -104,11 +103,8 @@ public:
       return mResult;
    }
 
-   void setResult(const VirtualObjectReference& object) {
-      if ( !object.isNull() )
-      {
-         mResult = Variant(object);
-      }
+   void setResult(VirtualObject& object) {
+      mResult = Variant(object);
    }
 
    void setResult(int value) {
@@ -174,27 +170,26 @@ public:
    void push(double value);
    void push(bool value);
    void push(const std::string& value);
-   void push(const VirtualObjectReference& object);
+   void push(VirtualObject& object);
 
  // execution
    bool execute(const std::string& classname, const std::string& function);
-   void execute(const VirtualObjectReference& object, const std::string& function);
+   void execute(VirtualObject& object, const std::string& function);
 
  // exception handling
    std::string buildCallStack() const;
-   void displayException(const VirtualException& exception);
+   void displayException(VirtualException& exception);
 
  // object instantation
-   VirtualObjectReference instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
-   VirtualObjectReference instantiateNative(const std::string& classname, void* pobject, bool owned = true);
-   VirtualObjectReference instantiateShare(const VirtualObjectReference& origin);
+   VirtualObject*         instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
+   VirtualObject*         instantiateNative(const std::string& classname, void* pobject, bool owned = true);
+   VirtualObject*         instantiateShare(const VirtualObject& origin);
    VirtualArrayReference  instantiateArray();
 
  // observing
-   VirtualObjectReference lookupNative(void* pobject);
-   void registerNative(VirtualObjectReference& object, void* pnative);
-   void unregisterNative(VirtualObjectReference& object);
-   void unregisterNative(void* pnative);
+   VirtualObject*    lookupNative(void* pobject);
+   void              registerNative(VirtualObject& object, void* pnative);
+   void              unregisterNative(VirtualObject& object);
 
 private:
    friend class VirtualCompileCallback;
@@ -246,9 +241,10 @@ private:
       int                              mStackBase;
    };
 
+   typedef std::vector<VirtualObject*> Objects;
    typedef std::stack<VirtualCall> CallStack;
    typedef std::map<std::string, callbackfnc> Natives;
-   typedef std::map<void*, VirtualObjectReference> NativeObjectMap;
+   typedef std::map<void*, VirtualObject*> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
 
@@ -259,9 +255,9 @@ private:
    Variant pop();
 
  // exception
-   VirtualObjectReference  instantiateArrayException(const VirtualArrayException& e);
-   void                    throwException(const std::string& exceptionname, const std::string& reason = "");
-   bool                    handleException(VirtualException* pexception);
+   VirtualObject& instantiateArrayException(const VirtualArrayException& e);
+   void           throwException(const std::string& exceptionname, const std::string& reason = "");
+   bool           handleException(VirtualException* pexception);
 
  // class loading
    VirtualClass* doLoadClass(const std::string& classname);
@@ -274,11 +270,11 @@ private:
    VirtualContext&               mContext;
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
+   Objects                       mObjects;
    GarbageCollector              mGC;
    Stack                         mStack;
    CallStack                     mCallStack;
    VirtualCall                   mCall;
-   VirtualMachineObjectObserver  mObjectObserver;
    Natives                       mNatives;
    NativeObjectMap               mNativeObjects;
    State                         mState;

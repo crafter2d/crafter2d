@@ -79,7 +79,7 @@ void Process::setWorld(World* pworld)
 
 // - Operations
 
-bool Process::create(const VirtualObjectReference& self)
+bool Process::create(const VirtualObject& self)
 {
    if ( mpScriptManager == NULL )
    {

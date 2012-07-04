@@ -29,6 +29,7 @@
 
 #include "script/vm/virtualcontext.h"
 #include "script/vm/virtualmachine.h"
+#include "script/vm/virtualobject.h"
 
 #include "script.h"
 #include "scriptobject.h"
@@ -106,14 +107,15 @@ void ScriptManager::destroy()
 
 Script* ScriptManager::loadNative(const std::string& classname, void* pobject, bool owned)
 {
-   VirtualObjectReference object = mpVirtualMachine->instantiateNative(classname, pobject, owned);
-   if ( object.isNull() )
+   Script* pscript = NULL;
+
+   VirtualObject* pvirtualobject = mpVirtualMachine->instantiateNative(classname, pobject, owned);
+   if ( pvirtualobject != NULL )
    {
-      return NULL;
+      pscript = new Script(*this);
+      pscript->setThis(*pvirtualobject);
    }
 
-   Script* pscript(new Script(*this));
-   pscript->setThis(object);
    return pscript;
 }
 
@@ -132,9 +134,12 @@ ScriptManager*  ScriptManager::spawnChild()
    return pmanager;
 }
 
-VirtualObjectReference ScriptManager::shareObject(const VirtualObjectReference& origin)
+VirtualObject& ScriptManager::shareObject(const VirtualObject& origin)
 {
-   return mpVirtualMachine->instantiateShare(origin);
+   VirtualObject* pshare = mpVirtualMachine->instantiateShare(origin);
+   ASSERT_PTR(pshare);
+
+   return *pshare;
 }
 
 /// \fn ScriptManager::executeScript(const std::string& classname, const std::string& function)

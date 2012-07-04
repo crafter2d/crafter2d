@@ -32,27 +32,27 @@
 Script::Script(ScriptManager& manager, const std::string& name):
    mScriptManager(manager),
    mClassName(name),
-   mObject()
+   mpObject(NULL)
 {
 }
 
 // - Get/set
 
-void Script::setThis(const VirtualObjectReference& object)
+void Script::setThis(VirtualObject& object)
 {
-   mObject = object;
+   mpObject = &object;
 }
 
 void Script::setThis(void* pthis)
 {
    if ( !mClassName.empty() )
    {
-      mObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis, false);
+      mpObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis, false);
    }
    else
    {
-      mObject = mScriptManager.mpVirtualMachine->lookupNative(pthis);
-      ASSERT(!mObject.isNull());
+      mpObject = mScriptManager.mpVirtualMachine->lookupNative(pthis);
+      ASSERT_PTR(mpObject);
    }
 }
 
@@ -66,9 +66,11 @@ void Script::setThis(void* pthis)
 /// \returns always returns true
 bool Script::run(const std::string& function)
 {
+   ASSERT_PTR(mpObject);
+
    try
    {
-      mScriptManager.mpVirtualMachine->execute(mObject, function);
+      mScriptManager.mpVirtualMachine->execute(*mpObject, function);
    }
    catch ( VirtualFunctionNotFoundException* pe )
    {
@@ -100,10 +102,10 @@ int Script::getInteger()
 
 void Script::addParam(void* pobject)
 {
-   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->lookupNative(pobject));
-   ASSERT_MSG(!ref.isNull(), "Object should have been registered already when using this method.");
+   VirtualObject* pvirtualobject = mScriptManager.mpVirtualMachine->lookupNative(pobject);
+   ASSERT_MSG(pobject != NULL, "Object should have been registered already when using this method.");
 
-   mScriptManager.mpVirtualMachine->push(ref);
+   mScriptManager.mpVirtualMachine->push(*pvirtualobject);
 }
 
 /// \fn Script::addParam(const std::string& classname, void* pobject)
@@ -113,12 +115,12 @@ void Script::addParam(void* pobject)
 /// \param typeName the type name of the object (class name)
 void Script::addParam(const std::string& classname, void* pobject)
 {
-   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject, false));
+   VirtualObject* pvirtualobject = mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject, false);
 
-   mScriptManager.mpVirtualMachine->push(ref);
+   mScriptManager.mpVirtualMachine->push(*pvirtualobject);
 }
 
-void Script::addParam(const VirtualObjectReference& object)
+void Script::addParam(VirtualObject& object)
 {
    mScriptManager.mpVirtualMachine->push(object);
 }

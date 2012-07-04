@@ -4,7 +4,7 @@
 #include "core/defines.h"
 #include "core/conv/lexical.h"
 
-#include "script/vm/virtualobjectreference.h"
+#include "script/vm/virtualobject.h"
 #include "script/vm/virtualarrayreference.h"
 #include "script/vm/virtualclass.h"
 
@@ -52,9 +52,15 @@ Variant::Variant(const std::string& value):
 {
 }
 
-Variant::Variant(const VirtualObjectReference& object):
+Variant::Variant(VirtualObject& object):
    mType(eObject),
-   mpHolder(new DataHolder<VirtualObjectReference>(object))
+   mpHolder(new ObjectHolder(&object))
+{
+}
+
+Variant::Variant(VirtualObject* pvirtualobject):
+   mType(eObject),
+   mpHolder(new ObjectHolder(pvirtualobject))
 {
 }
 
@@ -95,7 +101,7 @@ bool Variant::operator==(const Variant& that) const
             return asString() == that.asString();
 
          case eObject:
-            return asObject().ptr() == that.asObject().ptr();
+            return &asObject() == &that.asObject();
 
          case eArray:
             return asArray().ptr() == that.asArray().ptr();
@@ -270,16 +276,16 @@ void Variant::setString(const std::string& value)
    mpHolder = new DataHolder<std::string>(value);
 }
 
-VirtualObjectReference& Variant::asObject() const
+VirtualObject& Variant::asObject() const
 {
-   return ((DataHolder<VirtualObjectReference>*)mpHolder)->mData;
+   return *((ObjectHolder*)mpHolder)->mData;
 }
 
-void Variant::setObject(const VirtualObjectReference& object)
+void Variant::setObject(VirtualObject& object)
 {
    mType = eObject;
    delete mpHolder;
-   mpHolder = new DataHolder<VirtualObjectReference>(object);
+   mpHolder = new ObjectHolder(&object);
 }
 
 VirtualArrayReference& Variant::asArray() const
@@ -353,7 +359,7 @@ std::string Variant::typeAsString() const
       case eBool:
          return "boolean";
       case eObject:
-         return "object";
+         return asObject().getClass().getName();
       case eArray:
          return "array";
    }
@@ -375,7 +381,7 @@ std::string Variant::toString() const
       case eBool:
          return asBool() ? std::string("true") : std::string("false");
       case eObject:
-         return asObject()->getClass().getName();
+         return asObject().getClass().getName();
       case eArray:
          return "array";
    }

@@ -157,7 +157,7 @@ void VirtualObject::collect(GarbageCollector& gc)
       Variant& member = mpMembers[index];
       if ( member.isObject() )
       {
-         gc.collect(member.asObject());
+         //gc.collect(member.asObject());
       }
    }
 }

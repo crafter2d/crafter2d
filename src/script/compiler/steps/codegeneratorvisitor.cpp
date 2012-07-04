@@ -1784,7 +1784,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
       funcobject->setMember(0, Variant(function.getName()));
       funcobject->setMember(1, Variant(VirtualArrayReference(pannoarray)));
 
-      (*pfuncarray)[index] = Variant(VirtualObjectReference(funcobject));
+      (*pfuncarray)[index] = Variant(*funcobject); // <-- hack!
    }
 
    VirtualObject* classobject = new VirtualObject();
@@ -1792,7 +1792,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
    classobject->setMember(0, Variant(ast.getFullName()));
    classobject->setMember(1, Variant(VirtualArrayReference(pfuncarray)));
 
-   mpVClass->setClassObject(VirtualObjectReference(classobject));
+   mpVClass->setClassObject(classobject);
 }
 
 void CodeGeneratorVisitor::handleLiteral(const Literal& literal)

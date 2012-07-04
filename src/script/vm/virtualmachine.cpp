@@ -35,7 +35,6 @@
 #include "virtualinstructiontable.h"
 #include "virtualcontext.h"
 #include "virtualobject.h"
-#include "virtualobjectreference.h"
 #include "virtualclass.h"
 #include "virtualarrayobject.h"
 #include "virtualarrayreference.h"
@@ -57,7 +56,7 @@ void Console_print(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void ClassLoader_doLoadClass(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
+   VirtualObject& thisobject = accessor.getThis();
    const std::string& classname = accessor.getString(1);
 
    accessor.setResult(machine.loadClass(classname));
@@ -65,28 +64,28 @@ void ClassLoader_doLoadClass(VirtualMachine& machine, VirtualStackAccessor& acce
 
 void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   VirtualObjectReference& classobject = accessor.getObject(1);
+   VirtualObject& thisobject = accessor.getThis();
+   VirtualObject& classobject = accessor.getObject(1);
 
-   std::string name = classobject->getMember(0).asString();
-   VirtualObjectReference object = machine.instantiate(name);
+   std::string name = classobject.getMember(0).asString();
+   VirtualObject* pobject = machine.instantiate(name);
 
-   accessor.setResult(object);
+   accessor.setResult(*pobject);
 }
 
 void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   VirtualObjectReference& instance = accessor.getObject(1);
+   VirtualObject& thisobject = accessor.getThis();
+   VirtualObject& instance = accessor.getObject(1);
 
-   std::string fncname = thisobject->getMember(0).asString();
+   std::string fncname = thisobject.getMember(0).asString();
 
    machine.execute(instance, fncname);
 }
 
 void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
+   VirtualObject& thisobject = accessor.getThis();
 
    std::string callstack = machine.buildCallStack();
 
@@ -172,7 +171,6 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mStack(),
    mCallStack(),
    mCall(),
-   mObjectObserver(*this),
    mNatives(),
    mpArrayClass(NULL),
    mpStringClass(NULL),
@@ -302,7 +300,7 @@ void VirtualMachine::push(const std::string& value)
    mStack.push_back(Variant(value));
 }
 
-void VirtualMachine::push(const VirtualObjectReference& object)
+void VirtualMachine::push(VirtualObject& object)
 {
   mStack.push_back(Variant(object));
 }
@@ -311,13 +309,13 @@ void VirtualMachine::push(const VirtualObjectReference& object)
 
 bool VirtualMachine::execute(const std::string& classname, const std::string& function)
 {
-   VirtualObjectReference object = instantiate(classname);
-   if ( object.isNull() )
+   VirtualObject* pvirtualobject = instantiate(classname);
+   if ( pvirtualobject != NULL )
    {
       return false;
    }
 
-   execute(object, function);
+   execute(*pvirtualobject, function);
    
    // for now run the garbage collector here. have to find the right spot for it.
    mGC.gc(*this);
@@ -325,13 +323,13 @@ bool VirtualMachine::execute(const std::string& classname, const std::string& fu
    return true;
 }
 
-void VirtualMachine::execute(const VirtualObjectReference& object, const std::string& function)
+void VirtualMachine::execute(VirtualObject& object, const std::string& function)
 {
-   const VirtualClass& vclass = object->getClass();
+   const VirtualClass& vclass = object.getClass();
    const VirtualFunctionTableEntry* pentry = vclass.getVirtualFunctionTable().findByName(function);
    if ( pentry == NULL )
    {
-      throw new VirtualFunctionNotFoundException(object->getClass().getName(), function);
+      throw new VirtualFunctionNotFoundException(object.getClass().getName(), function);
    }
 
    Variant objectvariant(object);
@@ -363,7 +361,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
       }
       catch ( VirtualFunctionNotFoundException* pfuncexception)
       {
-         VirtualException* pexception = new VirtualException(instantiate("system.NoSuchFunctionException"));
+         VirtualException* pexception = new VirtualException(*instantiate("system.NoSuchFunctionException"));
 
          handleException(pexception);
 
@@ -430,7 +428,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             const Variant& object = mStack[mStack.size() - arguments - 1];
             ASSERT(object.isObject());
 
-            if ( !object.asObject()->hasNativeObject() )
+            if ( !object.asObject().hasNativeObject() )
             {
                const std::string& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
 
@@ -483,7 +481,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             const Variant& object = mStack[mStack.size() - arguments]; // find the object to call the method on
             if ( object.isObject() )
             {
-               const VirtualClass& theclass = object.asObject()->getClass();
+               const VirtualClass& theclass = object.asObject().getClass();
                const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
 
                execute(theclass, entry);
@@ -517,7 +515,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             const Variant& object = mStack[mStack.size() - arguments]; // find the object to call the method on
             ASSERT(object.isObject());
 
-            const VirtualClass& theclass = object.asObject()->getClass();
+            const VirtualClass& theclass = object.asObject().getClass();
             const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable().resolveInterface(instruction.getArgument());
 
             execute(theclass, entry);
@@ -948,18 +946,18 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eCmpEqObj:
          {
-            VirtualObjectReference right = mStack.back().asObject(); mStack.pop_back();
-            VirtualObjectReference left  = mStack.back().asObject(); mStack.pop_back();
+            VirtualObject& right = mStack.back().asObject(); mStack.pop_back();
+            VirtualObject& left  = mStack.back().asObject(); mStack.pop_back();
 
-            mStack.push_back(Variant(left.ptr() == right.ptr()));
+            mStack.push_back(Variant(&left == &right));
          }
          break;
       case VirtualInstruction::eCmpNeqObj:
          {
-            VirtualObjectReference right = mStack.back().asObject(); mStack.pop_back();
-            VirtualObjectReference left  = mStack.back().asObject(); mStack.pop_back();
+            VirtualObject& right = mStack.back().asObject(); mStack.pop_back();
+            VirtualObject& left  = mStack.back().asObject(); mStack.pop_back();
 
-            mStack.push_back(Variant(left.ptr() != right.ptr()));
+            mStack.push_back(Variant(&left != &right));
          }
          break;
       case VirtualInstruction::eCmpEqAr:
@@ -1081,11 +1079,12 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             const std::string& name = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
             const VirtualClass* pcompareclass = mContext.mClassTable.find(name);
 
-            Variant object = mStack.back();  mStack.pop_back();
-            ASSERT(object.isObject());
+            Variant var = mStack.back();  mStack.pop_back();
+            ASSERT(var.isObject());
+            VirtualObject& object = var.asObject();
 
-            if ( object.asObject()->getClass().isBaseClass(*pcompareclass)
-              || object.asObject()->getClass().implements(*pcompareclass) )
+            if ( object.getClass().isBaseClass(*pcompareclass)
+              || object.getClass().implements(*pcompareclass) )
             {
                mStack.push_back(Variant(true));
             }
@@ -1135,7 +1134,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          {
             ASSERT(mStack.back().isObject());
 
-            VirtualObjectReference exception = mStack.back().asObject();
+            VirtualObject& exception = mStack.back().asObject();
             mStack.pop_back();
 
             throw new VirtualException(exception);
@@ -1150,7 +1149,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             mStack.pop_back();
 
             if ( obj.isObject() )
-               mStack.push_back((*obj.asObject()).getMember(instruction.getArgument()));
+               mStack.push_back(obj.asObject().getMember(instruction.getArgument()));
             else if ( obj.isArray() )
                mStack.push_back(Variant(obj.asArray().ptr()->size()));
             else if ( obj.isEmpty() )
@@ -1169,7 +1168,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             Variant value = mStack.back();
             mStack.pop_back();
 
-            obj.asObject()->setMember(instruction.getArgument(), value);
+            obj.asObject().setMember(instruction.getArgument(), value);
          }
          break;
       case VirtualInstruction::eLoadLocal:
@@ -1278,7 +1277,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             Variant name;
             if ( instruction.getArgument() == 1 )
             {
-               name.setString(mStack.back().asObject()->getClass().getName());
+               name.setString(mStack.back().asObject().getClass().getName());
             }
             else
             {
@@ -1338,15 +1337,15 @@ std::string VirtualMachine::buildCallStack() const
 
 void VirtualMachine::throwException(const std::string& exceptionname, const std::string& reason)
 {
-   VirtualObjectReference exception(instantiate(exceptionname, -1));
+   VirtualObject* pexception = instantiate(exceptionname, -1);
 
    if ( reason.length() > 0 )
    {
       mStack.push_back(Variant(reason));
-      execute(exception, "setCause");
+      execute(*pexception, "setCause");
    }
 
-   throw new VirtualException(exception);
+   throw new VirtualException(*pexception);
 }
 
 bool VirtualMachine::handleException(VirtualException* pexception)
@@ -1379,9 +1378,9 @@ bool VirtualMachine::handleException(VirtualException* pexception)
    throw pexception;
 }
 
-void VirtualMachine::displayException(const VirtualException& exception)
+void VirtualMachine::displayException(VirtualException& exception)
 {
-   const VirtualObjectReference& exceptionobject = exception.getException();
+   VirtualObject& exceptionobject = exception.getException();
 
    execute(exceptionobject, "getCause");
    execute(exceptionobject, "getCallStack");
@@ -1397,23 +1396,18 @@ void VirtualMachine::displayException(const VirtualException& exception)
 
 // - Object creation
 
-VirtualObjectReference VirtualMachine::instantiate(const std::string& classname, int constructor, void* pnativeobject)
+VirtualObject* VirtualMachine::instantiate(const std::string& classname, int constructor, void* pnativeobject)
 {
    VirtualClass* pclass = doLoadClass(classname);
-   if ( pclass == NULL )
+   if ( pclass == NULL || !pclass->canInstantiate() )
    {
-      return VirtualObjectReference();
+      return NULL;
    }
 
-   if ( !pclass->canInstantiate() )
-   {
-      // not allowed to do instantiate this class (abstract)
-      throw std::exception();
-   }
-
-   VirtualObjectReference object(pclass->instantiate());
+   AutoPtr<VirtualObject> object = pclass->instantiate();
    object->setNativeObject(pnativeobject);
-   Variant objectvariant(object);
+
+   Variant objectvariant(*object);
 
    {
       // run field initialization expressions
@@ -1442,67 +1436,73 @@ VirtualObjectReference VirtualMachine::instantiate(const std::string& classname,
       }
    }
 
-   return object;
+   mObjects.push_back(object.release());
+   return object.getPointer();
 }
 
-VirtualObjectReference VirtualMachine::instantiateNative(const std::string& classname, void* pobject, bool owned)
+VirtualObject* VirtualMachine::instantiateNative(const std::string& classname, void* pobject, bool owned)
 {
-   if ( pobject == NULL )
+   VirtualObject* presult = NULL;
+   if ( pobject != NULL )
    {
-      return VirtualObjectReference();
+      NativeObjectMap::iterator it = mNativeObjects.find(pobject);
+      if ( it != mNativeObjects.end() )
+      {
+         // already constructed this object earlier
+         ASSERT(it->second->getNativeObject() == pobject);
+         presult = it->second;
+         presult->setOwner(owned);
+      }
+      else
+      {
+         // construct new instance & remember it
+         presult = instantiate(classname, -1, pobject);
+         ASSERT_PTR(presult);
+         ASSERT(presult->hasNativeObject() && presult->getNativeObject() == pobject);
+
+         presult->setOwner(owned);
+         mNativeObjects[pobject] = presult;
+      }
    }
-
-   NativeObjectMap::iterator it = mNativeObjects.find(pobject);
-   if ( it != mNativeObjects.end() )
-   {
-      // already constructed this object earlier
-      ASSERT(it->second->getNativeObject() == pobject);
-      VirtualObjectReference& ref = it->second;
-      ref->setOwner(owned);
-      return ref;
-   }
-
-   // construct new instance & remember it
-   VirtualObjectReference object(instantiate(classname, -1, pobject));
-   if ( !object.isNull() )
-   {
-      ASSERT(object->hasNativeObject() && object->getNativeObject() == pobject);
-      object->setOwner(owned);
-
-      mNativeObjects[pobject] = object;
-   }
-
-   return object;
+   
+   return presult;
 }
 
-VirtualObjectReference VirtualMachine::instantiateShare(const VirtualObjectReference& origin)
+VirtualObject* VirtualMachine::instantiateShare(const VirtualObject& origin)
 {
-   VirtualObjectReference share = origin->clone();
+   VirtualObject* pshare = origin.clone();
+   ASSERT_PTR(pshare);
 
-   mNativeObjects[share->getNativeObject()] = share;
+   mObjects.push_back(pshare);
 
-   return share;
+   if ( pshare->hasNativeObject() )
+   {
+      mNativeObjects[pshare->getNativeObject()] = pshare;
+   }
+
+   return pshare;
 }
 
-VirtualObjectReference VirtualMachine::instantiateArrayException(const VirtualArrayException& e)
+VirtualObject& VirtualMachine::instantiateArrayException(const VirtualArrayException& e)
 {
-   VirtualObjectReference result;
+   VirtualObject* presult;
 
    switch ( e.getKind() )
    {
       case VirtualArrayException::eOutOfBounds: 
          {
-            result = instantiate("system.ArrayIndexOutOfBoundsException", -1);
+            presult = instantiate("system.ArrayIndexOutOfBoundsException", -1);
             break;
          }
       default:
          UNREACHABLE("Invalid enum value");
    }
    
-   return result;
+   ASSERT_PTR(presult);
+   return *presult;
 }
 
-VirtualObjectReference VirtualMachine::lookupNative(void* pobject)
+VirtualObject* VirtualMachine::lookupNative(void* pobject)
 {
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
    if ( it != mNativeObjects.end() )
@@ -1510,7 +1510,7 @@ VirtualObjectReference VirtualMachine::lookupNative(void* pobject)
       ASSERT(it->second->getNativeObject() == pobject);
       return it->second;
    }
-   return VirtualObjectReference();
+   return NULL;
 }
 
 VirtualArrayReference VirtualMachine::instantiateArray()
@@ -1523,42 +1523,23 @@ VirtualArrayReference VirtualMachine::instantiateArray()
 
 // - Native interface
 
-void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnative)
+void VirtualMachine::registerNative(VirtualObject& object, void* pnative)
 {
-   ASSERT(!object->hasNativeObject());
-   object->setNativeObject(pnative);
+   ASSERT(!object.hasNativeObject());
+   object.setNativeObject(pnative);
 
-   std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObjectReference>(pnative, object));
+   std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObject*>(pnative, &object));
    ASSERT(ret.second);
 }
 
-void VirtualMachine::unregisterNative(void* pnative)
+void VirtualMachine::unregisterNative(VirtualObject& object)
 {
-   VirtualObjectReference& ref = mNativeObjects[pnative];
-   if ( ref->isOwner() )
-   {
-      const std::string& classname = ref->getClass().getNativeClassName();
-      std::string fnc = classname + "_destruct";
+   // to be decided what to do with this.. called from the GC??
 
-      mStack.push_back(Variant(ref));
-      mStack.push_back(Variant(1));
-
-      VirtualStackAccessor accessor(mStack);
-      (*mNatives[fnc])(*this, accessor);
-
-      mStack.pop_back();
-      mStack.pop_back();
-   }
-
-   ASSERT(mNativeObjects.find(pnative) != mNativeObjects.end());
-   mNativeObjects.erase(pnative);
-}
-
-void VirtualMachine::unregisterNative(VirtualObjectReference& object)
-{
+   /*
    if ( object.uses() <= 2 ) // kept by GC and native object array
    {
-      ASSERT(object->hasNativeObject());
+      ASSERT(object.hasNativeObject());
 
       // remove the object from the map
       NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
@@ -1580,6 +1561,7 @@ void VirtualMachine::unregisterNative(VirtualObjectReference& object)
          mStack.pop_back();
       }
    }
+   */
 }
 
 // - Callbacks
@@ -1673,18 +1655,16 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
 {
    if ( mLoaded )
    {
-      VirtualObjectReference objectref = aclass.getClassObject();
+      VirtualObject& object = aclass.getClassObject();
 
       // resolve the virtual classes
-      VirtualObject& object = *objectref;
       object.setClass(mContext.mClassTable.resolve("system.Class"));
 
       VirtualArrayReference arrayref = object.getMember(1).asArray();
       const VirtualClass& funcclass = mContext.mClassTable.resolve("system.Function");
       for ( int index = 0; index < arrayref->size(); index++ )
       {
-         VirtualObjectReference funcref = (*arrayref)[index].asObject();
-         VirtualObject& func = *funcref;
+         VirtualObject& func = (*arrayref)[index].asObject();
          func.setClass(funcclass);
       }
 
@@ -1694,7 +1674,7 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
       const Variant& classloaderobject = classloader.getStatic(0);
 
       mStack.push_back(classloaderobject);
-      mStack.push_back(Variant(objectref));
+      mStack.push_back(Variant(object));
 
       execute(classloader, entry);
    }
@@ -1715,8 +1695,8 @@ void VirtualMachine::shrinkStack(int newsize)
          Variant& variant = *it;
          if ( variant.isObject() )
          {
-            VirtualObjectReference& ref = variant.asObject();
-            mGC.collect(ref);
+            VirtualObject& object = variant.asObject();
+            //mGC.collect(object);
          }
       }
 

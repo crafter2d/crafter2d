@@ -6,7 +6,7 @@
 
 #include "script/script_base.h"
 
-class VirtualObjectReference;
+class VirtualObject;
 class VirtualArrayReference;
 
 class SCRIPT_API Variant
@@ -19,7 +19,8 @@ public:
    explicit Variant(char value);
    explicit Variant(bool value);
    explicit Variant(const std::string& value);
-   explicit Variant(const VirtualObjectReference& object);
+   explicit Variant(VirtualObject& object);
+   explicit Variant(VirtualObject* pvirtualobject);
    explicit Variant(const VirtualArrayReference& array);
            ~Variant();
 
@@ -48,8 +49,8 @@ public:
    const std::string& asString() const;
    void setString(const std::string& value);
 
-   VirtualObjectReference& asObject() const;
-   void setObject(const VirtualObjectReference& object);
+   VirtualObject& asObject() const;
+   void setObject(VirtualObject& object);
 
    VirtualArrayReference& asArray() const;
    void setArray(const VirtualArrayReference& array);
@@ -110,6 +111,8 @@ private:
 
       T mData;
    };
+
+   typedef DataHolder<VirtualObject*> ObjectHolder;
 
    MetaType        mType;
    DataHolderBase* mpHolder;

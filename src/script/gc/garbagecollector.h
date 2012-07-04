@@ -5,8 +5,7 @@
 
 #include "core/containers/hashmap.h"
 
-#include "script/vm/virtualobjectreference.h"
-
+class VirtualObject;
 class VirtualMachine;
 
 class GarbageCollector
@@ -16,15 +15,11 @@ public:
    ~GarbageCollector();
 
  // operations
-   void collect(VirtualObjectReference& object);
    void gc(VirtualMachine& vm);
 
 private:
-   typedef HashMap<void*, VirtualObjectReference> Objects;
-
- // query
-   bool isUnique(const VirtualObjectReference& object) const;
-
+   typedef HashMap<void*, VirtualObject*> Objects;
+   
    Objects mObjects;
 };
 

@@ -8,12 +8,12 @@
 
 #include "virtualinstructiontable.h"
 #include "virtualfunctiontable.h"
-#include "virtualobjectreference.h"
 
 class ASTClass;
 class Variant;
 class VirtualArrayObject;
 class VirtualLookupTable;
+class VirtualObject;
 
 class SCRIPT_API VirtualClass
 {
@@ -57,8 +57,8 @@ public:
    int  getStaticCount() const;
    void setStaticCount(int count);
 
-   const VirtualObjectReference& getClassObject() const;
-   void setClassObject(const VirtualObjectReference& object);
+   VirtualObject& getClassObject() const;
+   void           setClassObject(VirtualObject* pobject);
 
    void setFlags(Flags flags);
 
@@ -92,7 +92,7 @@ private:
    ASTClass*               mpDefinition;
    VirtualFunctionTable    mVTable;
    VirtualInstructionTable mInstructions;
-   VirtualObjectReference  mClassObject;
+   VirtualObject*          mpClassObject;
    LookupTables            mLookupTables;
    Variant*                mpStatics;
    int                     mStaticCount;

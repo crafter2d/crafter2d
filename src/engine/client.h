@@ -62,7 +62,7 @@ public:
                   Client();
    virtual        ~Client();
 
-   virtual bool   create(const VirtualObjectReference& name);
+   virtual bool   create(const VirtualObject& name);
    virtual bool   destroy();
    virtual void   update(float delta);
 

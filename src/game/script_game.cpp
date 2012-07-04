@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include "script/vm/virtualmachine.h"
-#include "script/vm/virtualobjectreference.h"
+#include "script/vm/virtualobject.h"
 
 #include "engine/script/scriptobject.h"
 #include "engine/script/scriptmanager.h"
@@ -28,30 +28,30 @@
 
 void Game_getScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Game* pgame = (Game*) thisobject->getNativeObject();
+   VirtualObject& thisobject = accessor.getThis();
+   Game* pgame = (Game*) thisobject.getNativeObject();
 
    ScriptManager& scriptmanager = pgame->getScriptManager();
-   VirtualObjectReference ref = machine.instantiateNative("ScriptManager", &scriptmanager, false);
+   VirtualObject* pref = machine.instantiateNative("ScriptManager", &scriptmanager, false);
 
-   accessor.setResult(ref);
+   accessor.setResult(*pref);
 }
 
 void Game_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Game* pgame = (Game*) thisobject->getNativeObject();
+   VirtualObject& thisobject = accessor.getThis();
+   Game* pgame = (Game*) thisobject.getNativeObject();
 
    GameWindowFactory& factory = pgame->getWindowFactory();
-   VirtualObjectReference ref = machine.instantiateNative("system.GameWindowFactory", &factory, false);
+   VirtualObject* pref = machine.instantiateNative("system.GameWindowFactory", &factory, false);
 
-   accessor.setResult(ref);
+   accessor.setResult(*pref);
 }
 
 void Game_setActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   Game* pgame = (Game*) thisobject->getNativeObject();
+   VirtualObject& thisobject = accessor.getThis();
+   Game* pgame = (Game*) thisobject.getNativeObject();
 
    bool active = accessor.getBoolean(1);
 

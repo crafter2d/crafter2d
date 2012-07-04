@@ -4,6 +4,7 @@
 #include "core/containers/hashmapiterator.h"
 
 #include "script/vm/virtualmachine.h"
+#include "script/vm/virtualobject.h"
 
 int VoidHash(void* pkey)
 {
@@ -34,27 +35,11 @@ GarbageCollector::~GarbageCollector()
    ASSERT(mObjects.isEmpty());
 }
 
-// - Query
-
-bool GarbageCollector::isUnique(const VirtualObjectReference& object) const
-{
-   return object.isUnique() || (object->hasNativeObject() && object.uses() <= 2);
-}
-
 // - Operations
-
-void GarbageCollector::collect(VirtualObjectReference& object)
-{
-   ASSERT(object.uses() > 0);
-
-   if ( !mObjects.contains(object.ptr()) )
-   {
-      mObjects.insert(object.ptr(), object);
-   }
-}
 
 void GarbageCollector::gc(VirtualMachine& vm)
 {
+   /*
    HashMapIterator<void*, VirtualObjectReference> it = mObjects.getIterator();
    while ( it.isValid() )
    {
@@ -67,11 +52,12 @@ void GarbageCollector::gc(VirtualMachine& vm)
       {
          if ( ref->hasNativeObject() )
          {
-            vm.unregisterNative(ref);
+            vm.unregisterNative(*ref);
          }
 
          ref->collect(*this);
          it.reset();
       }
    }
+   */
 }

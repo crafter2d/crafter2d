@@ -18,7 +18,7 @@ VirtualClass::VirtualClass():
    mpDefinition(NULL),
    mVTable(),
    mInstructions(),
-   mClassObject(NULL),
+   mpClassObject(NULL),
    mpStatics(NULL),
    mStaticCount(0),
    mVariableCount(0),
@@ -136,14 +136,15 @@ void VirtualClass::setDefinition(ASTClass* pdefinition)
    mpDefinition = pdefinition;
 }
 
-const VirtualObjectReference& VirtualClass::getClassObject() const
+VirtualObject& VirtualClass::getClassObject() const
 {
-   return mClassObject;
+   ASSERT_PTR(mpClassObject);
+   return *mpClassObject;
 }
 
-void VirtualClass::setClassObject(const VirtualObjectReference& object)
+void VirtualClass::setClassObject(VirtualObject* pobject)
 {
-   mClassObject = object;
+   mpClassObject = pobject;
 }
 
 void VirtualClass::setFlags(Flags flags)

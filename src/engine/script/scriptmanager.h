@@ -31,7 +31,7 @@
 class Script;
 class VirtualMachine;
 class VirtualContext;
-class VirtualObjectReference;
+class VirtualObject;
 
 /**
 @author Jeroen Broekhuizen
@@ -115,7 +115,7 @@ public:
 
  // operations
    ScriptManager*          spawnChild();
-   VirtualObjectReference  shareObject(const VirtualObjectReference& origin);
+   VirtualObject&          shareObject(const VirtualObject& origin);
 
  // function interface
    bool                    hasFunction(const std::string& name) const;

@@ -37,7 +37,7 @@ AIController::AIController(Process& process):
 
 // - Get/set
 
-void AIController::setThis(const VirtualObjectReference& self)
+void AIController::setThis(VirtualObject& self)
 {
    mpScript->setThis(self);
 }
