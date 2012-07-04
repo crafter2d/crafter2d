@@ -35,6 +35,7 @@
 #include "virtualcompilecallback.h"
 #include "virtualfunctiontableentry.h"
 #include "virtualcontext.h"
+#include "virtualstack.h"
 
 class VirtualArrayException;
 class VirtualInstruction;
@@ -44,12 +45,10 @@ class VirtualFunctionTableEntry;
 class VirtualException;
 class VirtualObject;
 
-typedef std::deque<Variant> Stack;
-
 class VirtualStackAccessor
 {
 public:
-   VirtualStackAccessor(Stack& stack): mStack(stack), mSize(stack.back().asInt())
+   VirtualStackAccessor(VirtualStack& stack): mStack(stack), mSize(stack.back().asInt())
    {
    }
 
@@ -139,9 +138,9 @@ private:
       // index 0 -> 4 - 3 = 1
    }
 
-   Stack&   mStack;
-   Variant  mResult;
-   int      mSize;
+   VirtualStack&  mStack;
+   Variant        mResult;
+   int            mSize;
 };
 
 class SCRIPT_API VirtualMachine
@@ -272,7 +271,7 @@ private:
    Compiler                      mCompiler;
    Objects                       mObjects;
    GarbageCollector              mGC;
-   Stack                         mStack;
+   VirtualStack                  mStack;
    CallStack                     mCallStack;
    VirtualCall                   mCall;
    Natives                       mNatives;
