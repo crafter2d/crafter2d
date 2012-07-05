@@ -142,6 +142,11 @@ VirtualObject& ScriptManager::shareObject(const VirtualObject& origin)
    return *pshare;
 }
 
+void ScriptManager::addRootObject(VirtualObject& object)
+{
+   mpVirtualMachine->addRootObject(object);
+}
+
 /// \fn ScriptManager::executeScript(const std::string& classname, const std::string& function)
 /// \brief Runs a class function once. The function must be a static function.
 /// \param classname Name of the class

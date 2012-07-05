@@ -9,7 +9,6 @@ use engine.game.*;
 class GameServer extends Server
 {
 	private boolean mStarted = false;
-	private Player mPlayer;
 	private Hero   mHero;
 	private Grudge mGrudge;
 	

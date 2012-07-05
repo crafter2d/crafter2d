@@ -47,15 +47,21 @@ public:
    bool isShared() const;
    void setShared(bool shared);
 
+   bool isMarked() const;
+   void setMarked(bool marked);
+
  // query
    const VirtualClass& getClass() const;
    void                setClass(const VirtualClass& definition);
+
+   int getMemberCount() const;
 
  // operation
    void initialize(int variables);
    VirtualObject* clone() const;
    Variant& getMember(int index);
    void setMember(int index, const Variant& value);
+   void mark();
 
  // garbage
    void collect(GarbageCollector& gc);
@@ -69,6 +75,7 @@ private:
    int                           mMemberCount;
    bool                          mOwnsNative;
    bool                          mShared;
+   bool                          mMarked;
 };
 
 #endif // VIRTUAL_OBJECT_H_

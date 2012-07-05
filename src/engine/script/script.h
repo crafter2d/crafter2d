@@ -53,8 +53,9 @@ public:
    bool        getBoolean();
    int         getInteger();
 
-   void        setThis(VirtualObject& object);
-   void        setThis(void* pthis);
+   VirtualObject& getThis();
+   void           setThis(VirtualObject& object);
+   void           setThis(void* pthis);
 
    bool        run(const std::string& function);
 

@@ -39,25 +39,41 @@ GarbageCollector::~GarbageCollector()
 
 void GarbageCollector::gc(VirtualMachine& vm)
 {
-   /*
-   HashMapIterator<void*, VirtualObjectReference> it = mObjects.getIterator();
-   while ( it.isValid() )
+   phaseMark(vm);
+   phaseCollect(vm);
+}
+
+void GarbageCollector::phaseMark(VirtualMachine& vm)
+{
+   vm.mContext.mClassTable.mark();  // marks all statics
+   vm.mStack.mark();
+
+   for ( int index = 0; index < vm.mRootObjects.size(); index++ )
    {
-      VirtualObjectReference ref = it.item();
-      it.remove();
+      VirtualObject* pobject = vm.mRootObjects[index];
+      pobject->mark();
+   }
+}
 
-      ASSERT(!mObjects.contains(ref.ptr()));
-      
-      if ( isUnique(ref) )
+void GarbageCollector::phaseCollect(VirtualMachine& vm)
+{
+   for ( int index = 0; index < vm.mObjects.size(); )
+   {
+      VirtualObject* pobject = vm.mObjects[index];
+      if ( pobject->isMarked() )
       {
-         if ( ref->hasNativeObject() )
-         {
-            vm.unregisterNative(*ref);
-         }
+         pobject->setMarked(false);
+         index++;
+      }
+      else
+      {
+         vm.mObjects.erase(vm.mObjects.begin() + index);
 
-         ref->collect(*this);
-         it.reset();
+         if ( pobject->hasNativeObject() )
+         {
+            vm.unregisterNative(*pobject);
+         }
+         delete pobject;
       }
    }
-   */
 }

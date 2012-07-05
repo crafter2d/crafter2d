@@ -26,6 +26,7 @@
 #include "resourcemanager.h"
 
 ResourceHandle::ResourceHandle(ResourceManager& manager, Resource* presource):
+   RefCount(),
    mManager(manager),
    mpResource(presource)
 {

@@ -49,7 +49,6 @@ Actor::Actor():
    mpBody(NULL),
    mpAnimator(NULL),
    mpController(NULL),
-   mType(),
    mWidth(0),
    mHeight(0),
    halfX(.0f),

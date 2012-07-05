@@ -56,6 +56,9 @@ public:
    const std::string&      getName() const;
    void                    setName(const std::string& name);
 
+   const std::string&      getClassName() const;
+   void                    setClassName(const std::string& classname);
+
  // operations
    virtual void destroy();
 
@@ -90,6 +93,7 @@ private:
    Entities          mChildren;
    std::string       mName;
    std::string       mXmlFile;
+   std::string       mClassName;
 };
 
 #ifdef JENGINE_INLINE

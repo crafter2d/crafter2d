@@ -9,6 +9,7 @@ class Resource
 public:
    Resource();
    Resource(const std::string& name);
+   virtual ~Resource();
 
  // get/set
    const std::string& getName() const;

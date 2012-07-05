@@ -62,6 +62,12 @@ void OOCheckVisitor::visit(ASTClass& ast)
       }
    }
 
+   if ( ast.isNative() )
+   {
+      // a class is native if its either marked native or has one or native functions
+      ast.getModifiers().setNative();
+   }
+
    validateClass(ast);
    
    visitChildren(ast);
@@ -90,6 +96,7 @@ void OOCheckVisitor::visit(ASTFunction& ast)
       }
    }
    
+   /*
    if ( ast.getModifiers().isNative() )
    {
       if ( ast.isConstructor() )
@@ -103,7 +110,8 @@ void OOCheckVisitor::visit(ASTFunction& ast)
          mpClass->getModifiers().setNative();
       }
    }
-   
+   */
+
    if ( ast.hasBody() )
    {
       ast.getBody().accept(*this);

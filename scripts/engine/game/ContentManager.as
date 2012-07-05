@@ -8,6 +8,14 @@ final class ContentManager
 		super();
 	}
 	
-	public native Entity loadEntity(string filename);
+	public Entity loadEntity(string filename)
+	{
+		Entity result = native_loadEntity(filename);
+		result.onCreated();
+		return result;
+	}
+	
+	
 	public native World load(string filename);
+	private native Entity native_loadEntity(string filename);
 }

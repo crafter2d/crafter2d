@@ -45,6 +45,9 @@ public:
 
    int size() const;
 
+ // operations
+   void mark();
+
 private:
    typedef std::vector<Variant> Stack;
 

@@ -203,6 +203,8 @@ bool Game::initGame()
       return false;
    }
 
+   mScriptManager.addRootObject(mpScript->getThis());
+
    if ( mpScript->run("initialize") && mpScript->getBoolean() )
    {
       mActive = true;

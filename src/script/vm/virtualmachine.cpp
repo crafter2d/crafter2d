@@ -166,6 +166,8 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mContext(context),
    mCallback(*this),
    mCompiler(),
+   mObjects(),
+   mRootObjects(),
    mGC(),
    mStack(),
    mCallStack(),
@@ -294,6 +296,11 @@ void VirtualMachine::push(const std::string& value)
 void VirtualMachine::push(VirtualObject& object)
 {
   mStack.pushObject(object);
+}
+
+void VirtualMachine::addRootObject(VirtualObject& object)
+{
+   mRootObjects.push_back(&object);
 }
 
 // - Execution
@@ -1427,7 +1434,7 @@ VirtualObject* VirtualMachine::instantiateNative(const std::string& classname, v
       {
          // construct new instance & remember it
          presult = instantiate(classname, -1, pobject);
-         ASSERT_PTR(presult);
+         ASSERT_PTR(presult); 
          ASSERT(presult->hasNativeObject() && presult->getNativeObject() == pobject);
 
          presult->setOwner(owned);
@@ -1506,32 +1513,31 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
 {
    // to be decided what to do with this.. called from the GC??
 
-   /*
-   if ( object.uses() <= 2 ) // kept by GC and native object array
-   {
       ASSERT(object.hasNativeObject());
 
       // remove the object from the map
-      NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
+      NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObject());
       ASSERT(it != mNativeObjects.end());
       mNativeObjects.erase(it);
 
-      if ( object->isOwner() )
+      if ( object.isOwner() )
       {
-         const std::string& classname = object->getClass().getNativeClassName();
+         const std::string& classname = object.getClass().getNativeClassName();
+         if ( classname.empty() )
+         {
+            int aap = 5;
+         }
+
          std::string fnc = classname + "_destruct";
 
-         mStack.push_back(Variant(object));
-         mStack.push_back(Variant(1));
+         mStack.pushObject(object);
+         mStack.pushInt(1);
 
          VirtualStackAccessor accessor(mStack);
          (*mNatives[fnc])(*this, accessor);
 
-         mStack.pop_back();
-         mStack.pop_back();
+         mStack.pop(2);
       }
-   }
-   */
 }
 
 // - Callbacks

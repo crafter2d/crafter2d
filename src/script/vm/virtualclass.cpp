@@ -266,6 +266,15 @@ const Variant& VirtualClass::getStatic(int index) const
    return mpStatics[index];
 }
 
+Variant& VirtualClass::getStatic(int index)
+{
+   ASSERT_PTR(mpStatics);
+   ASSERT(index >= 0);
+   ASSERT(index < mStaticCount);
+
+   return mpStatics[index];
+}
+
 void VirtualClass::setStatic(int index, const Variant& value)
 {
    ASSERT_PTR(mpStatics);

@@ -24,6 +24,7 @@ public:
  // operations
    void addLevel(int size);
    void resize(int newsize);
+   void mark();
 
  // downcast
    virtual VirtualArrayObject& asArray();

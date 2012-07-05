@@ -3,6 +3,9 @@
 
 #include "core/defines.h"
 
+#include "virtualarrayreference.h"
+#include "virtualobject.h"
+
 VirtualStack::VirtualStack(int initialsize):
    mStack(),
    mSize(0)
@@ -132,4 +135,20 @@ Variant& VirtualStack::top()
       mStack.resize(mStack.size() * 2);
    }
    return mStack[mSize++];
+}
+
+void VirtualStack::mark()
+{
+   for ( int index = 0; index < mSize; index++ )
+   {
+      Variant& variant = mStack[index];
+      if ( variant.isObject() )
+      {
+         variant.asObject().mark();
+      }
+      else if ( variant.isArray() )
+      {
+         variant.asArray()->mark();
+      }
+   }
 }

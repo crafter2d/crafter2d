@@ -36,7 +36,8 @@ Entity::Entity():
    mpParent(NULL),
    mChildren(),
    mName(),
-   mXmlFile()
+   mXmlFile(),
+   mClassName()
 {
    if ( ((int)mId) == -1 )
       mId = IdManager::getInstance().getNextId();

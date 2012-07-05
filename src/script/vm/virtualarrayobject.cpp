@@ -8,6 +8,7 @@
 #include "script/common/variant.h"
 
 #include "virtualarrayexception.h"
+#include "virtualobject.h"
 
 VirtualArrayObject::VirtualArrayObject():
    mpArray(0)
@@ -73,6 +74,18 @@ void VirtualArrayObject::resize(int newsize)
       delete[] mpArray;
       mpArray = parray;
       mSize   = newsize;
+   }
+}
+
+void VirtualArrayObject::mark()
+{
+   for ( int index = 0; index < mSize; index++ )
+   {
+      Variant& variant = mpArray[index];
+      if ( variant.isObject() )
+      {
+         variant.asObject().mark();
+      }
    }
 }
 

@@ -116,6 +116,7 @@ public:
  // operations
    ScriptManager*          spawnChild();
    VirtualObject&          shareObject(const VirtualObject& origin);
+   void                    addRootObject(VirtualObject& object);
 
  // function interface
    bool                    hasFunction(const std::string& name) const;

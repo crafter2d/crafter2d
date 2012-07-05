@@ -3,7 +3,10 @@
 
 #include "core/defines.h"
 
+#include "script/common/variant.h"
+
 #include "virtualclass.h"
+#include "virtualobject.h"
 
 #include <iostream>
 #include <algorithm>
@@ -42,6 +45,24 @@ void VirtualClassTable::clear()
 void VirtualClassTable::insert(VirtualClass* ptype)
 {
    mClasses[ptype->getName()] = ptype;
+}
+
+void VirtualClassTable::mark()
+{
+   Classes::iterator it = mClasses.begin();
+   for ( ; it != mClasses.end(); it++ )
+   {
+      VirtualClass* pclass = it->second;
+      int statics = pclass->getStaticCount();
+      for ( int index = 0; index < statics; index++ )
+      {
+         Variant& var = pclass->getStatic(index);
+         if ( var.isObject() )
+         {
+            var.asObject().mark();
+         }
+      }
+   }
 }
 
 void VirtualClassTable::print(const LiteralTable& literals)

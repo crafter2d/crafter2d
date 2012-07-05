@@ -79,6 +79,7 @@ public:
    VirtualArrayObject* instantiateArray() const;
 
    const Variant& getStatic(int index) const;
+         Variant& getStatic(int index);
    void           setStatic(int index, const Variant& value);
 
    int addLookupTable(VirtualLookupTable* ptable);

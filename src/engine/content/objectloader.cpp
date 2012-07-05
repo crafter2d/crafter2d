@@ -119,14 +119,15 @@ Actor* ActorLoader::load(const std::string& filename)
 
    // create the actual scripted object
    const std::string* pclasstype = pobject->Attribute(std::string("type"));
-   actor->setType(pclasstype != NULL ? *pclasstype : "engine.game.Actor");
+   actor->setClassName(pclasstype != NULL ? *pclasstype : "engine.game.Actor");
 
+   /*
    AutoPtr<Script> script = getProcess().getScriptManager().loadNative(actor->getType(), actor.getPointer(), false);
    if ( !script.hasPointer() )
    {
       throw new InvalidContentException("Type " + *pclasstype + " is not a valid class name.");
    }
-   script->run("onCreated");
+   script->run("onCreated");*/
    
    return actor.release();
 }

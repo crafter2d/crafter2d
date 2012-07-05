@@ -38,6 +38,12 @@ Script::Script(ScriptManager& manager, const std::string& name):
 
 // - Get/set
 
+VirtualObject& Script::getThis()
+{
+   ASSERT_PTR(mpObject);
+   return *mpObject;
+}
+
 void Script::setThis(VirtualObject& object)
 {
    mpObject = &object;

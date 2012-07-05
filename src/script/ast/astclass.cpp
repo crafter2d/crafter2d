@@ -231,6 +231,11 @@ bool ASTClass::isLocal(const ASTFunction& function) const
    return &function.getClass() == this;
 }
 
+bool ASTClass::isNative() const
+{
+   return mModifiers.isNative() || hasNativeFunction();
+}
+
 bool ASTClass::isGeneric() const
 {
    return mpTypeVariables != NULL;
@@ -262,6 +267,20 @@ bool ASTClass::hasAbstractFunction() const
    {
       ASTFunction* pfunction = it->second;
       if ( pfunction->getModifiers().isAbstract() )
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
+bool ASTClass::hasNativeFunction() const
+{
+   Functions::const_iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); it++ )
+   {
+      ASTFunction* pfunction = it->second;
+      if ( pfunction->getModifiers().isNative() )
       {
          return true;
       }

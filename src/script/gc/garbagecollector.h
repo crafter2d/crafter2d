@@ -5,6 +5,7 @@
 
 #include "core/containers/hashmap.h"
 
+class Variant;
 class VirtualObject;
 class VirtualMachine;
 
@@ -19,7 +20,10 @@ public:
 
 private:
    typedef HashMap<void*, VirtualObject*> Objects;
-   
+
+   void phaseMark(VirtualMachine& vm);
+   void phaseCollect(VirtualMachine& vm);
+      
    Objects mObjects;
 };
 

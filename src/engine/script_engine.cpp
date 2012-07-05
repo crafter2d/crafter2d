@@ -297,14 +297,14 @@ void ScriptManager_shareObject(VirtualMachine& machine, VirtualStackAccessor& ac
    scriptmanager.shareObject(object);
 }
 
-void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ContentManager_native_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(ContentManager, contentmanager);
 
    const std::string& filename = accessor.getString(1);
 
    Entity* presult = contentmanager.loadEntity(filename);
-   RETURN_CLASS_OWNED("engine.game.Entity", Entity, presult);
+   RETURN_CLASS_OWNED(presult->getClassName(), Entity, presult);
 }
 
 void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1081,6 +1081,11 @@ void EngineGraphics_native_drawRoundedRect(VirtualMachine& machine, VirtualStack
    graphics.drawRoundedRect(x, y, width, height);
 }
 
+void Font_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(FontPtr);
+}
+
 void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(FontPtr, font);
@@ -1113,6 +1118,11 @@ void Font_getBaseLine(VirtualMachine& machine, VirtualStackAccessor& accessor)
    GET_THIS(FontPtr, font);
 
    accessor.setResult(font->getBaseLine());
+}
+
+void Texture_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(TexturePtr);
 }
 
 void Texture_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1212,7 +1222,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Client_setKeyMap", Client_setKeyMap);
    registrator.addCallback("Client_getPlayer", Client_getPlayer);
 
-   registrator.addCallback("ContentManager_loadEntity", ContentManager_loadEntity);
+   registrator.addCallback("ContentManager_native_loadEntity", ContentManager_native_loadEntity);
    registrator.addCallback("ContentManager_load", ContentManager_load);
 
    registrator.addCallback("ScriptManager_spawnChild", ScriptManager_spawnChild);
@@ -1329,11 +1339,13 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("EngineGraphics_native_drawRoundedRect", EngineGraphics_native_drawRoundedRect);
    registrator.addCallback("EngineGraphics_native_drawTexture", EngineGraphics_native_drawTexture);
 
+   registrator.addCallback("Font_destruct", Font_destruct);
    registrator.addCallback("Font_render", Font_render);
    registrator.addCallback("Font_getBaseLine", Font_getBaseLine);
    registrator.addCallback("Font_native_textWidth", Font_native_textWidth);
    registrator.addCallback("Font_native_textHeight", Font_native_textHeight);
 
+   registrator.addCallback("Texture_destruct", Texture_destruct);
    registrator.addCallback("Texture_getWidth", Texture_getWidth);
    registrator.addCallback("Texture_getHeight", Texture_getHeight);
 

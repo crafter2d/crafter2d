@@ -24,6 +24,7 @@ public:
    void clear();
    void insert(VirtualClass* ptype);
    void print(const LiteralTable& literals);
+   void mark();
 
  // search
    VirtualClass* find(const std::string& name) const;

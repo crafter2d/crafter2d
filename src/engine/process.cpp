@@ -87,8 +87,12 @@ bool Process::create(const VirtualObject& self)
       return false;
    }
 
+   VirtualObject& localself = getScriptManager().shareObject(self);
+
+   mpScriptManager->addRootObject(localself);
+
    mpScript = new Script(getScriptManager());
-   mpScript->setThis(getScriptManager().shareObject(self));
+   mpScript->setThis(localself);
    
    return true;
 }

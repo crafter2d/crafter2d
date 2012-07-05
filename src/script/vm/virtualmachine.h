@@ -171,6 +171,8 @@ public:
    void push(const std::string& value);
    void push(VirtualObject& object);
 
+   void addRootObject(VirtualObject& object);
+
  // execution
    bool execute(const std::string& classname, const std::string& function);
    void execute(VirtualObject& object, const std::string& function);
@@ -192,6 +194,7 @@ public:
 
 private:
    friend class VirtualCompileCallback;
+   friend class GarbageCollector;
 
    class VirtualCall {
    public:
@@ -270,6 +273,7 @@ private:
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
    Objects                       mObjects;
+   Objects                       mRootObjects;
    GarbageCollector              mGC;
    VirtualStack                  mStack;
    CallStack                     mCallStack;

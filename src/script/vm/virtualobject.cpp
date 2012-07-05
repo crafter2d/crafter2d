@@ -27,6 +27,8 @@
 #include "script/gc/garbagecollector.h"
 
 #include "virtualmachine.h"
+#include "virtualarrayreference.h"
+#include "virtualclass.h"
 
 VirtualObject::VirtualObject():
    mpClass(NULL),
@@ -34,7 +36,8 @@ VirtualObject::VirtualObject():
    mpMembers(NULL),
    mMemberCount(0),
    mOwnsNative(false),
-   mShared(false)
+   mShared(false),
+   mMarked(false)
 {
 }
 
@@ -44,7 +47,8 @@ VirtualObject::VirtualObject(const VirtualObject& that):
    mpMembers(that.mpMembers),
    mMemberCount(that.mMemberCount),
    mOwnsNative(false),
-   mShared(true)
+   mShared(true),
+   mMarked(false)
 {
 }
 
@@ -105,6 +109,16 @@ void VirtualObject::setShared(bool shared)
    mShared = shared;
 }
 
+bool VirtualObject::isMarked() const
+{
+   return mMarked;
+}
+
+void VirtualObject::setMarked(bool marked)
+{
+   mMarked = marked;
+}
+
 // - Query
 
 const VirtualClass& VirtualObject::getClass() const
@@ -115,6 +129,11 @@ const VirtualClass& VirtualObject::getClass() const
 void VirtualObject::setClass(const VirtualClass& definition)
 {
    mpClass = &definition;
+}
+
+int VirtualObject::getMemberCount() const
+{
+   return mMemberCount;
 }
 
 // - Operations
@@ -131,6 +150,30 @@ void VirtualObject::initialize(int variables)
 VirtualObject* VirtualObject::clone() const
 {
    return new VirtualObject(*this);
+}
+
+void VirtualObject::mark()
+{
+   if ( mpClass->getName() == "engine.game.Player" )
+   {
+      int aap = 5;
+   }
+   if ( !mMarked )
+   {
+      mMarked = true;
+
+      for ( int index = 0; index < mMemberCount; index++ )
+      {
+         if ( mpMembers[index].isObject() )
+         {
+            mpMembers[index].asObject().mark();
+         }
+         else if ( mpMembers[index].isArray() )
+         {
+            mpMembers[index].asArray()->mark();
+         }
+      }
+   }
 }
 
 Variant& VirtualObject::getMember(int index)

@@ -43,6 +43,7 @@
 	 \brief Initialized all internal variables.
  */
 Texture::Texture():
+   Resource(),
    _width(0),
    _height(0),
    _actualwidth(0),

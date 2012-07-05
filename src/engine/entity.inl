@@ -82,3 +82,13 @@ INLINE const std::string& Entity::getName() const
 {
    return mName;
 }
+
+const std::string& Entity::getClassName() const
+{
+   return mClassName;
+}
+
+void Entity::setClassName(const std::string& classname)
+{
+   mClassName = classname;
+}

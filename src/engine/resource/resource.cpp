@@ -11,6 +11,10 @@ Resource::Resource(const std::string& name):
 {
 }
 
+Resource::~Resource()
+{
+}
+
 // get/set
 
 const std::string& Resource::getName() const
