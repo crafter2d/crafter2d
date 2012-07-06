@@ -11,7 +11,8 @@ abstract class Client extends Process
 	private EngineGraphics 			mGraphics = new EngineGraphics();
 	private MouseEventDispatcher 	mMouseDispatcher;
 	private KeyEventDispatcher		mKeyDispatcher;
-	
+	private GameWindow 				mWindow;
+		
 	public native Client()
 	{
 		super();
@@ -31,6 +32,7 @@ abstract class Client extends Process
 	private native void native_setWindow(GameWindow window);
 	
 	public native boolean connect(string host, int port, string name);
+	public native GameWindowFactory getWindowFactory();
 	public native void update(real delta);
 	public native void setActionMap(ActionMap map);
 	public native void setKeyMap(KeyMap map);
@@ -49,8 +51,16 @@ abstract class Client extends Process
 		return false;
 	}
 	
+	// - Get/set
+	
+	public GameWindow getWindow()
+	{
+		return mWindow;
+	}
+	
 	public void setWindow(GameWindow window)
 	{
+		mWindow = window;
 		native_setWindow(window);
 	}
 	
@@ -107,6 +117,7 @@ abstract class Client extends Process
 	/// after a server notification.
 	public void onWorldChanged(World world)
 	{
+		setInternalWorld(world);
 	}
 	
 	// - input handling

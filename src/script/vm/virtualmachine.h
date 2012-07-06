@@ -184,7 +184,6 @@ public:
  // object instantation
    VirtualObject*         instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
    VirtualObject*         instantiateNative(const std::string& classname, void* pobject, bool owned = true);
-   VirtualObject*         instantiateShare(const VirtualObject& origin);
    VirtualArrayReference  instantiateArray();
 
  // observing

@@ -173,9 +173,10 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mCallStack(),
    mCall(),
    mNatives(),
+   mNativeObjects(),
+   mState(eInit),
    mpArrayClass(NULL),
    mpStringClass(NULL),
-   mState(eRunning),
    mLoaded(false)
 {
    mCompiler.setCallback(mCallback);
@@ -308,7 +309,7 @@ void VirtualMachine::addRootObject(VirtualObject& object)
 bool VirtualMachine::execute(const std::string& classname, const std::string& function)
 {
    VirtualObject* pvirtualobject = instantiate(classname);
-   if ( pvirtualobject != NULL )
+   if ( pvirtualobject == NULL )
    {
       return false;
    }
@@ -1029,7 +1030,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::ePushThis:
          {
-            Variant& value = mStack[mCall.mStackBase];
+            Variant value = mStack[mCall.mStackBase];
             mStack.push(value);
          }
          break;
@@ -1168,9 +1169,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eStoreLocal:
          {
-            Variant value = mStack.back();
-            mStack.pop();
-
+            Variant value = mStack.pop();
             mStack[mCall.mStackBase + instruction.getArgument()] = value;
          }
          break;
@@ -1443,21 +1442,6 @@ VirtualObject* VirtualMachine::instantiateNative(const std::string& classname, v
    }
    
    return presult;
-}
-
-VirtualObject* VirtualMachine::instantiateShare(const VirtualObject& origin)
-{
-   VirtualObject* pshare = origin.clone();
-   ASSERT_PTR(pshare);
-
-   mObjects.push_back(pshare);
-
-   if ( pshare->hasNativeObject() )
-   {
-      mNativeObjects[pshare->getNativeObject()] = pshare;
-   }
-
-   return pshare;
 }
 
 VirtualObject& VirtualMachine::instantiateArrayException(const VirtualArrayException& e)

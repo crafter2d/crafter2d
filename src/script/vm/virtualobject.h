@@ -32,7 +32,6 @@ class SCRIPT_API VirtualObject
 {
 public:
    VirtualObject();
-   VirtualObject(const VirtualObject& that);
    ~VirtualObject();
    
  // get/set
@@ -43,9 +42,6 @@ public:
       
    bool isOwner() const;
    void setOwner(bool owned);
-
-   bool isShared() const;
-   void setShared(bool shared);
 
    bool isMarked() const;
    void setMarked(bool marked);
@@ -58,7 +54,6 @@ public:
 
  // operation
    void initialize(int variables);
-   VirtualObject* clone() const;
    Variant& getMember(int index);
    void setMember(int index, const Variant& value);
    void mark();
@@ -74,7 +69,6 @@ private:
    Variant*                      mpMembers;
    int                           mMemberCount;
    bool                          mOwnsNative;
-   bool                          mShared;
    bool                          mMarked;
 };
 

@@ -47,7 +47,7 @@ void ActionMap::setProcess(Process& process)
 {
    mpProcess = &process;
 
-   mpScript = process.getScriptManager().loadNative("ActionMap", this, false);
+   mpScript = process.getScriptManager().load("engine.game.ActionMap", this, false);
    ASSERT_PTR(mpScript);
 }
 

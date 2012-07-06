@@ -42,6 +42,8 @@ public:
    bool isEmpty() const;
    bool contains(K key) const;
 
+   int size() const;
+
  // operations
    void insert(K key, E& element);
    void remove(HashMapIterator<K,E>& it);

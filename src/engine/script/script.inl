@@ -29,7 +29,7 @@
 /// \param val a numerical value
 INLINE void Script::addParam(int val)
 {
-   mScriptManager.mpVirtualMachine->push(val);
+   mScriptManager.mVirtualMachine.push(val);
 }
 
 /// \fn Script::addParam(float val)
@@ -37,7 +37,7 @@ INLINE void Script::addParam(int val)
 /// \param val a floating point value
 INLINE void Script::addParam(float val)
 {
-   mScriptManager.mpVirtualMachine->push(val);
+   mScriptManager.mVirtualMachine.push(val);
 }
 
 /// \fn Script::addParam(bool val)
@@ -45,7 +45,7 @@ INLINE void Script::addParam(float val)
 /// \param val a floating point value
 INLINE void Script::addParam(bool val)
 {
-   mScriptManager.mpVirtualMachine->push(val);
+   mScriptManager.mVirtualMachine.push(val);
 }
 
 /// \fn Script::addParam(const char* val)
@@ -53,5 +53,5 @@ INLINE void Script::addParam(bool val)
 /// \param val a pointer to a character string
 INLINE void Script::addParam(const std::string& val)
 {
-   mScriptManager.mpVirtualMachine->push(val);
+   mScriptManager.mVirtualMachine.push(val);
 }

@@ -29,7 +29,8 @@ public:
    void pushObject(VirtualObject& object);
    void pushArray(const VirtualArrayReference& array);
 
-   void                   pop(int count = 1);
+   Variant                pop();
+   void                   pop(int count);
    int                    popInt();
    double                 popReal();
    bool                   popBool();
@@ -49,10 +50,11 @@ public:
    void mark();
 
 private:
-   typedef std::vector<Variant> Stack;
+   typedef std::vector<Variant*> Stack;
 
  // operations
    Variant& top();
+   void     grow(int amount);
 
    Stack mStack;
    int   mSize;

@@ -23,7 +23,7 @@ public:
    }
 
    void registerCallbacks(ScriptManager& manager) {
-      VirtualMachine& vm = *manager.mpVirtualMachine;
+      VirtualMachine& vm = manager.mVirtualMachine;
 
       for ( int index = 0; index < mNames.size(); index++ )
       {

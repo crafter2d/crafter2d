@@ -408,7 +408,7 @@ void World::addEntity(Entity* pentity)
 
    notifyEntityAdded(*pentity);
 
-   mpScript->addParam("engine.game.Entity", pentity);
+   mpScript->addParam(pentity->getClassName(), pentity);
    mpScript->run("onEntityAdded");
 }
 

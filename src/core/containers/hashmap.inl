@@ -58,6 +58,7 @@ bool HashMap<K,E>::isEmpty() const
 template <typename K, class E>
 bool HashMap<K,E>::contains(K key) const
 {
+   ASSERT_PTR(mHashFnc);
    unsigned int hash = (*mHashFnc)(key) % mSize;
    if ( mpBuckets[hash] != NULL )
    {
@@ -72,6 +73,12 @@ bool HashMap<K,E>::contains(K key) const
    }
 
    return false;
+}
+
+template <typename K, class E>
+int HashMap<K,E>::size() const
+{
+   return mCount;
 }
 
 // - Operations

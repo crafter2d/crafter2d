@@ -8,7 +8,7 @@ use engine.collections.*;
 use engine.game.*;
 
 class GameClient extends Client
-{
+{	
 	public GameClient()
 	{
 		super();
@@ -16,14 +16,16 @@ class GameClient extends Client
 	
 	public boolean create()
 	{
-		if ( super.create() )
-		{			
-			MessageBox.showInformation("This is a messagebox!");
-			
-			return true;
+		GameWindow window = getWindowFactory().createWindow();
+		if ( !window.create("GameWindow", 800, 600, 32, false) )
+		{
+			return false;
 		}
-		
-		return false;
+		setWindow(window);
+	
+		MessageBox.showInformation("This is a messagebox!");
+			
+		return connect("localhost", 7000, "player");
 	}
 	
 	public void onConnected(Player player)
@@ -80,9 +82,5 @@ class GameClient extends Client
 			world.setFollowActor(controller);
 			world.setFollowBorders(150, 650, 100, 500);
 		}
-	}
-	
-	public void onWorldChanged()
-	{
 	}
 }

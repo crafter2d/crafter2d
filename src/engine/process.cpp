@@ -39,7 +39,7 @@ Process::Process():
    mNetObserver(*this),
    conn(mNetObserver),
    mContentManager(*this),
-   mpScriptManager(NULL),
+   mScriptManager(),
    mpScript(NULL),
    actionMap(NULL),
    initialized(false),
@@ -52,9 +52,6 @@ Process::~Process()
 {
    delete mpScript;
    mpScript = NULL;
-
-   delete mpScriptManager;
-   mpScriptManager = NULL;
 
    delete actionMap;
    actionMap = NULL;
@@ -70,7 +67,7 @@ void Process::setWorld(World* pworld)
 
       if ( mpWorld != NULL )
       {
-         pworld->setScript(getScriptManager().loadNative("engine.game.World", pworld, false));
+         pworld->setScript(getScriptManager().load("engine.game.World", pworld, false));
       }
 
       notifyWorldChanged();
@@ -79,22 +76,20 @@ void Process::setWorld(World* pworld)
 
 // - Operations
 
-bool Process::create(const VirtualObject& self)
+bool Process::create(const std::string& classname)
 {
-   if ( mpScriptManager == NULL )
+   mScriptManager.initialize();
+   mpScript = mScriptManager.load(classname, this, false);
+   if ( mpScript == NULL )
    {
-      // throw exception with warning that the scriptmanager must be set first
       return false;
    }
 
-   VirtualObject& localself = getScriptManager().shareObject(self);
+   // make me a root objects
+   mScriptManager.addRootObject(mpScript->getThis());
 
-   mpScriptManager->addRootObject(localself);
-
-   mpScript = new Script(getScriptManager());
-   mpScript->setThis(localself);
-   
-   return true;
+   // run the onCreated function
+   return mpScript->run("onCreated");
 }
 
 bool Process::destroy()

@@ -46,6 +46,7 @@ class Input;
 class KeyEvent;
 class MouseEvent;
 class GameWindow;
+class GameWindowFactory;
 class KeyMap;
 class WorldRenderer;
 class Player;
@@ -62,7 +63,7 @@ public:
                   Client();
    virtual        ~Client();
 
-   virtual bool   create(const VirtualObject& name);
+   virtual bool   create(const std::string& classname);
    virtual bool   destroy();
    virtual void   update(float delta);
 
@@ -80,7 +81,12 @@ public:
    Input&         getInput();
    void           setInput(Input& input);
 
-   void           setWindow(GameWindow* pwindow);
+   GameWindowFactory& getWindowFactory();
+   void               setWindowFactory(GameWindowFactory& factory);
+
+   bool               hasWindow() const;
+   GameWindow&        getWindow();
+   void               setWindow(GameWindow* pwindow);
 
  // operations
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
@@ -125,6 +131,7 @@ private:
    ClientKeyEventDispatcher   mKeyEventDispatcher;
    ClientMouseEventDispatcher mMouseEventDispatcher;
    SoundManager               mSoundManager;
+   GameWindowFactory*         mpWindowFactory;
    WorldRenderer*             mpWorldRenderer;
    Player*                    mpPlayer;
    KeyMap*                    mpKeyMap;

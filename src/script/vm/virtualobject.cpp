@@ -22,6 +22,7 @@
 #include <exception>
 
 #include "core/defines.h"
+#include "core/log/log.h"
 
 #include "script/common/variant.h"
 #include "script/gc/garbagecollector.h"
@@ -36,30 +37,15 @@ VirtualObject::VirtualObject():
    mpMembers(NULL),
    mMemberCount(0),
    mOwnsNative(false),
-   mShared(false),
-   mMarked(false)
-{
-}
-
-VirtualObject::VirtualObject(const VirtualObject& that):
-   mpClass(that.mpClass),
-   mpNativeObject(that.mpNativeObject),
-   mpMembers(that.mpMembers),
-   mMemberCount(that.mMemberCount),
-   mOwnsNative(false),
-   mShared(true),
    mMarked(false)
 {
 }
 
 VirtualObject::~VirtualObject()
 {
-   if ( !mShared )
-   {
-      delete[] mpMembers;
-      mpMembers = NULL;
-   }
-
+   delete[] mpMembers;
+   mpMembers = NULL;
+   
    ASSERT(!mOwnsNative || mpNativeObject == NULL);
 }
 
@@ -97,16 +83,6 @@ bool VirtualObject::isOwner() const
 void VirtualObject::setOwner(bool owned)
 {
    mOwnsNative = owned;
-}
-
-bool VirtualObject::isShared() const
-{
-   return mShared;
-}
-
-void VirtualObject::setShared(bool shared)
-{
-   mShared = shared;
 }
 
 bool VirtualObject::isMarked() const
@@ -147,35 +123,6 @@ void VirtualObject::initialize(int variables)
    }
 }
 
-VirtualObject* VirtualObject::clone() const
-{
-   return new VirtualObject(*this);
-}
-
-void VirtualObject::mark()
-{
-   if ( mpClass->getName() == "engine.game.Player" )
-   {
-      int aap = 5;
-   }
-   if ( !mMarked )
-   {
-      mMarked = true;
-
-      for ( int index = 0; index < mMemberCount; index++ )
-      {
-         if ( mpMembers[index].isObject() )
-         {
-            mpMembers[index].asObject().mark();
-         }
-         else if ( mpMembers[index].isArray() )
-         {
-            mpMembers[index].asArray()->mark();
-         }
-      }
-   }
-}
-
 Variant& VirtualObject::getMember(int index)
 {
    ASSERT(index >= 0);
@@ -193,14 +140,24 @@ void VirtualObject::setMember(int index, const Variant& value)
 
 // - Garbage collection
 
-void VirtualObject::collect(GarbageCollector& gc)
+void VirtualObject::mark()
 {
-   for ( int index = 0; index < mMemberCount; ++index )
+   //Log::getInstance().info(mpClass->getName().c_str());
+
+   if ( !mMarked )
    {
-      Variant& member = mpMembers[index];
-      if ( member.isObject() )
+      mMarked = true;
+
+      for ( int index = 0; index < mMemberCount; index++ )
       {
-         //gc.collect(member.asObject());
+         if ( mpMembers[index].isObject() )
+         {
+            mpMembers[index].asObject().mark();
+         }
+         else if ( mpMembers[index].isArray() )
+         {
+            mpMembers[index].asArray()->mark();
+         }
       }
    }
 }

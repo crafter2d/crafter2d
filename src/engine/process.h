@@ -35,7 +35,6 @@ class ActionMap;
 class DataStream;
 class NetEvent;
 class Script;
-class VirtualObject;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -46,9 +45,9 @@ class ENGINE_API Process
 {
 public:
    explicit       Process();
-   virtual        ~Process();
+   virtual        ~Process() = 0;
 
-   virtual bool   create(const VirtualObject& self);
+   virtual bool   create(const std::string& classname);
    virtual bool   destroy();
    virtual void   update (float delta);
 
@@ -61,7 +60,6 @@ public:
    void           setActionMap(ActionMap* map);
 
    ScriptManager& getScriptManager();
-   void           setScriptManager(ScriptManager* pscriptmanager);
 
    bool           hasWorld() const;
    const World&   getWorld() const;
@@ -87,7 +85,7 @@ protected:
    ProcessNetObserver   mNetObserver;
    NetConnection        conn;
    ContentManager       mContentManager;
-   ScriptManager*       mpScriptManager;
+   ScriptManager        mScriptManager;
    Script*              mpScript;
    ActionMap*           actionMap;
    bool                 initialized;

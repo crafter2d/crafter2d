@@ -23,16 +23,12 @@ int VoidHash(void* pkey)
 	return hashOffset;
 }
 
-GarbageCollector::GarbageCollector():
-   mObjects()
+GarbageCollector::GarbageCollector()
 {
-   mObjects.setHashFunction(VoidHash);
 }
 
 GarbageCollector::~GarbageCollector()
 {
-   // the garbage collector should be empty before it is destructed
-   ASSERT(mObjects.isEmpty());
 }
 
 // - Operations

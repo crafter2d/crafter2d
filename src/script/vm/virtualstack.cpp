@@ -10,19 +10,19 @@ VirtualStack::VirtualStack(int initialsize):
    mStack(),
    mSize(0)
 {
-   mStack.resize(initialsize);
+   grow(initialsize);
 }
 
 const Variant& VirtualStack::operator[](int index) const
 {
    ASSERT(index < mSize);
-   return mStack[index];
+   return *mStack[index];
 }
 
 Variant& VirtualStack::operator[](int index)
 {
    ASSERT(index < mSize);
-   return mStack[index];
+   return *mStack[index];
 }
 
 // - Stack operations
@@ -67,6 +67,11 @@ void VirtualStack::pushArray(const VirtualArrayReference& array)
    top().setArray(array);
 }
 
+Variant VirtualStack::pop()
+{
+   return *mStack[--mSize];
+}
+
 void VirtualStack::pop(int count)
 {
    mSize -= count;
@@ -75,47 +80,47 @@ void VirtualStack::pop(int count)
 
 int VirtualStack::popInt()
 {
-   return mStack[--mSize].asInt();
+   return mStack[--mSize]->asInt();
 }
 
 double VirtualStack::popReal()
 {
-   return mStack[--mSize].asReal();
+   return mStack[--mSize]->asReal();
 }
 
 bool VirtualStack::popBool()
 {
-   return mStack[--mSize].asBool();
+   return mStack[--mSize]->asBool();
 }
 
 char VirtualStack::popChar()
 {
-   return mStack[--mSize].asChar();
+   return mStack[--mSize]->asChar();
 }
 
 const std::string& VirtualStack::popString()
 {
-   return mStack[--mSize].asString();
+   return mStack[--mSize]->asString();
 }
 
 VirtualObject& VirtualStack::popObject()
 {
-   return mStack[--mSize].asObject();
+   return mStack[--mSize]->asObject();
 }
 
 VirtualArrayReference& VirtualStack::popArray()
 {
-   return mStack[--mSize].asArray();
+   return mStack[--mSize]->asArray();
 }
 
 Variant& VirtualStack::back()
 {
-   return mStack[mSize-1];
+   return *mStack[mSize-1];
 }
 
 void VirtualStack::insert(int index, const Variant& value)
 {
-   mStack.insert(mStack.begin() + index, value);
+   mStack.insert(mStack.begin() + index, new Variant(value));
    ++mSize;
 }
 
@@ -132,16 +137,26 @@ Variant& VirtualStack::top()
 {
    if ( mSize + 1 >= mStack.size() )
    {
-      mStack.resize(mStack.size() * 2);
+      grow(mStack.size());
    }
-   return mStack[mSize++];
+   return *mStack[mSize++];
+}
+
+void VirtualStack::grow(int amount)
+{
+   int oldsize = mStack.size();
+   mStack.resize(mStack.size() + amount);
+   for ( int index = oldsize; index < mStack.size(); index++ )
+   {
+      mStack[index] = new Variant();
+   }
 }
 
 void VirtualStack::mark()
 {
    for ( int index = 0; index < mSize; index++ )
    {
-      Variant& variant = mStack[index];
+      Variant& variant = *mStack[index];
       if ( variant.isObject() )
       {
          variant.asObject().mark();

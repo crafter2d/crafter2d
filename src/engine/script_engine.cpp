@@ -31,7 +31,6 @@
 #include "script/vm/virtualarrayreference.h"
 
 #include "script/scriptobject.h"
-#include "script/scriptmanager.h"
 
 #include "physics/inputforcegenerator.h"
 #include "physics/box2d/box2dbody.h"
@@ -68,38 +67,6 @@
 #define RETURN_CLASS(class, type, pointer)         accessor.setResult(*machine.instantiateNative(class, pointer, false))
 #define RETURN_CLASS_OWNED(class, type, pointer)   accessor.setResult(*machine.instantiateNative(class, pointer, true))
 
-void Process_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-   
-   VirtualObject& self = accessor.getObject(1);
-
-   accessor.setResult(process.create(self));
-}
-
-void Process_destroy(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-
-   process.destroy();
-}
-
-void Process_getScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-
-   RETURN_CLASS("engine.game.ScriptManager", ScriptManager, &process.getScriptManager());
-}
-
-void Process_setScriptManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-
-   ScriptManager* pscriptmanager = static_cast<ScriptManager*>(accessor.getObject(1).useNativeObject());
-
-   process.setScriptManager(pscriptmanager);
-}
-
 void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    const std::string& name = accessor.getString(1);
@@ -124,33 +91,12 @@ void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& ac
    RETURN_CLASS("engine.game.ContentManager", ContentManager, &process.getContentManager());
 }
 
-void Process_getWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Process, process);
-
-   RETURN_CLASS("engine.game.World", World, &process.getWorld());
-}
-
-void Process_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Process_native_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Process, process);
 
    World* pworld = static_cast<World*>(accessor.getObject(1).useNativeObject());
    process.setWorld(pworld);
-}
-
-void Server_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObject& thisobject = accessor.getThis();
-
-   Server* pserver = new Server();
-   machine.registerNative(thisobject, pserver);
-   thisobject.setOwner(true);
-}
-
-void Server_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   DESTRUCT_THIS(Server);
 }
 
 void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -181,29 +127,6 @@ void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& acces
    server.sendScriptEvent(client, *pstream);
 }
 
-void Server_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Server, server);
-
-   float delta = accessor.getReal(1);
-
-   server.update(delta);
-}
-
-void Client_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObject& thisobject = accessor.getThis();
-
-   Client* pclient = new Client();
-   machine.registerNative(thisobject, pclient);
-   thisobject.setOwner(true);
-}
-
-void Client_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   DESTRUCT_THIS(Client);
-}
-
 void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Client, client);
@@ -212,15 +135,6 @@ void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
    int port = accessor.getInt(2);
 
    accessor.setResult(client.connect(ip.c_str(), port));
-}
-
-void Client_update(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Client, client);
-
-   float delta = accessor.getReal(1);
-
-   client.update(delta);
 }
 
 void Client_nativeRender(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -244,6 +158,13 @@ void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
    GET_THIS(Client, client);
 
    accessor.setResult(client.isActive());
+}
+
+void Client_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Client, client);
+
+   RETURN_CLASS("system.GameWindowFactory", GameWindowFactory, &client.getWindowFactory());
 }
 
 void Client_native_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -281,22 +202,6 @@ void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
    client.setKeyMap(pmap);
 }
 
-void ScriptManager_spawnChild(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(ScriptManager, scriptmanager);
-
-   RETURN_CLASS_OWNED("engine.game.ScriptManager", ScriptManager, scriptmanager.spawnChild());
-}
-
-void ScriptManager_shareObject(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(ScriptManager, scriptmanager);
-
-   VirtualObject& object = accessor.getObject(1);
-
-   scriptmanager.shareObject(object);
-}
-
 void ContentManager_native_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(ContentManager, contentmanager);
@@ -322,6 +227,19 @@ void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccesso
    GET_THIS(GameWindowFactory, factory);
 
    RETURN_CLASS_OWNED("system.GameWindow", GameWindow, factory.createWindow());
+}
+
+void GameWindow_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(GameWindow, window);
+
+   const std::string& title = accessor.getString(1);
+   int width = accessor.getInt(2);
+   int height = accessor.getInt(3);
+   int bitdepth = accessor.getInt(4);
+   bool fullscreen = accessor.getBoolean(5);
+
+   accessor.setResult(window.create(title, width, height, bitdepth, fullscreen));
 }
 
 void BufferedStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -405,7 +323,7 @@ void Actor_getPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   RETURN_CLASS("engine.core.Vector2D", Vector, const_cast<Vector*>(&actor.getPosition()));
+   RETURN_CLASS_OWNED("engine.core.Vector2D", Vector, new Vector(actor.getPosition()));
 }
 
 void Actor_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -421,7 +339,7 @@ void Actor_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   RETURN_CLASS("engine.core.Vector2D", Vector, const_cast<Vector*>(&actor.getVelocity()));
+   RETURN_CLASS_OWNED("engine.core.Vector2D", Vector, new Vector(actor.getVelocity()));
 }
 
 void Actor_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1194,29 +1112,20 @@ void script_engine_register(ScriptManager& manager)
 {
    ScriptRegistrator registrator;
 
-   registrator.addCallback("Process_create", Process_create);
-   registrator.addCallback("Process_destroy", Process_destroy);
-   registrator.addCallback("Process_getScriptManager", Process_getScriptManager);
-   registrator.addCallback("Process_setScriptManager", Process_setScriptManager);
    registrator.addCallback("Process_getFont", Process_getFont);
    registrator.addCallback("Process_getTexture", Process_getTexture);
    registrator.addCallback("Process_getContentManager", Process_getContentManager);
-   registrator.addCallback("Process_getWorld", Process_getWorld);
-   registrator.addCallback("Process_setWorld", Process_setWorld);
+   registrator.addCallback("Process_native_setWorld", Process_native_setWorld);
 
-   registrator.addCallback("Server_init", Server_init);
-   registrator.addCallback("Server_destruct", Server_destruct);
    registrator.addCallback("Server_listen", Server_listen);
-   registrator.addCallback("Server_update", Server_update);
    registrator.addCallback("Server_setActionMap", Server_setActionMap);
    registrator.addCallback("Server_sendScriptEvent", Server_sendScriptEvent);
 
-   registrator.addCallback("Client_init", Client_init);
    registrator.addCallback("Client_connect", Client_connect);
-   registrator.addCallback("Client_update", Client_update);
    registrator.addCallback("Client_nativeRender", Client_nativeRender);
    registrator.addCallback("Client_nativeDisplay", Client_nativeDisplay);
    registrator.addCallback("Client_isActive", Client_isActive);
+   registrator.addCallback("Client_getWindowFactory", Client_getWindowFactory);
    registrator.addCallback("Client_native_setWindow", Client_native_setWindow);
    registrator.addCallback("Client_setActionMap", Client_setActionMap);
    registrator.addCallback("Client_setKeyMap", Client_setKeyMap);
@@ -1225,10 +1134,9 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("ContentManager_native_loadEntity", ContentManager_native_loadEntity);
    registrator.addCallback("ContentManager_load", ContentManager_load);
 
-   registrator.addCallback("ScriptManager_spawnChild", ScriptManager_spawnChild);
-   registrator.addCallback("ScriptManager_shareObject", ScriptManager_shareObject);
-
    registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
+
+   registrator.addCallback("GameWindow_create", GameWindow_create);
 
    registrator.addCallback("BufferedStream_init", BufferedStream_init);
    registrator.addCallback("BufferedStream_destruct", BufferedStream_destruct);

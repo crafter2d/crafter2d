@@ -78,9 +78,9 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create(const VirtualObject& self)
+bool Client::create(const std::string& classname)
 {
-   bool success = Process::create(self);
+   bool success = Process::create(classname);
    if ( success )
    {
       ASSERT_PTR(mpWindow);
@@ -192,6 +192,8 @@ void Client::render(float delta)
    }
 
    glDisable (GL_ALPHA_TEST);
+
+   mpWindow->display();
 }
 
 void Client::display()

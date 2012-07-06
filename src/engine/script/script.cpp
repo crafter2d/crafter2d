@@ -53,11 +53,11 @@ void Script::setThis(void* pthis)
 {
    if ( !mClassName.empty() )
    {
-      mpObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis, false);
+      mpObject = mScriptManager.mVirtualMachine.instantiateNative(mClassName, pthis, false);
    }
    else
    {
-      mpObject = mScriptManager.mpVirtualMachine->lookupNative(pthis);
+      mpObject = mScriptManager.mVirtualMachine.lookupNative(pthis);
       ASSERT_PTR(mpObject);
    }
 }
@@ -76,7 +76,7 @@ bool Script::run(const std::string& function)
 
    try
    {
-      mScriptManager.mpVirtualMachine->execute(*mpObject, function);
+      mScriptManager.mVirtualMachine.execute(*mpObject, function);
    }
    catch ( VirtualFunctionNotFoundException* pe )
    {
@@ -98,20 +98,20 @@ bool Script::run(const std::string& function)
 
 bool Script::getBoolean()
 {
-   return mScriptManager.mpVirtualMachine->popBoolean();
+   return mScriptManager.mVirtualMachine.popBoolean();
 }
 
 int Script::getInteger()
 {
-   return mScriptManager.mpVirtualMachine->popInt();
+   return mScriptManager.mVirtualMachine.popInt();
 }
 
 void Script::addParam(void* pobject)
 {
-   VirtualObject* pvirtualobject = mScriptManager.mpVirtualMachine->lookupNative(pobject);
+   VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.lookupNative(pobject);
    ASSERT_MSG(pobject != NULL, "Object should have been registered already when using this method.");
 
-   mScriptManager.mpVirtualMachine->push(*pvirtualobject);
+   mScriptManager.mVirtualMachine.push(*pvirtualobject);
 }
 
 /// \fn Script::addParam(const std::string& classname, void* pobject)
@@ -121,12 +121,12 @@ void Script::addParam(void* pobject)
 /// \param typeName the type name of the object (class name)
 void Script::addParam(const std::string& classname, void* pobject)
 {
-   VirtualObject* pvirtualobject = mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject, false);
+   VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.instantiateNative(classname, pobject, false);
 
-   mScriptManager.mpVirtualMachine->push(*pvirtualobject);
+   mScriptManager.mVirtualMachine.push(*pvirtualobject);
 }
 
 void Script::addParam(VirtualObject& object)
 {
-   mScriptManager.mpVirtualMachine->push(object);
+   mScriptManager.mVirtualMachine.push(object);
 }

@@ -17,6 +17,11 @@ class GameServer extends Server
 		super();
 	}
 	
+	public boolean create()
+	{
+		return listen(7000);
+	}
+	
 	public int onClientConnecting()
 	{
 		if ( mStarted )
