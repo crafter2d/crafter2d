@@ -643,7 +643,7 @@ void InputController_destruct(VirtualMachine& machine, VirtualStackAccessor& acc
    DESTRUCT_THIS(InputController);
 }
 
-void InputController_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputController_native_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(InputController, controller);
 
@@ -1196,7 +1196,7 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("InputController_init", InputController_init);
    registrator.addCallback("InputController_destruct", InputController_destruct);
-   registrator.addCallback("InputController_setActionMap", InputController_setActionMap);
+   registrator.addCallback("InputController_native_setActionMap", InputController_native_setActionMap);
 
    registrator.addCallback("AIController_init", AIController_init);
    registrator.addCallback("AIController_destruct", AIController_destruct);

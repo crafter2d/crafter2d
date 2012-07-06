@@ -5,6 +5,21 @@ use ActionMap;
 
 class InputController extends Controller
 {
+	private ActionMap mActionMap = null;
+	
+	// - Get/set
+	
+	public ActionMap getActionMap()
+	{
+		return mActionMap;
+	}
+	
+	public void setActionMap(ActionMap map)
+	{
+		mActionMap = map;
+		native_setActionMap(map);
+	}
+	
 	public native InputController();
-	public native void setActionMap(ActionMap actionmap);
+	private native void native_setActionMap(ActionMap actionmap);
 }
