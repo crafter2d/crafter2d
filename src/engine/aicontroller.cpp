@@ -28,6 +28,9 @@
 #include "actor.h"
 #include "process.h"
 
+// static
+const std::string AIController::smFunc("updateAI");
+
 AIController::AIController(Process& process):
    Controller(),
    mpScript(NULL)
@@ -47,5 +50,5 @@ void AIController::setThis(VirtualObject& self)
 void AIController::performAction(Actor& actor)
 {
    mpScript->addParam(&actor);
-   mpScript->run("updateAI");
+   mpScript->run(smFunc);
 }

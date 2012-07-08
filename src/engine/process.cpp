@@ -23,6 +23,8 @@
 #  include "process.inl"
 #endif
 
+// #include <vld.h>
+
 #include "core/log/log.h"
 
 #include "script/vm/virtualclass.h"
@@ -44,7 +46,8 @@ Process::Process():
    actionMap(NULL),
    initialized(false),
    mpWorld(NULL),
-   mActive(true)
+   mActive(true),
+   mDetecting(false)
 {
 }
 
@@ -133,3 +136,18 @@ void Process::sendScriptEvent(int clientid, const DataStream& stream)
    conn.send(clientid, event);
 }
 
+void Process::swapLeakDetection()
+{
+   mDetecting = !mDetecting;
+
+   /*
+   if ( mDetecting )
+   {
+      VLDEnable();
+   }
+   else
+   {
+      VLDDisable();
+   }
+   */
+}

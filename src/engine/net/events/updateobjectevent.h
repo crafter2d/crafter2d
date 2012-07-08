@@ -38,6 +38,7 @@ public:
 
             UpdateObjectEvent();
    explicit UpdateObjectEvent(const Entity& entity);
+            ~UpdateObjectEvent();
    
  // get/set
    Id                getId() const;

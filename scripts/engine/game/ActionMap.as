@@ -6,7 +6,16 @@ use engine.core.*;
 class ActionMap
 {
 	public native ActionMap();
-	public native void setProcess(Server server);
+	
+	// - Calls
+	
+	public void onSwapLeakDetector(boolean down)
+	{
+		if ( down ) // execute only once
+		{
+			getProcess().swapLeakDetection();
+		}
+	}
 	
 	public void onKeyDown(Actor object, int action)
 	{
@@ -62,4 +71,10 @@ class ActionMap
 		object.setAnimation(1);
 		object.getForceGenerator().setVelocity(velocity);
 	}
+	
+	// - Natives
+	
+	public native Process getProcess();
+	public native void setProcess(Process process);
+	public native void bind(int action, string function);
 }

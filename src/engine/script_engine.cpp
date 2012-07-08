@@ -99,6 +99,13 @@ void Process_native_setWorld(VirtualMachine& machine, VirtualStackAccessor& acce
    process.setWorld(pworld);
 }
 
+void Process_swapLeakDetection(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Process, process);
+
+   process.swapLeakDetection();
+}
+
 void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Server, server);
@@ -323,7 +330,7 @@ void Actor_getPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   RETURN_CLASS_OWNED("engine.core.Vector2D", Vector, new Vector(actor.getPosition()));
+   RETURN_CLASS("engine.core.Vector2D", Vector, const_cast<Vector*>(&actor.getPosition()));
 }
 
 void Actor_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -339,7 +346,7 @@ void Actor_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   RETURN_CLASS_OWNED("engine.core.Vector2D", Vector, new Vector(actor.getVelocity()));
+   RETURN_CLASS("engine.core.Vector2D", Vector, const_cast<Vector*>(&actor.getVelocity()));
 }
 
 void Actor_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -861,6 +868,13 @@ void ActionMap_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
    DESTRUCT_THIS(ActionMap);
 }
 
+void ActionMap_getProcess(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(ActionMap, map);
+   
+   RETURN_CLASS("engine.Process", Process, &map.getProcess());
+}
+
 void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(ActionMap, map);
@@ -868,6 +882,16 @@ void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accesso
    Process* pprocess = (Process*) accessor.getObject(1).getNativeObject();
 
    map.setProcess(*pprocess);
+}
+
+void ActionMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(ActionMap, map);
+
+   int action = accessor.getInt(1);
+   const std::string& fnc = accessor.getString(2);
+
+   map.bind(action, fnc.c_str());
 }
 
 void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1116,6 +1140,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Process_getTexture", Process_getTexture);
    registrator.addCallback("Process_getContentManager", Process_getContentManager);
    registrator.addCallback("Process_native_setWorld", Process_native_setWorld);
+   registrator.addCallback("Process_swapLeakDetection", Process_swapLeakDetection);
 
    registrator.addCallback("Server_listen", Server_listen);
    registrator.addCallback("Server_setActionMap", Server_setActionMap);
@@ -1230,7 +1255,9 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("ActionMap_init", ActionMap_init);
    registrator.addCallback("ActionMap_destruct", ActionMap_destruct);
+   registrator.addCallback("ActionMap_getProcess", ActionMap_getProcess);
    registrator.addCallback("ActionMap_setProcess", ActionMap_setProcess);
+   registrator.addCallback("ActionMap_bind", ActionMap_bind);
 
    registrator.addCallback("KeyMap_init", KeyMap_init);
    registrator.addCallback("KeyMap_destruct", KeyMap_destruct);

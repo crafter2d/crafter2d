@@ -50,7 +50,6 @@
 
 #include "console.h"
 #include "gamesettings.h"
-#include "script_game.h"
 
 /*!
     \fn Game::Game()
@@ -217,6 +216,35 @@ void Game::endGame()
    delete mpServer;
 }
 
+
+#include <crtdbg.h>
+
+
+int CustomAllocHook( int nAllocType, void *userData, size_t size, 
+                              int nBlockType, long requestNumber, 
+                                   const unsigned char *filename, 
+                                                  int lineNumber)
+{
+   if( nBlockType == _CRT_BLOCK)
+      return TRUE;
+
+   switch(nAllocType)
+   {
+      case _HOOK_ALLOC :
+         break ;
+
+      case _HOOK_REALLOC:
+         // add the code for handling the reallocation requests
+         break ;
+
+      case _HOOK_FREE :
+         break ;
+   }
+
+   return TRUE;
+}
+
+
 /*!
     \fn Game::runFrame()
 	 \brief Called when next frame should be rendered. Overload it to render your own custom objects.
@@ -225,6 +253,8 @@ void Game::endGame()
 void Game::runFrame()
 {
    //Profiler::getInstance().begin();
+
+   _CrtSetAllocHook(CustomAllocHook);
 
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
@@ -248,6 +278,8 @@ void Game::runFrame()
       start = 0;
       frame = 0;
    }
+
+   _CrtSetAllocHook(NULL);
 
    // Profiler::getInstance().end();
    // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());

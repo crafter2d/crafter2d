@@ -15,6 +15,7 @@ class SCRIPT_API VirtualStack
 {
 public:
    explicit VirtualStack(int initialsize = 32);
+            ~VirtualStack();
 
    const Variant& operator[](int index) const;
          Variant& operator[](int index);

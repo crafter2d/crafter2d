@@ -20,7 +20,7 @@
 #include "virtualmachine.h"
 
 // When testing with Visual Leak Detecter, uncomment the next line
-// #include <vld.h>
+//#include <vld.h>
 #include <iostream>
 
 #include "core/defines.h"
@@ -529,7 +529,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             VirtualStackAccessor accessor(mStack);
             (*it->second)(*this, accessor);
 
-            mStack.pop(); // pop the argument count
+            mStack.pop(1); // pop the argument count
             if ( accessor.hasResult() )
                mStack.push(accessor.getResult());
          }
@@ -976,7 +976,8 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eIsNull:
          {
-            bool empty = mStack.back().isEmpty(); mStack.pop();
+            bool empty = mStack.back().isEmpty(); 
+            mStack.pop(1);
 
             mStack.pushBool(empty);
          }
@@ -1135,8 +1136,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eLoad:
          {
-            Variant obj = mStack.back();
-            mStack.pop();
+            Variant obj = mStack.pop();
 
             if ( obj.isObject() )
                mStack.push(obj.asObject().getMember(instruction.getArgument()));
@@ -1144,7 +1144,6 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
                mStack.push(Variant(obj.asArray().ptr()->size()));
             else if ( obj.isEmpty() )
             {
-               // error!!
                throwException("system.NullPointerException");
             }
          }
@@ -1154,10 +1153,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             ASSERT(mStack.back().isObject());
             VirtualObject& object = mStack.popObject();
 
-            Variant value = mStack.back();
-            mStack.pop();
-
-            object.setMember(instruction.getArgument(), value);
+            object.setMember(instruction.getArgument(), mStack.pop());
          }
          break;
       case VirtualInstruction::eLoadLocal:
@@ -1169,8 +1165,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eStoreLocal:
          {
-            Variant value = mStack.pop();
-            mStack[mCall.mStackBase + instruction.getArgument()] = value;
+            mStack[mCall.mStackBase + instruction.getArgument()] = mStack.pop();
          }
          break;
       case VirtualInstruction::eLoadArray:
@@ -1193,7 +1188,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
             int i = mStack.popInt();
 
-            mStack.pop(); // pop the array from the stack
+            mStack.pop(1); // pop the array from the stack
 
             mStack.push(parray->at(i));
          }
@@ -1218,28 +1213,26 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
             int i = mStack.popInt();
 
-            mStack.pop(); // <-- pop array
+            mStack.pop(1); // <-- pop array
 
-            parray->at(i) = mStack.back();
-            mStack.pop();
+            parray->at(i) = mStack.pop();
          }
          break;
       case VirtualInstruction::eStoreStatic:
          {
             int classlit = mStack.popInt();
 
-            std::string classname = mContext.mLiteralTable[classlit].getValue().asString();
+            const std::string& classname = mContext.mLiteralTable[classlit].getValue().asString();
             VirtualClass& c = mContext.mClassTable.resolve(classname);
 
-            c.setStatic(instruction.getArgument(), mStack.back());
-            mStack.pop();
+            c.setStatic(instruction.getArgument(), mStack.pop());
          }
          break;
       case VirtualInstruction::eLoadStatic:
          {
             int classlit = mStack.popInt();
 
-            std::string classname = mContext.mLiteralTable[classlit].getValue().asString();
+            const std::string& classname = mContext.mLiteralTable[classlit].getValue().asString();
             const VirtualClass& c = mContext.mClassTable.resolve(classname);
 
             mStack.push(c.getStatic(instruction.getArgument()));
@@ -1262,7 +1255,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             {
                name = mContext.mLiteralTable[mStack.back().asInt()].getValue().asString();
             }
-            mStack.pop();
+            mStack.pop(1);
 
             const VirtualClass& classloader = mContext.mClassTable.resolve("system.ClassLoader");
             const VirtualFunctionTableEntry* pentry = classloader.getVirtualFunctionTable().findByName("findClass");

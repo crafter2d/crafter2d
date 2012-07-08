@@ -13,6 +13,15 @@ VirtualStack::VirtualStack(int initialsize):
    grow(initialsize);
 }
 
+VirtualStack::~VirtualStack()
+{
+   for ( Stack::size_type index = 0; index < mStack.size(); ++index )
+   {
+      delete mStack[index];
+   }
+   mStack.clear();
+}
+
 const Variant& VirtualStack::operator[](int index) const
 {
    ASSERT(index < mSize);
@@ -120,7 +129,17 @@ Variant& VirtualStack::back()
 
 void VirtualStack::insert(int index, const Variant& value)
 {
-   mStack.insert(mStack.begin() + index, new Variant(value));
+   if ( mSize + 1 >= mStack.size() )
+   {
+      grow(mStack.size());
+   }
+
+   for ( int idx = mSize-1; idx >= index; --idx )
+   {
+      mStack[idx+1] = mStack[idx];
+   }
+   mStack[index] = new Variant(value);
+
    ++mSize;
 }
 

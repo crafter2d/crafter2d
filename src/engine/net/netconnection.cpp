@@ -71,6 +71,11 @@ bool NetConnection::initialize()
    return true;
 }
 
+NetPackage* construct()
+{
+   return new NetPackage();
+}
+
 /******************************************************
  * NetConnection class
  */
@@ -82,6 +87,7 @@ NetConnection::NetConnection(NetObserver& observer):
    mSocket(),
    mFlags(0)
 {
+   mAllocator.setConstructFunc(construct);
 }
 
 NetConnection::~NetConnection()
@@ -234,7 +240,7 @@ void NetConnection::processPackage(NetAddress& client, NetPackage& package)
    NetObjectStream stream(arraystream);
    stream >> &pobject;
 
-   AutoPtr<NetEvent> event(dynamic_cast<NetEvent*>(pobject));
+   AutoPtr<NetEvent> event(static_cast<NetEvent*>(pobject));
    mObserver.onEvent(client.index, *event);
 
    client.nextPackageNumber++;

@@ -43,6 +43,10 @@ UpdateObjectEvent::UpdateObjectEvent(const Entity& object):
    object.pack(stream);
 }
 
+UpdateObjectEvent::~UpdateObjectEvent()
+{
+}
+
 void UpdateObjectEvent::update(Entity& entity) const
 {
    NetStream stream(const_cast<BufferedStream&>(mDataStream));

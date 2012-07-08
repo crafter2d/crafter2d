@@ -74,7 +74,8 @@ public:
 
  // operations
    void sendScriptEvent(int clientid, const DataStream& stream);
-   
+   void swapLeakDetection();
+
   // events
    virtual void onNetEvent(int clientid, const NetEvent& event) = 0;
 
@@ -95,6 +96,7 @@ private:
  // members
    World*      mpWorld;
    bool        mActive;
+   bool        mDetecting;
 };
 
 #ifdef JENGINE_INLINE

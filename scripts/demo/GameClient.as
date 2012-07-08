@@ -8,7 +8,9 @@ use engine.collections.*;
 use engine.game.*;
 
 class GameClient extends Client
-{	
+{
+	private ActionMap mActionMap;
+	
 	public GameClient()
 	{
 		super();
@@ -32,12 +34,15 @@ class GameClient extends Client
 	{
 		addPlayer(player);
 		
-		setActionMap(new ActionMap());
+		mActionMap = new ActionMap();
+		mActionMap.bind(6, "onSwapLeakDetector");
+		setActionMap(mActionMap);
 		
 		KeyMap map = new KeyMap();
 		map.bind(276, 1); 	// left
 		map.bind(275, 2); 	// right
 		map.bind(32, 3); 	// space -> jump
+		map.bind(100, 6);   // leak detection
 		setKeyMap(map);
 	}
 	

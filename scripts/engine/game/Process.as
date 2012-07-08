@@ -87,6 +87,10 @@ abstract class Process
 	{
 	}
 	
+	// - Memory leak detection
+	
+	public native void swapLeakDetection();
+	
 	// - Natives
 	
 	public native void destroy();

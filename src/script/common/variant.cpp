@@ -199,7 +199,6 @@ bool Variant::operator>=(const Variant& that) const
 const Variant& Variant::operator=(const Variant& that)
 {
    delete mpHolder;
-
    mType = that.mType;
    mpHolder = (mType == eEmpty) ? NULL : that.mpHolder->clone();
 
@@ -215,9 +214,16 @@ int Variant::asInt() const
 
 void Variant::setInt(int value)
 {
-   mType = eInt;
-   delete mpHolder;
-   mpHolder = new DataHolder<int>(value);
+   if ( mType == eInt )
+   {
+      ((DataHolder<int>*)mpHolder)->mData = value;
+   }
+   else
+   {
+      mType = eInt;
+      delete mpHolder;
+      mpHolder = new DataHolder<int>(value);
+   }
 }
 
 double Variant::asReal() const
@@ -227,9 +233,16 @@ double Variant::asReal() const
 
 void Variant::setReal(double value)
 {
-   mType = eReal;
-   delete mpHolder;
-   mpHolder = new DataHolder<double>(value);
+   if ( mType == eReal )
+   {
+      ((DataHolder<double>*)mpHolder)->mData = value;
+   }
+   else
+   {
+      mType = eReal;
+      delete mpHolder;
+      mpHolder = new DataHolder<double>(value);
+   }
 }
 
 char Variant::asChar() const
@@ -240,9 +253,16 @@ char Variant::asChar() const
 
 void Variant::setChar(char value)
 {
-   mType = eChar;
-   delete mpHolder;
-   mpHolder = new DataHolder<char>(value);
+   if ( mType == eChar )
+   {
+      ((DataHolder<char>*)mpHolder)->mData = value;
+   }
+   else
+   {
+      mType = eChar;
+      delete mpHolder;
+      mpHolder = new DataHolder<char>(value);
+   }
 }
 
 bool Variant::asBool() const
@@ -271,9 +291,16 @@ const std::string& Variant::asString() const
 
 void Variant::setString(const std::string& value)
 {
-   mType = eString;
-   delete mpHolder;
-   mpHolder = new DataHolder<std::string>(value);
+   if ( mType == eString )
+   {
+      ((DataHolder<std::string>*)mpHolder)->mData = value;
+   }
+   else
+   {
+      mType = eString;
+      delete mpHolder;
+      mpHolder = new DataHolder<std::string>(value);
+   }
 }
 
 VirtualObject& Variant::asObject() const
@@ -283,9 +310,16 @@ VirtualObject& Variant::asObject() const
 
 void Variant::setObject(VirtualObject& object)
 {
-   mType = eObject;
-   delete mpHolder;
-   mpHolder = new ObjectHolder(&object);
+   if ( mType == eObject )
+   {
+      ((ObjectHolder*)mpHolder)->mData = &object;
+   }
+   else
+   {
+      mType = eObject;
+      delete mpHolder;
+      mpHolder = new ObjectHolder(&object);
+   }
 }
 
 VirtualArrayReference& Variant::asArray() const
@@ -295,9 +329,16 @@ VirtualArrayReference& Variant::asArray() const
 
 void Variant::setArray(const VirtualArrayReference& array)
 {
-   mType = eArray;
-   delete mpHolder;
-   mpHolder = new DataHolder<VirtualArrayReference>(array);
+   if ( mType == eArray )
+   {
+      ((DataHolder<VirtualArrayReference>*)mpHolder)->mData = array;
+   }
+   else
+   {
+      mType = eArray;
+      delete mpHolder;
+      mpHolder = new DataHolder<VirtualArrayReference>(array);
+   }
 }
 
 // - Query
