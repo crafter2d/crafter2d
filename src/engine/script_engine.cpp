@@ -28,7 +28,7 @@
 
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualobject.h"
-#include "script/vm/virtualarrayreference.h"
+#include "script/vm/virtualarray.h"
 
 #include "script/scriptobject.h"
 
@@ -1116,18 +1116,17 @@ void File_readText(VirtualMachine& machine, VirtualStackAccessor& accessor)
    char* pbuffer = new char[length];
    length = file.read(pbuffer, length);
 
-   VirtualArrayReference arrayref(machine.instantiateArray());
-   VirtualArrayObject& array = *arrayref;
-   array.addLevel(length);
+   VirtualArray* parray = machine.instantiateArray();
+   parray->addLevel(length);
    
    for ( int index = 0; index < length; index++ )
    {
-      array[index].setChar(pbuffer[index]);
+      (*parray)[index].setChar(pbuffer[index]);
    }
 
    delete[] pbuffer;
 
-   accessor.setResult(Variant(arrayref));
+   accessor.setResult(*parray);
 }
 
 // - Registration

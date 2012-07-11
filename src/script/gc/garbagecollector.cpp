@@ -55,7 +55,7 @@ void GarbageCollector::phaseCollect(VirtualMachine& vm)
 {
    for ( int index = 0; index < vm.mObjects.size(); )
    {
-      VirtualObject* pobject = vm.mObjects[index];
+      Collectable* pobject = vm.mObjects[index];
       if ( pobject->isMarked() )
       {
          pobject->setMarked(false);
@@ -65,10 +65,7 @@ void GarbageCollector::phaseCollect(VirtualMachine& vm)
       {
          vm.mObjects.erase(vm.mObjects.begin() + index);
 
-         if ( pobject->hasNativeObject() )
-         {
-            vm.unregisterNative(*pobject);
-         }
+         pobject->finalize(vm);
          delete pobject;
       }
    }

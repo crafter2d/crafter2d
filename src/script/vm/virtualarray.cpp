@@ -1,5 +1,5 @@
 
-#include "virtualarrayobject.h"
+#include "virtualarray.h"
 
 #include <exception>
 
@@ -10,34 +10,39 @@
 #include "virtualarrayexception.h"
 #include "virtualobject.h"
 
-VirtualArrayObject::VirtualArrayObject():
+VirtualArray::VirtualArray():
+   Collectable(),
    mpArray(0)
 {
 }
 
-VirtualArrayObject::~VirtualArrayObject()
+VirtualArray::~VirtualArray()
 {
-   delete[] mpArray;
+   if ( mpArray != NULL )
+   {
+      delete[] mpArray;
+      mpArray = NULL;
+   }
 }
 
-const Variant& VirtualArrayObject::operator[](int index) const
+const Variant& VirtualArray::operator[](int index) const
 {
    return at(index);
 }
 
-Variant& VirtualArrayObject::operator[](int index)
+Variant& VirtualArray::operator[](int index)
 {
    return at(index);
 }
 
 // - Query
 
-const Variant& VirtualArrayObject::at(int index) const
+const Variant& VirtualArray::at(int index) const
 {
-   return const_cast<VirtualArrayObject&>(*this).at(index);
+   return const_cast<VirtualArray&>(*this).at(index);
 }
 
-Variant& VirtualArrayObject::at(int index)
+Variant& VirtualArray::at(int index)
 {
    if ( index < 0 || index >= mSize )
    {
@@ -46,20 +51,20 @@ Variant& VirtualArrayObject::at(int index)
    return mpArray[index];
 }
 
-int VirtualArrayObject::size() const
+int VirtualArray::size() const
 {
    return mSize;
 }
 
 // - Operations
 
-void VirtualArrayObject::addLevel(int size)
+void VirtualArray::addLevel(int size)
 {
    mpArray = new Variant[size];
    mSize   = size;
 }
 
-void VirtualArrayObject::resize(int newsize)
+void VirtualArray::resize(int newsize)
 {
    if ( mSize != newsize )
    {
@@ -77,7 +82,9 @@ void VirtualArrayObject::resize(int newsize)
    }
 }
 
-void VirtualArrayObject::mark()
+// - Marking
+   
+void VirtualArray::doMark()
 {
    for ( int index = 0; index < mSize; index++ )
    {
@@ -89,9 +96,6 @@ void VirtualArrayObject::mark()
    }
 }
 
-// - Downcast
-
-VirtualArrayObject& VirtualArrayObject::asArray()
+void VirtualArray::finalize(VirtualMachine& vm)
 {
-   return *this;
 }

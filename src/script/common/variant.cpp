@@ -4,8 +4,8 @@
 #include "core/defines.h"
 #include "core/conv/lexical.h"
 
+#include "script/vm/virtualarray.h"
 #include "script/vm/virtualobject.h"
-#include "script/vm/virtualarrayreference.h"
 #include "script/vm/virtualclass.h"
 
 // - Variant
@@ -64,9 +64,9 @@ Variant::Variant(VirtualObject* pvirtualobject):
 {
 }
 
-Variant::Variant(const VirtualArrayReference& array):
+Variant::Variant(VirtualArray& array):
    mType(eArray),
-   mpHolder(new DataHolder<VirtualArrayReference>(array))
+   mpHolder(new ArrayHolder(&array))
 {
 }
 
@@ -104,7 +104,7 @@ bool Variant::operator==(const Variant& that) const
             return &asObject() == &that.asObject();
 
          case eArray:
-            return asArray().ptr() == that.asArray().ptr();
+            return &asArray() == &that.asArray();
       }
    }
 
@@ -322,22 +322,22 @@ void Variant::setObject(VirtualObject& object)
    }
 }
 
-VirtualArrayReference& Variant::asArray() const
+VirtualArray& Variant::asArray() const
 {
-   return ((DataHolder<VirtualArrayReference>*)mpHolder)->mData;
+   return *((ArrayHolder*)mpHolder)->mData;
 }
 
-void Variant::setArray(const VirtualArrayReference& array)
+void Variant::setArray(VirtualArray& array)
 {
    if ( mType == eArray )
    {
-      ((DataHolder<VirtualArrayReference>*)mpHolder)->mData = array;
+      ((ArrayHolder*)mpHolder)->mData = &array;
    }
    else
    {
       mType = eArray;
       delete mpHolder;
-      mpHolder = new DataHolder<VirtualArrayReference>(array);
+      mpHolder = new ArrayHolder(&array);
    }
 }
 

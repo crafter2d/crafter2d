@@ -19,17 +19,12 @@
  ***************************************************************************/
 #include "virtualobject.h"
 
-#include <exception>
-
 #include "core/defines.h"
-#include "core/log/log.h"
 
 #include "script/common/variant.h"
-#include "script/gc/garbagecollector.h"
 
+#include "virtualarray.h"
 #include "virtualmachine.h"
-#include "virtualarrayreference.h"
-#include "virtualclass.h"
 
 VirtualObject::VirtualObject():
    mpClass(NULL),
@@ -140,24 +135,25 @@ void VirtualObject::setMember(int index, const Variant& value)
 
 // - Garbage collection
 
-void VirtualObject::mark()
+void VirtualObject::finalize(VirtualMachine& vm)
 {
-   //Log::getInstance().info(mpClass->getName().c_str());
-
-   if ( !mMarked )
+   if ( mpNativeObject != NULL )
    {
-      mMarked = true;
+      vm.unregisterNative(*this);
+   }
+}
 
-      for ( int index = 0; index < mMemberCount; index++ )
+void VirtualObject::doMark()
+{
+   for ( int index = 0; index < mMemberCount; index++ )
+   {
+      if ( mpMembers[index].isObject() )
       {
-         if ( mpMembers[index].isObject() )
-         {
-            mpMembers[index].asObject().mark();
-         }
-         else if ( mpMembers[index].isArray() )
-         {
-            mpMembers[index].asArray()->mark();
-         }
+         mpMembers[index].asObject().mark();
+      }
+      else if ( mpMembers[index].isArray() )
+      {
+         mpMembers[index].asArray().mark();
       }
    }
 }

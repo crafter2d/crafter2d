@@ -30,18 +30,18 @@
 #include "script/compiler/compiler.h"
 #include "script/common/literal.h"
 
+#include "virtualarray.h"
 #include "virtualarrayexception.h"
 #include "virtualfunctionnotfoundexception.h"
 #include "virtualinstructiontable.h"
 #include "virtualcontext.h"
 #include "virtualobject.h"
 #include "virtualclass.h"
-#include "virtualarrayobject.h"
-#include "virtualarrayreference.h"
 #include "virtualexception.h"
 #include "virtualfunctiontable.h"
 #include "virtualfunctiontableentry.h"
 #include "virtuallookuptable.h"
+#include "virtualstackaccessor.h"
 
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -93,11 +93,11 @@ void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& acce
 
 void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualArrayReference& thisobject = accessor.getArray(0);
+   VirtualArray& thisobject = accessor.getArray(0);
 
    int newsize = accessor.getInt(1);
 
-   thisobject->resize(newsize);
+   thisobject.resize(newsize);
 }
 
 void InternalString_equals(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -445,16 +445,20 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
             int arraydimension = instruction.getArgument();
 
-            VirtualArrayReference array = instantiateArray();
+            VirtualArray* parray = instantiateArray();
+            parray->addLevel(mStack.popInt());
 
+            /* no support yet for multi-dimensional arrays
+            VirtualArray* pinit = parray;
             for ( int index = 0; index < arraydimension; index++ )
             {
                int size = mStack.popInt();
 
-               array->addLevel(size);
+               pinit = pinit->addLevel(size);
             }
+            */
 
-            mStack.pushArray(array);
+            mStack.pushArray(*parray);
          }
          break;
       case VirtualInstruction::eCallSuper:
@@ -957,18 +961,18 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCmpEqAr:
          {
-            VirtualArrayReference right = mStack.popArray();
-            VirtualArrayReference left  = mStack.popArray();
+            VirtualArray& right = mStack.popArray();
+            VirtualArray& left  = mStack.popArray();
 
-            mStack.pushBool(left.ptr() == right.ptr());
+            mStack.pushBool(&left == &right);
          }
          break;
       case VirtualInstruction::eCmpNeqAr:
          {
-            VirtualArrayReference right = mStack.popArray();
-            VirtualArrayReference left  = mStack.popArray();
+            VirtualArray& right = mStack.popArray();
+            VirtualArray& left  = mStack.popArray();
 
-            mStack.pushBool(left.ptr() != right.ptr());
+            mStack.pushBool(&left != &right);
          }
          break;
 
@@ -1141,7 +1145,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             if ( obj.isObject() )
                mStack.push(obj.asObject().getMember(instruction.getArgument()));
             else if ( obj.isArray() )
-               mStack.push(Variant(obj.asArray().ptr()->size()));
+               mStack.push(Variant(obj.asArray().size()));
             else if ( obj.isEmpty() )
             {
                throwException("system.NullPointerException");
@@ -1178,12 +1182,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             Variant& variant = mStack[mStack.size() - instruction.getArgument() - 1];
             ASSERT(variant.isArray());
 
-            VirtualArrayObject* parray = variant.asArray().ptr();
-
+            VirtualArray* parray = &variant.asArray();
             for ( int index = 0; index < instruction.getArgument() - 1; index++ )
             {
                int i = mStack.popInt();
-               parray = parray->at(i).asArray().ptr();
+               parray = &parray->at(i).asArray();
             }
 
             int i = mStack.popInt();
@@ -1203,12 +1206,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             Variant& variant = mStack[mStack.size() - instruction.getArgument() - 1];
             ASSERT(variant.isArray());
 
-            VirtualArrayObject* parray = variant.asArray().ptr();
-
+            VirtualArray* parray = &variant.asArray();
             for ( int index = 0; index < instruction.getArgument()-1; index++ )
             {
                int i = mStack.popInt();
-               parray = parray->at(i).asArray().ptr();
+               parray = &parray->at(i).asArray();
             }
 
             int i = mStack.popInt();
@@ -1467,12 +1469,12 @@ VirtualObject* VirtualMachine::lookupNative(void* pobject)
    return NULL;
 }
 
-VirtualArrayReference VirtualMachine::instantiateArray()
+VirtualArray* VirtualMachine::instantiateArray()
 {
    ASSERT_PTR(mpArrayClass);
-   VirtualArrayReference ref(mpArrayClass->instantiateArray());
-
-   return ref;
+   VirtualArray* parray = new VirtualArray();
+   mObjects.push_back(parray);
+   return parray;
 }
 
 // - Native interface
@@ -1490,31 +1492,31 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
 {
    // to be decided what to do with this.. called from the GC??
 
-      ASSERT(object.hasNativeObject());
+   ASSERT(object.hasNativeObject());
 
-      // remove the object from the map
-      NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObject());
-      ASSERT(it != mNativeObjects.end());
-      mNativeObjects.erase(it);
+   // remove the object from the map
+   NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObject());
+   ASSERT(it != mNativeObjects.end());
+   mNativeObjects.erase(it);
 
-      if ( object.isOwner() )
+   if ( object.isOwner() )
+   {
+      const std::string& classname = object.getClass().getNativeClassName();
+      if ( classname.empty() )
       {
-         const std::string& classname = object.getClass().getNativeClassName();
-         if ( classname.empty() )
-         {
-            int aap = 5;
-         }
-
-         std::string fnc = classname + "_destruct";
-
-         mStack.pushObject(object);
-         mStack.pushInt(1);
-
-         VirtualStackAccessor accessor(mStack);
-         (*mNatives[fnc])(*this, accessor);
-
-         mStack.pop(2);
+         int aap = 5;
       }
+
+      std::string fnc = classname + "_destruct";
+
+      mStack.pushObject(object);
+      mStack.pushInt(1);
+
+      VirtualStackAccessor accessor(mStack);
+      (*mNatives[fnc])(*this, accessor);
+
+      mStack.pop(2);
+   }
 }
 
 // - Callbacks
@@ -1613,11 +1615,11 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
       // resolve the virtual classes
       object.setClass(mContext.mClassTable.resolve("system.Class"));
 
-      VirtualArrayReference arrayref = object.getMember(1).asArray();
+      VirtualArray& funcarray = object.getMember(1).asArray();
       const VirtualClass& funcclass = mContext.mClassTable.resolve("system.Function");
-      for ( int index = 0; index < arrayref->size(); index++ )
+      for ( int index = 0; index < funcarray.size(); index++ )
       {
-         VirtualObject& func = (*arrayref)[index].asObject();
+         VirtualObject& func = funcarray[index].asObject();
          func.setClass(funcclass);
       }
 

@@ -7,7 +7,7 @@
 #include "script/script_base.h"
 
 class VirtualObject;
-class VirtualArrayReference;
+class VirtualArray;
 
 class SCRIPT_API Variant
 {
@@ -21,7 +21,7 @@ public:
    explicit Variant(const std::string& value);
    explicit Variant(VirtualObject& object);
    explicit Variant(VirtualObject* pvirtualobject);
-   explicit Variant(const VirtualArrayReference& array);
+   explicit Variant(VirtualArray& array);
            ~Variant();
 
    bool operator==(const Variant& that) const;
@@ -52,8 +52,8 @@ public:
    VirtualObject& asObject() const;
    void setObject(VirtualObject& object);
 
-   VirtualArrayReference& asArray() const;
-   void setArray(const VirtualArrayReference& array);
+   VirtualArray& asArray() const;
+   void setArray(VirtualArray& array);
 
  // query
    bool isEmpty() const;
@@ -113,6 +113,7 @@ private:
    };
 
    typedef DataHolder<VirtualObject*> ObjectHolder;
+   typedef DataHolder<VirtualArray*>  ArrayHolder;
 
    MetaType        mType;
    DataHolderBase* mpHolder;

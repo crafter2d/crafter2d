@@ -22,13 +22,13 @@
 
 #include "script/script_base.h"
 
-class GarbageCollector;
+#include "script/gc/collectable.h"
+
 class Variant;
 class VirtualClass;
-class VirtualObjectReference;
 class VirtualMachine;
 
-class SCRIPT_API VirtualObject
+class SCRIPT_API VirtualObject : public Collectable
 {
 public:
    VirtualObject();
@@ -56,10 +56,11 @@ public:
    void initialize(int variables);
    Variant& getMember(int index);
    void setMember(int index, const Variant& value);
-   void mark();
+   virtual void finalize(VirtualMachine& vm);
 
- // garbage
-   void collect(GarbageCollector& gc);
+protected:
+ // marking
+   virtual void doMark();
 
 private:
 

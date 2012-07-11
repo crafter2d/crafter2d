@@ -9,7 +9,7 @@
 
 #include "script/common/variant.h"
 
-class VirtualArrayReference;
+class VirtualArray;
 
 class SCRIPT_API VirtualStack
 {
@@ -28,17 +28,17 @@ public:
    void pushChar(char value);
    void pushString(const std::string& value);
    void pushObject(VirtualObject& object);
-   void pushArray(const VirtualArrayReference& array);
+   void pushArray(VirtualArray& array);
 
-   Variant                pop();
-   void                   pop(int count);
-   int                    popInt();
-   double                 popReal();
-   bool                   popBool();
-   char                   popChar();
-   const std::string&     popString();
-   VirtualObject&         popObject();
-   VirtualArrayReference& popArray();
+   Variant              pop();
+   void                 pop(int count);
+   int                  popInt();
+   double               popReal();
+   bool                 popBool();
+   char                 popChar();
+   const std::string&   popString();
+   VirtualObject&       popObject();
+   VirtualArray&        popArray();
 
    void insert(int index, const Variant& value);
 

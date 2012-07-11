@@ -3,7 +3,7 @@
 
 #include "core/defines.h"
 
-#include "virtualarrayreference.h"
+#include "virtualarray.h"
 #include "virtualobject.h"
 
 VirtualStack::VirtualStack(int initialsize):
@@ -71,7 +71,7 @@ void VirtualStack::pushObject(VirtualObject& object)
    top().setObject(object);
 }
 
-void VirtualStack::pushArray(const VirtualArrayReference& array)
+void VirtualStack::pushArray(VirtualArray& array)
 {
    top().setArray(array);
 }
@@ -117,7 +117,7 @@ VirtualObject& VirtualStack::popObject()
    return mStack[--mSize]->asObject();
 }
 
-VirtualArrayReference& VirtualStack::popArray()
+VirtualArray& VirtualStack::popArray()
 {
    return mStack[--mSize]->asArray();
 }
@@ -182,7 +182,7 @@ void VirtualStack::mark()
       }
       else if ( variant.isArray() )
       {
-         variant.asArray()->mark();
+         variant.asArray().mark();
       }
    }
 }

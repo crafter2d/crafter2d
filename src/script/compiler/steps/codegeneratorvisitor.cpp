@@ -5,7 +5,7 @@
 #include "core/smartptr/scopedvalue.h"
 
 #include "script/ast/ast.h"
-#include "script/vm/virtualarrayobject.h"
+#include "script/vm/virtualarray.h"
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualinstruction.h"
@@ -14,7 +14,6 @@
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualfunctiontable.h"
 #include "script/vm/virtualfunctiontableentry.h"
-#include "script/vm/virtualarrayreference.h"
 #include "script/vm/virtuallookuptable.h"
 
 #include "script/common/literal.h"
@@ -1755,14 +1754,14 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
 void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
 {
    const FunctionTable& table = ast.getFunctionTable();
-   VirtualArrayObject* pfuncarray = new VirtualArrayObject();
+   VirtualArray* pfuncarray = new VirtualArray();
    pfuncarray->addLevel(table.size());
 
    for ( int index = 0; index < table.size(); index++ )
    {
       const ASTFunction& function = table[index];
 
-      VirtualArrayObject* pannoarray = new VirtualArrayObject();
+      VirtualArray* pannoarray = new VirtualArray();
       if ( function.hasAnnotations() )
       {
          const ASTAnnotations& annotations = function.getAnnotations();
@@ -1782,7 +1781,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
       VirtualObject* funcobject = new VirtualObject();
       funcobject->initialize(2);
       funcobject->setMember(0, Variant(function.getName()));
-      funcobject->setMember(1, Variant(VirtualArrayReference(pannoarray)));
+      funcobject->setMember(1, Variant(*pannoarray));
 
       (*pfuncarray)[index] = Variant(*funcobject); // <-- hack!
    }
@@ -1790,7 +1789,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
    VirtualObject* classobject = new VirtualObject();
    classobject->initialize(2);
    classobject->setMember(0, Variant(ast.getFullName()));
-   classobject->setMember(1, Variant(VirtualArrayReference(pfuncarray)));
+   classobject->setMember(1, Variant(*pfuncarray));
 
    mpVClass->setClassObject(classobject);
 }

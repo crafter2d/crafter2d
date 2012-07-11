@@ -37,111 +37,13 @@
 #include "virtualcontext.h"
 #include "virtualstack.h"
 
+class Collectable;
 class VirtualArrayException;
 class VirtualInstruction;
-class VirtualProgram;
-class VirtualFunctionBase;
 class VirtualFunctionTableEntry;
 class VirtualException;
 class VirtualObject;
-
-class VirtualStackAccessor
-{
-public:
-   VirtualStackAccessor(VirtualStack& stack): mStack(stack), mSize(stack.back().asInt())
-   {
-   }
-
- // query
-   VirtualObject& getThis() const
-   {
-      return getObject(0);
-   }
-
-   int getInt(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asInt();
-   }
-
-   double getReal(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asReal();
-   }
-
-   const std::string& getString(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asString();
-   }
-
-   char getChar(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asChar();
-   }
-
-   bool getBoolean(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asBool();
-   }
-
-   VirtualObject& getObject(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asObject();
-   }
-
-   VirtualArrayReference& getArray(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asArray();
-   }
-
- // return value
-   bool hasResult() {
-      return !mResult.isEmpty();
-   }
-
-   Variant& getResult() {
-      return mResult;
-   }
-
-   void setResult(VirtualObject& object) {
-      mResult = Variant(object);
-   }
-
-   void setResult(int value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(double value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(bool value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(char value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(const std::string& value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(const Variant& value) {
-      mResult = value;
-   }
-
-private:
-   Variant& getArgument(int index) const {
-      ASSERT(index <= mSize);
-      return mStack[mStack.size() - (mSize + 1) + index];
-      // 0 1 2 3 -> ssize = 4; size = 3
-      // index 0 -> 4 - 3 = 1
-   }
-
-   VirtualStack&  mStack;
-   Variant        mResult;
-   int            mSize;
-};
+class VirtualStackAccessor;
 
 class SCRIPT_API VirtualMachine
 {
@@ -182,9 +84,9 @@ public:
    void displayException(VirtualException& exception);
 
  // object instantation
-   VirtualObject*         instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
-   VirtualObject*         instantiateNative(const std::string& classname, void* pobject, bool owned = true);
-   VirtualArrayReference  instantiateArray();
+   VirtualObject*    instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
+   VirtualObject*    instantiateNative(const std::string& classname, void* pobject, bool owned = true);
+   VirtualArray*     instantiateArray();
 
  // observing
    VirtualObject*    lookupNative(void* pobject);
@@ -243,6 +145,7 @@ private:
    };
 
    typedef std::vector<VirtualObject*> Objects;
+   typedef std::vector<Collectable*> Collectables;
    typedef std::stack<VirtualCall> CallStack;
    typedef std::map<std::string, callbackfnc> Natives;
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
@@ -271,7 +174,7 @@ private:
    VirtualContext&               mContext;
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
-   Objects                       mObjects;
+   Collectables                  mObjects;
    Objects                       mRootObjects;
    GarbageCollector              mGC;
    VirtualStack                  mStack;

@@ -7,7 +7,6 @@
 #include "script/common/variant.h"
 
 #include "virtualobject.h"
-#include "virtualarrayobject.h"
 #include "virtualfunctiontable.h"
 #include "virtuallookuptable.h"
 
@@ -246,13 +245,6 @@ VirtualObject* VirtualClass::instantiate() const
    VirtualObject* pobject = new VirtualObject();
    pobject->setClass(*this);
    pobject->initialize(mVariableCount);
-
-   return pobject;
-}
-
-VirtualArrayObject* VirtualClass::instantiateArray() const
-{
-   VirtualArrayObject* pobject = new VirtualArrayObject();
 
    return pobject;
 }

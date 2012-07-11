@@ -11,7 +11,6 @@
 
 class ASTClass;
 class Variant;
-class VirtualArrayObject;
 class VirtualLookupTable;
 class VirtualObject;
 
@@ -76,7 +75,6 @@ public:
 
  // operations
    VirtualObject*      instantiate() const;
-   VirtualArrayObject* instantiateArray() const;
 
    const Variant& getStatic(int index) const;
          Variant& getStatic(int index);
