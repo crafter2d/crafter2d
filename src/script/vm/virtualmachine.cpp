@@ -166,7 +166,6 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mContext(context),
    mCallback(*this),
    mCompiler(),
-   mObjects(),
    mRootObjects(),
    mGC(),
    mStack(),
@@ -1407,7 +1406,9 @@ VirtualObject* VirtualMachine::instantiate(const std::string& classname, int con
       }
    }
 
-   mObjects.push_back(object.release());
+   // register the object with the garbage collector
+   mGC.collect(object.release());
+
    return object.getPointer();
 }
 
@@ -1473,7 +1474,7 @@ VirtualArray* VirtualMachine::instantiateArray()
 {
    ASSERT_PTR(mpArrayClass);
    VirtualArray* parray = new VirtualArray();
-   mObjects.push_back(parray);
+   mGC.collect(parray);
    return parray;
 }
 

@@ -28,7 +28,6 @@
 
 #include "core/defines.h"
 
-#include "script/common/variant.h"
 #include "script/compiler/compiler.h"
 #include "script/gc/garbagecollector.h"
 
@@ -37,7 +36,7 @@
 #include "virtualcontext.h"
 #include "virtualstack.h"
 
-class Collectable;
+class Variant;
 class VirtualArrayException;
 class VirtualInstruction;
 class VirtualFunctionTableEntry;
@@ -145,7 +144,6 @@ private:
    };
 
    typedef std::vector<VirtualObject*> Objects;
-   typedef std::vector<Collectable*> Collectables;
    typedef std::stack<VirtualCall> CallStack;
    typedef std::map<std::string, callbackfnc> Natives;
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
@@ -155,9 +153,7 @@ private:
  // execution
    void execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry);
    void execute(const VirtualClass& vclass, const VirtualInstruction& instruction);
-
-   Variant pop();
-
+   
  // exception
    VirtualObject& instantiateArrayException(const VirtualArrayException& e);
    void           throwException(const std::string& exceptionname, const std::string& reason = "");
@@ -174,7 +170,6 @@ private:
    VirtualContext&               mContext;
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
-   Collectables                  mObjects;
    Objects                       mRootObjects;
    GarbageCollector              mGC;
    VirtualStack                  mStack;

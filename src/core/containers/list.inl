@@ -153,15 +153,25 @@ void List<E>::remove(Iterator<E>& it)
    {
       _phead = _ptail = NULL;
    }
-   else if ( pnode == _phead )
+   else
    {
-      _phead = _phead->nextptr();
-      _phead->prev(NULL);
-   }
-   else if ( pnode == _ptail )
-   {
-      _ptail = _ptail->prevptr();
-      _ptail->next(NULL);
+      if ( pnode->hasPrev() )
+      {
+         pnode->prev().next(pnode->nextptr());
+      }
+      else
+      {
+         _phead = pnode->nextptr();
+      }
+
+      if ( pnode->hasNext() )
+      {
+         pnode->next().prev(pnode->prevptr());
+      }
+      else
+      {
+         _ptail = pnode->prevptr();
+      }
    }
 
    delete pnode;

@@ -29,6 +29,7 @@
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualarray.h"
+#include "script/vm/virtualstackaccessor.h"
 
 #include "script/scriptobject.h"
 

@@ -34,6 +34,12 @@ bool ListNode<E>::hasNext() const
 }
 
 template <class N>
+ListNode<N>& ListNode<N>::next()
+{
+   return *_pnext;
+}
+
+template <class N>
 ListNode<N>* ListNode<N>::nextptr()
 {
    return _pnext;
@@ -49,6 +55,12 @@ template <class E>
 bool ListNode<E>::hasPrev() const
 {
    return _pprev != NULL;
+}
+
+template <class N>
+ListNode<N>& ListNode<N>::prev()
+{
+   return *_pprev;
 }
 
 template <class N>

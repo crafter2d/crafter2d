@@ -1,7 +1,7 @@
 
 #include "garbagecollector.h"
 
-#include "core/containers/hashmapiterator.h"
+#include "core/containers/listiterator.h"
 
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualobject.h"
@@ -23,7 +23,8 @@ int VoidHash(void* pkey)
 	return hashOffset;
 }
 
-GarbageCollector::GarbageCollector()
+GarbageCollector::GarbageCollector():
+   mCollectables()
 {
 }
 
@@ -32,6 +33,11 @@ GarbageCollector::~GarbageCollector()
 }
 
 // - Operations
+
+void GarbageCollector::collect(Collectable* pcollectable)
+{
+   mCollectables.addTail(pcollectable);
+}
 
 void GarbageCollector::gc(VirtualMachine& vm)
 {
@@ -53,17 +59,19 @@ void GarbageCollector::phaseMark(VirtualMachine& vm)
 
 void GarbageCollector::phaseCollect(VirtualMachine& vm)
 {
-   for ( int index = 0; index < vm.mObjects.size(); )
+   ListIterator<Collectable*> it = mCollectables.getFront();
+   while ( it.isValid() )
    {
-      Collectable* pobject = vm.mObjects[index];
+      Collectable* pobject = *it;
       if ( pobject->isMarked() )
       {
          pobject->setMarked(false);
-         index++;
+
+         ++it;
       }
       else
       {
-         vm.mObjects.erase(vm.mObjects.begin() + index);
+         it.remove();
 
          pobject->finalize(vm);
          delete pobject;
