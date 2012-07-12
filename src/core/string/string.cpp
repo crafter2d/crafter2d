@@ -1,113 +1,156 @@
 
 #include "string.h"
 
-#include <unicode/unistr.h>
 #include <string.h>
 
-class StringData
-{
-public:
-   StringData(): mString() {}
-   StringData(const StringData& that): mString(that.mString) {}
-   StringData(const char* pdata): mString(pdata) {}
-
-   UnicodeString mString;
-};
-
 String::String():
-   mpData(new StringData())
-{
-}
-
-String::String(const String& that):
-   mpData(new StringData(*that.mpData))
+   mString()
 {
 }
 
 String::String(const char* pdata):
-   mpData(new StringData(pdata))
+   mString(pdata)
+{
+}
+
+String::String(const std::string& that):
+   mString(that.c_str())
+{
+}
+
+String::String(const String& that):
+   mString(that.mString)
 {
 }
 
 String::~String()
 {
-   delete mpData;
 }
 
 const String& String::operator=(const String& that)
 {
-   mpData->mString = that.mpData->mString;
+   mString = that.mString;
    return *this;
 }
 
 const String& String::operator=(const char* pstring)
 {
-   mpData->mString = pstring;
+   mString = pstring;
    return *this;
+}
+
+const String& String::operator=(const std::string& that)
+{
+   mString = that.c_str();
+   return *this;
+}
+
+bool String::operator<=(const String& that) const
+{
+   return mString.compare(that.mString) <= 0;
+}
+
+bool String::operator<(const String& that) const
+{
+   return mString.compare(that.mString) < 0;
+}
+
+bool String::operator>(const String& that) const
+{
+   return mString.compare(that.mString) > 0;
+}
+
+bool String::operator>=(const String& that) const
+{
+   return mString.compare(that.mString) >= 0;
+}
+
+const String& String::operator+=(char c)
+{
+   mString += c;
+   return *this;
+}
+
+const String& String::operator+=(const String& that)
+{
+   mString += that.mString;
+   return *this;
+}
+
+String String::operator+(const String& that)
+{
+   String result;
+   result.mString = mString + that.mString;
+   return result;
 }
 
 // - Query
 
 int String::length() const
 {
-   return mpData->mString.length();
+   return mString.length();
 }
 
 char* String::toUtf8(int& length) const
 {
-   length = mpData->mString.length();
+   length = mString.length();
    char* pdata = new char[length+1];
    memset(pdata, 0, length + 1);
 
    CheckedArrayByteSink sink(pdata, length);
-   mpData->mString.toUTF8(sink);
+   mString.toUTF8(sink);
 
    return pdata;
+}
+
+int String::compare(const String& that) const
+{
+   return mString.compare(that.mString);
 }
 
 // - Comparison
 
 bool String::operator==(const String& that) const
 {
-   return mpData->mString == that.mpData->mString;
+   return mString == that.mString;
 }
 
 // - Operations
 
 const String& String::toLower()
 {
-   mpData->mString.toLower();
+   mString.toLower();
    return *this;
 }
 
 const String& String::toUpper()
 {
-   mpData->mString.toUpper();
+   mString.toUpper();
    return *this;
 }
 
 const String& String::trim()
 {
-   mpData->mString.trim();
+   mString.trim();
    return *this;
 }
 
 void String::replace(int original, int newtext)
 {
-   mpData->mString.findAndReplace(original, newtext);
+   mString.findAndReplace(original, newtext);
 }
 
 String String::subStr(int start, int count) const
 {
    String result;
-   mpData->mString.extract(start, count, result.mpData->mString);
+   mString.extract(start, count, result.mString);
    return result;
 }
 
 String String::unescape() const
 {
    String result;
-   result.mpData->mString = mpData->mString.unescape();
+   result.mString = mString.unescape();
    return result;
 }
 
@@ -115,7 +158,7 @@ String String::unescape() const
 
 int String::indexOf(char character)
 {
-   return mpData->mString.indexOf(character);
+   return mString.indexOf(character);
 }
 
 // - Conversion
@@ -125,10 +168,10 @@ std::string String::toStdString() const
    UErrorCode status = U_ZERO_ERROR;
    char* pdata = 0;
 
-   int32_t ln = mpData->mString.extract(pdata, 0, NULL, status);
+   int32_t ln = mString.extract(pdata, 0, NULL, status);
    pdata = new char[ln+1];
    status = U_ZERO_ERROR;
-   mpData->mString.extract(pdata, ln, NULL, status);
+   mString.extract(pdata, ln, NULL, status);
    if ( status != U_ZERO_ERROR )
    {
       // bah

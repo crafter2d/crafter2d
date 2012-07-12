@@ -26,6 +26,7 @@
 #include "core/defines.h"
 #include "core/smartptr/autoptr.h"
 #include "core/string/char.h"
+#include "core/conv/numberconverter.h"
 
 #include "script/compiler/compiler.h"
 #include "script/common/literal.h"
@@ -42,6 +43,7 @@
 #include "virtualfunctiontableentry.h"
 #include "virtuallookuptable.h"
 #include "virtualstackaccessor.h"
+#include "virtualstring.h"
 
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -66,7 +68,7 @@ void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor
    VirtualObject& thisobject = accessor.getThis();
    VirtualObject& classobject = accessor.getObject(1);
 
-   std::string name = classobject.getMember(0).asString();
+   String name = classobject.getMember(0).asString();
    VirtualObject* pobject = machine.instantiate(name);
 
    accessor.setResult(*pobject);
@@ -77,7 +79,7 @@ void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObject& thisobject = accessor.getThis();
    VirtualObject& instance = accessor.getObject(1);
 
-   std::string fncname = thisobject.getMember(0).asString();
+   String fncname = thisobject.getMember(0).asString();
 
    machine.execute(instance, fncname);
 }
@@ -86,7 +88,7 @@ void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& acce
 {
    VirtualObject& thisobject = accessor.getThis();
 
-   std::string callstack = machine.buildCallStack();
+   String callstack = machine.buildCallStack();
 
    accessor.setResult(callstack);
 }
@@ -102,32 +104,32 @@ void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accesso
 
 void InternalString_equals(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& thisstring = accessor.getString(0);
-   const std::string& thatstring = accessor.getString(1);
+   const String& thisstring = accessor.getString(0);
+   const String& thatstring = accessor.getString(1);
 
    accessor.setResult(thisstring == thatstring);
 }
 
 void InternalString_subString(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& thisstring = accessor.getString(0);
+   const String& thisstring = accessor.getString(0);
    
    int pos = accessor.getInt(1);
    int len = accessor.getInt(2);
 
-   accessor.setResult(thisstring.substr(pos, len));
+   accessor.setResult(thisstring.subStr(pos, len));
 }
 
 void InternalString_length(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& thisstring = accessor.getString(0);
+   const String& thisstring = accessor.getString(0);
 
    accessor.setResult((int) thisstring.length());
 }
 
 void InternalString_getChar(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& thisstring = accessor.getString(0);
+   const String& thisstring = accessor.getString(0);
 
    int index = accessor.getInt(1);
 
@@ -447,15 +449,19 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             VirtualArray* parray = instantiateArray();
             parray->addLevel(mStack.popInt());
 
-            /* no support yet for multi-dimensional arrays
+            // no support yet for multi-dimensional arrays
             VirtualArray* pinit = parray;
             for ( int index = 0; index < arraydimension; index++ )
             {
                int size = mStack.popInt();
 
-               pinit = pinit->addLevel(size);
+               pinit->addLevel(size);
+               if ( index < arraydimension - 1 )
+               {
+                  VirtualArray* ptemp = pinit;
+                  
+               }
             }
-            */
 
             mStack.pushArray(*parray);
          }
@@ -571,7 +577,9 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eInt2String:
          {
-            mStack.back().int2string();
+            String result;
+            NumberConverter::getInstance().format(result, mStack.popInt());
+            mStack.pushString(result);
          }
          break;
       case VirtualInstruction::eReal2Int:
@@ -581,17 +589,23 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eReal2String:
          {
-            mStack.back().real2string();
+            String result;
+            NumberConverter::getInstance().format(result, mStack.popReal());
+            mStack.pushString(result);
          }
          break;
       case VirtualInstruction::eChar2String:
          {
-            mStack.back().char2string();
+            String result;
+            result += mStack.popChar();
+            mStack.pushString(result);
          }
          break;
       case VirtualInstruction::eBoolean2String:
          {
-            mStack.back().boolean2string();
+            bool value = mStack.popBool();
+            String string(value ? String("true") : String("false"));
+            mStack.pushString(string);
          }
          break;
 
@@ -885,56 +899,56 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eAddStr:
          {
-            std::string right = mStack.popString();
-            std::string left = mStack.popString();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
             mStack.pushString(left + right);
          }
          break;
       case VirtualInstruction::eCmpEqStr:
          {
-            std::string right = mStack.popString();
-            std::string left = mStack.popString();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
             mStack.pushBool(left == right);
          }
          break;
       case VirtualInstruction::eCmpNeqStr:
          {
-            std::string right = mStack.popString();
-            std::string left = mStack.popString();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
-            mStack.pushBool(left != right);
+            mStack.pushBool(!(left == right));
          }
          break;
       case VirtualInstruction::eCmpLeStr:
          {
-            std::string right = mStack.popString();
-            std::string left = mStack.popString();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
             mStack.pushBool(left <= right);
          }
          break;
       case VirtualInstruction::eCmpLtStr:
          {
-            std::string right = mStack.popString();
-            std::string left = mStack.popString();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
             mStack.pushBool(left < right);
          }
          break;
       case VirtualInstruction::eCmpGeStr:
          {
-            std::string right = mStack.popString();
-            std::string left = mStack.popString();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
             mStack.pushBool(left > right);
          }
          break;
       case VirtualInstruction::eCmpGtStr:
          {
-            std::string right = mStack.popString();
-            std::string left = mStack.popString();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
             mStack.pushBool(left >= right);
          }
@@ -1067,7 +1081,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
 
       case VirtualInstruction::ePop:
-         mStack.pop(instruction.getArgument()); //shrinkStack(mStack.size() - instruction.getArgument());
+         mStack.pop(instruction.getArgument());
          break;
 
       case VirtualInstruction::eInstanceOf:
@@ -1144,7 +1158,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             if ( obj.isObject() )
                mStack.push(obj.asObject().getMember(instruction.getArgument()));
             else if ( obj.isArray() )
-               mStack.push(Variant(obj.asArray().size()));
+               mStack.push(Variant(obj.asArray().size())); // length attribute
             else if ( obj.isEmpty() )
             {
                throwException("system.NullPointerException");
@@ -1233,7 +1247,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          {
             int classlit = mStack.popInt();
 
-            const std::string& classname = mContext.mLiteralTable[classlit].getValue().asString();
+            const String& classname = mContext.mLiteralTable[classlit].getValue().asString();
             const VirtualClass& c = mContext.mClassTable.resolve(classname);
 
             mStack.push(c.getStatic(instruction.getArgument()));
@@ -1247,7 +1261,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eLoadClass:
          {
-            std::string name;
+            String name;
             if ( instruction.getArgument() == 1 )
             {
                name = mStack.back().asObject().getClass().getName();
@@ -1277,30 +1291,31 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
 // - Exception
 
-std::string VirtualMachine::buildCallStack() const
+String VirtualMachine::buildCallStack() const
 {
    CallStack dump = mCallStack;
 
-   std::string result = "Call stack:\n";
+   String result = String("Call stack:\n");
    while ( dump.size() > 1 )
    {
       const VirtualCall& call = dump.top();
 
       ASSERT_PTR(call.mpEntry);
-      result += "- " + call.mpClass->getName() + '.' + call.mpEntry->mName + '(';
+      result += String("- ");
+      result += String(call.mpClass->getName() + '.' + call.mpEntry->mName + '(');
 
       for ( int index = 0; index < call.mpEntry->mArguments; index++ )
       {
          const Variant& value = mStack[call.mStackBase + index];
-         result += value.typeAsString() + " = " + value.toString();
+         result += value.typeAsString() + String(" = ") + value.toString();
 
          if ( index < call.mpEntry->mArguments - 1 )
          {
-            result += ", ";
+            result += String(", ");
          }
       }
 
-      result += ")\n";
+      result += String(")\n");
 
       dump.pop();
    }
@@ -1308,7 +1323,7 @@ std::string VirtualMachine::buildCallStack() const
    return result;
 }
 
-void VirtualMachine::throwException(const std::string& exceptionname, const std::string& reason)
+void VirtualMachine::throwException(const std::string& exceptionname, const String& reason)
 {
    VirtualObject* pexception = instantiate(exceptionname, -1);
 
@@ -1358,10 +1373,10 @@ void VirtualMachine::displayException(VirtualException& exception)
    execute(exceptionobject, "getCause");
    execute(exceptionobject, "getCallStack");
 
-   std::string callstack = mStack.popString();
-   std::string cause = mStack.popString();
+   String callstack = mStack.popString();
+   String cause = mStack.popString();
 
-   std::cout << cause << std::endl << callstack;
+   std::cout << cause.toStdString() << std::endl << callstack.toStdString();
 }
 
 // - Object creation
@@ -1476,6 +1491,13 @@ VirtualArray* VirtualMachine::instantiateArray()
    VirtualArray* parray = new VirtualArray();
    mGC.collect(parray);
    return parray;
+}
+
+VirtualString& VirtualMachine::instantiateString()
+{
+   VirtualString* pstring = new VirtualString();
+   mGC.collect(pstring);
+   return *pstring;
 }
 
 // - Native interface

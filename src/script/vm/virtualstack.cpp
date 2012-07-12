@@ -61,7 +61,7 @@ void VirtualStack::pushChar(char value)
    top().setChar(value);
 }
 
-void VirtualStack::pushString(const std::string& value)
+void VirtualStack::pushString(const String& value)
 {
    top().setString(value);
 }
@@ -107,7 +107,7 @@ char VirtualStack::popChar()
    return mStack[--mSize]->asChar();
 }
 
-const std::string& VirtualStack::popString()
+const String& VirtualStack::popString()
 {
    return mStack[--mSize]->asString();
 }

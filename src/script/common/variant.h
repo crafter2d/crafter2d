@@ -2,9 +2,9 @@
 #ifndef VIRTUAL_VARIANT_H_
 #define VIRTUAL_VARIANT_H_
 
-#include <string>
-
 #include "script/script_base.h"
+
+#include "core/string/string.h"
 
 class VirtualObject;
 class VirtualArray;
@@ -18,7 +18,7 @@ public:
    explicit Variant(double value);
    explicit Variant(char value);
    explicit Variant(bool value);
-   explicit Variant(const std::string& value);
+   explicit Variant(const String& value);
    explicit Variant(VirtualObject& object);
    explicit Variant(VirtualObject* pvirtualobject);
    explicit Variant(VirtualArray& array);
@@ -46,8 +46,8 @@ public:
    char asChar() const;
    void setChar(char value);
 
-   const std::string& asString() const;
-   void setString(const std::string& value);
+   const String& asString() const;
+   void setString(const String& value);
 
    VirtualObject& asObject() const;
    void setObject(VirtualObject& object);
@@ -66,18 +66,14 @@ public:
    bool isArray() const;
 
  // display
-   std::string typeAsString() const;
-   std::string toString() const;
+   String  typeAsString() const;
+   String  toString() const;
    int     toInt() const;
    double  toReal() const;
 
  // conversion
    void int2real();
-   void int2string();
    void real2int();
-   void real2string();
-   void char2string();
-   void boolean2string();
 
 private:
    enum MetaType
@@ -114,6 +110,7 @@ private:
 
    typedef DataHolder<VirtualObject*> ObjectHolder;
    typedef DataHolder<VirtualArray*>  ArrayHolder;
+   typedef DataHolder<String>         StringHolder;
 
    MetaType        mType;
    DataHolderBase* mpHolder;

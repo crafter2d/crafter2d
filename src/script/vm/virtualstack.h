@@ -4,11 +4,11 @@
 
 #include "script/script_base.h"
 
-#include <string>
 #include <vector>
 
 #include "script/common/variant.h"
 
+class String;
 class VirtualArray;
 
 class SCRIPT_API VirtualStack
@@ -26,7 +26,7 @@ public:
    void pushReal(double value);
    void pushBool(bool value);
    void pushChar(char value);
-   void pushString(const std::string& value);
+   void pushString(const String& value);
    void pushObject(VirtualObject& object);
    void pushArray(VirtualArray& array);
 
@@ -36,7 +36,7 @@ public:
    double               popReal();
    bool                 popBool();
    char                 popChar();
-   const std::string&   popString();
+   const String&        popString();
    VirtualObject&       popObject();
    VirtualArray&        popArray();
 

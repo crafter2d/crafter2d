@@ -27,7 +27,8 @@ if ( os.is("windows") ) then
 					path.join(libdir, "tinyxml/include"),
 					path.join(libdir, "freetype2/include"),
 					path.join(libdir, "soil/include"),
-					path.join(libdir, "box2d/include") }
+					path.join(libdir, "box2d/include"),
+					path.join(libdir, "icu/include") }
 
     libdirs { 	path.join(libdir, "sdl/lib"),
 				path.join(libdir, "glee/lib"),

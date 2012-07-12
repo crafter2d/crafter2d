@@ -3,10 +3,12 @@
 
 #include "core/defines.h"
 #include "core/conv/lexical.h"
+#include "core/conv/numberconverter.h"
 
 #include "script/vm/virtualarray.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualclass.h"
+#include "script/vm/virtualstring.h"
 
 // - Variant
 
@@ -46,9 +48,9 @@ Variant::Variant(bool value):
 {
 }
 
-Variant::Variant(const std::string& value):
+Variant::Variant(const String& value):
    mType(eString),
-   mpHolder(new DataHolder<std::string>(value))
+   mpHolder(new StringHolder(value))
 {
 }
 
@@ -130,7 +132,7 @@ bool Variant::operator<=(const Variant& that) const
          return asReal() <= that.asReal();
 
       case eString:
-         return asString().compare(that.asString()) <= 0;
+         return asString() <= that.asString();
    }
 
    return false;
@@ -150,7 +152,7 @@ bool Variant::operator<(const Variant& that) const
          return asReal() < that.asReal();
 
       case eString:
-         return asString().compare(that.asString()) <= 0;
+         return asString() < that.asString();
    }
 
    return false;
@@ -170,7 +172,7 @@ bool Variant::operator>(const Variant& that) const
          return asReal() > that.asReal();
 
       case eString:
-         return asString().compare(that.asString()) > 0;
+         return asString() > that.asString();
    }
 
    return false;
@@ -190,7 +192,7 @@ bool Variant::operator>=(const Variant& that) const
          return asReal() >= that.asReal();
 
       case eString:
-         return asString().compare(that.asString()) >= 0;
+         return asString() >= that.asString();
    }
 
    return false;
@@ -284,22 +286,22 @@ void Variant::setBool(bool value)
    }
 }
 
-const std::string& Variant::asString() const
+const String& Variant::asString() const
 {
-   return ((DataHolder<std::string>*)mpHolder)->mData;
+   return ((StringHolder*)mpHolder)->mData;
 }
 
-void Variant::setString(const std::string& value)
+void Variant::setString(const String& value)
 {
    if ( mType == eString )
    {
-      ((DataHolder<std::string>*)mpHolder)->mData = value;
+      ((StringHolder*)mpHolder)->mData = value;
    }
    else
    {
       mType = eString;
       delete mpHolder;
-      mpHolder = new DataHolder<std::string>(value);
+      mpHolder = new StringHolder(value);
    }
 }
 
@@ -385,49 +387,49 @@ bool Variant::isArray() const
 
 // - Display
 
-std::string Variant::typeAsString() const
+String Variant::typeAsString() const
 {
    switch ( mType )
    {
       case eString:
-         return "string";
+         return String("string");
       case eInt:
-         return "int";
+         return String("int");
       case eReal:
-         return "real";
+         return String("real");
       case eChar:
-         return "char";
+         return String("char");
       case eBool:
-         return "boolean";
+         return String("boolean");
       case eObject:
-         return asObject().getClass().getName();
+         return String(asObject().getClass().getName().c_str());
       case eArray:
-         return "array";
+         return String("array");
    }
-   return "";
+   return String();
 }
 
-std::string Variant::toString() const
+String Variant::toString() const
 {
    switch ( mType )
    {
       case eString:
          return asString();
       case eInt:
-         return lexical_cast<std::string>(asInt());
+         return String(lexical_cast<std::string>(asInt()).c_str());
       case eReal:
-         return lexical_cast<std::string>(asReal());
+         return String(lexical_cast<std::string>(asReal()).c_str());
       case eChar:
-         return lexical_cast<std::string>(asChar());
+         return String(lexical_cast<std::string>(asChar()).c_str());
       case eBool:
-         return asBool() ? std::string("true") : std::string("false");
+         return asBool() ? String("true") : String("false");
       case eObject:
-         return asObject().getClass().getName();
+         return String(asObject().getClass().getName().c_str());
       case eArray:
-         return "array";
+         return String("array");
    }
 
-   return "";
+   return String();
 }
 
 int Variant::toInt() const
@@ -439,7 +441,7 @@ int Variant::toInt() const
    case eReal:
       return static_cast<int>(asReal());
    case eString:
-      return lexical_cast<int>(asString());
+      return NumberConverter::getInstance().toInt(asString());
 
    default:
       UNREACHABLE("Can not convert this type to int!");
@@ -469,32 +471,9 @@ void Variant::int2real()
    setReal((double)asInt());
 }
 
-void Variant::int2string()
-{
-   ASSERT(isInt());
-   setString(lexical_cast<std::string>(asInt()));
-}
-
 void Variant::real2int()
 {
    ASSERT(isReal());
    setInt((int)asReal());
 }
 
-void Variant::real2string()
-{
-   ASSERT(isReal());
-   setString(lexical_cast<std::string>(asReal()));
-}
-
-void Variant::char2string()
-{
-   ASSERT(isChar());
-   setString(toString());
-}
-
-void Variant::boolean2string()
-{
-   ASSERT(isBool());
-   setString(asBool() ? "true" : "false");
-}

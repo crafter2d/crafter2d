@@ -29,7 +29,7 @@ public:
       return value.asReal();
    }
 
-   const std::string& getString(int argument) const {
+   const String& getString(int argument) const {
       Variant& value = getArgument(argument);
       return value.asString();
    }
@@ -87,7 +87,7 @@ public:
       mResult = Variant(value);
    }
 
-   void setResult(const std::string& value) {
+   void setResult(const String& value) {
       mResult = Variant(value);
    }
 

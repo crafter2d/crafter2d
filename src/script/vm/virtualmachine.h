@@ -43,6 +43,7 @@ class VirtualFunctionTableEntry;
 class VirtualException;
 class VirtualObject;
 class VirtualStackAccessor;
+class VirtualString;
 
 class SCRIPT_API VirtualMachine
 {
@@ -79,13 +80,14 @@ public:
    void execute(VirtualObject& object, const std::string& function);
 
  // exception handling
-   std::string buildCallStack() const;
+   String buildCallStack() const;
    void displayException(VirtualException& exception);
 
  // object instantation
    VirtualObject*    instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
    VirtualObject*    instantiateNative(const std::string& classname, void* pobject, bool owned = true);
    VirtualArray*     instantiateArray();
+   VirtualString&    instantiateString();
 
  // observing
    VirtualObject*    lookupNative(void* pobject);
@@ -156,7 +158,7 @@ private:
    
  // exception
    VirtualObject& instantiateArrayException(const VirtualArrayException& e);
-   void           throwException(const std::string& exceptionname, const std::string& reason = "");
+   void           throwException(const std::string& exceptionname, const String& reason);
    bool           handleException(VirtualException* pexception);
 
  // class loading
