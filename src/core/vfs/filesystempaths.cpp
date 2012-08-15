@@ -22,6 +22,8 @@
 
 #include <algorithm>
 
+#include "core/string/string.h"
+
 FileSystemPaths::FileSystemPaths():
    mPaths()
 {
@@ -37,17 +39,17 @@ const FileSystemPath& FileSystemPaths::operator[](int index) const
 class Pred
 {
 public:
-   Pred(const std::string& path): mPath(path) {}
+   Pred(const String& path): mPath(path) {}
 
    bool operator()(FileSystemPath* ppath) {
       return (*ppath) == mPath;
    }
 
 private:
-   const std::string& mPath;
+   const String& mPath;
 };
 
-bool FileSystemPaths::contains(const std::string& path) const
+bool FileSystemPaths::contains(const String& path) const
 {
    return std::find_if(mPaths.begin(), mPaths.end(), Pred(path)) != mPaths.end();
 }
@@ -59,7 +61,7 @@ int FileSystemPaths::size() const
 
 // - Operations
 
-void FileSystemPaths::add(const std::string& path)
+void FileSystemPaths::add(const String& path)
 {
    if ( !contains(path) )
    {
@@ -68,7 +70,7 @@ void FileSystemPaths::add(const std::string& path)
    }
 }
 
-void FileSystemPaths::remove(const std::string& path)
+void FileSystemPaths::remove(const String& path)
 {
    Paths::iterator it = std::find_if(mPaths.begin(), mPaths.end(), Pred(path));
    if ( it != mPaths.end() )

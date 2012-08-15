@@ -20,7 +20,7 @@
 #ifndef AI_CONTROLLER_H
 #define AI_CONTROLLER_H
 
-#include <string>
+#include "core/string/string.h"
 
 #include "controller.h"
 
@@ -41,7 +41,7 @@ public:
 
 private:
 
-   static const std::string smFunc;
+   static const String smFunc;
 
    Script* mpScript;
 };

@@ -2,7 +2,7 @@
 #ifndef AST_FUNCTION_H_
 #define AST_FUNCTION_H_
 
-#include <string>
+#include "core/string/string.h"
 
 #include "astmember.h"
 #include "astmodifier.h"
@@ -21,8 +21,8 @@ public:
    virtual ~ASTFunction();
 
  // get/set
-   const std::string& getName() const;
-   void           setName(const std::string& name);
+   const String& getName() const;
+   void          setName(const String& name);
 
    const ASTType& getType() const;
          ASTType& getType();
@@ -70,13 +70,13 @@ public:
    void addArgument(ASTFunctionArgument* pargument);
 
  // search
-   const ASTFunctionArgument& resolveArgument(const std::string& name) const;
+   const ASTFunctionArgument& resolveArgument(const String& name) const;
    
  // visitor
    ACCEPT;
 
 private:
-   std::string       mName;
+   String            mName;
    ASTAnnotations*   mpAnnotations;
    ASTModifiers      mModifiers;
    ASTTypeVariables* mpTypeVariables;

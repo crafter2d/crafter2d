@@ -20,14 +20,14 @@
 #ifndef TEXTURE_LOADER_FACTORY_H_
 #define TEXTURE_LOADER_FACTORY_H_
 
-#include <string>
+class String;
 
 class AbstractTextureLoader;
 
 class TextureLoaderFactory
 {
 public:
-   static AbstractTextureLoader*   constructLoader(const std::string& filename);
+   static AbstractTextureLoader*   constructLoader(const String& filename);
 
    ~TextureLoaderFactory();
 

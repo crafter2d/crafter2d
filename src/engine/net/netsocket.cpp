@@ -32,6 +32,8 @@
 #define SOCKET_ERROR -1
 #endif
 
+#include "core/string/string.h"
+
 #include "netaddress.h"
 #include "netpackage.h"
 #include "netsocketexception.h"
@@ -43,15 +45,18 @@ NetSocket::NetSocket():
 
 // - Query
    
-bool NetSocket::resolve(NetAddress& address, const std::string& name)
+bool NetSocket::resolve(NetAddress& address, const String& name)
 {
+   char aname[256];
+   name.asArray(aname, 256);
+
    address.addr.sin_family = AF_INET;
 	address.addr.sin_port = htons ((u_short)0);
-   address.addr.sin_addr.s_addr = inet_addr(name.c_str());
+   address.addr.sin_addr.s_addr = inet_addr(aname);
 
 	if (address.addr.sin_addr.s_addr == INADDR_NONE)
    {
-      hostent *host_info = gethostbyname(name.c_str());
+      hostent *host_info = gethostbyname(aname);
 		if (host_info == NULL)
       {
 			return false;

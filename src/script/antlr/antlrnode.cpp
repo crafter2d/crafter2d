@@ -30,9 +30,9 @@ int AntlrNode::getType() const
    return mpNode->getType(mpNode);
 }
 
-std::string AntlrNode::toString() const
+String AntlrNode::toString() const
 {
-   return std::string((char*)mpNode->toString(mpNode)->chars);
+   return String((char*)mpNode->toString(mpNode)->chars);
 }
 
 int AntlrNode::getLine() const

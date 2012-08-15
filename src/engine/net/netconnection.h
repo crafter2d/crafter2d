@@ -42,6 +42,7 @@ class NetAddress;
 class NetObserver;
 class NetStream;
 class Process;
+class String;
 
 const int   MAX_PACKAGE_NUMBER            = 0xAFFFFFFF;
 const int   INVALID_CLIENTID              = -1;
@@ -77,7 +78,7 @@ public:
 
  // operations
    bool        listen(int port);
-   int         connect(const std::string& serverName, int port);
+   int         connect(const String& serverName, int port);
    void        shutdown();
    void        disconnect(int client);
    void        update();

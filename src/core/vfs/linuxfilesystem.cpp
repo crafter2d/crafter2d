@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <fnmatch.h>
 
+#include "core/string/string.h"
+
 LinuxFileSystem::LinuxFileSystem():
    FileSystem()
 {
@@ -33,10 +35,10 @@ LinuxFileSystem::~LinuxFileSystem()
 {
 }
 
-bool LinuxFileSystem::doRecurseDirectory(const std::string& dir, const std::string& mask, Callback callback, void* pdata)
+bool LinuxFileSystem::doRecurseDirectory(const String& dir, const String& mask, Callback callback, void* pdata)
 {
    dirent** pentries = NULL;
-   int      count    = scandir(dir.c_str(), &pentries, 0, alphasort);
+   int      count    = scandir(dir.getBuffer(), &pentries, 0, alphasort);
 
    struct stat s;
 
@@ -44,10 +46,10 @@ bool LinuxFileSystem::doRecurseDirectory(const std::string& dir, const std::stri
    {
       dirent& entry = *pentries[index];
 
-      if ( fnmatch(mask.c_str(), entry.d_name, FNM_PATHNAME) == 0 )
+      if ( fnmatch(mask.getBuffer(), entry.d_name, FNM_PATHNAME) == 0 )
       {
-         std::string file = dir + entry.d_name;
-         stat(file.c_str(), &s);
+         String file = dir + entry.d_name;
+         stat(file.getBuffer(), &s);
 
          callback(entry.d_name, S_ISDIR(s.st_mode), pdata);
       }
@@ -56,25 +58,25 @@ bool LinuxFileSystem::doRecurseDirectory(const std::string& dir, const std::stri
    return true;
 }
 
-bool LinuxFileSystem::recurseDirectory(const std::string& dir, Callback callback, void* pdata)
+bool LinuxFileSystem::recurseDirectory(const String& dir, Callback callback, void* pdata)
 {
-   std::string localdir = dir;
+   String localdir = dir;
    if ( localdir[localdir.length() - 1] != '/' )
       localdir += '/';
 
    return doRecurseDirectory(localdir, "*.*", callback, pdata);
 }
 
-bool LinuxFileSystem::find(const std::string& mask, Callback callback, void* pdata)
+bool LinuxFileSystem::find(const String& mask, Callback callback, void* pdata)
 {
-   std::string dir;
-   std::string pattern;
+   String dir;
+   String pattern;
 
-   std::string::size_type index = mask.rfind('/');
+   String::size_type index = mask.lastIndexOf('/');
    if ( index != mask.npos )
    {
-      dir     = mask.substr(0, index);
-      pattern = mask.substr(index+1, mask.length() - index - 1);
+      dir     = mask.subStr(0, index);
+      pattern = mask.subStr(index+1, mask.length() - index - 1);
    }
    else
    {

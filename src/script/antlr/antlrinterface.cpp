@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "core/defines.h"
-#include "core/conv/lexical.h"
+#include "core/conv/numberconverter.h"
 #include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 
@@ -135,8 +135,8 @@ ASTType* AntlrParser::getType(const AntlrNode& node)
          break;
       case ID:
          {
-            std::string name = typenode.toString();
-            std::string qualifiedname = mClassResolver.resolve(name);
+            String name = typenode.toString();
+            String qualifiedname = mClassResolver.resolve(name);
             if ( qualifiedname == "" )
             {
                // can be a type argument!
@@ -258,7 +258,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
 
 ASTNode* AntlrParser::handlePackage(const AntlrNode& node)
 {
-   std::string identifier;
+   String identifier;
    int count = node.getChildCount();
    for ( int index = 0; index < count; index++ )
    {
@@ -282,7 +282,7 @@ ASTNode* AntlrParser::handlePackage(const AntlrNode& node)
 
 ASTNode* AntlrParser::handleUse(const AntlrNode& node)
 {
-   std::string identifier;
+   String identifier;
    int count = node.getChildCount();
    for ( int index = 0; index < count; index++ )
    {
@@ -347,7 +347,7 @@ ASTTypeVariables* AntlrParser::handleTypeVariables(const AntlrNode& node)
    int count = node.getChildCount();
    for ( int index = 0; index < count; index++ )
    {
-      std::string id, extra;
+      String id, extra;
       ASTTypeVariable* ptype = new ASTTypeVariable();
 
       AntlrNode typenode = node.getChild(index);
@@ -398,8 +398,8 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
    handleModifiers(modsnode, pclass->getModifiers());
 
    AntlrNode namenode = node.getChild(1);
-   std::string name = namenode.toString();
-   std::string qualifiedname = mClassResolver.resolve(name);
+   String name = namenode.toString();
+   String qualifiedname = mClassResolver.resolve(name);
 
    pclass->setName(name);
    pclass->setFullName(qualifiedname);
@@ -551,7 +551,7 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
    ASTType* ptype = getType(typenode);
 
    AntlrNode namenode = node.getChild(2);
-   std::string name = namenode.toString();
+   String name = namenode.toString();
 
    AntlrNode argumentnode = node.getChild(3);
    int type = argumentnode.getType();
@@ -592,7 +592,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
    modifiers.setVisibility(ASTModifiers::ePublic);
 
    AntlrNode namenode = node.getChild(1);
-   std::string name = namenode.toString();
+   String name = namenode.toString();
 
    AntlrNode argumentnode = node.getChild(2);
    int type = argumentnode.getType();
@@ -1123,7 +1123,7 @@ ASTExpression* AntlrParser::handleExpression(const AntlrNode& node)
    if ( count > 1 )
    {
       AntlrNode operatornode = node.getChild(1);
-      std::string op = operatornode.toString();
+      String op = operatornode.toString();
 
       if ( op == "=" )
       {
@@ -1468,7 +1468,7 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
 {
    int count = node.getChildCount();
    AntlrNode valuenode = node.getChild(0);
-   std::string valuestr = valuenode.toString();
+   String valuestr = valuenode.toString();
 
    Variant value;
    ASTType::Kind kind = ASTType::eInt;
@@ -1477,11 +1477,11 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
    {
       case INT:
          kind = ASTType::eInt;
-         value.setInt(lexical_cast<int>(valuestr));
+         value.setInt(NumberConverter::getInstance().toInt(valuestr));
          break;
       case FLOAT:
          kind = ASTType::eReal;
-         value.setReal(lexical_cast<double>(valuestr));
+         value.setReal(NumberConverter::getInstance().toDouble(valuestr));
          break;
       case CHAR:
          kind = ASTType::eChar;
@@ -1523,25 +1523,21 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
 
 // - Helpers
 
-char AntlrParser::parseChar(const std::string& value)
+char AntlrParser::parseChar(const String& value)
 {
    ASSERT(value[0] == '\'');
 
-   std::string unquoted = value.substr(1, value.length() - 2);
-   String s(unquoted.c_str());
-   std::string unescaped = s.unescape().toStdString();
-
-   return unescaped[0];
+   //String unquoted = value.subStr(1, value.length() - 2);
+   
+   return value.unescape()[1];
 }
 
-std::string AntlrParser::parseString(const std::string& value)
+String AntlrParser::parseString(const String& value)
 {
    ASSERT(value[0] == '\"');
 
-   std::string unquoted = value.substr(1, value.length() - 2);
-   String s(unquoted.c_str());
-   
-   return s.unescape().toStdString();
+   String unquoted = value.subStr(1, value.length() - 2);   
+   return unquoted.unescape();
 }
 
 // - Error reporting
@@ -1567,7 +1563,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 
    int linenr = ex->line;
    int charpos = ex->charPositionInLine;
-   std::stringstream message;
+   String message;
 
    switch ( ex->type )
    {
@@ -1581,17 +1577,17 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   //
          if ( tokenNames == NULL )
          {
-            message << "Extraneous input...";
+            message = "Extraneous input...";
          }
          else
          {
             if	(ex->expecting == ANTLR3_TOKEN_EOF)
 			   {
-				   message << "Extraneous input - expected <EOF>";
+				   message = "Extraneous input - expected <EOF>";
 			   }
 			   else
 			   {
-				   message << "Extraneous input - expected " << (const char*)tokenNames[ex->expecting];
+				   message = String("Extraneous input - expected ") + (const char*)tokenNames[ex->expecting];
 			   }
          }
          break;
@@ -1604,17 +1600,17 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   //
          if ( tokenNames == NULL )
          {
-            message << "Missing token...";
+            message = "Missing token...";
          }
          else
          {
             if	(ex->expecting == ANTLR3_TOKEN_EOF)
 			   {
-				   message << "Missing <EOF>";
+				   message = "Missing <EOF>";
 			   }
 			   else
 			   {
-				   message << "Missing " << (const char*)tokenNames[ex->expecting];
+				   message = String("Missing ") + (const char*)tokenNames[ex->expecting];
 			   }
          }
          break;
@@ -1627,7 +1623,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // You may get this if there are not more tokens and more are needed
 		   // to complete a parse for instance.
 		   //
-         message << "Syntax error...";
+         message = "Syntax error...";
          break;
 
       case ANTLR3_MISMATCHED_TOKEN_EXCEPTION:
@@ -1643,17 +1639,17 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   //
          if ( tokenNames == NULL )
          {
-            message << "Syntax error...";
+            message = "Syntax error...";
          }
          else
          {
             if	(ex->expecting == ANTLR3_TOKEN_EOF)
 			   {
-				   message << "Expected <EOF>";
+				   message = "Expected <EOF>";
 			   }
 			   else
 			   {
-				   message << "Expected " << (const char*)tokenNames[ex->expecting];
+				   message = String("Expected ") + (const char*)tokenNames[ex->expecting];
 			   }
          }
          break;
@@ -1664,7 +1660,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // you should. It means that at the point where the current token occurred
 		   // that the DFA indicates nowhere to go from here.
 		   //
-         message << "Can not match to any predicted input";
+         message = "Can not match to any predicted input";
          break;
       case ANTLR3_MISMATCHED_SET_EXCEPTION:
          {
@@ -1678,7 +1674,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 			   // possible tokens at this point, but we did not see any
 			   // member of that set.
 			   //
-			   message << "Unexpected input." << std::endl <<  "Expected one of : ";
+			   message = String("Unexpected input.\nExpected one of : ");
 
 			   // What tokens could we have accepted at this point in the
 			   // parse?
@@ -1701,15 +1697,15 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 					   //
 					   if  (tokenNames[bit])
 					   {
-						   message << (count > 0 ? ", " : "") << tokenNames[bit];
+						   message += String(count > 0 ? ", " : "") + (const char*)tokenNames[bit];
 						   count++;
 					   }
 				   }
 			   }
 			   else
 			   {
-				   message << "Actually dude, we didn't seem to be expecting anything here, or at least" << std::endl
-				           << "I could not work out what I was expecting, like so many of us these days!";
+				   message = String("Actually dude, we didn't seem to be expecting anything here, or at least\n")
+				           + String("I could not work out what I was expecting, like so many of us these days!");
 			   }
 		   }
          break;
@@ -1720,7 +1716,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // but found a token that ended that sequence earlier than
 		   // we should have done.
 		   //
-         message << "Missing elements...";
+         message = std::string("Missing elements...");
          break;
       default:
 
@@ -1730,9 +1726,9 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // token.
 		   //
 
-         message << "Syntax not recognised.";
+         message = std::string("Syntax not recognised.");
          break;
    }
 
-   throw new AntlrException(message.str(), linenr, charpos);
+   throw new AntlrException(message, linenr, charpos);
 }

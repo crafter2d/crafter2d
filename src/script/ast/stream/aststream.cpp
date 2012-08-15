@@ -3,13 +3,14 @@
 
 #include "script/ast/ast.h"
 
-ASTStream::ASTStream(std::stringstream& stream):
+ASTStream::ASTStream(String& stream):
    mStream(stream)
 {
 }
 
 // - Streaming
 
+/*
 ASTStream& ASTStream::operator<<(const ASTClass& ast)
 {
    mStream << ast.getName();
@@ -258,3 +259,4 @@ ASTVariable* ASTStream::readVariable()
 
    return pvariable;
 }
+*/

@@ -21,8 +21,8 @@
 #define TEXTURE_H
 
 #include <GL/GLee.h>
-#include <string>
 
+#include "core/string/string.h"
 #include "core/defines.h"
 
 #include "engine/resource/resource.h"
@@ -43,7 +43,7 @@ public:
    bool           createNormalizingCube(int size = 128);
    virtual void   release();
 
-   virtual bool   load(const std::string& file);
+   virtual bool   load(const String& file);
 
    void           enable() const;
    void           disable () const;
@@ -76,7 +76,7 @@ protected:
    GLuint tex;
    GLenum target;
    int texStage;
-   std::string filename;
+   String filename;
 };
 
 #ifdef JENGINE_INLINE

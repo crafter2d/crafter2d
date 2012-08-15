@@ -40,7 +40,7 @@ AbstractWorldVersionReader::~AbstractWorldVersionReader()
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-bool AbstractWorldVersionReader::read(const std::string& filename)
+bool AbstractWorldVersionReader::read(const String& filename)
 {
    mFilename = filename;
    mWorld.setFilename(filename);

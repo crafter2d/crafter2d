@@ -4,10 +4,11 @@
 
 #include "../compilestep.h"
 
-#include <string>
 #include <vector>
 #include <stack>
 #include <map>
+
+#include "core/string/string.h"
 
 #include "script/ast/asttype.h"
 #include "script/scope/scopestack.h"
@@ -84,7 +85,7 @@ private:
    };
 
    typedef std::stack<LoopFlow> LoopFlowStack;
-   typedef std::map<std::string, const ASTLocalVariable*> VariableMap;
+   typedef std::map<String, const ASTLocalVariable*> VariableMap;
    typedef std::vector<Inst> InstructionList;
 
    enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 5, ePostDecr = 6, eKeep = 8 };
@@ -94,7 +95,7 @@ private:
    void addLabel(int id);
 
    int allocateLabel();
-   int allocateLiteral(const std::string& value);
+   int allocateLiteral(const String& value);
 
    void convertLabels();
    void removeLabels();

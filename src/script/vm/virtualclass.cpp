@@ -35,27 +35,27 @@ VirtualClass::~VirtualClass()
 
 // - Get/set
    
-const std::string& VirtualClass::getName() const
+const String& VirtualClass::getName() const
 {
    return mName;
 }
 
-void VirtualClass::setName(const std::string& name)
+void VirtualClass::setName(const String& name)
 {
    mName = name;
 }
 
 bool VirtualClass::hasBaseName() const
 {
-   return !mBaseName.empty();
+   return !mBaseName.isEmpty();
 }
 
-const std::string& VirtualClass::getBaseName() const
+const String& VirtualClass::getBaseName() const
 {
    return mBaseName;
 }
 
-void VirtualClass::setBaseName(const std::string& name)
+void VirtualClass::setBaseName(const String& name)
 {
    mBaseName = name;
 }
@@ -163,7 +163,7 @@ bool VirtualClass::canInstantiate() const
    return (mFlags & eInstantiatable) == eInstantiatable;
 }
 
-std::string VirtualClass::getNativeClassName() const
+String VirtualClass::getNativeClassName() const
 {
    if ( isNative() )
    {
@@ -171,7 +171,7 @@ std::string VirtualClass::getNativeClassName() const
       return mpDefinition->getName();
    }
 
-   return hasBaseClass() ? getBaseClass().getNativeClassName() : "";
+   return hasBaseClass() ? getBaseClass().getNativeClassName() : String("");
 }
    
 bool VirtualClass::isBaseClass(const VirtualClass& base) const
@@ -212,11 +212,11 @@ const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
 
 const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
 {
-   std::string name = mName;
-   std::size_t pos = mName.find('.');
-   if ( pos != std::string::npos )
+   String name = mName;
+   int pos = mName.indexOf('.');
+   if ( pos != -1 )
    {
-      name.erase(0, pos + 1);
+      name.remove(0, pos + 1);
    }
 
    return mVTable.findByName(name);

@@ -22,11 +22,10 @@
 
 #include "core/core_base.h"
 
-#include <string>
-
 #include "filesystempaths.h" 
 
 class File;
+class String;
 
 /// \brief Abstract base class of the virtual file system.
 
@@ -40,22 +39,22 @@ public:
    virtual ~FileSystem();
 
  // query
-   bool exists(const std::string& filename) const;
+   bool exists(const String& filename) const;
 
  // operations
-   File* open(const std::string& filename, int modus) const;
+   File* open(const String& filename, int modus) const;
 
-   void addPath(const std::string& path);
-   void removePath(const std::string& path);
+   void addPath(const String& path);
+   void removePath(const String& path);
    void removeAll();
 
-   virtual bool recurseDirectory(const std::string& dir, Callback callback, void* pdata = NULL) = 0;
-   virtual bool find(const std::string& mask, Callback callback, void* pdata = NULL) = 0;
+   virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL) = 0;
+   virtual bool find(const String& mask, Callback callback, void* pdata = NULL) = 0;
 
 protected:
    FileSystem();
 
-   std::string expand(const std::string& path) const;
+   String expand(const String& path) const;
       
 private:
   

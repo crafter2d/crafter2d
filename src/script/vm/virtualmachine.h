@@ -36,6 +36,7 @@
 #include "virtualcontext.h"
 #include "virtualstack.h"
 
+class String;
 class Variant;
 class VirtualArrayException;
 class VirtualInstruction;
@@ -43,7 +44,6 @@ class VirtualFunctionTableEntry;
 class VirtualException;
 class VirtualObject;
 class VirtualStackAccessor;
-class VirtualString;
 
 class SCRIPT_API VirtualMachine
 {
@@ -57,37 +57,36 @@ public:
    void initialize();
    
  // loading
-   bool loadClass(const std::string& classname);
+   bool loadClass(const String& classname);
 
-   void registerCallback(const std::string& name, callbackfnc callback);
+   void registerCallback(const String& name, callbackfnc callback);
 
  // stack access
    int popInt();
    double popReal();
    bool popBoolean();
-   std::string popString();
+   String popString();
 
    void push(int value);
    void push(double value);
    void push(bool value);
-   void push(const std::string& value);
+   void push(const String& value);
    void push(VirtualObject& object);
 
    void addRootObject(VirtualObject& object);
 
  // execution
-   bool execute(const std::string& classname, const std::string& function);
-   void execute(VirtualObject& object, const std::string& function);
+   bool execute(const String& classname, const String& function);
+   void execute(VirtualObject& object, const String& function);
 
  // exception handling
    String buildCallStack() const;
    void displayException(VirtualException& exception);
 
  // object instantation
-   VirtualObject*    instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
-   VirtualObject*    instantiateNative(const std::string& classname, void* pobject, bool owned = true);
+   VirtualObject*    instantiate(const String& classname, int constructor = -1, void* pobject = NULL);
+   VirtualObject*    instantiateNative(const String& classname, void* pobject, bool owned = true);
    VirtualArray*     instantiateArray();
-   VirtualString&    instantiateString();
 
  // observing
    VirtualObject*    lookupNative(void* pobject);
@@ -147,7 +146,7 @@ private:
 
    typedef std::vector<VirtualObject*> Objects;
    typedef std::stack<VirtualCall> CallStack;
-   typedef std::map<std::string, callbackfnc> Natives;
+   typedef std::map<String, callbackfnc> Natives;
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
@@ -158,11 +157,11 @@ private:
    
  // exception
    VirtualObject& instantiateArrayException(const VirtualArrayException& e);
-   void           throwException(const std::string& exceptionname, const String& reason);
+   void           throwException(const String& exceptionname, const String& reason);
    bool           handleException(VirtualException* pexception);
 
  // class loading
-   VirtualClass* doLoadClass(const std::string& classname);
+   VirtualClass* doLoadClass(const String& classname);
    void          classLoaded(VirtualClass* pclass);
    void          createClass(const VirtualClass& aclass);
 

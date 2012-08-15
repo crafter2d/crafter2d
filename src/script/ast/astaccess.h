@@ -2,7 +2,7 @@
 #ifndef AST_ACCESS_H_
 #define AST_ACCESS_H_
 
-#include <string>
+#include "core/string/string.h"
 
 #include "astexpressionpart.h"
 #include "asttypelist.h"
@@ -29,8 +29,8 @@ public:
    virtual ~ASTAccess();
 
  // get/set
-   const std::string& getName() const;
-   void               setName(const std::string& name);
+   const String& getName() const;
+   void          setName(const String& name);
 
    Kind getKind() const;
    void setKind(Kind kind);
@@ -69,7 +69,7 @@ public:
    ACCEPT;
 
 private:
-   std::string mName;
+   String mName;
    Kind        mKind;
    VarAccess   mVarAccess;
 

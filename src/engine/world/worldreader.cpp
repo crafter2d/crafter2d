@@ -36,7 +36,7 @@ WorldReader::~WorldReader()
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-bool WorldReader::read(World& world, const std::string& filename)
+bool WorldReader::read(World& world, const String& filename)
 {
    AbstractWorldVersionReader* preader = NULL;
 

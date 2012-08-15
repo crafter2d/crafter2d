@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE const std::string& AntlrException::getMessage() const
+INLINE const String& AntlrException::getMessage() const
 {
    return mMessage;
 }

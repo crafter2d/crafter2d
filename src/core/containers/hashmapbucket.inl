@@ -28,6 +28,12 @@ void HashMapBucket<K,E>::setElement(E& element)
 }
 
 template <typename K, class E>
+bool HashMapBucket<K,E>::hasNext() const
+{
+   return mpNext != NULL;
+}
+
+template <typename K, class E>
 HashMapBucket<K,E>* HashMapBucket<K,E>::getNext()
 {
    return mpNext;

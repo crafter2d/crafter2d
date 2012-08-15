@@ -29,7 +29,7 @@
 #include "process.h"
 
 // static
-const std::string AIController::smFunc("updateAI");
+const String AIController::smFunc("updateAI");
 
 AIController::AIController(Process& process):
    Controller(),

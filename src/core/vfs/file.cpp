@@ -20,11 +20,12 @@
 #include "file.h"
 
 #include "core/defines.h"
+#include "core/string/string.h"
 
 #include "buffer.h"
 
 // static 
-std::string File::concat(const std::string& path, const std::string& filename)
+String File::concat(const String& path, const String& filename)
 {
    bool has = path[path.length()-1] == '/' || path[path.length()-1] == '\\'
            || filename[0] == '/' || filename[0] == '\\';
@@ -36,17 +37,17 @@ std::string File::concat(const std::string& path, const std::string& filename)
 }
 
 // static
-std::string File::extractPath(const std::string& filepath)
+String File::extractPath(const String& filepath)
 {
-   std::size_t pos = filepath.rfind('/');
-   if ( pos == std::string::npos )
+   int pos = filepath.lastIndexOf('/');
+   if ( pos == -1 )
    {
-      pos = filepath.rfind('\\');
+      pos = filepath.lastIndexOf('\\');
    }
 
-   if ( pos != std::string::npos )
+   if ( pos != -1 )
    {
-      return filepath.substr(0, pos);
+      return filepath.subStr(0, pos);
    }
 
    return "";
@@ -73,7 +74,7 @@ void File::setBuffer(Buffer* pbuffer)
    mpBuffer = pbuffer;
 }
 
-bool File::open(const std::string& filename, int modus)
+bool File::open(const String& filename, int modus)
 {
    if ( virOpen(filename, modus) )
    {
@@ -102,9 +103,9 @@ int File::write(void* ptr, int size)
    return getBuffer().write(ptr, size);
 }
 
-int File::write(const std::string& text)
+int File::write(const String& text)
 {
-   return getBuffer().write((void*)text.c_str(), text.length());
+   return getBuffer().write((void*)text.getBuffer(), text.length());
 }
 
 char File::getc()
@@ -136,7 +137,7 @@ int File::size()
    return getBuffer().size();
 }
 
-bool File::virOpen(const std::string& , int)
+bool File::virOpen(const String& , int)
 {
    PURE_VIRTUAL
    return false;

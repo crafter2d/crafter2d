@@ -27,6 +27,7 @@
 #include "core/smartptr/autoptr.h"
 #include "core/streams/arraystream.h"
 #include "core/streams/bufferedstream.h"
+#include "core/string/string.h"
 #include "core/containers/listiterator.h"
 #include "core/log/log.h"
 #include "core/system/timer.h"
@@ -113,7 +114,7 @@ bool NetConnection::listen(int port)
 /// \fn NetConnection::connect(const std::string& server, int port)
 /// \brief Set up this connection for communication with a server.
 /// \returns clientid of remote connection
-int NetConnection::connect(const std::string& serverName, int port)
+int NetConnection::connect(const String& serverName, int port)
 {
    int clientid = -1;
 

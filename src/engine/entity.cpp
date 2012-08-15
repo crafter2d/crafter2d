@@ -53,7 +53,7 @@ Entity::~Entity()
 /// \fn SceneObject::setName(const char* newName)
 /// \brief Sets the name of this object.
 /// \param n the new name for this object
-void Entity::setName(const std::string& name)
+void Entity::setName(const String& name)
 {
    if ( name != mName )
    {

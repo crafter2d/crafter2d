@@ -34,7 +34,7 @@ CompileException::~CompileException()
 
 // - Query
    
-std::string CompileException::asString() const
+String CompileException::asString() const
 {
    PURE_VIRTUAL;
    return "";

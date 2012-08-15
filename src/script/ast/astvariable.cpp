@@ -21,12 +21,12 @@ ASTVariable::~ASTVariable()
 
 // - Get/set
 
-const std::string& ASTVariable::getName() const
+const String& ASTVariable::getName() const
 {
    return mName;
 }
 
-void ASTVariable::setName(const std::string& name)
+void ASTVariable::setName(const String& name)
 {
    mName = name;
 }

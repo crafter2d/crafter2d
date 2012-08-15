@@ -20,8 +20,7 @@
 #ifndef WORDREADER_H
 #define WORDREADER_H
 
-#include <string>
-
+class String;
 class World;
 
 class WorldReader
@@ -31,7 +30,7 @@ public:
     ~WorldReader();
 
  // operations
-    bool read(World& world, const std::string& filename);
+    bool read(World& world, const String& filename);
 };
 
 #endif // WORDREADER_H

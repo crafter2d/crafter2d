@@ -21,7 +21,6 @@
 #define _PROCESS_H_
 
 #include <map>
-#include <string>
 
 #include "engine/engine_base.h"
 #include "engine/script/scriptmanager.h"
@@ -35,6 +34,7 @@ class ActionMap;
 class DataStream;
 class NetEvent;
 class Script;
+class String;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -47,7 +47,7 @@ public:
    explicit       Process();
    virtual        ~Process() = 0;
 
-   virtual bool   create(const std::string& classname);
+   virtual bool   create(const String& classname);
    virtual bool   destroy();
    virtual void   update (float delta);
 

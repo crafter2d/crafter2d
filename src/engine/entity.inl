@@ -58,37 +58,37 @@ INLINE Entities& Entity::getChildren()
 
 INLINE bool Entity::hasFilename() const
 {
-   return !mXmlFile.empty();
+   return !mXmlFile.isEmpty();
 }
 
-INLINE const std::string& Entity::getFilename() const
+INLINE const String& Entity::getFilename() const
 {
    return mXmlFile;
 }
 
-INLINE void Entity::setFilename(const std::string& filename)
+INLINE void Entity::setFilename(const String& filename)
 {
    mXmlFile = filename;
 }
 
 INLINE bool Entity::hasName() const
 {
-   return !mName.empty();
+   return !mName.isEmpty();
 }
 
 /// \fn SceneObject::getName()
 /// \brief Returns the name of this object.
-INLINE const std::string& Entity::getName() const
+INLINE const String& Entity::getName() const
 {
    return mName;
 }
 
-const std::string& Entity::getClassName() const
+const String& Entity::getClassName() const
 {
    return mClassName;
 }
 
-void Entity::setClassName(const std::string& classname)
+void Entity::setClassName(const String& classname)
 {
    mClassName = classname;
 }

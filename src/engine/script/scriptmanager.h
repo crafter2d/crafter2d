@@ -25,12 +25,12 @@
 #include "engine/engine_base.h"
 
 #include <list>
-#include <string>
 #include <vector>
 
 #include "script/vm/virtualmachine.h"
 
 class Script;
+class String;
 class VirtualObject;
 
 /**
@@ -93,10 +93,10 @@ public:
    void                    destroy();
    
  // loading
-   Script*                 load(const std::string& classname, void* pobject, bool owned);
+   Script*                 load(const String& classname, void* pobject, bool owned);
    
  // execution
-   bool                    executeScript(const std::string& classname, const std::string& function);
+   bool                    executeScript(const String& classname, const String& function);
    
  // operations
    void                    addRootObject(VirtualObject& object);

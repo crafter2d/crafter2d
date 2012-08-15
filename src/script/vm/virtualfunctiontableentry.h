@@ -2,7 +2,7 @@
 #ifndef VIRTUAL_FUNCTION_TABLE_ENTRY_H_
 #define VIRTUAL_FUNCTION_TABLE_ENTRY_H_
 
-#include <string>
+#include "core/string/string.h"
 
 class VirtualFunctionTableEntry
 {
@@ -29,11 +29,11 @@ public:
       return new VirtualFunctionTableEntry(*this);
    }
 
-   std::string mName;
-   int         mInstruction;
-   int         mOriginalInstruction;
-   int         mArguments;
-   int         mInterface;
+   String mName;
+   int    mInstruction;
+   int    mOriginalInstruction;
+   int    mArguments;
+   int    mInterface;
 };
 
 #endif // VIRTUAL_FUNCTION_TABLE_ENTRY_H_

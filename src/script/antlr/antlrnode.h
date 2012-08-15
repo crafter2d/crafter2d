@@ -2,7 +2,7 @@
 #ifndef ANTLR_NODE_H_
 #define ANTLR_NODE_H_
 
-#include <string>
+#include "core/string/string.h"
 
 struct ANTLR3_BASE_TREE_struct;
 
@@ -20,7 +20,7 @@ public:
    int getLine() const;
    int getPosition() const;
 
-   std::string toString() const;
+   String toString() const;
    int getType() const;
 
 private:

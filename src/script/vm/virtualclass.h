@@ -4,7 +4,7 @@
 
 #include "script/script_base.h"
 
-#include <string>
+#include "core/string/string.h"
 
 #include "virtualinstructiontable.h"
 #include "virtualfunctiontable.h"
@@ -29,12 +29,12 @@ public:
    ~VirtualClass();
 
  // get/set
-   const std::string& getName() const;
-   void               setName(const std::string& name);
+   const String& getName() const;
+   void               setName(const String& name);
 
    bool               hasBaseName() const;
-   const std::string& getBaseName() const;
-   void               setBaseName(const std::string& name);
+   const String& getBaseName() const;
+   void               setBaseName(const String& name);
 
    bool                hasBaseClass() const;
    const VirtualClass& getBaseClass() const;
@@ -65,7 +65,7 @@ public:
    bool isNative() const;
    bool canInstantiate() const;
 
-   std::string getNativeClassName() const;
+   String getNativeClassName() const;
 
    bool isBaseClass(const VirtualClass& base) const;
    bool implements(const VirtualClass& interfce) const;
@@ -85,8 +85,8 @@ public:
    void offsetCode(int offset);
    
 private:
-   std::string             mName;
-   std::string             mBaseName;
+   String                  mName;
+   String                  mBaseName;
    const VirtualClass*     mpBaseClass;
    ASTClass*               mpDefinition;
    VirtualFunctionTable    mVTable;

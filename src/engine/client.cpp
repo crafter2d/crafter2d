@@ -78,7 +78,7 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create(const std::string& classname)
+bool Client::create(const String& classname)
 {
    bool success = Process::create(classname);
    if ( success )
@@ -129,7 +129,7 @@ bool Client::destroy()
    return Process::destroy();
 }
 
-bool Client::connect(const char* server, int port)
+bool Client::connect(const String& server, int port)
 {
    // setup connection to the server
    mServerId = conn.connect(server, port);

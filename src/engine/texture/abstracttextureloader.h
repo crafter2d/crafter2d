@@ -20,11 +20,10 @@
 #ifndef ABSTRACT_TEXTURE_LOADER_H_
 #define ABSTRACT_TEXTURE_LOADER_H_
 
-#include <string>
-
 #include "textureinfo.h"
 
 class File;
+class String;
 
 class AbstractTextureLoader
 {
@@ -34,7 +33,7 @@ public:
 
    const TextureInfo&   getTextureInfo() const;
 
-   bool load(const std::string& filename);
+   bool load(const String& filename);
 
 protected:
    virtual bool virLoad(File& file, TextureInfo& info) = 0;

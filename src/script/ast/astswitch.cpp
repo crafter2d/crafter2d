@@ -3,6 +3,7 @@
 
 #include <sstream>
 
+#include "core/conv/numberconverter.h"
 #include "core/defines.h"
 
 #include "script/compiler/compilecontext.h"
@@ -134,9 +135,10 @@ void ASTSwitch::validateCaseTypes(CompileContext& context)
       const ASTCase& ast = dynamic_cast<const ASTCase&>(cases[index]);
       if ( ast.isCase() && !mpType->greater(ast.getType()) )
       {
-         std::stringstream ss;
-         ss << "Case " << index << " should be of type " << mpType->toString();
-         context.getLog().error(ss.str());
+         String number;
+         String ss;
+         ss = String("Case ") + NumberConverter::getInstance().format(number, index) + String(" should be of type ") + mpType->toString();
+         context.getLog().error(ss);
       }
    }
 }

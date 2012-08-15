@@ -36,7 +36,7 @@ Scope* ScopeStack::pop()
 
 // search
    
-ScopeVariable* ScopeStack::find(const std::string& name)
+ScopeVariable* ScopeStack::find(const String& name)
 {
    for ( int index = mScopes.size() - 1; index >= 0; index-- )
    {

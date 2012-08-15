@@ -20,7 +20,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <string>
+#include "core/string/string.h"
 
 #include "net/netobject.h"
 
@@ -40,24 +40,24 @@ public:
    virtual ~Entity() = 0;
 
  // get/set
-   uint                    getId() const;
-   void                    setId(uint id);
+   uint           getId() const;
+   void           setId(uint id);
 
-   bool                    hasParent() const;
-   const Entity&           getParent() const;
-         Entity&           getParent();
-   void                    setParent(Entity& parent);
+   bool           hasParent() const;
+   const Entity&  getParent() const;
+         Entity&  getParent();
+   void           setParent(Entity& parent);
 
-   bool                    hasFilename() const;
-   const std::string&      getFilename() const;
-   void                    setFilename(const std::string& filename);
+   bool           hasFilename() const;
+   const String&  getFilename() const;
+   void           setFilename(const String& filename);
 
-   bool                    hasName() const;
-   const std::string&      getName() const;
-   void                    setName(const std::string& name);
+   bool           hasName() const;
+   const String&  getName() const;
+   void           setName(const String& name);
 
-   const std::string&      getClassName() const;
-   void                    setClassName(const std::string& classname);
+   const String&  getClassName() const;
+   void           setClassName(const String& classname);
 
  // operations
    virtual void destroy();
@@ -88,12 +88,12 @@ protected:
 
 private:
 
-   Id                mId;
-   Entity*           mpParent;
-   Entities          mChildren;
-   std::string       mName;
-   std::string       mXmlFile;
-   std::string       mClassName;
+   Id           mId;
+   Entity*      mpParent;
+   Entities     mChildren;
+   String       mName;
+   String       mXmlFile;
+   String       mClassName;
 };
 
 #ifdef JENGINE_INLINE

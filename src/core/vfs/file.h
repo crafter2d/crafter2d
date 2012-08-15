@@ -23,9 +23,9 @@
 #include "core/core_base.h"
 
 #include <stdio.h>
-#include <string>
 
 class Buffer;
+class String;
 
 /**
    @author Jeroen Broekhuizen <jeroen@jengine.homedns.org>
@@ -38,20 +38,20 @@ public:
                EBinary = 4,
                EText = 8 };
 
-   static std::string concat(const std::string& path, const std::string& filename);
-   static std::string extractPath(const std::string& filepath);
-   static bool        exists(const std::string& filepath);
+   static String concat(const String& path, const String& filename);
+   static String extractPath(const String& filepath);
+   static bool   exists(const String& filepath);
 
    File();
    virtual ~File();
 
-   bool open(const std::string& filename, int modus = ERead | EBinary);
+   bool open(const String& filename, int modus = ERead | EBinary);
    void close();
 
  // reading
    int  read(void* ptr, int size);
    int  write(void* ptr, int size);
-   int  write(const std::string& text);
+   int  write(const String& text);
    char getc();
 
  // search & positioning
@@ -67,7 +67,7 @@ protected:
    Buffer&  getBuffer();
    void     setBuffer(Buffer* pbuffer);
 
-   virtual bool   virOpen(const std::string& filename, int modus) = 0;
+   virtual bool   virOpen(const String& filename, int modus) = 0;
    virtual void   virClose();
 
 private:

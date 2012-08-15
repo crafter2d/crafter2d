@@ -27,12 +27,12 @@ ASTAccess::~ASTAccess()
 
 // - Get/set
    
-const std::string& ASTAccess::getName() const
+const String& ASTAccess::getName() const
 {
    return mName;
 }
 
-void ASTAccess::setName(const std::string& name)
+void ASTAccess::setName(const String& name)
 {
    mName = name;
 }

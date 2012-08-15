@@ -12,7 +12,7 @@ ASTTypeVariables::ASTTypeVariables():
 
 // - Query
 
-bool ASTTypeVariables::contains(const std::string& name) const
+bool ASTTypeVariables::contains(const String& name) const
 {
    TypeVariableMap::const_iterator it = mTypeVariables.begin();
    for ( ; it != mTypeVariables.end(); it++ )
@@ -56,7 +56,7 @@ void ASTTypeVariables::clear()
 
 // - Search
    
-const ASTTypeVariable* ASTTypeVariables::find(const std::string& id) const
+const ASTTypeVariable* ASTTypeVariables::find(const String& id) const
 {
    TypeVariableMap::const_iterator it = mTypeVariables.find(id);
    return it != mTypeVariables.end() ? it->second : NULL;

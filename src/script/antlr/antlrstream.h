@@ -2,8 +2,6 @@
 #ifndef ANTLR_STREAM_H_
 #define ANTLR_STREAM_H_
 
-#include <string>
-
 class String;
 
 struct ANTLR3_INPUT_STREAM_struct;
@@ -11,7 +9,7 @@ struct ANTLR3_INPUT_STREAM_struct;
 class AntlrStream
 {
 public:
-   static AntlrStream* fromFile(const std::string& filename);
+   static AntlrStream* fromFile(const String& filename);
    static AntlrStream* fromString(const String& code);
 
    ~AntlrStream();

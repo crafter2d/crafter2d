@@ -30,22 +30,22 @@
 #include "compressedfile.h"
 #include "stdiofile.h"
 
-void tokenize(std::vector<std::string>& tokens, const std::string& str, char delimitor)
+void tokenize(std::vector<String>& tokens, const String& str, char delimitor)
 {
-   std::size_t start = 0;
-   std::size_t pos = str.find(delimitor);
+   int start = 0;
+   int pos = str.indexOf(delimitor);
 
-   while ( pos != std::string::npos )
+   while ( pos != -1 )
    {
-      std::string token = str.substr(start, pos - start);
+      String token = str.subStr(start, pos - start);
       tokens.push_back(token);
 
       start = pos + 1;
-      pos = str.find(delimitor, start);
+      pos = str.indexOf(delimitor, start);
    }
 
 
-   std::string token = str.substr(start, str.size() - start);
+   String token = str.subStr(start, str.length() - start);
    tokens.push_back(token);
 }
 
@@ -70,12 +70,12 @@ FileSystem::~FileSystem()
 {
 }
 
-void FileSystem::addPath(const std::string& path)
+void FileSystem::addPath(const String& path)
 {
    mPaths.add(path);
 }
 
-void FileSystem::removePath(const std::string& path)
+void FileSystem::removePath(const String& path)
 {
    mPaths.remove(path);
 }
@@ -85,7 +85,7 @@ void FileSystem::removeAll()
    mPaths.removeAll();
 }
 
-bool FileSystem::exists(const std::string& filename) const
+bool FileSystem::exists(const String& filename) const
 {
    for ( int index = 0; index < mPaths.size(); index++ )
    {
@@ -99,7 +99,7 @@ bool FileSystem::exists(const std::string& filename) const
    return false;
 }
 
-File* FileSystem::open(const std::string& filename, int modus) const
+File* FileSystem::open(const String& filename, int modus) const
 {
    for ( int index = 0; index < mPaths.size(); index++ )
    {
@@ -114,7 +114,7 @@ File* FileSystem::open(const std::string& filename, int modus) const
    return NULL;
 }
 
-typedef std::vector<std::string> Tokens;
+typedef std::vector<String> Tokens;
 
 static void strip(Tokens& tokens)
 {
@@ -122,7 +122,7 @@ static void strip(Tokens& tokens)
    Tokens::iterator it = tokens.begin();
    while ( it != tokens.end() )
    {
-      const std::string& token = *it;
+      const String& token = *it;
       if ( token.compare("..") == 0 )
       {
          count++;
@@ -132,7 +132,7 @@ static void strip(Tokens& tokens)
    tokens.erase(tokens.begin(), tokens.begin() + count);
 }
 
-std::string FileSystem::expand(const std::string& path) const
+String FileSystem::expand(const String& path) const
 {
    Tokens tokens;
    tokenize(tokens, path, '/');
@@ -141,12 +141,12 @@ std::string FileSystem::expand(const std::string& path) const
    Tokens::iterator it = tokens.begin();
    while ( it != tokens.end() )
    {
-      //const std::string& token = (*it);
+      //const String& token = (*it);
       Tokens::iterator next = it + 1;
 
       if ( next != tokens.end() )
       {
-         const std::string& s = (*next);
+         const String& s = (*next);
          if ( s.compare("..") == 0 )
          {
             tokens.erase(it,next);

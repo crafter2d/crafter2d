@@ -23,8 +23,10 @@
 #endif
 
 #include <tinyxml.h>
+#include <string>
 
 #include "core/log/log.h"
+#include "core/string/string.h"
 
 #include "tile.h"
 
@@ -57,16 +59,16 @@ TileSet::TileSet():
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-bool TileSet::create(const std::string& filename)
+bool TileSet::create(const String& filename)
 {
    int thisTile, val;
    Log& log = Log::getInstance();
 
-   std::string path = "../images/" + filename;
+   std::string path = "../images/" + filename.toStdString();
    TiXmlDocument doc(path);
    if ( !doc.LoadFile() )
    {
-      log.error("TileSet.create: can not load '%s'", filename.c_str());
+      log.error("TileSet.create: can not load '%s'", path.c_str());
 		return false;
 	}
 
@@ -74,14 +76,14 @@ bool TileSet::create(const std::string& filename)
    TiXmlElement* set = (TiXmlElement*)doc.FirstChild("tileset");
    if ( set == NULL )
    {
-      log.error("TileSet.create: %s is not an tileset information file.", filename.c_str());
+      log.error("TileSet.create: %s is not an tileset information file.", path.c_str());
 		return false;
    }
 
    set->QueryIntAttribute("count", &mTileCount);
    if ( mTileCount <= 0 )
    {
-      log.error("TileSet.create: %s contains invalid tileset size.", filename.c_str());
+      log.error("TileSet.create: %s contains invalid tileset size.", path.c_str());
       return false;
    }
    mTileCount ++; // tile engine starts at 1
@@ -91,7 +93,7 @@ bool TileSet::create(const std::string& filename)
 
    if ( mTileWidth == 0 || mTileHeight == 0 )
    {
-      log.error("TileSet.create: invalid tile dimensions (in file %s)", filename.c_str());
+      log.error("TileSet.create: invalid tile dimensions (in file %s)", path.c_str());
       return false;
    }
 

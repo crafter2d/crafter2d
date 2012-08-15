@@ -20,6 +20,7 @@
 #include "resourcemanager.h"
 
 #include "core/smartptr/autoptr.h"
+#include "core/containers/hashinterface.h"
 
 #include "engine/ui/font.h"
 
@@ -31,7 +32,7 @@ ResourceManager::ResourceManager():
    mFreeTypeLib(NULL),
    mResources()
 {
-   mResources.create(256);
+   mResources.setHashFunction(HashInterface::hashString);
    initialize();
 }
 
@@ -63,9 +64,9 @@ void ResourceManager::destroy()
 
 /// \fn ResourceManager::loadTexture (const std::string& file)
 /// \brief Returns a texture from a the given file.
-TexturePtr ResourceManager::getTexture(const std::string& file)
+TexturePtr ResourceManager::getTexture(const String& file)
 {
-	ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(file));
+	ResourceHandle* phandle = *mResources.get(file);
 	if ( phandle == NULL )
    {
       AutoPtr<Texture> texture = new Texture();
@@ -73,15 +74,15 @@ TexturePtr ResourceManager::getTexture(const std::string& file)
          return TexturePtr();
 
       phandle = new ResourceHandle(*this, texture.release());
-		mResources.insert(file, static_cast<void*>(phandle));
+		mResources.insert(file, phandle);
 	}
 
    return TexturePtr(phandle);
 }
 
-FontPtr ResourceManager::getFont(const std::string& name, int size)
+FontPtr ResourceManager::getFont(const String& name, int size)
 {
-   ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(name));
+   ResourceHandle* phandle = *mResources.get(name);
 	if ( phandle == NULL )
    {
       AutoPtr<UIFont> font = new UIFont();

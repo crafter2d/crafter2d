@@ -161,7 +161,7 @@ int CodeGeneratorVisitor::allocateLabel()
    return mLabel++;
 }
 
-int CodeGeneratorVisitor::allocateLiteral(const std::string& value)
+int CodeGeneratorVisitor::allocateLiteral(const String& value)
 {
    Variant variant(value);
 
@@ -250,7 +250,7 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       if ( ast.isConstructor() )
       {
          // call the init method -> set the native object
-         std::string fncname = mpClass->getName() + "_init";
+         String fncname = mpClass->getName() + "_init";
          int resource = allocateLiteral(fncname);
 
          addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
@@ -265,7 +265,7 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       }
       else
       {
-         std::string fncname = ast.getClass().getName() + "_" + ast.getName();
+         String fncname = ast.getClass().getName() + "_" + ast.getName();
          int resource = allocateLiteral(fncname);
 
          // the arguments of this function are re-used by the native function,

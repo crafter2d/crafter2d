@@ -39,12 +39,12 @@ ASTFunction::~ASTFunction()
 
 // - Get/set
 
-const std::string& ASTFunction::getName() const
+const String& ASTFunction::getName() const
 {
    return mName;
 }
 
-void ASTFunction::setName(const std::string& name)
+void ASTFunction::setName(const String& name)
 {
    mName = name;
 }
@@ -218,7 +218,7 @@ const ASTNodes& ASTFunction::getArguments() const
 
 // - Search
    
-const ASTFunctionArgument& ASTFunction::resolveArgument(const std::string& name) const
+const ASTFunctionArgument& ASTFunction::resolveArgument(const String& name) const
 {
    for ( int index = 0; index < getChildren().size(); index++ )
    {

@@ -47,18 +47,18 @@ void OOCheckVisitor::visit(ASTClass& ast)
       {
          if ( !ast.getModifiers().isAbstract() )
          {
-            mContext.getLog().error("Class " + mpClass->getName() + " must be abstract.");
+            mContext.getLog().error(String("Class ") + mpClass->getName() + " must be abstract.");
          }
       }
       
       if ( ast.hasBaseClass() && ast.getBaseClass().getModifiers().isFinal() )
       {
-         mContext.getLog().error("Class "+ ast.getName() + " can not extend final class " + ast.getBaseClass().getName());
+         mContext.getLog().error(String("Class ") + ast.getName() + " can not extend final class " + ast.getBaseClass().getName());
       }
       
       if ( ast.getModifiers().isAbstract() )
       {
-         mContext.getLog().warning("Class " + ast.getName() + " is marked abstract without abstract functions.");
+         mContext.getLog().warning(String("Class ") + ast.getName() + " is marked abstract without abstract functions.");
       }
    }
 
@@ -91,8 +91,8 @@ void OOCheckVisitor::visit(ASTFunction& ast)
    {
       if ( !hasSuperCall(ast) )
       {
-         std::string constructor = mpClass->getFullName() + "." + ast.getName() + "(" + ast.getSignature().toString() + ")";
-         mContext.getLog().error("Constructor " + constructor + " must call super.");
+         String constructor = mpClass->getFullName() + "." + ast.getName() + "(" + ast.getSignature().toString() + ")";
+         mContext.getLog().error((String("Constructor ") + constructor + " must call super.").toStdString());
       }
    }
    
@@ -254,7 +254,7 @@ void OOCheckVisitor::visit(ASTExpression& ast)
       // ensure the variable is not final
       if ( mpVariable != NULL && mpVariable->getModifiers().isFinal() )
       {
-         mContext.getLog().error("Can not assign a value to final variable " + mpVariable->getName());
+         mContext.getLog().error((String("Can not assign a value to final variable ") + mpVariable->getName()).toStdString());
       }
 
       mpCurrentType = NULL;
@@ -312,14 +312,14 @@ void OOCheckVisitor::visit(ASTAccess& ast)
             {
                if ( !function.getModifiers().isPublic() )
                {
-                  mContext.getLog().error("Method " + mpCurrentType->getObjectClass().getName() + "." + function.getName() + " is not accessible.");
+                  mContext.getLog().error(String("Method ") + mpCurrentType->getObjectClass().getName() + "." + function.getName() + " is not accessible.");
                }
             }
             else
             {
                if ( function.getModifiers().isPrivate() && !mpClass->isLocal(function) )
                {
-                  mContext.getLog().error("Can not access private function " + function.getName());
+                  mContext.getLog().error(String("Can not access private function ") + function.getName());
                }
             }
          }
@@ -334,7 +334,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
 
                if ( !var.getModifiers().isPublic() )
                {
-                  mContext.getLog().error("Can not access private variable " + ast.getName());
+                  mContext.getLog().error(String("Can not access private variable ") + ast.getName());
                }
 
                mpVariable = &var;
@@ -352,7 +352,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
                      {
                         if ( pfield->getVariable().getModifiers().isPrivate() )
                         {
-                           mContext.getLog().error("Can not access private variable " + ast.getName());
+                           mContext.getLog().error(String("Can not access private variable ") + ast.getName());
                         }
 
                         mpVariable = &pfield->getVariable();
@@ -444,7 +444,7 @@ void OOCheckVisitor::validateClass(const ASTClass& aclass)
 
          if ( basefunction.getModifiers().isAbstract() && function.getModifiers().isAbstract() )
          {
-            mContext.getLog().error("Function " + aclass.getName() + "." + function.getName() + " must be implemented.");
+            mContext.getLog().error(String("Function ") + aclass.getName() + "." + function.getName() + " must be implemented.");
          }
       }
    }
@@ -471,7 +471,7 @@ void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const 
 
    if ( error )
    {
-      mContext.getLog().error("Invalid concatenation with null operator! Only == and != are supported.");
+      mContext.getLog().error(String("Invalid concatenation with null operator! Only == and != are supported."));
    }
 }
 

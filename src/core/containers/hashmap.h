@@ -29,7 +29,7 @@ template <typename K, class E>
 class HashMap
 {
 public:
-   typedef int(*HashFnc)(K key);
+   typedef unsigned int(*HashFnc)(const K& key);
 
    HashMap(int size = 256);
 
@@ -40,14 +40,19 @@ public:
 
  // query
    bool isEmpty() const;
-   bool contains(K key) const;
+   bool contains(const K& key) const;
+   E* get(const K& key);
 
    int size() const;
 
  // operations
-   void insert(K key, E& element);
+   void insert(const K& key, E& element);
    void remove(HashMapIterator<K,E>& it);
+   void remove(const K& key);
    void clear();
+
+ // searching
+   HashMapIterator<K,E> find(const K& k);
 
 private:
    friend class HashMapIterator<K,E>;

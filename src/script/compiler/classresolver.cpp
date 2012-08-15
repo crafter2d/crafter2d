@@ -21,14 +21,14 @@ const ClassResolver& ClassResolver::operator=(const ClassResolver& that)
 
 // - Operations
 
-void ClassResolver::insert(const std::string& path)
+void ClassResolver::insert(const String& path)
 {
-   std::string qualifiedpath = path;
-   if ( path.find('*') == std::string::npos )
+   String qualifiedpath = path;
+   if ( path.indexOf('*') == -1 )
    {
       // no * so replace last part with *
-      std::size_t pos = path.rfind('.');
-      if ( pos == std::string::npos )
+      int pos = path.lastIndexOf('.');
+      if ( pos == -1 )
       {
          return;
       }
@@ -41,26 +41,26 @@ void ClassResolver::insert(const std::string& path)
    mPaths.insert(qualifiedpath);
 }
 
-std::string ClassResolver::resolve(const std::string& classname) const
+String ClassResolver::resolve(const String& classname) const
 {
-   String s = String(classname.c_str()).toLower();
-   string j = s.toStdString();
+   String lowerclassname(classname);
+   lowerclassname.toLower();
 
    Paths::const_iterator it = mPaths.begin();
    for ( ; it != mPaths.end(); ++it )
    {
-      const string& path = (*it);
+      const String& path = (*it);
 
-      size_t pos = path.rfind('*');
-      if ( pos != string::npos )
+      int pos = path.lastIndexOf('*');
+      if ( pos != -1 )
       {
-         string fullclassname = path.substr(0, pos) + classname;
+         String fullclassname = path.subStr(0, pos) + classname;
          if ( checkClassExists(fullclassname) )
          {
             return fullclassname;
          }
       }
-      else if ( path.compare(j) == 0 )
+      else if ( path.compare(lowerclassname) == 0 )
       {
          return classname;
       }
@@ -69,9 +69,9 @@ std::string ClassResolver::resolve(const std::string& classname) const
    return "";
 }
 
-bool ClassResolver::checkClassExists(const string& classname) const
+bool ClassResolver::checkClassExists(const String& classname) const
 {
-   String name(classname.c_str());
+   String name(classname);
    name.replace('.', '/');
 
    return FileSystem::getInstance().exists(name.toStdString() + ".as");

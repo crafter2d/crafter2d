@@ -2,7 +2,7 @@
 #ifndef AST_PACKAGE_H_
 #define AST_PACKAGE_H_
 
-#include <string>
+#include "core/string/string.h"
 
 #include "astnode.h"
 
@@ -12,14 +12,14 @@ public:
    ASTPackage();
 
  // get/set
-   const std::string& getName() const;
-   void setName(const std::string& name);
+   const String& getName() const;
+   void          setName(const String& name);
 
  // visit
    ACCEPT;
 
 private:
-   std::string mName;
+   String mName;
 };
 
 #endif // AST_PACKAGE_H_

@@ -1,6 +1,8 @@
 
 #include "compilelog.h"
 
+#include "core/string/string.h"
+
 CompileLog::CompileLog():
    mLog(),
    mErrorCount(0)
@@ -34,6 +36,18 @@ void CompileLog::warning(const std::string& warning)
 void CompileLog::error(const std::string& error)
 {
    mLog.push_back("Error: " + error);
+
+   mErrorCount++;
+}
+
+void CompileLog::warning(const String& warning)
+{
+   mLog.push_back("Warning: " + warning.toStdString());
+}
+
+void CompileLog::error(const String& error)
+{
+   mLog.push_back("Error: " + error.toStdString());
 
    mErrorCount++;
 }

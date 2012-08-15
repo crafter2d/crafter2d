@@ -79,7 +79,7 @@ void Process::setWorld(World* pworld)
 
 // - Operations
 
-bool Process::create(const std::string& classname)
+bool Process::create(const String& classname)
 {
    mScriptManager.initialize();
    mpScript = mScriptManager.load(classname, this, false);

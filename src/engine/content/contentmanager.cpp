@@ -38,7 +38,7 @@ ContentManager::ContentManager(Process& process):
 // - Loading
 //---------------------------------
 
-Entity* ContentManager::loadEntity(const std::string& filename)
+Entity* ContentManager::loadEntity(const String& filename)
 {
    if ( !mProcess.hasWorld() )
    {
@@ -52,7 +52,7 @@ Entity* ContentManager::loadEntity(const std::string& filename)
    return loader.load(filename);
 }
 
-World* ContentManager::load(const std::string& filename)
+World* ContentManager::load(const String& filename)
 {
    AutoPtr<World> world = new World();
    if ( world.hasPointer() )

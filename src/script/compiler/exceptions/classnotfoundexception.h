@@ -20,20 +20,20 @@
 #ifndef CLASS_NOT_FOUND_EXCEPTION_H_
 #define CLASS_NOT_FOUND_EXCEPTION_H_
 
-#include <string>
+#include "core/string/string.h"
 
 #include "compileexception.h"
 
 class ClassNotFoundException : public CompileException
 {
 public:
-   explicit ClassNotFoundException(const std::string& classname);
+   explicit ClassNotFoundException(const String& classname);
 
  // query
-   virtual std::string asString() const;
+   virtual String asString() const;
 
 private:
-   std::string mClassName;
+   String mClassName;
 };
 
 #endif // CLASS_NOT_FOUND_EXCEPTION_H_

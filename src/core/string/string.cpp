@@ -27,6 +27,16 @@ String::~String()
 {
 }
 
+const char String::operator[](int index) const
+{
+   return mString[index];
+}
+
+char String::operator[](int index)
+{
+   return mString[index];
+}
+
 const String& String::operator=(const String& that)
 {
    mString = that.mString;
@@ -77,14 +87,26 @@ const String& String::operator+=(const String& that)
    return *this;
 }
 
-String String::operator+(const String& that)
+String String::operator+(const String& that) const
 {
    String result;
    result.mString = mString + that.mString;
    return result;
 }
 
+String String::operator+(char c) const
+{
+   String result;
+   result.mString = mString + c;
+   return result;
+}
+
 // - Query
+
+bool String::isEmpty() const
+{
+   return mString.isEmpty() == TRUE;
+}
 
 int String::length() const
 {
@@ -103,6 +125,18 @@ char* String::toUtf8(int& length) const
    return pdata;
 }
 
+const char* String::getBuffer() const
+{
+   return (char*) mString.getBuffer();
+}
+
+char* String::asArray(char* pdest, int capacity) const
+{
+   UErrorCode err;
+   mString.extract(pdest, capacity, NULL, err);
+   return pdest;
+}
+
 int String::compare(const String& that) const
 {
    return mString.compare(that.mString);
@@ -112,7 +146,12 @@ int String::compare(const String& that) const
 
 bool String::operator==(const String& that) const
 {
-   return mString == that.mString;
+   return (mString == that.mString) == TRUE;
+}
+
+bool String::operator!=(const String& that) const
+{
+   return (mString == that.mString) == FALSE;
 }
 
 // - Operations
@@ -135,9 +174,29 @@ const String& String::trim()
    return *this;
 }
 
-void String::replace(int original, int newtext)
+void String::append(const String& that)
+{
+   *this += that;
+}
+
+void String::setTo(const char* ptext, int length)
+{
+   mString.setTo(ptext, length);
+}
+
+void String::replace(char original, char newtext)
 {
    mString.findAndReplace(original, newtext);
+}
+
+void String::replace(int start, int length, const String& with)
+{
+   mString.replace(start, length, with.mString);
+}
+
+void String::remove(int start, int count)
+{
+   mString.remove(start, count);
 }
 
 String String::subStr(int start, int count) const
@@ -156,9 +215,14 @@ String String::unescape() const
 
 // - Searching
 
-int String::indexOf(char character)
+int String::indexOf(char character, int start) const
 {
-   return mString.indexOf(character);
+   return mString.indexOf(character, start);
+}
+
+int String::lastIndexOf(char character) const
+{
+   return mString.lastIndexOf(character);
 }
 
 // - Conversion

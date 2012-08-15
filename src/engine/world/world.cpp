@@ -47,7 +47,7 @@
 #include "worldwriter.h"
 #include "topdownworldrenderer.h"
 
-static const std::string WORLD_EXTENSION = ".jwl";
+static const String WORLD_EXTENSION = ".jwl";
 
 /// fn World::World
 /// brief Currently does nothing

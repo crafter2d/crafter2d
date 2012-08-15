@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+class String;
+
 class CompileLog
 {
 public:
@@ -20,6 +22,9 @@ public:
    void info(const std::string& info);
    void warning(const std::string& warning);
    void error(const std::string& error);
+
+   void warning(const String& warning);
+   void error(const String& error);
 
  // operations
    void clear();

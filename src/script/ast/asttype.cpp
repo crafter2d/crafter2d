@@ -11,13 +11,13 @@
 #include "asttypevariables.h"
 #include "astvisitor.h"
 
-static const std::string SInt = "int";
-static const std::string SReal = "real";
-static const std::string SChar = "char";
-static const std::string SString = "string";
-static const std::string SBool = "boolean";
-static const std::string SVoid = "void";
-static const std::string SInvalid = "<unknown>";
+static const String SInt = "int";
+static const String SReal = "real";
+static const String SChar = "char";
+static const String SString = "string";
+static const String SBool = "boolean";
+static const String SVoid = "void";
+static const String SInvalid = "<unknown>";
 
 ASTType ASTType::SVoidType(eVoid);
 
@@ -103,12 +103,12 @@ void ASTType::setKind(Kind kind)
    mKind = kind;
 }
 
-const std::string& ASTType::getObjectName() const
+const String& ASTType::getObjectName() const
 {
    return mObjectName;
 }
 
-void ASTType::setObjectName(const std::string& name)
+void ASTType::setObjectName(const String& name)
 {
    mObjectName = name;
 }
@@ -426,9 +426,9 @@ ASTType* ASTType::clone() const
 
 // - Conversion
 
-std::string ASTType::toString() const
+String ASTType::toString() const
 {
-   std::string type;
+   String type;
 
    switch ( mKind )
    {

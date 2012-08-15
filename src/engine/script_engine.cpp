@@ -70,7 +70,7 @@
 
 void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& name = accessor.getString(1);
+   const String& name = accessor.getString(1);
    int size = accessor.getInt(2);
 
    FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
@@ -79,7 +79,7 @@ void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void Process_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& name = accessor.getString(1);
+   const String& name = accessor.getString(1);
 
    TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(name));
    RETURN_CLASS_OWNED("engine.core.Texture", TexturePtr, ptexture);
@@ -139,10 +139,10 @@ void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Client, client);
 
-   std::string ip = accessor.getString(1);
+   String ip = accessor.getString(1);
    int port = accessor.getInt(2);
 
-   accessor.setResult(client.connect(ip.c_str(), port));
+   accessor.setResult(client.connect(ip, port));
 }
 
 void Client_nativeRender(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -214,7 +214,7 @@ void ContentManager_native_loadEntity(VirtualMachine& machine, VirtualStackAcces
 {
    GET_THIS(ContentManager, contentmanager);
 
-   const std::string& filename = accessor.getString(1);
+   const String& filename = accessor.getString(1);
 
    Entity* presult = contentmanager.loadEntity(filename);
    RETURN_CLASS_OWNED(presult->getClassName(), Entity, presult);
@@ -224,7 +224,7 @@ void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor
 {
    GET_THIS(ContentManager, contentmanager);
 
-   const std::string& filename = accessor.getString(1);
+   const String& filename = accessor.getString(1);
 
    World* presult = contentmanager.load(filename);
    RETURN_CLASS_OWNED("engine.game.World", World, presult);
@@ -241,7 +241,7 @@ void GameWindow_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(GameWindow, window);
 
-   const std::string& title = accessor.getString(1);
+   const String& title = accessor.getString(1);
    int width = accessor.getInt(2);
    int height = accessor.getInt(3);
    int bitdepth = accessor.getInt(4);
@@ -363,7 +363,7 @@ void Actor_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   const std::string& name = accessor.getString(1);
+   const String& name = accessor.getString(1);
 
    actor.setName(name);
 }
@@ -890,9 +890,9 @@ void ActionMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
    GET_THIS(ActionMap, map);
 
    int action = accessor.getInt(1);
-   const std::string& fnc = accessor.getString(2);
+   const String& fnc = accessor.getString(2);
 
-   map.bind(action, fnc.c_str());
+   map.bind(action, fnc);
 }
 
 void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -970,7 +970,7 @@ void EngineGraphics_drawText(VirtualMachine& machine, VirtualStackAccessor& acce
 
    float x = accessor.getInt(1);
    float y = accessor.getInt(2);
-   const std::string& text = accessor.getString(3);
+   const String& text = accessor.getString(3);
 
    graphics.drawText(x, y, text);
 }
@@ -1033,7 +1033,7 @@ void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(FontPtr, font);
 
-   const std::string& text = accessor.getString(1);
+   const String& text = accessor.getString(1);
 
    font->render(text);
 }
@@ -1042,7 +1042,7 @@ void Font_native_textWidth(VirtualMachine& machine, VirtualStackAccessor& access
 {
    GET_THIS(FontPtr, font);
 
-   const std::string& text = accessor.getString(1);
+   const String& text = accessor.getString(1);
 
    accessor.setResult(font->getTextWidth(text));
 }
@@ -1051,7 +1051,7 @@ void Font_native_textHeight(VirtualMachine& machine, VirtualStackAccessor& acces
 {
    GET_THIS(FontPtr, font);
 
-   const std::string& text = accessor.getString(1);
+   const String& text = accessor.getString(1);
 
    accessor.setResult(font->getTextHeight(text));
 }
@@ -1091,7 +1091,7 @@ void FileSystem_native_open(VirtualMachine& machine, VirtualStackAccessor& acces
 {
    GET_THIS(FileSystem, fs);
 
-   const std::string& name = accessor.getString(1);
+   const String& name = accessor.getString(1);
    int modus = accessor.getInt(2);
 
    RETURN_CLASS_OWNED("engine.io.File", File, fs.open(name, modus));

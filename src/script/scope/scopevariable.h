@@ -2,7 +2,7 @@
 #ifndef SCOPE_VARIABLE_H_
 #define SCOPE_VARIABLE_H_
 
-#include <string>
+#include "core/string/string.h"
 
 class ASTFunctionArgument;
 class ASTLocalVariable;
@@ -18,8 +18,8 @@ public:
    ~ScopeVariable();
 
  // get/set
-   const std::string& getName() const;
-   void               setName(const std::string& name);
+   const String& getName() const;
+   void          setName(const String& name);
 
    const ASTType& getType() const;
    void           setType(const ASTType* ptype);

@@ -70,7 +70,7 @@ void ScriptManager::destroy()
 
 // - Loading
 
-Script* ScriptManager::load(const std::string& classname, void* pobject, bool owned)
+Script* ScriptManager::load(const String& classname, void* pobject, bool owned)
 {
    Script* pscript = NULL;
 
@@ -92,11 +92,11 @@ void ScriptManager::addRootObject(VirtualObject& object)
    mVirtualMachine.addRootObject(object);
 }
 
-/// \fn ScriptManager::executeScript(const std::string& classname, const std::string& function)
+/// \fn ScriptManager::executeScript(const String& classname, const String& function)
 /// \brief Runs a class function once. The function must be a static function.
 /// \param classname Name of the class
 /// \param function Name of the static function to be executed
-bool ScriptManager::executeScript(const std::string& classname, const std::string& function)
+bool ScriptManager::executeScript(const String& classname, const String& function)
 {
    return mVirtualMachine.execute(classname, function);
 }

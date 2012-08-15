@@ -14,6 +14,7 @@ public:
    E&             getElement();
    void           setElement(E& element);
 
+   bool                hasNext() const;
    HashMapBucket<K,E>* getNext();
    void                setNext(HashMapBucket<K,E>* pnext);
 

@@ -4,9 +4,11 @@
 
 #include <unicode/numfmt.h>
 
+#include "core/core_base.h"
+
 class String;
 
-class NumberConverter
+class CORE_API NumberConverter
 {
 public:
    static NumberConverter& getInstance();

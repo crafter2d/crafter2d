@@ -113,9 +113,9 @@ void Signature::append(ASTType* ptype)
 
 // conversion
    
-std::string Signature::toString() const
+String Signature::toString() const
 {
-   std::string result;
+   String result;
    for ( std::size_t index = 0; index < mTypes.size(); index++ )
    {
       const ASTType* ptype = mTypes[index];

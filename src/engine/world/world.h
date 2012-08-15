@@ -20,10 +20,10 @@
 #ifndef WORLD_H_
 #define WORLD_H_
 
-#include <string>
 #include <vector>
 #include <map>
 
+#include "core/string/string.h"
 #include "core/math/vector.h"
 
 #include "engine/idmanager.h"
@@ -88,11 +88,11 @@ public:
    void           setFollowBorders(int left, int right, int top, int bottom);
    void           setObjectLayer(int layer);
 
-   const std::string&   getName() const;
-   void                 setName(const std::string& name);
+   const String&   getName() const;
+   void                 setName(const String& name);
 
-   const std::string&   getFilename() const;
-   void                 setFilename(const std::string& filename);
+   const String&   getFilename() const;
+   void                 setFilename(const String& filename);
 
    const Bound&   getBound(int index) const;
          Bound&   getBound(int index);
@@ -168,8 +168,8 @@ private:
    Bounds      bounds;
    EntityMap   mEntities;
    Observers   mObservers;
-   std::string mName;
-   std::string mFilename;
+   String mName;
+   String mFilename;
 
    SimulationFactory*     mpSimulationFactory;
    Simulator*             mpSimulator;

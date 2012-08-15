@@ -29,7 +29,7 @@
 
 #include "script/vm/virtualfunctionnotfoundexception.h"
 
-Script::Script(ScriptManager& manager, const std::string& name):
+Script::Script(ScriptManager& manager, const String& name):
    mScriptManager(manager),
    mClassName(name),
    mpObject(NULL)
@@ -51,7 +51,7 @@ void Script::setThis(VirtualObject& object)
 
 void Script::setThis(void* pthis)
 {
-   if ( !mClassName.empty() )
+   if ( !mClassName.isEmpty() )
    {
       mpObject = mScriptManager.mVirtualMachine.instantiateNative(mClassName, pthis, false);
    }
@@ -70,7 +70,7 @@ void Script::setThis(void* pthis)
 /// \brief Runs the script. You must first call prepareCall and optionaly the addParam functions
 /// to set up the function name and arguments.
 /// \returns always returns true
-bool Script::run(const std::string& function)
+bool Script::run(const String& function)
 {
    ASSERT_PTR(mpObject);
 
@@ -80,7 +80,7 @@ bool Script::run(const std::string& function)
    }
    catch ( VirtualFunctionNotFoundException* pe )
    {
-      Log::getInstance().error("Could not find function %s.%s", pe->getClassName().c_str(), pe->getFunction().c_str());
+      Log::getInstance().error("Could not find function %s.%s", pe->getClassName().getBuffer(), pe->getFunction().getBuffer());
       return false;
    }
    catch ( VirtualException* pe )

@@ -2,9 +2,9 @@
 #ifndef SCOPE_STACK_H_
 #define SCOPE_STACK_H_
 
-#include <string>
 #include <deque>
 
+class String;
 class Scope;
 class ScopeVariable;
 
@@ -25,7 +25,7 @@ public:
    Scope* pop();
 
  // search
-   ScopeVariable* find(const std::string& name);
+   ScopeVariable* find(const String& name);
 
 private:
    Scopes mScopes;

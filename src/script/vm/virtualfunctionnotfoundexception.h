@@ -22,20 +22,20 @@
 
 #include "script/script_base.h"
 
-#include <string>
+#include "core/string/string.h"
 
 class SCRIPT_API VirtualFunctionNotFoundException
 {
 public:
-   VirtualFunctionNotFoundException(const std::string& aclass, const std::string& function);
+   VirtualFunctionNotFoundException(const String& aclass, const String& function);
 
  // get/set
-   const std::string& getClassName() const;
-   const std::string& getFunction() const;
+   const String& getClassName() const;
+   const String& getFunction() const;
 
 private:
-   std::string mClass;
-   std::string mFunction;
+   String mClass;
+   String mFunction;
 };
 
 #endif //VIRTUAL_FUNCTION_NOT_FOUND_EXCEPTION_H

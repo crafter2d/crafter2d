@@ -20,10 +20,9 @@
 #ifndef NET_SOCKET_H
 #define NET_SOCKET_H
 
-#include <string>
-
 class NetAddress;
 class NetPackage;
+class String;
 
 class NetSocket
 {
@@ -31,7 +30,7 @@ public:
    NetSocket();
 
  // query
-   bool resolve(NetAddress& address, const std::string& name);
+   bool resolve(NetAddress& address, const String& name);
 
  // operations
    bool bind(int port);

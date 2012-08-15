@@ -26,7 +26,8 @@
 
 #include "resourceptr.h"
 
-#include "engine/hashtable.h"
+#include "core/containers/hashmap.h"
+#include "core/string/string.h"
 
 class UIFont;
 class Texture;
@@ -46,8 +47,8 @@ public:
    ~ResourceManager();
 
  // resource retreival
-   TexturePtr getTexture(const std::string& file);
-   FontPtr    getFont(const std::string& name, int size);
+   TexturePtr getTexture(const String& file);
+   FontPtr    getFont(const String& name, int size);
 
  // initialization
    bool initialize();
@@ -56,6 +57,8 @@ public:
    void notifyResourceDeleted(const Resource& resource);
 
 private:
+   typedef HashMap<String, ResourceHandle*> Resources;
+
    explicit ResourceManager();
    ResourceManager& operator=(const ResourceManager& mgr);
 
@@ -63,7 +66,7 @@ private:
 
  // members
    FT_Library  mFreeTypeLib;
-	HashTable   mResources;
+	Resources   mResources;
 };
 
 #endif // RESOURCE_MANAGER_H_

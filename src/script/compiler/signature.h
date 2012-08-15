@@ -2,11 +2,11 @@
 #ifndef SIGNATURE_H_
 #define SIGNATURE_H_
 
-#include <string>
 #include <vector>
 
 class ASTType;
 class ASTTypeList;
+class String;
 
 class Signature
 {
@@ -30,7 +30,7 @@ public:
    void append(ASTType* ptype);
 
  // conversion
-   std::string toString() const;
+   String toString() const;
 
 private:
 

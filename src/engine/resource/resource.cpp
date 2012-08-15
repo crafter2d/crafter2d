@@ -17,12 +17,12 @@ Resource::~Resource()
 
 // get/set
 
-const std::string& Resource::getName() const
+const String& Resource::getName() const
 {
    return mName;
 }
 
-void Resource::setName(const std::string& name)
+void Resource::setName(const String& name)
 {
    mName = name;
 }

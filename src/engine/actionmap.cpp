@@ -53,7 +53,7 @@ void ActionMap::setProcess(Process& process)
 
 // - Operations
 
-void ActionMap::bind(int action, const std::string& function)
+void ActionMap::bind(int action, const String& function)
 {
    mActions[action] = function;
 }
@@ -69,7 +69,7 @@ void ActionMap::process(int action, bool down)
    }
    else
    {
-      const std::string& function = it->second;
+      const String& function = it->second;
       
       ASSERT_PTR(mpScript);
       mpScript->addParam(down);

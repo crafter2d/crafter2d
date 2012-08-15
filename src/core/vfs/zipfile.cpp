@@ -21,12 +21,14 @@
 
 #include <time.h>
 
+#include "core/string/string.h"
+
 ZipFile::ZipFile():
    _zip(NULL)
 {
 }
 
-ZipFile::ZipFile(const std::string &path):
+ZipFile::ZipFile(const String &path):
    _zip(NULL)
 {
    open(path);
@@ -37,26 +39,26 @@ ZipFile::~ZipFile()
    zipClose(_zip, NULL);
 }
 
-bool ZipFile::open(const std::string& path)
+bool ZipFile::open(const String& path)
 {
-   _zip = zipOpen(path.c_str(), APPEND_STATUS_ADDINZIP);
+   _zip = zipOpen(path.getBuffer(), APPEND_STATUS_ADDINZIP);
 
    return _zip != NULL;
 }
 
-bool ZipFile::create(const std::string& path)
+bool ZipFile::create(const String& path)
 {
-   _zip = zipOpen(path.c_str(), APPEND_STATUS_CREATE);
+   _zip = zipOpen(path.getBuffer(), APPEND_STATUS_CREATE);
 
    return _zip != NULL;
 }
 
-void ZipFile::addFile(const std::string& name, void* pdata, int size)
+void ZipFile::addFile(const String& name, void* pdata, int size)
 {
    const zip_fileinfo info = constructInfo();
 
    zipOpenNewFileInZip(_zip, 
-                       name.c_str(),
+                       name.getBuffer(),
                        &info,
                        NULL,
                        0,

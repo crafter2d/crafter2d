@@ -8,7 +8,6 @@
 #include "script/vm/virtualarray.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualclass.h"
-#include "script/vm/virtualstring.h"
 
 // - Variant
 
@@ -402,7 +401,7 @@ String Variant::typeAsString() const
       case eBool:
          return String("boolean");
       case eObject:
-         return String(asObject().getClass().getName().c_str());
+         return String(asObject().getClass().getName());
       case eArray:
          return String("array");
    }
@@ -424,7 +423,7 @@ String Variant::toString() const
       case eBool:
          return asBool() ? String("true") : String("false");
       case eObject:
-         return String(asObject().getClass().getName().c_str());
+         return String(asObject().getClass().getName());
       case eArray:
          return String("array");
    }

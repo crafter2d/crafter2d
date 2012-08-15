@@ -103,11 +103,11 @@ bool Layer::create(const std::string& layername, int w, int h, const std::string
 
    // load the tileset
    const Texture& diffuse = effect.resolveTexture("diffuseMap");
-   std::string tileInfo = diffuse.getName();
-   std::size_t pos = tileInfo.rfind('.');
+   String tileInfo = diffuse.getName();
+   int pos = tileInfo.lastIndexOf('.');
    tileInfo.replace(pos+1,3,"xml");
 
-   if ( !mTileSet.create(tileInfo.c_str()) )
+   if ( !mTileSet.create(tileInfo) )
       return false;
 
    tileCount = tileset().getTileCount();

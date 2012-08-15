@@ -56,7 +56,7 @@ bool HashMap<K,E>::isEmpty() const
 }
 
 template <typename K, class E>
-bool HashMap<K,E>::contains(K key) const
+bool HashMap<K,E>::contains(const K& key) const
 {
    ASSERT_PTR(mHashFnc);
    unsigned int hash = (*mHashFnc)(key) % mSize;
@@ -76,6 +76,35 @@ bool HashMap<K,E>::contains(K key) const
 }
 
 template <typename K, class E>
+E* HashMap<K,E>::get(const K& key)
+{
+   E* presult = NULL;
+   ASSERT_PTR(mHashFnc);
+   unsigned int hash = (*mHashFnc)(key) % mSize;
+   HashMapBucket<K,E>* pbucket = mpBuckets[hash];
+   if ( pbucket != NULL )
+   {
+      if ( pbucket->hasNext() )
+      {
+         for ( ; pbucket != NULL; pbucket = pbucket->getNext() )
+         {
+            if ( pbucket->getKey() == key )
+            {
+               presult = & pbucket->getElement();
+               break;
+            }
+         }
+      }
+      else
+      {
+         presult = & pbucket->getElement();
+      }
+   }
+   
+   return presult;
+}
+
+template <typename K, class E>
 int HashMap<K,E>::size() const
 {
    return mCount;
@@ -84,7 +113,7 @@ int HashMap<K,E>::size() const
 // - Operations
 
 template <typename K, class E>
-void HashMap<K,E>::insert(K key, E& element)
+void HashMap<K,E>::insert(const K& key, E& element)
 {
    unsigned int hash = (*mHashFnc)(key) % mSize;
    if ( mpBuckets[hash] == NULL )
@@ -115,8 +144,44 @@ void HashMap<K,E>::insert(K key, E& element)
 }
 
 template <typename K, class E>
+void HashMap<K,E>::remove(const K& key)
+{
+   unsigned int hash = (*mHashFnc)(key) % mSize;
+   HashMapBucket<K,E>* pbucket = mpBuckets[hash];
+   if ( pbucket->getNext() != NULL )
+   {
+      for ( HashMapBucket<K,E>* pprev = NULL; pbucket != NULL; pprev = pbucket, pbucket = pbucket->getNext() )
+      {
+         if ( pbucket->getKey() == key )
+         {
+            if ( pprev != NULL )
+            {
+               pprev->setNext(pbucket->getNext());
+            }
+            else
+            {
+               mpBuckets[hash] = pbucket->getNext();
+            }
+
+            delete pbucket;
+            return;
+         }
+      }
+   }
+   else
+   {
+      mpBuckets[hash] = NULL;
+      delete pbucket;
+   }
+
+   mCount--;
+}
+
+template <typename K, class E>
 void HashMap<K,E>::remove(HashMapIterator<K,E>& it)
 {
+   remove(it.mpBucket->getKey());
+   /*
    unsigned int hash = (*mHashFnc)(it.mpBucket->getKey()) % mSize;
    HashMapBucket<K,E>* pbucket = mpBuckets[hash];
    if ( pbucket->getNext() != NULL )
@@ -147,6 +212,7 @@ void HashMap<K,E>::remove(HashMapIterator<K,E>& it)
    }
 
    mCount--;
+   */
 }
 
 template <typename K, class E>

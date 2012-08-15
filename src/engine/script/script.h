@@ -22,7 +22,7 @@
 
 #include "engine/engine_base.h"
 
-#include <string>
+#include "core/string/string.h"
 
 class ScriptManager;
 class ScriptObject;
@@ -40,7 +40,7 @@ implemented and therefor shouldn't be used.
 class ENGINE_API Script
 {
 public:
-   explicit    Script(ScriptManager& manager, const std::string& name = "");
+   explicit    Script(ScriptManager& manager, const String& name = "");
    
    void        addParam(int val);
    void        addParam(float val);
@@ -57,11 +57,11 @@ public:
    void           setThis(VirtualObject& object);
    void           setThis(void* pthis);
 
-   bool        run(const std::string& function);
+   bool        run(const String& function);
 
 private:
    ScriptManager&  mScriptManager;
-   std::string     mClassName;
+   String          mClassName;
    VirtualObject*  mpObject;
 };
 

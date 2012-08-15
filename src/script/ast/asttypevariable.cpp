@@ -20,12 +20,12 @@ ASTTypeVariable::~ASTTypeVariable()
 
 // get/set
 
-const std::string& ASTTypeVariable::getIdentifier() const
+const String& ASTTypeVariable::getIdentifier() const
 {
    return mId;
 }
 
-void ASTTypeVariable::setIdentifier(const std::string& id)
+void ASTTypeVariable::setIdentifier(const String& id)
 {
    mId = id; 
 }

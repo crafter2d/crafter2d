@@ -95,22 +95,22 @@ void ASTClass::setBaseClass(ASTClass& baseclass)
    mpBaseType->setObjectClass(baseclass);
 }
 
-const std::string& ASTClass::getName() const
+const String& ASTClass::getName() const
 {
    return mName;
 }
    
-void ASTClass::setName(const std::string& name)
+void ASTClass::setName(const String& name)
 {
    mName = name;
 }
 
-const std::string& ASTClass::getFullName() const
+const String& ASTClass::getFullName() const
 {
    return mFullName;
 }
 
-void ASTClass::setFullName(const std::string& name)
+void ASTClass::setFullName(const String& name)
 {
    mFullName = name;
 }
@@ -241,7 +241,7 @@ bool ASTClass::isGeneric() const
    return mpTypeVariables != NULL;
 }
 
-bool ASTClass::isTypeName(const std::string& name) const
+bool ASTClass::isTypeName(const String& name) const
 {
    return isGeneric() && mpTypeVariables->contains(name);
 }
@@ -325,7 +325,7 @@ void ASTClass::addMember(ASTMember* pmember)
       ASTFunction* pfunction = dynamic_cast<ASTFunction*>(pmember);
       pfunction->setClass(*this);
 
-      mFunctions.insert(make_pair(pfunction->getName(), pfunction));
+      mFunctions.insert(std::make_pair(pfunction->getName(), pfunction));
    }
 
    addChild(pmember);
@@ -409,12 +409,12 @@ void ASTClass::indexFunctions()
 
 // - Search
 
-const ASTField* ASTClass::findStatic(const std::string& name, SearchScope scope) const
+const ASTField* ASTClass::findStatic(const String& name, SearchScope scope) const
 {
    return const_cast<ASTClass&>(*this).findStatic(name, scope);
 }
 
-ASTField* ASTClass::findStatic(const std::string& name, SearchScope scope)
+ASTField* ASTClass::findStatic(const String& name, SearchScope scope)
 {
    for ( std::size_t index = 0; index < mStatics.size(); index++ )
    {
@@ -427,12 +427,12 @@ ASTField* ASTClass::findStatic(const std::string& name, SearchScope scope)
    return scope == eAll && hasBaseClass() ? getBaseClass().findStatic(name, eAll) : NULL;
 }
 
-const ASTField* ASTClass::findField(const std::string& name, SearchScope scope) const
+const ASTField* ASTClass::findField(const String& name, SearchScope scope) const
 {
    return const_cast<ASTClass&>(*this).findField(name, scope);
 }
 
-ASTField* ASTClass::findField(const std::string& name, SearchScope scope)
+ASTField* ASTClass::findField(const String& name, SearchScope scope)
 {
    for ( std::size_t index = 0; index < mFields.size(); index++ )
    {
@@ -445,12 +445,12 @@ ASTField* ASTClass::findField(const std::string& name, SearchScope scope)
    return scope == eAll && hasBaseClass() ? getBaseClass().findField(name) : NULL;
 }
 
-const ASTFunction* ASTClass::findBestMatch(const std::string& name, const Signature& signature, const ASTTypeList& types) const
+const ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types) const
 {
    return const_cast<ASTClass&>(*this).findBestMatch(name, signature, types);
 }
 
-ASTFunction* ASTClass::findBestMatch(const std::string& name, const Signature& signature, const ASTTypeList& types)
+ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types)
 {
    Functions::iterator it = mFunctions.find(name);
    if ( it != mFunctions.end() )
@@ -470,12 +470,12 @@ ASTFunction* ASTClass::findBestMatch(const std::string& name, const Signature& s
    return hasBaseClass() ? getBaseClass().findBestMatch(name, signature, types) : NULL;
 }
 
-const ASTFunction* ASTClass::findExactMatch(const std::string& name, const Signature& signature) const
+const ASTFunction* ASTClass::findExactMatch(const String& name, const Signature& signature) const
 {
    return const_cast<ASTClass&>(*this).findExactMatch(name, signature);
 }
 
-ASTFunction* ASTClass::findExactMatch(const std::string& name, const Signature& signature)
+ASTFunction* ASTClass::findExactMatch(const String& name, const Signature& signature)
 {
    ASTFunction* pfunction = findExactMatchLocal(name, signature);
    if ( pfunction == NULL && hasBaseClass() )
@@ -485,7 +485,7 @@ ASTFunction* ASTClass::findExactMatch(const std::string& name, const Signature& 
    return pfunction;
 }
 
-ASTFunction* ASTClass::findExactMatchLocal(const std::string& name, const Signature& signature)
+ASTFunction* ASTClass::findExactMatchLocal(const String& name, const Signature& signature)
 {
    Functions::iterator it = mFunctions.find(name);
    if ( it != mFunctions.end() )

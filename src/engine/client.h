@@ -63,7 +63,7 @@ public:
                   Client();
    virtual        ~Client();
 
-   virtual bool   create(const std::string& classname);
+   virtual bool   create(const String& classname);
    virtual bool   destroy();
    virtual void   update(float delta);
 
@@ -91,7 +91,7 @@ public:
  // operations
    virtual bool   loadWorld(const std::string& filename, const std::string& name);
 
-   bool           connect(const char* server, int port);
+   bool           connect(const String& server, int port);
    void           disconnect();
 
    void           sendToServer(NetObject& object);

@@ -11,12 +11,12 @@ ASTUse::ASTUse():
 
 // get/set
    
-const std::string& ASTUse::getIdentifier() const
+const String& ASTUse::getIdentifier() const
 {
    return mIdentifier;
 }
 
-void ASTUse::setIdentifier(const std::string& identifier)
+void ASTUse::setIdentifier(const String& identifier)
 {
    mIdentifier = identifier;
 }

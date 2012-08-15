@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "virtualfunctionnotfoundexception.h"
 
-VirtualFunctionNotFoundException::VirtualFunctionNotFoundException(const std::string& aclass, const std::string& function):
+VirtualFunctionNotFoundException::VirtualFunctionNotFoundException(const String& aclass, const String& function):
    mClass(aclass),
    mFunction(function)
 {
@@ -27,12 +27,12 @@ VirtualFunctionNotFoundException::VirtualFunctionNotFoundException(const std::st
 
 // get/set
 
-const std::string& VirtualFunctionNotFoundException::getClassName() const
+const String& VirtualFunctionNotFoundException::getClassName() const
 {
    return mClass;
 }
 
-const std::string& VirtualFunctionNotFoundException::getFunction() const
+const String& VirtualFunctionNotFoundException::getFunction() const
 {
    return mFunction;
 }

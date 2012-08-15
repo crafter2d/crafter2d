@@ -3,10 +3,10 @@
 #define COMPILE_CONTEXT_H_
 
 #include <map>
-#include <string>
+
+#include "core/string/string.h"
 
 #include "script/ast/asttype.h"
-
 #include "script/common/literaltable.h"
 
 #include "compilelog.h"
@@ -17,7 +17,7 @@ class VirtualClass;
 
 class CompileContext
 {
-   typedef std::map<std::string, ASTClass*> ClassMap;
+   typedef std::map<String, ASTClass*> ClassMap;
 
 public:
    explicit CompileContext(Compiler& compiler);
@@ -32,20 +32,20 @@ public:
    void          setResult(VirtualClass* pclass);
    
  // query
-   bool hasClass(const std::string& classname) const;
+   bool hasClass(const String& classname) const;
 
  // operations
    void addClass(ASTClass* pclass);
-   bool loadClass(const std::string& classname);
+   bool loadClass(const String& classname);
 
    void collectCompileClasses(std::vector<ASTClass*>& classes);
 
  // search
-   const ASTClass* findClass(const std::string& classname) const;
-         ASTClass* findClass(const std::string& name);
+   const ASTClass* findClass(const String& classname) const;
+         ASTClass* findClass(const String& name);
 
-   const ASTClass& resolveClass(const std::string& classname) const;
-         ASTClass& resolveClass(const std::string& classname);
+   const ASTClass& resolveClass(const String& classname) const;
+         ASTClass& resolveClass(const String& classname);
 
 private:
    void insertInternalTypes();

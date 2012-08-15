@@ -21,7 +21,7 @@
 
 #include "textureloadersoil.h"
 
-AbstractTextureLoader* TextureLoaderFactory::constructLoader(const std::string& filename)
+AbstractTextureLoader* TextureLoaderFactory::constructLoader(const String& filename)
 {
    AbstractTextureLoader* ploader = NULL;
 

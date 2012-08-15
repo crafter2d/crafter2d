@@ -13,8 +13,11 @@ public:
             String();
             String(const String& that);
    explicit String(const std::string& that);
-   explicit String(const char* pdata);
-   ~String();
+            String(const char* pdata);
+           ~String();
+
+   const char operator[](int index) const;
+         char operator[](int index);
 
    const String& operator=(const String& that);
    const String& operator=(const char* pstring);
@@ -26,14 +29,19 @@ public:
    bool operator>=(const String& that) const;
 
    bool operator==(const String& that) const;
+   bool operator!=(const String& that) const;
 
    const String& operator+=(char c);
    const String& operator+=(const String& that);
-   String operator+(const String& that);
+   String operator+(const String& that) const;
+   String operator+(char c) const;
 
  // query
+   bool isEmpty() const;
    int length() const;
+   const char* getBuffer() const;
    char* toUtf8(int& length) const;
+   char* asArray(char* parray, int size) const;
    int compare(const String& that) const;
 
  // operations
@@ -41,13 +49,19 @@ public:
    const String& toUpper();
    const String& trim();
 
-   void replace(int original, int newtext);
+   void append(const String& that);
+   void setTo(const char* ptext, int length);
+
+   void replace(char original, char newtext);
+   void replace(int start, int length, const String& with);
+   void remove(int start, int count);
 
    String subStr(int start, int count) const;
    String unescape() const;
 
  // searching
-   int indexOf(char character);
+   int indexOf(char character, int start = 0) const;
+   int lastIndexOf(char character) const;
 
  // conversion
    std::string toStdString() const;

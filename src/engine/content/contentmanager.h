@@ -21,12 +21,12 @@
 #define CONTENT_MANAGER_H
 
 #include <map>
-#include <string>
 
 #include "engine/idmanager.h"
 
 class Entity;
 class Process;
+class String;
 class World;
 
 class ContentManager
@@ -35,8 +35,8 @@ public:
    ContentManager(Process& process);
 
  // loading
-   Entity*  loadEntity(const std::string& filename);
-   World*   load(const std::string& filename);
+   Entity*  loadEntity(const String& filename);
+   World*   load(const String& filename);
 
 private:
 

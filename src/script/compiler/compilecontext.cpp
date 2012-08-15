@@ -50,10 +50,10 @@ void CompileContext::setResult(VirtualClass* pclass)
 
 // - Query
 
-bool CompileContext::hasClass(const std::string& classname) const
+bool CompileContext::hasClass(const String& classname) const
 {
-   String s = String(classname.c_str()).toLower();
-   std::string lowercasename = s.toStdString();
+   String lowercasename = classname;
+   lowercasename.toLower();
 
    return mClasses.find(lowercasename) != mClasses.end();
 }
@@ -62,16 +62,16 @@ bool CompileContext::hasClass(const std::string& classname) const
 
 void CompileContext::addClass(ASTClass* pclass)
 {
-   String s = String(pclass->getFullName().c_str()).toLower();
-   std::string lowercasename = s.toStdString();
+   String lowercasename = pclass->getFullName();
+   lowercasename.toLower();
    
    mClasses[lowercasename] = pclass;
 }
 
-bool CompileContext::loadClass(const std::string& classname)
+bool CompileContext::loadClass(const String& classname)
 {
-   String s = String(classname.c_str()).toLower();
-   std::string lowercasename = s.toStdString();
+   String lowercasename = classname;
+   lowercasename.toLower();
 
    ClassMap::iterator it = mClasses.find(lowercasename);
    if ( it == mClasses.end() )
@@ -97,26 +97,26 @@ void CompileContext::collectCompileClasses(std::vector<ASTClass*>& classes)
 
 // - Search
 
-const ASTClass* CompileContext::findClass(const std::string& classname) const
+const ASTClass* CompileContext::findClass(const String& classname) const
 {
    return const_cast<CompileContext*>(this)->findClass(classname);
 }
 
-ASTClass* CompileContext::findClass(const std::string& name)
+ASTClass* CompileContext::findClass(const String& name)
 {
-   String s = String(name.c_str()).toLower();
-   std::string lowercasename = s.toStdString();
+   String lowercasename(name);
+   lowercasename.toLower();
 
    ClassMap::iterator it = mClasses.find(lowercasename);
    return it != mClasses.end() ? it->second : NULL;
 }
 
-const ASTClass& CompileContext::resolveClass(const std::string& classname) const
+const ASTClass& CompileContext::resolveClass(const String& classname) const
 {
    return const_cast<CompileContext*>(this)->resolveClass(classname);
 }
 
-ASTClass& CompileContext::resolveClass(const std::string& classname)
+ASTClass& CompileContext::resolveClass(const String& classname)
 {
    ASTClass* pclass = findClass(classname);
    if ( pclass == NULL )

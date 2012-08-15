@@ -2,9 +2,9 @@
 #ifndef SCOPE_H_
 #define SCOPE_H_
 
-#include <string>
 #include <vector>
 
+class String;
 class ScopeVariable;
 
 class Scope
@@ -20,7 +20,7 @@ public:
    void clear();
 
  // search
-   ScopeVariable* find(const std::string& name);
+   ScopeVariable* find(const String& name);
 
 private:
    Variables mVariables;
