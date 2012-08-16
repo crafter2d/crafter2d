@@ -29,8 +29,8 @@ IMPLEMENT_REPLICATABLE(NewObjectEventId, NewObjectEvent, NetEvent)
 
 NewObjectEvent::NewObjectEvent():
    NetEvent(newobjectEvent),
-   mId(),
-   mParentId(),
+   mId(0),
+   mParentId(0),
    mFileName()
 {
 }

@@ -45,7 +45,7 @@ const String& String::operator=(const String& that)
 
 const String& String::operator=(const char* pstring)
 {
-   mString = pstring;
+   setTo(pstring, strlen(pstring));
    return *this;
 }
 
@@ -142,6 +142,11 @@ int String::compare(const String& that) const
    return mString.compare(that.mString);
 }
 
+int String::hashCode() const
+{
+   return mString.hashCode();
+}
+
 // - Comparison
 
 bool String::operator==(const String& that) const
@@ -181,7 +186,8 @@ void String::append(const String& that)
 
 void String::setTo(const char* ptext, int length)
 {
-   mString.setTo(ptext, length);
+   StringPiece piece(ptext);
+   mString = UnicodeString::fromUTF8(piece);
 }
 
 void String::replace(char original, char newtext)

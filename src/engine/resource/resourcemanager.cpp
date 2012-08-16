@@ -66,24 +66,25 @@ void ResourceManager::destroy()
 /// \brief Returns a texture from a the given file.
 TexturePtr ResourceManager::getTexture(const String& file)
 {
-	ResourceHandle* phandle = *mResources.get(file);
-	if ( phandle == NULL )
+   if ( !mResources.contains(file) )
    {
       AutoPtr<Texture> texture = new Texture();
       if ( !texture.hasPointer() || !texture->load(file) )
          return TexturePtr();
 
-      phandle = new ResourceHandle(*this, texture.release());
+      ResourceHandle* phandle = new ResourceHandle(*this, texture.release());
 		mResources.insert(file, phandle);
 	}
 
-   return TexturePtr(phandle);
+   ResourceHandle** phandle = mResources.get(file);
+   ASSERT_PTR(phandle);
+
+   return TexturePtr(*phandle);
 }
 
 FontPtr ResourceManager::getFont(const String& name, int size)
 {
-   ResourceHandle* phandle = *mResources.get(name);
-	if ( phandle == NULL )
+   if ( !mResources.contains(name) )
    {
       AutoPtr<UIFont> font = new UIFont();
       if ( !font.hasPointer() || !font->load(mFreeTypeLib, name, size) )
@@ -91,10 +92,14 @@ FontPtr ResourceManager::getFont(const String& name, int size)
          return FontPtr();
       }
 
-      phandle = new ResourceHandle(*this, font.release());
+      ResourceHandle* phandle = new ResourceHandle(*this, font.release());
       mResources.insert(name, phandle);
    }
-   return FontPtr(phandle);
+
+   ResourceHandle** phandle = mResources.get(name);
+   ASSERT_PTR(phandle);
+
+   return FontPtr(*phandle);
 }
 
 // notifications

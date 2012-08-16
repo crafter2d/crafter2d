@@ -22,6 +22,8 @@
 
 #include <GL/GLee.h>
 
+class String;
+
 /// @author Jeroen Broekhuizen
 /// \brief ARB vertex program wrapper for backwards compatibility on older hardware.
 ///
@@ -37,13 +39,13 @@ public:
 
 	void release();
 
-	bool compile( const char* filename);
-   bool compile( const char* code, int len );
+	bool compile(const String& filename);
+   bool compile(const char* code, int len);
 
 	void enable() const;
 	void disable() const;
 
-	GLint getUniformLocation( const char* name ) const;
+	GLint getUniformLocation( const String& name ) const;
 
 private:
    bool save( const char* code, int len );

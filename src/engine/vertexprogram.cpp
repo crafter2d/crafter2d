@@ -23,7 +23,11 @@
 #include <cstdlib>
 
 #include "core/log/log.h"
+#include "core/string/string.h"
+#include "core/conv/numberconverter.h"
 #include "core/smartptr/autoptr.h"
+#include "core/vfs/filesystem.h"
+#include "core/vfs/file.h"
 
 #include "opengl.h"
 
@@ -57,19 +61,17 @@ void VertexProgram::release ()
    }
 }
 
-bool VertexProgram::compile(const char* filename)
+bool VertexProgram::compile(const String& filename)
 {
-   std::ifstream file (filename, std::ios::binary );
-	if ( !file.is_open() )
+   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
+   if ( !pfile.hasPointer() )
    {
-      Log::getInstance().error("VertexProgram.compile: Can not open vertex assembly file '%s'", filename);
+      Log::getInstance().error("VertexProgram.compile: Can not open vertex assembly file '%s'", filename.getBuffer());
 		return false;
 	}
 
 	// determine file length
-	file.seekg (0, std::ios::end);
-	length = file.tellg();
-   file.seekg (0, std::ios::beg);
+   length = pfile->size();
 
    bool success = false;
    if ( length > 0 )
@@ -84,11 +86,10 @@ bool VertexProgram::compile(const char* filename)
       else
       {
 	      memset(pcode, 0, length+1);
-	      file.read(pcode, length);
-	      file.close ();
+         pfile->read(pcode, length);
 
          // perform the actual code
-         success = compile(pcode, length );
+         success = compile(pcode, length);
       }
 
       delete[] pcode;
@@ -149,24 +150,28 @@ void VertexProgram::disable() const
    glDisable(GL_VERTEX_PROGRAM_ARB);
 }
 
-GLint VertexProgram::getUniformLocation (const char* name) const
+GLint VertexProgram::getUniformLocation(const String& name) const
 {
-	const char* pos = strstr(source, name);
+   int len;
+   const char* pname = name.toUtf8(len);
+	const char* pos = strstr(source, pname);
+   delete[] pname;
 	if ( pos != NULL )
-  {
-     std::string num;
+   {
+      char num[10] = {};
+      int index = 0;
 
-     // we assume here that it is a PARAM with program.local[n]
-     pos = strchr(pos, '[');
+      // we assume here that it is a PARAM with program.local[n]
+      pos = strchr(pos, '[');
 
-     while (*pos != ']')
-     {
-        num += *pos;
-        ++pos;
-     }
+      while (*pos != ']')
+      {
+         num[index++] = *pos;
+         ++pos;
+      }
 
-     // convert the n to a number
-     return (GLint)atoi (num.c_str());
+      // convert the n to a number
+      return (GLint)atoi(num);
 	}
 
 	return -1;

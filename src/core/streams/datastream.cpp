@@ -111,8 +111,11 @@ void DataStream::writeChar(char value)
 
 void DataStream::writeString(const String& text)
 {
-   writeInt(text.length());
-   writeBytes(text.getBuffer(), text.length());
+   int len;
+   const char* ptext = text.toUtf8(len);
+   writeInt(len);
+   writeBytes(ptext, len);
+   delete[] ptext;
 }
 
 // - Overloadable interface

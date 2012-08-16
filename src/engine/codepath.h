@@ -20,9 +20,10 @@
 #ifndef CODEPATH_H_
 #define CODEPATH_H_
 
-#include <string>
 #include "shader.h"
 #include "vertexprogram.h"
+
+class String;
 
 /*!
 @author Jeroen Broekhuizen
@@ -37,14 +38,14 @@ public:
    enum PathType { ECG, EGLSL };
 
 	/*!
-        \fn CodePath::load(const char* vertex, const char* fragment)
+        \fn CodePath::load(const String& vertex, const String& fragment)
 	     \brief Load in the vertex and fragment shaders. This function should be called before any of the other functions.
 		  \param vertex the filename of the vertex shader (either GLSL or ASM)
 		  \param fragment the filename of the fragment shader (only GLSL)
 	     \retval true if the vertex shader is loaded correctly
 		  \retval false loading failed, consult the log file for possible reasons.
     */
-	virtual bool load(const std::string& vertex, const std::string& fragment) = 0;
+	virtual bool load(const String& vertex, const String& fragment) = 0;
 
 	/*!
         \fn CodePath::release()
@@ -68,12 +69,12 @@ public:
    virtual PathType getType() const = 0;
 
 	/*!
-        \fn CodePath::getUniformLocation(const char* name)
+        \fn CodePath::getUniformLocation(const String& name)
 	     \brief Tries to retreive the location of a unifom variable in the shader.
 		  \param name character string which should respresents an uniform variable in the shader
 		  \returns a 0 or higher if it is found, -1 otherwise
     */
-	virtual int getUniformLocation (const char* name) const = 0;
+	virtual int getUniformLocation (const String& name) const = 0;
 
 	/*!
         \fn CodePath::setUniform1i(int index, int val)
@@ -115,14 +116,14 @@ class ShaderPath: public CodePath
 public:
    ShaderPath();
 
-	virtual bool     load(const std::string& vertex, const std::string& fragment);
+	virtual bool     load(const String& vertex, const String& fragment);
 	virtual void     release();
 
 	virtual void     enable() const;
 	virtual void     disable() const;
 
    virtual PathType getType() const;
-	virtual int      getUniformLocation(const char* name) const;
+	virtual int      getUniformLocation(const String& name) const;
 
 	virtual void     setUniform1i(int index, int val);
 	virtual void     setUniform3f(int index, float x, float y, float z);
@@ -145,14 +146,14 @@ public:
    ProgramPath();
    virtual ~ProgramPath();
 
-	virtual bool     load (const std::string& vertex, const std::string& fragment);
+	virtual bool     load (const String& vertex, const String& fragment);
 	virtual void     release ();
 
 	virtual void     enable () const;
 	virtual void     disable () const;
 
    virtual PathType getType() const;
-	virtual int      getUniformLocation (const char* name) const;
+	virtual int      getUniformLocation (const String& name) const;
 
 	virtual void     setUniform1i (int index, int val);
 	virtual void     setUniform3f (int index, float x, float y, float z);

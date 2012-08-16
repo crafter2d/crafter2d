@@ -25,6 +25,8 @@
 #include <GL/GLee.h>
 #include <vector>
 
+class String;
+
 /**
 @author Jeroen Broekhuizen
 \brief Base class for the shaders. It profides basic functionality needed to load and compile a vertex- and fragment. Don't
@@ -37,14 +39,14 @@ public:
    virtual        ~Shader();
 
 	void           release();
-   bool           compile( const char* filename );
+   bool           compile( const String& filename );
    bool           compile( const char* source, int len );
 
    void           handle( GLhandleARB shader );
    GLhandleARB    handle() const;
 
 private:
-   GLcharARB*     load( const char* file, int& length );
+   GLcharARB*     load( const String& file, int& length );
 
 protected:
 	/// \brief The OpenGL shader object handle
@@ -95,7 +97,7 @@ public:
    bool        valid() const;
 
    GLint       getAttribute( const char* name ) const;
-   GLint       getUniformLocation( const char* name ) const;
+   GLint       getUniformLocation( const String& name ) const;
 
    void        setUniform1i( GLint index, int i );
 	void        setUniform3f( GLint index, float x, float y, float z );

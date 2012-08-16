@@ -21,7 +21,7 @@ NumberConverter::NumberConverter():
    mpFormat(NULL)
 {
    UErrorCode error = U_ZERO_ERROR;
-   mpFormat = NumberFormat::createInstance(error);
+   mpFormat = NumberFormat::createInstance(Locale::getEnglish(), error);
    if ( U_FAILURE(error) )
    {
       // meh!!
@@ -41,10 +41,23 @@ int NumberConverter::toInt(const String& value)
 
 double NumberConverter::toDouble(const String& value)
 {
-   Formattable result;
+   bool only = mpFormat->isParseIntegerOnly();
+
+   Formattable format;
    UErrorCode error = U_ZERO_ERROR;
-   mpFormat->parse(value.mString, result, error);
-   return result.getDouble();
+   mpFormat->parse(value.mString, format, error);
+
+   double result = 0;
+   switch ( format.getType() )
+   {
+   case Formattable::kDouble:
+      result = format.getDouble();
+      break;
+   case Formattable::kLong:
+      result = format.getLong();
+      break;
+   }
+   return result;
 }
 
 String& NumberConverter::format(String& result, int value)

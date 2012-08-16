@@ -56,8 +56,8 @@ public:
 	bool              load(const String& file);
 	void              destroy();
 	
-	const Texture&    resolveTexture(const char* uniform) const;
-   const Texture*    findTexture(const char* uniform) const;
+	const Texture&    resolveTexture(const String& uniform) const;
+   const Texture*    findTexture(const String& uniform) const;
 
          bool        hasPath() const;
    const CodePath&   getPath() const;
@@ -71,7 +71,7 @@ private:
    typedef std::vector<TexStage> Stages;
 
 	bool              processTextures(const TiXmlElement& effect);
-	bool              processCode(const TiXmlElement& effect, const std::string& path);
+	bool              processCode(const TiXmlElement& effect, const String& path);
 	bool              processCombiners(const TiXmlElement& shader_part);
 	bool              postprocessTextures();
 	

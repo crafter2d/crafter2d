@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,56 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RESOURCE_MANAGER_H_
-#define RESOURCE_MANAGER_H_
+#include "hashinterface.h"
 
-#include <string>
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-#include "resourceptr.h"
-
-#include "core/containers/hashmap.h"
 #include "core/string/string.h"
 
-class UIFont;
-class Texture;
-
-typedef ResourcePtr<UIFont> FontPtr;
-typedef ResourcePtr<Texture> TexturePtr;
-
-/**
-@author Jeroen Broekhuizen
-\brief Resource manager.
-*/
-class ResourceManager
+unsigned int HashInterface::hashString(const String& value)
 {
-public:
-   static ResourceManager& getInstance();
-
-   ~ResourceManager();
-
- // resource retreival
-   TexturePtr getTexture(const String& file);
-   FontPtr    getFont(const String& name, int size);
-
- // initialization
-   bool initialize();
-
- // notifications
-   void notifyResourceDeleted(const Resource& resource);
-
-private:
-   typedef HashMap<String, ResourceHandle*> Resources;
-
-   explicit ResourceManager();
-   ResourceManager& operator=(const ResourceManager& mgr);
-
-   void destroy();
-
- // members
-   FT_Library  mFreeTypeLib;
-	Resources   mResources;
-};
-
-#endif // RESOURCE_MANAGER_H_
+   return value.hashCode();
+}

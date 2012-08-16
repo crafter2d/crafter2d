@@ -170,7 +170,7 @@ bool Effect::postprocessTextures ()
    // get the uniform locations of the textures in the fragment shader
    for ( Stages::size_type s = 0; s < stages.size(); ++s)
    {
-      stages[s].index = getPath().getUniformLocation(stages[s].uniform.getBuffer());
+      stages[s].index = getPath().getUniformLocation(stages[s].uniform);
       if (stages[s].index == -1)
       {
          Log::getInstance().error("Can not find %s", stages[s].uniform.getBuffer());
@@ -182,13 +182,13 @@ bool Effect::postprocessTextures ()
 }
 
 /*!
-    \fn Effect::processCode( const TiXmlElement* effect )
+    \fn Effect::processCode(const TiXmlElement* effect, const String& path)
 	 \brief Loads in the shaders (if any) from the file and creates the code path. In case GLSL isn't
 	 supported it first checks the existence of a vertex program. If that doesn't exist the GLSL counter
 	 part is loaded and automatically converted.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::processCode(const TiXmlElement& effect, const std::string& path)
+bool Effect::processCode(const TiXmlElement& effect, const String& path)
 {
    const char* vertex = NULL, *fragment = NULL;
 
@@ -229,8 +229,8 @@ bool Effect::processCode(const TiXmlElement& effect, const std::string& path)
    }
 
    // files should be in same directory
-   std::string vertexfile   = path + vertex;
-   std::string fragmentfile = path + fragment;
+   String vertexfile   = path + vertex;
+   String fragmentfile = path + fragment;
 
    // now load the codepath
    mCodePath = OpenGL::createCodePath(pathtype);
@@ -359,20 +359,22 @@ GLint Effect::getSourceValue (const char* str)
 	 \brief Looks up the uniform string in the stages of this effect. If found the texture object is returned.
 	 \returns a texture object if uniform is known, NULL otherwise.
  */
-const Texture& Effect::resolveTexture (const char* uniform) const
+const Texture& Effect::resolveTexture (const String& uniform) const
 {
    const Texture* ptexture = findTexture(uniform);
    ASSERT_MSG(ptexture, "Can not find the texture.");
    return *ptexture;
 }
 
-const Texture* Effect::findTexture(const char* uniform) const
+const Texture* Effect::findTexture(const String& uniform) const
 {
    for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
       const TexStage& stage = stages[s];
-      if ( strcmp (uniform, stage.uniform.getBuffer()) == 0 )
+      if ( uniform == stage.uniform )
+      {
          return stage.tex.ptr();
+      }
    }
 
    return NULL;

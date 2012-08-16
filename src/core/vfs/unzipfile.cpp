@@ -49,7 +49,10 @@ UnzipFile::~UnzipFile()
 
 bool UnzipFile::open(const String& path)
 {
-   _zip = unzOpen(path.getBuffer());
+   int len;
+   const char* ppath = path.toUtf8(len);
+   _zip = unzOpen(ppath);
+   delete[] ppath;
 
    return _zip != NULL;
 }
@@ -59,7 +62,12 @@ bool UnzipFile::contains(const String& name) const
    if ( _zip == NULL )
       return false;
 
-   return unzLocateFile(_zip, name.getBuffer(), 2) != UNZ_OK;
+   int len;
+   const char* pname = name.toUtf8(len);
+   bool result = unzLocateFile(_zip, name.getBuffer(), 2) != UNZ_OK;
+   delete[] pname;
+
+   return result;
 }
 
 bool UnzipFile::readFile(const String& name, void*& pdata, int &size, bool casesensitive)
@@ -67,9 +75,16 @@ bool UnzipFile::readFile(const String& name, void*& pdata, int &size, bool cases
    if ( _zip == NULL )
       return false;
 
-   if ( unzLocateFile(_zip, name.getBuffer(), casesensitive ? 1 : 2) != UNZ_OK )
+   int len;
+   const char* pname = name.toUtf8(len);
+   int result = unzLocateFile(_zip, pname, casesensitive ? 1 : 2);
+   delete[] pname;
+   
+   if ( result != UNZ_OK )
+   {
       return false;
-
+   }
+   
    unz_file_info info;
    if ( unzGetCurrentFileInfo(_zip, &info, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK )
       return false;
