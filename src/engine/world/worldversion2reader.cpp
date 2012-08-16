@@ -21,6 +21,7 @@
 
 #include <tinyxml.h>
 
+#include "core/string/string.h"
 #include "core/vfs/unzipfile.h"
 #include "core/streams/arraystream.h"
 
@@ -186,7 +187,7 @@ bool WorldVersion2Reader::readObjects(UnzipFile& zip)
 // - Helpers
 //////////////////////////////////////////////////////////////////////////
 
-bool WorldVersion2Reader::loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, const std::string& filename)
+bool WorldVersion2Reader::loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, const String& filename)
 {
    int size;
    char* pdata = NULL;
@@ -209,7 +210,7 @@ bool WorldVersion2Reader::loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, con
 DataStream& operator>>(DataStream& in, Layer& layer)
 {
    float width, height;
-   std::string name, effect;
+   String name, effect;
 
    in >> name >> effect >> width >> height;
 

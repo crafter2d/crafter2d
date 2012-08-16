@@ -48,10 +48,10 @@ INLINE void Script::addParam(bool val)
    mScriptManager.mVirtualMachine.push(val);
 }
 
-/// \fn Script::addParam(const char* val)
+/// \fn Script::addParam(const String& val)
 /// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
 /// \param val a pointer to a character string
-INLINE void Script::addParam(const std::string& val)
+INLINE void Script::addParam(const String& val)
 {
    mScriptManager.mVirtualMachine.push(val);
 }

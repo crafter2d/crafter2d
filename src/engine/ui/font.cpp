@@ -164,7 +164,7 @@ int UIFont::getTextHeight(const String& text) const
 
 // - Rendering
 
-void UIFont::render(const std::string& text)
+void UIFont::render(const String& text)
 {
    FontChar* pfontchar = NULL;
 

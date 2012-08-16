@@ -348,6 +348,12 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    mCallStack.push(mCall);
    mCall.start(vclass, entry, mStack.size());
 
+#ifdef _DEBUG
+   int len;
+   const char* pclass = vclass.getName().toUtf8(len);
+   const char* pentry = entry.mName.toUtf8(len);
+#endif
+
    const VirtualInstructionTable& instructions = mContext.mInstructions;
 
    while ( mState != eReturn )
@@ -390,6 +396,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    {
       shrinkStack(mCall.mStackBase);
    }
+
+#ifndef _DEBUG
+   delete[] pclass;
+   delete[] pentry;
+#endif
 
    mCall = mCallStack.top();
    mCallStack.pop();
@@ -445,10 +456,8 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
             int arraydimension = instruction.getArgument();
 
+            // no full support yet for multi-dimensional arrays
             VirtualArray* parray = instantiateArray();
-            parray->addLevel(mStack.popInt());
-
-            // no support yet for multi-dimensional arrays
             VirtualArray* pinit = parray;
             for ( int index = 0; index < arraydimension; index++ )
             {
@@ -458,7 +467,6 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
                if ( index < arraydimension - 1 )
                {
                   VirtualArray* ptemp = pinit;
-                  
                }
             }
 

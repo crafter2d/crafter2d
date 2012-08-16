@@ -20,7 +20,7 @@
 
 #include "core/defines.h"
 
-const std::string& AbstractWorldVersionReader::getFilename() const
+const String& AbstractWorldVersionReader::getFilename() const
 {
    return mFilename;
 }

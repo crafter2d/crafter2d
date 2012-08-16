@@ -7,7 +7,11 @@
 // static
 NumberConverter& NumberConverter::getInstance()
 {
-   static NumberConverter* pconverter = new NumberConverter();
+   static NumberConverter* pconverter;
+   if ( pconverter == NULL )
+   {
+      pconverter = new NumberConverter();
+   }
    return *pconverter;
 }
 
@@ -16,28 +20,31 @@ NumberConverter& NumberConverter::getInstance()
 NumberConverter::NumberConverter():
    mpFormat(NULL)
 {
-   UErrorCode error;
+   UErrorCode error = U_ZERO_ERROR;
    mpFormat = NumberFormat::createInstance(error);
+   if ( U_FAILURE(error) )
+   {
+      // meh!!
+      int aap = 5;
+   }
 }
 
 // - Conversions
 
 int NumberConverter::toInt(const String& value)
 {
-   UErrorCode error;
    Formattable result;
+   UErrorCode error = U_ZERO_ERROR;
    mpFormat->parse(value.mString, result, error);
-   ASSERT(result.getType() == Formattable::kLong);
-   return result.getLong(NULL);
+   return result.getLong();
 }
 
 double NumberConverter::toDouble(const String& value)
 {
-   UErrorCode error;
    Formattable result;
+   UErrorCode error = U_ZERO_ERROR;
    mpFormat->parse(value.mString, result, error);
-   ASSERT(result.getType() == Formattable::kLong);
-   return result.getDouble(error);
+   return result.getDouble();
 }
 
 String& NumberConverter::format(String& result, int value)

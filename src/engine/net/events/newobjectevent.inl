@@ -29,7 +29,7 @@ INLINE Id NewObjectEvent::getParentId() const
    return mParentId;
 }
 
-INLINE const std::string& NewObjectEvent::getFileName() const
+INLINE const String& NewObjectEvent::getFileName() const
 {
    return mFileName;
 }

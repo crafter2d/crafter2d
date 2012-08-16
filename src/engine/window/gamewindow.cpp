@@ -39,7 +39,7 @@ GameWindow::~GameWindow()
 
 // - Creation
 
-bool GameWindow::create(const std::string& title, int width, int height, int bitdepth, bool fullscreen)
+bool GameWindow::create(const String& title, int width, int height, int bitdepth, bool fullscreen)
 {
    return doCreate(title, width, height, bitdepth, fullscreen);
 }
@@ -49,7 +49,7 @@ void GameWindow::destroy()
    doDestroy();
 }
 
-bool GameWindow::doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen)
+bool GameWindow::doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen)
 {
    return false;
 }

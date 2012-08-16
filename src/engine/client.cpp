@@ -258,7 +258,7 @@ bool Client::initOpenGL()
 	return success;
 }
 
-bool Client::loadWorld(const std::string& filename, const std::string& name)
+bool Client::loadWorld(const String& filename, const String& name)
 {
    World* pworld = getContentManager().load(filename);
    if ( pworld != NULL )

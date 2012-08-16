@@ -44,12 +44,12 @@ ActorLoader::ActorLoader(Process& process):
 
 // - Operations
 
-Actor* ActorLoader::load(const std::string& filename)
+Actor* ActorLoader::load(const String& filename)
 {
    Log& log = Log::getInstance();
 
 	// try to find the object in the file
-   TiXmlDocument doc(filename);
+   TiXmlDocument doc(filename.toStdString());
    if ( !doc.LoadFile() )
    {
       return NULL;
@@ -89,10 +89,10 @@ Actor* ActorLoader::load(const std::string& filename)
 	if ( ptex != NULL )
    {
 		TiXmlText* pvalue = (TiXmlText*)ptex->FirstChild();
-      TexturePtr texture = ResourceManager::getInstance().getTexture(pvalue->ValueStr());
+      TexturePtr texture = ResourceManager::getInstance().getTexture(pvalue->ValueStr().c_str());
       if ( !texture.isValid() )
       {
-         throw new InvalidContentException("ActorLoader: can not load resource " + pvalue->ValueStr());
+         throw new InvalidContentException(String("ActorLoader: can not load resource ") + pvalue->ValueStr().c_str());
       }
       else
       {
@@ -101,7 +101,7 @@ Actor* ActorLoader::load(const std::string& filename)
 	}
    else
    {
-      throw new InvalidContentException("ActorLoader: actor requires a texture (missing in " + actor->getName() + ")");
+      throw new InvalidContentException(String("ActorLoader: actor requires a texture (missing in ") + actor->getName() + ")");
 	}
 
    // load animation stuff
@@ -119,7 +119,7 @@ Actor* ActorLoader::load(const std::string& filename)
 
    // create the actual scripted object
    const std::string* pclasstype = pobject->Attribute(std::string("type"));
-   actor->setClassName(pclasstype != NULL ? *pclasstype : "engine.game.Actor");
+   actor->setClassName(pclasstype != NULL ? pclasstype->c_str() : "engine.game.Actor");
 
    /*
    AutoPtr<Script> script = getProcess().getScriptManager().loadNative(actor->getType(), actor.getPointer(), false);

@@ -23,6 +23,7 @@
 
 #include <algorithm>
 
+#include "core/string/string.h"
 #include "core/input/keyeventdispatcher.h"
 #include "core/input/keyevent.h"
 #include "core/input/mouseeventdispatcher.h"
@@ -74,7 +75,7 @@ SDLGameWindow::~SDLGameWindow()
 {
 }
 
-bool SDLGameWindow::doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen)
+bool SDLGameWindow::doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen)
 {
    if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
    {
@@ -98,7 +99,7 @@ bool SDLGameWindow::doCreate(const std::string& title, int width, int height, in
 
    resize(width, height);
 
-   SDL_WM_SetCaption(title.c_str(), title.c_str());
+   SDL_WM_SetCaption(title.getBuffer(), title.getBuffer());
    SDL_EnableUNICODE(1);
 
    return true;

@@ -183,10 +183,10 @@ bool WorldWriter::writeObjects(ZipFile& zip)
 
 DataStream& operator<<(DataStream& in, const Layer& layer)
 {
-   const std::string&   name       = layer.getName();
-   const std::string&   effectFile = layer.getEffectFile();
-   int                  width      = layer.getWidth();
-   int                  height     = layer.getHeight();
+   const String&   name       = layer.getName();
+   const String&   effectFile = layer.getEffectFile();
+   int             width      = layer.getWidth();
+   int             height     = layer.getHeight();
    
    in << name << effectFile << width << height;
 

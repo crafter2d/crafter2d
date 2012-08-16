@@ -45,9 +45,9 @@ public:
    void        addParam(int val);
    void        addParam(float val);
    void        addParam(bool val);
-   void        addParam(const std::string& val);
+   void        addParam(const String& val);
    void        addParam(void* pobject);
-   void        addParam(const std::string& classname, void* pobject);
+   void        addParam(const String& classname, void* pobject);
    void        addParam(VirtualObject& object);
 
    bool        getBoolean();

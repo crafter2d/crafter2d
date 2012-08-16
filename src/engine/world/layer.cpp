@@ -80,7 +80,7 @@ Layer::~Layer()
 
 /// \fn Layer::~Layer()
 /// \brief Create a new empty layer
-bool Layer::create(const std::string& layername, int w, int h, const std::string& effectname)
+bool Layer::create(const String& layername, int w, int h, const String& effectname)
 {
    name        = layername;
    effectFile  = effectname;
@@ -97,7 +97,7 @@ bool Layer::create(const std::string& layername, int w, int h, const std::string
 
    if ( !effect.load(effectFile) )
    {
-      Log::getInstance().error("Can not load effect file '%s'.", effectFile.c_str());
+      Log::getInstance().error("Can not load effect file '%s'.", effectFile.getBuffer());
       return false;
    }
 

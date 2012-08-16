@@ -42,7 +42,7 @@ protected:
    bool readBounds(UnzipFile& zip);
    bool readObjects(UnzipFile& zip);
 
-   bool loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, const std::string& filename);
+   bool loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, const String& filename);
 };
 
 #endif // WORLDVERSION2READER_H

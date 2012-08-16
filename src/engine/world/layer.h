@@ -20,11 +20,11 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include <string>
 #include <fstream>
 
 #include "core/math/vector.h"
 #include "core/defines.h"
+#include "core/string/string.h"
 
 #include "engine/shader.h"
 #include "engine/texture.h"
@@ -61,7 +61,7 @@ public:
    virtual        ~Layer();
 
  // Construction
-   bool           create(const std::string& name, int width, int height, const std::string& effect);
+   bool           create(const String& name, int width, int height, const String& effect);
    void           release();
 
  // pure virtuals
@@ -71,8 +71,8 @@ public:
    virtual void   drawHighlight(const Vector& point) = 0;
 
  // get/set interface
-   const std::string& getName() const;
-   void               setName(const std::string& name);
+   const String& getName() const;
+   void          setName(const String& name);
 
    virtual LayerType  getType() const;
 
@@ -103,7 +103,7 @@ public:
    float          getTexTileHeight() const { return texTileHeight; }
 
    const Effect&        getEffect() const;
-   const std::string&   getEffectFile() const;
+   const String&   getEffectFile() const;
 
  // Operations
    Vector         layerToScreen( const Vector& vec ) const;
@@ -139,7 +139,7 @@ protected:
    bool animateTiles;
    bool dirty;
 
-   std::string name, effectFile;
+   String name, effectFile;
    Effect effect;
    TileSet mTileSet;
 

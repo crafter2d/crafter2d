@@ -114,12 +114,12 @@ void Script::addParam(void* pobject)
    mScriptManager.mVirtualMachine.push(*pvirtualobject);
 }
 
-/// \fn Script::addParam(const std::string& classname, void* pobject)
+/// \fn Script::addParam(const String& classname, void* pobject)
 /// \brief Pushes a custom type parameter on top of the stack which will be use by Lua as a parameter to the
 /// function.
 /// \param object a pointer to an object
 /// \param typeName the type name of the object (class name)
-void Script::addParam(const std::string& classname, void* pobject)
+void Script::addParam(const String& classname, void* pobject)
 {
    VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.instantiateNative(classname, pobject, false);
 

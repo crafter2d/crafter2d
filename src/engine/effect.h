@@ -20,9 +20,9 @@
 #ifndef EFFECT_H_
 #define EFFECT_H_
 
-#include <string>
 #include <vector>
 
+#include "core/string/string.h"
 #include "texture.h"
 
 class CodePath;
@@ -42,7 +42,7 @@ class Effect
 {
 	struct TexStage {
 		TexturePtr tex;
-      std::string uniform;
+      String uniform;
 		int index;
 		GLint combiner;
 		GLint source0;
@@ -53,7 +53,7 @@ public:
 	                  Effect();
 	                  ~Effect();
 	
-	bool              load(const std::string& file);
+	bool              load(const String& file);
 	void              destroy();
 	
 	const Texture&    resolveTexture(const char* uniform) const;
@@ -78,7 +78,7 @@ private:
 	GLint             getCombinerValue(const char* str);
 	GLint             getSourceValue(const char* str);
 	
-   std::string name;
+   String      name;
    Stages      stages;
    CodePath*   mCodePath;
    bool        useCombiners;  

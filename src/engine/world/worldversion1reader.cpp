@@ -44,10 +44,10 @@ WorldVersion1Reader::~WorldVersion1Reader()
 
 bool WorldVersion1Reader::virRead()
 {
-   std::ifstream stream (getFilename().c_str(), std::ios_base::in | std::ios_base::binary);
+   std::ifstream stream (getFilename().getBuffer(), std::ios_base::in | std::ios_base::binary);
    if ( !stream.is_open () )
    {
-      Log::getInstance().error("World:create : Can not open file %s", getFilename().c_str());
+      Log::getInstance().error("World:create : Can not open file %s", getFilename().getBuffer());
       return false;
    }
 
@@ -72,7 +72,7 @@ bool WorldVersion1Reader::readLayers(std::ifstream& stream)
 
       if ( !readLayer(stream, *player) || !player->prepare() )
       {
-         Log::getInstance().error("World:create : loading layer %d from %s failed.", i, getFilename().c_str());
+         Log::getInstance().error("World:create : loading layer %d from %s failed.", i, getFilename().getBuffer());
          getWorld().destroy ();
          return false;
       }
@@ -87,7 +87,7 @@ bool WorldVersion1Reader::readLayer(std::ifstream& stream, Layer& layer)
 	char buffer[255];
 
    int width, height, tileWidth, tileHeight, tileCount, scrollSpeedX, scrollSpeedY;
-   std::string name, effectName;
+   String name, effectName;
 
 	memset (buffer, 0, 255);
 	stream.read ((char*)&nameLen, sizeof(unsigned char));
@@ -107,11 +107,16 @@ bool WorldVersion1Reader::readLayer(std::ifstream& stream, Layer& layer)
 	stream.read (buffer, nameLen);
 	effectName = buffer;
 
-   std::size_t pos = effectName.rfind ('\\');
-	effectName.erase (0, pos+1);
-   pos = effectName.rfind('.');
-   if ( pos != effectName.npos )
-      effectName.erase(pos, 4);
+   int pos = effectName.lastIndexOf('\\');
+	if ( pos != -1 )
+   {
+      effectName.remove(0, pos+1);
+   }
+   pos = effectName.lastIndexOf('.');
+   if ( pos != -1 )
+   {
+      effectName.remove(pos, 4);
+   }
 
 	// read in the scroll speeds
 	stream.read ((char*)&scrollSpeedX, sizeof (int));

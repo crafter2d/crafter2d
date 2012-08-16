@@ -34,7 +34,7 @@ void Graphics::drawRoundedRect(int x, int y, int width, int height)
    glRecti(x+1, y+height-1, x+width-1, y+height);   // bottom
 }
 
-void Graphics::drawText(int x, int y, const std::string& text)
+void Graphics::drawText(int x, int y, const String& text)
 {
    ASSERT_PTR(mpFont);
 

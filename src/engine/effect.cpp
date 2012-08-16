@@ -57,22 +57,22 @@ Effect::~Effect()
 }
 
 /*!
-    \fn Effect::load(const char* file)
+    \fn Effect::load(const String& file)
 	 \brief Loads an effect file and prepairs the OpenGL textures and shaders. It also
 	 sets up pointers to the uniform variables.
 	 \retval true the effect file is loaded correctly.
 	 \retval false an error occured (look in the log file for a message).
  */
-bool Effect::load(const std::string& file)
+bool Effect::load(const String& file)
 {
 	Log& log = Log::getInstance();
 
-   std::string path = "../shaders/" + file + ".xml";
+   String path = String("../shaders/") + file + ".xml";
 
-   TiXmlDocument doc(path);
+   TiXmlDocument doc(path.toStdString());
 	if ( !doc.LoadFile() )
    {
-      log.error("Effect.load: can not load '%s'", file.c_str());
+      log.error("Effect.load: can not load '%s'", file.getBuffer());
 		return false;
 	}
 
@@ -80,7 +80,7 @@ bool Effect::load(const std::string& file)
 	const TiXmlElement* effect = static_cast<TiXmlElement*>(doc.FirstChild("effect"));
 	if ( effect == NULL )
    {
-		log.error("Effect.load: %s is not an effect file.", file.c_str());
+		log.error("Effect.load: %s is not an effect file.", file.getBuffer());
 		return false;
 	}
 
@@ -170,10 +170,10 @@ bool Effect::postprocessTextures ()
    // get the uniform locations of the textures in the fragment shader
    for ( Stages::size_type s = 0; s < stages.size(); ++s)
    {
-      stages[s].index = getPath().getUniformLocation(stages[s].uniform.c_str());
+      stages[s].index = getPath().getUniformLocation(stages[s].uniform.getBuffer());
       if (stages[s].index == -1)
       {
-         Log::getInstance().error("Can not find %s", stages[s].uniform.c_str());
+         Log::getInstance().error("Can not find %s", stages[s].uniform.getBuffer());
          return false;
       }
    }
@@ -371,7 +371,7 @@ const Texture* Effect::findTexture(const char* uniform) const
    for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
       const TexStage& stage = stages[s];
-      if ( strcmp (uniform, stage.uniform.c_str()) == 0 )
+      if ( strcmp (uniform, stage.uniform.getBuffer()) == 0 )
          return stage.tex.ptr();
    }
 

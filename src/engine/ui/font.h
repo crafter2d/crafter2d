@@ -47,7 +47,7 @@ public:
    int      getTextHeight(const String& text) const;
 
  // rendering
-   void     render(const std::string& text);
+   void     render(const String& text);
 
 private:
    typedef std::map<char, FontChar*> Characters;

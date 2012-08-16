@@ -89,7 +89,7 @@ public:
    void               setWindow(GameWindow* pwindow);
 
  // operations
-   virtual bool   loadWorld(const std::string& filename, const std::string& name);
+   virtual bool   loadWorld(const String& filename, const String& name);
 
    bool           connect(const String& server, int port);
    void           disconnect();
