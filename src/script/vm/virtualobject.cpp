@@ -66,7 +66,7 @@ void* VirtualObject::useNativeObject()
 
 void VirtualObject::setNativeObject(void* pobject)
 {
-   ASSERT(mpNativeObject == NULL);
+   //ASSERT(mpNativeObject == NULL);
    mpNativeObject = pobject;
 }
 
@@ -113,6 +113,7 @@ void VirtualObject::initialize(int variables)
 {
    if ( variables > 0 )
    {
+      delete[] mpMembers;
       mpMembers = new Variant[variables];
       mMemberCount = variables;
    }
@@ -141,6 +142,8 @@ void VirtualObject::finalize(VirtualMachine& vm)
    {
       vm.unregisterNative(*this);
    }
+
+   vm.release(*this);
 }
 
 void VirtualObject::doMark()

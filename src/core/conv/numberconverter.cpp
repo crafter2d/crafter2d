@@ -22,11 +22,6 @@ NumberConverter::NumberConverter():
 {
    UErrorCode error = U_ZERO_ERROR;
    mpFormat = NumberFormat::createInstance(Locale::getEnglish(), error);
-   if ( U_FAILURE(error) )
-   {
-      // meh!!
-      int aap = 5;
-   }
 }
 
 // - Conversions

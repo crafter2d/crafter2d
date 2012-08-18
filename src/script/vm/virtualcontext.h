@@ -4,6 +4,7 @@
 
 #include "script/script_base.h"
 
+#include "script/common/stringcache.h"
 #include "script/common/literaltable.h"
 
 #include "virtualclasstable.h"
@@ -16,6 +17,7 @@ public:
 
    VirtualClassTable       mClassTable;
    VirtualInstructionTable mInstructions;
+   StringCache             mStringCache;
    LiteralTable            mLiteralTable;
 };
 

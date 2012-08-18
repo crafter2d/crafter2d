@@ -8,73 +8,80 @@
 #include "script/vm/virtualarray.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualclass.h"
+#include "script/vm/virtualstring.h"
 
 // - Variant
 
 Variant::Variant():
    mType(eEmpty),
-   mpHolder(NULL)
+   mValue()
 {
 }
 
 Variant::Variant(const Variant& that):
    mType(that.mType),
-   mpHolder(isEmpty() ? NULL : that.mpHolder->clone())
+   mValue(that.mValue)
 {
 }
 
 Variant::Variant(int value):
    mType(eInt),
-   mpHolder(new DataHolder<int>(value))
+   mValue()
 {
+   mValue.mInt = value;
 }
 
 Variant::Variant(double value):
    mType(eReal),
-   mpHolder(new DataHolder<double>(value))
+   mValue()
 {
+   mValue.mReal = value;
 }
 
 Variant::Variant(char value):
    mType(eChar),
-   mpHolder(new DataHolder<char>(value))
+   mValue()
 {
+   mValue.mChar = value;
 }
 
 Variant::Variant(bool value):
    mType(eBool),
-   mpHolder(new DataHolder<bool>(value))
+   mValue()
 {
+   mValue.mBoolean = value;
 }
 
-Variant::Variant(const String& value):
+Variant::Variant(VirtualString& value):
    mType(eString),
-   mpHolder(new StringHolder(value))
+   mValue()
 {
+   mValue.mpString = &value;
 }
 
 Variant::Variant(VirtualObject& object):
    mType(eObject),
-   mpHolder(new ObjectHolder(&object))
+   mValue()
 {
+   mValue.mpObject = &object;
 }
 
 Variant::Variant(VirtualObject* pvirtualobject):
    mType(eObject),
-   mpHolder(new ObjectHolder(pvirtualobject))
+   mValue()
 {
+   mValue.mpObject = pvirtualobject;
 }
 
 Variant::Variant(VirtualArray& array):
    mType(eArray),
-   mpHolder(new ArrayHolder(&array))
+   mValue()
 {
+   mValue.mpArray = &array;
 }
 
 Variant::~Variant()
 {
-   delete mpHolder;
-   mpHolder = NULL;
 }
 
 bool Variant::operator==(const Variant& that) const
@@ -199,9 +206,8 @@ bool Variant::operator>=(const Variant& that) const
 
 const Variant& Variant::operator=(const Variant& that)
 {
-   delete mpHolder;
    mType = that.mType;
-   mpHolder = (mType == eEmpty) ? NULL : that.mpHolder->clone();
+   mValue = that.mValue;
 
    return *this;
 }
@@ -210,136 +216,80 @@ const Variant& Variant::operator=(const Variant& that)
 
 int Variant::asInt() const
 {
-   return ((DataHolder<int>*)mpHolder)->mData;
+   return mValue.mInt;
 }
 
 void Variant::setInt(int value)
 {
-   if ( mType == eInt )
-   {
-      ((DataHolder<int>*)mpHolder)->mData = value;
-   }
-   else
-   {
-      mType = eInt;
-      delete mpHolder;
-      mpHolder = new DataHolder<int>(value);
-   }
+   mType = eInt;
+   mValue.mInt = value;
 }
 
 double Variant::asReal() const
 {
-   return ((DataHolder<double>*)mpHolder)->mData;
+   return mValue.mReal;
 }
 
 void Variant::setReal(double value)
 {
-   if ( mType == eReal )
-   {
-      ((DataHolder<double>*)mpHolder)->mData = value;
-   }
-   else
-   {
-      mType = eReal;
-      delete mpHolder;
-      mpHolder = new DataHolder<double>(value);
-   }
+   mType = eReal;
+   mValue.mReal = value;
 }
 
 char Variant::asChar() const
 {
    ASSERT(mType == eChar);
-   return ((DataHolder<char>*)mpHolder)->mData;
+   return mValue.mChar;
 }
 
 void Variant::setChar(char value)
 {
-   if ( mType == eChar )
-   {
-      ((DataHolder<char>*)mpHolder)->mData = value;
-   }
-   else
-   {
-      mType = eChar;
-      delete mpHolder;
-      mpHolder = new DataHolder<char>(value);
-   }
+   mType = eChar;
+   mValue.mChar = value;
 }
 
 bool Variant::asBool() const
 {
-   return ((DataHolder<bool>*)mpHolder)->mData;
+   return mValue.mBoolean;
 }
 
 void Variant::setBool(bool value)
 {
-   if ( mType == eBool )
-   {
-      ((DataHolder<bool>*)mpHolder)->mData = value;
-   }
-   else
-   {
-      mType = eBool;
-      delete mpHolder;
-      mpHolder = new DataHolder<bool>(value);
-   }
+   mType = eBool;
+   mValue.mBoolean = value;
 }
 
-const String& Variant::asString() const
+VirtualString& Variant::asString() const
 {
-   return ((StringHolder*)mpHolder)->mData;
+   return *mValue.mpString;
 }
 
-void Variant::setString(const String& value)
+void Variant::setString(VirtualString& value)
 {
-   if ( mType == eString )
-   {
-      ((StringHolder*)mpHolder)->mData = value;
-   }
-   else
-   {
-      mType = eString;
-      delete mpHolder;
-      mpHolder = new StringHolder(value);
-   }
+   mType = eString;
+   mValue.mpString = &value;
 }
 
 VirtualObject& Variant::asObject() const
 {
-   return *((ObjectHolder*)mpHolder)->mData;
+   return *mValue.mpObject;
 }
 
 void Variant::setObject(VirtualObject& object)
 {
-   if ( mType == eObject )
-   {
-      ((ObjectHolder*)mpHolder)->mData = &object;
-   }
-   else
-   {
-      mType = eObject;
-      delete mpHolder;
-      mpHolder = new ObjectHolder(&object);
-   }
+   mType = eObject;
+   mValue.mpObject = &object;
 }
 
 VirtualArray& Variant::asArray() const
 {
-   return *((ArrayHolder*)mpHolder)->mData;
+   return *mValue.mpArray;
 }
 
 void Variant::setArray(VirtualArray& array)
 {
-   if ( mType == eArray )
-   {
-      ((ArrayHolder*)mpHolder)->mData = &array;
-   }
-   else
-   {
-      mType = eArray;
-      delete mpHolder;
-      mpHolder = new ArrayHolder(&array);
-   }
+   mType = eArray;
+   mValue.mpArray = &array;
 }
 
 // - Query
@@ -413,7 +363,7 @@ String Variant::toString() const
    switch ( mType )
    {
       case eString:
-         return asString();
+         return asString().getString();
       case eInt:
          return String(lexical_cast<std::string>(asInt()).c_str());
       case eReal:
@@ -440,7 +390,7 @@ int Variant::toInt() const
    case eReal:
       return static_cast<int>(asReal());
    case eString:
-      return NumberConverter::getInstance().toInt(asString());
+      return NumberConverter::getInstance().toInt(asString().getString());
 
    default:
       UNREACHABLE("Can not convert this type to int!");

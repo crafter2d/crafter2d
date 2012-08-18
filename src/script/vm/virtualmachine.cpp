@@ -67,7 +67,7 @@ void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor
    VirtualObject& thisobject = accessor.getThis();
    VirtualObject& classobject = accessor.getObject(1);
 
-   String name = classobject.getMember(0).asString();
+   String name = classobject.getMember(0).asString().getString();
    VirtualObject* pobject = machine.instantiate(name);
 
    accessor.setResult(*pobject);
@@ -78,7 +78,7 @@ void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
    VirtualObject& thisobject = accessor.getThis();
    VirtualObject& instance = accessor.getObject(1);
 
-   String fncname = thisobject.getMember(0).asString();
+   String fncname = thisobject.getMember(0).asString().getString();
 
    machine.execute(instance, fncname);
 }
@@ -291,7 +291,7 @@ void VirtualMachine::push(bool value)
 
 void VirtualMachine::push(const String& value)
 {
-   mStack.pushString(value);
+   mStack.pushString(mContext.mStringCache.lookup(value));
 }
 
 void VirtualMachine::push(VirtualObject& object)
@@ -348,11 +348,13 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    mCallStack.push(mCall);
    mCall.start(vclass, entry, mStack.size());
 
+   /*
 #ifdef _DEBUG
    int len;
    const char* pclass = vclass.getName().toUtf8(len);
    const char* pentry = entry.mName.toUtf8(len);
 #endif
+   */
 
    const VirtualInstructionTable& instructions = mContext.mInstructions;
 
@@ -423,7 +425,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eNew:
          {
-            const String& type = mContext.mLiteralTable[mStack.popInt()].getValue().asString();
+            const String& type = mContext.mLiteralTable[mStack.popInt()].getValue().asString().getString();
 
             VirtualObject* pobject = instantiate(type, instruction.getArgument());
             ASSERT_PTR(pobject);
@@ -440,9 +442,9 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
             if ( !object.asObject().hasNativeObject() )
             {
-               const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
+               const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
 
-               VirtualStackAccessor accessor(mStack);
+               VirtualStackAccessor accessor(mContext, mStack);
                (*mNatives[fnc])(*this, accessor);
 
                mStack.pop(); // pop argument count
@@ -534,7 +536,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCallNative:
          {
-            const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
+            const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
 
             Natives::iterator it = mNatives.find(fnc);
             if ( it == mNatives.end() )
@@ -542,7 +544,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
                throwException("system.NativeFunctionNotFoundException", fnc);
             }
 
-            VirtualStackAccessor accessor(mStack);
+            VirtualStackAccessor accessor(mContext, mStack);
             (*it->second)(*this, accessor);
 
             mStack.pop(1); // pop the argument count
@@ -555,7 +557,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             int classlit = mStack.popInt();
             int arguments = mStack.popInt();
 
-            String classname = mContext.mLiteralTable[classlit].getValue().asString();
+            String classname = mContext.mLiteralTable[classlit].getValue().asString().getString();
 
             const VirtualClass& theclass = mContext.mClassTable.resolve(classname);
             const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
@@ -586,7 +588,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          {
             String result;
             NumberConverter::getInstance().format(result, mStack.popInt());
-            mStack.pushString(result);
+            mStack.pushString(mContext.mStringCache.lookup(result));
          }
          break;
       case VirtualInstruction::eReal2Int:
@@ -598,21 +600,21 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          {
             String result;
             NumberConverter::getInstance().format(result, mStack.popReal());
-            mStack.pushString(result);
+            mStack.pushString(mContext.mStringCache.lookup(result));
          }
          break;
       case VirtualInstruction::eChar2String:
          {
             String result;
             result += mStack.popChar();
-            mStack.pushString(result);
+            mStack.pushString(mContext.mStringCache.lookup(result));
          }
          break;
       case VirtualInstruction::eBoolean2String:
          {
             bool value = mStack.popBool();
             String string(value ? String("true") : String("false"));
-            mStack.pushString(string);
+            mStack.pushString(mContext.mStringCache.lookup(string));
          }
          break;
 
@@ -882,7 +884,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             char right = mStack.popChar();
             String left = mStack.popString();
 
-            mStack.pushString(left + right);
+            mStack.pushString(mContext.mStringCache.lookup(left + right));
          }
          break;
       case VirtualInstruction::eCmpEqChar:
@@ -909,7 +911,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             String right = mStack.popString();
             String left = mStack.popString();
 
-            mStack.pushString(left + right);
+            mStack.pushString(mContext.mStringCache.lookup(left + right));
          }
          break;
       case VirtualInstruction::eCmpEqStr:
@@ -1011,7 +1013,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eLookup:
          {
-            String classname = mContext.mLiteralTable[mStack.popInt()].getValue().asString();
+            String classname = mContext.mLiteralTable[mStack.popInt()].getValue().asString().getString();
             const VirtualLookupTable& table = mContext.mClassTable.resolve(classname).getLookupTable(instruction.getArgument());
 
             int codeindex = table.lookup(mStack.back());
@@ -1093,7 +1095,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eInstanceOf:
          {
-            const String& name = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
+            const String& name = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
             const VirtualClass* pcompareclass = mContext.mClassTable.find(name);
 
             ASSERT(mStack.back().isObject());
@@ -1244,7 +1246,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          {
             int classlit = mStack.popInt();
 
-            const String& classname = mContext.mLiteralTable[classlit].getValue().asString();
+            const String& classname = mContext.mLiteralTable[classlit].getValue().asString().getString();
             VirtualClass& c = mContext.mClassTable.resolve(classname);
 
             c.setStatic(instruction.getArgument(), mStack.pop());
@@ -1254,7 +1256,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          {
             int classlit = mStack.popInt();
 
-            const String& classname = mContext.mLiteralTable[classlit].getValue().asString();
+            const String& classname = mContext.mLiteralTable[classlit].getValue().asString().getString();
             const VirtualClass& c = mContext.mClassTable.resolve(classname);
 
             mStack.push(c.getStatic(instruction.getArgument()));
@@ -1275,7 +1277,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             }
             else
             {
-               name = mContext.mLiteralTable[mStack.back().asInt()].getValue().asString();
+               name = mContext.mLiteralTable[mStack.back().asInt()].getValue().asString().getString();
             }
             mStack.pop(1);
 
@@ -1284,7 +1286,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             const Variant& classloaderobject = classloader.getStatic(0);
 
             mStack.push(classloaderobject);
-            mStack.pushString(name);
+            mStack.pushString(mContext.mStringCache.lookup(name));
 
             execute(classloader, *pentry);
          }
@@ -1336,7 +1338,7 @@ void VirtualMachine::throwException(const String& exceptionname, const String& r
 
    if ( reason.length() > 0 )
    {
-      mStack.pushString(reason);
+      mStack.pushString(mContext.mStringCache.lookup(reason));
       execute(*pexception, "setCause");
    }
 
@@ -1396,10 +1398,11 @@ VirtualObject* VirtualMachine::instantiate(const String& classname, int construc
       return NULL;
    }
 
-   AutoPtr<VirtualObject> object = pclass->instantiate();
-   object->setNativeObject(pnativeobject);
+   VirtualObject* pobject = mObjectCache.alloc();
+   pobject->setNativeObject(pnativeobject);
+   pclass->instantiate(*pobject);   
 
-   Variant objectvariant(*object);
+   Variant objectvariant(*pobject);
 
    {
       // run field initialization expressions
@@ -1429,9 +1432,9 @@ VirtualObject* VirtualMachine::instantiate(const String& classname, int construc
    }
 
    // register the object with the garbage collector
-   mGC.collect(object.release());
+   mGC.collect(pobject);
 
-   return object.getPointer();
+   return pobject;
 }
 
 VirtualObject* VirtualMachine::instantiateNative(const String& classname, void* pobject, bool owned)
@@ -1500,6 +1503,11 @@ VirtualArray* VirtualMachine::instantiateArray()
    return parray;
 }
 
+void VirtualMachine::release(VirtualObject& object)
+{
+   mObjectCache.free(&object);
+}
+
 // - Native interface
 
 void VirtualMachine::registerNative(VirtualObject& object, void* pnative)
@@ -1530,7 +1538,7 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
       mStack.pushObject(object);
       mStack.pushInt(1);
 
-      VirtualStackAccessor accessor(mStack);
+      VirtualStackAccessor accessor(mContext, mStack);
       (*mNatives[fnc])(*this, accessor);
 
       mStack.pop(2);
@@ -1590,7 +1598,18 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
                   int i = mContext.mLiteralTable.indexOf(literal);
                   if ( i == mContext.mLiteralTable.size() )
                   {
-                     i = mContext.mLiteralTable.insert(literal.clone());
+                     Literal* pliteral = NULL;
+                     if ( literal.getValue().isString() )
+                     {
+                        VirtualString& vstring = mContext.mStringCache.lookup(literal.getValue().asString().getString());
+                        pliteral = new Literal(Variant(vstring));
+                     }
+                     else
+                     {
+                        pliteral = literal.clone();
+                     }
+                      
+                     i = mContext.mLiteralTable.insert(pliteral);
                   }
 
                   previous.setArgument(i);

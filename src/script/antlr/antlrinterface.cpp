@@ -1470,13 +1470,6 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
    AntlrNode valuenode = node.getChild(0);
    String valuestr = valuenode.toString();
 
-   int len;
-   const char* pf = valuestr.toUtf8(len);
-   if ( strncmp(pf, "25", 2) == 0 )
-   {
-      int aap = 5;
-   }
-
    Variant value;
    ASTType::Kind kind = ASTType::eInt;
    ANTLR3_UINT32 valuetype = valuenode.getType();
@@ -1496,7 +1489,7 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
          break;
       case STRING:
          kind = ASTType::eString;
-         value.setString(parseString(valuestr));
+         value.setString(mContext.getStringCache().lookup(parseString(valuestr)));
          break;
       case LITTRUE:
          kind = ASTType::eBoolean;

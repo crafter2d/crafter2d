@@ -163,7 +163,8 @@ int CodeGeneratorVisitor::allocateLabel()
 
 int CodeGeneratorVisitor::allocateLiteral(const String& value)
 {
-   Variant variant(value);
+   VirtualString& vstring = mContext.getStringCache().lookup(value);
+   Variant variant(vstring);
 
    int index = mContext.getLiteralTable().indexOf(variant);
    if ( index == mContext.getLiteralTable().size() )
@@ -1770,7 +1771,8 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
          {
             const ASTAnnotation& annotation = annotations[a];
 
-            (*pannoarray)[a] = Variant(annotation.mName);
+            VirtualString& vname = mContext.getStringCache().lookup(annotation.mName);
+            (*pannoarray)[a] = Variant(vname);
          }
       }
       else
@@ -1780,7 +1782,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
 
       VirtualObject* funcobject = new VirtualObject();
       funcobject->initialize(2);
-      funcobject->setMember(0, Variant(function.getName()));
+      funcobject->setMember(0, Variant(mContext.getStringCache().lookup(function.getName())));
       funcobject->setMember(1, Variant(*pannoarray));
 
       (*pfuncarray)[index] = Variant(*funcobject); // <-- hack!
@@ -1788,7 +1790,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
 
    VirtualObject* classobject = new VirtualObject();
    classobject->initialize(2);
-   classobject->setMember(0, Variant(ast.getFullName()));
+   classobject->setMember(0, Variant(mContext.getStringCache().lookup(ast.getFullName())));
    classobject->setMember(1, Variant(*pfuncarray));
 
    mpVClass->setClassObject(classobject);
@@ -1797,7 +1799,7 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
 void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
 {
    int index = literal.getTableIndex();
-   const Variant value = literal.getValue();
+   const Variant& value = literal.getValue();
    if ( value.isInt() )
    {
       switch ( value.asInt() )
@@ -1818,20 +1820,22 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
    }
    else if ( value.isReal() )
    {
-      switch ( value.asInt() )
+      double real = value.asReal();
+      if ( real == 0.0 )
       {
-      case 0:
          addInstruction(VirtualInstruction::eReal0);
-         break;
-      case 1:
+      }
+      else if ( real == 1.0 )
+      {
          addInstruction(VirtualInstruction::eReal1);
-         break;
-      case 2:
+      }
+      else if ( real == 2.0 )
+      {
          addInstruction(VirtualInstruction::eReal2);
-         break;
-      default:
+      }
+      else
+      {
          addInstruction(VirtualInstruction::eLoadLiteral, index);
-         break;
       }
    }
    else if ( value.isBool() )

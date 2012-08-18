@@ -15,6 +15,7 @@
 CompileContext::CompileContext(Compiler& compiler):
    mCompiler(compiler),
    mClasses(),
+   mStringCache(),
    mLiteralTable(),
    mLog(),
    mpResult(NULL)
@@ -26,6 +27,11 @@ CompileContext::CompileContext(Compiler& compiler):
 CompileLog& CompileContext::getLog()
 {
    return mLog;
+}
+
+StringCache& CompileContext::getStringCache()
+{
+   return mStringCache;
 }
 
 const LiteralTable& CompileContext::getLiteralTable() const

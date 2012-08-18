@@ -5,6 +5,7 @@
 
 #include "virtualarray.h"
 #include "virtualobject.h"
+#include "virtualstring.h"
 
 VirtualStack::VirtualStack(int initialsize):
    mStack(),
@@ -61,7 +62,7 @@ void VirtualStack::pushChar(char value)
    top().setChar(value);
 }
 
-void VirtualStack::pushString(const String& value)
+void VirtualStack::pushString(VirtualString& value)
 {
    top().setString(value);
 }
@@ -109,7 +110,7 @@ char VirtualStack::popChar()
 
 const String& VirtualStack::popString()
 {
-   return mStack[--mSize]->asString();
+   return mStack[--mSize]->asString().getString();
 }
 
 VirtualObject& VirtualStack::popObject()

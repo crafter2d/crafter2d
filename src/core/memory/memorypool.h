@@ -10,7 +10,7 @@ class MemoryPool
    typedef std::queue<T*> Pool;
 
 public:
-   MemoryPool();
+   MemoryPool(): mPool() {}
 
    T* alloc() {
       if ( mPool.empty() )

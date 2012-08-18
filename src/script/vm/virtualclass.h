@@ -74,7 +74,7 @@ public:
    const VirtualFunctionTableEntry* getDefaultConstructor() const;
 
  // operations
-   VirtualObject*      instantiate() const;
+   void instantiate(VirtualObject& object) const;
 
    const Variant& getStatic(int index) const;
          Variant& getStatic(int index);

@@ -2,19 +2,24 @@
 #ifndef STRING_CACHE_H
 #define STRING_CACHE_H
 
-class StringData;
+#include <map>
 
-class StringCache
+#include "script/script_base.h" 
+
+class String;
+class VirtualString;
+
+class SCRIPT_API StringCache
 {
 public:
    StringCache();
 
-
+   VirtualString& lookup(const String& value);
 
 private:
-   typedef std::vector<StringData*> Strings;
+   typedef std::map<int, VirtualString*> StringMap;
 
-   Strings mStrings;
+   StringMap mStrings;
 };
 
 #endif // STRING_CACHE_H

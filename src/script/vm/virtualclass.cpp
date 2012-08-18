@@ -240,13 +240,10 @@ void VirtualClass::offsetCode(int offset)
 
 // - Runtime instantiation
 
-VirtualObject* VirtualClass::instantiate() const
+void VirtualClass::instantiate(VirtualObject& object) const
 {
-   VirtualObject* pobject = new VirtualObject();
-   pobject->setClass(*this);
-   pobject->initialize(mVariableCount);
-
-   return pobject;
+   object.setClass(*this);
+   object.initialize(mVariableCount);
 }
 
 const Variant& VirtualClass::getStatic(int index) const

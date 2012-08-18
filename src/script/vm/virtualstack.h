@@ -26,7 +26,7 @@ public:
    void pushReal(double value);
    void pushBool(bool value);
    void pushChar(char value);
-   void pushString(const String& value);
+   void pushString(VirtualString& value);
    void pushObject(VirtualObject& object);
    void pushArray(VirtualArray& array);
 

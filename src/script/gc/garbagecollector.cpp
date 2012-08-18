@@ -74,7 +74,7 @@ void GarbageCollector::phaseCollect(VirtualMachine& vm)
          it.remove();
 
          pobject->finalize(vm);
-         delete pobject;
+         //delete pobject;
       }
    }
 }

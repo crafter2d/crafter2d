@@ -8,6 +8,7 @@
 
 class VirtualObject;
 class VirtualArray;
+class VirtualString;
 
 class SCRIPT_API Variant
 {
@@ -18,7 +19,7 @@ public:
    explicit Variant(double value);
    explicit Variant(char value);
    explicit Variant(bool value);
-   explicit Variant(const String& value);
+   explicit Variant(VirtualString& value);
    explicit Variant(VirtualObject& object);
    explicit Variant(VirtualObject* pvirtualobject);
    explicit Variant(VirtualArray& array);
@@ -46,8 +47,8 @@ public:
    char asChar() const;
    void setChar(char value);
 
-   const String& asString() const;
-   void setString(const String& value);
+   VirtualString& asString() const;
+   void setString(VirtualString& value);
 
    VirtualObject& asObject() const;
    void setObject(VirtualObject& object);
@@ -87,33 +88,20 @@ private:
       eObject,
       eArray
    };
+
+   union Value
+   {
+      int            mInt;
+      double         mReal;
+      char           mChar;
+      bool           mBoolean;
+      VirtualString* mpString;
+      VirtualObject* mpObject;
+      VirtualArray*  mpArray;
+   };
    
-   struct DataHolderBase
-   {
-      virtual ~DataHolderBase() {}
-
-      virtual DataHolderBase* clone() const = 0;
-   };
-
-   template< typename T >
-   struct DataHolder : DataHolderBase
-   {
-      DataHolder(const T& data): mData(data) {}
-      DataHolder(const DataHolder& that): mData(that.mData) {}
-      
-      virtual DataHolder<T>* clone() const {
-         return new DataHolder<T>(*this);
-      }
-
-      T mData;
-   };
-
-   typedef DataHolder<VirtualObject*> ObjectHolder;
-   typedef DataHolder<VirtualArray*>  ArrayHolder;
-   typedef DataHolder<String>         StringHolder;
-
    MetaType        mType;
-   DataHolderBase* mpHolder;
+   Value           mValue;
 };
 
 #endif // VIRTUAL_VARIANT_H_

@@ -5,11 +5,13 @@
 #include "core/defines.h"
 
 #include "virtualstack.h"
+#include "virtualstring.h"
+#include "virtualcontext.h"
 
 class VirtualStackAccessor
 {
 public:
-   VirtualStackAccessor(VirtualStack& stack): mStack(stack), mSize(stack.back().asInt())
+   VirtualStackAccessor(VirtualContext& context, VirtualStack& stack): mContext(context), mStack(stack), mSize(stack.back().asInt())
    {
    }
 
@@ -31,7 +33,7 @@ public:
 
    const String& getString(int argument) const {
       Variant& value = getArgument(argument);
-      return value.asString();
+      return value.asString().getString();
    }
 
    char getChar(int argument) const {
@@ -88,7 +90,7 @@ public:
    }
 
    void setResult(const String& value) {
-      mResult = Variant(value);
+      mResult = Variant(mContext.mStringCache.lookup(value));
    }
 
    void setResult(const Variant& value) {
@@ -103,9 +105,10 @@ private:
       // index 0 -> 4 - 3 = 1
    }
 
-   VirtualStack&  mStack;
-   Variant        mResult;
-   int            mSize;
+   VirtualContext&   mContext;
+   VirtualStack&     mStack;
+   Variant           mResult;
+   int               mSize;
 };
 
 #endif // VIRTUAL_STACK_ACCESSOR_H

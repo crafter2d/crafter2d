@@ -26,6 +26,7 @@
 
 #include "script/script_base.h"
 
+#include "core/memory/memorypool.h"
 #include "core/defines.h"
 
 #include "script/compiler/compiler.h"
@@ -87,6 +88,7 @@ public:
    VirtualObject*    instantiate(const String& classname, int constructor = -1, void* pobject = NULL);
    VirtualObject*    instantiateNative(const String& classname, void* pobject, bool owned = true);
    VirtualArray*     instantiateArray();
+   void              release(VirtualObject& object);
 
  // observing
    VirtualObject*    lookupNative(void* pobject);
@@ -172,6 +174,7 @@ private:
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
    Objects                       mRootObjects;
+   MemoryPool<VirtualObject>     mObjectCache;
    GarbageCollector              mGC;
    VirtualStack                  mStack;
    CallStack                     mCallStack;

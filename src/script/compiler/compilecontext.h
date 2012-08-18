@@ -7,6 +7,7 @@
 #include "core/string/string.h"
 
 #include "script/ast/asttype.h"
+#include "script/common/stringcache.h"
 #include "script/common/literaltable.h"
 
 #include "compilelog.h"
@@ -24,6 +25,8 @@ public:
 
  // get/set
    CompileLog& getLog();
+
+   StringCache& getStringCache();
 
    const LiteralTable& getLiteralTable() const;
          LiteralTable& getLiteralTable();
@@ -52,6 +55,7 @@ private:
 
    Compiler&      mCompiler;
    ClassMap       mClasses;
+   StringCache    mStringCache;
    LiteralTable   mLiteralTable;
    CompileLog     mLog;
    VirtualClass*  mpResult;
