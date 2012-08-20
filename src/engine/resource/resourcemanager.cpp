@@ -20,6 +20,7 @@
 #include "resourcemanager.h"
 
 #include "core/smartptr/autoptr.h"
+#include "core/containers/hashinterface.h"
 
 #include "engine/ui/font.h"
 
@@ -31,7 +32,7 @@ ResourceManager::ResourceManager():
    mFreeTypeLib(NULL),
    mResources()
 {
-   mResources.create(256);
+   mResources.setHashFunction(HashInterface::hashString);
    initialize();
 }
 
@@ -63,26 +64,27 @@ void ResourceManager::destroy()
 
 /// \fn ResourceManager::loadTexture (const std::string& file)
 /// \brief Returns a texture from a the given file.
-TexturePtr ResourceManager::getTexture(const std::string& file)
+TexturePtr ResourceManager::getTexture(const String& file)
 {
-	ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(file));
-	if ( phandle == NULL )
+   if ( !mResources.contains(file) )
    {
       AutoPtr<Texture> texture = new Texture();
       if ( !texture.hasPointer() || !texture->load(file) )
          return TexturePtr();
 
-      phandle = new ResourceHandle(*this, texture.release());
-		mResources.insert(file, static_cast<void*>(phandle));
+      ResourceHandle* phandle = new ResourceHandle(*this, texture.release());
+		mResources.insert(file, phandle);
 	}
 
-   return TexturePtr(phandle);
+   ResourceHandle** phandle = mResources.get(file);
+   ASSERT_PTR(phandle);
+
+   return TexturePtr(*phandle);
 }
 
-FontPtr ResourceManager::getFont(const std::string& name, int size)
+FontPtr ResourceManager::getFont(const String& name, int size)
 {
-   ResourceHandle* phandle = static_cast<ResourceHandle*>(mResources.lookup(name));
-	if ( phandle == NULL )
+   if ( !mResources.contains(name) )
    {
       AutoPtr<UIFont> font = new UIFont();
       if ( !font.hasPointer() || !font->load(mFreeTypeLib, name, size) )
@@ -90,10 +92,14 @@ FontPtr ResourceManager::getFont(const std::string& name, int size)
          return FontPtr();
       }
 
-      phandle = new ResourceHandle(*this, font.release());
+      ResourceHandle* phandle = new ResourceHandle(*this, font.release());
       mResources.insert(name, phandle);
    }
-   return FontPtr(phandle);
+
+   ResourceHandle** phandle = mResources.get(name);
+   ASSERT_PTR(phandle);
+
+   return FontPtr(*phandle);
 }
 
 // notifications

@@ -47,13 +47,13 @@ void ActionMap::setProcess(Process& process)
 {
    mpProcess = &process;
 
-   mpScript = process.getScriptManager().loadNative("ActionMap", this, false);
+   mpScript = process.getScriptManager().load("engine.game.ActionMap", this, false);
    ASSERT_PTR(mpScript);
 }
 
 // - Operations
 
-void ActionMap::bind(int action, const char* function)
+void ActionMap::bind(int action, const String& function)
 {
    mActions[action] = function;
 }
@@ -69,7 +69,7 @@ void ActionMap::process(int action, bool down)
    }
    else
    {
-      std::string function = it->second;
+      const String& function = it->second;
       
       ASSERT_PTR(mpScript);
       mpScript->addParam(down);

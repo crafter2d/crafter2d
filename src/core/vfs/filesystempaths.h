@@ -20,10 +20,11 @@
 #ifndef FILESYSTEM_PATHS_H_
 #define FILESYSTEM_PATHS_H_
 
-#include <string>
 #include <vector>
 
 #include "filesystempath.h"
+
+class String;
 
 class FileSystemPaths
 {
@@ -33,12 +34,12 @@ public:
    const FileSystemPath& operator[](int index) const;
 
  // query
-   bool contains(const std::string& path) const;
+   bool contains(const String& path) const;
    int  size() const;
 
  // operations
-   void add(const std::string& path);
-   void remove(const std::string& path);
+   void add(const String& path);
+   void remove(const String& path);
    void removeAll();
 
 private:

@@ -78,9 +78,6 @@ public:
    bool              isStatic() const;
    const Texture&    getTexture() const;
 
-   const std::string& getType() const;
-   void               setType(const std::string& type);
-
    bool              hasBody() const;
    const Body&       getBody() const;
          Body&       getBody();
@@ -120,7 +117,6 @@ private:
    Body*          mpBody;
    Animator*      mpAnimator; // owned
    Controller*    mpController;
-   std::string    mType;
    Vector         mPos;
    Vector         mVel;
    int            mWidth, mHeight;

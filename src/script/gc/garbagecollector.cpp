@@ -1,9 +1,10 @@
 
 #include "garbagecollector.h"
 
-#include "core/containers/hashmapiterator.h"
+#include "core/containers/listiterator.h"
 
 #include "script/vm/virtualmachine.h"
+#include "script/vm/virtualobject.h"
 
 int VoidHash(void* pkey)
 {
@@ -23,55 +24,57 @@ int VoidHash(void* pkey)
 }
 
 GarbageCollector::GarbageCollector():
-   mObjects()
+   mCollectables()
 {
-   mObjects.setHashFunction(VoidHash);
 }
 
 GarbageCollector::~GarbageCollector()
 {
-   // the garbage collector should be empty before it is destructed
-   ASSERT(mObjects.isEmpty());
-}
-
-// - Query
-
-bool GarbageCollector::isUnique(const VirtualObjectReference& object) const
-{
-   return object.isUnique() || (object->hasNativeObject() && object.uses() <= 2);
 }
 
 // - Operations
 
-void GarbageCollector::collect(VirtualObjectReference& object)
+void GarbageCollector::collect(Collectable* pcollectable)
 {
-   ASSERT(object.uses() > 0);
-
-   if ( !mObjects.contains(object.ptr()) )
-   {
-      mObjects.insert(object.ptr(), object);
-   }
+   mCollectables.addTail(pcollectable);
 }
 
 void GarbageCollector::gc(VirtualMachine& vm)
 {
-   HashMapIterator<void*, VirtualObjectReference> it = mObjects.getIterator();
+   phaseMark(vm);
+   phaseCollect(vm);
+}
+
+void GarbageCollector::phaseMark(VirtualMachine& vm)
+{
+   vm.mContext.mClassTable.mark();  // marks all statics
+   vm.mStack.mark();
+
+   for ( int index = 0; index < vm.mRootObjects.size(); index++ )
+   {
+      VirtualObject* pobject = vm.mRootObjects[index];
+      pobject->mark();
+   }
+}
+
+void GarbageCollector::phaseCollect(VirtualMachine& vm)
+{
+   ListIterator<Collectable*> it = mCollectables.getFront();
    while ( it.isValid() )
    {
-      VirtualObjectReference ref = it.item();
-      it.remove();
-
-      ASSERT(!mObjects.contains(ref.ptr()));
-      
-      if ( isUnique(ref) )
+      Collectable* pobject = *it;
+      if ( pobject->isMarked() )
       {
-         if ( ref->hasNativeObject() )
-         {
-            vm.unregisterNative(ref);
-         }
+         pobject->setMarked(false);
 
-         ref->collect(*this);
-         it.reset();
+         ++it;
+      }
+      else
+      {
+         it.remove();
+
+         pobject->finalize(vm);
+         //delete pobject;
       }
    }
 }

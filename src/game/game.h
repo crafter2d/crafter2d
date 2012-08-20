@@ -22,11 +22,11 @@
 
 #include <string>
 
-#include "engine/script/scriptmanager.h"
-
 #include "gamesettings.h"
 
 class GameWindowFactory;
+class Client;
+class Server;
 class TimerData;
 
 /**
@@ -46,8 +46,6 @@ public:
 
          void           setTitle(const std::string& title);
    const std::string&   getTitle() const;
-
-   ScriptManager&       getScriptManager();
 
    GameWindowFactory&   getWindowFactory();
    void                 setWindowFactory(GameWindowFactory& windowfactory);
@@ -69,13 +67,13 @@ private:
    bool                 initOpenGL();
    void                 runFrame();
 
-   GameSettings              mSettings;
-   std::string               mTitle;
-   ScriptManager             mScriptManager;
-   Script*                   mpScript;
-   GameWindowFactory*        mpWindowFactory;
-   TimerData*                mpTimerData;
-   bool                      mActive;
+   GameSettings         mSettings;
+   std::string          mTitle;
+   GameWindowFactory*   mpWindowFactory;
+   TimerData*           mpTimerData;
+   Client*              mpClient;
+   Server*              mpServer;
+   bool                 mActive;
 };
 
 #ifdef JENGINE_INLINE

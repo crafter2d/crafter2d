@@ -59,7 +59,7 @@ WorldWriter::~WorldWriter()
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-bool WorldWriter::write(const World& world, const std::string& filename)
+bool WorldWriter::write(const World& world, const String& filename)
 {
    setWorld(world);
 
@@ -91,7 +91,7 @@ bool WorldWriter::writeSimulator(ZipFile& zip)
 
    std::stringstream stream;
    stream << doc;
-   std::string data = stream.str();
+   const std::string& data = stream.str();
 
    zip.addFile("simulator.xml", (void*)data.c_str(), data.length());
 
@@ -140,7 +140,7 @@ bool WorldWriter::writeBounds(ZipFile& zip)
 
    std::stringstream stream;
    stream << doc;
-   std::string data = stream.str();
+   const std::string& data = stream.str();
 
    zip.addFile("bounds.xml", (void*)data.c_str(), data.length());
 
@@ -170,7 +170,7 @@ bool WorldWriter::writeObjects(ZipFile& zip)
 
    std::stringstream stream;
    stream << doc;
-   std::string data = stream.str();
+   const std::string& data = stream.str();
 
    zip.addFile("objects.xml", (void*)data.c_str(), data.length());
 
@@ -183,10 +183,10 @@ bool WorldWriter::writeObjects(ZipFile& zip)
 
 DataStream& operator<<(DataStream& in, const Layer& layer)
 {
-   const std::string&   name       = layer.getName();
-   const std::string&   effectFile = layer.getEffectFile();
-   int                  width      = layer.getWidth();
-   int                  height     = layer.getHeight();
+   const String&   name       = layer.getName();
+   const String&   effectFile = layer.getEffectFile();
+   int             width      = layer.getWidth();
+   int             height     = layer.getHeight();
    
    in << name << effectFile << width << height;
 

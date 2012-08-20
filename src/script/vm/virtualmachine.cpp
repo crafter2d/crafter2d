@@ -20,116 +20,115 @@
 #include "virtualmachine.h"
 
 // When testing with Visual Leak Detecter, uncomment the next line
-// #include <vld.h>
+//#include <vld.h>
 #include <iostream>
 
 #include "core/defines.h"
 #include "core/smartptr/autoptr.h"
 #include "core/string/char.h"
+#include "core/conv/numberconverter.h"
 
 #include "script/compiler/compiler.h"
 #include "script/common/literal.h"
 
+#include "virtualarray.h"
 #include "virtualarrayexception.h"
 #include "virtualfunctionnotfoundexception.h"
 #include "virtualinstructiontable.h"
 #include "virtualcontext.h"
 #include "virtualobject.h"
-#include "virtualobjectreference.h"
 #include "virtualclass.h"
-#include "virtualarrayobject.h"
-#include "virtualarrayreference.h"
 #include "virtualexception.h"
 #include "virtualfunctiontable.h"
 #include "virtualfunctiontableentry.h"
 #include "virtuallookuptable.h"
-#include "virtualownednativeobjectstrategy.h"
+#include "virtualstackaccessor.h"
 
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   std::cout << accessor.getString(1) << std::endl;
+   std::cout << accessor.getString(1).toStdString() << std::endl;
 }
 
 void Console_print(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   std::cout << accessor.getString(1);
+   std::cout << accessor.getString(1).toStdString();
 }
 
 void ClassLoader_doLoadClass(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   const std::string& classname = accessor.getString(1);
+   VirtualObject& thisobject = accessor.getThis();
+   const String& classname = accessor.getString(1);
 
    accessor.setResult(machine.loadClass(classname));
 }
 
 void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   VirtualObjectReference& classobject = accessor.getObject(1);
+   VirtualObject& thisobject = accessor.getThis();
+   VirtualObject& classobject = accessor.getObject(1);
 
-   std::string name = classobject->getMember(0).asString();
-   VirtualObjectReference object = machine.instantiate(name);
+   String name = classobject.getMember(0).asString().getString();
+   VirtualObject* pobject = machine.instantiate(name);
 
-   accessor.setResult(object);
+   accessor.setResult(*pobject);
 }
 
 void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
-   VirtualObjectReference& instance = accessor.getObject(1);
+   VirtualObject& thisobject = accessor.getThis();
+   VirtualObject& instance = accessor.getObject(1);
 
-   std::string fncname = thisobject->getMember(0).asString();
+   String fncname = thisobject.getMember(0).asString().getString();
 
    machine.execute(instance, fncname);
 }
 
 void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObjectReference& thisobject = accessor.getThis();
+   VirtualObject& thisobject = accessor.getThis();
 
-   std::string callstack = machine.buildCallStack();
+   String callstack = machine.buildCallStack();
 
    accessor.setResult(callstack);
 }
 
 void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualArrayReference& thisobject = accessor.getArray(0);
+   VirtualArray& thisobject = accessor.getArray(0);
 
    int newsize = accessor.getInt(1);
 
-   thisobject->resize(newsize);
+   thisobject.resize(newsize);
 }
 
 void InternalString_equals(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& thisstring = accessor.getString(0);
-   const std::string& thatstring = accessor.getString(1);
+   const String& thisstring = accessor.getString(0);
+   const String& thatstring = accessor.getString(1);
 
    accessor.setResult(thisstring == thatstring);
 }
 
 void InternalString_subString(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& thisstring = accessor.getString(0);
+   const String& thisstring = accessor.getString(0);
    
    int pos = accessor.getInt(1);
    int len = accessor.getInt(2);
 
-   accessor.setResult(thisstring.substr(pos, len));
+   accessor.setResult(thisstring.subStr(pos, len));
 }
 
 void InternalString_length(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& thisstring = accessor.getString(0);
+   const String& thisstring = accessor.getString(0);
 
    accessor.setResult((int) thisstring.length());
 }
 
 void InternalString_getChar(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const std::string& thisstring = accessor.getString(0);
+   const String& thisstring = accessor.getString(0);
 
    int index = accessor.getInt(1);
 
@@ -168,34 +167,35 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mContext(context),
    mCallback(*this),
    mCompiler(),
+   mRootObjects(),
    mGC(),
    mStack(),
    mCallStack(),
    mCall(),
-   mObjectObserver(*this),
    mNatives(),
+   mNativeObjects(),
+   mState(eInit),
    mpArrayClass(NULL),
    mpStringClass(NULL),
-   mState(eRunning),
    mLoaded(false)
 {
    mCompiler.setCallback(mCallback);
 
-   mNatives.insert(std::pair<std::string, callbackfnc>("Console_println", Console_println));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Console_print", Console_print));
-   mNatives.insert(std::pair<std::string, callbackfnc>("ClassLoader_doLoadClass", ClassLoader_doLoadClass));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Class_doNewInstance", Class_doNewInstance));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Function_doInvoke", Function_doInvoke));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Throwable_fillCallStack", Throwable_fillCallStack));
-   mNatives.insert(std::pair<std::string, callbackfnc>("InternalArray_resize", InternalArray_resize));
-   mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_equals", InternalString_equals));
-   mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_length", InternalString_length));
-   mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_subString", InternalString_subString));
-   mNatives.insert(std::pair<std::string, callbackfnc>("InternalString_getChar", InternalString_getChar));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Char_isAlphaNum", Char_isAlphaNum));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Char_isAlpha", Char_isAlpha));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Char_isDigit", Char_isDigit));
-   mNatives.insert(std::pair<std::string, callbackfnc>("Char_isWhitespace", Char_isWhitespace));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Console_println"), Console_println));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Console_print"), Console_print));
+   mNatives.insert(std::pair<String, callbackfnc>(String("ClassLoader_doLoadClass"), ClassLoader_doLoadClass));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Class_doNewInstance"), Class_doNewInstance));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Function_doInvoke"), Function_doInvoke));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Throwable_fillCallStack"), Throwable_fillCallStack));
+   mNatives.insert(std::pair<String, callbackfnc>(String("InternalArray_resize"), InternalArray_resize));
+   mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_equals"), InternalString_equals));
+   mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_length"), InternalString_length));
+   mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_subString"), InternalString_subString));
+   mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_getChar"), InternalString_getChar));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Char_isAlphaNum"), Char_isAlphaNum));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Char_isAlpha"), Char_isAlpha));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Char_isDigit"), Char_isDigit));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Char_isWhitespace"), Char_isWhitespace));
 }
 
 VirtualMachine::~VirtualMachine()
@@ -242,82 +242,79 @@ void VirtualMachine::initialize()
 
 // - Loading
 
-bool VirtualMachine::loadClass(const std::string& classname)
+bool VirtualMachine::loadClass(const String& classname)
 {
    return doLoadClass(classname) != NULL;
 }
 
-void VirtualMachine::registerCallback(const std::string& name, callbackfnc callback)
+void VirtualMachine::registerCallback(const String& name, callbackfnc callback)
 {
-   mNatives.insert(std::pair<std::string, callbackfnc>(name, callback));
+   mNatives.insert(std::pair<String, callbackfnc>(name, callback));
 }
 
 // - Stack access
 
 int VirtualMachine::popInt()
 {
-   int value = mStack.back().asInt();
-   mStack.pop_back();
-   return value;
+   return mStack.popInt();
 }
 
 double VirtualMachine::popReal()
 {
-   double value = mStack.back().asReal();
-   mStack.pop_back();
-   return value;
+   return mStack.popReal();
 }
 
 bool VirtualMachine::popBoolean()
 {
-   bool value = mStack.back().asBool();
-   mStack.pop_back();
-   return value;
+   return mStack.popBool();
 }
 
-std::string VirtualMachine::popString()
+String VirtualMachine::popString()
 {
-   std::string value = mStack.back().asString();
-   mStack.pop_back();
-   return value;
+   return mStack.popString();
 }
 
 void VirtualMachine::push(int value)
 {
-   mStack.push_back(Variant(value));
+   mStack.pushInt(value);
 }
 
 void VirtualMachine::push(double value)
 {
-   mStack.push_back(Variant(value));
+   mStack.pushReal(value);
 }
 
 void VirtualMachine::push(bool value)
 {
-   mStack.push_back(Variant(value));
+   mStack.pushBool(value);
 }
 
-void VirtualMachine::push(const std::string& value)
+void VirtualMachine::push(const String& value)
 {
-   mStack.push_back(Variant(value));
+   mStack.pushString(mContext.mStringCache.lookup(value));
 }
 
-void VirtualMachine::push(const VirtualObjectReference& object)
+void VirtualMachine::push(VirtualObject& object)
 {
-  mStack.push_back(Variant(object));
+  mStack.pushObject(object);
+}
+
+void VirtualMachine::addRootObject(VirtualObject& object)
+{
+   mRootObjects.push_back(&object);
 }
 
 // - Execution
 
-bool VirtualMachine::execute(const std::string& classname, const std::string& function)
+bool VirtualMachine::execute(const String& classname, const String& function)
 {
-   VirtualObjectReference object = instantiate(classname);
-   if ( object.isNull() )
+   VirtualObject* pvirtualobject = instantiate(classname);
+   if ( pvirtualobject == NULL )
    {
       return false;
    }
 
-   execute(object, function);
+   execute(*pvirtualobject, function);
    
    // for now run the garbage collector here. have to find the right spot for it.
    mGC.gc(*this);
@@ -325,20 +322,20 @@ bool VirtualMachine::execute(const std::string& classname, const std::string& fu
    return true;
 }
 
-void VirtualMachine::execute(const VirtualObjectReference& object, const std::string& function)
+void VirtualMachine::execute(VirtualObject& object, const String& function)
 {
-   const VirtualClass& vclass = object->getClass();
+   const VirtualClass& vclass = object.getClass();
    const VirtualFunctionTableEntry* pentry = vclass.getVirtualFunctionTable().findByName(function);
    if ( pentry == NULL )
    {
-      throw new VirtualFunctionNotFoundException(object->getClass().getName(), function);
+      throw new VirtualFunctionNotFoundException(object.getClass().getName(), function);
    }
 
    Variant objectvariant(object);
    if ( pentry->mArguments > 1 )
-      mStack.insert(mStack.begin() + mStack.size() - (pentry->mArguments - 1), objectvariant);
+      mStack.insert(mStack.size() - (pentry->mArguments - 1), objectvariant);
    else
-      mStack.push_back(objectvariant);
+      mStack.push(objectvariant);
 
    execute(vclass, *pentry);
    
@@ -350,6 +347,14 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
 {
    mCallStack.push(mCall);
    mCall.start(vclass, entry, mStack.size());
+
+   /*
+#ifdef _DEBUG
+   int len;
+   const char* pclass = vclass.getName().toUtf8(len);
+   const char* pentry = entry.mName.toUtf8(len);
+#endif
+   */
 
    const VirtualInstructionTable& instructions = mContext.mInstructions;
 
@@ -363,7 +368,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
       }
       catch ( VirtualFunctionNotFoundException* pfuncexception)
       {
-         VirtualException* pexception = new VirtualException(instantiate("system.NoSuchFunctionException"));
+         VirtualException* pexception = new VirtualException(*instantiate("system.NoSuchFunctionException"));
 
          handleException(pexception);
 
@@ -387,12 +392,17 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    {
       Variant result = mStack.back();
       shrinkStack(mCall.mStackBase);
-      mStack.push_back(result);
+      mStack.push(result);
    }
    else
    {
       shrinkStack(mCall.mStackBase);
    }
+
+#ifndef _DEBUG
+   delete[] pclass;
+   delete[] pentry;
+#endif
 
    mCall = mCallStack.top();
    mCallStack.pop();
@@ -409,18 +419,18 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             // reserver 'argument' number of places on stack for arguments/variables
             for ( int index = 0; index < instruction.getArgument(); index++ )
             {
-               mStack.push_back(Variant());
+               mStack.push(Variant());
             }
          }
          break;
       case VirtualInstruction::eNew:
          {
-            const std::string& type = mContext.mLiteralTable[mStack.back().asInt()].getValue().asString();
-            mStack.pop_back();
+            const String& type = mContext.mLiteralTable[mStack.popInt()].getValue().asString().getString();
 
-            Variant object(instantiate(type, instruction.getArgument()));
+            VirtualObject* pobject = instantiate(type, instruction.getArgument());
+            ASSERT_PTR(pobject);
 
-            mStack.push_back(object);
+            mStack.pushObject(*pobject);
          }
          break;
       case VirtualInstruction::eNewNative:
@@ -430,14 +440,14 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             const Variant& object = mStack[mStack.size() - arguments - 1];
             ASSERT(object.isObject());
 
-            if ( !object.asObject()->hasNativeObject() )
+            if ( !object.asObject().hasNativeObject() )
             {
-               const std::string& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
+               const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
 
-               VirtualStackAccessor accessor(mStack);
+               VirtualStackAccessor accessor(mContext, mStack);
                (*mNatives[fnc])(*this, accessor);
 
-               mStack.pop_back(); // pop argument count
+               mStack.pop(); // pop argument count
             }
          }
          break;
@@ -448,23 +458,26 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
             int arraydimension = instruction.getArgument();
 
-            VirtualArrayReference array = instantiateArray();
-
+            // no full support yet for multi-dimensional arrays
+            VirtualArray* parray = instantiateArray();
+            VirtualArray* pinit = parray;
             for ( int index = 0; index < arraydimension; index++ )
             {
-               Variant size = mStack.back();
-               mStack.pop_back();
+               int size = mStack.popInt();
 
-               array->addLevel(size.asInt());
+               pinit->addLevel(size);
+               if ( index < arraydimension - 1 )
+               {
+                  VirtualArray* ptemp = pinit;
+               }
             }
 
-            mStack.push_back(Variant(array));
+            mStack.pushArray(*parray);
          }
          break;
       case VirtualInstruction::eCallSuper:
          {
-            int arguments = mStack.back().asInt();
-            mStack.pop_back();
+            int arguments = mStack.popInt();
 
             const Variant& object = mStack[mStack.size() - arguments];
             ASSERT(object.isObject());
@@ -477,13 +490,12 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCall:
          {
-            int arguments = mStack.back().asInt();
-            mStack.pop_back();
-
+            int arguments = mStack.popInt();
+            
             const Variant& object = mStack[mStack.size() - arguments]; // find the object to call the method on
             if ( object.isObject() )
             {
-               const VirtualClass& theclass = object.asObject()->getClass();
+               const VirtualClass& theclass = object.asObject().getClass();
                const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
 
                execute(theclass, entry);
@@ -505,19 +517,18 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             else
             {
                ASSERT(object.isEmpty());
-               throwException("system.NullPointerException");
+               throwException("system.NullPointerException", "");
             }
          }
          break;
       case VirtualInstruction::eCallInterface:
          {
-            int arguments = mStack.back().asInt();
-            mStack.pop_back();
+            int arguments = mStack.popInt();
 
             const Variant& object = mStack[mStack.size() - arguments]; // find the object to call the method on
             ASSERT(object.isObject());
 
-            const VirtualClass& theclass = object.asObject()->getClass();
+            const VirtualClass& theclass = object.asObject().getClass();
             const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable().resolveInterface(instruction.getArgument());
 
             execute(theclass, entry);
@@ -525,7 +536,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCallNative:
          {
-            const std::string& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
+            const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
 
             Natives::iterator it = mNatives.find(fnc);
             if ( it == mNatives.end() )
@@ -533,20 +544,20 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
                throwException("system.NativeFunctionNotFoundException", fnc);
             }
 
-            VirtualStackAccessor accessor(mStack);
+            VirtualStackAccessor accessor(mContext, mStack);
             (*it->second)(*this, accessor);
 
-            mStack.pop_back(); // pop the argument count
+            mStack.pop(1); // pop the argument count
             if ( accessor.hasResult() )
-               mStack.push_back(accessor.getResult());
+               mStack.push(accessor.getResult());
          }
          break;
       case VirtualInstruction::eCallStatic:
          {
-            int classlit = mStack.back().asInt(); mStack.pop_back();
-            int arguments = mStack.back().asInt(); mStack.pop_back();
+            int classlit = mStack.popInt();
+            int arguments = mStack.popInt();
 
-            std::string classname = mContext.mLiteralTable[classlit].getValue().asString();
+            String classname = mContext.mLiteralTable[classlit].getValue().asString().getString();
 
             const VirtualClass& theclass = mContext.mClassTable.resolve(classname);
             const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[instruction.getArgument()];
@@ -575,7 +586,9 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eInt2String:
          {
-            mStack.back().int2string();
+            String result;
+            NumberConverter::getInstance().format(result, mStack.popInt());
+            mStack.pushString(mContext.mStringCache.lookup(result));
          }
          break;
       case VirtualInstruction::eReal2Int:
@@ -585,17 +598,23 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eReal2String:
          {
-            mStack.back().real2string();
+            String result;
+            NumberConverter::getInstance().format(result, mStack.popReal());
+            mStack.pushString(mContext.mStringCache.lookup(result));
          }
          break;
       case VirtualInstruction::eChar2String:
          {
-            mStack.back().char2string();
+            String result;
+            result += mStack.popChar();
+            mStack.pushString(mContext.mStringCache.lookup(result));
          }
          break;
       case VirtualInstruction::eBoolean2String:
          {
-            mStack.back().boolean2string();
+            bool value = mStack.popBool();
+            String string(value ? String("true") : String("false"));
+            mStack.pushString(mContext.mStringCache.lookup(string));
          }
          break;
 
@@ -603,18 +622,18 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eCmpEqBool:
          {
-            bool right = mStack.back().asBool(); mStack.pop_back();
-            bool left  = mStack.back().asBool(); mStack.pop_back();
+            bool right = mStack.popBool();
+            bool left  = mStack.popBool();
 
-            mStack.push_back(Variant(left == right));
+            mStack.pushBool(left == right);
          }
          break;
       case VirtualInstruction::eCmpNeqBool:
          {
-            bool right = mStack.back().asBool(); mStack.pop_back();
-            bool left  = mStack.back().asBool(); mStack.pop_back();
+            bool right = mStack.popBool();
+            bool left  = mStack.popBool();
 
-            mStack.push_back(Variant(left != right));
+            mStack.pushBool(left != right);
          }
          break;
 
@@ -622,142 +641,142 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eAddInt:
          {
-            int right = mStack.back().toInt(); mStack.pop_back();
-            int left  = mStack.back().toInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left + right));
+            mStack.pushInt(left + right);
          }
          break;
       case VirtualInstruction::eSubInt:
          {
-            int right = mStack.back().toInt(); mStack.pop_back();
-            int left  = mStack.back().toInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left - right));
+            mStack.pushInt(left - right);
          }
          break;
       case VirtualInstruction::eMulInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left * right));
+            mStack.pushInt(left * right);
          }
          break;
       case VirtualInstruction::eDivInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
             if ( right == 0 )
             {
-               throwException("system.DivideByZeroException");
+               throwException("system.DivideByZeroException", "");
             }
 
-            mStack.push_back(Variant(left / right));
+            mStack.pushInt(left / right);
          }
          break;
       case VirtualInstruction::eOrInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left | right));
+            mStack.pushInt(left | right);
          }
          break;
       case VirtualInstruction::eXorInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left ^ right));
+            mStack.pushInt(left ^ right);
          }
          break;
       case VirtualInstruction::eAndInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left & right));
+            mStack.pushInt(left & right);
          }
          break;
       case VirtualInstruction::eShiftLeftInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left << right));
+            mStack.pushInt(left << right);
          }
          break;
       case VirtualInstruction::eShiftRightInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left >> right));
+            mStack.pushInt(left >> right);
          }
          break;
       case VirtualInstruction::eRemInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left % right));
+            mStack.pushInt(left % right);
          }
          break;
       case VirtualInstruction::eIntNegate:
          {
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int left = mStack.popInt();
 
-            mStack.push_back(Variant(-left));
+            mStack.pushInt(-left);
          }
          break;
       case VirtualInstruction::eCmpEqInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left == right));
+            mStack.pushBool(left == right);
          }
          break;
       case VirtualInstruction::eCmpNeqInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left != right));
+            mStack.pushBool(left != right);
          }
          break;
       case VirtualInstruction::eCmpLtInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left < right));
+            mStack.pushBool(left < right);
          }
          break;
       case VirtualInstruction::eCmpLeInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left <= right));
+            mStack.pushBool(left <= right);
          }
          break;
       case VirtualInstruction::eCmpGtInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left > right));
+            mStack.pushBool(left > right);
          }
          break;
       case VirtualInstruction::eCmpGeInt:
          {
-            int right = mStack.back().asInt(); mStack.pop_back();
-            int left  = mStack.back().asInt(); mStack.pop_back();
+            int right = mStack.popInt();
+            int left  = mStack.popInt();
 
-            mStack.push_back(Variant(left >= right));
+            mStack.pushBool(left >= right);
          }
          break;
 
@@ -765,123 +784,123 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eAddReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left + right));
+            mStack.pushReal(left + right);
          }
          break;
       case VirtualInstruction::eSubReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left - right));
+            mStack.pushReal(left - right);
          }
          break;
       case VirtualInstruction::eMulReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left * right));
+            mStack.pushReal(left * right);
          }
          break;
       case VirtualInstruction::eDivReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left / right));
+            mStack.pushReal(left / right);
          }
          break;
       case VirtualInstruction::eRemReal:
          {
-            int right = (int) mStack.back().asReal(); mStack.pop_back();
-            int left  = (int) mStack.back().asReal(); mStack.pop_back();
+            int right = (int) mStack.popReal();
+            int left  = (int) mStack.popReal();
 
-            mStack.push_back(Variant((double)(left % right)));
+            mStack.pushReal((double)(left % right));
          }
          break;
       case VirtualInstruction::eRealNegate:
          {
-            double top = mStack.back().asReal(); mStack.pop_back();
+            double top = mStack.popReal();
 
-            mStack.push_back(Variant(-top));
+            mStack.pushReal(-top);
          }
          break;
       case VirtualInstruction::eCmpEqReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left == right));
+            mStack.pushBool(left == right);
          }
          break;
       case VirtualInstruction::eCmpNeqReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left != right));
+            mStack.pushBool(left != right);
          }
          break;
       case VirtualInstruction::eCmpLtReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left < right));
+            mStack.pushBool(left < right);
          }
          break;
       case VirtualInstruction::eCmpLeReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left <= right));
+            mStack.pushBool(left <= right);
          }
          break;
       case VirtualInstruction::eCmpGtReal:
          {
-            double right = mStack.back().asReal(); mStack.pop_back();
-            double left  = mStack.back().asReal(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left > right));
+            mStack.pushBool(left > right);
          }
          break;
       case VirtualInstruction::eCmpGeReal:
          {
-            double right = mStack.back().asInt(); mStack.pop_back();
-            double left  = mStack.back().asInt(); mStack.pop_back();
+            double right = mStack.popReal();
+            double left  = mStack.popReal();
 
-            mStack.push_back(Variant(left >= right));
+            mStack.pushBool(left >= right);
          }
          break;
 
       // - Char interface
       case VirtualInstruction::eAddChar:
          {
-            char right = mStack.back().asChar(); mStack.pop_back();
-            std::string left = mStack.back().asString(); mStack.pop_back();
+            char right = mStack.popChar();
+            String left = mStack.popString();
 
-            mStack.push_back(Variant(left + right));
+            mStack.pushString(mContext.mStringCache.lookup(left + right));
          }
          break;
       case VirtualInstruction::eCmpEqChar:
          {
-            char right = mStack.back().asChar(); mStack.pop_back();
-            char left  = mStack.back().asChar(); mStack.pop_back();
+            char right = mStack.popChar();
+            char left  = mStack.popChar();
 
-            mStack.push_back(Variant(left == right));
+            mStack.pushBool(left == right);
          }
          break;
       case VirtualInstruction::eCmpNeqChar:
          {
-            char right = mStack.back().asChar(); mStack.pop_back();
-            char left  = mStack.back().asChar(); mStack.pop_back();
+            char right = mStack.popChar();
+            char left  = mStack.popChar();
 
-            mStack.push_back(Variant(left != right));
+            mStack.pushBool(left != right);
          }
          break;
 
@@ -889,58 +908,58 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eAddStr:
          {
-            std::string right = mStack.back().asString(); mStack.pop_back();
-            std::string left = mStack.back().asString(); mStack.pop_back();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
-            mStack.push_back(Variant(left + right));
+            mStack.pushString(mContext.mStringCache.lookup(left + right));
          }
          break;
       case VirtualInstruction::eCmpEqStr:
          {
-            std::string right = mStack.back().asString(); mStack.pop_back();
-            std::string left  = mStack.back().asString(); mStack.pop_back();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
-            mStack.push_back(Variant(left == right));
+            mStack.pushBool(left == right);
          }
          break;
       case VirtualInstruction::eCmpNeqStr:
          {
-            std::string right = mStack.back().asString(); mStack.pop_back();
-            std::string left  = mStack.back().asString(); mStack.pop_back();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
-            mStack.push_back(Variant(left != right));
+            mStack.pushBool(!(left == right));
          }
          break;
       case VirtualInstruction::eCmpLeStr:
          {
-            std::string right = mStack.back().asString(); mStack.pop_back();
-            std::string left  = mStack.back().asString(); mStack.pop_back();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
-            mStack.push_back(Variant(left <= right));
+            mStack.pushBool(left <= right);
          }
          break;
       case VirtualInstruction::eCmpLtStr:
          {
-            std::string right = mStack.back().asString(); mStack.pop_back();
-            std::string left  = mStack.back().asString(); mStack.pop_back();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
-            mStack.push_back(Variant(left < right));
+            mStack.pushBool(left < right);
          }
          break;
       case VirtualInstruction::eCmpGeStr:
          {
-            std::string right = mStack.back().asString(); mStack.pop_back();
-            std::string left  = mStack.back().asString(); mStack.pop_back();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
-            mStack.push_back(Variant(left > right));
+            mStack.pushBool(left > right);
          }
          break;
       case VirtualInstruction::eCmpGtStr:
          {
-            std::string right = mStack.back().asString(); mStack.pop_back();
-            std::string left  = mStack.back().asString(); mStack.pop_back();
+            String right = mStack.popString();
+            String left = mStack.popString();
 
-            mStack.push_back(Variant(left >= right));
+            mStack.pushBool(left >= right);
          }
          break;
 
@@ -948,34 +967,34 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eCmpEqObj:
          {
-            VirtualObjectReference right = mStack.back().asObject(); mStack.pop_back();
-            VirtualObjectReference left  = mStack.back().asObject(); mStack.pop_back();
+            VirtualObject& right = mStack.popObject();
+            VirtualObject& left  = mStack.popObject();
 
-            mStack.push_back(Variant(left.ptr() == right.ptr()));
+            mStack.pushBool(&left == &right);
          }
          break;
       case VirtualInstruction::eCmpNeqObj:
          {
-            VirtualObjectReference right = mStack.back().asObject(); mStack.pop_back();
-            VirtualObjectReference left  = mStack.back().asObject(); mStack.pop_back();
+            VirtualObject& right = mStack.popObject();
+            VirtualObject& left  = mStack.popObject();
 
-            mStack.push_back(Variant(left.ptr() != right.ptr()));
+            mStack.pushBool(&left != &right);
          }
          break;
       case VirtualInstruction::eCmpEqAr:
          {
-            VirtualArrayReference right = mStack.back().asArray(); mStack.pop_back();
-            VirtualArrayReference left  = mStack.back().asArray(); mStack.pop_back();
+            VirtualArray& right = mStack.popArray();
+            VirtualArray& left  = mStack.popArray();
 
-            mStack.push_back(Variant(left.ptr() == right.ptr()));
+            mStack.pushBool(&left == &right);
          }
          break;
       case VirtualInstruction::eCmpNeqAr:
          {
-            VirtualArrayReference right = mStack.back().asArray(); mStack.pop_back();
-            VirtualArrayReference left  = mStack.back().asArray(); mStack.pop_back();
+            VirtualArray& right = mStack.popArray();
+            VirtualArray& left  = mStack.popArray();
 
-            mStack.push_back(Variant(left.ptr() != right.ptr()));
+            mStack.pushBool(&left != &right);
          }
          break;
 
@@ -983,9 +1002,10 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eIsNull:
          {
-            bool empty = mStack.back().isEmpty(); mStack.pop_back();
+            bool empty = mStack.back().isEmpty(); 
+            mStack.pop(1);
 
-            mStack.push_back(Variant(empty));
+            mStack.pushBool(empty);
          }
          break;
 
@@ -993,12 +1013,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eLookup:
          {
-            std::string classname = mContext.mLiteralTable[mStack.back().asInt()].getValue().asString();
+            String classname = mContext.mLiteralTable[mStack.popInt()].getValue().asString().getString();
             const VirtualLookupTable& table = mContext.mClassTable.resolve(classname).getLookupTable(instruction.getArgument());
-            mStack.pop_back();
 
             int codeindex = table.lookup(mStack.back());
-            mStack.pop_back();
+            mStack.pop();
 
             mCall.jump(codeindex);
          }
@@ -1010,88 +1029,86 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eJumpFalse:
          {
-            if ( !mStack.back().asBool() )
+            if ( !mStack.popBool() )
             {
                mCall.jump(instruction.getArgument());
             }
-            mStack.pop_back();
          }
          break;
       case VirtualInstruction::eJumpTrue:
          {
-            if ( mStack.back().asBool() )
+            if ( mStack.popBool() )
             {
                mCall.jump(instruction.getArgument());
             }
-            mStack.pop_back();
          }
          break;
 
       // stack
 
       case VirtualInstruction::ePush:
-         mStack.push_back(Variant(instruction.getArgument()));
+         mStack.pushInt(instruction.getArgument());
          break;
       case VirtualInstruction::ePushTrue:
-         mStack.push_back(Variant(true));
+         mStack.pushBool(true);
          break;
       case VirtualInstruction::ePushFalse:
-         mStack.push_back(Variant(false));
+         mStack.pushBool(false);
          break;
       case VirtualInstruction::ePushThis:
          {
-            const Variant& value = mStack[mCall.mStackBase];
-            mStack.push_back(value);
+            Variant value = mStack[mCall.mStackBase];
+            mStack.push(value);
          }
          break;
       case VirtualInstruction::ePushNull:
-         mStack.push_back(Variant());
+         mStack.push(Variant());
          break;
       case VirtualInstruction::eInt0:
-         mStack.push_back(Variant(0));
+         mStack.pushInt(0);
          break;
       case VirtualInstruction::eInt1:
-         mStack.push_back(Variant(1));
+         mStack.pushInt(1);
          break;
       case VirtualInstruction::eInt2:
-         mStack.push_back(Variant(2));
+         mStack.pushInt(2);
          break;
       case VirtualInstruction::eReal0:
-         mStack.push_back(Variant(0.0));
+         mStack.pushReal(0.0);
          break;
       case VirtualInstruction::eReal1:
-         mStack.push_back(Variant(1.0));
+         mStack.pushReal(1.0);
          break;
       case VirtualInstruction::eReal2:
-         mStack.push_back(Variant(2.0));
+         mStack.pushReal(2.0);
          break;
       case VirtualInstruction::eDup:
-         mStack.push_back(mStack.back());
+         mStack.push(mStack.back());
          break;
       case VirtualInstruction::eNot:
          mStack.back().setBool(!mStack.back().asBool());
          break;
 
       case VirtualInstruction::ePop:
-         shrinkStack(mStack.size() - instruction.getArgument());
+         mStack.pop(instruction.getArgument());
          break;
 
       case VirtualInstruction::eInstanceOf:
          {
-            const std::string& name = mContext.mLiteralTable[instruction.getArgument()].getValue().asString();
+            const String& name = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
             const VirtualClass* pcompareclass = mContext.mClassTable.find(name);
 
-            Variant object = mStack.back();  mStack.pop_back();
-            ASSERT(object.isObject());
+            ASSERT(mStack.back().isObject());
+            VirtualObject& object = mStack.popObject();
 
-            if ( object.asObject()->getClass().isBaseClass(*pcompareclass)
-              || object.asObject()->getClass().implements(*pcompareclass) )
+            if ( object.getClass().isBaseClass(*pcompareclass)
+              || object.getClass().implements(*pcompareclass) )
             {
-               mStack.push_back(Variant(true));
+               mStack.pushBool(true);
             }
             else
             {
-               mStack.push_back(Variant(false));
+               mStack.pushBool(false);
             }
          }
          break;
@@ -1135,8 +1152,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          {
             ASSERT(mStack.back().isObject());
 
-            VirtualObjectReference exception = mStack.back().asObject();
-            mStack.pop_back();
+            VirtualObject& exception = mStack.popObject();
 
             throw new VirtualException(exception);
          }
@@ -1146,45 +1162,36 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
       case VirtualInstruction::eLoad:
          {
-            Variant obj = mStack.back();
-            mStack.pop_back();
+            Variant obj = mStack.pop();
 
             if ( obj.isObject() )
-               mStack.push_back((*obj.asObject()).getMember(instruction.getArgument()));
+               mStack.push(obj.asObject().getMember(instruction.getArgument()));
             else if ( obj.isArray() )
-               mStack.push_back(Variant(obj.asArray().ptr()->size()));
+               mStack.push(Variant(obj.asArray().size())); // length attribute
             else if ( obj.isEmpty() )
             {
-               // error!!
-               throwException("system.NullPointerException");
+               throwException("system.NullPointerException", "");
             }
          }
          break;
       case VirtualInstruction::eStore:
          {
-            Variant obj = mStack.back();
-            mStack.pop_back();
+            ASSERT(mStack.back().isObject());
+            VirtualObject& object = mStack.popObject();
 
-            ASSERT(obj.isObject());
-            Variant value = mStack.back();
-            mStack.pop_back();
-
-            obj.asObject()->setMember(instruction.getArgument(), value);
+            object.setMember(instruction.getArgument(), mStack.pop());
          }
          break;
       case VirtualInstruction::eLoadLocal:
          {
             Variant& value = mStack[mCall.mStackBase + instruction.getArgument()];
 
-            mStack.push_back(value);
+            mStack.push(value);
          }
          break;
       case VirtualInstruction::eStoreLocal:
          {
-            Variant value = mStack.back();
-            mStack.pop_back();
-
-            mStack[mCall.mStackBase + instruction.getArgument()] = value;
+            mStack[mCall.mStackBase + instruction.getArgument()] = mStack.pop();
          }
          break;
       case VirtualInstruction::eLoadArray:
@@ -1197,22 +1204,18 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             Variant& variant = mStack[mStack.size() - instruction.getArgument() - 1];
             ASSERT(variant.isArray());
 
-            VirtualArrayObject* parray = variant.asArray().ptr();
-
+            VirtualArray* parray = &variant.asArray();
             for ( int index = 0; index < instruction.getArgument() - 1; index++ )
             {
-               int i = mStack.back().asInt();
-               mStack.pop_back();
-
-               parray = parray->at(i).asArray().ptr();
+               int i = mStack.popInt();
+               parray = &parray->at(i).asArray();
             }
 
-            int i = mStack.back().asInt();
-            mStack.pop_back();
+            int i = mStack.popInt();
 
-            mStack.pop_back(); // pop the array from the stack
+            mStack.pop(1); // pop the array from the stack
 
-            mStack.push_back(parray->at(i));
+            mStack.push(parray->at(i));
          }
          break;
       case VirtualInstruction::eStoreArray:
@@ -1225,73 +1228,65 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             Variant& variant = mStack[mStack.size() - instruction.getArgument() - 1];
             ASSERT(variant.isArray());
 
-            VirtualArrayObject* parray = variant.asArray().ptr();
-
+            VirtualArray* parray = &variant.asArray();
             for ( int index = 0; index < instruction.getArgument()-1; index++ )
             {
-               int i = mStack.back().asInt();
-               mStack.pop_back();
-
-               parray = parray->at(i).asArray().ptr();
+               int i = mStack.popInt();
+               parray = &parray->at(i).asArray();
             }
 
-            int i = mStack.back().asInt();
-            mStack.pop_back();
+            int i = mStack.popInt();
 
-            mStack.pop_back(); // <-- pop array
+            mStack.pop(1); // <-- pop array
 
-            parray->at(i) = mStack.back();
-            mStack.pop_back();
+            parray->at(i) = mStack.pop();
          }
          break;
       case VirtualInstruction::eStoreStatic:
          {
-            int classlit = mStack.back().asInt();
-            mStack.pop_back();
+            int classlit = mStack.popInt();
 
-            std::string classname = mContext.mLiteralTable[classlit].getValue().asString();
+            const String& classname = mContext.mLiteralTable[classlit].getValue().asString().getString();
             VirtualClass& c = mContext.mClassTable.resolve(classname);
 
-            c.setStatic(instruction.getArgument(), mStack.back());
-            mStack.pop_back();
+            c.setStatic(instruction.getArgument(), mStack.pop());
          }
          break;
       case VirtualInstruction::eLoadStatic:
          {
-            int classlit = mStack.back().asInt();
-            mStack.pop_back();
+            int classlit = mStack.popInt();
 
-            std::string classname = mContext.mLiteralTable[classlit].getValue().asString();
+            const String& classname = mContext.mLiteralTable[classlit].getValue().asString().getString();
             const VirtualClass& c = mContext.mClassTable.resolve(classname);
 
-            mStack.push_back(c.getStatic(instruction.getArgument()));
+            mStack.push(c.getStatic(instruction.getArgument()));
          }
          break;
       case VirtualInstruction::eLoadLiteral:
          {
             const Literal& literal = mContext.mLiteralTable[instruction.getArgument()];
-            mStack.push_back(literal.getValue());
+            mStack.push(literal.getValue());
          }
          break;
       case VirtualInstruction::eLoadClass:
          {
-            Variant name;
+            String name;
             if ( instruction.getArgument() == 1 )
             {
-               name.setString(mStack.back().asObject()->getClass().getName());
+               name = mStack.back().asObject().getClass().getName();
             }
             else
             {
-               name.setString(mContext.mLiteralTable[mStack.back().asInt()].getValue().asString());
+               name = mContext.mLiteralTable[mStack.back().asInt()].getValue().asString().getString();
             }
-            mStack.pop_back();
+            mStack.pop(1);
 
             const VirtualClass& classloader = mContext.mClassTable.resolve("system.ClassLoader");
             const VirtualFunctionTableEntry* pentry = classloader.getVirtualFunctionTable().findByName("findClass");
             const Variant& classloaderobject = classloader.getStatic(0);
 
-            mStack.push_back(classloaderobject);
-            mStack.push_back(name);
+            mStack.push(classloaderobject);
+            mStack.pushString(mContext.mStringCache.lookup(name));
 
             execute(classloader, *pentry);
          }
@@ -1305,30 +1300,31 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
 // - Exception
 
-std::string VirtualMachine::buildCallStack() const
+String VirtualMachine::buildCallStack() const
 {
    CallStack dump = mCallStack;
 
-   std::string result = "Call stack:\n";
+   String result = String("Call stack:\n");
    while ( dump.size() > 1 )
    {
       const VirtualCall& call = dump.top();
 
       ASSERT_PTR(call.mpEntry);
-      result += "- " + call.mpClass->getName() + '.' + call.mpEntry->mName + '(';
+      result += String("- ");
+      result += String(call.mpClass->getName() + '.' + call.mpEntry->mName + '(');
 
       for ( int index = 0; index < call.mpEntry->mArguments; index++ )
       {
          const Variant& value = mStack[call.mStackBase + index];
-         result += value.typeAsString() + " = " + value.toString();
+         result += value.typeAsString() + String(" = ") + value.toString();
 
          if ( index < call.mpEntry->mArguments - 1 )
          {
-            result += ", ";
+            result += String(", ");
          }
       }
 
-      result += ")\n";
+      result += String(")\n");
 
       dump.pop();
    }
@@ -1336,17 +1332,17 @@ std::string VirtualMachine::buildCallStack() const
    return result;
 }
 
-void VirtualMachine::throwException(const std::string& exceptionname, const std::string& reason)
+void VirtualMachine::throwException(const String& exceptionname, const String& reason)
 {
-   VirtualObjectReference exception(instantiate(exceptionname, -1));
+   VirtualObject* pexception = instantiate(exceptionname, -1);
 
    if ( reason.length() > 0 )
    {
-      mStack.push_back(Variant(reason));
-      execute(exception, "setCause");
+      mStack.pushString(mContext.mStringCache.lookup(reason));
+      execute(*pexception, "setCause");
    }
 
-   throw new VirtualException(exception);
+   throw new VirtualException(*pexception);
 }
 
 bool VirtualMachine::handleException(VirtualException* pexception)
@@ -1356,7 +1352,7 @@ bool VirtualMachine::handleException(VirtualException* pexception)
       VirtualCall::VirtualGuard& guard = mCall.mGuards.back();
       if ( mCall.mInstructionPointer <= guard.mJumpTo )
       {
-         mStack.push_back(Variant(pexception->getException()));
+         mStack.pushObject(pexception->getException());
 
          mCall.jump(guard.mJumpTo);
 
@@ -1379,46 +1375,39 @@ bool VirtualMachine::handleException(VirtualException* pexception)
    throw pexception;
 }
 
-void VirtualMachine::displayException(const VirtualException& exception)
+void VirtualMachine::displayException(VirtualException& exception)
 {
-   const VirtualObjectReference& exceptionobject = exception.getException();
+   VirtualObject& exceptionobject = exception.getException();
 
    execute(exceptionobject, "getCause");
    execute(exceptionobject, "getCallStack");
 
-   std::string callstack = mStack.back().asString();
-   mStack.pop_back();
+   String callstack = mStack.popString();
+   String cause = mStack.popString();
 
-   std::string cause = mStack.back().asString();
-   mStack.pop_back();
-
-   std::cout << cause << std::endl << callstack;
+   std::cout << cause.toStdString() << std::endl << callstack.toStdString();
 }
 
 // - Object creation
 
-VirtualObjectReference VirtualMachine::instantiate(const std::string& classname, int constructor, void* pnativeobject)
+VirtualObject* VirtualMachine::instantiate(const String& classname, int constructor, void* pnativeobject)
 {
    VirtualClass* pclass = doLoadClass(classname);
-   if ( pclass == NULL )
+   if ( pclass == NULL || !pclass->canInstantiate() )
    {
-      return VirtualObjectReference();
+      return NULL;
    }
 
-   if ( !pclass->canInstantiate() )
-   {
-      // not allowed to do instantiate this class (abstract)
-      throw std::exception();
-   }
+   VirtualObject* pobject = mObjectCache.alloc();
+   pobject->setNativeObject(pnativeobject);
+   pclass->instantiate(*pobject);   
 
-   VirtualObjectReference object(pclass->instantiate());
-   object->setNativeObject(pnativeobject);
-   Variant objectvariant(object);
+   Variant objectvariant(*pobject);
 
    {
       // run field initialization expressions
       const VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[1];
-      mStack.push_back(objectvariant);
+      mStack.push(objectvariant);
       execute(*pclass, entry);
    }
 
@@ -1437,72 +1426,65 @@ VirtualObjectReference VirtualMachine::instantiate(const std::string& classname,
 
       if (pentry != NULL )
       {
-         mStack.insert(mStack.begin() + mStack.size() - (pentry->mArguments - 1), objectvariant);
+         mStack.insert(mStack.size() - (pentry->mArguments - 1), objectvariant);
          execute(*pclass, *pentry);
       }
    }
 
-   return object;
+   // register the object with the garbage collector
+   mGC.collect(pobject);
+
+   return pobject;
 }
 
-VirtualObjectReference VirtualMachine::instantiateNative(const std::string& classname, void* pobject, bool owned)
+VirtualObject* VirtualMachine::instantiateNative(const String& classname, void* pobject, bool owned)
 {
-   if ( pobject == NULL )
+   VirtualObject* presult = NULL;
+   if ( pobject != NULL )
    {
-      return VirtualObjectReference();
+      NativeObjectMap::iterator it = mNativeObjects.find(pobject);
+      if ( it != mNativeObjects.end() )
+      {
+         // already constructed this object earlier
+         ASSERT(it->second->getNativeObject() == pobject);
+         presult = it->second;
+         presult->setOwner(owned);
+      }
+      else
+      {
+         // construct new instance & remember it
+         presult = instantiate(classname, -1, pobject);
+         ASSERT_PTR(presult); 
+         ASSERT(presult->hasNativeObject() && presult->getNativeObject() == pobject);
+
+         presult->setOwner(owned);
+         mNativeObjects[pobject] = presult;
+      }
    }
-
-   NativeObjectMap::iterator it = mNativeObjects.find(pobject);
-   if ( it != mNativeObjects.end() )
-   {
-      // already constructed this object earlier
-      ASSERT(it->second->getNativeObject() == pobject);
-      VirtualObjectReference& ref = it->second;
-      ref->setOwner(owned);
-      return ref;
-   }
-
-   // construct new instance & remember it
-   VirtualObjectReference object(instantiate(classname, -1, pobject));
-   if ( !object.isNull() )
-   {
-      ASSERT(object->hasNativeObject() && object->getNativeObject() == pobject);
-      object->setOwner(owned);
-
-      mNativeObjects[pobject] = object;
-   }
-
-   return object;
+   
+   return presult;
 }
 
-VirtualObjectReference VirtualMachine::instantiateShare(const VirtualObjectReference& origin)
+VirtualObject& VirtualMachine::instantiateArrayException(const VirtualArrayException& e)
 {
-   VirtualObjectReference share = origin->clone();
-
-   mNativeObjects[share->getNativeObject()] = share;
-
-   return share;
-}
-
-VirtualObjectReference VirtualMachine::instantiateArrayException(const VirtualArrayException& e)
-{
-   VirtualObjectReference result;
+   VirtualObject* presult;
 
    switch ( e.getKind() )
    {
       case VirtualArrayException::eOutOfBounds: 
          {
-            result = instantiate("system.ArrayIndexOutOfBoundsException", -1);
+            presult = instantiate("system.ArrayIndexOutOfBoundsException", -1);
             break;
          }
       default:
          UNREACHABLE("Invalid enum value");
    }
    
-   return result;
+   ASSERT_PTR(presult);
+   return *presult;
 }
 
-VirtualObjectReference VirtualMachine::lookupNative(void* pobject)
+VirtualObject* VirtualMachine::lookupNative(void* pobject)
 {
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
    if ( it != mNativeObjects.end() )
@@ -1510,81 +1492,62 @@ VirtualObjectReference VirtualMachine::lookupNative(void* pobject)
       ASSERT(it->second->getNativeObject() == pobject);
       return it->second;
    }
-   return VirtualObjectReference();
+   return NULL;
 }
 
-VirtualArrayReference VirtualMachine::instantiateArray()
+VirtualArray* VirtualMachine::instantiateArray()
 {
    ASSERT_PTR(mpArrayClass);
-   VirtualArrayReference ref(mpArrayClass->instantiateArray());
+   VirtualArray* parray = new VirtualArray();
+   mGC.collect(parray);
+   return parray;
+}
 
-   return ref;
+void VirtualMachine::release(VirtualObject& object)
+{
+   mObjectCache.free(&object);
 }
 
 // - Native interface
 
-void VirtualMachine::registerNative(VirtualObjectReference& object, void* pnative)
+void VirtualMachine::registerNative(VirtualObject& object, void* pnative)
 {
-   ASSERT(!object->hasNativeObject());
-   object->setNativeObject(pnative);
+   ASSERT(!object.hasNativeObject());
+   object.setNativeObject(pnative);
 
-   std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObjectReference>(pnative, object));
+   std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObject*>(pnative, &object));
    ASSERT(ret.second);
 }
 
-void VirtualMachine::unregisterNative(void* pnative)
+void VirtualMachine::unregisterNative(VirtualObject& object)
 {
-   VirtualObjectReference& ref = mNativeObjects[pnative];
-   if ( ref->isOwner() )
+   // to be decided what to do with this.. called from the GC??
+
+   ASSERT(object.hasNativeObject());
+
+   // remove the object from the map
+   NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObject());
+   ASSERT(it != mNativeObjects.end());
+   mNativeObjects.erase(it);
+
+   if ( object.isOwner() )
    {
-      const std::string& classname = ref->getClass().getNativeClassName();
-      std::string fnc = classname + "_destruct";
+      const String& classname = object.getClass().getNativeClassName();
+      String fnc = classname + "_destruct";
 
-      mStack.push_back(Variant(ref));
-      mStack.push_back(Variant(1));
+      mStack.pushObject(object);
+      mStack.pushInt(1);
 
-      VirtualStackAccessor accessor(mStack);
+      VirtualStackAccessor accessor(mContext, mStack);
       (*mNatives[fnc])(*this, accessor);
 
-      mStack.pop_back();
-      mStack.pop_back();
-   }
-
-   ASSERT(mNativeObjects.find(pnative) != mNativeObjects.end());
-   mNativeObjects.erase(pnative);
-}
-
-void VirtualMachine::unregisterNative(VirtualObjectReference& object)
-{
-   if ( object.uses() <= 2 ) // kept by GC and native object array
-   {
-      ASSERT(object->hasNativeObject());
-
-      // remove the object from the map
-      NativeObjectMap::iterator it = mNativeObjects.find(object->getNativeObject());
-      ASSERT(it != mNativeObjects.end());
-      mNativeObjects.erase(it);
-
-      if ( object->isOwner() )
-      {
-         const std::string& classname = object->getClass().getNativeClassName();
-         std::string fnc = classname + "_destruct";
-
-         mStack.push_back(Variant(object));
-         mStack.push_back(Variant(1));
-
-         VirtualStackAccessor accessor(mStack);
-         (*mNatives[fnc])(*this, accessor);
-
-         mStack.pop_back();
-         mStack.pop_back();
-      }
+      mStack.pop(2);
    }
 }
 
 // - Callbacks
 
-VirtualClass* VirtualMachine::doLoadClass(const std::string& classname)
+VirtualClass* VirtualMachine::doLoadClass(const String& classname)
 {
    VirtualClass* pclass = mContext.mClassTable.find(classname);
    if ( pclass == NULL )
@@ -1635,7 +1598,18 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
                   int i = mContext.mLiteralTable.indexOf(literal);
                   if ( i == mContext.mLiteralTable.size() )
                   {
-                     i = mContext.mLiteralTable.insert(literal.clone());
+                     Literal* pliteral = NULL;
+                     if ( literal.getValue().isString() )
+                     {
+                        VirtualString& vstring = mContext.mStringCache.lookup(literal.getValue().asString().getString());
+                        pliteral = new Literal(Variant(vstring));
+                     }
+                     else
+                     {
+                        pliteral = literal.clone();
+                     }
+                      
+                     i = mContext.mLiteralTable.insert(pliteral);
                   }
 
                   previous.setArgument(i);
@@ -1652,7 +1626,7 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
 
    if ( pclass->hasBaseName() )
    {
-      std::string base = pclass->getBaseName();
+      String base = pclass->getBaseName();
       const VirtualClass& baseclass = mContext.mClassTable.resolve(base);
 
       pclass->setBaseClass(baseclass);
@@ -1673,18 +1647,16 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
 {
    if ( mLoaded )
    {
-      VirtualObjectReference objectref = aclass.getClassObject();
+      VirtualObject& object = aclass.getClassObject();
 
       // resolve the virtual classes
-      VirtualObject& object = *objectref;
       object.setClass(mContext.mClassTable.resolve("system.Class"));
 
-      VirtualArrayReference arrayref = object.getMember(1).asArray();
+      VirtualArray& funcarray = object.getMember(1).asArray();
       const VirtualClass& funcclass = mContext.mClassTable.resolve("system.Function");
-      for ( int index = 0; index < arrayref->size(); index++ )
+      for ( int index = 0; index < funcarray.size(); index++ )
       {
-         VirtualObjectReference funcref = (*arrayref)[index].asObject();
-         VirtualObject& func = *funcref;
+         VirtualObject& func = funcarray[index].asObject();
          func.setClass(funcclass);
       }
 
@@ -1693,8 +1665,8 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
       const VirtualFunctionTableEntry& entry = classloader.getVirtualFunctionTable()[4];
       const Variant& classloaderobject = classloader.getStatic(0);
 
-      mStack.push_back(classloaderobject);
-      mStack.push_back(Variant(objectref));
+      mStack.push(classloaderobject);
+      mStack.pushObject(object);
 
       execute(classloader, entry);
    }
@@ -1706,20 +1678,5 @@ void VirtualMachine::shrinkStack(int newsize)
 {
    int diff = mStack.size() - newsize;
    ASSERT(diff >= 0);
-
-   if ( diff > 0 )
-   {
-      Stack::iterator it = mStack.begin() + newsize + 1;
-      for ( ; it != mStack.end(); ++it )
-      {
-         Variant& variant = *it;
-         if ( variant.isObject() )
-         {
-            VirtualObjectReference& ref = variant.asObject();
-            mGC.collect(ref);
-         }
-      }
-
-      mStack.resize(newsize);
-   }
+   mStack.pop(diff);
 }

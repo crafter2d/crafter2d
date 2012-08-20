@@ -39,9 +39,10 @@ UIFont::UIFont():
 
 // - Initialization
 
-bool UIFont::load(FT_Library lib, const std::string& name, int size)
+bool UIFont::load(FT_Library lib, const String& name, int size)
 {
-   FT_Error error = FT_New_Face(lib, name.c_str(), 0, &mFace);
+   char buf[256];
+   FT_Error error = FT_New_Face(lib, name.asArray(buf, 256), 0, &mFace);
 	CHECK_ERROR("Not valid!");
    setName(name);
 
@@ -132,12 +133,12 @@ int UIFont::getBaseLine() const
 
 // - Size calculation
 
-int UIFont::getTextWidth(const std::string& text) const
+int UIFont::getTextWidth(const String& text) const
 {
    int result = 0;
    FontChar* pfontchar = NULL;
 
-   for ( std::size_t index = 0; index < text.length(); ++index )
+   for ( int index = 0; index < text.length(); ++index )
    {
       char character = text[index];
       Characters::const_iterator it = mCharacters.find(character);
@@ -156,14 +157,14 @@ int UIFont::getTextWidth(const std::string& text) const
    return result;
 }
 
-int UIFont::getTextHeight(const std::string& text) const
+int UIFont::getTextHeight(const String& text) const
 {
    return mHeight;
 }
 
 // - Rendering
 
-void UIFont::render(const std::string& text)
+void UIFont::render(const String& text)
 {
    FontChar* pfontchar = NULL;
 

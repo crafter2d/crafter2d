@@ -22,24 +22,25 @@
 
 #include "core/core_base.h"
 
-#include <string>
 #include "zip/unzip.h"
+
+class String;
 
 class CORE_API UnzipFile
 {
 public:
-   static bool isZip(const std::string& path);
+   static bool isZip(const String& path);
 
-   explicit UnzipFile(const std::string& path);
+   explicit UnzipFile(const String& path);
             ~UnzipFile();
 
-   bool contains(const std::string& name) const;
+   bool contains(const String& name) const;
 
-   bool readFile(const std::string& name, void*& pdata, int& size, bool casesensitive = true);
+   bool readFile(const String& name, void*& pdata, int& size, bool casesensitive = true);
 
 private:
    UnzipFile();
-   bool open(const std::string& path);
+   bool open(const String& path);
 
    unzFile _zip;
 };

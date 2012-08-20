@@ -33,9 +33,9 @@ WinFileSystem::~WinFileSystem()
 {
 }
 
-bool WinFileSystem::recurseDirectory(const std::string& dir, Callback callback, void* pdata)
+bool WinFileSystem::recurseDirectory(const String& dir, Callback callback, void* pdata)
 {
-   std::string localdir = dir;
+   String localdir = dir;
    if ( localdir[localdir.length() - 1] == '/' )
       localdir += '*';
    else
@@ -44,7 +44,7 @@ bool WinFileSystem::recurseDirectory(const std::string& dir, Callback callback, 
    WIN32_FIND_DATA ffd;
    HANDLE hFind = INVALID_HANDLE_VALUE;
 
-   hFind = FindFirstFile(localdir.c_str(), &ffd);
+   hFind = FindFirstFile(localdir.getBuffer(), &ffd);
    if ( hFind == INVALID_HANDLE_VALUE )
       return true;
 
@@ -63,12 +63,12 @@ bool WinFileSystem::recurseDirectory(const std::string& dir, Callback callback, 
    return true;
 }
 
-bool WinFileSystem::find(const std::string& mask, Callback callback, void* pdata)
+bool WinFileSystem::find(const String& mask, Callback callback, void* pdata)
 {
    WIN32_FIND_DATA ffd;
    HANDLE hFind = INVALID_HANDLE_VALUE;
 
-   hFind = FindFirstFile(mask.c_str(), &ffd);
+   hFind = FindFirstFile(mask.getBuffer(), &ffd);
    if ( hFind == INVALID_HANDLE_VALUE )
       return true;
 

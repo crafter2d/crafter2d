@@ -27,6 +27,7 @@
 #include "core/smartptr/autoptr.h"
 #include "core/streams/arraystream.h"
 #include "core/streams/bufferedstream.h"
+#include "core/string/string.h"
 #include "core/containers/listiterator.h"
 #include "core/log/log.h"
 #include "core/system/timer.h"
@@ -71,6 +72,11 @@ bool NetConnection::initialize()
    return true;
 }
 
+NetPackage* construct()
+{
+   return new NetPackage();
+}
+
 /******************************************************
  * NetConnection class
  */
@@ -82,6 +88,7 @@ NetConnection::NetConnection(NetObserver& observer):
    mSocket(),
    mFlags(0)
 {
+   mAllocator.setConstructFunc(construct);
 }
 
 NetConnection::~NetConnection()
@@ -107,7 +114,7 @@ bool NetConnection::listen(int port)
 /// \fn NetConnection::connect(const std::string& server, int port)
 /// \brief Set up this connection for communication with a server.
 /// \returns clientid of remote connection
-int NetConnection::connect(const std::string& serverName, int port)
+int NetConnection::connect(const String& serverName, int port)
 {
    int clientid = -1;
 
@@ -234,7 +241,7 @@ void NetConnection::processPackage(NetAddress& client, NetPackage& package)
    NetObjectStream stream(arraystream);
    stream >> &pobject;
 
-   AutoPtr<NetEvent> event(dynamic_cast<NetEvent*>(pobject));
+   AutoPtr<NetEvent> event(static_cast<NetEvent*>(pobject));
    mObserver.onEvent(client.index, *event);
 
    client.nextPackageNumber++;
@@ -254,7 +261,7 @@ void NetConnection::send(int clientid, const NetObject& object, NetPackage::Reli
 {
    NetAddress& client = mClients[clientid];
 
-   BufferedStream bufferedstream;
+   BufferedStream bufferedstream(1024);
    NetObjectStream stream(bufferedstream);
    stream << object;
 

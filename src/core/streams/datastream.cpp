@@ -22,6 +22,8 @@
 #  include "datastream.inl"
 #endif
 
+#include "core/string/string.h"
+
 DataStream::DataStream()
 {
 }
@@ -72,12 +74,12 @@ void DataStream::readChar(char& value)
    value = readByte();
 }
 
-void DataStream::readString(std::string& value)
+void DataStream::readString(String& value)
 {
    int length;
    readInt(length);
    const char* pdata = readBytes(length);
-   value.assign(pdata, length);
+   value.setTo(pdata, length);
 }
 
 // - Writting
@@ -107,10 +109,13 @@ void DataStream::writeChar(char value)
    writeBytes(&value, 1);
 }
 
-void DataStream::writeString(const std::string& text)
+void DataStream::writeString(const String& text)
 {
-   writeInt(text.length());
-   writeBytes(text.data(), text.length());
+   int len;
+   const char* ptext = text.toUtf8(len);
+   writeInt(len);
+   writeBytes(ptext, len);
+   delete[] ptext;
 }
 
 // - Overloadable interface

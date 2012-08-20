@@ -26,17 +26,17 @@ class AntlrException : public CompileException
 {
 public:
             AntlrException();
-   explicit AntlrException(const std::string& msg, int line = -1, int charpos = -1);
+   explicit AntlrException(const String& msg, int line = -1, int charpos = -1);
 
  // get/set
-   const std::string& getMessage() const;
+   const String& getMessage() const;
    int                getCharPosition() const;
 
  // query
-   std::string asString() const;
+   virtual String asString() const;
 
 private:
-   std::string mMessage;
+   String mMessage;
    int         mCharPos;
 };
 

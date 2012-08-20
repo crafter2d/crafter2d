@@ -20,11 +20,11 @@
 #ifndef SERVER_DIRTY_SET_H_
 #define SERVER_DIRTY_SET_H_
 
-#include <list>
+#include <vector>
 
 #include "dirtyset.h"
 
-class NetConnection;
+class AggregateEvent;
 class Entity;
 
 class ServerDirtySet : public DirtySet
@@ -32,16 +32,14 @@ class ServerDirtySet : public DirtySet
 public:
    ServerDirtySet();
    virtual ~ServerDirtySet();
-
- // transmission
-   void send(int clientid, NetConnection& conn);
-
+   
  // reporting
+           void collect(AggregateEvent& event);
    virtual void reportDirty(Entity& entity);
 
 private:
  // typedefs
-   typedef std::list<Entity*> Objects;
+   typedef std::vector<Entity*> Objects;
 
    Objects mObjects;
 };

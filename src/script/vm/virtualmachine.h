@@ -26,127 +26,25 @@
 
 #include "script/script_base.h"
 
+#include "core/memory/memorypool.h"
 #include "core/defines.h"
 
-#include "script/common/variant.h"
 #include "script/compiler/compiler.h"
 #include "script/gc/garbagecollector.h"
 
 #include "virtualcompilecallback.h"
-#include "virtualobjectreference.h"
 #include "virtualfunctiontableentry.h"
-#include "virtualmachineobjectobserver.h"
 #include "virtualcontext.h"
+#include "virtualstack.h"
 
+class String;
+class Variant;
 class VirtualArrayException;
 class VirtualInstruction;
-class VirtualProgram;
-class VirtualFunctionBase;
 class VirtualFunctionTableEntry;
 class VirtualException;
-
-typedef std::deque<Variant> Stack;
-
-class VirtualStackAccessor
-{
-public:
-   VirtualStackAccessor(Stack& stack): mStack(stack), mSize(stack.back().asInt())
-   {
-   }
-
- // query
-   VirtualObjectReference& getThis() const
-   {
-      return getObject(0);
-   }
-
-   int getInt(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asInt();
-   }
-
-   double getReal(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asReal();
-   }
-
-   const std::string& getString(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asString();
-   }
-
-   char getChar(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asChar();
-   }
-
-   bool getBoolean(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asBool();
-   }
-
-   VirtualObjectReference& getObject(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asObject();
-   }
-
-   VirtualArrayReference& getArray(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asArray();
-   }
-
- // return value
-   bool hasResult() {
-      return !mResult.isEmpty();
-   }
-
-   Variant& getResult() {
-      return mResult;
-   }
-
-   void setResult(const VirtualObjectReference& object) {
-      if ( !object.isNull() )
-      {
-         mResult = Variant(object);
-      }
-   }
-
-   void setResult(int value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(double value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(bool value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(char value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(const std::string& value) {
-      mResult = Variant(value);
-   }
-
-   void setResult(const Variant& value) {
-      mResult = value;
-   }
-
-private:
-   Variant& getArgument(int index) const {
-      ASSERT(index <= mSize);
-      return mStack[mStack.size() - (mSize + 1) + index];
-      // 0 1 2 3 -> ssize = 4; size = 3
-      // index 0 -> 4 - 3 = 1
-   }
-
-   Stack&   mStack;
-   Variant  mResult;
-   int      mSize;
-};
+class VirtualObject;
+class VirtualStackAccessor;
 
 class SCRIPT_API VirtualMachine
 {
@@ -160,44 +58,46 @@ public:
    void initialize();
    
  // loading
-   bool loadClass(const std::string& classname);
+   bool loadClass(const String& classname);
 
-   void registerCallback(const std::string& name, callbackfnc callback);
+   void registerCallback(const String& name, callbackfnc callback);
 
  // stack access
    int popInt();
    double popReal();
    bool popBoolean();
-   std::string popString();
+   String popString();
 
    void push(int value);
    void push(double value);
    void push(bool value);
-   void push(const std::string& value);
-   void push(const VirtualObjectReference& object);
+   void push(const String& value);
+   void push(VirtualObject& object);
+
+   void addRootObject(VirtualObject& object);
 
  // execution
-   bool execute(const std::string& classname, const std::string& function);
-   void execute(const VirtualObjectReference& object, const std::string& function);
+   bool execute(const String& classname, const String& function);
+   void execute(VirtualObject& object, const String& function);
 
  // exception handling
-   std::string buildCallStack() const;
-   void displayException(const VirtualException& exception);
+   String buildCallStack() const;
+   void displayException(VirtualException& exception);
 
  // object instantation
-   VirtualObjectReference instantiate(const std::string& classname, int constructor = -1, void* pobject = NULL);
-   VirtualObjectReference instantiateNative(const std::string& classname, void* pobject, bool owned = true);
-   VirtualObjectReference instantiateShare(const VirtualObjectReference& origin);
-   VirtualArrayReference  instantiateArray();
+   VirtualObject*    instantiate(const String& classname, int constructor = -1, void* pobject = NULL);
+   VirtualObject*    instantiateNative(const String& classname, void* pobject, bool owned = true);
+   VirtualArray*     instantiateArray();
+   void              release(VirtualObject& object);
 
  // observing
-   VirtualObjectReference lookupNative(void* pobject);
-   void registerNative(VirtualObjectReference& object, void* pnative);
-   void unregisterNative(VirtualObjectReference& object);
-   void unregisterNative(void* pnative);
+   VirtualObject*    lookupNative(void* pobject);
+   void              registerNative(VirtualObject& object, void* pnative);
+   void              unregisterNative(VirtualObject& object);
 
 private:
    friend class VirtualCompileCallback;
+   friend class GarbageCollector;
 
    class VirtualCall {
    public:
@@ -246,25 +146,24 @@ private:
       int                              mStackBase;
    };
 
+   typedef std::vector<VirtualObject*> Objects;
    typedef std::stack<VirtualCall> CallStack;
-   typedef std::map<std::string, callbackfnc> Natives;
-   typedef std::map<void*, VirtualObjectReference> NativeObjectMap;
+   typedef std::map<String, callbackfnc> Natives;
+   typedef std::map<void*, VirtualObject*> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
 
  // execution
    void execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry);
    void execute(const VirtualClass& vclass, const VirtualInstruction& instruction);
-
-   Variant pop();
-
+   
  // exception
-   VirtualObjectReference  instantiateArrayException(const VirtualArrayException& e);
-   void                    throwException(const std::string& exceptionname, const std::string& reason = "");
-   bool                    handleException(VirtualException* pexception);
+   VirtualObject& instantiateArrayException(const VirtualArrayException& e);
+   void           throwException(const String& exceptionname, const String& reason);
+   bool           handleException(VirtualException* pexception);
 
  // class loading
-   VirtualClass* doLoadClass(const std::string& classname);
+   VirtualClass* doLoadClass(const String& classname);
    void          classLoaded(VirtualClass* pclass);
    void          createClass(const VirtualClass& aclass);
 
@@ -274,11 +173,12 @@ private:
    VirtualContext&               mContext;
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
+   Objects                       mRootObjects;
+   MemoryPool<VirtualObject>     mObjectCache;
    GarbageCollector              mGC;
-   Stack                         mStack;
+   VirtualStack                  mStack;
    CallStack                     mCallStack;
    VirtualCall                   mCall;
-   VirtualMachineObjectObserver  mObjectObserver;
    Natives                       mNatives;
    NativeObjectMap               mNativeObjects;
    State                         mState;

@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE const std::string& CompileException::getFilename() const
+INLINE const String& CompileException::getFilename() const
 {
    return mFilename;
 }
 
-INLINE void CompileException::setFilename(const std::string& filename)
+INLINE void CompileException::setFilename(const String& filename)
 {
    mFilename = filename;
 }

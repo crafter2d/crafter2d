@@ -2,20 +2,21 @@
 #ifndef RESOURCE_H_
 #define RESOURCE_H_
 
-#include <string>
+#include "core/string/string.h"
 
 class Resource
 {
 public:
    Resource();
    Resource(const std::string& name);
+   virtual ~Resource();
 
  // get/set
-   const std::string& getName() const;
-   void               setName(const std::string& name);
+   const String& getName() const;
+   void          setName(const String& name);
 
 private:
-   std::string mName;
+   String mName;
 };
 
 #endif // RESOURCE_H_

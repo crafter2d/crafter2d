@@ -66,6 +66,6 @@ void NetAddress::removeAcknowledged(uint number)
 
    if ( index < resendQueue.size() )
    {
-      resendQueue.erase(resendQueue.begin(), resendQueue.begin() + index);
+      resendQueue.erase(resendQueue.begin(), resendQueue.begin() + (++index));
    }
 }

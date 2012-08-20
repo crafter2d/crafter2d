@@ -11,12 +11,12 @@ ASTPackage::ASTPackage():
 
 // - Get/set
 
-const std::string& ASTPackage::getName() const 
+const String& ASTPackage::getName() const 
 { 
    return mName;
 }
    
-void ASTPackage::setName(const std::string& name)
+void ASTPackage::setName(const String& name)
 {
    mName = name;
 }

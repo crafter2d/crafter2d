@@ -22,7 +22,7 @@ ScopeVariable::~ScopeVariable()
 
 // - Get/set
 
-const std::string& ScopeVariable::getName() const
+const String& ScopeVariable::getName() const
 {
    return mVariable.getName();
 }

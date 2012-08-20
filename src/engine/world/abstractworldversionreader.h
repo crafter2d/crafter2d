@@ -20,7 +20,7 @@
 #ifndef ABSTRACTWORLDVERSIONREADER_H
 #define ABSTRACTWORLDVERSIONREADER_H
 
-#include <string>
+#include "core/string/string.h"
 
 class World;
 
@@ -31,20 +31,20 @@ public:
    virtual ~AbstractWorldVersionReader() = 0;
 
  // get/set
-   const std::string&   getFilename() const;
+   const String&   getFilename() const;
 
    const World&         getWorld() const;
          World&         getWorld();
 
  // operations
-   bool read(const std::string& filename);
+   bool read(const String& filename);
 
 protected:
    virtual bool virRead() = 0;
 
 private:
-   std::string mFilename;
-   World&      mWorld;
+   String   mFilename;
+   World&   mWorld;
 };
 
 #ifdef JENGINE_INLINE

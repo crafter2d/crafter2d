@@ -50,18 +50,18 @@ ShaderPath::ShaderPath():
 	\retval true the shader objects have been successfully linked.
 	\retval false otherwise, consult the log file for compiler/linker specific errors.
  */
-bool ShaderPath::load(const std::string& vertex, const std::string& fragment)
+bool ShaderPath::load(const String& vertex, const String& fragment)
 {
 	Log& log = Log::getInstance ();
 	shader.create();
 
 	// try to load and add the vertex shader
-   if ( !vertex.empty() )
+   if ( !vertex.isEmpty() )
    {
 		AutoPtr<VertexShader> vs = new VertexShader();
-      if ( !vs->compile(vertex.c_str()) )
+      if ( !vs->compile(vertex) )
       {
-         log.error("GLSLPath.load: Failed to load or compile vertex shader '%s'", vertex.c_str());
+         log.error("GLSLPath.load: Failed to load or compile vertex shader '%s'", vertex.getBuffer());
 			return false;
 		}
 
@@ -69,12 +69,12 @@ bool ShaderPath::load(const std::string& vertex, const std::string& fragment)
 	}
 
 	// try to load and add the fragment shader
-   if ( !fragment.empty() )
+   if ( !fragment.isEmpty() )
    {
 		AutoPtr<FragmentShader> fs = new FragmentShader();
-      if ( !fs->compile(fragment.c_str()) )
+      if ( !fs->compile(fragment) )
       {
-         log.error("GLSLPath.load: Failed to load or compile fragment shader '%s'", fragment.c_str());
+         log.error("GLSLPath.load: Failed to load or compile fragment shader '%s'", fragment.getBuffer());
 			return false;
 		}
 
@@ -105,7 +105,7 @@ CodePath::PathType ShaderPath::getType() const
    return CodePath::EGLSL;
 }
 
-int ShaderPath::getUniformLocation (const char* name) const
+int ShaderPath::getUniformLocation (const String& name) const
 {
 	return shader.getUniformLocation(name);
 }
@@ -135,10 +135,10 @@ ProgramPath::~ProgramPath()
 {
 }
 
-bool ProgramPath::load (const std::string& vertex, const std::string& fragment)
+bool ProgramPath::load (const String& vertex, const String& fragment)
 {
 	// forget about the fragment shader, it is not supported
-	if ( !program.compile(vertex.c_str()) )
+	if ( !program.compile(vertex) )
 		return false;
 
 	return true;
@@ -164,7 +164,7 @@ CodePath::PathType ProgramPath::getType() const
    return CodePath::EGLSL;
 }
 
-int ProgramPath::getUniformLocation (const char* name) const
+int ProgramPath::getUniformLocation (const String& name) const
 {
 	return program.getUniformLocation(name);
 }

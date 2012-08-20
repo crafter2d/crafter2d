@@ -22,6 +22,8 @@
 
 #include <map>
 
+#include "core/string/string.h"
+
 #include "net/events/actionevent.h"
 
 class ActionEvent;
@@ -59,14 +61,14 @@ public:
    void     setProcess(Process& process);
 
  // operations
-   void bind(int action, const char* function);
+   void bind(int action, const String& function);
 
  // processing
    void process(int action, bool down);
    void processRemote(const ActionEvent& event, Actor& object);
 
 private:
-   typedef std::map<int, const char*> Actions;
+   typedef std::map<int, String> Actions;
 
    Process* mpProcess;
    Script*  mpScript;

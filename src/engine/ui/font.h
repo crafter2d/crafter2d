@@ -21,9 +21,10 @@
 #define FONT_H_
 
 #include <map>
-#include <string>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
+#include "core/string/string.h"
 
 #include "engine/resource/resource.h"
 
@@ -35,18 +36,18 @@ public:
    UIFont();
 
  // initialization
-   bool     load(FT_Library lib, const std::string& name, int size = 10);
+   bool     load(FT_Library lib, const String& name, int size = 10);
    void     destroy();
 
  // query
    int      getBaseLine() const;
 
  // sizes
-   int      getTextWidth(const std::string& text) const;
-   int      getTextHeight(const std::string& text) const;
+   int      getTextWidth(const String& text) const;
+   int      getTextHeight(const String& text) const;
 
  // rendering
-   void     render(const std::string& text);
+   void     render(const String& text);
 
 private:
    typedef std::map<char, FontChar*> Characters;

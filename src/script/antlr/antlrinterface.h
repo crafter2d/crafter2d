@@ -25,9 +25,6 @@
 #include "script/ast/ast.h"
 #include "script/compiler/classresolver.h"
 
-class QString;
-class QStringList;
-
 class ASTClass;
 class AntlrNode;
 class AntlrStream;
@@ -47,8 +44,8 @@ private:
    void     handleFuncArguments(const AntlrNode& node, ASTFunction& function);
    void     handleModifiers(const AntlrNode& node, ASTModifiers& modifiers);
 
-   std::string parseString(const std::string& value);
-   char        parseChar(const std::string& value);
+   String   parseString(const String& value);
+   char     parseChar(const String& value);
 
    ASTType* getType(const AntlrNode& node);
 
@@ -98,7 +95,7 @@ private:
 
    CompileContext& mContext;
    ClassResolver   mClassResolver;
-   std::string     mPackage;
+   String          mPackage;
    ASTClass*       mpClass;
 };
 

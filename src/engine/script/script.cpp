@@ -29,30 +29,36 @@
 
 #include "script/vm/virtualfunctionnotfoundexception.h"
 
-Script::Script(ScriptManager& manager, const std::string& name):
+Script::Script(ScriptManager& manager, const String& name):
    mScriptManager(manager),
    mClassName(name),
-   mObject()
+   mpObject(NULL)
 {
 }
 
 // - Get/set
 
-void Script::setThis(const VirtualObjectReference& object)
+VirtualObject& Script::getThis()
 {
-   mObject = object;
+   ASSERT_PTR(mpObject);
+   return *mpObject;
+}
+
+void Script::setThis(VirtualObject& object)
+{
+   mpObject = &object;
 }
 
 void Script::setThis(void* pthis)
 {
-   if ( !mClassName.empty() )
+   if ( !mClassName.isEmpty() )
    {
-      mObject = mScriptManager.mpVirtualMachine->instantiateNative(mClassName, pthis, false);
+      mpObject = mScriptManager.mVirtualMachine.instantiateNative(mClassName, pthis, false);
    }
    else
    {
-      mObject = mScriptManager.mpVirtualMachine->lookupNative(pthis);
-      ASSERT(!mObject.isNull());
+      mpObject = mScriptManager.mVirtualMachine.lookupNative(pthis);
+      ASSERT_PTR(mpObject);
    }
 }
 
@@ -64,15 +70,17 @@ void Script::setThis(void* pthis)
 /// \brief Runs the script. You must first call prepareCall and optionaly the addParam functions
 /// to set up the function name and arguments.
 /// \returns always returns true
-bool Script::run(const std::string& function)
+bool Script::run(const String& function)
 {
+   ASSERT_PTR(mpObject);
+
    try
    {
-      mScriptManager.mpVirtualMachine->execute(mObject, function);
+      mScriptManager.mVirtualMachine.execute(*mpObject, function);
    }
    catch ( VirtualFunctionNotFoundException* pe )
    {
-      Log::getInstance().error("Could not find function %s.%s", pe->getClassName().c_str(), pe->getFunction().c_str());
+      Log::getInstance().error("Could not find function %s.%s", pe->getClassName().getBuffer(), pe->getFunction().getBuffer());
       return false;
    }
    catch ( VirtualException* pe )
@@ -90,35 +98,35 @@ bool Script::run(const std::string& function)
 
 bool Script::getBoolean()
 {
-   return mScriptManager.mpVirtualMachine->popBoolean();
+   return mScriptManager.mVirtualMachine.popBoolean();
 }
 
 int Script::getInteger()
 {
-   return mScriptManager.mpVirtualMachine->popInt();
+   return mScriptManager.mVirtualMachine.popInt();
 }
 
 void Script::addParam(void* pobject)
 {
-   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->lookupNative(pobject));
-   ASSERT_MSG(!ref.isNull(), "Object should have been registered already when using this method.");
+   VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.lookupNative(pobject);
+   ASSERT_MSG(pobject != NULL, "Object should have been registered already when using this method.");
 
-   mScriptManager.mpVirtualMachine->push(ref);
+   mScriptManager.mVirtualMachine.push(*pvirtualobject);
 }
 
-/// \fn Script::addParam(const std::string& classname, void* pobject)
+/// \fn Script::addParam(const String& classname, void* pobject)
 /// \brief Pushes a custom type parameter on top of the stack which will be use by Lua as a parameter to the
 /// function.
 /// \param object a pointer to an object
 /// \param typeName the type name of the object (class name)
-void Script::addParam(const std::string& classname, void* pobject)
+void Script::addParam(const String& classname, void* pobject)
 {
-   VirtualObjectReference ref(mScriptManager.mpVirtualMachine->instantiateNative(classname, pobject, false));
+   VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.instantiateNative(classname, pobject, false);
 
-   mScriptManager.mpVirtualMachine->push(ref);
+   mScriptManager.mVirtualMachine.push(*pvirtualobject);
 }
 
-void Script::addParam(const VirtualObjectReference& object)
+void Script::addParam(VirtualObject& object)
 {
-   mScriptManager.mpVirtualMachine->push(object);
+   mScriptManager.mVirtualMachine.push(object);
 }

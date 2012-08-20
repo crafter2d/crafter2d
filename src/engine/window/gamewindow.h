@@ -22,7 +22,6 @@
 
 #include "engine/engine_base.h"
 
-#include <string>
 #include <vector>
 
 class GameWindowListener;
@@ -30,6 +29,7 @@ class MouseEventDispatcher;
 class MouseEvent;
 class KeyEventDispatcher;
 class KeyEvent;
+class String;
 
 class ENGINE_API GameWindow
 {
@@ -40,7 +40,7 @@ public:
    virtual ~GameWindow() = 0;
 
  // creation
-   bool create(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
+   bool create(const String& title, int width, int height, int bitdepth, bool fullscreen);
    void destroy();
 
  // query
@@ -63,7 +63,7 @@ public:
 
 protected:
  // creation
-   virtual bool doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
+   virtual bool doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen);
    virtual void doDestroy();
 
  // listener notification

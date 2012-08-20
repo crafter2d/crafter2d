@@ -20,7 +20,7 @@
 #ifndef COMPILE_EXCEPTION_H
 #define COMPILE_EXCEPTION_H
 
-#include <string>
+#include "core/string/string.h"
 
 class CompileException
 {
@@ -29,18 +29,18 @@ public:
    virtual ~CompileException() = 0;
 
  // get/set
-   const std::string& getFilename() const;
-   void               setFilename(const std::string& filename);
+   const String& getFilename() const;
+   void          setFilename(const String& filename);
 
    int  getLine() const;
    void setLine(int line);
 
  // query
-   virtual std::string asString() const = 0;
+   virtual String asString() const = 0;
 
 private:
-   std::string mFilename;
-   int         mLine;
+   String mFilename;
+   int    mLine;
 };
 
 #ifdef JENGINE_INLINE

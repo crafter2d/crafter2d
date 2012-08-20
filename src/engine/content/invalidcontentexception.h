@@ -20,19 +20,19 @@
 #ifndef INVALID_CONTENT_EXCEPTION_H
 #define INVALID_CONTENT_EXCEPTION_H
 
-#include <string>
+#include "core/string/string.h"
 
 class InvalidContentException
 {
 public:
    InvalidContentException();
-   InvalidContentException(const std::string& reason);
+   InvalidContentException(const String& reason);
    InvalidContentException(const InvalidContentException& that);
 
-   const std::string& getReason() const;
+   const String& getReason() const;
 
 private:
-   std::string mReason;
+   String mReason;
 };
 
 #endif // INVALID_CONTENT_EXCEPTION_H

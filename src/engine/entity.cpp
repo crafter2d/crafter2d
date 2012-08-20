@@ -36,7 +36,8 @@ Entity::Entity():
    mpParent(NULL),
    mChildren(),
    mName(),
-   mXmlFile()
+   mXmlFile(),
+   mClassName()
 {
    if ( ((int)mId) == -1 )
       mId = IdManager::getInstance().getNextId();
@@ -52,7 +53,7 @@ Entity::~Entity()
 /// \fn SceneObject::setName(const char* newName)
 /// \brief Sets the name of this object.
 /// \param n the new name for this object
-void Entity::setName(const std::string& name)
+void Entity::setName(const String& name)
 {
    if ( name != mName )
    {

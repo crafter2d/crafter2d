@@ -374,7 +374,7 @@ void SymbolCollectorVisitor::resolveType(ASTType& type)
 
       if ( !type.resolveType(mContext, ptypevariables) )
       {
-         mContext.getLog().error("Could not resolve type " + type.toString());
+         mContext.getLog().error(String("Could not resolve type ") + type.toString());
          type.setKind(ASTType::eUnknown);
       }
    }

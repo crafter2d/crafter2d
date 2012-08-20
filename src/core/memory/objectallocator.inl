@@ -21,11 +21,10 @@
 
 template<class E>
 ObjectAllocator<E>::ObjectAllocator():
-   mpElements(NULL),
-   mSize(50),
+   mElements(),
    mAvailable(0)
 {
-   mpElements = new E*[mSize];
+   mElements.reserve(50);
 }
 
 // - Operations
@@ -33,18 +32,21 @@ ObjectAllocator<E>::ObjectAllocator():
 template<class E>
 E* ObjectAllocator<E>::get()
 {
-   return mAvailable > 0 ? mpElements[--mAvailable] : new E();
+   if ( mElements.size() > 0 )
+   {
+      E* p = mElements.back();
+      mElements.pop_back();
+      return p;
+   }
+   else
+   {
+      ASSERT(mFunc != NULL);
+      return (*mFunc)();
+   }
 }
 
 template<class E>
 void ObjectAllocator<E>::release(E* pobject)
 {
-   if ( mAvailable < mSize )
-   {
-      mpElements[mAvailable++] = pobject;
-   }
-   else
-   {
-      delete pobject;
-   }
+   mElements.push_back(pobject);
 }

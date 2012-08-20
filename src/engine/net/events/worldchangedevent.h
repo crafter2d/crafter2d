@@ -20,7 +20,7 @@
 #ifndef WORLD_CHANGED_EVENT_H
 #define WORLD_CHANGED_EVENT_H
 
-#include <string>
+#include "core/string/string.h"
 
 #include "netevent.h"
 
@@ -35,7 +35,7 @@ public:
    WorldChangedEvent(const World& world);
 
  // get/set
-   const std::string& getFilename() const;
+   const String& getFilename() const;
 
 protected:
  // streaming
@@ -44,7 +44,7 @@ protected:
 
 private:
 
-   std::string mFilename;
+   String mFilename;
 };
 
 #ifdef JENGINE_INLINE

@@ -45,10 +45,11 @@
 #include "engine/physics/simulationfactoryregistry.h"
 #include "engine/net/netobjectfactory.h"
 #include "engine/net/netconnection.h"
+#include "engine/client.h"
+#include "engine/server.h"
 
 #include "console.h"
 #include "gamesettings.h"
-#include "script_game.h"
 
 /*!
     \fn Game::Game()
@@ -57,10 +58,10 @@
 Game::Game():
    mSettings(),
    mTitle(),
-   mScriptManager(),
-   mpScript(NULL),
    mpWindowFactory(NULL),
    mpTimerData(NULL),
+   mpClient(NULL),
+   mpServer(NULL),
    mActive(false)
 {
 }
@@ -111,10 +112,6 @@ bool Game::create()
 
    mSettings.initialize();
 
-   // initialize scripting engine
-   mScriptManager.initialize();
-   script_game_register(mScriptManager);
-
    // initialize the console
    Console& console = Console::getInstance();
    console.create ();
@@ -138,7 +135,8 @@ bool Game::create()
    
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
-   if ( !initGame() )
+   mActive = initGame();
+   if ( !mActive )
    {
       console.error("Aborted after failed game initialization.");
       return false;
@@ -156,9 +154,6 @@ void Game::destroy()
 {
    // free the game resources
 	endGame ();
-
-	// release the Lua scripting environment
-	mScriptManager.destroy ();
 
    // release timer data
    TIMER.releaseData(mpTimerData);
@@ -196,19 +191,14 @@ void Game::run()
  */
 bool Game::initGame()
 {
-   mpScript = mScriptManager.loadNative("Game", this, false);
-   if ( mpScript == NULL )
-   {
-      // failed to load the Game class (or any depending class)
-      return false;
-   }
+   mpServer = new Server();
+   mpServer->create("demo.GameServer");
 
-   if ( mpScript->run("initialize") && mpScript->getBoolean() )
-   {
-      mActive = true;
-   }
+   mpClient = new Client();
+   mpClient->setWindowFactory(*mpWindowFactory);
+   mpClient->create("demo.GameClient");
 
-	return mActive;
+	return true;
 }
 
 /*!
@@ -219,11 +209,11 @@ bool Game::initGame()
  */
 void Game::endGame()
 {
-   if ( mpScript != NULL )
-   {
-      mpScript->run("shutdown");
-      delete mpScript;
-   }
+   mpClient->destroy();
+   delete mpClient;
+
+   mpServer->destroy();
+   delete mpServer;
 }
 
 /*!
@@ -234,26 +224,26 @@ void Game::endGame()
 void Game::runFrame()
 {
    //Profiler::getInstance().begin();
-
+   
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
    static float start = 0;
    static unsigned int frame = 0;
 
-   mScriptManager.update(delta);
    if ( !isActive() )
       return;
 
-   ASSERT_PTR(mpScript);
-   mpScript->addParam(delta);
-   mpScript->run("run");
+   mpServer->update(delta);
+
+   mpClient->update(delta);
+   mpClient->render(delta);
 
    frame++;
    start += timerdelta.getDelta();
    if ( start >= 1.0f )
    {
-      //std::cout << "Fps: " << frame << std::endl;
+      std::cout << "Fps: " << frame << std::endl;
       start = 0;
       frame = 0;
    }

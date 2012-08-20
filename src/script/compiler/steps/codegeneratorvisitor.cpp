@@ -5,7 +5,7 @@
 #include "core/smartptr/scopedvalue.h"
 
 #include "script/ast/ast.h"
-#include "script/vm/virtualarrayobject.h"
+#include "script/vm/virtualarray.h"
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualinstruction.h"
@@ -14,7 +14,6 @@
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualfunctiontable.h"
 #include "script/vm/virtualfunctiontableentry.h"
-#include "script/vm/virtualarrayreference.h"
 #include "script/vm/virtuallookuptable.h"
 
 #include "script/common/literal.h"
@@ -162,9 +161,10 @@ int CodeGeneratorVisitor::allocateLabel()
    return mLabel++;
 }
 
-int CodeGeneratorVisitor::allocateLiteral(const std::string& value)
+int CodeGeneratorVisitor::allocateLiteral(const String& value)
 {
-   Variant variant(value);
+   VirtualString& vstring = mContext.getStringCache().lookup(value);
+   Variant variant(vstring);
 
    int index = mContext.getLiteralTable().indexOf(variant);
    if ( index == mContext.getLiteralTable().size() )
@@ -251,7 +251,7 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       if ( ast.isConstructor() )
       {
          // call the init method -> set the native object
-         std::string fncname = mpClass->getName() + "_init";
+         String fncname = mpClass->getName() + "_init";
          int resource = allocateLiteral(fncname);
 
          addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
@@ -266,7 +266,7 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       }
       else
       {
-         std::string fncname = ast.getClass().getName() + "_" + ast.getName();
+         String fncname = ast.getClass().getName() + "_" + ast.getName();
          int resource = allocateLiteral(fncname);
 
          // the arguments of this function are re-used by the native function,
@@ -1755,14 +1755,14 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
 void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
 {
    const FunctionTable& table = ast.getFunctionTable();
-   VirtualArrayObject* pfuncarray = new VirtualArrayObject();
+   VirtualArray* pfuncarray = new VirtualArray();
    pfuncarray->addLevel(table.size());
 
    for ( int index = 0; index < table.size(); index++ )
    {
       const ASTFunction& function = table[index];
 
-      VirtualArrayObject* pannoarray = new VirtualArrayObject();
+      VirtualArray* pannoarray = new VirtualArray();
       if ( function.hasAnnotations() )
       {
          const ASTAnnotations& annotations = function.getAnnotations();
@@ -1771,7 +1771,8 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
          {
             const ASTAnnotation& annotation = annotations[a];
 
-            (*pannoarray)[a] = Variant(annotation.mName);
+            VirtualString& vname = mContext.getStringCache().lookup(annotation.mName);
+            (*pannoarray)[a] = Variant(vname);
          }
       }
       else
@@ -1781,24 +1782,24 @@ void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
 
       VirtualObject* funcobject = new VirtualObject();
       funcobject->initialize(2);
-      funcobject->setMember(0, Variant(function.getName()));
-      funcobject->setMember(1, Variant(VirtualArrayReference(pannoarray)));
+      funcobject->setMember(0, Variant(mContext.getStringCache().lookup(function.getName())));
+      funcobject->setMember(1, Variant(*pannoarray));
 
-      (*pfuncarray)[index] = Variant(VirtualObjectReference(funcobject));
+      (*pfuncarray)[index] = Variant(*funcobject); // <-- hack!
    }
 
    VirtualObject* classobject = new VirtualObject();
    classobject->initialize(2);
-   classobject->setMember(0, Variant(ast.getFullName()));
-   classobject->setMember(1, Variant(VirtualArrayReference(pfuncarray)));
+   classobject->setMember(0, Variant(mContext.getStringCache().lookup(ast.getFullName())));
+   classobject->setMember(1, Variant(*pfuncarray));
 
-   mpVClass->setClassObject(VirtualObjectReference(classobject));
+   mpVClass->setClassObject(classobject);
 }
 
 void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
 {
    int index = literal.getTableIndex();
-   const Variant value = literal.getValue();
+   const Variant& value = literal.getValue();
    if ( value.isInt() )
    {
       switch ( value.asInt() )
@@ -1819,20 +1820,22 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
    }
    else if ( value.isReal() )
    {
-      switch ( value.asInt() )
+      double real = value.asReal();
+      if ( real == 0.0 )
       {
-      case 0:
          addInstruction(VirtualInstruction::eReal0);
-         break;
-      case 1:
+      }
+      else if ( real == 1.0 )
+      {
          addInstruction(VirtualInstruction::eReal1);
-         break;
-      case 2:
+      }
+      else if ( real == 2.0 )
+      {
          addInstruction(VirtualInstruction::eReal2);
-         break;
-      default:
+      }
+      else
+      {
          addInstruction(VirtualInstruction::eLoadLiteral, index);
-         break;
       }
    }
    else if ( value.isBool() )

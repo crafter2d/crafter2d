@@ -2,8 +2,9 @@
 #ifndef AST_ANNOTATIONS_H_
 #define AST_ANNOTATIONS_H_
 
-#include <string>
 #include <vector>
+
+#include "core/string/string.h"
 
 #include "astnode.h"
 
@@ -21,7 +22,7 @@ public:
  // query
    int size() const;
 
-   bool contains(const std::string& name) const;
+   bool contains(const String& name) const;
 
  // operations
    void add(ASTAnnotation* pannotation);

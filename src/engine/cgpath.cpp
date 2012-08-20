@@ -23,6 +23,7 @@
 #endif
 
 #include "core/log/log.h"
+#include "core/string/string.h"
 #include "core/defines.h"
 
 #include "cgengine.h"
@@ -40,21 +41,26 @@ CGPath::~CGPath()
 {
 }
 
-bool CGPath::load (const std::string& vertex, const std::string& fragment)
+bool CGPath::load (const String& vertex, const String& fragment)
 {
    return loadVertexProgram(vertex) && loadFragmentProgram(fragment);
 }
 
-bool CGPath::loadVertexProgram(const std::string& vertexfile)
+bool CGPath::loadVertexProgram(const String& vertexfile)
 {
    CGEngine& cg = CGEngine::getInstance();
 
+   int len = 0;
+   const char* pfilename = vertexfile.toUtf8(len);
+
    vp = cgCreateProgramFromFile(cg.context(), 
                                 CG_SOURCE, 
-                                vertexfile.c_str(), 
+                                pfilename, 
                                 cg.getVertexProfile(), 
                                 "main", 
                                 cg.getVertexProfileArguments());
+
+   delete[] pfilename;
 
    if (vp == NULL)
    {
@@ -73,16 +79,21 @@ bool CGPath::loadVertexProgram(const std::string& vertexfile)
    return true;
 }
 
-bool CGPath::loadFragmentProgram(const std::string& fragmentfile)
+bool CGPath::loadFragmentProgram(const String& fragmentfile)
 {
    CGEngine& cg = CGEngine::getInstance();
+
+   int len = 0;
+   const char* pfilename = fragmentfile.toUtf8(len);
    
    fp = cgCreateProgramFromFile(cg.context(), 
                                 CG_SOURCE,
-                                fragmentfile.c_str(), 
+                                pfilename, 
                                 cg.getFragmentProfile(), 
                                 "main", 
                                 NULL);
+
+   delete[] pfilename;
 
    if ( fp == NULL )
    {
@@ -95,12 +106,12 @@ bool CGPath::loadFragmentProgram(const std::string& fragmentfile)
    return true;
 }
 
-void CGPath::CGCompileError(CGcontext context, const std::string& type, const std::string& file)
+void CGPath::CGCompileError(CGcontext context, const String& type, const String& file)
 {
    Log& log = Log::getInstance();
    const char* list = cgGetLastListing(context);
 
-   log.error("CG Path - Could not load %s program: %s", type.c_str(), file.c_str());
+   log.error("CG Path - Could not load %s program: %s", type.getBuffer(), file.getBuffer());
    if ( list != NULL )
       log.info("%s", list);
 }
@@ -156,15 +167,19 @@ CodePath::PathType CGPath::getType() const
    return CodePath::ECG;
 }
 
-int CGPath::getUniformLocation(const char* name) const
+int CGPath::getUniformLocation(const String& name) const
 {
    CGparameter param = 0;
+   int len;
+   const char* pname = name.toUtf8(len);
 
    if ( vp != NULL )
-      param = cgGetNamedParameter(vp, name);
+      param = cgGetNamedParameter(vp, pname);
 
    if ( fp != NULL && param == 0 )
-      param = cgGetNamedParameter(fp, name);
+      param = cgGetNamedParameter(fp, pname);
+
+   delete[] pname;
 
    _userparams.push_back(param);
    return _userparams.size() - 1;

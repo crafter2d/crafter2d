@@ -3,7 +3,7 @@
 
 // - Get/set
 
-INLINE const std::string& WorldChangedEvent::getFilename() const
+INLINE const String& WorldChangedEvent::getFilename() const
 {
    return mFilename;
 }

@@ -31,6 +31,7 @@ enum EventType {
    disconnectEvent   = 0x0002,
    joinEvent         = 0x0003,
    serverdownEvent   = 0x0004,
+   aggregateEvent    = 0x0005,
 
    // game events
    actionEvent       = 0x0020,

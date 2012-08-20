@@ -2,12 +2,13 @@
 #ifndef VIRTUAL_VARIANT_H_
 #define VIRTUAL_VARIANT_H_
 
-#include <string>
-
 #include "script/script_base.h"
 
-class VirtualObjectReference;
-class VirtualArrayReference;
+#include "core/string/string.h"
+
+class VirtualObject;
+class VirtualArray;
+class VirtualString;
 
 class SCRIPT_API Variant
 {
@@ -18,9 +19,10 @@ public:
    explicit Variant(double value);
    explicit Variant(char value);
    explicit Variant(bool value);
-   explicit Variant(const std::string& value);
-   explicit Variant(const VirtualObjectReference& object);
-   explicit Variant(const VirtualArrayReference& array);
+   explicit Variant(VirtualString& value);
+   explicit Variant(VirtualObject& object);
+   explicit Variant(VirtualObject* pvirtualobject);
+   explicit Variant(VirtualArray& array);
            ~Variant();
 
    bool operator==(const Variant& that) const;
@@ -45,14 +47,14 @@ public:
    char asChar() const;
    void setChar(char value);
 
-   const std::string& asString() const;
-   void setString(const std::string& value);
+   VirtualString& asString() const;
+   void setString(VirtualString& value);
 
-   VirtualObjectReference& asObject() const;
-   void setObject(const VirtualObjectReference& object);
+   VirtualObject& asObject() const;
+   void setObject(VirtualObject& object);
 
-   VirtualArrayReference& asArray() const;
-   void setArray(const VirtualArrayReference& array);
+   VirtualArray& asArray() const;
+   void setArray(VirtualArray& array);
 
  // query
    bool isEmpty() const;
@@ -65,18 +67,14 @@ public:
    bool isArray() const;
 
  // display
-   std::string typeAsString() const;
-   std::string toString() const;
+   String  typeAsString() const;
+   String  toString() const;
    int     toInt() const;
    double  toReal() const;
 
  // conversion
    void int2real();
-   void int2string();
    void real2int();
-   void real2string();
-   void char2string();
-   void boolean2string();
 
 private:
    enum MetaType
@@ -90,29 +88,20 @@ private:
       eObject,
       eArray
    };
+
+   union Value
+   {
+      int            mInt;
+      double         mReal;
+      char           mChar;
+      bool           mBoolean;
+      VirtualString* mpString;
+      VirtualObject* mpObject;
+      VirtualArray*  mpArray;
+   };
    
-   struct DataHolderBase
-   {
-      virtual ~DataHolderBase() {}
-
-      virtual DataHolderBase* clone() const = 0;
-   };
-
-   template< typename T >
-   struct DataHolder : DataHolderBase
-   {
-      DataHolder(const T& data): mData(data) {}
-      DataHolder(const DataHolder& that): mData(that.mData) {}
-      
-      virtual DataHolder<T>* clone() const {
-         return new DataHolder<T>(*this);
-      }
-
-      T mData;
-   };
-
    MetaType        mType;
-   DataHolderBase* mpHolder;
+   Value           mValue;
 };
 
 #endif // VIRTUAL_VARIANT_H_

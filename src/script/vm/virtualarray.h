@@ -1,16 +1,18 @@
 
-#ifndef VIRTUAL_ARRAY_OBJECT_H_
-#define VIRTUAL_ARRAY_OBJECT_H_
+#ifndef VIRTUAL_ARRAY_H_
+#define VIRTUAL_ARRAY_H_
 
 #include "script/script_base.h"
 
+#include "script/gc/collectable.h"
+
 class Variant;
 
-class SCRIPT_API VirtualArrayObject
+class SCRIPT_API VirtualArray : public Collectable
 {
 public:
-   VirtualArrayObject();
-   virtual ~VirtualArrayObject();
+   VirtualArray();
+   virtual ~VirtualArray();
 
    const Variant& operator[](int index) const;
          Variant& operator[](int index);
@@ -25,12 +27,15 @@ public:
    void addLevel(int size);
    void resize(int newsize);
 
- // downcast
-   virtual VirtualArrayObject& asArray();
+   virtual void finalize(VirtualMachine& vm);
 
+protected:
+ // marking
+   virtual void doMark();
+   
 private:
    Variant* mpArray;
    int      mSize;
 };
 
-#endif // VIRTUAL_ARRAY_OBJECT_H_
+#endif // VIRTUAL_ARRAY_H_

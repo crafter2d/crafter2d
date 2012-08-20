@@ -20,6 +20,7 @@
 #ifndef NEWOBJECTEVENT_H_
 #define NEWOBJECTEVENT_H_
 
+#include "core/string/string.h"
 #include "engine/idmanager.h"
 
 #include "netevent.h"
@@ -38,9 +39,9 @@ public:
    explicit NewObjectEvent(const Entity& entity);
    
  // get/set
-   Id                 getId() const;
-   Id                 getParentId() const;
-   const std::string& getFileName() const;
+   Id            getId() const;
+   Id            getParentId() const;
+   const String& getFileName() const;
 
 protected:
  // streaming
@@ -48,9 +49,9 @@ protected:
    virtual void   doUnpack(DataStream& stream);
 
 private:
-   Id          mId;
-   Id          mParentId;
-   std::string mFileName;
+   Id     mId;
+   Id     mParentId;
+   String mFileName;
 };
 
 #ifdef JENGINE_INLINE

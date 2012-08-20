@@ -30,10 +30,12 @@ public:
    ListNode(E& element, ListNode<E>* pprev, ListNode<E>* pnext);
    
    bool           hasNext() const;
+   ListNode<E>&   next();
    ListNode<E>*   nextptr();
    void           next(ListNode<E>* pnext);
    
    bool           hasPrev() const;
+   ListNode<E>&   prev();
    ListNode<E>*   prevptr();
    void           prev(ListNode<E>* pprev);
 

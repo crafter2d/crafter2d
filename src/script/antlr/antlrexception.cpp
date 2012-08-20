@@ -29,7 +29,7 @@ AntlrException::AntlrException():
 {
 }
 
-AntlrException::AntlrException(const std::string& msg, int line, int charpos):
+AntlrException::AntlrException(const String& msg, int line, int charpos):
    CompileException(),
    mMessage(msg),
    mCharPos(charpos)
@@ -39,7 +39,7 @@ AntlrException::AntlrException(const std::string& msg, int line, int charpos):
 
 // - Query
    
-std::string AntlrException::asString() const
+String AntlrException::asString() const
 {
    return mMessage;
 }

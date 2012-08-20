@@ -35,6 +35,7 @@
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
 
+#include "net/events/aggregateevent.h"
 #include "net/events/newobjectevent.h"
 #include "net/events/connectevent.h"
 #include "net/events/connectreplyevent.h"
@@ -78,9 +79,9 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create(const VirtualObjectReference& self)
+bool Client::create(const String& classname)
 {
-   bool success = Process::create(self);
+   bool success = Process::create(classname);
    if ( success )
    {
       ASSERT_PTR(mpWindow);
@@ -129,7 +130,7 @@ bool Client::destroy()
    return Process::destroy();
 }
 
-bool Client::connect(const char* server, int port)
+bool Client::connect(const String& server, int port)
 {
    // setup connection to the server
    mServerId = conn.connect(server, port);
@@ -192,6 +193,8 @@ void Client::render(float delta)
    }
 
    glDisable (GL_ALPHA_TEST);
+
+   mpWindow->display();
 }
 
 void Client::display()
@@ -256,7 +259,7 @@ bool Client::initOpenGL()
 	return success;
 }
 
-bool Client::loadWorld(const std::string& filename, const std::string& name)
+bool Client::loadWorld(const String& filename, const String& name)
 {
    World* pworld = getContentManager().load(filename);
    if ( pworld != NULL )
@@ -280,6 +283,17 @@ void Client::onNetEvent(int client, const NetEvent& event)
 {
    switch ( event.getType() )
    {
+      case aggregateEvent:
+         {
+            const AggregateEvent& aevent = dynamic_cast<const AggregateEvent&>(event);
+            const AggregateEvent::Events events = aevent.getEvents();
+            for ( std::size_t index = 0; index < events.size(); index++ )
+            {
+               const NetEvent& netevent = *events[index];
+               onNetEvent(client, netevent);
+            }
+            break;
+         };
       case connectReplyEvent:
          {
             const ConnectReplyEvent& crevent = dynamic_cast<const ConnectReplyEvent&>(event);

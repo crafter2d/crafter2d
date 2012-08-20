@@ -25,7 +25,7 @@
 class StdioFile : public File
 {
 public:
-   static bool exists(const std::string& file);
+   static bool exists(const String& file);
 
    StdioFile();
    virtual ~StdioFile();
@@ -33,7 +33,7 @@ public:
    virtual bool isValid() const;
 
 protected:
-   virtual bool   virOpen(const std::string& filename, int modus);
+   virtual bool   virOpen(const String& filename, int modus);
    virtual void   virClose();
 
 private:

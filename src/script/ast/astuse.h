@@ -2,7 +2,7 @@
 #ifndef AST_USE_H_
 #define AST_USE_H_
 
-#include <string>
+#include "core/string/string.h"
 
 #include "astnode.h"
 
@@ -12,14 +12,14 @@ public:
    ASTUse();
 
  // get/set
-   const std::string& getIdentifier() const;
-   void           setIdentifier(const std::string& identifier);
+   const String& getIdentifier() const;
+   void          setIdentifier(const String& identifier);
 
  // visitor
    ACCEPT;
 
 private:
-   std::string mIdentifier;
+   String mIdentifier;
 };
 
 #endif // AST_USE_H_

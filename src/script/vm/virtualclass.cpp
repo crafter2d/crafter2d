@@ -7,7 +7,6 @@
 #include "script/common/variant.h"
 
 #include "virtualobject.h"
-#include "virtualarrayobject.h"
 #include "virtualfunctiontable.h"
 #include "virtuallookuptable.h"
 
@@ -18,7 +17,7 @@ VirtualClass::VirtualClass():
    mpDefinition(NULL),
    mVTable(),
    mInstructions(),
-   mClassObject(NULL),
+   mpClassObject(NULL),
    mpStatics(NULL),
    mStaticCount(0),
    mVariableCount(0),
@@ -36,27 +35,27 @@ VirtualClass::~VirtualClass()
 
 // - Get/set
    
-const std::string& VirtualClass::getName() const
+const String& VirtualClass::getName() const
 {
    return mName;
 }
 
-void VirtualClass::setName(const std::string& name)
+void VirtualClass::setName(const String& name)
 {
    mName = name;
 }
 
 bool VirtualClass::hasBaseName() const
 {
-   return !mBaseName.empty();
+   return !mBaseName.isEmpty();
 }
 
-const std::string& VirtualClass::getBaseName() const
+const String& VirtualClass::getBaseName() const
 {
    return mBaseName;
 }
 
-void VirtualClass::setBaseName(const std::string& name)
+void VirtualClass::setBaseName(const String& name)
 {
    mBaseName = name;
 }
@@ -136,14 +135,15 @@ void VirtualClass::setDefinition(ASTClass* pdefinition)
    mpDefinition = pdefinition;
 }
 
-const VirtualObjectReference& VirtualClass::getClassObject() const
+VirtualObject& VirtualClass::getClassObject() const
 {
-   return mClassObject;
+   ASSERT_PTR(mpClassObject);
+   return *mpClassObject;
 }
 
-void VirtualClass::setClassObject(const VirtualObjectReference& object)
+void VirtualClass::setClassObject(VirtualObject* pobject)
 {
-   mClassObject = object;
+   mpClassObject = pobject;
 }
 
 void VirtualClass::setFlags(Flags flags)
@@ -163,7 +163,7 @@ bool VirtualClass::canInstantiate() const
    return (mFlags & eInstantiatable) == eInstantiatable;
 }
 
-std::string VirtualClass::getNativeClassName() const
+String VirtualClass::getNativeClassName() const
 {
    if ( isNative() )
    {
@@ -171,7 +171,7 @@ std::string VirtualClass::getNativeClassName() const
       return mpDefinition->getName();
    }
 
-   return hasBaseClass() ? getBaseClass().getNativeClassName() : "";
+   return hasBaseClass() ? getBaseClass().getNativeClassName() : String("");
 }
    
 bool VirtualClass::isBaseClass(const VirtualClass& base) const
@@ -212,11 +212,11 @@ const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
 
 const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
 {
-   std::string name = mName;
-   std::size_t pos = mName.find('.');
-   if ( pos != std::string::npos )
+   String name = mName;
+   int pos = mName.indexOf('.');
+   if ( pos != -1 )
    {
-      name.erase(0, pos + 1);
+      name.remove(0, pos + 1);
    }
 
    return mVTable.findByName(name);
@@ -240,23 +240,22 @@ void VirtualClass::offsetCode(int offset)
 
 // - Runtime instantiation
 
-VirtualObject* VirtualClass::instantiate() const
+void VirtualClass::instantiate(VirtualObject& object) const
 {
-   VirtualObject* pobject = new VirtualObject();
-   pobject->setClass(*this);
-   pobject->initialize(mVariableCount);
-
-   return pobject;
-}
-
-VirtualArrayObject* VirtualClass::instantiateArray() const
-{
-   VirtualArrayObject* pobject = new VirtualArrayObject();
-
-   return pobject;
+   object.setClass(*this);
+   object.initialize(mVariableCount);
 }
 
 const Variant& VirtualClass::getStatic(int index) const
+{
+   ASSERT_PTR(mpStatics);
+   ASSERT(index >= 0);
+   ASSERT(index < mStaticCount);
+
+   return mpStatics[index];
+}
+
+Variant& VirtualClass::getStatic(int index)
 {
    ASSERT_PTR(mpStatics);
    ASSERT(index >= 0);

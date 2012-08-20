@@ -20,20 +20,29 @@
 #ifndef OBJECT_ALLOCATOR_H
 #define OBJECT_ALLOCATOR_H
 
+#include <vector>
+
 template<class E>
 class ObjectAllocator
 {
 public:
+   typedef E*(*ConstructFnc)();
+
    ObjectAllocator();
+
+ // get/set
+   void setConstructFunc(ConstructFnc fnc) { mFunc = fnc; }
 
  // operations
    E* get();
    void release(E* pobject);
 
 private:
-   E** mpElements;
-   int mSize;
-   int mAvailable;
+   typedef std::vector<E*> Elements;
+
+   Elements       mElements;
+   ConstructFnc   mFunc;
+   int            mAvailable;
 };
 
 #include "objectallocator.inl"

@@ -37,13 +37,14 @@ public:
    DEFINE_REPLICATABLE(UpdateObjectEvent)
 
             UpdateObjectEvent();
-   explicit UpdateObjectEvent(const Entity& entity);
+   virtual ~UpdateObjectEvent();
    
  // get/set
    Id                getId() const;
    const DataStream& getDataStream() const;
 
  // update
+   void initialize(const Entity& entity);
    void update(Entity& entity) const;
 
 protected:

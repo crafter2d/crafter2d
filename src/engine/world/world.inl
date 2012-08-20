@@ -64,22 +64,22 @@ INLINE void World::setFollowBorders(int left, int right, int top, int bottom)
    bottomBorder = bottom;
 }
 
-INLINE const std::string& World::getName() const
+INLINE const String& World::getName() const
 {
    return mName;
 }
    
-INLINE void World::setName(const std::string& name)
+INLINE void World::setName(const String& name)
 {
    mName = name;
 }
 
-INLINE const std::string& World::getFilename() const
+INLINE const String& World::getFilename() const
 {
    return mFilename;
 }
 
-INLINE void World::setFilename(const std::string& filename)
+INLINE void World::setFilename(const String& filename)
 {
    mFilename = filename;
 }

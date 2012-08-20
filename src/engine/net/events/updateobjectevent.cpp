@@ -34,13 +34,16 @@ UpdateObjectEvent::UpdateObjectEvent():
 {
 }
 
-UpdateObjectEvent::UpdateObjectEvent(const Entity& object):
-   NetEvent(updobjectEvent),
-   mId(object.getId()),
-   mDataStream()
+UpdateObjectEvent::~UpdateObjectEvent()
 {
+}
+
+void UpdateObjectEvent::initialize(const Entity& entity)
+{
+   mId = entity.getId();
+   mDataStream.clear();
    NetStream stream(mDataStream);
-   object.pack(stream);
+   entity.pack(stream);
 }
 
 void UpdateObjectEvent::update(Entity& entity) const

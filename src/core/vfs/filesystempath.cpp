@@ -27,7 +27,7 @@
 #include "unzipfile.h"
 #include "zipfile.h"
 
-FileSystemPath::FileSystemPath(const std::string& path):
+FileSystemPath::FileSystemPath(const String& path):
    mPath(path),
    mpUnzip(NULL)
 {
@@ -40,7 +40,7 @@ FileSystemPath::~FileSystemPath()
    mpUnzip = NULL;
 }
 
-void FileSystemPath::fillInfo(const std::string& path)
+void FileSystemPath::fillInfo(const String& path)
 {
    if ( UnzipFile::isZip(path) )
    {
@@ -52,7 +52,7 @@ void FileSystemPath::fillInfo(const std::string& path)
 // - Get/set
 //---------------------------------------
 
-const std::string& FileSystemPath::getPath() const
+const String& FileSystemPath::getPath() const
 {
    return mPath;
 }
@@ -64,7 +64,7 @@ bool FileSystemPath::isZipped() const
    return mpUnzip != NULL;
 }
 
-bool FileSystemPath::exists(const std::string& filename) const
+bool FileSystemPath::exists(const String& filename) const
 {
    if ( isZipped() )
    {
@@ -78,10 +78,10 @@ bool FileSystemPath::exists(const std::string& filename) const
 
 // - Operations
 
-File* FileSystemPath::open(const std::string& filename, int modus) const
+File* FileSystemPath::open(const String& filename, int modus) const
 {
    File* presult = NULL;
-   std::string file = File::concat(mPath, filename);
+   String file = File::concat(mPath, filename);
 
    if ( isZipped() )
    {
@@ -115,7 +115,7 @@ File* FileSystemPath::open(const std::string& filename, int modus) const
 // - Comparison
 //---------------------------------------
    
-bool FileSystemPath::operator==(const std::string& path) const
+bool FileSystemPath::operator==(const String& path) const
 {
    return mPath == path;
 }

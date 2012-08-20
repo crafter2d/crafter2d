@@ -2,6 +2,7 @@
 #include "virtualfunctiontable.h"
 
 #include "core/defines.h"
+#include "core/string/string.h"
 
 #include "virtualfunctiontableentry.h"
 
@@ -88,7 +89,7 @@ void VirtualFunctionTable::offset(int offset)
 
 // - Search
 
-const VirtualFunctionTableEntry* VirtualFunctionTable::findByName(const std::string& name) const
+const VirtualFunctionTableEntry* VirtualFunctionTable::findByName(const String& name) const
 {
    for ( std::size_t index = 0; index < mEntries.size(); index++ )
    {

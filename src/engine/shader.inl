@@ -66,19 +66,6 @@ INLINE void ShaderObject::disable() const
 	glUseProgramObjectARB (0);
 }
 
-/// \fn ShaderObject::getAttribute(const char* name)
-/// \brief Try to find a custom attribute in the GLSL shader by name.
-/// \return The index of the attribute that is currently linked to it or -1 if the attribute was not found.
-INLINE GLint ShaderObject::getAttribute(const char* name) const
-{
-	return glGetAttribLocationARB (program, name);
-}
-
-INLINE GLint ShaderObject::getUniformLocation (const char* name) const
-{
-	return glGetUniformLocationARB(program, name);
-}
-
 INLINE void ShaderObject::setUniform1i (GLint index, int i)
 {
 	glUniform1iARB (index, i);

@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE const std::string& Layer::getName() const
+INLINE const String& Layer::getName() const
 {
    return name;
 }
 
-void Layer::setName(const std::string& n)
+void Layer::setName(const String& n)
 {
    name = n;
 }
@@ -77,7 +77,7 @@ INLINE const Effect& Layer::getEffect() const
 
 /// \fn layer:getEffectFile()
 /// brief Returns the name of the effect file.
-INLINE const std::string& Layer::getEffectFile() const
+INLINE const String& Layer::getEffectFile() const
 {
    return effectFile;
 }

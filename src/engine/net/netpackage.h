@@ -29,7 +29,7 @@ class NetPackage
 {
 public:
    static const int HeaderSize;
-   static const int MaxDataSize = 1500;
+   static const int MaxDataSize = 10000;
    static const int MaxPackageSize;
 
    enum PacketType {

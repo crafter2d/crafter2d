@@ -22,20 +22,21 @@
 
 #include "core/core_base.h"
 
-#include <string>
 #include "zip/zip.h"
+
+class String;
 
 class CORE_API ZipFile
 {
 public:
             ZipFile();
-   explicit ZipFile(const std::string& path);
+   explicit ZipFile(const String& path);
             ~ZipFile();
 
-   bool create(const std::string& path);
-   bool open(const std::string& path);
+   bool create(const String& path);
+   bool open(const String& path);
 
-   void addFile(const std::string& name, void* pdata, int size);
+   void addFile(const String& name, void* pdata, int size);
 
 private:
    zip_fileinfo constructInfo();

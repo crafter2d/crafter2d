@@ -20,7 +20,6 @@
 #ifndef GAME_WINDOW_H
 #define GAME_WINDOW_H
 
-#include <string>
 #include <vector>
 
 #include "core/math/color.h"
@@ -60,7 +59,7 @@ public:
 
 protected:
  // creation
-   bool doCreate(const std::string& title, int width, int height, int bitdepth, bool fullscreen);
+   bool doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen);
    void doDestroy();
 
 private:

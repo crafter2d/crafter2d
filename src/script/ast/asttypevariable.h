@@ -2,7 +2,7 @@
 #ifndef AST_TYPE_VARIABLE_H_
 #define AST_TYPE_VARIABLE_H_
 
-#include <string>
+#include "core/string/string.h"
 
 class ASTType;
 
@@ -15,8 +15,8 @@ public:
    ~ASTTypeVariable();
 
  // get/set
-   const std::string& getIdentifier() const;
-   void               setIdentifier(const std::string& id);
+   const String& getIdentifier() const;
+   void          setIdentifier(const String& id);
 
    Mode getMode() const;
    void setMode(Mode mode);
@@ -28,7 +28,7 @@ public:
    void setIndex(int index);
 
 private:
-   std::string mId;
+   String mId;
    Mode        mMode;
    ASTType*    mpOther;
    int         mIndex;

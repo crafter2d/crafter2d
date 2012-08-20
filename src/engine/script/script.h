@@ -22,12 +22,11 @@
 
 #include "engine/engine_base.h"
 
-#include "script/vm/virtualobjectreference.h"
-
-#include <string>
+#include "core/string/string.h"
 
 class ScriptManager;
 class ScriptObject;
+class VirtualObject;
 
 /**
 @author Jeroen Broekhuizen
@@ -41,28 +40,29 @@ implemented and therefor shouldn't be used.
 class ENGINE_API Script
 {
 public:
-   explicit    Script(ScriptManager& manager, const std::string& name = "");
+   explicit    Script(ScriptManager& manager, const String& name = "");
    
-   void        addParam (int val);
-   void        addParam (float val);
-   void        addParam (bool val);
-   void        addParam (const std::string& val);
+   void        addParam(int val);
+   void        addParam(float val);
+   void        addParam(bool val);
+   void        addParam(const String& val);
    void        addParam(void* pobject);
-   void        addParam (const std::string& classname, void* pobject);
-   void        addParam(const VirtualObjectReference& object);
+   void        addParam(const String& classname, void* pobject);
+   void        addParam(VirtualObject& object);
 
    bool        getBoolean();
    int         getInteger();
 
-   void        setThis(const VirtualObjectReference& object);
-   void        setThis(void* pthis);
+   VirtualObject& getThis();
+   void           setThis(VirtualObject& object);
+   void           setThis(void* pthis);
 
-   bool        run(const std::string& function);
+   bool        run(const String& function);
 
 private:
-   ScriptManager&          mScriptManager;
-   std::string             mClassName;
-   VirtualObjectReference  mObject;
+   ScriptManager&  mScriptManager;
+   String          mClassName;
+   VirtualObject*  mpObject;
 };
 
 #ifdef JENGINE_INLINE

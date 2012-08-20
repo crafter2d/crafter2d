@@ -2,9 +2,9 @@
 #ifndef SCRIPT_OBJECT_H_
 #define SCRIPT_OBJECT_H_
 
-#include <string>
 #include <vector>
 
+#include "core/string/string.h"
 #include "script/vm/virtualmachine.h"
 
 #include "scriptmanager.h"
@@ -17,13 +17,13 @@ public:
 
  // operations
 
-   void addCallback(const std::string& name, VirtualMachine::callbackfnc callback) {
+   void addCallback(const String& name, VirtualMachine::callbackfnc callback) {
       mNames.push_back(name);
       mCallbacks.push_back(callback);
    }
 
    void registerCallbacks(ScriptManager& manager) {
-      VirtualMachine& vm = *manager.mpVirtualMachine;
+      VirtualMachine& vm = manager.mVirtualMachine;
 
       for ( int index = 0; index < mNames.size(); index++ )
       {
@@ -32,7 +32,7 @@ public:
    }
 
 private:
-   std::vector<std::string> mNames;
+   std::vector<String> mNames;
    std::vector<VirtualMachine::callbackfnc> mCallbacks;
 };
 

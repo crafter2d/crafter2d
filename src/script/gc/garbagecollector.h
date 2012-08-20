@@ -3,10 +3,9 @@
 #ifndef GARBAGE_COLLECTOR_H
 #define GARBAGE_COLLECTOR_H
 
-#include "core/containers/hashmap.h"
+#include "core/containers/list.h"
 
-#include "script/vm/virtualobjectreference.h"
-
+class Collectable;
 class VirtualMachine;
 
 class GarbageCollector
@@ -16,16 +15,18 @@ public:
    ~GarbageCollector();
 
  // operations
-   void collect(VirtualObjectReference& object);
+   void collect(Collectable* pcollectable);
+
    void gc(VirtualMachine& vm);
 
 private:
-   typedef HashMap<void*, VirtualObjectReference> Objects;
+   typedef List<Collectable*> Collectables;
 
- // query
-   bool isUnique(const VirtualObjectReference& object) const;
+ // phases
+   void phaseMark(VirtualMachine& vm);
+   void phaseCollect(VirtualMachine& vm);
 
-   Objects mObjects;
+   Collectables mCollectables;
 };
 
 #endif // GARBAGE_COLLECTOR_H

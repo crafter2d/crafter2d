@@ -24,7 +24,7 @@ InvalidContentException::InvalidContentException():
 {
 }
 
-InvalidContentException::InvalidContentException(const std::string& reason):
+InvalidContentException::InvalidContentException(const String& reason):
    mReason(reason)
 {
 }
@@ -36,7 +36,7 @@ InvalidContentException::InvalidContentException(const InvalidContentException& 
 
 // - Get/set
 
-const std::string& InvalidContentException::getReason() const
+const String& InvalidContentException::getReason() const
 {
    return mReason;
 }

@@ -38,7 +38,7 @@ AbstractTextureLoader::~AbstractTextureLoader()
 {
 }
 
-bool AbstractTextureLoader::load(const std::string& filename)
+bool AbstractTextureLoader::load(const String& filename)
 {
    AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
 

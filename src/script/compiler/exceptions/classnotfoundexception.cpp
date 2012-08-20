@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "classnotfoundexception.h"
 
-ClassNotFoundException::ClassNotFoundException(const std::string& classname):
+ClassNotFoundException::ClassNotFoundException(const String& classname):
    CompileException(),
    mClassName(classname)
 {
@@ -27,7 +27,7 @@ ClassNotFoundException::ClassNotFoundException(const std::string& classname):
 
 // - Query
    
-std::string ClassNotFoundException::asString() const
+String ClassNotFoundException::asString() const
 {
-   return std::string("Could not find class ") + mClassName;
+   return String("Could not find class ") + mClassName;
 }

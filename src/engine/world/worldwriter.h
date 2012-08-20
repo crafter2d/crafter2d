@@ -20,8 +20,7 @@
 #ifndef WORLDWRITER_H
 #define WORLDWRITER_H
 
-#include <string>
-
+class String;
 class World;
 class ZipFile;
 
@@ -38,7 +37,7 @@ public:
          void     setWorld(const World& world);
 
  // operations
-   bool write(const World& world, const std::string& filename);
+   bool write(const World& world, const String& filename);
 
 private:
    bool writeHeader(ZipFile& zip);

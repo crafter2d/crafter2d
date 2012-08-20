@@ -22,8 +22,10 @@
 #include <string.h>
 #include <time.h>
 
+#include "core/string/string.h"
+
 //static
-bool UnzipFile::isZip(const std::string& path)
+bool UnzipFile::isZip(const String& path)
 {
    UnzipFile zip;
    return zip.open(path);
@@ -34,7 +36,7 @@ UnzipFile::UnzipFile():
 {
 }
 
-UnzipFile::UnzipFile(const std::string &path):
+UnzipFile::UnzipFile(const String &path):
    _zip(NULL)
 {
    open(path);
@@ -45,29 +47,44 @@ UnzipFile::~UnzipFile()
    unzClose(_zip);
 }
 
-bool UnzipFile::open(const std::string& path)
+bool UnzipFile::open(const String& path)
 {
-   _zip = unzOpen(path.c_str());
+   int len;
+   const char* ppath = path.toUtf8(len);
+   _zip = unzOpen(ppath);
+   delete[] ppath;
 
    return _zip != NULL;
 }
 
-bool UnzipFile::contains(const std::string& name) const
+bool UnzipFile::contains(const String& name) const
 {
    if ( _zip == NULL )
       return false;
 
-   return unzLocateFile(_zip, name.c_str(), 2) != UNZ_OK;
+   int len;
+   const char* pname = name.toUtf8(len);
+   bool result = unzLocateFile(_zip, name.getBuffer(), 2) != UNZ_OK;
+   delete[] pname;
+
+   return result;
 }
 
-bool UnzipFile::readFile(const std::string& name, void*& pdata, int &size, bool casesensitive)
+bool UnzipFile::readFile(const String& name, void*& pdata, int &size, bool casesensitive)
 {
    if ( _zip == NULL )
       return false;
 
-   if ( unzLocateFile(_zip, name.c_str(), casesensitive ? 1 : 2) != UNZ_OK )
+   int len;
+   const char* pname = name.toUtf8(len);
+   int result = unzLocateFile(_zip, pname, casesensitive ? 1 : 2);
+   delete[] pname;
+   
+   if ( result != UNZ_OK )
+   {
       return false;
-
+   }
+   
    unz_file_info info;
    if ( unzGetCurrentFileInfo(_zip, &info, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK )
       return false;

@@ -29,6 +29,9 @@
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
 
+#include "core/smartptr/autoptr.h"
+#include "core/vfs/filesystem.h"
+#include "core/vfs/file.h"
 #include "core/log/log.h"
 
 #include "opengl.h"
@@ -52,15 +55,15 @@ Shader::~Shader()
 }
 
 /*!
-    \fn Shader::compile()
+    \fn Shader::compile(const String& filename)
 	 \brief Tries to compile the shader to native assembly language. Make sure you have first loaded in a shader.
 	 \retval true when compilation was successfull
 	 \retval false if there was no shader, or the shader had an error.
  */
-bool Shader::compile( const char* filename )
+bool Shader::compile(const String& filename)
 {
    int length = 0;
-   GLcharARB* code = load( filename, length );
+   GLcharARB* code = load(filename, length);
    if( code != NULL )
    {
       bool suc = compile( code, length );
@@ -95,24 +98,22 @@ bool Shader::compile( const char* source, int length )
 	return true;
 }
 
-/// \fn Shader::load (const char* filename)
+/// \fn Shader::load (const String& filename)
 /// \brief Loads in a shader from a file.
 /// \param[in] filename name of the shader file
 /// \param     length   set to length of the code
 /// \returns pointer to the source code loaded, user must release memory.
-GLcharARB* Shader::load (const char* filename, int& length)
+GLcharARB* Shader::load (const String& filename, int& length)
 {
-   std::ifstream file (filename, std::ios::binary );
-	if ( !file.is_open() )
+   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
+   if ( !pfile.hasPointer() )
    {
       Log::getInstance().error("Shader.load: Can not open shader file: %s", filename);
 		return false;
 	}
 
 	// determine file length
-	file.seekg (0, std::ios::end);
-	length = file.tellg();
-	file.seekg (0, std::ios::beg);
+	length = pfile->size();
 
 	// read in the complete data
 	GLcharARB* source = new GLcharARB[length+1];
@@ -122,9 +123,8 @@ GLcharARB* Shader::load (const char* filename, int& length)
 		return false;
 	}
 
-	memset (source, 0, length+1);
-	file.read (source, length);
-	file.close ();
+	memset(source, 0, length+1);
+	pfile->read(source, length);
 	return source;
 }
 
@@ -140,6 +140,23 @@ void Shader::release()
 		glDeleteObjectARB (shader);
 		shader = 0;
 	}
+}
+
+/// \fn ShaderObject::getAttribute(const char* name)
+/// \brief Try to find a custom attribute in the GLSL shader by name.
+/// \return The index of the attribute that is currently linked to it or -1 if the attribute was not found.
+GLint ShaderObject::getAttribute(const char* name) const
+{
+	return glGetAttribLocationARB (program, name);
+}
+
+GLint ShaderObject::getUniformLocation(const String& name) const
+{
+   int len;
+   const char* ploc = name.toUtf8(len);
+	GLint result = glGetUniformLocationARB(program, ploc);
+   delete[] ploc;
+   return result;
 }
 
 /*!

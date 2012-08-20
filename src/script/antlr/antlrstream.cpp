@@ -9,7 +9,7 @@
 #include "core/string/string.h"
 
 // static
-AntlrStream* AntlrStream::fromFile(const std::string& filename)
+AntlrStream* AntlrStream::fromFile(const String& filename)
 {
    AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead);
    if ( !file.hasPointer() || !file->isValid() )

@@ -90,7 +90,7 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
    {
       if ( ast.getModifiers().isAbstract() )
       {
-         mContext.getLog().error("Abstract function " + mpClass->getName() + "." + ast.getName() + " should not have a body.");
+         mContext.getLog().error(String("Abstract function ") + mpClass->getName() + "." + ast.getName() + " should not have a body.");
       }
       else
       {
@@ -101,7 +101,7 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
    }
    else if ( !ast.getModifiers().isAbstract() && !ast.getModifiers().isNative() )
    {
-      mContext.getLog().error("Function " + mpClass->getName() + "." + ast.getName() + " requires a body.");
+      mContext.getLog().error(String("Function ") + mpClass->getName() + "." + ast.getName() + " requires a body.");
    }
 
    mCurrentType.clear();
@@ -166,7 +166,7 @@ void SymbolCheckVisitor::visit(ASTIf& ast)
    ast.getCondition().accept(*this);
    if ( !mCurrentType.isBoolean() )
    {
-      mContext.getLog().error("If condition expression must be of type boolean.");
+      mContext.getLog().error(String("If condition expression must be of type boolean."));
    }
 
    ast.getStatement().accept(*this);
@@ -192,7 +192,7 @@ void SymbolCheckVisitor::visit(ASTFor& ast)
 
       if ( !mCurrentType.isBoolean() )
       {
-         mContext.getLog().error("For loop condition expression must be of type boolean.");
+         mContext.getLog().error(String("For loop condition expression must be of type boolean."));
       }
    }
 
@@ -215,12 +215,12 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
 
       if ( mCurrentType.isObject() && !mCurrentType.getObjectClass().isImplementing(iterableclass) )
       {
-         mContext.getLog().error("Container must be iterable.");
+         mContext.getLog().error(String("Container ") + var.getName() + " must be iterable for use in foreach.");
       }
    }
    else
    {
-      mContext.getLog().error("Compiler error: missing required initializer for foreach variable " + var.getName());
+      mContext.getLog().error(String("Compiler error: missing required initializer for foreach variable ") + var.getName());
    }
 
    ScopeVariable* pvariable = ScopeVariable::fromVariable(ast.getVariable());
@@ -235,7 +235,7 @@ void SymbolCheckVisitor::visit(ASTWhile& ast)
 
    if ( !mCurrentType.isBoolean() )
    {
-      mContext.getLog().error("While loop condition must be of type boolean.");
+      mContext.getLog().error(String("While loop condition must be of type boolean."));
    }
 
    ast.getBody().accept(*this);
@@ -247,7 +247,7 @@ void SymbolCheckVisitor::visit(ASTDo& ast)
    ast.getCondition().accept(*this);
    if ( !mCurrentType.isBoolean() )
    {
-      mContext.getLog().error("Do loop condition must be of type boolean.");
+      mContext.getLog().error(String("Do loop condition must be of type boolean."));
    }
 }
 
@@ -258,7 +258,7 @@ void SymbolCheckVisitor::visit(ASTSwitch& ast)
 
    if ( ast.getDefaultCount() > 1 )
    {
-      mContext.getLog().error("Too many 'default' statements in switch statement (one is max).");
+      mContext.getLog().error(String("A switch statement can have only one default case."));
    }
 
    visitChildren(ast);
@@ -298,7 +298,7 @@ void SymbolCheckVisitor::visit(ASTReturn& ast)
    {
       if ( mpFunction->getType().isVoid() )
       {
-         mContext.getLog().error("Function " + mpFunction->getName() + " is a void function and can not return an object or value.");
+         mContext.getLog().error(String("Function ") + mpFunction->getName() + " is a void function and can not return an object or value.");
       }
       else
       {
@@ -306,13 +306,13 @@ void SymbolCheckVisitor::visit(ASTReturn& ast)
 
          if ( !mCurrentType.greater(mpFunction->getType()) )
          {
-            mContext.getLog().error("Return type should be " + mpFunction->getType().toString() + " but is " + mCurrentType.toString());
+            mContext.getLog().error(String("Return type should be ") + mpFunction->getType().toString() + " but is " + mCurrentType.toString());
          }
       }
    }
    else if ( !mpFunction->getType().isVoid() )
    {
-      mContext.getLog().error("Function " + mpFunction->getName() + " should return a value of type " + mpFunction->getType().toString());
+      mContext.getLog().error(String("Function ") + mpFunction->getName() + " should return a value of type " + mpFunction->getType().toString());
    }
 }
 
@@ -353,7 +353,7 @@ void SymbolCheckVisitor::visit(ASTCatch& ast)
 
    if ( !ok )
    {
-      mContext.getLog().error("Catch expects a throwable object.");
+      mContext.getLog().error(String("Catch expects a throwable object."));
    }
 
    ast.getBody().accept(*this);
@@ -368,12 +368,12 @@ void SymbolCheckVisitor::visit(ASTThrow& ast)
       const ASTClass* pthrowable = mContext.findClass("system.Throwable");
       if ( !mCurrentType.getObjectClass().isBase(*pthrowable) )
       {
-         mContext.getLog().error("Throw expression object must be derived from Throwable.");
+         mContext.getLog().error(String("Throw expression object must be derived from Throwable."));
       }
    }
    else
    {
-      mContext.getLog().error("Throw requires an expression resulting in a throwable object.");
+      mContext.getLog().error(String("Throw requires an expression resulting in a throwable object."));
    }
 }
 
@@ -385,7 +385,7 @@ void SymbolCheckVisitor::visit(ASTAssert& ast)
 
    if ( !mCurrentType.isBoolean() )
    {
-      mContext.getLog().error("The assert condition expression must be of type boolean.");
+      mContext.getLog().error(String("The assert condition expression must be of type boolean."));
    }
 }
 
@@ -407,12 +407,12 @@ void SymbolCheckVisitor::visit(ASTExpression& ast)
 
          if ( !mCurrentType.greater(lefttype) )
          {
-            mContext.getLog().error("Invalid type for assignment. Can not assign " + mCurrentType.toString() + " to " + lefttype.toString());
+            mContext.getLog().error(String("Invalid type for assignment. Can not assign ") + mCurrentType.toString() + " to " + lefttype.toString());
          }
       }
       else
       {
-         mContext.getLog().error("Can only assign to variables.");
+         mContext.getLog().error(String("Can only assign to variables."));
       }
    }
 }
@@ -469,8 +469,8 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
             }
             else
             {
-               std::string op = "+";
-               mContext.getLog().error("Can not execute operator " + op + " on types " + lefttype.toString() + " and " + righttype.toString());
+               String op("+");
+               mContext.getLog().error(String("Can not execute operator ") + op + " on types " + lefttype.toString() + " and " + righttype.toString());
             }
          }
          break;
@@ -485,7 +485,7 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
 
             if ( !lefttype.isInt() || !righttype.isInt() )
             {
-               mContext.getLog().error("Bitwise operators only operate on int values.");
+               mContext.getLog().error(String("Bitwise operators only operate on int values."));
             }
          }
          break;
@@ -495,8 +495,8 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
          {
             if ( !lefttype.isBoolean() || !mCurrentType.isBoolean() )
             {
-               std::string op = "&&"; // add toString to Mode
-               mContext.getLog().error("Operator " + op + " requires boolean expressions.");
+               String op("&&"); // add toString to Mode
+               mContext.getLog().error(String("Operator ") + op + " requires boolean expressions.");
             }
          }
          break;
@@ -511,17 +511,17 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
             ASTType comp = ASTType::greaterType(lefttype, mCurrentType);
             if ( !comp.isValid() )
             {
-               mContext.getLog().error("Can not compare type " + lefttype.toString() + " with type " + mCurrentType.toString());
+               mContext.getLog().error(String("Can not compare type ") + lefttype.toString() + " with type " + mCurrentType.toString());
             }
             else if ( ast.getMode() >= ASTConcatenate::eSmallerEqual )
             {
                if ( comp.isObject() || comp.isArray() )
                {
-                  mContext.getLog().error("Operator is not supported on arrays and objects.");
+                  mContext.getLog().error(String("Operator is not supported on arrays and objects."));
                }
                else if ( comp.isBoolean() )
                {
-                  mContext.getLog().error("Operator is not supported on boolean.");
+                  mContext.getLog().error(String("Operator is not supported on boolean."));
                }
             }
 
@@ -549,11 +549,11 @@ void SymbolCheckVisitor::visit(ASTInstanceOf& ast)
 
    if ( !(mCurrentType.isObject() || mCurrentType.isArray()) )
    {
-      mContext.getLog().error("Operator instanceof can only be called against objects/arrays.");
+      mContext.getLog().error(String("Operator instanceof can only be called against objects/arrays."));
    }
    else if ( !mCurrentType.isDerivedFrom(ast.getInstanceType()) )
    {
-      mContext.getLog().error("Instanceof operator can never be true for " + mCurrentType.toString() + " and " + ast.getInstanceType().toString());
+      mContext.getLog().error(String("Instanceof operator can never be true for ") + mCurrentType.toString() + " and " + ast.getInstanceType().toString());
    }
 
    mCurrentType = ASTType(ASTType::eBoolean);
@@ -586,8 +586,8 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
 
                if ( pfunction == NULL )
                {
-                  std::string arguments = "(" + signature.toString() + ")";
-                  mContext.getLog().error("No matching constructor " + newclass.getFullName() + arguments + " defined.");
+                  String arguments = String("(") + signature.toString() + ")";
+                  mContext.getLog().error(String("No matching constructor ") + newclass.getFullName() + arguments + " defined.");
                }
                else
                {
@@ -609,7 +609,7 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
 
                if ( !mCurrentType.isInt() )
                {
-                  mContext.getLog().error("Array size expression should be of type int.");
+                  mContext.getLog().error(String("Array size expression should be of type int."));
                }
             }
 
@@ -644,8 +644,8 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
 
    if ( mpFunction->getModifiers().isStatic() )
    {
-      std::string str = ast.getKind() == ASTSuper::eThis ? "this" : "super";
-      mContext.getLog().error("Can not access " + str + " from a static function.");
+      String str = ast.getKind() == ASTSuper::eThis ? "this" : "super";
+      mContext.getLog().error(String("Can not access ") + str + " from a static function.");
    }
 
    if ( ast.isCall() )
@@ -671,8 +671,8 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
       }
       else
       {
-         std::string arguments = "(" + signature.toString() + ")";
-         mContext.getLog().error("No constructor " + psearchclass->getFullName() + arguments + " defined.");
+         String arguments = String("(") + signature.toString() + ")";
+         mContext.getLog().error(String("No constructor ") + psearchclass->getFullName() + arguments + " defined.");
       }
    }
    else
@@ -690,7 +690,7 @@ void SymbolCheckVisitor::visit(ASTLiteral& ast)
 
 void SymbolCheckVisitor::visit(ASTAccess& ast)
 {
-   const std::string& name = ast.getName();
+   const String& name = ast.getName();
    bool wasstatic = mStatic;
    mStatic = false;
 
@@ -734,7 +734,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                }
                else
                {
-                  mContext.getLog().error("Class " + aclass.getName() + " has no member variable " + name);
+                  mContext.getLog().error(String("Class ") + aclass.getName() + " has no member variable " + name);
                }
             }
             else
@@ -764,7 +764,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                      // none static members from a static function.
                      if ( mpFunction != NULL && (mpFunction->getModifiers().isStatic() && !var.getModifiers().isStatic()) )
                      {
-                        mContext.getLog().error("Can not access instance member " + var.getName());
+                        mContext.getLog().error(String("Can not access instance member ") + var.getName());
                      }
 
                      // variable access on current class
@@ -775,14 +775,14 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                   }
                   else
                   {
-                     mContext.getLog().error("Identifier " + name + " is not defined.");
+                     mContext.getLog().error(String("Identifier ") + name + " is not defined.");
                   }
                }
             }
 
             if ( wasstatic && !ast.getVariable().getModifiers().isStatic() )
             {
-               mContext.getLog().error("Can not access non static variable " + ast.getName() + " from static");
+               mContext.getLog().error(String("Can not access non static variable ") + ast.getName() + " from static");
             }
          }
          break;
@@ -814,12 +814,12 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                      break;
                   case ASTType::eVoid:
                      {
-                        mContext.getLog().error("Can not invoke a method on a void object.");
+                        mContext.getLog().error(String("Can not invoke a method on a void object."));
                      }
                      break;
                   default:
                      {
-                        mContext.getLog().error("Can not invoke method on basic types.");
+                        mContext.getLog().error(String("Can not invoke method on basic types."));
                      }
                      break;
                }
@@ -851,7 +851,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
 
                   if ( !mCurrentType.isInt() )
                   {
-                     mContext.getLog().error("Array access expression must be of type int.");
+                     mContext.getLog().error(String("Array access expression must be of type int."));
                   }
                }
 
@@ -869,7 +869,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
          {
             if ( !mCurrentType.isObject() )
             {
-               mContext.getLog().warning("The class operator currently is only supported for objects.");
+               mContext.getLog().warning(String("The class operator currently is only supported for objects."));
             }
 
             if ( !wasstatic )
@@ -887,7 +887,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
       case ASTAccess::eInvalid:
       default:
          {
-            mContext.getLog().error("Unknown access detected.");
+            mContext.getLog().error(String("Unknown access detected."));
          }
          break;
    }
@@ -924,7 +924,7 @@ void SymbolCheckVisitor::checkVarInit(ASTVariable& var)
 
       if ( !mCurrentType.greater(var.getType()) )
       {
-         mContext.getLog().error("Assigning wrong type to variable '" + var.getName() + "' was expecting " + var.getType().toString() + " and got " + mCurrentType.toString());
+         mContext.getLog().error(String("Assigning wrong type to variable '") + var.getName() + "' was expecting " + var.getType().toString() + " and got " + mCurrentType.toString());
       }
    }
 }
@@ -939,11 +939,11 @@ void SymbolCheckVisitor::checkReturn(const ASTFunction& function)
       bool hasunreachablecode = false;
       if ( !function.getBody().hasReturn(hasunreachablecode) )
       {
-         mContext.getLog().error("Function " + function.getName() + " should return a value of type " + function.getType().toString());
+         mContext.getLog().error(String("Function ") + function.getName() + " should return a value of type " + function.getType().toString());
       }
       else if ( hasunreachablecode )
       {
-         mContext.getLog().warning("Unreachable code in " + function.getName());
+         mContext.getLog().warning(String("Unreachable code in ") + function.getName());
       }
    }
 }
@@ -987,7 +987,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
 
       if ( isstatic && !pfunction->getModifiers().isStatic() )
       {
-         mContext.getLog().error("Can not call non static function " + pfunction->getName());
+         mContext.getLog().error(String("Can not call non static function ") + pfunction->getName());
       }
       access.setFunction(*pfunction);
 
@@ -1015,8 +1015,8 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
    }
    else
    {
-      std::string arguments = "(" + signature.toString() + ")";
-      mContext.getLog().error("No matching function " + aclass.getName() + "." + access.getName() + arguments + " defined.");
+      String arguments = String("(") + signature.toString() + ")";
+      mContext.getLog().error(String("No matching function ") + aclass.getName() + "." + access.getName() + arguments + " defined.");
    }
 }
 
@@ -1031,7 +1031,7 @@ void SymbolCheckVisitor::checkOperator(ASTUnary::Operator op)
          {
             if ( !mCurrentType.isNumeric() )
             {
-               mContext.getLog().error("Pre operator requires a numeric value.");
+               mContext.getLog().error(String("Pre operator requires a numeric value."));
             }
          }
          break;
@@ -1039,7 +1039,7 @@ void SymbolCheckVisitor::checkOperator(ASTUnary::Operator op)
          {
             if ( !mCurrentType.isBoolean() )
             {
-               mContext.getLog().error("Not operator requires a boolean value.");
+               mContext.getLog().error(String("Not operator requires a boolean value."));
             }
          }
          break;
@@ -1050,6 +1050,6 @@ void SymbolCheckVisitor::checkUnknown(const ASTType& type)
 {
    if ( type.isUnknown() )
    {
-      mContext.getLog().error("Unknown class type " + type.getObjectName());
+      mContext.getLog().error(String("Unknown class type ") + type.getObjectName());
    }
 }

@@ -2,7 +2,7 @@
 #ifndef AST_VARIABLE_H_
 #define AST_VARIABLE_H_
 
-#include <string>
+#include "core/string/string.h"
 
 #include "astmodifier.h"
 
@@ -16,8 +16,8 @@ public:
    virtual ~ASTVariable();
 
  // get/set
-   const std::string& getName() const;
-   void               setName(const std::string& name);
+   const String& getName() const;
+   void          setName(const String& name);
 
    const ASTType& getType() const;
          ASTType& getType();
@@ -36,7 +36,7 @@ public:
    void setResourceIndex(int index);
 
 private:
-   std::string       mName;
+   String       mName;
    ASTModifiers      mModifiers;
    ASTType*          mpType;
    ASTVariableInit*  mpInit;

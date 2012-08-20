@@ -29,7 +29,7 @@
 /// \param val a numerical value
 INLINE void Script::addParam(int val)
 {
-   mScriptManager.mpVirtualMachine->push(val);
+   mScriptManager.mVirtualMachine.push(val);
 }
 
 /// \fn Script::addParam(float val)
@@ -37,7 +37,7 @@ INLINE void Script::addParam(int val)
 /// \param val a floating point value
 INLINE void Script::addParam(float val)
 {
-   mScriptManager.mpVirtualMachine->push(val);
+   mScriptManager.mVirtualMachine.push(val);
 }
 
 /// \fn Script::addParam(bool val)
@@ -45,13 +45,13 @@ INLINE void Script::addParam(float val)
 /// \param val a floating point value
 INLINE void Script::addParam(bool val)
 {
-   mScriptManager.mpVirtualMachine->push(val);
+   mScriptManager.mVirtualMachine.push(val);
 }
 
-/// \fn Script::addParam(const char* val)
+/// \fn Script::addParam(const String& val)
 /// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
 /// \param val a pointer to a character string
-INLINE void Script::addParam(const std::string& val)
+INLINE void Script::addParam(const String& val)
 {
-   mScriptManager.mpVirtualMachine->push(val);
+   mScriptManager.mVirtualMachine.push(val);
 }

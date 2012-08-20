@@ -2,9 +2,9 @@
 #ifndef VIRTUAL_FUNCTION_TABLE_H_
 #define VIRTUAL_FUNCTION_TABLE_H_
 
-#include <string>
 #include <vector>
 
+class String;
 class VirtualFunctionTableEntry;
 
 class VirtualFunctionTable
@@ -30,7 +30,7 @@ public:
    void offset(int offset);
 
  // search
-   const VirtualFunctionTableEntry* findByName(const std::string& name) const;
+   const VirtualFunctionTableEntry* findByName(const String& name) const;
 
    const VirtualFunctionTableEntry& resolveInterface(int index) const;
 

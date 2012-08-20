@@ -20,7 +20,7 @@
 #ifndef PRELOAD_VISITOR_H_
 #define PRELOAD_VISITOR_H_
 
-#include <string>
+#include "core/string/string.h"
 
 #include "script/compiler/compilestep.h"
 #include "script/compiler/classresolver.h"
@@ -83,7 +83,7 @@ private:
 
    CompileContext&   mContext;
    ClassResolver     mClassResolver;
-   std::string       mPackage;
+   String            mPackage;
    ScopeStack        mScopeStack;
    ASTClass*         mpClass;
 };

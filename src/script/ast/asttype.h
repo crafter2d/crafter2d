@@ -2,7 +2,7 @@
 #ifndef AST_TYPE_H_
 #define AST_TYPE_H_
 
-#include <string>
+#include "core/string/string.h"
 
 #include "asttypelist.h"
 
@@ -32,8 +32,8 @@ public:
    Kind getKind() const;
    void setKind(Kind kind);
 
-   const std::string& getObjectName() const;
-   void           setObjectName(const std::string& name);
+   const String& getObjectName() const;
+   void          setObjectName(const String& name);
 
    bool            hasObjectClass() const;
    const ASTClass& getObjectClass() const;
@@ -90,12 +90,12 @@ public:
    ASTType* clone() const;
 
  // conversion
-   std::string toString() const;
+   String toString() const;
 
 private:
 
    Kind                   mKind;
-   std::string            mObjectName;
+   String                 mObjectName;
    ASTClass*              mpObjectClass;
    ASTTypeList            mTypeArguments;
    const ASTTypeVariable* mpTypeVariable;

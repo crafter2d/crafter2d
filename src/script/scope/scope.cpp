@@ -1,6 +1,8 @@
 
 #include "scope.h"
 
+#include "core/string/string.h"
+
 #include "scopevariable.h"
 
 Scope::Scope():
@@ -31,7 +33,7 @@ void Scope::clear()
 
 // - Search
 
-ScopeVariable* Scope::find(const std::string& name)
+ScopeVariable* Scope::find(const String& name)
 {
    for ( std::size_t index = 0; index < mVariables.size(); index++ )
    {

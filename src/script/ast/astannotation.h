@@ -2,12 +2,12 @@
 #ifndef AST_ANNOTATION_H_
 #define AST_ANNOTATION_H_
 
-#include <string>
+#include "core/string/string.h"
 
 class ASTAnnotation
 {
 public:
-   std::string mName;
+   String mName;
 };
 
 #endif // AST_ANNOTATION_H_

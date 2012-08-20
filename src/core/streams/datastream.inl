@@ -45,7 +45,7 @@ INLINE DataStream& DataStream::operator<<(char value)
    return *this;
 }
 
-INLINE DataStream& DataStream::operator<<(const std::string& value)
+INLINE DataStream& DataStream::operator<<(const String& value)
 {
    writeString(value);
    return *this;
@@ -75,7 +75,7 @@ INLINE DataStream& DataStream::operator>>(char& value)
    return *this;
 }
 
-INLINE DataStream& DataStream::operator>>(std::string& value)
+INLINE DataStream& DataStream::operator>>(String& value)
 {
    readString(value);
    return *this;

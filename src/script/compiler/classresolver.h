@@ -2,12 +2,13 @@
 #ifndef CLASS_RESOLVER_H_
 #define CLASS_RESOLVER_H_
 
-#include <string>
 #include <set>
+
+#include "core/string/string.h"
 
 class ClassResolver
 {
-   typedef std::set<std::string> Paths;
+   typedef std::set<String> Paths;
 
 public:
    ClassResolver();
@@ -15,12 +16,12 @@ public:
    const ClassResolver& operator=(const ClassResolver& that);
 
  // operations
-   void insert(const std::string& path);
+   void insert(const String& path);
 
-   std::string resolve(const std::string& classname) const;
+   String resolve(const String& classname) const;
 
 private:
-   bool checkClassExists(const std::string& classname) const;
+   bool checkClassExists(const String& classname) const;
 
    Paths mPaths;
 };

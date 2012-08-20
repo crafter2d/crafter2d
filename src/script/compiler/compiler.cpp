@@ -91,7 +91,7 @@ void Compiler::cleanUp()
 
 // - Compilation
 
-bool Compiler::compile(const std::string& classname)
+bool Compiler::compile(const String& classname)
 {
    bool success = true;
    ASTClass* pclass = mContext.findClass(classname);
@@ -196,13 +196,13 @@ bool Compiler::performSteps(ASTNode& node, Steps& steps)
    return true;
 }
 
-bool Compiler::load(const std::string& classname)
+bool Compiler::load(const String& classname)
 {
    AntlrParser parser(mContext);
 
-   String name(classname.c_str());
-   name.replace('.', '/');
-   std::string filename = name.toStdString() + ".as";
+   String filename(classname);
+   filename.replace('.', '/');
+   filename += String(".as");
 
    try
    {
@@ -268,17 +268,17 @@ void Compiler::reportError(CompileException& exception)
 {
    std::ofstream outfile("compilelog.txt", std::ios_base::app);
 
-   outfile << "> " << exception.getFilename() << "(" << exception.getLine() << "): " << exception.asString() << std::endl;
+   outfile << "> " << exception.getFilename().toStdString() << "(" << exception.getLine() << "): " << exception.asString().toStdString() << std::endl;
 }
 
-void Compiler::displayErrors(const std::string& currentfile)
+void Compiler::displayErrors(const String& currentfile)
 {
    std::ofstream outfile("compilelog.txt", std::ios_base::app);
 
    const CompileLog::StringList& log = mContext.getLog().getLog();
    for ( std::size_t index = 0; index < log.size(); index++ )
    {
-      outfile << "> " << currentfile << ": " << log[index] << std::endl;
+      outfile << "> " << currentfile.toStdString() << ": " << log[index] << std::endl;
    }
 
    outfile.close();

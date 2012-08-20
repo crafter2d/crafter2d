@@ -20,18 +20,17 @@
 #ifndef ACTOR_LOADER_H
 #define ACTOR_LOADER_H
 
-#include <string>
-
 #include "contentloader.h"
 
 class Actor;
+class String;
 
 class ActorLoader : public ContentLoader
 {
 public:
    ActorLoader(Process& process);
 
-   Actor* load(const std::string& filename);
+   Actor* load(const String& filename);
 };
 
 #endif // OBJECT_LOADER_H

@@ -25,13 +25,13 @@
 #include "engine/engine_base.h"
 
 #include <list>
-#include <string>
 #include <vector>
 
+#include "script/vm/virtualmachine.h"
+
 class Script;
-class VirtualMachine;
-class VirtualContext;
-class VirtualObjectReference;
+class String;
+class VirtualObject;
 
 /**
 @author Jeroen Broekhuizen
@@ -85,15 +85,6 @@ always exists (it returns a reference to the script object).
 */
 class ENGINE_API ScriptManager
 {
-   struct Request {
-      std::string mFunction;
-      uint        mJobId;
-      float       mStartTime;
-      float       mCurrentTime;
-   };
-
-   typedef std::list<Request> Requests;
-
 public:   
    ScriptManager();
    ~ScriptManager();
@@ -102,46 +93,24 @@ public:
    void                    destroy();
    
  // loading
-   Script*                 loadNative(const std::string& classname, void* pobject, bool owned);
+   Script*                 load(const String& classname, void* pobject, bool owned);
    
  // execution
-   bool                    executeScript(const std::string& classname, const std::string& function);
+   bool                    executeScript(const String& classname, const String& function);
    
- // requests
-   void                    update(float delta);
-   uint                    schedule(const std::string& cmd, float time);
-   void                    unschedule(const uint jobid);
-   void                    unscheduleAll();
-
  // operations
-   ScriptManager*          spawnChild();
-   VirtualObjectReference  shareObject(const VirtualObjectReference& origin);
-
- // function interface
-   bool                    hasFunction(const std::string& name) const;
-   std::string             generateUniqueFunctionName(const std::string& name);
-
- // global retreival
-   int                     getInt(const char* var);
-   bool                    getBool(const char* var);
-   void*                   getClass(const char* var);
+   void                    addRootObject(VirtualObject& object);
 
 private:
    friend class Script;
    friend class ScriptRegistrator;
+   
+   void operator=( const ScriptManager& mgr );
 
-   explicit ScriptManager(VirtualContext& context);
-
-   void                    operator=( const ScriptManager& mgr );
-
-   void                    registerGlobals();
+   void registerGlobals();
   
-   VirtualContext*   mpVirtualContext;
-   VirtualMachine*   mpVirtualMachine;
-   Script*           mpScript;
-   Requests          requests;
-   uint              job;
-   bool              mChild;
+   VirtualContext    mVirtualContext;
+   VirtualMachine    mVirtualMachine;
 };
 
 #endif // SCRIPT_MANAGER_H_

@@ -1,24 +1,35 @@
 
 #include "virtualexception.h"
 
+#include "core/defines.h"
+
+#include "virtualobject.h"
+
 VirtualException::VirtualException():
-   mException(NULL)
+   mpException(NULL)
 {
 }
 
-VirtualException::VirtualException(const VirtualObjectReference& exception):
-   mException(exception)
+VirtualException::VirtualException(VirtualObject& exception):
+   mpException(&exception)
 {
 }
 
 // get/set
    
-const VirtualObjectReference& VirtualException::getException() const
+const VirtualObject& VirtualException::getException() const
 {
-   return mException;
+   ASSERT_PTR(mpException);
+   return *mpException;
 }
 
-void VirtualException::setException(const VirtualObjectReference& object)
+VirtualObject& VirtualException::getException()
 {
-   mException = object;
+   ASSERT_PTR(mpException);
+   return *mpException;
+}
+
+void VirtualException::setException(VirtualObject& object)
+{
+   mpException = &object;
 }

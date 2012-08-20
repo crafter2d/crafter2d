@@ -22,17 +22,16 @@
 
 #include "script/script_base.h"
 
-class GarbageCollector;
+#include "script/gc/collectable.h"
+
 class Variant;
 class VirtualClass;
-class VirtualObjectReference;
 class VirtualMachine;
 
-class SCRIPT_API VirtualObject
+class SCRIPT_API VirtualObject : public Collectable
 {
 public:
    VirtualObject();
-   VirtualObject(const VirtualObject& that);
    ~VirtualObject();
    
  // get/set
@@ -44,21 +43,24 @@ public:
    bool isOwner() const;
    void setOwner(bool owned);
 
-   bool isShared() const;
-   void setShared(bool shared);
+   bool isMarked() const;
+   void setMarked(bool marked);
 
  // query
    const VirtualClass& getClass() const;
    void                setClass(const VirtualClass& definition);
 
+   int getMemberCount() const;
+
  // operation
    void initialize(int variables);
-   VirtualObject* clone() const;
    Variant& getMember(int index);
    void setMember(int index, const Variant& value);
+   virtual void finalize(VirtualMachine& vm);
 
- // garbage
-   void collect(GarbageCollector& gc);
+protected:
+ // marking
+   virtual void doMark();
 
 private:
 
@@ -68,7 +70,7 @@ private:
    Variant*                      mpMembers;
    int                           mMemberCount;
    bool                          mOwnsNative;
-   bool                          mShared;
+   bool                          mMarked;
 };
 
 #endif // VIRTUAL_OBJECT_H_

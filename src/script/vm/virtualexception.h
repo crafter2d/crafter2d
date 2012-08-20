@@ -2,20 +2,23 @@
 #ifndef VIRTUAL_EXCEPTION_H_
 #define VIRTUAL_EXCEPTION_H_
 
-#include "virtualobjectreference.h"
+#include "script/script_base.h"
+
+class VirtualObject;
 
 class SCRIPT_API VirtualException
 {
 public:
-   VirtualException();
-   explicit VirtualException(const VirtualObjectReference& exception);
+            VirtualException();
+   explicit VirtualException(VirtualObject& exception);
 
  // get/set
-   const VirtualObjectReference& getException() const;
-   void                          setException(const VirtualObjectReference& object);
+   const VirtualObject& getException() const;
+         VirtualObject& getException();
+   void                 setException(VirtualObject& object);
 
 private:
-   VirtualObjectReference mException;
+   VirtualObject* mpException;
 };
 
 #endif // VIRTUAL_EXCEPTION_H_

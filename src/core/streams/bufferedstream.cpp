@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "bufferedstream.h"
 
+#include <memory>
+
 #include "core/defines.h"
 
 BufferedStream::BufferedStream():

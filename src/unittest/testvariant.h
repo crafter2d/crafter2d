@@ -18,15 +18,11 @@ public:
 
       v = Variant(200);
       TS_ASSERT(v.asInt() == 200);
-
-      v.int2string();
-      TS_ASSERT(v.isString());
-      TS_ASSERT(v.asString() == "200");
    }
 
    void testString()
    {
-      Variant v(std::string("100"));
+      Variant v("100");
       TS_ASSERT(v.isString());
       
       TS_ASSERT(v.toInt() == 100);

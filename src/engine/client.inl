@@ -34,3 +34,25 @@ INLINE void Client::setInput(Input& input)
 {
    mpInput = &input;
 }
+
+INLINE GameWindowFactory& Client::getWindowFactory()
+{
+   ASSERT_PTR(mpWindowFactory);
+   return *mpWindowFactory;
+}
+
+INLINE void Client::setWindowFactory(GameWindowFactory& factory)
+{
+   mpWindowFactory = &factory;
+}
+
+INLINE bool Client::hasWindow() const
+{
+   return mpWindow != NULL;
+}
+
+INLINE GameWindow& Client::getWindow()
+{
+   ASSERT_PTR(mpWindow);
+   return *mpWindow;
+}

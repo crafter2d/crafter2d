@@ -23,6 +23,8 @@
 #include <Cg/cg.h>
 #include "codepath.h"
 
+class String;
+
 /*!
 @author Jeroen Broekhuizen
 \brief Code path that uses CG of NVidia to handle the shaders. 
@@ -42,24 +44,24 @@ public:
 	CGPath();
 	~CGPath();
 
-	virtual bool     load (const std::string& vertex, const std::string& fragment);
+	virtual bool     load (const String& vertex, const String& fragment);
 	virtual void     release ();
 
 	virtual void     enable() const;
 	virtual void     disable() const;
 	
    virtual PathType getType() const;
-	virtual int      getUniformLocation (const char* name) const;
+	virtual int      getUniformLocation (const String& name) const;
 
 	virtual void     setUniform1i (int index, int val);
 	virtual void     setUniform3f (int index, float x, float y, float z);
 	virtual void     setUniform4f (int index, float x, float y, float z, float w);
 
 private:
-   bool  loadVertexProgram(const std::string& vertexfile);
-   bool  loadFragmentProgram(const std::string& fragmentfile);
+   bool  loadVertexProgram(const String& vertexfile);
+   bool  loadFragmentProgram(const String& fragmentfile);
 
-   void  CGCompileError(CGcontext context, const std::string& type, const std::string& file);
+   void  CGCompileError(CGcontext context, const String& type, const String& file);
 
    CGprogram   vp, fp;
    CGparameter _mvpMatrix;

@@ -22,7 +22,7 @@ int ASTAnnotations::size() const
    return mAnnotations.size();
 }
 
-bool ASTAnnotations::contains(const std::string& name) const
+bool ASTAnnotations::contains(const String& name) const
 {
    for ( std::size_t index = 0; index < mAnnotations.size(); index++ )
    {

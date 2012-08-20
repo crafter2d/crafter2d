@@ -28,14 +28,14 @@
 #include "zipfile.h"
 
 // static
-bool CompressedFile::isCompressedFile(const std::string& file)
+bool CompressedFile::isCompressedFile(const String& file)
 {
-   int dot = file.find('.');
-   int slash = file.find('/');
+   int dot = file.indexOf('.');
+   int slash = file.lastIndexOf('/');
 
    if ( dot < slash )
    {
-      std::string zip = file.substr(0, dot+3);
+      String zip = file.subStr(0, dot+3);
       return UnzipFile::isZip(zip);
    }
 
@@ -43,7 +43,7 @@ bool CompressedFile::isCompressedFile(const std::string& file)
 }
 
 // static
-bool CompressedFile::exists(const std::string& path, const std::string& file)
+bool CompressedFile::exists(const String& path, const String& file)
 {
     UnzipFile zipfile(path);
     return zipfile.contains(file);
@@ -61,7 +61,7 @@ CompressedFile::~CompressedFile()
    virClose();
 }
 
-bool CompressedFile::virOpen(const std::string& filename, int modus)
+bool CompressedFile::virOpen(const String& filename, int modus)
 {
    decode(filename);
 
@@ -103,14 +103,14 @@ bool CompressedFile::isValid() const
    return true;
 }
 
-void CompressedFile::decode(const std::string& filename)
+void CompressedFile::decode(const String& filename)
 {
-   int dot = filename.find('.');
+   int dot = filename.indexOf('.');
    int len = dot + 4;
 
-   mZipFile = filename.substr(0, len);
+   mZipFile = filename.subStr(0, len);
 
    len = filename.length() - len - 1;
 
-   mFile = filename.substr(dot + 5, len);
+   mFile = filename.subStr(dot + 5, len);
 }

@@ -21,7 +21,6 @@
 #define _PROCESS_H_
 
 #include <map>
-#include <string>
 
 #include "engine/engine_base.h"
 #include "engine/script/scriptmanager.h"
@@ -35,7 +34,7 @@ class ActionMap;
 class DataStream;
 class NetEvent;
 class Script;
-class VirtualObjectReference;
+class String;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -46,9 +45,9 @@ class ENGINE_API Process
 {
 public:
    explicit       Process();
-   virtual        ~Process();
+   virtual        ~Process() = 0;
 
-   virtual bool   create(const VirtualObjectReference& self);
+   virtual bool   create(const String& classname);
    virtual bool   destroy();
    virtual void   update (float delta);
 
@@ -61,7 +60,6 @@ public:
    void           setActionMap(ActionMap* map);
 
    ScriptManager& getScriptManager();
-   void           setScriptManager(ScriptManager* pscriptmanager);
 
    bool           hasWorld() const;
    const World&   getWorld() const;
@@ -76,7 +74,8 @@ public:
 
  // operations
    void sendScriptEvent(int clientid, const DataStream& stream);
-   
+   void swapLeakDetection();
+
   // events
    virtual void onNetEvent(int clientid, const NetEvent& event) = 0;
 
@@ -87,7 +86,7 @@ protected:
    ProcessNetObserver   mNetObserver;
    NetConnection        conn;
    ContentManager       mContentManager;
-   ScriptManager*       mpScriptManager;
+   ScriptManager        mScriptManager;
    Script*              mpScript;
    ActionMap*           actionMap;
    bool                 initialized;
@@ -97,6 +96,7 @@ private:
  // members
    World*      mpWorld;
    bool        mActive;
+   bool        mDetecting;
 };
 
 #ifdef JENGINE_INLINE

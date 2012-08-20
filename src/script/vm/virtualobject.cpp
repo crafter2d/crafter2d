@@ -19,13 +19,11 @@
  ***************************************************************************/
 #include "virtualobject.h"
 
-#include <exception>
-
 #include "core/defines.h"
 
 #include "script/common/variant.h"
-#include "script/gc/garbagecollector.h"
 
+#include "virtualarray.h"
 #include "virtualmachine.h"
 
 VirtualObject::VirtualObject():
@@ -34,28 +32,15 @@ VirtualObject::VirtualObject():
    mpMembers(NULL),
    mMemberCount(0),
    mOwnsNative(false),
-   mShared(false)
-{
-}
-
-VirtualObject::VirtualObject(const VirtualObject& that):
-   mpClass(that.mpClass),
-   mpNativeObject(that.mpNativeObject),
-   mpMembers(that.mpMembers),
-   mMemberCount(that.mMemberCount),
-   mOwnsNative(false),
-   mShared(true)
+   mMarked(false)
 {
 }
 
 VirtualObject::~VirtualObject()
 {
-   if ( !mShared )
-   {
-      delete[] mpMembers;
-      mpMembers = NULL;
-   }
-
+   delete[] mpMembers;
+   mpMembers = NULL;
+   
    ASSERT(!mOwnsNative || mpNativeObject == NULL);
 }
 
@@ -81,7 +66,7 @@ void* VirtualObject::useNativeObject()
 
 void VirtualObject::setNativeObject(void* pobject)
 {
-   ASSERT(mpNativeObject == NULL);
+   //ASSERT(mpNativeObject == NULL);
    mpNativeObject = pobject;
 }
 
@@ -95,14 +80,14 @@ void VirtualObject::setOwner(bool owned)
    mOwnsNative = owned;
 }
 
-bool VirtualObject::isShared() const
+bool VirtualObject::isMarked() const
 {
-   return mShared;
+   return mMarked;
 }
 
-void VirtualObject::setShared(bool shared)
+void VirtualObject::setMarked(bool marked)
 {
-   mShared = shared;
+   mMarked = marked;
 }
 
 // - Query
@@ -117,20 +102,21 @@ void VirtualObject::setClass(const VirtualClass& definition)
    mpClass = &definition;
 }
 
+int VirtualObject::getMemberCount() const
+{
+   return mMemberCount;
+}
+
 // - Operations
 
 void VirtualObject::initialize(int variables)
 {
    if ( variables > 0 )
    {
+      delete[] mpMembers;
       mpMembers = new Variant[variables];
       mMemberCount = variables;
    }
-}
-
-VirtualObject* VirtualObject::clone() const
-{
-   return new VirtualObject(*this);
 }
 
 Variant& VirtualObject::getMember(int index)
@@ -150,14 +136,27 @@ void VirtualObject::setMember(int index, const Variant& value)
 
 // - Garbage collection
 
-void VirtualObject::collect(GarbageCollector& gc)
+void VirtualObject::finalize(VirtualMachine& vm)
 {
-   for ( int index = 0; index < mMemberCount; ++index )
+   if ( mpNativeObject != NULL )
    {
-      Variant& member = mpMembers[index];
-      if ( member.isObject() )
+      vm.unregisterNative(*this);
+   }
+
+   vm.release(*this);
+}
+
+void VirtualObject::doMark()
+{
+   for ( int index = 0; index < mMemberCount; index++ )
+   {
+      if ( mpMembers[index].isObject() )
       {
-         gc.collect(member.asObject());
+         mpMembers[index].asObject().mark();
+      }
+      else if ( mpMembers[index].isArray() )
+      {
+         mpMembers[index].asArray().mark();
       }
    }
 }

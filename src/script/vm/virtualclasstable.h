@@ -3,33 +3,35 @@
 #define VIRTUAL_CLASS_TABLE_H_
 
 #include <map>
-#include <string>
 #include <vector>
+
+#include "core/string/string.h"
 
 class LiteralTable;
 class VirtualClass;
 
 class VirtualClassTable
 {
-   typedef std::map<std::string, VirtualClass*> Classes;
+   typedef std::map<String, VirtualClass*> Classes;
 
 public:
    VirtualClassTable();
    ~VirtualClassTable();
 
  // query
-   bool contains(const std::string& name) const;
+   bool contains(const String& name) const;
    
  // operations
    void clear();
    void insert(VirtualClass* ptype);
    void print(const LiteralTable& literals);
+   void mark();
 
  // search
-   VirtualClass* find(const std::string& name) const;
+   VirtualClass* find(const String& name) const;
 
-   const VirtualClass& resolve(const std::string& name) const;
-         VirtualClass& resolve(const std::string& name);
+   const VirtualClass& resolve(const String& name) const;
+         VirtualClass& resolve(const String& name);
 
  // conversion
    std::vector<VirtualClass*> asArray();

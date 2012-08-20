@@ -20,13 +20,15 @@
 #ifndef COMPRESSED_FILE_H_
 #define COMPRESSED_FILE_H_
 
+#include "core/string/string.h"
+
 #include "file.h"
 
 class CompressedFile : public File
 {
 public:
-   static bool isCompressedFile(const std::string& file);
-   static bool exists(const std::string& path, const std::string& file);
+   static bool isCompressedFile(const String& file);
+   static bool exists(const String& path, const String& file);
 
    CompressedFile();
    virtual ~CompressedFile();
@@ -35,14 +37,14 @@ public:
 
 protected:
  // operations
-   virtual bool  virOpen(const std::string& filename, int modus);
+   virtual bool  virOpen(const String& filename, int modus);
    virtual void  virClose();
 
 private:
-   void decode(const std::string& filename);
+   void decode(const String& filename);
 
-   std::string mZipFile;
-   std::string mFile;
+   String mZipFile;
+   String mFile;
 };
 
 #ifdef JENGINE_INLINE

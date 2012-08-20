@@ -4,8 +4,9 @@
 
 #include "script/script_base.h"
 
-#include <string>
 #include <vector>
+
+#include "core/string/string.h"
 
 #include "compilecontext.h"
 
@@ -31,7 +32,7 @@ public:
    const Literal& lookupLiteral(int index) const;
 
  // compilation
-   bool compile(const std::string& classname);
+   bool compile(const String& classname);
    void cleanUp();
 
 private:
@@ -47,11 +48,11 @@ private:
    bool performSteps(ASTNode& node, Steps& steps);
    void sort(ASTClasses& classes, ASTClasses& sorted);
 
-   bool load(const std::string& classname);
+   bool load(const String& classname);
    void save(ASTClass& ast);
 
    void reportError(CompileException& exception);
-   void displayErrors(const std::string& currentfile);
+   void displayErrors(const String& currentfile);
 
    CompileContext    mContext;
    CompileCallback*  mpCallback;

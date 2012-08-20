@@ -43,6 +43,7 @@
 	 \brief Initialized all internal variables.
  */
 Texture::Texture():
+   Resource(),
    _width(0),
    _height(0),
    _actualwidth(0),
@@ -77,14 +78,14 @@ void Texture::release()
 	}
 }
 
-/// \fn Texture::load(const std::string& file)
+/// \fn Texture::load(const String& file)
 /// \brief Call this function to load a texture from file. Currently only the BMP and TMA file formats are supported.
 /// \param[in] filename the complete filename of the texture
 /// \retval true if the texture was loaded successfully
 /// \retval false not supported file format (see the loadBitmap and loadPicture functions for more information)
-bool Texture::load(const std::string& file)
+bool Texture::load(const String& file)
 {
-   if ( file.empty() )
+   if ( file.isEmpty() )
       return false;
 
    setName(file);
@@ -344,7 +345,7 @@ uchar* Texture::ensureProperSize(int bytes, uchar* pdata, int width, int height)
 
    if ( _actualwidth > 1024 || _actualheight > 1024 )
    {
-      Log::getInstance().error("Image size of %s is too big!", filename.c_str());
+      Log::getInstance().error("Image size of %s is too big!", filename.getBuffer());
       delete[] pdata;
       return NULL;
    }

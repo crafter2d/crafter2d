@@ -22,7 +22,7 @@
 
 #include "core/core_base.h"
 
-#include <string>
+class String;
 
 class CORE_API DataStream
 {
@@ -40,13 +40,13 @@ public:
    DataStream&  operator<<(int i);
    DataStream&  operator<<(bool b);
    DataStream&  operator<<(char c);
-   DataStream&  operator<<(const std::string& text);
+   DataStream&  operator<<(const String& text);
 
    DataStream&  operator>>(float& f);
    DataStream&  operator>>(int& i);
    DataStream&  operator>>(bool& b);
    DataStream&  operator>>(char& c);
-   DataStream&  operator>>(std::string& str);
+   DataStream&  operator>>(String& str);
 
  // overloadables
    virtual void writeInt(int value);
@@ -54,14 +54,14 @@ public:
    virtual void writeFloat(float value);
    virtual void writeBool(bool value);
    virtual void writeChar(char c);
-   virtual void writeString(const std::string& text);
+   virtual void writeString(const String& text);
    
    virtual void readInt(int& value);
    virtual void readUint(unsigned int& value);
    virtual void readFloat(float& value);
    virtual void readBool(bool& value);
    virtual void readChar(char& value);
-   virtual void readString(std::string& value);
+   virtual void readString(String& value);
 
    void write(const DataStream& that);
    void read(DataStream& that);

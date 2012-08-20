@@ -3,12 +3,12 @@
 #define AST_CLASS_H_
 
 #include <map>
-#include <string>
 #include <vector>
+
+#include "core/string/string.h"
 
 #include "script/compiler/functiontable.h"
 #include "script/compiler/classresolver.h"
-
 #include "script/common/literaltable.h"
 
 #include "astnode.h"
@@ -27,7 +27,7 @@ class CompileContext;
 
 class ASTClass : public ASTNode
 {
-   typedef std::multimap<std::string, ASTFunction*> Functions;
+   typedef std::multimap<String, ASTFunction*> Functions;
 
 public:
    enum SearchScope { eLocal, eAll };
@@ -53,11 +53,11 @@ public:
          ASTClass& getBaseClass();
    void            setBaseClass(ASTClass& baseclass);
 
-   const std::string& getName() const;
-   void               setName(const std::string& name);
+   const String& getName() const;
+   void               setName(const String& name);
 
-   const std::string& getFullName() const;
-   void               setFullName(const std::string& name);
+   const String& getFullName() const;
+   void               setFullName(const String& name);
 
    const ASTModifiers& getModifiers() const;
          ASTModifiers& getModifiers();
@@ -82,12 +82,14 @@ public:
    bool isBase(const ASTClass& base) const;
    bool isImplementing(const ASTClass& intrface) const;
    bool isLocal(const ASTFunction& function) const;
+   bool isNative() const;
 
    bool isGeneric() const;
-   bool isTypeName(const std::string& name) const;
+   bool isTypeName(const String& name) const;
 
    bool hasConstructor() const;
    bool hasAbstractFunction() const;
+   bool hasNativeFunction() const;
 
    int getTotalStatics() const;
    int getTotalVariables() const;
@@ -104,17 +106,17 @@ public:
    void calculateResources();
 
  // search
-   const ASTField* findStatic(const std::string& name, SearchScope scope = eAll) const;
-         ASTField* findStatic(const std::string& name, SearchScope scope = eAll);
+   const ASTField* findStatic(const String& name, SearchScope scope = eAll) const;
+         ASTField* findStatic(const String& name, SearchScope scope = eAll);
 
-   const ASTField* findField(const std::string& name, SearchScope scope = eAll) const;
-         ASTField* findField(const std::string& name, SearchScope scope = eAll);
+   const ASTField* findField(const String& name, SearchScope scope = eAll) const;
+         ASTField* findField(const String& name, SearchScope scope = eAll);
 
-   const ASTFunction* findBestMatch(const std::string& name, const Signature& signature, const ASTTypeList& types) const;
-         ASTFunction* findBestMatch(const std::string& name, const Signature& signature, const ASTTypeList& types);
+   const ASTFunction* findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types) const;
+         ASTFunction* findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types);
 
-   const ASTFunction* findExactMatch(const std::string& name, const Signature& signature) const;
-         ASTFunction* findExactMatch(const std::string& name, const Signature& signature);
+   const ASTFunction* findExactMatch(const String& name, const Signature& signature) const;
+         ASTFunction* findExactMatch(const String& name, const Signature& signature);
 
    const ASTFunction* findInterfaceFunction(const ASTFunction& function) const;
 
@@ -128,15 +130,15 @@ private:
    void indexFunctions();
 
  // search
-   ASTFunction* findExactMatchLocal(const std::string& name, const Signature& signature);
+   ASTFunction* findExactMatchLocal(const String& name, const Signature& signature);
 
    Kind              mKind;
    ClassResolver     mResolver;
    ASTModifiers      mModifiers;
    ASTType*          mpBaseType;
    ASTTypeList       mInterfaces;
-   std::string       mName;
-   std::string       mFullName;
+   String       mName;
+   String       mFullName;
    ASTTypeVariables* mpTypeVariables;
    FunctionTable     mTable;
    Fields            mStatics;

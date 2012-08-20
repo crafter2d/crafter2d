@@ -23,6 +23,8 @@
 #  include "process.inl"
 #endif
 
+// #include <vld.h>
+
 #include "core/log/log.h"
 
 #include "script/vm/virtualclass.h"
@@ -39,12 +41,13 @@ Process::Process():
    mNetObserver(*this),
    conn(mNetObserver),
    mContentManager(*this),
-   mpScriptManager(NULL),
+   mScriptManager(),
    mpScript(NULL),
    actionMap(NULL),
    initialized(false),
    mpWorld(NULL),
-   mActive(true)
+   mActive(true),
+   mDetecting(false)
 {
 }
 
@@ -52,9 +55,6 @@ Process::~Process()
 {
    delete mpScript;
    mpScript = NULL;
-
-   delete mpScriptManager;
-   mpScriptManager = NULL;
 
    delete actionMap;
    actionMap = NULL;
@@ -70,7 +70,7 @@ void Process::setWorld(World* pworld)
 
       if ( mpWorld != NULL )
       {
-         pworld->setScript(getScriptManager().loadNative("engine.game.World", pworld, false));
+         pworld->setScript(getScriptManager().load("engine.game.World", pworld, false));
       }
 
       notifyWorldChanged();
@@ -79,18 +79,20 @@ void Process::setWorld(World* pworld)
 
 // - Operations
 
-bool Process::create(const VirtualObjectReference& self)
+bool Process::create(const String& classname)
 {
-   if ( mpScriptManager == NULL )
+   mScriptManager.initialize();
+   mpScript = mScriptManager.load(classname, this, false);
+   if ( mpScript == NULL )
    {
-      // throw exception with warning that the scriptmanager must be set first
       return false;
    }
 
-   mpScript = new Script(getScriptManager());
-   mpScript->setThis(getScriptManager().shareObject(self));
-   
-   return true;
+   // make me a root objects
+   mScriptManager.addRootObject(mpScript->getThis());
+
+   // run the onCreated function
+   return mpScript->run("onCreated");
 }
 
 bool Process::destroy()
@@ -134,3 +136,18 @@ void Process::sendScriptEvent(int clientid, const DataStream& stream)
    conn.send(clientid, event);
 }
 
+void Process::swapLeakDetection()
+{
+   mDetecting = !mDetecting;
+
+   /*
+   if ( mDetecting )
+   {
+      VLDEnable();
+   }
+   else
+   {
+      VLDDisable();
+   }
+   */
+}

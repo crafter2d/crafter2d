@@ -20,19 +20,26 @@
 #include "stdiofile.h"
 
 #include "core/defines.h"
+#include "core/string/string.h"
 
 #include "buffer.h"
 
 // static 
-bool StdioFile::exists(const std::string& file)
+bool StdioFile::exists(const String& file)
 {
+   int len;
+   const char* ppath = file.toUtf8(len);
+
    bool result = false;
-   FILE* pfile = fopen(file.c_str(), "r");
+   FILE* pfile = fopen(ppath, "r");
    if ( pfile != NULL )
    {
       result = true;
       fclose(pfile);
    }
+
+   delete[] ppath;
+
    return result;
 }
 
@@ -47,18 +54,21 @@ StdioFile::~StdioFile()
    virClose();
 }
 
-bool StdioFile::virOpen(const std::string& filename, int modus)
+bool StdioFile::virOpen(const String& filename, int modus)
 {
-   std::string mode;
+   char mode[3] = { 0, 0, 0 };
    if ( IS_SET(modus, ERead) )
-      mode = 'r';
+      mode[0] = 'r';
    else
-      mode = 'w';
+      mode[0] = 'w';
 
    if ( IS_SET(modus, EBinary) )
-      mode += 'b';
+      mode[1] = 'b';
 
-   mpFile = fopen(filename.c_str(), mode.c_str());
+   int len;
+   const char* ppath = filename.toUtf8(len);
+   mpFile = fopen(ppath, mode);
+   delete[] ppath;
 
    setBuffer(Buffer::fromFile(mpFile));
 
