@@ -39,6 +39,7 @@ enum NetObjectId
    NameChangeObjectEventId = 14,
    ServerDownEventId       = 15,
    WorldChangedEventId     = 16,
+   AggregateEventId        = 17,
 
    EntityId                = 101,
    ActorId                 = 102,

@@ -17,19 +17,37 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "processnetobserver.h"
+#ifndef AGGREGATE_EVENT_H
+#define AGGREGATE_EVENT_H
 
-#include "process.h"
+#include <vector>
 
-ProcessNetObserver::ProcessNetObserver(Process& process):
-   NetObserver(),
-   mProcess(process)
+#include "netevent.h"
+
+class AggregateEvent : public NetEvent
 {
-}
+public:
+   DEFINE_REPLICATABLE(AggregateEvent)
 
-// - Implementation
+   typedef std::vector<NetEvent*> Events;
 
-void ProcessNetObserver::onEvent(int clientid, const NetEvent& event)
-{
-   mProcess.onNetEvent(clientid, event);
-}
+   AggregateEvent();
+   virtual ~AggregateEvent();
+
+ // get/set
+   const Events& getEvents() const { return mEvents; } 
+
+ // operations
+   void add(NetEvent* pevent);
+
+protected:
+ // streaming
+   virtual void   doPack(DataStream& stream) const;
+   virtual void   doUnpack(DataStream& stream);
+
+private:
+
+   Events mEvents;
+};
+
+#endif // AGGREGATE_EVENT_H

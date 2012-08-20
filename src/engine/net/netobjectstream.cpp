@@ -1,8 +1,10 @@
 
 #include "netobjectstream.h"
 
+#include "events/netevent.h"
 #include "netobject.h"
 #include "netobjectfactory.h"
+#include "neteventfactory.h"
 
 NetObjectStream::NetObjectStream(DataStream& stream):
    NetStream(stream)
@@ -28,4 +30,20 @@ NetObjectStream& NetObjectStream::operator>>(NetObject** obj)
    (*obj)->setReplica();
    (*obj)->unpack(*this);
    return *this;
+}
+
+NetEvent* NetObjectStream::readEvent()
+{
+   int type;
+   readInt(type);
+
+   NetEvent* pevent = NetEventFactory::getInstance().create(type);
+   if ( pevent == NULL )
+   {
+      pevent = static_cast<NetEvent*>(NetObjectFactory::getInstance().createObject(type));
+   }
+   pevent->setReplica();
+   pevent->unpack(*this);
+
+   return pevent;
 }

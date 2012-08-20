@@ -28,6 +28,7 @@
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
+#include "engine/net/events/aggregateevent.h"
 #include "engine/net/events/connectevent.h"
 #include "engine/net/events/connectreplyevent.h"
 #include "engine/net/events/disconnectevent.h"
@@ -108,8 +109,11 @@ void Server::update(float delta)
       ClientMap::iterator it = clients.begin();
       for ( ; it != clients.end(); ++it )
       {
+         AggregateEvent event;
+         dirtyset.collect(event);
+
          int clientid = it->first;
-         dirtyset.send(clientid, conn);
+         conn.send(clientid, event);
       }
    }
 }

@@ -261,7 +261,7 @@ void NetConnection::send(int clientid, const NetObject& object, NetPackage::Reli
 {
    NetAddress& client = mClients[clientid];
 
-   BufferedStream bufferedstream;
+   BufferedStream bufferedstream(1024);
    NetObjectStream stream(bufferedstream);
    stream << object;
 

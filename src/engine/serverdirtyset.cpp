@@ -19,9 +19,9 @@
  ***************************************************************************/
 #include "serverdirtyset.h"
 
+#include "net/neteventfactory.h"
+#include "net/events/aggregateevent.h"
 #include "net/events/updateobjectevent.h"
-
-#include "net/netconnection.h"
 
 #include "entity.h"
 
@@ -42,15 +42,16 @@ void ServerDirtySet::reportDirty(Entity& entity)
    mObjects.push_back(&entity);
 }
 
-void ServerDirtySet::send(int clientid, NetConnection& conn)
+void ServerDirtySet::collect(AggregateEvent& event)
 {
-   Objects::iterator it = mObjects.begin();
-   for ( ; it != mObjects.end(); ++it )
+   NetEventFactory& factory = NetEventFactory::getInstance();
+   for ( std::size_t index = 0; index < mObjects.size(); ++index )
    {
-      Entity& object = *(*it);
+      Entity& object = *mObjects[index];
+      UpdateObjectEvent* pevent = factory.createUpdateEvent();
+      pevent->initialize(object);
 
-      UpdateObjectEvent event(object);
-      conn.send(clientid, event);
+      event.add(pevent);
    }
 }
 

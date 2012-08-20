@@ -17,19 +17,62 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "processnetobserver.h"
+#include "aggregateevent.h"
 
-#include "process.h"
+#include "core/streams/datastream.h"
 
-ProcessNetObserver::ProcessNetObserver(Process& process):
-   NetObserver(),
-   mProcess(process)
+#include "engine/net/netobjectstream.h"
+#include "engine/net/neteventfactory.h"
+
+IMPLEMENT_REPLICATABLE(AggregateEventId, AggregateEvent, NetEvent)
+
+AggregateEvent::AggregateEvent():
+   NetEvent(aggregateEvent),
+   mEvents()
 {
 }
 
-// - Implementation
-
-void ProcessNetObserver::onEvent(int clientid, const NetEvent& event)
+AggregateEvent::~AggregateEvent()
 {
-   mProcess.onNetEvent(clientid, event);
+   NetEventFactory& factory = NetEventFactory::getInstance();
+   for ( std::size_t index = 0; index < mEvents.size(); ++index )
+   {
+      NetEvent* pevent = mEvents[index];
+      factory.release(pevent);
+   }
+}
+
+// - Operations
+
+void AggregateEvent::add(NetEvent* pevent)
+{
+   mEvents.push_back(pevent);
+}
+
+// - Streaming
+   
+void AggregateEvent::doPack(DataStream& stream) const
+{
+   stream.writeInt(mEvents.size());
+
+   NetObjectStream netstream(stream);
+   for ( std::size_t index = 0; index < mEvents.size(); ++index )
+   {
+      NetEvent& event = *mEvents[index];
+      netstream << event;
+   }
+}
+
+void AggregateEvent::doUnpack(DataStream& stream)
+{
+   int count;
+   stream.readInt(count);
+   mEvents.reserve(count);
+
+   NetObjectStream netstream(stream);
+   for ( int index = 0; index < count; ++index )
+   {
+      NetEvent* pevent = netstream.readEvent();
+      mEvents.push_back(pevent);
+   }
 }

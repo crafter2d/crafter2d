@@ -17,19 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "processnetobserver.h"
+#ifndef NET_EVENT_FACTORY_H
+#define NET_EVENT_FACTORY_H
 
-#include "process.h"
+#include "core/memory/memorypool.h"
 
-ProcessNetObserver::ProcessNetObserver(Process& process):
-   NetObserver(),
-   mProcess(process)
+class NetEvent;
+class UpdateObjectEvent;
+
+class NetEventFactory
 {
-}
+public:
 
-// - Implementation
+   static NetEventFactory& getInstance();
 
-void ProcessNetObserver::onEvent(int clientid, const NetEvent& event)
-{
-   mProcess.onNetEvent(clientid, event);
-}
+ // update factory
+   NetEvent*          create(int type);
+   UpdateObjectEvent* createUpdateEvent();
+
+   void release(NetEvent* event);
+
+private:
+   NetEventFactory();
+
+   static NetEventFactory* mpInstance;
+
+   MemoryPool<UpdateObjectEvent> mUpdatePool;
+};
+
+#endif // NET_EVENT_FACTORY_H

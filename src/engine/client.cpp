@@ -35,6 +35,7 @@
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
 
+#include "net/events/aggregateevent.h"
 #include "net/events/newobjectevent.h"
 #include "net/events/connectevent.h"
 #include "net/events/connectreplyevent.h"
@@ -282,6 +283,17 @@ void Client::onNetEvent(int client, const NetEvent& event)
 {
    switch ( event.getType() )
    {
+      case aggregateEvent:
+         {
+            const AggregateEvent& aevent = dynamic_cast<const AggregateEvent&>(event);
+            const AggregateEvent::Events events = aevent.getEvents();
+            for ( std::size_t index = 0; index < events.size(); index++ )
+            {
+               const NetEvent& netevent = *events[index];
+               onNetEvent(client, netevent);
+            }
+            break;
+         };
       case connectReplyEvent:
          {
             const ConnectReplyEvent& crevent = dynamic_cast<const ConnectReplyEvent&>(event);
