@@ -16,7 +16,8 @@ if ( os.is("windows") ) then
 	defines { "WIN32", "SCRIPT_EXPORTS" }
 	
 	includedirs { 	path.join(libdir, "antlr/include"),
-					path.join(libdir, "zlib/include") }
+					path.join(libdir, "zlib/include"),
+					path.join(libdir, "icu/include")					}
 					
 	libdirs { 	path.join(libdir, "antlr/lib"),
 				path.join(libdir, "zlib/lib") }

@@ -19,7 +19,7 @@ class World
 	{
 		if ( entity instanceof Actor )
 		{
-			// mActors.add((Actor)entity);
+			mActors.add((Actor)entity);
 		}
 	}
 	

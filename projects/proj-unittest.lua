@@ -16,7 +16,8 @@ includedirs { "src" }
 
 if ( os.is("windows") ) then
 	includedirs { 	path.join(libdir, "cxxtest"),
-					path.join(libdir, "zlib/include") }
+					path.join(libdir, "zlib/include"),
+					path.join(libdir, "icu/include") }
 					
 	libdirs { 	path.join(libdir, "zlib/lib") }
 	

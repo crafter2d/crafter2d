@@ -9,6 +9,8 @@ use engine.game.*;
 
 class GameClient extends Client
 {
+	private ActionMap mActionMap;
+	
 	public GameClient()
 	{
 		super();
@@ -16,26 +18,31 @@ class GameClient extends Client
 	
 	public boolean create()
 	{
-		if ( super.create() )
-		{			
-			MessageBox.showInformation("This is a messagebox!");
-			
-			return true;
+		GameWindow window = getWindowFactory().createWindow();
+		if ( !window.create("GameWindow", 800, 600, 32, false) )
+		{
+			return false;
 		}
-		
-		return false;
+		setWindow(window);
+	
+		MessageBox.showInformation("This is a messagebox!");
+			
+		return connect("localhost", 7000, "player");
 	}
 	
 	public void onConnected(Player player)
 	{
 		addPlayer(player);
 		
-		setActionMap(new ActionMap());
+		mActionMap = new ActionMap();
+		mActionMap.bind(6, "onSwapLeakDetector");
+		setActionMap(mActionMap);
 		
 		KeyMap map = new KeyMap();
 		map.bind(276, 1); 	// left
 		map.bind(275, 2); 	// right
 		map.bind(32, 3); 	// space -> jump
+		map.bind(100, 6);   // leak detection
 		setKeyMap(map);
 	}
 	
@@ -80,9 +87,5 @@ class GameClient extends Client
 			world.setFollowActor(controller);
 			world.setFollowBorders(150, 650, 100, 500);
 		}
-	}
-	
-	public void onWorldChanged()
-	{
 	}
 }

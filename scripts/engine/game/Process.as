@@ -19,25 +19,15 @@ abstract class Process
 	private MessageMap mMessageMap     = new MessageMap();
 	private ArrayList<Player> mPlayers = new ArrayList<Player>();
 	
+	private World mWorld;
+	
 	public static int CONNECT_ALLOW = 0;
 	public static int CONNECT_DENY_STARTED = 1;
 	
-	// natives
-	
-	private native boolean create(Object self);
-	
-	public native void destroy();
-	public native ScriptManager getScriptManager();
-	public native void setScriptManager(ScriptManager scriptmanager);
-	public native Font getFont(string name, int size);
-	public native Texture getTexture(string name);
-	public native ContentManager getContentManager();
-	public native World getWorld();
-	public native void setWorld(World world);
-	
-	public boolean create()
+	/// called by the native process when it is created
+	private boolean onCreated()
 	{		
-		boolean success = create(this);
+		boolean success = create();
 		if ( success )
 		{	
 			// Register the messages
@@ -45,6 +35,8 @@ abstract class Process
 		}
 		return success;
 	}
+	
+	public abstract boolean create();
 	
 	public void onScriptEvent(NetStream stream)
 	{
@@ -59,12 +51,30 @@ abstract class Process
 	
 	public void addPlayer(Player player)
 	{
+		System.console.println("Added player to ");
 		mPlayers.add(player);
 	}
 	
 	public Player getPlayers()
 	{
 		return mPlayers.get(0);
+	}
+	
+	public World getWorld()
+	{
+		return mWorld;
+	}
+	
+	/// does not call the native function
+	protected void setInternalWorld(World world)
+	{
+		mWorld = world;
+	}
+	
+	public void setWorld(World world)
+	{
+		mWorld = world;
+		native_setWorld(world);
 	}
 	
 	// - Overloadables
@@ -76,4 +86,18 @@ abstract class Process
 	protected void onMessageReceived(Message message)
 	{
 	}
+	
+	// - Memory leak detection
+	
+	public native void swapLeakDetection();
+	
+	// - Natives
+	
+	public native void destroy();
+	public native ScriptManager getScriptManager();
+	public native void setScriptManager(ScriptManager scriptmanager);
+	public native Font getFont(string name, int size);
+	public native Texture getTexture(string name);
+	public native ContentManager getContentManager();
+	public native void native_setWorld(World world);
 }
