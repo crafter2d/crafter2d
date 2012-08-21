@@ -1,5 +1,15 @@
-JEngine SSE, version 0.4.7, Jeroen Broekhuizen
+JEngine SSE, version 0.4.8, Jeroen Broekhuizen
 Copyright 2009-2012
+
+Change log 0.4.8
+----------------
+* Greatly improved script engine performance
+* Added garbage collector
+* Added scripted XML parser
+* Added some unit tests
+* Added initial code to support Unicode
+* Improved networking code
+* Fixed many smaller bugs
 
 Change log 0.4.7
 ----------------

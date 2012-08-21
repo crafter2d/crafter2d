@@ -25,6 +25,34 @@
 template<typename, class> class HashMapBucket;
 template<typename, class> class HashMapIterator;
 
+/**
+@author Jeroen Broekhuizen
+\brief A templated hash map implementation.
+
+@section hashmap_Introduction Introduction
+A hash map can be used to quickly lookup an element based on a key value. It does so by generating a hash value
+of the key. Based on the hash value it possibly can limit the number of key compares (depending on the hashing
+algorithm).
+
+@section hashmap_Hashfunction Hash Function
+Use the setHashFunction method to set the hash function. This function is used by most of the methods of the
+hash map. The function prototype should match the HashFnc declaration. It is called to whenever a hash value
+is needed (e.g. during insertion). The resulting hash value of this method should adhere to the following
+rules:
+
+ * It should return always the same for value for a key
+ * Multiple keys may result in the same hash value
+
+The HashInterface namespace contains some implementations for default values that can be used.
+
+@section hashmap_Usage Usage
+Ensure that the hash function has already been set before going on with the following part. Inserting a new 
+key-element pair is done with the insert method. This implementation requires a key to be unique. If the same
+key value is already stored in the map, it's element is overriden by the new.
+
+Retrieval of the object is done with the get method. You will need the key to lookup the element.
+*/
+
 template <typename K, class E>
 class HashMap
 {

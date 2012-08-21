@@ -70,6 +70,14 @@ void ScriptManager::destroy()
 
 // - Loading
 
+/// \fn ScriptManager::load(const String& classname, void* pobject, bool owned)
+/// \brief Loads a script class from file into the virtual machine and optionally attaches
+/// a pointer to the native class (required for native classes).
+/// \param classname Fully qualified name of the class
+/// \param pobject Pointer to the native class (may be NULL)
+/// \param owned If true, the virtual machine takes ownership of the pointer, and deletes it
+/// when the virtual class is deleted.
+/// \returns A script object if class is successfully instantiated, or NULL otherwise
 Script* ScriptManager::load(const String& classname, void* pobject, bool owned)
 {
    Script* pscript = NULL;
@@ -87,6 +95,10 @@ Script* ScriptManager::load(const String& classname, void* pobject, bool owned)
 
 // - Operations
 
+/// \fn ScriptManager::addRootObject(VirtualObject& object)
+/// \brief Adds a root object to the garbage collector. A root object is an object
+/// that is used by the garbage collector as starting point for usage detection.
+/// \param object Root object to be added
 void ScriptManager::addRootObject(VirtualObject& object)
 {
    mVirtualMachine.addRootObject(object);

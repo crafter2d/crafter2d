@@ -26,7 +26,7 @@
 #include "sdlgamewindowfactory.h"
 
 /*!
- 	\mainpage JEngine SE - 2D Smart Scoll Engine Documentation
+ 	\mainpage JEngine SE - 2D Simple Scroll Engine Documentation
  	\section intro_sec Introduction
  	These pages contain the complete documentation of the JEngine sources. You will find here
 	all information about the classes, structures, etc used to implement the engine.

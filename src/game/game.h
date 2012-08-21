@@ -22,8 +22,6 @@
 
 #include <string>
 
-#include "gamesettings.h"
-
 class GameWindowFactory;
 class Client;
 class Server;
@@ -67,7 +65,6 @@ private:
    bool                 initOpenGL();
    void                 runFrame();
 
-   GameSettings         mSettings;
    std::string          mTitle;
    GameWindowFactory*   mpWindowFactory;
    TimerData*           mpTimerData;

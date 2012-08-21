@@ -1,14 +1,9 @@
-JEngine SSE, version 0.4.7, Jeroen Broekhuizen
+JEngine SSE, version 0.4.8, Jeroen Broekhuizen
 Copyright 2009-2012
 
 Thanks for downloading this latest version of the JEngine SSE. The biggest change
-in this new version, which is released earlier than planned, finally fully supports 
-the Linux operating system again!
-
-Besides the Linux compatibility also the demo has gotten some attention. The enemy
-model, called Grudge, is now running around and when close to the user hitting him.
-In later versions this demo will be extended further to an actual simple game
-showing the capabilities of the engine.
+in this new version is the performance increase of the overall engine (but mainly
+the scripting engine) and garbage collector.
 
 To run the demo application, navigate to the bin directory and execute the game.exe 
 file by double clicking on it on windows or by running ./game in the bin directory

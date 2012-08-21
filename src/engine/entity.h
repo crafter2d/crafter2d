@@ -29,6 +29,8 @@
 
 class NodeVisitor;
 
+/// \brief Base class for all entities that can be shown in your game.
+
 class Entity : public NetObject
 {
    enum { eNameDirty = 256 };

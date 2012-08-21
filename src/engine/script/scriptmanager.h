@@ -35,53 +35,26 @@ class VirtualObject;
 
 /**
 @author Jeroen Broekhuizen
-\brief The script manager singleton for creating and scheduling new scripts.
+\brief The script manager for loading and executing scripts.
 
 @section scriptManager_introduction Introduction
-The script manager can be used for creating and managing your script files. The build in
-scheduler can also be used for scheduling any script to run at a certain time. Besides complete
-scripts it is also possible to just run one line of code only with the executeLine function.
+The script manager is a wrapper around the virtual machine. It makes using the script engine
+in your game easier and cleaner.
 
-@section scriptManager_initialize Initializing the manager
-At start up of the game you must first initialize this singleton script manager to set up
-the Lua scripting environment. This is done with the initialize function which creates the
-Lua enviroment and loads the default modules, like string, math and io. Besides these default
-modules it is also possible to load your own module. This can be done with the loadModule
-function as is shown in the next code fragment.
+@section scriptManager_rootobjects Root Objects
+The garbage collector used by the script engine, uses the so called 'mark & sweep' algorithm.
+This two step process first marks objects that are still in use and then frees all objects that
+have not been marked. Root objects are used as starting point for the marking phase. So, any 
+object that can not be reached through a root object, will be released as it's not in use any
+more.
 
-@code
-// somewhere in a tolua generated module header file
-TOLUA_API int tolua_mymodule_open (lua_State* tolua_S);
+A typical example of a root object would be the server class. The server keeps track of all
+the entities, players, etc. The engine marks both server and client automatically as root
+objects.
 
-void MyGame::loadCustomScriptLibraries()
-{
-   ScriptManager::getInstance().loadModule(tolua_mymodule_open);
-}
-@endcode
-
-Finally you can set up some default objects during initialization of your game. JEngine SSE
-default loads in the canvas, client, server, etc in the Lua environment for easy access in
-your scripts.
-
-@code
-scriptMgr.setObject(&server, "Server", "server");
-scriptMgr.setObject(&client, "Client", "client");
-@endcode
-
-@section scriptManager_runScripts Running scripts
-Main usage of this class is for creating new scripts, or modifying the scripting enviroment,
-which is explained mostly in the previous part. There are two main methods available for running
-a scripts.
-
-The first method is to create a completely new scripts object, which can either run in the
-global Lua environment or in its own sub-enviroment (this will not modify the games global
-environment). You should use this method only if you need to run the script multiple times
-at a regular interval, otherwise it can become an expensive operation.
-
-When you only need to run a script once or on certain events, then method two is better. This
-method uses the getTemporaryScript to retreive a temporary script object (which always runs
-in the global enviroment). This call is much cheaper then the previous method, as the object
-always exists (it returns a reference to the script object).
+A common pitfall are native objects. It is easy to create a native class and script class 
+counter part. You then have to ensure whenever this class is instantiated, that you store
+a reference to it as it otherwise will be freed soon again.
 */
 class ENGINE_API ScriptManager
 {

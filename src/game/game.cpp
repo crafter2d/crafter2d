@@ -49,14 +49,12 @@
 #include "engine/server.h"
 
 #include "console.h"
-#include "gamesettings.h"
 
 /*!
     \fn Game::Game()
 	 \brief Initialized member variables
  */
 Game::Game():
-   mSettings(),
    mTitle(),
    mpWindowFactory(NULL),
    mpTimerData(NULL),
@@ -83,19 +81,15 @@ Game::~Game()
 }
 
 /*!
-    \fn Game::create(char* caption, int w, int h, int bd)
-	 \brief Call this function to initialize the main window and OpenGL for your game.
-	 \param[in] caption caption of the window
-	 \param[in] w width of the window
-	 \param[in] h height of the window
-	 \param[in] bd color bitdepht of screen (16,24,32)
+    \fn Game::create()
+	 \brief Call this function to initialize the game engine and prepare it for running a game.
 	 \return true if initialized successfull, false otherwise
  */
 
 bool Game::create()
 {
    Log& log = Log::getInstance();
-   log << "JEngine SSE V0.4.7 - Copyright 2012 - Jeroen Broekhuizen\n";
+   log << "JEngine SSE V0.4.8 - Copyright 2012 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
@@ -109,8 +103,6 @@ bool Game::create()
    SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
 
    log << "\n-- Initializing Graphics --\n\n";
-
-   mSettings.initialize();
 
    // initialize the console
    Console& console = Console::getInstance();

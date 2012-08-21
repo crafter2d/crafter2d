@@ -6,7 +6,7 @@
 
 #include "core/containers/hashmap.h"
 
-int hashInt(int& value)
+unsigned int hashInt(const int& value)
 {
    return value;
 }
@@ -26,9 +26,10 @@ public:
    void testInsertion()
    {
       Test test1(1, 100);
-      Test test2(1, 200);
+      Test test2(2, 200);
 
       HashMap<int,Test> map;
+      map.setHashFunction(hashInt);
       TS_ASSERT(map.isEmpty());
 
       map.insert(test1.key, test1);
