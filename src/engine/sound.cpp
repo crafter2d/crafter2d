@@ -186,6 +186,9 @@ void SoundManager::destroy()
    {
       alcDestroyContext (context);
       alcCloseDevice (device);
+
+      context = 0;
+      device = 0;
    }
 }
 

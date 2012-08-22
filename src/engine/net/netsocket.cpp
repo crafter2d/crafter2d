@@ -47,23 +47,26 @@ NetSocket::NetSocket():
    
 bool NetSocket::resolve(NetAddress& address, const String& name)
 {
-   char aname[256];
-   name.asArray(aname, 256);
+   int len = 0;
+   const char* pname = name.toUtf8(len);
 
    address.addr.sin_family = AF_INET;
 	address.addr.sin_port = htons ((u_short)0);
-   address.addr.sin_addr.s_addr = inet_addr(aname);
+   address.addr.sin_addr.s_addr = inet_addr(pname);
 
 	if (address.addr.sin_addr.s_addr == INADDR_NONE)
    {
-      hostent *host_info = gethostbyname(aname);
+      hostent *host_info = gethostbyname(pname);
 		if (host_info == NULL)
       {
+         delete[] pname;
 			return false;
       }
 
 		memcpy(&address.addr.sin_addr, host_info->h_addr, host_info->h_length);
 	}
+
+   delete[] pname;
 
    return true;
 }

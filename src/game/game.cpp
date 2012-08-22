@@ -55,12 +55,10 @@
 	 \brief Initialized member variables
  */
 Game::Game():
-   mTitle(),
    mpWindowFactory(NULL),
    mpTimerData(NULL),
    mpClient(NULL),
-   mpServer(NULL),
-   mActive(false)
+   mpServer(NULL)
 {
 }
 
@@ -93,16 +91,12 @@ bool Game::create()
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
-   mpTimerData = TIMER.createData();
-
    FileSystem::getInstance().addPath("../scripts");
    FileSystem::getInstance().addPath("../images");
    
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
    SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
-
-   log << "\n-- Initializing Graphics --\n\n";
 
    // initialize the console
    Console& console = Console::getInstance();
@@ -124,11 +118,12 @@ bool Game::create()
    console.reload();
 
    log << "\n-- Running Game --\n\n";
+
+   mpTimerData = TIMER.createData();
    
    // give the game time to load in stuff before window shows up
    // (after that, the game has to keep track of it's own state)
-   mActive = initGame();
-   if ( !mActive )
+   if ( !initGame() )
    {
       console.error("Aborted after failed game initialization.");
       return false;
@@ -169,7 +164,7 @@ void Game::run()
 {
    TIMER.start(getTimerData());
 
-	while ( mActive )
+   while ( mpClient->isActive() )
    {
 		runFrame();
 	}
@@ -222,9 +217,6 @@ void Game::runFrame()
 
    static float start = 0;
    static unsigned int frame = 0;
-
-   if ( !isActive() )
-      return;
 
    mpServer->update(delta);
 

@@ -64,7 +64,7 @@ bool UnzipFile::contains(const String& name) const
 
    int len;
    const char* pname = name.toUtf8(len);
-   bool result = unzLocateFile(_zip, name.getBuffer(), 2) != UNZ_OK;
+   bool result = unzLocateFile(_zip, pname, 2) != UNZ_OK;
    delete[] pname;
 
    return result;

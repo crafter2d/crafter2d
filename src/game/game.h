@@ -20,8 +20,6 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <string>
-
 class GameWindowFactory;
 class Client;
 class Server;
@@ -29,22 +27,15 @@ class TimerData;
 
 /**
 @author Jeroen Broekhuizen
-\brief This is the main application class. You must inherit your own class from it. It implements the
-complete rendering and event loop. See the initGame, endGame and runFrame functions for more information.
+\brief Actual game class responsible for launching and shutting down global systems.
 */
 class Game
 {
 public:
-                        Game();
-   virtual              ~Game();
+   Game();
+   ~Game();
 
  // get/set interface
-         void           setActive(bool act=true);
-         bool           isActive() const;
-
-         void           setTitle(const std::string& title);
-   const std::string&   getTitle() const;
-
    GameWindowFactory&   getWindowFactory();
    void                 setWindowFactory(GameWindowFactory& windowfactory);
 
@@ -52,25 +43,20 @@ public:
    bool                 create();
    void                 destroy();
    void                 run();
-   
-protected:
+
+private:
  // get/set
    TimerData&           getTimerData();
 
- // overloadables
-   virtual bool         initGame();
-   virtual void         endGame();
-
-private:
-   bool                 initOpenGL();
+ // operations
+   bool                 initGame();
+   void                 endGame();
    void                 runFrame();
 
-   std::string          mTitle;
    GameWindowFactory*   mpWindowFactory;
    TimerData*           mpTimerData;
    Client*              mpClient;
    Server*              mpServer;
-   bool                 mActive;
 };
 
 #ifdef JENGINE_INLINE

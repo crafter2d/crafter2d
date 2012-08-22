@@ -130,13 +130,6 @@ const char* String::getBuffer() const
    return (char*) mString.getBuffer();
 }
 
-char* String::asArray(char* pdest, int capacity) const
-{
-   UErrorCode err;
-   mString.extract(pdest, capacity, NULL, err);
-   return pdest;
-}
-
 int String::compare(const String& that) const
 {
    return mString.compare(that.mString);

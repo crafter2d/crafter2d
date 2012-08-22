@@ -41,7 +41,6 @@ public:
    int length() const;
    const char* getBuffer() const;
    char* toUtf8(int& length) const;
-   char* asArray(char* parray, int size) const;
    int compare(const String& that) const;
    int hashCode() const;
 

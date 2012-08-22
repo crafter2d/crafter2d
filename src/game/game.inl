@@ -19,38 +19,10 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-/// \fn Game::setActive(bool act)
-/// \brief Set the activity flag of the application.
-INLINE void Game::setActive(bool act)
-{
-   mActive = act;
-}
-
-/// \fn Game::isActive() const
-/// \brief Returns the active flag.
-INLINE bool Game::isActive() const
-{
-   return mActive;
-}
-
 INLINE TimerData& Game::getTimerData()
 {
    ASSERT_PTR(mpTimerData);
    return *mpTimerData;
-}
-
-/// \fn Game::setTitle(const char* _title)
-/// \brief Set the new title of the game application.
-INLINE void Game::setTitle(const std::string& title)
-{
-   mTitle = title;
-}
-
-/// \fn const char* Game::getTitle() const
-/// \brief Returns a const pointer to the current application title.
-INLINE const std::string& Game::getTitle() const
-{
-   return mTitle;
 }
 
 INLINE GameWindowFactory& Game::getWindowFactory()

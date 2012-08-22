@@ -90,17 +90,14 @@ bool Client::create(const String& classname)
       mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
       mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
 
-      if ( !mpWindow->create("GameWindow", 800, 600, 32, false) )
-      {
-         return false;
-      }
+      Log& log = Log::getInstance();
+      log << "\n-- Initializing Graphics --\n\n";
 
       if ( !initOpenGL() )
       {
          return false;
       }
 
-      Log& log = Log::getInstance();
       log << "\n-- Initializing Sound --\n\n";
 
       // initialize the sound system
@@ -254,6 +251,8 @@ bool Client::initOpenGL()
 
 	   glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
       glShadeModel (GL_SMOOTH);
+
+      onWindowResized();
    }
 
 	return success;
@@ -401,6 +400,7 @@ void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
    if ( pworld == NULL )
    {
       // ee boehhh
+      Log::getInstance().error("Failed to load world!");
       return;
    }
 

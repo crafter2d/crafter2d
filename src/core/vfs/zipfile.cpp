@@ -41,14 +41,20 @@ ZipFile::~ZipFile()
 
 bool ZipFile::open(const String& path)
 {
-   _zip = zipOpen(path.getBuffer(), APPEND_STATUS_ADDINZIP);
+   int len;
+   const char* ppath = path.toUtf8(len);
+   _zip = zipOpen(ppath, APPEND_STATUS_ADDINZIP);
+   delete[] ppath;
 
    return _zip != NULL;
 }
 
 bool ZipFile::create(const String& path)
 {
+   int len;
+   const char* ppath = path.toUtf8(len);
    _zip = zipOpen(path.getBuffer(), APPEND_STATUS_CREATE);
+   delete[] ppath;
 
    return _zip != NULL;
 }
