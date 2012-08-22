@@ -41,8 +41,11 @@ UIFont::UIFont():
 
 bool UIFont::load(FT_Library lib, const String& name, int size)
 {
-   char buf[256];
-   FT_Error error = FT_New_Face(lib, name.asArray(buf, 256), 0, &mFace);
+   int len;
+   const char* pfile = name.toUtf8(len);
+   FT_Error error = FT_New_Face(lib, pfile, 0, &mFace);
+   delete[] pfile;
+
 	CHECK_ERROR("Not valid!");
    setName(name);
 

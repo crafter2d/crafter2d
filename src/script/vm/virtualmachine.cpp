@@ -348,13 +348,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    mCallStack.push(mCall);
    mCall.start(vclass, entry, mStack.size());
 
-   /*
 #ifdef _DEBUG
    int len;
    const char* pclass = vclass.getName().toUtf8(len);
    const char* pentry = entry.mName.toUtf8(len);
 #endif
-   */
 
    const VirtualInstructionTable& instructions = mContext.mInstructions;
 
@@ -399,7 +397,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
       shrinkStack(mCall.mStackBase);
    }
 
-#ifndef _DEBUG
+#ifdef _DEBUG
    delete[] pclass;
    delete[] pentry;
 #endif
