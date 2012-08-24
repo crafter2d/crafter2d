@@ -91,7 +91,7 @@ bool CompileContext::loadClass(const String& classname)
 void CompileContext::collectCompileClasses(std::vector<ASTClass*>& classes)
 {
    ClassMap::iterator it = mClasses.begin();
-   for ( ; it != mClasses.end(); it++ )
+   for ( ; it != mClasses.end(); ++it )
    {
       ASTClass* pclass = it->second;
       if ( pclass->getState() == ASTClass::eLoaded )

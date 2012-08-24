@@ -7,6 +7,7 @@
 class CORE_API Char
 {
 public:
+   static bool isEOL(char c);
    static bool isWhitespace(char c);
    static bool isAlphaNum(char c);
    static bool isAlpha(char c);

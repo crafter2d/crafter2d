@@ -15,7 +15,7 @@ ASTTypeVariables::ASTTypeVariables():
 bool ASTTypeVariables::contains(const String& name) const
 {
    TypeVariableMap::const_iterator it = mTypeVariables.begin();
-   for ( ; it != mTypeVariables.end(); it++ )
+   for ( ; it != mTypeVariables.end(); ++it )
    {
       if ( it->first == name )
       {
@@ -47,7 +47,7 @@ void ASTTypeVariables::append(ASTTypeVariable* pvariable)
 void ASTTypeVariables::clear()
 {
    TypeVariableMap::iterator it = mTypeVariables.begin();
-   for ( ; it != mTypeVariables.end(); it++ )
+   for ( ; it != mTypeVariables.end(); ++it )
    {
       delete it->second;
    }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,50 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MEMORY_BUFFER_H_
-#define MEMORY_BUFFER_H_
+#ifndef INI_FILE_PARSER_H
+#define INI_FILE_PARSER_H
 
-#include "buffer.h"
+class IniFile;
+class IniFileProperty;
+class IniFileSection;
+class File;
+class String;
 
-#include "core/defines.h"
-
-class MemoryBuffer : public Buffer
+class IniFileParser
 {
 public:
-            MemoryBuffer();
-   explicit MemoryBuffer(void* pdata, int size);
-   virtual ~MemoryBuffer();
-
- // get/set
-           uchar*          getData();
-           int             getDataSize();
-
- // query
-   virtual bool            isMemoryBuffer() const;
-   virtual MemoryBuffer&   asMemoryBuffer();
-
- // operations
-   virtual int          read(void* ptr, int size);
-   virtual int          write(void* ptr, int size);
-   virtual char         getchar();
-   virtual char         peekchar();
-   virtual void         seek(int pos, int mode);
-   virtual int          tell() const;
-   virtual bool         eof() const;
-
-   virtual int          size();
+   IniFileParser(const  String& filename, IniFile& inifile);
 
 private:
-           void assign(void* pdata, int size);
-           void free();
 
-   uchar*   mpData;
-   int      mDataSize;
-   int      mCursor;
+ // parsing
+   void              parse(const String& filename, IniFile& inifile);
+   IniFileSection*   parseSection(File& file);
+   IniFileProperty*  parseProperty(File& file);
+   void              parseComment(File& file);
+   String            parseWord(File& file, char delim = ' ');
+
+   void              skipWhiteSpace(File& file);
 };
 
-#ifdef JENGINE_INLINE
-#  include "memorybuffer.inl"
-#endif
-
-#endif // MEMORY_BUFFER_H_
+#endif // INI_FILE_PARSER_H

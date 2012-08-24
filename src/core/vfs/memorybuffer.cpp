@@ -122,6 +122,11 @@ char MemoryBuffer::getchar()
   return data;
 }
 
+char MemoryBuffer::peekchar()
+{
+   return mpData[mCursor];
+}
+
 void MemoryBuffer::seek(int pos, int mode)
 {
   switch ( mode )

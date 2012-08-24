@@ -126,12 +126,12 @@ private:
    void  handleUpdateObjectEvent(const UpdateObjectEvent& event);
    void  handleScriptEvent(const ScriptEvent& event);
 
+   GameWindowFactory*         mpWindowFactory;
    GameWindow*                mpWindow;
    ClientGameWindowListener   mWindowListener;
    ClientKeyEventDispatcher   mKeyEventDispatcher;
    ClientMouseEventDispatcher mMouseEventDispatcher;
    SoundManager               mSoundManager;
-   GameWindowFactory*         mpWindowFactory;
    WorldRenderer*             mpWorldRenderer;
    Player*                    mpPlayer;
    KeyMap*                    mpKeyMap;

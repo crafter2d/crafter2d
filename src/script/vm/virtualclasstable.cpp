@@ -34,7 +34,7 @@ bool VirtualClassTable::contains(const String& name) const
 void VirtualClassTable::clear()
 {
    Classes::iterator it = mClasses.begin();
-   for ( ; it != mClasses.end(); it++ )
+   for ( ; it != mClasses.end(); ++it )
    {
       delete it->second;
    }
@@ -50,7 +50,7 @@ void VirtualClassTable::insert(VirtualClass* ptype)
 void VirtualClassTable::mark()
 {
    Classes::iterator it = mClasses.begin();
-   for ( ; it != mClasses.end(); it++ )
+   for ( ; it != mClasses.end(); ++it )
    {
       VirtualClass* pclass = it->second;
       int statics = pclass->getStaticCount();
@@ -70,7 +70,7 @@ void VirtualClassTable::print(const LiteralTable& literals)
    using std::cout;
 
    Classes::iterator it = mClasses.begin();
-   for ( ; it != mClasses.end(); it++ )
+   for ( ; it != mClasses.end(); ++it )
    {
       VirtualClass* pclass = it->second;
       std::string code = pclass->getInstructions().toString(literals);
@@ -87,7 +87,7 @@ std::vector<VirtualClass*> VirtualClassTable::asArray()
 {
    std::vector<VirtualClass*> array;
    Classes::iterator it = mClasses.begin();
-   for ( ; it != mClasses.end(); it++ )
+   for ( ; it != mClasses.end(); ++it )
    {
       VirtualClass* pclass = it->second;
       array.push_back(pclass);

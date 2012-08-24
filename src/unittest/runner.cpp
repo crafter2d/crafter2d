@@ -202,19 +202,25 @@ public:
 
 static class TestDescription_TestVariant_testReal : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVariant_testReal() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 25, "testReal" ) {}
+ TestDescription_TestVariant_testReal() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 26, "testReal" ) {}
  void runTest() { suite_TestVariant.testReal(); }
 } testDescription_TestVariant_testReal;
 
+static class TestDescription_TestVariant_testBoolean : public CxxTest::RealTestDescription {
+public:
+ TestDescription_TestVariant_testBoolean() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 38, "testBoolean" ) {}
+ void runTest() { suite_TestVariant.testBoolean(); }
+} testDescription_TestVariant_testBoolean;
+
 static class TestDescription_TestVariant_testString : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVariant_testString() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 36, "testString" ) {}
+ TestDescription_TestVariant_testString() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 50, "testString" ) {}
  void runTest() { suite_TestVariant.testString(); }
 } testDescription_TestVariant_testString;
 
 static class TestDescription_TestVariant_testAssignment : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVariant_testAssignment() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 45, "testAssignment" ) {}
+ TestDescription_TestVariant_testAssignment() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 59, "testAssignment" ) {}
  void runTest() { suite_TestVariant.testAssignment(); }
 } testDescription_TestVariant_testAssignment;
 

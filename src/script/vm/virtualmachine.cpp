@@ -56,15 +56,12 @@ void Console_print(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void ClassLoader_doLoadClass(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
    const String& classname = accessor.getString(1);
-
    accessor.setResult(machine.loadClass(classname));
 }
 
 void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
    VirtualObject& classobject = accessor.getObject(1);
 
    String name = classobject.getMember(0).asString().getString();
@@ -85,8 +82,6 @@ void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
    String callstack = machine.buildCallStack();
 
    accessor.setResult(callstack);
@@ -352,6 +347,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    int len;
    const char* pclass = vclass.getName().toUtf8(len);
    const char* pentry = entry.mName.toUtf8(len);
+
+   if ( strcmp(pentry, "add") == 0 )
+   {
+      int aap = 5;
+   }
 #endif
 
    const VirtualInstructionTable& instructions = mContext.mInstructions;
@@ -465,8 +465,8 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
                pinit->addLevel(size);
                if ( index < arraydimension - 1 )
-               {
-                  VirtualArray* ptemp = pinit;
+               { // need to implement this for multi dimensional arrays
+                  // VirtualArray* ptemp = pinit;
                }
             }
 
@@ -553,7 +553,6 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
       case VirtualInstruction::eCallStatic:
          {
             int classlit = mStack.popInt();
-            int arguments = mStack.popInt();
 
             String classname = mContext.mLiteralTable[classlit].getValue().asString().getString();
 

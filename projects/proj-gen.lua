@@ -15,7 +15,8 @@ files { "src/gen/**.cpp", "src/gen/**.h", "src/gen/**.inl" }
 includedirs { "src" }
 
 if ( os.is("windows") ) then
-	includedirs { path.join(libdir, "ctemplate/include") }
+	includedirs { path.join(libdir, "ctemplate/include"),
+				  path.join(libdir, "icu/include")}
 
 	libdirs { path.join(libdir, "ctemplate/lib") }
 	

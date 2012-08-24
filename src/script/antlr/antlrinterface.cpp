@@ -1466,7 +1466,6 @@ ASTAccess* AntlrParser::handleClassAccess(const AntlrNode& node)
 
 ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
 {
-   int count = node.getChildCount();
    AntlrNode valuenode = node.getChild(0);
    String valuestr = valuenode.toString();
 

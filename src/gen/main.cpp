@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <iostream>
 
 #include "core/defines.h"
 #include "core/commandline/commandline.h"
@@ -11,9 +12,12 @@ int main(int argc, char *argv[])
 {
    CommandLine cmdline(argc, argv);
 
+   std::cout << "Gen tool - Copyright 2012 - Jeroen Broekhuizen" << std::endl;
+
    if ( cmdline.size() == 0 )
    {
       // print help information
+      std::cout << "Invalid arguments.";
    }
    else
    {

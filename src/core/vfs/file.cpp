@@ -113,6 +113,11 @@ char File::getc()
    return getBuffer().getchar();
 }
 
+char File::peekc()
+{
+   return getBuffer().peekchar();
+}
+
 // Search & positioning
 
 void File::seek(int pos, int mode)

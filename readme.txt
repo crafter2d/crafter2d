@@ -3,24 +3,22 @@ Copyright 2009-2012
 
 Thanks for downloading this latest version of the JEngine SSE. The biggest change
 in this new version is the performance increase of the overall engine (but mainly
-the scripting engine) and garbage collector.
+the scripting engine) and a brand new garbage collector.
 
 To run the demo application, navigate to the bin directory and execute the game.exe 
 file by double clicking on it on windows or by running ./game in the bin directory
 on Linux.
 
-Note that the engine still in development and parts can be changed or removed. This
-software currently is not bug free. Please submit all bugs you find in the bug tracker.
-For questions, feature requests, etc. you can post a message on the forum.
-
-Future plans:
+FUTURE PLANS:
 The previous plan was to work hard on version 0.5. But new insights in for example
 Agile working has resulted in changes of plans. New versions will be released more
 often with a selected set of new functionalities/refactorings and bug fixes.
 
 This way users like you can pick up these versions earlier and play-test with them.
 New bugs and priorities for new functionalities can then be requested on the forums
-so that the functionalities that users want are getting in sooner.
+so that the functionalities that users want are getting in sooner. As more frequent
+releases take place, older versions (except 0.4.5 as long as the editor isn't ported)
+are unsupported quicker.
 
 For this to work I will need people to test the engine and report the bugs, think
 of new features you would like to have and file them on the forums.
@@ -48,7 +46,7 @@ of the JEngine SSE website at:
 Website: http://jenginesse.sourceforge.net/
 Wiki   : https://sourceforge.net/apps/mediawiki/jenginesse
 Forum  : https://sourceforge.net/apps/phpbb/jenginesse/
-Tracker: https://sourceforge.net/tracker/?group_id=255997&atid=1144317
+Mantis : https://sourceforge.net/apps/mantisbt/jenginesse/main_page.php
 
 TROUBLESHOOTING:
 
@@ -56,10 +54,9 @@ If for some reason the application does not start, first check your log file loc
 in the bin directory. It might contain an error which you can solve, like unsupported
 hardware.
 
-In case you find a software bug in the engine, please report them on in the bug tracker
-application of the sourceforge website (http://sourceforge.com/projects/jenginesse).
-Please fill in as many fields as possible and a clear description of what is wrong. A
-reproduction scenario would also be very helpfull.
+In case you find a software bug in the engine, please report them on in the mantis bug tracker
+application of the sourceforge website. Please fill in as many fields as possible and a clear 
+description of what is wrong. A reproduction scenario would be appreciated.
 
 For questions or functionality requests you can move to the forums.
 

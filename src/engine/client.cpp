@@ -59,6 +59,7 @@
 
 Client::Client():
    Process(),
+   mpWindowFactory(NULL),
    mpWindow(NULL),
    mWindowListener(*this),
    mKeyEventDispatcher(*this),

@@ -49,7 +49,7 @@ void VirtualLookupTable::add(const Variant& variant, int codeindex)
 void VirtualLookupTable::offsetCode(int offset)
 {
    EntryMap::iterator it = mEntries.begin();
-   for ( ; it != mEntries.end(); it++ )
+   for ( ; it != mEntries.end(); ++it )
    {
       Entry* pentry = it->second;
       pentry->mActual += offset;

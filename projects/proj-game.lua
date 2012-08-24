@@ -20,7 +20,7 @@ if ( os.is("windows") ) then
 					path.join(libdir, "tinyxml/include"),
 					path.join(libdir, "openal/include"),
 					path.join(libdir, "zlib/include"),
-					path.join(libdir, "icu/include")					}
+					path.join(libdir, "icu/include") }
 
 	libdirs { 	path.join(libdir, "sdl/lib"),
 				path.join(libdir, "glee/lib"),

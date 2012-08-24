@@ -36,8 +36,6 @@ int NumberConverter::toInt(const String& value)
 
 double NumberConverter::toDouble(const String& value)
 {
-   bool only = mpFormat->isParseIntegerOnly();
-
    Formattable format;
    UErrorCode error = U_ZERO_ERROR;
    mpFormat->parse(value.mString, format, error);

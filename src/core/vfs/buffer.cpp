@@ -80,6 +80,12 @@ char Buffer::getchar()
   return 0;
 }
 
+char Buffer::peekchar() 
+{
+   PURE_VIRTUAL
+   return 0;
+}
+
 void Buffer::seek(int , int )
 {
   PURE_VIRTUAL

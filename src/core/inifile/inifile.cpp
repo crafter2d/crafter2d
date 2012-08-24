@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,50 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MEMORY_BUFFER_H_
-#define MEMORY_BUFFER_H_
+#include "inifile.h"
 
-#include "buffer.h"
+#include "core/containers/hashinterface.h"
+#include "core/string/char.h"
+#include "core/string/string.h"
+#include "core/vfs/filesystem.h"
+#include "core/vfs/file.h"
+#include "core/smartptr/autoptr.h"
 
-#include "core/defines.h"
+#include "inifileexception.h"
+#include "inifileparser.h"
+#include "inifileproperty.h"
+#include "inifilesection.h"
 
-class MemoryBuffer : public Buffer
+IniFile::IniFile(const String& filename):
+   mSections()
 {
-public:
-            MemoryBuffer();
-   explicit MemoryBuffer(void* pdata, int size);
-   virtual ~MemoryBuffer();
+   mSections.setHashFunction(HashInterface::hashString);
+   
+   IniFileParser parser(filename, *this);
+}
 
- // get/set
-           uchar*          getData();
-           int             getDataSize();
+// - Query
 
- // query
-   virtual bool            isMemoryBuffer() const;
-   virtual MemoryBuffer&   asMemoryBuffer();
+const String& IniFile::get(const String& name)
+{
+   return get("global", name);
+}
 
- // operations
-   virtual int          read(void* ptr, int size);
-   virtual int          write(void* ptr, int size);
-   virtual char         getchar();
-   virtual char         peekchar();
-   virtual void         seek(int pos, int mode);
-   virtual int          tell() const;
-   virtual bool         eof() const;
+const String& IniFile::get(const String& section, const String& name)
+{
+   if ( !mSections.contains(section) )
+   {
+      throw new IniFileException("Section " + name + " could not be found.");
+   }
 
-   virtual int          size();
-
-private:
-           void assign(void* pdata, int size);
-           void free();
-
-   uchar*   mpData;
-   int      mDataSize;
-   int      mCursor;
-};
-
-#ifdef JENGINE_INLINE
-#  include "memorybuffer.inl"
-#endif
-
-#endif // MEMORY_BUFFER_H_
+   IniFileSection** psection = mSections.get(section);
+   ASSERT_PTR(psection);
+   return (*psection)->get(name);
+}

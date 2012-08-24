@@ -5,6 +5,12 @@
 #include <unicode/uchar.h>
 
 // static
+
+bool Char::isEOL(char c)
+{
+   return c == '\r' || c == '\n';
+}
+
 bool Char::isWhitespace(char c)
 {
    return u_isWhitespace(c) == TRUE;

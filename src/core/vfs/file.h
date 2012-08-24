@@ -53,6 +53,7 @@ public:
    int  write(void* ptr, int size);
    int  write(const String& text);
    char getc();
+   char peekc();
 
  // search & positioning
    void seek(int pos, int mode);

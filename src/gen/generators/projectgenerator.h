@@ -4,7 +4,7 @@
 
 #include "generator.h"
 
-#include <string>
+class String;
 
 class ProjectGenerator : public Generator
 {
@@ -16,7 +16,7 @@ public:
 
 private:
  // operations
-   bool write(const std::string& filename, const std::string& output, bool force);
+   bool write(const String& filename, const String& output, bool force);
 };
 
 #endif // PROJECT_GENERATOR_H

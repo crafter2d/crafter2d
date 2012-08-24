@@ -76,6 +76,14 @@ char FileBuffer::getchar()
   return fgetc(mpFile);
 }
 
+char FileBuffer::peekchar()
+{
+   int pos = ftell(mpFile);
+   char peek = getchar();
+   fseek(mpFile, pos, SEEK_SET);
+   return peek;
+}
+
 void FileBuffer::seek(int pos, int mode)
 {
   fseek(mpFile, pos, mode);

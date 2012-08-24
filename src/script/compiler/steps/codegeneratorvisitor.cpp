@@ -31,6 +31,8 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mContext(context),
    mpClass(NULL),
    mpFunction(NULL),
+   mpAccess(NULL),
+   mpExpression(NULL),
    mCurrentType(),
    mpVClass(NULL),
    mInstructions(),
@@ -44,7 +46,8 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mState(0),
    mSuperCall(false),
    mRightHandSide(false),
-   mStore(false)
+   mStore(false),
+   mNeedPop(true)
 {
 }
 
@@ -97,7 +100,7 @@ int CodeGeneratorVisitor::findLabel(int label) const
 
 void CodeGeneratorVisitor::convertLabels()
 {
-   if ( mInstructions.size() > 0 )
+   if ( !mInstructions.empty() )
    {
       int firstline = mInstructions[0].linenr;
 
@@ -132,6 +135,7 @@ void CodeGeneratorVisitor::removeLabels()
       if ( inst.instruction == labelID )
       {
          mInstructions.erase(mInstructions.begin() + index);
+         index++;
       }
    }
 }
@@ -1392,28 +1396,33 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             visitChildren(ast);
 
-            addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
+            //addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
 
             if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
             {
                addInstruction(VirtualInstruction::ePush, allocateLiteral(before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()));
                addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
             }
-            else if ( function.getModifiers().isNative() )
+            else 
             {
-               addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
-            }
-            else if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
-            {
-               addInstruction(VirtualInstruction::eCallInterface, function.getResourceIndex());
-            }
-            else if ( mSuperCall )
-            {
-               addInstruction(VirtualInstruction::eCallSuper, function.getResourceIndex());
-            }
-            else
-            {
-               addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
+               addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
+
+               if ( function.getModifiers().isNative() )
+               {
+                  addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
+               }
+               else if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
+               {
+                  addInstruction(VirtualInstruction::eCallInterface, function.getResourceIndex());
+               }
+               else if ( mSuperCall )
+               {
+                  addInstruction(VirtualInstruction::eCallSuper, function.getResourceIndex());
+               }
+               else
+               {
+                  addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
+               }
             }
 
             if ( function.getType().isVoid() )

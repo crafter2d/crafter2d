@@ -65,7 +65,6 @@ int VirtualInstructionTable::size() const
 
 std::string VirtualInstructionTable::toString(const LiteralTable& table) const
 {
-   std::string result;
    std::ostringstream cout(std::ostringstream::out);
    
    int line = 0;
@@ -109,5 +108,5 @@ std::string VirtualInstructionTable::toString(const LiteralTable& table) const
       endl(cout);
    }
 
-   return result;
+   return cout.str();
 }

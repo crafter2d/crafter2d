@@ -70,7 +70,6 @@ void NetClients::remove(int clientid)
    ClientMap::iterator it = mClients.find(clientid);
    if ( it != mClients.end() )
    {
-      NetAddress* paddress = it->second;
       delete mClients[clientid];
       mClients.erase(it);
    }

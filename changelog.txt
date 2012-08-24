@@ -7,9 +7,12 @@ Change log 0.4.8
 * Added garbage collector
 * Added scripted XML parser
 * Added some unit tests
+* Added ini file reader
 * Added initial code to support Unicode
 * Improved networking code
+* Removed Game.as file, replaced by game.ini
 * Fixed many smaller bugs
+* Fixed bug 6: client crash on compile failure
 
 Change log 0.4.7
 ----------------

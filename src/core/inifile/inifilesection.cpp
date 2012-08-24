@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,50 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MEMORY_BUFFER_H_
-#define MEMORY_BUFFER_H_
-
-#include "buffer.h"
-
-#include "core/defines.h"
-
-class MemoryBuffer : public Buffer
-{
-public:
-            MemoryBuffer();
-   explicit MemoryBuffer(void* pdata, int size);
-   virtual ~MemoryBuffer();
-
- // get/set
-           uchar*          getData();
-           int             getDataSize();
-
- // query
-   virtual bool            isMemoryBuffer() const;
-   virtual MemoryBuffer&   asMemoryBuffer();
-
- // operations
-   virtual int          read(void* ptr, int size);
-   virtual int          write(void* ptr, int size);
-   virtual char         getchar();
-   virtual char         peekchar();
-   virtual void         seek(int pos, int mode);
-   virtual int          tell() const;
-   virtual bool         eof() const;
-
-   virtual int          size();
-
-private:
-           void assign(void* pdata, int size);
-           void free();
-
-   uchar*   mpData;
-   int      mDataSize;
-   int      mCursor;
-};
-
-#ifdef JENGINE_INLINE
-#  include "memorybuffer.inl"
+#include "inifilesection.h"
+#ifndef JENGINE_INLINE
+#  include "inifilesection.inl"
 #endif
 
-#endif // MEMORY_BUFFER_H_
+#include "core/containers/hashinterface.h"
+
+#include "inifileproperty.h"
+
+IniFileSection::IniFileSection(const String& name):
+   mProperties(),
+   mName(name)
+{
+   mProperties.setHashFunction(HashInterface::hashString);
+}
+
+// - Query
+
+const String& IniFileSection::get(const String& name)
+{
+   IniFileProperty** pproperty = mProperties.get(name);
+   ASSERT_PTR(pproperty);
+   return (*pproperty)->getValue();
+}
+
+// - Operations
+
+void IniFileSection::add(IniFileProperty* pproperty)
+{
+   mProperties.insert(pproperty->getName(), pproperty);
+}

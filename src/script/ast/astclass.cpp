@@ -249,7 +249,7 @@ bool ASTClass::isTypeName(const String& name) const
 bool ASTClass::hasConstructor() const
 {
    Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); it++ )
+   for ( ; it != mFunctions.end(); ++it )
    {
       ASTFunction* pfunction = it->second;
       if ( pfunction->getKind() == ASTMember::eConstructor )
@@ -263,7 +263,7 @@ bool ASTClass::hasConstructor() const
 bool ASTClass::hasAbstractFunction() const
 {
    Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); it++ )
+   for ( ; it != mFunctions.end(); ++it )
    {
       ASTFunction* pfunction = it->second;
       if ( pfunction->getModifiers().isAbstract() )
@@ -277,7 +277,7 @@ bool ASTClass::hasAbstractFunction() const
 bool ASTClass::hasNativeFunction() const
 {
    Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); it++ )
+   for ( ; it != mFunctions.end(); ++it )
    {
       ASTFunction* pfunction = it->second;
       if ( pfunction->getModifiers().isNative() )
@@ -390,15 +390,13 @@ void ASTClass::indexVariables()
 
 void ASTClass::indexFunctions()
 {
-   int index = 0;
-
    if ( hasBaseClass() )
    {
       mTable = getBaseClass().getFunctionTable();
    }
 
    Functions::iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); it++ )
+   for ( ; it != mFunctions.end(); ++it )
    {
       ASTFunction* pfunction = it->second;
       mTable.insert(*pfunction);
@@ -457,7 +455,7 @@ ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signat
    {
       Functions::iterator end = mFunctions.upper_bound(name);
 
-      for ( ; it != end; it++ )
+      for ( ; it != end; ++it )
       {
          ASTFunction* pfunction = it->second;
          if ( pfunction->getSignature().bestMatch(signature, types) )
@@ -492,7 +490,7 @@ ASTFunction* ASTClass::findExactMatchLocal(const String& name, const Signature& 
    {
       Functions::iterator end = mFunctions.upper_bound(name);
 
-      for ( ; it != end; it++ )
+      for ( ; it != end; ++it )
       {
          ASTFunction* pfunction = it->second;
          if ( pfunction->getSignature().exactMatch(signature) )

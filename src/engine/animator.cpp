@@ -107,28 +107,28 @@ void Animator::parseAnimation (const char* sequence, Animation *panimation)
 {
 	char number[10] = "";
 	int length = strlen (sequence);
-	int anim = 0, j = 0;
+	int j = 0;
 
 	// parse the sequence
 	for ( int i = 0; i < length; ++i )
    {
-		if (isdigit (sequence[i]))
-			number[j++] = sequence[i];
-		else
+	   if (isdigit (sequence[i]))
+		   number[j++] = sequence[i];
+      else
       {
-			// save the number and skip trailing spaces
-			panimation->add (atoi (number));
-			while (isspace (sequence[i]))
+         // save the number and skip trailing spaces
+         panimation->add(atoi(number));
+         while (isspace (sequence[i]))
             i++;
 
          i--;
-			j = 0;
-		}
+         j = 0;
+      }
 	}
 
 	// see if there is still a number in the buffer
 	if (j > 0)
-      panimation->add (atoi (number));
+      panimation->add(atoi(number));
 
    panimation->add(-1);
 }

@@ -21,6 +21,7 @@
 
 INLINE
 NetAddress::NetAddress():
+   index(0),
    packageNumber(1),
    nextPackageNumber(1),
    lastTimeRecv(0),
@@ -37,6 +38,7 @@ NetAddress::NetAddress():
 
 INLINE
 NetAddress::NetAddress(const sockaddr_in& address):
+   index(0),
    packageNumber(1),
    nextPackageNumber(1),
    lastTimeRecv(0),

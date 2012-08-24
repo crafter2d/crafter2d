@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,50 +17,38 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MEMORY_BUFFER_H_
-#define MEMORY_BUFFER_H_
+#ifndef INI_FILE_SECTION_H
+#define INI_FILE_SECTION_H
 
-#include "buffer.h"
+#include "core/containers/hashmap.h"
+#include "core/string/string.h"
 
-#include "core/defines.h"
+class IniFileProperty;
 
-class MemoryBuffer : public Buffer
+class IniFileSection
 {
 public:
-            MemoryBuffer();
-   explicit MemoryBuffer(void* pdata, int size);
-   virtual ~MemoryBuffer();
+   explicit IniFileSection(const String& name);
 
  // get/set
-           uchar*          getData();
-           int             getDataSize();
+   const String& getName() const;
 
  // query
-   virtual bool            isMemoryBuffer() const;
-   virtual MemoryBuffer&   asMemoryBuffer();
+   const String& get(const String& name);
 
  // operations
-   virtual int          read(void* ptr, int size);
-   virtual int          write(void* ptr, int size);
-   virtual char         getchar();
-   virtual char         peekchar();
-   virtual void         seek(int pos, int mode);
-   virtual int          tell() const;
-   virtual bool         eof() const;
-
-   virtual int          size();
+   void add(IniFileProperty* pproperty);
 
 private:
-           void assign(void* pdata, int size);
-           void free();
+ // types
+   typedef HashMap<String, IniFileProperty*> Properties;
 
-   uchar*   mpData;
-   int      mDataSize;
-   int      mCursor;
+   Properties  mProperties;
+   String      mName;
 };
 
 #ifdef JENGINE_INLINE
-#  include "memorybuffer.inl"
+#  include "inifilesection.inl"
 #endif
 
-#endif // MEMORY_BUFFER_H_
+#endif // INI_FILE_SECTION_H

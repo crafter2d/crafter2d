@@ -8,6 +8,7 @@
 
 #include "core/commandline/commandline.h"
 #include "core/smartptr/autoptr.h"
+#include "core/string/string.h"
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"
 
@@ -48,15 +49,15 @@ bool ProjectGenerator::generate(CommandLine& commandline)
       }
    }
    
-   std::string clientfile = File::concat(packagename, projectname + "Client.as");
-   std::string serverfile = File::concat(packagename, projectname + "Server.as");
+   String clientfile = File::concat(String(packagename), String(projectname) + "Client.as");
+   String serverfile = File::concat(String(packagename), String(projectname) + "Server.as");
 
-   return write(clientfile, clientoutput, force) && write(serverfile, serveroutput, force);
+   return write(clientfile, String(clientoutput), force) && write(serverfile, String(serveroutput), force);
 }
 
 // - Operations
 
-bool ProjectGenerator::write(const std::string& filename, const std::string& output, bool force)
+bool ProjectGenerator::write(const String& filename, const String& output, bool force)
 {
    if ( !force && getFileSystem().exists(filename) )
    {

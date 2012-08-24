@@ -31,6 +31,7 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "core/inifile/inifile.h"
 #include "core/system/platform.h"
 #include "core/system/timer.h"
 #include "core/system/timerdelta.h"
@@ -91,6 +92,7 @@ bool Game::create()
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
+   FileSystem::getInstance().addPath("../bin");
    FileSystem::getInstance().addPath("../scripts");
    FileSystem::getInstance().addPath("../images");
    
@@ -178,12 +180,14 @@ void Game::run()
  */
 bool Game::initGame()
 {
+   IniFile inifile("game.ini");
+   
    mpServer = new Server();
-   mpServer->create("demo.GameServer");
+   mpServer->create(inifile.get("Process", "server"));
 
    mpClient = new Client();
    mpClient->setWindowFactory(*mpWindowFactory);
-   mpClient->create("demo.GameClient");
+   mpClient->create(inifile.get("Process", "client"));
 
 	return true;
 }

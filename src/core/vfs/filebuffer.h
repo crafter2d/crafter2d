@@ -37,6 +37,7 @@ public:
    virtual int  read(void* ptr, int size);
    virtual int  write(void* ptr, int size);
    virtual char getchar();
+   virtual char peekchar();
    virtual void seek(int pos, int mode);
    virtual int  tell() const;
    virtual bool eof() const;

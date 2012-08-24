@@ -26,13 +26,15 @@ class Simulator;
 class ContentLoader
 {
 public:
-   ContentLoader(Process& process): mProcess(process) {}
+   ContentLoader(Process& process);
 
-   Simulator& getSimulator() { return *mpSimulator; }
-   void       setSimulator(Simulator& simulator) { mpSimulator = &simulator; }
+ // get/set
+   Simulator& getSimulator();
+   void       setSimulator(Simulator& simulator);
 
 protected:
-   Process& getProcess() { return mProcess; }
+ // get/set
+   Process& getProcess();
 
 private:
    Simulator* mpSimulator;
