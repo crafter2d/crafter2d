@@ -28,16 +28,19 @@ class Grudge extends Actor
 		
 		if ( target instanceof Bound )
 		{
-			if ( (side == 2 && isLookingLeft()) || (side == 3 && isLookingRight()) )
-			{
-				turnAround();
-			}
-			
-			if ( isOnGround() )
-			{
-				// when on the ground, start the walking animation
-				setAnimation(2);
-			}
+         if ( getState() instanceof PatrolState )
+         {
+            if ( (side == 2 && isLookingLeft()) || (side == 3 && isLookingRight()) )
+            {
+               turnAround();
+            }
+            
+            if ( isOnGround() )
+            {
+               // when on the ground, start the walking animation
+               setAnimation(2);
+            }
+         }
 		}
 	}
 	

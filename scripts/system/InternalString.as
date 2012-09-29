@@ -32,4 +32,10 @@ final class InternalString
 	/// returns a sub string of this string starting at character start
 	/// and a length of count
 	public native string subString(int start, int count);
+	
+	/// returns the index of the first occurence of character c in this string
+	public native int indexOf(char c);
+	
+	/// returns the index of the last occurence of character c in this string
+	public native int lastIndexOf(char c);
 }

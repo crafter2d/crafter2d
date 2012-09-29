@@ -200,10 +200,8 @@ int Actor::getAnimation() const
 
 void Actor::setAnimation(int anim)
 {
-   if ( mpAnimator != NULL )
+   if ( mpAnimator != NULL && mpAnimator->setAnimation(anim) )
    {
-      mpAnimator->setAnimation(anim);
-
       setDirty(eAnimationDirty);
    }
 }

@@ -1291,6 +1291,10 @@ void CodeGeneratorVisitor::visit(const ASTCast& ast)
             {
                addInstruction(VirtualInstruction::eReal2Int);
             }
+            else if ( from.isString() )
+            {
+               addInstruction(VirtualInstruction::eString2Int);
+            }
             break;
          case ASTType::eReal:
             if ( from.isInt() )

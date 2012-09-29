@@ -194,7 +194,7 @@ DataStream& operator<<(DataStream& in, const Layer& layer)
    {
       for ( int x = 0; x < width; ++x )
       {
-         int tile = layer.getTile(x * layer.tilewidth(), y * layer.tileheight());
+         int tile = layer.getTile(x, y);
          in << tile;
       }
    }

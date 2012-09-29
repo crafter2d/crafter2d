@@ -82,30 +82,13 @@ Client::~Client()
 
 bool Client::create(const String& classname)
 {
-   bool success = Process::create(classname);
-   if ( success )
-   {
-      ASSERT_PTR(mpWindow);
+   Log& log = Log::getInstance();
+   log << "\n-- Initializing Sound --\n\n";
 
-      mpWindow->addListener(mWindowListener);
-      mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
-      mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
+   // initialize the sound system
+   mSoundManager.initialize();
 
-      Log& log = Log::getInstance();
-      log << "\n-- Initializing Graphics --\n\n";
-
-      if ( !initOpenGL() )
-      {
-         return false;
-      }
-
-      log << "\n-- Initializing Sound --\n\n";
-
-      // initialize the sound system
-      mSoundManager.initialize();
-   }
-
-   return success;
+   return Process::create(classname);
 }
 
 bool Client::destroy()
@@ -192,6 +175,9 @@ void Client::render(float delta)
 
    glDisable (GL_ALPHA_TEST);
 
+   //mpScript->addParam(delta);
+   //mpScript->run("paint");
+
    mpWindow->display();
 }
 
@@ -234,6 +220,8 @@ void Client::setWindow(GameWindow* pwindow)
    {
       delete mpWindow;
       mpWindow = pwindow;
+
+      onWindowChanged();
    }
 }
 
@@ -485,6 +473,22 @@ void Client::handleScriptEvent(const ScriptEvent& event)
 }
 
 // - Notifications
+
+void Client::onWindowChanged()
+{
+   if ( hasWindow() )
+   {
+      mpWindow->addListener(mWindowListener);
+      mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
+      mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
+
+      Log::getInstance() << "\n-- Initializing Graphics --\n\n";
+
+      if ( !initOpenGL() )
+      {
+      }
+   }
+}
 
 void Client::onWindowResized()
 {

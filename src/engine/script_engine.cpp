@@ -46,6 +46,7 @@
 
 #include "window/gamewindowfactory.h"
 
+#include "world/layer.h"
 #include "world/world.h"
 #include "engine/content/contentmanager.h"
 
@@ -327,36 +328,52 @@ void Actor_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
    DESTRUCT_THIS(Actor);
 }
 
-void Actor_getPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_getPositionX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   RETURN_CLASS("engine.core.Vector2D", Vector, const_cast<Vector*>(&actor.getPosition()));
+   accessor.setResult(actor.getPosition().x);
+}
+
+void Actor_getPositionY(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Actor, actor);
+
+   accessor.setResult(actor.getPosition().y);
 }
 
 void Actor_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   Vector* ppos = (Vector*) accessor.getObject(1).getNativeObject();
+   float xpos = accessor.getReal(1);
+   float ypos = accessor.getReal(2);
 
-   actor.setPosition(*ppos);
+   actor.setPosition(Vector(xpos, ypos));
 }
 
-void Actor_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_getVelocityX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   RETURN_CLASS("engine.core.Vector2D", Vector, const_cast<Vector*>(&actor.getVelocity()));
+   accessor.setResult(actor.getVelocity().x);
+}
+
+void Actor_getVelocityY(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Actor, actor);
+
+   accessor.setResult(actor.getVelocity().y);
 }
 
 void Actor_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   Vector* ppos = (Vector*) accessor.getObject(1).getNativeObject();
+   float xvel = accessor.getReal(1);
+   float yvel = accessor.getReal(2);
 
-   actor.setVelocity(*ppos);
+   actor.setVelocity(Vector(xvel, yvel));
 }
 
 void Actor_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -446,61 +463,6 @@ void Player_native_setController(VirtualMachine& machine, VirtualStackAccessor& 
    Actor& entity = *static_cast<Actor*>(accessor.getObject(1).getNativeObject());
 
    player.setController(entity);
-}
-
-void Vector2D_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObject& thisobject = accessor.getThis();
-
-   Vector* pvector = new Vector();
-   machine.registerNative(thisobject, pvector);
-   thisobject.setOwner(true);
-}
-
-void Vector2D_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   DESTRUCT_THIS(Vector);
-}
-
-void Vector2D_getX(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Vector, vector);
-
-   accessor.setResult(vector.x);
-}
-
-void Vector2D_setX(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Vector, vector);
-
-   float x = accessor.getReal(1);
-
-   vector.x = x;
-}
-
-void Vector2D_getY(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Vector, vector);
-
-   accessor.setResult(vector.y);
-}
-
-void Vector2D_setY(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Vector, vector);
-
-   float y = accessor.getReal(1);
-
-   vector.y = y;
-}
-
-void Vector2D_distance(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Vector, vector);
-
-   Vector* pto = static_cast<Vector*>(accessor.getObject(1).getNativeObject());
-
-   accessor.setResult(vector.distance(*pto));
 }
 
 void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -605,6 +567,74 @@ void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
    RETURN_CLASS("engine.game.Actor", Actor, static_cast<Actor*>(pentity));
 }
 
+void World_getLayerCount(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(World, world);
+
+   accessor.setResult(world.getLayerCount());
+}
+ 
+void World_getLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(World, world);
+
+   int index = accessor.getInt(1);
+
+   RETURN_CLASS("engine.game.Layer", Layer, world.getLayer(index));
+}
+
+void Layer_getEffect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Layer, layer);
+
+   RETURN_CLASS("engine.game.Effect", Effect, const_cast<Effect*>(&layer.getEffect()));
+}
+
+void Layer_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Layer, layer);
+
+   accessor.setResult(layer.getWidth());
+}
+
+void Layer_getHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Layer, layer);
+
+   accessor.setResult(layer.getHeight());
+}
+
+void Layer_getTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Layer, layer);
+
+   int x = accessor.getInt(1);
+   int y = accessor.getInt(2);
+
+   accessor.setResult(layer.getTile(x, y));
+}
+
+void Layer_setTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Layer, layer);
+
+   int x = accessor.getInt(1);
+   int y = accessor.getInt(2);
+   int t = accessor.getInt(3);
+
+   layer.setTile(x, y, t);
+}
+
+void Effect_resolveTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Effect, effect);
+
+   const String& name = accessor.getString(1);
+
+   TexturePtr* ptexture = new TexturePtr(effect.resolveTexture(name));
+   RETURN_CLASS_OWNED("engine.core.Texture", TexturePtr, ptexture);
+}
+
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
@@ -619,22 +649,24 @@ void InputForceGenerator_destruct(VirtualMachine& machine, VirtualStackAccessor&
    DESTRUCT_THIS(InputForceGenerator);
 }
 
-void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_native_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(InputForceGenerator, generator);
 
-   Vector* pvel = (Vector*) accessor.getObject(1).getNativeObject();
+   float xvel = accessor.getReal(1);
+   float yvel = accessor.getReal(2);
 
-   generator.setVelocity(*pvel);
+   generator.setVelocity(Vector(xvel, yvel));
 }
 
-void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_native_setImpulse(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(InputForceGenerator, generator);
 
-   Vector* pvel = (Vector*) accessor.getObject(1).getNativeObject();
+   float ximp = accessor.getReal(1);
+   float yimp = accessor.getReal(2);
 
-   generator.setImpulse(*pvel);
+   generator.setImpulse(Vector(ximp, yimp));
 }
 
 void InputController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -687,13 +719,16 @@ void Box2DSimulator_lineOfSight(VirtualMachine& machine, VirtualStackAccessor& a
    accessor.setResult(simulator.lineOfSight(from.getBody(), to.getBody()));
 }
 
-void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Box2DSimulator_native_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Box2DSimulator, simulator);
 
-   Box2DRevoluteJointDefinition* pjointdef = (Box2DRevoluteJointDefinition*) accessor.getObject(1).getNativeObject();
+   Box2DBody& left = *(Box2DBody*) accessor.getObject(1).getNativeObject();
+   Box2DBody& right = *(Box2DBody*) accessor.getObject(2).getNativeObject();
+   float anchorx = accessor.getReal(3);
+   float anchory = accessor.getReal(4);
 
-   simulator.createRevoluteJoint(*pjointdef);
+   simulator.createRevoluteJoint(left, right, Vector(anchorx, anchory));
 }
 
 void Box2DSimulator_createRopeJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -719,66 +754,6 @@ void Box2DBody_generateSensors(VirtualMachine& machine, VirtualStackAccessor& ac
    GET_THIS(Box2DBody, body);
 
    body.generateSensors();
-}
-
-void Box2DRevoluteJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObject& thisobject = accessor.getThis();
-
-   Box2DRevoluteJointDefinition* pjointdef = new Box2DRevoluteJointDefinition();
-   machine.registerNative(thisobject, pjointdef);
-   thisobject.setOwner(true);
-}
-
-void Box2DRevoluteJointDefinition_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   DESTRUCT_THIS(Box2DRevoluteJointDefinition);
-}
-
-void Box2DRevoluteJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRevoluteJointDefinition, joint);
-
-   RETURN_CLASS("box2d.Box2DBody", Box2DBody, joint.pleft);
-}
-
-void Box2DRevoluteJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRevoluteJointDefinition, joint);
-
-   VirtualObject& left = accessor.getObject(1);
-
-   joint.pleft = (Box2DBody*)left.getNativeObject();
-}
-
-void Box2DRevoluteJointDefinition_getRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRevoluteJointDefinition, joint);
-
-   RETURN_CLASS("box2d.Box2DBody", Box2DBody, joint.pright);
-}
-
-void Box2DRevoluteJointDefinition_setRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRevoluteJointDefinition, joint);
-
-   VirtualObject& right = accessor.getObject(1);
-
-   joint.pright = (Box2DBody*)right.getNativeObject();
-}
-
-void Box2DRevoluteJointDefinition_getAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRevoluteJointDefinition, joint);
-
-   RETURN_CLASS("engine.core.Vector2D", Vector, &joint.anchor);
-}
-
-void Box2DRevoluteJointDefinition_setAnchor(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRevoluteJointDefinition, joint);
-
-   joint.anchor = *(Vector*)accessor.getObject(1).getNativeObject();
 }
 
 void Box2DRopeJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -827,32 +802,52 @@ void Box2DRopeJointDefinition_setRight(VirtualMachine& machine, VirtualStackAcce
    joint.pright = (Box2DBody*)right.getNativeObject();
 }
 
-void Box2DRopeJointDefinition_getLocalAnchorLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Box2DRopeJointDefinition_getLocalAnchorLeftX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   RETURN_CLASS("engine.core.Vector2D", Vector, &joint.anchorLeft);
+   accessor.setResult(joint.anchorLeft.x);
+}
+
+void Box2DRopeJointDefinition_getLocalAnchorLeftY(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   accessor.setResult(joint.anchorLeft.y);
 }
 
 void Box2DRopeJointDefinition_setLocalAnchorLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   joint.anchorLeft = *(Vector*)accessor.getObject(1).getNativeObject();
+   float ximp = accessor.getReal(1);
+   float yimp = accessor.getReal(2);
+
+   joint.anchorLeft.set(ximp, yimp);
 }
 
-void Box2DRopeJointDefinition_getLocalAnchorRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Box2DRopeJointDefinition_getLocalAnchorRightX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   RETURN_CLASS("engine.core.Vector2D", Vector, &joint.anchorRight);
+   accessor.setResult(joint.anchorRight.x);
+}
+
+void Box2DRopeJointDefinition_getLocalAnchorRightY(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Box2DRopeJointDefinition, joint);
+
+   accessor.setResult(joint.anchorRight.y);
 }
 
 void Box2DRopeJointDefinition_setLocalAnchorRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   joint.anchorRight = *(Vector*)accessor.getObject(1).getNativeObject();
+   float ximp = accessor.getReal(1);
+   float yimp = accessor.getReal(2);
+
+   joint.anchorRight.set(ximp, yimp);
 }
 
 void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -988,6 +983,23 @@ void EngineGraphics_native_drawTexture(VirtualMachine& machine, VirtualStackAcce
    graphics.drawTexture(**ptexture, x, y, width, height);
 }
 
+void EngineGraphics_native_drawTexturePart(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Graphics, graphics);
+
+   TexturePtr* ptexture = (TexturePtr*) accessor.getObject(1).getNativeObject();
+   int x      = accessor.getInt(2);
+   int y      = accessor.getInt(3);
+   int width  = accessor.getInt(4);
+   int height = accessor.getInt(5);
+   float tx   = accessor.getReal(6);
+   float ty   = accessor.getReal(7);
+   float tw   = accessor.getReal(8);
+   float th   = accessor.getReal(9);
+
+   graphics.drawTexture(**ptexture, x, y, width, height, tx, ty, tw, th);
+}
+
 void EngineGraphics_native_fillRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Graphics, graphics);
@@ -1068,6 +1080,13 @@ void Texture_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
    DESTRUCT_THIS(TexturePtr);
 }
 
+void Texture_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(TexturePtr, texture);
+
+   accessor.setResult(texture->getName());
+}
+
 void Texture_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(TexturePtr, texture);
@@ -1082,6 +1101,20 @@ void Texture_getHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(texture->getHeight());
 }
 
+void Texture_getSourceWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(TexturePtr, texture);
+
+   accessor.setResult(texture->getSourceWidth());
+}
+
+void Texture_getSourceHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(TexturePtr, texture);
+
+   accessor.setResult(texture->getSourceHeight());
+}
+
 void FileSystem_getInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    RETURN_CLASS("engine.io.FileSystem", FileSystem, &FileSystem::getInstance());
@@ -1094,7 +1127,15 @@ void FileSystem_native_open(VirtualMachine& machine, VirtualStackAccessor& acces
    const String& name = accessor.getString(1);
    int modus = accessor.getInt(2);
 
-   RETURN_CLASS_OWNED("engine.io.File", File, fs.open(name, modus));
+   File* pfile = fs.open(name, modus);
+   if ( pfile != NULL )
+   {
+      RETURN_CLASS_OWNED("engine.io.File", File, pfile);
+   }
+   else
+   {
+      accessor.setResult(Variant());
+   }   
 }
 
 void File_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1176,9 +1217,11 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addCallback("Actor_init", Actor_init);
    registrator.addCallback("Actor_destruct", Actor_destruct);
-   registrator.addCallback("Actor_getPosition", Actor_getPosition);
+   registrator.addCallback("Actor_getPositionX", Actor_getPositionX);
+   registrator.addCallback("Actor_getPositionY", Actor_getPositionY);
    registrator.addCallback("Actor_setPosition", Actor_setPosition);
-   registrator.addCallback("Actor_getVelocity", Actor_getVelocity);
+   registrator.addCallback("Actor_getVelocityX", Actor_getVelocityX);
+   registrator.addCallback("Actor_getVelocityY", Actor_getVelocityY);
    registrator.addCallback("Actor_setVelocity", Actor_setVelocity);
    registrator.addCallback("Actor_setName", Actor_setName);
    registrator.addCallback("Actor_setAnimation", Actor_setAnimation);
@@ -1193,14 +1236,6 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Player_native_getController", Player_native_getController);
    registrator.addCallback("Player_native_setController", Player_native_setController);
 
-   registrator.addCallback("Vector2D_init", Vector2D_init);
-   registrator.addCallback("Vector2D_destruct", Vector2D_destruct);
-   registrator.addCallback("Vector2D_getX", Vector2D_getX);
-   registrator.addCallback("Vector2D_setX", Vector2D_setX);
-   registrator.addCallback("Vector2D_getY", Vector2D_getY);
-   registrator.addCallback("Vector2D_setY", Vector2D_setY);
-   registrator.addCallback("Vector2D_distance", Vector2D_distance);
-
    registrator.addCallback("World_init", World_init);
    registrator.addCallback("World_destruct", World_destruct);
    registrator.addCallback("World_getName", World_getName);
@@ -1213,11 +1248,21 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("World_setFollowBorderWidth", World_setFollowBorderWidth);
    registrator.addCallback("World_getSimulator", World_getSimulator);
    registrator.addCallback("World_findEntity", World_findEntity);
+   registrator.addCallback("World_native_getLayerCount", World_getLayerCount);
+   registrator.addCallback("World_native_getLayer", World_getLayer);
+
+   registrator.addCallback("Layer_getEffect", Layer_getEffect);
+   registrator.addCallback("Layer_getWidth", Layer_getWidth);
+   registrator.addCallback("Layer_getHeight", Layer_getHeight);
+   registrator.addCallback("Layer_getTile", Layer_getTile);
+   registrator.addCallback("Layer_setTile", Layer_setTile);
+
+   registrator.addCallback("Effect_resolveTexture", Effect_resolveTexture);
 
    registrator.addCallback("InputForceGenerator_init", InputForceGenerator_init);
    registrator.addCallback("InputForceGenerator_destruct", InputForceGenerator_destruct);
-   registrator.addCallback("InputForceGenerator_setVelocity", InputForceGenerator_setVelocity);
-   registrator.addCallback("InputForceGenerator_setImpulse", InputForceGenerator_setImpulse);
+   registrator.addCallback("InputForceGenerator_native_setVelocity", InputForceGenerator_native_setVelocity);
+   registrator.addCallback("InputForceGenerator_native_setImpulse", InputForceGenerator_native_setImpulse);
 
    registrator.addCallback("InputController_init", InputController_init);
    registrator.addCallback("InputController_destruct", InputController_destruct);
@@ -1227,20 +1272,11 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("AIController_destruct", AIController_destruct);
 
    registrator.addCallback("Box2DSimulator_lineOfSight", Box2DSimulator_lineOfSight);
-   registrator.addCallback("Box2DSimulator_createRevoluteJoint", Box2DSimulator_createRevoluteJoint);
+   registrator.addCallback("Box2DSimulator_native_createRevoluteJoint", Box2DSimulator_native_createRevoluteJoint);
    registrator.addCallback("Box2DSimulator_createRopeJoint", Box2DSimulator_createRopeJoint);
 
    registrator.addCallback("Box2DBody_addForceGenerator", Box2DBody_addForceGenerator);
    registrator.addCallback("Box2DBody_generateSensors", Box2DBody_generateSensors);
-
-   registrator.addCallback("Box2DRevoluteJointDefinition_init", Box2DRevoluteJointDefinition_init);
-   registrator.addCallback("Box2DRevoluteJointDefinition_destruct", Box2DRevoluteJointDefinition_destruct);
-   registrator.addCallback("Box2DRevoluteJointDefinition_getLeft", Box2DRevoluteJointDefinition_getLeft);
-   registrator.addCallback("Box2DRevoluteJointDefinition_setLeft", Box2DRevoluteJointDefinition_setLeft);
-   registrator.addCallback("Box2DRevoluteJointDefinition_getRight", Box2DRevoluteJointDefinition_getRight);
-   registrator.addCallback("Box2DRevoluteJointDefinition_setRight", Box2DRevoluteJointDefinition_setRight);
-   registrator.addCallback("Box2DRevoluteJointDefinition_getAnchor", Box2DRevoluteJointDefinition_getAnchor);
-   registrator.addCallback("Box2DRevoluteJointDefinition_setAnchor", Box2DRevoluteJointDefinition_setAnchor);
 
    registrator.addCallback("Box2DRopeJointDefinition_init", Box2DRopeJointDefinition_init);
    registrator.addCallback("Box2DRopeJointDefinition_destruct", Box2DRopeJointDefinition_destruct);
@@ -1248,9 +1284,11 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Box2DRopeJointDefinition_setLeft", Box2DRopeJointDefinition_setLeft);
    registrator.addCallback("Box2DRopeJointDefinition_getRight", Box2DRopeJointDefinition_getRight);
    registrator.addCallback("Box2DRopeJointDefinition_setRight", Box2DRopeJointDefinition_setRight);
-   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorLeft", Box2DRopeJointDefinition_getLocalAnchorLeft);
+   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorLeftX", Box2DRopeJointDefinition_getLocalAnchorLeftX);
+   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorLeftY", Box2DRopeJointDefinition_getLocalAnchorLeftY);
    registrator.addCallback("Box2DRopeJointDefinition_setLocalAnchorLeft", Box2DRopeJointDefinition_setLocalAnchorLeft);
-   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorRight", Box2DRopeJointDefinition_getLocalAnchorRight);
+   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorRightX", Box2DRopeJointDefinition_getLocalAnchorRightX);
+   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorRightY", Box2DRopeJointDefinition_getLocalAnchorRightY);
    registrator.addCallback("Box2DRopeJointDefinition_setLocalAnchorRight", Box2DRopeJointDefinition_setLocalAnchorRight);
 
    registrator.addCallback("ActionMap_init", ActionMap_init);
@@ -1281,8 +1319,11 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Font_native_textHeight", Font_native_textHeight);
 
    registrator.addCallback("Texture_destruct", Texture_destruct);
+   registrator.addCallback("Texture_getName", Texture_getName);
    registrator.addCallback("Texture_getWidth", Texture_getWidth);
    registrator.addCallback("Texture_getHeight", Texture_getHeight);
+   registrator.addCallback("Texture_getSourceWidth", Texture_getSourceWidth);
+   registrator.addCallback("Texture_getSourceHeight", Texture_getSourceHeight);
 
    registrator.addCallback("FileSystem_getInstance", FileSystem_getInstance);
    registrator.addCallback("FileSystem_native_open", FileSystem_native_open);

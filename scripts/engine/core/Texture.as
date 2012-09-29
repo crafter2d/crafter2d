@@ -13,6 +13,9 @@ final class Texture
 		return new Size(getWidth(), getHeight());
 	}
 		
+	public native string getName();
 	public native int getWidth();
 	public native int getHeight();
+	public native int getSourceWidth();
+	public native int getSourceHeight();
 }

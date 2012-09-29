@@ -17,6 +17,7 @@ public:
    void drawRoundedRect(int x, int y, int width, int height);
 	void drawText(int x, int y, const String& text);
    void drawTexture(const Texture& texture, int x, int y, int width, int height);
+   void drawTexture(const Texture& texture, int x, int y, int width, int height, float tx, float ty, float tw, float th);
 
    void translate(float x, float y);
 

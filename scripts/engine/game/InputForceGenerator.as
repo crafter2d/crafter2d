@@ -7,6 +7,16 @@ class InputForceGenerator
 {
 	public native InputForceGenerator();
 	
-	public native void setVelocity(Vector2D vel);
-	public native void setImpulse(Vector2D impulse);
+	public void setVelocity(Vector2D vel)
+	{
+		native_setVelocity(vel.x, vel.y);
+	}
+	
+	public void setImpulse(Vector2D impulse)
+	{
+		native_setImpulse(impulse.x, impulse.y);
+	}
+	
+	private native void native_setVelocity(real x, real y);
+	private native void native_setImpulse(real x, real y);
 }

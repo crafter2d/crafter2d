@@ -183,11 +183,19 @@ bool Game::initGame()
    IniFile inifile("game.ini");
    
    mpServer = new Server();
-   mpServer->create(inifile.get("Process", "server"));
+   if ( !mpServer->create(inifile.get("Process", "server")) )
+   {
+      Log::getInstance().error("FAILED to start the server.");
+      return false;
+   }
 
    mpClient = new Client();
    mpClient->setWindowFactory(*mpWindowFactory);
-   mpClient->create(inifile.get("Process", "client"));
+   if ( !mpClient->create(inifile.get("Process", "client")) )
+   {
+      Log::getInstance().error("FAILED to start the client.");
+      return false;
+   }
 
 	return true;
 }
@@ -200,11 +208,11 @@ bool Game::initGame()
  */
 void Game::endGame()
 {
-   mpClient->destroy();
    delete mpClient;
+   mpClient = NULL;
 
-   mpServer->destroy();
    delete mpServer;
+   mpServer = NULL;
 }
 
 /*!
@@ -219,21 +227,30 @@ void Game::runFrame()
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
-   static float start = 0;
-   static unsigned int frame = 0;
+   static float FREQ = 1.0f / 120.0f;
+   static float cur = 0;
 
-   mpServer->update(delta);
-
-   mpClient->update(delta);
-   mpClient->render(delta);
-
-   frame++;
-   start += timerdelta.getDelta();
-   if ( start >= 1.0f )
+   cur += delta;
+   if ( cur >= FREQ )
    {
-      std::cout << "Fps: " << frame << std::endl;
-      start = 0;
-      frame = 0;
+      static float start = 0;
+      static unsigned int frame = 0;
+
+      mpServer->update(cur);
+      mpClient->update(cur);
+
+      mpClient->render(cur);
+
+      frame++;
+      start += cur;
+      if ( start >= 1.0f )
+      {
+         std::cout << "Fps: " << frame << std::endl;
+         start = 0;
+         frame = 0;
+      }
+
+      cur = 0.0f;
    }
 
    // Profiler::getInstance().end();

@@ -7,6 +7,22 @@ class XmlElement extends XmlNode
 {	
 	private ArrayList<XmlAttribute> mAttributes = new ArrayList<XmlAttribute>();
 	
+	// Query
+	
+	public XmlAttribute getAttribute(string name)
+	{
+		foreach ( XmlAttribute attr : mAttributes )
+		{
+			if ( attr.getName() == name )
+			{
+				return attr;
+			}
+		}
+		return null;
+	}
+	
+	// Parsing
+	
 	protected void parse(XmlStream stream)
 	{		
 		mValue = stream.readName();

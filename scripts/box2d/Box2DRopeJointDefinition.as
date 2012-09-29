@@ -5,17 +5,55 @@ use engine.core.*;
 
 public class Box2DRopeJointDefinition
 {
-	public native Box2DRopeJointDefinition();
+	private Box2DBody mLeft;
+	private Box2DBody mRight;
+	private Vector2D  mLocalAnchorLeft;
+	private Vector2D  mLocalAnchorRight;
+
+	public Box2DRopeJointDefinition()
+	{
+		super();
+	}
 	
-	public native Box2DBody getLeft();
-	public native void setLeft(Box2DBody left);
+	// Get/set
 	
-	public native Box2DBody getRight();
-	public native void setRight(Box2DBody right);
+	public Box2DBody getLeft()
+	{
+		return mLeft;
+	}
 	
-	public native Vector2D getLocalAnchorLeft();
-	public native void setLocalAnchorLeft(Vector2D anchor);
+	public void setLeft(Box2DBody body)
+	{
+		mLeft = body;
+	}
 	
-	public native Vector2D getLocalAnchorRight();
-	public native void setLocalAnchorRight(Vector2D anchor);
+	public Box2DBody getRight()
+	{
+		return mRight;
+	}
+	
+	public void setRight(Box2DBody body)
+	{
+		mRight = body;
+	}
+	
+	public Vector2D getLocalAnchorLeft()
+	{
+		return mLocalAnchorLeft;
+	}
+	
+	public void setLocalAnchorLeft(Vector2D anchor)
+	{
+		mLocalAnchorLeft = anchor;
+	}
+	
+	public Vector2D getLocalAnchorRight()
+	{
+		return mLocalAnchorRight;
+	}
+	
+	public void setLocalAnchorRight(Vector2D anchor)
+	{
+		mLocalAnchorRight = anchor;
+	}
 }

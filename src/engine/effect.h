@@ -56,8 +56,8 @@ public:
 	bool              load(const String& file);
 	void              destroy();
 	
-	const Texture&    resolveTexture(const String& uniform) const;
-   const Texture*    findTexture(const String& uniform) const;
+	const TexturePtr  resolveTexture(const String& uniform) const;
+   const TexturePtr  findTexture(const String& uniform) const;
 
          bool        hasPath() const;
    const CodePath&   getPath() const;

@@ -21,6 +21,7 @@ public:
          Variant& operator[](int index);
 
  // stack operations
+   void push(int count);
    void push(const Variant& value);
    void pushInt(int value);
    void pushReal(double value);

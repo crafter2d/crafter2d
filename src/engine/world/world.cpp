@@ -327,8 +327,6 @@ int World::addLayer(Layer* player)
 {
    layers.push_back(player);
 
-   notifyLayerAdded(*player);
-
    return layers.size() - 1;
 }
 
@@ -453,25 +451,6 @@ void World::accept(NodeVisitor& nv)
 //////////////////////////////////////////////////////////////////////////
 // - Notifications
 //////////////////////////////////////////////////////////////////////////
-
-class WorldLayerAddedNotify : public std::unary_function<WorldObserver*, void>
-{
-public:
-   explicit WorldLayerAddedNotify(Layer& layer): _layer(layer) {}
-
-   void operator()(WorldObserver* pobserver) const
-   {
-      pobserver->notifyLayerAdded(_layer);
-   }
-
-private:
-   Layer& _layer;
-};
-
-void World::notifyLayerAdded(Layer& layer)
-{
-   std::for_each(mObservers.begin(), mObservers.end(), WorldLayerAddedNotify(layer));
-}
 
 class WorldScrollNotify : public std::unary_function<WorldObserver*, void>
 {

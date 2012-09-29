@@ -51,8 +51,7 @@ Animator::Animator():
    mAnimFrameCount(0),
    mCurrentAnimation(0),
    mAnimIndex(0),
-   mAnimFrame(0),
-   mAnimChanged(false)
+   mAnimFrame(0)
 {
 }
 
@@ -189,7 +188,7 @@ int Animator::getAnimation() const
    return mCurrentAnimation + 1;
 }
 
-void Animator::setAnimation(int animation)
+bool Animator::setAnimation(int animation)
 {
    animation--;
 
@@ -199,8 +198,10 @@ void Animator::setAnimation(int animation)
 		mAnimIndex = 0;
       mAnimFrame = 0;
 
-      mAnimChanged = true;
+      return true;
 	}
+
+   return false;
 }
 
 const TextureCoordinate& Animator::getTextureCoordinate()

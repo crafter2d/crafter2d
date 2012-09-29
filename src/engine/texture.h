@@ -76,7 +76,6 @@ protected:
    GLuint tex;
    GLenum target;
    int texStage;
-   String filename;
 };
 
 #ifdef JENGINE_INLINE

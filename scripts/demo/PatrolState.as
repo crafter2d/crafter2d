@@ -6,6 +6,10 @@ use engine.game.*;
 
 class PatrolState extends AIState
 {
+   public void initialize(Actor actor)
+   {
+   }
+
 	public void perform(Actor actor, Actor player)
 	{
 		if ( actor.isOnGround() )

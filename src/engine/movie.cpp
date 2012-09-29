@@ -70,7 +70,7 @@ bool Movie::load(const char* file)
    bool ok = false;
 
 #ifdef WIN32
-   filename = file;
+   setName(file);
    tex = 0;
 
    target = getRenderTarget ();

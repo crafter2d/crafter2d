@@ -5,14 +5,44 @@ use engine.core.*;
 
 public class Box2DRevoluteJointDefinition
 {
-	public native Box2DRevoluteJointDefinition();
+	private Box2DBody mLeft;
+	private Box2DBody mRight;
+	private Vector2D  mAnchor;
 	
-	public native Box2DBody getLeft();
-	public native void setLeft(Box2DBody left);
+	public Box2DRevoluteJointDefinition()
+	{
+		super();
+	}
+		
+	// Get/set
 	
-	public native Box2DBody getRight();
-	public native void setRight(Box2DBody right);
+	public Box2DBody getLeft()
+	{
+		return mLeft;
+	}
 	
-	public native Vector2D getAnchor();
-	public native void setAnchor(Vector2D anchor);
+	public void setLeft(Box2DBody body)
+	{
+		mLeft = body;
+	}
+	
+	public Box2DBody getRight()
+	{
+		return mRight;
+	}
+	
+	public void setRight(Box2DBody body)
+	{
+		mRight = body;
+	}
+	
+	public Vector2D getAnchor()
+	{
+		return mAnchor;
+	}
+	
+	public void setAnchor(Vector2D anchor)
+	{
+		mAnchor = anchor;
+	}
 }

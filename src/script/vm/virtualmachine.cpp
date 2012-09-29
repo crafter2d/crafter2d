@@ -130,6 +130,24 @@ void InternalString_getChar(VirtualMachine& machine, VirtualStackAccessor& acces
    accessor.setResult(thisstring[index]);
 }
 
+void InternalString_indexOf(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   const String& thisstring = accessor.getString(0);
+
+   char c = accessor.getChar(1);
+
+   accessor.setResult(thisstring.indexOf(c));
+}
+
+void InternalString_lastIndexOf(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   const String& thisstring = accessor.getString(0);
+
+   char c = accessor.getChar(1);
+
+   accessor.setResult(thisstring.lastIndexOf(c));
+}
+
 void Char_isAlphaNum(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    char c = accessor.getChar(0);
@@ -156,6 +174,20 @@ void Char_isWhitespace(VirtualMachine& machine, VirtualStackAccessor& accessor)
    char c = accessor.getChar(0);
 
    accessor.setResult(Char::isWhitespace(c));
+}
+
+void Math_sqrt(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   double value = accessor.getReal(0);
+
+   accessor.setResult(sqrt(value));
+}
+
+void Math_ceil(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   double value = accessor.getReal(0);
+
+   accessor.setResult(ceil(value));
 }
 
 VirtualMachine::VirtualMachine(VirtualContext& context):
@@ -187,10 +219,14 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_length"), InternalString_length));
    mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_subString"), InternalString_subString));
    mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_getChar"), InternalString_getChar));
+   mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_indexOf"), InternalString_indexOf));
+   mNatives.insert(std::pair<String, callbackfnc>(String("InternalString_lastIndexOf"), InternalString_lastIndexOf));
    mNatives.insert(std::pair<String, callbackfnc>(String("Char_isAlphaNum"), Char_isAlphaNum));
    mNatives.insert(std::pair<String, callbackfnc>(String("Char_isAlpha"), Char_isAlpha));
    mNatives.insert(std::pair<String, callbackfnc>(String("Char_isDigit"), Char_isDigit));
    mNatives.insert(std::pair<String, callbackfnc>(String("Char_isWhitespace"), Char_isWhitespace));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Math_sqrt"), Math_sqrt));
+   mNatives.insert(std::pair<String, callbackfnc>(String("Math_ceil"), Math_ceil));
 }
 
 VirtualMachine::~VirtualMachine()
@@ -347,11 +383,6 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    int len;
    const char* pclass = vclass.getName().toUtf8(len);
    const char* pentry = entry.mName.toUtf8(len);
-
-   if ( strcmp(pentry, "add") == 0 )
-   {
-      int aap = 5;
-   }
 #endif
 
    const VirtualInstructionTable& instructions = mContext.mInstructions;
@@ -414,11 +445,8 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
    {
       case VirtualInstruction::eReserve:
          {
-            // reserver 'argument' number of places on stack for arguments/variables
-            for ( int index = 0; index < instruction.getArgument(); index++ )
-            {
-               mStack.push(Variant());
-            }
+            // reserve 'argument' number of places on stack for arguments/variables
+            mStack.push(instruction.getArgument());
          }
          break;
       case VirtualInstruction::eNew:
@@ -612,6 +640,13 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             bool value = mStack.popBool();
             String string(value ? String("true") : String("false"));
             mStack.pushString(mContext.mStringCache.lookup(string));
+         }
+         break;
+      case VirtualInstruction::eString2Int:
+         {
+            const String& value = mStack.popString();
+            int result = NumberConverter::getInstance().toInt(value);
+            mStack.pushInt(result);            
          }
          break;
 

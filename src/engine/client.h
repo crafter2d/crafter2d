@@ -97,6 +97,7 @@ public:
    void           sendToServer(NetObject& object);
 
  // notifications
+   void onWindowChanged();
    void onWindowResized();
    void onWindowClosing();
    void onWindowClosed();

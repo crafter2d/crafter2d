@@ -10,9 +10,9 @@ abstract class XmlNode
 	private static char[] dtdHeader = { '!' };
 	private static char[] cdataHeader = { '!', '[', 'C', 'D', 'A', 'T', 'A', '[' };
 	
-	private XmlNode 			mParent = null;
-	private ArrayList<XmlNode> 	mChildren = new ArrayList<XmlNode>();
-	protected string 			mValue;
+	private XmlNode 			 mParent = null;
+	protected ArrayList<XmlNode> mChildren = new ArrayList<XmlNode>();
+	protected string 			 mValue;
 	
 	// - Get/set
 	

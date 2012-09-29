@@ -8,6 +8,11 @@ class XmlAttribute extends XmlNode
 	
 	// - Get/set
 	
+	public string getName()
+	{
+		return mName;
+	}
+	
 	public string getValue()
 	{
 		return mValue;

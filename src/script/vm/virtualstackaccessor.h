@@ -11,7 +11,7 @@
 class VirtualStackAccessor
 {
 public:
-   VirtualStackAccessor(VirtualContext& context, VirtualStack& stack): mContext(context), mStack(stack), mSize(stack.back().asInt())
+   VirtualStackAccessor(VirtualContext& context, VirtualStack& stack): mContext(context), mStack(stack), mSize(stack.back().asInt()), mHasResult(false)
    {
    }
 
@@ -58,7 +58,7 @@ public:
 
  // return value
    bool hasResult() {
-      return !mResult.isEmpty();
+      return mHasResult;
    }
 
    Variant& getResult() {
@@ -66,35 +66,36 @@ public:
    }
 
    void setResult(VirtualObject& object) {
-      mResult = Variant(object);
+      setResult(Variant(object));
    }
 
    void setResult(VirtualArray& array) {
-      mResult = Variant(array);
+      setResult(Variant(array));
    }
 
    void setResult(int value) {
-      mResult = Variant(value);
+      setResult(Variant(value));
    }
 
    void setResult(double value) {
-      mResult = Variant(value);
+      setResult(Variant(value));
    }
 
    void setResult(bool value) {
-      mResult = Variant(value);
+      setResult(Variant(value));
    }
 
    void setResult(char value) {
-      mResult = Variant(value);
+      setResult(Variant(value));
    }
 
    void setResult(const String& value) {
-      mResult = Variant(mContext.mStringCache.lookup(value));
+      setResult(Variant(mContext.mStringCache.lookup(value)));
    }
 
    void setResult(const Variant& value) {
       mResult = value;
+      mHasResult = true;
    }
 
 private:
@@ -109,6 +110,7 @@ private:
    VirtualStack&     mStack;
    Variant           mResult;
    int               mSize;
+   bool              mHasResult;
 };
 
 #endif // VIRTUAL_STACK_ACCESSOR_H

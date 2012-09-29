@@ -119,7 +119,7 @@ String String::operator+(char c) const
    return result;
 }
 
-String operator+(const char* pleft, const String& right)
+CORE_API String operator+(const char* pleft, const String& right)
 {
    return String(pleft) + right;
 }

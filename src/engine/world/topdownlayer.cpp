@@ -49,8 +49,8 @@ bool TopDownLayer::prepare(int screenWidth, int screenHeight)
    int border = 0;
 
    // get number of tiles on one row in the diffuseMap
-	const Texture& diffuse = effect.resolveTexture("diffuseMap");
-	maxTilesOnRow = diffuse.getWidth() / (tileWidth + border*2);
+	const TexturePtr diffuse = effect.resolveTexture("diffuseMap");
+	maxTilesOnRow = diffuse->getWidth() / (tileWidth + border*2);
 
 	// calculate the maximum number of tiles on the screen
 	maxTilesX = MIN(screenWidth  / mTileSet.getTileWidth() , width);
@@ -65,8 +65,8 @@ bool TopDownLayer::prepare(int screenWidth, int screenHeight)
    if ( vb == NULL )
       return false;
 
-   float dx = diffuse.getSourceWidth() / diffuse.getWidth();
-   float dy = diffuse.getSourceHeight() / diffuse.getHeight();
+   float dx = diffuse->getSourceWidth() / diffuse->getWidth();
+   float dy = diffuse->getSourceHeight() / diffuse->getHeight();
 
    texTileWidth  = dx * tileWidth;
    texTileHeight = dy * tileHeight;

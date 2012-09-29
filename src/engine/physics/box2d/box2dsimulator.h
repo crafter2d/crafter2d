@@ -30,6 +30,7 @@ struct b2Vec2;
 class Object;
 class Vector;
 
+class Box2DBody;
 class Box2DJoint;
 class Box2DRevoluteJoint;
 class Box2DRevoluteJointDefinition;
@@ -61,6 +62,8 @@ public:
    virtual void  removeBody(Body& body);
 
    Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);
+   Box2DRevoluteJoint& createRevoluteJoint(Box2DBody& left, Box2DBody& right, const Vector& anchor);
+
    Box2DRopeJoint&     createRopeJoint(Box2DRopeJointDefinition& definition);
 
  // update
@@ -79,6 +82,7 @@ private:
    b2World*             mpb2World;
    Box2DContactListener mContactListener;
    Joints               mJoints;
+   float                mDelta;
 };
 
 #endif

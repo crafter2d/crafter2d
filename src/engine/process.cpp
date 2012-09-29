@@ -53,11 +53,13 @@ Process::Process():
 
 Process::~Process()
 {
-   delete mpScript;
-   mpScript = NULL;
-
-   delete actionMap;
-   actionMap = NULL;
+   try
+   {
+      destroy();
+   }
+   catch (...)
+   {
+   }
 }
 
 // - Get/set
@@ -98,6 +100,12 @@ bool Process::create(const String& classname)
 bool Process::destroy()
 {
    conn.shutdown();
+
+   delete mpScript;
+   mpScript = NULL;
+
+   delete actionMap;
+   actionMap = NULL;
    
    return true;
 }

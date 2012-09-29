@@ -359,25 +359,25 @@ GLint Effect::getSourceValue (const char* str)
 	 \brief Looks up the uniform string in the stages of this effect. If found the texture object is returned.
 	 \returns a texture object if uniform is known, NULL otherwise.
  */
-const Texture& Effect::resolveTexture (const String& uniform) const
+const TexturePtr Effect::resolveTexture (const String& uniform) const
 {
-   const Texture* ptexture = findTexture(uniform);
-   ASSERT_MSG(ptexture, "Can not find the texture.");
-   return *ptexture;
+   const TexturePtr texture = findTexture(uniform);
+   ASSERT_MSG(texture.isValid(), "Can not find the texture.");
+   return texture;
 }
 
-const Texture* Effect::findTexture(const String& uniform) const
+const TexturePtr Effect::findTexture(const String& uniform) const
 {
    for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
       const TexStage& stage = stages[s];
       if ( uniform == stage.uniform )
       {
-         return stage.tex.ptr();
+         return stage.tex;
       }
    }
 
-   return NULL;
+   return TexturePtr();
 }
 
 /*!

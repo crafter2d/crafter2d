@@ -37,6 +37,16 @@ Variant& VirtualStack::operator[](int index)
 
 // - Stack operations
 
+void VirtualStack::push(int count)
+{
+   mSize += count;
+
+   if ( mSize >= mStack.size() )
+   {
+      grow(mStack.size());
+   }  
+}
+
 void VirtualStack::push(const Variant& value)
 {
    top() = value;

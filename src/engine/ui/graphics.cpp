@@ -77,6 +77,21 @@ void Graphics::drawTexture(const Texture& texture, int x, int y, int width, int 
    texture.disable();
 }
 
+void Graphics::drawTexture(const Texture& texture, int x, int y, int width, int height, float tx, float ty, float tw, float th)
+{
+   texture.enable();
+
+   glColor3f (1,1,1);
+   glBegin( GL_QUADS );
+   glMultiTexCoord2f (GL_TEXTURE0_ARB, tx, ty); glVertex2i(x, y+height);
+   glMultiTexCoord2f (GL_TEXTURE0_ARB, tx + tw, ty); glVertex2i(x, y);
+   glMultiTexCoord2f (GL_TEXTURE0_ARB, tx + tw, ty + th); glVertex2i(x+width, y);
+   glMultiTexCoord2f (GL_TEXTURE0_ARB, tx, ty + th); glVertex2i(x+width, y+height);
+   glEnd();
+
+   texture.disable();
+}
+
 void Graphics::translate(float x, float y)
 {
    glMatrixMode(GL_MODELVIEW);

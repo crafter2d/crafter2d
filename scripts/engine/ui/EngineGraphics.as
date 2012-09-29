@@ -21,6 +21,7 @@ class EngineGraphics extends Graphics
 	private native void native_drawRoundedRect(int x, int y, int width, int height);
 	private native void native_fillRect(int x, int y, int width, int height);
 	private native void native_drawTexture(Texture texture, int x, int y, int width, int height);
+	private native void native_drawTexturePart(Texture texture, int x, int y, int width, int height, real tx, real ty, real tw, real th);
 	private native void doSetColor(real r, real g, real b, real a);
 	private native void nativeSetFont(Font font);
 	
@@ -42,6 +43,13 @@ class EngineGraphics extends Graphics
 	public void drawTexture(Texture texture, Rectangle rect)
 	{
 		native_drawTexture(texture, rect.x, rect.y, rect.width, rect.height);
+	}
+	
+	public void drawTexture(Texture texture, Rectangle rect, real tx, real ty, real tw, real th)
+	{
+		native_drawTexturePart(texture,
+			rect.x, rect.y, rect.width, rect.height,
+			tx, ty, tw, th);
 	}
 	
 	public Color getColor()

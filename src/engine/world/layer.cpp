@@ -102,8 +102,8 @@ bool Layer::create(const String& layername, int w, int h, const String& effectna
    }
 
    // load the tileset
-   const Texture& diffuse = effect.resolveTexture("diffuseMap");
-   String tileInfo = diffuse.getName();
+   const TexturePtr diffuse = effect.resolveTexture("diffuseMap");
+   String tileInfo = diffuse->getName();
    int pos = tileInfo.lastIndexOf('.');
    tileInfo.replace(pos+1,3,"xml");
 
@@ -264,18 +264,15 @@ void Layer::scroll (float x, float y)
 }
 
 /// \fn Layer::getTile(int x, int y)
-/// \brief Returns the tile the user for a position; -1 if the position is outside the layer.
+/// \brief Returns the tile the given indices; -1 if the position is outside the layer.
 int Layer::getTile(int x, int y) const
 {
-   if (x < 0 || y < 0)
+   if ( x < 0 || y < 0 || x >= width || y >= height )
+   {
       return -1;
+   }
 
-   int tileX = x / tileWidth;
-   int tileY = y / tileHeight;
-   if (tileX >= width || tileY >= height)
-      return -1;
-   else
-      return field[tileY][tileX].getTextureId ();
+   return field[y][x].getTextureId();
 }
 
 /// \fn Layer:setTile(int x, int y, int tile)

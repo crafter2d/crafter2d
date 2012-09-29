@@ -41,7 +41,7 @@ public:
    void nextFrame();
 
    int  getAnimation() const;
-   void setAnimation(int animation);
+   bool setAnimation(int animation);
 
    const TextureCoordinate& getTextureCoordinate();
 
@@ -65,7 +65,6 @@ private:
 	int      mCurrentAnimation;
 	int      mAnimIndex;
 	int      mAnimFrame;
-   bool     mAnimChanged;
 };
 
 #ifdef JENGINE_INLINE

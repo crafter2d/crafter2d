@@ -345,7 +345,7 @@ uchar* Texture::ensureProperSize(int bytes, uchar* pdata, int width, int height)
 
    if ( _actualwidth > 1024 || _actualheight > 1024 )
    {
-      Log::getInstance().error("Image size of %s is too big!", filename.getBuffer());
+      Log::getInstance().error("Image size of %s is too big!", getName().getBuffer());
       delete[] pdata;
       return NULL;
    }

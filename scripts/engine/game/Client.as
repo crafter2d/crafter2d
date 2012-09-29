@@ -69,14 +69,14 @@ abstract class Client extends Process
 		return mGraphics;
 	}
 	
-	public void render(real delta)
+	public void paint(real delta)
 	{
-		nativeRender(delta);
+		//nativeRender(delta);
 		
 		Canvas canvas = Canvas.getInstance();
 		canvas.paint(mGraphics);
 		
-		nativeDisplay();
+		//nativeDisplay();
 	}
 	
 	// - Connection

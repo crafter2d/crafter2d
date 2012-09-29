@@ -7,14 +7,22 @@ use engine.collections.*;
 class World
 {
 	private ArrayList<Actor> mActors = new ArrayList<Actor>();
+	private ArrayList<Layer> mLayers = null;
 	
 	public native World()
 	{
 		super();
 	}
 	
-	// Object registration
+	// Get/set
 	
+	public ArrayList<Layer> getLayers()
+	{
+		return mLayers;
+	}
+	
+	// Object registration
+		
 	public void onEntityAdded(Entity entity)
 	{
 		if ( entity instanceof Actor )
@@ -34,6 +42,20 @@ class World
 		}
 	}
 	
+	// Designing
+	
+	public void prepare()
+	{
+		mLayers = new ArrayList<Layer>();
+		int layers = native_getLayerCount();
+		for ( int index = 0; index < layers; ++index )
+		{
+			Layer layer = native_getLayer(index);
+			mLayers.add(layer);
+			layer.prepare();
+		}
+	}
+	
 	// Natives
 	
 	public native string getName();
@@ -46,4 +68,7 @@ class World
 	public native void setFollowBorders(int left, int right, int top, int bottom);
 	public native void setFollowBorderWidth(int width);
 	public native Box2DSimulator getSimulator();
+	
+	private native int native_getLayerCount();
+	private native Layer native_getLayer(int index);
 }

@@ -54,7 +54,7 @@ public:
    String operator+(const String& that) const;
    String operator+(char c) const;
 
-   friend String operator+(const char* pleft, const String& right);
+   CORE_API friend String operator+(const char* pleft, const String& right);
 
  // query
    bool isEmpty() const;

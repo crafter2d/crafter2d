@@ -17,6 +17,22 @@ class XmlDocument extends XmlNode
 		parse(mStream);
 	}
 	
+	// - Query
+	
+	public XmlElement getDocumentElement()
+	{
+		foreach ( XmlNode node : mChildren )
+		{
+			if ( node instanceof XmlElement )
+			{
+				return (XmlElement) node;
+			}
+		}
+		return null;
+	}
+	
+	// - Parsing
+	
 	protected void parse(XmlStream stream)
 	{
 		while ( !stream.isEOS() )

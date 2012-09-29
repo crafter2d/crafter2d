@@ -51,7 +51,6 @@ abstract class Process
 	
 	public void addPlayer(Player player)
 	{
-		System.console.println("Added player to ");
 		mPlayers.add(player);
 	}
 	

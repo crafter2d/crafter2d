@@ -47,7 +47,8 @@ Box2DSimulator::Box2DSimulator():
    Simulator(),
    mpb2World(NULL),
    mContactListener(*this),
-   mJoints()
+   mJoints(),
+   mDelta(0.0f)
 {
 }
 
@@ -116,6 +117,20 @@ Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefini
    return *pjoint;
 }
 
+Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DBody& left, Box2DBody& right, const Vector& anchor)
+{
+   b2RevoluteJointDef jd;
+   jd.Initialize(&left.getBody(), &right.getBody(), vectorToB2(anchor));
+
+   b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpb2World->CreateJoint(&jd));
+
+   Box2DRevoluteJoint* pjoint = new Box2DRevoluteJoint(*pb2joint);
+
+   mJoints.push_back(pjoint);
+
+   return *pjoint;
+}
+
 Box2DRopeJoint& Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& definition)
 {
    b2RopeJointDef jd;
@@ -169,13 +184,21 @@ void Box2DSimulator::notifyWorldChanged()
 
 void Box2DSimulator::run(float timestep)
 {
-   int velocityIterations = 6;
-   int positionIterations = 2;
+   static const float step = 1.0f / 60.0f;
 
-   getBodies().integrate(timestep);
+   mDelta += timestep;
+   //if ( mDelta >= step )
+   {
+      static const int velocityIterations = 8;
+      static const int positionIterations = 3;
+   
+      getBodies().integrate(step);
 
-   mpb2World->Step(timestep, velocityIterations, positionIterations);
-   mpb2World->ClearForces();
+      mpb2World->Step(step, velocityIterations, positionIterations);
+      //mpb2World->ClearForces();
 
-   getBodies().finalize();
+      getBodies().finalize();
+
+      mDelta = 0.0f;
+   }
 }
