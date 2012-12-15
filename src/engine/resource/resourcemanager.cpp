@@ -21,24 +21,20 @@
 
 #include "core/smartptr/autoptr.h"
 #include "core/containers/hashinterface.h"
-
-#include "engine/ui/font.h"
+#include "core/graphics/font.h"
+#include "core/graphics/texture.h"
+#include "core/graphics/device.h"
 
 #include "resourcehandle.h"
 
-#include "engine/texture.h"
-
 ResourceManager::ResourceManager():
-   mFreeTypeLib(NULL),
    mResources()
 {
    mResources.setHashFunction(HashInterface::hashString);
-   initialize();
 }
 
 ResourceManager::~ResourceManager()
 {
-   destroy();
 }
 
 ResourceManager& ResourceManager::getInstance()
@@ -47,64 +43,63 @@ ResourceManager& ResourceManager::getInstance()
    return manager;
 }
 
-// - Initialization
-
-bool ResourceManager::initialize()
-{
-   if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
-      return false;
-
-   return true;
-}
-
-void ResourceManager::destroy()
-{
-   FT_Done_FreeType(mFreeTypeLib);
-}
+// - Operations
 
 /// \fn ResourceManager::loadTexture (const std::string& file)
 /// \brief Returns a texture from a the given file.
-TexturePtr ResourceManager::getTexture(const String& file)
+TexturePtr ResourceManager::getTexture(Graphics::Device& device, const String& file)
 {
+   ResourceHandle<Graphics::Texture>* phandle = NULL;
+
    if ( !mResources.contains(file) )
    {
-      AutoPtr<Texture> texture = new Texture();
-      if ( !texture.hasPointer() || !texture->load(file) )
+      AutoPtr<Graphics::Texture> texture = device.createTexture(file);
+      if ( !texture.hasPointer() )
          return TexturePtr();
 
-      ResourceHandle* phandle = new ResourceHandle(*this, texture.release());
-		mResources.insert(file, phandle);
+      phandle = new ResourceHandle<Graphics::Texture>(*this, texture.release());
+      phandle->setName(file);
+
+      ResourceHandleBase* pbasehandle = phandle; // needed for *& in container, perhaps time to change that..
+		mResources.insert(file, pbasehandle);
 	}
-
-   ResourceHandle** phandle = mResources.get(file);
-   ASSERT_PTR(phandle);
-
-   return TexturePtr(*phandle);
-}
-
-FontPtr ResourceManager::getFont(const String& name, int size)
-{
-   if ( !mResources.contains(name) )
+   else
    {
-      AutoPtr<UIFont> font = new UIFont();
-      if ( !font.hasPointer() || !font->load(mFreeTypeLib, name, size) )
-      {
-         return FontPtr();
-      }
-
-      ResourceHandle* phandle = new ResourceHandle(*this, font.release());
-      mResources.insert(name, phandle);
+      phandle = static_cast<ResourceHandle<Graphics::Texture>*>(*mResources.get(file));
    }
 
-   ResourceHandle** phandle = mResources.get(name);
    ASSERT_PTR(phandle);
-
-   return FontPtr(*phandle);
+   return TexturePtr(phandle);
 }
 
-// notifications
+FontPtr ResourceManager::getFont(Graphics::Device& device, const String& name, int size)
+{
+   ResourceHandle<Graphics::Font>* phandle = NULL;
 
-void ResourceManager::notifyResourceDeleted(const Resource& resource)
+   if ( !mResources.contains(name) )
+   {
+      AutoPtr<Graphics::Font> font = device.createFont(name, size);
+      if ( !font.hasPointer() )
+         return FontPtr();
+
+      phandle = new ResourceHandle<Graphics::Font>(*this, font.release());
+      phandle->setName(name);
+
+      ResourceHandleBase* pbasehandle = phandle;
+      mResources.insert(name, pbasehandle);
+   }
+   else
+   {
+      phandle = static_cast<ResourceHandle<Graphics::Font>*>(*mResources.get(name));
+   }
+
+   ASSERT_PTR(phandle);
+   return FontPtr(phandle);
+}
+
+// - Notifications
+
+void ResourceManager::notifyResourceDeleted(const ResourceHandleBase& resource)
 {
    mResources.remove(resource.getName());
 }

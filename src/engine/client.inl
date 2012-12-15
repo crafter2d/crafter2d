@@ -56,3 +56,9 @@ INLINE GameWindow& Client::getWindow()
    ASSERT_PTR(mpWindow);
    return *mpWindow;
 }
+
+INLINE Graphics::Device& Client::getDevice()
+{
+   ASSERT_PTR(mpDevice);
+   return *mpDevice;
+}

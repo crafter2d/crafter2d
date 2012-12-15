@@ -23,14 +23,12 @@
 #endif
 
 #include "net/netconnection.h"
-#include "net/events/viewportevent.h"
 
 #include "world/world.h"
 
 #include "client.h"
 
 Player::Player():
-   mViewport(),
    mWorldObserver(*this),
    mpController(NULL),
    mClientId(0)
@@ -57,5 +55,5 @@ void Player::initialize(World& world)
 
 void Player::notifyScrollChange(const Vector& scrollposition)
 {
-   ViewportEvent event(mViewport);
+
 }

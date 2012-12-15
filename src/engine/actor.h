@@ -20,18 +20,18 @@
 #ifndef _ACTOR_H_
 #define _ACTOR_H_
 
-#include <string>
-#include <vector>
-
 #include "core/math/vector.h"
 
+#include "effect.h"
 #include "entity.h"
-#include "texture.h"
+
+namespace Graphics
+{
+   class VertexBuffer;
+   class Texture;
+};
 
 class TiXmlDocument;
-
-class Animator;
-class Body;
 class Controller;
 class NodeVisitor;
 class State;
@@ -65,22 +65,13 @@ public:
    void              setRotation(const float deg);
    void              setSize(int width, int height);
    void              setVisible(bool vis = true);
-   void              setStatic(bool isstatic);
    void              setTexture(TexturePtr texture);
-   void              setAnimator(Animator* panimator);
-   void              setBody(Body& body);
 
    const Vector&     getPosition() const;
    const Vector&     getVelocity() const;
    float             getRotation() const;
    Vector            getSize() const;
    bool              isVisible() const;
-   bool              isStatic() const;
-   const Texture&    getTexture() const;
-
-   bool              hasBody() const;
-   const Body&       getBody() const;
-         Body&       getBody();
 
    int               getAnimation() const;
    void              setAnimation(int anim);
@@ -99,13 +90,11 @@ public:
    void updateState();
 
 protected:
- // get/set
-   Animator&         getAnimator();
 
  // update & drawing
    virtual void      doUpdate(float delta);
    virtual void      doUpdateClient(float delta);
-   virtual void      doDraw() const;
+   virtual void      doDraw(Graphics::RenderContext& context) const override;
 
  // streaming
    virtual void      doPack(DataStream& stream) const;
@@ -113,9 +102,6 @@ protected:
 	
 private:
 
-   TexturePtr     texture;
-   Body*          mpBody;
-   Animator*      mpAnimator; // owned
    Controller*    mpController;
    Vector         mPos;
    Vector         mVel;
@@ -124,7 +110,6 @@ private:
    float          angle;
    bool           visible;
    bool           dir;
-   bool           mStatic;
 };
 
 #ifdef JENGINE_INLINE

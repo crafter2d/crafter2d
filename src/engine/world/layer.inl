@@ -21,26 +21,26 @@
 
 INLINE const String& Layer::getName() const
 {
-   return name;
-}
-
-void Layer::setName(const String& n)
-{
-   name = n;
+   return mpDefinition->name;
 }
 
 /// \fn Layer::getWidth()
 /// \brief Returns the number of tiles that fit horizontally in this layer.
 INLINE int Layer::getWidth() const
 {
-   return width;
+   return mpDefinition->width;
 }
 
 /// \fn Layer::getHeight()
 /// \brief Returns the number of tiles that fit vertically in this layer.
 INLINE int Layer::getHeight() const
 {
-   return height;
+   return mpDefinition->height;
+}
+
+INLINE void Layer::setDefinition(LayerDefinition* pdefinition)
+{
+   mpDefinition = pdefinition;
 }
 
 /// \fn Layer::setVertex ()
@@ -72,14 +72,7 @@ INLINE bool Layer::isTileAnimating() const
 /// \brief Return the effect for this layer.
 INLINE const Effect& Layer::getEffect() const
 {
-   return effect;
-}
-
-/// \fn layer:getEffectFile()
-/// brief Returns the name of the effect file.
-INLINE const String& Layer::getEffectFile() const
-{
-   return effectFile;
+   return mEffect;
 }
 
 /// \fn Layer::layerToScreen( const Vector& vec ) const

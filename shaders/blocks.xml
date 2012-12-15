@@ -1,13 +1,8 @@
 <?xml version="1.0">
 <effect name="blockseffect">
-<texture uniform="diffuseMap">blocks.png</texture>
-
-<code type="CG" >
-   <vertex>simple_vert.cg</vertex>
-   <fragment>simple_frag.cg</fragment>
-   <combiner>
-      <stage0 combiner='replace'></stage0>
-   </combiner>
-</code>
-
+	<texture uniform="diffuseMap">blocks.png</texture>
+	<code type="CG" >
+		<vertex>simple_vert.cg</vertex>
+		<fragment>simple_frag.cg</fragment>
+	</code>
 </effect>

@@ -8,10 +8,6 @@ void main(
 	out float4 texCoord0O : TEXCOORD0,
 	uniform float4x4 modelviewproj)
 {
-#ifdef PROFILE_ARBVP1
-	modelviewproj = glstate.matrix.mvp;
-#endif
-	
 	positionO = mul(modelviewproj, position);
 	texCoord0O = texCoord;
 }

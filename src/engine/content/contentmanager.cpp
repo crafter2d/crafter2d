@@ -27,18 +27,25 @@
 #include "engine/world/world.h"
 #include "engine/world/worldreader.h"
 
-#include "objectloader.h"
+#include "actorloader.h"
 
 ContentManager::ContentManager(Process& process):
    mProcess(process)
 {
 }
 
+// - Get/set
+
+Process& ContentManager::getProcess()
+{
+   return mProcess;
+}
+
 //---------------------------------
 // - Loading
 //---------------------------------
 
-Entity* ContentManager::loadEntity(const String& filename)
+Entity* ContentManager::doLoadEntity(const String& filename, int flags)
 {
    if ( !mProcess.hasWorld() )
    {
@@ -49,10 +56,10 @@ Entity* ContentManager::loadEntity(const String& filename)
    ActorLoader loader(mProcess);
    loader.setSimulator(mProcess.getWorld().getSimulator());
 
-   return loader.load(filename);
+   return loader.load(filename, flags);
 }
 
-World* ContentManager::load(const String& filename)
+World* ContentManager::doLoadWorld(const String& filename, int flags)
 {
    AutoPtr<World> world = new World();
    if ( world.hasPointer() )

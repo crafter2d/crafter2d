@@ -24,21 +24,18 @@
 
 #include <tinyxml.h>
 
+#include "core/graphics/texture.h"
 #include "core/log/log.h"
+#include "core/math/size.h"
 
 #include "animation.h"
-#include "actor.h"
 
-Animator* Animator::construct(const TiXmlElement& xmlObject, Actor& actor)
+using namespace Graphics;
+
+Animator* Animator::construct(const TiXmlElement& xmlAnimation)
 {
-   Animator* panimator = NULL;
-   const TiXmlElement* pXmlAnimation = static_cast<const TiXmlElement*>(xmlObject.FirstChild("animations"));
-	if ( pXmlAnimation != NULL )
-   {
-      panimator = new Animator();
-      panimator->loadFromXML(*pXmlAnimation, actor);
-   }
-
+   Animator* panimator = panimator = new Animator();
+   panimator->loadFromXML(xmlAnimation);
    return panimator;
 }
 
@@ -59,7 +56,13 @@ Animator::~Animator()
 {
 }
 
-bool Animator::loadFromXML(const TiXmlElement& xmlanimator, Actor& actor)
+void Animator::initialize(const Texture& texture, const Size& meshsize)
+{
+   mAnimFrameWidth = texture.getWidth() / meshsize.width;
+   mTextureCoords.generateFromTexture(texture, meshsize, mAnimFrameCount);
+}
+
+bool Animator::loadFromXML(const TiXmlElement& xmlanimator)
 {
    // query the animation speed (in mm)
 	if ( xmlanimator.QueryFloatAttribute("speed", &mAnimationSpeed) != TIXML_SUCCESS )
@@ -74,11 +77,6 @@ bool Animator::loadFromXML(const TiXmlElement& xmlanimator, Actor& actor)
    }
 
    parseAnimations(xmlanimator);
-
-   const Texture& texture = actor.getTexture();
-   const Vector& size     = actor.getSize();
-   mAnimFrameWidth = texture.getWidth() / size.x;
-   mTextureCoords.generateFromTexture(texture, size.x, size.y, mAnimFrameCount);
 
 	return true;
 }
@@ -153,7 +151,7 @@ void Animator::determineFrameCount()
 //--------------
 //- Animation
 
-void Animator::animate(float delta)
+bool Animator::animate(float delta)
 {
    mAnimationDelta += delta;
    if ( mAnimationDelta >= mAnimationSpeed )
@@ -161,7 +159,11 @@ void Animator::animate(float delta)
       nextFrame();
 
       mAnimationDelta = 0;
+
+      return true;
    }
+
+   return false;
 }
 
 /// \fn AnimObject::nextFrame()

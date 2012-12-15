@@ -21,19 +21,21 @@
 #define RESOURCE_MANAGER_H_
 
 #include <string>
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-#include "resourceptr.h"
 
 #include "core/containers/hashmap.h"
 #include "core/string/string.h"
 
-class UIFont;
-class Texture;
+#include "resourceptr.h"
 
-typedef ResourcePtr<UIFont> FontPtr;
-typedef ResourcePtr<Texture> TexturePtr;
+namespace Graphics
+{
+   class Device;
+   class Font;
+   class Texture;
+};
+
+typedef ResourcePtr<Graphics::Font> FontPtr;
+typedef ResourcePtr<Graphics::Texture> TexturePtr;
 
 /**
 @author Jeroen Broekhuizen
@@ -47,25 +49,19 @@ public:
    ~ResourceManager();
 
  // resource retreival
-   TexturePtr getTexture(const String& file);
-   FontPtr    getFont(const String& name, int size);
-
- // initialization
-   bool initialize();
-
+   TexturePtr getTexture(Graphics::Device& device, const String& file);
+   FontPtr    getFont(Graphics::Device& device, const String& name, int size);
+   
  // notifications
-   void notifyResourceDeleted(const Resource& resource);
+   void notifyResourceDeleted(const ResourceHandleBase& resource);
 
 private:
-   typedef HashMap<String, ResourceHandle*> Resources;
+   typedef HashMap<String, ResourceHandleBase*> Resources;
 
    explicit ResourceManager();
    ResourceManager& operator=(const ResourceManager& mgr);
-
-   void destroy();
-
+   
  // members
-   FT_Library  mFreeTypeLib;
 	Resources   mResources;
 };
 

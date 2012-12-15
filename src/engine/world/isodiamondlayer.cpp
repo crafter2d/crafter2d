@@ -21,8 +21,9 @@
 #include "isodiamondlayer.h"
 
 #include "core/math/point.h"
-
-#include "engine/vertexbuffer.h"
+#include "core/graphics/vertexbuffer.h"
+#include "core/graphics/rendercontext.h"
+#include "core/graphics/viewport.h"
 
 #include "isodiamondtilerow.h"
 #include "layertype.h"
@@ -39,37 +40,24 @@ IsoDiamondLayer::~IsoDiamondLayer()
 {
 }
 
-LayerType IsoDiamondLayer::getType() const
+bool IsoDiamondLayer::initialize(Graphics::Device& device)
 {
-   return EIsoDiamond;
-}
-
-float IsoDiamondLayer::getXOffset() const
-{
-   return _xstart;
-}
-
-bool IsoDiamondLayer::prepare(int screenWidth, int screenHeight)
-{
-   vb = createVertexBuffer(width, height, 4);
-   if ( vb == NULL )
+   if ( !Layer::initialize(device) )
+   {
       return false;
+   }
 
    tileWidth = 40;
    tileHeight = 20;
-
-   // calculate maximum tiles to scroll
-	xscrollMax = MAX((tileWidth * width) - screenWidth, 0);
-	yscrollMax = MAX((tileHeight * height) - screenHeight, 0);
 
    _halfTileWidth  = static_cast<float>(tileWidth) / 2;
    _halfTileHeight = static_cast<float>(tileHeight) / 2;
 
    // calculate start offset
-   _xstart = tileWidth * (width / 2);// + _halfTileWidth;
+   _xstart = tileWidth * (getWidth() / 2);// + _halfTileWidth;
 
    // get number of tiles on one row in the diffuseMap
-	const TexturePtr diffuse = effect.resolveTexture("diffuseMap");
+	const TexturePtr diffuse = getEffect().resolveTexture("diffuseMap");
 	maxTilesOnRow = diffuse->getWidth() / tileWidth;
 
    float nX = static_cast<float>(diffuse->getWidth()) / tileWidth;
@@ -92,7 +80,24 @@ bool IsoDiamondLayer::prepare(int screenWidth, int screenHeight)
    return true;
 }
 
-void IsoDiamondLayer::draw()
+LayerType IsoDiamondLayer::getType() const
+{
+   return EIsoDiamond;
+}
+
+float IsoDiamondLayer::getXOffset() const
+{
+   return _xstart;
+}
+
+void IsoDiamondLayer::onViewportChanged(const Graphics::Viewport& viewport)
+{
+   // calculate maximum tiles to scroll
+	xscrollMax = MAX((tileWidth * getWidth()) - viewport.getWidth(), 0);
+	yscrollMax = MAX((tileHeight * getHeight()) - viewport.getHeight(), 0);
+}
+
+void IsoDiamondLayer::draw(Graphics::RenderContext& context)
 {
    float* data = vb->lock(0);
 
@@ -107,12 +112,12 @@ void IsoDiamondLayer::draw()
 
    int verts_to_render = 0;
 
-   for ( int y = 0; y < height; ++y )
+   for ( int y = 0; y < getHeight(); ++y )
    {
       xpos = xstart;
       ypos = ystart;
 
-      for ( int x = 0; x < width; ++x )
+      for ( int x = 0; x < getWidth(); ++x )
       {
          int texId = field[y][x].getTextureId();
          if ( texId > 0 )
@@ -140,7 +145,7 @@ void IsoDiamondLayer::draw()
 
    // draw layer at onces
 	vb->enable ();
-	glDrawArrays (GL_QUADS, 0, verts_to_render);
+   context.drawTriangles(0, verts_to_render);
 	vb->disable ();
 }
 
@@ -157,6 +162,7 @@ void IsoDiamondLayer::drawHighlight(const Vector& point)
 
    xiso += _xstart;
 
+   /*
    glLineWidth(2.0f);
 
    glBegin(GL_LINE_LOOP);
@@ -167,6 +173,7 @@ void IsoDiamondLayer::drawHighlight(const Vector& point)
    glEnd();
 
    glLineWidth(1.0f);
+   */
 }
 
 TileRow* IsoDiamondLayer::createTileRows(int width, int height)

@@ -2,13 +2,13 @@
 package engine.game;
 
 use system.*;
-use engine.ui.*;
+//use engine.ui.*;
 use engine.input.*;
 use engine.core.*;
 
 abstract class Client extends Process
 {
-	private EngineGraphics 			mGraphics = new EngineGraphics();
+	//private EngineGraphics 			mGraphics = new EngineGraphics();
 	private MouseEventDispatcher 	mMouseDispatcher;
 	private KeyEventDispatcher		mKeyDispatcher;
 	private GameWindow 				mWindow;
@@ -17,11 +17,11 @@ abstract class Client extends Process
 	{
 		super();
 		
-		FontManager mgr = FontManager.getInstance();
-		mgr.setProcess(this);
+		//FontManager mgr = FontManager.getInstance();
+		//mgr.setProcess(this);
 		
-		TextureManager tmgr = TextureManager.getInstance();
-		tmgr.setProcess(this);
+		//TextureManager tmgr = TextureManager.getInstance();
+		//tmgr.setProcess(this);
 		
 		mMouseDispatcher = new MouseEventDispatcher();
 		mKeyDispatcher = new KeyEventDispatcher();
@@ -42,10 +42,7 @@ abstract class Client extends Process
 	public boolean create()
 	{
 		if ( super.create() )
-		{
-			FontManager mgr = FontManager.getInstance();
-			mgr.setProcess(this);
-			
+		{		
 			return true;
 		}
 		return false;
@@ -64,17 +61,19 @@ abstract class Client extends Process
 		native_setWindow(window);
 	}
 	
+	/*
 	public EngineGraphics getGraphics()
 	{
 		return mGraphics;
 	}
+	*/
 	
 	public void paint(real delta)
 	{
 		//nativeRender(delta);
 		
-		Canvas canvas = Canvas.getInstance();
-		canvas.paint(mGraphics);
+		//Canvas canvas = Canvas.getInstance();
+		//canvas.paint(mGraphics);
 		
 		//nativeDisplay();
 	}

@@ -28,15 +28,24 @@ class Entity;
 class Process;
 class String;
 class World;
+class ActorLoader;
+class WorldLoader;
 
 class ContentManager
 {
 public:
    ContentManager(Process& process);
 
+ // get/set
+   Process& getProcess();
+
  // loading
-   Entity*  loadEntity(const String& filename);
-   World*   load(const String& filename);
+   virtual Entity*  loadEntity(const String& filename) = 0;
+   virtual World*   loadWorld(const String& filename) = 0;
+
+protected:
+   Entity*  doLoadEntity(const String& filename, int flags);
+   World*   doLoadWorld(const String& filename, int flags);
 
 private:
 

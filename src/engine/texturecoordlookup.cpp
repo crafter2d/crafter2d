@@ -17,12 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "texture.h"
-
-#include "core/math/vector.h"
-#include "core/defines.h"
-
 #include "texturecoordlookup.h"
+
+#include "core/graphics/texture.h"
+#include "core/math/size.h"
+#include "core/math/vertex.h"
+#include "core/defines.h"
 
 TextureCoordLookup::TextureCoordLookup():
    _lookupTable(NULL),
@@ -38,13 +38,13 @@ TextureCoordLookup::~TextureCoordLookup()
    _lookupTable = NULL;
 }
 
-void TextureCoordLookup::generateFromTexture(const Texture& texture, float framewidth, float frameheight, int framecount)
+void TextureCoordLookup::generateFromTexture(const Graphics::Texture& texture, const Size& framesize, int framecount)
 {
    _frameCount = framecount;
 
-   int maxFramesPerRow = texture.getWidth() / framewidth;
-   float nX = static_cast<float>(texture.getWidth()) / framewidth;
-   float nY = static_cast<float>(texture.getHeight()) / frameheight;
+   int maxFramesPerRow = static_cast<int>(texture.getWidth() / framesize.width);
+   float nX = static_cast<float>(texture.getWidth()) / framesize.width;
+   float nY = static_cast<float>(texture.getHeight()) / framesize.height;
 
    _texFrameWidth  = texture.getSourceWidth() / nX;
    _texFrameHeight = texture.getSourceHeight() / nY;
@@ -57,8 +57,8 @@ void TextureCoordLookup::generateFromTexture(const Texture& texture, float frame
       float x = static_cast<float>(tc % maxFramesPerRow) * _texFrameWidth;
       float y = floorf ((float)tc / maxFramesPerRow) * _texFrameHeight;
 
-      Vector tl = Vector(x, y);
-      Vector br = Vector(x + _texFrameWidth, y + _texFrameHeight);
+      Vertex tl(x, y);
+      Vertex br(x + _texFrameWidth, y + _texFrameHeight);
 
       _lookupTable[tc].initialize(tl, br);
 	}

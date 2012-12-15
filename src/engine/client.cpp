@@ -22,15 +22,17 @@
 #  include "client.inl"
 #endif
 
-#include <GL/GLee.h>
-#include <GL/glu.h>
-
 #include "core/defines.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
 #include "core/input/keyevent.h"
 #include "core/input/mouseevent.h"
+#include "core/graphics/device.h"
+#include "core/graphics/devicefactory.h"
+#include "core/graphics/rendercontext.h"
+#include "core/graphics/viewport.h"
+#include "core/system/platform.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
@@ -51,16 +53,20 @@
 #include "world/world.h"
 #include "world/worldrenderer.h"
 
+#include "clientcontentmanager.h"
 #include "player.h"
 #include "entity.h"
 #include "actionmap.h"
 #include "keymap.h"
-#include "opengl.h"
+
+using namespace Graphics;
 
 Client::Client():
    Process(),
    mpWindowFactory(NULL),
    mpWindow(NULL),
+   mpDevice(NULL),
+   mpRenderContext(NULL),
    mWindowListener(*this),
    mKeyEventDispatcher(*this),
    mMouseEventDispatcher(*this),
@@ -72,6 +78,7 @@ Client::Client():
    mRequests(),
    mServerId(-1)
 {
+   setContentManager(new ClientContentManager(*this));
 }
 
 Client::~Client()
@@ -86,7 +93,7 @@ bool Client::create(const String& classname)
    log << "\n-- Initializing Sound --\n\n";
 
    // initialize the sound system
-   mSoundManager.initialize();
+   mSoundManager.initialize();   
 
    return Process::create(classname);
 }
@@ -156,10 +163,11 @@ void Client::update(float delta)
 
 void Client::render(float delta)
 {
-   glLoadIdentity ();
-   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glAlphaFunc (GL_GREATER, 0.1f);
-   glEnable (GL_ALPHA_TEST);
+   mpRenderContext->clear();
+   mpRenderContext->setIdentityViewMatrix();
+
+   //glAlphaFunc (GL_GREATER, 0.1f);
+   //glEnable (GL_ALPHA_TEST);
 
    if ( mpWorldRenderer != NULL )
    {
@@ -170,10 +178,10 @@ void Client::render(float delta)
          mSoundManager.setPlayerPosition(controler.getPosition());
       }
 
-      mpWorldRenderer->render(delta);
+      mpWorldRenderer->render(*mpRenderContext, delta);
    }
 
-   glDisable (GL_ALPHA_TEST);
+   //glDisable (GL_ALPHA_TEST);
 
    //mpScript->addParam(delta);
    //mpScript->run("paint");
@@ -229,27 +237,44 @@ void Client::setWindow(GameWindow* pwindow)
 // - Operations
 //---------------------------------------------
 
-bool Client::initOpenGL()
-{
-   bool success = OpenGL::initialize ();
-   if ( success )
-   {
-      //const Color& color = mSettings.getClearColor();
-      const Color color(75, 150, 230, 255);
-      glClearColor(color.getRed(), color.getGreen(), color.getBlue(), 0.0f);
+typedef Graphics::DeviceFactory* (*PFACTORY)();
 
-	   glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-      glShadeModel (GL_SMOOTH);
+bool Client::initDevice()
+{
+   Log::getInstance() << "\n-- Initializing Graphics --\n\n";
+
+   void* pmodule = Platform::getInstance().loadModule("OGLd.dll");
+   if ( pmodule == NULL )
+   {
+      return false;
+   }
+
+   PFACTORY pfactoryfnc = (PFACTORY)Platform::getInstance().getFunctionAddress(pmodule, "getDeviceFactory");
+   if ( pfactoryfnc == NULL )
+   {
+      return false;
+   }
+
+   AutoPtr<DeviceFactory> pfactory = pfactoryfnc();
+   if ( pfactory.hasPointer() )
+   {
+      static const Color color(75, 150, 230, 255);
+
+      mpDevice = pfactory->createDevice();
+      mpDevice->create(mpWindow->getHandle());
+
+      mpRenderContext = mpDevice->createRenderContext();
+      mpRenderContext->setClearColor(color);
 
       onWindowResized();
    }
 
-	return success;
+	return true;
 }
 
 bool Client::loadWorld(const String& filename, const String& name)
 {
-   World* pworld = getContentManager().load(filename);
+   World* pworld = getContentManager().loadWorld(filename);
    if ( pworld != NULL )
    {
       mpWorldRenderer = pworld->createRenderer();
@@ -385,7 +410,7 @@ void Client::handleServerdownEvent()
 
 void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
 {
-   World* pworld = getContentManager().load(event.getFilename());
+   World* pworld = getContentManager().loadWorld(event.getFilename());
    if ( pworld == NULL )
    {
       // ee boehhh
@@ -394,13 +419,6 @@ void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
    }
 
    setWorld(pworld);
-
-   mpWorldRenderer = pworld->createRenderer();
-   mpPlayer->initialize(*pworld);
-
-   // run the onWorldChanged script
-   mpScript->addParam("engine.game.World", pworld);
-   mpScript->run("onWorldChanged");
 }
 
 void Client::handleNewObjectEvent(const NewObjectEvent& event)
@@ -474,6 +492,22 @@ void Client::handleScriptEvent(const ScriptEvent& event)
 
 // - Notifications
 
+void Client::notifyWorldChanged()
+{
+   World& world = getWorld();
+   world.initialize(*mpDevice);
+   world.onViewportChanged(mpRenderContext->getViewport());
+
+   mpWorldRenderer = world.createRenderer();
+   mpPlayer->initialize(world);
+
+   // run the onWorldChanged script
+   mpScript->addParam("engine.game.World", &world);
+   mpScript->run("onWorldChanged");
+
+   Process::notifyWorldChanged();
+}
+
 void Client::onWindowChanged()
 {
    if ( hasWindow() )
@@ -482,25 +516,23 @@ void Client::onWindowChanged()
       mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
       mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
 
-      Log::getInstance() << "\n-- Initializing Graphics --\n\n";
-
-      if ( !initOpenGL() )
-      {
-      }
+      initDevice();
    }
 }
 
 void Client::onWindowResized()
 {
    // set the new opengl states
-   glViewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
+   Graphics::Viewport viewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
 
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   gluOrtho2D(0, mpWindow->getWidth(), mpWindow->getHeight(), 0);
+   mpRenderContext->setViewport(viewport);
+   mpRenderContext->setOrthoProjection();
+   mpRenderContext->setIdentityViewMatrix();
 
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
+   if ( hasWorld() )
+   {
+      getWorld().onViewportChanged(viewport);
+   }
 }
 
 void Client::onWindowClosing()

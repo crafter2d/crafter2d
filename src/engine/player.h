@@ -24,8 +24,6 @@
 
 #include "actor.h"
 #include "playerworldobserver.h"
-#include "viewport.h"
-#include "net/netconnection.h"
 
 class World;
 
@@ -42,8 +40,6 @@ public:
    int                  getClientId() const;
    void                 setClientId(int clientid);
 
-   Viewport&            getViewport();
-
    bool                 hasController() const;
    Actor&               getController();
    void                 setController(Actor& actor);
@@ -56,7 +52,6 @@ public:
 
 private:
 
-   Viewport             mViewport;
    PlayerWorldObserver  mWorldObserver;
    Actor*               mpController;
    int                  mClientId;

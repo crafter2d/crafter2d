@@ -25,16 +25,17 @@
 #include "engine/engine_base.h"
 #include "engine/script/scriptmanager.h"
 
-#include "content/contentmanager.h"
 #include "net/netconnection.h"
 
 #include "processnetobserver.h"
 
 class ActionMap;
+class ContentManager;
 class DataStream;
 class NetEvent;
 class Script;
 class String;
+class World;
 
 /// @author Jeroen Broekhuizen
 /// \brief Provides the basic functionality for the process.
@@ -55,6 +56,7 @@ public:
    NetConnection* getConnection();
 
    ContentManager& getContentManager();
+   void            setContentManager(ContentManager* pmanager);
 
    ActionMap*     getActionMap();
    void           setActionMap(ActionMap* map);
@@ -85,7 +87,7 @@ protected:
 
    ProcessNetObserver   mNetObserver;
    NetConnection        conn;
-   ContentManager       mContentManager;
+   ContentManager*      mpContentManager;
    ScriptManager        mScriptManager;
    Script*              mpScript;
    ActionMap*           actionMap;

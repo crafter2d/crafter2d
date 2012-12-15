@@ -133,10 +133,7 @@ bool WorldVersion2Reader::readLayers(UnzipFile& zip)
 
    for ( int index = 0; index < layercount; ++index )
    {
-      Layer* player = getWorld().createLayer();
-      getWorld().addLayer(player);
-
-      stream >> *player;
+      readLayer(stream);
    }
 
    delete[] pdata;
@@ -207,14 +204,23 @@ bool WorldVersion2Reader::loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, con
 // - Layer stream functions
 //////////////////////////////////////////////////////////////////////////
 
-DataStream& operator>>(DataStream& in, Layer& layer)
+void WorldVersion2Reader::readLayer(DataStream& in)
 {
    float width, height;
    String name, effect;
 
+   Layer* player = getWorld().createLayer();
+   getWorld().addLayer(player);
+
    in >> name >> effect >> width >> height;
 
-   layer.create(name, width, height, effect);
+   LayerDefinition* pdefinition = new LayerDefinition();
+   pdefinition->effect = effect;
+   pdefinition->name = name;
+   pdefinition->width = width;
+   pdefinition->height = height;
+
+   player->create(pdefinition);
 
    for ( int y = 0; y < height; ++y )
    {
@@ -222,9 +228,7 @@ DataStream& operator>>(DataStream& in, Layer& layer)
       {
          int textureid;
          in.readInt(textureid);
-         layer.setTile(x, y, textureid);
+         player->setTile(x, y, textureid);
       }
    }
-
-   return in;
 }

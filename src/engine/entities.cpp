@@ -40,13 +40,13 @@ void Entities::update(float delta)
    }
 }
 
-void Entities::draw() const
+void Entities::draw(Graphics::RenderContext& context) const
 {
    EntityMap::const_iterator it = mEntities.begin();
    for ( ; it != mEntities.end(); ++it )
    {
       Entity* pentity = it->second;
-      pentity->draw();
+      pentity->draw(context);
    }
 }
 

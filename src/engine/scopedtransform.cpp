@@ -19,11 +19,6 @@
  ***************************************************************************/
 #include "scopedtransform.h"
 
-#ifdef _WIN32
-#  include <windows.h>
-#endif
-#include <GL/gl.h>
-
 #include "core/math/vector.h"
 
 ScopedTransform::ScopedTransform(const Vector& vector)
@@ -38,11 +33,11 @@ ScopedTransform::ScopedTransform(float x, float y)
 
 ScopedTransform::~ScopedTransform()
 {
-   glPopMatrix();
+   //glPopMatrix();
 }
 
 void ScopedTransform::push(float x, float y)
 {
-   glPushMatrix();
-   glTranslatef(x, y, 0);
+   //glPushMatrix();
+   //glTranslatef(x, y, 0);
 }

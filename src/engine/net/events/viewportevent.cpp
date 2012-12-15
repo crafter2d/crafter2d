@@ -22,9 +22,8 @@
 #  include "viewportevent.inl"
 #endif
 
+#include "core/graphics/viewport.h"
 #include "core/streams/datastream.h"
-
-#include "../../viewport.h"
 
 IMPLEMENT_REPLICATABLE(ViewportEventId, ViewportEvent, NetEvent)
 
@@ -35,16 +34,17 @@ ViewportEvent::ViewportEvent():
 {
 }
 
-ViewportEvent::ViewportEvent(const Viewport& viewport):
+ViewportEvent::ViewportEvent(const Graphics::Viewport& viewport):
    NetEvent(viewportEvent),
-   mX(viewport._left),
-   mY(viewport._top)
+   mX(viewport.getLeft()),
+   mY(viewport.getTop())
 {
 }
 
-void ViewportEvent::update(Viewport& viewport) const
+void ViewportEvent::update(Graphics::Viewport& viewport) const
 {
-   viewport.setPosition(mX, mY);
+   viewport.setLeft(mX);
+   viewport.setTop(mY);
 }
 
 // - Streaming

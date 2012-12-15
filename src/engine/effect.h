@@ -23,10 +23,18 @@
 #include <vector>
 
 #include "core/string/string.h"
-#include "texture.h"
+#include "core/graphics/texture.h"
+#include "engine/resource/resourcemanager.h"
 
-class CodePath;
 class TiXmlElement;
+
+namespace Graphics
+{
+   class BlendState;
+   class CodePath;
+   class Device;
+   class RenderContext;
+};
 
 /*!
 @author Jeroen Broekhuizen
@@ -40,48 +48,42 @@ code).
  */
 class Effect
 {
-	struct TexStage {
-		TexturePtr tex;
-      String uniform;
-		int index;
-		GLint combiner;
-		GLint source0;
-		GLint source1;
-	};
-	
 public:
 	                  Effect();
 	                  ~Effect();
 	
-	bool              load(const String& file);
+	bool              load(Graphics::Device& device, const String& file);
 	void              destroy();
 	
 	const TexturePtr  resolveTexture(const String& uniform) const;
    const TexturePtr  findTexture(const String& uniform) const;
 
-         bool        hasPath() const;
-   const CodePath&   getPath() const;
-         void        setPath(CodePath* path);
-	
-	void              enable () const;
-	void              disable () const;
+   void              enable(Graphics::RenderContext& context) const;
+	void              disable(Graphics::RenderContext& context) const;
 	
 private:
+   struct TexStage
+   {
+		TexturePtr tex;
+      String uniform;
+		int index;
+	};
+
   // types
    typedef std::vector<TexStage> Stages;
 
-	bool              processTextures(const TiXmlElement& effect);
-	bool              processCode(const TiXmlElement& effect, const String& path);
-	bool              processCombiners(const TiXmlElement& shader_part);
-	bool              postprocessTextures();
-	
-	GLint             getCombinerValue(const char* str);
-	GLint             getSourceValue(const char* str);
-	
-   String      name;
-   Stages      stages;
-   CodePath*   mCodePath;
-   bool        useCombiners;  
+	bool              processTextures(Graphics::Device& device, const TiXmlElement& effect);
+   bool              postprocessTextures();
+
+	bool              processCode(Graphics::Device& device, const TiXmlElement& effect, const String& path);
+   bool              processBlendState(Graphics::Device& device, const TiXmlElement& effect);
+		
+   String                name;
+   Stages                stages;
+   Graphics::CodePath*   mpCodePath;
+   Graphics::BlendState* mpBlendStateEnabled;
+   Graphics::BlendState* mpBlendStateDisabled;
+   int                   mModelViewProjectArg;
 };
 
 #ifdef JENGINE_INLINE

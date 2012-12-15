@@ -153,9 +153,9 @@ class Actor extends Entity implements Collidable
 	{
 		mGenerator = generator;
 		
-		Box2DBody body = getBody();
-		body.addForceGenerator(generator);
-		body.generateSensors();
+		//Box2DBody body = getBody();
+		//body.addForceGenerator(generator);
+		//body.generateSensors();
 	}
 	
 	public boolean isOnGround()

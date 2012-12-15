@@ -28,7 +28,7 @@ public:
    explicit TopDownWorldRenderer(World& world);
    virtual ~TopDownWorldRenderer();
 
-   virtual void render(float delta);
+   virtual void render(Graphics::RenderContext& context, float delta);
 };
 
 #endif

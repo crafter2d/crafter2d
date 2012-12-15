@@ -150,7 +150,7 @@ char* String::toUtf8(int& length) const
 
 const char* String::getBuffer() const
 {
-   return (char*) mString.getBuffer();
+   return (char*) ((UnicodeString)mString).getTerminatedBuffer();
 }
 
 int String::compare(const String& that) const
@@ -251,19 +251,9 @@ int String::lastIndexOf(char character) const
 
 std::string String::toStdString() const
 {
-   UErrorCode status = U_ZERO_ERROR;
-   char* pdata = 0;
-
-   int32_t ln = mString.extract(pdata, 0, NULL, status);
-   pdata = new char[ln+1];
-   status = U_ZERO_ERROR;
-   mString.extract(pdata, ln, NULL, status);
-   if ( status != U_ZERO_ERROR )
-   {
-      // bah
-   }
-
-   pdata[ln] = 0;
+   int len = 0;
+   char* pdata = toUtf8(len);
+   
    std::string result = pdata;
    delete[] pdata;
 

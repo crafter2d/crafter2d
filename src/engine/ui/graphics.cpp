@@ -1,6 +1,6 @@
 
 #include "graphics.h"
-
+/*
 #include <GL/GLee.h>
 
 #include "core/defines.h"
@@ -107,3 +107,4 @@ void Graphics::setColor(float r, float g, float b, float a)
 {
    glColor4f(r, g, b, a);
 }
+*/

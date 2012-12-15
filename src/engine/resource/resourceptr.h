@@ -27,7 +27,7 @@ class ResourcePtr
 {
 public:
             ResourcePtr();
-   explicit ResourcePtr(ResourceHandle* phandle);
+   explicit ResourcePtr(ResourceHandle<T>* phandle);
             ResourcePtr(const ResourcePtr<T>& that);
             ~ResourcePtr();
 
@@ -41,6 +41,8 @@ public:
    const T* ptr() const;
          T* ptr();
 
+   const String& getName() const;
+
  // dereferencing
    T* operator->() const;
    T& operator*() const;
@@ -48,7 +50,7 @@ public:
 private:
 
  // members
-   ResourceHandle* mpHandle;
+   ResourceHandle<T>* mpHandle;
 };
 
 #include "resourceptr.inl"

@@ -22,22 +22,20 @@
 #  include "particlesystem.inl"
 #endif
 
-#include <GL/GLee.h>
-#include <GL/glu.h>
 #include <tinyxml.h>
 
 #include "core/log/log.h"
 #include "core/streams/datastream.h"
 #include "core/system/timer.h"
+#include "core/graphics/vertexbuffer.h"
+#include "core/graphics/device.h"
+#include "core/graphics/codepath.h"
+#include "core/graphics/rendercontext.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
 #include "engine/resource/resourcemanager.h"
 
-#include "codepath.h"
-#include "opengl.h"
-#include "vertexbuffer.h"
-#include "effect.h"
 #include "process.h"
 #include "nodevisitor.h"
 
@@ -69,18 +67,20 @@ IMPLEMENT_REPLICATABLE(ParticleSystemId, ParticleSystem, Entity)
 /// \fn ParticleSystem::ParticleSystem()
 /// \brief Initializes member variables.
 ParticleSystem::ParticleSystem():
+   Entity(),
+   position(),
+   mEffect(),
 	activeList(0),
    freeList(0),
-   maxBufferSize(0),
+   mGeometryBuffer(NULL),
+   mGeometryBufferSize(0),
+   updateScript(NULL),
    emitRate(0),
    emitCount(0),
    active(0),
    maxActive(70),
 	lastUpdate(0),
-   lastInit(0),
-   updateScript(0),
-   buffer(0),
-   path(0)
+   lastInit(0)
 {
 }
 
@@ -142,24 +142,20 @@ bool ParticleSystem::load(TiXmlDocument& doc)
 
 /// \fn ParticleSystem::prepare()
 /// \brief Creates and initializes the particle system components neccessary for rendering.
-bool ParticleSystem::prepare()
+bool ParticleSystem::prepare(Graphics::Device& device)
 {
-	//maxBufferSize = (size-1) * 2;
-   maxBufferSize = 256;
+   using namespace Graphics;
 
-	// create & initialize the code path
-   path = OpenGL::createCodePath(CodePath::ECG);
-	path->load("shaders/pointsprite.cg", "");
-
-   Effect effect;
-   effect.setPath(path);
+   // load effect
+   mEffect.load(device, "shaders/pointsprite.xml");
 
    int usage  = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
    int format = VertexBuffer::eXY | VertexBuffer::eDiffuse | VertexBuffer::eTex0 | VertexBuffer::eTex1;
 
 	// generate the vertex buffer
-	buffer = OpenGL::createVertexBuffer ();
-	if (!buffer->create(effect, maxBufferSize*4, usage, format))
+   mGeometryBufferSize = 256;
+	mGeometryBuffer = device.createVertexBuffer();
+	if (!mGeometryBuffer->create(mGeometryBufferSize * 4, usage, format))
 		return false;
 
 	srand(TIMER.getTick() * 1000);
@@ -170,26 +166,28 @@ bool ParticleSystem::prepare()
 /// \brief Release all dynamic objects inside this particle system.
 void ParticleSystem::destroy()
 {
-   if (path != 0) {
-      delete path;
-      path = 0;
+   mEffect.destroy();
+   
+   if ( mGeometryBuffer != NULL )
+   {
+      delete mGeometryBuffer;
+      mGeometryBuffer = NULL;
    }
-   if (buffer != 0) {
-      delete buffer;
-      buffer = 0;
-   }
-   if (updateScript != 0) {
+   if ( updateScript != 0 )
+   {
       delete updateScript;
       updateScript = 0;
    }
 
    // release the particle lists of this particle system
-   while (activeList != 0) {
+   while ( activeList != 0 )
+   {
       Particle* temp = activeList;
       activeList = activeList->next;
       delete temp;
    }
-   while (freeList != 0) {
+   while ( freeList != 0 )
+   {
       Particle* temp = freeList;
       freeList = freeList->next;
       delete temp;
@@ -272,25 +270,19 @@ void ParticleSystem::doUpdate(float delta)
 /// \fn ParticleSystem::doDraw ()
 /// \brief Draw the particles to the screen buffer via a vertex buffer and
 /// vertex shader for rendering speed.
-void ParticleSystem::doDraw() const
+void ParticleSystem::doDraw(Graphics::RenderContext& context) const
 {
-   glDisable(GL_DEPTH_TEST);
-	//glDisable(GL_ALPHA_TEST);
-	glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-   texture->enable ();
-
 	uint num = 0;
 	Particle* part = activeList;
-	ParticleVertex* verts = (ParticleVertex*)buffer->lock (0);
+	ParticleVertex* verts = (ParticleVertex*)mGeometryBuffer->lock (0);
 
-	path->enable();
+   mEffect.enable(context);
+
 	while (part)
    {
 		float halfSize = part->size * 0.5f;
 
-		// create the quad
+		// create the rectangle
 		verts[0].pos = part->pos;
 		verts[0].diffuse = part->color;
 		verts[0].tex.set (0,0);
@@ -314,15 +306,16 @@ void ParticleSystem::doDraw() const
 		verts += 4;
 
 		// check buffer limit
-		if (++num >= maxBufferSize) {
+      if ( ++num >= mGeometryBufferSize )
+      {
 			// buffer full -> render contents and continue
-			buffer->unlock ();
+			mGeometryBuffer->unlock();
 
-			buffer->enable ();
-			glDrawArrays (GL_QUADS, 0, num*4);
-			buffer->disable ();
+			mGeometryBuffer->enable();
+         context.drawTriangles(0, num * 4);
+			mGeometryBuffer->disable();
 
-			verts = (ParticleVertex*)buffer->lock (0);
+			verts = (ParticleVertex*)mGeometryBuffer->lock (0);
 			num = 0;
 		}
 
@@ -330,18 +323,15 @@ void ParticleSystem::doDraw() const
 	}
 
 	// render any remaining particles
-	buffer->unlock ();
-	if (num != 0) {
-		buffer->enable ();
-		glDrawArrays (GL_QUADS, 0, num*4);
-		buffer->disable ();
+	mGeometryBuffer->unlock ();
+	if ( num != 0 )
+   {
+		mGeometryBuffer->enable ();
+		context.drawTriangles(0, num * 4);
+		mGeometryBuffer->disable ();
 	}
-	path->disable();
 
-	glDisable(GL_BLEND);
-	glEnable(GL_ALPHA_TEST);
-
-	texture->disable();
+	mEffect.disable(context);
 }
 
 // - Visitor

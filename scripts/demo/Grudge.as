@@ -18,7 +18,7 @@ class Grudge extends Actor
 		mWeapon = WEAPON_CLUB;
 		
 		setState(new PatrolState());
-		setForceGenerator(new InputForceGenerator());
+		//setForceGenerator(new InputForceGenerator());
 		setInitialFaceDirection(Actor.FACE_LEFT);
 	}
 

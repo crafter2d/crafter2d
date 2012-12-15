@@ -22,7 +22,10 @@
 
 #include "netevent.h"
 
-class Viewport;
+namespace Graphics
+{
+   class Viewport;
+}
 
 /**
 @author Jeroen Broekhuizen
@@ -33,9 +36,9 @@ public:
    DEFINE_REPLICATABLE(ViewportEvent)
 
             ViewportEvent();
-   explicit ViewportEvent(const Viewport& viewport);
+   explicit ViewportEvent(const Graphics::Viewport& viewport);
 
-   void update(Viewport& viewport) const;
+   void update(Graphics::Viewport& viewport) const;
    
 protected:
  // streaming

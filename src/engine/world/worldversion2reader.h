@@ -24,6 +24,7 @@
 
 class UnzipFile;
 class TiXmlDocument;
+class DataStream;
 
 class WorldVersion2Reader : public AbstractWorldVersionReader
 {
@@ -43,6 +44,10 @@ protected:
    bool readObjects(UnzipFile& zip);
 
    bool loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, const String& filename);
+
+private:
+ // operations
+   void readLayer(DataStream& in);
 };
 
 #endif // WORLDVERSION2READER_H

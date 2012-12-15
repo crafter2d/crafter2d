@@ -46,6 +46,7 @@ public:
    void         setBackgroundColor(const Color& color);
 
  // query
+   virtual int getHandle() const;
    int getWidth() const;
    int getHeight() const;
 

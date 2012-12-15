@@ -20,57 +20,43 @@
 #include "texturecoordinate.h"
 
 TextureCoordinate::TextureCoordinate():
-   mTL(),
-   mBR()
+   mCoordinates()
 {
 }
 
 TextureCoordinate::TextureCoordinate(const TextureCoordinate& that):
-   mTL(that.mTL),
-   mBR(that.mBR)
+   mCoordinates()
 {
+   mCoordinates[TopLeft] = that.getTopLeft();
+   mCoordinates[TopRight] = that.getTopRight();
+   mCoordinates[BottomRight] = that.getBottomRight();
+   mCoordinates[BottomLeft] = that.getBottomLeft();
 }
 
-TextureCoordinate::~TextureCoordinate()
+void TextureCoordinate::initialize(const Vertex& tl, const Vertex& br)
 {
+   mCoordinates[TopLeft] =  tl;
+   mCoordinates[TopRight].set(br.x, tl.y);
+   mCoordinates[BottomRight] = br;
+   mCoordinates[BottomLeft].set(tl.x, br.y);
 }
 
-void TextureCoordinate::initialize(const Vector& tl, const Vector& br)
+const Vertex& TextureCoordinate::getTopLeft() const
 {
-   mTL = tl;
-   mBR = br;
+   return mCoordinates[TopLeft];
 }
 
-Vector TextureCoordinate::getTopLeft()
+const Vertex& TextureCoordinate::getTopRight() const
 {
-   return mTL;
+   return mCoordinates[TopRight];
 }
 
-Vector TextureCoordinate::getTopRight()
+const Vertex& TextureCoordinate::getBottomLeft() const
 {
-   return Vector(mBR.x, mTL.y);
+   return mCoordinates[BottomRight];
 }
 
-Vector TextureCoordinate::getBottomLeft()
+const Vertex& TextureCoordinate::getBottomRight() const
 {
-   return Vector(mTL.x, mBR.y);
-}
-
-Vector TextureCoordinate::getBottomRight()
-{
-   return mBR;
-}
-
-void TextureCoordinate::flipHorizontal()
-{
-   float temp = mTL.x;
-   mTL.x = mBR.x;
-   mBR.x = temp;
-}
-
-void TextureCoordinate::flipVertical()
-{
-   float temp = mTL.y;
-   mTL.y = mBR.y;
-   mBR.y = temp;
+   return mCoordinates[BottomLeft];
 }

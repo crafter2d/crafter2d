@@ -31,8 +31,6 @@
 #include "layer.h"
 #include "world.h"
 
-DataStream& operator<<(DataStream& in, const Layer& layer);
-
 //////////////////////////////////////////////////////////////////////////
 // - Static operations
 //////////////////////////////////////////////////////////////////////////
@@ -107,7 +105,7 @@ bool WorldWriter::writeLayers(ZipFile& zip)
    for ( int index = 0; index < getWorld().getLayerCount(); ++index )
    {
       const Layer* player = getWorld().getLayer(index);
-      stream << *player;
+      //stream << *player;
    }
 
    zip.addFile("data", (void*)stream.getData(), stream.getDataSize());
@@ -177,27 +175,3 @@ bool WorldWriter::writeObjects(ZipFile& zip)
    return true;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// - Layer stream functions
-//////////////////////////////////////////////////////////////////////////
-
-DataStream& operator<<(DataStream& in, const Layer& layer)
-{
-   const String&   name       = layer.getName();
-   const String&   effectFile = layer.getEffectFile();
-   int             width      = layer.getWidth();
-   int             height     = layer.getHeight();
-   
-   in << name << effectFile << width << height;
-
-   for ( int y = 0; y < height; ++y )
-   {
-      for ( int x = 0; x < width; ++x )
-      {
-         int tile = layer.getTile(x, y);
-         in << tile;
-      }
-   }
-
-   return in;
-}

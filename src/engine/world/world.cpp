@@ -47,6 +47,8 @@
 #include "worldwriter.h"
 #include "topdownworldrenderer.h"
 
+using namespace Graphics;
+
 static const String WORLD_EXTENSION = ".jwl";
 
 /// fn World::World
@@ -88,8 +90,13 @@ World::~World()
 
 /// \fn World::initialize()
 /// \brief Loads world information from a file and preprocesses this information for use during the game
-void World::initialize()
+void World::initialize(Device& device)
 {
+   for ( std::size_t index = 0; index < layers.size(); index++ )
+   {
+      Layer* player = layers[index];
+      player->initialize(device);
+   }
 }
 
 /// \fn Worl::save()
@@ -212,33 +219,33 @@ void World::updateClient(float delta)
    }
 }
 
-/// \fn World::doDraw()
+/// \fn World::draw(Graphics::RenderContext& context)
 /// \brief Draws the world on screen
-void World::draw () const
+void World::draw(Graphics::RenderContext& context) const
 {
    // render the layers
    for ( int i = 0; i < layers.size(); i++ )
    {
       // enable the effect
       const Effect& effect = layers[i]->getEffect();
-      effect.enable();
+      effect.enable(context);
 
       // now render the layer
-      layers[i]->draw();
+      layers[i]->draw(context);
 
       // quit the effect
-      effect.disable();
+      effect.disable(context);
    }
 
    // scroll the viewpoint to the right position
    Vector scroll = layers[getObjectLayer()]->getScroll ();
-   glTranslatef(-scroll.x, -scroll.y, 0);
+   //glTranslatef(-scroll.x, -scroll.y, 0);
 
    EntityMap::const_iterator it = mEntities.begin();
    for ( ; it != mEntities.end(); ++it )
    {
       Entity* pentity = it->second;
-      pentity->draw();
+      pentity->draw(context);
    }
 }
 
@@ -509,4 +516,13 @@ void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, 
    mpScript->addParam(side);
    mpScript->addParam(begin);
    mpScript->run("onObjectCollision");
+}
+
+void World::onViewportChanged(const Graphics::Viewport& viewport)
+{
+   for ( int index = 0; index < layers.size(); ++index )
+   {
+      Layer* player = layers[index];
+      player->onViewportChanged(viewport);
+   }
 }

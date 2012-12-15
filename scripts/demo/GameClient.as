@@ -2,7 +2,7 @@
 package demo;
 
 use engine.core.*;
-use engine.ui.*;
+// use engine.ui.*;
 use engine.messages.*;
 use engine.collections.*;
 use engine.game.*;
@@ -25,7 +25,7 @@ class GameClient extends Client
 		}
 		setWindow(window);
 	
-		MessageBox.showInformation("This is a messagebox!");
+		//MessageBox.showInformation("This is a messagebox!");
 			
 		return connect("localhost", 7000, "player");
 	}

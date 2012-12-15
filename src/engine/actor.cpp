@@ -22,11 +22,11 @@
 #  include "actor.inl"
 #endif
 
-#include <GL/GLee.h>
-#include <GL/glu.h>
 #include <tinyxml.h>
 
 #include "core/log/log.h"
+#include "core/graphics/vertexbuffer.h"
+#include "core/graphics/rendercontext.h"
 
 #include "engine/physics/body.h"
 #include "engine/physics/simulator.h"
@@ -41,13 +41,12 @@
 #include "controller.h"
 #include "scopedtransform.h"
 
+using namespace Graphics;
+
 IMPLEMENT_REPLICATABLE(ActorId, Actor, Entity)
 
 Actor::Actor():
    Entity(),
-   texture(),
-   mpBody(NULL),
-   mpAnimator(NULL),
    mpController(NULL),
    mWidth(0),
    mHeight(0),
@@ -55,8 +54,7 @@ Actor::Actor():
    halfY(.0f),
    angle(.0f),
    visible(true),
-   dir(true),
-   mStatic(false)
+   dir(true)
 {
 }
 
@@ -68,12 +66,6 @@ Actor::~Actor()
 
 void Actor::destroy()
 {
-   delete mpBody;
-   mpBody = NULL;
-
-   delete mpAnimator;
-   mpAnimator = NULL;
-
    Entity::destroy();
 }
 
@@ -81,7 +73,7 @@ void Actor::destroy()
 
 bool Actor::hasLineOfSight(const Actor& that) const
 {
-   return getBody().hasLineOfSight(that.getBody());
+   return false; // getBody().hasLineOfSight(that.getBody());
 }
 
 // - Modifier interface
@@ -95,58 +87,24 @@ void Actor::setController(Controller* pcontroller)
 
 void Actor::doUpdate(float delta)
 {
+   Entity::doUpdate(delta);
+
    if ( mpController != NULL )
       mpController->performAction(*this);
 }
 
 void Actor::doUpdateClient(float delta)
 {
-   // perform client side predictions
-   if ( mpAnimator != NULL )
-      mpAnimator->animate(delta);
+   Entity::doUpdate(delta);
 }
 
 /*!
     \fn Actor::draw()
 	 \brief Draws the object on the screen.
  */
-void Actor::doDraw() const
+void Actor::doDraw(RenderContext& context) const
 {
-   ScopedTransform transform(mPos);
-
-	texture->enable();
-
-   TextureCoordinate texcoord = mpAnimator->getTextureCoordinate();
-   if ( !dir )
-      texcoord.flipHorizontal();
-
-   Vector tex;
-
-   glColor3f (1,1,1);
-   glPushMatrix();
-
-   glRotatef(angle, 0,0,1);
-	glBegin (GL_QUADS);
-      tex = texcoord.getTopLeft();
-		glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
-		glVertex2f (-halfX,-halfY);
-
-      tex = texcoord.getBottomLeft();
-      glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
-		glVertex2f (-halfX,halfY);
-
-      tex = texcoord.getBottomRight();
-      glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
-		glVertex2f (halfX,halfY);
-
-      tex = texcoord.getTopRight();
-      glMultiTexCoord2f (GL_TEXTURE0_ARB, tex.x, tex.y);
-		glVertex2f (halfX,-halfY);
-	glEnd();
-
-   texture->disable();
-
-   glPopMatrix();
+   Entity::doDraw(context);
 }
 
 /// \fn Actor::clone ()
@@ -170,17 +128,6 @@ const Vector& Actor::getPosition() const
 /// \param p the new position of the object
 void Actor::setPosition(const Vector& p)
 {
-   if ( isReplica() )
-      mPos = p;
-   else
-   {
-      if ( mpBody != NULL )
-         mpBody->setPosition(p);
-      else
-         mPos = p;
-
-      setDirty(ePositionDirty);
-   }
 }
 
 void Actor::setSize(int width, int height)
@@ -195,12 +142,12 @@ void Actor::setSize(int width, int height)
 
 int Actor::getAnimation() const
 {
-   return mpAnimator != NULL ? mpAnimator->getAnimation() : 0;
+   return 0;// mpAnimator != NULL ? mpAnimator->getAnimation() : 0;
 }
 
 void Actor::setAnimation(int anim)
 {
-   if ( mpAnimator != NULL && mpAnimator->setAnimation(anim) )
+   //if ( mpAnimator != NULL && mpAnimator->setAnimation(anim) )
    {
       setDirty(eAnimationDirty);
    }
@@ -219,11 +166,6 @@ void Actor::accept(NodeVisitor& nv)
 
 void Actor::updateState()
 {
-   ASSERT_PTR(mpBody);
-
-   mPos  = mpBody->getPosition();
-   angle = mpBody->getAngle();
-
    setDirty(ePositionDirty);
 }
 
@@ -243,7 +185,7 @@ void Actor::doPack(DataStream& stream) const
 
    if ( isDirty(eAnimationDirty) )
    {
-      stream << mpAnimator->getAnimation();
+      //stream << mpAnimator->getAnimation();
    }
 }
 
@@ -264,7 +206,7 @@ void Actor::doUnpack(DataStream& stream)
       int anim;
       stream >> anim;
 
-      if ( mpAnimator != NULL )
-         mpAnimator->setAnimation(anim);
+      //if ( mpAnimator != NULL )
+      //   mpAnimator->setAnimation(anim);
    }
 }

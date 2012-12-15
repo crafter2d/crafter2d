@@ -22,18 +22,18 @@
 #  include "effect.inl"
 #endif
 
-#include <GL/GLee.h>
-
 #include "core/vfs/file.h"
 #include "core/log/log.h"
-#include "core/defines.h"
+#include "core/graphics/codepath.h"
+#include "core/graphics/device.h"
+#include "core/graphics/blendstatedesc.h"
+#include "core/graphics/rendercontext.h"
 
 #include "engine/resource/resourcemanager.h"
 
-#include "codepath.h"
-#include "opengl.h"
-#include "texture.h"
 #include "tinyxml.h"
+
+using namespace Graphics;
 
 /*!
     \fn Effect::Effect(void)
@@ -42,8 +42,9 @@
 Effect::Effect():
    name(),
    stages(),
-   mCodePath(NULL),
-   useCombiners(false)
+   mpCodePath(NULL),
+   mpBlendStateEnabled(NULL),
+   mpBlendStateDisabled(NULL)
 {
 }
 
@@ -63,7 +64,7 @@ Effect::~Effect()
 	 \retval true the effect file is loaded correctly.
 	 \retval false an error occured (look in the log file for a message).
  */
-bool Effect::load(const String& file)
+bool Effect::load(Device& device, const String& file)
 {
 	Log& log = Log::getInstance();
 
@@ -88,7 +89,7 @@ bool Effect::load(const String& file)
    name = effect->Attribute ("name");
 
 	// try to load in the textures
-	if ( !processTextures(*effect) || !processCode(*effect, "../shaders/") )
+	if ( !processTextures(device, *effect) || !processCode(device, *effect, "../shaders/") || !processBlendState(device, *effect) )
 		return false;
 
 	// find the uniform indices of the texture
@@ -103,12 +104,12 @@ bool Effect::load(const String& file)
  */
 void Effect::destroy ()
 {
-   if( mCodePath != NULL )
+   if( mpCodePath != NULL )
    {
 		// release the path
-		mCodePath->release ();
-		delete mCodePath;
-		mCodePath = NULL;
+		mpCodePath->release ();
+		delete mpCodePath;
+		mpCodePath = NULL;
 	}
 
 	stages.clear ();
@@ -120,7 +121,7 @@ void Effect::destroy ()
 	 various stages neccessary for this effect.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::processTextures(const TiXmlElement& effect)
+bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effect)
 {
    const TiXmlElement* ptexture = static_cast<const TiXmlElement*>(effect.FirstChild("texture"));
    while ( ptexture != NULL )
@@ -140,7 +141,7 @@ bool Effect::processTextures(const TiXmlElement& effect)
 		else
       {
 			// must be a normal texture
-         stage.tex = ResourceManager::getInstance().getTexture(file->Value());
+         stage.tex = ResourceManager::getInstance().getTexture(device, file->Value());
          if ( !stage.tex.isValid() )
          {
             Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());
@@ -165,12 +166,12 @@ bool Effect::processTextures(const TiXmlElement& effect)
 	 nothing is done.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::postprocessTextures ()
+bool Effect::postprocessTextures()
 {
    // get the uniform locations of the textures in the fragment shader
    for ( Stages::size_type s = 0; s < stages.size(); ++s)
    {
-      stages[s].index = getPath().getUniformLocation(stages[s].uniform);
+      stages[s].index = mpCodePath->getUniformLocation(stages[s].uniform);
       if (stages[s].index == -1)
       {
          Log::getInstance().error("Can not find %s", stages[s].uniform.getBuffer());
@@ -188,7 +189,7 @@ bool Effect::postprocessTextures ()
 	 part is loaded and automatically converted.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::processCode(const TiXmlElement& effect, const String& path)
+bool Effect::processCode(Graphics::Device& device, const TiXmlElement& effect, const String& path)
 {
    const char* vertex = NULL, *fragment = NULL;
 
@@ -209,7 +210,7 @@ bool Effect::processCode(const TiXmlElement& effect, const String& path)
 
    // load the vertex shader
    const TiXmlElement* pshader_part = static_cast<const TiXmlElement*>(pcode_part->FirstChild("vertex"));
-   if ( pshader_part != NULL && OpenGL::supportsVertexShader(pathtype) )
+   if ( pshader_part != NULL )
    {
       const TiXmlText* psource = static_cast<const TiXmlText*>(pshader_part->FirstChild());
       ASSERT_PTR(psource);
@@ -219,7 +220,7 @@ bool Effect::processCode(const TiXmlElement& effect, const String& path)
 
    // load the fragment shader
    pshader_part = static_cast<const TiXmlElement*>(pcode_part->FirstChild("fragment"));
-   if ( pshader_part && OpenGL::supportsFragmentShader(pathtype) )
+   if ( pshader_part != NULL )
    {
 	   // see if there is a GLSL shader available
       const TiXmlText* psource = static_cast<const TiXmlText*>(pshader_part->FirstChild());
@@ -233,125 +234,38 @@ bool Effect::processCode(const TiXmlElement& effect, const String& path)
    String fragmentfile = path + fragment;
 
    // now load the codepath
-   mCodePath = OpenGL::createCodePath(pathtype);
-   if ( mCodePath == NULL || !mCodePath->load(vertexfile, fragmentfile) )
+   mpCodePath = device.createCodePath(pathtype);
+   if ( mpCodePath == NULL || !mpCodePath->load(vertexfile, fragmentfile) )
        return false;
 
-   // is no fragment shader or not supported, look for combiners
-   if ( fragment == NULL || !OpenGL::supportsFragmentShader(pathtype) )
-   {
-      useCombiners = true;
-
-      if ( !stages.empty() && !processCombiners(*pcode_part) )
-         return false;
-   }
+   mModelViewProjectArg = mpCodePath->getUniformLocation("modelviewproj");
 
 	return true;
 }
 
-/*!
-    \fn Effect::processCombiners(TiXmlElement* effect)
-	 \brief Loads in the texture combiner setup per stage.
-	 \returns true when no errors are detected, false otherwise.
- */
-bool Effect::processCombiners(const TiXmlElement& shader_part)
+/// \fn Effect::processBlendState(Device& device, const TiXmlElement& effect)
+/// \brief Loads in any blendstate that is described in the effect
+bool Effect::processBlendState(Graphics::Device& device, const TiXmlElement& effect)
 {
-	const TiXmlElement* pcombiner_part = static_cast<const TiXmlElement*>(shader_part.FirstChild("combiner"));
-   if ( pcombiner_part == NULL )
+   const TiXmlElement* pblend_part = static_cast<const TiXmlElement*>(effect.FirstChild("blend"));
+   if ( pblend_part != NULL )
    {
-      Log::getInstance().error("Effect.processCombiners: could not find combiner for effect.");
-      return true;
+      using namespace Graphics;
+
+      String strsource(pblend_part->Attribute("source"));
+      String strdest(pblend_part->Attribute("dest"));
+     
+      BlendStateDesc descenabled(BlendStateDesc::fromString(strsource), BlendStateDesc::fromString(strdest), true);
+      mpBlendStateEnabled = device.createBlendState(descenabled);
+
+      BlendStateDesc descdisabled(BlendStateDesc::BS_ONE, BlendStateDesc::BS_ZERO, false);
+      mpBlendStateDisabled = device.createBlendState(descdisabled);
    }
 
-	char stagebuf[100];
-	sprintf (stagebuf, "stage0");
-	const TiXmlElement* pstage_part = static_cast<const TiXmlElement*>(pcombiner_part->FirstChild(stagebuf));
-   for ( std::size_t i = 0; i < stages.size(); ++i )
-   {
-		if ( pstage_part == NULL )
-      {
-			Log::getInstance().error("Effect.processCombiners: there is no combiner for stage %d", i);
-			return false;
-		}
-
-		// get the text with the combiner, source0 and source1
-		stages[i].combiner = getCombinerValue(pstage_part->Attribute("combiner"));
-		stages[i].source0 = getSourceValue   (pstage_part->Attribute("source0"));
-		stages[i].source1 = getSourceValue   (pstage_part->Attribute("source1"));
-
-		// get next stage
-		sprintf (stagebuf, "stage%d", i+1);
-		pstage_part = static_cast<const TiXmlElement*>(pcombiner_part->IterateChildren (stagebuf, pstage_part));
-	}
-
-	return true;
-}
-
-void strupr(char *dest, const char *src) {
-	while (*src!='\0') {
-		if (*src>=97 && *src<=122)
-			*dest = *src-32;
-  		else
-			*dest = *src;
-		src++;
-		dest++;
-	}
-	dest = '\0';
-}
-
-/*!
-    \fn Effect::getCombinerValue(const char* str)
-	 \brief Converts the string value to a texture combiner OpenGL enum value.
-	 \returns the corresponding value if str is known, -1 if an error occured or GL_MODULATE in case str = NULL.
- */
-GLint Effect::getCombinerValue (const char* str)
-{
-	if (str == NULL)
-	    return GL_MODULATE;
-
-	char buf[256];
-	memset (buf, 0, 256);
-	strupr (buf, str);
-
-	// now check for the combiner names
-	if (strcmp (buf, "MODULATE") == 0)
-	    return GL_MODULATE;
-	else if (strcmp (buf, "REPLACE") == 0)
-	    return GL_REPLACE;
-	else if (strcmp (buf, "DOT3") == 0)
-	    return GL_DOT3_RGB;
-	else if (strcmp (buf, "ADD") == 0)
-	    return GL_ADD;
-	return -1;
-}
-
-/*!
-    \fn Effect::getSourceValue(const char* str)
-	 \brief Converts the string value to a texture source OpenGL enum value.
-	 \returns the corresponding value if str is known, -1 if an error occured or 0 in case str = NULL (means not to set sources).
- */
-GLint Effect::getSourceValue (const char* str)
-{
-	if (str == NULL)
-		return 0;
-
-	// there are no such long sources
-	if (strlen (str) > 20)
-		return -1;
-
-	// check the sources
-	char buf[20];
-	memset (buf, 0, 20);
-	strupr (buf, str);
-
-	// now check for the combiner names
-	if (strcmp (buf, "PREVIOUS") == 0)
-	    return GL_PREVIOUS;
-	else if (strcmp (buf, "TEXTURE") == 0)
-	    return GL_TEXTURE;
-	else if (strcmp (buf, "CONSTANT") == 0)
-	    return GL_CONSTANT;
-	return -1;
+   BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_SRC_INV_ALPHA, true);
+   mpBlendStateEnabled = device.createBlendState(desc);
+   
+   return true;
 }
 
 /*!
@@ -384,31 +298,22 @@ const TexturePtr Effect::findTexture(const String& uniform) const
     \fn Effect::enable()
 	 \brief Enables the textures, shaders and if neccessary the texture combiners.
  */
-void Effect::enable () const
+void Effect::enable(RenderContext& context) const
 {
-   getPath().enable();
+   if ( mpBlendStateEnabled )
+   {
+      context.setBlendState(*mpBlendStateEnabled);
+   }
+
+   mpCodePath->enable();
+   mpCodePath->setStateUniform(mModelViewProjectArg);
 
    for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
 	   const TexStage& stage = stages[s];
-	   stage.tex->enable ();
-	   if ( useCombiners )
-      {
-		   // enable the combiners
-		   glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-		   glTexEnvf (GL_TEXTURE_ENV, GL_COMBINE_RGB, stage.combiner);
-		   if (stage.source0 > 0)
-         {
-			   glTexEnvf (GL_TEXTURE_ENV, GL_SOURCE0_RGB, stage.source0);
-			   glTexEnvf (GL_TEXTURE_ENV, GL_SOURCE1_RGB, stage.source1);
-		   }
-	   }
-	   else
-      {
-		   // set textures for GLSL language
-         if ( OpenGL::supportsFragmentShader(mCodePath->getType()) )
-            mCodePath->setUniform1i (stage.index, s);
-	   }
+      stage.tex->enable();
+
+      mpCodePath->setUniform1i(stage.index, s);
    }
 }
 
@@ -416,19 +321,19 @@ void Effect::enable () const
     \fn Effect::disable()
 	 \brief Disables the textures, shaders and eventually resets the texture combiners.
  */
-void Effect::disable () const
+void Effect::disable(RenderContext& context) const
 {
-   getPath().disable();
+   if ( mpBlendStateDisabled != NULL )
+   {
+      context.setBlendState(*mpBlendStateDisabled);
+   }
+
+   mpCodePath->disable();
 
    // disable the textures and reset their environment
    for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
       const TexStage& stage = stages[s];
-      stage.tex->disable ();
-
-      if ( useCombiners )
-      {
-         glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-      }
+      stage.tex->disable();
    }
 }

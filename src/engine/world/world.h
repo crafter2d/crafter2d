@@ -34,6 +34,13 @@
 #include "layertype.h"
 #include "worldsimulatorlistener.h"
 
+namespace Graphics
+{
+   class Device;
+   class RenderContext;
+   class Viewport;
+}
+
 class DirtySet;
 class Entity;
 class Layer;
@@ -75,7 +82,7 @@ public:
    World();
    ~World();
 
-   void  initialize();
+   void  initialize(Graphics::Device& device);
    void  destroy();
    bool  save();
 
@@ -89,10 +96,10 @@ public:
    void           setObjectLayer(int layer);
 
    const String&   getName() const;
-   void                 setName(const String& name);
+   void            setName(const String& name);
 
    const String&   getFilename() const;
-   void                 setFilename(const String& filename);
+   void            setFilename(const String& filename);
 
    const Bound&   getBound(int index) const;
          Bound&   getBound(int index);
@@ -126,7 +133,7 @@ public:
  // update & drawing
    void   update(DirtySet& set, float delta);
    void   updateClient(float delta);
-   void   draw() const;
+   void   draw(Graphics::RenderContext& context) const;
 
  // operations
    Layer* createLayer();
@@ -145,6 +152,8 @@ public:
  // notification
    void notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin);
    void notifyObjectObjectCollision(Actor& object, Actor& target, int side, bool begin);
+
+   void onViewportChanged(const Graphics::Viewport& viewport);
 
  // rendering
    WorldRenderer* createRenderer();

@@ -29,6 +29,9 @@ public:
    virtual ~WinPlatform();
 
    virtual Timer* createTimer();
+
+   virtual void* loadModule(const String& name);
+   virtual void* getFunctionAddress(void* module, const String& name);
 };
 
 #endif

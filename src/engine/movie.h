@@ -22,13 +22,13 @@
 
 #include "core/defines.h"
 
-#include "texture.h"
-
 #ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #include <vfw.h>
 #endif
 
-class Movie: public Texture
+class Movie
 {
 public:
                   Movie();
@@ -50,6 +50,10 @@ protected:
    HBITMAP           mBitmap;
 #endif
 
+   uint     mFrameWidth;
+   uint     mFrameHeight;
+   uint     mWidth;
+   uint     mHeight;
    uint     mNumberOfFrames;
    uint     mFramesPerSecond;
    uint     mCurrentFrame;

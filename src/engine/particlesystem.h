@@ -22,15 +22,19 @@
 
 #include "core/math/vector.h"
 #include "core/math/color.h"
+#include "core/graphics/texture.h"
 
-#include "engine/texture.h"
-
-#include "texture.h"
 #include "entity.h"
+#include "effect.h"
 
-class CodePath;
+namespace Graphics
+{
+   class CodePath;
+   class Device;
+   class VertexBuffer;
+};
+
 class Script;
-class VertexBuffer;
 
 /**
 @author Jeroen Broekhuizen
@@ -77,19 +81,21 @@ protected:
 
  // update & drawing
    virtual void   doUpdate(float delta);
-	virtual void   doDraw() const;
+	virtual void   doDraw(Graphics::RenderContext& context) const override;
 
-   bool           prepare();
+   bool           prepare(Graphics::Device& device);
 
  // streaming
    virtual void   doPack(DataStream& stream) const;
    virtual void   doUnpack(DataStream& stream);
 
-   Vector    position;
-   TexturePtr texture;
-	Particle* activeList;
-	Particle* freeList;
-	uint      maxBufferSize;
+   Vector         position;
+   Effect         mEffect;
+	Particle*      activeList;
+	Particle*      freeList;
+   Graphics::VertexBuffer*  mGeometryBuffer;
+	uint           mGeometryBufferSize;
+   Script*        updateScript;
 	
 	int emitRate;
    int emitCount;
@@ -97,11 +103,6 @@ protected:
    int maxActive;
 	int lastUpdate;
    int lastInit;
-
-	Script* updateScript;
-	
-	VertexBuffer* buffer;
-	CodePath* path;
 };
 
 #ifdef JENGINE_INLINE

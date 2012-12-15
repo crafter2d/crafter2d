@@ -44,6 +44,7 @@ public:
    void destroy();
 
  // query
+   virtual int getHandle() const = 0;
    virtual int getWidth() const;
    virtual int getHeight() const;
 

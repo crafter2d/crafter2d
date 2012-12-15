@@ -19,8 +19,6 @@
  ***************************************************************************/
 #include "topdownworldrenderer.h"
 
-#include <GL/GLee.h>
-
 #include "world.h"
 
 TopDownWorldRenderer::TopDownWorldRenderer(World& world):
@@ -34,19 +32,15 @@ TopDownWorldRenderer::~TopDownWorldRenderer()
 
 // - Rendering
 
-void TopDownWorldRenderer::render(float delta)
+void TopDownWorldRenderer::render(Graphics::RenderContext& context, float delta)
 {
    // draw the scenegraph
-   glColor4f(1,1,1,1);
- 
-   getWorld().draw();
+   getWorld().draw(context);
 
    // see if there is any creature under the mouse
    //pick(tick, graph);
 
    // reset the matrix
-   glLoadIdentity();
-
 
 
    /*

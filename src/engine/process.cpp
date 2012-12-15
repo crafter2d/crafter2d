@@ -40,7 +40,7 @@
 Process::Process():
    mNetObserver(*this),
    conn(mNetObserver),
-   mContentManager(*this),
+   mpContentManager(NULL),
    mScriptManager(),
    mpScript(NULL),
    actionMap(NULL),

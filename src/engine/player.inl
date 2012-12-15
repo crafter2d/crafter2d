@@ -29,11 +29,6 @@ INLINE void Player::setClientId(int clientid)
    mClientId = clientid;
 }
 
-INLINE Viewport& Player::getViewport()
-{
-   return mViewport;
-}
-
 INLINE bool Player::hasController() const
 {
    return mpController != NULL;

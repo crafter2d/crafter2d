@@ -19,9 +19,8 @@
  ***************************************************************************/
 #include "rendervisitor.h"
 
+#include "core/graphics/viewport.h"
 #include "core/defines.h"
-
-#include "viewport.h"
 
 RenderVisitor::RenderVisitor():
    _pviewport(NULL)

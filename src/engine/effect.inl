@@ -18,22 +18,3 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/defines.h"
-
-bool Effect::hasPath() const
-{
-   return mCodePath != NULL;
-}
-
-/// \fn Effect::getPath()
-/// \brief Returns a pointer to the code path used by this effect object.
-/// \returns a pointer to the code path, NULL if the object is not loaded correctly.
-INLINE const CodePath& Effect::getPath() const
-{
-   ASSERT_PTR(mCodePath)
-   return *mCodePath;
-}
-
-INLINE void Effect::setPath(CodePath* ppath)
-{
-   mCodePath = ppath;
-}

@@ -20,9 +20,10 @@
 #include "movie.h"
 
 #include "core/log/log.h"
+#include "core/math/math.h"
 
 #ifdef WIN32
-HDC Movie::hdc = CreateCompatibleDC(0);
+HDC Movie::hdc = ::CreateCompatibleDC(0);
 #endif
 
 Movie::Movie()
@@ -48,18 +49,16 @@ Movie::~Movie()
 
 void Movie::release()
 {
-   Texture::release();
 #ifdef WIN32
    if ( mpStream != NULL )
    {
-      DeleteObject(mBitmap);
-	   DrawDibClose(mDIB);
+      ::DeleteObject(mBitmap);
+	   ::DrawDibClose(mDIB);
 
 	   AVIStreamGetFrameClose(mpFramePointer);
 	   AVIStreamRelease(mpStream);
       mpFramePointer = NULL;
       mpStream = NULL;
-
       mpData = NULL;
    }
 #endif
@@ -70,10 +69,6 @@ bool Movie::load(const char* file)
    bool ok = false;
 
 #ifdef WIN32
-   setName(file);
-   tex = 0;
-
-   target = getRenderTarget ();
    if (strstr(file, "avi") != NULL)
    {
       ok = loadAVI(file);
@@ -83,9 +78,6 @@ bool Movie::load(const char* file)
       Log::getInstance().error("Movie.load: unknown movie format (%s)", file);
 		return false;
 	}
-	
-	glTexParameteri (target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri (target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 #endif
 
 	return ok;
@@ -107,14 +99,14 @@ bool Movie::loadAVI(const char* filename)
       // get avi dimensions and length
       AVISTREAMINFO psi;
       AVIStreamInfo(mpStream, &psi, sizeof(psi));
-      _width = psi.rcFrame.right-psi.rcFrame.left;
-      _height = psi.rcFrame.bottom-psi.rcFrame.top;
+      mFrameWidth = psi.rcFrame.right-psi.rcFrame.left;
+      mFrameHeight = psi.rcFrame.bottom-psi.rcFrame.top;
       mNumberOfFrames = AVIStreamLength(mpStream);
 
-      _actualwidth = findNextPowerOfTwo(_width);
-      _actualheight = findNextPowerOfTwo(_height);
+      mWidth = Math::nextPowerOfTwo(mFrameWidth);
+      mHeight = Math::nextPowerOfTwo(mFrameHeight);
 
-      mDIB = DrawDibOpen();
+      mDIB = ::DrawDibOpen();
 
       // calculate how much frame per second must be displayed
       mFramesPerSecond = psi.dwRate / psi.dwScale;
@@ -125,8 +117,8 @@ bool Movie::loadAVI(const char* filename)
       bmih.biSize = sizeof (BITMAPINFOHEADER);
 	   bmih.biPlanes = 1;
 	   bmih.biBitCount = 24;
-      bmih.biWidth = _actualwidth;//getWidth();
-      bmih.biHeight = _actualheight;// getHeight();
+      bmih.biWidth = mWidth;
+      bmih.biHeight = mHeight;
 	   bmih.biCompression = BI_RGB;
 	   mBitmap = CreateDIBSection (hdc, (BITMAPINFO*)(&bmih), DIB_RGB_COLORS, (void**)(&mpData), NULL, 0);
 	   SelectObject (hdc, mBitmap);
@@ -138,13 +130,7 @@ bool Movie::loadAVI(const char* filename)
          log.error("Can not open the stream frame of %s.", filename);
          return false;
       }
-
-      target = getRenderTarget ();
-
-      glGenTextures(1, &tex);
-	   glBindTexture(target, tex);
-      update(0);
-      
+            
       return true;
    }
 #endif
@@ -161,13 +147,10 @@ void Movie::update(float delta)
    uchar* pdata = (uchar*)lpbi+lpbi->biSize+lpbi->biClrUsed * sizeof(RGBQUAD);
 
    // copy the data to our buffer
-   DrawDibDraw (mDIB, hdc, 0, 0, _actualwidth, _actualheight, lpbi, pdata, 0, 0, getWidth(), getHeight(), 0);
+   ::DrawDibDraw (mDIB, hdc, 0, 0, mWidth, mHeight, lpbi, pdata, 0, 0, mFrameWidth, mFrameHeight, 0);
 
-   // update the texture (flipping r and b channel)
-   glBindTexture (target, tex);
-   glTexImage2D (target, 0, 3, _actualwidth, _actualheight, 0, GL_BGR, GL_UNSIGNED_BYTE, mpData);
-   //glTexSubImage2D (target, 0, 0, 0, getWidth(), getHeight(), GL_BGR, GL_UNSIGNED_BYTE, data);
-
+   // Note that the data is stored in BGR format in avi
+   
    // go to next frame
    mFrameTime += delta;
    if ( mFrameTime > mUpdateRate )

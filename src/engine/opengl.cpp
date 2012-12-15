@@ -85,20 +85,7 @@ bool OpenGL::initialize ()
 	return true;
 }
 
-/// \fn OpenGL::createVertexBuffer()
-/// \brief Creates a vertex buffer for storage of the geometry. When Vertex Buffer Objects are supported, one will
-/// be created. A default buffer will be created otherwise.
-/// \return A pointer to the vertex buffer instance.
-VertexBuffer* OpenGL::createVertexBuffer()
-{
-	VertexBuffer *vb = NULL;
-	if ( GLEE_ARB_vertex_buffer_object )
-		vb = new VertexBufferObject();
-	else
-		vb = new VertexBufferArray();
 
-	return vb;
-}
 
 CodePath* OpenGL::createCodePath (CodePath::PathType pathtype)
 {

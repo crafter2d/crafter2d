@@ -70,7 +70,7 @@ bool WorldVersion1Reader::readLayers(std::ifstream& stream)
       Layer* player = createLayer();
       getWorld().addLayer(player);
 
-      if ( !readLayer(stream, *player) || !player->prepare() )
+      if ( !readLayer(stream, *player) )
       {
          Log::getInstance().error("World:create : loading layer %d from %s failed.", i, getFilename().getBuffer());
          getWorld().destroy ();
@@ -89,10 +89,12 @@ bool WorldVersion1Reader::readLayer(std::ifstream& stream, Layer& layer)
    int width, height, tileWidth, tileHeight, tileCount, scrollSpeedX, scrollSpeedY;
    String name, effectName;
 
+   LayerDefinition* pdefinition = new LayerDefinition;
+   layer.setDefinition(pdefinition);
+
 	memset (buffer, 0, 255);
 	stream.read ((char*)&nameLen, sizeof(unsigned char));
 	stream.read (buffer, nameLen);
-   layer.setName(buffer);
 
 	// read in the dimensions
 	stream.read ((char*)&width, sizeof(int));
@@ -100,6 +102,10 @@ bool WorldVersion1Reader::readLayer(std::ifstream& stream, Layer& layer)
 	stream.read ((char*)&tileWidth, sizeof (int));
 	stream.read ((char*)&tileHeight, sizeof (int));
 	stream.read ((char*)&tileCount, sizeof (int));
+
+   pdefinition->name = buffer;
+   pdefinition->width = width;
+   pdefinition->height = height;
 
 	// read in the effect file name
 	memset (buffer, 0, 255);
@@ -118,6 +124,8 @@ bool WorldVersion1Reader::readLayer(std::ifstream& stream, Layer& layer)
       effectName.remove(pos, 4);
    }
 
+   pdefinition->effect = buffer;
+
 	// read in the scroll speeds
 	stream.read ((char*)&scrollSpeedX, sizeof (int));
 	stream.read ((char*)&scrollSpeedY, sizeof (int));
@@ -127,12 +135,6 @@ bool WorldVersion1Reader::readLayer(std::ifstream& stream, Layer& layer)
       Log::getInstance().error("World:create : Invalid layer size!");
 		return false;
 	}
-
-   if ( !layer.create(name, width, height, effectName) )
-   {
-      Log::getInstance().error("World:create : Can not create layer!");
-      return false;
-   }
 
 	// read in the texture id's and bounds
    int* row = new int[width];

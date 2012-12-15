@@ -25,6 +25,8 @@ end
 libdir = path.join(_OPTIONS["libdir"], _ACTION)
 	
 require "projects/proj-core"
+require "projects/proj-d3d"
+require "projects/proj-ogl"
 require "projects/proj-script"
 require "projects/proj-engine"
 require "projects/proj-gui"

@@ -85,20 +85,6 @@ INLINE bool Actor::isVisible() const
 	return visible;
 }
 
-/// \fn Actor::isStatic() const
-/// \brief Check if this is a static object.
-INLINE bool Actor::isStatic() const
-{
-   return mStatic;
-}
-
-/// \fn Actor::setStatic() const
-/// \brief Set the static object flag.
-INLINE void Actor::setStatic(bool isstatic)
-{
-   mStatic = isstatic;
-}
-
 /// \fn Actor::getRotation() const
 /// \brief Returns the rotation in degrees of the object.
 INLINE float Actor::getRotation() const
@@ -121,47 +107,7 @@ INLINE Vector Actor::getSize() const
    return Vector(static_cast<float>(mWidth), static_cast<float>(mHeight)); 
 }
 
-INLINE const Texture& Actor::getTexture() const
-{
-   return *texture;
-}
-
-INLINE Animator& Actor::getAnimator()
-{
-   return *mpAnimator;
-}
-
-INLINE bool Actor::hasBody() const
-{
-   return mpBody != NULL;
-}
-
-INLINE const Body& Actor::getBody() const
-{
-   return *mpBody;
-}
-
-INLINE Body& Actor::getBody()
-{
-   return *mpBody;
-}
-
 INLINE Controller& Actor::getController()
 {
    return *mpController;
-}
-
-INLINE void Actor::setTexture(TexturePtr texture)
-{
-   this->texture = texture;
-}
-
-INLINE void Actor::setAnimator(Animator* panimator)
-{
-   mpAnimator = panimator;
-}
-
-INLINE void Actor::setBody(Body& body)
-{
-   mpBody = &body;
 }

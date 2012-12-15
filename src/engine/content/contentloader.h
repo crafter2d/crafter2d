@@ -26,6 +26,12 @@ class Simulator;
 class ContentLoader
 {
 public:
+   enum LoadFlags
+   {
+      eLoadPhysics = 1,
+      eLoadGraphics = 2,
+   };
+
    ContentLoader(Process& process);
 
  // get/set

@@ -21,9 +21,10 @@
 #include "topdownlayer.h"
 
 #include "core/math/point.h"
-
-#include "engine/opengl.h"
-#include "engine/vertexbuffer.h"
+#include "core/graphics/rendercontext.h"
+#include "core/graphics/indexbuffer.h"
+#include "core/graphics/vertexbuffer.h"
+#include "core/graphics/viewport.h"
 
 #include "layertype.h"
 #include "tile.h"
@@ -44,38 +45,29 @@ LayerType TopDownLayer::getType() const
    return ETopDown;
 }
 
-bool TopDownLayer::prepare(int screenWidth, int screenHeight)
+bool TopDownLayer::initialize(Graphics::Device& device)
 {
-   int border = 0;
-
-   // get number of tiles on one row in the diffuseMap
-	const TexturePtr diffuse = effect.resolveTexture("diffuseMap");
-	maxTilesOnRow = diffuse->getWidth() / (tileWidth + border*2);
-
-	// calculate the maximum number of tiles on the screen
-	maxTilesX = MIN(screenWidth  / mTileSet.getTileWidth() , width);
-	maxTilesY = MIN(screenHeight / mTileSet.getTileHeight(), height);
-
-	// calculate maximum tiles to scroll
-	xscrollMax = MAX((width  - maxTilesX) * tileWidth , 0);
-	yscrollMax = MAX((height - maxTilesY) * tileHeight, 0);
-
-   delete vb;
-   vb = createVertexBuffer(width, height, 4);
-   if ( vb == NULL )
+   if ( !Layer::initialize(device) )
+   {
       return false;
+   }
 
+   const TexturePtr diffuse = getEffect().resolveTexture("diffuseMap");
    float dx = diffuse->getSourceWidth() / diffuse->getWidth();
    float dy = diffuse->getSourceHeight() / diffuse->getHeight();
 
    texTileWidth  = dx * tileWidth;
    texTileHeight = dy * tileHeight;
 
+   static const int border = 0;
    float borderx = dx * (tileWidth + border*2);
    float bordery = dy * (tileHeight + border*2);
 
    float offsetx = (borderx - texTileWidth) / 2;
    float offsety = (bordery - texTileHeight) / 2;
+
+   // get number of tiles on one row in the diffuseMap
+	maxTilesOnRow = diffuse->getWidth() / (tileWidth + border*2);
 
    // build the texture coord lookup table
    delete[] texcoordLookup;
@@ -83,23 +75,34 @@ bool TopDownLayer::prepare(int screenWidth, int screenHeight)
 	for (int tc = 0; tc < tileCount; tc++)
    {
 		// calculate starting texture coordinates
-		texcoordLookup[tc+1].x = offsetx + static_cast<float>(tc % maxTilesOnRow) * borderx;
+		texcoordLookup[tc+1].x = offsetx + static_cast<float>(tc % maxTilesOnRow) * borderx + 0.0005f;
 		texcoordLookup[tc+1].y = offsety + floorf ((float)tc / maxTilesOnRow) * bordery;
 	}
 
-   texTileWidth -= 0.001;
-   texTileHeight -= 0.001;
+   texTileWidth -= 0.001f;
+   texTileHeight -= 0.001f;
 
 	return true;
+}
+
+void TopDownLayer::onViewportChanged(const Graphics::Viewport& viewport)
+{
+	// calculate the maximum number of tiles on the screen
+	maxTilesX = MIN(viewport.getWidth()  / mTileSet.getTileWidth() , getWidth());
+   maxTilesY = MIN(viewport.getHeight() / mTileSet.getTileHeight(), getHeight());
+
+	// calculate maximum tiles to scroll
+	xscrollMax = MAX((getWidth() - maxTilesX) * tileWidth , 0);
+	yscrollMax = MAX((getHeight() - maxTilesY) * tileHeight, 0);
 }
 
 /// \fn Layer::draw()
 /// \brief Draws this layer on the screen.
 /// \return Nothing
-void TopDownLayer::draw ()
+void TopDownLayer::draw(Graphics::RenderContext& context)
 {
-   glPushMatrix ();
-	glTranslatef (-xscroll, -yscroll, 0);
+   //glPushMatrix ();
+	//glTranslatef (-xscroll, -yscroll, 0);
 
 	if ( dirty )
    {
@@ -115,13 +118,15 @@ void TopDownLayer::draw ()
 		if (((int)yscroll % tileHeight) > (tileHeight>>1)) yend++;
 
 		// check on bounds
-		if (xend > width) xend = width;
-		if (yend > height) yend = height;
+		if (xend > getWidth()) xend = getWidth();
+		if (yend > getHeight()) yend = getHeight();
 
 		float ypos = ystart * tileHeight;// - tileHeight;
 
 		verts_to_render = 0;
 		float* data = vb->lock (0);
+      int index = 0;
+      unsigned short* indexdata = (unsigned short*)ib->lock();
 
   	   for ( int y = ystart; y < yend; y++ )
       {
@@ -143,13 +148,22 @@ void TopDownLayer::draw ()
 					float texY = texcoordLookup[texId].y;
 
 					// insert the vertices
-					setVertex (&data, xpos                          , ypos                          , 0.0005+texX, texY);
-               setVertex (&data, xpos+tileset().getTileWidth() , ypos                          , 0.0005+texX+texTileWidth, texY);
-               setVertex (&data, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), 0.0005+texX+texTileWidth, texY+texTileHeight);
-               setVertex (&data, xpos                          , ypos+tileset().getTileHeight(), 0.0005+texX, texY+texTileHeight);
+					setVertex (&data, xpos                          , ypos                          , texX, texY);
+               setVertex (&data, xpos+tileset().getTileWidth() , ypos                          , texX+texTileWidth, texY);
+               setVertex (&data, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), texX+texTileWidth, texY+texTileHeight);
+               setVertex (&data, xpos                          , ypos+tileset().getTileHeight(), texX, texY+texTileHeight);
 
-					// keep track of number of vertices
-					verts_to_render += 4;
+               indexdata[0] = index + 0;
+               indexdata[1] = index + 1;
+               indexdata[2] = index + 2;
+               indexdata[3] = index + 0;
+               indexdata[4] = index + 2;
+               indexdata[5] = index + 3;
+               indexdata += 6;
+               index += 4;
+
+               // keep track of number of vertices
+					verts_to_render += 6;
 				}
 				xpos += tileWidth;
 			}
@@ -157,18 +171,17 @@ void TopDownLayer::draw ()
 			ypos += tileHeight;
 		}
 
-		vb->unlock ();
+		vb->unlock();
+      ib->unlock();
 
       // reset the dirty flag
       dirty = false;
 	}
 
    // draw layer at onces
-	vb->enable();
-	glDrawArrays(GL_QUADS, 0, verts_to_render);
-	vb->disable();
-
-	glPopMatrix();
+   context.setVertexBuffer(*vb);
+   context.setIndexBuffer(*ib);
+	context.drawTriangles(0, verts_to_render);
 }
 
 void TopDownLayer::drawHighlight(const Vector& point)
@@ -176,6 +189,7 @@ void TopDownLayer::drawHighlight(const Vector& point)
    float x = (point.x * tileWidth) - xscroll;
    float y = (point.y * tileHeight) - yscroll;
 
+   /*
    glLineWidth(2.0f);
 
    glBegin(GL_LINE_LOOP);
@@ -186,6 +200,7 @@ void TopDownLayer::drawHighlight(const Vector& point)
    glEnd();
 
    glLineWidth(1.0f);
+   */
 }
 
 TileRow* TopDownLayer::createTileRows(int width, int height)

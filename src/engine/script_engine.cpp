@@ -40,7 +40,6 @@
 #include "physics/box2d/box2dropejoint.h"
 
 #include "ui/graphics.h"
-#include "ui/font.h"
 
 #include "resource/resourcemanager.h"
 
@@ -58,7 +57,6 @@
 #include "server.h"
 #include "inputcontroller.h"
 #include "aicontroller.h"
-#include "texture.h"
 
 #define GET_THIS(type, variable)                   type& variable = *static_cast<type*>(accessor.getThis().getNativeObject())
 #define DESTRUCT_THIS(type)                        delete static_cast<type*>(accessor.getThis().useNativeObject());
@@ -74,16 +72,8 @@ void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
    const String& name = accessor.getString(1);
    int size = accessor.getInt(2);
 
-   FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
-   RETURN_CLASS_OWNED("engine.ui.Font", FontPtr, pfont);
-}
-
-void Process_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   const String& name = accessor.getString(1);
-
-   TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(name));
-   RETURN_CLASS_OWNED("engine.core.Texture", TexturePtr, ptexture);
+   //FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
+   //RETURN_CLASS_OWNED("engine.ui.Font", FontPtr, pfont);
 }
 
 void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -146,22 +136,6 @@ void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(client.connect(ip, port));
 }
 
-void Client_nativeRender(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Client, client);
-
-   float delta = accessor.getReal(1);
-
-   client.render(delta);
-}
-
-void Client_nativeDisplay(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Client, client);
-
-   client.display();
-}
-
 void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Client, client);
@@ -211,6 +185,16 @@ void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
    client.setKeyMap(pmap);
 }
 
+void Client_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Client, client);
+
+   const String& name = accessor.getString(1);
+
+   TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(client.getDevice(), name));
+   RETURN_CLASS_OWNED("engine.core.Texture", TexturePtr, ptexture);
+}
+
 void ContentManager_native_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(ContentManager, contentmanager);
@@ -227,7 +211,7 @@ void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor
 
    const String& filename = accessor.getString(1);
 
-   World* presult = contentmanager.load(filename);
+   World* presult = contentmanager.loadWorld(filename);
    RETURN_CLASS_OWNED("engine.game.World", World, presult);
 }
 
@@ -406,13 +390,6 @@ void Actor_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
    GET_THIS(Actor, actor);
 
    actor.flip();
-}
-
-void Actor_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Actor, actor);
-
-   RETURN_CLASS("box2d.Box2DBody", Body, &actor.getBody());
 }
 
 void Actor_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -716,7 +693,7 @@ void Box2DSimulator_lineOfSight(VirtualMachine& machine, VirtualStackAccessor& a
    const Actor& from = *(Actor*) accessor.getObject(1).getNativeObject();
    const Actor& to = *(Actor*) accessor.getObject(2).getNativeObject();
 
-   accessor.setResult(simulator.lineOfSight(from.getBody(), to.getBody()));
+   accessor.setResult(false); //simulator.lineOfSight(from.getBody(), to.getBody()));
 }
 
 void Box2DSimulator_native_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -914,6 +891,7 @@ void KeyMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
    map.bind(key, action);
 }
 
+/*
 void EngineGraphics_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
@@ -1074,6 +1052,7 @@ void Font_getBaseLine(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    accessor.setResult(font->getBaseLine());
 }
+*/
 
 void Texture_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -1178,7 +1157,6 @@ void script_engine_register(ScriptManager& manager)
    ScriptRegistrator registrator;
 
    registrator.addCallback("Process_getFont", Process_getFont);
-   registrator.addCallback("Process_getTexture", Process_getTexture);
    registrator.addCallback("Process_getContentManager", Process_getContentManager);
    registrator.addCallback("Process_native_setWorld", Process_native_setWorld);
    registrator.addCallback("Process_swapLeakDetection", Process_swapLeakDetection);
@@ -1188,14 +1166,13 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Server_sendScriptEvent", Server_sendScriptEvent);
 
    registrator.addCallback("Client_connect", Client_connect);
-   registrator.addCallback("Client_nativeRender", Client_nativeRender);
-   registrator.addCallback("Client_nativeDisplay", Client_nativeDisplay);
    registrator.addCallback("Client_isActive", Client_isActive);
    registrator.addCallback("Client_getWindowFactory", Client_getWindowFactory);
    registrator.addCallback("Client_native_setWindow", Client_native_setWindow);
    registrator.addCallback("Client_setActionMap", Client_setActionMap);
    registrator.addCallback("Client_setKeyMap", Client_setKeyMap);
    registrator.addCallback("Client_getPlayer", Client_getPlayer);
+   registrator.addCallback("Client_getTexture", Client_getTexture);
 
    registrator.addCallback("ContentManager_native_loadEntity", ContentManager_native_loadEntity);
    registrator.addCallback("ContentManager_load", ContentManager_load);
@@ -1225,7 +1202,6 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Actor_setVelocity", Actor_setVelocity);
    registrator.addCallback("Actor_setName", Actor_setName);
    registrator.addCallback("Actor_setAnimation", Actor_setAnimation);
-   registrator.addCallback("Actor_getBody", Actor_getBody);
    registrator.addCallback("Actor_direction", Actor_direction);
    registrator.addCallback("Actor_flip", Actor_flip);
    registrator.addCallback("Actor_setController", Actor_setController);
@@ -1301,6 +1277,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("KeyMap_destruct", KeyMap_destruct);
    registrator.addCallback("KeyMap_bind", KeyMap_bind);
 
+   /*
    registrator.addCallback("EngineGraphics_init", EngineGraphics_init);
    registrator.addCallback("EngineGraphics_destruct", EngineGraphics_destruct);
    registrator.addCallback("EngineGraphics_doSetColor", EngineGraphics_doSetColor);
@@ -1316,7 +1293,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addCallback("Font_render", Font_render);
    registrator.addCallback("Font_getBaseLine", Font_getBaseLine);
    registrator.addCallback("Font_native_textWidth", Font_native_textWidth);
-   registrator.addCallback("Font_native_textHeight", Font_native_textHeight);
+   registrator.addCallback("Font_native_textHeight", Font_native_textHeight); */
 
    registrator.addCallback("Texture_destruct", Texture_destruct);
    registrator.addCallback("Texture_getName", Texture_getName);

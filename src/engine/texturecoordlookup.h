@@ -22,7 +22,12 @@
 
 #include "texturecoordinate.h"
 
-class Texture;
+namespace Graphics
+{
+   class Texture;
+};
+
+struct Size;
 class Vector;
 
 class TextureCoordLookup
@@ -36,7 +41,7 @@ public:
    float getFrameHeight() const;
 
  // Operations
-   void generateFromTexture(const Texture& texture, float framewidth, float frameheight, int framecount);
+   void generateFromTexture(const Graphics::Texture& texture, const Size& framesize, int framecount);
    
    const TextureCoordinate& operator[](int index) const;
 

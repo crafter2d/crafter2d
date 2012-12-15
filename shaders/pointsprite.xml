@@ -1,0 +1,10 @@
+<?xml version="1.0">
+<effect name="pointsprite_effect">
+<texture uniform="diffuseMap">blocks.png</texture>
+<blend source="SrcAlph" dest="One" />
+<code type="CG" >
+   <vertex>pointsprite_vert.cg</vertex>
+   <fragment>pointsprite_frag.cg</fragment>
+</code>
+
+</effect>

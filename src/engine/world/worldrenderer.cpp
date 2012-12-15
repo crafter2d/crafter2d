@@ -40,7 +40,7 @@ World& WorldRenderer::getWorld()
 
 // - Rendering
 
-void WorldRenderer::render(float delta)
+void WorldRenderer::render(Graphics::RenderContext& context, float delta)
 {
    PURE_VIRTUAL
 }

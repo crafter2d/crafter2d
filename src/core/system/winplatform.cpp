@@ -19,6 +19,10 @@
  ***************************************************************************/
 #include "winplatform.h"
 
+#include <Windows.h>
+
+#include "core/string/string.h"
+
 #include "wintimer.h"
 
 WinPlatform::WinPlatform():
@@ -33,4 +37,19 @@ WinPlatform::~WinPlatform()
 Timer* WinPlatform::createTimer()
 {
    return new WinTimer();
+}
+
+void* WinPlatform::loadModule(const String& name)
+{
+   LPCWSTR pname = (LPCWSTR)name.getBuffer();
+   return ::LoadLibraryW(pname);
+}
+
+void* WinPlatform::getFunctionAddress(void* pmodule, const String& name)
+{
+   int len = 0;
+   const char* pname = name.toUtf8(len);
+   void* pfnc = ::GetProcAddress((HMODULE)pmodule, pname);
+   delete[] pname;
+   return pfnc;
 }

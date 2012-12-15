@@ -32,6 +32,12 @@
 #include "process.h"
 #include "sound.h"
 
+namespace Graphics
+{
+   class Device;
+   class RenderContext;
+};
+
 class ConnectReplyEvent;
 class DisconnectEvent;
 class JoinEvent;
@@ -88,6 +94,8 @@ public:
    GameWindow&        getWindow();
    void               setWindow(GameWindow* pwindow);
 
+   Graphics::Device& getDevice();
+
  // operations
    virtual bool   loadWorld(const String& filename, const String& name);
 
@@ -108,12 +116,16 @@ public:
  // network event callback
    virtual void onNetEvent(int client, const NetEvent& event);
 
+protected:
+ // notifications
+   virtual void notifyWorldChanged();
+
 private:
    friend class ClientMouseEventListener;
    friend class ClientKeyEventListener;
 
  // initialization
-   bool initOpenGL();
+   bool initDevice();
 
  // event handlers
    void  handleConnectReplyEvent(const ConnectReplyEvent& event);
@@ -129,6 +141,8 @@ private:
 
    GameWindowFactory*         mpWindowFactory;
    GameWindow*                mpWindow;
+   Graphics::Device*          mpDevice;
+   Graphics::RenderContext*   mpRenderContext;
    ClientGameWindowListener   mWindowListener;
    ClientKeyEventDispatcher   mKeyEventDispatcher;
    ClientMouseEventDispatcher mMouseEventDispatcher;

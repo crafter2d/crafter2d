@@ -25,7 +25,7 @@ public:
    void registerCallbacks(ScriptManager& manager) {
       VirtualMachine& vm = manager.mVirtualMachine;
 
-      for ( int index = 0; index < mNames.size(); index++ )
+      for ( std::size_t index = 0; index < mNames.size(); index++ )
       {
          vm.registerCallback(mNames[index], mCallbacks[index]);
       }

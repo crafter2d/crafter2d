@@ -22,17 +22,22 @@
 #  include "entity.inl"
 #endif
 
+#include "core/graphics/device.h"
 #include "core/defines.h"
 
+#include "engine/components/componentinterface.h"
+#include "engine/components/meshcomponent.h"
 #include "engine/net/netstream.h"
 
-#include "scopedtransform.h"
+using namespace Graphics;
 
 ABSTRACT_IMPLEMENT_REPLICATABLE(EntityId, Entity, NetObject)
 
 Entity::Entity():
    NetObject(),
    mId(-1),
+   mComponents(*this),
+   mpMeshComponent(NULL),
    mpParent(NULL),
    mChildren(),
    mName(),
@@ -40,7 +45,9 @@ Entity::Entity():
    mClassName()
 {
    if ( ((int)mId) == -1 )
+   {
       mId = IdManager::getInstance().getNextId();
+   }
 }
 
 Entity::~Entity()
@@ -65,6 +72,16 @@ void Entity::setName(const String& name)
 
 // - Operations
 
+void Entity::initialize(Device& device)
+{
+   Component* pcomponent = mComponents.findComponent(ComponentInterface::eMeshComponent);
+   if ( pcomponent != NULL )
+   {
+      mpMeshComponent = static_cast<MeshComponent*>(pcomponent);
+      mpMeshComponent->initialize(device);
+   }
+}
+
 void Entity::destroy()
 {
    if ( mpParent != NULL )
@@ -72,6 +89,11 @@ void Entity::destroy()
       mpParent->remove(*this);
       mpParent = NULL;
    }
+}
+
+void Entity::addComponent(Component* pcomponent)
+{
+   mComponents.addComponent(pcomponent);
 }
 
 void Entity::update(float delta)
@@ -88,25 +110,29 @@ void Entity::updateClient(float delta)
    doUpdateClient(delta);
 }
 
-void Entity::draw() const
+void Entity::draw(Graphics::RenderContext& context) const
 {
-   doDraw();
+   doDraw(context);
 
-   mChildren.draw();
+   mChildren.draw(context);
 }
 
 void Entity::doUpdate(float delta)
 {
-   PURE_VIRTUAL
+   mComponents.update(delta);
 }
 
 void Entity::doUpdateClient(float delta)
 {
+   mComponents.update(delta);
 }
 
-void Entity::doDraw() const
+void Entity::doDraw(Graphics::RenderContext& context) const
 {
-   PURE_VIRTUAL
+   if ( mpMeshComponent != NULL )
+   {
+      mpMeshComponent->render(context);
+   }
 }
 
 // - Maintenance

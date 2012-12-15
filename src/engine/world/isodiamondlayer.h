@@ -28,17 +28,23 @@ public:
            IsoDiamondLayer();
    virtual ~IsoDiamondLayer();
 
+ // creations
+   virtual bool initialize(Graphics::Device& device);
+
  // get/set interface
    virtual LayerType  getType() const;
 
    float getXOffset() const;
 
  // operations
-   virtual bool prepare(int screenWidth, int screenHeight);
-   virtual void draw();
+   virtual void draw(Graphics::RenderContext& context);
    virtual void drawHighlight(const Vector& point);
 
+ // coordinate conversion
    virtual Point  pointToTile(const Point& point);
+
+ // notifications
+   virtual void onViewportChanged(const Graphics::Viewport& viewport);
 
 protected:
    virtual TileRow*  createTileRows(int width, int height);

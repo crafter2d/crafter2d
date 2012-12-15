@@ -22,7 +22,7 @@
 
 #include "engine/engine_base.h"
 
-#include "codepath.h"
+#include "core/graphics/codepath.h"
 
 class VertexBuffer;
 
@@ -41,7 +41,6 @@ public:
    static VertexBuffer* createVertexBuffer();
 
    static bool          isPathSupported(CodePath::PathType pathtype);
-   static CodePath*     createCodePath(CodePath::PathType pathtype);
 
    static bool          supportsCG();
 	static bool          supportsGLSL ();

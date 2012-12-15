@@ -20,10 +20,9 @@
 
 #include "core/smartptr/autoptr.h"
 
-#include <cstdlib>
-
 #include "game.h"
 #include "sdlgamewindowfactory.h"
+#include "win32gamewindowfactory.h"
 
 /*!
  	\mainpage JEngine SE - 2D Simple Scroll Engine Documentation
@@ -69,6 +68,7 @@
 
 int main(int argc, char *argv[])
 {
+   //Win32GameWindowFactory windowfactory;
    SDLGameWindowFactory windowfactory;
 
    AutoPtr<Game> game = new Game();
@@ -78,5 +78,5 @@ int main(int argc, char *argv[])
       game->run ();
    }
 
-   return EXIT_SUCCESS;
+   return 0;
 }

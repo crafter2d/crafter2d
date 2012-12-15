@@ -470,6 +470,11 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             {
                const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
 
+#ifdef _DEBUG
+               int len;
+               const char* pname = fnc.toUtf8(len);
+#endif
+
                VirtualStackAccessor accessor(mContext, mStack);
                (*mNatives[fnc])(*this, accessor);
 

@@ -23,10 +23,18 @@
 #include "core/string/string.h"
 
 #include "net/netobject.h"
+#include "components/components.h"
 
 #include "entities.h"
 #include "idmanager.h"
 
+namespace Graphics
+{
+   class Device;
+   class RenderContext;
+};
+
+class MeshComponent;
 class NodeVisitor;
 
 /// \brief Base class for all entities that can be shown in your game.
@@ -62,12 +70,15 @@ public:
    void           setClassName(const String& classname);
 
  // operations
+   void initialize(Graphics::Device& device);
    virtual void destroy();
+
+   void addComponent(Component* pcomponent);
 
  // update & drawing
    void update(float delta);
    void updateClient(float delta);
-   void draw() const;
+   void draw(Graphics::RenderContext& context) const;
 
  // maintenance
    Entities& getChildren();
@@ -82,7 +93,7 @@ protected:
  // update & drawing
    virtual void doUpdate(float delta) = 0;
    virtual void doUpdateClient(float delta);
-   virtual void doDraw() const = 0;
+   virtual void doDraw(Graphics::RenderContext& context) const = 0;
 
  // streaming
    virtual void doPack(DataStream& stream) const;
@@ -90,12 +101,14 @@ protected:
 
 private:
 
-   Id           mId;
-   Entity*      mpParent;
-   Entities     mChildren;
-   String       mName;
-   String       mXmlFile;
-   String       mClassName;
+   Id                mId;
+   Components        mComponents;
+   MeshComponent*    mpMeshComponent;
+   Entity*           mpParent;
+   Entities          mChildren;
+   String            mName;
+   String            mXmlFile;
+   String            mClassName;
 };
 
 #ifdef JENGINE_INLINE

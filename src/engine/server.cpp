@@ -49,6 +49,7 @@
 #include "controller.h"
 #include "player.h"
 #include "serverdirtyset.h"
+#include "servercontentmanager.h"
 
 Server::Server():
    Process(),
@@ -56,6 +57,7 @@ Server::Server():
    mWorldObserver(*this),
    mActiveClient(-1)
 {
+   setContentManager(new ServerContentManager(*this));
 }
 
 Server::~Server()
@@ -312,5 +314,5 @@ void Server::handleConnectEvent(const ConnectEvent& event)
 void Server::handleViewportEvent(const ViewportEvent& event)
 {
    Player& player = *clients[mActiveClient];
-   event.update(player.getViewport());
+   //event.update(player.getViewport());
 }

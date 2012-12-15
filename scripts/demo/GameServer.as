@@ -85,8 +85,8 @@ class GameServer extends Server
 		Vector2D right = new Vector2D();
 		right.set(943, 422);
 		
-		Bridge bridge = new Bridge();
-		bridge.create(this, left, right);
+		//Bridge bridge = new Bridge();
+		//bridge.create(this, left, right);
 		
 		/*
 		left.set(180.0, 80.0);

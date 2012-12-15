@@ -24,6 +24,11 @@
 
 #include "idmanager.h"
 
+namespace Graphics
+{
+   class RenderContext;
+};
+
 class Entity;
 class NodeVisitor;
 
@@ -43,7 +48,7 @@ public:
 
  // update & drawing
    void update(float delta);
-   void draw() const;
+   void draw(Graphics::RenderContext& context) const;
 
  // visitor
    void traverse(NodeVisitor& visitor);

@@ -2,6 +2,7 @@
 #ifndef GRAPHICS_H_
 #define GRAPHICS_H_
 
+/*
 class String;
 class UIFont;
 class Texture;
@@ -27,5 +28,6 @@ public:
 private:
    UIFont* mpFont;
 };
+*/
 
 #endif // ENGINE_GRAPHICS_H_

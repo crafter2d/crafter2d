@@ -26,7 +26,7 @@ ResourcePtr<T>::ResourcePtr():
 }
    
 template<class T>
-ResourcePtr<T>::ResourcePtr(ResourceHandle* phandle):
+ResourcePtr<T>::ResourcePtr(ResourceHandle<T>* phandle):
    mpHandle(phandle)
 {
    if ( mpHandle != NULL )
@@ -68,21 +68,28 @@ ResourcePtr<T>& ResourcePtr<T>::operator=(const ResourcePtr<T>& that)
 // query
 
 template<class T>
-INLINE bool ResourcePtr<T>::isValid() const
+bool ResourcePtr<T>::isValid() const
 {
    return mpHandle != NULL;
 }
 
 template<class T>
-INLINE const T* ResourcePtr<T>::ptr() const
+const T* ResourcePtr<T>::ptr() const
 {
    return operator->();
 }
 
 template<class T>
-INLINE T* ResourcePtr<T>::ptr()
+T* ResourcePtr<T>::ptr()
 {
    return operator->();
+}
+
+template<class T>
+const String& ResourcePtr<T>::getName() const
+{
+   ASSERT(isValid());
+   return mpHandle->getName();
 }
 
 // - Dereferencing
@@ -90,7 +97,7 @@ INLINE T* ResourcePtr<T>::ptr()
 template<class T>
 T* ResourcePtr<T>::operator->() const
 {
-   return static_cast<T*>(&mpHandle->getResource());
+   return &static_cast<T&>(mpHandle->getResource());
 }
 
 template<class T>

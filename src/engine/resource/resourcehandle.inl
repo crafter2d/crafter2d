@@ -17,27 +17,58 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "core/defines.h"
 
 // - Get/set
 
-INLINE bool ResourceHandle::hasResource() const
+template<class T>
+ResourceHandle<T>::ResourceHandle(ResourceManager& manager, T* presource):
+   ResourceHandleBase(manager),
+   mpResource(presource)
+{
+}
+
+template<class T>
+ResourceHandle<T>::~ResourceHandle()
+{
+}
+
+// - Get/set
+
+template<class T>
+bool ResourceHandle<T>::hasResource() const
 {
    return mpResource != NULL;
 }
 
-INLINE const Resource& ResourceHandle::getResource() const
+template<class T>
+const T& ResourceHandle<T>::getResource() const
 {
    ASSERT_PTR(mpResource);
    return *mpResource;
 }
 
-INLINE Resource& ResourceHandle::getResource()
+template<class T>
+T& ResourceHandle<T>::getResource()
 {
    ASSERT_PTR(mpResource);
    return *mpResource;
 }
 
-INLINE void ResourceHandle::setResource(Resource* presource)
+template<class T>
+void ResourceHandle<T>::setResource(T* presource)
 {
    mpResource = presource;
 }
+
+// - Operations
+   
+template<class T>
+void ResourceHandle<T>::release()
+{
+   ResourceHandleBase::release();
+
+   delete mpResource;
+   mpResource = NULL;
+}
+

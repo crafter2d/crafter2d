@@ -20,36 +20,33 @@
 #ifndef RESOURCE_HANDLE_H_
 #define RESOURCE_HANDLE_H_
 
-#include "core/defines.h"
-#include "core/smartptr/refcount.h"
+#include "resourcehandlebase.h"
 
-class Resource;
 class ResourceManager;
 
-class ResourceHandle : public RefCount
+template<class T>
+class ResourceHandle : public ResourceHandleBase
 {
 public:
-   ResourceHandle(ResourceManager& manager, Resource* presource = NULL);
+   ResourceHandle(ResourceManager& manager, T* presource);
    virtual ~ResourceHandle();
 
  // get/set
-   bool            hasResource() const;
-   const Resource& getResource() const;
-   Resource&       getResource();
-   void            setResource(Resource* presource);
-
+   bool     hasResource() const;
+   const T& getResource() const;
+   T&       getResource();
+   void     setResource(T* presource);
+   
+protected:
  // operations
-   void release();
+   virtual void release();
 
 private:
 
  // members
-   ResourceManager& mManager;
-   Resource*        mpResource;
+   T* mpResource;
 };
 
-#ifdef JENGINE_INLINE
-#  include "resourcehandle.inl"
-#endif
+#include "resourcehandle.inl"
 
 #endif // RESOURCE_HANDLE_H_

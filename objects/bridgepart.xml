@@ -2,10 +2,12 @@
 <!-- char sprite -->
 
 <object name="bridgepart" width=12 height=8>
-   <texture>bridgepart.png</texture>
-   <animations speed=125>
-      <anim length=1>0</anim>
-   </animations>
+   <mesh>
+      <texture>bridgepart.png</texture>
+      <animations speed=125>
+         <anim length=1>0</anim>
+      </animations>
+   </mesh>
    <body inertia="1" mass="1">
       <shape type="box" halfx="6" halfy="4" />
    </body>

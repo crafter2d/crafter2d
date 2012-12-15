@@ -26,18 +26,18 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
-#include <GL/GLee.h>
-#include <GL/glu.h>
 #include <math.h>
 
+#include "core/graphics/device.h"
+#include "core/graphics/indexbuffer.h"
+#include "core/graphics/vertexbuffer.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 
-#include "engine/opengl.h"
-#include "engine/vertexbuffer.h"
-
 #include "tile.h"
 #include "tilerow.h"
+
+using namespace Graphics;
 
 /// \fn Layer::Layer()
 /// \brief Initializes the member variables.
@@ -48,8 +48,6 @@ Layer::Layer():
    texTileWidth(0),
    texTileHeight(0),
    maxTilesOnRow(0),
-   width(0),
-   height(0),
    xscroll(0),
    yscroll(0),
    xscrollMax(0),
@@ -62,12 +60,12 @@ Layer::Layer():
    verts_to_render(0),
    animateTiles(true),
    dirty(true),
-   name(),
-   effectFile(),
    mTileSet(),
    field(0),
    vb(0),
-   texcoordLookup(0)
+   texcoordLookup(0),
+   mpDefinition(NULL),
+   mEffect()
 {
 }
 
@@ -78,32 +76,41 @@ Layer::~Layer()
 	release();
 }
 
-/// \fn Layer::~Layer()
-/// \brief Create a new empty layer
-bool Layer::create(const String& layername, int w, int h, const String& effectname)
+bool Layer::create(LayerDefinition* pdefinition)
 {
-   name        = layername;
-   effectFile  = effectname;
-   width       = w;
-   height      = h;
+   setDefinition(pdefinition);
 
-   if (width <= 0 || height <= 0) 
+   if (getWidth() <= 0 || getHeight() <= 0) 
    {
       Log::getInstance().error("Layer.create: Invalid layer size!");
 		return false;
 	}
 
-   field = createTileRows(width, height);
+   field = createTileRows(getWidth(), getHeight());
 
-   if ( !effect.load(effectFile) )
+   return true;
+}
+
+/// \fn Layer::~Layer()
+/// \brief Create a new empty layer
+bool Layer::initialize(Device& device)
+{
+   if ( !mEffect.load(device, mpDefinition->effect) )
    {
-      Log::getInstance().error("Can not load effect file '%s'.", effectFile.getBuffer());
+      int len;
+      const char* pfile = mpDefinition->effect.toUtf8(len);
+      Log::getInstance().error("Can not load effect file '%s'.", pfile);
+      return false;
+   }
+
+   if ( !createBuffers(device, getWidth(), getHeight()) )
+   {
       return false;
    }
 
    // load the tileset
-   const TexturePtr diffuse = effect.resolveTexture("diffuseMap");
-   String tileInfo = diffuse->getName();
+   const TexturePtr diffuse = mEffect.resolveTexture("diffuseMap");
+   String tileInfo = diffuse.getName();
    int pos = tileInfo.lastIndexOf('.');
    tileInfo.replace(pos+1,3,"xml");
 
@@ -114,36 +121,23 @@ bool Layer::create(const String& layername, int w, int h, const String& effectna
    tileWidth = tileset().getTileWidth();
    tileHeight = tileset().getTileHeight();
 
-   return prepare();
+   return true;
 }
 
-/// \fn Layer::prepare()
-/// \brief Precalculates values and initializes the OpenGL object of the layer for rendering.
+/// \fn Layer::onViewportChanged(const Graphics::Viewport& viewport)
+/// \brief Called when the viewports dimensions have been changed. Precalculates maximum allowable scrolling 
+/// values and initializes the OpenGL object of the layer for rendering.
 /// \retval true the layer was successfully prepaired
 /// \retval false the vertex buffer could not be created
-bool Layer::prepare()
+void Layer::onViewportChanged(const Graphics::Viewport& viewport)
 {
-   GLint viewport[4];
-	glGetIntegerv(GL_VIEWPORT, viewport);
-
-   // calculate maximum allowable scrolling, world is now moving in a negative manner
-	// so negate the values for run-time improvement.
-	int screenWidth = viewport[2] - viewport[0];
-	int screenHeight = viewport[3] - viewport[1];
-
-   return prepare(screenWidth, screenHeight);
-}
-
-bool Layer::prepare(int screenWidth, int screenHeight)
-{
-   PURE_VIRTUAL
-   return false;
+   PURE_VIRTUAL;
 }
 
 Vector Layer::getScrollArea() const
 {
-   int tilesX = MAX(width - maxTilesX, 0);
-   int tilesY = MAX(height - maxTilesY, 0);
+   int tilesX = MAX(getWidth() - maxTilesX, 0);
+   int tilesY = MAX(getHeight() - maxTilesY, 0);
 
    return Vector(tileset().getTileWidth() * tilesX, mTileSet.getTileHeight() * tilesY);
 }
@@ -162,7 +156,7 @@ void Layer::calculateScrollSpeed(const Vector& area, int screenWidth, int screen
 /// \return Nothing
 void Layer::release()
 {
-	effect.destroy ();
+	mEffect.destroy ();
 
 	delete[] texcoordLookup;
 	delete[] field;
@@ -184,7 +178,7 @@ void Layer::update(float delta)
 /// \fn Layer::draw()
 /// \brief Pure virtual draw method. Should be overloaded by sub-classes.
 /// \return Nothing
-void Layer::draw()
+void Layer::draw(Graphics::RenderContext& context)
 {
    PURE_VIRTUAL
 }
@@ -214,26 +208,39 @@ TileRow* Layer::createTileRows(int width, int height)
    return NULL;
 }
 
-VertexBuffer* Layer::createVertexBuffer(int width, int height, int vertexcount)
+bool Layer::createBuffers(Device& device, int width, int height)
 {
-   // create the vertex buffer for this layer
-	AutoPtr<VertexBuffer> vb = OpenGL::createVertexBuffer();
-   if ( !vb.hasPointer() )
+   vb = device.createVertexBuffer();
+   if ( vb == NULL )
    {
       Log::getInstance().error("Not enough memory available for vertex buffer.");
-      return NULL;
+      return false;
    }
 
+   // create the vertex buffer for this layer
    int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
    int format = VertexBuffer::eXY | VertexBuffer::eTex0;
+   int size = width * height * 4; // each tile is 4 vertices
 
-   if ( !vb->create (effect, width*height*vertexcount, usage, format) )
+   if ( !vb->create(size, usage, format) )
    {
 		Log::getInstance().error("Could not create the vertex buffer.");
-		return NULL;
+		return false;
 	}
 
-   return vb.release();
+   ib = device.createIndexBuffer();
+   if ( ib == NULL )
+   {
+      return false;
+   }
+
+   size = width * height * 6; // each tile is 6 indices
+   if ( !ib->create(IndexBuffer::eShort, size, NULL) )
+   {
+      return false;
+   }
+
+   return true;
 }
 
 /// \fn Layer::scroll(float x, float y)
@@ -267,7 +274,7 @@ void Layer::scroll (float x, float y)
 /// \brief Returns the tile the given indices; -1 if the position is outside the layer.
 int Layer::getTile(int x, int y) const
 {
-   if ( x < 0 || y < 0 || x >= width || y >= height )
+   if ( x < 0 || y < 0 || x >= getWidth() || y >= getHeight() )
    {
       return -1;
    }
@@ -279,32 +286,10 @@ int Layer::getTile(int x, int y) const
 /// \breif Set the new tile texture.
 void Layer::setTile(int x, int y, int tile)
 {
-   if ( x >= 0 && y >= 0 && x < width && y < height )
+   if ( x >= 0 && y >= 0 && x < getWidth() && y < getHeight() )
    {
       field[y][x].setTextureId(tile);
 
       dirty = true;
    }
-}
-
-/// \fn Layer::resize(int newwidth, int newheight)
-/// \brief Resize the layer to the new dimensions.
-void Layer::resize(int newwidth, int newheight)
-{
-   TileRow* pnewrows = createTileRows(newwidth, newheight);
-   int size = MIN(newheight, height);
-   for ( int y = 0; y < size; ++y )
-   {
-      pnewrows[y] = field[y];
-   }
-
-   delete[] field;
-   field = pnewrows;
-
-   width = newwidth;
-   height = newheight;
-
-   prepare();
-
-   dirty = true;
 }

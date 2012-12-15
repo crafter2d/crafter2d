@@ -30,11 +30,18 @@ public:
 
    virtual LayerType getType() const;
 
-   virtual bool prepare(int screenWidth, int screenHeight);
-   virtual void draw();
+ // creation
+   virtual bool initialize(Graphics::Device& device);
+
+ // operations
+   virtual void draw(Graphics::RenderContext& context);
    virtual void drawHighlight(const Vector& point);
 
+ // coordinate conversion
    virtual Point pointToTile(const Point& point);
+
+ // notifications
+   virtual void onViewportChanged(const Graphics::Viewport& viewport);
 
 protected:
    virtual TileRow*  createTileRows(int width, int height);

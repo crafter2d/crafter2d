@@ -20,6 +20,11 @@
 #ifndef WORLD_RENDERER
 #define WORLD_RENDERER
 
+namespace Graphics
+{
+   class RenderContext;
+};
+
 class World;
 
 class WorldRenderer
@@ -28,7 +33,7 @@ public:
    explicit WorldRenderer(World& world);
    virtual ~WorldRenderer() = 0;
 
-   virtual void render(float delta) = 0;
+   virtual void render(Graphics::RenderContext& context, float delta) = 0;
 
  // get/set
    World& getWorld();

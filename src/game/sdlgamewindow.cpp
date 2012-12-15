@@ -185,6 +185,11 @@ int SDLGameWindow::getWindowFlags(bool fullscreen)
   return flags;
 }
 
+int SDLGameWindow::getHandle() const
+{
+   return -1;
+}
+
 int SDLGameWindow::getWidth() const
 {
    return mpWindow->w;

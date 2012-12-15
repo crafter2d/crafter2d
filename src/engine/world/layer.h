@@ -26,8 +26,6 @@
 #include "core/defines.h"
 #include "core/string/string.h"
 
-#include "engine/shader.h"
-#include "engine/texture.h"
 #include "engine/effect.h"
 
 #include "tileset.h"
@@ -42,9 +40,25 @@
 #define COLLIDED_VERT				2
 #define COLLIDED_GRAFITY			4
 
+namespace Graphics
+{
+   class Device;
+   class Viewport;
+   class RenderContext;
+   class IndexBuffer;
+   class VertexBuffer;
+};
+
 class Point;
 class TileRow;
-class VertexBuffer;
+
+struct LayerDefinition
+{
+   int width;
+   int height;
+   String name;
+   String effect;
+};
 
 /**
 @author Jeroen Broekhuizen
@@ -61,13 +75,12 @@ public:
    virtual        ~Layer();
 
  // Construction
-   bool           create(const String& name, int width, int height, const String& effect);
-   void           release();
+   virtual bool create(LayerDefinition* pdefinition);
+   virtual bool initialize(Graphics::Device& device);
+   void         release();
 
  // pure virtuals
-           bool   prepare();
-   virtual bool   prepare(int screenWidth, int screenHeight) = 0;
-   virtual void   draw() = 0;
+   virtual void   draw(Graphics::RenderContext& context) = 0;
    virtual void   drawHighlight(const Vector& point) = 0;
 
  // get/set interface
@@ -78,6 +91,8 @@ public:
 
    virtual int            getTile(int x, int y) const;
    virtual void           setTile(int x, int y, int tile);
+
+   void setDefinition(LayerDefinition* pdefinition);
 
    Vector         getScrollSpeed() const;
    void           setScrollSpeed(float x, float y);
@@ -102,8 +117,7 @@ public:
    float          getTexTileWidth() const { return texTileWidth; }
    float          getTexTileHeight() const { return texTileHeight; }
 
-   const Effect&        getEffect() const;
-   const String&   getEffectFile() const;
+   const Effect&  getEffect() const;
 
  // Operations
    Vector         layerToScreen( const Vector& vec ) const;
@@ -114,23 +128,23 @@ public:
    virtual Point  pointToTile(const Point& point) = 0;
 
    void           scroll(float x, float y);
-   void           resize(int newwidth, int newheight);
    void           update(float delta);
 
    void           calculateScrollSpeed(const Vector& area, int screenWidth, int screenHeight);
 
+ // notifications
+   virtual void onViewportChanged(const Graphics::Viewport& viewport) = 0;
+
 protected:
  // pure virtuals
-   virtual TileRow*  createTileRows(int width, int height) = 0;
+   virtual TileRow* createTileRows(int width, int height) = 0;
 
  // operations
-   VertexBuffer*  createVertexBuffer(int width, int height, int vertexcount);
    void           setVertex(float** data, float x, float y, float texX, float texY);
 
    int tileWidth, tileHeight, tileCount;
    float texTileWidth, texTileHeight;
    int maxTilesOnRow;
-   int width, height;
    float xscroll, yscroll;
    float xscrollMax, yscrollMax;
    float scrollSpeedX, scrollSpeedY;
@@ -139,14 +153,20 @@ protected:
    bool animateTiles;
    bool dirty;
 
-   String name, effectFile;
-   Effect effect;
    TileSet mTileSet;
 
    TileRow* field;
-   VertexBuffer* vb;
+   Graphics::VertexBuffer* vb;
+   Graphics::IndexBuffer* ib;
    Vector* texcoordLookup;
-   Texture diffuseMap, normalMap, normalizeCube;
+
+private:
+ // operations
+   bool createBuffers(Graphics::Device& device, int width, int height);
+
+ // members
+   LayerDefinition*  mpDefinition;
+   Effect            mEffect;
 };
 
 #ifdef JENGINE_INLINE

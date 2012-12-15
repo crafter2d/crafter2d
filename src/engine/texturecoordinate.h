@@ -20,30 +20,30 @@
 #ifndef _TEXTURE_COORDINATE
 #define _TEXTURE_COORDINATE
 
-#include "core/math/vector.h"
+#include "core/math/vertex.h"
 
 class TextureCoordLookup;
 
 class TextureCoordinate
 {
+   static const int TopLeft = 0;
+   static const int TopRight = 1;
+   static const int BottomRight = 2;
+   static const int BottomLeft = 3;
+
 public:
    TextureCoordinate();
    TextureCoordinate(const TextureCoordinate& that);
-   ~TextureCoordinate();
 
-   void initialize(const Vector& tl, const Vector& br);
+   void initialize(const Vertex& tl, const Vertex& br);
 
-   Vector getTopLeft();
-   Vector getTopRight();
-   Vector getBottomLeft();
-   Vector getBottomRight();
-
-   void flipHorizontal();
-   void flipVertical();
+   const Vertex& getTopLeft() const;
+   const Vertex& getTopRight() const;
+   const Vertex& getBottomLeft() const;
+   const Vertex& getBottomRight() const;
 
 private:
-   Vector mTL;
-   Vector mBR;
+   Vertex mCoordinates[4];
 };
 
 #endif

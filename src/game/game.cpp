@@ -102,7 +102,7 @@ bool Game::create()
 
    // initialize the console
    Console& console = Console::getInstance();
-   console.create ();
+   console.create();
 
 #ifdef WIN32
    if ( !NetConnection::initialize() )

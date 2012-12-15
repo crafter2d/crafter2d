@@ -20,9 +20,12 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
+#include "core/core_base.h"
+
+class String;
 class Timer;
 
-class Platform
+class CORE_API Platform
 {
 public:
       static Platform&  getInstance();
@@ -30,6 +33,9 @@ public:
    virtual ~Platform();
 
    virtual Timer* createTimer() = 0;
+
+   virtual void* loadModule(const String& name) = 0;
+   virtual void* getFunctionAddress(void* module, const String& name) = 0;
 
 protected:
    Platform();
