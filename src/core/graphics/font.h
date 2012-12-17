@@ -25,8 +25,6 @@
 #include "core/string/string.h"
 #include "core/core_base.h"
 
-#include "engine/resource/resource.h"
-
 namespace Graphics
 {
    class CORE_API Font

@@ -19,13 +19,17 @@ if ( os.is("windows") ) then
 	
    includedirs {
       path.join(libdir, "glee/include"),
+	  path.join(libdir, "cg/include"),
       path.join(libdir, "soil/include"),
+	  path.join(libdir, "freetype2/include"),
       path.join(libdir, "icu/include")
    }
 
    libdirs {
       path.join(libdir, "glee/lib"),
-      path.join(libdir, "soil/lib")
+	  path.join(libdir, "cg/lib"),
+      path.join(libdir, "soil/lib"),
+	  path.join(libdir, "freetype2/lib"),
    }
 
 	-- set IDE specific settings
@@ -37,19 +41,19 @@ if ( os.is("windows") ) then
       links { "cg", "cgGL" }
 	  
 		configuration "Debug"
-			links { "GLee_d", "SOIL_d" } 
+			links { "GLee_d", "SOIL_d", "freetype242MT_D" } 
 		 
 		configuration "Release"
-			links { "GLee_d", "SOIL" }
+			links { "GLee_d", "SOIL", "freetype242MT" }
 
 	else
-		links { "cg", "cgGL" }
+		links { "opengl32", "glu32", "cg", "cgGL" }
 		
 		configuration "Debug"
-			links { "GLee_d", "SOIL_d" }
+			links { "GLee_d", "SOIL_d", "freetype242MT_D" }
 					
 		configuration "Release"
-			links { "GLee", "SOIL" }
+			links { "GLee", "SOIL", "freetype242MT_D" }
    end -- win32
    
 elseif ( os.is("linux") ) then

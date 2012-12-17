@@ -19,10 +19,10 @@ newoption
 }
 
 if not _OPTIONS["libdir"] then
-	_OPTIONS["libdir"] = path.join(os.getcwd(), "../externallibs")
+	_OPTIONS["libdir"] = path.join(path.join(os.getcwd(), "../externallibs"), _ACTION)
 end
 
-libdir = path.join(_OPTIONS["libdir"], _ACTION)
+libdir = _OPTIONS["libdir"]
 	
 require "projects/proj-core"
 require "projects/proj-d3d"

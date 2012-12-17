@@ -13,7 +13,7 @@ files { "src/script/**.cpp", "src/script/**.c", "src/script/**.h", "src/script/*
 includedirs { "src" }
 
 if ( os.is("windows") ) then
-	defines { "WIN32", "SCRIPT_EXPORTS" }
+	defines { "WIN32", "SCRIPT_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 	
 	includedirs { 	path.join(libdir, "antlr/include"),
 					path.join(libdir, "zlib/include"),

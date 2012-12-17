@@ -15,7 +15,7 @@ includedirs { "src" }
 
 -- set the include and library
 if ( os.is("windows") ) then
-	defines { "WIN32", "ENGINE_EXPORTS" }
+	defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 	
 	includedirs { 	path.join(libdir, "sdl/include"),
 					path.join(libdir, "openal/include"),
@@ -23,7 +23,6 @@ if ( os.is("windows") ) then
 					path.join(libdir, "ogg/include"),
 					path.join(libdir, "vorbis/include"),
 					path.join(libdir, "tinyxml/include"),
-					path.join(libdir, "freetype2/include"),
 					path.join(libdir, "box2d/include"),
 					path.join(libdir, "icu/include") }
 
@@ -33,7 +32,6 @@ if ( os.is("windows") ) then
 				path.join(libdir, "ogg/lib"),
 				path.join(libdir, "vorbis/lib"),
 				path.join(libdir, "tinyxml/lib"),
-				path.join(libdir, "freetype2/lib"),
 				path.join(libdir, "box2d/lib") }
 
 	-- set IDE specific settings
@@ -52,16 +50,14 @@ if ( os.is("windows") ) then
 
 	else
 		
-		links { "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", 
-				"OpenAL32", "ALut", "cg", "cgGL"  }
+		links { "SDL", "gdi32", "user32", "vfw32", "ws2_32", 
+				"OpenAL32", "ALut"  }
 		
 		configuration "Debug"
-			links { "GLee_d", "box2d_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d", 
-	                "freetype242MT_D" }
+			links { "box2d_d", "vorbisfile_d", "tinyxmld_STL", "zlib1_d" }
 					
 		configuration "Release"
-			links { "GLee", "box2d", "vorbisfile", "tinyxml_STL", "zlib1", 
-					"freetype242MT" }
+			links { "box2d", "vorbisfile", "tinyxml_STL", "zlib1" }
    end -- win32
    
 elseif ( os.is("linux") ) then

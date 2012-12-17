@@ -1,2 +1,2 @@
 @echo off
-gen vs2010
+premake4 --libdir=D:\Devel\jenginesse\externallibs\vs2012 vs2010

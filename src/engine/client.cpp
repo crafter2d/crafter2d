@@ -183,8 +183,8 @@ void Client::render(float delta)
 
    //glDisable (GL_ALPHA_TEST);
 
-   //mpScript->addParam(delta);
-   //mpScript->run("paint");
+   mpScript->addParam(delta);
+   mpScript->run("paint");
 
    mpWindow->display();
 }
