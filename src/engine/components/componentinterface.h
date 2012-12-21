@@ -9,6 +9,12 @@ namespace ComponentInterface
       eMeshComponent,
       ePhysisComponent
    };
+
+   enum ComponentMessageType
+   {
+	   ePositionChangedMsg,
+	   eNUM_MESSAGE_TYPES
+   };
 };
 
 #endif // ENTITY_COMPONENT_INTERFACE_H

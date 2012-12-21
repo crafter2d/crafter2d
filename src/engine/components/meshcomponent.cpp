@@ -13,6 +13,10 @@
 #include "engine/animator.h"
 #include "engine/texturecoordinate.h"
 
+#include "components.h"
+#include "componentmessage.h"
+#include "componentstructs.h"
+
 using namespace Graphics;
 
 struct PTVertex
@@ -64,8 +68,26 @@ void MeshComponent::initialize(Device& device)
    }
 }
 
+void MeshComponent::registerComponent(Components& components)
+{
+	Component::registerComponent(components);
+
+	components.subscribeMessageType(*this, ComponentInterface::ePositionChangedMsg);
+}
+
 void MeshComponent::handleMessage(const ComponentMessage& message)
 {
+	using namespace ComponentInterface;
+
+	switch ( message.getMessageType() )
+	{
+	case ePositionChangedMsg:
+		{
+			Matrix4* pinfo = (Matrix4*) message.getData();
+         mTransform = *pinfo;
+		}
+		break;
+	}
 }
 
 void MeshComponent::update(float delta)
@@ -101,6 +123,7 @@ void MeshComponent::render(RenderContext& context)
 {
    mEffect.enable(context);
 
+   context.setWorldMatrix(mTransform);
    context.setVertexBuffer(*mpVertexBuffer);
    context.setIndexBuffer(*mpIndexBuffer);
    

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,55 +17,47 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#include "stringinterface.h"
 
-INLINE const Simulator& Body::getSimulator() const
+#include "string.h"
+
+unsigned long sCrcTable[256];
+bool          sCrcTableComputed = false;
+
+void buildCrcTable()
 {
-   return mSimulator;
+   unsigned long c;
+   int n, k;
+   
+   for ( n = 0; n < 256; n++ )
+   {
+      c = (unsigned long) n;
+      for (k = 0; k < 8; k++)
+      {
+         if (c & 1)
+            c = 0x04C11DB7 ^ (c >> 1);
+         else
+            c = c >> 1;
+      }
+      sCrcTable[n] = c;
+   }
+
+   sCrcTableComputed = true;
 }
 
-INLINE Simulator& Body::getSimulator()
+unsigned long StringInterface::crc(const String& text)
 {
-   return mSimulator;
-}
+   if ( !sCrcTableComputed )
+   {
+      buildCrcTable();
+   }
 
-INLINE const Actor& Body::getActor() const
-{
-   return mActor;
-}
+   unsigned long result = 0xffffffffL;
+   for ( int index = 0; index < text.length(); ++index )
+   {
+      char c = text[index];
+      result = sCrcTable[(result ^ c) & 0xff] ^ (result >> 8);
+   }
 
-INLINE Actor& Body::getActor()
-{
-   return mActor;
-}
-
-INLINE const Vector& Body::getPosition() const
-{
-   return mPosition;
-}
-
-INLINE void Body::setPosition(const Vector& pos)
-{
-   mPosition = pos;
-   notifyPositionChanged();
-}
-
-INLINE float Body::getAngle() const
-{
-   return mAngle;
-}
-
-INLINE void Body::setAngle(float angle)
-{
-   mAngle = angle;
-}
-
-INLINE const Matrix4& Body::getTransform() const
-{
-   return mTransform;
-}
-
-INLINE ForceGenerators& Body::getForceGenerators()
-{
-   return mForceGenerators;
+	return result;
 }

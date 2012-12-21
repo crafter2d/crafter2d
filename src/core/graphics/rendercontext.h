@@ -7,6 +7,8 @@
 
 #include "viewport.h"
 
+class Matrix4;
+
 namespace Graphics
 {
    class BlendState;
@@ -37,6 +39,7 @@ namespace Graphics
 
       virtual void setIdentityViewMatrix() = 0;
       virtual void setIdentityWorldMatrix() = 0;
+      virtual void setWorldMatrix(const Matrix4& matrix) = 0;
 
       virtual void clear() = 0;
 

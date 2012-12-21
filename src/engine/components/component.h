@@ -17,13 +17,16 @@ public:
    const Entity& getEntity() const;
          Entity& getEntity();
 
-   void setOwner(Components& components);
-
    ComponentInterface::ComponentType getType() const;
 
  // operations
+   virtual void registerComponent(Components& components);
    virtual void handleMessage(const ComponentMessage& message) = 0;
    virtual void update(float delta) = 0;
+
+protected:
+ // messaging
+	void postMessage(ComponentMessage& message);
 
 private:
 

@@ -194,8 +194,20 @@ void Box2DBody::integrate(float timestep)
 
 void Box2DBody::finalize()
 {
-   setPosition(Box2DSimulator::b2ToVector(mBody.GetPosition()));
-   setAngle(RAD2DEG(mBody.GetAngle()));
+   const b2Transform& trans = mBody.GetTransform();
+   Vector position = Box2DSimulator::b2ToVector(trans.p);
+   float matvalues[] = 
+   {
+      trans.q.c, trans.q.s, 0, position.x,
+      -trans.q.s, trans.q.c, 0, position.y,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+   };
+
+   mTransform.setArray(matvalues);
+
+   //setPosition(Box2DSimulator::b2ToVector(mBody.GetPosition()));
+   //setAngle(RAD2DEG(mBody.GetAngle()));
 
    Body::finalize();
 }

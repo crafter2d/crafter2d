@@ -23,6 +23,7 @@ namespace Graphics
 
       virtual void setIdentityViewMatrix();
       virtual void setIdentityWorldMatrix();
+      virtual void setWorldMatrix(const Matrix4& matrix);
 
       virtual void clear();
 

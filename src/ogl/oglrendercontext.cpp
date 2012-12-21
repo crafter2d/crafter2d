@@ -6,6 +6,7 @@
 
 #include "core/graphics/viewport.h"
 #include "core/math/color.h"
+#include "core/math/matrix4.h"
 
 #include "oglblendstate.h"
 #include "oglindexbuffer.h"
@@ -69,6 +70,12 @@ void OGLRenderContext::setIdentityViewMatrix()
 {
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
+}
+
+void OGLRenderContext::setWorldMatrix(const Matrix4& matrix)
+{
+   glMatrixMode(GL_MODELVIEW);
+   glLoadMatrixf(matrix.asArray());
 }
 
 void OGLRenderContext::setIdentityWorldMatrix()

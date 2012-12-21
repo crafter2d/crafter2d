@@ -1,0 +1,6 @@
+
+#ifndef COMPONENT_STRUCTS_H
+#define COMPONENT_STRUCTS_H
+
+
+#endif // COMPONENT_STRUCTS_H

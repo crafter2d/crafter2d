@@ -6,11 +6,13 @@
 
 #include "engine/physics/body.h"
 
+#include "componentmessage.h"
+#include "componentstructs.h"
+
 PhysicsComponent::PhysicsComponent():
    Component(ComponentInterface::ePhysisComponent),
    mpBody(NULL),
-   mPosition(),
-   mAngle(0.0f)
+   mTransform()
 {
 }
 
@@ -22,15 +24,13 @@ void PhysicsComponent::handleMessage(const ComponentMessage& message)
 
 void PhysicsComponent::update(float delta)
 {
-   if ( mPosition != mpBody->getPosition() )
-   {
-      // moved
-      mPosition = mpBody->getPosition();
-   }
+   const Matrix4& transform = mpBody->getTransform();
 
-   if ( mAngle != mpBody->getAngle() )
+   if ( transform != mTransform )
    {
-      // rotated
-      mAngle = mpBody->getAngle();
+      mTransform = transform;
+      
+      ComponentMessage message(ComponentInterface::ePositionChangedMsg, &mTransform);
+      postMessage(message);
    }
 }

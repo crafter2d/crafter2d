@@ -21,6 +21,7 @@
 #define BODY_H_
 
 #include "core/math/vector.h"
+#include "core/math/matrix4.h"
 
 #include "collisionshapes.h"
 #include "forcegenerators.h"
@@ -51,6 +52,8 @@ public:
 
    float         getAngle() const;
    void          setAngle(float angle);
+
+   const Matrix4& getTransform() const;
    
    ForceGenerators& getForceGenerators();
 
@@ -76,6 +79,7 @@ protected:
  // notification
    virtual void notifyPositionChanged();
    
+   Matrix4 mTransform;
    Vector            mPosition;
    float             mAngle;
 

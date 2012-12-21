@@ -3,6 +3,7 @@
 #define PHYSICS_COMPONENT_H
 
 #include "core/math/vector.h"
+#include "core/math/matrix4.h"
 
 #include "component.h"
 
@@ -25,8 +26,7 @@ public:
 
 private:
    Body*    mpBody;
-   Vector   mPosition;
-   float    mAngle;
+   Matrix4  mTransform;
 };
 
 #ifdef JENGINE_INLINE

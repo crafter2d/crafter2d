@@ -20,3 +20,18 @@ Entity& Component::getEntity()
 {
    return mpComponents->getEntity();
 }
+
+// - Messaging
+
+void Component::postMessage(ComponentMessage& message)
+{
+	ASSERT_PTR(mpComponents);
+	mpComponents->postMessage(message);
+}
+
+// - Operations
+
+void Component::registerComponent(Components& components)
+{
+	mpComponents = &components;
+}

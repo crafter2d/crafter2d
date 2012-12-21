@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,55 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#ifndef STRING_INTERFACE_H
+#define STRING_INTERFACE_H
 
-INLINE const Simulator& Body::getSimulator() const
-{
-   return mSimulator;
-}
+class String;
 
-INLINE Simulator& Body::getSimulator()
+namespace StringInterface
 {
-   return mSimulator;
-}
+	unsigned long crc(const String& text);
+};
 
-INLINE const Actor& Body::getActor() const
-{
-   return mActor;
-}
-
-INLINE Actor& Body::getActor()
-{
-   return mActor;
-}
-
-INLINE const Vector& Body::getPosition() const
-{
-   return mPosition;
-}
-
-INLINE void Body::setPosition(const Vector& pos)
-{
-   mPosition = pos;
-   notifyPositionChanged();
-}
-
-INLINE float Body::getAngle() const
-{
-   return mAngle;
-}
-
-INLINE void Body::setAngle(float angle)
-{
-   mAngle = angle;
-}
-
-INLINE const Matrix4& Body::getTransform() const
-{
-   return mTransform;
-}
-
-INLINE ForceGenerators& Body::getForceGenerators()
-{
-   return mForceGenerators;
-}
+#endif // STRING_INTERFACE_H

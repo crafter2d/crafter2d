@@ -3,6 +3,7 @@
 #define MESH_COMPONENT_H
 
 #include "core/math/size.h"
+#include "core/math/matrix4.h"
 #include "core/string/string.h"
 
 #include "engine/effect.h"
@@ -40,6 +41,7 @@ public:
    void render(Graphics::RenderContext& context);
 
  // overloads
+   virtual void registerComponent(Components& components);
    virtual void handleMessage(const ComponentMessage& message);
    virtual void update(float delta);
 
@@ -48,6 +50,7 @@ private:
    void updateBuffers();
 
  // members
+   Matrix4                 mTransform;
    Animator*               mpAnimator; // owned
    Effect                  mEffect;
    String                  mEffectName;
