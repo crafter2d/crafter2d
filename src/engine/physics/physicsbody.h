@@ -84,6 +84,9 @@ private:
    Vector   mAcceleration;
    Vector   mLastFrameAcceleration;
 
+   Vector   mPosition;
+   float    mAngle;
+
    float    mLinearDamping;
    float    mAngularDamping;
 

@@ -182,11 +182,6 @@ void Actor::doPack(DataStream& stream) const
       const Vector& pos = getPosition();
       stream << pos.x << pos.y << mVel.x << mVel.y << angle << dir;
    }
-
-   if ( isDirty(eAnimationDirty) )
-   {
-      //stream << mpAnimator->getAnimation();
-   }
 }
 
 void Actor::doUnpack(DataStream& stream)
@@ -199,14 +194,5 @@ void Actor::doUnpack(DataStream& stream)
       stream >> pos.x >> pos.y >> mVel.x >> mVel.y >> angle >> dir;
 
       setPosition(pos);
-   }
-
-   if ( isDirty(eAnimationDirty) )
-   {
-      int anim;
-      stream >> anim;
-
-      //if ( mpAnimator != NULL )
-      //   mpAnimator->setAnimation(anim);
    }
 }

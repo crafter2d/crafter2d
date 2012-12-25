@@ -35,6 +35,8 @@ PhysicsBody::PhysicsBody(Simulator& simulator, Actor& actor):
    mAccumTorque(0.0f),
    mAcceleration(),
    mLastFrameAcceleration(),
+   mPosition(),
+   mAngle(0.0f),
    mLinearDamping(0.95f),
    mAngularDamping(1.0f),
    mInverseInertia(0.0f),

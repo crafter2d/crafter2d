@@ -199,6 +199,8 @@ void World::update(DirtySet& set, float delta)
 
 void World::updateClient(float delta)
 {
+   getSimulator().run(delta);
+
    // scroll if necessary
    if (autoFollow && followMode != NoFollow)
    {

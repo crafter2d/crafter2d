@@ -73,6 +73,8 @@ void MeshComponent::registerComponent(Components& components)
 	Component::registerComponent(components);
 
 	components.subscribeMessageType(*this, ComponentInterface::ePositionChangedMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eUpdateMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eRenderMsg);
 }
 
 void MeshComponent::handleMessage(const ComponentMessage& message)
@@ -86,6 +88,16 @@ void MeshComponent::handleMessage(const ComponentMessage& message)
 			Matrix4* pinfo = (Matrix4*) message.getData();
          mTransform = *pinfo;
 		}
+   case eUpdateMsg:
+      {
+         float* pdelta = (float*)message.getData();
+         update(*pdelta);
+      }
+   case eRenderMsg:
+      {
+         RenderContext* pcontext = static_cast<RenderContext*>(message.getData());
+         render(*pcontext);
+      }
 		break;
 	}
 }

@@ -5,11 +5,13 @@
 #include "core/math/vector.h"
 #include "core/math/matrix4.h"
 
+#include "engine/physics/bodylistener.h"
+
 #include "component.h"
 
 class Body;
 
-class PhysicsComponent : public Component
+class PhysicsComponent : public Component, IBodyListener
 {
 public:
    PhysicsComponent();
@@ -23,6 +25,9 @@ public:
  // component interface
    virtual void handleMessage(const ComponentMessage& message);
    virtual void update(float delta);
+
+ // notifications
+   virtual void onPositionChanged(Body& body);
 
 private:
    Body*    mpBody;

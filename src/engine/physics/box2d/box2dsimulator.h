@@ -29,6 +29,7 @@ struct b2Vec2;
 
 class Object;
 class Vector;
+class Matrix4;
 
 class Box2DBody;
 class Box2DJoint;
@@ -41,6 +42,7 @@ class Box2DSimulator : public Simulator
 {
 public:
    static Vector b2ToVector(const b2Vec2& b2);
+   static Matrix4 b2ToMatrix(const b2Transform& tf);
    static b2Vec2 vectorToB2(const Vector& v);
 
    enum BodyType { eBound, eObject };

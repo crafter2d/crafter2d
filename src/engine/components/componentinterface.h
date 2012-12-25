@@ -13,6 +13,8 @@ namespace ComponentInterface
    enum ComponentMessageType
    {
 	   ePositionChangedMsg,
+      eUpdateMsg,
+      eRenderMsg,
 	   eNUM_MESSAGE_TYPES
    };
 };

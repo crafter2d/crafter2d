@@ -24,13 +24,15 @@ void PhysicsComponent::handleMessage(const ComponentMessage& message)
 
 void PhysicsComponent::update(float delta)
 {
-   const Matrix4& transform = mpBody->getTransform();
+}
 
-   if ( transform != mTransform )
-   {
-      mTransform = transform;
-      
-      ComponentMessage message(ComponentInterface::ePositionChangedMsg, &mTransform);
-      postMessage(message);
-   }
+// - Notifications
+
+void PhysicsComponent::onPositionChanged(Body& body)
+{
+   mTransform.setPosition(body.getPosition());
+   mTransform.setRotation(body.getAngle());
+
+   ComponentMessage message(ComponentInterface::ePositionChangedMsg, &mTransform);
+   postMessage(message);
 }

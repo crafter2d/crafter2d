@@ -24,8 +24,7 @@
 
 #include <tinyxml.h>
 
-#include "engine/actor.h"
-
+#include "bodylistener.h"
 #include "collisionshape.h"
 #include "simulator.h"
 #include "forcegenerator.h"
@@ -43,11 +42,9 @@ bool Body::hasInfo(const TiXmlElement& element)
 // - Body
 // ----------------------------------
 
-Body::Body(Simulator& simulator, Actor& actor):
-   mPosition(actor.getPosition()),
-   mAngle(actor.getRotation()),
+Body::Body(Simulator& simulator):
    mSimulator(simulator),
-   mActor(actor),
+   mTransform(),
    mForceGenerators()
 {
 }
@@ -115,6 +112,16 @@ void Body::notifyPositionChanged()
 {
 }
 
+// -- listener notifications
+
+void Body::firePositionChanged()
+{
+   if ( mpListener != NULL )
+   {
+      mpListener->onPositionChanged(*this);
+   }
+}
+
 // ----------------------------------
 // -- Integration
 // ----------------------------------
@@ -126,5 +133,4 @@ void Body::integrate(float timestep)
 
 void Body::finalize()
 {
-   mActor.updateState();
 }

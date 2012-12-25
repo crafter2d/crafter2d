@@ -53,8 +53,7 @@ public:
  // maintenance
    virtual void      destroy();
    virtual Actor*    clone ();
-
-   void              addState(State* state);
+   
    void              rotate(float deg);
    void              flip();
    bool              direction() const;
@@ -65,7 +64,6 @@ public:
    void              setRotation(const float deg);
    void              setSize(int width, int height);
    void              setVisible(bool vis = true);
-   void              setTexture(TexturePtr texture);
 
    const Vector&     getPosition() const;
    const Vector&     getVelocity() const;

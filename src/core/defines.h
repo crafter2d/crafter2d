@@ -70,4 +70,9 @@ typedef void*           handle;
 #define PURE_VIRTUAL          assert(false && "Pure virtual!");
 #define UNREACHABLE(msg)      assert(false && msg);
 
+// MATH
+
+#define PI 3.14159265358979323846
+#define RAD2DEG(rad)(rad * 180 / PI)
+
 #endif

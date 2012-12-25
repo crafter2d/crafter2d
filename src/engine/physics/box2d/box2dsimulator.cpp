@@ -43,6 +43,16 @@ b2Vec2 Box2DSimulator::vectorToB2(const Vector& v)
    return b2Vec2(v.x / 30, v.y / 30);
 }
 
+Matrix4 Box2DSimulator::b2ToMatrix(const b2Transform& tf)
+{
+   return Matrix4(
+      tf.q.c     , tf.q.s     , 0, 0,
+      -tf.q.s    , tf.q.c     , 0, 0,
+      0          , 0          , 1, 0,
+      tf.p.x * 30, tf.p.y * 30, 0, 1
+   );
+}
+
 Box2DSimulator::Box2DSimulator():
    Simulator(),
    mpb2World(NULL),

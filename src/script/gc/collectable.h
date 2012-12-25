@@ -2,9 +2,11 @@
 #ifndef COLLECTABLE_H
 #define COLLECTABLE_H
 
+#include "script/script_base.h"
+
 class VirtualMachine;
 
-class Collectable
+class SCRIPT_API Collectable
 {
 public:
             Collectable();

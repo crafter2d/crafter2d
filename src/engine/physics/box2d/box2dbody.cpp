@@ -188,26 +188,17 @@ void Box2DBody::integrate(float timestep)
    getForceGenerators().applyForces(*this);
 }
 
-#define PI 3.14159265358979323846
-#define RAD2DEG(rad)(rad * 180 / PI)
-
-
 void Box2DBody::finalize()
 {
-   const b2Transform& trans = mBody.GetTransform();
-   Vector position = Box2DSimulator::b2ToVector(trans.p);
-   float matvalues[] = 
+   if ( !mBody.IsAwake() )
    {
-      trans.q.c, trans.q.s, 0, position.x,
-      -trans.q.s, trans.q.c, 0, position.y,
-      0, 0, 1, 0,
-      0, 0, 0, 1
-   };
+      Matrix4 mat = Box2DSimulator::b2ToMatrix(mBody.GetTransform());
 
-   mTransform.setArray(matvalues);
+      setPosition();
+      setAngle(mBody.GetAngle());
 
-   //setPosition(Box2DSimulator::b2ToVector(mBody.GetPosition()));
-   //setAngle(RAD2DEG(mBody.GetAngle()));
+      firePositionChanged();
+   }
 
    Body::finalize();
 }

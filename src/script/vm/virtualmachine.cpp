@@ -395,7 +395,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
 
          execute(vclass, inst);
       }
-      catch ( VirtualFunctionNotFoundException* pfuncexception)
+      catch ( VirtualFunctionNotFoundException* )
       {
          VirtualException* pexception = new VirtualException(*instantiate("system.NoSuchFunctionException"));
 

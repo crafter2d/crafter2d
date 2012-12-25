@@ -26,7 +26,7 @@
 #include "collisionshapes.h"
 #include "forcegenerators.h"
 
-class Actor;
+class IBodyListener;
 class CollisionShape;
 class TiXmlElement;
 class ForceGenerator;
@@ -37,21 +37,12 @@ class Body
 public:
    static bool hasInfo(const TiXmlElement& element);
 
-   explicit Body(Simulator& simulator, Actor& actor);
+   explicit Body(Simulator& simulator);
    virtual ~Body();
 
  // get/set
    const Simulator& getSimulator() const;
          Simulator& getSimulator();
-
-   const Actor&  getActor() const;
-         Actor&  getActor();
-
-   const Vector& getPosition() const;
-   void          setPosition(const Vector& pos);
-
-   float         getAngle() const;
-   void          setAngle(float angle);
 
    const Matrix4& getTransform() const;
    
@@ -78,17 +69,17 @@ public:
 protected:
  // notification
    virtual void notifyPositionChanged();
-   
-   Matrix4 mTransform;
-   Vector            mPosition;
-   float             mAngle;
+
+ // listener notifications
+   void firePositionChanged();
 
 private:
  // operations
    void cleanUp();
 
    Simulator&        mSimulator;
-   Actor&            mActor;
+   Matrix4           mTransform;
+   IBodyListener*    mpListener;
    ForceGenerators   mForceGenerators;
 };
 
