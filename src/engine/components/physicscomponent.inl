@@ -19,9 +19,3 @@ INLINE Body& PhysicsComponent::getBody()
    ASSERT_PTR(mpBody);
    return *mpBody;
 }
-
-INLINE void PhysicsComponent::setBody(Body& body)
-{
-   mpBody = &body;
-}
-

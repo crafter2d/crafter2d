@@ -26,6 +26,7 @@
 #include "core/defines.h"
 
 #include "engine/components/componentinterface.h"
+#include "engine/components/componentmessage.h"
 #include "engine/components/meshcomponent.h"
 #include "engine/net/netstream.h"
 
@@ -119,20 +120,17 @@ void Entity::draw(Graphics::RenderContext& context) const
 
 void Entity::doUpdate(float delta)
 {
-   mComponents.update(delta);
+   mComponents.postMessage(ComponentMessage(ComponentInterface::eUpdateMsg, &delta));
 }
 
 void Entity::doUpdateClient(float delta)
 {
-   mComponents.update(delta);
+   doUpdate(delta);
 }
 
 void Entity::doDraw(Graphics::RenderContext& context) const
 {
-   if ( mpMeshComponent != NULL )
-   {
-      mpMeshComponent->render(context);
-   }
+   mComponents.postMessage(ComponentMessage(ComponentInterface::eRenderMsg, &context));
 }
 
 // - Maintenance

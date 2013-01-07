@@ -1,6 +1,7 @@
 
 #include "matrix4.h"
 
+#include "core/defines.h"
 #include "vector.h"
 
 Matrix4::Matrix4():
@@ -71,8 +72,34 @@ void Matrix4::setArray(const float* pmatrix)
    mMatrix[12] = pmatrix[13]; mMatrix[13] = pmatrix[13]; mMatrix[14] = pmatrix[14]; mMatrix[15] = pmatrix[15];
 }
 
-void Matrix4::setPosition(const Vector& position)
+Matrix4& Matrix4::translate(float x, float y, float z)
 {
-   mMatrix[12] = position.x;
-   mMatrix[13] = position.y;
+   mMatrix[0] += mMatrix[12]*x;   mMatrix[1] += mMatrix[13]*x;   mMatrix[2] += mMatrix[14]*x;   mMatrix[3] += mMatrix[15]*x;
+   mMatrix[4] += mMatrix[12]*y;   mMatrix[5] += mMatrix[13]*y;   mMatrix[6] += mMatrix[14]*y;   mMatrix[7] += mMatrix[15]*y;
+   mMatrix[8] += mMatrix[12]*z;   mMatrix[9] += mMatrix[13]*z;   mMatrix[10]+= mMatrix[14]*z;   mMatrix[11]+= mMatrix[15]*z;
+   return *this;
+}
+
+Matrix4& Matrix4::translate(const Vector& position)
+{
+   return translate(position.x, position.y, 0);
+}
+
+Matrix4& Matrix4::rotateZ(float angle)
+{
+   float c = cosf(DEG2RAD(angle));
+   float s = sinf(DEG2RAD(angle));
+   float m0 = mMatrix[0], m1 = mMatrix[1], m2 = mMatrix[2],  m3 = mMatrix[3],
+         m4 = mMatrix[4], m5 = mMatrix[5], m6 = mMatrix[6],  m7 = mMatrix[7];
+
+   mMatrix[0] = m0 * c + m4 *-s;
+   mMatrix[1] = m1 * c + m5 *-s;
+   mMatrix[2] = m2 * c + m6 *-s;
+   mMatrix[3] = m3 * c + m7 *-s;
+   mMatrix[4] = m0 * s + m4 * c;
+   mMatrix[5] = m1 * s + m5 * c;
+   mMatrix[6] = m2 * s + m6 * c;
+   mMatrix[7] = m3 * s + m7 * c;
+
+   return *this;
 }

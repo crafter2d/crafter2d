@@ -164,6 +164,11 @@ bool Compiler::compile(const String& classname)
 
 // - Operations
 
+void Compiler::setClassRegistry(const ClassRegistry& registry)
+{
+   mContext.setClassRegistry(registry);
+}
+
 void Compiler::createLoadSteps()
 {
    mLoadSteps.push_back(new PreloadVisitor(mContext));

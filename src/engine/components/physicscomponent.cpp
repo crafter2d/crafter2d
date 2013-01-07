@@ -16,6 +16,14 @@ PhysicsComponent::PhysicsComponent():
 {
 }
 
+// - Get/set
+
+void PhysicsComponent::setBody(Body& body)
+{
+   mpBody = &body;
+   mpBody->addListener(this);
+}
+
 // - Component interface
 
 void PhysicsComponent::handleMessage(const ComponentMessage& message)
@@ -30,9 +38,10 @@ void PhysicsComponent::update(float delta)
 
 void PhysicsComponent::onPositionChanged(Body& body)
 {
-   mTransform.setPosition(body.getPosition());
-   mTransform.setRotation(body.getAngle());
+   PositionChangedInfo info;
+   info.position = body.getPosition();
+   info.angle = body.getAngle();
 
-   ComponentMessage message(ComponentInterface::ePositionChangedMsg, &mTransform);
+   ComponentMessage message(ComponentInterface::ePositionChangedMsg, &info);
    postMessage(message);
 }

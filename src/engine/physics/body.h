@@ -31,25 +31,36 @@ class CollisionShape;
 class TiXmlElement;
 class ForceGenerator;
 class Simulator;
+class Actor;
 
 class Body
 {
 public:
    static bool hasInfo(const TiXmlElement& element);
 
-   explicit Body(Simulator& simulator);
+   explicit Body(Simulator& simulator, Actor& actor);
    virtual ~Body();
 
  // get/set
    const Simulator& getSimulator() const;
          Simulator& getSimulator();
 
-   const Matrix4& getTransform() const;
-   
+   const Actor& getActor() const;
+         Actor& getActor();
+
+   const Vector& getPosition() const;
+   void          setPosition(const Vector& pos);
+
+   float getAngle() const;
+   void  setAngle(float angle);
+
    ForceGenerators& getForceGenerators();
 
  // query
    bool hasLineOfSight(const Body& that) const;
+
+ // maintenance
+   void addListener(IBodyListener* plistener);
 
  // loading
    virtual void load(const TiXmlElement& element);
@@ -78,7 +89,10 @@ private:
    void cleanUp();
 
    Simulator&        mSimulator;
+   Actor&            mActor;
    Matrix4           mTransform;
+   Vector            mPosition;
+   float             mAngle;
    IBodyListener*    mpListener;
    ForceGenerators   mForceGenerators;
 };

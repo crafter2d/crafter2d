@@ -20,11 +20,13 @@
 #ifndef STRING_INTERFACE_H
 #define STRING_INTERFACE_H
 
+#include "core/core_base.h"
+
 class String;
 
 namespace StringInterface
 {
-	unsigned long crc(const String& text);
+	CORE_API unsigned long crc(const String& text);
 };
 
 #endif // STRING_INTERFACE_H

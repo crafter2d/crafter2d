@@ -29,7 +29,7 @@ struct b2Vec2;
 class Box2DBody : public Body
 {
 public:
-   explicit Box2DBody(Simulator& simulator, Actor& actor, b2Body& body);
+   explicit Box2DBody(Simulator& simulator, b2Body& body, Actor& actor);
    virtual ~Box2DBody();
 
  // get/set

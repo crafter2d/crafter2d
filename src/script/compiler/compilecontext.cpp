@@ -54,6 +54,16 @@ void CompileContext::setResult(VirtualClass* pclass)
    mpResult = pclass;
 }
 
+ClassRegistry& CompileContext::getClassRegistry()
+{
+   return mClassRegistry;
+}
+
+void CompileContext::setClassRegistry(const ClassRegistry& registry)
+{
+   mClassRegistry.merge(registry);
+}
+
 // - Query
 
 bool CompileContext::hasClass(const String& classname) const

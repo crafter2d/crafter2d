@@ -3,6 +3,7 @@
 
 #include "core/defines.h"
 #include "core/smartptr/scopedvalue.h"
+#include "core/string/stringinterface.h"
 
 #include "script/ast/ast.h"
 #include "script/vm/virtualarray.h"
@@ -18,6 +19,8 @@
 
 #include "script/common/literal.h"
 #include "script/common/variant.h"
+#include "script/common/classregistration.h"
+#include "script/common/functionregistration.h"
 #include "script/scope/scope.h"
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"
@@ -254,12 +257,17 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
 
       if ( ast.isConstructor() )
       {
+         int index = mContext.getClassRegistry().findCallback(*mpClass, ast);
+         addInstruction(VirtualInstruction::eNewNative, index);
+
+         /*
          // call the init method -> set the native object
          String fncname = mpClass->getName() + "_init";
          int resource = allocateLiteral(fncname);
 
          addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
          addInstruction(VirtualInstruction::eNewNative, resource);
+         */
 
          if ( ast.hasBody() )
          {
@@ -270,14 +278,18 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       }
       else
       {
-         String fncname = ast.getClass().getName() + "_" + ast.getName();
-         int resource = allocateLiteral(fncname);
-
          // the arguments of this function are re-used by the native function,
          // so no need to push them on the stack again
 
+         int index = mContext.getClassRegistry().findCallback(*mpClass, ast);
+         if ( index == - 1 )
+         {
+            String fncname = ast.getClass().getName() + "_" + ast.getName();
+            int aap = 5;
+         }
+
          addInstruction(VirtualInstruction::ePush, ast.getArgumentCount()); // includes this
-         addInstruction(VirtualInstruction::eCallNative, resource);
+         addInstruction(VirtualInstruction::eCallNative, index);
          addInstruction(VirtualInstruction::eRet, ast.getType().isVoid() ? 0 : 1);
       }
    }

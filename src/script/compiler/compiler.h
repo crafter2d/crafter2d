@@ -15,6 +15,7 @@ class ASTNode;
 class CompileStep;
 class CompileCallback;
 class CompileException;
+class ClassRegistry;
 
 class SCRIPT_API Compiler
 {
@@ -30,6 +31,9 @@ public:
    void             setCallback(CompileCallback& callback);
 
    const Literal& lookupLiteral(int index) const;
+
+ // operations
+   void setClassRegistry(const ClassRegistry& registry);
 
  // compilation
    bool compile(const String& classname);

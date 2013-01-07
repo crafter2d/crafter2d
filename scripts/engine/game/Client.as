@@ -27,8 +27,6 @@ abstract class Client extends Process
 		mKeyDispatcher = new KeyEventDispatcher();
 	}
 	
-	private native void nativeRender(real delta);
-	private native void nativeDisplay();
 	private native void native_setWindow(GameWindow window);
 	
 	public native boolean connect(string host, int port, string name);
@@ -69,13 +67,9 @@ abstract class Client extends Process
 	*/
 	
 	public void paint(real delta)
-	{
-		//nativeRender(delta);
-		
+	{		
 		//Canvas canvas = Canvas.getInstance();
 		//canvas.paint(mGraphics);
-		
-		//nativeDisplay();
 	}
 	
 	// - Connection

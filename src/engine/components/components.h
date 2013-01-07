@@ -26,9 +26,6 @@ public:
    void subscribeMessageType(Component& component, ComponentInterface::ComponentMessageType messagetype);
    void postMessage(ComponentMessage& message);
 
- // operations
-   void update(float delta);
-
  // find
    Component* findComponent(ComponentInterface::ComponentType type);
 

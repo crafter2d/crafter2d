@@ -23,7 +23,11 @@ public:
 
    void setIdentity();
    void setArray(const float* pmatrix);
-   void setPosition(const Vector& position);
+   
+   Matrix4& translate(float x, float y, float z);
+   Matrix4& translate(const Vector& position);
+
+   Matrix4& rotateZ(float angle);
 
 private:
    // row major order

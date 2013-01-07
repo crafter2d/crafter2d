@@ -9,6 +9,7 @@
 #include "script/ast/asttype.h"
 #include "script/common/stringcache.h"
 #include "script/common/literaltable.h"
+#include "script/common/classregistry.h"
 
 #include "compilelog.h"
 
@@ -33,6 +34,9 @@ public:
 
    VirtualClass* getResult();
    void          setResult(VirtualClass* pclass);
+
+   ClassRegistry& getClassRegistry();
+   void setClassRegistry(const ClassRegistry& registry);
    
  // query
    bool hasClass(const String& classname) const;
@@ -55,6 +59,7 @@ private:
 
    Compiler&      mCompiler;
    ClassMap       mClasses;
+   ClassRegistry  mClassRegistry;
    StringCache    mStringCache;
    LiteralTable   mLiteralTable;
    CompileLog     mLog;

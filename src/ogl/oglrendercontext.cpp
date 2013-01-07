@@ -74,8 +74,11 @@ void OGLRenderContext::setIdentityViewMatrix()
 
 void OGLRenderContext::setWorldMatrix(const Matrix4& matrix)
 {
+   float mat[16];
+   matrix.asOpenGL(mat);
+
    glMatrixMode(GL_MODELVIEW);
-   glLoadMatrixf(matrix.asArray());
+   glLoadMatrixf(mat);
 }
 
 void OGLRenderContext::setIdentityWorldMatrix()

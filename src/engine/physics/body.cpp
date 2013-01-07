@@ -42,8 +42,9 @@ bool Body::hasInfo(const TiXmlElement& element)
 // - Body
 // ----------------------------------
 
-Body::Body(Simulator& simulator):
+Body::Body(Simulator& simulator, Actor& actor):
    mSimulator(simulator),
+   mActor(actor),
    mTransform(),
    mForceGenerators()
 {
@@ -81,6 +82,13 @@ void Body::cleanUp()
       delete mForceGenerators[index];
    }
    mForceGenerators.clear();
+}
+
+// -- Maintenance
+
+void Body::addListener(IBodyListener* plistener)
+{
+   mpListener = plistener;
 }
 
 // ----------------------------------

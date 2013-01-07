@@ -92,11 +92,8 @@ abstract class Process
 	
 	// - Natives
 	
-	public native void destroy();
-	public native ScriptManager getScriptManager();
-	public native void setScriptManager(ScriptManager scriptmanager);
-	public native Font getFont(string name, int size);
-	public native Texture getTexture(string name);
+	//public native Font getFont(string name, int size);
+	//public native Texture getTexture(string name);
 	public native ContentManager getContentManager();
 	public native void native_setWorld(World world);
 }

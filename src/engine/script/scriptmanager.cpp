@@ -53,9 +53,9 @@ ScriptManager::~ScriptManager()
 /// \returns false if the Lua state could not be created, true otherwise
 bool ScriptManager::initialize()
 {
-   mVirtualMachine.initialize();
-
    script_engine_register(*this);
+
+   mVirtualMachine.initialize();
 
 	return true;
 }

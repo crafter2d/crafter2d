@@ -21,6 +21,8 @@
 
 #include <Box2D.h>
 
+#include "core/math/matrix4.h"
+
 #include "engine/world/world.h"
 #include "engine/world/bound.h"
 #include "engine/world/bounds.h"
@@ -102,7 +104,7 @@ Body& Box2DSimulator::createBody(Actor& actor)
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
 
-   Box2DBody* pbody = new Box2DBody(*this, actor, *pboxbody);
+   Box2DBody* pbody = new Box2DBody(*this, *pboxbody, actor);
 
    addBody(pbody);
 

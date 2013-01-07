@@ -79,29 +79,21 @@ class GameServer extends Server
 
 	private void createObjects()
 	{
+		/*
 		Vector2D left = new Vector2D();
 		left.set(727, 422);
 		
 		Vector2D right = new Vector2D();
 		right.set(943, 422);
 		
-		//Bridge bridge = new Bridge();
-		//bridge.create(this, left, right);
-		
-		/*
-		left.set(180.0, 80.0);
-		for ( int index = 0; index < 4; index++ )
-		{
-			Actor.construct(this, "Box" + index, left, "../objects/box.xml");
-			
-			left.setY(left.getY() - 25.0);
-		}
-		*/
-		
+		Bridge bridge = new Bridge();
+		bridge.create(this, left, right);
+				
 		Vector2D pos = new Vector2D();
 		pos.set(190.0, 30);
 		
 		mGrudge = (Grudge) Actor.construct(this, "grudge1", pos, "../objects/grudge.xml");
 		mGrudge.setLocalController(new AIController(this));
+		*/
 	}
 }

@@ -200,6 +200,11 @@ int ASTFunction::getArgumentCount() const
    return getChildren().size() + (getModifiers().isStatic() ? 0 : 1);
 }
 
+String ASTFunction::getPrototype() const
+{
+   return getName() + "(" + mpSignature->toString() + ")";
+}
+
 // - Operations
    
 void ASTFunction::addArgument(ASTFunctionArgument* pargument)

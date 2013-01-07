@@ -5,7 +5,11 @@
 #include <vector>
 
 #include "core/string/string.h"
+#include "core/defines.h"
+
 #include "script/vm/virtualmachine.h"
+#include "script/common/classregistration.h"
+#include "script/common/functionregistration.h"
 
 #include "scriptmanager.h"
 
@@ -13,27 +17,46 @@ class ScriptRegistrator
 {
 public:
 
-   ScriptRegistrator(): mCallbacks() {}
-
- // operations
-
-   void addCallback(const String& name, VirtualMachine::callbackfnc callback) {
-      mNames.push_back(name);
-      mCallbacks.push_back(callback);
+   ScriptRegistrator():
+      mRegistry(),
+      mpActive(NULL)
+   {
    }
 
-   void registerCallbacks(ScriptManager& manager) {
-      VirtualMachine& vm = manager.mVirtualMachine;
+ // operations
+   void addClass(const String& name)
+   {
+      mpActive = &mRegistry.addClass(name);
+   }
 
-      for ( std::size_t index = 0; index < mNames.size(); index++ )
-      {
-         vm.registerCallback(mNames[index], mCallbacks[index]);
-      }
+   void addConstructor(const String& prototype, VMInterface::CallbackFnc callback)
+   {
+      ASSERT_PTR(mpActive);
+      mpActive->addFunction(FunctionRegistration::Constructor(prototype, callback));
+   }
+
+   void addDestructor(VMInterface::CallbackFnc callback)
+   {
+      ASSERT_PTR(mpActive);
+      mpActive->addFunction(FunctionRegistration::Destructor(callback));
+   }
+
+   void addFunction(const String& name, VMInterface::CallbackFnc callback)
+   {
+      ASSERT_PTR(mpActive);
+      mpActive->addFunction(FunctionRegistration::Function(name, callback));
+   }
+
+   void registerCallbacks(ScriptManager& manager)
+   {
+      manager.mVirtualMachine.mergeClassRegistry(mRegistry);
    }
 
 private:
-   std::vector<String> mNames;
-   std::vector<VirtualMachine::callbackfnc> mCallbacks;
+   typedef std::vector<ClassRegistration> Classes;
+
+   ClassRegistry        mRegistry;
+   ClassRegistration*   mpActive;
 };
 
 #endif // SCRIPT_OBJECT_H_

@@ -106,6 +106,13 @@ bool OGLDevice::create(int windowhandle)
    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
    glShadeModel(GL_SMOOTH);
 
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   glTranslatef(25, 125, 0);
+
+   float mat[16];
+   glGetFloatv(GL_MODELVIEW_MATRIX, mat);
+
    // initialize free type
    if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
       return false;

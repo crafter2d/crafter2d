@@ -85,14 +85,19 @@ void MeshComponent::handleMessage(const ComponentMessage& message)
 	{
 	case ePositionChangedMsg:
 		{
-			Matrix4* pinfo = (Matrix4*) message.getData();
-         mTransform = *pinfo;
+         PositionChangedInfo* pinfo = (PositionChangedInfo*) message.getData();
+
+         mTransform.setIdentity();
+         mTransform.translate(pinfo->position);
+         //mTransform.rotateZ(pinfo->angle);
 		}
+      break;
    case eUpdateMsg:
       {
          float* pdelta = (float*)message.getData();
          update(*pdelta);
       }
+      break;
    case eRenderMsg:
       {
          RenderContext* pcontext = static_cast<RenderContext*>(message.getData());

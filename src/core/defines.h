@@ -72,7 +72,8 @@ typedef void*           handle;
 
 // MATH
 
-#define PI 3.14159265358979323846
+#define PI 3.14159265358979323846f
+#define DEG2RAD(deg)(deg * PI / 180)
 #define RAD2DEG(rad)(rad * 180 / PI)
 
 #endif

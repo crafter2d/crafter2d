@@ -12,7 +12,7 @@ public class Box2DSimulator
    // around a point on another object.  
    public void createRevoluteJoint(Box2DBody left, Box2DBody right, Vector2D anchor)
    {
-      native_createRevoluteJoint(left, right, anchor.x, anchor.y);
+      createRevoluteJoint(left, right, anchor.x, anchor.y);
    }
    
    // Creates a rope joint. All it does is ensuring that two objects aren't stretched
@@ -21,5 +21,5 @@ public class Box2DSimulator
    
    // - natives
    
-   private native void native_createRevoluteJoint(Box2DBody left, Box2DBody right, real anchorx, real anchory);
+   private native void createRevoluteJoint(Box2DBody left, Box2DBody right, real anchorx, real anchory);
 }

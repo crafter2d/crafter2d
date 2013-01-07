@@ -83,7 +83,7 @@ void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& ac
    RETURN_CLASS("engine.game.ContentManager", ContentManager, &process.getContentManager());
 }
 
-void Process_native_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Process_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Process, process);
 
@@ -1156,158 +1156,183 @@ void script_engine_register(ScriptManager& manager)
 {
    ScriptRegistrator registrator;
 
-   registrator.addCallback("Process_getFont", Process_getFont);
-   registrator.addCallback("Process_getContentManager", Process_getContentManager);
-   registrator.addCallback("Process_native_setWorld", Process_native_setWorld);
-   registrator.addCallback("Process_swapLeakDetection", Process_swapLeakDetection);
+   registrator.addClass("Process");
+   registrator.addFunction("getFont", Process_getFont);
+   registrator.addFunction("getContentManager", Process_getContentManager);
+   registrator.addFunction("native_setWorld", Process_setWorld);
+   registrator.addFunction("swapLeakDetection", Process_swapLeakDetection);
 
-   registrator.addCallback("Server_listen", Server_listen);
-   registrator.addCallback("Server_setActionMap", Server_setActionMap);
-   registrator.addCallback("Server_sendScriptEvent", Server_sendScriptEvent);
+   registrator.addClass("Server");
+   registrator.addFunction("listen", Server_listen);
+   registrator.addFunction("setActionMap", Server_setActionMap);
+   registrator.addFunction("sendScriptEvent", Server_sendScriptEvent);
 
-   registrator.addCallback("Client_connect", Client_connect);
-   registrator.addCallback("Client_isActive", Client_isActive);
-   registrator.addCallback("Client_getWindowFactory", Client_getWindowFactory);
-   registrator.addCallback("Client_native_setWindow", Client_native_setWindow);
-   registrator.addCallback("Client_setActionMap", Client_setActionMap);
-   registrator.addCallback("Client_setKeyMap", Client_setKeyMap);
-   registrator.addCallback("Client_getPlayer", Client_getPlayer);
-   registrator.addCallback("Client_getTexture", Client_getTexture);
+   registrator.addClass("Client");
+   registrator.addFunction("connect", Client_connect);
+   registrator.addFunction("isActive", Client_isActive);
+   registrator.addFunction("getWindowFactory", Client_getWindowFactory);
+   registrator.addFunction("native_setWindow", Client_native_setWindow);
+   registrator.addFunction("setActionMap", Client_setActionMap);
+   registrator.addFunction("setKeyMap", Client_setKeyMap);
+   registrator.addFunction("getPlayer", Client_getPlayer);
+   registrator.addFunction("getTexture", Client_getTexture);
 
-   registrator.addCallback("ContentManager_native_loadEntity", ContentManager_native_loadEntity);
-   registrator.addCallback("ContentManager_load", ContentManager_load);
+   registrator.addClass("ContentManager");
+   registrator.addFunction("loadEntity", ContentManager_native_loadEntity);
+   registrator.addFunction("load", ContentManager_load);
 
-   registrator.addCallback("GameWindowFactory_createWindow", GameWindowFactory_createWindow);
+   registrator.addClass("GameWindowFactory");
+   registrator.addFunction("createWindow", GameWindowFactory_createWindow);
 
-   registrator.addCallback("GameWindow_create", GameWindow_create);
+   registrator.addClass("GameWindow");
+   registrator.addFunction("create", GameWindow_create);
 
-   registrator.addCallback("BufferedStream_init", BufferedStream_init);
-   registrator.addCallback("BufferedStream_destruct", BufferedStream_destruct);
+   registrator.addClass("BufferedStream");
+   registrator.addConstructor("init", BufferedStream_init);
+   registrator.addDestructor(BufferedStream_destruct);
 
-   registrator.addCallback("NetStream_init", NetStream_init);
-   registrator.addCallback("NetStream_destruct", NetStream_destruct);
-   registrator.addCallback("NetStream_writeInt", NetStream_writeInt);
-   registrator.addCallback("NetStream_readInt", NetStream_readInt);
-   registrator.addCallback("NetStream_clear", NetStream_clear);
+   registrator.addClass("NetStream");
+   registrator.addConstructor("init", NetStream_init);
+   registrator.addDestructor(NetStream_destruct);
+   registrator.addFunction("writeInt", NetStream_writeInt);
+   registrator.addFunction("readInt", NetStream_readInt);
+   registrator.addFunction("clear", NetStream_clear);
 
-   registrator.addCallback("Entity_getId", Entity_getId);
+   registrator.addClass("Entity");
+   registrator.addFunction("getId", Entity_getId);
 
-   registrator.addCallback("Actor_init", Actor_init);
-   registrator.addCallback("Actor_destruct", Actor_destruct);
-   registrator.addCallback("Actor_getPositionX", Actor_getPositionX);
-   registrator.addCallback("Actor_getPositionY", Actor_getPositionY);
-   registrator.addCallback("Actor_setPosition", Actor_setPosition);
-   registrator.addCallback("Actor_getVelocityX", Actor_getVelocityX);
-   registrator.addCallback("Actor_getVelocityY", Actor_getVelocityY);
-   registrator.addCallback("Actor_setVelocity", Actor_setVelocity);
-   registrator.addCallback("Actor_setName", Actor_setName);
-   registrator.addCallback("Actor_setAnimation", Actor_setAnimation);
-   registrator.addCallback("Actor_direction", Actor_direction);
-   registrator.addCallback("Actor_flip", Actor_flip);
-   registrator.addCallback("Actor_setController", Actor_setController);
-   registrator.addCallback("Actor_add", Actor_add);
-   registrator.addCallback("Actor_hasLineOfSight", Actor_hasLineOfSight);
+   registrator.addClass("Actor");
+   registrator.addConstructor("init", Actor_init);
+   registrator.addDestructor(Actor_destruct);
+   registrator.addFunction("getPositionX", Actor_getPositionX);
+   registrator.addFunction("getPositionY", Actor_getPositionY);
+   registrator.addFunction("setPosition", Actor_setPosition);
+   registrator.addFunction("getVelocityX", Actor_getVelocityX);
+   registrator.addFunction("getVelocityY", Actor_getVelocityY);
+   registrator.addFunction("setVelocity", Actor_setVelocity);
+   registrator.addFunction("setName", Actor_setName);
+   registrator.addFunction("setAnimation", Actor_setAnimation);
+   registrator.addFunction("direction", Actor_direction);
+   registrator.addFunction("flip", Actor_flip);
+   registrator.addFunction("setController", Actor_setController);
+   registrator.addFunction("add", Actor_add);
+   registrator.addFunction("hasLineOfSight", Actor_hasLineOfSight);
 
-   registrator.addCallback("Player_getClientId", Player_getClientId);
-   registrator.addCallback("Player_native_getController", Player_native_getController);
-   registrator.addCallback("Player_native_setController", Player_native_setController);
+   registrator.addClass("Player");
+   registrator.addFunction("getClientId", Player_getClientId);
+   registrator.addFunction("getController", Player_native_getController);
+   registrator.addFunction("setController", Player_native_setController);
 
-   registrator.addCallback("World_init", World_init);
-   registrator.addCallback("World_destruct", World_destruct);
-   registrator.addCallback("World_getName", World_getName);
-   registrator.addCallback("World_add", World_add);
-   registrator.addCallback("World_setObjectLayer", World_setObjectLayer);
-   registrator.addCallback("World_setFollowMode", World_setFollowMode);
-   registrator.addCallback("World_getFollowActor", World_getFollowActor);
-   registrator.addCallback("World_setFollowActor", World_setFollowActor);
-   registrator.addCallback("World_setFollowBorders", World_setFollowBorders);
-   registrator.addCallback("World_setFollowBorderWidth", World_setFollowBorderWidth);
-   registrator.addCallback("World_getSimulator", World_getSimulator);
-   registrator.addCallback("World_findEntity", World_findEntity);
-   registrator.addCallback("World_native_getLayerCount", World_getLayerCount);
-   registrator.addCallback("World_native_getLayer", World_getLayer);
+   registrator.addClass("World");
+   registrator.addConstructor("init", World_init);
+   registrator.addDestructor(World_destruct);
+   registrator.addFunction("getName", World_getName);
+   registrator.addFunction("add", World_add);
+   registrator.addFunction("setObjectLayer", World_setObjectLayer);
+   registrator.addFunction("setFollowMode", World_setFollowMode);
+   registrator.addFunction("getFollowActor", World_getFollowActor);
+   registrator.addFunction("setFollowActor", World_setFollowActor);
+   registrator.addFunction("setFollowBorders", World_setFollowBorders);
+   registrator.addFunction("setFollowBorderWidth", World_setFollowBorderWidth);
+   registrator.addFunction("getSimulator", World_getSimulator);
+   registrator.addFunction("findEntity", World_findEntity);
+   registrator.addFunction("getLayerCount", World_getLayerCount);
+   registrator.addFunction("getLayer", World_getLayer);
 
-   registrator.addCallback("Layer_getEffect", Layer_getEffect);
-   registrator.addCallback("Layer_getWidth", Layer_getWidth);
-   registrator.addCallback("Layer_getHeight", Layer_getHeight);
-   registrator.addCallback("Layer_getTile", Layer_getTile);
-   registrator.addCallback("Layer_setTile", Layer_setTile);
+   registrator.addClass("Layer");
+   registrator.addFunction("getEffect", Layer_getEffect);
+   registrator.addFunction("getWidth", Layer_getWidth);
+   registrator.addFunction("getHeight", Layer_getHeight);
+   registrator.addFunction("getTile", Layer_getTile);
+   registrator.addFunction("setTile", Layer_setTile);
 
-   registrator.addCallback("Effect_resolveTexture", Effect_resolveTexture);
+   registrator.addClass("Effect");
+   registrator.addFunction("resolveTexture", Effect_resolveTexture);
 
-   registrator.addCallback("InputForceGenerator_init", InputForceGenerator_init);
-   registrator.addCallback("InputForceGenerator_destruct", InputForceGenerator_destruct);
-   registrator.addCallback("InputForceGenerator_native_setVelocity", InputForceGenerator_native_setVelocity);
-   registrator.addCallback("InputForceGenerator_native_setImpulse", InputForceGenerator_native_setImpulse);
+   registrator.addClass("InputForceGenerator");
+   registrator.addConstructor("init", InputForceGenerator_init);
+   registrator.addDestructor(InputForceGenerator_destruct);
+   registrator.addFunction("setVelocity", InputForceGenerator_native_setVelocity);
+   registrator.addFunction("setImpulse", InputForceGenerator_native_setImpulse);
 
-   registrator.addCallback("InputController_init", InputController_init);
-   registrator.addCallback("InputController_destruct", InputController_destruct);
-   registrator.addCallback("InputController_native_setActionMap", InputController_native_setActionMap);
+   registrator.addClass("InputController");
+   registrator.addConstructor("init", InputController_init);
+   registrator.addDestructor(InputController_destruct);
+   registrator.addFunction("setActionMap", InputController_native_setActionMap);
 
-   registrator.addCallback("AIController_init", AIController_init);
-   registrator.addCallback("AIController_destruct", AIController_destruct);
+   registrator.addClass("AIController");
+   registrator.addConstructor("init", AIController_init);
+   registrator.addDestructor(AIController_destruct);
 
-   registrator.addCallback("Box2DSimulator_lineOfSight", Box2DSimulator_lineOfSight);
-   registrator.addCallback("Box2DSimulator_native_createRevoluteJoint", Box2DSimulator_native_createRevoluteJoint);
-   registrator.addCallback("Box2DSimulator_createRopeJoint", Box2DSimulator_createRopeJoint);
+   registrator.addClass("Box2DSimulator");
+   registrator.addFunction("lineOfSight", Box2DSimulator_lineOfSight);
+   registrator.addFunction("createRevoluteJoint", Box2DSimulator_native_createRevoluteJoint);
+   registrator.addFunction("createRopeJoint", Box2DSimulator_createRopeJoint);
 
-   registrator.addCallback("Box2DBody_addForceGenerator", Box2DBody_addForceGenerator);
-   registrator.addCallback("Box2DBody_generateSensors", Box2DBody_generateSensors);
+   registrator.addClass("Box2DBody");
+   registrator.addFunction("addForceGenerator", Box2DBody_addForceGenerator);
+   registrator.addFunction("generateSensors", Box2DBody_generateSensors);
 
-   registrator.addCallback("Box2DRopeJointDefinition_init", Box2DRopeJointDefinition_init);
-   registrator.addCallback("Box2DRopeJointDefinition_destruct", Box2DRopeJointDefinition_destruct);
-   registrator.addCallback("Box2DRopeJointDefinition_getLeft", Box2DRopeJointDefinition_getLeft);
-   registrator.addCallback("Box2DRopeJointDefinition_setLeft", Box2DRopeJointDefinition_setLeft);
-   registrator.addCallback("Box2DRopeJointDefinition_getRight", Box2DRopeJointDefinition_getRight);
-   registrator.addCallback("Box2DRopeJointDefinition_setRight", Box2DRopeJointDefinition_setRight);
-   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorLeftX", Box2DRopeJointDefinition_getLocalAnchorLeftX);
-   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorLeftY", Box2DRopeJointDefinition_getLocalAnchorLeftY);
-   registrator.addCallback("Box2DRopeJointDefinition_setLocalAnchorLeft", Box2DRopeJointDefinition_setLocalAnchorLeft);
-   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorRightX", Box2DRopeJointDefinition_getLocalAnchorRightX);
-   registrator.addCallback("Box2DRopeJointDefinition_getLocalAnchorRightY", Box2DRopeJointDefinition_getLocalAnchorRightY);
-   registrator.addCallback("Box2DRopeJointDefinition_setLocalAnchorRight", Box2DRopeJointDefinition_setLocalAnchorRight);
+   registrator.addClass("Box2DRopeJointDefinition");
+   registrator.addConstructor("init", Box2DRopeJointDefinition_init);
+   registrator.addDestructor(Box2DRopeJointDefinition_destruct);
+   registrator.addFunction("getLeft", Box2DRopeJointDefinition_getLeft);
+   registrator.addFunction("setLeft", Box2DRopeJointDefinition_setLeft);
+   registrator.addFunction("getRight", Box2DRopeJointDefinition_getRight);
+   registrator.addFunction("setRight", Box2DRopeJointDefinition_setRight);
+   registrator.addFunction("getLocalAnchorLeftX", Box2DRopeJointDefinition_getLocalAnchorLeftX);
+   registrator.addFunction("getLocalAnchorLeftY", Box2DRopeJointDefinition_getLocalAnchorLeftY);
+   registrator.addFunction("setLocalAnchorLeft", Box2DRopeJointDefinition_setLocalAnchorLeft);
+   registrator.addFunction("getLocalAnchorRightX", Box2DRopeJointDefinition_getLocalAnchorRightX);
+   registrator.addFunction("getLocalAnchorRightY", Box2DRopeJointDefinition_getLocalAnchorRightY);
+   registrator.addFunction("setLocalAnchorRight", Box2DRopeJointDefinition_setLocalAnchorRight);
 
-   registrator.addCallback("ActionMap_init", ActionMap_init);
-   registrator.addCallback("ActionMap_destruct", ActionMap_destruct);
-   registrator.addCallback("ActionMap_getProcess", ActionMap_getProcess);
-   registrator.addCallback("ActionMap_setProcess", ActionMap_setProcess);
-   registrator.addCallback("ActionMap_bind", ActionMap_bind);
+   registrator.addClass("ActionMap");
+   registrator.addConstructor("init", ActionMap_init);
+   registrator.addDestructor(ActionMap_destruct);
+   registrator.addFunction("getProcess", ActionMap_getProcess);
+   registrator.addFunction("setProcess", ActionMap_setProcess);
+   registrator.addFunction("bind", ActionMap_bind);
 
-   registrator.addCallback("KeyMap_init", KeyMap_init);
-   registrator.addCallback("KeyMap_destruct", KeyMap_destruct);
-   registrator.addCallback("KeyMap_bind", KeyMap_bind);
+   registrator.addClass("KeyMap");
+   registrator.addConstructor("init", KeyMap_init);
+   registrator.addDestructor(KeyMap_destruct);
+   registrator.addFunction("bind", KeyMap_bind);
 
    /*
-   registrator.addCallback("EngineGraphics_init", EngineGraphics_init);
-   registrator.addCallback("EngineGraphics_destruct", EngineGraphics_destruct);
-   registrator.addCallback("EngineGraphics_doSetColor", EngineGraphics_doSetColor);
-   registrator.addCallback("EngineGraphics_nativeSetFont", EngineGraphics_nativeSetFont);
-   registrator.addCallback("EngineGraphics_translate", EngineGraphics_translate);
-   registrator.addCallback("EngineGraphics_drawText", EngineGraphics_drawText);
-   registrator.addCallback("EngineGraphics_native_fillRect", EngineGraphics_native_fillRect);
-   registrator.addCallback("EngineGraphics_native_drawRect", EngineGraphics_native_drawRect);
-   registrator.addCallback("EngineGraphics_native_drawRoundedRect", EngineGraphics_native_drawRoundedRect);
-   registrator.addCallback("EngineGraphics_native_drawTexture", EngineGraphics_native_drawTexture);
+   registrator.addFunction("EngineGraphics_init", EngineGraphics_init);
+   registrator.addFunction("EngineGraphics_destruct", EngineGraphics_destruct);
+   registrator.addFunction("EngineGraphics_doSetColor", EngineGraphics_doSetColor);
+   registrator.addFunction("EngineGraphics_nativeSetFont", EngineGraphics_nativeSetFont);
+   registrator.addFunction("EngineGraphics_translate", EngineGraphics_translate);
+   registrator.addFunction("EngineGraphics_drawText", EngineGraphics_drawText);
+   registrator.addFunction("EngineGraphics_native_fillRect", EngineGraphics_native_fillRect);
+   registrator.addFunction("EngineGraphics_native_drawRect", EngineGraphics_native_drawRect);
+   registrator.addFunction("EngineGraphics_native_drawRoundedRect", EngineGraphics_native_drawRoundedRect);
+   registrator.addFunction("EngineGraphics_native_drawTexture", EngineGraphics_native_drawTexture);
 
-   registrator.addCallback("Font_destruct", Font_destruct);
-   registrator.addCallback("Font_render", Font_render);
-   registrator.addCallback("Font_getBaseLine", Font_getBaseLine);
-   registrator.addCallback("Font_native_textWidth", Font_native_textWidth);
-   registrator.addCallback("Font_native_textHeight", Font_native_textHeight); */
+   registrator.addFunction("Font_destruct", Font_destruct);
+   registrator.addFunction("Font_render", Font_render);
+   registrator.addFunction("Font_getBaseLine", Font_getBaseLine);
+   registrator.addFunction("Font_native_textWidth", Font_native_textWidth);
+   registrator.addFunction("Font_native_textHeight", Font_native_textHeight); */
 
-   registrator.addCallback("Texture_destruct", Texture_destruct);
-   registrator.addCallback("Texture_getName", Texture_getName);
-   registrator.addCallback("Texture_getWidth", Texture_getWidth);
-   registrator.addCallback("Texture_getHeight", Texture_getHeight);
-   registrator.addCallback("Texture_getSourceWidth", Texture_getSourceWidth);
-   registrator.addCallback("Texture_getSourceHeight", Texture_getSourceHeight);
+   registrator.addClass("Texture");
+   registrator.addDestructor(Texture_destruct);
+   registrator.addFunction("getName", Texture_getName);
+   registrator.addFunction("getWidth", Texture_getWidth);
+   registrator.addFunction("getHeight", Texture_getHeight);
+   registrator.addFunction("getSourceWidth", Texture_getSourceWidth);
+   registrator.addFunction("getSourceHeight", Texture_getSourceHeight);
 
-   registrator.addCallback("FileSystem_getInstance", FileSystem_getInstance);
-   registrator.addCallback("FileSystem_native_open", FileSystem_native_open);
+   registrator.addClass("FileSystem");
+   registrator.addFunction("getInstance", FileSystem_getInstance);
+   registrator.addFunction("open", FileSystem_native_open);
 
-   registrator.addCallback("File_destruct", File_destruct);
-   registrator.addCallback("File_length", File_length);
-   registrator.addCallback("File_readText", File_readText);
+   registrator.addClass("File");
+   registrator.addDestructor(File_destruct);
+   registrator.addFunction("length", File_length);
+   registrator.addFunction("readText", File_readText);
 
    registrator.registerCallbacks(manager);
 }

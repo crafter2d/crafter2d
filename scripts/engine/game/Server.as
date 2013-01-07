@@ -46,8 +46,5 @@ abstract class Server extends Process
 	}
 	
 	public native boolean listen(int port);
-	public native void update(real delta);
 	public native void sendScriptEvent(int clientid, NetStream stream);
-
-	protected native boolean loadWorld(string filename, string name);
 }

@@ -66,6 +66,8 @@ public:
 
    int getArgumentCount() const;
 
+   String getPrototype() const;
+
  // operations
    void addArgument(ASTFunctionArgument* pargument);
 

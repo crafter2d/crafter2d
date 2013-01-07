@@ -102,7 +102,7 @@ protected:
 private:
 
    Id                mId;
-   Components        mComponents;
+   mutable Components mComponents;
    MeshComponent*    mpMeshComponent;
    Entity*           mpParent;
    Entities          mChildren;

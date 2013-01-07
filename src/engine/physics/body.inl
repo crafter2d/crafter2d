@@ -29,9 +29,36 @@ INLINE Simulator& Body::getSimulator()
    return mSimulator;
 }
 
-INLINE const Matrix4& Body::getTransform() const
+INLINE const Actor& Body::getActor() const
 {
-   return mTransform;
+   return mActor;
+}
+
+INLINE Actor& Body::getActor()
+{
+   return mActor;
+}
+
+INLINE const Vector& Body::getPosition() const
+{
+   return mPosition;
+}
+
+INLINE void Body::setPosition(const Vector& pos)
+{
+   mPosition = pos;
+   notifyPositionChanged();
+}
+
+INLINE float Body::getAngle() const
+{
+   return mAngle;
+}
+
+INLINE void Body::setAngle(float angle)
+{
+   mAngle = angle;
+   notifyPositionChanged();
 }
 
 INLINE ForceGenerators& Body::getForceGenerators()

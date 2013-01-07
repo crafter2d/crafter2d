@@ -22,13 +22,15 @@
 #include <Box2D.h>
 #include <tinyxml.h>
 
+#include "core/defines.h"
+
 #include "box2dsimulator.h"
 
 static const std::string sBODYELEMENT       = "body";
 static const std::string sSHAPEELEMENT      = "shape";
 static const std::string sTYPE              = "type";
 
-Box2DBody::Box2DBody(Simulator& simulator, Actor& actor, b2Body& body):
+Box2DBody::Box2DBody(Simulator& simulator, b2Body& body, Actor& actor):
    Body(simulator, actor),
    mBody(body),
    mHalfWidth(0),
@@ -178,7 +180,7 @@ void Box2DBody::applyImpulse(const Vector& impulse)
 
 void Box2DBody::notifyPositionChanged()
 {
-   mBody.SetTransform(Box2DSimulator::vectorToB2(mPosition), mBody.GetAngle());
+   mBody.SetTransform(Box2DSimulator::vectorToB2(getPosition()), getAngle());
 }
 
 // integration
@@ -192,10 +194,8 @@ void Box2DBody::finalize()
 {
    if ( !mBody.IsAwake() )
    {
-      Matrix4 mat = Box2DSimulator::b2ToMatrix(mBody.GetTransform());
-
-      setPosition();
-      setAngle(mBody.GetAngle());
+      setPosition(Box2DSimulator::b2ToVector(mBody.GetPosition()));
+      setAngle(RAD2DEG(mBody.GetAngle()));
 
       firePositionChanged();
    }

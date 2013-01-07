@@ -43,18 +43,6 @@ void Components::postMessage(ComponentMessage& message)
 	}
 }
 
-// - Operations
-
-void Components::update(float delta)
-{
-   ComponentMap::iterator it = mComponents.begin();
-   for ( ; it != mComponents.end(); ++it )
-   {
-      Component* pcomponent = it->second;
-      pcomponent->update(delta);
-   }
-}
-
 // - Find
 
 Component* Components::findComponent(ComponentInterface::ComponentType type)

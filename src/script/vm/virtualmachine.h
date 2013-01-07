@@ -36,7 +36,9 @@
 #include "virtualfunctiontableentry.h"
 #include "virtualcontext.h"
 #include "virtualstack.h"
+#include "vminterface.h"
 
+class ClassRegistry;
 class String;
 class Variant;
 class VirtualArrayException;
@@ -52,15 +54,12 @@ public:
    explicit VirtualMachine(VirtualContext& context);
    ~VirtualMachine();
 
-   typedef void (*callbackfnc)(VirtualMachine& machine, VirtualStackAccessor& accessor);
-
  // initialization
    void initialize();
    
  // loading
    bool loadClass(const String& classname);
-
-   void registerCallback(const String& name, callbackfnc callback);
+   void mergeClassRegistry(const ClassRegistry& registry);
 
  // stack access
    int popInt();
@@ -147,8 +146,8 @@ private:
    };
 
    typedef std::vector<VirtualObject*> Objects;
+   typedef std::vector<VMInterface::CallbackFnc> Callbacks;
    typedef std::stack<VirtualCall> CallStack;
-   typedef std::map<String, callbackfnc> Natives;
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
@@ -179,7 +178,7 @@ private:
    VirtualStack                  mStack;
    CallStack                     mCallStack;
    VirtualCall                   mCall;
-   Natives                       mNatives;
+   Callbacks                     mCallbacks;
    NativeObjectMap               mNativeObjects;
    State                         mState;
    VirtualClass*                 mpArrayClass;
