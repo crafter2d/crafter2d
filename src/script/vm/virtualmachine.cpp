@@ -78,7 +78,9 @@ VirtualMachine::~VirtualMachine()
 
 void VirtualMachine::initialize()
 {
-   VMInterface::registerCommonFunctions(*this);
+   ClassRegistry registry;
+   VMInterface::registerCommonFunctions(registry);
+   mergeClassRegistry(registry);
 
    // preload some common classes
    loadClass("system.Object");
@@ -397,22 +399,14 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCallNative:
          {
-            //const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
-
-            /*
-            Natives::iterator it = mNatives.find(fnc);
-            if ( it == mNatives.end() )
-            {
-               throwException("system.NativeFunctionNotFoundException", fnc);
-            }
-            */
-
             VirtualStackAccessor accessor(mContext, mStack);
             (*mCallbacks[instruction.getArgument()])(*this, accessor);
 
             mStack.pop(1); // pop the argument count
             if ( accessor.hasResult() )
+            {
                mStack.push(accessor.getResult());
+            }
          }
          break;
       case VirtualInstruction::eCallStatic:
@@ -1401,16 +1395,14 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
 
    if ( object.isOwner() )
    {
-      const String& classname = object.getClass().getNativeClassName();
-      String fnc = classname + "_destruct";
+      const VirtualFunctionTableEntry* pentry = object.getClass().getVirtualFunctionTable().findByName("finalize");
+      if ( pentry != NULL )
+      {
+         mStack.pushObject(object);
+         mStack.pushInt(1);
 
-      mStack.pushObject(object);
-      mStack.pushInt(1);
-
-      VirtualStackAccessor accessor(mContext, mStack);
-      //(*mNatives[fnc])(*this, accessor);
-
-      mStack.pop(2);
+         execute(object.getClass(), *pentry);
+      }
    }
 }
 

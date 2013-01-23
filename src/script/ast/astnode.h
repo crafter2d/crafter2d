@@ -24,6 +24,7 @@ public:
  // children
    bool hasChildren() const;
    void addChild(ASTNode* pchild);
+   void insertChild(int index, ASTNode* pchild);
    void removeChild(ASTNode** pchild);
    void detachChild(const ASTNode& child);
 

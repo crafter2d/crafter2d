@@ -8,6 +8,7 @@
 
 #include "script/compiler/compiler.h"
 #include "script/compiler/compilecallback.h"
+#include "script/vm/vminterface.h"
 
 class TestCompiler : public CxxTest::TestSuite
 {
@@ -29,12 +30,16 @@ public:
 
    void testCompilation()
    {
-      Compiler compiler;
-
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();
       fs.addPath("../scripts");
       fs.addPath("../src/unittest/tests");
+
+      ClassRegistry registry;
+      VMInterface::registerCommonFunctions(registry);
+
+      Compiler compiler;
+      compiler.setClassRegistry(registry);
 
       // compiler required classes
       TS_ASSERT(compiler.compile("system.Object"));
@@ -42,9 +47,6 @@ public:
       TS_ASSERT(compiler.compile("system.InternalString"));
       TS_ASSERT(compiler.compile("system.ClassLoader"));
       TS_ASSERT(compiler.compile("system.System"));
-
-      // do the actual test
-      TS_ASSERT(compiler.compile("Test"));
    }
 
    void testCallback()

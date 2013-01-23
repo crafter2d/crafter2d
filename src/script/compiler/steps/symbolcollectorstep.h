@@ -68,6 +68,8 @@ public:
    virtual void visit(ASTInstanceOf& ast);
    virtual void visit(ASTNew& ast);
    virtual void visit(ASTCast& ast);
+   virtual void visit(ASTSuper& ast);
+   virtual void visit(ASTNative& ast);
    virtual void visit(ASTAccess& ast);
    virtual void visit(ASTCompound& compound);
 
@@ -77,13 +79,20 @@ protected:
 
 private:
  // operations
-   void createDefaultConstructor(ASTClass& ast);
+   void generateDefaultConstructor(ASTClass& ast);
+   void generateNativeFinalize(ASTClass& ast);
+   void generateConstructorBody(ASTFunction& ast);
+   void generateSuperCall(ASTFunction& function);
+   void generateNativeCall(ASTFunction& function);
+
    void resolveType(ASTType& type);
 
    CompileContext&  mContext;
    ClassResolver    mResolver;
    ASTClass*        mpClass;
    ASTFunction*     mpFunction;
+   bool             mHasSuperCall;
+   bool             mHasNativeCall;
 };
 
 #endif // SYMBOL_COLLECTOR_VISITOR_H_

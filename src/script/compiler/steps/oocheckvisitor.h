@@ -37,6 +37,7 @@ public:
    virtual void visit(ASTConcatenate& ast);
    virtual void visit(ASTUnary& ast);
    virtual void visit(ASTSuper& ast);
+   virtual void visit(ASTNative& ast);
    virtual void visit(ASTNew& ast);
    virtual void visit(ASTAccess& ast);
    virtual void visit(ASTCompound& compound);
@@ -48,8 +49,7 @@ protected:
 private:
  // operations
    bool isFinal(ASTNode& expr);
-   bool hasSuperCall(const ASTFunction& function) const;
-
+   
    void validateClass(const ASTClass& aclass);
    void validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right);
 
@@ -57,9 +57,11 @@ private:
 
    CompileContext&      mContext;
    ASTClass*            mpClass;
+   ASTFunction*         mpFunction;
    const ASTVariable*   mpVariable;
    const ASTType*       mpCurrentType;
    ScopeStack           mScopeStack;
+   bool                 mHasNativeCall;
 };
 
 #endif // OOCHECK_VISITOR_H_

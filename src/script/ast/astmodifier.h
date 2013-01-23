@@ -2,6 +2,8 @@
 #ifndef AST_MODIFIERS_H_
 #define AST_MODIFIERS_H_
 
+#include "core/defines.h"
+
 class ASTModifiers
 {
 public:
@@ -10,8 +12,9 @@ public:
        eStatic       = 1,
        eFinal        = 2,
        eAbstract     = 4,
-       eNative       = 8,
-       eSynchronized = 16
+       ePureNative   = 8,
+       eNative       = 16,
+       eSynchronized = 32
    };
 
    ASTModifiers(): mAccess(ePublic), mFlags(0) {}
@@ -34,7 +37,11 @@ public:
    void setAbstract() { mFlags |= eAbstract; }
 
    bool isNative() const { return (mFlags & eNative) == eNative; }
-   void setNative() { mFlags |= eNative; }
+   void setNative(bool native = true) { native ? SET_FLAG(mFlags, eNative) : CLEAR_FLAG(mFlags, eNative); }
+
+   bool isPureNative() const { return IS_SET(mFlags, ePureNative); }
+   void setPureNative(bool native = true) { native ? SET_FLAG(mFlags, ePureNative) : CLEAR_FLAG(mFlags, ePureNative); }
+   void toPureNative() { setNative(false); setPureNative(); }
 
    bool isSynchronized() const { return (mFlags & eSynchronized) == eSynchronized; }
    void setSynchronized() { mFlags |= eSynchronized; }

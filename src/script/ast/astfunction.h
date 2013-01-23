@@ -60,6 +60,7 @@ public:
 
  // query
    bool isConstructor() const;
+   bool isDefaultConstructor() const;
    bool isGeneric() const;
 
    const ASTNodes& getArguments() const;

@@ -69,9 +69,14 @@ void FunctionTable::insert(FunctionTable& table)
 
 void FunctionTable::reindex()
 {
+   int resourceindex = 2;
+
    for ( std::size_t index = 0; index < mFunctions.size(); index++ )
    {
       ASTFunction* pfunction = mFunctions[index];
-      pfunction->setResourceIndex(index+2); // add static & var init blocks
+      if ( !pfunction->getModifiers().isPureNative() )
+      {
+         pfunction->setResourceIndex(resourceindex++); // add static & var init blocks
+      }
    }
 }

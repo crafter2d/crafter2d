@@ -53,6 +53,11 @@ void ASTNode::addChild(ASTNode* pchild)
    mChildren.add(pchild);
 }
 
+void ASTNode::insertChild(int index, ASTNode* pchild)
+{
+   mChildren.insert(index, pchild);
+}
+
 void ASTNode::removeChild(ASTNode** pchild)
 {
    mChildren.remove(pchild);

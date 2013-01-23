@@ -10,6 +10,7 @@
 class ASTClass;
 class ASTFunction;
 class ClassRegistration;
+class FunctionRegistration;
 class String;
 
 class SCRIPT_API ClassRegistry
@@ -28,7 +29,8 @@ public:
    const ClassRegistration* findClass(const String& name) const;
          ClassRegistration* findClass(const String& name);
 
-   int findCallback(const ASTClass& astclass, const ASTFunction& function) const;
+   const FunctionRegistration* findCallback(const ASTClass& astclass, const ASTFunction& function) const;
+   const FunctionRegistration* findCallback(const ASTClass& astclass, const String& fncname) const;
 
 private:
    void renumber();

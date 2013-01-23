@@ -68,6 +68,7 @@ public:
    virtual void visit(ASTInstanceOf& ast);
    virtual void visit(ASTNew& ast);
    virtual void visit(ASTSuper& ast);
+   virtual void visit(ASTNative& ast);
    virtual void visit(ASTLiteral& ast);
    virtual void visit(ASTCast& ast);
    virtual void visit(ASTAccess& ast);

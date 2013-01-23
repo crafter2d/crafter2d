@@ -325,6 +325,7 @@ primary	:	compound_expression
 	|	NEW^ type new_arguments
 	|	SUPER^ arguments?
 	|	THIS^ arguments?
+	|   NATIVE^ arguments?
 	;
 	
 selector:	'.' identifier type_argument? arguments?				-> ^(ACCESS identifier type_argument? arguments?)

@@ -161,10 +161,8 @@ void Math_ceil(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(ceil(value));
 }
 
-void VMInterface::registerCommonFunctions(VirtualMachine& machine)
+SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)
 {
-   ClassRegistry registry;
-
    {
       ClassRegistration& reg = registry.addClass("Console");
       reg.addFunction(FunctionRegistration::Function(String("println"), Console_println));
@@ -219,6 +217,4 @@ void VMInterface::registerCommonFunctions(VirtualMachine& machine)
       reg.addFunction(FunctionRegistration::Function(String("sqrt"), Math_sqrt));
       reg.addFunction(FunctionRegistration::Function(String("ceil"), Math_ceil));
    }
-
-   machine.mergeClassRegistry(registry);
 }

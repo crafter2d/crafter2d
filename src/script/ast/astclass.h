@@ -90,6 +90,7 @@ public:
    bool hasConstructor() const;
    bool hasAbstractFunction() const;
    bool hasNativeFunction() const;
+   bool hasNativeConstructor() const;
 
    int getTotalStatics() const;
    int getTotalVariables() const;

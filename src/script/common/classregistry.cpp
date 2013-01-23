@@ -4,6 +4,7 @@
 #include "core/defines.h"
 
 #include "script/ast/astclass.h"
+#include "script/ast/astfunction.h"
 
 #include "classregistration.h"
 #include "functionregistration.h"
@@ -79,17 +80,22 @@ ClassRegistration* ClassRegistry::findClass(const String& name)
    return NULL;
 }
 
-int ClassRegistry::findCallback(const ASTClass& astclass, const ASTFunction& function) const
+const FunctionRegistration* ClassRegistry::findCallback(const ASTClass& astclass, const ASTFunction& function) const
+{
+   return findCallback(astclass, function.getName());
+}
+
+const FunctionRegistration* ClassRegistry::findCallback(const ASTClass& astclass, const String& fncname) const
 {
    const ClassRegistration* pclass = findClass(astclass.getName());
    if ( pclass != NULL )
    {
-      const FunctionRegistration* funcreg = pclass->find(function);
+      const FunctionRegistration* funcreg = pclass->find(fncname);
       if ( funcreg != NULL )
       {
-         return funcreg->getIndex();
+         return funcreg;
       }
    }
 
-   return -1;
+   return NULL;
 }

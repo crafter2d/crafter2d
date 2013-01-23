@@ -6,6 +6,7 @@
 #include "script/ast/ast.h"
 #include "script/compiler/compilecontext.h"
 #include "script/compiler/signature.h"
+#include "script/common/functionregistration.h"
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"
 
@@ -47,7 +48,7 @@ void OOCheckVisitor::visit(ASTClass& ast)
       {
          if ( !ast.getModifiers().isAbstract() )
          {
-            mContext.getLog().error(String("Class ") + mpClass->getName() + " must be abstract.");
+            mContext.getLog().error(String("Class ") + mpClass->getName() + " must be defined as abstract.");
          }
       }
       
@@ -56,7 +57,7 @@ void OOCheckVisitor::visit(ASTClass& ast)
          mContext.getLog().error(String("Class ") + ast.getName() + " can not extend final class " + ast.getBaseClass().getName());
       }
       
-      if ( ast.getModifiers().isAbstract() )
+      if ( ast.getModifiers().isAbstract() && !mpClass->hasAbstractFunction() )
       {
          mContext.getLog().warning(String("Class ") + ast.getName() + " is marked abstract without abstract functions.");
       }
@@ -75,6 +76,8 @@ void OOCheckVisitor::visit(ASTClass& ast)
 
 void OOCheckVisitor::visit(ASTFunction& ast)
 {
+   mpFunction = &ast;
+
    ScopedScope scope(mScopeStack);
 
    ast.getArguments().accept(*this);
@@ -89,32 +92,23 @@ void OOCheckVisitor::visit(ASTFunction& ast)
 
    if ( ast.isConstructor() )
    {
-      if ( !hasSuperCall(ast) )
+      // abstract classes can not have native constructors
+      if ( ast.getModifiers().isNative() && mpClass->getModifiers().isAbstract() )
       {
-         String constructor = mpClass->getFullName() + "." + ast.getName() + "(" + ast.getSignature().toString() + ")";
-         mContext.getLog().error((String("Constructor ") + constructor + " must call super.").toStdString());
+         mContext.getLog().error("Abstract class " + mpClass->getFullName() + " can not have native constructors.");
       }
    }
-   
-   /*
-   if ( ast.getModifiers().isNative() )
-   {
-      if ( ast.isConstructor() )
-      {
-         // mark class native when a it contains a native constructor, it should also not have a native base class
-         if ( mpClass->hasBaseClass() && mpClass->getBaseClass().getModifiers().isNative() )
-         {
-            mContext.getLog().error("Native class + " + mpClass->getName() + " can not have a native base class " + mpClass->getBaseClass().getName() + ".");
-         }
-
-         mpClass->getModifiers().setNative();
-      }
-   }
-   */
 
    if ( ast.hasBody() )
    {
+      mHasNativeCall = false;
+
       ast.getBody().accept(*this);
+
+      if ( mHasNativeCall )
+      {
+         ast.getModifiers().setNative(true);
+      }
    }
 }
 
@@ -297,6 +291,28 @@ void OOCheckVisitor::visit(ASTSuper& ast)
 {
 }
 
+void OOCheckVisitor::visit(ASTNative& ast)
+{
+   mHasNativeCall = true;
+
+   String name;
+   if ( mpFunction->isConstructor() )
+      name = "init";
+   else
+      name = mpFunction->getName();
+
+   const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(*mpClass, name);
+   if ( preg == NULL )
+   {
+      String fncname = mpClass->getFullName() + "_" + mpFunction->getName() + "(" + mpFunction->getSignature().toString() + ")";
+      mContext.getLog().error("Native function " + fncname + " is not registered or has wrong arguments");
+   }
+   else
+   {
+      ast.setIndex(preg->getIndex());
+   }
+}
+
 void OOCheckVisitor::visit(ASTAccess& ast)
 {
    switch ( ast.getKind() )
@@ -392,36 +408,6 @@ void OOCheckVisitor::visit(ASTCompound& compound)
 bool OOCheckVisitor::isFinal(ASTNode& expr)
 {
    return false;
-}
-
-bool OOCheckVisitor::hasSuperCall(const ASTFunction& function) const
-{
-   if ( function.hasBody() && mpClass->hasBaseClass() )
-   {
-      // ensure that there is a call to super
-      const ASTBlock& block = function.getBody();
-      if ( block.hasChildren() )
-      {
-         const ASTStatement& statement = function.getBody().getStatement(0);
-         const ASTExpressionStatement* pexprstmt = dynamic_cast<const ASTExpressionStatement*>(&statement);
-         if ( pexprstmt != NULL )
-         {
-            const ASTUnary* punary = dynamic_cast<const ASTUnary*>(&pexprstmt->getExpression().getLeft());
-            if ( punary != NULL )
-            {
-               ASSERT(!punary->getParts().isEmpty());
-               const ASTExpressionPart* ppart = dynamic_cast<const ASTExpressionPart*>(&punary->getParts()[0]);
-               if ( ppart != NULL )
-               {
-                  return dynamic_cast<const ASTSuper*>(ppart) != NULL;
-               }
-            }
-         }
-      }
-
-      return false;
-   }
-   return true;
 }
 
 void OOCheckVisitor::validateClass(const ASTClass& aclass)

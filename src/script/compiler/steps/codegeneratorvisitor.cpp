@@ -243,55 +243,10 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
 
 void CodeGeneratorVisitor::visit(const ASTFunction& ast)
 {
-   if ( ast.getModifiers().isNative() )
+   if ( ast.getModifiers().isPureNative() )
    {
-      // here a native method should be invoked
-
-      VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-      pentry->mName = ast.getName();
-      pentry->mInstruction = mInstructions.empty() ? 0 : mInstructions.back().linenr + 1;
-      pentry->mOriginalInstruction = pentry->mInstruction;
-      pentry->mArguments = ast.getArgumentCount();
-
-      mpVClass->getVirtualFunctionTable().append(pentry);
-
-      if ( ast.isConstructor() )
-      {
-         int index = mContext.getClassRegistry().findCallback(*mpClass, ast);
-         addInstruction(VirtualInstruction::eNewNative, index);
-
-         /*
-         // call the init method -> set the native object
-         String fncname = mpClass->getName() + "_init";
-         int resource = allocateLiteral(fncname);
-
-         addInstruction(VirtualInstruction::ePush, ast.getArgumentCount());
-         addInstruction(VirtualInstruction::eNewNative, resource);
-         */
-
-         if ( ast.hasBody() )
-         {
-            ast.getBody().accept(*this);
-         }
-
-         addInstruction(VirtualInstruction::eRet, 0);
-      }
-      else
-      {
-         // the arguments of this function are re-used by the native function,
-         // so no need to push them on the stack again
-
-         int index = mContext.getClassRegistry().findCallback(*mpClass, ast);
-         if ( index == - 1 )
-         {
-            String fncname = ast.getClass().getName() + "_" + ast.getName();
-            int aap = 5;
-         }
-
-         addInstruction(VirtualInstruction::ePush, ast.getArgumentCount()); // includes this
-         addInstruction(VirtualInstruction::eCallNative, index);
-         addInstruction(VirtualInstruction::eRet, ast.getType().isVoid() ? 0 : 1);
-      }
+      // No implementation, these are called directly except constructors. Those need to
+      // be called explicitly.
    }
    else
    {
@@ -1257,8 +1212,10 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
 
 void CodeGeneratorVisitor::visit(const ASTSuper& ast)
 {
-   if ( ast.hasConstructor() )
+   if ( ast.isCall() )
    {
+      ASSERT(ast.hasConstructor());
+
       addInstruction(VirtualInstruction::ePushThis);
 
       // call to constructor of superclass
@@ -1277,6 +1234,31 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
    {
       mSuperCall = true;
    }
+}
+
+void CodeGeneratorVisitor::visit(const ASTNative& ast)
+{
+   addInstruction(VirtualInstruction::ePushThis);
+
+   if ( ast.hasArguments() )
+   {
+      visitChildren(ast); // place arguments on the stack
+
+      addInstruction(VirtualInstruction::ePush, ast.getArguments().size() + 1);
+   }
+   else
+   {
+      ASSERT_PTR(mpFunction);
+      int arguments = mpFunction->getArgumentCount();
+      for ( int index = 1; index <= arguments; index++ ) // skip the 'this' argument
+      {
+         addInstruction(VirtualInstruction::eLoadLocal, index);
+      }
+
+      addInstruction(VirtualInstruction::ePush, arguments + 1);
+   }
+
+   addInstruction(VirtualInstruction::eCallNative, ast.getIndex());
 }
 
 void CodeGeneratorVisitor::visit(const ASTCast& ast)
@@ -1412,9 +1394,21 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             visitChildren(ast);
 
-            //addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
+            if ( function.getModifiers().isPureNative() )
+            {
+               addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
+               
+               const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(function.getClass(), function);
+               if ( preg == NULL )
+               {
+                  String fncname = function.getClass().getFullName() + "_" + function.getName() + "(" + mpFunction->getSignature().toString() + ")";
+                  mContext.getLog().error("Can not find registered method for function " + fncname);
+                  return;
+               }
 
-            if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
+               addInstruction(VirtualInstruction::eCallNative, preg->getIndex());
+            }
+            else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
             {
                addInstruction(VirtualInstruction::ePush, allocateLiteral(before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()));
                addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
@@ -1423,11 +1417,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             {
                addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
 
-               if ( function.getModifiers().isNative() )
-               {
-                  addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
-               }
-               else if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
+               if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
                {
                   addInstruction(VirtualInstruction::eCallInterface, function.getResourceIndex());
                }

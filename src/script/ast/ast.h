@@ -38,6 +38,7 @@
 #include "astinstanceof.h"
 #include "astnew.h"
 #include "astsuper.h"
+#include "astnative.h"
 #include "astcast.h"
 #include "astaccess.h"
 #include "asttype.h"

@@ -35,6 +35,7 @@ class ASTUnary;
 class ASTInstanceOf;
 class ASTNew;
 class ASTSuper;
+class ASTNative;
 class ASTAccess;
 class ASTCompound;
 class ASTConcatenate;
@@ -87,6 +88,7 @@ public:
    VISIT(ASTInstanceOf);
    VISIT(ASTNew);
    VISIT(ASTSuper);
+   VISIT(ASTNative);
    VISIT(ASTAccess);
    VISIT(ASTCompound);
    VISIT(ASTConcatenate);

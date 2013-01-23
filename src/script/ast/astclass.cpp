@@ -288,6 +288,22 @@ bool ASTClass::hasNativeFunction() const
    return false;
 }
 
+bool ASTClass::hasNativeConstructor() const
+{
+   Functions::const_iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); ++it )
+   {
+      ASTFunction* pfunction = it->second;
+      if ( pfunction->getKind() == ASTMember::eConstructor
+         && ( pfunction->getModifiers().isNative()
+           || pfunction->getModifiers().isPureNative() ) )
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
 int ASTClass::getTotalStatics() const
 {
    return mStatics.size();

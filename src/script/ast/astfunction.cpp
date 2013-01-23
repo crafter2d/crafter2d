@@ -190,6 +190,11 @@ bool ASTFunction::isConstructor() const
    return getKind() == eConstructor;
 }
 
+bool ASTFunction::isDefaultConstructor() const
+{
+   return isConstructor() && getChildren().isEmpty();
+}
+
 bool ASTFunction::isGeneric() const
 {
    return mpTypeVariables != NULL && mpTypeVariables->size() > 0;

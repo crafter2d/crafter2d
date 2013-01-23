@@ -20,6 +20,7 @@
 #include "symbolcollectorstep.h"
 
 #include "script/compiler/compilecontext.h"
+#include "script/common/classregistration.h"
 
 #include "script/ast/ast.h"
 
@@ -72,12 +73,17 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
       resolveType(type);
    }
 
-   if ( !ast.hasConstructor() )
+   if ( !ast.hasConstructor() && ast.hasBaseType() )
    {
-      createDefaultConstructor(ast);
+      generateDefaultConstructor(ast);
    }
 
    visitChildren(ast);
+
+   if ( ast.hasNativeConstructor() )
+   {
+      generateNativeFinalize(ast);
+   }
 }
 
 void SymbolCollectorVisitor::visit(ASTFunction& ast)
@@ -88,9 +94,39 @@ void SymbolCollectorVisitor::visit(ASTFunction& ast)
 
    visitChildren(ast); // <-- arguments
 
+   if ( ast.isConstructor() && !ast.hasBody() )
+   {
+      if ( ast.getModifiers().isPureNative() )
+      {
+         // constructors should never be pure native!
+         ast.getModifiers().setPureNative(false);
+         ASSERT(ast.getModifiers().isNative());
+      }
+
+      // generate a default body, the super/native calls will be added later on when required
+      generateConstructorBody(ast);
+   }
+
    if ( ast.hasBody() )
    {
+      mHasNativeCall = false;
+      mHasSuperCall = false;
+
       ast.getBody().accept(*this);
+
+      if ( ast.isDefaultConstructor() && !mHasSuperCall && mpClass->hasBaseType() )
+      {
+         generateSuperCall(ast);
+      }
+      
+      if ( ast.getModifiers().isNative() && !mHasNativeCall )
+      {
+         generateNativeCall(ast);
+      }
+      else if ( mHasNativeCall )
+      {
+         ast.getModifiers().setNative(true);
+      }
    }
 }
 
@@ -287,6 +323,22 @@ void SymbolCollectorVisitor::visit(ASTInstanceOf& ast)
    ast.getObject().accept(*this);
 }
 
+void SymbolCollectorVisitor::visit(ASTSuper& ast)
+{
+   if ( ast.isCall() )
+   {
+      mHasSuperCall = true;
+
+      ASTNodes& args = ast.getArguments();
+      args.accept(*this);
+   }
+}
+
+void SymbolCollectorVisitor::visit(ASTNative& ast)
+{
+   mHasNativeCall = true;
+}
+
 void SymbolCollectorVisitor::visit(ASTNew& ast)
 {
    resolveType(ast.getType());
@@ -333,10 +385,36 @@ void SymbolCollectorVisitor::visit(ASTCompound& compound)
 
 // - Operations
 
-void SymbolCollectorVisitor::createDefaultConstructor(ASTClass& ast)
+void SymbolCollectorVisitor::generateDefaultConstructor(ASTClass& ast)
 {
-   // default constructor always calls super class and is public
+   ASTFunction* pconstructor = new ASTFunction(ASTMember::eConstructor);
+   pconstructor->setName(ast.getName());
+   pconstructor->setType(new ASTType(ASTType::eVoid));
+   pconstructor->getModifiers().setVisibility(ASTModifiers::ePublic);
 
+   ast.addMember(pconstructor);
+}
+
+void SymbolCollectorVisitor::generateNativeFinalize(ASTClass& ast)
+{
+   const FunctionRegistration* pdestructor = mContext.getClassRegistry().findCallback(ast, "destroy");
+   if ( pdestructor != NULL )
+   {
+      ASTBlock* pbody = new ASTBlock();
+      ASTNative* pnative = new ASTNative();
+      pbody->addChild(pnative);
+
+      ASTFunction* pfunc = new ASTFunction(ASTMember::eFunction);
+      pfunc->setName(ast.getName());
+      pfunc->setBody(pbody);
+      pfunc->setType(new ASTType(ASTType::eVoid));
+
+      ast.addMember(pfunc);
+   }
+}
+
+void SymbolCollectorVisitor::generateConstructorBody(ASTFunction& ast)
+{
    ASTBlock* pbody = new ASTBlock();
    ASTSuper* psuper = new ASTSuper();
    psuper->setCall(true);
@@ -347,13 +425,34 @@ void SymbolCollectorVisitor::createDefaultConstructor(ASTClass& ast)
    pexpression->setLeft(punary);
    ASTExpressionStatement* pexprstmt = new ASTExpressionStatement(pexpression);
    pbody->addChild(pexprstmt);
-   
-   ASTFunction* pconstructor = new ASTFunction(ASTMember::eConstructor);
-   pconstructor->setName(ast.getName());
-   pconstructor->setBody(pbody);
-   pconstructor->setType(new ASTType(ASTType::eVoid));
 
-   ast.addMember(pconstructor);
+   ast.setBody(pbody);
+}
+
+void SymbolCollectorVisitor::generateSuperCall(ASTFunction& function)
+{
+   ASTSuper* psuper = new ASTSuper();
+   psuper->setKind(ASTSuper::eSuper);
+   psuper->setCall(true);
+   ASTUnary* punary = new ASTUnary();
+   punary->addPart(psuper);
+   ASTExpression* pexpression = new ASTExpression();
+   pexpression->setLeft(punary);
+   ASTExpressionStatement* pexprstmt = new ASTExpressionStatement(pexpression);
+
+   function.getBody().insertChild(0, pexprstmt);
+}
+
+void SymbolCollectorVisitor::generateNativeCall(ASTFunction& function)
+{
+   ASTNative* pnative = new ASTNative();
+   ASTUnary* punary = new ASTUnary();
+   punary->addPart(pnative);
+   ASTExpression* pexpression = new ASTExpression();
+   pexpression->setLeft(punary);
+   ASTExpressionStatement* pexprstmt = new ASTExpressionStatement(pexpression);
+
+   function.getBody().insertChild(0, pexprstmt);
 }
 
 /// Resolve the type, if resolving fails the type is marked as unknown so other 

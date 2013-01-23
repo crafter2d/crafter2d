@@ -86,6 +86,7 @@ private:
    ASTUnary*               handleUnary(const AntlrNode& node);
    ASTNew*                 handleNew(const AntlrNode& node);
    ASTNode*                handleSuper(const AntlrNode& node);
+   ASTNode*                handleNative(const AntlrNode& node);
    ASTCast*                handleCast(const AntlrNode& node);
    ASTAccess*              handleAccess(const AntlrNode& node);
    ASTAccess*              handleArrayAccess(const AntlrNode& node);

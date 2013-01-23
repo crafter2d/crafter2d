@@ -1,8 +1,6 @@
 
 #include "classregistration.h"
 
-#include "script/ast/astfunction.h"
-
 #include "functionregistration.h"
 
 ClassRegistration::ClassRegistration(const String& name):
@@ -135,16 +133,28 @@ void ClassRegistration::copyTo(Functions& dest, const Functions& source)
 
 // - Search
 
-const FunctionRegistration* ClassRegistration::find(const ASTFunction& function) const
+const FunctionRegistration* ClassRegistration::find(const String& name) const
 {
-   const Functions* pfunctions = function.isConstructor() ? &mConstructors : &mMembers;
-
-   for ( std::size_t index = 0; index < pfunctions->size(); index++ )
+   const FunctionRegistration* preg = find(mMembers, name);
+   if ( preg == NULL )
    {
-      const FunctionRegistration& functionreg = *(*pfunctions)[index];
-      if ( functionreg.getPrototype() == function.getName() )
+      preg = find(mConstructors, name);
+      if ( preg == NULL )
       {
-         return &functionreg;
+         preg = find(mDestructors, name);
+      }
+   }
+   return preg;
+}
+
+const FunctionRegistration* ClassRegistration::find(const Functions& functions, const String& name) const
+{
+   for ( std::size_t index = 0; index < functions.size(); index++ )
+   {
+      const FunctionRegistration* pfunctionreg = functions[index];
+      if ( pfunctionreg->getPrototype() == name )
+      {
+         return pfunctionreg;
       }
    }
 

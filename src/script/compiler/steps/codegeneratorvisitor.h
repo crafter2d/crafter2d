@@ -57,6 +57,7 @@ public:
    virtual void visit(const ASTInstanceOf& ast);
    virtual void visit(const ASTNew& ast);
    virtual void visit(const ASTSuper& ast);
+   virtual void visit(const ASTNative& ast);
    virtual void visit(const ASTCast& ast);
    virtual void visit(const ASTAccess& ast);
    virtual void visit(const ASTLiteral& literal);   

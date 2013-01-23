@@ -9,7 +9,6 @@
 #include "script/script_base.h"
 #include "script/vm/vminterface.h"
 
-class ASTFunction;
 class FunctionRegistration;
 
 class SCRIPT_API ClassRegistration
@@ -31,7 +30,7 @@ public:
    void collect(std::vector<VMInterface::CallbackFnc>& callbacks) const;
 
  // search
-   const FunctionRegistration* find(const ASTFunction& function) const;
+   const FunctionRegistration* find(const String& name) const;
 
 private:
    typedef std::vector<FunctionRegistration*> Functions;
@@ -41,6 +40,7 @@ private:
    void merge(Functions& dest, const Functions& source);
    void copyTo(Functions& dest, const Functions& source);
    void collectFrom(std::vector<VMInterface::CallbackFnc>& callbacks, const Functions& source) const;
+   const FunctionRegistration* find(const Functions& functions, const String& name) const;
 
    String    mName;
    Functions mConstructors;

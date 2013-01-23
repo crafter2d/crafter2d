@@ -21,6 +21,7 @@
 
 #include "core/defines.h"
 #include "core/smartptr/scopedvalue.h"
+#include "core/conv/numberconverter.h"
 
 #include "script/ast/ast.h"
 #include "script/scope/scope.h"
@@ -104,7 +105,7 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
          ast.getBody().accept(*this);
       }
    }
-   else if ( !ast.getModifiers().isAbstract() && !ast.getModifiers().isNative() )
+   else if ( !ast.getModifiers().isAbstract() && !ast.getModifiers().isPureNative() )
    {
       mContext.getLog().error(String("Function ") + mpClass->getName() + "." + ast.getName() + " requires a body.");
    }
@@ -637,21 +638,24 @@ void SymbolCheckVisitor::visit(ASTCast& ast)
 
 void SymbolCheckVisitor::visit(ASTSuper& ast)
 {
-   ASTClass* pclass = mpClass;
-   if ( pclass->hasBaseType() && pclass->getBaseType().isUnknown() )
+   ASSERT_PTR(mpClass);
+   ASSERT_PTR(mpFunction);
+
+   if ( mpClass->hasBaseType() && mpClass->getBaseType().isUnknown() )
    {
       // skip calls to the unknown super class
       return;
    }
 
-   if ( ast.getKind() == ASTSuper::eSuper )
-      pclass = &mpClass->getBaseClass();
-
    if ( mpFunction->getModifiers().isStatic() )
    {
+      // statics do not have a this (thus also not a super)
       String str = ast.getKind() == ASTSuper::eThis ? "this" : "super";
       mContext.getLog().error(String("Can not access ") + str + " from a static function.");
+      return;
    }
+
+   ASTClass* pclass = ast.isThis() ? mpClass : &mpClass->getBaseClass();
 
    if ( ast.isCall() )
    {
@@ -665,11 +669,8 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
          signature.append(mCurrentType.clone());
       }
 
-      // use the correct class for this super node
-      ASTClass* psearchclass = ast.getKind() == ASTSuper::eThis ? mpClass : &mpClass->getBaseClass();
-
       ASTTypeList types;
-      ASTFunction* pconstructor = pclass->findBestMatch(psearchclass->getName(), signature, types);
+      ASTFunction* pconstructor = pclass->findBestMatch(pclass->getName(), signature, types);
       if ( pconstructor != NULL )
       {
          ast.setConstructor(pconstructor);
@@ -677,15 +678,61 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
       else
       {
          String arguments = String("(") + signature.toString() + ")";
-         mContext.getLog().error(String("No constructor ") + psearchclass->getFullName() + arguments + " defined.");
+         mContext.getLog().error(String("No constructor ") + pclass->getFullName() + arguments + " defined.");
       }
+
+      // calls to this and super return nothing (void)
+      mCurrentType = ASTType::SVoidType;
    }
    else
    {
+      // note: pclass already is correct class for this or super
+
       mCurrentType.setKind(ASTType::eObject);
       mCurrentType.setObjectName(pclass->getName());
       mCurrentType.setObjectClass(*pclass);
    }
+}
+
+void SymbolCheckVisitor::visit(ASTNative& ast)
+{
+   if ( ast.hasArguments() )
+   {
+      ASSERT_PTR(mpFunction);
+      const Signature& signature = mpFunction->getSignature();
+
+      ASTNodes& arguments = ast.getArguments();
+      for ( int index = 0; index < arguments.size(); index++ )
+      {
+         ASTExpression& expr = dynamic_cast<ASTExpression&>(arguments[index]);
+         expr.accept(*this);
+
+         const ASTType& sigtype = signature[index];
+         if ( !mCurrentType.greater(sigtype) )
+         {
+            String sidx;
+            NumberConverter::getInstance().format(sidx, index);
+            String func = mpClass->getFullName() + "." + mpFunction->getName();
+            mContext.getLog().error("While calling native implementation of function "
+                                  + func
+                                  + "; argument "
+                                  + sidx
+                                  + " of can not be mapped from "
+                                  + mCurrentType.toString()
+                                  + " to " + sigtype.toString());
+         }
+      }
+
+      ASTTypeList types;
+      if ( !mpFunction->getSignature().bestMatch(signature, types) )
+      {
+         String arguments = signature.toString();
+         mContext.getLog().error("Arguments to native do not match " + arguments);
+      }
+   }
+
+   ASSERT_PTR(mpFunction);
+   mCurrentType = mpFunction->getType();
 }
 
 void SymbolCheckVisitor::visit(ASTLiteral& ast)

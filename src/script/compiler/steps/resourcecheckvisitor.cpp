@@ -34,7 +34,7 @@ void ResourceCheckVisitor::visit(ASTClass& ast)
 
 void ResourceCheckVisitor::visit(ASTFunction& ast)
 {
-   if ( !ast.getModifiers().isNative() && !ast.getModifiers().isAbstract() )
+   if ( !ast.getModifiers().isPureNative() && !ast.getModifiers().isAbstract() )
    {
       mOffset = ast.getArguments().size();
       mMaxVariables = mOffset;

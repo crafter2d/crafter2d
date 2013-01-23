@@ -222,6 +222,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
       case NEW:               return handleNew(node);
       case SUPER:             return handleSuper(node);
       case THIS:              return handleSuper(node);
+      case NATIVE:            return handleNative(node);
       case CAST:              return handleCast(node);
       case ACCESS:            return handleAccess(node);
       case ARRAYACCESS:       return handleArrayAccess(node);
@@ -534,7 +535,13 @@ ASTMember* AntlrParser::handleConstructor(const AntlrNode& node)
       pfunction->setBody(pbody);
    }
    else
+   {
       ASSERT(nodetype == SEP);
+      if ( pfunction->getModifiers().isNative() )
+      {
+         pfunction->getModifiers().setPureNative();
+      }
+   }
 
    return pfunction;
 }
@@ -661,7 +668,13 @@ ASTMember* AntlrParser::handleFuncDecl(const AntlrNode& node)
       pfunction->setBody(pbody);
    }
    else
+   {
       ASSERT(nodetype == SEP);
+      if ( pfunction->getModifiers().isNative() )
+      {
+         pfunction->getModifiers().toPureNative();
+      }
+   }
 
    return pfunction;
 }
@@ -701,7 +714,13 @@ ASTMember* AntlrParser::handleVoidFuncDecl(const AntlrNode& node)
       pfunction->setBody(pbody);
    }
    else
+   {
       ASSERT(nodetype == SEP);
+      if ( pfunction->getModifiers().isNative() )
+      {
+         pfunction->getModifiers().toPureNative();
+      }
+   }
 
    return pfunction;
 }
@@ -1363,7 +1382,15 @@ ASTNew* AntlrParser::handleNew(const AntlrNode& node)
 ASTNode* AntlrParser::handleSuper(const AntlrNode& node)
 {
    ASTSuper* psuper = new ASTSuper();
-   psuper->setKind(node.getType() == SUPER ? ASTSuper::eSuper : ASTSuper::eThis);
+   switch ( node.getType() )
+   {
+   case SUPER:
+      psuper->setKind(ASTSuper::eSuper);
+      break;
+   case THIS:
+      psuper->setKind(ASTSuper::eThis);
+      break;
+   }
 
    int count = node.getChildCount();
    if ( count == 1 )
@@ -1384,6 +1411,29 @@ ASTNode* AntlrParser::handleSuper(const AntlrNode& node)
    }
 
    return psuper;
+}
+
+ASTNode* AntlrParser::handleNative(const AntlrNode& node)
+{
+   ASTNative* pnative = new ASTNative();
+
+   int count = node.getChildCount();
+   if ( count == 1 )
+   {
+      AntlrNode argsnode = node.getChild(0);
+      ASSERT(argsnode.getType() == ARGUMENTS);
+
+      count = argsnode.getChildCount();
+      for ( int index = 0; index < count; index += 2 ) // skip the ,
+      {
+         AntlrNode argnode = argsnode.getChild(index);
+         ASTExpression* parg = handleExpression(argnode);
+
+         pnative->addChild(parg);
+      }
+   }
+
+   return pnative;
 }
 
 ASTCast* AntlrParser::handleCast(const AntlrNode& node)
