@@ -11,7 +11,7 @@
 class VirtualStackAccessor
 {
 public:
-   VirtualStackAccessor(VirtualContext& context, VirtualStack& stack): mContext(context), mStack(stack), mSize(stack.back().asInt()), mHasResult(false)
+   VirtualStackAccessor(VirtualContext& context, VirtualStack& stack, int arguments): mContext(context), mStack(stack), mSize(arguments), mHasResult(false)
    {
    }
 
@@ -101,7 +101,7 @@ public:
 private:
    Variant& getArgument(int index) const {
       ASSERT(index <= mSize);
-      return mStack[mStack.size() - (mSize + 1) + index];
+      return mStack[mStack.size() - mSize + index];
       // 0 1 2 3 -> ssize = 4; size = 3
       // index 0 -> 4 - 3 = 1
    }

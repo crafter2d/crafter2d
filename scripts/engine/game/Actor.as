@@ -32,6 +32,10 @@ class Actor extends Entity implements Collidable
 	public static int FACE_LEFT  = 1;
 	public static int FACE_RIGHT = 2;
 	
+	private Actor()
+	{
+	}
+	
 	// Get/set
 	
 	public Vector2D getPosition()
@@ -206,8 +210,6 @@ class Actor extends Entity implements Collidable
 	}
 	
 	// - Natives
-	
-	private native Actor();
 	
 	private native real getPositionX();
 	private native real getPositionY();

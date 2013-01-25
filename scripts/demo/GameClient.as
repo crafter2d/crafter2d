@@ -59,7 +59,7 @@ class GameClient extends Client
 			break;
 		}
 		
-		MessageBox.showInformation(message);
+		// MessageBox.showInformation(message);
 	}
 	
 	protected void registerMessages(MessageMap messagemap)

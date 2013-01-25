@@ -226,7 +226,7 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
       {
          visit(function);
       }
-      else
+      else if ( !function.getModifiers().isPureNative() )
       {
          VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
          pentry->mName = function.getName();

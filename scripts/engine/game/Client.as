@@ -13,7 +13,7 @@ abstract class Client extends Process
 	private KeyEventDispatcher		mKeyDispatcher;
 	private GameWindow 				mWindow;
 		
-	public native Client()
+	public Client()
 	{
 		super();
 		
@@ -26,8 +26,6 @@ abstract class Client extends Process
 		mMouseDispatcher = new MouseEventDispatcher();
 		mKeyDispatcher = new KeyEventDispatcher();
 	}
-	
-	private native void native_setWindow(GameWindow window);
 	
 	public native boolean connect(string host, int port, string name);
 	public native GameWindowFactory getWindowFactory();
@@ -56,7 +54,7 @@ abstract class Client extends Process
 	public void setWindow(GameWindow window)
 	{
 		mWindow = window;
-		native_setWindow(window);
+		native;
 	}
 	
 	/*
@@ -86,7 +84,7 @@ abstract class Client extends Process
 	public void onConnectionDenite(int reason)
 	{
 		string message = "Server denied the connection with unknown reason.";
-		MessageBox.showInformation(message);
+		//MessageBox.showInformation(message);
 	}
 	
 	/// called by the engine when another player joined the game.

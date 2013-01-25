@@ -298,19 +298,17 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eNewNative:
          {            
-            int arguments = mStack.back().asInt();
+            int arguments = mStack.popInt();
 
-            const Variant& object = mStack[mStack.size() - arguments - 1];
+            const Variant& object = mStack[mStack.size() - arguments];
             ASSERT(object.isObject());
 
             if ( !object.asObject().hasNativeObject() )
             {
                // const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
 
-               VirtualStackAccessor accessor(mContext, mStack);
+               VirtualStackAccessor accessor(mContext, mStack, arguments);
                (*mCallbacks[instruction.getArgument()])(*this, accessor);
-
-               mStack.pop(); // pop argument count
             }
          }
          break;
@@ -399,10 +397,12 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
          break;
       case VirtualInstruction::eCallNative:
          {
-            VirtualStackAccessor accessor(mContext, mStack);
+            int arguments = mStack.popInt();
+
+            VirtualStackAccessor accessor(mContext, mStack, arguments);
             (*mCallbacks[instruction.getArgument()])(*this, accessor);
 
-            mStack.pop(1); // pop the argument count
+            mStack.pop(arguments); // pop the arguments
             if ( accessor.hasResult() )
             {
                mStack.push(accessor.getResult());
@@ -1392,6 +1392,8 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
    NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObject());
    ASSERT(it != mNativeObjects.end());
    mNativeObjects.erase(it);
+
+   object.setNativeObject(NULL);
 
    if ( object.isOwner() )
    {

@@ -21,6 +21,6 @@ class TextureManager
 	
 	Texture getTexture(string name)
 	{
-		return mProcess.getTexture(name);
+		return null; // mProcess.getTexture(name);
 	}
 }

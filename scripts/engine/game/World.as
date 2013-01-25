@@ -47,10 +47,10 @@ class World
 	public void prepare()
 	{
 		mLayers = new ArrayList<Layer>();
-		int layers = native_getLayerCount();
+		int layers = getLayerCount();
 		for ( int index = 0; index < layers; ++index )
 		{
-			Layer layer = native_getLayer(index);
+			Layer layer = getLayer(index);
 			mLayers.add(layer);
 			layer.prepare();
 		}
@@ -69,6 +69,6 @@ class World
 	public native void setFollowBorderWidth(int width);
 	public native Box2DSimulator getSimulator();
 	
-	private native int native_getLayerCount();
-	private native Layer native_getLayer(int index);
+	private native int getLayerCount();
+	private native Layer getLayer(int index);
 }

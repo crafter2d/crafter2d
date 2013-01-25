@@ -14,13 +14,13 @@ final class Font
 	public Size getTextSize(string text)
 	{
 		Size result = new Size();
-		result.width = native_textWidth(text);
-		result.height = native_textHeight(text);
+		result.width = getTextWidth(text);
+		result.height = getTextHeight(text);
 		return result;
 	}
 	
-	private native int native_textHeight(string text);
-	private native int native_textWidth(string text);
+	private native int getTextHeight(string text);
+	private native int getTextWidth(string text);
 	
 	public native int getBaseLine();
 	public native void render(string text);

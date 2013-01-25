@@ -10,8 +10,6 @@ use engine.net.*;
 
 abstract class Server extends Process
 {	
-	public native Server();
-	
 	/// called by the engine when a player tries to join, can be overloaded to
 	/// deny new players to join
 	/// return  0 when the player is allowed to join

@@ -7,9 +7,7 @@ final class FileSystem
 	
 	public File open(string name, int modus)
 	{
-		File file = native_open(name, modus);
+		File file = native;
 		return file;
 	}
-	
-	private native File native_open(string name, int modus);
 }

@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/math/vector.h"
+#include "core/graphics/font.h"
 #include "core/streams/datastream.h"
 #include "core/streams/bufferedstream.h"
 #include "core/vfs/file.h"
@@ -150,7 +151,7 @@ void Client_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& acce
    RETURN_CLASS("system.GameWindowFactory", GameWindowFactory, &client.getWindowFactory());
 }
 
-void Client_native_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Client, client);
 
@@ -195,7 +196,7 @@ void Client_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
    RETURN_CLASS_OWNED("engine.core.Texture", TexturePtr, ptexture);
 }
 
-void ContentManager_native_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(ContentManager, contentmanager);
 
@@ -626,7 +627,7 @@ void InputForceGenerator_destruct(VirtualMachine& machine, VirtualStackAccessor&
    DESTRUCT_THIS(InputForceGenerator);
 }
 
-void InputForceGenerator_native_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(InputForceGenerator, generator);
 
@@ -636,7 +637,7 @@ void InputForceGenerator_native_setVelocity(VirtualMachine& machine, VirtualStac
    generator.setVelocity(Vector(xvel, yvel));
 }
 
-void InputForceGenerator_native_setImpulse(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(InputForceGenerator, generator);
 
@@ -660,7 +661,7 @@ void InputController_destruct(VirtualMachine& machine, VirtualStackAccessor& acc
    DESTRUCT_THIS(InputController);
 }
 
-void InputController_native_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputController_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(InputController, controller);
 
@@ -1014,6 +1015,8 @@ void EngineGraphics_native_drawRoundedRect(VirtualMachine& machine, VirtualStack
    graphics.drawRoundedRect(x, y, width, height);
 }
 
+*/
+
 void Font_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    DESTRUCT_THIS(FontPtr);
@@ -1028,7 +1031,7 @@ void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
    font->render(text);
 }
 
-void Font_native_textWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Font_getTextWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(FontPtr, font);
 
@@ -1037,7 +1040,7 @@ void Font_native_textWidth(VirtualMachine& machine, VirtualStackAccessor& access
    accessor.setResult(font->getTextWidth(text));
 }
 
-void Font_native_textHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Font_getTextHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(FontPtr, font);
 
@@ -1052,7 +1055,6 @@ void Font_getBaseLine(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    accessor.setResult(font->getBaseLine());
 }
-*/
 
 void Texture_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -1159,7 +1161,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addClass("Process");
    registrator.addFunction("getFont", Process_getFont);
    registrator.addFunction("getContentManager", Process_getContentManager);
-   registrator.addFunction("native_setWorld", Process_setWorld);
+   registrator.addFunction("setWorld", Process_setWorld);
    registrator.addFunction("swapLeakDetection", Process_swapLeakDetection);
 
    registrator.addClass("Server");
@@ -1171,14 +1173,14 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("connect", Client_connect);
    registrator.addFunction("isActive", Client_isActive);
    registrator.addFunction("getWindowFactory", Client_getWindowFactory);
-   registrator.addFunction("native_setWindow", Client_native_setWindow);
+   registrator.addFunction("setWindow", Client_setWindow);
    registrator.addFunction("setActionMap", Client_setActionMap);
    registrator.addFunction("setKeyMap", Client_setKeyMap);
    registrator.addFunction("getPlayer", Client_getPlayer);
    registrator.addFunction("getTexture", Client_getTexture);
 
    registrator.addClass("ContentManager");
-   registrator.addFunction("loadEntity", ContentManager_native_loadEntity);
+   registrator.addFunction("loadEntity", ContentManager_loadEntity);
    registrator.addFunction("load", ContentManager_load);
 
    registrator.addClass("GameWindowFactory");
@@ -1252,13 +1254,13 @@ void script_engine_register(ScriptManager& manager)
    registrator.addClass("InputForceGenerator");
    registrator.addConstructor("init", InputForceGenerator_init);
    registrator.addDestructor(InputForceGenerator_destruct);
-   registrator.addFunction("setVelocity", InputForceGenerator_native_setVelocity);
-   registrator.addFunction("setImpulse", InputForceGenerator_native_setImpulse);
+   registrator.addFunction("setVelocity", InputForceGenerator_setVelocity);
+   registrator.addFunction("setImpulse", InputForceGenerator_setImpulse);
 
    registrator.addClass("InputController");
    registrator.addConstructor("init", InputController_init);
    registrator.addDestructor(InputController_destruct);
-   registrator.addFunction("setActionMap", InputController_native_setActionMap);
+   registrator.addFunction("setActionMap", InputController_setActionMap);
 
    registrator.addClass("AIController");
    registrator.addConstructor("init", AIController_init);
@@ -1310,12 +1312,14 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("EngineGraphics_native_drawRect", EngineGraphics_native_drawRect);
    registrator.addFunction("EngineGraphics_native_drawRoundedRect", EngineGraphics_native_drawRoundedRect);
    registrator.addFunction("EngineGraphics_native_drawTexture", EngineGraphics_native_drawTexture);
+   */
 
-   registrator.addFunction("Font_destruct", Font_destruct);
-   registrator.addFunction("Font_render", Font_render);
-   registrator.addFunction("Font_getBaseLine", Font_getBaseLine);
-   registrator.addFunction("Font_native_textWidth", Font_native_textWidth);
-   registrator.addFunction("Font_native_textHeight", Font_native_textHeight); */
+   registrator.addClass("Font");
+   registrator.addDestructor(Font_destruct);
+   registrator.addFunction("render", Font_render);
+   registrator.addFunction("getBaseLine", Font_getBaseLine);
+   registrator.addFunction("getTextWidth", Font_getTextWidth);
+   registrator.addFunction("getTextHeight", Font_getTextHeight);
 
    registrator.addClass("Texture");
    registrator.addDestructor(Texture_destruct);

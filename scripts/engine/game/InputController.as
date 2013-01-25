@@ -7,6 +7,8 @@ class InputController extends Controller
 {
 	private ActionMap mActionMap = null;
 	
+	public native InputController();
+	
 	// - Get/set
 	
 	public ActionMap getActionMap()
@@ -17,9 +19,6 @@ class InputController extends Controller
 	public void setActionMap(ActionMap map)
 	{
 		mActionMap = map;
-		native_setActionMap(map);
+		native;
 	}
-	
-	public native InputController();
-	private native void native_setActionMap(ActionMap actionmap);
 }

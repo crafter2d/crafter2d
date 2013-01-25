@@ -10,12 +10,11 @@ final class ContentManager
 	
 	public Entity loadEntity(string filename)
 	{
-		Entity result = native_loadEntity(filename);
+		Entity result = native;
 		result.onCreated();
 		return result;
 	}
 	
 	
 	public native World load(string filename);
-	private native Entity native_loadEntity(string filename);
 }

@@ -21,6 +21,6 @@ class FontManager
 	
 	Font getFont(string name, int size)
 	{
-		return mProcess.getFont(name, size);
+		return null; // mProcess.getFont(name, size);
 	}
 }

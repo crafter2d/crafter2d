@@ -73,7 +73,7 @@ abstract class Process
 	public void setWorld(World world)
 	{
 		mWorld = world;
-		native_setWorld(world);
+		native;
 	}
 	
 	// - Overloadables
@@ -95,5 +95,4 @@ abstract class Process
 	//public native Font getFont(string name, int size);
 	//public native Texture getTexture(string name);
 	public native ContentManager getContentManager();
-	public native void native_setWorld(World world);
 }
