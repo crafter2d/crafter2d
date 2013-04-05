@@ -91,21 +91,12 @@ private:
    };
 
    typedef std::stack<LoopFlow> LoopFlowStack;
-   typedef std::map<String, const ASTLocalVariable*> VariableMap;
    typedef std::vector<Inst> InstructionList;
    typedef std::vector<CodePatch*> Patches;
 
    enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 5, ePostDecr = 6, eKeep = 8 };
 
  // operations
-   void addInstruction(CIL::Opcode opcode, int argument = -1);
-   void addLabel(int id);
-
-   int allocateLabel();
-   int allocateLiteral(const String& value);
-
-   int findLabel(int label) const;
-
    void handleAssignment(const ASTAccess& access, bool local);
    void handleVariable(const ASTVariable& variable, bool local);
    void handleStaticBlock(const ASTClass& ast);
@@ -113,7 +104,7 @@ private:
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
 
-   CIL::CompiledType* TypeToCILType(const ASTType& type);
+   CIL::Type* TypeToCILType(const ASTType& type);
 
    void addPatch(CodePatch* ppatch);
    void applyPatches();
@@ -127,6 +118,7 @@ private:
    Patches              mPatches;
 
    CompiledClass*       mpCClass;
+   CompiledFunction*    mpCFunction;
    FunctionBuilder      mBuilder;
 
    VirtualClass*        mpVClass;
