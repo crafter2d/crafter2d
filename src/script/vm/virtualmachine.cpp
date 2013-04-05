@@ -278,7 +278,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
 
 void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstruction& instruction)
 {
-   switch ( instruction.getInstruction() )
+   switch ( instruction.getOpcode() )
    {
       case VirtualInstruction::eReserve:
          {
@@ -1438,7 +1438,7 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
    {
       VirtualInstruction& instruction = mContext.mInstructions[index];
 
-      switch ( instruction.getInstruction() )
+      switch ( instruction.getOpcode() )
       {
          case VirtualInstruction::eCallStatic:
          case VirtualInstruction::eNew:
@@ -1448,13 +1448,11 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
          case VirtualInstruction::eLookup:
             lookback++;
 
-         //case VirtualInstruction::eNewNative:
-         //case VirtualInstruction::eCallNative:
          case VirtualInstruction::eLoadLiteral:
          case VirtualInstruction::eInstanceOf:
             {
                VirtualInstruction& previous = mContext.mInstructions[index - lookback];
-               if ( previous.getInstruction() != VirtualInstruction::ePushThis )
+               if ( previous.getOpcode() != VirtualInstruction::ePushThis )
                {
                   const Literal& literal = mCompiler.lookupLiteral(previous.getArgument());
 

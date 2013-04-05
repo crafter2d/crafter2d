@@ -321,6 +321,25 @@ void ASTClass::addInterface(ASTType* ptype)
    mInterfaces.append(ptype);
 }
 
+bool ASTClass::isMember(const String& name) const
+{
+   const ASTMember* pmember = findField(name);
+   if ( pmember == NULL )
+   {
+      pmember = findStatic(name);
+      if ( pmember == NULL )
+      {
+         Functions::const_iterator it = mFunctions.find(name);
+         if ( it == mFunctions.end() )
+         {
+            return false;
+         }
+      }
+   }
+
+   return true;
+}
+
 void ASTClass::addMember(ASTMember* pmember)
 {
    if ( pmember->getKind() == ASTMember::eField )

@@ -12,14 +12,19 @@
 
 #include "script/ast/asttype.h"
 #include "script/scope/scopestack.h"
+#include "script/vm/virtualinstruction.h"
+#include "script/compiler/cil.h"
+#include "script/compiler/functionbuilder.h"
 
 class ASTVariable;
+class CodePatch;
 class CompileContext;
 class Literal;
 class VirtualClass;
 class VirtualFunction;
-class VirtualProgram;
 class VirtualLookupTable;
+class CompiledClass;
+class CompiledFunction;
 
 class CodeGeneratorVisitor : public CompileStep
 {
@@ -88,18 +93,16 @@ private:
    typedef std::stack<LoopFlow> LoopFlowStack;
    typedef std::map<String, const ASTLocalVariable*> VariableMap;
    typedef std::vector<Inst> InstructionList;
+   typedef std::vector<CodePatch*> Patches;
 
    enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 5, ePostDecr = 6, eKeep = 8 };
 
  // operations
-   void addInstruction(int instruction, int argument = -1);
+   void addInstruction(CIL::Opcode opcode, int argument = -1);
    void addLabel(int id);
 
    int allocateLabel();
    int allocateLiteral(const String& value);
-
-   void convertLabels();
-   void removeLabels();
 
    int findLabel(int label) const;
 
@@ -110,16 +113,24 @@ private:
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
 
-   void fillInstructionList();
+   CIL::CompiledType* TypeToCILType(const ASTType& type);
 
+   void addPatch(CodePatch* ppatch);
+   void applyPatches();
+   
    CompileContext&      mContext;
    const ASTClass*      mpClass;
    const ASTFunction*   mpFunction;
    const ASTAccess*     mpAccess;
    const ASTExpression* mpExpression;
    ASTType              mCurrentType;
+   Patches              mPatches;
+
+   CompiledClass*       mpCClass;
+   FunctionBuilder      mBuilder;
 
    VirtualClass*        mpVClass;
+   VirtualFunction*     mpVirFunction;
    InstructionList      mInstructions;
    ScopeStack           mScopeStack;
    LoopFlowStack        mLoopFlowStack;

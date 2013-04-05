@@ -209,6 +209,11 @@ bool Compiler::load(const String& classname)
    filename.replace('.', '/');
    filename += String(".as");
 
+   if ( classname.toStdString() == "TestNative")
+   {
+      int aap = 5;
+   }
+
    try
    {
       AutoPtr<AntlrStream> stream(AntlrStream::fromFile(filename));

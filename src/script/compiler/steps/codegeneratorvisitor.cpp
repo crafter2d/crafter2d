@@ -16,6 +16,7 @@
 #include "script/vm/virtualfunctiontable.h"
 #include "script/vm/virtualfunctiontableentry.h"
 #include "script/vm/virtuallookuptable.h"
+#include "script/vm/virtualfunction.h"
 
 #include "script/common/literal.h"
 #include "script/common/variant.h"
@@ -25,7 +26,11 @@
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"
 #include "script/compiler/compilecontext.h"
+#include "script/compiler/compiledclass.h"
+#include "script/compiler/compiledfunction.h"
 #include "script/compiler/signature.h"
+
+#include "patch/callinterfacepatch.h"
 
 const int labelID = 0xF000;
 
@@ -74,93 +79,26 @@ bool CodeGeneratorVisitor::performStep(ASTNode& node)
 
 // - Code generation
 
-void CodeGeneratorVisitor::fillInstructionList()
+void CodeGeneratorVisitor::addInstruction(CIL::Opcode opcode, int argument)
 {
-   convertLabels();
+   CIL::CompiledInstruction instruction;
+   instruction.opcode = opcode;
 
-   VirtualInstructionTable& instructions = mpVClass->getInstructions();
-   for ( std::size_t index = 0; index < mInstructions.size(); index++ )
-   {
-      Inst& inst = mInstructions[index];
-      instructions.add((VirtualInstruction::Instruction)inst.instruction, inst.arg);
-   }
-}
-
-int CodeGeneratorVisitor::findLabel(int label) const
-{
-   std::size_t index = 0;
-   for ( ; index < mInstructions.size(); index++ )
-   {
-      const Inst& inst = mInstructions[index];
-      if ( inst.instruction == labelID && inst.arg == label )
-      {
-         break;
-      }
-   }
-
-   return index;
-}
-
-void CodeGeneratorVisitor::convertLabels()
-{
-   if ( !mInstructions.empty() )
-   {
-      int firstline = mInstructions[0].linenr;
-
-      for ( std::size_t index = 0; index < mInstructions.size(); index++ )
-      {
-         Inst& inst = mInstructions[index];
-
-         VirtualInstruction::Instruction instruction = (VirtualInstruction::Instruction)inst.instruction;
-         if ( instruction == VirtualInstruction::eJump
-           || instruction == VirtualInstruction::eJumpTrue
-           || instruction == VirtualInstruction::eJumpFalse
-           || instruction == VirtualInstruction::eEnterGuard
-           || instruction == VirtualInstruction::eEnterGuardF )
-         {
-            int labelindex = findLabel(inst.arg);
-            ASSERT(labelindex != mInstructions.size());
-
-            const Inst& labelinst = mInstructions[labelindex];
-            inst.arg = labelinst.linenr - firstline;
-         }
-      }
-
-      removeLabels();
-   }
-}
-
-void CodeGeneratorVisitor::removeLabels()
-{
-   for ( int index = mInstructions.size() - 1; index >= 0; index-- )
-   {
-      Inst& inst = mInstructions[index];
-      if ( inst.instruction == labelID )
-      {
-         mInstructions.erase(mInstructions.begin() + index);
-         index++;
-      }
-   }
-}
-
-void CodeGeneratorVisitor::addInstruction(int instruction, int argument)
-{
-   Inst inst;
-   inst.instruction = instruction;
-   inst.arg         = argument;
-   inst.linenr      = mLineNr++;
-
-   mInstructions.push_back(inst);
+   //mpVirFunction->addInstruction(instruction);
 }
 
 void CodeGeneratorVisitor::addLabel(int id)
 {
-   Inst inst;
-   inst.instruction = labelID;
-   inst.arg         = id;
-   inst.linenr      = mLineNr;
+   VirtualInstruction instruction(VirtualInstruction::eLabel, id);
+   mpVirFunction->addInstruction(instruction);
+}
 
-   mInstructions.push_back(inst);
+void CodeGeneratorVisitor::addPatch(CodePatch* ppatch)
+{
+   ppatch->setVirtualFunction(*mpVirFunction);
+   ppatch->setOffset(mLineNr);
+
+   mPatches.push_back(ppatch);
 }
 
 int CodeGeneratorVisitor::allocateLabel()
@@ -235,8 +173,6 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
          mpVClass->getVirtualFunctionTable().append(pentry);
       }
    }
-
-   fillInstructionList();
 
    ast.setState(ASTClass::eCompiled);
 }
@@ -318,6 +254,9 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
 {
    const ASTVariable& var = ast.getVariable();
 
+   CIL::Type* ptype = TypeToCILType(var.getType());
+   mpCFunction->addLocal(ptype);
+
    if ( var.hasInit() )
    {
       mCurrentType.clear();
@@ -327,9 +266,9 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
       {
          const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-         addInstruction(VirtualInstruction::ePush, arrayinit.getCount());
-         addInstruction(VirtualInstruction::eNewArray, 1);
-         addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+         mBuilder.addPush(arrayinit.getCount());
+         mBuilder.addNewArray(1);
+         mBuilder.addStoreLocal(var.getResourceIndex());
 
          int count = arrayinit.getCount();
          for ( int index = 0; index < count; index++ )
@@ -338,15 +277,16 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
 
             vinit.getExpression().accept(*this);
 
-            addInstruction(VirtualInstruction::eLoadLocal, var.getResourceIndex());
-            addInstruction(VirtualInstruction::ePush, index);
-            addInstruction(VirtualInstruction::eStoreArray, 1);
+            mBuilder.addLoadLocal(var.getResourceIndex());
+            mBuilder.addPush(index);
+            mBuilder.addStoreElem(1);
          }
       }
       else
       {
          varinit.getExpression().accept(*this);
-         addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+
+         mBuilder.addStoreLocal(var.getResourceIndex);
       }
    }
 
@@ -357,15 +297,16 @@ void CodeGeneratorVisitor::visit(const ASTIf& ast)
 {
    ast.getCondition().accept(*this);
 
-   int labelFalse = allocateLabel();
-   addInstruction(VirtualInstruction::eJumpFalse, labelFalse);
+   int labelFalse = mBuilder.allocateLabel();
+
+   mBuilder.addJumpFalse(labelFalse);
 
    ast.getStatement().accept(*this);
 
    if ( ast.hasElseStatement() )
    {
       int labelFinish = allocateLabel();
-      addInstruction(VirtualInstruction::eJump, labelFinish);
+      mBuilder.addJump(labelFinish);
 
       addLabel(labelFalse);
 
@@ -1419,6 +1360,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
                if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
                {
+                  addPatch(new CallInterfacePatch(before.getObjectClass(), function));
                   addInstruction(VirtualInstruction::eCallInterface, function.getResourceIndex());
                }
                else if ( mSuperCall )
@@ -1512,8 +1454,8 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
 
             // the literal of the class has already been stored on the stack (see ASTAccess::eStatic and unary)
 
-            int instruction = local ? VirtualInstruction::eStoreLocal : (isstatic ? VirtualInstruction::eStoreStatic : VirtualInstruction::eStore);
-            addInstruction(instruction, access.getVariable().getResourceIndex());
+            VirtualInstruction::Opcode opcode = local ? VirtualInstruction::eStoreLocal : (isstatic ? VirtualInstruction::eStoreStatic : VirtualInstruction::eStore);
+            addInstruction(opcode, access.getVariable().getResourceIndex());
          }
          break;
 
@@ -1539,8 +1481,8 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
 {
    bool isstatic = variable.getModifiers().isStatic();
 
-   int store = local ? VirtualInstruction::eStoreLocal : (isstatic ? VirtualInstruction::eStoreStatic : VirtualInstruction::eStore);
-   int load  = local ? VirtualInstruction::eLoadLocal  : (isstatic ? VirtualInstruction::eLoadStatic : VirtualInstruction::eLoad);
+   VirtualInstruction::Opcode store = local ? VirtualInstruction::eStoreLocal : (isstatic ? VirtualInstruction::eStoreStatic : VirtualInstruction::eStore);
+   VirtualInstruction::Opcode load  = local ? VirtualInstruction::eLoadLocal  : (isstatic ? VirtualInstruction::eLoadStatic : VirtualInstruction::eLoad);
 
    if ( mLoadFlags > 0 )
    {
@@ -1867,5 +1809,74 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
    else
    {
       addInstruction(VirtualInstruction::eLoadLiteral, index);
+   }
+}
+
+CIL::CompiledType* CodeGeneratorVisitor::TypeToCILType(const ASTType& type)
+{
+   CIL::CompiledType* ptype = new CIL::CompiledType;
+
+   switch ( type.getKind() )
+   {
+      case ASTType::eBoolean:
+         ptype->type = CIL::eBool;
+         break;
+      case ASTType::eInt:
+         ptype->type = CIL::eInt;
+         break;
+      case ASTType::eReal:
+         ptype->type = CIL::eReal;
+         break;
+      case ASTType::eChar:
+         ptype->type = CIL::eChar;
+         break;
+      case ASTType::eString:
+         ptype->type = CIL::eString;
+         break;
+      case ASTType::eArray:
+         ptype->type = CIL::eArray;
+         ptype->size = type.getArrayDimension();
+         ptype->elem_type = TypeToCILType(type.getArrayType());
+         break;
+      case ASTType::eObject:
+         ptype->type = CIL::eObject;
+         ptype->name = new String(type.getObjectClass().getFullName());
+         break;
+      case ASTType::eVoid:
+         ptype->type = CIL::eVoid;
+         break;
+      default:
+         UNREACHABLE("type is not yet converted.");
+   }
+
+   return ptype;
+}
+
+// - Patching interface
+
+
+
+void CodeGeneratorVisitor::applyPatches()
+{
+   for ( unsigned int index = 0; index < mPatches.size(); ++index )
+   {
+      CodePatch* ppatch = mPatches[index];
+      Inst& inst = mInstructions[ppatch->getOffset()];
+      
+      switch ( ppatch->getKind() )
+      {
+         case CodePatch::eCallInterface:
+            {
+               CallInterfacePatch* pcall = static_cast<CallInterfacePatch*>(ppatch);
+               ASTClass& klass = pcall->getClass();
+
+               printf("Patching interface call\n");
+
+
+               //pcall->getFunction().get
+               inst.arg = 1;
+            }
+            break;
+      }
    }
 }

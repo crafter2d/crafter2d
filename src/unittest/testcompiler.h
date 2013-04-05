@@ -27,7 +27,7 @@ class TestCompiler : public CxxTest::TestSuite
    };
 
 public:
-
+   
    void testCompilation()
    {
       FileSystem& fs = FileSystem::getInstance();

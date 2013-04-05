@@ -426,8 +426,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
    ASTAccess* paccess = dynamic_cast<ASTAccess*>(&unary.getParts()[0]);
    if ( paccess != NULL )
    {
-      ASTField* pfield = mpClass->findField(paccess->getName());
-      if ( pfield != NULL )
+      if ( mpClass->isMember(paccess->getName()) )
       {
          // it's a member field, so nothing to do here
          return;

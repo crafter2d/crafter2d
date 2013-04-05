@@ -22,9 +22,9 @@ VirtualInstruction& VirtualInstructionTable::operator[](int index)
    return mInstructions[index];
 }
 
-void VirtualInstructionTable::add(VirtualInstruction::Instruction instruction, int argument)
+void VirtualInstructionTable::add(VirtualInstruction::Opcode opcode, int argument)
 {
-   VirtualInstruction inst(instruction, argument);
+   VirtualInstruction inst(opcode, argument);
    add(inst);
 }
 
@@ -41,14 +41,14 @@ void VirtualInstructionTable::add(const VirtualInstructionTable& instructions)
    {
       const VirtualInstruction& instruction = instructions[index];
 
-      switch ( instruction.getInstruction() )
+      switch ( instruction.getOpcode() )
       {
          case VirtualInstruction::eJump:
          case VirtualInstruction::eJumpTrue:
          case VirtualInstruction::eJumpFalse:
          case VirtualInstruction::eEnterGuard:
          case VirtualInstruction::eEnterGuardF:
-            add(instruction.getInstruction(), instruction.getArgument() + offset);
+            add(instruction.getOpcode(), instruction.getArgument() + offset);
             break;
 
          default:
@@ -56,6 +56,16 @@ void VirtualInstructionTable::add(const VirtualInstructionTable& instructions)
             break;
       }
    }
+}
+
+void VirtualInstructionTable::remove(int index)
+{
+   mInstructions.erase(mInstructions.begin() + index);
+}
+
+bool VirtualInstructionTable::isEmpty() const
+{
+   return size() == 0;
 }
 
 int VirtualInstructionTable::size() const
@@ -73,12 +83,12 @@ std::string VirtualInstructionTable::toString(const LiteralTable& table) const
    {
       const VirtualInstruction& inst = mInstructions[index];
 
-      std::string text = VirtualInstruction::instructionToString(inst.getInstruction());
+      std::string text = VirtualInstruction::opcodeToString(inst.getOpcode());
 
       cout.width(3);
       cout << line << ": " << text << " ";
 
-      switch ( inst.getInstruction() )
+      switch ( inst.getOpcode() )
       {
          case VirtualInstruction::eReserve:
          case VirtualInstruction::eCall:

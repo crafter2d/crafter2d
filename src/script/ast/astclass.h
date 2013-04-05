@@ -82,6 +82,7 @@ public:
    bool isBase(const ASTClass& base) const;
    bool isImplementing(const ASTClass& intrface) const;
    bool isLocal(const ASTFunction& function) const;
+   bool isMember(const String& name) const;
    bool isNative() const;
 
    bool isGeneric() const;
