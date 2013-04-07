@@ -13,7 +13,7 @@
 #include "script/ast/asttype.h"
 #include "script/scope/scopestack.h"
 #include "script/vm/virtualinstruction.h"
-#include "script/compiler/cil.h"
+#include "script/cil/cil.h"
 #include "script/compiler/functionbuilder.h"
 
 class ASTVariable;
@@ -135,7 +135,6 @@ private:
    bool                 mSuperCall;
    bool                 mRightHandSide;
    bool                 mStore;
-   bool                 mNeedPop;
 };
 
 #endif // CODE_GENERATOR_VISITOR_H_

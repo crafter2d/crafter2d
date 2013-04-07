@@ -55,8 +55,7 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mState(0),
    mSuperCall(false),
    mRightHandSide(false),
-   mStore(false),
-   mNeedPop(true)
+   mStore(false)
 {
 }
 
@@ -154,28 +153,10 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
    else
    {
       ScopedScope scope(mScopeStack);
-
-      const ASTFunction* pinterfacefnc = mpClass->findInterfaceFunction(ast);
-
-      VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-      pentry->mName = ast.getName();
-      pentry->mInstruction = mInstructions.empty() ? 0 : mInstructions.back().linenr + 1;
-      pentry->mOriginalInstruction = pentry->mInstruction;
-      pentry->mArguments = ast.getArgumentCount();
-      pentry->mInterface = pinterfacefnc != NULL ? pinterfacefnc->getResourceIndex() : -1;
-
-      mpVClass->getVirtualFunctionTable().append(pentry);
-
+      
       mpFunction = &ast;
 
-      /* JB: no longer: done in the actual compiler
-      // reserve space on the stack for arguments & local variables
-      int varcount = ast.getLocalVariableCount();
-      if ( varcount >= 1 )
-      {
-         addInstruction(VirtualInstruction::eReserve, varcount);
-      }
-      */
+      mBuilder.reset();
 
       mCurrentType.clear();
 
@@ -208,15 +189,8 @@ void CodeGeneratorVisitor::visit(const ASTBlock& ast)
 void CodeGeneratorVisitor::visit(const ASTExpressionStatement& ast)
 {
    mExpr = 0;
-   mNeedPop = false;
-
+   
    ast.getExpression().accept(*this);
-
-   if ( mNeedPop )
-   {
-      mBuilder.addPop(1);
-      mNeedPop = false;
-   }
 }
 
 void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
@@ -224,8 +198,8 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
    const ASTVariable& var = ast.getVariable();
 
    CIL::Type* ptype = TypeToCILType(var.getType());
-   mpCFunction->addLocal(ptype);
-
+   mBuilder.addLocal(ptype);
+   
    if ( var.hasInit() )
    {
       mCurrentType.clear();
@@ -235,9 +209,9 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
       {
          const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-         mBuilder.addPush(arrayinit.getCount());
-         mBuilder.addNewArray(1);
-         mBuilder.addStoreLocal(var.getResourceIndex());
+         mBuilder.emit(CIL_ldc, arrayinit.getCount());
+         mBuilder.emit(CIL_newarray, 1);
+         mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
          int count = arrayinit.getCount();
          for ( int index = 0; index < count; index++ )
@@ -247,7 +221,7 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
             vinit.getExpression().accept(*this);
 
             mBuilder.emit(CIL_ldloc, var.getResourceIndex());
-            mBuilder.emit(CIL_push, index);
+            mBuilder.emit(CIL_ldc, index);
             mBuilder.emit(CIL_stelem, 1);
          }
       }
@@ -268,14 +242,14 @@ void CodeGeneratorVisitor::visit(const ASTIf& ast)
 
    int labelFalse = mBuilder.allocateLabel();
 
-   mBuilder.addJumpFalse(labelFalse);
+   mBuilder.emit(CIL_jump_false, labelFalse);
 
    ast.getStatement().accept(*this);
 
    if ( ast.hasElseStatement() )
    {
       int labelFinish = mBuilder.allocateLabel();
-      mBuilder.addJump(labelFinish);
+      mBuilder.emit(CIL_jump, labelFinish);
 
       mBuilder.addLabel(labelFalse);
 
@@ -311,7 +285,7 @@ void CodeGeneratorVisitor::visit(const ASTFor& ast)
    {
       ast.getCondition().accept(*this);
 
-      mBuilder.addJumpFalse(flow.end);
+      mBuilder.emit(CIL_jump_false, flow.end);
    }
 
    ast.getBody().accept(*this);
@@ -322,7 +296,7 @@ void CodeGeneratorVisitor::visit(const ASTFor& ast)
    mExpr = 0;
    visitChildren(ast);
 
-   mBuilder.addJump(labelStart);
+   mBuilder.emit(CIL_jump, labelStart);
    mBuilder.addLabel(flow.end);
 
    mLoopFlowStack.pop();
@@ -346,72 +320,76 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    mCurrentType.clear();
    varinit.getExpression().accept(*this);
 
+   // container object is currently at top of evaluation stack
+   // - ast contains index
+   // - var contains object from array
+
    if ( mCurrentType.isArray() )
    {
       // index = 0
       mBuilder.emit(CIL_ldc, 0);
-      mBuilder.emit(CIL_stloc, var.getResourceIndex());
+      mBuilder.emit(CIL_stloc, ast.getResourceIndex());
 
       const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
       const ASTField* pfield = arrayclass.findField("length", ASTClass::eLocal);
 
-      // check for the size ( index < array.length )
       mBuilder.addLabel(flow.start);
-      mBuilder.addDup();
-      mBuilder.addLoad(pfield->getVariable().getResourceIndex());
-      mBuilder.addLoadLocal(ast.getResourceIndex());
-      mBuilder.addCmpEq();
-      mBuilder.addJumpTrue(flow.end);
+      mBuilder.emit(CIL_dup);
+
+      // check for the size ( index < array.length )
+      mBuilder.emit(CIL_load, pfield->getVariable().getResourceIndex());
+      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_cmpeq);
+      mBuilder.emit(CIL_jump_true, flow.end);
       
       // get item & execute body ( var = array[index]; )
-      mBuilder.addDup();
-      mBuilder.addLoadLocal(ast.getResourceIndex());
-      mBuilder.addLoadElem(1);
-      mBuilder.addStoreLocal(var.getResourceIndex());
+      mBuilder.emit(CIL_dup);
+      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_ldelem, 1);
+      mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
       ast.getBody().accept(*this);
 
       // increment iteration ( index++; )
-      mBuilder.addLoadLocal(ast.getResourceIndex());
-      mBuilder.addConst(1);
-      mBuilder.addAdd();
-      mBuilder.addStoreLocal(ast.getResourceIndex());
-      mBuilder.addJump(flow.start);
+      mBuilder.emit(CIL_ldloc, var.getResourceIndex());
+      mBuilder.emit(CIL_ldc, 1);
+      mBuilder.emit(CIL_add);
+      mBuilder.emit(CIL_stloc, var.getResourceIndex());
+      mBuilder.emit(CIL_jump, flow.start);
 
       mExpr = 0;
 
       // and of loop (pop array from stack)
       mBuilder.addLabel(flow.end);
-      mBuilder.addPop(1);
    }
    else
    {
       String name = mCurrentType.getObjectClass().getFullName() + ".iterator";
 
-      mBuilder.addPush(1);
-      mBuilder.addCall(name);
-      mBuilder.addStoreLocal(ast.getResourceIndex());
+      // ast = iterator
+      // var = object in the container
+
+      mBuilder.emit(CIL_call, name);
+      mBuilder.emit(CIL_stloc, ast.getResourceIndex());
 
       mBuilder.addLabel(flow.start);
 
       String hasnextname = "engine.collections.Iterator.hasNext";
       String nextname = "engine.collections.Iterator.next";
 
-      // is there still an item
-      mBuilder.addLoadLocal(ast.getResourceIndex());
-      mBuilder.addPush(1);
-      mBuilder.addCall(hasnextname);
-      mBuilder.addJumpFalse(flow.end);
+      // is there still an item: if not it.hasNext goto end
+      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_call, hasnextname);
+      mBuilder.emit(CIL_jump_false, flow.end);
 
-      // store the next item from the list
-      mBuilder.addLoadLocal(ast.getResourceIndex());
-      mBuilder.addPush(1);
-      mBuilder.addCall(nextname);
-      mBuilder.addStoreLocal(var.getResourceIndex());
+      // store the next item from the list: var = it.next()
+      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_call, nextname);
+      mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
       ast.getBody().accept(*this);
 
-      mBuilder.addJump(flow.start);
+      mBuilder.emit(CIL_jump, flow.start);
       mBuilder.addLabel(flow.end);
    }
 }
@@ -427,11 +405,11 @@ void CodeGeneratorVisitor::visit(const ASTWhile& ast)
 
    ast.getCondition().accept(*this);
 
-   mBuilder.addJumpFalse(flow.end);
+   mBuilder.emit(CIL_jump_false, flow.end);
 
    ast.getBody().accept(*this);
 
-   mBuilder.addJump(flow.start);
+   mBuilder.emit(CIL_jump, flow.start);
    mBuilder.addLabel(flow.end);
 
    mLoopFlowStack.pop();
@@ -449,7 +427,7 @@ void CodeGeneratorVisitor::visit(const ASTDo& ast)
    ast.getBody().accept(*this);
    ast.getCondition().accept(*this);
 
-   mBuilder.addJumpTrue(flow.start);
+   mBuilder.emit(CIL_jump_true, flow.start);
    mBuilder.addLabel(flow.end);
 
    mLoopFlowStack.pop();
@@ -467,8 +445,8 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
 
       // lookup the value in the table and jump there
       // if not found -> jump to default or skip in case no default is present
-      mBuilder.addPush(tableidx);
-      mBuilder.addLookup(mpClass->getFullName());
+      mBuilder.emit(CIL_ldstr, mpClass->getFullName());
+      mBuilder.emit(CIL_lookup, tableidx);
 
       visitChildren(ast);
 
@@ -512,7 +490,7 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
       if ( !ast.hasDefault() )
       {
          // if no default and none matched -> jump out
-         mBuilder.addJump(flow.end);
+         mBuilder.emit(CIL_jump, flow.end);
       }
 
       // generate code for all bodies, with the correct labels before them
@@ -554,7 +532,7 @@ void CodeGeneratorVisitor::visit(const ASTReturn& ast)
       ast.getExpression().accept(*this);
    }
 
-   mBuilder.addRet(ast.hasExpression() ? 1 : 0);
+   mBuilder.emit(CIL_ret, ast.hasExpression() ? 1 : 0);
 }
 
 void CodeGeneratorVisitor::visit(const ASTTry& ast)
@@ -563,19 +541,18 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
    int labelCatch = mBuilder.allocateLabel();
 
    if ( ast.hasFinallyBlock() )
-      mBuilder.addEnterGuardFinal(labelCatch);
+      mBuilder.emit(CIL_enter_guard_f, labelCatch);
    else
-      mBuilder.addEnterGuard(labelCatch);
+      mBuilder.emit(CIL_enter_guard, labelCatch);
 
    ast.getBody().accept(*this);
 
    // if we get here, no exception happend
-   mBuilder.addJump(labelEnd);
-
+   mBuilder.emit(CIL_jump, labelEnd);
 
    // from here the code is executed when an exception did occure
    mBuilder.addLabel(labelCatch);
-   mBuilder.addStoreLocal(ast.getResourceIndex());
+   mBuilder.emit(CIL_stloc, ast.getResourceIndex());
 
    const ASTNodes& catches = ast.getCatches();
    for ( int index = 0; index < catches.size(); index++ )
@@ -586,9 +563,10 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
 
       const ASTVariable& var = c.getVariable().getVariable();
 
-      mBuilder.addLoadLocal(ast.getResourceIndex());
-      mBuilder.addInstanceOf(var.getType().getObjectClass().getFullName());
-      mBuilder.addJumpFalse(labelNext);
+      // jump to next if exception is not instanceof catch type
+      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_instanceof, var.getType().getObjectClass().getFullName());
+      mBuilder.emit(CIL_jump_false, labelNext);
 
       // make sure the exception variable can be resolved (is a variable after all)
       ScopedScope scope(mScopeStack);
@@ -596,13 +574,13 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
 
       c.getBody().accept(*this);
 
-      mBuilder.addJump(labelEnd);
+      mBuilder.emit(CIL_jump, labelEnd);
       mBuilder.addLabel(labelNext);
    }
 
    // the exception was not handled, so re-throw it
-   mBuilder.addLoadLocal(ast.getResourceIndex());
-   mBuilder.addThrow();
+   mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+   mBuilder.emit(CIL_throw);
 
    // no exception occured or it was handled successfully
    mBuilder.addLabel(labelEnd);
@@ -611,14 +589,14 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
       ast.getFinallyBlock().accept(*this);
    }
 
-   mBuilder.addLeaveGuard();
+   mBuilder.emit(CIL_leave_guard);
 }
 
 void CodeGeneratorVisitor::visit(const ASTThrow& ast)
 {
    ast.getExpression().accept(*this);
 
-   mBuilder.addThrow();
+   mBuilder.emit(CIL_throw);
 }
 
 void CodeGeneratorVisitor::visit(const ASTAssert& ast)
@@ -630,9 +608,9 @@ void CodeGeneratorVisitor::visit(const ASTAssert& ast)
 
    // if condition is false we throw an exception of type AssertionError,
    // else we jump to the end
-   mBuilder.addJumpTrue(labelend);
-   mBuilder.addNew(assertclass);
-   mBuilder.addThrow();
+   mBuilder.emit(CIL_jump_true, labelend);
+   mBuilder.emit(CIL_new, assertclass);
+   mBuilder.emit(CIL_throw);
 
    mBuilder.addLabel(labelend);
 }
@@ -644,11 +622,11 @@ void CodeGeneratorVisitor::visit(const ASTLoopControl& ast)
    // must become a stack of labels to support nested loops
    if ( ast.getKind() == ASTLoopControl::eBreak )
    {
-      mBuilder.addJump(info.end);
+      mBuilder.emit(CIL_jump, info.end);
    }
    else
    {
-      mBuilder.addJump(info.start);
+      mBuilder.emit(CIL_jump, info.start);
    }
 }
 
@@ -673,13 +651,12 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
       ast.getLeft().accept(*this);
 
       mStore = false;
-      mNeedPop = false;
 
       ASSERT(mpAccess->getAccess() != ASTAccess::eInvalidAccess);
       bool local = mpAccess->getAccess() == ASTAccess::eLocal;
 
       if ( mpAccess->getAccess() == ASTAccess::eField )
-         mBuilder.addLoadArg(0);
+         mBuilder.emit(CIL_ldarg, 0); // this
 
       switch ( ast.getKind() )
       {
@@ -694,8 +671,7 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
    else
    {
       mpExpression = &ast;
-      mNeedPop = true;
-
+      
       ast.getLeft().accept(*this);
    }
 
@@ -721,7 +697,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addAdd();
+            mBuilder.emit(CIL_add);
          }
          break;
 
@@ -729,7 +705,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addSub();
+            mBuilder.emit(CIL_sub);
          }
          break;
 
@@ -737,7 +713,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addMul();
+            mBuilder.emit(CIL_mul);
          }
          break;
 
@@ -745,7 +721,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addDiv();
+            mBuilder.emit(CIL_div);
          }
          break;
 
@@ -753,7 +729,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addRem();
+            mBuilder.emit(CIL_rem);
          }
          break;
 
@@ -763,7 +739,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addOr();
+            mBuilder.emit(CIL_or);
          }
          break;
 
@@ -771,7 +747,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addXor();
+            mBuilder.emit(CIL_xor);
          }
          break;
 
@@ -779,7 +755,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addAnd();
+            mBuilder.emit(CIL_and);
          }
          break;
 
@@ -787,7 +763,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addShiftLeft();
+            mBuilder.emit(CIL_shl);
          }
          break;
 
@@ -795,7 +771,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addShiftRight();
+            mBuilder.emit(CIL_shr);
          }
          break;
 
@@ -812,10 +788,10 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
             switch ( mCurrentType.getKind() )
             {
                case ASTType::eNull:
-                  mBuilder.addIsNull();
+                  mBuilder.emit(CIL_isnull);
                   break;
                default:
-                  mBuilder.addCmpEq();
+                  mBuilder.emit(CIL_cmpeq);
             }
          }
          break;
@@ -831,11 +807,11 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
             switch ( mCurrentType.getKind() )
             {
                case ASTType::eNull:
-                  mBuilder.addIsNull();
-                  mBuilder.addNot();
+                  mBuilder.emit(CIL_isnull);
+                  mBuilder.emit(CIL_neg);
                   break;
                default:
-                  mBuilder.addCmpNe();
+                  mBuilder.emit(CIL_cmpne);
                   break;
             }
          }
@@ -845,7 +821,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addCmpLe();
+            mBuilder.emit(CIL_cmple);
          }
          break;
 
@@ -853,7 +829,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addCmpLT();
+            mBuilder.emit(CIL_cmplt);
          }
          break;
 
@@ -861,7 +837,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addCmpGt();
+            mBuilder.emit(CIL_cmpgt);
          }
          break;
 
@@ -869,7 +845,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            mBuilder.addCmpGe();
+            mBuilder.emit(CIL_cmpge);
          }
          break;
 
@@ -877,30 +853,30 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
       case ASTConcatenate::eOr:
          {
-            mBuilder.addJumpTrue(labelResult);                    // true
+            mBuilder.emit(CIL_jump_true, labelResult);                  // true
 
             concatenate.getRight().accept(*this);
 
-            mBuilder.addJumpTrue(labelResult);                    // true
-            mBuilder.addPush(0);                                  // push false
-            mBuilder.addJump(labelFinish);                        // jump to finish
+            mBuilder.emit(CIL_jump_true, labelResult);                  // true
+            mBuilder.emit(CIL_ldc, 0);                                  // push false
+            mBuilder.emit(CIL_jump, labelFinish);                       // jump to finish
             mBuilder.addLabel(labelResult);
-            mBuilder.addPush(1);                                  // push true
+            mBuilder.emit(CIL_ldc, 1);                                  // push true
             mBuilder.addLabel(labelFinish);
          }
          break;
 
       case ASTConcatenate::eAnd:
          {
-            mBuilder.addJumpFalse(labelResult);                   // false
+            mBuilder.emit(CIL_jump_false, labelResult);                   // false
 
             concatenate.getRight().accept(*this);
 
-            mBuilder.addJumpFalse(labelResult);                   // false
-            mBuilder.addPush(1);                                  // push true
-            mBuilder.addJump(labelFinish);                        // jump to finish
+            mBuilder.emit(CIL_jump_false, labelResult);                   // false
+            mBuilder.emit(CIL_ldc, 1);                                  // push true
+            mBuilder.emit(CIL_jump, labelFinish);                        // jump to finish
             mBuilder.addLabel(labelResult);
-            mBuilder.addPush(0);                                  // push false
+            mBuilder.emit(CIL_ldc, 0);                                  // push false
             mBuilder.addLabel(labelFinish);
          }
          break;
@@ -927,7 +903,7 @@ void CodeGeneratorVisitor::visit(const ASTUnary& ast)
       if ( index == 0 )
       {
          // we need to push this as otherwise there is nothing
-         mBuilder.addLoadArg(0);
+         mBuilder.emit(CIL_ldarg, 0);
       }
    }
    else
@@ -954,10 +930,10 @@ void CodeGeneratorVisitor::visit(const ASTUnary& ast)
       switch ( ast.getPre() )
       {
          case ASTUnary::eNegate:
-            mBuilder.addNeg();
+            mBuilder.emit(CIL_neg);
             break;
          case ASTUnary::eNot:
-            mBuilder.addNot();
+            mBuilder.emit(CIL_not);
             break;
       }
    }
@@ -968,7 +944,7 @@ void CodeGeneratorVisitor::visit(const ASTInstanceOf& ast)
    ast.getObject().accept(*this);
 
    String classname = ast.getInstanceType().getObjectClass().getFullName();
-   mBuilder.addInstanceOf(classname);
+   mBuilder.emit(CIL_instanceof, classname);
 }
 
 void CodeGeneratorVisitor::visit(const ASTNew& ast)
@@ -982,7 +958,7 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
 
             ast.getArguments().accept(*this);
 
-            mBuilder.addNew(classname); // constructor index as argument
+            mBuilder.emit(CIL_new, classname); // constructor index as argument
          }
          break;
 
@@ -991,7 +967,7 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
             // reverse put sizes on stack
             reverseVisitChildren(ast);
 
-            mBuilder.addNewArray(ast.getArrayDimension());
+            mBuilder.emit(CIL_newarray, ast.getArrayDimension());
          }
          break;
    }
@@ -1003,7 +979,7 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
    {
       ASSERT(ast.hasConstructor());
 
-      mBuilder.addLoadArg(0);
+      mBuilder.emit(CIL_ldarg, 0);
 
       // call to constructor of superclass
       visitChildren(ast);
@@ -1015,13 +991,11 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
       }
 
       String name = pclass->getFullName() + "." + pclass->getName();
-      mBuilder.addCall(name);
-      
-      mNeedPop = false;
+      mBuilder.emit(CIL_call, name);
    }
    else if ( ast.isThis() )
    {
-      mBuilder.addPushThis();
+      mBuilder.emit(CIL_ldarg, 0);
    }
    else
    {
@@ -1031,13 +1005,13 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
 
 void CodeGeneratorVisitor::visit(const ASTNative& ast)
 {
-   mBuilder.addPushThis();
+   mBuilder.emit(CIL_ldarg, 0);
 
    if ( ast.hasArguments() )
    {
       visitChildren(ast); // place arguments on the stack
 
-      mBuilder.addPush(ast.getArguments().size() + 1);
+      mBuilder.emit(CIL_ldc, ast.getArguments().size() + 1);
    }
    else
    {
@@ -1045,13 +1019,13 @@ void CodeGeneratorVisitor::visit(const ASTNative& ast)
       int arguments = mpFunction->getArgumentCount();
       for ( int index = 1; index <= arguments; index++ ) // skip the 'this' argument
       {
-         mBuilder.addLoadArg(index);
+         mBuilder.emit(CIL_ldarg, index);
       }
 
-      mBuilder.addPush(arguments + 1);
+      mBuilder.emit(CIL_ldc, arguments + 1);
    }
 
-   mBuilder.addCallNative(ast.getIndex());
+   mBuilder.emit(CIL_call_native, ast.getIndex());
 }
 
 void CodeGeneratorVisitor::visit(const ASTCast& ast)
@@ -1074,13 +1048,13 @@ void CodeGeneratorVisitor::visit(const ASTCast& ast)
       {
          case ASTType::eInt:
             // should not yet happen
-            mBuilder.addConvInt();
+            mBuilder.emit(CIL_conv_int);
             break;
          case ASTType::eReal:
-            mBuilder.addConvReal();
+            mBuilder.emit(CIL_conv_real);
             break;
          case ASTType::eString:
-            mBuilder.addConvString();
+            mBuilder.emit(CIL_conv_string);
             break;
       }
    }
@@ -1186,7 +1160,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                   return;
                }
 
-               mBuilder.emit(CIL_push, function.getArgumentCount());
+               mBuilder.emit(CIL_ldc, function.getArgumentCount());
                mBuilder.emit(CIL_call_native, preg->getIndex());
             }
             else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
@@ -1196,8 +1170,6 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             }
             else 
             {
-               mBuilder.emit(CIL_push, function.getArgumentCount());
-
                if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
                {
                   addPatch(new CallInterfacePatch(before.getObjectClass(), function));
@@ -1218,12 +1190,6 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                   String name = function.getClass().getFullName() + "." + function.getName();
                   mBuilder.emit(CIL_call, name);
                }
-            }
-
-            if ( function.getType().isVoid() )
-            {
-               // nothing is pushed on the stack with a void function
-               mNeedPop = false;
             }
 
             mSuperCall = false;
@@ -1275,7 +1241,7 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
    {
       if ( !IS_SET(mState, eStateNoNull) )
       {
-         mBuilder.addPushNull();
+         mBuilder.emit(CIL_ldnull);
       }
    }
    else
@@ -1290,8 +1256,6 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 
 void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
 {
-   ScopedValue<bool> needspop(&mNeedPop, false, mNeedPop);
-
    switch ( access.getKind() )
    {
       case ASTAccess::eField:
@@ -1302,15 +1266,15 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
 
             if ( local )
             {
-               mBuilder.addStoreLocal(access.getVariable().getResourceIndex());
+               mBuilder.emit(CIL_stloc, access.getVariable().getResourceIndex());
             }
             else if ( isstatic )
             {
-               mBuilder.addStoreStatic(access.getVariable().getResourceIndex());
+               mBuilder.emit(CIL_ststatic, access.getVariable().getResourceIndex());
             }
             else
             {
-               mBuilder.addStore(access.getVariable().getResourceIndex());
+               mBuilder.emit(CIL_store, access.getVariable().getResourceIndex());
             }
          }
          break;
@@ -1320,7 +1284,7 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
             // add indices on stack
             reverseVisitChildren(access);
 
-            mBuilder.addStoreElem(access.getArguments().size());
+            mBuilder.emit(CIL_stelem, access.getArguments().size());
          }
          break;
 
@@ -1415,7 +1379,7 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
             const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
             // var = new array[count]
-            mBuilder.emit(CIL_push, arrayinit.getCount());
+            mBuilder.emit(CIL_ldc, arrayinit.getCount());
             mBuilder.emit(CIL_newarray, 1);
             mBuilder.emit(CIL_ldstr, ast.getFullName());
             mBuilder.emit(CIL_ststatic, variable.getResourceIndex());
@@ -1430,7 +1394,7 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
                // var[index] = expr
                mBuilder.emit(CIL_ldstr, ast.getFullName());
                mBuilder.emit(CIL_ldstatic, variable.getResourceIndex());
-               mBuilder.emit(CIL_push, index);
+               mBuilder.emit(CIL_ldc, index);
                mBuilder.emit(CIL_stelem, 1);
             }
          }
@@ -1453,11 +1417,11 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
          }
 
          // class.var = init
-         mBuilder.emit(CIL_push, ast.getFullName());
+         mBuilder.emit(CIL_ldstr, ast.getFullName());
          mBuilder.emit(CIL_ststatic, variable.getResourceIndex());
       }
    }
-   mBuilder.addRet(0);
+   mBuilder.emit(CIL_ret, 0);
 }
 
 void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
@@ -1498,7 +1462,7 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          {
             const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-            mBuilder.emit(CIL_push, arrayinit.getCount());
+            mBuilder.emit(CIL_ldc, arrayinit.getCount());
             mBuilder.emit(CIL_newarray, 1);
             mBuilder.emit(CIL_ldarg, 0);
             mBuilder.emit(CIL_store, variable.getResourceIndex());
@@ -1512,7 +1476,7 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
 
                mBuilder.emit(CIL_ldarg, 0);
                mBuilder.emit(CIL_load, variable.getResourceIndex());
-               mBuilder.emit(CIL_push, index);
+               mBuilder.emit(CIL_ldc, index);
                mBuilder.emit(CIL_stelem, 1);
             }
          }
@@ -1538,7 +1502,7 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          mBuilder.emit(CIL_store, variable.getResourceIndex());
       }
    }
-   mBuilder.addRet(0);
+   mBuilder.emit(CIL_ret, 0);
 }
 
 void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
