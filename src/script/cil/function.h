@@ -16,20 +16,21 @@ namespace CIL
 
     // operations
       void setName(const String& name);
-      void setSignature(const Signature& signature);
       void setInstructions(const Instructions& instructions);
-      void setLocals(const Types& locals);
-      void setVisibility(Visibility visibility);
+      void setModifiers(int modifiers);
+      void setReturnType(Type* ptype);
+
+      void addArgument(Type* parg);
+      void addLocal(Type* ploc);
 
    private:
 
       String         mName;
-      Signature      mSignature;
       Instructions   mInstructions;
       Types          mArgs;
       Types          mLocals;
-      Visibility     mVisibility;
-      int            mFlags;
+      Type*          mpReturnType;
+      int            mModifiers;
    };
 }
 

@@ -14,6 +14,7 @@
 #include "astnode.h"
 #include "astmodifier.h"
 #include "asttypelist.h"
+#include "astfunctionmap.h"
 
 class ASTMember;
 class ASTFunction;
@@ -27,8 +28,6 @@ class CompileContext;
 
 class ASTClass : public ASTNode
 {
-   typedef std::multimap<String, ASTFunction*> Functions;
-
 public:
    enum SearchScope { eLocal, eAll };
    enum Kind { eClass, eInterface };
@@ -54,10 +53,10 @@ public:
    void            setBaseClass(ASTClass& baseclass);
 
    const String& getName() const;
-   void               setName(const String& name);
+   void          setName(const String& name);
 
    const String& getFullName() const;
-   void               setFullName(const String& name);
+   void          setFullName(const String& name);
 
    const ASTModifiers& getModifiers() const;
          ASTModifiers& getModifiers();
@@ -120,8 +119,6 @@ public:
    const ASTFunction* findExactMatch(const String& name, const Signature& signature) const;
          ASTFunction* findExactMatch(const String& name, const Signature& signature);
 
-   const ASTFunction* findInterfaceFunction(const ASTFunction& function) const;
-
  // visitor
    ACCEPT;
 
@@ -139,13 +136,13 @@ private:
    ASTModifiers      mModifiers;
    ASTType*          mpBaseType;
    ASTTypeList       mInterfaces;
-   String       mName;
-   String       mFullName;
+   String            mName;
+   String            mFullName;
    ASTTypeVariables* mpTypeVariables;
    FunctionTable     mTable;
    Fields            mStatics;
    Fields            mFields;
-   Functions         mFunctions;
+   ASTFunctionMap    mFunctions;
    mutable State     mState;
 };
 

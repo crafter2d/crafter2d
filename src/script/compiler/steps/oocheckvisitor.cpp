@@ -98,6 +98,18 @@ void OOCheckVisitor::visit(ASTFunction& ast)
          mContext.getLog().error("Abstract class " + mpClass->getFullName() + " can not have native constructors.");
       }
    }
+   else
+   {
+      if ( mpClass->hasBaseClass() )
+      {
+         ASTClass& baseclass = mpClass->getBaseClass();
+         ASTFunction* pbasefunc = baseclass.findExactMatch(ast.getName(), ast.getSignature());
+         if ( pbasefunc != NULL )
+         {
+            ast.setBaseFunction(*pbasefunc);
+         }
+      }
+   }
 
    if ( ast.hasBody() )
    {
@@ -418,6 +430,8 @@ void OOCheckVisitor::validateClass(const ASTClass& aclass)
 
    if ( !aclass.getModifiers().isAbstract() && aclass.hasBaseClass() )
    {
+      
+      /*
       const FunctionTable& functions = aclass.getFunctionTable();
 
       const ASTClass& baseclass = aclass.getBaseClass();
@@ -433,6 +447,7 @@ void OOCheckVisitor::validateClass(const ASTClass& aclass)
             mContext.getLog().error(String("Function ") + aclass.getName() + "." + function.getName() + " must be implemented.");
          }
       }
+      */
    }
 }
 

@@ -84,6 +84,7 @@ private:
    void generateConstructorBody(ASTFunction& ast);
    void generateSuperCall(ASTFunction& function);
    void generateNativeCall(ASTFunction& function);
+   void generateReturn(ASTFunction& function);
 
    void resolveType(ASTType& type);
 

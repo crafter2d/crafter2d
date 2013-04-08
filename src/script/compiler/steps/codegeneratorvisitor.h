@@ -16,15 +16,20 @@
 #include "script/cil/cil.h"
 #include "script/compiler/functionbuilder.h"
 
+namespace CIL
+{
+   class Class;
+   class Function;
+   class SwitchTable;
+};
+
+class ASTModifiers;
 class ASTVariable;
-class CodePatch;
+class Signature;
 class CompileContext;
 class Literal;
 class VirtualClass;
 class VirtualFunction;
-class VirtualLookupTable;
-class CompiledClass;
-class CompiledFunction;
 
 class CodeGeneratorVisitor : public CompileStep
 {
@@ -38,6 +43,7 @@ public:
    virtual void visit(const ASTRoot& root);
    virtual void visit(const ASTClass& ast);
    virtual void visit(const ASTFunction& ast);
+   virtual void visit(const ASTFunctionArgument& argument);
    virtual void visit(const ASTBlock& ast);
    virtual void visit(const ASTExpressionStatement& ast);
    virtual void visit(const ASTLocalVariable& ast);
@@ -72,13 +78,6 @@ protected:
    virtual bool performStep(ASTNode& node);
 
 private:
-   struct Inst
-   {
-      int instruction;
-      int arg;
-      int linenr;
-   };
-
    struct LoopFlow
    {
       int start;
@@ -91,8 +90,6 @@ private:
    };
 
    typedef std::stack<LoopFlow> LoopFlowStack;
-   typedef std::vector<Inst> InstructionList;
-   typedef std::vector<CodePatch*> Patches;
 
    enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 5, ePostDecr = 6, eKeep = 8 };
 
@@ -104,31 +101,28 @@ private:
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
 
-   CIL::Type* TypeToCILType(const ASTType& type);
+ // CIL generation
+   void buildFunction();
 
-   void addPatch(CodePatch* ppatch);
-   void applyPatches();
-   
+   int         toCilModifiers(const ASTModifiers& modifiers);
+   CIL::Type*  toCilType(const ASTType& type);
+      
    CompileContext&      mContext;
    const ASTClass*      mpClass;
    const ASTFunction*   mpFunction;
    const ASTAccess*     mpAccess;
    const ASTExpression* mpExpression;
    ASTType              mCurrentType;
-   Patches              mPatches;
 
-   CompiledClass*       mpCClass;
-   CompiledFunction*    mpCFunction;
+   CIL::Class*          mpCilClass;
+   CIL::Function*       mpCilFunction;
    FunctionBuilder      mBuilder;
 
    VirtualClass*        mpVClass;
    VirtualFunction*     mpVirFunction;
-   InstructionList      mInstructions;
    ScopeStack           mScopeStack;
    LoopFlowStack        mLoopFlowStack;
-   VirtualLookupTable*  mpLookupTable;
-   int                  mLabel;
-   int                  mLineNr;
+   CIL::SwitchTable*    mpSwitchTable;
    int                  mLoadFlags;
    int                  mExpr;
    int                  mState;

@@ -19,16 +19,20 @@ namespace CIL
    public:
       Class();
 
+    // get/set
+      void setName(const String& name);
+      void setBaseName(const String& name);
+      void setModifiers(int modifiers);
+
     // operations
       void addFunction(Function* pfunction);
 
    private:
 
-      Functions   mFunctions; // owns
-      String      mName;
-      String      mBaseName;
-      Visibility  mVisibility;
-      int         mFlags;
+      Functions      mFunctions; // owns
+      String         mName;
+      String         mBaseName;
+      int            mModifiers;
    };
 }
 

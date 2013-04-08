@@ -20,23 +20,17 @@ namespace CIL
       eInvalidType
    };
 
-   enum TypeFlags {
-      eIsArray    =  1
-   };
+   enum Modifiers {
+      ePublic     = 1,
+      eProtected  = 2,
+      ePrivate    = 4,
 
-   enum Visibility {
-      ePublic,
-      eProtected,
-      ePrivate
-   };
-
-   enum Flags {
-      eStatic     =  1,
-      eAbstract   =  2,
-      eVirtual    =  4,
-      eNative     =  8,
-      eFinal      = 16,
-      eInterface  = 32
+      eStatic     = 8,
+      eNative     = 16,
+      eAbstract   = 32,
+      eFinal      = 64,
+      eOverride   = 128,
+      eInterface  = 256
    };
 
    enum Opcode {
@@ -94,7 +88,7 @@ namespace CIL
       CIL_stelem,
       CIL_ldstatic,
       CIL_ststatic,
-      CIL_lookup,
+      CIL_switch,
       CIL_instanceof,
       CIL_enter_guard,
       CIL_enter_guard_f,

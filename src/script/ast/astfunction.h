@@ -48,6 +48,9 @@ public:
    const ASTClass& getClass() const;
    void            setClass(ASTClass& owner);
 
+   const ASTFunction& getBaseFunction() const;
+   void               setBaseFunction(ASTFunction& function);
+
    bool            hasBody() const;
    const ASTBlock& getBody() const;
          ASTBlock& getBody();
@@ -62,6 +65,7 @@ public:
    bool isConstructor() const;
    bool isDefaultConstructor() const;
    bool isGeneric() const;
+   bool isVirtual() const;
 
    const ASTNodes& getArguments() const;
 
@@ -85,6 +89,7 @@ private:
    ASTTypeVariables* mpTypeVariables;
    ASTType*          mpType;
    ASTClass*         mpClass;
+   ASTFunction*      mpBaseFunction;
    ASTBlock*         mpBody;
    Signature*        mpSignature;
    int               mResourceIndex;

@@ -4,7 +4,7 @@
 #include "core/string/string.h"
 #include "core/defines.h"
 
-#include "compiledfunction.h"
+#include "script/cil/function.h"
 
 FunctionBuilder::FunctionBuilder():
    mInstructions(),
@@ -67,6 +67,14 @@ void FunctionBuilder::emit(CIL::Opcode opcode, const String& arg)
    mInstructions.push_back(inst);
 }
 
+void FunctionBuilder::emit(CIL::Opcode opcode, void* parg)
+{
+   CIL::Instruction inst;
+   inst.opcode = opcode;
+   inst.mPtr = parg;
+   mInstructions.push_back(inst);
+}
+
 // Building
 
 void FunctionBuilder::reset()
@@ -80,12 +88,12 @@ void FunctionBuilder::reset()
    mLocals.clear();
 }
 
-CompiledFunction* FunctionBuilder::Build()
+CIL::Function* FunctionBuilder::build()
 {
    replaceLabels();
    removeNops();
 
-   CompiledFunction* pfunc = new CompiledFunction();
+   CIL::Function* pfunc = new CIL::Function();
    pfunc->setInstructions(mInstructions);
    pfunc->setLocals(mLocals);
 

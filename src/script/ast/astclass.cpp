@@ -485,22 +485,12 @@ const ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& 
 
 ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types)
 {
-   Functions::iterator it = mFunctions.find(name);
-   if ( it != mFunctions.end() )
+   ASTFunction* pfunction = mFunctions.findBestMatch(name, signature, types);
+   if ( pfunction != NULL && hasBaseClass() )
    {
-      Functions::iterator end = mFunctions.upper_bound(name);
-
-      for ( ; it != end; ++it )
-      {
-         ASTFunction* pfunction = it->second;
-         if ( pfunction->getSignature().bestMatch(signature, types) )
-         {
-            return pfunction;
-         }
-      }
+      pfunction = getBaseClass().findBestMatch(name, signature, types);
    }
-
-   return hasBaseClass() ? getBaseClass().findBestMatch(name, signature, types) : NULL;
+   return pfunction;
 }
 
 const ASTFunction* ASTClass::findExactMatch(const String& name, const Signature& signature) const
@@ -510,50 +500,12 @@ const ASTFunction* ASTClass::findExactMatch(const String& name, const Signature&
 
 ASTFunction* ASTClass::findExactMatch(const String& name, const Signature& signature)
 {
-   ASTFunction* pfunction = findExactMatchLocal(name, signature);
+   ASTFunction* pfunction = mFunctions.findExactMatch(name, signature);
    if ( pfunction == NULL && hasBaseClass() )
    {
       pfunction = getBaseClass().findExactMatch(name, signature);
    }
    return pfunction;
-}
-
-ASTFunction* ASTClass::findExactMatchLocal(const String& name, const Signature& signature)
-{
-   Functions::iterator it = mFunctions.find(name);
-   if ( it != mFunctions.end() )
-   {
-      Functions::iterator end = mFunctions.upper_bound(name);
-
-      for ( ; it != end; ++it )
-      {
-         ASTFunction* pfunction = it->second;
-         if ( pfunction->getSignature().exactMatch(signature) )
-         {
-            return pfunction;
-         }
-      }
-   }
-   return NULL;
-}
-
-const ASTFunction* ASTClass::findInterfaceFunction(const ASTFunction& function) const
-{
-   for ( int index = 0; index < mInterfaces.size(); index++ )
-   {
-      const ASTType& type = mInterfaces[index];
-
-      const ASTClass& c = type.getObjectClass();
-      ASSERT(c.getKind() == ASTClass::eInterface);
-
-      const ASTFunction* pifunc = c.findExactMatch(function.getName(), function.getSignature());
-      if ( pifunc != NULL )
-      {
-         return pifunc;
-      }
-   }
-
-   return hasBaseClass() ? getBaseClass().findInterfaceFunction(function) : NULL;
 }
 
 // - Visitor

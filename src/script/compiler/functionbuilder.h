@@ -6,7 +6,11 @@
 
 #include "cil.h"
 
-class CompiledFunction;
+namespace CIL
+{
+   class Function;
+}
+
 class String;
 
 class FunctionBuilder
@@ -26,10 +30,11 @@ public:
    void emit(CIL::Opcode opcode, int arg);
    void emit(CIL::Opcode opcode, double arg);
    void emit(CIL::Opcode opcode, const String& arg);
+   void emit(CIL::Opcode opcode, void* parg);
 
  // building
    void reset();
-   CompiledFunction* Build();
+   CIL::Function* build();
 
 private:
 

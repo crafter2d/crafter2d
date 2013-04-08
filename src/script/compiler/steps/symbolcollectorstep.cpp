@@ -128,6 +128,11 @@ void SymbolCollectorVisitor::visit(ASTFunction& ast)
          ast.getModifiers().setNative(true);
       }
    }
+
+   if ( ast.getType().isVoid() )
+   {
+      generateReturn(ast);
+   }
 }
 
 void SymbolCollectorVisitor::visit(ASTFunctionArgument& ast)
@@ -453,6 +458,13 @@ void SymbolCollectorVisitor::generateNativeCall(ASTFunction& function)
    ASTExpressionStatement* pexprstmt = new ASTExpressionStatement(pexpression);
 
    function.getBody().insertChild(0, pexprstmt);
+}
+
+void SymbolCollectorVisitor::generateReturn(ASTFunction& function)
+{
+   ASTReturn* preturn = new ASTReturn();
+   
+   function.getBody().addChild(preturn);
 }
 
 /// Resolve the type, if resolving fails the type is marked as unknown so other 

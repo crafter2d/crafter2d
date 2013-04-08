@@ -22,6 +22,7 @@ ASTFunction::ASTFunction(ASTMember::Kind kind):
    mpTypeVariables(NULL),
    mpType(NULL),
    mpClass(NULL),
+   mpBaseFunction(NULL),
    mpBody(NULL),
    mpSignature(new Signature()),
    mResourceIndex(-1),
@@ -134,7 +135,6 @@ void ASTFunction::setResourceIndex(int index)
    mResourceIndex = index;
 }
 
-
 const ASTClass& ASTFunction::getClass() const
 {
    ASSERT_PTR(mpClass);
@@ -144,6 +144,17 @@ const ASTClass& ASTFunction::getClass() const
 void ASTFunction::setClass(ASTClass& owner)
 {
    mpClass = &owner;
+}
+
+const ASTFunction& ASTFunction::getBaseFunction() const
+{
+   ASSERT_PTR(mpBaseFunction);
+   return *mpBaseFunction;
+}
+  
+void ASTFunction::setBaseFunction(ASTFunction& function)
+{
+   mpBaseFunction = &function;
 }
 
 const ASTBlock& ASTFunction::getBody() const
@@ -198,6 +209,11 @@ bool ASTFunction::isDefaultConstructor() const
 bool ASTFunction::isGeneric() const
 {
    return mpTypeVariables != NULL && mpTypeVariables->size() > 0;
+}
+
+bool ASTFunction::isVirtual() const
+{
+   return mpBaseFunction != NULL;
 }
 
 int ASTFunction::getArgumentCount() const
