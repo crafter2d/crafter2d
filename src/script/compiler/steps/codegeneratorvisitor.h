@@ -29,7 +29,6 @@ class Signature;
 class CompileContext;
 class Literal;
 class VirtualClass;
-class VirtualFunction;
 
 class CodeGeneratorVisitor : public CompileStep
 {
@@ -102,8 +101,6 @@ private:
    void handleLiteral(const Literal& literal);
 
  // CIL generation
-   void buildFunction();
-
    int         toCilModifiers(const ASTModifiers& modifiers);
    CIL::Type*  toCilType(const ASTType& type);
       
@@ -116,13 +113,11 @@ private:
 
    CIL::Class*          mpCilClass;
    CIL::Function*       mpCilFunction;
+   CIL::SwitchTable*    mpSwitchTable;
    FunctionBuilder      mBuilder;
 
-   VirtualClass*        mpVClass;
-   VirtualFunction*     mpVirFunction;
    ScopeStack           mScopeStack;
    LoopFlowStack        mLoopFlowStack;
-   CIL::SwitchTable*    mpSwitchTable;
    int                  mLoadFlags;
    int                  mExpr;
    int                  mState;

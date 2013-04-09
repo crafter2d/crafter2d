@@ -2,35 +2,21 @@
 #include "codegeneratorvisitor.h"
 
 #include "core/defines.h"
-#include "core/smartptr/scopedvalue.h"
 #include "core/string/stringinterface.h"
 
 #include "script/ast/ast.h"
-#include "script/vm/virtualclass.h"
-#include "script/vm/virtualobject.h"
-#include "script/vm/virtualinstruction.h"
-#include "script/vm/virtualinstructiontable.h"
-#include "script/vm/virtualclasstable.h"
-#include "script/vm/virtualmachine.h"
-#include "script/vm/virtualfunctiontable.h"
-#include "script/vm/virtualfunctiontableentry.h"
-#include "script/vm/virtuallookuptable.h"
-#include "script/vm/virtualfunction.h"
-#include "script/vm/virtualstring.h"
-
+#include "script/cil/class.h"
+#include "script/cil/function.h"
+#include "script/cil/switchtabel.h"
 #include "script/common/literal.h"
 #include "script/common/variant.h"
 #include "script/common/classregistration.h"
 #include "script/common/functionregistration.h"
+#include "script/compiler/compilecontext.h"
 #include "script/scope/scope.h"
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"
-#include "script/compiler/compilecontext.h"
-#include "script/compiler/signature.h"
-
-#include "script/cil/class.h"
-#include "script/cil/function.h"
-#include "script/cil/switchtabel.h"
+#include "script/vm/virtualstring.h"
 
 using namespace CIL;
 
@@ -42,10 +28,11 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mpAccess(NULL),
    mpExpression(NULL),
    mCurrentType(),
-   mpVClass(NULL),
+   mpCilClass(NULL),
+   mpCilFunction(NULL),
+   mpSwitchTable(NULL),
    mScopeStack(),
    mLoopFlowStack(),
-   mpSwitchTable(NULL),
    mLoadFlags(0),
    mExpr(0),
    mState(0),
@@ -61,11 +48,13 @@ bool CodeGeneratorVisitor::performStep(ASTNode& node)
 {
    ((const ASTNode&)node).accept(*this);
 
-   mContext.setResult(mpVClass);
+   // mContext.setResult(mpVClass);
 
+   /*
    mpVClass->setDefinition(const_cast<ASTClass*>(mpClass));
    mpVClass->setStaticCount(mpClass->getTotalStatics());
    mpVClass = NULL;
+   */
 
    return true;
 }
@@ -89,6 +78,16 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
    mpCilClass->setBaseName(ast.hasBaseClass() ? ast.getBaseClass().getFullName() : "");
    mpCilClass->setModifiers(toCilModifiers(ast.getModifiers()));
 
+   const ASTTypeList& interfaces = ast.getInterfaces();
+   for ( int index = 0; index < interfaces.size(); ++index ) 
+   {
+      const ASTType& type = interfaces[index];
+      ASSERT(type.isObject());
+      ASSERT(type.hasObjectClass());
+
+      mpCilClass->addInterface(type.getObjectClass().getFullName());
+   }
+
    // base class should be set by the VM
    // we don't register the member variables, as they must be loaded/stored differently than locals
 
@@ -98,26 +97,14 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
    // maybe we should also let the loader fill in the virtual function table...
    // so for now just compile the functions
 
-   const FunctionTable& table = ast.getFunctionTable();
-   for ( int index = 0; index < table.size(); index++ )
+   ast.getFunctions().accept(*this);
+
+   // we are done compiling this class
+
+   if ( !mContext.getLog().hasErrors() )
    {
-      const ASTFunction& function = table[index];
-      if ( ast.isLocal(function) && !function.getModifiers().isAbstract() )
-      {
-         visit(function);
-      }
-      else if ( !function.getModifiers().isPureNative() )
-      {
-         CIL::Function* pfunction = new CIL::Function();
-         pfunction->setName(function.getName());
-         pfunction->setModifiers(toCilModifiers(function.getModifiers()));
-
-         mpCilFunction = pfunction;
-         function.getArguments().accept(*this);
-      }
+      ast.setState(ASTClass::eCompiled);
    }
-
-   ast.setState(ASTClass::eCompiled);
 }
 
 void CodeGeneratorVisitor::visit(const ASTFunction& ast)
@@ -134,20 +121,27 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
       mpFunction = &ast;
 
       mpCilFunction = new CIL::Function();
+      mpCilClass->addFunction(mpCilFunction);
+      mpCilFunction->setName(mpFunction->getName());
+      mpCilFunction->setModifiers(toCilModifiers(mpFunction->getModifiers()));
+
       if ( !ast.getModifiers().isStatic() )
       {
          CIL::Type* pthistype = NULL;
          mpCilFunction->addArgument(pthistype);
       }
 
-      mBuilder.reset();
+      mBuilder.start();
 
       mCurrentType.clear();
 
       ast.getArguments().accept(*this);
-      ast.getBody().accept(*this);
+      if ( ast.hasBody() )
+      {
+         ast.getBody().accept(*this);
+      }
 
-      buildFunction();
+      mBuilder.end(*mpCilFunction);
    }
 }
 
@@ -305,7 +299,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    const ASTVariableInit& varinit = var.getInit();
 
    ASTTypeList list;
-   Signature signature;
+   ASTSignature signature;
 
    mCurrentType.clear();
    varinit.getExpression().accept(*this);
@@ -354,7 +348,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    }
    else
    {
-      String name = mCurrentType.getObjectClass().getFullName() + ".iterator";
+      String name = mCurrentType.getObjectClass().getFullName() + ".iterator()";
 
       // ast = iterator
       // var = object in the container
@@ -364,8 +358,8 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
 
       mBuilder.addLabel(flow.start);
 
-      String hasnextname = "engine.collections.Iterator.hasNext";
-      String nextname = "engine.collections.Iterator.next";
+      String hasnextname = "engine.collections.Iterator.hasNext()";
+      String nextname = "engine.collections.Iterator.next()";
 
       // is there still an item: if not it.hasNext goto end
       mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
@@ -978,7 +972,7 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
          pclass = &pclass->getBaseClass();
       }
 
-      String name = pclass->getFullName() + "." + pclass->getName();
+      String name = pclass->getFullName() + "." + pclass->getName() + "()";
       mBuilder.emit(CIL_call, name);
    }
    else if ( ast.isThis() )
@@ -1153,27 +1147,26 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             }
             else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
             {
-               String name = before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName();
+               String name = before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName() + "." + function.getPrototype();
                mBuilder.emit(CIL_call_static, name);
             }
             else 
             {
                if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
                {
-                  String name = before.getObjectClass().getFullName() + "." + function.getName();
+                  String name = before.getObjectClass().getFullName() + "." + function.getPrototype();
                   mBuilder.emit(CIL_call, name);
                }
                else if ( mSuperCall )
                {
-                  //addInstruction(VirtualInstruction::eCallSuper, function.getResourceIndex());
+                  // call same function on the base class
                   const ASTClass& baseclass = function.getClass().getBaseClass();
-                  const ASTFunction& basefunction = baseclass.getFunctionTable()[function.getResourceIndex()];
-                  String name = baseclass.getFullName() + "." + basefunction.getName();
+                  String name = baseclass.getFullName() + "." + function.getPrototype();
                   mBuilder.emit(CIL_call, name);
                }
                else
                {
-                  String name = function.getClass().getFullName() + "." + function.getName();
+                  String name = function.getClass().getFullName() + "." + function.getPrototype();
                   mBuilder.emit(CIL_call, name);
                }
             }
@@ -1335,12 +1328,17 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
 
 void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
 {
-   VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-   mpVClass->getVirtualFunctionTable().append(pentry);
-   pentry->mName = "static_init";
-   pentry->mInstruction = 0;//mInstructions.empty() ? 0 : mInstructions.back().linenr + 1;
-   pentry->mOriginalInstruction = pentry->mInstruction;
-   pentry->mArguments = 0;
+   // var_init blocks have no return value & no arguments
+   CIL::Type* preturntype = new CIL::Type();
+   preturntype->type = CIL::eVoid;
+
+   CIL::Function* pfunction = new CIL::Function();
+   mpCilClass->addFunction(pfunction);
+   pfunction->setName("static_init");
+   pfunction->setModifiers(CIL::eProtected);
+   pfunction->setReturnType(preturntype);
+
+   mBuilder.start();
 
    const ASTClass::Fields& fields = ast.getStatics();
    for ( std::size_t index = 0; index < fields.size(); index++ )
@@ -1408,21 +1406,35 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
       }
    }
    mBuilder.emit(CIL_ret, 0);
+
+   // build the function
+   mBuilder.end(*pfunction);
 }
 
 void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
 {
-   VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-   mpVClass->getVirtualFunctionTable().append(pentry);
-   pentry->mName = "var_init";
-   pentry->mInstruction = 0; //mInstructions.empty() ? 0 : mInstructions.back().linenr + 1;
-   pentry->mOriginalInstruction = pentry->mInstruction;
-   pentry->mArguments = 1;
+   // var_init blocks have no return value
+   CIL::Type* preturntype = new CIL::Type();
+   preturntype->type = CIL::eVoid;
+
+   // supply the this as argument
+   CIL::Type* pargument = new CIL::Type();
+   pargument->type = CIL::eObject;
+   pargument->name = new String(ast.getFullName());
+
+   // construct the functions
+   CIL::Function* pfunction = new CIL::Function();
+   mpCilClass->addFunction(pfunction);
+   pfunction->setName("var_init");
+   pfunction->setModifiers(CIL::eProtected);
+   pfunction->setReturnType(preturntype);
+   pfunction->addArgument(pargument);
+
+   mBuilder.start();
 
    if ( ast.hasBaseClass() )
    {
-      String name = ast.getBaseClass().getFullName() + ".field_init";
-      mBuilder.emit(CIL_ldarg, 0);
+      String name = ast.getBaseClass().getFullName() + ".var_init";
       mBuilder.emit(CIL_call, name);
    }
 
@@ -1489,6 +1501,8 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
       }
    }
    mBuilder.emit(CIL_ret, 0);
+
+   mBuilder.end(*pfunction);
 }
 
 /*
@@ -1568,18 +1582,6 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
 
 // CIL generation
 
-void CodeGeneratorVisitor::buildFunction()
-{
-   if ( !mpFunction->getModifiers().isPureNative() )
-   {
-      CIL::Function* pfunction = mBuilder.build();
-      pfunction->setName(mpFunction->getName());
-      pfunction->setModifiers(toCilModifiers(mpFunction->getModifiers()));
-
-      mpCilClass->addFunction(pfunction);
-   }
-}
-
 int CodeGeneratorVisitor::toCilModifiers(const ASTModifiers& modifiers)
 {
    int result = 0;
@@ -1640,4 +1642,3 @@ CIL::Type* CodeGeneratorVisitor::toCilType(const ASTType& type)
 
    return ptype;
 }
-

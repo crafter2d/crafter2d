@@ -4,7 +4,7 @@
 
 #include <vector>
 
-class Variant;
+#include "script/common/variant.h"
 
 namespace CIL
 {

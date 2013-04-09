@@ -4,23 +4,21 @@
 
 #include <vector>
 
-#include "cil.h"
+#include "script/cil/cil.h"
 
 namespace CIL
 {
    class Function;
 }
 
+class ASTFunction;
 class String;
 
 class FunctionBuilder
 {
 public:
    FunctionBuilder();
-
- // storage
-   void addLocal(CIL::Type* ptype);
-
+   
  // label operations
    int  allocateLabel();
    void addLabel(int id);
@@ -33,8 +31,8 @@ public:
    void emit(CIL::Opcode opcode, void* parg);
 
  // building
-   void reset();
-   CIL::Function* build();
+   void start();
+   void end(CIL::Function& function);
 
 private:
 
@@ -44,7 +42,6 @@ private:
    int  findLabel(int label) const;
 
    CIL::Instructions mInstructions;
-   CIL::Types        mLocals;
    int               mLabel;
 };
 

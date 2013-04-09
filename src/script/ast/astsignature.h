@@ -1,6 +1,6 @@
 
-#ifndef SIGNATURE_H_
-#define SIGNATURE_H_
+#ifndef AST_SIGNATURE_H_
+#define AST_SIGNATURE_H_
 
 #include <vector>
 
@@ -8,22 +8,22 @@ class ASTType;
 class ASTTypeList;
 class String;
 
-class Signature
+class ASTSignature
 {
    typedef std::vector<const ASTType*> Types;
 
 public:
    enum Match { eExact, eBest };
 
-   Signature();
-   ~Signature();
+   ASTSignature();
+   ~ASTSignature();
 
  // query
    const ASTType& operator[](int index) const;
    int size() const;
 
-   bool exactMatch(const Signature& that) const;
-   bool bestMatch(const Signature& that, const ASTTypeList& types) const;
+   bool exactMatch(const ASTSignature& that) const;
+   bool bestMatch(const ASTSignature& that, const ASTTypeList& types) const;
 
  // operations
    void append(const ASTType& type);
@@ -38,4 +38,4 @@ private:
    bool  mOwning;
 };
 
-#endif // SIGNATURE_H_
+#endif // AST_SIGNATURE_H_

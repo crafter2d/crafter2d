@@ -4,8 +4,6 @@
 #include "core/defines.h"
 #include <exception>
 
-#include "script/compiler/signature.h"
-
 #include "astblock.h"
 #include "astfunctionargument.h"
 #include "asttype.h"
@@ -13,6 +11,7 @@
 #include "astvariable.h"
 #include "astannotations.h"
 #include "asttypevariables.h"
+#include "astsignature.h"
 
 ASTFunction::ASTFunction(ASTMember::Kind kind):
    ASTMember(kind),
@@ -24,7 +23,7 @@ ASTFunction::ASTFunction(ASTMember::Kind kind):
    mpClass(NULL),
    mpBaseFunction(NULL),
    mpBody(NULL),
-   mpSignature(new Signature()),
+   mpSignature(new ASTSignature()),
    mResourceIndex(-1),
    mLocalVariableCount(0)
 {
@@ -178,7 +177,7 @@ void ASTFunction::setBody(ASTBlock* pbody)
    mpBody = pbody;
 }
 
-const Signature& ASTFunction::getSignature() const
+const ASTSignature& ASTFunction::getSignature() const
 {
    ASSERT(mpSignature);
    return *mpSignature;

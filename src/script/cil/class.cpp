@@ -6,6 +6,7 @@ namespace CIL
 
    Class::Class():
       mFunctions(),
+      mInterfaces(),
       mName(),
       mBaseName(),
       mModifiers(0)
@@ -31,6 +32,11 @@ namespace CIL
 
    // - Operations
    
+   void Class::addInterface(const String& interfce)
+   {
+      mInterfaces.push_back(interfce);
+   }
+
    void Class::addFunction(Function* pfunction)
    {
       mFunctions.push_back(pfunction);

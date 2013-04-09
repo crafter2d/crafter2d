@@ -10,16 +10,10 @@ public:
    VirtualFunction();
 
    void addInstruction(const VirtualInstruction& instruction);
-   void prepare();
 
 private:
 
  // operations
-   void replaceLabels();
-   void removeNops();
-
-   int  findLabel(int label) const;
-
    VirtualInstructionTable mInstructions;
 };
 

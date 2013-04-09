@@ -5,7 +5,6 @@
 
 #include "script/ast/ast.h"
 #include "script/compiler/compilecontext.h"
-#include "script/compiler/signature.h"
 #include "script/common/functionregistration.h"
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"

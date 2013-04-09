@@ -22,8 +22,8 @@ class ASTField;
 class ASTType;
 class ASTTypeList;
 class ASTTypeVariables;
+class ASTSignature;
 class Scope;
-class Signature;
 class CompileContext;
 
 class ASTClass : public ASTNode
@@ -64,6 +64,9 @@ public:
    const ASTTypeVariables& getTypeVariables() const;
          ASTTypeVariables& getTypeVariables();
    void                    setTypeVariables(ASTTypeVariables* ptypes);
+
+   const ASTFunctionMap& getFunctions() const;
+         ASTFunctionMap& getFunctions();
 
    const FunctionTable& getFunctionTable() const;
          FunctionTable& getFunctionTable();
@@ -113,11 +116,11 @@ public:
    const ASTField* findField(const String& name, SearchScope scope = eAll) const;
          ASTField* findField(const String& name, SearchScope scope = eAll);
 
-   const ASTFunction* findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types) const;
-         ASTFunction* findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types);
+   const ASTFunction* findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types) const;
+         ASTFunction* findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types);
 
-   const ASTFunction* findExactMatch(const String& name, const Signature& signature) const;
-         ASTFunction* findExactMatch(const String& name, const Signature& signature);
+   const ASTFunction* findExactMatch(const String& name, const ASTSignature& signature) const;
+         ASTFunction* findExactMatch(const String& name, const ASTSignature& signature);
 
  // visitor
    ACCEPT;
@@ -129,7 +132,7 @@ private:
    void indexFunctions();
 
  // search
-   ASTFunction* findExactMatchLocal(const String& name, const Signature& signature);
+   ASTFunction* findExactMatchLocal(const String& name, const ASTSignature& signature);
 
    Kind              mKind;
    ClassResolver     mResolver;

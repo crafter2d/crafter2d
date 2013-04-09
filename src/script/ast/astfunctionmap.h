@@ -7,23 +7,38 @@
 
 class ASTFunction;
 class ASTTypeList;
-class Signature;
+class ASTSignature;
+class ASTVisitor;
 
 class ASTFunctionMap
 {
    typedef std::multimap<String, ASTFunction*> FunctionMap;
 public:
    ASTFunctionMap();
+   ~ASTFunctionMap();
+
+ // query
+   bool hasConstructor() const;
+   bool hasAbstractFunction() const;
+   bool hasNativeFunction() const;
+   bool hasNativeConstructor() const;
+
+   bool hasFunction(const String& name) const;
 
  // maintenance
    void insert(ASTFunction* pfunction);
+   void clear();
 
  // lookup
    ASTFunction* findBestMatch(const ASTFunction& that, const ASTTypeList& types);
    ASTFunction* findExactMatch(const ASTFunction& that);
 
-   ASTFunction* findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types);
-   ASTFunction* findExactMatch(const String& name, const Signature& signature);
+   ASTFunction* findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types);
+   ASTFunction* findExactMatch(const String& name, const ASTSignature& signature);
+
+ // visitor
+   void accept(ASTVisitor& visitor) const;
+   void accept(ASTVisitor& visitor);
 
 private:
    FunctionMap mFunctions;

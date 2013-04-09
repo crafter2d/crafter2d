@@ -3,9 +3,8 @@
 
 #include <algorithm>
 
-#include "../ast/astfunction.h"
-
-#include "signature.h"
+#include "script/ast/astfunction.h"
+#include "script/ast/astsignature.h"
 
 FunctionTable::FunctionTable():
    mFunctions()

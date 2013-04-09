@@ -12,7 +12,7 @@ class ASTBlock;
 class ASTClass;
 class ASTFunctionArgument;
 class ASTTypeVariables;
-class Signature;
+class ASTSignature;
 
 class ASTFunction : public ASTMember
 {
@@ -56,7 +56,7 @@ public:
          ASTBlock& getBody();
    void            setBody(ASTBlock* pbody);
 
-   const Signature& getSignature() const;
+   const ASTSignature& getSignature() const;
 
    int  getLocalVariableCount() const;
    void setLocalVariableCount(int count);
@@ -91,7 +91,7 @@ private:
    ASTClass*         mpClass;
    ASTFunction*      mpBaseFunction;
    ASTBlock*         mpBody;
-   Signature*        mpSignature;
+   ASTSignature*     mpSignature;
    int               mResourceIndex;
    int               mLocalVariableCount;
 };

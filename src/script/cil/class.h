@@ -15,6 +15,7 @@ namespace CIL
    class Class
    {
       typedef std::vector<Function*> Functions;
+      typedef std::vector<String> Interfaces;
 
    public:
       Class();
@@ -25,11 +26,13 @@ namespace CIL
       void setModifiers(int modifiers);
 
     // operations
+      void addInterface(const String& interfce);
       void addFunction(Function* pfunction);
 
    private:
 
       Functions      mFunctions; // owns
+      Interfaces     mInterfaces;
       String         mName;
       String         mBaseName;
       int            mModifiers;

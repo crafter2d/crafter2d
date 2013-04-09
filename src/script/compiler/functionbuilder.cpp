@@ -12,13 +12,6 @@ FunctionBuilder::FunctionBuilder():
 {
 }
 
-// - Storage
-
-void FunctionBuilder::addLocal(CIL::Type* ptype)
-{
-   mLocals.push_back(ptype);
-}
-
 // - Label operations
 
 int FunctionBuilder::allocateLabel()
@@ -77,30 +70,19 @@ void FunctionBuilder::emit(CIL::Opcode opcode, void* parg)
 
 // Building
 
-void FunctionBuilder::reset()
+void FunctionBuilder::start()
 {
    mInstructions.clear();
-
-   for ( unsigned index = 0; index < mLocals.size(); index++ )
-   {
-      delete mLocals[index];
-   }
-   mLocals.clear();
 }
 
-CIL::Function* FunctionBuilder::build()
+void FunctionBuilder::end(CIL::Function& function)
 {
    replaceLabels();
    removeNops();
 
-   CIL::Function* pfunc = new CIL::Function();
-   pfunc->setInstructions(mInstructions);
-   pfunc->setLocals(mLocals);
+   function.setInstructions(mInstructions);
 
    mInstructions.clear();
-   mLocals.clear();
-   
-   return pfunc;
 }
 
 void FunctionBuilder::replaceLabels()

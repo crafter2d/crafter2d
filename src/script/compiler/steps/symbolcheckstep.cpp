@@ -29,7 +29,6 @@
 #include "script/scope/scopedscope.h"
 #include "script/common/literal.h"
 #include "script/compiler/compilecontext.h"
-#include "script/compiler/signature.h"
 #include "script/compiler/classresolver.h"
 
 #include "variablecheckvisitor.h"
@@ -573,7 +572,7 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
          {
             ASTType before = mCurrentType;
 
-            Signature signature;
+            ASTSignature signature;
             ASTNodes& arguments = ast.getArguments();
             for ( int index = 0; index < arguments.size(); index++ )
             {
@@ -659,7 +658,7 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
 
    if ( ast.isCall() )
    {
-      Signature signature;
+      ASTSignature signature;
       ASTNodes& arguments = ast.getArguments();
       for ( int index = 0; index < arguments.size(); index++ )
       {
@@ -699,7 +698,7 @@ void SymbolCheckVisitor::visit(ASTNative& ast)
    if ( ast.hasArguments() )
    {
       ASSERT_PTR(mpFunction);
-      const Signature& signature = mpFunction->getSignature();
+      const ASTSignature& signature = mpFunction->getSignature();
 
       ASTNodes& arguments = ast.getArguments();
       for ( int index = 0; index < arguments.size(); index++ )
@@ -1004,7 +1003,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
 {
    ASTType before = mCurrentType;
 
-   Signature signature;
+   ASTSignature signature;
    ASTNodes& arguments = access.getArguments();
    for ( int index = 0; index < arguments.size(); index++ )
    {
@@ -1019,7 +1018,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
 
    if ( pfunction != NULL )
    {
-      const Signature& funcsig = pfunction->getSignature();
+      const ASTSignature& funcsig = pfunction->getSignature();
 
       // check if cast is required
       for ( int index = 0; index < signature.size(); index++ )

@@ -5,7 +5,6 @@
 
 #include "script/scope/scope.h"
 #include "script/scope/scopevariable.h"
-#include "script/compiler/signature.h"
 
 #include "astfunction.h"
 #include "asttype.h"
@@ -143,6 +142,16 @@ void ASTClass::setTypeVariables(ASTTypeVariables* pinfo)
    mpTypeVariables = pinfo;
 }
 
+const ASTFunctionMap& ASTClass::getFunctions() const
+{
+   return mFunctions;
+}
+
+ASTFunctionMap& ASTClass::getFunctions()
+{
+   return mFunctions;
+}
+
 const FunctionTable& ASTClass::getFunctionTable() const
 {
    return mTable;
@@ -248,60 +257,22 @@ bool ASTClass::isTypeName(const String& name) const
 
 bool ASTClass::hasConstructor() const
 {
-   Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getKind() == ASTMember::eConstructor )
-      {
-         return true;
-      }
-   }
-   return false;
+   return mFunctions.hasConstructor();
 }
 
 bool ASTClass::hasAbstractFunction() const
 {
-   Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getModifiers().isAbstract() )
-      {
-         return true;
-      }
-   }
-   return false;
+   return mFunctions.hasAbstractFunction();
 }
 
 bool ASTClass::hasNativeFunction() const
 {
-   Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getModifiers().isNative() )
-      {
-         return true;
-      }
-   }
-   return false;
+   return mFunctions.hasNativeFunction();
 }
 
 bool ASTClass::hasNativeConstructor() const
 {
-   Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getKind() == ASTMember::eConstructor
-         && ( pfunction->getModifiers().isNative()
-           || pfunction->getModifiers().isPureNative() ) )
-      {
-         return true;
-      }
-   }
-   return false;
+   return mFunctions.hasNativeConstructor();
 }
 
 int ASTClass::getTotalStatics() const
@@ -329,11 +300,7 @@ bool ASTClass::isMember(const String& name) const
       pmember = findStatic(name);
       if ( pmember == NULL )
       {
-         Functions::const_iterator it = mFunctions.find(name);
-         if ( it == mFunctions.end() )
-         {
-            return false;
-         }
+         return mFunctions.hasFunction(name);
       }
    }
 
@@ -360,7 +327,7 @@ void ASTClass::addMember(ASTMember* pmember)
       ASTFunction* pfunction = dynamic_cast<ASTFunction*>(pmember);
       pfunction->setClass(*this);
 
-      mFunctions.insert(std::make_pair(pfunction->getName(), pfunction));
+      mFunctions.insert(pfunction);
    }
 
    addChild(pmember);
@@ -430,12 +397,14 @@ void ASTClass::indexFunctions()
       mTable = getBaseClass().getFunctionTable();
    }
 
+   /*
    Functions::iterator it = mFunctions.begin();
    for ( ; it != mFunctions.end(); ++it )
    {
       ASTFunction* pfunction = it->second;
       mTable.insert(*pfunction);
    }
+   */
 
    mTable.reindex();
 }
@@ -478,12 +447,12 @@ ASTField* ASTClass::findField(const String& name, SearchScope scope)
    return scope == eAll && hasBaseClass() ? getBaseClass().findField(name) : NULL;
 }
 
-const ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types) const
+const ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types) const
 {
    return const_cast<ASTClass&>(*this).findBestMatch(name, signature, types);
 }
 
-ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types)
+ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types)
 {
    ASTFunction* pfunction = mFunctions.findBestMatch(name, signature, types);
    if ( pfunction != NULL && hasBaseClass() )
@@ -493,12 +462,12 @@ ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signat
    return pfunction;
 }
 
-const ASTFunction* ASTClass::findExactMatch(const String& name, const Signature& signature) const
+const ASTFunction* ASTClass::findExactMatch(const String& name, const ASTSignature& signature) const
 {
    return const_cast<ASTClass&>(*this).findExactMatch(name, signature);
 }
 
-ASTFunction* ASTClass::findExactMatch(const String& name, const Signature& signature)
+ASTFunction* ASTClass::findExactMatch(const String& name, const ASTSignature& signature)
 {
    ASTFunction* pfunction = mFunctions.findExactMatch(name, signature);
    if ( pfunction == NULL && hasBaseClass() )

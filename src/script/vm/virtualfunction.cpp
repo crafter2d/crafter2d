@@ -12,10 +12,3 @@ void VirtualFunction::addInstruction(const VirtualInstruction& instruction)
 {
    mInstructions.add(instruction);
 }
-
-void VirtualFunction::prepare()
-{
-   replaceLabels();
-   removeNops();
-}
-

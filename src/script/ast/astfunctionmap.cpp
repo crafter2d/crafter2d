@@ -2,15 +2,98 @@
 #include "astfunctionmap.h"
 
 #include "astfunction.h"
+#include "astsignature.h"
+#include "astvisitor.h"
 
 ASTFunctionMap::ASTFunctionMap():
    mFunctions()
 {
 }
 
+ASTFunctionMap::~ASTFunctionMap()
+{
+   clear();
+}
+
+// - Query
+
+bool ASTFunctionMap::hasConstructor() const
+{
+   FunctionMap::const_iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); ++it )
+   {
+      ASTFunction* pfunction = it->second;
+      if ( pfunction->getKind() == ASTMember::eConstructor )
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
+bool ASTFunctionMap::hasAbstractFunction() const
+{
+   FunctionMap::const_iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); ++it )
+   {
+      ASTFunction* pfunction = it->second;
+      if ( pfunction->getModifiers().isAbstract() )
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
+bool ASTFunctionMap::hasNativeFunction() const
+{
+   FunctionMap::const_iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); ++it )
+   {
+      ASTFunction* pfunction = it->second;
+      if ( pfunction->getModifiers().isNative() )
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
+bool ASTFunctionMap::hasNativeConstructor() const
+{
+   FunctionMap::const_iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); ++it )
+   {
+      ASTFunction* pfunction = it->second;
+      if ( pfunction->getKind() == ASTMember::eConstructor
+         && ( pfunction->getModifiers().isNative()
+           || pfunction->getModifiers().isPureNative() ) )
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
+bool ASTFunctionMap::hasFunction(const String& name) const
+{
+   return mFunctions.find(name) != mFunctions.end();
+}
+
+// - Operations
+
 void ASTFunctionMap::insert(ASTFunction* pfunction)
 {
    mFunctions.insert(std::make_pair(pfunction->getName(), pfunction));
+}
+
+void ASTFunctionMap::clear()
+{
+   FunctionMap::iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); ++it )
+   {
+      delete it->second;
+   }
 }
 
 // - Lookup
@@ -25,7 +108,7 @@ ASTFunction* ASTFunctionMap::findExactMatch(const ASTFunction& that)
    return findExactMatch(that.getName(), that.getSignature());
 }
 
-ASTFunction* ASTFunctionMap::findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types)
+ASTFunction* ASTFunctionMap::findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types)
 {
    FunctionMap::iterator it = mFunctions.find(name);
    if ( it != mFunctions.end() )
@@ -41,9 +124,10 @@ ASTFunction* ASTFunctionMap::findBestMatch(const String& name, const Signature& 
          }
       }
    }
+   return NULL;
 }
 
-ASTFunction* ASTFunctionMap::findExactMatch(const String& name, const Signature& signature)
+ASTFunction* ASTFunctionMap::findExactMatch(const String& name, const ASTSignature& signature)
 {
    FunctionMap::iterator it = mFunctions.find(name);
    if ( it != mFunctions.end() )
@@ -61,4 +145,25 @@ ASTFunction* ASTFunctionMap::findExactMatch(const String& name, const Signature&
    }
    return NULL;
 }
+
+// - Visitor
+
+void ASTFunctionMap::accept(ASTVisitor& visitor) const
+{
+   FunctionMap::const_iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); ++it )
+   {
+      const ASTFunction* pfunction = it->second;
+      visitor.visit(*pfunction);
+   }
+}
+   
+void ASTFunctionMap::accept(ASTVisitor& visitor)
+{
+   FunctionMap::iterator it = mFunctions.begin();
+   for ( ; it != mFunctions.end(); ++it )
+   {
+      ASTFunction* pfunction = it->second;
+      visitor.visit(*pfunction);
+   }
 }
