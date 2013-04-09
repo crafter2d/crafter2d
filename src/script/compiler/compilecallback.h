@@ -4,14 +4,17 @@
 
 #include "script/script_base.h"
 
-class VirtualClass;
+namespace CIL
+{
+   class Class;
+}
 
 class SCRIPT_API CompileCallback
 {
 public:
    CompileCallback();
 
-   virtual void notify(VirtualClass* pclass) = 0;
+   virtual void notify(CIL::Class* pclass) = 0;
 };
 
 #endif // COMPILE_CALLBACK_H_

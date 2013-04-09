@@ -20,13 +20,12 @@ ASTClass::ASTClass():
    mModifiers(),
    mpBaseType(NULL),
    mInterfaces(),
+   mpTypeVariables(NULL),
+   mFunctions(),
    mName(),
    mFullName(),
-   mpTypeVariables(NULL),
-   mTable(),
    mStatics(),
    mFields(),
-   mFunctions(),
    mState(eParsed)
 {
 }
@@ -150,21 +149,6 @@ const ASTFunctionMap& ASTClass::getFunctions() const
 ASTFunctionMap& ASTClass::getFunctions()
 {
    return mFunctions;
-}
-
-const FunctionTable& ASTClass::getFunctionTable() const
-{
-   return mTable;
-}
-
-FunctionTable& ASTClass::getFunctionTable()
-{
-   if ( mTable.size() == 0 )
-   {
-      indexFunctions();
-   }
-
-   return mTable;
 }
 
 const ASTTypeList& ASTClass::getInterfaces() const
@@ -367,7 +351,6 @@ void ASTClass::calculateResources()
 {
    indexStatics();
    indexVariables();
-   indexFunctions();
 }
 
 void ASTClass::indexStatics()
@@ -388,25 +371,6 @@ void ASTClass::indexVariables()
       ASTField* pvariable = mFields[index];
       pvariable->getVariable().setResourceIndex(base + index);
    }
-}
-
-void ASTClass::indexFunctions()
-{
-   if ( hasBaseClass() )
-   {
-      mTable = getBaseClass().getFunctionTable();
-   }
-
-   /*
-   Functions::iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      mTable.insert(*pfunction);
-   }
-   */
-
-   mTable.reindex();
 }
 
 // - Search

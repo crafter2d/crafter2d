@@ -30,6 +30,13 @@ namespace CIL
       mModifiers = modifiers;
    }
 
+   // - Query
+
+   const Class::Functions& Class::getFunctions() const
+   {
+      return mFunctions;
+   }
+
    // - Operations
    
    void Class::addInterface(const String& interfce)

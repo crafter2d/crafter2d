@@ -137,12 +137,13 @@ bool Compiler::compile(const String& classname)
             pclass = sorted[index];
             if ( performSteps(*pclass, mCompileSteps) )
             {
+               CIL::Class* pcilclass = mContext.useResult();
                if ( hasCallback() )
                {
-                  mpCallback->notify(mContext.getResult());
+                  mpCallback->notify(pcilclass);
                }
 
-               save(*pclass);
+               save(*pcilclass);
             }
             else
             {
@@ -209,11 +210,6 @@ bool Compiler::load(const String& classname)
    filename.replace('.', '/');
    filename += String(".as");
 
-   if ( classname.toStdString() == "TestNative")
-   {
-      int aap = 5;
-   }
-
    try
    {
       AutoPtr<AntlrStream> stream(AntlrStream::fromFile(filename));
@@ -236,7 +232,7 @@ bool Compiler::load(const String& classname)
    return false;
 }
 
-void Compiler::save(ASTClass& ast)
+void Compiler::save(const CIL::Class& ast)
 {
    // do some interesting saving stuff here
 }

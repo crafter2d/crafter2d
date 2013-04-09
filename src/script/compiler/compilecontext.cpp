@@ -44,12 +44,14 @@ LiteralTable& CompileContext::getLiteralTable()
    return mLiteralTable;
 }
 
-VirtualClass* CompileContext::getResult()
+CIL::Class* CompileContext::useResult()
 {
-   return mpResult;
+   CIL::Class* presult = mpResult;
+   mpResult = NULL;
+   return presult;
 }
 
-void CompileContext::setResult(VirtualClass* pclass)
+void CompileContext::setResult(CIL::Class* pclass)
 {
    mpResult = pclass;
 }

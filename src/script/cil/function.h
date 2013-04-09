@@ -16,7 +16,10 @@ namespace CIL
 
     // operations
       void setName(const String& name);
-      void setInstructions(const Instructions& instructions);
+
+      const Instructions& getInstructions() const;
+      void                setInstructions(const Instructions& instructions);
+
       void setModifiers(int modifiers);
       void setReturnType(Type* ptype);
 

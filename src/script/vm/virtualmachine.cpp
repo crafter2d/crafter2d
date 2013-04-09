@@ -1423,7 +1423,7 @@ VirtualClass* VirtualMachine::doLoadClass(const String& classname)
    return pclass;
 }
 
-void VirtualMachine::classLoaded(VirtualClass* pclass)
+void VirtualMachine::classLoaded(CIL::Class* pclass)
 {
    int offset = mContext.mInstructions.size();
 

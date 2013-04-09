@@ -7,7 +7,6 @@
 
 #include "core/string/string.h"
 
-#include "script/compiler/functiontable.h"
 #include "script/compiler/classresolver.h"
 #include "script/common/literaltable.h"
 
@@ -68,9 +67,6 @@ public:
    const ASTFunctionMap& getFunctions() const;
          ASTFunctionMap& getFunctions();
 
-   const FunctionTable& getFunctionTable() const;
-         FunctionTable& getFunctionTable();
-
    const ASTTypeList& getInterfaces() const;
          ASTTypeList& getInterfaces();
 
@@ -129,7 +125,6 @@ private:
  // operations
    void indexStatics();
    void indexVariables();
-   void indexFunctions();
 
  // search
    ASTFunction* findExactMatchLocal(const String& name, const ASTSignature& signature);
@@ -139,13 +134,12 @@ private:
    ASTModifiers      mModifiers;
    ASTType*          mpBaseType;
    ASTTypeList       mInterfaces;
+   ASTTypeVariables* mpTypeVariables;
+   ASTFunctionMap    mFunctions;
    String            mName;
    String            mFullName;
-   ASTTypeVariables* mpTypeVariables;
-   FunctionTable     mTable;
    Fields            mStatics;
    Fields            mFields;
-   ASTFunctionMap    mFunctions;
    mutable State     mState;
 };
 

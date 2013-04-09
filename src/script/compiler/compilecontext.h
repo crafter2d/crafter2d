@@ -13,9 +13,13 @@
 
 #include "compilelog.h"
 
+namespace CIL
+{
+   class Class;
+}
+
 class Compiler;
 class ASTClass;
-class VirtualClass;
 
 class CompileContext
 {
@@ -32,8 +36,8 @@ public:
    const LiteralTable& getLiteralTable() const;
          LiteralTable& getLiteralTable();
 
-   VirtualClass* getResult();
-   void          setResult(VirtualClass* pclass);
+   CIL::Class* useResult();
+   void        setResult(CIL::Class* pclass);
 
    ClassRegistry& getClassRegistry();
    void setClassRegistry(const ClassRegistry& registry);
@@ -63,7 +67,7 @@ private:
    StringCache    mStringCache;
    LiteralTable   mLiteralTable;
    CompileLog     mLog;
-   VirtualClass*  mpResult;
+   CIL::Class*    mpResult;
 };
 
 #endif // COMPILE_CONTEXT_H_

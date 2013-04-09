@@ -53,7 +53,7 @@ private:
    void sort(ASTClasses& classes, ASTClasses& sorted);
 
    bool load(const String& classname);
-   void save(ASTClass& ast);
+   void save(const CIL::Class& ast);
 
    void reportError(CompileException& exception);
    void displayErrors(const String& currentfile);

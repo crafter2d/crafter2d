@@ -12,7 +12,7 @@ public:
    VirtualCompileCallback(VirtualMachine& vm);
 
  // callback
-   virtual void notify(VirtualClass* pclass);
+   virtual void notify(CIL::Class* pclass);
 
 private:
    VirtualMachine& mVM;

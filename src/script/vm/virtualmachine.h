@@ -38,6 +38,11 @@
 #include "virtualstack.h"
 #include "vminterface.h"
 
+namespace CIL
+{
+   class Class;
+}
+
 class ClassRegistry;
 class String;
 class Variant;
@@ -163,7 +168,7 @@ private:
 
  // class loading
    VirtualClass* doLoadClass(const String& classname);
-   void          classLoaded(VirtualClass* pclass);
+   void          classLoaded(CIL::Class* pclass);
    void          createClass(const VirtualClass& aclass);
 
  // stack operations

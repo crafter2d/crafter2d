@@ -11,7 +11,7 @@ VirtualCompileCallback::VirtualCompileCallback(VirtualMachine& vm):
 
 // - Callback
 
-void VirtualCompileCallback::notify(VirtualClass* pclass)
+void VirtualCompileCallback::notify(CIL::Class* pclass)
 {
    mVM.classLoaded(pclass);
 }

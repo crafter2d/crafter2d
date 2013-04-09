@@ -14,16 +14,19 @@ namespace CIL
 
    class Class
    {
-      typedef std::vector<Function*> Functions;
       typedef std::vector<String> Interfaces;
 
    public:
+      typedef std::vector<Function*> Functions;
+
       Class();
 
     // get/set
       void setName(const String& name);
       void setBaseName(const String& name);
       void setModifiers(int modifiers);
+
+      const Functions& getFunctions() const;
 
     // operations
       void addInterface(const String& interfce);

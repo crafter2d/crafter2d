@@ -21,6 +21,11 @@ namespace CIL
       mName = name;
    }
 
+   const Instructions& Function::getInstructions() const
+   {
+      return mInstructions;
+   }
+
    void Function::setInstructions(const CIL::Instructions& instructions)
    {
       mInstructions = instructions;
