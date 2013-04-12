@@ -14,6 +14,10 @@ namespace CIL
    public:
       Function();
 
+    // query
+      const Types& getArguments() const;
+      const Types& getLocals() const;
+
     // operations
       void setName(const String& name);
 

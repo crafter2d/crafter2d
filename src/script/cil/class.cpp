@@ -7,6 +7,7 @@ namespace CIL
    Class::Class():
       mFunctions(),
       mInterfaces(),
+      mFields(),
       mName(),
       mBaseName(),
       mModifiers(0)
@@ -37,7 +38,27 @@ namespace CIL
       return mFunctions;
    }
 
+   const Class::Fields& Class::getFields() const
+   {
+      return mFields;
+   }
+
+   const Class::Fields& Class::getStaticFields() const
+   {
+      return mStatics;
+   }
+
    // - Operations
+
+   void Class::addField(CIL::Type* pfield)
+   {
+      mFields.push_back(pfield);
+   }
+
+   void Class::addStaticField(CIL::Type* pfield)
+   {
+      mStatics.push_back(pfield);
+   }
    
    void Class::addInterface(const String& interfce)
    {

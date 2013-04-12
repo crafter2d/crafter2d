@@ -1423,8 +1423,21 @@ VirtualClass* VirtualMachine::doLoadClass(const String& classname)
    return pclass;
 }
 
+#include "stackcpu/stackcpu.h"
+#include "codegen/irgenerator.h"
+#include "codegen/ircontext.h"
+
 void VirtualMachine::classLoaded(CIL::Class* pclass)
 {
+   StackCPU cpu;
+   CodeGen::IRContext context;
+   AutoPtr<CodeGen::IRGenerator> generator = cpu.createIRGenerator();
+   if ( generator->generate(context, *pclass) )
+   {
+      // success!
+   }
+
+   /*
    int offset = mContext.mInstructions.size();
 
    mContext.mClassTable.insert(pclass);
@@ -1501,7 +1514,7 @@ void VirtualMachine::classLoaded(CIL::Class* pclass)
 
    // execute the static initialization body
    VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[0];
-   execute(*pclass, entry);
+   execute(*pclass, entry); */
 }
 
 void VirtualMachine::createClass(const VirtualClass& aclass)

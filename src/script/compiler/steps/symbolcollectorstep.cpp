@@ -421,16 +421,6 @@ void SymbolCollectorVisitor::generateNativeFinalize(ASTClass& ast)
 void SymbolCollectorVisitor::generateConstructorBody(ASTFunction& ast)
 {
    ASTBlock* pbody = new ASTBlock();
-   ASTSuper* psuper = new ASTSuper();
-   psuper->setCall(true);
-   psuper->setKind(ASTSuper::eSuper);
-   ASTUnary* punary = new ASTUnary();
-   punary->addPart(psuper);
-   ASTExpression* pexpression = new ASTExpression();
-   pexpression->setLeft(punary);
-   ASTExpressionStatement* pexprstmt = new ASTExpressionStatement(pexpression);
-   pbody->addChild(pexprstmt);
-
    ast.setBody(pbody);
 }
 
@@ -462,9 +452,12 @@ void SymbolCollectorVisitor::generateNativeCall(ASTFunction& function)
 
 void SymbolCollectorVisitor::generateReturn(ASTFunction& function)
 {
-   ASTReturn* preturn = new ASTReturn();
-   
-   function.getBody().addChild(preturn);
+   if ( !function.getModifiers().isAbstract() && !function.getModifiers().isPureNative() )
+   {
+      ASTReturn* preturn = new ASTReturn();
+  
+      function.getBody().addChild(preturn);
+   }
 }
 
 /// Resolve the type, if resolving fails the type is marked as unknown so other 

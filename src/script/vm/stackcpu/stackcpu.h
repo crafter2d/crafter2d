@@ -7,6 +7,8 @@
 class StackCPU : public CPU
 {
 public:
+
+   virtual CodeGen::IRGenerator* createIRGenerator();
 };
 
 #endif // STACK_CPU_H

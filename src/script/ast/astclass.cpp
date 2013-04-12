@@ -419,7 +419,7 @@ const ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignatur
 ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types)
 {
    ASTFunction* pfunction = mFunctions.findBestMatch(name, signature, types);
-   if ( pfunction != NULL && hasBaseClass() )
+   if ( pfunction == NULL && hasBaseClass() )
    {
       pfunction = getBaseClass().findBestMatch(name, signature, types);
    }

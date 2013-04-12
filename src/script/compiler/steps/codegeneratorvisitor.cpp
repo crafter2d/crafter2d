@@ -48,7 +48,7 @@ bool CodeGeneratorVisitor::performStep(ASTNode& node)
 {
    ((const ASTNode&)node).accept(*this);
 
-   // mContext.setResult(mpVClass);
+   mContext.setResult(mpCilClass);
 
    /*
    mpVClass->setDefinition(const_cast<ASTClass*>(mpClass));
@@ -78,19 +78,10 @@ void CodeGeneratorVisitor::visit(const ASTClass& ast)
    mpCilClass->setBaseName(ast.hasBaseClass() ? ast.getBaseClass().getFullName() : "");
    mpCilClass->setModifiers(toCilModifiers(ast.getModifiers()));
 
-   const ASTTypeList& interfaces = ast.getInterfaces();
-   for ( int index = 0; index < interfaces.size(); ++index ) 
-   {
-      const ASTType& type = interfaces[index];
-      ASSERT(type.isObject());
-      ASSERT(type.hasObjectClass());
-
-      mpCilClass->addInterface(type.getObjectClass().getFullName());
-   }
-
    // base class should be set by the VM
    // we don't register the member variables, as they must be loaded/stored differently than locals
 
+   handleFillClass(ast);
    handleStaticBlock(ast);
    handleFieldBlock(ast);
 
@@ -193,7 +184,7 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
       {
          const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-         mBuilder.emit(CIL_ldc, arrayinit.getCount());
+         mBuilder.emit(CIL_ldint, arrayinit.getCount());
          mBuilder.emit(CIL_newarray, 1);
          mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
@@ -205,7 +196,7 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
             vinit.getExpression().accept(*this);
 
             mBuilder.emit(CIL_ldloc, var.getResourceIndex());
-            mBuilder.emit(CIL_ldc, index);
+            mBuilder.emit(CIL_ldint, index);
             mBuilder.emit(CIL_stelem, 1);
          }
       }
@@ -311,17 +302,18 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    if ( mCurrentType.isArray() )
    {
       // index = 0
-      mBuilder.emit(CIL_ldc, 0);
+      mBuilder.emit(CIL_ldint, 0);
       mBuilder.emit(CIL_stloc, ast.getResourceIndex());
 
       const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
       const ASTField* pfield = arrayclass.findField("length", ASTClass::eLocal);
+      const CIL::Opcode op_load = toElemOpcode(mCurrentType);
 
       mBuilder.addLabel(flow.start);
       mBuilder.emit(CIL_dup);
 
       // check for the size ( index < array.length )
-      mBuilder.emit(CIL_load, pfield->getVariable().getResourceIndex());
+      mBuilder.emit(CIL_ldfield, pfield->getVariable().getResourceIndex());
       mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
       mBuilder.emit(CIL_cmpeq);
       mBuilder.emit(CIL_jump_true, flow.end);
@@ -329,14 +321,14 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       // get item & execute body ( var = array[index]; )
       mBuilder.emit(CIL_dup);
       mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
-      mBuilder.emit(CIL_ldelem, 1);
+      mBuilder.emit(op_load, 1);
       mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
       ast.getBody().accept(*this);
 
       // increment iteration ( index++; )
       mBuilder.emit(CIL_ldloc, var.getResourceIndex());
-      mBuilder.emit(CIL_ldc, 1);
+      mBuilder.emit(CIL_ldint, 1);
       mBuilder.emit(CIL_add);
       mBuilder.emit(CIL_stloc, var.getResourceIndex());
       mBuilder.emit(CIL_jump, flow.start);
@@ -840,10 +832,10 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
             concatenate.getRight().accept(*this);
 
             mBuilder.emit(CIL_jump_true, labelResult);                  // true
-            mBuilder.emit(CIL_ldc, 0);                                  // push false
+            mBuilder.emit(CIL_ldfalse);                                 // push false
             mBuilder.emit(CIL_jump, labelFinish);                       // jump to finish
             mBuilder.addLabel(labelResult);
-            mBuilder.emit(CIL_ldc, 1);                                  // push true
+            mBuilder.emit(CIL_ldtrue);                                  // push true
             mBuilder.addLabel(labelFinish);
          }
          break;
@@ -854,11 +846,11 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
             concatenate.getRight().accept(*this);
 
-            mBuilder.emit(CIL_jump_false, labelResult);                   // false
-            mBuilder.emit(CIL_ldc, 1);                                  // push true
+            mBuilder.emit(CIL_jump_false, labelResult);                  // false
+            mBuilder.emit(CIL_ldtrue);                                   // push true
             mBuilder.emit(CIL_jump, labelFinish);                        // jump to finish
             mBuilder.addLabel(labelResult);
-            mBuilder.emit(CIL_ldc, 0);                                  // push false
+            mBuilder.emit(CIL_ldfalse);                                  // push false
             mBuilder.addLabel(labelFinish);
          }
          break;
@@ -966,13 +958,13 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
       // call to constructor of superclass
       visitChildren(ast);
 
-      const ASTClass* pclass = &ast.getConstructor().getClass();
+      const ASTClass* pclass = mpClass;
       if ( ast.isSuper() )
       {
-         pclass = &pclass->getBaseClass();
+         pclass = &ast.getConstructor().getClass();
       }
 
-      String name = pclass->getFullName() + "." + pclass->getName() + "()";
+      String name = pclass->getFullName() + "." + ast.getConstructor().getPrototype();
       mBuilder.emit(CIL_call, name);
    }
    else if ( ast.isThis() )
@@ -993,7 +985,7 @@ void CodeGeneratorVisitor::visit(const ASTNative& ast)
    {
       visitChildren(ast); // place arguments on the stack
 
-      mBuilder.emit(CIL_ldc, ast.getArguments().size() + 1);
+      mBuilder.emit(CIL_ldint, ast.getArguments().size() + 1);
    }
    else
    {
@@ -1004,7 +996,7 @@ void CodeGeneratorVisitor::visit(const ASTNative& ast)
          mBuilder.emit(CIL_ldarg, index);
       }
 
-      mBuilder.emit(CIL_ldc, arguments + 1);
+      mBuilder.emit(CIL_ldint, arguments + 1);
    }
 
    mBuilder.emit(CIL_call_native, ast.getIndex());
@@ -1084,6 +1076,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                   handleVariable(var, false);
                   break;
 
+               case ASTAccess::eArgument:
                case ASTAccess::eLocal:
                   handleVariable(var, true);
                   break;
@@ -1112,10 +1105,13 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             // the array object is now on top of the stack
             mExpr = 1;
 
+            ASTType before = mCurrentType;
+
             // add indices on stack
             reverseVisitChildren(ast);
 
-            mBuilder.emit(CIL_ldelem, ast.getArguments().size());
+            const CIL::Opcode op_load = toElemOpcode(before);
+            mBuilder.emit(op_load, ast.getArguments().size());
          }
          break;
 
@@ -1142,7 +1138,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                   return;
                }
 
-               mBuilder.emit(CIL_ldc, function.getArgumentCount());
+               mBuilder.emit(CIL_ldint, function.getArgumentCount());
                mBuilder.emit(CIL_call_native, preg->getIndex());
             }
             else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
@@ -1253,7 +1249,7 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
             }
             else
             {
-               mBuilder.emit(CIL_store, access.getVariable().getResourceIndex());
+               mBuilder.emit(CIL_stfield, access.getVariable().getResourceIndex());
             }
          }
          break;
@@ -1278,10 +1274,11 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
 
 void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool local)
 {
+   bool isargument = variable.isArgument();
    bool isstatic = variable.getModifiers().isStatic();
 
-   Opcode store = local ? CIL_stloc : (isstatic ? CIL_ststatic : CIL_store);
-   Opcode load  = local ? CIL_ldloc : (isstatic ? CIL_ldstatic : CIL_load);
+   Opcode store = local ? (isargument ? CIL_ldarg : CIL_stloc) : (isstatic ? CIL_ststatic : CIL_stfield);
+   Opcode load  = local ? (isargument ? CIL_ldarg : CIL_ldloc) : (isstatic ? CIL_ldstatic : CIL_ldfield);
 
    if ( mLoadFlags > 0 )
    {
@@ -1289,7 +1286,7 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
       mBuilder.emit(load, variable.getResourceIndex());
 
       if ( variable.getType().isInt() )
-         mBuilder.emit(CIL_ldc, 1);
+         mBuilder.emit(CIL_ldint, 1);
       else
          mBuilder.emit(CIL_ldreal, 1.0);
 
@@ -1313,7 +1310,7 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
       {
          // revert if it should be a post operator
          if ( variable.getType().isInt() )
-            mBuilder.emit(CIL_ldc, 1);
+            mBuilder.emit(CIL_ldint, 1);
          else
             mBuilder.emit(CIL_ldreal, 1.0);
 
@@ -1323,6 +1320,39 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
    else
    {
       mBuilder.emit(load, variable.getResourceIndex());
+   }
+}
+
+void CodeGeneratorVisitor::handleFillClass(const ASTClass& ast)
+{
+   const ASTTypeList& interfaces = ast.getInterfaces();
+   for ( int index = 0; index < interfaces.size(); ++index ) 
+   {
+      const ASTType& type = interfaces[index];
+      ASSERT(type.isObject());
+      ASSERT(type.hasObjectClass());
+
+      mpCilClass->addInterface(type.getObjectClass().getFullName());
+   }
+
+   const ASTClass::Fields& fields = ast.getFields();
+   for ( unsigned index = 0; index < fields.size(); ++index )
+   {
+      const ASTField& member = *fields[index];
+      const ASTVariable& var = member.getVariable();
+
+      CIL::Type* ptype = toCilType(var.getType());
+      mpCilClass->addField(ptype);
+   }
+
+   const ASTClass::Fields& statics = ast.getStatics();
+   for ( unsigned index = 0; index < fields.size(); ++index )
+   {
+      const ASTField& member = *fields[index];
+      const ASTVariable& var = member.getVariable();
+
+      CIL::Type* ptype = toCilType(var.getType());
+      mpCilClass->addStaticField(ptype);
    }
 }
 
@@ -1363,7 +1393,7 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
             const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
             // var = new array[count]
-            mBuilder.emit(CIL_ldc, arrayinit.getCount());
+            mBuilder.emit(CIL_ldint, arrayinit.getCount());
             mBuilder.emit(CIL_newarray, 1);
             mBuilder.emit(CIL_ldstr, ast.getFullName());
             mBuilder.emit(CIL_ststatic, variable.getResourceIndex());
@@ -1378,7 +1408,7 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
                // var[index] = expr
                mBuilder.emit(CIL_ldstr, ast.getFullName());
                mBuilder.emit(CIL_ldstatic, variable.getResourceIndex());
-               mBuilder.emit(CIL_ldc, index);
+               mBuilder.emit(CIL_ldint, index);
                mBuilder.emit(CIL_stelem, 1);
             }
          }
@@ -1389,8 +1419,10 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
          switch ( type.getKind() )
          {
             case ASTType::eBoolean:
+               mBuilder.emit(CIL_ldfalse);
+               break;
             case ASTType::eInt:
-               mBuilder.emit(CIL_ldc, 0);
+               mBuilder.emit(CIL_ldint, 0);
                break;
             case ASTType::eReal:
                mBuilder.emit(CIL_ldreal, 0.0);
@@ -1434,7 +1466,7 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
 
    if ( ast.hasBaseClass() )
    {
-      String name = ast.getBaseClass().getFullName() + ".var_init";
+      String name = ast.getBaseClass().getFullName() + ".var_init()";
       mBuilder.emit(CIL_call, name);
    }
 
@@ -1454,16 +1486,16 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
             varinit.getExpression().accept(*this);
 
             mBuilder.emit(CIL_ldarg, 0);
-            mBuilder.emit(CIL_store, variable.getResourceIndex());
+            mBuilder.emit(CIL_stfield, variable.getResourceIndex());
          }
          else // array initialization (currently only for one dimensional arrays)
          {
             const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-            mBuilder.emit(CIL_ldc, arrayinit.getCount());
+            mBuilder.emit(CIL_ldint, arrayinit.getCount());
             mBuilder.emit(CIL_newarray, 1);
             mBuilder.emit(CIL_ldarg, 0);
-            mBuilder.emit(CIL_store, variable.getResourceIndex());
+            mBuilder.emit(CIL_stfield, variable.getResourceIndex());
 
             int count = arrayinit.getCount();
             for ( int index = 0; index < count; index++ )
@@ -1473,8 +1505,8 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
                vinit.getExpression().accept(*this);
 
                mBuilder.emit(CIL_ldarg, 0);
-               mBuilder.emit(CIL_load, variable.getResourceIndex());
-               mBuilder.emit(CIL_ldc, index);
+               mBuilder.emit(CIL_ldfield, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldint, index);
                mBuilder.emit(CIL_stelem, 1);
             }
          }
@@ -1485,8 +1517,10 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          switch ( type.getKind() )
          {
             case ASTType::eBoolean:
+               mBuilder.emit(CIL_ldfalse);
+               break;
             case ASTType::eInt:
-               mBuilder.emit(CIL_ldc, 0);
+               mBuilder.emit(CIL_ldint, 0);
                break;
             case ASTType::eReal:
                mBuilder.emit(CIL_ldreal, 0.0);
@@ -1497,7 +1531,7 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          }
 
          mBuilder.emit(CIL_ldarg, 0);
-         mBuilder.emit(CIL_store, variable.getResourceIndex());
+         mBuilder.emit(CIL_stfield, variable.getResourceIndex());
       }
    }
    mBuilder.emit(CIL_ret, 0);
@@ -1556,7 +1590,7 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
    const Variant& value = literal.getValue();
    if ( value.isInt() )
    {
-      mBuilder.emit(CIL_ldc, value.asInt());
+      mBuilder.emit(CIL_ldint, value.asInt());
    }
    else if ( value.isReal() )
    {
@@ -1564,7 +1598,7 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
    }
    else if ( value.isBool() )
    {
-      mBuilder.emit(CIL_ldc, value.asBool() ? 1 : 0);
+      mBuilder.emit(value.asBool() ? CIL_ldtrue : CIL_ldfalse, 0);
    }
    else if ( value.isString() )
    {
@@ -1636,9 +1670,42 @@ CIL::Type* CodeGeneratorVisitor::toCilType(const ASTType& type)
       case ASTType::eVoid:
          ptype->type = CIL::eVoid;
          break;
+      case ASTType::eGeneric:
+         ptype->type = CIL::eObject;
+         break;
       default:
          UNREACHABLE("type is not yet converted.");
    }
 
    return ptype;
+}
+
+CIL::Opcode CodeGeneratorVisitor::toElemOpcode(const ASTType& type)
+{
+   using namespace CIL;
+
+   ASSERT(type.isArray());
+   const ASTType& elementtype = type.getArrayType();
+   switch ( elementtype.getKind() )
+   {
+      case ASTType::eBoolean:
+         return CIL_ldelem_bool;
+      case ASTType::eInt:
+         return CIL_ldelem_int;
+      case ASTType::eReal:
+         return CIL_ldelem_real;
+      case ASTType::eChar:
+         return CIL_ldelem_char;
+      case ASTType::eString:
+         return CIL_ldelem_string;
+      case ASTType::eObject:
+         return CIL_ldelem_object;
+      case ASTType::eArray:
+         return CIL_ldelem_array;
+      default:
+         break;
+   }
+
+   UNREACHABLE("Invalid type");
+   return CIL_nop;
 }

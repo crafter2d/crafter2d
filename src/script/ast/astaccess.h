@@ -20,6 +20,7 @@ public:
    enum VarAccess { 
       eField,           // access field, pushes the class(name) first on stack
       eRefField,        // field of topmost object on stack
+      eArgument,        // argument of the function, location is on stack
       eLocal,           // local variable, space is on stack
       eArrayAccess,     // array access, the array object should be on the stack already
       eInvalidAccess

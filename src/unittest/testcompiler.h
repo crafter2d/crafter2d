@@ -10,6 +10,11 @@
 #include "script/compiler/compilecallback.h"
 #include "script/vm/vminterface.h"
 
+namespace CIL
+{
+   class Class;
+}
+
 class TestCompiler : public CxxTest::TestSuite
 {
    class TestCompilerCallback : public CompileCallback
@@ -20,7 +25,7 @@ class TestCompiler : public CxxTest::TestSuite
       {
       }
 
-      virtual void notify(VirtualClass* pclass)
+      virtual void notify(CIL::Class* pclass)
       {
          mTest.loaded();
       }

@@ -795,7 +795,9 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                const ScopeVariable* pvariable = mScopeStack.find(name);
                if ( pvariable != NULL )
                {
-                  ast.setAccess(ASTAccess::eLocal);
+                  const ASTVariable& var = pvariable->getVariable();
+
+                  ast.setAccess(var.isArgument() ? ASTAccess::eArgument : ASTAccess::eLocal);
                   ast.setVariable(pvariable->getVariable());
 
                   mCurrentType = pvariable->getType();
@@ -1002,6 +1004,11 @@ void SymbolCheckVisitor::checkReturn(const ASTFunction& function)
 void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& access, bool isstatic)
 {
    ASTType before = mCurrentType;
+
+   if ( mpFunction->getName() == "asArray" )
+   {
+      int aap = 5;
+   }
 
    ASTSignature signature;
    ASTNodes& arguments = access.getArguments();

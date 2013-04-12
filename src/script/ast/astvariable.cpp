@@ -9,6 +9,7 @@ ASTVariable::ASTVariable():
    mModifiers(),
    mpType(NULL),
    mpInit(NULL),
+   mLocation(eInvalidLoc),
    mResourceIndex(-1)
 {
 }
@@ -83,6 +84,16 @@ void ASTVariable::setInit(ASTVariableInit* pinit)
    mpInit = pinit;
 }
 
+ASTVariable::Location ASTVariable::getLocation() const
+{
+   return mLocation;
+}
+
+void ASTVariable::setLocation(Location location)
+{
+   mLocation = location;
+}
+
 int ASTVariable::getResourceIndex() const
 {
    return mResourceIndex;
@@ -91,4 +102,12 @@ int ASTVariable::getResourceIndex() const
 void ASTVariable::setResourceIndex(int index)
 {
    mResourceIndex = index;
+}
+
+// query
+
+bool ASTVariable::isArgument() const
+{
+   ASSERT(mLocation != eInvalidLoc);
+   return mLocation == eArgument;
 }

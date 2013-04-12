@@ -99,10 +99,12 @@ private:
    void handleFieldBlock(const ASTClass& ast);
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
+   void handleFillClass(const ASTClass& ast);
 
  // CIL generation
    int         toCilModifiers(const ASTModifiers& modifiers);
    CIL::Type*  toCilType(const ASTType& type);
+   CIL::Opcode toElemOpcode(const ASTType& type);
       
    CompileContext&      mContext;
    const ASTClass*      mpClass;

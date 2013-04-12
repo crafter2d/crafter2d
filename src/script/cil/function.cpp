@@ -14,6 +14,18 @@ namespace CIL
    {
    }
 
+   // - Query
+      
+   const Types& Function::getArguments() const
+   {
+      return mArgs;
+   }
+
+   const Types& Function::getLocals() const
+   {
+      return mLocals;
+   }
+
    // - Operations
 
    void Function::setName(const String& name)
