@@ -8,7 +8,7 @@ namespace CIL
 
    Function::Function():
        mName(),
-       mArgs(),
+       mSignature(),
        mLocals(),
        mModifiers(0)
    {
@@ -16,9 +16,9 @@ namespace CIL
 
    // - Query
       
-   const Types& Function::getArguments() const
+   const Signature& Function::getSignature() const
    {
-      return mArgs;
+      return mSignature;
    }
 
    const Types& Function::getLocals() const
@@ -48,6 +48,12 @@ namespace CIL
       mModifiers = modifiers;
    }
 
+   const Type& Function::getReturnType() const
+   {
+      ASSERT_PTR(mpReturnType);
+      return *mpReturnType;
+   }
+
    void Function::setReturnType(Type* ptype)
    {
       mpReturnType = ptype;
@@ -55,7 +61,7 @@ namespace CIL
 
    void Function::addArgument(Type* parg)
    {
-      mArgs.push_back(parg);
+      mSignature.addArgument(parg);
    }
 
    void Function::addLocal(Type* plocal)

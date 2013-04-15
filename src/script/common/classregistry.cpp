@@ -6,75 +6,80 @@
 #include "script/ast/astclass.h"
 #include "script/ast/astfunction.h"
 
-#include "classregistration.h"
 #include "functionregistration.h"
 
-void ClassRegistry::assign(const ClassRegistry& that)
+ClassRegistry::ClassRegistry():
+   mClasses(),
+   mFunctions(),
+   mpCurrent(NULL)
 {
-   mClasses = that.mClasses;
-   renumber();
 }
 
-ClassRegistration& ClassRegistry::addClass(const String& name)
+VMInterface::CallbackFnc ClassRegistry::getCallback(int index) const
 {
-   mClasses.push_back(new ClassRegistration(name));
-   return *mClasses[mClasses.size() - 1];
+   return mFunctions[index]->getCallback();
 }
 
-void ClassRegistry::merge(const ClassRegistry& that)
+const FunctionRegistration& ClassRegistry::getFunction(int index) const
 {
-   for ( std::size_t index = 0; index < that.mClasses.size(); index++ )
+   return *mFunctions[index];
+}
+
+// - Maintenance
+
+void ClassRegistry::add(const ClassRegistry& that)
+{
+   for ( std::size_t index = 0; index < that.mClasses.size(); ++index )
    {
-      const ClassRegistration& classreg = *that.mClasses[index];
+      const ClassRegistration& thatreg = that.mClasses[index];
 
-      ClassRegistration* thisclassreg = findClass(classreg.getName());
-      if ( thisclassreg != NULL )
-      {
-         thisclassreg->merge(classreg);
-      }
-      else
-      {
-         mClasses.push_back(classreg.clone());
-      }
+      ClassRegistration reg;
+      reg.start = thatreg.start + mFunctions.size();
+      reg.end = thatreg.end + mFunctions.size();
+
+      mClasses.push_back(reg);
    }
 
-   renumber();
-}
-
-void ClassRegistry::renumber()
-{
-   int index = 0;
-   for ( std::size_t idx = 0; idx < mClasses.size(); idx++ )
+   for ( std::size_t index = 0; index < that.mFunctions.size(); ++index )
    {
-      ClassRegistration& reg = *mClasses[idx];
-      reg.renumber(index);
+      const FunctionRegistration* preg = that.mFunctions[index];
+
+      mFunctions.push_back(preg->clone());
    }
 }
 
-void ClassRegistry::collect(std::vector<VMInterface::CallbackFnc>& callbacks) const
+void ClassRegistry::addClass(const String& name)
 {
-   for ( std::size_t index = 0; index < mClasses.size(); index++ )
-   {
-      const ClassRegistration& reg = *mClasses[index];
-      reg.collect(callbacks);
-   }
+   ClassRegistration reg;
+   reg.name = name;
+   reg.start = mFunctions.size();
+   reg.end = reg.start;
+
+   mClasses.push_back(reg);
+   mpCurrent = &reg;
 }
 
-// search
+void ClassRegistry::addFunction(const String& name, VMInterface::CallbackFnc callback)
+{
+   mFunctions.push_back(FunctionRegistration::create(name, callback));
+   mpCurrent->end++;
+}
 
-const ClassRegistration* ClassRegistry::findClass(const String& name) const
+// - Search
+
+const ClassRegistry::ClassRegistration* ClassRegistry::findClass(const String& name) const
 {
    return const_cast<ClassRegistry*>(this)->findClass(name);
 }
 
-ClassRegistration* ClassRegistry::findClass(const String& name)
+ClassRegistry::ClassRegistration* ClassRegistry::findClass(const String& name)
 {
    for ( std::size_t index = 0; index < mClasses.size(); index++ )
    {
-      ClassRegistration* pregistration = mClasses[index];
-      if ( pregistration->getName() == name )
+      ClassRegistration& reg = mClasses[index];
+      if ( reg.name == name )
       {
-         return pregistration;
+         return &reg;
       }
    }
    return NULL;
@@ -90,10 +95,13 @@ const FunctionRegistration* ClassRegistry::findCallback(const ASTClass& astclass
    const ClassRegistration* pclass = findClass(astclass.getName());
    if ( pclass != NULL )
    {
-      const FunctionRegistration* funcreg = pclass->find(fncname);
-      if ( funcreg != NULL )
+      for ( std::size_t index = pclass->start; index < pclass->end; ++index )
       {
-         return funcreg;
+         const FunctionRegistration* pfuncreg = mFunctions[index];
+         if ( pfuncreg->getPrototype() == fncname )
+         {
+            return pfuncreg;
+         }
       }
    }
 

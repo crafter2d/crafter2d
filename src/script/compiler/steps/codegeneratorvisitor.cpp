@@ -10,7 +10,6 @@
 #include "script/cil/switchtabel.h"
 #include "script/common/literal.h"
 #include "script/common/variant.h"
-#include "script/common/classregistration.h"
 #include "script/common/functionregistration.h"
 #include "script/compiler/compilecontext.h"
 #include "script/scope/scope.h"

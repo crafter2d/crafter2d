@@ -5,7 +5,9 @@
 #include <vector>
 
 #include "core/string/string.h"
+
 #include "cil.h"
+#include "signature.h"
 
 namespace CIL
 {
@@ -15,7 +17,7 @@ namespace CIL
       Function();
 
     // query
-      const Types& getArguments() const;
+      const Signature& getSignature() const;
       const Types& getLocals() const;
 
     // operations
@@ -25,7 +27,9 @@ namespace CIL
       void                setInstructions(const Instructions& instructions);
 
       void setModifiers(int modifiers);
-      void setReturnType(Type* ptype);
+
+      const Type& getReturnType() const;
+      void        setReturnType(Type* ptype);
 
       void addArgument(Type* parg);
       void addLocal(Type* ploc);
@@ -34,7 +38,7 @@ namespace CIL
 
       String         mName;
       Instructions   mInstructions;
-      Types          mArgs;
+      Signature      mSignature;
       Types          mLocals;
       Type*          mpReturnType;
       int            mModifiers;

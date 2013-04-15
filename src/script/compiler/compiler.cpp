@@ -165,6 +165,11 @@ bool Compiler::compile(const String& classname)
 
 // - Operations
 
+const ClassRegistry& Compiler::getClassRegistry() const
+{
+   return mContext.getClassRegistry();
+}
+
 void Compiler::setClassRegistry(const ClassRegistry& registry)
 {
    mContext.setClassRegistry(registry);

@@ -23,8 +23,12 @@ namespace CIL
       Class();
 
     // get/set
-      void setName(const String& name);
-      void setBaseName(const String& name);
+      const String&  getName() const;
+      void           setName(const String& name);
+
+      const String&  getBaseName() const;
+      void           setBaseName(const String& name);
+
       void setModifiers(int modifiers);
 
       const Fields& getFields() const;

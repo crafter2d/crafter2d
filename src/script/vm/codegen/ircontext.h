@@ -2,6 +2,9 @@
 #ifndef CODEGEN_IR_CONTEXT_H
 #define CODEGEN_IR_CONTEXT_H
 
+#include "script/cil/classmap.h"
+#include "script/common/classregistry.h"
+
 #include "block.h"
 
 namespace CodeGen
@@ -11,6 +14,9 @@ namespace CodeGen
    public:
       IRContext();
 
+      CIL::ClassMap classes;
+      ClassRegistry* pclassregistry;
+      
    // operations
       void     allocateInstructionBlocks(int amount);
       Block*   createBlock(int target);

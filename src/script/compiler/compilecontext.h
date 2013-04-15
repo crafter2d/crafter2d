@@ -39,8 +39,8 @@ public:
    CIL::Class* useResult();
    void        setResult(CIL::Class* pclass);
 
-   ClassRegistry& getClassRegistry();
-   void setClassRegistry(const ClassRegistry& registry);
+   const ClassRegistry& getClassRegistry() const;
+   void                 setClassRegistry(const ClassRegistry& registry);
    
  // query
    bool hasClass(const String& classname) const;

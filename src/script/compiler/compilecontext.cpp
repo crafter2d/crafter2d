@@ -56,7 +56,7 @@ void CompileContext::setResult(CIL::Class* pclass)
    mpResult = pclass;
 }
 
-ClassRegistry& CompileContext::getClassRegistry()
+const ClassRegistry& CompileContext::getClassRegistry() const
 {
    return mClassRegistry;
 }

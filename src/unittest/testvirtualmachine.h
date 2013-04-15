@@ -83,13 +83,13 @@ public:
    void testRun()
    {
       ClassRegistry registry;
-      ClassRegistration& classreg = registry.addClass("NativeClass");
-      classreg.addFunction(FunctionRegistration::Constructor("init", NativeClass_init));
-      classreg.addFunction(FunctionRegistration::Function("getIntValue", NativeClass_getIntValue));
-      classreg.addFunction(FunctionRegistration::Function("getStringValue", NativeClass_getStringValue));
-      classreg.addFunction(FunctionRegistration::Function("add", NativeClass_add));
-      classreg.addFunction(FunctionRegistration::Function("sub", NativeClass_sub));
-      classreg.addFunction(FunctionRegistration::Function("mul", NativeClass_mul));
+      registry.addClass("NativeClass");
+      registry.addFunction(FunctionRegistration::create("init", NativeClass_init));
+      registry.addFunction(FunctionRegistration::create("getIntValue", NativeClass_getIntValue));
+      registry.addFunction(FunctionRegistration::create("getStringValue", NativeClass_getStringValue));
+      registry.addFunction(FunctionRegistration::create("add", NativeClass_add));
+      registry.addFunction(FunctionRegistration::create("sub", NativeClass_sub));
+      registry.addFunction(FunctionRegistration::create("mul", NativeClass_mul));
 
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();

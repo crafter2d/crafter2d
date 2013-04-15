@@ -151,7 +151,6 @@ private:
    };
 
    typedef std::vector<VirtualObject*> Objects;
-   typedef std::vector<VMInterface::CallbackFnc> Callbacks;
    typedef std::stack<VirtualCall> CallStack;
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
 
@@ -183,7 +182,6 @@ private:
    VirtualStack                  mStack;
    CallStack                     mCallStack;
    VirtualCall                   mCall;
-   Callbacks                     mCallbacks;
    NativeObjectMap               mNativeObjects;
    State                         mState;
    VirtualClass*                 mpArrayClass;

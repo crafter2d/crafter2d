@@ -33,7 +33,8 @@ public:
    const Literal& lookupLiteral(int index) const;
 
  // operations
-   void setClassRegistry(const ClassRegistry& registry);
+   const ClassRegistry& getClassRegistry() const;
+   void                 setClassRegistry(const ClassRegistry& registry);
 
  // compilation
    bool compile(const String& classname);

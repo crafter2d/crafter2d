@@ -116,7 +116,6 @@ bool VirtualMachine::loadClass(const String& classname)
 
 void VirtualMachine::mergeClassRegistry(const ClassRegistry& registry)
 {
-   registry.collect(mCallbacks);
    mCompiler.setClassRegistry(registry);
 }
 
@@ -305,10 +304,8 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
 
             if ( !object.asObject().hasNativeObject() )
             {
-               // const String& fnc = mContext.mLiteralTable[instruction.getArgument()].getValue().asString().getString();
-
                VirtualStackAccessor accessor(mContext, mStack, arguments);
-               (*mCallbacks[instruction.getArgument()])(*this, accessor);
+               (*mCompiler.getClassRegistry().getCallback(instruction.getArgument()))(*this, accessor);
             }
          }
          break;
@@ -400,7 +397,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
             int arguments = mStack.popInt();
 
             VirtualStackAccessor accessor(mContext, mStack, arguments);
-            (*mCallbacks[instruction.getArgument()])(*this, accessor);
+            (*mCompiler.getClassRegistry().getCallback(instruction.getArgument()))(*this, accessor);
 
             mStack.pop(arguments); // pop the arguments
             if ( accessor.hasResult() )

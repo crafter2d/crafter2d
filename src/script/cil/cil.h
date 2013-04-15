@@ -40,7 +40,6 @@ namespace CIL
       CIL_dup,
       CIL_new,
       CIL_newarray,
-      CIL_newnative,
       CIL_conv_int,
       CIL_conv_real,
       CIL_conv_string,
@@ -112,6 +111,8 @@ namespace CIL
          String*  name;
          Type*    elem_type;
       };
+
+      bool match(const Type& that) const;
    };
 
    struct Instruction

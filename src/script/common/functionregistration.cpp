@@ -2,36 +2,16 @@
 #include "functionregistration.h"
 
 // static 
-FunctionRegistration FunctionRegistration::Constructor(const String& prototype, VMInterface::CallbackFnc callback)
+FunctionRegistration* FunctionRegistration::create(const String& prototype, VMInterface::CallbackFnc callback)
 {
-   return FunctionRegistration(eConstructor, prototype, callback);
-}
-
-// static 
-FunctionRegistration FunctionRegistration::Destructor(VMInterface::CallbackFnc callback)
-{
-   return FunctionRegistration(eDestructor, callback);
-}
-
-// static 
-FunctionRegistration FunctionRegistration::Function(const String& prototype, VMInterface::CallbackFnc callback)
-{
-   return FunctionRegistration(eFunction, prototype, callback);
+   return new FunctionRegistration(prototype, callback);
 }
 
 // - Constructors
 
-FunctionRegistration::FunctionRegistration(Type type, VMInterface::CallbackFnc callback):
+FunctionRegistration::FunctionRegistration(const String& prototype, VMInterface::CallbackFnc callback):
    mIndex(-1),
-   mType(type),
-   mPrototype(),
-   mCallback(callback)
-{
-}
-
-FunctionRegistration::FunctionRegistration(Type type, const String& prototype, VMInterface::CallbackFnc callback):
-   mIndex(-1),
-   mType(type),
+   mType(eInvalidType),
    mPrototype(prototype),
    mCallback(callback)
 {
@@ -43,15 +23,6 @@ FunctionRegistration::FunctionRegistration(const FunctionRegistration& that):
    mPrototype(that.mPrototype),
    mCallback(that.mCallback)
 {
-}
-
-const FunctionRegistration& FunctionRegistration::operator=(const FunctionRegistration& that)
-{
-   mIndex = that.mIndex;
-   mType = that.mType;
-   mPrototype = that.mPrototype;
-   mCallback = that.mCallback;
-   return *this;
 }
 
 // - Get/set
@@ -66,7 +37,7 @@ void FunctionRegistration::setIndex(int index)
    mIndex = index;
 }
 
-FunctionRegistration::Type FunctionRegistration::getType() const
+FunctionRegistration::Type FunctionRegistration::getReturnType() const
 {
    return mType;
 }

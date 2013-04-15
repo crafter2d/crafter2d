@@ -16,9 +16,19 @@ namespace CIL
 
    // - Get/set
 
+   const String& Class::getName() const
+   {
+      return mName;
+   }
+
    void Class::setName(const String& name)
    {
       mName = name;
+   }
+
+   const String& Class::getBaseName() const
+   {
+      return mBaseName;
    }
       
    void Class::setBaseName(const String& name)
