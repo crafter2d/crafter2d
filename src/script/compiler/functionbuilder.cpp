@@ -12,6 +12,13 @@ FunctionBuilder::FunctionBuilder():
 {
 }
 
+// - Get/set
+
+const CIL::Instructions& FunctionBuilder::getInstructions() const
+{
+   return mInstructions;
+}
+
 // - Label operations
 
 int FunctionBuilder::allocateLabel()
@@ -75,14 +82,10 @@ void FunctionBuilder::start()
    mInstructions.clear();
 }
 
-void FunctionBuilder::end(CIL::Function& function)
+void FunctionBuilder::end()
 {
    replaceLabels();
    removeNops();
-
-   function.setInstructions(mInstructions);
-
-   mInstructions.clear();
 }
 
 void FunctionBuilder::replaceLabels()
@@ -106,7 +109,7 @@ void FunctionBuilder::replaceLabels()
 
             CIL::Instruction& labelinst = mInstructions[labelindex];
             labelinst.opcode = CIL::CIL_nop;
-            inst.mInt = labelindex;
+            inst.mInt = labelindex - index; // offset
          }
       }
    }

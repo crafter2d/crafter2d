@@ -18,6 +18,9 @@ class FunctionBuilder
 {
 public:
    FunctionBuilder();
+
+ // get/set
+   const CIL::Instructions& getInstructions() const;
    
  // label operations
    int  allocateLabel();
@@ -32,7 +35,7 @@ public:
 
  // building
    void start();
-   void end(CIL::Function& function);
+   void end();
 
 private:
 

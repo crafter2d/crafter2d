@@ -36,9 +36,6 @@ public:
    const LiteralTable& getLiteralTable() const;
          LiteralTable& getLiteralTable();
 
-   CIL::Class* useResult();
-   void        setResult(CIL::Class* pclass);
-
    const ClassRegistry& getClassRegistry() const;
    void                 setClassRegistry(const ClassRegistry& registry);
    
@@ -67,7 +64,6 @@ private:
    StringCache    mStringCache;
    LiteralTable   mLiteralTable;
    CompileLog     mLog;
-   CIL::Class*    mpResult;
 };
 
 #endif // COMPILE_CONTEXT_H_

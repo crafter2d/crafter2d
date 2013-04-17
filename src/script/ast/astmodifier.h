@@ -18,6 +18,7 @@ public:
    };
 
    ASTModifiers(): mAccess(ePublic), mFlags(0) {}
+   ASTModifiers(Access access, int flags): mAccess(access), mFlags(flags) {}
 
    const ASTModifiers& operator=(const ASTModifiers& that)
    {

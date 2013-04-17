@@ -18,8 +18,6 @@
 
 namespace CIL
 {
-   class Class;
-   class Function;
    class SwitchTable;
 };
 
@@ -39,9 +37,10 @@ public:
    void print();
    
  // visitor
-   virtual void visit(const ASTRoot& root);
-   virtual void visit(const ASTClass& ast);
-   virtual void visit(const ASTFunction& ast);
+   virtual void visit(ASTRoot& root);
+   virtual void visit(ASTClass& ast);
+   virtual void visit(ASTFunction& ast);
+
    virtual void visit(const ASTFunctionArgument& argument);
    virtual void visit(const ASTBlock& ast);
    virtual void visit(const ASTExpressionStatement& ast);
@@ -95,15 +94,12 @@ private:
  // operations
    void handleAssignment(const ASTAccess& access, bool local);
    void handleVariable(const ASTVariable& variable, bool local);
-   void handleStaticBlock(const ASTClass& ast);
-   void handleFieldBlock(const ASTClass& ast);
+   void handleStaticBlock(ASTClass& ast);
+   void handleFieldBlock(ASTClass& ast);
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
-   void handleFillClass(const ASTClass& ast);
 
  // CIL generation
-   int         toCilModifiers(const ASTModifiers& modifiers);
-   CIL::Type*  toCilType(const ASTType& type);
    CIL::Opcode toElemOpcode(const ASTType& type);
       
    CompileContext&      mContext;
@@ -113,8 +109,6 @@ private:
    const ASTExpression* mpExpression;
    ASTType              mCurrentType;
 
-   CIL::Class*          mpCilClass;
-   CIL::Function*       mpCilFunction;
    CIL::SwitchTable*    mpSwitchTable;
    FunctionBuilder      mBuilder;
 

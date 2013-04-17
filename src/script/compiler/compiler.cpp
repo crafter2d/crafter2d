@@ -19,6 +19,7 @@
 #include "steps/resourcecheckvisitor.h"
 #include "steps/oocheckvisitor.h"
 #include "steps/codegeneratorvisitor.h"
+#include "steps/bytecodegenerationvisitor.h"
 
 #include "compilecallback.h"
 
@@ -137,13 +138,15 @@ bool Compiler::compile(const String& classname)
             pclass = sorted[index];
             if ( performSteps(*pclass, mCompileSteps) )
             {
-               CIL::Class* pcilclass = mContext.useResult();
+               save(*pclass);
+
+               /*
                if ( hasCallback() )
                {
                   mpCallback->notify(pcilclass);
                }
 
-               save(*pcilclass);
+               save(*pcilclass); */
             }
             else
             {
@@ -191,6 +194,7 @@ void Compiler::createCompileSteps()
    mCompileSteps.push_back(new ResourceCheckVisitor(mContext));
    mCompileSteps.push_back(new OOCheckVisitor(mContext));
    mCompileSteps.push_back(new CodeGeneratorVisitor(mContext));
+   mCompileSteps.push_back(new ByteCodeGenerationVisitor(mContext));
 }
 
 bool Compiler::performSteps(ASTNode& node, Steps& steps)
@@ -237,7 +241,7 @@ bool Compiler::load(const String& classname)
    return false;
 }
 
-void Compiler::save(const CIL::Class& ast)
+void Compiler::save(const ASTClass& ast)
 {
    // do some interesting saving stuff here
 }

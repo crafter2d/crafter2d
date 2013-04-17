@@ -17,8 +17,7 @@ CompileContext::CompileContext(Compiler& compiler):
    mClasses(),
    mStringCache(),
    mLiteralTable(),
-   mLog(),
-   mpResult(NULL)
+   mLog()
 {
 }
 
@@ -44,18 +43,6 @@ LiteralTable& CompileContext::getLiteralTable()
    return mLiteralTable;
 }
 
-CIL::Class* CompileContext::useResult()
-{
-   CIL::Class* presult = mpResult;
-   mpResult = NULL;
-   return presult;
-}
-
-void CompileContext::setResult(CIL::Class* pclass)
-{
-   mpResult = pclass;
-}
-
 const ClassRegistry& CompileContext::getClassRegistry() const
 {
    return mClassRegistry;
@@ -63,7 +50,7 @@ const ClassRegistry& CompileContext::getClassRegistry() const
 
 void CompileContext::setClassRegistry(const ClassRegistry& registry)
 {
-   mClassRegistry.merge(registry);
+   mClassRegistry.add(registry);
 }
 
 // - Query

@@ -4,6 +4,8 @@
 
 #include "core/string/string.h"
 
+#include "script/cil/cil.h"
+
 #include "astmember.h"
 #include "astmodifier.h"
 
@@ -61,6 +63,8 @@ public:
    int  getLocalVariableCount() const;
    void setLocalVariableCount(int count);
 
+   void setInstructions(const CIL::Instructions& instructions);
+
  // query
    bool isConstructor() const;
    bool isDefaultConstructor() const;
@@ -75,6 +79,7 @@ public:
 
  // operations
    void addArgument(ASTFunctionArgument* pargument);
+   void cleanup();
 
  // search
    const ASTFunctionArgument& resolveArgument(const String& name) const;
@@ -92,6 +97,7 @@ private:
    ASTFunction*      mpBaseFunction;
    ASTBlock*         mpBody;
    ASTSignature*     mpSignature;
+   CIL::Instructions mInstructions;
    int               mResourceIndex;
    int               mLocalVariableCount;
 };

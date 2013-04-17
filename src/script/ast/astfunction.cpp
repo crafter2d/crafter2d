@@ -193,6 +193,11 @@ void ASTFunction::setLocalVariableCount(int count)
    mLocalVariableCount = count;
 }
 
+void ASTFunction::setInstructions(const CIL::Instructions& instructions)
+{
+   mInstructions = instructions;
+}
+
 // - Query
 
 bool ASTFunction::isConstructor() const
@@ -239,6 +244,12 @@ void ASTFunction::addArgument(ASTFunctionArgument* pargument)
 const ASTNodes& ASTFunction::getArguments() const
 {
    return getChildren();
+}
+
+void ASTFunction::cleanup()
+{
+   delete mpBody;
+   mpBody = NULL;
 }
 
 // - Search
