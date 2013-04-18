@@ -29,7 +29,6 @@ void RegisterIRGenerator::generate(const CIL::Function& cilfunction)
             }
             break;
          case CIL_newarray:
-         case CIL_newnative:
             break;
 
          case CIL_call:

@@ -20,7 +20,6 @@
 #include "symbolcollectorstep.h"
 
 #include "script/compiler/compilecontext.h"
-#include "script/common/classregistration.h"
 
 #include "script/ast/ast.h"
 

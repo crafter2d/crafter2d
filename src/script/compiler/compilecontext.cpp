@@ -15,6 +15,8 @@
 CompileContext::CompileContext(Compiler& compiler):
    mCompiler(compiler),
    mClasses(),
+   mClassRegistry(),
+   mpByteCodeGenerator(NULL),
    mStringCache(),
    mLiteralTable(),
    mLog()
@@ -51,6 +53,17 @@ const ClassRegistry& CompileContext::getClassRegistry() const
 void CompileContext::setClassRegistry(const ClassRegistry& registry)
 {
    mClassRegistry.add(registry);
+}
+
+CodeGen::IRGenerator& CompileContext::getByteCodeGenerator()
+{
+   ASSERT_PTR(mpByteCodeGenerator);
+   return *mpByteCodeGenerator;
+}
+
+void CompileContext::setByteCodeGenerator(CodeGen::IRGenerator& generator)
+{
+   mpByteCodeGenerator = &generator;
 }
 
 // - Query

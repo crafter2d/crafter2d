@@ -141,6 +141,7 @@ bool Compiler::compile(const String& classname)
                save(*pclass);
 
                /*
+
                if ( hasCallback() )
                {
                   mpCallback->notify(pcilclass);

@@ -8,32 +8,6 @@ class String;
 
 namespace CIL
 {
-   enum TypeName {
-      eBool,
-      eInt,
-      eReal,
-      eString,
-      eChar,
-      eArray,
-      eObject,
-      eGeneric,
-      eVoid,
-      eInvalidType
-   };
-
-   enum Modifiers {
-      ePublic     = 1,
-      eProtected  = 2,
-      ePrivate    = 4,
-
-      eStatic     = 8,
-      eNative     = 16,
-      eAbstract   = 32,
-      eFinal      = 64,
-      eOverride   = 128,
-      eInterface  = 256
-   };
-
    enum Opcode {
       CIL_nop,
       CIL_label,
@@ -75,6 +49,7 @@ namespace CIL
       CIL_ldreal,
       CIL_ldtrue,
       CIL_ldfalse,
+      CIL_ldthis,
       CIL_ldclass,
       CIL_ldnull,
       CIL_ldfield,
@@ -101,20 +76,6 @@ namespace CIL
       CIL_throw
    };
 
-   struct Type
-   {
-      TypeName type;
-      int      size;
-      
-      union
-      {
-         String*  name;
-         Type*    elem_type;
-      };
-
-      bool match(const Type& that) const;
-   };
-
    struct Instruction
    {
       CIL::Opcode opcode;
@@ -128,7 +89,6 @@ namespace CIL
       };
    };
 
-   typedef std::vector<Type*> Types;
    typedef std::vector<Instruction> Instructions;
 };
 

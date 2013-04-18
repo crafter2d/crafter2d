@@ -13,13 +13,13 @@
 
 #include "compilelog.h"
 
-namespace CIL
-{
-   class Class;
-}
-
-class Compiler;
 class ASTClass;
+class Compiler;
+
+namespace CodeGen
+{
+   class IRGenerator;
+}
 
 class CompileContext
 {
@@ -38,6 +38,9 @@ public:
 
    const ClassRegistry& getClassRegistry() const;
    void                 setClassRegistry(const ClassRegistry& registry);
+
+   CodeGen::IRGenerator& getByteCodeGenerator();
+   void                  setByteCodeGenerator(CodeGen::IRGenerator& generator);
    
  // query
    bool hasClass(const String& classname) const;
@@ -61,6 +64,7 @@ private:
    Compiler&      mCompiler;
    ClassMap       mClasses;
    ClassRegistry  mClassRegistry;
+   CodeGen::IRGenerator*   mpByteCodeGenerator;
    StringCache    mStringCache;
    LiteralTable   mLiteralTable;
    CompileLog     mLog;

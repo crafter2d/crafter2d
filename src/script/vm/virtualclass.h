@@ -43,9 +43,8 @@ public:
    const VirtualFunctionTable& getVirtualFunctionTable() const;
          VirtualFunctionTable& getVirtualFunctionTable();
 
-   const VirtualInstructionTable& getInstructions() const;
-         VirtualInstructionTable& getInstructions();
-   void                           setInstructions(const VirtualInstructionTable& instructions);
+   const char* getByteCode() const;
+   void        setByteCode(const char* pbytecode);
 
    const ASTClass& getDefinition() const;
    void            setDefinition(ASTClass* pdefinition);
@@ -90,7 +89,7 @@ private:
    const VirtualClass*     mpBaseClass;
    ASTClass*               mpDefinition;
    VirtualFunctionTable    mVTable;
-   VirtualInstructionTable mInstructions;
+   char*                   mpByteCode;
    VirtualObject*          mpClassObject;
    LookupTables            mLookupTables;
    Variant*                mpStatics;

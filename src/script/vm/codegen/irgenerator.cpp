@@ -1,48 +1,40 @@
 
 #include "irgenerator.h"
 
+#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
 #include "script/cil/cil.h"
 #include "script/cil/class.h"
 
+#include "script/vm/virtualclass.h"
+#include "script/vm/virtualcontext.h"
+#include "script/vm/virtualfunctiontable.h"
+
 #include "block.h"
-#include "ircontext.h"
 
 namespace CodeGen
 {
 
-   IRGenerator::IRGenerator()
+   IRGenerator::IRGenerator():
+      mBlocks()
    {
    }
 
    // - Operations
 
-   bool IRGenerator::generate(IRContext& context, const CIL::Class& cilclass)
-   {
-      const CIL::Class::Functions& functions = cilclass.getFunctions();
-      for ( unsigned index = 0; index < functions.size(); ++index )
-      {
-         const CIL::Function& function = *functions[index];
-         if ( !generate(context, cilclass, function) )
-         {
-            return false;
-         }
-      }
-
-      return true;
-   }
-
-   bool IRGenerator::generate(IRContext& context, const CIL::Class& cilclass, const CIL::Function& cilfunction)
+   char* IRGenerator::generate(CompileContext& context, const ASTFunction& function)
    {
       PURE_VIRTUAL;
-      return false;
+      return NULL;
    }
 
-   void IRGenerator::buildBlocks(IRContext& context, const CIL::Instructions& instructions)
+   // - Block operations
+
+   void IRGenerator::buildBlocks(VirtualContext& context, const CIL::Instructions& instructions)
    {
-      context.allocateInstructionBlocks(instructions.size());
-      context.insertBlock(0);
+      allocateInstructionBlocks(instructions.size());
+      insertBlock(0);
 
       for ( unsigned index = 0; index < instructions.size(); ++index )
       {
@@ -55,7 +47,7 @@ namespace CodeGen
                // insert new block for code between this and target
                {
                   int target = inst.mInt;
-                  context.insertBlock(target);
+                  insertBlock(target);
                }
                break;
 
@@ -64,6 +56,33 @@ namespace CodeGen
                break;
          }
       }
+   }
+
+   void IRGenerator::allocateInstructionBlocks(int amount)
+   {
+      mBlocks.resize(amount);
+   }
+
+   Block* IRGenerator::createBlock(int target)
+   {
+      Block* ptarget = new Block();
+      ptarget->id = mBlocks.size();
+      ptarget->start = target;
+      return ptarget;
+   }
+
+   void IRGenerator::insertBlock(int target)
+   {
+      if ( mBlocks[target] == NULL )
+      {
+         Block* ptarget = createBlock(target);
+         mBlocks[target] = ptarget;
+      }
+   }
+
+   Block* IRGenerator::getBlock(int target)
+   {
+      return mBlocks[target] != NULL ? mBlocks[target] : NULL;
    }
 
 } // namespace CodeGen

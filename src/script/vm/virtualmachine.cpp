@@ -1429,8 +1429,10 @@ void VirtualMachine::classLoaded(CIL::Class* pclass)
    StackCPU cpu;
    CodeGen::IRContext context;
    AutoPtr<CodeGen::IRGenerator> generator = cpu.createIRGenerator();
-   if ( generator->generate(context, *pclass) )
+   VirtualClass* pvirclass = generator->generate(mContext, *pclass);
+   if ( pvirclass != NULL )
    {
+      mContext.mClassTable.insert(pvirclass);
       // success!
    }
 

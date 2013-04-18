@@ -9,6 +9,7 @@ class VirtualFunctionTableEntry
 public:
    VirtualFunctionTableEntry():
       mName(),
+      mpCode(NULL),
       mInstruction(-1),
       mOriginalInstruction(-1),
       mArguments(0),
@@ -30,6 +31,7 @@ public:
    }
 
    String mName;
+   char*  mpCode;
    int    mInstruction;
    int    mOriginalInstruction;
    int    mArguments;

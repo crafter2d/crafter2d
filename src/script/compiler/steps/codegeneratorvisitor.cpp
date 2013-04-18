@@ -1087,7 +1087,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             if ( !mCurrentType.isValid() )
             {
-               mBuilder.emit(CIL_ldarg, 0); // this
+               mBuilder.emit(CIL_ldthis); // this
             }
 
             ASTType before = mCurrentType;

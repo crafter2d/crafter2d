@@ -12,12 +12,12 @@
 
 #include "script/common/variant.h"
 
-#include "script/vm/virtualinstruction.h"
+#include "script/ast/astfunction.h"
+#include "script/vm/virtualcontext.h"
 #include "script/vm/virtualinstructiontable.h"
-#include "script/vm/virtualfunctiontable.h"
+#include "script/vm/virtualfunctiontableentry.h"
 #include "script/vm/virtualstring.h"
 #include "script/vm/codegen/block.h"
-#include "script/vm/codegen/ircontext.h"
 
 struct Inst
 {
@@ -47,7 +47,7 @@ StackIRGenerator::StackIRGenerator():
 {
 }
 
-bool StackIRGenerator::generate(CodeGen::IRContext& context, const CIL::Class& cilclass, const CIL::Function& cilfunction)
+char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& function)
 {
    using namespace CIL;
    using namespace SBIL;
@@ -56,6 +56,8 @@ bool StackIRGenerator::generate(CodeGen::IRContext& context, const CIL::Class& c
    Insts insts;
    std::vector<Variant> symbols;
    int ip = 0;
+
+   VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
 
    const CIL::Instructions& instructions = cilfunction.getInstructions();
    buildBlocks(context, instructions);
@@ -497,7 +499,7 @@ bool StackIRGenerator::generate(CodeGen::IRContext& context, const CIL::Class& c
             break;
          case CIL_ldarg:
             {
-               const CIL::Type& ciltype = cilfunction.getSignature()[inst.mInt];
+               const CIL::Type& ciltype = function.getSignature()[inst.mInt];
                SBIL::Type type = typeToSBIL(ciltype);
                INSERT(SBIL_ldlocal, inst.mInt, type);
             }
@@ -550,13 +552,14 @@ bool StackIRGenerator::generate(CodeGen::IRContext& context, const CIL::Class& c
             break;
       }
    }
-   return true;
+
+   return pentry;
 }
 
-CIL::Function* StackIRGenerator::resolveFunction(CodeGen::IRContext& context, const String& name)
+CIL::Function* StackIRGenerator::resolveFunction(VirtualContext& context, const String& name)
 {
    CIL::Resolver resolver;
-   CIL::Function* pfunction = resolver.resolveFunction(context.classes, name);
+   CIL::Function* pfunction = resolver.resolveFunction(context.mCilClasses, name);
    return pfunction;
 }
 

@@ -9,8 +9,6 @@
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"
 
-#include "variablecheckvisitor.h"
-
 OOCheckVisitor::OOCheckVisitor(CompileContext& context):
    CompileStep(),
    mContext(context),

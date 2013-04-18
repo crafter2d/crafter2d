@@ -6,27 +6,34 @@
 
 #include "block.h"
 
-namespace CIL
-{
-   class Class;
-   class Function;
-}
+class ASTFunction;
+class CompileContext;
+class VirtualContext;
+class VirtualClass;
+class VirtualFunctionTableEntry;
 
 namespace CodeGen
 {
-   class IRContext;
-
    class IRGenerator
    {
    public:
       IRGenerator();
 
-      bool generate(IRContext& context, const CIL::Class& cilclass);
+      virtual char* generate(CompileContext& context, const ASTFunction& function) = 0;
 
    protected:
-      virtual bool generate(IRContext& context, const CIL::Class& cilclass, const CIL::Function& cilfunction) = 0;
+    // block operations
+      void     buildBlocks(VirtualContext& context, const CIL::Instructions& instructions);
+      Block*   getBlock(int target);
 
-      void buildBlocks(IRContext& context, const CIL::Instructions& instructions);
+   private:
+
+    // block operations
+      void     allocateInstructionBlocks(int amount);
+      Block*   createBlock(int target);
+      void     insertBlock(int target);
+
+      Blocks mBlocks;
    };
 }
 

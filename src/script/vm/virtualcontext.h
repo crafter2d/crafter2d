@@ -4,6 +4,8 @@
 
 #include "script/script_base.h"
 
+#include "script/cil/classmap.h"
+#include "script/common/classregistry.h"
 #include "script/common/stringcache.h"
 #include "script/common/literaltable.h"
 
@@ -17,6 +19,8 @@ public:
 
    VirtualClassTable       mClassTable;
    VirtualInstructionTable mInstructions;
+   CIL::ClassMap           mCilClasses;
+   ClassRegistry           mNativeRegistry;
    StringCache             mStringCache;
    LiteralTable            mLiteralTable;
 };

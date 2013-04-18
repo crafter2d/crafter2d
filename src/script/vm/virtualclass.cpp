@@ -85,19 +85,15 @@ VirtualFunctionTable& VirtualClass::getVirtualFunctionTable()
    return mVTable;
 }
 
-const VirtualInstructionTable& VirtualClass::getInstructions() const
+const char* VirtualClass::getByteCode() const
 {
-   return mInstructions;
+   ASSERT_PTR(mpByteCode);
+   return mpByteCode;
 }
 
-VirtualInstructionTable& VirtualClass::getInstructions()
+void VirtualClass::setByteCode(const char* pcode)
 {
-   return mInstructions;
-}
-
-void VirtualClass::setInstructions(const VirtualInstructionTable& instructions)
-{
-   mInstructions = instructions;
+   mpByteCode = strdup(pcode);
 }
 
 int VirtualClass::getVariableCount() const

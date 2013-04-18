@@ -14,11 +14,6 @@ namespace CIL
    class Function;
 }
 
-namespace CodeGen
-{
-   struct IRCall;
-}
-
 class String;
 class VirtualFunctionTableEntry;
 
@@ -28,13 +23,13 @@ public:
    StackIRGenerator();
 
 protected:
-   virtual bool generate(CodeGen::IRContext& context, const CIL::Class& cilclass, const CIL::Function& cilfunction);
+   virtual VirtualFunctionTableEntry* generate(VirtualContext& context, const CIL::Class& cilclass, const CIL::Function& cilfunction);
 
 private:
    SBIL::Type typeToSBIL(const CIL::Type& type);
    SBIL::Type typeToSBIL(FunctionRegistration::Type type);
 
-   CIL::Function* resolveFunction(CodeGen::IRContext& context, const String& name);
+   CIL::Function* resolveFunction(VirtualContext& context, const String& name);
 };
 
 #endif // STACK_IR_GENERATOR_H
