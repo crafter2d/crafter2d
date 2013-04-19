@@ -157,6 +157,8 @@ void SymbolCheckVisitor::visit(ASTLocalVariable& ast)
    checkUnknown(var.getType());
    checkVarInit(var);
 
+   mpFunction->addLocal(var.getType().clone());
+
    ScopeVariable* pvariable = ScopeVariable::fromVariable(ast.getVariable());
    mScopeStack.add(pvariable);
 }

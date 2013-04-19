@@ -14,6 +14,7 @@
 #include "astmodifier.h"
 #include "asttypelist.h"
 #include "astfunctionmap.h"
+#include "astfunctiontable.h"
 
 class ASTMember;
 class ASTFunction;
@@ -66,6 +67,9 @@ public:
 
    const ASTFunctionMap& getFunctions() const;
          ASTFunctionMap& getFunctions();
+
+   const ASTFunctionTable& getFunctionTable() const;
+         ASTFunctionTable& getFunctionTable();
 
    const ASTTypeList& getInterfaces() const;
          ASTTypeList& getInterfaces();
@@ -125,6 +129,7 @@ private:
  // operations
    void indexStatics();
    void indexVariables();
+   void indexFunctions();
 
  // search
    ASTFunction* findExactMatchLocal(const String& name, const ASTSignature& signature);
@@ -136,6 +141,7 @@ private:
    ASTTypeList       mInterfaces;
    ASTTypeVariables* mpTypeVariables;
    ASTFunctionMap    mFunctions;
+   ASTFunctionTable  mFunctionTable;
    String            mName;
    String            mFullName;
    Fields            mStatics;

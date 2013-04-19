@@ -8,7 +8,6 @@
 #include "core/defines.h"
 
 #include "script/vm/virtualmachine.h"
-#include "script/common/classregistration.h"
 #include "script/common/functionregistration.h"
 
 #include "scriptmanager.h"
@@ -18,33 +17,19 @@ class ScriptRegistrator
 public:
 
    ScriptRegistrator():
-      mRegistry(),
-      mpActive(NULL)
+      mRegistry()
    {
    }
 
  // operations
    void addClass(const String& name)
    {
-      mpActive = &mRegistry.addClass(name);
+      mRegistry.addClass(name);
    }
 
-   void addConstructor(const String& prototype, VMInterface::CallbackFnc callback)
+   void addFunction(const String& prototype, VMInterface::CallbackFnc callback)
    {
-      ASSERT_PTR(mpActive);
-      mpActive->addFunction(FunctionRegistration::Constructor(prototype, callback));
-   }
-
-   void addDestructor(VMInterface::CallbackFnc callback)
-   {
-      ASSERT_PTR(mpActive);
-      mpActive->addFunction(FunctionRegistration::Destructor(callback));
-   }
-
-   void addFunction(const String& name, VMInterface::CallbackFnc callback)
-   {
-      ASSERT_PTR(mpActive);
-      mpActive->addFunction(FunctionRegistration::Function(name, callback));
+      mRegistry.addFunction(prototype, callback);
    }
 
    void registerCallbacks(ScriptManager& manager)
@@ -53,10 +38,8 @@ public:
    }
 
 private:
-   typedef std::vector<ClassRegistration> Classes;
 
    ClassRegistry        mRegistry;
-   ClassRegistration*   mpActive;
 };
 
 #endif // SCRIPT_OBJECT_H_

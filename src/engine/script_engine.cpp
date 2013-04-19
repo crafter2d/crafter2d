@@ -1190,12 +1190,12 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("create", GameWindow_create);
 
    registrator.addClass("BufferedStream");
-   registrator.addConstructor("init", BufferedStream_init);
-   registrator.addDestructor(BufferedStream_destruct);
+   registrator.addFunction("init", BufferedStream_init);
+   registrator.addFunction("destruct", BufferedStream_destruct);
 
    registrator.addClass("NetStream");
-   registrator.addConstructor("init", NetStream_init);
-   registrator.addDestructor(NetStream_destruct);
+   registrator.addFunction("init", NetStream_init);
+   registrator.addFunction("destruct", NetStream_destruct);
    registrator.addFunction("writeInt", NetStream_writeInt);
    registrator.addFunction("readInt", NetStream_readInt);
    registrator.addFunction("clear", NetStream_clear);
@@ -1204,8 +1204,8 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("getId", Entity_getId);
 
    registrator.addClass("Actor");
-   registrator.addConstructor("init", Actor_init);
-   registrator.addDestructor(Actor_destruct);
+   registrator.addFunction("init", Actor_init);
+   registrator.addFunction("destruct", Actor_destruct);
    registrator.addFunction("getPositionX", Actor_getPositionX);
    registrator.addFunction("getPositionY", Actor_getPositionY);
    registrator.addFunction("setPosition", Actor_setPosition);
@@ -1226,8 +1226,8 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("setController", Player_native_setController);
 
    registrator.addClass("World");
-   registrator.addConstructor("init", World_init);
-   registrator.addDestructor(World_destruct);
+   registrator.addFunction("init", World_init);
+   registrator.addFunction("destruct", World_destruct);
    registrator.addFunction("getName", World_getName);
    registrator.addFunction("add", World_add);
    registrator.addFunction("setObjectLayer", World_setObjectLayer);
@@ -1252,19 +1252,19 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("resolveTexture", Effect_resolveTexture);
 
    registrator.addClass("InputForceGenerator");
-   registrator.addConstructor("init", InputForceGenerator_init);
-   registrator.addDestructor(InputForceGenerator_destruct);
+   registrator.addFunction("init", InputForceGenerator_init);
+   registrator.addFunction("destruct", InputForceGenerator_destruct);
    registrator.addFunction("setVelocity", InputForceGenerator_setVelocity);
    registrator.addFunction("setImpulse", InputForceGenerator_setImpulse);
 
    registrator.addClass("InputController");
-   registrator.addConstructor("init", InputController_init);
-   registrator.addDestructor(InputController_destruct);
+   registrator.addFunction("init", InputController_init);
+   registrator.addFunction("destruct", InputController_destruct);
    registrator.addFunction("setActionMap", InputController_setActionMap);
 
    registrator.addClass("AIController");
-   registrator.addConstructor("init", AIController_init);
-   registrator.addDestructor(AIController_destruct);
+   registrator.addFunction("init", AIController_init);
+   registrator.addFunction("destruct", AIController_destruct);
 
    registrator.addClass("Box2DSimulator");
    registrator.addFunction("lineOfSight", Box2DSimulator_lineOfSight);
@@ -1276,8 +1276,8 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("generateSensors", Box2DBody_generateSensors);
 
    registrator.addClass("Box2DRopeJointDefinition");
-   registrator.addConstructor("init", Box2DRopeJointDefinition_init);
-   registrator.addDestructor(Box2DRopeJointDefinition_destruct);
+   registrator.addFunction("init", Box2DRopeJointDefinition_init);
+   registrator.addFunction("destruct", Box2DRopeJointDefinition_destruct);
    registrator.addFunction("getLeft", Box2DRopeJointDefinition_getLeft);
    registrator.addFunction("setLeft", Box2DRopeJointDefinition_setLeft);
    registrator.addFunction("getRight", Box2DRopeJointDefinition_getRight);
@@ -1290,15 +1290,15 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("setLocalAnchorRight", Box2DRopeJointDefinition_setLocalAnchorRight);
 
    registrator.addClass("ActionMap");
-   registrator.addConstructor("init", ActionMap_init);
-   registrator.addDestructor(ActionMap_destruct);
+   registrator.addFunction("init", ActionMap_init);
+   registrator.addFunction("destruct", ActionMap_destruct);
    registrator.addFunction("getProcess", ActionMap_getProcess);
    registrator.addFunction("setProcess", ActionMap_setProcess);
    registrator.addFunction("bind", ActionMap_bind);
 
    registrator.addClass("KeyMap");
-   registrator.addConstructor("init", KeyMap_init);
-   registrator.addDestructor(KeyMap_destruct);
+   registrator.addFunction("init", KeyMap_init);
+   registrator.addFunction("destruct", KeyMap_destruct);
    registrator.addFunction("bind", KeyMap_bind);
 
    /*
@@ -1315,14 +1315,14 @@ void script_engine_register(ScriptManager& manager)
    */
 
    registrator.addClass("Font");
-   registrator.addDestructor(Font_destruct);
+   registrator.addFunction("destruct", Font_destruct);
    registrator.addFunction("render", Font_render);
    registrator.addFunction("getBaseLine", Font_getBaseLine);
    registrator.addFunction("getTextWidth", Font_getTextWidth);
    registrator.addFunction("getTextHeight", Font_getTextHeight);
 
    registrator.addClass("Texture");
-   registrator.addDestructor(Texture_destruct);
+   registrator.addFunction("destruct", Texture_destruct);
    registrator.addFunction("getName", Texture_getName);
    registrator.addFunction("getWidth", Texture_getWidth);
    registrator.addFunction("getHeight", Texture_getHeight);
@@ -1334,7 +1334,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("open", FileSystem_native_open);
 
    registrator.addClass("File");
-   registrator.addDestructor(File_destruct);
+   registrator.addFunction("destruct", File_destruct);
    registrator.addFunction("length", File_length);
    registrator.addFunction("readText", File_readText);
 

@@ -8,12 +8,8 @@
 
 #include "sbil.h"
 
-namespace CIL
-{
-   class Class;
-   class Function;
-}
-
+class ASTFunction;
+class ASTType;
 class String;
 class VirtualFunctionTableEntry;
 
@@ -22,14 +18,13 @@ class StackIRGenerator : public CodeGen::IRGenerator
 public:
    StackIRGenerator();
 
-protected:
-   virtual VirtualFunctionTableEntry* generate(VirtualContext& context, const CIL::Class& cilclass, const CIL::Function& cilfunction);
+   virtual char* generate(CompileContext& context, const ASTFunction& function);
 
 private:
-   SBIL::Type typeToSBIL(const CIL::Type& type);
+   SBIL::Type typeToSBIL(const ASTType& type);
    SBIL::Type typeToSBIL(FunctionRegistration::Type type);
 
-   CIL::Function* resolveFunction(VirtualContext& context, const String& name);
+   ASTFunction* resolveFunction(CompileContext& context, const String& name);
 };
 
 #endif // STACK_IR_GENERATOR_H

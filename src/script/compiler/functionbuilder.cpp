@@ -4,8 +4,6 @@
 #include "core/string/string.h"
 #include "core/defines.h"
 
-#include "script/cil/function.h"
-
 FunctionBuilder::FunctionBuilder():
    mInstructions(),
    mLabel(0)

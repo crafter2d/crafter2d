@@ -9,7 +9,6 @@
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualstackaccessor.h"
 #include "script/vm/virtualobject.h"
-#include "script/common/classregistration.h"
 #include "script/common/functionregistration.h"
 
 class NativeClass
@@ -84,12 +83,12 @@ public:
    {
       ClassRegistry registry;
       registry.addClass("NativeClass");
-      registry.addFunction(FunctionRegistration::create("init", NativeClass_init));
-      registry.addFunction(FunctionRegistration::create("getIntValue", NativeClass_getIntValue));
-      registry.addFunction(FunctionRegistration::create("getStringValue", NativeClass_getStringValue));
-      registry.addFunction(FunctionRegistration::create("add", NativeClass_add));
-      registry.addFunction(FunctionRegistration::create("sub", NativeClass_sub));
-      registry.addFunction(FunctionRegistration::create("mul", NativeClass_mul));
+      registry.addFunction("init", NativeClass_init);
+      registry.addFunction("getIntValue", NativeClass_getIntValue);
+      registry.addFunction("getStringValue", NativeClass_getStringValue);
+      registry.addFunction("add", NativeClass_add);
+      registry.addFunction("sub", NativeClass_sub);
+      registry.addFunction("mul", NativeClass_mul);
 
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();

@@ -5,7 +5,6 @@
 #include "core/defines.h"
 
 #include "script/cil/cil.h"
-#include "script/cil/class.h"
 
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualcontext.h"
@@ -31,7 +30,7 @@ namespace CodeGen
 
    // - Block operations
 
-   void IRGenerator::buildBlocks(VirtualContext& context, const CIL::Instructions& instructions)
+   void IRGenerator::buildBlocks(CompileContext& context, const CIL::Instructions& instructions)
    {
       allocateInstructionBlocks(instructions.size());
       insertBlock(0);

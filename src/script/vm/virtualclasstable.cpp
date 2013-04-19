@@ -73,11 +73,13 @@ void VirtualClassTable::print(const LiteralTable& literals)
    for ( ; it != mClasses.end(); ++it )
    {
       VirtualClass* pclass = it->second;
+      /*
       std::string code = pclass->getInstructions().toString(literals);
 
       cout << "=====================================" << std::endl;
       cout << "Code of " << pclass->getName().toStdString() << std::endl << std::endl;
       cout << code << std::endl;
+      */
    }
 }
 

@@ -2,21 +2,15 @@
 #ifndef REGISTER_IR_GENERATOR_H
 #define REGISTER_IR_GENERATOR_H
 
-namespace CIL
-{
-   class Class;
-   class Function;
-}
+#include "script/vm/codegen/irgenerator.h"
 
-class RegisterIRGenerator
+class RegisterIRGenerator : public CodeGen::IRGenerator
 {
 public:
 
-   virtual bool generate(const CIL::Class& cilclass);
+   virtual char* RegisterIRGenerator::generate(CompileContext& context, const ASTFunction& function);
 
 private:
-
-   void generate(const CIL::Function& cilfunction);
 };
 
 #endif // REGISTER_IR_GENERATOR_H

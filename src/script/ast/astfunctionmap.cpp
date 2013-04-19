@@ -80,6 +80,23 @@ bool ASTFunctionMap::hasFunction(const String& name) const
    return mFunctions.find(name) != mFunctions.end();
 }
 
+// - Iterator
+
+ASTFunctionMap::Iterator ASTFunctionMap::getIterator()
+{
+   return mFunctions.begin();
+}
+   
+bool ASTFunctionMap::hasNext(Iterator& it) const
+{
+   return it != mFunctions.end();
+}
+
+ASTFunction& ASTFunctionMap::getNext(Iterator& it)
+{
+   return *(it++)->second;
+}
+
 // - Operations
 
 void ASTFunctionMap::insert(ASTFunction* pfunction)

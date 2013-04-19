@@ -22,6 +22,7 @@ ASTClass::ASTClass():
    mInterfaces(),
    mpTypeVariables(NULL),
    mFunctions(),
+   mFunctionTable(),
    mName(),
    mFullName(),
    mStatics(),
@@ -149,6 +150,16 @@ const ASTFunctionMap& ASTClass::getFunctions() const
 ASTFunctionMap& ASTClass::getFunctions()
 {
    return mFunctions;
+}
+
+const ASTFunctionTable& ASTClass::getFunctionTable() const
+{
+   return mFunctionTable;
+}
+
+ASTFunctionTable& ASTClass::getFunctionTable()
+{
+   return mFunctionTable;
 }
 
 const ASTTypeList& ASTClass::getInterfaces() const
@@ -351,6 +362,7 @@ void ASTClass::calculateResources()
 {
    indexStatics();
    indexVariables();
+   indexFunctions();
 }
 
 void ASTClass::indexStatics()
@@ -371,6 +383,16 @@ void ASTClass::indexVariables()
       ASTField* pvariable = mFields[index];
       pvariable->getVariable().setResourceIndex(base + index);
    }
+}
+
+void ASTClass::indexFunctions()
+{
+   if ( hasBaseClass() )
+   {
+      mFunctionTable = getBaseClass().getFunctionTable();
+   }
+
+   mFunctionTable.build(mFunctions);
 }
 
 // - Search

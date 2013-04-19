@@ -5,15 +5,16 @@
 #include <vector>
 
 class ASTFunction;
+class ASTFunctionMap;
 
-class FunctionTable
+class ASTFunctionTable
 {
    typedef std::vector<ASTFunction*> Functions;
 
 public:
-   FunctionTable();
+   ASTFunctionTable();
 
-   const FunctionTable& operator=(const FunctionTable& that);
+   const ASTFunctionTable& operator=(const ASTFunctionTable& that);
 
  // query
    int size() const;
@@ -23,8 +24,10 @@ public:
          ASTFunction& operator[](int index);
 
  // operations
+   void build(ASTFunctionMap& functions);
+
    void insert(ASTFunction& function);
-   void insert(FunctionTable& table);
+   void insert(ASTFunctionTable& table);
 
    void reindex();
 

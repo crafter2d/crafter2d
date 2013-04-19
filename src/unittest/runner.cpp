@@ -87,17 +87,17 @@ public:
 static TestCompiler suite_TestCompiler;
 
 static CxxTest::List Tests_TestCompiler = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestCompiler( "E:/Devel/jenginesse/src/unittest/testcompiler.h", 18, "TestCompiler", suite_TestCompiler, Tests_TestCompiler );
+CxxTest::StaticSuiteDescription suiteDescription_TestCompiler( "E:/Devel/jenginesse/src/unittest/testcompiler.h", 13, "TestCompiler", suite_TestCompiler, Tests_TestCompiler );
 
 static class TestDescription_TestCompiler_testCompilation : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestCompiler_testCompilation() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 36, "testCompilation" ) {}
+ TestDescription_TestCompiler_testCompilation() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 31, "testCompilation" ) {}
  void runTest() { suite_TestCompiler.testCompilation(); }
 } testDescription_TestCompiler_testCompilation;
 
 static class TestDescription_TestCompiler_testCallback : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestCompiler_testCallback() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 57, "testCallback" ) {}
+ TestDescription_TestCompiler_testCallback() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 52, "testCallback" ) {}
  void runTest() { suite_TestCompiler.testCallback(); }
 } testDescription_TestCompiler_testCallback;
 
@@ -229,11 +229,11 @@ public:
 static TestVirtualMachine suite_TestVirtualMachine;
 
 static CxxTest::List Tests_TestVirtualMachine = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestVirtualMachine( "E:/Devel/jenginesse/src/unittest/testvirtualmachine.h", 79, "TestVirtualMachine", suite_TestVirtualMachine, Tests_TestVirtualMachine );
+CxxTest::StaticSuiteDescription suiteDescription_TestVirtualMachine( "E:/Devel/jenginesse/src/unittest/testvirtualmachine.h", 78, "TestVirtualMachine", suite_TestVirtualMachine, Tests_TestVirtualMachine );
 
 static class TestDescription_TestVirtualMachine_testRun : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVirtualMachine_testRun() : CxxTest::RealTestDescription( Tests_TestVirtualMachine, suiteDescription_TestVirtualMachine, 83, "testRun" ) {}
+ TestDescription_TestVirtualMachine_testRun() : CxxTest::RealTestDescription( Tests_TestVirtualMachine, suiteDescription_TestVirtualMachine, 82, "testRun" ) {}
  void runTest() { suite_TestVirtualMachine.testRun(); }
 } testDescription_TestVirtualMachine_testRun;
 

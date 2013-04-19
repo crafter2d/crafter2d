@@ -23,6 +23,12 @@ CompileContext::CompileContext(Compiler& compiler):
 {
 }
 
+CompileContext::~CompileContext()
+{
+   delete mpByteCodeGenerator;
+   mpByteCodeGenerator = NULL;
+}
+
 // - Get/set
 
 CompileLog& CompileContext::getLog()
@@ -61,9 +67,9 @@ CodeGen::IRGenerator& CompileContext::getByteCodeGenerator()
    return *mpByteCodeGenerator;
 }
 
-void CompileContext::setByteCodeGenerator(CodeGen::IRGenerator& generator)
+void CompileContext::setByteCodeGenerator(CodeGen::IRGenerator* pgenerator)
 {
-   mpByteCodeGenerator = &generator;
+   mpByteCodeGenerator = pgenerator;
 }
 
 // - Query
@@ -142,4 +148,12 @@ ASTClass& CompileContext::resolveClass(const String& classname)
       throw new ClassNotFoundException(classname);
    }
    return *pclass;
+}
+
+VirtualClass& CompileContext::resolveVirtualClass(const String& classname)
+{
+   VirtualClassMap::iterator it = mVirtualClasses.find(classname);
+   if ( it == mVirtualClasses.end() )
+      UNREACHABLE("Could not find virtualclass");
+   return * it->second;
 }

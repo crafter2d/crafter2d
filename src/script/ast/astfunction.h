@@ -8,10 +8,12 @@
 
 #include "astmember.h"
 #include "astmodifier.h"
+#include "asttypelist.h"
 
 class ASTAnnotations;
 class ASTBlock;
 class ASTClass;
+class ASTLocalVariable;
 class ASTFunctionArgument;
 class ASTTypeVariables;
 class ASTSignature;
@@ -59,10 +61,12 @@ public:
    void            setBody(ASTBlock* pbody);
 
    const ASTSignature& getSignature() const;
+   const ASTTypeList& getLocals() const;
 
    int  getLocalVariableCount() const;
    void setLocalVariableCount(int count);
 
+   const CIL::Instructions& getInstructions() const;
    void setInstructions(const CIL::Instructions& instructions);
 
  // query
@@ -79,6 +83,7 @@ public:
 
  // operations
    void addArgument(ASTFunctionArgument* pargument);
+   void addLocal(ASTType* plocal);
    void cleanup();
 
  // search
@@ -89,6 +94,7 @@ public:
 
 private:
    String            mName;
+   ASTTypeList       mLocals;
    ASTAnnotations*   mpAnnotations;
    ASTModifiers      mModifiers;
    ASTTypeVariables* mpTypeVariables;

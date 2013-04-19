@@ -15,6 +15,7 @@
 
 class ASTClass;
 class Compiler;
+class VirtualClass;
 
 namespace CodeGen
 {
@@ -24,9 +25,11 @@ namespace CodeGen
 class CompileContext
 {
    typedef std::map<String, ASTClass*> ClassMap;
+   typedef std::map<String, VirtualClass*> VirtualClassMap;
 
 public:
    explicit CompileContext(Compiler& compiler);
+           ~CompileContext();
 
  // get/set
    CompileLog& getLog();
@@ -40,7 +43,7 @@ public:
    void                 setClassRegistry(const ClassRegistry& registry);
 
    CodeGen::IRGenerator& getByteCodeGenerator();
-   void                  setByteCodeGenerator(CodeGen::IRGenerator& generator);
+   void                  setByteCodeGenerator(CodeGen::IRGenerator* pgenerator);
    
  // query
    bool hasClass(const String& classname) const;
@@ -58,16 +61,19 @@ public:
    const ASTClass& resolveClass(const String& classname) const;
          ASTClass& resolveClass(const String& classname);
 
+   VirtualClass& resolveVirtualClass(const String& classname);
+
 private:
    void insertInternalTypes();
 
-   Compiler&      mCompiler;
-   ClassMap       mClasses;
-   ClassRegistry  mClassRegistry;
-   CodeGen::IRGenerator*   mpByteCodeGenerator;
-   StringCache    mStringCache;
-   LiteralTable   mLiteralTable;
-   CompileLog     mLog;
+   Compiler&               mCompiler;
+   ClassMap                mClasses;
+   VirtualClassMap         mVirtualClasses;
+   ClassRegistry           mClassRegistry;
+   CodeGen::IRGenerator*   mpByteCodeGenerator; // owns
+   StringCache             mStringCache;
+   LiteralTable            mLiteralTable;
+   CompileLog              mLog;
 };
 
 #endif // COMPILE_CONTEXT_H_

@@ -1,19 +1,13 @@
 
 #include "registerirgenerator.h"
 
-#include "script/cil/class.h"
-#include "script/cil/function.h"
+#include "script/ast/ast.h"
 
-bool RegisterIRGenerator::generate(const CIL::Class& cilclass)
-{
-   return true;
-}
-
-void RegisterIRGenerator::generate(const CIL::Function& cilfunction)
+char* RegisterIRGenerator::generate(CompileContext& context, const ASTFunction& function)
 {
    using namespace CIL;
 
-   const CIL::Instructions& instructions = cilfunction.getInstructions();
+   const CIL::Instructions& instructions = function.getInstructions();
    for ( unsigned index = 0; index < instructions.size(); ++index )
    {
       const CIL::Instruction& inst = instructions[index];
@@ -104,5 +98,6 @@ void RegisterIRGenerator::generate(const CIL::Function& cilfunction)
          case CIL_ststatic:
             break;
       }
+      return NULL;
    }
 }

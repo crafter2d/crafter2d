@@ -167,7 +167,7 @@ private:
 
  // class loading
    VirtualClass* doLoadClass(const String& classname);
-   void          classLoaded(CIL::Class* pclass);
+   void          classLoaded(VirtualClass* pclass);
    void          createClass(const VirtualClass& aclass);
 
  // stack operations

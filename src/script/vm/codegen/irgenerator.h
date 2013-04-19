@@ -23,7 +23,7 @@ namespace CodeGen
 
    protected:
     // block operations
-      void     buildBlocks(VirtualContext& context, const CIL::Instructions& instructions);
+      void     buildBlocks(CompileContext& context, const CIL::Instructions& instructions);
       Block*   getBlock(int target);
 
    private:

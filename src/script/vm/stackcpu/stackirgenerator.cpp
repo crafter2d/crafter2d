@@ -6,16 +6,11 @@
 #include "core/defines.h"
 
 #include "script/cil/cil.h"
-#include "script/cil/class.h"
-#include "script/cil/function.h"
-#include "script/cil/resolver.h"
 
 #include "script/common/variant.h"
 
-#include "script/ast/astfunction.h"
-#include "script/vm/virtualcontext.h"
-#include "script/vm/virtualinstructiontable.h"
-#include "script/vm/virtualfunctiontableentry.h"
+#include "script/ast/ast.h"
+#include "script/compiler/compilecontext.h"
 #include "script/vm/virtualstring.h"
 #include "script/vm/codegen/block.h"
 
@@ -57,9 +52,7 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
    std::vector<Variant> symbols;
    int ip = 0;
 
-   VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-
-   const CIL::Instructions& instructions = cilfunction.getInstructions();
+   const CIL::Instructions& instructions = function.getInstructions();
    buildBlocks(context, instructions);
 
    for ( unsigned index = 0; index < instructions.size(); ++index )
@@ -79,7 +72,7 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
          
          case CIL_new:
             {
-               Function* pcall = resolveFunction(context, *inst.mString);
+               ASTFunction* pcall = resolveFunction(context, *inst.mString);
                INSERT(SBIL_new, (int)pcall, SBIL_object);
             }
             break;
@@ -93,25 +86,25 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
 
          case CIL_call:
             {
-               Function* pfunction = resolveFunction(context, *inst.mString);
+               ASTFunction* pfunction = resolveFunction(context, *inst.mString);
                FunctionSymbol* psymbol = new FunctionSymbol;
                psymbol->args = pfunction->getSignature().size();
 
-               SBIL::Type type = typeToSBIL(pfunction->getReturnType());
+               SBIL::Type type = typeToSBIL(pfunction->getType());
                INSERT(SBIL_call, (int)pfunction, type);
             }
             break;
          case CIL_call_native:
             {
-               const FunctionRegistration& funcreg = context.pclassregistry->getFunction(inst.mInt);
+               const FunctionRegistration& funcreg = context.getClassRegistry().getFunction(inst.mInt);
                SBIL::Type type = typeToSBIL(funcreg.getReturnType());
                INSERT(SBIL_call_native, inst.mInt, type);
             }
             break;
          case CIL_call_static:
             {
-               Function* pfunction = resolveFunction(context, *inst.mString);
-               SBIL::Type type = typeToSBIL(pfunction->getReturnType());
+               ASTFunction* pfunction = resolveFunction(context, *inst.mString);
+               SBIL::Type type = typeToSBIL(pfunction->getType());
                INSERT(SBIL_call_static, 0, type);
             }
             break;
@@ -489,8 +482,8 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
 
          case CIL_ldfield:
             {
-               const CIL::Type* ptype = cilclass.getFields()[inst.mInt];
-               SBIL::Type type = typeToSBIL(*ptype);
+               const ASTField& field = *function.getClass().getFields()[inst.mInt];
+               SBIL::Type type = typeToSBIL(field.getVariable().getType());
                INSERT(SBIL_ldfield, inst.mInt, type);
             }
             break;
@@ -499,8 +492,8 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             break;
          case CIL_ldarg:
             {
-               const CIL::Type& ciltype = function.getSignature()[inst.mInt];
-               SBIL::Type type = typeToSBIL(ciltype);
+               const ASTType& argtype = function.getSignature()[inst.mInt];
+               SBIL::Type type = typeToSBIL(argtype);
                INSERT(SBIL_ldlocal, inst.mInt, type);
             }
             break;
@@ -509,12 +502,12 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             break;
          case CIL_ldloc:
             {
-               const CIL::Type* ptype = cilfunction.getLocals()[inst.mInt];
-               SBIL::Type type = typeToSBIL(*ptype);
-               INSERT(SBIL_ldlocal, inst.mInt + cilfunction.getSignature().size(), type);
+               const ASTType& asttype = function.getLocals()[inst.mInt];
+               SBIL::Type type = typeToSBIL(asttype);
+               INSERT(SBIL_ldlocal, inst.mInt + function.getSignature().size(), type);
             }
          case CIL_stloc:
-            INSERT(SBIL_stlocal, inst.mInt + cilfunction.getSignature().size(), SBIL_null);
+            INSERT(SBIL_stlocal, inst.mInt + function.getSignature().size(), SBIL_null);
             break;
          case CIL_ldelem_bool:
             INSERT(SBIL_ldelem, inst.mInt, SBIL_bool);
@@ -542,8 +535,8 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             break;
          case CIL_ldstatic:
             {
-               const CIL::Type* ptype = cilclass.getStaticFields()[index];
-               SBIL::Type type = typeToSBIL(*ptype);
+               const ASTField& field = *function.getClass().getStatics()[index];
+               SBIL::Type type = typeToSBIL(field.getVariable().getType());
                INSERT(SBIL_ldstatic, inst.mInt, type);
             }
             break;
@@ -553,35 +546,38 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
       }
    }
 
-   return pentry;
+   return NULL;
 }
 
-CIL::Function* StackIRGenerator::resolveFunction(VirtualContext& context, const String& name)
+ASTFunction* StackIRGenerator::resolveFunction(CompileContext& context, const String& name)
 {
+   /*
    CIL::Resolver resolver;
    CIL::Function* pfunction = resolver.resolveFunction(context.mCilClasses, name);
    return pfunction;
+   */
+   return NULL;
 }
 
-SBIL::Type StackIRGenerator::typeToSBIL(const CIL::Type& type)
+SBIL::Type StackIRGenerator::typeToSBIL(const ASTType& type)
 {
-   switch ( type.type )
+   switch ( type.getKind() )
    {
-      case CIL::eBool:
+      case ASTType::eBoolean:
          return SBIL::SBIL_bool;
-      case CIL::eInt:
+      case ASTType::eInt:
          return SBIL::SBIL_int;
-      case CIL::eReal:
+      case ASTType::eReal:
          return SBIL::SBIL_real;
-      case CIL::eChar:
+      case ASTType::eChar:
          return SBIL::SBIL_char;
-      case CIL::eString:
+      case ASTType::eString:
          return SBIL::SBIL_string;
-      case CIL::eObject:
+      case ASTType::eObject:
          return SBIL::SBIL_object;
-      case CIL::eArray:
+      case ASTType::eArray:
          return SBIL::SBIL_array;
-      case CIL::eVoid:
+      case ASTType::eVoid:
          return SBIL::SBIL_null;
    }
    return SBIL::SBIL_invalid;

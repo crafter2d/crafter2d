@@ -31,6 +31,9 @@
 #include "script/compiler/compiler.h"
 #include "script/common/literal.h"
 
+#include "stackcpu/stackcpu.h"
+#include "codegen/irgenerator.h"
+
 #include "virtualarray.h"
 #include "virtualarrayexception.h"
 #include "virtualfunctionnotfoundexception.h"
@@ -59,6 +62,9 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mpStringClass(NULL),
    mLoaded(false)
 {
+   StackCPU cpu;
+
+   mCompiler.setByteCodeGenerator(cpu.createIRGenerator());
    mCompiler.setCallback(mCallback);
 }
 
@@ -1420,22 +1426,10 @@ VirtualClass* VirtualMachine::doLoadClass(const String& classname)
    return pclass;
 }
 
-#include "stackcpu/stackcpu.h"
-#include "codegen/irgenerator.h"
-#include "codegen/ircontext.h"
-
-void VirtualMachine::classLoaded(CIL::Class* pclass)
+void VirtualMachine::classLoaded(VirtualClass* pclass)
 {
-   StackCPU cpu;
-   CodeGen::IRContext context;
-   AutoPtr<CodeGen::IRGenerator> generator = cpu.createIRGenerator();
-   VirtualClass* pvirclass = generator->generate(mContext, *pclass);
-   if ( pvirclass != NULL )
-   {
-      mContext.mClassTable.insert(pvirclass);
-      // success!
-   }
-
+   mContext.mClassTable.insert(pclass);
+   
    /*
    int offset = mContext.mInstructions.size();
 

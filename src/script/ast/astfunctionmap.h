@@ -14,6 +14,9 @@ class ASTFunctionMap
 {
    typedef std::multimap<String, ASTFunction*> FunctionMap;
 public:
+
+   typedef FunctionMap::iterator Iterator;
+
    ASTFunctionMap();
    ~ASTFunctionMap();
 
@@ -24,6 +27,11 @@ public:
    bool hasNativeConstructor() const;
 
    bool hasFunction(const String& name) const;
+
+ // iterators
+   Iterator     getIterator();
+   bool         hasNext(Iterator& it) const;
+   ASTFunction& getNext(Iterator& it);
 
  // maintenance
    void insert(ASTFunction* pfunction);

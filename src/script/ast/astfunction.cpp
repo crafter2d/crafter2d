@@ -12,10 +12,12 @@
 #include "astannotations.h"
 #include "asttypevariables.h"
 #include "astsignature.h"
+#include "astlocalvariable.h"
 
 ASTFunction::ASTFunction(ASTMember::Kind kind):
    ASTMember(kind),
    mName(),
+   mLocals(),
    mpAnnotations(NULL),
    mModifiers(),
    mpTypeVariables(NULL),
@@ -183,6 +185,11 @@ const ASTSignature& ASTFunction::getSignature() const
    return *mpSignature;
 }
 
+const ASTTypeList& ASTFunction::getLocals() const
+{
+   return mLocals;
+}
+
 int ASTFunction::getLocalVariableCount() const
 {
    return mLocalVariableCount;
@@ -191,6 +198,11 @@ int ASTFunction::getLocalVariableCount() const
 void ASTFunction::setLocalVariableCount(int count)
 {
    mLocalVariableCount = count;
+}
+
+const CIL::Instructions& ASTFunction::getInstructions() const
+{
+   return mInstructions;
 }
 
 void ASTFunction::setInstructions(const CIL::Instructions& instructions)
@@ -239,6 +251,11 @@ void ASTFunction::addArgument(ASTFunctionArgument* pargument)
    pargument->getVariable().setResourceIndex(getArgumentCount());
 
    addChild(pargument);
+}
+
+void ASTFunction::addLocal(ASTType* plocal)
+{
+   mLocals.append(plocal);
 }
 
 const ASTNodes& ASTFunction::getArguments() const

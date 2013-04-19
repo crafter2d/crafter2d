@@ -63,6 +63,11 @@ void Compiler::setCallback(CompileCallback& callback)
    mpCallback = &callback;
 }
 
+void Compiler::setByteCodeGenerator(CodeGen::IRGenerator* pgenerator)
+{
+   mContext.setByteCodeGenerator(pgenerator);
+}
+
 // - Query
 
 const Literal& Compiler::lookupLiteral(int index) const

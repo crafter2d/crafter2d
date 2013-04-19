@@ -140,7 +140,7 @@ void CodeGeneratorVisitor::visit(const ASTExpressionStatement& ast)
 void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
 {
    const ASTVariable& var = ast.getVariable();
-   
+      
    if ( var.hasInit() )
    {
       mCurrentType.clear();

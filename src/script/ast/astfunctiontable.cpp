@@ -1,17 +1,18 @@
 
-#include "functiontable.h"
+#include "astfunctiontable.h"
 
 #include <algorithm>
 
 #include "script/ast/astfunction.h"
+#include "script/ast/astfunctionmap.h"
 #include "script/ast/astsignature.h"
 
-FunctionTable::FunctionTable():
+ASTFunctionTable::ASTFunctionTable():
    mFunctions()
 {
 }
 
-const FunctionTable& FunctionTable::operator=(const FunctionTable& that)
+const ASTFunctionTable& ASTFunctionTable::operator=(const ASTFunctionTable& that)
 {
    mFunctions = that.mFunctions;
    return *this;
@@ -19,29 +20,44 @@ const FunctionTable& FunctionTable::operator=(const FunctionTable& that)
 
 // - Query
 
-int FunctionTable::size() const
+int ASTFunctionTable::size() const
 {
    return mFunctions.size();
 }
 
-bool FunctionTable::contains(const ASTFunction& function) const
+bool ASTFunctionTable::contains(const ASTFunction& function) const
 {
    return std::find(mFunctions.begin(), mFunctions.end(), &function) != mFunctions.end();
 }
 
-const ASTFunction& FunctionTable::operator[](int index) const
+const ASTFunction& ASTFunctionTable::operator[](int index) const
 {
    return *mFunctions[index];
 }
 
-ASTFunction& FunctionTable::operator[](int index)
+ASTFunction& ASTFunctionTable::operator[](int index)
 {
    return *mFunctions[index];
 }
 
 // - Operations
+
+void ASTFunctionTable::build(ASTFunctionMap& functions)
+{
+   // we assume that the base class table is already assigned
+   // now insert local functions into the table
+
+   ASTFunctionMap::Iterator it = functions.getIterator();
+   while ( functions.hasNext(it) )
+   {
+      ASTFunction& function = functions.getNext(it);
+      insert(function);
+   }
    
-void FunctionTable::insert(ASTFunction& function)
+   reindex();
+}
+   
+void ASTFunctionTable::insert(ASTFunction& function)
 {
    for ( std::size_t index = 0; index < mFunctions.size(); index++ )
    {
@@ -58,7 +74,7 @@ void FunctionTable::insert(ASTFunction& function)
    mFunctions.push_back(&function);
 }
 
-void FunctionTable::insert(FunctionTable& table)
+void ASTFunctionTable::insert(ASTFunctionTable& table)
 {
    for ( int index = 0; index < table.size(); index++ )
    {
@@ -66,7 +82,7 @@ void FunctionTable::insert(FunctionTable& table)
    }
 }
 
-void FunctionTable::reindex()
+void ASTFunctionTable::reindex()
 {
    int resourceindex = 2;
 

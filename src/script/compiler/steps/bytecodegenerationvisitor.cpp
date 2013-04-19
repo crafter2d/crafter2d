@@ -36,7 +36,6 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
 
    mpVirClass = new VirtualClass();
    mpVirClass->setName(ast.getName());
-   mpVirClass->setBaseName(ast.hasBaseClass() ? ast.getBaseClass().getFullName() : "");
    mpVirClass->setVariableCount(ast.getTotalVariables());
 
    int flags = VirtualClass::eNone;
@@ -46,7 +45,13 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
       flags |= VirtualClass::eNative;
    mpVirClass->setFlags((VirtualClass::Flags)flags);
 
-   ast.getFunctions().accept(*this);
+   if ( ast.hasBaseClass() )
+   {
+      VirtualClass& baseclass = mContext.resolveVirtualClass(ast.getBaseClass().getFullName());
+      mpVirClass->setBaseClass(baseclass);
+   }
+
+   const ASTFunctionTable& functions = ast.getFunctionTable();
 
    mpVirClass->setByteCode(mpCode);
 

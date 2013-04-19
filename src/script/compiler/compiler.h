@@ -10,6 +10,11 @@
 
 #include "compilecontext.h"
 
+namespace CodeGen
+{
+   class IRGenerator;
+}
+
 class AntlrStream;
 class ASTNode;
 class CompileStep;
@@ -29,6 +34,8 @@ public:
    bool             hasCallback() const;
    CompileCallback& getCallback();
    void             setCallback(CompileCallback& callback);
+
+   void             setByteCodeGenerator(CodeGen::IRGenerator* pgenerator);
 
    const Literal& lookupLiteral(int index) const;
 

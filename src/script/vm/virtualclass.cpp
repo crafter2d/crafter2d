@@ -16,7 +16,7 @@ VirtualClass::VirtualClass():
    mpBaseClass(NULL),
    mpDefinition(NULL),
    mVTable(),
-   mInstructions(),
+   mpByteCode(NULL),
    mpClassObject(NULL),
    mpStatics(NULL),
    mStaticCount(0),
