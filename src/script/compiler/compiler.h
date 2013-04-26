@@ -10,7 +10,7 @@
 
 #include "compilecontext.h"
 
-namespace CodeGen
+namespace ByteCode
 {
    class IRGenerator;
 }
@@ -35,7 +35,7 @@ public:
    CompileCallback& getCallback();
    void             setCallback(CompileCallback& callback);
 
-   void             setByteCodeGenerator(CodeGen::IRGenerator* pgenerator);
+   void             setByteCodeGenerator(ByteCode::IRGenerator* pgenerator);
 
    const Literal& lookupLiteral(int index) const;
 

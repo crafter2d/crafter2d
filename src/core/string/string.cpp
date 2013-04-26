@@ -247,6 +247,11 @@ int String::lastIndexOf(char character) const
    return mString.lastIndexOf(character);
 }
 
+int String::lastIndexOf(char character, int start, int end) const
+{
+   return mString.lastIndexOf(character, start, end);
+}
+
 // - Conversion
 
 std::string String::toStdString() const

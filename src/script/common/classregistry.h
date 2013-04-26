@@ -11,18 +11,12 @@
 
 class ASTClass;
 class ASTFunction;
+class ClassRegistration;
 class FunctionRegistration;
 
 class SCRIPT_API ClassRegistry
 {
-   struct ClassRegistration
-   {
-      String   name;
-      int      start;
-      int      end;
-   };
-
-   typedef std::vector<ClassRegistration> Classes;
+   typedef std::vector<ClassRegistration*> Classes;
    typedef std::vector<FunctionRegistration*> Functions;
 
 public:

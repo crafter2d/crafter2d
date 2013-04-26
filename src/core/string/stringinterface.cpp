@@ -61,3 +61,26 @@ unsigned long StringInterface::crc(const String& text)
 
 	return result;
 }
+
+std::vector<String> StringInterface::tokenize(const String& text, char separator)
+{
+   std::vector<String> result;
+   String value;
+   for ( int index = 0; index < text.length(); ++index )
+   {
+      if ( text[index] == separator )
+      {
+         result.push_back(value.trim());
+         value = "";
+      }
+      else
+      {
+         value += text[index];
+      }
+   }
+   if ( !value.isEmpty() )
+   {
+      result.push_back(value.trim());
+   }
+   return result;
+}

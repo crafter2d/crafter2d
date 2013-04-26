@@ -17,7 +17,7 @@ class ASTClass;
 class Compiler;
 class VirtualClass;
 
-namespace CodeGen
+namespace ByteCode
 {
    class IRGenerator;
 }
@@ -42,8 +42,8 @@ public:
    const ClassRegistry& getClassRegistry() const;
    void                 setClassRegistry(const ClassRegistry& registry);
 
-   CodeGen::IRGenerator& getByteCodeGenerator();
-   void                  setByteCodeGenerator(CodeGen::IRGenerator* pgenerator);
+   ByteCode::IRGenerator& getByteCodeGenerator();
+   void                  setByteCodeGenerator(ByteCode::IRGenerator* pgenerator);
    
  // query
    bool hasClass(const String& classname) const;
@@ -51,6 +51,8 @@ public:
  // operations
    void addClass(ASTClass* pclass);
    bool loadClass(const String& classname);
+
+   void addVirtualClass(VirtualClass* pclass);
 
    void collectCompileClasses(std::vector<ASTClass*>& classes);
 
@@ -61,6 +63,8 @@ public:
    const ASTClass& resolveClass(const String& classname) const;
          ASTClass& resolveClass(const String& classname);
 
+   const ASTFunction& resolveFunction(const String& call) const;
+
    VirtualClass& resolveVirtualClass(const String& classname);
 
 private:
@@ -70,7 +74,7 @@ private:
    ClassMap                mClasses;
    VirtualClassMap         mVirtualClasses;
    ClassRegistry           mClassRegistry;
-   CodeGen::IRGenerator*   mpByteCodeGenerator; // owns
+   ByteCode::IRGenerator*  mpByteCodeGenerator; // owns
    StringCache             mStringCache;
    LiteralTable            mLiteralTable;
    CompileLog              mLog;

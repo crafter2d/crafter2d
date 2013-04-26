@@ -4,11 +4,11 @@
 
 #include "script/vm/cpu.h"
 
-class StackCPU : public CPU
+class SCRIPT_API StackCPU : public CPU
 {
 public:
 
-   virtual CodeGen::IRGenerator* createIRGenerator();
+   virtual ByteCode::IRGenerator* createIRGenerator();
 };
 
 #endif // STACK_CPU_H

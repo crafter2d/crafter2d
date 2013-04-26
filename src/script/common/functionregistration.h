@@ -7,26 +7,20 @@
 #include "script/script_base.h"
 #include "script/vm/vminterface.h"
 
+class ClassRegistration;
+
 class SCRIPT_API FunctionRegistration
 {
 public:
-   enum Type
-   {
-      eBool,
-      eInt,
-      eReal,
-      eChar,
-      eString,
-      eInvalidType
-   };
-
    static FunctionRegistration* create(const String& prototype, VMInterface::CallbackFnc callback);
    
  // get/set
    int getIndex() const;
    void setIndex(int index);
 
-   Type getReturnType() const;
+   const ClassRegistration& getClassRegistration() const;
+   void setClassRegistration(const ClassRegistration& klass);
+
    const String& getPrototype() const;
    VMInterface::CallbackFnc getCallback() const;
 
@@ -37,10 +31,10 @@ private:
    FunctionRegistration(const String& prototype, VMInterface::CallbackFnc callback);
    FunctionRegistration(const FunctionRegistration& that);
 
-   int mIndex;
-   Type mType;
-   String mPrototype;
-   VMInterface::CallbackFnc mCallback;
+   const ClassRegistration*   mpClass;
+   int                        mIndex;
+   String                     mPrototype;
+   VMInterface::CallbackFnc   mCallback;
 };
 
 #endif // FUNCTION_REGISTRATION_H

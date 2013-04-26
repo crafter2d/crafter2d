@@ -4,19 +4,13 @@
 
 namespace SBIL
 {
-   enum Type {
-      SBIL_bool,
-      SBIL_int,
-      SBIL_real,
-      SBIL_char,
-      SBIL_string,
-      SBIL_object,
-      SBIL_array,
-      SBIL_null,
-      SBIL_invalid,
-   };
+   #define OPCODE(a,b,c) a,
 
    enum Opcode {
+      #include "sbil.def"
+
+      SBIL_last,
+      /*
       SBIL_nop,
       SBIL_dup,
 
@@ -132,8 +126,10 @@ namespace SBIL
       SBIL_enterguard,
       SBIL_enterguard_final,
       SBIL_leaveguard,
-      SBIL_throw,
+      SBIL_throw,*/
    };
+
+#undef OPCODE
 }
 
 #endif // STACK_BASED_CPU_H

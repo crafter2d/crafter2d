@@ -35,6 +35,7 @@ protected:
 
 private:
    String mString;
+   int    mHash;
 };
 
 #endif // VIRTUAL_STRING_CACHE_H

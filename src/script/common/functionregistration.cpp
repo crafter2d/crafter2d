@@ -1,6 +1,10 @@
 
 #include "functionregistration.h"
 
+#include "core/defines.h"
+
+#include "classregistration.h"
+
 // static 
 FunctionRegistration* FunctionRegistration::create(const String& prototype, VMInterface::CallbackFnc callback)
 {
@@ -10,16 +14,16 @@ FunctionRegistration* FunctionRegistration::create(const String& prototype, VMIn
 // - Constructors
 
 FunctionRegistration::FunctionRegistration(const String& prototype, VMInterface::CallbackFnc callback):
+   mpClass(NULL),
    mIndex(-1),
-   mType(eInvalidType),
    mPrototype(prototype),
    mCallback(callback)
 {
 }
 
 FunctionRegistration::FunctionRegistration(const FunctionRegistration& that):
+   mpClass(that.mpClass),
    mIndex(that.mIndex),
-   mType(that.mType),
    mPrototype(that.mPrototype),
    mCallback(that.mCallback)
 {
@@ -37,9 +41,15 @@ void FunctionRegistration::setIndex(int index)
    mIndex = index;
 }
 
-FunctionRegistration::Type FunctionRegistration::getReturnType() const
+const ClassRegistration& FunctionRegistration::getClassRegistration() const
 {
-   return mType;
+   ASSERT_PTR(mpClass);
+   return *mpClass;
+}
+
+void FunctionRegistration::setClassRegistration(const ClassRegistration& klass)
+{
+   mpClass = &klass;
 }
 
 const String& FunctionRegistration::getPrototype() const

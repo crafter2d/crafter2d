@@ -21,6 +21,8 @@ public:
 
    static ASTType greaterType(const ASTType& left, const ASTType& right);
 
+   static ASTType* fromString(const String& type);
+
             ASTType();
    explicit ASTType(Kind kind);
             ASTType(const ASTType& that);
@@ -93,6 +95,8 @@ public:
    String toString() const;
 
 private:
+
+   void determineArrayDimension();
 
    Kind                   mKind;
    String                 mObjectName;

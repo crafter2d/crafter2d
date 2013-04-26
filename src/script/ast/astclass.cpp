@@ -328,6 +328,14 @@ void ASTClass::addMember(ASTMember* pmember)
    addChild(pmember);
 }
 
+ASTType* ASTClass::createThisType() const
+{
+   ASTType* presult = new ASTType(ASTType::eObject);
+   presult->setObjectName(getFullName());
+   presult->setObjectClass(const_cast<ASTClass&>(*this));
+   return presult;
+}
+
 const ClassResolver& ASTClass::getResolver() const
 {
    return mResolver;

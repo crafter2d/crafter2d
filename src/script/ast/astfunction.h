@@ -61,6 +61,8 @@ public:
    void            setBody(ASTBlock* pbody);
 
    const ASTSignature& getSignature() const;
+
+   const ASTTypeList& getArguments() const;
    const ASTTypeList& getLocals() const;
 
    int  getLocalVariableCount() const;
@@ -75,7 +77,7 @@ public:
    bool isGeneric() const;
    bool isVirtual() const;
 
-   const ASTNodes& getArguments() const;
+   const ASTNodes& getArgumentNodes() const;
 
    int getArgumentCount() const;
 
@@ -83,17 +85,17 @@ public:
 
  // operations
    void addArgument(ASTFunctionArgument* pargument);
+
+   void addArgument(ASTType* pargument);
    void addLocal(ASTType* plocal);
    void cleanup();
-
- // search
-   const ASTFunctionArgument& resolveArgument(const String& name) const;
    
  // visitor
    ACCEPT;
 
 private:
    String            mName;
+   ASTTypeList       mArguments;
    ASTTypeList       mLocals;
    ASTAnnotations*   mpAnnotations;
    ASTModifiers      mModifiers;

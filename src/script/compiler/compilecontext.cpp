@@ -7,6 +7,8 @@
 
 #include "script/ast/astclass.h"
 #include "script/ast/astvariable.h"
+#include "script/vm/virtualclass.h"
+#include "script/bytecode/irgenerator.h"
 
 #include "exceptions/classnotfoundexception.h"
 
@@ -15,6 +17,7 @@
 CompileContext::CompileContext(Compiler& compiler):
    mCompiler(compiler),
    mClasses(),
+   mVirtualClasses(),
    mClassRegistry(),
    mpByteCodeGenerator(NULL),
    mStringCache(),
@@ -61,13 +64,13 @@ void CompileContext::setClassRegistry(const ClassRegistry& registry)
    mClassRegistry.add(registry);
 }
 
-CodeGen::IRGenerator& CompileContext::getByteCodeGenerator()
+ByteCode::IRGenerator& CompileContext::getByteCodeGenerator()
 {
    ASSERT_PTR(mpByteCodeGenerator);
    return *mpByteCodeGenerator;
 }
 
-void CompileContext::setByteCodeGenerator(CodeGen::IRGenerator* pgenerator)
+void CompileContext::setByteCodeGenerator(ByteCode::IRGenerator* pgenerator)
 {
    mpByteCodeGenerator = pgenerator;
 }
@@ -104,6 +107,11 @@ bool CompileContext::loadClass(const String& classname)
    }
 
    return true;
+}
+
+void CompileContext::addVirtualClass(VirtualClass* pclass)
+{
+   mVirtualClasses[pclass->getName()] = pclass;
 }
 
 void CompileContext::collectCompileClasses(std::vector<ASTClass*>& classes)

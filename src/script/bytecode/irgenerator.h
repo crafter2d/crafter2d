@@ -12,28 +12,43 @@ class VirtualContext;
 class VirtualClass;
 class VirtualFunctionTableEntry;
 
-namespace CodeGen
+namespace ByteCode
 {
+   class Program;
+   class Patch;
+
    class IRGenerator
    {
+      typedef std::vector<Patch*> Patches;
+
    public:
       IRGenerator();
+      virtual ~IRGenerator();
 
-      virtual char* generate(CompileContext& context, const ASTFunction& function) = 0;
+      virtual char* generate(CompileContext& context, Program& program, const ASTFunction& function) = 0;
 
    protected:
+    // operations
+      void cleanup();
+
     // block operations
       void     buildBlocks(CompileContext& context, const CIL::Instructions& instructions);
-      Block*   getBlock(int target);
+      bool     hasBlock(int index) const;
+      Block*   getBlock(int index);
+      Blocks&  getBlocks();
+
+    // patches
+      void addPatch(Patch* ppatch);
+      void applyPatches(char* pcode);
 
    private:
 
     // block operations
       void     allocateInstructionBlocks(int amount);
-      Block*   createBlock(int target);
-      void     insertBlock(int target);
+      Block&   createBlock(int target);
 
-      Blocks mBlocks;
+      Blocks   mBlocks;
+      Patches  mPatches;
    };
 }
 

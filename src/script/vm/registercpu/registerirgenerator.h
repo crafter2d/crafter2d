@@ -2,9 +2,9 @@
 #ifndef REGISTER_IR_GENERATOR_H
 #define REGISTER_IR_GENERATOR_H
 
-#include "script/vm/codegen/irgenerator.h"
+#include "script/bytecode/irgenerator.h"
 
-class RegisterIRGenerator : public CodeGen::IRGenerator
+class RegisterIRGenerator : public ByteCode::IRGenerator
 {
 public:
 

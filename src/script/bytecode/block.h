@@ -1,10 +1,10 @@
 
-#ifndef CODEGEN_BLOCK_H
-#define CODEGEN_BLOCK_H
+#ifndef BYTECODE_BLOCK_H
+#define BYTECODE_BLOCK_H
 
 #include <vector>
 
-namespace CodeGen
+namespace ByteCode
 {
    class Instruction;
    class Block;
@@ -17,11 +17,18 @@ namespace CodeGen
       int id;
       int start;
 
+      Instruction* pstart;
+      Instruction* pcurrent;
+
+      int codepos;
+
       Blocks to;
       Blocks from;
+
+      Block();
+
+      void addInstruction(Instruction* pinst);
    };
+}
 
-   
-};
-
-#endif // CODEGEN_BLOCK_H
+#endif // BYTECODE_BLOCK_H

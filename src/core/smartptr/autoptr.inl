@@ -31,7 +31,7 @@ INLINE AutoPtr<T>::AutoPtr(const AutoPtr<T>& ptr):
    mpValue(ptr.mpValue),
    mOwned(true)
 {
-   operator=(ptr);
+   ptr.mOwned = false;
 }
 
 template<class T>
@@ -47,10 +47,12 @@ INLINE AutoPtr<T>::~AutoPtr()
 template<class T>
 INLINE AutoPtr<T>& AutoPtr<T>::operator=(const AutoPtr<T>& ptr)
 {
-   operator=(ptr.mpValue);
+   if ( &ptr != this )
+   {
+      operator=(ptr.mpValue);
 
-   AutoPtr<T>& nonconstptr = const_cast<autoptr_type&>(ptr);
-   nonconstptr.mOwned = false;
+      ptr.mOwned = false;
+   }
 
    return *this;
 }
@@ -58,8 +60,11 @@ INLINE AutoPtr<T>& AutoPtr<T>::operator=(const AutoPtr<T>& ptr)
 template<class T>
 INLINE AutoPtr<T>& AutoPtr<T>::operator=(T* pvalue)
 {
-   delete mpValue;
-   mpValue = pvalue;
+   if ( mpValue != pvalue )
+   {
+      delete mpValue;
+      mpValue = pvalue;
+   }
    return *this;
 }
 

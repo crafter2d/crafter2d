@@ -7,7 +7,7 @@ CPU::CPU()
 {
 }
 
-CodeGen::IRGenerator* CPU::createIRGenerator()
+ByteCode::IRGenerator* CPU::createIRGenerator()
 {
    PURE_VIRTUAL;
    return NULL;

@@ -2,6 +2,7 @@
 #include "astsignature.h"
 
 #include "core/smartptr/autoptr.h"
+#include "core/defines.h"
 
 #include "../ast/asttype.h"
 #include "../ast/astclass.h"
@@ -18,7 +19,7 @@ ASTSignature::~ASTSignature()
 {
    if ( mOwning )
    {
-      for ( int index = 0; index < mTypes.size(); index++ ) 
+      for ( std::size_t index = 0; index < mTypes.size(); index++ ) 
       {
          delete mTypes[index];
       }
@@ -43,7 +44,7 @@ bool ASTSignature::exactMatch(const ASTSignature& that) const
    if ( that.size() != size() )
       return false;
 
-   for ( int index = 0; index < mTypes.size(); index++ )
+   for ( std::size_t index = 0; index < mTypes.size(); index++ )
    {
       const ASTType& type = *mTypes[index];
       const ASTType& thattype = *that.mTypes[index];
@@ -62,7 +63,7 @@ bool ASTSignature::bestMatch(const ASTSignature& that, const ASTTypeList& types)
    if ( that.size() != size() )
       return false;
 
-   for ( int index = 0; index < mTypes.size(); index++ )
+   for ( std::size_t index = 0; index < mTypes.size(); index++ )
    {
       AutoPtr<ASTType> ptype = mTypes[index]->clone();
       const ASTType& thattype = *that.mTypes[index];
@@ -101,7 +102,7 @@ bool ASTSignature::bestMatch(const ASTSignature& that, const ASTTypeList& types)
 
 void ASTSignature::append(const ASTType& type)
 {
-   // Q_ASSERT(!mOwning);
+   // ASSERT(!mOwning);
    mTypes.push_back(&type);
 }
 

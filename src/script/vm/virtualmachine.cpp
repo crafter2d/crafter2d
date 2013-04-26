@@ -32,7 +32,6 @@
 #include "script/common/literal.h"
 
 #include "stackcpu/stackcpu.h"
-#include "codegen/irgenerator.h"
 
 #include "virtualarray.h"
 #include "virtualarrayexception.h"

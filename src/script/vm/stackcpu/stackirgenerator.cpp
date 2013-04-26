@@ -2,62 +2,81 @@
 #include "stackirgenerator.h"
 
 #include <vector>
+#include <stack>
+#include <string.h>
 
+#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
 #include "script/cil/cil.h"
 
-#include "script/common/variant.h"
-
 #include "script/ast/ast.h"
+#include "script/bytecode/block.h"
+#include "script/bytecode/program.h"
+#include "script/bytecode/symboltable.h"
+#include "script/bytecode/functionsymbol.h"
+#include "script/bytecode/valuesymbol.h"
+#include "script/bytecode/jumppatch.h"
+#include "script/bytecode/block.h"
+#include "script/bytecode/instruction.h"
+#include "script/common/variant.h"
+#include "script/common/classregistration.h"
 #include "script/compiler/compilecontext.h"
+#include "script/compiler/functionresolver.h"
 #include "script/vm/virtualstring.h"
-#include "script/vm/codegen/block.h"
 
-struct Inst
+struct OpcodeInfo
 {
-   SBIL::Opcode   opcode;
-   SBIL::Type     type;
-   int            arg;
+   int push;
+   int pop;
 };
 
-typedef std::vector<Inst> Insts;
-
-#define INSERT(opc,a,t)      \
-   do {                      \
-      Inst ins;              \
-      ins.opcode = opc;      \
-      ins.type = t;          \
-      ins.arg = a;           \
-      insts.push_back(ins);  \
-   } while (false);
-
-struct FunctionSymbol
-{
-   int args;
+#define OPCODE(a,b,c) { b, c },
+const OpcodeInfo stackinfo[SBIL::SBIL_last + 1] = {
+#include "sbil.def"
 };
 
 StackIRGenerator::StackIRGenerator():
-   CodeGen::IRGenerator()
+   ByteCode::IRGenerator()
 {
 }
 
-char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& function)
+char* StackIRGenerator::generate(CompileContext& context, ByteCode::Program& program, const ASTFunction& function)
+{
+   generateInstructions(context, program, function);
+   checkAndFixStack(program, function);
+   buildCode(program, function);
+   cleanup();
+
+   return NULL;
+}
+
+void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::Program& program, const ASTFunction& function)
 {
    using namespace CIL;
    using namespace SBIL;
-   using namespace CodeGen;
+   using namespace ByteCode;
 
-   Insts insts;
-   std::vector<Variant> symbols;
-   int ip = 0;
+   FunctionResolver resolver;
+
+   if ( function.getName() == "indexOf" )
+   {
+      int aap = 5;
+   }
+
+   std::stack<AutoPtr<ASTType>> types;
 
    const CIL::Instructions& instructions = function.getInstructions();
    buildBlocks(context, instructions);
 
+   Block* pblock = getBlock(0);
+
    for ( unsigned index = 0; index < instructions.size(); ++index )
    {
       const CIL::Instruction& inst = instructions[index];
+
+      if ( hasBlock(index) )
+         pblock = getBlock(index);
 
       switch ( inst.opcode )
       {
@@ -67,18 +86,41 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             break;
 
          case CIL_dup:
-            INSERT(SBIL_dup, 0, insts[insts.size() - 1].type);
+            {
+               types.push(types.top()->clone());
+               INSERT(SBIL_dup, 0);
+            }
             break;
          
          case CIL_new:
             {
-               ASTFunction* pcall = resolveFunction(context, *inst.mString);
-               INSERT(SBIL_new, (int)pcall, SBIL_object);
+               ASTFunction& constructor = resolver.resolve(context, *inst.mString);
+               ASSERT(constructor.isConstructor());
+
+               FunctionSymbol* psymbol = new FunctionSymbol();
+               psymbol->args = constructor.getArgumentCount() - 1;   // object is created in this instruction
+               psymbol->returns = !constructor.getType().isVoid();
+               int i = program.getSymbolTable().add(psymbol);
+
+               for ( int arg = 0; arg < psymbol->args; ++arg )
+                  types.pop();
+
+               types.push(function.getType().clone());
+
+               INSERT(SBIL_new, i);
             }
             break;
          case CIL_newarray:
             {
-               INSERT(SBIL_new_array, inst.mInt, SBIL_array);
+               ASTType* ptype = ASTType::fromString(*inst.mString);
+
+               int depth = ptype->getArrayDimension();
+               for ( int arg = 0; arg < depth; ++arg )
+                  types.pop();
+
+               types.push(ptype);
+
+               INSERT(SBIL_new_array, depth);
             }
             break;
 
@@ -86,47 +128,85 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
 
          case CIL_call:
             {
-               ASTFunction* pfunction = resolveFunction(context, *inst.mString);
-               FunctionSymbol* psymbol = new FunctionSymbol;
-               psymbol->args = pfunction->getSignature().size();
+               ASTFunction& func = resolver.resolve(context, *inst.mString);
 
-               SBIL::Type type = typeToSBIL(pfunction->getType());
-               INSERT(SBIL_call, (int)pfunction, type);
+               FunctionSymbol* psymbol = new FunctionSymbol();
+               psymbol->args = func.getArgumentCount();
+               psymbol->returns = !func.getType().isVoid();
+               int i = program.getSymbolTable().add(psymbol);
+
+               for ( int arg = 0; arg < func.getArguments().size(); ++arg )
+                  types.pop();
+
+               if ( psymbol->returns )
+                  types.push(func.getType().clone());
+
+               INSERT(SBIL_call, i);
+            }
+            break;
+         case CIL_call_static:
+            {
+               ASTFunction& func = resolver.resolve(context, *inst.mString);
+
+               FunctionSymbol* psymbol = new FunctionSymbol;
+               psymbol->args = func.getArgumentCount();
+               psymbol->returns = !func.getType().isVoid();
+               int i = program.getSymbolTable().add(psymbol);
+
+               for ( int arg = 0; arg < func.getArguments().size(); ++arg )
+                  types.pop();
+
+               if ( psymbol->returns )
+                  types.push(func.getType().clone());
+
+               INSERT(SBIL_call_static, i);
             }
             break;
          case CIL_call_native:
             {
                const FunctionRegistration& funcreg = context.getClassRegistry().getFunction(inst.mInt);
-               SBIL::Type type = typeToSBIL(funcreg.getReturnType());
-               INSERT(SBIL_call_native, inst.mInt, type);
-            }
-            break;
-         case CIL_call_static:
-            {
-               ASTFunction* pfunction = resolveFunction(context, *inst.mString);
-               SBIL::Type type = typeToSBIL(pfunction->getType());
-               INSERT(SBIL_call_static, 0, type);
+               ASTFunction& func = resolver.resolve(context, funcreg.getClassRegistration().name + "." + funcreg.getPrototype());
+
+               FunctionSymbol* psymbol = new FunctionSymbol;
+               psymbol->args = inst.mInt;
+               psymbol->returns = !func.getType().isVoid();
+               int i = program.getSymbolTable().add(psymbol);
+
+               int args = func.getArgumentCount();
+               for ( int arg = 0; arg < args; ++arg )
+                  types.pop();
+
+               if ( psymbol->returns )
+                  types.push(func.getType().clone());
+
+               INSERT(SBIL_call_native, i);
             }
             break;
          case CIL_ret:
-            INSERT(SBIL_ret, inst.mInt, SBIL_null);
+            INSERT(SBIL_ret, inst.mInt);
             break;
 
          // Math
 
          case CIL_add:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_iadd, 0, SBIL_int);
+                  case ASTType::eInt:
+                     INSERT(SBIL_iadd, 0);
+                     types.push(new ASTType(ASTType::eInt));
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_radd, 0, SBIL_real);
+                  case ASTType::eReal:
+                     INSERT(SBIL_radd, 0);
+                     types.push(new ASTType(ASTType::eReal));
                      break;
-                  case SBIL_string:
-                     INSERT(SBIL_sadd, 0, SBIL_string);
+                  case ASTType::eString:
+                     INSERT(SBIL_sadd, 0);
+                     types.push(new ASTType(ASTType::eString));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -136,14 +216,19 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             break;
          case CIL_sub:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_isub, 0, SBIL_int);
+                  case ASTType::eInt:
+                     INSERT(SBIL_isub, 0);
+                     types.push(new ASTType(ASTType::eInt));
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rsub, 0, SBIL_real);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rsub, 0);
+                     types.push(new ASTType(ASTType::eReal));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -153,14 +238,19 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             break;
          case CIL_mul:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_imul, 0, SBIL_int);
+                  case ASTType::eInt:
+                     INSERT(SBIL_imul, 0);
+                     types.push(new ASTType(ASTType::eInt));
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rmul, 0, SBIL_real);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rmul, 0);
+                     types.push(new ASTType(ASTType::eReal));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -170,14 +260,19 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             break;
          case CIL_div:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_idiv, 0, SBIL_int);
+                  case ASTType::eInt:
+                     INSERT(SBIL_idiv, 0);
+                     types.push(new ASTType(ASTType::eInt));
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rdiv, 0, SBIL_real);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rdiv, 0);
+                     types.push(new ASTType(ASTType::eReal));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -187,14 +282,18 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             break;
          case CIL_neg:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_ineg, 0, SBIL_int);
+                  case ASTType::eInt:
+                     INSERT(SBIL_ineg, 0);
+                     types.push(new ASTType(ASTType::eInt));
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rneg, 0, SBIL_real);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rneg, 0);
+                     types.push(new ASTType(ASTType::eReal));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -203,400 +302,517 @@ char* StackIRGenerator::generate(CompileContext& context, const ASTFunction& fun
             }
             break;
          case CIL_rem:
-            {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               ASSERT(type == SBIL_int);
-               INSERT(SBIL_irem, 0, SBIL_int);
-            }
+            INSERT(SBIL_irem, 0);
+            types.push(new ASTType(ASTType::eInt));
             break;
          case CIL_shl:
-            {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               ASSERT(type == SBIL_int);
-               INSERT(SBIL_shl, 0, SBIL_int);
-            }
+            INSERT(SBIL_shl, 0);
+            types.push(new ASTType(ASTType::eInt));
             break;
          case CIL_shr:
-            {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               ASSERT(type == SBIL_int);
-               INSERT(SBIL_shr, 0, SBIL_int);
-            }
+            INSERT(SBIL_shr, 0);
+            types.push(new ASTType(ASTType::eInt));
             break;
 
          case CIL_xor:
-            INSERT(SBIL_xor, 0, SBIL_int);
+            INSERT(SBIL_xor, 0);
             break;
          case CIL_and:
-            INSERT(SBIL_and, 0, SBIL_int);
+            INSERT(SBIL_and, 0);
             break;
          case CIL_or:
-            INSERT(SBIL_or, 0, SBIL_int);
+            INSERT(SBIL_or, 0);
             break;
          case CIL_not:
-            INSERT(SBIL_not, 0, SBIL_bool);
+            INSERT(SBIL_not, 0);
+            types.push(new ASTType(ASTType::eInt));
             break;
 
          case CIL_cmpeq:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> ptype = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( ptype->getKind() )
                {
-                  case SBIL_bool:
-                     INSERT(SBIL_bcmpeq, 0, SBIL_bool);
+                  case ASTType::eBoolean:
+                     INSERT(SBIL_bcmpeq, 0);
                      break;
-                  case SBIL_int:
-                     INSERT(SBIL_icmpeq, 0, SBIL_bool);
+                  case ASTType::eInt:
+                     INSERT(SBIL_icmpeq, 0);
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rcmpeq, 0, SBIL_bool);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rcmpeq, 0);
                      break;
-                  case SBIL_char:
-                     INSERT(SBIL_ccmpeq, 0, SBIL_bool);
+                  case ASTType::eChar:
+                     INSERT(SBIL_ccmpeq, 0);
                      break;
-                  case SBIL_string:
-                     INSERT(SBIL_scmpeq, 0, SBIL_bool);
+                  case ASTType::eString:
+                     INSERT(SBIL_scmpeq, 0);
                      break;
-                  case SBIL_object:
-                     INSERT(SBIL_ocmpeq, 0, SBIL_bool);
+                  case ASTType::eGeneric:
+                  case ASTType::eObject:
+                     INSERT(SBIL_ocmpeq, 0);
                      break;
-                  case SBIL_array:
-                     INSERT(SBIL_acmpeq, 0, SBIL_bool);
+                  case ASTType::eArray:
+                     INSERT(SBIL_acmpeq, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
+
+               types.push(new ASTType(ASTType::eBoolean));
             }
             break;
          case CIL_cmpne:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_bool:
-                     INSERT(SBIL_bcmpne, 0, SBIL_bool);
+                  case ASTType::eBoolean:
+                     INSERT(SBIL_bcmpne, 0);
                      break;
-                  case SBIL_int:
-                     INSERT(SBIL_icmpne, 0, SBIL_bool);
+                  case ASTType::eInt:
+                     INSERT(SBIL_icmpne, 0);
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rcmpne, 0, SBIL_bool);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rcmpne, 0);
                      break;
-                  case SBIL_char:
-                     INSERT(SBIL_ccmpne, 0, SBIL_bool);
+                  case ASTType::eChar:
+                     INSERT(SBIL_ccmpne, 0);
                      break;
-                  case SBIL_string:
-                     INSERT(SBIL_scmpne, 0, SBIL_bool);
+                  case ASTType::eString:
+                     INSERT(SBIL_scmpne, 0);
                      break;
-                  case SBIL_object:
-                     INSERT(SBIL_ocmpeq, 0, SBIL_bool);
-                     INSERT(SBIL_not, 0, SBIL_bool);
+                  case ASTType::eGeneric:
+                  case ASTType::eObject:
+                     INSERT(SBIL_ocmpeq, 0);
+                     INSERT(SBIL_not, 0);
                      break;
-                  case SBIL_array:
-                     INSERT(SBIL_acmpeq, 0, SBIL_bool);
-                     INSERT(SBIL_not, 0, SBIL_bool);
+                  case ASTType::eArray:
+                     INSERT(SBIL_acmpeq, 0);
+                     INSERT(SBIL_not, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
+               types.push(new ASTType(ASTType::eBoolean));
             }
             break;
          case CIL_cmpgt:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_icmpgt, 0, SBIL_bool);
+                  case ASTType::eInt:
+                     INSERT(SBIL_icmpgt, 0);
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rcmpgt, 0, SBIL_bool);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rcmpgt, 0);
                      break;
-                  case SBIL_char:
-                     INSERT(SBIL_ccmpgt, 0, SBIL_bool);
+                  case ASTType::eChar:
+                     INSERT(SBIL_ccmpgt, 0);
                      break;
-                  case SBIL_string:
-                     INSERT(SBIL_scmpgt, 0, SBIL_bool);
+                  case ASTType::eString:
+                     INSERT(SBIL_scmpgt, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
+               types.push(new ASTType(ASTType::eBoolean));
             }
             break;
          case CIL_cmpge:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_icmpge, 0, SBIL_bool);
+                  case ASTType::eInt:
+                     INSERT(SBIL_icmpge, 0);
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rcmpge, 0, SBIL_bool);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rcmpge, 0);
                      break;
-                  case SBIL_char:
-                     INSERT(SBIL_ccmpge, 0, SBIL_bool);
+                  case ASTType::eChar:
+                     INSERT(SBIL_ccmpge, 0);
                      break;
-                  case SBIL_string:
-                     INSERT(SBIL_scmpge, 0, SBIL_bool);
+                  case ASTType::eString:
+                     INSERT(SBIL_scmpge, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
+               types.push(new ASTType(ASTType::eBoolean));
             }
             break;
          case CIL_cmple:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_icmple, 0, SBIL_bool);
+                  case ASTType::eInt:
+                     INSERT(SBIL_icmple, 0);
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rcmple, 0, SBIL_bool);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rcmple, 0);
                      break;
-                  case SBIL_char:
-                     INSERT(SBIL_ccmple, 0, SBIL_bool);
+                  case ASTType::eChar:
+                     INSERT(SBIL_ccmple, 0);
                      break;
-                  case SBIL_string:
-                     INSERT(SBIL_scmple, 0, SBIL_bool);
+                  case ASTType::eString:
+                     INSERT(SBIL_scmple, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
+               types.push(new ASTType(ASTType::eBoolean));
             }
             break;
          case CIL_cmplt:
             {
-               SBIL::Type type = insts[insts.size() - 1].type;
-               switch ( type )
+               AutoPtr<ASTType> type = types.top().release();
+               types.pop();
+               types.pop();
+
+               switch ( type->getKind() )
                {
-                  case SBIL_int:
-                     INSERT(SBIL_icmplt, 0, SBIL_bool);
+                  case ASTType::eInt:
+                     INSERT(SBIL_icmplt, 0);
                      break;
-                  case SBIL_real:
-                     INSERT(SBIL_rcmplt, 0, SBIL_bool);
+                  case ASTType::eReal:
+                     INSERT(SBIL_rcmplt, 0);
                      break;
-                  case SBIL_char:
-                     INSERT(SBIL_ccmplt, 0, SBIL_bool);
+                  case ASTType::eChar:
+                     INSERT(SBIL_ccmplt, 0);
                      break;
-                  case SBIL_string:
-                     INSERT(SBIL_scmplt, 0, SBIL_bool);
+                  case ASTType::eString:
+                     INSERT(SBIL_scmplt, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
+               types.push(new ASTType(ASTType::eBoolean));
             }
             break;
          case CIL_isnull:
-            INSERT(SBIL_isnull, 0, SBIL_bool);
+            INSERT(SBIL_isnull, 0);
+            types.push(new ASTType(ASTType::eBoolean));
             break;
 
          case CIL_jump:
-            {
-               // compute address to jump to
-               int addr = 0; 
-               INSERT(SBIL_jump, addr, SBIL_null);
-            }
+            INSERT(SBIL_jump, 0);
             break;
          case CIL_jump_true:
-            {
-               // compute addr to jump to
-               int addr = 0; 
-               INSERT(SBIL_jump_true, addr, SBIL_null);
-            }
+            ASSERT(types.top()->isBoolean());
+            INSERT(SBIL_jump_true, 0);
+            types.pop();
             break;
          case CIL_jump_false:
-            {
-               // compute addr to jump to
-               int addr = 0; 
-               INSERT(SBIL_jump_false, addr, SBIL_null);
-            }
+            ASSERT(types.top()->isBoolean());
+            INSERT(SBIL_jump_false, 0);
+            types.pop();
             break;
 
          case CIL_ldint:
             if ( inst.mInt == 0 )
             {
-               INSERT(SBIL_push_i0, 0, SBIL_int);
+               INSERT(SBIL_push_i0, 0);
             }
             else if ( inst.mInt == 1 )
             {
-               INSERT(SBIL_push_i1, 0, SBIL_int);
+               INSERT(SBIL_push_i1, 0);
             }
             else if ( inst.mInt == 2 )
             {
-               INSERT(SBIL_push_i2, 0, SBIL_int);
+               INSERT(SBIL_push_i2, 0);
             }
             else
             {
-               INSERT(SBIL_pushi, inst.mInt, SBIL_int);
+               INSERT(SBIL_pushi, inst.mInt);
             }
+            types.push(new ASTType(ASTType::eInt));
             break;
          case CIL_ldreal:
             if ( inst.mReal == 0.0 )
             {
-               INSERT(SBIL_push_r0, 0, SBIL_int);
+               INSERT(SBIL_push_r0, 0);
             }
             else if ( inst.mReal == 1.0 )
             {
-               INSERT(SBIL_push_r1, 0, SBIL_int);
+               INSERT(SBIL_push_r1, 0);
             }
             else if ( inst.mReal == 2.0 )
             {
-               INSERT(SBIL_push_r2, 0, SBIL_int);
+               INSERT(SBIL_push_r2, 0);
             }
             else
             {
-               INSERT(SBIL_push, 0, SBIL_real);
+               ValueSymbol* psymbol = new ValueSymbol();
+               psymbol->value.setReal(inst.mReal);
+               int i = program.getSymbolTable().add(psymbol);
+
+               INSERT(SBIL_push, i);
             }
+            types.push(new ASTType(ASTType::eReal));
             break;
          case CIL_ldchar:
-            INSERT(SBIL_pushc, inst.mInt, SBIL_char);
+            INSERT(SBIL_pushc, inst.mInt);
+            types.push(new ASTType(ASTType::eChar));
             break;
          case CIL_ldstr:
             {
-               // push in symbol table (string cache)
-               int loc = 0; // replace with actual index
-               INSERT(SBIL_push, loc, SBIL_string);
+               ValueSymbol* psymbol = new ValueSymbol();
+               psymbol->value.setString(VirtualString(*inst.mString));
+               int i = program.getSymbolTable().add(psymbol);
+
+               INSERT(SBIL_push, i);
+               types.push(new ASTType(ASTType::eString));
             }
             break;
          case CIL_ldtrue:
-            INSERT(SBIL_push_true, 0, SBIL_bool);
+            INSERT(SBIL_push_true, 0);
+            types.push(new ASTType(ASTType::eBoolean));
             break;
          case CIL_ldfalse:
-            INSERT(SBIL_push_false, 0, SBIL_bool);
+            INSERT(SBIL_push_false, 0);
+            types.push(new ASTType(ASTType::eBoolean));
             break;
          case CIL_ldclass:
-            INSERT(SBIL_push_class, 0, SBIL_object);
+            {
+               ASTType* ptype = new ASTType(ASTType::eObject);
+               ptype->setObjectName("system.Class");
+               ptype->setObjectClass(context.resolveClass("system.Class"));
+
+               INSERT(SBIL_push_class, 0);
+               types.push(ptype);
+            }
             break;
          case CIL_ldnull:
-            INSERT(SBIL_push_null, 0, SBIL_null);
+            INSERT(SBIL_push_null, 0);
+            types.push(new ASTType(ASTType::eNull));
             break;
 
          case CIL_ldfield:
             {
-               const ASTField& field = *function.getClass().getFields()[inst.mInt];
-               SBIL::Type type = typeToSBIL(field.getVariable().getType());
-               INSERT(SBIL_ldfield, inst.mInt, type);
+               AutoPtr<ASTType> type = types.top().release();
+               ASSERT(type->getKind() == ASTType::eObject || type->getKind() == ASTType::eArray);
+               types.pop();
+
+               const ASTClass& klass = type->getObjectClass();
+               if ( klass.getFullName() == "system.InternalArray" )
+               {
+                  // load length attribute of the array
+                  INSERT(SBIL_ldfield, 0);
+                  types.push(new ASTType(ASTType::eInt));
+               }
+               else
+               {
+                  const ASTField& field = *klass.getFields()[inst.mInt];
+                  INSERT(SBIL_ldfield, inst.mInt);
+                  types.push(field.getVariable().getType().clone());
+               }
             }
             break;
          case CIL_stfield:
-            INSERT(SBIL_stfield, inst.mInt, SBIL_null);
+            INSERT(SBIL_stfield, inst.mInt);
+            types.pop(); // value
+            types.pop(); // object
             break;
          case CIL_ldarg:
             {
-               const ASTType& argtype = function.getSignature()[inst.mInt];
-               SBIL::Type type = typeToSBIL(argtype);
-               INSERT(SBIL_ldlocal, inst.mInt, type);
+               const ASTType& argtype = function.getArguments()[inst.mInt];
+               INSERT(SBIL_ldlocal, inst.mInt);
+               types.push(argtype.clone());
             }
             break;
          case CIL_starg:
-            INSERT(SBIL_stlocal, inst.mInt, SBIL_null);
+            INSERT(SBIL_stlocal, inst.mInt);
+            types.pop();
             break;
          case CIL_ldloc:
             {
                const ASTType& asttype = function.getLocals()[inst.mInt];
-               SBIL::Type type = typeToSBIL(asttype);
-               INSERT(SBIL_ldlocal, inst.mInt + function.getSignature().size(), type);
+               INSERT(SBIL_ldlocal, inst.mInt + function.getArguments().size());
+               types.push(asttype.clone());
             }
+            break;
          case CIL_stloc:
-            INSERT(SBIL_stlocal, inst.mInt + function.getSignature().size(), SBIL_null);
+            INSERT(SBIL_stlocal, inst.mInt + function.getArguments().size());
+            types.pop();
             break;
-         case CIL_ldelem_bool:
-            INSERT(SBIL_ldelem, inst.mInt, SBIL_bool);
-            break;
-         case CIL_ldelem_int:
-            INSERT(SBIL_ldelem, inst.mInt, SBIL_int);
-            break;
-         case CIL_ldelem_real:
-            INSERT(SBIL_ldelem, inst.mInt, SBIL_real);
-            break;
-         case CIL_ldelem_char:
-            INSERT(SBIL_ldelem, inst.mInt, SBIL_char);
-            break;
-         case CIL_ldelem_string:
-            INSERT(SBIL_ldelem, inst.mInt, SBIL_string);
-            break;
-         case CIL_ldelem_object:
-            INSERT(SBIL_ldelem, inst.mInt, SBIL_object);
-            break;
-         case CIL_ldelem_array:
-            INSERT(SBIL_ldelem, inst.mInt, SBIL_array);
+         case CIL_ldelem:
+            {
+               // pop indices
+               for ( int ei = 0; ei < inst.mInt; ++ ei )
+                  types.pop();
+            
+               INSERT(SBIL_ldelem, inst.mInt);
+               
+               AutoPtr<ASTType> type = types.top();
+               types.pop();                              // pop array
+               types.push(type->getArrayType().clone()); // push element
+            }
             break;
          case CIL_stelem:
-            INSERT(SBIL_stelem, inst.mInt, SBIL_null);
+            {
+               // pop indices
+               for ( int ei = 0; ei < inst.mInt; ++ei )
+                  types.pop();
+
+               INSERT(SBIL_stelem, inst.mInt);
+               types.pop();   // pop element
+               types.pop();   // pop array
+            }
             break;
          case CIL_ldstatic:
             {
                const ASTField& field = *function.getClass().getStatics()[index];
-               SBIL::Type type = typeToSBIL(field.getVariable().getType());
-               INSERT(SBIL_ldstatic, inst.mInt, type);
+               INSERT(SBIL_ldstatic, inst.mInt);
+               types.push(field.getVariable().getType().clone());
             }
             break;
          case CIL_ststatic:
-            INSERT(SBIL_ststatic, inst.mInt, SBIL_null);
+            INSERT(SBIL_ststatic, inst.mInt);
+            types.pop();
             break;
       }
    }
-
-   return NULL;
 }
 
-ASTFunction* StackIRGenerator::resolveFunction(CompileContext& context, const String& name)
+void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const ASTFunction& function)
 {
-   /*
-   CIL::Resolver resolver;
-   CIL::Function* pfunction = resolver.resolveFunction(context.mCilClasses, name);
-   return pfunction;
-   */
-   return NULL;
-}
+   using namespace SBIL;
+   using namespace ByteCode;
 
-SBIL::Type StackIRGenerator::typeToSBIL(const ASTType& type)
-{
-   switch ( type.getKind() )
+   typedef std::vector<Instruction*> Calls;
+   Calls calls;
+
+   Blocks& blocks = getBlocks();
+
+   // fill the stack
+   for ( std::size_t index = 0; index < blocks.size(); ++index )
    {
-      case ASTType::eBoolean:
-         return SBIL::SBIL_bool;
-      case ASTType::eInt:
-         return SBIL::SBIL_int;
-      case ASTType::eReal:
-         return SBIL::SBIL_real;
-      case ASTType::eChar:
-         return SBIL::SBIL_char;
-      case ASTType::eString:
-         return SBIL::SBIL_string;
-      case ASTType::eObject:
-         return SBIL::SBIL_object;
-      case ASTType::eArray:
-         return SBIL::SBIL_array;
-      case ASTType::eVoid:
-         return SBIL::SBIL_null;
+      if ( !hasBlock(index) )
+         continue;
+         
+      Block* pblock = blocks[index];
+
+      Instruction* pinst = pblock->pstart;
+      while ( pinst != NULL )
+      {
+         int opcode = INST_OPCODE(pinst->inst);
+
+         switch ( opcode ) 
+         {
+            case SBIL_call:
+            case SBIL_call_static:
+               {
+                  int instarg = INST_ARG(pinst->inst);
+                  const FunctionSymbol& symbol = static_cast<const FunctionSymbol&>(program.getSymbolTable()[instarg]);
+                  for ( int arg = 0; arg < symbol.args; ++arg )
+                     calls.pop_back();
+
+                  // push return value
+                  if ( symbol.returns )
+                     calls.push_back(pinst);
+               }
+               break;
+            default:
+               {
+                  int pop = stackinfo[opcode].pop;
+                  for ( int i = 0; i < pop; ++i )
+                     calls.pop_back();
+
+                  if ( stackinfo[opcode].push == 1 )
+                     calls.push_back(pinst);
+               }
+         }
+
+         pinst = pinst->next;
+      }
    }
-   return SBIL::SBIL_invalid;
+
+   // now see what indices are still there that need an additional pop
+   // skip the return value at the top of the stack
+
+   std::size_t size = calls.size() - function.getType().isVoid() ? 0 : 1;
+   for ( std::size_t index = 0; index < size; ++index )
+   {
+      Instruction* inst = new Instruction;
+      inst->inst = MAKE_INST(SBIL_pop,0);
+      inst->next = calls[index]->next;
+
+      calls[index]->next = inst;
+   }
 }
 
-SBIL::Type StackIRGenerator::typeToSBIL(FunctionRegistration::Type type)
+void StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& function)
 {
-   switch ( type )
+   using namespace SBIL;
+   using namespace ByteCode;
+
+   unsigned int pos = 0;
+   unsigned int size = 32;
+   char* pcode = (char*)malloc(size);
+   memset(pcode, 0, size);
+
+   Blocks& blocks = getBlocks();
+
+   // fill the stack
+   for ( std::size_t index = 0; index < blocks.size(); ++index )
    {
-      case FunctionRegistration::eBool:
-         return SBIL::SBIL_bool;
-      case FunctionRegistration::eInt:
-         return SBIL::SBIL_int;
-      case FunctionRegistration::eReal:
-         return SBIL::SBIL_real;
-      case FunctionRegistration::eChar:
-         return SBIL::SBIL_char;
-      case FunctionRegistration::eString:
-         return SBIL::SBIL_string;
+      if ( !hasBlock(index) )
+         continue;
+
+      Block* pblock = blocks[index];
+      pblock->codepos = pos;
+
+      Instruction* pinst = pblock->pstart;
+      while ( pinst != NULL )
+      {
+         int opcode = INST_OPCODE(pinst->inst);
+         if ( opcode == SBIL_jump || opcode == SBIL_jump_true || opcode == SBIL_jump_false )
+         {
+            JumpPatch* ppatch = new JumpPatch();
+            ppatch->pos = pos;
+            ppatch->to = pblock->to[0];
+
+            addPatch(ppatch);
+         }
+
+         *((int*)&pcode[pos]) = pinst->inst;
+
+         pos += sizeof(int);
+         if ( pos > size )
+         {
+            size *= 2;
+            pcode = (char*)realloc(pcode, size);
+         }
+
+         pinst = pinst->next;
+      }
    }
-   return SBIL::SBIL_invalid;
+
+   applyPatches(pcode);
+   
+   free(pcode);
 }

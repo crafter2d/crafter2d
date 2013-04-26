@@ -116,7 +116,7 @@ void SymbolCheckVisitor::visit(ASTFunctionArgument& ast)
 {
    ASTVariable& var = ast.getVariable();
    checkVarInit(var);
-
+   
    ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
 }
@@ -213,6 +213,8 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
    ScopedScope scope(mScopeStack);
 
    ASTVariable& var = ast.getVariable();
+   mpFunction->addLocal(var.getType().clone());
+
    if ( var.hasInit() )
    {
       ASTVariableInit& varinit = var.getInit();
@@ -230,7 +232,7 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
       mContext.getLog().error(String("Compiler error: missing required initializer for foreach variable ") + var.getName());
    }
 
-   ScopeVariable* pvariable = ScopeVariable::fromVariable(ast.getVariable());
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
 
    ast.getBody().accept(*this);
@@ -340,19 +342,13 @@ void SymbolCheckVisitor::visit(ASTCatch& ast)
    ast.getVariable().accept(*this);
 
    const ASTVariable& var = ast.getVariable().getVariable();
+
    const ASTType& type = var.getType();
    bool ok = type.isObject();
    if ( ok )
    {
-      ASTClass* pthrowable = mContext.findClass("system.Throwable");
-      if ( pthrowable != NULL )
-      {
-         if ( !var.getType().getObjectClass().isBase(*pthrowable) )
-         {
-            ok = false;
-         }
-      }
-      else
+      const ASTClass& throwable = mContext.resolveClass("system.Throwable");
+      if ( !var.getType().getObjectClass().isBase(throwable) )
       {
          ok = false;
       }

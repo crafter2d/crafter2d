@@ -90,12 +90,13 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
       ScopedScope scope(mScopeStack);
       
       mpFunction = &ast;
+      mpFunction->addArgument(mpClass->createThisType());
 
       mBuilder.start();
 
       mCurrentType.clear();
 
-      ast.getArguments().accept(*this);
+      ast.getArgumentNodes().accept(*this);
       if ( ast.hasBody() )
       {
          ((const ASTNode&)ast.getBody()).accept(*this);
@@ -111,6 +112,8 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
 void CodeGeneratorVisitor::visit(const ASTFunctionArgument& argument)
 {
    const ASTVariable& variable = argument.getVariable();
+
+   mpFunction->addArgument(variable.getType().clone());
 }
 
 void CodeGeneratorVisitor::visit(const ASTVariableInit& ast)
@@ -151,7 +154,7 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
          const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
          mBuilder.emit(CIL_ldint, arrayinit.getCount());
-         mBuilder.emit(CIL_newarray, 1);
+         mBuilder.emit(CIL_newarray, var.getType().toString());
          mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
          int count = arrayinit.getCount();
@@ -273,7 +276,6 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
 
       const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
       const ASTField* pfield = arrayclass.findField("length", ASTClass::eLocal);
-      const CIL::Opcode op_load = toElemOpcode(mCurrentType);
 
       mBuilder.addLabel(flow.start);
       mBuilder.emit(CIL_dup);
@@ -287,7 +289,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       // get item & execute body ( var = array[index]; )
       mBuilder.emit(CIL_dup);
       mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
-      mBuilder.emit(op_load, 1);
+      mBuilder.emit(CIL_ldelem, 1);
       mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
       ast.getBody().accept(*this);
@@ -596,7 +598,7 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
       bool local = mpAccess->getAccess() == ASTAccess::eLocal;
 
       if ( mpAccess->getAccess() == ASTAccess::eField )
-         mBuilder.emit(CIL_ldarg, 0); // this
+         mBuilder.emit(CIL_ldarg, 0);
 
       switch ( ast.getKind() )
       {
@@ -893,7 +895,7 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
    {
       case ASTNew::eObject:
          {
-            String classname = ast.getType().getObjectClass().getFullName();
+            String classname = ast.getType().getObjectClass().getFullName() + "." + ast.getConstructor().getPrototype();
             mCurrentType = ast.getType();
 
             ast.getArguments().accept(*this);
@@ -907,7 +909,7 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
             // reverse put sizes on stack
             reverseVisitChildren(ast);
 
-            mBuilder.emit(CIL_newarray, ast.getArrayDimension());
+            mBuilder.emit(CIL_newarray, ast.getType().toString());
          }
          break;
    }
@@ -1076,8 +1078,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             // add indices on stack
             reverseVisitChildren(ast);
 
-            const CIL::Opcode op_load = toElemOpcode(before);
-            mBuilder.emit(op_load, ast.getArguments().size());
+            mBuilder.emit(CIL_ldelem, ast.getArguments().size());
          }
          break;
 
@@ -1087,7 +1088,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             if ( !mCurrentType.isValid() )
             {
-               mBuilder.emit(CIL_ldthis); // this
+               mBuilder.emit(CIL_ldarg, 0); // this
             }
 
             ASTType before = mCurrentType;
@@ -1099,12 +1100,11 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(function.getClass(), function);
                if ( preg == NULL )
                {
-                  String fncname = function.getClass().getFullName() + "_" + function.getName() + "(" + mpFunction->getSignature().toString() + ")";
+                  String fncname = function.getClass().getFullName() + "_" + function.getPrototype();
                   mContext.getLog().error("Can not find registered method for function " + fncname);
                   return;
                }
 
-               mBuilder.emit(CIL_ldint, function.getArgumentCount());
                mBuilder.emit(CIL_call_native, preg->getIndex());
             }
             else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
@@ -1324,7 +1324,7 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
 
             // var = new array[count]
             mBuilder.emit(CIL_ldint, arrayinit.getCount());
-            mBuilder.emit(CIL_newarray, 1);
+            mBuilder.emit(CIL_newarray, variable.getType().toString());
             mBuilder.emit(CIL_ldstr, ast.getFullName());
             mBuilder.emit(CIL_ststatic, variable.getResourceIndex());
 
@@ -1419,7 +1419,7 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
             const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
             mBuilder.emit(CIL_ldint, arrayinit.getCount());
-            mBuilder.emit(CIL_newarray, 1);
+            mBuilder.emit(CIL_newarray, variable.getType().toString());
             mBuilder.emit(CIL_ldarg, 0);
             mBuilder.emit(CIL_stfield, variable.getResourceIndex());
 
@@ -1543,36 +1543,4 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
    {
       // should not get here
    }
-}
-
-// CIL generation
-
-CIL::Opcode CodeGeneratorVisitor::toElemOpcode(const ASTType& type)
-{
-   using namespace CIL;
-
-   ASSERT(type.isArray());
-   const ASTType& elementtype = type.getArrayType();
-   switch ( elementtype.getKind() )
-   {
-      case ASTType::eBoolean:
-         return CIL_ldelem_bool;
-      case ASTType::eInt:
-         return CIL_ldelem_int;
-      case ASTType::eReal:
-         return CIL_ldelem_real;
-      case ASTType::eChar:
-         return CIL_ldelem_char;
-      case ASTType::eString:
-         return CIL_ldelem_string;
-      case ASTType::eObject:
-         return CIL_ldelem_object;
-      case ASTType::eArray:
-         return CIL_ldelem_array;
-      default:
-         break;
-   }
-
-   UNREACHABLE("Invalid type");
-   return CIL_nop;
 }

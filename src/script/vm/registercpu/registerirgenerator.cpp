@@ -79,25 +79,12 @@ char* RegisterIRGenerator::generate(CompileContext& context, const ASTFunction& 
             break;
          case CIL_ldloc:
          case CIL_stloc:
-         case CIL_ldelem_bool:
-            break;
-         case CIL_ldelem_int:
-            break;
-         case CIL_ldelem_real:
-            break;
-         case CIL_ldelem_char:
-            break;
-         case CIL_ldelem_string:
-            break;
-         case CIL_ldelem_object:
-            break;
-         case CIL_ldelem_array:
-            break;
+         case CIL_ldelem:
          case CIL_stelem:
          case CIL_ldstatic:
          case CIL_ststatic:
             break;
       }
-      return NULL;
    }
+   return NULL;
 }

@@ -2,17 +2,19 @@
 #ifndef CPU_H
 #define CPU_H
 
-namespace CodeGen
+#include "script/script_base.h"
+
+namespace ByteCode
 {
    class IRGenerator;
 }
 
-class CPU
+class SCRIPT_API CPU
 {
 public:
    CPU();
 
-   virtual CodeGen::IRGenerator* createIRGenerator() = 0;
+   virtual ByteCode::IRGenerator* createIRGenerator() = 0;
 };
 
 #endif // CPU_H

@@ -102,6 +102,8 @@ public:
    void addInterface(ASTType* pinterfacetype);
    void addMember(ASTMember* pmember);
 
+   ASTType* createThisType() const;
+
    const ClassResolver& getResolver() const;
    void setResolver(const ClassResolver& resolver);
 

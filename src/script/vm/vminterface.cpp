@@ -162,40 +162,40 @@ void Math_ceil(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)
 {
-   registry.addClass("Console");
-   registry.addFunction("println", Console_println);
-   registry.addFunction("print", Console_print);
+   registry.addClass("system.Console");
+   registry.addFunction("println(string)", Console_println);
+   registry.addFunction("print(string)", Console_print);
 
-   registry.addClass("ClassLoader");
-   registry.addFunction("doLoadClass", ClassLoader_doLoadClass);
+   registry.addClass("system.ClassLoader");
+   registry.addFunction("doLoadClass(string)", ClassLoader_doLoadClass);
    
-   registry.addClass("Class");
-   registry.addFunction("doNewInstance", Class_doNewInstance);
+   registry.addClass("system.Class");
+   registry.addFunction("doNewInstance(system.Class)", Class_doNewInstance);
 
-   registry.addClass("Function");
-   registry.addFunction("doInvoke", Function_doInvoke);
+   registry.addClass("system.Function");
+   registry.addFunction("doInvoke(system.Object)", Function_doInvoke);
    
-   registry.addClass("Throwable");
-   registry.addFunction("fillCallStack", Throwable_fillCallStack);
+   registry.addClass("system.Throwable");
+   registry.addFunction("fillCallStack()", Throwable_fillCallStack);
 
-   registry.addClass("InternalArray");
-   registry.addFunction("resize", InternalArray_resize);
+   registry.addClass("system.InternalArray");
+   registry.addFunction("resize(int)", InternalArray_resize);
 
-   registry.addClass("InternalString");
-   registry.addFunction("equals", InternalString_equals);
-   registry.addFunction("length", InternalString_length);
-   registry.addFunction("subString", InternalString_subString);
-   registry.addFunction("getChar", InternalString_getChar);
-   registry.addFunction("indexOf", InternalString_indexOf);
-   registry.addFunction("lastIndexOf", InternalString_lastIndexOf);
+   registry.addClass("system.InternalString");
+   registry.addFunction("equals(string)", InternalString_equals);
+   registry.addFunction("length()", InternalString_length);
+   registry.addFunction("subString(int, int)", InternalString_subString);
+   registry.addFunction("getChar(int)", InternalString_getChar);
+   registry.addFunction("indexOf(int)", InternalString_indexOf);
+   registry.addFunction("lastIndexOf(int)", InternalString_lastIndexOf);
    
-   registry.addClass("Char");
-   registry.addFunction("isAlphaNum", Char_isAlphaNum);
-   registry.addFunction("isAlpha", Char_isAlpha);
-   registry.addFunction("isDigit", Char_isDigit);
-   registry.addFunction("isWhitespace", Char_isWhitespace);
+   registry.addClass("system.Char");
+   registry.addFunction("isAlphaNum(char)", Char_isAlphaNum);
+   registry.addFunction("isAlpha(char)", Char_isAlpha);
+   registry.addFunction("isDigit(char)", Char_isDigit);
+   registry.addFunction("isWhitespace(char)", Char_isWhitespace);
    
-   registry.addClass("Math");
-   registry.addFunction("sqrt", Math_sqrt);
-   registry.addFunction("ceil", Math_ceil);
+   registry.addClass("engine.core.Math");
+   registry.addFunction("sqrt(real)", Math_sqrt);
+   registry.addFunction("ceil(real)", Math_ceil);
 }

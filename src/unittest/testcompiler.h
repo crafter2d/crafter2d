@@ -9,6 +9,7 @@
 #include "script/compiler/compiler.h"
 #include "script/compiler/compilecallback.h"
 #include "script/vm/vminterface.h"
+#include "script/vm/stackcpu/stackcpu.h"
 
 class TestCompiler : public CxxTest::TestSuite
 {
@@ -38,7 +39,10 @@ public:
       ClassRegistry registry;
       VMInterface::registerCommonFunctions(registry);
 
+      StackCPU cpu;
+
       Compiler compiler;
+      compiler.setByteCodeGenerator(cpu.createIRGenerator());
       compiler.setClassRegistry(registry);
 
       // compiler required classes

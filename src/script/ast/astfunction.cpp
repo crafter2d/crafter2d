@@ -17,6 +17,7 @@
 ASTFunction::ASTFunction(ASTMember::Kind kind):
    ASTMember(kind),
    mName(),
+   mArguments(),
    mLocals(),
    mpAnnotations(NULL),
    mModifiers(),
@@ -185,6 +186,11 @@ const ASTSignature& ASTFunction::getSignature() const
    return *mpSignature;
 }
 
+const ASTTypeList& ASTFunction::getArguments() const
+{
+   return mArguments;
+}
+
 const ASTTypeList& ASTFunction::getLocals() const
 {
    return mLocals;
@@ -232,6 +238,11 @@ bool ASTFunction::isVirtual() const
    return mpBaseFunction != NULL;
 }
 
+const ASTNodes& ASTFunction::getArgumentNodes() const
+{
+   return getChildren();
+}
+
 int ASTFunction::getArgumentCount() const
 {
    return getChildren().size() + (getModifiers().isStatic() ? 0 : 1);
@@ -253,36 +264,20 @@ void ASTFunction::addArgument(ASTFunctionArgument* pargument)
    addChild(pargument);
 }
 
+void ASTFunction::addArgument(ASTType* pargument)
+{
+   mArguments.append(pargument);
+}
+
 void ASTFunction::addLocal(ASTType* plocal)
 {
    mLocals.append(plocal);
-}
-
-const ASTNodes& ASTFunction::getArguments() const
-{
-   return getChildren();
 }
 
 void ASTFunction::cleanup()
 {
    delete mpBody;
    mpBody = NULL;
-}
-
-// - Search
-   
-const ASTFunctionArgument& ASTFunction::resolveArgument(const String& name) const
-{
-   for ( int index = 0; index < getChildren().size(); index++ )
-   {
-      const ASTFunctionArgument& argument = static_cast<const ASTFunctionArgument&>(getChildren()[index]);
-      if ( argument.getVariable().getName() == name )
-      {
-         return argument;
-      }
-   }
-
-   UNREACHABLE("unreachable!");
 }
 
 // - Visitor

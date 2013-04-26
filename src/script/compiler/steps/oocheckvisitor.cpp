@@ -77,7 +77,7 @@ void OOCheckVisitor::visit(ASTFunction& ast)
 
    ScopedScope scope(mScopeStack);
 
-   ast.getArguments().accept(*this);
+   ast.getArgumentNodes().accept(*this);
 
    if ( ast.hasAnnotations() )
    {

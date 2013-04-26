@@ -82,6 +82,7 @@ public:
  // searching
    int indexOf(char character, int start = 0) const;
    int lastIndexOf(char character) const;
+   int lastIndexOf(char character, int start, int end) const;
 
  // conversion
    std::string toStdString() const;

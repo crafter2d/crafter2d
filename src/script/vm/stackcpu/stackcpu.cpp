@@ -3,7 +3,7 @@
 
 #include "stackirgenerator.h"
 
-CodeGen::IRGenerator* StackCPU::createIRGenerator()
+ByteCode::IRGenerator* StackCPU::createIRGenerator()
 {
    return new StackIRGenerator();
 }

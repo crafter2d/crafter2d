@@ -63,7 +63,7 @@ void Compiler::setCallback(CompileCallback& callback)
    mpCallback = &callback;
 }
 
-void Compiler::setByteCodeGenerator(CodeGen::IRGenerator* pgenerator)
+void Compiler::setByteCodeGenerator(ByteCode::IRGenerator* pgenerator)
 {
    mContext.setByteCodeGenerator(pgenerator);
 }

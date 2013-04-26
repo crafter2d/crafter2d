@@ -20,6 +20,8 @@
 #ifndef STRING_INTERFACE_H
 #define STRING_INTERFACE_H
 
+#include <vector>
+
 #include "core/core_base.h"
 
 class String;
@@ -27,6 +29,8 @@ class String;
 namespace StringInterface
 {
 	CORE_API unsigned long crc(const String& text);
+
+   CORE_API std::vector<String> tokenize(const String& text, char separator);
 };
 
 #endif // STRING_INTERFACE_H

@@ -98,13 +98,10 @@ private:
    void handleFieldBlock(ASTClass& ast);
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
-
- // CIL generation
-   CIL::Opcode toElemOpcode(const ASTType& type);
-      
+         
    CompileContext&      mContext;
-   const ASTClass*      mpClass;
-   const ASTFunction*   mpFunction;
+   ASTClass*            mpClass;
+   ASTFunction*         mpFunction;
    const ASTAccess*     mpAccess;
    const ASTExpression* mpExpression;
    ASTType              mCurrentType;

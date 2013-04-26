@@ -11,21 +11,43 @@
 #include "script/vm/virtualfunctiontable.h"
 
 #include "block.h"
+#include "codepatch.h"
 
-namespace CodeGen
+namespace ByteCode
 {
 
    IRGenerator::IRGenerator():
-      mBlocks()
+      mBlocks(),
+      mPatches()
    {
+   }
+
+   IRGenerator::~IRGenerator()
+   {
+      cleanup();
    }
 
    // - Operations
 
-   char* IRGenerator::generate(CompileContext& context, const ASTFunction& function)
+   char* IRGenerator::generate(CompileContext& context, Program& program, const ASTFunction& function)
    {
       PURE_VIRTUAL;
       return NULL;
+   }
+
+   void IRGenerator::cleanup()
+   {
+      for ( std::size_t index = 0; index < mBlocks.size(); ++index )
+      {
+         delete mBlocks[index];
+      }
+      mBlocks.clear();
+
+      for ( std::size_t index = 0; index < mPatches.size(); ++index )
+      {
+         delete mPatches[index];
+      }
+      mPatches.clear();
    }
 
    // - Block operations
@@ -33,7 +55,7 @@ namespace CodeGen
    void IRGenerator::buildBlocks(CompileContext& context, const CIL::Instructions& instructions)
    {
       allocateInstructionBlocks(instructions.size());
-      insertBlock(0);
+      createBlock(0);
 
       for ( unsigned index = 0; index < instructions.size(); ++index )
       {
@@ -43,10 +65,14 @@ namespace CodeGen
             case CIL::CIL_jump:
             case CIL::CIL_jump_true:
             case CIL::CIL_jump_false:
-               // insert new block for code between this and target
                {
-                  int target = inst.mInt;
-                  insertBlock(target);
+                  int target = index + inst.mInt;
+
+                  Block& to = createBlock(target);
+                  Block& from = createBlock(index);
+
+                  to.from.push_back(&from);
+                  from.to.push_back(&to);
                }
                break;
 
@@ -62,26 +88,44 @@ namespace CodeGen
       mBlocks.resize(amount);
    }
 
-   Block* IRGenerator::createBlock(int target)
+   Block& IRGenerator::createBlock(int target)
    {
       Block* ptarget = new Block();
       ptarget->id = mBlocks.size();
       ptarget->start = target;
-      return ptarget;
+      mBlocks[target] = ptarget;
+      return *ptarget;
    }
 
-   void IRGenerator::insertBlock(int target)
+   bool IRGenerator::hasBlock(int index) const
    {
-      if ( mBlocks[target] == NULL )
+      return mBlocks[index] != NULL;
+   }
+   
+   Block* IRGenerator::getBlock(int index)
+   {
+      return mBlocks[index];
+   }
+
+   Blocks& IRGenerator::getBlocks()
+   {
+      return mBlocks;
+   }
+
+   // - Patch operations
+
+   void IRGenerator::addPatch(Patch* ppatch)
+   {
+      mPatches.push_back(ppatch);
+   }
+
+   void IRGenerator::applyPatches(char* pcode)
+   {
+      for ( std::size_t index = 0; index < mPatches.size(); ++index )
       {
-         Block* ptarget = createBlock(target);
-         mBlocks[target] = ptarget;
+         Patch* ppatch = mPatches[index];
+         ppatch->apply(pcode);
       }
-   }
-
-   Block* IRGenerator::getBlock(int target)
-   {
-      return mBlocks[target] != NULL ? mBlocks[target] : NULL;
    }
 
 } // namespace CodeGen
