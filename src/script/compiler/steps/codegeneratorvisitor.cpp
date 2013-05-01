@@ -255,6 +255,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    flow.end   = mBuilder.allocateLabel();
    mLoopFlowStack.push(flow);
 
+   const ASTVariable& iteratorvar = ast.getIteratorVariable();
    const ASTVariable& var = ast.getVariable();
    const ASTVariableInit& varinit = var.getInit();
 
@@ -272,7 +273,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    {
       // index = 0
       mBuilder.emit(CIL_ldint, 0);
-      mBuilder.emit(CIL_stloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_stloc, iteratorvar.getResourceIndex());
 
       const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
       const ASTField* pfield = arrayclass.findField("length", ASTClass::eLocal);
@@ -282,13 +283,13 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
 
       // check for the size ( index < array.length )
       mBuilder.emit(CIL_ldfield, pfield->getVariable().getResourceIndex());
-      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_cmpeq);
       mBuilder.emit(CIL_jump_true, flow.end);
       
       // get item & execute body ( var = array[index]; )
       mBuilder.emit(CIL_dup);
-      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_ldelem, 1);
       mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
@@ -314,7 +315,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       // var = object in the container
 
       mBuilder.emit(CIL_call, name);
-      mBuilder.emit(CIL_stloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_stloc, iteratorvar.getResourceIndex());
 
       mBuilder.addLabel(flow.start);
 
@@ -322,12 +323,12 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       String nextname = "engine.collections.Iterator.next()";
 
       // is there still an item: if not it.hasNext goto end
-      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_call, hasnextname);
       mBuilder.emit(CIL_jump_false, flow.end);
 
       // store the next item from the list: var = it.next()
-      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_call, nextname);
       mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
@@ -1117,7 +1118,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
                {
                   String name = before.getObjectClass().getFullName() + "." + function.getPrototype();
-                  mBuilder.emit(CIL_call, name);
+                  mBuilder.emit(CIL_call_interface, name);
                }
                else if ( mSuperCall )
                {
@@ -1294,6 +1295,10 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
    // var_init blocks have no return value & no arguments
    ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
    ast.insertChild(0, pfunction);
+
+   ast.getFunctionTable().set(0, *pfunction);
+
+   pfunction->setClass(ast);
    pfunction->setName("static_init");
    pfunction->setModifiers(ASTModifiers(ASTModifiers::eProtected, ASTModifiers::eStatic));
    pfunction->setType(new ASTType(ASTType::eVoid));
@@ -1384,6 +1389,10 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
    // construct the functions
    ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
    ast.addMember(pfunction);
+
+   ast.getFunctionTable().set(1, *pfunction);
+
+   pfunction->setClass(ast);
    pfunction->setName("var_init");
    pfunction->setModifiers(ASTModifiers(ASTModifiers::eProtected, 0));
    pfunction->setType(new ASTType(ASTType::eVoid));
@@ -1469,52 +1478,6 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
    pfunction->setInstructions(mBuilder.getInstructions());
    mBuilder.end();
 }
-
-/*
-void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
-{
-   const FunctionTable& table = ast.getFunctionTable();
-   VirtualArray* pfuncarray = new VirtualArray();
-   pfuncarray->addLevel(table.size());
-
-   for ( int index = 0; index < table.size(); index++ )
-   {
-      const ASTFunction& function = table[index];
-
-      VirtualArray* pannoarray = new VirtualArray();
-      if ( function.hasAnnotations() )
-      {
-         const ASTAnnotations& annotations = function.getAnnotations();
-         pannoarray->addLevel(annotations.size());
-         for ( int a = 0; a < annotations.size(); a++ )
-         {
-            const ASTAnnotation& annotation = annotations[a];
-
-            VirtualString& vname = mContext.getStringCache().lookup(annotation.mName);
-            (*pannoarray)[a] = Variant(vname);
-         }
-      }
-      else
-      {
-         pannoarray->addLevel(0);
-      }
-
-      VirtualObject* funcobject = new VirtualObject();
-      funcobject->initialize(2);
-      funcobject->setMember(0, Variant(mContext.getStringCache().lookup(function.getName())));
-      funcobject->setMember(1, Variant(*pannoarray));
-
-      (*pfuncarray)[index] = Variant(*funcobject); // <-- hack!
-   }
-
-   VirtualObject* classobject = new VirtualObject();
-   classobject->initialize(2);
-   classobject->setMember(0, Variant(mContext.getStringCache().lookup(ast.getFullName())));
-   classobject->setMember(1, Variant(*pfuncarray));
-
-   mpVClass->setClassObject(classobject);
-}
-*/
 
 void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
 {

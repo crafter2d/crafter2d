@@ -26,6 +26,7 @@ public:
  // operations
    void build(ASTFunctionMap& functions);
 
+   void set(int index, ASTFunction& function);
    void insert(ASTFunction& function);
    void insert(ASTFunctionTable& table);
 

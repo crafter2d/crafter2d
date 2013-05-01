@@ -5,8 +5,8 @@
 class ASTType;
 
 #define MAKE_INST(opcode,arg)((opcode << 24) | arg)
-#define INST_OPCODE(inst) ((inst >> 24) & 0xFF)
-#define INST_ARG(inst) (inst & 0xFFFFFF)
+#define INST_OPCODE(inst) (((inst) >> 24) & 0xFF)
+#define INST_ARG(inst) ((inst) & 0xFFFFFF)
 
 #define INSERT(opc,a)                                          \
    do {                                                        \

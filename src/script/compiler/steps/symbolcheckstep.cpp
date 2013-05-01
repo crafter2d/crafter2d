@@ -212,25 +212,43 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
 {
    ScopedScope scope(mScopeStack);
 
+   ASTVariable& iteratorvar = ast.getIteratorVariable();
    ASTVariable& var = ast.getVariable();
-   mpFunction->addLocal(var.getType().clone());
 
    if ( var.hasInit() )
    {
       ASTVariableInit& varinit = var.getInit();
       varinit.getExpression().accept(*this);
 
-      const ASTClass& iterableclass = mContext.resolveClass("engine.collections.Iterable");
+      ASTClass& iterableclass = mContext.resolveClass("engine.collections.Iterable");
+      ASTType* piteratortype = new ASTType();
 
-      if ( mCurrentType.isObject() && !mCurrentType.getObjectClass().isImplementing(iterableclass) )
+      if ( mCurrentType.isObject() )
       {
-         mContext.getLog().error(String("Container ") + var.getName() + " must be iterable for use in foreach.");
+         if( mCurrentType.getObjectClass().isImplementing(iterableclass) )
+         {
+            piteratortype->setKind(ASTType::eObject);
+            piteratortype->setObjectClass(iterableclass);
+         }
+         else
+         {
+            mContext.getLog().error(String("Container ") + var.getName() + " must be iterable for use in foreach.");
+         }
       }
+      else if ( mCurrentType.isArray() )
+      {
+         piteratortype->setKind(ASTType::eInt);
+      }
+
+      iteratorvar.setType(piteratortype);
    }
    else
    {
       mContext.getLog().error(String("Compiler error: missing required initializer for foreach variable ") + var.getName());
    }
+
+   mpFunction->addLocal(iteratorvar.getType().clone());
+   mpFunction->addLocal(var.getType().clone());
 
    ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
@@ -1002,11 +1020,6 @@ void SymbolCheckVisitor::checkReturn(const ASTFunction& function)
 void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& access, bool isstatic)
 {
    ASTType before = mCurrentType;
-
-   if ( mpFunction->getName() == "asArray" )
-   {
-      int aap = 5;
-   }
 
    ASTSignature signature;
    ASTNodes& arguments = access.getArguments();

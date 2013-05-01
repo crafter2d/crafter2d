@@ -18,6 +18,7 @@ namespace CIL
       CIL_conv_real,
       CIL_conv_string,
       CIL_call,
+      CIL_call_interface,
       CIL_call_static,
       CIL_call_native,
       CIL_ret,

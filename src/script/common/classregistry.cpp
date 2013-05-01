@@ -48,6 +48,8 @@ void ClassRegistry::add(const ClassRegistry& that)
 
       mFunctions.push_back(preg->clone());
    }
+
+   renumber();
 }
 
 void ClassRegistry::addClass(const String& name)
@@ -69,6 +71,16 @@ void ClassRegistry::addFunction(const String& name, VMInterface::CallbackFnc cal
    mFunctions.push_back(pregistration);
 
    mpCurrent->end++;
+}
+
+// - Operations
+
+void ClassRegistry::renumber()
+{
+   for ( std::size_t index = 0; index < mFunctions.size(); ++index )
+   {
+      mFunctions[index]->setIndex(index);
+   }
 }
 
 // - Search

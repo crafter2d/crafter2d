@@ -25,7 +25,7 @@ namespace ByteCode
       IRGenerator();
       virtual ~IRGenerator();
 
-      virtual char* generate(CompileContext& context, Program& program, const ASTFunction& function) = 0;
+      virtual int generate(CompileContext& context, const ASTFunction& function) = 0;
 
    protected:
     // operations

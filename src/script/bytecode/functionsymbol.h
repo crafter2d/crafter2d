@@ -9,6 +9,8 @@ namespace ByteCode
    class FunctionSymbol : public Symbol
    {
    public:
+      VirtualClass* klass;
+      int func;
       int args;
       bool returns;
    };

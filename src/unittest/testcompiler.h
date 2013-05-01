@@ -39,10 +39,8 @@ public:
       ClassRegistry registry;
       VMInterface::registerCommonFunctions(registry);
 
-      StackCPU cpu;
-
       Compiler compiler;
-      compiler.setByteCodeGenerator(cpu.createIRGenerator());
+      compiler.setByteCodeGenerator(mCpu.createIRGenerator());
       compiler.setClassRegistry(registry);
 
       // compiler required classes
@@ -58,10 +56,12 @@ public:
       TestCompilerCallback callback(*this);
 
       mLoaded = false;
-
+      
       Compiler compiler;
+      compiler.setByteCodeGenerator(mCpu.createIRGenerator());
       compiler.setCallback(callback);
-      compiler.compile("system.Object");
+
+      TS_ASSERT(compiler.compile("system.Object"));
 
       TS_ASSERT(mLoaded);
    }
@@ -73,7 +73,8 @@ public:
 
 private:
 
-   bool mLoaded;
+   StackCPU mCpu;
+   bool     mLoaded;
 };
 
 #endif // TEST_COMPILER_H

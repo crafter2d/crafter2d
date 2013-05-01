@@ -10,6 +10,9 @@
 ASTFunctionTable::ASTFunctionTable():
    mFunctions()
 {
+   // reserve space for the initializer functions
+   mFunctions.push_back(NULL);
+   mFunctions.push_back(NULL);
 }
 
 const ASTFunctionTable& ASTFunctionTable::operator=(const ASTFunctionTable& that)
@@ -56,10 +59,15 @@ void ASTFunctionTable::build(ASTFunctionMap& functions)
    
    reindex();
 }
+
+void ASTFunctionTable::set(int index, ASTFunction& function)
+{
+   mFunctions[index] = &function;
+}
    
 void ASTFunctionTable::insert(ASTFunction& function)
 {
-   for ( std::size_t index = 0; index < mFunctions.size(); index++ )
+   for ( std::size_t index = 2; index < mFunctions.size(); index++ )
    {
       ASTFunction* pfunction = mFunctions[index];
 
@@ -86,7 +94,7 @@ void ASTFunctionTable::reindex()
 {
    int resourceindex = 2;
 
-   for ( std::size_t index = 0; index < mFunctions.size(); index++ )
+   for ( std::size_t index = 2; index < mFunctions.size(); index++ )
    {
       ASTFunction* pfunction = mFunctions[index];
       if ( !pfunction->getModifiers().isPureNative() )

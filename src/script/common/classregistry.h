@@ -35,6 +35,9 @@ public:
    const FunctionRegistration* findCallback(const ASTClass& astclass, const String& fncname) const;
 
 private:
+ // operations
+   void renumber();
+
  // searching
    const ClassRegistration* findClass(const String& name) const;
          ClassRegistration* findClass(const String& name);

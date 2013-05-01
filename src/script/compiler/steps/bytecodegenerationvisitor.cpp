@@ -5,7 +5,9 @@
 #include "script/compiler/compilecontext.h"
 #include "script/bytecode/irgenerator.h"
 #include "script/bytecode/program.h"
+#include "script/vm/virtualarray.h"
 #include "script/vm/virtualclass.h"
+#include "script/vm/virtualobject.h"
 #include "script/vm/virtualfunctiontableentry.h"
 
 ByteCodeGenerationVisitor::ByteCodeGenerationVisitor(CompileContext& context):
@@ -45,6 +47,7 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
    mpVirClass->setName(ast.getFullName());
    mpVirClass->setBaseClass(*pbaseclass);
    mpVirClass->setVariableCount(ast.getTotalVariables());
+   mpVirClass->setStaticCount(ast.getStatics().size());
 
    int flags = VirtualClass::eNone;
    if ( !ast.getModifiers().isAbstract() )
@@ -83,6 +86,8 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
 
    mpVirClass->setByteCode(mpCode);
 
+   handleClassObject(ast);
+
    mContext.addVirtualClass(mpVirClass);
 
    delete[] mpCode;
@@ -91,15 +96,60 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
 
 void ByteCodeGenerationVisitor::visit(const ASTFunction& ast)
 {
-   ByteCode::Program program;
    ByteCode::IRGenerator& generator = mContext.getByteCodeGenerator();
-   char* pcode = generator.generate(mContext, program, ast);
+   int index = generator.generate(mContext, ast);
 
    VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
    pentry->mName = ast.getPrototype();
-   pentry->mInstruction = 0; // insert offset in byte code
+   pentry->mInstruction = index; // insert offset in byte code
    pentry->mOriginalInstruction = pentry->mInstruction;
    pentry->mArguments = ast.getArgumentCount();
 
    mpVirClass->getVirtualFunctionTable().append(pentry);
+}
+
+// - Operations
+
+void ByteCodeGenerationVisitor::handleClassObject(const ASTClass& ast)
+{
+   const ASTFunctionTable& table = ast.getFunctionTable();
+   VirtualArray* pfuncarray = new VirtualArray();
+   pfuncarray->addLevel(table.size());
+
+   for ( int index = 0; index < table.size(); index++ )
+   {
+      const ASTFunction& function = table[index];
+
+      VirtualArray* pannoarray = new VirtualArray();
+      if ( function.hasAnnotations() )
+      {
+         const ASTAnnotations& annotations = function.getAnnotations();
+         pannoarray->addLevel(annotations.size());
+         for ( int a = 0; a < annotations.size(); a++ )
+         {
+            const ASTAnnotation& annotation = annotations[a];
+
+            VirtualString& vname = mContext.getStringCache().lookup(annotation.mName);
+            (*pannoarray)[a] = Variant(vname);
+         }
+      }
+      else
+      {
+         pannoarray->addLevel(0);
+      }
+
+      VirtualObject* funcobject = new VirtualObject();
+      funcobject->initialize(2);
+      funcobject->setMember(0, Variant(mContext.getStringCache().lookup(function.getName())));
+      funcobject->setMember(1, Variant(*pannoarray));
+
+      (*pfuncarray)[index] = Variant(*funcobject); // <-- hack!
+   }
+
+   VirtualObject* classobject = new VirtualObject();
+   classobject->initialize(2);
+   classobject->setMember(0, Variant(mContext.getStringCache().lookup(ast.getFullName())));
+   classobject->setMember(1, Variant(*pfuncarray));
+
+   mpVirClass->setClassObject(classobject);
 }

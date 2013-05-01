@@ -30,6 +30,7 @@
 
 #include "script/compiler/compiler.h"
 #include "script/common/literal.h"
+#include "script/bytecode/program.h"
 
 #include "stackcpu/stackcpu.h"
 
@@ -59,11 +60,15 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mState(eInit),
    mpArrayClass(NULL),
    mpStringClass(NULL),
+   mpCPU(NULL),
+   mpProgram(NULL),
    mLoaded(false)
 {
-   StackCPU cpu;
+   mpCPU = new StackCPU();
+   mpProgram = mpCPU->getProgram();
 
-   mCompiler.setByteCodeGenerator(cpu.createIRGenerator());
+   mCompiler.setProgram(*mpProgram);
+   mCompiler.setByteCodeGenerator(mpCPU->createIRGenerator());
    mCompiler.setCallback(mCallback);
 }
 
@@ -282,6 +287,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
 
 void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstruction& instruction)
 {
+   /*
    switch ( instruction.getOpcode() )
    {
       case VirtualInstruction::eReserve:
@@ -1161,6 +1167,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
       default:
          break;
    }
+   */
 }
 
 // - Exception

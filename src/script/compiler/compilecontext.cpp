@@ -75,6 +75,17 @@ void CompileContext::setByteCodeGenerator(ByteCode::IRGenerator* pgenerator)
    mpByteCodeGenerator = pgenerator;
 }
 
+ByteCode::Program& CompileContext::getProgram()
+{
+   ASSERT_PTR(mpProgram);
+   return *mpProgram;
+}
+   
+void CompileContext::setProgram(ByteCode::Program& program)
+{
+   mpProgram = &program;
+}
+
 // - Query
 
 bool CompileContext::hasClass(const String& classname) const

@@ -41,14 +41,17 @@ StackIRGenerator::StackIRGenerator():
 {
 }
 
-char* StackIRGenerator::generate(CompileContext& context, ByteCode::Program& program, const ASTFunction& function)
+int StackIRGenerator::generate(CompileContext& context, const ASTFunction& function)
 {
-   generateInstructions(context, program, function);
-   checkAndFixStack(program, function);
-   buildCode(program, function);
+   if ( function.getName() == "add")
+   {
+      int aap = 5;
+   }
+   generateInstructions(context, context.getProgram(), function);
+   checkAndFixStack(context.getProgram(), function);
+   int index = buildCode(context.getProgram(), function);
    cleanup();
-
-   return NULL;
+   return index;
 }
 
 void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::Program& program, const ASTFunction& function)
@@ -67,9 +70,11 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
    std::stack<AutoPtr<ASTType>> types;
 
    const CIL::Instructions& instructions = function.getInstructions();
-   buildBlocks(context, instructions);
+   if ( instructions.empty() )
+      return;
 
-   Block* pblock = getBlock(0);
+   buildBlocks(context, instructions);
+   Block* pblock;
 
    for ( unsigned index = 0; index < instructions.size(); ++index )
    {
@@ -98,6 +103,8 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                ASSERT(constructor.isConstructor());
 
                FunctionSymbol* psymbol = new FunctionSymbol();
+               psymbol->klass = & context.resolveVirtualClass(function.getClass().getFullName());
+               psymbol->func = function.getResourceIndex();
                psymbol->args = constructor.getArgumentCount() - 1;   // object is created in this instruction
                psymbol->returns = !constructor.getType().isVoid();
                int i = program.getSymbolTable().add(psymbol);
@@ -131,6 +138,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                ASTFunction& func = resolver.resolve(context, *inst.mString);
 
                FunctionSymbol* psymbol = new FunctionSymbol();
+               psymbol->func = func.getResourceIndex();
                psymbol->args = func.getArgumentCount();
                psymbol->returns = !func.getType().isVoid();
                int i = program.getSymbolTable().add(psymbol);
@@ -144,11 +152,12 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                INSERT(SBIL_call, i);
             }
             break;
-         case CIL_call_static:
+         case CIL_call_interface:
             {
                ASTFunction& func = resolver.resolve(context, *inst.mString);
 
-               FunctionSymbol* psymbol = new FunctionSymbol;
+               FunctionSymbol* psymbol = new FunctionSymbol();
+               psymbol->func = func.getResourceIndex();
                psymbol->args = func.getArgumentCount();
                psymbol->returns = !func.getType().isVoid();
                int i = program.getSymbolTable().add(psymbol);
@@ -159,7 +168,27 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                if ( psymbol->returns )
                   types.push(func.getType().clone());
 
-               INSERT(SBIL_call_static, i);
+               INSERT(SBIL_call_interface, i);
+            }
+            break;
+         case CIL_call_static:
+            {
+               ASTFunction& func = resolver.resolve(context, *inst.mString);
+
+               FunctionSymbol* psymbol = new FunctionSymbol;
+               psymbol->klass = &context.resolveVirtualClass(func.getClass().getFullName());
+               psymbol->func = func.getResourceIndex();
+               psymbol->args = func.getArgumentCount();
+               psymbol->returns = !func.getType().isVoid();
+               int i = program.getSymbolTable().add(psymbol);
+
+               for ( int arg = 0; arg < func.getArguments().size(); ++arg )
+                  types.pop();
+
+               if ( psymbol->returns )
+                  types.push(func.getType().clone());
+               
+               INSERT(SBIL_call_static, func.getResourceIndex());
             }
             break;
          case CIL_call_native:
@@ -168,7 +197,8 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                ASTFunction& func = resolver.resolve(context, funcreg.getClassRegistration().name + "." + funcreg.getPrototype());
 
                FunctionSymbol* psymbol = new FunctionSymbol;
-               psymbol->args = inst.mInt;
+               psymbol->func = inst.mInt;
+               psymbol->args = func.getArgumentCount();
                psymbol->returns = !func.getType().isVoid();
                int i = program.getSymbolTable().add(psymbol);
 
@@ -324,8 +354,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             INSERT(SBIL_or, 0);
             break;
          case CIL_not:
-            INSERT(SBIL_not, 0);
-            types.push(new ASTType(ASTType::eInt));
+            INSERT(SBIL_not, 0); // push & pop a boolean
             break;
 
          case CIL_cmpeq:
@@ -685,7 +714,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_ldstatic:
             {
-               const ASTField& field = *function.getClass().getStatics()[index];
+               const ASTField& field = *function.getClass().getStatics()[inst.mInt];
                INSERT(SBIL_ldstatic, inst.mInt);
                types.push(field.getVariable().getType().clone());
             }
@@ -724,6 +753,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
          switch ( opcode ) 
          {
             case SBIL_call:
+            case SBIL_call_interface:
             case SBIL_call_static:
                {
                   int instarg = INST_ARG(pinst->inst);
@@ -765,7 +795,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
    }
 }
 
-void StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& function)
+int StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& function)
 {
    using namespace SBIL;
    using namespace ByteCode;
@@ -814,5 +844,9 @@ void StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& 
 
    applyPatches(pcode);
    
+   int index = program.linkCode(pcode, pos);
+
    free(pcode);
+
+   return index;
 }

@@ -11,7 +11,6 @@ public:
       mName(),
       mpCode(NULL),
       mInstruction(-1),
-      mOriginalInstruction(-1),
       mArguments(0),
       mInterface(-1)
    {
@@ -20,7 +19,6 @@ public:
    VirtualFunctionTableEntry(const VirtualFunctionTableEntry& that): 
       mName(that.mName),
       mInstruction(that.mInstruction),
-      mOriginalInstruction(that.mOriginalInstruction),
       mArguments(that.mArguments),
       mInterface(that.mInterface)
    {
@@ -33,7 +31,6 @@ public:
    String mName;
    char*  mpCode;
    int    mInstruction;
-   int    mOriginalInstruction;
    int    mArguments;
    int    mInterface;
 };

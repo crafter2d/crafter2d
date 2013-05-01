@@ -22,6 +22,11 @@ protected:
    virtual bool performStep(ASTNode& node);
 
 private:
+ // operations
+   void handleClassObject(const ASTClass& ast);
+   void handleStaticBlock(ASTClass& ast);
+   void handleFieldBlock(ASTClass& ast);
+
    CompileContext& mContext;
    VirtualClass*   mpVirClass;
    char*           mpCode;

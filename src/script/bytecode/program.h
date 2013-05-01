@@ -9,14 +9,25 @@ namespace ByteCode
    class Program
    {
    public:
+      Program();
       
     // get/set
       const SymbolTable& getSymbolTable() const;
             SymbolTable& getSymbolTable();
 
-   private:
+      int         getSize() const;
+      const char* getCode() const;
 
-      SymbolTable mSymbolTable;
+    // operations
+      int linkCode(const char* pcode, unsigned int size);
+
+   private:
+      void allocateCode(int size);
+
+      SymbolTable    mSymbolTable;
+      char*          mpCode;
+      unsigned int   mCodeSize;
+      unsigned int   mCodeLength;
    };
 }
 

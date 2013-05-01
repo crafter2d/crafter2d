@@ -44,6 +44,9 @@ public:
 
    ByteCode::IRGenerator& getByteCodeGenerator();
    void                  setByteCodeGenerator(ByteCode::IRGenerator* pgenerator);
+
+   ByteCode::Program& getProgram();
+   void               setProgram(ByteCode::Program& program);
    
  // query
    bool hasClass(const String& classname) const;
@@ -77,6 +80,7 @@ private:
    ByteCode::IRGenerator*  mpByteCodeGenerator; // owns
    StringCache             mStringCache;
    LiteralTable            mLiteralTable;
+   ByteCode::Program*      mpProgram;
    CompileLog              mLog;
 };
 

@@ -17,13 +17,13 @@ public:
          ASTVariable& getVariable();
    void               setVariable(ASTVariable* pvariable);
 
+   const ASTVariable& getIteratorVariable() const;
+         ASTVariable& getIteratorVariable();
+
    const ASTStatement& getBody() const;
          ASTStatement& getBody();
    void                setBody(ASTStatement* pbody);
-
-   int  getResourceIndex() const;
-   void setResourceIndex(int index);
-
+   
  // query
    virtual bool hasReturn(bool& hasunreachablecode) const;
 
@@ -31,9 +31,15 @@ public:
    ACCEPT;
 
 private:
+ // get/set
+   void setIteratorVariable(ASTVariable* pvariable);
+
+ // operations
+   void createIteratorVariable();
+
    ASTVariable*   mpVariable;
+   ASTVariable*   mpIterator;
    ASTStatement*  mpBody;
-   int            mResourceIndex;
 };
 
 #endif // AST_FOREACH_H_

@@ -68,6 +68,11 @@ void Compiler::setByteCodeGenerator(ByteCode::IRGenerator* pgenerator)
    mContext.setByteCodeGenerator(pgenerator);
 }
 
+void Compiler::setProgram(ByteCode::Program& program)
+{
+   mContext.setProgram(program);
+}
+
 // - Query
 
 const Literal& Compiler::lookupLiteral(int index) const
@@ -144,6 +149,13 @@ bool Compiler::compile(const String& classname)
             if ( performSteps(*pclass, mCompileSteps) )
             {
                save(*pclass);
+
+               VirtualClass& virclass = mContext.resolveVirtualClass(pclass->getFullName());
+
+               if ( hasCallback() )
+               {
+                  getCallback().notify(&virclass);
+               }
 
                /*
 

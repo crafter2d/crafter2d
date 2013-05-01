@@ -38,12 +38,13 @@
 #include "virtualstack.h"
 #include "vminterface.h"
 
-namespace CIL
+namespace ByteCode
 {
-   class Class;
+   class Program;
 }
 
 class ClassRegistry;
+class CPU;
 class String;
 class Variant;
 class VirtualArrayException;
@@ -179,13 +180,14 @@ private:
    Objects                       mRootObjects;
    MemoryPool<VirtualObject>     mObjectCache;
    GarbageCollector              mGC;
-   VirtualStack                  mStack;
    CallStack                     mCallStack;
    VirtualCall                   mCall;
    NativeObjectMap               mNativeObjects;
    State                         mState;
    VirtualClass*                 mpArrayClass;
    VirtualClass*                 mpStringClass;
+   CPU*                          mpCPU;
+   ByteCode::Program*            mpProgram;
    bool                          mRetVal;
    bool                          mLoaded;
 };

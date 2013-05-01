@@ -19,13 +19,13 @@ class StackIRGenerator : public ByteCode::IRGenerator
 public:
    StackIRGenerator();
 
-   virtual char* generate(CompileContext& context, ByteCode::Program& program, const ASTFunction& function);
+   virtual int generate(CompileContext& context, const ASTFunction& function);
 
 private:
    
    void generateInstructions(CompileContext& context, ByteCode::Program& program, const ASTFunction& function);
    void checkAndFixStack(const ByteCode::Program& program, const ASTFunction& function);
-   void buildCode(ByteCode::Program& program, const ASTFunction& function);
+   int  buildCode(ByteCode::Program& program, const ASTFunction& function);
 };
 
 #endif // STACK_IR_GENERATOR_H

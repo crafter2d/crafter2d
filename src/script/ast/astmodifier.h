@@ -14,7 +14,8 @@ public:
        eAbstract     = 4,
        ePureNative   = 8,
        eNative       = 16,
-       eSynchronized = 32
+       eSynchronized = 32,
+       eInternal     = 64,
    };
 
    ASTModifiers(): mAccess(ePublic), mFlags(0) {}

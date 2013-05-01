@@ -30,6 +30,10 @@ ASTFunction& FunctionResolver::resolve(CompileContext& context, const String& pr
          {
             String& arg = arguments[index];
             ASTType* ptype = ASTType::fromString(arg);
+            if ( ptype->isObject() )
+            {
+               ptype->setObjectClass(context.resolveClass(ptype->getObjectName()));
+            }
             signature.append(ptype);
          }
 

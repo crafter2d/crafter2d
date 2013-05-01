@@ -13,6 +13,7 @@
 namespace ByteCode
 {
    class IRGenerator;
+   class Program;
 }
 
 class AntlrStream;
@@ -36,6 +37,7 @@ public:
    void             setCallback(CompileCallback& callback);
 
    void             setByteCodeGenerator(ByteCode::IRGenerator* pgenerator);
+   void             setProgram(ByteCode::Program& program);
 
    const Literal& lookupLiteral(int index) const;
 

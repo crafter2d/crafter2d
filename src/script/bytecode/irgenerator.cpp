@@ -29,7 +29,7 @@ namespace ByteCode
 
    // - Operations
 
-   char* IRGenerator::generate(CompileContext& context, Program& program, const ASTFunction& function)
+   int IRGenerator::generate(CompileContext& context, const ASTFunction& function)
    {
       PURE_VIRTUAL;
       return NULL;

@@ -76,9 +76,8 @@ void ResourceCheckVisitor::visit(ASTFor& ast)
 
 void ResourceCheckVisitor::visit(ASTForeach& ast)
 {
-   ast.getVariable().setResourceIndex(mOffset++);
-   ast.setResourceIndex(mOffset++);
-   
+   ast.getIteratorVariable().setResourceIndex(mOffset++);
+   ast.getVariable().setResourceIndex(mOffset++);   
    ast.getBody().accept(*this);
 }
 
