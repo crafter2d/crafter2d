@@ -52,31 +52,21 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mCallback(*this),
    mCompiler(),
    mRootObjects(),
-   mGC(),
-   mStack(),
-   mCallStack(),
-   mCall(),
    mNativeObjects(),
    mState(eInit),
    mpArrayClass(NULL),
    mpStringClass(NULL),
    mpCPU(NULL),
-   mpProgram(NULL),
    mLoaded(false)
 {
-   mpCPU = new StackCPU();
-   mpProgram = mpCPU->getProgram();
+   mpCPU = new StackCPU(*this);
 
-   mCompiler.setProgram(*mpProgram);
-   mCompiler.setByteCodeGenerator(mpCPU->createIRGenerator());
+   mCompiler.setCPU(*mpCPU);
    mCompiler.setCallback(mCallback);
 }
 
 VirtualMachine::~VirtualMachine()
 {
-   // clear the garbage collector
-   mGC.gc(*this);
-
    // set destruct state, native object notifies vm when it is destructed
    // resulting in double delete.
    mState = eDestruct;
@@ -91,6 +81,7 @@ void VirtualMachine::initialize()
    ClassRegistry registry;
    VMInterface::registerCommonFunctions(registry);
    mergeClassRegistry(registry);
+   mContext.mNativeRegistry.add(mCompiler.getClassRegistry());
 
    // preload some common classes
    loadClass("system.Object");
@@ -100,6 +91,7 @@ void VirtualMachine::initialize()
    // resolve the internal classes
    mpArrayClass = &mContext.mClassTable.resolve("system.InternalArray");
    mpStringClass = &mContext.mClassTable.resolve("system.InternalString");
+   mpCPU->initialize(mContext);
 
    // pre-compile utility classes
    loadClass("system.ClassLoader");
@@ -131,51 +123,6 @@ void VirtualMachine::mergeClassRegistry(const ClassRegistry& registry)
 
 // - Stack access
 
-int VirtualMachine::popInt()
-{
-   return mStack.popInt();
-}
-
-double VirtualMachine::popReal()
-{
-   return mStack.popReal();
-}
-
-bool VirtualMachine::popBoolean()
-{
-   return mStack.popBool();
-}
-
-String VirtualMachine::popString()
-{
-   return mStack.popString();
-}
-
-void VirtualMachine::push(int value)
-{
-   mStack.pushInt(value);
-}
-
-void VirtualMachine::push(double value)
-{
-   mStack.pushReal(value);
-}
-
-void VirtualMachine::push(bool value)
-{
-   mStack.pushBool(value);
-}
-
-void VirtualMachine::push(const String& value)
-{
-   mStack.pushString(mContext.mStringCache.lookup(value));
-}
-
-void VirtualMachine::push(VirtualObject& object)
-{
-  mStack.pushObject(object);
-}
-
 void VirtualMachine::addRootObject(VirtualObject& object)
 {
    mRootObjects.push_back(&object);
@@ -185,21 +132,20 @@ void VirtualMachine::addRootObject(VirtualObject& object)
 
 bool VirtualMachine::execute(const String& classname, const String& function)
 {
-   VirtualObject* pvirtualobject = instantiate(classname);
-   if ( pvirtualobject == NULL )
-   {
+   const VirtualClass* pclass = doLoadClass(classname);
+   if ( pclass == NULL )
       return false;
-   }
 
-   execute(*pvirtualobject, function);
-   
-   // for now run the garbage collector here. have to find the right spot for it.
-   mGC.gc(*this);
+   const VirtualFunctionTableEntry* pentry = pclass->getVirtualFunctionTable().findByName(function);
+   if ( pentry == NULL )
+      return false;
+
+   mpCPU->execute(mContext, *pclass, *pentry);
 
    return true;
 }
 
-void VirtualMachine::execute(VirtualObject& object, const String& function)
+Variant VirtualMachine::execute(VirtualObject& object, const String& function, int argc, Variant* pargs)
 {
    const VirtualClass& vclass = object.getClass();
    const VirtualFunctionTableEntry* pentry = vclass.getVirtualFunctionTable().findByName(function);
@@ -208,20 +154,12 @@ void VirtualMachine::execute(VirtualObject& object, const String& function)
       throw new VirtualFunctionNotFoundException(object.getClass().getName(), function);
    }
 
-   Variant objectvariant(object);
-   if ( pentry->mArguments > 1 )
-      mStack.insert(mStack.size() - (pentry->mArguments - 1), objectvariant);
-   else
-      mStack.push(objectvariant);
-
-   execute(vclass, *pentry);
-   
-   // for now run the garbage collector here. have to find the right spot for it.
-   mGC.gc(*this);
+   return mpCPU->execute(mContext, object, *pentry, argc, pargs);
 }
 
 void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry)
 {
+   /*
    mCallStack.push(mCall);
    mCall.start(vclass, entry, mStack.size());
 
@@ -283,6 +221,7 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualFunctionTa
    mCallStack.pop();
 
    mState = eRunning;
+   */
 }
 
 void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstruction& instruction)
@@ -1170,170 +1109,56 @@ void VirtualMachine::execute(const VirtualClass& vclass, const VirtualInstructio
    */
 }
 
+void VirtualMachine::mark()
+{
+   mpCPU->mark();
+
+   mContext.mClassTable.mark();  // marks all statics
+   for ( std::size_t index = 0; index < mRootObjects.size(); index++ )
+   {
+      VirtualObject* pobject = mRootObjects[index];
+      pobject->mark();
+   }
+}
+
 // - Exception
 
 String VirtualMachine::buildCallStack() const
 {
-   CallStack dump = mCallStack;
-
-   String result = String("Call stack:\n");
-   while ( dump.size() > 1 )
-   {
-      const VirtualCall& call = dump.top();
-
-      ASSERT_PTR(call.mpEntry);
-      result += String("- ");
-      result += String(call.mpClass->getName() + '.' + call.mpEntry->mName + '(');
-
-      for ( int index = 0; index < call.mpEntry->mArguments; index++ )
-      {
-         const Variant& value = mStack[call.mStackBase + index];
-         result += value.typeAsString() + String(" = ") + value.toString();
-
-         if ( index < call.mpEntry->mArguments - 1 )
-         {
-            result += String(", ");
-         }
-      }
-
-      result += String(")\n");
-
-      dump.pop();
-   }
-
-   return result;
-}
-
-void VirtualMachine::throwException(const String& exceptionname, const String& reason)
-{
-   VirtualObject* pexception = instantiate(exceptionname, -1);
-
-   if ( reason.length() > 0 )
-   {
-      mStack.pushString(mContext.mStringCache.lookup(reason));
-      execute(*pexception, "setCause");
-   }
-
-   throw new VirtualException(*pexception);
-}
-
-bool VirtualMachine::handleException(VirtualException* pexception)
-{
-   if ( mCall.mGuards.size() > 0 )
-   {
-      VirtualCall::VirtualGuard& guard = mCall.mGuards.back();
-      if ( mCall.mInstructionPointer <= guard.mJumpTo )
-      {
-         mStack.pushObject(pexception->getException());
-
-         mCall.jump(guard.mJumpTo);
-
-         return true;
-      }
-      else
-      {
-         // exception within a catch handler, so see if there is another try/catch around this one
-         mCall.mGuards.pop_back();
-
-         return handleException(pexception);
-      }
-   }
-
-   // shrink the stack
-   shrinkStack(mCall.mStackBase);
-   mCall = mCallStack.top();
-   mCallStack.pop();
-
-   throw pexception;
-}
-
-void VirtualMachine::displayException(VirtualException& exception)
-{
-   VirtualObject& exceptionobject = exception.getException();
-
-   execute(exceptionobject, "getCause");
-   execute(exceptionobject, "getCallStack");
-
-   String callstack = mStack.popString();
-   String cause = mStack.popString();
-
-   std::cout << cause.toStdString() << std::endl << callstack.toStdString();
+   return mpCPU->buildCallStack();
 }
 
 // - Object creation
 
-VirtualObject* VirtualMachine::instantiate(const String& classname, int constructor, void* pnativeobject)
+VirtualObject* VirtualMachine::instantiate(const String& classname, int constructor)
 {
+   VirtualObject* presult;
    VirtualClass* pclass = doLoadClass(classname);
-   if ( pclass == NULL || !pclass->canInstantiate() )
+   if ( pclass != NULL )
    {
-      return NULL;
+      presult = mpCPU->instantiate(mContext, *pclass, constructor);
    }
-
-   VirtualObject* pobject = mObjectCache.alloc();
-   pobject->setNativeObject(pnativeobject);
-   pclass->instantiate(*pobject);   
-
-   Variant objectvariant(*pobject);
-
-   {
-      // run field initialization expressions
-      const VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[1];
-      mStack.push(objectvariant);
-      execute(*pclass, entry);
-   }
-
-   {
-      const VirtualFunctionTableEntry* pentry = NULL;
-
-      // call the constructor as coded
-      if ( constructor == -1 )
-      {
-         pentry = pclass->getDefaultConstructor();
-      }
-      else
-      {
-         pentry = &pclass->getVirtualFunctionTable()[constructor];
-      }
-
-      if (pentry != NULL )
-      {
-         mStack.insert(mStack.size() - (pentry->mArguments - 1), objectvariant);
-         execute(*pclass, *pentry);
-      }
-   }
-
-   // register the object with the garbage collector
-   mGC.collect(pobject);
-
-   return pobject;
+   return presult;
 }
 
 VirtualObject* VirtualMachine::instantiateNative(const String& classname, void* pobject, bool owned)
 {
-   VirtualObject* presult = NULL;
-   if ( pobject != NULL )
-   {
-      NativeObjectMap::iterator it = mNativeObjects.find(pobject);
-      if ( it != mNativeObjects.end() )
-      {
-         // already constructed this object earlier
-         ASSERT(it->second->getNativeObject() == pobject);
-         presult = it->second;
-         presult->setOwner(owned);
-      }
-      else
-      {
-         // construct new instance & remember it
-         presult = instantiate(classname, -1, pobject);
-         ASSERT_PTR(presult); 
-         ASSERT(presult->hasNativeObject() && presult->getNativeObject() == pobject);
+   ASSERT_PTR(pobject);
 
-         presult->setOwner(owned);
-         mNativeObjects[pobject] = presult;
-      }
+   VirtualObject* presult = NULL;
+   NativeObjectMap::iterator it = mNativeObjects.find(pobject);
+   if ( it != mNativeObjects.end() )
+   {
+      presult = it->second;
+   }
+   else
+   {
+      presult = instantiate(classname);
+      mNativeObjects.insert(std::pair<void*, VirtualObject*>(pobject, presult));
    }
    
+   presult->setNativeObject(pobject);
+   presult->setOwner(owned);
    return presult;
 }
 
@@ -1386,6 +1211,7 @@ void VirtualMachine::registerNative(VirtualObject& object, void* pnative)
 {
    ASSERT(!object.hasNativeObject());
    object.setNativeObject(pnative);
+   object.setOwner(true);
 
    std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObject*>(pnative, &object));
    ASSERT(ret.second);
@@ -1409,10 +1235,7 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
       const VirtualFunctionTableEntry* pentry = object.getClass().getVirtualFunctionTable().findByName("finalize");
       if ( pentry != NULL )
       {
-         mStack.pushObject(object);
-         mStack.pushInt(1);
-
-         execute(object.getClass(), *pentry);
+         mpCPU->execute(mContext, object, *pentry);
       }
    }
 }
@@ -1435,6 +1258,15 @@ VirtualClass* VirtualMachine::doLoadClass(const String& classname)
 void VirtualMachine::classLoaded(VirtualClass* pclass)
 {
    mContext.mClassTable.insert(pclass);
+
+   if ( pclass->getName() == "system.ClassLoader" )
+   {
+      int aap = 5;
+   }
+
+   // execute the static initialization body
+   VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[0];
+   mpCPU->execute(mContext, *pclass, entry);
    
    /*
    int offset = mContext.mInstructions.size();
@@ -1537,19 +1369,11 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
       const VirtualClass& classloader = mContext.mClassTable.resolve("system.ClassLoader");
       const VirtualFunctionTableEntry& entry = classloader.getVirtualFunctionTable()[4];
       const Variant& classloaderobject = classloader.getStatic(0);
+      ASSERT(classloaderobject.isObject());
 
-      mStack.push(classloaderobject);
-      mStack.pushObject(object);
+      Variant arg(object);
+      mpCPU->execute(mContext, classloaderobject.asObject(), entry, 1, &arg);
 
       execute(classloader, entry);
    }
-}
-
-// - Stack operations
-
-void VirtualMachine::shrinkStack(int newsize)
-{
-   int diff = mStack.size() - newsize;
-   ASSERT(diff >= 0);
-   mStack.pop(diff);
 }

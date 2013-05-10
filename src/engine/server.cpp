@@ -191,9 +191,10 @@ void Server::onNetEvent(int client, const NetEvent& event)
             AutoPtr<Player> player = clients[client];
 
             // run the onClientConnect script
-            mpScript->addParam((int)client);
-            mpScript->addParam("engine.game.Player", player.getPointer());
-            mpScript->run("onClientDisconnect");
+            Variant args[2];
+            args[0].setInt(client);
+            args[1].setObject(mpScript->resolve(player.getPointer()));
+            mpScript->run("onClientDisconnect", 2, args);
 
             // remove the player from the client list
             ClientMap::iterator it = clients.find(client);
@@ -215,9 +216,10 @@ void Server::onNetEvent(int client, const NetEvent& event)
 
             // run the onClientConnect script
             Player* player = clients[client];
-            mpScript->addParam("engine.game.Player", player);
-            mpScript->addParam("engine.net.NetStream", &stream);
-            mpScript->run("onEvent");
+            Variant args[2];
+            args[0].setObject(mpScript->resolve(player));
+            args[1].setObject(mpScript->instantiate("engine.net.NetStream", &stream));
+            mpScript->run("onEvent", 2, args);
             break;
          }
       case actionEvent:
@@ -292,8 +294,8 @@ void Server::addPlayer(int clientid, Player* pplayer)
 void Server::handleConnectEvent(const ConnectEvent& event)
 {
    // check if the script allows this new player
-   mpScript->run("onClientConnecting");
-   int reason = mpScript->getInteger();
+   Variant retval = mpScript->run("onClientConnecting");
+   int reason = retval.asInt();
    if ( reason != 0 )
    {
       ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
@@ -306,8 +308,8 @@ void Server::handleConnectEvent(const ConnectEvent& event)
       addPlayer(mActiveClient, pplayer);
 
       // run the onClientConnect script
-      mpScript->addParam("engine.game.Player", pplayer);
-      mpScript->run("onClientConnect");
+      Variant arg(mpScript->instantiate("engine.game.Player", pplayer));
+      mpScript->run("onClientConnect", 1, &arg);
    }
 }
 

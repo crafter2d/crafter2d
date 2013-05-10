@@ -328,6 +328,14 @@ void ASTClass::addMember(ASTMember* pmember)
    addChild(pmember);
 }
 
+void ASTClass::insertFunction(int index, ASTFunction* pfunction)
+{
+   mFunctions.insert(pfunction);
+   mFunctionTable.set(index, *pfunction);
+
+   insertChild(index, pfunction);
+}
+
 ASTType* ASTClass::createThisType() const
 {
    ASTType* presult = new ASTType(ASTType::eObject);

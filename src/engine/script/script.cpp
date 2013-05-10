@@ -70,63 +70,45 @@ void Script::setThis(void* pthis)
 /// \brief Runs the script. You must first call prepareCall and optionaly the addParam functions
 /// to set up the function name and arguments.
 /// \returns always returns true
-bool Script::run(const String& function)
+Variant Script::run(const String& function, int argc, Variant* pargs)
 {
    ASSERT_PTR(mpObject);
 
+   Variant result;
    try
    {
-      mScriptManager.mVirtualMachine.execute(*mpObject, function);
+      result = mScriptManager.mVirtualMachine.execute(*mpObject, function, argc, pargs);
    }
    catch ( VirtualFunctionNotFoundException* pe )
    {
       Log::getInstance().error("Could not find function %s.%s", pe->getClassName().getBuffer(), pe->getFunction().getBuffer());
-      return false;
    }
-   catch ( VirtualException* pe )
+   catch ( VirtualException* )
    {
       Log::getInstance().error("Unhandled exception");
-      return false;
    }
 
-   return true;
+   return result;
 }
 
 //-----------------------------------------
 // - Retrieval
 //-----------------------------------------
 
-bool Script::getBoolean()
-{
-   return mScriptManager.mVirtualMachine.popBoolean();
-}
-
-int Script::getInteger()
-{
-   return mScriptManager.mVirtualMachine.popInt();
-}
-
-void Script::addParam(void* pobject)
+VirtualObject& Script::resolve(void* pobject)
 {
    VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.lookupNative(pobject);
    ASSERT_MSG(pobject != NULL, "Object should have been registered already when using this method.");
-
-   mScriptManager.mVirtualMachine.push(*pvirtualobject);
+   return *pvirtualobject;
 }
 
-/// \fn Script::addParam(const String& classname, void* pobject)
-/// \brief Pushes a custom type parameter on top of the stack which will be use by Lua as a parameter to the
-/// function.
-/// \param object a pointer to an object
-/// \param typeName the type name of the object (class name)
-void Script::addParam(const String& classname, void* pobject)
+/// \fn Script::instantiate(const String& classname, void* pobject)
+/// \brief Instantiates a native virtual object.
+/// \param classname the name of the script class
+/// \param pobject a pointer to the native object
+
+VirtualObject& Script::instantiate(const String& classname, void* pobject)
 {
    VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.instantiateNative(classname, pobject, false);
-
-   mScriptManager.mVirtualMachine.push(*pvirtualobject);
-}
-
-void Script::addParam(VirtualObject& object)
-{
-   mScriptManager.mVirtualMachine.push(object);
+   return *pvirtualobject;
 }

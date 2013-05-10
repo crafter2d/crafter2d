@@ -23,35 +23,3 @@
 
 #include "scriptmanager.h"
 #include "scriptobject.h"
-
-/// \fn Script::addParam(int val)
-/// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
-/// \param val a numerical value
-INLINE void Script::addParam(int val)
-{
-   mScriptManager.mVirtualMachine.push(val);
-}
-
-/// \fn Script::addParam(float val)
-/// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
-/// \param val a floating point value
-INLINE void Script::addParam(float val)
-{
-   mScriptManager.mVirtualMachine.push(val);
-}
-
-/// \fn Script::addParam(bool val)
-/// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
-/// \param val a floating point value
-INLINE void Script::addParam(bool val)
-{
-   mScriptManager.mVirtualMachine.push(val);
-}
-
-/// \fn Script::addParam(const String& val)
-/// \brief Pushes a parameter on top of the stack which will be use by Lua as a parameter to the function.
-/// \param val a pointer to a character string
-INLINE void Script::addParam(const String& val)
-{
-   mScriptManager.mVirtualMachine.push(val);
-}

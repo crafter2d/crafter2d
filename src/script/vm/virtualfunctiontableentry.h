@@ -4,23 +4,30 @@
 
 #include "core/string/string.h"
 
+#include "virtualguard.h"
+
 class VirtualFunctionTableEntry
 {
 public:
+   typedef std::vector<VM::Guard> Guards;
+
    VirtualFunctionTableEntry():
       mName(),
-      mpCode(NULL),
+      guards(),
       mInstruction(-1),
       mArguments(0),
-      mInterface(-1)
+      mInterface(-1),
+      returns(false)
    {
    }
 
    VirtualFunctionTableEntry(const VirtualFunctionTableEntry& that): 
       mName(that.mName),
+      guards(that.guards),
       mInstruction(that.mInstruction),
       mArguments(that.mArguments),
-      mInterface(that.mInterface)
+      mInterface(that.mInterface),
+      returns(that.returns)
    {
    }
 
@@ -29,10 +36,11 @@ public:
    }
 
    String mName;
-   char*  mpCode;
+   Guards guards;
    int    mInstruction;
    int    mArguments;
    int    mInterface;
+   bool   returns;
 };
 
 #endif // VIRTUAL_FUNCTION_TABLE_ENTRY_H_

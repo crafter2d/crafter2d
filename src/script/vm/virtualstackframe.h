@@ -11,6 +11,7 @@ class VirtualFunctionTableEntry;
 
 namespace VM
 {
+   class Guard;
 
    class StackFrame
    {
@@ -22,6 +23,7 @@ namespace VM
 
       Locals                           locals;
 
+      int                              sp;
       int                              retaddress;
 
    };

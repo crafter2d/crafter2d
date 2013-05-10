@@ -101,6 +101,7 @@ public:
  // operations
    void addInterface(ASTType* pinterfacetype);
    void addMember(ASTMember* pmember);
+   void insertFunction(int index, ASTFunction* pfunction);
 
    ASTType* createThisType() const;
 

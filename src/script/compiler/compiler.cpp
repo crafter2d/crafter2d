@@ -7,10 +7,12 @@
 #include "core/string/string.h"
 #include "core/conv/lexical.h"
 #include "core/smartptr/autoptr.h"
+#include "core/defines.h"
 
 #include "script/antlr/antlrexception.h"
 #include "script/antlr/antlrinterface.h"
 #include "script/antlr/antlrstream.h"
+#include "script/vm/cpu.h"
 
 #include "exceptions/classnotfoundexception.h"
 #include "steps/preloadvisitor.h"
@@ -36,6 +38,7 @@
 Compiler::Compiler():
    mContext(*this),
    mpCallback(NULL),
+   mpCPU(NULL),
    mLoadSteps(),
    mPrecompileSteps(),
    mCompileSteps(),
@@ -63,14 +66,18 @@ void Compiler::setCallback(CompileCallback& callback)
    mpCallback = &callback;
 }
 
-void Compiler::setByteCodeGenerator(ByteCode::IRGenerator* pgenerator)
+CPU& Compiler::getCPU()
 {
-   mContext.setByteCodeGenerator(pgenerator);
+   ASSERT_PTR(mpCPU);
+   return *mpCPU;
 }
 
-void Compiler::setProgram(ByteCode::Program& program)
+void Compiler::setCPU(CPU& cpu)
 {
-   mContext.setProgram(program);
+   mpCPU = &cpu;
+
+   mContext.setByteCodeGenerator(cpu.createIRGenerator());
+   mContext.setProgram(cpu.getProgram());
 }
 
 // - Query

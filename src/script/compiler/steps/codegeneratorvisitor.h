@@ -89,7 +89,7 @@ private:
 
    typedef std::stack<LoopFlow> LoopFlowStack;
 
-   enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 5, ePostDecr = 6, eKeep = 8 };
+   enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 4, ePostDecr = 8, eKeep = 16 };
 
  // operations
    void handleAssignment(const ASTAccess& access, bool local);
@@ -114,7 +114,6 @@ private:
    int                  mLoadFlags;
    int                  mExpr;
    int                  mState;
-   bool                 mSuperCall;
    bool                 mRightHandSide;
    bool                 mStore;
 };

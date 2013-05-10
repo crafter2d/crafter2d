@@ -18,6 +18,7 @@ namespace ByteCode
 
 class AntlrStream;
 class ASTNode;
+class CPU;
 class CompileStep;
 class CompileCallback;
 class CompileException;
@@ -36,8 +37,8 @@ public:
    CompileCallback& getCallback();
    void             setCallback(CompileCallback& callback);
 
-   void             setByteCodeGenerator(ByteCode::IRGenerator* pgenerator);
-   void             setProgram(ByteCode::Program& program);
+   CPU& getCPU();
+   void setCPU(CPU& cpu);
 
    const Literal& lookupLiteral(int index) const;
 
@@ -70,6 +71,7 @@ private:
 
    CompileContext    mContext;
    CompileCallback*  mpCallback;
+   CPU*              mpCPU;
    Steps             mLoadSteps;
    Steps             mPrecompileSteps;
    Steps             mCompileSteps;

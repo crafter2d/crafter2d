@@ -22,6 +22,7 @@ public:
 
  // stack operations
    void push(int count);
+   void push(int count, Variant* pvalues);
    void push(const Variant& value);
    void pushInt(int value);
    void pushReal(double value);

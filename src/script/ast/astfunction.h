@@ -5,6 +5,7 @@
 #include "core/string/string.h"
 
 #include "script/cil/cil.h"
+#include "script/cil/guards.h"
 
 #include "astmember.h"
 #include "astmodifier.h"
@@ -20,6 +21,7 @@ class ASTSignature;
 
 class ASTFunction : public ASTMember
 {
+   typedef std::vector<CIL::Guard*> Guards;
 public:
    explicit ASTFunction(ASTMember::Kind kind);
    virtual ~ASTFunction();
@@ -71,6 +73,9 @@ public:
    const CIL::Instructions& getInstructions() const;
    void setInstructions(const CIL::Instructions& instructions);
 
+   const CIL::Guards& getGuards() const;
+   void               setGuards(const CIL::Guards& guards);
+
  // query
    bool isConstructor() const;
    bool isDefaultConstructor() const;
@@ -106,6 +111,7 @@ private:
    ASTBlock*         mpBody;
    ASTSignature*     mpSignature;
    CIL::Instructions mInstructions;
+   CIL::Guards       mGuards;
    int               mResourceIndex;
    int               mLocalVariableCount;
 };

@@ -31,7 +31,6 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mLoadFlags(0),
    mExpr(0),
    mState(0),
-   mSuperCall(false),
    mRightHandSide(false),
    mStore(false)
 {
@@ -59,16 +58,16 @@ void CodeGeneratorVisitor::visit(ASTClass& ast)
 
    mpClass = &ast;
 
+   // maybe we should also let the loader fill in the virtual function table...
+   // so for now just compile the functions
+
+   ast.getFunctions().accept(*this);
+
    // base class should be set by the VM
    // we don't register the member variables, as they must be loaded/stored differently than locals
 
    handleStaticBlock(ast);
    handleFieldBlock(ast);
-
-   // maybe we should also let the loader fill in the virtual function table...
-   // so for now just compile the functions
-
-   ast.getFunctions().accept(*this);
 
    // we are done compiling this class
 
@@ -88,6 +87,11 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
    else
    {
       ScopedScope scope(mScopeStack);
+
+      if ( ast.getName() == "NativeClass" )
+      {
+         int aap = 5;
+      }
       
       mpFunction = &ast;
       mpFunction->addArgument(mpClass->createThisType());
@@ -105,6 +109,7 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
       mBuilder.end();
 
       ast.setInstructions(mBuilder.getInstructions());
+      ast.setGuards(mBuilder.getGuards());
       ast.cleanup();
    }
 }
@@ -276,13 +281,16 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       mBuilder.emit(CIL_stloc, iteratorvar.getResourceIndex());
 
       const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
-      const ASTField* pfield = arrayclass.findField("length", ASTClass::eLocal);
+      const ASTFunction* plenghfnc = arrayclass.findExactMatch("size", ASTSignature());
+
+      const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(arrayclass, *plenghfnc);
+      ASSERT_PTR(preg);
 
       mBuilder.addLabel(flow.start);
       mBuilder.emit(CIL_dup);
 
-      // check for the size ( index < array.length )
-      mBuilder.emit(CIL_ldfield, pfield->getVariable().getResourceIndex());
+      // check for the size ( index < array.length() )
+      mBuilder.emit(CIL_call_native, preg->getIndex());
       mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_cmpeq);
       mBuilder.emit(CIL_jump_true, flow.end);
@@ -324,12 +332,12 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
 
       // is there still an item: if not it.hasNext goto end
       mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
-      mBuilder.emit(CIL_call, hasnextname);
+      mBuilder.emit(CIL_call_virt, hasnextname);
       mBuilder.emit(CIL_jump_false, flow.end);
 
       // store the next item from the list: var = it.next()
       mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
-      mBuilder.emit(CIL_call, nextname);
+      mBuilder.emit(CIL_call_virt, nextname);
       mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
       ast.getBody().accept(*this);
@@ -478,20 +486,27 @@ void CodeGeneratorVisitor::visit(const ASTReturn& ast)
    mBuilder.emit(CIL_ret, ast.hasExpression() ? 1 : 0);
 }
 
+#include "script/cil/guard.h"
+
 void CodeGeneratorVisitor::visit(const ASTTry& ast)
 {
+   int labelFinal = mBuilder.allocateLabel();
    int labelEnd   = mBuilder.allocateLabel();
    int labelCatch = mBuilder.allocateLabel();
 
-   if ( ast.hasFinallyBlock() )
-      mBuilder.emit(CIL_enter_guard_f, labelCatch);
-   else
-      mBuilder.emit(CIL_enter_guard, labelCatch);
+   CIL::Guard* pguard = new CIL::Guard();
+   mBuilder.addGuard(pguard);
+
+   // set up guard structure
+   pguard->finalize = ast.hasFinallyBlock();
+   pguard->labels[0] = labelCatch;
+   pguard->labels[1] = labelFinal;
+   pguard->labels[2] = labelEnd;
 
    ast.getBody().accept(*this);
 
    // if we get here, no exception happend
-   mBuilder.emit(CIL_jump, labelEnd);
+   mBuilder.emit(CIL_jump, labelFinal);
 
    // from here the code is executed when an exception did occure
    mBuilder.addLabel(labelCatch);
@@ -517,7 +532,7 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
 
       c.getBody().accept(*this);
 
-      mBuilder.emit(CIL_jump, labelEnd);
+      mBuilder.emit(CIL_jump, labelFinal);
       mBuilder.addLabel(labelNext);
    }
 
@@ -526,13 +541,13 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
    mBuilder.emit(CIL_throw);
 
    // no exception occured or it was handled successfully
-   mBuilder.addLabel(labelEnd);
+   mBuilder.addLabel(labelFinal);
    if ( ast.hasFinallyBlock() )
    {
       ast.getFinallyBlock().accept(*this);
    }
 
-   mBuilder.emit(CIL_leave_guard);
+   mBuilder.addLabel(labelEnd);
 }
 
 void CodeGeneratorVisitor::visit(const ASTThrow& ast)
@@ -547,7 +562,7 @@ void CodeGeneratorVisitor::visit(const ASTAssert& ast)
    ast.getCondition().accept(*this);
 
    int labelend = mBuilder.allocateLabel();
-   String assertclass = "system.AssertionError";
+   String assertclass = "system.AssertionError.AssertionError()";
 
    // if condition is false we throw an exception of type AssertionError,
    // else we jump to the end
@@ -940,10 +955,6 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
    {
       mBuilder.emit(CIL_ldarg, 0);
    }
-   else
-   {
-      mSuperCall = true;
-   }
 }
 
 void CodeGeneratorVisitor::visit(const ASTNative& ast)
@@ -953,19 +964,15 @@ void CodeGeneratorVisitor::visit(const ASTNative& ast)
    if ( ast.hasArguments() )
    {
       visitChildren(ast); // place arguments on the stack
-
-      mBuilder.emit(CIL_ldint, ast.getArguments().size() + 1);
    }
    else
    {
       ASSERT_PTR(mpFunction);
       int arguments = mpFunction->getArgumentCount();
-      for ( int index = 1; index <= arguments; index++ ) // skip the 'this' argument
+      for ( int index = 1; index < arguments; index++ )
       {
          mBuilder.emit(CIL_ldarg, index);
       }
-
-      mBuilder.emit(CIL_ldint, arguments + 1);
    }
 
    mBuilder.emit(CIL_call_native, ast.getIndex());
@@ -987,17 +994,35 @@ void CodeGeneratorVisitor::visit(const ASTCast& ast)
    }
    else
    {
-      switch ( mCurrentType.getKind() )
+      switch ( from.getKind() )
       {
+         case ASTType::eBoolean:
+            if ( mCurrentType.isString() )
+               mBuilder.emit(CIL_bconv_str);
+            break;
          case ASTType::eInt:
-            // should not yet happen
-            mBuilder.emit(CIL_conv_int);
+            if ( mCurrentType.isReal() )
+               mBuilder.emit(CIL_iconv_real);
+            else if ( mCurrentType.isString() )
+               mBuilder.emit(CIL_iconv_str);
             break;
          case ASTType::eReal:
-            mBuilder.emit(CIL_conv_real);
+            if ( mCurrentType.isInt() )
+               mBuilder.emit(CIL_rconv_int);
+            else if ( mCurrentType.isString() )
+               mBuilder.emit(CIL_rconv_str);
+            break;
+         case ASTType::eChar:
+            if ( mCurrentType.isString() )
+               mBuilder.emit(CIL_cconv_str);
             break;
          case ASTType::eString:
-            mBuilder.emit(CIL_conv_string);
+            if ( mCurrentType.isBoolean() )
+               mBuilder.emit(CIL_sconv_bool);
+            else if ( mCurrentType.isInt() )
+               mBuilder.emit(CIL_sconv_int);
+            else if ( mCurrentType.isReal() )
+               mBuilder.emit(CIL_rconv_str);
             break;
       }
    }
@@ -1110,7 +1135,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             }
             else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
             {
-               String name = before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName() + "." + function.getPrototype();
+               String name = (before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()) + "." + function.getPrototype();
                mBuilder.emit(CIL_call_static, name);
             }
             else 
@@ -1120,21 +1145,12 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                   String name = before.getObjectClass().getFullName() + "." + function.getPrototype();
                   mBuilder.emit(CIL_call_interface, name);
                }
-               else if ( mSuperCall )
-               {
-                  // call same function on the base class
-                  const ASTClass& baseclass = function.getClass().getBaseClass();
-                  String name = baseclass.getFullName() + "." + function.getPrototype();
-                  mBuilder.emit(CIL_call, name);
-               }
                else
                {
                   String name = function.getClass().getFullName() + "." + function.getPrototype();
-                  mBuilder.emit(CIL_call, name);
+                  mBuilder.emit(CIL_call_virt, name);
                }
             }
-
-            mSuperCall = false;
 
             const ASTType& type = function.getType();
             if ( type.isGeneric() )
@@ -1257,7 +1273,11 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
       else
          mBuilder.emit(CIL_ldreal, 1.0);
 
-      mBuilder.emit(IS_SET(mLoadFlags, ePreIncr) ? CIL_add : CIL_sub);
+      if ( IS_SET(mLoadFlags, ePreIncr) || IS_SET(mLoadFlags, ePostIncr) )
+         mBuilder.emit(CIL_add);
+      else if ( IS_SET(mLoadFlags, ePreDecr) || IS_SET(mLoadFlags, ePostDecr) )
+         mBuilder.emit(CIL_sub);
+
       mBuilder.emit(CIL_dup);
 
       int flags = mLoadFlags;
@@ -1281,7 +1301,10 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
          else
             mBuilder.emit(CIL_ldreal, 1.0);
 
-         mBuilder.emit(IS_SET(flags, ePostIncr) ? CIL_add : CIL_sub);
+         if ( IS_SET(flags, ePostIncr) )
+            mBuilder.emit(CIL_sub);
+         else if ( IS_SET(flags, ePostDecr) )
+            mBuilder.emit(CIL_add);
       }
    }
    else
@@ -1292,16 +1315,21 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
 
 void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
 {
+   if ( ast.getFullName() == "system.ClassLoader" )
+   {
+      int aap = 5;
+   }
+
    // var_init blocks have no return value & no arguments
    ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
-   ast.insertChild(0, pfunction);
-
-   ast.getFunctionTable().set(0, *pfunction);
-
    pfunction->setClass(ast);
    pfunction->setName("static_init");
    pfunction->setModifiers(ASTModifiers(ASTModifiers::eProtected, ASTModifiers::eStatic));
    pfunction->setType(new ASTType(ASTType::eVoid));
+   pfunction->addArgument(ast.createThisType());
+   pfunction->setResourceIndex(0);
+
+   ast.insertFunction(0, pfunction);
 
    mBuilder.start();
 
@@ -1363,7 +1391,7 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
                mBuilder.emit(CIL_ldreal, 0.0);
                break;
             case ASTType::eString:
-               mBuilder.emit(CIL_ldstr, "");
+               mBuilder.emit(CIL_ldstr, String());
                break;
             case ASTType::eObject:
             case ASTType::eArray:
@@ -1388,20 +1416,21 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
 {
    // construct the functions
    ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
-   ast.addMember(pfunction);
-
-   ast.getFunctionTable().set(1, *pfunction);
-
    pfunction->setClass(ast);
    pfunction->setName("var_init");
    pfunction->setModifiers(ASTModifiers(ASTModifiers::eProtected, 0));
    pfunction->setType(new ASTType(ASTType::eVoid));
+   pfunction->addArgument(ast.createThisType());
+   pfunction->setResourceIndex(1);
+
+   ast.insertFunction(1, pfunction);
 
    mBuilder.start();
 
    if ( ast.hasBaseClass() )
    {
       String name = ast.getBaseClass().getFullName() + ".var_init()";
+      mBuilder.emit(CIL_ldarg, 0);
       mBuilder.emit(CIL_call, name);
    }
 
@@ -1461,10 +1490,11 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
                mBuilder.emit(CIL_ldreal, 0.0);
                break;
             case ASTType::eString:
-               mBuilder.emit(CIL_ldstr, "");
+               mBuilder.emit(CIL_ldstr, String());
                break;
             case ASTType::eObject:
             case ASTType::eArray:
+            case ASTType::eGeneric:
                mBuilder.emit(CIL_ldnull);
                break;
          }
@@ -1474,9 +1504,9 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
       }
    }
    mBuilder.emit(CIL_ret, 0);
+   mBuilder.end();
 
    pfunction->setInstructions(mBuilder.getInstructions());
-   mBuilder.end();
 }
 
 void CodeGeneratorVisitor::handleLiteral(const Literal& literal)

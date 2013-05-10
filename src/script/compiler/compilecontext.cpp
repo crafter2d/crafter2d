@@ -22,6 +22,7 @@ CompileContext::CompileContext(Compiler& compiler):
    mpByteCodeGenerator(NULL),
    mStringCache(),
    mLiteralTable(),
+   mpProgram(NULL),
    mLog()
 {
 }

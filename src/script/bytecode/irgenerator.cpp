@@ -31,9 +31,16 @@ namespace ByteCode
 
    int IRGenerator::generate(CompileContext& context, const ASTFunction& function)
    {
-      PURE_VIRTUAL;
-      return NULL;
+      int result = virGenerate(context, function);
+      cleanup();
+      return result;
    }
+
+   int IRGenerator::virGenerate(CompileContext& context, const ASTFunction& function)
+   {
+      PURE_VIRTUAL;
+      return 0;
+   };
 
    void IRGenerator::cleanup()
    {

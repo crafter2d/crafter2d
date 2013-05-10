@@ -47,6 +47,15 @@ void VirtualStack::push(int count)
    }  
 }
 
+void VirtualStack::push(int count, Variant* pvalues)
+{
+   push(count);
+   for ( int index = 0; index < count; ++index )
+   {
+      *mStack[mSize++] = pvalues[index];
+   }
+}
+
 void VirtualStack::push(const Variant& value)
 {
    top() = value;

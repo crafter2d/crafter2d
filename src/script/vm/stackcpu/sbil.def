@@ -2,13 +2,13 @@
 //	   opcode                 push, pop
 
 OPCODE(SBIL_nop,				0, 0)
-OPCODE(SBIL_dup,				1, 1)
+OPCODE(SBIL_dup,				1, 0)
 
 OPCODE(SBIL_new,				1, 0)
 OPCODE(SBIL_new_array,			1, 0)
-OPCODE(SBIL_new_native,			1, 0)
 
 OPCODE(SBIL_call,				0, 0)
+OPCODE(SBIL_call_virt,			0, 0)
 OPCODE(SBIL_call_interface,     0, 0)
 OPCODE(SBIL_call_static,		0, 0)
 OPCODE(SBIL_call_native,		0, 0)
@@ -82,14 +82,14 @@ OPCODE(SBIL_bcmpeq,				1, 2)
 OPCODE(SBIL_bcmpne,				1, 2)
 OPCODE(SBIL_isnull,				1, 1)
 
-OPCODE(SBIL_ldfield,			1, 0)
-OPCODE(SBIL_stfield,			0, 1)
+OPCODE(SBIL_ldfield,			1, 1)
+OPCODE(SBIL_stfield,			0, 2)
 OPCODE(SBIL_ldlocal,			1, 0)
 OPCODE(SBIL_stlocal,			0, 1)
 OPCODE(SBIL_ldelem,				1, 0)
 OPCODE(SBIL_stelem,				0, 1)
-OPCODE(SBIL_ldstatic,			1, 0)
-OPCODE(SBIL_ststatic,			0, 1)
+OPCODE(SBIL_ldstatic,			1, 1)
+OPCODE(SBIL_ststatic,			0, 2)
 
 OPCODE(SBIL_jump,				0, 0)
 OPCODE(SBIL_jump_true,			0, 1)
@@ -113,7 +113,4 @@ OPCODE(SBIL_pop,				0, 1)
 OPCODE(SBIL_switch,				0, 0)
 OPCODE(SBIL_instanceof,			1, 1)
 
-OPCODE(SBIL_enterguard,			0, 0)
-OPCODE(SBIL_enterguard_final,	0, 0)
-OPCODE(SBIL_leaveguard,			0, 0)
 OPCODE(SBIL_throw,				0, 0)

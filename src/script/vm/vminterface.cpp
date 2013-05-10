@@ -57,6 +57,13 @@ void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& acce
    accessor.setResult(callstack);
 }
 
+void InternalArray_size(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualArray& thisobject = accessor.getArray(0);
+
+   accessor.setResult(thisobject.size());
+}
+
 void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualArray& thisobject = accessor.getArray(0);
@@ -179,6 +186,7 @@ SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)
    registry.addFunction("fillCallStack()", Throwable_fillCallStack);
 
    registry.addClass("system.InternalArray");
+   registry.addFunction("size()", InternalArray_size);
    registry.addFunction("resize(int)", InternalArray_resize);
 
    registry.addClass("system.InternalString");

@@ -8,7 +8,9 @@
 
 #include "script/compiler/compiler.h"
 #include "script/compiler/compilecallback.h"
+#include "script/vm/virtualcontext.h"
 #include "script/vm/vminterface.h"
+#include "script/vm/virtualmachine.h"
 #include "script/vm/stackcpu/stackcpu.h"
 
 class TestCompiler : public CxxTest::TestSuite
@@ -28,6 +30,14 @@ class TestCompiler : public CxxTest::TestSuite
    };
 
 public:
+
+   TestCompiler():
+      CxxTest::TestSuite(),
+      mContext(),
+      mVM(mContext),
+      mCpu(mVM)
+   {
+   }
    
    void testCompilation()
    {
@@ -40,7 +50,7 @@ public:
       VMInterface::registerCommonFunctions(registry);
 
       Compiler compiler;
-      compiler.setByteCodeGenerator(mCpu.createIRGenerator());
+      compiler.setCPU(mCpu);
       compiler.setClassRegistry(registry);
 
       // compiler required classes
@@ -58,7 +68,7 @@ public:
       mLoaded = false;
       
       Compiler compiler;
-      compiler.setByteCodeGenerator(mCpu.createIRGenerator());
+      compiler.setCPU(mCpu);
       compiler.setCallback(callback);
 
       TS_ASSERT(compiler.compile("system.Object"));
@@ -73,6 +83,8 @@ public:
 
 private:
 
+   VirtualContext mContext;
+   VirtualMachine mVM;
    StackCPU mCpu;
    bool     mLoaded;
 };

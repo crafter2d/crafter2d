@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "script/cil/cil.h"
+#include "script/cil/guards.h"
 
 namespace CIL
 {
@@ -21,10 +22,12 @@ public:
 
  // get/set
    const CIL::Instructions& getInstructions() const;
+   const CIL::Guards&       getGuards() const;
    
  // label operations
    int  allocateLabel();
    void addLabel(int id);
+   void addGuard(CIL::Guard* pguard);
 
  // emitting
    void emit(CIL::Opcode opcode);
@@ -39,12 +42,18 @@ public:
 
 private:
 
+   typedef std::vector<int> Labels;
+
  // operations
-   void replaceLabels();
+   void createJumps();
    void removeNops();
+
    int  findLabel(int label) const;
+   int  getLocation(int label);
 
    CIL::Instructions mInstructions;
+   CIL::Guards       mGuards;
+   Labels            mLabels;
    int               mLabel;
 };
 

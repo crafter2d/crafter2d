@@ -6,6 +6,7 @@
 
 class CompileContext;
 class VirtualClass;
+class VirtualFunctionTableEntry;
 
 class ByteCodeGenerationVisitor : public CompileStep
 {
@@ -24,8 +25,7 @@ protected:
 private:
  // operations
    void handleClassObject(const ASTClass& ast);
-   void handleStaticBlock(ASTClass& ast);
-   void handleFieldBlock(ASTClass& ast);
+   void handleGuards(VirtualFunctionTableEntry& entry, const ASTFunction& function);
 
    CompileContext& mContext;
    VirtualClass*   mpVirClass;

@@ -209,7 +209,7 @@ const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
 const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
 {
    String name = mName;
-   int pos = mName.indexOf('.');
+   int pos = mName.lastIndexOf('.');
    if ( pos != -1 )
    {
       name.remove(0, pos + 1);

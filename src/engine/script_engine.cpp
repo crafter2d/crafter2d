@@ -242,7 +242,6 @@ void BufferedStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor
 
    BufferedStream* pstream = new BufferedStream();
    machine.registerNative(thisobject, pstream);
-   thisobject.setOwner(true);
 }
 
 void BufferedStream_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -258,7 +257,6 @@ void NetStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    NetStream* pstream = new NetStream(*pbufferedstream);
    machine.registerNative(thisobject, pstream);
-   thisobject.setOwner(true);
 }
 
 void NetStream_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -305,7 +303,6 @@ void Actor_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Actor* pactor = new Actor();
    machine.registerNative(thisobject, pactor);
-   thisobject.setOwner(true);
 }
 
 void Actor_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -449,7 +446,6 @@ void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    World* pworld = new World();
    machine.registerNative(thisobject, pworld);
-   thisobject.setOwner(true);
 }
 
 void World_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -619,7 +615,6 @@ void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& acc
 
    InputForceGenerator* pgenerator = new InputForceGenerator();
    machine.registerNative(thisobject, pgenerator);
-   thisobject.setOwner(true);
 }
 
 void InputForceGenerator_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -653,7 +648,6 @@ void InputController_init(VirtualMachine& machine, VirtualStackAccessor& accesso
 
    InputController* pcontroller = new InputController();
    machine.registerNative(thisobject, pcontroller);
-   thisobject.setOwner(true);
 }
 
 void InputController_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -679,7 +673,6 @@ void AIController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    AIController* pcontroller = new AIController(*pprocess);
    pcontroller->setThis(thisobject);
    machine.registerNative(thisobject, pcontroller);
-   thisobject.setOwner(true);
 }
 
 void AIController_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -740,7 +733,6 @@ void Box2DRopeJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor
 
    Box2DRopeJointDefinition* pjointdef = new Box2DRopeJointDefinition();
    machine.registerNative(thisobject, pjointdef);
-   thisobject.setOwner(true);
 }
 
 void Box2DRopeJointDefinition_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -834,7 +826,6 @@ void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    ActionMap* pmap = new ActionMap();
    machine.registerNative(thisobject, pmap);
-   thisobject.setOwner(true);
 }
 
 void ActionMap_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -874,7 +865,6 @@ void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    KeyMap* pmap = new KeyMap();
    machine.registerNative(thisobject, pmap);
-   thisobject.setOwner(true);
 }
 
 void KeyMap_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -899,7 +889,6 @@ void EngineGraphics_init(VirtualMachine& machine, VirtualStackAccessor& accessor
 
    Graphics* pgraphics = new Graphics();
    machine.registerNative(thisobject, pgraphics);
-   thisobject.setOwner(true);
 }
 
 void EngineGraphics_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)

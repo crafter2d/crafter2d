@@ -19,7 +19,8 @@ class StackIRGenerator : public ByteCode::IRGenerator
 public:
    StackIRGenerator();
 
-   virtual int generate(CompileContext& context, const ASTFunction& function);
+protected:
+   virtual int virGenerate(CompileContext& context, const ASTFunction& function);
 
 private:
    

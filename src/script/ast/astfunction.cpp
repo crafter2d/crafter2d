@@ -216,6 +216,16 @@ void ASTFunction::setInstructions(const CIL::Instructions& instructions)
    mInstructions = instructions;
 }
 
+const CIL::Guards& ASTFunction::getGuards() const
+{
+   return mGuards;
+}
+ 
+void ASTFunction::setGuards(const CIL::Guards& guards)
+{
+   mGuards = guards;
+}
+
 // - Query
 
 bool ASTFunction::isConstructor() const

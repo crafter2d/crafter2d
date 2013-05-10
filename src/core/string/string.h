@@ -37,6 +37,7 @@ public:
    const char operator[](int index) const;
          char operator[](int index);
 
+   const String& operator=(const char c);
    const String& operator=(const String& that);
    const String& operator=(const char* pstring);
    const String& operator=(const std::string& that);

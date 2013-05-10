@@ -67,33 +67,23 @@ public:
    bool loadClass(const String& classname);
    void mergeClassRegistry(const ClassRegistry& registry);
 
- // stack access
-   int popInt();
-   double popReal();
-   bool popBoolean();
-   String popString();
-
-   void push(int value);
-   void push(double value);
-   void push(bool value);
-   void push(const String& value);
-   void push(VirtualObject& object);
-
-   void addRootObject(VirtualObject& object);
-
  // execution
    bool execute(const String& classname, const String& function);
-   void execute(VirtualObject& object, const String& function);
+   Variant execute(VirtualObject& object, const String& function, int argc = 0, Variant* pargs = NULL);
 
  // exception handling
    String buildCallStack() const;
    void displayException(VirtualException& exception);
 
  // object instantation
-   VirtualObject*    instantiate(const String& classname, int constructor = -1, void* pobject = NULL);
+   VirtualObject*    instantiate(const String& classname, int constructor = -1);
    VirtualObject*    instantiateNative(const String& classname, void* pobject, bool owned = true);
    VirtualArray*     instantiateArray();
    void              release(VirtualObject& object);
+
+ // garbage collection
+   void addRootObject(VirtualObject& object);
+   void mark();
 
  // observing
    VirtualObject*    lookupNative(void* pobject);
@@ -103,56 +93,8 @@ public:
 private:
    friend class VirtualCompileCallback;
    friend class GarbageCollector;
-
-   class VirtualCall {
-   public:
-
-      class VirtualGuard
-      {
-      public:
-         VirtualGuard(): mJumpTo(-1), mFinally(false) {}
-         VirtualGuard(int jumpto, bool finally): mJumpTo(jumpto), mFinally(finally) {}
-
-         int  mJumpTo;
-         bool mFinally;
-      };
-
-      typedef std::deque<VirtualGuard> Guards;
-
-      VirtualCall(): mpClass(NULL), mpEntry(NULL), mInstructionPointer(0), mStackBase(0)
-      {
-      }
-
-      const VirtualCall& operator=(const VirtualCall& that) {
-         mpClass = that.mpClass;
-         mpEntry = that.mpEntry;
-         mInstructionPointer = that.mInstructionPointer;
-         mStackBase = that.mStackBase;
-         mGuards = that.mGuards;
-         return *this;
-      }
-
-      void start(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry, int stack) {
-         mGuards.clear();
-         mpClass             = &vclass;
-         mpEntry             = &entry;
-         mInstructionPointer = entry.mInstruction;
-         mStackBase          = stack - entry.mArguments;
-      }
-
-      void jump(int address) {
-         mInstructionPointer = address;
-      }
-
-      Guards                           mGuards;
-      const VirtualClass*              mpClass;
-      const VirtualFunctionTableEntry* mpEntry;
-      int                              mInstructionPointer;
-      int                              mStackBase;
-   };
-
+   
    typedef std::vector<VirtualObject*> Objects;
-   typedef std::stack<VirtualCall> CallStack;
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
@@ -180,8 +122,6 @@ private:
    Objects                       mRootObjects;
    MemoryPool<VirtualObject>     mObjectCache;
    GarbageCollector              mGC;
-   CallStack                     mCallStack;
-   VirtualCall                   mCall;
    NativeObjectMap               mNativeObjects;
    State                         mState;
    VirtualClass*                 mpArrayClass;

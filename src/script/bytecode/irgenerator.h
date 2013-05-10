@@ -25,10 +25,12 @@ namespace ByteCode
       IRGenerator();
       virtual ~IRGenerator();
 
-      virtual int generate(CompileContext& context, const ASTFunction& function) = 0;
+      int generate(CompileContext& context, const ASTFunction& function);
 
    protected:
     // operations
+      virtual int virGenerate(CompileContext& context, const ASTFunction& function) = 0;
+
       void cleanup();
 
     // block operations

@@ -1,6 +1,8 @@
 
 #include "stackcpu.h"
 
+#include "core/conv/numberconverter.h"
+#include "core/smartptr/scopedvalue.h"
 #include "core/defines.h"
 
 #include "script/bytecode/program.h"
@@ -11,18 +13,22 @@
 #include "script/vm/virtualarray.h"
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualcontext.h"
+#include "script/vm/virtualexception.h"
+#include "script/vm/virtualguard.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualfunctiontableentry.h"
 #include "script/vm/virtualstackaccessor.h"
 
 #include "stackirgenerator.h"
 
-#define OPCODE ((SBIL::Opcode)INST_OPCODE(*(int*)&pcode[ip]))
-#define ARG    (INST_ARG(*(int*)&pcode[ip]));
+#define OPCODE ((SBIL::Opcode)INST_OPCODE(*(int*)&pcode[mIP]))
+#define ARG    (INST_ARG(*(int*)&pcode[mIP]));
 
 StackCPU::StackCPU(VirtualMachine& vm):
    CPU(vm),
-   mStack()
+   mStack(),
+   mIP(0),
+   mFP(-1)
 {
 }
 
@@ -31,30 +37,62 @@ ByteCode::IRGenerator* StackCPU::createIRGenerator()
    return new StackIRGenerator();
 }
 
-void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, const VirtualFunctionTableEntry& entry)
+Variant StackCPU::execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, Variant* pargs)
+{
+   mStack.push(argc, pargs);
+
+   return execute(context, object, entry);
+}
+
+Variant StackCPU::execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry)
+{
+   Variant objectvariant(object);
+   if ( entry.mArguments > 1 )
+      mStack.insert(mStack.size() - (entry.mArguments - 1), objectvariant);
+   else
+      mStack.push(objectvariant);
+
+   execute(context, object.getClass(), entry);
+
+   return entry.returns ? mStack.pop() : Variant();
+}
+
+void StackCPU::execute(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
+{
+   ScopedValue<int> value(&mSavedFP, mFP, mSavedFP);
+
+   call(context, klass, entry);
+   execute(context);
+
+   // for now run the garbage collector here. have to find the right spot for it.
+   getGC().gc(getVM());
+}
+
+void StackCPU::execute(VirtualContext& context)
 {
    using namespace ByteCode;
    using namespace SBIL;
 
    ByteCode::Program& program = getProgram();
-   const char* pcode = &program.getCode()[entry.mInstruction];
+   const char* pcode = program.getCode();
 
-   int ip = entry.mInstruction;
-
-   while ( ip < program.getSize() )
+   while ( mIP < program.getSize() && mFP > mSavedFP )
    {
       SBIL::Opcode opcode = OPCODE;
+      int arg = ARG;
+      mIP += sizeof(int);
 
-      switch ( INST_OPCODE(*((int*)pcode)) )
+      switch ( opcode )
       {
          case SBIL_dup:
+            mStack.push(mStack.back());
             break;
 
          case SBIL_new:
             {
-               int arg = ARG;
                FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
-               VirtualObject* pobject = instantiate(*symbol.klass, symbol.func);
+               VirtualClass& klass = context.mClassTable.resolve(symbol.klass);
+               VirtualObject* pobject = instantiate(context, klass, symbol.func);
                ASSERT_PTR(pobject);
 
                mStack.pushObject(*pobject);
@@ -62,30 +100,42 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
             break;
          case SBIL_new_array:
             {
-            }
-            break;
-         case SBIL_new_native:
-            {
+               // n sizes
+               // NewArray dimension
+               
+               // no full support yet for multi-dimensional arrays
+               VirtualArray* parray = instantiateArray();
+               VirtualArray* pinit = parray;
+               for ( int index = 0; index < arg; index++ )
+               {
+                  int size = mStack.popInt();
+
+                  pinit->addLevel(size);
+                  if ( index < arg - 1 )
+                  { // need to implement this for multi dimensional arrays
+                     // VirtualArray* ptemp = pinit;
+                  }
+               }
+
+               mStack.pushArray(*parray);
             }
             break;
 
          case SBIL_call:
             {
-               int arg = ARG;
                call(context, arg);
             }
             break;
-         case SBIL_call_static:
+         case SBIL_call_virt:
             {
-               int arg = ARG;
-               FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
-               const VirtualFunctionTableEntry& entry = symbol.klass->getVirtualFunctionTable()[symbol.func];
-               call(context, *symbol.klass, entry);
+               const FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
+               const VirtualObject& object = mStack[mStack.size() - symbol.args].asObject();
+               const VirtualClass& klass = object.getClass();
+               call(context, klass, klass.getVirtualFunctionTable()[symbol.func]);
             }
             break;
          case SBIL_call_interface:
             {
-               int arg = ARG;
                FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
 
                const Variant& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
@@ -99,7 +149,6 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
             break;
          case SBIL_call_native:
             {
-               int arg = ARG;
                FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
 
                VirtualStackAccessor accessor(context, mStack, symbol.args);
@@ -114,8 +163,70 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
             break;
          case SBIL_ret:
             {
-               mIP = mCalls.top().retaddress;
-               mCalls.pop();
+               mIP = mCalls[mFP--].retaddress;
+               mCalls.pop_back();
+            }
+            break;
+
+         case SBIL_bconv_str:
+            {
+               bool value = mStack.popBool();
+               String string(value ? String("true") : String("false"));
+               mStack.pushString(context.mStringCache.lookup(string));
+            }
+            break;
+         case SBIL_iconv_real:
+            mStack.back().int2real();
+            break;
+         case SBIL_iconv_str:
+            {
+               String result;
+               NumberConverter::getInstance().format(result, mStack.popInt());
+               mStack.pushString(context.mStringCache.lookup(result));
+            }
+            break;
+         case SBIL_rconv_int:
+            mStack.back().real2int();
+            break;
+         case SBIL_rconv_str:
+            {
+               String result;
+               NumberConverter::getInstance().format(result, mStack.popReal());
+               mStack.pushString(context.mStringCache.lookup(result));
+            }
+            break;
+         case SBIL_cconv_str:
+            {
+               String result;
+               result = mStack.popChar();
+               mStack.pushString(context.mStringCache.lookup(result));
+            }
+            break;
+         case SBIL_sconv_int:
+            {
+               const String& value = mStack.popString();
+               int result = NumberConverter::getInstance().toInt(value);
+               mStack.pushInt(result);  
+            }
+            break;
+         case SBIL_sconv_real:
+            {
+               const String& value = mStack.popString();
+               double result = NumberConverter::getInstance().toDouble(value);
+               mStack.pushReal(result);  
+            }
+            break;
+         case SBIL_sconv_bool:
+            {
+               const String& value = mStack.popString();
+               if ( value == "true" )
+                  mStack.pushBool(true);
+               else if ( value == "false" )
+                  mStack.pushBool(false);
+               else
+               {
+                  // throw an exception
+               }
             }
             break;
 
@@ -448,30 +559,30 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
                mStack.pushBool(&left == &right);
             }
             break;
+         case SBIL_isnull:
+            mStack.pushBool(mStack.pop().isEmpty());
+            break;
 
          case SBIL_jump:
             {
-               int arg = ARG;
-               pcode += arg;
+               mIP += arg;
             }
             break;
          case SBIL_jump_true:
             {
-               int arg = ARG;
                bool value = mStack.popBool();
                if ( value )
                {
-                  pcode += arg;
+                  mIP += arg;
                }
             }
             break;
          case SBIL_jump_false:
             {
-               int arg = ARG;
                bool value = mStack.popBool();
                if ( !value )
                {
-                  pcode += arg;
+                  mIP += arg;
                }
             }
             break;
@@ -479,67 +590,54 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
          case SBIL_ldfield:
             {
                Variant obj = mStack.pop();
+               if ( obj.isEmpty() )
+               {
+                  throwException(context, "system.NullPointerException", "");
+               }
 
-               if ( obj.isObject() )
-               {
-                  int arg = ARG;
-                  mStack.push(obj.asObject().getMember(arg));
-               }
-               else if ( obj.isArray() )
-               {
-                  mStack.push(Variant(obj.asArray().size())); // length attribute
-               }
-               else if ( obj.isEmpty() )
-               {
-                  //throwException("system.NullPointerException", "");
-               }
+               mStack.push(obj.asObject().getMember(arg));
             }
             break;
          case SBIL_stfield:
             {
                ASSERT(mStack.back().isObject());
                VirtualObject& object = mStack.popObject();
-
-               int arg = ARG;
                object.setMember(arg, mStack.pop());
             }
             break;
          case SBIL_ldlocal:
             {
-               int arg = ARG;
-               Variant& value = mCalls.top().locals[arg];
+               Variant& value = mCalls.back().locals[arg];
                mStack.push(value);
             }
             break;
          case SBIL_stlocal:
             {
-               int arg = ARG;
-               mCalls.top().locals[arg] = mStack.pop();
+               mCalls.back().locals[arg] = mStack.pop();
             }
             break;
          case SBIL_ldelem:
             {
                // stack content:
-            // - n indices
-            // - array object
-            // the actual array object is below the indices in the stack
+               // - n indices
+               // - array object
+               // the actual array object is below the indices in the stack
 
-            int arg = ARG;
-            Variant& variant = mStack[mStack.size() - arg - 1];
-            ASSERT(variant.isArray());
+               Variant& variant = mStack[mStack.size() - arg - 1];
+               ASSERT(variant.isArray());
 
-            VirtualArray* parray = &variant.asArray();
-            for ( int index = 0; index < arg - 1; index++ )
-            {
+               VirtualArray* parray = &variant.asArray();
+               for ( int index = 0; index < arg - 1; index++ )
+               {
+                  int i = mStack.popInt();
+                  parray = &parray->at(i).asArray();
+               }
+
                int i = mStack.popInt();
-               parray = &parray->at(i).asArray();
-            }
 
-            int i = mStack.popInt();
+               mStack.pop(1); // pop the array from the stack
 
-            mStack.pop(1); // pop the array from the stack
-
-            mStack.push(parray->at(i));
+               mStack.push(parray->at(i));
             }
             break;
          case SBIL_stelem:
@@ -549,7 +647,6 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
                // - array object
                // - value to store
 
-               int arg = ARG;
                Variant& variant = mStack[mStack.size() - arg - 1];
                ASSERT(variant.isArray());
 
@@ -575,39 +672,35 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
                const String& classname = symbol.value.asString().getString();
                VirtualClass& c = context.mClassTable.resolve(classname);
 
-               int arg = ARG;
                mStack.push(c.getStatic(arg));
             }
             break;
          case SBIL_ststatic:
             {
-               int classlit = mStack.popInt();
+               //int classlit = mStack.popInt();
+               String classname = mStack.popString();
 
-               const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[classlit];
-               const String& classname = symbol.value.asString().getString();
+               // const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[classlit];
+               // const String& classname = symbol.value.asString().getString();
                VirtualClass& c = context.mClassTable.resolve(classname);
 
-               int arg = ARG;
                c.setStatic(arg, mStack.pop());
             }
             break;
 
          case SBIL_push:
             {
-               int arg = ARG;
                ValueSymbol& symbol = (ValueSymbol&)program.getSymbolTable()[arg];
                mStack.push(symbol.value);
             }
             break;
          case SBIL_pushi:
             {
-               int arg = ARG;
                mStack.pushInt(arg);
             }
             break;
          case SBIL_pushc:
             {
-               int arg = ARG;
                mStack.pushChar((char)arg);
             }
             break;
@@ -635,10 +728,12 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
          case SBIL_push_false:
             mStack.pushBool(false);
             break;
+         case SBIL_push_null:
+            mStack.push(Variant());
+            break;
          case SBIL_push_class:
             {
                String name;
-               int arg = ARG;
                if ( arg == 1 )
                {
                   name = mStack.back().asObject().getClass().getName();
@@ -660,16 +755,51 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& pclass, cons
             }
             break;
 
-         case SBIL_enterguard:
+         // - Specials
+
+         case SBIL_switch:
             {
+               /*
+               String classname = context.mLiteralTable[mStack.popInt()].getValue().asString().getString();
+               const VirtualLookupTable& table = context.mClassTable.resolve(classname).getLookupTable(instruction.getArgument());
+
+               int codeindex = table.lookup(mStack.back());
+               mStack.pop();
+
+               mCall.jump(codeindex);
+               */
             }
             break;
-         case SBIL_enterguard_final:
+         case SBIL_instanceof:
             {
+               const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[arg];
+               const VirtualClass& klass = context.mClassTable.resolve(symbol.value.asString().getString());
+               
+               ASSERT(mStack.back().isObject());
+               VirtualObject& object = mStack.popObject();
+
+               if ( object.getClass().isBaseClass(klass)
+                 || object.getClass().implements(klass) )
+               {
+                  mStack.pushBool(true);
+               }
+               else
+               {
+                  mStack.pushBool(false);
+               }
             }
             break;
-         case SBIL_leaveguard:
+
+         // - Exceptions
+
+         case SBIL_throw:
             {
+               VirtualObject& exception = mStack.popObject();
+               if ( !handleException(exception) )
+               {
+                  // ow boy!! need to figure out what to do here.
+                  return;
+               }
             }
             break;
             
@@ -688,7 +818,7 @@ void StackCPU::call(VirtualContext& context, int symbolindex)
    const Variant& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
    if ( object.isObject() )
    {
-      const VirtualClass& klass = object.asObject().getClass();
+      const VirtualClass& klass = context.mClassTable.resolve(symbol.klass);// object.asObject().getClass();
       call(context, klass, klass.getVirtualFunctionTable()[symbol.func]);
    }
    else if ( object.isArray() )
@@ -713,37 +843,100 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
    VM::StackFrame frame;
    frame.pclass = & klass;
    frame.pentry = & entry;
+   frame.sp     = mStack.size();
    frame.retaddress = mIP;
 
    frame.locals.resize(entry.mArguments);
    for ( int index = entry.mArguments - 1; index >= 0; --index )
    {
-      frame.locals.push_back(mStack.pop());
+      frame.locals[index] = mStack.pop();
    }
 
-   mCalls.push(frame);
+   mCalls.push_back(frame);
+   mFP++;
+
+   mIP = entry.mInstruction;
 }
 
-VirtualObject* StackCPU::instantiate(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
-{
-   ASSERT(klass.canInstantiate());
+// - Garbage collection
    
-   VirtualObject* pobject = allocObject();
-   klass.instantiate(*pobject);
+void StackCPU::mark()
+{
+   mStack.mark();
+}
 
-   Variant objectvariant(*pobject);
+// - Exception handling
+   
+String StackCPU::buildCallStack() const
+{
+   String result;
 
-   // run field initialization expressions
-   const VirtualFunctionTableEntry& varinit_entry = klass.getVirtualFunctionTable()[1];
-   mStack.push(objectvariant);
-   call(context, klass, varinit_entry);
+   for ( std::size_t index = mFP; index >= 0; ++index )
+   {
+      const VM::StackFrame& frame = mCalls[index];
+      ASSERT_PTR(frame.pentry);
 
-   // run the constructor (entry)
-   mStack.insert(mStack.size() - (entry.mArguments - 1), objectvariant);
-   call(context, klass, entry);
+      result += String("- ");
+      result += String(frame.pclass->getName() + '.' + frame.pentry->mName + '(');
 
-   // register object with GC
-   getGC().collect(pobject);
+      for ( int index = 0; index < frame.pentry->mArguments; index++ )
+      {
+         const Variant& value = frame.locals[index];
+         result += value.typeAsString() + String(" = ") + value.toString();
 
-   return pobject;
+         if ( index < frame.pentry->mArguments - 1 )
+         {
+            result += String(", ");
+         }
+      }
+
+      result += String(")\n");
+   }
+
+   return result;
+}
+
+bool StackCPU::handleException(VirtualObject& exception)
+{
+   if ( mFP <= 0 )
+   {
+      return false;
+   }
+   
+   const VirtualFunctionTableEntry& entry = *mCalls[mFP].pentry;
+
+   /*
+   if ( entry.guards.size() > 0 )
+   {
+      
+      const VM::Guard& guard = entry.guards.back();
+      if ( mIP <= guard.mJumpTo )
+      {
+         // exception in code, jump to first catch statement
+         mStack.pushObject(exception);
+
+         mIP = guard.mJumpTo;
+
+         return true;
+      }
+      else
+      {
+         // exception within a catch handler, so see if there is another try/catch around this one
+         frame.guards.pop_back();
+
+         return handleException(exception);
+      }
+   }
+   else
+   {
+      // no try/catch in this method, jump out and see if the previous function has one
+      mStack.pop(mStack.size() - mCalls[mFP].sp);
+      mIP = frame.retaddress;
+      mCalls.pop_back();
+
+      return handleException(exception);
+   }
+   
+      */
+   return true;
 }

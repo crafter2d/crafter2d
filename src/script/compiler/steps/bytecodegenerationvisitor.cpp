@@ -5,10 +5,12 @@
 #include "script/compiler/compilecontext.h"
 #include "script/bytecode/irgenerator.h"
 #include "script/bytecode/program.h"
+#include "script/cil/guard.h"
 #include "script/vm/virtualarray.h"
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualfunctiontableentry.h"
+#include "script/vm/virtualguard.h"
 
 ByteCodeGenerationVisitor::ByteCodeGenerationVisitor(CompileContext& context):
    CompileStep(),
@@ -68,6 +70,7 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
             VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
             pentry->mName = function.getName();
             pentry->mArguments = function.getArgumentCount();
+            pentry->returns = !function.getType().isVoid();
             mpVirClass->getVirtualFunctionTable().append(pentry);
          }
          else
@@ -96,14 +99,21 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
 
 void ByteCodeGenerationVisitor::visit(const ASTFunction& ast)
 {
+   if ( ast.getName() == "run" && ast.getClass().getName() == "Test" )
+   {
+      int aap = 5;
+   }
+
    ByteCode::IRGenerator& generator = mContext.getByteCodeGenerator();
    int index = generator.generate(mContext, ast);
 
    VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
    pentry->mName = ast.getPrototype();
    pentry->mInstruction = index; // insert offset in byte code
-   pentry->mOriginalInstruction = pentry->mInstruction;
    pentry->mArguments = ast.getArgumentCount();
+   pentry->returns = !ast.getType().isVoid();
+
+   handleGuards(*pentry, ast);
 
    mpVirClass->getVirtualFunctionTable().append(pentry);
 }
@@ -152,4 +162,20 @@ void ByteCodeGenerationVisitor::handleClassObject(const ASTClass& ast)
    classobject->setMember(1, Variant(*pfuncarray));
 
    mpVirClass->setClassObject(classobject);
+}
+
+void ByteCodeGenerationVisitor::handleGuards(VirtualFunctionTableEntry& entry, const ASTFunction& function)
+{
+   const CIL::Guards& guards = function.getGuards();
+   for ( int index = 0; index < guards.size(); ++index )
+   {
+      const CIL::Guard& guard = guards[index];
+
+      VM::Guard vmguard;
+      vmguard.catchLabel = guard.labels[0];
+      vmguard.finallyLabel = guard.labels[1];
+      vmguard.endLabel = guard.labels[2];
+
+      entry.guards.push_back(vmguard);
+   }
 }

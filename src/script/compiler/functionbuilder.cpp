@@ -6,6 +6,8 @@
 
 FunctionBuilder::FunctionBuilder():
    mInstructions(),
+   mGuards(),
+   mLabels(),
    mLabel(0)
 {
 }
@@ -17,6 +19,11 @@ const CIL::Instructions& FunctionBuilder::getInstructions() const
    return mInstructions;
 }
 
+const CIL::Guards& FunctionBuilder::getGuards() const
+{
+   return mGuards;
+}
+
 // - Label operations
 
 int FunctionBuilder::allocateLabel()
@@ -26,10 +33,19 @@ int FunctionBuilder::allocateLabel()
 
 void FunctionBuilder::addLabel(int id)
 {
+   mLabels.resize(mLabel);
+   mLabels[id] = mInstructions.size();
+   /*
    CIL::Instruction inst;
    inst.opcode = CIL::CIL_label;
    inst.mInt   = id;
    mInstructions.push_back(inst);
+   */
+}
+
+void FunctionBuilder::addGuard(CIL::Guard* pguard)
+{
+   mGuards.add(pguard);
 }
 
 // - Emitters
@@ -78,36 +94,34 @@ void FunctionBuilder::emit(CIL::Opcode opcode, void* parg)
 void FunctionBuilder::start()
 {
    mInstructions.clear();
+   mLabels.clear();
+   mLabel = 0;
 }
 
 void FunctionBuilder::end()
 {
-   replaceLabels();
+   createJumps();
    removeNops();
 }
 
-void FunctionBuilder::replaceLabels()
+void FunctionBuilder::createJumps()
 {
-   if ( !mInstructions.empty() )
+   if ( mLabels.size() > 0 )
    {
-      int firstline = 0;
-
       for ( std::size_t index = 0; index < mInstructions.size(); index++ )
       {
          CIL::Instruction& inst = mInstructions[index];
 
-         if ( inst.opcode == CIL::CIL_jump
-           || inst.opcode == CIL::CIL_jump_true
-           || inst.opcode == CIL::CIL_jump_false
-           || inst.opcode == CIL::CIL_enter_guard
-           || inst.opcode == CIL::CIL_enter_guard_f )
+         switch ( inst.opcode )
          {
-            int labelindex = findLabel(inst.mInt);
-            ASSERT(labelindex != mInstructions.size());
-
-            CIL::Instruction& labelinst = mInstructions[labelindex];
-            labelinst.opcode = CIL::CIL_nop;
-            inst.mInt = labelindex - index; // offset
+            case CIL::CIL_jump:
+            case CIL::CIL_jump_true:
+            case CIL::CIL_jump_false:
+               {
+                  int target = mLabels[inst.mInt];
+                  inst.mInt = target - index;
+               }
+               break;
          }
       }
    }
@@ -115,27 +129,12 @@ void FunctionBuilder::replaceLabels()
 
 void FunctionBuilder::removeNops()
 {
-   for ( int index = mInstructions.size() - 1; index >= 0; )
+   for ( int index = mInstructions.size() - 1; index >= 0; --index )
    {
       CIL::Instruction& inst = mInstructions[index];
       if ( inst.opcode == CIL::CIL_nop )
-         mInstructions.erase(mInstructions.begin() + index);
-      else
-         index--;
-   }
-}
-
-int FunctionBuilder::findLabel(int label) const
-{
-   std::size_t index = 0;
-   for ( ; index < mInstructions.size(); index++ )
-   {
-      const CIL::Instruction& inst = mInstructions[index];
-      if ( inst.opcode == CIL::CIL_label  )
       {
-         break;
+         mInstructions.erase(mInstructions.begin() + index);
       }
    }
-
-   return index;
 }

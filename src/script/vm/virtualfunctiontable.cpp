@@ -75,18 +75,6 @@ void VirtualFunctionTable::merge(const VirtualFunctionTable& that)
    }
 }
 
-void VirtualFunctionTable::offset(int offset)
-{
-   for ( std::size_t index = 0; index < mEntries.size(); index++ )
-   {
-      VirtualFunctionTableEntry* pentry = mEntries[index];
-      if ( pentry->mOriginalInstruction >= 0 && pentry->mInstruction == pentry->mOriginalInstruction )
-      {
-         pentry->mInstruction += offset;
-      }
-   }
-}
-
 // - Search
 
 const VirtualFunctionTableEntry* VirtualFunctionTable::findByName(const String& name) const

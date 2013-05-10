@@ -10,14 +10,20 @@ namespace CIL
 {
    enum Opcode {
       CIL_nop,
-      CIL_label,
       CIL_dup,
       CIL_new,
       CIL_newarray,
-      CIL_conv_int,
-      CIL_conv_real,
-      CIL_conv_string,
+      CIL_bconv_str,
+      CIL_iconv_real,
+      CIL_iconv_str,
+      CIL_rconv_int,
+      CIL_rconv_str,
+      CIL_cconv_str,
+      CIL_sconv_bool,
+      CIL_sconv_int,
+      CIL_sconv_real,
       CIL_call,
+      CIL_call_virt,
       CIL_call_interface,
       CIL_call_static,
       CIL_call_native,
@@ -64,9 +70,6 @@ namespace CIL
       CIL_ststatic,
       CIL_switch,
       CIL_instanceof,
-      CIL_enter_guard,
-      CIL_enter_guard_f,
-      CIL_leave_guard,
       CIL_throw
    };
 

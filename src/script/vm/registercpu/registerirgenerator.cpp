@@ -15,7 +15,6 @@ char* RegisterIRGenerator::generate(CompileContext& context, const ASTFunction& 
       switch ( inst.opcode )
       {
          case CIL_nop:
-         case CIL_label:
             break;
          
          case CIL_new:

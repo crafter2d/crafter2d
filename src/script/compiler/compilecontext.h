@@ -20,6 +20,7 @@ class VirtualClass;
 namespace ByteCode
 {
    class IRGenerator;
+   class Program;
 }
 
 class CompileContext

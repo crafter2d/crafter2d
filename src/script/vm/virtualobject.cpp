@@ -119,11 +119,16 @@ void VirtualObject::initialize(int variables)
    }
 }
 
-Variant& VirtualObject::getMember(int index)
+const Variant& VirtualObject::getMember(int index) const
 {
    ASSERT(index >= 0);
    ASSERT(index < mMemberCount);
    return mpMembers[index];
+}
+
+Variant& VirtualObject::getMember(int index)
+{
+   return const_cast<Variant&>(((const VirtualObject&)*this).getMember(index));
 }
 
 void VirtualObject::setMember(int index, const Variant& value)

@@ -28,7 +28,6 @@ void NativeClass_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    NativeClass* pnative = new NativeClass();
    machine.registerNative(thisobject, pnative);
-   thisobject.setOwner(true);
 }
 
 void NativeClass_getIntValue(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -83,12 +82,12 @@ public:
    {
       ClassRegistry registry;
       registry.addClass("NativeClass");
-      registry.addFunction("init", NativeClass_init);
-      registry.addFunction("getIntValue", NativeClass_getIntValue);
-      registry.addFunction("getStringValue", NativeClass_getStringValue);
-      registry.addFunction("add", NativeClass_add);
-      registry.addFunction("sub", NativeClass_sub);
-      registry.addFunction("mul", NativeClass_mul);
+      registry.addFunction("init()", NativeClass_init);
+      registry.addFunction("getIntValue()", NativeClass_getIntValue);
+      registry.addFunction("getStringValue()", NativeClass_getStringValue);
+      registry.addFunction("add(int, int)", NativeClass_add);
+      registry.addFunction("sub(int, int)", NativeClass_sub);
+      registry.addFunction("mul(int, int)", NativeClass_mul);
 
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();

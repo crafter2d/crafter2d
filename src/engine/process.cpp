@@ -94,7 +94,7 @@ bool Process::create(const String& classname)
    mScriptManager.addRootObject(mpScript->getThis());
 
    // run the onCreated function
-   return mpScript->run("onCreated");
+   return mpScript->run("onCreated").asBool();
 }
 
 bool Process::destroy()

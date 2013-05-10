@@ -225,8 +225,8 @@ void ParticleSystem::doUpdate(float delta)
 				   curpart->pos += curpart->vel;
                
 				   // run the particle script
-				   updateScript->addParam((int)lifetime);
-				   updateScript->run("updateParticle");
+               Variant arg((int)lifetime);
+				   updateScript->run("updateParticle", 1, &arg);
 
 				   part = &curpart->next;
 			   }

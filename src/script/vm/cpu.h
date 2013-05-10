@@ -3,7 +3,9 @@
 #define CPU_H
 
 #include "core/memory/memorypool.h"
+#include "core/string/string.h"
 
+#include "script/gc/garbagecollector.h"
 #include "script/script_base.h"
 
 namespace ByteCode
@@ -12,9 +14,12 @@ namespace ByteCode
    class Program;
 }
 
+class Variant;
+class VirtualArray;
 class VirtualObject;
 class VirtualContext;
 class VirtualClass;
+class VirtualException;
 class VirtualMachine;
 class VirtualFunctionTableEntry;
 
@@ -22,6 +27,7 @@ class SCRIPT_API CPU
 {
 public:
    CPU(VirtualMachine& vm);
+   virtual ~CPU();
 
  // get/set
    ByteCode::Program& getProgram();
@@ -32,21 +38,36 @@ public:
  // operations
    void initialize(VirtualContext& context);
 
+ // instantiation
+   VirtualObject* instantiate(VirtualContext& context, const VirtualClass& klass, int constructor);
+   VirtualArray*  instantiateArray();
+
  // execution
-   virtual void execute(VirtualContext& context, const VirtualClass& pclass, const VirtualFunctionTableEntry& entry);
+   virtual Variant execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, Variant* pargs) = 0;
+   virtual Variant execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry) = 0;
+   virtual void    execute(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry) = 0;
+
+ // garbage collection
+   virtual void mark() = 0;
+
+ // exception handling
+   virtual String buildCallStack() const = 0;
 
 protected:
  // query
-   VirtualMachine& getVM();
-   VirtualClass& getArrayClass();
-   VirtualClass& getStringClass();
-
- // operations
-   VirtualObject* allocObject();
+   GarbageCollector& getGC();
+   VirtualMachine&   getVM();
+   VirtualClass&     getArrayClass();
+   VirtualClass&     getStringClass();
+      
+ // exception handling
+           void   displayException(const VirtualException& exception);
+           void   throwException(VirtualContext& context, const String& exceptionname, const String& reason);
 
 private:
 
    VirtualMachine&            mVM;
+   GarbageCollector           mGC;
    ByteCode::Program*         mpProgram;
    VirtualClass*              mpArrayClass;
    VirtualClass*              mpStringClass;

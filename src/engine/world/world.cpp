@@ -415,8 +415,8 @@ void World::addEntity(Entity* pentity)
 
    notifyEntityAdded(*pentity);
 
-   mpScript->addParam(pentity->getClassName(), pentity);
-   mpScript->run("onEntityAdded");
+   Variant arg(mpScript->resolve(pentity));
+   mpScript->run("onEntityAdded", 1, &arg);
 }
 
 void World::removeEntity(Id id)
@@ -503,21 +503,23 @@ void World::notifyEntityRemoved(const Entity& entity)
 void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("engine.game.Actor", &object);
-   mpScript->addParam("engine.game.Bound", &bound);
-   mpScript->addParam(side);
-   mpScript->addParam(begin);
-   mpScript->run("onObjectCollision");
+   Variant args[4];
+   args[0].setObject(mpScript->resolve(&object));
+   args[1].setObject(mpScript->resolve(&bound));
+   args[2].setInt(side);
+   args[3].setBool(begin);
+   mpScript->run("onObjectCollision", 4, args);
 }
 
 void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("engine.game.Actor", &source);
-   mpScript->addParam("system.Object", &target);
-   mpScript->addParam(side);
-   mpScript->addParam(begin);
-   mpScript->run("onObjectCollision");
+   Variant args[4];
+   args[0].setObject(mpScript->resolve(&source));
+   args[1].setObject(mpScript->resolve(&target));
+   args[2].setInt(side);
+   args[3].setBool(begin);
+   mpScript->run("onObjectCollision", 4, args);
 }
 
 void World::onViewportChanged(const Graphics::Viewport& viewport)
