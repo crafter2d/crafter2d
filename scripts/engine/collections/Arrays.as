@@ -5,8 +5,8 @@ final class Arrays
 {
 	static public <Type> void copy(Type[] from, Type[] to)
 	{
-		assert from.length <= to.length;
-		for ( int index = 0; index < from.length; index++ )
+		assert from.size() <= to.size();
+		for ( int index = 0; index < from.size(); index++ )
 		{
 			to[index] = from[index];
 		}
@@ -14,7 +14,7 @@ final class Arrays
 	
 	static public <Type> boolean equals(Type[] left, Type[] right)
 	{
-		return equals(left, right, left.length);
+		return equals(left, right, left.size());
 	}
 	
 	static public <Type> boolean equals(Type[] left, Type[] right, int length)
