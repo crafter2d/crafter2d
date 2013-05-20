@@ -6,8 +6,9 @@
 
 namespace ByteCode
 {
-   class Instruction;
    class Block;
+   class ExceptionGuard;
+   class Instruction;
 
    typedef std::vector<Block*> Blocks;
 
@@ -16,12 +17,14 @@ namespace ByteCode
    public:
       int id;
       int start;
+      int codepos;
 
       Instruction* pstart;
       Instruction* pcurrent;
 
-      int codepos;
-
+      ExceptionGuard* pguard;
+      int             guard_type;
+      
       Blocks to;
       Blocks from;
 

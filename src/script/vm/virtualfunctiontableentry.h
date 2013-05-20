@@ -16,6 +16,7 @@ public:
       guards(),
       mInstruction(-1),
       mArguments(0),
+      mLocals(0),
       mInterface(-1),
       returns(false)
    {
@@ -26,6 +27,7 @@ public:
       guards(that.guards),
       mInstruction(that.mInstruction),
       mArguments(that.mArguments),
+      mLocals(that.mLocals),
       mInterface(that.mInterface),
       returns(that.returns)
    {
@@ -39,6 +41,7 @@ public:
    Guards guards;
    int    mInstruction;
    int    mArguments;
+   int    mLocals;
    int    mInterface;
    bool   returns;
 };

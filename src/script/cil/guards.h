@@ -17,7 +17,9 @@ namespace CIL
       ~Guards();
       
       const Guards& operator=(const Guards& that);
+
       const Guard&  operator[](int index) const;
+            Guard&  operator[](int index);
 
     // query
       int size() const;
@@ -25,6 +27,9 @@ namespace CIL
     // maintenance
       void add(Guard* pguard);
       void clear();
+
+    // search
+      const Guard* find(int instruction) const;
 
    private:
       GuardVector mGuards;

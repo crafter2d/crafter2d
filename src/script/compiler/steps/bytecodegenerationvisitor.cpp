@@ -99,7 +99,7 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
 
 void ByteCodeGenerationVisitor::visit(const ASTFunction& ast)
 {
-   if ( ast.getName() == "run" && ast.getClass().getName() == "Test" )
+   if ( ast.getName() == "copy" && ast.getClass().getName() == "Arrays" )
    {
       int aap = 5;
    }
@@ -108,9 +108,10 @@ void ByteCodeGenerationVisitor::visit(const ASTFunction& ast)
    int index = generator.generate(mContext, ast);
 
    VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-   pentry->mName = ast.getPrototype();
-   pentry->mInstruction = index; // insert offset in byte code
+   pentry->mName = ast.getName();
+   pentry->mInstruction = index;
    pentry->mArguments = ast.getArgumentCount();
+   pentry->mLocals = ast.getLocals().size();
    pentry->returns = !ast.getType().isVoid();
 
    handleGuards(*pentry, ast);

@@ -10,7 +10,6 @@ OPCODE(SBIL_new_array,			1, 0)
 OPCODE(SBIL_call,				0, 0)
 OPCODE(SBIL_call_virt,			0, 0)
 OPCODE(SBIL_call_interface,     0, 0)
-OPCODE(SBIL_call_static,		0, 0)
 OPCODE(SBIL_call_native,		0, 0)
 OPCODE(SBIL_ret,				0, 0)
 

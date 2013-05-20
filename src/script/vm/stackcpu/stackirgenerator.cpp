@@ -12,6 +12,7 @@
 
 #include "script/ast/ast.h"
 #include "script/bytecode/block.h"
+#include "script/bytecode/exceptionguard.h"
 #include "script/bytecode/program.h"
 #include "script/bytecode/symboltable.h"
 #include "script/bytecode/functionsymbol.h"
@@ -56,14 +57,16 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
    using namespace SBIL;
    using namespace ByteCode;
 
+   if ( function.getName() == "run" && function.getClass().getName() == "TestRunner" )
+   {
+      int aap = 5;
+   }
+
    FunctionResolver resolver;
    std::stack<AutoPtr<ASTType>> types;
 
    const CIL::Instructions& instructions = function.getInstructions();
-   if ( instructions.empty() )
-      return;
 
-   buildBlocks(context, instructions);
    Block* pblock;
 
    for ( unsigned index = 0; index < instructions.size(); ++index )
@@ -102,7 +105,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                for ( int arg = 0; arg < psymbol->args; ++arg )
                   types.pop();
 
-               types.push(function.getType().clone());
+               types.push(constructor.getClass().createThisType());
 
                INSERT(SBIL_new, i);
             }
@@ -124,6 +127,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          // Calls
 
          case CIL_call:
+         case CIL_call_static:
             {
                ASTFunction& func = resolver.resolve(context, *inst.mString);
                ASSERT(func.getResourceIndex() >= 0);
@@ -182,26 +186,6 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                   types.push(func.getType().clone());
 
                INSERT(SBIL_call_interface, i);
-            }
-            break;
-         case CIL_call_static:
-            {
-               ASTFunction& func = resolver.resolve(context, *inst.mString);
-
-               FunctionSymbol* psymbol = new FunctionSymbol;
-               psymbol->klass = func.getClass().getFullName();
-               psymbol->func = func.getResourceIndex();
-               psymbol->args = func.getArgumentCount();
-               psymbol->returns = !func.getType().isVoid();
-               int i = program.getSymbolTable().add(psymbol);
-
-               for ( int arg = 0; arg < func.getArguments().size(); ++arg )
-                  types.pop();
-
-               if ( psymbol->returns )
-                  types.push(func.getType().clone());
-               
-               INSERT(SBIL_call_static, i);
             }
             break;
          case CIL_call_native:
@@ -674,7 +658,11 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                ptype->setObjectName("system.Class");
                ptype->setObjectClass(context.resolveClass("system.Class"));
 
-               INSERT(SBIL_push_class, 0);
+               ValueSymbol* psymbol = new ValueSymbol();
+               psymbol->value.setString(context.getStringCache().lookup(*inst.mString));
+               int i = program.getSymbolTable().add(psymbol);
+
+               INSERT(SBIL_push_class, i);
                types.push(ptype);
             }
             break;
@@ -729,7 +717,15 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_stloc:
             INSERT(SBIL_stlocal, inst.mInt + function.getArguments().size());
-            types.pop();
+            if ( pblock->pguard != NULL && pblock->start == index && pblock->guard_type == ExceptionGuard::sCatch )
+            {
+               // no popping here, as this is the store exception instruction in case an exception was thrown.
+               // so currently there is nothing on the types stack.
+            }
+            else
+            {
+               types.pop();
+            }
             break;
          case CIL_ldelem:
             {
@@ -758,8 +754,9 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          case CIL_ldstatic:
             {
                const ASTField& field = *function.getClass().getStatics()[inst.mInt];
-               INSERT(SBIL_ldstatic, inst.mInt);
                types.push(field.getVariable().getType().clone());
+
+               INSERT(SBIL_ldstatic, inst.mInt);
             }
             break;
          case CIL_ststatic:
@@ -780,12 +777,16 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                psymbol->value.setString(VirtualString(*inst.mString));
                int index = program.getSymbolTable().add(psymbol);
                INSERT(SBIL_instanceof, index);
+
+               types.pop();
+               types.push(new ASTType(ASTType::eBoolean));
             }
             break;
 
          // exceptions
             
          case CIL_throw:
+            types.pop();
             INSERT(SBIL_throw, 0);
             break;
       }
@@ -824,7 +825,6 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
          {
             case SBIL_call:
             case SBIL_call_interface:
-            case SBIL_call_static:
             case SBIL_call_virt:
                {
                   int instarg = INST_ARG(pinst->inst);
@@ -853,6 +853,17 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
                      calls.pop_back();
                }
                break;
+            case SBIL_stlocal:
+               {
+                  if ( pinst == pblock->pstart && pblock->pguard != NULL && pblock->guard_type == ExceptionGuard::sCatch )
+                  {
+                     // special case, as it could be that this is the storage of an exception which
+                     // is push on the stack whenever the it is thrown.
+                     break;
+                  }
+
+                  // Fall through to execute the normal code for this instruction
+               }
             default:
                {
                   int pop = stackinfo[opcode].pop;
@@ -902,6 +913,12 @@ int StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& f
 
       Block* pblock = blocks[index];
       pblock->codepos = pos;
+
+      if ( pblock->pguard != NULL )
+      {
+         // add the guard to the program
+         pblock->pguard->locations[pblock->guard_type] = pos;
+      }
 
       Instruction* pinst = pblock->pstart;
       while ( pinst != NULL )

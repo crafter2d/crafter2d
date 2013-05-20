@@ -1,10 +1,10 @@
 
-#ifndef CIL_GUARD_H
-#define CIL_GUARD_H
+#ifndef BYTECODE_EXCEPTIONGUARD_H
+#define BYTECODE_EXCEPTIONGUARD_H
 
-namespace CIL
+namespace ByteCode
 {
-   class Guard
+   class ExceptionGuard
    {
    public:
       static const int sStart = 0;
@@ -12,11 +12,9 @@ namespace CIL
       static const int sFinal = 2;
       static const int sEnd   = 3;
 
-      Guard* clone() const;
-
       bool finalize;
-      int  labels[4];
+      int  locations[4];
    };
 }
 
-#endif // CIL_GUARD_H
+#endif // BYTECODE_EXCEPTIONGUARD_H

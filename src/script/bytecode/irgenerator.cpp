@@ -5,13 +5,18 @@
 #include "core/defines.h"
 
 #include "script/cil/cil.h"
+#include "script/cil/guard.h"
 
+#include "script/ast/astfunction.h"
+#include "script/compiler/compilecontext.h"
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualcontext.h"
 #include "script/vm/virtualfunctiontable.h"
 
 #include "block.h"
 #include "codepatch.h"
+#include "exceptionguard.h"
+#include "program.h"
 
 namespace ByteCode
 {
@@ -31,8 +36,20 @@ namespace ByteCode
 
    int IRGenerator::generate(CompileContext& context, const ASTFunction& function)
    {
-      int result = virGenerate(context, function);
+      int result = -1;
+
+      const CIL::Instructions& instructions = function.getInstructions();
+      if ( instructions.empty() )
+      {
+         throw std::exception();
+      }
+      
+      const CIL::Guards& guards = function.getGuards();
+      buildBlocks(context, instructions, guards);
+
+      result = virGenerate(context, function);
       cleanup();
+
       return result;
    }
 
@@ -59,12 +76,18 @@ namespace ByteCode
 
    // - Block operations
 
-   void IRGenerator::buildBlocks(CompileContext& context, const CIL::Instructions& instructions)
+   void IRGenerator::buildBlocks(CompileContext& context, const CIL::Instructions& instructions, const CIL::Guards& guards)
    {
       allocateInstructionBlocks(instructions.size());
       createBlock(0);
 
-      for ( unsigned index = 0; index < instructions.size(); ++index )
+      for ( int index = 0; index < guards.size(); ++index )
+      {
+         const CIL::Guard& cilguard = guards[index];
+         buildGuardBlocks(context, cilguard);
+      }
+      
+      for ( std::size_t index = 0; index < instructions.size(); ++index )
       {
          const CIL::Instruction& inst = instructions[index];
          switch ( inst.opcode )
@@ -97,10 +120,14 @@ namespace ByteCode
 
    Block& IRGenerator::createBlock(int target)
    {
-      Block* ptarget = new Block();
-      ptarget->id = mBlocks.size();
-      ptarget->start = target;
-      mBlocks[target] = ptarget;
+      Block* ptarget = mBlocks[target];
+      if ( ptarget == NULL )
+      {
+         ptarget = new Block();
+         ptarget->id = mBlocks.size();
+         ptarget->start = target;
+         mBlocks[target] = ptarget;
+      }
       return *ptarget;
    }
 
@@ -117,6 +144,39 @@ namespace ByteCode
    Blocks& IRGenerator::getBlocks()
    {
       return mBlocks;
+   }
+
+   void IRGenerator::buildGuardBlocks(CompileContext& context, const CIL::Guard& cilguard)
+   {
+      ExceptionGuard* pguard = new ExceptionGuard();
+      context.getProgram().addGuard(pguard);
+
+      // For catch we create a new block. It is required for the stack code
+      // generator, as it has to check whether the store local is an exception
+      // handler or not.
+
+      Block& block_start = createBlock(cilguard.labels[CIL::Guard::sStart]);
+      Block& block_catch = createBlock(cilguard.labels[CIL::Guard::sCatch]);
+      Block& block_end   = createBlock(cilguard.labels[CIL::Guard::sEnd]);
+
+      block_start.pguard = pguard;
+      block_start.guard_type = ExceptionGuard::sStart;
+
+      block_catch.pguard = pguard;
+      block_catch.guard_type = ExceptionGuard::sCatch;
+
+      block_end.pguard = pguard;
+      block_end.guard_type = ExceptionGuard::sEnd;
+
+      if ( pguard->finalize )
+      {
+         // If there is a final block, we link the start to the 
+
+         Block& block_final = createBlock(cilguard.labels[CIL::Guard::sFinal]);
+
+         block_final.pguard = pguard;
+         block_final.guard_type = ExceptionGuard::sFinal;
+      }
    }
 
    // - Patch operations

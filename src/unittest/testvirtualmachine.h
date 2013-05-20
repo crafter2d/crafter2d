@@ -5,6 +5,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include "core/vfs/filesystem.h"
+#include "core/smartptr/autoptr.h"
 
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualstackaccessor.h"
@@ -82,7 +83,7 @@ public:
    {
       ClassRegistry registry;
       registry.addClass("NativeClass");
-      registry.addFunction("init()", NativeClass_init);
+      registry.addFunction("NativeClass()", NativeClass_init);
       registry.addFunction("getIntValue()", NativeClass_getIntValue);
       registry.addFunction("getStringValue()", NativeClass_getStringValue);
       registry.addFunction("add(int, int)", NativeClass_add);
@@ -99,7 +100,10 @@ public:
       vm.mergeClassRegistry(registry);
       vm.initialize();
 
-      TS_ASSERT(vm.execute("Test", "run"));
+      AutoPtr<VirtualObject> object = vm.instantiate("Test");
+
+      TS_ASSERT(object.hasPointer());
+      TS_ASSERT(vm.execute(*object, "run").isEmpty());
    }
 
 };

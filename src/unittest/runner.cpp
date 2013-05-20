@@ -87,17 +87,17 @@ public:
 static TestCompiler suite_TestCompiler;
 
 static CxxTest::List Tests_TestCompiler = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestCompiler( "E:/Devel/jenginesse/src/unittest/testcompiler.h", 13, "TestCompiler", suite_TestCompiler, Tests_TestCompiler );
+CxxTest::StaticSuiteDescription suiteDescription_TestCompiler( "E:/Devel/jenginesse/src/unittest/testcompiler.h", 16, "TestCompiler", suite_TestCompiler, Tests_TestCompiler );
 
 static class TestDescription_TestCompiler_testCompilation : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestCompiler_testCompilation() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 31, "testCompilation" ) {}
+ TestDescription_TestCompiler_testCompilation() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 42, "testCompilation" ) {}
  void runTest() { suite_TestCompiler.testCompilation(); }
 } testDescription_TestCompiler_testCompilation;
 
 static class TestDescription_TestCompiler_testCallback : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestCompiler_testCallback() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 52, "testCallback" ) {}
+ TestDescription_TestCompiler_testCallback() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 64, "testCallback" ) {}
  void runTest() { suite_TestCompiler.testCallback(); }
 } testDescription_TestCompiler_testCallback;
 

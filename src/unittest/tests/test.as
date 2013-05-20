@@ -8,12 +8,20 @@ use UnitTest.*;
 
 class Test
 {
+	int a = 0;
+	
 	public void run()
 	{
+		if ( a != 0 )
+		{
+		}
+		a++;
+		
 		TestRunner tr = TestRunner.getInstance();
 		//tr.addClass(TestFile.class);
-		tr.addClass(TestInterface.class);
+		//tr.addClass(TestInterface.class);
 		tr.addClass(TestNative.class);
+		/*
 		tr.addClass(TestString.class);
 		tr.addClass(TestChar.class);
 		tr.addClass(TestArray.class);
@@ -21,6 +29,7 @@ class Test
 		tr.addClass(TestException.class);
 		tr.addClass(TestLoops.class);
 		tr.addClass(TestGenerics.class);
+		*/
 		tr.run();
 	}
 }

@@ -7,11 +7,6 @@
 #include "script/cil/cil.h"
 #include "script/cil/guards.h"
 
-namespace CIL
-{
-   class Function;
-}
-
 class ASTFunction;
 class String;
 
@@ -46,7 +41,7 @@ private:
 
  // operations
    void createJumps();
-   void removeNops();
+   void createGuards();
 
    int  findLabel(int label) const;
    int  getLocation(int label);

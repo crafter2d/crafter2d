@@ -5,6 +5,7 @@
 #include "core/string/stringinterface.h"
 
 #include "script/ast/ast.h"
+#include "script/cil/guard.h"
 #include "script/cil/switchtabel.h"
 #include "script/common/literal.h"
 #include "script/common/variant.h"
@@ -88,13 +89,16 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
    {
       ScopedScope scope(mScopeStack);
 
-      if ( ast.getName() == "NativeClass" )
+      if ( ast.getName() == "add" && ast.getClass().getName() == "ArrayList" )
       {
          int aap = 5;
       }
       
       mpFunction = &ast;
-      mpFunction->addArgument(mpClass->createThisType());
+      if ( !mpFunction->getModifiers().isStatic() )
+      {
+         mpFunction->addArgument(mpClass->createThisType());
+      }
 
       mBuilder.start();
 
@@ -486,10 +490,9 @@ void CodeGeneratorVisitor::visit(const ASTReturn& ast)
    mBuilder.emit(CIL_ret, ast.hasExpression() ? 1 : 0);
 }
 
-#include "script/cil/guard.h"
-
 void CodeGeneratorVisitor::visit(const ASTTry& ast)
 {
+   int labelGuard = mBuilder.allocateLabel();
    int labelFinal = mBuilder.allocateLabel();
    int labelEnd   = mBuilder.allocateLabel();
    int labelCatch = mBuilder.allocateLabel();
@@ -499,9 +502,13 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
 
    // set up guard structure
    pguard->finalize = ast.hasFinallyBlock();
-   pguard->labels[0] = labelCatch;
-   pguard->labels[1] = labelFinal;
-   pguard->labels[2] = labelEnd;
+   pguard->labels[0] = labelGuard;
+   pguard->labels[1] = labelCatch;
+   pguard->labels[2] = labelFinal;
+   pguard->labels[3] = labelEnd;
+
+   // mark the start of the guard, needed to determine which guard to use at runtime
+   mBuilder.addLabel(labelGuard);
 
    ast.getBody().accept(*this);
 
@@ -766,7 +773,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
             {
                case ASTType::eNull:
                   mBuilder.emit(CIL_isnull);
-                  mBuilder.emit(CIL_neg);
+                  mBuilder.emit(CIL_not);
                   break;
                default:
                   mBuilder.emit(CIL_cmpne);
@@ -1167,7 +1174,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
          {
             if ( ast.getAccess() == ASTAccess::eField )
             {
-               mBuilder.emit(CIL_ldclass, 1);
+               mBuilder.emit(CIL_ldclass, "");
             }
             else
             {
@@ -1278,7 +1285,10 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
       else if ( IS_SET(mLoadFlags, ePreDecr) || IS_SET(mLoadFlags, ePostDecr) )
          mBuilder.emit(CIL_sub);
 
-      mBuilder.emit(CIL_dup);
+      if ( mLoadFlags > eKeep )
+      {
+         mBuilder.emit(CIL_dup);
+      }
 
       int flags = mLoadFlags;
       mLoadFlags = 0;
@@ -1292,7 +1302,7 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
       }
 
       mBuilder.emit(store, variable.getResourceIndex());
-
+      
       if ( flags > eKeep )
       {
          // revert if it should be a post operator

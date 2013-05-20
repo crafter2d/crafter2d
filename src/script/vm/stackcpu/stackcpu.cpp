@@ -129,9 +129,29 @@ void StackCPU::execute(VirtualContext& context)
          case SBIL_call_virt:
             {
                const FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
-               const VirtualObject& object = mStack[mStack.size() - symbol.args].asObject();
-               const VirtualClass& klass = object.getClass();
-               call(context, klass, klass.getVirtualFunctionTable()[symbol.func]);
+
+               Variant value = mStack[mStack.size() - symbol.args];
+               const VirtualClass* pclass = NULL;
+               if ( value.isObject() )
+               {
+                  const VirtualObject& object = value.asObject();
+                  pclass = &object.getClass();
+               }
+               else if ( value.isString() )
+               {
+                  pclass = &getStringClass();
+               }
+               else if ( value.isArray() )
+               {
+                  pclass = &getArrayClass();
+               }
+
+               if ( pclass == NULL )
+               {
+                  throwException(context, "NullPointerException", "");
+               }
+
+               call(context, *pclass, pclass->getVirtualFunctionTable()[symbol.func]);
             }
             break;
          case SBIL_call_interface:
@@ -666,13 +686,10 @@ void StackCPU::execute(VirtualContext& context)
             break;
          case SBIL_ldstatic:
             {
-               int classlit = mStack.popInt();
+               const String& classname = mStack.popString();
+               VirtualClass& klass = context.mClassTable.resolve(classname);
 
-               const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[classlit];
-               const String& classname = symbol.value.asString().getString();
-               VirtualClass& c = context.mClassTable.resolve(classname);
-
-               mStack.push(c.getStatic(arg));
+               mStack.push(klass.getStatic(arg));
             }
             break;
          case SBIL_ststatic:
@@ -733,25 +750,19 @@ void StackCPU::execute(VirtualContext& context)
             break;
          case SBIL_push_class:
             {
-               String name;
-               if ( arg == 1 )
+               const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[arg];
+               String classname = symbol.value.asString().getString();
+
+               if ( classname.isEmpty() )
                {
-                  name = mStack.back().asObject().getClass().getName();
+                  VirtualObject& object = mStack.popObject();
+                  mStack.pushObject(object.getClass().getClassObject());
                }
                else
                {
-                  const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[mStack.back().asInt()];
-                  name = symbol.value.asString().getString();
+                  VirtualClass& klass = context.mClassTable.resolve(classname);
+                  mStack.pushObject(klass.getClassObject());
                }
-               
-               const VirtualClass& classloader = context.mClassTable.resolve("system.ClassLoader");
-               const VirtualFunctionTableEntry* pentry = classloader.getVirtualFunctionTable().findByName("findClass");
-               const Variant& classloaderobject = classloader.getStatic(0);
-
-               mStack.push(classloaderobject);
-               mStack.pushString(context.mStringCache.lookup(name));
-
-               call(context, classloader, *pentry);
             }
             break;
 
@@ -815,10 +826,14 @@ void StackCPU::call(VirtualContext& context, int symbolindex)
    using namespace ByteCode;
 
    FunctionSymbol& symbol = (FunctionSymbol&)getProgram().getSymbolTable()[symbolindex];
+   const VirtualClass& klass = context.mClassTable.resolve(symbol.klass);
+   call(context, klass, klass.getVirtualFunctionTable()[symbol.func]);
+
+   /*
    const Variant& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
    if ( object.isObject() )
    {
-      const VirtualClass& klass = context.mClassTable.resolve(symbol.klass);// object.asObject().getClass();
+      const VirtualClass& klass = object.asObject().getClass();
       call(context, klass, klass.getVirtualFunctionTable()[symbol.func]);
    }
    else if ( object.isArray() )
@@ -836,6 +851,7 @@ void StackCPU::call(VirtualContext& context, int symbolindex)
       ASSERT(object.isEmpty());
       //throwException("system.NullPointerException", "");
    }
+   */
 }
 
 void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
@@ -846,7 +862,7 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
    frame.sp     = mStack.size();
    frame.retaddress = mIP;
 
-   frame.locals.resize(entry.mArguments);
+   frame.locals.resize(entry.mArguments + entry.mLocals);
    for ( int index = entry.mArguments - 1; index >= 0; --index )
    {
       frame.locals[index] = mStack.pop();

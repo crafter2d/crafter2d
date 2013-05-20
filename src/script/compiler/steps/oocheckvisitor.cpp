@@ -304,17 +304,13 @@ void OOCheckVisitor::visit(ASTNative& ast)
 {
    mHasNativeCall = true;
 
-   String name;
-   if ( mpFunction->isConstructor() )
-      name = "init";
-   else
-      name = mpFunction->getName();
+   String name = mpFunction->getPrototype();
 
    const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(*mpClass, name);
    if ( preg == NULL )
    {
-      String fncname = mpClass->getFullName() + "_" + mpFunction->getName() + "(" + mpFunction->getSignature().toString() + ")";
-      mContext.getLog().error("Native function " + fncname + " is not registered or has wrong arguments");
+      String qualitifiedname = mpClass->getFullName() + "_" + name;
+      mContext.getLog().error("Native function " + qualitifiedname + " is not registered or has wrong arguments");
    }
    else
    {

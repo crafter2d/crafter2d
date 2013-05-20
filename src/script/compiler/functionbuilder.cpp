@@ -4,6 +4,8 @@
 #include "core/string/string.h"
 #include "core/defines.h"
 
+#include "script/cil/guard.h"
+
 FunctionBuilder::FunctionBuilder():
    mInstructions(),
    mGuards(),
@@ -35,12 +37,6 @@ void FunctionBuilder::addLabel(int id)
 {
    mLabels.resize(mLabel);
    mLabels[id] = mInstructions.size();
-   /*
-   CIL::Instruction inst;
-   inst.opcode = CIL::CIL_label;
-   inst.mInt   = id;
-   mInstructions.push_back(inst);
-   */
 }
 
 void FunctionBuilder::addGuard(CIL::Guard* pguard)
@@ -95,13 +91,14 @@ void FunctionBuilder::start()
 {
    mInstructions.clear();
    mLabels.clear();
+   mGuards.clear();
    mLabel = 0;
 }
 
 void FunctionBuilder::end()
 {
    createJumps();
-   removeNops();
+   createGuards();
 }
 
 void FunctionBuilder::createJumps()
@@ -127,14 +124,16 @@ void FunctionBuilder::createJumps()
    }
 }
 
-void FunctionBuilder::removeNops()
+void FunctionBuilder::createGuards()
 {
-   for ( int index = mInstructions.size() - 1; index >= 0; --index )
+   for ( int index = 0; index < mGuards.size(); ++index )
    {
-      CIL::Instruction& inst = mInstructions[index];
-      if ( inst.opcode == CIL::CIL_nop )
+      CIL::Guard& guard = mGuards[index];
+
+      for ( int label = 0; label < 4; ++label )
       {
-         mInstructions.erase(mInstructions.begin() + index);
+         int target = mLabels[guard.labels[label]];
+         guard.labels[label] = target;
       }
    }
 }

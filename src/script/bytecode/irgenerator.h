@@ -6,6 +6,12 @@
 
 #include "block.h"
 
+namespace CIL
+{
+   class Guard;
+   class Guards;
+}
+
 class ASTFunction;
 class CompileContext;
 class VirtualContext;
@@ -34,7 +40,6 @@ namespace ByteCode
       void cleanup();
 
     // block operations
-      void     buildBlocks(CompileContext& context, const CIL::Instructions& instructions);
       bool     hasBlock(int index) const;
       Block*   getBlock(int index);
       Blocks&  getBlocks();
@@ -46,6 +51,8 @@ namespace ByteCode
    private:
 
     // block operations
+      void     buildBlocks(CompileContext& context, const CIL::Instructions& instructions, const CIL::Guards& guards);
+      void     buildGuardBlocks(CompileContext& context, const CIL::Guard& cilguard);
       void     allocateInstructionBlocks(int amount);
       Block&   createBlock(int target);
 

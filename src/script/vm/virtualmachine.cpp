@@ -1132,7 +1132,7 @@ String VirtualMachine::buildCallStack() const
 
 VirtualObject* VirtualMachine::instantiate(const String& classname, int constructor)
 {
-   VirtualObject* presult;
+   VirtualObject* presult = NULL;
    VirtualClass* pclass = doLoadClass(classname);
    if ( pclass != NULL )
    {
@@ -1264,88 +1264,11 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
       int aap = 5;
    }
 
-   // execute the static initialization body
-   VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[0];
-   mpCPU->execute(mContext, *pclass, entry);
-   
-   /*
-   int offset = mContext.mInstructions.size();
-
-   mContext.mClassTable.insert(pclass);
-   mContext.mInstructions.add(pclass->getInstructions());
-
-   pclass->offsetCode(offset);
-
-   int lookback = 0;
-
-   for ( int index = offset; index < mContext.mInstructions.size(); index++ )
-   {
-      VirtualInstruction& instruction = mContext.mInstructions[index];
-
-      switch ( instruction.getOpcode() )
-      {
-         case VirtualInstruction::eCallStatic:
-         case VirtualInstruction::eNew:
-         case VirtualInstruction::eLoadClass:
-         case VirtualInstruction::eLoadStatic:
-         case VirtualInstruction::eStoreStatic:
-         case VirtualInstruction::eLookup:
-            lookback++;
-
-         case VirtualInstruction::eLoadLiteral:
-         case VirtualInstruction::eInstanceOf:
-            {
-               VirtualInstruction& previous = mContext.mInstructions[index - lookback];
-               if ( previous.getOpcode() != VirtualInstruction::ePushThis )
-               {
-                  const Literal& literal = mCompiler.lookupLiteral(previous.getArgument());
-
-                  int i = mContext.mLiteralTable.indexOf(literal);
-                  if ( i == mContext.mLiteralTable.size() )
-                  {
-                     Literal* pliteral = NULL;
-                     if ( literal.getValue().isString() )
-                     {
-                        VirtualString& vstring = mContext.mStringCache.lookup(literal.getValue().asString().getString());
-                        pliteral = new Literal(Variant(vstring));
-                     }
-                     else
-                     {
-                        pliteral = literal.clone();
-                     }
-                      
-                     i = mContext.mLiteralTable.insert(pliteral);
-                  }
-
-                  previous.setArgument(i);
-               }
-
-               lookback = 0;
-            }
-            break;
-
-         default:
-            break;
-      }
-   }
-
-   if ( pclass->hasBaseName() )
-   {
-      String base = pclass->getBaseName();
-      const VirtualClass& baseclass = mContext.mClassTable.resolve(base);
-
-      pclass->setBaseClass(baseclass);
-
-      VirtualFunctionTable& vtable = pclass->getVirtualFunctionTable();
-      vtable.merge(baseclass.getVirtualFunctionTable());
-      vtable.offset(offset);
-   }
-
    createClass(*pclass);
 
    // execute the static initialization body
    VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[0];
-   execute(*pclass, entry); */
+   mpCPU->execute(mContext, *pclass, entry);
 }
 
 void VirtualMachine::createClass(const VirtualClass& aclass)
