@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
 #include "script/bytecode/program.h"
@@ -118,14 +119,27 @@ VirtualArray* CPU::instantiateArray()
 void CPU::throwException(VirtualContext& context, const String& exceptionname, const String& reason)
 {
    VirtualClass& klass = context.mClassTable.resolve(exceptionname);
-   VirtualObject* pexception = instantiate(context, klass, -1);
+   AutoPtr<VirtualObject> exception = instantiate(context, klass, -1);
 
    if ( reason.length() > 0 )
    {
-      pexception->getMember(0).setString(context.mStringCache.lookup(reason));
+      exception->getMember(0).setString(context.mStringCache.lookup(reason));
    }
 
-   throw new VirtualException(*pexception);
+   if ( !handleException(context, *exception) )
+   {
+      // oops!!
+   }
+   else
+   {
+      exception.release();
+   }
+}
+
+bool CPU::handleException(VirtualContext& context, VirtualObject& exception)
+{
+   PURE_VIRTUAL;
+   return false;
 }
 
 String CPU::buildCallStack() const

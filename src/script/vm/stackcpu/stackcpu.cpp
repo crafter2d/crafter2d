@@ -26,10 +26,15 @@
 
 StackCPU::StackCPU(VirtualMachine& vm):
    CPU(vm),
+   mCalls(),
    mStack(),
+   mpActiveGuard(NULL),
    mIP(0),
-   mFP(-1)
+   mFP(-1),
+   mSavedFP(-1),
+   mState()
 {
+   mCalls.resize(8);
 }
 
 ByteCode::IRGenerator* StackCPU::createIRGenerator()
@@ -54,6 +59,9 @@ Variant StackCPU::execute(VirtualContext& context, VirtualObject& object, const 
 
    execute(context, object.getClass(), entry);
 
+   // for now run the garbage collector here. have to find the right spot for it.
+   getGC().gc(getVM());
+
    return entry.returns ? mStack.pop() : Variant();
 }
 
@@ -63,9 +71,6 @@ void StackCPU::execute(VirtualContext& context, const VirtualClass& klass, const
 
    call(context, klass, entry);
    execute(context);
-
-   // for now run the garbage collector here. have to find the right spot for it.
-   getGC().gc(getVM());
 }
 
 void StackCPU::execute(VirtualContext& context)
@@ -73,15 +78,15 @@ void StackCPU::execute(VirtualContext& context)
    using namespace ByteCode;
    using namespace SBIL;
 
-   ByteCode::Program& program = getProgram();
+   Program& program = getProgram();
    const char* pcode = program.getCode();
 
-   while ( mIP < program.getSize() && mFP > mSavedFP )
+   while ( mFP > mSavedFP )
    {
       SBIL::Opcode opcode = OPCODE;
       int arg = ARG;
       mIP += sizeof(int);
-
+   
       switch ( opcode )
       {
          case SBIL_dup:
@@ -147,11 +152,9 @@ void StackCPU::execute(VirtualContext& context)
                }
 
                if ( pclass == NULL )
-               {
-                  throwException(context, "NullPointerException", "");
-               }
-
-               call(context, *pclass, pclass->getVirtualFunctionTable()[symbol.func]);
+                  throwException(context, "system.NullPointerException", "");
+               else
+                  call(context, *pclass, pclass->getVirtualFunctionTable()[symbol.func]);
             }
             break;
          case SBIL_call_interface:
@@ -184,7 +187,7 @@ void StackCPU::execute(VirtualContext& context)
          case SBIL_ret:
             {
                mIP = mCalls[mFP--].retaddress;
-               mCalls.pop_back();
+               //mIP = program.getSize();
             }
             break;
 
@@ -585,7 +588,9 @@ void StackCPU::execute(VirtualContext& context)
 
          case SBIL_jump:
             {
-               mIP += arg;
+               bool sign = (arg & 0x1);
+               int offset = (arg >> 1) * (sign ? -1 : 1);
+               mIP += offset;
             }
             break;
          case SBIL_jump_true:
@@ -593,7 +598,9 @@ void StackCPU::execute(VirtualContext& context)
                bool value = mStack.popBool();
                if ( value )
                {
-                  mIP += arg;
+                  bool sign = (arg & 0x1);
+                  int offset = (arg >> 1) * (sign ? -1 : 1);
+                  mIP += offset;
                }
             }
             break;
@@ -602,7 +609,9 @@ void StackCPU::execute(VirtualContext& context)
                bool value = mStack.popBool();
                if ( !value )
                {
-                  mIP += arg;
+                  bool sign = (arg & 0x1);
+                  int offset = (arg >> 1) * (sign ? -1 : 1);
+                  mIP += offset;
                }
             }
             break;
@@ -611,11 +620,9 @@ void StackCPU::execute(VirtualContext& context)
             {
                Variant obj = mStack.pop();
                if ( obj.isEmpty() )
-               {
                   throwException(context, "system.NullPointerException", "");
-               }
-
-               mStack.push(obj.asObject().getMember(arg));
+               else               
+                  mStack.push(obj.asObject().getMember(arg));
             }
             break;
          case SBIL_stfield:
@@ -627,13 +634,13 @@ void StackCPU::execute(VirtualContext& context)
             break;
          case SBIL_ldlocal:
             {
-               Variant& value = mCalls.back().locals[arg];
+               Variant& value = mCalls[mFP].locals[arg];
                mStack.push(value);
             }
             break;
          case SBIL_stlocal:
             {
-               mCalls.back().locals[arg] = mStack.pop();
+               mCalls[mFP].locals[arg] = mStack.pop();
             }
             break;
          case SBIL_ldelem:
@@ -657,7 +664,10 @@ void StackCPU::execute(VirtualContext& context)
 
                mStack.pop(1); // pop the array from the stack
 
-               mStack.push(parray->at(i));
+               if ( i >= parray->size() )
+                  throwException(context, "ArrayIndexOutOfBoundsException", "");
+               else              
+                  mStack.push(parray->at(i));
             }
             break;
          case SBIL_stelem:
@@ -681,7 +691,12 @@ void StackCPU::execute(VirtualContext& context)
 
                mStack.pop(1); // <-- pop array
 
-               parray->at(i) = mStack.pop();
+               Variant val = mStack.pop();
+
+               if ( i >= parray->size() )
+                  throwException(context, "system.ArrayIndexOutOfBoundsException", "");
+               else
+                  parray->at(i) = val;
             }
             break;
          case SBIL_ldstatic:
@@ -694,11 +709,7 @@ void StackCPU::execute(VirtualContext& context)
             break;
          case SBIL_ststatic:
             {
-               //int classlit = mStack.popInt();
                String classname = mStack.popString();
-
-               // const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[classlit];
-               // const String& classname = symbol.value.asString().getString();
                VirtualClass& c = context.mClassTable.resolve(classname);
 
                c.setStatic(arg, mStack.pop());
@@ -790,7 +801,7 @@ void StackCPU::execute(VirtualContext& context)
                VirtualObject& object = mStack.popObject();
 
                if ( object.getClass().isBaseClass(klass)
-                 || object.getClass().implements(klass) )
+                  || object.getClass().implements(klass) )
                {
                   mStack.pushBool(true);
                }
@@ -806,7 +817,7 @@ void StackCPU::execute(VirtualContext& context)
          case SBIL_throw:
             {
                VirtualObject& exception = mStack.popObject();
-               if ( !handleException(exception) )
+               if ( !handleException(context, exception) )
                {
                   // ow boy!! need to figure out what to do here.
                   return;
@@ -828,34 +839,15 @@ void StackCPU::call(VirtualContext& context, int symbolindex)
    FunctionSymbol& symbol = (FunctionSymbol&)getProgram().getSymbolTable()[symbolindex];
    const VirtualClass& klass = context.mClassTable.resolve(symbol.klass);
    call(context, klass, klass.getVirtualFunctionTable()[symbol.func]);
-
-   /*
-   const Variant& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
-   if ( object.isObject() )
-   {
-      const VirtualClass& klass = object.asObject().getClass();
-      call(context, klass, klass.getVirtualFunctionTable()[symbol.func]);
-   }
-   else if ( object.isArray() )
-   {
-      const VirtualClass& klass = getArrayClass();
-      call(context, klass, getArrayClass().getVirtualFunctionTable()[symbol.func]);
-   }
-   else if ( object.isString() )
-   {
-      const VirtualClass& klass = getStringClass();
-      call(context, klass, getStringClass().getVirtualFunctionTable()[symbol.func]);
-   }
-   else
-   {
-      ASSERT(object.isEmpty());
-      //throwException("system.NullPointerException", "");
-   }
-   */
 }
 
 void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
 {
+   if ( klass.getName() == "UnitTest.TestRunner" && entry.mName == "runPretest" )
+   {
+      int aap = 5;
+   }
+
    VM::StackFrame frame;
    frame.pclass = & klass;
    frame.pentry = & entry;
@@ -868,10 +860,18 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
       frame.locals[index] = mStack.pop();
    }
 
-   mCalls.push_back(frame);
    mFP++;
+   if ( mFP >= mCalls.size() )
+   {
+      mCalls.resize(mCalls.size() * 2);
+   }
+   mCalls[mFP] = frame;
 
    mIP = entry.mInstruction;
+
+   //execute(context);
+
+   //mIP = mCalls[mFP--].retaddress;
 }
 
 // - Garbage collection
@@ -887,7 +887,7 @@ String StackCPU::buildCallStack() const
 {
    String result;
 
-   for ( std::size_t index = mFP; index >= 0; ++index )
+   for ( int index = mFP; index >= 0; --index )
    {
       const VM::StackFrame& frame = mCalls[index];
       ASSERT_PTR(frame.pentry);
@@ -912,47 +912,28 @@ String StackCPU::buildCallStack() const
    return result;
 }
 
-bool StackCPU::handleException(VirtualObject& exception)
+bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception)
 {
-   if ( mFP <= 0 )
-   {
-      return false;
-   }
+   ASSERT(mFP >= 0);
    
-   const VirtualFunctionTableEntry& entry = *mCalls[mFP].pentry;
-
-   /*
-   if ( entry.guards.size() > 0 )
+   while ( mFP >= 0 )
    {
-      
-      const VM::Guard& guard = entry.guards.back();
-      if ( mIP <= guard.mJumpTo )
+      const VirtualFunctionTableEntry& entry = *mCalls[mFP].pentry;
+      const VirtualGuard* pguard = entry.guards.findGuard(mIP);
+
+      if ( pguard != NULL )
       {
-         // exception in code, jump to first catch statement
          mStack.pushObject(exception);
 
-         mIP = guard.mJumpTo;
+         mIP = pguard->locations[VirtualGuard::sCatch];
 
          return true;
       }
       else
       {
-         // exception within a catch handler, so see if there is another try/catch around this one
-         frame.guards.pop_back();
-
-         return handleException(exception);
+         mFP--;
       }
    }
-   else
-   {
-      // no try/catch in this method, jump out and see if the previous function has one
-      mStack.pop(mStack.size() - mCalls[mFP].sp);
-      mIP = frame.retaddress;
-      mCalls.pop_back();
 
-      return handleException(exception);
-   }
-   
-      */
-   return true;
+   return false;
 }

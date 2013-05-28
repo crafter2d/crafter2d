@@ -5,10 +5,12 @@
 #include "core/defines.h"
 
 #include "script/cil/guard.h"
+#include "script/cil/switchtabel.h"
 
 FunctionBuilder::FunctionBuilder():
    mInstructions(),
    mGuards(),
+   mSwitches(),
    mLabels(),
    mLabel(0)
 {
@@ -24,6 +26,11 @@ const CIL::Instructions& FunctionBuilder::getInstructions() const
 const CIL::Guards& FunctionBuilder::getGuards() const
 {
    return mGuards;
+}
+
+const CIL::SwitchTables& FunctionBuilder::getSwitchTables() const
+{
+   return mSwitches;
 }
 
 // - Label operations
@@ -42,6 +49,11 @@ void FunctionBuilder::addLabel(int id)
 void FunctionBuilder::addGuard(CIL::Guard* pguard)
 {
    mGuards.add(pguard);
+}
+
+int FunctionBuilder::addTable(CIL::SwitchTable* ptable)
+{
+   return mSwitches.add(ptable);
 }
 
 // - Emitters
@@ -99,6 +111,7 @@ void FunctionBuilder::end()
 {
    createJumps();
    createGuards();
+   createSwitches();
 }
 
 void FunctionBuilder::createJumps()
@@ -136,4 +149,14 @@ void FunctionBuilder::createGuards()
          guard.labels[label] = target;
       }
    }
+}
+
+void FunctionBuilder::createSwitches()
+{
+   for ( int index = 0; index < mSwitches.size(); ++index )
+   {
+      CIL::SwitchTable& table = mSwitches[index];
+   }
+
+   mSwitches.clear();
 }

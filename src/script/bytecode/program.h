@@ -2,7 +2,6 @@
 #ifndef BYTECODE_PROGRAM_H
 #define BYTECODE_PROGRAM_H
 
-#include "exceptionguards.h"
 #include "symboltable.h"
 
 namespace ByteCode
@@ -22,12 +21,9 @@ namespace ByteCode
     // operations
       int linkCode(const char* pcode, unsigned int size);
 
-      void addGuard(ExceptionGuard* pguard);
-
    private:
       void allocateCode(int size);
 
-      ExceptionGuards   mGuards;
       SymbolTable       mSymbolTable;
       char*             mpCode;
       unsigned int      mCodeSize;

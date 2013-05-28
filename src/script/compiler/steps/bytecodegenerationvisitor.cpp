@@ -99,22 +99,22 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
 
 void ByteCodeGenerationVisitor::visit(const ASTFunction& ast)
 {
-   if ( ast.getName() == "copy" && ast.getClass().getName() == "Arrays" )
+   if ( ast.getName() == "runTests" && ast.getClass().getName() == "TestRunner" )
    {
       int aap = 5;
    }
 
    ByteCode::IRGenerator& generator = mContext.getByteCodeGenerator();
-   int index = generator.generate(mContext, ast);
+   VirtualFunctionTableEntry* pentry =  generator.generate(mContext, ast);
+   if ( pentry == NULL )
+   {
+      // complain! mehh
+   }
 
-   VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
    pentry->mName = ast.getName();
-   pentry->mInstruction = index;
    pentry->mArguments = ast.getArgumentCount();
    pentry->mLocals = ast.getLocals().size();
    pentry->returns = !ast.getType().isVoid();
-
-   handleGuards(*pentry, ast);
 
    mpVirClass->getVirtualFunctionTable().append(pentry);
 }
@@ -163,20 +163,4 @@ void ByteCodeGenerationVisitor::handleClassObject(const ASTClass& ast)
    classobject->setMember(1, Variant(*pfuncarray));
 
    mpVirClass->setClassObject(classobject);
-}
-
-void ByteCodeGenerationVisitor::handleGuards(VirtualFunctionTableEntry& entry, const ASTFunction& function)
-{
-   const CIL::Guards& guards = function.getGuards();
-   for ( int index = 0; index < guards.size(); ++index )
-   {
-      const CIL::Guard& guard = guards[index];
-
-      VM::Guard vmguard;
-      vmguard.catchLabel = guard.labels[0];
-      vmguard.finallyLabel = guard.labels[1];
-      vmguard.endLabel = guard.labels[2];
-
-      entry.guards.push_back(vmguard);
-   }
 }

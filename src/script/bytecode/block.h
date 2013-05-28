@@ -4,10 +4,11 @@
 
 #include <vector>
 
+class VirtualGuard;
+
 namespace ByteCode
 {
    class Block;
-   class ExceptionGuard;
    class Instruction;
 
    typedef std::vector<Block*> Blocks;
@@ -22,8 +23,8 @@ namespace ByteCode
       Instruction* pstart;
       Instruction* pcurrent;
 
-      ExceptionGuard* pguard;
-      int             guard_type;
+      VirtualGuard* pguard;
+      int           guard_type;
       
       Blocks to;
       Blocks from;

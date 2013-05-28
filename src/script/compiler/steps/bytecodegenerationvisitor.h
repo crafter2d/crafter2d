@@ -25,7 +25,6 @@ protected:
 private:
  // operations
    void handleClassObject(const ASTClass& ast);
-   void handleGuards(VirtualFunctionTableEntry& entry, const ASTFunction& function);
 
    CompileContext& mContext;
    VirtualClass*   mpVirClass;

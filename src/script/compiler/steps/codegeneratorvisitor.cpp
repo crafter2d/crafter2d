@@ -114,6 +114,7 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
 
       ast.setInstructions(mBuilder.getInstructions());
       ast.setGuards(mBuilder.getGuards());
+      ast.setSwitchTables(mBuilder.getSwitchTables());
       ast.cleanup();
    }
 }
@@ -272,13 +273,12 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    ASTSignature signature;
 
    mCurrentType.clear();
-   varinit.getExpression().accept(*this);
 
    // container object is currently at top of evaluation stack
    // - ast contains index
    // - var contains object from array
 
-   if ( mCurrentType.isArray() )
+   if ( iteratorvar.getType().isInt() )
    {
       // index = 0
       mBuilder.emit(CIL_ldint, 0);
@@ -291,16 +291,16 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       ASSERT_PTR(preg);
 
       mBuilder.addLabel(flow.start);
-      mBuilder.emit(CIL_dup);
 
       // check for the size ( index < array.length() )
+      varinit.getExpression().accept(*this);
       mBuilder.emit(CIL_call_native, preg->getIndex());
       mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_cmpeq);
       mBuilder.emit(CIL_jump_true, flow.end);
       
       // get item & execute body ( var = array[index]; )
-      mBuilder.emit(CIL_dup);
+      varinit.getExpression().accept(*this);
       mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_ldelem, 1);
       mBuilder.emit(CIL_stloc, var.getResourceIndex());
@@ -308,10 +308,10 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       ast.getBody().accept(*this);
 
       // increment iteration ( index++; )
-      mBuilder.emit(CIL_ldloc, var.getResourceIndex());
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_ldint, 1);
       mBuilder.emit(CIL_add);
-      mBuilder.emit(CIL_stloc, var.getResourceIndex());
+      mBuilder.emit(CIL_stloc, iteratorvar.getResourceIndex());
       mBuilder.emit(CIL_jump, flow.start);
 
       mExpr = 0;
@@ -321,6 +321,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    }
    else
    {
+      varinit.getExpression().accept(*this);
       String name = mCurrentType.getObjectClass().getFullName() + ".iterator()";
 
       // ast = iterator
@@ -407,7 +408,8 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
 
       // lookup the value in the table and jump there
       // if not found -> jump to default or skip in case no default is present
-      mBuilder.emit(CIL_switch, (void*)mpSwitchTable);
+      int index = mBuilder.addTable(mpSwitchTable);
+      mBuilder.emit(CIL_switch, index);
 
       visitChildren(ast);
    }
@@ -468,6 +470,8 @@ void CodeGeneratorVisitor::visit(const ASTCase& ast)
    ASSERT_PTR(mpSwitchTable);
 
    int label = mBuilder.allocateLabel();
+   mBuilder.addLabel(label);
+
    if ( ast.isCase() )
    {
       mpSwitchTable->add(label, ast.getValue());

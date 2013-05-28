@@ -22,7 +22,7 @@ namespace ByteCode
    {
       return mSymbolTable;
    }
-
+   
    int Program::getSize() const
    {
       return mCodeSize;
@@ -34,11 +34,6 @@ namespace ByteCode
    }
 
    // - Operations
-
-   void Program::addGuard(ExceptionGuard* pguard)
-   {
-      mGuards.add(pguard);
-   }
 
    int Program::linkCode(const char* pcode, unsigned int size)
    {

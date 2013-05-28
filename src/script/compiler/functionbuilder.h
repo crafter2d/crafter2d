@@ -6,6 +6,7 @@
 
 #include "script/cil/cil.h"
 #include "script/cil/guards.h"
+#include "script/cil/switchtables.h"
 
 class ASTFunction;
 class String;
@@ -18,11 +19,13 @@ public:
  // get/set
    const CIL::Instructions& getInstructions() const;
    const CIL::Guards&       getGuards() const;
+   const CIL::SwitchTables& getSwitchTables() const;
    
  // label operations
    int  allocateLabel();
    void addLabel(int id);
    void addGuard(CIL::Guard* pguard);
+   int  addTable(CIL::SwitchTable* ptable);
 
  // emitting
    void emit(CIL::Opcode opcode);
@@ -42,12 +45,14 @@ private:
  // operations
    void createJumps();
    void createGuards();
+   void createSwitches();
 
    int  findLabel(int label) const;
    int  getLocation(int label);
 
    CIL::Instructions mInstructions;
    CIL::Guards       mGuards;
+   CIL::SwitchTables mSwitches;
    Labels            mLabels;
    int               mLabel;
 };

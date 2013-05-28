@@ -6,6 +6,7 @@
 
 #include "script/cil/cil.h"
 #include "script/cil/guards.h"
+#include "script/cil/switchtables.h"
 
 #include "astmember.h"
 #include "astmodifier.h"
@@ -76,6 +77,9 @@ public:
    const CIL::Guards& getGuards() const;
    void               setGuards(const CIL::Guards& guards);
 
+   const CIL::SwitchTables& getSwitchTables() const;
+   void                     setSwitchTables(const CIL::SwitchTables& tables);
+
  // query
    bool isConstructor() const;
    bool isDefaultConstructor() const;
@@ -112,6 +116,7 @@ private:
    ASTSignature*     mpSignature;
    CIL::Instructions mInstructions;
    CIL::Guards       mGuards;
+   CIL::SwitchTables mSwitchTables;
    int               mResourceIndex;
    int               mLocalVariableCount;
 };

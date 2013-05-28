@@ -27,6 +27,9 @@ ASTFunction::ASTFunction(ASTMember::Kind kind):
    mpBaseFunction(NULL),
    mpBody(NULL),
    mpSignature(new ASTSignature()),
+   mInstructions(),
+   mGuards(),
+   mSwitchTables(),
    mResourceIndex(-1),
    mLocalVariableCount(0)
 {
@@ -224,6 +227,16 @@ const CIL::Guards& ASTFunction::getGuards() const
 void ASTFunction::setGuards(const CIL::Guards& guards)
 {
    mGuards = guards;
+}
+
+const CIL::SwitchTables& ASTFunction::getSwitchTables() const
+{
+   return mSwitchTables;
+}
+
+void ASTFunction::setSwitchTables(const CIL::SwitchTables& tables)
+{
+   mSwitchTables = tables;
 }
 
 // - Query

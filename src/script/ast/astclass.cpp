@@ -403,6 +403,11 @@ void ASTClass::indexVariables()
 
 void ASTClass::indexFunctions()
 {
+   if( mName == "Class" )
+   {
+      int aap = 5;
+   }
+
    if ( hasBaseClass() )
    {
       mFunctionTable = getBaseClass().getFunctionTable();

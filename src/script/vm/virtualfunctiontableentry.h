@@ -4,13 +4,11 @@
 
 #include "core/string/string.h"
 
-#include "virtualguard.h"
+#include "virtualguards.h"
 
 class VirtualFunctionTableEntry
 {
 public:
-   typedef std::vector<VM::Guard> Guards;
-
    VirtualFunctionTableEntry():
       mName(),
       guards(),
@@ -37,13 +35,21 @@ public:
       return new VirtualFunctionTableEntry(*this);
    }
 
-   String mName;
-   Guards guards;
-   int    mInstruction;
-   int    mArguments;
-   int    mLocals;
-   int    mInterface;
-   bool   returns;
+   void addGuard(VirtualGuard* pguard) {
+      guards.add(pguard);
+   }
+
+   void updateGuards() {
+      guards.updatePosition(mInstruction);
+   }
+
+   String         mName;
+   VirtualGuards  guards;
+   int            mInstruction;
+   int            mArguments;
+   int            mLocals;
+   int            mInterface;
+   bool           returns;
 };
 
 #endif // VIRTUAL_FUNCTION_TABLE_ENTRY_H_

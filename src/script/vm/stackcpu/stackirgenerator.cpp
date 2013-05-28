@@ -8,11 +8,8 @@
 #include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
-#include "script/cil/cil.h"
-
 #include "script/ast/ast.h"
 #include "script/bytecode/block.h"
-#include "script/bytecode/exceptionguard.h"
 #include "script/bytecode/program.h"
 #include "script/bytecode/symboltable.h"
 #include "script/bytecode/functionsymbol.h"
@@ -20,11 +17,15 @@
 #include "script/bytecode/jumppatch.h"
 #include "script/bytecode/block.h"
 #include "script/bytecode/instruction.h"
+#include "script/cil/cil.h"
+#include "script/cil/switchtabel.h"
 #include "script/common/variant.h"
 #include "script/common/classregistration.h"
 #include "script/compiler/compilecontext.h"
 #include "script/compiler/functionresolver.h"
+#include "script/vm/virtualguard.h"
 #include "script/vm/virtualstring.h"
+#include "script/vm/virtualfunctiontableentry.h"
 
 struct OpcodeInfo
 {
@@ -42,13 +43,16 @@ StackIRGenerator::StackIRGenerator():
 {
 }
 
-int StackIRGenerator::virGenerate(CompileContext& context, const ASTFunction& function)
+bool StackIRGenerator::virGenerate(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function)
 {
    ByteCode::Program& program = context.getProgram();
 
    generateInstructions(context, program, function);
    checkAndFixStack(program, function);
-   return buildCode(program, function);
+
+   entry.mInstruction = buildCode(program, function);
+
+   return true;
 }
 
 void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::Program& program, const ASTFunction& function)
@@ -57,7 +61,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
    using namespace SBIL;
    using namespace ByteCode;
 
-   if ( function.getName() == "run" && function.getClass().getName() == "TestRunner" )
+   if ( function.getName() == "runTests" && function.getClass().getName() == "TestRunner" )
    {
       int aap = 5;
    }
@@ -217,30 +221,48 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
 
          case CIL_bconv_str:
             INSERT(SBIL_bconv_str, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eString));
             break;
          case CIL_iconv_real:
             INSERT(SBIL_iconv_real, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eReal));
             break;
          case CIL_iconv_str:
             INSERT(SBIL_iconv_str, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eString));
             break;
          case CIL_rconv_int:
             INSERT(SBIL_rconv_int, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eInt));
             break;
          case CIL_rconv_str:
             INSERT(SBIL_rconv_str, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eString));
             break;
          case CIL_cconv_str:
             INSERT(SBIL_cconv_str, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eString));
             break;
          case CIL_sconv_bool:
             INSERT(SBIL_sconv_bool, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eBoolean));
             break;
          case CIL_sconv_int:
             INSERT(SBIL_sconv_int, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eInt));
             break;
          case CIL_sconv_real:
             INSERT(SBIL_sconv_real, 0);
+            types.pop();
+            types.push(new ASTType(ASTType::eReal));
             break;
 
          // Math
@@ -674,22 +696,13 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          case CIL_ldfield:
             {
                AutoPtr<ASTType> type = types.top().release();
-               ASSERT(type->getKind() == ASTType::eObject || type->getKind() == ASTType::eArray);
+               ASSERT(type->getKind() == ASTType::eObject);
                types.pop();
 
                const ASTClass& klass = type->getObjectClass();
-               if ( klass.getFullName() == "system.InternalArray" )
-               {
-                  // load length attribute of the array
-                  INSERT(SBIL_ldfield, 0);
-                  types.push(new ASTType(ASTType::eInt));
-               }
-               else
-               {
-                  const ASTField& field = *klass.getFields()[inst.mInt];
-                  INSERT(SBIL_ldfield, inst.mInt);
-                  types.push(field.getVariable().getType().clone());
-               }
+               const ASTField& field = *klass.getFields()[inst.mInt];
+               INSERT(SBIL_ldfield, inst.mInt);
+               types.push(field.getVariable().getType().clone());
             }
             break;
          case CIL_stfield:
@@ -717,7 +730,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_stloc:
             INSERT(SBIL_stlocal, inst.mInt + function.getArguments().size());
-            if ( pblock->pguard != NULL && pblock->start == index && pblock->guard_type == ExceptionGuard::sCatch )
+            if ( pblock->pguard != NULL && pblock->start == index && pblock->guard_type == VirtualGuard::sCatch )
             {
                // no popping here, as this is the store exception instruction in case an exception was thrown.
                // so currently there is nothing on the types stack.
@@ -753,7 +766,11 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_ldstatic:
             {
-               const ASTField& field = *function.getClass().getStatics()[inst.mInt];
+               const CIL::Instruction& previousinst = instructions[index - 1];
+               ASSERT(previousinst.opcode == CIL_ldstr);
+
+               const ASTClass& klass = context.resolveClass(*previousinst.mString);
+               const ASTField& field = *klass.getStatics()[inst.mInt];
                types.push(field.getVariable().getType().clone());
 
                INSERT(SBIL_ldstatic, inst.mInt);
@@ -767,14 +784,16 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          // specials
 
          case CIL_switch:
-
-            INSERT(SBIL_switch, 0);
+            {
+               CIL::SwitchTable* pciltable = (CIL::SwitchTable*)inst.mPtr;
+               INSERT(SBIL_switch, 0);
+            }
             break;
 
          case CIL_instanceof:
             {
                ValueSymbol* psymbol = new ValueSymbol();
-               psymbol->value.setString(VirtualString(*inst.mString));
+               psymbol->value.setString(context.getStringCache().lookup(*inst.mString));
                int index = program.getSymbolTable().add(psymbol);
                INSERT(SBIL_instanceof, index);
 
@@ -855,7 +874,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
                break;
             case SBIL_stlocal:
                {
-                  if ( pinst == pblock->pstart && pblock->pguard != NULL && pblock->guard_type == ExceptionGuard::sCatch )
+                  if ( pinst == pblock->pstart && pblock->pguard != NULL && pblock->guard_type == VirtualGuard::sCatch )
                   {
                      // special case, as it could be that this is the storage of an exception which
                      // is push on the stack whenever the it is thrown.

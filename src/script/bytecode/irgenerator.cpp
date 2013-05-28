@@ -4,18 +4,18 @@
 #include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
+#include "script/ast/astfunction.h"
 #include "script/cil/cil.h"
 #include "script/cil/guard.h"
-
-#include "script/ast/astfunction.h"
 #include "script/compiler/compilecontext.h"
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualcontext.h"
-#include "script/vm/virtualfunctiontable.h"
+#include "script/vm/virtualguard.h"
+#include "script/vm/virtualguards.h"
+#include "script/vm/virtualfunctiontableentry.h"
 
 #include "block.h"
 #include "codepatch.h"
-#include "exceptionguard.h"
 #include "program.h"
 
 namespace ByteCode
@@ -34,26 +34,31 @@ namespace ByteCode
 
    // - Operations
 
-   int IRGenerator::generate(CompileContext& context, const ASTFunction& function)
+   VirtualFunctionTableEntry* IRGenerator::generate(CompileContext& context, const ASTFunction& function)
    {
-      int result = -1;
-
       const CIL::Instructions& instructions = function.getInstructions();
       if ( instructions.empty() )
       {
          throw std::exception();
       }
+
+      AutoPtr<VirtualFunctionTableEntry> result = new VirtualFunctionTableEntry();
       
       const CIL::Guards& guards = function.getGuards();
-      buildBlocks(context, instructions, guards);
+      buildBlocks(context, *result, instructions, guards);
 
-      result = virGenerate(context, function);
-      cleanup();
+      if ( virGenerate(context, *result, function) )
+      {
+         result->updateGuards();
 
-      return result;
+         cleanup();
+         return result.release();
+      }
+
+      return NULL;
    }
 
-   int IRGenerator::virGenerate(CompileContext& context, const ASTFunction& function)
+   bool IRGenerator::virGenerate(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function)
    {
       PURE_VIRTUAL;
       return 0;
@@ -76,7 +81,7 @@ namespace ByteCode
 
    // - Block operations
 
-   void IRGenerator::buildBlocks(CompileContext& context, const CIL::Instructions& instructions, const CIL::Guards& guards)
+   void IRGenerator::buildBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const CIL::Instructions& instructions, const CIL::Guards& guards)
    {
       allocateInstructionBlocks(instructions.size());
       createBlock(0);
@@ -84,7 +89,7 @@ namespace ByteCode
       for ( int index = 0; index < guards.size(); ++index )
       {
          const CIL::Guard& cilguard = guards[index];
-         buildGuardBlocks(context, cilguard);
+         buildGuardBlocks(context, entry, cilguard);
       }
       
       for ( std::size_t index = 0; index < instructions.size(); ++index )
@@ -146,10 +151,10 @@ namespace ByteCode
       return mBlocks;
    }
 
-   void IRGenerator::buildGuardBlocks(CompileContext& context, const CIL::Guard& cilguard)
+   void IRGenerator::buildGuardBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const CIL::Guard& cilguard)
    {
-      ExceptionGuard* pguard = new ExceptionGuard();
-      context.getProgram().addGuard(pguard);
+      VirtualGuard* pguard = new VirtualGuard();
+      entry.addGuard(pguard);
 
       // For catch we create a new block. It is required for the stack code
       // generator, as it has to check whether the store local is an exception
@@ -160,13 +165,13 @@ namespace ByteCode
       Block& block_end   = createBlock(cilguard.labels[CIL::Guard::sEnd]);
 
       block_start.pguard = pguard;
-      block_start.guard_type = ExceptionGuard::sStart;
+      block_start.guard_type = VirtualGuard::sStart;
 
       block_catch.pguard = pguard;
-      block_catch.guard_type = ExceptionGuard::sCatch;
+      block_catch.guard_type = VirtualGuard::sCatch;
 
       block_end.pguard = pguard;
-      block_end.guard_type = ExceptionGuard::sEnd;
+      block_end.guard_type = VirtualGuard::sEnd;
 
       if ( pguard->finalize )
       {
@@ -175,7 +180,7 @@ namespace ByteCode
          Block& block_final = createBlock(cilguard.labels[CIL::Guard::sFinal]);
 
          block_final.pguard = pguard;
-         block_final.guard_type = ExceptionGuard::sFinal;
+         block_final.guard_type = VirtualGuard::sFinal;
       }
    }
 

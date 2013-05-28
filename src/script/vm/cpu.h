@@ -61,8 +61,9 @@ protected:
    VirtualClass&     getStringClass();
       
  // exception handling
-           void   displayException(const VirtualException& exception);
-           void   throwException(VirtualContext& context, const String& exceptionname, const String& reason);
+           void displayException(const VirtualException& exception);
+           void throwException(VirtualContext& context, const String& exceptionname, const String& reason);
+   virtual bool handleException(VirtualContext& context, VirtualObject& exception) = 0;
 
 private:
 

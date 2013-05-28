@@ -92,14 +92,12 @@ void ASTFunctionTable::insert(ASTFunctionTable& table)
 
 void ASTFunctionTable::reindex()
 {
+   // skip the static and variable init blocks, as they are created in a later stage
    int resourceindex = 2;
 
    for ( std::size_t index = 2; index < mFunctions.size(); index++ )
    {
       ASTFunction* pfunction = mFunctions[index];
-      if ( !pfunction->getModifiers().isPureNative() )
-      {
-         pfunction->setResourceIndex(resourceindex++); // add static & var init blocks
-      }
+      pfunction->setResourceIndex(resourceindex++);
    }
 }

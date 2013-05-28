@@ -20,7 +20,7 @@ public:
    StackIRGenerator();
 
 protected:
-   virtual int virGenerate(CompileContext& context, const ASTFunction& function);
+   virtual bool virGenerate(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function);
 
 private:
    

@@ -9,6 +9,7 @@
 #include "script/vm/virtualstackframe.h"
 
 class VirtualObject;
+class VirtualGuard;
 
 class SCRIPT_API StackCPU : public CPU
 {
@@ -32,7 +33,7 @@ protected:
 
  // exception handling
    virtual String buildCallStack() const;
-           bool   handleException(VirtualObject& exception);
+   virtual bool   handleException(VirtualContext& context, VirtualObject& exception);
 
 private:
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
@@ -44,8 +45,9 @@ private:
    void call(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry);
 
  // members
-   CallStack      mCalls;
-   VirtualStack   mStack;
+         CallStack      mCalls;
+         VirtualStack   mStack;
+   const VirtualGuard*  mpActiveGuard;
 
    int            mIP;
    int            mFP;

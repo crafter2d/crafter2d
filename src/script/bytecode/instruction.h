@@ -4,7 +4,7 @@
 
 class ASTType;
 
-#define MAKE_INST(opcode,arg)((opcode << 24) | arg)
+#define MAKE_INST(opcode,arg)((opcode << 24) | (arg & 0x00FFFFFF))
 #define INST_OPCODE(inst) (((inst) >> 24) & 0xFF)
 #define INST_ARG(inst) ((inst) & 0xFFFFFF)
 

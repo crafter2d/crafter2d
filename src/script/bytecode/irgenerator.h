@@ -31,11 +31,11 @@ namespace ByteCode
       IRGenerator();
       virtual ~IRGenerator();
 
-      int generate(CompileContext& context, const ASTFunction& function);
+      VirtualFunctionTableEntry* generate(CompileContext& context, const ASTFunction& function);
 
    protected:
     // operations
-      virtual int virGenerate(CompileContext& context, const ASTFunction& function) = 0;
+      virtual bool virGenerate(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function) = 0;
 
       void cleanup();
 
@@ -51,8 +51,8 @@ namespace ByteCode
    private:
 
     // block operations
-      void     buildBlocks(CompileContext& context, const CIL::Instructions& instructions, const CIL::Guards& guards);
-      void     buildGuardBlocks(CompileContext& context, const CIL::Guard& cilguard);
+      void     buildBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const CIL::Instructions& instructions, const CIL::Guards& guards);
+      void     buildGuardBlocks(CompileContext& context,  VirtualFunctionTableEntry& entry,const CIL::Guard& cilguard);
       void     allocateInstructionBlocks(int amount);
       Block&   createBlock(int target);
 
