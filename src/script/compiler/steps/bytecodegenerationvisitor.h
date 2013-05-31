@@ -28,8 +28,6 @@ private:
 
    CompileContext& mContext;
    VirtualClass*   mpVirClass;
-   char*           mpCode;
-   int             mCodeSize;
 };
 
 #endif // BYTECODE_GENERATION_VISITOR_H

@@ -7,12 +7,16 @@
 #include "script/ast/astfunction.h"
 #include "script/cil/cil.h"
 #include "script/cil/guard.h"
+#include "script/cil/switchtabel.h"
+#include "script/cil/switchtableentry.h"
+#include "script/cil/switchtables.h"
 #include "script/compiler/compilecontext.h"
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualcontext.h"
 #include "script/vm/virtualguard.h"
 #include "script/vm/virtualguards.h"
 #include "script/vm/virtualfunctiontableentry.h"
+#include "script/vm/virtuallookuptable.h"
 
 #include "block.h"
 #include "codepatch.h"
@@ -44,12 +48,12 @@ namespace ByteCode
 
       AutoPtr<VirtualFunctionTableEntry> result = new VirtualFunctionTableEntry();
       
-      const CIL::Guards& guards = function.getGuards();
-      buildBlocks(context, *result, instructions, guards);
+      buildBlocks(context, *result, function);
 
       if ( virGenerate(context, *result, function) )
       {
          result->updateGuards();
+         result->updateLookupTables();
 
          cleanup();
          return result.release();
@@ -61,7 +65,7 @@ namespace ByteCode
    bool IRGenerator::virGenerate(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function)
    {
       PURE_VIRTUAL;
-      return 0;
+      return false;
    };
 
    void IRGenerator::cleanup()
@@ -80,43 +84,6 @@ namespace ByteCode
    }
 
    // - Block operations
-
-   void IRGenerator::buildBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const CIL::Instructions& instructions, const CIL::Guards& guards)
-   {
-      allocateInstructionBlocks(instructions.size());
-      createBlock(0);
-
-      for ( int index = 0; index < guards.size(); ++index )
-      {
-         const CIL::Guard& cilguard = guards[index];
-         buildGuardBlocks(context, entry, cilguard);
-      }
-      
-      for ( std::size_t index = 0; index < instructions.size(); ++index )
-      {
-         const CIL::Instruction& inst = instructions[index];
-         switch ( inst.opcode )
-         {
-            case CIL::CIL_jump:
-            case CIL::CIL_jump_true:
-            case CIL::CIL_jump_false:
-               {
-                  int target = index + inst.mInt;
-
-                  Block& to = createBlock(target);
-                  Block& from = createBlock(index);
-
-                  to.from.push_back(&from);
-                  from.to.push_back(&to);
-               }
-               break;
-
-            default:
-               // no jump, so nothing happens
-               break;
-         }
-      }
-   }
 
    void IRGenerator::allocateInstructionBlocks(int amount)
    {
@@ -151,7 +118,27 @@ namespace ByteCode
       return mBlocks;
    }
 
-   void IRGenerator::buildGuardBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const CIL::Guard& cilguard)
+   void IRGenerator::buildBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function)
+   {
+      const CIL::Instructions& instructions = function.getInstructions();
+      allocateInstructionBlocks(instructions.size());
+      createBlock(0);
+
+      buildGuards(entry, function.getGuards());      
+      buildTables(entry, function.getSwitchTables());
+      buildInstructions(instructions);
+   }
+
+   void IRGenerator::buildGuards(VirtualFunctionTableEntry& entry, const CIL::Guards& cilguards)
+   {
+      for ( int index = 0; index < cilguards.size(); ++index )
+      {
+         const CIL::Guard& cilguard = cilguards[index];
+         buildGuardBlocks(entry, cilguard);
+      }
+   }
+
+   void IRGenerator::buildGuardBlocks(VirtualFunctionTableEntry& entry, const CIL::Guard& cilguard)
    {
       VirtualGuard* pguard = new VirtualGuard();
       entry.addGuard(pguard);
@@ -181,6 +168,73 @@ namespace ByteCode
 
          block_final.pguard = pguard;
          block_final.guard_type = VirtualGuard::sFinal;
+      }
+   }
+
+   void IRGenerator::buildTables(VirtualFunctionTableEntry& entry, const CIL::SwitchTables& tables)
+   {
+      for ( int index = 0; index < tables.size(); ++index )
+      {
+         const CIL::SwitchTable& table = tables[index];
+         buildTableBlocks(entry, table);
+      }
+   }
+
+   void IRGenerator::buildTableBlocks(VirtualFunctionTableEntry& entry, const CIL::SwitchTable& table)
+   {
+      VirtualLookupTable* plookup = new VirtualLookupTable();
+      entry.addLookupTable(plookup);
+
+      plookup->setEnd(table.getEnd());
+      Block& block_end = createBlock(table.getEnd());
+      block_end.plookup = plookup;
+      block_end.lookup_type = 2;
+
+      if ( table.hasDefault() )
+      {
+         plookup->setDefault(table.getDefault());
+         
+         Block& block_default = createBlock(table.getDefault());
+         block_default.plookup = plookup;
+         block_default.lookup_type = 1;
+      }
+
+      for ( int index = 0; index < table.size(); ++index )
+      {
+         const CIL::SwitchTableEntry& entry = table[index];
+
+         Block& block_case = createBlock(entry.label);
+         block_case.plookup = plookup;
+         block_case.lookup_value = entry.value;
+         block_case.lookup_type = 3;
+      }
+   }
+
+   void IRGenerator::buildInstructions(const CIL::Instructions& instructions)
+   {
+      for ( std::size_t index = 0; index < instructions.size(); ++index )
+      {
+         const CIL::Instruction& inst = instructions[index];
+         switch ( inst.opcode )
+         {
+            case CIL::CIL_jump:
+            case CIL::CIL_jump_true:
+            case CIL::CIL_jump_false:
+               {
+                  int target = index + inst.mInt;
+
+                  Block& to = createBlock(target);
+                  Block& from = createBlock(index);
+
+                  to.from.push_back(&from);
+                  from.to.push_back(&to);
+               }
+               break;
+
+            default:
+               // no jump, so nothing happens
+               break;
+         }
       }
    }
 

@@ -293,6 +293,11 @@ bool ASTType::isUnknown() const
    return mKind == eUnknown;
 }
 
+bool ASTType::isValueType() const
+{
+   return isNumeric() || isChar() || isString();
+}
+
 bool ASTType::isNull() const
 {
    return mKind == eNull;

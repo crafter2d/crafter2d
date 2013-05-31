@@ -14,9 +14,7 @@
 
 ByteCodeGenerationVisitor::ByteCodeGenerationVisitor(CompileContext& context):
    CompileStep(),
-   mContext(context),
-   mpCode(NULL),
-   mCodeSize(0)
+   mContext(context)
 {
 }
 
@@ -36,9 +34,6 @@ void ByteCodeGenerationVisitor::visit(const ASTRoot& root)
 
 void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
 {
-   mCodeSize = 64;
-   mpCode = new char[mCodeSize];
-
    VirtualClass* pbaseclass = NULL;
    if ( ast.hasBaseClass() )
    {
@@ -87,14 +82,9 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
       }
    }
 
-   mpVirClass->setByteCode(mpCode);
-
    handleClassObject(ast);
 
    mContext.addVirtualClass(mpVirClass);
-
-   delete[] mpCode;
-   mpCode = NULL;
 }
 
 void ByteCodeGenerationVisitor::visit(const ASTFunction& ast)

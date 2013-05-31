@@ -4,7 +4,10 @@
 
 #include <vector>
 
+#include "script/common/variant.h"
+
 class VirtualGuard;
+class VirtualLookupTable;
 
 namespace ByteCode
 {
@@ -25,6 +28,10 @@ namespace ByteCode
 
       VirtualGuard* pguard;
       int           guard_type;
+
+      VirtualLookupTable* plookup;
+      Variant             lookup_value;
+      int                 lookup_type;
       
       Blocks to;
       Blocks from;

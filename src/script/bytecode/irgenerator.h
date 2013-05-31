@@ -10,6 +10,8 @@ namespace CIL
 {
    class Guard;
    class Guards;
+   class SwitchTable;
+   class SwitchTables;
 }
 
 class ASTFunction;
@@ -51,8 +53,13 @@ namespace ByteCode
    private:
 
     // block operations
-      void     buildBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const CIL::Instructions& instructions, const CIL::Guards& guards);
-      void     buildGuardBlocks(CompileContext& context,  VirtualFunctionTableEntry& entry,const CIL::Guard& cilguard);
+      void     buildBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function);
+      void     buildGuards(VirtualFunctionTableEntry& entry, const CIL::Guards& cilguards);
+      void     buildGuardBlocks(VirtualFunctionTableEntry& entry,const CIL::Guard& cilguard);
+      void     buildTables(VirtualFunctionTableEntry& entry, const CIL::SwitchTables& tables);
+      void     buildTableBlocks(VirtualFunctionTableEntry& entry, const CIL::SwitchTable& table);
+      void     buildInstructions(const CIL::Instructions& instructions);
+
       void     allocateInstructionBlocks(int amount);
       Block&   createBlock(int target);
 

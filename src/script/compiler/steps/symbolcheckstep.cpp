@@ -283,6 +283,11 @@ void SymbolCheckVisitor::visit(ASTSwitch& ast)
    ast.getExpression().accept(*this);
    ast.setType(mCurrentType.clone());
 
+   if ( !mCurrentType.isValueType() )
+   {
+      mContext.getLog().error("Switch statement value should be a value, found " + mCurrentType.toString());
+   }
+
    if ( ast.getDefaultCount() > 1 )
    {
       mContext.getLog().error(String("A switch statement can have only one default case."));

@@ -7,6 +7,7 @@
 #include "script/ast/ast.h"
 #include "script/cil/guard.h"
 #include "script/cil/switchtabel.h"
+#include "script/cil/switchtableentry.h"
 #include "script/common/literal.h"
 #include "script/common/variant.h"
 #include "script/common/functionregistration.h"
@@ -466,7 +467,7 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
 
 void CodeGeneratorVisitor::visit(const ASTCase& ast)
 {
-   ASSERT(ast.hasValue());
+   ASSERT(ast.isDefault() || ast.hasValue());
    ASSERT_PTR(mpSwitchTable);
 
    int label = mBuilder.allocateLabel();
@@ -474,7 +475,11 @@ void CodeGeneratorVisitor::visit(const ASTCase& ast)
 
    if ( ast.isCase() )
    {
-      mpSwitchTable->add(label, ast.getValue());
+      CIL::SwitchTableEntry entry;
+      entry.label = label;
+      entry.value = ast.getValue();
+
+      mpSwitchTable->add(entry);
    }
    else
    {

@@ -98,10 +98,6 @@ private:
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
 
    enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
-
- // execution
-   void execute(const VirtualClass& vclass, const VirtualFunctionTableEntry& entry);
-   void execute(const VirtualClass& vclass, const VirtualInstruction& instruction);
    
  // exception
    VirtualObject& instantiateArrayException(const VirtualArrayException& e);
@@ -112,9 +108,6 @@ private:
    VirtualClass* doLoadClass(const String& classname);
    void          classLoaded(VirtualClass* pclass);
    void          createClass(const VirtualClass& aclass);
-
- // stack operations
-   void shrinkStack(int newsize);
 
    VirtualContext&               mContext;
    VirtualCompileCallback        mCallback;

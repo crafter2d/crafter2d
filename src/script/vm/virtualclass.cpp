@@ -16,7 +16,6 @@ VirtualClass::VirtualClass():
    mpBaseClass(NULL),
    mpDefinition(NULL),
    mVTable(),
-   mpByteCode(NULL),
    mpClassObject(NULL),
    mpStatics(NULL),
    mStaticCount(0),
@@ -83,17 +82,6 @@ const VirtualFunctionTable& VirtualClass::getVirtualFunctionTable() const
 VirtualFunctionTable& VirtualClass::getVirtualFunctionTable()
 {
    return mVTable;
-}
-
-const char* VirtualClass::getByteCode() const
-{
-   ASSERT_PTR(mpByteCode);
-   return mpByteCode;
-}
-
-void VirtualClass::setByteCode(const char* pcode)
-{
-   mpByteCode = strdup(pcode);
 }
 
 int VirtualClass::getVariableCount() const
@@ -200,12 +188,6 @@ bool VirtualClass::implements(const VirtualClass& interfce) const
    return false;
 }
 
-const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
-{
-   ASSERT(index >= 0 && index < mLookupTables.size());
-   return *mLookupTables[index];
-}
-
 const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
 {
    String name = mName;
@@ -216,22 +198,6 @@ const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
    }
 
    return mVTable.findByName(name);
-}
-
-// - Operations
-
-int VirtualClass::addLookupTable(VirtualLookupTable* ptable)
-{
-   mLookupTables.push_back(ptable);
-   return mLookupTables.size() - 1;
-}
-
-void VirtualClass::offsetCode(int offset)
-{
-   for ( std::size_t index = 0; index < mLookupTables.size(); index++ )
-   {
-      mLookupTables[index]->offsetCode(offset);
-   }
 }
 
 // - Runtime instantiation

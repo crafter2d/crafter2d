@@ -66,6 +66,7 @@ public:
    bool isVoid() const;
    bool isNumeric() const;
    bool isUnknown() const;
+   bool isValueType() const;
    
    bool isNull() const;
    bool isArray() const;

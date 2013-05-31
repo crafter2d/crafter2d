@@ -13,6 +13,7 @@ namespace ByteCode
       pcurrent(NULL),
       pguard(NULL),
       guard_type(-1),
+      plookup(NULL),
       to(),
       from()
    {

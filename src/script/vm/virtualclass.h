@@ -11,13 +11,10 @@
 
 class ASTClass;
 class Variant;
-class VirtualLookupTable;
 class VirtualObject;
 
 class SCRIPT_API VirtualClass
 {
-   typedef std::vector<VirtualLookupTable*> LookupTables;
-
 public:
    enum Flags {
       eNone = 0, 
@@ -30,11 +27,11 @@ public:
 
  // get/set
    const String& getName() const;
-   void               setName(const String& name);
+   void          setName(const String& name);
 
-   bool               hasBaseName() const;
+   bool          hasBaseName() const;
    const String& getBaseName() const;
-   void               setBaseName(const String& name);
+   void          setBaseName(const String& name);
 
    bool                hasBaseClass() const;
    const VirtualClass& getBaseClass() const;
@@ -42,9 +39,6 @@ public:
 
    const VirtualFunctionTable& getVirtualFunctionTable() const;
          VirtualFunctionTable& getVirtualFunctionTable();
-
-   const char* getByteCode() const;
-   void        setByteCode(const char* pbytecode);
 
    const ASTClass& getDefinition() const;
    void            setDefinition(ASTClass* pdefinition);
@@ -69,7 +63,6 @@ public:
    bool isBaseClass(const VirtualClass& base) const;
    bool implements(const VirtualClass& interfce) const;
 
-   const VirtualLookupTable& getLookupTable(int index) const;
    const VirtualFunctionTableEntry* getDefaultConstructor() const;
 
  // operations
@@ -79,8 +72,6 @@ public:
          Variant& getStatic(int index);
    void           setStatic(int index, const Variant& value);
 
-   int addLookupTable(VirtualLookupTable* ptable);
-
    void offsetCode(int offset);
    
 private:
@@ -89,9 +80,7 @@ private:
    const VirtualClass*     mpBaseClass;
    ASTClass*               mpDefinition;
    VirtualFunctionTable    mVTable;
-   char*                   mpByteCode;
    VirtualObject*          mpClassObject;
-   LookupTables            mLookupTables;
    Variant*                mpStatics;
    int                     mStaticCount;
    int                     mVariableCount;

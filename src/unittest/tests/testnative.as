@@ -18,8 +18,6 @@ class TestNative
 	{
 		NativeClass nativeClass = new NativeClass();
 		assert nativeClass.getStringValue() == "test";
-		
-		System.console.println("Ran testNativeStringReturn");
 	}
 	
 	@test

@@ -8,8 +8,6 @@ use UnitTest.*;
 
 class Test
 {
-	int a = 0;
-	
 	public void run()
 	{
 		TestRunner tr = TestRunner.getInstance();
@@ -23,6 +21,7 @@ class Test
 		tr.addClass(TestLoops.class);
 		tr.addClass(TestGenerics.class);
 		tr.addClass(TestException.class);
+		tr.addClass(TestSwitch.class);
 		
 		tr.run();
 	}

@@ -6,6 +6,7 @@
 
 #include "script/cil/guard.h"
 #include "script/cil/switchtabel.h"
+#include "script/cil/switchtableentry.h"
 
 FunctionBuilder::FunctionBuilder():
    mInstructions(),
@@ -104,6 +105,7 @@ void FunctionBuilder::start()
    mInstructions.clear();
    mLabels.clear();
    mGuards.clear();
+   mSwitches.clear();
    mLabel = 0;
 }
 
@@ -153,10 +155,27 @@ void FunctionBuilder::createGuards()
 
 void FunctionBuilder::createSwitches()
 {
+   int target;
+
    for ( int index = 0; index < mSwitches.size(); ++index )
    {
       CIL::SwitchTable& table = mSwitches[index];
-   }
 
-   mSwitches.clear();
+      if ( table.hasDefault() )
+      {
+         target = mLabels[table.getDefault()];
+         table.addDefault(target);
+      }
+
+      target = mLabels[table.getEnd()];
+      table.addEnd(target);
+
+      for ( int te = 0; te < table.size(); ++te )
+      {
+         CIL::SwitchTableEntry& entry = table[te];
+
+         int target = mLabels[entry.label];
+         entry.label = target;
+      }
+   }
 }

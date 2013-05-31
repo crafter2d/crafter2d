@@ -26,6 +26,7 @@
 #include "script/vm/virtualguard.h"
 #include "script/vm/virtualstring.h"
 #include "script/vm/virtualfunctiontableentry.h"
+#include "script/vm/virtuallookuptable.h"
 
 struct OpcodeInfo
 {
@@ -935,8 +936,22 @@ int StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& f
 
       if ( pblock->pguard != NULL )
       {
-         // add the guard to the program
          pblock->pguard->locations[pblock->guard_type] = pos;
+      }
+      else if ( pblock->plookup != NULL )
+      {
+         switch ( pblock->lookup_type )
+         {
+         case 1:
+            pblock->plookup->setDefault(pos);
+            break;
+         case 2:
+            pblock->plookup->setEnd(pos);
+            break;
+         case 3:
+            pblock->plookup->add(pblock->lookup_value, pos);
+            break;
+         }
       }
 
       Instruction* pinst = pblock->pstart;

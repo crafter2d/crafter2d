@@ -17,6 +17,7 @@
 #include "script/vm/virtualguard.h"
 #include "script/vm/virtualobject.h"
 #include "script/vm/virtualfunctiontableentry.h"
+#include "script/vm/virtuallookuptable.h"
 #include "script/vm/virtualstackaccessor.h"
 
 #include "stackirgenerator.h"
@@ -781,15 +782,8 @@ void StackCPU::execute(VirtualContext& context)
 
          case SBIL_switch:
             {
-               /*
-               String classname = context.mLiteralTable[mStack.popInt()].getValue().asString().getString();
-               const VirtualLookupTable& table = context.mClassTable.resolve(classname).getLookupTable(instruction.getArgument());
-
-               int codeindex = table.lookup(mStack.back());
-               mStack.pop();
-
-               mCall.jump(codeindex);
-               */
+               const VirtualLookupTable* ptable = mCalls[mFP].pentry->lookups[arg];
+               mIP = ptable->lookup(mStack.pop());
             }
             break;
          case SBIL_instanceof:
@@ -931,7 +925,7 @@ bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception
       }
       else
       {
-         mFP--;
+         mIP = mCalls[mFP--].retaddress;
       }
    }
 

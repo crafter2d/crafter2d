@@ -44,7 +44,8 @@ const VirtualGuard* VirtualGuards::findGuard(int pos) const
    for ( std::size_t index = 0; index < mGuards.size(); ++index )
    {
       const VirtualGuard* pguard = mGuards[index];
-      if ( pguard->locations[VirtualGuard::sStart] <= pos && pguard->locations[VirtualGuard::sCatch] > pos )
+      // range is [start,catch> as the last instruction before the catch is always a jump to final/end
+      if ( pguard->locations[VirtualGuard::sStart] <= pos && pguard->locations[VirtualGuard::sCatch] >= pos )
       {
          int dist = pos - pguard->locations[VirtualGuard::sStart];
          if ( dist < bestdist )
