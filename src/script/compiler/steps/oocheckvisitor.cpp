@@ -39,7 +39,7 @@ void OOCheckVisitor::visit(ASTClass& ast)
    mpClass = &ast;
    ASSERT_PTR(mpClass);
 
-   if ( mpClass->getKind() == ASTClass::eClass )
+   if ( mpClass->isClass() )
    {
       if ( mpClass->hasAbstractFunction() )
       {
@@ -58,6 +58,10 @@ void OOCheckVisitor::visit(ASTClass& ast)
       {
          mContext.getLog().warning(String("Class ") + ast.getName() + " is marked abstract without abstract functions.");
       }
+   }
+   else 
+   {
+      ASSERT(mpClass->isInterface());
    }
 
    if ( ast.isNative() )
@@ -415,13 +419,13 @@ bool OOCheckVisitor::isFinal(ASTNode& expr)
    return false;
 }
 
-void OOCheckVisitor::validateClass(const ASTClass& aclass)
+void OOCheckVisitor::validateClass(const ASTClass& klass)
 {
    // check if all base class functions are implemented
    // does not have to be a direct class: abstract classes do not have to implement the abstract methods of their base
    // (abstract methods shouldnt be stored in the function table, but as they are its making life much easier)
 
-   if ( !aclass.getModifiers().isAbstract() && aclass.hasBaseClass() )
+   if ( !klass.getModifiers().isAbstract() && klass.hasBaseClass() )
    {
       
       /*
@@ -442,6 +446,8 @@ void OOCheckVisitor::validateClass(const ASTClass& aclass)
       }
       */
    }
+
+    checkInterfaceImplementation(klass);
 }
 
 void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right)
@@ -482,6 +488,34 @@ void OOCheckVisitor::checkVarInit(ASTVariable& var)
       else if ( varinit.hasExpression() )
       {
          varinit.getExpression().accept(*this);
+      }
+   }
+}
+
+void OOCheckVisitor::checkInterfaceImplementation(const ASTClass& ast)
+{
+   if ( !ast.getModifiers().isAbstract() )
+   {
+      ASTTypeList interfaces;
+      ast.collectInterfaces(interfaces);
+
+      for ( int index = 0; index < interfaces.size(); ++index )
+      {
+         ASTType& itype = interfaces[index];
+         ASTClass& intrface = itype.getObjectClass();
+         ASSERT(intrface.isInterface());
+
+         ASTFunctionMap& functions = intrface.getFunctions();
+         ASTFunctionMap::Iterator it = functions.getIterator();
+         while ( functions.hasNext(it) )
+         {
+            ASTFunction& function = functions.getNext(it);
+            const ASTFunction* pimplementation = ast.findExactMatch(function.getName(), function.getSignature());
+            if ( pimplementation == NULL )
+            {
+               mContext.getLog().error("Function " + intrface.getFullName() + "." + function.getPrototype() + " is not implemented.");
+            }
+         }
       }
    }
 }

@@ -12,7 +12,7 @@ class Test
 	{
 		TestRunner tr = TestRunner.getInstance();
 		//tr.addClass(TestFile.class);
-		//tr.addClass(TestInterface.class);
+		tr.addClass(TestInterface.class);
 		tr.addClass(TestNative.class);
 		tr.addClass(TestString.class);
 		tr.addClass(TestChar.class);

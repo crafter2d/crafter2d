@@ -25,7 +25,6 @@ namespace CIL
       CIL_call,
       CIL_call_virt,
       CIL_call_interface,
-      CIL_call_static,
       CIL_call_native,
       CIL_ret,
       CIL_add,

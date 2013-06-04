@@ -72,7 +72,7 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
       resolveType(type);
    }
 
-   if ( !ast.hasConstructor() && ast.hasBaseType() )
+   if ( ast.isClass() && !ast.hasConstructor() && ast.hasBaseType() )
    {
       generateDefaultConstructor(ast);
    }

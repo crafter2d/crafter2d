@@ -4,4 +4,5 @@
 interface InterfaceClass
 {
 	int getValue();
+	void setValue(int value);
 }

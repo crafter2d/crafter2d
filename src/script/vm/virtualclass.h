@@ -52,6 +52,9 @@ public:
    VirtualObject& getClassObject() const;
    void           setClassObject(VirtualObject* pobject);
 
+   const int*  getInterfaceLookupTable() const;
+   void        setInterfaceLookupTable(int* ptable);
+
    void setFlags(Flags flags);
 
  // query
@@ -83,6 +86,7 @@ private:
    VirtualObject*          mpClassObject;
    Variant*                mpStatics;
    int                     mStaticCount;
+   int*                    mpInterfaceLookupTable;
    int                     mVariableCount;
    Flags                   mFlags;
 };

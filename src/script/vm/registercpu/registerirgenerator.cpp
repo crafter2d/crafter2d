@@ -26,7 +26,8 @@ char* RegisterIRGenerator::generate(CompileContext& context, const ASTFunction& 
 
          case CIL_call:
          case CIL_call_native:
-         case CIL_call_static:
+         case CIL_call_interface:
+         case CIL_call_virt:
          case CIL_ret:
             break;
 

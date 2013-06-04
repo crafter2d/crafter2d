@@ -166,7 +166,8 @@ void StackCPU::execute(VirtualContext& context)
                ASSERT(object.isObject());
 
                const VirtualClass& theclass = object.asObject().getClass();
-               const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable().resolveInterface(symbol.func);
+               const int* ptable = theclass.getInterfaceLookupTable();
+               const VirtualFunctionTableEntry& entry = theclass.getVirtualFunctionTable()[ptable[symbol.func]];
 
                call(context, theclass, entry);
             }
@@ -837,11 +838,6 @@ void StackCPU::call(VirtualContext& context, int symbolindex)
 
 void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
 {
-   if ( klass.getName() == "UnitTest.TestRunner" && entry.mName == "runPretest" )
-   {
-      int aap = 5;
-   }
-
    VM::StackFrame frame;
    frame.pclass = & klass;
    frame.pentry = & entry;

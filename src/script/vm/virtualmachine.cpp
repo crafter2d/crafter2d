@@ -301,11 +301,6 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
 {
    mContext.mClassTable.insert(pclass);
 
-   if ( pclass->getName() == "system.ClassLoader" )
-   {
-      int aap = 5;
-   }
-
    createClass(*pclass);
 
    // execute the static initialization body

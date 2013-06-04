@@ -121,6 +121,11 @@ bool CompileContext::loadClass(const String& classname)
    return true;
 }
 
+void CompileContext::addInterface(ASTClass& interfce)
+{
+   mInterfaces.add(interfce);
+}
+
 void CompileContext::addVirtualClass(VirtualClass* pclass)
 {
    mVirtualClasses[pclass->getName()] = pclass;

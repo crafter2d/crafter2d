@@ -24,7 +24,8 @@ protected:
 
 private:
  // operations
-   void handleClassObject(const ASTClass& ast);
+   void createClassObject(const ASTClass& klass);
+   void createInterfaceLookupTable(const ASTClass& klass);
 
    CompileContext& mContext;
    VirtualClass*   mpVirClass;

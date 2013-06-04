@@ -163,15 +163,6 @@ bool Compiler::compile(const String& classname)
                {
                   getCallback().notify(&virclass);
                }
-
-               /*
-
-               if ( hasCallback() )
-               {
-                  mpCallback->notify(pcilclass);
-               }
-
-               save(*pcilclass); */
             }
             else
             {

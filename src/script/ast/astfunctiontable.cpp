@@ -57,7 +57,7 @@ void ASTFunctionTable::build(ASTFunctionMap& functions)
       insert(function);
    }
    
-   reindex();
+   reindex(2);
 }
 
 void ASTFunctionTable::set(int index, ASTFunction& function)
@@ -90,12 +90,12 @@ void ASTFunctionTable::insert(ASTFunctionTable& table)
    }
 }
 
-void ASTFunctionTable::reindex()
+void ASTFunctionTable::reindex(int base)
 {
    // skip the static and variable init blocks, as they are created in a later stage
-   int resourceindex = 2;
+   int resourceindex = base;
 
-   for ( std::size_t index = 2; index < mFunctions.size(); index++ )
+   for ( std::size_t index = 2; index < mFunctions.size(); ++index )
    {
       ASTFunction* pfunction = mFunctions[index];
       pfunction->setResourceIndex(resourceindex++);

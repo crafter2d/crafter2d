@@ -19,6 +19,7 @@ VirtualClass::VirtualClass():
    mpClassObject(NULL),
    mpStatics(NULL),
    mStaticCount(0),
+   mpInterfaceLookupTable(NULL),
    mVariableCount(0),
    mFlags(eNone)
 {
@@ -27,6 +28,7 @@ VirtualClass::VirtualClass():
 VirtualClass::~VirtualClass()
 {
    setDefinition(NULL);
+   setInterfaceLookupTable(NULL);
 
    delete[] mpStatics;
    mpStatics = NULL;
@@ -128,6 +130,17 @@ VirtualObject& VirtualClass::getClassObject() const
 void VirtualClass::setClassObject(VirtualObject* pobject)
 {
    mpClassObject = pobject;
+}
+
+const int* VirtualClass::getInterfaceLookupTable() const
+{
+   return mpInterfaceLookupTable;
+}
+ 
+void VirtualClass::setInterfaceLookupTable(int* ptable)
+{
+   delete mpInterfaceLookupTable;
+   mpInterfaceLookupTable = ptable;
 }
 
 void VirtualClass::setFlags(Flags flags)

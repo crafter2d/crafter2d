@@ -99,6 +99,15 @@ void PreloadVisitor::visit(ASTClass& ast)
          }
       }
    }
+   
+   // register interfaces to the context, so it later can be resolved for the interface lookup
+   // tables. these tables are links between interface function calls and the actuall virtual table
+   // function entry.
+
+   if ( ast.isInterface() )
+   {
+      mContext.addInterface(ast);
+   }
 
    ASTTypeList& intrfaces = ast.getInterfaces();
    for ( int index = 0; index < intrfaces.size(); index++ )

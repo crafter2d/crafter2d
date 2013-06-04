@@ -82,18 +82,14 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
       }
    }
 
-   handleClassObject(ast);
+   createClassObject(ast);
+   createInterfaceLookupTable(ast);
 
    mContext.addVirtualClass(mpVirClass);
 }
 
 void ByteCodeGenerationVisitor::visit(const ASTFunction& ast)
 {
-   if ( ast.getName() == "runTests" && ast.getClass().getName() == "TestRunner" )
-   {
-      int aap = 5;
-   }
-
    ByteCode::IRGenerator& generator = mContext.getByteCodeGenerator();
    VirtualFunctionTableEntry* pentry =  generator.generate(mContext, ast);
    if ( pentry == NULL )
@@ -111,7 +107,7 @@ void ByteCodeGenerationVisitor::visit(const ASTFunction& ast)
 
 // - Operations
 
-void ByteCodeGenerationVisitor::handleClassObject(const ASTClass& ast)
+void ByteCodeGenerationVisitor::createClassObject(const ASTClass& ast)
 {
    const ASTFunctionTable& table = ast.getFunctionTable();
    VirtualArray* pfuncarray = new VirtualArray();
@@ -153,4 +149,49 @@ void ByteCodeGenerationVisitor::handleClassObject(const ASTClass& ast)
    classobject->setMember(1, Variant(*pfuncarray));
 
    mpVirClass->setClassObject(classobject);
+}
+
+void ByteCodeGenerationVisitor::createInterfaceLookupTable(const ASTClass& klass)
+{
+   ASTTypeList interfaces;
+   klass.collectInterfaces(interfaces);
+
+   // determine the highest number of used function
+   int max = 0;
+   for ( int index = 0; index < interfaces.size(); ++index )
+   {
+      const ASTClass& iface = interfaces[index].getObjectClass();
+      const ASTFunctionTable& table = iface.getFunctionTable();
+      ASSERT(table.size() > 0);
+
+      const ASTFunction& function = table[table.size() - 1];
+      if ( function.getResourceIndex() > max )
+      {
+         max = function.getResourceIndex();
+      }
+   }
+
+   const ASTFunctionTable& klasstable = klass.getFunctionTable();
+
+   // create the lookup table (each interface function is at the same position in the table
+   // and links to the actual function number in the virtual table.
+   int* ptable = new int[max + 1];
+   for ( int index = 0; index < interfaces.size(); ++index )
+   {
+      const ASTClass& iface = interfaces[index].getObjectClass();
+      const ASTFunctionTable& table = iface.getFunctionTable();
+      
+      for ( int entry = 0; entry < table.size(); ++entry )
+      {
+         const ASTFunction& func = table[entry];
+         const ASTFunction* plookupfunc = klass.findExactMatch(func.getName(), func.getSignature());
+
+         ASSERT_PTR(plookupfunc);
+         ASSERT(func.getResourceIndex() <= max);
+
+         ptable[func.getResourceIndex()] = plookupfunc->getResourceIndex();
+      }
+   }
+
+   mpVirClass->setInterfaceLookupTable(ptable);
 }

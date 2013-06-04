@@ -62,11 +62,6 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
    using namespace SBIL;
    using namespace ByteCode;
 
-   if ( function.getName() == "runTests" && function.getClass().getName() == "TestRunner" )
-   {
-      int aap = 5;
-   }
-
    FunctionResolver resolver;
    std::stack<AutoPtr<ASTType>> types;
 
@@ -132,7 +127,6 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          // Calls
 
          case CIL_call:
-         case CIL_call_static:
             {
                ASTFunction& func = resolver.resolve(context, *inst.mString);
                ASSERT(func.getResourceIndex() >= 0);
@@ -820,11 +814,6 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
 
    typedef std::vector<Instruction*> Calls;
    Calls calls;
-
-   if ( function.getName() == "var_init" )
-   {
-      int aap = 5;
-   }
 
    Blocks& blocks = getBlocks();
 

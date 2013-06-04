@@ -11,6 +11,7 @@
 #include "script/common/literaltable.h"
 #include "script/common/classregistry.h"
 
+#include "compileinterfacetable.h"
 #include "compilelog.h"
 
 class ASTClass;
@@ -56,6 +57,8 @@ public:
    void addClass(ASTClass* pclass);
    bool loadClass(const String& classname);
 
+   void addInterface(ASTClass& interfce);
+
    void addVirtualClass(VirtualClass* pclass);
 
    void collectCompileClasses(std::vector<ASTClass*>& classes);
@@ -76,6 +79,7 @@ private:
 
    Compiler&               mCompiler;
    ClassMap                mClasses;
+   CompileInterfaceTable   mInterfaces;
    VirtualClassMap         mVirtualClasses;
    ClassRegistry           mClassRegistry;
    ByteCode::IRGenerator*  mpByteCodeGenerator; // owns

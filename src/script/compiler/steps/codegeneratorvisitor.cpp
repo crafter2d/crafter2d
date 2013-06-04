@@ -90,11 +90,6 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
    {
       ScopedScope scope(mScopeStack);
 
-      if ( ast.getName() == "add" && ast.getClass().getName() == "ArrayList" )
-      {
-         int aap = 5;
-      }
-      
       mpFunction = &ast;
       if ( !mpFunction->getModifiers().isStatic() )
       {
@@ -1152,7 +1147,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
             {
                String name = (before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()) + "." + function.getPrototype();
-               mBuilder.emit(CIL_call_static, name);
+               mBuilder.emit(CIL_call, name);
             }
             else 
             {
@@ -1334,11 +1329,6 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
 
 void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
 {
-   if ( ast.getFullName() == "system.ClassLoader" )
-   {
-      int aap = 5;
-   }
-
    // var_init blocks have no return value & no arguments
    ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
    pfunction->setClass(ast);

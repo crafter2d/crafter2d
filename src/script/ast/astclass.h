@@ -81,6 +81,9 @@ public:
    void setState(State state) const;
 
  // query
+   bool isClass() const;
+   bool isInterface() const;
+
    bool isBase(const ASTClass& base) const;
    bool isImplementing(const ASTClass& intrface) const;
    bool isLocal(const ASTFunction& function) const;
@@ -107,6 +110,8 @@ public:
 
    const ClassResolver& getResolver() const;
    void setResolver(const ClassResolver& resolver);
+
+   void collectInterfaces(ASTTypeList& interfaces) const;
 
    void registerVariables(Scope& scope) const;
 

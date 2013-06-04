@@ -193,6 +193,16 @@ void ASTClass::setState(State state) const
 }
 
 // - Query
+
+bool ASTClass::isClass() const
+{
+   return mKind == eClass;
+}
+   
+bool ASTClass::isInterface() const
+{
+   return mKind == eInterface;
+}
    
 bool ASTClass::isBase(const ASTClass& base) const
 {
@@ -354,6 +364,16 @@ void ASTClass::setResolver(const ClassResolver& resolver)
    mResolver = resolver;
 }
 
+void ASTClass::collectInterfaces(ASTTypeList& interfaces) const
+{
+   interfaces.append(mInterfaces);
+
+   if ( hasBaseClass() )
+   {
+      getBaseClass().collectInterfaces(interfaces);
+   }
+}
+
 void ASTClass::registerVariables(Scope& scope) const
 {
    if ( hasBaseClass() )
@@ -403,14 +423,12 @@ void ASTClass::indexVariables()
 
 void ASTClass::indexFunctions()
 {
-   if( mName == "Class" )
+   if ( isClass() )
    {
-      int aap = 5;
-   }
-
-   if ( hasBaseClass() )
-   {
-      mFunctionTable = getBaseClass().getFunctionTable();
+      if ( hasBaseClass() )
+      {
+         mFunctionTable = getBaseClass().getFunctionTable();
+      }
    }
 
    mFunctionTable.build(mFunctions);

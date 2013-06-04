@@ -54,6 +54,7 @@ private:
    void validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right);
 
    void checkVarInit(ASTVariable& var);
+   void checkInterfaceImplementation(const ASTClass& ast);
 
    CompileContext&      mContext;
    ASTClass*            mpClass;

@@ -30,7 +30,7 @@ public:
    void insert(ASTFunction& function);
    void insert(ASTFunctionTable& table);
 
-   void reindex();
+   void reindex(int base = 0);
 
 private:
    Functions mFunctions;
