@@ -1,7 +1,6 @@
 
 package demo;
 
-use server;
 use engine.core.*;
 use engine.messages.*;
 use engine.game.*;

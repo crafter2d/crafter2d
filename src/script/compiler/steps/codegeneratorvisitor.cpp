@@ -81,6 +81,11 @@ void CodeGeneratorVisitor::visit(ASTClass& ast)
 
 void CodeGeneratorVisitor::visit(ASTFunction& ast)
 {
+   if ( ast.getName() == "getInstance" && mpClass->getName() == "Canvas" )
+   {
+      int aap = 5;
+   }
+
    if ( ast.getModifiers().isPureNative() )
    {
       // No implementation, these are called directly except constructors. Those need to
@@ -622,15 +627,11 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
       mStore = false;
 
       ASSERT(mpAccess->getAccess() != ASTAccess::eInvalidAccess);
-      bool local = mpAccess->getAccess() == ASTAccess::eLocal;
-
-      if ( mpAccess->getAccess() == ASTAccess::eField )
-         mBuilder.emit(CIL_ldarg, 0);
 
       switch ( ast.getKind() )
       {
          case ASTExpression::eAssign:
-            handleAssignment(*mpAccess, local);
+            handleAssignment(*mpAccess);
             break;
 
          case ASTExpression::ePlusAssign:
@@ -1053,16 +1054,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                case ASTAccess::eField:
                   if ( isstatic )
                   {
-                     // use one of the two
-                     // - mCurrentType : call static of other class
-                     // - mpClass : access static field of this class
-                     String name;
-                     if ( mCurrentType.isValid() )
-                        name = mCurrentType.getObjectClass().getFullName();
-                     else
-                        name = mpClass->getFullName();
-
-                     mBuilder.emit(CIL_ldstr, name);
+                     emitStaticVariableClassName();
                   }
                   else
                   {
@@ -1223,28 +1215,36 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 
 // - Helpers
 
-void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
+void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access)
 {
    switch ( access.getKind() )
    {
       case ASTAccess::eField:
          {
-            bool isstatic = access.getVariable().getModifiers().isStatic();
-
             // the literal of the class has already been stored on the stack (see ASTAccess::eStatic and unary)
 
-            if ( local )
+            if ( mpAccess->getAccess() == ASTAccess::eLocal )
             {
                mBuilder.emit(CIL_stloc, access.getVariable().getResourceIndex());
             }
-            else if ( isstatic )
-            {
-               mBuilder.emit(CIL_ststatic, access.getVariable().getResourceIndex());
-            }
             else
             {
-               mBuilder.emit(CIL_stfield, access.getVariable().getResourceIndex());
+               bool isstatic = access.getVariable().getModifiers().isStatic();
+               if ( isstatic )
+               {
+                  emitStaticVariableClassName();
+                  mBuilder.emit(CIL_ststatic, access.getVariable().getResourceIndex());
+               }
+               else
+               {
+                  if ( mpAccess->getAccess() == ASTAccess::eField )
+                     mBuilder.emit(CIL_ldarg, 0);
+
+                  mBuilder.emit(CIL_stfield, access.getVariable().getResourceIndex());
+               }
             }
+
+            
          }
          break;
 
@@ -1545,4 +1545,18 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
    {
       // should not get here
    }
+}
+
+void CodeGeneratorVisitor::emitStaticVariableClassName()
+{
+   // use one of the two
+   // - mCurrentType : call static of other class
+   // - mpClass : access static field of this class
+   String name;
+   if ( mCurrentType.isValid() )
+      name = mCurrentType.getObjectClass().getFullName();
+   else
+      name = mpClass->getFullName();
+
+   mBuilder.emit(CIL_ldstr, name);
 }

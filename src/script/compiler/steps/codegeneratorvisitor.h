@@ -92,12 +92,14 @@ private:
    enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 4, ePostDecr = 8, eKeep = 16 };
 
  // operations
-   void handleAssignment(const ASTAccess& access, bool local);
+   void handleAssignment(const ASTAccess& access);
    void handleVariable(const ASTVariable& variable, bool local);
    void handleStaticBlock(ASTClass& ast);
    void handleFieldBlock(ASTClass& ast);
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
+
+   void emitStaticVariableClassName();
          
    CompileContext&      mContext;
    ASTClass*            mpClass;

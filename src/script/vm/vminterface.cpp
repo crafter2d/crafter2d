@@ -194,8 +194,8 @@ SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)
    registry.addFunction("length()", InternalString_length);
    registry.addFunction("subString(int, int)", InternalString_subString);
    registry.addFunction("getChar(int)", InternalString_getChar);
-   registry.addFunction("indexOf(int)", InternalString_indexOf);
-   registry.addFunction("lastIndexOf(int)", InternalString_lastIndexOf);
+   registry.addFunction("indexOf(char)", InternalString_indexOf);
+   registry.addFunction("lastIndexOf(char)", InternalString_lastIndexOf);
    
    registry.addClass("system.Char");
    registry.addFunction("isAlphaNum(char)", Char_isAlphaNum);

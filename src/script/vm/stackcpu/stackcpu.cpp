@@ -61,7 +61,10 @@ Variant StackCPU::execute(VirtualContext& context, VirtualObject& object, const 
    execute(context, object.getClass(), entry);
 
    // for now run the garbage collector here. have to find the right spot for it.
-   getGC().gc(getVM());
+   if ( !isGarbageCollectionBlocked() )
+   {
+      getGC().gc(getVM());
+   }
 
    return entry.returns ? mStack.pop() : Variant();
 }
@@ -176,13 +179,26 @@ void StackCPU::execute(VirtualContext& context)
             {
                FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
 
+               mCalls[mFP].callnative = true;
+
                VirtualStackAccessor accessor(context, mStack, symbol.args);
                (*context.mNativeRegistry.getCallback(symbol.func))(getVM(), accessor);
 
-               mStack.pop(symbol.args);
-               if ( accessor.hasResult() )
+               mCalls[mFP].callnative = false;
+
+               if ( mState == eExceptionHandling )
                {
-                  mStack.push(accessor.getResult());
+                  VirtualObject& exception = mStack.popObject();
+                  
+                  mStack.pop(symbol.args);
+
+                  handleException(context, exception);
+               }
+               else 
+               {
+                  mStack.pop(symbol.args);
+                  if ( accessor.hasResult() )
+                     mStack.push(accessor.getResult());
                }
             }
             break;
@@ -869,6 +885,23 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
 void StackCPU::mark()
 {
    mStack.mark();
+   
+   for ( int index = 0; index <= mFP; ++index )
+   {
+      VM::StackFrame::Locals& locals = mCalls[index].locals;
+      for ( int idx = 0; idx < locals.size(); ++idx )
+      {
+         Variant& variant = locals[idx];
+         if ( variant.isObject() )
+         {
+            variant.asObject().mark();
+         }
+         else if ( variant.isArray() )
+         {
+            variant.asArray().mark();
+         }
+      }
+   }
 }
 
 // - Exception handling
@@ -917,11 +950,25 @@ bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception
 
          mIP = pguard->locations[VirtualGuard::sCatch];
 
+         mState = eRunning;
+
          return true;
       }
       else
       {
          mIP = mCalls[mFP--].retaddress;
+         if ( mCalls[mFP].callnative )
+         {
+            // need to bail out of native function calls before handling an catch/finally
+            // an example that triggers this is the UnitTesting framework. it at runtime
+            // calls function using the class reflection. asserts fired there must be caught
+            // after the native has been abandoned.
+
+            mState = eExceptionHandling;
+            mStack.pushObject(exception);
+            
+            return true;
+         }
       }
    }
 

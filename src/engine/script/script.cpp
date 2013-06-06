@@ -98,7 +98,7 @@ Variant Script::run(const String& function, int argc, Variant* pargs)
 VirtualObject& Script::resolve(void* pobject)
 {
    VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.lookupNative(pobject);
-   ASSERT_MSG(pobject != NULL, "Object should have been registered already when using this method.");
+   ASSERT_MSG(pvirtualobject != NULL, "Object should have been registered already when using this method.");
    return *pvirtualobject;
 }
 

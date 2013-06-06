@@ -372,7 +372,7 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
-            Variant arg(mpScript->resolve(mpPlayer));
+            Variant arg(mpScript->instantiate("engine.game.Player", mpPlayer));
             mpScript->run("onConnected", 1, &arg);
 
             initialized = true;

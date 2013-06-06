@@ -36,7 +36,7 @@ protected:
    virtual bool   handleException(VirtualContext& context, VirtualObject& exception);
 
 private:
-   enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
+   enum State { eInit, eRunning, eExceptionHandling, eFinalizing, eReturn, eDestruct };
 
  // execution
    void execute(VirtualContext& context);

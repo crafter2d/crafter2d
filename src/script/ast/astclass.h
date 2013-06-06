@@ -101,6 +101,8 @@ public:
    int getTotalStatics() const;
    int getTotalVariables() const;
 
+   const ASTField& getField(int index) const;
+
  // operations
    void addInterface(ASTType* pinterfacetype);
    void addMember(ASTMember* pmember);

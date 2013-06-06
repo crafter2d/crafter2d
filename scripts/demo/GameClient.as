@@ -27,7 +27,7 @@ class GameClient extends Client
 	
 		//MessageBox.showInformation("This is a messagebox!");
 			
-		return connect("localhost", 7000, "player");
+		return connect("localhost", 7000);
 	}
 	
 	public void onConnected(Player player)

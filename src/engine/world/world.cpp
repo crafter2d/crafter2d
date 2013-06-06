@@ -415,7 +415,7 @@ void World::addEntity(Entity* pentity)
 
    notifyEntityAdded(*pentity);
 
-   Variant arg(mpScript->resolve(pentity));
+   Variant arg(mpScript->instantiate(pentity->getClassName(), pentity));
    mpScript->run("onEntityAdded", 1, &arg);
 }
 

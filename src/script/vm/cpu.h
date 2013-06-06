@@ -59,6 +59,8 @@ protected:
    VirtualMachine&   getVM();
    VirtualClass&     getArrayClass();
    VirtualClass&     getStringClass();
+
+   bool isGarbageCollectionBlocked() const;
       
  // exception handling
            void displayException(const VirtualException& exception);
@@ -73,6 +75,7 @@ private:
    VirtualClass*              mpArrayClass;
    VirtualClass*              mpStringClass;
    MemoryPool<VirtualObject>  mObjectCache;
+   bool                       mBlockGC;
 };
 
 #endif // CPU_H

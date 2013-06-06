@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "core/smartptr/autoptr.h"
+#include "core/smartptr/scopedvalue.h"
 #include "core/defines.h"
 
 #include "script/bytecode/program.h"
@@ -21,7 +22,8 @@ CPU::CPU(VirtualMachine& vm):
    mpProgram(NULL),
    mpArrayClass(NULL),
    mpStringClass(NULL),
-   mObjectCache()
+   mObjectCache(),
+   mBlockGC(false)
 {
    mpProgram = new ByteCode::Program();
 }
@@ -67,6 +69,11 @@ ByteCode::IRGenerator* CPU::createIRGenerator()
    return NULL;
 }
 
+bool CPU::isGarbageCollectionBlocked() const
+{
+   return mBlockGC == true;
+}
+
 // - Execution
 
 Variant CPU::execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry)
@@ -89,6 +96,8 @@ VirtualObject* CPU::instantiate(VirtualContext& context, const VirtualClass& kla
 
    VirtualObject* pobject = mObjectCache.alloc();
    klass.instantiate(*pobject);
+
+   ScopedValue<bool> scope(&mBlockGC, true, mBlockGC);
    
    Variant objectvariant(*pobject);
 

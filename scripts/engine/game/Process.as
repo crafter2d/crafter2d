@@ -64,6 +64,8 @@ abstract class Process
 		return mWorld;
 	}
 	
+	public native void setActionMap(ActionMap map);
+	
 	/// does not call the native function
 	protected void setInternalWorld(World world)
 	{

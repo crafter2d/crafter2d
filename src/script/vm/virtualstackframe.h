@@ -18,6 +18,16 @@ namespace VM
    public:
       typedef std::vector<Variant> Locals;
 
+      StackFrame():
+         pclass(NULL),
+         pentry(NULL),
+         locals(),
+         sp(0),
+         retaddress(-1),
+         callnative(false)
+      {
+      }
+
       const VirtualClass*              pclass;
       const VirtualFunctionTableEntry* pentry;
 
@@ -25,6 +35,8 @@ namespace VM
 
       int                              sp;
       int                              retaddress;
+
+      bool                             callnative;
 
    };
 }

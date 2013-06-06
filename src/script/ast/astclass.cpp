@@ -290,6 +290,18 @@ int ASTClass::getTotalVariables() const
    return mFields.size() + (hasBaseClass() ? getBaseClass().getTotalVariables() : 0);
 }
 
+const ASTField& ASTClass::getField(int var) const
+{
+   if ( mFields.empty() || mFields[0]->getVariable().getResourceIndex() > var )
+   {
+      return getBaseClass().getField(var);
+   }
+
+   std::size_t index = var - mFields[0]->getVariable().getResourceIndex();
+   ASSERT(index < mFields.size());
+   return *mFields[index];
+}
+
 // - Operations
    
 void ASTClass::addInterface(ASTType* ptype)

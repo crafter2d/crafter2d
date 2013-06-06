@@ -695,7 +695,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                types.pop();
 
                const ASTClass& klass = type->getObjectClass();
-               const ASTField& field = *klass.getFields()[inst.mInt];
+               const ASTField& field = klass.getField(inst.mInt);
                INSERT(SBIL_ldfield, inst.mInt);
                types.push(field.getVariable().getType().clone());
             }
@@ -817,6 +817,11 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
 
    Blocks& blocks = getBlocks();
 
+   if ( function.getName() == "create" && function.getClass().getName() == "TileSet")
+   {
+      int aap = 5;
+   }
+
    // fill the stack
    for ( std::size_t index = 0; index < blocks.size(); ++index )
    {
@@ -835,6 +840,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
             case SBIL_call:
             case SBIL_call_interface:
             case SBIL_call_virt:
+            case SBIL_call_native:
                {
                   int instarg = INST_ARG(pinst->inst);
                   const FunctionSymbol& symbol = static_cast<const FunctionSymbol&>(program.getSymbolTable()[instarg]);

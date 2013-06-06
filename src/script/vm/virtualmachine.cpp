@@ -94,6 +94,8 @@ void VirtualMachine::initialize()
    mState = eRunning;
    mLoaded = true;
 
+   loadClass("system.AssertionError");
+
    // register the loaded classes with the ClassLoader instance
    std::vector<VirtualClass*> classes = mContext.mClassTable.asArray();
    for ( std::size_t index = 0; index < classes.size(); index++ )
