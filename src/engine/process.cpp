@@ -23,7 +23,8 @@
 #  include "process.inl"
 #endif
 
-#include <vld.h>
+// When testing with Visual Leak Detecter, uncomment the next line
+// #include <vld.h>
 
 #include "core/log/log.h"
 
@@ -151,6 +152,7 @@ void Process::swapLeakDetection()
 {
    mDetecting = !mDetecting;
 
+   /*
    if ( mDetecting )
    {
       VLDEnable();
@@ -159,4 +161,5 @@ void Process::swapLeakDetection()
    {
       VLDDisable();
    }
+   */
 }

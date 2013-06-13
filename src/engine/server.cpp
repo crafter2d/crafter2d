@@ -19,9 +19,6 @@
  ***************************************************************************/
 #include "server.h"
 
-// When testing with Visual Leak Detecter, uncomment the next line
-#include <vld.h>
-
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/smartptr/scopedvalue.h"
