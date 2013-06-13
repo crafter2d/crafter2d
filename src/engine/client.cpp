@@ -261,7 +261,10 @@ bool Client::initDevice()
       static const Color color(75, 150, 230, 255);
 
       mpDevice = pfactory->createDevice();
-      mpDevice->create(mpWindow->getHandle());
+      if ( !mpDevice->create(mpWindow->getHandle()) )
+      {
+         return false;
+      }
 
       mpRenderContext = mpDevice->createRenderContext();
       mpRenderContext->setClearColor(color);
@@ -516,7 +519,10 @@ void Client::onWindowChanged()
       mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
       mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
 
-      initDevice();
+      if ( !initDevice() )
+      {
+         //setActive(false);
+      }
    }
 }
 

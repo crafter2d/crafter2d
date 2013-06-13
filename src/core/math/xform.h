@@ -22,22 +22,34 @@
 
 #include "core/core_base.h"
 
-#include "matrix2x2.h"
 #include "vector.h"
+
+class Matrix4;
 
 class CORE_API XForm
 {
 public:
    XForm();
+   XForm(const Vector& position, float angle);
    ~XForm();
+
+   const XForm& operator=(const XForm& that);
+
+ // get/set
+   const Vector& getPosition() const;
+   void          setPosition(const Vector& pos);
+
+   float         getAngle() const;
+   void          setAngle(float angle);
    
    void set(const Vector& position, float angle);
 
-   Vector transform(const Vector& point) const;
+ // conversion
+   void asMatrix(Matrix4& mat) const;
 
 private:
-   Matrix2x2 mMatrix;
    Vector    mPosition;
+   float     mAngle;
 };
 
 #endif

@@ -23,7 +23,7 @@
 #  include "process.inl"
 #endif
 
-// #include <vld.h>
+#include <vld.h>
 
 #include "core/log/log.h"
 
@@ -101,6 +101,9 @@ bool Process::destroy()
 {
    conn.shutdown();
 
+   delete mpWorld;
+   mpWorld = NULL;
+
    delete mpScript;
    mpScript = NULL;
 
@@ -148,7 +151,6 @@ void Process::swapLeakDetection()
 {
    mDetecting = !mDetecting;
 
-   /*
    if ( mDetecting )
    {
       VLDEnable();
@@ -157,5 +159,4 @@ void Process::swapLeakDetection()
    {
       VLDDisable();
    }
-   */
 }

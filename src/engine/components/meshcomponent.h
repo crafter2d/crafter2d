@@ -3,7 +3,7 @@
 #define MESH_COMPONENT_H
 
 #include "core/math/size.h"
-#include "core/math/matrix4.h"
+#include "core/math/xform.h"
 #include "core/string/string.h"
 
 #include "engine/effect.h"
@@ -33,12 +33,15 @@ public:
    const String& getEffectName() const;
    void          setEffectName(const String& name);
 
+   const Vector& getPosition() const;
+   float         getAngle() const;
+
    const Size& getSize() const;
    void        setSize(const Size& size);
 
  // operations
    void initialize(Graphics::Device& device);
-   void render(Graphics::RenderContext& context);
+   void render(Graphics::RenderContext& context) const;
 
  // overloads
    virtual void registerComponent(Components& components);
@@ -50,7 +53,7 @@ private:
    void updateBuffers();
 
  // members
-   Matrix4                 mTransform;
+   XForm                   mTransform;
    Animator*               mpAnimator; // owned
    Effect                  mEffect;
    String                  mEffectName;

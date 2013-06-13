@@ -27,8 +27,7 @@
 // static 
 Timer& Timer::getInstance()
 {
-   static AutoPtr<Timer> ptimer(Platform::getInstance().createTimer());
-   return *ptimer;
+   return Platform::getInstance().getTimer();
 }
 
 Timer::Timer()

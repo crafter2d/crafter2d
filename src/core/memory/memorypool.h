@@ -29,6 +29,14 @@ class MemoryPool
 
 public:
    MemoryPool(): mPool() {}
+   ~MemoryPool() {
+      while ( !mPool.empty() )
+      {
+         T* pitem = mPool.front();
+         mPool.pop();
+         delete pitem;
+      }
+   }
 
    T* alloc() {
       if ( mPool.empty() )

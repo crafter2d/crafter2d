@@ -6,6 +6,7 @@
 
 #include "core/graphics/viewport.h"
 #include "core/math/color.h"
+#include "core/math/xform.h"
 #include "core/math/matrix4.h"
 
 #include "oglblendstate.h"
@@ -72,13 +73,15 @@ void OGLRenderContext::setIdentityViewMatrix()
    glLoadIdentity();
 }
 
-void OGLRenderContext::setWorldMatrix(const Matrix4& matrix)
+void OGLRenderContext::setWorldMatrix(const XForm& matrix)
 {
-   float mat[16];
-   matrix.asOpenGL(mat);
+   float matogl[16];
+   Matrix4 mat;
+   matrix.asMatrix(mat);
+   mat.asOpenGL(matogl);
 
    glMatrixMode(GL_MODELVIEW);
-   glLoadMatrixf(mat);
+   glLoadMatrixf(matogl);
 }
 
 void OGLRenderContext::setIdentityWorldMatrix()
@@ -98,6 +101,13 @@ void OGLRenderContext::drawTriangles(int start, int count)
    ASSERT_PTR(mpIndexBuffer);
    GLenum type = mpIndexBuffer->getNativeType();
    glDrawElements(GL_TRIANGLES, count, type, 0);
+}
+
+void OGLRenderContext::drawTriangleFan(int start, int count)
+{
+   ASSERT_PTR(mpIndexBuffer);
+
+   glDrawElements(GL_TRIANGLE_FAN, count, mpIndexBuffer->getNativeType(), 0);
 }
 
 void OGLRenderContext::drawTriangleStrip(int start, int count)

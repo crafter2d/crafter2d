@@ -23,6 +23,7 @@
 #include <tinyxml.h>
 
 #include "core/defines.h"
+#include "core/math/xform.h"
 
 #include "box2dsimulator.h"
 
@@ -192,13 +193,10 @@ void Box2DBody::integrate(float timestep)
 
 void Box2DBody::finalize()
 {
-   if ( !mBody.IsAwake() )
-   {
-      setPosition(Box2DSimulator::b2ToVector(mBody.GetPosition()));
-      setAngle(RAD2DEG(mBody.GetAngle()));
+   XForm transform(Box2DSimulator::b2ToVector(mBody.GetPosition()), RAD2DEG(mBody.GetAngle()));
+   setTransform(transform);
 
-      firePositionChanged();
-   }
-
+   firePositionChanged();
+   
    Body::finalize();
 }

@@ -37,37 +37,6 @@ INLINE bool Actor::direction() const
    return dir;
 }
 
-/// \fn Actor::rotate(float degree)
-/// \brief Rotate the object by degree degrees.
-INLINE void Actor::rotate(float degree)
-{
-   setRotation(angle+degree); 
-}
-
-/// \fn Actor::setVelocity (const Vector& v)
-/// \brief Set the velocity of the object. The velocity should be measured in seconds,
-/// as the engine will interpolate it between the frames displayed.
-/// \param v the new velocity in distance/second
-INLINE void Actor::setVelocity (const Vector& v)
-{
-	mVel = v;
-   setDirty(ePositionDirty);
-}
-
-/// \fn void setRotation(const float deg)
-/// \brief Sets the new degree of rotation of this object.
-/// \param deg the new rotation degree
-INLINE void Actor::setRotation(const float deg) 
-{
-   angle = deg;
-   setDirty(ePositionDirty);
-
-   if (angle<0) 
-      angle+=360;
-   else if (angle>=360) 
-      angle -= 360;
-}
-
 /// \fn Actor::setVisible (bool vis = true)
 /// \brief Set the visibility status of this object.
 /// \param vis the visibility flag for this object
@@ -83,21 +52,6 @@ INLINE void Actor::setVisible(bool vis)
 INLINE bool Actor::isVisible() const
 {
 	return visible;
-}
-
-/// \fn Actor::getRotation() const
-/// \brief Returns the rotation in degrees of the object.
-INLINE float Actor::getRotation() const
-{
-   return angle;
-}
-
-/// \fn Actor::getVelocity ()
-/// \brief Returns the current velocity of the object
-/// \returns current velocity of the object
-INLINE const Vector& Actor::getVelocity() const
-{
-	return mVel;
 }
 
 /// \fn Actor::getSize()

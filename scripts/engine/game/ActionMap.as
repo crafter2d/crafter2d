@@ -19,7 +19,7 @@ class ActionMap
 	
 	public void onKeyDown(Actor object, int action)
 	{
-		Vector2D velocity = object.getVelocity();
+		Vector2D velocity = new Vector2D(); //object.getVelocity();
 		
 		if ( action == 3 ) // jump
 		{
@@ -61,7 +61,7 @@ class ActionMap
 	
 	public void onKeyUp(Actor object, int action)
 	{
-		Vector2D velocity = object.getVelocity();
+		Vector2D velocity = new Vector2D(); //object.getVelocity();
 		
 		if ( action == 1 || action == 2 )
 		{

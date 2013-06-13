@@ -20,7 +20,7 @@
 #include "server.h"
 
 // When testing with Visual Leak Detecter, uncomment the next line
-// #include <vld.h>
+#include <vld.h>
 
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
@@ -114,8 +114,11 @@ void Server::update(float delta)
          AggregateEvent event;
          dirtyset.collect(event);
 
-         int clientid = it->first;
-         conn.send(clientid, event);
+         if ( !event.isEmpty() )
+         {
+            int clientid = it->first;
+            conn.send(clientid, event);
+         }
       }
    }
 }

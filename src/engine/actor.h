@@ -54,20 +54,19 @@ public:
    virtual void      destroy();
    virtual Actor*    clone ();
    
-   void              rotate(float deg);
    void              flip();
    bool              direction() const;
 	
  // get/set interface
    void              setPosition(const Vector& vec);
-   void              setVelocity(const Vector& vec);
+   const Vector&     getPosition() const;
+
+   float             getRotation() const;
    void              setRotation(const float deg);
+   
    void              setSize(int width, int height);
    void              setVisible(bool vis = true);
-
-   const Vector&     getPosition() const;
-   const Vector&     getVelocity() const;
-   float             getRotation() const;
+   
    Vector            getSize() const;
    bool              isVisible() const;
 
@@ -101,11 +100,8 @@ protected:
 private:
 
    Controller*    mpController;
-   Vector         mPos;
-   Vector         mVel;
    int            mWidth, mHeight;
    float          halfX, halfY;
-   float          angle;
    bool           visible;
    bool           dir;
 };

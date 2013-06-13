@@ -53,10 +53,10 @@ const Vertex& TextureCoordinate::getTopRight() const
 
 const Vertex& TextureCoordinate::getBottomLeft() const
 {
-   return mCoordinates[BottomRight];
+   return mCoordinates[BottomLeft];
 }
 
 const Vertex& TextureCoordinate::getBottomRight() const
 {
-   return mCoordinates[BottomLeft];
+   return mCoordinates[BottomRight];
 }

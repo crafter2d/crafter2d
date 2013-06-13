@@ -7,7 +7,7 @@
 
 #include "viewport.h"
 
-class Matrix4;
+class XForm;
 
 namespace Graphics
 {
@@ -39,11 +39,12 @@ namespace Graphics
 
       virtual void setIdentityViewMatrix() = 0;
       virtual void setIdentityWorldMatrix() = 0;
-      virtual void setWorldMatrix(const Matrix4& matrix) = 0;
+      virtual void setWorldMatrix(const XForm& matrix) = 0;
 
       virtual void clear() = 0;
 
       virtual void drawTriangles(int start, int count) = 0;
+      virtual void drawTriangleFan(int start, int count) = 0;
       virtual void drawTriangleStrip(int start, int count) = 0;
 
    private:

@@ -26,7 +26,8 @@
 #include "wintimer.h"
 
 WinPlatform::WinPlatform():
-   Platform()
+   Platform(),
+   mTimer()
 {
 }
 
@@ -34,9 +35,9 @@ WinPlatform::~WinPlatform()
 {
 }
 
-Timer* WinPlatform::createTimer()
+Timer& WinPlatform::getTimer()
 {
-   return new WinTimer();
+   return mTimer;
 }
 
 void* WinPlatform::loadModule(const String& name)

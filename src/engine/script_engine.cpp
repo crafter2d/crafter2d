@@ -334,30 +334,6 @@ void Actor_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
    actor.setPosition(Vector(xpos, ypos));
 }
 
-void Actor_getVelocityX(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Actor, actor);
-
-   accessor.setResult(actor.getVelocity().x);
-}
-
-void Actor_getVelocityY(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Actor, actor);
-
-   accessor.setResult(actor.getVelocity().y);
-}
-
-void Actor_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Actor, actor);
-
-   float xvel = accessor.getReal(1);
-   float yvel = accessor.getReal(2);
-
-   actor.setVelocity(Vector(xvel, yvel));
-}
-
 void Actor_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
@@ -1197,9 +1173,6 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("getPositionX()", Actor_getPositionX);
    registrator.addFunction("getPositionY()", Actor_getPositionY);
    registrator.addFunction("setPosition(real, real)", Actor_setPosition);
-   registrator.addFunction("getVelocityX()", Actor_getVelocityX);
-   registrator.addFunction("getVelocityY()", Actor_getVelocityY);
-   registrator.addFunction("setVelocity(real, real)", Actor_setVelocity);
    registrator.addFunction("setName(string)", Actor_setName);
    registrator.addFunction("setAnimation(int)", Actor_setAnimation);
    registrator.addFunction("direction()", Actor_direction);

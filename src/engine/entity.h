@@ -90,6 +90,14 @@ public:
 
 protected:
 
+ // get/set
+   bool                 hasMesh() const;
+   const MeshComponent& getMesh() const;
+         MeshComponent& getMesh();
+
+ // messaging
+   void sendComponentMessage(ComponentMessage& message);
+
  // update & drawing
    virtual void doUpdate(float delta) = 0;
    virtual void doUpdateClient(float delta);

@@ -48,16 +48,6 @@ class Actor extends Entity implements Collidable
 		setPosition(pos.x, pos.y);
 	}
 	
-	public Vector2D getVelocity()
-	{
-		return new Vector2D(getVelocityX(), getVelocityY());
-	}
-	
-	public void setVelocity(Vector2D vel)
-	{
-		setVelocity(vel.x, vel.y);
-	}
-	
 	public int getFaceDirection()
 	{
 		return mDirection;
@@ -214,9 +204,6 @@ class Actor extends Entity implements Collidable
 	private native real getPositionX();
 	private native real getPositionY();
 	private native void setPosition(real x, real y);
-	private native real getVelocityX();
-	private native real getVelocityY();
-	private native void setVelocity(real x, real y);
 	
 	public native void setName(string name);
 	public native void setAnimation(int index);

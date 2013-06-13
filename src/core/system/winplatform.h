@@ -21,6 +21,7 @@
 #define WIN_PLATFORM_H_
 
 #include "platform.h"
+#include "wintimer.h"
 
 class WinPlatform : public Platform
 {
@@ -28,10 +29,14 @@ public:
    WinPlatform();
    virtual ~WinPlatform();
 
-   virtual Timer* createTimer();
+   virtual Timer& getTimer();
 
    virtual void* loadModule(const String& name);
    virtual void* getFunctionAddress(void* module, const String& name);
+
+private:
+
+   WinTimer mTimer;
 };
 
 #endif

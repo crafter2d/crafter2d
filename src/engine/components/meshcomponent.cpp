@@ -27,6 +27,7 @@ struct PTVertex
 
 MeshComponent::MeshComponent():
    Component(ComponentInterface::eMeshComponent),
+   mTransform(),
    mpAnimator(NULL),
    mEffect(),
    mEffectName(),
@@ -41,6 +42,20 @@ MeshComponent::~MeshComponent()
    delete mpAnimator;
 }
 
+// - Get/set
+
+const Vector& MeshComponent::getPosition() const
+{
+   return mTransform.getPosition();
+}
+
+float MeshComponent::getAngle() const
+{
+   return mTransform.getAngle();
+}
+
+// - Operations
+
 void MeshComponent::initialize(Device& device)
 {
    mHalfSize.width = mSize.width / 2.0f;
@@ -54,7 +69,7 @@ void MeshComponent::initialize(Device& device)
       short indices[] = { 0, 1, 2, 3 };
 
       mpIndexBuffer = device.createIndexBuffer();
-      mpIndexBuffer->create(IndexBuffer::eShort, 6, indices);
+      mpIndexBuffer->create(IndexBuffer::eShort, 4, indices);
 
       if ( mpAnimator != NULL )
       {
@@ -85,11 +100,8 @@ void MeshComponent::handleMessage(const ComponentMessage& message)
 	{
 	case ePositionChangedMsg:
 		{
-         PositionChangedInfo* pinfo = (PositionChangedInfo*) message.getData();
-
-         mTransform.setIdentity();
-         mTransform.translate(pinfo->position);
-         //mTransform.rotateZ(pinfo->angle);
+         PositionInfo* pinfo = (PositionInfo*) message.getData();
+         mTransform = pinfo->transform;
 		}
       break;
    case eUpdateMsg:
@@ -117,34 +129,34 @@ void MeshComponent::update(float delta)
 
 void MeshComponent::updateBuffers()
 {
-   TextureCoordinate texcoord = mpAnimator->getTextureCoordinate();
+   const TextureCoordinate& texcoord = mpAnimator->getTextureCoordinate();
 
    PTVertex* pdata = reinterpret_cast<PTVertex*>(mpVertexBuffer->lock(mVertexFormat));
 
    pdata[0].pos.set(-mHalfSize.width, -mHalfSize.height);
    pdata[0].tex = texcoord.getTopLeft();
 
-   pdata[1].pos.set(-mHalfSize.width, mHalfSize.height);
-   pdata[1].tex = texcoord.getBottomLeft();
+   pdata[1].pos.set(mHalfSize.width, -mHalfSize.height);
+   pdata[1].tex = texcoord.getTopRight();
 
    pdata[2].pos.set(mHalfSize.width, mHalfSize.height);
    pdata[2].tex = texcoord.getBottomRight();
 
-   pdata[3].pos.set(mHalfSize.width, -mHalfSize.height);
-   pdata[3].tex = texcoord.getTopRight();
+   pdata[3].pos.set(-mHalfSize.width, mHalfSize.height);
+   pdata[3].tex = texcoord.getBottomLeft();
 
    mpVertexBuffer->unlock();
 }
 
-void MeshComponent::render(RenderContext& context)
+void MeshComponent::render(RenderContext& context) const
 {
-   mEffect.enable(context);
-
    context.setWorldMatrix(mTransform);
    context.setVertexBuffer(*mpVertexBuffer);
    context.setIndexBuffer(*mpIndexBuffer);
+
+   mEffect.enable(context);
    
-   context.drawTriangleStrip(0, 4);
+   context.drawTriangleFan(0, 4);
 
    mEffect.disable(context);
 }

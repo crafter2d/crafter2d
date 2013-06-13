@@ -28,11 +28,11 @@ class Timer;
 class CORE_API Platform
 {
 public:
-      static Platform&  getInstance();
+   static Platform&  getInstance();
 
    virtual ~Platform();
 
-   virtual Timer* createTimer() = 0;
+   virtual Timer& getTimer() = 0;
 
    virtual void* loadModule(const String& name) = 0;
    virtual void* getFunctionAddress(void* module, const String& name) = 0;

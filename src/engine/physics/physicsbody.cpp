@@ -65,7 +65,8 @@ void PhysicsBody::load(const TiXmlElement& element)
 
 Vector PhysicsBody::localToWorld(const Vector& vector) const
 {
-   return mTransform.transform(vector);
+   //return mTransform.transform(vector);
+   return vector;
 }
 
 // ----------------------------------

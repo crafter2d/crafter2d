@@ -23,11 +23,12 @@ namespace Graphics
 
       virtual void setIdentityViewMatrix();
       virtual void setIdentityWorldMatrix();
-      virtual void setWorldMatrix(const Matrix4& matrix);
+      virtual void setWorldMatrix(const XForm& matrix);
 
       virtual void clear();
 
       virtual void drawTriangles(int start, int count);
+      virtual void drawTriangleFan(int start, int count);
       virtual void drawTriangleStrip(int start, int count);
 
    private:

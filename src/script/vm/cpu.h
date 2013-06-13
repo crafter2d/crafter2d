@@ -7,6 +7,7 @@
 
 #include "script/gc/garbagecollector.h"
 #include "script/script_base.h"
+#include "script/vm/virtualobject.h"
 
 namespace ByteCode
 {
@@ -16,7 +17,6 @@ namespace ByteCode
 
 class Variant;
 class VirtualArray;
-class VirtualObject;
 class VirtualContext;
 class VirtualClass;
 class VirtualException;
@@ -41,6 +41,7 @@ public:
  // instantiation
    VirtualObject* instantiate(VirtualContext& context, const VirtualClass& klass, int constructor);
    VirtualArray*  instantiateArray();
+   void           release(VirtualObject& object);
 
  // execution
    virtual Variant execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, Variant* pargs) = 0;

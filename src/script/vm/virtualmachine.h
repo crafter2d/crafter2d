@@ -26,7 +26,6 @@
 
 #include "script/script_base.h"
 
-#include "core/memory/memorypool.h"
 #include "core/defines.h"
 
 #include "script/compiler/compiler.h"
@@ -113,7 +112,6 @@ private:
    VirtualCompileCallback        mCallback;
    Compiler                      mCompiler;
    Objects                       mRootObjects;
-   MemoryPool<VirtualObject>     mObjectCache;
    GarbageCollector              mGC;
    NativeObjectMap               mNativeObjects;
    State                         mState;

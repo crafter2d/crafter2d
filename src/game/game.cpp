@@ -227,22 +227,22 @@ void Game::runFrame()
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
-   static float FREQ = 1.0f / 120.0f;
+   static float FREQ = 1.0f / 60.0f;
    static float cur = 0;
 
    cur += delta;
-   if ( cur >= FREQ )
+   //if ( cur >= FREQ )
    {
       static float start = 0;
       static unsigned int frame = 0;
 
-      mpServer->update(cur);
-      mpClient->update(cur);
-
-      mpClient->render(cur);
+      mpServer->update(delta);
+      
+      mpClient->update(delta);
+      mpClient->render(delta);
 
       frame++;
-      start += cur;
+      start += delta;
       if ( start >= 1.0f )
       {
          std::cout << "Fps: " << frame << std::endl;

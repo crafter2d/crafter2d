@@ -69,7 +69,7 @@ public:
    Box2DRopeJoint&     createRopeJoint(Box2DRopeJointDefinition& definition);
 
  // update
-   virtual void run(float timestep);
+   virtual void run(float delta);
 
 protected:
  // notifications

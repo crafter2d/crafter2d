@@ -246,7 +246,7 @@ VirtualArray* VirtualMachine::instantiateArray()
 
 void VirtualMachine::release(VirtualObject& object)
 {
-   mObjectCache.free(&object);
+   mpCPU->release(object);
 }
 
 // - Native interface

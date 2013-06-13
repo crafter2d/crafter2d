@@ -123,6 +123,11 @@ VirtualArray* CPU::instantiateArray()
    return parray;
 }
 
+void CPU::release(VirtualObject& object)
+{
+   mObjectCache.free(&object);
+}
+
 // - Exception handling
 
 void CPU::throwException(VirtualContext& context, const String& exceptionname, const String& reason)

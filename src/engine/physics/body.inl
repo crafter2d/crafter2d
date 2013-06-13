@@ -41,23 +41,34 @@ INLINE Actor& Body::getActor()
 
 INLINE const Vector& Body::getPosition() const
 {
-   return mPosition;
+   return mTransform.getPosition();
 }
 
 INLINE void Body::setPosition(const Vector& pos)
 {
-   mPosition = pos;
+   mTransform.setPosition(pos);
    notifyPositionChanged();
 }
 
 INLINE float Body::getAngle() const
 {
-   return mAngle;
+   return mTransform.getAngle();
 }
 
 INLINE void Body::setAngle(float angle)
 {
-   mAngle = angle;
+   mTransform.setAngle(angle);
+   notifyPositionChanged();
+}
+
+INLINE const XForm& Body::getTransform() const
+{
+   return mTransform;
+}
+
+INLINE void Body::setTransform(const XForm& transform)
+{
+   mTransform = transform;
    notifyPositionChanged();
 }
 

@@ -23,7 +23,7 @@ public:
 
    void setIdentity();
    void setArray(const float* pmatrix);
-   
+      
    Matrix4& translate(float x, float y, float z);
    Matrix4& translate(const Vector& position);
 

@@ -19,9 +19,17 @@
  ***************************************************************************/
 #include "xform.h"
 
+#include "matrix4.h"
+
 XForm::XForm():
-   mMatrix(),
-   mPosition()
+   mPosition(),
+   mAngle(0.0f)
+{
+}
+
+XForm::XForm(const Vector& position, float angle):
+   mPosition(position),
+   mAngle(angle)
 {
 }
 
@@ -29,13 +37,45 @@ XForm::~XForm()
 {
 }
 
+const XForm& XForm::operator=(const XForm& that)
+{
+   mPosition = that.mPosition;
+   mAngle = that.mAngle;
+   return *this;
+}
+
+// - Get/set
+
+const Vector& XForm::getPosition() const
+{
+   return mPosition;
+}
+
+void XForm::setPosition(const Vector& pos)
+{
+   mPosition = pos;
+}
+   
+float XForm::getAngle() const
+{
+   return mAngle;
+}
+
+void XForm::setAngle(float angle)
+{
+   mAngle = angle;
+}
+
 void XForm::set(const Vector& position, float angle)
 {
    mPosition = position;
-   mMatrix.setRotation(angle);
+   mAngle = angle;
 }
 
-Vector XForm::transform(const Vector& point) const
+// - Conversion
+   
+void XForm::asMatrix(Matrix4& mat) const
 {
-   return mPosition + mMatrix.transform(point);
+   mat.setIdentity();
+   mat.translate(mPosition);
 }
