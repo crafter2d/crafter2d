@@ -34,6 +34,8 @@
 #include "box2drevolutejoint.h"
 #include "box2dropejoint.h"
 
+const String Box2DSimulator::sClassName = "box2d.Box2DSimulator";
+
 // static
 Vector Box2DSimulator::b2ToVector(const b2Vec2& b2)
 {
@@ -75,6 +77,11 @@ Box2DSimulator::~Box2DSimulator()
 
 // - Query
 
+const String& Box2DSimulator::getClassName() const
+{
+   return sClassName;
+}
+
 bool Box2DSimulator::lineOfSight(const Body& from, const Body& to) const
 {
    Box2DRayCastCallback callback;
@@ -88,7 +95,7 @@ bool Box2DSimulator::lineOfSight(const Body& from, const Body& to) const
 
 void Box2DSimulator::cleanUp()
 {
-   for ( int index = 0; index < mJoints.size(); index++ )
+   for ( std::size_t index = 0; index < mJoints.size(); index++ )
    {
       Box2DJoint* pjoint = mJoints[index];
       delete pjoint;

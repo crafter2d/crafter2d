@@ -9,6 +9,7 @@
 #include "components.h"
 #include "componentmessage.h"
 #include "componentstructs.h"
+#include "querybodycomponentmessage.h"
 
 PhysicsComponent::PhysicsComponent():
    Component(ComponentInterface::ePhysisComponent),
@@ -32,9 +33,10 @@ void PhysicsComponent::registerComponent(Components& components)
 
 	components.subscribeMessageType(*this, ComponentInterface::ePositionMsg);
    components.subscribeMessageType(*this, ComponentInterface::eQueryPositionMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eQueryBodyMsg);
 }
 
-void PhysicsComponent::handleMessage(const ComponentMessage& message)
+void PhysicsComponent::handleMessage(ComponentMessage& message)
 {
    using namespace ComponentInterface;
 
@@ -50,6 +52,12 @@ void PhysicsComponent::handleMessage(const ComponentMessage& message)
          {
             PositionInfo* pinfo = reinterpret_cast<PositionInfo*>(message.getData());
             pinfo->transform = mpBody->getTransform();
+         }
+         break;
+      case eQueryBodyMsg:
+         {
+            QueryBodyComponentMessage& query = static_cast<QueryBodyComponentMessage&>(message);
+            query.setBody(*mpBody);
          }
          break;
    }

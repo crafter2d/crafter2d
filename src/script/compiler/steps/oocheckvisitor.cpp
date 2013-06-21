@@ -94,10 +94,12 @@ void OOCheckVisitor::visit(ASTFunction& ast)
    if ( ast.isConstructor() )
    {
       // abstract classes can not have native constructors
+      /*
       if ( ast.getModifiers().isNative() && mpClass->getModifiers().isAbstract() )
       {
          mContext.getLog().error("Abstract class " + mpClass->getFullName() + " can not have native constructors.");
       }
+      */
    }
    else
    {

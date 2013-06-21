@@ -21,6 +21,14 @@
 
 #include "matrix4.h"
 
+XForm XForm::sIdentity;
+
+// static 
+XForm& XForm::identity()
+{
+   return sIdentity;
+}
+
 XForm::XForm():
    mPosition(),
    mAngle(0.0f)
@@ -44,6 +52,15 @@ const XForm& XForm::operator=(const XForm& that)
    return *this;
 }
 
+XForm XForm::operator*(const XForm& that) const
+{
+   XForm result;
+
+   result.setPosition(mPosition.x + that.mPosition.x, mPosition.y + that.mPosition.y);
+
+   return result;
+}
+
 // - Get/set
 
 const Vector& XForm::getPosition() const
@@ -54,6 +71,11 @@ const Vector& XForm::getPosition() const
 void XForm::setPosition(const Vector& pos)
 {
    mPosition = pos;
+}
+
+void XForm::setPosition(float x, float y)
+{
+   mPosition.set(x, y);
 }
    
 float XForm::getAngle() const
@@ -66,6 +88,12 @@ void XForm::setAngle(float angle)
    mAngle = angle;
 }
 
+void XForm::setIdentity()
+{
+   mPosition.set(0, 0);
+   mAngle = 0.0f;
+}
+
 void XForm::set(const Vector& position, float angle)
 {
    mPosition = position;
@@ -76,6 +104,14 @@ void XForm::set(const Vector& position, float angle)
    
 void XForm::asMatrix(Matrix4& mat) const
 {
-   mat.setIdentity();
    mat.translate(mPosition);
+}
+
+void XForm::asOpenGL(float mat[16]) const
+{
+   // transpose matrix in there
+   mat[ 0] = 1; mat[ 4] = 0; mat[ 8] = 0; mat[12] = mPosition.x;
+   mat[ 1] = 0; mat[ 5] = 1; mat[ 9] = 0; mat[13] = mPosition.y;
+   mat[ 2] = 0; mat[ 6] = 0; mat[10] = 1; mat[14] = 0;
+   mat[ 3] = 0; mat[ 7] = 0; mat[11] = 0; mat[15] = 1;
 }

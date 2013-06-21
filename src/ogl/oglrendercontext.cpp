@@ -4,6 +4,7 @@
 #include <GL/GLee.h>
 #include <GL/glu.h>
 
+#include "core/graphics/effect.h"
 #include "core/graphics/viewport.h"
 #include "core/math/color.h"
 #include "core/math/xform.h"
@@ -16,15 +17,14 @@
 using namespace Graphics;
 
 OGLRenderContext::OGLRenderContext():
+   mpEffect(NULL),
    mpVertexBuffer(NULL),
    mpIndexBuffer(NULL)
 {
 }
 
-void OGLRenderContext::setViewport(const Viewport& viewport)
+void OGLRenderContext::onViewportChanged(const Viewport& viewport)
 {
-   RenderContext::setViewport(viewport);
-
    glViewport(viewport.getLeft(), viewport.getTop(), viewport.getWidth(), viewport.getHeight());
 }
 
@@ -40,6 +40,12 @@ void OGLRenderContext::setBlendState(const BlendState& state)
    {
       glDisable(GL_BLEND);
    }
+}
+
+void OGLRenderContext::setEffect(const Effect& effect)
+{
+   mpEffect = &effect;
+   mpEffect->enable(*this);
 }
 
 void OGLRenderContext::setVertexBuffer(const VertexBuffer& buffer)
@@ -67,25 +73,32 @@ void OGLRenderContext::setOrthoProjection()
    gluOrtho2D(0, width, height, 0);
 }
 
-void OGLRenderContext::setIdentityViewMatrix()
+void OGLRenderContext::setObjectMatrix(const XForm& matrix)
 {
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
+   mObjectMatrix = matrix;
+
+   updateViewMatrix();
 }
 
 void OGLRenderContext::setWorldMatrix(const XForm& matrix)
 {
-   float matogl[16];
-   Matrix4 mat;
-   matrix.asMatrix(mat);
-   mat.asOpenGL(matogl);
+   mWorldMatrix = matrix;
+
+   updateViewMatrix();
+}
+
+void OGLRenderContext::updateViewMatrix()
+{
+   XForm matrix = mWorldMatrix * mObjectMatrix;
+   matrix.asOpenGL(matogl);
 
    glMatrixMode(GL_MODELVIEW);
    glLoadMatrixf(matogl);
-}
 
-void OGLRenderContext::setIdentityWorldMatrix()
-{
+   if ( mpEffect != NULL )
+   {
+      mpEffect->updateStateMatrices();
+   }
 }
 
 void OGLRenderContext::clear()

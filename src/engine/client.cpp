@@ -26,6 +26,7 @@
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
+#include "core/math/xform.h"
 #include "core/input/keyevent.h"
 #include "core/input/mouseevent.h"
 #include "core/graphics/device.h"
@@ -164,7 +165,8 @@ void Client::update(float delta)
 void Client::render(float delta)
 {
    mpRenderContext->clear();
-   mpRenderContext->setIdentityViewMatrix();
+   mpRenderContext->setObjectMatrix(XForm::identity());
+   mpRenderContext->setWorldMatrix(XForm::identity());
 
    //glAlphaFunc (GL_GREATER, 0.1f);
    //glEnable (GL_ALPHA_TEST);
@@ -533,8 +535,7 @@ void Client::onWindowResized()
 
    mpRenderContext->setViewport(viewport);
    mpRenderContext->setOrthoProjection();
-   mpRenderContext->setIdentityViewMatrix();
-
+   
    if ( hasWorld() )
    {
       getWorld().onViewportChanged(viewport);

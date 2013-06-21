@@ -36,8 +36,8 @@ public:
    virtual void applyForce(Body& body) const;
 
 private:
-   Vector mVelocity;
-   Vector mImpulse;
+           Vector mVelocity;
+   mutable Vector mImpulse;
 };
 
 #endif

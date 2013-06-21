@@ -20,21 +20,12 @@
 #ifndef _ACTOR_H_
 #define _ACTOR_H_
 
-#include "core/math/vector.h"
-
-#include "effect.h"
 #include "entity.h"
-
-namespace Graphics
-{
-   class VertexBuffer;
-   class Texture;
-};
 
 class TiXmlDocument;
 class Controller;
 class NodeVisitor;
-class State;
+class Vector;
 
 /**
 @author Jeroen Broekhuizen
@@ -63,13 +54,10 @@ public:
 
    float             getRotation() const;
    void              setRotation(const float deg);
-   
-   void              setSize(int width, int height);
-   void              setVisible(bool vis = true);
-   
-   Vector            getSize() const;
+  
    bool              isVisible() const;
-
+   void              setVisible(bool vis = true);
+  
    int               getAnimation() const;
    void              setAnimation(int anim);
 
@@ -101,7 +89,6 @@ private:
 
    Controller*    mpController;
    int            mWidth, mHeight;
-   float          halfX, halfY;
    bool           visible;
    bool           dir;
 };

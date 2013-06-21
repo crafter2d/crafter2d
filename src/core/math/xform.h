@@ -29,25 +29,34 @@ class Matrix4;
 class CORE_API XForm
 {
 public:
+   static XForm& identity();
+
    XForm();
    XForm(const Vector& position, float angle);
    ~XForm();
 
    const XForm& operator=(const XForm& that);
 
+   XForm operator*(const XForm& that) const;
+
  // get/set
    const Vector& getPosition() const;
    void          setPosition(const Vector& pos);
+   void          setPosition(float x, float y);
 
    float         getAngle() const;
    void          setAngle(float angle);
    
+   void setIdentity();
    void set(const Vector& position, float angle);
 
  // conversion
    void asMatrix(Matrix4& mat) const;
+   void asOpenGL(float mat[16]) const;
 
 private:
+   static XForm sIdentity;
+
    Vector    mPosition;
    float     mAngle;
 };

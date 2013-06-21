@@ -43,8 +43,6 @@ Actor::Actor():
    mpController(NULL),
    mWidth(0),
    mHeight(0),
-   halfX(.0f),
-   halfY(.0f),
    visible(true),
    dir(true)
 {
@@ -165,16 +163,6 @@ void Actor::setRotation(const float deg)
    sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
 
    setDirty(ePositionDirty);
-}
-
-void Actor::setSize(int width, int height)
-{
-   mWidth = width;
-   mHeight = height;
-
-   // set the half size as well
-   halfX = width * 0.5f;
-   halfY = height * 0.5f;
 }
 
 int Actor::getAnimation() const

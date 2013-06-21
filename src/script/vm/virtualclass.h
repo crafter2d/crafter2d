@@ -41,7 +41,7 @@ public:
          VirtualFunctionTable& getVirtualFunctionTable();
 
    const ASTClass& getDefinition() const;
-   void            setDefinition(ASTClass* pdefinition);
+   void            setDefinition(const ASTClass& definition);
 
    int  getVariableCount() const;
    void setVariableCount(int count);
@@ -81,7 +81,7 @@ private:
    String                  mName;
    String                  mBaseName;
    const VirtualClass*     mpBaseClass;
-   ASTClass*               mpDefinition;
+   const ASTClass*         mpDefinition;
    VirtualFunctionTable    mVTable;
    VirtualObject*          mpClassObject;
    Variant*                mpStatics;

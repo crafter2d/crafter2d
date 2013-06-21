@@ -22,6 +22,7 @@
 
 #include "core/math/vector.h"
 #include "core/math/xform.h"
+#include "core/script/iscriptable.h"
 
 #include "collisionshapes.h"
 #include "forcegenerators.h"
@@ -33,7 +34,7 @@ class ForceGenerator;
 class Simulator;
 class Actor;
 
-class Body
+class Body : public IScriptable
 {
 public:
    static bool hasInfo(const TiXmlElement& element);

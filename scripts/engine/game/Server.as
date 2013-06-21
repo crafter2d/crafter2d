@@ -2,6 +2,7 @@
 package engine.game;
 
 use system.*;
+use engine.collections.*;
 use engine.messages.*;
 use engine.net.*;
 
@@ -41,6 +42,19 @@ abstract class Server extends Process
 		message.write(mStream);
 		
 		sendScriptEvent(clientid, mStream);
+	}
+	
+	public void broadcastMessage(Message message)
+	{
+		mStream.clear();
+		mStream.writeInt(message.getId());
+		message.write(mStream);
+		
+		ArrayList<Player> players = getPlayers();
+		foreach ( Player player : players )
+		{
+			sendScriptEvent(player.getClientId(), mStream);
+		}
 	}
 	
 	public native boolean listen(int port);

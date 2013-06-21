@@ -22,18 +22,17 @@
 #include <tinyxml.h>
 
 #include "core/log/log.h"
+#include "core/resource/resourcemanager.h"
 #include "core/smartptr/autoptr.h"
 
 #include "engine/physics/body.h"
 #include "engine/physics/simulator.h"
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
-#include "engine/resource/resourcemanager.h"
 #include "engine/animator.h"
 #include "engine/actor.h"
 #include "engine/components/physicscomponent.h"
 #include "engine/components/meshcomponent.h"
-
 #include "engine/process.h"
 #include "engine/script/scriptmanager.h"
 

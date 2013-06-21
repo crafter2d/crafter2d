@@ -29,8 +29,8 @@ MeshComponent::MeshComponent():
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
    mpAnimator(NULL),
-   mEffect(),
    mEffectName(),
+   mEffect(),
    mpVertexBuffer(NULL),
    mVertexFormat(VertexBuffer::eXY | VertexBuffer::eTex0),
    mSize()
@@ -92,7 +92,7 @@ void MeshComponent::registerComponent(Components& components)
    components.subscribeMessageType(*this, ComponentInterface::eRenderMsg);
 }
 
-void MeshComponent::handleMessage(const ComponentMessage& message)
+void MeshComponent::handleMessage(ComponentMessage& message)
 {
 	using namespace ComponentInterface;
 
@@ -150,13 +150,10 @@ void MeshComponent::updateBuffers()
 
 void MeshComponent::render(RenderContext& context) const
 {
-   context.setWorldMatrix(mTransform);
+   context.setObjectMatrix(mTransform);
+   context.setEffect(mEffect);
    context.setVertexBuffer(*mpVertexBuffer);
    context.setIndexBuffer(*mpIndexBuffer);
 
-   mEffect.enable(context);
-   
    context.drawTriangleFan(0, 4);
-
-   mEffect.disable(context);
 }

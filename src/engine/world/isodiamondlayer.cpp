@@ -22,6 +22,7 @@
 
 #include "core/math/point.h"
 #include "core/graphics/vertexbuffer.h"
+#include "core/graphics/texture.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 

@@ -31,10 +31,10 @@
 #include "core/graphics/device.h"
 #include "core/graphics/codepath.h"
 #include "core/graphics/rendercontext.h"
+#include "core/resource/resourcemanager.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
-#include "engine/resource/resourcemanager.h"
 
 #include "process.h"
 #include "nodevisitor.h"

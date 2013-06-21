@@ -28,6 +28,8 @@
 #include "collisionplane.h"
 #include "physicsbody.h"
 
+String PhysicsSimulator::sClassName = "engine.game.Simulator";
+
 PhysicsSimulator::PhysicsSimulator():
    Simulator(),
    mWorldShapes()
@@ -58,6 +60,11 @@ void PhysicsSimulator::worldChanged()
 }
 
 // query
+
+const String& PhysicsSimulator::getClassName() const
+{
+   return sClassName;
+}
 
 bool PhysicsSimulator::lineOfSight(const Body& from, const Body& to) const
 {

@@ -26,6 +26,7 @@
 #include <functional>
 #include <Box2D.h>
 
+#include "core/graphics/rendercontext.h"
 #include "core/log/log.h"
 #include "core/defines.h"
 
@@ -221,26 +222,23 @@ void World::updateClient(float delta)
    }
 }
 
+#include "core/math/xform.h"
+
 /// \fn World::draw(Graphics::RenderContext& context)
 /// \brief Draws the world on screen
 void World::draw(Graphics::RenderContext& context) const
 {
+   context.setObjectMatrix(XForm::identity());
+
    // render the layers
    for ( int i = 0; i < layers.size(); i++ )
    {
-      // enable the effect
-      const Effect& effect = layers[i]->getEffect();
-      effect.enable(context);
-
-      // now render the layer
-      layers[i]->draw(context);
-
-      // quit the effect
-      effect.disable(context);
+      Layer& layer = *layers[i];
+      layer.draw(context);
    }
 
    // scroll the viewpoint to the right position
-   Vector scroll = layers[getObjectLayer()]->getScroll ();
+   //Vector scroll = layers[getObjectLayer()]->getScroll ();
    //glTranslatef(-scroll.x, -scroll.y, 0);
 
    EntityMap::const_iterator it = mEntities.begin();
@@ -505,7 +503,7 @@ void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bo
    ASSERT_PTR(mpScript);
    Variant args[4];
    args[0].setObject(mpScript->resolve(&object));
-   args[1].setObject(mpScript->resolve(&bound));
+   args[1].setObject(mpScript->instantiate("engine.game.Bound", &bound));
    args[2].setInt(side);
    args[3].setBool(begin);
    mpScript->run("onObjectCollision", 4, args);

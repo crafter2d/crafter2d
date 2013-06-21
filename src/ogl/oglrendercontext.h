@@ -4,6 +4,8 @@
 
 #include "core/graphics/rendercontext.h"
 
+#include "core/math/xform.h"
+
 namespace Graphics
 {
    class OGLIndexBuffer;
@@ -14,15 +16,14 @@ namespace Graphics
    public:
       OGLRenderContext();
 
-      virtual void setViewport(const Viewport& viewport);
       virtual void setBlendState(const BlendState& state);
+      virtual void setEffect(const Effect& effect);
       virtual void setVertexBuffer(const VertexBuffer& buffer);
       virtual void setIndexBuffer(const IndexBuffer& buffer);
 
       virtual void setOrthoProjection();
-
-      virtual void setIdentityViewMatrix();
-      virtual void setIdentityWorldMatrix();
+      
+      virtual void setObjectMatrix(const XForm& matrix);
       virtual void setWorldMatrix(const XForm& matrix);
 
       virtual void clear();
@@ -31,9 +32,21 @@ namespace Graphics
       virtual void drawTriangleFan(int start, int count);
       virtual void drawTriangleStrip(int start, int count);
 
+   protected:
+    // notifications
+      virtual void onViewportChanged(const Viewport& viewport);
+
    private:
+      void updateViewMatrix();
+
+      const Effect*          mpEffect;
       const OGLVertexBuffer* mpVertexBuffer;
       const OGLIndexBuffer*  mpIndexBuffer;
+
+      XForm mObjectMatrix;
+      XForm mWorldMatrix;
+
+      float matogl[16];
    };
 
 };

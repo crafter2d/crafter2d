@@ -37,13 +37,11 @@ public:
 
  // query
    int getSide(const b2Fixture& sensor) const;
+   virtual const String& getClassName() const;
 
  // loading
    virtual void load(const TiXmlElement& element);
-
- // operations
-   void generateSensors();
-
+   
  // forces
    virtual void applyForce(const Vector& force);
    virtual void applyForce(const Vector& force, const Vector& pos);
@@ -59,6 +57,7 @@ protected:
    virtual void notifyPositionChanged();
 
 private:
+   void       createSensors();
    b2Fixture* createSensor(float halfx, float halfy, const b2Vec2& center);
 
    b2Body& mBody;
@@ -68,6 +67,8 @@ private:
    b2Fixture* mpBottomSensor;
    b2Fixture* mpLeftSensor;
    b2Fixture* mpRightSensor;
+
+   static String sClassName;
 };
 
 #endif

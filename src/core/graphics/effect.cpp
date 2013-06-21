@@ -22,18 +22,19 @@
 #  include "effect.inl"
 #endif
 
+#include <tinyxml.h>
+
 #include "core/vfs/file.h"
 #include "core/log/log.h"
-#include "core/graphics/codepath.h"
-#include "core/graphics/device.h"
-#include "core/graphics/blendstatedesc.h"
-#include "core/graphics/rendercontext.h"
 
-#include "engine/resource/resourcemanager.h"
+#include "codepath.h"
+#include "device.h"
+#include "blendstatedesc.h"
+#include "rendercontext.h"
+#include "texture.h"
 
-#include "tinyxml.h"
-
-using namespace Graphics;
+namespace Graphics
+{
 
 /*!
     \fn Effect::Effect(void)
@@ -306,7 +307,7 @@ void Effect::enable(RenderContext& context) const
    }
 
    mpCodePath->enable();
-   mpCodePath->setStateUniform(mModelViewProjectArg);
+   mpCodePath->setUniformStateMatrix(mModelViewProjectArg);
 
    for ( Stages::size_type s = 0; s < stages.size(); ++s )
    {
@@ -337,3 +338,10 @@ void Effect::disable(RenderContext& context) const
       stage.tex->disable();
    }
 }
+
+void Effect::updateStateMatrices() const
+{
+   mpCodePath->setUniformStateMatrix(mModelViewProjectArg);
+}
+
+} // end namespace

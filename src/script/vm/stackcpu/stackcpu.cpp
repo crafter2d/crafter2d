@@ -166,7 +166,10 @@ void StackCPU::execute(VirtualContext& context)
                FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
 
                const Variant& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
-               ASSERT(object.isObject());
+               if ( object.isEmpty() )
+               {
+                  throwException(context, "system.NullPointerException", "");
+               }
 
                const VirtualClass& theclass = object.asObject().getClass();
                const int* ptable = theclass.getInterfaceLookupTable();
@@ -859,6 +862,11 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
    frame.pentry = & entry;
    frame.sp     = mStack.size();
    frame.retaddress = mIP;
+
+   if ( entry.mName == "addForceGenerator" )
+   {
+      int aap = 6;
+   }
 
    frame.locals.resize(entry.mArguments + entry.mLocals);
    for ( int index = entry.mArguments - 1; index >= 0; --index )

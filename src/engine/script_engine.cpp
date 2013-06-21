@@ -18,7 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/math/vector.h"
+#include "core/graphics/effect.h"
 #include "core/graphics/font.h"
+#include "core/graphics/texture.h"
+#include "core/resource/resourcemanager.h"
 #include "core/streams/datastream.h"
 #include "core/streams/bufferedstream.h"
 #include "core/vfs/file.h"
@@ -42,13 +45,12 @@
 
 #include "ui/graphics.h"
 
-#include "resource/resourcemanager.h"
-
 #include "window/gamewindowfactory.h"
 
 #include "world/layer.h"
 #include "world/world.h"
 #include "engine/content/contentmanager.h"
+#include "engine/components/querybodycomponentmessage.h"
 
 #include "actionmap.h"
 #include "entity.h"
@@ -65,8 +67,10 @@
 #define RETURN(type, pointer)                      accessor.setResult(*machine.instantiateNative(#type, pointer, false))
 #define RETURN_OWNED(type, pointer)                accessor.setResult(*machine.instantiateNative(#type, pointer, true))
 
-#define RETURN_CLASS(class, type, pointer)         accessor.setResult(*machine.instantiateNative(class, pointer, false))
-#define RETURN_CLASS_OWNED(class, type, pointer)   accessor.setResult(*machine.instantiateNative(class, pointer, true))
+#define RETURN_CLASS(class, pointer)               accessor.setResult(*machine.instantiateNative(class, pointer, false))
+#define RETURN_CLASS_OWNED(class, pointer)         accessor.setResult(*machine.instantiateNative(class, pointer, true))
+
+#define RETURN_CLASS_I(scriptable)                 accessor.setResult(machine.instantiateNative(scriptable, false));
 
 void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -81,7 +85,7 @@ void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& ac
 {
    GET_THIS(Process, process);
 
-   RETURN_CLASS("engine.game.ContentManager", ContentManager, &process.getContentManager());
+   RETURN_CLASS("engine.game.ContentManager", &process.getContentManager());
 }
 
 void Process_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -148,7 +152,7 @@ void Client_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& acce
 {
    GET_THIS(Client, client);
 
-   RETURN_CLASS("system.GameWindowFactory", GameWindowFactory, &client.getWindowFactory());
+   RETURN_CLASS("system.GameWindowFactory", &client.getWindowFactory());
 }
 
 void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -165,7 +169,7 @@ void Client_getPlayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
    GET_THIS(Client, client);
 
    Player& player = client.getPlayer();
-   RETURN_CLASS("engine.game.Player", Player, &player);
+   RETURN_CLASS("engine.game.Player", &player);
 }
 
 void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -193,7 +197,7 @@ void Client_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
    const String& name = accessor.getString(1);
 
    TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(client.getDevice(), name));
-   RETURN_CLASS_OWNED("engine.core.Texture", TexturePtr, ptexture);
+   RETURN_CLASS_OWNED("engine.core.Texture", ptexture);
 }
 
 void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -203,7 +207,7 @@ void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& ac
    const String& filename = accessor.getString(1);
 
    Entity* presult = contentmanager.loadEntity(filename);
-   RETURN_CLASS_OWNED(presult->getClassName(), Entity, presult);
+   RETURN_CLASS_OWNED(presult->getClassName(), presult);
 }
 
 void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -213,14 +217,14 @@ void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor
    const String& filename = accessor.getString(1);
 
    World* presult = contentmanager.loadWorld(filename);
-   RETURN_CLASS_OWNED("engine.game.World", World, presult);
+   RETURN_CLASS_OWNED("engine.game.World", presult);
 }
 
 void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(GameWindowFactory, factory);
 
-   RETURN_CLASS_OWNED("system.GameWindow", GameWindow, factory.createWindow());
+   RETURN_CLASS_OWNED("system.GameWindow", factory.createWindow());
 }
 
 void GameWindow_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -290,11 +294,34 @@ void NetStream_clear(VirtualMachine& machine, VirtualStackAccessor& accessor)
    stream.clear();
 }
 
+void QueryBodyComponentMessage_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObject& thisobject = accessor.getThis();
+
+   QueryBodyComponentMessage* pmsg = new QueryBodyComponentMessage();
+   machine.registerNative(thisobject, pmsg);
+}
+
+void QueryBodyComponentMessage_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(QueryBodyComponentMessage, msg);
+
+   RETURN_CLASS_I(msg.getBody());
+}
+
 void Entity_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Entity, entity);
 
    accessor.setResult((int)entity.getId());
+}
+
+void Entity_sendComponentMessage(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Entity, entity);
+
+   ComponentMessage* pmsg = (ComponentMessage*) accessor.getObject(1).getNativeObject();
+   entity.sendComponentMessage(*pmsg);
 }
 
 void Actor_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -467,7 +494,7 @@ void World_getFollowActor(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(World, world);
 
-   RETURN_CLASS("engine.game.Actor", Actor, world.getFollowObject());
+   RETURN_CLASS("engine.game.Actor", world.getFollowObject());
 }
 
 void World_setFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -483,7 +510,7 @@ void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(World, world);
 
-   RETURN_CLASS("box2d.Box2DSimulator", Box2DSimulator, &(Box2DSimulator&)world.getSimulator());
+   RETURN_CLASS_I(world.getSimulator());
 }
 
 void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -514,7 +541,7 @@ void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
    int controllerid = accessor.getInt(1);
    Entity* pentity = world.findEntity(Id(controllerid));
 
-   RETURN_CLASS("engine.game.Actor", Actor, static_cast<Actor*>(pentity));
+   RETURN_CLASS("engine.game.Actor", static_cast<Actor*>(pentity));
 }
 
 void World_getLayerCount(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -530,14 +557,14 @@ void World_getLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    int index = accessor.getInt(1);
 
-   RETURN_CLASS("engine.game.Layer", Layer, world.getLayer(index));
+   RETURN_CLASS("engine.game.Layer", world.getLayer(index));
 }
 
 void Layer_getEffect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Layer, layer);
 
-   RETURN_CLASS("engine.game.Effect", Effect, const_cast<Effect*>(&layer.getEffect()));
+   RETURN_CLASS("engine.game.Effect", const_cast<Graphics::Effect*>(&layer.getEffect()));
 }
 
 void Layer_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -577,12 +604,12 @@ void Layer_setTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void Effect_resolveTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(Effect, effect);
+   GET_THIS(Graphics::Effect, effect);
 
    const String& name = accessor.getString(1);
 
    TexturePtr* ptexture = new TexturePtr(effect.resolveTexture(name));
-   RETURN_CLASS_OWNED("engine.core.Texture", TexturePtr, ptexture);
+   RETURN_CLASS_OWNED("engine.core.Texture", ptexture);
 }
 
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -596,6 +623,17 @@ void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& acc
 void InputForceGenerator_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    DESTRUCT_THIS(InputForceGenerator);
+}
+
+void InputForceGenerator_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(InputForceGenerator, generator);
+
+   VirtualObject* pobject = machine.instantiate("engine.core.Vector2D");
+   pobject->setMember(0, Variant(generator.getVelocity().x));
+   pobject->setMember(1, Variant(generator.getVelocity().y));
+   
+   accessor.setResult(Variant(pobject));
 }
 
 void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -691,16 +729,9 @@ void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& 
 {
    GET_THIS(Box2DBody, body);
 
-   InputForceGenerator* pgenerator = (InputForceGenerator*) accessor.getObject(1).useNativeObject();
+   ForceGenerator* pgenerator = (ForceGenerator*) accessor.getObject(1).useNativeObject();
 
    body.addForceGenerator(pgenerator);
-}
-
-void Box2DBody_generateSensors(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DBody, body);
-
-   body.generateSensors();
 }
 
 void Box2DRopeJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -720,7 +751,7 @@ void Box2DRopeJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAcces
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   RETURN_CLASS("box2d.Box2DBody", Box2DBody, joint.pleft);
+   RETURN_CLASS("box2d.Box2DBody", joint.pleft);
 }
 
 void Box2DRopeJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -736,7 +767,7 @@ void Box2DRopeJointDefinition_getRight(VirtualMachine& machine, VirtualStackAcce
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   RETURN_CLASS("box2d.Box2DBody", Box2DBody, joint.pright);
+   RETURN_CLASS("box2d.Box2DBody", joint.pright);
 }
 
 void Box2DRopeJointDefinition_setRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -813,7 +844,7 @@ void ActionMap_getProcess(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(ActionMap, map);
    
-   RETURN_CLASS("engine.Process", Process, &map.getProcess());
+   RETURN_CLASS("engine.Process", &map.getProcess());
 }
 
 void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1063,7 +1094,7 @@ void Texture_getSourceHeight(VirtualMachine& machine, VirtualStackAccessor& acce
 
 void FileSystem_getInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   RETURN_CLASS("engine.io.FileSystem", FileSystem, &FileSystem::getInstance());
+   RETURN_CLASS("engine.io.FileSystem", &FileSystem::getInstance());
 }
 
 void FileSystem_open(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1076,7 +1107,7 @@ void FileSystem_open(VirtualMachine& machine, VirtualStackAccessor& accessor)
    File* pfile = fs.open(name, modus);
    if ( pfile != NULL )
    {
-      RETURN_CLASS_OWNED("engine.io.File", File, pfile);
+      RETURN_CLASS_OWNED("engine.io.File", pfile);
    }
    else
    {
@@ -1166,6 +1197,11 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addClass("engine.game.Entity");
    registrator.addFunction("getId()", Entity_getId);
+   registrator.addFunction("sendComponentMessage(engine.game.ComponentMessage)", Entity_sendComponentMessage);
+
+   registrator.addClass("engine.game.QueryBodyComponentMessage");
+   registrator.addFunction("QueryBodyComponentMessage()", QueryBodyComponentMessage_init);
+   registrator.addFunction("getBody()", QueryBodyComponentMessage_getBody);
 
    registrator.addClass("engine.game.Actor");
    registrator.addFunction("Actor()", Actor_init);
@@ -1215,6 +1251,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addClass("engine.game.InputForceGenerator");
    registrator.addFunction("InputForceGenerator()", InputForceGenerator_init);
    registrator.addFunction("finalize()", InputForceGenerator_destruct);
+   registrator.addFunction("getVelocity()", InputForceGenerator_getVelocity);
    registrator.addFunction("setVelocity(real, real)", InputForceGenerator_setVelocity);
    registrator.addFunction("setImpulse(real, real)", InputForceGenerator_setImpulse);
 
@@ -1233,8 +1270,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction("createRopeJoint(box2d.Box2DRopeJointDefinition)", Box2DSimulator_createRopeJoint);
 
    registrator.addClass("box2d.Box2DBody");
-   registrator.addFunction("addForceGenerator(engine.game.InputForceGenerator)", Box2DBody_addForceGenerator);
-   registrator.addFunction("generateSensors()", Box2DBody_generateSensors);
+   registrator.addFunction("addForceGenerator(engine.game.ForceGenerator)", Box2DBody_addForceGenerator);
 
    registrator.addClass("box2d.Box2DRopeJointDefinition");
    registrator.addFunction("Box2DRopeJointDefinition", Box2DRopeJointDefinition_init);

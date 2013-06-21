@@ -22,6 +22,8 @@
 #  include "physicsbody.inl"
 #endif
 
+String PhysicsBody::sClassName = "box2d.Box2DBody";
+
 #include "physicsxml.h"
 #include "collisionshape.h"
 
@@ -46,6 +48,13 @@ PhysicsBody::PhysicsBody(Simulator& simulator, Actor& actor):
 
 PhysicsBody::~PhysicsBody()
 {
+}
+
+// - Query
+
+const String& PhysicsBody::getClassName() const
+{
+   return sClassName;
 }
 
 // ----------------------------------

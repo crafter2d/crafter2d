@@ -12,6 +12,7 @@ class XForm;
 namespace Graphics
 {
    class BlendState;
+   class Effect;
    class IndexBuffer;
    class VertexBuffer;
 
@@ -24,28 +25,33 @@ namespace Graphics
       const Color& getClearColor() const;
       void         setClearColor(const Color& color);
 
-      const Viewport getViewport() const;
+      const Viewport& getViewport() const;
+      void            setViewport(const Viewport& viewport);
 
     // operations
 
-      /// Set the current viewport dimensions
-      virtual void setViewport(const Viewport& viewport) = 0;
       virtual void setBlendState(const BlendState& state) = 0;
+      virtual void setEffect(const Effect& effect) = 0;
       virtual void setVertexBuffer(const VertexBuffer& buffer) = 0;
       virtual void setIndexBuffer(const IndexBuffer& buffer) = 0;
 
       /// Sets the projection matrix to orthographic using the current viewport
       virtual void setOrthoProjection() = 0;
 
-      virtual void setIdentityViewMatrix() = 0;
-      virtual void setIdentityWorldMatrix() = 0;
+     // Matrix operations
+      virtual void setObjectMatrix(const XForm& matrix) = 0;
       virtual void setWorldMatrix(const XForm& matrix) = 0;
 
       virtual void clear() = 0;
 
+      // drawing instructions
       virtual void drawTriangles(int start, int count) = 0;
       virtual void drawTriangleFan(int start, int count) = 0;
       virtual void drawTriangleStrip(int start, int count) = 0;
+
+   protected:
+    // notifications
+      virtual void onViewportChanged(const Viewport& viewport) = 0;
 
    private:
 

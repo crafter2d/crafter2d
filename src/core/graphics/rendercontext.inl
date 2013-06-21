@@ -14,7 +14,7 @@ inline void RenderContext::setClearColor(const Color& color)
    mClearColor = color;
 }
 
-inline const Viewport RenderContext::getViewport() const
+inline const Viewport& RenderContext::getViewport() const
 {
    return mViewport;
 }

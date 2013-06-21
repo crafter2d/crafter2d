@@ -1073,13 +1073,17 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
       }
       else if ( !type.getTypeArguments().empty() )
       {
-         // here we should like the T of the original class with the T of the returning type
+         mCurrentType = pfunction->getType();
+
+         // if we get a generic type argument, replace it with the actual variable.
          const ASTType& arg = type.getTypeArguments()[0];
-         const ASTTypeVariable* pvariable = aclass.getTypeVariables().find(arg.getObjectName());
-         if ( pvariable != NULL )
+         if ( arg.isGeneric() )
          {
-            mCurrentType = pfunction->getType();
-            mCurrentType.replaceArgument(before.getTypeArguments()[pvariable->getIndex()]);
+            const ASTTypeVariable* pvariable = aclass.getTypeVariables().find(arg.getObjectName());
+            if ( pvariable != NULL )
+            {
+               mCurrentType.replaceArgument(before.getTypeArguments()[pvariable->getIndex()]);
+            }
          }
       }
       else

@@ -54,13 +54,6 @@ INLINE bool Actor::isVisible() const
 	return visible;
 }
 
-/// \fn Actor::getSize()
-/// \brief Returns the size of this object.
-INLINE Vector Actor::getSize() const
-{
-   return Vector(static_cast<float>(mWidth), static_cast<float>(mHeight)); 
-}
-
 INLINE Controller& Actor::getController()
 {
    return *mpController;

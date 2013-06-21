@@ -45,6 +45,7 @@ namespace ByteCode
 class ClassRegistry;
 class CPU;
 class String;
+class IScriptable;
 class Variant;
 class VirtualArrayException;
 class VirtualInstruction;
@@ -76,6 +77,7 @@ public:
 
  // object instantation
    VirtualObject*    instantiate(const String& classname, int constructor = -1);
+   VirtualObject&    instantiateNative(IScriptable& scriptable, bool owned);
    VirtualObject*    instantiateNative(const String& classname, void* pobject, bool owned = true);
    VirtualArray*     instantiateArray();
    void              release(VirtualObject& object);

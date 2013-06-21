@@ -28,6 +28,7 @@ class b2World;
 struct b2Vec2;
 
 class Object;
+class String;
 class Vector;
 class Matrix4;
 
@@ -57,6 +58,7 @@ public:
    virtual ~Box2DSimulator();
 
  // query
+   virtual const String& getClassName() const;
    virtual bool lineOfSight(const Body& from, const Body& to) const;
 
  // maintenance
@@ -85,6 +87,8 @@ private:
    Box2DContactListener mContactListener;
    Joints               mJoints;
    float                mDelta;
+
+   static const String  sClassName;
 };
 
 #endif

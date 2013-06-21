@@ -23,6 +23,7 @@
 //#include <vld.h>
 #include <iostream>
 
+#include "core/script/iscriptable.h"
 #include "core/defines.h"
 
 #include "script/compiler/compiler.h"
@@ -185,6 +186,11 @@ VirtualObject* VirtualMachine::instantiate(const String& classname, int construc
    return presult;
 }
 
+VirtualObject& VirtualMachine::instantiateNative(IScriptable& scriptable, bool owned)
+{
+   return *instantiateNative(scriptable.getClassName(), (void*)&scriptable, owned);
+}
+
 VirtualObject* VirtualMachine::instantiateNative(const String& classname, void* pobject, bool owned)
 {
    ASSERT_PTR(pobject);
@@ -198,6 +204,11 @@ VirtualObject* VirtualMachine::instantiateNative(const String& classname, void* 
    else
    {
       presult = instantiate(classname);
+      if ( presult == NULL )
+      {
+         return NULL;
+      }
+
       mNativeObjects.insert(std::pair<void*, VirtualObject*>(pobject, presult));
    }
    

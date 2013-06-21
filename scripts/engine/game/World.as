@@ -67,7 +67,7 @@ class World
 	public native void setFollowActor(Actor actor);
 	public native void setFollowBorders(int left, int right, int top, int bottom);
 	public native void setFollowBorderWidth(int width);
-	public native Box2DSimulator getSimulator();
+	public native Simulator getSimulator();
 	
 	private native int getLayerCount();
 	private native Layer getLayer(int index);

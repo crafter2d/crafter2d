@@ -21,8 +21,10 @@
 #include "topdownlayer.h"
 
 #include "core/math/point.h"
+#include "core/math/xform.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/indexbuffer.h"
+#include "core/graphics/texture.h"
 #include "core/graphics/vertexbuffer.h"
 #include "core/graphics/viewport.h"
 
@@ -178,9 +180,15 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
       dirty = false;
 	}
 
+   XForm matrix;
+   matrix.setPosition(Vector(-xscroll, -yscroll));
+
    // draw layer at onces
+   context.setWorldMatrix(matrix);
+   context.setEffect(getEffect());
    context.setVertexBuffer(*vb);
    context.setIndexBuffer(*ib);
+
 	context.drawTriangles(0, verts_to_render);
 }
 

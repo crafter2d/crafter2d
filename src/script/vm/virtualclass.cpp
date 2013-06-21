@@ -27,7 +27,6 @@ VirtualClass::VirtualClass():
 
 VirtualClass::~VirtualClass()
 {
-   setDefinition(NULL);
    setInterfaceLookupTable(NULL);
 
    delete[] mpStatics;
@@ -115,10 +114,9 @@ const ASTClass& VirtualClass::getDefinition() const
    return *mpDefinition;
 }
 
-void VirtualClass::setDefinition(ASTClass* pdefinition)
+void VirtualClass::setDefinition(const ASTClass& definition)
 {
-   delete mpDefinition;
-   mpDefinition = pdefinition;
+   mpDefinition = &definition;
 }
 
 VirtualObject& VirtualClass::getClassObject() const

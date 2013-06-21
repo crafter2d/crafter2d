@@ -1,6 +1,7 @@
 
 package demo;
 
+use engine.collections.*;
 use engine.core.*;
 use engine.messages.*;
 use engine.game.*;
@@ -59,8 +60,7 @@ class GameServer extends Server
 		Vector2D position = new Vector2D();
 		position.set(100, 30);
 		
-		ActionMap map = new ActionMap();
-		map.setProcess(this);
+		ActionMap map = new DemoActionMap(this);
 		
 		InputController controller = new InputController();
 		controller.setActionMap(map);

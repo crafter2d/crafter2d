@@ -17,6 +17,7 @@ namespace ComponentInterface
       eQueryPositionMsg,
       eUpdateMsg,
       eRenderMsg,
+      eQueryBodyMsg,
 	   eNUM_MESSAGE_TYPES
    };
 };

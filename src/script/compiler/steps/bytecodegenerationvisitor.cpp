@@ -41,6 +41,7 @@ void ByteCodeGenerationVisitor::visit(const ASTClass& ast)
    }
 
    mpVirClass = new VirtualClass();
+   mpVirClass->setDefinition(ast);
    mpVirClass->setName(ast.getFullName());
    mpVirClass->setBaseClass(*pbaseclass);
    mpVirClass->setVariableCount(ast.getTotalVariables());

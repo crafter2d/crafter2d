@@ -21,7 +21,7 @@ public:
 
  // component interface
    virtual void registerComponent(Components& components);
-   virtual void handleMessage(const ComponentMessage& message);
+   virtual void handleMessage(ComponentMessage& message);
    virtual void update(float delta);
 
  // notifications

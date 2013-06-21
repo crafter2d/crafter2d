@@ -2,11 +2,10 @@
 #ifndef MESH_COMPONENT_H
 #define MESH_COMPONENT_H
 
+#include "core/graphics/effect.h"
 #include "core/math/size.h"
 #include "core/math/xform.h"
 #include "core/string/string.h"
-
-#include "engine/effect.h"
 
 #include "component.h"
 
@@ -45,7 +44,7 @@ public:
 
  // overloads
    virtual void registerComponent(Components& components);
-   virtual void handleMessage(const ComponentMessage& message);
+   virtual void handleMessage(ComponentMessage& message);
    virtual void update(float delta);
 
 private:
@@ -55,8 +54,8 @@ private:
  // members
    XForm                   mTransform;
    Animator*               mpAnimator; // owned
-   Effect                  mEffect;
    String                  mEffectName;
+   Graphics::Effect        mEffect;
    Graphics::VertexBuffer* mpVertexBuffer;
    Graphics::IndexBuffer*  mpIndexBuffer;
    int                     mVertexFormat;
