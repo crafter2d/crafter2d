@@ -39,8 +39,10 @@ PickVisitor::PickVisitor(const Vector& pos):
 /// \brief Tries to pick the given object.
 void PickVisitor::visitActor(Actor* pactor) 
 {
+   // move to a component message to the mesh component
+
    Vector pos  = pactor->getPosition();
-   Vector size = (pactor->getSize() / 2);
+   Vector size = Vector(); //(pactor->getSize() / 2);
 
    if ((pickPos.x >= (pos.x-size.x) && pickPos.x < (pos.x+size.x)) &&
       (pickPos.y >= (pos.y-size.y) && pickPos.y < (pos.y+size.y))) {

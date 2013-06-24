@@ -51,6 +51,8 @@ void ServerDirtySet::collect(AggregateEvent& event)
       UpdateObjectEvent* pevent = factory.createUpdateEvent();
       pevent->initialize(object);
 
+      object.resetDirty();
+
       event.add(pevent);
    }
 }

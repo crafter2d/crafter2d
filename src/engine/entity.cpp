@@ -71,6 +71,23 @@ void Entity::setName(const String& name)
    }
 }
 
+bool Entity::hasMesh() const
+{
+   return mpMeshComponent != NULL;
+}
+
+const MeshComponent& Entity::getMesh() const
+{
+   ASSERT_PTR(mpMeshComponent);
+   return *mpMeshComponent;
+}
+
+MeshComponent& Entity::getMesh()
+{
+   ASSERT_PTR(mpMeshComponent);
+   return *mpMeshComponent;
+}
+
 // - Operations
 
 void Entity::initialize(Device& device)
@@ -99,8 +116,6 @@ void Entity::addComponent(Component* pcomponent)
 
 void Entity::update(float delta)
 {
-   resetDirty();
-
    doUpdate(delta);
 
    mChildren.update(delta);
@@ -130,8 +145,15 @@ void Entity::doUpdateClient(float delta)
 
 void Entity::doDraw(Graphics::RenderContext& context) const
 {
-   mComponents.postMessage(ComponentMessage(ComponentInterface::eRenderMsg, &context));
 }
+
+// - Messaging
+   
+void Entity::sendComponentMessage(ComponentMessage& message)
+{
+   mComponents.postMessage(message);
+}
+
 
 // - Maintenance
 

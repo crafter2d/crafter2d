@@ -49,6 +49,6 @@ void AIController::setThis(VirtualObject& self)
 
 void AIController::performAction(Actor& actor)
 {
-   mpScript->addParam(&actor);
-   mpScript->run(smFunc);
+   Variant arg(mpScript->resolve(&actor));
+   mpScript->run(smFunc, 1, &arg);
 }

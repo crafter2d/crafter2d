@@ -72,19 +72,21 @@ void ActionMap::process(int action, bool down)
       const String& function = it->second;
       
       ASSERT_PTR(mpScript);
-      mpScript->addParam(down);
-      mpScript->run(function);
+      Variant arg(down);
+      mpScript->run(function, 1, &arg);
    }
 }
 
 void ActionMap::processRemote(const ActionEvent& event, Actor& object)
 {
    ASSERT_PTR(mpScript);
-   mpScript->addParam("engine.game.Actor", &object);
-   mpScript->addParam(event.getAction());
-
+   
+   Variant args[2];
+   args[0].setObject(mpScript->resolve(&object));
+   args[1].setInt(event.getAction());
+   
    if ( event.isDown() )
-      mpScript->run("onKeyDown");
+      mpScript->run("onKeyDown", 2, args);
    else
-      mpScript->run("onKeyUp");
+      mpScript->run("onKeyUp", 2, args);
 }

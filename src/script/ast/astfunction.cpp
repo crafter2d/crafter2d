@@ -4,8 +4,6 @@
 #include "core/defines.h"
 #include <exception>
 
-#include "script/compiler/signature.h"
-
 #include "astblock.h"
 #include "astfunctionargument.h"
 #include "asttype.h"
@@ -13,17 +11,25 @@
 #include "astvariable.h"
 #include "astannotations.h"
 #include "asttypevariables.h"
+#include "astsignature.h"
+#include "astlocalvariable.h"
 
 ASTFunction::ASTFunction(ASTMember::Kind kind):
    ASTMember(kind),
    mName(),
+   mArguments(),
+   mLocals(),
    mpAnnotations(NULL),
    mModifiers(),
    mpTypeVariables(NULL),
    mpType(NULL),
    mpClass(NULL),
+   mpBaseFunction(NULL),
    mpBody(NULL),
-   mpSignature(new Signature()),
+   mpSignature(new ASTSignature()),
+   mInstructions(),
+   mGuards(),
+   mSwitchTables(),
    mResourceIndex(-1),
    mLocalVariableCount(0)
 {
@@ -134,7 +140,6 @@ void ASTFunction::setResourceIndex(int index)
    mResourceIndex = index;
 }
 
-
 const ASTClass& ASTFunction::getClass() const
 {
    ASSERT_PTR(mpClass);
@@ -144,6 +149,17 @@ const ASTClass& ASTFunction::getClass() const
 void ASTFunction::setClass(ASTClass& owner)
 {
    mpClass = &owner;
+}
+
+const ASTFunction& ASTFunction::getBaseFunction() const
+{
+   ASSERT_PTR(mpBaseFunction);
+   return *mpBaseFunction;
+}
+  
+void ASTFunction::setBaseFunction(ASTFunction& function)
+{
+   mpBaseFunction = &function;
 }
 
 const ASTBlock& ASTFunction::getBody() const
@@ -167,10 +183,20 @@ void ASTFunction::setBody(ASTBlock* pbody)
    mpBody = pbody;
 }
 
-const Signature& ASTFunction::getSignature() const
+const ASTSignature& ASTFunction::getSignature() const
 {
    ASSERT(mpSignature);
    return *mpSignature;
+}
+
+const ASTTypeList& ASTFunction::getArguments() const
+{
+   return mArguments;
+}
+
+const ASTTypeList& ASTFunction::getLocals() const
+{
+   return mLocals;
 }
 
 int ASTFunction::getLocalVariableCount() const
@@ -181,6 +207,36 @@ int ASTFunction::getLocalVariableCount() const
 void ASTFunction::setLocalVariableCount(int count)
 {
    mLocalVariableCount = count;
+}
+
+const CIL::Instructions& ASTFunction::getInstructions() const
+{
+   return mInstructions;
+}
+
+void ASTFunction::setInstructions(const CIL::Instructions& instructions)
+{
+   mInstructions = instructions;
+}
+
+const CIL::Guards& ASTFunction::getGuards() const
+{
+   return mGuards;
+}
+ 
+void ASTFunction::setGuards(const CIL::Guards& guards)
+{
+   mGuards = guards;
+}
+
+const CIL::SwitchTables& ASTFunction::getSwitchTables() const
+{
+   return mSwitchTables;
+}
+
+void ASTFunction::setSwitchTables(const CIL::SwitchTables& tables)
+{
+   mSwitchTables = tables;
 }
 
 // - Query
@@ -198,6 +254,16 @@ bool ASTFunction::isDefaultConstructor() const
 bool ASTFunction::isGeneric() const
 {
    return mpTypeVariables != NULL && mpTypeVariables->size() > 0;
+}
+
+bool ASTFunction::isVirtual() const
+{
+   return mpBaseFunction != NULL;
+}
+
+const ASTNodes& ASTFunction::getArgumentNodes() const
+{
+   return getChildren();
 }
 
 int ASTFunction::getArgumentCount() const
@@ -221,25 +287,20 @@ void ASTFunction::addArgument(ASTFunctionArgument* pargument)
    addChild(pargument);
 }
 
-const ASTNodes& ASTFunction::getArguments() const
+void ASTFunction::addArgument(ASTType* pargument)
 {
-   return getChildren();
+   mArguments.append(pargument);
 }
 
-// - Search
-   
-const ASTFunctionArgument& ASTFunction::resolveArgument(const String& name) const
+void ASTFunction::addLocal(ASTType* plocal)
 {
-   for ( int index = 0; index < getChildren().size(); index++ )
-   {
-      const ASTFunctionArgument& argument = static_cast<const ASTFunctionArgument&>(getChildren()[index]);
-      if ( argument.getVariable().getName() == name )
-      {
-         return argument;
-      }
-   }
+   mLocals.append(plocal);
+}
 
-   UNREACHABLE("unreachable!");
+void ASTFunction::cleanup()
+{
+   delete mpBody;
+   mpBody = NULL;
 }
 
 // - Visitor

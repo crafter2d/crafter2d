@@ -4,18 +4,25 @@
 
 #include "core/string/string.h"
 
+#include "script/cil/cil.h"
+#include "script/cil/guards.h"
+#include "script/cil/switchtables.h"
+
 #include "astmember.h"
 #include "astmodifier.h"
+#include "asttypelist.h"
 
 class ASTAnnotations;
 class ASTBlock;
 class ASTClass;
+class ASTLocalVariable;
 class ASTFunctionArgument;
 class ASTTypeVariables;
-class Signature;
+class ASTSignature;
 
 class ASTFunction : public ASTMember
 {
+   typedef std::vector<CIL::Guard*> Guards;
 public:
    explicit ASTFunction(ASTMember::Kind kind);
    virtual ~ASTFunction();
@@ -48,22 +55,38 @@ public:
    const ASTClass& getClass() const;
    void            setClass(ASTClass& owner);
 
+   const ASTFunction& getBaseFunction() const;
+   void               setBaseFunction(ASTFunction& function);
+
    bool            hasBody() const;
    const ASTBlock& getBody() const;
          ASTBlock& getBody();
    void            setBody(ASTBlock* pbody);
 
-   const Signature& getSignature() const;
+   const ASTSignature& getSignature() const;
+
+   const ASTTypeList& getArguments() const;
+   const ASTTypeList& getLocals() const;
 
    int  getLocalVariableCount() const;
    void setLocalVariableCount(int count);
+
+   const CIL::Instructions& getInstructions() const;
+   void setInstructions(const CIL::Instructions& instructions);
+
+   const CIL::Guards& getGuards() const;
+   void               setGuards(const CIL::Guards& guards);
+
+   const CIL::SwitchTables& getSwitchTables() const;
+   void                     setSwitchTables(const CIL::SwitchTables& tables);
 
  // query
    bool isConstructor() const;
    bool isDefaultConstructor() const;
    bool isGeneric() const;
+   bool isVirtual() const;
 
-   const ASTNodes& getArguments() const;
+   const ASTNodes& getArgumentNodes() const;
 
    int getArgumentCount() const;
 
@@ -72,21 +95,28 @@ public:
  // operations
    void addArgument(ASTFunctionArgument* pargument);
 
- // search
-   const ASTFunctionArgument& resolveArgument(const String& name) const;
+   void addArgument(ASTType* pargument);
+   void addLocal(ASTType* plocal);
+   void cleanup();
    
  // visitor
    ACCEPT;
 
 private:
    String            mName;
+   ASTTypeList       mArguments;
+   ASTTypeList       mLocals;
    ASTAnnotations*   mpAnnotations;
    ASTModifiers      mModifiers;
    ASTTypeVariables* mpTypeVariables;
    ASTType*          mpType;
    ASTClass*         mpClass;
+   ASTFunction*      mpBaseFunction;
    ASTBlock*         mpBody;
-   Signature*        mpSignature;
+   ASTSignature*     mpSignature;
+   CIL::Instructions mInstructions;
+   CIL::Guards       mGuards;
+   CIL::SwitchTables mSwitchTables;
    int               mResourceIndex;
    int               mLocalVariableCount;
 };

@@ -16,10 +16,10 @@ VirtualClass::VirtualClass():
    mpBaseClass(NULL),
    mpDefinition(NULL),
    mVTable(),
-   mInstructions(),
    mpClassObject(NULL),
    mpStatics(NULL),
    mStaticCount(0),
+   mpInterfaceLookupTable(NULL),
    mVariableCount(0),
    mFlags(eNone)
 {
@@ -27,7 +27,7 @@ VirtualClass::VirtualClass():
 
 VirtualClass::~VirtualClass()
 {
-   setDefinition(NULL);
+   setInterfaceLookupTable(NULL);
 
    delete[] mpStatics;
    mpStatics = NULL;
@@ -85,21 +85,6 @@ VirtualFunctionTable& VirtualClass::getVirtualFunctionTable()
    return mVTable;
 }
 
-const VirtualInstructionTable& VirtualClass::getInstructions() const
-{
-   return mInstructions;
-}
-
-VirtualInstructionTable& VirtualClass::getInstructions()
-{
-   return mInstructions;
-}
-
-void VirtualClass::setInstructions(const VirtualInstructionTable& instructions)
-{
-   mInstructions = instructions;
-}
-
 int VirtualClass::getVariableCount() const
 {
    return mVariableCount;
@@ -129,10 +114,9 @@ const ASTClass& VirtualClass::getDefinition() const
    return *mpDefinition;
 }
 
-void VirtualClass::setDefinition(ASTClass* pdefinition)
+void VirtualClass::setDefinition(const ASTClass& definition)
 {
-   delete mpDefinition;
-   mpDefinition = pdefinition;
+   mpDefinition = &definition;
 }
 
 VirtualObject& VirtualClass::getClassObject() const
@@ -144,6 +128,17 @@ VirtualObject& VirtualClass::getClassObject() const
 void VirtualClass::setClassObject(VirtualObject* pobject)
 {
    mpClassObject = pobject;
+}
+
+const int* VirtualClass::getInterfaceLookupTable() const
+{
+   return mpInterfaceLookupTable;
+}
+ 
+void VirtualClass::setInterfaceLookupTable(int* ptable)
+{
+   delete mpInterfaceLookupTable;
+   mpInterfaceLookupTable = ptable;
 }
 
 void VirtualClass::setFlags(Flags flags)
@@ -204,38 +199,16 @@ bool VirtualClass::implements(const VirtualClass& interfce) const
    return false;
 }
 
-const VirtualLookupTable& VirtualClass::getLookupTable(int index) const
-{
-   ASSERT(index >= 0 && index < mLookupTables.size());
-   return *mLookupTables[index];
-}
-
 const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
 {
    String name = mName;
-   int pos = mName.indexOf('.');
+   int pos = mName.lastIndexOf('.');
    if ( pos != -1 )
    {
       name.remove(0, pos + 1);
    }
 
    return mVTable.findByName(name);
-}
-
-// - Operations
-
-int VirtualClass::addLookupTable(VirtualLookupTable* ptable)
-{
-   mLookupTables.push_back(ptable);
-   return mLookupTables.size() - 1;
-}
-
-void VirtualClass::offsetCode(int offset)
-{
-   for ( std::size_t index = 0; index < mLookupTables.size(); index++ )
-   {
-      mLookupTables[index]->offsetCode(offset);
-   }
 }
 
 // - Runtime instantiation

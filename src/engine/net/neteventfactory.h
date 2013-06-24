@@ -22,8 +22,9 @@
 
 #include "core/memory/memorypool.h"
 
+#include "engine/net/events/updateobjectevent.h"
+
 class NetEvent;
-class UpdateObjectEvent;
 
 class NetEventFactory
 {

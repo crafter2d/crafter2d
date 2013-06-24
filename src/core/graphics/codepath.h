@@ -81,7 +81,10 @@ namespace Graphics
        */
 	   virtual int getUniformLocation (const String& name) const = 0;
 
-      virtual void setStateUniform(int index) = 0;
+      /*!
+       * \brief Prepare the vertex shader with the updated projection & world matrices
+       */
+      virtual void setUniformStateMatrix(int index) const = 0;
 
 	   /*!
            \fn CodePath::setUniform1i(int index, int val)

@@ -11,7 +11,8 @@ VirtualStack::VirtualStack(int initialsize):
    mStack(),
    mSize(0)
 {
-   grow(initialsize);
+   mStack.resize(initialsize);
+   fill(0);
 }
 
 VirtualStack::~VirtualStack()
@@ -37,14 +38,14 @@ Variant& VirtualStack::operator[](int index)
 
 // - Stack operations
 
-void VirtualStack::push(int count)
+void VirtualStack::push(int count, Variant* pvalues)
 {
-   mSize += count;
+   ensureFits(count);
 
-   if ( mSize >= mStack.size() )
+   for ( int index = 0; index < count; ++index )
    {
-      grow(mStack.size());
-   }  
+      *mStack[mSize++] = pvalues[index];
+   }
 }
 
 void VirtualStack::push(const Variant& value)
@@ -140,15 +141,13 @@ Variant& VirtualStack::back()
 
 void VirtualStack::insert(int index, const Variant& value)
 {
-   if ( mSize + 1 >= mStack.size() )
-   {
-      grow(mStack.size());
-   }
+   ensureFits(1);
 
    for ( int idx = mSize-1; idx >= index; --idx )
    {
       mStack[idx+1] = mStack[idx];
    }
+
    mStack[index] = new Variant(value);
 
    ++mSize;
@@ -165,18 +164,23 @@ int VirtualStack::size() const
 
 Variant& VirtualStack::top()
 {
-   if ( mSize + 1 >= mStack.size() )
-   {
-      grow(mStack.size());
-   }
+   ensureFits(1);
    return *mStack[mSize++];
 }
 
-void VirtualStack::grow(int amount)
+void VirtualStack::ensureFits(int amount)
 {
-   int oldsize = mStack.size();
-   mStack.resize(mStack.size() + amount);
-   for ( int index = oldsize; index < mStack.size(); index++ )
+   if ( mSize + amount >= mStack.size() )
+   {
+      int oldsize = mStack.size();
+      mStack.resize(mStack.size() * 2);
+      fill(oldsize);
+   }
+}
+
+void VirtualStack::fill(int from)
+{
+   for ( int index = from; index < mStack.size(); index++ )
    {
       mStack[index] = new Variant();
    }

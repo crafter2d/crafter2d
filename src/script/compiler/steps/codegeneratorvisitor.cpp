@@ -2,32 +2,22 @@
 #include "codegeneratorvisitor.h"
 
 #include "core/defines.h"
-#include "core/smartptr/scopedvalue.h"
 #include "core/string/stringinterface.h"
 
 #include "script/ast/ast.h"
-#include "script/vm/virtualarray.h"
-#include "script/vm/virtualclass.h"
-#include "script/vm/virtualobject.h"
-#include "script/vm/virtualinstruction.h"
-#include "script/vm/virtualinstructiontable.h"
-#include "script/vm/virtualclasstable.h"
-#include "script/vm/virtualmachine.h"
-#include "script/vm/virtualfunctiontable.h"
-#include "script/vm/virtualfunctiontableentry.h"
-#include "script/vm/virtuallookuptable.h"
-
+#include "script/cil/guard.h"
+#include "script/cil/switchtabel.h"
+#include "script/cil/switchtableentry.h"
 #include "script/common/literal.h"
 #include "script/common/variant.h"
-#include "script/common/classregistration.h"
 #include "script/common/functionregistration.h"
+#include "script/compiler/compilecontext.h"
 #include "script/scope/scope.h"
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"
-#include "script/compiler/compilecontext.h"
-#include "script/compiler/signature.h"
+#include "script/vm/virtualstring.h"
 
-const int labelID = 0xF000;
+using namespace CIL;
 
 CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    CompileStep(),
@@ -37,20 +27,14 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mpAccess(NULL),
    mpExpression(NULL),
    mCurrentType(),
-   mpVClass(NULL),
-   mInstructions(),
+   mpSwitchTable(NULL),
    mScopeStack(),
    mLoopFlowStack(),
-   mpLookupTable(NULL),
-   mLabel(0),
-   mLineNr(0),
    mLoadFlags(0),
    mExpr(0),
    mState(0),
-   mSuperCall(false),
    mRightHandSide(false),
-   mStore(false),
-   mNeedPop(true)
+   mStore(false)
 {
 }
 
@@ -58,191 +42,50 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
 
 bool CodeGeneratorVisitor::performStep(ASTNode& node)
 {
-   mInstructions.clear();
-   mLineNr = 0;
-
-   ((const ASTNode&)node).accept(*this);
-
-   mContext.setResult(mpVClass);
-
-   mpVClass->setDefinition(const_cast<ASTClass*>(mpClass));
-   mpVClass->setStaticCount(mpClass->getTotalStatics());
-   mpVClass = NULL;
+   node.accept(*this);
 
    return true;
 }
 
-// - Code generation
-
-void CodeGeneratorVisitor::fillInstructionList()
-{
-   convertLabels();
-
-   VirtualInstructionTable& instructions = mpVClass->getInstructions();
-   for ( std::size_t index = 0; index < mInstructions.size(); index++ )
-   {
-      Inst& inst = mInstructions[index];
-      instructions.add((VirtualInstruction::Instruction)inst.instruction, inst.arg);
-   }
-}
-
-int CodeGeneratorVisitor::findLabel(int label) const
-{
-   std::size_t index = 0;
-   for ( ; index < mInstructions.size(); index++ )
-   {
-      const Inst& inst = mInstructions[index];
-      if ( inst.instruction == labelID && inst.arg == label )
-      {
-         break;
-      }
-   }
-
-   return index;
-}
-
-void CodeGeneratorVisitor::convertLabels()
-{
-   if ( !mInstructions.empty() )
-   {
-      int firstline = mInstructions[0].linenr;
-
-      for ( std::size_t index = 0; index < mInstructions.size(); index++ )
-      {
-         Inst& inst = mInstructions[index];
-
-         VirtualInstruction::Instruction instruction = (VirtualInstruction::Instruction)inst.instruction;
-         if ( instruction == VirtualInstruction::eJump
-           || instruction == VirtualInstruction::eJumpTrue
-           || instruction == VirtualInstruction::eJumpFalse
-           || instruction == VirtualInstruction::eEnterGuard
-           || instruction == VirtualInstruction::eEnterGuardF )
-         {
-            int labelindex = findLabel(inst.arg);
-            ASSERT(labelindex != mInstructions.size());
-
-            const Inst& labelinst = mInstructions[labelindex];
-            inst.arg = labelinst.linenr - firstline;
-         }
-      }
-
-      removeLabels();
-   }
-}
-
-void CodeGeneratorVisitor::removeLabels()
-{
-   for ( int index = mInstructions.size() - 1; index >= 0; index-- )
-   {
-      Inst& inst = mInstructions[index];
-      if ( inst.instruction == labelID )
-      {
-         mInstructions.erase(mInstructions.begin() + index);
-         index++;
-      }
-   }
-}
-
-void CodeGeneratorVisitor::addInstruction(int instruction, int argument)
-{
-   Inst inst;
-   inst.instruction = instruction;
-   inst.arg         = argument;
-   inst.linenr      = mLineNr++;
-
-   mInstructions.push_back(inst);
-}
-
-void CodeGeneratorVisitor::addLabel(int id)
-{
-   Inst inst;
-   inst.instruction = labelID;
-   inst.arg         = id;
-   inst.linenr      = mLineNr;
-
-   mInstructions.push_back(inst);
-}
-
-int CodeGeneratorVisitor::allocateLabel()
-{
-   return mLabel++;
-}
-
-int CodeGeneratorVisitor::allocateLiteral(const String& value)
-{
-   VirtualString& vstring = mContext.getStringCache().lookup(value);
-   Variant variant(vstring);
-
-   int index = mContext.getLiteralTable().indexOf(variant);
-   if ( index == mContext.getLiteralTable().size() )
-   {
-      Literal* pliteral = new Literal(variant);
-      index = mContext.getLiteralTable().insert(pliteral);
-   }
-
-   return index;
-}
-
 // - Visitor
 
-void CodeGeneratorVisitor::visit(const ASTRoot& root)
+void CodeGeneratorVisitor::visit(ASTRoot& root)
 {
    visitChildren(root);
 }
 
-void CodeGeneratorVisitor::visit(const ASTClass& ast)
+void CodeGeneratorVisitor::visit(ASTClass& ast)
 {
    ScopedScope scope(mScopeStack);
 
    mpClass = &ast;
 
-   mpVClass = new VirtualClass();
-   mpVClass->setName(ast.getFullName());
-   mpVClass->setBaseName(ast.hasBaseClass() ? ast.getBaseClass().getFullName() : "");
-   mpVClass->setVariableCount(ast.getTotalVariables());
+   // maybe we should also let the loader fill in the virtual function table...
+   // so for now just compile the functions
 
-   int flags = VirtualClass::eNone;
-   if ( !ast.getModifiers().isAbstract() )
-      flags |= VirtualClass::eInstantiatable;
-   if ( ast.getModifiers().isNative() )
-      flags |= VirtualClass::eNative;
-   mpVClass->setFlags((VirtualClass::Flags)flags);
+   ast.getFunctions().accept(*this);
 
    // base class should be set by the VM
    // we don't register the member variables, as they must be loaded/stored differently than locals
 
    handleStaticBlock(ast);
    handleFieldBlock(ast);
-   handleClassObject(ast);
 
-   // maybe we should also let the loader fill in the virtual function table...
-   // so for now just compile the functions
+   // we are done compiling this class
 
-   const FunctionTable& table = ast.getFunctionTable();
-   for ( int index = 0; index < table.size(); index++ )
+   if ( !mContext.getLog().hasErrors() )
    {
-      const ASTFunction& function = table[index];
-      if ( ast.isLocal(function) && !function.getModifiers().isAbstract() )
-      {
-         visit(function);
-      }
-      else if ( !function.getModifiers().isPureNative() )
-      {
-         VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-         pentry->mName = function.getName();
-         pentry->mArguments = function.getArgumentCount();
-
-         mpVClass->getVirtualFunctionTable().append(pentry);
-      }
+      ast.setState(ASTClass::eCompiled);
    }
-
-   fillInstructionList();
-
-   ast.setState(ASTClass::eCompiled);
 }
 
-void CodeGeneratorVisitor::visit(const ASTFunction& ast)
+void CodeGeneratorVisitor::visit(ASTFunction& ast)
 {
+   if ( ast.getName() == "getInstance" && mpClass->getName() == "Canvas" )
+   {
+      int aap = 5;
+   }
+
    if ( ast.getModifiers().isPureNative() )
    {
       // No implementation, these are called directly except constructors. Those need to
@@ -252,35 +95,36 @@ void CodeGeneratorVisitor::visit(const ASTFunction& ast)
    {
       ScopedScope scope(mScopeStack);
 
-      const ASTFunction* pinterfacefnc = mpClass->findInterfaceFunction(ast);
-
-      VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-      pentry->mName = ast.getName();
-      pentry->mInstruction = mInstructions.empty() ? 0 : mInstructions.back().linenr + 1;
-      pentry->mOriginalInstruction = pentry->mInstruction;
-      pentry->mArguments = ast.getArgumentCount();
-      pentry->mInterface = pinterfacefnc != NULL ? pinterfacefnc->getResourceIndex() : -1;
-
-      mpVClass->getVirtualFunctionTable().append(pentry);
-
       mpFunction = &ast;
-
-      // reserve space on the stack for arguments & local variables
-      int varcount = ast.getLocalVariableCount();
-      if ( varcount >= 1 )
+      if ( !mpFunction->getModifiers().isStatic() )
       {
-         addInstruction(VirtualInstruction::eReserve, varcount);
+         mpFunction->addArgument(mpClass->createThisType());
       }
+
+      mBuilder.start();
 
       mCurrentType.clear();
 
-      ast.getBody().accept(*this);
-
-      if ( ast.getType().isVoid() )
+      ast.getArgumentNodes().accept(*this);
+      if ( ast.hasBody() )
       {
-         addInstruction(VirtualInstruction::eRet, 0);
+         ((const ASTNode&)ast.getBody()).accept(*this);
       }
+
+      mBuilder.end();
+
+      ast.setInstructions(mBuilder.getInstructions());
+      ast.setGuards(mBuilder.getGuards());
+      ast.setSwitchTables(mBuilder.getSwitchTables());
+      ast.cleanup();
    }
+}
+
+void CodeGeneratorVisitor::visit(const ASTFunctionArgument& argument)
+{
+   const ASTVariable& variable = argument.getVariable();
+
+   mpFunction->addArgument(variable.getType().clone());
 }
 
 void CodeGeneratorVisitor::visit(const ASTVariableInit& ast)
@@ -303,21 +147,14 @@ void CodeGeneratorVisitor::visit(const ASTBlock& ast)
 void CodeGeneratorVisitor::visit(const ASTExpressionStatement& ast)
 {
    mExpr = 0;
-   mNeedPop = false;
-
+   
    ast.getExpression().accept(*this);
-
-   if ( mNeedPop )
-   {
-      addInstruction(VirtualInstruction::ePop, 1);
-      mNeedPop = false;
-   }
 }
 
 void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
 {
    const ASTVariable& var = ast.getVariable();
-
+      
    if ( var.hasInit() )
    {
       mCurrentType.clear();
@@ -327,9 +164,9 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
       {
          const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-         addInstruction(VirtualInstruction::ePush, arrayinit.getCount());
-         addInstruction(VirtualInstruction::eNewArray, 1);
-         addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+         mBuilder.emit(CIL_ldint, arrayinit.getCount());
+         mBuilder.emit(CIL_newarray, var.getType().toString());
+         mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
          int count = arrayinit.getCount();
          for ( int index = 0; index < count; index++ )
@@ -338,15 +175,16 @@ void CodeGeneratorVisitor::visit(const ASTLocalVariable& ast)
 
             vinit.getExpression().accept(*this);
 
-            addInstruction(VirtualInstruction::eLoadLocal, var.getResourceIndex());
-            addInstruction(VirtualInstruction::ePush, index);
-            addInstruction(VirtualInstruction::eStoreArray, 1);
+            mBuilder.emit(CIL_ldloc, var.getResourceIndex());
+            mBuilder.emit(CIL_ldint, index);
+            mBuilder.emit(CIL_stelem, 1);
          }
       }
       else
       {
          varinit.getExpression().accept(*this);
-         addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+
+         mBuilder.emit(CIL_stloc, var.getResourceIndex());
       }
    }
 
@@ -357,25 +195,26 @@ void CodeGeneratorVisitor::visit(const ASTIf& ast)
 {
    ast.getCondition().accept(*this);
 
-   int labelFalse = allocateLabel();
-   addInstruction(VirtualInstruction::eJumpFalse, labelFalse);
+   int labelFalse = mBuilder.allocateLabel();
+
+   mBuilder.emit(CIL_jump_false, labelFalse);
 
    ast.getStatement().accept(*this);
 
    if ( ast.hasElseStatement() )
    {
-      int labelFinish = allocateLabel();
-      addInstruction(VirtualInstruction::eJump, labelFinish);
+      int labelFinish = mBuilder.allocateLabel();
+      mBuilder.emit(CIL_jump, labelFinish);
 
-      addLabel(labelFalse);
+      mBuilder.addLabel(labelFalse);
 
       ast.getElseStatement().accept(*this);
 
-      addLabel(labelFinish);
+      mBuilder.addLabel(labelFinish);
    }
    else
    {
-      addLabel(labelFalse);
+      mBuilder.addLabel(labelFalse);
    }
 }
 
@@ -383,11 +222,11 @@ void CodeGeneratorVisitor::visit(const ASTFor& ast)
 {
    ScopedScope scope(mScopeStack);
 
-   int labelStart = allocateLabel();
+   int labelStart = mBuilder.allocateLabel();
 
    LoopFlow flow;
-   flow.start = allocateLabel();
-   flow.end  = allocateLabel();
+   flow.start = mBuilder.allocateLabel();
+   flow.end  = mBuilder.allocateLabel();
    mLoopFlowStack.push(flow);
 
    if ( ast.hasInitializer() )
@@ -395,26 +234,25 @@ void CodeGeneratorVisitor::visit(const ASTFor& ast)
       ast.getInitializer().accept(*this);
    }
 
-   addLabel(labelStart);
+   mBuilder.addLabel(labelStart);
 
    if ( ast.hasCondition() )
    {
       ast.getCondition().accept(*this);
 
-      addInstruction(VirtualInstruction::eJumpFalse, flow.end);
+      mBuilder.emit(CIL_jump_false, flow.end);
    }
 
    ast.getBody().accept(*this);
 
-   addLabel(flow.start);
+   mBuilder.addLabel(flow.start);
 
    // update part
    mExpr = 0;
    visitChildren(ast);
 
-   addInstruction(VirtualInstruction::eJump, labelStart);
-
-   addLabel(flow.end);
+   mBuilder.emit(CIL_jump, labelStart);
+   mBuilder.addLabel(flow.end);
 
    mLoopFlowStack.pop();
 }
@@ -424,107 +262,114 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    ScopedScope scope(mScopeStack);
 
    LoopFlow flow;
-   flow.start = allocateLabel();
-   flow.end  = allocateLabel();
+   flow.start = mBuilder.allocateLabel();
+   flow.end   = mBuilder.allocateLabel();
    mLoopFlowStack.push(flow);
 
+   const ASTVariable& iteratorvar = ast.getIteratorVariable();
    const ASTVariable& var = ast.getVariable();
    const ASTVariableInit& varinit = var.getInit();
 
    ASTTypeList list;
-   Signature signature;
+   ASTSignature signature;
 
    mCurrentType.clear();
-   varinit.getExpression().accept(*this);
 
-   if ( mCurrentType.isArray() )
+   // container object is currently at top of evaluation stack
+   // - ast contains index
+   // - var contains object from array
+
+   if ( iteratorvar.getType().isInt() )
    {
       // index = 0
-      addInstruction(VirtualInstruction::eInt0);
-      addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
+      mBuilder.emit(CIL_ldint, 0);
+      mBuilder.emit(CIL_stloc, iteratorvar.getResourceIndex());
 
       const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
-      const ASTField* pfield = arrayclass.findField("length", ASTClass::eLocal);
+      const ASTFunction* plenghfnc = arrayclass.findExactMatch("size", ASTSignature());
 
-      // check for the size ( index < array.length )
-      addLabel(flow.start);
-      addInstruction(VirtualInstruction::eDup);
-      addInstruction(VirtualInstruction::eLoad, pfield->getVariable().getResourceIndex());
-      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-      addInstruction(VirtualInstruction::eCmpEqInt);
-      addInstruction(VirtualInstruction::eJumpTrue, flow.end);
+      const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(arrayclass, *plenghfnc);
+      ASSERT_PTR(preg);
 
+      mBuilder.addLabel(flow.start);
+
+      // check for the size ( index < array.length() )
+      varinit.getExpression().accept(*this);
+      mBuilder.emit(CIL_call_native, preg->getIndex());
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
+      mBuilder.emit(CIL_cmpeq);
+      mBuilder.emit(CIL_jump_true, flow.end);
+      
       // get item & execute body ( var = array[index]; )
-      addInstruction(VirtualInstruction::eDup);
-      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-      addInstruction(VirtualInstruction::eLoadArray, 1);
-      addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+      varinit.getExpression().accept(*this);
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
+      mBuilder.emit(CIL_ldelem, 1);
+      mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
       ast.getBody().accept(*this);
 
       // increment iteration ( index++; )
-      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-      addInstruction(VirtualInstruction::eInt1);
-      addInstruction(VirtualInstruction::eAddInt);
-      addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
-      addInstruction(VirtualInstruction::eJump, flow.start);
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
+      mBuilder.emit(CIL_ldint, 1);
+      mBuilder.emit(CIL_add);
+      mBuilder.emit(CIL_stloc, iteratorvar.getResourceIndex());
+      mBuilder.emit(CIL_jump, flow.start);
+
       mExpr = 0;
 
       // and of loop (pop array from stack)
-      addLabel(flow.end);
-      addInstruction(VirtualInstruction::ePop, 1);
+      mBuilder.addLabel(flow.end);
    }
    else
    {
-      const ASTFunction* piterator = mCurrentType.getObjectClass().findBestMatch("iterator", signature, list);
+      varinit.getExpression().accept(*this);
+      String name = mCurrentType.getObjectClass().getFullName() + ".iterator()";
 
-      addInstruction(VirtualInstruction::ePush, 1);
-      addInstruction(VirtualInstruction::eCall, piterator->getResourceIndex());
-      addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
+      // ast = iterator
+      // var = object in the container
 
-      addLabel(flow.start);
+      mBuilder.emit(CIL_call, name);
+      mBuilder.emit(CIL_stloc, iteratorvar.getResourceIndex());
 
-      const ASTClass& iteratorclass = mContext.resolveClass("engine.collections.Iterator");
-      const ASTFunction* phasnext = iteratorclass.findBestMatch("hasNext", signature, list);
-      const ASTFunction* pnext = iteratorclass.findBestMatch("next", signature, list);
+      mBuilder.addLabel(flow.start);
 
-      // is there still an item
-      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-      addInstruction(VirtualInstruction::ePush, 1);
-      addInstruction(VirtualInstruction::eCall, phasnext->getResourceIndex());
-      addInstruction(VirtualInstruction::eJumpFalse, flow.end);
+      String hasnextname = "engine.collections.Iterator.hasNext()";
+      String nextname = "engine.collections.Iterator.next()";
 
-      // store the next item from the list
-      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-      addInstruction(VirtualInstruction::ePush, 1);
-      addInstruction(VirtualInstruction::eCall, pnext->getResourceIndex());
-      addInstruction(VirtualInstruction::eStoreLocal, var.getResourceIndex());
+      // is there still an item: if not it.hasNext goto end
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
+      mBuilder.emit(CIL_call_virt, hasnextname);
+      mBuilder.emit(CIL_jump_false, flow.end);
+
+      // store the next item from the list: var = it.next()
+      mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
+      mBuilder.emit(CIL_call_virt, nextname);
+      mBuilder.emit(CIL_stloc, var.getResourceIndex());
 
       ast.getBody().accept(*this);
 
-      addInstruction(VirtualInstruction::eJump, flow.start);
-      addLabel(flow.end);
+      mBuilder.emit(CIL_jump, flow.start);
+      mBuilder.addLabel(flow.end);
    }
 }
 
 void CodeGeneratorVisitor::visit(const ASTWhile& ast)
 {
    LoopFlow flow;
-   flow.start = allocateLabel();
-   flow.end  = allocateLabel();
+   flow.start = mBuilder.allocateLabel();
+   flow.end   = mBuilder.allocateLabel();
    mLoopFlowStack.push(flow);
 
-   addLabel(flow.start);
+   mBuilder.addLabel(flow.start);
 
    ast.getCondition().accept(*this);
 
-   addInstruction(VirtualInstruction::eJumpFalse, flow.end);
+   mBuilder.emit(CIL_jump_false, flow.end);
 
    ast.getBody().accept(*this);
 
-   addInstruction(VirtualInstruction::eJump, flow.start);
-
-   addLabel(flow.end);
+   mBuilder.emit(CIL_jump, flow.start);
+   mBuilder.addLabel(flow.end);
 
    mLoopFlowStack.pop();
 }
@@ -532,18 +377,17 @@ void CodeGeneratorVisitor::visit(const ASTWhile& ast)
 void CodeGeneratorVisitor::visit(const ASTDo& ast)
 {
    LoopFlow flow;
-   flow.start = allocateLabel();
-   flow.end  = allocateLabel();
+   flow.start = mBuilder.allocateLabel();
+   flow.end   = mBuilder.allocateLabel();
    mLoopFlowStack.push(flow);
 
-   addLabel(flow.start);
+   mBuilder.addLabel(flow.start);
 
    ast.getBody().accept(*this);
    ast.getCondition().accept(*this);
 
-   addInstruction(VirtualInstruction::eJumpTrue, flow.start);
-
-   addLabel(flow.end);
+   mBuilder.emit(CIL_jump_true, flow.start);
+   mBuilder.addLabel(flow.end);
 
    mLoopFlowStack.pop();
 }
@@ -552,25 +396,23 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
 {
    LoopFlow flow;
    flow.start = -1;
-   flow.end  = allocateLabel();
+   flow.end   = mBuilder.allocateLabel();
    mLoopFlowStack.push(flow);
 
    if ( ast.canLookup() )
    {
       // create a lookup table for the values (filled by the cases)
-      mpLookupTable = new VirtualLookupTable();
-      int tableidx = mpVClass->addLookupTable(mpLookupTable);
+      mpSwitchTable = new CIL::SwitchTable();
+      mpSwitchTable->addEnd(flow.end);
 
       ast.getExpression().accept(*this);
 
       // lookup the value in the table and jump there
       // if not found -> jump to default or skip in case no default is present
-      addInstruction(VirtualInstruction::ePush, allocateLiteral(mpClass->getFullName()));
-      addInstruction(VirtualInstruction::eLookup, tableidx);
+      int index = mBuilder.addTable(mpSwitchTable);
+      mBuilder.emit(CIL_switch, index);
 
       visitChildren(ast);
-
-      mpLookupTable->setEnd(mLineNr);
    }
    else
    {
@@ -581,12 +423,12 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
       {
          const ASTCase& astcase = ast.getCase(index);
 
-         int label = allocateLabel();
+         int label = mBuilder.allocateLabel();
          labels.push_back(label);
 
          if ( astcase.isDefault() )
          {
-            addInstruction(VirtualInstruction::eJump, label);
+            mBuilder.emit(CIL_jump, label);
 
             // we break here as the other tests will never be executed
             // though the code can still fall through
@@ -597,27 +439,15 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
             ast.getExpression().accept(*this);
             astcase.getValueExpression().accept(*this);
 
-            switch ( astcase.getType().getKind() )
-            {
-               case ASTType::eInt:
-                  addInstruction(VirtualInstruction::eCmpEqInt);
-                  break;
-               case ASTType::eReal:
-                  addInstruction(VirtualInstruction::eCmpEqReal);
-                  break;
-               case ASTType::eString:
-                  addInstruction(VirtualInstruction::eCmpEqStr);
-                  break;
-            }
-
-            addInstruction(VirtualInstruction::eJumpTrue, label);
+            mBuilder.emit(CIL_cmpeq);
+            mBuilder.emit(CIL_jump_true, label);
          }
       }
 
       if ( !ast.hasDefault() )
       {
          // if no default and none matched -> jump out
-         addInstruction(VirtualInstruction::eJump, flow.end);
+         mBuilder.emit(CIL_jump, flow.end);
       }
 
       // generate code for all bodies, with the correct labels before them
@@ -625,28 +455,35 @@ void CodeGeneratorVisitor::visit(const ASTSwitch& ast)
       {
          const ASTCase& astcase = ast.getCase(index);
 
-         addLabel(labels[index]);
+         mBuilder.addLabel(labels[index]);
 
          astcase.getBody().accept(*this);
       }
    }
 
-   addLabel(flow.end);
+   mBuilder.addLabel(flow.end);
    mLoopFlowStack.pop();
 }
 
 void CodeGeneratorVisitor::visit(const ASTCase& ast)
 {
-   ASSERT(ast.hasValue());
-   ASSERT_PTR(mpLookupTable);
+   ASSERT(ast.isDefault() || ast.hasValue());
+   ASSERT_PTR(mpSwitchTable);
+
+   int label = mBuilder.allocateLabel();
+   mBuilder.addLabel(label);
 
    if ( ast.isCase() )
    {
-      mpLookupTable->add(ast.getValue(), mLineNr);
+      CIL::SwitchTableEntry entry;
+      entry.label = label;
+      entry.value = ast.getValue();
+
+      mpSwitchTable->add(entry);
    }
    else
    {
-      mpLookupTable->setDefault(mLineNr);
+      mpSwitchTable->addDefault(label);
    }
 
    ast.getBody().accept(*this);
@@ -659,40 +496,51 @@ void CodeGeneratorVisitor::visit(const ASTReturn& ast)
       ast.getExpression().accept(*this);
    }
 
-   addInstruction(VirtualInstruction::eRet, ast.hasExpression() ? 1 : 0);
+   mBuilder.emit(CIL_ret, ast.hasExpression() ? 1 : 0);
 }
 
 void CodeGeneratorVisitor::visit(const ASTTry& ast)
 {
-   int label = allocateLabel();
-   int labelCatch = allocateLabel();
+   int labelGuard = mBuilder.allocateLabel();
+   int labelFinal = mBuilder.allocateLabel();
+   int labelEnd   = mBuilder.allocateLabel();
+   int labelCatch = mBuilder.allocateLabel();
 
-   if ( ast.hasFinallyBlock() )
-      addInstruction(VirtualInstruction::eEnterGuardF, labelCatch);
-   else
-      addInstruction(VirtualInstruction::eEnterGuard, labelCatch);
+   CIL::Guard* pguard = new CIL::Guard();
+   mBuilder.addGuard(pguard);
+
+   // set up guard structure
+   pguard->finalize = ast.hasFinallyBlock();
+   pguard->labels[0] = labelGuard;
+   pguard->labels[1] = labelCatch;
+   pguard->labels[2] = labelFinal;
+   pguard->labels[3] = labelEnd;
+
+   // mark the start of the guard, needed to determine which guard to use at runtime
+   mBuilder.addLabel(labelGuard);
 
    ast.getBody().accept(*this);
 
-   addInstruction(VirtualInstruction::eJump, label);
+   // if we get here, no exception happend
+   mBuilder.emit(CIL_jump, labelFinal);
 
    // from here the code is executed when an exception did occure
-   addLabel(labelCatch);
-   addInstruction(VirtualInstruction::eStoreLocal, ast.getResourceIndex());
+   mBuilder.addLabel(labelCatch);
+   mBuilder.emit(CIL_stloc, ast.getResourceIndex());
 
    const ASTNodes& catches = ast.getCatches();
    for ( int index = 0; index < catches.size(); index++ )
    {
       const ASTCatch& c = static_cast<const ASTCatch&>(catches[index]);
 
-      int labelNext = allocateLabel();
+      int labelNext = mBuilder.allocateLabel();
 
       const ASTVariable& var = c.getVariable().getVariable();
 
-      int lit = allocateLiteral(var.getType().getObjectName());
-      addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-      addInstruction(VirtualInstruction::eInstanceOf, lit);
-      addInstruction(VirtualInstruction::eJumpFalse, labelNext);
+      // jump to next if exception is not instanceof catch type
+      mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+      mBuilder.emit(CIL_instanceof, var.getType().getObjectClass().getFullName());
+      mBuilder.emit(CIL_jump_false, labelNext);
 
       // make sure the exception variable can be resolved (is a variable after all)
       ScopedScope scope(mScopeStack);
@@ -700,44 +548,45 @@ void CodeGeneratorVisitor::visit(const ASTTry& ast)
 
       c.getBody().accept(*this);
 
-      addInstruction(VirtualInstruction::eJump, label);
-      addLabel(labelNext);
+      mBuilder.emit(CIL_jump, labelFinal);
+      mBuilder.addLabel(labelNext);
    }
 
    // the exception was not handled, so re-throw it
-   addInstruction(VirtualInstruction::eLoadLocal, ast.getResourceIndex());
-   addInstruction(VirtualInstruction::eThrow);
+   mBuilder.emit(CIL_ldloc, ast.getResourceIndex());
+   mBuilder.emit(CIL_throw);
 
    // no exception occured or it was handled successfully
-   addLabel(label);
+   mBuilder.addLabel(labelFinal);
    if ( ast.hasFinallyBlock() )
    {
       ast.getFinallyBlock().accept(*this);
    }
 
-   addInstruction(VirtualInstruction::eLeaveGuard);
+   mBuilder.addLabel(labelEnd);
 }
 
 void CodeGeneratorVisitor::visit(const ASTThrow& ast)
 {
    ast.getExpression().accept(*this);
 
-   addInstruction(VirtualInstruction::eThrow);
+   mBuilder.emit(CIL_throw);
 }
 
 void CodeGeneratorVisitor::visit(const ASTAssert& ast)
 {
    ast.getCondition().accept(*this);
 
-   int labelend = allocateLabel();
-   int errorlit = allocateLiteral("system.AssertionError");
+   int labelend = mBuilder.allocateLabel();
+   String assertclass = "system.AssertionError.AssertionError()";
 
-   addInstruction(VirtualInstruction::eJumpTrue, labelend);
-   addInstruction(VirtualInstruction::ePush, errorlit);
-   addInstruction(VirtualInstruction::eNew);
-   addInstruction(VirtualInstruction::eThrow);
+   // if condition is false we throw an exception of type AssertionError,
+   // else we jump to the end
+   mBuilder.emit(CIL_jump_true, labelend);
+   mBuilder.emit(CIL_new, assertclass);
+   mBuilder.emit(CIL_throw);
 
-   addLabel(labelend);
+   mBuilder.addLabel(labelend);
 }
 
 void CodeGeneratorVisitor::visit(const ASTLoopControl& ast)
@@ -747,11 +596,11 @@ void CodeGeneratorVisitor::visit(const ASTLoopControl& ast)
    // must become a stack of labels to support nested loops
    if ( ast.getKind() == ASTLoopControl::eBreak )
    {
-      addInstruction(VirtualInstruction::eJump, info.end);
+      mBuilder.emit(CIL_jump, info.end);
    }
    else
    {
-      addInstruction(VirtualInstruction::eJump, info.start);
+      mBuilder.emit(CIL_jump, info.start);
    }
 }
 
@@ -776,18 +625,13 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
       ast.getLeft().accept(*this);
 
       mStore = false;
-      mNeedPop = false;
 
       ASSERT(mpAccess->getAccess() != ASTAccess::eInvalidAccess);
-      bool local = mpAccess->getAccess() == ASTAccess::eLocal;
-
-      if ( mpAccess->getAccess() == ASTAccess::eField )
-         addInstruction(VirtualInstruction::ePushThis);
 
       switch ( ast.getKind() )
       {
          case ASTExpression::eAssign:
-            handleAssignment(*mpAccess, local);
+            handleAssignment(*mpAccess);
             break;
 
          case ASTExpression::ePlusAssign:
@@ -797,8 +641,7 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
    else
    {
       mpExpression = &ast;
-      mNeedPop = true;
-
+      
       ast.getLeft().accept(*this);
    }
 
@@ -814,8 +657,8 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
    mCurrentType.clear();
 
-   int labelResult = allocateLabel();
-   int labelFinish = allocateLabel();
+   int labelResult = mBuilder.allocateLabel();
+   int labelFinish = mBuilder.allocateLabel();
 
    switch ( concatenate.getMode() )
    {
@@ -824,15 +667,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            // two operants are already same type due to cast
-            if ( mCurrentType.isInt() )
-               addInstruction(VirtualInstruction::eAddInt);
-            else if ( mCurrentType.isReal() )
-               addInstruction(VirtualInstruction::eAddReal);
-            else if ( mCurrentType.isChar() )
-               addInstruction(VirtualInstruction::eAddChar);
-            else if ( mCurrentType.isString() )
-               addInstruction(VirtualInstruction::eAddStr);
+            mBuilder.emit(CIL_add);
          }
          break;
 
@@ -840,10 +675,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            if ( mCurrentType.isInt() )
-               addInstruction(VirtualInstruction::eSubInt);
-            else if ( mCurrentType.isReal() )
-               addInstruction(VirtualInstruction::eSubReal);
+            mBuilder.emit(CIL_sub);
          }
          break;
 
@@ -851,10 +683,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            if ( mCurrentType.isInt() )
-               addInstruction(VirtualInstruction::eMulInt);
-            else if ( mCurrentType.isReal() )
-               addInstruction(VirtualInstruction::eMulReal);
+            mBuilder.emit(CIL_mul);
          }
          break;
 
@@ -862,10 +691,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            if ( mCurrentType.isInt() )
-               addInstruction(VirtualInstruction::eDivInt);
-            else if ( mCurrentType.isReal() )
-               addInstruction(VirtualInstruction::eDivReal);
+            mBuilder.emit(CIL_div);
          }
          break;
 
@@ -873,10 +699,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            if ( mCurrentType.isInt() )
-               addInstruction(VirtualInstruction::eRemInt);
-            else if ( mCurrentType.isReal() )
-               addInstruction(VirtualInstruction::eRemReal);
+            mBuilder.emit(CIL_rem);
          }
          break;
 
@@ -886,7 +709,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eOrInt);
+            mBuilder.emit(CIL_or);
          }
          break;
 
@@ -894,7 +717,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eXorInt);
+            mBuilder.emit(CIL_xor);
          }
          break;
 
@@ -902,7 +725,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eAndInt);
+            mBuilder.emit(CIL_and);
          }
          break;
 
@@ -910,7 +733,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eShiftLeftInt);
+            mBuilder.emit(CIL_shl);
          }
          break;
 
@@ -918,7 +741,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eShiftRightInt);
+            mBuilder.emit(CIL_shr);
          }
          break;
 
@@ -934,30 +757,11 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
             switch ( mCurrentType.getKind() )
             {
-               case ASTType::eBoolean:
-                  addInstruction(VirtualInstruction::eCmpEqBool);
-                  break;
-               case ASTType::eInt:
-                  addInstruction(VirtualInstruction::eCmpEqInt);
-                  break;
-               case ASTType::eReal:
-                  addInstruction(VirtualInstruction::eCmpEqReal);
-                  break;
-               case ASTType::eChar:
-                  addInstruction(VirtualInstruction::eCmpEqChar);
-                  break;
-               case ASTType::eString:
-                  addInstruction(VirtualInstruction::eCmpEqStr);
-                  break;
-               case ASTType::eObject:
-                  addInstruction(VirtualInstruction::eCmpEqObj);
-                  break;
-               case ASTType::eArray:
-                  addInstruction(VirtualInstruction::eCmpEqAr);
-                  break;
                case ASTType::eNull:
-                  addInstruction(VirtualInstruction::eIsNull);
+                  mBuilder.emit(CIL_isnull);
                   break;
+               default:
+                  mBuilder.emit(CIL_cmpeq);
             }
          }
          break;
@@ -972,30 +776,12 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
             switch ( mCurrentType.getKind() )
             {
-               case ASTType::eBoolean:
-                  addInstruction(VirtualInstruction::eCmpNeqBool);
-                  break;
-               case ASTType::eInt:
-                  addInstruction(VirtualInstruction::eCmpNeqInt);
-                  break;
-               case ASTType::eReal:
-                  addInstruction(VirtualInstruction::eCmpNeqReal);
-                  break;
-               case ASTType::eChar:
-                  addInstruction(VirtualInstruction::eCmpNeqChar);
-                  break;
-               case ASTType::eString:
-                  addInstruction(VirtualInstruction::eCmpNeqStr);
-                  break;
-               case ASTType::eObject:
-                  addInstruction(VirtualInstruction::eCmpNeqObj);
-                  break;
-               case ASTType::eArray:
-                  addInstruction(VirtualInstruction::eCmpNeqAr);
-                  break;
                case ASTType::eNull:
-                  addInstruction(VirtualInstruction::eIsNull);
-                  addInstruction(VirtualInstruction::eNot);
+                  mBuilder.emit(CIL_isnull);
+                  mBuilder.emit(CIL_not);
+                  break;
+               default:
+                  mBuilder.emit(CIL_cmpne);
                   break;
             }
          }
@@ -1005,18 +791,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            switch ( mCurrentType.getKind() )
-            {
-               case ASTType::eInt:
-                  addInstruction(VirtualInstruction::eCmpLeInt);
-                  break;
-               case ASTType::eReal:
-                  addInstruction(VirtualInstruction::eCmpLeReal);
-                  break;
-               case ASTType::eString:
-                  addInstruction(VirtualInstruction::eCmpLeStr);
-                  break;
-            }
+            mBuilder.emit(CIL_cmple);
          }
          break;
 
@@ -1024,18 +799,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            switch ( mCurrentType.getKind() )
-            {
-               case ASTType::eInt:
-                  addInstruction(VirtualInstruction::eCmpLtInt);
-                  break;
-               case ASTType::eReal:
-                  addInstruction(VirtualInstruction::eCmpLtReal);
-                  break;
-               case ASTType::eString:
-                  addInstruction(VirtualInstruction::eCmpLtStr);
-                  break;
-            }
+            mBuilder.emit(CIL_cmplt);
          }
          break;
 
@@ -1043,18 +807,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            switch ( mCurrentType.getKind() )
-            {
-               case ASTType::eInt:
-                  addInstruction(VirtualInstruction::eCmpGtInt);
-                  break;
-               case ASTType::eReal:
-                  addInstruction(VirtualInstruction::eCmpGtReal);
-                  break;
-               case ASTType::eString:
-                  addInstruction(VirtualInstruction::eCmpGtStr);
-                  break;
-            }
+            mBuilder.emit(CIL_cmpgt);
          }
          break;
 
@@ -1062,18 +815,7 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
          {
             concatenate.getRight().accept(*this);
 
-            switch ( mCurrentType.getKind() )
-            {
-               case ASTType::eInt:
-                  addInstruction(VirtualInstruction::eCmpGeInt);
-                  break;
-               case ASTType::eReal:
-                  addInstruction(VirtualInstruction::eCmpGeReal);
-                  break;
-               case ASTType::eString:
-                  addInstruction(VirtualInstruction::eCmpGeStr);
-                  break;
-            }
+            mBuilder.emit(CIL_cmpge);
          }
          break;
 
@@ -1081,31 +823,31 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
       case ASTConcatenate::eOr:
          {
-            addInstruction(VirtualInstruction::eJumpTrue, labelResult);    // true
+            mBuilder.emit(CIL_jump_true, labelResult);                  // true
 
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eJumpTrue, labelResult);    // true
-            addInstruction(VirtualInstruction::ePushFalse);                // push false
-            addInstruction(VirtualInstruction::eJump, labelFinish);        // jump to finish
-            addLabel(labelResult);
-            addInstruction(VirtualInstruction::ePushTrue);                 // push true
-            addLabel(labelFinish);
+            mBuilder.emit(CIL_jump_true, labelResult);                  // true
+            mBuilder.emit(CIL_ldfalse);                                 // push false
+            mBuilder.emit(CIL_jump, labelFinish);                       // jump to finish
+            mBuilder.addLabel(labelResult);
+            mBuilder.emit(CIL_ldtrue);                                  // push true
+            mBuilder.addLabel(labelFinish);
          }
          break;
 
       case ASTConcatenate::eAnd:
          {
-            addInstruction(VirtualInstruction::eJumpFalse, labelResult);   // false
+            mBuilder.emit(CIL_jump_false, labelResult);                   // false
 
             concatenate.getRight().accept(*this);
 
-            addInstruction(VirtualInstruction::eJumpFalse, labelResult);   // false
-            addInstruction(VirtualInstruction::ePushTrue);                 // push true
-            addInstruction(VirtualInstruction::eJump, labelFinish);        // jump to finish
-            addLabel(labelResult);
-            addInstruction(VirtualInstruction::ePushFalse);                // push false
-            addLabel(labelFinish);
+            mBuilder.emit(CIL_jump_false, labelResult);                  // false
+            mBuilder.emit(CIL_ldtrue);                                   // push true
+            mBuilder.emit(CIL_jump, labelFinish);                        // jump to finish
+            mBuilder.addLabel(labelResult);
+            mBuilder.emit(CIL_ldfalse);                                  // push false
+            mBuilder.addLabel(labelFinish);
          }
          break;
    }
@@ -1131,7 +873,7 @@ void CodeGeneratorVisitor::visit(const ASTUnary& ast)
       if ( index == 0 )
       {
          // we need to push this as otherwise there is nothing
-         addInstruction(VirtualInstruction::ePushThis);
+         mBuilder.emit(CIL_ldarg, 0);
       }
    }
    else
@@ -1158,17 +900,10 @@ void CodeGeneratorVisitor::visit(const ASTUnary& ast)
       switch ( ast.getPre() )
       {
          case ASTUnary::eNegate:
-            {
-               if ( mCurrentType.isInt() )
-                  addInstruction(VirtualInstruction::eIntNegate);
-               else if ( mCurrentType.isReal() )
-                  addInstruction(VirtualInstruction::eRealNegate);
-            }
+            mBuilder.emit(CIL_neg);
             break;
          case ASTUnary::eNot:
-            {
-               addInstruction(VirtualInstruction::eNot);
-            }
+            mBuilder.emit(CIL_not);
             break;
       }
    }
@@ -1178,8 +913,8 @@ void CodeGeneratorVisitor::visit(const ASTInstanceOf& ast)
 {
    ast.getObject().accept(*this);
 
-   int typenameid = allocateLiteral(ast.getInstanceType().getObjectName());
-   addInstruction(VirtualInstruction::eInstanceOf, typenameid);
+   String classname = ast.getInstanceType().getObjectClass().getFullName();
+   mBuilder.emit(CIL_instanceof, classname);
 }
 
 void CodeGeneratorVisitor::visit(const ASTNew& ast)
@@ -1188,14 +923,12 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
    {
       case ASTNew::eObject:
          {
-            int typenameid = allocateLiteral(ast.getType().getObjectName());
-
+            String classname = ast.getType().getObjectClass().getFullName() + "." + ast.getConstructor().getPrototype();
             mCurrentType = ast.getType();
 
             ast.getArguments().accept(*this);
 
-            addInstruction(VirtualInstruction::ePush, typenameid);
-            addInstruction(VirtualInstruction::eNew, ast.getConstructor().getResourceIndex()); // constructor index as argument
+            mBuilder.emit(CIL_new, classname); // constructor index as argument
          }
          break;
 
@@ -1204,7 +937,7 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
             // reverse put sizes on stack
             reverseVisitChildren(ast);
 
-            addInstruction(VirtualInstruction::eNewArray, ast.getArrayDimension());
+            mBuilder.emit(CIL_newarray, ast.getType().toString());
          }
          break;
    }
@@ -1216,49 +949,45 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
    {
       ASSERT(ast.hasConstructor());
 
-      addInstruction(VirtualInstruction::ePushThis);
+      mBuilder.emit(CIL_ldarg, 0);
 
       // call to constructor of superclass
       visitChildren(ast);
 
-      addInstruction(VirtualInstruction::ePush, ast.getArgumentCount() + 1);
-      addInstruction(ast.isSuper() ? VirtualInstruction::eCallSuper : VirtualInstruction::eCall, ast.getConstructor().getResourceIndex());
+      const ASTClass* pclass = mpClass;
+      if ( ast.isSuper() )
+      {
+         pclass = &ast.getConstructor().getClass();
+      }
 
-      mNeedPop = false;
+      String name = pclass->getFullName() + "." + ast.getConstructor().getPrototype();
+      mBuilder.emit(CIL_call, name);
    }
    else if ( ast.isThis() )
    {
-      addInstruction(VirtualInstruction::ePushThis);
-   }
-   else
-   {
-      mSuperCall = true;
+      mBuilder.emit(CIL_ldarg, 0);
    }
 }
 
 void CodeGeneratorVisitor::visit(const ASTNative& ast)
 {
-   addInstruction(VirtualInstruction::ePushThis);
+   mBuilder.emit(CIL_ldarg, 0);
 
    if ( ast.hasArguments() )
    {
       visitChildren(ast); // place arguments on the stack
-
-      addInstruction(VirtualInstruction::ePush, ast.getArguments().size() + 1);
    }
    else
    {
       ASSERT_PTR(mpFunction);
       int arguments = mpFunction->getArgumentCount();
-      for ( int index = 1; index <= arguments; index++ ) // skip the 'this' argument
+      for ( int index = 1; index < arguments; index++ )
       {
-         addInstruction(VirtualInstruction::eLoadLocal, index);
+         mBuilder.emit(CIL_ldarg, index);
       }
-
-      addInstruction(VirtualInstruction::ePush, arguments + 1);
    }
 
-   addInstruction(VirtualInstruction::eCallNative, ast.getIndex());
+   mBuilder.emit(CIL_call_native, ast.getIndex());
 }
 
 void CodeGeneratorVisitor::visit(const ASTCast& ast)
@@ -1277,34 +1006,35 @@ void CodeGeneratorVisitor::visit(const ASTCast& ast)
    }
    else
    {
-      switch ( mCurrentType.getKind() )
+      switch ( from.getKind() )
       {
+         case ASTType::eBoolean:
+            if ( mCurrentType.isString() )
+               mBuilder.emit(CIL_bconv_str);
+            break;
          case ASTType::eInt:
-            // should not yet happen
-            if ( from.isReal() )
-            {
-               addInstruction(VirtualInstruction::eReal2Int);
-            }
-            else if ( from.isString() )
-            {
-               addInstruction(VirtualInstruction::eString2Int);
-            }
+            if ( mCurrentType.isReal() )
+               mBuilder.emit(CIL_iconv_real);
+            else if ( mCurrentType.isString() )
+               mBuilder.emit(CIL_iconv_str);
             break;
          case ASTType::eReal:
-            if ( from.isInt() )
-            {
-               addInstruction(VirtualInstruction::eInt2Real);
-            }
+            if ( mCurrentType.isInt() )
+               mBuilder.emit(CIL_rconv_int);
+            else if ( mCurrentType.isString() )
+               mBuilder.emit(CIL_rconv_str);
+            break;
+         case ASTType::eChar:
+            if ( mCurrentType.isString() )
+               mBuilder.emit(CIL_cconv_str);
             break;
          case ASTType::eString:
-            if ( from.isInt() )
-               addInstruction(VirtualInstruction::eInt2String);
-            else if ( from.isReal() )
-               addInstruction(VirtualInstruction::eReal2String);
-            else if ( from.isChar() )
-               addInstruction(VirtualInstruction::eChar2String);
-            else if ( from.isBoolean() )
-               addInstruction(VirtualInstruction::eBoolean2String);
+            if ( mCurrentType.isBoolean() )
+               mBuilder.emit(CIL_sconv_bool);
+            else if ( mCurrentType.isInt() )
+               mBuilder.emit(CIL_sconv_int);
+            else if ( mCurrentType.isReal() )
+               mBuilder.emit(CIL_rconv_str);
             break;
       }
    }
@@ -1324,15 +1054,11 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                case ASTAccess::eField:
                   if ( isstatic )
                   {
-                     // use one of the two
-                     // - mCurrentType : call static of other class
-                     // - mpClass : access static field of this class
-                     int classlit = allocateLiteral(mCurrentType.isValid() ? mCurrentType.getObjectClass().getFullName() : mpClass->getFullName());
-                     addInstruction(VirtualInstruction::ePush, classlit);
+                     emitStaticVariableClassName();
                   }
                   else
                   {
-                     addInstruction(VirtualInstruction::ePushThis);
+                     mBuilder.emit(CIL_ldarg, 0); // this
                   }
 
                   handleVariable(var, false);
@@ -1341,11 +1067,13 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                case ASTAccess::eRefField:
                   if ( isstatic )
                   {
-                     addInstruction(VirtualInstruction::ePush, allocateLiteral(mCurrentType.getObjectClass().getFullName()));
+                     String name = mCurrentType.getObjectClass().getFullName();
+                     mBuilder.emit(CIL_ldstr, name);
                   }
                   handleVariable(var, false);
                   break;
 
+               case ASTAccess::eArgument:
                case ASTAccess::eLocal:
                   handleVariable(var, true);
                   break;
@@ -1374,10 +1102,12 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             // the array object is now on top of the stack
             mExpr = 1;
 
+            ASTType before = mCurrentType;
+
             // add indices on stack
             reverseVisitChildren(ast);
 
-            addInstruction(VirtualInstruction::eLoadArray, ast.getArguments().size());
+            mBuilder.emit(CIL_ldelem, ast.getArguments().size());
          }
          break;
 
@@ -1387,7 +1117,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             if ( !mCurrentType.isValid() )
             {
-               addInstruction(VirtualInstruction::ePushThis);
+               mBuilder.emit(CIL_ldarg, 0); // this
             }
 
             ASTType before = mCurrentType;
@@ -1396,48 +1126,34 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             if ( function.getModifiers().isPureNative() )
             {
-               addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
-               
                const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(function.getClass(), function);
                if ( preg == NULL )
                {
-                  String fncname = function.getClass().getFullName() + "_" + function.getName() + "(" + mpFunction->getSignature().toString() + ")";
+                  String fncname = function.getClass().getFullName() + "_" + function.getPrototype();
                   mContext.getLog().error("Can not find registered method for function " + fncname);
                   return;
                }
 
-               addInstruction(VirtualInstruction::eCallNative, preg->getIndex());
+               mBuilder.emit(CIL_call_native, preg->getIndex());
             }
             else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
             {
-               addInstruction(VirtualInstruction::ePush, allocateLiteral(before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()));
-               addInstruction(VirtualInstruction::eCallStatic, function.getResourceIndex());
+               String name = (before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()) + "." + function.getPrototype();
+               mBuilder.emit(CIL_call, name);
             }
             else 
             {
-               addInstruction(VirtualInstruction::ePush, function.getArgumentCount());
-
                if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
                {
-                  addInstruction(VirtualInstruction::eCallInterface, function.getResourceIndex());
-               }
-               else if ( mSuperCall )
-               {
-                  addInstruction(VirtualInstruction::eCallSuper, function.getResourceIndex());
+                  String name = before.getObjectClass().getFullName() + "." + function.getPrototype();
+                  mBuilder.emit(CIL_call_interface, name);
                }
                else
                {
-                  addInstruction(VirtualInstruction::eCall, function.getResourceIndex());
+                  String name = function.getClass().getFullName() + "." + function.getPrototype();
+                  mBuilder.emit(CIL_call_virt, name);
                }
             }
-
-            if ( function.getType().isVoid() )
-            {
-               // nothing is pushed on the stack with a void function
-               mNeedPop = false;
-            }
-
-            mSuperCall = false;
 
             const ASTType& type = function.getType();
             if ( type.isGeneric() )
@@ -1454,12 +1170,11 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
          {
             if ( ast.getAccess() == ASTAccess::eField )
             {
-               addInstruction(VirtualInstruction::eLoadClass, 1);
+               mBuilder.emit(CIL_ldclass, "");
             }
             else
             {
-               addInstruction(VirtualInstruction::ePush, allocateLiteral(mCurrentType.getObjectClass().getFullName()));
-               addInstruction(VirtualInstruction::eLoadClass, 0);
+               mBuilder.emit(CIL_ldclass, mCurrentType.getObjectClass().getFullName());
             }
 
             mCurrentType.clear();
@@ -1487,7 +1202,7 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
    {
       if ( !IS_SET(mState, eStateNoNull) )
       {
-         addInstruction(VirtualInstruction::ePushNull);
+         mBuilder.emit(CIL_ldnull);
       }
    }
    else
@@ -1500,20 +1215,36 @@ void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 
 // - Helpers
 
-void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
+void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access)
 {
-   ScopedValue<bool> needspop(&mNeedPop, false, mNeedPop);
-
    switch ( access.getKind() )
    {
       case ASTAccess::eField:
          {
-            bool isstatic = access.getVariable().getModifiers().isStatic();
-
             // the literal of the class has already been stored on the stack (see ASTAccess::eStatic and unary)
 
-            int instruction = local ? VirtualInstruction::eStoreLocal : (isstatic ? VirtualInstruction::eStoreStatic : VirtualInstruction::eStore);
-            addInstruction(instruction, access.getVariable().getResourceIndex());
+            if ( mpAccess->getAccess() == ASTAccess::eLocal )
+            {
+               mBuilder.emit(CIL_stloc, access.getVariable().getResourceIndex());
+            }
+            else
+            {
+               bool isstatic = access.getVariable().getModifiers().isStatic();
+               if ( isstatic )
+               {
+                  emitStaticVariableClassName();
+                  mBuilder.emit(CIL_ststatic, access.getVariable().getResourceIndex());
+               }
+               else
+               {
+                  if ( mpAccess->getAccess() == ASTAccess::eField )
+                     mBuilder.emit(CIL_ldarg, 0);
+
+                  mBuilder.emit(CIL_stfield, access.getVariable().getResourceIndex());
+               }
+            }
+
+            
          }
          break;
 
@@ -1522,7 +1253,7 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
             // add indices on stack
             reverseVisitChildren(access);
 
-            addInstruction(VirtualInstruction::eStoreArray, access.getArguments().size());
+            mBuilder.emit(CIL_stelem, access.getArguments().size());
          }
          break;
 
@@ -1537,28 +1268,31 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access, bool local)
 
 void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool local)
 {
+   bool isargument = variable.isArgument();
    bool isstatic = variable.getModifiers().isStatic();
 
-   int store = local ? VirtualInstruction::eStoreLocal : (isstatic ? VirtualInstruction::eStoreStatic : VirtualInstruction::eStore);
-   int load  = local ? VirtualInstruction::eLoadLocal  : (isstatic ? VirtualInstruction::eLoadStatic : VirtualInstruction::eLoad);
+   Opcode store = local ? (isargument ? CIL_ldarg : CIL_stloc) : (isstatic ? CIL_ststatic : CIL_stfield);
+   Opcode load  = local ? (isargument ? CIL_ldarg : CIL_ldloc) : (isstatic ? CIL_ldstatic : CIL_ldfield);
 
    if ( mLoadFlags > 0 )
    {
       // if not local, the object is already on the stack
-      addInstruction(load, variable.getResourceIndex());
+      mBuilder.emit(load, variable.getResourceIndex());
 
       if ( variable.getType().isInt() )
-      {
-         addInstruction(VirtualInstruction::eInt1);
-         addInstruction(IS_SET(mLoadFlags, ePreIncr) ? VirtualInstruction::eAddInt : VirtualInstruction::eSubInt);
-      }
+         mBuilder.emit(CIL_ldint, 1);
       else
-      {
-         addInstruction(VirtualInstruction::eReal1);
-         addInstruction(IS_SET(mLoadFlags, ePreIncr) ? VirtualInstruction::eAddReal : VirtualInstruction::eSubReal);
-      }
+         mBuilder.emit(CIL_ldreal, 1.0);
 
-      addInstruction(VirtualInstruction::eDup);
+      if ( IS_SET(mLoadFlags, ePreIncr) || IS_SET(mLoadFlags, ePostIncr) )
+         mBuilder.emit(CIL_add);
+      else if ( IS_SET(mLoadFlags, ePreDecr) || IS_SET(mLoadFlags, ePostDecr) )
+         mBuilder.emit(CIL_sub);
+
+      if ( mLoadFlags > eKeep )
+      {
+         mBuilder.emit(CIL_dup);
+      }
 
       int flags = mLoadFlags;
       mLoadFlags = 0;
@@ -1571,39 +1305,42 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable, bool loca
          mRightHandSide = false;
       }
 
-      addInstruction(store, variable.getResourceIndex());
-
+      mBuilder.emit(store, variable.getResourceIndex());
+      
       if ( flags > eKeep )
       {
          // revert if it should be a post operator
          if ( variable.getType().isInt() )
-         {
-            addInstruction(VirtualInstruction::eInt1);
-            addInstruction(IS_SET(flags, ePostIncr) ? VirtualInstruction::eSubInt : VirtualInstruction::eAddInt);
-         }
+            mBuilder.emit(CIL_ldint, 1);
          else
-         {
-            addInstruction(VirtualInstruction::eReal1);
-            addInstruction(IS_SET(flags, ePostIncr) ? VirtualInstruction::eSubReal : VirtualInstruction::eAddReal);
-         }
+            mBuilder.emit(CIL_ldreal, 1.0);
+
+         if ( IS_SET(flags, ePostIncr) )
+            mBuilder.emit(CIL_sub);
+         else if ( IS_SET(flags, ePostDecr) )
+            mBuilder.emit(CIL_add);
       }
    }
    else
    {
-      addInstruction(load, variable.getResourceIndex());
+      mBuilder.emit(load, variable.getResourceIndex());
    }
 }
 
-void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
+void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
 {
-   VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-   mpVClass->getVirtualFunctionTable().append(pentry);
-   pentry->mName = "static_init";
-   pentry->mInstruction = mInstructions.empty() ? 0 : mInstructions.back().linenr + 1;
-   pentry->mOriginalInstruction = pentry->mInstruction;
-   pentry->mArguments = 0;
+   // var_init blocks have no return value & no arguments
+   ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
+   pfunction->setClass(ast);
+   pfunction->setName("static_init");
+   pfunction->setModifiers(ASTModifiers(ASTModifiers::eProtected, ASTModifiers::eStatic));
+   pfunction->setType(new ASTType(ASTType::eVoid));
+   pfunction->addArgument(ast.createThisType());
+   pfunction->setResourceIndex(0);
 
-   int lit = allocateLiteral(ast.getFullName());
+   ast.insertFunction(0, pfunction);
+
+   mBuilder.start();
 
    const ASTClass::Fields& fields = ast.getStatics();
    for ( std::size_t index = 0; index < fields.size(); index++ )
@@ -1619,17 +1356,19 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
          if ( varinit.hasExpression() )
          {
             varinit.getExpression().accept(*this);
-            addInstruction(VirtualInstruction::ePush, lit);
-            addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+
+            mBuilder.emit(CIL_ldstr, ast.getFullName());
+            mBuilder.emit(CIL_ststatic, variable.getResourceIndex());
          }
          else // array initializer
          {
             const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-            addInstruction(VirtualInstruction::ePush, arrayinit.getCount());
-            addInstruction(VirtualInstruction::eNewArray, 1);
-            addInstruction(VirtualInstruction::ePush, lit);
-            addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+            // var = new array[count]
+            mBuilder.emit(CIL_ldint, arrayinit.getCount());
+            mBuilder.emit(CIL_newarray, variable.getType().toString());
+            mBuilder.emit(CIL_ldstr, ast.getFullName());
+            mBuilder.emit(CIL_ststatic, variable.getResourceIndex());
 
             int count = arrayinit.getCount();
             for ( int index = 0; index < count; index++ )
@@ -1638,10 +1377,11 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
 
                vinit.getExpression().accept(*this);
 
-               addInstruction(VirtualInstruction::ePush, lit);
-               addInstruction(VirtualInstruction::eLoadStatic, variable.getResourceIndex());
-               addInstruction(VirtualInstruction::ePush, index);
-               addInstruction(VirtualInstruction::eStoreArray, 1);
+               // var[index] = expr
+               mBuilder.emit(CIL_ldstr, ast.getFullName());
+               mBuilder.emit(CIL_ldstatic, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldint, index);
+               mBuilder.emit(CIL_stelem, 1);
             }
          }
       }
@@ -1651,45 +1391,56 @@ void CodeGeneratorVisitor::handleStaticBlock(const ASTClass& ast)
          switch ( type.getKind() )
          {
             case ASTType::eBoolean:
-               addInstruction(VirtualInstruction::ePushFalse);
-               addInstruction(VirtualInstruction::ePush, lit);
-               addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldfalse);
                break;
             case ASTType::eInt:
-               addInstruction(VirtualInstruction::eInt0);
-               addInstruction(VirtualInstruction::ePush, lit);
-               addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldint, 0);
                break;
             case ASTType::eReal:
-               addInstruction(VirtualInstruction::eReal0);
-               addInstruction(VirtualInstruction::ePush, lit);
-               addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldreal, 0.0);
                break;
             case ASTType::eString:
-               addInstruction(VirtualInstruction::eLoadLiteral, allocateLiteral(""));
-               addInstruction(VirtualInstruction::ePush, lit);
-               addInstruction(VirtualInstruction::eStoreStatic, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldstr, String());
+               break;
+            case ASTType::eObject:
+            case ASTType::eArray:
+               mBuilder.emit(CIL_ldnull);
                break;
          }
+
+         // class.var = init
+         mBuilder.emit(CIL_ldstr, ast.getFullName());
+         mBuilder.emit(CIL_ststatic, variable.getResourceIndex());
       }
    }
-   addInstruction(VirtualInstruction::eRet, 0);
+   mBuilder.emit(CIL_ret, 0);
+
+   // build the function
+   mBuilder.end();
+
+   pfunction->setInstructions(mBuilder.getInstructions());
 }
 
-void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
+void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
 {
-   VirtualFunctionTableEntry* pentry = new VirtualFunctionTableEntry();
-   mpVClass->getVirtualFunctionTable().append(pentry);
-   pentry->mName = "var_init";
-   pentry->mInstruction = mInstructions.empty() ? 0 : mInstructions.back().linenr + 1;
-   pentry->mOriginalInstruction = pentry->mInstruction;
-   pentry->mArguments = 1;
+   // construct the functions
+   ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
+   pfunction->setClass(ast);
+   pfunction->setName("var_init");
+   pfunction->setModifiers(ASTModifiers(ASTModifiers::eProtected, 0));
+   pfunction->setType(new ASTType(ASTType::eVoid));
+   pfunction->addArgument(ast.createThisType());
+   pfunction->setResourceIndex(1);
+
+   ast.insertFunction(1, pfunction);
+
+   mBuilder.start();
 
    if ( ast.hasBaseClass() )
    {
-      addInstruction(VirtualInstruction::ePushThis);
-      addInstruction(VirtualInstruction::ePush, 1);
-      addInstruction(VirtualInstruction::eCallSuper, 1);
+      String name = ast.getBaseClass().getFullName() + ".var_init()";
+      mBuilder.emit(CIL_ldarg, 0);
+      mBuilder.emit(CIL_call, name);
    }
 
    const ASTClass::Fields& fields = ast.getFields();
@@ -1707,17 +1458,17 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          {
             varinit.getExpression().accept(*this);
 
-            addInstruction(VirtualInstruction::ePushThis);
-            addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+            mBuilder.emit(CIL_ldarg, 0);
+            mBuilder.emit(CIL_stfield, variable.getResourceIndex());
          }
          else // array initialization (currently only for one dimensional arrays)
          {
             const ASTArrayInit& arrayinit = varinit.getArrayInit();
 
-            addInstruction(VirtualInstruction::ePush, arrayinit.getCount());
-            addInstruction(VirtualInstruction::eNewArray, 1);
-            addInstruction(VirtualInstruction::ePushThis);
-            addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+            mBuilder.emit(CIL_ldint, arrayinit.getCount());
+            mBuilder.emit(CIL_newarray, variable.getType().toString());
+            mBuilder.emit(CIL_ldarg, 0);
+            mBuilder.emit(CIL_stfield, variable.getResourceIndex());
 
             int count = arrayinit.getCount();
             for ( int index = 0; index < count; index++ )
@@ -1726,10 +1477,10 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
 
                vinit.getExpression().accept(*this);
 
-               addInstruction(VirtualInstruction::ePushThis);
-               addInstruction(VirtualInstruction::eLoad, variable.getResourceIndex());
-               addInstruction(VirtualInstruction::ePush, index);
-               addInstruction(VirtualInstruction::eStoreArray, 1);
+               mBuilder.emit(CIL_ldarg, 0);
+               mBuilder.emit(CIL_ldfield, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldint, index);
+               mBuilder.emit(CIL_stelem, 1);
             }
          }
       }
@@ -1739,133 +1490,73 @@ void CodeGeneratorVisitor::handleFieldBlock(const ASTClass& ast)
          switch ( type.getKind() )
          {
             case ASTType::eBoolean:
-               addInstruction(VirtualInstruction::ePushFalse);
-               addInstruction(VirtualInstruction::ePushThis);
-               addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldfalse);
                break;
             case ASTType::eInt:
-               addInstruction(VirtualInstruction::eInt0);
-               addInstruction(VirtualInstruction::ePushThis);
-               addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldint, 0);
                break;
             case ASTType::eReal:
-               addInstruction(VirtualInstruction::eReal0);
-               addInstruction(VirtualInstruction::ePushThis);
-               addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
+               mBuilder.emit(CIL_ldreal, 0.0);
                break;
             case ASTType::eString:
-               {
-                  int lit = allocateLiteral("");
-                  addInstruction(VirtualInstruction::eLoadLiteral, lit);
-                  addInstruction(VirtualInstruction::ePushThis);
-                  addInstruction(VirtualInstruction::eStore, variable.getResourceIndex());
-               }
+               mBuilder.emit(CIL_ldstr, String());
+               break;
+            case ASTType::eObject:
+            case ASTType::eArray:
+            case ASTType::eGeneric:
+               mBuilder.emit(CIL_ldnull);
                break;
          }
+
+         mBuilder.emit(CIL_ldarg, 0);
+         mBuilder.emit(CIL_stfield, variable.getResourceIndex());
       }
    }
-   addInstruction(VirtualInstruction::eRet, 0);
-}
+   mBuilder.emit(CIL_ret, 0);
+   mBuilder.end();
 
-void CodeGeneratorVisitor::handleClassObject(const ASTClass& ast)
-{
-   const FunctionTable& table = ast.getFunctionTable();
-   VirtualArray* pfuncarray = new VirtualArray();
-   pfuncarray->addLevel(table.size());
-
-   for ( int index = 0; index < table.size(); index++ )
-   {
-      const ASTFunction& function = table[index];
-
-      VirtualArray* pannoarray = new VirtualArray();
-      if ( function.hasAnnotations() )
-      {
-         const ASTAnnotations& annotations = function.getAnnotations();
-         pannoarray->addLevel(annotations.size());
-         for ( int a = 0; a < annotations.size(); a++ )
-         {
-            const ASTAnnotation& annotation = annotations[a];
-
-            VirtualString& vname = mContext.getStringCache().lookup(annotation.mName);
-            (*pannoarray)[a] = Variant(vname);
-         }
-      }
-      else
-      {
-         pannoarray->addLevel(0);
-      }
-
-      VirtualObject* funcobject = new VirtualObject();
-      funcobject->initialize(2);
-      funcobject->setMember(0, Variant(mContext.getStringCache().lookup(function.getName())));
-      funcobject->setMember(1, Variant(*pannoarray));
-
-      (*pfuncarray)[index] = Variant(*funcobject); // <-- hack!
-   }
-
-   VirtualObject* classobject = new VirtualObject();
-   classobject->initialize(2);
-   classobject->setMember(0, Variant(mContext.getStringCache().lookup(ast.getFullName())));
-   classobject->setMember(1, Variant(*pfuncarray));
-
-   mpVClass->setClassObject(classobject);
+   pfunction->setInstructions(mBuilder.getInstructions());
 }
 
 void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
 {
-   int index = literal.getTableIndex();
    const Variant& value = literal.getValue();
    if ( value.isInt() )
    {
-      switch ( value.asInt() )
-      {
-      case 0:
-         addInstruction(VirtualInstruction::eInt0);
-         break;
-      case 1:
-         addInstruction(VirtualInstruction::eInt1);
-         break;
-      case 2:
-         addInstruction(VirtualInstruction::eInt2);
-         break;
-      default:
-         addInstruction(VirtualInstruction::eLoadLiteral, index);
-         break;
-      }
+      mBuilder.emit(CIL_ldint, value.asInt());
    }
    else if ( value.isReal() )
    {
-      double real = value.asReal();
-      if ( real == 0.0 )
-      {
-         addInstruction(VirtualInstruction::eReal0);
-      }
-      else if ( real == 1.0 )
-      {
-         addInstruction(VirtualInstruction::eReal1);
-      }
-      else if ( real == 2.0 )
-      {
-         addInstruction(VirtualInstruction::eReal2);
-      }
-      else
-      {
-         addInstruction(VirtualInstruction::eLoadLiteral, index);
-      }
+      mBuilder.emit(CIL_ldreal, value.asReal());
    }
    else if ( value.isBool() )
    {
-      if ( value.asBool() )
-      {
-         addInstruction(VirtualInstruction::ePushTrue);
-      }
-      else
-      {
-         addInstruction(VirtualInstruction::ePushFalse);
-      }
+      mBuilder.emit(value.asBool() ? CIL_ldtrue : CIL_ldfalse, 0);
+   }
+   else if ( value.isString() )
+   {
+      mBuilder.emit(CIL_ldstr, value.asString().getString());
+   }
+   else if ( value.isChar() )
+   {
+      mBuilder.emit(CIL_ldchar, value.asChar());
    }
    else
    {
-      addInstruction(VirtualInstruction::eLoadLiteral, index);
+      // should not get here
    }
+}
+
+void CodeGeneratorVisitor::emitStaticVariableClassName()
+{
+   // use one of the two
+   // - mCurrentType : call static of other class
+   // - mpClass : access static field of this class
+   String name;
+   if ( mCurrentType.isValid() )
+      name = mCurrentType.getObjectClass().getFullName();
+   else
+      name = mpClass->getFullName();
+
+   mBuilder.emit(CIL_ldstr, name);
 }

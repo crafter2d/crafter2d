@@ -23,9 +23,11 @@
 #include "timerdata.h"
 
 TimerDelta::TimerDelta(TimerData& data):
-   mDelta(TIMER.getInterval(data))
+   mDelta(0.0f)
 {
-   TIMER.start(data);
+   Timer& timer = TIMER;
+   mDelta = timer.getInterval(data);
+   timer.start(data);
 }
 
 float TimerDelta::getDelta() const

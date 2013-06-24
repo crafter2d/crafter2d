@@ -30,7 +30,7 @@ public:
    
  // operations
    void add(const Variant& variant, int codeindex);
-   void offsetCode(int offset);
+   void updatePosition(int offset);
 
 private:
    EntryMap mEntries;

@@ -5,7 +5,6 @@
 
 #include "script/scope/scope.h"
 #include "script/scope/scopevariable.h"
-#include "script/compiler/signature.h"
 
 #include "astfunction.h"
 #include "asttype.h"
@@ -21,13 +20,13 @@ ASTClass::ASTClass():
    mModifiers(),
    mpBaseType(NULL),
    mInterfaces(),
+   mpTypeVariables(NULL),
+   mFunctions(),
+   mFunctionTable(),
    mName(),
    mFullName(),
-   mpTypeVariables(NULL),
-   mTable(),
    mStatics(),
    mFields(),
-   mFunctions(),
    mState(eParsed)
 {
 }
@@ -143,19 +142,24 @@ void ASTClass::setTypeVariables(ASTTypeVariables* pinfo)
    mpTypeVariables = pinfo;
 }
 
-const FunctionTable& ASTClass::getFunctionTable() const
+const ASTFunctionMap& ASTClass::getFunctions() const
 {
-   return mTable;
+   return mFunctions;
 }
 
-FunctionTable& ASTClass::getFunctionTable()
+ASTFunctionMap& ASTClass::getFunctions()
 {
-   if ( mTable.size() == 0 )
-   {
-      indexFunctions();
-   }
+   return mFunctions;
+}
 
-   return mTable;
+const ASTFunctionTable& ASTClass::getFunctionTable() const
+{
+   return mFunctionTable;
+}
+
+ASTFunctionTable& ASTClass::getFunctionTable()
+{
+   return mFunctionTable;
 }
 
 const ASTTypeList& ASTClass::getInterfaces() const
@@ -189,6 +193,16 @@ void ASTClass::setState(State state) const
 }
 
 // - Query
+
+bool ASTClass::isClass() const
+{
+   return mKind == eClass;
+}
+   
+bool ASTClass::isInterface() const
+{
+   return mKind == eInterface;
+}
    
 bool ASTClass::isBase(const ASTClass& base) const
 {
@@ -248,60 +262,22 @@ bool ASTClass::isTypeName(const String& name) const
 
 bool ASTClass::hasConstructor() const
 {
-   Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getKind() == ASTMember::eConstructor )
-      {
-         return true;
-      }
-   }
-   return false;
+   return mFunctions.hasConstructor();
 }
 
 bool ASTClass::hasAbstractFunction() const
 {
-   Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getModifiers().isAbstract() )
-      {
-         return true;
-      }
-   }
-   return false;
+   return mFunctions.hasAbstractFunction();
 }
 
 bool ASTClass::hasNativeFunction() const
 {
-   Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getModifiers().isNative() )
-      {
-         return true;
-      }
-   }
-   return false;
+   return mFunctions.hasNativeFunction();
 }
 
 bool ASTClass::hasNativeConstructor() const
 {
-   Functions::const_iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      if ( pfunction->getKind() == ASTMember::eConstructor
-         && ( pfunction->getModifiers().isNative()
-           || pfunction->getModifiers().isPureNative() ) )
-      {
-         return true;
-      }
-   }
-   return false;
+   return mFunctions.hasNativeConstructor();
 }
 
 int ASTClass::getTotalStatics() const
@@ -314,11 +290,38 @@ int ASTClass::getTotalVariables() const
    return mFields.size() + (hasBaseClass() ? getBaseClass().getTotalVariables() : 0);
 }
 
+const ASTField& ASTClass::getField(int var) const
+{
+   if ( mFields.empty() || mFields[0]->getVariable().getResourceIndex() > var )
+   {
+      return getBaseClass().getField(var);
+   }
+
+   std::size_t index = var - mFields[0]->getVariable().getResourceIndex();
+   ASSERT(index < mFields.size());
+   return *mFields[index];
+}
+
 // - Operations
    
 void ASTClass::addInterface(ASTType* ptype)
 {
    mInterfaces.append(ptype);
+}
+
+bool ASTClass::isMember(const String& name) const
+{
+   const ASTMember* pmember = findField(name);
+   if ( pmember == NULL )
+   {
+      pmember = findStatic(name);
+      if ( pmember == NULL )
+      {
+         return mFunctions.hasFunction(name);
+      }
+   }
+
+   return true;
 }
 
 void ASTClass::addMember(ASTMember* pmember)
@@ -341,10 +344,26 @@ void ASTClass::addMember(ASTMember* pmember)
       ASTFunction* pfunction = dynamic_cast<ASTFunction*>(pmember);
       pfunction->setClass(*this);
 
-      mFunctions.insert(std::make_pair(pfunction->getName(), pfunction));
+      mFunctions.insert(pfunction);
    }
 
    addChild(pmember);
+}
+
+void ASTClass::insertFunction(int index, ASTFunction* pfunction)
+{
+   mFunctions.insert(pfunction);
+   mFunctionTable.set(index, *pfunction);
+
+   insertChild(index, pfunction);
+}
+
+ASTType* ASTClass::createThisType() const
+{
+   ASTType* presult = new ASTType(ASTType::eObject);
+   presult->setObjectName(getFullName());
+   presult->setObjectClass(const_cast<ASTClass&>(*this));
+   return presult;
 }
 
 const ClassResolver& ASTClass::getResolver() const
@@ -355,6 +374,16 @@ const ClassResolver& ASTClass::getResolver() const
 void ASTClass::setResolver(const ClassResolver& resolver)
 {
    mResolver = resolver;
+}
+
+void ASTClass::collectInterfaces(ASTTypeList& interfaces) const
+{
+   interfaces.append(mInterfaces);
+
+   if ( hasBaseClass() )
+   {
+      getBaseClass().collectInterfaces(interfaces);
+   }
 }
 
 void ASTClass::registerVariables(Scope& scope) const
@@ -406,19 +435,15 @@ void ASTClass::indexVariables()
 
 void ASTClass::indexFunctions()
 {
-   if ( hasBaseClass() )
+   if ( isClass() )
    {
-      mTable = getBaseClass().getFunctionTable();
+      if ( hasBaseClass() )
+      {
+         mFunctionTable = getBaseClass().getFunctionTable();
+      }
    }
 
-   Functions::iterator it = mFunctions.begin();
-   for ( ; it != mFunctions.end(); ++it )
-   {
-      ASTFunction* pfunction = it->second;
-      mTable.insert(*pfunction);
-   }
-
-   mTable.reindex();
+   mFunctionTable.build(mFunctions);
 }
 
 // - Search
@@ -459,82 +484,34 @@ ASTField* ASTClass::findField(const String& name, SearchScope scope)
    return scope == eAll && hasBaseClass() ? getBaseClass().findField(name) : NULL;
 }
 
-const ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types) const
+const ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types) const
 {
    return const_cast<ASTClass&>(*this).findBestMatch(name, signature, types);
 }
 
-ASTFunction* ASTClass::findBestMatch(const String& name, const Signature& signature, const ASTTypeList& types)
+ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types)
 {
-   Functions::iterator it = mFunctions.find(name);
-   if ( it != mFunctions.end() )
+   ASTFunction* pfunction = mFunctions.findBestMatch(name, signature, types);
+   if ( pfunction == NULL && hasBaseClass() )
    {
-      Functions::iterator end = mFunctions.upper_bound(name);
-
-      for ( ; it != end; ++it )
-      {
-         ASTFunction* pfunction = it->second;
-         if ( pfunction->getSignature().bestMatch(signature, types) )
-         {
-            return pfunction;
-         }
-      }
+      pfunction = getBaseClass().findBestMatch(name, signature, types);
    }
-
-   return hasBaseClass() ? getBaseClass().findBestMatch(name, signature, types) : NULL;
+   return pfunction;
 }
 
-const ASTFunction* ASTClass::findExactMatch(const String& name, const Signature& signature) const
+const ASTFunction* ASTClass::findExactMatch(const String& name, const ASTSignature& signature) const
 {
    return const_cast<ASTClass&>(*this).findExactMatch(name, signature);
 }
 
-ASTFunction* ASTClass::findExactMatch(const String& name, const Signature& signature)
+ASTFunction* ASTClass::findExactMatch(const String& name, const ASTSignature& signature)
 {
-   ASTFunction* pfunction = findExactMatchLocal(name, signature);
+   ASTFunction* pfunction = mFunctions.findExactMatch(name, signature);
    if ( pfunction == NULL && hasBaseClass() )
    {
       pfunction = getBaseClass().findExactMatch(name, signature);
    }
    return pfunction;
-}
-
-ASTFunction* ASTClass::findExactMatchLocal(const String& name, const Signature& signature)
-{
-   Functions::iterator it = mFunctions.find(name);
-   if ( it != mFunctions.end() )
-   {
-      Functions::iterator end = mFunctions.upper_bound(name);
-
-      for ( ; it != end; ++it )
-      {
-         ASTFunction* pfunction = it->second;
-         if ( pfunction->getSignature().exactMatch(signature) )
-         {
-            return pfunction;
-         }
-      }
-   }
-   return NULL;
-}
-
-const ASTFunction* ASTClass::findInterfaceFunction(const ASTFunction& function) const
-{
-   for ( int index = 0; index < mInterfaces.size(); index++ )
-   {
-      const ASTType& type = mInterfaces[index];
-
-      const ASTClass& c = type.getObjectClass();
-      ASSERT(c.getKind() == ASTClass::eInterface);
-
-      const ASTFunction* pifunc = c.findExactMatch(function.getName(), function.getSignature());
-      if ( pifunc != NULL )
-      {
-         return pifunc;
-      }
-   }
-
-   return hasBaseClass() ? getBaseClass().findInterfaceFunction(function) : NULL;
 }
 
 // - Visitor

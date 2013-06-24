@@ -48,8 +48,8 @@ public:
    T*    release();
 
 private:
-   T*    mpValue;
-   bool  mOwned;
+   T*             mpValue;
+   mutable bool   mOwned;
 };
 
 #include "autoptr.inl"

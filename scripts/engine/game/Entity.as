@@ -8,4 +8,6 @@ abstract class Entity
 	public void onCreated()
 	{
 	}
+	
+	protected native void sendComponentMessage(ComponentMessage message);
 }

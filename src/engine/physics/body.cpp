@@ -46,6 +46,7 @@ Body::Body(Simulator& simulator, Actor& actor):
    mSimulator(simulator),
    mActor(actor),
    mTransform(),
+   mpListener(NULL),
    mForceGenerators()
 {
 }

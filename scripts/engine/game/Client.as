@@ -27,10 +27,9 @@ abstract class Client extends Process
 		mKeyDispatcher = new KeyEventDispatcher();
 	}
 	
-	public native boolean connect(string host, int port, string name);
+	public native boolean connect(string host, int port);
 	public native GameWindowFactory getWindowFactory();
 	public native void update(real delta);
-	public native void setActionMap(ActionMap map);
 	public native void setKeyMap(KeyMap map);
 	public native boolean isActive();
 	public native Player getPlayer();

@@ -47,7 +47,7 @@ int ProgramPath::getUniformLocation (const String& name) const
 	return program.getUniformLocation(name);
 }
 
-void ProgramPath::setStateUniform(int index)
+void ProgramPath::setUniformStateMatrix(int index) const
 {
 }
 

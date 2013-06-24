@@ -35,7 +35,7 @@ private:
    typedef std::set<ComponentInterface::ComponentType> MessageToComponentSet;
 
  // members
-   Entity&					mEntity;
+   Entity&					   mEntity;
    ComponentMap				mComponents;
    MessageToComponentSet	mMessageToComponent[ComponentInterface::eNUM_MESSAGE_TYPES];
 };

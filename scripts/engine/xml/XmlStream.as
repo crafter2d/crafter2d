@@ -20,14 +20,14 @@ class XmlStream
 	
 	public boolean isEOS()
 	{
-		return mPos >= mBuffer.length;
+		return mPos >= mBuffer.size();
 	}
 	
 	// - Operations
 	
 	public void skipWhitespace()
 	{
-		while ( mPos < mBuffer.length && Char.isWhitespace(mBuffer[mPos]) )
+		while ( mPos < mBuffer.size() && Char.isWhitespace(mBuffer[mPos]) )
 		{
 			++mPos;
 		}
@@ -52,13 +52,13 @@ class XmlStream
 	{
 		assert mBuffer != null;
 		
-		if ( mPos + sequence.length >= mBuffer.length )
+		if ( mPos + sequence.size() >= mBuffer.size() )
 		{
 			// does not fit in the buffer
 			return false;
 		}
 
-		for ( int index = 0; index < sequence.length; index++ )
+		for ( int index = 0; index < sequence.size(); index++ )
 		{
 			if ( mBuffer[mPos + index] != sequence[index] )
 			{
@@ -74,7 +74,7 @@ class XmlStream
 		boolean result = peek(sequence);
 		if ( result )
 		{
-			mPos = mPos + sequence.length;
+			mPos = mPos + sequence.size();
 		}
 		
 		return result;
@@ -99,7 +99,7 @@ class XmlStream
 		string result = "";
 		if ( Char.isAlpha(mBuffer[mPos]) )
 		{
-			while ( mPos < mBuffer.length )
+			while ( mPos < mBuffer.size() )
 			{
 				char c = mBuffer[mPos];
 				if ( Char.isAlphaNum(c) || c == '_' || c == '-' || c == '.' || c == ':' )
@@ -122,7 +122,7 @@ class XmlStream
 	{
 		string result = "";
 		
-		while ( mPos < mBuffer.length )
+		while ( mPos < mBuffer.size() )
 		{
 			char c = mBuffer[mPos];
 			if ( c == end )

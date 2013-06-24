@@ -7,10 +7,11 @@
 class VirtualInstruction
 {
 public:
-   enum Instruction
+   enum Opcode
    {
       eNop,
       eReserve,
+      eLabel,
       eNew,
       eNewArray,
       eNewNative,
@@ -39,11 +40,11 @@ public:
       eMulInt,
       eDivInt,
       eRemInt,
-      eOrInt,
-      eXorInt,
-      eAndInt,
       eShiftLeftInt,
       eShiftRightInt,
+      eXorInt,
+      eOrInt,
+      eAndInt,
       eIntNegate,
       eCmpEqInt,
       eCmpNeqInt,
@@ -108,20 +109,25 @@ public:
       eLoadClass
    };
 
-   static const std::string& instructionToString(Instruction inst);
+   static const std::string& opcodeToString(Opcode inst);
 
    VirtualInstruction();
-   VirtualInstruction(Instruction instruction, int argument);
+   VirtualInstruction(Opcode instruction, int argument);
 
  // get/set
-   Instruction getInstruction() const;
+   Opcode getOpcode() const;
+   void   setOpcode(Opcode inst);
    
    int         getArgument() const;
    void        setArgument(int index);
 
+ // query
+   bool isNop() const;
+   bool isLabel(int label) const;
+
 private:
-   Instruction mInstruction;
-   int         mArgument;
+   Opcode   mOpcode;
+   int      mArgument;
 };
 
 #endif // VIRTUAL_INSTRUCTION_H_

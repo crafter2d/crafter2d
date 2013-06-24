@@ -23,6 +23,7 @@
 #  include "process.inl"
 #endif
 
+// When testing with Visual Leak Detecter, uncomment the next line
 // #include <vld.h>
 
 #include "core/log/log.h"
@@ -94,12 +95,15 @@ bool Process::create(const String& classname)
    mScriptManager.addRootObject(mpScript->getThis());
 
    // run the onCreated function
-   return mpScript->run("onCreated");
+   return mpScript->run("onCreated").asBool();
 }
 
 bool Process::destroy()
 {
    conn.shutdown();
+
+   delete mpWorld;
+   mpWorld = NULL;
 
    delete mpScript;
    mpScript = NULL;

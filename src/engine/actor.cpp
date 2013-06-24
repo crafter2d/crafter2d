@@ -22,24 +22,17 @@
 #  include "actor.inl"
 #endif
 
-#include <tinyxml.h>
-
 #include "core/log/log.h"
-#include "core/graphics/vertexbuffer.h"
 #include "core/graphics/rendercontext.h"
 
-#include "engine/physics/body.h"
-#include "engine/physics/simulator.h"
+#include "engine/components/meshcomponent.h"
+#include "engine/components/componentstructs.h"
+#include "engine/components/componentmessage.h"
 #include "engine/net/netstream.h"
-#include "engine/resource/resourcemanager.h"
-#include "engine/world/world.h"
 
 #include "animator.h"
-#include "process.h"
 #include "nodevisitor.h"
-#include "texturecoordinate.h"
 #include "controller.h"
-#include "scopedtransform.h"
 
 using namespace Graphics;
 
@@ -50,9 +43,6 @@ Actor::Actor():
    mpController(NULL),
    mWidth(0),
    mHeight(0),
-   halfX(.0f),
-   halfY(.0f),
-   angle(.0f),
    visible(true),
    dir(true)
 {
@@ -104,7 +94,8 @@ void Actor::doUpdateClient(float delta)
  */
 void Actor::doDraw(RenderContext& context) const
 {
-   Entity::doDraw(context);
+   ASSERT(hasMesh());
+   getMesh().render(context);
 }
 
 /// \fn Actor::clone ()
@@ -120,7 +111,14 @@ Actor* Actor::clone ()
 /// \returns current position of object
 const Vector& Actor::getPosition() const
 {
-   return mPos;
+   if ( hasMesh() )
+      return getMesh().getPosition();
+   else
+   {
+      PositionInfo info;
+      const_cast<Actor&>(*this).sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
+      return info.transform.getPosition();
+   }
 }
 
 /// \fn Actor::setPosition(const Vector& p)
@@ -128,16 +126,43 @@ const Vector& Actor::getPosition() const
 /// \param p the new position of the object
 void Actor::setPosition(const Vector& p)
 {
+   PositionInfo info;
+   sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
+   
+   info.transform.setPosition(p);
+
+   sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
+
+   setDirty(ePositionDirty);
 }
 
-void Actor::setSize(int width, int height)
+/// \fn Actor::getRotation() const
+/// \brief Returns the rotation in degrees of the object.
+float Actor::getRotation() const
 {
-   mWidth = width;
-   mHeight = height;
+   if ( hasMesh() )
+      return getMesh().getAngle();
+   else
+   {
+      PositionInfo info;
+      const_cast<Actor&>(*this).sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
+      return info.transform.getAngle();
+   }
+}
 
-   // set the half size as well
-   halfX = width * 0.5f;
-   halfY = height * 0.5f;
+/// \fn void setRotation(const float deg)
+/// \brief Sets the new degree of rotation of this object.
+/// \param deg the new rotation degree
+void Actor::setRotation(const float deg) 
+{
+   PositionInfo info;
+   sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
+   
+   info.transform.setAngle(deg);
+
+   sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
+
+   setDirty(ePositionDirty);
 }
 
 int Actor::getAnimation() const
@@ -179,8 +204,10 @@ void Actor::doPack(DataStream& stream) const
 
    if ( isDirty(ePositionDirty) )
    {
-      const Vector& pos = getPosition();
-      stream << pos.x << pos.y << mVel.x << mVel.y << angle << dir;
+      PositionInfo info;
+      const_cast<Actor&>(*this).sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
+
+      stream << info.transform.getPosition().x << info.transform.getPosition().y << info.transform.getAngle() << dir;
    }
 }
 
@@ -191,8 +218,14 @@ void Actor::doUnpack(DataStream& stream)
    if ( isDirty(ePositionDirty) )
    {
       Vector pos;
-      stream >> pos.x >> pos.y >> mVel.x >> mVel.y >> angle >> dir;
+      float angle;
 
-      setPosition(pos);
+      stream >> pos.x >> pos.y >> angle >> dir;
+
+      PositionInfo info;
+      info.transform.set(pos, angle);
+      sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
+
+      setDirty(ePositionDirty);
    }
 }

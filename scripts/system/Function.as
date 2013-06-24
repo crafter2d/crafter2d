@@ -13,7 +13,7 @@ public class Function
 	
 	public boolean hasAnnotation(string name)
 	{
-		for ( int index = 0; index < mAnnotations.length; index++ )
+		for ( int index = 0; index < mAnnotations.size(); index++ )
 		{
 			if ( mAnnotations[index] == name )
 			{

@@ -14,6 +14,7 @@ public:
             VirtualString();
    explicit VirtualString(const String& value);
             VirtualString(const VirtualString& that);
+   virtual ~VirtualString();
 
  // operators
    bool operator==(const VirtualString& that) const;
@@ -35,6 +36,7 @@ protected:
 
 private:
    String mString;
+   int    mHash;
 };
 
 #endif // VIRTUAL_STRING_CACHE_H

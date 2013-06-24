@@ -99,6 +99,15 @@ void PreloadVisitor::visit(ASTClass& ast)
          }
       }
    }
+   
+   // register interfaces to the context, so it later can be resolved for the interface lookup
+   // tables. these tables are links between interface function calls and the actuall virtual table
+   // function entry.
+
+   if ( ast.isInterface() )
+   {
+      mContext.addInterface(ast);
+   }
 
    ASTTypeList& intrfaces = ast.getInterfaces();
    for ( int index = 0; index < intrfaces.size(); index++ )
@@ -426,8 +435,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
    ASTAccess* paccess = dynamic_cast<ASTAccess*>(&unary.getParts()[0]);
    if ( paccess != NULL )
    {
-      ASTField* pfield = mpClass->findField(paccess->getName());
-      if ( pfield != NULL )
+      if ( mpClass->isMember(paccess->getName()) )
       {
          // it's a member field, so nothing to do here
          return;

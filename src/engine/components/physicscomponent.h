@@ -2,9 +2,6 @@
 #ifndef PHYSICS_COMPONENT_H
 #define PHYSICS_COMPONENT_H
 
-#include "core/math/vector.h"
-#include "core/math/matrix4.h"
-
 #include "engine/physics/bodylistener.h"
 
 #include "component.h"
@@ -23,7 +20,8 @@ public:
    void              setBody(Body& body);
 
  // component interface
-   virtual void handleMessage(const ComponentMessage& message);
+   virtual void registerComponent(Components& components);
+   virtual void handleMessage(ComponentMessage& message);
    virtual void update(float delta);
 
  // notifications
@@ -31,7 +29,6 @@ public:
 
 private:
    Body*    mpBody;
-   Matrix4  mTransform;
 };
 
 #ifdef JENGINE_INLINE

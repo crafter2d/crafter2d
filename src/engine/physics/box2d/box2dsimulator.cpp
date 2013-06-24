@@ -22,6 +22,7 @@
 #include <Box2D.h>
 
 #include "core/math/matrix4.h"
+#include "core/defines.h"
 
 #include "engine/world/world.h"
 #include "engine/world/bound.h"
@@ -32,6 +33,8 @@
 #include "box2draycastcallback.h"
 #include "box2drevolutejoint.h"
 #include "box2dropejoint.h"
+
+const String Box2DSimulator::sClassName = "box2d.Box2DSimulator";
 
 // static
 Vector Box2DSimulator::b2ToVector(const b2Vec2& b2)
@@ -47,12 +50,15 @@ b2Vec2 Box2DSimulator::vectorToB2(const Vector& v)
 
 Matrix4 Box2DSimulator::b2ToMatrix(const b2Transform& tf)
 {
+   /*
    return Matrix4(
       tf.q.c     , tf.q.s     , 0, 0,
       -tf.q.s    , tf.q.c     , 0, 0,
       0          , 0          , 1, 0,
       tf.p.x * 30, tf.p.y * 30, 0, 1
    );
+   */
+   return Matrix4();
 }
 
 Box2DSimulator::Box2DSimulator():
@@ -71,6 +77,11 @@ Box2DSimulator::~Box2DSimulator()
 
 // - Query
 
+const String& Box2DSimulator::getClassName() const
+{
+   return sClassName;
+}
+
 bool Box2DSimulator::lineOfSight(const Body& from, const Body& to) const
 {
    Box2DRayCastCallback callback;
@@ -84,7 +95,7 @@ bool Box2DSimulator::lineOfSight(const Body& from, const Body& to) const
 
 void Box2DSimulator::cleanUp()
 {
-   for ( int index = 0; index < mJoints.size(); index++ )
+   for ( std::size_t index = 0; index < mJoints.size(); index++ )
    {
       Box2DJoint* pjoint = mJoints[index];
       delete pjoint;
@@ -98,8 +109,8 @@ void Box2DSimulator::cleanUp()
 Body& Box2DSimulator::createBody(Actor& actor)
 {
    b2BodyDef bodydef;
-   bodydef.position = vectorToB2(actor.getPosition());
-   bodydef.angle    = actor.getRotation();
+   bodydef.position = b2Vec2();
+   bodydef.angle    = 0.0f;
    bodydef.type     = b2_dynamicBody;
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
@@ -145,6 +156,7 @@ Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DBody& left, Box2DBo
 
 Box2DRopeJoint& Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& definition)
 {
+   /*
    b2RopeJointDef jd;
    jd.bodyA = &definition.pleft->getBody();
    jd.bodyB = &definition.pright->getBody();
@@ -159,6 +171,9 @@ Box2DRopeJoint& Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& defini
    mJoints.push_back(pjoint);
 
    return *pjoint;
+   */
+
+   throw std::exception();
 }
 
 // - Notifications
@@ -166,7 +181,7 @@ Box2DRopeJoint& Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& defini
 void Box2DSimulator::notifyWorldChanged()
 {
    b2Vec2 gravity(0, 9);
-   mpb2World = new b2World(gravity);
+   mpb2World = new b2World(gravity, true);
    mpb2World->SetContactListener(&mContactListener);
 
    const Bounds& bounds = getWorld().getBounds();
@@ -179,10 +194,12 @@ void Box2DSimulator::notifyWorldChanged()
       def.position.Set(0,0);
       def.type     = b2_staticBody;
       def.userData = const_cast<Bound*>(&bound);
-      b2Body* pbody = mpb2World->CreateBody(&def);
 
+      b2PolygonShape ground;
+      ground.SetAsEdge(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
+      /*
       b2EdgeShape ground;
-      ground.Set(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
+      ground.Set(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));*/
 
       b2FixtureDef fixturedef;
       fixturedef.shape    = &ground;
@@ -190,6 +207,7 @@ void Box2DSimulator::notifyWorldChanged()
       fixturedef.friction = 0.3f;
       fixturedef.userData = (void*)eBound;
 
+      b2Body* pbody = mpb2World->CreateBody(&def);
       pbody->CreateFixture(&fixturedef);
    }
 }
@@ -199,7 +217,7 @@ void Box2DSimulator::run(float timestep)
    static const float step = 1.0f / 60.0f;
 
    mDelta += timestep;
-   //if ( mDelta >= step )
+   if ( mDelta >= step )
    {
       static const int velocityIterations = 8;
       static const int positionIterations = 3;

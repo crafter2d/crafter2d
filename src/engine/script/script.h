@@ -23,6 +23,7 @@
 #include "engine/engine_base.h"
 
 #include "core/string/string.h"
+#include "script/common/variant.h"
 
 class ScriptManager;
 class ScriptObject;
@@ -42,22 +43,15 @@ class ENGINE_API Script
 public:
    explicit    Script(ScriptManager& manager, const String& name = "");
    
-   void        addParam(int val);
-   void        addParam(float val);
-   void        addParam(bool val);
-   void        addParam(const String& val);
-   void        addParam(void* pobject);
-   void        addParam(const String& classname, void* pobject);
-   void        addParam(VirtualObject& object);
-
-   bool        getBoolean();
-   int         getInteger();
-
    VirtualObject& getThis();
    void           setThis(VirtualObject& object);
    void           setThis(void* pthis);
 
-   bool        run(const String& function);
+   Variant        run(const String& function, int argc = 0, Variant* pargs = NULL);
+
+ // retreival
+   VirtualObject& resolve(void* pobject);
+   VirtualObject& instantiate(const String& classname, void* pobject);
 
 private:
    ScriptManager&  mScriptManager;

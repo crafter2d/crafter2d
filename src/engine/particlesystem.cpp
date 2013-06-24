@@ -31,10 +31,10 @@
 #include "core/graphics/device.h"
 #include "core/graphics/codepath.h"
 #include "core/graphics/rendercontext.h"
+#include "core/resource/resourcemanager.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
-#include "engine/resource/resourcemanager.h"
 
 #include "process.h"
 #include "nodevisitor.h"
@@ -225,8 +225,8 @@ void ParticleSystem::doUpdate(float delta)
 				   curpart->pos += curpart->vel;
                
 				   // run the particle script
-				   updateScript->addParam((int)lifetime);
-				   updateScript->run("updateParticle");
+               Variant arg((int)lifetime);
+				   updateScript->run("updateParticle", 1, &arg);
 
 				   part = &curpart->next;
 			   }

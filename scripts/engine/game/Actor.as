@@ -2,13 +2,13 @@
 package engine.game;
 
 use engine.core.*;
-use box2d.box2dbody;
 
 class Actor extends Entity implements Collidable
 {
-	private InputForceGenerator mGenerator;
+	private ForceGenerator mGenerator;
 	private Controller mController;
 	private AIState mState;
+	private Body mBody;
 	
 	private int mDirection = FACE_LEFT;
 	private int mOnGround = 0;
@@ -22,6 +22,7 @@ class Actor extends Entity implements Collidable
 		Actor object = (Actor)contentmgr.loadEntity(file);
 		object.setPosition(position);
 		object.setName(name);
+		object.initialize();
 		
 		World world = process.getWorld();
 		world.add(object);
@@ -46,16 +47,6 @@ class Actor extends Entity implements Collidable
 	public void setPosition(Vector2D pos)
 	{
 		setPosition(pos.x, pos.y);
-	}
-	
-	public Vector2D getVelocity()
-	{
-		return new Vector2D(getVelocityX(), getVelocityY());
-	}
-	
-	public void setVelocity(Vector2D vel)
-	{
-		setVelocity(vel.x, vel.y);
 	}
 	
 	public int getFaceDirection()
@@ -84,6 +75,11 @@ class Actor extends Entity implements Collidable
 		mController = c;
 	}
 	
+	public Body getBody()
+	{
+		return mBody;
+	}
+	
 	public AIState getState()
 	{
 		return mState;
@@ -92,10 +88,17 @@ class Actor extends Entity implements Collidable
 	public void setState(AIState state)
 	{
 		mState = state;
-      mState.initialize(this);
+		mState.initialize(this);
 	}
 	
 	// Operations
+	
+	protected void initialize()
+	{
+		QueryBodyComponentMessage msg = new QueryBodyComponentMessage();
+		sendComponentMessage(msg);
+		mBody = msg.getBody();
+	}
 	
 	public boolean isLookingLeft()
 	{
@@ -148,18 +151,17 @@ class Actor extends Entity implements Collidable
 		flip();
 	}
 	
-	public InputForceGenerator getForceGenerator()
+	public ForceGenerator getForceGenerator()
 	{
 		return mGenerator;
 	}
 	
-	public void setForceGenerator(InputForceGenerator generator)
+	public void setForceGenerator(ForceGenerator generator)
 	{
 		mGenerator = generator;
 		
-		//Box2DBody body = getBody();
-		//body.addForceGenerator(generator);
-		//body.generateSensors();
+		Body body = getBody();
+		body.addForceGenerator(generator);
 	}
 	
 	public boolean isOnGround()
@@ -186,9 +188,7 @@ class Actor extends Entity implements Collidable
 	{
 		if ( isOnGround() )
 		{
-			Vector2D vel = new Vector2D();
-			vel.setY(-25.0);
-			
+			Vector2D vel = new Vector2D(0, -25.0);
 			mGenerator.setImpulse(vel);
 		}
 	}
@@ -214,15 +214,11 @@ class Actor extends Entity implements Collidable
 	private native real getPositionX();
 	private native real getPositionY();
 	private native void setPosition(real x, real y);
-	private native real getVelocityX();
-	private native real getVelocityY();
-	private native void setVelocity(real x, real y);
 	
 	public native void setName(string name);
 	public native void setAnimation(int index);
 	public native boolean direction();
 	public native void flip();
-	public native Box2DBody getBody();
 	public native boolean hasLineOfSight(Actor to);
 	
 	private native void setController(Controller c);

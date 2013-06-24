@@ -2,17 +2,24 @@
 #include "virtualstring.h"
 
 VirtualString::VirtualString():
+   Collectable(),
    mString()
 {
 }
 
 VirtualString::VirtualString(const String& value):
+   Collectable(),
    mString(value)
 {
 }
 
 VirtualString::VirtualString(const VirtualString& that):
+   Collectable(),
    mString(that.mString)
+{
+}
+
+VirtualString::~VirtualString()
 {
 }
 

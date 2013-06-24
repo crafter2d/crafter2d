@@ -137,6 +137,9 @@ bool Variant::operator<=(const Variant& that) const
       case eReal:
          return asReal() <= that.asReal();
 
+      case eChar:
+         return asChar() <= that.asChar();
+
       case eString:
          return asString() <= that.asString();
    }
@@ -156,6 +159,9 @@ bool Variant::operator<(const Variant& that) const
 
       case eReal:
          return asReal() < that.asReal();
+
+      case eChar:
+         return asChar() < that.asChar();
 
       case eString:
          return asString() < that.asString();
@@ -177,6 +183,9 @@ bool Variant::operator>(const Variant& that) const
       case eReal:
          return asReal() > that.asReal();
 
+      case eChar:
+         return asChar() > that.asChar();
+
       case eString:
          return asString() > that.asString();
    }
@@ -196,6 +205,9 @@ bool Variant::operator>=(const Variant& that) const
 
       case eReal:
          return asReal() >= that.asReal();
+
+      case eChar:
+         return asChar() >= that.asChar();
 
       case eString:
          return asString() >= that.asString();

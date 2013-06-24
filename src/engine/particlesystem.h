@@ -22,10 +22,10 @@
 
 #include "core/math/vector.h"
 #include "core/math/color.h"
+#include "core/graphics/effect.h"
 #include "core/graphics/texture.h"
 
 #include "entity.h"
-#include "effect.h"
 
 namespace Graphics
 {
@@ -90,12 +90,13 @@ protected:
    virtual void   doUnpack(DataStream& stream);
 
    Vector         position;
-   Effect         mEffect;
-	Particle*      activeList;
+   Particle*      activeList;
 	Particle*      freeList;
-   Graphics::VertexBuffer*  mGeometryBuffer;
 	uint           mGeometryBufferSize;
    Script*        updateScript;
+
+   Graphics::Effect         mEffect;
+   Graphics::VertexBuffer*  mGeometryBuffer;
 	
 	int emitRate;
    int emitCount;

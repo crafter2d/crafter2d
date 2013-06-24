@@ -27,15 +27,14 @@ class GameClient extends Client
 	
 		//MessageBox.showInformation("This is a messagebox!");
 			
-		return connect("localhost", 7000, "player");
+		return connect("localhost", 7000);
 	}
 	
 	public void onConnected(Player player)
 	{
 		addPlayer(player);
 		
-		mActionMap = new ActionMap();
-		mActionMap.bind(6, "onSwapLeakDetector");
+		mActionMap = new DemoClientActionMap();
 		setActionMap(mActionMap);
 		
 		KeyMap map = new KeyMap();
@@ -67,6 +66,7 @@ class GameClient extends Client
 		//super.registerMessages(messagemap);
 		
 		messagemap.register(ControllerMessage.ID, ControllerMessage.class);
+		messagemap.register(ActionMessage.ID, ActionMessage.class);
 	}
 	
 	protected void onMessageReceived(Message message)
@@ -80,12 +80,21 @@ class GameClient extends Client
 			
 			int controllerid = msg.getControllerId();
 			Actor controller = (Actor) world.findEntity(controllerid);
+			controller.initialize();
+			controller.setForceGenerator(new InputForceGenerator());			
 			getPlayer().setController(controller);
 			
 			world.setFollowMode(0);
 			world.setObjectLayer(0);
 			world.setFollowActor(controller);
 			world.setFollowBorders(150, 650, 100, 500);
+		}
+		else if ( message instanceof ActionMessage )
+		{
+			// perform the action on the given actor
+			ActionMessage action = (ActionMessage) message;
+			Actor actor = (Actor) getWorld().findEntity(action.getActorId());
+			mActionMap.onKeyDown(actor, action.getAction());
 		}
 	}
 }

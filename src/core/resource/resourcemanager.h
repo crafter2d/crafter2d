@@ -41,7 +41,7 @@ typedef ResourcePtr<Graphics::Texture> TexturePtr;
 @author Jeroen Broekhuizen
 \brief Resource manager.
 */
-class ResourceManager
+class CORE_API ResourceManager
 {
 public:
    static ResourceManager& getInstance();

@@ -8,7 +8,7 @@ class TestArray
 {
 	private void validateArray(int[] array)
 	{
-		for ( int index = 1; index <= array.length; index++ )
+		for ( int index = 1; index <= array.size(); index++ )
 		{
 			assert array[index-1] == index;
 		}

@@ -12,6 +12,13 @@ class ASTType;
 class ASTVariable
 {
 public:
+   enum Location {
+      eField,
+      eArgument,
+      eLocal,
+      eInvalidLoc
+   };
+
    ASTVariable();
    virtual ~ASTVariable();
 
@@ -31,15 +38,22 @@ public:
    const ASTVariableInit& getInit() const;
          ASTVariableInit& getInit();
    void                   setInit(ASTVariableInit* pinit);
+
+   Location getLocation() const;
+   void     setLocation(Location location);
    
    int  getResourceIndex() const;
    void setResourceIndex(int index);
 
+ // query
+   bool isArgument() const;
+
 private:
-   String       mName;
+   String            mName;
    ASTModifiers      mModifiers;
    ASTType*          mpType;
    ASTVariableInit*  mpInit;
+   Location          mLocation;
    int               mResourceIndex;
 };
 

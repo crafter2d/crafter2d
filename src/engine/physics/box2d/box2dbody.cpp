@@ -23,12 +23,15 @@
 #include <tinyxml.h>
 
 #include "core/defines.h"
+#include "core/math/xform.h"
 
 #include "box2dsimulator.h"
 
 static const std::string sBODYELEMENT       = "body";
 static const std::string sSHAPEELEMENT      = "shape";
 static const std::string sTYPE              = "type";
+
+String Box2DBody::sClassName = "box2d.Box2DBody";
 
 Box2DBody::Box2DBody(Simulator& simulator, b2Body& body, Actor& actor):
    Body(simulator, actor),
@@ -58,6 +61,11 @@ b2Body& Box2DBody::getBody()
 }
 
 // query
+
+const String& Box2DBody::getClassName() const
+{
+   return sClassName;
+}
    
 int Box2DBody::getSide(const b2Fixture& sensor) const
 {
@@ -134,12 +142,14 @@ void Box2DBody::load(const TiXmlElement& element)
             mBody.CreateFixture(&fixturedef);
          }
       }
+
+      createSensors();
    }
 }
 
 // operations
    
-void Box2DBody::generateSensors()
+void Box2DBody::createSensors()
 {
    mpBottomSensor = createSensor(mHalfWidth, 0.2f, b2Vec2(0, mHalfHeight));
    mpLeftSensor   = createSensor(0.1f, mHalfHeight, b2Vec2(-mHalfWidth, 0));
@@ -192,13 +202,10 @@ void Box2DBody::integrate(float timestep)
 
 void Box2DBody::finalize()
 {
-   if ( !mBody.IsAwake() )
-   {
-      setPosition(Box2DSimulator::b2ToVector(mBody.GetPosition()));
-      setAngle(RAD2DEG(mBody.GetAngle()));
+   XForm transform(Box2DSimulator::b2ToVector(mBody.GetPosition()), RAD2DEG(mBody.GetAngle()));
+   setTransform(transform);
 
-      firePositionChanged();
-   }
-
+   firePositionChanged();
+   
    Body::finalize();
 }

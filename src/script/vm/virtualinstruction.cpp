@@ -72,9 +72,9 @@ static std::string sLoadLiteral   = "loadliteral";
 static std::string sInvalid       = "stfu";
 
 //static
-const std::string& VirtualInstruction::instructionToString(Instruction inst)
+const std::string& VirtualInstruction::opcodeToString(Opcode opcode)
 {
-   switch ( inst )
+   switch ( opcode )
    {
       case eReserve:       return sReserve;
       case eNew:           return sNew;
@@ -147,20 +147,25 @@ const std::string& VirtualInstruction::instructionToString(Instruction inst)
 }
 
 VirtualInstruction::VirtualInstruction():
-   mInstruction(eNop),
+   mOpcode(eNop),
    mArgument(-1)
 {
 }
 
-VirtualInstruction::VirtualInstruction(Instruction instruction, int argument):
-   mInstruction(instruction),
+VirtualInstruction::VirtualInstruction(Opcode opcode, int argument):
+   mOpcode(opcode),
    mArgument(argument)
 {
 }
 
-VirtualInstruction::Instruction VirtualInstruction::getInstruction() const
+VirtualInstruction::Opcode VirtualInstruction::getOpcode() const
 {
-   return mInstruction;
+   return mOpcode;
+}
+
+void VirtualInstruction::setOpcode(Opcode inst)
+{
+   mOpcode = inst;
 }
 
 int VirtualInstruction::getArgument() const
@@ -171,4 +176,16 @@ int VirtualInstruction::getArgument() const
 void VirtualInstruction::setArgument(int index)
 {
    mArgument = index;
+}
+
+// - Query
+
+bool VirtualInstruction::isNop() const
+{
+   return mOpcode == VirtualInstruction::eNop;
+}
+
+bool VirtualInstruction::isLabel(int label) const
+{
+   return mOpcode == eLabel && mArgument == label;
 }

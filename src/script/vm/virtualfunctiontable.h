@@ -24,10 +24,8 @@ public:
  // operations
    void append(VirtualFunctionTableEntry* pentry);
    void append(const VirtualFunctionTable& table);
-   void clear();
-
    void merge(const VirtualFunctionTable& that);
-   void offset(int offset);
+   void clear();
 
  // search
    const VirtualFunctionTableEntry* findByName(const String& name) const;

@@ -3,8 +3,8 @@
 
 #include "core/containers/listiterator.h"
 
-#include "script/vm/virtualmachine.h"
 #include "script/vm/virtualobject.h"
+#include "script/vm/virtualmachine.h"
 
 int VoidHash(void* pkey)
 {
@@ -47,14 +47,7 @@ void GarbageCollector::gc(VirtualMachine& vm)
 
 void GarbageCollector::phaseMark(VirtualMachine& vm)
 {
-   vm.mContext.mClassTable.mark();  // marks all statics
-   vm.mStack.mark();
-
-   for ( int index = 0; index < vm.mRootObjects.size(); index++ )
-   {
-      VirtualObject* pobject = vm.mRootObjects[index];
-      pobject->mark();
-   }
+   vm.mark();
 }
 
 void GarbageCollector::phaseCollect(VirtualMachine& vm)

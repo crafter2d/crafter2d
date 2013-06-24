@@ -2,12 +2,11 @@
 #ifndef COMPONENT_STRUCTS_H
 #define COMPONENT_STRUCTS_H
 
-#include "core/math/vector.h"
+#include "core/math/xform.h"
 
-struct PositionChangedInfo
+struct PositionInfo
 {
-   Vector position;
-   float  angle;
+   XForm transform;
 };
 
 #endif // COMPONENT_STRUCTS_H

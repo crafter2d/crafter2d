@@ -7,6 +7,8 @@
 
 #include "script/ast/astclass.h"
 #include "script/ast/astvariable.h"
+#include "script/vm/virtualclass.h"
+#include "script/bytecode/irgenerator.h"
 
 #include "exceptions/classnotfoundexception.h"
 
@@ -15,11 +17,20 @@
 CompileContext::CompileContext(Compiler& compiler):
    mCompiler(compiler),
    mClasses(),
+   mVirtualClasses(),
+   mClassRegistry(),
+   mpByteCodeGenerator(NULL),
    mStringCache(),
    mLiteralTable(),
-   mLog(),
-   mpResult(NULL)
+   mpProgram(NULL),
+   mLog()
 {
+}
+
+CompileContext::~CompileContext()
+{
+   delete mpByteCodeGenerator;
+   mpByteCodeGenerator = NULL;
 }
 
 // - Get/set
@@ -44,24 +55,36 @@ LiteralTable& CompileContext::getLiteralTable()
    return mLiteralTable;
 }
 
-VirtualClass* CompileContext::getResult()
-{
-   return mpResult;
-}
-
-void CompileContext::setResult(VirtualClass* pclass)
-{
-   mpResult = pclass;
-}
-
-ClassRegistry& CompileContext::getClassRegistry()
+const ClassRegistry& CompileContext::getClassRegistry() const
 {
    return mClassRegistry;
 }
 
 void CompileContext::setClassRegistry(const ClassRegistry& registry)
 {
-   mClassRegistry.merge(registry);
+   mClassRegistry.add(registry);
+}
+
+ByteCode::IRGenerator& CompileContext::getByteCodeGenerator()
+{
+   ASSERT_PTR(mpByteCodeGenerator);
+   return *mpByteCodeGenerator;
+}
+
+void CompileContext::setByteCodeGenerator(ByteCode::IRGenerator* pgenerator)
+{
+   mpByteCodeGenerator = pgenerator;
+}
+
+ByteCode::Program& CompileContext::getProgram()
+{
+   ASSERT_PTR(mpProgram);
+   return *mpProgram;
+}
+   
+void CompileContext::setProgram(ByteCode::Program& program)
+{
+   mpProgram = &program;
 }
 
 // - Query
@@ -96,6 +119,16 @@ bool CompileContext::loadClass(const String& classname)
    }
 
    return true;
+}
+
+void CompileContext::addInterface(ASTClass& interfce)
+{
+   mInterfaces.add(interfce);
+}
+
+void CompileContext::addVirtualClass(VirtualClass* pclass)
+{
+   mVirtualClasses[pclass->getName()] = pclass;
 }
 
 void CompileContext::collectCompileClasses(std::vector<ASTClass*>& classes)
@@ -140,4 +173,12 @@ ASTClass& CompileContext::resolveClass(const String& classname)
       throw new ClassNotFoundException(classname);
    }
    return *pclass;
+}
+
+VirtualClass& CompileContext::resolveVirtualClass(const String& classname)
+{
+   VirtualClassMap::iterator it = mVirtualClasses.find(classname);
+   if ( it == mVirtualClasses.end() )
+      UNREACHABLE("Could not find virtualclass");
+   return * it->second;
 }

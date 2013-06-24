@@ -29,7 +29,6 @@
 #include "script/scope/scopedscope.h"
 #include "script/common/literal.h"
 #include "script/compiler/compilecontext.h"
-#include "script/compiler/signature.h"
 #include "script/compiler/classresolver.h"
 
 #include "variablecheckvisitor.h"
@@ -117,7 +116,7 @@ void SymbolCheckVisitor::visit(ASTFunctionArgument& ast)
 {
    ASTVariable& var = ast.getVariable();
    checkVarInit(var);
-
+   
    ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
 }
@@ -157,6 +156,8 @@ void SymbolCheckVisitor::visit(ASTLocalVariable& ast)
    ASTVariable& var = ast.getVariable();
    checkUnknown(var.getType());
    checkVarInit(var);
+
+   mpFunction->addLocal(var.getType().clone());
 
    ScopeVariable* pvariable = ScopeVariable::fromVariable(ast.getVariable());
    mScopeStack.add(pvariable);
@@ -211,25 +212,45 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
 {
    ScopedScope scope(mScopeStack);
 
+   ASTVariable& iteratorvar = ast.getIteratorVariable();
    ASTVariable& var = ast.getVariable();
+
    if ( var.hasInit() )
    {
       ASTVariableInit& varinit = var.getInit();
       varinit.getExpression().accept(*this);
 
-      const ASTClass& iterableclass = mContext.resolveClass("engine.collections.Iterable");
+      ASTClass& iterableclass = mContext.resolveClass("engine.collections.Iterable");
+      ASTType* piteratortype = new ASTType();
 
-      if ( mCurrentType.isObject() && !mCurrentType.getObjectClass().isImplementing(iterableclass) )
+      if ( mCurrentType.isObject() )
       {
-         mContext.getLog().error(String("Container ") + var.getName() + " must be iterable for use in foreach.");
+         if( mCurrentType.getObjectClass().isImplementing(iterableclass) )
+         {
+            piteratortype->setKind(ASTType::eObject);
+            piteratortype->setObjectClass(iterableclass);
+         }
+         else
+         {
+            mContext.getLog().error(String("Container ") + var.getName() + " must be iterable for use in foreach.");
+         }
       }
+      else if ( mCurrentType.isArray() )
+      {
+         piteratortype->setKind(ASTType::eInt);
+      }
+
+      iteratorvar.setType(piteratortype);
    }
    else
    {
       mContext.getLog().error(String("Compiler error: missing required initializer for foreach variable ") + var.getName());
    }
 
-   ScopeVariable* pvariable = ScopeVariable::fromVariable(ast.getVariable());
+   mpFunction->addLocal(iteratorvar.getType().clone());
+   mpFunction->addLocal(var.getType().clone());
+
+   ScopeVariable* pvariable = ScopeVariable::fromVariable(var);
    mScopeStack.add(pvariable);
 
    ast.getBody().accept(*this);
@@ -261,6 +282,11 @@ void SymbolCheckVisitor::visit(ASTSwitch& ast)
 {
    ast.getExpression().accept(*this);
    ast.setType(mCurrentType.clone());
+
+   if ( !mCurrentType.isValueType() )
+   {
+      mContext.getLog().error("Switch statement value should be a value, found " + mCurrentType.toString());
+   }
 
    if ( ast.getDefaultCount() > 1 )
    {
@@ -339,19 +365,13 @@ void SymbolCheckVisitor::visit(ASTCatch& ast)
    ast.getVariable().accept(*this);
 
    const ASTVariable& var = ast.getVariable().getVariable();
+
    const ASTType& type = var.getType();
    bool ok = type.isObject();
    if ( ok )
    {
-      ASTClass* pthrowable = mContext.findClass("system.Throwable");
-      if ( pthrowable != NULL )
-      {
-         if ( !var.getType().getObjectClass().isBase(*pthrowable) )
-         {
-            ok = false;
-         }
-      }
-      else
+      const ASTClass& throwable = mContext.resolveClass("system.Throwable");
+      if ( !var.getType().getObjectClass().isBase(throwable) )
       {
          ok = false;
       }
@@ -573,7 +593,7 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
          {
             ASTType before = mCurrentType;
 
-            Signature signature;
+            ASTSignature signature;
             ASTNodes& arguments = ast.getArguments();
             for ( int index = 0; index < arguments.size(); index++ )
             {
@@ -659,7 +679,7 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
 
    if ( ast.isCall() )
    {
-      Signature signature;
+      ASTSignature signature;
       ASTNodes& arguments = ast.getArguments();
       for ( int index = 0; index < arguments.size(); index++ )
       {
@@ -699,7 +719,7 @@ void SymbolCheckVisitor::visit(ASTNative& ast)
    if ( ast.hasArguments() )
    {
       ASSERT_PTR(mpFunction);
-      const Signature& signature = mpFunction->getSignature();
+      const ASTSignature& signature = mpFunction->getSignature();
 
       ASTNodes& arguments = ast.getArguments();
       for ( int index = 0; index < arguments.size(); index++ )
@@ -796,7 +816,9 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                const ScopeVariable* pvariable = mScopeStack.find(name);
                if ( pvariable != NULL )
                {
-                  ast.setAccess(ASTAccess::eLocal);
+                  const ASTVariable& var = pvariable->getVariable();
+
+                  ast.setAccess(var.isArgument() ? ASTAccess::eArgument : ASTAccess::eLocal);
                   ast.setVariable(pvariable->getVariable());
 
                   mCurrentType = pvariable->getType();
@@ -1004,7 +1026,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
 {
    ASTType before = mCurrentType;
 
-   Signature signature;
+   ASTSignature signature;
    ASTNodes& arguments = access.getArguments();
    for ( int index = 0; index < arguments.size(); index++ )
    {
@@ -1019,7 +1041,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
 
    if ( pfunction != NULL )
    {
-      const Signature& funcsig = pfunction->getSignature();
+      const ASTSignature& funcsig = pfunction->getSignature();
 
       // check if cast is required
       for ( int index = 0; index < signature.size(); index++ )
@@ -1051,13 +1073,17 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& aclass, ASTAccess& 
       }
       else if ( !type.getTypeArguments().empty() )
       {
-         // here we should like the T of the original class with the T of the returning type
+         mCurrentType = pfunction->getType();
+
+         // if we get a generic type argument, replace it with the actual variable.
          const ASTType& arg = type.getTypeArguments()[0];
-         const ASTTypeVariable* pvariable = aclass.getTypeVariables().find(arg.getObjectName());
-         if ( pvariable != NULL )
+         if ( arg.isGeneric() )
          {
-            mCurrentType = pfunction->getType();
-            mCurrentType.replaceArgument(before.getTypeArguments()[pvariable->getIndex()]);
+            const ASTTypeVariable* pvariable = aclass.getTypeVariables().find(arg.getObjectName());
+            if ( pvariable != NULL )
+            {
+               mCurrentType.replaceArgument(before.getTypeArguments()[pvariable->getIndex()]);
+            }
          }
       }
       else

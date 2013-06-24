@@ -116,6 +116,13 @@ void BufferedStream::readBytes(void* pbuffer, int amount)
    mPos += amount;
 }
 
+const char* BufferedStream::readBytes(int amount)
+{
+   const char* presult = &mpBuffer[mPos];
+   mPos += amount;
+   return presult;
+}
+
 char BufferedStream::readByte()
 {
    ASSERT(mSize > 0 && mPos < mSize);

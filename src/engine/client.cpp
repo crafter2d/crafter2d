@@ -26,6 +26,7 @@
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
+#include "core/math/xform.h"
 #include "core/input/keyevent.h"
 #include "core/input/mouseevent.h"
 #include "core/graphics/device.h"
@@ -164,7 +165,8 @@ void Client::update(float delta)
 void Client::render(float delta)
 {
    mpRenderContext->clear();
-   mpRenderContext->setIdentityViewMatrix();
+   mpRenderContext->setObjectMatrix(XForm::identity());
+   mpRenderContext->setWorldMatrix(XForm::identity());
 
    //glAlphaFunc (GL_GREATER, 0.1f);
    //glEnable (GL_ALPHA_TEST);
@@ -183,8 +185,8 @@ void Client::render(float delta)
 
    //glDisable (GL_ALPHA_TEST);
 
-   mpScript->addParam(delta);
-   mpScript->run("paint");
+   Variant arg((double)delta);
+   mpScript->run("paint", 1, &arg);
 
    mpWindow->display();
 }
@@ -261,7 +263,10 @@ bool Client::initDevice()
       static const Color color(75, 150, 230, 255);
 
       mpDevice = pfactory->createDevice();
-      mpDevice->create(mpWindow->getHandle());
+      if ( !mpDevice->create(mpWindow->getHandle()) )
+      {
+         return false;
+      }
 
       mpRenderContext = mpDevice->createRenderContext();
       mpRenderContext->setClearColor(color);
@@ -372,8 +377,8 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
-            mpScript->addParam("engine.game.Player", mpPlayer);
-            mpScript->run("onConnected");
+            Variant arg(mpScript->instantiate("engine.game.Player", mpPlayer));
+            mpScript->run("onConnected", 1, &arg);
 
             initialized = true;
             break;
@@ -381,8 +386,8 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
       case ConnectReplyEvent::eDenite:
          {
             // run the Client_onConnectionDenite script
-            mpScript->addParam(event.getReason());
-            mpScript->run("onConnectionDenite");
+            Variant arg(event.getReason());
+            mpScript->run("onConnectionDenite", 1, &arg);
             break;
          }
    }
@@ -391,15 +396,15 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
 void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
-   mpScript->addParam(event.getId()+1);
-   mpScript->run("onPlayerJoined");
+   Variant arg(event.getId() + 1);
+   mpScript->run("onPlayerJoined", 1, &arg);
 }
 
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
-   mpScript->addParam(event.getId()+1);
-   mpScript->run("onPlayerLeft");
+   Variant arg(event.getId() + 1);
+   mpScript->run("onPlayerLeft", 1, &arg);
 }
 
 void Client::handleServerdownEvent()
@@ -486,8 +491,8 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    NetStream stream(datastream);
 
    // run the onClientConnect script
-   mpScript->addParam("engine.net.NetStream", &stream);
-   mpScript->run("onScriptEvent");
+   Variant arg(mpScript->instantiate("engine.net.NetStream", &stream));
+   mpScript->run("onScriptEvent", 1, &arg);
 }
 
 // - Notifications
@@ -502,8 +507,8 @@ void Client::notifyWorldChanged()
    mpPlayer->initialize(world);
 
    // run the onWorldChanged script
-   mpScript->addParam("engine.game.World", &world);
-   mpScript->run("onWorldChanged");
+   Variant arg(mpScript->resolve(&world));
+   mpScript->run("onWorldChanged", 1, &arg);
 
    Process::notifyWorldChanged();
 }
@@ -516,7 +521,10 @@ void Client::onWindowChanged()
       mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
       mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
 
-      initDevice();
+      if ( !initDevice() )
+      {
+         //setActive(false);
+      }
    }
 }
 
@@ -527,8 +535,7 @@ void Client::onWindowResized()
 
    mpRenderContext->setViewport(viewport);
    mpRenderContext->setOrthoProjection();
-   mpRenderContext->setIdentityViewMatrix();
-
+   
    if ( hasWorld() )
    {
       getWorld().onViewportChanged(viewport);
@@ -546,17 +553,19 @@ void Client::onWindowClosed()
 
 void Client::onKeyEvent(const KeyEvent& event)
 {
-   mpScript->addParam(event.getKey());
-   mpScript->addParam(event.getEventType() == KeyEvent::ePressed);
-   mpScript->run("onKeyEvent");
+   Variant args[2];
+   args[0].setInt(event.getKey());
+   args[1].setBool(event.getEventType() == KeyEvent::ePressed);
+   mpScript->run("onKeyEvent", 2, args);
 }
 
 void Client::onMouseEvent(const MouseEvent& event)
 {
-   mpScript->addParam(event.getLocation().x());
-   mpScript->addParam(event.getLocation().y());
-   mpScript->addParam(event.getButtons());
-   mpScript->addParam(event.getEventType());
-   mpScript->run("onMouseEvent");
+   Variant args[4];
+   args[0].setInt(event.getLocation().x());
+   args[1].setInt(event.getLocation().y());
+   args[2].setInt(event.getButtons());
+   args[3].setInt(event.getEventType());
+   mpScript->run("onMouseEvent", 4, args);
 }
 

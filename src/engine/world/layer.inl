@@ -70,7 +70,7 @@ INLINE bool Layer::isTileAnimating() const
 
 /// \fn Layer::getEffect()
 /// \brief Return the effect for this layer.
-INLINE const Effect& Layer::getEffect() const
+INLINE const Graphics::Effect& Layer::getEffect() const
 {
    return mEffect;
 }

@@ -46,7 +46,7 @@ void VirtualLookupTable::add(const Variant& variant, int codeindex)
    mEntries[variant] = pentry;
 }
 
-void VirtualLookupTable::offsetCode(int offset)
+void VirtualLookupTable::updatePosition(int offset)
 {
    EntryMap::iterator it = mEntries.begin();
    for ( ; it != mEntries.end(); ++it )

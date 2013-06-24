@@ -10,7 +10,7 @@ class TestNative
 	{
 		NativeClass nativeClass = new NativeClass();
 		assert nativeClass != null;
-		assert nativeClass->getIntValue() == 5;
+		assert nativeClass.getIntValue() == 5;
 	}
 	
 	@test

@@ -20,6 +20,8 @@
 #ifndef SIMULATOR_H_
 #define SIMULATOR_H_
 
+#include "core/script/iscriptable.h"
+
 #include "bodies.h"
 
 class Actor;
@@ -38,7 +40,7 @@ place each frame through a call to the run method.
 At startup the generateWorldShapes method is called so that the 
 */
 
-class Simulator
+class Simulator : public IScriptable
 {
 public:
    Simulator();

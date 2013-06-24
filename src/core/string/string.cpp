@@ -55,6 +55,12 @@ char String::operator[](int index)
    return mString[index];
 }
 
+const String& String::operator=(const char c)
+{
+   mString = c;
+   return *this;
+}
+
 const String& String::operator=(const String& that)
 {
    mString = that.mString;
@@ -245,6 +251,11 @@ int String::indexOf(char character, int start) const
 int String::lastIndexOf(char character) const
 {
    return mString.lastIndexOf(character);
+}
+
+int String::lastIndexOf(char character, int start, int end) const
+{
+   return mString.lastIndexOf(character, start, end);
 }
 
 // - Conversion

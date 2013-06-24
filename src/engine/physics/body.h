@@ -21,7 +21,8 @@
 #define BODY_H_
 
 #include "core/math/vector.h"
-#include "core/math/matrix4.h"
+#include "core/math/xform.h"
+#include "core/script/iscriptable.h"
 
 #include "collisionshapes.h"
 #include "forcegenerators.h"
@@ -33,7 +34,7 @@ class ForceGenerator;
 class Simulator;
 class Actor;
 
-class Body
+class Body : public IScriptable
 {
 public:
    static bool hasInfo(const TiXmlElement& element);
@@ -53,6 +54,9 @@ public:
 
    float getAngle() const;
    void  setAngle(float angle);
+
+   const XForm& getTransform() const;
+   void         setTransform(const XForm& transform);
 
    ForceGenerators& getForceGenerators();
 
@@ -90,9 +94,7 @@ private:
 
    Simulator&        mSimulator;
    Actor&            mActor;
-   Matrix4           mTransform;
-   Vector            mPosition;
-   float             mAngle;
+   XForm             mTransform;
    IBodyListener*    mpListener;
    ForceGenerators   mForceGenerators;
 };

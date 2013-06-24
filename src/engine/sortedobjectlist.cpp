@@ -22,6 +22,8 @@
 #  include "sortedobjectlist.inl"
 #endif
 
+#include "core/math/vector.h"
+
 #include "actor.h"
 
 //////////////////////////////////////////////////////////////////////////

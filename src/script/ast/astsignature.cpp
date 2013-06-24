@@ -1,24 +1,25 @@
 
-#include "signature.h"
+#include "astsignature.h"
 
 #include "core/smartptr/autoptr.h"
+#include "core/defines.h"
 
 #include "../ast/asttype.h"
 #include "../ast/astclass.h"
 #include "../ast/asttypevariable.h"
 #include "../ast/asttypevariables.h"
 
-Signature::Signature():
+ASTSignature::ASTSignature():
    mTypes(),
    mOwning(false) 
 {
 }
 
-Signature::~Signature()
+ASTSignature::~ASTSignature()
 {
    if ( mOwning )
    {
-      for ( int index = 0; index < mTypes.size(); index++ ) 
+      for ( std::size_t index = 0; index < mTypes.size(); index++ ) 
       {
          delete mTypes[index];
       }
@@ -28,22 +29,22 @@ Signature::~Signature()
 
 // - Query
 
-const ASTType& Signature::operator[](int index) const
+const ASTType& ASTSignature::operator[](int index) const
 {
    return *mTypes[index];
 }
 
-int Signature::size() const
+int ASTSignature::size() const
 {
    return mTypes.size();
 }
 
-bool Signature::exactMatch(const Signature& that) const
+bool ASTSignature::exactMatch(const ASTSignature& that) const
 {
    if ( that.size() != size() )
       return false;
 
-   for ( int index = 0; index < mTypes.size(); index++ )
+   for ( std::size_t index = 0; index < mTypes.size(); index++ )
    {
       const ASTType& type = *mTypes[index];
       const ASTType& thattype = *that.mTypes[index];
@@ -57,12 +58,12 @@ bool Signature::exactMatch(const Signature& that) const
    return true;
 }
 
-bool Signature::bestMatch(const Signature& that, const ASTTypeList& types) const
+bool ASTSignature::bestMatch(const ASTSignature& that, const ASTTypeList& types) const
 {
    if ( that.size() != size() )
       return false;
 
-   for ( int index = 0; index < mTypes.size(); index++ )
+   for ( std::size_t index = 0; index < mTypes.size(); index++ )
    {
       AutoPtr<ASTType> ptype = mTypes[index]->clone();
       const ASTType& thattype = *that.mTypes[index];
@@ -99,13 +100,13 @@ bool Signature::bestMatch(const Signature& that, const ASTTypeList& types) const
 
 // - Operations
 
-void Signature::append(const ASTType& type)
+void ASTSignature::append(const ASTType& type)
 {
-   // Q_ASSERT(!mOwning);
+   // ASSERT(!mOwning);
    mTypes.push_back(&type);
 }
 
-void Signature::append(ASTType* ptype)
+void ASTSignature::append(ASTType* ptype)
 {
    mTypes.push_back(ptype);
    mOwning = true;
@@ -113,7 +114,7 @@ void Signature::append(ASTType* ptype)
 
 // conversion
    
-String Signature::toString() const
+String ASTSignature::toString() const
 {
    String result;
    for ( std::size_t index = 0; index < mTypes.size(); index++ )

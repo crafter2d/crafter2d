@@ -21,6 +21,7 @@
 #define DEFINES_OF_JENGINE_H_
 
 #include <cassert>
+#include <exception>
 
 #undef NULL
 #define NULL 0
@@ -67,7 +68,7 @@ typedef void*           handle;
 #define ASSERT(cond)          assert(cond);
 #define ASSERT_MSG(cond,msg)  assert(cond && msg);
 #define ASSERT_PTR(ptr)       assert(ptr != NULL);
-#define PURE_VIRTUAL          assert(false && "Pure virtual!");
+#define PURE_VIRTUAL          assert(false && "Pure virtual!"); throw std::exception();
 #define UNREACHABLE(msg)      assert(false && msg);
 
 // MATH

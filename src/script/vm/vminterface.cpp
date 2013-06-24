@@ -7,7 +7,6 @@
 #include "core/math/math.h"
 
 #include "script/common/classregistry.h"
-#include "script/common/classregistration.h"
 #include "script/common/functionregistration.h"
 
 #include "virtualmachine.h"
@@ -56,6 +55,13 @@ void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& acce
    String callstack = machine.buildCallStack();
 
    accessor.setResult(callstack);
+}
+
+void InternalArray_size(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualArray& thisobject = accessor.getArray(0);
+
+   accessor.setResult(thisobject.size());
 }
 
 void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -163,58 +169,41 @@ void Math_ceil(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)
 {
-   {
-      ClassRegistration& reg = registry.addClass("Console");
-      reg.addFunction(FunctionRegistration::Function(String("println"), Console_println));
-      reg.addFunction(FunctionRegistration::Function(String("print"), Console_print));
-   }
+   registry.addClass("system.Console");
+   registry.addFunction("println(string)", Console_println);
+   registry.addFunction("print(string)", Console_print);
 
-   {
-      ClassRegistration& reg = registry.addClass("ClassLoader");
-      reg.addFunction(FunctionRegistration::Function(String("doLoadClass"), ClassLoader_doLoadClass));
-   }
+   registry.addClass("system.ClassLoader");
+   registry.addFunction("doLoadClass(string)", ClassLoader_doLoadClass);
+   
+   registry.addClass("system.Class");
+   registry.addFunction("doNewInstance(system.Class)", Class_doNewInstance);
 
-   {
-      ClassRegistration& reg = registry.addClass("Class");
-      reg.addFunction(FunctionRegistration::Function(String("doNewInstance"), Class_doNewInstance));
-   }
+   registry.addClass("system.Function");
+   registry.addFunction("doInvoke(system.Object)", Function_doInvoke);
+   
+   registry.addClass("system.Throwable");
+   registry.addFunction("fillCallStack()", Throwable_fillCallStack);
 
-   {
-      ClassRegistration& reg = registry.addClass("Function");
-      reg.addFunction(FunctionRegistration::Function(String("doInvoke"), Function_doInvoke));
-   }
+   registry.addClass("system.InternalArray");
+   registry.addFunction("size()", InternalArray_size);
+   registry.addFunction("resize(int)", InternalArray_resize);
 
-   {
-      ClassRegistration& reg = registry.addClass("Throwable");
-      reg.addFunction(FunctionRegistration::Function(String("fillCallStack"), Throwable_fillCallStack));
-   }
-
-   {
-      ClassRegistration& reg = registry.addClass("InternalArray");
-      reg.addFunction(FunctionRegistration::Function(String("resize"), InternalArray_resize));
-   }
-
-   {
-      ClassRegistration& reg = registry.addClass("InternalString");
-      reg.addFunction(FunctionRegistration::Function(String("equals"), InternalString_equals));
-      reg.addFunction(FunctionRegistration::Function(String("length"), InternalString_length));
-      reg.addFunction(FunctionRegistration::Function(String("subString"), InternalString_subString));
-      reg.addFunction(FunctionRegistration::Function(String("getChar"), InternalString_getChar));
-      reg.addFunction(FunctionRegistration::Function(String("indexOf"), InternalString_indexOf));
-      reg.addFunction(FunctionRegistration::Function(String("lastIndexOf"), InternalString_lastIndexOf));
-   }
-
-   {
-      ClassRegistration& reg = registry.addClass("Char");
-      reg.addFunction(FunctionRegistration::Function(String("isAlphaNum"), Char_isAlphaNum));
-      reg.addFunction(FunctionRegistration::Function(String("isAlpha"), Char_isAlpha));
-      reg.addFunction(FunctionRegistration::Function(String("isDigit"), Char_isDigit));
-      reg.addFunction(FunctionRegistration::Function(String("isWhitespace"), Char_isWhitespace));
-   }
-
-   {
-      ClassRegistration& reg = registry.addClass("Math");
-      reg.addFunction(FunctionRegistration::Function(String("sqrt"), Math_sqrt));
-      reg.addFunction(FunctionRegistration::Function(String("ceil"), Math_ceil));
-   }
+   registry.addClass("system.InternalString");
+   registry.addFunction("equals(string)", InternalString_equals);
+   registry.addFunction("length()", InternalString_length);
+   registry.addFunction("subString(int, int)", InternalString_subString);
+   registry.addFunction("getChar(int)", InternalString_getChar);
+   registry.addFunction("indexOf(char)", InternalString_indexOf);
+   registry.addFunction("lastIndexOf(char)", InternalString_lastIndexOf);
+   
+   registry.addClass("system.Char");
+   registry.addFunction("isAlphaNum(char)", Char_isAlphaNum);
+   registry.addFunction("isAlpha(char)", Char_isAlpha);
+   registry.addFunction("isDigit(char)", Char_isDigit);
+   registry.addFunction("isWhitespace(char)", Char_isWhitespace);
+   
+   registry.addClass("engine.core.Math");
+   registry.addFunction("sqrt(real)", Math_sqrt);
+   registry.addFunction("ceil(real)", Math_ceil);
 }

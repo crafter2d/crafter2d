@@ -1,10 +1,12 @@
 
 package box2d;
 
-use engine.game.inputforcegenerator;
+use engine.game.*;
 
-class Box2DBody
+class Box2DBody extends Body
 {
-	public native void addForceGenerator(InputForceGenerator generator);
-	public native void generateSensors();
+	public void addForceGenerator(ForceGenerator generator)
+	{
+		native;
+	}
 }

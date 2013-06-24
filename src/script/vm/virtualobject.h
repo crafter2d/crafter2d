@@ -50,12 +50,14 @@ public:
    const VirtualClass& getClass() const;
    void                setClass(const VirtualClass& definition);
 
+   const Variant& getMember(int index) const;
+         Variant& getMember(int index);
+   void           setMember(int index, const Variant& value);
+
    int getMemberCount() const;
 
  // operation
    void initialize(int variables);
-   Variant& getMember(int index);
-   void setMember(int index, const Variant& value);
    virtual void finalize(VirtualMachine& vm);
 
 protected:

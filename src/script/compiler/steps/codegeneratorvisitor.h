@@ -12,14 +12,21 @@
 
 #include "script/ast/asttype.h"
 #include "script/scope/scopestack.h"
+#include "script/vm/virtualinstruction.h"
+#include "script/cil/cil.h"
+#include "script/compiler/functionbuilder.h"
 
+namespace CIL
+{
+   class SwitchTable;
+};
+
+class ASTModifiers;
 class ASTVariable;
+class Signature;
 class CompileContext;
 class Literal;
 class VirtualClass;
-class VirtualFunction;
-class VirtualProgram;
-class VirtualLookupTable;
 
 class CodeGeneratorVisitor : public CompileStep
 {
@@ -30,9 +37,11 @@ public:
    void print();
    
  // visitor
-   virtual void visit(const ASTRoot& root);
-   virtual void visit(const ASTClass& ast);
-   virtual void visit(const ASTFunction& ast);
+   virtual void visit(ASTRoot& root);
+   virtual void visit(ASTClass& ast);
+   virtual void visit(ASTFunction& ast);
+
+   virtual void visit(const ASTFunctionArgument& argument);
    virtual void visit(const ASTBlock& ast);
    virtual void visit(const ASTExpressionStatement& ast);
    virtual void visit(const ASTLocalVariable& ast);
@@ -67,13 +76,6 @@ protected:
    virtual bool performStep(ASTNode& node);
 
 private:
-   struct Inst
-   {
-      int instruction;
-      int arg;
-      int linenr;
-   };
-
    struct LoopFlow
    {
       int start;
@@ -86,53 +88,36 @@ private:
    };
 
    typedef std::stack<LoopFlow> LoopFlowStack;
-   typedef std::map<String, const ASTLocalVariable*> VariableMap;
-   typedef std::vector<Inst> InstructionList;
 
-   enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 5, ePostDecr = 6, eKeep = 8 };
+   enum LoadFlags { ePreIncr = 1, ePreDecr = 2, ePostIncr = 4, ePostDecr = 8, eKeep = 16 };
 
  // operations
-   void addInstruction(int instruction, int argument = -1);
-   void addLabel(int id);
-
-   int allocateLabel();
-   int allocateLiteral(const String& value);
-
-   void convertLabels();
-   void removeLabels();
-
-   int findLabel(int label) const;
-
-   void handleAssignment(const ASTAccess& access, bool local);
+   void handleAssignment(const ASTAccess& access);
    void handleVariable(const ASTVariable& variable, bool local);
-   void handleStaticBlock(const ASTClass& ast);
-   void handleFieldBlock(const ASTClass& ast);
+   void handleStaticBlock(ASTClass& ast);
+   void handleFieldBlock(ASTClass& ast);
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
 
-   void fillInstructionList();
-
+   void emitStaticVariableClassName();
+         
    CompileContext&      mContext;
-   const ASTClass*      mpClass;
-   const ASTFunction*   mpFunction;
+   ASTClass*            mpClass;
+   ASTFunction*         mpFunction;
    const ASTAccess*     mpAccess;
    const ASTExpression* mpExpression;
    ASTType              mCurrentType;
 
-   VirtualClass*        mpVClass;
-   InstructionList      mInstructions;
+   CIL::SwitchTable*    mpSwitchTable;
+   FunctionBuilder      mBuilder;
+
    ScopeStack           mScopeStack;
    LoopFlowStack        mLoopFlowStack;
-   VirtualLookupTable*  mpLookupTable;
-   int                  mLabel;
-   int                  mLineNr;
    int                  mLoadFlags;
    int                  mExpr;
    int                  mState;
-   bool                 mSuperCall;
    bool                 mRightHandSide;
    bool                 mStore;
-   bool                 mNeedPop;
 };
 
 #endif // CODE_GENERATOR_VISITOR_H_

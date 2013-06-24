@@ -37,6 +37,7 @@ public:
    const char operator[](int index) const;
          char operator[](int index);
 
+   const String& operator=(const char c);
    const String& operator=(const String& that);
    const String& operator=(const char* pstring);
    const String& operator=(const std::string& that);
@@ -82,6 +83,7 @@ public:
  // searching
    int indexOf(char character, int start = 0) const;
    int lastIndexOf(char character) const;
+   int lastIndexOf(char character, int start, int end) const;
 
  // conversion
    std::string toStdString() const;

@@ -19,12 +19,14 @@ public:
          VirtualInstruction& operator[](int index);
 
  // query
+   bool isEmpty() const;
    int size() const;
 
  // adding
-   void add(VirtualInstruction::Instruction instruction, int argument);
+   void add(VirtualInstruction::Opcode opcode, int argument);
    void add(const VirtualInstruction& instruction);
    void add(const VirtualInstructionTable& instructions);
+   void remove(int index);
 
  // output
    std::string toString(const LiteralTable& table) const;

@@ -4,8 +4,10 @@
 #include <GL/GLee.h>
 #include <GL/glu.h>
 
+#include "core/graphics/effect.h"
 #include "core/graphics/viewport.h"
 #include "core/math/color.h"
+#include "core/math/xform.h"
 #include "core/math/matrix4.h"
 
 #include "oglblendstate.h"
@@ -15,15 +17,14 @@
 using namespace Graphics;
 
 OGLRenderContext::OGLRenderContext():
+   mpEffect(NULL),
    mpVertexBuffer(NULL),
    mpIndexBuffer(NULL)
 {
 }
 
-void OGLRenderContext::setViewport(const Viewport& viewport)
+void OGLRenderContext::onViewportChanged(const Viewport& viewport)
 {
-   RenderContext::setViewport(viewport);
-
    glViewport(viewport.getLeft(), viewport.getTop(), viewport.getWidth(), viewport.getHeight());
 }
 
@@ -39,6 +40,12 @@ void OGLRenderContext::setBlendState(const BlendState& state)
    {
       glDisable(GL_BLEND);
    }
+}
+
+void OGLRenderContext::setEffect(const Effect& effect)
+{
+   mpEffect = &effect;
+   mpEffect->enable(*this);
 }
 
 void OGLRenderContext::setVertexBuffer(const VertexBuffer& buffer)
@@ -66,23 +73,32 @@ void OGLRenderContext::setOrthoProjection()
    gluOrtho2D(0, width, height, 0);
 }
 
-void OGLRenderContext::setIdentityViewMatrix()
+void OGLRenderContext::setObjectMatrix(const XForm& matrix)
 {
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
+   mObjectMatrix = matrix;
+
+   updateViewMatrix();
 }
 
-void OGLRenderContext::setWorldMatrix(const Matrix4& matrix)
+void OGLRenderContext::setWorldMatrix(const XForm& matrix)
 {
-   float mat[16];
-   matrix.asOpenGL(mat);
+   mWorldMatrix = matrix;
 
-   glMatrixMode(GL_MODELVIEW);
-   glLoadMatrixf(mat);
+   updateViewMatrix();
 }
 
-void OGLRenderContext::setIdentityWorldMatrix()
+void OGLRenderContext::updateViewMatrix()
 {
+   XForm matrix = mWorldMatrix * mObjectMatrix;
+   matrix.asOpenGL(matogl);
+
+   glMatrixMode(GL_MODELVIEW);
+   glLoadMatrixf(matogl);
+
+   if ( mpEffect != NULL )
+   {
+      mpEffect->updateStateMatrices();
+   }
 }
 
 void OGLRenderContext::clear()
@@ -98,6 +114,13 @@ void OGLRenderContext::drawTriangles(int start, int count)
    ASSERT_PTR(mpIndexBuffer);
    GLenum type = mpIndexBuffer->getNativeType();
    glDrawElements(GL_TRIANGLES, count, type, 0);
+}
+
+void OGLRenderContext::drawTriangleFan(int start, int count)
+{
+   ASSERT_PTR(mpIndexBuffer);
+
+   glDrawElements(GL_TRIANGLE_FAN, count, mpIndexBuffer->getNativeType(), 0);
 }
 
 void OGLRenderContext::drawTriangleStrip(int start, int count)

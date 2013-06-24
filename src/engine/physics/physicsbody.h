@@ -47,6 +47,9 @@ public:
 
    const Vector& getLastFrameAcceleration() const;
 
+ // query
+   const String& PhysicsBody::getClassName() const;
+
  // shapes
    void  addShape(CollisionShape* pshape);
    const CollisionShapes& getShapes() const;
@@ -92,6 +95,8 @@ private:
 
    float    mInverseInertia;
    float    mInverseMass;
+
+   static String sClassName;
 };
 
 #endif

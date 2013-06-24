@@ -22,11 +22,10 @@
 
 #include <fstream>
 
+#include "core/graphics/effect.h"
 #include "core/math/vector.h"
 #include "core/defines.h"
 #include "core/string/string.h"
-
-#include "engine/effect.h"
 
 #include "tileset.h"
 #include "layertype.h"
@@ -117,7 +116,7 @@ public:
    float          getTexTileWidth() const { return texTileWidth; }
    float          getTexTileHeight() const { return texTileHeight; }
 
-   const Effect&  getEffect() const;
+   const Graphics::Effect& getEffect() const;
 
  // Operations
    Vector         layerToScreen( const Vector& vec ) const;
@@ -166,7 +165,7 @@ private:
 
  // members
    LayerDefinition*  mpDefinition;
-   Effect            mEffect;
+   Graphics::Effect  mEffect;
 };
 
 #ifdef JENGINE_INLINE

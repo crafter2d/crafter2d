@@ -54,15 +54,22 @@ abstract class Process
 		mPlayers.add(player);
 	}
 	
-	public Player getPlayers()
+	public ArrayList<Player> getPlayers()
 	{
-		return mPlayers.get(0);
+		return mPlayers;
+	}
+	
+	public Player getPlayer(int id)
+	{
+		return mPlayers.get(id);
 	}
 	
 	public World getWorld()
 	{
 		return mWorld;
 	}
+	
+	public native void setActionMap(ActionMap map);
 	
 	/// does not call the native function
 	protected void setInternalWorld(World world)

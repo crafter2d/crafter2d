@@ -20,7 +20,6 @@
 #include "symbolcollectorstep.h"
 
 #include "script/compiler/compilecontext.h"
-#include "script/common/classregistration.h"
 
 #include "script/ast/ast.h"
 
@@ -73,7 +72,7 @@ void SymbolCollectorVisitor::visit(ASTClass& ast)
       resolveType(type);
    }
 
-   if ( !ast.hasConstructor() && ast.hasBaseType() )
+   if ( ast.isClass() && !ast.hasConstructor() && ast.hasBaseType() )
    {
       generateDefaultConstructor(ast);
    }
@@ -127,6 +126,11 @@ void SymbolCollectorVisitor::visit(ASTFunction& ast)
       {
          ast.getModifiers().setNative(true);
       }
+   }
+
+   if ( ast.getType().isVoid() )
+   {
+      generateReturn(ast);
    }
 }
 
@@ -416,16 +420,6 @@ void SymbolCollectorVisitor::generateNativeFinalize(ASTClass& ast)
 void SymbolCollectorVisitor::generateConstructorBody(ASTFunction& ast)
 {
    ASTBlock* pbody = new ASTBlock();
-   ASTSuper* psuper = new ASTSuper();
-   psuper->setCall(true);
-   psuper->setKind(ASTSuper::eSuper);
-   ASTUnary* punary = new ASTUnary();
-   punary->addPart(psuper);
-   ASTExpression* pexpression = new ASTExpression();
-   pexpression->setLeft(punary);
-   ASTExpressionStatement* pexprstmt = new ASTExpressionStatement(pexpression);
-   pbody->addChild(pexprstmt);
-
    ast.setBody(pbody);
 }
 
@@ -453,6 +447,16 @@ void SymbolCollectorVisitor::generateNativeCall(ASTFunction& function)
    ASTExpressionStatement* pexprstmt = new ASTExpressionStatement(pexpression);
 
    function.getBody().insertChild(0, pexprstmt);
+}
+
+void SymbolCollectorVisitor::generateReturn(ASTFunction& function)
+{
+   if ( !function.getModifiers().isAbstract() && !function.getModifiers().isPureNative() )
+   {
+      ASTReturn* preturn = new ASTReturn();
+  
+      function.getBody().addChild(preturn);
+   }
 }
 
 /// Resolve the type, if resolving fails the type is marked as unknown so other 

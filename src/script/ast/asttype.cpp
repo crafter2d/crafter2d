@@ -31,6 +31,63 @@ ASTType ASTType::greaterType(const ASTType& left, const ASTType& right)
 
    return ASTType();
 }
+   
+// static 
+ASTType* ASTType::fromString(const String& type)
+{
+   int pos = type.lastIndexOf('[');
+   if ( pos != -1 )
+   {
+      String arraytype = type.subStr(0, pos);
+      ASTType* parray = new ASTType(ASTType::eArray);
+      parray->setArrayType(fromString(arraytype));
+      parray->determineArrayDimension();
+      return parray;
+   }
+
+   if ( type == SBool )
+   {
+      return new ASTType(ASTType::eBoolean);
+   }
+   else if ( type == SInt  )
+   {
+      return new ASTType(ASTType::eInt);
+   }
+   else if ( type == SReal )
+   {
+      return new ASTType(ASTType::eReal);
+   }
+   else if ( type == SChar )
+   {
+      return new ASTType(ASTType::eChar);
+   }
+   else if ( type == SString )
+   {
+      return new ASTType(ASTType::eString);
+   }
+   else if ( type == SVoid )
+   {
+      return new ASTType(ASTType::eVoid);
+   }
+   else
+   {
+      String value;
+
+      // todo, what with generics?
+      ASTType::Kind kind = ASTType::eObject;
+      if ( type[0] == '~' ) {
+         kind = ASTType::eGeneric;
+         value = type.subStr(1, type.length() - 1);
+      }
+      else
+         value = type;
+
+      ASTType* ptype = new ASTType(kind);
+      ptype->setObjectName(value);
+      return ptype;
+   }
+   return NULL;
+}
 
 ASTType::ASTType():
    mKind(eInvalid),
@@ -236,6 +293,11 @@ bool ASTType::isUnknown() const
    return mKind == eUnknown;
 }
 
+bool ASTType::isValueType() const
+{
+   return isNumeric() || isChar() || isString();
+}
+
 bool ASTType::isNull() const
 {
    return mKind == eNull;
@@ -424,6 +486,17 @@ ASTType* ASTType::clone() const
    return new ASTType(*this);
 }
 
+void ASTType::determineArrayDimension()
+{
+   mArrayDimension = 1;
+   ASTType* ptype = mpArrayType;
+   while ( mpArrayType->isArray() )
+   {
+      ptype = mpArrayType->mpArrayType;
+      mArrayDimension++;
+   }
+}
+
 // - Conversion
 
 String ASTType::toString() const
@@ -447,8 +520,11 @@ String ASTType::toString() const
       case eBoolean:
          type = SBool;
          break;
+      case eGeneric:
+         type = "~";
+         // fall through
       case eObject:
-         type = mpObjectClass != NULL ? mpObjectClass->getFullName() : mObjectName;
+         type += mpObjectClass != NULL ? mpObjectClass->getFullName() : mObjectName;
          if ( !mTypeArguments.empty() )
          {
             type += "<";

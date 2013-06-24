@@ -7,8 +7,7 @@
 ResourceCheckVisitor::ResourceCheckVisitor(CompileContext& context):
    CompileStep(),
    mContext(context),
-   mOffset(0),
-   mMaxVariables(0)
+   mOffset(0)
 {
 }
 
@@ -36,29 +35,17 @@ void ResourceCheckVisitor::visit(ASTFunction& ast)
 {
    if ( !ast.getModifiers().isPureNative() && !ast.getModifiers().isAbstract() )
    {
-      mOffset = ast.getArguments().size();
-      mMaxVariables = mOffset;
+      mOffset = 0;
 
-      if ( !ast.getModifiers().isStatic() )
-      {
-         // add the this argument
-         mOffset++;
-      }
-      
       ast.getBody().accept(*this);
     
-      ast.setLocalVariableCount(mMaxVariables - ast.getArguments().size());
+      ast.setLocalVariableCount(mOffset - ast.getArguments().size());
    }
 }
 
 void ResourceCheckVisitor::visit(ASTBlock& ast)
 {
-   int savedoffset = mOffset;
-
    visitChildren(ast);
-
-   mMaxVariables = mOffset > mMaxVariables ? mOffset : mMaxVariables;
-   mOffset = savedoffset;
 }
 
 void ResourceCheckVisitor::visit(ASTLocalVariable& ast)
@@ -89,22 +76,21 @@ void ResourceCheckVisitor::visit(ASTFor& ast)
 
 void ResourceCheckVisitor::visit(ASTForeach& ast)
 {
-   ast.getVariable().setResourceIndex(mOffset++);
-   ast.setResourceIndex(mOffset++);
-   
+   ast.getIteratorVariable().setResourceIndex(mOffset++);
+   ast.getVariable().setResourceIndex(mOffset++);   
    ast.getBody().accept(*this);
 }
 
 void ResourceCheckVisitor::visit(ASTWhile& ast)
 {
-   ast.getCondition().accept(*this);
+   // condition can not have a local variable
    ast.getBody().accept(*this);
 }
 
 void ResourceCheckVisitor::visit(ASTDo& ast)
 {
    ast.getBody().accept(*this);
-   ast.getCondition().accept(*this);
+   // condition can not have a local variable
 }
 
 void ResourceCheckVisitor::visit(ASTSwitch& ast)
@@ -125,8 +111,7 @@ void ResourceCheckVisitor::visit(ASTTry& ast)
 
    if ( ast.getCatches().size() > 0 )
    {
-      ast.setResourceIndex(mOffset);
-      mOffset++;
+      ast.setResourceIndex(mOffset++);
 
       visitChildren(ast);
    }
@@ -139,5 +124,6 @@ void ResourceCheckVisitor::visit(ASTTry& ast)
 
 void ResourceCheckVisitor::visit(ASTCatch& ast)
 {
+   // the variable of the catches are shared   
    ast.getBody().accept(*this);
 }

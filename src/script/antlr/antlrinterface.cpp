@@ -470,6 +470,7 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
 ASTMember* AntlrParser::handleVarDecl(const AntlrNode& node)
 {
    ASTVariable* pvariable = new ASTVariable();
+   pvariable->setLocation(ASTVariable::eField);
 
    AntlrNode modnode = node.getChild(0);
    handleModifiers(modnode, pvariable->getModifiers());
@@ -500,6 +501,8 @@ void AntlrParser::handleFuncArguments(const AntlrNode& node, ASTFunction& functi
    while ( index < count )
    {
       ASTVariable* pvariable = new ASTVariable();
+      pvariable->setLocation(ASTVariable::eArgument);
+
       AntlrNode typenode = node.getChild(index);
       pvariable->setType(getType(typenode));
 
@@ -576,6 +579,7 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
    else
    {
       ASTVariable* pvariable = new ASTVariable();
+      pvariable->setLocation(ASTVariable::eField);
       pvariable->setModifiers(modifiers);
       pvariable->setType(ptype);
       pvariable->setName(name);
@@ -616,7 +620,11 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
    }
    else
    {
+      UNREACHABLE("Void type member variables are not supported");
+      return NULL;
+      /*
       ASTVariable* pvariable = new ASTVariable();
+      pvariable->setLocation(ASTVariable::eField);
       pvariable->setModifiers(modifiers);
       pvariable->setType(ASTType::SVoidType.clone());
       pvariable->setName(name);
@@ -628,6 +636,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
       }
 
       return new ASTField(pvariable);
+      */
    }
 }
 
@@ -807,6 +816,7 @@ ASTBlock* AntlrParser::handleBlock(const AntlrNode& node)
 ASTLocalVariable* AntlrParser::handleLocalVarDecl(const AntlrNode& node)
 {
    ASTVariable* pvariable = new ASTVariable();
+   pvariable->setLocation(ASTVariable::eLocal);
 
    AntlrNode typenode = node.getChild(0);
    pvariable->setType(getType(typenode));
@@ -894,6 +904,7 @@ ASTFor* AntlrParser::handleFor(const AntlrNode& node)
 ASTForeach* AntlrParser::handleForeach(const AntlrNode& node)
 {
    ASTVariable* pvariable = new ASTVariable();
+   pvariable->setLocation(ASTVariable::eLocal);
 
    AntlrNode typenode = node.getChild(0);
    pvariable->setType(getType(typenode));
@@ -1064,6 +1075,7 @@ ASTTry* AntlrParser::handleTry(const AntlrNode& node)
 ASTCatch* AntlrParser::handleCatch(const AntlrNode& node)
 {
    ASTVariable* pvariable = new ASTVariable();
+   pvariable->setLocation(ASTVariable::eLocal);
 
    AntlrNode typenode = node.getChild(0);
    pvariable->setType(getType(typenode));

@@ -10,6 +10,7 @@
 #include "astfield.h"
 #include "astfunction.h"
 #include "astfunctionargument.h"
+#include "astsignature.h"
 #include "astvariable.h"
 #include "astvariableinit.h"
 #include "astlocalvariable.h"

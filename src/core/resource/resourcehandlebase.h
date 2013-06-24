@@ -7,7 +7,7 @@
 
 class ResourceManager;
 
-class ResourceHandleBase : public RefCount
+class CORE_API ResourceHandleBase : public RefCount
 {
 public:
    explicit ResourceHandleBase(ResourceManager& manager);

@@ -21,7 +21,7 @@ public:
          Variant& operator[](int index);
 
  // stack operations
-   void push(int count);
+   void push(int count, Variant* pvalues);
    void push(const Variant& value);
    void pushInt(int value);
    void pushReal(double value);
@@ -56,7 +56,8 @@ private:
 
  // operations
    Variant& top();
-   void     grow(int amount);
+   void     ensureFits(int amount);
+   void     fill(int from);
 
    Stack mStack;
    int   mSize;

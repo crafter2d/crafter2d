@@ -48,5 +48,5 @@ void InputForceGenerator::applyForce(Body& body) const
    body.applyForce(mVelocity);
    body.applyImpulse(mImpulse);
 
-   const_cast<Vector&>(mImpulse) = Vector::zero();
+   mImpulse = Vector::zero();
 }

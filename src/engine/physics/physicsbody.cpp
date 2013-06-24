@@ -22,6 +22,8 @@
 #  include "physicsbody.inl"
 #endif
 
+String PhysicsBody::sClassName = "box2d.Box2DBody";
+
 #include "physicsxml.h"
 #include "collisionshape.h"
 
@@ -48,6 +50,13 @@ PhysicsBody::~PhysicsBody()
 {
 }
 
+// - Query
+
+const String& PhysicsBody::getClassName() const
+{
+   return sClassName;
+}
+
 // ----------------------------------
 // - Loading
 // ----------------------------------
@@ -65,7 +74,8 @@ void PhysicsBody::load(const TiXmlElement& element)
 
 Vector PhysicsBody::localToWorld(const Vector& vector) const
 {
-   return mTransform.transform(vector);
+   //return mTransform.transform(vector);
+   return vector;
 }
 
 // ----------------------------------

@@ -87,9 +87,9 @@ int ShaderPath::getUniformLocation (const String& name) const
 	return shader.getUniformLocation(name);
 }
 
-void ShaderPath::setStateUniform(int index)
+void ShaderPath::setUniformStateMatrix(int index) const
 {
-   shader.setStateUniform(index);
+   shader.setUniformStateMatrix(index);
 }
 
 void ShaderPath::setUniform1i (int index, int val)

@@ -7,27 +7,20 @@
 #include "script/script_base.h"
 #include "script/vm/vminterface.h"
 
+class ClassRegistration;
+
 class SCRIPT_API FunctionRegistration
 {
 public:
-   enum Type
-   {
-      eConstructor,
-      eDestructor,
-      eFunction
-   };
-
-   static FunctionRegistration Constructor(const String& prototype, VMInterface::CallbackFnc callback);
-   static FunctionRegistration Destructor(VMInterface::CallbackFnc callback);
-   static FunctionRegistration Function(const String& prototype, VMInterface::CallbackFnc callback);
-
-   const FunctionRegistration& operator=(const FunctionRegistration& that);
-
+   static FunctionRegistration* create(const String& prototype, VMInterface::CallbackFnc callback);
+   
  // get/set
    int getIndex() const;
    void setIndex(int index);
 
-   Type getType() const;
+   const ClassRegistration& getClassRegistration() const;
+   void setClassRegistration(const ClassRegistration& klass);
+
    const String& getPrototype() const;
    VMInterface::CallbackFnc getCallback() const;
 
@@ -35,14 +28,13 @@ public:
    FunctionRegistration* clone() const;
 
 private:
-   FunctionRegistration(Type type, VMInterface::CallbackFnc callback);
-   FunctionRegistration(Type type, const String& prototype, VMInterface::CallbackFnc callback);
+   FunctionRegistration(const String& prototype, VMInterface::CallbackFnc callback);
    FunctionRegistration(const FunctionRegistration& that);
 
-   int mIndex;
-   Type mType;
-   String mPrototype;
-   VMInterface::CallbackFnc mCallback;
+   const ClassRegistration*   mpClass;
+   int                        mIndex;
+   String                     mPrototype;
+   VMInterface::CallbackFnc   mCallback;
 };
 
 #endif // FUNCTION_REGISTRATION_H

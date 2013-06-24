@@ -4,36 +4,36 @@
 
 #include "core/string/string.h"
 
+#include "virtualguards.h"
+
+class VirtualLookupTable;
+
 class VirtualFunctionTableEntry
 {
 public:
-   VirtualFunctionTableEntry():
-      mName(),
-      mInstruction(-1),
-      mOriginalInstruction(-1),
-      mArguments(0),
-      mInterface(-1)
-   {
-   }
+   typedef std::vector<VirtualLookupTable*> VirtualLookups;
 
-   VirtualFunctionTableEntry(const VirtualFunctionTableEntry& that): 
-      mName(that.mName),
-      mInstruction(that.mInstruction),
-      mOriginalInstruction(that.mOriginalInstruction),
-      mArguments(that.mArguments),
-      mInterface(that.mInterface)
-   {
-   }
+   VirtualFunctionTableEntry();
+   VirtualFunctionTableEntry(const VirtualFunctionTableEntry& that);
 
-   VirtualFunctionTableEntry* clone() const {
-      return new VirtualFunctionTableEntry(*this);
-   }
+ // maintenance
+   VirtualFunctionTableEntry* clone() const;
 
-   String mName;
-   int    mInstruction;
-   int    mOriginalInstruction;
-   int    mArguments;
-   int    mInterface;
+   void addLookupTable(VirtualLookupTable* ptable);
+   void updateLookupTables();
+
+   void addGuard(VirtualGuard* pguard);
+   void updateGuards();
+
+ // data
+   String         mName;
+   VirtualGuards  guards;
+   VirtualLookups lookups;
+   int            mInstruction;
+   int            mArguments;
+   int            mLocals;
+   int            mInterface;
+   bool           returns;
 };
 
 #endif // VIRTUAL_FUNCTION_TABLE_ENTRY_H_

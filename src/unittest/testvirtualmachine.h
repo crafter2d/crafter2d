@@ -5,11 +5,11 @@
 #include <cxxtest/TestSuite.h>
 
 #include "core/vfs/filesystem.h"
+#include "core/smartptr/autoptr.h"
 
 #include "script/vm/virtualmachine.h"
 #include "script/vm/virtualstackaccessor.h"
 #include "script/vm/virtualobject.h"
-#include "script/common/classregistration.h"
 #include "script/common/functionregistration.h"
 
 class NativeClass
@@ -29,7 +29,6 @@ void NativeClass_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    NativeClass* pnative = new NativeClass();
    machine.registerNative(thisobject, pnative);
-   thisobject.setOwner(true);
 }
 
 void NativeClass_getIntValue(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -83,13 +82,13 @@ public:
    void testRun()
    {
       ClassRegistry registry;
-      ClassRegistration& classreg = registry.addClass("NativeClass");
-      classreg.addFunction(FunctionRegistration::Constructor("init", NativeClass_init));
-      classreg.addFunction(FunctionRegistration::Function("getIntValue", NativeClass_getIntValue));
-      classreg.addFunction(FunctionRegistration::Function("getStringValue", NativeClass_getStringValue));
-      classreg.addFunction(FunctionRegistration::Function("add", NativeClass_add));
-      classreg.addFunction(FunctionRegistration::Function("sub", NativeClass_sub));
-      classreg.addFunction(FunctionRegistration::Function("mul", NativeClass_mul));
+      registry.addClass("NativeClass");
+      registry.addFunction("NativeClass()", NativeClass_init);
+      registry.addFunction("getIntValue()", NativeClass_getIntValue);
+      registry.addFunction("getStringValue()", NativeClass_getStringValue);
+      registry.addFunction("add(int, int)", NativeClass_add);
+      registry.addFunction("sub(int, int)", NativeClass_sub);
+      registry.addFunction("mul(int, int)", NativeClass_mul);
 
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();
@@ -101,7 +100,10 @@ public:
       vm.mergeClassRegistry(registry);
       vm.initialize();
 
-      TS_ASSERT(vm.execute("Test", "run"));
+      AutoPtr<VirtualObject> object = vm.instantiate("Test");
+
+      TS_ASSERT(object.hasPointer());
+      TS_ASSERT(vm.execute(*object, "run").isEmpty());
    }
 
 };

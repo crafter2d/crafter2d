@@ -5,12 +5,9 @@
 
 #include "script/ast/ast.h"
 #include "script/compiler/compilecontext.h"
-#include "script/compiler/signature.h"
 #include "script/common/functionregistration.h"
 #include "script/scope/scopevariable.h"
 #include "script/scope/scopedscope.h"
-
-#include "variablecheckvisitor.h"
 
 OOCheckVisitor::OOCheckVisitor(CompileContext& context):
    CompileStep(),
@@ -42,7 +39,7 @@ void OOCheckVisitor::visit(ASTClass& ast)
    mpClass = &ast;
    ASSERT_PTR(mpClass);
 
-   if ( mpClass->getKind() == ASTClass::eClass )
+   if ( mpClass->isClass() )
    {
       if ( mpClass->hasAbstractFunction() )
       {
@@ -62,6 +59,10 @@ void OOCheckVisitor::visit(ASTClass& ast)
          mContext.getLog().warning(String("Class ") + ast.getName() + " is marked abstract without abstract functions.");
       }
    }
+   else 
+   {
+      ASSERT(mpClass->isInterface());
+   }
 
    if ( ast.isNative() )
    {
@@ -80,7 +81,7 @@ void OOCheckVisitor::visit(ASTFunction& ast)
 
    ScopedScope scope(mScopeStack);
 
-   ast.getArguments().accept(*this);
+   ast.getArgumentNodes().accept(*this);
 
    if ( ast.hasAnnotations() )
    {
@@ -93,9 +94,23 @@ void OOCheckVisitor::visit(ASTFunction& ast)
    if ( ast.isConstructor() )
    {
       // abstract classes can not have native constructors
+      /*
       if ( ast.getModifiers().isNative() && mpClass->getModifiers().isAbstract() )
       {
          mContext.getLog().error("Abstract class " + mpClass->getFullName() + " can not have native constructors.");
+      }
+      */
+   }
+   else
+   {
+      if ( mpClass->hasBaseClass() )
+      {
+         ASTClass& baseclass = mpClass->getBaseClass();
+         ASTFunction* pbasefunc = baseclass.findExactMatch(ast.getName(), ast.getSignature());
+         if ( pbasefunc != NULL )
+         {
+            ast.setBaseFunction(*pbasefunc);
+         }
       }
    }
 
@@ -295,17 +310,13 @@ void OOCheckVisitor::visit(ASTNative& ast)
 {
    mHasNativeCall = true;
 
-   String name;
-   if ( mpFunction->isConstructor() )
-      name = "init";
-   else
-      name = mpFunction->getName();
+   String name = mpFunction->getPrototype();
 
    const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(*mpClass, name);
    if ( preg == NULL )
    {
-      String fncname = mpClass->getFullName() + "_" + mpFunction->getName() + "(" + mpFunction->getSignature().toString() + ")";
-      mContext.getLog().error("Native function " + fncname + " is not registered or has wrong arguments");
+      String qualitifiedname = mpClass->getFullName() + "_" + name;
+      mContext.getLog().error("Native function " + qualitifiedname + " is not registered or has wrong arguments");
    }
    else
    {
@@ -410,14 +421,16 @@ bool OOCheckVisitor::isFinal(ASTNode& expr)
    return false;
 }
 
-void OOCheckVisitor::validateClass(const ASTClass& aclass)
+void OOCheckVisitor::validateClass(const ASTClass& klass)
 {
    // check if all base class functions are implemented
    // does not have to be a direct class: abstract classes do not have to implement the abstract methods of their base
    // (abstract methods shouldnt be stored in the function table, but as they are its making life much easier)
 
-   if ( !aclass.getModifiers().isAbstract() && aclass.hasBaseClass() )
+   if ( !klass.getModifiers().isAbstract() && klass.hasBaseClass() )
    {
+      
+      /*
       const FunctionTable& functions = aclass.getFunctionTable();
 
       const ASTClass& baseclass = aclass.getBaseClass();
@@ -433,7 +446,10 @@ void OOCheckVisitor::validateClass(const ASTClass& aclass)
             mContext.getLog().error(String("Function ") + aclass.getName() + "." + function.getName() + " must be implemented.");
          }
       }
+      */
    }
+
+    checkInterfaceImplementation(klass);
 }
 
 void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right)
@@ -474,6 +490,34 @@ void OOCheckVisitor::checkVarInit(ASTVariable& var)
       else if ( varinit.hasExpression() )
       {
          varinit.getExpression().accept(*this);
+      }
+   }
+}
+
+void OOCheckVisitor::checkInterfaceImplementation(const ASTClass& ast)
+{
+   if ( !ast.getModifiers().isAbstract() )
+   {
+      ASTTypeList interfaces;
+      ast.collectInterfaces(interfaces);
+
+      for ( int index = 0; index < interfaces.size(); ++index )
+      {
+         ASTType& itype = interfaces[index];
+         ASTClass& intrface = itype.getObjectClass();
+         ASSERT(intrface.isInterface());
+
+         ASTFunctionMap& functions = intrface.getFunctions();
+         ASTFunctionMap::Iterator it = functions.getIterator();
+         while ( functions.hasNext(it) )
+         {
+            ASTFunction& function = functions.getNext(it);
+            const ASTFunction* pimplementation = ast.findExactMatch(function.getName(), function.getSignature());
+            if ( pimplementation == NULL )
+            {
+               mContext.getLog().error("Function " + intrface.getFullName() + "." + function.getPrototype() + " is not implemented.");
+            }
+         }
       }
    }
 }

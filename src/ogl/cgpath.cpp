@@ -171,7 +171,7 @@ int CGPath::getUniformLocation(const String& name) const
    return _userparams.size() - 1;
 }
 
-void CGPath::setStateUniform(int index)
+void CGPath::setUniformStateMatrix(int index) const
 {
    CGparameter param = _userparams[index];
    cgGLSetStateMatrixParameter(param, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);

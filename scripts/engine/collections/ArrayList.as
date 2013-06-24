@@ -20,7 +20,7 @@ class ArrayList<T> implements Iterable<T>
 	
 	public T get(int index)
 	{
-		if ( index >= mArray.length )
+		if ( index >= mArray.size() )
 		{
 			throw new ArrayIndexOutOfBoundsException();
 		}
@@ -29,9 +29,9 @@ class ArrayList<T> implements Iterable<T>
 	
 	public void add(T element)
 	{
-		if ( mElements >= mArray.length )
+		if ( mElements >= mArray.size() )
 		{
-			mArray.resize(mArray.length * 2);
+			mArray.resize(mArray.size() * 2);
 		}
 		mArray[mElements++] = element;
 	}

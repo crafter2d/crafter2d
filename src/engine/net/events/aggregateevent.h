@@ -37,6 +37,9 @@ public:
  // get/set
    const Events& getEvents() const { return mEvents; } 
 
+ // query
+   bool isEmpty() const { return mEvents.empty(); }
+
  // operations
    void add(NetEvent* pevent);
 

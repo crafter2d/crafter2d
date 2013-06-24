@@ -80,6 +80,9 @@ public:
    void updateClient(float delta);
    void draw(Graphics::RenderContext& context) const;
 
+ // messaging
+   void sendComponentMessage(ComponentMessage& message);
+
  // maintenance
    Entities& getChildren();
    void      add(Entity& entity);
@@ -89,6 +92,11 @@ public:
    virtual void accept(NodeVisitor& visitor) = 0;
 
 protected:
+
+ // get/set
+   bool                 hasMesh() const;
+   const MeshComponent& getMesh() const;
+         MeshComponent& getMesh();
 
  // update & drawing
    virtual void doUpdate(float delta) = 0;

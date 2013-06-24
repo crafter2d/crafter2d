@@ -127,7 +127,7 @@ bool ASTSwitch::hasReturn(bool& hasunreachablecode) const
 void ASTSwitch::validateCaseTypes(CompileContext& context)
 {
    ASSERT_PTR(mpType);
-   ASSERT(mpType->isInt() || mpType->isReal());
+   ASSERT(mpType->isValueType());
 
    const ASTNodes& cases = getChildren();
    for ( int index = 0; index < cases.size(); index++ )

@@ -51,7 +51,7 @@ INLINE void ShaderObject::disable() const
 	glUseProgramObjectARB (0);
 }
 
-INLINE void ShaderObject::setStateUniform(int index)
+INLINE void ShaderObject::setUniformStateMatrix(int index) const
 {
 }
 

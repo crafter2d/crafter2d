@@ -7,10 +7,12 @@
 #include "core/string/string.h"
 #include "core/conv/lexical.h"
 #include "core/smartptr/autoptr.h"
+#include "core/defines.h"
 
 #include "script/antlr/antlrexception.h"
 #include "script/antlr/antlrinterface.h"
 #include "script/antlr/antlrstream.h"
+#include "script/vm/cpu.h"
 
 #include "exceptions/classnotfoundexception.h"
 #include "steps/preloadvisitor.h"
@@ -19,6 +21,7 @@
 #include "steps/resourcecheckvisitor.h"
 #include "steps/oocheckvisitor.h"
 #include "steps/codegeneratorvisitor.h"
+#include "steps/bytecodegenerationvisitor.h"
 
 #include "compilecallback.h"
 
@@ -35,6 +38,7 @@
 Compiler::Compiler():
    mContext(*this),
    mpCallback(NULL),
+   mpCPU(NULL),
    mLoadSteps(),
    mPrecompileSteps(),
    mCompileSteps(),
@@ -60,6 +64,20 @@ CompileCallback& Compiler::getCallback()
 void Compiler::setCallback(CompileCallback& callback)
 {
    mpCallback = &callback;
+}
+
+CPU& Compiler::getCPU()
+{
+   ASSERT_PTR(mpCPU);
+   return *mpCPU;
+}
+
+void Compiler::setCPU(CPU& cpu)
+{
+   mpCPU = &cpu;
+
+   mContext.setByteCodeGenerator(cpu.createIRGenerator());
+   mContext.setProgram(cpu.getProgram());
 }
 
 // - Query
@@ -137,12 +155,14 @@ bool Compiler::compile(const String& classname)
             pclass = sorted[index];
             if ( performSteps(*pclass, mCompileSteps) )
             {
+               save(*pclass);
+
+               VirtualClass& virclass = mContext.resolveVirtualClass(pclass->getFullName());
+
                if ( hasCallback() )
                {
-                  mpCallback->notify(mContext.getResult());
+                  getCallback().notify(&virclass);
                }
-
-               save(*pclass);
             }
             else
             {
@@ -163,6 +183,11 @@ bool Compiler::compile(const String& classname)
 }
 
 // - Operations
+
+const ClassRegistry& Compiler::getClassRegistry() const
+{
+   return mContext.getClassRegistry();
+}
 
 void Compiler::setClassRegistry(const ClassRegistry& registry)
 {
@@ -185,6 +210,7 @@ void Compiler::createCompileSteps()
    mCompileSteps.push_back(new ResourceCheckVisitor(mContext));
    mCompileSteps.push_back(new OOCheckVisitor(mContext));
    mCompileSteps.push_back(new CodeGeneratorVisitor(mContext));
+   mCompileSteps.push_back(new ByteCodeGenerationVisitor(mContext));
 }
 
 bool Compiler::performSteps(ASTNode& node, Steps& steps)
@@ -231,7 +257,7 @@ bool Compiler::load(const String& classname)
    return false;
 }
 
-void Compiler::save(ASTClass& ast)
+void Compiler::save(const ASTClass& ast)
 {
    // do some interesting saving stuff here
 }

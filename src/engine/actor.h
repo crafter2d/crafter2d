@@ -20,21 +20,12 @@
 #ifndef _ACTOR_H_
 #define _ACTOR_H_
 
-#include "core/math/vector.h"
-
-#include "effect.h"
 #include "entity.h"
-
-namespace Graphics
-{
-   class VertexBuffer;
-   class Texture;
-};
 
 class TiXmlDocument;
 class Controller;
 class NodeVisitor;
-class State;
+class Vector;
 
 /**
 @author Jeroen Broekhuizen
@@ -54,23 +45,19 @@ public:
    virtual void      destroy();
    virtual Actor*    clone ();
    
-   void              rotate(float deg);
    void              flip();
    bool              direction() const;
 	
  // get/set interface
    void              setPosition(const Vector& vec);
-   void              setVelocity(const Vector& vec);
-   void              setRotation(const float deg);
-   void              setSize(int width, int height);
-   void              setVisible(bool vis = true);
-
    const Vector&     getPosition() const;
-   const Vector&     getVelocity() const;
-   float             getRotation() const;
-   Vector            getSize() const;
-   bool              isVisible() const;
 
+   float             getRotation() const;
+   void              setRotation(const float deg);
+  
+   bool              isVisible() const;
+   void              setVisible(bool vis = true);
+  
    int               getAnimation() const;
    void              setAnimation(int anim);
 
@@ -101,11 +88,7 @@ protected:
 private:
 
    Controller*    mpController;
-   Vector         mPos;
-   Vector         mVel;
    int            mWidth, mHeight;
-   float          halfX, halfY;
-   float          angle;
    bool           visible;
    bool           dir;
 };

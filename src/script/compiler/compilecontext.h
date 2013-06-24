@@ -11,18 +11,27 @@
 #include "script/common/literaltable.h"
 #include "script/common/classregistry.h"
 
+#include "compileinterfacetable.h"
 #include "compilelog.h"
 
-class Compiler;
 class ASTClass;
+class Compiler;
 class VirtualClass;
+
+namespace ByteCode
+{
+   class IRGenerator;
+   class Program;
+}
 
 class CompileContext
 {
    typedef std::map<String, ASTClass*> ClassMap;
+   typedef std::map<String, VirtualClass*> VirtualClassMap;
 
 public:
    explicit CompileContext(Compiler& compiler);
+           ~CompileContext();
 
  // get/set
    CompileLog& getLog();
@@ -32,11 +41,14 @@ public:
    const LiteralTable& getLiteralTable() const;
          LiteralTable& getLiteralTable();
 
-   VirtualClass* getResult();
-   void          setResult(VirtualClass* pclass);
+   const ClassRegistry& getClassRegistry() const;
+   void                 setClassRegistry(const ClassRegistry& registry);
 
-   ClassRegistry& getClassRegistry();
-   void setClassRegistry(const ClassRegistry& registry);
+   ByteCode::IRGenerator& getByteCodeGenerator();
+   void                  setByteCodeGenerator(ByteCode::IRGenerator* pgenerator);
+
+   ByteCode::Program& getProgram();
+   void               setProgram(ByteCode::Program& program);
    
  // query
    bool hasClass(const String& classname) const;
@@ -44,6 +56,10 @@ public:
  // operations
    void addClass(ASTClass* pclass);
    bool loadClass(const String& classname);
+
+   void addInterface(ASTClass& interfce);
+
+   void addVirtualClass(VirtualClass* pclass);
 
    void collectCompileClasses(std::vector<ASTClass*>& classes);
 
@@ -54,16 +70,23 @@ public:
    const ASTClass& resolveClass(const String& classname) const;
          ASTClass& resolveClass(const String& classname);
 
+   const ASTFunction& resolveFunction(const String& call) const;
+
+   VirtualClass& resolveVirtualClass(const String& classname);
+
 private:
    void insertInternalTypes();
 
-   Compiler&      mCompiler;
-   ClassMap       mClasses;
-   ClassRegistry  mClassRegistry;
-   StringCache    mStringCache;
-   LiteralTable   mLiteralTable;
-   CompileLog     mLog;
-   VirtualClass*  mpResult;
+   Compiler&               mCompiler;
+   ClassMap                mClasses;
+   CompileInterfaceTable   mInterfaces;
+   VirtualClassMap         mVirtualClasses;
+   ClassRegistry           mClassRegistry;
+   ByteCode::IRGenerator*  mpByteCodeGenerator; // owns
+   StringCache             mStringCache;
+   LiteralTable            mLiteralTable;
+   ByteCode::Program*      mpProgram;
+   CompileLog              mLog;
 };
 
 #endif // COMPILE_CONTEXT_H_

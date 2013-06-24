@@ -10,8 +10,15 @@
 
 #include "compilecontext.h"
 
+namespace ByteCode
+{
+   class IRGenerator;
+   class Program;
+}
+
 class AntlrStream;
 class ASTNode;
+class CPU;
 class CompileStep;
 class CompileCallback;
 class CompileException;
@@ -30,10 +37,14 @@ public:
    CompileCallback& getCallback();
    void             setCallback(CompileCallback& callback);
 
+   CPU& getCPU();
+   void setCPU(CPU& cpu);
+
    const Literal& lookupLiteral(int index) const;
 
  // operations
-   void setClassRegistry(const ClassRegistry& registry);
+   const ClassRegistry& getClassRegistry() const;
+   void                 setClassRegistry(const ClassRegistry& registry);
 
  // compilation
    bool compile(const String& classname);
@@ -53,13 +64,14 @@ private:
    void sort(ASTClasses& classes, ASTClasses& sorted);
 
    bool load(const String& classname);
-   void save(ASTClass& ast);
+   void save(const ASTClass& ast);
 
    void reportError(CompileException& exception);
    void displayErrors(const String& currentfile);
 
    CompileContext    mContext;
    CompileCallback*  mpCallback;
+   CPU*              mpCPU;
    Steps             mLoadSteps;
    Steps             mPrecompileSteps;
    Steps             mCompileSteps;

@@ -48,8 +48,7 @@ Platform::~Platform()
 {
 }
 
-Timer* Platform::createTimer()
+Timer& Platform::getTimer()
 {
    PURE_VIRTUAL
-   return NULL;
 }

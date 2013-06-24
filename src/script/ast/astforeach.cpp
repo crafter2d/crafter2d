@@ -7,14 +7,16 @@
 ASTForeach::ASTForeach():
    ASTStatement(),
    mpVariable(NULL),
-   mpBody(NULL),
-   mResourceIndex(-1)
+   mpIterator(new ASTVariable()),
+   mpBody(NULL)
 {
+   createIteratorVariable();
 }
 
 ASTForeach::~ASTForeach()
 {
    setVariable(NULL);
+   setIteratorVariable(NULL);
    setBody(NULL);
 }
 
@@ -36,6 +38,22 @@ void ASTForeach::setVariable(ASTVariable* pvariable)
    mpVariable = pvariable;
 }
 
+const ASTVariable& ASTForeach::getIteratorVariable() const
+{
+   return *mpIterator;
+}
+         
+ASTVariable& ASTForeach::getIteratorVariable()
+{
+   return *mpIterator;
+}
+
+void ASTForeach::setIteratorVariable(ASTVariable* pvariable)
+{
+   delete mpIterator;
+   mpIterator = pvariable;
+}
+
 const ASTStatement& ASTForeach::getBody() const
 {
    return *mpBody;
@@ -52,21 +70,23 @@ void ASTForeach::setBody(ASTStatement* pbody)
    mpBody = pbody;
 }
 
-int ASTForeach::getResourceIndex() const
-{
-   return mResourceIndex;
-}
-
-void ASTForeach::setResourceIndex(int index)
-{
-   mResourceIndex = index;
-}
-
 // - Query
    
 bool ASTForeach::hasReturn(bool& hasunreachablecode) const
 {
    return getBody().hasReturn(hasunreachablecode);
+}
+
+// - Operations
+
+void ASTForeach::createIteratorVariable()
+{
+   ASTModifiers modifiers;
+   modifiers.setFlags(ASTModifiers::eInternal);
+
+   mpIterator->setLocation(ASTVariable::eLocal);
+   mpIterator->setName("it");
+   mpIterator->setModifiers(modifiers);
 }
 
 // - Visit

@@ -32,7 +32,7 @@ namespace Graphics
       GLint       getAttribute( const char* name ) const;
       GLint       getUniformLocation( const String& name ) const;
 
-      void        setStateUniform(int index);
+      void        setUniformStateMatrix(int index) const;
       void        setUniform1i( GLint index, int i );
 	   void        setUniform3f( GLint index, float x, float y, float z );
       void        setUniform4f( GLint index, float x, float y, float z, float w );

@@ -1,7 +1,8 @@
 
 #include "rendercontext.h"
 
-using namespace Graphics;
+namespace Graphics
+{
 
 RenderContext::RenderContext():
    mViewport(),
@@ -9,7 +10,13 @@ RenderContext::RenderContext():
 {
 }
 
+// - Get/set
+
 void RenderContext::setViewport(const Viewport& viewport)
 {
    mViewport = viewport;
+
+   onViewportChanged(viewport);
 }
+
+} // namespace Graphics

@@ -11,13 +11,10 @@
 
 class ASTClass;
 class Variant;
-class VirtualLookupTable;
 class VirtualObject;
 
 class SCRIPT_API VirtualClass
 {
-   typedef std::vector<VirtualLookupTable*> LookupTables;
-
 public:
    enum Flags {
       eNone = 0, 
@@ -30,11 +27,11 @@ public:
 
  // get/set
    const String& getName() const;
-   void               setName(const String& name);
+   void          setName(const String& name);
 
-   bool               hasBaseName() const;
+   bool          hasBaseName() const;
    const String& getBaseName() const;
-   void               setBaseName(const String& name);
+   void          setBaseName(const String& name);
 
    bool                hasBaseClass() const;
    const VirtualClass& getBaseClass() const;
@@ -43,12 +40,8 @@ public:
    const VirtualFunctionTable& getVirtualFunctionTable() const;
          VirtualFunctionTable& getVirtualFunctionTable();
 
-   const VirtualInstructionTable& getInstructions() const;
-         VirtualInstructionTable& getInstructions();
-   void                           setInstructions(const VirtualInstructionTable& instructions);
-
    const ASTClass& getDefinition() const;
-   void            setDefinition(ASTClass* pdefinition);
+   void            setDefinition(const ASTClass& definition);
 
    int  getVariableCount() const;
    void setVariableCount(int count);
@@ -58,6 +51,9 @@ public:
 
    VirtualObject& getClassObject() const;
    void           setClassObject(VirtualObject* pobject);
+
+   const int*  getInterfaceLookupTable() const;
+   void        setInterfaceLookupTable(int* ptable);
 
    void setFlags(Flags flags);
 
@@ -70,7 +66,6 @@ public:
    bool isBaseClass(const VirtualClass& base) const;
    bool implements(const VirtualClass& interfce) const;
 
-   const VirtualLookupTable& getLookupTable(int index) const;
    const VirtualFunctionTableEntry* getDefaultConstructor() const;
 
  // operations
@@ -80,21 +75,18 @@ public:
          Variant& getStatic(int index);
    void           setStatic(int index, const Variant& value);
 
-   int addLookupTable(VirtualLookupTable* ptable);
-
    void offsetCode(int offset);
    
 private:
    String                  mName;
    String                  mBaseName;
    const VirtualClass*     mpBaseClass;
-   ASTClass*               mpDefinition;
+   const ASTClass*         mpDefinition;
    VirtualFunctionTable    mVTable;
-   VirtualInstructionTable mInstructions;
    VirtualObject*          mpClassObject;
-   LookupTables            mLookupTables;
    Variant*                mpStatics;
    int                     mStaticCount;
+   int*                    mpInterfaceLookupTable;
    int                     mVariableCount;
    Flags                   mFlags;
 };

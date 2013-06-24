@@ -21,7 +21,7 @@ public:
 
  // operations
    virtual void registerComponent(Components& components);
-   virtual void handleMessage(const ComponentMessage& message) = 0;
+   virtual void handleMessage(ComponentMessage& message) = 0;
    virtual void update(float delta) = 0;
 
 protected:

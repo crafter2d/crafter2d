@@ -5,7 +5,7 @@ package system;
 
 class InternalArray
 {
-	public final int length;
+	public native int size();
 	
 	public native void resize(int newsize);
 }

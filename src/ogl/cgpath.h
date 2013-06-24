@@ -59,7 +59,8 @@ namespace Graphics
       virtual PathType getType() const;
 	   virtual int      getUniformLocation (const String& name) const;
 
-      virtual void     setStateUniform(int index);
+      virtual void     setUniformStateMatrix(int index) const;
+
 	   virtual void     setUniform1i (int index, int val);
 	   virtual void     setUniform3f (int index, float x, float y, float z);
 	   virtual void     setUniform4f (int index, float x, float y, float z, float w);
