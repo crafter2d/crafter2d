@@ -12,7 +12,6 @@
 
 namespace Graphics
 {
-
    class OGLDevice : public Device
    {
    public:
@@ -23,11 +22,11 @@ namespace Graphics
       CGEngine& getCG() { return mCG; }
 
     // overloads
-      virtual bool create(int windowhandle);
+      virtual bool create(int windowhandle, int width, int height);
 
       virtual RenderContext*  createRenderContext();
       virtual CodePath*       createCodePath(CodePath::PathType type);
-      virtual VertexBuffer*   createVertexBuffer();
+      virtual VertexBuffer*   createVertexBuffer(VertexInputLayout& layout);
       virtual IndexBuffer*    createIndexBuffer();
       virtual Texture*        createTexture(const String& filename);
       virtual BlendState*     createBlendState(const BlendStateDesc& desc);

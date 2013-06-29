@@ -24,14 +24,7 @@
 
 namespace Graphics
 {
-   struct VertexBufferDesc
-   {
-      int index;
-	   int size;
-	   int pos;
-	   int flags;
-	   float* pointer;
-   };
+   class VertexInputLayout;
 
    /**
    @author Jeroen Broekhuizen
@@ -51,25 +44,7 @@ namespace Graphics
          eWriteOnly = 16
       };
 
-      enum VertexFormat {
-         eXY             = 1,
-         eXYZ            = 2,
-         eXYZW           = 4,
-         eNormal         = 8,
-         eDiffuse        = 16,
-         eSpecular       = 32,
-         eTex0           = 64,
-         eTex1           = 128,
-         eTex2           = 256,
-         eTex3           = 512,
-         eTex4           = 1024,
-         eTangent        = 2048,
-         eBinormal       = 4096,
-
-         eMax            = eBinormal
-      };
-
-      VertexBuffer();
+      explicit VertexBuffer(VertexInputLayout& layout);
       virtual ~VertexBuffer();
 
 	    /*!
@@ -81,7 +56,7 @@ namespace Graphics
 	        \retval true      the object is created successfully
 	        \retval false     the usage flag or VBO's are invalid or the system ran out of memory
 	     */
-       virtual bool create(int length, int usage, int fvf) = 0;
+       virtual bool create(int length, int usage) = 0;
 
 	    /*!
 	        \fn VertexBuffer::release()
@@ -128,9 +103,7 @@ namespace Graphics
       // operation
       void fillDescription (int fvf);
 
-      VertexBufferDesc* mpFields;
-      int               mFieldCount;
-      int               mStride;
+      VertexInputLayout&   mLayout;
    };
 };
 

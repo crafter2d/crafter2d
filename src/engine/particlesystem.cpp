@@ -69,7 +69,8 @@ IMPLEMENT_REPLICATABLE(ParticleSystemId, ParticleSystem, Entity)
 ParticleSystem::ParticleSystem():
    Entity(),
    position(),
-   mEffect(),
+   mInputLayout(Graphics::INPUT_XY | Graphics::INPUT_Diffuse | Graphics::INPUT_Tex0 | Graphics::INPUT_Tex1),
+   mEffect(mInputLayout),
 	activeList(0),
    freeList(0),
    mGeometryBuffer(NULL),
@@ -150,12 +151,11 @@ bool ParticleSystem::prepare(Graphics::Device& device)
    mEffect.load(device, "shaders/pointsprite.xml");
 
    int usage  = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
-   int format = VertexBuffer::eXY | VertexBuffer::eDiffuse | VertexBuffer::eTex0 | VertexBuffer::eTex1;
 
 	// generate the vertex buffer
    mGeometryBufferSize = 256;
-	mGeometryBuffer = device.createVertexBuffer();
-	if (!mGeometryBuffer->create(mGeometryBufferSize * 4, usage, format))
+	mGeometryBuffer = device.createVertexBuffer(mInputLayout);
+	if (!mGeometryBuffer->create(mGeometryBufferSize * 4, usage))
 		return false;
 
 	srand(TIMER.getTick() * 1000);

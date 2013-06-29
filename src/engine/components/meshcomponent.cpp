@@ -5,6 +5,7 @@
 #endif
 
 #include "core/graphics/device.h"
+#include "core/graphics/vertexinputlayout.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/indexbuffer.h"
 #include "core/graphics/vertexbuffer.h"
@@ -29,10 +30,11 @@ MeshComponent::MeshComponent():
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
    mpAnimator(NULL),
+   mInputLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0),
    mEffectName(),
-   mEffect(),
+   mEffect(mInputLayout),
    mpVertexBuffer(NULL),
-   mVertexFormat(VertexBuffer::eXY | VertexBuffer::eTex0),
+   mpIndexBuffer(NULL),
    mSize()
 {
 }
@@ -63,8 +65,8 @@ void MeshComponent::initialize(Device& device)
 
    if ( mEffect.load(device, mEffectName) )
    {
-      mpVertexBuffer = device.createVertexBuffer();
-      mpVertexBuffer->create(4, VertexBuffer::eWriteOnly | VertexBuffer::eDynamic, mVertexFormat);
+      mpVertexBuffer = device.createVertexBuffer(mInputLayout);
+      mpVertexBuffer->create(4, VertexBuffer::eWriteOnly | VertexBuffer::eDynamic);
 
       short indices[] = { 0, 1, 2, 3 };
 
@@ -131,7 +133,7 @@ void MeshComponent::updateBuffers()
 {
    const TextureCoordinate& texcoord = mpAnimator->getTextureCoordinate();
 
-   PTVertex* pdata = reinterpret_cast<PTVertex*>(mpVertexBuffer->lock(mVertexFormat));
+   PTVertex* pdata = reinterpret_cast<PTVertex*>(mpVertexBuffer->lock(0));
 
    pdata[0].pos.set(-mHalfSize.width, -mHalfSize.height);
    pdata[0].tex = texcoord.getTopLeft();

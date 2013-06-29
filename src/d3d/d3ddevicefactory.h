@@ -4,10 +4,13 @@
 
 #include "core/graphics/devicefactory.h"
 
-class D3DDeviceFactory : public DeviceFactory
+namespace Graphics
 {
-public:
-   virtual Device* createDevice();
-};
+   class D3DDeviceFactory : public DeviceFactory
+   {
+   public:
+      virtual Device* createDevice();
+   };
+}
 
 #endif // D3DDEVICE_FACTORY_H

@@ -3,6 +3,7 @@
 #define MESH_COMPONENT_H
 
 #include "core/graphics/effect.h"
+#include "core/graphics/vertexinputlayout.h"
 #include "core/math/size.h"
 #include "core/math/xform.h"
 #include "core/string/string.h"
@@ -52,15 +53,15 @@ private:
    void updateBuffers();
 
  // members
-   XForm                   mTransform;
-   Animator*               mpAnimator; // owned
-   String                  mEffectName;
-   Graphics::Effect        mEffect;
-   Graphics::VertexBuffer* mpVertexBuffer;
-   Graphics::IndexBuffer*  mpIndexBuffer;
-   int                     mVertexFormat;
-   Size                    mSize;
-   Size                    mHalfSize;
+   XForm                         mTransform;
+   Animator*                     mpAnimator; // owned
+   String                        mEffectName;
+   Graphics::VertexInputLayout   mInputLayout;
+   Graphics::Effect              mEffect;
+   Graphics::VertexBuffer*       mpVertexBuffer;
+   Graphics::IndexBuffer*        mpIndexBuffer;
+   Size                          mSize;
+   Size                          mHalfSize;
 };
 
 #ifdef JENGINE_INLINE

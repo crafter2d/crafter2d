@@ -6,21 +6,33 @@
 
 #include <d3d11.h>
 
-class D3DDevice : public Device
+namespace Graphics
 {
-public:
-   D3DDevice();
+   class D3DDevice : public Device
+   {
+   public:
+      D3DDevice();
 
- // overloads
-   virtual bool create(int window, int width, int height);
+    // get/set
+      ID3D11Device& getDevice() { return *mpDevice; }
 
-   virtual CodePath* createCodePath(CodePath::PathType type);
+    // overloads
+      virtual bool create(int windowhandle, int width, int height);
 
-private:
-   ID3D11Device*           mpDevice;
-   ID3D11DeviceContext*    mpContext;
-   IDXGISwapChain*         mpSwapChain;
-   ID3D11RenderTargetView* mpRenderTargetView;
-};
+      virtual RenderContext*  createRenderContext();
+      virtual CodePath*       createCodePath(CodePath::PathType type);
+      virtual VertexBuffer*   createVertexBuffer(VertexInputLayout& layout);
+      virtual IndexBuffer*    createIndexBuffer();
+      virtual Texture*        createTexture(const String& filename);
+      virtual BlendState*     createBlendState(const BlendStateDesc& desc);
+      virtual Font*           createFont(const String& name, int pointsize);
+
+   private:
+      ID3D11Device*           mpDevice;
+      ID3D11DeviceContext*    mpContext;
+      IDXGISwapChain*         mpSwapChain;
+      ID3D11RenderTargetView* mpRenderTargetView;
+   };
+}
 
 #endif // D3D_DEVICE_H

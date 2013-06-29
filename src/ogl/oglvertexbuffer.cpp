@@ -22,6 +22,8 @@
 
 #include <GL/GLee.h>
 
+#include "core/graphics/vertexinputlayout.h"
+#include "core/graphics/vertexinputelement.h"
 #include "core/log/log.h"
 #include "core/defines.h"
 
@@ -33,8 +35,8 @@ using namespace Graphics;
     \fn VertexBufferObject::VertexBufferObject()
 	 \brief Initializes member variables
  */
-OGLVertexBuffer::OGLVertexBuffer()
- : VertexBuffer(),
+OGLVertexBuffer::OGLVertexBuffer(VertexInputLayout& layout)
+ : VertexBuffer(layout),
    buffer(0),
    locked(false)
 {
@@ -50,11 +52,11 @@ OGLVertexBuffer::~OGLVertexBuffer()
 }
 
 /*!
-    \fn VertexBufferObject::create(int length, int usage, int fvf)
+    \fn VertexBufferObject::create(int length, int usage)
  */
-bool OGLVertexBuffer::create(int length, int usage, int fvf)
+bool OGLVertexBuffer::create(int length, int usage)
 {
-   if ( !VertexBuffer::create(length, usage, fvf) )
+   if ( !VertexBuffer::create(length, usage) )
       return false;
 
 	GLuint flag = 0;
@@ -95,7 +97,7 @@ bool OGLVertexBuffer::create(int length, int usage, int fvf)
 
    glGenBuffers(1, &buffer);
    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-   glBufferData(GL_ARRAY_BUFFER, mStride * length, 0, flag);
+   glBufferData(GL_ARRAY_BUFFER, mLayout.getStride() * length, 0, flag);
 
 	return true;
 }
@@ -142,12 +144,12 @@ void OGLVertexBuffer::unlock()
 void OGLVertexBuffer::enable() const
 {
    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-   for ( int i = mFieldCount - 1; i >= 0; --i )
+   for ( int i = mLayout.getSize() - 1; i >= 0; --i )
    {
-      const VertexBufferDesc& field = mpFields[i];
+      const VertexInputElement& field = mLayout[i];
 
 		glEnableVertexAttribArray(field.index);
-	   glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, mStride, (void*)(field.pos));
+      glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, mLayout.getStride(), (void*)(field.pos));
    }
 }
 

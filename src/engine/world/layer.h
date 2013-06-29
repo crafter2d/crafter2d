@@ -23,6 +23,7 @@
 #include <fstream>
 
 #include "core/graphics/effect.h"
+#include "core/graphics/vertexinputlayout.h"
 #include "core/math/vector.h"
 #include "core/defines.h"
 #include "core/string/string.h"
@@ -155,6 +156,7 @@ protected:
    TileSet mTileSet;
 
    TileRow* field;
+   Graphics::VertexInputLayout mInputLayout;
    Graphics::VertexBuffer* vb;
    Graphics::IndexBuffer* ib;
    Vector* texcoordLookup;

@@ -62,10 +62,12 @@ Layer::Layer():
    dirty(true),
    mTileSet(),
    field(0),
-   vb(0),
+   mInputLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0),
+   vb(NULL),
+   ib(NULL),
    texcoordLookup(0),
    mpDefinition(NULL),
-   mEffect()
+   mEffect(mInputLayout)
 {
 }
 
@@ -210,7 +212,7 @@ TileRow* Layer::createTileRows(int width, int height)
 
 bool Layer::createBuffers(Device& device, int width, int height)
 {
-   vb = device.createVertexBuffer();
+   vb = device.createVertexBuffer(mInputLayout);
    if ( vb == NULL )
    {
       Log::getInstance().error("Not enough memory available for vertex buffer.");
@@ -219,10 +221,9 @@ bool Layer::createBuffers(Device& device, int width, int height)
 
    // create the vertex buffer for this layer
    int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
-   int format = VertexBuffer::eXY | VertexBuffer::eTex0;
    int size = width * height * 4; // each tile is 4 vertices
 
-   if ( !vb->create(size, usage, format) )
+   if ( !vb->create(size, usage) )
    {
 		Log::getInstance().error("Could not create the vertex buffer.");
 		return false;

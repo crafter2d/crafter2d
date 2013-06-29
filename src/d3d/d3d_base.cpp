@@ -23,7 +23,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	return TRUE;
 }
 
-extern "C" D3D_API DeviceFactory* cdecl getDeviceFactory()
+extern "C" D3D_API Graphics::DeviceFactory* cdecl getDeviceFactory()
 {
-   return new D3DDeviceFactory();
+   return new Graphics::D3DDeviceFactory();
 }

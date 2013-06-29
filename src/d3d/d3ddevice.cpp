@@ -1,6 +1,11 @@
 
 #include "d3ddevice.h"
 
+#include "d3drendercontext.h"
+
+namespace Graphics
+{
+
 D3DDevice::D3DDevice():
    Device(),
    mpDevice(NULL),
@@ -10,8 +15,9 @@ D3DDevice::D3DDevice():
 {
 }
 
-bool D3DDevice::create(int window, int width, int height)
+bool D3DDevice::create(int windowhandle, int width, int height)
 {
+
    D3D_FEATURE_LEVEL level;
    DXGI_SWAP_CHAIN_DESC sd;
    ZeroMemory(&sd, sizeof(sd));
@@ -22,7 +28,7 @@ bool D3DDevice::create(int window, int width, int height)
    sd.BufferDesc.RefreshRate.Numerator = 60;
    sd.BufferDesc.RefreshRate.Denominator = 1;
    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-   sd.OutputWindow = (HWND)window;
+   sd.OutputWindow = (HWND)windowhandle;
    sd.SampleDesc.Count = 1;
    sd.SampleDesc.Quality = 0;
    sd.Windowed = true;
@@ -48,7 +54,39 @@ bool D3DDevice::create(int window, int width, int height)
    return true;
 }
 
+RenderContext* D3DDevice::createRenderContext()
+{
+   return new D3DRenderContext(mpContext);
+}
+
 CodePath* D3DDevice::createCodePath(CodePath::PathType type)
 {
    return NULL;
 }
+
+VertexBuffer* D3DDevice::createVertexBuffer(VertexInputLayout& layout)
+{
+   return NULL;
+}
+
+IndexBuffer* D3DDevice::createIndexBuffer()
+{
+   return NULL;
+}
+
+Texture* D3DDevice::createTexture(const String& filename)
+{
+   return NULL;
+}
+
+BlendState* D3DDevice::createBlendState(const BlendStateDesc& desc)
+{
+   return NULL;
+}
+
+Font* D3DDevice::createFont(const String& name, int pointsize)
+{
+   return NULL;
+}
+
+} // namespace Graphics

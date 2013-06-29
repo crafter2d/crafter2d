@@ -26,6 +26,8 @@ class String;
 
 namespace Graphics
 {
+   class VertexInputLayout;
+
    /*!
    @author Jeroen Broekhuizen
    \brief Pure virtual prototype for the different code paths used in this engine.
@@ -41,12 +43,13 @@ namespace Graphics
 	   /*!
            \fn CodePath::load(const String& vertex, const String& fragment)
 	        \brief Load in the vertex and fragment shaders. This function should be called before any of the other functions.
+           \param layout the layout of the vertex structure
 		     \param vertex the filename of the vertex shader (either GLSL or ASM)
 		     \param fragment the filename of the fragment shader (only GLSL)
 	        \retval true if the vertex shader is loaded correctly
 		     \retval false loading failed, consult the log file for possible reasons.
        */
-	   virtual bool load(const String& vertex, const String& fragment) = 0;
+	   virtual bool load(VertexInputLayout& layout, const String& vertex, const String& fragment) = 0;
 
 	   /*!
            \fn CodePath::release()

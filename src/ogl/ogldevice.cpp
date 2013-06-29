@@ -67,7 +67,7 @@ bool OGLDevice::supportGLSL() const
 
 // - Creation
 
-bool OGLDevice::create(int windowhandle)
+bool OGLDevice::create(int windowhandle, int width, int height)
 {
    Log& log = Log::getInstance();
 	GLint units;
@@ -149,9 +149,9 @@ CodePath* OGLDevice::createCodePath(CodePath::PathType type)
 /// \brief Creates a vertex buffer for storage of the geometry. When Vertex Buffer Objects are supported, one will
 /// be created. A default buffer will be created otherwise.
 /// \return A pointer to the vertex buffer instance.
-VertexBuffer* OGLDevice::createVertexBuffer()
+VertexBuffer* OGLDevice::createVertexBuffer(VertexInputLayout& layout)
 {
-	return new OGLVertexBuffer();
+	return new OGLVertexBuffer(layout);
 }
 
 IndexBuffer* OGLDevice::createIndexBuffer()

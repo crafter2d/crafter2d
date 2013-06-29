@@ -40,9 +40,10 @@ namespace Graphics
     \fn Effect::Effect(void)
 	 \brief initializes internal member variables (by default texture combiners are not used).
  */
-Effect::Effect():
+   Effect::Effect(VertexInputLayout& layout):
    name(),
    stages(),
+   mLayout(layout),
    mpCodePath(NULL),
    mpBlendStateEnabled(NULL),
    mpBlendStateDisabled(NULL)
@@ -236,7 +237,7 @@ bool Effect::processCode(Graphics::Device& device, const TiXmlElement& effect, c
 
    // now load the codepath
    mpCodePath = device.createCodePath(pathtype);
-   if ( mpCodePath == NULL || !mpCodePath->load(vertexfile, fragmentfile) )
+   if ( mpCodePath == NULL || !mpCodePath->load(mLayout, vertexfile, fragmentfile) )
        return false;
 
    mModelViewProjectArg = mpCodePath->getUniformLocation("modelviewproj");

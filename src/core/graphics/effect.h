@@ -34,6 +34,7 @@ namespace Graphics
    class Device;
    class RenderContext;
    class Texture;
+   class VertexInputLayout;
 
    /*!
    @author Jeroen Broekhuizen
@@ -48,7 +49,7 @@ namespace Graphics
    class CORE_API Effect
    {
    public:
-	                     Effect();
+	   explicit          Effect(VertexInputLayout& layout);
 	                     ~Effect();
 	
 	   bool              load(Graphics::Device& device, const String& file);
@@ -81,10 +82,11 @@ namespace Graphics
 		
       String                name;
       Stages                stages;
-      Graphics::CodePath*   mpCodePath;
-      Graphics::BlendState* mpBlendStateEnabled;
-      Graphics::BlendState* mpBlendStateDisabled;
-      int                   mModelViewProjectArg;
+      Graphics::VertexInputLayout&  mLayout;
+      Graphics::CodePath*           mpCodePath;
+      Graphics::BlendState*         mpBlendStateEnabled;
+      Graphics::BlendState*         mpBlendStateDisabled;
+      int                           mModelViewProjectArg;
    };
 }
 

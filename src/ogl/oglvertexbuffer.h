@@ -30,10 +30,10 @@ namespace Graphics
    class OGLVertexBuffer : public VertexBuffer
    {
    public:
-       OGLVertexBuffer();
+       explicit OGLVertexBuffer(VertexInputLayout& layout);
        virtual ~OGLVertexBuffer();
 
-       bool create(int length, int usage, int fvf);
+       bool create(int length, int usage);
 	    void release();
 
        float* lock(int fvf);

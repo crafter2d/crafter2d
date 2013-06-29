@@ -47,6 +47,13 @@ const char* DataStream::getData() const
    return NULL;
 }
 
+// - Operations
+
+void DataStream::copyTo(DataStream& that) const
+{
+   that.writeBlob(getData(), getDataSize());
+}
+
 // - Reading
 
 void DataStream::readInt(int& value)
@@ -80,6 +87,11 @@ void DataStream::readString(String& value)
    readInt(length);
    const char* pdata = readBytes(length);
    value.setTo(pdata, length);
+}
+
+void DataStream::readBlob(void* pdata, int size)
+{
+
 }
 
 // - Writting
@@ -116,6 +128,11 @@ void DataStream::writeString(const String& text)
    writeInt(len);
    writeBytes(ptext, len);
    delete[] ptext;
+}
+
+void DataStream::writeBlob(const void* pdata, int size)
+{
+   writeBytes(pdata, size);
 }
 
 // - Overloadable interface

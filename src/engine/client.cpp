@@ -263,7 +263,7 @@ bool Client::initDevice()
       static const Color color(75, 150, 230, 255);
 
       mpDevice = pfactory->createDevice();
-      if ( !mpDevice->create(mpWindow->getHandle()) )
+      if ( !mpDevice->create(mpWindow->getHandle(), mpWindow->getWidth(), mpWindow->getHeight()) )
       {
          return false;
       }

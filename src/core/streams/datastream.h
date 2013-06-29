@@ -48,6 +48,9 @@ public:
    DataStream&  operator>>(char& c);
    DataStream&  operator>>(String& str);
 
+ // operations
+   void copyTo(DataStream& that) const;
+
  // overloadables
    virtual void writeInt(int value);
    virtual void writeUint(unsigned int value);
@@ -55,6 +58,7 @@ public:
    virtual void writeBool(bool value);
    virtual void writeChar(char c);
    virtual void writeString(const String& text);
+           void writeBlob(const void* pdata, int size);
    
    virtual void readInt(int& value);
    virtual void readUint(unsigned int& value);
@@ -62,6 +66,7 @@ public:
    virtual void readBool(bool& value);
    virtual void readChar(char& value);
    virtual void readString(String& value);
+           void readBlob(void* pdata, int size);
 
    void write(const DataStream& that);
    void read(DataStream& that);

@@ -20,7 +20,10 @@
 #ifndef D3D_BASE_H_
 #define D3D_BASE_H_
 
-class DeviceFactory;
+namespace Graphics
+{
+   class DeviceFactory;
+}
 
 #ifdef WIN32
 #ifdef D3D_EXPORTS
@@ -32,6 +35,6 @@ class DeviceFactory;
 #define D3D_API
 #endif
 
-extern "C" D3D_API DeviceFactory* cdecl getDeviceFactory();
+extern "C" D3D_API Graphics::DeviceFactory* cdecl getDeviceFactory();
 
 #endif // D3D_BASE_H_
