@@ -20,7 +20,7 @@ namespace Graphics
    public:
       ShaderPath();
 
-	   virtual bool     load(const String& vertex, const String& fragment);
+	   virtual bool     load(VertexInputLayout& layout, const String& vertex, const String& fragment);
 	   virtual void     release();
 
 	   virtual void     enable() const;

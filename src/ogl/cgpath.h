@@ -50,7 +50,7 @@ namespace Graphics
 	   explicit CGPath(CGEngine& engine);
 	   virtual ~CGPath();
 
-	   virtual bool     load (const String& vertex, const String& fragment);
+	   virtual bool     load (VertexInputLayout& layout, const String& vertex, const String& fragment);
 	   virtual void     release ();
 
 	   virtual void     enable() const;

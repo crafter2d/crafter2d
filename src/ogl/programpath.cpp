@@ -13,7 +13,7 @@ ProgramPath::~ProgramPath()
 {
 }
 
-bool ProgramPath::load (const String& vertex, const String& fragment)
+bool ProgramPath::load(VertexInputLayout& layout, const String& vertex, const String& fragment)
 {
 	// forget about the fragment shader, it is not supported
 	if ( !program.compile(vertex) )

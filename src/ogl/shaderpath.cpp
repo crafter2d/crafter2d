@@ -14,7 +14,7 @@ ShaderPath::ShaderPath():
 }
 
 /*!
-    \fn ShaderPath::load (const char* vertex, const char* fragment)
+    \fn ShaderPath::load (VertexInputLayout& layout, const char* vertex, const char* fragment)
 	\brief Loads in a vertex and fragment shader.
 
 	This function loads the supplied vertex and fragment shaders into the shader
@@ -27,7 +27,7 @@ ShaderPath::ShaderPath():
 	\retval true the shader objects have been successfully linked.
 	\retval false otherwise, consult the log file for compiler/linker specific errors.
  */
-bool ShaderPath::load(const String& vertex, const String& fragment)
+bool ShaderPath::load(VertexInputLayout& layout, const String& vertex, const String& fragment)
 {
 	Log& log = Log::getInstance ();
 	shader.create();

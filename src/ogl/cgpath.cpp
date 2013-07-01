@@ -44,7 +44,7 @@ CGPath::~CGPath()
 {
 }
 
-bool CGPath::load(const String& vertex, const String& fragment)
+bool CGPath::load(VertexInputLayout& layout, const String& vertex, const String& fragment)
 {
    return loadVertexProgram(vertex) && loadFragmentProgram(fragment);
 }

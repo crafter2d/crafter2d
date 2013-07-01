@@ -1,6 +1,8 @@
 
 #include "symboltable.h"
 
+#include "symbol.h"
+
 namespace ByteCode
 {
    SymbolTable::SymbolTable():

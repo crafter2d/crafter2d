@@ -21,7 +21,7 @@ namespace Graphics
       ProgramPath();
       virtual ~ProgramPath();
 
-	   virtual bool     load (const String& vertex, const String& fragment);
+	   virtual bool     load (VertexInputLayout& layout, const String& vertex, const String& fragment);
 	   virtual void     release ();
 
 	   virtual void     enable () const;
