@@ -64,7 +64,7 @@ bool VertexProgram::compile(const String& filename)
    AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
    if ( !pfile.hasPointer() )
    {
-      Log::getInstance().error("VertexProgram.compile: Can not open vertex assembly file '%s'", filename.getBuffer());
+      Log::getInstance().error("VertexProgram.compile: Can not open vertex assembly file '%s'", filename.toUtf8().c_str());
 		return false;
 	}
 
@@ -150,10 +150,8 @@ void VertexProgram::disable() const
 
 GLint VertexProgram::getUniformLocation(const String& name) const
 {
-   int len;
-   const char* pname = name.toUtf8(len);
-	const char* pos = strstr(source, pname);
-   delete[] pname;
+   const std::string uname = name.toUtf8();
+	const char* pos = strstr(source, uname.c_str());
 	if ( pos != NULL )
    {
       char num[10] = {};

@@ -64,7 +64,7 @@ bool TileSet::create(const String& filename)
    int thisTile, val;
    Log& log = Log::getInstance();
 
-   std::string path = "../images/" + filename.toStdString();
+   std::string path = "../images/" + filename.toUtf8();
    TiXmlDocument doc(path);
    if ( !doc.LoadFile() )
    {

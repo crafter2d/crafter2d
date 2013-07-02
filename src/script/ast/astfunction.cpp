@@ -273,7 +273,7 @@ int ASTFunction::getArgumentCount() const
 
 String ASTFunction::getPrototype() const
 {
-   return getName() + "(" + mpSignature->toString() + ")";
+   return getName() + '(' + mpSignature->toString() + ')';
 }
 
 // - Operations

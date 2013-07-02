@@ -190,7 +190,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          case CIL_call_native:
             {
                const FunctionRegistration& funcreg = context.getClassRegistry().getFunction(inst.mInt);
-               ASTFunction& func = resolver.resolve(context, funcreg.getClassRegistration().name + "." + funcreg.getPrototype());
+               ASTFunction& func = resolver.resolve(context, funcreg.getClassRegistration().name + UTEXT(".") + funcreg.getPrototype());
 
                FunctionSymbol* psymbol = new FunctionSymbol;
                psymbol->func = inst.mInt;
@@ -672,8 +672,8 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          case CIL_ldclass:
             {
                ASTType* ptype = new ASTType(ASTType::eObject);
-               ptype->setObjectName("system.Class");
-               ptype->setObjectClass(context.resolveClass("system.Class"));
+               ptype->setObjectName(UTEXT("system.Class"));
+               ptype->setObjectClass(context.resolveClass(UTEXT("system.Class")));
 
                ValueSymbol* psymbol = new ValueSymbol();
                psymbol->value.setString(context.getStringCache().lookup(*inst.mString));
@@ -817,7 +817,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
 
    Blocks& blocks = getBlocks();
 
-   if ( function.getName() == "create" && function.getClass().getName() == "TileSet")
+   if ( function.getName() == UTEXT("create") && function.getClass().getName() == UTEXT("TileSet") )
    {
       int aap = 5;
    }

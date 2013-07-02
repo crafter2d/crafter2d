@@ -86,8 +86,8 @@ Variant CPU::execute(VirtualContext& context, VirtualObject& object, const Virtu
 
 void CPU::initialize(VirtualContext& context)
 {
-   mpArrayClass = &context.mClassTable.resolve("system.InternalArray");
-   mpStringClass = &context.mClassTable.resolve("system.InternalString");
+   mpArrayClass = &context.mClassTable.resolve(UTEXT("system.InternalArray"));
+   mpStringClass = &context.mClassTable.resolve(UTEXT("system.InternalString"));
 }
 
 VirtualObject* CPU::instantiate(VirtualContext& context, const VirtualClass& klass, int constructor)
@@ -169,10 +169,10 @@ void CPU::displayException(const VirtualException& exception)
    const String& cause = exceptionobject.getMember(0).asString().getString();
    const String& callstack = exceptionobject.getMember(1).asString().getString();
 
-   String result = "Caught exception " 
-                 + exceptionobject.getClass().getName() + "\n"
-                 + cause + "\n"
+   String result = UTEXT("Caught exception ")
+                 + exceptionobject.getClass().getName() + UTEXT("\n")
+                 + cause + UTEXT("\n")
                  + callstack;
 
-   std::cout << cause.toStdString() << std::endl << callstack.toStdString();
+   std::cout << cause.toUtf8() << std::endl << callstack.toUtf8();
 }

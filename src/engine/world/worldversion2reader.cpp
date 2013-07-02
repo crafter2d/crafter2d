@@ -76,7 +76,7 @@ bool WorldVersion2Reader::readHeader(UnzipFile& zip)
    int size;
    char* pdata = NULL;
 
-   if ( !zip.readFile("header", (void*&)pdata, size) )
+   if ( !zip.readFile(UTEXT("header"), (void*&)pdata, size) )
       return false;
 
    int version = -1;
@@ -92,7 +92,7 @@ bool WorldVersion2Reader::readSimulator(UnzipFile& zip)
 {
    TiXmlDocument doc;
 
-   if ( loadXmlFromZip(zip, doc, "simulator.xml") )
+   if ( loadXmlFromZip(zip, doc, UTEXT("simulator.xml")) )
    {
       TiXmlElement* psimulator = doc.FirstChildElement("simulator");
       if ( psimulator == NULL )
@@ -121,7 +121,7 @@ bool WorldVersion2Reader::readLayers(UnzipFile& zip)
    int size;
    char* pdata = NULL;
 
-   if ( !zip.readFile("data", (void*&)pdata, size) )
+   if ( !zip.readFile(UTEXT("data"), (void*&)pdata, size) )
       return false;
 
    ArrayStream stream(pdata, size);
@@ -145,7 +145,7 @@ bool WorldVersion2Reader::readBounds(UnzipFile& zip)
 {
    TiXmlDocument doc;
 
-   if ( loadXmlFromZip(zip, doc, "bounds.xml") )
+   if ( loadXmlFromZip(zip, doc, UTEXT("bounds.xml")) )
    {
       TiXmlElement* pbounds = doc.FirstChildElement("bounds");
       TiXmlElement* pelement = pbounds->FirstChildElement("bound");
@@ -173,7 +173,7 @@ bool WorldVersion2Reader::readObjects(UnzipFile& zip)
 {
    TiXmlDocument doc;
 
-   if ( loadXmlFromZip(zip, doc, "objects.xml") )
+   if ( loadXmlFromZip(zip, doc, UTEXT("objects.xml")) )
    {
       return true;
    }

@@ -70,7 +70,7 @@ bool Server::destroy()
       ServerDownEvent event;
       sendToAllClients(event);
 
-      mpScript->run("onShutdown");
+      mpScript->run(UTEXT("onShutdown"));
    }
    
    return Process::destroy();
@@ -194,7 +194,7 @@ void Server::onNetEvent(int client, const NetEvent& event)
             Variant args[2];
             args[0].setInt(client);
             args[1].setObject(mpScript->resolve(player.getPointer()));
-            mpScript->run("onClientDisconnect", 2, args);
+            mpScript->run(UTEXT("onClientDisconnect"), 2, args);
 
             // remove the player from the client list
             ClientMap::iterator it = clients.find(client);
@@ -218,8 +218,8 @@ void Server::onNetEvent(int client, const NetEvent& event)
             Player* player = clients[client];
             Variant args[2];
             args[0].setObject(mpScript->resolve(player));
-            args[1].setObject(mpScript->instantiate("engine.net.NetStream", &stream));
-            mpScript->run("onEvent", 2, args);
+            args[1].setObject(mpScript->instantiate(UTEXT("engine.net.NetStream"), &stream));
+            mpScript->run(UTEXT("onEvent"), 2, args);
             break;
          }
       case actionEvent:
@@ -294,7 +294,7 @@ void Server::addPlayer(int clientid, Player* pplayer)
 void Server::handleConnectEvent(const ConnectEvent& event)
 {
    // check if the script allows this new player
-   Variant retval = mpScript->run("onClientConnecting");
+   Variant retval = mpScript->run(UTEXT("onClientConnecting"));
    int reason = retval.asInt();
    if ( reason != 0 )
    {
@@ -308,8 +308,8 @@ void Server::handleConnectEvent(const ConnectEvent& event)
       addPlayer(mActiveClient, pplayer);
 
       // run the onClientConnect script
-      Variant arg(mpScript->instantiate("engine.game.Player", pplayer));
-      mpScript->run("onClientConnect", 1, &arg);
+      Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), pplayer));
+      mpScript->run(UTEXT("onClientConnect"), 1, &arg);
    }
 }
 

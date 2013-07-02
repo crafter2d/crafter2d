@@ -70,12 +70,13 @@ bool Effect::load(Device& device, const String& file)
 {
 	Log& log = Log::getInstance();
 
-   String path = String("../shaders/") + file + ".xml";
+   String path = UTEXT("../shaders/") + file + UTEXT(".xml");
 
-   TiXmlDocument doc(path.toStdString());
+   std::string filename = path.toUtf8();
+   TiXmlDocument doc(filename);
 	if ( !doc.LoadFile() )
    {
-      log.error("Effect.load: can not load '%s'", file.getBuffer());
+      log.error("Effect.load: can not load '%s'", filename.c_str());
 		return false;
 	}
 
@@ -83,7 +84,7 @@ bool Effect::load(Device& device, const String& file)
 	const TiXmlElement* effect = static_cast<TiXmlElement*>(doc.FirstChild("effect"));
 	if ( effect == NULL )
    {
-		log.error("Effect.load: %s is not an effect file.", file.getBuffer());
+      log.error("Effect.load: %s is not an effect file.", filename.c_str());
 		return false;
 	}
 
@@ -91,7 +92,7 @@ bool Effect::load(Device& device, const String& file)
    name = effect->Attribute ("name");
 
 	// try to load in the textures
-	if ( !processTextures(device, *effect) || !processCode(device, *effect, "../shaders/") || !processBlendState(device, *effect) )
+	if ( !processTextures(device, *effect) || !processCode(device, *effect, UTEXT("../shaders/")) || !processBlendState(device, *effect) )
 		return false;
 
 	// find the uniform indices of the texture
@@ -143,7 +144,8 @@ bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effec
 		else
       {
 			// must be a normal texture
-         stage.tex = ResourceManager::getInstance().getTexture(device, file->Value());
+         String filename(file->ValueStr());
+         stage.tex = ResourceManager::getInstance().getTexture(device, filename);
          if ( !stage.tex.isValid() )
          {
             Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());
@@ -176,7 +178,7 @@ bool Effect::postprocessTextures()
       stages[s].index = mpCodePath->getUniformLocation(stages[s].uniform);
       if (stages[s].index == -1)
       {
-         Log::getInstance().error("Can not find %s", stages[s].uniform.getBuffer());
+         Log::getInstance().error("Can not find %s", stages[s].uniform.toUtf8());
          return false;
       }
    }
@@ -232,15 +234,15 @@ bool Effect::processCode(Graphics::Device& device, const TiXmlElement& effect, c
    }
 
    // files should be in same directory
-   String vertexfile   = path + vertex;
-   String fragmentfile = path + fragment;
+   String vertexfile   = path + String::fromUtf8(vertex);
+   String fragmentfile = path + String::fromUtf8(fragment);
 
    // now load the codepath
    mpCodePath = device.createCodePath(pathtype);
    if ( mpCodePath == NULL || !mpCodePath->load(mLayout, vertexfile, fragmentfile) )
        return false;
 
-   mModelViewProjectArg = mpCodePath->getUniformLocation("modelviewproj");
+   mModelViewProjectArg = mpCodePath->getUniformLocation(UTEXT("modelviewproj"));
 
 	return true;
 }

@@ -75,7 +75,7 @@ bool WorldWriter::writeHeader(ZipFile& zip)
    const int version = getVersion();
    stream.writeInt(version);
 
-   zip.addFile("header", (void*)stream.getData(), stream.getDataSize());
+   zip.addFile(UTEXT("header"), (void*)stream.getData(), stream.getDataSize());
 
    return true;
 }
@@ -91,7 +91,7 @@ bool WorldWriter::writeSimulator(ZipFile& zip)
    stream << doc;
    const std::string& data = stream.str();
 
-   zip.addFile("simulator.xml", (void*)data.c_str(), data.length());
+   zip.addFile(UTEXT("simulator.xml"), (void*)data.c_str(), data.length());
 
    return true;
 }
@@ -108,7 +108,7 @@ bool WorldWriter::writeLayers(ZipFile& zip)
       //stream << *player;
    }
 
-   zip.addFile("data", (void*)stream.getData(), stream.getDataSize());
+   zip.addFile(UTEXT("data"), (void*)stream.getData(), stream.getDataSize());
 
    return true;
 }
@@ -140,7 +140,7 @@ bool WorldWriter::writeBounds(ZipFile& zip)
    stream << doc;
    const std::string& data = stream.str();
 
-   zip.addFile("bounds.xml", (void*)data.c_str(), data.length());
+   zip.addFile(UTEXT("bounds.xml"), (void*)data.c_str(), data.length());
 
    return true;
 }
@@ -170,7 +170,7 @@ bool WorldWriter::writeObjects(ZipFile& zip)
    stream << doc;
    const std::string& data = stream.str();
 
-   zip.addFile("objects.xml", (void*)data.c_str(), data.length());
+   zip.addFile(UTEXT("objects.xml"), (void*)data.c_str(), data.length());
 
    return true;
 }

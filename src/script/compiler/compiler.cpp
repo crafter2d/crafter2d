@@ -233,7 +233,7 @@ bool Compiler::load(const String& classname)
 
    String filename(classname);
    filename.replace('.', '/');
-   filename += String(".as");
+   filename += UTEXT(".as");
 
    try
    {
@@ -299,7 +299,7 @@ void Compiler::reportError(CompileException& exception)
 {
    std::ofstream outfile("compilelog.txt", std::ios_base::app);
 
-   outfile << "> " << exception.getFilename().toStdString() << "(" << exception.getLine() << "): " << exception.asString().toStdString() << std::endl;
+   outfile << "> " << exception.getFilename().toUtf8() << "(" << exception.getLine() << "): " << exception.asString().toUtf8() << std::endl;
 }
 
 void Compiler::displayErrors(const String& currentfile)
@@ -309,7 +309,7 @@ void Compiler::displayErrors(const String& currentfile)
    const CompileLog::StringList& log = mContext.getLog().getLog();
    for ( std::size_t index = 0; index < log.size(); index++ )
    {
-      outfile << "> " << currentfile.toStdString() << ": " << log[index] << std::endl;
+      outfile << "> " << currentfile.toUtf8() << ": " << log[index] << std::endl;
    }
 
    outfile.close();

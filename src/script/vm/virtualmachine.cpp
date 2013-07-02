@@ -79,23 +79,23 @@ void VirtualMachine::initialize()
    mContext.mNativeRegistry.add(mCompiler.getClassRegistry());
 
    // preload some common classes
-   loadClass("system.Object");
-   loadClass("system.InternalArray");
-   loadClass("system.InternalString");
+   loadClass(UTEXT("system.Object"));
+   loadClass(UTEXT("system.InternalArray"));
+   loadClass(UTEXT("system.InternalString"));
 
    // resolve the internal classes
-   mpArrayClass = &mContext.mClassTable.resolve("system.InternalArray");
-   mpStringClass = &mContext.mClassTable.resolve("system.InternalString");
+   mpArrayClass = &mContext.mClassTable.resolve(UTEXT("system.InternalArray"));
+   mpStringClass = &mContext.mClassTable.resolve(UTEXT("system.InternalString"));
    mpCPU->initialize(mContext);
 
    // pre-compile utility classes
-   loadClass("system.ClassLoader");
-   loadClass("system.System");
+   loadClass(UTEXT("system.ClassLoader"));
+   loadClass(UTEXT("system.System"));
 
    mState = eRunning;
    mLoaded = true;
 
-   loadClass("system.AssertionError");
+   loadClass(UTEXT("system.AssertionError"));
 
    // register the loaded classes with the ClassLoader instance
    std::vector<VirtualClass*> classes = mContext.mClassTable.asArray();
@@ -225,7 +225,7 @@ VirtualObject& VirtualMachine::instantiateArrayException(const VirtualArrayExcep
    {
       case VirtualArrayException::eOutOfBounds: 
          {
-            presult = instantiate("system.ArrayIndexOutOfBoundsException", -1);
+            presult = instantiate(UTEXT("system.ArrayIndexOutOfBoundsException"), -1);
             break;
          }
       default:
@@ -287,7 +287,8 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
 
    if ( object.isOwner() )
    {
-      const VirtualFunctionTableEntry* pentry = object.getClass().getVirtualFunctionTable().findByName("finalize");
+      static String sFinal = UTEXT("finalize");
+      const VirtualFunctionTableEntry* pentry = object.getClass().getVirtualFunctionTable().findByName(sFinal);
       if ( pentry != NULL )
       {
          mpCPU->execute(mContext, object, *pentry);
@@ -325,13 +326,17 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
 {
    if ( mLoaded )
    {
+      static const String sClass = UTEXT("system.Class");
+      static const String sFunction = UTEXT("system.Function");
+      static const String sClassLoader = UTEXT("system.ClassLoader");
+
       VirtualObject& object = aclass.getClassObject();
 
       // resolve the virtual classes
-      object.setClass(mContext.mClassTable.resolve("system.Class"));
+      object.setClass(mContext.mClassTable.resolve(sClass));
 
       VirtualArray& funcarray = object.getMember(1).asArray();
-      const VirtualClass& funcclass = mContext.mClassTable.resolve("system.Function");
+      const VirtualClass& funcclass = mContext.mClassTable.resolve(sFunction);
       for ( int index = 0; index < funcarray.size(); index++ )
       {
          VirtualObject& func = funcarray[index].asObject();
@@ -339,7 +344,7 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
       }
 
       // notify the ClassLoader to add this class
-      const VirtualClass& classloader = mContext.mClassTable.resolve("system.ClassLoader");
+      const VirtualClass& classloader = mContext.mClassTable.resolve(sClassLoader);
       const VirtualFunctionTableEntry& entry = classloader.getVirtualFunctionTable()[4];
       const Variant& classloaderobject = classloader.getStatic(0);
       ASSERT(classloaderobject.isObject());

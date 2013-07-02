@@ -9,8 +9,8 @@ using namespace std;
 ClassResolver::ClassResolver():
    mPaths()
 {
-   mPaths.insert("*");
-   mPaths.insert("system.*");
+   mPaths.insert(UTEXT("*"));
+   mPaths.insert(UTEXT("system.*"));
 }
 
 const ClassResolver& ClassResolver::operator=(const ClassResolver& that)
@@ -34,7 +34,7 @@ void ClassResolver::insert(const String& path)
       }
       else
       {
-         qualifiedpath.replace(pos+1, path.length(), "*");
+         qualifiedpath.replace(pos+1, path.length(), UTEXT("*"));
       }
    }
 
@@ -66,7 +66,7 @@ String ClassResolver::resolve(const String& classname) const
       }
    }
 
-   return "";
+   return String::empty();
 }
 
 bool ClassResolver::checkClassExists(const String& classname) const
@@ -74,5 +74,5 @@ bool ClassResolver::checkClassExists(const String& classname) const
    String name(classname);
    name.replace('.', '/');
 
-   return FileSystem::getInstance().exists(name + ".as");
+   return FileSystem::getInstance().exists(name + UTEXT(".as"));
 }

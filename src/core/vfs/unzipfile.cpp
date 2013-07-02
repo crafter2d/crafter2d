@@ -49,58 +49,51 @@ UnzipFile::~UnzipFile()
 
 bool UnzipFile::open(const String& path)
 {
-   int len;
-   const char* ppath = path.toUtf8(len);
-   _zip = unzOpen(ppath);
-   delete[] ppath;
-
+   std::string p = path.toUtf8();
+   _zip = unzOpen(p.c_str());
    return _zip != NULL;
 }
 
 bool UnzipFile::contains(const String& name) const
 {
-   if ( _zip == NULL )
-      return false;
-
-   int len;
-   const char* pname = name.toUtf8(len);
-   bool result = unzLocateFile(_zip, pname, 2) != UNZ_OK;
-   delete[] pname;
-
+   bool result = false;
+   if ( _zip != NULL )
+   {
+      std::string file = name.toUtf8();
+      result = unzLocateFile(_zip, file.c_str(), 2) != UNZ_OK;
+   }
    return result;
 }
 
 bool UnzipFile::readFile(const String& name, void*& pdata, int &size, bool casesensitive)
 {
-   if ( _zip == NULL )
-      return false;
-
-   int len;
-   const char* pname = name.toUtf8(len);
-   int result = unzLocateFile(_zip, pname, casesensitive ? 1 : 2);
-   delete[] pname;
-   
-   if ( result != UNZ_OK )
+   bool result = false;
+   if ( _zip != NULL )
    {
-      return false;
-   }
+      std::string file = name.toUtf8();
+      int result = unzLocateFile(_zip, file.c_str(), casesensitive ? 1 : 2);
+      if ( result != UNZ_OK )
+      {
+         return false;
+      }
    
-   unz_file_info info;
-   if ( unzGetCurrentFileInfo(_zip, &info, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK )
-      return false;
+      unz_file_info info;
+      if ( unzGetCurrentFileInfo(_zip, &info, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK )
+         return false;
 
-   size  = info.uncompressed_size;
-   pdata = new char[size + 1];
-   memset(pdata, 0, size+1);
+      size  = info.uncompressed_size;
+      pdata = new char[size + 1];
+      memset(pdata, 0, size+1);
 
-   if ( unzOpenCurrentFile(_zip) != UNZ_OK )
-      return false;
+      if ( unzOpenCurrentFile(_zip) != UNZ_OK )
+         return false;
 
-   size = unzReadCurrentFile(_zip, pdata, info.uncompressed_size);
-   if ( size < 0 )
-      return false;
+      size = unzReadCurrentFile(_zip, pdata, info.uncompressed_size);
+      if ( size < 0 )
+         return false;
 
-   unzCloseCurrentFile(_zip);
+      unzCloseCurrentFile(_zip);
+   }
 
    return true;
 }

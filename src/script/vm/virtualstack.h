@@ -26,7 +26,7 @@ public:
    void pushInt(int value);
    void pushReal(double value);
    void pushBool(bool value);
-   void pushChar(char value);
+   void pushChar(UChar value);
    void pushString(VirtualString& value);
    void pushObject(VirtualObject& object);
    void pushArray(VirtualArray& array);
@@ -36,7 +36,7 @@ public:
    int                  popInt();
    double               popReal();
    bool                 popBool();
-   char                 popChar();
+   UChar                popChar();
    const String&        popString();
    VirtualObject&       popObject();
    VirtualArray&        popArray();

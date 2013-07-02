@@ -99,9 +99,8 @@ bool Layer::initialize(Device& device)
 {
    if ( !mEffect.load(device, mpDefinition->effect) )
    {
-      int len;
-      const char* pfile = mpDefinition->effect.toUtf8(len);
-      Log::getInstance().error("Can not load effect file '%s'.", pfile);
+      std::string file = mpDefinition->effect.toUtf8();
+      Log::getInstance().error("Can not load effect file '%s'.", file.c_str());
       return false;
    }
 
@@ -111,10 +110,10 @@ bool Layer::initialize(Device& device)
    }
 
    // load the tileset
-   const TexturePtr diffuse = mEffect.resolveTexture("diffuseMap");
+   const TexturePtr diffuse = mEffect.resolveTexture(UTEXT("diffuseMap"));
    String tileInfo = diffuse.getName();
    int pos = tileInfo.lastIndexOf('.');
-   tileInfo.replace(pos+1,3,"xml");
+   tileInfo.replace(pos+1, 3, UTEXT("xml"));
 
    if ( !mTileSet.create(tileInfo) )
       return false;

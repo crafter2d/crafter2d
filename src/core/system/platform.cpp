@@ -23,6 +23,8 @@
 
 #ifdef WIN32
 #  include "winplatform.h"
+#elif WINRT
+#  include "winplatform.h"
 #elif LINUX
 #  include "linuxplatform.h"
 #endif
@@ -30,6 +32,8 @@
 Platform& Platform::getInstance()
 {
 #ifdef WIN32
+   static WinPlatform platform;
+#elif WINRT
    static WinPlatform platform;
 #elif LINUX
    static LinuxPlatform platform;

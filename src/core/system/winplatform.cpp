@@ -42,15 +42,16 @@ Timer& WinPlatform::getTimer()
 
 void* WinPlatform::loadModule(const String& name)
 {
-   LPCWSTR pname = (LPCWSTR)name.getBuffer();
-   return ::LoadLibraryW(pname);
+   std::wstring uname = name.toUtf16();
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+   return LoadLibraryEx(uname.c_str(), NULL, 0);
+#else
+   return LoadPackagedLibrary(uname.c_str(), 0);
+#endif
 }
 
 void* WinPlatform::getFunctionAddress(void* pmodule, const String& name)
 {
-   int len = 0;
-   const char* pname = name.toUtf8(len);
-   void* pfnc = ::GetProcAddress((HMODULE)pmodule, pname);
-   delete[] pname;
-   return pfnc;
+   std::string uname = name.toUtf8();
+   return GetProcAddress((HMODULE)pmodule, uname.c_str());
 }

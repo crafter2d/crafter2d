@@ -99,7 +99,7 @@ bool SDLGameWindow::doCreate(const String& title, int width, int height, int bit
 
    resize(width, height);
 
-   SDL_WM_SetCaption(title.getBuffer(), title.getBuffer());
+   SDL_WM_SetCaption(title.toUtf8().c_str(), title.toUtf8().c_str());
    SDL_EnableUNICODE(1);
 
    return true;

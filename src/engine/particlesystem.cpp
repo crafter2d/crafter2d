@@ -148,7 +148,7 @@ bool ParticleSystem::prepare(Graphics::Device& device)
    using namespace Graphics;
 
    // load effect
-   mEffect.load(device, "shaders/pointsprite.xml");
+   mEffect.load(device, UTEXT("shaders/pointsprite.xml"));
 
    int usage  = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
 
@@ -226,7 +226,7 @@ void ParticleSystem::doUpdate(float delta)
                
 				   // run the particle script
                Variant arg((int)lifetime);
-				   updateScript->run("updateParticle", 1, &arg);
+				   updateScript->run(UTEXT("updateParticle"), 1, &arg);
 
 				   part = &curpart->next;
 			   }

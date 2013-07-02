@@ -38,7 +38,7 @@ Variant::Variant(double value):
    mValue.mReal = value;
 }
 
-Variant::Variant(char value):
+Variant::Variant(UChar value):
    mType(eChar),
    mValue()
 {
@@ -248,13 +248,13 @@ void Variant::setReal(double value)
    mValue.mReal = value;
 }
 
-char Variant::asChar() const
+UChar Variant::asChar() const
 {
    ASSERT(mType == eChar);
    return mValue.mChar;
 }
 
-void Variant::setChar(char value)
+void Variant::setChar(UChar value)
 {
    mType = eChar;
    mValue.mChar = value;

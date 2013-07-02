@@ -43,14 +43,14 @@ IniFile::IniFile(const String& filename):
 
 const String& IniFile::get(const String& name)
 {
-   return get("global", name);
+   return get(UTEXT("global"), name);
 }
 
 const String& IniFile::get(const String& section, const String& name)
 {
    if ( !mSections.contains(section) )
    {
-      throw new IniFileException("Section " + name + " could not be found.");
+      throw new IniFileException(UTEXT("Section ") + name + UTEXT(" could not be found."));
    }
 
    IniFileSection** psection = mSections.get(section);

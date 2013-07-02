@@ -42,12 +42,12 @@ void CompileLog::error(const std::string& error)
 
 void CompileLog::warning(const String& warning)
 {
-   mLog.push_back("Warning: " + warning.toStdString());
+   mLog.push_back("Warning: " + warning.toUtf8());
 }
 
 void CompileLog::error(const String& error)
 {
-   mLog.push_back("Error: " + error.toStdString());
+   mLog.push_back("Error: " + error.toUtf8());
 
    mErrorCount++;
 }

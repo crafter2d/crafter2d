@@ -58,7 +58,7 @@ bool IsoDiamondLayer::initialize(Graphics::Device& device)
    _xstart = tileWidth * (getWidth() / 2);// + _halfTileWidth;
 
    // get number of tiles on one row in the diffuseMap
-	const TexturePtr diffuse = getEffect().resolveTexture("diffuseMap");
+	const TexturePtr diffuse = getEffect().resolveTexture(UTEXT("diffuseMap"));
 	maxTilesOnRow = diffuse->getWidth() / tileWidth;
 
    float nX = static_cast<float>(diffuse->getWidth()) / tileWidth;

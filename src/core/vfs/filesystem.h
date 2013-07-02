@@ -32,7 +32,7 @@ class String;
 class CORE_API FileSystem
 {
 public:
-   typedef void(*Callback)(const char* name, bool isdir, void* pdata);
+   typedef void(*Callback)(const String& name, bool isdir, void* pdata);
 
    static FileSystem&   getInstance();
 

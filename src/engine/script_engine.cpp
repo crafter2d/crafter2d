@@ -64,8 +64,8 @@
 #define GET_THIS(type, variable)                   type& variable = *static_cast<type*>(accessor.getThis().getNativeObject())
 #define DESTRUCT_THIS(type)                        delete static_cast<type*>(accessor.getThis().useNativeObject());
 
-#define RETURN(type, pointer)                      accessor.setResult(*machine.instantiateNative(#type, pointer, false))
-#define RETURN_OWNED(type, pointer)                accessor.setResult(*machine.instantiateNative(#type, pointer, true))
+#define RETURN(type, pointer)                      accessor.setResult(*machine.instantiateNative(UTEXT(#type), pointer, false))
+#define RETURN_OWNED(type, pointer)                accessor.setResult(*machine.instantiateNativeUTEXT((#type), pointer, true))
 
 #define RETURN_CLASS(class, pointer)               accessor.setResult(*machine.instantiateNative(class, pointer, false))
 #define RETURN_CLASS_OWNED(class, pointer)         accessor.setResult(*machine.instantiateNative(class, pointer, true))
@@ -78,14 +78,14 @@ void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
    int size = accessor.getInt(2);
 
    //FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
-   //RETURN_CLASS_OWNED("engine.ui.Font", FontPtr, pfont);
+   //RETURN_CLASS_OWNED("engine.ui.Font"), FontPtr, pfont);
 }
 
 void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Process, process);
 
-   RETURN_CLASS("engine.game.ContentManager", &process.getContentManager());
+   RETURN_CLASS(UTEXT("engine.game.ContentManager"), &process.getContentManager());
 }
 
 void Process_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -152,7 +152,7 @@ void Client_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& acce
 {
    GET_THIS(Client, client);
 
-   RETURN_CLASS("system.GameWindowFactory", &client.getWindowFactory());
+   RETURN_CLASS(UTEXT("system.GameWindowFactory"), &client.getWindowFactory());
 }
 
 void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -169,7 +169,7 @@ void Client_getPlayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
    GET_THIS(Client, client);
 
    Player& player = client.getPlayer();
-   RETURN_CLASS("engine.game.Player", &player);
+   RETURN_CLASS(UTEXT("engine.game.Player"), &player);
 }
 
 void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -197,7 +197,7 @@ void Client_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
    const String& name = accessor.getString(1);
 
    TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(client.getDevice(), name));
-   RETURN_CLASS_OWNED("engine.core.Texture", ptexture);
+   RETURN_CLASS_OWNED(UTEXT("engine.core.Texture"), ptexture);
 }
 
 void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -217,14 +217,14 @@ void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor
    const String& filename = accessor.getString(1);
 
    World* presult = contentmanager.loadWorld(filename);
-   RETURN_CLASS_OWNED("engine.game.World", presult);
+   RETURN_CLASS_OWNED(UTEXT("engine.game.World"), presult);
 }
 
 void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(GameWindowFactory, factory);
 
-   RETURN_CLASS_OWNED("system.GameWindow", factory.createWindow());
+   RETURN_CLASS_OWNED(UTEXT("system.GameWindow"), factory.createWindow());
 }
 
 void GameWindow_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -494,7 +494,7 @@ void World_getFollowActor(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(World, world);
 
-   RETURN_CLASS("engine.game.Actor", world.getFollowObject());
+   RETURN_CLASS(UTEXT("engine.game.Actor"), world.getFollowObject());
 }
 
 void World_setFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -541,7 +541,7 @@ void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
    int controllerid = accessor.getInt(1);
    Entity* pentity = world.findEntity(Id(controllerid));
 
-   RETURN_CLASS("engine.game.Actor", static_cast<Actor*>(pentity));
+   RETURN_CLASS(UTEXT("engine.game.Actor"), static_cast<Actor*>(pentity));
 }
 
 void World_getLayerCount(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -557,14 +557,14 @@ void World_getLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    int index = accessor.getInt(1);
 
-   RETURN_CLASS("engine.game.Layer", world.getLayer(index));
+   RETURN_CLASS(UTEXT("engine.game.Layer"), world.getLayer(index));
 }
 
 void Layer_getEffect(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Layer, layer);
 
-   RETURN_CLASS("engine.game.Effect", const_cast<Graphics::Effect*>(&layer.getEffect()));
+   RETURN_CLASS(UTEXT("engine.game.Effect"), const_cast<Graphics::Effect*>(&layer.getEffect()));
 }
 
 void Layer_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -609,7 +609,7 @@ void Effect_resolveTexture(VirtualMachine& machine, VirtualStackAccessor& access
    const String& name = accessor.getString(1);
 
    TexturePtr* ptexture = new TexturePtr(effect.resolveTexture(name));
-   RETURN_CLASS_OWNED("engine.core.Texture", ptexture);
+   RETURN_CLASS_OWNED(UTEXT("engine.core.Texture"), ptexture);
 }
 
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -629,7 +629,7 @@ void InputForceGenerator_getVelocity(VirtualMachine& machine, VirtualStackAccess
 {
    GET_THIS(InputForceGenerator, generator);
 
-   VirtualObject* pobject = machine.instantiate("engine.core.Vector2D");
+   VirtualObject* pobject = machine.instantiate(UTEXT("engine.core.Vector2D"));
    pobject->setMember(0, Variant(generator.getVelocity().x));
    pobject->setMember(1, Variant(generator.getVelocity().y));
    
@@ -751,7 +751,7 @@ void Box2DRopeJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAcces
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   RETURN_CLASS("box2d.Box2DBody", joint.pleft);
+   RETURN_CLASS(UTEXT("box2d.Box2DBody"), joint.pleft);
 }
 
 void Box2DRopeJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -767,7 +767,7 @@ void Box2DRopeJointDefinition_getRight(VirtualMachine& machine, VirtualStackAcce
 {
    GET_THIS(Box2DRopeJointDefinition, joint);
 
-   RETURN_CLASS("box2d.Box2DBody", joint.pright);
+   RETURN_CLASS(UTEXT("box2d.Box2DBody"), joint.pright);
 }
 
 void Box2DRopeJointDefinition_setRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -844,7 +844,7 @@ void ActionMap_getProcess(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(ActionMap, map);
    
-   RETURN_CLASS("engine.Process", &map.getProcess());
+   RETURN_CLASS(UTEXT("engine.Process"), &map.getProcess());
 }
 
 void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1094,7 +1094,7 @@ void Texture_getSourceHeight(VirtualMachine& machine, VirtualStackAccessor& acce
 
 void FileSystem_getInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   RETURN_CLASS("engine.io.FileSystem", &FileSystem::getInstance());
+   RETURN_CLASS(UTEXT("engine.io.FileSystem"), &FileSystem::getInstance());
 }
 
 void FileSystem_open(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1107,7 +1107,7 @@ void FileSystem_open(VirtualMachine& machine, VirtualStackAccessor& accessor)
    File* pfile = fs.open(name, modus);
    if ( pfile != NULL )
    {
-      RETURN_CLASS_OWNED("engine.io.File", pfile);
+      RETURN_CLASS_OWNED(UTEXT("engine.io.File"), pfile);
    }
    else
    {
@@ -1154,186 +1154,186 @@ void script_engine_register(ScriptManager& manager)
 {
    ScriptRegistrator registrator;
 
-   registrator.addClass("engine.game.Process");
-   //registrator.addFunction("getFont", Process_getFont);
-   registrator.addFunction("getContentManager()", Process_getContentManager);
-   registrator.addFunction("setActionMap(engine.game.ActionMap)", Process_setActionMap);
-   registrator.addFunction("setWorld(engine.game.World)", Process_setWorld);
-   registrator.addFunction("swapLeakDetection()", Process_swapLeakDetection);
+   registrator.addClass(UTEXT("engine.game.Process"));
+   //registrator.addFunction(UTEXT("getFont"), Process_getFont);
+   registrator.addFunction(UTEXT("getContentManager()"), Process_getContentManager);
+   registrator.addFunction(UTEXT("setActionMap(engine.game.ActionMap)"), Process_setActionMap);
+   registrator.addFunction(UTEXT("setWorld(engine.game.World)"), Process_setWorld);
+   registrator.addFunction(UTEXT("swapLeakDetection()"), Process_swapLeakDetection);
 
-   registrator.addClass("engine.game.Server");
-   registrator.addFunction("listen(int)", Server_listen);
-   registrator.addFunction("sendScriptEvent(int, engine.net.NetStream)", Server_sendScriptEvent);
+   registrator.addClass(UTEXT("engine.game.Server"));
+   registrator.addFunction(UTEXT("listen(int)"), Server_listen);
+   registrator.addFunction(UTEXT("sendScriptEvent(int, engine.net.NetStream)"), Server_sendScriptEvent);
 
-   registrator.addClass("engine.game.Client");
-   registrator.addFunction("connect(string, int)", Client_connect);
-   registrator.addFunction("isActive()", Client_isActive);
-   registrator.addFunction("getWindowFactory()", Client_getWindowFactory);
-   registrator.addFunction("setWindow(system.GameWindow)", Client_setWindow);
-   registrator.addFunction("setKeyMap(engine.game.KeyMap)", Client_setKeyMap);
-   registrator.addFunction("getPlayer()", Client_getPlayer);
-   registrator.addFunction("getTexture(string)", Client_getTexture);
+   registrator.addClass(UTEXT("engine.game.Client"));
+   registrator.addFunction(UTEXT("connect(string, int)"), Client_connect);
+   registrator.addFunction(UTEXT("isActive()"), Client_isActive);
+   registrator.addFunction(UTEXT("getWindowFactory()"), Client_getWindowFactory);
+   registrator.addFunction(UTEXT("setWindow(system.GameWindow)"), Client_setWindow);
+   registrator.addFunction(UTEXT("setKeyMap(engine.game.KeyMap)"), Client_setKeyMap);
+   registrator.addFunction(UTEXT("getPlayer()"), Client_getPlayer);
+   registrator.addFunction(UTEXT("getTexture(string)"), Client_getTexture);
 
-   registrator.addClass("engine.game.ContentManager");
-   registrator.addFunction("loadEntity(string)", ContentManager_loadEntity);
-   registrator.addFunction("load(string)", ContentManager_load);
+   registrator.addClass(UTEXT("engine.game.ContentManager"));
+   registrator.addFunction(UTEXT("loadEntity(string)"), ContentManager_loadEntity);
+   registrator.addFunction(UTEXT("load(string)"), ContentManager_load);
 
-   registrator.addClass("system.GameWindowFactory");
-   registrator.addFunction("createWindow()", GameWindowFactory_createWindow);
+   registrator.addClass(UTEXT("system.GameWindowFactory"));
+   registrator.addFunction(UTEXT("createWindow()"), GameWindowFactory_createWindow);
 
-   registrator.addClass("system.GameWindow");
-   registrator.addFunction("create(string, int, int, int, boolean)", GameWindow_create);
+   registrator.addClass(UTEXT("system.GameWindow"));
+   registrator.addFunction(UTEXT("create(string, int, int, int, boolean)"), GameWindow_create);
 
-   registrator.addClass("engine.streams.BufferedStream");
-   registrator.addFunction("BufferedStream()", BufferedStream_init);
-   registrator.addFunction("finalize()", BufferedStream_destruct);
+   registrator.addClass(UTEXT("engine.streams.BufferedStream"));
+   registrator.addFunction(UTEXT("BufferedStream()"), BufferedStream_init);
+   registrator.addFunction(UTEXT("finalize()"), BufferedStream_destruct);
 
-   registrator.addClass("engine.net.NetStream");
-   registrator.addFunction("NetStream(engine.streams.BufferedStream)", NetStream_init);
-   registrator.addFunction("finalize()", NetStream_destruct);
-   registrator.addFunction("writeInt(int)", NetStream_writeInt);
-   registrator.addFunction("readInt()", NetStream_readInt);
-   registrator.addFunction("clear()", NetStream_clear);
+   registrator.addClass(UTEXT("engine.net.NetStream"));
+   registrator.addFunction(UTEXT("NetStream(engine.streams.BufferedStream)"), NetStream_init);
+   registrator.addFunction(UTEXT("finalize()"), NetStream_destruct);
+   registrator.addFunction(UTEXT("writeInt(int)"), NetStream_writeInt);
+   registrator.addFunction(UTEXT("readInt()"), NetStream_readInt);
+   registrator.addFunction(UTEXT("clear()"), NetStream_clear);
 
-   registrator.addClass("engine.game.Entity");
-   registrator.addFunction("getId()", Entity_getId);
-   registrator.addFunction("sendComponentMessage(engine.game.ComponentMessage)", Entity_sendComponentMessage);
+   registrator.addClass(UTEXT("engine.game.Entity"));
+   registrator.addFunction(UTEXT("getId()"), Entity_getId);
+   registrator.addFunction(UTEXT("sendComponentMessage(engine.game.ComponentMessage)"), Entity_sendComponentMessage);
 
-   registrator.addClass("engine.game.QueryBodyComponentMessage");
-   registrator.addFunction("QueryBodyComponentMessage()", QueryBodyComponentMessage_init);
-   registrator.addFunction("getBody()", QueryBodyComponentMessage_getBody);
+   registrator.addClass(UTEXT("engine.game.QueryBodyComponentMessage"));
+   registrator.addFunction(UTEXT("QueryBodyComponentMessage()"), QueryBodyComponentMessage_init);
+   registrator.addFunction(UTEXT("getBody()"), QueryBodyComponentMessage_getBody);
 
-   registrator.addClass("engine.game.Actor");
-   registrator.addFunction("Actor()", Actor_init);
-   registrator.addFunction("finalize()", Actor_destruct);
-   registrator.addFunction("getPositionX()", Actor_getPositionX);
-   registrator.addFunction("getPositionY()", Actor_getPositionY);
-   registrator.addFunction("setPosition(real, real)", Actor_setPosition);
-   registrator.addFunction("setName(string)", Actor_setName);
-   registrator.addFunction("setAnimation(int)", Actor_setAnimation);
-   registrator.addFunction("direction()", Actor_direction);
-   registrator.addFunction("flip()", Actor_flip);
-   registrator.addFunction("setController(engine.game.Controller)", Actor_setController);
-   registrator.addFunction("add(engine.game.Actor)", Actor_add);
-   registrator.addFunction("hasLineOfSight(engine.game.Actor)", Actor_hasLineOfSight);
+   registrator.addClass(UTEXT("engine.game.Actor"));
+   registrator.addFunction(UTEXT("Actor()"), Actor_init);
+   registrator.addFunction(UTEXT("finalize()"), Actor_destruct);
+   registrator.addFunction(UTEXT("getPositionX()"), Actor_getPositionX);
+   registrator.addFunction(UTEXT("getPositionY()"), Actor_getPositionY);
+   registrator.addFunction(UTEXT("setPosition(real, real)"), Actor_setPosition);
+   registrator.addFunction(UTEXT("setName(string)"), Actor_setName);
+   registrator.addFunction(UTEXT("setAnimation(int)"), Actor_setAnimation);
+   registrator.addFunction(UTEXT("direction()"), Actor_direction);
+   registrator.addFunction(UTEXT("flip()"), Actor_flip);
+   registrator.addFunction(UTEXT("setController(engine.game.Controller)"), Actor_setController);
+   registrator.addFunction(UTEXT("add(engine.game.Actor)"), Actor_add);
+   registrator.addFunction(UTEXT("hasLineOfSight(engine.game.Actor)"), Actor_hasLineOfSight);
 
-   registrator.addClass("engine.game.Player");
-   registrator.addFunction("getClientId()", Player_getClientId);
-   registrator.addFunction("getController()", Player_getController);
-   registrator.addFunction("setController(engine.game.Actor)", Player_setController);
+   registrator.addClass(UTEXT("engine.game.Player"));
+   registrator.addFunction(UTEXT("getClientId()"), Player_getClientId);
+   registrator.addFunction(UTEXT("getController()"), Player_getController);
+   registrator.addFunction(UTEXT("setController(engine.game.Actor)"), Player_setController);
 
-   registrator.addClass("engine.game.World");
-   registrator.addFunction("World()", World_init);
-   registrator.addFunction("finalize()", World_destruct);
-   registrator.addFunction("getName()", World_getName);
-   registrator.addFunction("add(engine.game.Actor)", World_add);
-   registrator.addFunction("setObjectLayer(int)", World_setObjectLayer);
-   registrator.addFunction("setFollowMode(int)", World_setFollowMode);
-   registrator.addFunction("getFollowActor()", World_getFollowActor);
-   registrator.addFunction("setFollowActor(engine.game.Actor)", World_setFollowActor);
-   registrator.addFunction("setFollowBorders(int, int, int, int)", World_setFollowBorders);
-   registrator.addFunction("setFollowBorderWidth(int)", World_setFollowBorderWidth);
-   registrator.addFunction("getSimulator()", World_getSimulator);
-   registrator.addFunction("findEntity(int)", World_findEntity);
-   registrator.addFunction("getLayerCount()", World_getLayerCount);
-   registrator.addFunction("getLayer(int)", World_getLayer);
+   registrator.addClass(UTEXT("engine.game.World"));
+   registrator.addFunction(UTEXT("World()"), World_init);
+   registrator.addFunction(UTEXT("finalize()"), World_destruct);
+   registrator.addFunction(UTEXT("getName()"), World_getName);
+   registrator.addFunction(UTEXT("add(engine.game.Actor)"), World_add);
+   registrator.addFunction(UTEXT("setObjectLayer(int)"), World_setObjectLayer);
+   registrator.addFunction(UTEXT("setFollowMode(int)"), World_setFollowMode);
+   registrator.addFunction(UTEXT("getFollowActor()"), World_getFollowActor);
+   registrator.addFunction(UTEXT("setFollowActor(engine.game.Actor)"), World_setFollowActor);
+   registrator.addFunction(UTEXT("setFollowBorders(int, int, int, int)"), World_setFollowBorders);
+   registrator.addFunction(UTEXT("setFollowBorderWidth(int)"), World_setFollowBorderWidth);
+   registrator.addFunction(UTEXT("getSimulator()"), World_getSimulator);
+   registrator.addFunction(UTEXT("findEntity(int)"), World_findEntity);
+   registrator.addFunction(UTEXT("getLayerCount()"), World_getLayerCount);
+   registrator.addFunction(UTEXT("getLayer(int)"), World_getLayer);
 
-   registrator.addClass("engine.game.Layer");
-   registrator.addFunction("getEffect()", Layer_getEffect);
-   registrator.addFunction("getWidth()", Layer_getWidth);
-   registrator.addFunction("getHeight()", Layer_getHeight);
-   registrator.addFunction("getTile(int, int)", Layer_getTile);
-   registrator.addFunction("setTile(int, int, int)", Layer_setTile);
+   registrator.addClass(UTEXT("engine.game.Layer"));
+   registrator.addFunction(UTEXT("getEffect()"), Layer_getEffect);
+   registrator.addFunction(UTEXT("getWidth()"), Layer_getWidth);
+   registrator.addFunction(UTEXT("getHeight()"), Layer_getHeight);
+   registrator.addFunction(UTEXT("getTile(int, int)"), Layer_getTile);
+   registrator.addFunction(UTEXT("setTile(int, int, int)"), Layer_setTile);
 
-   registrator.addClass("engine.game.Effect");
-   registrator.addFunction("resolveTexture(string)", Effect_resolveTexture);
+   registrator.addClass(UTEXT("engine.game.Effect"));
+   registrator.addFunction(UTEXT("resolveTexture(string)"), Effect_resolveTexture);
 
-   registrator.addClass("engine.game.InputForceGenerator");
-   registrator.addFunction("InputForceGenerator()", InputForceGenerator_init);
-   registrator.addFunction("finalize()", InputForceGenerator_destruct);
-   registrator.addFunction("getVelocity()", InputForceGenerator_getVelocity);
-   registrator.addFunction("setVelocity(real, real)", InputForceGenerator_setVelocity);
-   registrator.addFunction("setImpulse(real, real)", InputForceGenerator_setImpulse);
+   registrator.addClass(UTEXT("engine.game.InputForceGenerator"));
+   registrator.addFunction(UTEXT("InputForceGenerator()"), InputForceGenerator_init);
+   registrator.addFunction(UTEXT("finalize()"), InputForceGenerator_destruct);
+   registrator.addFunction(UTEXT("getVelocity()"), InputForceGenerator_getVelocity);
+   registrator.addFunction(UTEXT("setVelocity(real, real)"), InputForceGenerator_setVelocity);
+   registrator.addFunction(UTEXT("setImpulse(real, real)"), InputForceGenerator_setImpulse);
 
-   registrator.addClass("engine.game.InputController");
-   registrator.addFunction("InputController()", InputController_init);
-   registrator.addFunction("finalize()", InputController_destruct);
-   registrator.addFunction("setActionMap(engine.game.ActionMap)", InputController_setActionMap);
+   registrator.addClass(UTEXT("engine.game.InputController"));
+   registrator.addFunction(UTEXT("InputController()"), InputController_init);
+   registrator.addFunction(UTEXT("finalize()"), InputController_destruct);
+   registrator.addFunction(UTEXT("setActionMap(engine.game.ActionMap)"), InputController_setActionMap);
 
-   registrator.addClass("engine.game.AIController");
-   registrator.addFunction("AIController()", AIController_init);
-   registrator.addFunction("finalize()", AIController_destruct);
+   registrator.addClass(UTEXT("engine.game.AIController"));
+   registrator.addFunction(UTEXT("AIController()"), AIController_init);
+   registrator.addFunction(UTEXT("finalize()"), AIController_destruct);
 
-   registrator.addClass("box2d.Box2DSimulator");
-   registrator.addFunction("lineOfSight(Actor, Actor)", Box2DSimulator_lineOfSight);
-   registrator.addFunction("createRevoluteJoint(box2d.Box2DBody, box2d.Box2DBody, real, real)", Box2DSimulator_createRevoluteJoint);
-   registrator.addFunction("createRopeJoint(box2d.Box2DRopeJointDefinition)", Box2DSimulator_createRopeJoint);
+   registrator.addClass(UTEXT("box2d.Box2DSimulator"));
+   registrator.addFunction(UTEXT("lineOfSight(Actor, Actor)"), Box2DSimulator_lineOfSight);
+   registrator.addFunction(UTEXT("createRevoluteJoint(box2d.Box2DBody, box2d.Box2DBody, real, real)"), Box2DSimulator_createRevoluteJoint);
+   registrator.addFunction(UTEXT("createRopeJoint(box2d.Box2DRopeJointDefinition)"), Box2DSimulator_createRopeJoint);
 
-   registrator.addClass("box2d.Box2DBody");
-   registrator.addFunction("addForceGenerator(engine.game.ForceGenerator)", Box2DBody_addForceGenerator);
+   registrator.addClass(UTEXT("box2d.Box2DBody"));
+   registrator.addFunction(UTEXT("addForceGenerator(engine.game.ForceGenerator)"), Box2DBody_addForceGenerator);
 
-   registrator.addClass("box2d.Box2DRopeJointDefinition");
-   registrator.addFunction("Box2DRopeJointDefinition", Box2DRopeJointDefinition_init);
-   registrator.addFunction("finalize()", Box2DRopeJointDefinition_destruct);
-   registrator.addFunction("getLeft()", Box2DRopeJointDefinition_getLeft);
-   registrator.addFunction("setLeft(box2d.Box2DBody)", Box2DRopeJointDefinition_setLeft);
-   registrator.addFunction("getRight()", Box2DRopeJointDefinition_getRight);
-   registrator.addFunction("setRight(box2d.Box2DBody)", Box2DRopeJointDefinition_setRight);
-   registrator.addFunction("getLocalAnchorLeftX()", Box2DRopeJointDefinition_getLocalAnchorLeftX);
-   registrator.addFunction("getLocalAnchorLeftY()", Box2DRopeJointDefinition_getLocalAnchorLeftY);
-   registrator.addFunction("setLocalAnchorLeft(real, real)", Box2DRopeJointDefinition_setLocalAnchorLeft);
-   registrator.addFunction("getLocalAnchorRightX()", Box2DRopeJointDefinition_getLocalAnchorRightX);
-   registrator.addFunction("getLocalAnchorRightY()", Box2DRopeJointDefinition_getLocalAnchorRightY);
-   registrator.addFunction("setLocalAnchorRight(real, real)", Box2DRopeJointDefinition_setLocalAnchorRight);
+   registrator.addClass(UTEXT("box2d.Box2DRopeJointDefinition"));
+   registrator.addFunction(UTEXT("Box2DRopeJointDefinition"), Box2DRopeJointDefinition_init);
+   registrator.addFunction(UTEXT("finalize()"), Box2DRopeJointDefinition_destruct);
+   registrator.addFunction(UTEXT("getLeft()"), Box2DRopeJointDefinition_getLeft);
+   registrator.addFunction(UTEXT("setLeft(box2d.Box2DBody)"), Box2DRopeJointDefinition_setLeft);
+   registrator.addFunction(UTEXT("getRight()"), Box2DRopeJointDefinition_getRight);
+   registrator.addFunction(UTEXT("setRight(box2d.Box2DBody)"), Box2DRopeJointDefinition_setRight);
+   registrator.addFunction(UTEXT("getLocalAnchorLeftX()"), Box2DRopeJointDefinition_getLocalAnchorLeftX);
+   registrator.addFunction(UTEXT("getLocalAnchorLeftY()"), Box2DRopeJointDefinition_getLocalAnchorLeftY);
+   registrator.addFunction(UTEXT("setLocalAnchorLeft(real, real)"), Box2DRopeJointDefinition_setLocalAnchorLeft);
+   registrator.addFunction(UTEXT("getLocalAnchorRightX()"), Box2DRopeJointDefinition_getLocalAnchorRightX);
+   registrator.addFunction(UTEXT("getLocalAnchorRightY()"), Box2DRopeJointDefinition_getLocalAnchorRightY);
+   registrator.addFunction(UTEXT("setLocalAnchorRight(real, real)"), Box2DRopeJointDefinition_setLocalAnchorRight);
 
-   registrator.addClass("engine.game.ActionMap");
-   registrator.addFunction("ActionMap()", ActionMap_init);
-   registrator.addFunction("finalize()", ActionMap_destruct);
-   registrator.addFunction("getProcess()", ActionMap_getProcess);
-   registrator.addFunction("setProcess(engine.game.Process)", ActionMap_setProcess);
-   registrator.addFunction("bind(int, string)", ActionMap_bind);
+   registrator.addClass(UTEXT("engine.game.ActionMap"));
+   registrator.addFunction(UTEXT("ActionMap()"), ActionMap_init);
+   registrator.addFunction(UTEXT("finalize()"), ActionMap_destruct);
+   registrator.addFunction(UTEXT("getProcess()"), ActionMap_getProcess);
+   registrator.addFunction(UTEXT("setProcess(engine.game.Process)"), ActionMap_setProcess);
+   registrator.addFunction(UTEXT("bind(int, string)"), ActionMap_bind);
 
-   registrator.addClass("engine.game.KeyMap");
-   registrator.addFunction("KeyMap()", KeyMap_init);
-   registrator.addFunction("finalize()", KeyMap_destruct);
-   registrator.addFunction("bind(int, int)", KeyMap_bind);
+   registrator.addClass(UTEXT("engine.game.KeyMap"));
+   registrator.addFunction(UTEXT("KeyMap()"), KeyMap_init);
+   registrator.addFunction(UTEXT("finalize()"), KeyMap_destruct);
+   registrator.addFunction(UTEXT("bind(int, int)"), KeyMap_bind);
 
    /*
-   registrator.addFunction("EngineGraphics_init", EngineGraphics_init);
-   registrator.addFunction("EngineGraphics_destruct", EngineGraphics_destruct);
-   registrator.addFunction("EngineGraphics_doSetColor", EngineGraphics_doSetColor);
-   registrator.addFunction("EngineGraphics_nativeSetFont", EngineGraphics_nativeSetFont);
-   registrator.addFunction("EngineGraphics_translate", EngineGraphics_translate);
-   registrator.addFunction("EngineGraphics_drawText", EngineGraphics_drawText);
-   registrator.addFunction("EngineGraphics_native_fillRect", EngineGraphics_native_fillRect);
-   registrator.addFunction("EngineGraphics_native_drawRect", EngineGraphics_native_drawRect);
-   registrator.addFunction("EngineGraphics_native_drawRoundedRect", EngineGraphics_native_drawRoundedRect);
-   registrator.addFunction("EngineGraphics_native_drawTexture", EngineGraphics_native_drawTexture);
+   registrator.addFunction(UTEXT("EngineGraphics_init"), EngineGraphics_init);
+   registrator.addFunction(UTEXT("EngineGraphics_destruct"), EngineGraphics_destruct);
+   registrator.addFunction(UTEXT("EngineGraphics_doSetColor"), EngineGraphics_doSetColor);
+   registrator.addFunction(UTEXT("EngineGraphics_nativeSetFont"), EngineGraphics_nativeSetFont);
+   registrator.addFunction(UTEXT("EngineGraphics_translate"), EngineGraphics_translate);
+   registrator.addFunction(UTEXT("EngineGraphics_drawText"), EngineGraphics_drawText);
+   registrator.addFunction(UTEXT("EngineGraphics_native_fillRect"), EngineGraphics_native_fillRect);
+   registrator.addFunction(UTEXT("EngineGraphics_native_drawRect"), EngineGraphics_native_drawRect);
+   registrator.addFunction(UTEXT("EngineGraphics_native_drawRoundedRect"), EngineGraphics_native_drawRoundedRect);
+   registrator.addFunction(UTEXT("EngineGraphics_native_drawTexture"), EngineGraphics_native_drawTexture);
    */
 
-   registrator.addClass("engine.ui.Font");
-   registrator.addFunction("finalize()", Font_destruct);
-   registrator.addFunction("render(string)", Font_render);
-   registrator.addFunction("getBaseLine()", Font_getBaseLine);
-   registrator.addFunction("getTextWidth(string)", Font_getTextWidth);
-   registrator.addFunction("getTextHeight(string)", Font_getTextHeight);
+   registrator.addClass(UTEXT("engine.ui.Font"));
+   registrator.addFunction(UTEXT("finalize()"), Font_destruct);
+   registrator.addFunction(UTEXT("render(string)"), Font_render);
+   registrator.addFunction(UTEXT("getBaseLine()"), Font_getBaseLine);
+   registrator.addFunction(UTEXT("getTextWidth(string)"), Font_getTextWidth);
+   registrator.addFunction(UTEXT("getTextHeight(string)"), Font_getTextHeight);
 
-   registrator.addClass("engine.core.Texture");
-   registrator.addFunction("finalize()", Texture_destruct);
-   registrator.addFunction("getName()", Texture_getName);
-   registrator.addFunction("getWidth()", Texture_getWidth);
-   registrator.addFunction("getHeight()", Texture_getHeight);
-   registrator.addFunction("getSourceWidth()", Texture_getSourceWidth);
-   registrator.addFunction("getSourceHeight()", Texture_getSourceHeight);
+   registrator.addClass(UTEXT("engine.core.Texture"));
+   registrator.addFunction(UTEXT("finalize()"), Texture_destruct);
+   registrator.addFunction(UTEXT("getName()"), Texture_getName);
+   registrator.addFunction(UTEXT("getWidth()"), Texture_getWidth);
+   registrator.addFunction(UTEXT("getHeight()"), Texture_getHeight);
+   registrator.addFunction(UTEXT("getSourceWidth()"), Texture_getSourceWidth);
+   registrator.addFunction(UTEXT("getSourceHeight()"), Texture_getSourceHeight);
 
-   registrator.addClass("engine.io.FileSystem");
-   registrator.addFunction("getInstance()", FileSystem_getInstance);
-   registrator.addFunction("open(string, int)", FileSystem_open);
+   registrator.addClass(UTEXT("engine.io.FileSystem"));
+   registrator.addFunction(UTEXT("getInstance()"), FileSystem_getInstance);
+   registrator.addFunction(UTEXT("open(string, int)"), FileSystem_open);
 
-   registrator.addClass("engine.io.File");
-   registrator.addFunction("finalize()", File_destruct);
-   registrator.addFunction("length()", File_length);
-   registrator.addFunction("readText()", File_readText);
+   registrator.addClass(UTEXT("engine.io.File"));
+   registrator.addFunction(UTEXT("finalize()"), File_destruct);
+   registrator.addFunction(UTEXT("length()"), File_length);
+   registrator.addFunction(UTEXT("readText()"), File_readText);
 
    registrator.registerCallbacks(manager);
 }

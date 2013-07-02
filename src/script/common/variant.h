@@ -17,7 +17,7 @@ public:
             Variant(const Variant& that);
    explicit Variant(int value);
    explicit Variant(double value);
-   explicit Variant(char value);
+   explicit Variant(UChar value);
    explicit Variant(bool value);
    explicit Variant(VirtualString& value);
    explicit Variant(VirtualObject& object);
@@ -44,8 +44,8 @@ public:
    bool asBool() const;
    void setBool(bool value);
 
-   char asChar() const;
-   void setChar(char value);
+   UChar asChar() const;
+   void setChar(UChar value);
 
    VirtualString& asString() const;
    void setString(VirtualString& value);
@@ -93,7 +93,7 @@ private:
    {
       int            mInt;
       double         mReal;
-      char           mChar;
+      UChar          mChar;
       bool           mBoolean;
       VirtualString* mpString;
       VirtualObject* mpObject;

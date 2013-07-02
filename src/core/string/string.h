@@ -28,18 +28,23 @@
 class CORE_API String
 {
 public:
+   static const String& empty();
+   static String fromUtf8(const char* pdata);
+
             String();
             String(const String& that);
    explicit String(const std::string& that);
-            String(const char* pdata);
+   explicit String(const std::wstring& that);
+            String(bool nullterm, const UChar* pdata);
+            String(const UChar* pdata);
            ~String();
 
-   const char operator[](int index) const;
-         char operator[](int index);
+   const UChar operator[](int index) const;
+         UChar operator[](int index);
 
    const String& operator=(const char c);
    const String& operator=(const String& that);
-   const String& operator=(const char* pstring);
+   const String& operator=(const UChar* pstring);
    const String& operator=(const std::string& that);
 
    bool operator<=(const String& that) const;
@@ -50,18 +55,17 @@ public:
    bool operator==(const String& that) const;
    bool operator!=(const String& that) const;
 
-   const String& operator+=(char c);
+   const String& operator+=(UChar c);
+   const String& operator+=(const char* pdata);
    const String& operator+=(const String& that);
    String operator+(const String& that) const;
-   String operator+(char c) const;
+   String operator+(UChar c) const;
 
-   CORE_API friend String operator+(const char* pleft, const String& right);
+   CORE_API friend String operator+(const UChar* pleft, const String& right);
 
  // query
    bool isEmpty() const;
    int length() const;
-   const char* getBuffer() const;
-   char* toUtf8(int& length) const;
    int compare(const String& that) const;
    int hashCode() const;
 
@@ -86,12 +90,17 @@ public:
    int lastIndexOf(char character, int start, int end) const;
 
  // conversion
-   std::string toStdString() const;
+   std::string  toUtf8() const;
+   std::wstring toUtf16() const;
 
 private:
    friend class NumberConverter;
 
+   static const String sEmpty;
+
    UnicodeString mString;
 };
+
+#define UTEXT(text) String(TRUE, L ## text)
 
 #endif // STRING_H_

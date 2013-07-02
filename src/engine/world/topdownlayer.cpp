@@ -54,7 +54,7 @@ bool TopDownLayer::initialize(Graphics::Device& device)
       return false;
    }
 
-   const TexturePtr diffuse = getEffect().resolveTexture("diffuseMap");
+   const TexturePtr diffuse = getEffect().resolveTexture(UTEXT("diffuseMap"));
    float dx = diffuse->getSourceWidth() / diffuse->getWidth();
    float dy = diffuse->getSourceHeight() / diffuse->getHeight();
 

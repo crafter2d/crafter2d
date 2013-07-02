@@ -50,7 +50,7 @@ String File::extractPath(const String& filepath)
       return filepath.subStr(0, pos);
    }
 
-   return "";
+   return L"";
 }
 
 File::File():
@@ -105,7 +105,8 @@ int File::write(void* ptr, int size)
 
 int File::write(const String& text)
 {
-   return getBuffer().write((void*)text.getBuffer(), text.length());
+   std::string data = text.toUtf8();
+   return getBuffer().write((void*)data.c_str(), data.length());
 }
 
 char File::getc()

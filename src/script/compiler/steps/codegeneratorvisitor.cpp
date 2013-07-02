@@ -81,7 +81,7 @@ void CodeGeneratorVisitor::visit(ASTClass& ast)
 
 void CodeGeneratorVisitor::visit(ASTFunction& ast)
 {
-   if ( ast.getName() == "getInstance" && mpClass->getName() == "Canvas" )
+   if ( ast.getName() == UTEXT("getInstance") && mpClass->getName() == UTEXT("Canvas") )
    {
       int aap = 5;
    }
@@ -285,8 +285,8 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
       mBuilder.emit(CIL_ldint, 0);
       mBuilder.emit(CIL_stloc, iteratorvar.getResourceIndex());
 
-      const ASTClass& arrayclass = mContext.resolveClass("system.InternalArray");
-      const ASTFunction* plenghfnc = arrayclass.findExactMatch("size", ASTSignature());
+      const ASTClass& arrayclass = mContext.resolveClass(UTEXT("system.InternalArray"));
+      const ASTFunction* plenghfnc = arrayclass.findExactMatch(UTEXT("size"), ASTSignature());
 
       const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(arrayclass, *plenghfnc);
       ASSERT_PTR(preg);
@@ -323,7 +323,7 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
    else
    {
       varinit.getExpression().accept(*this);
-      String name = mCurrentType.getObjectClass().getFullName() + ".iterator()";
+      String name = mCurrentType.getObjectClass().getFullName() + UTEXT(".iterator()");
 
       // ast = iterator
       // var = object in the container
@@ -333,8 +333,8 @@ void CodeGeneratorVisitor::visit(const ASTForeach& ast)
 
       mBuilder.addLabel(flow.start);
 
-      String hasnextname = "engine.collections.Iterator.hasNext()";
-      String nextname = "engine.collections.Iterator.next()";
+      static const String hasnextname = UTEXT("engine.collections.Iterator.hasNext()");
+      static const String nextname = UTEXT("engine.collections.Iterator.next()");
 
       // is there still an item: if not it.hasNext goto end
       mBuilder.emit(CIL_ldloc, iteratorvar.getResourceIndex());
@@ -578,7 +578,7 @@ void CodeGeneratorVisitor::visit(const ASTAssert& ast)
    ast.getCondition().accept(*this);
 
    int labelend = mBuilder.allocateLabel();
-   String assertclass = "system.AssertionError.AssertionError()";
+   String assertclass = UTEXT("system.AssertionError.AssertionError()");
 
    // if condition is false we throw an exception of type AssertionError,
    // else we jump to the end
@@ -923,7 +923,7 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
    {
       case ASTNew::eObject:
          {
-            String classname = ast.getType().getObjectClass().getFullName() + "." + ast.getConstructor().getPrototype();
+            String classname = ast.getType().getObjectClass().getFullName() + '.' + ast.getConstructor().getPrototype();
             mCurrentType = ast.getType();
 
             ast.getArguments().accept(*this);
@@ -960,7 +960,7 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
          pclass = &ast.getConstructor().getClass();
       }
 
-      String name = pclass->getFullName() + "." + ast.getConstructor().getPrototype();
+      String name = pclass->getFullName() + '.' + ast.getConstructor().getPrototype();
       mBuilder.emit(CIL_call, name);
    }
    else if ( ast.isThis() )
@@ -1129,8 +1129,8 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
                const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(function.getClass(), function);
                if ( preg == NULL )
                {
-                  String fncname = function.getClass().getFullName() + "_" + function.getPrototype();
-                  mContext.getLog().error("Can not find registered method for function " + fncname);
+                  String fncname = function.getClass().getFullName() + '.' + function.getPrototype();
+                  mContext.getLog().error(UTEXT("Can not find registered method for function ") + fncname);
                   return;
                }
 
@@ -1138,19 +1138,19 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             }
             else if ( function.getModifiers().isStatic() ) // first check for static so native statics are possible as well
             {
-               String name = (before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()) + "." + function.getPrototype();
+               String name = (before.isValid() ? before.getObjectClass().getFullName() : mpClass->getFullName()) + '.' + function.getPrototype();
                mBuilder.emit(CIL_call, name);
             }
             else 
             {
                if ( before.isObject() && before.getObjectClass().getKind() == ASTClass::eInterface )
                {
-                  String name = before.getObjectClass().getFullName() + "." + function.getPrototype();
+                  String name = before.getObjectClass().getFullName() + '.' + function.getPrototype();
                   mBuilder.emit(CIL_call_interface, name);
                }
                else
                {
-                  String name = function.getClass().getFullName() + "." + function.getPrototype();
+                  String name = function.getClass().getFullName() + '.' + function.getPrototype();
                   mBuilder.emit(CIL_call_virt, name);
                }
             }
@@ -1170,7 +1170,7 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
          {
             if ( ast.getAccess() == ASTAccess::eField )
             {
-               mBuilder.emit(CIL_ldclass, "");
+               mBuilder.emit(CIL_ldclass, String::empty());
             }
             else
             {
@@ -1179,8 +1179,8 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             mCurrentType.clear();
             mCurrentType.setKind(ASTType::eObject);
-            mCurrentType.setObjectName("system.Class");
-            mCurrentType.setObjectClass(mContext.resolveClass("system.Class"));
+            mCurrentType.setObjectName(UTEXT("system.Class"));
+            mCurrentType.setObjectClass(mContext.resolveClass(UTEXT("system.Class")));
          }
          break;
 
@@ -1332,7 +1332,7 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
    // var_init blocks have no return value & no arguments
    ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
    pfunction->setClass(ast);
-   pfunction->setName("static_init");
+   pfunction->setName(UTEXT("static_init"));
    pfunction->setModifiers(ASTModifiers(ASTModifiers::eProtected, ASTModifiers::eStatic));
    pfunction->setType(new ASTType(ASTType::eVoid));
    pfunction->addArgument(ast.createThisType());
@@ -1426,7 +1426,7 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
    // construct the functions
    ASTFunction* pfunction = new ASTFunction(ASTFunction::eFunction);
    pfunction->setClass(ast);
-   pfunction->setName("var_init");
+   pfunction->setName(UTEXT("var_init"));
    pfunction->setModifiers(ASTModifiers(ASTModifiers::eProtected, 0));
    pfunction->setType(new ASTType(ASTType::eVoid));
    pfunction->addArgument(ast.createThisType());
@@ -1438,7 +1438,7 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
 
    if ( ast.hasBaseClass() )
    {
-      String name = ast.getBaseClass().getFullName() + ".var_init()";
+      String name = ast.getBaseClass().getFullName() + UTEXT(".var_init()");
       mBuilder.emit(CIL_ldarg, 0);
       mBuilder.emit(CIL_call, name);
    }

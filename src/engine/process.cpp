@@ -73,7 +73,7 @@ void Process::setWorld(World* pworld)
 
       if ( mpWorld != NULL )
       {
-         pworld->setScript(getScriptManager().load("engine.game.World", pworld, false));
+         pworld->setScript(getScriptManager().load(UTEXT("engine.game.World"), pworld, false));
       }
 
       notifyWorldChanged();
@@ -95,7 +95,7 @@ bool Process::create(const String& classname)
    mScriptManager.addRootObject(mpScript->getThis());
 
    // run the onCreated function
-   return mpScript->run("onCreated").asBool();
+   return mpScript->run(UTEXT("onCreated")).asBool();
 }
 
 bool Process::destroy()

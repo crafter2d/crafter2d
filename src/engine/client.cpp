@@ -164,6 +164,8 @@ void Client::update(float delta)
 
 void Client::render(float delta)
 {
+   static const String sPaint = UTEXT("paint");
+
    mpRenderContext->clear();
    mpRenderContext->setObjectMatrix(XForm::identity());
    mpRenderContext->setWorldMatrix(XForm::identity());
@@ -186,7 +188,7 @@ void Client::render(float delta)
    //glDisable (GL_ALPHA_TEST);
 
    Variant arg((double)delta);
-   mpScript->run("paint", 1, &arg);
+   mpScript->run(sPaint, 1, &arg);
 
    mpWindow->display();
 }
@@ -245,13 +247,13 @@ bool Client::initDevice()
 {
    Log::getInstance() << "\n-- Initializing Graphics --\n\n";
 
-   void* pmodule = Platform::getInstance().loadModule("OGLd.dll");
+   void* pmodule = Platform::getInstance().loadModule(UTEXT("OGLd.dll"));
    if ( pmodule == NULL )
    {
       return false;
    }
 
-   PFACTORY pfactoryfnc = (PFACTORY)Platform::getInstance().getFunctionAddress(pmodule, "getDeviceFactory");
+   PFACTORY pfactoryfnc = (PFACTORY)Platform::getInstance().getFunctionAddress(pmodule, UTEXT("getDeviceFactory"));
    if ( pfactoryfnc == NULL )
    {
       return false;
@@ -377,8 +379,8 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
-            Variant arg(mpScript->instantiate("engine.game.Player", mpPlayer));
-            mpScript->run("onConnected", 1, &arg);
+            Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), mpPlayer));
+            mpScript->run(UTEXT("onConnected"), 1, &arg);
 
             initialized = true;
             break;
@@ -387,7 +389,7 @@ void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
          {
             // run the Client_onConnectionDenite script
             Variant arg(event.getReason());
-            mpScript->run("onConnectionDenite", 1, &arg);
+            mpScript->run(UTEXT("onConnectionDenite"), 1, &arg);
             break;
          }
    }
@@ -397,20 +399,20 @@ void Client::handleJoinEvent(const JoinEvent& event)
 {
    // run the onConnected script
    Variant arg(event.getId() + 1);
-   mpScript->run("onPlayerJoined", 1, &arg);
+   mpScript->run(UTEXT("onPlayerJoined"), 1, &arg);
 }
 
 void Client::handleDisconnectEvent(const DisconnectEvent& event)
 {
    // call the script
    Variant arg(event.getId() + 1);
-   mpScript->run("onPlayerLeft", 1, &arg);
+   mpScript->run(UTEXT("onPlayerLeft"), 1, &arg);
 }
 
 void Client::handleServerdownEvent()
 {
    // server went down, run the onClientConnect script
-   mpScript->run("onServerDown");
+   mpScript->run(UTEXT("onServerDown"));
 }
 
 void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
@@ -491,8 +493,8 @@ void Client::handleScriptEvent(const ScriptEvent& event)
    NetStream stream(datastream);
 
    // run the onClientConnect script
-   Variant arg(mpScript->instantiate("engine.net.NetStream", &stream));
-   mpScript->run("onScriptEvent", 1, &arg);
+   Variant arg(mpScript->instantiate(UTEXT("engine.net.NetStream"), &stream));
+   mpScript->run(UTEXT("onScriptEvent"), 1, &arg);
 }
 
 // - Notifications
@@ -508,7 +510,7 @@ void Client::notifyWorldChanged()
 
    // run the onWorldChanged script
    Variant arg(mpScript->resolve(&world));
-   mpScript->run("onWorldChanged", 1, &arg);
+   mpScript->run(UTEXT("onWorldChanged"), 1, &arg);
 
    Process::notifyWorldChanged();
 }
@@ -556,7 +558,7 @@ void Client::onKeyEvent(const KeyEvent& event)
    Variant args[2];
    args[0].setInt(event.getKey());
    args[1].setBool(event.getEventType() == KeyEvent::ePressed);
-   mpScript->run("onKeyEvent", 2, args);
+   mpScript->run(UTEXT("onKeyEvent"), 2, args);
 }
 
 void Client::onMouseEvent(const MouseEvent& event)
@@ -566,6 +568,6 @@ void Client::onMouseEvent(const MouseEvent& event)
    args[1].setInt(event.getLocation().y());
    args[2].setInt(event.getButtons());
    args[3].setInt(event.getEventType());
-   mpScript->run("onMouseEvent", 4, args);
+   mpScript->run(UTEXT("onMouseEvent"), 4, args);
 }
 

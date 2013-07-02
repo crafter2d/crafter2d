@@ -10,6 +10,6 @@ void SCRIPT_API runScript()
 {
    VirtualContext context;
    VirtualMachine vm(context);
-   vm.execute("Army", "executeTests");
+   vm.execute(UTEXT("Army"), UTEXT("executeTests"));
 }
 

@@ -34,7 +34,7 @@
 #include "box2drevolutejoint.h"
 #include "box2dropejoint.h"
 
-const String Box2DSimulator::sClassName = "box2d.Box2DSimulator";
+const String Box2DSimulator::sClassName = UTEXT("box2d.Box2DSimulator");
 
 // static
 Vector Box2DSimulator::b2ToVector(const b2Vec2& b2)

@@ -31,7 +31,7 @@ static const std::string sBODYELEMENT       = "body";
 static const std::string sSHAPEELEMENT      = "shape";
 static const std::string sTYPE              = "type";
 
-String Box2DBody::sClassName = "box2d.Box2DBody";
+String Box2DBody::sClassName = UTEXT("box2d.Box2DBody");
 
 Box2DBody::Box2DBody(Simulator& simulator, b2Body& body, Actor& actor):
    Body(simulator, actor),

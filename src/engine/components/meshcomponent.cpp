@@ -75,7 +75,7 @@ void MeshComponent::initialize(Device& device)
 
       if ( mpAnimator != NULL )
       {
-         const TexturePtr tex = mEffect.findTexture("diffuseMap");
+         const TexturePtr tex = mEffect.findTexture(UTEXT("diffuseMap"));
          ASSERT(tex.isValid());
 
          mpAnimator->initialize(*tex, mSize);

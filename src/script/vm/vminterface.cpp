@@ -16,12 +16,12 @@
 
 void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   std::cout << accessor.getString(1).toStdString() << std::endl;
+   std::cout << accessor.getString(1).toUtf8() << std::endl;
 }
 
 void Console_print(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   std::cout << accessor.getString(1).toStdString();
+   std::cout << accessor.getString(1).toUtf8();
 }
 
 void ClassLoader_doLoadClass(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -111,7 +111,7 @@ void InternalString_indexOf(VirtualMachine& machine, VirtualStackAccessor& acces
 {
    const String& thisstring = accessor.getString(0);
 
-   char c = accessor.getChar(1);
+   UChar c = accessor.getChar(1);
 
    accessor.setResult(thisstring.indexOf(c));
 }
@@ -120,35 +120,35 @@ void InternalString_lastIndexOf(VirtualMachine& machine, VirtualStackAccessor& a
 {
    const String& thisstring = accessor.getString(0);
 
-   char c = accessor.getChar(1);
+   UChar c = accessor.getChar(1);
 
    accessor.setResult(thisstring.lastIndexOf(c));
 }
 
 void Char_isAlphaNum(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   char c = accessor.getChar(0);
+   UChar c = accessor.getChar(0);
 
    accessor.setResult(Char::isAlphaNum(c));
 }
 
 void Char_isAlpha(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   char c = accessor.getChar(0);
+   UChar c = accessor.getChar(0);
 
    accessor.setResult(Char::isAlpha(c));
 }
 
 void Char_isDigit(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   char c = accessor.getChar(0);
+   UChar c = accessor.getChar(0);
 
    accessor.setResult(Char::isDigit(c));
 }
 
 void Char_isWhitespace(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   char c = accessor.getChar(0);
+   UChar c = accessor.getChar(0);
 
    accessor.setResult(Char::isWhitespace(c));
 }
@@ -169,41 +169,41 @@ void Math_ceil(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)
 {
-   registry.addClass("system.Console");
-   registry.addFunction("println(string)", Console_println);
-   registry.addFunction("print(string)", Console_print);
+   registry.addClass(UTEXT("system.Console"));
+   registry.addFunction(UTEXT("println(string)"), Console_println);
+   registry.addFunction(UTEXT("print(string)"), Console_print);
 
-   registry.addClass("system.ClassLoader");
-   registry.addFunction("doLoadClass(string)", ClassLoader_doLoadClass);
+   registry.addClass(UTEXT("system.ClassLoader"));
+   registry.addFunction(UTEXT("doLoadClass(string)"), ClassLoader_doLoadClass);
    
-   registry.addClass("system.Class");
-   registry.addFunction("doNewInstance(system.Class)", Class_doNewInstance);
+   registry.addClass(UTEXT("system.Class"));
+   registry.addFunction(UTEXT("doNewInstance(system.Class)"), Class_doNewInstance);
 
-   registry.addClass("system.Function");
-   registry.addFunction("doInvoke(system.Object)", Function_doInvoke);
+   registry.addClass(UTEXT("system.Function"));
+   registry.addFunction(UTEXT("doInvoke(system.Object)"), Function_doInvoke);
    
-   registry.addClass("system.Throwable");
-   registry.addFunction("fillCallStack()", Throwable_fillCallStack);
+   registry.addClass(UTEXT("system.Throwable"));
+   registry.addFunction(UTEXT("fillCallStack()"), Throwable_fillCallStack);
 
-   registry.addClass("system.InternalArray");
-   registry.addFunction("size()", InternalArray_size);
-   registry.addFunction("resize(int)", InternalArray_resize);
+   registry.addClass(UTEXT("system.InternalArray"));
+   registry.addFunction(UTEXT("size()"), InternalArray_size);
+   registry.addFunction(UTEXT("resize(int)"), InternalArray_resize);
 
-   registry.addClass("system.InternalString");
-   registry.addFunction("equals(string)", InternalString_equals);
-   registry.addFunction("length()", InternalString_length);
-   registry.addFunction("subString(int, int)", InternalString_subString);
-   registry.addFunction("getChar(int)", InternalString_getChar);
-   registry.addFunction("indexOf(char)", InternalString_indexOf);
-   registry.addFunction("lastIndexOf(char)", InternalString_lastIndexOf);
+   registry.addClass(UTEXT("system.InternalString"));
+   registry.addFunction(UTEXT("equals(string)"), InternalString_equals);
+   registry.addFunction(UTEXT("length()"), InternalString_length);
+   registry.addFunction(UTEXT("subString(int, int)"), InternalString_subString);
+   registry.addFunction(UTEXT("getChar(int)"), InternalString_getChar);
+   registry.addFunction(UTEXT("indexOf(char)"), InternalString_indexOf);
+   registry.addFunction(UTEXT("lastIndexOf(char)"), InternalString_lastIndexOf);
    
-   registry.addClass("system.Char");
-   registry.addFunction("isAlphaNum(char)", Char_isAlphaNum);
-   registry.addFunction("isAlpha(char)", Char_isAlpha);
-   registry.addFunction("isDigit(char)", Char_isDigit);
-   registry.addFunction("isWhitespace(char)", Char_isWhitespace);
+   registry.addClass(UTEXT("system.Char"));
+   registry.addFunction(UTEXT("isAlphaNum(char)"), Char_isAlphaNum);
+   registry.addFunction(UTEXT("isAlpha(char)"), Char_isAlpha);
+   registry.addFunction(UTEXT("isDigit(char)"), Char_isDigit);
+   registry.addFunction(UTEXT("isWhitespace(char)"), Char_isWhitespace);
    
-   registry.addClass("engine.core.Math");
-   registry.addFunction("sqrt(real)", Math_sqrt);
-   registry.addFunction("ceil(real)", Math_ceil);
+   registry.addClass(UTEXT("engine.core.Math"));
+   registry.addFunction(UTEXT("sqrt(real)"), Math_sqrt);
+   registry.addFunction(UTEXT("ceil(real)"), Math_ceil);
 }

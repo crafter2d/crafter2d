@@ -2,6 +2,8 @@
 #ifndef ANTLR_STREAM_H_
 #define ANTLR_STREAM_H_
 
+#include <string>
+
 class String;
 
 struct ANTLR3_INPUT_STREAM_struct;
@@ -17,10 +19,10 @@ public:
    ANTLR3_INPUT_STREAM_struct* getStream() const;
 
 private:
-   AntlrStream(ANTLR3_INPUT_STREAM_struct* pstream, char* pdata);
+   AntlrStream(const std::string& data);
       
-   ANTLR3_INPUT_STREAM_struct* mpStream;
-   char* mpData;
+   mutable ANTLR3_INPUT_STREAM_struct* mpStream;
+   std::string mData;
 };
 
 #endif // ANTLR_STREAM_H_

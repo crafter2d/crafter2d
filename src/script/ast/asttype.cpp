@@ -11,13 +11,13 @@
 #include "asttypevariables.h"
 #include "astvisitor.h"
 
-static const String SInt = "int";
-static const String SReal = "real";
-static const String SChar = "char";
-static const String SString = "string";
-static const String SBool = "boolean";
-static const String SVoid = "void";
-static const String SInvalid = "<unknown>";
+static const String SInt = UTEXT("int");
+static const String SReal = UTEXT("real");
+static const String SChar = UTEXT("char");
+static const String SString = UTEXT("string");
+static const String SBool = UTEXT("boolean");
+static const String SVoid = UTEXT("void");
+static const String SInvalid = UTEXT("<unknown>");
 
 ASTType ASTType::SVoidType(eVoid);
 
@@ -376,7 +376,7 @@ bool ASTType::greater(const ASTType& that) const
    {
       if ( that.isObject() )
       {
-          return that.getObjectName() == "system.Object"; // object is greater than a generic (its da uber type)
+          return that.getObjectName() == UTEXT("system.Object"); // object is greater than a generic (its da uber type)
       }
       else if ( that.isGeneric() )
       {
@@ -460,12 +460,12 @@ bool ASTType::resolveType(CompileContext& context, const ASTTypeVariables* ptype
    }
    else if ( mKind == eArray )
    {
-      mpObjectClass = &context.resolveClass("system.InternalArray");
+      mpObjectClass = &context.resolveClass(UTEXT("system.InternalArray"));
       return mpArrayType->resolveType(context, ptypevariables);
    }
    else if ( mKind == eString )
    {
-      mpObjectClass = &context.resolveClass("system.InternalString");
+      mpObjectClass = &context.resolveClass(UTEXT("system.InternalString"));
    }
 
    return true;

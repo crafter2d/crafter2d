@@ -41,21 +41,15 @@ ZipFile::~ZipFile()
 
 bool ZipFile::open(const String& path)
 {
-   int len;
-   const char* ppath = path.toUtf8(len);
-   _zip = zipOpen(ppath, APPEND_STATUS_ADDINZIP);
-   delete[] ppath;
-
+   std::string p = path.toUtf8();
+   _zip = zipOpen(p.c_str(), APPEND_STATUS_ADDINZIP);
    return _zip != NULL;
 }
 
 bool ZipFile::create(const String& path)
 {
-   int len;
-   const char* ppath = path.toUtf8(len);
-   _zip = zipOpen(path.getBuffer(), APPEND_STATUS_CREATE);
-   delete[] ppath;
-
+   std::string p = path.toUtf8();
+   _zip = zipOpen(p.c_str(), APPEND_STATUS_CREATE);
    return _zip != NULL;
 }
 
@@ -63,8 +57,9 @@ void ZipFile::addFile(const String& name, void* pdata, int size)
 {
    const zip_fileinfo info = constructInfo();
 
+   std::string file = name.toUtf8();
    zipOpenNewFileInZip(_zip, 
-                       name.getBuffer(),
+                       file.c_str(),
                        &info,
                        NULL,
                        0,

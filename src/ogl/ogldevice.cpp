@@ -181,11 +181,8 @@ Texture* OGLDevice::createTexture(const String& filename)
 Font* OGLDevice::createFont(const String& name, int pointsize)
 {
    FT_Face face;
-   int len;
-   const char* pfile = name.toUtf8(len);
-   FT_Error error = FT_New_Face(mFreeTypeLib, pfile, 0, &face);
-   delete[] pfile;
-
+   const std::string file = name.toUtf8();
+   FT_Error error = FT_New_Face(mFreeTypeLib, file.c_str(), 0, &face);
 	if ( error != 0 )
    {
       return NULL;

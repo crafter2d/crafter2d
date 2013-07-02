@@ -27,18 +27,15 @@
 // static 
 bool StdioFile::exists(const String& file)
 {
-   int len;
-   const char* ppath = file.toUtf8(len);
+   std::string filename = file.toUtf8();
 
    bool result = false;
-   FILE* pfile = fopen(ppath, "r");
+   FILE* pfile = fopen(filename.c_str(), "r");
    if ( pfile != NULL )
    {
       result = true;
       fclose(pfile);
    }
-
-   delete[] ppath;
 
    return result;
 }
@@ -65,11 +62,8 @@ bool StdioFile::virOpen(const String& filename, int modus)
    if ( IS_SET(modus, EBinary) )
       mode[1] = 'b';
 
-   int len;
-   const char* ppath = filename.toUtf8(len);
-   mpFile = fopen(ppath, mode);
-   delete[] ppath;
-
+   std::string path = filename.toUtf8();
+   mpFile = fopen(path.c_str(), mode);
    setBuffer(Buffer::fromFile(mpFile));
 
    return true;

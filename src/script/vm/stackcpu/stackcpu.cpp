@@ -156,7 +156,7 @@ void StackCPU::execute(VirtualContext& context)
                }
 
                if ( pclass == NULL )
-                  throwException(context, "system.NullPointerException", "");
+                  throwException(context, UTEXT("system.NullPointerException"), String::empty());
                else
                   call(context, *pclass, pclass->getVirtualFunctionTable()[symbol.func]);
             }
@@ -168,7 +168,7 @@ void StackCPU::execute(VirtualContext& context)
                const Variant& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
                if ( object.isEmpty() )
                {
-                  throwException(context, "system.NullPointerException", "");
+                  throwException(context, UTEXT("system.NullPointerException"), String::empty());
                }
 
                const VirtualClass& theclass = object.asObject().getClass();
@@ -263,9 +263,9 @@ void StackCPU::execute(VirtualContext& context)
          case SBIL_sconv_bool:
             {
                const String& value = mStack.popString();
-               if ( value == "true" )
+               if ( value == UTEXT("true") )
                   mStack.pushBool(true);
-               else if ( value == "false" )
+               else if ( value == UTEXT("false") )
                   mStack.pushBool(false);
                else
                {
@@ -641,7 +641,7 @@ void StackCPU::execute(VirtualContext& context)
             {
                Variant obj = mStack.pop();
                if ( obj.isEmpty() )
-                  throwException(context, "system.NullPointerException", "");
+                  throwException(context, UTEXT("system.NullPointerException"), String::empty());
                else               
                   mStack.push(obj.asObject().getMember(arg));
             }
@@ -686,7 +686,7 @@ void StackCPU::execute(VirtualContext& context)
                mStack.pop(1); // pop the array from the stack
 
                if ( i >= parray->size() )
-                  throwException(context, "ArrayIndexOutOfBoundsException", "");
+                  throwException(context, UTEXT("ArrayIndexOutOfBoundsException"), String::empty());
                else              
                   mStack.push(parray->at(i));
             }
@@ -715,7 +715,7 @@ void StackCPU::execute(VirtualContext& context)
                Variant val = mStack.pop();
 
                if ( i >= parray->size() )
-                  throwException(context, "system.ArrayIndexOutOfBoundsException", "");
+                  throwException(context, UTEXT("system.ArrayIndexOutOfBoundsException"), String::empty());
                else
                   parray->at(i) = val;
             }
@@ -863,7 +863,7 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
    frame.sp     = mStack.size();
    frame.retaddress = mIP;
 
-   if ( entry.mName == "addForceGenerator" )
+   if ( entry.mName == UTEXT("addForceGenerator") )
    {
       int aap = 6;
    }

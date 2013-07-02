@@ -36,7 +36,7 @@ IniFileParser::IniFileParser(const  String& filename, IniFile& inifile)
 
 void IniFileParser::parse(const String& filename, IniFile& inifile)
 {
-   IniFileSection* pcurrentsection = new IniFileSection("global");
+   IniFileSection* pcurrentsection = new IniFileSection(UTEXT("global"));
    inifile.mSections.insert(pcurrentsection->getName(), pcurrentsection);
 
    AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead | File::EText);
@@ -100,7 +100,7 @@ String IniFileParser::parseWord(File& file, char delim)
    while ( !file.eof() )
    {
       char next = file.peekc();
-      if ( next == delim || Char::isWhitespace(next) )
+      if ( next == EOF || next == delim || Char::isWhitespace(next) )
       {
          break;
       }

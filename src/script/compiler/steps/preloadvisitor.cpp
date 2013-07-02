@@ -63,7 +63,7 @@ void PreloadVisitor::visit(ASTPackage& ast)
 {
    mPackage = ast.getName();
 
-   mClassResolver.insert(mPackage + ".*");
+   mClassResolver.insert(mPackage + UTEXT(".*"));
 }
 
 void PreloadVisitor::visit(ASTUse& ast)
@@ -78,18 +78,18 @@ void PreloadVisitor::visit(ASTClass& ast)
    ScopedValue<ASTClass*> scopedclass(&mpClass, &ast, mpClass);
    mContext.addClass(&ast);
 
-   if ( ast.getName() != "Object" )
+   if ( ast.getName() != UTEXT("Object") )
    {
       if ( !ast.hasBaseType() )
       {
          ASTType* ptype = new ASTType(ASTType::eObject);
-         ptype->setObjectName("system.Object");
+         ptype->setObjectName(UTEXT("system.Object"));
          ast.setBaseType(ptype);
       }
 
       if ( !ast.hasBaseType() || !load(ast.getBaseType()) )
       {
-         mContext.getLog().error(String("Can not determine base type of ") + ast.getFullName());
+         mContext.getLog().error(UTEXT("Can not determine base type of ") + ast.getFullName());
       }
       else
       {
@@ -195,7 +195,7 @@ void PreloadVisitor::visit(ASTExpressionStatement& ast)
    }
    else
    {
-      mContext.getLog().error(String("Compiler error: Expression statement without expression."));
+      mContext.getLog().error(UTEXT("Compiler error: Expression statement without expression."));
    }
 }
 
@@ -483,7 +483,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
                std::size_t pos = qualifiedname.lastIndexOf('.');
                if ( pos != -1 )
                {
-                  String path = qualifiedname.subStr(0, pos) + ".*";
+                  String path = qualifiedname.subStr(0, pos) + UTEXT(".*");
                   mClassResolver.insert(path);
                }
 
@@ -515,7 +515,7 @@ void PreloadVisitor::checkVarInit(ASTVariable& var, bool allowarray)
       {
          if ( !allowarray )
          {
-            mContext.getLog().error((String("It's not allowed to initialize variable ") + var.getName() + " with an array.").toStdString());
+            mContext.getLog().error(UTEXT("It's not allowed to initialize variable ") + var.getName() + UTEXT(" with an array."));
          }
          else
          {
@@ -528,7 +528,7 @@ void PreloadVisitor::checkVarInit(ASTVariable& var, bool allowarray)
       }
       else
       {
-         mContext.getLog().warning((String("Compiler warning: variable ") + var.getName() + " has an empty initializer object.").toStdString());
+         mContext.getLog().warning(UTEXT("Compiler warning: variable ") + var.getName() + UTEXT(" has an empty initializer object."));
       }
    }
 }

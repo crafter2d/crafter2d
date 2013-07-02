@@ -22,7 +22,7 @@
 #  include "physicsbody.inl"
 #endif
 
-String PhysicsBody::sClassName = "box2d.Box2DBody";
+String PhysicsBody::sClassName = UTEXT("box2d.Box2DBody");
 
 #include "physicsxml.h"
 #include "collisionshape.h"

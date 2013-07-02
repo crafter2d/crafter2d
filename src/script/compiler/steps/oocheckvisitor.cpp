@@ -45,18 +45,18 @@ void OOCheckVisitor::visit(ASTClass& ast)
       {
          if ( !ast.getModifiers().isAbstract() )
          {
-            mContext.getLog().error(String("Class ") + mpClass->getName() + " must be defined as abstract.");
+            mContext.getLog().error(UTEXT("Class ") + mpClass->getName() + UTEXT(" must be defined as abstract."));
          }
       }
       
       if ( ast.hasBaseClass() && ast.getBaseClass().getModifiers().isFinal() )
       {
-         mContext.getLog().error(String("Class ") + ast.getName() + " can not extend final class " + ast.getBaseClass().getName());
+         mContext.getLog().error(UTEXT("Class ") + ast.getName() + UTEXT(" can not extend final class ") + ast.getBaseClass().getName());
       }
       
       if ( ast.getModifiers().isAbstract() && !mpClass->hasAbstractFunction() )
       {
-         mContext.getLog().warning(String("Class ") + ast.getName() + " is marked abstract without abstract functions.");
+         mContext.getLog().warning(UTEXT("Class ") + ast.getName() + UTEXT(" is marked abstract without abstract functions."));
       }
    }
    else 
@@ -85,7 +85,7 @@ void OOCheckVisitor::visit(ASTFunction& ast)
 
    if ( ast.hasAnnotations() )
    {
-      if ( ast.getAnnotations().contains("override") )
+      if ( ast.getAnnotations().contains(UTEXT("override")) )
       {
          // check if the base class still has this function
       }
@@ -263,7 +263,7 @@ void OOCheckVisitor::visit(ASTExpression& ast)
       // ensure the variable is not final
       if ( mpVariable != NULL && mpVariable->getModifiers().isFinal() )
       {
-         mContext.getLog().error((String("Can not assign a value to final variable ") + mpVariable->getName()).toStdString());
+         mContext.getLog().error(UTEXT("Can not assign a value to final variable ") + mpVariable->getName());
       }
 
       mpCurrentType = NULL;
@@ -315,8 +315,8 @@ void OOCheckVisitor::visit(ASTNative& ast)
    const FunctionRegistration* preg = mContext.getClassRegistry().findCallback(*mpClass, name);
    if ( preg == NULL )
    {
-      String qualitifiedname = mpClass->getFullName() + "_" + name;
-      mContext.getLog().error("Native function " + qualitifiedname + " is not registered or has wrong arguments");
+      String qualitifiedname = mpClass->getFullName() + '.' + name;
+      mContext.getLog().error(UTEXT("Native function ") + qualitifiedname + UTEXT(" is not registered or has wrong arguments"));
    }
    else
    {
@@ -339,14 +339,14 @@ void OOCheckVisitor::visit(ASTAccess& ast)
             {
                if ( !function.getModifiers().isPublic() )
                {
-                  mContext.getLog().error(String("Method ") + mpCurrentType->getObjectClass().getName() + "." + function.getName() + " is not accessible.");
+                  mContext.getLog().error(UTEXT("Method ") + mpCurrentType->getObjectClass().getName() + '.' + function.getName() + UTEXT(" is not accessible."));
                }
             }
             else
             {
                if ( function.getModifiers().isPrivate() && !mpClass->isLocal(function) )
                {
-                  mContext.getLog().error(String("Can not access private function ") + function.getName());
+                  mContext.getLog().error(UTEXT("Can not access private function ") + function.getName());
                }
             }
          }
@@ -361,7 +361,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
 
                if ( !var.getModifiers().isPublic() )
                {
-                  mContext.getLog().error(String("Can not access private variable ") + ast.getName());
+                  mContext.getLog().error(UTEXT("Can not access private variable ") + ast.getName());
                }
 
                mpVariable = &var;
@@ -379,7 +379,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
                      {
                         if ( pfield->getVariable().getModifiers().isPrivate() )
                         {
-                           mContext.getLog().error(String("Can not access private variable ") + ast.getName());
+                           mContext.getLog().error(UTEXT("Can not access private variable ") + ast.getName());
                         }
 
                         mpVariable = &pfield->getVariable();
@@ -515,7 +515,7 @@ void OOCheckVisitor::checkInterfaceImplementation(const ASTClass& ast)
             const ASTFunction* pimplementation = ast.findExactMatch(function.getName(), function.getSignature());
             if ( pimplementation == NULL )
             {
-               mContext.getLog().error("Function " + intrface.getFullName() + "." + function.getPrototype() + " is not implemented.");
+               mContext.getLog().error(UTEXT("Function ") + intrface.getFullName() + '.' + function.getPrototype() + UTEXT(" is not implemented."));
             }
          }
       }

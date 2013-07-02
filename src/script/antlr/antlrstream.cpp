@@ -29,34 +29,30 @@ AntlrStream* AntlrStream::fromFile(const String& filename)
 // static
 AntlrStream* AntlrStream::fromString(const String& code)
 {
-   int length = 0;
-   char* pdata = code.toUtf8(length);
-
-   pANTLR3_INPUT_STREAM input = antlr3StringStreamNew((pANTLR3_UINT8)pdata, ANTLR3_ENC_UTF8, length, (pANTLR3_UINT8)"expression");
-   if ( input == NULL )
-   {
-      return NULL;
-   }
-
-   return new AntlrStream(input, pdata);
+   std::string data = code.toUtf8();
+   return new AntlrStream(data.c_str());
 }
 
-AntlrStream::AntlrStream(ANTLR3_INPUT_STREAM_struct* pstream, char* pdata):
-   mpStream(pstream),
-   mpData(pdata)
+AntlrStream::AntlrStream(const std::string& data):
+   mpStream(NULL),
+   mData(data)
 {
+
 }
 
 AntlrStream::~AntlrStream()
 {
    mpStream->close(mpStream);
-
-   delete[] mpData;
 }
 
 // - Get/set
 
 ANTLR3_INPUT_STREAM_struct* AntlrStream::getStream() const
 {
+   if ( mpStream == NULL )
+   {
+      mpStream = antlr3StringStreamNew((pANTLR3_UINT8)mData.c_str(), ANTLR3_ENC_UTF8, mData.length(), (pANTLR3_UINT8)"expression");
+   }
+
    return mpStream;
 }

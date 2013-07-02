@@ -4,14 +4,16 @@
 
 #include "core/core_base.h"
 
+#include <unicode/uchar.h>
+
 class CORE_API Char
 {
 public:
-   static bool isEOL(char c);
-   static bool isWhitespace(char c);
-   static bool isAlphaNum(char c);
-   static bool isAlpha(char c);
-   static bool isDigit(char c);
+   static bool isEOL(UChar c);
+   static bool isWhitespace(UChar c);
+   static bool isAlphaNum(UChar c);
+   static bool isAlpha(UChar c);
+   static bool isDigit(UChar c);
 };
 
 #endif // CHAR_H

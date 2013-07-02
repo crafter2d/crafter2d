@@ -28,7 +28,7 @@
 #include "collisionplane.h"
 #include "physicsbody.h"
 
-String PhysicsSimulator::sClassName = "engine.game.Simulator";
+String PhysicsSimulator::sClassName = UTEXT("engine.game.Simulator");
 
 PhysicsSimulator::PhysicsSimulator():
    Simulator(),

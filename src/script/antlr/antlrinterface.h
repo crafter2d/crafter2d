@@ -45,7 +45,7 @@ private:
    void     handleModifiers(const AntlrNode& node, ASTModifiers& modifiers);
 
    String   parseString(const String& value);
-   char     parseChar(const String& value);
+   UChar     parseChar(const String& value);
 
    ASTType* getType(const AntlrNode& node);
 

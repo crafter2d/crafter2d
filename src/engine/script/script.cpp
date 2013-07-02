@@ -81,7 +81,7 @@ Variant Script::run(const String& function, int argc, Variant* pargs)
    }
    catch ( VirtualFunctionNotFoundException* pe )
    {
-      Log::getInstance().error("Could not find function %s.%s", pe->getClassName().getBuffer(), pe->getFunction().getBuffer());
+      Log::getInstance().error("Could not find function %s.%s", pe->getClassName().toUtf8(), pe->getFunction().toUtf8());
    }
    catch ( VirtualException* )
    {

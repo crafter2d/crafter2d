@@ -36,7 +36,7 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
    pasLexer lexer = asLexerNew(stream.getStream());
    if ( lexer == NULL )
    {
-      throw new AntlrException("failed to instantiate lexer");
+      throw new AntlrException(UTEXT("failed to instantiate lexer"));
    }
 
    pANTLR3_COMMON_TOKEN_STREAM tstream;
@@ -45,7 +45,7 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
    {
       lexer->free(lexer);
 
-      throw new AntlrException("Can not open token stream");
+      throw new AntlrException(UTEXT("Can not open token stream"));
    }
 
    pasParser parser = asParserNew(tstream);
@@ -54,7 +54,7 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
       lexer->free(lexer);
       tstream->free(tstream);
 
-      throw new AntlrException("Failed to instantiate parser");
+      throw new AntlrException(UTEXT("Failed to instantiate parser"));
    }
 
    try
@@ -64,7 +64,7 @@ ASTRoot* AntlrParser::parse(const AntlrStream& stream)
 
       if ( parser->pParser->rec->state->errorCount > 0 )
       {
-         throw new AntlrException("Errors while parsing input");
+         throw new AntlrException(UTEXT("Errors while parsing input"));
       }
       else
       {
@@ -137,7 +137,7 @@ ASTType* AntlrParser::getType(const AntlrNode& node)
          {
             String name = typenode.toString();
             String qualifiedname = mClassResolver.resolve(name);
-            if ( qualifiedname == "" )
+            if ( qualifiedname.isEmpty() )
             {
                // can be a type argument!
                qualifiedname = name;
@@ -276,7 +276,7 @@ ASTNode* AntlrParser::handlePackage(const AntlrNode& node)
    ppackage->setName(identifier);
 
    mPackage = identifier;
-   mClassResolver.insert(mPackage + ".*");
+   mClassResolver.insert(mPackage + UTEXT(".*"));
 
    return ppackage;
 }
@@ -1156,15 +1156,15 @@ ASTExpression* AntlrParser::handleExpression(const AntlrNode& node)
       AntlrNode operatornode = node.getChild(1);
       String op = operatornode.toString();
 
-      if ( op == "=" )
+      if ( op == UTEXT("=") )
       {
          pexpression->setKind(ASTExpression::eAssign);
       }
-      else if ( op == "+=" )
+      else if ( op == UTEXT("+=") )
       {
          pexpression->setKind(ASTExpression::ePlusAssign);
       }
-      else if ( op == "-=" )
+      else if ( op == UTEXT("-=") )
       {
          pexpression->setKind(ASTExpression::eMinAssign);
       }
@@ -1584,7 +1584,7 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
 
 // - Helpers
 
-char AntlrParser::parseChar(const String& value)
+UChar AntlrParser::parseChar(const String& value)
 {
    ASSERT(value[0] == '\'');
 
@@ -1638,17 +1638,17 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   //
          if ( tokenNames == NULL )
          {
-            message = "Extraneous input...";
+            message = UTEXT("Extraneous input...");
          }
          else
          {
             if	(ex->expecting == ANTLR3_TOKEN_EOF)
 			   {
-				   message = "Extraneous input - expected <EOF>";
+				   message = UTEXT("Extraneous input - expected <EOF>");
 			   }
 			   else
 			   {
-				   message = String("Extraneous input - expected ") + (const char*)tokenNames[ex->expecting];
+               message = UTEXT("Extraneous input - expected ") + String::fromUtf8((const char*)tokenNames[ex->expecting]);
 			   }
          }
          break;
@@ -1661,17 +1661,17 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   //
          if ( tokenNames == NULL )
          {
-            message = "Missing token...";
+            message = UTEXT("Missing token...");
          }
          else
          {
             if	(ex->expecting == ANTLR3_TOKEN_EOF)
 			   {
-				   message = "Missing <EOF>";
+				   message = UTEXT("Missing <EOF>");
 			   }
 			   else
 			   {
-				   message = String("Missing ") + (const char*)tokenNames[ex->expecting];
+               message = UTEXT("Missing ") + String::fromUtf8((const char*)tokenNames[ex->expecting]);
 			   }
          }
          break;
@@ -1684,7 +1684,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // You may get this if there are not more tokens and more are needed
 		   // to complete a parse for instance.
 		   //
-         message = "Syntax error...";
+         message = UTEXT("Syntax error...");
          break;
 
       case ANTLR3_MISMATCHED_TOKEN_EXCEPTION:
@@ -1700,17 +1700,17 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   //
          if ( tokenNames == NULL )
          {
-            message = "Syntax error...";
+            message = UTEXT("Syntax error...");
          }
          else
          {
             if	(ex->expecting == ANTLR3_TOKEN_EOF)
 			   {
-				   message = "Expected <EOF>";
+				   message = UTEXT("Expected <EOF>");
 			   }
 			   else
 			   {
-				   message = String("Expected ") + (const char*)tokenNames[ex->expecting];
+               message = UTEXT("Expected ") + String::fromUtf8((const char*)tokenNames[ex->expecting]);
 			   }
          }
          break;
@@ -1721,7 +1721,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // you should. It means that at the point where the current token occurred
 		   // that the DFA indicates nowhere to go from here.
 		   //
-         message = "Can not match to any predicted input";
+         message = UTEXT("Can not match to any predicted input");
          break;
       case ANTLR3_MISMATCHED_SET_EXCEPTION:
          {
@@ -1735,7 +1735,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 			   // possible tokens at this point, but we did not see any
 			   // member of that set.
 			   //
-			   message = String("Unexpected input.\nExpected one of : ");
+			   message = UTEXT("Unexpected input.\nExpected one of : ");
 
 			   // What tokens could we have accepted at this point in the
 			   // parse?
@@ -1758,15 +1758,15 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 					   //
 					   if  (tokenNames[bit])
 					   {
-						   message += String(count > 0 ? ", " : "") + (const char*)tokenNames[bit];
+                     message += String(count > 0 ? ", " : "") + String::fromUtf8((const char*)tokenNames[bit]);
 						   count++;
 					   }
 				   }
 			   }
 			   else
 			   {
-				   message = String("Actually dude, we didn't seem to be expecting anything here, or at least\n")
-				           + String("I could not work out what I was expecting, like so many of us these days!");
+				   message = UTEXT("Actually dude, we didn't seem to be expecting anything here, or at least\n")
+				           + UTEXT("I could not work out what I was expecting, like so many of us these days!");
 			   }
 		   }
          break;
@@ -1777,7 +1777,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // but found a token that ended that sequence earlier than
 		   // we should have done.
 		   //
-         message = std::string("Missing elements...");
+         message = UTEXT("Missing elements...");
          break;
       default:
 
@@ -1787,7 +1787,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // token.
 		   //
 
-         message = std::string("Syntax not recognised.");
+         message = UTEXT("Syntax not recognised.");
          break;
    }
 

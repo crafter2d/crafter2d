@@ -21,18 +21,42 @@
 
 #include <string.h>
 
+const String String::sEmpty;
+
+const String& String::empty()
+{
+   return sEmpty;
+}
+
+String String::fromUtf8(const char* pdata)
+{
+   String result;
+   result.setTo(pdata, -1);
+   return result;
+}
+
 String::String():
    mString()
 {
 }
 
-String::String(const char* pdata):
+String::String(const UChar* pdata):
    mString(pdata)
 {
 }
 
 String::String(const std::string& that):
    mString(that.c_str())
+{
+}
+
+String::String(const std::wstring& that):
+   mString(that.c_str())
+{
+}
+
+String::String(bool nullterm, const UChar* pdata):
+   mString(nullterm, pdata, -1)
 {
 }
 
@@ -45,12 +69,12 @@ String::~String()
 {
 }
 
-const char String::operator[](int index) const
+const UChar String::operator[](int index) const
 {
    return mString[index];
 }
 
-char String::operator[](int index)
+UChar String::operator[](int index)
 {
    return mString[index];
 }
@@ -67,9 +91,9 @@ const String& String::operator=(const String& that)
    return *this;
 }
 
-const String& String::operator=(const char* pstring)
+const String& String::operator=(const UChar* pstring)
 {
-   setTo(pstring, strlen(pstring));
+   mString.setTo(pstring, u_strlen(pstring));
    return *this;
 }
 
@@ -99,9 +123,15 @@ bool String::operator>=(const String& that) const
    return mString.compare(that.mString) >= 0;
 }
 
-const String& String::operator+=(char c)
+const String& String::operator+=(UChar c)
 {
    mString += c;
+   return *this;
+}
+
+const String& String::operator+=(const char* pdata)
+{
+   mString += pdata;
    return *this;
 }
 
@@ -118,14 +148,14 @@ String String::operator+(const String& that) const
    return result;
 }
 
-String String::operator+(char c) const
+String String::operator+(UChar c) const
 {
    String result;
    result.mString = mString + c;
    return result;
 }
 
-CORE_API String operator+(const char* pleft, const String& right)
+CORE_API String operator+(const UChar* pleft, const String& right)
 {
    return String(pleft) + right;
 }
@@ -140,23 +170,6 @@ bool String::isEmpty() const
 int String::length() const
 {
    return mString.length();
-}
-
-char* String::toUtf8(int& length) const
-{
-   length = mString.length();
-   char* pdata = new char[length+1];
-   memset(pdata, 0, length + 1);
-
-   CheckedArrayByteSink sink(pdata, length);
-   mString.toUTF8(sink);
-
-   return pdata;
-}
-
-const char* String::getBuffer() const
-{
-   return (char*) ((UnicodeString)mString).getTerminatedBuffer();
 }
 
 int String::compare(const String& that) const
@@ -260,13 +273,27 @@ int String::lastIndexOf(char character, int start, int end) const
 
 // - Conversion
 
-std::string String::toStdString() const
+std::string String::toUtf8() const
 {
-   int len = 0;
-   char* pdata = toUtf8(len);
-   
-   std::string result = pdata;
-   delete[] pdata;
+   int size = mString.length();
+   char* pdata = new char[size+1];
+   memset(pdata, 0, size + 1);
 
+   CheckedArrayByteSink sink(pdata, size);
+   mString.toUTF8(sink);
+
+   std::string result(pdata, size);
+   delete[] pdata;
+   return result;
+}
+
+std::wstring String::toUtf16() const
+{
+   UErrorCode error = U_ZERO_ERROR;
+   int size = mString.length();
+   UChar* pdata = new UChar[size];
+   mString.extract(pdata, size, error);
+   std::wstring result(pdata, size);
+   delete[] pdata;
    return result;
 }

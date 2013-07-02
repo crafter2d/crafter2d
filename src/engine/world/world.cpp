@@ -50,7 +50,7 @@
 
 using namespace Graphics;
 
-static const String WORLD_EXTENSION = ".jwl";
+static const String WORLD_EXTENSION = UTEXT(".jwl");
 
 /// fn World::World
 /// brief Currently does nothing
@@ -414,7 +414,7 @@ void World::addEntity(Entity* pentity)
    notifyEntityAdded(*pentity);
 
    Variant arg(mpScript->instantiate(pentity->getClassName(), pentity));
-   mpScript->run("onEntityAdded", 1, &arg);
+   mpScript->run(UTEXT("onEntityAdded"), 1, &arg);
 }
 
 void World::removeEntity(Id id)
@@ -503,10 +503,10 @@ void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bo
    ASSERT_PTR(mpScript);
    Variant args[4];
    args[0].setObject(mpScript->resolve(&object));
-   args[1].setObject(mpScript->instantiate("engine.game.Bound", &bound));
+   args[1].setObject(mpScript->instantiate(UTEXT("engine.game.Bound"), &bound));
    args[2].setInt(side);
    args[3].setBool(begin);
-   mpScript->run("onObjectCollision", 4, args);
+   mpScript->run(UTEXT("onObjectCollision"), 4, args);
 }
 
 void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, bool begin)
@@ -517,7 +517,7 @@ void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, 
    args[1].setObject(mpScript->resolve(&target));
    args[2].setInt(side);
    args[3].setBool(begin);
-   mpScript->run("onObjectCollision", 4, args);
+   mpScript->run(UTEXT("onObjectCollision"), 4, args);
 }
 
 void World::onViewportChanged(const Graphics::Viewport& viewport)

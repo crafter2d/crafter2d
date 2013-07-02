@@ -85,7 +85,7 @@ void ASTForeach::createIteratorVariable()
    modifiers.setFlags(ASTModifiers::eInternal);
 
    mpIterator->setLocation(ASTVariable::eLocal);
-   mpIterator->setName("it");
+   mpIterator->setName(UTEXT("it"));
    mpIterator->setModifiers(modifiers);
 }
 

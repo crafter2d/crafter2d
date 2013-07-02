@@ -44,10 +44,10 @@ WorldVersion1Reader::~WorldVersion1Reader()
 
 bool WorldVersion1Reader::virRead()
 {
-   std::ifstream stream (getFilename().getBuffer(), std::ios_base::in | std::ios_base::binary);
+   std::ifstream stream (getFilename().toUtf8(), std::ios_base::in | std::ios_base::binary);
    if ( !stream.is_open () )
    {
-      Log::getInstance().error("World:create : Can not open file %s", getFilename().getBuffer());
+      Log::getInstance().error("World:create : Can not open file %s", getFilename().toUtf8());
       return false;
    }
 
@@ -72,7 +72,7 @@ bool WorldVersion1Reader::readLayers(std::ifstream& stream)
 
       if ( !readLayer(stream, *player) )
       {
-         Log::getInstance().error("World:create : loading layer %d from %s failed.", i, getFilename().getBuffer());
+         Log::getInstance().error("World:create : loading layer %d from %s failed.", i, getFilename().toUtf8());
          getWorld().destroy ();
          return false;
       }

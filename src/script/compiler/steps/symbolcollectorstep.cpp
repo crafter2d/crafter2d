@@ -401,7 +401,7 @@ void SymbolCollectorVisitor::generateDefaultConstructor(ASTClass& ast)
 
 void SymbolCollectorVisitor::generateNativeFinalize(ASTClass& ast)
 {
-   const FunctionRegistration* pdestructor = mContext.getClassRegistry().findCallback(ast, "destroy");
+   const FunctionRegistration* pdestructor = mContext.getClassRegistry().findCallback(ast, UTEXT("destroy"));
    if ( pdestructor != NULL )
    {
       ASTBlock* pbody = new ASTBlock();

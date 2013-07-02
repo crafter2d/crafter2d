@@ -41,7 +41,7 @@ implemented and therefor shouldn't be used.
 class ENGINE_API Script
 {
 public:
-   explicit    Script(ScriptManager& manager, const String& name = "");
+   explicit    Script(ScriptManager& manager, const String& name = String::empty());
    
    VirtualObject& getThis();
    void           setThis(VirtualObject& object);

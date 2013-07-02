@@ -37,5 +37,5 @@ CompileException::~CompileException()
 String CompileException::asString() const
 {
    PURE_VIRTUAL;
-   return "";
+   return String::empty();
 }

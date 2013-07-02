@@ -92,9 +92,9 @@ bool Game::create()
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "---------------------------------------------------------\n";
 
-   FileSystem::getInstance().addPath("../bin");
-   FileSystem::getInstance().addPath("../scripts");
-   FileSystem::getInstance().addPath("../images");
+   FileSystem::getInstance().addPath(UTEXT("../bin"));
+   FileSystem::getInstance().addPath(UTEXT("../scripts"));
+   FileSystem::getInstance().addPath(UTEXT("../images"));
    
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
@@ -180,10 +180,10 @@ void Game::run()
  */
 bool Game::initGame()
 {
-   IniFile inifile("game.ini");
+   IniFile inifile(UTEXT("game.ini"));
    
    mpServer = new Server();
-   if ( !mpServer->create(inifile.get("Process", "server")) )
+   if ( !mpServer->create(inifile.get(UTEXT("Process"), UTEXT("server"))) )
    {
       Log::getInstance().error("FAILED to start the server.");
       return false;
@@ -191,7 +191,7 @@ bool Game::initGame()
 
    mpClient = new Client();
    mpClient->setWindowFactory(*mpWindowFactory);
-   if ( !mpClient->create(inifile.get("Process", "client")) )
+   if ( !mpClient->create(inifile.get(UTEXT("Process"), UTEXT("client"))) )
    {
       Log::getInstance().error("FAILED to start the client.");
       return false;

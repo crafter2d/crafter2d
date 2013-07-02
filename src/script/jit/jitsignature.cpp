@@ -17,7 +17,7 @@ JITSignature* JITSignature::clone() const
 {
    JITSignature* presult = new JITSignature(*this);
 
-   for ( int index = 0; index < mTypes.size(); ++index )
+   for ( std::size_t index = 0; index < mTypes.size(); ++index )
    {
       const JITType* ptype = mTypes[index];
       presult->add(ptype->clone());

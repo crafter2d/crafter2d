@@ -36,7 +36,7 @@ public:
       return value.asString().getString();
    }
 
-   char getChar(int argument) const {
+   UChar getChar(int argument) const {
       Variant& value = getArgument(argument);
       return value.asChar();
    }
@@ -85,7 +85,7 @@ public:
       setResult(Variant(value));
    }
 
-   void setResult(char value) {
+   void setResult(UChar value) {
       setResult(Variant(value));
    }
 

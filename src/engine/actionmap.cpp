@@ -47,7 +47,7 @@ void ActionMap::setProcess(Process& process)
 {
    mpProcess = &process;
 
-   mpScript = process.getScriptManager().load("engine.game.ActionMap", this, false);
+   mpScript = process.getScriptManager().load(UTEXT("engine.game.ActionMap"), this, false);
    ASSERT_PTR(mpScript);
 }
 
@@ -86,7 +86,7 @@ void ActionMap::processRemote(const ActionEvent& event, Actor& object)
    args[1].setInt(event.getAction());
    
    if ( event.isDown() )
-      mpScript->run("onKeyDown", 2, args);
+      mpScript->run(UTEXT("onKeyDown"), 2, args);
    else
-      mpScript->run("onKeyUp", 2, args);
+      mpScript->run(UTEXT("onKeyUp"), 2, args);
 }

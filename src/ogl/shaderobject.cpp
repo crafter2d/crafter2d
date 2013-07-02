@@ -138,9 +138,6 @@ GLint ShaderObject::getAttribute(const char* name) const
 
 GLint ShaderObject::getUniformLocation(const String& name) const
 {
-   int len;
-   const char* ploc = name.toUtf8(len);
-	GLint result = glGetUniformLocationARB(program, ploc);
-   delete[] ploc;
-   return result;
+   const std::string loc = name.toUtf8();
+   return glGetUniformLocationARB(program, loc.c_str());
 }

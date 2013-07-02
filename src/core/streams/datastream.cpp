@@ -123,11 +123,9 @@ void DataStream::writeChar(char value)
 
 void DataStream::writeString(const String& text)
 {
-   int len;
-   const char* ptext = text.toUtf8(len);
-   writeInt(len);
-   writeBytes(ptext, len);
-   delete[] ptext;
+   std::string utf = text.toUtf8();
+   writeInt(utf.length());
+   writeBytes(utf.c_str(), utf.length());
 }
 
 void DataStream::writeBlob(const void* pdata, int size)

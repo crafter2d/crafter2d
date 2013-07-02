@@ -68,7 +68,7 @@ void VirtualStack::pushBool(bool value)
    top().setBool(value);
 }
 
-void VirtualStack::pushChar(char value)
+void VirtualStack::pushChar(UChar value)
 {
    top().setChar(value);
 }
@@ -114,7 +114,7 @@ bool VirtualStack::popBool()
    return mStack[--mSize]->asBool();
 }
 
-char VirtualStack::popChar()
+UChar VirtualStack::popChar()
 {
    return mStack[--mSize]->asChar();
 }

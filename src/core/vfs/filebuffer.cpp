@@ -80,7 +80,10 @@ char FileBuffer::peekchar()
 {
    int pos = ftell(mpFile);
    char peek = getchar();
-   fseek(mpFile, pos, SEEK_SET);
+   if ( peek != EOF )
+   {
+      fseek(mpFile, pos, SEEK_SET);
+   }
    return peek;
 }
 

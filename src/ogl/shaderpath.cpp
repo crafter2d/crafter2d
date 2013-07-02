@@ -38,7 +38,7 @@ bool ShaderPath::load(VertexInputLayout& layout, const String& vertex, const Str
 		AutoPtr<VertexShader> vs = new VertexShader();
       if ( !vs->compile(vertex) )
       {
-         log.error("GLSLPath.load: Failed to load or compile vertex shader '%s'", vertex.getBuffer());
+         log.error("GLSLPath.load: Failed to load or compile vertex shader '%s'", vertex.toUtf8().c_str());
 			return false;
 		}
 
@@ -51,7 +51,7 @@ bool ShaderPath::load(VertexInputLayout& layout, const String& vertex, const Str
 		AutoPtr<FragmentShader> fs = new FragmentShader();
       if ( !fs->compile(fragment) )
       {
-         log.error("GLSLPath.load: Failed to load or compile fragment shader '%s'", fragment.getBuffer());
+         log.error("GLSLPath.load: Failed to load or compile fragment shader '%s'", fragment.toUtf8().c_str());
 			return false;
 		}
 

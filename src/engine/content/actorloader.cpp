@@ -50,7 +50,7 @@ Actor* ActorLoader::load(const String& filename, int flags)
    Log& log = Log::getInstance();
 
 	// try to find the object in the file
-   TiXmlDocument doc(filename.toStdString());
+   TiXmlDocument doc(filename.toUtf8());
    if ( !doc.LoadFile() )
    {
       return NULL;
@@ -64,12 +64,12 @@ Actor* ActorLoader::load(const String& filename, int flags)
 	}
 
    AutoPtr<Actor> actor = new Actor();
-   actor->setName(pobject->Attribute("name"));
+   actor->setName(String::fromUtf8(pobject->Attribute("name")));
    actor->setFilename(filename);
 
    // create the actual scripted object
    const std::string* pclasstype = pobject->Attribute(std::string("type"));
-   actor->setClassName(pclasstype != NULL ? pclasstype->c_str() : "engine.game.Actor");
+   actor->setClassName(pclasstype != NULL ? String(*pclasstype) : UTEXT("engine.game.Actor"));
 
    if ( IS_SET(flags, ContentLoader::eLoadPhysics) )
    {
@@ -112,7 +112,7 @@ void ActorLoader::loadMesh(const TiXmlElement& mesh, Actor& actor)
 	if ( mesh.QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
 		  mesh.QueryIntAttribute ("height", &height) != TIXML_SUCCESS )
    {
-      throw new InvalidContentException("ActorLoader: actor requires a valid size.");
+      throw new InvalidContentException(UTEXT("ActorLoader: actor requires a valid size."));
 	}
 
    AutoPtr<MeshComponent> meshcomp = new MeshComponent();
@@ -129,7 +129,7 @@ void ActorLoader::loadMesh(const TiXmlElement& mesh, Actor& actor)
 	}
    else
    {
-      throw new InvalidContentException(String("ActorLoader: actor requires a texture (missing in ") + actor.getName() + ")");
+      throw new InvalidContentException(UTEXT("ActorLoader: actor requires a texture (missing in ") + actor.getName() + ')');
 	}
 
    // load animation stuff
