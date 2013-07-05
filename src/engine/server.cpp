@@ -172,6 +172,9 @@ void Server::sendScriptEventToAllClients(const NetStream& stream)
 // -- Event handling
 // ----------------------------------
 
+static const String sNetStream = UTEXT("engine.net.NetStream");
+static const String sOnEvent   = UTEXT("onEvent");
+
 /// \fn Server::onNetEvent(int client, const NetEvent& event)
 /// \brief Handles the incomming events.
 void Server::onNetEvent(int client, const NetEvent& event)
@@ -218,8 +221,8 @@ void Server::onNetEvent(int client, const NetEvent& event)
             Player* player = clients[client];
             Variant args[2];
             args[0].setObject(mpScript->resolve(player));
-            args[1].setObject(mpScript->instantiate(UTEXT("engine.net.NetStream"), &stream));
-            mpScript->run(UTEXT("onEvent"), 2, args);
+            args[1].setObject(mpScript->instantiate(sNetStream, &stream));
+            mpScript->run(sOnEvent, 2, args);
             break;
          }
       case actionEvent:

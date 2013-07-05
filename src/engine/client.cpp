@@ -487,14 +487,19 @@ void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
    }
 }
 
+static const String sNetStream    = UTEXT("engine.net.NetStream");
+static const String sScriptEvent  = UTEXT("onScriptEvent");
+static const String sOnKeyEvent   = UTEXT("onKeyEvent");
+static const String sOnMouseEvent = UTEXT("onMouseEvent");
+
 void Client::handleScriptEvent(const ScriptEvent& event)
 {
    DataStream& datastream = const_cast<DataStream&>(event.getStream());
    NetStream stream(datastream);
 
    // run the onClientConnect script
-   Variant arg(mpScript->instantiate(UTEXT("engine.net.NetStream"), &stream));
-   mpScript->run(UTEXT("onScriptEvent"), 1, &arg);
+   Variant arg(mpScript->instantiate(sNetStream, &stream));
+   mpScript->run(sScriptEvent, 1, &arg);
 }
 
 // - Notifications
@@ -558,7 +563,7 @@ void Client::onKeyEvent(const KeyEvent& event)
    Variant args[2];
    args[0].setInt(event.getKey());
    args[1].setBool(event.getEventType() == KeyEvent::ePressed);
-   mpScript->run(UTEXT("onKeyEvent"), 2, args);
+   mpScript->run(sOnKeyEvent, 2, args);
 }
 
 void Client::onMouseEvent(const MouseEvent& event)
@@ -568,6 +573,6 @@ void Client::onMouseEvent(const MouseEvent& event)
    args[1].setInt(event.getLocation().y());
    args[2].setInt(event.getButtons());
    args[3].setInt(event.getEventType());
-   mpScript->run(UTEXT("onMouseEvent"), 4, args);
+   mpScript->run(sOnMouseEvent, 4, args);
 }
 

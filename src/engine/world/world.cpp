@@ -24,7 +24,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <Box2D.h>
 
 #include "core/graphics/rendercontext.h"
 #include "core/log/log.h"
@@ -498,15 +497,18 @@ void World::notifyEntityRemoved(const Entity& entity)
    }
 }
 
+static const String sBound = UTEXT("engine.game.Bound");
+static const String sCollision = UTEXT("onObjectCollision");
+
 void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
    Variant args[4];
    args[0].setObject(mpScript->resolve(&object));
-   args[1].setObject(mpScript->instantiate(UTEXT("engine.game.Bound"), &bound));
+   args[1].setObject(mpScript->instantiate(sBound, &bound));
    args[2].setInt(side);
    args[3].setBool(begin);
-   mpScript->run(UTEXT("onObjectCollision"), 4, args);
+   mpScript->run(sCollision, 4, args);
 }
 
 void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, bool begin)
@@ -517,7 +519,7 @@ void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, 
    args[1].setObject(mpScript->resolve(&target));
    args[2].setInt(side);
    args[3].setBool(begin);
-   mpScript->run(UTEXT("onObjectCollision"), 4, args);
+   mpScript->run(sCollision, 4, args);
 }
 
 void World::onViewportChanged(Graphics::RenderContext& context)
