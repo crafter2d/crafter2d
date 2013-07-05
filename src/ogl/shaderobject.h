@@ -7,6 +7,8 @@
 
 namespace Graphics
 {
+   class ShaderUniformBuffer;
+
    /**
    @author Jeroen Broekhuizen
    \brief The shader object class. It keeps track of the OpenGL program which can hold vertex- and fragment shaders. With this class
@@ -26,20 +28,27 @@ namespace Graphics
       void        enable() const;
       void        disable() const;
 
-      GLhandleARB handle() const;
+      GLuint      handle() const;
       bool        valid() const;
+
+    // uniforms
+      ShaderUniformBuffer* getUniformBuffer(const String& name) const;
+
+      void bindTexture(const Texture& uniform);
 
       GLint       getAttribute( const char* name ) const;
       GLint       getUniformLocation( const String& name ) const;
 
-      void        setUniformStateMatrix(int index) const;
       void        setUniform1i( GLint index, int i );
 	   void        setUniform3f( GLint index, float x, float y, float z );
       void        setUniform4f( GLint index, float x, float y, float z, float w );
 
    private:
-      std::vector<Shader*> shaders;
-      GLhandleARB program;
+      typedef std::vector<Shader*> Shaders;
+
+    // data
+      Shaders shaders;
+      GLuint  program;
    };
 };
 

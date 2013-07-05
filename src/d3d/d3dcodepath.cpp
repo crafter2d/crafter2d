@@ -86,7 +86,7 @@ bool D3DCodePath::createInputLayout(const VertexInputLayout& layout, DataStream&
       D3D11_INPUT_ELEMENT_DESC& desc = pdescs[index];
 
       memset(&desc, 0, sizeof(D3D11_INPUT_ELEMENT_DESC));
-      desc.SemanticName = element.semantic.toUtf8(len);
+      desc.SemanticName = strdup(element.semantic.toUtf8().c_str());
       desc.Format = DXGI_FORMAT_R32G32_FLOAT;
       desc.AlignedByteOffset = element.pos;
       desc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -107,6 +107,31 @@ bool D3DCodePath::createInputLayout(const VertexInputLayout& layout, DataStream&
    }
 
    return true;
+}
+
+void D3DCodePath::release()
+{
+   mpInputLayout->Release();
+   mpInputLayout = NULL;
+
+   mpVertexShader->Release();
+   mpVertexShader = NULL;
+
+   mpPixelShader->Release();
+   mpPixelShader = NULL;
+}
+
+void D3DCodePath::enable() const
+{
+   ID3D11DeviceContext* pcontext;
+   pcontext->IASetInputLayout(mpInputLayout);
+   pcontext->VSSetShader(mpVertexShader, NULL, 0);
+   pcontext->PSSetShader(mpPixelShader, NULL, 0);
+}
+
+void D3DCodePath::disable() const
+{
+   
 }
 
 } // namespace Graphics

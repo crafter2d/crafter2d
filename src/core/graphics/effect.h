@@ -35,6 +35,7 @@ namespace Graphics
    class RenderContext;
    class Texture;
    class VertexInputLayout;
+   class UniformBuffer;
 
    /*!
    @author Jeroen Broekhuizen
@@ -58,6 +59,8 @@ namespace Graphics
 	   const TexturePtr  resolveTexture(const String& uniform) const;
       const TexturePtr  findTexture(const String& uniform) const;
 
+      UniformBuffer*    getUniformBuffer(const String& name) const;
+
       void              enable(Graphics::RenderContext& context) const;
 	   void              disable(Graphics::RenderContext& context) const;
 
@@ -67,12 +70,11 @@ namespace Graphics
       struct TexStage
       {
 		   TexturePtr tex;
-         String uniform;
-		   int index;
+         String     name;
 	   };
 
      // types
-      typedef std::vector<TexStage> Stages;
+      typedef std::vector<TexturePtr> Textures;
 
 	   bool              processTextures(Graphics::Device& device, const TiXmlElement& effect);
       bool              postprocessTextures();
@@ -80,8 +82,8 @@ namespace Graphics
 	   bool              processCode(Graphics::Device& device, const TiXmlElement& effect, const String& path);
       bool              processBlendState(Graphics::Device& device, const TiXmlElement& effect);
 		
-      String                name;
-      Stages                stages;
+      String                        name;
+      Textures                      mTextures;
       Graphics::VertexInputLayout&  mLayout;
       Graphics::CodePath*           mpCodePath;
       Graphics::BlendState*         mpBlendStateEnabled;

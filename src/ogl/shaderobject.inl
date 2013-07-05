@@ -31,7 +31,7 @@ INLINE void ShaderObject::addShader(Shader* pshader)
 	shaders.push_back(pshader);
 }
 
-INLINE GLhandleARB ShaderObject::handle() const
+INLINE GLuint ShaderObject::handle() const
 { 
    return program;
 }
@@ -41,18 +41,14 @@ INLINE GLhandleARB ShaderObject::handle() const
 /// disable() is called.
 INLINE void ShaderObject::enable() const
 {
-	glUseProgramObjectARB (program);
+	glUseProgram(program);
 }
 
 /// \fn ShaderObject::disable()
 /// \brief Stops using this object and restores original OpenGL rendering pipeline.
 INLINE void ShaderObject::disable() const
 {
-	glUseProgramObjectARB (0);
-}
-
-INLINE void ShaderObject::setUniformStateMatrix(int index) const
-{
+	glUseProgram(0);
 }
 
 INLINE void ShaderObject::setUniform1i (GLint index, int i)

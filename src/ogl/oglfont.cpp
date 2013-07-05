@@ -66,7 +66,7 @@ int OGLFont::getTextWidth(const String& text) const
 
    for ( int index = 0; index < text.length(); ++index )
    {
-      char character = text[index];
+      UChar character = text[index];
       Characters::const_iterator it = mCharacters.find(character);
       if ( it == mCharacters.end() )
       {
@@ -95,9 +95,9 @@ void OGLFont::render(const String& text)
 {
    FontChar* pfontchar = NULL;
 
-   for ( std::size_t index = 0; index < text.length(); ++index )
+   for ( int index = 0; index < text.length(); ++index )
    {
-      char character = text[index];
+      UChar character = text[index];
       Characters::iterator it = mCharacters.find(character);
       if ( it == mCharacters.end() )
       {
@@ -114,7 +114,7 @@ void OGLFont::render(const String& text)
 
 // - Helpers
 
-FontChar* OGLFont::loadGlyph(char character)
+FontChar* OGLFont::loadGlyph(UChar character)
 {
    ASSERT_PTR(mFace);
 

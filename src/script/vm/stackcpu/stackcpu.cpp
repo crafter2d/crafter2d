@@ -352,7 +352,7 @@ void StackCPU::execute(VirtualContext& context)
             break;
          case SBIL_cadd:
             {
-               char right = mStack.popChar();
+               UChar right = mStack.popChar();
                const String& left = mStack.popString();
                mStack.pushString(context.mStringCache.lookup(left + right));
             }
@@ -507,43 +507,43 @@ void StackCPU::execute(VirtualContext& context)
             break;
          case SBIL_ccmpeq:
             {
-               char right = mStack.popChar();
-               char left  = mStack.popChar();
+               UChar right = mStack.popChar();
+               UChar left  = mStack.popChar();
                mStack.pushBool(left == right);
             }
             break;
          case SBIL_ccmpne:
             {
-               char right = mStack.popChar();
-               char left  = mStack.popChar();
+               UChar right = mStack.popChar();
+               UChar left  = mStack.popChar();
                mStack.pushBool(left != right);
             }
             break;
          case SBIL_ccmpgt:
             {
-               char right = mStack.popChar();
-               char left  = mStack.popChar();
+               UChar right = mStack.popChar();
+               UChar left  = mStack.popChar();
                mStack.pushBool(left > right);
             }
             break;
          case SBIL_ccmpge:
             {
-               char right = mStack.popChar();
-               char left  = mStack.popChar();
+               UChar right = mStack.popChar();
+               UChar left  = mStack.popChar();
                mStack.pushBool(left >= right);
             }
             break;
          case SBIL_ccmple:
             {
-               char right = mStack.popChar();
-               char left  = mStack.popChar();
+               UChar right = mStack.popChar();
+               UChar left  = mStack.popChar();
                mStack.pushBool(left <= right);
             }
             break;
          case SBIL_ccmplt:
             {
-               char right = mStack.popChar();
-               char left  = mStack.popChar();
+               UChar right = mStack.popChar();
+               UChar left  = mStack.popChar();
                mStack.pushBool(left < right);
             }
             break;

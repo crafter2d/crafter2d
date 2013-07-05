@@ -20,7 +20,7 @@ namespace Graphics
       virtual bool create(int windowhandle, int width, int height);
 
       virtual RenderContext*  createRenderContext();
-      virtual CodePath*       createCodePath(CodePath::PathType type);
+      virtual CodePath*       createCodePath();
       virtual VertexBuffer*   createVertexBuffer(VertexInputLayout& layout);
       virtual IndexBuffer*    createIndexBuffer();
       virtual Texture*        createTexture(const String& filename);

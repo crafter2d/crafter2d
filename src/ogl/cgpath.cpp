@@ -142,11 +142,6 @@ void CGPath::disable() const
       cgGLDisableProfile( mCG.getFragmentProfile() );
 }
 
-CodePath::PathType CGPath::getType() const
-{
-   return CodePath::ECG;
-}
-
 int CGPath::getUniformLocation(const String& name) const
 {
    CGparameter param = 0;

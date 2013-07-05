@@ -180,7 +180,7 @@ void VirtualStack::ensureFits(int amount)
 
 void VirtualStack::fill(int from)
 {
-   for ( int index = from; index < mStack.size(); index++ )
+   for ( std::size_t index = from; index < mStack.size(); index++ )
    {
       mStack[index] = new Variant();
    }

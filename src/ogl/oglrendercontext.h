@@ -16,15 +16,11 @@ namespace Graphics
    public:
       OGLRenderContext();
 
-      virtual void setBlendState(const BlendState& state);
-      virtual void setEffect(const Effect& effect);
-      virtual void setVertexBuffer(const VertexBuffer& buffer);
-      virtual void setIndexBuffer(const IndexBuffer& buffer);
-
-      virtual void setOrthoProjection();
-      
-      virtual void setObjectMatrix(const XForm& matrix);
-      virtual void setWorldMatrix(const XForm& matrix);
+      virtual void setBlendState(const BlendState& state) override;
+      virtual void setEffect(const Effect& effect) override;
+      virtual void setVertexBuffer(const VertexBuffer& buffer) override;
+      virtual void setIndexBuffer(const IndexBuffer& buffer) override;
+      virtual void setUniformBuffer(const UniformBuffer& buffer) override;
 
       virtual void clear();
 
@@ -37,16 +33,11 @@ namespace Graphics
       virtual void onViewportChanged(const Viewport& viewport);
 
    private:
-      void updateViewMatrix();
 
+    // data
       const Effect*          mpEffect;
       const OGLVertexBuffer* mpVertexBuffer;
       const OGLIndexBuffer*  mpIndexBuffer;
-
-      XForm mObjectMatrix;
-      XForm mWorldMatrix;
-
-      float matogl[16];
    };
 
 };

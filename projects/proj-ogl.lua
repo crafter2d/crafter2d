@@ -19,7 +19,6 @@ if ( os.is("windows") ) then
 	
    includedirs {
       path.join(libdir, "glee/include"),
-	  path.join(libdir, "cg/include"),
       path.join(libdir, "soil/include"),
 	  path.join(libdir, "freetype2/include"),
       path.join(libdir, "icu/include")
@@ -27,7 +26,6 @@ if ( os.is("windows") ) then
 
    libdirs {
       path.join(libdir, "glee/lib"),
-	  path.join(libdir, "cg/lib"),
       path.join(libdir, "soil/lib"),
 	  path.join(libdir, "freetype2/lib"),
    }
@@ -37,9 +35,7 @@ if ( os.is("windows") ) then
 	
 		buildoptions { "-W", "-Wall", "-O0" }
 		linkoptions { "--allow-multiple-definition" }
-      
-      links { "cg", "cgGL" }
-	  
+       
 		configuration "Debug"
 			links { "GLee_d", "SOIL_d", "freetype242MT_D" } 
 		 

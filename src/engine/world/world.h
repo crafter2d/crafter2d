@@ -132,7 +132,7 @@ public:
 
  // update & drawing
    void   update(DirtySet& set, float delta);
-   void   updateClient(float delta);
+   void   updateClient(Graphics::RenderContext& context, float delta);
    void   draw(Graphics::RenderContext& context) const;
 
  // operations
@@ -153,7 +153,7 @@ public:
    void notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin);
    void notifyObjectObjectCollision(Actor& object, Actor& target, int side, bool begin);
 
-   void onViewportChanged(const Graphics::Viewport& viewport);
+   void onViewportChanged(Graphics::RenderContext& context);
 
  // rendering
    WorldRenderer* createRenderer();

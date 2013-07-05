@@ -20,6 +20,8 @@
 #ifndef VERTEXBUFFER_OBJECT_H
 #define VERTEXBUFFER_OBJECT_H
 
+#include <GL/GLee.h>
+
 #include "core/graphics/vertexbuffer.h"
 
 namespace Graphics
@@ -44,8 +46,9 @@ namespace Graphics
 
    private:
 
-      unsigned int buffer;
-      bool locked;
+      GLuint mVAO;
+      GLuint mBuffer;
+      bool   locked;
    };
 };
 

@@ -9,6 +9,9 @@ class Vector;
 class CORE_API Matrix4
 {
 public:
+
+   static Matrix4 getOrtho(float left, float right, float top, float bottom);
+
    Matrix4();
    Matrix4(const float* pmatrix);
    Matrix4(float xx, float xy, float xz, float xw,
@@ -32,7 +35,6 @@ public:
 private:
    // row major order
    float mMatrix[16];
-   float mTranspose[16];
 };
 
 #endif // MATRIX_4X4_H

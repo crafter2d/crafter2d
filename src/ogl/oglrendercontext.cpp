@@ -6,6 +6,7 @@
 
 #include "core/graphics/effect.h"
 #include "core/graphics/viewport.h"
+#include "core/graphics/uniformbuffer.h"
 #include "core/math/color.h"
 #include "core/math/xform.h"
 #include "core/math/matrix4.h"
@@ -60,45 +61,9 @@ void OGLRenderContext::setIndexBuffer(const IndexBuffer& buffer)
    mpIndexBuffer->enable();
 }
 
-void OGLRenderContext::setOrthoProjection()
+void OGLRenderContext::setUniformBuffer(const UniformBuffer& buffer)
 {
-   GLint viewport[4];
-   glGetIntegerv(GL_VIEWPORT, viewport);
-
-   int width = viewport[2] - viewport[0];
-	int height = viewport[3] - viewport[1];
-
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   gluOrtho2D(0, width, height, 0);
-}
-
-void OGLRenderContext::setObjectMatrix(const XForm& matrix)
-{
-   mObjectMatrix = matrix;
-
-   updateViewMatrix();
-}
-
-void OGLRenderContext::setWorldMatrix(const XForm& matrix)
-{
-   mWorldMatrix = matrix;
-
-   updateViewMatrix();
-}
-
-void OGLRenderContext::updateViewMatrix()
-{
-   XForm matrix = mWorldMatrix * mObjectMatrix;
-   matrix.asOpenGL(matogl);
-
-   glMatrixMode(GL_MODELVIEW);
-   glLoadMatrixf(matogl);
-
-   if ( mpEffect != NULL )
-   {
-      mpEffect->updateStateMatrices();
-   }
+   buffer.enable(*this);
 }
 
 void OGLRenderContext::clear()

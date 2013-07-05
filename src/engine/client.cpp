@@ -158,7 +158,7 @@ void Client::update(float delta)
 
    if ( hasWorld() )
    {
-      getWorld().updateClient(delta);
+      getWorld().updateClient(*mpRenderContext, delta);
    }
 }
 
@@ -503,7 +503,7 @@ void Client::notifyWorldChanged()
 {
    World& world = getWorld();
    world.initialize(*mpDevice);
-   world.onViewportChanged(mpRenderContext->getViewport());
+   world.onViewportChanged(*mpRenderContext);
 
    mpWorldRenderer = world.createRenderer();
    mpPlayer->initialize(world);
@@ -540,7 +540,7 @@ void Client::onWindowResized()
    
    if ( hasWorld() )
    {
-      getWorld().onViewportChanged(viewport);
+      getWorld().onViewportChanged(*mpRenderContext);
    }
 }
 

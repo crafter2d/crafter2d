@@ -26,10 +26,11 @@ namespace Graphics
 	   virtual void     enable() const;
 	   virtual void     disable() const;
 
-      virtual PathType getType() const;
-	   virtual int      getUniformLocation(const String& name) const;
+      virtual UniformBuffer* getUniformBuffer(const String& name) const;
 
-      virtual void     setUniformStateMatrix(int index) const;
+      virtual void     bindTexture(const Texture& uniform);
+
+	   virtual int      getUniformLocation(const String& name) const;
 
 	   virtual void     setUniform1i(int index, int val);
 	   virtual void     setUniform3f(int index, float x, float y, float z);

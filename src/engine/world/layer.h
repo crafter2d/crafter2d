@@ -25,6 +25,7 @@
 #include "core/graphics/effect.h"
 #include "core/graphics/vertexinputlayout.h"
 #include "core/math/vector.h"
+#include "core/math/matrix4.h"
 #include "core/defines.h"
 #include "core/string/string.h"
 
@@ -47,6 +48,7 @@ namespace Graphics
    class RenderContext;
    class IndexBuffer;
    class VertexBuffer;
+   class UniformBuffer;
 };
 
 class Point;
@@ -133,7 +135,7 @@ public:
    void           calculateScrollSpeed(const Vector& area, int screenWidth, int screenHeight);
 
  // notifications
-   virtual void onViewportChanged(const Graphics::Viewport& viewport) = 0;
+   virtual void onViewportChanged(Graphics::RenderContext& context);
 
 protected:
  // pure virtuals
@@ -159,15 +161,24 @@ protected:
    Graphics::VertexInputLayout mInputLayout;
    Graphics::VertexBuffer* vb;
    Graphics::IndexBuffer* ib;
+   Graphics::UniformBuffer* ub;
    Vector* texcoordLookup;
 
 private:
+   struct ConstantBuffer
+   {
+      Matrix4 projection;
+      Matrix4 world;
+   };
+
  // operations
    bool createBuffers(Graphics::Device& device, int width, int height);
+   bool createUniformBuffers();
 
  // members
    LayerDefinition*  mpDefinition;
    Graphics::Effect  mEffect;
+   ConstantBuffer    mConstants;
 };
 
 #ifdef JENGINE_INLINE

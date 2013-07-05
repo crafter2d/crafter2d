@@ -5,6 +5,8 @@
 #include "core/string/string.h"
 #include "core/smartptr/autoptr.h"
 
+#include "shaderuniformbuffer.h"
+
 using namespace Graphics;
 
 ShaderPath::ShaderPath():
@@ -77,19 +79,19 @@ void ShaderPath::disable () const
 	shader.disable();
 }
 
-CodePath::PathType ShaderPath::getType() const
+UniformBuffer* ShaderPath::getUniformBuffer(const String& name) const
 {
-   return CodePath::EGLSL;
+   return shader.getUniformBuffer(name);
+}
+
+void ShaderPath::bindTexture(const Texture& texture)
+{
+   shader.bindTexture(texture);
 }
 
 int ShaderPath::getUniformLocation (const String& name) const
 {
 	return shader.getUniformLocation(name);
-}
-
-void ShaderPath::setUniformStateMatrix(int index) const
-{
-   shader.setUniformStateMatrix(index);
 }
 
 void ShaderPath::setUniform1i (int index, int val)

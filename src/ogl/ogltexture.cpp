@@ -253,13 +253,10 @@ void OGLTexture::enable() const
 {
 	glActiveTexture (GL_TEXTURE0 + mTexStage);
 	glBindTexture(mTarget, mID);
-   glEnable(mTarget);
 }
 
 void OGLTexture::disable () const
 {
-	glActiveTexture(GL_TEXTURE0 + mTexStage);
-	glDisable(mTarget);
 }
 
 // - Query

@@ -7,10 +7,14 @@
 #include <GL/GLee.h>
 #include <GL/glu.h>
 
+#include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/string/string.h"
 
-using namespace Graphics;
+#include "shaderuniformbuffer.h"
+
+namespace Graphics
+{
 
 /// \fn ShaderObject::ShaderObject()
 /// \brief Constructor which is used to initialize member variables.
@@ -34,7 +38,7 @@ ShaderObject::~ ShaderObject()
  */
 bool ShaderObject::create()
 {
-	program = glCreateProgramObjectARB();
+	program = glCreateProgram();
 	if ( program == NULL )
    {
       Log::getInstance().error("ShaderObject.create: Could not create program object.");
@@ -46,7 +50,7 @@ bool ShaderObject::create()
 void ShaderObject::release ()
 {
 	// delete the program object
-	glDeleteObjectARB (program);
+	glDeleteProgram(program);
 	program = 0;
 }
 
@@ -74,14 +78,14 @@ bool ShaderObject::link()
 	for ( ; it != shaders.end(); ++it )
    {
       Shader* pshader = *it;
-		glAttachObjectARB (program, pshader->handle());
+		glAttachShader(program, pshader->handle());
 		pshader->release();
       delete pshader;
 	}
 	shaders.clear();
 
 	// now link them & make sure it went ok
-	glLinkProgramARB (program);
+	glLinkProgram(program);
 
 	glErr = glGetError();
    while (glErr != GL_NO_ERROR)
@@ -90,14 +94,14 @@ bool ShaderObject::link()
       glErr = glGetError();
    }
 
-	glGetObjectParameterivARB (program, GL_OBJECT_LINK_STATUS_ARB, (GLint*)&linked);
+   glGetProgramiv(program, GL_LINK_STATUS, &linked);
 	if ( linked != GL_TRUE )
    {
 		// display linker error message
 		GLint length;
-		glGetObjectParameterivARB (program, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
-		GLcharARB *log = new GLcharARB[length];
-		glGetInfoLogARB (program, length, &length, log);
+      glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+		GLchar *log = new GLchar[length];
+		glGetProgramInfoLog (program, length, &length, log);
 		Log::getInstance().error("Linker log: %s", log);
 		delete[] log;
 		return false;
@@ -110,22 +114,42 @@ bool ShaderObject::link()
 bool ShaderObject::valid() const
 {
 	int valid;
-   glValidateProgramARB(program);
-   glGetObjectParameterivARB(program, GL_OBJECT_VALIDATE_STATUS_ARB, (GLint*)&valid);
+   glValidateProgram(program);
+   glGetProgramiv(program, GL_VALIDATE_STATUS, (GLint*)&valid);
 
    if ( valid != GL_TRUE )
 	{
       GLint length;
 
       // display linker error message
-      glGetObjectParameterivARB(program, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
-      GLcharARB *log = new GLcharARB[length];
-      glGetInfoLogARB( program, length, &length, log );
+      glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+      GLchar *log = new GLcharARB[length];
+      glGetProgramInfoLog( program, length, &length, log );
       Log::getInstance().error( "Validate log: %s", log );
       delete[] log;
    }
 
    return ( valid != GL_TRUE );
+}
+
+ShaderUniformBuffer* ShaderObject::getUniformBuffer(const String& name) const
+{
+   ShaderUniformBuffer* presult = NULL;
+   std::string uname = name.toUtf8();
+   GLuint index = glGetUniformBlockIndex(program, uname.c_str());
+   if ( index != 0 )
+   {
+      presult = new ShaderUniformBuffer(program, index);
+   }
+
+   return presult;
+}
+
+void ShaderObject::bindTexture(const Texture& texture)
+{
+   std::string uni = texture.getUniform().toUtf8();
+   GLint texloc = glGetUniformLocation(program, uni.c_str());
+   glProgramUniform1i(program, texloc, texture.getStage());
 }
 
 /// \fn ShaderObject::getAttribute(const char* name)
@@ -141,3 +165,5 @@ GLint ShaderObject::getUniformLocation(const String& name) const
    const std::string loc = name.toUtf8();
    return glGetUniformLocationARB(program, loc.c_str());
 }
+
+} // namespace Graphics

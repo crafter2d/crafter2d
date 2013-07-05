@@ -23,8 +23,6 @@
 #endif
 
 #include <string.h>
-#include <iostream>
-#include <fstream>
 #include <GL/glu.h>
 
 #include "core/smartptr/autoptr.h"
@@ -39,7 +37,7 @@ using namespace Graphics;
 	 \brief Constructor of the Shader class, for initialization of the member variables.
  */
 Shader::Shader():
-   shader(0)
+   mShader(0)
 {
 }
 
@@ -61,7 +59,7 @@ Shader::~Shader()
 bool Shader::compile(const String& filename)
 {
    int length = 0;
-   GLcharARB* code = load(filename, length);
+   GLchar* code = load(filename, length);
    if( code != NULL )
    {
       bool suc = compile( code, length );
@@ -74,21 +72,21 @@ bool Shader::compile(const String& filename)
 
 bool Shader::compile( const char* source, int length )
 {
-	assert( shader != 0 && "Shader.compile: shader object is not initialized. make sure you use the Vertex- or FragmentShader class." );
+	assert(mShader != 0 && "Shader.compile: shader object is not initialized. make sure you use the Vertex- or FragmentShader class.");
 
 	// load in the shader and compile it
-	glShaderSourceARB (shader, 1, (const GLcharARB**)&source, &length);
-	glCompileShaderARB (shader);
+	glShaderSource(mShader, 1, (const GLchar**)&source, &length);
+	glCompileShader(mShader);
 
 	// see if the code was compiled successfully
    GLint compiled;
-	glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
+   glGetShaderiv(mShader, GL_COMPILE_STATUS, &compiled);
 	if ( compiled != GL_TRUE )
    {
 		GLint maxLength = 0;
-		glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &maxLength);
-		GLcharARB *log = new GLcharARB[maxLength];
-		glGetInfoLogARB(shader, maxLength, &length, log);
+      glGetShaderiv(mShader, GL_INFO_LOG_LENGTH, &maxLength);
+		GLchar *log = new GLcharARB[maxLength];
+		glGetShaderInfoLog(mShader, maxLength, &length, log);
       Log::getInstance().info("Compiler log: %s", log);
 		delete[] log;
 		return false;
@@ -114,7 +112,7 @@ GLcharARB* Shader::load (const String& filename, int& length)
 	length = pfile->size();
 
 	// read in the complete data
-	GLcharARB* source = new GLcharARB[length+1];
+	GLchar* source = new GLchar[length+1];
 	if ( source == NULL )
    {
       Log::getInstance().error("Shader.load: No memory available for source.");
@@ -134,9 +132,10 @@ GLcharARB* Shader::load (const String& filename, int& length)
  */
 void Shader::release()
 {
-	if (shader != 0) {
-		glDeleteObjectARB (shader);
-		shader = 0;
+	if (mShader != 0)
+   {
+		glDeleteShader(mShader);
+		mShader = 0;
 	}
 }
 
@@ -146,7 +145,7 @@ void Shader::release()
  */
 VertexShader::VertexShader()
 {
-	handle( glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB) );
+	handle(glCreateShader(GL_VERTEX_SHADER));
 	if ( handle() == NULL )
    {
       Log::getInstance().error("VertexShader: Can not create shader object.");
@@ -159,7 +158,7 @@ VertexShader::VertexShader()
  */
 FragmentShader::FragmentShader()
 {
-	handle( glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB) );
+	handle(glCreateShader(GL_FRAGMENT_SHADER));
 	if ( handle() == NULL )
    {
       Log::getInstance().error("FragmentShader: Can not create shader object.");

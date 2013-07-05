@@ -42,7 +42,7 @@ public:
    const UChar operator[](int index) const;
          UChar operator[](int index);
 
-   const String& operator=(const char c);
+   const String& operator=(const UChar c);
    const String& operator=(const String& that);
    const String& operator=(const UChar* pstring);
    const String& operator=(const std::string& that);
@@ -77,7 +77,7 @@ public:
    void append(const String& that);
    void setTo(const char* ptext, int length);
 
-   void replace(char original, char newtext);
+   void replace(UChar original, UChar newtext);
    void replace(int start, int length, const String& with);
    void remove(int start, int count);
 
@@ -85,9 +85,9 @@ public:
    String unescape() const;
 
  // searching
-   int indexOf(char character, int start = 0) const;
-   int lastIndexOf(char character) const;
-   int lastIndexOf(char character, int start, int end) const;
+   int indexOf(UChar character, int start = 0) const;
+   int lastIndexOf(UChar character) const;
+   int lastIndexOf(UChar character, int start, int end) const;
 
  // conversion
    std::string  toUtf8() const;

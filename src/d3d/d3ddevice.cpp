@@ -1,6 +1,7 @@
 
 #include "d3ddevice.h"
 
+#include "d3dcodepath.h"
 #include "d3drendercontext.h"
 
 namespace Graphics
@@ -59,9 +60,9 @@ RenderContext* D3DDevice::createRenderContext()
    return new D3DRenderContext(mpContext);
 }
 
-CodePath* D3DDevice::createCodePath(CodePath::PathType type)
+CodePath* D3DDevice::createCodePath()
 {
-   return NULL;
+   return new D3DCodePath(*this);
 }
 
 VertexBuffer* D3DDevice::createVertexBuffer(VertexInputLayout& layout)

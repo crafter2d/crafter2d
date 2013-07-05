@@ -19,7 +19,11 @@ namespace Graphics
    public:
       explicit D3DCodePath(D3DDevice& device);
 
-      virtual bool load(VertexInputLayout& layout, const String& vertex, const String& fragment) override;
+      virtual bool      load(VertexInputLayout& layout, const String& vertex, const String& fragment) override;
+      virtual void      release() override;
+
+      virtual void      enable() const override;
+	   virtual void      disable() const override;
 
    private:
 

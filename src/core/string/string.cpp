@@ -79,7 +79,7 @@ UChar String::operator[](int index)
    return mString[index];
 }
 
-const String& String::operator=(const char c)
+const String& String::operator=(const UChar c)
 {
    mString = c;
    return *this;
@@ -225,7 +225,7 @@ void String::setTo(const char* ptext, int length)
    mString = UnicodeString::fromUTF8(piece);
 }
 
-void String::replace(char original, char newtext)
+void String::replace(UChar original, UChar newtext)
 {
    mString.findAndReplace(original, newtext);
 }
@@ -256,17 +256,17 @@ String String::unescape() const
 
 // - Searching
 
-int String::indexOf(char character, int start) const
+int String::indexOf(UChar character, int start) const
 {
    return mString.indexOf(character, start);
 }
 
-int String::lastIndexOf(char character) const
+int String::lastIndexOf(UChar character) const
 {
    return mString.lastIndexOf(character);
 }
 
-int String::lastIndexOf(char character, int start, int end) const
+int String::lastIndexOf(UChar character, int start, int end) const
 {
    return mString.lastIndexOf(character, start, end);
 }

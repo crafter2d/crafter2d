@@ -198,7 +198,7 @@ void World::update(DirtySet& set, float delta)
    }
 }
 
-void World::updateClient(float delta)
+void World::updateClient(Graphics::RenderContext& context, float delta)
 {
    getSimulator().run(delta);
 
@@ -520,11 +520,11 @@ void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, 
    mpScript->run(UTEXT("onObjectCollision"), 4, args);
 }
 
-void World::onViewportChanged(const Graphics::Viewport& viewport)
+void World::onViewportChanged(Graphics::RenderContext& context)
 {
    for ( int index = 0; index < layers.size(); ++index )
    {
       Layer* player = layers[index];
-      player->onViewportChanged(viewport);
+      player->onViewportChanged(context);
    }
 }

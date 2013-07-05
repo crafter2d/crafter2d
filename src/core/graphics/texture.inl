@@ -32,6 +32,21 @@ INLINE void Texture::setName(const String& name)
    mName = name;
 }
 
+INLINE const String& Texture::getUniform() const
+{
+   return mUniform;
+}
+      
+INLINE void Texture::setUniform(const String& uniform)
+{
+   mUniform = uniform;
+}
+
+INLINE int Texture::getStage() const
+{
+   return mTexStage;
+}
+
 INLINE void Texture::setStage(int stage)
 {
    mTexStage = stage;

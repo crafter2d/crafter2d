@@ -22,6 +22,7 @@
 
 #include "core/math/point.h"
 #include "core/math/xform.h"
+#include "core/math/matrix4.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/indexbuffer.h"
 #include "core/graphics/texture.h"
@@ -87,8 +88,10 @@ bool TopDownLayer::initialize(Graphics::Device& device)
 	return true;
 }
 
-void TopDownLayer::onViewportChanged(const Graphics::Viewport& viewport)
+void TopDownLayer::onViewportChanged(Graphics::RenderContext& context)
 {
+   const Graphics::Viewport& viewport = context.getViewport();
+
 	// calculate the maximum number of tiles on the screen
 	maxTilesX = MIN(viewport.getWidth()  / mTileSet.getTileWidth() , getWidth());
    maxTilesY = MIN(viewport.getHeight() / mTileSet.getTileHeight(), getHeight());
@@ -96,6 +99,8 @@ void TopDownLayer::onViewportChanged(const Graphics::Viewport& viewport)
 	// calculate maximum tiles to scroll
 	xscrollMax = MAX((getWidth() - maxTilesX) * tileWidth , 0);
 	yscrollMax = MAX((getHeight() - maxTilesY) * tileHeight, 0);
+
+   Layer::onViewportChanged(context);
 }
 
 /// \fn Layer::draw()
@@ -180,14 +185,11 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
       dirty = false;
 	}
 
-   XForm matrix;
-   matrix.setPosition(Vector(-xscroll, -yscroll));
-
    // draw layer at onces
-   context.setWorldMatrix(matrix);
    context.setEffect(getEffect());
    context.setVertexBuffer(*vb);
    context.setIndexBuffer(*ib);
+   context.setUniformBuffer(*ub);
 
 	context.drawTriangles(0, verts_to_render);
 }

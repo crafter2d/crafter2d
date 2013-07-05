@@ -27,8 +27,6 @@
 #include "texture/textureloaderfactory.h"
 #include "texture/abstracttextureloader.h"
 
-#include "cgpath.h"
-#include "programpath.h"
 #include "oglblendstate.h"
 #include "oglfont.h"
 #include "ogltexture.h"
@@ -42,7 +40,6 @@ namespace Graphics
 
 OGLDevice::OGLDevice():
    Device(),
-   mCG(),
    mFreeTypeLib(NULL)
 {
 }
@@ -53,11 +50,6 @@ OGLDevice::~OGLDevice()
 }
 
 // - Query
-
-bool OGLDevice::supportCG() const
-{
-   return mCG.isValid();
-}
 
 bool OGLDevice::supportGLSL() const
 {
@@ -75,9 +67,9 @@ bool OGLDevice::create(int windowhandle, int width, int height)
    log << "Graphics card:\t\t" << (char*)glGetString(GL_VENDOR) << "\n";
    log << "OpenGL version:\t\t" << (char*)glGetString(GL_VERSION) << "\n";
 
-   if ( !GLEE_VERSION_1_3 )
+   if ( !GLEE_VERSION_3_2 )
    {
-      log << "OpenGL version 1.3 is required to run this application.\n";
+      log << "OpenGL version 3.2 is required to run this application.\n";
       return false;
    }
 
@@ -93,26 +85,20 @@ bool OGLDevice::create(int windowhandle, int width, int height)
    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
    log << "Max texture size:\t" << maxTextureSize << "\n";
 
-	// see if VBO's are supported
-   if ( GLEE_ARB_vertex_buffer_object )
-      log << "Using VBO extention for vertex storage.\n";
-   else
-      log << "Videocard does not support the VBO extension. Falling back on vertex arrays.\n";
-
-   // create the context
-	if ( !mCG.initialize () )
+	// see if required buffer objects are supported
+   if ( !GL_ARB_vertex_buffer_object || !GL_ARB_uniform_buffer_object )
+   {
+      log << "Required buffer objects are not available. Can not proceed.\n";
       return false;
-
+   }
+   
    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
    glShadeModel(GL_SMOOTH);
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
    glTranslatef(25, 125, 0);
-
-   float mat[16];
-   glGetFloatv(GL_MODELVIEW_MATRIX, mat);
-
+   
    // initialize free type
    if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
       return false;
@@ -125,24 +111,9 @@ RenderContext* OGLDevice::createRenderContext()
    return new OGLRenderContext();
 }
 
-CodePath* OGLDevice::createCodePath(CodePath::PathType type)
+CodePath* OGLDevice::createCodePath()
 {
-   switch ( type )
-   {
-   case CodePath::ECG:
-      if ( supportCG() )
-		   return new CGPath(mCG);
-      break;
-   case CodePath::EGLSL:
-		if ( supportGLSL() )
-			return new ShaderPath();
-		else
-			return new ProgramPath();
-   default:
-      break;
-	}
-
-   return NULL;
+   return new ShaderPath();
 }
 
 /// \fn OGLDevice::createVertexBuffer()

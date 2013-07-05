@@ -26,7 +26,9 @@ class String;
 
 namespace Graphics
 {
+   class Texture;
    class VertexInputLayout;
+   class UniformBuffer;
 
    /*!
    @author Jeroen Broekhuizen
@@ -38,7 +40,6 @@ namespace Graphics
    class CORE_API CodePath
    {
    public:
-      enum PathType { ECG, EGLSL };
 
 	   /*!
            \fn CodePath::load(const String& vertex, const String& fragment)
@@ -70,12 +71,12 @@ namespace Graphics
        */
 	   virtual void disable () const = 0;
 
-      /*!
-           \fn CodePath::getType()
-	        \brief Returns the type of code path this object represents.
-       */
-      virtual PathType getType() const = 0;
+      /// \brief Looks up the uniform block in the shader and returns it as a buffer object.
+      virtual UniformBuffer* getUniformBuffer(const String& name) const = 0;
 
+      /// \brief binds the texture to the uniform to the stage (unit)
+      virtual void bindTexture(const Texture& uniform) = 0;
+      
 	   /*!
            \fn CodePath::getUniformLocation(const String& name)
 	        \brief Tries to retreive the location of a unifom variable in the shader.
@@ -83,11 +84,6 @@ namespace Graphics
 		     \returns a 0 or higher if it is found, -1 otherwise
        */
 	   virtual int getUniformLocation (const String& name) const = 0;
-
-      /*!
-       * \brief Prepare the vertex shader with the updated projection & world matrices
-       */
-      virtual void setUniformStateMatrix(int index) const = 0;
 
 	   /*!
            \fn CodePath::setUniform1i(int index, int val)

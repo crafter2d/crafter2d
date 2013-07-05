@@ -31,6 +31,11 @@
 #include "core/graphics/device.h"
 #include "core/graphics/indexbuffer.h"
 #include "core/graphics/vertexbuffer.h"
+#include "core/graphics/uniformbuffer.h"
+#include "core/graphics/rendercontext.h"
+#include "core/graphics/viewport.h"
+#include "core/graphics/texture.h"
+#include "core/math/matrix4.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 
@@ -65,6 +70,7 @@ Layer::Layer():
    mInputLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0),
    vb(NULL),
    ib(NULL),
+   ub(NULL),
    texcoordLookup(0),
    mpDefinition(NULL),
    mEffect(mInputLayout)
@@ -104,7 +110,8 @@ bool Layer::initialize(Device& device)
       return false;
    }
 
-   if ( !createBuffers(device, getWidth(), getHeight()) )
+   if ( !createBuffers(device, getWidth(), getHeight())
+     || !createUniformBuffers() )
    {
       return false;
    }
@@ -125,20 +132,23 @@ bool Layer::initialize(Device& device)
    return true;
 }
 
-/// \fn Layer::onViewportChanged(const Graphics::Viewport& viewport)
+/// \fn Layer::onViewportChanged(const Graphics::RenderContext& context)
 /// \brief Called when the viewports dimensions have been changed. Precalculates maximum allowable scrolling 
 /// values and initializes the OpenGL object of the layer for rendering.
 /// \retval true the layer was successfully prepaired
 /// \retval false the vertex buffer could not be created
-void Layer::onViewportChanged(const Graphics::Viewport& viewport)
+void Layer::onViewportChanged(Graphics::RenderContext& context)
 {
-   PURE_VIRTUAL;
+   const Graphics::Viewport& viewport = context.getViewport();
+   mConstants.projection = Matrix4::getOrtho(0, (float)viewport.getWidth(), 0, (float)viewport.getHeight());
+
+   ub->set(context, &mConstants);
 }
 
 Vector Layer::getScrollArea() const
 {
-   int tilesX = MAX(getWidth() - maxTilesX, 0);
-   int tilesY = MAX(getHeight() - maxTilesY, 0);
+   float tilesX = (float) MAX(getWidth() - maxTilesX, 0);
+   float tilesY = (float) MAX(getHeight() - maxTilesY, 0);
 
    return Vector(tileset().getTileWidth() * tilesX, mTileSet.getTileHeight() * tilesY);
 }
@@ -228,15 +238,25 @@ bool Layer::createBuffers(Device& device, int width, int height)
 		return false;
 	}
 
+   size = width * height * 6; // each tile is 6 indices
    ib = device.createIndexBuffer();
-   if ( ib == NULL )
+   if ( ib == NULL || !ib->create(IndexBuffer::eShort, size, NULL) )
    {
       return false;
    }
 
-   size = width * height * 6; // each tile is 6 indices
-   if ( !ib->create(IndexBuffer::eShort, size, NULL) )
+   //mConstants.projection = Matrix4::createProjectionMatrix(
+   
+   return true;
+}
+
+bool Layer::createUniformBuffers()
+{
+   ub = mEffect.getUniformBuffer(UTEXT("mpv"));
+   if ( ub == NULL )
    {
+      // could not create the uniform buffer object
+      // perhaps wrong name??
       return false;
    }
 

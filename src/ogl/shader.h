@@ -26,6 +26,9 @@ class String;
 
 namespace Graphics
 {
+   class ShaderUniformBlock;
+   class Texture;
+
    /**
    @author Jeroen Broekhuizen
    \brief Base class for the shaders. It profides basic functionality needed to load and compile a vertex- and fragment. Don't
@@ -35,22 +38,26 @@ namespace Graphics
    class Shader
    {
    public:
-                     Shader();
-      virtual        ~Shader();
+              Shader();
+      virtual ~Shader();
 
-	   void           release();
-      bool           compile( const String& filename );
-      bool           compile( const char* source, int len );
+    // get/set
+      GLuint handle() const;
 
-      void           handle( GLhandleARB shader );
-      GLhandleARB    handle() const;
-
-   private:
-      GLcharARB*     load( const String& file, int& length );
+    // compilation
+      bool    compile(const String& filename);
+      bool    compile(const char* source, int len);
+      void    release();
 
    protected:
+    // get/set
+      void   handle(GLuint shader);
+
+   private:
+      GLchar* load(const String& file, int& length);
+
 	   /// \brief The OpenGL shader object handle
-	   GLhandleARB shader;
+	   GLuint mShader;
    };
 
    /**

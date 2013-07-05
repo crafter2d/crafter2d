@@ -73,7 +73,7 @@ void DataStream::readFloat(float& value)
 
 void DataStream::readBool(bool& value)
 {
-   value = static_cast<bool>(readByte());
+   value = readByte() != 0;
 }
 
 void DataStream::readChar(char& value)

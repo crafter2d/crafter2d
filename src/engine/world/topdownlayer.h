@@ -41,7 +41,7 @@ public:
    virtual Point pointToTile(const Point& point);
 
  // notifications
-   virtual void onViewportChanged(const Graphics::Viewport& viewport);
+   virtual void onViewportChanged(Graphics::RenderContext& context);
 
 protected:
    virtual TileRow*  createTileRows(int width, int height);

@@ -45,11 +45,15 @@ namespace Graphics
       virtual void   enable() const = 0;
       virtual void   disable () const = 0;
 
+      int            getStage() const;
       void           setStage (int stage);
 
     // get/set
       const String& getName() const;
       void          setName(const String& name);
+
+      const String& getUniform() const;
+      void          setUniform(const String& uniform);
 
       virtual bool   isValid() const = 0;
       int            getWidth() const;
@@ -63,6 +67,7 @@ namespace Graphics
       void           flipIt(unsigned char* buffer);
 
       String mName;
+      String mUniform;
       int   _width;
       int   _height;
       int   _actualwidth;

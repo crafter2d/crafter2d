@@ -42,7 +42,7 @@ namespace Graphics
  */
    Effect::Effect(VertexInputLayout& layout):
    name(),
-   stages(),
+   mTextures(),
    mLayout(layout),
    mpCodePath(NULL),
    mpBlendStateEnabled(NULL),
@@ -92,11 +92,13 @@ bool Effect::load(Device& device, const String& file)
    name = effect->Attribute ("name");
 
 	// try to load in the textures
-	if ( !processTextures(device, *effect) || !processCode(device, *effect, UTEXT("../shaders/")) || !processBlendState(device, *effect) )
+	if ( !processCode(device, *effect, UTEXT("../shaders/")) 
+     || !processBlendState(device, *effect)
+     || !processTextures(device, *effect) )
+   {
 		return false;
+   }
 
-	// find the uniform indices of the texture
-	postprocessTextures();
 	return true;
 }
 
@@ -115,7 +117,7 @@ void Effect::destroy ()
 		mpCodePath = NULL;
 	}
 
-	stages.clear ();
+	mTextures.clear ();
 }
 
 /*!
@@ -131,8 +133,10 @@ bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effec
    {
       TexStage stage;
 
+      TexturePtr texture;
+
 		// process this texture
-    	stage.uniform = ptexture->Attribute("uniform");
+
     	const TiXmlText* file = static_cast<const TiXmlText*>(ptexture->FirstChild());
       const char* ptype = ptexture->Attribute("type");
 		if ( ptype != NULL && strcmp(ptype, "normcube") == 0 )
@@ -145,45 +149,29 @@ bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effec
       {
 			// must be a normal texture
          String filename(file->ValueStr());
-         stage.tex = ResourceManager::getInstance().getTexture(device, filename);
-         if ( !stage.tex.isValid() )
+         texture = ResourceManager::getInstance().getTexture(device, filename);
+         if ( !texture.isValid() )
          {
             Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());
 				return false;
 			}
 		}
 
-      stages.push_back(stage);
-		stage.tex->setStage(static_cast<int>(stages.size()-1));
+      ASSERT(texture.isValid());
+
+      texture->setUniform(String::fromUtf8(ptexture->Attribute("uniform")));
+      texture->setStage(static_cast<int>(mTextures.size()));
+
+      mTextures.push_back(texture);
+		
+      mpCodePath->bindTexture(*texture);
 
 		// now iterate over the rest of the textures
 		ptexture = static_cast<const TiXmlElement*>(effect.IterateChildren ("texture", ptexture));
 	}
 
 	// we need at least one texture
-   return !stages.empty();
-}
-
-/*!
-    \fn Effect::postprocessTextures()
-	 \brief When GLSL is supported the uniform location of the textures are queried, otherwise
-	 nothing is done.
-	 \returns true when no errors are detected, false otherwise.
- */
-bool Effect::postprocessTextures()
-{
-   // get the uniform locations of the textures in the fragment shader
-   for ( Stages::size_type s = 0; s < stages.size(); ++s)
-   {
-      stages[s].index = mpCodePath->getUniformLocation(stages[s].uniform);
-      if (stages[s].index == -1)
-      {
-         Log::getInstance().error("Can not find %s", stages[s].uniform.toUtf8());
-         return false;
-      }
-   }
-
-	return true;
+   return !mTextures.empty();
 }
 
 /*!
@@ -202,14 +190,6 @@ bool Effect::processCode(Graphics::Device& device, const TiXmlElement& effect, c
    {
       Log::getInstance().error("Effect.processCode: effect file doesn't contain a code block!");
 		return false;
-   }
-
-   // get the code type
-   CodePath::PathType pathtype = CodePath::ECG;
-   const char* ptype = pcode_part->Attribute("type");
-   if ( stricmp(ptype, "glsl") == 0 )
-   {
-      pathtype = CodePath::EGLSL;
    }
 
    // load the vertex shader
@@ -238,7 +218,7 @@ bool Effect::processCode(Graphics::Device& device, const TiXmlElement& effect, c
    String fragmentfile = path + String::fromUtf8(fragment);
 
    // now load the codepath
-   mpCodePath = device.createCodePath(pathtype);
+   mpCodePath = device.createCodePath();
    if ( mpCodePath == NULL || !mpCodePath->load(mLayout, vertexfile, fragmentfile) )
        return false;
 
@@ -286,16 +266,22 @@ const TexturePtr Effect::resolveTexture (const String& uniform) const
 
 const TexturePtr Effect::findTexture(const String& uniform) const
 {
-   for ( Stages::size_type s = 0; s < stages.size(); ++s )
+   for ( Textures::size_type s = 0; s < mTextures.size(); ++s )
    {
-      const TexStage& stage = stages[s];
-      if ( uniform == stage.uniform )
+      const TexturePtr& texture = mTextures[s];
+      if ( uniform == texture->getName() )
       {
-         return stage.tex;
+         return texture;
       }
    }
 
    return TexturePtr();
+}
+
+UniformBuffer* Effect::getUniformBuffer(const String& name) const
+{
+   ASSERT_PTR(mpCodePath);
+   return mpCodePath->getUniformBuffer(name);
 }
 
 /*!
@@ -304,20 +290,17 @@ const TexturePtr Effect::findTexture(const String& uniform) const
  */
 void Effect::enable(RenderContext& context) const
 {
-   if ( mpBlendStateEnabled )
+   if ( mpBlendStateEnabled != NULL )
    {
       context.setBlendState(*mpBlendStateEnabled);
    }
 
    mpCodePath->enable();
-   mpCodePath->setUniformStateMatrix(mModelViewProjectArg);
 
-   for ( Stages::size_type s = 0; s < stages.size(); ++s )
+   for ( Textures::size_type s = 0; s < mTextures.size(); ++s )
    {
-	   const TexStage& stage = stages[s];
-      stage.tex->enable();
-
-      mpCodePath->setUniform1i(stage.index, s);
+	   const TexturePtr& texture = mTextures[s];
+      texture->enable();
    }
 }
 
@@ -333,18 +316,6 @@ void Effect::disable(RenderContext& context) const
    }
 
    mpCodePath->disable();
-
-   // disable the textures and reset their environment
-   for ( Stages::size_type s = 0; s < stages.size(); ++s )
-   {
-      const TexStage& stage = stages[s];
-      stage.tex->disable();
-   }
-}
-
-void Effect::updateStateMatrices() const
-{
-   mpCodePath->setUniformStateMatrix(mModelViewProjectArg);
 }
 
 } // end namespace

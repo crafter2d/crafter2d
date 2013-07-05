@@ -13,11 +13,15 @@ namespace Graphics
    public:
       explicit D3DRenderContext(ID3D11DeviceContext* mpContext);
 
+    // query
+      ID3D11DeviceContext& getContext();
+
     // operations
       virtual void setBlendState(const BlendState& state);
       virtual void setEffect(const Effect& effect);
       virtual void setVertexBuffer(const VertexBuffer& buffer);
       virtual void setIndexBuffer(const IndexBuffer& buffer);
+      virtual void setUniformBuffer(const UniformBuffer& buffer);
 
       /// Sets the projection matrix to orthographic using the current viewport
       virtual void setOrthoProjection();

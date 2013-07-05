@@ -15,7 +15,7 @@ includedirs { "src" }
 
 if ( os.is("windows") ) then
 	-- this is an export dll
-	defines { "WIN32", "CORE_EXPORTS" }
+	defines { "WIN32", "CORE_EXPORTS", "UNICODE" }
 	
 	excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*" }
 		

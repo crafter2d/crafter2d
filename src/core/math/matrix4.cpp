@@ -4,6 +4,23 @@
 #include "core/defines.h"
 #include "vector.h"
 
+Matrix4 Matrix4::getOrtho(float left, float right, float top, float bottom)
+{
+   Matrix4 result;
+
+   const float near = -1;
+   const float far  = 1;
+   
+   result.mMatrix[0]    = 2 / (right - left);
+   result.mMatrix[3]    = -(right + left) / (right - left);
+   result.mMatrix[5]    = 2 / (top - bottom);
+   result.mMatrix[7]    = -(top + bottom) / (top - bottom);
+   result.mMatrix[10]   = -2 / (far - near);
+   result.mMatrix[11]   = -(far + near) / (far - near);
+
+   return result;
+}
+
 Matrix4::Matrix4():
 	mMatrix()
 {

@@ -31,10 +31,10 @@ namespace Graphics
       virtual void render(const String& text);
 
    private:
-      typedef std::map<char, FontChar*> Characters;
+      typedef std::map<UChar, FontChar*> Characters;
 
     // loading
-      FontChar* loadGlyph(char character);
+      FontChar* loadGlyph(UChar character);
 
     // helpers
       FT_BBox        measure(char c);

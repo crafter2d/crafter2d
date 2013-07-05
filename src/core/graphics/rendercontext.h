@@ -15,6 +15,7 @@ namespace Graphics
    class Effect;
    class IndexBuffer;
    class VertexBuffer;
+   class UniformBuffer;
 
    class CORE_API RenderContext
    {
@@ -34,6 +35,7 @@ namespace Graphics
       virtual void setEffect(const Effect& effect) = 0;
       virtual void setVertexBuffer(const VertexBuffer& buffer) = 0;
       virtual void setIndexBuffer(const IndexBuffer& buffer) = 0;
+      virtual void setUniformBuffer(const UniformBuffer& buffer) = 0;
 
       /// Sets the projection matrix to orthographic using the current viewport
       virtual void setOrthoProjection() = 0;

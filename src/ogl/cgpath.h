@@ -56,7 +56,6 @@ namespace Graphics
 	   virtual void     enable() const;
 	   virtual void     disable() const;
 	
-      virtual PathType getType() const;
 	   virtual int      getUniformLocation (const String& name) const;
 
       virtual void     setUniformStateMatrix(int index) const;
@@ -66,14 +65,19 @@ namespace Graphics
 	   virtual void     setUniform4f (int index, float x, float y, float z, float w);
 
    private:
+      typedef std::vector<CGparameter> Parameters;
+
+    // operations
       bool  loadVertexProgram(const String& vertexfile);
       bool  loadFragmentProgram(const String& fragmentfile);
 
       void  CGCompileError(CGcontext context, const String& type, const String& file);
 
-      CGEngine& mCG;
-      CGprogram   vp, fp;
-      mutable std::vector<CGparameter> _userparams;
+    // data
+      CGEngine&          mCG;
+      CGprogram          vp;
+      CGprogram          fp;
+      mutable Parameters _userparams;
    };
 };
 

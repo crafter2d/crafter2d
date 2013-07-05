@@ -24,20 +24,20 @@ namespace Graphics
 
 /// \fn Shader::handle( GLhandleARB _shader )
 /// \brief Set a new handle of the shader.
-INLINE void Shader::handle( GLhandleARB _shader )
+INLINE void Shader::handle(GLuint shader)
 {
-   if (shader)
+   if ( mShader != NULL )
       release();
 
-   shader = _shader;
+   mShader = shader;
 }
 
 /// \fn Shader::handle()
 /// \brief Use this function to get the internal handle to the shader object. It is recommended for advanced users only.
 /// \returns Handle to the shader object (either a vertex- or fragment shader).
-INLINE GLhandleARB Shader::handle() const
+INLINE GLuint Shader::handle() const
 {
-	return shader;
+	return mShader;
 }
 
 };
