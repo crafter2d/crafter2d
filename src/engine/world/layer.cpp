@@ -111,7 +111,7 @@ bool Layer::initialize(Device& device)
    }
 
    if ( !createBuffers(device, getWidth(), getHeight())
-     || !createUniformBuffers() )
+     || !createUniformBuffers(device) )
    {
       return false;
    }
@@ -140,7 +140,9 @@ bool Layer::initialize(Device& device)
 void Layer::onViewportChanged(Graphics::RenderContext& context)
 {
    const Graphics::Viewport& viewport = context.getViewport();
-   mConstants.projection = Matrix4::getOrtho(0, (float)viewport.getWidth(), 0, (float)viewport.getHeight());
+   mConstants.projection.setOrtho(0, (float)viewport.getWidth(), 0, (float)viewport.getHeight());
+   mConstants.world.setIdentity();
+   mConstants.object.setIdentity();
 
    ub->set(context, &mConstants);
 }
@@ -250,10 +252,16 @@ bool Layer::createBuffers(Device& device, int width, int height)
    return true;
 }
 
-bool Layer::createUniformBuffers()
+bool Layer::createUniformBuffers(Graphics::Device& device)
 {
+   UNIFORM_BUFFER_DESC descs[] = {
+      { UTEXT("proj"), sizeof(float) * 16 },
+      { UTEXT("world"), sizeof(float) * 16 },
+      { UTEXT("object"), sizeof(float) * 16 },
+   };
+
    ub = mEffect.getUniformBuffer(UTEXT("mpv"));
-   if ( ub == NULL )
+   if ( ub == NULL || !ub->create(device, descs, 3) )
    {
       // could not create the uniform buffer object
       // perhaps wrong name??

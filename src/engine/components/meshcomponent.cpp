@@ -123,10 +123,12 @@ void MeshComponent::handleMessage(ComponentMessage& message)
 
 void MeshComponent::update(float delta)
 {
+   /*
    if ( mpAnimator != NULL && mpAnimator->animate(delta) )
    {
       updateBuffers();
    }
+   */
 }
 
 void MeshComponent::updateBuffers()
@@ -152,10 +154,10 @@ void MeshComponent::updateBuffers()
 
 void MeshComponent::render(RenderContext& context) const
 {
-   context.setObjectMatrix(mTransform);
+   //context.setObjectMatrix(mTransform);
    context.setEffect(mEffect);
-   context.setVertexBuffer(*mpVertexBuffer);
-   context.setIndexBuffer(*mpIndexBuffer);
+   //context.setVertexBuffer(*mpVertexBuffer);
+   //context.setIndexBuffer(*mpIndexBuffer);
 
-   context.drawTriangleFan(0, 4);
+   //context.drawTriangleFan(0, 4);
 }

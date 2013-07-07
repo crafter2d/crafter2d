@@ -221,14 +221,10 @@ void World::updateClient(Graphics::RenderContext& context, float delta)
    }
 }
 
-#include "core/math/xform.h"
-
 /// \fn World::draw(Graphics::RenderContext& context)
 /// \brief Draws the world on screen
 void World::draw(Graphics::RenderContext& context) const
 {
-   context.setObjectMatrix(XForm::identity());
-
    // render the layers
    for ( int i = 0; i < layers.size(); i++ )
    {

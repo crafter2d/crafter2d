@@ -169,11 +169,12 @@ private:
    {
       Matrix4 projection;
       Matrix4 world;
+      Matrix4 object;
    };
 
  // operations
    bool createBuffers(Graphics::Device& device, int width, int height);
-   bool createUniformBuffers();
+   bool createUniformBuffers(Graphics::Device& device);
 
  // members
    LayerDefinition*  mpDefinition;

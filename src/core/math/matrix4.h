@@ -9,9 +9,6 @@ class Vector;
 class CORE_API Matrix4
 {
 public:
-
-   static Matrix4 getOrtho(float left, float right, float top, float bottom);
-
    Matrix4();
    Matrix4(const float* pmatrix);
    Matrix4(float xx, float xy, float xz, float xw,
@@ -24,8 +21,12 @@ public:
 
    void asOpenGL(float mat[16]) const;
 
+   void setOrtho(float left, float right, float top, float bottom);
+
    void setIdentity();
    void setArray(const float* pmatrix);
+
+   //Matrix4 transpose();
       
    Matrix4& translate(float x, float y, float z);
    Matrix4& translate(const Vector& position);

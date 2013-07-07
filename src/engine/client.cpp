@@ -167,8 +167,8 @@ void Client::render(float delta)
    static const String sPaint = UTEXT("paint");
 
    mpRenderContext->clear();
-   mpRenderContext->setObjectMatrix(XForm::identity());
-   mpRenderContext->setWorldMatrix(XForm::identity());
+   //mpRenderContext->setObjectMatrix(XForm::identity());
+   //mpRenderContext->setWorldMatrix(XForm::identity());
 
    //glAlphaFunc (GL_GREATER, 0.1f);
    //glEnable (GL_ALPHA_TEST);
@@ -541,7 +541,7 @@ void Client::onWindowResized()
    Graphics::Viewport viewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
 
    mpRenderContext->setViewport(viewport);
-   mpRenderContext->setOrthoProjection();
+   //mpRenderContext->setOrthoProjection();
    
    if ( hasWorld() )
    {

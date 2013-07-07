@@ -12,7 +12,7 @@ namespace Graphics
    struct UNIFORM_BUFFER_DESC
    {
       String name;
-      int    offset;
+      int    size;
    };
 
    class UniformBuffer

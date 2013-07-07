@@ -269,7 +269,7 @@ const TexturePtr Effect::findTexture(const String& uniform) const
    for ( Textures::size_type s = 0; s < mTextures.size(); ++s )
    {
       const TexturePtr& texture = mTextures[s];
-      if ( uniform == texture->getName() )
+      if ( uniform == texture->getUniform() )
       {
          return texture;
       }

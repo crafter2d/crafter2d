@@ -2,7 +2,7 @@
 <effect name="blockseffect">
 	<texture uniform="diffuseMap">blocks.png</texture>
 	<code type="CG" >
-		<vertex>simple_vert.cg</vertex>
-		<fragment>simple_frag.cg</fragment>
+		<vertex>vertex.glsl</vertex>
+		<fragment>fragment.glsl</fragment>
 	</code>
 </effect>

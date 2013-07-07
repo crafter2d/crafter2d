@@ -17,8 +17,8 @@ ShaderUniformBuffer::ShaderUniformBuffer(GLuint program, GLuint block):
 
 bool ShaderUniformBuffer::create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr)
 {
-   ASSERT(mProgram > 0);
-   ASSERT(mBlock > 0);
+   ASSERT(mProgram != GL_INVALID_INDEX);
+   ASSERT(mBlock != GL_INVALID_INDEX);
 
    return createUniforms(pdescs, nr) && createBuffer();
 }
@@ -57,15 +57,28 @@ bool ShaderUniformBuffer::createUniforms(UNIFORM_BUFFER_DESC* pdescs, int nr)
       glGetActiveUniformsiv(mProgram, 1, &pindices[index], GL_UNIFORM_OFFSET, &element.offset);
       glGetActiveUniformsiv(mProgram, 1, &pindices[index], GL_UNIFORM_SIZE  , &element.size);
 
+      int offset = 0;
       for ( int src = 0; src < nr; ++src )
       {
          UNIFORM_BUFFER_DESC& desc = pdescs[src];
          if ( desc.name == element.name )
          {
-            element.source_offset = desc.offset;
+            element.source_offset = offset;
             break;
          }
+         else
+         {
+            offset += desc.size;
+         }
       }
+   }
+
+   // determine total buffer size that needs to be allocated
+   mBufferSize = 0;
+   for ( int index = 0; index < nr; ++index )
+   {
+      UNIFORM_BUFFER_DESC& desc = pdescs[index];
+      mBufferSize += desc.size;
    }
 
    return true;
