@@ -75,42 +75,7 @@ namespace Graphics
       virtual UniformBuffer* getUniformBuffer(const String& name) const = 0;
 
       /// \brief binds the texture to the uniform to the stage (unit)
-      virtual void bindTexture(const Texture& uniform) = 0;
-      
-	   /*!
-           \fn CodePath::getUniformLocation(const String& name)
-	        \brief Tries to retreive the location of a unifom variable in the shader.
-		     \param name character string which should respresents an uniform variable in the shader
-		     \returns a 0 or higher if it is found, -1 otherwise
-       */
-	   virtual int getUniformLocation (const String& name) const = 0;
-
-	   /*!
-           \fn CodePath::setUniform1i(int index, int val)
-	        \brief Set the values of a one component uniform integer variable. The index of the uniform
-		     variable should be retreived with the getUniformLocation function.
-		     \param index the index of the uniform to set
-		     \param val the value to set this uniform with
-       */
-	   virtual void setUniform1i (int index, int val) = 0;
-
-	   /*!
-           \fn CodePath::setUniform3f(int index, float x, float y, float z)
-	        \brief Set the values of a two component uniform float variable. The index of the uniform
-		     variable should be retreived with the getUniformLocation function.
-		     \param index the index of the uniform to set
-		     \param x,y,z the values to set this uniform with
-       */
-	   virtual void setUniform3f (int index, float x, float y, float z) = 0;
-
-	   /*!
-           \fn CodePath::setUniform4f(int index, float x, float y, float z, float w)
-	        \brief Set the values of a four component uniform float variable. The index of the uniform
-		     variable should be retreived with the getUniformLocation function.
-		     \param index the index of the uniform to set
-		     \param x,y,z,w the values to set this uniform with
-       */
-	   virtual void setUniform4f (int index, float x, float y, float z, float w) = 0;
+      virtual bool bindTexture(const Texture& uniform) = 0;
    };
 };
 

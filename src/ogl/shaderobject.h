@@ -34,7 +34,7 @@ namespace Graphics
     // uniforms
       ShaderUniformBuffer* getUniformBuffer(const String& name) const;
 
-      void bindTexture(const Texture& uniform);
+      bool bindTexture(const Texture& uniform);
 
       GLint       getAttribute( const char* name ) const;
       GLint       getUniformLocation( const String& name ) const;

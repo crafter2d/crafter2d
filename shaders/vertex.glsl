@@ -6,8 +6,16 @@ layout (std140) uniform mpv
 	mat4 object;
 };
 
+out Data
+{
+	vec2 texCoord;
+} DataOut;
+
+in vec2 position;
+in vec2 tex;
+
 void main()
 {
-	gl_TexCoord[0] = gl_MultiTexCoord0;
-	gl_Position = gl_Vertex * object * world * proj;
+	DataOut.texCoord = tex;
+	gl_Position = vec4(position,0,1) * object * world * proj;
 }

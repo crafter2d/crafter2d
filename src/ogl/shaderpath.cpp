@@ -84,27 +84,7 @@ UniformBuffer* ShaderPath::getUniformBuffer(const String& name) const
    return shader.getUniformBuffer(name);
 }
 
-void ShaderPath::bindTexture(const Texture& texture)
+bool ShaderPath::bindTexture(const Texture& texture)
 {
-   shader.bindTexture(texture);
-}
-
-int ShaderPath::getUniformLocation (const String& name) const
-{
-	return shader.getUniformLocation(name);
-}
-
-void ShaderPath::setUniform1i (int index, int val)
-{
-	shader.setUniform1i(index, val);
-}
-
-void ShaderPath::setUniform3f (int index, float x, float y, float z)
-{
-	shader.setUniform3f (index, x, y, z);
-}
-
-void ShaderPath::setUniform4f (int index, float x, float y, float z, float w)
-{
-	shader.setUniform4f (index, x, y, z, w);
+   return shader.bindTexture(texture);
 }

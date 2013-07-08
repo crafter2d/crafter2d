@@ -154,10 +154,9 @@ void MeshComponent::updateBuffers()
 
 void MeshComponent::render(RenderContext& context) const
 {
-   //context.setObjectMatrix(mTransform);
    context.setEffect(mEffect);
-   //context.setVertexBuffer(*mpVertexBuffer);
-   //context.setIndexBuffer(*mpIndexBuffer);
+   context.setVertexBuffer(*mpVertexBuffer);
+   context.setIndexBuffer(*mpIndexBuffer);
 
-   //context.drawTriangleFan(0, 4);
+   context.drawTriangleFan(0, 4);
 }

@@ -128,11 +128,13 @@ void Effect::destroy ()
  */
 bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effect)
 {
+   ASSERT_PTR(mpCodePath);
+
+   mpCodePath->enable();
+
    const TiXmlElement* ptexture = static_cast<const TiXmlElement*>(effect.FirstChild("texture"));
    while ( ptexture != NULL )
    {
-      TexStage stage;
-
       TexturePtr texture;
 
 		// process this texture
@@ -164,7 +166,10 @@ bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effec
 
       mTextures.push_back(texture);
 		
-      mpCodePath->bindTexture(*texture);
+      if ( !mpCodePath->bindTexture(*texture) )
+      {
+         return false;
+      }
 
 		// now iterate over the rest of the textures
 		ptexture = static_cast<const TiXmlElement*>(effect.IterateChildren ("texture", ptexture));
@@ -221,9 +226,7 @@ bool Effect::processCode(Graphics::Device& device, const TiXmlElement& effect, c
    mpCodePath = device.createCodePath();
    if ( mpCodePath == NULL || !mpCodePath->load(mLayout, vertexfile, fragmentfile) )
        return false;
-
-   mModelViewProjectArg = mpCodePath->getUniformLocation(UTEXT("modelviewproj"));
-
+   
 	return true;
 }
 

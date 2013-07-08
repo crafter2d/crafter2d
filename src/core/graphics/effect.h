@@ -67,12 +67,6 @@ namespace Graphics
       void              updateStateMatrices() const;
 	
    private:
-      struct TexStage
-      {
-		   TexturePtr tex;
-         String     name;
-	   };
-
      // types
       typedef std::vector<TexturePtr> Textures;
 
@@ -88,7 +82,6 @@ namespace Graphics
       Graphics::CodePath*           mpCodePath;
       Graphics::BlendState*         mpBlendStateEnabled;
       Graphics::BlendState*         mpBlendStateDisabled;
-      int                           mModelViewProjectArg;
    };
 }
 

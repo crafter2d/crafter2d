@@ -145,11 +145,12 @@ ShaderUniformBuffer* ShaderObject::getUniformBuffer(const String& name) const
    return presult;
 }
 
-void ShaderObject::bindTexture(const Texture& texture)
+bool ShaderObject::bindTexture(const Texture& texture)
 {
    std::string uni = texture.getUniform().toUtf8();
    GLint texloc = glGetUniformLocation(program, uni.c_str());
    glProgramUniform1i(program, texloc, texture.getStage());
+   return glGetError() == GL_NO_ERROR;
 }
 
 /// \fn ShaderObject::getAttribute(const char* name)

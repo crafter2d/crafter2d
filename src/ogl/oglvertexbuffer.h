@@ -45,6 +45,7 @@ namespace Graphics
        virtual void disable() const;
 
    private:
+      void setupIndices();
 
       GLuint mVAO;
       GLuint mBuffer;

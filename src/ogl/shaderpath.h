@@ -20,21 +20,17 @@ namespace Graphics
    public:
       ShaderPath();
 
-	   virtual bool     load(VertexInputLayout& layout, const String& vertex, const String& fragment);
-	   virtual void     release();
+    // query
+      virtual UniformBuffer* getUniformBuffer(const String& name) const override;
 
-	   virtual void     enable() const;
-	   virtual void     disable() const;
+    // operations
+	   virtual bool     load(VertexInputLayout& layout, const String& vertex, const String& fragment) override;
+	   virtual void     release() override;
 
-      virtual UniformBuffer* getUniformBuffer(const String& name) const;
+	   virtual void     enable() const override;
+	   virtual void     disable() const override;
 
-      virtual void     bindTexture(const Texture& uniform);
-
-	   virtual int      getUniformLocation(const String& name) const;
-
-	   virtual void     setUniform1i(int index, int val);
-	   virtual void     setUniform3f(int index, float x, float y, float z);
-	   virtual void     setUniform4f(int index, float x, float y, float z, float w);
+      virtual bool     bindTexture(const Texture& uniform) override;
 
    private:
 	   ShaderObject shader;
