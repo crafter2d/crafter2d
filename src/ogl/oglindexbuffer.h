@@ -17,11 +17,11 @@ namespace Graphics
       virtual bool create(IndexFormat format, int elements, void* data);
       virtual void release();
 
-      virtual void enable() const;
-      virtual void disable() const;
+      virtual void enable(RenderContext& context) const;
+      virtual void disable(RenderContext& context) const;
 
-      virtual void* lock();
-      virtual void unlock();
+      virtual void* lock(RenderContext& context);
+      virtual void unlock(RenderContext& context);
 
    private:
       unsigned int mBuffer;

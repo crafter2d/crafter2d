@@ -70,6 +70,9 @@ bool Win32GameWindow::doCreate(const String& title, int width, int height, int b
       return false;
    }
 
+   mWidth = width;
+   mHeight = height;
+
    ::SetWindowLongPtr(mWnd, GWLP_USERDATA, (LONG)this);
 
    ::ShowWindow(mWnd, SW_SHOW);
@@ -91,6 +94,16 @@ void Win32GameWindow::doDestroy()
 int Win32GameWindow::getHandle() const
 {
    return (int) mWnd;
+}
+
+int Win32GameWindow::getWidth() const
+{
+   return mWidth;
+}
+
+int Win32GameWindow::getHeight() const
+{
+   return mHeight;
 }
 
 void Win32GameWindow::resize(int width, int height)

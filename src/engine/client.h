@@ -94,7 +94,8 @@ public:
    GameWindow&        getWindow();
    void               setWindow(GameWindow* pwindow);
 
-   Graphics::Device& getDevice();
+   Graphics::Device&        getDevice();
+   Graphics::RenderContext& getRenderContext();
 
  // operations
    virtual bool   loadWorld(const String& filename, const String& name);

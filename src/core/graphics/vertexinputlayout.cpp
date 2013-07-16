@@ -164,7 +164,7 @@ namespace Graphics
 			   field.size = 4;
 			   break;
 		   case INPUT_Tex0:
-            field.semantic = "TEXCOORD0";
+            field.semantic = "TEXCOORD";
 			   field.index = 8;
 			   field.size = 2;
 			   break;

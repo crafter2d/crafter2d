@@ -28,6 +28,7 @@
 #include "core/streams/datastream.h"
 #include "core/system/timer.h"
 #include "core/graphics/vertexbuffer.h"
+#include "core/graphics/vertexinputlayout.h"
 #include "core/graphics/device.h"
 #include "core/graphics/codepath.h"
 #include "core/graphics/rendercontext.h"
@@ -69,8 +70,7 @@ IMPLEMENT_REPLICATABLE(ParticleSystemId, ParticleSystem, Entity)
 ParticleSystem::ParticleSystem():
    Entity(),
    position(),
-   mInputLayout(Graphics::INPUT_XY | Graphics::INPUT_Diffuse | Graphics::INPUT_Tex0 | Graphics::INPUT_Tex1),
-   mEffect(mInputLayout),
+   mEffect(),
 	activeList(0),
    freeList(0),
    mGeometryBuffer(NULL),
@@ -148,14 +148,15 @@ bool ParticleSystem::prepare(Graphics::Device& device)
    using namespace Graphics;
 
    // load effect
-   mEffect.load(device, UTEXT("shaders/pointsprite.xml"));
+   VertexInputLayout layout(Graphics::INPUT_XY | Graphics::INPUT_Diffuse | Graphics::INPUT_Tex0 | Graphics::INPUT_Tex1);
+   mEffect.load(device, layout, UTEXT("shaders/pointsprite.xml"));
 
    int usage  = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
 
 	// generate the vertex buffer
    mGeometryBufferSize = 256;
-	mGeometryBuffer = device.createVertexBuffer(mInputLayout);
-	if (!mGeometryBuffer->create(mGeometryBufferSize * 4, usage))
+	mGeometryBuffer = device.createVertexBuffer();
+	if (!mGeometryBuffer->create(layout, mGeometryBufferSize * 4, usage))
 		return false;
 
 	srand(TIMER.getTick() * 1000);
@@ -274,7 +275,7 @@ void ParticleSystem::doDraw(Graphics::RenderContext& context) const
 {
 	uint num = 0;
 	Particle* part = activeList;
-	ParticleVertex* verts = (ParticleVertex*)mGeometryBuffer->lock (0);
+	ParticleVertex* verts = (ParticleVertex*)mGeometryBuffer->lock(context);
 
    mEffect.enable(context);
 
@@ -309,13 +310,13 @@ void ParticleSystem::doDraw(Graphics::RenderContext& context) const
       if ( ++num >= mGeometryBufferSize )
       {
 			// buffer full -> render contents and continue
-			mGeometryBuffer->unlock();
+			mGeometryBuffer->unlock(context);
 
-			mGeometryBuffer->enable();
+			mGeometryBuffer->enable(context);
          context.drawTriangles(0, num * 4);
-			mGeometryBuffer->disable();
+			mGeometryBuffer->disable(context);
 
-			verts = (ParticleVertex*)mGeometryBuffer->lock (0);
+			verts = (ParticleVertex*)mGeometryBuffer->lock (context);
 			num = 0;
 		}
 
@@ -323,12 +324,12 @@ void ParticleSystem::doDraw(Graphics::RenderContext& context) const
 	}
 
 	// render any remaining particles
-	mGeometryBuffer->unlock ();
+	mGeometryBuffer->unlock(context);
 	if ( num != 0 )
    {
-		mGeometryBuffer->enable ();
+		mGeometryBuffer->enable(context);
 		context.drawTriangles(0, num * 4);
-		mGeometryBuffer->disable ();
+		mGeometryBuffer->disable(context);
 	}
 
 	mEffect.disable(context);

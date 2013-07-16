@@ -3,7 +3,6 @@
 #define MESH_COMPONENT_H
 
 #include "core/graphics/effect.h"
-#include "core/graphics/vertexinputlayout.h"
 #include "core/math/size.h"
 #include "core/math/xform.h"
 #include "core/string/string.h"
@@ -40,7 +39,7 @@ public:
    void        setSize(const Size& size);
 
  // operations
-   void initialize(Graphics::Device& device);
+   void initialize(Graphics::Device& device, Graphics::RenderContext& context);
    void render(Graphics::RenderContext& context) const;
 
  // overloads
@@ -50,13 +49,12 @@ public:
 
 private:
  // operations
-   void updateBuffers();
+   void updateBuffers(Graphics::RenderContext& context);
 
  // members
    XForm                         mTransform;
    Animator*                     mpAnimator; // owned
    String                        mEffectName;
-   Graphics::VertexInputLayout   mInputLayout;
    Graphics::Effect              mEffect;
    Graphics::VertexBuffer*       mpVertexBuffer;
    Graphics::IndexBuffer*        mpIndexBuffer;

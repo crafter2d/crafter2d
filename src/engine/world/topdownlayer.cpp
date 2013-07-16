@@ -131,9 +131,9 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
 		float ypos = ystart * tileHeight;// - tileHeight;
 
 		verts_to_render = 0;
-		float* data = vb->lock (0);
+		float* data = vb->lock(context);
       int index = 0;
-      unsigned short* indexdata = (unsigned short*)ib->lock();
+      unsigned short* indexdata = (unsigned short*)ib->lock(context);
 
   	   for ( int y = ystart; y < yend; y++ )
       {
@@ -178,8 +178,8 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
 			ypos += tileHeight;
 		}
 
-		vb->unlock();
-      ib->unlock();
+		vb->unlock(context);
+      ib->unlock(context);
 
       // reset the dirty flag
       dirty = false;

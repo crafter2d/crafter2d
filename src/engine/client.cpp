@@ -190,6 +190,7 @@ void Client::render(float delta)
    Variant arg((double)delta);
    mpScript->run(sPaint, 1, &arg);
 
+   mpDevice->present();
    mpWindow->display();
 }
 
@@ -247,7 +248,7 @@ bool Client::initDevice()
 {
    Log::getInstance() << "\n-- Initializing Graphics --\n\n";
 
-   void* pmodule = Platform::getInstance().loadModule(UTEXT("OGLd.dll"));
+   void* pmodule = Platform::getInstance().loadModule(UTEXT("D3Dd.dll"));
    if ( pmodule == NULL )
    {
       return false;
@@ -265,7 +266,7 @@ bool Client::initDevice()
       static const Color color(75, 150, 230, 255);
 
       mpDevice = pfactory->createDevice();
-      if ( !mpDevice->create(mpWindow->getHandle(), mpWindow->getWidth(), mpWindow->getHeight()) )
+      if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
       {
          return false;
       }

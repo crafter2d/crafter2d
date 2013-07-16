@@ -21,7 +21,6 @@
 #define CG_PATH_H_
 
 #include <vector>
-#include <Cg/cg.h>
 
 #include "core/graphics/codepath.h"
 

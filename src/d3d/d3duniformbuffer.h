@@ -13,7 +13,7 @@ namespace Graphics
    public:
       D3DUniformBuffer();
 
-      virtual bool create(Device& device, int bytes) override;
+      virtual bool create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr) override;
 
       virtual void set(RenderContext& context, const void* pdata) override;
 
@@ -21,6 +21,10 @@ namespace Graphics
          
    private:
 
+    // helpers
+      int determineSize(UNIFORM_BUFFER_DESC* pdescs, int nr);
+
+    // data
       ID3D11Buffer* mpBuffer;
    };
 }

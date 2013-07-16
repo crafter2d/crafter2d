@@ -90,13 +90,13 @@ MeshComponent& Entity::getMesh()
 
 // - Operations
 
-void Entity::initialize(Device& device)
+void Entity::initialize(Device& device, RenderContext& context)
 {
    Component* pcomponent = mComponents.findComponent(ComponentInterface::eMeshComponent);
    if ( pcomponent != NULL )
    {
       mpMeshComponent = static_cast<MeshComponent*>(pcomponent);
-      mpMeshComponent->initialize(device);
+      mpMeshComponent->initialize(device, context);
    }
 }
 

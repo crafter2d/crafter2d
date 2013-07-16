@@ -4,13 +4,22 @@
 #include "core/graphics/indexbuffer.h"
 #include "core/graphics/vertexbuffer.h"
 #include "core/graphics/uniformbuffer.h"
+#include "core/graphics/effect.h"
+
+#include "d3dblendstate.h"
 
 namespace Graphics
 {
 
-D3DRenderContext::D3DRenderContext(ID3D11DeviceContext* pcontext):
+ID3D11DeviceContext& D3DRenderContext::asContext(RenderContext& context)
+{
+   return *static_cast<D3DRenderContext&>(context).mpContext;
+}
+
+D3DRenderContext::D3DRenderContext(ID3D11DeviceContext* pcontext, ID3D11RenderTargetView* targetview):
    RenderContext(),
-   mpContext(pcontext)
+   mpContext(pcontext),
+   mpRenderTargetView(targetview)
 {
 }
 
@@ -25,20 +34,22 @@ ID3D11DeviceContext& D3DRenderContext::getContext()
 
 void D3DRenderContext::setBlendState(const BlendState& state)
 {
+   static_cast<const D3DBlendState&>(state).enable(*mpContext);
 }
 
 void D3DRenderContext::setEffect(const Effect& effect)
 {
+   effect.enable(*this);
 }
 
 void D3DRenderContext::setVertexBuffer(const VertexBuffer& buffer)
 {
-   buffer.enable();
+   buffer.enable(*this);
 }
 
 void D3DRenderContext::setIndexBuffer(const IndexBuffer& buffer)
 {
-   buffer.enable();
+   buffer.enable(*this);
 }
 
 void D3DRenderContext::setUniformBuffer(const UniformBuffer& buffer)
@@ -46,28 +57,20 @@ void D3DRenderContext::setUniformBuffer(const UniformBuffer& buffer)
    buffer.enable(*this);
 }
 
-// - Matrix operations
-
-void D3DRenderContext::setOrthoProjection()
-{
-}
-
-void D3DRenderContext::setObjectMatrix(const XForm& matrix)
-{
-}
-
-void D3DRenderContext::setWorldMatrix(const XForm& matrix)
-{
-}
-
 // - Drawing
 
 void D3DRenderContext::clear()
 {
+   const Color& color = getClearColor();
+   const float clear[4] = { color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() };
+
+   mpContext->ClearRenderTargetView(mpRenderTargetView, clear);
 }
 
 void D3DRenderContext::drawTriangles(int start, int count)
 {
+   mpContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+   mpContext->DrawIndexed(count, start, 0);
 }
 
 void D3DRenderContext::drawTriangleFan(int start, int count)

@@ -11,7 +11,9 @@ namespace Graphics
    class D3DRenderContext : public RenderContext
    {
    public:
-      explicit D3DRenderContext(ID3D11DeviceContext* mpContext);
+      static ID3D11DeviceContext& asContext(RenderContext& context);
+
+      D3DRenderContext(ID3D11DeviceContext* pcontext, ID3D11RenderTargetView* targetview);
 
     // query
       ID3D11DeviceContext& getContext();
@@ -23,19 +25,11 @@ namespace Graphics
       virtual void setIndexBuffer(const IndexBuffer& buffer);
       virtual void setUniformBuffer(const UniformBuffer& buffer);
 
-      /// Sets the projection matrix to orthographic using the current viewport
-      virtual void setOrthoProjection();
-
-     // Matrix operations
-      virtual void setObjectMatrix(const XForm& matrix);
-      virtual void setWorldMatrix(const XForm& matrix);
-
-      virtual void clear();
-
       // drawing instructions
       virtual void drawTriangles(int start, int count);
       virtual void drawTriangleFan(int start, int count);
       virtual void drawTriangleStrip(int start, int count);
+      virtual void clear();
 
    protected:
     // notifications
@@ -43,7 +37,8 @@ namespace Graphics
 
    private:
 
-      ID3D11DeviceContext* mpContext;
+      ID3D11DeviceContext*    mpContext;
+      ID3D11RenderTargetView* mpRenderTargetView;
    };
 }
 

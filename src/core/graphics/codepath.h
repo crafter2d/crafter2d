@@ -29,6 +29,7 @@ namespace Graphics
    class Texture;
    class VertexInputLayout;
    class UniformBuffer;
+   class RenderContext;
 
    /*!
    @author Jeroen Broekhuizen
@@ -42,7 +43,7 @@ namespace Graphics
    public:
 
 	   /*!
-           \fn CodePath::load(const String& vertex, const String& fragment)
+           \fn CodePath::load(const VertexInputLayout& layout, const String& vertex, const String& fragment)
 	        \brief Load in the vertex and fragment shaders. This function should be called before any of the other functions.
            \param layout the layout of the vertex structure
 		     \param vertex the filename of the vertex shader (either GLSL or ASM)
@@ -50,7 +51,7 @@ namespace Graphics
 	        \retval true if the vertex shader is loaded correctly
 		     \retval false loading failed, consult the log file for possible reasons.
        */
-	   virtual bool load(VertexInputLayout& layout, const String& vertex, const String& fragment) = 0;
+	   virtual bool load(const VertexInputLayout& layout, const String& vertex, const String& fragment) = 0;
 
 	   /*!
            \fn CodePath::release()
@@ -63,19 +64,19 @@ namespace Graphics
 	        \brief Enable the shaders for use during rendering. When ready with the batch you should call disable
 		     to stop using this shader with other geometry.
        */
-	   virtual void enable () const = 0;
+	   virtual void enable (RenderContext& context) const = 0;
 
 	   /*!
            \fn CodePath::disable()
 	        \brief Disable the shaders. After this function is called the fixed pipeline will be used again.
        */
-	   virtual void disable () const = 0;
+	   virtual void disable (RenderContext& context) const = 0;
 
       /// \brief Looks up the uniform block in the shader and returns it as a buffer object.
       virtual UniformBuffer* getUniformBuffer(const String& name) const = 0;
 
       /// \brief binds the texture to the uniform to the stage (unit)
-      virtual bool bindTexture(const Texture& uniform) = 0;
+      virtual bool bindTexture(RenderContext& context, const Texture& uniform) = 0;
    };
 };
 

@@ -13,6 +13,8 @@ public:
 
  // query
    virtual int getHandle() const;
+   virtual int getWidth() const;
+   virtual int getHeight() const;
 
  // overloads
    virtual void resize(int width, int height);
@@ -29,7 +31,10 @@ protected:
    virtual void doDestroy();
 
 private:
+
    HWND mWnd;
+   int  mWidth;
+   int  mHeight;
 };
 
 #endif // WIN32_GAMEWINDOW_H

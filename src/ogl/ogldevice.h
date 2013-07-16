@@ -17,15 +17,19 @@ namespace Graphics
       virtual ~ OGLDevice();
       
     // overloads
-      virtual bool create(int windowhandle, int width, int height);
+      virtual bool create(int windowhandle, int width, int height) override;
 
+    // creation
       virtual RenderContext*  createRenderContext() override;
       virtual CodePath*       createCodePath() override;
-      virtual VertexBuffer*   createVertexBuffer(VertexInputLayout& layout) override;
+      virtual VertexBuffer*   createVertexBuffer() override;
       virtual IndexBuffer*    createIndexBuffer() override;
       virtual Texture*        createTexture(const String& filename) override;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) override;
       virtual Font*           createFont(const String& name, int pointsize) override;
+
+    // presenting
+      virtual void present() override;
 
    private:
     // query
@@ -35,7 +39,7 @@ namespace Graphics
     // operations
       GLenum toGLBlendState(Graphics::BlendStateDesc::BlendFactor factor);
 
-      FT_Library  mFreeTypeLib;
+      FT_Library        mFreeTypeLib;
    };
 
 };

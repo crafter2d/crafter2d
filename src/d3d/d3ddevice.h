@@ -6,6 +6,8 @@
 
 #include <d3d11.h>
 
+#include "d3drendercontext.h"
+
 namespace Graphics
 {
    class D3DDevice : public Device
@@ -19,19 +21,23 @@ namespace Graphics
     // overloads
       virtual bool create(int windowhandle, int width, int height);
 
+      virtual void present();
+
       virtual RenderContext*  createRenderContext();
       virtual CodePath*       createCodePath();
-      virtual VertexBuffer*   createVertexBuffer(VertexInputLayout& layout);
+      virtual VertexBuffer*   createVertexBuffer();
       virtual IndexBuffer*    createIndexBuffer();
       virtual Texture*        createTexture(const String& filename);
       virtual BlendState*     createBlendState(const BlendStateDesc& desc);
       virtual Font*           createFont(const String& name, int pointsize);
 
    private:
+
       ID3D11Device*           mpDevice;
       ID3D11DeviceContext*    mpContext;
       IDXGISwapChain*         mpSwapChain;
       ID3D11RenderTargetView* mpRenderTargetView;
+      ID3D11BlendState*       mpBlendState;
    };
 }
 

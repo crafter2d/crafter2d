@@ -14,8 +14,9 @@ ClientContentManager::ClientContentManager(Client& process):
    
 Entity* ClientContentManager::loadEntity(const String& filename)
 {
+   Client& client = static_cast<Client&>(getProcess());
    Entity* pentity = doLoadEntity(filename, ContentLoader::eLoadGraphics | ContentLoader::eLoadPhysics);
-   pentity->initialize(static_cast<Client&>(getProcess()).getDevice());
+   pentity->initialize(client.getDevice(), client.getRenderContext());
 
    return pentity;
 }

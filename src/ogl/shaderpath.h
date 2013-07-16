@@ -24,13 +24,13 @@ namespace Graphics
       virtual UniformBuffer* getUniformBuffer(const String& name) const override;
 
     // operations
-	   virtual bool     load(VertexInputLayout& layout, const String& vertex, const String& fragment) override;
+	   virtual bool     load(const VertexInputLayout& layout, const String& vertex, const String& fragment) override;
 	   virtual void     release() override;
 
-	   virtual void     enable() const override;
-	   virtual void     disable() const override;
+      virtual void     enable(RenderContext& context) const override;
+	   virtual void     disable(RenderContext& context) const override;
 
-      virtual bool     bindTexture(const Texture& uniform) override;
+      virtual bool     bindTexture(RenderContext& context, const Texture& uniform) override;
 
    private:
 	   ShaderObject shader;

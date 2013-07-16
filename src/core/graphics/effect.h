@@ -50,10 +50,10 @@ namespace Graphics
    class CORE_API Effect
    {
    public:
-	   explicit          Effect(VertexInputLayout& layout);
+	                     Effect();
 	                     ~Effect();
 	
-	   bool              load(Graphics::Device& device, const String& file);
+	   bool              load(Graphics::Device& device, const VertexInputLayout& layout, const String& file);
 	   void              destroy();
 	
 	   const TexturePtr  resolveTexture(const String& uniform) const;
@@ -73,12 +73,11 @@ namespace Graphics
 	   bool              processTextures(Graphics::Device& device, const TiXmlElement& effect);
       bool              postprocessTextures();
 
-	   bool              processCode(Graphics::Device& device, const TiXmlElement& effect, const String& path);
+	   bool              processCode(Graphics::Device& device, const Graphics::VertexInputLayout& layout, const TiXmlElement& effect, const String& path);
       bool              processBlendState(Graphics::Device& device, const TiXmlElement& effect);
 		
       String                        name;
       Textures                      mTextures;
-      Graphics::VertexInputLayout&  mLayout;
       Graphics::CodePath*           mpCodePath;
       Graphics::BlendState*         mpBlendStateEnabled;
       Graphics::BlendState*         mpBlendStateDisabled;

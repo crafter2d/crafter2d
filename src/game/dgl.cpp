@@ -68,8 +68,8 @@
 
 int main(int argc, char *argv[])
 {
-   //Win32GameWindowFactory windowfactory;
-   SDLGameWindowFactory windowfactory;
+   Win32GameWindowFactory windowfactory;
+   //SDLGameWindowFactory windowfactory;
 
    AutoPtr<Game> game = new Game();
    game->setWindowFactory(windowfactory);

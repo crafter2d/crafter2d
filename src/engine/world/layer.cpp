@@ -29,6 +29,7 @@
 #include <math.h>
 
 #include "core/graphics/device.h"
+#include "core/graphics/vertexinputlayout.h"
 #include "core/graphics/indexbuffer.h"
 #include "core/graphics/vertexbuffer.h"
 #include "core/graphics/uniformbuffer.h"
@@ -67,13 +68,12 @@ Layer::Layer():
    dirty(true),
    mTileSet(),
    field(0),
-   mInputLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0),
    vb(NULL),
    ib(NULL),
    ub(NULL),
    texcoordLookup(0),
    mpDefinition(NULL),
-   mEffect(mInputLayout)
+   mEffect()
 {
 }
 
@@ -103,14 +103,15 @@ bool Layer::create(LayerDefinition* pdefinition)
 /// \brief Create a new empty layer
 bool Layer::initialize(Device& device)
 {
-   if ( !mEffect.load(device, mpDefinition->effect) )
+   VertexInputLayout layout(Graphics::INPUT_XY | Graphics::INPUT_Tex0);
+   if ( !mEffect.load(device, layout, mpDefinition->effect) )
    {
       std::string file = mpDefinition->effect.toUtf8();
       Log::getInstance().error("Can not load effect file '%s'.", file.c_str());
       return false;
    }
 
-   if ( !createBuffers(device, getWidth(), getHeight())
+   if ( !createBuffers(device, layout, getWidth(), getHeight())
      || !createUniformBuffers(device) )
    {
       return false;
@@ -221,9 +222,9 @@ TileRow* Layer::createTileRows(int width, int height)
    return NULL;
 }
 
-bool Layer::createBuffers(Device& device, int width, int height)
+bool Layer::createBuffers(Device& device, const VertexInputLayout& layout, int width, int height)
 {
-   vb = device.createVertexBuffer(mInputLayout);
+   vb = device.createVertexBuffer();
    if ( vb == NULL )
    {
       Log::getInstance().error("Not enough memory available for vertex buffer.");
@@ -234,7 +235,7 @@ bool Layer::createBuffers(Device& device, int width, int height)
    int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
    int size = width * height * 4; // each tile is 4 vertices
 
-   if ( !vb->create(size, usage) )
+   if ( !vb->create(layout, size, usage) )
    {
 		Log::getInstance().error("Could not create the vertex buffer.");
 		return false;

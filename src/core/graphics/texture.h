@@ -26,6 +26,8 @@
 
 namespace Graphics
 {
+   class Device;
+   class RenderContext;
    class TextureInfo;
 
    /**
@@ -38,12 +40,11 @@ namespace Graphics
       explicit       Texture();
       virtual        ~Texture();
 
-      virtual bool   create(const TextureInfo& info) = 0;
-      virtual bool   createNormalizingCube(int size = 128) = 0;
+      virtual bool   create(Device& device, const TextureInfo& info) = 0;
       virtual void   release();
 
-      virtual void   enable() const = 0;
-      virtual void   disable () const = 0;
+      virtual void   enable(RenderContext& context) const = 0;
+      virtual void   disable(RenderContext& context) const = 0;
 
       int            getStage() const;
       void           setStage (int stage);

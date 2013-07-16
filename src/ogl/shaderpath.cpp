@@ -1,6 +1,7 @@
 
 #include "shaderpath.h"
 
+#include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/string/string.h"
 #include "core/smartptr/autoptr.h"
@@ -29,7 +30,7 @@ ShaderPath::ShaderPath():
 	\retval true the shader objects have been successfully linked.
 	\retval false otherwise, consult the log file for compiler/linker specific errors.
  */
-bool ShaderPath::load(VertexInputLayout& layout, const String& vertex, const String& fragment)
+bool ShaderPath::load(const VertexInputLayout& layout, const String& vertex, const String& fragment)
 {
 	Log& log = Log::getInstance ();
 	shader.create();
@@ -69,12 +70,12 @@ void ShaderPath::release ()
 	shader.release ();
 }
 
-void ShaderPath::enable () const
+void ShaderPath::enable(RenderContext& context) const
 {
 	shader.enable();
 }
 
-void ShaderPath::disable () const
+void ShaderPath::disable(RenderContext& context) const
 {
 	shader.disable();
 }
@@ -84,7 +85,9 @@ UniformBuffer* ShaderPath::getUniformBuffer(const String& name) const
    return shader.getUniformBuffer(name);
 }
 
-bool ShaderPath::bindTexture(const Texture& texture)
+bool ShaderPath::bindTexture(RenderContext& context, const Texture& texture)
 {
-   return shader.bindTexture(texture);
+   bool result = shader.bindTexture(texture);
+   texture.enable(context);
+   return result;
 }

@@ -70,7 +70,7 @@ public:
    void           setClassName(const String& classname);
 
  // operations
-   void initialize(Graphics::Device& device);
+   void initialize(Graphics::Device& device, Graphics::RenderContext& context);
    virtual void destroy();
 
    void addComponent(Component* pcomponent);

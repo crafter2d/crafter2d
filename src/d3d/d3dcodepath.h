@@ -19,17 +19,22 @@ namespace Graphics
    public:
       explicit D3DCodePath(D3DDevice& device);
 
-      virtual bool      load(VertexInputLayout& layout, const String& vertex, const String& fragment) override;
+    // query
+      virtual UniformBuffer* getUniformBuffer(const String& name) const override;
+
+      virtual bool      load(const VertexInputLayout& layout, const String& vertex, const String& fragment) override;
       virtual void      release() override;
 
-      virtual void      enable() const override;
-	   virtual void      disable() const override;
+      virtual void      enable(RenderContext& context) const override;
+	   virtual void      disable(RenderContext& context) const override;
+
+      virtual bool bindTexture(RenderContext& context, const Texture& uniform) override;
 
    private:
 
       bool readShaderFile(const String& filename, DataStream& buffer);
 
-      bool loadVertexProgram(VertexInputLayout& layout, const String& filename);
+      bool loadVertexProgram(const VertexInputLayout& layout, const String& filename);
       bool loadPixelProgram(const String& filename);
 
       bool createInputLayout(const VertexInputLayout& layout, DataStream& stream);

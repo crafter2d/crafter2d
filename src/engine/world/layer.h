@@ -23,7 +23,6 @@
 #include <fstream>
 
 #include "core/graphics/effect.h"
-#include "core/graphics/vertexinputlayout.h"
 #include "core/math/vector.h"
 #include "core/math/matrix4.h"
 #include "core/defines.h"
@@ -158,7 +157,6 @@ protected:
    TileSet mTileSet;
 
    TileRow* field;
-   Graphics::VertexInputLayout mInputLayout;
    Graphics::VertexBuffer* vb;
    Graphics::IndexBuffer* ib;
    Graphics::UniformBuffer* ub;
@@ -173,7 +171,7 @@ private:
    };
 
  // operations
-   bool createBuffers(Graphics::Device& device, int width, int height);
+   bool createBuffers(Graphics::Device& device, const Graphics::VertexInputLayout& layout, int width, int height);
    bool createUniformBuffers(Graphics::Device& device);
 
  // members

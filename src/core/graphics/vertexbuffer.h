@@ -24,6 +24,7 @@
 
 namespace Graphics
 {
+   class RenderContext;
    class VertexInputLayout;
 
    /**
@@ -44,19 +45,20 @@ namespace Graphics
          eWriteOnly = 16
       };
 
-      explicit VertexBuffer(VertexInputLayout& layout);
+               VertexBuffer();
       virtual ~VertexBuffer();
 
 	    /*!
-	        \fn VertexBuffer::create (int length, int usage, int fvf)
+	        \fn VertexBuffer::create (const VertexInputLayout& layout, int length, int usage, int fvf)
 		     \brief Creates the actuall vertex buffer object you can fill later on.
+           \param[in] layout the layout of the vertex structure in this buffer
 	 	     \param[in] length the number of items that should fit in this buffer
 	        \param[in] usage  the usage of this buffer (static, dynamic, etc)
 	        \param[in] fvf    the vertex format specification (position, texture coordinates, etc)
 	        \retval true      the object is created successfully
 	        \retval false     the usage flag or VBO's are invalid or the system ran out of memory
 	     */
-       virtual bool create(int length, int usage) = 0;
+       virtual bool create(const VertexInputLayout& layout, int length, int usage) = 0;
 
 	    /*!
 	        \fn VertexBuffer::release()
@@ -66,44 +68,34 @@ namespace Graphics
 	    virtual void release() = 0;
 
 	    /*!
-           \fn VertexBuffer::lock(int fvf)
+           \fn VertexBuffer::lock(RenderContext& context)
 	        \brief Locks the specified vertex attributes so they can be changed with setAt(). Only the setAt function is allowed untill you call unlock().
-	        \param[in] fvf  specify the vertex attributes which should be locked.
+	        \param[in] context  the rendering context created by the device.
 	        \retval true the vertex attributes are locked successfully
 	        \retval false could not map a vertex attribute
         */
-	    virtual float* lock(int fvf) = 0;
+	    virtual float* lock(RenderContext& context) = 0;
 
 	    /*!
            \fn VertexBuffer::unlock()
 	        \brief Unlocks all locked vertex attributes. After calling this function you should not call setAt til you called lock again.
 	        \return Nothing
         */
-       virtual void unlock() = 0;
+       virtual void unlock(RenderContext& context) = 0;
 
 	   /*!
            \fn VertexBuffer::enable()
 	        \brief Enables the vertex buffer for use during rendering. Call disable to stop using this buffer.
 	        \return Nothing
         */
-       virtual void enable() const = 0;
+       virtual void enable(RenderContext& context) const = 0;
 
 	    /*!
            \fn VertexBuffer::disable()
            \brief Disables the vertex buffer for rendering. Until enabled again data from this buffer will not be rendered.
 	        \return Nothing
         */
-       virtual void disable() const = 0;
-
-   protected:
-    // query
-      int getFieldCount(int fvf);
-      int getFVFSize(int fvf);
-
-      // operation
-      void fillDescription (int fvf);
-
-      VertexInputLayout&   mLayout;
+       virtual void disable(RenderContext& context) const = 0;
    };
 };
 

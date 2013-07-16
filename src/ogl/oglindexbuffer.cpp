@@ -51,22 +51,21 @@ bool OGLIndexBuffer::create(IndexFormat format, int elements, void* data)
 
 void OGLIndexBuffer::release()
 {
-   disable();
-
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
    glDeleteBuffers(1, &mBuffer);
 }
 
-void OGLIndexBuffer::enable() const
+void OGLIndexBuffer::enable(RenderContext& context) const
 {
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
 }
 
-void OGLIndexBuffer::disable() const
+void OGLIndexBuffer::disable(RenderContext& context) const
 {
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void* OGLIndexBuffer::lock()
+void* OGLIndexBuffer::lock(RenderContext& context)
 {
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
 	void* pointer = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -77,7 +76,7 @@ void* OGLIndexBuffer::lock()
 	return pointer;
 }
 
-void OGLIndexBuffer::unlock()
+void OGLIndexBuffer::unlock(RenderContext& context)
 {
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);

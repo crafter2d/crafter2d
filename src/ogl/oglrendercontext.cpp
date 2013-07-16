@@ -52,13 +52,13 @@ void OGLRenderContext::setEffect(const Effect& effect)
 void OGLRenderContext::setVertexBuffer(const VertexBuffer& buffer)
 {
    mpVertexBuffer = static_cast<const OGLVertexBuffer*>(&buffer);
-   mpVertexBuffer->enable();
+   mpVertexBuffer->enable(*this);
 }
 
 void OGLRenderContext::setIndexBuffer(const IndexBuffer& buffer)
 {
    mpIndexBuffer = static_cast<const OGLIndexBuffer*>(&buffer);
-   mpIndexBuffer->enable();
+   mpIndexBuffer->enable(*this);
 }
 
 void OGLRenderContext::setUniformBuffer(const UniformBuffer& buffer)

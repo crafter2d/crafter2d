@@ -62,3 +62,9 @@ INLINE Graphics::Device& Client::getDevice()
    ASSERT_PTR(mpDevice);
    return *mpDevice;
 }
+
+INLINE Graphics::RenderContext& Client::getRenderContext()
+{
+   ASSERT_PTR(mpRenderContext);
+   return *mpRenderContext;
+}

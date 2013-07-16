@@ -120,9 +120,9 @@ CodePath* OGLDevice::createCodePath()
 /// \brief Creates a vertex buffer for storage of the geometry. When Vertex Buffer Objects are supported, one will
 /// be created. A default buffer will be created otherwise.
 /// \return A pointer to the vertex buffer instance.
-VertexBuffer* OGLDevice::createVertexBuffer(VertexInputLayout& layout)
+VertexBuffer* OGLDevice::createVertexBuffer()
 {
-	return new OGLVertexBuffer(layout);
+	return new OGLVertexBuffer();
 }
 
 IndexBuffer* OGLDevice::createIndexBuffer()
@@ -141,7 +141,7 @@ Texture* OGLDevice::createTexture(const String& filename)
    {
       const TextureInfo& info = loader->getTextureInfo();
       presult = new OGLTexture();
-      if ( !presult->create(info) )
+      if ( !presult->create(*this, info) )
       {
       }
    }
@@ -211,6 +211,12 @@ GLenum OGLDevice::toGLBlendState(BlendStateDesc::BlendFactor blendfactor)
          break;
    }
    return factor;
+}
+
+// - Presenting
+
+void OGLDevice::present()
+{
 }
 
 };

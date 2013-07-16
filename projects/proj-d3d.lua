@@ -17,9 +17,9 @@ includedirs { "src" }
 if ( os.is("windows") ) then
 	defines { "WIN32", "D3D_EXPORTS" }
 	
-	includedirs {  }
+	includedirs { path.join(libdir, "icu/include") }
 
-   libdirs { }
+	libdirs { }
 
 	-- set IDE specific settings
 	if ( _ACTION == "cb-gcc" ) then

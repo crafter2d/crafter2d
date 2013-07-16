@@ -15,7 +15,7 @@ OGLTexture::OGLTexture():
 
 // - Creation
 
-bool OGLTexture::create(const TextureInfo& info)
+bool OGLTexture::create(Device& device, const TextureInfo& info)
 {
    bool success = false;
 
@@ -68,170 +68,6 @@ bool OGLTexture::create(const TextureInfo& info)
 	return success;
 }
 
-bool OGLTexture::createNormalizingCube(int size)
-{
-	mTarget = GL_TEXTURE_CUBE_MAP;
-
-	mID = 0;
-	glGenTextures(1, &mID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, mID);
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	float fX    = 0.0,
-		  fY    = 0.0,
-		  fZ    = 0.0,
-		  oolen = 1.0;
-	int x            =    0,
-        y            =    0,
-        z            =    0,
-        mapSize      = size,
-        halfMapSize  = mapSize/2;
-
-  	GLubyte *dataContainer = new GLubyte[mapSize*mapSize*3];
-
-	for(y=0;y<mapSize;y++) {
-		for(z=0;z<mapSize;z++) {
-			fX    = (float)halfMapSize;
-			fY    = (float)halfMapSize-y;
-			fZ    = (float)halfMapSize-z;
-			oolen = 1.0f/sqrt(fX*fX+fY*fY+fZ*fZ);
-
-			fX*=oolen;
-			fY*=oolen;
-			fZ*=oolen;
-
-			dataContainer[y*3*mapSize+z*3+0] = GLubyte((((fX)+1.0f)/2.0f)*255.0f);
-			dataContainer[y*3*mapSize+z*3+1] = GLubyte((((fY)+1.0f)/2.0f)*255.0f);
-			dataContainer[y*3*mapSize+z*3+2] = GLubyte((((fZ)+1.0f)/2.0f)*255.0f);
-		}
-	}
-
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0,
-                0, GL_RGB8, mapSize, mapSize,
-                0, GL_RGB, GL_UNSIGNED_BYTE, dataContainer);
-
-	for(y=0;y<mapSize;y++) {
-		for(z=0;z<mapSize;z++) {
-			fX    =(float)-halfMapSize;
-			fY    =(float)halfMapSize-y;
-			fZ    =(float)z-halfMapSize;
-			oolen = 1.0f/sqrt(fX*fX+fY*fY+fZ*fZ);
-
-			fX*=oolen;
-			fY*=oolen;
-			fZ*=oolen;
-			dataContainer[y*3*mapSize+z*3+0] = GLubyte((((fX)+1.0f)/2.0f)*255.0f);
-			dataContainer[y*3*mapSize+z*3+1] = GLubyte((((fY)+1.0f)/2.0f)*255.0f);
-			dataContainer[y*3*mapSize+z*3+2] = GLubyte((((fZ)+1.0f)/2.0f)*255.0f);
-		}
-	}
-
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 1,
-                0, GL_RGB8, mapSize, mapSize,
-                0, GL_RGB, GL_UNSIGNED_BYTE, dataContainer);
-
-	for(z=0;z<mapSize;z++)
-	{
-		for(x=0;x<mapSize;x++)
-		{
-			fX    = (float)x-halfMapSize;
-			fY    = (float)halfMapSize;
-			fZ    = (float)z-halfMapSize;
-			oolen = 1.0f/sqrt(fX*fX+fY*fY+fZ*fZ);
-
-			fX*=oolen;
-			fY*=oolen;
-			fZ*=oolen;
-			dataContainer[z*3*mapSize+x*3+0] = GLubyte((((fX)+1.0f)/2.0f)*255.0f);
-			dataContainer[z*3*mapSize+x*3+1] = GLubyte((((fY)+1.0f)/2.0f)*255.0f);
-			dataContainer[z*3*mapSize+x*3+2] = GLubyte((((fZ)+1.0f)/2.0f)*255.0f);
-		}
-	}
-
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 2,
-                0, GL_RGB8, mapSize, mapSize,
-                0, GL_RGB, GL_UNSIGNED_BYTE, dataContainer);
-
-	for(z=0;z<mapSize;z++)
-	{
-		for(x=0;x<mapSize;x++)
-		{
-			fX    = (float)x-halfMapSize;
-			fY    = (float)-halfMapSize;
-			fZ    = (float)halfMapSize-z;
-			oolen = 1.0f/sqrt(fX*fX+fY*fY+fZ*fZ);
-
-			fX*=oolen;
-			fY*=oolen;
-			fZ*=oolen;
-
-			dataContainer[z*3*mapSize+x*3+0] = GLubyte((((fX)+1.0f)/2.0f)*255.0f);
-			dataContainer[z*3*mapSize+x*3+1] = GLubyte((((fY)+1.0f)/2.0f)*255.0f);
-			dataContainer[z*3*mapSize+x*3+2] = GLubyte((((fZ)+1.0f)/2.0f)*255.0f);
-		}
-	}
-
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 3,
-                0, GL_RGB8, mapSize, mapSize,
-                0, GL_RGB, GL_UNSIGNED_BYTE, dataContainer);
-
-	for(y=0;y<mapSize;y++)
-	{
-		for(x=0;x<mapSize;x++)
-		{
-			fX    = (float)x-halfMapSize;
-			fY    = (float)halfMapSize - y;
-			fZ    = (float)halfMapSize;
-			oolen = 1.0f/sqrt(fX*fX+fY*fY+fZ*fZ);
-
-			fX*=oolen;
-			fY*=oolen;
-			fZ*=oolen;
-
-			dataContainer[y*3*mapSize+x*3+0] = GLubyte((((fX)+1.0f)/2.0f)*255.0f);
-		    dataContainer[y*3*mapSize+x*3+1] = GLubyte((((fY)+1.0f)/2.0f)*255.0f);
-			dataContainer[y*3*mapSize+x*3+2] = GLubyte((((fZ)+1.0f)/2.0f)*255.0f);
-		}
-	}
-
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 4,
-                0, GL_RGB8, mapSize, mapSize,
-                0, GL_RGB, GL_UNSIGNED_BYTE, dataContainer);
-
-	for(y=0;y<mapSize;y++)
-	{
-		for(x=0;x<mapSize;x++)
-		{
-			fX    = (float)halfMapSize - x;
-			fY    = (float)halfMapSize - y;
-			fZ    = (float)-halfMapSize;
-			oolen = 1.0f/sqrt(fX*fX+fY*fY+fZ*fZ);
-
-			fX*=oolen;
-			fY*=oolen;
-			fZ*=oolen;
-
-			dataContainer[y*3*mapSize+x*3+0] = GLubyte((((fX)+1.0f)/2.0f)*255.0f);
-			dataContainer[y*3*mapSize+x*3+1] = GLubyte((((fY)+1.0f)/2.0f)*255.0f);
-			dataContainer[y*3*mapSize+x*3+2] = GLubyte((((fZ)+1.0f)/2.0f)*255.0f);
-		}
-	}
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 5,
-                0, GL_RGB8, mapSize, mapSize,
-                0, GL_RGB, GL_UNSIGNED_BYTE, dataContainer);
-
-	delete[] dataContainer;
-
-	_height = size;
-	_width  = size;
-	return true;
-}
-
 /// \fn Texture::release()
 /// \brief Releases the texture if not already done so.
 /// \return Nothing
@@ -249,13 +85,13 @@ void OGLTexture::release()
 /// \fn Texture::enable(bool active=true)
 /// \brief Use this function to either activate or deactivate this texture.
 /// \param[in] active when true the texture is made active, when false it is deactivated
-void OGLTexture::enable() const
+void OGLTexture::enable(RenderContext& context) const
 {
 	glActiveTexture (GL_TEXTURE0 + mTexStage);
 	glBindTexture(mTarget, mID);
 }
 
-void OGLTexture::disable () const
+void OGLTexture::disable(RenderContext& context) const
 {
 }
 

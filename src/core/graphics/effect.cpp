@@ -40,10 +40,9 @@ namespace Graphics
     \fn Effect::Effect(void)
 	 \brief initializes internal member variables (by default texture combiners are not used).
  */
-   Effect::Effect(VertexInputLayout& layout):
+Effect::Effect():
    name(),
    mTextures(),
-   mLayout(layout),
    mpCodePath(NULL),
    mpBlendStateEnabled(NULL),
    mpBlendStateDisabled(NULL)
@@ -66,7 +65,7 @@ Effect::~Effect()
 	 \retval true the effect file is loaded correctly.
 	 \retval false an error occured (look in the log file for a message).
  */
-bool Effect::load(Device& device, const String& file)
+bool Effect::load(Device& device, const VertexInputLayout& layout, const String& file)
 {
 	Log& log = Log::getInstance();
 
@@ -92,7 +91,7 @@ bool Effect::load(Device& device, const String& file)
    name = effect->Attribute ("name");
 
 	// try to load in the textures
-	if ( !processCode(device, *effect, UTEXT("../shaders/")) 
+	if ( !processCode(device, layout, *effect, UTEXT("../shaders/")) 
      || !processBlendState(device, *effect)
      || !processTextures(device, *effect) )
    {
@@ -128,35 +127,19 @@ void Effect::destroy ()
  */
 bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effect)
 {
-   ASSERT_PTR(mpCodePath);
-
-   mpCodePath->enable();
-
    const TiXmlElement* ptexture = static_cast<const TiXmlElement*>(effect.FirstChild("texture"));
    while ( ptexture != NULL )
    {
       TexturePtr texture;
 
-		// process this texture
+		const TiXmlText* file = static_cast<const TiXmlText*>(ptexture->FirstChild());
+      String filename(file->ValueStr());
 
-    	const TiXmlText* file = static_cast<const TiXmlText*>(ptexture->FirstChild());
-      const char* ptype = ptexture->Attribute("type");
-		if ( ptype != NULL && strcmp(ptype, "normcube") == 0 )
+      texture = ResourceManager::getInstance().getTexture(device, filename);
+      if ( !texture.isValid() )
       {
-			// make it a normalizing cube map
-         //stage.tex = new Texture();
-			//stage.tex->createNormalizingCube();
-		}
-		else
-      {
-			// must be a normal texture
-         String filename(file->ValueStr());
-         texture = ResourceManager::getInstance().getTexture(device, filename);
-         if ( !texture.isValid() )
-         {
-            Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());
-				return false;
-			}
+         Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());
+			return false;
 		}
 
       ASSERT(texture.isValid());
@@ -165,11 +148,6 @@ bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effec
       texture->setStage(static_cast<int>(mTextures.size()));
 
       mTextures.push_back(texture);
-		
-      if ( !mpCodePath->bindTexture(*texture) )
-      {
-         return false;
-      }
 
 		// now iterate over the rest of the textures
 		ptexture = static_cast<const TiXmlElement*>(effect.IterateChildren ("texture", ptexture));
@@ -180,13 +158,13 @@ bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effec
 }
 
 /*!
-    \fn Effect::processCode(const TiXmlElement* effect, const String& path)
+    \fn Effect::processCode(Graphics::Device& device, const Graphics::VertexInputLayout& layout, const TiXmlElement* effect, const String& path)
 	 \brief Loads in the shaders (if any) from the file and creates the code path. In case GLSL isn't
 	 supported it first checks the existence of a vertex program. If that doesn't exist the GLSL counter
 	 part is loaded and automatically converted.
 	 \returns true when no errors are detected, false otherwise.
  */
-bool Effect::processCode(Graphics::Device& device, const TiXmlElement& effect, const String& path)
+bool Effect::processCode(Graphics::Device& device, const Graphics::VertexInputLayout& layout, const TiXmlElement& effect, const String& path)
 {
    const char* vertex = NULL, *fragment = NULL;
 
@@ -224,7 +202,7 @@ bool Effect::processCode(Graphics::Device& device, const TiXmlElement& effect, c
 
    // now load the codepath
    mpCodePath = device.createCodePath();
-   if ( mpCodePath == NULL || !mpCodePath->load(mLayout, vertexfile, fragmentfile) )
+   if ( mpCodePath == NULL || !mpCodePath->load(layout, vertexfile, fragmentfile) )
        return false;
    
 	return true;
@@ -298,12 +276,12 @@ void Effect::enable(RenderContext& context) const
       context.setBlendState(*mpBlendStateEnabled);
    }
 
-   mpCodePath->enable();
+   mpCodePath->enable(context);
 
    for ( Textures::size_type s = 0; s < mTextures.size(); ++s )
    {
 	   const TexturePtr& texture = mTextures[s];
-      texture->enable();
+      mpCodePath->bindTexture(context, *texture);
    }
 }
 
@@ -318,7 +296,7 @@ void Effect::disable(RenderContext& context) const
       context.setBlendState(*mpBlendStateDisabled);
    }
 
-   mpCodePath->disable();
+   mpCodePath->disable(context);
 }
 
 } // end namespace

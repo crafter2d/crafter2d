@@ -15,16 +15,15 @@ public:
    OGLTexture();
 
  // creation
-   virtual bool   create(const TextureInfo& info);
-   virtual bool   createNormalizingCube(int size = 128);
-   virtual void   release();
+   virtual bool   create(Device& device, const TextureInfo& info) override;
+   virtual void   release() override;
 
  // enable/disable
-   virtual void   enable() const;
-   virtual void   disable () const;
+   virtual void   enable(RenderContext& context) const override;
+   virtual void   disable(RenderContext& context) const override;
 
  // query
-   virtual bool   isValid() const;
+   virtual bool   isValid() const override;
 
 private:
    static GLenum  getRenderTarget();

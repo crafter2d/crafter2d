@@ -100,7 +100,7 @@ void IsoDiamondLayer::onViewportChanged(const Graphics::Viewport& viewport)
 
 void IsoDiamondLayer::draw(Graphics::RenderContext& context)
 {
-   float* data = vb->lock(0);
+   float* data = vb->lock(context);
 
    float halfwidth  = texTileWidth / 2;
    float halfheight = texTileHeight / 2;
@@ -142,12 +142,12 @@ void IsoDiamondLayer::draw(Graphics::RenderContext& context)
       ystart += _halfTileHeight;
    }
 
-   vb->unlock();
+   vb->unlock(context);
 
    // draw layer at onces
-	vb->enable ();
+	vb->enable(context);
    context.drawTriangles(0, verts_to_render);
-	vb->disable ();
+	vb->disable(context);
 }
 
 void IsoDiamondLayer::drawHighlight(const Vector& point)

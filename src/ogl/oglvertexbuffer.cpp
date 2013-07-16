@@ -36,8 +36,8 @@ namespace Graphics
     \fn VertexBufferObject::VertexBufferObject()
 	 \brief Initializes member variables
  */
-OGLVertexBuffer::OGLVertexBuffer(VertexInputLayout& layout)
- : VertexBuffer(layout),
+OGLVertexBuffer::OGLVertexBuffer()
+ : VertexBuffer(),
    mVAO(0),
    mBuffer(0),
    locked(false)
@@ -56,9 +56,9 @@ OGLVertexBuffer::~OGLVertexBuffer()
 /*!
     \fn VertexBufferObject::create(int length, int usage)
  */
-bool OGLVertexBuffer::create(int length, int usage)
+bool OGLVertexBuffer::create(const VertexInputLayout& layout, int length, int usage)
 {
-   if ( !VertexBuffer::create(length, usage) )
+   if ( !VertexBuffer::create(layout, length, usage) )
       return false;
 
 	GLuint flag = 0;
@@ -97,20 +97,20 @@ bool OGLVertexBuffer::create(int length, int usage)
       return false;
    }
 
-   setupIndices();
+   setupIndices(layout);
 
    glGenVertexArrays(1, &mVAO);
    glBindVertexArray(mVAO);
 
    glGenBuffers(1, &mBuffer);
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-   glBufferData(GL_ARRAY_BUFFER, mLayout.getStride() * length, 0, flag);
+   glBufferData(GL_ARRAY_BUFFER, layout.getStride() * length, 0, flag);
 
-   for ( int i = mLayout.getSize() - 1; i >= 0; --i )
+   for ( int i = layout.getSize() - 1; i >= 0; --i )
    {
-      const VertexInputElement& field = mLayout[i];
+      const VertexInputElement& field = layout[i];
 
-      glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, mLayout.getStride(), (void*)(field.pos));
+      glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), (void*)(field.pos));
       glEnableVertexAttribArray(field.index);
    }
 
@@ -125,7 +125,7 @@ void OGLVertexBuffer::release()
    glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDeleteBuffers(1, &mBuffer);
 
-   disable();
+   glBindVertexArray(0);
    glDeleteVertexArrays(1, &mVAO);
 
    mVAO = mBuffer = 0;
@@ -134,9 +134,9 @@ void OGLVertexBuffer::release()
 }
 
 /*!
-    \fn VertexBufferObject::lock(int fvf)
+    \fn VertexBufferObject::lock(RenderContext& context)
  */
-float* OGLVertexBuffer::lock(int fvf)
+float* OGLVertexBuffer::lock(RenderContext& context)
 {
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	float* pointer = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -148,7 +148,7 @@ float* OGLVertexBuffer::lock(int fvf)
 /*!
     \fn VertexBufferObject::unlock()
  */
-void OGLVertexBuffer::unlock()
+void OGLVertexBuffer::unlock(RenderContext& context)
 {
 	if (locked) {
 		glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
@@ -160,7 +160,7 @@ void OGLVertexBuffer::unlock()
 /*!
     \fn VertexBufferObject::enable()
  */
-void OGLVertexBuffer::enable() const
+void OGLVertexBuffer::enable(RenderContext& context) const
 {
    glBindVertexArray(mVAO);
 }
@@ -168,21 +168,21 @@ void OGLVertexBuffer::enable() const
 /*!
     \fn VertexBufferObject::disable()
  */
-void OGLVertexBuffer::disable() const
+void OGLVertexBuffer::disable(RenderContext& context) const
 {
    glBindVertexArray(0);
 }
 
 // - Operations
 
-void OGLVertexBuffer::setupIndices()
+void OGLVertexBuffer::setupIndices(const VertexInputLayout& layout)
 {
    GLint program ;
    glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
-   for ( int index = 0; index < mLayout.getSize(); ++index )
+   for ( int index = 0; index < layout.getSize(); ++index )
    {
-      VertexInputElement& field = const_cast<VertexInputElement&>(mLayout[index]);
+      VertexInputElement& field = const_cast<VertexInputElement&>(layout[index]);
       switch ( field.flags )
       {
          case INPUT_XY:

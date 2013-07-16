@@ -32,20 +32,20 @@ namespace Graphics
    class OGLVertexBuffer : public VertexBuffer
    {
    public:
-       explicit OGLVertexBuffer(VertexInputLayout& layout);
+                OGLVertexBuffer();
        virtual ~OGLVertexBuffer();
 
-       bool create(int length, int usage);
+       virtual bool create(const VertexInputLayout& layout, int length, int usage) override;
 	    void release();
 
-       float* lock(int fvf);
-       void unlock();
+       float* lock(RenderContext& context);
+       void unlock(RenderContext& context);
 
-       virtual void enable() const;
-       virtual void disable() const;
+       virtual void enable(RenderContext& context) const;
+       virtual void disable(RenderContext& context) const;
 
    private:
-      void setupIndices();
+      void setupIndices(const VertexInputLayout& layout);
 
       GLuint mVAO;
       GLuint mBuffer;

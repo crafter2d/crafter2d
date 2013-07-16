@@ -24,7 +24,6 @@
 #include "core/math/color.h"
 #include "core/graphics/effect.h"
 #include "core/graphics/texture.h"
-#include "core/graphics/vertexinputlayout.h"
 
 #include "entity.h"
 
@@ -96,7 +95,6 @@ protected:
 	uint           mGeometryBufferSize;
    Script*        updateScript;
 
-   Graphics::VertexInputLayout mInputLayout;
    Graphics::Effect         mEffect;
    Graphics::VertexBuffer*  mGeometryBuffer;
 	

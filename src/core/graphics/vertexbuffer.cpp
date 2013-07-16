@@ -24,8 +24,7 @@
 
 using namespace Graphics;
 
-VertexBuffer::VertexBuffer(VertexInputLayout& layout):
-   mLayout(layout)
+VertexBuffer::VertexBuffer()
 {
 }
 
@@ -33,7 +32,7 @@ VertexBuffer::~VertexBuffer()
 {
 }
 
-bool VertexBuffer::create(int length, int usage)
+bool VertexBuffer::create(const VertexInputLayout& layout, int length, int usage)
 {
    /* GameDev:
 	 * So it is possible to put all stuff in one buffer and render that at the same time, see below!:

@@ -30,9 +30,8 @@ MeshComponent::MeshComponent():
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
    mpAnimator(NULL),
-   mInputLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0),
    mEffectName(),
-   mEffect(mInputLayout),
+   mEffect(),
    mpVertexBuffer(NULL),
    mpIndexBuffer(NULL),
    mSize()
@@ -58,15 +57,17 @@ float MeshComponent::getAngle() const
 
 // - Operations
 
-void MeshComponent::initialize(Device& device)
+void MeshComponent::initialize(Device& device, RenderContext& context)
 {
    mHalfSize.width = mSize.width / 2.0f;
    mHalfSize.height = mSize.height / 2.0f;
 
-   if ( mEffect.load(device, mEffectName) )
+   Graphics::VertexInputLayout layout(Graphics::INPUT_XY | Graphics::INPUT_Tex0);
+
+   if ( mEffect.load(device, layout, mEffectName) )                                                                                                 
    {
-      mpVertexBuffer = device.createVertexBuffer(mInputLayout);
-      mpVertexBuffer->create(4, VertexBuffer::eWriteOnly | VertexBuffer::eDynamic);
+      mpVertexBuffer = device.createVertexBuffer();
+      mpVertexBuffer->create(layout, 4, VertexBuffer::eWriteOnly | VertexBuffer::eDynamic);
 
       short indices[] = { 0, 1, 2, 3 };
 
@@ -81,7 +82,7 @@ void MeshComponent::initialize(Device& device)
          mpAnimator->initialize(*tex, mSize);
       }
 
-      updateBuffers();
+      updateBuffers(context);
    }
 }
 
@@ -131,11 +132,11 @@ void MeshComponent::update(float delta)
    */
 }
 
-void MeshComponent::updateBuffers()
+void MeshComponent::updateBuffers(RenderContext& context)
 {
    const TextureCoordinate& texcoord = mpAnimator->getTextureCoordinate();
 
-   PTVertex* pdata = reinterpret_cast<PTVertex*>(mpVertexBuffer->lock(0));
+   PTVertex* pdata = reinterpret_cast<PTVertex*>(mpVertexBuffer->lock(context));
 
    pdata[0].pos.set(-mHalfSize.width, -mHalfSize.height);
    pdata[0].tex = texcoord.getTopLeft();
@@ -149,14 +150,16 @@ void MeshComponent::updateBuffers()
    pdata[3].pos.set(-mHalfSize.width, mHalfSize.height);
    pdata[3].tex = texcoord.getBottomLeft();
 
-   mpVertexBuffer->unlock();
+   mpVertexBuffer->unlock(context);
 }
 
 void MeshComponent::render(RenderContext& context) const
 {
+   /*
    context.setEffect(mEffect);
    context.setVertexBuffer(*mpVertexBuffer);
    context.setIndexBuffer(*mpIndexBuffer);
+   */
 
    context.drawTriangleFan(0, 4);
 }

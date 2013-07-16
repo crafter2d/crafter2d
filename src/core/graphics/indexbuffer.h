@@ -24,6 +24,8 @@
 
 namespace Graphics
 {
+   class RenderContext;
+
    class CORE_API IndexBuffer
    {
    public:
@@ -41,11 +43,11 @@ namespace Graphics
       virtual bool create(IndexFormat format, int elements, void* data) = 0;
       virtual void release() = 0;
 
-      virtual void enable() const = 0;
-      virtual void disable() const = 0;
+      virtual void enable(RenderContext& context) const = 0;
+      virtual void disable(RenderContext& context) const = 0;
 
-      virtual void* lock() = 0;
-      virtual void unlock() = 0;
+      virtual void* lock(RenderContext& context) = 0;
+      virtual void  unlock(RenderContext& context) = 0;
 
    private:
       IndexFormat mFormat;

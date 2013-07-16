@@ -1,12 +1,9 @@
 
 #include "d3duniformbuffer.h"
 
-#include <d3d11.h>
-
 #include "core/defines.h"
 
 #include "d3ddevice.h"
-
 #include "d3drendercontext.h"
 
 namespace Graphics
@@ -17,9 +14,11 @@ namespace Graphics
    {
    }
 
-   bool D3DUniformBuffer::create(Device& device, int bytes)
+   bool D3DUniformBuffer::create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr)
    {
       D3DDevice& d3ddevice = static_cast<D3DDevice&>(device);
+
+      int bytes = determineSize(pdescs, nr);
 
       D3D11_BUFFER_DESC constantBufferDesc = {0};
       constantBufferDesc.ByteWidth = bytes;
@@ -46,6 +45,19 @@ namespace Graphics
    {
       D3DRenderContext& d3dcontext = static_cast<D3DRenderContext&>(context);
       d3dcontext.getContext().VSSetConstantBuffers(0, 1, &mpBuffer);
+   }
+
+   // - Helpers
+
+   int D3DUniformBuffer::determineSize(UNIFORM_BUFFER_DESC* pdescs, int nr)
+   {
+      int result = 0;
+      for ( int index = 0; index < nr; ++index )
+      {
+         UNIFORM_BUFFER_DESC& desc = pdescs[index];
+         result += desc.size;
+      }
+      return result;
    }
 
 } // namespace Graphics
