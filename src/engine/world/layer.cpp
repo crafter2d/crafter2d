@@ -36,6 +36,7 @@
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 #include "core/graphics/texture.h"
+#include "core/graphics/utils.h"
 #include "core/math/matrix4.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
@@ -170,11 +171,14 @@ void Layer::calculateScrollSpeed(const Vector& area, int screenWidth, int screen
 /// \return Nothing
 void Layer::release()
 {
-	mEffect.destroy ();
+   delete ub;
+   delete ib;
+   delete vb;
+   
+	mEffect.destroy();
 
 	delete[] texcoordLookup;
 	delete[] field;
-	delete vb;
 }
 
 void Layer::update(float delta)
@@ -231,9 +235,11 @@ bool Layer::createBuffers(Device& device, const VertexInputLayout& layout, int w
       return false;
    }
 
+   const int batchsize = width * height;
+
    // create the vertex buffer for this layer
    int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
-   int size = width * height * 4; // each tile is 4 vertices
+   int size = batchsize * 4; // each tile is 4 vertices
 
    if ( !vb->create(layout, size, usage) )
    {
@@ -241,14 +247,11 @@ bool Layer::createBuffers(Device& device, const VertexInputLayout& layout, int w
 		return false;
 	}
 
-   size = width * height * 6; // each tile is 6 indices
-   ib = device.createIndexBuffer();
-   if ( ib == NULL || !ib->create(IndexBuffer::eShort, size, NULL) )
+   ib = Utils::createIndexBuffer(device, batchsize, 4, 6);
+   if ( ib == NULL )
    {
       return false;
    }
-
-   //mConstants.projection = Matrix4::createProjectionMatrix(
    
    return true;
 }

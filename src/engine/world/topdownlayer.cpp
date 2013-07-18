@@ -132,8 +132,6 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
 
 		verts_to_render = 0;
 		float* data = vb->lock(context);
-      int index = 0;
-      unsigned short* indexdata = (unsigned short*)ib->lock(context);
 
   	   for ( int y = ystart; y < yend; y++ )
       {
@@ -160,15 +158,6 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
                setVertex (&data, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), texX+texTileWidth, texY+texTileHeight);
                setVertex (&data, xpos                          , ypos+tileset().getTileHeight(), texX, texY+texTileHeight);
 
-               indexdata[0] = index + 0;
-               indexdata[1] = index + 1;
-               indexdata[2] = index + 2;
-               indexdata[3] = index + 0;
-               indexdata[4] = index + 2;
-               indexdata[5] = index + 3;
-               indexdata += 6;
-               index += 4;
-
                // keep track of number of vertices
 					verts_to_render += 6;
 				}
@@ -179,7 +168,6 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
 		}
 
 		vb->unlock(context);
-      ib->unlock(context);
 
       // reset the dirty flag
       dirty = false;

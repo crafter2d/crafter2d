@@ -15,6 +15,7 @@ namespace Graphics
    {
    public:
       D3DIndexBuffer(D3DDevice& device);
+      virtual ~D3DIndexBuffer();
 
       virtual bool create(IndexFormat format, int elements, void* data) override;
       virtual void release() override;

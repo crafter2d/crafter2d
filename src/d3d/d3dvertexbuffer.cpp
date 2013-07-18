@@ -16,6 +16,11 @@ D3DVertexBuffer::D3DVertexBuffer(D3DDevice& device):
 {
 }
 
+D3DVertexBuffer::~D3DVertexBuffer()
+{
+   release();
+}
+
 bool D3DVertexBuffer::create(const VertexInputLayout& layout, int length, int usage)
 {
    if ( !VertexBuffer::create(layout, length, usage) )

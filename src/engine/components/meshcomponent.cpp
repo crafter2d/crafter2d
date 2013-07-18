@@ -20,12 +20,6 @@
 
 using namespace Graphics;
 
-struct PTVertex
-{
-   Vertex pos;
-   Vertex tex;
-};
-
 MeshComponent::MeshComponent():
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
@@ -136,6 +130,7 @@ void MeshComponent::updateBuffers(RenderContext& context)
 {
    const TextureCoordinate& texcoord = mpAnimator->getTextureCoordinate();
 
+   /*
    PTVertex* pdata = reinterpret_cast<PTVertex*>(mpVertexBuffer->lock(context));
 
    pdata[0].pos.set(-mHalfSize.width, -mHalfSize.height);
@@ -150,7 +145,7 @@ void MeshComponent::updateBuffers(RenderContext& context)
    pdata[3].pos.set(-mHalfSize.width, mHalfSize.height);
    pdata[3].tex = texcoord.getBottomLeft();
 
-   mpVertexBuffer->unlock(context);
+   mpVertexBuffer->unlock(context); */
 }
 
 void MeshComponent::render(RenderContext& context) const

@@ -13,7 +13,8 @@ namespace Graphics
    public:
       ShaderUniformBuffer(GLuint program, GLuint block);
 
-      bool create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr);
+      virtual bool create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr) override;
+      virtual void release() override;
 
       /// set the data into the uniform buffer
       virtual void set(RenderContext& context, const void* pdata) override;

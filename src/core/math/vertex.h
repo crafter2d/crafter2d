@@ -2,6 +2,8 @@
 #ifndef VERTEX2_H
 #define VERTEX2_H
 
+#include "core/math/vector.h"
+
 struct Vertex
 {
    float x;
@@ -10,6 +12,8 @@ struct Vertex
    Vertex();
    Vertex(const Vertex& that);
    Vertex(float _x, float _y);
+
+   Vertex& operator=(const Vector& v);
 
    void set(float _x, float _y);
 };
@@ -33,6 +37,14 @@ Vertex::Vertex(float _x, float _y):
    x(_x),
    y(_y)
 {
+}
+
+inline 
+Vertex& Vertex::operator=(const Vector& v)
+{
+   x = v.x;
+   y = v.y;
+   return *this;
 }
 
 inline

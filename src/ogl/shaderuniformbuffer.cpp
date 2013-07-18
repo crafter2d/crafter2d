@@ -23,6 +23,14 @@ bool ShaderUniformBuffer::create(Device& device, UNIFORM_BUFFER_DESC* pdescs, in
    return createUniforms(pdescs, nr) && createBuffer();
 }
 
+void ShaderUniformBuffer::release()
+{
+   glBindBuffer(GL_UNIFORM_BUFFER, 0);
+   glDeleteBuffers(1, &mBuffer);
+
+   mBuffer = 0;
+}
+
 bool ShaderUniformBuffer::createBuffer()
 {
    glGetActiveUniformBlockiv(mProgram, mBuffer, GL_UNIFORM_BLOCK_DATA_SIZE, &mBufferSize);

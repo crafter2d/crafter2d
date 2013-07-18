@@ -12,8 +12,10 @@ namespace Graphics
    {
    public:
       D3DUniformBuffer();
+      virtual ~D3DUniformBuffer();
 
       virtual bool create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr) override;
+      virtual void release() override;
 
       virtual void set(RenderContext& context, const void* pdata) override;
 

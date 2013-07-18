@@ -14,6 +14,11 @@ namespace Graphics
    {
    }
 
+   D3DUniformBuffer::~D3DUniformBuffer()
+   {
+      release();
+   }
+
    bool D3DUniformBuffer::create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr)
    {
       D3DDevice& d3ddevice = static_cast<D3DDevice&>(device);
@@ -33,6 +38,12 @@ namespace Graphics
          return false;
 
       return true;
+   }
+
+   void D3DUniformBuffer::release()
+   {
+      mpBuffer->Release();
+      mpBuffer = NULL;
    }
 
    void D3DUniformBuffer::set(RenderContext& context, const void* pdata)

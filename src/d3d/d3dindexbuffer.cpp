@@ -13,19 +13,37 @@ D3DIndexBuffer::D3DIndexBuffer(D3DDevice& device):
 {
 }
 
+D3DIndexBuffer::~D3DIndexBuffer()
+{
+   release();
+}
+
 bool D3DIndexBuffer::create(IndexFormat format, int elements, void* data)
 {
    mFormat = DXGI_FORMAT_R16_UINT;
 
+   D3D11_USAGE usage = D3D11_USAGE_DEFAULT;
+   int cpuflags = 0;
+   if ( data == NULL )
+   {
+      usage = D3D11_USAGE_DYNAMIC;
+      cpuflags = D3D11_CPU_ACCESS_WRITE;
+   }
+
    D3D11_BUFFER_DESC indexBufferDesc;
    indexBufferDesc.ByteWidth = sizeof(unsigned short) * elements;
-   indexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+   indexBufferDesc.Usage = usage;
    indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-   indexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+   indexBufferDesc.CPUAccessFlags = cpuflags;
    indexBufferDesc.MiscFlags = 0;
    indexBufferDesc.StructureByteStride = 0;
+
+   D3D11_SUBRESOURCE_DATA indexBufferData;
+   indexBufferData.pSysMem = data;
+   indexBufferData.SysMemPitch = 0;
+   indexBufferData.SysMemSlicePitch = 0;
    
-   HRESULT hr = mDevice.getDevice().CreateBuffer(&indexBufferDesc, NULL, &mpBuffer);
+   HRESULT hr = mDevice.getDevice().CreateBuffer(&indexBufferDesc, &indexBufferData, &mpBuffer);
 
    return SUCCEEDED(hr);
 }

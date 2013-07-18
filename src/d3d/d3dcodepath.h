@@ -18,6 +18,7 @@ namespace Graphics
    {
    public:
       explicit D3DCodePath(D3DDevice& device);
+      virtual ~D3DCodePath();
 
     // query
       virtual UniformBuffer* getUniformBuffer(const String& name) const override;

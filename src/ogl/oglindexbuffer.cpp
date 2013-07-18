@@ -11,6 +11,11 @@ OGLIndexBuffer::OGLIndexBuffer():
 {
 }
 
+OGLIndexBuffer::~OGLIndexBuffer()
+{
+   release();
+}
+
 unsigned int OGLIndexBuffer::getNativeType() const
 {
    return mNativeType;

@@ -24,6 +24,11 @@ D3DCodePath::D3DCodePath(D3DDevice& device):
 {
 }
 
+D3DCodePath::~D3DCodePath()
+{
+   release();
+}
+
 UniformBuffer* D3DCodePath::getUniformBuffer(const String& name) const
 {
    D3DUniformBuffer* presult = new D3DUniformBuffer();
@@ -87,7 +92,6 @@ bool D3DCodePath::readShaderFile(const String& filename, DataStream& buffer)
 
 bool D3DCodePath::createInputLayout(const VertexInputLayout& layout, DataStream& stream)
 {
-   int len;
    D3D11_INPUT_ELEMENT_DESC* pdescs = new D3D11_INPUT_ELEMENT_DESC[layout.getSize()];
    for ( int index = 0; index < layout.getSize(); ++index )
    {

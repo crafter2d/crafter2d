@@ -10,6 +10,7 @@ namespace Graphics
    {
    public:
       OGLIndexBuffer();
+      virtual ~OGLIndexBuffer();
 
     // query
       unsigned int getNativeType() const;

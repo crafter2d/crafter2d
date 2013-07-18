@@ -50,9 +50,10 @@ public:
    void setIdentity();
    void set(const Vector& position, float angle);
 
+   Vector transform(const Vector& pos) const;
+
  // conversion
    void asMatrix(Matrix4& mat) const;
-   void asOpenGL(float mat[16]) const;
 
 private:
    static XForm sIdentity;

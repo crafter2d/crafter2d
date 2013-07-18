@@ -107,11 +107,16 @@ void XForm::asMatrix(Matrix4& mat) const
    mat.translate(mPosition);
 }
 
-void XForm::asOpenGL(float mat[16]) const
+Vector XForm::transform(const Vector& pos) const
 {
-   // transpose matrix in there
-   mat[ 0] = 1; mat[ 4] = 0; mat[ 8] = 0; mat[12] = mPosition.x;
-   mat[ 1] = 0; mat[ 5] = 1; mat[ 9] = 0; mat[13] = mPosition.y;
-   mat[ 2] = 0; mat[ 6] = 0; mat[10] = 1; mat[14] = 0;
-   mat[ 3] = 0; mat[ 7] = 0; mat[11] = 0; mat[15] = 1;
+   float sin = sinf(mAngle);
+   float cos = cosf(mAngle);
+
+   // 3x3 Matrix
+   // cos  -sin   p.x
+   // sin   cos   p.y
+   // 0    0      1
+
+   return Vector(cos * pos.x + -sin * pos.y + mPosition.x,
+                 sin * pos.x +  cos * pos.y + mPosition.y);
 }

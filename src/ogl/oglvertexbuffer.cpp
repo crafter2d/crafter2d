@@ -50,7 +50,7 @@ OGLVertexBuffer::OGLVertexBuffer()
  */
 OGLVertexBuffer::~OGLVertexBuffer()
 {
-	release ();
+	release();
 }
 
 /*!
