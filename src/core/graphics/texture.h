@@ -43,12 +43,9 @@ namespace Graphics
       virtual bool   create(Device& device, const TextureInfo& info) = 0;
       virtual void   release();
 
-      virtual void   enable(RenderContext& context) const = 0;
+      virtual void   enable(RenderContext& context, int stage) const = 0;
       virtual void   disable(RenderContext& context) const = 0;
-
-      int            getStage() const;
-      void           setStage (int stage);
-
+      
     // get/set
       const String& getName() const;
       void          setName(const String& name);
@@ -74,8 +71,7 @@ namespace Graphics
       int   _actualwidth;
       int   _actualheight;
       float _sourceWidth;
-      float _sourceHeight;   
-      int   mTexStage;
+      float _sourceHeight;
    };
 };
 

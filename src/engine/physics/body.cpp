@@ -42,9 +42,9 @@ bool Body::hasInfo(const TiXmlElement& element)
 // - Body
 // ----------------------------------
 
-Body::Body(Simulator& simulator, Actor& actor):
+Body::Body(Simulator& simulator):
    mSimulator(simulator),
-   mActor(actor),
+   mpEntity(NULL),
    mTransform(),
    mpListener(NULL),
    mForceGenerators()

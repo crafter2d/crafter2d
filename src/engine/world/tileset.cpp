@@ -48,6 +48,7 @@ TileInfo::TileInfo():
 //////////////////////////////////////////////////////////////////////////
 
 TileSet::TileSet():
+   mMap(),
    mpInfo(NULL),
    mTileCount(0),
    mTileWidth(0),
@@ -59,12 +60,12 @@ TileSet::TileSet():
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-bool TileSet::create(const String& filename)
+bool TileSet::create(Graphics::Device& device, const String& filename)
 {
    int thisTile, val;
    Log& log = Log::getInstance();
 
-   std::string path = "../images/" + filename.toUtf8();
+   std::string path = filename.toUtf8();
    TiXmlDocument doc(path);
    if ( !doc.LoadFile() )
    {
@@ -101,6 +102,12 @@ bool TileSet::create(const String& filename)
    mpInfo = new TileInfo[mTileCount];
    memset(mpInfo, 0, sizeof(TileInfo) * mTileCount);
 
+   // load the texture
+   if ( !loadTexture(device, *set) )
+   {
+      return false;
+   }
+
    // load information about all tiles
    TiXmlElement* tile = (TiXmlElement*)set->FirstChild("tile");
    while ( tile )
@@ -128,6 +135,25 @@ bool TileSet::create(const String& filename)
       tile = (TiXmlElement*)set->IterateChildren ("tile", tile);
    }
    return true;
+}
+
+bool TileSet::loadTexture(Graphics::Device& device, const TiXmlElement& set)
+{
+   const TiXmlElement* pmapelement = static_cast<const TiXmlElement*>(set.FirstChild("texture"));
+   if ( pmapelement == NULL )
+   {
+      return false;
+   }
+
+   const char* pfile = pmapelement->Attribute("name");
+   if ( pfile == NULL )
+   {
+      return false;
+   }
+
+   String file = String::fromUtf8(pfile);
+   mMap = ResourceManager::getInstance().getTexture(device, file);
+   return mMap.isValid();
 }
 
 bool TileSet::update(float tick)

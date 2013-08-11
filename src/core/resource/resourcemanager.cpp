@@ -45,6 +45,8 @@ ResourceManager& ResourceManager::getInstance()
 
 // - Operations
 
+static String sPath = UTEXT("../images/");
+
 /// \fn ResourceManager::loadTexture (const std::string& file)
 /// \brief Returns a texture from a the given file.
 TexturePtr ResourceManager::getTexture(Graphics::Device& device, const String& file)
@@ -53,6 +55,7 @@ TexturePtr ResourceManager::getTexture(Graphics::Device& device, const String& f
 
    if ( !mResources.contains(file) )
    {
+      String path = sPath + file;
       AutoPtr<Graphics::Texture> texture = device.createTexture(file);
       if ( !texture.hasPointer() )
          return TexturePtr();

@@ -44,8 +44,7 @@ Texture::Texture():
    _actualwidth(0),
    _actualheight(0),
    _sourceWidth(1.0f),
-   _sourceHeight(1.0f),
-	mTexStage(0)
+   _sourceHeight(1.0f)
 {
 }
 

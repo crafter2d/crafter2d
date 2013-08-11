@@ -147,9 +147,9 @@ void D3DCodePath::disable(RenderContext& context) const
    
 }
 
-bool D3DCodePath::bindTexture(RenderContext& context, const Texture& uniform)
+bool D3DCodePath::bindTexture(RenderContext& context, int stage, const Texture& uniform)
 {
-   uniform.enable(context);
+   uniform.enable(context, stage);
    return true;
 }
 

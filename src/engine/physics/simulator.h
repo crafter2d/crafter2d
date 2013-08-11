@@ -24,8 +24,8 @@
 
 #include "bodies.h"
 
-class Actor;
 class World;
+class BodyDefinition;
 class SimulatorListener;
 
 /**
@@ -53,13 +53,13 @@ public:
 
  // get/set
    const World& getWorld() const;
-   void         setWorld(const World& world);\
+   void         setWorld(const World& world);
       
  // query
    virtual bool lineOfSight(const Body& from, const Body& to) const = 0;
 
  // maintenance
-   virtual Body& createBody(Actor& actor) = 0;
+   virtual Body& createBody(const BodyDefinition& definition) = 0;
    virtual void  removeBody(Body& body);
 
  // operations

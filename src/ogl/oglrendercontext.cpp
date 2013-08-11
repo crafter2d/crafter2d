@@ -4,7 +4,6 @@
 #include <GL/GLee.h>
 #include <GL/glu.h>
 
-#include "core/graphics/effect.h"
 #include "core/graphics/viewport.h"
 #include "core/graphics/uniformbuffer.h"
 #include "core/math/color.h"
@@ -41,12 +40,6 @@ void OGLRenderContext::setBlendState(const BlendState& state)
    {
       glDisable(GL_BLEND);
    }
-}
-
-void OGLRenderContext::setEffect(const Effect& effect)
-{
-   mpEffect = &effect;
-   mpEffect->enable(*this);
 }
 
 void OGLRenderContext::setVertexBuffer(const VertexBuffer& buffer)

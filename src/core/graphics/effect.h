@@ -50,33 +50,41 @@ namespace Graphics
    class CORE_API Effect
    {
    public:
-	                     Effect();
-	                     ~Effect();
+      Effect();
+	   ~Effect();
+
+    // get/set
+      const String& getName() const;
+      const String& getFileName() const;
 	
+    // operations
 	   bool              load(Graphics::Device& device, const VertexInputLayout& layout, const String& file);
 	   void              destroy();
 	
-	   const TexturePtr  resolveTexture(const String& uniform) const;
-      const TexturePtr  findTexture(const String& uniform) const;
-
       UniformBuffer*    getUniformBuffer(const String& name) const;
 
-      void              enable(Graphics::RenderContext& context) const;
-	   void              disable(Graphics::RenderContext& context) const;
+      void              setTexture(int stage, const TexturePtr& texture);
 
-      void              updateStateMatrices() const;
+      void              render(RenderContext& context, int vertcount);
 	
    private:
      // types
-      typedef std::vector<TexturePtr> Textures;
+      struct TexInfo
+      {
+         TexturePtr texture;
+         int        stage;
+      };
 
-	   bool              processTextures(Graphics::Device& device, const TiXmlElement& effect);
-      bool              postprocessTextures();
+      typedef std::vector<TexInfo> Textures;
 
+      void              enable(Graphics::RenderContext& context) const;
+	   void              disable(Graphics::RenderContext& context) const;
+      
 	   bool              processCode(Graphics::Device& device, const Graphics::VertexInputLayout& layout, const TiXmlElement& effect, const String& path);
       bool              processBlendState(Graphics::Device& device, const TiXmlElement& effect);
 		
       String                        name;
+      String                        mFile;
       Textures                      mTextures;
       Graphics::CodePath*           mpCodePath;
       Graphics::BlendState*         mpBlendStateEnabled;

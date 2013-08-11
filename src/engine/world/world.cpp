@@ -259,7 +259,7 @@ void World::scroll ()
    {
       if ( followObject != NULL )
       {
-         Vector pos = followObject->getPosition ();
+         Vector pos = Vector::zero(); //followObject->getPosition ();
          Layer& layer = *layers[getObjectLayer()];
 
          // determine if the layer should be scrolled
@@ -496,7 +496,7 @@ void World::notifyEntityRemoved(const Entity& entity)
 static const String sBound = UTEXT("engine.game.Bound");
 static const String sCollision = UTEXT("onObjectCollision");
 
-void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin)
+void World::notifyObjectWorldCollision(Entity& object, Bound& bound, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
    Variant args[4];
@@ -507,7 +507,7 @@ void World::notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bo
    mpScript->run(sCollision, 4, args);
 }
 
-void World::notifyObjectObjectCollision(Actor& source, Actor& target, int side, bool begin)
+void World::notifyObjectObjectCollision(Entity& source, Entity& target, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
    Variant args[4];

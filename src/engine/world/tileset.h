@@ -20,7 +20,15 @@
 #ifndef TILESET_H_
 #define TILESET_H_
 
+#include "core/resource/resourcemanager.h"
+
+namespace Graphics
+{
+   class Device;
+}
+
 class String;
+class TiXmlElement;
 
 enum TileInfoFlag {
    TileAnimate    = 1,
@@ -44,18 +52,26 @@ class TileSet
 public:
    TileSet();
 
-   bool create(const String& filename);
+   bool create(Graphics::Device& device, const String& filename);
    bool update(float tick);
 
  // operator overloads
    TileInfo& operator[](int idx);
 
  // get/set
+   TexturePtr& getTexture();
+
    int   getTileCount() const;
    int   getTileWidth() const;
    int   getTileHeight() const;
 
-protected:
+private:
+
+ // loading
+   bool loadTexture(Graphics::Device& device, const TiXmlElement& tile);
+
+ // data
+   TexturePtr  mMap;
    TileInfo*   mpInfo;
    int         mTileCount;
    int         mTileWidth;

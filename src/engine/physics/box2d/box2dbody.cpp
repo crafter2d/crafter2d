@@ -33,8 +33,8 @@ static const std::string sTYPE              = "type";
 
 String Box2DBody::sClassName = UTEXT("box2d.Box2DBody");
 
-Box2DBody::Box2DBody(Simulator& simulator, b2Body& body, Actor& actor):
-   Body(simulator, actor),
+Box2DBody::Box2DBody(Simulator& simulator, b2Body& body):
+   Body(simulator),
    mBody(body),
    mHalfWidth(0),
    mHalfHeight(0),
@@ -55,7 +55,7 @@ Box2DBody::~Box2DBody()
 
 // get/set
 
-b2Body& Box2DBody::getBody()
+b2Body& Box2DBody::getBox2DBody()
 {
    return mBody;
 }

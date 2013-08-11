@@ -59,6 +59,7 @@ struct LayerDefinition
    int height;
    String name;
    String effect;
+   String tileset;
 };
 
 /**
@@ -93,7 +94,8 @@ public:
    virtual int            getTile(int x, int y) const;
    virtual void           setTile(int x, int y, int tile);
 
-   void setDefinition(LayerDefinition* pdefinition);
+   const LayerDefinition& getDefinition() const;
+   void                   setDefinition(LayerDefinition* pdefinition);
 
    Vector         getScrollSpeed() const;
    void           setScrollSpeed(float x, float y);
@@ -119,6 +121,7 @@ public:
    float          getTexTileHeight() const { return texTileHeight; }
 
    const Graphics::Effect& getEffect() const;
+         Graphics::Effect& getEffect();
 
  // Operations
    Vector         layerToScreen( const Vector& vec ) const;

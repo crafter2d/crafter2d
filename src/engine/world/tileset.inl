@@ -24,6 +24,11 @@ INLINE TileInfo& TileSet::operator[](int idx)
    return mpInfo[idx];
 }
 
+INLINE TexturePtr& TileSet::getTexture()
+{
+   return mMap;
+}
+
 int TileSet::getTileCount() const
 {
    return mTileCount;

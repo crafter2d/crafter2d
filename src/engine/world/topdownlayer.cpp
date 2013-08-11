@@ -31,6 +31,7 @@
 
 #include "layertype.h"
 #include "tile.h"
+#include "tileset.h"
 #include "tilerow.h"
 #include "topdowntilerow.h"
 
@@ -55,7 +56,7 @@ bool TopDownLayer::initialize(Graphics::Device& device)
       return false;
    }
 
-   const TexturePtr diffuse = getEffect().resolveTexture(UTEXT("diffuseMap"));
+   const TexturePtr& diffuse = mTileSet.getTexture();
    float dx = diffuse->getSourceWidth() / diffuse->getWidth();
    float dy = diffuse->getSourceHeight() / diffuse->getHeight();
 
@@ -108,78 +109,20 @@ void TopDownLayer::onViewportChanged(Graphics::RenderContext& context)
 /// \return Nothing
 void TopDownLayer::draw(Graphics::RenderContext& context)
 {
-   //glPushMatrix ();
-	//glTranslatef (-xscroll, -yscroll, 0);
-
-	if ( dirty )
+   if ( dirty )
    {
-		// determine the tile we are in
-		int xstart = xscroll / tileWidth;
-		int ystart = yscroll / tileHeight;
+      updateBuffers(context);		
 
-		int xend = xstart + maxTilesX + 1;
-		int yend = ystart + maxTilesY + 1;
-
-		// see if we have to render an extra tile
-		if (((int)xscroll % tileWidth) > (tileWidth>>1)) xend++;
-		if (((int)yscroll % tileHeight) > (tileHeight>>1)) yend++;
-
-		// check on bounds
-		if (xend > getWidth()) xend = getWidth();
-		if (yend > getHeight()) yend = getHeight();
-
-		float ypos = ystart * tileHeight;// - tileHeight;
-
-		verts_to_render = 0;
-		float* data = vb->lock(context);
-
-  	   for ( int y = ystart; y < yend; y++ )
-      {
-			float xpos = xstart * tileWidth;
-
-			for ( int x = xstart; x < xend; x++ )
-         {
-				int texId = field[y][x].getTextureId();
-				if (texId >= 1)
-            {
-               TileInfo& info = mTileSet[texId];
-
-               // see if the tile can be animated
-               if (animateTiles && info.flag & TileAnimate)
-                   texId += info.anim_index;
-
-					// calculate the position of the vertex
-					float texX = texcoordLookup[texId].x;
-					float texY = texcoordLookup[texId].y;
-
-					// insert the vertices
-					setVertex (&data, xpos                          , ypos                          , texX, texY);
-               setVertex (&data, xpos+tileset().getTileWidth() , ypos                          , texX+texTileWidth, texY);
-               setVertex (&data, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), texX+texTileWidth, texY+texTileHeight);
-               setVertex (&data, xpos                          , ypos+tileset().getTileHeight(), texX, texY+texTileHeight);
-
-               // keep track of number of vertices
-					verts_to_render += 6;
-				}
-				xpos += tileWidth;
-			}
-         // (3D only: instead of + do a -)
-			ypos += tileHeight;
-		}
-
-		vb->unlock(context);
-
-      // reset the dirty flag
       dirty = false;
 	}
 
-   // draw layer at onces
-   context.setEffect(getEffect());
    context.setVertexBuffer(*vb);
    context.setIndexBuffer(*ib);
    context.setUniformBuffer(*ub);
 
-	context.drawTriangles(0, verts_to_render);
+   Graphics::Effect& effect = getEffect();
+   effect.setTexture(0, mTileSet.getTexture());
+   effect.render(context, verts_to_render);
 }
 
 void TopDownLayer::drawHighlight(const Vector& point)
@@ -199,6 +142,65 @@ void TopDownLayer::drawHighlight(const Vector& point)
 
    glLineWidth(1.0f);
    */
+}
+
+void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
+{
+   // determine the tile we are in
+	int xstart = xscroll / tileWidth;
+	int ystart = yscroll / tileHeight;
+
+	int xend = xstart + maxTilesX + 1;
+	int yend = ystart + maxTilesY + 1;
+
+	// see if we have to render an extra tile
+	if (((int)xscroll % tileWidth) > (tileWidth>>1)) xend++;
+	if (((int)yscroll % tileHeight) > (tileHeight>>1)) yend++;
+
+	// check on bounds
+	if (xend > getWidth()) xend = getWidth();
+	if (yend > getHeight()) yend = getHeight();
+
+	float ypos = ystart * tileHeight;
+
+	verts_to_render = 0;
+	float* data = vb->lock(context);
+
+  	for ( int y = ystart; y < yend; y++ )
+   {
+		float xpos = xstart * tileWidth;
+
+		for ( int x = xstart; x < xend; x++ )
+      {
+			int texId = field[y][x].getTextureId();
+			if (texId >= 1)
+         {
+            TileInfo& info = mTileSet[texId];
+
+            // see if the tile can be animated
+            if (animateTiles && info.flag & TileAnimate)
+                  texId += info.anim_index;
+
+				// calculate the position of the vertex
+				float texX = texcoordLookup[texId].x;
+				float texY = texcoordLookup[texId].y;
+
+				// insert the vertices
+				setVertex (&data, xpos                          , ypos                          , texX, texY);
+            setVertex (&data, xpos+tileset().getTileWidth() , ypos                          , texX+texTileWidth, texY);
+            setVertex (&data, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), texX+texTileWidth, texY+texTileHeight);
+            setVertex (&data, xpos                          , ypos+tileset().getTileHeight(), texX, texY+texTileHeight);
+
+            // keep track of number of vertices
+				verts_to_render += 6;
+			}
+			xpos += tileWidth;
+		}
+      // (3D only: instead of + do a -)
+		ypos += tileHeight;
+	}
+
+	vb->unlock(context);
 }
 
 TileRow* TopDownLayer::createTileRows(int width, int height)

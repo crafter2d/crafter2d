@@ -22,7 +22,10 @@ public:
    const Size&              getSize() const;
    void                     setSize(const Size& size);
 
+   const Size&              getHalfSize() const;
+
    const Graphics::Texture& getTexture() const;
+   void                     setTexture(const TexturePtr& texture);
 
    const TextureCoordinate& getTextureCoordinate() const;
    void                     setTextureCoordinate(const TextureCoordinate& coordinate);
@@ -37,6 +40,7 @@ private:
    TextureCoordinate mTexCoordinate;
    XForm             mTransform;
    Size              mSize;
+   Size              mHalfSize;
 };
 
 #endif // SPRITE_H

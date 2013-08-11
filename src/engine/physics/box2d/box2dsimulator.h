@@ -31,6 +31,7 @@ class Object;
 class String;
 class Vector;
 class Matrix4;
+class BodyDefinition;
 
 class Box2DBody;
 class Box2DJoint;
@@ -62,7 +63,7 @@ public:
    virtual bool lineOfSight(const Body& from, const Body& to) const;
 
  // maintenance
-   virtual Body& createBody(Actor& actor);
+   virtual Body& createBody(const BodyDefinition& definition);
    virtual void  removeBody(Body& body);
 
    Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);

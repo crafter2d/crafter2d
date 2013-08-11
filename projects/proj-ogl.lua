@@ -43,7 +43,7 @@ if ( os.is("windows") ) then
 			links { "GLee_d", "SOIL", "freetype242MT" }
 
 	else
-		links { "opengl32", "glu32", "cg", "cgGL" }
+		links { "opengl32", "glu32" }
 		
 		configuration "Debug"
 			links { "GLee_d", "SOIL_d", "freetype242MT_D" }

@@ -20,6 +20,8 @@
 #ifndef WORLDWRITER_H
 #define WORLDWRITER_H
 
+class DataStream;
+class Layer;
 class String;
 class World;
 class ZipFile;
@@ -45,6 +47,8 @@ private:
    bool writeLayers(ZipFile& zip);
    bool writeBounds(ZipFile& zip);
    bool writeObjects(ZipFile& zip);
+
+   void writeLayer(DataStream& out, const Layer& layer);
 
    const World*   mpWorld;
 };

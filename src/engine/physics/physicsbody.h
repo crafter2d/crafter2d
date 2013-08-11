@@ -28,7 +28,7 @@
 class PhysicsBody : public Body
 {
 public:
-   PhysicsBody(Simulator& simulator, Actor& actor);
+   PhysicsBody(Simulator& simulator);
    virtual ~PhysicsBody();
 
   // get/set

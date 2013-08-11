@@ -25,12 +25,13 @@
 #include "core/resource/resourcemanager.h"
 #include "core/smartptr/autoptr.h"
 
-#include "engine/physics/body.h"
+#include "engine/physics/bodydefinition.h"
 #include "engine/physics/simulator.h"
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
+#include "engine/sprites/sprite.h"
 #include "engine/animator.h"
-#include "engine/actor.h"
+#include "engine/entity.h"
 #include "engine/components/physicscomponent.h"
 #include "engine/components/meshcomponent.h"
 #include "engine/process.h"
@@ -45,7 +46,7 @@ ActorLoader::ActorLoader(Process& process):
 
 // - Operations
 
-Actor* ActorLoader::load(const String& filename, int flags)
+Entity* ActorLoader::load(const String& filename, int flags)
 {
    Log& log = Log::getInstance();
 
@@ -56,14 +57,14 @@ Actor* ActorLoader::load(const String& filename, int flags)
       return NULL;
    }
 
-	const TiXmlElement* pobject = static_cast<const TiXmlElement*>(doc.FirstChild ("object"));
+	const TiXmlElement* pobject = static_cast<const TiXmlElement*>(doc.FirstChild("entity"));
 	if ( pobject == NULL )
    {
       log.error("Object.load: Invalid XML file format, object expected.\n");
 		return NULL;
 	}
 
-   AutoPtr<Actor> actor = new Actor();
+   AutoPtr<Entity> actor = new Entity();
    actor->setName(String::fromUtf8(pobject->Attribute("name")));
    actor->setFilename(filename);
 
@@ -73,15 +74,19 @@ Actor* ActorLoader::load(const String& filename, int flags)
 
    if ( IS_SET(flags, ContentLoader::eLoadPhysics) )
    {
-      loadPhysics(*pobject, *actor);
+      const TiXmlElement* pphysicsxml = pobject->FirstChildElement("body");
+      if ( pphysicsxml != NULL )
+      {
+         loadPhysics(*pphysicsxml, *actor);
+      }
    }
 
    if ( IS_SET(flags, ContentLoader::eLoadGraphics) )
    {
-      const TiXmlElement* pmesh = pobject->FirstChildElement("mesh");
-      if ( pmesh != NULL )
+      const TiXmlElement* pspritexml = pobject->FirstChildElement("sprite");
+      if ( pspritexml != NULL )
       {
-         loadMesh(*pmesh, *actor);
+         loadMesh(*pspritexml, *actor);
       }
       else
       {
@@ -92,21 +97,53 @@ Actor* ActorLoader::load(const String& filename, int flags)
    return actor.release();
 }
 
-void ActorLoader::loadPhysics(const TiXmlElement& object, Actor& actor)
+void ActorLoader::loadPhysics(const TiXmlElement& physicsxml, Entity& actor)
 {
-   if ( Body::hasInfo(object) )
+   AutoPtr<BodyDefinition> definition = new BodyDefinition();
+
+   int isstatic = 0;
+   physicsxml.QueryIntAttribute("static", &isstatic);
+   if ( isstatic > 0 )
+      definition->setStatic(true);
+
+   int rotate = 1;
+   if ( physicsxml.QueryIntAttribute("rotate", &rotate) == TIXML_SUCCESS && rotate == 0 )
+      definition->setFixedRotation(true);
+
+   const TiXmlElement* pshapeelement = dynamic_cast<const TiXmlElement*>(physicsxml.FirstChild("shape"));
+   if ( pshapeelement != NULL )
    {
-      Body& body = getSimulator().createBody(actor);
-      body.load(object);
+      const std::string* pshapetype = pshapeelement->Attribute(std::string("type"));
+      if ( pshapetype != NULL )
+      {
+         if ( pshapetype->compare("box") == 0 )
+         {
+            float width;
+            float height;
 
-      PhysicsComponent* ppc = new PhysicsComponent();
-      ppc->setBody(body);
+            pshapeelement->QueryFloatAttribute("halfx", &width);
+            pshapeelement->QueryFloatAttribute("halfy", &height);
 
-      actor.addComponent(ppc);
+            width /= 30.0f;
+            height /= 30.0f;
+
+            definition->setShapeType(BodyDefinition::eBox);
+            definition->setWidth(width);
+            definition->setHeight(height);
+         }
+         else if ( pshapetype->compare("circle") == 0 )
+         {
+            float radius = 0.0f;
+            pshapeelement->QueryFloatAttribute("radius", &radius);
+            
+            definition->setShapeType(BodyDefinition::eCircle);
+            definition->setRadius(radius / 30.0f);
+         }
+      }
    }
 }
 
-void ActorLoader::loadMesh(const TiXmlElement& mesh, Actor& actor)
+void ActorLoader::loadMesh(const TiXmlElement& mesh, Entity& actor)
 {
    int width, height;
 	if ( mesh.QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
@@ -115,30 +152,37 @@ void ActorLoader::loadMesh(const TiXmlElement& mesh, Actor& actor)
       throw new InvalidContentException(UTEXT("ActorLoader: actor requires a valid size."));
 	}
 
-   AutoPtr<MeshComponent> meshcomp = new MeshComponent();
-   meshcomp->setSize(Size(width, height));
+   AutoPtr<Sprite> sprite = new Sprite(); 
 
-   // load texture data
-   const TiXmlElement* peffect = mesh.FirstChildElement("effect");
-	if ( peffect != NULL )
+   AutoPtr<MeshComponent> meshcomp = new MeshComponent();
+   sprite->setSize(Size(width, height));
+
+   // load texture
+   const TiXmlElement* ptextureelement = mesh.FirstChildElement("texture");
+   if ( ptextureelement != NULL )
    {
-      const TiXmlText* pvalue = dynamic_cast<const TiXmlText*>(peffect->FirstChild());
-      const std::string& name = pvalue->ValueStr();
-      String effectName(name.c_str());
-      meshcomp->setEffectName(effectName);
-	}
+      const TiXmlText* pvalue = dynamic_cast<const TiXmlText*>(ptextureelement->FirstChild());
+      ASSERT_PTR(pvalue);
+      String texture(pvalue->ValueStr());
+      /*
+      TexturePtr ptr = ResourceManager::getInstance().getTexture(device, texture);
+      if ( !ptr.isValid() )
+      {
+         throw new InvalidContentException(UTEXT("ActorLoader: can not load texture ") + texture);
+      }
+      
+      sprite->setTexture(ptr);
+      */
+   }
    else
    {
       throw new InvalidContentException(UTEXT("ActorLoader: actor requires a texture (missing in ") + actor.getName() + ')');
-	}
+   }
 
    // load animation stuff
    const TiXmlElement* pXmlAnimation = mesh.FirstChildElement("animations");
    if ( pXmlAnimation != NULL )
    {
-      Animator* panimator = Animator::construct(*pXmlAnimation);
-      meshcomp->setAnimator(panimator);
+      //mpAnimator = Animator::construct(*pXmlAnimation);
    }
-
-   actor.addComponent(meshcomp.release());
 }

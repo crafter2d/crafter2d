@@ -27,6 +27,7 @@
 #include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/math/size.h"
+#include "core/smartptr/autoptr.h"
 
 #include "animation.h"
 
@@ -34,9 +35,13 @@ using namespace Graphics;
 
 Animator* Animator::construct(const TiXmlElement& xmlAnimation)
 {
-   Animator* panimator = panimator = new Animator();
-   panimator->loadFromXML(xmlAnimation);
-   return panimator;
+   AutoPtr<Animator> animator = new Animator();
+   if ( animator->loadFromXML(xmlAnimation) )
+   {
+      return animator.release();
+   }
+
+   return NULL;
 }
 
 Animator::Animator():

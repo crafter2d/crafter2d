@@ -20,7 +20,6 @@ namespace Graphics
 
     // operations
       virtual void setBlendState(const BlendState& state);
-      virtual void setEffect(const Effect& effect);
       virtual void setVertexBuffer(const VertexBuffer& buffer);
       virtual void setIndexBuffer(const IndexBuffer& buffer);
       virtual void setUniformBuffer(const UniformBuffer& buffer);

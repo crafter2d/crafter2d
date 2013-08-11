@@ -76,7 +76,7 @@ namespace Graphics
       virtual UniformBuffer* getUniformBuffer(const String& name) const = 0;
 
       /// \brief binds the texture to the uniform to the stage (unit)
-      virtual bool bindTexture(RenderContext& context, const Texture& uniform) = 0;
+      virtual bool bindTexture(RenderContext& context, int stage, const Texture& uniform) = 0;
    };
 };
 

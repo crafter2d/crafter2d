@@ -4,15 +4,12 @@
 #  include "meshcomponent.inl"
 #endif
 
-#include "core/graphics/device.h"
-#include "core/graphics/vertexinputlayout.h"
 #include "core/graphics/rendercontext.h"
-#include "core/graphics/indexbuffer.h"
-#include "core/graphics/vertexbuffer.h"
 #include "core/math/vertex.h"
 
 #include "engine/animator.h"
 #include "engine/texturecoordinate.h"
+#include "engine/sprites/sprite.h"
 
 #include "components.h"
 #include "componentmessage.h"
@@ -24,17 +21,14 @@ MeshComponent::MeshComponent():
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
    mpAnimator(NULL),
-   mEffectName(),
-   mEffect(),
-   mpVertexBuffer(NULL),
-   mpIndexBuffer(NULL),
-   mSize()
+   mpSprite(NULL)
 {
 }
 
 MeshComponent::~MeshComponent()
 {
    delete mpAnimator;
+   delete mpSprite;
 }
 
 // - Get/set
@@ -50,35 +44,6 @@ float MeshComponent::getAngle() const
 }
 
 // - Operations
-
-void MeshComponent::initialize(Device& device, RenderContext& context)
-{
-   mHalfSize.width = mSize.width / 2.0f;
-   mHalfSize.height = mSize.height / 2.0f;
-
-   Graphics::VertexInputLayout layout(Graphics::INPUT_XY | Graphics::INPUT_Tex0);
-
-   if ( mEffect.load(device, layout, mEffectName) )                                                                                                 
-   {
-      mpVertexBuffer = device.createVertexBuffer();
-      mpVertexBuffer->create(layout, 4, VertexBuffer::eWriteOnly | VertexBuffer::eDynamic);
-
-      short indices[] = { 0, 1, 2, 3 };
-
-      mpIndexBuffer = device.createIndexBuffer();
-      mpIndexBuffer->create(IndexBuffer::eShort, 4, indices);
-
-      if ( mpAnimator != NULL )
-      {
-         const TexturePtr tex = mEffect.findTexture(UTEXT("diffuseMap"));
-         ASSERT(tex.isValid());
-
-         mpAnimator->initialize(*tex, mSize);
-      }
-
-      updateBuffers(context);
-   }
-}
 
 void MeshComponent::registerComponent(Components& components)
 {
@@ -154,7 +119,6 @@ void MeshComponent::render(RenderContext& context) const
    context.setEffect(mEffect);
    context.setVertexBuffer(*mpVertexBuffer);
    context.setIndexBuffer(*mpIndexBuffer);
-   */
-
    context.drawTriangleFan(0, 4);
+   */
 }

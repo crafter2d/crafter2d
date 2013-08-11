@@ -97,7 +97,7 @@ void SpriteRenderer::renderSprite(const Sprite& sprite, PTVertex* pbuffer)
 {
    const TextureCoordinate& coordinate = sprite.getTextureCoordinate();
    const XForm& xform = sprite.getTransform();
-   const Size& size = sprite.getSize();
+   const Size& size = sprite.getHalfSize();
 
    int offsets[4][2] = { {-1, -1}, {1, -1}, {1, 1}, {-1, 1} };
    int texindex[] = { TextureCoordinate::TopLeft, TextureCoordinate::TopRight, TextureCoordinate::BottomRight, TextureCoordinate::BottomLeft };

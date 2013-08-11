@@ -29,14 +29,21 @@ INLINE Simulator& Body::getSimulator()
    return mSimulator;
 }
 
-INLINE const Actor& Body::getActor() const
+INLINE const Entity& Body::getEntity() const
 {
-   return mActor;
+   ASSERT_PTR(mpEntity);
+   return *mpEntity;
 }
 
-INLINE Actor& Body::getActor()
+INLINE Entity& Body::getEntity()
 {
-   return mActor;
+   ASSERT_PTR(mpEntity);
+   return *mpEntity;
+}
+
+INLINE void Body::setEntity(Entity& entity)
+{
+   mpEntity = &entity;
 }
 
 INLINE const Vector& Body::getPosition() const

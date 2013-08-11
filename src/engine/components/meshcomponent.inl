@@ -11,22 +11,14 @@ INLINE void MeshComponent::setAnimator(Animator* panimator)
    mpAnimator = panimator;
 }
 
-INLINE const String& MeshComponent::getEffectName() const
+INLINE const Sprite& MeshComponent::getSprite() const
 {
-   return mEffectName;
+   ASSERT_PTR(mpSprite);
+   return *mpSprite;
 }
    
-INLINE void MeshComponent::setEffectName(const String& name)
+INLINE void MeshComponent::setSprite(Sprite* psprite)
 {
-   mEffectName = name;
+   mpSprite = psprite;
 }
 
-INLINE const Size& MeshComponent::getSize() const
-{
-   return mSize;
-}
-   
-INLINE void MeshComponent::setSize(const Size& size)
-{
-   mSize = size;
-}

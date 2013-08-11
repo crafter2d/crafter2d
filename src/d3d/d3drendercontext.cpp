@@ -37,11 +37,6 @@ void D3DRenderContext::setBlendState(const BlendState& state)
    static_cast<const D3DBlendState&>(state).enable(*mpContext);
 }
 
-void D3DRenderContext::setEffect(const Effect& effect)
-{
-   effect.enable(*this);
-}
-
 void D3DRenderContext::setVertexBuffer(const VertexBuffer& buffer)
 {
    buffer.enable(*this);

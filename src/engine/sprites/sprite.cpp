@@ -9,7 +9,8 @@ Sprite::Sprite():
    mTexture(),
    mTexCoordinate(),
    mTransform(),
-   mSize()
+   mSize(),
+   mHalfSize()
 {
 }
 
@@ -23,11 +24,22 @@ const Size& Sprite::getSize() const
 void Sprite::setSize(const Size& size)
 {
    mSize = size;
+   mHalfSize = mSize / 2.0f;
+}
+
+const Size& Sprite::getHalfSize() const
+{
+   return mHalfSize;
 }
 
 const Texture& Sprite::getTexture() const
 {
    return *mTexture;
+}
+
+void Sprite::setTexture(const TexturePtr& texture)
+{
+   mTexture = texture;
 }
 
 const TextureCoordinate& Sprite::getTextureCoordinate() const

@@ -17,7 +17,6 @@ namespace Graphics
       OGLRenderContext();
 
       virtual void setBlendState(const BlendState& state) override;
-      virtual void setEffect(const Effect& effect) override;
       virtual void setVertexBuffer(const VertexBuffer& buffer) override;
       virtual void setIndexBuffer(const IndexBuffer& buffer) override;
       virtual void setUniformBuffer(const UniformBuffer& buffer) override;

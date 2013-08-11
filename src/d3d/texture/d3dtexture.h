@@ -16,7 +16,7 @@ namespace Graphics
 
       virtual bool   create(Device& device, const TextureInfo& info) override;
 
-      virtual void   enable(RenderContext& context) const override;
+      virtual void   enable(RenderContext& context, int stage) const override;
       virtual void   disable(RenderContext& context) const override;
 
       virtual bool   isValid() const override;

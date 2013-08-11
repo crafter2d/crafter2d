@@ -27,7 +27,7 @@
 #include "engine/world/world.h"
 #include "engine/world/bound.h"
 #include "engine/world/bounds.h"
-#include "engine/actor.h"
+#include "engine/physics/bodydefinition.h"
 
 #include "box2dbody.h"
 #include "box2draycastcallback.h"
@@ -106,7 +106,7 @@ void Box2DSimulator::cleanUp()
    mpb2World = NULL;
 }
 
-Body& Box2DSimulator::createBody(Actor& actor)
+Body& Box2DSimulator::createBody(const BodyDefinition& definition)
 {
    b2BodyDef bodydef;
    bodydef.position = b2Vec2();
@@ -114,9 +114,42 @@ Body& Box2DSimulator::createBody(Actor& actor)
    bodydef.type     = b2_dynamicBody;
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
+   b2Shape* pshape = NULL;
 
-   Box2DBody* pbody = new Box2DBody(*this, *pboxbody, actor);
+   switch ( definition.getShapeType() )
+   {
+      case BodyDefinition::eBox:
+         {
+            b2PolygonShape shape;
+            shape.SetAsBox(definition.getWidth(), definition.getHeight());
 
+            b2FixtureDef fixturedef;
+            fixturedef.density  = 1;
+            fixturedef.friction = 0.3f;
+            fixturedef.shape    = &shape;
+            fixturedef.userData = (void*)Box2DSimulator::eObject;
+            
+            pboxbody->CreateFixture(&fixturedef);
+         }
+         break;
+      case BodyDefinition::eCircle:
+         {
+            b2CircleShape shape;
+            shape.m_radius = definition.getRadius() / 30;
+
+            b2FixtureDef fixturedef;
+            fixturedef.density  = 1;
+            fixturedef.friction = 1;
+            fixturedef.shape    = &shape;
+            fixturedef.userData = (void*)Box2DSimulator::eObject;
+
+            pboxbody->CreateFixture(&fixturedef);
+         }
+      default:
+         throw new std::exception("invalid body shape.");
+   }
+
+   Box2DBody* pbody = new Box2DBody(*this, *pboxbody);
    addBody(pbody);
 
    return *pbody;
@@ -129,7 +162,7 @@ void Box2DSimulator::removeBody(Body& body)
 Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefinition& definition)
 {
    b2RevoluteJointDef jd;
-   jd.Initialize(&definition.pleft->getBody(), &definition.pright->getBody(), vectorToB2(definition.anchor));
+   jd.Initialize(&definition.pleft->getBox2DBody(), &definition.pright->getBox2DBody(), vectorToB2(definition.anchor));
 
    b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpb2World->CreateJoint(&jd));
 
@@ -143,7 +176,7 @@ Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefini
 Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DBody& left, Box2DBody& right, const Vector& anchor)
 {
    b2RevoluteJointDef jd;
-   jd.Initialize(&left.getBody(), &right.getBody(), vectorToB2(anchor));
+   jd.Initialize(&left.getBox2DBody(), &right.getBox2DBody(), vectorToB2(anchor));
 
    b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpb2World->CreateJoint(&jd));
 

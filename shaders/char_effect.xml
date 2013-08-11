@@ -1,8 +1,7 @@
 <?xml version="1.0">
 <effect name="char">
-   <texture uniform="diffuseMap">char.png</texture>
    <code>
-      <vertex>vertex.glsl</vertex>
-      <fragment>fragment.glsl</fragment>
+      <vertex>vertex.cso</vertex>
+      <fragment>fragment.cso</fragment>
    </code>
 </effect>

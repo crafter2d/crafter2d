@@ -29,7 +29,7 @@ public:
    PhysicsSimulator();
    virtual ~PhysicsSimulator();
 
-   virtual Body& createBody(Actor& actor);
+   virtual Body& createBody(const BodyDefinition& definition);
 
  // query
    virtual const String& getClassName() const;

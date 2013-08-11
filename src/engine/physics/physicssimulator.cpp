@@ -41,9 +41,9 @@ PhysicsSimulator::~PhysicsSimulator()
    mWorldShapes.removeAll();
 }
 
-Body& PhysicsSimulator::createBody(Actor& actor)
+Body& PhysicsSimulator::createBody(const BodyDefinition& definition)
 {
-   PhysicsBody* pbody = new PhysicsBody(*this, actor);
+   PhysicsBody* pbody = new PhysicsBody(*this);
    addBody(pbody);
    return *pbody;
 }

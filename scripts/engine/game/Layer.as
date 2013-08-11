@@ -31,6 +31,7 @@ class Layer
 	
 	public void prepare()
 	{
+		/*
 		Effect effect = getEffect();
 		Texture image = effect.getDiffuseTexture();
 		
@@ -44,6 +45,7 @@ class Layer
 		mCoords.initialize(image, mTileSet);
 		
 		fillMap();
+		*/
 	}
 	
 	private void fillMap()

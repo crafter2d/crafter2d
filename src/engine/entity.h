@@ -47,7 +47,7 @@ public:
    DEFINE_REPLICATABLE(Entity);
 
    Entity();
-   virtual ~Entity() = 0;
+   virtual ~Entity();
 
  // get/set
    uint           getId() const;
@@ -89,7 +89,7 @@ public:
    void      remove(Entity& entity);
 
  // visitor
-   virtual void accept(NodeVisitor& visitor) = 0;
+   virtual void accept(NodeVisitor& visitor);
 
 protected:
 
@@ -99,9 +99,9 @@ protected:
          MeshComponent& getMesh();
 
  // update & drawing
-   virtual void doUpdate(float delta) = 0;
+   virtual void doUpdate(float delta);
    virtual void doUpdateClient(float delta);
-   virtual void doDraw(Graphics::RenderContext& context) const = 0;
+   virtual void doDraw(Graphics::RenderContext& context) const;
 
  // streaming
    virtual void doPack(DataStream& stream) const;

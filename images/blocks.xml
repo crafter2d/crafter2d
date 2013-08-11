@@ -1,4 +1,5 @@
 <?xml version="1.0">
 <!-- blocks.png information file -->
 <tileset width=32 height=32 count=41>
+	<texture name="blocks.dds" />
 </tileset>

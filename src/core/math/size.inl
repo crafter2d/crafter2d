@@ -27,3 +27,8 @@ Size& Size::operator=(const Size& that)
    height = that.height;
    return *this;
 }
+
+inline Size Size::operator/(float value)
+{
+   return Size(width / value, height / value);
+}

@@ -46,8 +46,9 @@ String::String(const UChar* pdata):
 }
 
 String::String(const std::string& that):
-   mString(that.c_str())
+   mString()
 {
+   setTo(that.c_str(), that.length());
 }
 
 String::String(const std::wstring& that):
@@ -221,7 +222,7 @@ void String::append(const String& that)
 
 void String::setTo(const char* ptext, int length)
 {
-   StringPiece piece(ptext);
+   StringPiece piece(ptext, length);
    mString = UnicodeString::fromUTF8(piece);
 }
 

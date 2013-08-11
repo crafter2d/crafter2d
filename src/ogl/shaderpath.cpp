@@ -85,9 +85,9 @@ UniformBuffer* ShaderPath::getUniformBuffer(const String& name) const
    return shader.getUniformBuffer(name);
 }
 
-bool ShaderPath::bindTexture(RenderContext& context, const Texture& texture)
+bool ShaderPath::bindTexture(RenderContext& context, int stage, const Texture& texture)
 {
-   bool result = shader.bindTexture(texture);
-   texture.enable(context);
+   bool result = shader.bindTexture(stage, texture);
+   texture.enable(context, stage);
    return result;
 }

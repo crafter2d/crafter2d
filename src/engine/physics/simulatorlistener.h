@@ -20,7 +20,7 @@
 #ifndef SIMULATOR_LISTENER_H_
 #define SIMULATOR_LISTENER_H_
 
-class Actor;
+class Entity;
 class Bound;
 
 class SimulatorListener
@@ -29,8 +29,8 @@ public:
    SimulatorListener();
    virtual ~SimulatorListener() = 0;
 
-   virtual void collideObjectWorld(Actor& source, Bound& bound, int side, bool begin);
-   virtual void collideObjectObject(Actor& source, Actor& target, int side, bool begin);
+   virtual void collideObjectWorld(Entity& source, Bound& bound, int side, bool begin);
+   virtual void collideObjectObject(Entity& source, Entity& target, int side, bool begin);
 };
 
 #endif

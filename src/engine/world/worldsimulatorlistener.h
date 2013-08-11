@@ -30,8 +30,8 @@ public:
    WorldSimulatorListener(World& world);
    virtual ~WorldSimulatorListener();
 
-   virtual void collideObjectWorld(Actor& object, Bound& bound, int side, bool begin);
-   virtual void collideObjectObject(Actor& object, Actor& target, int side, bool begin);
+   virtual void collideObjectWorld(Entity& object, Bound& bound, int side, bool begin);
+   virtual void collideObjectObject(Entity& object, Entity& target, int side, bool begin);
 
 private:
    World& mWorld;

@@ -85,9 +85,9 @@ void OGLTexture::release()
 /// \fn Texture::enable(bool active=true)
 /// \brief Use this function to either activate or deactivate this texture.
 /// \param[in] active when true the texture is made active, when false it is deactivated
-void OGLTexture::enable(RenderContext& context) const
+void OGLTexture::enable(RenderContext& context, int stage) const
 {
-	glActiveTexture (GL_TEXTURE0 + mTexStage);
+	glActiveTexture (GL_TEXTURE0 + stage);
 	glBindTexture(mTarget, mID);
 }
 

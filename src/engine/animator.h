@@ -75,6 +75,8 @@ private:
 	int      mAnimFrame;
 };
 
+typedef SharedPtr<Animator> AnimatorPtr;
+
 #ifdef JENGINE_INLINE
 #  include "animator.inl"
 #endif

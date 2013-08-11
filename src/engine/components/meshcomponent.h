@@ -2,8 +2,6 @@
 #ifndef MESH_COMPONENT_H
 #define MESH_COMPONENT_H
 
-#include "core/graphics/effect.h"
-#include "core/math/size.h"
 #include "core/math/xform.h"
 #include "core/string/string.h"
 
@@ -11,13 +9,11 @@
 
 namespace Graphics
 {
-   class Device;
    class RenderContext;
-   class IndexBuffer;
-   class VertexBuffer;
-};
+}
 
 class Animator;
+class Sprite;
 
 class MeshComponent : public Component
 {
@@ -29,17 +25,13 @@ public:
    const Animator& getAnimator() const;
    void            setAnimator(Animator* panimator);
 
-   const String& getEffectName() const;
-   void          setEffectName(const String& name);
-
    const Vector& getPosition() const;
    float         getAngle() const;
 
-   const Size& getSize() const;
-   void        setSize(const Size& size);
+   const Sprite& getSprite() const;
+   void          setSprite(Sprite* psprite);
 
  // operations
-   void initialize(Graphics::Device& device, Graphics::RenderContext& context);
    void render(Graphics::RenderContext& context) const;
 
  // overloads
@@ -54,12 +46,7 @@ private:
  // members
    XForm                         mTransform;
    Animator*                     mpAnimator; // owned
-   String                        mEffectName;
-   Graphics::Effect              mEffect;
-   Graphics::VertexBuffer*       mpVertexBuffer;
-   Graphics::IndexBuffer*        mpIndexBuffer;
-   Size                          mSize;
-   Size                          mHalfSize;
+   Sprite*                       mpSprite;
 };
 
 #ifdef JENGINE_INLINE

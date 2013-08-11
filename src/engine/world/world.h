@@ -88,8 +88,8 @@ public:
 
  // get/set
    void           setAutoFollow(bool enabled=true);
-   Actor*         getFollowObject();
-   void           setFollowObject(Actor* obj);
+   Entity*        getFollowObject();
+   void           setFollowObject(Entity* obj);
    void           setScrollMode(int fm);
    void           setFollowBorderWidth(int width);
    void           setFollowBorders(int left, int right, int top, int bottom);
@@ -150,8 +150,8 @@ public:
    Entity&  resolveEntity(Id id);
 
  // notification
-   void notifyObjectWorldCollision(Actor& object, Bound& bound, int side, bool begin);
-   void notifyObjectObjectCollision(Actor& object, Actor& target, int side, bool begin);
+   void notifyObjectWorldCollision(Entity& object, Bound& bound, int side, bool begin);
+   void notifyObjectObjectCollision(Entity& object, Entity& target, int side, bool begin);
 
    void onViewportChanged(Graphics::RenderContext& context);
 
@@ -192,7 +192,7 @@ private:
    int leftBorder, rightBorder, topBorder, bottomBorder;
    int _objectLayer;
    FollowMode followMode;
-   Actor* followObject;
+   Entity* followObject;
 };
 
 #ifdef JENGINE_INLINE

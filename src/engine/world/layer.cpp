@@ -119,12 +119,8 @@ bool Layer::initialize(Device& device)
    }
 
    // load the tileset
-   const TexturePtr diffuse = mEffect.resolveTexture(UTEXT("diffuseMap"));
-   String tileInfo = diffuse.getName();
-   int pos = tileInfo.lastIndexOf('.');
-   tileInfo.replace(pos+1, 3, UTEXT("xml"));
-
-   if ( !mTileSet.create(tileInfo) )
+   String tileInfo = UTEXT("../images/") + mpDefinition->tileset + UTEXT(".xml");
+   if ( !mTileSet.create(device, tileInfo) )
       return false;
 
    tileCount = tileset().getTileCount();

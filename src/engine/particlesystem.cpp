@@ -277,7 +277,7 @@ void ParticleSystem::doDraw(Graphics::RenderContext& context) const
 	Particle* part = activeList;
 	ParticleVertex* verts = (ParticleVertex*)mGeometryBuffer->lock(context);
 
-   mEffect.enable(context);
+   //mEffect.enable(context);
 
 	while (part)
    {
@@ -332,7 +332,7 @@ void ParticleSystem::doDraw(Graphics::RenderContext& context) const
 		mGeometryBuffer->disable(context);
 	}
 
-	mEffect.disable(context);
+	//mEffect.disable(context);
 }
 
 // - Visitor

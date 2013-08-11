@@ -96,7 +96,6 @@ void Entity::initialize(Device& device, RenderContext& context)
    if ( pcomponent != NULL )
    {
       mpMeshComponent = static_cast<MeshComponent*>(pcomponent);
-      mpMeshComponent->initialize(device, context);
    }
 }
 

@@ -73,7 +73,7 @@ void Box2DContactListener::collisionObjectWorld(b2Contact* pcontact, b2Fixture& 
    
    if ( side > 0 && mSimulator.hasListener() )
    {
-      mSimulator.getListener().collideObjectWorld(pbody->getActor(), *(Bound*)bound.GetBody()->GetUserData(), side, begin);
+      mSimulator.getListener().collideObjectWorld(pbody->getEntity(), *(Bound*)bound.GetBody()->GetUserData(), side, begin);
    }
 }
 
@@ -86,6 +86,6 @@ void Box2DContactListener::collisionObjectObject(b2Contact* pcontact, b2Fixture&
    
    if ( side > 0 && mSimulator.hasListener() )
    {
-      mSimulator.getListener().collideObjectObject(pbody->getActor(), *(Actor*)object.GetBody()->GetUserData(), side, begin);
+      mSimulator.getListener().collideObjectObject(pbody->getEntity(), *(Entity*)object.GetBody()->GetUserData(), side, begin);
    }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0">
 <effect name="blockseffect">
-	<texture uniform="diffuseMap">blocks.dds</texture>
 	<code>
 		<vertex>vertex.cso</vertex>
 		<fragment>fragment.cso</fragment>

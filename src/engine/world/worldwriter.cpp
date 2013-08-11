@@ -105,7 +105,7 @@ bool WorldWriter::writeLayers(ZipFile& zip)
    for ( int index = 0; index < getWorld().getLayerCount(); ++index )
    {
       const Layer* player = getWorld().getLayer(index);
-      //stream << *player;
+      writeLayer(stream, *player);
    }
 
    zip.addFile(UTEXT("data"), (void*)stream.getData(), stream.getDataSize());
@@ -175,3 +175,24 @@ bool WorldWriter::writeObjects(ZipFile& zip)
    return true;
 }
 
+void WorldWriter::writeLayer(DataStream& out, const Layer& layer)
+{
+   const LayerDefinition& definition = layer.getDefinition();
+
+   const String& name = definition.name;
+   const String& effect = definition.effect;
+   const String& tileset = definition.tileset;
+   int width = definition.width;
+   int height = definition.height;
+   
+   out << definition.name << definition.effect << definition.tileset << definition.width << definition.height;
+
+   for ( int y = 0; y < height; ++y )
+   {
+      for ( int x = 0; x < width; ++x )
+      {
+         int tile = layer.getTile(x, y);
+         out.writeInt(tile);
+      }
+   }
+}

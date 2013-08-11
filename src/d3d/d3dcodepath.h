@@ -29,7 +29,7 @@ namespace Graphics
       virtual void      enable(RenderContext& context) const override;
 	   virtual void      disable(RenderContext& context) const override;
 
-      virtual bool bindTexture(RenderContext& context, const Texture& uniform) override;
+      virtual bool      bindTexture(RenderContext& context, int stage, const Texture& uniform) override;
 
    private:
 

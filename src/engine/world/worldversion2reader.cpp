@@ -206,16 +206,20 @@ bool WorldVersion2Reader::loadXmlFromZip(UnzipFile& zip, TiXmlDocument& doc, con
 
 void WorldVersion2Reader::readLayer(DataStream& in)
 {
-   float width, height;
-   String name, effect;
+   int width, height;
+   String name, effect, tileset;
 
    Layer* player = getWorld().createLayer();
    getWorld().addLayer(player);
 
-   in >> name >> effect >> width >> height;
+   //in >> name >> effect >> width >> height;
+   //tileset = UTEXT("blocks");
+
+   in >> name >> effect >> tileset >> width >> height;
 
    LayerDefinition* pdefinition = new LayerDefinition();
    pdefinition->effect = effect;
+   pdefinition->tileset = tileset;
    pdefinition->name = name;
    pdefinition->width = width;
    pdefinition->height = height;

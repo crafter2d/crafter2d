@@ -45,6 +45,11 @@ public:
 
 protected:
    virtual TileRow*  createTileRows(int width, int height);
+
+private:
+
+ // updating
+   void updateBuffers(Graphics::RenderContext& context);
 };
 
 #endif

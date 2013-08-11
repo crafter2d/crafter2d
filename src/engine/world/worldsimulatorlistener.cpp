@@ -31,12 +31,12 @@ WorldSimulatorListener::~WorldSimulatorListener()
 {
 }
 
-void WorldSimulatorListener::collideObjectWorld(Actor& object, Bound& bound, int side, bool begin)
+void WorldSimulatorListener::collideObjectWorld(Entity& object, Bound& bound, int side, bool begin)
 {
    mWorld.notifyObjectWorldCollision(object, bound, side, begin);
 }
 
-void WorldSimulatorListener::collideObjectObject(Actor& object, Actor& target, int side, bool begin)
+void WorldSimulatorListener::collideObjectObject(Entity& object, Entity& target, int side, bool begin)
 {
    mWorld.notifyObjectObjectCollision(object, target, side, begin);
 }

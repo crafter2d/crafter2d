@@ -32,22 +32,23 @@ class CollisionShape;
 class TiXmlElement;
 class ForceGenerator;
 class Simulator;
-class Actor;
+class Entity;
 
 class Body : public IScriptable
 {
 public:
    static bool hasInfo(const TiXmlElement& element);
 
-   explicit Body(Simulator& simulator, Actor& actor);
+   explicit Body(Simulator& simulator);
    virtual ~Body();
 
  // get/set
    const Simulator& getSimulator() const;
          Simulator& getSimulator();
 
-   const Actor& getActor() const;
-         Actor& getActor();
+   const Entity& getEntity() const;
+         Entity& getEntity();
+   void          setEntity(Entity& entity);
 
    const Vector& getPosition() const;
    void          setPosition(const Vector& pos);
@@ -93,8 +94,8 @@ private:
    void cleanUp();
 
    Simulator&        mSimulator;
-   Actor&            mActor;
    XForm             mTransform;
+   Entity*           mpEntity;
    IBodyListener*    mpListener;
    ForceGenerators   mForceGenerators;
 };

@@ -18,3 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/defines.h"
+
+namespace Graphics
+{
+
+INLINE const String& Effect::getName() const
+{
+   return name;
+}
+
+INLINE const String& Effect::getFileName() const
+{
+   return mFile;
+}
+
+}

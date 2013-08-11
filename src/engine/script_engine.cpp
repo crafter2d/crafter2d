@@ -602,16 +602,6 @@ void Layer_setTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
    layer.setTile(x, y, t);
 }
 
-void Effect_resolveTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Graphics::Effect, effect);
-
-   const String& name = accessor.getString(1);
-
-   TexturePtr* ptexture = new TexturePtr(effect.resolveTexture(name));
-   RETURN_CLASS_OWNED(UTEXT("engine.core.Texture"), ptexture);
-}
-
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
@@ -1246,7 +1236,6 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction(UTEXT("setTile(int, int, int)"), Layer_setTile);
 
    registrator.addClass(UTEXT("engine.game.Effect"));
-   registrator.addFunction(UTEXT("resolveTexture(string)"), Effect_resolveTexture);
 
    registrator.addClass(UTEXT("engine.game.InputForceGenerator"));
    registrator.addFunction(UTEXT("InputForceGenerator()"), InputForceGenerator_init);

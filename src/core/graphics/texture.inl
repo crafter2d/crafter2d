@@ -42,16 +42,6 @@ INLINE void Texture::setUniform(const String& uniform)
    mUniform = uniform;
 }
 
-INLINE int Texture::getStage() const
-{
-   return mTexStage;
-}
-
-INLINE void Texture::setStage(int stage)
-{
-   mTexStage = stage;
-}
-
 INLINE int Texture::getWidth() const
 {
    return _width; 

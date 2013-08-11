@@ -42,6 +42,7 @@ namespace Graphics
  */
 Effect::Effect():
    name(),
+   mFile(),
    mTextures(),
    mpCodePath(NULL),
    mpBlendStateEnabled(NULL),
@@ -69,6 +70,7 @@ bool Effect::load(Device& device, const VertexInputLayout& layout, const String&
 {
 	Log& log = Log::getInstance();
 
+   mFile = file;
    String path = UTEXT("../shaders/") + file + UTEXT(".xml");
 
    std::string filename = path.toUtf8();
@@ -92,8 +94,7 @@ bool Effect::load(Device& device, const VertexInputLayout& layout, const String&
 
 	// try to load in the textures
 	if ( !processCode(device, layout, *effect, UTEXT("../shaders/")) 
-     || !processBlendState(device, *effect)
-     || !processTextures(device, *effect) )
+     || !processBlendState(device, *effect) )
    {
 		return false;
    }
@@ -117,44 +118,6 @@ void Effect::destroy ()
 	}
 
 	mTextures.clear ();
-}
-
-/*!
-    \fn Effect::processTextures( const TiXmlElement* effect )
-	 \brief Creates/loads in the textures and their uniform names from the effect file for the
-	 various stages neccessary for this effect.
-	 \returns true when no errors are detected, false otherwise.
- */
-bool Effect::processTextures(Graphics::Device& device, const TiXmlElement& effect)
-{
-   const TiXmlElement* ptexture = static_cast<const TiXmlElement*>(effect.FirstChild("texture"));
-   while ( ptexture != NULL )
-   {
-      TexturePtr texture;
-
-		const TiXmlText* file = static_cast<const TiXmlText*>(ptexture->FirstChild());
-      String filename(file->ValueStr());
-
-      texture = ResourceManager::getInstance().getTexture(device, filename);
-      if ( !texture.isValid() )
-      {
-         Log::getInstance().error("Effect.processTextures: could not load texture %s", file->Value());
-			return false;
-		}
-
-      ASSERT(texture.isValid());
-
-      texture->setUniform(String::fromUtf8(ptexture->Attribute("uniform")));
-      texture->setStage(static_cast<int>(mTextures.size()));
-
-      mTextures.push_back(texture);
-
-		// now iterate over the rest of the textures
-		ptexture = static_cast<const TiXmlElement*>(effect.IterateChildren ("texture", ptexture));
-	}
-
-	// we need at least one texture
-   return !mTextures.empty();
 }
 
 /*!
@@ -217,8 +180,8 @@ bool Effect::processBlendState(Graphics::Device& device, const TiXmlElement& eff
    {
       using namespace Graphics;
 
-      String strsource(pblend_part->Attribute("source"));
-      String strdest(pblend_part->Attribute("dest"));
+      String strsource = String::fromUtf8(pblend_part->Attribute("source"));
+      String strdest   = String::fromUtf8(pblend_part->Attribute("dest"));
      
       BlendStateDesc descenabled(BlendStateDesc::fromString(strsource), BlendStateDesc::fromString(strdest), true);
       mpBlendStateEnabled = device.createBlendState(descenabled);
@@ -233,36 +196,16 @@ bool Effect::processBlendState(Graphics::Device& device, const TiXmlElement& eff
    return true;
 }
 
-/*!
-    \fn Effect::getTexture(const char* uniform)
-	 \brief Looks up the uniform string in the stages of this effect. If found the texture object is returned.
-	 \returns a texture object if uniform is known, NULL otherwise.
- */
-const TexturePtr Effect::resolveTexture (const String& uniform) const
-{
-   const TexturePtr texture = findTexture(uniform);
-   ASSERT_MSG(texture.isValid(), "Can not find the texture.");
-   return texture;
-}
-
-const TexturePtr Effect::findTexture(const String& uniform) const
-{
-   for ( Textures::size_type s = 0; s < mTextures.size(); ++s )
-   {
-      const TexturePtr& texture = mTextures[s];
-      if ( uniform == texture->getUniform() )
-      {
-         return texture;
-      }
-   }
-
-   return TexturePtr();
-}
-
 UniformBuffer* Effect::getUniformBuffer(const String& name) const
 {
    ASSERT_PTR(mpCodePath);
    return mpCodePath->getUniformBuffer(name);
+}
+
+void Effect::setTexture(int stage, const TexturePtr& texture)
+{
+   TexInfo info = { texture, stage };
+   mTextures.push_back(info);
 }
 
 /*!
@@ -271,32 +214,24 @@ UniformBuffer* Effect::getUniformBuffer(const String& name) const
  */
 void Effect::enable(RenderContext& context) const
 {
-   if ( mpBlendStateEnabled != NULL )
-   {
-      context.setBlendState(*mpBlendStateEnabled);
-   }
-
+   context.setBlendState(*mpBlendStateEnabled);
+   
    mpCodePath->enable(context);
 
    for ( Textures::size_type s = 0; s < mTextures.size(); ++s )
    {
-	   const TexturePtr& texture = mTextures[s];
-      mpCodePath->bindTexture(context, *texture);
+	   const TexInfo& info = mTextures[s];
+      mpCodePath->bindTexture(context, info.stage, *(info.texture));
    }
 }
 
-/*!
-    \fn Effect::disable()
-	 \brief Disables the textures, shaders and eventually resets the texture combiners.
- */
-void Effect::disable(RenderContext& context) const
+void Effect::render(RenderContext& context, int vertcount)
 {
-   if ( mpBlendStateDisabled != NULL )
-   {
-      context.setBlendState(*mpBlendStateDisabled);
-   }
+   enable(context);
 
-   mpCodePath->disable(context);
+   context.drawTriangles(0, vertcount);
+
+   mTextures.clear();
 }
 
 } // end namespace

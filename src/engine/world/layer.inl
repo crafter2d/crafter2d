@@ -38,6 +38,12 @@ INLINE int Layer::getHeight() const
    return mpDefinition->height;
 }
 
+INLINE const LayerDefinition& Layer::getDefinition() const
+{
+   ASSERT_PTR(mpDefinition);
+   return *mpDefinition;
+}
+
 INLINE void Layer::setDefinition(LayerDefinition* pdefinition)
 {
    mpDefinition = pdefinition;
@@ -71,6 +77,11 @@ INLINE bool Layer::isTileAnimating() const
 /// \fn Layer::getEffect()
 /// \brief Return the effect for this layer.
 INLINE const Graphics::Effect& Layer::getEffect() const
+{
+   return mEffect;
+}
+
+INLINE Graphics::Effect& Layer::getEffect()
 {
    return mEffect;
 }

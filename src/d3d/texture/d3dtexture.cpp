@@ -40,11 +40,11 @@ bool D3DTexture::create(Device& device, const TextureInfo& info)
    return true;
 }
 
-void D3DTexture::enable(RenderContext& context) const
+void D3DTexture::enable(RenderContext& context, int stage) const
 {
    ID3D11DeviceContext& d3dcontext = D3DRenderContext::asContext(context);
-   d3dcontext.PSSetShaderResources(0, 1, &mpResource);
-   d3dcontext.PSSetSamplers(0, 1, &mpSampler);
+   d3dcontext.PSSetShaderResources(stage, 1, &mpResource);
+   d3dcontext.PSSetSamplers(stage, 1, &mpSampler);
 }
 
 void D3DTexture::disable(RenderContext& context) const

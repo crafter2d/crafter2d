@@ -22,7 +22,7 @@
 
 #include "contentloader.h"
 
-class Actor;
+class Entity;
 class String;
 class TiXmlElement;
 
@@ -31,12 +31,12 @@ class ActorLoader : public ContentLoader
 public:
    ActorLoader(Process& process);
 
-   Actor* load(const String& filename, int flags);
+   Entity* load(const String& filename, int flags);
 
 private:
 
-   void loadPhysics(const TiXmlElement& object, Actor& actor);
-   void loadMesh(const TiXmlElement& object, Actor& actor);
+   void loadPhysics(const TiXmlElement& object, Entity& actor);
+   void loadMesh(const TiXmlElement& object, Entity& actor);
 };
 
 #endif // OBJECT_LOADER_H

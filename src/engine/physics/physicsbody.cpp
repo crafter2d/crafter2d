@@ -22,13 +22,13 @@
 #  include "physicsbody.inl"
 #endif
 
-String PhysicsBody::sClassName = UTEXT("box2d.Box2DBody");
+String PhysicsBody::sClassName = UTEXT("physicsbody");
 
 #include "physicsxml.h"
 #include "collisionshape.h"
 
-PhysicsBody::PhysicsBody(Simulator& simulator, Actor& actor):
-   Body(simulator, actor),
+PhysicsBody::PhysicsBody(Simulator& simulator):
+   Body(simulator),
    mTransform(),
    mShapes(),
    mLinearVelocity(),
