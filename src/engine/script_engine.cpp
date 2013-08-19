@@ -61,8 +61,8 @@
 #include "inputcontroller.h"
 #include "aicontroller.h"
 
-#define GET_THIS(type, variable)                   type& variable = *static_cast<type*>(accessor.getThis().getNativeObject())
-#define DESTRUCT_THIS(type)                        delete static_cast<type*>(accessor.getThis().useNativeObject());
+#define GET_THIS(type, variable)                   type& variable = accessor.getThis().getNativeObject<type>()
+#define DESTRUCT_THIS(type)                        delete accessor.getThis().useNativeObject<type>();
 
 #define RETURN(type, pointer)                      accessor.setResult(*machine.instantiateNative(UTEXT(#type), pointer, false))
 #define RETURN_OWNED(type, pointer)                accessor.setResult(*machine.instantiateNativeUTEXT((#type), pointer, true))
@@ -74,8 +74,8 @@
 
 void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   const String& name = accessor.getString(1);
-   int size = accessor.getInt(2);
+   //const String& name = accessor.getString(1);
+   //int size = accessor.getInt(2);
 
    //FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
    //RETURN_CLASS_OWNED("engine.ui.Font"), FontPtr, pfont);
@@ -92,17 +92,19 @@ void Process_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(Server, server);
 
-   ActionMap* pmap = (ActionMap*) accessor.getObject(1).useNativeObject();
+   ActionMap* pmap = accessor.getObject(1).useNativeObject<ActionMap>();
 
    server.setActionMap(pmap);
 }
 
-void Process_setWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Process_loadWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Process, process);
 
-   World* pworld = static_cast<World*>(accessor.getObject(1).useNativeObject());
-   process.setWorld(pworld);
+   const String& filename = accessor.getString(1);
+   World* pworld = process.loadWorld(filename);
+
+   RETURN_CLASS(UTEXT("engine.game.World"), pworld);
 }
 
 void Process_swapLeakDetection(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -126,9 +128,9 @@ void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& acces
    GET_THIS(Server, server);
 
    int client = accessor.getInt(1);
-   NetStream* pstream = (NetStream*) accessor.getObject(2).getNativeObject();
+   NetStream& stream = accessor.getObject(2).getNativeObject<NetStream>();
 
-   server.sendScriptEvent(client, *pstream);
+   server.sendScriptEvent(client, stream);
 }
 
 void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -159,7 +161,7 @@ void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Client, client);
 
-   GameWindow* pwindow = (GameWindow*) accessor.getObject(1).useNativeObject();
+   GameWindow* pwindow = accessor.getObject(1).useNativeObject<GameWindow>();
 
    client.setWindow(pwindow);
 }
@@ -176,7 +178,7 @@ void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor
 {
    GET_THIS(Client, client);
 
-   ActionMap* pmap = (ActionMap*) accessor.getObject(1).useNativeObject();
+   ActionMap* pmap = accessor.getObject(1).useNativeObject<ActionMap>();
 
    client.setActionMap(pmap);
 }
@@ -185,7 +187,7 @@ void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Client, client);
 
-   KeyMap* pmap = (KeyMap*) accessor.getObject(1).useNativeObject();
+   KeyMap* pmap = accessor.getObject(1).useNativeObject<KeyMap>();
 
    client.setKeyMap(pmap);
 }
@@ -208,16 +210,6 @@ void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& ac
 
    Entity* presult = contentmanager.loadEntity(filename);
    RETURN_CLASS_OWNED(presult->getClassName(), presult);
-}
-
-void ContentManager_load(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(ContentManager, contentmanager);
-
-   const String& filename = accessor.getString(1);
-
-   World* presult = contentmanager.loadWorld(filename);
-   RETURN_CLASS_OWNED(UTEXT("engine.game.World"), presult);
 }
 
 void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -257,9 +249,9 @@ void NetStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
-   BufferedStream* pbufferedstream = (BufferedStream*) accessor.getObject(1).getNativeObject();
+   BufferedStream& bufferedstream = accessor.getObject(1).getNativeObject<BufferedStream>();
 
-   NetStream* pstream = new NetStream(*pbufferedstream);
+   NetStream* pstream = new NetStream(bufferedstream);
    machine.registerNative(thisobject, pstream);
 }
 
@@ -320,8 +312,8 @@ void Entity_sendComponentMessage(VirtualMachine& machine, VirtualStackAccessor& 
 {
    GET_THIS(Entity, entity);
 
-   ComponentMessage* pmsg = (ComponentMessage*) accessor.getObject(1).getNativeObject();
-   entity.sendComponentMessage(*pmsg);
+   ComponentMessage& msg = accessor.getObject(1).getNativeObject<ComponentMessage>();
+   entity.sendComponentMessage(msg);
 }
 
 void Actor_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -397,7 +389,7 @@ void Actor_setController(VirtualMachine& machine, VirtualStackAccessor& accessor
 {
    GET_THIS(Actor, actor);
 
-   Controller* pcontroller = (Controller*) accessor.getObject(1).useNativeObject();
+   Controller* pcontroller = accessor.getObject(1).useNativeObject<Controller>();
 
    actor.setController(pcontroller);
 }
@@ -406,18 +398,18 @@ void Actor_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   Actor* pchild = (Actor*) accessor.getObject(1).getNativeObject();
+   Actor& child = accessor.getObject(1).getNativeObject<Actor>();
 
-   actor.add(*pchild);
+   actor.add(child);
 }
 
 void Actor_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
 
-   Actor* pto = (Actor*) accessor.getObject(1).getNativeObject();
+   Actor& to = accessor.getObject(1).getNativeObject<Actor>();
 
-   accessor.setResult(actor.hasLineOfSight(*pto));
+   accessor.setResult(actor.hasLineOfSight(to));
 }
 
 void Player_getClientId(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -438,7 +430,7 @@ void Player_setController(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(Player, player);
 
-   Actor& entity = *static_cast<Actor*>(accessor.getObject(1).getNativeObject());
+   Actor& entity = accessor.getObject(1).getNativeObject<Actor>();
 
    player.setController(entity);
 }
@@ -467,7 +459,7 @@ void World_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(World, world);
 
-   Actor* pentity = static_cast<Actor*>(accessor.getObject(1).useNativeObject());
+   Actor* pentity = accessor.getObject(1).useNativeObject<Actor>();
 
    world.addEntity(pentity);
 }
@@ -501,9 +493,9 @@ void World_setFollowActor(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(World, world);
 
-   Actor* pentity = static_cast<Actor*>(accessor.getObject(1).getNativeObject());
+   Actor& entity = accessor.getObject(1).getNativeObject<Actor>();
 
-   world.setFollowObject(pentity);
+   world.setFollowObject(entity);
 }
 
 void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -541,7 +533,7 @@ void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
    int controllerid = accessor.getInt(1);
    Entity* pentity = world.findEntity(Id(controllerid));
 
-   RETURN_CLASS(UTEXT("engine.game.Actor"), static_cast<Actor*>(pentity));
+   RETURN_CLASS(UTEXT("engine.game.Actor"), pentity);
 }
 
 void World_getLayerCount(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -663,18 +655,18 @@ void InputController_setActionMap(VirtualMachine& machine, VirtualStackAccessor&
 {
    GET_THIS(InputController, controller);
 
-   ActionMap* pactionmap = (ActionMap*) accessor.getObject(1).getNativeObject();
+   ActionMap& actionmap = accessor.getObject(1).getNativeObject<ActionMap>();
 
-   controller.setActionMap(pactionmap);
+   controller.setActionMap(actionmap);
 }
 
 void AIController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
-   Process* pprocess = (Process*) accessor.getObject(1).getNativeObject();
+   Process& process = accessor.getObject(1).getNativeObject<Process>();
 
-   AIController* pcontroller = new AIController(*pprocess);
+   AIController* pcontroller = new AIController(process);
    pcontroller->setThis(thisobject);
    machine.registerNative(thisobject, pcontroller);
 }
@@ -686,10 +678,10 @@ void AIController_destruct(VirtualMachine& machine, VirtualStackAccessor& access
 
 void Box2DSimulator_lineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(Box2DSimulator, simulator);
+   //GET_THIS(Box2DSimulator, simulator);
 
-   const Actor& from = *(Actor*) accessor.getObject(1).getNativeObject();
-   const Actor& to = *(Actor*) accessor.getObject(2).getNativeObject();
+   //const Actor& from = accessor.getObject(1).getNativeObject<Actor>();
+   //const Actor& to = accessor.getObject(2).getNativeObject<Actor>();
 
    accessor.setResult(false); //simulator.lineOfSight(from.getBody(), to.getBody()));
 }
@@ -698,8 +690,8 @@ void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAcc
 {
    GET_THIS(Box2DSimulator, simulator);
 
-   Box2DBody& left = *(Box2DBody*) accessor.getObject(1).getNativeObject();
-   Box2DBody& right = *(Box2DBody*) accessor.getObject(2).getNativeObject();
+   Box2DBody& left = accessor.getObject(1).getNativeObject<Box2DBody>();
+   Box2DBody& right = accessor.getObject(2).getNativeObject<Box2DBody>();
    float anchorx = accessor.getReal(3);
    float anchory = accessor.getReal(4);
 
@@ -710,16 +702,16 @@ void Box2DSimulator_createRopeJoint(VirtualMachine& machine, VirtualStackAccesso
 {
    GET_THIS(Box2DSimulator, simulator);
 
-   Box2DRopeJointDefinition* pjointdef = (Box2DRopeJointDefinition*) accessor.getObject(1).getNativeObject();
+   Box2DRopeJointDefinition& jointdef = accessor.getObject(1).getNativeObject<Box2DRopeJointDefinition>();
 
-   simulator.createRopeJoint(*pjointdef);
+   simulator.createRopeJoint(jointdef);
 }
 
 void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Box2DBody, body);
 
-   ForceGenerator* pgenerator = (ForceGenerator*) accessor.getObject(1).useNativeObject();
+   ForceGenerator* pgenerator = accessor.getObject(1).useNativeObject<ForceGenerator>();
 
    body.addForceGenerator(pgenerator);
 }
@@ -750,7 +742,7 @@ void Box2DRopeJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAcces
 
    VirtualObject& left = accessor.getObject(1);
 
-   joint.pleft = (Box2DBody*)left.getNativeObject();
+   joint.pleft = &left.getNativeObject<Box2DBody>();
 }
 
 void Box2DRopeJointDefinition_getRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -766,7 +758,7 @@ void Box2DRopeJointDefinition_setRight(VirtualMachine& machine, VirtualStackAcce
 
    VirtualObject& right = accessor.getObject(1);
 
-   joint.pright = (Box2DBody*)right.getNativeObject();
+   joint.pright = &right.getNativeObject<Box2DBody>();
 }
 
 void Box2DRopeJointDefinition_getLocalAnchorLeftX(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -841,9 +833,9 @@ void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(ActionMap, map);
 
-   Process* pprocess = (Process*) accessor.getObject(1).getNativeObject();
+   Process& process = accessor.getObject(1).getNativeObject<Process>();
 
-   map.setProcess(*pprocess);
+   map.setProcess(process);
 }
 
 void ActionMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1148,7 +1140,7 @@ void script_engine_register(ScriptManager& manager)
    //registrator.addFunction(UTEXT("getFont"), Process_getFont);
    registrator.addFunction(UTEXT("getContentManager()"), Process_getContentManager);
    registrator.addFunction(UTEXT("setActionMap(engine.game.ActionMap)"), Process_setActionMap);
-   registrator.addFunction(UTEXT("setWorld(engine.game.World)"), Process_setWorld);
+   registrator.addFunction(UTEXT("loadWorld(string)"), Process_loadWorld);
    registrator.addFunction(UTEXT("swapLeakDetection()"), Process_swapLeakDetection);
 
    registrator.addClass(UTEXT("engine.game.Server"));
@@ -1166,7 +1158,6 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addClass(UTEXT("engine.game.ContentManager"));
    registrator.addFunction(UTEXT("loadEntity(string)"), ContentManager_loadEntity);
-   registrator.addFunction(UTEXT("load(string)"), ContentManager_load);
 
    registrator.addClass(UTEXT("system.GameWindowFactory"));
    registrator.addFunction(UTEXT("createWindow()"), GameWindowFactory_createWindow);

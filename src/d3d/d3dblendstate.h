@@ -17,7 +17,9 @@ namespace Graphics
    class D3DBlendState : public BlendState
    {
    public:
+      D3DBlendState();
 
+    // operations
       bool create(ID3D11Device& device, const BlendStateDesc& desc);
 
       void enable(ID3D11DeviceContext& context) const;

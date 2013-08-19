@@ -10,7 +10,7 @@ public:
    MeshComponentLoader();
 
  // overrides
-   virtual const String& getId() const override;
+   virtual const String& getXmlTag() const override;
    virtual ComponentDefinition* load(const TiXmlElement& element) override;
 };
 

@@ -12,6 +12,7 @@ namespace Graphics
    {
    public:
       ShaderUniformBuffer(GLuint program, GLuint block);
+      virtual ~ShaderUniformBuffer();
 
       virtual bool create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr) override;
       virtual void release() override;

@@ -20,7 +20,10 @@ namespace Graphics
 
 D3DCodePath::D3DCodePath(D3DDevice& device):
    CodePath(),
-   mDevice(device)
+   mDevice(device),
+   mpInputLayout(NULL),
+   mpVertexShader(NULL),
+   mpPixelShader(NULL)
 {
 }
 

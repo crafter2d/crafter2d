@@ -68,7 +68,7 @@ void Box2DContactListener::collisionObjectWorld(b2Contact* pcontact, b2Fixture& 
 {
    // collision between a object(A) && bound(B)
 
-   Box2DBody* pbody = (Box2DBody*)sensor.GetBody()->GetUserData();
+   Box2DBody* pbody = static_cast<Box2DBody*>(sensor.GetBody()->GetUserData());
    int side = pbody->getSide(sensor);
    
    if ( side > 0 && mSimulator.hasListener() )
@@ -81,7 +81,7 @@ void Box2DContactListener::collisionObjectObject(b2Contact* pcontact, b2Fixture&
 {
    // collision between object(A) && object(B)
 
-   Box2DBody* pbody = (Box2DBody*)sensor.GetBody()->GetUserData();
+   Box2DBody* pbody = static_cast<Box2DBody*>(sensor.GetBody()->GetUserData());
    int side = pbody->getSide(sensor);
    
    if ( side > 0 && mSimulator.hasListener() )

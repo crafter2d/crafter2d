@@ -353,12 +353,11 @@ void NetConnection::receive()
    NetAddress address;
    while ( mSocket.select(true, false) )
    {
-      int bytes = -1;
       PackageHandle package(mAllocator);
 
       try
       {
-         bytes = mSocket.receive(address, *package);
+         int bytes = mSocket.receive(address, *package);
          ASSERT(package.hasObject());
 
          NetAddress& client = findOrCreate(address); 

@@ -62,13 +62,13 @@ void MeshComponent::handleMessage(ComponentMessage& message)
 	{
 	case ePositionChangedMsg:
 		{
-         PositionInfo* pinfo = (PositionInfo*) message.getData();
+         PositionInfo* pinfo = static_cast<PositionInfo*>(message.getData());
          mTransform = pinfo->transform;
 		}
       break;
    case eUpdateMsg:
       {
-         float* pdelta = (float*)message.getData();
+         float* pdelta = static_cast<float*>(message.getData());
          update(*pdelta);
       }
       break;
@@ -93,9 +93,9 @@ void MeshComponent::update(float delta)
 
 void MeshComponent::updateBuffers(RenderContext& context)
 {
+   /*
    const TextureCoordinate& texcoord = mpAnimator->getTextureCoordinate();
 
-   /*
    PTVertex* pdata = reinterpret_cast<PTVertex*>(mpVertexBuffer->lock(context));
 
    pdata[0].pos.set(-mHalfSize.width, -mHalfSize.height);

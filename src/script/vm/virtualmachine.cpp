@@ -241,7 +241,7 @@ VirtualObject* VirtualMachine::lookupNative(void* pobject)
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
    if ( it != mNativeObjects.end() )
    {
-      ASSERT(it->second->getNativeObject() == pobject);
+      ASSERT(it->second->getNativeObjectPtr() == pobject);
       return it->second;
    }
    return NULL;
@@ -279,7 +279,7 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
    ASSERT(object.hasNativeObject());
 
    // remove the object from the map
-   NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObject());
+   NativeObjectMap::iterator it = mNativeObjects.find(object.getNativeObjectPtr());
    ASSERT(it != mNativeObjects.end());
    mNativeObjects.erase(it);
 

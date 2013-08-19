@@ -17,37 +17,51 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "soundloaderfactory.h"
+#ifndef _SOUND_H_
+#define _SOUND_H_
 
-#include <string>
-
-#include "core/defines.h"
-
-#include "soundloaderal.h"
-#include "soundloaderogg.h"
-
-SoundLoaderFactory::SoundLoaderFactory()
+namespace FMOD
 {
+   class Channel;
+   class Sound;
 }
 
-SoundLoaderFactory::~SoundLoaderFactory()
+#include "core/math/vector.h"
+
+namespace JEngineSSE
 {
+   /*!
+   @author Jeroen Broekhuizen
+   \brief Interface of a sound object.
+
+   The sound class represents a sound object that can be positioned and played somewhere 
+   in your world. To load a sound the SoundManager::load function must be used.
+    */
+   class Sound
+   {
+   public:
+	   Sound*         clone();
+
+	   void           pause();
+      void           resume();
+	   void           stop() const;
+
+	   void           setPosition( const Vector& pos );
+
+   private:
+      friend class SoundManager;
+
+    // constructors
+      explicit       Sound(FMOD::Sound* psound);
+
+    // data
+      FMOD::Sound*   mpSound;
+      mutable FMOD::Channel* mpChannel;
+   };
 }
 
-// static
-SoundLoaderFactory& SoundLoaderFactory::getInstance()
-{
-   static SoundLoaderFactory factory;
-   return factory;
-}
+#ifdef JENGINE_INLINE
+#  include "sound.inl"
+#endif
 
-SoundLoader& SoundLoaderFactory::resolveLoader(const std::string& filename)
-{
-   static SoundLoaderAL alloader;
-   static SoundLoaderOgg oggloader;
-
-   if ( filename.find(".ogg") != std::string::npos )
-      return oggloader;
-   else
-      return alloader;
-}
+#endif

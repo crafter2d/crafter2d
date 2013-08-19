@@ -2,28 +2,23 @@
 #ifndef MESH_COMPONENT_DEFINITION_H
 #define MESH_COMPONENT_DEFINITION_H
 
-#include "core/string/string.h"
-
 #include "componentdefinition.h"
 
-class Animator;
+#include "engine/sprites/spritedefinition.h"
 
 class MeshComponentDefinition : public ComponentDefinition
 {
 public:
+   MeshComponentDefinition();
 
- // overrides
-   virtual void load(const TiXmlElement& element) override;
-
-   virtual Component* instantiate() const;
+ // get/set
+   const SpriteDefinition& getSpriteDefinition() const;
+         SpriteDefinition& getSpriteDefinition();
 
 private:
 
  // data
-   String      mTexture;
-   Animator*   mpAnimator;
-   int         mWidth;
-   int         mHeight;
+   SpriteDefinition mSpriteDefinition;
 };
 
 #endif // MESH_COMPONENT_DEFINITION_H

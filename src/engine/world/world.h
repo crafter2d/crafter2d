@@ -89,7 +89,7 @@ public:
  // get/set
    void           setAutoFollow(bool enabled=true);
    Entity*        getFollowObject();
-   void           setFollowObject(Entity* obj);
+   void           setFollowObject(Entity& obj);
    void           setScrollMode(int fm);
    void           setFollowBorderWidth(int width);
    void           setFollowBorders(int left, int right, int top, int bottom);

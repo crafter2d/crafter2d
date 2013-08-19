@@ -76,7 +76,7 @@ void SpriteRenderer::endDraw(RenderContext& context)
 {
    mSprites.sort();
 
-   PTVertex* pvertices = (PTVertex*) mpVB->lock(context);
+   PTVertex* pvertices = static_cast<PTVertex*>(mpVB->lock(context));
 
    for ( int index = 0; index < mSprites.size(); ++index )
    {

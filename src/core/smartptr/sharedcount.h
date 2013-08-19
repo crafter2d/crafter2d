@@ -53,7 +53,7 @@ public:
       }
    }
 
-   const SharedCount& operator=(const SharedCount& that)
+   SharedCount& operator=(const SharedCount& that)
    {
        if ( mpCounter != that.mpCounter )
       {

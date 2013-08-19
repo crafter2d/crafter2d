@@ -275,7 +275,7 @@ void ParticleSystem::doDraw(Graphics::RenderContext& context) const
 {
 	uint num = 0;
 	Particle* part = activeList;
-	ParticleVertex* verts = (ParticleVertex*)mGeometryBuffer->lock(context);
+   ParticleVertex* verts = reinterpret_cast<ParticleVertex*>(mGeometryBuffer->lock(context));
 
    //mEffect.enable(context);
 
@@ -316,7 +316,7 @@ void ParticleSystem::doDraw(Graphics::RenderContext& context) const
          context.drawTriangles(0, num * 4);
 			mGeometryBuffer->disable(context);
 
-			verts = (ParticleVertex*)mGeometryBuffer->lock (context);
+			verts = reinterpret_cast<ParticleVertex*>(mGeometryBuffer->lock (context));
 			num = 0;
 		}
 

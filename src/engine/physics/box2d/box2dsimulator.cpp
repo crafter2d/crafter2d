@@ -114,7 +114,6 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
    bodydef.type     = b2_dynamicBody;
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
-   b2Shape* pshape = NULL;
 
    switch ( definition.getShapeType() )
    {

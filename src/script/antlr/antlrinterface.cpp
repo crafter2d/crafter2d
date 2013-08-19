@@ -1612,14 +1612,14 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 
    if ( ex->streamName == NULL )
    {
-      if	( ((pANTLR3_COMMON_TOKEN)(ex->token))->type == ANTLR3_TOKEN_EOF )
-		{
-			// ANTLR3_FPRINTF(stderr, "-end of input-(");
-		}
-		else
-		{
-			//ANTLR3_FPRINTF(stderr, "-unknown source-(");
-		}
+      if ( ((pANTLR3_COMMON_TOKEN)(ex->token))->type == ANTLR3_TOKEN_EOF )
+      {
+         // ANTLR3_FPRINTF(stderr, "-end of input-(");
+      }
+      else
+      {
+         //ANTLR3_FPRINTF(stderr, "-unknown source-(");
+      }
    }
 
    int linenr = ex->line;

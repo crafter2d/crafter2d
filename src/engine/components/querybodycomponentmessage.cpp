@@ -4,7 +4,8 @@
 #include "querybodycomponentmessage.h"
 
 QueryBodyComponentMessage::QueryBodyComponentMessage():
-   ComponentMessage(ComponentInterface::eQueryBodyMsg, NULL)
+   ComponentMessage(ComponentInterface::eQueryBodyMsg, NULL),
+   mpBody(NULL)
 {
 }
 

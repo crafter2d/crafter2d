@@ -15,6 +15,12 @@ ShaderUniformBuffer::ShaderUniformBuffer(GLuint program, GLuint block):
 {
 }
 
+ShaderUniformBuffer::~ShaderUniformBuffer()
+{
+   delete mpElements;
+   mElementNr = 0;
+}
+
 bool ShaderUniformBuffer::create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr)
 {
    ASSERT(mProgram != GL_INVALID_INDEX);
@@ -53,10 +59,10 @@ bool ShaderUniformBuffer::createUniforms(UNIFORM_BUFFER_DESC* pdescs, int nr)
    glGetProgramiv(mProgram, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxlength);
    GLchar* pname = new GLchar[maxlength];
 
-   BLOCK_UNIFORM* pelements = new BLOCK_UNIFORM[mElementNr];
+   mpElements = new BLOCK_UNIFORM[mElementNr];
    for ( int index = 0; index < mElementNr; ++index )
    {
-      BLOCK_UNIFORM& element = pelements[index];
+      BLOCK_UNIFORM& element = mpElements[index];
 
       int length;
       glGetActiveUniformName(mProgram, pindices[index], maxlength, &length, pname);

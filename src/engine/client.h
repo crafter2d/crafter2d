@@ -25,12 +25,12 @@
 #include <map>
 
 #include "window/gamewindow.h"
+#include "sound/soundmanager.h"
 #include "clientgamewindowlistener.h"
 #include "clientkeyeventdispatcher.h"
 #include "clientmouseeventdispatcher.h"
 #include "idmanager.h"
 #include "process.h"
-#include "sound.h"
 
 namespace Graphics
 {
@@ -98,8 +98,6 @@ public:
    Graphics::RenderContext& getRenderContext();
 
  // operations
-   virtual bool   loadWorld(const String& filename, const String& name);
-
    bool           connect(const String& server, int port);
    void           disconnect();
 
@@ -147,7 +145,7 @@ private:
    ClientGameWindowListener   mWindowListener;
    ClientKeyEventDispatcher   mKeyEventDispatcher;
    ClientMouseEventDispatcher mMouseEventDispatcher;
-   SoundManager               mSoundManager;
+   JEngineSSE::SoundManager   mSoundManager;
    WorldRenderer*             mpWorldRenderer;
    Player*                    mpPlayer;
    KeyMap*                    mpKeyMap;

@@ -19,15 +19,11 @@ if ( os.is("windows") ) then
 	
 	excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*" }
 		
-	includedirs { 	path.join(libdir, "glee/include"),
-                    path.join(libdir, "cg/include"),
-					path.join(libdir, "zlib/include"),
+	includedirs { 	path.join(libdir, "zlib/include"),
 					path.join(libdir, "tinyxml/include"),
 					path.join(libdir, "icu/include") }
 					
-	libdirs { 	path.join(libdir, "glee/lib"),
-				path.join(libdir, "cg/lib"),
-				path.join(libdir, "zlib/lib"),
+	libdirs { 	path.join(libdir, "zlib/lib"),
 				path.join(libdir, "tinyxml/lib"),
 				path.join(libdir, "icu/lib") }
 				
@@ -38,23 +34,19 @@ if ( os.is("windows") ) then
 		linkoptions { "--allow-multiple-definition" }
 	  
 		configuration "Debug"
-			links { "GLee_d", "mingw32", "opengl32", "glu32", "gdi32", 
-					"user32", "vfw32", "ws2_32",  "cg", "cgGL",
-					"zlib1", "tinyxmld_STL"  } 
+			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1", "tinyxmld_STL", "icuuc", "icuin" }
 		 
 		configuration "Release"
-			links { "GLee_d", "SOIL", "mingw32", "opengl32", "glu32", "gdi32", 
-					"user32", "vfw32", "ws2_32", "cg", "cgGL",
-					"zlib1", "tinyxml_STL"  } 
+			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1", "tinyxml_STL", "icuuc", "icuin" }
 	else
 
-		links { "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32", "cg", "cgGL", "icuuc", "icuin" }
+		links { "gdi32", "user32", "vfw32", "ws2_32", "icuuc", "icuin" }
 		
 		configuration "Debug"
-			links { "GLee_d", "tinyxmld_STL", "zlib1_d" }
+			links { "tinyxmld_STL", "zlib1_d" }
 					
 		configuration "Release"
-			links { "GLee", "tinyxml_STL", "zlib1" }
+			links { "tinyxml_STL", "zlib1" }
 	end
 elseif ( os.is("linux") ) then
 

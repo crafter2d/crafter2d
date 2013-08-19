@@ -18,7 +18,8 @@ D3DDevice::D3DDevice():
    mpDevice(NULL),
    mpContext(NULL),
    mpSwapChain(NULL),
-   mpRenderTargetView(NULL)
+   mpRenderTargetView(NULL),
+   mpBlendState(NULL)
 {
 }
 
@@ -56,6 +57,10 @@ bool D3DDevice::create(int windowhandle, int width, int height)
 
    // create & set the rendertarget view
    hr = mpSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)& pbackbuffer);
+   if ( FAILED(hr) )
+   {
+      return false;
+   }
    mpDevice->CreateRenderTargetView(pbackbuffer, NULL, &mpRenderTargetView);
    pbackbuffer->Release();
 
@@ -75,6 +80,11 @@ void D3DDevice::present()
    // to sleep until the next VSync. This ensures we don't waste any cycles rendering
    // frames that will never be displayed to the screen.
    HRESULT hr = mpSwapChain->Present(0, 0);
+
+   if ( FAILED(hr) )
+   {
+      // error!
+   }
 }
 
 RenderContext* D3DDevice::createRenderContext()

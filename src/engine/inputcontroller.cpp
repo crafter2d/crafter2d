@@ -32,9 +32,9 @@ InputController::InputController():
 
 // - Get/set
 
-void InputController::setActionMap(ActionMap* pactionmap)
+void InputController::setActionMap(ActionMap& actionmap)
 {
-   mpActionMap = pactionmap;
+   mpActionMap = &actionmap;
 }
 
 // - Operations

@@ -88,7 +88,7 @@ bool Animator::loadFromXML(const TiXmlElement& xmlanimator)
 
 void Animator::parseAnimations(const TiXmlElement& xmlanimator)
 {
-   TiXmlElement* pxmlanimation = (TiXmlElement*)xmlanimator.FirstChild("anim");
+   const TiXmlElement* pxmlanimation = static_cast<const TiXmlElement*>(xmlanimator.FirstChild("anim"));
    while ( pxmlanimation != NULL )
    {
 		Animation *panim = new Animation();
@@ -98,7 +98,7 @@ void Animator::parseAnimations(const TiXmlElement& xmlanimator)
       const TiXmlText* xmlValue = static_cast<const TiXmlText*>(pxmlanimation->FirstChild());
 		parseAnimation(xmlValue->Value(), panim);
 
-      pxmlanimation = (TiXmlElement*)xmlanimator.IterateChildren ("anim", pxmlanimation);
+      pxmlanimation = static_cast<const TiXmlElement*>(xmlanimator.IterateChildren ("anim", pxmlanimation));
    }
 
    determineFrameCount();

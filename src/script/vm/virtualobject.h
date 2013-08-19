@@ -36,8 +36,9 @@ public:
    
  // get/set
    bool  hasNativeObject() const;
-   void* getNativeObject();
-   void* useNativeObject();
+   void* getNativeObjectPtr();
+   template<typename T> T& getNativeObject();
+   template<typename T> T* useNativeObject();
    void  setNativeObject(void* pobject);
       
    bool isOwner() const;
@@ -74,5 +75,19 @@ private:
    bool                          mOwnsNative;
    bool                          mMarked;
 };
+
+template<typename T>
+T& VirtualObject::getNativeObject()
+{
+   return *static_cast<T*>(mpNativeObject);
+}
+
+template<typename T>
+T* VirtualObject::useNativeObject()
+{
+   ASSERT(mOwnsNative);
+   mOwnsNative = false;
+   return static_cast<T*>(mpNativeObject);
+}
 
 #endif // VIRTUAL_OBJECT_H_

@@ -1,7 +1,8 @@
 
 #include "componentdefinition.h"
 
-ComponentDefinition::ComponentDefinition()
+ComponentDefinition::ComponentDefinition(ComponentInterface::ComponentType type):
+   mComponentType(type)
 {
 }
 
@@ -9,8 +10,9 @@ ComponentDefinition::~ComponentDefinition()
 {
 }
 
-// - Operations
+// - Get/set
 
-void ComponentDefinition::load(const TiXmlElement& element)
+ComponentInterface::ComponentType ComponentDefinition::getComponentType() const
 {
+   return mComponentType;
 }

@@ -126,6 +126,8 @@ void Server::update(float delta)
 
 void Server::notifyWorldChanged()
 {
+   setContentManager(new ServerContentManager(*this));
+
    getWorld().attach(mWorldObserver);
 
    WorldChangedEvent event(getWorld());
@@ -318,6 +320,6 @@ void Server::handleConnectEvent(const ConnectEvent& event)
 
 void Server::handleViewportEvent(const ViewportEvent& event)
 {
-   Player& player = *clients[mActiveClient];
+   //Player& player = *clients[mActiveClient];
    //event.update(player.getViewport());
 }

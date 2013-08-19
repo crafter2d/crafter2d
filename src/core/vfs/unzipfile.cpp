@@ -67,7 +67,6 @@ bool UnzipFile::contains(const String& name) const
 
 bool UnzipFile::readFile(const String& name, void*& pdata, int &size, bool casesensitive)
 {
-   bool result = false;
    if ( _zip != NULL )
    {
       std::string file = name.toUtf8();

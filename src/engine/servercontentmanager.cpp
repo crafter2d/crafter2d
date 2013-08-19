@@ -2,22 +2,20 @@
 #include "servercontentmanager.h"
 
 #include "engine/content/contentloader.h"
+#include "engine/components/physicscomponentfactory.h"
+#include "engine/world/world.h"
 
 #include "server.h"
 
 ServerContentManager::ServerContentManager(Server& server):
    ContentManager(server)
 {
+
 }
 
-// - Loading
+// - Overrides
 
-Entity* ServerContentManager::loadEntity(const String& filename)
+void ServerContentManager::initializeEntityFactory(EntityFactory& factory)
 {
-   return doLoadEntity(filename, ContentLoader::eLoadPhysics);
-}
-
-World* ServerContentManager::loadWorld(const String& filename)
-{
-   return doLoadWorld(filename, ContentLoader::eLoadPhysics);
+   factory.registerComponentFactory(new PhysicsComponentFactory(getProcess().getWorld().getSimulator()));
 }

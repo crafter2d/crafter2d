@@ -53,7 +53,7 @@ bool StackIRGenerator::virGenerate(CompileContext& context, VirtualFunctionTable
 
    entry.mInstruction = buildCode(program, function);
 
-   return true;
+   return entry.mInstruction > -1;
 }
 
 void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::Program& program, const ASTFunction& function)
@@ -966,6 +966,12 @@ int StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& f
          {
             size *= 2;
             pcode = (char*)realloc(pcode, size);
+            if ( pcode == NULL )
+            {
+               // out of memory?
+               free(pcode);
+               return -1;
+            }
          }
 
          *((int*)&pcode[pos]) = pinst->inst;

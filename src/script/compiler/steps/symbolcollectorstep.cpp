@@ -28,7 +28,9 @@ SymbolCollectorVisitor::SymbolCollectorVisitor(CompileContext& context):
    mContext(context),
    mResolver(),
    mpClass(NULL),
-   mpFunction(NULL)
+   mpFunction(NULL),
+   mHasSuperCall(false),
+   mHasNativeCall(false)
 {
 }
 

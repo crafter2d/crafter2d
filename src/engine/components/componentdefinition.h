@@ -2,19 +2,23 @@
 #ifndef COMPONENT_DEFINITION_H
 #define COMPONENT_DEFINITION_H
 
+#include "componentinterface.h"
+
 class Component;
-class TiXmlElement;
 
 class ComponentDefinition
 {
 public:
-
-   ComponentDefinition();
+   explicit ComponentDefinition(ComponentInterface::ComponentType type);
    virtual ~ComponentDefinition() = 0;
 
-   virtual void load(const TiXmlElement& element) = 0;
+ // get/set
+   ComponentInterface::ComponentType getComponentType() const;
 
-   virtual Component* instantiate() const = 0;
+private:
+
+ // data
+   ComponentInterface::ComponentType mComponentType;
 };
 
 #endif // COMPONENT_DEFINITION_H

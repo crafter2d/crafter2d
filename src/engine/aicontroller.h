@@ -32,6 +32,7 @@ class AIController : public Controller
 {
 public:
    explicit AIController(Process& process);
+   virtual ~AIController();
 
  // get/set
    void setThis(VirtualObject& self);

@@ -24,13 +24,9 @@
 #include "engine/actor.h"
 #include "engine/process.h"
 
-#include "engine/world/world.h"
-#include "engine/world/worldreader.h"
-
-#include "actorloader.h"
-
 ContentManager::ContentManager(Process& process):
-   mProcess(process)
+   mProcess(process),
+   mpEntityFactory()
 {
 }
 
@@ -41,11 +37,22 @@ Process& ContentManager::getProcess()
    return mProcess;
 }
 
+EntityFactory& ContentManager::getEntityFactory()
+{
+   if ( mpEntityFactory == NULL )
+   {
+      mpEntityFactory = new EntityFactory();
+      initializeEntityFactory(*mpEntityFactory);
+   }
+
+   return *mpEntityFactory;
+}
+
 //---------------------------------
 // - Loading
 //---------------------------------
 
-Entity* ContentManager::doLoadEntity(const String& filename, int flags)
+Entity* ContentManager::loadEntity(const String& filename)
 {
    if ( !mProcess.hasWorld() )
    {
@@ -53,24 +60,5 @@ Entity* ContentManager::doLoadEntity(const String& filename, int flags)
       return NULL;
    }
 
-   ActorLoader loader(mProcess);
-   loader.setSimulator(mProcess.getWorld().getSimulator());
-
-   return loader.load(filename, flags);
-}
-
-World* ContentManager::doLoadWorld(const String& filename, int flags)
-{
-   AutoPtr<World> world = new World();
-   if ( world.hasPointer() )
-   {
-      WorldReader reader;
-      if ( !reader.read(*world, filename) )
-      {
-         // failed, throw an exception
-         return NULL;
-      }
-   }
-
-   return world.release();
+   return getEntityFactory().create(filename);
 }

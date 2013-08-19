@@ -19,23 +19,3 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE bool SoundManager::isInitialized() const
-{
-   return _initialized;
-}
-
-INLINE bool SoundManager::isEnabled() const
-{
-   return isInitialized() && _enabled;
-}
-
-INLINE void SoundManager::enable()
-{
-   _enabled = true;
-}
-
-INLINE void SoundManager::disable()
-{
-   _enabled = false;
-}
-

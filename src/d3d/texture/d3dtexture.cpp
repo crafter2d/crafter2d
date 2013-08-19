@@ -11,7 +11,8 @@ namespace Graphics
 
 D3DTexture::D3DTexture(ID3D11ShaderResourceView* presource):
    Texture(),
-   mpResource(presource)
+   mpResource(presource),
+   mpSampler(NULL)
 {
 }
 
@@ -36,8 +37,7 @@ bool D3DTexture::create(Device& device, const TextureInfo& info)
    
    D3DDevice& d3ddevice = static_cast<D3DDevice&>(device);
    HRESULT hr = d3ddevice.getDevice().CreateSamplerState( &sampDesc, &mpSampler);
-
-   return true;
+   return SUCCEEDED(hr);
 }
 
 void D3DTexture::enable(RenderContext& context, int stage) const

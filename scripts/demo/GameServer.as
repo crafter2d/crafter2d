@@ -39,20 +39,18 @@ class GameServer extends Server
 	private void start(Player player)
 	{
 		addPlayer(player);
-		mStarted = true;
 		
-		World world = getContentManager().load("../worlds/map1.jwl");
-		if ( world == null )
+		if ( !createWorld("../worlds/map1.jwl") )
 		{
 			// meh, something went terribly wrong..
 		}
-		
-		setWorld(world);
 		
 		mHero = createPlayer(player);
 		player.setController(mHero);
 		
 		createObjects();
+		
+		mStarted = true;
 	}
 	
 	private Hero createPlayer(Player player)

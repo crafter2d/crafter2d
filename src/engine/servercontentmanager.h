@@ -11,9 +11,9 @@ class ServerContentManager : public ContentManager
 public:
    ServerContentManager(Server& server);
 
- // loading
-   virtual Entity*  loadEntity(const String& filename);
-   virtual World*   loadWorld(const String& filename);
+protected:
+ // overrides
+   virtual void initializeEntityFactory(EntityFactory& factory) override;
 };
 
 #endif // SERVER_CONTENT_MANAGER_H

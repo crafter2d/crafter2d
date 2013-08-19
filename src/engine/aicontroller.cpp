@@ -38,6 +38,12 @@ AIController::AIController(Process& process):
    mpScript = new Script(process.getScriptManager());
 }
 
+AIController::~AIController()
+{
+   delete mpScript;
+   mpScript = NULL;
+}
+
 // - Get/set
 
 void AIController::setThis(VirtualObject& self)

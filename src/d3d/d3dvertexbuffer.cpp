@@ -12,6 +12,7 @@ namespace Graphics
 D3DVertexBuffer::D3DVertexBuffer(D3DDevice& device):
    VertexBuffer(),
    mDevice(device),
+   mpBuffer(NULL),
    mStride(0)
 {
 }

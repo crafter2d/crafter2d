@@ -33,11 +33,11 @@ INLINE Entity* World::getFollowObject()
    return followObject;
 }
 
-/// \fn World::setFollowObject(Entity* obj)
+/// \fn World::setFollowObject(Entity& obj)
 /// \brief Set the object which should be followed when in auto modus.
-INLINE void World::setFollowObject(Entity* obj)
+INLINE void World::setFollowObject(Entity& obj)
 {
-   followObject = obj;
+   followObject = &obj;
 }
 
 /// \fn World::setScrollMode(int fm)

@@ -27,6 +27,7 @@
 // #include <vld.h>
 
 #include "core/log/log.h"
+#include "core/smartptr/autoptr.h"
 
 #include "script/vm/virtualclass.h"
 
@@ -34,6 +35,7 @@
 #include "engine/script/scriptmanager.h"
 #include "engine/net/events/scriptevent.h"
 #include "engine/world/world.h"
+#include "engine/world/worldreader.h"
 
 #include "actionmap.h"
 #include "script_engine.h"
@@ -60,23 +62,6 @@ Process::~Process()
    }
    catch (...)
    {
-   }
-}
-
-// - Get/set
-
-void Process::setWorld(World* pworld)
-{
-   if ( mpWorld != pworld )
-   {
-      mpWorld = pworld;
-
-      if ( mpWorld != NULL )
-      {
-         pworld->setScript(getScriptManager().load(UTEXT("engine.game.World"), pworld, false));
-      }
-
-      notifyWorldChanged();
    }
 }
 
@@ -112,6 +97,27 @@ bool Process::destroy()
    actionMap = NULL;
    
    return true;
+}
+
+World* Process::loadWorld(const String& filename)
+{
+   AutoPtr<World> world = new World();
+   if ( world.hasPointer() )
+   {
+      WorldReader reader;
+      if ( reader.read(*world, filename) )
+      {
+         mpWorld = world.release();
+         mpWorld->setScript(getScriptManager().load(UTEXT("engine.game.World"), mpWorld, false));
+
+         notifyWorldChanged();
+
+         return mpWorld;
+      }
+   }
+
+   // we could not load the file
+   return NULL;
 }
 
 // - Notifications

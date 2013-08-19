@@ -48,7 +48,7 @@ public:
    const Vector& getLastFrameAcceleration() const;
 
  // query
-   const String& PhysicsBody::getClassName() const;
+   const String& getClassName() const;
 
  // shapes
    void  addShape(CollisionShape* pshape);

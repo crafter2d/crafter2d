@@ -8,6 +8,8 @@
 
 #include "engine/components/componentloader.h"
 
+class EntityDefinition;
+
 class EntityLoader
 {
 public:
@@ -15,7 +17,8 @@ public:
 
  // operations
    void registerLoader(ComponentLoader* ploader);
-   void load(const String& filename);
+
+   EntityDefinition* load(const String& filename);
 
 private:
    typedef std::map<String, ComponentLoader*> Loaders;

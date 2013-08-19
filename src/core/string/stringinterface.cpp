@@ -55,8 +55,7 @@ unsigned long StringInterface::crc(const String& text)
    unsigned long result = 0xffffffffL;
    for ( int index = 0; index < text.length(); ++index )
    {
-      UChar c = text[index];
-      result = sCrcTable[(result ^ c) & 0xff] ^ (result >> 8);
+      result = sCrcTable[(result ^ text[index]) & 0xff] ^ (result >> 8);
    }
 
 	return result;

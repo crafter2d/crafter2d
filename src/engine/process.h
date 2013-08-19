@@ -66,7 +66,6 @@ public:
    bool           hasWorld() const;
    const World&   getWorld() const;
          World&   getWorld();
-   void           setWorld(World* pworld);
 
    bool           isInitialized();
    void           setInitialized(bool init);
@@ -75,6 +74,7 @@ public:
    void           setActive(bool active);
 
  // operations
+   World* loadWorld(const String& filename);
    void sendScriptEvent(int clientid, const DataStream& stream);
    void swapLeakDetection();
 

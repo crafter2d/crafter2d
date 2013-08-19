@@ -51,16 +51,8 @@ bool VirtualObject::hasNativeObject() const
    return mpNativeObject != NULL;
 }
 
-void* VirtualObject::getNativeObject()
+void* VirtualObject::getNativeObjectPtr()
 {
-   return mpNativeObject;
-}
-
-void* VirtualObject::useNativeObject()
-{
-   ASSERT(mOwnsNative);
-
-   mOwnsNative = false;
    return mpNativeObject;
 }
 

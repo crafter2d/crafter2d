@@ -36,7 +36,7 @@ public:
    InputController();
 
  // get/set
-   void setActionMap(ActionMap* pactionmap);
+   void setActionMap(ActionMap& actionmap);
 
  // operations
    void queueAction(const ActionEvent& actionevent);
@@ -50,7 +50,7 @@ private:
 
  // members
    ActionQueue mActions;
-   ActionMap*  mpActionMap;
+   ActionMap*  mpActionMap; // not owning
 };
 
 #endif // INPUT_CONTROLLER_H_

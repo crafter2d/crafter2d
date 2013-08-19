@@ -7,6 +7,11 @@
 
 namespace Graphics
 {
+   D3DBlendState::D3DBlendState():
+      mpBlendState(NULL)
+   {
+   }
+
    bool D3DBlendState::create(ID3D11Device& device, const BlendStateDesc& desc)
    {
       D3D11_BLEND_DESC blendDesc;

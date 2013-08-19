@@ -22,7 +22,7 @@ int AntlrNode::getChildCount() const
    
 AntlrNode AntlrNode::getChild(int index) const
 {
-   return AntlrNode((ANTLR3_BASE_TREE_struct*)mpNode->getChild(mpNode, index));
+   return AntlrNode(static_cast<ANTLR3_BASE_TREE_struct*>(mpNode->getChild(mpNode, index)));
 }
 
 int AntlrNode::getType() const

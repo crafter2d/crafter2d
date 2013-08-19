@@ -62,7 +62,7 @@ elseif ( os.is("linux") ) then
 	defines { "LINUX" }
 	
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
-	links { "vorbisfile", "tinyxml", "freetype", "Box2D", "SOIL" }
+	links { "GLee", "freetype", "SOIL" }
 
 end
 

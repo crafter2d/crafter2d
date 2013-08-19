@@ -34,7 +34,6 @@ protected:
 private:
    CompileContext& mContext;
    int             mOffset;
-   int             mMaxVariables;
 };
 
 #endif // RESOURCE_CHECK_VISITOR_H_

@@ -14,7 +14,7 @@ public:
    virtual ~ComponentLoader() = 0;
 
  // operation
-   virtual const String& getId() const = 0;
+   virtual const String& getXmlTag() const = 0;
    virtual ComponentDefinition* load(const TiXmlElement& element) = 0;
 };
 

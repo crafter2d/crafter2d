@@ -3,29 +3,34 @@
 #define SPRITE_DEFINITION_H
 
 #include "core/resource/resourcemanager.h"
+#include "core/string/string.h"
+#include "core/math/size.h"
 
 #include "engine/animator.h"
 
 class SpriteDefinition
 {
 public:
+   SpriteDefinition();
 
  // get/set
-   int getWidth() const;
-   void setWidth(int width);
+   const Size& getSize() const;
+   void        setSize(const Size& size);
 
-   int getHeight() const;
-   void setHeight(int height);
+   const String& getTextureName() const;
+   void          setTextureName(const String& name);
 
+   bool            hasSpriteAnimator() const;
+   const Animator& getSpriteAnimator() const;
+   void            setSpriteAnimator(Animator* panimator);
 
 private:
 
  // data
+   String      mTextureName;
    TexturePtr  mTexture;
-   AnimatorPtr mAnimator;
-   int         mWidth;
-   int         mHeight;
-
+   Size        mSize;
+   Animator*   mpAnimator;
 };
 
 #endif // SPRITE_DEFINITION_H

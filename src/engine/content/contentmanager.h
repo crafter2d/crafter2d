@@ -23,11 +23,11 @@
 #include <map>
 
 #include "engine/idmanager.h"
+#include "engine/entity/entityfactory.h"
 
 class Entity;
 class Process;
 class String;
-class World;
 class ActorLoader;
 class WorldLoader;
 
@@ -40,16 +40,19 @@ public:
    Process& getProcess();
 
  // loading
-   virtual Entity*  loadEntity(const String& filename) = 0;
-   virtual World*   loadWorld(const String& filename) = 0;
+   Entity* loadEntity(const String& filename);
 
 protected:
-   Entity*  doLoadEntity(const String& filename, int flags);
-   World*   doLoadWorld(const String& filename, int flags);
+ // operations
+   virtual void initializeEntityFactory(EntityFactory& factory) = 0;
 
 private:
+ // get/set
+   EntityFactory& getEntityFactory();
 
-   Process& mProcess;
+ // data
+   Process&       mProcess;
+   EntityFactory* mpEntityFactory;
 };
 
 #endif // CONTENT_MANAGER_H

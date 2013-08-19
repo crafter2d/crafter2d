@@ -863,11 +863,6 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
    frame.sp     = mStack.size();
    frame.retaddress = mIP;
 
-   if ( entry.mName == UTEXT("addForceGenerator") )
-   {
-      int aap = 6;
-   }
-
    frame.locals.resize(entry.mArguments + entry.mLocals);
    for ( int index = entry.mArguments - 1; index >= 0; --index )
    {
@@ -882,10 +877,6 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
    mCalls[mFP] = frame;
 
    mIP = entry.mInstruction;
-
-   //execute(context);
-
-   //mIP = mCalls[mFP--].retaddress;
 }
 
 // - Garbage collection

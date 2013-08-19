@@ -5,14 +5,16 @@
 #include "engine/content/contentmanager.h"
 
 class Client;
+class EntityFactory;
 
 class ClientContentManager : public ContentManager
 {
 public:
    explicit ClientContentManager(Client& process);
 
-   virtual Entity*  loadEntity(const String& filename);
-   virtual World*   loadWorld(const String& filename);
+protected:
+ // overrides
+   virtual void initializeEntityFactory(EntityFactory& factory) override;
 };
 
 #endif // CLIENT_CONTENT_MANANGER_H

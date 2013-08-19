@@ -16,10 +16,10 @@ EntityLoader::EntityLoader():
 
 void EntityLoader::registerLoader(ComponentLoader* ploader)
 {
-   mLoaders.insert(std::make_pair(ploader->getId(), ploader));
+   mLoaders.insert(std::make_pair(ploader->getXmlTag(), ploader));
 }
 
-void EntityLoader::load(const String& filename)
+EntityDefinition* EntityLoader::load(const String& filename)
 {
    // try to find the object in the file
    TiXmlDocument doc(filename.toUtf8());
@@ -35,6 +35,10 @@ void EntityLoader::load(const String& filename)
    }
 
    EntityDefinition* pentitydef = new EntityDefinition();
+
+   // create the actual scripted object
+   const std::string* pclasstype = pentity->Attribute(std::string("type"));
+   pentitydef->setClassName(pclasstype != NULL ? String(*pclasstype) : UTEXT("engine.game.Actor"));
 
    const TiXmlNode* pcomponent = NULL;
    while( pcomponent = pentity->IterateChildren(pcomponent) )
@@ -58,4 +62,6 @@ void EntityLoader::load(const String& filename)
          pentitydef->addComponentDefinition(pdefinition);
       }
    }
+
+   return pentitydef;
 }

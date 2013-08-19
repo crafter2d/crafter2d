@@ -9,7 +9,8 @@ namespace Graphics
 
 D3DIndexBuffer::D3DIndexBuffer(D3DDevice& device):
    IndexBuffer(),
-   mDevice(device)
+   mDevice(device),
+   mpBuffer(NULL)
 {
 }
 

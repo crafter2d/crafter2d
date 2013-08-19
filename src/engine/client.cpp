@@ -79,7 +79,6 @@ Client::Client():
    mRequests(),
    mServerId(-1)
 {
-   setContentManager(new ClientContentManager(*this));
 }
 
 Client::~Client()
@@ -169,23 +168,18 @@ void Client::render(float delta)
    mpRenderContext->clear();
    //mpRenderContext->setObjectMatrix(XForm::identity());
    //mpRenderContext->setWorldMatrix(XForm::identity());
-
-   //glAlphaFunc (GL_GREATER, 0.1f);
-   //glEnable (GL_ALPHA_TEST);
-
+   
    if ( mpWorldRenderer != NULL )
    {
       if ( mpPlayer->hasController() )
       {
          // set the sound of the player
-         Actor& controler = mpPlayer->getController();
-         mSoundManager.setPlayerPosition(controler.getPosition());
+         //Actor& controler = mpPlayer->getController();
+         //mSoundManager.setPlayerPosition(controler.getPosition());
       }
 
       mpWorldRenderer->render(*mpRenderContext, delta);
    }
-
-   //glDisable (GL_ALPHA_TEST);
 
    Variant arg((double)delta);
    mpScript->run(sPaint, 1, &arg);
@@ -278,17 +272,6 @@ bool Client::initDevice()
    }
 
 	return true;
-}
-
-bool Client::loadWorld(const String& filename, const String& name)
-{
-   World* pworld = getContentManager().loadWorld(filename);
-   if ( pworld != NULL )
-   {
-      mpWorldRenderer = pworld->createRenderer();
-   }
-
-   return pworld != NULL;
 }
 
 void Client::sendToServer(NetObject& object)
@@ -418,15 +401,13 @@ void Client::handleServerdownEvent()
 
 void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
 {
-   World* pworld = getContentManager().loadWorld(event.getFilename());
+   World* pworld = loadWorld(event.getFilename());
    if ( pworld == NULL )
    {
       // ee boehhh
       Log::getInstance().error("Failed to load world!");
       return;
    }
-
-   setWorld(pworld);
 }
 
 void Client::handleNewObjectEvent(const NewObjectEvent& event)
@@ -507,6 +488,9 @@ void Client::handleScriptEvent(const ScriptEvent& event)
 
 void Client::notifyWorldChanged()
 {
+   // need a new content manager, the simulator, etc, have changed
+   setContentManager(new ClientContentManager(*this));
+
    World& world = getWorld();
    world.initialize(*mpDevice);
    world.onViewportChanged(*mpRenderContext);
