@@ -19,6 +19,9 @@
  ***************************************************************************/
 #include "texturecoordinate.h"
 
+namespace Graphics
+{
+
 TextureCoordinate::TextureCoordinate():
    mCoordinates()
 {
@@ -65,3 +68,5 @@ const Vertex& TextureCoordinate::getBottomRight() const
 {
    return mCoordinates[BottomRight];
 }
+
+} // namespace Graphics

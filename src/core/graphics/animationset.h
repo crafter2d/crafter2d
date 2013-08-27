@@ -22,35 +22,38 @@
 
 #include <vector>
 
-class Animation;
-
-/**
-@author Jeroen Broekhuizen
-\brief Interface for an animation set. It includes one animation.
-
-You can use this class for your objects that have a form of animation in it.
-*/
-class AnimationSet
+namespace Graphics
 {
-public:
-   typedef std::vector<Animation*> Animations;
+   class Animation;
 
-                     AnimationSet();
-	                  ~AnimationSet();
+   /**
+   @author Jeroen Broekhuizen
+   \brief Interface for an animation set. It includes one animation.
 
-   void              destroy();
+   You can use this class for your objects that have a form of animation in it.
+   */
+   class AnimationSet
+   {
+   public:
+      typedef std::vector<Animation*> Animations;
 
-   void              add(Animation* anim);
-   void              remove(Animation* anim);
+                        AnimationSet();
+	                     ~AnimationSet();
 
-	int               size() const;
-	const Animation&  operator[](int index) const;
+      void              destroy();
 
-private:
-   Animations::iterator find(Animation* animation);
+      void              add(Animation* anim);
+      void              remove(Animation* anim);
 
-   Animations mAnimations;
-};
+	   int               size() const;
+	   const Animation&  operator[](int index) const;
+
+   private:
+      Animations::iterator find(Animation* animation);
+
+      Animations mAnimations;
+   };
+}
 
 #ifdef JENGINE_INLINE
 #  include "animationset.inl"

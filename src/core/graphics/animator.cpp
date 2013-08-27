@@ -30,8 +30,10 @@
 #include "core/smartptr/autoptr.h"
 
 #include "animation.h"
+#include "animation/animationstate.h"
 
-using namespace Graphics;
+namespace Graphics
+{
 
 Animator* Animator::construct(const TiXmlElement& xmlAnimation)
 {
@@ -46,20 +48,21 @@ Animator* Animator::construct(const TiXmlElement& xmlAnimation)
 
 Animator::Animator():
    mTextureCoords(),
-   mAnimations(),
+   mpAnimations(NULL),
    mAnimationSpeed(0),
    mAnimationDelta(0),
    mAnimFrameWidth(0),
-   mAnimFrameCount(0),
-   mCurrentAnimation(0),
-   mAnimIndex(0),
-   mAnimFrame(0)
+   mAnimFrameCount(0)
 {
 }
 
 Animator::~Animator()
 {
+   delete mpAnimations;
+   mpAnimations = NULL;
 }
+
+// - Operations
 
 void Animator::initialize(const Texture& texture, const Size& meshsize)
 {
@@ -75,8 +78,8 @@ bool Animator::loadFromXML(const TiXmlElement& xmlanimator)
    mAnimationSpeed /= 1000.0f;
    
    // allocate the memory set
-   mAnimations = SharedPtr<AnimationSet>(new AnimationSet());
-   if ( !mAnimations.hasPointer() )
+   mpAnimations = new AnimationSet();
+   if ( mpAnimations == NULL )
    {
       return false;
    }
@@ -156,14 +159,13 @@ void Animator::determineFrameCount()
 //--------------
 //- Animation
 
-bool Animator::animate(float delta)
+bool Animator::animate(AnimationState& state) const
 {
-   mAnimationDelta += delta;
-   if ( mAnimationDelta >= mAnimationSpeed )
+   if ( state.mDelta >= mAnimationSpeed )
    {
-      nextFrame();
+      nextFrame(state);
 
-      mAnimationDelta = 0;
+      state.mDelta = 0;
 
       return true;
    }
@@ -172,46 +174,24 @@ bool Animator::animate(float delta)
 }
 
 /// \fn AnimObject::nextFrame()
-void Animator::nextFrame()
+void Animator::nextFrame(AnimationState& state) const
 {
    if ( getAnimations().size() > 0 )
    {
-	   // move to next frame
-	   mAnimIndex++;
-      const Animation& animation = getAnimations()[mCurrentAnimation];
-	   mAnimFrame = animation[mAnimIndex];
+      const Animation& animation = getAnimations()[state.mAnimation];
 
-	   // wrap if neccessary
-	   if (mAnimFrame == -1)
+      int index = animation[++state.mAnimFrame];
+	   if ( index == -1 )
       {
-		   mAnimIndex = 0;
-		   mAnimFrame = animation[mAnimIndex];
+         state.mAnimFrame = 0;
+         state.mTexIndex = animation[state.mAnimFrame];
 	   }
    }
 }
 
-int Animator::getAnimation() const
+const TextureCoordinate& Animator::getTextureCoordinate(const AnimationState& state) const
 {
-   return mCurrentAnimation + 1;
+   return mTextureCoords[state.mTexIndex];
 }
 
-bool Animator::setAnimation(int animation)
-{
-   animation--;
-
-	if ( animation != mCurrentAnimation )
-   {
-		mCurrentAnimation = animation;
-		mAnimIndex = 0;
-      mAnimFrame = 0;
-
-      return true;
-	}
-
-   return false;
-}
-
-const TextureCoordinate& Animator::getTextureCoordinate()
-{
-   return mTextureCoords[mAnimFrame];
-}
+} // namespace Graphics

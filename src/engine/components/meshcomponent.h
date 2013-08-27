@@ -10,10 +10,8 @@
 namespace Graphics
 {
    class RenderContext;
+   class Sprite;
 }
-
-class Animator;
-class Sprite;
 
 class MeshComponent : public Component
 {
@@ -22,14 +20,11 @@ public:
    virtual ~MeshComponent();
 
  // get/set
-   const Animator& getAnimator() const;
-   void            setAnimator(Animator* panimator);
-
    const Vector& getPosition() const;
    float         getAngle() const;
 
-   const Sprite& getSprite() const;
-   void          setSprite(Sprite* psprite);
+   const Graphics::Sprite& getSprite() const;
+   void                    setSprite(Graphics::Sprite* psprite);
 
  // operations
    void render(Graphics::RenderContext& context) const;
@@ -45,8 +40,7 @@ private:
 
  // members
    XForm                         mTransform;
-   Animator*                     mpAnimator; // owned
-   Sprite*                       mpSprite;
+   Graphics::Sprite*             mpSprite;
 };
 
 #ifdef JENGINE_INLINE

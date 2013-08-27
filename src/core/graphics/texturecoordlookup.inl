@@ -19,6 +19,9 @@
  ***************************************************************************/
 #include "core/defines.h"
 
+namespace Graphics
+{
+
 INLINE float TextureCoordLookup::getFrameWidth() const
 {
    return _texFrameWidth;
@@ -28,3 +31,5 @@ INLINE float TextureCoordLookup::getFrameHeight() const
 {
    return _texFrameHeight;
 }
+
+} // namespace Graphics

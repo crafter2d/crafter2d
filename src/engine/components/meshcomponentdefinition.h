@@ -4,7 +4,7 @@
 
 #include "componentdefinition.h"
 
-#include "engine/sprites/spritedefinition.h"
+#include "core/graphics/sprites/spritedefinition.h"
 
 class MeshComponentDefinition : public ComponentDefinition
 {
@@ -12,13 +12,13 @@ public:
    MeshComponentDefinition();
 
  // get/set
-   const SpriteDefinition& getSpriteDefinition() const;
-         SpriteDefinition& getSpriteDefinition();
+   const Graphics::SpriteDefinition& getSpriteDefinition() const;
+         Graphics::SpriteDefinition& getSpriteDefinition();
 
 private:
 
  // data
-   SpriteDefinition mSpriteDefinition;
+   Graphics::SpriteDefinition mSpriteDefinition;
 };
 
 #endif // MESH_COMPONENT_DEFINITION_H

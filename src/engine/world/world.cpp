@@ -217,7 +217,7 @@ void World::updateClient(Graphics::RenderContext& context, float delta)
    for ( ; it != mEntities.end(); ++it )
    {
       Entity* pentity = it->second;
-      pentity->updateClient(delta);
+      pentity->update(delta);
    }
 }
 

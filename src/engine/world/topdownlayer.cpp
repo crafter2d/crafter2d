@@ -121,7 +121,7 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
    context.setUniformBuffer(*ub);
 
    Graphics::Effect& effect = getEffect();
-   effect.setTexture(0, mTileSet.getTexture());
+   effect.setTexture(0, *mTileSet.getTexture());
    effect.render(context, verts_to_render);
 }
 
@@ -164,7 +164,7 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 	float ypos = ystart * tileHeight;
 
 	verts_to_render = 0;
-	float* data = vb->lock(context);
+	float* data = (float*) vb->lock(context);
 
   	for ( int y = ystart; y < yend; y++ )
    {

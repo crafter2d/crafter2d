@@ -5,11 +5,8 @@
 #endif
 
 #include "core/graphics/rendercontext.h"
+#include "core/graphics/sprites/sprite.h"
 #include "core/math/vertex.h"
-
-#include "engine/animator.h"
-#include "engine/texturecoordinate.h"
-#include "engine/sprites/sprite.h"
 
 #include "components.h"
 #include "componentmessage.h"
@@ -20,14 +17,12 @@ using namespace Graphics;
 MeshComponent::MeshComponent():
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
-   mpAnimator(NULL),
    mpSprite(NULL)
 {
 }
 
 MeshComponent::~MeshComponent()
 {
-   delete mpAnimator;
    delete mpSprite;
 }
 
@@ -83,42 +78,10 @@ void MeshComponent::handleMessage(ComponentMessage& message)
 
 void MeshComponent::update(float delta)
 {
-   /*
-   if ( mpAnimator != NULL && mpAnimator->animate(delta) )
-   {
-      updateBuffers();
-   }
-   */
-}
-
-void MeshComponent::updateBuffers(RenderContext& context)
-{
-   /*
-   const TextureCoordinate& texcoord = mpAnimator->getTextureCoordinate();
-
-   PTVertex* pdata = reinterpret_cast<PTVertex*>(mpVertexBuffer->lock(context));
-
-   pdata[0].pos.set(-mHalfSize.width, -mHalfSize.height);
-   pdata[0].tex = texcoord.getTopLeft();
-
-   pdata[1].pos.set(mHalfSize.width, -mHalfSize.height);
-   pdata[1].tex = texcoord.getTopRight();
-
-   pdata[2].pos.set(mHalfSize.width, mHalfSize.height);
-   pdata[2].tex = texcoord.getBottomRight();
-
-   pdata[3].pos.set(-mHalfSize.width, mHalfSize.height);
-   pdata[3].tex = texcoord.getBottomLeft();
-
-   mpVertexBuffer->unlock(context); */
+   mpSprite->update(delta);
 }
 
 void MeshComponent::render(RenderContext& context) const
 {
-   /*
-   context.setEffect(mEffect);
-   context.setVertexBuffer(*mpVertexBuffer);
-   context.setIndexBuffer(*mpIndexBuffer);
-   context.drawTriangleFan(0, 4);
-   */
+   context.drawSprite(*mpSprite);
 }

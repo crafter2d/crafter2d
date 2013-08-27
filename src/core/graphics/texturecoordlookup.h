@@ -22,34 +22,37 @@
 
 #include "texturecoordinate.h"
 
-namespace Graphics
-{
-   class Texture;
-};
-
 struct Size;
 class Vector;
 
-class TextureCoordLookup
+namespace Graphics
 {
-public:
-   TextureCoordLookup();
-   ~TextureCoordLookup();
+   class Texture;
 
- // Get/set interface
-   float getFrameWidth() const;
-   float getFrameHeight() const;
+   class TextureCoordLookup
+   {
+   public:
+      TextureCoordLookup();
+      ~TextureCoordLookup();
 
- // Operations
-   void generateFromTexture(const Graphics::Texture& texture, const Size& framesize, int framecount);
+    // Get/set interface
+      float getFrameWidth() const;
+      float getFrameHeight() const;
+
+    // query
+      bool isEmpty() const;
+
+    // Operations
+      void generateFromTexture(const Graphics::Texture& texture, const Size& framesize, int framecount);
    
-   const TextureCoordinate& operator[](int index) const;
+      const TextureCoordinate& operator[](int index) const;
 
-private:
-   TextureCoordinate* _lookupTable;
-   float _texFrameWidth;
-   float _texFrameHeight;
-   int _frameCount;
-};
+   private:
+      TextureCoordinate* _lookupTable;
+      float _texFrameWidth;
+      float _texFrameHeight;
+      int _frameCount;
+   };
+}
 
 #endif

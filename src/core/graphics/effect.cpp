@@ -41,7 +41,7 @@ namespace Graphics
 	 \brief initializes internal member variables (by default texture combiners are not used).
  */
 Effect::Effect():
-   name(),
+   mName(),
    mFile(),
    mTextures(),
    mpCodePath(NULL),
@@ -90,7 +90,7 @@ bool Effect::load(Device& device, const VertexInputLayout& layout, const String&
 	}
 
    // save the name (if supplied)
-   name = effect->Attribute ("name");
+   mName = effect->Attribute ("name");
 
 	// try to load in the textures
 	if ( !processCode(device, layout, *effect, UTEXT("../shaders/")) 
@@ -202,9 +202,9 @@ UniformBuffer* Effect::getUniformBuffer(const String& name) const
    return mpCodePath->getUniformBuffer(name);
 }
 
-void Effect::setTexture(int stage, const TexturePtr& texture)
+void Effect::setTexture(int stage, const Texture& texture)
 {
-   TexInfo info = { texture, stage };
+   TexInfo info = { &texture, stage };
    mTextures.push_back(info);
 }
 
@@ -221,7 +221,7 @@ void Effect::enable(RenderContext& context) const
    for ( Textures::size_type s = 0; s < mTextures.size(); ++s )
    {
 	   const TexInfo& info = mTextures[s];
-      mpCodePath->bindTexture(context, info.stage, *(info.texture));
+      mpCodePath->bindTexture(context, info.stage, *info.ptexture);
    }
 }
 

@@ -17,11 +17,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "core/defines.h"
+#include "animationset.h"
+#ifndef JENGINE_INLINE
+#  include "animationset.inl"
+#endif
 
-/// \fn Animation::add(int id)
-/// \brief Add a new item to the sequence
-INLINE void Animation::add(int id)
+#include "animation.h"
+
+namespace Graphics
 {
-   push_back(id);
+
+AnimationSet::AnimationSet():
+   mAnimations()
+{
 }
+
+AnimationSet::~AnimationSet()
+{
+   destroy();
+}
+
+/**************************************************************
+ * Operations
+ */
+
+void AnimationSet::destroy()
+{
+   while (!mAnimations.empty())
+      remove(mAnimations[0]);
+}
+
+void AnimationSet::remove(Animation* animation)
+{
+   Animations::iterator it = find(animation);
+   if (it != mAnimations.end()) {
+      mAnimations.erase(it);
+   }
+}
+
+} // namespace Graphics

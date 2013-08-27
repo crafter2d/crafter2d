@@ -30,17 +30,17 @@ void Components::addComponent(Component* pcomponent)
 
 void Components::subscribeMessageType(Component& component, ComponentInterface::ComponentMessageType messagetype)
 {
-	mMessageToComponent[messagetype].insert(component.getType());
+   mMessageToComponent[messagetype].insert(component.getType());
 }
 
 void Components::postMessage(ComponentMessage& message)
 {
-	MessageToComponentSet& set = mMessageToComponent[message.getMessageType()];
-	for ( MessageToComponentSet::iterator it = set.begin(); it != set.end(); ++it )
-	{
-		Component* pcomponent = mComponents[*it];
-		pcomponent->handleMessage(message);
-	}
+   MessageToComponentSet& set = mMessageToComponent[message.getMessageType()];
+   for ( MessageToComponentSet::iterator it = set.begin(); it != set.end(); ++it )
+   {
+      Component* pcomponent = mComponents[*it];
+      pcomponent->handleMessage(message);
+   }
 }
 
 // - Find

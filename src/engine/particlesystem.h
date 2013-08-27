@@ -81,7 +81,7 @@ protected:
 
  // update & drawing
    virtual void   doUpdate(float delta);
-	virtual void   doDraw(Graphics::RenderContext& context) const override;
+	virtual void   doDraw(Graphics::RenderContext& context) const;
 
    bool           prepare(Graphics::Device& device);
 

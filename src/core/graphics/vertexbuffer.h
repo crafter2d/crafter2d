@@ -71,10 +71,8 @@ namespace Graphics
            \fn VertexBuffer::lock(RenderContext& context)
 	        \brief Locks the specified vertex attributes so they can be changed with setAt(). Only the setAt function is allowed untill you call unlock().
 	        \param[in] context  the rendering context created by the device.
-	        \retval true the vertex attributes are locked successfully
-	        \retval false could not map a vertex attribute
         */
-	    virtual float* lock(RenderContext& context) = 0;
+	    virtual void* lock(RenderContext& context) = 0;
 
 	    /*!
            \fn VertexBuffer::unlock()

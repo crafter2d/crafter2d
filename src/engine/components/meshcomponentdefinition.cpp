@@ -13,12 +13,12 @@ MeshComponentDefinition::MeshComponentDefinition():
 
 // get/set
    
-const SpriteDefinition& MeshComponentDefinition::getSpriteDefinition() const
+const Graphics::SpriteDefinition& MeshComponentDefinition::getSpriteDefinition() const
 {
    return mSpriteDefinition;
 }
          
-SpriteDefinition& MeshComponentDefinition::getSpriteDefinition()
+Graphics::SpriteDefinition& MeshComponentDefinition::getSpriteDefinition()
 {
    return mSpriteDefinition;
 }

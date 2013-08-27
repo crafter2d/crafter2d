@@ -79,7 +79,7 @@ protected:
  // update & drawing
    virtual void      doUpdate(float delta);
    virtual void      doUpdateClient(float delta);
-   virtual void      doDraw(Graphics::RenderContext& context) const override;
+   virtual void      doDraw(Graphics::RenderContext& context) const;
 
  // streaming
    virtual void      doPack(DataStream& stream) const;

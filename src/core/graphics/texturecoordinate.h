@@ -22,30 +22,31 @@
 
 #include "core/math/vertex.h"
 
-class TextureCoordLookup;
-
-class TextureCoordinate
+namespace Graphics
 {
-public:
-   static const int TopLeft = 0;
-   static const int TopRight = 1;
-   static const int BottomRight = 2;
-   static const int BottomLeft = 3;
+   class TextureCoordinate
+   {
+   public:
+      static const int TopLeft = 0;
+      static const int TopRight = 1;
+      static const int BottomRight = 2;
+      static const int BottomLeft = 3;
 
-   TextureCoordinate();
-   TextureCoordinate(const TextureCoordinate& that);
+      TextureCoordinate();
+      TextureCoordinate(const TextureCoordinate& that);
 
-   void initialize(const Vertex& tl, const Vertex& br);
+      void initialize(const Vertex& tl, const Vertex& br);
 
-   const Vertex& get(int index) const;
+      const Vertex& get(int index) const;
 
-   const Vertex& getTopLeft() const;
-   const Vertex& getTopRight() const;
-   const Vertex& getBottomLeft() const;
-   const Vertex& getBottomRight() const;
+      const Vertex& getTopLeft() const;
+      const Vertex& getTopRight() const;
+      const Vertex& getBottomLeft() const;
+      const Vertex& getBottomRight() const;
 
-private:
-   Vertex mCoordinates[4];
-};
+   private:
+      Vertex mCoordinates[4];
+   };
+}
 
 #endif

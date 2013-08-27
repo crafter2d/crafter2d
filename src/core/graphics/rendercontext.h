@@ -6,6 +6,7 @@
 #include "core/math/color.h"
 
 #include "viewport.h"
+#include "sprites/spriterenderer.h"
 
 class XForm;
 
@@ -13,6 +14,7 @@ namespace Graphics
 {
    class BlendState;
    class Effect;
+   class Sprite;
    class IndexBuffer;
    class VertexBuffer;
    class UniformBuffer;
@@ -29,18 +31,27 @@ namespace Graphics
       const Viewport& getViewport() const;
       void            setViewport(const Viewport& viewport);
 
+    // initialization
+      void initialize(Device& device);
+
     // operations
       virtual void setBlendState(const BlendState& state) = 0;
       virtual void setVertexBuffer(const VertexBuffer& buffer) = 0;
       virtual void setIndexBuffer(const IndexBuffer& buffer) = 0;
       virtual void setUniformBuffer(const UniformBuffer& buffer) = 0;
 
-      // drawing instructions
+    // drawing instructions
       virtual void drawTriangles(int start, int count) = 0;
       virtual void drawTriangleFan(int start, int count) = 0;
       virtual void drawTriangleStrip(int start, int count) = 0;
-
+     
       virtual void clear() = 0;
+
+    // drawing sprites
+      void beginDraw();
+      void endDraw();
+
+      void drawSprite(const Sprite& sprite);
 
    protected:
     // notifications
@@ -48,8 +59,10 @@ namespace Graphics
 
    private:
 
-      Viewport mViewport;
-      Color    mClearColor;
+    // data
+      SpriteRenderer mSpriteRenderer;
+      Viewport       mViewport;
+      Color          mClearColor;
    };
 };
 

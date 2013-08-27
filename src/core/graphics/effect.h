@@ -63,7 +63,7 @@ namespace Graphics
 	
       UniformBuffer*    getUniformBuffer(const String& name) const;
 
-      void              setTexture(int stage, const TexturePtr& texture);
+      void              setTexture(int stage, const Texture& texture);
 
       void              render(RenderContext& context, int vertcount);
 	
@@ -71,8 +71,8 @@ namespace Graphics
      // types
       struct TexInfo
       {
-         TexturePtr texture;
-         int        stage;
+         const Texture* ptexture;
+         int            stage;
       };
 
       typedef std::vector<TexInfo> Textures;
@@ -83,12 +83,12 @@ namespace Graphics
 	   bool              processCode(Graphics::Device& device, const Graphics::VertexInputLayout& layout, const TiXmlElement& effect, const String& path);
       bool              processBlendState(Graphics::Device& device, const TiXmlElement& effect);
 		
-      String                        name;
-      String                        mFile;
-      Textures                      mTextures;
-      Graphics::CodePath*           mpCodePath;
-      Graphics::BlendState*         mpBlendStateEnabled;
-      Graphics::BlendState*         mpBlendStateDisabled;
+      String      mName;
+      String      mFile;
+      Textures    mTextures;
+      CodePath*   mpCodePath;
+      BlendState* mpBlendStateEnabled;
+      BlendState* mpBlendStateDisabled;
    };
 }
 

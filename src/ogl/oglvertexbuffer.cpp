@@ -136,10 +136,10 @@ void OGLVertexBuffer::release()
 /*!
     \fn VertexBufferObject::lock(RenderContext& context)
  */
-float* OGLVertexBuffer::lock(RenderContext& context)
+void* OGLVertexBuffer::lock(RenderContext& context)
 {
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-	float* pointer = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	void* pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	if (pointer != NULL)
 		locked = true;
 	return pointer;

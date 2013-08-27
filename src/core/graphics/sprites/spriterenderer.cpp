@@ -1,8 +1,27 @@
-
+/***************************************************************************
+ *   Copyright (C) 2013 by Jeroen Broekhuizen                              *
+ *   jengine.sse@live.nl                                                   *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License as        *
+ *   published by the Free Software Foundation; either version 2.1 of the  *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This library is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Lesser General Public License for more details.                   *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "spriterenderer.h"
 
 #include "core/graphics/device.h"
 #include "core/graphics/indexbuffer.h"
+#include "core/graphics/rendercontext.h"
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/utils.h"
 #include "core/graphics/vertexbuffer.h"
@@ -10,11 +29,22 @@
 #include "core/math/size.h"
 #include "core/math/xform.h"
 
-#include "engine/texturecoordinate.h"
+#include "core/graphics/texturecoordinate.h"
 
 #include "sprite.h"
 
-using namespace Graphics;
+#include "core/math/matrix4.h"
+#include "core/math/vector.h"
+
+struct ConstantBuffer
+   {
+      Matrix4 projection;
+      Matrix4 world;
+      Matrix4 object;
+   };
+
+namespace Graphics
+{
 
 SpriteRenderer::SpriteRenderer():
    mSprites(),
@@ -33,7 +63,7 @@ bool SpriteRenderer::create(Device& device)
    Graphics::VertexInputLayout vertexLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0);
    uint usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
 
-   if ( !mEffect.load(device, vertexLayout, UTEXT("spriteeffect.xml")) )
+   if ( !mEffect.load(device, vertexLayout, UTEXT("spriteeffect")) )
    {
       return false;
    }
@@ -53,7 +83,7 @@ bool SpriteRenderer::create(Device& device)
    const int batchsize = 256;
 
    mpVB = device.createVertexBuffer();
-   if ( mpVB == NULL || mpVB->create(vertexLayout, batchsize * SpriteVertices, usage) )
+   if ( mpVB == NULL || !mpVB->create(vertexLayout, batchsize * SpriteVertices, usage) )
    {
       return false;
    }
@@ -70,6 +100,14 @@ bool SpriteRenderer::create(Device& device)
 void SpriteRenderer::beginDraw(RenderContext& context)
 {
    mSprites.clear();
+
+   ConstantBuffer constants;
+   constants.projection.setOrtho(0, 800.0f, 0, 600.0f);
+   constants.world.setIdentity();
+   constants.object.setIdentity();
+   constants.object.translate(Vector(100, 100));
+
+   mpUB->set(context, &constants);
 }
    
 void SpriteRenderer::endDraw(RenderContext& context)
@@ -86,6 +124,13 @@ void SpriteRenderer::endDraw(RenderContext& context)
    }
 
    mpVB->unlock(context);
+
+   context.setVertexBuffer(*mpVB);
+   context.setIndexBuffer(*mpIB);
+   context.setUniformBuffer(*mpUB);
+
+   mEffect.setTexture(0, mSprites[0].getTexture());
+   mEffect.render(context, 6);
 }
 
 void SpriteRenderer::draw(const Sprite& sprite)
@@ -113,7 +158,9 @@ void SpriteRenderer::renderSprite(const Sprite& sprite, PTVertex* pbuffer)
 
       const Vertex& tex = coordinate.get(texindex[index]);
 
-      pbuffer->pos = point;
-      pbuffer->tex = tex;
+      pbuffer[index].pos = point;
+      pbuffer[index].tex = tex;
    }
 }
+
+} // namespace Graphics

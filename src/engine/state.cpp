@@ -22,7 +22,7 @@
 #  include "state.inl"
 #endif
 
-#include "core/system/timer.h" 
+#include "core/system/timer.h"
 
 #include "actor.h"
 
@@ -136,9 +136,13 @@ void RotateState::initialize()
 {
    finalRotation = object()->getRotation() + rotation();
    if (finalRotation < 0)
+   {
       finalRotation += 360;
+   }
    else if (finalRotation >= 360)
+   {
       finalRotation -= 360;
+   }
 
    float steps = duration(); // / (float)object()->getMoveSpeed();
    rotation(rotation() / steps);

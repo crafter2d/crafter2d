@@ -90,7 +90,7 @@ MeshComponent& Entity::getMesh()
 
 // - Operations
 
-void Entity::initialize(Device& device, RenderContext& context)
+void Entity::initialize()
 {
    Component* pcomponent = mComponents.findComponent(ComponentInterface::eMeshComponent);
    if ( pcomponent != NULL )
@@ -115,35 +115,19 @@ void Entity::addComponent(Component* pcomponent)
 
 void Entity::update(float delta)
 {
-   doUpdate(delta);
+   mComponents.postMessage(ComponentMessage(ComponentInterface::eUpdateMsg, &delta));
 
    mChildren.update(delta);
 }
 
-void Entity::updateClient(float delta)
-{
-   doUpdateClient(delta);
-}
-
 void Entity::draw(Graphics::RenderContext& context) const
 {
-   doDraw(context);
+   if ( hasMesh() )
+   {
+      getMesh().render(context);
+   }
 
    mChildren.draw(context);
-}
-
-void Entity::doUpdate(float delta)
-{
-   mComponents.postMessage(ComponentMessage(ComponentInterface::eUpdateMsg, &delta));
-}
-
-void Entity::doUpdateClient(float delta)
-{
-   doUpdate(delta);
-}
-
-void Entity::doDraw(Graphics::RenderContext& context) const
-{
 }
 
 // - Messaging

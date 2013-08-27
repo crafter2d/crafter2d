@@ -1,16 +1,16 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2013 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License as        *
+ *   published by the Free Software Foundation; either version 2.1 of the  *
  *   License, or (at your option) any later version.                       *
  *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
+ *   This library is distributed in the hope that it will be useful,       *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
+ *   GNU Lesser General Public License for more details.                   *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
  *   License along with this program; if not, write to the                 *
@@ -22,7 +22,7 @@
 #include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
 #include "core/graphics/blendstatedesc.h"
-#include "core/graphics/textureinfo.h" 
+#include "core/graphics/textureinfo.h"
 
 #include "texture/textureloaderfactory.h"
 #include "texture/abstracttextureloader.h"
@@ -53,8 +53,8 @@ OGLDevice::~OGLDevice()
 
 bool OGLDevice::supportGLSL() const
 {
-	// GLSL is only supported if both vertex- and fragment shaders are available
-	return (GLEE_ARB_shading_language_100 && GLEE_ARB_shader_objects && GLEE_ARB_vertex_shader);
+   // GLSL is only supported if both vertex- and fragment shaders are available
+   return (GLEE_ARB_shading_language_100 && GLEE_ARB_shader_objects && GLEE_ARB_vertex_shader);
 }
 
 // - Creation
@@ -62,19 +62,19 @@ bool OGLDevice::supportGLSL() const
 bool OGLDevice::create(int windowhandle, int width, int height)
 {
    Log& log = Log::getInstance();
-	GLint units;
+   GLint units;
 
    log << "Graphics card:\t\t" << (char*)glGetString(GL_VENDOR) << "\n";
    log << "OpenGL version:\t\t" << (char*)glGetString(GL_VERSION) << "\n";
 
-   if ( !GLEE_VERSION_3_2 )
+   if ( GLEE_VERSION_3_2 == true )
    {
       log << "OpenGL version 3.2 is required to run this application.\n";
       return false;
    }
 
    // make sure that there are enough texture units
-	glGetIntegerv (GL_MAX_TEXTURE_UNITS, &units);
+   glGetIntegerv (GL_MAX_TEXTURE_UNITS, &units);
    if ( units < 2 )
    {
       log << "Videocard does not support 2 or more texture units.\n";
@@ -85,7 +85,7 @@ bool OGLDevice::create(int windowhandle, int width, int height)
    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
    log << "Max texture size:\t" << maxTextureSize << "\n";
 
-	// see if required buffer objects are supported
+   // see if required buffer objects are supported
    if ( !GL_ARB_vertex_buffer_object || !GL_ARB_uniform_buffer_object )
    {
       log << "Required buffer objects are not available. Can not proceed.\n";

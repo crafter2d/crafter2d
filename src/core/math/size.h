@@ -9,7 +9,7 @@ struct Size
    Size(float width, float height);
 
    Size& operator=(const Size& that);
-   Size operator/(float value);
+   Size operator/(float value) const;
 
    float width;
    float height;

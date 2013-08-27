@@ -24,7 +24,7 @@ namespace Graphics
 
 INLINE const String& Effect::getName() const
 {
-   return name;
+   return mName;
 }
 
 INLINE const String& Effect::getFileName() const

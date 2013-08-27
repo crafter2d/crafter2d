@@ -100,7 +100,7 @@ void IsoDiamondLayer::onViewportChanged(const Graphics::Viewport& viewport)
 
 void IsoDiamondLayer::draw(Graphics::RenderContext& context)
 {
-   float* data = vb->lock(context);
+   float* data = (float*) vb->lock(context);
 
    float halfwidth  = texTileWidth / 2;
    float halfheight = texTileHeight / 2;

@@ -17,68 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef ANIMATOR_H_
-#define ANIMATOR_H_
+#ifndef ANIMATION_H_
+#define ANIMATION_H_
 
-#include "core/smartptr/sharedptr.h"
-
-#include "animationset.h"
-#include "texturecoordlookup.h"
+#include <vector>
 
 namespace Graphics
 {
-   class Texture;
+   class Animation : public std::vector<int>
+   {
+   public:
+      void add(int id);
+   };
 }
 
-struct Size;
-class TiXmlElement;
-
-class Animator
-{
-public:
-   static Animator* construct(const TiXmlElement& xmlObject);
-
-   Animator();
-   ~Animator();
-
- // operations
-   void initialize(const Graphics::Texture& texture, const Size& meshsize);
-
- // Animation
-   bool animate(float delta);
-   void nextFrame();
-
-   int  getAnimation() const;
-   bool setAnimation(int animation);
-
-   const TextureCoordinate& getTextureCoordinate();
-
-private:
-  // get/set
-   AnimationSet&  getAnimations();
-
-  // parsing
-   bool loadFromXML(const TiXmlElement& xmlanimation);
-   void parseAnimations(const TiXmlElement& xmlanimator);
-   void parseAnimation(const char* sequence, Animation *animation);
-
-   void determineFrameCount();
-
-   TextureCoordLookup        mTextureCoords;
-   SharedPtr<AnimationSet>   mAnimations;
-	float    mAnimationSpeed;
-	float    mAnimationDelta;
-   float    mAnimFrameWidth;
-   int      mAnimFrameCount;
-	int      mCurrentAnimation;
-	int      mAnimIndex;
-	int      mAnimFrame;
-};
-
-typedef SharedPtr<Animator> AnimatorPtr;
-
 #ifdef JENGINE_INLINE
-#  include "animator.inl"
+#  include "animation.inl"
 #endif
 
 #endif

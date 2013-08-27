@@ -5,15 +5,17 @@
 
 #include "core/string/string.h"
 #include "core/smartptr/autoptr.h"
-
-#include "engine/animator.h"
+#include "core/graphics/animator.h"
 
 #include "meshcomponentdefinition.h"
 
 static String sId(UTEXT("sprite"));
 
-MeshComponentLoader::MeshComponentLoader():
-   ComponentLoader()
+using namespace Graphics;
+
+MeshComponentLoader::MeshComponentLoader(Graphics::Device& device):
+   ComponentLoader(),
+   mDevice(device)
 {
 }
 
@@ -48,7 +50,14 @@ ComponentDefinition* MeshComponentLoader::load(const TiXmlElement& element)
          // throw error;
       }
 
-      spritedef.setTextureName(String(pvalue->ValueStr()));
+      String texturefile = String(pvalue->ValueStr());
+      TexturePtr texture = ResourceManager::getInstance().getTexture(mDevice, texturefile);
+      if ( !texture.isValid() )
+      {
+         // throw error
+      }
+
+      spritedef.setTexture(texture);
    }
 
    const TiXmlElement* pXmlAnimation = element.FirstChildElement("animations");
@@ -59,6 +68,8 @@ ComponentDefinition* MeshComponentLoader::load(const TiXmlElement& element)
       {
          // throw error;
       }
+
+      panimator->initialize(spritedef.getTexture(), spritedef.getSize());
 
       spritedef.setSpriteAnimator(panimator);
    }

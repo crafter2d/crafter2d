@@ -28,7 +28,7 @@ public:
    void          setValue(const String& value);
 
 private:
-   
+
    String mName;
    String mValue;
    Type   mType;

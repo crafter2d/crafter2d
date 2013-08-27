@@ -19,10 +19,14 @@
  ***************************************************************************/
 #include "texturecoordlookup.h"
 
-#include "core/graphics/texture.h"
 #include "core/math/size.h"
 #include "core/math/vertex.h"
 #include "core/defines.h"
+
+#include "texture.h"
+
+namespace Graphics
+{
 
 TextureCoordLookup::TextureCoordLookup():
    _lookupTable(NULL),
@@ -37,6 +41,15 @@ TextureCoordLookup::~TextureCoordLookup()
    delete[] _lookupTable;
    _lookupTable = NULL;
 }
+
+// - Query
+      
+bool TextureCoordLookup::isEmpty() const
+{
+   return _frameCount == 0;
+}
+
+// - Operations
 
 void TextureCoordLookup::generateFromTexture(const Graphics::Texture& texture, const Size& framesize, int framecount)
 {
@@ -80,3 +93,5 @@ float TextureCoordLookup::getFrameHeight() const
 {
    return _texFrameHeight;
 }
+
+} // namespace Graphics

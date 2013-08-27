@@ -49,7 +49,7 @@ void D3DVertexBuffer::release()
    mpBuffer->Release();
 }
 
-float* D3DVertexBuffer::lock(RenderContext& context)
+void* D3DVertexBuffer::lock(RenderContext& context)
 {
    D3D11_MAPPED_SUBRESOURCE mappedResource;
    HRESULT hr = D3DRenderContext::asContext(context).Map(mpBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -58,7 +58,7 @@ float* D3DVertexBuffer::lock(RenderContext& context)
       // meh!!
       return NULL;
    }
-   return (float*) mappedResource.pData;
+   return mappedResource.pData;
 }
 
 void D3DVertexBuffer::unlock(RenderContext& context)

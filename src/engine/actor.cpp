@@ -30,7 +30,6 @@
 #include "engine/components/componentmessage.h"
 #include "engine/net/netstream.h"
 
-#include "animator.h"
 #include "nodevisitor.h"
 #include "controller.h"
 
@@ -77,15 +76,12 @@ void Actor::setController(Controller* pcontroller)
 
 void Actor::doUpdate(float delta)
 {
-   Entity::doUpdate(delta);
-
    if ( mpController != NULL )
       mpController->performAction(*this);
 }
 
 void Actor::doUpdateClient(float delta)
 {
-   Entity::doUpdate(delta);
 }
 
 /*!
@@ -94,8 +90,6 @@ void Actor::doUpdateClient(float delta)
  */
 void Actor::doDraw(RenderContext& context) const
 {
-   ASSERT(hasMesh());
-   getMesh().render(context);
 }
 
 /// \fn Actor::clone ()

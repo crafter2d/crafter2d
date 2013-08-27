@@ -70,8 +70,8 @@ public:
    void           setClassName(const String& classname);
 
  // operations
-   void initialize(Graphics::Device& device, Graphics::RenderContext& context);
-   virtual void destroy();
+   void initialize();
+   void destroy();
 
    void addComponent(Component* pcomponent);
 
@@ -98,12 +98,7 @@ protected:
    const MeshComponent& getMesh() const;
          MeshComponent& getMesh();
 
- // update & drawing
-   virtual void doUpdate(float delta);
-   virtual void doUpdateClient(float delta);
-   virtual void doDraw(Graphics::RenderContext& context) const;
-
- // streaming
+  // streaming
    virtual void doPack(DataStream& stream) const;
    virtual void doUnpack(DataStream& stream);
 

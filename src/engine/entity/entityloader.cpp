@@ -37,7 +37,7 @@ EntityDefinition* EntityLoader::load(const String& filename)
    EntityDefinition* pentitydef = new EntityDefinition();
 
    // create the actual scripted object
-   const std::string* pclasstype = pentity->Attribute(std::string("type"));
+   const std::string* pclasstype = pentity->Attribute(std::string("class"));
    pentitydef->setClassName(pclasstype != NULL ? String(*pclasstype) : UTEXT("engine.game.Actor"));
 
    const TiXmlNode* pcomponent = NULL;

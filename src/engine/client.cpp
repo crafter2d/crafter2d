@@ -166,6 +166,7 @@ void Client::render(float delta)
    static const String sPaint = UTEXT("paint");
 
    mpRenderContext->clear();
+   mpRenderContext->beginDraw();
    //mpRenderContext->setObjectMatrix(XForm::identity());
    //mpRenderContext->setWorldMatrix(XForm::identity());
    
@@ -180,6 +181,8 @@ void Client::render(float delta)
 
       mpWorldRenderer->render(*mpRenderContext, delta);
    }
+
+   mpRenderContext->endDraw();
 
    Variant arg((double)delta);
    mpScript->run(sPaint, 1, &arg);
@@ -267,6 +270,7 @@ bool Client::initDevice()
 
       mpRenderContext = mpDevice->createRenderContext();
       mpRenderContext->setClearColor(color);
+      mpRenderContext->initialize(*mpDevice);
 
       onWindowResized();
    }
