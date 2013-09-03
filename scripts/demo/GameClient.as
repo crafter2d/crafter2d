@@ -9,7 +9,7 @@ use engine.game.*;
 
 class GameClient extends Client
 {
-	private ActionMap mActionMap;
+	private DemoClientActionMap mLocalActionMap;
 	
 	public GameClient()
 	{
@@ -34,13 +34,13 @@ class GameClient extends Client
 	{
 		addPlayer(player);
 		
-		mActionMap = new DemoClientActionMap();
-		setActionMap(mActionMap);
+		mLocalActionMap = new DemoClientActionMap();
+		setActionMap(mLocalActionMap);
 		
 		KeyMap map = new KeyMap();
-		map.bind(276, 1); 	// left
-		map.bind(275, 2); 	// right
-		map.bind(32, 3); 	// space -> jump
+		map.bind(203, 1); 	// left (276)
+		map.bind(205, 2); 	// right (275)
+		map.bind(57, 3); 	// space -> jump (32)
 		map.bind(100, 6);   // leak detection
 		setKeyMap(map);
 	}
@@ -77,12 +77,14 @@ class GameClient extends Client
 		{
 			ControllerMessage msg = (ControllerMessage)message;
 			World world = getWorld();
-			
+					
 			int controllerid = msg.getControllerId();
 			Actor controller = (Actor) world.findEntity(controllerid);
 			controller.initialize();
-			controller.setForceGenerator(new InputForceGenerator());			
+			controller.setForceGenerator(new InputForceGenerator());
 			getPlayer().setController(controller);
+			
+			mLocalActionMap.setActor(controller);
 			
 			world.setFollowMode(0);
 			world.setObjectLayer(0);
@@ -94,7 +96,7 @@ class GameClient extends Client
 			// perform the action on the given actor
 			ActionMessage action = (ActionMessage) message;
 			Actor actor = (Actor) getWorld().findEntity(action.getActorId());
-			mActionMap.onKeyDown(actor, action.getAction());
+			mLocalActionMap.onKeyDown(actor, action.getAction());
 		}
 	}
 }

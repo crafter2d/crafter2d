@@ -23,6 +23,8 @@
 
 #include "core/input/mouseeventdispatcher.h"
 #include "core/input/keyeventdispatcher.h"
+#include "core/system/platform.h"
+#include "core/string/string.h"
 
 #include "gamewindowlistener.h"
 
@@ -70,19 +72,40 @@ int GameWindow::getHeight() const
    return 0;
 }
 
+// - Operations
+
+typedef Driver* (*PDRIVER)();
+
+Driver* GameWindow::doLoadDriver(const String& driver)
+{
+   void* pmodule = Platform::getInstance().loadModule(driver);
+   if ( pmodule == NULL )
+   {
+      return NULL;
+   }
+
+   PDRIVER pdriverfnc = (PDRIVER)Platform::getInstance().getFunctionAddress(pmodule, UTEXT("getDriver"));
+   if ( pdriverfnc == NULL )
+   {
+      return NULL;
+   }
+
+   return pdriverfnc();
+}
+
 // - Dispatchers
 
-void GameWindow::setKeyEventDispatcher(KeyEventDispatcher& dispatcher)
+void GameWindow::setKeyEventDispatcher(Input::KeyEventDispatcher& dispatcher)
 {
   mpKeyDispatcher = &dispatcher;
 }
 
-void GameWindow::setMouseEventDispatcher(MouseEventDispatcher& dispatcher)
+void GameWindow::setMouseEventDispatcher(Input::MouseEventDispatcher& dispatcher)
 {
   mpMouseDispatcher = &dispatcher;
 }
 
-void GameWindow::dispatch(const MouseEvent& mouseevent)
+void GameWindow::dispatch(const Input::MouseEvent& mouseevent)
 {
    if ( mpMouseDispatcher != NULL )
    {
@@ -90,8 +113,12 @@ void GameWindow::dispatch(const MouseEvent& mouseevent)
    }
 }
 
-void GameWindow::dispatch(const KeyEvent& keyevent)
+void GameWindow::dispatch(const Input::KeyEvent& keyevent)
 {
+   if ( mpKeyDispatcher != NULL )
+   {
+      mpKeyDispatcher->dispatch(keyevent);
+   }
 }
 
 // - Listeners

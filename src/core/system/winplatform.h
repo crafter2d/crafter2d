@@ -29,10 +29,13 @@ public:
    WinPlatform();
    virtual ~WinPlatform();
 
-   virtual Timer& getTimer();
+ // query
+   virtual OS getOS() const override;
+   virtual Timer& getTimer() override;
 
-   virtual void* loadModule(const String& name);
-   virtual void* getFunctionAddress(void* module, const String& name);
+ // operations
+   virtual void* loadModule(const String& name) override;
+   virtual void* getFunctionAddress(void* module, const String& name) override;
 
 private:
 

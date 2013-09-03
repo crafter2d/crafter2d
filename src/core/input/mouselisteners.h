@@ -22,28 +22,31 @@
 
 #include "core/containers/listeners.h"
 
-class MouseEvent;
-class MouseListener;
-
-class MouseListeners : public Listeners<MouseListener>
+namespace Input
 {
-public:
-   typedef Listeners<MouseListener> MouseListenersImp;
+   class MouseEvent;
+   class MouseListener;
 
-   MouseListeners();
-   ~MouseListeners();
+   class MouseListeners : public Listeners<MouseListener>
+   {
+   public:
+      typedef Listeners<MouseListener> MouseListenersImp;
 
-  // notifications
-   void fireMouseClickEvent(const MouseEvent& event);
-   void fireMouseButtonEvent(const MouseEvent& event);
-   void fireMouseMotionEvent(const MouseEvent& event);
+      MouseListeners();
+      ~MouseListeners();
 
-   void fireMouseContextEvent(const MouseEvent& event);
+     // notifications
+      void fireMouseClickEvent(const MouseEvent& event);
+      void fireMouseButtonEvent(const MouseEvent& event);
+      void fireMouseMotionEvent(const MouseEvent& event);
 
-   void fireMouseEnterEvent(const MouseEvent& event);
-   void fireMouseExitEvent(const MouseEvent& event);
+      void fireMouseContextEvent(const MouseEvent& event);
 
-protected:
-};
+      void fireMouseEnterEvent(const MouseEvent& event);
+      void fireMouseExitEvent(const MouseEvent& event);
+
+   protected:
+   };
+}
 
 #endif

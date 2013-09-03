@@ -65,7 +65,7 @@ namespace Graphics
 
       void              setTexture(int stage, const Texture& texture);
 
-      void              render(RenderContext& context, int vertcount);
+      void              render(RenderContext& context, int start, int vertcount);
 	
    private:
      // types

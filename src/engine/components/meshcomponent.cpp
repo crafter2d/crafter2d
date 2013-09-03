@@ -58,7 +58,7 @@ void MeshComponent::handleMessage(ComponentMessage& message)
 	case ePositionChangedMsg:
 		{
          PositionInfo* pinfo = static_cast<PositionInfo*>(message.getData());
-         mTransform = pinfo->transform;
+         mpSprite->setTransform(pinfo->transform);
 		}
       break;
    case eUpdateMsg:

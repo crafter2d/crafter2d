@@ -30,10 +30,21 @@ class CORE_API Platform
 public:
    static Platform&  getInstance();
 
+   enum OS
+   {
+      eWindows,
+      eWindowsRT,
+      eWindowsPhone,
+      eLinux,
+   };
+
    virtual ~Platform();
 
+ // query
+   virtual OS getOS() const = 0;
    virtual Timer& getTimer() = 0;
 
+ // operations
    virtual void* loadModule(const String& name) = 0;
    virtual void* getFunctionAddress(void* module, const String& name) = 0;
 

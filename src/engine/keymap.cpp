@@ -19,9 +19,12 @@
  ***************************************************************************/
 #include "keymap.h"
 
+#include "core/input/input.h"
+
 #include "actionmap.h"
 #include "client.h"
-#include "input.h"
+
+using namespace Input;
 
 KeyMap::KeyMap():
    mpClient(NULL),
@@ -47,8 +50,6 @@ void KeyMap::bind(int key, int action)
    mKeys[key] = info;
 }
 
-#include <SDL/SDL.h>
-
 void KeyMap::update()
 {
    ASSERT_PTR(mpClient)
@@ -56,9 +57,7 @@ void KeyMap::update()
    ActionMap* pactionmap = mpClient->getActionMap();
    if ( pactionmap != NULL )
    {
-      //Input& input = mpClient->getInput();
-
-      Uint8 *keystate = SDL_GetKeyState(NULL);
+      InputDevice& input = mpClient->getInput();
 
       KeyInfos::iterator it = mKeys.begin();
       for ( ; it != mKeys.end(); ++it )
@@ -66,9 +65,7 @@ void KeyMap::update()
          int key = it->first;
          KeyInfo& info = it->second;
 
-         
-         //if ( input.isKeyDown(key) )
-         if ( keystate[key] )
+         if ( input.isKeyDown(key) )
          {
             if ( !info.state )
             {

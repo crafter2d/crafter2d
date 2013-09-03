@@ -31,6 +31,8 @@
 
 #include "console.h"
 
+using namespace Input;
+
 static int getModifiers()
 {
    int mode = SDL_GetModState();
@@ -52,7 +54,7 @@ static MouseEvent::Button toMouseEventButton(int sdlbutton)
 {
    switch ( sdlbutton )
    {
-   case SDL_BUTTON_LEFT:         return MouseEvent::eLeft;
+      case SDL_BUTTON_LEFT:      return MouseEvent::eLeft;
       case SDL_BUTTON_RIGHT:     return MouseEvent::eRight;
       case SDL_BUTTON_MIDDLE:    return MouseEvent::eMiddle;
       case SDL_BUTTON_WHEELUP:   return MouseEvent::eWheelUp;
@@ -183,6 +185,11 @@ int SDLGameWindow::getWindowFlags(bool fullscreen)
       flags |= SDL_HWACCEL;
 
   return flags;
+}
+
+Driver* SDLGameWindow::loadDriver()
+{
+   return doLoadDriver(UTEXT("OGLd.dll"));
 }
 
 int SDLGameWindow::getHandle() const

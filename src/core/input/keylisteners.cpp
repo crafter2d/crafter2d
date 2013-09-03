@@ -25,6 +25,9 @@
 #include "keyevent.h"
 #include "keylistener.h"
 
+namespace Input
+{
+
 KeyListeners::KeyListeners():
    KeyListenersImp()
 {
@@ -65,3 +68,5 @@ void KeyListeners::fireKeyReleased(const KeyEvent& event)
     (*it)->onKeyReleased(event);
   }
 }
+
+} // namespace Input

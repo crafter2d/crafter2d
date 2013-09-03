@@ -41,7 +41,7 @@ class NodeVisitor;
 
 class Entity : public NetObject
 {
-   enum { eNameDirty = 256 };
+   enum { eNameDirty = 256, ePositionDirty = 2 };
 
 public:
    DEFINE_REPLICATABLE(Entity);

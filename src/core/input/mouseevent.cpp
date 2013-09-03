@@ -20,9 +20,10 @@
 
 #include "mouseevent.h"
 
-//-----------------------------------
+namespace Input
+{
+
 // - Construction
-//-----------------------------------
 
 MouseEvent::MouseEvent(int buttons, EventType eventtype, int keymodifiers, const Point& location, const Point& relative):
    InputEvent(keymodifiers),
@@ -36,3 +37,5 @@ MouseEvent::MouseEvent(int buttons, EventType eventtype, int keymodifiers, const
 MouseEvent::~MouseEvent()
 {
 }
+
+} // namespace Input

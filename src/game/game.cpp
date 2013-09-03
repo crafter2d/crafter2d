@@ -22,12 +22,6 @@
 #  include "game.inl"
 #endif
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <vfw.h>
-#endif
-
 #include <iostream>
 #include <cstdlib>
 
@@ -104,15 +98,10 @@ bool Game::create()
    Console& console = Console::getInstance();
    console.create();
 
-#ifdef WIN32
    if ( !NetConnection::initialize() )
    {
       return false;
    }
-
-   // initialize the AVI library
-   AVIFileInit();
-#endif
 
    NetObjectFactory::getInstance().initialize();
 
@@ -146,11 +135,6 @@ void Game::destroy()
 
    // release timer data
    TIMER.releaseData(mpTimerData);
-
-#ifdef WIN32
-   // release the avi library
-   AVIFileExit();
-#endif
 }
 
 //////////////////////////////////////////////////////////////////////////

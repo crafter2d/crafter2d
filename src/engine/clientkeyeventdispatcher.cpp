@@ -29,7 +29,7 @@ ClientKeyEventDispatcher::ClientKeyEventDispatcher(Client& client):
 
 // - Dispatch
 
-void ClientKeyEventDispatcher::dispatch(const KeyEvent& event)
+void ClientKeyEventDispatcher::dispatch(const Input::KeyEvent& event)
 {
    mClient.onKeyEvent(event);
 }

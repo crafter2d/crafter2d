@@ -105,32 +105,58 @@ void SpriteRenderer::beginDraw(RenderContext& context)
    constants.projection.setOrtho(0, 800.0f, 0, 600.0f);
    constants.world.setIdentity();
    constants.object.setIdentity();
-   constants.object.translate(Vector(100, 100));
 
    mpUB->set(context, &constants);
 }
    
 void SpriteRenderer::endDraw(RenderContext& context)
 {
-   mSprites.sort();
-
-   PTVertex* pvertices = static_cast<PTVertex*>(mpVB->lock(context));
-
-   for ( int index = 0; index < mSprites.size(); ++index )
+   if ( mSprites.size() > 0 )
    {
-      const Sprite& sprite = mSprites[index];
+      mSprites.sort();
 
-      renderSprite(sprite, pvertices);
+      PTVertex* pvertices = static_cast<PTVertex*>(mpVB->lock(context));
+
+      for ( int index = 0; index < mSprites.size(); ++index )
+      {
+         const Sprite& sprite = mSprites[index];
+
+         renderSprite(sprite, pvertices);
+
+         pvertices += 4;
+      }
+
+      mpVB->unlock(context);
+
+      context.setVertexBuffer(*mpVB);
+      context.setIndexBuffer(*mpIB);
+      context.setUniformBuffer(*mpUB);
+
+      int start = 0;
+      int indices = 0;
+      const Texture* ptex = &mSprites[0].getTexture();
+      for ( int index = 0; index < mSprites.size(); ++index )
+      {
+         const Sprite& sprite = mSprites[index];
+         if ( &sprite.getTexture() != ptex )
+         {
+            mEffect.setTexture(0, *ptex);
+            mEffect.render(context, start, indices);
+
+            start += indices;
+            indices = 0;
+            ptex = &sprite.getTexture();
+         }
+
+         indices += 6;
+      }
+
+      if ( indices > 0 )
+      {
+         mEffect.setTexture(0, *ptex);
+         mEffect.render(context, start, indices);
+      }
    }
-
-   mpVB->unlock(context);
-
-   context.setVertexBuffer(*mpVB);
-   context.setIndexBuffer(*mpIB);
-   context.setUniformBuffer(*mpUB);
-
-   mEffect.setTexture(0, mSprites[0].getTexture());
-   mEffect.render(context, 6);
 }
 
 void SpriteRenderer::draw(const Sprite& sprite)

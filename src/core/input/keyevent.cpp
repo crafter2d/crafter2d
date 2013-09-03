@@ -20,6 +20,9 @@
 
 #include "keyevent.h"
 
+namespace Input
+{
+
 //----------------------------------------------
 // - Construction
 //----------------------------------------------
@@ -34,3 +37,5 @@ KeyEvent::KeyEvent(int key, EventType type, int keymodifiers):
 KeyEvent::~KeyEvent()
 {
 }
+
+} // namespace Input

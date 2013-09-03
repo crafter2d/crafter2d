@@ -16,6 +16,8 @@ public:
    virtual int getWidth() const;
    virtual int getHeight() const;
 
+   virtual Driver* loadDriver() override;
+
  // overloads
    virtual void resize(int width, int height);
    virtual void toggleFullscreen();

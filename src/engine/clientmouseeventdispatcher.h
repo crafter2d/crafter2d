@@ -24,14 +24,14 @@
 
 class Client;
 
-class ClientMouseEventDispatcher : public MouseEventDispatcher
+class ClientMouseEventDispatcher : public Input::MouseEventDispatcher
 {
 public:
    explicit ClientMouseEventDispatcher(Client& client);
    virtual ~ClientMouseEventDispatcher();
    
  // overloads
-   virtual void dispatch(const MouseEvent& event);
+   virtual void dispatch(const Input::MouseEvent& event);
 
 private:
 

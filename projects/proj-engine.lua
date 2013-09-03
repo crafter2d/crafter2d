@@ -17,15 +17,13 @@ includedirs { "src" }
 if ( os.is("windows") ) then
 	defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 	
-	includedirs { 	path.join(libdir, "sdl/include"),
-					path.join(libdir, "fmod/include"),
+	includedirs { 	path.join(libdir, "fmod/include"),
 					path.join(libdir, "zlib/include"),
 					path.join(libdir, "tinyxml/include"),
 					path.join(libdir, "box2d/include"),
 					path.join(libdir, "icu/include") }
 
-    libdirs { 	path.join(libdir, "sdl/lib"),
-				path.join(libdir, "fmod/lib"),
+    libdirs { 	path.join(libdir, "fmod/lib"),
 				path.join(libdir, "zlib/lib"),
 				path.join(libdir, "tinyxml/lib"),
 				path.join(libdir, "box2d/lib") }
@@ -37,16 +35,16 @@ if ( os.is("windows") ) then
 		linkoptions { "--allow-multiple-definition" }
 	  
 		configuration "Debug"
-			links { "mingw32", "SDL", "gdi32", "user32", "vfw32", "ws2_32",
+			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
 					"zlib1", "box2d_d", "tinyxmld_STL", "fmodex_vc" } 
 		 
 		configuration "Release"
-			links { "mingw32", "SDL", "gdi32", "user32", "vfw32", "ws2_32",
+			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
 					"zlib1", "box2d", "tinyxml_STL", "fmodex_vc" }
 
 	else
 		
-		links { "SDL", "gdi32", "user32", "vfw32", "ws2_32", "fmodex_vc" }
+		links { "gdi32", "user32", "vfw32", "ws2_32", "fmodex_vc" }
 		
 		configuration "Debug"
 			links { "box2d_d", "tinyxmld_STL", "zlib1_d" }
@@ -65,7 +63,7 @@ elseif ( os.is("linux") ) then
 	defines { "LINUX" }
 	
 	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
-	links { "SDL", "tinyxml", "Box2D" }
+	links { "tinyxml", "Box2D" }
 
 end
 

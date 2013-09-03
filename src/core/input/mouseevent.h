@@ -30,55 +30,58 @@
 struct SDL_MouseButtonEvent;
 struct SDL_MouseMotionEvent;
 
-class CORE_API MouseEvent : public InputEvent
+namespace Input
 {
-public:
-  // enums
-   enum Button {
-      eInvalid   = 0,
-      eLeft      = 1,
-      eRight     = 2,
-      eMiddle    = 4,
-      eWheelUp   = 8,
-      eWheelDown = 16
+   class CORE_API MouseEvent : public InputEvent
+   {
+   public:
+     // enums
+      enum Button {
+         eInvalid   = 0,
+         eLeft      = 1,
+         eRight     = 2,
+         eMiddle    = 4,
+         eWheelUp   = 8,
+         eWheelDown = 16
+      };
+
+      enum EventType {
+         ePressed,
+         eReleased,
+         eMotion
+      };
+
+    // statics
+      static MouseEvent FromSDL(SDL_MouseButtonEvent& event);
+      static MouseEvent FromSDL(SDL_MouseMotionEvent& event);
+
+    // construction
+      MouseEvent(int buttons, EventType eventtype, int keymodifiers, const Point& location, const Point& relative = Point::zero());
+      virtual ~MouseEvent();
+
+    // get/set
+            int       getButtons() const   { return mButtons; }
+            EventType getEventType() const { return mEventType; }
+      const Point&    getLocation() const  { return mLocation; }
+      const Point&    getRelative() const  { return mRelative; }        
+
+    // query
+      bool isLeftButtonDown() const { return IS_SET(mButtons, eLeft); }
+      bool isRightButtonDown() const { return IS_SET(mButtons, eRight); }
+      bool isMiddleButtonDown() const { return IS_SET(mButtons, eMiddle); }
+
+      bool isWheelUp() const   { return mButtons == eWheelUp;   }
+      bool isWheelDown() const { return mButtons == eWheelDown; }
+
+   private:
+     // statics
+      static Button toMouseEventButton(int sdlbutton);
+
+      int       mButtons;
+      EventType mEventType;
+      Point     mLocation;
+      Point     mRelative;
    };
-
-   enum EventType {
-      ePressed,
-      eReleased,
-      eMotion
-   };
-
- // statics
-   static MouseEvent FromSDL(SDL_MouseButtonEvent& event);
-   static MouseEvent FromSDL(SDL_MouseMotionEvent& event);
-
- // construction
-   MouseEvent(int buttons, EventType eventtype, int keymodifiers, const Point& location, const Point& relative = Point::zero());
-   virtual ~MouseEvent();
-
- // get/set
-         int       getButtons() const   { return mButtons; }
-         EventType getEventType() const { return mEventType; }
-   const Point&    getLocation() const  { return mLocation; }
-   const Point&    getRelative() const  { return mRelative; }        
-
- // query
-   bool isLeftButtonDown() const { return IS_SET(mButtons, eLeft); }
-   bool isRightButtonDown() const { return IS_SET(mButtons, eRight); }
-   bool isMiddleButtonDown() const { return IS_SET(mButtons, eMiddle); }
-
-   bool isWheelUp() const   { return mButtons == eWheelUp;   }
-   bool isWheelDown() const { return mButtons == eWheelDown; }
-
-private:
-  // statics
-   static Button toMouseEventButton(int sdlbutton);
-
-   int       mButtons;
-   EventType mEventType;
-   Point     mLocation;
-   Point     mRelative;
-};
+}
 
 #endif

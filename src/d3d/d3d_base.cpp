@@ -3,7 +3,7 @@
 
 #include <Windows.h>
 
-#include "d3ddevicefactory.h"
+#include "dxdriver.h"
 
 #pragma comment(lib, "d3d11.lib")
 
@@ -23,7 +23,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	return TRUE;
 }
 
-extern "C" D3D_API Graphics::DeviceFactory* cdecl getDeviceFactory()
+extern "C" D3D_API Driver* cdecl getDriver()
 {
-   return new Graphics::D3DDeviceFactory();
+   return new DXDriver();
 }

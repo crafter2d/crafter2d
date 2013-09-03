@@ -22,15 +22,18 @@
 
 #include "core/core_base.h"
 
-class KeyEvent;
-
-class CORE_API KeyEventDispatcher
+namespace Input
 {
-public:
-   KeyEventDispatcher();
-   virtual ~KeyEventDispatcher();
+   class KeyEvent;
 
-   virtual void dispatch(const KeyEvent& event) = 0;
-};
+   class CORE_API KeyEventDispatcher
+   {
+   public:
+      KeyEventDispatcher();
+      virtual ~KeyEventDispatcher();
+
+      virtual void dispatch(const KeyEvent& event) = 0;
+   };
+}
 
 #endif

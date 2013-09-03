@@ -1,12 +1,14 @@
 <?xml version="1.0">
 <!-- char sprite -->
 
-<object name="box" width=32 height=32>
-   <texture>box.png</texture>
-   <animations speed=125>
-      <anim length=1>0</anim>
-   </animations>
+<entity name="box">
+   <sprite width=32 height=32>
+      <texture>box.dds</texture>
+      <animations speed=125>
+         <anim length=1>0</anim>
+      </animations>
+   </sprite>
    <body inertia="1" mass="80">
       <shape type="box" halfx="16" halfy="16" />
    </body>
-</object>
+</entity>

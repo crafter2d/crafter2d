@@ -25,6 +25,9 @@
 #include "mouseevent.h"
 #include "mouselistener.h"
 
+namespace Input
+{
+
 MouseListeners::MouseListeners():
    MouseListenersImp()
 {
@@ -101,3 +104,5 @@ void MouseListeners::fireMouseExitEvent(const MouseEvent& event)
       (*it)->onMouseExited(event);
    }
 }
+
+} // namespace Input

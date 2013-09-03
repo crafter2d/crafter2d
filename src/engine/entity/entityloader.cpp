@@ -26,12 +26,14 @@ EntityDefinition* EntityLoader::load(const String& filename)
    if ( !doc.LoadFile() )
    {
       // throw error;
+      return NULL;
    }
 
 	const TiXmlElement* pentity = static_cast<const TiXmlElement*>(doc.FirstChild("entity"));
    if ( pentity == NULL )
    {
       // throw error;
+      return NULL;
    }
 
    EntityDefinition* pentitydef = new EntityDefinition();

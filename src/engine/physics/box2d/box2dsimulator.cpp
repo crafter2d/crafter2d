@@ -109,9 +109,10 @@ void Box2DSimulator::cleanUp()
 Body& Box2DSimulator::createBody(const BodyDefinition& definition)
 {
    b2BodyDef bodydef;
-   bodydef.position = b2Vec2();
-   bodydef.angle    = 0.0f;
-   bodydef.type     = b2_dynamicBody;
+   bodydef.position      = b2Vec2();
+   bodydef.angle         = 0.0f;
+   bodydef.type          = b2_dynamicBody;
+   bodydef.fixedRotation = definition.isFixedRotation();
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
 

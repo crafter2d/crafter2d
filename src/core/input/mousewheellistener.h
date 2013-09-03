@@ -20,17 +20,20 @@
 #ifndef MOUSE_WHEEL_LISTENER_H
 #define MOUSE_WHEEL_LISTENER_H
 
-class MouseEvent;
-
-class MouseWheelListener
+namespace Input
 {
-public:
-   MouseWheelListener();
-   virtual ~MouseWheelListener();
+   class MouseEvent;
 
-   /// \fn MouseWheelListener::onMouseWheel(const MouseEvent& event)
-   /// Called when the user scrolls with the mouse wheel.
-   virtual void onMouseWheel(const MouseEvent& event);
-};
+   class MouseWheelListener
+   {
+   public:
+      MouseWheelListener();
+      virtual ~MouseWheelListener();
+
+      /// \fn MouseWheelListener::onMouseWheel(const MouseEvent& event)
+      /// Called when the user scrolls with the mouse wheel.
+      virtual void onMouseWheel(const MouseEvent& event);
+   };
+}
 
 #endif

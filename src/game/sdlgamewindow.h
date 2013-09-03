@@ -32,8 +32,12 @@ struct SDL_MouseButtonEvent;
 struct SDL_Surface;
 
 class GameWindowListener;
-class KeyEventDispatcher;
-class MouseEventDispatcher;
+
+namespace Input
+{
+   class KeyEventDispatcher;
+   class MouseEventDispatcher;
+}
 
 class SDLGameWindow : public GameWindow
 {
@@ -46,6 +50,7 @@ public:
    void         setBackgroundColor(const Color& color);
 
  // query
+   virtual Driver* loadDriver() override;
    virtual int getHandle() const;
    int getWidth() const;
    int getHeight() const;

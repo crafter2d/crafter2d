@@ -27,6 +27,7 @@
 #include "core/log/log.h"
 #include "core/math/color.h"
 #include "core/math/xform.h"
+#include "core/input/input.h"
 #include "core/input/keyevent.h"
 #include "core/input/mouseevent.h"
 #include "core/graphics/device.h"
@@ -34,9 +35,11 @@
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 #include "core/system/platform.h"
+#include "core/system/driver.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
+#include "engine/window/gamewindow.h"
 
 #include "net/events/aggregateevent.h"
 #include "net/events/newobjectevent.h"
@@ -61,6 +64,7 @@
 #include "keymap.h"
 
 using namespace Graphics;
+using namespace Input;
 
 Client::Client():
    Process(),
@@ -75,7 +79,6 @@ Client::Client():
    mpWorldRenderer(NULL),
    mpPlayer(NULL),
    mpKeyMap(NULL),
-   mpInput(NULL),
    mRequests(),
    mServerId(-1)
 {
@@ -89,12 +92,6 @@ Client::~Client()
 
 bool Client::create(const String& classname)
 {
-   Log& log = Log::getInstance();
-   log << "\n-- Initializing Sound --\n\n";
-
-   // initialize the sound system
-   mSoundManager.initialize();   
-
    return Process::create(classname);
 }
 
@@ -148,6 +145,7 @@ void Client::update(float delta)
 {
    Process::update(delta);
 
+   mpInputDevice->update();
    mpWindow->update();
 
    if ( hasKeyMap() )
@@ -167,8 +165,6 @@ void Client::render(float delta)
 
    mpRenderContext->clear();
    mpRenderContext->beginDraw();
-   //mpRenderContext->setObjectMatrix(XForm::identity());
-   //mpRenderContext->setWorldMatrix(XForm::identity());
    
    if ( mpWorldRenderer != NULL )
    {
@@ -221,7 +217,9 @@ INLINE void Client::setKeyMap(KeyMap* pkeymap)
 {
    mpKeyMap = pkeymap;
    if ( mpKeyMap != NULL )
+   {
       mpKeyMap->setClient(*this);
+   }
 }
 
 void Client::setWindow(GameWindow* pwindow)
@@ -235,57 +233,71 @@ void Client::setWindow(GameWindow* pwindow)
    }
 }
 
-//---------------------------------------------
-// - Operations
-//---------------------------------------------
-
-typedef Graphics::DeviceFactory* (*PFACTORY)();
+// - Initialization
 
 bool Client::initDevice()
 {
+   AutoPtr<Driver> driver = mpWindow->loadDriver();
+   if ( !driver.hasPointer() )
+   {
+      return false;
+   }
+
+   return initGraphics(*driver) 
+       && initInput(*driver)
+       && initSound();
+}
+
+bool Client::initGraphics(Driver& driver)
+{
    Log::getInstance() << "\n-- Initializing Graphics --\n\n";
 
-   void* pmodule = Platform::getInstance().loadModule(UTEXT("D3Dd.dll"));
-   if ( pmodule == NULL )
+   static const Color color(75, 150, 230, 255);
+
+   mpDevice = driver.createGraphicsDevice();
+   if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
    {
       return false;
    }
 
-   PFACTORY pfactoryfnc = (PFACTORY)Platform::getInstance().getFunctionAddress(pmodule, UTEXT("getDeviceFactory"));
-   if ( pfactoryfnc == NULL )
-   {
-      return false;
-   }
+   mpRenderContext = mpDevice->createRenderContext();
+   mpRenderContext->setClearColor(color);
+   mpRenderContext->initialize(*mpDevice);
 
-   AutoPtr<DeviceFactory> pfactory = pfactoryfnc();
-   if ( pfactory.hasPointer() )
-   {
-      static const Color color(75, 150, 230, 255);
+   onWindowResized();
 
-      mpDevice = pfactory->createDevice();
-      if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
-      {
-         return false;
-      }
-
-      mpRenderContext = mpDevice->createRenderContext();
-      mpRenderContext->setClearColor(color);
-      mpRenderContext->initialize(*mpDevice);
-
-      onWindowResized();
-   }
-
-	return true;
+   return true;
 }
+
+bool Client::initInput(Driver& driver)
+{
+   Log::getInstance() << "\n-- Initializing Input --\n\n";
+
+   mpInputDevice = driver.createInputDevice();
+   if ( mpInputDevice == NULL || !mpInputDevice->create(mpWindow->getHandle()) )
+   {
+      // failed to create input! can't proceed
+      return false;
+   }
+
+   return true;
+}
+
+bool Client::initSound()
+{
+   Log::getInstance() << "\n-- Initializing Sound --\n\n";
+
+   return mSoundManager.initialize();
+}
+
+// - Operations
 
 void Client::sendToServer(NetObject& object)
 {
    conn.send(mServerId, object);
 }
 
-//---------------------------------------------
 // - Events
-//---------------------------------------------
 
 void Client::onNetEvent(int client, const NetEvent& event)
 {
@@ -526,11 +538,8 @@ void Client::onWindowChanged()
 
 void Client::onWindowResized()
 {
-   // set the new opengl states
    Graphics::Viewport viewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
-
    mpRenderContext->setViewport(viewport);
-   //mpRenderContext->setOrthoProjection();
    
    if ( hasWorld() )
    {
@@ -547,15 +556,17 @@ void Client::onWindowClosed()
    setActive(false);
 }
 
-void Client::onKeyEvent(const KeyEvent& event)
+// - Input
+
+void Client::onKeyEvent(const Input::KeyEvent& event)
 {
    Variant args[2];
    args[0].setInt(event.getKey());
-   args[1].setBool(event.getEventType() == KeyEvent::ePressed);
+   args[1].setBool(event.getEventType() == Input::KeyEvent::ePressed);
    mpScript->run(sOnKeyEvent, 2, args);
 }
 
-void Client::onMouseEvent(const MouseEvent& event)
+void Client::onMouseEvent(const Input::MouseEvent& event)
 {
    Variant args[4];
    args[0].setInt(event.getLocation().x());

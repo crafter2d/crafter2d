@@ -27,6 +27,7 @@
 
 #include "engine/components/componentinterface.h"
 #include "engine/components/componentmessage.h"
+#include "engine/components/componentstructs.h"
 #include "engine/components/meshcomponent.h"
 #include "engine/net/netstream.h"
 
@@ -171,6 +172,14 @@ void Entity::doPack(DataStream& stream) const
    {
       stream << getName();
    }
+
+   if ( isDirty(ePositionDirty) )
+   {
+      PositionInfo info;
+      const_cast<Entity&>(*this).sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
+
+      stream << info.transform.getPosition().x << info.transform.getPosition().y << info.transform.getAngle();
+   }
 }
 
 void Entity::doUnpack(DataStream& stream)
@@ -182,5 +191,17 @@ void Entity::doUnpack(DataStream& stream)
    if ( isDirty(eNameDirty) )
    {
       stream >> mName;
+   }
+
+   if ( isDirty(ePositionDirty) )
+   {
+      Vector pos;
+      float angle;
+
+      stream >> pos.x >> pos.y >> angle;
+
+      PositionInfo info;
+      info.transform.set(pos, angle);
+      sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
    }
 }

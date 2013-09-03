@@ -24,11 +24,16 @@
 
 #include <vector>
 
+namespace Input
+{
+   class MouseEventDispatcher;
+   class MouseEvent;
+   class KeyEventDispatcher;
+   class KeyEvent;
+}
+
+class Driver;
 class GameWindowListener;
-class MouseEventDispatcher;
-class MouseEvent;
-class KeyEventDispatcher;
-class KeyEvent;
 class String;
 
 class ENGINE_API GameWindow
@@ -44,6 +49,7 @@ public:
    void destroy();
 
  // query
+   virtual Driver* loadDriver() = 0;
    virtual int getHandle() const = 0;
    virtual int getWidth() const;
    virtual int getHeight() const;
@@ -55,8 +61,8 @@ public:
    virtual void display() = 0;
 
  // dispatchers
-   void setKeyEventDispatcher(KeyEventDispatcher& dispatcher);
-   void setMouseEventDispatcher(MouseEventDispatcher& dispatcher);
+   void setKeyEventDispatcher(Input::KeyEventDispatcher& dispatcher);
+   void setMouseEventDispatcher(Input::MouseEventDispatcher& dispatcher);
 
  // listeners
    void addListener(GameWindowListener& listener);
@@ -67,20 +73,22 @@ protected:
    virtual bool doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen);
    virtual void doDestroy();
 
+   Driver* doLoadDriver(const String& driver);
+
  // listener notification
    void fireWindowClosed();
    void fireWindowResized();
 
  // dispatch
-   void dispatch(const MouseEvent& mouseevent);
-   void dispatch(const KeyEvent& keyevent);
+   void dispatch(const Input::MouseEvent& mouseevent);
+   void dispatch(const Input::KeyEvent& keyevent);
 
 private:
 
  // members
-   Listeners               mListeners;
-   KeyEventDispatcher*     mpKeyDispatcher;
-   MouseEventDispatcher*   mpMouseDispatcher;
+   Listeners                     mListeners;
+   Input::KeyEventDispatcher*    mpKeyDispatcher;
+   Input::MouseEventDispatcher*  mpMouseDispatcher;
 };
 
 #endif // GAME_WINDOW_H_

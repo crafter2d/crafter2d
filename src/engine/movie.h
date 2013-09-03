@@ -22,12 +22,6 @@
 
 #include "core/defines.h"
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <vfw.h>
-#endif
-
 class Movie
 {
 public:
@@ -40,15 +34,6 @@ public:
 
 protected:
    bool           loadAVI(const char* filename);
-
-#ifdef WIN32
-   static HDC hdc;
-
-   PAVISTREAM        mpStream;
-   PGETFRAME         mpFramePointer;
-   HDRAWDIB          mDIB;
-   HBITMAP           mBitmap;
-#endif
 
    uint     mFrameWidth;
    uint     mFrameHeight;

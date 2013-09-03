@@ -25,6 +25,8 @@
 
 #include "core/defines.h"
 
+namespace Input
+{
 // - Construction
 
 InputEvent::InputEvent(int keymodifiers):
@@ -36,3 +38,6 @@ InputEvent::InputEvent(int keymodifiers):
 InputEvent::~InputEvent()
 {
 }
+
+} // namespace Input
+

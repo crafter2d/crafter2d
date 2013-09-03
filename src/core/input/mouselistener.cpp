@@ -20,6 +20,9 @@
 
 #include "mouselistener.h"
 
+namespace Input
+{
+
 MouseListener::MouseListener()
 {
 }
@@ -51,3 +54,5 @@ void MouseListener::onMouseEntered(const MouseEvent& event)
 void MouseListener::onMouseExited(const MouseEvent& event)
 {
 }
+
+} // namespace Input

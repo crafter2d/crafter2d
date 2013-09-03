@@ -35,6 +35,8 @@
 #include "script/vm/virtualarray.h"
 #include "script/vm/virtualstackaccessor.h"
 
+#include "engine/window/gamewindow.h"
+
 #include "script/scriptobject.h"
 
 #include "physics/inputforcegenerator.h"

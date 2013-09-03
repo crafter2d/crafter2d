@@ -33,16 +33,21 @@
 	\section feat_sec Features
 	JEngine has the following features:
 	<ul>
-	<li>%Object oriented design (C++)
-	<li>OpenGL support via SDL
+	<li>Object oriented design (C++)
+	<li>DirectX and OpenGL
+   <li>Full shader support (HLSL & GLSL)
 	<li>Multiplatform: Windows and Linux
-	<li>GLSL and CG shading
+   <li>Supports single & multi player games
 	<li>Scripting language
-	<li>and much more.. :)
+	<li>and much more..
 	</ul>
 
 	\section lic_sec Licence
-	The source code and documentation are released LGPL. This means that you may use, alter and redistribute the sources and documentation freely as long as the original licence notification is included both in open source as in commercial products. Credits are appreciated, but not required. If you have any questions, please contact me at <a href="mailto:jeroen@jeroen.homedns.org">jeroen@jeroen.homedns.org</a>.
+	The source code and documentation are released LGPL. This means that you may use, alter and 
+   redistribute the sources and documentation freely as long as the original licence notification
+   is included both in open source as in commercial products. Credits are appreciated, but not
+   required. If you have any questions, please contact me at
+   <a href="mailto:jeroen@jeroen.homedns.org">jeroen@jeroen.homedns.org</a>.
 
 	This software is provided 'as-is' without any express or implied warranty. In no event will
 	the authors be held liable for any damages arising from the use of this software.
@@ -51,18 +56,16 @@
 	<ul>
    <li>Antlr, http://antlr.org/
    <li>Box2D, http://box2d.org/
-   <li>CxxTest, http://cxxtest.tigris.org/
-   <li>DevIL, http://openil.sourceforge.net/
-   <li>FreeType2, http://freetype.org/
-   <li>GLee, http://elf-stone.com/glee.php
    <li>ICU, http://site.icu-project.org/
-   <li>NVidia Cg, http://developer.nvidia.com/
-   <li>Ogg/Vorbis, http://xiph.org/
-	<li>OpenAL, http://www.openal.org/
+   <li>TinyXML, http://www.grinninglizard.com/tinyxml
+   <li>Zlib, http://zlib.net/
+	<li>FMOD, http://www.fmod.com/
+   <li>DirectX, http://www.microsoft.com/directx
    <li>SDL, http://libsdl.org/
    <li>SOIL, http://www.lonesock.net/soil.html
-	<li>TinyXML, http://www.grinninglizard.com/tinyxml
-   <li>Zlib, http://zlib.net/
+   <li>GLee, http://elf-stone.com/glee.php
+   <li>FreeType2, http://freetype.org/
+   <li>CxxTest, http://cxxtest.tigris.org/
 	</ul>
  */
 

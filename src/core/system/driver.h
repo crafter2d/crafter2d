@@ -1,40 +1,45 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2013 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License as        *
+ *   published by the Free Software Foundation; either version 2.1 of the  *
  *   License, or (at your option) any later version.                       *
  *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
+ *   This library is distributed in the hope that it will be useful,       *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
+ *   GNU Lesser General Public License for more details.                   *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
  *   License along with this program; if not, write to the                 *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef DRIVER_H
+#define DRIVER_H
 
-#include "mousewheellistener.h"
+#include "core/core_base.h"
+
+namespace Graphics
+{
+   class Device;
+}
 
 namespace Input
 {
-
-MouseWheelListener::MouseWheelListener()
-{
+   class InputDevice;
 }
 
-MouseWheelListener::~MouseWheelListener()
+class CORE_API Driver
 {
-}
+public:
+   Driver();
 
-// - Notifications
+   virtual Graphics::Device* createGraphicsDevice() = 0;
+   virtual Input::InputDevice* createInputDevice() = 0;
 
-void MouseWheelListener::onMouseWheel(const MouseEvent& event)
-{
-}
+};
 
-} // namespace Input
+#endif // DRIVER_H

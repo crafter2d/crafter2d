@@ -22,19 +22,8 @@
 #include "core/log/log.h"
 #include "core/math/math.h"
 
-#ifdef WIN32
-HDC Movie::hdc = ::CreateCompatibleDC(0);
-#endif
-
 Movie::Movie()
- : 
-#ifdef WIN32
-   mpStream(NULL),
-   mpFramePointer(NULL),
-   mDIB(NULL),
-   mBitmap(NULL),
-#endif
-   mNumberOfFrames(0),
+ : mNumberOfFrames(0),
    mFramesPerSecond(0),
    mCurrentFrame(0),
    mUpdateRate(0.0f),
@@ -49,116 +38,20 @@ Movie::~Movie()
 
 void Movie::release()
 {
-#ifdef WIN32
-   if ( mpStream != NULL )
-   {
-      ::DeleteObject(mBitmap);
-	   ::DrawDibClose(mDIB);
-
-	   AVIStreamGetFrameClose(mpFramePointer);
-	   AVIStreamRelease(mpStream);
-      mpFramePointer = NULL;
-      mpStream = NULL;
-      mpData = NULL;
-   }
-#endif
 }
 
 bool Movie::load(const char* file)
 {
    bool ok = false;
 
-#ifdef WIN32
-   if (strstr(file, "avi") != NULL)
-   {
-      ok = loadAVI(file);
-   }
-	else 
-   {
-      Log::getInstance().error("Movie.load: unknown movie format (%s)", file);
-		return false;
-	}
-#endif
-
 	return ok;
 }
 
 bool Movie::loadAVI(const char* filename)
 {
-#ifdef WIN32
-   Log& log = Log::getInstance();
-
-   // try to open the avi file
-   if ( AVIStreamOpenFromFile(&mpStream, filename, streamtypeVIDEO, 0, OF_READ, NULL) != 0 )
-   {
-      log.error("Can not open %s movie file.", filename);   
-      return false;
-   }
-   else 
-   {
-      // get avi dimensions and length
-      AVISTREAMINFO psi;
-      AVIStreamInfo(mpStream, &psi, sizeof(psi));
-      mFrameWidth = psi.rcFrame.right-psi.rcFrame.left;
-      mFrameHeight = psi.rcFrame.bottom-psi.rcFrame.top;
-      mNumberOfFrames = AVIStreamLength(mpStream);
-
-      mWidth = Math::nextPowerOfTwo(mFrameWidth);
-      mHeight = Math::nextPowerOfTwo(mFrameHeight);
-
-      mDIB = ::DrawDibOpen();
-
-      // calculate how much frame per second must be displayed
-      mFramesPerSecond = psi.dwRate / psi.dwScale;
-      mUpdateRate = 1.0f / mFramesPerSecond;
-
-      // create bitmap info
-      BITMAPINFOHEADER  bmih;
-      bmih.biSize = sizeof (BITMAPINFOHEADER);
-	   bmih.biPlanes = 1;
-	   bmih.biBitCount = 24;
-      bmih.biWidth = mWidth;
-      bmih.biHeight = mHeight;
-	   bmih.biCompression = BI_RGB;
-	   mBitmap = CreateDIBSection (hdc, (BITMAPINFO*)(&bmih), DIB_RGB_COLORS, (void**)(&mpData), NULL, 0);
-	   SelectObject (hdc, mBitmap);
-
-      // get the AVI frame pointer
-      mpFramePointer = AVIStreamGetFrameOpen(mpStream, NULL);
-      if ( mpFramePointer == NULL )
-      {
-         log.error("Can not open the stream frame of %s.", filename);
-         return false;
-      }
-            
-      return true;
-   }
-#endif
-	return true;
+	return false;
 }
 
 void Movie::update(float delta)
 {
-#ifdef WIN32
-   LPBITMAPINFOHEADER lpbi;
-
-   // get the frame data
-   lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(mpFramePointer, mCurrentFrame);
-   uchar* pdata = (uchar*)lpbi+lpbi->biSize+lpbi->biClrUsed * sizeof(RGBQUAD);
-
-   // copy the data to our buffer
-   ::DrawDibDraw (mDIB, hdc, 0, 0, mWidth, mHeight, lpbi, pdata, 0, 0, mFrameWidth, mFrameHeight, 0);
-
-   // Note that the data is stored in BGR format in avi
-   
-   // go to next frame
-   mFrameTime += delta;
-   if ( mFrameTime > mUpdateRate )
-   {
-	   if ( ++mCurrentFrame == mNumberOfFrames )
-		   mCurrentFrame=0;
-
-      mFrameTime = 0.0f;
-	}
-#endif
 }

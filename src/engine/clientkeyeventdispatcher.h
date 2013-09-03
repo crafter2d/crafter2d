@@ -24,13 +24,13 @@
 
 class Client;
 
-class ClientKeyEventDispatcher : public KeyEventDispatcher
+class ClientKeyEventDispatcher : public Input::KeyEventDispatcher
 {
 public:
    explicit ClientKeyEventDispatcher(Client& client);
  
  // dispatch
-   virtual void dispatch(const KeyEvent& event);
+   virtual void dispatch(const Input::KeyEvent& event) override;
 
 private:
 

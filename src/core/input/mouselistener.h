@@ -20,37 +20,40 @@
 #ifndef MOUSE_LISTENER_H
 #define MOUSE_LISTENER_H
 
-class MouseEvent;
-
-class MouseListener
+namespace Input
 {
-public:
-   MouseListener();
-   virtual ~MouseListener();
+   class MouseEvent;
 
-   /// \fn MouseListener::onMouseButton(const MouseEvent& event)
-   /// Called when a button is pressed or released
-   virtual void onMouseButton(const MouseEvent& event);
+   class MouseListener
+   {
+   public:
+      MouseListener();
+      virtual ~MouseListener();
 
-   /// \fn MouseListener::onMouseClick(const MouseEvent& event)
-   /// Called when a click with a button is detected
-   virtual void onMouseClick(const MouseEvent& event);
+      /// \fn MouseListener::onMouseButton(const MouseEvent& event)
+      /// Called when a button is pressed or released
+      virtual void onMouseButton(const MouseEvent& event);
 
-   /// \fn onMouseMotion(const MouseEvent& event)
-   /// Called when the mouse moves
-   virtual void onMouseMotion(const MouseEvent& event);
+      /// \fn MouseListener::onMouseClick(const MouseEvent& event)
+      /// Called when a click with a button is detected
+      virtual void onMouseClick(const MouseEvent& event);
 
-   /// \fn onMouseContext(const MouseEvent& event)
-   /// Called when a right click was detected. Can be used to popup a context menu. 
-   virtual void onMouseContext(const MouseEvent& event);
+      /// \fn onMouseMotion(const MouseEvent& event)
+      /// Called when the mouse moves
+      virtual void onMouseMotion(const MouseEvent& event);
 
-   // \fn onMouseEntered(const MouseEvent& event);
-   // Called when the mouse enters the window
-   virtual void onMouseEntered(const MouseEvent& event);
+      /// \fn onMouseContext(const MouseEvent& event)
+      /// Called when a right click was detected. Can be used to popup a context menu. 
+      virtual void onMouseContext(const MouseEvent& event);
 
-   // \fn onMouseExited(const MouseEvent& event);
-   // Called when the mouse leaves the window
-   virtual void onMouseExited(const MouseEvent& event);
-};
+      // \fn onMouseEntered(const MouseEvent& event);
+      // Called when the mouse enters the window
+      virtual void onMouseEntered(const MouseEvent& event);
+
+      // \fn onMouseExited(const MouseEvent& event);
+      // Called when the mouse leaves the window
+      virtual void onMouseExited(const MouseEvent& event);
+   };
+}
 
 #endif

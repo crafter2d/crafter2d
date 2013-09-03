@@ -122,7 +122,7 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
 
    Graphics::Effect& effect = getEffect();
    effect.setTexture(0, *mTileSet.getTexture());
-   effect.render(context, verts_to_render);
+   effect.render(context, 0, verts_to_render);
 }
 
 void TopDownLayer::drawHighlight(const Vector& point)

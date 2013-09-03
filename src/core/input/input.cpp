@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Jeroen Broekhuizen                              *
+ *   Copyright (C) 2010 by Jeroen Broekhuizen                              *
  *   jengine.sse@live.nl                                                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,24 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-#include "mousewheellistener.h"
+#include "input.h"
 
 namespace Input
 {
 
-MouseWheelListener::MouseWheelListener()
+InputDevice::InputDevice()
 {
 }
 
-MouseWheelListener::~MouseWheelListener()
+bool InputDevice::isKeyDown(int key)
 {
+   return false;
 }
 
-// - Notifications
-
-void MouseWheelListener::onMouseWheel(const MouseEvent& event)
+bool InputDevice::isMouseButtonDown(MouseButton button)
 {
+   return false;
 }
 
-} // namespace Input
+}

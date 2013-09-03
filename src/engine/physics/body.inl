@@ -79,6 +79,11 @@ INLINE void Body::setTransform(const XForm& transform)
    notifyPositionChanged();
 }
 
+INLINE void Body::updateTransform(const XForm& xform)
+{
+   mTransform = xform;
+}
+
 INLINE ForceGenerators& Body::getForceGenerators()
 {
    return mForceGenerators;

@@ -35,6 +35,15 @@ WinPlatform::~WinPlatform()
 {
 }
 
+Platform::OS WinPlatform::getOS() const
+{
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+   return Platform::eWindows;
+#else
+   return Platform::eWindowsRT;
+#endif
+}
+
 Timer& WinPlatform::getTimer()
 {
    return mTimer;

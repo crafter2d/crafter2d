@@ -22,6 +22,9 @@
 
 #include "mousewheellistener.h"
 
+namespace Input
+{
+
 MouseWheelListeners::MouseWheelListeners():
    MouseWheelListenersImp()
 {
@@ -42,3 +45,5 @@ void MouseWheelListeners::fireMouseWheelEvent(const MouseEvent& event)
      (*it)->onMouseWheel(event);
    }
 }
+
+} // namespace Input

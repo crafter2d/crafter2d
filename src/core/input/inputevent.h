@@ -22,34 +22,37 @@
 
 #include "core/core_base.h"
 
-class CORE_API InputEvent
+namespace Input
 {
-public:
- // enums
-   enum KeyModifiers {
-      eNone  = 0,
-      eShift = 1,
-      eCtrl  = 2,
-      eAlt   = 4
-   };
+   class CORE_API InputEvent
+   {
+   public:
+    // enums
+      enum KeyModifiers {
+         eNone  = 0,
+         eShift = 1,
+         eCtrl  = 2,
+         eAlt   = 4
+      };
 
-   explicit InputEvent(int keymodifiers);
-   virtual ~InputEvent() = 0;
+      explicit InputEvent(int keymodifiers);
+      virtual ~InputEvent() = 0;
 
- // query
-   bool isShiftDown() const;
-   bool isCtrlDown() const;
-   bool isAltDown() const;
+    // query
+      bool isShiftDown() const;
+      bool isCtrlDown() const;
+      bool isAltDown() const;
 
-   bool isConsumed() const;
+      bool isConsumed() const;
 
- // operations
-   void consume() const;
+    // operations
+      void consume() const;
    
-private:
-   int  mKeyModifiers;
-   bool mConsumed;
-};
+   private:
+      int  mKeyModifiers;
+      bool mConsumed;
+   };
+}
 
 #ifdef JENGINE_INLINE
 #  include "inputevent.inl"

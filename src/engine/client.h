@@ -24,7 +24,6 @@
 
 #include <map>
 
-#include "window/gamewindow.h"
 #include "sound/soundmanager.h"
 #include "clientgamewindowlistener.h"
 #include "clientkeyeventdispatcher.h"
@@ -38,6 +37,13 @@ namespace Graphics
    class RenderContext;
 };
 
+namespace Input
+{
+   class InputDevice;
+   class KeyEvent;
+   class MouseEvent;
+};
+
 class ConnectReplyEvent;
 class DisconnectEvent;
 class JoinEvent;
@@ -48,9 +54,7 @@ class NameChangeObjectEvent;
 class ScriptEvent;
 class WorldChangedEvent;
 
-class Input;
-class KeyEvent;
-class MouseEvent;
+class Driver;
 class GameWindow;
 class GameWindowFactory;
 class KeyMap;
@@ -83,10 +87,6 @@ public:
    KeyMap&        getKeyMap();
    void           setKeyMap(KeyMap* pkeymap);
 
-   bool           hasInput() const;
-   Input&         getInput();
-   void           setInput(Input& input);
-
    GameWindowFactory& getWindowFactory();
    void               setWindowFactory(GameWindowFactory& factory);
 
@@ -96,6 +96,8 @@ public:
 
    Graphics::Device&        getDevice();
    Graphics::RenderContext& getRenderContext();
+
+   Input::InputDevice&  getInput();
 
  // operations
    bool           connect(const String& server, int port);
@@ -109,8 +111,8 @@ public:
    void onWindowClosing();
    void onWindowClosed();
 
-   void onKeyEvent(const KeyEvent& event);
-   void onMouseEvent(const MouseEvent& event);
+   void onKeyEvent(const Input::KeyEvent& event);
+   void onMouseEvent(const Input::MouseEvent& event);
 
  // network event callback
    virtual void onNetEvent(int client, const NetEvent& event);
@@ -125,7 +127,10 @@ private:
 
  // initialization
    bool initDevice();
-
+   bool initGraphics(Driver& driver);
+   bool initInput(Driver& driver);
+   bool initSound();
+   
  // event handlers
    void  handleConnectReplyEvent(const ConnectReplyEvent& event);
    void  handleDisconnectEvent(const DisconnectEvent& event);
@@ -142,6 +147,7 @@ private:
    GameWindow*                mpWindow;
    Graphics::Device*          mpDevice;
    Graphics::RenderContext*   mpRenderContext;
+   Input::InputDevice*        mpInputDevice;
    ClientGameWindowListener   mWindowListener;
    ClientKeyEventDispatcher   mKeyEventDispatcher;
    ClientMouseEventDispatcher mMouseEventDispatcher;
@@ -149,7 +155,6 @@ private:
    WorldRenderer*             mpWorldRenderer;
    Player*                    mpPlayer;
    KeyMap*                    mpKeyMap;
-   Input*                     mpInput;
    Requests                   mRequests;
    int                        mServerId;
 };

@@ -20,6 +20,9 @@
 
 #include "keylistener.h"
 
+namespace Input
+{
+
 KeyListener::KeyListener()
 {
 }
@@ -37,3 +40,5 @@ void KeyListener::onKeyPressed(const KeyEvent& event)
 void KeyListener::onKeyReleased(const KeyEvent& event)
 {
 }
+
+} // namespace Input

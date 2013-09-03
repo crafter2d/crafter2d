@@ -225,11 +225,11 @@ void Effect::enable(RenderContext& context) const
    }
 }
 
-void Effect::render(RenderContext& context, int vertcount)
+void Effect::render(RenderContext& context, int start, int vertcount)
 {
    enable(context);
 
-   context.drawTriangles(0, vertcount);
+   context.drawTriangles(start, vertcount);
 
    mTextures.clear();
 }

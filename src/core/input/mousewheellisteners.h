@@ -22,18 +22,21 @@
 
 #include "core/containers/listeners.h"
 
-class MouseEvent;
-class MouseWheelListener;
-
-class MouseWheelListeners : public Listeners<MouseWheelListener>
+namespace Input
 {
-public:
-   typedef Listeners<MouseWheelListener> MouseWheelListenersImp;
+   class MouseEvent;
+   class MouseWheelListener;
 
-   MouseWheelListeners();
-   virtual ~MouseWheelListeners();
+   class MouseWheelListeners : public Listeners<MouseWheelListener>
+   {
+   public:
+      typedef Listeners<MouseWheelListener> MouseWheelListenersImp;
 
-   void fireMouseWheelEvent(const MouseEvent& event);
-};
+      MouseWheelListeners();
+      virtual ~MouseWheelListeners();
+
+      void fireMouseWheelEvent(const MouseEvent& event);
+   };
+}
 
 #endif

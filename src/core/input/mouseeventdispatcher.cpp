@@ -22,6 +22,9 @@
 
 #include "core/defines.h"
 
+namespace Input
+{
+
 MouseEventDispatcher::MouseEventDispatcher()
 {
 }
@@ -34,3 +37,5 @@ void MouseEventDispatcher::dispatch(const MouseEvent& event)
 {
   PURE_VIRTUAL;
 }
+
+} // namespace Input

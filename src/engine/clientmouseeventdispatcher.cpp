@@ -35,7 +35,7 @@ ClientMouseEventDispatcher::~ClientMouseEventDispatcher()
 
 // - Dispatching
 
-void ClientMouseEventDispatcher::dispatch(const MouseEvent& event)
+void ClientMouseEventDispatcher::dispatch(const Input::MouseEvent& event)
 {
    mClient.onMouseEvent(event);
 }

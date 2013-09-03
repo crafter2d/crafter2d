@@ -17,18 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "input.h"
+#ifndef INPUT_H_
+#define INPUT_H_
 
-Input::Input()
+#include "core/core_base.h"
+
+namespace Input
 {
+   class CORE_API InputDevice
+   {
+   public:
+      enum MouseButton { eLeft, eMiddle, eRight };
+
+      InputDevice();
+
+      virtual bool create(int windowhandle) = 0;
+      virtual void update() = 0;
+
+      virtual bool isKeyDown(int key);
+      virtual bool isMouseButtonDown(MouseButton button);
+   };
 }
 
-bool Input::isKeyDown(int key)
-{
-   return false;
-}
-
-bool Input::isMouseButtonDown(MouseButton button)
-{
-   return false;
-}
+#endif // INPUT_H_

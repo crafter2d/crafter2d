@@ -10,9 +10,7 @@ class Bridge
 	public void create(Process process, Vector2D left, Vector2D right)
 	{
 		Box2DSimulator simulator = process.getWorld().getSimulator();
-		
-		// the position is center of the bridge part
-		
+				
 		Vector2D anchorpos = new Vector2D();
 		anchorpos.setX(left.x + 6.0);
 		anchorpos.setY(left.y);
@@ -21,8 +19,8 @@ class Bridge
 		real diff = right.x - left.x;
 		real num = Math.ceil(diff / width);
       
-      Box2DBody leftbody = createSide(process, left, 0);
-      Box2DBody rightbody = null;
+		Box2DBody leftbody = createSide(process, left, 0);
+		Box2DBody rightbody = null;
 		
 		int count = (int)num;
 		for ( int index = 1; index < count; ++index )
@@ -32,8 +30,8 @@ class Bridge
 			
 			simulator.createRevoluteJoint(leftbody, rightbody, anchorpos);
 			
-         leftbody = rightbody;
-         anchorpos.x = anchorpos.x + width;
+			leftbody = rightbody;
+			anchorpos.x = anchorpos.x + width;
 		}
 		
 		left.x = left.x + width;

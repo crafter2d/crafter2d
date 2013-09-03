@@ -24,6 +24,10 @@ class Actor extends Entity implements Collidable
 		object.setName(name);
 		object.initialize();
 		
+		QueryBodyComponentMessage message = new QueryBodyComponentMessage();
+		object.sendComponentMessage(message);
+		object.setBody(message.getBody());
+		
 		World world = process.getWorld();
 		world.add(object);
 		
@@ -78,6 +82,11 @@ class Actor extends Entity implements Collidable
 	public Body getBody()
 	{
 		return mBody;
+	}
+	
+	public void setBody(Body body)
+	{
+		mBody = body;
 	}
 	
 	public AIState getState()

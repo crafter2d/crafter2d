@@ -66,6 +66,7 @@ const XForm& Sprite::getTransform() const
 
 void Sprite::setTransform(const XForm& xform)
 {
+   mTransform = xform;
 }
 
 // - Operations

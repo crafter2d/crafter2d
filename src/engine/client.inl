@@ -19,22 +19,6 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE bool Client::hasInput() const
-{
-   return mpInput != NULL;
-}
-
-INLINE Input& Client::getInput()
-{
-   ASSERT_PTR(mpInput);
-   return *mpInput;
-}
-
-INLINE void Client::setInput(Input& input)
-{
-   mpInput = &input;
-}
-
 INLINE GameWindowFactory& Client::getWindowFactory()
 {
    ASSERT_PTR(mpWindowFactory);
@@ -67,4 +51,10 @@ INLINE Graphics::RenderContext& Client::getRenderContext()
 {
    ASSERT_PTR(mpRenderContext);
    return *mpRenderContext;
+}
+
+INLINE Input::InputDevice& Client::getInput()
+{
+   ASSERT_PTR(mpInputDevice);
+   return *mpInputDevice;
 }

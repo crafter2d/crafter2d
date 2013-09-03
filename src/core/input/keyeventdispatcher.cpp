@@ -20,6 +20,9 @@
 
 #include "keyeventdispatcher.h"
 
+namespace Input
+{
+
 KeyEventDispatcher::KeyEventDispatcher()
 {
 }
@@ -33,3 +36,5 @@ KeyEventDispatcher::~KeyEventDispatcher()
 void KeyEventDispatcher::dispatch(const KeyEvent& event)
 {
 }
+
+} // namespace Input

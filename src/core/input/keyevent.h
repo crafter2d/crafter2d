@@ -24,25 +24,28 @@
 
 #include "inputevent.h"
 
-class CORE_API KeyEvent : public InputEvent
+namespace Input
 {
-public:
-  // enums
-   enum EventType {
-      ePressed,
-      eReleased
+   class CORE_API KeyEvent : public InputEvent
+   {
+   public:
+     // enums
+      enum EventType {
+         ePressed,
+         eReleased
+      };
+
+      KeyEvent(int key, EventType type, int keymodifiers);
+      virtual ~KeyEvent();
+
+     // get/set
+      int       getKey() const       { return mKey;  }
+      EventType getEventType() const { return mType; }
+
+   private:
+      int       mKey;
+      EventType mType;
    };
-
-   KeyEvent(int key, EventType type, int keymodifiers);
-   virtual ~KeyEvent();
-
-  // get/set
-   int       getKey() const       { return mKey;  }
-   EventType getEventType() const { return mType; }
-
-private:
-   int       mKey;
-   EventType mType;
-};
+}
 
 #endif

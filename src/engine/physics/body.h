@@ -83,6 +83,9 @@ public:
    virtual void finalize() = 0;
 
 protected:
+ // operations
+   void updateTransform(const XForm& xform);
+
  // notification
    virtual void notifyPositionChanged();
 

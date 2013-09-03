@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "core/defines.h"
 
+namespace Input
+{
 // - Query
 
 INLINE bool InputEvent::isShiftDown() const
@@ -47,3 +49,5 @@ INLINE void InputEvent::consume() const
 {
    const_cast<InputEvent&>(*this).mConsumed = true;
 }
+
+} // namespace Input

@@ -20,7 +20,7 @@
 #ifndef CLIENT_GAME_WINDOW_LISTENER_H
 #define CLIENT_GAME_WINDOW_LISTENER_H
 
-#include "window/gamewindowlistener.h"
+#include "engine/window/gamewindowlistener.h"
 
 class Client;
 

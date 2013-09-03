@@ -26,6 +26,9 @@
 
 class Matrix4;
 
+/// transformation is in pixel space
+/// angle is in radians 
+
 class CORE_API XForm
 {
 public:

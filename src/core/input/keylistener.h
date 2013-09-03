@@ -20,22 +20,25 @@
 #ifndef KEY_LISTENER_H
 #define KEY_LISTENER_H
 
-class KeyEvent;
-
-class KeyListener
+namespace Input
 {
-public:
-   KeyListener();
-   virtual ~KeyListener() = 0;
+   class KeyEvent;
 
-   /// \fn KeyListener::onKeyPressed(const KeyEvent& event)
-   /// Called when a key is pressed.
-   virtual void onKeyPressed(const KeyEvent& event);
+   class KeyListener
+   {
+   public:
+      KeyListener();
+      virtual ~KeyListener() = 0;
 
-   /// \fn KeyListener::onKeyReleased(const KeyEvent& event)
-   /// Called when a key is released.
-   virtual void onKeyReleased(const KeyEvent& event);
+      /// \fn KeyListener::onKeyPressed(const KeyEvent& event)
+      /// Called when a key is pressed.
+      virtual void onKeyPressed(const KeyEvent& event);
 
-};
+      /// \fn KeyListener::onKeyReleased(const KeyEvent& event)
+      /// Called when a key is released.
+      virtual void onKeyReleased(const KeyEvent& event);
+
+   };
+}
 
 #endif

@@ -202,8 +202,8 @@ void Box2DBody::integrate(float timestep)
 
 void Box2DBody::finalize()
 {
-   XForm transform(Box2DSimulator::b2ToVector(mBody.GetPosition()), RAD2DEG(mBody.GetAngle()));
-   setTransform(transform);
+   XForm transform(Box2DSimulator::b2ToVector(mBody.GetPosition()), mBody.GetAngle());
+   updateTransform(transform);
 
    firePositionChanged();
    

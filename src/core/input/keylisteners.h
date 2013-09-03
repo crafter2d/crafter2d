@@ -22,24 +22,27 @@
 
 #include "core/containers/listeners.h"
 
-class KeyEvent;
-class KeyListener;
-
-class KeyListeners : public Listeners<KeyListener>
+namespace Input
 {
-public:
-   typedef Listeners<KeyListener> KeyListenersImp;
+   class KeyEvent;
+   class KeyListener;
 
-   KeyListeners();
-   ~KeyListeners();
+   class KeyListeners : public Listeners<KeyListener>
+   {
+   public:
+      typedef Listeners<KeyListener> KeyListenersImp;
 
-  // notifications
-   void fireKeyEvent(const KeyEvent& event);
+      KeyListeners();
+      ~KeyListeners();
 
-protected:
-  // notifications
-   void fireKeyPressed(const KeyEvent& event);
-   void fireKeyReleased(const KeyEvent& event);
-};
+     // notifications
+      void fireKeyEvent(const KeyEvent& event);
+
+   protected:
+     // notifications
+      void fireKeyPressed(const KeyEvent& event);
+      void fireKeyReleased(const KeyEvent& event);
+   };
+}
 
 #endif
