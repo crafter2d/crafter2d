@@ -92,3 +92,28 @@ void Entity::setClassName(const String& classname)
 {
    mClassName = classname;
 }
+
+bool Entity::isDirty() const
+{
+   return mDirtyFlag != 0;
+}
+
+/// \fn Entity::isDirty(int flag) const
+/// \brief Checks if this dirty flag is set.
+bool Entity::isDirty(int flag) const
+{
+   return IS_SET(mDirtyFlag, flag);
+}
+
+/// \fn Entity::setDirty(bool dirt)
+/// \brief Set the dirty flag.
+void Entity::setDirty(int flag)
+{
+   SET_FLAG(mDirtyFlag, flag);
+}
+
+/// \fn Entity::resetDirty()
+void Entity::resetDirty()
+{
+   mDirtyFlag = 0;
+}

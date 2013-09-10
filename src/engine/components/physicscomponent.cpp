@@ -29,11 +29,13 @@ void PhysicsComponent::setBody(Body& body)
 
 void PhysicsComponent::registerComponent(Components& components)
 {
-	Component::registerComponent(components);
+   Component::registerComponent(components);
 
-	components.subscribeMessageType(*this, ComponentInterface::ePositionMsg);
+   components.subscribeMessageType(*this, ComponentInterface::ePositionMsg);
    components.subscribeMessageType(*this, ComponentInterface::eQueryPositionMsg);
    components.subscribeMessageType(*this, ComponentInterface::eQueryBodyMsg);
+   
+   mpBody->setEntity(getEntity());
 }
 
 void PhysicsComponent::handleMessage(ComponentMessage& message)

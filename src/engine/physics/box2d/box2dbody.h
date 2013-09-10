@@ -25,6 +25,7 @@
 class b2Body;
 class b2Fixture;
 struct b2Vec2;
+struct Size;
 
 class Box2DBody : public Body
 {
@@ -34,13 +35,11 @@ public:
 
  // get/set
    b2Body& getBox2DBody();
+   void setHalfSize(const Size& size);
 
  // query
    int getSide(const b2Fixture& sensor) const;
    virtual const String& getClassName() const;
-
- // loading
-   virtual void load(const TiXmlElement& element);
    
  // forces
    virtual void applyForce(const Vector& force);

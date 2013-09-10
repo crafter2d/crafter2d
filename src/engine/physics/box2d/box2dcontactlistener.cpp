@@ -49,6 +49,11 @@ void Box2DContactListener::collision(b2Contact* pcontact, bool begin)
 
    int typeA = (int)pa->GetUserData();
    int typeB = (int)pb->GetUserData();
+   
+   if ( pa->IsSensor() && pb->IsSensor() )
+   {
+      return;
+   }
 
    if ( pa->IsSensor() && typeB == Box2DSimulator::eObject )
    {
@@ -86,6 +91,7 @@ void Box2DContactListener::collisionObjectObject(b2Contact* pcontact, b2Fixture&
    
    if ( side > 0 && mSimulator.hasListener() )
    {
-      mSimulator.getListener().collideObjectObject(pbody->getEntity(), *(Entity*)object.GetBody()->GetUserData(), side, begin);
+      Box2DBody* pobjectbody = static_cast<Box2DBody*>(object.GetBody()->GetUserData());
+      mSimulator.getListener().collideObjectObject(pbody->getEntity(), pobjectbody->getEntity(), side, begin);
    }
 }

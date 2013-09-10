@@ -25,13 +25,13 @@
 #include "win32gamewindowfactory.h"
 
 /*!
- 	\mainpage JEngine SE - 2D Simple Scroll Engine Documentation
+ 	\mainpage Crafter 2D - Game framework for traditional platform games
  	\section intro_sec Introduction
- 	These pages contain the complete documentation of the JEngine sources. You will find here
+ 	These pages contain the complete documentation of the Crafter 2D sources. You will find here
 	all information about the classes, structures, etc used to implement the engine.
 
 	\section feat_sec Features
-	JEngine has the following features:
+	Crafter 2D has the following features:
 	<ul>
 	<li>Object oriented design (C++)
 	<li>DirectX and OpenGL
@@ -47,12 +47,12 @@
    redistribute the sources and documentation freely as long as the original licence notification
    is included both in open source as in commercial products. Credits are appreciated, but not
    required. If you have any questions, please contact me at
-   <a href="mailto:jeroen@jeroen.homedns.org">jeroen@jeroen.homedns.org</a>.
+   <a href="mailto:jengine.sse@live.nl">jengine.sse@live.nl</a>.
 
 	This software is provided 'as-is' without any express or implied warranty. In no event will
 	the authors be held liable for any damages arising from the use of this software.
 
-	JEngine supports/uses the following libraries:
+	Crafter 2D supports/uses the following libraries:
 	<ul>
    <li>Antlr, http://antlr.org/
    <li>Box2D, http://box2d.org/

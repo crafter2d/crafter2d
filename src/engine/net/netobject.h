@@ -75,11 +75,6 @@ public:
  // get/set
    bool     isReplica() const;
    void     setReplica(bool replica=true);
-
-   bool     isDirty() const;
-   bool     isDirty(int flag) const;
-   void     setDirty(int flag);
-   void     resetDirty();
    
  // streaming
    void     pack(NetStream& stream) const;
@@ -92,8 +87,8 @@ protected:
 
 private:
 
-   int   mDirtyFlag;
-   bool  mIsReplica;
+ // data
+   int   mIsReplica;
 };
 
 #ifdef JENGINE_INLINE

@@ -32,32 +32,3 @@ void NetObject::setReplica(bool rep)
 {
    mIsReplica = rep;
 }
-
-/// \fn NetObject::isDirty() const
-/// \brief Checks if this object is dirty.
-bool NetObject::isDirty() const
-{ 
-   return mDirtyFlag > 0; 
-}
-
-/// \fn NetObject::isDirty(int flag) const
-/// \brief Checks if this dirty flag is set.
-bool NetObject::isDirty(int flag) const
-{
-   return IS_SET(mDirtyFlag, flag);
-}
-
-/// \fn NetObject::setDirty(bool dirt)
-/// \brief Set the dirty flag.
-void NetObject::setDirty(int flag)
-{
-   SET_FLAG(mDirtyFlag, flag);
-}
-
-/// \fn NetObject::resetDirty()
-void NetObject::resetDirty()
-{
-   mDirtyFlag = 0;
-}
-
-

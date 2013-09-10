@@ -29,7 +29,6 @@
 ABSTRACT_IMPLEMENT_REPLICATABLE(NetObjectId, NetObject, )
 
 NetObject::NetObject():
-   mDirtyFlag(0),
    mIsReplica(false)
 {
 }
@@ -42,8 +41,6 @@ NetObject::~NetObject()
 
 void NetObject::pack(NetStream& stream) const
 {
-   stream.writeInt(mDirtyFlag);
-
    doPack(stream);
 }
 
@@ -53,11 +50,7 @@ void NetObject::doPack(DataStream& stream) const
 
 void NetObject::unpack(NetStream& stream)
 {
-   stream.readInt(mDirtyFlag);
-
    doUnpack(stream);
-
-   mDirtyFlag = 0;
 }
 
 void NetObject::doUnpack(DataStream& stream)

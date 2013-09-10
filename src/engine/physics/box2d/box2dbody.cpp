@@ -24,6 +24,7 @@
 
 #include "core/defines.h"
 #include "core/math/xform.h"
+#include "core/math/size.h"
 
 #include "box2dsimulator.h"
 
@@ -60,6 +61,12 @@ b2Body& Box2DBody::getBox2DBody()
    return mBody;
 }
 
+void Box2DBody::setHalfSize(const Size& size)
+{
+	mHalfWidth = size.width;
+	mHalfHeight = size.height;
+}
+
 // query
 
 const String& Box2DBody::getClassName() const
@@ -77,74 +84,6 @@ int Box2DBody::getSide(const b2Fixture& sensor) const
       return 3;
    else
       return 0;
-}
-
-// loading
-
-void Box2DBody::load(const TiXmlElement& element)
-{
-   Body::load(element);
-
-   const TiXmlElement* pphysics = dynamic_cast<const TiXmlElement*>(element.FirstChild(sBODYELEMENT));
-   if ( pphysics == NULL )
-   {
-      return;
-   }
-
-   int isstatic = 0;
-   pphysics->QueryIntAttribute("static", &isstatic);
-   if ( isstatic > 0 )
-      mBody.SetType(b2_staticBody);
-
-   int rotate = 1;
-   if ( pphysics->QueryIntAttribute("rotate", &rotate) == TIXML_SUCCESS && rotate == 0 )
-      mBody.SetFixedRotation(true);
-
-   const TiXmlElement* pshapeelement = dynamic_cast<const TiXmlElement*>(pphysics->FirstChild(sSHAPEELEMENT));
-   if ( pshapeelement != NULL )
-   {
-      const std::string* pshapetype = pshapeelement->Attribute(sTYPE);
-      if ( pshapetype != NULL )
-      {
-         if ( pshapetype->compare("box") == 0 )
-         {
-            pshapeelement->QueryFloatAttribute("halfx", &mHalfWidth);
-            pshapeelement->QueryFloatAttribute("halfy", &mHalfHeight);
-
-            mHalfWidth /= 30.0f;
-            mHalfHeight /= 30.0f;
-
-            b2PolygonShape shape;
-            shape.SetAsBox(mHalfWidth, mHalfHeight);
-
-            b2FixtureDef fixturedef;
-            fixturedef.density  = 1;
-            fixturedef.friction = 0.3f;
-            fixturedef.shape    = &shape;
-            fixturedef.userData = (void*)Box2DSimulator::eObject;
-            
-            mBody.CreateFixture(&fixturedef);
-         }
-         else if ( pshapetype->compare("circle") == 0 )
-         {
-            float radius = 0.0f;
-            pshapeelement->QueryFloatAttribute("radius", &radius);
-            
-            b2CircleShape shape;
-            shape.m_radius = radius / 30;
-
-            b2FixtureDef fixturedef;
-            fixturedef.density  = 1;
-            fixturedef.friction = 1;
-            fixturedef.shape    = &shape;
-            fixturedef.userData = (void*)Box2DSimulator::eObject;
-
-            mBody.CreateFixture(&fixturedef);
-         }
-      }
-
-      createSensors();
-   }
 }
 
 // operations

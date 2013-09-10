@@ -22,6 +22,7 @@
 #include <Box2D.h>
 
 #include "core/math/matrix4.h"
+#include "core/math/size.h"
 #include "core/defines.h"
 
 #include "engine/world/world.h"
@@ -150,6 +151,8 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
    }
 
    Box2DBody* pbody = new Box2DBody(*this, *pboxbody);
+   pbody->setHalfSize(Size(definition.getWidth(), definition.getHeight()));
+   pbody->createSensors();
    addBody(pbody);
 
    return *pbody;

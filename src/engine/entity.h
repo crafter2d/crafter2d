@@ -68,6 +68,11 @@ public:
 
    const String&  getClassName() const;
    void           setClassName(const String& classname);
+   
+   bool           isDirty() const;
+   bool           isDirty(int flag) const;
+   void           setDirty(int flag);
+   void           resetDirty();
 
  // operations
    void initialize();
@@ -112,6 +117,7 @@ private:
    String            mName;
    String            mXmlFile;
    String            mClassName;
+   unsigned int		 mDirtyFlag;
 };
 
 #ifdef JENGINE_INLINE

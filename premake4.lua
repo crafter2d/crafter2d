@@ -1,7 +1,7 @@
--- JEngine SSE PreMake 4 configuration file
--- Copyright 2010, Jeroen Broekhuizen
+-- Crafter 2D PreMake 4 configuration file
+-- Copyright 2010-2013, Jeroen Broekhuizen
 
-solution "JEngine"
+solution "Crafter2D"
 	configurations { "Debug", "Release" }
 	location "build"
 

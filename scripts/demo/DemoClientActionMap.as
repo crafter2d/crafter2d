@@ -18,6 +18,7 @@ class DemoClientActionMap extends ActionMap
 		bind(6, "onSwapLeakDetector");
 		bind(1, "walkLeft");
 		bind(2, "walkRight");
+		bind(3, "jump");
 	}
 	
 	public void walkLeft(boolean down)
@@ -51,6 +52,14 @@ class DemoClientActionMap extends ActionMap
 		if ( !mEntity.direction() )
 		{
 			mEntity.flip();
+		}
+	}
+
+	public void jump(boolean down)
+	{
+		if ( down )
+		{
+			mEntity.jump();
 		}
 	}
 

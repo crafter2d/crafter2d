@@ -1,5 +1,5 @@
-JEngine SSE, version 0.4.8, Jeroen Broekhuizen
-Copyright 2009-2012
+Crafter 2D, version 0.4.8, Jeroen Broekhuizen
+Copyright 2009-2013
 
 Change log 0.4.8
 ----------------

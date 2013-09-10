@@ -1,5 +1,6 @@
 @echo off
-echo JEngine SSE Static source code analysis launcher.
+echo Crafter 2D - Static source code analysis launcher.
+echo Copyright 2010-2013, J. Broekhuizen
 
 if "%1" == "" goto Help
 if "%1" == "--help" goto Help

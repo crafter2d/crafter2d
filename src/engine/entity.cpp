@@ -44,7 +44,8 @@ Entity::Entity():
    mChildren(),
    mName(),
    mXmlFile(),
-   mClassName()
+   mClassName(),
+   mDirtyFlag(false)
 {
    if ( ((int)mId) == -1 )
    {
@@ -167,6 +168,7 @@ void Entity::doPack(DataStream& stream) const
    NetObject::doPack(stream);
 
    stream.writeUint(mId);
+   stream.writeUint(mDirtyFlag);
 
    if ( isDirty(eNameDirty) )
    {
@@ -187,6 +189,7 @@ void Entity::doUnpack(DataStream& stream)
    NetObject::doUnpack(stream);
 
    stream.readUint(mId);
+   stream.readUint(mDirtyFlag);
 
    if ( isDirty(eNameDirty) )
    {
@@ -204,4 +207,6 @@ void Entity::doUnpack(DataStream& stream)
       info.transform.set(pos, angle);
       sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
    }
+   
+   mDirtyFlag = 0;
 }

@@ -1,5 +1,5 @@
 ;NSIS Modern User Interface
-;JEngine SSE installer script
+;Crafter 2D installer script
 ;Written by Jeroen Broekhuizen
 
 ;--------------------------------
@@ -11,14 +11,14 @@
 ;General
 
   ;Name and file
-  Name "JEngine SSE"  
+  Name "Crafter 2D"  
   OutFile "setup.exe"
   
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\JEngine SSE"
+  InstallDir "$PROGRAMFILES\Crafter2D"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\JEngine SSE" ""
+  InstallDirRegKey HKCU "Software\Crafter2D" ""
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel user
@@ -106,7 +106,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecEngine ${LANG_ENGLISH} "Required engine files needed to run JEngine SSE based games. Includes demo game showing the capabilities of the engine."
+  LangString DESC_SecEngine ${LANG_ENGLISH} "Required engine files needed to run Crafter 2D based games. Includes demo game showing the capabilities of the engine."
   LangString DESC_SecSource ${LANG_ENGLISH} "Full source code of the engine and demo."
   
   LangString DESC_SecEngine ${LANG_DUTCH} "Vereiste bestanden voor de engine inclusief een demo spel."
@@ -125,7 +125,7 @@ Section "Uninstall"
   
   RMDir /r "$INSTDIR"
 
-  DeleteRegKey /ifempty HKCU "Software\JEngine SSE"
+  DeleteRegKey /ifempty HKCU "Software\Crafter2D"
 
 SectionEnd
 
