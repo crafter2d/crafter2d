@@ -23,6 +23,10 @@ public:
 private:
    typedef std::map<String, ComponentLoader*> Loaders;
 
+ // loading
+   EntityDefinition* load(const TiXmlElement& entity);
+   void loadLink(const TiXmlElement& xmllink, EntityDefinition& definition);
+
  // data
    Loaders mLoaders;
 };

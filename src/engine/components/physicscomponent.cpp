@@ -5,6 +5,7 @@
 #endif
 
 #include "engine/physics/body.h"
+#include "engine/entity.h"
 
 #include "components.h"
 #include "componentmessage.h"
@@ -29,12 +30,12 @@ void PhysicsComponent::setBody(Body& body)
 
 void PhysicsComponent::registerComponent(Components& components)
 {
-   Component::registerComponent(components);
+	Component::registerComponent(components);
 
-   components.subscribeMessageType(*this, ComponentInterface::ePositionMsg);
-   components.subscribeMessageType(*this, ComponentInterface::eQueryPositionMsg);
+	components.subscribeMessageType(*this, ComponentInterface::ePositionChangedMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eRotationChangedMsg);
    components.subscribeMessageType(*this, ComponentInterface::eQueryBodyMsg);
-   
+
    mpBody->setEntity(getEntity());
 }
 
@@ -44,16 +45,10 @@ void PhysicsComponent::handleMessage(ComponentMessage& message)
 
    switch ( message.getMessageType() )
    {
-      case ePositionMsg:
+      case ePositionChangedMsg:
+      case eRotationChangedMsg:
          {
-            PositionInfo* pinfo = reinterpret_cast<PositionInfo*>(message.getData());
-            mpBody->setTransform(pinfo->transform);
-         }
-         break;
-      case eQueryPositionMsg:
-         {
-            PositionInfo* pinfo = reinterpret_cast<PositionInfo*>(message.getData());
-            pinfo->transform = mpBody->getTransform();
+            mpBody->setTransform(getEntity().getTransform());
          }
          break;
       case eQueryBodyMsg:
@@ -73,9 +68,6 @@ void PhysicsComponent::update(float delta)
 
 void PhysicsComponent::onPositionChanged(Body& body)
 {
-   PositionInfo info;
-   info.transform = body.getTransform();
-
-   ComponentMessage message(ComponentInterface::ePositionChangedMsg, &info);
-   postMessage(message);
+   getEntity().setTransform(body.getTransform());
 }
+

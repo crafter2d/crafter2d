@@ -100,65 +100,6 @@ Actor* Actor::clone ()
 	return NULL;
 }
 
-/// \fn Actor::getPosition () const
-/// \brief Returns the current position of the object
-/// \returns current position of object
-const Vector& Actor::getPosition() const
-{
-   if ( hasMesh() )
-      return getMesh().getPosition();
-   else
-   {
-      PositionInfo info;
-      const_cast<Actor&>(*this).sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
-      return info.transform.getPosition();
-   }
-}
-
-/// \fn Actor::setPosition(const Vector& p)
-/// \brief Set the position of the object in world coordinates.
-/// \param p the new position of the object
-void Actor::setPosition(const Vector& p)
-{
-   PositionInfo info;
-   sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
-   
-   info.transform.setPosition(p);
-
-   sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
-
-   setDirty(ePositionDirty);
-}
-
-/// \fn Actor::getRotation() const
-/// \brief Returns the rotation in degrees of the object.
-float Actor::getRotation() const
-{
-   if ( hasMesh() )
-      return getMesh().getAngle();
-   else
-   {
-      PositionInfo info;
-      const_cast<Actor&>(*this).sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
-      return info.transform.getAngle();
-   }
-}
-
-/// \fn void setRotation(const float deg)
-/// \brief Sets the new degree of rotation of this object.
-/// \param deg the new rotation degree
-void Actor::setRotation(const float deg) 
-{
-   PositionInfo info;
-   sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
-   
-   info.transform.setAngle(deg);
-
-   sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
-
-   setDirty(ePositionDirty);
-}
-
 int Actor::getAnimation() const
 {
    return 0;// mpAnimator != NULL ? mpAnimator->getAnimation() : 0;
@@ -186,40 +127,4 @@ void Actor::accept(NodeVisitor& nv)
 void Actor::updateState()
 {
    setDirty(ePositionDirty);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Packing & unpacking
-//////////////////////////////////////////////////////////////////////////
-
-void Actor::doPack(DataStream& stream) const
-{
-   Entity::doPack(stream);
-
-   if ( isDirty(ePositionDirty) )
-   {
-      PositionInfo info;
-      const_cast<Actor&>(*this).sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
-
-      stream << info.transform.getPosition().x << info.transform.getPosition().y << info.transform.getAngle() << dir;
-   }
-}
-
-void Actor::doUnpack(DataStream& stream)
-{
-   Entity::doUnpack(stream);
-
-   if ( isDirty(ePositionDirty) )
-   {
-      Vector pos;
-      float angle;
-
-      stream >> pos.x >> pos.y >> angle >> dir;
-
-      PositionInfo info;
-      info.transform.set(pos, angle);
-      sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
-
-      setDirty(ePositionDirty);
-   }
 }

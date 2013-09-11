@@ -92,6 +92,11 @@ void Body::addListener(IBodyListener* plistener)
    mpListener = plistener;
 }
 
+void Body::link(Body& to, const JointDefinition& definition)
+{
+   mSimulator.createLink(*this, to, definition);
+}
+
 // ----------------------------------
 // -- Force Generators
 // ----------------------------------

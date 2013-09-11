@@ -24,11 +24,6 @@ INLINE Id NewObjectEvent::getId() const
    return mId;
 }
 
-INLINE Id NewObjectEvent::getParentId() const
-{
-   return mParentId;
-}
-
 INLINE const String& NewObjectEvent::getFileName() const
 {
    return mFileName;

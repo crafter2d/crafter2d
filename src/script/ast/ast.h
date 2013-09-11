@@ -14,6 +14,7 @@
 #include "astvariable.h"
 #include "astvariableinit.h"
 #include "astlocalvariable.h"
+#include "astproperty.h"
 #include "astannotations.h"
 #include "astannotation.h"
 #include "astarrayinit.h"

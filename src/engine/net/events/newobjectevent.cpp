@@ -30,7 +30,6 @@ IMPLEMENT_REPLICATABLE(NewObjectEventId, NewObjectEvent, NetEvent)
 NewObjectEvent::NewObjectEvent():
    NetEvent(newobjectEvent),
    mId(0),
-   mParentId(0),
    mFileName()
 {
 }
@@ -38,7 +37,6 @@ NewObjectEvent::NewObjectEvent():
 NewObjectEvent::NewObjectEvent(const Entity& entity):
    NetEvent(newobjectEvent),
    mId(entity.getId()),
-   mParentId(entity.hasParent() ? entity.getParent().getId() : IdManager::invalidId),
    mFileName(entity.getFilename())
 {
 }
@@ -50,7 +48,6 @@ void NewObjectEvent::doPack(DataStream& stream) const
    NetEvent::doPack(stream);
    
    stream.writeUint(mId);
-   stream.writeUint(mParentId);
    stream.writeString(mFileName);
 }
 
@@ -59,7 +56,6 @@ void NewObjectEvent::doUnpack(DataStream& stream)
    NetEvent::doUnpack(stream);
       
    stream.readUint(mId);
-   stream.readUint(mParentId);
    stream.readString(mFileName);
 }
 

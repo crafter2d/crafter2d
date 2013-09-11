@@ -23,10 +23,13 @@
 #include <vector>
 
 #include "core/graphics/effect.h"
+#include "core/math/matrix4.h"
 #include "core/math/vertex.h"
 #include "core/defines.h"
 
 #include "spritebatch.h"
+
+class Vector;
 
 namespace Graphics
 {
@@ -42,8 +45,11 @@ namespace Graphics
    public:
       SpriteRenderer();
 
+    // operations
       bool create(Device& device);
+      void setOffset(RenderContext& context, const Vector& offset);
 
+    // drawing
       void beginDraw(RenderContext& context);
       void endDraw(RenderContext& context);
 
@@ -56,12 +62,21 @@ namespace Graphics
          Vertex tex;
       };
 
+      struct ConstantBuffer
+      {
+         Matrix4 projection;
+         Matrix4 world;
+         Matrix4 object;
+      };
+
     // rendering
       void renderSprite(const Sprite& sprite, PTVertex* pbuffer);
 
     // data
       SpriteBatch    mSprites;
+      ConstantBuffer mConstants;
       Effect         mEffect;
+      Vector         mOffset;
       UniformBuffer* mpUB;
       VertexBuffer*  mpVB;
       IndexBuffer*   mpIB;

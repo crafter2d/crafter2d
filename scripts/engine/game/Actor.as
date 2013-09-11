@@ -23,11 +23,7 @@ class Actor extends Entity implements Collidable
 		object.setPosition(position);
 		object.setName(name);
 		object.initialize();
-		
-		QueryBodyComponentMessage message = new QueryBodyComponentMessage();
-		object.sendComponentMessage(message);
-		object.setBody(message.getBody());
-		
+				
 		World world = process.getWorld();
 		world.add(object);
 		
@@ -106,7 +102,10 @@ class Actor extends Entity implements Collidable
 	{
 		QueryBodyComponentMessage msg = new QueryBodyComponentMessage();
 		sendComponentMessage(msg);
-		mBody = msg.getBody();
+		if ( msg.hasBody() )
+		{
+			mBody = msg.getBody();
+		}
 	}
 	
 	public boolean isLookingLeft()

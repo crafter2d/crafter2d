@@ -811,17 +811,24 @@ void StackCPU::execute(VirtualContext& context)
                const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[arg];
                const VirtualClass& klass = context.mClassTable.resolve(symbol.value.asString().getString());
                
-               ASSERT(mStack.back().isObject());
-               VirtualObject& object = mStack.popObject();
-
-               if ( object.getClass().isBaseClass(klass)
-                  || object.getClass().implements(klass) )
+               if ( mStack.back().isEmpty() )
                {
-                  mStack.pushBool(true);
+                  throwException(context, UTEXT("system.NullPointerException"), String::empty());
                }
                else
                {
-                  mStack.pushBool(false);
+                  ASSERT(mStack.back().isObject());
+                  VirtualObject& object = mStack.popObject();
+
+                  if ( object.getClass().isBaseClass(klass)
+                     || object.getClass().implements(klass) )
+                  {
+                     mStack.pushBool(true);
+                  }
+                  else
+                  {
+                     mStack.pushBool(false);
+                  }
                }
             }
             break;

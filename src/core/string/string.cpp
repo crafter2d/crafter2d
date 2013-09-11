@@ -31,7 +31,7 @@ const String& String::empty()
 String String::fromUtf8(const char* pdata)
 {
    String result;
-   result.setTo(pdata, -1);
+   result.setTo(pdata, strlen(pdata));
    return result;
 }
 

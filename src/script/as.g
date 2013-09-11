@@ -22,6 +22,7 @@ tokens
     FUNCTION_ARGUMENTS;
     VOID_FUNCDECL;
     VARIABLE_DECL;
+    PROPERTY_DECL;
     ARRAYINIT;
     LOCALVARDECL;
     STMT_EXPR;
@@ -81,10 +82,15 @@ class_inheritance
 class_member
 	:	class_func_decl
 	|	class_var_decl
+	|	class_property_decl
 	;
 	
 class_var_decl
 	:	modifiers type variables_decl ';' 					-> ^(VARIABLE_DECL modifiers type variables_decl)
+	;
+	
+class_property_decl
+	:	PROPERTY type identifier ';'						-> ^(PROPERTY_DECL type identifier)
 	;
 	
 class_func_decl
@@ -395,7 +401,7 @@ identifier
 	:	ID
 	;
 
-T_PACKAGE	:	'package';
+T_PACKAGE:	'package';
 USE	:	'use';
 CLASS	:	'class';
 INTRFACE:	'interface';
@@ -406,6 +412,7 @@ IMPL	:	'implements';
 NEW	:	'new';
 INST_OF	:	'instanceof';
 T_ASSERT:	'assert';
+PROPERTY:	'property';
 FOR	:	'for';
 FOREACH	:	'foreach';
 WHILE	:	'while';

@@ -10,7 +10,7 @@ class ASTType;
 class ASTMember : public ASTNode
 {
 public:
-   enum Kind { eConstructor, eFunction, eField };
+   enum Kind { eConstructor, eFunction, eField, eProperty };
 
    explicit ASTMember(Kind kind);
    virtual ~ASTMember();

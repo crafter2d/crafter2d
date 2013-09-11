@@ -131,7 +131,7 @@ public:
 
    virtual Point  pointToTile(const Point& point) = 0;
 
-   void           scroll(float x, float y);
+   void           scroll(Graphics::RenderContext& context, float x, float y);
    void           update(float delta);
 
    void           calculateScrollSpeed(const Vector& area, int screenWidth, int screenHeight);

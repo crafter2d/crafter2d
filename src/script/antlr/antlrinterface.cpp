@@ -195,6 +195,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
       case IFACE_MEMBER:      return handleInterfaceMember(node);
       case IFACE_VOID_MEMBER: return handleInterfaceVoidMember(node);
       case VARIABLE_DECL:     return handleVarDecl(node);
+      case PROPERTY_DECL:     return handlePropertyDecl(node);
       case CONSTRUCTOR_DECL:  return handleConstructor(node);
       case FUNCTION_DECL:     return handleFuncDecl(node);
       case VOID_FUNCDECL:     return handleVoidFuncDecl(node);
@@ -489,6 +490,19 @@ ASTMember* AntlrParser::handleVarDecl(const AntlrNode& node)
    }
 
    return new ASTField(pvariable);
+}
+
+ASTMember* AntlrParser::handlePropertyDecl(const AntlrNode& node)
+{
+   ASTProperty* pproperty = new ASTProperty();
+
+   AntlrNode typenode = node.getChild(0);
+   pproperty->setType(getType(typenode));
+
+   AntlrNode namenode = node.getChild(1);
+   pproperty->setName(namenode.toString());
+
+   return pproperty;
 }
 
 void AntlrParser::handleFuncArguments(const AntlrNode& node, ASTFunction& function)

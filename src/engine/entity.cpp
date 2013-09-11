@@ -42,6 +42,8 @@ Entity::Entity():
    mpMeshComponent(NULL),
    mpParent(NULL),
    mChildren(),
+   mTransform(),
+   mOffset(),
    mName(),
    mXmlFile(),
    mClassName(),
@@ -90,6 +92,50 @@ MeshComponent& Entity::getMesh()
    return *mpMeshComponent;
 }
 
+void Entity::setTransform(const XForm& transform)
+{
+   mTransform = transform;
+
+   ComponentMessage message(ComponentInterface::eUpdatedMsg); // called from the physics engine
+   sendComponentMessage(message);
+}
+
+/// \fn Entity::setPosition(const Vector& p)
+/// \brief Set the position of the object in world coordinates.
+/// \param p the new position of the object
+void Entity::setPosition(const Vector& p)
+{
+   mTransform.setPosition(p + mOffset);
+   sendComponentMessage(ComponentMessage(ComponentInterface::ePositionChangedMsg));
+
+   setDirty(ePositionDirty);
+
+   mChildren.setPosition(p);
+}
+
+/// \fn void setRotation(const float rotation)
+/// \brief Sets the new degree of rotation of this object.
+/// \param rotation the new rotation degree in radians
+void Entity::setRotation(const float rotation) 
+{
+   mTransform.setAngle(rotation);
+   sendComponentMessage(ComponentMessage(ComponentInterface::eRotationChangedMsg));
+
+   setDirty(ePositionDirty);
+
+   // mChildren.setRotation(deg);
+}
+
+/// \fn void setOffset(const Vector& offset)
+/// \brief Updates the offset and directly the position of the entity as well!
+void Entity::setOffset(const Vector& offset)
+{
+   mTransform.setPosition(mTransform.getPosition() + (offset - mOffset));
+   mOffset = offset;
+
+   sendComponentMessage(ComponentMessage(ComponentInterface::ePositionChangedMsg));
+}
+
 // - Operations
 
 void Entity::initialize()
@@ -99,6 +145,8 @@ void Entity::initialize()
    {
       mpMeshComponent = static_cast<MeshComponent*>(pcomponent);
    }
+
+   mChildren.initialize();
 }
 
 void Entity::destroy()
@@ -142,11 +190,11 @@ void Entity::sendComponentMessage(ComponentMessage& message)
 
 // - Maintenance
 
-void Entity::add(Entity& entity)
+void Entity::add(Entity* pentity)
 {
-   entity.setParent(*this);
+   pentity->setParent(*this);
 
-   mChildren.add(entity);
+   mChildren.add(pentity);
 }
 
 void Entity::remove(Entity& entity)
@@ -177,10 +225,12 @@ void Entity::doPack(DataStream& stream) const
 
    if ( isDirty(ePositionDirty) )
    {
-      PositionInfo info;
-      const_cast<Entity&>(*this).sendComponentMessage(ComponentMessage(ComponentInterface::eQueryPositionMsg, &info));
+      stream << mTransform.getPosition().x << mTransform.getPosition().y;
+   }
 
-      stream << info.transform.getPosition().x << info.transform.getPosition().y << info.transform.getAngle();
+   if ( isDirty(eRotationDirty) )
+   {
+      stream << mTransform.getAngle();
    }
 }
 
@@ -199,13 +249,15 @@ void Entity::doUnpack(DataStream& stream)
    if ( isDirty(ePositionDirty) )
    {
       Vector pos;
+      stream >> pos.x >> pos.y;
+      setPosition(pos);
+   }
+
+   if ( isDirty(eRotationDirty) )
+   {
       float angle;
-
-      stream >> pos.x >> pos.y >> angle;
-
-      PositionInfo info;
-      info.transform.set(pos, angle);
-      sendComponentMessage(ComponentMessage(ComponentInterface::ePositionMsg, &info));
+      stream >> angle;
+      setRotation(angle);
    }
    
    mDirtyFlag = 0;

@@ -441,16 +441,6 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
    entity->setId(event.getId());
    entity->setReplica();
 
-   if ( event.getParentId() != IdManager::invalidId )
-   {
-      Entity* pparent = getWorld().findEntity(event.getParentId());
-      if ( pparent == NULL )
-      {
-         UNREACHABLE("Could not find the parent!!");
-      }
-      pparent->add(*entity);
-   }
-
    // remove the request
    Requests::iterator it = mRequests.find(entity->getId());
    if ( it != mRequests.end() )

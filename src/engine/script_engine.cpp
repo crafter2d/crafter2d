@@ -296,6 +296,13 @@ void QueryBodyComponentMessage_init(VirtualMachine& machine, VirtualStackAccesso
    machine.registerNative(thisobject, pmsg);
 }
 
+void QueryBodyComponentMessage_hasBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(QueryBodyComponentMessage, msg);
+
+   accessor.setResult(msg.hasBody());
+}
+
 void QueryBodyComponentMessage_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(QueryBodyComponentMessage, msg);
@@ -402,7 +409,7 @@ void Actor_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
    Actor& child = accessor.getObject(1).getNativeObject<Actor>();
 
-   actor.add(child);
+   actor.add(&child);
 }
 
 void Actor_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -690,6 +697,7 @@ void Box2DSimulator_lineOfSight(VirtualMachine& machine, VirtualStackAccessor& a
 
 void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   /*
    GET_THIS(Box2DSimulator, simulator);
 
    Box2DBody& left = accessor.getObject(1).getNativeObject<Box2DBody>();
@@ -698,15 +706,18 @@ void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAcc
    float anchory = accessor.getReal(4);
 
    simulator.createRevoluteJoint(left, right, Vector(anchorx, anchory));
+   */
 }
 
 void Box2DSimulator_createRopeJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
+   /*
    GET_THIS(Box2DSimulator, simulator);
 
    Box2DRopeJointDefinition& jointdef = accessor.getObject(1).getNativeObject<Box2DRopeJointDefinition>();
 
    simulator.createRopeJoint(jointdef);
+   */
 }
 
 void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1184,6 +1195,7 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addClass(UTEXT("engine.game.QueryBodyComponentMessage"));
    registrator.addFunction(UTEXT("QueryBodyComponentMessage()"), QueryBodyComponentMessage_init);
+   registrator.addFunction(UTEXT("hasBody()"), QueryBodyComponentMessage_hasBody);
    registrator.addFunction(UTEXT("getBody()"), QueryBodyComponentMessage_getBody);
 
    registrator.addClass(UTEXT("engine.game.Actor"));

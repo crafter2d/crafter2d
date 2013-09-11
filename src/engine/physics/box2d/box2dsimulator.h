@@ -32,6 +32,7 @@ class String;
 class Vector;
 class Matrix4;
 class BodyDefinition;
+class RevoluteJointDefinition;
 
 class Box2DBody;
 class Box2DJoint;
@@ -66,10 +67,7 @@ public:
    virtual Body& createBody(const BodyDefinition& definition);
    virtual void  removeBody(Body& body);
 
-   Box2DRevoluteJoint& createRevoluteJoint(Box2DRevoluteJointDefinition& definition);
-   Box2DRevoluteJoint& createRevoluteJoint(Box2DBody& left, Box2DBody& right, const Vector& anchor);
-
-   Box2DRopeJoint&     createRopeJoint(Box2DRopeJointDefinition& definition);
+   virtual void  createLink(const Body& left, const Body& right, const JointDefinition& definition);
 
  // update
    virtual void run(float delta);
@@ -80,6 +78,10 @@ protected:
 
 private:
    typedef std::vector<Box2DJoint*> Joints;
+
+ // creation
+   //void createRopeJoint(b2Body& left, b2Body& right, RopeJointDefinition& definition);
+   void createRevoluteJoint(b2Body& left, b2Body& right, const RevoluteJointDefinition& definition);
 
  // operations
    void cleanUp();

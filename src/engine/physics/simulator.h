@@ -26,6 +26,7 @@
 
 class World;
 class BodyDefinition;
+class JointDefinition;
 class SimulatorListener;
 
 /**
@@ -43,6 +44,13 @@ At startup the generateWorldShapes method is called so that the
 class Simulator : public IScriptable
 {
 public:
+
+   enum LinkType
+   {
+      eRevolute,
+      eInvalid,
+   };
+
    Simulator();
    virtual ~Simulator() = 0;
 
@@ -61,6 +69,8 @@ public:
  // maintenance
    virtual Body& createBody(const BodyDefinition& definition) = 0;
    virtual void  removeBody(Body& body);
+
+   virtual void  createLink(const Body& left, const Body& right, const JointDefinition& definition) = 0;
 
  // operations
    virtual void run(float timestep) = 0;

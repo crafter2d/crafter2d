@@ -14,8 +14,9 @@ namespace ComponentInterface
    {
       ePositionMsg,
 	   ePositionChangedMsg,
-      eQueryPositionMsg,
+      eRotationChangedMsg,
       eUpdateMsg,
+      eUpdatedMsg,
       eRenderMsg,
       eQueryBodyMsg,
 	   eNUM_MESSAGE_TYPES

@@ -59,6 +59,7 @@ private:
    ASTMember*              handleFuncDecl(const AntlrNode& node);
    ASTMember*              handleVoidFuncDecl(const AntlrNode& node);
    ASTMember*              handleVarDecl(const AntlrNode& node);
+   ASTMember*              handlePropertyDecl(const AntlrNode& node);
    ASTMember*              handleInterfaceMember(const AntlrNode& node);
    ASTMember*              handleInterfaceVoidMember(const AntlrNode& node);
    ASTAnnotations*         handleAnnotations(const AntlrNode& node);

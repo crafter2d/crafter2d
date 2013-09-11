@@ -20,7 +20,7 @@
 #ifndef ENTITIES_H
 #define ENTITIES_H
 
-#include <map>
+#include <vector>
 
 #include "idmanager.h"
 
@@ -31,24 +31,33 @@ namespace Graphics
 
 class Entity;
 class NodeVisitor;
+class Vector;
 
 class Entities
 {
-   typedef std::map<Id, Entity*> EntityMap;
+   typedef std::vector<Entity*> EntityMap;
 
 public:
    Entities();
    ~Entities();
 
+   const Entity& operator[](int index) const;
+         Entity& operator[](int index);
+
  // get/set
 
  // maintenance
-   void add(Entity& entity);
+   void add(Entity* pentity);
    void remove(Entity& entity);
+   void removeAll();
 
  // update & drawing
+   void initialize();
    void update(float delta);
    void draw(Graphics::RenderContext& context) const;
+
+ // positioning
+   void setPosition(const Vector& pos);
 
  // visitor
    void traverse(NodeVisitor& visitor);

@@ -8,6 +8,7 @@ class ASTPackage;
 class ASTUse;
 class ASTClass;
 class ASTField;
+class ASTProperty;
 class ASTFunction;
 class ASTFunctionArgument;
 class ASTLocalVariable;
@@ -60,6 +61,7 @@ public:
    VISIT(ASTUse);
    VISIT(ASTClass);
    VISIT(ASTField);
+   VISIT(ASTProperty);
    VISIT(ASTFunction);
    VISIT(ASTFunctionArgument);
    VISIT(ASTLocalVariable);

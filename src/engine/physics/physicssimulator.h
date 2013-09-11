@@ -30,6 +30,7 @@ public:
    virtual ~PhysicsSimulator();
 
    virtual Body& createBody(const BodyDefinition& definition);
+   virtual void  createLink(const Body& left, const Body& right, const JointDefinition& definition);
 
  // query
    virtual const String& getClassName() const;

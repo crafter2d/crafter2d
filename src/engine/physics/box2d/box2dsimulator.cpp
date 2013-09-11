@@ -29,6 +29,7 @@
 #include "engine/world/bound.h"
 #include "engine/world/bounds.h"
 #include "engine/physics/bodydefinition.h"
+#include "engine/physics/revolutejointdefinition.h"
 
 #include "box2dbody.h"
 #include "box2draycastcallback.h"
@@ -112,7 +113,7 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
    b2BodyDef bodydef;
    bodydef.position      = b2Vec2();
    bodydef.angle         = 0.0f;
-   bodydef.type          = b2_dynamicBody;
+   bodydef.type          = definition.isStatic() ? b2_staticBody : b2_dynamicBody;
    bodydef.fixedRotation = definition.isFixedRotation();
 
    b2Body* pboxbody = mpb2World->CreateBody(&bodydef);
@@ -162,37 +163,37 @@ void Box2DSimulator::removeBody(Body& body)
 {
 }
 
-Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DRevoluteJointDefinition& definition)
+void Box2DSimulator::createLink(const Body& left, const Body& right, const JointDefinition& definition)
+{
+   b2Body& leftbody = static_cast<Box2DBody&>(const_cast<Body&>(left)).getBox2DBody();
+   b2Body& rightbody = static_cast<Box2DBody&>(const_cast<Body&>(right)).getBox2DBody();
+
+   switch ( definition.getKind() )
+   {
+   case JointDefinition::eRevolute:
+      {
+         const RevoluteJointDefinition& revolutedef = static_cast<const RevoluteJointDefinition&>(definition);
+         createRevoluteJoint(leftbody, rightbody, revolutedef);
+      }
+      break;
+   }
+}
+
+void Box2DSimulator::createRevoluteJoint(b2Body& left, b2Body& right, const RevoluteJointDefinition& definition)
 {
    b2RevoluteJointDef jd;
-   jd.Initialize(&definition.pleft->getBox2DBody(), &definition.pright->getBox2DBody(), vectorToB2(definition.anchor));
+   jd.Initialize(&left, &right, vectorToB2(definition.anchor));
 
    b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpb2World->CreateJoint(&jd));
 
    Box2DRevoluteJoint* pjoint = new Box2DRevoluteJoint(*pb2joint);
 
    mJoints.push_back(pjoint);
-
-   return *pjoint;
 }
 
-Box2DRevoluteJoint& Box2DSimulator::createRevoluteJoint(Box2DBody& left, Box2DBody& right, const Vector& anchor)
+/*
+void Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& definition)
 {
-   b2RevoluteJointDef jd;
-   jd.Initialize(&left.getBox2DBody(), &right.getBox2DBody(), vectorToB2(anchor));
-
-   b2RevoluteJoint* pb2joint = static_cast<b2RevoluteJoint*>(mpb2World->CreateJoint(&jd));
-
-   Box2DRevoluteJoint* pjoint = new Box2DRevoluteJoint(*pb2joint);
-
-   mJoints.push_back(pjoint);
-
-   return *pjoint;
-}
-
-Box2DRopeJoint& Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& definition)
-{
-   /*
    b2RopeJointDef jd;
    jd.bodyA = &definition.pleft->getBody();
    jd.bodyB = &definition.pright->getBody();
@@ -207,10 +208,8 @@ Box2DRopeJoint& Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& defini
    mJoints.push_back(pjoint);
 
    return *pjoint;
-   */
-
-   throw std::exception();
 }
+*/
 
 // - Notifications
 

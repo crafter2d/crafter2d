@@ -8,6 +8,7 @@
 #include "viewport.h"
 #include "sprites/spriterenderer.h"
 
+class Vector;
 class XForm;
 
 namespace Graphics
@@ -51,6 +52,7 @@ namespace Graphics
       void beginDraw();
       void endDraw();
 
+      void setSpriteOffset(const Vector& offset);
       void drawSprite(const Sprite& sprite);
 
    protected:

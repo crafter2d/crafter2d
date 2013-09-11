@@ -160,6 +160,11 @@ void SymbolCollectorVisitor::visit(ASTField& ast)
    }
 }
 
+void SymbolCollectorVisitor::visit(ASTProperty& ast)
+{
+   resolveType(ast.getType());
+}
+
 void SymbolCollectorVisitor::visit(ASTVariableInit& ast)
 {
    if ( ast.hasExpression() )

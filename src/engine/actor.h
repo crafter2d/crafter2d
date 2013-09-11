@@ -49,11 +49,6 @@ public:
    bool              direction() const;
 	
  // get/set interface
-   void              setPosition(const Vector& vec);
-   const Vector&     getPosition() const;
-
-   float             getRotation() const;
-   void              setRotation(const float deg);
   
    bool              isVisible() const;
    void              setVisible(bool vis = true);
@@ -80,11 +75,7 @@ protected:
    virtual void      doUpdate(float delta);
    virtual void      doUpdateClient(float delta);
    virtual void      doDraw(Graphics::RenderContext& context) const;
-
- // streaming
-   virtual void      doPack(DataStream& stream) const;
-   virtual void      doUnpack(DataStream& stream);
-	
+   	
 private:
 
    Controller*    mpController;

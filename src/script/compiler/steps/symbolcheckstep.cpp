@@ -128,6 +128,11 @@ void SymbolCheckVisitor::visit(ASTField& ast)
    checkVarInit(var);
 }
 
+void SymbolCheckVisitor::visit(ASTProperty& ast)
+{
+   checkUnknown(ast.getType());
+}
+
 void SymbolCheckVisitor::visit(ASTVariableInit& ast)
 {
    visitChildren(ast);

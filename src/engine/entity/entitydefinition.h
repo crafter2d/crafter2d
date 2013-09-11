@@ -5,31 +5,46 @@
 #include <vector>
 
 #include "core/string/string.h"
+#include "core/math/vector.h"
 
 #include "engine/components/componentdefinition.h"
+
+class EntityLinkDefinition;
 
 class EntityDefinition
 {
 public:
  // types
-   typedef std::vector<ComponentDefinition*> CompDefs;
+   typedef std::vector<EntityDefinition*> Children;
+   typedef std::vector<EntityLinkDefinition*> Links;
+   typedef std::vector<ComponentDefinition*> Components;
 
    EntityDefinition();
 
  // get/set
-   const CompDefs& getComponentDefinitions() const;
+   const Children&   getChildren() const;
+   const Links&      getLinks() const;
+   const Components& getComponentDefinitions() const;
 
    const String& getClassName() const;
    void          setClassName(const String& name);
 
+   const Vector& getOffset() const;
+   void          setOffset(const Vector& offset);
+
  // registration
    void addComponentDefinition(ComponentDefinition* pdefinition);
+   void addChild(EntityDefinition* pdefinition);
+   void addLink(EntityLinkDefinition* plink);
 
 private:
 
  // data
-   CompDefs mDefinitions;
-   String   mClassName;
+   Children    mChildren;
+   Components  mCompDefs;
+   Links       mLinks;
+   String      mClassName;
+   Vector      mOffset;
 };
 
 #endif // ENTITY_DEFINITION_H

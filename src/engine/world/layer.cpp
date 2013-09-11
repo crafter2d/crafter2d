@@ -271,11 +271,12 @@ bool Layer::createUniformBuffers(Graphics::Device& device)
    return true;
 }
 
-/// \fn Layer::scroll(float x, float y)
+/// \fn Layer::scroll(Graphics::RenderContext& context, float x, float y)
 /// \brief Moves the layer around in the screen
+/// \param[in] context the graphics context
 /// \param[in] x amount layer should horizontally scroll; negative for left and positive for right
 /// \param[in] y amount layer should vertically scroll; negative for up and positive for down
-void Layer::scroll (float x, float y)
+void Layer::scroll(Graphics::RenderContext& context, float x, float y)
 {
    if (x != 0 || y != 0)
    {
@@ -294,7 +295,13 @@ void Layer::scroll (float x, float y)
          yscroll = yscrollMax;
 
       if ( oldxscroll != xscroll || oldyscroll != yscroll )
+      {
          dirty = true;
+
+         mConstants.world.translate(-(xscroll - oldxscroll), -(yscroll - oldyscroll), 0);
+
+         ub->set(context, &mConstants);
+      }
    }
 }
 

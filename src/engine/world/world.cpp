@@ -204,7 +204,7 @@ void World::updateClient(Graphics::RenderContext& context, float delta)
    // scroll if necessary
    if (autoFollow && followMode != NoFollow)
    {
-      scroll();
+      scroll(context);
    }
 
    for ( int i = 0; i < layers.size(); i++ )
@@ -233,8 +233,8 @@ void World::draw(Graphics::RenderContext& context) const
    }
 
    // scroll the viewpoint to the right position
-   //Vector scroll = layers[getObjectLayer()]->getScroll ();
-   //glTranslatef(-scroll.x, -scroll.y, 0);
+   Vector scroll = layers[getObjectLayer()]->getScroll ();
+   context.setSpriteOffset(scroll);
 
    EntityMap::const_iterator it = mEntities.begin();
    for ( ; it != mEntities.end(); ++it )
@@ -248,7 +248,7 @@ void World::draw(Graphics::RenderContext& context) const
 /// \brief Scrolls the layers based on the follow mode given by the application
 
 // Move to the viewport!
-void World::scroll ()
+void World::scroll (Graphics::RenderContext& context)
 {
    float xScroll = 0;
    float yScroll = 0;
@@ -257,7 +257,7 @@ void World::scroll ()
    {
       if ( followObject != NULL )
       {
-         Vector pos = Vector::zero(); //followObject->getPosition ();
+         Vector pos = followObject->getPosition();
          Layer& layer = *layers[getObjectLayer()];
 
          // determine if the layer should be scrolled
@@ -298,7 +298,7 @@ void World::scroll ()
       Vector prescroll = layer.getScroll();
 
       for ( Layers::size_type l = 0; l < layers.size(); ++l )
-         layers[l]->scroll(xScroll, yScroll);
+         layers[l]->scroll(context, xScroll, yScroll);
 
       Vector scroll = layer.getScroll();
 
@@ -498,7 +498,7 @@ void World::notifyObjectWorldCollision(Entity& object, Bound& bound, int side, b
 {
    ASSERT_PTR(mpScript);
    Variant args[4];
-   args[0].setObject(mpScript->resolve(&object));
+   args[0].setObject(mpScript->instantiate(object.getClassName(), &object));
    args[1].setObject(mpScript->instantiate(sBound, &bound));
    args[2].setInt(side);
    args[3].setBool(begin);
@@ -509,8 +509,8 @@ void World::notifyObjectObjectCollision(Entity& source, Entity& target, int side
 {
    ASSERT_PTR(mpScript);
    Variant args[4];
-   args[0].setObject(mpScript->resolve(&source));
-   args[1].setObject(mpScript->resolve(&target));
+   args[0].setObject(mpScript->instantiate(source.getClassName(), &source));
+   args[1].setObject(mpScript->instantiate(target.getClassName(), &target));
    args[2].setInt(side);
    args[3].setBool(begin);
    mpScript->run(sCollision, 4, args);

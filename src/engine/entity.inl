@@ -93,6 +93,26 @@ void Entity::setClassName(const String& classname)
    mClassName = classname;
 }
 
+INLINE const XForm& Entity::getTransform() const
+{
+   return mTransform;
+}
+
+INLINE const Vector& Entity::getPosition() const
+{
+   return mTransform.getPosition();
+}
+
+INLINE float Entity::getRotation() const
+{
+   return mTransform.getAngle();
+}
+
+INLINE const Vector& Entity::getOffset() const
+{
+   return mOffset;
+}
+
 bool Entity::isDirty() const
 {
    return mDirtyFlag != 0;
@@ -117,3 +137,4 @@ void Entity::resetDirty()
 {
    mDirtyFlag = 0;
 }
+

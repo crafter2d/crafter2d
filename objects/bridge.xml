@@ -1,0 +1,45 @@
+<?xml version="1.0">
+
+<!-- custom bridge entity -->
+<entity name="bridge">
+
+	<entity file="../objects/bridgeside.xml" offsetx="0.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="12.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="24.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="36.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="48.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="60.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="72.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="84.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="96.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="108.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="120.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="132.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="144.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="156.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="168.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="180.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="192.0" offsety="0.0" />
+	<entity file="../objects/bridgepart.xml" offsetx="204.0" offsety="0.0" />
+	<entity file="../objects/bridgeside.xml" offsetx="216.0" offsety="0.0" />
+	
+	<link left="0" right="1" anchorx="6.0" anchory="0.0" type="revolute" />
+	<link left="1" right="2" anchorx="18.0" anchory="0.0" type="revolute" />
+	<link left="2" right="3" anchorx="30.0" anchory="0.0" type="revolute" />
+	<link left="3" right="4" anchorx="42.0" anchory="0.0" type="revolute" />
+	<link left="4" right="5" anchorx="54.0" anchory="0.0" type="revolute" />
+	<link left="5" right="6" anchorx="66.0" anchory="0.0" type="revolute" />
+	<link left="6" right="7" anchorx="78.0" anchory="0.0" type="revolute" />
+	<link left="7" right="8" anchorx="90.0" anchory="0.0" type="revolute" />
+	<link left="8" right="9" anchorx="102.0" anchory="0.0" type="revolute" />
+	<link left="9" right="10" anchorx="114.0" anchory="0.0" type="revolute" />
+	<link left="10" right="11" anchorx="126.0" anchory="0.0" type="revolute" />
+	<link left="11" right="12" anchorx="138.0" anchory="0.0" type="revolute" />
+	<link left="12" right="13" anchorx="150.0" anchory="0.0" type="revolute" />
+	<link left="13" right="14" anchorx="162.0" anchory="0.0" type="revolute" />
+	<link left="14" right="15" anchorx="174.0" anchory="0.0" type="revolute" />
+	<link left="15" right="16" anchorx="186.0" anchory="0.0" type="revolute" />
+	<link left="16" right="17" anchorx="198.0" anchory="0.0" type="revolute" />
+	<link left="17" right="18" anchorx="210.0" anchory="0.0" type="revolute" />
+	
+</entity>

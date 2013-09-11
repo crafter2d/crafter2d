@@ -21,6 +21,8 @@
 #define ENTITY_H
 
 #include "core/string/string.h"
+#include "core/math/vector.h"
+#include "core/math/xform.h"
 
 #include "net/netobject.h"
 #include "components/components.h"
@@ -41,7 +43,7 @@ class NodeVisitor;
 
 class Entity : public NetObject
 {
-   enum { eNameDirty = 256, ePositionDirty = 2 };
+   enum { eNameDirty = 256, ePositionDirty = 2, eRotationDirty = 4 };
 
 public:
    DEFINE_REPLICATABLE(Entity);
@@ -74,6 +76,18 @@ public:
    void           setDirty(int flag);
    void           resetDirty();
 
+   const XForm&   getTransform() const;
+   void           setTransform(const XForm& transform);
+
+   const Vector&  getPosition() const;
+   void           setPosition(const Vector& p);
+
+   float          getRotation() const;
+   void           setRotation(float rot);
+
+   const Vector&  getOffset() const;
+   void           setOffset(const Vector& offset);
+
  // operations
    void initialize();
    void destroy();
@@ -90,7 +104,7 @@ public:
 
  // maintenance
    Entities& getChildren();
-   void      add(Entity& entity);
+   void      add(Entity* pentity);
    void      remove(Entity& entity);
 
  // visitor
@@ -114,6 +128,8 @@ private:
    MeshComponent*    mpMeshComponent;
    Entity*           mpParent;
    Entities          mChildren;
+   XForm             mTransform;
+   Vector            mOffset;
    String            mName;
    String            mXmlFile;
    String            mClassName;

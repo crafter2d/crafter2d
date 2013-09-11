@@ -78,9 +78,14 @@ class GameServer extends Server
 	private void createObjects()
 	{
 		Vector2D pos = new Vector2D();
+		/*
 		pos.set(300, 00); Actor.construct(this, "box", pos, "../objects/box.xml");
 		pos.set(300, 40); Actor.construct(this, "box", pos, "../objects/box.xml");
 		pos.set(300, 80); Actor.construct(this, "box", pos, "../objects/box.xml");
+		*/
+		
+		pos.set(727, 422);
+		Actor.construct(this, "bridge", pos, "../objects/bridge.xml");
 		
 		/*
 		Vector2D left = new Vector2D();

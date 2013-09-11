@@ -40,7 +40,6 @@ public:
    
  // get/set
    Id            getId() const;
-   Id            getParentId() const;
    const String& getFileName() const;
 
 protected:
@@ -50,7 +49,6 @@ protected:
 
 private:
    Id     mId;
-   Id     mParentId;
    String mFileName;
 };
 

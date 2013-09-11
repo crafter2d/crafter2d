@@ -160,7 +160,7 @@ public:
 
 protected:
 
-   void           scroll();
+   void           scroll(Graphics::RenderContext& context);
    void           initializeBorders();
    
  // notifications

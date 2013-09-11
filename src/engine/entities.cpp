@@ -12,41 +12,82 @@ Entities::Entities():
 
 Entities::~Entities()
 {
+   removeAll();
+}
+
+const Entity& Entities::operator[](int index) const
+{
+   return *mEntities[index];
+}
+
+Entity& Entities::operator[](int index)
+{
+   return *mEntities[index];
 }
 
 // - Maintenance
 
-void Entities::add(Entity& entity)
+void Entities::add(Entity* pentity)
 {
-   mEntities[entity.getId()] = &entity;
+   mEntities.push_back(pentity);
 }
 
 void Entities::remove(Entity& entity)
 {
-   EntityMap::iterator it = mEntities.find(entity.getId());
+   EntityMap::iterator it = std::find(mEntities.begin(), mEntities.end(), &entity);
    ASSERT(it != mEntities.end());
    mEntities.erase(it);
+
+   delete &entity;
+}
+
+void Entities::removeAll()
+{
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
+   {
+      Entity* pentity = mEntities[index];
+      delete pentity;
+   }
+   mEntities.clear();
 }
 
 // - update & drawing
 
+void Entities::initialize()
+{
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
+   {
+      Entity* pentity = mEntities[index];
+      pentity->initialize();
+   }
+}
+
 void Entities::update(float delta)
 {
-   EntityMap::iterator it = mEntities.begin();
-   for ( ; it != mEntities.end(); ++it )
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
    {
-      Entity* pentity = it->second;
+      Entity* pentity = mEntities[index];
       pentity->update(delta);
    }
 }
 
 void Entities::draw(Graphics::RenderContext& context) const
 {
-   EntityMap::const_iterator it = mEntities.begin();
-   for ( ; it != mEntities.end(); ++it )
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
    {
-      Entity* pentity = it->second;
+      Entity* pentity = mEntities[index];
       pentity->draw(context);
+   }
+}
+
+// - Positioning
+
+void Entities::setPosition(const Vector& pos)
+{
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
+   {
+      Entity* pentity = mEntities[index];
+      pentity->setPosition(pos);
    }
 }
 
@@ -54,10 +95,9 @@ void Entities::draw(Graphics::RenderContext& context) const
    
 void Entities::traverse(NodeVisitor& visitor)
 {
-   EntityMap::const_iterator it = mEntities.begin();
-   for ( ; it != mEntities.end(); ++it )
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
    {
-      Entity* pentity = it->second;
+      Entity* pentity = mEntities[index];
       visitor.traverse(*pentity);
    }
 }

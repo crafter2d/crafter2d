@@ -10,7 +10,12 @@ QueryBodyComponentMessage::QueryBodyComponentMessage():
 }
 
 // - Get/set
-   
+
+bool QueryBodyComponentMessage::hasBody() const
+{
+   return mpBody != NULL;
+}
+
 Body& QueryBodyComponentMessage::getBody()
 {
    ASSERT_PTR(mpBody);

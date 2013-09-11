@@ -48,6 +48,10 @@ Body& PhysicsSimulator::createBody(const BodyDefinition& definition)
    return *pbody;
 }
 
+void PhysicsSimulator::createLink(const Body& left, const Body& right, const JointDefinition& definition)
+{
+}
+
 void PhysicsSimulator::worldChanged()
 {
    const Bounds& bounds = getWorld().getBounds();

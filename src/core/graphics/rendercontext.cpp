@@ -39,6 +39,11 @@ void RenderContext::endDraw()
    mSpriteRenderer.endDraw(*this);
 }
 
+void RenderContext::setSpriteOffset(const Vector& offset)
+{
+   mSpriteRenderer.setOffset(*this, offset);
+}
+
 void RenderContext::drawSprite(const Sprite& sprite)
 {
    mSpriteRenderer.draw(sprite);

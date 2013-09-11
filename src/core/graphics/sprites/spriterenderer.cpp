@@ -36,18 +36,12 @@
 #include "core/math/matrix4.h"
 #include "core/math/vector.h"
 
-struct ConstantBuffer
-   {
-      Matrix4 projection;
-      Matrix4 world;
-      Matrix4 object;
-   };
-
 namespace Graphics
 {
 
 SpriteRenderer::SpriteRenderer():
    mSprites(),
+   mConstants(),
    mEffect(),
    mpUB(NULL),
    mpVB(NULL),
@@ -80,6 +74,10 @@ bool SpriteRenderer::create(Device& device)
       return false;
    }
 
+   mConstants.projection.setOrtho(0, 800.0f, 0, 600.0f);
+   mConstants.world.setIdentity();
+   mConstants.object.setIdentity();
+
    const int batchsize = 256;
 
    mpVB = device.createVertexBuffer();
@@ -97,16 +95,24 @@ bool SpriteRenderer::create(Device& device)
    return true;
 }
 
+void SpriteRenderer::setOffset(RenderContext& context, const Vector& offset)
+{
+   if ( mOffset != offset )
+   {
+      mConstants.world.translate(-(offset - mOffset));
+      // mpUB->set(context, &mConstants);
+
+      mOffset = offset;
+   }
+}
+
+// - Drawing
+
 void SpriteRenderer::beginDraw(RenderContext& context)
 {
    mSprites.clear();
 
-   ConstantBuffer constants;
-   constants.projection.setOrtho(0, 800.0f, 0, 600.0f);
-   constants.world.setIdentity();
-   constants.object.setIdentity();
-
-   mpUB->set(context, &constants);
+   mpUB->set(context, &mConstants);
 }
    
 void SpriteRenderer::endDraw(RenderContext& context)

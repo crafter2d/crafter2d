@@ -8,6 +8,8 @@
 #include "core/graphics/sprites/sprite.h"
 #include "core/math/vertex.h"
 
+#include "engine/entity.h"
+
 #include "components.h"
 #include "componentmessage.h"
 #include "componentstructs.h"
@@ -44,7 +46,7 @@ void MeshComponent::registerComponent(Components& components)
 {
 	Component::registerComponent(components);
 
-	components.subscribeMessageType(*this, ComponentInterface::ePositionChangedMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eUpdatedMsg);
    components.subscribeMessageType(*this, ComponentInterface::eUpdateMsg);
    components.subscribeMessageType(*this, ComponentInterface::eRenderMsg);
 }
@@ -55,10 +57,9 @@ void MeshComponent::handleMessage(ComponentMessage& message)
 
 	switch ( message.getMessageType() )
 	{
-	case ePositionChangedMsg:
+   case eUpdatedMsg:
 		{
-         PositionInfo* pinfo = static_cast<PositionInfo*>(message.getData());
-         mpSprite->setTransform(pinfo->transform);
+         mpSprite->setTransform(getEntity().getTransform());
 		}
       break;
    case eUpdateMsg:

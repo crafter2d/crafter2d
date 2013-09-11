@@ -49,11 +49,6 @@ void Box2DContactListener::collision(b2Contact* pcontact, bool begin)
 
    int typeA = (int)pa->GetUserData();
    int typeB = (int)pb->GetUserData();
-   
-   if ( pa->IsSensor() && pb->IsSensor() )
-   {
-      return;
-   }
 
    if ( pa->IsSensor() && typeB == Box2DSimulator::eObject )
    {

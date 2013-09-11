@@ -35,6 +35,7 @@ public:
 
  // get/set
    b2Body& getBox2DBody();
+
    void setHalfSize(const Size& size);
 
  // query

@@ -63,8 +63,8 @@ b2Body& Box2DBody::getBox2DBody()
 
 void Box2DBody::setHalfSize(const Size& size)
 {
-	mHalfWidth = size.width;
-	mHalfHeight = size.height;
+   mHalfWidth = size.width;
+   mHalfHeight = size.height;
 }
 
 // query

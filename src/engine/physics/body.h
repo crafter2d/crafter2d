@@ -29,6 +29,7 @@
 
 class IBodyListener;
 class CollisionShape;
+class JointDefinition;
 class TiXmlElement;
 class ForceGenerator;
 class Simulator;
@@ -66,6 +67,7 @@ public:
 
  // maintenance
    void addListener(IBodyListener* plistener);
+   void link(Body& to, const JointDefinition& definition);
 
  // loading
    virtual void load(const TiXmlElement& element);

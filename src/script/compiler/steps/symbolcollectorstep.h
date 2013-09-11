@@ -45,6 +45,7 @@ public:
    virtual void visit(ASTFunction& ast);
    virtual void visit(ASTFunctionArgument& ast);
    virtual void visit(ASTField& ast);
+   virtual void visit(ASTProperty& ast);
    virtual void visit(ASTBlock& ast);
    virtual void visit(ASTVariableInit& ast);
    virtual void visit(ASTArrayInit& ast);
