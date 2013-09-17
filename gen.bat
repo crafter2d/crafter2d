@@ -1,6 +1,6 @@
 @echo off
 
-echo JEngine SSE project generator, Version 1.0 for Windows
+echo Crafter 2D project generator script, version 1.0 for Windows
 echo Written by Jeroen Broekhuizen
 echo.
 

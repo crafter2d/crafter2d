@@ -82,9 +82,9 @@ Game::~Game()
 bool Game::create()
 {
    Log& log = Log::getInstance();
-   log << "JEngine SSE V0.4.8 - Copyright 2012 - Jeroen Broekhuizen\n";
+   log << "JEngine SSE V0.5.0 - Copyright 2013 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
-   log << "---------------------------------------------------------\n";
+   log << "--------------------------------------------------------\n";
 
    FileSystem::getInstance().addPath(UTEXT("../bin"));
    FileSystem::getInstance().addPath(UTEXT("../scripts"));

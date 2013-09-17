@@ -19,7 +19,6 @@
  ***************************************************************************/
 #include "sprite.h"
 
-#include "core/graphics/texture.h"
 #include "core/graphics/animator.h"
 
 #include "spritedefinition.h"

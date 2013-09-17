@@ -108,7 +108,11 @@ int Win32GameWindow::getHeight() const
 
 Driver* Win32GameWindow::loadDriver()
 {
+#ifdef _DEBUG
    return doLoadDriver(UTEXT("D3Dd.dll"));
+#else
+   return doLoadDriver(UTEXT("D3D.dll"));
+#endif
 }
 
 void Win32GameWindow::resize(int width, int height)
