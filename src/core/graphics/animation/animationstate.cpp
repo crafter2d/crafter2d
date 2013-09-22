@@ -30,7 +30,7 @@ namespace Graphics
       mDelta(0.0f),
       mAnimation(0),
       mAnimFrame(0),
-      mTexIndex(-1)
+      mTexIndex(0)
    {
    }
 

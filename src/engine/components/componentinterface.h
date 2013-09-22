@@ -19,6 +19,7 @@ namespace ComponentInterface
       eUpdatedMsg,
       eRenderMsg,
       eQueryBodyMsg,
+      eAnimationMsg,
 	   eNUM_MESSAGE_TYPES
    };
 };

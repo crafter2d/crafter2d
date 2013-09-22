@@ -27,6 +27,11 @@ INLINE const Animation& AnimationSet::operator[](int index) const
    return *mAnimations[index];
 }
 
+INLINE bool AnimationSet::isEmpty() const
+{
+   return mAnimations.empty();
+}
+
 INLINE int AnimationSet::size() const
 {
    return static_cast<int>(mAnimations.size());

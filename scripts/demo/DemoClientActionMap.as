@@ -25,7 +25,14 @@ class DemoClientActionMap extends ActionMap
 	{
 		real speed = 0.0;
 		if ( down )
+		{
 			speed = -20.0;
+			mEntity.setAnimation(1);
+		}
+		else
+		{
+			mEntity.setAnimation(0);
+		}
 	
 		InputForceGenerator force = (InputForceGenerator) mEntity.getForceGenerator();
 		Vector2D velocity = force.getVelocity();
@@ -42,7 +49,14 @@ class DemoClientActionMap extends ActionMap
 	{
 		real speed = 0.0;
 		if ( down )
+		{
 			speed = 20.0;
+			mEntity.setAnimation(1);
+		}
+		else
+		{
+			mEntity.setAnimation(0);
+		}
 			
 		InputForceGenerator force = (InputForceGenerator) mEntity.getForceGenerator();
 		Vector2D velocity = force.getVelocity();

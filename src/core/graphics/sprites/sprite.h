@@ -54,6 +54,7 @@ namespace Graphics
     // operations
       bool initialize(Device& device);
       void update(float delta);
+      void setAnimation(int index);
 
    private:
 

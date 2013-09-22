@@ -74,6 +74,8 @@ bool Sprite::initialize(Device& device)
 {
    mHalfSize = mDefinition.getSize() / 2.0f;
 
+   setAnimation(0);
+
    return true;
 }
 
@@ -86,6 +88,15 @@ void Sprite::update(float delta)
       {
          mTexCoordinate = mDefinition.getSpriteAnimator().getTextureCoordinate(mAnimState);
       }
+   }
+}
+
+void Sprite::setAnimation(int index)
+{
+   if ( mDefinition.hasSpriteAnimator() )
+   {
+      mAnimState.setActiveAnimation(index);
+      mTexCoordinate = mDefinition.getSpriteAnimator().getTextureCoordinate(mAnimState);
    }
 }
 

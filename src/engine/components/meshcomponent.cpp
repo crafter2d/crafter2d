@@ -13,6 +13,7 @@
 #include "components.h"
 #include "componentmessage.h"
 #include "componentstructs.h"
+#include "animationcomponentmessage.h"
 
 using namespace Graphics;
 
@@ -48,6 +49,7 @@ void MeshComponent::registerComponent(Components& components)
 
    components.subscribeMessageType(*this, ComponentInterface::eUpdatedMsg);
    components.subscribeMessageType(*this, ComponentInterface::eUpdateMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eAnimationMsg);
    components.subscribeMessageType(*this, ComponentInterface::eRenderMsg);
 }
 
@@ -66,6 +68,12 @@ void MeshComponent::handleMessage(ComponentMessage& message)
       {
          float* pdelta = static_cast<float*>(message.getData());
          update(*pdelta);
+      }
+      break;
+   case eAnimationMsg:
+      {
+         AnimationComponentMessage& msg = static_cast<AnimationComponentMessage&>(message);
+         mpSprite->setAnimation(msg.getAnimation());
       }
       break;
    case eRenderMsg:

@@ -134,8 +134,6 @@ void Animator::parseAnimation (const char* sequence, Animation *panimation)
 	// see if there is still a number in the buffer
 	if (j > 0)
       panimation->add(atoi(number));
-
-   panimation->add(-1);
 }
 
 void Animator::determineFrameCount()
@@ -159,9 +157,14 @@ void Animator::determineFrameCount()
 //--------------
 //- Animation
 
+bool Animator::canAnimate(AnimationState& state) const
+{
+   return !mpAnimations->isEmpty() && getAnimations()[state.mAnimation].size() > 1;
+}
+
 bool Animator::animate(AnimationState& state) const
 {
-   if ( state.mDelta >= mAnimationSpeed )
+   if ( canAnimate(state) && state.mDelta >= mAnimationSpeed )
    {
       nextFrame(state);
 
@@ -176,17 +179,14 @@ bool Animator::animate(AnimationState& state) const
 /// \fn AnimObject::nextFrame()
 void Animator::nextFrame(AnimationState& state) const
 {
-   if ( getAnimations().size() > 0 )
-   {
-      const Animation& animation = getAnimations()[state.mAnimation];
+   const Animation& animation = getAnimations()[state.mAnimation];
 
-      int index = animation[++state.mAnimFrame];
-	   if ( index == -1 )
-      {
-         state.mAnimFrame = 0;
-         state.mTexIndex = animation[state.mAnimFrame];
-	   }
+   if ( ++state.mAnimFrame >= animation.size() )
+   {
+      state.mAnimFrame = 0;
    }
+
+   state.mTexIndex = animation[state.mAnimFrame];
 }
 
 const TextureCoordinate& Animator::getTextureCoordinate(const AnimationState& state) const

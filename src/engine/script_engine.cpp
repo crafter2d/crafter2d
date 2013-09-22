@@ -53,6 +53,7 @@
 #include "world/world.h"
 #include "engine/content/contentmanager.h"
 #include "engine/components/querybodycomponentmessage.h"
+#include "engine/components/animationcomponentmessage.h"
 
 #include "actionmap.h"
 #include "entity.h"
@@ -310,6 +311,21 @@ void QueryBodyComponentMessage_getBody(VirtualMachine& machine, VirtualStackAcce
    RETURN_CLASS_I(msg.getBody());
 }
 
+void AnimationComponentMessage_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObject& thisobject = accessor.getThis();
+
+   AnimationComponentMessage* pmsg = new AnimationComponentMessage();
+   machine.registerNative(thisobject, pmsg);
+}
+
+void AnimationComponentMessage_setAnimation(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(AnimationComponentMessage, msg);
+
+   msg.setAnimation(accessor.getInt(1));
+}
+
 void Entity_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Entity, entity);
@@ -369,15 +385,6 @@ void Actor_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
    const String& name = accessor.getString(1);
 
    actor.setName(name);
-}
-
-void Actor_setAnimation(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Actor, actor);
-
-   int index = accessor.getInt(1);
-
-   actor.setAnimation(index);
 }
 
 void Actor_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1198,6 +1205,10 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction(UTEXT("hasBody()"), QueryBodyComponentMessage_hasBody);
    registrator.addFunction(UTEXT("getBody()"), QueryBodyComponentMessage_getBody);
 
+   registrator.addClass(UTEXT("engine.game.AnimationComponentMessage"));
+   registrator.addFunction(UTEXT("AnimationComponentMessage()"), AnimationComponentMessage_init);
+   registrator.addFunction(UTEXT("setAnimation(int)"), AnimationComponentMessage_setAnimation);
+
    registrator.addClass(UTEXT("engine.game.Actor"));
    registrator.addFunction(UTEXT("Actor()"), Actor_init);
    registrator.addFunction(UTEXT("finalize()"), Actor_destruct);
@@ -1205,7 +1216,6 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction(UTEXT("getPositionY()"), Actor_getPositionY);
    registrator.addFunction(UTEXT("setPosition(real, real)"), Actor_setPosition);
    registrator.addFunction(UTEXT("setName(string)"), Actor_setName);
-   registrator.addFunction(UTEXT("setAnimation(int)"), Actor_setAnimation);
    registrator.addFunction(UTEXT("direction()"), Actor_direction);
    registrator.addFunction(UTEXT("flip()"), Actor_flip);
    registrator.addFunction(UTEXT("setController(engine.game.Controller)"), Actor_setController);

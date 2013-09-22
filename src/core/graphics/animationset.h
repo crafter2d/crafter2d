@@ -45,6 +45,7 @@ namespace Graphics
       void              add(Animation* anim);
       void              remove(Animation* anim);
 
+      bool              isEmpty() const;
 	   int               size() const;
 	   const Animation&  operator[](int index) const;
 

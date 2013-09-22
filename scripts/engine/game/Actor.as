@@ -210,6 +210,14 @@ class Actor extends Entity implements Collidable
 		}
 	}
 	
+	public void setAnimation(int index)
+	{
+		AnimationComponentMessage message = new AnimationComponentMessage();
+		message.setAnimation(index);
+		
+		sendComponentMessage(message);
+	}
+	
 	// - State
 	
 	public AttackState getAttackState()
@@ -224,7 +232,6 @@ class Actor extends Entity implements Collidable
 	private native void setPosition(real x, real y);
 	
 	public native void setName(string name);
-	public native void setAnimation(int index);
 	public native boolean direction();
 	public native void flip();
 	public native boolean hasLineOfSight(Actor to);

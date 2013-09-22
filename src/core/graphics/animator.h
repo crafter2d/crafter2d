@@ -59,6 +59,9 @@ namespace Graphics
       const AnimationSet&  getAnimations() const;
             AnimationSet&  getAnimations();
 
+    // query
+      bool canAnimate(AnimationState& state) const;
+
     // animation
       void nextFrame(AnimationState& state) const;
 
