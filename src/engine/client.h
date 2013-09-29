@@ -152,6 +152,7 @@ private:
    ClientKeyEventDispatcher   mKeyEventDispatcher;
    ClientMouseEventDispatcher mMouseEventDispatcher;
    JEngineSSE::SoundManager   mSoundManager;
+   JEngineSSE::Sound*         mpBackgroundMusic;
    WorldRenderer*             mpWorldRenderer;
    Player*                    mpPlayer;
    KeyMap*                    mpKeyMap;

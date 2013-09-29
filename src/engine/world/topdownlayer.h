@@ -43,9 +43,6 @@ public:
  // notifications
    virtual void onViewportChanged(Graphics::RenderContext& context);
 
-protected:
-   virtual TileRow*  createTileRows(int width, int height);
-
 private:
 
  // updating

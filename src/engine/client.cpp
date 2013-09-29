@@ -145,6 +145,7 @@ void Client::update(float delta)
 {
    Process::update(delta);
 
+   mSoundManager.update();
    mpInputDevice->update();
    mpWindow->update();
 
@@ -507,6 +508,9 @@ void Client::notifyWorldChanged()
    // run the onWorldChanged script
    Variant arg(mpScript->resolve(&world));
    mpScript->run(UTEXT("onWorldChanged"), 1, &arg);
+
+   mpBackgroundMusic = mSoundManager.createTrack(UTEXT("../sounds/grassy_plain.ogg"));
+   mSoundManager.play(*mpBackgroundMusic);
 
    Process::notifyWorldChanged();
 }

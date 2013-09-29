@@ -62,6 +62,16 @@ TileSet::TileSet():
 
 bool TileSet::create(Graphics::Device& device, const String& filename)
 {
+   if ( load(filename) )
+   {
+      loadTexture(device);
+   }
+
+   return true;
+}
+
+bool TileSet::load(const String& filename)
+{
    int thisTile, val;
    Log& log = Log::getInstance();
 
@@ -87,7 +97,6 @@ bool TileSet::create(Graphics::Device& device, const String& filename)
       log.error("TileSet.create: %s contains invalid tileset size.", path.c_str());
       return false;
    }
-   mTileCount ++; // tile engine starts at 1
 
    set->QueryIntAttribute("width", &mTileWidth);
    set->QueryIntAttribute("height", &mTileHeight);
@@ -98,16 +107,24 @@ bool TileSet::create(Graphics::Device& device, const String& filename)
       return false;
    }
 
-   delete[] mpInfo;
-   mpInfo = new TileInfo[mTileCount];
-   memset(mpInfo, 0, sizeof(TileInfo) * mTileCount);
-
-   // load the texture
-   if ( !loadTexture(device, *set) )
+   const TiXmlElement* pmapelement = static_cast<const TiXmlElement*>(set->FirstChild("texture"));
+   if ( pmapelement == NULL )
    {
       return false;
    }
 
+   const char* pfile = pmapelement->Attribute("name");
+   if ( pfile == NULL )
+   {
+      return false;
+   }
+
+   mMapName = String::fromUtf8(pfile);
+
+   delete[] mpInfo;
+   mpInfo = new TileInfo[mTileCount];
+   memset(mpInfo, 0, sizeof(TileInfo) * mTileCount);
+   
    // load information about all tiles
    TiXmlElement* tile = (TiXmlElement*)set->FirstChild("tile");
    while ( tile )
@@ -137,22 +154,9 @@ bool TileSet::create(Graphics::Device& device, const String& filename)
    return true;
 }
 
-bool TileSet::loadTexture(Graphics::Device& device, const TiXmlElement& set)
+bool TileSet::loadTexture(Graphics::Device& device)
 {
-   const TiXmlElement* pmapelement = static_cast<const TiXmlElement*>(set.FirstChild("texture"));
-   if ( pmapelement == NULL )
-   {
-      return false;
-   }
-
-   const char* pfile = pmapelement->Attribute("name");
-   if ( pfile == NULL )
-   {
-      return false;
-   }
-
-   String file = String::fromUtf8(pfile);
-   mMap = ResourceManager::getInstance().getTexture(device, file);
+   mMap = ResourceManager::getInstance().getTexture(device, mMapName);
    return mMap.isValid();
 }
 

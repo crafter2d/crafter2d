@@ -20,13 +20,15 @@
 #ifndef WORLDWRITER_H
 #define WORLDWRITER_H
 
+#include "engine/engine_base.h"
+
 class DataStream;
 class Layer;
 class String;
 class World;
 class ZipFile;
 
-class WorldWriter
+class ENGINE_API WorldWriter
 {
 public:
    static int getVersion();

@@ -5,8 +5,8 @@
    <sprite width=48 height=62>
 	  <texture>char.dds</texture>
       <animations speed=125>
-         <anim length=1>0</anim>
-         <anim length=7>1 2 3 4 5 6 7</anim>
+         <anim length=1 />
+         <anim length=7 />
       </animations>
    </sprite>
    <body inertia="1" mass="80" rotate="0">

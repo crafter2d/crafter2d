@@ -20,10 +20,12 @@
 #ifndef WORDREADER_H
 #define WORDREADER_H
 
+#include "engine/engine_base.h"
+
 class String;
 class World;
 
-class WorldReader
+class ENGINE_API WorldReader
 {
 public:
     WorldReader();

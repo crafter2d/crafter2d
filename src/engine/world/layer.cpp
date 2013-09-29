@@ -72,7 +72,7 @@ Layer::Layer():
    vb(NULL),
    ib(NULL),
    ub(NULL),
-   texcoordLookup(0),
+   texcoordLookup(NULL),
    mpDefinition(NULL),
    mEffect()
 {
@@ -218,8 +218,34 @@ LayerType Layer::getType() const
 
 TileRow* Layer::createTileRows(int width, int height)
 {
-   PURE_VIRTUAL
-   return NULL;
+   TileRow* prows = new TileRow[height];
+   for ( int index = 0; index < height; ++index )
+   {
+      prows[index].create(width);
+   }
+
+   return prows;
+}
+
+void Layer::resize(int width, int height)
+{
+   if ( height >= getHeight() )
+   {
+       
+   }
+   else
+   {
+      // remove rows
+   }
+
+   for ( int index = 0; index < height; ++index )
+   {
+      TileRow& row = field[index];
+      row.resize(width);
+   }
+
+   mpDefinition->width = width;
+   mpDefinition->height = height;
 }
 
 bool Layer::createBuffers(Device& device, const VertexInputLayout& layout, int width, int height)

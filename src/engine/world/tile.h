@@ -33,6 +33,8 @@ public:
    Tile();
    virtual ~Tile();
 
+   Tile& operator=(const Tile& that);
+
  // get/set
    int   getTextureId() const;
    void  setTextureId(int tex);

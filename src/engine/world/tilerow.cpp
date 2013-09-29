@@ -36,7 +36,7 @@ TileRow::TileRow():
 /// \brief Releases internal member variables
 TileRow::~TileRow()
 {
-	release ();
+	release();
 }
 
 TileRow& TileRow::operator=(const TileRow& row)
@@ -88,8 +88,23 @@ void TileRow::release()
 
 Tile* TileRow::createTiles(int width)
 {
-   PURE_VIRTUAL
-   return NULL;
+   return new Tile[width];
+}
+
+void TileRow::resize(int width)
+{
+   Tile* ptiles = createTiles(width);
+
+   int w = MIN(_width, width);
+   for ( int index = 0; index < w; ++index )
+   {
+      ptiles[index] = _ptiles[index];
+   }
+
+   release();
+
+   _ptiles = ptiles;
+   _width  = width;
 }
 
 

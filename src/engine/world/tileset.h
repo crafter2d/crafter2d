@@ -22,6 +22,8 @@
 
 #include "core/resource/resourcemanager.h"
 
+#include "engine/engine_base.h"
+
 namespace Graphics
 {
    class Device;
@@ -47,18 +49,20 @@ struct TileInfo {
 };
 
 /// Implements a tileset container. In this container we can store information about every tile in the tile bitmap.
-class TileSet
+class ENGINE_API TileSet
 {
 public:
    TileSet();
 
    bool create(Graphics::Device& device, const String& filename);
+   bool load(const String& filename);
    bool update(float tick);
 
  // operator overloads
    TileInfo& operator[](int idx);
 
  // get/set
+   const String& getTextureName() const;
    TexturePtr& getTexture();
 
    int   getTileCount() const;
@@ -68,9 +72,10 @@ public:
 private:
 
  // loading
-   bool loadTexture(Graphics::Device& device, const TiXmlElement& tile);
+   bool loadTexture(Graphics::Device& device);
 
  // data
+   String      mMapName;
    TexturePtr  mMap;
    TileInfo*   mpInfo;
    int         mTileCount;

@@ -112,7 +112,11 @@ b2Fixture* Box2DBody::createSensor(float halfx, float halfy, const b2Vec2& cente
   
 void Box2DBody::applyForce(const Vector& force)
 {
-   mBody.ApplyForce(b2Vec2(force.x, force.y), mBody.GetWorldCenter());
+   // mBody.ApplyForce(b2Vec2(force.x, force.y), mBody.GetWorldCenter());
+   b2Vec2 v = Box2DSimulator::vectorToB2(force);
+   b2Vec2 vel = mBody.GetLinearVelocity();
+   vel.x = v.x;
+   mBody.SetLinearVelocity(vel);
 }
 
 void Box2DBody::applyForce(const Vector& force, const Vector& pos)

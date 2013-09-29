@@ -28,6 +28,8 @@ namespace Graphics
    {
    public:
       void add(int id);
+
+      void generate(int start, int length);
    };
 }
 

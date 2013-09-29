@@ -23,7 +23,7 @@
 /// \brief Use this function to get the normal of this bound. The normal can be used for collision
 /// detection etc.
 /// \returns the normal of this bound
-INLINE Vector Bound::getNormal()
+INLINE const Vector& Bound::getNormal()
 {
 	return mNormal;
 }

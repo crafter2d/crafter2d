@@ -69,6 +69,11 @@ void SoundManager::destroy()
    mpSystem->release();
 }
 
+void SoundManager::update()
+{
+   mpSystem->update();
+}
+
 // - Factory functions
 
 Sound* SoundManager::createSound(const String& filename) const

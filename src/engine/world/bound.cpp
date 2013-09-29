@@ -106,24 +106,19 @@ Bound::CollisionType Bound::intersect(const Vector& p3, const Vector& p4, Vector
 // - Editing interface
 //////////////////////////////////////////////////////////////////////////
 
+void Bound::flip()
+{
+   Vector left = mLeft;
+   mLeft = mRight;
+   mRight = left;
+
+   calculateNormal();
+}
+
 void Bound::move(const Vector& offset)
 {
    mLeft += offset;
    mRight += offset;
-}
-
-int Bound::findPoint(const Vector& point)
-{
-   if ( (point - mLeft).length() < 4 )
-   {
-      return 0;
-   }
-   else if ( (point - mRight).length() < 4 )
-   {
-      return 1;
-   }
-
-   return -1;
 }
 
 void Bound::movePoint(int point, const Vector& offset)
@@ -138,4 +133,32 @@ void Bound::movePoint(int point, const Vector& offset)
    }
 
    calculateNormal();
+}
+
+void Bound::straighten(float margin)
+{
+   if ( fabs(mLeft.x - mRight.x) < margin )
+   {
+      mRight.x = mLeft.x;
+   }
+   else if ( fabs(mLeft.y - mRight.y) < margin )
+   {
+      mRight.y = mLeft.y;
+   }
+}
+
+// - Searching
+
+int Bound::findPoint(const Vector& point)
+{
+   if ( (point - mLeft).length() < 4 )
+   {
+      return 0;
+   }
+   else if ( (point - mRight).length() < 4 )
+   {
+      return 1;
+   }
+
+   return -1;
 }

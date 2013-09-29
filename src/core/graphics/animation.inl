@@ -29,4 +29,12 @@ INLINE void Animation::add(int id)
    push_back(id);
 }
 
+INLINE void Animation::generate(int start, int length)
+{
+   for ( int index = start; index < start + length; ++index )
+   {
+      add(index);
+   }
+}
+
 } // namespace Graphics

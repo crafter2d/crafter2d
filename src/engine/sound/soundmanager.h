@@ -22,6 +22,7 @@ namespace JEngineSSE
     // operations
       bool initialize();
       void destroy();
+      void update();
 
     // media player functions
       bool play(const Sound& sound);

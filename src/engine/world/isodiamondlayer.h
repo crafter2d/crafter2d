@@ -45,10 +45,7 @@ public:
 
  // notifications
    virtual void onViewportChanged(const Graphics::Viewport& viewport);
-
-protected:
-   virtual TileRow*  createTileRows(int width, int height);
-
+   
 private:
    float _halfTileWidth;
    float _halfTileHeight;

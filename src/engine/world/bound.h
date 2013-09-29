@@ -22,6 +22,8 @@
 
 #include "core/math/vector.h"
 
+#include "engine/engine_base.h"
+
 /**
 @author Jeroen Broekhuizen
 \brief Bound for collision detection, can also be used to represent lines.
@@ -30,7 +32,7 @@ To do exact collision detection, JEngine implements bounds as non-passable (and 
 world to which object can collide during for example movement or grafity. Using line math an exact location
 of intersection can be determined.
 */
-class Bound
+class ENGINE_API Bound
 {
 public:
    enum CollisionType { eCoinsident, eCollision, eParellel, eNoCollision };
@@ -45,15 +47,20 @@ public:
    const Vector&  getRight() const;
    void           setRight(const Vector& right);
 
+   const Vector&  getNormal();
+
  //operations
    bool           hitTest(const Vector& point, float& distance);
    CollisionType  intersect(const Vector& p3, const Vector& p4, Vector& ip);
-	Vector         getNormal();
 
+ // editing
+   void     flip();
    void     move(const Vector& offset);
-
-   int      findPoint(const Vector& point);
    void     movePoint(int point, const Vector& offset);
+   void     straighten(float margin = 3.0f);
+
+ // searching
+   int      findPoint(const Vector& point);
 
 private:
    void  calculateNormal();

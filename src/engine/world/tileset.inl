@@ -24,6 +24,11 @@ INLINE TileInfo& TileSet::operator[](int idx)
    return mpInfo[idx];
 }
 
+INLINE const String& TileSet::getTextureName() const
+{
+   return mMapName;
+}
+
 INLINE TexturePtr& TileSet::getTexture()
 {
    return mMap;

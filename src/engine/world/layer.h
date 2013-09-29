@@ -28,6 +28,8 @@
 #include "core/defines.h"
 #include "core/string/string.h"
 
+#include "engine/engine_base.h"
+
 #include "tileset.h"
 #include "layertype.h"
 
@@ -70,7 +72,7 @@ A layer is a piece of the world which you can load and render on you screen. It 
 sunset background or whatever your like. A layer uses only one texture as its tileset, which should contain
 at least one sub-texture which can be rendered on the tiles.
 */
-class Layer
+class ENGINE_API Layer
 {
 public:
                   Layer();
@@ -135,14 +137,14 @@ public:
    void           update(float delta);
 
    void           calculateScrollSpeed(const Vector& area, int screenWidth, int screenHeight);
+ 
+ // editing
+   void resize(int width, int height);
 
  // notifications
    virtual void onViewportChanged(Graphics::RenderContext& context);
 
 protected:
- // pure virtuals
-   virtual TileRow* createTileRows(int width, int height) = 0;
-
  // operations
    void           setVertex(float** data, float x, float y, float texX, float texY);
 
@@ -176,6 +178,8 @@ private:
  // operations
    bool createBuffers(Graphics::Device& device, const Graphics::VertexInputLayout& layout, int width, int height);
    bool createUniformBuffers(Graphics::Device& device);
+
+   TileRow* createTileRows(int width, int height);
 
  // members
    LayerDefinition*  mpDefinition;

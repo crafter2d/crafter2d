@@ -91,49 +91,24 @@ bool Animator::loadFromXML(const TiXmlElement& xmlanimator)
 
 void Animator::parseAnimations(const TiXmlElement& xmlanimator)
 {
+   int start = 0;
    const TiXmlElement* pxmlanimation = static_cast<const TiXmlElement*>(xmlanimator.FirstChild("anim"));
    while ( pxmlanimation != NULL )
    {
-		Animation *panim = new Animation();
-		getAnimations().add(panim);
+		Animation *panimation = new Animation();
+		getAnimations().add(panimation);
 
-		// now parse the animation sequence
-      const TiXmlText* xmlValue = static_cast<const TiXmlText*>(pxmlanimation->FirstChild());
-		parseAnimation(xmlValue->Value(), panim);
-
+      int length;
+      if ( pxmlanimation->QueryIntAttribute("length", &length) == TIXML_SUCCESS )
+      {
+         panimation->generate(start, length);
+         start += length;
+      }
+      
       pxmlanimation = static_cast<const TiXmlElement*>(xmlanimator.IterateChildren ("anim", pxmlanimation));
    }
 
    determineFrameCount();
-}
-
-/// \fn AnimObject::parseAnimation (const char* animation)
-void Animator::parseAnimation (const char* sequence, Animation *panimation)
-{
-	char number[10] = "";
-	int length = strlen (sequence);
-	int j = 0;
-
-	// parse the sequence
-	for ( int i = 0; i < length; ++i )
-   {
-	   if (isdigit (sequence[i]))
-		   number[j++] = sequence[i];
-      else
-      {
-         // save the number and skip trailing spaces
-         panimation->add(atoi(number));
-         while (isspace (sequence[i]))
-            i++;
-
-         i--;
-         j = 0;
-      }
-	}
-
-	// see if there is still a number in the buffer
-	if (j > 0)
-      panimation->add(atoi(number));
 }
 
 void Animator::determineFrameCount()

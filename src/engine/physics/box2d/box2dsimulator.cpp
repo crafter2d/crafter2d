@@ -128,6 +128,7 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
             b2FixtureDef fixturedef;
             fixturedef.density  = 1;
             fixturedef.friction = 0.3f;
+            fixturedef.restitution = 0.2f;
             fixturedef.shape    = &shape;
             fixturedef.userData = (void*)Box2DSimulator::eObject;
             

@@ -33,22 +33,28 @@ class TileRow
 {
 public:
    TileRow();
-   virtual ~TileRow() = 0;
+   ~TileRow();
 
-   TileRow& operator=(const TileRow& row);
-
-   int getWidth() const { return _width; }
-
-   bool create(int width);
-   void release();
-
+ // operators
    const Tile& operator[](int index) const;
          Tile& operator[](int index);
 
-protected:
-   virtual Tile* createTiles(int width) = 0;
+   TileRow& operator=(const TileRow& row);
+
+ // query
+   int getWidth() const { return _width; }
+
+ // operations
+   bool create(int width);
+   void release();
+
+   void resize(int width);
 
 private:
+ // operations
+   Tile* createTiles(int width);
+
+ // data
    Tile* _ptiles;
    int   _width;
 };

@@ -36,3 +36,9 @@ Tile::Tile():
 Tile::~Tile()
 {
 }
+
+Tile& Tile::operator=(const Tile& that)
+{
+   texture = that.texture;
+   return *this;
+}

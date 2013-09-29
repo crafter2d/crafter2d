@@ -177,17 +177,6 @@ void IsoDiamondLayer::drawHighlight(const Vector& point)
    */
 }
 
-TileRow* IsoDiamondLayer::createTileRows(int width, int height)
-{
-   TileRow* prows = new IsoDiamondTileRow[height];
-   for ( int index = 0; index < height; ++index )
-   {
-      prows[index].create(width);
-   }
-
-   return prows;
-}
-
 Point IsoDiamondLayer::pointToTile(const Point& point)
 {
    Point p(point.x() - getXOffset() + xscroll, point.y() + yscroll);

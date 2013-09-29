@@ -22,9 +22,11 @@
 
 #include <vector>
 
+#include "engine/engine_base.h"
+
 class Bound;
 
-class Bounds : public std::vector<Bound*>
+class ENGINE_API Bounds : public std::vector<Bound*>
 {
 public:
    typedef std::vector<Bound*> BoundsImp;

@@ -33,7 +33,6 @@
 #include "tile.h"
 #include "tileset.h"
 #include "tilerow.h"
-#include "topdowntilerow.h"
 
 TopDownLayer::TopDownLayer():
    Layer()
@@ -75,12 +74,12 @@ bool TopDownLayer::initialize(Graphics::Device& device)
 
    // build the texture coord lookup table
    delete[] texcoordLookup;
-	texcoordLookup = new Vector[tileCount+1];
+	texcoordLookup = new Vector[tileCount];
 	for (int tc = 0; tc < tileCount; tc++)
    {
 		// calculate starting texture coordinates
-		texcoordLookup[tc+1].x = offsetx + static_cast<float>(tc % maxTilesOnRow) * borderx + 0.0005f;
-		texcoordLookup[tc+1].y = offsety + floorf ((float)tc / maxTilesOnRow) * bordery;
+		texcoordLookup[tc].x = offsetx + static_cast<float>(tc % maxTilesOnRow) * borderx + 0.0005f;
+		texcoordLookup[tc].y = offsety + floorf ((float)tc / maxTilesOnRow) * bordery;
 	}
 
    texTileWidth -= 0.001f;
@@ -173,7 +172,7 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 		for ( int x = xstart; x < xend; x++ )
       {
 			int texId = field[y][x].getTextureId();
-			if (texId >= 1)
+			if (texId >= 0)
          {
             TileInfo& info = mTileSet[texId];
 
@@ -201,17 +200,6 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 	}
 
 	vb->unlock(context);
-}
-
-TileRow* TopDownLayer::createTileRows(int width, int height)
-{
-   TileRow* prows = new TopDownTileRow[height];
-   for ( int index = 0; index < height; ++index )
-   {
-      prows[index].create(width);
-   }
-
-   return prows;
 }
 
 Point TopDownLayer::pointToTile(const Point& point)

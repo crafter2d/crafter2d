@@ -29,6 +29,7 @@
 #include "engine/idmanager.h"
 #include "engine/worldobserver.h"
 #include "engine/script/script.h"
+#include "engine/engine_base.h"
 
 #include "bounds.h"
 #include "layertype.h"
@@ -70,7 +71,7 @@ By using the World::setScrollMode function you can change the behaviour of the e
 When using the FollowObject modus you must also set the object to follow with the
 setFollowObject function.
 */
-class World
+class ENGINE_API World
 {
 public:
    enum FollowMode { FollowObject=0, FollowMouse=1, NoFollow=2 };
@@ -106,6 +107,7 @@ public:
          int      getBoundCount() const;
 
    const Bounds&  getBounds() const;
+         Bounds&  getBounds();
 
    int            getLayerCount() const;
    Layer*         getLayer(int index);
