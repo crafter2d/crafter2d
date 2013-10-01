@@ -26,9 +26,7 @@
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 
-#include "isodiamondtilerow.h"
 #include "layertype.h"
-#include "tile.h"
 
 IsoDiamondLayer::IsoDiamondLayer():
    _halfTileWidth(0.0f),
@@ -102,9 +100,6 @@ void IsoDiamondLayer::draw(Graphics::RenderContext& context)
 {
    float* data = (float*) vb->lock(context);
 
-   float halfwidth  = texTileWidth / 2;
-   float halfheight = texTileHeight / 2;
-
    float xstart = _xstart - xscroll;
    float ystart = -yscroll;
 
@@ -120,19 +115,9 @@ void IsoDiamondLayer::draw(Graphics::RenderContext& context)
 
       for ( int x = 0; x < getWidth(); ++x )
       {
-         int texId = field[y][x].getTextureId();
-         if ( texId > 0 )
-         {
-            float tx = texcoordLookup[texId].x;
-            float ty = texcoordLookup[texId].y;
-
-            setVertex(&data, xpos - _halfTileWidth, ypos,                     tx,               ty + halfheight);
-            setVertex(&data, xpos,                  ypos - _halfTileHeight,   tx + halfwidth,   ty);
-            setVertex(&data, xpos + _halfTileWidth, ypos,                     tx + texTileWidth,ty + halfheight);
-            setVertex(&data, xpos,                  ypos + _halfTileHeight,   tx + halfwidth,   ty + texTileHeight);
-
-            verts_to_render += 4;
-         }
+         drawTile(&data, LayerLevel::eBack, x, y, xpos, ypos);
+         drawTile(&data, LayerLevel::eMid, x, y, xpos, ypos);
+         drawTile(&data, LayerLevel::eFront, x, y, xpos, ypos);
 
          xpos += _halfTileWidth;
          ypos += _halfTileHeight;
@@ -150,31 +135,29 @@ void IsoDiamondLayer::draw(Graphics::RenderContext& context)
 	vb->disable(context);
 }
 
-void IsoDiamondLayer::drawHighlight(const Vector& point)
+void IsoDiamondLayer::drawTile(float** pdata, LayerLevel level, int x, int y, int xpos, int ypos)
 {
-   float x = point.x * _halfTileWidth;
-   float y = point.y * _halfTileWidth;
+   int texId = mTileMap.get(LayerLevel::eBack, x, y);
+   if ( texId >= 0 )
+   {
+      float tx = texcoordLookup[texId].x;
+      float ty = texcoordLookup[texId].y;
 
-   float xiso = x - y;
-   float yiso = (x + y) / 2;
+      float halfwidth  = texTileWidth / 2;
+      float halfheight = texTileHeight / 2;
 
-   xiso -= xscroll;
-   yiso -= yscroll;
+      setVertex(pdata, xpos - _halfTileWidth, ypos,                     tx,               ty + halfheight);
+      setVertex(pdata, xpos,                  ypos - _halfTileHeight,   tx + halfwidth,   ty);
+      setVertex(pdata, xpos + _halfTileWidth, ypos,                     tx + texTileWidth,ty + halfheight);
+      setVertex(pdata, xpos,                  ypos + _halfTileHeight,   tx + halfwidth,   ty + texTileHeight);
 
-   xiso += _xstart;
+      verts_to_render += 4;
+   }
+}
 
-   /*
-   glLineWidth(2.0f);
-
-   glBegin(GL_LINE_LOOP);
-   glVertex2f(xiso - _halfTileWidth,   yiso);
-   glVertex2f(xiso,                    yiso - _halfTileHeight);
-   glVertex2f(xiso + _halfTileWidth,   yiso);
-   glVertex2f(xiso,                    yiso + _halfTileHeight);
-   glEnd();
-
-   glLineWidth(1.0f);
-   */
+void IsoDiamondLayer::drawFront(Graphics::RenderContext& context)
+{
+   // nothing here yet
 }
 
 Point IsoDiamondLayer::pointToTile(const Point& point)

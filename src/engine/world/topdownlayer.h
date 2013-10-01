@@ -34,9 +34,9 @@ public:
    virtual bool initialize(Graphics::Device& device);
 
  // operations
-   virtual void draw(Graphics::RenderContext& context);
-   virtual void drawHighlight(const Vector& point);
-
+   virtual void draw(Graphics::RenderContext& context) override;
+   virtual void drawFront(Graphics::RenderContext& context) override;
+   
  // coordinate conversion
    virtual Point pointToTile(const Point& point);
 
@@ -47,6 +47,7 @@ private:
 
  // updating
    void updateBuffers(Graphics::RenderContext& context);
+   void updateTile(float** pdata, int& verts, LayerLevel level, int x, int y, float xpos, float ypos);
 };
 
 #endif

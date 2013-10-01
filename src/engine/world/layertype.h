@@ -21,5 +21,6 @@
 #define GUI_LAYER_TYPE_H_
 
 enum LayerType { ETopDown, EIsoDiamond, EInvalidLayerType };
+enum LayerLevel { eFront, eMid, eBack };
 
 #endif

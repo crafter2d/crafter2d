@@ -74,7 +74,7 @@ bool SpriteRenderer::create(Device& device)
       return false;
    }
 
-   mConstants.projection.setOrtho(0, 800.0f, 0, 600.0f);
+   mConstants.projection.setIdentity();
    mConstants.world.setIdentity();
    mConstants.object.setIdentity();
 
@@ -104,6 +104,11 @@ void SpriteRenderer::setOffset(RenderContext& context, const Vector& offset)
 
       mOffset = offset;
    }
+}
+
+void SpriteRenderer::viewportChanged(const Viewport& viewport)
+{
+   mConstants.projection.setOrtho(0, viewport.getWidth(), 0, viewport.getHeight());
 }
 
 // - Drawing

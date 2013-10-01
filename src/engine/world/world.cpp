@@ -144,21 +144,7 @@ void World::setObjectLayer(int objectlayerid)
 {
    if ( objectlayerid < layers.size() )
    {
-      int screenWidth = 800;
-      int screenHeight = 600;
-
       _objectLayer = objectlayerid;
-      Layer* pobjectlayer = layers[objectlayerid];
-      Vector area = pobjectlayer->getScrollArea();
-
-      for ( int index = 0; index < objectlayerid; index++ )
-      {
-         if ( index != objectlayerid )
-         {
-            Layer* player = layers[index];
-            player->calculateScrollSpeed(area, screenWidth, screenHeight);
-         }
-      }
    }
    else
    {
@@ -236,11 +222,20 @@ void World::draw(Graphics::RenderContext& context) const
    Vector scroll = layers[getObjectLayer()]->getScroll ();
    context.setSpriteOffset(scroll);
 
+   context.beginDraw();
    EntityMap::const_iterator it = mEntities.begin();
    for ( ; it != mEntities.end(); ++it )
    {
       Entity* pentity = it->second;
       pentity->draw(context);
+   }
+   context.endDraw();
+
+   // render the layers
+   for ( int i = 0; i < layers.size(); i++ )
+   {
+      Layer& layer = *layers[i];
+      layer.drawFront(context);
    }
 }
 
@@ -518,9 +513,18 @@ void World::notifyObjectObjectCollision(Entity& source, Entity& target, int side
 
 void World::onViewportChanged(Graphics::RenderContext& context)
 {
+   Layer* pobjectlayer = layers[_objectLayer];
+   Vector area = pobjectlayer->getScrollArea();
+
    for ( int index = 0; index < layers.size(); ++index )
    {
       Layer* player = layers[index];
       player->onViewportChanged(context);
+
+      if ( index != _objectLayer )
+      {
+         // calculate the scroll speed based on the object layer area
+         player->calculateScrollSpeed(area, context.getViewport().getWidth(), context.getViewport().getHeight());
+      }
    }
 }

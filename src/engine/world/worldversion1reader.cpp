@@ -146,7 +146,7 @@ bool WorldVersion1Reader::readLayer(std::ifstream& stream, Layer& layer)
 
 		for (int x = 0; x < width; x++)
       {
-			layer.setTile(x, y, row[x]);
+         layer.setTile(LayerLevel::eMid, x, y, row[x]);
 		}
 	}
 

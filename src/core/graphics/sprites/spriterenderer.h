@@ -35,6 +35,7 @@ namespace Graphics
 {
    class Device;
    class RenderContext;
+   class Viewport;
    class UniformBuffer;
    class VertexBuffer;
    class IndexBuffer;
@@ -48,6 +49,7 @@ namespace Graphics
     // operations
       bool create(Device& device);
       void setOffset(RenderContext& context, const Vector& offset);
+      void viewportChanged(const Viewport& viewport);
 
     // drawing
       void beginDraw(RenderContext& context);

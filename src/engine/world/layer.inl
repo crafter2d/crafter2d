@@ -24,6 +24,11 @@ INLINE const String& Layer::getName() const
    return mpDefinition->name;
 }
 
+INLINE void Layer::setName(const String& name)
+{
+   mpDefinition->name = name;
+}
+
 /// \fn Layer::getWidth()
 /// \brief Returns the number of tiles that fit horizontally in this layer.
 INLINE int Layer::getWidth() const
@@ -124,6 +129,16 @@ INLINE const TileSet& Layer::tileset() const
 INLINE TileSet& Layer::tileset()
 {
    return mTileSet;
+}
+
+INLINE const TileField& Layer::getTileField() const
+{
+   return mTileMap;
+}
+
+INLINE TileField& Layer::getTileField()
+{
+   return mTileMap;
 }
 
 INLINE int Layer::tilecount() const

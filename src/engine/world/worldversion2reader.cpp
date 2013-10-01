@@ -38,7 +38,7 @@ DataStream& operator>>(DataStream& in, Layer& layer);
 // - Static operations
 //////////////////////////////////////////////////////////////////////////
 
-int WorldVersion2Reader::getVersion()
+int WorldVersion2Reader::getCurrentVersion()
 {
    return WorldWriter::getVersion();
 }
@@ -48,7 +48,8 @@ int WorldVersion2Reader::getVersion()
 //////////////////////////////////////////////////////////////////////////
 
 WorldVersion2Reader::WorldVersion2Reader(World& world):
-   AbstractWorldVersionReader(world)
+   AbstractWorldVersionReader(world),
+   mVersion(-1)
 {
 }
 
@@ -79,13 +80,12 @@ bool WorldVersion2Reader::readHeader(UnzipFile& zip)
    if ( !zip.readFile(UTEXT("header"), (void*&)pdata, size) )
       return false;
 
-   int version = -1;
    ArrayStream stream(pdata, size);
-   stream.readInt(version);
+   stream.readInt(mVersion);
 
    delete[] pdata;
 
-   return getVersion() == version;
+   return mVersion <= getCurrentVersion();
 }
 
 bool WorldVersion2Reader::readSimulator(UnzipFile& zip)
@@ -211,10 +211,7 @@ void WorldVersion2Reader::readLayer(DataStream& in)
 
    Layer* player = getWorld().createLayer();
    getWorld().addLayer(player);
-
-   //in >> name >> effect >> width >> height;
-   //tileset = UTEXT("blocks");
-
+   
    in >> name >> effect >> tileset >> width >> height;
 
    LayerDefinition* pdefinition = new LayerDefinition();
@@ -226,13 +223,26 @@ void WorldVersion2Reader::readLayer(DataStream& in)
 
    player->create(pdefinition);
 
-   for ( int y = 0; y < height; ++y )
+   if ( mVersion == 1 )
    {
-      for ( int x = 0; x < width; ++x )
+      for ( int y = 0; y < height; ++y )
       {
-         int textureid;
-         in.readInt(textureid);
-         player->setTile(x, y, textureid);
+         for ( int x = 0; x < width; ++x )
+         {
+            int textureid;
+            in.readInt(textureid);
+            if ( textureid > 255 )
+            {
+               // convert, we only accept 255 tiles, guess we'll never get here.
+               textureid = 255;
+            }
+            player->setTile(LayerLevel::eMid, x, y, textureid);
+         }
       }
+   }
+   else
+   {
+      TileField& field = player->getTileField();
+      field.load(in);
    }
 }

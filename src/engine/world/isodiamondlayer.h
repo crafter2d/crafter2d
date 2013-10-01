@@ -38,7 +38,7 @@ public:
 
  // operations
    virtual void draw(Graphics::RenderContext& context);
-   virtual void drawHighlight(const Vector& point);
+   virtual void drawFront(Graphics::RenderContext& context);
 
  // coordinate conversion
    virtual Point  pointToTile(const Point& point);
@@ -47,6 +47,11 @@ public:
    virtual void onViewportChanged(const Graphics::Viewport& viewport);
    
 private:
+
+ // drawing
+   void drawTile(float** pdata, LayerLevel level, int x, int y, int xpos, int ypos);
+
+ // data
    float _halfTileWidth;
    float _halfTileHeight;
    float _xstart;

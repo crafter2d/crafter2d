@@ -30,9 +30,7 @@
 #include "core/graphics/viewport.h"
 
 #include "layertype.h"
-#include "tile.h"
 #include "tileset.h"
-#include "tilerow.h"
 
 TopDownLayer::TopDownLayer():
    Layer()
@@ -124,23 +122,41 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
    effect.render(context, 0, verts_to_render);
 }
 
-void TopDownLayer::drawHighlight(const Vector& point)
+void TopDownLayer::drawFront(Graphics::RenderContext& context)
 {
-   float x = (point.x * tileWidth) - xscroll;
-   float y = (point.y * tileHeight) - yscroll;
+   context.setVertexBuffer(*pfrontvb);
+   context.setIndexBuffer(*ib);
+   context.setUniformBuffer(*ub);
 
-   /*
-   glLineWidth(2.0f);
+   Graphics::Effect& effect = getEffect();
+   effect.setTexture(0, *mTileSet.getTexture());
+   effect.render(context, 0, verts_to_render_front);
+}
 
-   glBegin(GL_LINE_LOOP);
-   glVertex2f(x, y);
-   glVertex2f(x, y + tileHeight);
-   glVertex2f(x + tileWidth, y + tileHeight );
-   glVertex2f(x + tileWidth, y);
-   glEnd();
+void TopDownLayer::updateTile(float** pdata, int& verts, LayerLevel level, int x, int y, float xpos, float ypos)
+{
+   uint8_t texId = mTileMap.get(level, x, y);
+	if ( texId < 255 )
+   {
+      TileInfo& info = mTileSet[texId];
 
-   glLineWidth(1.0f);
-   */
+      // see if the tile can be animated
+      if (animateTiles && info.flag & TileAnimate)
+            texId += info.anim_index;
+
+		// calculate the position of the vertex
+		float texX = texcoordLookup[texId].x;
+		float texY = texcoordLookup[texId].y;
+
+		// insert the vertices
+		setVertex(pdata, xpos                          , ypos                          , texX, texY);
+      setVertex(pdata, xpos+tileset().getTileWidth() , ypos                          , texX+texTileWidth, texY);
+      setVertex(pdata, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), texX+texTileWidth, texY+texTileHeight);
+      setVertex(pdata, xpos                          , ypos+tileset().getTileHeight(), texX, texY+texTileHeight);
+
+      // keep track of number of vertices
+		verts += 6;
+   }
 }
 
 void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
@@ -163,7 +179,9 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 	float ypos = ystart * tileHeight;
 
 	verts_to_render = 0;
+   verts_to_render_front = 0;
 	float* data = (float*) vb->lock(context);
+   float* pfrontdata = (float*) pfrontvb->lock(context);
 
   	for ( int y = ystart; y < yend; y++ )
    {
@@ -171,28 +189,10 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 
 		for ( int x = xstart; x < xend; x++ )
       {
-			int texId = field[y][x].getTextureId();
-			if (texId >= 0)
-         {
-            TileInfo& info = mTileSet[texId];
-
-            // see if the tile can be animated
-            if (animateTiles && info.flag & TileAnimate)
-                  texId += info.anim_index;
-
-				// calculate the position of the vertex
-				float texX = texcoordLookup[texId].x;
-				float texY = texcoordLookup[texId].y;
-
-				// insert the vertices
-				setVertex (&data, xpos                          , ypos                          , texX, texY);
-            setVertex (&data, xpos+tileset().getTileWidth() , ypos                          , texX+texTileWidth, texY);
-            setVertex (&data, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), texX+texTileWidth, texY+texTileHeight);
-            setVertex (&data, xpos                          , ypos+tileset().getTileHeight(), texX, texY+texTileHeight);
-
-            // keep track of number of vertices
-				verts_to_render += 6;
-			}
+         updateTile(&data, verts_to_render, LayerLevel::eBack, x, y, xpos, ypos);
+         updateTile(&data, verts_to_render, LayerLevel::eMid, x, y, xpos, ypos);
+         updateTile(&pfrontdata, verts_to_render_front, LayerLevel::eFront, x, y, xpos, ypos);
+         
 			xpos += tileWidth;
 		}
       // (3D only: instead of + do a -)
@@ -200,6 +200,7 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 	}
 
 	vb->unlock(context);
+   pfrontvb->unlock(context);
 }
 
 Point TopDownLayer::pointToTile(const Point& point)

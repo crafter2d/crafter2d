@@ -56,14 +56,19 @@ void DataStream::copyTo(DataStream& that) const
 
 // - Reading
 
-void DataStream::readInt(int& value)
+void DataStream::readInt(int32_t& value)
 {
-   readBytes(&value, sizeof(int));
+   readBytes(&value, sizeof(int32_t));
 }
 
-void DataStream::readUint(unsigned int& value)
+void DataStream::readUint(uint32_t& value)
 {
-   readBytes(&value, sizeof(unsigned int));
+   readBytes(&value, sizeof(uint32_t));
+}
+
+void DataStream::readUint8(uint8_t& value)
+{
+   value = static_cast<uint8_t>(readByte());
 }
 
 void DataStream::readFloat(float& value)
@@ -91,7 +96,8 @@ void DataStream::readString(String& value)
 
 void DataStream::readBlob(void* pdata, int size)
 {
-
+   const char* ptr = readBytes(size);
+   memcpy(pdata, ptr, size);
 }
 
 // - Writting
@@ -101,9 +107,14 @@ void DataStream::writeInt(int value)
    writeBytes(&value, sizeof(int));
 }
 
-void DataStream::writeUint(unsigned int value)
+void DataStream::writeUint(uint32_t value)
 {
-   writeBytes(&value, sizeof(unsigned int));
+   writeBytes(&value, sizeof(uint32_t));
+}
+
+void DataStream::writeUint8(uint8_t value)
+{
+   writeBytes(&value, 1);
 }
 
 void DataStream::writeFloat(float value)

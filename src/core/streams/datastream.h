@@ -20,6 +20,8 @@
 #ifndef DATA_STREAM_H
 #define DATA_STREAM_H
 
+#include <stdint.h>
+
 #include "core/core_base.h"
 
 class String;
@@ -52,16 +54,18 @@ public:
    void copyTo(DataStream& that) const;
 
  // overloadables
-   virtual void writeInt(int value);
-   virtual void writeUint(unsigned int value);
+   virtual void writeInt(int32_t value);
+   virtual void writeUint(uint32_t value);
+   virtual void writeUint8(uint8_t value);
    virtual void writeFloat(float value);
    virtual void writeBool(bool value);
    virtual void writeChar(char c);
    virtual void writeString(const String& text);
            void writeBlob(const void* pdata, int size);
    
-   virtual void readInt(int& value);
-   virtual void readUint(unsigned int& value);
+   virtual void readInt(int32_t& value);
+   virtual void readUint(uint32_t& value);
+   virtual void readUint8(uint8_t& value);
    virtual void readFloat(float& value);
    virtual void readBool(bool& value);
    virtual void readChar(char& value);

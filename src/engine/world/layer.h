@@ -30,6 +30,7 @@
 
 #include "engine/engine_base.h"
 
+#include "tilefield.h"
 #include "tileset.h"
 #include "layertype.h"
 
@@ -53,7 +54,6 @@ namespace Graphics
 };
 
 class Point;
-class TileRow;
 
 struct LayerDefinition
 {
@@ -85,7 +85,7 @@ public:
 
  // pure virtuals
    virtual void   draw(Graphics::RenderContext& context) = 0;
-   virtual void   drawHighlight(const Vector& point) = 0;
+   virtual void   drawFront(Graphics::RenderContext& context) = 0;
 
  // get/set interface
    const String& getName() const;
@@ -93,11 +93,14 @@ public:
 
    virtual LayerType  getType() const;
 
-   virtual int            getTile(int x, int y) const;
-   virtual void           setTile(int x, int y, int tile);
+   virtual uint8_t getTile(LayerLevel level, int x, int y) const;
+   virtual void    setTile(LayerLevel level, int x, int y, uint8_t tile);
 
    const LayerDefinition& getDefinition() const;
    void                   setDefinition(LayerDefinition* pdefinition);
+
+   const TileField& getTileField() const;
+         TileField& getTileField();
 
    Vector         getScrollSpeed() const;
    void           setScrollSpeed(float x, float y);
@@ -155,14 +158,15 @@ protected:
    float xscrollMax, yscrollMax;
    float scrollSpeedX, scrollSpeedY;
    int maxTilesX, maxTilesY;
-   int verts, verts_to_render;
+   int verts, verts_to_render, verts_to_render_front;
    bool animateTiles;
    bool dirty;
 
    TileSet mTileSet;
+   TileField mTileMap;
 
-   TileRow* field;
    Graphics::VertexBuffer* vb;
+   Graphics::VertexBuffer* pfrontvb;
    Graphics::IndexBuffer* ib;
    Graphics::UniformBuffer* ub;
    Vector* texcoordLookup;
@@ -178,8 +182,6 @@ private:
  // operations
    bool createBuffers(Graphics::Device& device, const Graphics::VertexInputLayout& layout, int width, int height);
    bool createUniformBuffers(Graphics::Device& device);
-
-   TileRow* createTileRows(int width, int height);
 
  // members
    LayerDefinition*  mpDefinition;

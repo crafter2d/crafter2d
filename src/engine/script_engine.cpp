@@ -593,21 +593,23 @@ void Layer_getTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Layer, layer);
 
-   int x = accessor.getInt(1);
-   int y = accessor.getInt(2);
+   int level = accessor.getInt(1);
+   int x = accessor.getInt(2);
+   int y = accessor.getInt(3);
 
-   accessor.setResult(layer.getTile(x, y));
+   accessor.setResult(layer.getTile((LayerLevel)level, x, y));
 }
 
 void Layer_setTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Layer, layer);
 
-   int x = accessor.getInt(1);
-   int y = accessor.getInt(2);
-   int t = accessor.getInt(3);
+   int level = accessor.getInt(1);
+   int x = accessor.getInt(2);
+   int y = accessor.getInt(3);
+   int t = accessor.getInt(4);
 
-   layer.setTile(x, y, t);
+   layer.setTile((LayerLevel)level, x, y, t);
 }
 
 void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)

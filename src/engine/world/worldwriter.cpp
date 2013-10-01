@@ -37,7 +37,7 @@
 
 int WorldWriter::getVersion()
 {
-   return 1;
+   return 2;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -187,12 +187,6 @@ void WorldWriter::writeLayer(DataStream& out, const Layer& layer)
    
    out << definition.name << definition.effect << definition.tileset << definition.width << definition.height;
 
-   for ( int y = 0; y < height; ++y )
-   {
-      for ( int x = 0; x < width; ++x )
-      {
-         int tile = layer.getTile(x, y);
-         out.writeInt(tile);
-      }
-   }
+   const TileField& map = layer.getTileField();
+   map.write(out);
 }

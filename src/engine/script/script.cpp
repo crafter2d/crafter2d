@@ -110,5 +110,9 @@ VirtualObject& Script::resolve(void* pobject)
 VirtualObject& Script::instantiate(const String& classname, void* pobject)
 {
    VirtualObject* pvirtualobject = mScriptManager.mVirtualMachine.instantiateNative(classname, pobject, false);
+   if ( pvirtualobject == NULL )
+   {
+      throw new std::exception(("Could not instantiate object of type " + classname.toUtf8()).c_str());
+   }
    return *pvirtualobject;
 }

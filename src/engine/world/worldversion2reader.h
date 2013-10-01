@@ -29,7 +29,7 @@ class DataStream;
 class WorldVersion2Reader : public AbstractWorldVersionReader
 {
 public:
-   static int getVersion();
+   static int getCurrentVersion();
 
    WorldVersion2Reader(World& world);
    virtual ~WorldVersion2Reader();
@@ -48,6 +48,9 @@ protected:
 private:
  // operations
    void readLayer(DataStream& in);
+
+ // data
+   int mVersion;
 };
 
 #endif // WORLDVERSION2READER_H

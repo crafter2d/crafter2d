@@ -41,8 +41,7 @@
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 
-#include "tile.h"
-#include "tilerow.h"
+#include "tilefield.h"
 
 using namespace Graphics;
 
@@ -68,11 +67,12 @@ Layer::Layer():
    animateTiles(true),
    dirty(true),
    mTileSet(),
-   field(0),
+   mTileMap(),
    vb(NULL),
+   pfrontvb(NULL),
    ib(NULL),
    ub(NULL),
-   texcoordLookup(NULL),
+   texcoordLookup(0),
    mpDefinition(NULL),
    mEffect()
 {
@@ -95,7 +95,8 @@ bool Layer::create(LayerDefinition* pdefinition)
 		return false;
 	}
 
-   field = createTileRows(getWidth(), getHeight());
+   //field = createTileRows(getWidth(), getHeight());
+   mTileMap.create(pdefinition->width, pdefinition->height);
 
    return true;
 }
@@ -170,11 +171,11 @@ void Layer::release()
    delete ub;
    delete ib;
    delete vb;
+   delete pfrontvb;
    
 	mEffect.destroy();
 
 	delete[] texcoordLookup;
-	delete[] field;
 }
 
 void Layer::update(float delta)
@@ -197,11 +198,6 @@ void Layer::draw(Graphics::RenderContext& context)
    PURE_VIRTUAL
 }
 
-void Layer::drawHighlight(const Vector& point)
-{
-   PURE_VIRTUAL
-}
-
 //////////////////////////////////////////////////////////////////////////
 // - Get/set interface
 //////////////////////////////////////////////////////////////////////////
@@ -216,33 +212,9 @@ LayerType Layer::getType() const
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-TileRow* Layer::createTileRows(int width, int height)
-{
-   TileRow* prows = new TileRow[height];
-   for ( int index = 0; index < height; ++index )
-   {
-      prows[index].create(width);
-   }
-
-   return prows;
-}
-
 void Layer::resize(int width, int height)
 {
-   if ( height >= getHeight() )
-   {
-       
-   }
-   else
-   {
-      // remove rows
-   }
-
-   for ( int index = 0; index < height; ++index )
-   {
-      TileRow& row = field[index];
-      row.resize(width);
-   }
+   mTileMap.resize(width, height);
 
    mpDefinition->width = width;
    mpDefinition->height = height;
@@ -257,7 +229,7 @@ bool Layer::createBuffers(Device& device, const VertexInputLayout& layout, int w
       return false;
    }
 
-   const int batchsize = width * height;
+   const int batchsize = width * height * 2;
 
    // create the vertex buffer for this layer
    int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
@@ -268,6 +240,9 @@ bool Layer::createBuffers(Device& device, const VertexInputLayout& layout, int w
 		Log::getInstance().error("Could not create the vertex buffer.");
 		return false;
 	}
+
+   pfrontvb = device.createVertexBuffer();
+   pfrontvb->create(layout, size, usage);
 
    ib = Utils::createIndexBuffer(device, batchsize, 4, 6);
    if ( ib == NULL )
@@ -333,24 +308,16 @@ void Layer::scroll(Graphics::RenderContext& context, float x, float y)
 
 /// \fn Layer::getTile(int x, int y)
 /// \brief Returns the tile the given indices; -1 if the position is outside the layer.
-int Layer::getTile(int x, int y) const
+uint8_t Layer::getTile(LayerLevel level, int x, int y) const
 {
-   if ( x < 0 || y < 0 || x >= getWidth() || y >= getHeight() )
-   {
-      return -1;
-   }
-
-   return field[y][x].getTextureId();
+   return mTileMap.get(level, x, y);
 }
 
-/// \fn Layer:setTile(int x, int y, int tile)
+/// \fn Layer:setTile(int x, int y, uint8_t tile)
 /// \breif Set the new tile texture.
-void Layer::setTile(int x, int y, int tile)
+void Layer::setTile(LayerLevel level, int x, int y, uint8_t tile)
 {
-   if ( x >= 0 && y >= 0 && x < getWidth() && y < getHeight() )
-   {
-      field[y][x].setTextureId(tile);
-
-      dirty = true;
-   }
+   mTileMap.set(level, x, y, tile);
+   
+   dirty = true;
 }
