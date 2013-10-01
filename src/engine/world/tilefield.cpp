@@ -56,13 +56,18 @@ void TileField::resize(int width, int height)
 
    int minwidth = MIN(width, mWidth);
    int minheight = MIN(height, mHeight);
-   int nextrow = sizeof(uint8_t) * width * 3;
 
-   uint8_t* ptr = pmap;
+   int srcsize = sizeof(uint8_t) * width * 3;
+   int destsize = sizeof(uint8_t) * mWidth * 3;
+
+   uint8_t* psrc = pmap;
+   uint8_t* pdest = mpMap;
+
    for ( int y = 0; y < minheight; ++y )
    {
-      memcpy(ptr, mpMap, sizeof(uint8_t) * minwidth * 3);
-      ptr += nextrow;
+      memcpy(psrc, pdest, sizeof(uint8_t) * minwidth * 3);
+      psrc += srcsize;
+      pdest += destsize;
    }
 
    delete[] mpMap;
