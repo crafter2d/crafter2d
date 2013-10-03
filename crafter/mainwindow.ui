@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1072</width>
+    <height>621</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QMdiArea" name="centralWidget">
+   <property name="viewMode">
+    <enum>QMdiArea::TabbedView</enum>
+   </property>
+   <property name="tabsClosable">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1072</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menuRecent_Projects">
+     <property name="title">
+      <string>Recent Projects</string>
+     </property>
+     <addaction name="action_recent1"/>
+     <addaction name="action_recent2"/>
+     <addaction name="action_recent3"/>
+     <addaction name="action_recent4"/>
+     <addaction name="action_recent5"/>
+    </widget>
+    <addaction name="actionNew"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="separator"/>
+    <addaction name="menuRecent_Projects"/>
+    <addaction name="separator"/>
+    <addaction name="actionE_xit"/>
+   </widget>
+   <widget class="QMenu" name="menu_He">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionViewProject"/>
+    <addaction name="actionViewLayers"/>
+    <addaction name="actionViewTiles"/>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionEdit_layers"/>
+    <addaction name="actionEdit_bounds"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="actionAdd_world"/>
+    <addaction name="actionAdd_layer"/>
+    <addaction name="separator"/>
+    <addaction name="actionProject_Fix_world"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
+   <addaction name="menuView"/>
+   <addaction name="menuProject"/>
+   <addaction name="menu_He"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionNew">
+   <property name="icon">
+    <iconset resource="crafter.qrc">
+     <normaloff>:/images/document-new.png</normaloff>:/images/document-new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="crafter.qrc">
+     <normaloff>:/images/document-open.png</normaloff>:/images/document-open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset resource="crafter.qrc">
+     <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+  </action>
+  <action name="actionE_xit">
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionViewLayers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Layers</string>
+   </property>
+  </action>
+  <action name="actionViewProject">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Project</string>
+   </property>
+  </action>
+  <action name="actionViewTiles">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Tiles</string>
+   </property>
+  </action>
+  <action name="action_recent1">
+   <property name="text">
+    <string>&lt;recent1&gt;</string>
+   </property>
+  </action>
+  <action name="action_recent2">
+   <property name="text">
+    <string>&lt;recent2&gt;</string>
+   </property>
+  </action>
+  <action name="action_recent3">
+   <property name="text">
+    <string>&lt;recent3&gt;</string>
+   </property>
+  </action>
+  <action name="action_recent4">
+   <property name="text">
+    <string>&lt;recent4&gt;</string>
+   </property>
+  </action>
+  <action name="action_recent5">
+   <property name="text">
+    <string>&lt;recent5&gt;</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="actionEdit_layers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Edit layers</string>
+   </property>
+  </action>
+  <action name="actionEdit_bounds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Edit bounds</string>
+   </property>
+  </action>
+  <action name="actionAdd_world">
+   <property name="text">
+    <string>Add world</string>
+   </property>
+  </action>
+  <action name="actionAdd_layer">
+   <property name="text">
+    <string>Add layer</string>
+   </property>
+  </action>
+  <action name="actionProject_Fix_world">
+   <property name="text">
+    <string>Fix world</string>
+   </property>
+  </action>
+  <action name="actionFlip_bound">
+   <property name="text">
+    <string>Flip bound</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="crafter.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/document-new.png</file>
+        <file>images/document-open.png</file>
+        <file>images/document-save.png</file>
+        <file>images/arrow-down.png</file>
+        <file>images/arrow-up.png</file>
+        <file>images/list-add.png</file>
+        <file>images/list-remove.png</file>
+        <file>images/align-horizontal-center.png</file>
+        <file>images/align-horizontal-left.png</file>
+        <file>images/align-horizontal-right.png</file>
+    </qresource>
+</RCC>

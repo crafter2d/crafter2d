@@ -1,0 +1,46 @@
+#include "tileviewwindow.h"
+
+#include <QScrollArea>
+
+#include "tileview.h"
+#include "tileworld.h"
+
+TileViewWindow::TileViewWindow(QWidget *parent) :
+    QScrollArea(parent),
+    mpTileView(NULL)
+{
+    mpTileView = new TileView();
+
+    setBackgroundRole(QPalette::Window);
+    setWidget(mpTileView);
+}
+
+// - Get/set
+
+TileView& TileViewWindow::getTileView()
+{
+    Q_ASSERT(mpTileView != NULL);
+    return *mpTileView;
+}
+
+bool TileViewWindow::hasWorld() const
+{
+    return mpTileView->hasWorld();
+}
+
+TileWorld& TileViewWindow::getWorld()
+{
+    return mpTileView->getWorld();
+}
+
+void TileViewWindow::setWorld(TileWorld& world)
+{
+    mpTileView->setWorld(world);
+
+    setWindowTitle(world.getName());
+}
+
+void TileViewWindow::setActiveTile(const Tile& tile)
+{
+    mpTileView->setActiveTile(tile);
+}
