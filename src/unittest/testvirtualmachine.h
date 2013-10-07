@@ -16,7 +16,7 @@ class NativeClass
 {
 public:
    int    getIntValue() { return 5; }
-   String getStringValue() { return "test"; }
+   String getStringValue() { return UTEXT("test"); }
 
    int add(int a, int b) { return a + b; }
    int sub(int a, int b) { return a - b; }
@@ -33,21 +33,21 @@ void NativeClass_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void NativeClass_getIntValue(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   NativeClass* pnative = static_cast<NativeClass*>(accessor.getThis().getNativeObject());
+   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
 
    accessor.setResult(pnative->getIntValue());
 }
 
 void NativeClass_getStringValue(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   NativeClass* pnative = static_cast<NativeClass*>(accessor.getThis().getNativeObject());
+   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
 
    accessor.setResult(pnative->getStringValue());
 }
 
 void NativeClass_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   NativeClass* pnative = static_cast<NativeClass*>(accessor.getThis().getNativeObject());
+   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
 
    int a = accessor.getInt(1);
    int b = accessor.getInt(2);
@@ -57,7 +57,7 @@ void NativeClass_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void NativeClass_sub(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   NativeClass* pnative = static_cast<NativeClass*>(accessor.getThis().getNativeObject());
+   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
 
    int a = accessor.getInt(1);
    int b = accessor.getInt(2);
@@ -67,7 +67,7 @@ void NativeClass_sub(VirtualMachine& machine, VirtualStackAccessor& accessor)
 
 void NativeClass_mul(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   NativeClass* pnative = static_cast<NativeClass*>(accessor.getThis().getNativeObject());
+   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
 
    int a = accessor.getInt(1);
    int b = accessor.getInt(2);

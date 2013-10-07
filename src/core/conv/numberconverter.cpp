@@ -17,50 +17,36 @@ NumberConverter& NumberConverter::getInstance()
 
 // - Interface
 
-NumberConverter::NumberConverter():
-   mpFormat(NULL)
+NumberConverter::NumberConverter()
 {
-   UErrorCode error = U_ZERO_ERROR;
-   mpFormat = NumberFormat::createInstance(Locale::getEnglish(), error);
 }
 
 // - Conversions
 
 int NumberConverter::toInt(const String& value)
 {
-   Formattable result;
-   UErrorCode error = U_ZERO_ERROR;
-   mpFormat->parse(value.mString, result, error);
-   return result.getLong();
+   return wcstol(value.mpString, NULL, 10);
 }
 
 double NumberConverter::toDouble(const String& value)
 {
-   Formattable format;
-   UErrorCode error = U_ZERO_ERROR;
-   mpFormat->parse(value.mString, format, error);
-
-   double result = 0;
-   switch ( format.getType() )
-   {
-   case Formattable::kDouble:
-      result = format.getDouble();
-      break;
-   case Formattable::kLong:
-      result = format.getLong();
-      break;
-   }
-   return result;
+   return wcstod(value.mpString, NULL);
 }
 
 String& NumberConverter::format(String& result, int value)
 {
-   mpFormat->format(value, result.mString);
+   wchar_t buff[256];
+   memset(buff, 0, sizeof(wchar_t) * 256);
+   int len = swprintf(buff, 10, L"%d", value);
+   result.setTo(buff, len);
    return result;
 }
 
 String& NumberConverter::format(String& result, double value)
 {
-   mpFormat->format(value, result.mString);
+   wchar_t buff[256];
+   memset(buff, 0, sizeof(wchar_t) * 256);
+   int len = swprintf(buff, 10, L"%Lf", value);
+   result.setTo(buff, len);
    return result;
 }

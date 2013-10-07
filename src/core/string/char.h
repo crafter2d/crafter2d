@@ -4,7 +4,7 @@
 
 #include "core/core_base.h"
 
-#include <unicode/uchar.h>
+typedef wchar_t UChar;
 
 class CORE_API Char
 {

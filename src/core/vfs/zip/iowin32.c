@@ -12,6 +12,7 @@
 */
 
 #include <stdlib.h>
+#include <windows.h>
 
 #include "zlib.h"
 #include "ioapi.h"
@@ -99,7 +100,7 @@ voidpf ZCALLBACK win32_open64_file_func (voidpf opaque,const void* filename,int 
     return win32_build_iowin(hFile);
 }
 
-
+/*
 voidpf ZCALLBACK win32_open64_file_funcA (voidpf opaque,const void* filename,int mode)
 {
     const char* mode_fopen = NULL;
@@ -109,7 +110,7 @@ voidpf ZCALLBACK win32_open64_file_funcA (voidpf opaque,const void* filename,int
     win32_translate_open_mode(mode,&dwDesiredAccess,&dwCreationDisposition,&dwShareMode,&dwFlagsAndAttributes);
 
     if ((filename!=NULL) && (dwDesiredAccess != 0))
-        hFile = CreateFileA((LPCSTR)filename, dwDesiredAccess, dwShareMode, NULL, dwCreationDisposition, dwFlagsAndAttributes, NULL);
+        hFile = CreateFile2((LPCSTR)filename, dwDesiredAccess, dwShareMode, NULL, dwCreationDisposition, dwFlagsAndAttributes, NULL);
 
     return win32_build_iowin(hFile);
 }
@@ -124,11 +125,11 @@ voidpf ZCALLBACK win32_open64_file_funcW (voidpf opaque,const void* filename,int
     win32_translate_open_mode(mode,&dwDesiredAccess,&dwCreationDisposition,&dwShareMode,&dwFlagsAndAttributes);
 
     if ((filename!=NULL) && (dwDesiredAccess != 0))
-        hFile = CreateFileW((LPCWSTR)filename, dwDesiredAccess, dwShareMode, NULL, dwCreationDisposition, dwFlagsAndAttributes, NULL);
+        hFile = CreateFile2((LPCWSTR)filename, dwDesiredAccess, dwShareMode, NULL, dwCreationDisposition, dwFlagsAndAttributes, NULL);
 
     return win32_build_iowin(hFile);
 }
-
+*/
 
 voidpf ZCALLBACK win32_open_file_func (voidpf opaque,const char* filename,int mode)
 {
@@ -362,7 +363,7 @@ void fill_win32_filefunc64(zlib_filefunc64_def* pzlib_filefunc_def)
     pzlib_filefunc_def->opaque = NULL;
 }
 
-
+/*
 void fill_win32_filefunc64A(zlib_filefunc64_def* pzlib_filefunc_def)
 {
     pzlib_filefunc_def->zopen64_file = win32_open64_file_funcA;
@@ -387,3 +388,4 @@ void fill_win32_filefunc64W(zlib_filefunc64_def* pzlib_filefunc_def)
     pzlib_filefunc_def->zerror_file = win32_error_file_func;
     pzlib_filefunc_def->opaque = NULL;
 }
+*/

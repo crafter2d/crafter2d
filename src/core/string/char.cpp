@@ -1,8 +1,7 @@
 
 #include "char.h"
 
-#include <unicode/utypes.h>
-#include <unicode/uchar.h>
+#include <cwctype>
 
 // static
 
@@ -13,20 +12,20 @@ bool Char::isEOL(UChar c)
 
 bool Char::isWhitespace(UChar c)
 {
-   return u_isWhitespace(c) == TRUE;
+   return iswspace(c);
 }
 
 bool Char::isAlphaNum(UChar c)
 {
-   return u_isalnum(c) == TRUE;
+   return iswalnum(c);
 }
 
 bool Char::isAlpha(UChar c)
 {
-   return u_isalpha(c) == TRUE;
+   return iswalpha(c);
 }
 
 bool Char::isDigit(UChar c)
 {
-   return u_isdigit(c) == TRUE;
+   return iswdigit(c);
 }

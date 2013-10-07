@@ -50,7 +50,7 @@ String File::extractPath(const String& filepath)
       return filepath.subStr(0, pos);
    }
 
-   return L"";
+   return UTEXT("");
 }
 
 File::File():

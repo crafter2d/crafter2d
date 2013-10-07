@@ -85,10 +85,10 @@ void CommandLine::parse(int argc, const char* const argv[])
       for ( int index = 1; index < argc; index++ )
       {
          const char* parg = argv[index];
-         String inputarg(parg);
+         String inputarg = String::fromUtf8(parg);
          CommandLineArgument argument;
 
-         int pos = inputarg.indexOf('=');
+         int pos = inputarg.indexOf(L'=');
          if ( pos == -1 )
          {
             argument.setName(String(argv[index]));
@@ -124,7 +124,7 @@ void CommandLine::parse(int argc, const char* const argv[])
          {
             // in there
             argument.setName(inputarg.subStr(0, pos));
-            argument.setValue(inputarg.subStr(pos+1, inputarg.length() - pos));
+            argument.setValue(inputarg.subStr(pos+1, inputarg.length() - pos - 1));
          }
 
          mArguments.push_back(argument);

@@ -20,8 +20,7 @@ if ( os.is("windows") ) then
 	includedirs { 	path.join(libdir, "fmod/include"),
 					path.join(libdir, "zlib/include"),
 					path.join(libdir, "tinyxml/include"),
-					path.join(libdir, "box2d/include"),
-					path.join(libdir, "icu/include") }
+					path.join(libdir, "box2d/include") }
 
     libdirs { 	path.join(libdir, "fmod/lib"),
 				path.join(libdir, "zlib/lib"),

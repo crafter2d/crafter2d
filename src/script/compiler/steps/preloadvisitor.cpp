@@ -78,6 +78,11 @@ void PreloadVisitor::visit(ASTClass& ast)
    ScopedValue<ASTClass*> scopedclass(&mpClass, &ast, mpClass);
    mContext.addClass(&ast);
 
+   if ( ast.getName() == UTEXT("ArrayList") )
+   {
+      int aap  =5;
+   }
+
    if ( ast.getName() != UTEXT("Object") )
    {
       if ( !ast.hasBaseType() )
@@ -124,6 +129,8 @@ void PreloadVisitor::visit(ASTClass& ast)
 void PreloadVisitor::visit(ASTFunction& ast)
 {
    ScopedScope scope(mScopeStack);
+
+   mpFunction = &ast;
 
    if ( !load(ast.getType()) )
    {
@@ -407,7 +414,7 @@ bool PreloadVisitor::load(ASTType& type)
    {
       const String& name = type.getObjectName();
 
-      if ( mpClass->isTypeName(name) )
+      if ( mpClass->isTypeName(name) || mpFunction->isTypeName(name) )
       {
          // name is not a type for the typename of this generic class
          return true;

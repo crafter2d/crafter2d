@@ -276,6 +276,11 @@ String ASTFunction::getPrototype() const
    return getName() + '(' + mpSignature->toString() + ')';
 }
 
+bool ASTFunction::isTypeName(const String& name) const
+{
+   return isGeneric() && mpTypeVariables->contains(name);
+}
+
 // - Operations
    
 void ASTFunction::addArgument(ASTFunctionArgument* pargument)

@@ -15,7 +15,7 @@ ASTFunction& FunctionResolver::resolve(CompileContext& context, const String& pr
    if ( pos != -1 )
    {
       String classname = prototype.subStr(0, pos);
-      String funcproto = prototype.subStr(pos + 1, prototype.length() - pos);
+      String funcproto = prototype.subStr(pos + 1, prototype.length() - pos - 1);
 
       ASTClass& astclass = context.resolveClass(classname);
 

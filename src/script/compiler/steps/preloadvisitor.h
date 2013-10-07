@@ -86,6 +86,7 @@ private:
    String            mPackage;
    ScopeStack        mScopeStack;
    ASTClass*         mpClass;
+   ASTFunction*      mpFunction;
 };
 
 #endif // PRELOAD_VISITOR_H_

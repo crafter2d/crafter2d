@@ -19,8 +19,8 @@ public:
       TS_ASSERT(v.isInt());
       TS_ASSERT(v.asInt() == 100);
       TS_ASSERT_EQUALS(v.toReal(), 100.0);
-      TS_ASSERT_EQUALS(v.toString(), String("100"));
-      TS_ASSERT_EQUALS(v.typeAsString(), String("int"));
+      TS_ASSERT_EQUALS(v.toString(), UTEXT("100"));
+      TS_ASSERT_EQUALS(v.typeAsString(), UTEXT("int"));
    }
 
    void testReal()
@@ -31,8 +31,8 @@ public:
       TS_ASSERT(v.isReal());
       TS_ASSERT_EQUALS(v.asReal(), 100.0);
       TS_ASSERT_EQUALS(v.toInt(), 100);
-      TS_ASSERT_EQUALS(v.toString(), String("100"));
-      TS_ASSERT_EQUALS(v.typeAsString(), String("real"));
+      TS_ASSERT_EQUALS(v.toString(), UTEXT("100"));
+      TS_ASSERT_EQUALS(v.typeAsString(), UTEXT("real"));
    }
 
    void testBoolean()
@@ -41,15 +41,15 @@ public:
 
       TS_ASSERT(vtrue.isBool());
       TS_ASSERT(vtrue.asBool());
-      TS_ASSERT_EQUALS(vtrue.toString(), String("true"));
+      TS_ASSERT_EQUALS(vtrue.toString(), UTEXT("true"));
 
       Variant vfalse(false);
-      TS_ASSERT_EQUALS(vfalse.toString(), String("false"));
+      TS_ASSERT_EQUALS(vfalse.toString(), UTEXT("false"));
    }
 
    void testString()
    {
-      VirtualString value("100");
+      VirtualString value(UTEXT("100"));
       Variant v(value);
       TS_ASSERT(v.isString());
       

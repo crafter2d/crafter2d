@@ -521,19 +521,19 @@ String ASTType::toString() const
          type = SBool;
          break;
       case eGeneric:
-         type = "~";
+         type = '~';
          // fall through
       case eObject:
          type += mpObjectClass != NULL ? mpObjectClass->getFullName() : mObjectName;
          if ( !mTypeArguments.empty() )
          {
-            type += "<";
+            type += '<';
             for ( int index = 0; index < mTypeArguments.size(); index++ )
             {
                const ASTType& arg = mTypeArguments[index];
                type += arg.toString();
             }
-            type += ">";
+            type += '>';
          }
          break;
       case eArray:
@@ -550,7 +550,7 @@ String ASTType::toString() const
 
    if ( isArray() )
    {
-      type += "[]";
+      type += UTEXT("[]");
    }
 
    return type;

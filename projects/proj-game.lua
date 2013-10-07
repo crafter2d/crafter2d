@@ -16,25 +16,20 @@ includedirs { "src" }
 
 if ( os.is("windows") ) then
 	includedirs { 	path.join(libdir, "sdl/include"),
-					path.join(libdir, "glee/include"),
-					path.join(libdir, "tinyxml/include"),
-					path.join(libdir, "openal/include"),
-					path.join(libdir, "zlib/include"),
-					path.join(libdir, "icu/include") }
+					path.join(libdir, "tinyxml/include")
+				}
 
 	libdirs { 	path.join(libdir, "sdl/lib"),
-				path.join(libdir, "glee/lib"),
-				path.join(libdir, "zlib/lib"),
 				path.join(libdir, "tinyxml/lib"),
-				}
+			}
 	
-	links { "SDLmain", "SDL", "opengl32", "glu32", "gdi32", "user32", "vfw32", "ws2_32" }
+	links { "SDLmain", "SDL", "user32", "vfw32", "ws2_32" }
 	
 	configuration "Debug"
-		links { "GLee_d", "tinyxmld_STL" }
+		links { "tinyxmld_STL" }
 			
 	configuration "Release"
-		links { "GLee", "tinyxml_STL" }
+		links { "tinyxml_STL" }
 elseif ( os.is("linux") ) then
 	
 	buildoptions { "-W", "-Wall", "-O0" }

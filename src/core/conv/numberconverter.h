@@ -2,8 +2,6 @@
 #ifndef NUMBER_CONVERTER_H
 #define NUMBER_CONVERTER_H
 
-#include <unicode/numfmt.h>
-
 #include "core/core_base.h"
 
 class String;
@@ -22,8 +20,6 @@ public:
 
 private:
    NumberConverter();
-
-   NumberFormat* mpFormat;
 };
 
 #endif // NUMBER_CONVERTER_H

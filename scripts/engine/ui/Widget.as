@@ -1,12 +1,10 @@
 
 package engine.ui;
 
-use engine.shapes.rectangle;
+use engine.shapes.*;
 use engine.input.*;
-use engine.collections.ArrayList;
+use engine.collections.*;
 use engine.core.*;
-
-use arraylist;
 
 abstract class Widget implements Focussable
 {

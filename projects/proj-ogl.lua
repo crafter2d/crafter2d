@@ -21,7 +21,6 @@ if ( os.is("windows") ) then
       path.join(libdir, "glee/include"),
       path.join(libdir, "soil/include"),
 	  path.join(libdir, "freetype2/include"),
-      path.join(libdir, "icu/include")
    }
 
    libdirs {

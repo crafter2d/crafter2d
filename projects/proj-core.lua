@@ -17,15 +17,13 @@ if ( os.is("windows") ) then
 	-- this is an export dll
 	defines { "WIN32", "CORE_EXPORTS", "UNICODE" }
 	
-	excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*" }
+	excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*", "src/core/string/linux*.*" }
 		
 	includedirs { 	path.join(libdir, "zlib/include"),
-					path.join(libdir, "tinyxml/include"),
-					path.join(libdir, "icu/include") }
+					path.join(libdir, "tinyxml/include") }
 					
 	libdirs { 	path.join(libdir, "zlib/lib"),
-				path.join(libdir, "tinyxml/lib"),
-				path.join(libdir, "icu/lib") }
+				path.join(libdir, "tinyxml/lib") }
 				
 	-- set IDE specific settings
 	if ( _ACTION == "cb-gcc" ) then
@@ -34,13 +32,13 @@ if ( os.is("windows") ) then
 		linkoptions { "--allow-multiple-definition" }
 	  
 		configuration "Debug"
-			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1", "tinyxmld_STL", "icuuc", "icuin" }
+			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1", "tinyxmld_STL" }
 		 
 		configuration "Release"
-			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1", "tinyxml_STL", "icuuc", "icuin" }
+			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1", "tinyxml_STL" }
 	else
 
-		links { "gdi32", "user32", "vfw32", "ws2_32", "icuuc", "icuin" }
+		links { "gdi32", "user32", "vfw32", "ws2_32" }
 		
 		configuration "Debug"
 			links { "tinyxmld_STL", "zlib1_d" }
@@ -57,10 +55,7 @@ elseif ( os.is("linux") ) then
 		linkoptions { "-Xlinker", "-zmuldefs" }
 	end
 
-	excludes { "src/core/vfs/win*.*", "src/core/system/win*.*", "src/core/vfs/zip/*32.*" }
-	
-	links { "icuuc" }
-		
+	excludes { "src/core/vfs/win*.*", "src/core/system/win*.*", "src/core/vfs/zip/*32.*", "src/core/string/win*.*" }		
 end
 
 configuration "Debug"

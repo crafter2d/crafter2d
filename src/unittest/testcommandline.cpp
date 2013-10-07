@@ -19,7 +19,7 @@ void TestCommandLine::testSize()
 
 void TestCommandLine::testSingleCommand()
 {
-   TS_ASSERT(mCmdLine.hasArgument(String("doit")));
+   TS_ASSERT(mCmdLine.hasArgument(UTEXT("doit")));
 }
 
 void TestCommandLine::testSpaceSeparatedArgument()
@@ -28,30 +28,30 @@ void TestCommandLine::testSpaceSeparatedArgument()
    TS_ASSERT_THROWS_NOTHING(mCmdLine.getArgument(name));
 
    const CommandLineArgument& arg = mCmdLine.getArgument(name);
-   TS_ASSERT(arg.getValue() == String("anothervalue"));
+   TS_ASSERT(arg.getValue() == UTEXT("anothervalue"));
 }
 
 void TestCommandLine::testFindValidArgument()
 {
-   const CommandLineArgument* pargument = mCmdLine.findArgument(String("argument"));
+   const CommandLineArgument* pargument = mCmdLine.findArgument(UTEXT("argument"));
    TS_ASSERT(pargument != NULL);
 }
 
 void TestCommandLine::testFindNonExistingArgument()
 {
-   const CommandLineArgument* pargument = mCmdLine.findArgument(String("non-existing-argument"));
+   const CommandLineArgument* pargument = mCmdLine.findArgument(UTEXT("non-existing-argument"));
    TS_ASSERT(pargument == NULL);
 }
 
 void TestCommandLine::testResolveCommand()
 {
-   const CommandLineArgument& arg = mCmdLine.getArgument(String("argument"));
+   const CommandLineArgument& arg = mCmdLine.getArgument(UTEXT("argument"));
 
    TS_ASSERT(arg.getType() == CommandLineArgument::eArgument);
-   TS_ASSERT(arg.getValue() == String("value"));
+   TS_ASSERT(arg.getValue() == UTEXT("value"));
 }
 
 void TestCommandLine::testResolveInvalidCommand()
 {
-   TS_ASSERT_THROWS(mCmdLine.getArgument(String("non-existing-argument")), CommandLineException*);
+   TS_ASSERT_THROWS(mCmdLine.getArgument(UTEXT("non-existing-argument")), CommandLineException*);
 }

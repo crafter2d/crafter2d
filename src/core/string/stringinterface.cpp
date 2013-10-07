@@ -63,6 +63,10 @@ unsigned long StringInterface::crc(const String& text)
 
 std::vector<String> StringInterface::tokenize(const String& text, char separator)
 {
+   if ( text == UTEXT("system.Object[], int") )
+   {
+      int aap = 5;
+   }
    std::vector<String> result;
    String value;
    for ( int index = 0; index < text.length(); ++index )

@@ -124,7 +124,7 @@ String ASTSignature::toString() const
 
       if ( index < mTypes.size() - 1 )
       {
-         result += ", ";
+         result += UTEXT(", ");
       }
    }
    return result;

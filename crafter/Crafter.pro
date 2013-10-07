@@ -86,8 +86,6 @@ Debug:MOC_DIR = $$BaseDir/debug/.moc
 Debug:RCC_DIR = $$BaseDir/debug/.rcc
 Debug:UI_DIR = $$BaseDir/debug/.ui
 
-INCLUDEPATH += $$PWD/../../externallibs/vs2012/icu/include
-
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../bin/ -lCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../bin/ -lCored
 

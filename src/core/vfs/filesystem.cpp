@@ -123,7 +123,7 @@ static void strip(Tokens& tokens)
    while ( it != tokens.end() )
    {
       const String& token = *it;
-      if ( token.compare(L"..") == 0 )
+      if ( token.compare(UTEXT("..")) == 0 )
       {
          count++;
       }
@@ -147,7 +147,7 @@ String FileSystem::expand(const String& path) const
       if ( next != tokens.end() )
       {
          const String& s = (*next);
-         if ( s.compare(L"..") == 0 )
+         if ( s.compare(UTEXT("..")) == 0 )
          {
             tokens.erase(it,next);
             it = tokens.begin();
@@ -155,5 +155,5 @@ String FileSystem::expand(const String& path) const
       }
    }
 
-   return L"";
+   return UTEXT("");
 }

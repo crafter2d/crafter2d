@@ -1564,6 +1564,10 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
          break;
       case STRING:
          kind = ASTType::eString;
+         if ( valuestr == UTEXT("\"../worlds/map1.jwl\"") )
+         {
+            int aap  =5;
+         }
          value.setString(mContext.getStringCache().lookup(parseString(valuestr)));
          break;
       case LITTRUE:

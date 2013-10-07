@@ -86,6 +86,8 @@ public:
    bool isGeneric() const;
    bool isVirtual() const;
 
+   bool isTypeName(const String& name) const;
+
    const ASTNodes& getArgumentNodes() const;
 
    int getArgumentCount() const;

@@ -1,7 +1,7 @@
 
 package engine.input;
 
-use engine.ui.InputFocusManager;
+use engine.ui.*;
 
 class KeyEventDispatcher extends InputEventDispatcher
 {

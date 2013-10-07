@@ -91,7 +91,7 @@ void DataStream::readString(String& value)
    int length;
    readInt(length);
    const char* pdata = readBytes(length);
-   value.setTo(pdata, length);
+   value.setToUtf8(pdata, length);
 }
 
 void DataStream::readBlob(void* pdata, int size)

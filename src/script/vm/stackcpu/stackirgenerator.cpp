@@ -190,6 +190,10 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          case CIL_call_native:
             {
                const FunctionRegistration& funcreg = context.getClassRegistry().getFunction(inst.mInt);
+               if ( funcreg.getClassRegistration().name == UTEXT("system.Class") )
+               {
+                  int aap = 5;
+               }
                ASTFunction& func = resolver.resolve(context, funcreg.getClassRegistration().name + UTEXT(".") + funcreg.getPrototype());
 
                FunctionSymbol* psymbol = new FunctionSymbol;

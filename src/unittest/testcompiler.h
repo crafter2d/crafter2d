@@ -43,8 +43,8 @@ public:
    {
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();
-      fs.addPath("../scripts");
-      fs.addPath("../src/unittest/tests");
+      fs.addPath(UTEXT("../scripts"));
+      fs.addPath(UTEXT("../src/unittest/tests"));
 
       ClassRegistry registry;
       VMInterface::registerCommonFunctions(registry);
@@ -54,11 +54,11 @@ public:
       compiler.setClassRegistry(registry);
 
       // compiler required classes
-      TS_ASSERT(compiler.compile("system.Object"));
-      TS_ASSERT(compiler.compile("system.InternalArray"));
-      TS_ASSERT(compiler.compile("system.InternalString"));
-      TS_ASSERT(compiler.compile("system.ClassLoader"));
-      TS_ASSERT(compiler.compile("system.System"));
+      TS_ASSERT(compiler.compile(UTEXT("system.Object")));
+      TS_ASSERT(compiler.compile(UTEXT("system.InternalArray")));
+      TS_ASSERT(compiler.compile(UTEXT("system.InternalString")));
+      TS_ASSERT(compiler.compile(UTEXT("system.ClassLoader")));
+      TS_ASSERT(compiler.compile(UTEXT("system.System")));
    }
 
    void testCallback()
@@ -71,7 +71,7 @@ public:
       compiler.setCPU(mCpu);
       compiler.setCallback(callback);
 
-      TS_ASSERT(compiler.compile("system.Object"));
+      TS_ASSERT(compiler.compile(UTEXT("system.Object")));
 
       TS_ASSERT(mLoaded);
    }

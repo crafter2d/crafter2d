@@ -20,10 +20,12 @@
 #ifndef STRING_H_
 #define STRING_H_
 
-#include <unicode/unistr.h>
+#include <cstdint>
 #include <string>
 
 #include "core/core_base.h"
+
+#include "char.h"
 
 class CORE_API String
 {
@@ -33,10 +35,9 @@ public:
 
             String();
             String(const String& that);
+   explicit String(const UChar* pdata);
    explicit String(const std::string& that);
    explicit String(const std::wstring& that);
-            String(bool nullterm, const UChar* pdata);
-            String(const UChar* pdata);
            ~String();
 
    const UChar operator[](int index) const;
@@ -56,7 +57,7 @@ public:
    bool operator!=(const String& that) const;
 
    const String& operator+=(UChar c);
-   const String& operator+=(const char* pdata);
+   const String& operator+=(const UChar* pdata);
    const String& operator+=(const String& that);
    String operator+(const String& that) const;
    String operator+(UChar c) const;
@@ -65,7 +66,7 @@ public:
 
  // query
    bool isEmpty() const;
-   int length() const;
+   uint32_t length() const;
    int compare(const String& that) const;
    int hashCode() const;
 
@@ -74,8 +75,11 @@ public:
    const String& toUpper();
    const String& trim();
 
+   void trimLeft();
+   void trimRight();
+
    void append(const String& that);
-   void setTo(const char* ptext, int length);
+   void setTo(const UChar* ptext, uint32_t length);
 
    void replace(UChar original, UChar newtext);
    void replace(int start, int length, const String& with);
@@ -93,14 +97,23 @@ public:
    std::string  toUtf8() const;
    std::wstring toUtf16() const;
 
+   void setToUtf8(const char* pdata, uint32_t length);
+
 private:
    friend class NumberConverter;
 
+ // operations
+   UChar* getBuffer(int length);
+
+ // static data
    static const String sEmpty;
 
-   UnicodeString mString;
+ // data
+   UChar*   mpString;
+   uint32_t mCapacity;
+   uint32_t mLength;   // not including the eos character
 };
 
-#define UTEXT(text) String(TRUE, L ## text)
+#define UTEXT(text) String(L ## text)
 
 #endif // STRING_H_
