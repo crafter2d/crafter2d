@@ -2,4 +2,5 @@ build
 
 output
 
-/crafter/Crafter.pro.user*
+*.pro.user*
+*.pro.autosave*

@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Crafter
 TEMPLATE = app
-DESTDIR = $$PWD/../bin
+DESTDIR = $$PWD/../../bin
 
 RESOURCES = crafter.qrc
 
@@ -74,7 +74,7 @@ FORMS    += mainwindow.ui \
     resizelayerdialog.ui \
     aboutdialog.ui
 
-BaseDir = $$PWD/../build/crafter
+BaseDir = $$PWD/../build/workshop
 
 Release:OBJECTS_DIR = $$BaseDir/release/.obj
 Release:MOC_DIR = $$BaseDir/release/.moc
@@ -86,13 +86,14 @@ Debug:MOC_DIR = $$BaseDir/debug/.moc
 Debug:RCC_DIR = $$BaseDir/debug/.rcc
 Debug:UI_DIR = $$BaseDir/debug/.ui
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../bin/ -lCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../bin/ -lCored
+BinDir = $$PWD/../../bin/
+SrcDir = $$PWD/../../src
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../bin/ -lEngine
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../bin/ -lEngined
+win32:CONFIG(release, debug|release): LIBS += -L$$BinDir -lCore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$BinDir -lCored
 
-INCLUDEPATH += $$PWD/../src
-DEPENDPATH += $$PWD/../src
+win32:CONFIG(release, debug|release): LIBS += -L$$BinDir -lEngine
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$BinDir -lEngined
 
-RESOURCES += crafter.qrc
+INCLUDEPATH += $$SrcDir
+DEPENDPATH += $$SrcDir
