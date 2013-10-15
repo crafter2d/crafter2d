@@ -4,6 +4,7 @@
 
 #include "core/core_base.h"
 
+#include "core/graphics/deviceinfo.h"
 #include "core/graphics/codepath.h"
 #include "core/graphics/blendstatedesc.h"
 
@@ -21,8 +22,15 @@ namespace Graphics
    class CORE_API Device
    {
    public:
+      Device();
       virtual ~Device();
 
+    // get/set
+      bool         hasDeviceInfo() const;
+      IDeviceInfo& getDeviceInfo();
+      void         setDeviceInfo(IDeviceInfo* pinfo);
+
+    // operations
       virtual bool create(int windowhandle, int width, int height) = 0;
 
       virtual void present() = 0;
@@ -34,6 +42,11 @@ namespace Graphics
       virtual Texture*        createTexture(const String& filename) = 0;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) = 0;
       virtual Font*           createFont(const String& name, int pointsize) = 0;
+
+   private:
+
+    // data
+      IDeviceInfo* mpDeviceInfo;
    };
 };
 

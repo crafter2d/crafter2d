@@ -56,7 +56,6 @@
 	<ul>
    <li>Antlr, http://antlr.org/
    <li>Box2D, http://box2d.org/
-   <li>ICU, http://site.icu-project.org/
    <li>TinyXML, http://www.grinninglizard.com/tinyxml
    <li>Zlib, http://zlib.net/
 	<li>FMOD, http://www.fmod.com/
