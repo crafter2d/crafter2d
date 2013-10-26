@@ -22,7 +22,7 @@
 
 #include "core/core_base.h"
 
-#include "zip/zip.h"
+#include <zip.h>
 
 class String;
 

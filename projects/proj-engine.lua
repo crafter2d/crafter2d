@@ -9,70 +9,61 @@ project "Engine"
 	flags { "NoPCH" }
 	location "build/engine"
 	
--- set project files
-files { "src/engine/**.cpp", "src/engine/**.h", "src/engine/**.inl" }
-includedirs { "src" }
+	files { "src/engine/**.cpp", "src/engine/**.h", "src/engine/**.inl" }
+	includedirs { "src" }
+	links { "Core", "Script" }
 
--- set the include and library
-if ( os.is("windows") ) then
-	defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
-	
-	includedirs { 	path.join(libdir, "fmod/include"),
-					path.join(libdir, "zlib/include"),
-					path.join(libdir, "tinyxml/include"),
-					path.join(libdir, "box2d/include") }
+	configuration "Debug"
+		defines { "_DEBUG", "TIXML_USE_STL" }
+		targetsuffix "d"
+		flags { "Symbols" }
+		
+	configuration "Release"
+		defines { "NDEBUG", "TIXML_USE_STL" }
+		flags { "Optimize" }
 
-    libdirs { 	path.join(libdir, "fmod/lib"),
-				path.join(libdir, "zlib/lib"),
-				path.join(libdir, "tinyxml/lib"),
-				path.join(libdir, "box2d/lib") }
 
-	-- set IDE specific settings
-	if ( _ACTION == "cb-gcc" ) then
-			
+	configuration "Windows"
+		defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
+		
+		includedirs { 	path.join(libdir, "fmod/include"),
+						path.join(libdir, "zlib/include"),
+						path.join(libdir, "tinyxml/include"),
+						path.join(libdir, "box2d/include") }
+
+		libdirs { 	path.join(libdir, "fmod/lib"),
+					path.join(libdir, "zlib/lib"),
+					path.join(libdir, "tinyxml/lib"),
+					path.join(libdir, "box2d/lib") }
+
+	configuration "cb-gcc"
 		buildoptions { "-W", "-Wall", "-O0" }
 		linkoptions { "--allow-multiple-definition" }
 	  
-		configuration "Debug"
-			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
-					"zlib1", "box2d_d", "tinyxmld_STL", "fmodex_vc" } 
-		 
-		configuration "Release"
-			links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
+	configuration "cb-gcc and Debug"
+		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
+				"zlib1", "box2d_d", "tinyxmld_STL", "fmodex_vc" } 
+	 
+	configuration "cb-gcc and Release"
+		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
 					"zlib1", "box2d", "tinyxml_STL", "fmodex_vc" }
 
-	else
-		
+	configuration "vs*"
 		links { "gdi32", "user32", "vfw32", "ws2_32", "fmodex_vc" }
 		
-		configuration "Debug"
-			links { "box2d_d", "tinyxmld_STL", "zlib1_d" }
-					
-		configuration "Release"
-			links { "box2d", "tinyxml_STL", "zlib1" }
-   end -- win32
+	configuration { "vs*", "Debug" }
+		links { "box2d_d", "tinyxmld_STL", "zlib1_d" }
+				
+	configuration { "vs*", "Release" }
+		links { "box2d", "tinyxml_STL", "zlib1" }
    
-elseif ( os.is("linux") ) then
+	configuration "linux"
+		buildoptions { "-W", "-Wall", "-O0" }
+		if ( _ACTION == "cb-gcc" ) then
+			linkoptions { "-Xlinker", "-zmuldefs" }
+		end
+	   
+		defines { "LINUX" }
 	
-	buildoptions { "-W", "-Wall", "-O0" }
-	if ( _ACTION == "cb-gcc" ) then
-		linkoptions { "-Xlinker", "-zmuldefs" }
-	end
-   
-	defines { "LINUX" }
-	
-	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
-	links { "tinyxml", "Box2D" }
-
-end
-
-configuration "Debug"
-	defines { "_DEBUG", "TIXML_USE_STL" }
-	targetsuffix "d"
-	flags { "Symbols" }
-	links { "Core", "Script" }
-	
-configuration "Release"
-	defines { "NDEBUG", "TIXML_USE_STL" }
-	flags { "Optimize" }
-	links { "Core", "Script" }
+		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
+		links { "tinyxml", "Box2D" }

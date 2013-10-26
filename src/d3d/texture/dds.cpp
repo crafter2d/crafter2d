@@ -23,6 +23,7 @@
 
 #include "dds.h"
 
+#include <algorithm>
 #include <memory>
 #include <cassert>
 

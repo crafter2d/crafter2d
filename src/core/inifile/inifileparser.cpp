@@ -115,12 +115,28 @@ String IniFileParser::parseWord(File& file, char delim)
 
 void IniFileParser::parseComment(File& file)
 {
-   while ( !file.eof() && !Char::isEOL(file.getc()) );
+   while (!file.eof())
+   {
+      UChar c = file.getc();
+      if (Char::isEOL(c))
+      {
+	      break;
+      }
+   }
 
    skipWhiteSpace(file);
 }
 
 void IniFileParser::skipWhiteSpace(File& file)
 {
-   for ( ; !file.eof() && Char::isWhitespace(file.peekc()); file.getc() );
+   while (!file.eof())
+   {
+      UChar c = file.peekc();
+      if ( !Char::isWhitespace(c) )
+      {
+         break;
+      }
+      file.getc();
+   }
+   //for ( ; !file.eof() && Char::isWhitespace(file.peekc()); file.getc() );
 }

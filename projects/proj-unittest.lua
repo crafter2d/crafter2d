@@ -10,29 +10,27 @@ project "UnitTest"
 	location "build/unittest"
 	debugdir "bin"
 	
--- set project files
-files { "src/unittest/**.cpp", "src/unittest/**.h", "src/unittest/**.inl" }
-includedirs { "src" }
-
-if ( os.is("windows") ) then
-	includedirs { 	path.join(libdir, "cxxtest"),
-					path.join(libdir, "zlib/include") }
-					
-	libdirs { 	path.join(libdir, "zlib/lib") }
-	
-	local sln = solution()
-	local srcdir = path.join(sln.basedir, "src/unittest");
-	local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
-	prebuildcommands { "python " .. gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }
-end
-
-configuration "Debug"
-	defines { "_DEBUG", "_CXXTEST_HAVE_EH" }
-	targetsuffix "d"
-	flags { "Symbols" }
+	-- set project files
+	files { "src/unittest/**.cpp", "src/unittest/**.h", "src/unittest/**.inl" }
+	includedirs { "src" }
 	links { "Core", "Engine", "Script" }
-	
-configuration "Release"
-	defines { "NDEBUG", "_CXXTEST_HAVE_EH" }
-	flags { "Optimize" }
-	links { "Core", "Engine", "Script" }
+
+	configuration "Debug"
+		defines { "_DEBUG", "_CXXTEST_HAVE_EH" }
+		targetsuffix "d"
+		flags { "Symbols" }
+		
+	configuration "Release"
+		defines { "NDEBUG", "_CXXTEST_HAVE_EH" }
+		flags { "Optimize" }
+		
+	configuration "windows"
+		includedirs { 	path.join(libdir, "cxxtest"),
+						path.join(libdir, "zlib/include") }
+						
+		libdirs { 	path.join(libdir, "zlib/lib") }
+		
+		local sln = solution()
+		local srcdir = path.join(sln.basedir, "src/unittest");
+		local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
+		--prebuildcommands { "python " .. gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }
