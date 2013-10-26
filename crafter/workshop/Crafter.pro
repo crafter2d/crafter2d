@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     boundprocessor.cpp \
     boundisland.cpp \
     resizelayerdialog.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    undosettile.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -61,7 +62,8 @@ HEADERS  += mainwindow.h \
     boundprocessor.h \
     boundisland.h \
     resizelayerdialog.h \
-    aboutdialog.h
+    aboutdialog.h \
+    undosettile.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \

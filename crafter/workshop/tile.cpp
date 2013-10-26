@@ -42,6 +42,13 @@ const QPoint& Tile::getTexCoord() const
     return mTexCoord;
 }
 
+// - Query
+
+bool Tile::isValid() const
+{
+    return mpMap != NULL;
+}
+
 // - Painting
 
 void Tile::paint(QPainter& painter, int x, int y)

@@ -41,6 +41,7 @@ public:
   // operations
     void load(const QString& path);
 
+    Tile getTile(const QPoint& mousepos, LayerLevel level);
     bool setTile(const QPoint& mousepos, LayerLevel level, const Tile &tile);
     void clearTile(const QPoint& mousepos, LayerLevel level);
 

@@ -72,8 +72,8 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
+    <addaction name="actionEdit_Undo"/>
+    <addaction name="actionEdit_Redo"/>
     <addaction name="separator"/>
     <addaction name="actionEdit_layers"/>
     <addaction name="actionEdit_bounds"/>
@@ -203,12 +203,12 @@
     <string>&lt;recent5&gt;</string>
    </property>
   </action>
-  <action name="actionUndo">
+  <action name="actionEdit_Undo">
    <property name="text">
     <string>Undo</string>
    </property>
   </action>
-  <action name="actionRedo">
+  <action name="actionEdit_Redo">
    <property name="text">
     <string>Redo</string>
    </property>

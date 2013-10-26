@@ -11,6 +11,7 @@
 #include <engine/world/world.h>
 
 #include "tileworld.h"
+#include "undosettile.h"
 
 TileView::TileView():
     QWidget(NULL),
@@ -124,6 +125,16 @@ void TileView::straightenBounds()
 
 }
 
+void TileView::undo()
+{
+    mUndoStack.undo();
+}
+
+void TileView::redo()
+{
+    mUndoStack.redo();
+}
+
 // - Slots
 
 void TileView::worldUpdated()
@@ -176,8 +187,10 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
         switch ( mEditMode )
         {
         case eLayerMode:
-            if ( mpWorld->setTile(pevent->pos(), mLevel, mTile) )
             {
+                UndoSetTile* pundo = new UndoSetTile(*mpWorld, pevent->pos(), mLevel, mTile);
+                mUndoStack.push(pundo);
+
                 repaint();
             }
             break;

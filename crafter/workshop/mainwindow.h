@@ -68,6 +68,10 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void on_actionEdit_Undo_triggered();
+
+    void on_actionEdit_Redo_triggered();
+
 private:
     enum { MaxRecentFiles = 5 };
 

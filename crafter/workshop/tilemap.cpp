@@ -81,15 +81,18 @@ Tile& TileMap::getTile(int tile)
 
 int TileMap::indexOf(const Tile& tile) const
 {
-    for ( int index = 0; index < mTiles.size(); index++ )
+    if ( tile.isValid() )
     {
-        Tile* ptile = mTiles[index];
-        if ( ptile->getTexCoord() == tile.getTexCoord() )
+        for ( int index = 0; index < mTiles.size(); index++ )
         {
-            return index;
+            Tile* ptile = mTiles[index];
+            if ( ptile->getTexCoord() == tile.getTexCoord() )
+            {
+                return index;
+            }
         }
     }
-    return -1;
+    return 255;
 }
 
 // - Painting
@@ -157,6 +160,24 @@ void TileMap::generateTiles()
     }
 }
 
+Tile TileMap::getTile(const QPoint& mousepos, LayerLevel level)
+{
+    int tilex = mousepos.x() / mTileSet.getTileWidth();
+    int tiley = mousepos.y() / mTileSet.getTileHeight();
+
+    if ( tilex >= 0 && tilex < mpLayer->getDefinition().width
+      && tiley >= 0 && tiley < mpLayer->getDefinition().height )
+    {
+        int tileindex = mpLayer->getTile(level, tilex, tiley);
+        if ( tileindex < 255 )
+        {
+            return *mTiles[tileindex];
+        }
+    }
+
+    return Tile();
+}
+
 bool TileMap::setTile(const QPoint& mousepos, LayerLevel level, const Tile& tile)
 {
     int tilex = mousepos.x() / mTileSet.getTileWidth();
@@ -165,7 +186,9 @@ bool TileMap::setTile(const QPoint& mousepos, LayerLevel level, const Tile& tile
     if ( tilex >= 0 && tilex < mpLayer->getDefinition().width
       && tiley >= 0 && tiley < mpLayer->getDefinition().height )
     {
-        mpLayer->setTile(level, tilex, tiley, indexOf(tile));
+        int index = indexOf(tile);
+        mpLayer->setTile(level, tilex, tiley, index);
+        mWorld.mapChanged(*this);
         return true;
     }
 

@@ -10,6 +10,7 @@
 #include <engine/world/layer.h>
 
 #include "stringinterface.h"
+#include "tile.h"
 #include "tilemap.h"
 
 // static
@@ -223,13 +224,24 @@ Bound& TileWorld::addBound(const QPoint& mousepos)
     return mpWorld->addBound(pos, pos);
 }
 
-bool TileWorld::setTile(const QPoint& mousepos, LayerLevel level, const Tile& tile)
+Tile TileWorld::getTile(const QPoint& mousepos, LayerLevel level)
 {
     if ( mpActiveMap != NULL )
     {
-        return mpActiveMap->setTile(mousepos, level, tile);
+        return mpActiveMap->getTile(mousepos, level);
     }
-    return false;
+
+    return Tile();
+}
+
+bool TileWorld::setTile(const QPoint& mousepos, LayerLevel level, const Tile& tile)
+{
+    bool result = false;
+    if ( mpActiveMap != NULL )
+    {
+        result = mpActiveMap->setTile(mousepos, level, tile);
+    }
+    return result;
 }
 
 void TileWorld::clearTile(const QPoint& mousepos, LayerLevel level)

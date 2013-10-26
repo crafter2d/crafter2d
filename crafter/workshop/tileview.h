@@ -3,6 +3,7 @@
 
 #include <QImage>
 #include <QWidget>
+#include <QUndoStack>
 
 #include <qpoint.h>
 #include <qvector.h>
@@ -45,6 +46,10 @@ public:
 
     void setActiveTile(const Tile& tile);
 
+  // operations
+    void undo();
+    void redo();
+
 public slots:
     void worldUpdated();
 
@@ -69,6 +74,7 @@ private:
     Bound*        mpSelectedBound;
     BoundEdge     mSelectedEdge;
     LayerLevel    mLevel;
+    QUndoStack    mUndoStack;
 };
 
 #endif // TILEVIEW_H
