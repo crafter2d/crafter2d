@@ -78,11 +78,10 @@ char FileBuffer::getchar()
 
 char FileBuffer::peekchar()
 {
-   int pos = ftell(mpFile);
    int peek = getchar();
    if ( peek != EOF )
    {
-      fseek(mpFile, pos, SEEK_SET);
+      ungetc(peek, mpFile);
    }
    return (char) peek;
 }
