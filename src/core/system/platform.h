@@ -46,6 +46,7 @@ public:
 
  // operations
    virtual void* loadModule(const String& name) = 0;
+   virtual void  freeModule(void* pmodule) = 0;
    virtual void* getFunctionAddress(void* module, const String& name) = 0;
 
 protected:

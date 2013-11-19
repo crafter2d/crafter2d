@@ -20,7 +20,8 @@
 #ifndef PHYSICS_SIMULATOR_H_
 #define PHYSICS_SIMULATOR_H_
 
-#include "simulator.h"
+#include "core/physics/simulator.h"
+
 #include "collisionshapes.h"
 
 class PhysicsSimulator : public Simulator

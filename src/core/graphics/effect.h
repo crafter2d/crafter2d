@@ -22,6 +22,7 @@
 
 #include <vector>
 
+#include "core/content/content.h"
 #include "core/string/string.h"
 #include "core/resource/resourcemanager.h"
 
@@ -30,65 +31,52 @@ class TiXmlElement;
 namespace Graphics
 {
    class BlendState;
-   class CodePath;
+   class EffectTechnique;
    class Device;
    class RenderContext;
-   class Texture;
-   class VertexInputLayout;
    class UniformBuffer;
+   class VertexBuffer;
 
-   /*!
-   @author Jeroen Broekhuizen
-   \brief Implements an effect for a collection of triangles.
-
-   This class implements the an effect for use during rendering of objects. It keeps track
-   of textures (one diffuse map and extra textures for other stages), shaders and eventually
-   texture combiners. Either GLSL or vertex programs are used depending on the target hardware
-   (if GLSL is not supported the GLSL code is automatically converted to vertex program ASM
-   code).
+   /**
+    * @author Jeroen Broekhuizen
+    * \brief Implements an effect used while rendering.
+    *
+    * This class implements the an effect for use during rendering of objects. 
     */
-   class CORE_API Effect
+   class CORE_API Effect : public IContent
    {
    public:
+    // types
+      typedef std::vector<EffectTechnique*> Techniques;
+
       Effect();
 	   ~Effect();
 
     // get/set
       const String& getName() const;
-      const String& getFileName() const;
+      const Techniques& getTechniques() const;
+
+    // buffers
+      UniformBuffer* createUniformBuffer(const String& name) const;
+      VertexBuffer*  createVertexBuffer(Device& device, int length, int usage);
 	
     // operations
-	   bool              load(Graphics::Device& device, const VertexInputLayout& layout, const String& file);
-	   void              destroy();
-	
-      UniformBuffer*    getUniformBuffer(const String& name) const;
+      void addTechnique(EffectTechnique* ptechnique);
 
-      void              setTexture(int stage, const Texture& texture);
+      void setBlendState(BlendState* pblendstate);
+      void setActiveTechnique(const String& name);
 
-      void              render(RenderContext& context, int start, int vertcount);
+      void enable(RenderContext& context) const;
 	
    private:
-     // types
-      struct TexInfo
-      {
-         const Texture* ptexture;
-         int            stage;
-      };
+    // operations
+      void destroy();
 
-      typedef std::vector<TexInfo> Textures;
-
-      void              enable(Graphics::RenderContext& context) const;
-	   void              disable(Graphics::RenderContext& context) const;
-      
-	   bool              processCode(Graphics::Device& device, const Graphics::VertexInputLayout& layout, const TiXmlElement& effect, const String& path);
-      bool              processBlendState(Graphics::Device& device, const TiXmlElement& effect);
-		
-      String      mName;
-      String      mFile;
-      Textures    mTextures;
-      CodePath*   mpCodePath;
-      BlendState* mpBlendStateEnabled;
-      BlendState* mpBlendStateDisabled;
+    // data
+      String            mName;
+      Techniques        mTechniques;
+      EffectTechnique*  mpActiveTechnique;
+      BlendState*       mpBlendState;
    };
 }
 

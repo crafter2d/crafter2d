@@ -19,4 +19,37 @@
  ***************************************************************************/
 #include "codepath.h"
 
+#include "core/defines.h"
+
+namespace Graphics
+{
+   CodePath::CodePath():
+      mpVertexLayout(NULL)
+   {
+   }
+
+   CodePath::~CodePath()
+   {
+      delete mpVertexLayout;
+   }
+
+   // - Get/set
+
+   bool CodePath::hasVertexLayout() const
+   {
+      return mpVertexLayout != NULL;
+   }
+
+   const VertexLayout& CodePath::getVertexLayout() const
+   {
+      ASSERT_PTR(mpVertexLayout);
+      return *mpVertexLayout;
+   }
+
+   void CodePath::setVertexLayout(VertexLayout* playout)
+   {
+      mpVertexLayout = playout;
+   }
+
+} // namespace Graphics
 

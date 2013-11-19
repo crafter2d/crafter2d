@@ -20,7 +20,7 @@
 #ifndef BOX2D_BODY_H_
 #define BOX2D_BODY_H_
 
-#include "engine/physics/body.h"
+#include "core/physics/body.h"
 
 class b2Body;
 class b2Fixture;

@@ -50,7 +50,7 @@ public:
 
  // reading
    int  read(void* ptr, int size);
-   int  write(void* ptr, int size);
+   int  write(const void* ptr, int size);
    int  write(const String& text);
    char getc();
    char peekc();

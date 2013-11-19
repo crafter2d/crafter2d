@@ -24,8 +24,7 @@
 #include "core/string/string.h"
 #include "core/vfs/unzipfile.h"
 #include "core/streams/arraystream.h"
-
-#include "engine/physics/simulationfactoryregistry.h"
+#include "core/physics/simulationfactoryregistry.h"
 
 #include "bound.h"
 #include "layer.h"

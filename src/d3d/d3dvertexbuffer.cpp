@@ -1,7 +1,7 @@
 
 #include "d3dvertexbuffer.h"
 
-#include "core/graphics/vertexinputlayout.h"
+#include "core/graphics/vertexlayout.h"
 
 #include "d3ddevice.h"
 #include "d3drendercontext.h"
@@ -22,11 +22,8 @@ D3DVertexBuffer::~D3DVertexBuffer()
    release();
 }
 
-bool D3DVertexBuffer::create(const VertexInputLayout& layout, int length, int usage)
+bool D3DVertexBuffer::create(const VertexLayout& layout, int length, int usage)
 {
-   if ( !VertexBuffer::create(layout, length, usage) )
-      return false;
-
    mStride = layout.getStride();
 
    D3D11_BUFFER_DESC desc = {0};

@@ -77,7 +77,7 @@ void ActionMap::process(int action, bool down)
    }
 }
 
-void ActionMap::processRemote(const ActionEvent& event, Actor& object)
+void ActionMap::processRemote(const ActionEvent& event, Entity& object)
 {
    ASSERT_PTR(mpScript);
    

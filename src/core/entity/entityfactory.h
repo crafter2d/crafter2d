@@ -4,8 +4,6 @@
 
 #include <map>
 
-#include "entityloader.h"
-
 class ComponentFactory;
 class Entity;
 class EntityDefinition;
@@ -31,7 +29,6 @@ private:
  // data
    Factories      mFactories;
    DefinitionMap  mDefinitions;
-   EntityLoader   mLoader;
 };
 
 #endif // ENTITY_FACTORY_H

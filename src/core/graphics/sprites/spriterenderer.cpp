@@ -25,7 +25,6 @@
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/utils.h"
 #include "core/graphics/vertexbuffer.h"
-#include "core/graphics/vertexinputlayout.h"
 #include "core/math/size.h"
 #include "core/math/xform.h"
 
@@ -42,7 +41,8 @@ namespace Graphics
 SpriteRenderer::SpriteRenderer():
    mSprites(),
    mConstants(),
-   mEffect(),
+   mOffset(),
+   mpEffect(NULL),
    mpUB(NULL),
    mpVB(NULL),
    mpIB(NULL)
@@ -54,21 +54,22 @@ static const int SpriteIndices  = 6;
 
 bool SpriteRenderer::create(Device& device)
 {
-   Graphics::VertexInputLayout vertexLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0);
+   //Graphics::VertexInputLayout vertexLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0);
    uint usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
 
-   if ( !mEffect.load(device, vertexLayout, UTEXT("spriteeffect")) )
+   mpEffect = device.createEffect(UTEXT("shaders/basic"));
+   if ( mpEffect == NULL )
    {
       return false;
    }
-
+   
    UNIFORM_BUFFER_DESC descs[] = {
-      { UTEXT("proj"), sizeof(float) * 16 },
-      { UTEXT("world"), sizeof(float) * 16 },
-      { UTEXT("object"), sizeof(float) * 16 },
+      { UTEXT("proj"), sizeof(float)* 16 },
+      { UTEXT("world"), sizeof(float)* 16 },
+      { UTEXT("object"), sizeof(float)* 16 },
    };
 
-   mpUB = mEffect.getUniformBuffer(UTEXT("mpv"));
+   mpUB = mpEffect->createUniformBuffer(UTEXT("mpv"));
    if ( !mpUB->create(device, descs, 3) )
    {
       return false;
@@ -80,8 +81,8 @@ bool SpriteRenderer::create(Device& device)
 
    const int batchsize = 256;
 
-   mpVB = device.createVertexBuffer();
-   if ( mpVB == NULL || !mpVB->create(vertexLayout, batchsize * SpriteVertices, usage) )
+   mpVB = mpEffect->createVertexBuffer(device, batchsize * SpriteVertices, usage);
+   if ( mpVB == NULL )
    {
       return false;
    }
@@ -143,6 +144,8 @@ void SpriteRenderer::endDraw(RenderContext& context)
       context.setIndexBuffer(*mpIB);
       context.setUniformBuffer(*mpUB);
 
+      mpEffect->enable(context);
+
       int start = 0;
       int indices = 0;
       const Texture* ptex = &mSprites[0].getTexture();
@@ -151,8 +154,8 @@ void SpriteRenderer::endDraw(RenderContext& context)
          const Sprite& sprite = mSprites[index];
          if ( &sprite.getTexture() != ptex )
          {
-            mEffect.setTexture(0, *ptex);
-            mEffect.render(context, start, indices);
+            context.setTexture(0, *ptex);
+            context.drawTriangles(start, indices);
 
             start += indices;
             indices = 0;
@@ -164,8 +167,8 @@ void SpriteRenderer::endDraw(RenderContext& context)
 
       if ( indices > 0 )
       {
-         mEffect.setTexture(0, *ptex);
-         mEffect.render(context, start, indices);
+         context.setTexture(0, *ptex);
+         context.drawTriangles(start, indices);
       }
    }
 }

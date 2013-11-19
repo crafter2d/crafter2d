@@ -14,11 +14,13 @@ class XForm;
 namespace Graphics
 {
    class BlendState;
+   class CodePath;
    class Effect;
    class Sprite;
    class IndexBuffer;
    class VertexBuffer;
    class UniformBuffer;
+   class Texture;
 
    class CORE_API RenderContext
    {
@@ -36,10 +38,12 @@ namespace Graphics
       void initialize(Device& device);
 
     // operations
+      virtual void setCodePath(CodePath& path) = 0;
       virtual void setBlendState(const BlendState& state) = 0;
       virtual void setVertexBuffer(const VertexBuffer& buffer) = 0;
       virtual void setIndexBuffer(const IndexBuffer& buffer) = 0;
       virtual void setUniformBuffer(const UniformBuffer& buffer) = 0;
+      virtual void setTexture(int stage, const Texture& texture) = 0;
 
     // drawing instructions
       virtual void drawTriangles(int start, int count) = 0;

@@ -20,7 +20,7 @@
 #ifndef REQUEST_OBJECT_EVENT_H_
 #define REQUEST_OBJECT_EVENT_H_
 
-#include "engine/idmanager.h"
+#include "core/entity/idmanager.h"
 
 #include "netevent.h"
 

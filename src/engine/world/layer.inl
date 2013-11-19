@@ -83,12 +83,14 @@ INLINE bool Layer::isTileAnimating() const
 /// \brief Return the effect for this layer.
 INLINE const Graphics::Effect& Layer::getEffect() const
 {
-   return mEffect;
+   ASSERT_PTR(mpEffect)
+   return *mpEffect;
 }
 
 INLINE Graphics::Effect& Layer::getEffect()
 {
-   return mEffect;
+   ASSERT_PTR(mpEffect)
+   return *mpEffect;
 }
 
 /// \fn Layer::layerToScreen( const Vector& vec ) const

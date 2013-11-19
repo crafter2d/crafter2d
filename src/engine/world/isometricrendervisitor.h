@@ -33,7 +33,7 @@ public:
    SortedObjectList& getObjects();
 
  // Overloads
-   virtual void visitActor(Actor* object);
+   virtual void visitEntity(Entity* object) override;
 
 private:
    SortedObjectList mObjects;

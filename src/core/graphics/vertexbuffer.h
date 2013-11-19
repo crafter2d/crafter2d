@@ -25,7 +25,7 @@
 namespace Graphics
 {
    class RenderContext;
-   class VertexInputLayout;
+   class VertexLayout;
 
    /**
    @author Jeroen Broekhuizen
@@ -49,16 +49,16 @@ namespace Graphics
       virtual ~VertexBuffer();
 
 	    /*!
-	        \fn VertexBuffer::create (const VertexInputLayout& layout, int length, int usage, int fvf)
+	        \fn VertexBuffer::create(const VertexLayout& vertexlayout, int length, int usage, int fvf)
 		     \brief Creates the actuall vertex buffer object you can fill later on.
-           \param[in] layout the layout of the vertex structure in this buffer
+           \param[in] vertexlayout the layout of the vertices
 	 	     \param[in] length the number of items that should fit in this buffer
 	        \param[in] usage  the usage of this buffer (static, dynamic, etc)
 	        \param[in] fvf    the vertex format specification (position, texture coordinates, etc)
 	        \retval true      the object is created successfully
 	        \retval false     the usage flag or VBO's are invalid or the system ran out of memory
 	     */
-       virtual bool create(const VertexInputLayout& layout, int length, int usage) = 0;
+       virtual bool create(const VertexLayout& vertexlayout, int length, int usage) = 0;
 
 	    /*!
 	        \fn VertexBuffer::release()

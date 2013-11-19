@@ -23,10 +23,10 @@
 #include <vector>
 #include <map>
 
+#include "core/entity/idmanager.h"
 #include "core/string/string.h"
 #include "core/math/vector.h"
 
-#include "engine/idmanager.h"
 #include "engine/worldobserver.h"
 #include "engine/script/script.h"
 #include "engine/engine_base.h"

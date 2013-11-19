@@ -27,17 +27,6 @@
 class Box2DBody;
 class b2RopeJoint;
 
-class Box2DRopeJointDefinition
-{
-public:
-   Box2DRopeJointDefinition();
-
-   Box2DBody* pleft;
-   Box2DBody* pright;
-   Vector     anchorLeft;
-   Vector     anchorRight;
-};
-
 class Box2DRopeJoint : public Box2DJoint
 {
 public:

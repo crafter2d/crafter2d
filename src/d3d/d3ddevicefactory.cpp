@@ -8,7 +8,8 @@ namespace Graphics
 
 Device* D3DDeviceFactory::createDevice()
 {
-   return new D3DDevice();
+   // return new D3DDevice();
+   return NULL;
 }
 
 } // namespace Graphics

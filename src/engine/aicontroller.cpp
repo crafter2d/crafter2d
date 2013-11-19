@@ -25,7 +25,6 @@
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
 
-#include "actor.h"
 #include "process.h"
 
 // static
@@ -53,8 +52,8 @@ void AIController::setThis(VirtualObject& self)
 
 // - Operations
 
-void AIController::performAction(Actor& actor)
+void AIController::performAction(Entity& entity)
 {
-   Variant arg(mpScript->resolve(&actor));
+   Variant arg(mpScript->resolve(&entity));
    mpScript->run(smFunc, 1, &arg);
 }

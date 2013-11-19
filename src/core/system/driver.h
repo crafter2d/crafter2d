@@ -25,7 +25,6 @@
 namespace Graphics
 {
    class Device;
-   class IDeviceInfo;
 }
 
 namespace Input
@@ -33,25 +32,16 @@ namespace Input
    class InputDevice;
 }
 
+class ContentManager;
+
 class CORE_API Driver
 {
 public:
    Driver();
 
- // get/set
-   bool                    hasDeviceInfo() const;
-   Graphics::IDeviceInfo&  getDeviceInfo();
-   void                    setDeviceInfo(Graphics::IDeviceInfo* pinfo);
-
- // interface
-   virtual Graphics::Device* createGraphicsDevice() = 0;
+   virtual Graphics::Device* createGraphicsDevice(ContentManager& manager) = 0;
    virtual Input::InputDevice* createInputDevice() = 0;
 
-
-private:
-
- // data
-   Graphics::IDeviceInfo* mpInfo;
 };
 
 #endif // DRIVER_H

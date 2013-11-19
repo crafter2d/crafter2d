@@ -31,8 +31,8 @@ public:
    WinFileSystem();
    virtual ~WinFileSystem();
 
-   virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL);
-   virtual bool find(const String& mask, Callback callback, void* pdata = NULL);
+   virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL) override;
+   virtual bool find(const String& mask, std::vector<String>& result) override;
 
 private:
    friend class FileSystem;

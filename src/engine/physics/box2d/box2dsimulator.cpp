@@ -24,12 +24,12 @@
 #include "core/math/matrix4.h"
 #include "core/math/size.h"
 #include "core/defines.h"
+#include "core/physics/bodydefinition.h"
+#include "core/physics/revolutejointdefinition.h"
 
 #include "engine/world/world.h"
 #include "engine/world/bound.h"
 #include "engine/world/bounds.h"
-#include "engine/physics/bodydefinition.h"
-#include "engine/physics/revolutejointdefinition.h"
 
 #include "box2dbody.h"
 #include "box2draycastcallback.h"

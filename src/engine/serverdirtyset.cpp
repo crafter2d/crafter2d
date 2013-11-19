@@ -19,11 +19,11 @@
  ***************************************************************************/
 #include "serverdirtyset.h"
 
+#include "core/entity/entity.h"
+
 #include "net/neteventfactory.h"
 #include "net/events/aggregateevent.h"
 #include "net/events/updateobjectevent.h"
-
-#include "entity.h"
 
 ServerDirtySet::ServerDirtySet():
    DirtySet(),

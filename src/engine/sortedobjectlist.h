@@ -22,9 +22,9 @@
 
 #include "core/containers/sortedlist.h"
 
-class Actor;
+class Entity;
 
-class SortedObjectList : public SortedList<Actor*>
+class SortedObjectList : public SortedList<Entity*>
 {
 public:
    SortedObjectList();

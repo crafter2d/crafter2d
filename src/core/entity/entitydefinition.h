@@ -4,10 +4,9 @@
 
 #include <vector>
 
+#include "core/entity/componentdefinitions/componentdefinition.h"
 #include "core/string/string.h"
 #include "core/math/vector.h"
-
-#include "engine/components/componentdefinition.h"
 
 class EntityLinkDefinition;
 

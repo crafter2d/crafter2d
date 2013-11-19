@@ -3,8 +3,8 @@
 
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/texture.h"
-#include "core/graphics/vertexinputlayout.h"
-#include "core/graphics/vertexinputelement.h"
+#include "core/graphics/vertexlayout.h"
+#include "core/graphics/vertexlayoutelement.h"
 #include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 #include "core/streams/filereaderstream.h"
@@ -38,67 +38,48 @@ UniformBuffer* D3DCodePath::getUniformBuffer(const String& name) const
    return presult;
 }
 
-bool D3DCodePath::load(const VertexInputLayout& layout, const String& vertex, const String& pixel)
+bool D3DCodePath::create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader)
 {
-   return loadVertexProgram(layout, vertex) && loadPixelProgram(pixel);
+   setVertexLayout(playout);
+
+   return loadVertexProgram(vertexshader) && loadPixelProgram(pixelshader);
 }
 
-bool D3DCodePath::loadVertexProgram(const VertexInputLayout& layout, const String& filename)
+bool D3DCodePath::loadVertexProgram(DataStream& stream)
 {
-   BufferedStream stream;
-   if ( readShaderFile(filename, stream) )
+   HRESULT hr = mDevice.getDevice().CreateVertexShader(stream.getData(), stream.getDataSize(), NULL, &mpVertexShader);
+   if ( FAILED(hr) )
    {
-      HRESULT hr = mDevice.getDevice().CreateVertexShader(stream.getData(), stream.getDataSize(), NULL, &mpVertexShader);
-      if ( FAILED(hr) )
-      {
-         return false;
-      }
+      return false;
+   }
 
-      if ( !createInputLayout(layout, stream) )
-      {
-         return false;
-      }
+   if ( !createInputLayout(stream) )
+   {
+      return false;
+   }
       
-      return true;
-   }
-
-   return false;
-}
-
-bool D3DCodePath::loadPixelProgram(const String& filename)
-{
-   BufferedStream stream;
-   if ( readShaderFile(filename, stream) )
-   {
-      HRESULT hr = mDevice.getDevice().CreatePixelShader(stream.getData(), stream.getDataSize(), NULL, &mpPixelShader);
-      if ( FAILED(hr) )
-      {
-         return false;
-      }
-   }
    return true;
 }
 
-bool D3DCodePath::readShaderFile(const String& filename, DataStream& buffer)
+bool D3DCodePath::loadPixelProgram(DataStream& stream)
 {
-   bool result = false;
-   AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
-   if ( file.hasPointer() )
+   HRESULT hr = mDevice.getDevice().CreatePixelShader(stream.getData(), stream.getDataSize(), NULL, &mpPixelShader);
+   if ( FAILED(hr) )
    {
-      FileReaderStream filestream(*file);
-      filestream.copyTo(buffer);
-      result = true;
+      return false;
    }
- 
-   return result;
+
+   return true;
 }
 
-bool D3DCodePath::createInputLayout(const VertexInputLayout& layout, DataStream& stream)
+bool D3DCodePath::createInputLayout(const DataStream& stream)
 {
+   const VertexLayout& layout = getVertexLayout();
+
    D3D11_INPUT_ELEMENT_DESC* pdescs = new D3D11_INPUT_ELEMENT_DESC[layout.getSize()];
    for ( int index = 0; index < layout.getSize(); ++index )
    {
-      const VertexInputElement& element = layout[index];
+      const VertexLayoutElement& element = layout[index];
       D3D11_INPUT_ELEMENT_DESC& desc = pdescs[index];
 
       memset(&desc, 0, sizeof(D3D11_INPUT_ELEMENT_DESC));

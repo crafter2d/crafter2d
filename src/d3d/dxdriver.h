@@ -26,7 +26,7 @@ class DXDriver : public Driver
 {
 public:
 
-   virtual Graphics::Device* createGraphicsDevice() override;
+   virtual Graphics::Device* createGraphicsDevice(ContentManager& manager) override;
    virtual Input::InputDevice* createInputDevice() override;
 };
 

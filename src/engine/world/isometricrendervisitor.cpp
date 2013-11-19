@@ -37,7 +37,7 @@ IsometricRenderVisitor::~IsometricRenderVisitor()
 // - Overloads
 //////////////////////////////////////////////////////////////////////////
 
-void IsometricRenderVisitor::visitActor(Actor* object)
+void IsometricRenderVisitor::visitEntity(Entity* object)
 {
    mObjects.add(object);
 }

@@ -20,8 +20,8 @@
 #ifndef NEWOBJECTEVENT_H_
 #define NEWOBJECTEVENT_H_
 
+#include "core/entity/idmanager.h"
 #include "core/string/string.h"
-#include "engine/idmanager.h"
 
 #include "netevent.h"
 

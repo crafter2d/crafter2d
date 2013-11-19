@@ -22,9 +22,8 @@
 #  include "state.inl"
 #endif
 
+#include "core/entity/entity.h"
 #include "core/system/timer.h"
-
-#include "actor.h"
 
 /*********************************************************
  * State class

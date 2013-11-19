@@ -23,6 +23,8 @@
 #endif
 
 #include "core/defines.h"
+#include "core/content/contentmanager.h"
+#include "core/entity/entity.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
@@ -57,9 +59,7 @@
 #include "world/world.h"
 #include "world/worldrenderer.h"
 
-#include "clientcontentmanager.h"
 #include "player.h"
-#include "entity.h"
 #include "actionmap.h"
 #include "keymap.h"
 
@@ -255,11 +255,13 @@ bool Client::initGraphics(Driver& driver)
 
    static const Color color(75, 150, 230, 255);
 
-   mpDevice = driver.createGraphicsDevice();
+   mpDevice = driver.createGraphicsDevice(getContentManager());
    if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
    {
       return false;
    }
+
+   getContentManager().setDevice(*mpDevice);
 
    mpRenderContext = mpDevice->createRenderContext();
    mpRenderContext->setClearColor(color);
@@ -433,14 +435,13 @@ void Client::handleNewObjectEvent(const NewObjectEvent& event)
 
    // a new object has been made on the server and is now also known on the client
 
-   AutoPtr<Entity> entity = getContentManager().loadEntity(event.getFileName());
+   AutoPtr<Entity> entity = getContentManager().loadContent<Entity>(event.getFileName());
    if ( !entity.hasPointer() )
    {
       UNREACHABLE("Could not create the entity!");
    }
 
    entity->setId(event.getId());
-   entity->setReplica();
 
    // remove the request
    Requests::iterator it = mRequests.find(entity->getId());
@@ -496,7 +497,7 @@ void Client::handleScriptEvent(const ScriptEvent& event)
 void Client::notifyWorldChanged()
 {
    // need a new content manager, the simulator, etc, have changed
-   setContentManager(new ClientContentManager(*this));
+   
 
    World& world = getWorld();
    world.initialize(*mpDevice);

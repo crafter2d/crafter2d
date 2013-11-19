@@ -27,17 +27,6 @@
 class Box2DBody;
 class b2RevoluteJoint;
 
-class Box2DRevoluteJointDefinition
-{
-public:
-   Box2DRevoluteJointDefinition();
-
-   Box2DBody* pleft;
-   Box2DBody* pright;
-   Vector anchor;
-};
-
-
 class Box2DRevoluteJoint : public Box2DJoint
 {
 public:

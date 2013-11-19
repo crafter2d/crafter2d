@@ -25,14 +25,12 @@
 #include <algorithm>
 #include <functional>
 
+#include "core/entity/entity.h"
 #include "core/graphics/rendercontext.h"
 #include "core/log/log.h"
-#include "core/defines.h"
+#include "core/physics/simulationfactory.h"
+#include "core/physics/simulator.h"
 
-#include "engine/physics/simulationfactory.h"
-#include "engine/physics/simulator.h"
-
-#include "engine/actor.h"
 #include "engine/nodevisitor.h"
 #include "engine/process.h"
 #include "engine/script/scriptmanager.h"

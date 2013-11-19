@@ -25,21 +25,18 @@
 #include "core/graphics/device.h"
 #include "core/defines.h"
 
-#include "engine/components/componentinterface.h"
-#include "engine/components/componentmessage.h"
-#include "engine/components/componentstructs.h"
-#include "engine/components/meshcomponent.h"
-#include "engine/net/netstream.h"
+#include "componentmessages/componentmessage.h"
+#include "components/componentinterface.h"
+#include "components/componentstructs.h"
+#include "components/meshcomponent.h"
 
 using namespace Graphics;
 
-ABSTRACT_IMPLEMENT_REPLICATABLE(EntityId, Entity, NetObject)
-
 Entity::Entity():
-   NetObject(),
    mId(-1),
    mComponents(*this),
    mpMeshComponent(NULL),
+   mpController(NULL),
    mpParent(NULL),
    mChildren(),
    mTransform(),
@@ -47,7 +44,8 @@ Entity::Entity():
    mName(),
    mXmlFile(),
    mClassName(),
-   mDirtyFlag(false)
+   mDirtyFlag(false),
+   mDirection(true)
 {
    if ( ((int)mId) == -1 )
    {
@@ -110,7 +108,7 @@ void Entity::setPosition(const Vector& p)
 
    setDirty(ePositionDirty);
 
-   mChildren.setPosition(p);
+   //mChildren.setPosition(p);
 }
 
 /// \fn void setRotation(const float rotation)
@@ -163,6 +161,11 @@ void Entity::addComponent(Component* pcomponent)
    mComponents.addComponent(pcomponent);
 }
 
+void Entity::flip()
+{
+   mDirection = !mDirection;
+}
+
 void Entity::update(float delta)
 {
    mComponents.postMessage(ComponentMessage(ComponentInterface::eUpdateMsg, &delta));
@@ -211,6 +214,7 @@ void Entity::accept(NodeVisitor& visitor)
 
 // - Streaming
 
+/*
 void Entity::doPack(DataStream& stream) const
 {
    NetObject::doPack(stream);
@@ -262,3 +266,4 @@ void Entity::doUnpack(DataStream& stream)
    
    mDirtyFlag = 0;
 }
+*/

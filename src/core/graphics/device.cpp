@@ -1,36 +1,34 @@
 
 #include "device.h"
 
-#include "core/defines.h"
+#include "core/content/contentmanager.h"
+
+#include "effect.h"
 
 namespace Graphics
 {
 
-Device::Device():
-   mpDeviceInfo(NULL)
-{
-}
+   Device::Device(ContentManager& contentmanager):
+      mContentManager(contentmanager)
+   {
+   }
 
-Device::~Device()
-{
-   delete mpDeviceInfo;
-}
+   Device::~Device()
+   {
+   }
 
-// - Get/set
+   // - Get/set
 
-bool Device::hasDeviceInfo() const
-{
-   return mpDeviceInfo != NULL;
-}
+   ContentManager& Device::getContentManager()
+   {
+      return mContentManager;
+   }
 
-IDeviceInfo& Device::getDeviceInfo()
-{
-   return *mpDeviceInfo;
-}
-      
-void Device::setDeviceInfo(IDeviceInfo* pinfo)
-{
-   mpDeviceInfo = pinfo;
-}
+   // - Creation
+
+   Effect* Device::createEffect(const String& filename)
+   {
+      return mContentManager.loadContent<Effect>(filename);
+   }
 
 };

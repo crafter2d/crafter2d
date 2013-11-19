@@ -8,12 +8,11 @@
 #include "core/graphics/sprites/sprite.h"
 #include "core/math/vertex.h"
 
-#include "engine/entity.h"
+#include "core/entity/entity.h"
+#include "core/entity/componentmessages/animationcomponentmessage.h"
 
 #include "components.h"
-#include "componentmessage.h"
 #include "componentstructs.h"
-#include "animationcomponentmessage.h"
 
 using namespace Graphics;
 

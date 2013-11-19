@@ -6,6 +6,8 @@
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/effect.h"
 
+#include "texture/d3dtexture.h"
+#include "d3dcodepath.h"
 #include "d3dblendstate.h"
 
 namespace Graphics
@@ -32,6 +34,11 @@ ID3D11DeviceContext& D3DRenderContext::getContext()
 
 // - State
 
+void D3DRenderContext::setCodePath(CodePath& path)
+{
+   static_cast<D3DCodePath&>(path).enable(*this);
+}
+
 void D3DRenderContext::setBlendState(const BlendState& state)
 {
    static_cast<const D3DBlendState&>(state).enable(*mpContext);
@@ -50,6 +57,11 @@ void D3DRenderContext::setIndexBuffer(const IndexBuffer& buffer)
 void D3DRenderContext::setUniformBuffer(const UniformBuffer& buffer)
 {
    buffer.enable(*this);
+}
+
+void D3DRenderContext::setTexture(int stage, const Texture& texture)
+{
+   texture.enable(*this, stage);
 }
 
 // - Drawing

@@ -4,13 +4,12 @@
 #  include "physicscomponent.inl"
 #endif
 
-#include "engine/physics/body.h"
-#include "engine/entity.h"
+#include "core/physics/body.h"
+#include "core/entity/entity.h"
+#include "core/entity/componentmessages/querybodycomponentmessage.h"
 
 #include "components.h"
-#include "componentmessage.h"
 #include "componentstructs.h"
-#include "querybodycomponentmessage.h"
 
 PhysicsComponent::PhysicsComponent():
    Component(ComponentInterface::ePhysisComponent),

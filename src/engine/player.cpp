@@ -22,7 +22,7 @@
 #  include "player.inl"
 #endif
 
-#include "net/netconnection.h"
+#include "engine/net/netconnection.h"
 
 #include "world/world.h"
 

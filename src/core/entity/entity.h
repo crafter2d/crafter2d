@@ -20,13 +20,15 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <cstdint>
+
+#include "core/content/content.h"
 #include "core/string/string.h"
 #include "core/math/vector.h"
 #include "core/math/xform.h"
+#include "core/core_base.h"
 
-#include "net/netobject.h"
 #include "components/components.h"
-
 #include "entities.h"
 #include "idmanager.h"
 
@@ -38,22 +40,21 @@ namespace Graphics
 
 class MeshComponent;
 class NodeVisitor;
+class Controller;
 
 /// \brief Base class for all entities that can be shown in your game.
 
-class Entity : public NetObject
+class CORE_API Entity : public IContent
 {
    enum { eNameDirty = 256, ePositionDirty = 2, eRotationDirty = 4 };
 
 public:
-   DEFINE_REPLICATABLE(Entity);
-
    Entity();
    virtual ~Entity();
 
  // get/set
-   uint           getId() const;
-   void           setId(uint id);
+   uint32_t       getId() const;
+   void           setId(uint32_t id);
 
    bool           hasParent() const;
    const Entity&  getParent() const;
@@ -88,11 +89,19 @@ public:
    const Vector&  getOffset() const;
    void           setOffset(const Vector& offset);
 
+   Controller&    getController();
+   void           setController(Controller* pcontroller);
+
+   bool           getDirection() const;
+   void           setDirection(bool direction);
+
  // operations
    void initialize();
    void destroy();
 
    void addComponent(Component* pcomponent);
+
+   void flip();
 
  // update & drawing
    void update(float delta);
@@ -110,30 +119,27 @@ public:
  // visitor
    virtual void accept(NodeVisitor& visitor);
 
-protected:
+private:
 
  // get/set
    bool                 hasMesh() const;
    const MeshComponent& getMesh() const;
          MeshComponent& getMesh();
 
-  // streaming
-   virtual void doPack(DataStream& stream) const;
-   virtual void doUnpack(DataStream& stream);
-
-private:
-
-   Id                mId;
-   mutable Components mComponents;
-   MeshComponent*    mpMeshComponent;
-   Entity*           mpParent;
-   Entities          mChildren;
-   XForm             mTransform;
-   Vector            mOffset;
-   String            mName;
-   String            mXmlFile;
-   String            mClassName;
-   unsigned int		 mDirtyFlag;
+ // data
+   Id                   mId;
+   mutable Components   mComponents;
+   MeshComponent*       mpMeshComponent;
+   Controller*          mpController;
+   Entity*              mpParent;
+   Entities             mChildren;
+   XForm                mTransform;
+   Vector               mOffset;
+   String               mName;
+   String               mXmlFile;
+   String               mClassName;
+   unsigned int		   mDirtyFlag;
+   bool                 mDirection;
 };
 
 #ifdef JENGINE_INLINE

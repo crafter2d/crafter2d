@@ -20,39 +20,78 @@
 #ifndef CONTENT_MANAGER_H
 #define CONTENT_MANAGER_H
 
-#include <map>
+#include "core/modules/modulecollection.h"
+#include "core/string/string.h"
+#include "core/core_base.h"
 
-#include "engine/idmanager.h"
-#include "engine/entity/entityfactory.h"
+#include "content.h"
 
-class Entity;
-class Process;
-class String;
-class ActorLoader;
-class WorldLoader;
+namespace Graphics
+{
+   class Device;
+}
 
-class ContentManager
+class IContent;
+class ContentModule;
+class ModuleManager;
+class Uuid;
+
+/**
+ * The content manager is responsible for loading content.
+ * There are some types of content that we support:
+ *   - images
+ *   - sounds
+ *   - entities
+ *   - worlds
+ *   - scripts
+ *   - effects
+ *
+ * These should all be derived from a base content class. Such that we
+ * can implement a T loadContent(const String& name);
+ * Then to load a sound we could say:
+ *   Sound* psound = ContentManager<Sound>.loadContent
+ *
+ */
+
+class CORE_API ContentManager
 {
 public:
-   ContentManager(Process& process);
+   ContentManager();
 
  // get/set
-   Process& getProcess();
+   Graphics::Device& getDevice();
+   void              setDevice(Graphics::Device& device);
+
+   const String& getBaseDir() const;
+   void          setBaseDir(const String& basedir);
 
  // loading
-   Entity* loadEntity(const String& filename);
+   template<class T> T* loadContent(const String& name);
 
-protected:
  // operations
-   virtual void initializeEntityFactory(EntityFactory& factory) = 0;
+   void initialize(ModuleManager& manager);
+   
+private:   
+ // loading
+   IContent* load(const String& name);
 
-private:
- // get/set
-   EntityFactory& getEntityFactory();
+ // search
+   ContentModule* findModule(const Uuid& uuid);
 
  // data
-   Process&       mProcess;
-   EntityFactory* mpEntityFactory;
+   Graphics::Device* mpDevice; // not owned
+   ModuleCollection  mModules;
+   String            mBaseDir;
 };
+
+#ifdef JENGINE_INLINE
+#include "contentmanager.inl"
+#endif
+
+template<class T>
+T* ContentManager::loadContent(const String& name)
+{
+   return dynamic_cast<T*>(load(name));
+}
 
 #endif // CONTENT_MANAGER_H

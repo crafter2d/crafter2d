@@ -24,11 +24,12 @@
 
 #include <map>
 
+#include "core/entity/idmanager.h"
+
 #include "sound/soundmanager.h"
 #include "clientgamewindowlistener.h"
 #include "clientkeyeventdispatcher.h"
 #include "clientmouseeventdispatcher.h"
-#include "idmanager.h"
 #include "process.h"
 
 namespace Graphics

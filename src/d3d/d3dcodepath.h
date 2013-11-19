@@ -23,7 +23,7 @@ namespace Graphics
     // query
       virtual UniformBuffer* getUniformBuffer(const String& name) const override;
 
-      virtual bool      load(const VertexInputLayout& layout, const String& vertex, const String& fragment) override;
+      virtual bool      create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader) override;
       virtual void      release() override;
 
       virtual void      enable(RenderContext& context) const override;
@@ -33,12 +33,10 @@ namespace Graphics
 
    private:
 
-      bool readShaderFile(const String& filename, DataStream& buffer);
+      bool loadVertexProgram(DataStream& program);
+      bool loadPixelProgram(DataStream& program);
 
-      bool loadVertexProgram(const VertexInputLayout& layout, const String& filename);
-      bool loadPixelProgram(const String& filename);
-
-      bool createInputLayout(const VertexInputLayout& layout, DataStream& stream);
+      bool createInputLayout(const DataStream& stream);
 
     // members
       D3DDevice& mDevice;

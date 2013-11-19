@@ -29,7 +29,6 @@
 #include <math.h>
 
 #include "core/graphics/device.h"
-#include "core/graphics/vertexinputlayout.h"
 #include "core/graphics/indexbuffer.h"
 #include "core/graphics/vertexbuffer.h"
 #include "core/graphics/uniformbuffer.h"
@@ -74,7 +73,8 @@ Layer::Layer():
    ub(NULL),
    texcoordLookup(0),
    mpDefinition(NULL),
-   mEffect()
+   mpEffect(NULL),
+   mConstants()
 {
 }
 
@@ -105,15 +105,22 @@ bool Layer::create(LayerDefinition* pdefinition)
 /// \brief Create a new empty layer
 bool Layer::initialize(Device& device)
 {
-   VertexInputLayout layout(Graphics::INPUT_XY | Graphics::INPUT_Tex0);
+   mpEffect = device.createEffect(UTEXT("shaders/basic")); //mpDefinition->effect);
+   if ( mpEffect == NULL )
+   {
+      return false;
+   }
+
+   /*
    if ( !mEffect.load(device, layout, mpDefinition->effect) )
    {
       std::string file = mpDefinition->effect.toUtf8();
       Log::getInstance().error("Can not load effect file '%s'.", file.c_str());
       return false;
    }
+   */
 
-   if ( !createBuffers(device, layout, getWidth(), getHeight())
+   if ( !createBuffers(device, getWidth(), getHeight())
      || !createUniformBuffers(device) )
    {
       return false;
@@ -172,10 +179,8 @@ void Layer::release()
    delete ib;
    delete vb;
    delete pfrontvb;
-   
-	mEffect.destroy();
-
 	delete[] texcoordLookup;
+   delete mpEffect;
 }
 
 void Layer::update(float delta)
@@ -220,29 +225,27 @@ void Layer::resize(int width, int height)
    mpDefinition->height = height;
 }
 
-bool Layer::createBuffers(Device& device, const VertexInputLayout& layout, int width, int height)
+bool Layer::createBuffers(Device& device, int width, int height)
 {
-   vb = device.createVertexBuffer();
+   ASSERT_PTR(mpEffect);
+
+   const int batchsize = width * height * 2;
+   int size = batchsize * 4; // each tile is 4 vertices
+   int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
+
+   vb = mpEffect->createVertexBuffer(device, size, usage);
    if ( vb == NULL )
    {
-      Log::getInstance().error("Not enough memory available for vertex buffer.");
+      Log::getInstance().error("Could not create the vertex buffer.");
       return false;
    }
 
-   const int batchsize = width * height * 2;
-
-   // create the vertex buffer for this layer
-   int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
-   int size = batchsize * 4; // each tile is 4 vertices
-
-   if ( !vb->create(layout, size, usage) )
+   pfrontvb = mpEffect->createVertexBuffer(device, size, usage);
+   if ( pfrontvb == NULL )
    {
-		Log::getInstance().error("Could not create the vertex buffer.");
-		return false;
-	}
-
-   pfrontvb = device.createVertexBuffer();
-   pfrontvb->create(layout, size, usage);
+      Log::getInstance().error("Could not create the vertex buffer.");
+      return false;
+   }
 
    ib = Utils::createIndexBuffer(device, batchsize, 4, 6);
    if ( ib == NULL )
@@ -261,7 +264,7 @@ bool Layer::createUniformBuffers(Graphics::Device& device)
       { UTEXT("object"), sizeof(float) * 16 },
    };
 
-   ub = mEffect.getUniformBuffer(UTEXT("mpv"));
+   ub = getEffect().createUniformBuffer(UTEXT("mpv"));
    if ( ub == NULL || !ub->create(device, descs, 3) )
    {
       // could not create the uniform buffer object

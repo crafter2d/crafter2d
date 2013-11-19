@@ -2,9 +2,11 @@
 #ifndef ANIMATION_COMPONENT_MESSAGE_H
 #define ANIMATION_COMPONENT_MESSAGE_H
 
+#include "core/core_base.h"
+
 #include "componentmessage.h"
 
-class AnimationComponentMessage : public ComponentMessage
+class CORE_API AnimationComponentMessage : public ComponentMessage
 {
 public:
    AnimationComponentMessage();

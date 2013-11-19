@@ -22,9 +22,8 @@
 #  include "deleteobjectevent.inl"
 #endif
 
+#include "core/entity/entity.h"
 #include "core/streams/datastream.h"
-
-#include "engine/entity.h"
 
 IMPLEMENT_REPLICATABLE(DeleteObjectEventId, DeleteObjectEvent, NetEvent)
 

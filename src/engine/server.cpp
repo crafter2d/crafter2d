@@ -19,9 +19,11 @@
  ***************************************************************************/
 #include "server.h"
 
-#include "core/smartptr/autoptr.h"
+#include "core/entity/controller.h"
 #include "core/log/log.h"
+#include "core/smartptr/autoptr.h"
 #include "core/smartptr/scopedvalue.h"
+#include "core/physics/simulator.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
@@ -39,14 +41,10 @@
 #include "engine/net/events/worldchangedevent.h"
 #include "engine/net/netstream.h"
 #include "engine/net/netobjectstream.h"
-#include "engine/physics/simulationfiller.h"
-#include "engine/physics/simulator.h"
 #include "engine/world/world.h"
 
-#include "controller.h"
 #include "player.h"
 #include "serverdirtyset.h"
-#include "servercontentmanager.h"
 
 Server::Server():
    Process(),
@@ -54,7 +52,6 @@ Server::Server():
    mWorldObserver(*this),
    mActiveClient(-1)
 {
-   setContentManager(new ServerContentManager(*this));
 }
 
 Server::~Server()
@@ -126,8 +123,6 @@ void Server::update(float delta)
 
 void Server::notifyWorldChanged()
 {
-   setContentManager(new ServerContentManager(*this));
-
    getWorld().attach(mWorldObserver);
 
    WorldChangedEvent event(getWorld());

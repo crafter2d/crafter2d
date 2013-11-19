@@ -30,7 +30,6 @@ namespace Graphics
 };
 
 class Entity;
-class NodeVisitor;
 class Vector;
 
 class Entities
@@ -55,12 +54,6 @@ public:
    void initialize();
    void update(float delta);
    void draw(Graphics::RenderContext& context) const;
-
- // positioning
-   void setPosition(const Vector& pos);
-
- // visitor
-   void traverse(NodeVisitor& visitor);
 
 private:
 

@@ -22,30 +22,32 @@
 #  include "pickvisitor.inl"
 #endif
 
-#include "actor.h"
+#include "core/entity/entity.h"
 
 PickVisitor::PickVisitor(): 
-   picked(0) 
+   mpPicked(NULL),
+   mPickPos()
 {
 }
 
 PickVisitor::PickVisitor(const Vector& pos):
-   picked(0),
-   pickPos(pos)
+   mpPicked(NULL),
+   mPickPos(pos)
 {
 }
 
-/// \fn PickVisitor::apply(Actor* pactor) 
+/// \fn PickVisitor::visitEntity(Entity* pentity) 
 /// \brief Tries to pick the given object.
-void PickVisitor::visitActor(Actor* pactor) 
+void PickVisitor::visitEntity(Entity* pentity) 
 {
    // move to a component message to the mesh component
 
-   Vector pos  = pactor->getPosition();
+   Vector pos  = pentity->getPosition();
    Vector size = Vector(); //(pactor->getSize() / 2);
 
-   if ((pickPos.x >= (pos.x-size.x) && pickPos.x < (pos.x+size.x)) &&
-      (pickPos.y >= (pos.y-size.y) && pickPos.y < (pos.y+size.y))) {
-      picked = pactor;
+   if ( (mPickPos.x >= (pos.x-size.x) && mPickPos.x < (pos.x+size.x)) &&
+        (mPickPos.y >= (pos.y-size.y) && mPickPos.y < (pos.y+size.y)))
+   {
+      mpPicked = pentity;
    }
 }

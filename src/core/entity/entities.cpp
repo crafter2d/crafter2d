@@ -2,8 +2,9 @@
 
 #include "entities.h"
 
+#include "core/defines.h"
+
 #include "entity.h"
-#include "nodevisitor.h"
 
 Entities::Entities():
    mEntities()
@@ -80,17 +81,7 @@ void Entities::draw(Graphics::RenderContext& context) const
    }
 }
 
-// - Positioning
-
-void Entities::setPosition(const Vector& pos)
-{
-   for ( std::size_t index = 0; index < mEntities.size(); ++index )
-   {
-      Entity* pentity = mEntities[index];
-      pentity->setPosition(pos);
-   }
-}
-
+/*
 // - Visitor
    
 void Entities::traverse(NodeVisitor& visitor)
@@ -101,3 +92,4 @@ void Entities::traverse(NodeVisitor& visitor)
       visitor.traverse(*pentity);
    }
 }
+*/

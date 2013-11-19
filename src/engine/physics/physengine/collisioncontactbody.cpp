@@ -20,7 +20,7 @@
 
 #include "collisioncontactbody.h"
 
-#include "body.h"
+#include "core/physics/body.h"
 
 CollisionContactBody::CollisionContactBody(Body &body):
    mBody(body),

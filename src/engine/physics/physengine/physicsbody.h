@@ -21,9 +21,10 @@
 #define PHYSICS_BODY_H_
 
 #include "core/math/xform.h"
+#include "core/physics/body.h"
+#include "core/physics/forcegenerators.h"
 
-#include "body.h"
-#include "forcegenerators.h"
+#include "collisionshapes.h"
 
 class PhysicsBody : public Body
 {

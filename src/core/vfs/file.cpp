@@ -98,7 +98,7 @@ int File::read(void* ptr, int size)
    return getBuffer().read(ptr, size);
 }
 
-int File::write(void* ptr, int size)
+int File::write(const void* ptr, int size)
 {
    return getBuffer().write(ptr, size);
 }

@@ -40,7 +40,7 @@ public:
 
  // modification
    virtual int  read(void* ptr, int size) = 0;
-   virtual int  write(void* ptr, int size) = 0;
+   virtual int  write(const void* ptr, int size) = 0;
    virtual char getchar() = 0;
    virtual char peekchar() = 0;
    virtual void seek(int pos, int mode) = 0;

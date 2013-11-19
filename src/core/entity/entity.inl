@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE uint Entity::getId() const
+INLINE uint32_t Entity::getId() const
 {
    return mId;
 }
 
-INLINE void Entity::setId(uint id)
+INLINE void Entity::setId(uint32_t id)
 {
    mId = id;
 }
@@ -111,6 +111,27 @@ INLINE float Entity::getRotation() const
 INLINE const Vector& Entity::getOffset() const
 {
    return mOffset;
+}
+
+INLINE Controller& Entity::getController()
+{
+   ASSERT_PTR(mpController);
+   return *mpController;
+}
+
+INLINE void Entity::setController(Controller* pcontroller)
+{
+   mpController = pcontroller;
+}
+
+INLINE bool Entity::getDirection() const
+{
+   return mDirection;
+}
+
+INLINE void Entity::setDirection(bool direction)
+{
+   mDirection = direction;
 }
 
 bool Entity::isDirty() const

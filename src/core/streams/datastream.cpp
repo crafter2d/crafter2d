@@ -71,6 +71,16 @@ void DataStream::readUint8(uint8_t& value)
    value = static_cast<uint8_t>(readByte());
 }
 
+void DataStream::readUint16(uint16_t& value)
+{
+   readBytes(&value, sizeof(uint16_t));
+}
+
+void DataStream::readUint64(uint64_t& value)
+{
+   readBytes(&value, sizeof(uint64_t));
+}
+
 void DataStream::readFloat(float& value)
 {
    readBytes(&value, sizeof(float));
@@ -115,6 +125,16 @@ void DataStream::writeUint(uint32_t value)
 void DataStream::writeUint8(uint8_t value)
 {
    writeBytes(&value, 1);
+}
+
+void DataStream::writeUint16(uint16_t value)
+{
+   writeBytes(&value, sizeof(uint16_t));
+}
+
+void DataStream::writeUint64(uint64_t value)
+{
+   writeBytes(&value, sizeof(uint64_t));
 }
 
 void DataStream::writeFloat(float value)

@@ -24,14 +24,11 @@
 
 #include <tinyxml.h>
 
-#include "core/vfs/file.h"
 #include "core/log/log.h"
 
-#include "codepath.h"
-#include "device.h"
-#include "blendstatedesc.h"
+#include "effecttechnique.h"
+#include "blendstate.h"
 #include "rendercontext.h"
-#include "texture.h"
 
 namespace Graphics
 {
@@ -42,11 +39,9 @@ namespace Graphics
  */
 Effect::Effect():
    mName(),
-   mFile(),
-   mTextures(),
-   mpCodePath(NULL),
-   mpBlendStateEnabled(NULL),
-   mpBlendStateDisabled(NULL)
+   mTechniques(),
+   mpActiveTechnique(NULL),
+   mpBlendState(NULL)
 {
 }
 
@@ -60,153 +55,56 @@ Effect::~Effect()
 }
 
 /*!
-    \fn Effect::load(const String& file)
-	 \brief Loads an effect file and prepairs the OpenGL textures and shaders. It also
-	 sets up pointers to the uniform variables.
-	 \retval true the effect file is loaded correctly.
-	 \retval false an error occured (look in the log file for a message).
- */
-bool Effect::load(Device& device, const VertexInputLayout& layout, const String& file)
-{
-	Log& log = Log::getInstance();
-
-   mFile = file;
-   String path = UTEXT("../shaders/") + file + UTEXT(".xml");
-
-   std::string filename = path.toUtf8();
-   TiXmlDocument doc(filename);
-	if ( !doc.LoadFile() )
-   {
-      log.error("Effect.load: can not load '%s'", filename.c_str());
-		return false;
-	}
-
-	// get the root element from the file
-	const TiXmlElement* effect = static_cast<TiXmlElement*>(doc.FirstChild("effect"));
-	if ( effect == NULL )
-   {
-      log.error("Effect.load: %s is not an effect file.", filename.c_str());
-		return false;
-	}
-
-   // save the name (if supplied)
-   mName = effect->Attribute ("name");
-
-	// try to load in the textures
-	if ( !processCode(device, layout, *effect, UTEXT("../shaders/")) 
-     || !processBlendState(device, *effect) )
-   {
-		return false;
-   }
-
-	return true;
-}
-
-/*!
     \fn Effect::destroy()
 	 \brief Releases the codepath and the data for the stages. After calling this function you must
 	 call load before enabling it again.
  */
-void Effect::destroy ()
+void Effect::destroy()
 {
-   if( mpCodePath != NULL )
+	setBlendState(NULL);
+
+   for ( std::size_t index = 0; index < mTechniques.size(); ++index )
    {
-		// release the path
-		mpCodePath->release ();
-		delete mpCodePath;
-		mpCodePath = NULL;
-	}
-
-	mTextures.clear ();
-}
-
-/*!
-    \fn Effect::processCode(Graphics::Device& device, const Graphics::VertexInputLayout& layout, const TiXmlElement* effect, const String& path)
-	 \brief Loads in the shaders (if any) from the file and creates the code path. In case GLSL isn't
-	 supported it first checks the existence of a vertex program. If that doesn't exist the GLSL counter
-	 part is loaded and automatically converted.
-	 \returns true when no errors are detected, false otherwise.
- */
-bool Effect::processCode(Graphics::Device& device, const Graphics::VertexInputLayout& layout, const TiXmlElement& effect, const String& path)
-{
-   const char* vertex = NULL, *fragment = NULL;
-
-   const TiXmlElement* pcode_part = static_cast<const TiXmlElement*>(effect.FirstChild("code"));
-   if ( pcode_part == NULL )
-   {
-      Log::getInstance().error("Effect.processCode: effect file doesn't contain a code block!");
-		return false;
+      delete mTechniques[index];
    }
-
-   // load the vertex shader
-   const TiXmlElement* pshader_part = static_cast<const TiXmlElement*>(pcode_part->FirstChild("vertex"));
-   if ( pshader_part != NULL )
-   {
-      const TiXmlText* psource = static_cast<const TiXmlText*>(pshader_part->FirstChild());
-      ASSERT_PTR(psource);
-
-	   vertex = psource->Value ();
-   }
-
-   // load the fragment shader
-   pshader_part = static_cast<const TiXmlElement*>(pcode_part->FirstChild("fragment"));
-   if ( pshader_part != NULL )
-   {
-	   // see if there is a GLSL shader available
-      const TiXmlText* psource = static_cast<const TiXmlText*>(pshader_part->FirstChild());
-      ASSERT_PTR(psource);
-
-	   fragment = psource->Value ();
-   }
-
-   // files should be in same directory
-   String vertexfile   = path + String::fromUtf8(vertex);
-   String fragmentfile = path + String::fromUtf8(fragment);
-
-   // now load the codepath
-   mpCodePath = device.createCodePath();
-   if ( mpCodePath == NULL || !mpCodePath->load(layout, vertexfile, fragmentfile) )
-       return false;
-   
-	return true;
+   mTechniques.clear();
 }
 
-/// \fn Effect::processBlendState(Device& device, const TiXmlElement& effect)
-/// \brief Loads in any blendstate that is described in the effect
-bool Effect::processBlendState(Graphics::Device& device, const TiXmlElement& effect)
+void Effect::addTechnique(EffectTechnique* ptechnique)
 {
-   const TiXmlElement* pblend_part = static_cast<const TiXmlElement*>(effect.FirstChild("blend"));
-   if ( pblend_part != NULL )
+   ASSERT_PTR(ptechnique);
+
+   mTechniques.push_back(ptechnique);
+
+   if ( mpActiveTechnique == NULL )
    {
-      using namespace Graphics;
-
-      String strsource = String::fromUtf8(pblend_part->Attribute("source"));
-      String strdest   = String::fromUtf8(pblend_part->Attribute("dest"));
-     
-      BlendStateDesc descenabled(BlendStateDesc::fromString(strsource), BlendStateDesc::fromString(strdest), true);
-      mpBlendStateEnabled = device.createBlendState(descenabled);
-
-      BlendStateDesc descdisabled(BlendStateDesc::BS_ONE, BlendStateDesc::BS_ZERO, false);
-      mpBlendStateDisabled = device.createBlendState(descdisabled);
+      mpActiveTechnique = ptechnique;
    }
-
-   BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_SRC_INV_ALPHA, true);
-   mpBlendStateEnabled = device.createBlendState(desc);
-   
-   return true;
 }
 
-UniformBuffer* Effect::getUniformBuffer(const String& name) const
+/// \fn Effect::setBlendState(BlendState* pblendstate)
+/// \brief Set the new blendstate object used during rendering
+void Effect::setBlendState(BlendState* pblendstate)
 {
-   ASSERT_PTR(mpCodePath);
-   return mpCodePath->getUniformBuffer(name);
+   delete mpBlendState;
+   mpBlendState = pblendstate;
 }
 
-void Effect::setTexture(int stage, const Texture& texture)
+// - Buffers
+
+UniformBuffer* Effect::createUniformBuffer(const String& name) const
 {
-   TexInfo info = { &texture, stage };
-   mTextures.push_back(info);
+   ASSERT_PTR(mpActiveTechnique);
+   return mpActiveTechnique->createUniformBuffer(name);
 }
+
+VertexBuffer* Effect::createVertexBuffer(Device& device, int length, int usage)
+{
+   ASSERT_PTR(mpActiveTechnique);
+   return mpActiveTechnique->createVertexBuffer(device, length, usage);
+}
+
+// - Operations
 
 /*!
     \fn Effect::enable()
@@ -214,24 +112,10 @@ void Effect::setTexture(int stage, const Texture& texture)
  */
 void Effect::enable(RenderContext& context) const
 {
-   context.setBlendState(*mpBlendStateEnabled);
+   context.setBlendState(*mpBlendState);
    
-   mpCodePath->enable(context);
-
-   for ( Textures::size_type s = 0; s < mTextures.size(); ++s )
-   {
-	   const TexInfo& info = mTextures[s];
-      mpCodePath->bindTexture(context, info.stage, *info.ptexture);
-   }
-}
-
-void Effect::render(RenderContext& context, int start, int vertcount)
-{
-   enable(context);
-
-   context.drawTriangles(start, vertcount);
-
-   mTextures.clear();
+   ASSERT_PTR(mpActiveTechnique);
+   mpActiveTechnique->enable(context);
 }
 
 } // end namespace

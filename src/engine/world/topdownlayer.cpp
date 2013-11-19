@@ -113,24 +113,24 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
       dirty = false;
 	}
 
+   getEffect().enable(context);
+
    context.setVertexBuffer(*vb);
    context.setIndexBuffer(*ib);
    context.setUniformBuffer(*ub);
-
-   Graphics::Effect& effect = getEffect();
-   effect.setTexture(0, *mTileSet.getTexture());
-   effect.render(context, 0, verts_to_render);
+   context.setTexture(0, *mTileSet.getTexture());
+   context.drawTriangles(0, verts_to_render);
 }
 
 void TopDownLayer::drawFront(Graphics::RenderContext& context)
 {
+   getEffect().enable(context);
+
    context.setVertexBuffer(*pfrontvb);
    context.setIndexBuffer(*ib);
    context.setUniformBuffer(*ub);
-
-   Graphics::Effect& effect = getEffect();
-   effect.setTexture(0, *mTileSet.getTexture());
-   effect.render(context, 0, verts_to_render_front);
+   context.setTexture(0, *mTileSet.getTexture());
+   context.drawTriangles(0, verts_to_render_front);
 }
 
 void TopDownLayer::updateTile(float** pdata, int& verts, LayerLevel level, int x, int y, float xpos, float ypos)

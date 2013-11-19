@@ -19,9 +19,8 @@
  ***************************************************************************/
 #include "collisionshape.h"
 
+#include "core/physics/body.h"
 #include "core/defines.h"
-
-#include "body.h"
 
 CollisionShape::CollisionShape(Type type):
    mpNext(NULL),

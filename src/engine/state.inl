@@ -43,13 +43,13 @@ INLINE float State::duration() const
    return _duration;
 }
 
-INLINE void State::object(Actor* obj)
+INLINE void State::object(Entity* obj)
 {
    _object = obj;
    initialize();
 }
 
-INLINE Actor* State::object() const
+INLINE Entity* State::object() const
 {
    return _object;
 }

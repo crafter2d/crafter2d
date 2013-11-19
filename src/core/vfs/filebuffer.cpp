@@ -56,7 +56,7 @@ int FileBuffer::read(void* ptr, int size)
    return fread(ptr, 1, size, mpFile);
 }
 
-int FileBuffer::write(void* ptr, int size)
+int FileBuffer::write(const void* ptr, int size)
 {
    return fwrite(ptr, 1, size, mpFile);
 }

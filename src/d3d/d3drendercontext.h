@@ -19,10 +19,12 @@ namespace Graphics
       ID3D11DeviceContext& getContext();
 
     // operations
+      virtual void setCodePath(CodePath& path) override;
       virtual void setBlendState(const BlendState& state);
       virtual void setVertexBuffer(const VertexBuffer& buffer);
       virtual void setIndexBuffer(const IndexBuffer& buffer);
       virtual void setUniformBuffer(const UniformBuffer& buffer);
+      virtual void setTexture(int stage, const Texture& texture) override;
 
       // drawing instructions
       virtual void drawTriangles(int start, int count);

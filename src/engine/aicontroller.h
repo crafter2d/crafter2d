@@ -20,9 +20,8 @@
 #ifndef AI_CONTROLLER_H
 #define AI_CONTROLLER_H
 
+#include "core/entity/controller.h"
 #include "core/string/string.h"
-
-#include "controller.h"
 
 class Process;
 class Script;
@@ -38,7 +37,7 @@ public:
    void setThis(VirtualObject& self);
 
  // operations
-   virtual void performAction(Actor& actor);
+   virtual void performAction(Entity& actor);
 
 private:
 

@@ -22,14 +22,14 @@
 namespace Graphics
 {
 
-INLINE const String& Effect::getName() const
-{
-   return mName;
-}
+   INLINE const String& Effect::getName() const
+   {
+      return mName;
+   }
 
-INLINE const String& Effect::getFileName() const
-{
-   return mFile;
-}
+   INLINE const Effect::Techniques& Effect::getTechniques() const
+   {
+      return mTechniques;
+   }
 
 }

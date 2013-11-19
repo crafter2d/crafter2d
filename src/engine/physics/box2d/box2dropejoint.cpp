@@ -19,16 +19,6 @@
  ***************************************************************************/
 #include "box2dropejoint.h"
 
-#include "core/defines.h"
-
-Box2DRopeJointDefinition::Box2DRopeJointDefinition():
-   pleft(NULL),
-   pright(NULL),
-   anchorLeft(),
-   anchorRight()
-{
-}
-
 Box2DRopeJoint::Box2DRopeJoint(b2RopeJoint& joint):
    mJoint(joint)
 {

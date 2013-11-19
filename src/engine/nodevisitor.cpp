@@ -22,22 +22,10 @@
 #  include "nodevisitor.inl"
 #endif
 
-#include "entity.h"
-
 NodeVisitor::NodeVisitor()
 {
 }
 
 NodeVisitor::~NodeVisitor()
 {
-}
-
-void NodeVisitor::traverse(Entity& node)
-{
-   // let the specialized traverser handle this node
-   node.accept(*this);
-
-   // traverse the children of this node
-   Entities& children = node.getChildren();
-   children.traverse(*this);
 }

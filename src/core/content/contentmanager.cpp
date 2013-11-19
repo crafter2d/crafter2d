@@ -18,47 +18,76 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "contentmanager.h"
+#ifndef JENGINE_INLINE
+#  include "contentmanager.inl"
+#endif
 
-#include "core/smartptr/autoptr.h"
+#include <tinyxml.h>
 
-#include "engine/actor.h"
-#include "engine/process.h"
+#include "core/content/contentheader.h"
+#include "core/content/contentmodule.h"
+#include "core/content/contentreader.h"
+#include "core/modules/modulemanager.h"
+#include "core/streams/filereaderstream.h"
+#include "core/system/uuid.h"
+#include "core/vfs/file.h"
+#include "core/vfs/filesystem.h"
 
-ContentManager::ContentManager(Process& process):
-   mProcess(process),
-   mpEntityFactory()
+#include "content.h"
+
+ContentManager::ContentManager():
+   mpDevice(NULL),
+   mModules(Module::eContent),
+   mBaseDir()
 {
 }
 
-// - Get/set
+// - Operations
 
-Process& ContentManager::getProcess()
+void ContentManager::initialize(ModuleManager& manager)
 {
-   return mProcess;
+   manager.getModules(mModules);
 }
 
-EntityFactory& ContentManager::getEntityFactory()
+IContent* ContentManager::load(const String& name)
 {
-   if ( mpEntityFactory == NULL )
+   IContent* presult = NULL;
+
+   String path = mBaseDir + name + UTEXT(".c2d");
+   File* pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
+   if ( pfile != NULL )
    {
-      mpEntityFactory = new EntityFactory();
-      initializeEntityFactory(*mpEntityFactory);
+      Uuid uuid;
+      FileReaderStream stream(*pfile);
+      uuid.read(stream);
+    
+      ContentModule* pmodule = findModule(uuid);
+      if ( pmodule != NULL )
+      {
+         IContentReader& reader = pmodule->getReader();
+         if ( mpDevice != NULL )
+         {
+            reader.setGraphicsDevice(*mpDevice);
+         }
+
+         presult = reader.read(*this, stream);
+      }
    }
 
-   return *mpEntityFactory;
+   return presult;
 }
 
-//---------------------------------
-// - Loading
-//---------------------------------
+// - Search
 
-Entity* ContentManager::loadEntity(const String& filename)
+ContentModule* ContentManager::findModule(const Uuid& uuid)
 {
-   if ( !mProcess.hasWorld() )
+   for ( int index = 0; index < mModules.size(); ++index )
    {
-      // need a world first!
-      return NULL;
+      ContentModule& mod = static_cast<ContentModule&>(mModules[index]);
+      if ( mod.getUuid() == uuid )
+      {
+         return &mod;
+      }
    }
-
-   return getEntityFactory().create(filename);
+   return NULL;
 }

@@ -22,7 +22,8 @@
 
 #include <string>
 
-#include "actor.h"
+#include "core/entity/entity.h"
+
 #include "playerworldobserver.h"
 
 class World;
@@ -37,12 +38,12 @@ public:
    ~Player();
 
  // get/set interface
-   int                  getClientId() const;
-   void                 setClientId(int clientid);
+   int     getClientId() const;
+   void    setClientId(int clientid);
 
-   bool                 hasController() const;
-   Actor&               getController();
-   void                 setController(Actor& actor);
+   bool    hasController() const;
+   Entity& getController();
+   void    setController(Entity& controller);
 
  // initialization
    void  initialize(World& world);
@@ -53,7 +54,7 @@ public:
 private:
 
    PlayerWorldObserver  mWorldObserver;
-   Actor*               mpController;
+   Entity*              mpController;
    int                  mClientId;
 };
 

@@ -28,7 +28,6 @@
 #include "core/streams/datastream.h"
 #include "core/system/timer.h"
 #include "core/graphics/vertexbuffer.h"
-#include "core/graphics/vertexinputlayout.h"
 #include "core/graphics/device.h"
 #include "core/graphics/codepath.h"
 #include "core/graphics/rendercontext.h"
@@ -63,16 +62,13 @@ Particle::Particle():
 
 // - ParticleSystem
 
-IMPLEMENT_REPLICATABLE(ParticleSystemId, ParticleSystem, Entity)
-
 /// \fn ParticleSystem::ParticleSystem()
 /// \brief Initializes member variables.
 ParticleSystem::ParticleSystem():
-   Entity(),
    position(),
-   mEffect(),
 	activeList(0),
    freeList(0),
+   mpEffect(NULL),
    mGeometryBuffer(NULL),
    mGeometryBufferSize(0),
    updateScript(NULL),
@@ -141,23 +137,29 @@ bool ParticleSystem::load(TiXmlDocument& doc)
 }
 */
 
-/// \fn ParticleSystem::prepare()
+/// \fn ParticleSystem::create()
 /// \brief Creates and initializes the particle system components neccessary for rendering.
-bool ParticleSystem::prepare(Graphics::Device& device)
+bool ParticleSystem::create(Graphics::Device& device)
 {
    using namespace Graphics;
 
    // load effect
-   VertexInputLayout layout(Graphics::INPUT_XY | Graphics::INPUT_Diffuse | Graphics::INPUT_Tex0 | Graphics::INPUT_Tex1);
-   mEffect.load(device, layout, UTEXT("shaders/pointsprite.xml"));
+   mpEffect = device.createEffect(UTEXT("shaders/basic"));
+   if ( mpEffect == NULL )
+   {
+      return false;
+   }
 
-   int usage  = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
+   mGeometryBufferSize = 256;
+   int size  = mGeometryBufferSize * 4;
+   int usage = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
 
 	// generate the vertex buffer
-   mGeometryBufferSize = 256;
-	mGeometryBuffer = device.createVertexBuffer();
-	if (!mGeometryBuffer->create(layout, mGeometryBufferSize * 4, usage))
-		return false;
+	mGeometryBuffer = mpEffect->createVertexBuffer(device, size, usage);
+   if ( mGeometryBuffer == NULL )
+	{
+      return false;
+   }
 
 	srand(TIMER.getTick() * 1000);
 	return true;
@@ -166,9 +168,7 @@ bool ParticleSystem::prepare(Graphics::Device& device)
 /// \fn ParticleSystem::destroy()
 /// \brief Release all dynamic objects inside this particle system.
 void ParticleSystem::destroy()
-{
-   mEffect.destroy();
-   
+{   
    if ( mGeometryBuffer != NULL )
    {
       delete mGeometryBuffer;
@@ -199,79 +199,72 @@ void ParticleSystem::destroy()
 /// \brief Fires the particle update script for every particle. After that the system
 /// checks if there are still enough particles alive. If not, new particles are initialized
 /// and put in the active list.
-void ParticleSystem::doUpdate(float delta)
+void ParticleSystem::update(float delta)
 {
-   if ( isReplica() )
+	if ( delta > 100 )
    {
-	   if ( delta > 100 )
+		Particle** part = &activeList;
+		while ( *part != NULL)
       {
-		   Particle** part = &activeList;
-		   while ( *part != NULL)
+			Particle *curpart = *part;
+			float lifetime = curpart->initTime;
+
+			if (lifetime >= curpart->life)
          {
-			   Particle *curpart = *part;
-			   float lifetime = curpart->initTime;
+				// particle's time is up
+				// now add it to the free list
+				*part = curpart->next;
+				curpart->next = freeList;
+				freeList = curpart;
 
-			   if (lifetime >= curpart->life)
-            {
-				   // particle's time is up
-				   // now add it to the free list
-				   *part = curpart->next;
-				   curpart->next = freeList;
-				   freeList = curpart;
-
-				   active--;
-			   }
-			   else {
-               curpart->initTime += delta;
-				   curpart->pos += curpart->vel;
+				active--;
+			}
+			else {
+            curpart->initTime += delta;
+				curpart->pos += curpart->vel;
                
-				   // run the particle script
-               Variant arg((int)lifetime);
-				   updateScript->run(UTEXT("updateParticle"), 1, &arg);
+				// run the particle script
+            Variant arg((int)lifetime);
+				updateScript->run(UTEXT("updateParticle"), 1, &arg);
 
-				   part = &curpart->next;
-			   }
-		   }
-	   }
+				part = &curpart->next;
+			}
+		}
+	}
 
-	   if ( delta > emitRate && active < maxActive)
-      {
-		   for ( int i = 0; i < emitCount; i++ )
-         {
-			   // fetch a particle from the free list
-			   Particle *part = freeList;
-			   if (!part)
-				   part = new Particle();
-			   else
-				   freeList = freeList->next;
-			   part->next = activeList;
-			   activeList = part;
-
-			   // initialize the particle
-			   part->pos = position;
-			   part->pos.x += rand()%6;
-			   part->pos.y += rand()%4;
-			   part->vel = Vector (0, -1.0f-rand()%2);
-			   part->color = Color(1,1,0);
-			   part->initTime = 0;
-			   part->life = (rand()%2000) / 1000.0f;
-			   part->state = 0;
-			   part->size = 20;
-
-			   active++;
-		   }
-	   }
-   }
-   else
+	if ( delta > emitRate && active < maxActive)
    {
-      setDirty(8);
-   }
+		for ( int i = 0; i < emitCount; i++ )
+      {
+			// fetch a particle from the free list
+			Particle *part = freeList;
+			if (!part)
+				part = new Particle();
+			else
+				freeList = freeList->next;
+			part->next = activeList;
+			activeList = part;
+
+			// initialize the particle
+			part->pos = position;
+			part->pos.x += rand()%6;
+			part->pos.y += rand()%4;
+			part->vel = Vector (0, -1.0f-rand()%2);
+			part->color = Color(1,1,0);
+			part->initTime = 0;
+			part->life = (rand()%2000) / 1000.0f;
+			part->state = 0;
+			part->size = 20;
+
+			active++;
+		}
+	}
 }
 
-/// \fn ParticleSystem::doDraw ()
+/// \fn ParticleSystem::draw ()
 /// \brief Draw the particles to the screen buffer via a vertex buffer and
 /// vertex shader for rendering speed.
-void ParticleSystem::doDraw(Graphics::RenderContext& context) const
+void ParticleSystem::draw(Graphics::RenderContext& context) const
 {
 	uint num = 0;
 	Particle* part = activeList;
@@ -331,29 +324,4 @@ void ParticleSystem::doDraw(Graphics::RenderContext& context) const
 		context.drawTriangles(0, num * 4);
 		mGeometryBuffer->disable(context);
 	}
-
-	//mEffect.disable(context);
-}
-
-// - Visitor
-
-void ParticleSystem::accept(NodeVisitor& visitor)
-{
-   visitor.visitParticleSystem(this);
-}
-
-// - Streaming 
-
-void ParticleSystem::doPack(DataStream& stream) const
-{
-   Entity::doPack(stream);
-   stream << true;
-}
-
-void ParticleSystem::doUnpack(DataStream& stream)
-{
-   Entity::doUnpack(stream);
-
-   bool dirty;
-   stream >> dirty;
 }

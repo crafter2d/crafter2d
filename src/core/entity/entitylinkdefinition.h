@@ -2,8 +2,6 @@
 #ifndef ENTITY_LINK_DEFINITION_H
 #define ENTITY_LINK_DEFINITION_H
 
-#include "engine/physics/simulator.h"
-
 class JointDefinition;
 
 class EntityLinkDefinition

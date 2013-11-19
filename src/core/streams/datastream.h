@@ -57,6 +57,8 @@ public:
    virtual void writeInt(int32_t value);
    virtual void writeUint(uint32_t value);
    virtual void writeUint8(uint8_t value);
+   virtual void writeUint16(uint16_t value);
+   virtual void writeUint64(uint64_t value);
    virtual void writeFloat(float value);
    virtual void writeBool(bool value);
    virtual void writeChar(char c);
@@ -66,6 +68,8 @@ public:
    virtual void readInt(int32_t& value);
    virtual void readUint(uint32_t& value);
    virtual void readUint8(uint8_t& value);
+   virtual void readUint16(uint16_t& value);
+   virtual void readUint64(uint64_t& value);
    virtual void readFloat(float& value);
    virtual void readBool(bool& value);
    virtual void readChar(char& value);

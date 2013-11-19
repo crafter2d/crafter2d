@@ -20,9 +20,8 @@
 #ifndef UPDATE_OBJECT_EVENT_H_
 #define UPDATE_OBJECT_EVENT_H_
 
+#include "core/entity/idmanager.h"
 #include "core/streams/bufferedstream.h"
-
-#include "engine/idmanager.h"
 
 #include "netevent.h"
 
@@ -44,7 +43,7 @@ public:
    const DataStream& getDataStream() const;
 
  // update
-   void initialize(const Entity& entity);
+   void initialize(Entity& entity);
    void update(Entity& entity) const;
 
 protected:

@@ -18,9 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/math/vector.h"
+#include "core/content/contentmanager.h"
+#include "core/entity/entity.h"
+#include "core/entity/componentmessages/querybodycomponentmessage.h"
+#include "core/entity/componentmessages/animationcomponentmessage.h"
 #include "core/graphics/effect.h"
 #include "core/graphics/font.h"
 #include "core/graphics/texture.h"
+#include "core/physics/inputforcegenerator.h"
 #include "core/resource/resourcemanager.h"
 #include "core/streams/datastream.h"
 #include "core/streams/bufferedstream.h"
@@ -39,7 +44,6 @@
 
 #include "script/scriptobject.h"
 
-#include "physics/inputforcegenerator.h"
 #include "physics/box2d/box2dbody.h"
 #include "physics/box2d/box2dsimulator.h"
 #include "physics/box2d/box2drevolutejoint.h"
@@ -51,12 +55,8 @@
 
 #include "world/layer.h"
 #include "world/world.h"
-#include "engine/content/contentmanager.h"
-#include "engine/components/querybodycomponentmessage.h"
-#include "engine/components/animationcomponentmessage.h"
 
 #include "actionmap.h"
-#include "entity.h"
 #include "keymap.h"
 #include "client.h"
 #include "player.h"
@@ -211,7 +211,7 @@ void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& ac
 
    const String& filename = accessor.getString(1);
 
-   Entity* presult = contentmanager.loadEntity(filename);
+   Entity* presult = contentmanager.loadContent<Entity>(filename);
    RETURN_CLASS_OWNED(presult->getClassName(), presult);
 }
 
@@ -326,6 +326,19 @@ void AnimationComponentMessage_setAnimation(VirtualMachine& machine, VirtualStac
    msg.setAnimation(accessor.getInt(1));
 }
 
+void Entity_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   VirtualObject& thisobject = accessor.getThis();
+
+   Entity* pentity = new Entity();
+   machine.registerNative(thisobject, pentity);
+}
+
+void Entity_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   DESTRUCT_THIS(Entity);
+}
+
 void Entity_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Entity, entity);
@@ -341,75 +354,63 @@ void Entity_sendComponentMessage(VirtualMachine& machine, VirtualStackAccessor& 
    entity.sendComponentMessage(msg);
 }
 
-void Actor_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_getPositionX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
+   GET_THIS(Entity, entity);
 
-   Actor* pactor = new Actor();
-   machine.registerNative(thisobject, pactor);
+   accessor.setResult(entity.getPosition().x);
 }
 
-void Actor_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_getPositionY(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   DESTRUCT_THIS(Actor);
+   GET_THIS(Entity, entity);
+
+   accessor.setResult(entity.getPosition().y);
 }
 
-void Actor_getPositionX(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(Actor, actor);
-
-   accessor.setResult(actor.getPosition().x);
-}
-
-void Actor_getPositionY(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Actor, actor);
-
-   accessor.setResult(actor.getPosition().y);
-}
-
-void Actor_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Actor, actor);
+   GET_THIS(Entity, entity);
 
    float xpos = accessor.getReal(1);
    float ypos = accessor.getReal(2);
 
-   actor.setPosition(Vector(xpos, ypos));
+   entity.setPosition(Vector(xpos, ypos));
 }
 
-void Actor_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(Actor, actor);
+   GET_THIS(Entity, entity);
 
    const String& name = accessor.getString(1);
 
-   actor.setName(name);
+   entity.setName(name);
 }
 
-void Actor_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(Actor, actor);
+   GET_THIS(Entity, entity);
 
-   accessor.setResult(actor.direction());
+   accessor.setResult(entity.getDirection());
 }
 
-void Actor_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(Actor, actor);
+   GET_THIS(Entity, entity);
 
-   actor.flip();
+   entity.flip();
 }
 
-void Actor_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
-   GET_THIS(Actor, actor);
+   GET_THIS(Entity, entity);
 
    Controller* pcontroller = accessor.getObject(1).useNativeObject<Controller>();
 
-   actor.setController(pcontroller);
+   entity.setController(pcontroller);
 }
 
+/*
 void Actor_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Actor, actor);
@@ -427,6 +428,7 @@ void Actor_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accesso
 
    accessor.setResult(actor.hasLineOfSight(to));
 }
+*/
 
 void Player_getClientId(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
@@ -439,14 +441,14 @@ void Player_getController(VirtualMachine& machine, VirtualStackAccessor& accesso
 {
    GET_THIS(Player, player);
 
-   RETURN(Actor, &player.getController());
+   RETURN(Entity, &player.getController());
 }
 
 void Player_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Player, player);
 
-   Actor& entity = accessor.getObject(1).getNativeObject<Actor>();
+   Entity& entity = accessor.getObject(1).getNativeObject<Entity>();
 
    player.setController(entity);
 }
@@ -475,7 +477,7 @@ void World_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(World, world);
 
-   Actor* pentity = accessor.getObject(1).useNativeObject<Actor>();
+   Entity* pentity = accessor.getObject(1).useNativeObject<Entity>();
 
    world.addEntity(pentity);
 }
@@ -501,15 +503,15 @@ void World_setFollowMode(VirtualMachine& machine, VirtualStackAccessor& accessor
 void World_getFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(World, world);
-
-   RETURN_CLASS(UTEXT("engine.game.Actor"), world.getFollowObject());
+      
+   RETURN_CLASS(UTEXT("engine.game.Entity"), world.getFollowObject());
 }
 
 void World_setFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(World, world);
 
-   Actor& entity = accessor.getObject(1).getNativeObject<Actor>();
+   Entity& entity = accessor.getObject(1).getNativeObject<Entity>();
 
    world.setFollowObject(entity);
 }
@@ -736,99 +738,6 @@ void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& 
    ForceGenerator* pgenerator = accessor.getObject(1).useNativeObject<ForceGenerator>();
 
    body.addForceGenerator(pgenerator);
-}
-
-void Box2DRopeJointDefinition_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   VirtualObject& thisobject = accessor.getThis();
-
-   Box2DRopeJointDefinition* pjointdef = new Box2DRopeJointDefinition();
-   machine.registerNative(thisobject, pjointdef);
-}
-
-void Box2DRopeJointDefinition_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   DESTRUCT_THIS(Box2DRopeJointDefinition);
-}
-
-void Box2DRopeJointDefinition_getLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   RETURN_CLASS(UTEXT("box2d.Box2DBody"), joint.pleft);
-}
-
-void Box2DRopeJointDefinition_setLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   VirtualObject& left = accessor.getObject(1);
-
-   joint.pleft = &left.getNativeObject<Box2DBody>();
-}
-
-void Box2DRopeJointDefinition_getRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   RETURN_CLASS(UTEXT("box2d.Box2DBody"), joint.pright);
-}
-
-void Box2DRopeJointDefinition_setRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   VirtualObject& right = accessor.getObject(1);
-
-   joint.pright = &right.getNativeObject<Box2DBody>();
-}
-
-void Box2DRopeJointDefinition_getLocalAnchorLeftX(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   accessor.setResult(joint.anchorLeft.x);
-}
-
-void Box2DRopeJointDefinition_getLocalAnchorLeftY(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   accessor.setResult(joint.anchorLeft.y);
-}
-
-void Box2DRopeJointDefinition_setLocalAnchorLeft(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   float ximp = accessor.getReal(1);
-   float yimp = accessor.getReal(2);
-
-   joint.anchorLeft.set(ximp, yimp);
-}
-
-void Box2DRopeJointDefinition_getLocalAnchorRightX(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   accessor.setResult(joint.anchorRight.x);
-}
-
-void Box2DRopeJointDefinition_getLocalAnchorRightY(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   accessor.setResult(joint.anchorRight.y);
-}
-
-void Box2DRopeJointDefinition_setLocalAnchorRight(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   GET_THIS(Box2DRopeJointDefinition, joint);
-
-   float ximp = accessor.getReal(1);
-   float yimp = accessor.getReal(2);
-
-   joint.anchorRight.set(ximp, yimp);
 }
 
 void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
@@ -1199,7 +1108,16 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction(UTEXT("clear()"), NetStream_clear);
 
    registrator.addClass(UTEXT("engine.game.Entity"));
+   registrator.addFunction(UTEXT("Entity()"), Entity_init);
+   registrator.addFunction(UTEXT("finalize()"), Entity_destruct);
    registrator.addFunction(UTEXT("getId()"), Entity_getId);
+   registrator.addFunction(UTEXT("getPositionX()"), Entity_getPositionX);
+   registrator.addFunction(UTEXT("getPositionY()"), Entity_getPositionY);
+   registrator.addFunction(UTEXT("setPosition(real, real)"), Entity_setPosition);
+   registrator.addFunction(UTEXT("setName(string)"), Entity_setName);
+   registrator.addFunction(UTEXT("direction()"), Entity_direction);
+   registrator.addFunction(UTEXT("flip()"), Entity_flip);
+   registrator.addFunction(UTEXT("setController(engine.game.Controller)"), Entity_setController);
    registrator.addFunction(UTEXT("sendComponentMessage(engine.game.ComponentMessage)"), Entity_sendComponentMessage);
 
    registrator.addClass(UTEXT("engine.game.QueryBodyComponentMessage"));
@@ -1211,18 +1129,13 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction(UTEXT("AnimationComponentMessage()"), AnimationComponentMessage_init);
    registrator.addFunction(UTEXT("setAnimation(int)"), AnimationComponentMessage_setAnimation);
 
+   /*
    registrator.addClass(UTEXT("engine.game.Actor"));
    registrator.addFunction(UTEXT("Actor()"), Actor_init);
    registrator.addFunction(UTEXT("finalize()"), Actor_destruct);
-   registrator.addFunction(UTEXT("getPositionX()"), Actor_getPositionX);
-   registrator.addFunction(UTEXT("getPositionY()"), Actor_getPositionY);
-   registrator.addFunction(UTEXT("setPosition(real, real)"), Actor_setPosition);
-   registrator.addFunction(UTEXT("setName(string)"), Actor_setName);
-   registrator.addFunction(UTEXT("direction()"), Actor_direction);
-   registrator.addFunction(UTEXT("flip()"), Actor_flip);
-   registrator.addFunction(UTEXT("setController(engine.game.Controller)"), Actor_setController);
    registrator.addFunction(UTEXT("add(engine.game.Actor)"), Actor_add);
    registrator.addFunction(UTEXT("hasLineOfSight(engine.game.Actor)"), Actor_hasLineOfSight);
+   */
 
    registrator.addClass(UTEXT("engine.game.Player"));
    registrator.addFunction(UTEXT("getClientId()"), Player_getClientId);
@@ -1277,21 +1190,7 @@ void script_engine_register(ScriptManager& manager)
 
    registrator.addClass(UTEXT("box2d.Box2DBody"));
    registrator.addFunction(UTEXT("addForceGenerator(engine.game.ForceGenerator)"), Box2DBody_addForceGenerator);
-
-   registrator.addClass(UTEXT("box2d.Box2DRopeJointDefinition"));
-   registrator.addFunction(UTEXT("Box2DRopeJointDefinition"), Box2DRopeJointDefinition_init);
-   registrator.addFunction(UTEXT("finalize()"), Box2DRopeJointDefinition_destruct);
-   registrator.addFunction(UTEXT("getLeft()"), Box2DRopeJointDefinition_getLeft);
-   registrator.addFunction(UTEXT("setLeft(box2d.Box2DBody)"), Box2DRopeJointDefinition_setLeft);
-   registrator.addFunction(UTEXT("getRight()"), Box2DRopeJointDefinition_getRight);
-   registrator.addFunction(UTEXT("setRight(box2d.Box2DBody)"), Box2DRopeJointDefinition_setRight);
-   registrator.addFunction(UTEXT("getLocalAnchorLeftX()"), Box2DRopeJointDefinition_getLocalAnchorLeftX);
-   registrator.addFunction(UTEXT("getLocalAnchorLeftY()"), Box2DRopeJointDefinition_getLocalAnchorLeftY);
-   registrator.addFunction(UTEXT("setLocalAnchorLeft(real, real)"), Box2DRopeJointDefinition_setLocalAnchorLeft);
-   registrator.addFunction(UTEXT("getLocalAnchorRightX()"), Box2DRopeJointDefinition_getLocalAnchorRightX);
-   registrator.addFunction(UTEXT("getLocalAnchorRightY()"), Box2DRopeJointDefinition_getLocalAnchorRightY);
-   registrator.addFunction(UTEXT("setLocalAnchorRight(real, real)"), Box2DRopeJointDefinition_setLocalAnchorRight);
-
+   
    registrator.addClass(UTEXT("engine.game.ActionMap"));
    registrator.addFunction(UTEXT("ActionMap()"), ActionMap_init);
    registrator.addFunction(UTEXT("finalize()"), ActionMap_destruct);

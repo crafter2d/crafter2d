@@ -20,6 +20,8 @@
 #ifndef FILESYSTEM_H_
 #define FILESYSTEM_H_
 
+#include <vector>
+
 #include "core/core_base.h"
 
 #include "filesystempaths.h" 
@@ -49,7 +51,7 @@ public:
    void removeAll();
 
    virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL) = 0;
-   virtual bool find(const String& mask, Callback callback, void* pdata = NULL) = 0;
+   virtual bool find(const String& mask, std::vector<String>& result) = 0;
 
 protected:
    FileSystem();

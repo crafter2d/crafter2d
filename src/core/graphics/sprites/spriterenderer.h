@@ -77,8 +77,8 @@ namespace Graphics
     // data
       SpriteBatch    mSprites;
       ConstantBuffer mConstants;
-      Effect         mEffect;
       Vector         mOffset;
+      Effect*        mpEffect;
       UniformBuffer* mpUB;
       VertexBuffer*  mpVB;
       IndexBuffer*   mpIB;

@@ -22,8 +22,10 @@
 #  include "updateobjectevent.inl"
 #endif
 
+#include "core/entity/entity.h"
+#include "core/entity/componentmessages/netstreamcomponentmessage.h"
+
 #include "engine/net/netstream.h"
-#include "engine/actor.h"
 
 IMPLEMENT_REPLICATABLE(UpdateObjectEventId, UpdateObjectEvent, NetEvent)
 
@@ -38,18 +40,22 @@ UpdateObjectEvent::~UpdateObjectEvent()
 {
 }
 
-void UpdateObjectEvent::initialize(const Entity& entity)
+void UpdateObjectEvent::initialize(Entity& entity)
 {
    mId = entity.getId();
    mDataStream.clear();
    NetStream stream(mDataStream);
-   entity.pack(stream);
+   
+   NetStreamComponentMessage message(stream, true);
+   entity.sendComponentMessage(message);
 }
 
 void UpdateObjectEvent::update(Entity& entity) const
 {
    NetStream stream(const_cast<BufferedStream&>(mDataStream));
-   entity.unpack(stream);
+
+   NetStreamComponentMessage message(stream, false);
+   entity.sendComponentMessage(message);
 }
 
 // - Streaming

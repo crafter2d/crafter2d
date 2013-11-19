@@ -41,7 +41,7 @@ public:
 
  // operations
    virtual int          read(void* ptr, int size);
-   virtual int          write(void* ptr, int size);
+   virtual int          write(const void* ptr, int size);
    virtual char         getchar();
    virtual char         peekchar();
    virtual void         seek(int pos, int mode);

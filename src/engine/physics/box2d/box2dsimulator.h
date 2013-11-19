@@ -20,7 +20,7 @@
 #ifndef BOX2D_SIMULATOR_H_
 #define BOX2D_SIMULATOR_H_
 
-#include "../simulator.h"
+#include "core/physics/simulator.h"
 
 #include "box2dcontactlistener.h"
 

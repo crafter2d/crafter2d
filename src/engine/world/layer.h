@@ -180,12 +180,12 @@ private:
    };
 
  // operations
-   bool createBuffers(Graphics::Device& device, const Graphics::VertexInputLayout& layout, int width, int height);
+   bool createBuffers(Graphics::Device& device, int width, int height);
    bool createUniformBuffers(Graphics::Device& device);
 
  // members
    LayerDefinition*  mpDefinition;
-   Graphics::Effect  mEffect;
+   Graphics::Effect* mpEffect;
    ConstantBuffer    mConstants;
 };
 

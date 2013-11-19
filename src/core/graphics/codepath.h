@@ -22,14 +22,15 @@
 
 #include "core/core_base.h"
 
+class DataStream;
 class String;
 
 namespace Graphics
 {
    class Texture;
-   class VertexInputLayout;
    class UniformBuffer;
    class RenderContext;
+   class VertexLayout;
 
    /*!
    @author Jeroen Broekhuizen
@@ -41,35 +42,33 @@ namespace Graphics
    class CORE_API CodePath
    {
    public:
+      CodePath();
+      virtual ~CodePath();
+
+    // get/set
+      bool                hasVertexLayout() const;
+      const VertexLayout& getVertexLayout() const;
+      
+    // operations
 
 	   /*!
-           \fn CodePath::load(const VertexInputLayout& layout, const String& vertex, const String& fragment)
+           \fn CodePath::create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader)
 	        \brief Load in the vertex and fragment shaders. This function should be called before any of the other functions.
-           \param layout the layout of the vertex structure
-		     \param vertex the filename of the vertex shader (either GLSL or ASM)
-		     \param fragment the filename of the fragment shader (only GLSL)
-	        \retval true if the vertex shader is loaded correctly
+           \param playout the layout of the vertex structure
+		     \param vertexshader the vertex shader binary or source
+		     \param fragmentshader the pixel shader binary or source
+	        \retval true if the vertex & pixel shaders are loaded correctly
 		     \retval false loading failed, consult the log file for possible reasons.
        */
-	   virtual bool load(const VertexInputLayout& layout, const String& vertex, const String& fragment) = 0;
+      virtual bool create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader) = 0;
 
-	   /*!
-           \fn CodePath::release()
-	        \brief Releases the shaders.
-       */
+	   /// \brief Releases the shaders.
 	   virtual void release () = 0;
 
-	   /*!
-           \fn CodePath::enable()
-	        \brief Enable the shaders for use during rendering. When ready with the batch you should call disable
-		     to stop using this shader with other geometry.
-       */
+	   /// \brief Enable the shaders for use during rendering. 
 	   virtual void enable (RenderContext& context) const = 0;
 
-	   /*!
-           \fn CodePath::disable()
-	        \brief Disable the shaders. After this function is called the fixed pipeline will be used again.
-       */
+      /// \brief Disable the shaders. After this function is called the fixed pipeline will be used again.
 	   virtual void disable (RenderContext& context) const = 0;
 
       /// \brief Looks up the uniform block in the shader and returns it as a buffer object.
@@ -77,6 +76,16 @@ namespace Graphics
 
       /// \brief binds the texture to the uniform to the stage (unit)
       virtual bool bindTexture(RenderContext& context, int stage, const Texture& uniform) = 0;
+
+   protected:
+
+    // get/set
+      void setVertexLayout(VertexLayout* playout);
+
+   private:
+
+    // data
+      VertexLayout* mpVertexLayout;
    };
 };
 

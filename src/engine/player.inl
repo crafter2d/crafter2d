@@ -34,13 +34,13 @@ INLINE bool Player::hasController() const
    return mpController != NULL;
 }
 
-INLINE Actor& Player::getController()
+INLINE Entity& Player::getController()
 {
    ASSERT_PTR(mpController)
    return *mpController;
 }
 
-INLINE void Player::setController(Actor& actor)
+INLINE void Player::setController(Entity& controller)
 {
-   mpController = &actor;
+   mpController = &controller;
 }

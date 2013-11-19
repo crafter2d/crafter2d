@@ -23,7 +23,7 @@ void NodeVisitor::visitWorld(World* object)
 {
 }
 
-void NodeVisitor::visitActor(Actor* object)
+void NodeVisitor::visitEntity(Entity* object)
 {
 }
 

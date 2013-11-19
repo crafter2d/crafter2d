@@ -59,6 +59,11 @@ void* WinPlatform::loadModule(const String& name)
 #endif
 }
 
+void WinPlatform::freeModule(void* pmodule)
+{
+   FreeLibrary((HMODULE)pmodule);
+}
+
 void* WinPlatform::getFunctionAddress(void* pmodule, const String& name)
 {
    std::string uname = name.toUtf8();

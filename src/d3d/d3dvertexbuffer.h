@@ -16,7 +16,7 @@ namespace Graphics
       D3DVertexBuffer(D3DDevice& device);
       virtual ~D3DVertexBuffer();
 
-      virtual bool create(const VertexInputLayout& layout, int length, int usage) override;
+      virtual bool create(const VertexLayout& layout, int length, int usage) override;
       virtual void release() override;
 
       virtual void*  lock(RenderContext& context) override;

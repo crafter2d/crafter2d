@@ -1,28 +1,30 @@
 
 #include "entityfactory.h"
 
+#include "core/physics/revolutejointdefinition.h"
 #include "core/smartptr/autoptr.h"
 
-#include "engine/components/componentfactory.h"
-#include "engine/components/querybodycomponentmessage.h"
-#include "engine/physics/revolutejointdefinition.h"
-#include "engine/entity.h"
+#include "core/entity/entity.h"
+#include "core/entity/components/componentfactory.h"
+#include "core/entity/componentmessages/querybodycomponentmessage.h"
 
 #include "entitydefinition.h"
 #include "entitylinkdefinition.h"
 
+
+// PROBABLY GOING TO BE REMOVED AS THE MOD WILL DO THE INSTANTIATION AND LOADING OF THE ENTITIES
+// otherwise the exercise of moving this to core wasn't necessary ;-)
+
+
 EntityFactory::EntityFactory():
    mFactories(),
-   mDefinitions(),
-   mLoader()
+   mDefinitions()
 {
 }
 
 void EntityFactory::registerComponentFactory(ComponentFactory* pfactory)
 {
    mFactories.insert(std::make_pair(pfactory->getComponentType(), pfactory));
-
-   mLoader.registerLoader(pfactory->createLoader());
 }
 
 Entity* EntityFactory::create(const String& filename)
@@ -50,7 +52,7 @@ EntityDefinition* EntityFactory::findOrCreate(const String& filename)
    }
    else
    {
-      presult = mLoader.load(filename);
+      //presult = mLoader.load(filename);
       if ( presult != NULL )
       {
          mDefinitions.insert(std::make_pair(filename, presult));

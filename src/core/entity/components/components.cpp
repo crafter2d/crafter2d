@@ -1,8 +1,9 @@
 
 #include "components.h"
 
+#include "core/entity/componentmessages/componentmessage.h"
+
 #include "component.h"
-#include "componentmessage.h"
 
 Components::Components(Entity& entity):
    mEntity(entity),

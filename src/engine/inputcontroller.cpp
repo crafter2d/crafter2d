@@ -51,7 +51,7 @@ void InputController::requestAction(const ActionEvent& actionevent)
    queueAction(actionevent);
 }
 
-void InputController::performAction(Actor& actor)
+void InputController::performAction(Entity& entity)
 {
    ASSERT_PTR(mpActionMap)
 
@@ -59,7 +59,7 @@ void InputController::performAction(Actor& actor)
    {
       const ActionEvent& actionevent = mActions.front();
 
-      mpActionMap->processRemote(actionevent, actor);
+      mpActionMap->processRemote(actionevent, entity);
 
       mActions.pop();
    }

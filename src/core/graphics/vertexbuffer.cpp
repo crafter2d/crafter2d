@@ -32,22 +32,6 @@ VertexBuffer::~VertexBuffer()
 {
 }
 
-bool VertexBuffer::create(const VertexInputLayout& layout, int length, int usage)
-{
-   /* GameDev:
-	 * So it is possible to put all stuff in one buffer and render that at the same time, see below!:
-	 *
-	 * glVertexPointer(3, GL_FLOAT, 4*sizeof(unsigned char) + 3*sizeof(float), 0);
-	 * glColorPointer(4, GL_UNSIGNED_BYTE, 4*sizeof(unsigned char) + 3*sizeof(float), (void*)(3*sizeof(float)));
-
-	 * The stride isn't the distance from the end of one attribute to the beginning of the next
-	 * attribute (of that type), but rather, the distance from the beginning of one to the beginning
-	 * of the next. And you can't use 0 for the color pointer offset because the color data doesn't start at 0.
-	 */
-
-	return true;
-}
-
 void VertexBuffer::release()
 {
 }

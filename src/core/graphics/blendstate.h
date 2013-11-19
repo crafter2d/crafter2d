@@ -18,6 +18,7 @@ namespace Graphics
 
    private:
 
+    // data
       bool mEnabled;
    };
 };

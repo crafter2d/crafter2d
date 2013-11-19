@@ -3,10 +3,11 @@
 #define COMPONENT_MESSAGE_H
 
 #include "core/defines.h"
+#include "core/core_base.h"
 
-#include "componentinterface.h"
+#include "core/entity/components/componentinterface.h"
 
-class ComponentMessage
+class CORE_API ComponentMessage
 {
 public:
 	ComponentMessage(ComponentInterface::ComponentMessageType messagetype, void* pdata = NULL);

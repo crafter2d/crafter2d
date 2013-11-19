@@ -87,7 +87,7 @@ int MemoryBuffer::read(void* ptr, int size)
    return size;
 }
 
-int MemoryBuffer::write(void* ptr, int size)
+int MemoryBuffer::write(const void* ptr, int size)
 {
    if ( !isWritting() )
       return 0;

@@ -20,7 +20,7 @@
 #ifndef DELETE_OBJECT_EVENT_H_
 #define DELETE_OBJECT_EVENT_H_
 
-#include "engine/idmanager.h"
+#include "core/entity/idmanager.h"
 
 #include "netevent.h"
 

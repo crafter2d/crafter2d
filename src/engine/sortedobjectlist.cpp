@@ -22,16 +22,15 @@
 #  include "sortedobjectlist.inl"
 #endif
 
+#include "core/entity/entity.h"
 #include "core/math/vector.h"
-
-#include "actor.h"
 
 //////////////////////////////////////////////////////////////////////////
 // - Statics
 //////////////////////////////////////////////////////////////////////////
 
 static
-int Compare(const Actor& left, const Actor& right)
+int Compare(const Entity& left, const Entity& right)
 {
    if ( left.getPosition().y < right.getPosition().y )
       return -1;
@@ -52,7 +51,7 @@ int Compare(const Actor& left, const Actor& right)
 //////////////////////////////////////////////////////////////////////////
 
 SortedObjectList::SortedObjectList():
-   SortedList<Actor*>()
+   SortedList<Entity*>()
 {
-   setCompareFnc((SortedList<Actor*>::CompareFnc)Compare);
+   setCompareFnc((SortedList<Entity*>::CompareFnc)Compare);
 }

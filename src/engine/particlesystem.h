@@ -25,8 +25,6 @@
 #include "core/graphics/effect.h"
 #include "core/graphics/texture.h"
 
-#include "entity.h"
-
 namespace Graphics
 {
    class CodePath;
@@ -58,44 +56,36 @@ public:
 /**
 @author Jeroen Broekhuizen
 */
-class ParticleSystem : public Entity
+class ParticleSystem
 {	
 public:
-   DEFINE_REPLICATABLE(ParticleSystem)
-
-	               ParticleSystem();
-	virtual        ~ParticleSystem();
+   ParticleSystem();
+	~ParticleSystem();
 	
-   virtual void   destroy();
+ // operations
+   bool create(Graphics::Device& device);
+   void destroy();
 
-	void           setEmitRate(int rate);
-	void           setEmitCount(int count);
+ // get/set
+   int  getEmitRate() const;
+	void setEmitRate(int rate);
+	void setEmitCount(int count);
 
-	int            getEmitRate() const;
+ // painting
+   void update(float delta);
+	void draw(Graphics::RenderContext& context) const;
 
- // visitor
-   virtual void accept(NodeVisitor& visitor);
-	
-protected:
+private:
    //virtual bool   load(TiXmlDocument& doc);
 
- // update & drawing
-   virtual void   doUpdate(float delta);
-	virtual void   doDraw(Graphics::RenderContext& context) const;
-
-   bool           prepare(Graphics::Device& device);
-
- // streaming
-   virtual void   doPack(DataStream& stream) const;
-   virtual void   doUnpack(DataStream& stream);
-
+ // data
    Vector         position;
    Particle*      activeList;
 	Particle*      freeList;
 	uint           mGeometryBufferSize;
    Script*        updateScript;
 
-   Graphics::Effect         mEffect;
+   Graphics::Effect*        mpEffect;
    Graphics::VertexBuffer*  mGeometryBuffer;
 	
 	int emitRate;

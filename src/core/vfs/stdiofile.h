@@ -20,9 +20,11 @@
 #ifndef STDIO_FILE_H_
 #define STDIO_FILE_H_
 
+#include "core/core_base.h"
+
 #include "file.h"
 
-class StdioFile : public File
+class CORE_API StdioFile : public File
 {
 public:
    static bool exists(const String& file);

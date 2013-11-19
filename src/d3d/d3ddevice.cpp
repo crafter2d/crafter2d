@@ -1,8 +1,6 @@
 
 #include "d3ddevice.h"
 
-#include "core/defines.h"
-
 #include "texture/d3dtexture.h"
 #include "texture/d3dtextureloaderdds.h"
 
@@ -15,8 +13,8 @@
 namespace Graphics
 {
 
-D3DDevice::D3DDevice():
-   Device(),
+D3DDevice::D3DDevice(ContentManager& contentmanager):
+   Device(contentmanager),
    mpDevice(NULL),
    mpContext(NULL),
    mpSwapChain(NULL),
@@ -25,19 +23,22 @@ D3DDevice::D3DDevice():
 {
 }
 
-// - Get/set
-
-void D3DDevice::setSwapChain(IDXGISwapChain1* pswapchain)
-{
-   mpSwapChain = pswapchain;
-}
-
-// - Operations
-
 bool D3DDevice::create(int windowhandle, int width, int height)
 {
-   ID3D11Device* pdevice;
-   ID3D11DeviceContext* pcontext;
+   D3D_FEATURE_LEVEL level;
+   DXGI_SWAP_CHAIN_DESC sd;
+   ZeroMemory(&sd, sizeof(sd));
+   sd.BufferCount = 1;
+   sd.BufferDesc.Width = width;
+   sd.BufferDesc.Height = height;
+   sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+   sd.BufferDesc.RefreshRate.Numerator = 60;
+   sd.BufferDesc.RefreshRate.Denominator = 1;
+   sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+   sd.OutputWindow = (HWND)windowhandle;
+   sd.SampleDesc.Count = 1;
+   sd.SampleDesc.Quality = 0;
+   sd.Windowed = true;
 
    UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if defined(_DEBUG)
@@ -45,41 +46,9 @@ bool D3DDevice::create(int windowhandle, int width, int height)
    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-   D3D_FEATURE_LEVEL level;
-   D3D_FEATURE_LEVEL featureLevels[] = 
-   {
-	   D3D_FEATURE_LEVEL_11_1,
-	   D3D_FEATURE_LEVEL_11_0,
-	   D3D_FEATURE_LEVEL_10_1,
-	   D3D_FEATURE_LEVEL_10_0,
-	   D3D_FEATURE_LEVEL_9_3
-   };
-
-   HRESULT hr = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, creationFlags, // Set set debug and Direct2D compatibility flags.
-			featureLevels, // List of feature levels this app can support.
-			ARRAYSIZE(featureLevels),
-			D3D11_SDK_VERSION, // Always set this to D3D11_SDK_VERSION.
-			&pdevice, // Returns the Direct3D device created.
-			&level, // Returns feature level of device created.
-			&pcontext // Returns the device immediate context.
-			);
-
+   HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE, NULL, creationFlags, NULL, 0, D3D11_SDK_VERSION,
+                                              &sd, &mpSwapChain, &mpDevice, &level, &mpContext);
    if ( FAILED(hr) )
-   {
-      return false;
-   }
-
-   if ( FAILED(pdevice->QueryInterface(__uuidof(ID3D11Device1), (void**)&mpDevice))
-     || FAILED(pcontext->QueryInterface(__uuidof(ID3D11DeviceContext1), (void**)&mpContext)) )
-   {
-      pdevice->Release();
-      pcontext->Release();
-      return false;
-   }
-   
-   ASSERT(hasDeviceInfo());
-   IDeviceInfo& info = getDeviceInfo();
-   if ( info.needsCustomDevice() && !info.buildCustomDevice(*this) )
    {
       return false;
    }
@@ -87,7 +56,6 @@ bool D3DDevice::create(int windowhandle, int width, int height)
    ID3D11Texture2D* pbackbuffer = NULL;
 
    // create & set the rendertarget view
-   ASSERT_PTR(mpSwapChain);
    hr = mpSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)& pbackbuffer);
    if ( FAILED(hr) )
    {

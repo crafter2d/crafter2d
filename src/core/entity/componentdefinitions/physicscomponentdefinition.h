@@ -2,7 +2,7 @@
 #ifndef PHYSICS_COMPONENT_DEFINITION_H
 #define PHYSICS_COMPONENT_DEFINITION_H
 
-#include "engine/physics/bodydefinition.h"
+#include "core/physics/bodydefinition.h"
 
 #include "componentdefinition.h"
 

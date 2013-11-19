@@ -2,7 +2,7 @@
 #ifndef PHYSICS_COMPONENT_H
 #define PHYSICS_COMPONENT_H
 
-#include "engine/physics/bodylistener.h"
+#include "core/physics/bodylistener.h"
 
 #include "component.h"
 

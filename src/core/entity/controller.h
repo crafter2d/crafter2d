@@ -20,14 +20,16 @@
 #ifndef _CONTROLER_H_
 #define _CONTROLER_H_
 
+#include "core/core_base.h"
+
 class ActionEvent;
-class Actor;
+class Entity;
 
 /// @author Jeroen Broekhuizen
 ///
-/// The controler is the instance that has control over an object. This
+/// The controler is the instance that has control over an entity. This
 /// is the base class for all controler types like user, ai, etc.
-class Controller
+class CORE_API Controller
 {
 public:
    Controller();
@@ -35,7 +37,7 @@ public:
 
  // operations
    virtual void requestAction(const ActionEvent& action);
-   virtual void performAction(Actor& actor) = 0;
+   virtual void performAction(Entity& entity) = 0;
 };
 
 #endif

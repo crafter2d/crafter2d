@@ -64,22 +64,27 @@ bool WinFileSystem::recurseDirectory(const String& dir, Callback callback, void*
    return true;
 }
 
-bool WinFileSystem::find(const String& mask, Callback callback, void* pdata)
+bool WinFileSystem::find(const String& mask, std::vector<String>& result)
 {
    WIN32_FIND_DATA ffd;
 
    HANDLE hFind = FindFirstFileEx(mask.toUtf16().c_str(), FindExInfoBasic, &ffd, FindExSearchNameMatch, NULL, 0);
    if ( hFind == INVALID_HANDLE_VALUE )
+   {
       return true;
+   }
 
    do
    {
       String name(ffd.cFileName);
-      callback(name, false, pdata);
+      result.push_back(name);
    }
    while ( FindNextFile(hFind, &ffd) != 0 );
 
    DWORD dwError = GetLastError();
+
+   FindClose(hFind);
+
    if (dwError != ERROR_NO_MORE_FILES) 
       return false;
 

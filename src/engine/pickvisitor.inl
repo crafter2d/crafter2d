@@ -23,12 +23,12 @@
 /// \brief Set the position of the pick.
 INLINE void PickVisitor::setPickPos(Vector pos)
 {
-   pickPos = pos; 
+   mPickPos = pos; 
 }
 
 /// \fn PickVisitor::getPicked()
 /// \brief Returns the actor which was picked.
-INLINE Actor* PickVisitor::getPicked()
+INLINE Entity* PickVisitor::getPicked()
 {
-   return picked;
+   return mpPicked;
 }

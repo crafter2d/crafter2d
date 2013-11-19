@@ -22,8 +22,9 @@
 
 #include <queue>
 
+#include "core/entity/controller.h"
+
 #include "actionmap.h"
-#include "controller.h"
 
 class ActionEvent;
 class ActionMap;
@@ -43,8 +44,8 @@ public:
    void clearActions();
 
  // overloads
-   virtual void requestAction(const ActionEvent& actionevent);
-   virtual void performAction(Actor& actor);
+   virtual void requestAction(const ActionEvent& actionevent) override;
+   virtual void performAction(Entity& entity) override;
 
 private:
 

@@ -26,20 +26,23 @@
 
 /// Implements the pick visitor. Use it to determine if the cursor is above
 /// an object.
-class PickVisitor: public NodeVisitor
+class PickVisitor : public NodeVisitor
 {
 public:
-                     PickVisitor();
-   explicit          PickVisitor(const Vector& pos);
+            PickVisitor();
+   explicit PickVisitor(const Vector& pos);
 
-            void     setPickPos(Vector pos);
-            Actor*   getPicked();
+   void    setPickPos(Vector pos);
+   Entity* getPicked();
 
-   virtual  void     visitActor(Actor* pactor);
+ // visit
+   virtual void visitEntity(Entity* pentity) override;
 
 protected:
-   Actor* picked;
-   Vector pickPos;
+
+ // data
+   Entity* mpPicked;
+   Vector  mPickPos;
 };
 
 #ifdef JENGINE_INLINE

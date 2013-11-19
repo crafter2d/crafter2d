@@ -446,6 +446,12 @@ String String::unescape() const
 
 // - Searching
 
+int String::indexOf(const String& that) const
+{
+   wchar_t* ploc = wcsstr(mpString, that.mpString);
+   return ploc == NULL ? -1 : ploc - mpString;
+}
+
 int String::indexOf(UChar character, int start) const
 {
    wchar_t* ploc = wcschr(&mpString[start], character);

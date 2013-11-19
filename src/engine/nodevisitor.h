@@ -20,7 +20,6 @@
 #ifndef _NODEVISITOR_H_
 #define _NODEVISITOR_H_
 
-class Actor;
 class Entity;
 class World;
 class ParticleSystem;
@@ -34,10 +33,8 @@ public:
                   NodeVisitor();
    virtual        ~NodeVisitor();
 
-           void   traverse(Entity& node);
-
    virtual void   visitWorld(World* object);
-   virtual void   visitActor(Actor* object);
+   virtual void   visitEntity(Entity* pobject);
    virtual void   visitParticleSystem(ParticleSystem* pobject);
 };
 

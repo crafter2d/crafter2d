@@ -2,7 +2,7 @@
 #ifndef COMPONENT_DEFINITION_H
 #define COMPONENT_DEFINITION_H
 
-#include "componentinterface.h"
+#include "core/entity/components/componentinterface.h"
 
 class Component;
 

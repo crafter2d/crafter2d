@@ -24,13 +24,9 @@
 #include "input/dxinputdevice.h"
 #include "d3ddevice.h"
 
-using namespace Graphics;
-
-Graphics::Device* DXDriver::createGraphicsDevice()
+Graphics::Device* DXDriver::createGraphicsDevice(ContentManager& manager)
 {
-   D3DDevice* pdevice = new D3DDevice();
-   pdevice->setDeviceInfo(&getDeviceInfo());
-   return pdevice;
+   return new Graphics::D3DDevice(manager);
 }
 
 Input::InputDevice* DXDriver::createInputDevice()
