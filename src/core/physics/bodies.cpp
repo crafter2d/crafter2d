@@ -22,7 +22,6 @@
 #include <algorithm>
 
 #include "body.h"
-#include "collisiondetector.h"
 
 Bodies::Bodies():
    BodiesImp()

@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "inputforcegenerator.h"
 
-#include "physicsbody.h"
+#include "body.h"
 
 InputForceGenerator::InputForceGenerator():
    ForceGenerator(),

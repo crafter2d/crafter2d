@@ -23,19 +23,18 @@
 #include "core/math/vector.h"
 #include "core/math/xform.h"
 #include "core/script/iscriptable.h"
+#include "core/core_base.h"
 
-#include "collisionshapes.h"
 #include "forcegenerators.h"
 
 class IBodyListener;
-class CollisionShape;
 class JointDefinition;
 class TiXmlElement;
 class ForceGenerator;
 class Simulator;
 class Entity;
 
-class Body : public IScriptable
+class CORE_API Body : public IScriptable
 {
 public:
    static bool hasInfo(const TiXmlElement& element);

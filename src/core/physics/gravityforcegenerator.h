@@ -21,10 +21,11 @@
 #define GRAVITY_FORCE_GENERATOR_H_
 
 #include "core/math/vector.h"
+#include "core/core_base.h"
 
 #include "forcegenerator.h"
 
-class GravityForceGenerator : public ForceGenerator
+class CORE_API GravityForceGenerator : public ForceGenerator
 {
 public:
    GravityForceGenerator(const Vector& gravity);

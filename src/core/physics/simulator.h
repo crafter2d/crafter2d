@@ -21,6 +21,7 @@
 #define SIMULATOR_H_
 
 #include "core/script/iscriptable.h"
+#include "core/core_base.h"
 
 #include "bodies.h"
 
@@ -41,7 +42,7 @@ place each frame through a call to the run method.
 At startup the generateWorldShapes method is called so that the 
 */
 
-class Simulator : public IScriptable
+class CORE_API Simulator : public IScriptable
 {
 public:
 

@@ -2,9 +2,11 @@
 #ifndef BODY_DEFINITION_H
 #define BODY_DEFINITION_H
 
+#include "core/core_base.h"
+
 class Body;
 
-class BodyDefinition
+class CORE_API BodyDefinition
 {
 public:
 

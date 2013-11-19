@@ -20,14 +20,14 @@
 #ifndef SIMULATION_FACTORY_H
 #define SIMULATION_FACTORY_H
 
-#include "engine/engine_base.h"
+#include "core/core_base.h"
 
 #include <string>
 
 class Simulator;
 class Body;
 
-class ENGINE_API SimulationFactory
+class CORE_API SimulationFactory
 {
 public:
    SimulationFactory();

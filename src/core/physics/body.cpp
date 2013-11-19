@@ -25,7 +25,6 @@
 #include <tinyxml.h>
 
 #include "bodylistener.h"
-#include "collisionshape.h"
 #include "simulator.h"
 #include "forcegenerator.h"
 

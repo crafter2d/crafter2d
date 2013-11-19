@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "gravityforcegenerator.h"
 
-#include "physicsbody.h"
+#include "body.h"
 
 GravityForceGenerator::GravityForceGenerator(const Vector& gravity):
    ForceGenerator(),

@@ -21,10 +21,11 @@
 #define INPUT_FORCE_GENERATOR_H_
 
 #include "core/math/vector.h"
+#include "core/core_base.h"
 
 #include "forcegenerator.h"
 
-class InputForceGenerator : public ForceGenerator
+class CORE_API InputForceGenerator : public ForceGenerator
 {
 public:
    InputForceGenerator();

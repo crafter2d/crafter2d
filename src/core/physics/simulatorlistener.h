@@ -20,10 +20,12 @@
 #ifndef SIMULATOR_LISTENER_H_
 #define SIMULATOR_LISTENER_H_
 
+#include "core/core_base.h"
+
 class Entity;
 class Bound;
 
-class SimulatorListener
+class CORE_API SimulatorListener
 {
 public:
    SimulatorListener();

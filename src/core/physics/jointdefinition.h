@@ -2,7 +2,9 @@
 #ifndef JOINT_DEFINITION_H
 #define JOINT_DEFINITION_H
 
-class JointDefinition
+#include "core/core_base.h"
+
+class CORE_API JointDefinition
 {
 public:
    enum Kind

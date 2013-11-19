@@ -22,10 +22,12 @@
 
 #include <vector>
 
+#include "core/core_base.h"
+
 class Body;
 class ForceGenerator;
 
-class ForceGenerators : public std::vector<ForceGenerator*>
+class CORE_API ForceGenerators : public std::vector<ForceGenerator*>
 {
 public:
    typedef std::vector<ForceGenerator*> ForceGeneratorsImp;

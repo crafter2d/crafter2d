@@ -20,14 +20,14 @@
 #ifndef SIMULATION_FACTORY_REGISTRY_H
 #define SIMULATION_FACTORY_REGISTRY_H
 
-#include "engine/engine_base.h"
+#include "core/core_base.h"
 
 #include <string>
 #include <map>
 
 class SimulationFactory;
 
-class ENGINE_API SimulationFactoryRegistry
+class CORE_API SimulationFactoryRegistry
 {
 public:
    static SimulationFactoryRegistry& getInstance();

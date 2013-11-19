@@ -20,9 +20,11 @@
 #ifndef FORCE_GENERATOR_H_
 #define FORCE_GENERATOR_H_
 
+#include "core/core_base.h"
+
 class Body;
 
-class ForceGenerator
+class CORE_API ForceGenerator
 {
 public:
    ForceGenerator();

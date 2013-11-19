@@ -22,11 +22,11 @@
 
 #include <vector>
 
-class Body;
-class CollisionData;
-class CollisionShapes;
+#include "core/core_base.h"
 
-class Bodies : public std::vector<Body*>
+class Body;
+
+class CORE_API Bodies : public std::vector<Body*>
 {
    typedef std::vector<Body*> BodiesImp;
 
@@ -39,10 +39,9 @@ public:
 
    void integrate(float timestep);
    void finalize();
-
-   //void collectContactData(CollisionData& data, const CollisionShapes& worldshapes) const;
-
+   
 private:
+ // search
    iterator find(Body* pbody);
 };
 
