@@ -1,0 +1,122 @@
+
+#include "entitydefinitionproto.h"
+
+#include "core/entity/entity.h"
+#include "core/streams/datastream.h"
+#include "core/defines.h"
+
+#include "../factories/componentfactories.h"
+
+#include "childdefinitionproto.h"
+#include "componentdefinitionproto.h"
+#include "linkdefinitionproto.h"
+
+Entity* EntityDefinitionProto::instantiate(ComponentFactories& factories)
+{
+   Entity* pentity = new Entity();
+
+   for ( uint32_t index = 0; index < mChildren.size(); ++index )
+   {
+      ChildDefinitionProto* pchilddef = mChildren[index];
+      EntityDefinitionProto& childentity = resolve(pchilddef->mRef);
+
+      Entity* pchild = childentity.instantiate(factories);
+      pentity->add(pchild);
+   }
+
+   for ( uint32_t index = 0; index < mComponents.size(); ++index )
+   {
+      ComponentDefinitionProto* pcomponentdef = mComponents[index];
+      Component* pcomponent = factories.instantiate(*pcomponentdef);
+      pentity->addComponent(pcomponent);
+   }
+
+   return pentity;
+}
+
+void EntityDefinitionProto::read(DataStream& stream)
+{
+   uint32_t size;
+
+   stream >> mName >> mClassName;
+
+   stream.readUint(size);
+   for ( uint32_t index = 0; index < size; ++index )
+   {
+      ChildDefinitionProto* pchild = new ChildDefinitionProto();
+      pchild->read(stream);
+      mChildren.push_back(pchild);
+   }
+
+   stream.readUint(size);
+   for ( uint32_t index = 0; index < size; ++index )
+   {
+      EntityDefinitionProto* pentity = new EntityDefinitionProto();
+      pentity->read(stream);
+      mEntities.push_back(pentity);
+   }
+
+   stream.readUint(size);
+   for ( uint32_t index = 0; index < size; ++index )
+   {
+      LinkDefinitionProto* plink = new LinkDefinitionProto();
+      plink->read(stream);
+      mLinks.push_back(plink);
+   }
+
+   stream.readUint(size);
+   for ( uint32_t index = 0; index < size; ++index )
+   {
+      ComponentDefinitionProto* pcomponent = ComponentDefinitionProto::fromStream(stream);
+      mComponents.push_back(pcomponent);
+   }
+}
+
+void EntityDefinitionProto::write(DataStream& stream) const
+{
+   stream << mName << mClassName;
+
+   stream.writeUint(mChildren.size());
+   for ( std::size_t index = 0; index < mChildren.size(); ++index )
+   {
+      const ChildDefinitionProto* pchild = mChildren[index];
+      pchild->write(stream);
+   }
+
+   stream.writeUint(mEntities.size());
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
+   {
+      const EntityDefinitionProto* pentity = mEntities[index];
+      pentity->write(stream);
+   }
+
+   stream.writeUint(mLinks.size());
+   for ( std::size_t index = 0; index < mLinks.size(); ++index )
+   {
+      const LinkDefinitionProto* plink = mLinks[index];
+      plink->write(stream);
+   }
+
+   stream.writeUint(mComponents.size());
+   for ( std::size_t index = 0; index < mComponents.size(); ++index )
+   {
+      const ComponentDefinitionProto* pcomponent = mComponents[index];
+      pcomponent->write(stream);
+   }
+}
+
+// - Search
+
+EntityDefinitionProto& EntityDefinitionProto::resolve(const String& name)
+{
+   for ( uint32_t index = 0; index < mEntities.size(); ++index )
+   {
+      EntityDefinitionProto* pentity = mEntities[index];
+      if ( pentity->mName == name )
+      {
+         return pentity;
+      }
+   }
+
+   UNREACHABLE("Could not resolve entity");
+}

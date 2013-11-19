@@ -30,7 +30,7 @@ project "UnitTest"
 						
 		libdirs { 	path.join(libdir, "zlib/lib") }
 		
-		local sln = solution()
-		local srcdir = path.join(sln.basedir, "src/unittest");
+		local srcdir = path.join("%{sln.basedir}", "src/unittest")
 		local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
-		--prebuildcommands { "python " .. gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }
+		
+		prebuildcommands { "python " .. gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }

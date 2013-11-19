@@ -22,7 +22,30 @@ project "Engine"
 		defines { "NDEBUG", "TIXML_USE_STL" }
 		flags { "Optimize" }
 
+	-- Visual Studio
+	configuration "vs*"
+		links { "gdi32", "user32", "vfw32", "ws2_32", "fmodex_vc" }
+		
+	configuration { "vs*", "Debug" }
+		links { "box2d_d", "tinyxmld_STL", "zlib1_d" }
+				
+	configuration { "vs*", "Release" }
+		links { "box2d", "tinyxml_STL", "zlib1" }
+		
+	-- CB support
+	configuration "cb-gcc"
+		buildoptions { "-W", "-Wall", "-O0" }
+		linkoptions { "--allow-multiple-definition" }
+	  
+	configuration { "cb-gcc", "Debug" }
+		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
+				"zlib1", "box2d_d", "tinyxmld_STL", "fmodex_vc" } 
+	 
+	configuration { "cb-gcc", "Release" }
+		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
+					"zlib1", "box2d", "tinyxml_STL", "fmodex_vc" }
 
+	-- Windows
 	configuration "Windows"
 		defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 		
@@ -36,27 +59,7 @@ project "Engine"
 					path.join(libdir, "tinyxml/lib"),
 					path.join(libdir, "box2d/lib") }
 
-	configuration "cb-gcc"
-		buildoptions { "-W", "-Wall", "-O0" }
-		linkoptions { "--allow-multiple-definition" }
-	  
-	configuration "cb-gcc and Debug"
-		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
-				"zlib1", "box2d_d", "tinyxmld_STL", "fmodex_vc" } 
-	 
-	configuration "cb-gcc and Release"
-		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
-					"zlib1", "box2d", "tinyxml_STL", "fmodex_vc" }
-
-	configuration "vs*"
-		links { "gdi32", "user32", "vfw32", "ws2_32", "fmodex_vc" }
-		
-	configuration { "vs*", "Debug" }
-		links { "box2d_d", "tinyxmld_STL", "zlib1_d" }
-				
-	configuration { "vs*", "Release" }
-		links { "box2d", "tinyxml_STL", "zlib1" }
-   
+	-- Linux
 	configuration "linux"
 		buildoptions { "-W", "-Wall", "-O0" }
 		if ( _ACTION == "cb-gcc" ) then

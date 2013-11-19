@@ -25,6 +25,7 @@ project "Game"
 		flags { "Optimize" }
 
 	configuration "windows"
+		defines { "WIN32" }
 		includedirs { 	path.join(libdir, "sdl/include"),
 						path.join(libdir, "tinyxml/include")
 					}
