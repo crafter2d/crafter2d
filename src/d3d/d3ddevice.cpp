@@ -107,10 +107,10 @@ IndexBuffer* D3DDevice::createIndexBuffer()
    return new D3DIndexBuffer(*this);
 }
 
-Texture* D3DDevice::createTexture(const String& filename)
+Texture* D3DDevice::createTexture(DataStream& imagedata)
 {
    D3DTextureLoaderDDS loader;
-   D3DTexture* ptexture = loader.load(*this, filename);
+   D3DTexture* ptexture = loader.load(*this, imagedata);
    return ptexture;
 }
 

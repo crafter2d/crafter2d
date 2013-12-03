@@ -19,7 +19,7 @@ bool Win32DeviceInfo::needsCustomDevice() const
 bool Win32DeviceInfo::buildCustomDevice(Graphics::Device& device)
 {
    Graphics::D3DDevice& d3ddevice = static_cast<Graphics::D3DDevice&>(device);
-   ID3D11Device1& d3ddevice1 = d3ddevice.getDevice();
+   ID3D11Device& d3d11device = d3ddevice.getDevice();
 
    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {0};
 	swapChainDesc.Width = static_cast<UINT>(800); // Match the size of the window.
@@ -35,7 +35,7 @@ bool Win32DeviceInfo::buildCustomDevice(Graphics::Device& device)
 	swapChainDesc.Flags = 0;
 
    IDXGIDevice1* dxgiDevice;
-   d3ddevice1.QueryInterface(__uuidof(IDXGIDevice1), (void**)&dxgiDevice);
+   d3d11device.QueryInterface(__uuidof(IDXGIDevice1), (void**)&dxgiDevice);
 		
 	IDXGIAdapter* dxgiAdapter;
 	dxgiDevice->GetAdapter(&dxgiAdapter);
@@ -47,13 +47,14 @@ bool Win32DeviceInfo::buildCustomDevice(Graphics::Device& device)
 		);
 
    IDXGISwapChain1* pswapChain;
-   HRESULT hr = dxgiFactory->CreateSwapChainForHwnd(&d3ddevice1, (HWND)mWnd, &swapChainDesc, NULL, NULL, &pswapChain);
+   HRESULT hr = dxgiFactory->CreateSwapChainForHwnd(&d3d11device, (HWND)mWnd, &swapChainDesc, NULL, NULL, &pswapChain);
    if ( FAILED(hr) )
    {
       return false;
    }
 
-   d3ddevice.setSwapChain(pswapChain);
+   // TODO: implement
+   // d3ddevice.setSwapChain(pswapChain);
 
    return true;
 }

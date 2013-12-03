@@ -4,9 +4,6 @@
 #include <tchar.h>
 
 #include "core/string/string.h"
-#include "core/system/driver.h"
-
-#include "win32deviceinfo.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -112,9 +109,7 @@ int Win32GameWindow::getHeight() const
 Driver* Win32GameWindow::loadDriver()
 {
 #ifdef _DEBUG
-   Driver* pdriver = doLoadDriver(UTEXT("D3Dd.dll"));
-   pdriver->setDeviceInfo(new Win32DeviceInfo((uint32_t)mWnd));
-   return pdriver;
+   return doLoadDriver(UTEXT("D3Dd.dll"));
 #else
    return doLoadDriver(UTEXT("D3D.dll"));
 #endif

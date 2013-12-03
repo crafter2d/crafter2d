@@ -35,20 +35,9 @@
 namespace Graphics
 {
 
-Animator* Animator::construct(const TiXmlElement& xmlAnimation)
-{
-   AutoPtr<Animator> animator = new Animator();
-   if ( animator->loadFromXML(xmlAnimation) )
-   {
-      return animator.release();
-   }
-
-   return NULL;
-}
-
 Animator::Animator():
    mTextureCoords(),
-   mpAnimations(NULL),
+   mAnimations(),
    mAnimationSpeed(0),
    mAnimationDelta(0),
    mAnimFrameWidth(0),
@@ -58,57 +47,22 @@ Animator::Animator():
 
 Animator::~Animator()
 {
-   delete mpAnimations;
-   mpAnimations = NULL;
 }
 
 // - Operations
 
 void Animator::initialize(const Texture& texture, const Size& meshsize)
 {
+   determineFrameCount();
    mAnimFrameWidth = texture.getWidth() / meshsize.width;
    mTextureCoords.generateFromTexture(texture, meshsize, mAnimFrameCount);
 }
 
-bool Animator::loadFromXML(const TiXmlElement& xmlanimator)
+void Animator::addAnimation(int start, int length)
 {
-   // query the animation speed (in mm)
-	if ( xmlanimator.QueryFloatAttribute("speed", &mAnimationSpeed) != TIXML_SUCCESS )
-		mAnimationSpeed = 100;
-   mAnimationSpeed /= 1000.0f;
-   
-   // allocate the memory set
-   mpAnimations = new AnimationSet();
-   if ( mpAnimations == NULL )
-   {
-      return false;
-   }
-
-   parseAnimations(xmlanimator);
-
-	return true;
-}
-
-void Animator::parseAnimations(const TiXmlElement& xmlanimator)
-{
-   int start = 0;
-   const TiXmlElement* pxmlanimation = static_cast<const TiXmlElement*>(xmlanimator.FirstChild("anim"));
-   while ( pxmlanimation != NULL )
-   {
-		Animation *panimation = new Animation();
-		getAnimations().add(panimation);
-
-      int length;
-      if ( pxmlanimation->QueryIntAttribute("length", &length) == TIXML_SUCCESS )
-      {
-         panimation->generate(start, length);
-         start += length;
-      }
-      
-      pxmlanimation = static_cast<const TiXmlElement*>(xmlanimator.IterateChildren ("anim", pxmlanimation));
-   }
-
-   determineFrameCount();
+   Animation* panimation = new Animation();
+   panimation->generate(start, length);
+   mAnimations.add(panimation);
 }
 
 void Animator::determineFrameCount()
@@ -134,7 +88,7 @@ void Animator::determineFrameCount()
 
 bool Animator::canAnimate(AnimationState& state) const
 {
-   return !mpAnimations->isEmpty() && getAnimations()[state.mAnimation].size() > 1;
+   return !mAnimations.isEmpty() && mAnimations[state.mAnimation].size() > 1;
 }
 
 bool Animator::animate(AnimationState& state) const
@@ -154,7 +108,7 @@ bool Animator::animate(AnimationState& state) const
 /// \fn AnimObject::nextFrame()
 void Animator::nextFrame(AnimationState& state) const
 {
-   const Animation& animation = getAnimations()[state.mAnimation];
+   const Animation& animation = mAnimations[state.mAnimation];
 
    if ( ++state.mAnimFrame >= animation.size() )
    {

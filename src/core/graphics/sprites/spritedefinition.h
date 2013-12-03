@@ -39,7 +39,7 @@ namespace Graphics
       void        setSize(const Size& size);
 
       const Texture& getTexture() const;
-      void           setTexture(const TexturePtr& texture);
+      void           setTexture(Texture* ptexture);
 
       bool            hasSpriteAnimator() const;
       const Animator& getSpriteAnimator() const;
@@ -49,7 +49,7 @@ namespace Graphics
 
     // data
       Size        mSize;
-      TexturePtr  mTexture;
+      Texture*    mpTexture;
       Animator*   mpAnimator;
    };
 }

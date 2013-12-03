@@ -2,6 +2,8 @@
 #ifndef CONTENT_READER_H
 #define CONTENT_READER_H
 
+#include "core/core_base.h"
+
 namespace Graphics
 {
    class Device;
@@ -12,26 +14,30 @@ class ContentManager;
 class DataStream;
 class Simulator;
 
-class IContentReader
+class CORE_API ContentReader
 {
 public:
-   IContentReader();
+   ContentReader();
 
  // get/set
+   ContentManager& getContentManager();
+   void            setContentManager(ContentManager& manager);
+
    bool              hasGraphicsDevice() const;
    Graphics::Device& getGraphicsDevice();
-   void              setGraphicsDevice(Graphics::Device& device);
+   void              setGraphicsDevice(Graphics::Device* device);
 
    bool       hasPhysicsSimulator() const;
    Simulator& getPhysicsSimulator();
-   void       setPhysicsSimulator(Simulator& simulator);
+   void       setPhysicsSimulator(Simulator* psimulator);
 
    /// Reads and instantiates the content from disc
-   virtual IContent* read(ContentManager& manager, DataStream& stream) = 0;
+   virtual IContent* read(DataStream& stream) = 0;
 
 private:
 
  // data
+   ContentManager*   mpContentManager;
    Graphics::Device* mpDevice;
    Simulator*        mpSimulator;
 };

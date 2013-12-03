@@ -8,8 +8,8 @@
 #include "core/core_base.h"
 #include "core/defines.h"
 
-class IContentReader;
-class IContentWriter;
+class ContentReader;
+class ContentWriter;
 
 /**
  * A content module is a collection containing a compiler, reader and writer.
@@ -27,11 +27,11 @@ public:
    virtual ~ContentModule();
 
  // get/set
-   IContentReader& getReader();
-   void            setReader(IContentReader* preader);
+   ContentReader& getReader();
+   void           setReader(ContentReader* preader);
 
-   IContentWriter& getWriter();
-   void            setWriter(IContentWriter* pwriter);
+   ContentWriter& getWriter();
+   void           setWriter(ContentWriter* pwriter);
 
    const String& getSupportedFiles() const;
    void          setSupportedFiles(const String& supportedfiles);
@@ -48,10 +48,10 @@ public:
 private:
 
  // data
-   Uuid              mUuid;
-   IContentReader*   mpReader;
-   IContentWriter*   mpWriter;
-   String            mSupportedFiles;
+   Uuid           mUuid;
+   String         mSupportedFiles;
+   ContentReader* mpReader;
+   ContentWriter* mpWriter;
 };
 
 #endif // CONTENT_MODULE_H

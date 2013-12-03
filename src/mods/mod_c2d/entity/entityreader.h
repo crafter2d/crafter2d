@@ -6,11 +6,11 @@
 
 class ComponentFactories;
 
-class EntityReader : public IContentReader
+class EntityReader : public ContentReader
 {
 protected:
  // overrides
-   virtual IContent* read(ContentManager& manager, DataStream& stream) override;
+   virtual IContent* read(DataStream& stream) override;
 
 private:
  // helpers

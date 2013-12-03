@@ -3,7 +3,6 @@
 
 #include <tinyxml.h>
 
-#include "core/entity/entitydefinition.h"
 #include "core/streams/datastream.h"
 #include "core/defines.h"
 
@@ -16,7 +15,7 @@
 #include "physicscomponentloader.h"
 
 EntityWriter::EntityWriter():
-   IContentWriter()
+   ContentWriter()
 {
 }
 

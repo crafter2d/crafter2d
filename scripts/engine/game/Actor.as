@@ -39,16 +39,6 @@ class Actor extends Entity implements Collidable
 	
 	// Get/set
 	
-	public Vector2D getPosition()
-	{
-		return new Vector2D(getPositionX(), getPositionY());
-	}
-	
-	public void setPosition(Vector2D pos)
-	{
-		setPosition(pos.x, pos.y);
-	}
-	
 	public int getFaceDirection()
 	{
 		return mDirection;
@@ -66,13 +56,6 @@ class Actor extends Entity implements Collidable
 			mDirection = direction;
 			flip();
 		}
-	}
-	
-	public void setLocalController(Controller c)
-	{
-		setController(c);
-		
-		mController = c;
 	}
 	
 	public Body getBody()
@@ -224,17 +207,4 @@ class Actor extends Entity implements Collidable
 	{
 		return null;
 	}
-	
-	// - Natives
-	
-	private native real getPositionX();
-	private native real getPositionY();
-	private native void setPosition(real x, real y);
-	
-	public native void setName(string name);
-	public native boolean direction();
-	public native void flip();
-	public native boolean hasLineOfSight(Actor to);
-	
-	private native void setController(Controller c);
 }

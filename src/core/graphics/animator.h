@@ -38,21 +38,24 @@ namespace Graphics
    class CORE_API Animator
    {
    public:
-      static Animator* construct(const TiXmlElement& xmlObject);
-
       Animator();
       ~Animator();
 
-    // operations
-      void initialize(const Texture& texture, const Size& meshsize);
-
-    // Animation
-      bool animate(AnimationState& state) const;
+    // get/set
+      void setAnimationSpeed(int milliseconds);
 
       int  getAnimation() const;
       bool setAnimation(int animation);
 
+    // query
       const TextureCoordinate& getTextureCoordinate(const AnimationState& state) const;
+
+    // operations
+      void initialize(const Texture& texture, const Size& meshsize);
+      void addAnimation(int start, int length);
+
+    // Animation
+      bool animate(AnimationState& state) const;
 
    private:
     // get/set
@@ -65,15 +68,11 @@ namespace Graphics
     // animation
       void nextFrame(AnimationState& state) const;
 
-    // parsing
-      bool loadFromXML(const TiXmlElement& xmlanimation);
-      void parseAnimations(const TiXmlElement& xmlanimator);
-      void parseAnimation(const char* sequence, Animation *animation);
-
+    // operations
       void determineFrameCount();
 
       TextureCoordLookup mTextureCoords;
-      AnimationSet*      mpAnimations;
+      AnimationSet       mAnimations;
 	   float    mAnimationSpeed;
 	   float    mAnimationDelta;
       float    mAnimFrameWidth;

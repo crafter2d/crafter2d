@@ -13,7 +13,7 @@ namespace Graphics
    class Sprite;
 }
 
-class MeshComponent : public Component
+class CORE_API MeshComponent : public Component
 {
 public:
    MeshComponent();

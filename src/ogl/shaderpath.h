@@ -24,7 +24,7 @@ namespace Graphics
       virtual UniformBuffer* getUniformBuffer(const String& name) const override;
 
     // operations
-	   virtual bool     load(const VertexInputLayout& layout, const String& vertex, const String& fragment) override;
+      virtual bool     create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader) override;
 	   virtual void     release() override;
 
       virtual void     enable(RenderContext& context) const override;

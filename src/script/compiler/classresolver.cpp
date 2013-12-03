@@ -34,7 +34,7 @@ void ClassResolver::insert(const String& path)
       }
       else
       {
-         qualifiedpath.replace(pos+1, path.length(), UTEXT("*"));
+         qualifiedpath.replace(pos+1, path.length() - pos - 1, UTEXT("*"));
       }
    }
 

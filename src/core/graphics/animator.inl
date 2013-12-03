@@ -21,15 +21,18 @@
 
 namespace Graphics
 {
+   INLINE void Animator::setAnimationSpeed(int milliseconds)
+   {
+      mAnimationSpeed = milliseconds;
+   }
+
    INLINE const AnimationSet& Animator::getAnimations() const
    {
-      ASSERT_PTR(mpAnimations);
-      return *mpAnimations;
+      return mAnimations;
    }
 
    INLINE AnimationSet& Animator::getAnimations()
    {
-      ASSERT_PTR(mpAnimations);
-      return *mpAnimations;
+      return mAnimations;
    }
 } // namespace Graphics

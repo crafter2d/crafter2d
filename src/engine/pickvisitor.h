@@ -26,7 +26,7 @@
 
 /// Implements the pick visitor. Use it to determine if the cursor is above
 /// an object.
-class PickVisitor : public NodeVisitor
+class PickVisitor: public NodeVisitor
 {
 public:
             PickVisitor();

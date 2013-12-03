@@ -2,6 +2,8 @@
 #include "entitydefinitionproto.h"
 
 #include "core/entity/entity.h"
+#include "core/physics/revolutejointdefinition.h"
+#include "core/entity/componentmessages/querybodycomponentmessage.h"
 #include "core/streams/datastream.h"
 #include "core/defines.h"
 
@@ -11,9 +13,14 @@
 #include "componentdefinitionproto.h"
 #include "linkdefinitionproto.h"
 
+
+// - Instantiation
+
 Entity* EntityDefinitionProto::instantiate(ComponentFactories& factories)
 {
    Entity* pentity = new Entity();
+
+   // child entities
 
    for ( uint32_t index = 0; index < mChildren.size(); ++index )
    {
@@ -24,6 +31,27 @@ Entity* EntityDefinitionProto::instantiate(ComponentFactories& factories)
       pentity->add(pchild);
    }
 
+   // link children
+
+   for ( uint32_t index = 0; index < mLinks.size(); ++index )
+   {
+      LinkDefinitionProto* plinkdef = mLinks[index];
+
+      Entity& leftchild = pentity->getChildren()[plinkdef->mLeft];
+      Entity& rightchild = pentity->getChildren()[plinkdef->mRight];
+
+      QueryBodyComponentMessage message;
+      leftchild.sendComponentMessage(message);
+      Body& leftbody = message.getBody();
+
+      rightchild.sendComponentMessage(message);
+      Body& rightbody = message.getBody();
+
+      leftbody.link(rightbody, *plinkdef->mpJointDef);
+   }
+
+   // components
+
    for ( uint32_t index = 0; index < mComponents.size(); ++index )
    {
       ComponentDefinitionProto* pcomponentdef = mComponents[index];
@@ -33,6 +61,8 @@ Entity* EntityDefinitionProto::instantiate(ComponentFactories& factories)
 
    return pentity;
 }
+
+// - Storage
 
 void EntityDefinitionProto::read(DataStream& stream)
 {
@@ -114,7 +144,7 @@ EntityDefinitionProto& EntityDefinitionProto::resolve(const String& name)
       EntityDefinitionProto* pentity = mEntities[index];
       if ( pentity->mName == name )
       {
-         return pentity;
+         return *pentity;
       }
    }
 

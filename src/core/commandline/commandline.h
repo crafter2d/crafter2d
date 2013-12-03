@@ -32,6 +32,7 @@ class CORE_API CommandLine
 
 public:
    CommandLine(int argc, char *argv[]);
+   ~CommandLine();
 
  // query
    int size() const;

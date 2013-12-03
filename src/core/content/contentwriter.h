@@ -8,10 +8,10 @@ class ContentHeader;
 class DataStream;
 class String;
 
-class CORE_API IContentWriter
+class CORE_API ContentWriter
 {
 public:
-   IContentWriter();
+   ContentWriter();
 
    virtual bool write(DataStream& stream, const String& filename) = 0;
 };

@@ -10,7 +10,7 @@ namespace Graphics
    class VertexLayout;
 }
 
-class EffectReader : public IContentReader
+class EffectReader : public ContentReader
 {
 public:
 

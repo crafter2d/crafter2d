@@ -26,10 +26,6 @@ public:
    void read(DataStream& stream);
    void write(DataStream& stream) const;
 
-private:
- // search
-   EntityDefinitionProto& resolve(const String& name);
-
  // data
    Children    mChildren;
    Links       mLinks;
@@ -37,6 +33,11 @@ private:
    Components  mComponents;
    String      mName;
    String      mClassName;
+
+private:
+
+ // search
+   EntityDefinitionProto& resolve(const String& name);
 };
 
 #endif // ENTITY_DEFINITION_PROTO_H

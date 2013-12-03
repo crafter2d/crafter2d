@@ -37,6 +37,10 @@ public:
 
    bool isFixedRotation() const;
    void setFixedRotation(bool fixed);
+
+ // operations
+   void createBox(float width, float height);
+   void createCircle(float radius);
    
 private:
 

@@ -12,6 +12,16 @@ ComponentFactory::~ComponentFactory()
 
 // - Get/set
 
+const ContentManager& ComponentFactory::getContentManager() const
+{
+   return *mpContentManager;
+}
+   
+void ComponentFactory::setContentManager(ContentManager& manager)
+{
+   mpContentManager = &manager;
+}
+
 ComponentInterface::ComponentType ComponentFactory::getComponentType() const
 {
    return mComponentType;

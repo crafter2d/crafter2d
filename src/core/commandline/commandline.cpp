@@ -30,6 +30,10 @@ CommandLine::CommandLine(int argc, char *argv[]):
    parse(argc, argv);
 }
 
+CommandLine::~CommandLine()
+{
+}
+
 // - Query
 
 int CommandLine::size() const

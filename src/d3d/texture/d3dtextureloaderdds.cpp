@@ -5,6 +5,7 @@
 
 #include "core/graphics/textureinfo.h"
 #include "core/smartptr/autoptr.h"
+#include "core/streams/datastream.h"
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
 
@@ -16,26 +17,31 @@
 
 using namespace DirectX;
 
-static HRESULT loadTextureDataFromFile(const String& filename, std::unique_ptr<uint8_t[]>& ddsData, DDS_HEADER** header, uint8_t** bitData, uint* bitSize)
+static HRESULT loadTextureDataFromFile(DataStream& imagedata, DDS_HEADER** header, uint8_t** bitData, uint* bitSize)
 {
+   /*
    AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
    if ( !file.hasPointer() )
       return E_FAIL;
 
    int size = file->size();
-   ddsData.reset(new (std::nothrow) uint8_t[size]);
-   if ( !ddsData )
-      return E_FAIL;
+   //ddsData.reset(new (std::nothrow) uint8_t[size]);
+   //if ( !ddsData )
+   //   return E_FAIL;
 
    int read = file->read(ddsData.get(), size);
    if ( read < size )
       return E_FAIL;
+      */
 
-   uint magicNumber = *(uint*)(ddsData.get());
+   uint8_t* pddsdata = const_cast<uint8_t*>((const uint8_t*)imagedata.getData());
+   int size = imagedata.getDataSize();
+
+   uint magicNumber = *(uint*)(pddsdata);
    if ( magicNumber != DDS_MAGIC )
       return E_FAIL;
 
-   auto hdr = reinterpret_cast<DDS_HEADER*>(ddsData.get() + sizeof(uint));
+   auto hdr = reinterpret_cast<DDS_HEADER*>(pddsdata + sizeof(uint));
 
    // Verify header to validate DDS file
    if ( hdr->size != sizeof(DDS_HEADER) ||
@@ -61,7 +67,7 @@ static HRESULT loadTextureDataFromFile(const String& filename, std::unique_ptr<u
     *header = hdr;
     ptrdiff_t offset = sizeof( uint32_t ) + sizeof( DDS_HEADER )
                        + (bDXT10Header ? sizeof( DDS_HEADER_DXT10 ) : 0);
-    *bitData = ddsData.get() + offset;
+    *bitData = pddsdata + offset;
     *bitSize = size - offset;
 
     return S_OK;
@@ -73,14 +79,13 @@ static HRESULT loadTextureDataFromFile(const String& filename, std::unique_ptr<u
 namespace Graphics
 {
 
-D3DTexture* D3DTextureLoaderDDS::load(D3DDevice& device, const String& filename)
+D3DTexture* D3DTextureLoaderDDS::load(D3DDevice& device, DataStream& imagedata)
 {
    DDS_HEADER* pheader = NULL;
    uint8_t* bitData = NULL;
    uint  bitSize = 0;
 
-   std::unique_ptr<uint8_t[]> ddsData;
-   HRESULT hr = loadTextureDataFromFile(filename, ddsData, &pheader, &bitData, &bitSize);
+   HRESULT hr = loadTextureDataFromFile(imagedata, &pheader, &bitData, &bitSize);
    if ( FAILED(hr) )
    {
       return false;

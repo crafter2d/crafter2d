@@ -27,7 +27,7 @@ namespace Graphics
       virtual CodePath*       createCodePath();
       virtual VertexBuffer*   createVertexBuffer();
       virtual IndexBuffer*    createIndexBuffer();
-      virtual Texture*        createTexture(const String& filename);
+      virtual Texture*        createTexture(DataStream& imagedata);
       virtual BlendState*     createBlendState(const BlendStateDesc& desc);
       virtual Font*           createFont(const String& name, int pointsize);
 

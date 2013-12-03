@@ -5,7 +5,7 @@
 	<sprite width=12 height=8>
 		<texture>bridgepart.dds</texture>
 		<animations speed=125>
-			<anim length=1 />
+			<anim length=1>0</anim>
 		</animations>
 	</sprite>
 	<body inertia="1" mass="80" static="1">

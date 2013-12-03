@@ -28,6 +28,8 @@
 
 #include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
+#include "core/content/contentmanager.h"
+#include "core/modules/modulemanager.h"
 
 #include "script/vm/virtualclass.h"
 
@@ -69,6 +71,18 @@ Process::~Process()
 
 bool Process::create(const String& classname)
 {
+   // initialize the modules
+   mpModuleManager = new ModuleManager();
+   if ( !mpModuleManager->initialize() )
+   {
+      return false;
+   }
+
+   // initialize the content manager
+   mpContentManager = new ContentManager();
+   mpContentManager->initialize(getModuleManager());
+
+   // initialize the scripting engine
    mScriptManager.initialize();
    mpScript = mScriptManager.load(classname, this, false);
    if ( mpScript == NULL )

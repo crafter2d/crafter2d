@@ -11,9 +11,9 @@
 ContentModule::ContentModule():
    Module(Module::eContent),
    mUuid(),
+   mSupportedFiles(),
    mpReader(NULL),
-   mpWriter(NULL),
-   mSupportedFiles()
+   mpWriter(NULL)
 {
 }
 
@@ -25,24 +25,24 @@ ContentModule::~ContentModule()
 
 // - Get/set
 
-IContentReader& ContentModule::getReader()
+ContentReader& ContentModule::getReader()
 {
    ASSERT_PTR(mpReader);
    return *mpReader;
 }
 
-void ContentModule::setReader(IContentReader* preader)
+void ContentModule::setReader(ContentReader* preader)
 {
    mpReader = preader;
 }
 
-IContentWriter& ContentModule::getWriter()
+ContentWriter& ContentModule::getWriter()
 {
    ASSERT_PTR(mpWriter);
    return *mpWriter;
 }
 
-void ContentModule::setWriter(IContentWriter* pwriter)
+void ContentModule::setWriter(ContentWriter* pwriter)
 {
    mpWriter = pwriter;
 }

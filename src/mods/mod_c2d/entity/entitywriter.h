@@ -8,7 +8,7 @@ class ChildDefinitionProto;
 class EntityDefinitionProto;
 class LinkDefinitionProto;
 
-class EntityWriter : public IContentWriter
+class EntityWriter : public ContentWriter
 {
 public:
    EntityWriter();

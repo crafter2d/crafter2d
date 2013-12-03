@@ -6,8 +6,11 @@
 
 namespace Graphics
 {
+   class Animator;
    class Device;
 }
+
+class MeshComponentDefinitionProto;
 
 class MeshComponentFactory : public ComponentFactory
 {
@@ -17,6 +20,9 @@ public:
    virtual Component* instantiate(const ComponentDefinitionProto& definition) const override;
 
 private:
+
+ // operations
+   Graphics::Animator* createAnimator(const MeshComponentDefinitionProto& definition) const;
 
  // data
    Graphics::Device& mDevice;

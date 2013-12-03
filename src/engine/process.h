@@ -31,6 +31,7 @@
 
 class ActionMap;
 class ContentManager;
+class ModuleManager;
 class DataStream;
 class NetEvent;
 class Script;
@@ -53,15 +54,13 @@ public:
    virtual void   update (float delta);
 
   // get/set
-   NetConnection* getConnection();
-
-   ContentManager& getContentManager();
-   void            setContentManager(ContentManager* pmanager);
+   NetConnection*    getConnection();
+   ModuleManager&    getModuleManager();
+   ContentManager&   getContentManager();
+   ScriptManager&    getScriptManager();
 
    ActionMap*     getActionMap();
    void           setActionMap(ActionMap* map);
-
-   ScriptManager& getScriptManager();
 
    bool           hasWorld() const;
    const World&   getWorld() const;
@@ -87,7 +86,6 @@ protected:
 
    ProcessNetObserver   mNetObserver;
    NetConnection        conn;
-   ContentManager*      mpContentManager;
    ScriptManager        mScriptManager;
    Script*              mpScript;
    ActionMap*           actionMap;
@@ -96,9 +94,11 @@ protected:
 private:
 
  // members
-   World*      mpWorld;
-   bool        mActive;
-   bool        mDetecting;
+   ModuleManager*    mpModuleManager;
+   ContentManager*   mpContentManager;
+   World*            mpWorld;
+   bool              mActive;
+   bool              mDetecting;
 };
 
 #ifdef JENGINE_INLINE

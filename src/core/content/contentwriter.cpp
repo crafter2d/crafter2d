@@ -5,6 +5,6 @@
 
 #include "contentheader.h"
 
-IContentWriter::IContentWriter()
+ContentWriter::ContentWriter()
 {
 }

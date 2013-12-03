@@ -34,6 +34,7 @@ namespace Graphics
 class IContent;
 class ContentModule;
 class ModuleManager;
+class Simulator;
 class Uuid;
 
 /**
@@ -66,7 +67,7 @@ public:
    void          setBaseDir(const String& basedir);
 
  // loading
-   template<class T> T* loadContent(const String& name);
+   template<class T> T* loadContent(const String& name) const;
 
  // operations
    void initialize(ModuleManager& manager);
@@ -79,9 +80,11 @@ private:
    ContentModule* findModule(const Uuid& uuid);
 
  // data
-   Graphics::Device* mpDevice; // not owned
    ModuleCollection  mModules;
    String            mBaseDir;
+
+   Graphics::Device* mpDevice;    // not owned
+   Simulator*        mpSimulator; // not owned
 };
 
 #ifdef JENGINE_INLINE
@@ -89,9 +92,9 @@ private:
 #endif
 
 template<class T>
-T* ContentManager::loadContent(const String& name)
+T* ContentManager::loadContent(const String& name) const
 {
-   return dynamic_cast<T*>(load(name));
+   return dynamic_cast<T*>(const_cast<ContentManager&>(*this).load(name));
 }
 
 #endif // CONTENT_MANAGER_H

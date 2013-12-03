@@ -10,7 +10,7 @@
 
 #include "proto/entitydefinitionproto.h"
 
-IContent* EntityReader::read(ContentManager& manager, DataStream& stream)
+IContent* EntityReader::read(DataStream& stream)
 {
    ComponentFactories factories;
    setupFactories(factories);

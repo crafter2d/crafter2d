@@ -8,7 +8,7 @@
 
 class Body;
 
-class PhysicsComponent : public Component, IBodyListener
+class CORE_API PhysicsComponent : public Component, IBodyListener
 {
 public:
    PhysicsComponent();

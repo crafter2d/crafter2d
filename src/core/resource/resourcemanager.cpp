@@ -56,7 +56,8 @@ TexturePtr ResourceManager::getTexture(Graphics::Device& device, const String& f
    if ( !mResources.contains(file) )
    {
       String path = sPath + file;
-      AutoPtr<Graphics::Texture> texture = device.createTexture(file);
+      DataStream* pstream = NULL;
+      AutoPtr<Graphics::Texture> texture = device.createTexture(*pstream); // TODO!
       if ( !texture.hasPointer() )
          return TexturePtr();
 

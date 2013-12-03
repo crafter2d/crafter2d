@@ -39,15 +39,16 @@ INLINE ScriptManager& Process::getScriptManager()
    return mScriptManager;
 }
 
+INLINE ModuleManager& Process::getModuleManager()
+{
+   ASSERT_PTR(mpModuleManager);
+   return *mpModuleManager;
+}
+
 INLINE ContentManager& Process::getContentManager()
 {
    ASSERT_PTR(mpContentManager);
    return *mpContentManager;
-}
-
-INLINE void Process::setContentManager(ContentManager* pmanager)
-{
-   mpContentManager = pmanager;
 }
 
 INLINE bool Process::hasWorld() const

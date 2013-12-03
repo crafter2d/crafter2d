@@ -13,7 +13,7 @@ class ASTEffect;
 class ASTTechnique;
 class DataStream;
 
-class EffectWriter : public IContentWriter
+class EffectWriter : public ContentWriter
 {
 protected:
 

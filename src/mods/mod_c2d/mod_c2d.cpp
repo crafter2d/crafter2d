@@ -16,6 +16,9 @@
 #include "entity/entityreader.h"
 #include "entity/entitywriter.h"
 
+#include "texture/texturereader.h"
+#include "texture/texturewriter.h"
+
 #ifdef WIN32
 #ifdef MOD_EXPORTS
 #define MOD_API __declspec(dllexport)
@@ -33,6 +36,10 @@ static const Uuid EffectGUID(0x569b9122, 0x695e, 0x46d5, effectval);
 // {89E326B3-1606-4137-BA81-8EBD5A158EEC}
 uint8_t entityval[] = { 0xba, 0x81, 0x8e, 0xbd, 0x5a, 0x15, 0x8e, 0xec };
 static const Uuid EntityGUID(0x89e326b3, 0x1606, 0x4137, entityval);
+
+// {EEDD2CF4-ABA2-4831-9966-C14FE9F1CDFC}
+uint8_t textureval[] = { 0x99, 0x66, 0xc1, 0x4f, 0xe9, 0xf1, 0xcd, 0xfc };
+static const Uuid TextureGUID(0xeedd2cf4, 0xaba2, 0x4831, textureval);
 
 
 extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
@@ -52,6 +59,13 @@ extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
    pentitymod->setReader(new EntityReader());
    pentitymod->setWriter(new EntityWriter());
    pmodules->add(pentitymod);
+
+   ContentModule* ptexturemod = new ContentModule();
+   ptexturemod->setSupportedFiles(UTEXT("dds"));
+   ptexturemod->setUuid(TextureGUID);
+   ptexturemod->setReader(new TextureReader());
+   ptexturemod->setWriter(new TextureWriter());
+   pmodules->add(ptexturemod);
 
    return pmodules;
 }

@@ -14,3 +14,17 @@ BodyDefinition::BodyDefinition():
 {
 }
 
+// - Operations
+
+void BodyDefinition::createBox(float width, float height)
+{
+   mShapeType = BodyDefinition::eBox;
+   mInfoA = width;
+   mInfoB = height;
+}
+
+void BodyDefinition::createCircle(float radius)
+{
+   mShapeType = BodyDefinition::eCircle;
+   mInfoA = radius;
+}

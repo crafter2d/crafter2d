@@ -4,13 +4,13 @@
 
 #include <map>
 
-#include "core/content/contentloader.h"
 #include "core/string/string.h"
 
 class ComponentLoader;
 class ChildDefinitionProto;
 class EntityDefinitionProto;
 class LinkDefinitionProto;
+class TiXmlElement;
 
 class EntityLoader
 {

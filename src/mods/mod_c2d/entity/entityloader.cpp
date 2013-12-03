@@ -4,8 +4,6 @@
 #include <tinyxml.h>
 
 #include "core/content/contentmanager.h"
-#include "core/entity/entitydefinition.h"
-#include "core/entity/entitylinkdefinition.h"
 #include "core/physics/revolutejointdefinition.h"
 #include "core/smartptr/autoptr.h"
 #include "core/defines.h"
@@ -171,7 +169,6 @@ LinkDefinitionProto* EntityLoader::loadLinkDefinition(const TiXmlElement& xmllin
 
       String type = String::fromUtf8(ptype);
       
-      /*
       JointDefinition* pjoint = NULL;
       if ( type == UTEXT("revolute" ) )
       {
@@ -183,12 +180,12 @@ LinkDefinitionProto* EntityLoader::loadLinkDefinition(const TiXmlElement& xmllin
          prevolute->anchor.set(anchorx, anchory);
 
          pjoint = prevolute;
-      }*/
+      }
 
       presult = new LinkDefinitionProto();
       presult->mLeft = left;
       presult->mRight = right;
-      presult->mType = LinkDefinitionProto::fromString(type);
+      presult->mpJointDef = pjoint;
    }
 
    return presult;

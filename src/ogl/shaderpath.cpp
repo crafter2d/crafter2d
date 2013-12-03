@@ -30,7 +30,7 @@ ShaderPath::ShaderPath():
 	\retval true the shader objects have been successfully linked.
 	\retval false otherwise, consult the log file for compiler/linker specific errors.
  */
-bool ShaderPath::load(const VertexInputLayout& layout, const String& vertex, const String& fragment)
+bool ShaderPath::load(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader)
 {
 	Log& log = Log::getInstance ();
 	shader.create();

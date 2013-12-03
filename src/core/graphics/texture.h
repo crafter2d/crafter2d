@@ -21,6 +21,7 @@
 #define TEXTURE_H
 
 #include "core/core_base.h"
+#include "core/content/content.h"
 #include "core/string/string.h"
 #include "core/defines.h"
 
@@ -34,7 +35,7 @@ namespace Graphics
    @author Jeroen Broekhuizen
    \brief Wrapper class around an OpenGL texture. Use this class to load and display textures on your objects.
    */
-   class CORE_API Texture
+   class CORE_API Texture : public IContent
    {
    public:
       explicit       Texture();

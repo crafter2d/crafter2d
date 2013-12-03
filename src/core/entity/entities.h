@@ -22,6 +22,8 @@
 
 #include <vector>
 
+#include "core/core_base.h"
+
 #include "idmanager.h"
 
 namespace Graphics
@@ -32,7 +34,7 @@ namespace Graphics
 class Entity;
 class Vector;
 
-class Entities
+class CORE_API Entities
 {
    typedef std::vector<Entity*> EntityMap;
 

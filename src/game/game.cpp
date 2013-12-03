@@ -26,6 +26,7 @@
 #include <cstdlib>
 
 #include "core/inifile/inifile.h"
+#include "core/physics/simulationfactoryregistry.h"
 #include "core/system/platform.h"
 #include "core/system/timer.h"
 #include "core/system/timerdelta.h"
@@ -35,9 +36,8 @@
 #include "engine/script/script.h"
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"
-#include "engine/physics/physicsfactory.h"
+#include "engine/physics/physengine/physicsfactory.h"
 #include "engine/physics/box2d/box2dfactory.h"
-#include "engine/physics/simulationfactoryregistry.h"
 #include "engine/net/netobjectfactory.h"
 #include "engine/net/netconnection.h"
 #include "engine/client.h"
@@ -86,6 +86,7 @@ bool Game::create()
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "--------------------------------------------------------\n";
 
+   FileSystem::getInstance().addPath(UTEXT("../"));
    FileSystem::getInstance().addPath(UTEXT("../bin"));
    FileSystem::getInstance().addPath(UTEXT("../scripts"));
    FileSystem::getInstance().addPath(UTEXT("../images"));

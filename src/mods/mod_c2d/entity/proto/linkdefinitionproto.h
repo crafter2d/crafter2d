@@ -2,6 +2,7 @@
 #ifndef LINK_DEFINITION_PROTO_H
 #define LINK_DEFINITION_PROTO_H
 
+#include "core/physics/jointdefinition.h"
 #include "core/string/string.h"
 
 class DataStream;
@@ -9,16 +10,15 @@ class DataStream;
 class LinkDefinitionProto
 {
 public:
-   enum Type { eRevolute };
 
-   static Type fromString(const String& type);
-
+ // storage
    void read(DataStream& stream);
    void write(DataStream& stream) const;
 
-   Type   mType;
-   String mLeft;
-   String mRight;
+ // data
+   JointDefinition* mpJointDef;
+   int  mLeft;
+   int  mRight;
 };
 
 #endif // LINK_DEFINITION_PROTO_H

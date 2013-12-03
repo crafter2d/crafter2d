@@ -28,7 +28,7 @@ IContent* EffectReader::read(DataStream& stream)
    }
 
    BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_SRC_INV_ALPHA, true);
-   BlendState* pblendstate = getDevice().createBlendState(desc);
+   BlendState* pblendstate = getGraphicsDevice().createBlendState(desc);
    presult->setBlendState(pblendstate);
 
    return presult;
@@ -54,7 +54,7 @@ EffectTechnique* EffectReader::readTechnique(DataStream& stream)
    ArrayStream vertexshader(pvertexshader, vertexshaderlen);
    ArrayStream pixelshader(ppixelshader, pixelshaderlen);
 
-   Device& device = getDevice();
+   Device& device = getGraphicsDevice();
    CodePath* ppath = device.createCodePath();
    ASSERT_PTR(ppath);
 

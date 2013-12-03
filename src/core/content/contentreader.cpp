@@ -3,7 +3,7 @@
 
 #include "core/defines.h"
 
-IContentReader::IContentReader():
+ContentReader::ContentReader():
    mpDevice(NULL),
    mpSimulator(NULL)
 {
@@ -11,34 +11,45 @@ IContentReader::IContentReader():
 
 // - Get/set
 
-bool IContentReader::hasGraphicsDevice() const
+ContentManager& ContentReader::getContentManager()
+{
+   ASSERT_PTR(mpContentManager);
+   return *mpContentManager;
+}
+
+void ContentReader::setContentManager(ContentManager& manager)
+{
+   mpContentManager = &manager;
+}
+
+bool ContentReader::hasGraphicsDevice() const
 {
    return mpDevice != NULL;
 }
 
-Graphics::Device& IContentReader::getGraphicsDevice()
+Graphics::Device& ContentReader::getGraphicsDevice()
 {
    ASSERT_PTR(mpDevice);
    return *mpDevice;
 }
 
-void IContentReader::setGraphicsDevice(Graphics::Device& device)
+void ContentReader::setGraphicsDevice(Graphics::Device* pdevice)
 {
-   mpDevice = &device;
+   mpDevice = pdevice;
 }
 
-bool IContentReader::hasPhysicsSimulator() const
+bool ContentReader::hasPhysicsSimulator() const
 {
    return mpSimulator != NULL;
 }
 
-Simulator& IContentReader::getPhysicsSimulator()
+Simulator& ContentReader::getPhysicsSimulator()
 {
    ASSERT_PTR(mpSimulator);
    return *mpSimulator;
 }
 
-void IContentReader::setPhysicsSimulator(Simulator& simulator)
+void ContentReader::setPhysicsSimulator(Simulator* psimulator)
 {
-   mpSimulator = &simulator;
+   mpSimulator = psimulator;
 }

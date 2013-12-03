@@ -8,6 +8,7 @@
 #include "core/graphics/blendstatedesc.h"
 
 class ContentManager;
+class DataStream;
 class String;
 
 namespace Graphics
@@ -38,7 +39,7 @@ namespace Graphics
       virtual CodePath*       createCodePath() = 0;
       virtual VertexBuffer*   createVertexBuffer() = 0;
       virtual IndexBuffer*    createIndexBuffer() = 0;
-      virtual Texture*        createTexture(const String& filename) = 0;
+      virtual Texture*        createTexture(DataStream& data) = 0;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) = 0;
       virtual Font*           createFont(const String& name, int pointsize) = 0;
               Effect*         createEffect(const String& filename);

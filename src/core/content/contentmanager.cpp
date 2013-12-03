@@ -36,9 +36,10 @@
 #include "content.h"
 
 ContentManager::ContentManager():
-   mpDevice(NULL),
    mModules(Module::eContent),
-   mBaseDir()
+   mBaseDir(),
+   mpDevice(NULL),
+   mpSimulator(NULL)
 {
 }
 
@@ -64,13 +65,12 @@ IContent* ContentManager::load(const String& name)
       ContentModule* pmodule = findModule(uuid);
       if ( pmodule != NULL )
       {
-         IContentReader& reader = pmodule->getReader();
-         if ( mpDevice != NULL )
-         {
-            reader.setGraphicsDevice(*mpDevice);
-         }
+         ContentReader& reader = pmodule->getReader();
+         reader.setContentManager(*this);
+         reader.setGraphicsDevice(mpDevice);
+         reader.setPhysicsSimulator(mpSimulator);
 
-         presult = reader.read(*this, stream);
+         presult = reader.read(stream);
       }
    }
 

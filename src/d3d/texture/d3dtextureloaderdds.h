@@ -4,7 +4,7 @@
 
 #include <d3d11.h>
 
-class String;
+class DataStream;
 
 namespace Graphics
 {
@@ -15,7 +15,7 @@ namespace Graphics
    {
    public:
 
-      D3DTexture* load(D3DDevice& device, const String& filename);
+      D3DTexture* load(D3DDevice& device, DataStream& imagedata);
    };
 }
 

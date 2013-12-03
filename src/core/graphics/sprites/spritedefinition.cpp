@@ -24,7 +24,7 @@ namespace Graphics
 
 SpriteDefinition::SpriteDefinition():
    mSize(),
-   mTexture(),
+   mpTexture(NULL),
    mpAnimator(NULL)
 {
 }
@@ -43,13 +43,13 @@ void SpriteDefinition::setSize(const Size& size)
 
 const Texture& SpriteDefinition::getTexture() const
 {
-   ASSERT(mTexture.isValid());
-   return *mTexture;
+   ASSERT_PTR(mpTexture);
+   return *mpTexture;
 }
    
-void SpriteDefinition::setTexture(const TexturePtr& texture)
+void SpriteDefinition::setTexture(Texture* ptexture)
 {
-   mTexture = texture;
+   mpTexture = ptexture;
 }
 
 bool SpriteDefinition::hasSpriteAnimator() const

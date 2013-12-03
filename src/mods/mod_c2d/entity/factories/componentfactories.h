@@ -14,6 +14,6 @@ public:
 
  // instantiation
    Component* instantiate(ComponentDefinitionProto& definition);
-}
+};
 
 #endif // COMPONENT_FACTORIES_H
