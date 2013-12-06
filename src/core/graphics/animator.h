@@ -42,7 +42,7 @@ namespace Graphics
       ~Animator();
 
     // get/set
-      void setAnimationSpeed(int milliseconds);
+      void setAnimationSpeed(float milliseconds);
 
       int  getAnimation() const;
       bool setAnimation(int animation);

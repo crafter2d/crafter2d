@@ -20,6 +20,8 @@
 #ifndef TOPDOWN_LAYER_H_
 #define TOPDOWN_LAYER_H_
 
+#include "core/math/vertex.h"
+
 #include "layer.h"
 
 class TopDownLayer : public Layer
@@ -45,9 +47,15 @@ public:
 
 private:
 
+   struct pv
+   {
+      Vertex pos;
+      Vertex tex;
+   };
+
  // updating
    void updateBuffers(Graphics::RenderContext& context);
-   void updateTile(float** pdata, int& verts, LayerLevel level, int x, int y, float xpos, float ypos);
+   void updateTile(pv** pdata, int& verts, LayerLevel level, int x, int y, float xpos, float ypos);
 };
 
 #endif

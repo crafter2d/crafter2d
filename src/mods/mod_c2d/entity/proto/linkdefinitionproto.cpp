@@ -14,7 +14,7 @@ void LinkDefinitionProto::read(DataStream& stream)
    {
    case JointDefinition::eRevolute:
       {
-         RevoluteJointDefinition* prev = static_cast<RevoluteJointDefinition*>(mpJointDef);
+         RevoluteJointDefinition* prev = new RevoluteJointDefinition();
          stream.readFloat(prev->anchor.x);
          stream.readFloat(prev->anchor.y);
 

@@ -28,22 +28,13 @@
 namespace Graphics
 {
 
-   Sprite* SpriteFactory::create(Graphics::Device& device, const SpriteDefinition& definition)
+   Sprite* SpriteFactory::create(Graphics::Device& device, SpriteDefinition* pdefinition)
    {
-      AutoPtr<Sprite> result = new Sprite(definition);
+      AutoPtr<Sprite> result = new Sprite(pdefinition);
       if ( result->initialize(device) )
          return result.release();
 
       return NULL;
-
-      /*
-      TexturePtr texture = ResourceManager::getInstance().getTexture(device, definition.getTextureName());
-      result->setTexture(texture);
-      result->setSize(definition.getSize());
-      result->setAnimator(definition.getSpriteAnimator());
-
-      return result.release();
-      */
    }
 
 } // namespace Graphics

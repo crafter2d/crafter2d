@@ -6,11 +6,11 @@ use engine.game.*;
 
 class PatrolState extends AIState
 {
-   public void initialize(Actor actor)
+   public void initialize(Entity entity)
    {
    }
 
-	public void perform(Actor actor, Actor player)
+	public void perform(Entity actor, Entity player)
 	{
 		if ( actor.isOnGround() )
 		{
@@ -25,17 +25,17 @@ class PatrolState extends AIState
 		}
 	}
 	
-	private boolean checkSight(Actor actor, Actor player)
+	private boolean checkSight(Entity actor, Entity player)
 	{
 		return 	actor.isLookingAt(player) && 
 				actor.getPosition().distance(player.getPosition()) < 100.0 && 
 				actor.hasLineOfSight(player);
 	}
 	
-	private void move(Actor actor)
+	private void move(Entity actor)
 	{
 		Vector2D velocity = new Vector2D();
-		if ( actor.getFaceDirection() == Actor.FACE_LEFT ) // to left
+		if ( actor.getFaceDirection() == Entity.FACE_LEFT ) // to left
 		{
 			velocity.setX(-20.0);
 		}
@@ -47,7 +47,7 @@ class PatrolState extends AIState
 		actor.getForceGenerator().setVelocity(velocity);
 	}
 	
-	private void attack(Actor actor, Actor player)
+	private void attack(Entity actor, Entity player)
 	{
 		System.console.println("Moving attack state!");
 		actor.getForceGenerator().setVelocity(new Vector2D());

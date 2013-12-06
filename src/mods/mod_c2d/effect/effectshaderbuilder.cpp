@@ -230,6 +230,10 @@ String EffectShaderBuilder::buildStructEntry(const ASTStructEntry& entry)
    if ( !entry.location.isEmpty() )
    {
       result += UTEXT(" : ") + entry.location;
+      if ( entry.slot != L'' )
+      {
+         result += entry.slot;
+      }
    }
    result += L';';
    return result;

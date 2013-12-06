@@ -45,7 +45,7 @@ namespace Graphics
    {
       mElements.push_back(pelement);
 
-      mStride += pelement->pos + sizeof(float)* pelement->size;
+      mStride += sizeof(float)* pelement->size;
    }
 
    void VertexLayout::clear()

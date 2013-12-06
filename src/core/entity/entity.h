@@ -46,9 +46,9 @@ class Controller;
 
 class CORE_API Entity : public IContent
 {
+public:
    enum { eNameDirty = 256, ePositionDirty = 2, eRotationDirty = 4 };
 
-public:
    Entity();
    virtual ~Entity();
 
@@ -60,11 +60,7 @@ public:
    const Entity&  getParent() const;
          Entity&  getParent();
    void           setParent(Entity& parent);
-
-   bool           hasFilename() const;
-   const String&  getFilename() const;
-   void           setFilename(const String& filename);
-
+   
    bool           hasName() const;
    const String&  getName() const;
    void           setName(const String& name);
@@ -94,6 +90,9 @@ public:
 
    bool           getDirection() const;
    void           setDirection(bool direction);
+
+ // query
+   bool hasLineOfSight(const Entity& that) const;
 
  // operations
    void initialize();
@@ -136,7 +135,6 @@ private:
    XForm                mTransform;
    Vector               mOffset;
    String               mName;
-   String               mXmlFile;
    String               mClassName;
    unsigned int		   mDirtyFlag;
    bool                 mDirection;

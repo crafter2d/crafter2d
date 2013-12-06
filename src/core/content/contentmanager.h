@@ -63,6 +63,9 @@ public:
    Graphics::Device& getDevice();
    void              setDevice(Graphics::Device& device);
 
+   Simulator& getSimulator();
+   void       setSimulator(Simulator& simulator);
+
    const String& getBaseDir() const;
    void          setBaseDir(const String& basedir);
 

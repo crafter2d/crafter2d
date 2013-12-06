@@ -20,16 +20,16 @@
 #ifndef TILESET_H_
 #define TILESET_H_
 
-#include "core/resource/resourcemanager.h"
+#include "core/string/string.h"
 
 #include "engine/engine_base.h"
 
 namespace Graphics
 {
    class Device;
+   class Texture;
 }
 
-class String;
 class TiXmlElement;
 
 enum TileInfoFlag {
@@ -63,7 +63,7 @@ public:
 
  // get/set
    const String& getTextureName() const;
-   TexturePtr& getTexture();
+   Graphics::Texture& getTexture();
 
    int   getTileCount() const;
    int   getTileWidth() const;
@@ -76,7 +76,7 @@ private:
 
  // data
    String      mMapName;
-   TexturePtr  mMap;
+   Graphics::Texture*    mpMap;
    TileInfo*   mpInfo;
    int         mTileCount;
    int         mTileWidth;

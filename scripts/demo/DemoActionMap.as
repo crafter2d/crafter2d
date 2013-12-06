@@ -19,7 +19,7 @@ class DemoActionMap extends ActionMap
 		setProcess(server);
 	}
 	
-	public void onKeyDown(Actor object, int action)
+	public void onKeyDown(Entity object, int action)
 	{
 		ActionMessage message = new ActionMessage(object.getId(), action);
 		mServer.broadcastMessage(message);
@@ -62,7 +62,7 @@ class DemoActionMap extends ActionMap
 		}
 	}
 	
-	public void onKeyUp(Actor object, int action)
+	public void onKeyUp(Entity object, int action)
 	{
 		InputForceGenerator force = (InputForceGenerator) object.getForceGenerator();
 		Vector2D velocity = force.getVelocity();

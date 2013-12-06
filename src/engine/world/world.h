@@ -140,6 +140,7 @@ public:
  // operations
    Layer* createLayer();
    int    addLayer(Layer* player);
+   void   removeLayer(Layer& layer);
    int    layerIndex(const Layer& layer);
    void   moveLayer(Layer* player, int offset);
 

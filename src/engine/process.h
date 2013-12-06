@@ -49,7 +49,7 @@ public:
    explicit       Process();
    virtual        ~Process() = 0;
 
-   virtual bool   create(const String& classname);
+   virtual bool   create(const String& classname, const String& basedir);
    virtual bool   destroy();
    virtual void   update (float delta);
 

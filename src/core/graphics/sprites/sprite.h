@@ -35,7 +35,7 @@ namespace Graphics
    class CORE_API Sprite
    {
    public:
-      explicit Sprite(const SpriteDefinition& definition);
+      explicit Sprite(SpriteDefinition* definition);
 
     // get/set
       const Size&              getSize() const;
@@ -59,7 +59,7 @@ namespace Graphics
    private:
 
     // data
-      const SpriteDefinition& mDefinition;
+      SpriteDefinition* mpDefinition;
 
       AnimationState    mAnimState;
       TexturePtr        mTexture;

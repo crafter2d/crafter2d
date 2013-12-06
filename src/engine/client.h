@@ -74,7 +74,6 @@ public:
                   Client();
    virtual        ~Client();
 
-   virtual bool   create(const String& classname);
    virtual bool   destroy();
    virtual void   update(float delta);
 

@@ -6,7 +6,7 @@ use engine.collections.*;
 
 class World
 {
-	private ArrayList<Actor> mActors = new ArrayList<Actor>();
+	private ArrayList<Entity> mEntities = new ArrayList<Entity>();
 	private ArrayList<Layer> mLayers = null;
 	
 	public native World()
@@ -25,10 +25,7 @@ class World
 		
 	public void onEntityAdded(Entity entity)
 	{
-		if ( entity instanceof Actor )
-		{
-			mActors.add((Actor)entity);
-		}
+		mEntities.add(entity);
 	}
 	
 	// Collision detection
@@ -59,12 +56,12 @@ class World
 	// Natives
 	
 	public native string getName();
-	public native void add(Actor actor);
-	public native Actor findEntity(int id);
+	public native void add(Entity actor);
+	public native Entity findEntity(int id);
 	public native void setObjectLayer(int layer);
 	public native void setFollowMode(int mode);
-	public native Actor getFollowActor();
-	public native void setFollowActor(Actor actor);
+	public native Entity getFollowActor();
+	public native void setFollowActor(Entity actor);
 	public native void setFollowBorders(int left, int right, int top, int bottom);
 	public native void setFollowBorderWidth(int width);
 	public native Simulator getSimulator();

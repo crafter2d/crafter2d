@@ -69,7 +69,7 @@ Process::~Process()
 
 // - Operations
 
-bool Process::create(const String& classname)
+bool Process::create(const String& classname, const String& basedir)
 {
    // initialize the modules
    mpModuleManager = new ModuleManager();
@@ -80,6 +80,7 @@ bool Process::create(const String& classname)
 
    // initialize the content manager
    mpContentManager = new ContentManager();
+   mpContentManager->setBaseDir(basedir);
    mpContentManager->initialize(getModuleManager());
 
    // initialize the scripting engine

@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "server.h"
 
+#include "core/content/contentmanager.h"
 #include "core/entity/controller.h"
 #include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
@@ -123,9 +124,13 @@ void Server::update(float delta)
 
 void Server::notifyWorldChanged()
 {
-   getWorld().attach(mWorldObserver);
+   World& world = getWorld();
 
-   WorldChangedEvent event(getWorld());
+   getContentManager().setSimulator(world.getSimulator());
+
+   world.attach(mWorldObserver);
+
+   WorldChangedEvent event(world);
    sendToAllClients(event);
 }
 

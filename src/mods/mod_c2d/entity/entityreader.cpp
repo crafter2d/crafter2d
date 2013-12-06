@@ -18,7 +18,7 @@ IContent* EntityReader::read(DataStream& stream)
    EntityDefinitionProto* pentityproto = new EntityDefinitionProto();
    pentityproto->read(stream);
 
-   return pentityproto->instantiate(factories);
+   return pentityproto->instantiate(getContentManager(), factories);
 }
 
 void EntityReader::setupFactories(ComponentFactories& factories)

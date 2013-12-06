@@ -54,7 +54,7 @@ IContent* ContentManager::load(const String& name)
 {
    IContent* presult = NULL;
 
-   String path = mBaseDir + name + UTEXT(".c2d");
+   String path = File::concat(mBaseDir, name + UTEXT(".c2d"));
    File* pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
    if ( pfile != NULL )
    {
@@ -71,6 +71,10 @@ IContent* ContentManager::load(const String& name)
          reader.setPhysicsSimulator(mpSimulator);
 
          presult = reader.read(stream);
+         if ( presult != NULL )
+         {
+            presult->setFilename(name);
+         }
       }
    }
 

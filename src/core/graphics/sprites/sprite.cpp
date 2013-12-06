@@ -26,14 +26,15 @@
 namespace Graphics
 {
 
-Sprite::Sprite(const SpriteDefinition& definition):
-   mDefinition(definition),
+Sprite::Sprite(SpriteDefinition* pdefinition):
+   mpDefinition(pdefinition),
    mAnimState(),
    mTexture(),
    mTexCoordinate(),
    mTransform(),
    mHalfSize()
 {
+   ASSERT_PTR(mpDefinition);
 }
 
 // - Query
@@ -45,7 +46,7 @@ const Size& Sprite::getHalfSize() const
 
 const Texture& Sprite::getTexture() const
 {
-   return mDefinition.getTexture();
+   return mpDefinition->getTexture();
 }
 
 const TextureCoordinate& Sprite::getTextureCoordinate() const
@@ -72,7 +73,7 @@ void Sprite::setTransform(const XForm& xform)
 
 bool Sprite::initialize(Device& device)
 {
-   mHalfSize = mDefinition.getSize() / 2.0f;
+   mHalfSize = mpDefinition->getSize() / 2.0f;
 
    setAnimation(0);
 
@@ -81,22 +82,22 @@ bool Sprite::initialize(Device& device)
 
 void Sprite::update(float delta)
 {
-   if ( mDefinition.hasSpriteAnimator() )
+   if ( mpDefinition->hasSpriteAnimator() )
    {
       mAnimState.update(delta);
-      if ( mDefinition.getSpriteAnimator().animate(mAnimState) )
+      if ( mpDefinition->getSpriteAnimator().animate(mAnimState) )
       {
-         mTexCoordinate = mDefinition.getSpriteAnimator().getTextureCoordinate(mAnimState);
+         mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
       }
    }
 }
 
 void Sprite::setAnimation(int index)
 {
-   if ( mDefinition.hasSpriteAnimator() )
+   if ( mpDefinition->hasSpriteAnimator() )
    {
       mAnimState.setActiveAnimation(index);
-      mTexCoordinate = mDefinition.getSpriteAnimator().getTextureCoordinate(mAnimState);
+      mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
    }
 }
 

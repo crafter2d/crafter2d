@@ -90,11 +90,6 @@ Client::~Client()
 
 // - Creation
 
-bool Client::create(const String& classname)
-{
-   return Process::create(classname);
-}
-
 bool Client::destroy()
 {
    mSoundManager.destroy();
@@ -505,6 +500,8 @@ void Client::notifyWorldChanged()
 
    mpWorldRenderer = world.createRenderer();
    mpPlayer->initialize(world);
+
+   getContentManager().setSimulator(world.getSimulator());
 
    // run the onWorldChanged script
    Variant arg(mpScript->resolve(&world));

@@ -42,7 +42,6 @@ Entity::Entity():
    mTransform(),
    mOffset(),
    mName(),
-   mXmlFile(),
    mClassName(),
    mDirtyFlag(false),
    mDirection(true)
@@ -108,7 +107,7 @@ void Entity::setPosition(const Vector& p)
 
    setDirty(ePositionDirty);
 
-   //mChildren.setPosition(p);
+   mChildren.setPosition(p);
 }
 
 /// \fn void setRotation(const float rotation)
@@ -132,6 +131,13 @@ void Entity::setOffset(const Vector& offset)
    mOffset = offset;
 
    sendComponentMessage(ComponentMessage(ComponentInterface::ePositionChangedMsg));
+}
+
+// - Query
+
+bool Entity::hasLineOfSight(const Entity& that) const
+{
+   return false;
 }
 
 // - Operations

@@ -53,9 +53,9 @@ bool TopDownLayer::initialize(Graphics::Device& device)
       return false;
    }
 
-   const TexturePtr& diffuse = mTileSet.getTexture();
-   float dx = diffuse->getSourceWidth() / diffuse->getWidth();
-   float dy = diffuse->getSourceHeight() / diffuse->getHeight();
+   const Graphics::Texture& diffuse = mTileSet.getTexture();
+   float dx = diffuse.getSourceWidth() / diffuse.getWidth();
+   float dy = diffuse.getSourceHeight() / diffuse.getHeight();
 
    texTileWidth  = dx * tileWidth;
    texTileHeight = dy * tileHeight;
@@ -68,7 +68,7 @@ bool TopDownLayer::initialize(Graphics::Device& device)
    float offsety = (bordery - texTileHeight) / 2;
 
    // get number of tiles on one row in the diffuseMap
-	maxTilesOnRow = diffuse->getWidth() / (tileWidth + border*2);
+	maxTilesOnRow = diffuse.getWidth() / (tileWidth + border*2);
 
    // build the texture coord lookup table
    delete[] texcoordLookup;
@@ -113,27 +113,33 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
       dirty = false;
 	}
 
-   getEffect().enable(context);
+   if ( verts_to_render > 0 )
+   {
+      getEffect().enable(context);
 
-   context.setVertexBuffer(*vb);
-   context.setIndexBuffer(*ib);
-   context.setUniformBuffer(*ub);
-   context.setTexture(0, *mTileSet.getTexture());
-   context.drawTriangles(0, verts_to_render);
+      context.setVertexBuffer(*vb);
+      context.setIndexBuffer(*ib);
+      context.setUniformBuffer(*ub);
+      context.setTexture(0, mTileSet.getTexture());
+      context.drawTriangles(0, verts_to_render);
+   }
 }
 
 void TopDownLayer::drawFront(Graphics::RenderContext& context)
 {
-   getEffect().enable(context);
+   if ( verts_to_render_front > 0 )
+   {
+      getEffect().enable(context);
 
-   context.setVertexBuffer(*pfrontvb);
-   context.setIndexBuffer(*ib);
-   context.setUniformBuffer(*ub);
-   context.setTexture(0, *mTileSet.getTexture());
-   context.drawTriangles(0, verts_to_render_front);
+      context.setVertexBuffer(*pfrontvb);
+      context.setIndexBuffer(*ib);
+      context.setUniformBuffer(*ub);
+      context.setTexture(0, mTileSet.getTexture());
+      context.drawTriangles(0, verts_to_render_front);
+   }
 }
 
-void TopDownLayer::updateTile(float** pdata, int& verts, LayerLevel level, int x, int y, float xpos, float ypos)
+void TopDownLayer::updateTile(pv** pdata, int& indices, LayerLevel level, int x, int y, float xpos, float ypos)
 {
    uint8_t texId = mTileMap.get(level, x, y);
 	if ( texId < 255 )
@@ -148,14 +154,21 @@ void TopDownLayer::updateTile(float** pdata, int& verts, LayerLevel level, int x
 		float texX = texcoordLookup[texId].x;
 		float texY = texcoordLookup[texId].y;
 
-		// insert the vertices
-		setVertex(pdata, xpos                          , ypos                          , texX, texY);
-      setVertex(pdata, xpos+tileset().getTileWidth() , ypos                          , texX+texTileWidth, texY);
-      setVertex(pdata, xpos+tileset().getTileHeight(), ypos+tileset().getTileHeight(), texX+texTileWidth, texY+texTileHeight);
-      setVertex(pdata, xpos                          , ypos+tileset().getTileHeight(), texX, texY+texTileHeight);
+      pv* pvertices = *pdata;
+      pvertices[0].pos.set(xpos, ypos);
+      pvertices[0].tex.set(texX, texY);
 
-      // keep track of number of vertices
-		verts += 6;
+      pvertices[1].pos.set(xpos+tileset().getTileWidth(), ypos);
+      pvertices[1].tex.set(texX+texTileWidth, texY);
+
+      pvertices[2].pos.set(xpos+tileset().getTileWidth(), ypos+tileset().getTileHeight());
+      pvertices[2].tex.set(texX+texTileWidth, texY+texTileHeight);
+     
+      pvertices[3].pos.set(xpos, ypos+tileset().getTileHeight());
+      pvertices[3].tex.set(texX, texY+texTileHeight);
+
+      (*pdata) += 4;
+		indices += 6;
    }
 }
 
@@ -180,8 +193,8 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 
 	verts_to_render = 0;
    verts_to_render_front = 0;
-	float* data = (float*) vb->lock(context);
-   float* pfrontdata = (float*) pfrontvb->lock(context);
+	pv* data = (pv*) vb->lock(context);
+   pv* pfrontdata = (pv*) pfrontvb->lock(context);
 
   	for ( int y = ystart; y < yend; y++ )
    {
@@ -195,6 +208,7 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
          
 			xpos += tileWidth;
 		}
+
       // (3D only: instead of + do a -)
 		ypos += tileHeight;
 	}

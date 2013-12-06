@@ -4,17 +4,15 @@
 #include "core/defines.h"
 #include "vector.h"
 
-void Matrix4::setOrtho(float left, float right, float top, float bottom)
+void Matrix4::setOrtho(float width, float height, float znear, float zfar)
 {
-   float far = 1;
-   float near = -1;
-
-   mMatrix[0]    = 2 / (right - left);
-   mMatrix[3]    = -(right + left) / (right - left);
-   mMatrix[5]    = 2 / (top - bottom);
-   mMatrix[7]    = -(top + bottom) / (top - bottom);
-   mMatrix[10]   = -2 / (far - near);
-   mMatrix[11]   = -(far + near) / (far - near);
+   
+   mMatrix[0]    = 2 / width;
+   mMatrix[3]    = -1;
+   mMatrix[5]    = 2 / -height;
+   mMatrix[7]    = 1;
+   mMatrix[10]   = -2 / (zfar - znear);
+   mMatrix[11]   = -(zfar + znear) / (zfar - znear);
 }
 
 Matrix4::Matrix4():

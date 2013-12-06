@@ -9,10 +9,12 @@ class ASTType;
 class ASTStructEntry
 {
 public:
+   ASTStructEntry(): ptype(NULL), name(), location(), slot(L'') {}
    
    ASTType* ptype;
    String   name;
    String   location;
+   UChar    slot;
 };
 
 #endif // AST_STRUCT_ENTRY_H

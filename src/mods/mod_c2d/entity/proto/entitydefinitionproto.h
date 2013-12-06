@@ -6,6 +6,7 @@
 
 #include "core/string/string.h"
 
+class ContentManager;
 class ComponentFactories;
 class Entity;
 class DataStream;
@@ -21,7 +22,7 @@ public:
    typedef std::vector<EntityDefinitionProto*> Entities;
    typedef std::vector<ComponentDefinitionProto*> Components;
 
-   Entity* instantiate(ComponentFactories& factories);
+   Entity* instantiate(ContentManager& manager, ComponentFactories& factories);
 
    void read(DataStream& stream);
    void write(DataStream& stream) const;

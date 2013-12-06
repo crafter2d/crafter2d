@@ -79,7 +79,7 @@ class GameClient extends Client
 			World world = getWorld();
 					
 			int controllerid = msg.getControllerId();
-			Actor controller = (Actor) world.findEntity(controllerid);
+			Entity controller = (Entity) world.findEntity(controllerid);
 			controller.initialize();
 			controller.setForceGenerator(new InputForceGenerator());
 			getPlayer().setController(controller);
@@ -93,10 +93,10 @@ class GameClient extends Client
 		}
 		else if ( message instanceof ActionMessage )
 		{
-			// perform the action on the given actor
+			// perform the action on the given entity
 			ActionMessage action = (ActionMessage) message;
-			Actor actor = (Actor) getWorld().findEntity(action.getActorId());
-			mLocalActionMap.onKeyDown(actor, action.getAction());
+			Entity entity = (Entity) getWorld().findEntity(action.getActorId());
+			mLocalActionMap.onKeyDown(entity, action.getAction());
 		}
 	}
 }

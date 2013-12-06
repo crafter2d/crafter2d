@@ -42,3 +42,16 @@ ComponentInterface::ComponentType ComponentDefinitionProto::getType() const
 {
    return mType;
 }
+
+// - Storage
+
+void ComponentDefinitionProto::read(DataStream& stream)
+{
+   virRead(stream);
+}
+
+void ComponentDefinitionProto::write(DataStream& stream) const
+{
+   stream.writeInt(mType);
+   virWrite(stream);
+}

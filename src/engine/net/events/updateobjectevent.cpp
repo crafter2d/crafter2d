@@ -44,8 +44,8 @@ void UpdateObjectEvent::initialize(Entity& entity)
 {
    mId = entity.getId();
    mDataStream.clear();
+
    NetStream stream(mDataStream);
-   
    NetStreamComponentMessage message(stream, true);
    entity.sendComponentMessage(message);
 }
@@ -53,7 +53,6 @@ void UpdateObjectEvent::initialize(Entity& entity)
 void UpdateObjectEvent::update(Entity& entity) const
 {
    NetStream stream(const_cast<BufferedStream&>(mDataStream));
-
    NetStreamComponentMessage message(stream, false);
    entity.sendComponentMessage(message);
 }

@@ -5,6 +5,6 @@ class Player
 {
 	public native int getClientId();
 	
-	public native Actor getController();
-	public native void setController(Actor actor);
+	public native Entity getController();
+	public native void setController(Entity actor);
 }

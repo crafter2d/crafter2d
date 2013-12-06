@@ -25,6 +25,9 @@
 #include <tinyxml.h>
 #include <string>
 
+#include "core/content/contentmanager.h"
+#include "core/graphics/device.h"
+#include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/string/string.h"
 
@@ -46,7 +49,8 @@ TileInfo::TileInfo():
 //////////////////////////////////////////////////////////////////////////
 
 TileSet::TileSet():
-   mMap(),
+   mMapName(),
+   mpMap(NULL),
    mpInfo(NULL),
    mTileCount(0),
    mTileWidth(0),
@@ -154,8 +158,8 @@ bool TileSet::load(const String& filename)
 
 bool TileSet::loadTexture(Graphics::Device& device)
 {
-   mMap = ResourceManager::getInstance().getTexture(device, mMapName);
-   return mMap.isValid();
+   mpMap = device.getContentManager().loadContent<Graphics::Texture>(mMapName);
+   return mpMap != NULL;
 }
 
 bool TileSet::update(float tick)

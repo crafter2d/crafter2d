@@ -5,10 +5,10 @@ use engine.game.*;
 
 // Hero class
 
-class Hero extends Actor
+class Hero extends Entity
 {
 	public void onCreated()
 	{
-		setInitialFaceDirection(Actor.FACE_RIGHT);
+		setInitialFaceDirection(Entity.FACE_RIGHT);
 	}
 }

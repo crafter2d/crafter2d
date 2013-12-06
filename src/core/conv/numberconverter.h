@@ -2,6 +2,7 @@
 #ifndef NUMBER_CONVERTER_H
 #define NUMBER_CONVERTER_H
 
+#include "core/string/char.h"
 #include "core/core_base.h"
 
 class String;
@@ -12,6 +13,7 @@ public:
    static NumberConverter& getInstance();
 
  // conversion
+   int toInt(UChar value);
    int toInt(const String& value);
    double toDouble(const String& value);
 

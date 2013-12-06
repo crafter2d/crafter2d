@@ -113,6 +113,12 @@ ASTStructEntry* EffectFileParser::parseStructEntry(Lexer& lexer)
    if ( lexer.next(L':') )
    {
       pentry->location = lexer.getIdentifier();
+      UChar ch = pentry->location[pentry->location.length() - 1];
+      if ( Char::isDigit(ch) )
+      {
+         pentry->slot = ch;
+         pentry->location = pentry->location.subStr(0, pentry->location.length() - 1);
+      }
    }
 
    if ( !lexer.next(L';') )

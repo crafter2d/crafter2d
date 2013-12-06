@@ -18,8 +18,13 @@ public:
    ComponentInterface::ComponentType getType() const;
 
  // storage
-   virtual void read(DataStream& stream) = 0;
-   virtual void write(DataStream& stream) const = 0;
+   void read(DataStream& stream);
+   void write(DataStream& stream) const;
+
+protected:
+ // storage
+   virtual void virRead(DataStream& stream) = 0;
+   virtual void virWrite(DataStream& stream) const = 0;
 
 private:
 

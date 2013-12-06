@@ -6,7 +6,7 @@
 
 class Vector;
 
-class CORE_API Matrix4
+__declspec(align(16)) class CORE_API Matrix4
 {
 public:
    Matrix4();
@@ -21,7 +21,7 @@ public:
 
    void asOpenGL(float mat[16]) const;
 
-   void setOrtho(float left, float right, float top, float bottom);
+   void setOrtho(float width, float height, float znear, float zfar);
 
    void setIdentity();
    void setArray(const float* pmatrix);

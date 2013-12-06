@@ -3,7 +3,7 @@
 
 <entity class="demo.Hero" name="char">
    <sprite width=48 height=62>
-	  <texture>char.dds</texture>
+	  <texture>images/char</texture>
       <animations speed=125>
          <anim length=1 />
          <anim length=7 />

@@ -6,7 +6,7 @@ use box2d.box2dbody;
 
 // grudge enemy
 
-class Grudge extends Actor
+class Grudge extends Entity
 {
 	private static int WEAPON_CLUB = 1;
 	private static int WEAPON_SPEAR = 2;
@@ -19,7 +19,7 @@ class Grudge extends Actor
 		
 		setState(new PatrolState());
 		//setForceGenerator(new InputForceGenerator());
-		setInitialFaceDirection(Actor.FACE_LEFT);
+		setInitialFaceDirection(Entity.FACE_LEFT);
 	}
 
 	public void collide(Object target, int side, boolean begin)

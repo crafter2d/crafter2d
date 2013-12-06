@@ -27,16 +27,16 @@ Component* MeshComponentFactory::instantiate(const ComponentDefinitionProto& def
 
    Size meshsize(meshdef.mWidth, meshdef.mHeight);
    Animator* panimator = createAnimator(meshdef);
-   Texture* ptexture = getContentManager().loadContent<Texture>(meshdef.mTexture);
+   Texture* ptexture = mDevice.getContentManager().loadContent<Texture>(meshdef.mTexture);
    panimator->initialize(*ptexture, meshsize);
 
-   SpriteDefinition spritedef;
-   spritedef.setSize(meshsize);
-   spritedef.setTexture(ptexture);
-   spritedef.setSpriteAnimator(panimator);
+   SpriteDefinition* pspritedef = new SpriteDefinition();
+   pspritedef->setSize(meshsize);
+   pspritedef->setTexture(ptexture);
+   pspritedef->setSpriteAnimator(panimator);
 
    MeshComponent* presult = new MeshComponent();
-   presult->setSprite(SpriteFactory::create(mDevice, spritedef));
+   presult->setSprite(SpriteFactory::create(mDevice, pspritedef));
    return presult;
 }
 

@@ -54,9 +54,6 @@ static const int SpriteIndices  = 6;
 
 bool SpriteRenderer::create(Device& device)
 {
-   //Graphics::VertexInputLayout vertexLayout(Graphics::INPUT_XY | Graphics::INPUT_Tex0);
-   uint usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
-
    mpEffect = device.createEffect(UTEXT("shaders/basic"));
    if ( mpEffect == NULL )
    {
@@ -81,6 +78,7 @@ bool SpriteRenderer::create(Device& device)
 
    const int batchsize = 256;
 
+   uint usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
    mpVB = mpEffect->createVertexBuffer(device, batchsize * SpriteVertices, usage);
    if ( mpVB == NULL )
    {
@@ -109,7 +107,7 @@ void SpriteRenderer::setOffset(RenderContext& context, const Vector& offset)
 
 void SpriteRenderer::viewportChanged(const Viewport& viewport)
 {
-   mConstants.projection.setOrtho(0, viewport.getWidth(), 0, viewport.getHeight());
+   mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
 }
 
 // - Drawing
@@ -140,11 +138,11 @@ void SpriteRenderer::endDraw(RenderContext& context)
 
       mpVB->unlock(context);
 
+      mpEffect->enable(context);
+
       context.setVertexBuffer(*mpVB);
       context.setIndexBuffer(*mpIB);
       context.setUniformBuffer(*mpUB);
-
-      mpEffect->enable(context);
 
       int start = 0;
       int indices = 0;

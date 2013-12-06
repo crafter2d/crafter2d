@@ -12,12 +12,13 @@ class PhysicsComponentDefinitionProto : public ComponentDefinitionProto
 public:
    PhysicsComponentDefinitionProto();
 
- // overrides
-   virtual void read(DataStream& stream) override;
-   virtual void write(DataStream& stream) const override;
-
  // data
    BodyDefinition mDefinition;
+
+protected:
+ // overrides
+   virtual void virRead(DataStream& stream) override;
+   virtual void virWrite(DataStream& stream) const override;
 };
 
 #endif // PHYSICS_COMPONENT_DEFINITION_H

@@ -20,9 +20,8 @@ public:
    void              setBody(Body& body);
 
  // component interface
-   virtual void registerComponent(Components& components);
-   virtual void handleMessage(ComponentMessage& message);
-   virtual void update(float delta);
+   virtual void registerComponent(Components& components) override;
+   virtual void handleMessage(ComponentMessage& message) override;
 
  // notifications
    virtual void onPositionChanged(Body& body);

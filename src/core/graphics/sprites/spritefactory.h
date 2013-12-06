@@ -32,7 +32,7 @@ namespace Graphics
    {
    public:
 
-      static Sprite* create(Graphics::Device& device, const SpriteDefinition& definition);
+      static Sprite* create(Graphics::Device& device, SpriteDefinition* pdefinition);
    };
 }
 

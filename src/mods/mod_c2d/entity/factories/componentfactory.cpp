@@ -1,7 +1,10 @@
 
 #include "componentfactory.h"
 
+#include "core/defines.h"
+
 ComponentFactory::ComponentFactory(ComponentInterface::ComponentType type):
+   mpContentManager(NULL),
    mComponentType(type)
 {
 }

@@ -111,15 +111,6 @@ bool Layer::initialize(Device& device)
       return false;
    }
 
-   /*
-   if ( !mEffect.load(device, layout, mpDefinition->effect) )
-   {
-      std::string file = mpDefinition->effect.toUtf8();
-      Log::getInstance().error("Can not load effect file '%s'.", file.c_str());
-      return false;
-   }
-   */
-
    if ( !createBuffers(device, getWidth(), getHeight())
      || !createUniformBuffers(device) )
    {
@@ -138,15 +129,25 @@ bool Layer::initialize(Device& device)
    return true;
 }
 
+/// \fn Layer::release()
+/// \brief Releases the internal memory
+/// \return Nothing
+void Layer::release()
+{
+   delete ub;
+   delete ib;
+   delete vb;
+   delete pfrontvb;
+	delete[] texcoordLookup;
+   delete mpEffect;
+}
+
 /// \fn Layer::onViewportChanged(const Graphics::RenderContext& context)
-/// \brief Called when the viewports dimensions have been changed. Precalculates maximum allowable scrolling 
-/// values and initializes the OpenGL object of the layer for rendering.
-/// \retval true the layer was successfully prepaired
-/// \retval false the vertex buffer could not be created
+/// \brief Called when the viewports dimensions have been changed. 
 void Layer::onViewportChanged(Graphics::RenderContext& context)
 {
    const Graphics::Viewport& viewport = context.getViewport();
-   mConstants.projection.setOrtho(0, (float)viewport.getWidth(), 0, (float)viewport.getHeight());
+   mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1.0f, 1.0f);
    mConstants.world.setIdentity();
    mConstants.object.setIdentity();
 
@@ -161,26 +162,12 @@ Vector Layer::getScrollArea() const
    return Vector(tileset().getTileWidth() * tilesX, mTileSet.getTileHeight() * tilesY);
 }
 
-
 void Layer::calculateScrollSpeed(const Vector& area, int screenWidth, int screenHeight)
 {
    Vector thisarea = getScrollArea();
 
    scrollSpeedX = thisarea.x / area.x;
    scrollSpeedY = thisarea.y / area.y;
-}
-
-/// \fn Layer::release()
-/// \brief Releases the internal memory
-/// \return Nothing
-void Layer::release()
-{
-   delete ub;
-   delete ib;
-   delete vb;
-   delete pfrontvb;
-	delete[] texcoordLookup;
-   delete mpEffect;
 }
 
 void Layer::update(float delta)

@@ -14,7 +14,7 @@ class AIController extends Controller
 		mProcess = process;
 	}
 	
-	public void updateAI(Actor actor)
+	public void updateAI(Entity actor)
 	{
 	/*
 		ArrayList<Player> players = mProcess.getPlayers();

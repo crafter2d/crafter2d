@@ -16,7 +16,7 @@ Component* ComponentFactories::instantiate(ComponentDefinitionProto& definition)
       ComponentFactory* pfactory = operator[](index);
       if ( pfactory->getComponentType() == definition.getType() )
       {
-         pfactory->instantiate(definition);
+         return pfactory->instantiate(definition);
       }
    }
 

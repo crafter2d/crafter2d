@@ -21,7 +21,7 @@
 
 namespace Graphics
 {
-   INLINE void Animator::setAnimationSpeed(int milliseconds)
+   INLINE void Animator::setAnimationSpeed(float milliseconds)
    {
       mAnimationSpeed = milliseconds;
    }

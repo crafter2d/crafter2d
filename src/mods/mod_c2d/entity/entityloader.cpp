@@ -62,7 +62,7 @@ EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
    pentitydef->mName = String::fromUtf8(pname);
 
    const char* pclasstype = entity.Attribute("class");
-   pentitydef->mClassName = (pclasstype != NULL ? String::fromUtf8(pclasstype) : UTEXT("engine.game.Actor"));
+   pentitydef->mClassName = (pclasstype != NULL ? String::fromUtf8(pclasstype) : UTEXT("engine.game.Entity"));
 
    const TiXmlElement* pelement = NULL;
    for ( const TiXmlElement* pelement = entity.FirstChildElement(); pelement != NULL; pelement = pelement->NextSiblingElement() )
@@ -71,33 +71,15 @@ EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
 
       if ( name == sChild )
       {
-         ChildDefinitionProto* pchild = loadChildDefinition(*pelement);
-         ASSERT_PTR(pchild);
-
-         if ( pchild->mRefType == ChildDefinitionProto::eFileReference )
-         {
-            // convert file references to local references
-            // simplifies loading the entity at runtime
-
-            EntityDefinitionProto* pchildentity = load(pchild->mRef);
-            pentitydef->mEntities.push_back(pchildentity);
-
-            pchild->mRefType = ChildDefinitionProto::eLocalReference;
-            pchild->mRef = pchildentity->mName;
-         }
-
-         pentitydef->mChildren.push_back(pchild);
+         loadChildDefinition(*pentitydef, *pelement);
       }
       else if ( name == sLink )
       {
-         LinkDefinitionProto* plinkdef = loadLinkDefinition(*pelement);
-
-         pentitydef->mLinks.push_back(plinkdef);
+         loadLinkDefinition(*pentitydef, *pelement);
       }
       else if ( name == sEntity )
       {
          EntityDefinitionProto* pentity = loadDefinition(*pelement);
-
          pentitydef->mEntities.push_back(pentity);
       }
       else
@@ -122,7 +104,7 @@ EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
    return pentitydef;
 }
 
-ChildDefinitionProto* EntityLoader::loadChildDefinition(const TiXmlElement& xmlchild)
+void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmlchild)
 {
    ChildDefinitionProto* pchild = new ChildDefinitionProto();
 
@@ -138,11 +120,13 @@ ChildDefinitionProto* EntityLoader::loadChildDefinition(const TiXmlElement& xmlc
    else
    {
       const char* pfile = xmlchild.Attribute("file");
-      if ( pfile != NULL )
+      if ( pfile == NULL )
       {
-         pchild->mRefType = ChildDefinitionProto::eFileReference;
-         pchild->mRef = String::fromUtf8(pfile);
+         throw std::exception("Should have a file reference!");
       }
+
+      pchild->mRefType = ChildDefinitionProto::eFileReference;
+      pchild->mRef = String::fromUtf8(pfile);
    }
 
    float offsetx, offsety;
@@ -150,10 +134,10 @@ ChildDefinitionProto* EntityLoader::loadChildDefinition(const TiXmlElement& xmlc
    xmlchild.QueryFloatAttribute("offsety", &offsety);
    pchild->mOffset = Vector(offsetx, offsety);
 
-   return pchild;
+   entity.mChildren.push_back(pchild);
 }
 
-LinkDefinitionProto* EntityLoader::loadLinkDefinition(const TiXmlElement& xmllink)
+void EntityLoader::loadLinkDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmllink)
 {
    LinkDefinitionProto* presult = NULL;
    int left, right;
@@ -188,5 +172,5 @@ LinkDefinitionProto* EntityLoader::loadLinkDefinition(const TiXmlElement& xmllin
       presult->mpJointDef = pjoint;
    }
 
-   return presult;
+   entity.mLinks.push_back(presult);
 }

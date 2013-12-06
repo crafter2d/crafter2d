@@ -25,8 +25,9 @@ private:
    
  // loading
    EntityDefinitionProto*  loadDefinition(const TiXmlElement& entity);
-   ChildDefinitionProto*   loadChildDefinition(const TiXmlElement& childelement);
-   LinkDefinitionProto*    loadLinkDefinition(const TiXmlElement& xmllink);
+
+   void loadChildDefinition(EntityDefinitionProto& entity, const TiXmlElement& childelement);
+   void loadLinkDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmllink);
 
  // registration
    void registerLoader(ComponentLoader* ploader);

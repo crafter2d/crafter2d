@@ -56,14 +56,14 @@ bool IsoDiamondLayer::initialize(Graphics::Device& device)
    _xstart = tileWidth * (getWidth() / 2);// + _halfTileWidth;
 
    // get number of tiles on one row in the diffuseMap
-   const TexturePtr diffuse = mTileSet.getTexture();
-	maxTilesOnRow = diffuse->getWidth() / tileWidth;
+   const Graphics::Texture& diffuse = mTileSet.getTexture();
+	maxTilesOnRow = diffuse.getWidth() / tileWidth;
 
-   float nX = static_cast<float>(diffuse->getWidth()) / tileWidth;
-   float nY = static_cast<float>(diffuse->getHeight()) / tileHeight;
+   float nX = static_cast<float>(diffuse.getWidth()) / tileWidth;
+   float nY = static_cast<float>(diffuse.getHeight()) / tileHeight;
 
-   texTileWidth  = diffuse->getSourceWidth() / nX;
-   texTileHeight = diffuse->getSourceHeight() / nY;
+   texTileWidth  = diffuse.getSourceWidth() / nX;
+   texTileHeight = diffuse.getSourceHeight() / nY;
 
    tileCount = 10;
 

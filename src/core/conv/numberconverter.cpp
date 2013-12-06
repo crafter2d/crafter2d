@@ -23,6 +23,11 @@ NumberConverter::NumberConverter()
 
 // - Conversions
 
+int NumberConverter::toInt(UChar value)
+{
+   return wcstol(&value, NULL, 10);
+}
+
 int NumberConverter::toInt(const String& value)
 {
    return wcstol(value.mpString, NULL, 10);

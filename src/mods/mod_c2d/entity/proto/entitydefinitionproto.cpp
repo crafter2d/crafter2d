@@ -1,9 +1,11 @@
 
 #include "entitydefinitionproto.h"
 
+#include "core/content/contentmanager.h"
 #include "core/entity/entity.h"
 #include "core/physics/revolutejointdefinition.h"
 #include "core/entity/componentmessages/querybodycomponentmessage.h"
+#include "core/entity/components/netcomponent.h"
 #include "core/streams/datastream.h"
 #include "core/defines.h"
 
@@ -16,18 +18,37 @@
 
 // - Instantiation
 
-Entity* EntityDefinitionProto::instantiate(ComponentFactories& factories)
+Entity* EntityDefinitionProto::instantiate(ContentManager& manager, ComponentFactories& factories)
 {
    Entity* pentity = new Entity();
+   pentity->setName(mName);
+   pentity->setClassName(mClassName);
 
    // child entities
 
    for ( uint32_t index = 0; index < mChildren.size(); ++index )
    {
       ChildDefinitionProto* pchilddef = mChildren[index];
-      EntityDefinitionProto& childentity = resolve(pchilddef->mRef);
 
-      Entity* pchild = childentity.instantiate(factories);
+      Entity* pchild = NULL;
+      switch ( pchilddef->mRefType )
+      {
+      case ChildDefinitionProto::eFileReference:
+         {
+            pchild = manager.loadContent<Entity>(pchilddef->mRef);
+         }
+         break;
+
+      case ChildDefinitionProto::eLocalReference:
+         {
+            EntityDefinitionProto& def = resolve(pchilddef->mRef);
+            pchild = def.instantiate(manager, factories);
+         }
+         break;
+      }
+      
+      ASSERT_PTR(pchild);
+      pchild->setOffset(pchilddef->mOffset);
       pentity->add(pchild);
    }
 
@@ -37,8 +58,8 @@ Entity* EntityDefinitionProto::instantiate(ComponentFactories& factories)
    {
       LinkDefinitionProto* plinkdef = mLinks[index];
 
-      Entity& leftchild = pentity->getChildren()[plinkdef->mLeft];
-      Entity& rightchild = pentity->getChildren()[plinkdef->mRight];
+      Entity& leftchild = pentity->getChildren()[plinkdef->mLeft - 1];
+      Entity& rightchild = pentity->getChildren()[plinkdef->mRight - 1];
 
       QueryBodyComponentMessage message;
       leftchild.sendComponentMessage(message);
@@ -56,8 +77,14 @@ Entity* EntityDefinitionProto::instantiate(ComponentFactories& factories)
    {
       ComponentDefinitionProto* pcomponentdef = mComponents[index];
       Component* pcomponent = factories.instantiate(*pcomponentdef);
-      pentity->addComponent(pcomponent);
+      if ( pcomponent != NULL )
+      {
+         pentity->addComponent(pcomponent);
+      }
    }
+
+   pentity->initialize();
+   pentity->addComponent(new NetComponent());
 
    return pentity;
 }

@@ -45,12 +45,12 @@
 	<!-- example inlined definition // -->
 	<entity name="bridgepart" >
 		<sprite width=12 height=8>
-			<texture>bridgepart.dds</texture>
+			<texture>images/bridgepart</texture>
 			<animations speed=125>
 				<anim length=1>0</anim>
 			</animations>
 		</sprite>
-		<body inertia="1" mass="80" static="1">
+		<body inertia="1" mass="80">
 			<shape type="box" halfx="6" halfy="4" />
 		</body>
 	</entity>

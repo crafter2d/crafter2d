@@ -215,7 +215,7 @@ void World::draw(Graphics::RenderContext& context) const
       Layer& layer = *layers[i];
       layer.draw(context);
    }
-
+   
    // scroll the viewpoint to the right position
    Vector scroll = layers[getObjectLayer()]->getScroll ();
    context.setSpriteOffset(scroll);
@@ -321,6 +321,12 @@ int World::addLayer(Layer* player)
    layers.push_back(player);
 
    return layers.size() - 1;
+}
+
+void World::removeLayer(Layer& layer)
+{
+   Layers::iterator it = std::find(layers.begin(), layers.end(), &layer);
+   layers.erase(it);
 }
 
 void World::moveLayer(Layer* player, int offset)

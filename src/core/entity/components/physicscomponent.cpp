@@ -59,10 +59,6 @@ void PhysicsComponent::handleMessage(ComponentMessage& message)
    }
 }
 
-void PhysicsComponent::update(float delta)
-{
-}
-
 // - Notifications
 
 void PhysicsComponent::onPositionChanged(Body& body)

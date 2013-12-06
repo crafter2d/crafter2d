@@ -6,11 +6,11 @@ use engine.game.*;
 
 class DemoClientActionMap extends ActionMap
 {
-	private Actor mEntity;
+	private Entity mEntity;
 	
-	public void setActor(Actor actor)
+	public void setActor(Entity entity)
 	{
-		mEntity = actor;
+		mEntity = entity;
 	}
 	
 	public DemoClientActionMap()

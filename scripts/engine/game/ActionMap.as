@@ -18,10 +18,10 @@ abstract class ActionMap
 	}
 
 	// Called by the engine when a key down action has been received
-	public abstract void onKeyDown(Actor object, int action);
+	public abstract void onKeyDown(Entity object, int action);
 	
 	// Called by the engine when a key up action has been received
-	public abstract void onKeyUp(Actor object, int action);
+	public abstract void onKeyUp(Entity object, int action);
 
 	// - Natives
 	

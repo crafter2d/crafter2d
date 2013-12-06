@@ -81,6 +81,16 @@ void Entities::draw(Graphics::RenderContext& context) const
    }
 }
 
+void Entities::setPosition(const Vector& pos)
+{
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
+   {
+      Entity* pentity = mEntities[index];
+      pentity->setPosition(pos);
+   }
+}
+
+
 /*
 // - Visitor
    

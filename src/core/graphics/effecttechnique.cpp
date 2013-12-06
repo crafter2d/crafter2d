@@ -20,7 +20,6 @@ EffectTechnique::~EffectTechnique()
    if( mpCodePath != NULL )
    {
 		// release the path
-		mpCodePath->release();
 		delete mpCodePath;
 		mpCodePath = NULL;
 	}

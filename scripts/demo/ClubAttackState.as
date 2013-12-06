@@ -5,12 +5,12 @@ use engine.game.*;
 
 class ClubAttackState extends AttackState
 {
-   public void initialize(Actor actor)
+   public void initialize(Entity actor)
    {
       actor.setAnimation(3);
    }
    
-	protected void attack(Actor actor, Actor player)
+	protected void attack(Entity actor, Entity player)
 	{
 		actor.lookAt(player);
 	}

@@ -9,7 +9,7 @@ MeshComponentDefinitionProto::MeshComponentDefinitionProto():
 {
 }
 
-void MeshComponentDefinitionProto::read(DataStream& stream)
+void MeshComponentDefinitionProto::virRead(DataStream& stream)
 {
    stream >> mWidth >> mHeight >> mTexture >> mAnimationSpeed;
 
@@ -23,9 +23,8 @@ void MeshComponentDefinitionProto::read(DataStream& stream)
    }
 }
 
-void MeshComponentDefinitionProto::write(DataStream& stream) const
+void MeshComponentDefinitionProto::virWrite(DataStream& stream) const
 {
-   stream.writeInt(ComponentInterface::eMeshComponent);
    stream << mWidth << mHeight << mTexture << mAnimationSpeed;
 
    stream.writeUint(mAnimations.size());

@@ -166,9 +166,11 @@ void Game::run()
 bool Game::initGame()
 {
    IniFile inifile(UTEXT("game.ini"));
+
+   String basedir = inifile.get(UTEXT("Process"), UTEXT("basedir"));
    
    mpServer = new Server();
-   if ( !mpServer->create(inifile.get(UTEXT("Process"), UTEXT("server"))) )
+   if ( !mpServer->create(inifile.get(UTEXT("Process"), UTEXT("server")), basedir) )
    {
       Log::getInstance().error("FAILED to start the server.");
       return false;
@@ -176,12 +178,12 @@ bool Game::initGame()
 
    mpClient = new Client();
    mpClient->setWindowFactory(*mpWindowFactory);
-   if ( !mpClient->create(inifile.get(UTEXT("Process"), UTEXT("client"))) )
+   if ( !mpClient->create(inifile.get(UTEXT("Process"), UTEXT("client")), basedir) )
    {
       Log::getInstance().error("FAILED to start the client.");
       return false;
    }
-
+   
 	return true;
 }
 

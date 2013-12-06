@@ -57,6 +57,8 @@ public:
    void update(float delta);
    void draw(Graphics::RenderContext& context) const;
 
+   void setPosition(const Vector& pos);
+
 private:
 
    EntityMap mEntities; // not owning

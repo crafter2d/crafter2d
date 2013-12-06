@@ -354,6 +354,14 @@ void Entity_sendComponentMessage(VirtualMachine& machine, VirtualStackAccessor& 
    entity.sendComponentMessage(msg);
 }
 
+void Entity_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+{
+   GET_THIS(Entity, entity);
+
+   Entity& other = accessor.getObject(1).getNativeObject<Entity>();
+   accessor.setResult(entity.hasLineOfSight(other));
+}
+
 void Entity_getPositionX(VirtualMachine& machine, VirtualStackAccessor& accessor)
 {
    GET_THIS(Entity, entity);
@@ -1119,6 +1127,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction(UTEXT("flip()"), Entity_flip);
    registrator.addFunction(UTEXT("setController(engine.game.Controller)"), Entity_setController);
    registrator.addFunction(UTEXT("sendComponentMessage(engine.game.ComponentMessage)"), Entity_sendComponentMessage);
+   registrator.addFunction(UTEXT("hasLineOfSight(engine.game.Entity)"), Entity_hasLineOfSight);
 
    registrator.addClass(UTEXT("engine.game.QueryBodyComponentMessage"));
    registrator.addFunction(UTEXT("QueryBodyComponentMessage()"), QueryBodyComponentMessage_init);
@@ -1134,23 +1143,22 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction(UTEXT("Actor()"), Actor_init);
    registrator.addFunction(UTEXT("finalize()"), Actor_destruct);
    registrator.addFunction(UTEXT("add(engine.game.Actor)"), Actor_add);
-   registrator.addFunction(UTEXT("hasLineOfSight(engine.game.Actor)"), Actor_hasLineOfSight);
    */
 
    registrator.addClass(UTEXT("engine.game.Player"));
    registrator.addFunction(UTEXT("getClientId()"), Player_getClientId);
    registrator.addFunction(UTEXT("getController()"), Player_getController);
-   registrator.addFunction(UTEXT("setController(engine.game.Actor)"), Player_setController);
+   registrator.addFunction(UTEXT("setController(engine.game.Entity)"), Player_setController);
 
    registrator.addClass(UTEXT("engine.game.World"));
    registrator.addFunction(UTEXT("World()"), World_init);
    registrator.addFunction(UTEXT("finalize()"), World_destruct);
    registrator.addFunction(UTEXT("getName()"), World_getName);
-   registrator.addFunction(UTEXT("add(engine.game.Actor)"), World_add);
+   registrator.addFunction(UTEXT("add(engine.game.Entity)"), World_add);
    registrator.addFunction(UTEXT("setObjectLayer(int)"), World_setObjectLayer);
    registrator.addFunction(UTEXT("setFollowMode(int)"), World_setFollowMode);
    registrator.addFunction(UTEXT("getFollowActor()"), World_getFollowActor);
-   registrator.addFunction(UTEXT("setFollowActor(engine.game.Actor)"), World_setFollowActor);
+   registrator.addFunction(UTEXT("setFollowActor(engine.game.Entity)"), World_setFollowActor);
    registrator.addFunction(UTEXT("setFollowBorders(int, int, int, int)"), World_setFollowBorders);
    registrator.addFunction(UTEXT("setFollowBorderWidth(int)"), World_setFollowBorderWidth);
    registrator.addFunction(UTEXT("getSimulator()"), World_getSimulator);
@@ -1184,7 +1192,7 @@ void script_engine_register(ScriptManager& manager)
    registrator.addFunction(UTEXT("finalize()"), AIController_destruct);
 
    registrator.addClass(UTEXT("box2d.Box2DSimulator"));
-   registrator.addFunction(UTEXT("lineOfSight(Actor, Actor)"), Box2DSimulator_lineOfSight);
+   registrator.addFunction(UTEXT("lineOfSight(engine.game.Entity, engine.game.Entity)"), Box2DSimulator_lineOfSight);
    registrator.addFunction(UTEXT("createRevoluteJoint(box2d.Box2DBody, box2d.Box2DBody, real, real)"), Box2DSimulator_createRevoluteJoint);
    registrator.addFunction(UTEXT("createRopeJoint(box2d.Box2DRopeJointDefinition)"), Box2DSimulator_createRopeJoint);
 

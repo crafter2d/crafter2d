@@ -13,7 +13,7 @@ PhysicsComponentDefinitionProto::PhysicsComponentDefinitionProto():
 
 // - Storage
 
-void PhysicsComponentDefinitionProto::read(DataStream& stream)
+void PhysicsComponentDefinitionProto::virRead(DataStream& stream)
 {
    BodyDefinition::ShapeType shapetype;
    bool isstatic, isfixedrot;
@@ -45,7 +45,7 @@ void PhysicsComponentDefinitionProto::read(DataStream& stream)
    }
 }
 
-void PhysicsComponentDefinitionProto::write(DataStream& stream) const
+void PhysicsComponentDefinitionProto::virWrite(DataStream& stream) const
 {
    stream.writeInt((int)mDefinition.getShapeType());
    stream.writeBool(mDefinition.isStatic());

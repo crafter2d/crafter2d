@@ -11,7 +11,7 @@ class GameServer extends Server
 	private boolean mStarted = false;
 	private Hero   mHero;
 	private Grudge mGrudge;
-	private Actor  mBox;
+	private Entity mBox;
 	
 	public GameServer()
 	{
@@ -64,15 +64,15 @@ class GameServer extends Server
 		InputController controller = new InputController();
 		controller.setActionMap(map);
 		
-		Hero actor = (Hero)Actor.construct(this, "Hero", position, "../objects/char.xml");
-		actor.setLocalController(controller);
-		actor.setForceGenerator(new InputForceGenerator());
+		Hero hero = (Hero)Entity.construct(this, "Hero", position, "objects/char");
+		hero.setController(controller);
+		hero.setForceGenerator(new InputForceGenerator());
 		
 		// notify the client
-		ControllerMessage message = new ControllerMessage(actor.getId());
+		ControllerMessage message = new ControllerMessage(hero.getId());
 		sendMessage(player.getClientId(), message);
 		
-		return actor;
+		return hero;
 	}
 
 	private void createObjects()
@@ -85,7 +85,7 @@ class GameServer extends Server
 		*/
 		
 		pos.set(727, 422);
-		Actor.construct(this, "bridge", pos, "../objects/bridge.xml");
+		Entity.construct(this, "bridge", pos, "objects/bridge");
 		
 		/*
 		Vector2D left = new Vector2D();

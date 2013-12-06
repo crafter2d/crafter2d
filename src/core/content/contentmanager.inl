@@ -12,6 +12,17 @@ INLINE void ContentManager::setDevice(Graphics::Device& device)
    mpDevice = &device;
 }
 
+INLINE Simulator& ContentManager::getSimulator()
+{
+   ASSERT_PTR(mpSimulator);
+   return *mpSimulator;
+}
+   
+INLINE void ContentManager::setSimulator(Simulator& simulator)
+{
+   mpSimulator = &simulator;
+}
+
 INLINE const String& ContentManager::getBaseDir() const
 {
    return mBaseDir;

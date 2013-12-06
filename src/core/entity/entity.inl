@@ -56,21 +56,6 @@ INLINE Entities& Entity::getChildren()
    return mChildren;
 }
 
-INLINE bool Entity::hasFilename() const
-{
-   return !mXmlFile.isEmpty();
-}
-
-INLINE const String& Entity::getFilename() const
-{
-   return mXmlFile;
-}
-
-INLINE void Entity::setFilename(const String& filename)
-{
-   mXmlFile = filename;
-}
-
 INLINE bool Entity::hasName() const
 {
    return !mName.isEmpty();

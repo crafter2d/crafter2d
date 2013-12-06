@@ -29,9 +29,10 @@ INLINE const String& TileSet::getTextureName() const
    return mMapName;
 }
 
-INLINE TexturePtr& TileSet::getTexture()
+INLINE Graphics::Texture& TileSet::getTexture()
 {
-   return mMap;
+   ASSERT_PTR(mpMap);
+   return *mpMap;
 }
 
 int TileSet::getTileCount() const

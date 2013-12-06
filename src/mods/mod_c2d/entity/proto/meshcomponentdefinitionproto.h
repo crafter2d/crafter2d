@@ -15,14 +15,17 @@ public:
 
    MeshComponentDefinitionProto();
 
-   virtual void read(DataStream& stream) override;
-   virtual void write(DataStream& stream) const override;
-
+ // data
    int         mWidth;
    int         mHeight;
    String      mTexture;
    float       mAnimationSpeed;
    Animations  mAnimations;
+
+protected:
+ // storage
+   virtual void virRead(DataStream& stream) override;
+   virtual void virWrite(DataStream& stream) const override;
 };
 
 #endif // MESH_DEFINITION_PROTO_H
