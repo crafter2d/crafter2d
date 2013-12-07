@@ -36,8 +36,10 @@ public:
 
     QSize getMinimumSize() const;
 
-    TileMap& getActiveMap();
+    bool     hasActiveMap() const;
+    TileMap* getActiveMap();
     void     setActiveMap(TileMap& active);
+    void     setActiveMap(TileMap *active);
 
     int      getMapCount() const;
     TileMap& getMap(int index);
@@ -52,6 +54,8 @@ public:
   // maintenance
     void addMap(TileMap* pmap);
     void addMap(LayerDefinition* pdefinition);
+
+    void removeMap(TileMap& map);
 
     Bound& addBound(const QPoint& mousepos);
 
@@ -74,7 +78,7 @@ public:
     void fixMaps();
 
 signals:
-    void activeMapChanged(TileMap& map);
+    void activeMapChanged(TileMap* pmap);
     void worldDirty();
 
 public slots:

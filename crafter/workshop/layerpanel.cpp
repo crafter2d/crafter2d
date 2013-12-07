@@ -19,7 +19,9 @@
 
 LayerPanel::LayerPanel(MainWindow& parent):
     DockPanel(parent),
-    ui(new Ui::LayerPanel)
+    ui(new Ui::LayerPanel),
+    mpDeleteAct(NULL),
+    mpResizeAct(NULL)
 {
     ui->setupUi(this);
 
@@ -63,6 +65,7 @@ void LayerPanel::worldActivated(TileWorld* pworld)
 void LayerPanel::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
+    menu.addAction(mpDeleteAct);
     menu.addAction(mpResizeAct);
     menu.exec(event->globalPos());
 }
@@ -71,6 +74,10 @@ void LayerPanel::contextMenuEvent(QContextMenuEvent *event)
 
 void LayerPanel::createContextMenu()
 {
+    mpDeleteAct = new QAction(tr("Delete"), this);
+    mpDeleteAct->setStatusTip(tr("Remove the layer"));
+    connect(mpDeleteAct, SIGNAL(triggered()), SLOT(on_deleteact_triggered()));
+
     mpResizeAct = new QAction(tr("Resize"), this);
     mpResizeAct->setStatusTip(tr("Resize the layer"));
     connect(mpResizeAct, SIGNAL(triggered()), SLOT(on_resizeact_triggered()));
@@ -136,6 +143,20 @@ void LayerPanel::on_buttonMoveDown_clicked()
         foreach (index, indices)
         {
             pmapmodel->moveDown(index);
+        }
+    }
+}
+
+void LayerPanel::on_deleteact_triggered()
+{
+    TileMapModel* pmapmodel = dynamic_cast<TileMapModel*>(ui->treeLayers->model());
+    if ( pmapmodel != NULL )
+    {
+        QModelIndex index;
+        QModelIndexList indices = ui->treeLayers->selectionModel()->selectedRows();
+        foreach (index, indices)
+        {
+            pmapmodel->removeRow(index.row());
         }
     }
 }

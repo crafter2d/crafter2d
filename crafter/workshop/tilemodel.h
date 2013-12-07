@@ -13,7 +13,7 @@ public:
     TileModel(QObject* parent = 0);
 
   // get/set
-    void setMap(TileMap& map);
+    void setMap(TileMap* pmap);
     void clearMap();
 
   // overrides
@@ -21,9 +21,6 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
 
 private:
-
-  // get/set
-    void setMap(TileMap* pmap);
 
   // data
     TileMap* mpMap;

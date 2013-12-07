@@ -21,11 +21,6 @@ void TileModel::setMap(TileMap* pmap)
     }
 }
 
-void TileModel::setMap(TileMap& map)
-{
-    setMap(&map);
-}
-
 void TileModel::clearMap()
 {
     setMap(NULL);

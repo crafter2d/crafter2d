@@ -39,6 +39,10 @@ void TileMap::load(const QString& path)
 
         generateTiles();
     }
+    else
+    {
+        throw new std::exception("Could not load tile set!");
+    }
 
     int width = mTileSet.getTileWidth();
     int height = mTileSet.getTileHeight();
@@ -213,7 +217,7 @@ void TileMap::fix()
 {
     const LayerDefinition& def = mpLayer->getDefinition();
 
-    for ( int y; y < def.height; ++y )
+    for ( int y = 0; y < def.height; ++y )
     {
         for ( int x = 0; x < def.width; ++x )
         {

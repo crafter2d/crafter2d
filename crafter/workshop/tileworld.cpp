@@ -112,17 +112,27 @@ QSize TileWorld::getMinimumSize() const
     return result;
 }
 
-TileMap& TileWorld::getActiveMap()
+bool TileWorld::hasActiveMap() const
 {
-    return *mpActiveMap;
+    return mpActiveMap != NULL;
+}
+
+TileMap* TileWorld::getActiveMap()
+{
+    return mpActiveMap;
 }
 
 void TileWorld::setActiveMap(TileMap& active)
 {
-    if ( &active != mpActiveMap )
+    setActiveMap(&active);
+}
+
+void TileWorld::setActiveMap(TileMap* active)
+{
+    if ( active != mpActiveMap )
     {
-        mpActiveMap = &active;
-        emit activeMapChanged(*mpActiveMap);
+        mpActiveMap = active;
+        emit activeMapChanged(mpActiveMap);
     }
 }
 
@@ -216,6 +226,34 @@ void TileWorld::addMap(LayerDefinition* pdefinition)
 
     TileMap* pmap = new TileMap(*this, player);
     addMap(pmap);
+}
+
+void TileWorld::removeMap(TileMap& map)
+{
+    int index = mMaps.indexOf(&map);
+
+    if ( mpActiveMap == &map )
+    {
+        // the map is currently active, change the active to the next or previous
+        if ( index < mMaps.size() - 1 )
+        {
+            setActiveMap(mMaps[index + 1]);
+        }
+        else if ( index > 0 )
+        {
+            setActiveMap(mMaps[index - 1]);
+        }
+        else
+        {
+            setActiveMap(NULL);
+        }
+    }
+
+    Layer& layer = map.getLayer();
+    mpWorld->removeLayer(layer);
+    delete &layer;
+
+    mMaps.remove(index);
 }
 
 Bound& TileWorld::addBound(const QPoint& mousepos)

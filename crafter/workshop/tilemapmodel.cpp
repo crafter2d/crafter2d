@@ -62,6 +62,21 @@ void TileMapModel::moveDown(const QModelIndex& index)
 
 // - Overrides
 
+bool TileMapModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if ( mpWorld != NULL )
+    {
+        beginRemoveRows(parent, row, count);
+        TileMap& map = mpWorld->getMap(row);
+        mpWorld->removeMap(map);
+        delete &map;
+        endRemoveRows();
+        return true;
+    }
+
+    return false;
+}
+
 int TileMapModel::rowCount(const QModelIndex &/*parent*/) const
 {
     if ( mpWorld != NULL )

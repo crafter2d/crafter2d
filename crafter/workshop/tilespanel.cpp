@@ -35,9 +35,12 @@ void TilesPanel::worldActivated(TileWorld* pworld)
 {
     if ( pworld != NULL )
     {
-        mpTileModel->setMap(pworld->getActiveMap());
+        if ( pworld->hasActiveMap() )
+        {
+            mpTileModel->setMap(pworld->getActiveMap());
+        }
 
-        connect(pworld, SIGNAL(activeMapChanged(TileMap&)), SLOT(on_world_activeMapChanged(TileMap&)));
+        connect(pworld, SIGNAL(activeMapChanged(TileMap*)), SLOT(on_world_activeMapChanged(TileMap*)));
     }
     else
     {
@@ -69,7 +72,7 @@ void TilesPanel::on_tile_selectionChanged(const QItemSelection& selected, const 
     }
 }
 
-void TilesPanel::on_world_activeMapChanged(TileMap& tilemap)
+void TilesPanel::on_world_activeMapChanged(TileMap* tilemap)
 {
     TileModel* pmodel = dynamic_cast<TileModel*>(ui->listTiles->model());
     pmodel->setMap(tilemap);

@@ -10,7 +10,7 @@ TARGET = DDSHandler
 TEMPLATE = lib
 CONFIG += plugin
 
-DESTDIR = $$[QT_INSTALL_PLUGINS]/imageformats
+DESTDIR = $$PWD/../../bin/imageformats
 
 SOURCES += \
     ddsplugin.cpp \

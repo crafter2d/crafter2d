@@ -27,7 +27,7 @@ protected:
 
 private slots:
     void on_tile_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-    void on_world_activeMapChanged(TileMap& map);
+    void on_world_activeMapChanged(TileMap *map);
 
 private:
     Ui::TilesPanel *ui;

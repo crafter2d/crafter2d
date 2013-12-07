@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QSettings>
 
-#include <engine/physics/simulationfactoryregistry.h>
+#include <core/physics/simulationfactoryregistry.h>
 #include <engine/physics/box2d/box2dfactory.h>
 
 int main(int argc, char *argv[])

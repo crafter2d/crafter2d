@@ -34,6 +34,7 @@ private slots:
     void on_buttonMoveUp_clicked();
     void on_buttonMoveDown_clicked();
 
+    void on_deleteact_triggered();
     void on_resizeact_triggered();
 
     void on_buttonFront_clicked();
@@ -54,6 +55,7 @@ private:
 
     Ui::LayerPanel *ui;
 
+    QAction* mpDeleteAct;
     QAction* mpResizeAct;
 };
 
