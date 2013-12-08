@@ -1,16 +1,27 @@
-Crafter 2D, version 0.5.0, Jeroen Broekhuizen
+Crafter 2D, version 0.6, Jeroen Broekhuizen
 Copyright 2009-2013
 
-Welcome to Crafter 2D! This is the first version of the engine that is being released
-as Crafter 2D! It is a huge milestone in history of this engine. In the past year
-a lot of time was spend to get the engine to where it is now.
+Welcome to the first update of Crafter 2D! The topic of this new version is the new
+module system. With the modules developers can extend the engine with new features
+without having to change the core engine. In this version the content modules have
+been introduced. In later versions additional types will be added.
 
-Notice that there currently is no editor to create new worlds. This feature will be
-added in the next release. A GUI is currently missing as well and will be implemented
-after a basic editor is running.
+Besides the module system, the Crafter Workshop has been implemented and released
+before. With the Workshop you can create your games in a WYSIWYG manner. Currently
+the program is still limited in functionality, though in future release more will
+be added. In this release it has become part of the standard distribution.
+
+Note: this release works only properly on Windows systems with DirectX. In an upcoming
+release the OpenGL path will be fixed and Linux support be restored.
 
 More information about the engine can be found on the wiki at the SourceForge.net
 website: http://sourceforge.net/projects/jenginesse/
+
+UPDATING:
+When upgrading from a previous version of Crafter 2D (or JEngine SSE), you will need
+to use the new basic.fx effect file. It is currently coded used by the engine. The
+old format is no longer supported. Check the wiki for more information on the format
+of the new effect file.
 
 RUNNING DEMO:
 To run the demo application, navigate to the bin directory and execute the game.exe 

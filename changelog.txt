@@ -1,5 +1,19 @@
-Crafter 2D, version 0.4.8, Jeroen Broekhuizen
+Crafter 2D, version 0.6, Jeroen Broekhuizen
 Copyright 2009-2013
+
+Change log 0.6
+--------------
+* Added dynamic module system
+* Added content modules
+* Added undo/redo in tile editor
+* Added delete layer functionality
+* Added Crafter Workspace to standard distribution
+* Improved layer to support 3 different levels: front, mid and back
+* Improved Crafter Workspace
+* Upgraded Premake to version 5
+* Removed ICU library dependency
+* Removed Actor classes, use Entity instead
+* Fixed some bugs
 
 Change log 0.5.0
 ----------------

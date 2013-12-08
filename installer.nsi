@@ -58,22 +58,28 @@ Section "Engine" SecEngine
   File readme.txt
 
   SetOutPath "$INSTDIR\bin"
-  File /x .svn bin\*
+  File /r bin\*
+  
+  SetOutPath "$INSTDIR\demo"
+  File /r demo\*
   
   SetOutPath "$INSTDIR\images"
-  File /x .svn /x original images\*
+  File /x original images\*
   
   SetOutPath "$INSTDIR\objects"
-  File /x .svn objects\*
+  File objects\*
   
   SetOutPath "$INSTDIR\scripts"
-  File /r /x .svn scripts\*
+  File /r scripts\*
   
   SetOutPath "$INSTDIR\shaders"
-  File /x .svn shaders\*
+  File shaders\*
+  
+  SetOutPath "$INSTDIR\sounds"
+  File sounds\*
   
   SetOutPath "$INSTDIR\worlds"
-  File /x .svn worlds\*
+  File worlds\*
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -85,20 +91,21 @@ Section "Source" SecSource
   SectionIn 1
   
   SetOutPath "$INSTDIR"
+  File .gitignore
   File cp.exe
   File Doxyfile
   File gen.bat
   File gen.sh
   File installer.nsi
-  File premake4.exe
-  File premake4.lua
-  File yasca.bat
+  File premake5.exe
+  File premake5.lua
+  File vera.bat
   
   SetOutPath "$INSTDIR\src"
-  File /r /x .svn src\*.*
+  File /r src\*.*
   
   SetOutPath "$INSTDIR\projects"
-  File /r /x .svn projects\*.*
+  File /r projects\*.*
   
 SectionEnd
 
