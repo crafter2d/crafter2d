@@ -33,7 +33,7 @@ public:
    virtual ~TextureLoaderSoil();
 
 protected:
-   virtual bool virLoad(File& file, TextureInfo& info);
+   virtual bool virLoad(DataStream& data, TextureInfo& info) override;
 };
 
 };

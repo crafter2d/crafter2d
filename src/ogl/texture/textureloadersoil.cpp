@@ -24,6 +24,7 @@
 
 #include "core/vfs/file.h"
 #include "core/smartptr/autoptr.h"
+#include "core/streams/datastream.h"
 
 namespace Graphics
 {
@@ -37,18 +38,13 @@ TextureLoaderSoil::~TextureLoaderSoil()
 {
 }
 
-bool TextureLoaderSoil::virLoad(File& file, TextureInfo& info)
+bool TextureLoaderSoil::virLoad(DataStream& data, TextureInfo& info)
 {
-   int size = file.size();
-   unsigned char* pdata = new unsigned char[size];
-   file.read(pdata, size);
-
    int width, height, channels;
-   unsigned char* pimage = SOIL_load_image_from_memory(pdata, size, &width, &height, &channels, SOIL_LOAD_AUTO);
+   unsigned char* pimage = SOIL_load_image_from_memory((unsigned char*)data.getData(), data.getDataSize(), &width, &height, &channels, SOIL_LOAD_AUTO);
    if ( pimage == NULL )
    {
-      delete[] pdata;
-      return false;
+     return false;
    }
 
    switch ( channels )
@@ -63,7 +59,6 @@ bool TextureLoaderSoil::virLoad(File& file, TextureInfo& info)
    info.setWidth(width);
    info.setHeight(height);
 
-   delete[] pdata;
    return true;
 }
 

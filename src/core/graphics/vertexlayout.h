@@ -16,6 +16,7 @@ namespace Graphics
       VertexLayout();
       ~VertexLayout();
 
+            VertexLayoutElement& operator[](int index);
       const VertexLayoutElement& operator[](int index) const;
 
     // get/set

@@ -13,7 +13,7 @@ namespace Graphics
    class OGLDevice : public Device
    {
    public:
-      OGLDevice();
+      explicit OGLDevice(ContentManager& contentmanager);
       virtual ~ OGLDevice();
       
     // overloads
@@ -24,7 +24,7 @@ namespace Graphics
       virtual CodePath*       createCodePath() override;
       virtual VertexBuffer*   createVertexBuffer() override;
       virtual IndexBuffer*    createIndexBuffer() override;
-      virtual Texture*        createTexture(const String& filename) override;
+      virtual Texture*        createTexture(DataStream& data) override;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) override;
       virtual Font*           createFont(const String& name, int pointsize) override;
 

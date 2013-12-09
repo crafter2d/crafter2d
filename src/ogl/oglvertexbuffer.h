@@ -35,7 +35,7 @@ namespace Graphics
                 OGLVertexBuffer();
        virtual ~OGLVertexBuffer();
 
-       virtual bool create(const VertexInputLayout& layout, int length, int usage) override;
+       virtual bool create(const VertexLayout& layout, int length, int usage) override;
 	    void release();
 
        virtual void* lock(RenderContext& context) override;
@@ -45,8 +45,8 @@ namespace Graphics
        virtual void disable(RenderContext& context) const;
 
    private:
-      void setupIndices(const VertexInputLayout& layout);
 
+    // data
       GLuint mVAO;
       GLuint mBuffer;
       bool   locked;

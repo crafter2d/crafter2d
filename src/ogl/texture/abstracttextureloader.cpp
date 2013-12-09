@@ -41,16 +41,14 @@ AbstractTextureLoader::~AbstractTextureLoader()
 {
 }
 
-bool AbstractTextureLoader::load(const String& filename)
+bool AbstractTextureLoader::load(DataStream& data)
 {
-   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
-
-   bool success = virLoad(*pfile, mTextureInfo);
+   bool success = virLoad(data, mTextureInfo);
 
    return success;
 }
 
-bool AbstractTextureLoader::virLoad(File& file, TextureInfo& info)
+bool AbstractTextureLoader::virLoad(DataStream& data, TextureInfo& info)
 {
    PURE_VIRTUAL
    return false;

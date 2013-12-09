@@ -4,6 +4,8 @@
 #include <GL/GLee.h>
 #include <GL/glu.h>
 
+#include "core/graphics/codepath.h"
+#include "core/graphics/texture.h"
 #include "core/graphics/viewport.h"
 #include "core/graphics/uniformbuffer.h"
 #include "core/math/color.h"
@@ -26,6 +28,11 @@ OGLRenderContext::OGLRenderContext():
 void OGLRenderContext::onViewportChanged(const Viewport& viewport)
 {
    glViewport(viewport.getLeft(), viewport.getTop(), viewport.getWidth(), viewport.getHeight());
+}
+
+void OGLRenderContext::setCodePath(CodePath& path)
+{
+   path.enable(*this);
 }
 
 void OGLRenderContext::setBlendState(const BlendState& state)
@@ -57,6 +64,11 @@ void OGLRenderContext::setIndexBuffer(const IndexBuffer& buffer)
 void OGLRenderContext::setUniformBuffer(const UniformBuffer& buffer)
 {
    buffer.enable(*this);
+}
+
+void OGLRenderContext::setTexture(int stage, const Texture& texture)
+{
+   texture.enable(*this, stage);
 }
 
 void OGLRenderContext::clear()

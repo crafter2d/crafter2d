@@ -22,6 +22,11 @@ namespace Graphics
    
    // - Statics
 
+   VertexLayoutElement& VertexLayout::operator[](int index)
+   {
+      return *mElements[index];
+   }
+
    const VertexLayoutElement& VertexLayout::operator[](int index) const
    {
       return *mElements[index];
