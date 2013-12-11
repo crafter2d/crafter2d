@@ -22,6 +22,7 @@
 
 #include "core/graphics/textureinfo.h"
 
+class DataStream;
 class File;
 class String;
 
@@ -34,14 +35,19 @@ public:
    AbstractTextureLoader();
    virtual ~AbstractTextureLoader() = 0;
 
+ // query
    const TextureInfo&   getTextureInfo() const;
 
-   bool load(const String& filename);
+ // loading
+   bool load(DataStream& stream);
 
 protected:
-   virtual bool virLoad(File& file, TextureInfo& info) = 0;
+ // virtual interface
+   virtual bool virLoad(DataStream& data, TextureInfo& info) = 0;
 
 private:
+
+ // data
    TextureInfo mTextureInfo;
 };
 

@@ -10,7 +10,7 @@ namespace Graphics
 class OGLDeviceFactory : public DeviceFactory
 {
 public:
-   virtual Device* createDevice();
+   virtual Device* createDevice() override;
 };
 
 };

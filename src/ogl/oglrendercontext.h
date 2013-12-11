@@ -16,10 +16,13 @@ namespace Graphics
    public:
       OGLRenderContext();
 
+    // overrides
+      virtual void setCodePath(CodePath& path) override;
       virtual void setBlendState(const BlendState& state) override;
       virtual void setVertexBuffer(const VertexBuffer& buffer) override;
       virtual void setIndexBuffer(const IndexBuffer& buffer) override;
       virtual void setUniformBuffer(const UniformBuffer& buffer) override;
+      virtual void setTexture(int stage, const Texture& texture) override;
 
       virtual void clear();
 

@@ -16,24 +16,27 @@ void EffectValidator::validate(const ASTEffect& effect)
 
 void EffectValidator::validateFunctions(const ASTEffect& effect)
 {
-   for ( std::size_t index = 0; index < effect.mFunctions.size(); ++index )
+   if ( effect.getLanguage() == ASTEffect::eDirectX )
    {
-      const ASTFunction* pfunction = effect.mFunctions[index];
-      
-      for ( std::size_t arg = 0; arg < pfunction->mArguments.size(); ++arg )
+      for ( std::size_t index = 0; index < effect.mFunctions.size(); ++index )
       {
-         const ASTFunctionArgument* parg = pfunction->mArguments[arg];
-         if ( parg->mpType->isUnknown() )
+         const ASTFunction* pfunction = effect.mFunctions[index];
+
+         for ( std::size_t arg = 0; arg < pfunction->mArguments.size(); ++arg )
          {
-            String error = UTEXT("Argument ") + parg->mName + UTEXT(" of function ") + pfunction->mName + UTEXT(" has unknown type.");
+            const ASTFunctionArgument* parg = pfunction->mArguments[arg];
+            if ( parg->mpType->isUnknown() )
+            {
+               String error = UTEXT("Argument ") + parg->mName + UTEXT(" of function ") + pfunction->mName + UTEXT(" has unknown type.");
+               throw std::exception(error.toUtf8().c_str());
+            }
+         }
+
+         if ( pfunction->mpType->isUnknown() )
+         {
+            String error = UTEXT("Could not resolve return type of function ") + pfunction->mName;
             throw std::exception(error.toUtf8().c_str());
          }
-      }
-
-      if ( pfunction->mpType->isUnknown() )
-      {
-         String error = UTEXT("Could not resolve return type of function ") + pfunction->mName;
-         throw std::exception(error.toUtf8().c_str());
       }
    }
 }

@@ -39,6 +39,9 @@ private:
    String readStructBody(Lexer& lexer);
    String readFunctionBody(Lexer& lexer);
 
+ // helpers
+   void determineLanguage();
+
  // data
    ASTEffect* mpEffect;
 };

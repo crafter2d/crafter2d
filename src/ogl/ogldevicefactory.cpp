@@ -8,7 +8,7 @@ namespace Graphics
 
 Device* OGLDeviceFactory::createDevice()
 {
-   return new OGLDevice();
+   return NULL;
 }
 
 };

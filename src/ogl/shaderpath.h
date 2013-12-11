@@ -33,6 +33,11 @@ namespace Graphics
       virtual bool     bindTexture(RenderContext& context, int stage, const Texture& uniform) override;
 
    private:
+
+    // opertions
+      void setupIndices(VertexLayout& layout);
+
+    // data
 	   ShaderObject shader;
    };
 };

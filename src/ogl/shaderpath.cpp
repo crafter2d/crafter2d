@@ -3,6 +3,7 @@
 
 #include "core/graphics/texture.h"
 #include "core/log/log.h"
+#include "core/streams/datastream.h"
 #include "core/string/string.h"
 #include "core/smartptr/autoptr.h"
 
@@ -17,7 +18,7 @@ ShaderPath::ShaderPath():
 }
 
 /*!
-    \fn ShaderPath::load (VertexInputLayout& layout, const char* vertex, const char* fragment)
+    \fn ShaderPath::load(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader)
 	\brief Loads in a vertex and fragment shader.
 
 	This function loads the supplied vertex and fragment shaders into the shader
@@ -25,44 +26,38 @@ ShaderPath::ShaderPath():
 	files should contain valid GLSL code, otherwise an linking error message will
 	be saved in the log file.
 
-	\param vertex File name of the vertex shader (may be NULL).
-	\param fragment File name of the fragment shader (may be NULL).
+	\param vertex The vertex shader.
+	\param fragment The fragment shader.
 	\retval true the shader objects have been successfully linked.
 	\retval false otherwise, consult the log file for compiler/linker specific errors.
  */
-bool ShaderPath::load(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader)
+bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader)
 {
 	Log& log = Log::getInstance ();
 	shader.create();
 
+   setVertexLayout(playout);
+
 	// try to load and add the vertex shader
-   if ( !vertex.isEmpty() )
+   AutoPtr<VertexShader> vs = new VertexShader();
+   if ( !vs->compile(vertexshader.getData(), vertexshader.getDataSize()) )
    {
-		AutoPtr<VertexShader> vs = new VertexShader();
-      if ( !vs->compile(vertex) )
-      {
-         log.error("GLSLPath.load: Failed to load or compile vertex shader '%s'", vertex.toUtf8().c_str());
-			return false;
-		}
-
-      shader.addShader(vs.release());
+      log.error("ShaderPath.load: Failed to compile vertex shader");
+		return false;
 	}
-
+	
 	// try to load and add the fragment shader
-   if ( !fragment.isEmpty() )
+   AutoPtr<FragmentShader> fs = new FragmentShader();
+   if ( !fs->compile(pixelshader.getData(), pixelshader.getDataSize()) )
    {
-		AutoPtr<FragmentShader> fs = new FragmentShader();
-      if ( !fs->compile(fragment) )
-      {
-         log.error("GLSLPath.load: Failed to load or compile fragment shader '%s'", fragment.toUtf8().c_str());
-			return false;
-		}
+      log.error("ShaderPath.load: Failed to load or compile fragment shader");
+      return false;
+   }
 
-      shader.addShader(fs.release());
-	}
-
-	// link the shader
-	return shader.link();
+   shader.addShader(vs.release());
+   shader.addShader(fs.release());
+	
+   return shader.link(*playout);
 }
 
 void ShaderPath::release ()

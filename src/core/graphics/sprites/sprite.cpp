@@ -29,7 +29,6 @@ namespace Graphics
 Sprite::Sprite(SpriteDefinition* pdefinition):
    mpDefinition(pdefinition),
    mAnimState(),
-   mTexture(),
    mTexCoordinate(),
    mTransform(),
    mHalfSize()

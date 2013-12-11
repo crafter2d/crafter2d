@@ -7,6 +7,8 @@
 #include <GL/GLee.h>
 #include <GL/glu.h>
 
+#include "core/graphics/vertexlayout.h"
+#include "core/graphics/vertexlayoutelement.h"
 #include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/string/string.h"
@@ -61,7 +63,7 @@ void ShaderObject::release ()
 	 \retval true the shaders are successfully linked
 	 \retval false the where no shaders added, or linking failed (log is generated)
  */
-bool ShaderObject::link()
+bool ShaderObject::link(VertexLayout& layout)
 {
 	GLint linked;
 	GLenum glErr;
@@ -106,7 +108,21 @@ bool ShaderObject::link()
 		delete[] log;
 		return false;
 	}
+
+   linkInput(layout);
+
 	return true;
+}
+
+void ShaderObject::linkInput(VertexLayout& layout)
+{
+   glUseProgram(program);
+   for ( int index = 0; index < layout.getSize(); ++index )
+   {
+      VertexLayoutElement& field = layout[index];
+      field.index = glGetAttribLocation(program, field.semantic.toUtf8().c_str());
+   }
+   glUseProgram(NULL);
 }
 
 /// \fn ShaderObject::valid() const

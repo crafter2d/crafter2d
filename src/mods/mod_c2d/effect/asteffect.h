@@ -31,7 +31,16 @@ public:
    typedef std::vector<ASTTexture*> Textures;
    typedef std::vector<ASTSampler*> Samplers;
 
+   enum Language { eDirectX, eOpenGL, eUnsupported };
+
    ASTEffect();
+
+ // get/set
+   Language getLanguage() const;
+   void     setLanguage(Language language);
+
+ // query
+   bool hasSupportedLanguage() const;
 
  // operations
    void addBuffer(ASTBuffer* pbuffer) { mBuffers.push_back(pbuffer); }
@@ -46,6 +55,7 @@ public:
    const ASTFunction* findFunction(const String& name) const;
 
  // data
+   Language mLanguage;
    Buffers mBuffers;
    Structs mStructs;
    Functions mFunctions;

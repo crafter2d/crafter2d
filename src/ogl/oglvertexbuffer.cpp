@@ -22,15 +22,17 @@
 
 #include <GL/GLee.h>
 
-#include "core/graphics/vertexinputlayout.h"
-#include "core/graphics/vertexinputelement.h"
+#include "core/graphics/vertexlayout.h"
+#include "core/graphics/vertexlayoutelement.h"
 #include "core/log/log.h"
 #include "core/defines.h"
 
 namespace Graphics
 {
 
-#define FLAG_LOCKED		8192
+#define FLAG_LOCKED		   8192
+#define BUFFER_OFFSET(i)   ((char *)NULL + (i))
+
 
 /*!
     \fn VertexBufferObject::VertexBufferObject()
@@ -56,11 +58,8 @@ OGLVertexBuffer::~OGLVertexBuffer()
 /*!
     \fn VertexBufferObject::create(int length, int usage)
  */
-bool OGLVertexBuffer::create(const VertexInputLayout& layout, int length, int usage)
+bool OGLVertexBuffer::create(const VertexLayout& layout, int length, int usage)
 {
-   if ( !VertexBuffer::create(layout, length, usage) )
-      return false;
-
 	GLuint flag = 0;
 
 	// see what usage is required on this buffer
@@ -97,8 +96,6 @@ bool OGLVertexBuffer::create(const VertexInputLayout& layout, int length, int us
       return false;
    }
 
-   setupIndices(layout);
-
    glGenVertexArrays(1, &mVAO);
    glBindVertexArray(mVAO);
 
@@ -108,9 +105,8 @@ bool OGLVertexBuffer::create(const VertexInputLayout& layout, int length, int us
 
    for ( int i = layout.getSize() - 1; i >= 0; --i )
    {
-      const VertexInputElement& field = layout[i];
-
-      glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), (void*)(field.pos));
+      const VertexLayoutElement& field = layout[i];
+      glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), BUFFER_OFFSET(field.pos));
       glEnableVertexAttribArray(field.index);
    }
 
@@ -171,63 +167,6 @@ void OGLVertexBuffer::enable(RenderContext& context) const
 void OGLVertexBuffer::disable(RenderContext& context) const
 {
    glBindVertexArray(0);
-}
-
-// - Operations
-
-void OGLVertexBuffer::setupIndices(const VertexInputLayout& layout)
-{
-   GLint program ;
-   glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-
-   for ( int index = 0; index < layout.getSize(); ++index )
-   {
-      VertexInputElement& field = const_cast<VertexInputElement&>(layout[index]);
-      switch ( field.flags )
-      {
-         case INPUT_XY:
-            field.index = glGetAttribLocation(program, "position");
-			   break;
-		   case INPUT_XYZ:
-            field.index = 0;
-			   break;
-		   case INPUT_XYZW:
-            field.index = 0;
-			   break;
-		   case INPUT_Normal:
-            field.index = 2;
-			   break;
-		   case INPUT_Diffuse:
-			   field.index = 3;
-			   break;
-		   case INPUT_Specular:
-			   field.index = 4;
-			   break;
-		   case INPUT_Tex0:
-            field.index = glGetAttribLocation(program, "tex");
-			   break;
-		   case INPUT_Tex1:
-			   field.index = 9;
-			   break;
-		   case INPUT_Tex2:
-			   field.index = 10;
-			   break;
-		   case INPUT_Tex3:
-			   field.index = 11;
-			   break;
-		   case INPUT_Tex4:
-			   field.index = 12;
-			   break;
-		   case INPUT_Tangent:
-			   field.index = 14;
-			   break;
-		   case INPUT_Binormal:
-			   field.index = 15;
-			   break;
-		   default:
-			   break; 
-      }
-   }
 }
 
 } // namespace Graphics

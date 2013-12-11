@@ -38,8 +38,8 @@
 namespace Graphics
 {
 
-OGLDevice::OGLDevice():
-   Device(),
+OGLDevice::OGLDevice(ContentManager& contentmanager) :
+   Device(contentmanager),
    mFreeTypeLib(NULL)
 {
 }
@@ -67,7 +67,7 @@ bool OGLDevice::create(int windowhandle, int width, int height)
    log << "Graphics card:\t\t" << (char*)glGetString(GL_VENDOR) << "\n";
    log << "OpenGL version:\t\t" << (char*)glGetString(GL_VERSION) << "\n";
 
-   if ( GLEE_VERSION_3_2 == true )
+   if ( !GLEE_VERSION_3_2 )
    {
       log << "OpenGL version 3.2 is required to run this application.\n";
       return false;
@@ -133,11 +133,11 @@ IndexBuffer* OGLDevice::createIndexBuffer()
 /// \fn OGLDevice::createTexture()
 /// \brief Creates a new empty texture.
 /// \return A pointer to the created texture.
-Texture* OGLDevice::createTexture(const String& filename)
+Texture* OGLDevice::createTexture(DataStream& data)
 {
    Texture* presult = NULL;
-   AutoPtr<AbstractTextureLoader> loader = TextureLoaderFactory::constructLoader(filename);
-   if ( loader.hasPointer() && loader->load(filename) )
+   AutoPtr<AbstractTextureLoader> loader = TextureLoaderFactory::constructLoader(UTEXT(""));
+   if ( loader.hasPointer() && loader->load(data) )
    {
       const TextureInfo& info = loader->getTextureInfo();
       presult = new OGLTexture();

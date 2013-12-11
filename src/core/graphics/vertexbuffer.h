@@ -49,12 +49,11 @@ namespace Graphics
       virtual ~VertexBuffer();
 
 	    /*!
-	        \fn VertexBuffer::create(const VertexLayout& vertexlayout, int length, int usage, int fvf)
+	        \fn VertexBuffer::create(const VertexLayout& vertexlayout, int length, int usage)
 		     \brief Creates the actuall vertex buffer object you can fill later on.
            \param[in] vertexlayout the layout of the vertices
 	 	     \param[in] length the number of items that should fit in this buffer
 	        \param[in] usage  the usage of this buffer (static, dynamic, etc)
-	        \param[in] fvf    the vertex format specification (position, texture coordinates, etc)
 	        \retval true      the object is created successfully
 	        \retval false     the usage flag or VBO's are invalid or the system ran out of memory
 	     */
