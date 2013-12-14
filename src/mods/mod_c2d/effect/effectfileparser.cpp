@@ -71,11 +71,30 @@ ASTEffect* EffectFileParser::parseDeclarations(Lexer& lexer)
          ASTTechnique *ptechnique = parseTechnique(lexer);
          mpEffect->addTechnique(ptechnique);
       }
+      else if ( token == UTEXT("language") )
+      {
+         String lang = lexer.getToken();
+         lexer.next(L';');
+
+         if ( lang == UTEXT("dx") )
+         {
+            mpEffect->setLanguage(ASTEffect::eDirectX);
+         }
+         else if ( lang == UTEXT("ogl") )
+         {
+            mpEffect->setLanguage(ASTEffect::eOpenGL);
+         }
+      }
       else
       {
          ASTFunction* pfunction = parseFunction(lexer, token);
          mpEffect->addFunction(pfunction);
       }
+   }
+
+   if ( !mpEffect->hasSupportedLanguage() )
+   {
+      determineLanguage();
    }
 
    return mpEffect;
@@ -212,9 +231,15 @@ ASTSampler* EffectFileParser::parseSampler(Lexer& lexer)
 
 ASTFunction* EffectFileParser::parseFunction(Lexer& lexer, const String& type)
 {
+   ASTType* ptype = ASTType::fromString(*mpEffect, type);
+   if ( ptype == NULL || ptype->isUnknown() )
+   {
+      throw std::exception(("Invalid token: " + type.toUtf8()).c_str());
+   }
+
    ASTFunction* pfunc = new ASTFunction();
    pfunc->mName = lexer.getIdentifier();
-   pfunc->mpType = ASTType::fromString(*mpEffect, type);
+   pfunc->mpType = ptype;
 
    parseArguments(lexer, *pfunc);
 
@@ -235,14 +260,16 @@ void EffectFileParser::parseArguments(Lexer& lexer, ASTFunction& func)
       throw std::exception("Function arguments expected!");
    }
 
-   do
+   if ( !lexer.next(L')') )
    {
-      ASTFunctionArgument* parg = parseArgument(lexer);
-      func.addArgument(parg);
-   }
-   while ( lexer.next(L',') );
+      do
+      {
+         ASTFunctionArgument* parg = parseArgument(lexer);
+         func.addArgument(parg);
+      } while ( lexer.next(L',') );
 
-   lexer.next(L')');
+      lexer.next(L')');
+   }
 }
 
 ASTFunctionArgument* EffectFileParser::parseArgument(Lexer& lexer)
@@ -250,7 +277,6 @@ ASTFunctionArgument* EffectFileParser::parseArgument(Lexer& lexer)
    ASTFunctionArgument* parg = new ASTFunctionArgument();
    parg->mpType = ASTType::fromString(*mpEffect, lexer.getIdentifier());
    parg->mName = lexer.getIdentifier();
-
    return parg;
 }
 
@@ -305,4 +331,39 @@ String EffectFileParser::readFunctionBody(Lexer& lexer)
       lexer.next(L'}');
    }
    return body;
+}
+
+
+// - Helpers
+
+void EffectFileParser::determineLanguage()
+{
+   ASSERT_PTR(mpEffect);
+
+   if ( !mpEffect->mFunctions.empty() )
+   {
+      ASTTechnique* ptechnique = mpEffect->mTechniques[0];
+      const ASTFunction* pfunction = mpEffect->findFunction(ptechnique->mVertex.mEntry);
+
+      if ( pfunction != NULL )
+      {
+         String identifiers[] = { UTEXT("gl_"), UTEXT("vec2"), UTEXT("mat4") };
+         int count = sizeof(identifiers) / sizeof(String);
+
+         for ( int index = 0; index < count; ++index )
+         {
+            int pos = pfunction->mBody.indexOf(identifiers[index]);
+            if ( pos != -1 )
+            {
+               mpEffect->setLanguage(ASTEffect::eOpenGL);
+               return;
+            }
+         }
+
+         mpEffect->setLanguage(ASTEffect::eDirectX);
+         return;
+      }
+   }
+
+   throw new std::exception("No language was specified, and could not determine the language automatically.");
 }

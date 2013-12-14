@@ -2,8 +2,6 @@
 #include "shaderpath.h"
 
 #include "core/graphics/texture.h"
-#include "core/graphics/vertexlayout.h"
-#include "core/graphics/vertexlayoutelement.h"
 #include "core/log/log.h"
 #include "core/streams/datastream.h"
 #include "core/string/string.h"
@@ -38,6 +36,8 @@ bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStr
 	Log& log = Log::getInstance ();
 	shader.create();
 
+   setVertexLayout(playout);
+
 	// try to load and add the vertex shader
    AutoPtr<VertexShader> vs = new VertexShader();
    if ( !vs->compile(vertexshader.getData(), vertexshader.getDataSize()) )
@@ -57,15 +57,7 @@ bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStr
    shader.addShader(vs.release());
    shader.addShader(fs.release());
 	
-   bool success = false;
-   if ( shader.link() )
-   {
-      setupIndices(*playout);
-
-      success = true;
-   }
-
-   return success;
+   return shader.link(*playout);
 }
 
 void ShaderPath::release ()
@@ -93,20 +85,4 @@ bool ShaderPath::bindTexture(RenderContext& context, int stage, const Texture& t
    bool result = shader.bindTexture(stage, texture);
    texture.enable(context, stage);
    return result;
-}
-
-void ShaderPath::setupIndices(VertexLayout& layout)
-{
-   shader.enable();
-
-   GLint program;
-   glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-
-   for ( int index = 0; index < layout.getSize(); ++index )
-   {
-      VertexLayoutElement& field = layout[index];
-      field.index = glGetAttribLocation(program, field.semantic.toUtf8().c_str());
-   }
-
-   shader.disable();
 }

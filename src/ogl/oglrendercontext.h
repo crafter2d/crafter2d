@@ -38,6 +38,7 @@ namespace Graphics
 
     // data
       const Effect*          mpEffect;
+            CodePath*        mpCodePath;
       const OGLVertexBuffer* mpVertexBuffer;
       const OGLIndexBuffer*  mpIndexBuffer;
    };

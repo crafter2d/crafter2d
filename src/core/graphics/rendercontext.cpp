@@ -17,7 +17,7 @@ void RenderContext::setViewport(const Viewport& viewport)
 {
    mViewport = viewport;
 
-   mSpriteRenderer.viewportChanged(viewport);
+   mSpriteRenderer.viewportChanged(*this, viewport);
 
    onViewportChanged(viewport);
 }

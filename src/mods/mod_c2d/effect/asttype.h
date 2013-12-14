@@ -9,7 +9,7 @@ class String;
 class ASTType
 {
 public:
-   enum Type { eFloat2, eFloat3, eFloat4, eMat2x2, eMat3x3, eMat4x4, eMat3x4, eStruct, eUnknown };
+   enum Type { eVoid, eFloat2, eFloat3, eFloat4, eMat2, eMat3, eMat4, eStruct, eUnknown };
 
    static ASTType* fromString(const ASTEffect& effect, const String& typestr);
 
@@ -26,7 +26,8 @@ public:
    bool isUnknown() const;
 
  // conversion
-   String toString() const;
+   String toDirectX() const;
+   String toOpenGL() const;
 
 private:
 

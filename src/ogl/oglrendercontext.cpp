@@ -16,10 +16,12 @@
 #include "oglindexbuffer.h"
 #include "oglvertexbuffer.h"
 
+
 using namespace Graphics;
 
 OGLRenderContext::OGLRenderContext():
    mpEffect(NULL),
+   mpCodePath(NULL),
    mpVertexBuffer(NULL),
    mpIndexBuffer(NULL)
 {
@@ -32,6 +34,7 @@ void OGLRenderContext::onViewportChanged(const Viewport& viewport)
 
 void OGLRenderContext::setCodePath(CodePath& path)
 {
+   mpCodePath = &path;
    path.enable(*this);
 }
 
@@ -68,6 +71,8 @@ void OGLRenderContext::setUniformBuffer(const UniformBuffer& buffer)
 
 void OGLRenderContext::setTexture(int stage, const Texture& texture)
 {
+   ASSERT_PTR(mpCodePath);
+   //mpCodePath->bindTexture(*this, stage, texture);
    texture.enable(*this, stage);
 }
 
@@ -83,7 +88,7 @@ void OGLRenderContext::drawTriangles(int start, int count)
 {
    ASSERT_PTR(mpIndexBuffer);
    GLenum type = mpIndexBuffer->getNativeType();
-   glDrawElements(GL_TRIANGLES, count, type, 0);
+   glDrawElements(GL_TRIANGLES, count, type, (void*)(start * sizeof(unsigned short)));
 }
 
 void OGLRenderContext::drawTriangleFan(int start, int count)

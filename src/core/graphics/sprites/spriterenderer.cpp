@@ -99,15 +99,17 @@ void SpriteRenderer::setOffset(RenderContext& context, const Vector& offset)
    if ( mOffset != offset )
    {
       mConstants.world.translate(-(offset - mOffset));
-      // mpUB->set(context, &mConstants);
+      mpUB->set(context, &mConstants);
 
       mOffset = offset;
    }
 }
 
-void SpriteRenderer::viewportChanged(const Viewport& viewport)
+void SpriteRenderer::viewportChanged(RenderContext& context, const Viewport& viewport)
 {
    mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
+
+   mpUB->set(context, &mConstants);
 }
 
 // - Drawing
@@ -115,28 +117,13 @@ void SpriteRenderer::viewportChanged(const Viewport& viewport)
 void SpriteRenderer::beginDraw(RenderContext& context)
 {
    mSprites.clear();
-
-   mpUB->set(context, &mConstants);
 }
    
 void SpriteRenderer::endDraw(RenderContext& context)
 {
    if ( mSprites.size() > 0 )
    {
-      mSprites.sort();
-
-      PTVertex* pvertices = static_cast<PTVertex*>(mpVB->lock(context));
-
-      for ( int index = 0; index < mSprites.size(); ++index )
-      {
-         const Sprite& sprite = mSprites[index];
-
-         renderSprite(sprite, pvertices);
-
-         pvertices += 4;
-      }
-
-      mpVB->unlock(context);
+      renderSprites(context);
 
       mpEffect->enable(context);
 
@@ -145,9 +132,9 @@ void SpriteRenderer::endDraw(RenderContext& context)
       context.setUniformBuffer(*mpUB);
 
       int start = 0;
-      int indices = 0;
+      int indices = 6;
       const Texture* ptex = &mSprites[0].getTexture();
-      for ( int index = 0; index < mSprites.size(); ++index )
+      for ( int index = 1; index < mSprites.size(); ++index )
       {
          const Sprite& sprite = mSprites[index];
          if ( &sprite.getTexture() != ptex )
@@ -168,12 +155,32 @@ void SpriteRenderer::endDraw(RenderContext& context)
          context.setTexture(0, *ptex);
          context.drawTriangles(start, indices);
       }
+
+      mpVB->disable(context);
+      mpIB->disable(context);
    }
 }
 
 void SpriteRenderer::draw(const Sprite& sprite)
 {
    mSprites.add(sprite);
+}
+
+void SpriteRenderer::renderSprites(RenderContext& context)
+{
+   PTVertex* pvertices = static_cast<PTVertex*>(mpVB->lock(context));
+
+   mSprites.sort();
+   for ( int index = 0; index < mSprites.size(); ++index )
+   {
+      const Sprite& sprite = mSprites[index];
+
+      renderSprite(sprite, pvertices);
+
+      pvertices += 4;
+   }
+
+   mpVB->unlock(context);
 }
 
 void SpriteRenderer::renderSprite(const Sprite& sprite, PTVertex* pbuffer)

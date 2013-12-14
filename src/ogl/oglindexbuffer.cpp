@@ -3,11 +3,14 @@
 
 #include <GL/GLee.h>
 
+#include "core/defines.h"
+
 using namespace Graphics;
 
 OGLIndexBuffer::OGLIndexBuffer():
    IndexBuffer(),
-   mNativeType(0)
+   mNativeType(0),
+   mLocked(false)
 {
 }
 
@@ -62,6 +65,7 @@ void OGLIndexBuffer::release()
 
 void OGLIndexBuffer::enable(RenderContext& context) const
 {
+   ASSERT(!mLocked);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
 }
 
@@ -83,6 +87,7 @@ void* OGLIndexBuffer::lock(RenderContext& context)
 
 void OGLIndexBuffer::unlock(RenderContext& context)
 {
+   ASSERT(mLocked);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
    mLocked = false;

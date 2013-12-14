@@ -2,6 +2,7 @@
 #include "asteffect.h"
 
 ASTEffect::ASTEffect():
+   mLanguage(eUnsupported),
    mBuffers(),
    mStructs(),
    mFunctions(),
@@ -10,4 +11,23 @@ ASTEffect::ASTEffect():
    mSamplers(),
    mpLayout(NULL)
 {
+}
+
+// get/set
+
+ASTEffect::Language ASTEffect::getLanguage() const
+{
+   return mLanguage;
+}
+
+void ASTEffect::setLanguage(Language language)
+{
+   mLanguage = language;
+}
+
+// - Query
+
+bool ASTEffect::hasSupportedLanguage() const
+{
+   return mLanguage != eUnsupported;
 }

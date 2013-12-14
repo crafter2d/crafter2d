@@ -8,6 +8,7 @@
 namespace Graphics
 {
    class ShaderUniformBuffer;
+   class VertexLayout;
 
    /**
    @author Jeroen Broekhuizen
@@ -23,7 +24,7 @@ namespace Graphics
 	   void        release();
 
       void        addShader(Shader* shader);
-      bool        link();
+      bool        link(VertexLayout& layout);
 
       void        enable() const;
       void        disable() const;
@@ -45,6 +46,9 @@ namespace Graphics
 
    private:
       typedef std::vector<Shader*> Shaders;
+
+    // operations
+      void linkInput(VertexLayout& layout);
 
     // data
       Shaders shaders;

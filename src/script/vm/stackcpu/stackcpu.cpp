@@ -963,7 +963,7 @@ bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception
       else
       {
          mIP = mCalls[mFP--].retaddress;
-         if ( mCalls[mFP].callnative )
+         if ( mFP >= 0 && mCalls[mFP].callnative )
          {
             // need to bail out of native function calls before handling an catch/finally
             // an example that triggers this is the UnitTesting framework. it at runtime

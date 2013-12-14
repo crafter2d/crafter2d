@@ -96,6 +96,7 @@ void VirtualMachine::initialize()
    mLoaded = true;
 
    loadClass(UTEXT("system.AssertionError"));
+   loadClass(UTEXT("system.NullPointerException"));
 
    // register the loaded classes with the ClassLoader instance
    std::vector<VirtualClass*> classes = mContext.mClassTable.asArray();

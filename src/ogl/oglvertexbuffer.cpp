@@ -103,12 +103,14 @@ bool OGLVertexBuffer::create(const VertexLayout& layout, int length, int usage)
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
    glBufferData(GL_ARRAY_BUFFER, layout.getStride() * length, 0, flag);
 
-   for ( int i = layout.getSize() - 1; i >= 0; --i )
+   for ( int i = 0; i < layout.getSize(); ++i )
    {
       const VertexLayoutElement& field = layout[i];
-      glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), BUFFER_OFFSET(field.pos));
       glEnableVertexAttribArray(field.index);
+      glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), BUFFER_OFFSET(field.pos));
    }
+
+   glBindVertexArray(0);
 
 	return true;
 }
@@ -134,6 +136,7 @@ void OGLVertexBuffer::release()
  */
 void* OGLVertexBuffer::lock(RenderContext& context)
 {
+   glBindVertexArray(mVAO);
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	void* pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	if (pointer != NULL)
@@ -149,6 +152,9 @@ void OGLVertexBuffer::unlock(RenderContext& context)
 	if (locked) {
 		glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 		glUnmapBuffer(GL_ARRAY_BUFFER);
+
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindVertexArray(0);
 		locked = false;
 	}
 }

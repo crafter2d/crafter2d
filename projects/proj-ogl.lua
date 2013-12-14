@@ -19,12 +19,14 @@ if ( os.is("windows") ) then
 	
    includedirs {
       path.join(libdir, "glee/include"),
+	  path.join(libdir, "sdl/include"),
       path.join(libdir, "soil/include"),
 	  path.join(libdir, "freetype2/include"),
    }
 
    libdirs {
       path.join(libdir, "glee/lib"),
+	  path.join(libdir, "sdl/lib"),
       path.join(libdir, "soil/lib"),
 	  path.join(libdir, "freetype2/lib"),
    }
@@ -69,9 +71,9 @@ configuration "Debug"
 	defines { "_DEBUG" }
 	targetsuffix "d"
 	flags { "Symbols" }
-	links { "Core" }
+	links { "Core", "SDL" }
 	
 configuration "Release"
 	defines { "NDEBUG" }
 	flags { "Optimize" }
-	links { "Core" }
+	links { "Core", "SDL" }

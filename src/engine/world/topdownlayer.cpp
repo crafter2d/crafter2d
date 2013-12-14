@@ -122,6 +122,9 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
       context.setUniformBuffer(*ub);
       context.setTexture(0, mTileSet.getTexture());
       context.drawTriangles(0, verts_to_render);
+
+      vb->disable(context);
+      ib->disable(context);
    }
 }
 
@@ -136,6 +139,9 @@ void TopDownLayer::drawFront(Graphics::RenderContext& context)
       context.setUniformBuffer(*ub);
       context.setTexture(0, mTileSet.getTexture());
       context.drawTriangles(0, verts_to_render_front);
+
+      vb->disable(context);
+      ib->disable(context);
    }
 }
 

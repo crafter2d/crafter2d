@@ -67,7 +67,7 @@ bool OGLDevice::create(int windowhandle, int width, int height)
    log << "Graphics card:\t\t" << (char*)glGetString(GL_VENDOR) << "\n";
    log << "OpenGL version:\t\t" << (char*)glGetString(GL_VERSION) << "\n";
 
-   if ( GLEE_VERSION_3_2 == true )
+   if ( !GLEE_VERSION_3_2 )
    {
       log << "OpenGL version 3.2 is required to run this application.\n";
       return false;

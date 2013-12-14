@@ -22,6 +22,7 @@
 #include <Windows.h>
 
 #include "ogldevicefactory.h"
+#include "ogldriver.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule,
                       DWORD  ul_reason_for_call,
@@ -41,4 +42,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 extern "C" OGL_API Graphics::DeviceFactory* cdecl getDeviceFactory()
 {
    return new Graphics::OGLDeviceFactory();
+}
+
+extern "C" OGL_API Driver* cdecl getDriver()
+{
+   return new OGLDriver();
 }

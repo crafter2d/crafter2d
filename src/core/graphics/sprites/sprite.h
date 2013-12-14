@@ -22,7 +22,6 @@
 
 #include "core/math/size.h"
 #include "core/math/xform.h"
-#include "core/resource/resourcemanager.h"
 #include "core/graphics/texture.h"
 #include "core/graphics/texturecoordinate.h"
 #include "core/graphics/animation/animationstate.h"
@@ -62,7 +61,6 @@ namespace Graphics
       SpriteDefinition* mpDefinition;
 
       AnimationState    mAnimState;
-      TexturePtr        mTexture;
       TextureCoordinate mTexCoordinate;
       XForm             mTransform;
       Size              mHalfSize;

@@ -49,7 +49,7 @@ namespace Graphics
     // operations
       bool create(Device& device);
       void setOffset(RenderContext& context, const Vector& offset);
-      void viewportChanged(const Viewport& viewport);
+      void viewportChanged(RenderContext& context, const Viewport& viewport);
 
     // drawing
       void beginDraw(RenderContext& context);
@@ -72,6 +72,7 @@ namespace Graphics
       };
 
     // rendering
+      void renderSprites(RenderContext& context);
       void renderSprite(const Sprite& sprite, PTVertex* pbuffer);
 
     // data
