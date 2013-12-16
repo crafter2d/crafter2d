@@ -153,6 +153,11 @@ void VirtualStack::insert(int index, const Variant& value)
    ++mSize;
 }
 
+void VirtualStack::setSize(int size)
+{
+   mSize = size;
+}
+
 // - Query
 
 int VirtualStack::size() const

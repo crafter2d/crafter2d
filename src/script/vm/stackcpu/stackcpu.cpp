@@ -101,10 +101,8 @@ void StackCPU::execute(VirtualContext& context)
             {
                FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
                VirtualClass& klass = context.mClassTable.resolve(symbol.klass);
-               VirtualObject* pobject = instantiate(context, klass, symbol.func);
-               ASSERT_PTR(pobject);
-
-               mStack.pushObject(*pobject);
+               VirtualObject& object = instantiate(context, klass, symbol.func);
+               mStack.pushObject(object);
             }
             break;
          case SBIL_new_array:
@@ -864,11 +862,15 @@ void StackCPU::call(VirtualContext& context, int symbolindex)
 
 void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
 {
-   VM::StackFrame frame;
+   mFP++;
+   if ( mFP >= mCalls.size() )
+   {
+      mCalls.resize(mCalls.size() * 2);
+   }
+
+   VM::StackFrame& frame = mCalls[mFP];
    frame.pclass = & klass;
    frame.pentry = & entry;
-   frame.sp     = mStack.size();
-   frame.retaddress = mIP;
 
    frame.locals.resize(entry.mArguments + entry.mLocals);
    for ( int index = entry.mArguments - 1; index >= 0; --index )
@@ -876,12 +878,8 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
       frame.locals[index] = mStack.pop();
    }
 
-   mFP++;
-   if ( mFP >= mCalls.size() )
-   {
-      mCalls.resize(mCalls.size() * 2);
-   }
-   mCalls[mFP] = frame;
+   frame.retaddress = mIP;
+   frame.sp = mStack.size();
 
    mIP = entry.mInstruction;
 }
@@ -962,7 +960,11 @@ bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception
       }
       else
       {
-         mIP = mCalls[mFP--].retaddress;
+         VM::StackFrame& frame = mCalls[mFP];
+         mStack.setSize(frame.sp);
+         mIP = frame.retaddress;
+
+         mFP--;
          if ( mFP >= 0 && mCalls[mFP].callnative )
          {
             // need to bail out of native function calls before handling an catch/finally

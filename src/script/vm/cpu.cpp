@@ -1,8 +1,10 @@
 
 #include "cpu.h"
 
+#include <string>
 #include <iostream>
 
+#include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
 #include "core/smartptr/scopedvalue.h"
 #include "core/defines.h"
@@ -90,7 +92,7 @@ void CPU::initialize(VirtualContext& context)
    mpStringClass = &context.mClassTable.resolve(UTEXT("system.InternalString"));
 }
 
-VirtualObject* CPU::instantiate(VirtualContext& context, const VirtualClass& klass, int constructor)
+VirtualObject& CPU::instantiate(VirtualContext& context, const VirtualClass& klass, int constructor)
 {
    ASSERT(klass.canInstantiate());
 
@@ -112,7 +114,7 @@ VirtualObject* CPU::instantiate(VirtualContext& context, const VirtualClass& kla
    // register object with GC
    getGC().collect(pobject);
 
-   return pobject;
+   return *pobject;
 }
 
 VirtualArray* CPU::instantiateArray()
@@ -133,20 +135,17 @@ void CPU::release(VirtualObject& object)
 void CPU::throwException(VirtualContext& context, const String& exceptionname, const String& reason)
 {
    VirtualClass& klass = context.mClassTable.resolve(exceptionname);
-   AutoPtr<VirtualObject> exception = instantiate(context, klass, -1);
+   VirtualObject& exception = instantiate(context, klass, -1);
+   String callstack = buildCallStack();
 
-   if ( reason.length() > 0 )
-   {
-      exception->getMember(0).setString(context.mStringCache.lookup(reason));
-   }
+   exception.getMember(0).setString(context.mStringCache.lookup(reason));
+   exception.getMember(1).setString(context.mStringCache.lookup(callstack));
 
-   if ( !handleException(context, *exception) )
+   if ( !handleException(context, exception) )
    {
-      // oops!!
-   }
-   else
-   {
-      exception.release();
+      String msg = UTEXT("Unhandled exception '") + klass.getName() + UTEXT("'\n") + callstack;
+      std::string m = msg.toUtf8();
+      Log::getInstance().error(m.c_str());
    }
 }
 

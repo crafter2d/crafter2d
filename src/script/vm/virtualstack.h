@@ -42,6 +42,7 @@ public:
    VirtualArray&        popArray();
 
    void insert(int index, const Variant& value);
+   void setSize(int size);
 
  // query
    Variant& back();

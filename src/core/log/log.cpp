@@ -84,7 +84,7 @@ void Log::error(const char* msg, ...)
 {
    ASSERT_PTR(msg);
 
-   char text[256];
+   char text[2048];
 
    va_list ap;
 	va_start (ap, msg);

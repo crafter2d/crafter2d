@@ -39,7 +39,7 @@ public:
    void initialize(VirtualContext& context);
 
  // instantiation
-   VirtualObject* instantiate(VirtualContext& context, const VirtualClass& klass, int constructor);
+   VirtualObject& instantiate(VirtualContext& context, const VirtualClass& klass, int constructor);
    VirtualArray*  instantiateArray();
    void           release(VirtualObject& object);
 

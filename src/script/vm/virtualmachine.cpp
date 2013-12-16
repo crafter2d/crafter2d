@@ -176,13 +176,17 @@ String VirtualMachine::buildCallStack() const
 
 // - Object creation
 
+/// /fn VirtualMachine::instantiate(const String& classname, int constructor)
+/// /brief Objects returned by this function can never be owned by the caller. The
+/// objects are managed by the garbage collector. Deleting it, probably results in
+/// and access violation when the garbage collector runs.
 VirtualObject* VirtualMachine::instantiate(const String& classname, int constructor)
 {
    VirtualObject* presult = NULL;
    VirtualClass* pclass = doLoadClass(classname);
    if ( pclass != NULL )
    {
-      presult = mpCPU->instantiate(mContext, *pclass, constructor);
+      presult = &mpCPU->instantiate(mContext, *pclass, constructor);
    }
    return presult;
 }
