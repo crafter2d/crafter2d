@@ -93,6 +93,12 @@ void OOCheckVisitor::visit(ASTFunction& ast)
 
    if ( ast.isConstructor() )
    {
+      // constructor name should be the same as class name
+      if ( ast.getName() != mpClass->getName() )
+      {
+         mContext.getLog().error(UTEXT("Invalid constructor name '") + ast.getName() + UTEXT("' for class ") + mpClass->getFullName());
+      }
+
       // abstract classes can not have native constructors
       /*
       if ( ast.getModifiers().isNative() && mpClass->getModifiers().isAbstract() )

@@ -103,7 +103,10 @@ public:
       AutoPtr<VirtualObject> object = vm.instantiate(UTEXT("Test"));
 
       TS_ASSERT(object.hasPointer());
-      TS_ASSERT(vm.execute(*object, UTEXT("run")).isEmpty());
+      if ( object.hasPointer() )
+      {
+         TS_ASSERT(vm.execute(*object, UTEXT("run")).isEmpty());
+      }
    }
 
 };

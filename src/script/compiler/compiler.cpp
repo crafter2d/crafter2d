@@ -153,6 +153,8 @@ bool Compiler::compile(const String& classname)
          for ( std::size_t index = 0; index < sorted.size(); index++ )
          {
             pclass = sorted[index];
+            pclass->setState(ASTClass::eCompiled);
+
             if ( performSteps(*pclass, mCompileSteps) )
             {
                save(*pclass);
@@ -167,9 +169,10 @@ bool Compiler::compile(const String& classname)
             else
             {
                ASSERT(mContext.getLog().hasErrors());
-               displayErrors(pclass->getFullName());
                success = false;
             }
+
+            displayErrors(pclass->getFullName());
          }
       }
       catch ( CompileException* pexception )

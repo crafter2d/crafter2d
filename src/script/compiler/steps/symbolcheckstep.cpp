@@ -86,11 +86,6 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
 
    visitChildren(ast); // <-- arguments
 
-   if ( ast.isConstructor() && ast.getName() != mpClass->getName() )
-   {
-      mContext.getLog().error(UTEXT("Function ") + mpClass->getFullName() + '.' + ast.getName() + UTEXT(" must have a return type (or equal class name as constructor)."));
-   }
-
    if ( ast.hasBody() )
    {
       if ( ast.getModifiers().isAbstract() )

@@ -70,13 +70,6 @@ void CodeGeneratorVisitor::visit(ASTClass& ast)
 
    handleStaticBlock(ast);
    handleFieldBlock(ast);
-
-   // we are done compiling this class
-
-   if ( !mContext.getLog().hasErrors() )
-   {
-      ast.setState(ASTClass::eCompiled);
-   }
 }
 
 void CodeGeneratorVisitor::visit(ASTFunction& ast)
