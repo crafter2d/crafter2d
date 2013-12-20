@@ -86,7 +86,7 @@ uchar* Texture::ensureProperSize(int bytes, uchar* pdata, int width, int height)
 
    int size = _actualwidth * _actualheight * bytes;
    uchar* pnewdata = new uchar[size];
-   memset(pnewdata, 0, width);
+   memset(pnewdata, 0, size);
 
    int rowwidth    = _actualwidth * bytes;
    int orgrowwidth = width * bytes;

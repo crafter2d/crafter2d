@@ -79,10 +79,11 @@ class GameServer extends Server
 	{
 		Vector2D pos = new Vector2D();
 		
+		/*
 		pos.set(300, 00); Entity.construct(this, "box", pos, "objects/box");
 		pos.set(300, 40); Entity.construct(this, "box", pos, "objects/box");
 		pos.set(300, 80); Entity.construct(this, "box", pos, "objects/box");
-		
+		*/
 		pos.set(727, 422);
 		Entity.construct(this, "bridge", pos, "objects/bridge");
 		

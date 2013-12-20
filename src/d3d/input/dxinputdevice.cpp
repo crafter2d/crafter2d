@@ -46,9 +46,35 @@ void DXInputDevice::update()
    }
 }
 
+static int Keys[] =
+{
+   0,
+   DIK_LEFT,
+   DIK_RIGHT,
+   DIK_UP,
+   DIK_DOWN,
+   DIK_SPACE,
+   DIK_RETURN,
+   DIK_HOME,
+   DIK_END,
+   DIK_PGUP,
+   DIK_PGDN,
+   DIK_TAB,
+   DIK_CAPITAL,
+   DIK_1,
+   DIK_2,
+   DIK_3,
+   DIK_4,
+   DIK_5,
+   DIK_6,
+   DIK_7,
+   DIK_8,
+   DIK_9,
+};
+
 bool DXInputDevice::isKeyDown(int key)
 {
-   return (mKeyStates[key] & 0x80) == 0x80;
+   return (mKeyStates[Keys[key]] & 0x80) == 0x80;
 }
 
 } // namespace Input

@@ -2,6 +2,7 @@
 package demo;
 
 use engine.core.*;
+use engine.input.*;
 use engine.game.*;
 
 class DemoClientActionMap extends ActionMap
@@ -15,7 +16,7 @@ class DemoClientActionMap extends ActionMap
 	
 	public DemoClientActionMap()
 	{
-		bind(6, "onSwapLeakDetector");
+		//bind(6, "onSwapLeakDetector");
 		bind(1, "walkLeft");
 		bind(2, "walkRight");
 		bind(3, "jump");

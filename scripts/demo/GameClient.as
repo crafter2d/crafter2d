@@ -2,7 +2,7 @@
 package demo;
 
 use engine.core.*;
-// use engine.ui.*;
+use engine.input.*;
 use engine.messages.*;
 use engine.collections.*;
 use engine.game.*;
@@ -38,10 +38,10 @@ class GameClient extends Client
 		setActionMap(mLocalActionMap);
 		
 		KeyMap map = new KeyMap();
-		map.bind(203, 1); 	// left (276)
-		map.bind(205, 2); 	// right (275)
-		map.bind(57, 3); 	// space -> jump (32)
-		map.bind(100, 6);   // leak detection
+		map.bind(Key.LEFT, 1); 	// left (276)
+		map.bind(Key.RIGHT, 2); 	// right (275)
+		map.bind(KEY.SPACE, 3); 	// space -> jump (32)
+		//map.bind(100, 6);   // leak detection
 		setKeyMap(map);
 	}
 	
