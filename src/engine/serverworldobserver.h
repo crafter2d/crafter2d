@@ -20,22 +20,27 @@
 #ifndef SERVER_WORLD_OBSERVER_H
 #define SERVER_WORLD_OBSERVER_H
 
+#include "core/defines.h"
+
 #include "worldobserver.h"
 
-class Server;
-
-class ServerWorldObserver : public WorldObserver
+namespace c2d
 {
-public:
-   ServerWorldObserver(Server& server);
+   class Server;
 
- // notifications
-   virtual void notifyEntityAdded(const Entity& entity);
-   virtual void notifyEntityRemoved(const Entity& entity);
+   class ServerWorldObserver : public WorldObserver
+   {
+   public:
+      ServerWorldObserver(Server& server);
 
-private:
+      // notifications
+      virtual void notifyEntityAdded(const Entity& entity);
+      virtual void notifyEntityRemoved(const Entity& entity);
 
-   Server& mServer;
-};
+   private:
+
+      Server& mServer;
+   };
+}
 
 #endif // SERVER_WORLD_OBSERVER_H

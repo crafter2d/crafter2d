@@ -19,75 +19,80 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-/// \fn Process::setInitialized(bool init)
-/// \brief Set the initialized flag to signal that the process has started 
-/// up correctly.
-INLINE void Process::setInitialized(bool init)
+namespace c2d
 {
-   initialized = init;
-}
 
-/// \fn Process::getConnection()
-/// \brief Returns the net connection of this process.
-INLINE NetConnection* Process::getConnection()
-{ 
-   return &conn; 
-}
+   /// \fn Process::setInitialized(bool init)
+   /// \brief Set the initialized flag to signal that the process has started 
+   /// up correctly.
+   INLINE void Process::setInitialized(bool init)
+   {
+      initialized = init;
+   }
 
-INLINE ScriptManager& Process::getScriptManager()
-{
-   return mScriptManager;
-}
+   /// \fn Process::getConnection()
+   /// \brief Returns the net connection of this process.
+   INLINE NetConnection* Process::getConnection()
+   {
+      return &conn;
+   }
 
-INLINE ModuleManager& Process::getModuleManager()
-{
-   ASSERT_PTR(mpModuleManager);
-   return *mpModuleManager;
-}
+   INLINE ScriptManager& Process::getScriptManager()
+   {
+      return mScriptManager;
+   }
 
-INLINE ContentManager& Process::getContentManager()
-{
-   ASSERT_PTR(mpContentManager);
-   return *mpContentManager;
-}
+   INLINE ModuleManager& Process::getModuleManager()
+   {
+      ASSERT_PTR(mpModuleManager);
+      return *mpModuleManager;
+   }
 
-INLINE bool Process::hasWorld() const
-{
-   return mpWorld != NULL;
-}
+   INLINE ContentManager& Process::getContentManager()
+   {
+      ASSERT_PTR(mpContentManager);
+      return *mpContentManager;
+   }
 
-INLINE const World& Process::getWorld() const
-{
-   ASSERT_PTR(mpWorld);
-   return *mpWorld;
-}
-         
-INLINE World& Process::getWorld()
-{
-   ASSERT_PTR(mpWorld);
-   return *mpWorld;
-}
+   INLINE bool Process::hasWorld() const
+   {
+      return mpWorld != NULL;
+   }
 
-/// \fn Process::getActionMap()
-/// \brief Returns the current actionmap of this process.
-INLINE ActionMap* Process::getActionMap()
-{
-   return actionMap; 
-}
+   INLINE const World& Process::getWorld() const
+   {
+      ASSERT_PTR(mpWorld);
+      return *mpWorld;
+   }
 
-/// \fn Process::isInitialized()
-/// \brief Returns the initialize flag.
-INLINE bool Process::isInitialized()
-{
-   return initialized;
-}
+   INLINE World& Process::getWorld()
+   {
+      ASSERT_PTR(mpWorld);
+      return *mpWorld;
+   }
 
-INLINE bool Process::isActive() const
-{
-   return mActive;
-}
+   /// \fn Process::getActionMap()
+   /// \brief Returns the current actionmap of this process.
+   INLINE ActionMap* Process::getActionMap()
+   {
+      return actionMap;
+   }
 
-INLINE void Process::setActive(bool active)
-{
-   mActive = active;
+   /// \fn Process::isInitialized()
+   /// \brief Returns the initialize flag.
+   INLINE bool Process::isInitialized()
+   {
+      return initialized;
+   }
+
+   INLINE bool Process::isActive() const
+   {
+      return mActive;
+   }
+
+   INLINE void Process::setActive(bool active)
+   {
+      mActive = active;
+   }
+
 }

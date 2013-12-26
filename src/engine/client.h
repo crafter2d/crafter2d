@@ -26,7 +26,8 @@
 
 #include "core/entity/idmanager.h"
 
-#include "sound/soundmanager.h"
+#include "engine/sound/soundmanager.h"
+
 #include "clientgamewindowlistener.h"
 #include "clientkeyeventdispatcher.h"
 #include "clientmouseeventdispatcher.h"
@@ -58,107 +59,112 @@ class WorldChangedEvent;
 class Driver;
 class GameWindow;
 class GameWindowFactory;
-class KeyMap;
 class WorldRenderer;
 class Player;
 
-/// \brief The client side process. It handles user input and rendering of the server objects.
-///
-/// The Client class implements the client process of the Client/Server model this engine is build
-/// upon.
-class ENGINE_API Client: public Process
+namespace c2d
 {
-public:
-   typedef std::map<Id, bool> Requests;
+   class KeyMap;
 
-                  Client();
-   virtual        ~Client();
+   /// \brief The client side process. It handles user input and rendering of the server objects.
+   ///
+   /// The Client class implements the client process of the Client/Server model this engine is build
+   /// upon.
+   class ENGINE_API Client : public Process
+   {
+   public:
+      typedef std::map<Id, bool> Requests;
 
-   virtual bool   destroy();
-   virtual void   update(float delta);
+      Client();
+      virtual        ~Client();
 
-           void   render(float delta);
-           void   display();
+      virtual bool   destroy();
+      virtual void   update(float delta);
 
- // get/set
-   Player&        getPlayer();
+      void   render(float delta);
+      void   display();
 
-   bool           hasKeyMap() const;
-   KeyMap&        getKeyMap();
-   void           setKeyMap(KeyMap* pkeymap);
+      // get/set
+      Player&        getPlayer();
 
-   GameWindowFactory& getWindowFactory();
-   void               setWindowFactory(GameWindowFactory& factory);
+      bool           hasKeyMap() const;
+      KeyMap&        getKeyMap();
+      void           setKeyMap(KeyMap* pkeymap);
 
-   bool               hasWindow() const;
-   GameWindow&        getWindow();
-   void               setWindow(GameWindow* pwindow);
+      GameWindowFactory& getWindowFactory();
+      void               setWindowFactory(GameWindowFactory& factory);
 
-   Graphics::Device&        getDevice();
-   Graphics::RenderContext& getRenderContext();
+      bool               hasWindow() const;
+      GameWindow&        getWindow();
+      void               setWindow(GameWindow* pwindow);
 
-   Input::InputDevice&  getInput();
+      Graphics::Device&        getDevice();
+      Graphics::RenderContext& getRenderContext();
 
- // operations
-   bool           connect(const String& server, int port);
-   void           disconnect();
+      Input::InputDevice&  getInput();
 
-   void           sendToServer(NetObject& object);
+      // operations
+      bool           connect(const String& server, int port);
+      void           disconnect();
 
- // notifications
-   void onWindowChanged();
-   void onWindowResized();
-   void onWindowClosing();
-   void onWindowClosed();
+      void           sendToServer(NetObject& object);
 
-   void onKeyEvent(const Input::KeyEvent& event);
-   void onMouseEvent(const Input::MouseEvent& event);
+      // notifications
+      void onWindowChanged();
+      void onWindowResized();
+      void onWindowClosing();
+      void onWindowClosed();
 
- // network event callback
-   virtual void onNetEvent(int client, const NetEvent& event);
+      void onKeyEvent(const Input::KeyEvent& event);
+      void onMouseEvent(const Input::MouseEvent& event);
 
-protected:
- // notifications
-   virtual void notifyWorldChanged();
+      // network event callback
+      virtual void onNetEvent(int client, const NetEvent& event);
 
-private:
-   friend class ClientMouseEventListener;
-   friend class ClientKeyEventListener;
+   protected:
+      // notifications
+      virtual void notifyWorldChanged();
 
- // initialization
-   bool initDevice();
-   bool initGraphics(Driver& driver);
-   bool initInput(Driver& driver);
-   bool initSound();
-   
- // event handlers
-   void  handleConnectReplyEvent(const ConnectReplyEvent& event);
-   void  handleDisconnectEvent(const DisconnectEvent& event);
-   void  handleJoinEvent(const JoinEvent& event);
-   void  handleServerdownEvent();
+   private:
+      friend class ClientMouseEventListener;
+      friend class ClientKeyEventListener;
 
-   void  handleWorldChangedEvent(const WorldChangedEvent& event);
-   void  handleNewObjectEvent(const NewObjectEvent& event);
-   void  handleDeleteObjectEvent(const DeleteObjectEvent& event);
-   void  handleUpdateObjectEvent(const UpdateObjectEvent& event);
-   void  handleScriptEvent(const ScriptEvent& event);
+      // initialization
+      bool initDevice();
+      bool initGraphics(Driver& driver);
+      bool initInput(Driver& driver);
+      bool initSound();
 
-   GameWindowFactory*         mpWindowFactory;
-   GameWindow*                mpWindow;
-   Graphics::Device*          mpDevice;
-   Graphics::RenderContext*   mpRenderContext;
-   Input::InputDevice*        mpInputDevice;
-   ClientGameWindowListener   mWindowListener;
-   ClientKeyEventDispatcher   mKeyEventDispatcher;
-   ClientMouseEventDispatcher mMouseEventDispatcher;
-   JEngineSSE::SoundManager   mSoundManager;
-   JEngineSSE::Sound*         mpBackgroundMusic;
-   WorldRenderer*             mpWorldRenderer;
-   Player*                    mpPlayer;
-   KeyMap*                    mpKeyMap;
-   Requests                   mRequests;
-   int                        mServerId;
-};
+      // event handlers
+      void  handleConnectReplyEvent(const ConnectReplyEvent& event);
+      void  handleDisconnectEvent(const DisconnectEvent& event);
+      void  handleJoinEvent(const JoinEvent& event);
+      void  handleServerdownEvent();
+
+      void  handleWorldChangedEvent(const WorldChangedEvent& event);
+      void  handleNewObjectEvent(const NewObjectEvent& event);
+      void  handleDeleteObjectEvent(const DeleteObjectEvent& event);
+      void  handleUpdateObjectEvent(const UpdateObjectEvent& event);
+      void  handleScriptEvent(const ScriptEvent& event);
+
+      GameWindowFactory*         mpWindowFactory;
+      GameWindow*                mpWindow;
+      Graphics::Device*          mpDevice;
+      Graphics::RenderContext*   mpRenderContext;
+      Input::InputDevice*        mpInputDevice;
+      ClientGameWindowListener   mWindowListener;
+      ClientKeyEventDispatcher   mKeyEventDispatcher;
+      ClientMouseEventDispatcher mMouseEventDispatcher;
+      SoundManager               mSoundManager;
+      Sound*                     mpBackgroundMusic;
+      WorldRenderer*             mpWorldRenderer;
+      Player*                    mpPlayer;
+      KeyMap*                    mpKeyMap;
+      Requests                   mRequests;
+      int                        mServerId;
+   };
+
+}
 
 #ifdef JENGINE_INLINE
 #  include "client.inl"

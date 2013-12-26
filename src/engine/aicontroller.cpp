@@ -27,33 +27,38 @@
 
 #include "process.h"
 
-// static
-const String AIController::smFunc("updateAI");
-
-AIController::AIController(Process& process):
-   Controller(),
-   mpScript(NULL)
+namespace c2d
 {
-   mpScript = new Script(process.getScriptManager());
-}
 
-AIController::~AIController()
-{
-   delete mpScript;
-   mpScript = NULL;
-}
+   // static
+   const String AIController::smFunc("updateAI");
 
-// - Get/set
+   AIController::AIController(Process& process) :
+      Controller(),
+      mpScript(NULL)
+   {
+      mpScript = new Script(process.getScriptManager());
+   }
 
-void AIController::setThis(VirtualObject& self)
-{
-   mpScript->setThis(self);
-}
+   AIController::~AIController()
+   {
+      delete mpScript;
+      mpScript = NULL;
+   }
 
-// - Operations
+   // - Get/set
 
-void AIController::performAction(Entity& entity)
-{
-   Variant arg(mpScript->resolve(&entity));
-   mpScript->run(smFunc, 1, &arg);
-}
+   void AIController::setThis(VirtualObject& self)
+   {
+      mpScript->setThis(self);
+   }
+
+   // - Operations
+
+   void AIController::performAction(Entity& entity)
+   {
+      Variant arg(mpScript->resolve(&entity));
+      mpScript->run(smFunc, 1, &arg);
+   }
+
+} // namespace c2d

@@ -29,64 +29,69 @@
 
 #include "client.h"
 
-ActionMap::ActionMap():
-   mpProcess(NULL),
-   mpScript(NULL),
-   mActions()
+namespace c2d
 {
-}
 
-ActionMap::~ActionMap()
-{
-   mpProcess = NULL;
-}
-
-// - Get/set
-
-void ActionMap::setProcess(Process& process)
-{
-   mpProcess = &process;
-
-   mpScript = process.getScriptManager().load(UTEXT("engine.game.ActionMap"), this, false);
-   ASSERT_PTR(mpScript);
-}
-
-// - Operations
-
-void ActionMap::bind(int action, const String& function)
-{
-   mActions[action] = function;
-}
-
-void ActionMap::process(int action, bool down)
-{
-   Actions::const_iterator it = mActions.find(action);
-   if ( it == mActions.end() )
+   ActionMap::ActionMap() :
+      mpProcess(NULL),
+      mpScript(NULL),
+      mActions()
    {
-      ActionEvent event(action, down);
-      Client& client = dynamic_cast<Client&>(getProcess());
-      client.sendToServer(event);
    }
-   else
+
+   ActionMap::~ActionMap()
    {
-      const String& function = it->second;
-      
+      mpProcess = NULL;
+   }
+
+   // - Get/set
+
+   void ActionMap::setProcess(Process& process)
+   {
+      mpProcess = &process;
+
+      mpScript = process.getScriptManager().load(UTEXT("engine.game.ActionMap"), this, false);
       ASSERT_PTR(mpScript);
-      Variant arg(down);
-      mpScript->run(function, 1, &arg);
    }
-}
 
-void ActionMap::processRemote(const ActionEvent& event, Entity& object)
-{
-   ASSERT_PTR(mpScript);
-   
-   Variant args[2];
-   args[0].setObject(mpScript->resolve(&object));
-   args[1].setInt(event.getAction());
-   
-   if ( event.isDown() )
-      mpScript->run(UTEXT("onKeyDown"), 2, args);
-   else
-      mpScript->run(UTEXT("onKeyUp"), 2, args);
-}
+   // - Operations
+
+   void ActionMap::bind(int action, const String& function)
+   {
+      mActions[action] = function;
+   }
+
+   void ActionMap::process(int action, bool down)
+   {
+      Actions::const_iterator it = mActions.find(action);
+      if ( it == mActions.end() )
+      {
+         ActionEvent event(action, down);
+         c2d::Client& client = dynamic_cast<c2d::Client&>(getProcess());
+         client.sendToServer(event);
+      }
+      else
+      {
+         const String& function = it->second;
+
+         ASSERT_PTR(mpScript);
+         Variant arg(down);
+         mpScript->run(function, 1, &arg);
+      }
+   }
+
+   void ActionMap::processRemote(const ActionEvent& event, Entity& object)
+   {
+      ASSERT_PTR(mpScript);
+
+      Variant args[2];
+      args[0].setObject(mpScript->resolve(&object));
+      args[1].setInt(event.getAction());
+
+      if ( event.isDown() )
+         mpScript->run(UTEXT("onKeyDown"), 2, args);
+      else
+         mpScript->run(UTEXT("onKeyUp"), 2, args);
+   }
+
+} // namespace c2d

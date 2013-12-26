@@ -25,19 +25,22 @@
 class ActionEvent;
 class Entity;
 
-/// @author Jeroen Broekhuizen
-///
-/// The controler is the instance that has control over an entity. This
-/// is the base class for all controler types like user, ai, etc.
-class CORE_API Controller
+namespace c2d
 {
-public:
-   Controller();
-   virtual ~Controller();
+   /// @author Jeroen Broekhuizen
+   ///
+   /// The controler is the instance that has control over an entity. This
+   /// is the base class for all controler types like user, ai, etc.
+   class CORE_API Controller
+   {
+   public:
+      Controller();
+      virtual ~Controller();
 
- // operations
-   virtual void requestAction(const ActionEvent& action);
-   virtual void performAction(Entity& entity) = 0;
-};
+      // operations
+      virtual void requestAction(const ActionEvent& action);
+      virtual void performAction(Entity& entity) = 0;
+   };
+}
 
 #endif

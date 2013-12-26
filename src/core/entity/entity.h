@@ -38,9 +38,13 @@ namespace Graphics
    class RenderContext;
 };
 
+namespace c2d
+{
+   class Controller;
+}
+
 class MeshComponent;
 class NodeVisitor;
-class Controller;
 
 /// \brief Base class for all entities that can be shown in your game.
 
@@ -85,8 +89,8 @@ public:
    const Vector&  getOffset() const;
    void           setOffset(const Vector& offset);
 
-   Controller&    getController();
-   void           setController(Controller* pcontroller);
+   c2d::Controller& getController();
+   void             setController(c2d::Controller* pcontroller);
 
    bool           getDirection() const;
    void           setDirection(bool direction);
@@ -129,7 +133,7 @@ private:
    Id                   mId;
    mutable Components   mComponents;
    MeshComponent*       mpMeshComponent;
-   Controller*          mpController;
+   c2d::Controller*     mpController;
    Entity*              mpParent;
    Entities             mChildren;
    XForm                mTransform;

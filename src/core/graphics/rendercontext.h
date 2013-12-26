@@ -17,6 +17,7 @@ namespace Graphics
    class CodePath;
    class Effect;
    class Sprite;
+   class RenderTarget;
    class IndexBuffer;
    class VertexBuffer;
    class UniformBuffer;
@@ -38,6 +39,7 @@ namespace Graphics
       void initialize(Device& device);
 
     // operations
+      virtual void setRenderTarget(RenderTarget& target) = 0;
       virtual void setCodePath(CodePath& path) = 0;
       virtual void setBlendState(const BlendState& state) = 0;
       virtual void setVertexBuffer(const VertexBuffer& buffer) = 0;

@@ -26,58 +26,61 @@
 
 using namespace Input;
 
-KeyMap::KeyMap():
-   mpClient(NULL),
-   mKeys()
+namespace c2d
 {
-}
-
-// - Get/set
-
-void KeyMap::setClient(Client& client)
-{
-   mpClient = &client;
-}
-
-// - Operations
-
-void KeyMap::bind(int key, int action)
-{
-   KeyInfo info;
-   info.action = action;
-   info.state  = false;   
-
-   mKeys[key] = info;
-}
-
-void KeyMap::update()
-{
-   ASSERT_PTR(mpClient)
-
-   ActionMap* pactionmap = mpClient->getActionMap();
-   if ( pactionmap != NULL )
+   KeyMap::KeyMap() :
+      mpClient(NULL),
+      mKeys()
    {
-      InputDevice& input = mpClient->getInput();
+   }
 
-      KeyInfos::iterator it = mKeys.begin();
-      for ( ; it != mKeys.end(); ++it )
+   // - Get/set
+
+   void KeyMap::setClient(Client& client)
+   {
+      mpClient = &client;
+   }
+
+   // - Operations
+
+   void KeyMap::bind(int key, int action)
+   {
+      KeyInfo info;
+      info.action = action;
+      info.state = false;
+
+      mKeys[key] = info;
+   }
+
+   void KeyMap::update()
+   {
+      ASSERT_PTR(mpClient)
+
+         ActionMap* pactionmap = mpClient->getActionMap();
+      if ( pactionmap != NULL )
       {
-         int key = it->first;
-         KeyInfo& info = it->second;
+         InputDevice& input = mpClient->getInput();
 
-         if ( input.isKeyDown(key) )
+         KeyInfos::iterator it = mKeys.begin();
+         for ( ; it != mKeys.end(); ++it )
          {
-            if ( !info.state )
+            int key = it->first;
+            KeyInfo& info = it->second;
+
+            if ( input.isKeyDown(key) )
             {
-               info.state = true;
-               pactionmap->process(info.action, true);
+               if ( !info.state )
+               {
+                  info.state = true;
+                  pactionmap->process(info.action, true);
+               }
             }
-         }
-         else if ( info.state )
-         {
-            info.state = false;
-            pactionmap->process(info.action, false);
+            else if ( info.state )
+            {
+               info.state = false;
+               pactionmap->process(info.action, false);
+            }
          }
       }
    }
-}
+} // namespace c2d

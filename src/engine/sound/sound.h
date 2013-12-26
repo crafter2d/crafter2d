@@ -28,7 +28,7 @@ namespace FMOD
 
 #include "core/math/vector.h"
 
-namespace JEngineSSE
+namespace c2d
 {
    /*!
    @author Jeroen Broekhuizen

@@ -4,13 +4,12 @@
 
 namespace FMOD
 {
-   class Sound;
    class System;
 }
 
 class String;
 
-namespace JEngineSSE
+namespace c2d
 {
    class Sound;
 

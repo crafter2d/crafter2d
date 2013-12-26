@@ -24,7 +24,7 @@
 #include <exception>
 
 #undef NULL
-#define NULL 0
+#define NULL nullptr
 
 // Uncomment next line to enable auto disconnecting after timeout
 //#define JENGINE_AUTODISCONNECT
@@ -33,9 +33,6 @@
 //#define JENGINE_INLINE
 
 #define JENGINE_STATISTICS_LIMIT    250
-
-#define JENGINE_MSG_HANDLED         0
-#define JENGINE_MSG_UNHANDLED       1
 
 #ifdef JENGINE_INLINE
 #  define INLINE inline

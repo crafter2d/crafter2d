@@ -34,6 +34,11 @@ ID3D11DeviceContext& D3DRenderContext::getContext()
 
 // - State
 
+void D3DRenderContext::setRenderTarget(RenderTarget& target)
+{
+
+}
+
 void D3DRenderContext::setCodePath(CodePath& path)
 {
    static_cast<D3DCodePath&>(path).enable(*this);
@@ -78,6 +83,8 @@ void D3DRenderContext::drawTriangles(int start, int count)
 {
    mpContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
    mpContext->DrawIndexed(count, start, 0);
+
+   // ID3D11RasterizerState state;
 }
 
 void D3DRenderContext::drawTriangleFan(int start, int count)

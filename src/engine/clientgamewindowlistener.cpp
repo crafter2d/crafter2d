@@ -21,28 +21,32 @@
 
 #include "client.h"
 
-ClientGameWindowListener::ClientGameWindowListener(Client& client):
-   mClient(client)
+namespace c2d
 {
-}
+   ClientGameWindowListener::ClientGameWindowListener(Client& client) :
+      mClient(client)
+   {
+   }
 
-ClientGameWindowListener::~ClientGameWindowListener()
-{
-}
+   ClientGameWindowListener::~ClientGameWindowListener()
+   {
+   }
 
-// - Notifications
+   // - Notifications
 
-void ClientGameWindowListener::onWindowResized()
-{
-   mClient.onWindowResized();
-}
+   void ClientGameWindowListener::onWindowResized()
+   {
+      mClient.onWindowResized();
+   }
 
-bool ClientGameWindowListener::onWindowClosing()
-{
-   return true;
-}
+   bool ClientGameWindowListener::onWindowClosing()
+   {
+      return true;
+   }
 
-void ClientGameWindowListener::onWindowClosed()
-{
-   mClient.onWindowClosed();
-}
+   void ClientGameWindowListener::onWindowClosed()
+   {
+      mClient.onWindowClosed();
+   }
+
+} // namespace c2d

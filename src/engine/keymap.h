@@ -24,37 +24,40 @@
 
 #include "core/defines.h"
 
-class ActionMap;
-class Client;
-
-/// /brief Client-side mapping of the keys to actions
-///
-/// The KeyMap is is used by the client to map key events to actions. These actions should be
-/// defines in the Lua code and also known on the server side.
-
-class KeyMap
+namespace c2d
 {
-public:
-   KeyMap();
+   class ActionMap;
+   class Client;
 
- // get/set
-   void setClient(Client& client);
+   /// /brief Client-side mapping of the keys to actions
+   ///
+   /// The KeyMap is is used by the client to map key events to actions. These actions should be
+   /// defines in the Lua code and also known on the server side.
 
- // operations
-   void bind(int key, int action);
-   void update();
-
-private:
-   struct KeyInfo
+   class KeyMap
    {
-      uint action;
-      bool state;
+   public:
+      KeyMap();
+
+      // get/set
+      void setClient(Client& client);
+
+      // operations
+      void bind(int key, int action);
+      void update();
+
+   private:
+      struct KeyInfo
+      {
+         uint action;
+         bool state;
+      };
+
+      typedef std::map<int, KeyInfo> KeyInfos;
+
+      Client*    mpClient;
+      KeyInfos   mKeys;
    };
-
-   typedef std::map<int, KeyInfo> KeyInfos;
-
-   Client*    mpClient;
-   KeyInfos   mKeys;
-};
+}
 
 #endif // KEY_MAP_H_

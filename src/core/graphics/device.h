@@ -17,6 +17,7 @@ namespace Graphics
    class Font;
    class BlendState;
    class RenderContext;
+   class RenderTarget;
    class Texture;
    class IndexBuffer;
    class VertexBuffer;
@@ -40,6 +41,7 @@ namespace Graphics
       virtual VertexBuffer*   createVertexBuffer() = 0;
       virtual IndexBuffer*    createIndexBuffer() = 0;
       virtual Texture*        createTexture(DataStream& data) = 0;
+      virtual RenderTarget*   createRenderTarget() = 0;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) = 0;
       virtual Font*           createFont(const String& name, int pointsize) = 0;
               Effect*         createEffect(const String& filename);

@@ -2,20 +2,25 @@
 #ifndef PROCESS_NET_OBSERVER_H
 #define PROCESS_NET_OBSERVER_H
 
+#include "core/defines.h"
+
 #include "net/netobserver.h"
 
-class Process;
-
-class ProcessNetObserver : public NetObserver
+namespace c2d
 {
-public:
-   explicit ProcessNetObserver(Process& process);
+   class Process;
 
- // implementation
-   virtual void onEvent(int clientid, const NetEvent& event);
+   class ProcessNetObserver : public NetObserver
+   {
+   public:
+      explicit ProcessNetObserver(Process& process);
 
-private:
-   Process& mProcess;
-};
+      // implementation
+      virtual void onEvent(int clientid, const NetEvent& event);
+
+   private:
+      Process& mProcess;
+   };
+}
 
 #endif // PROCESS_NET_OBSERVER_H

@@ -24,21 +24,24 @@
 
 #include "server.h"
 
-ServerWorldObserver::ServerWorldObserver(Server& server):
-   mServer(server)
+namespace c2d
 {
-}
- 
-// - Notifications
+   ServerWorldObserver::ServerWorldObserver(Server& server) :
+      mServer(server)
+   {
+   }
 
-void ServerWorldObserver::notifyEntityAdded(const Entity& entity)
-{
-   NewObjectEvent event(entity);
-   mServer.sendToAllClients(event);
-}
-   
-void ServerWorldObserver::notifyEntityRemoved(const Entity& entity)
-{
-   DeleteObjectEvent event(entity);
-   mServer.sendToAllClients(event);
+   // - Notifications
+
+   void ServerWorldObserver::notifyEntityAdded(const Entity& entity)
+   {
+      NewObjectEvent event(entity);
+      mServer.sendToAllClients(event);
+   }
+
+   void ServerWorldObserver::notifyEntityRemoved(const Entity& entity)
+   {
+      DeleteObjectEvent event(entity);
+      mServer.sendToAllClients(event);
+   }
 }

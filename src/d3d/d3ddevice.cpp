@@ -107,6 +107,11 @@ IndexBuffer* D3DDevice::createIndexBuffer()
    return new D3DIndexBuffer(*this);
 }
 
+RenderTarget* D3DDevice::createRenderTarget()
+{
+   return NULL;
+}
+
 Texture* D3DDevice::createTexture(DataStream& imagedata)
 {
    D3DTextureLoaderDDS loader;

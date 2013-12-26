@@ -234,7 +234,7 @@ bool Layer::createBuffers(Device& device, int width, int height)
       return false;
    }
 
-   ib = Utils::createIndexBuffer(device, batchsize, 4, 6);
+   ib = Utils::createIndexBuffer(device, batchsize, 4);
    if ( ib == NULL )
    {
       return false;

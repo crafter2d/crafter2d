@@ -27,31 +27,35 @@
 #include "actionmap.h"
 
 class ActionEvent;
-class ActionMap;
 
-class InputController : public Controller
+namespace c2d
 {
-   typedef std::queue<ActionEvent> ActionQueue;
+   class ActionMap;
 
-public:
-   InputController();
+   class InputController : public Controller
+   {
+      typedef std::queue<ActionEvent> ActionQueue;
 
- // get/set
-   void setActionMap(ActionMap& actionmap);
+   public:
+      InputController();
 
- // operations
-   void queueAction(const ActionEvent& actionevent);
-   void clearActions();
+      // get/set
+      void setActionMap(ActionMap& actionmap);
 
- // overloads
-   virtual void requestAction(const ActionEvent& actionevent) override;
-   virtual void performAction(Entity& entity) override;
+      // operations
+      void queueAction(const ActionEvent& actionevent);
+      void clearActions();
 
-private:
+      // overloads
+      virtual void requestAction(const ActionEvent& actionevent) override;
+      virtual void performAction(Entity& entity) override;
 
- // members
-   ActionQueue mActions;
-   ActionMap*  mpActionMap; // not owning
-};
+   private:
+
+      // members
+      ActionQueue mActions;
+      ActionMap*  mpActionMap; // not owning
+   };
+}
 
 #endif // INPUT_CONTROLLER_H_

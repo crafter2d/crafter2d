@@ -19,16 +19,19 @@
  ***************************************************************************/
 #include "controller.h"
 
-Controller::Controller(void)
+namespace c2d
 {
-}
+   Controller::Controller(void)
+   {
+   }
 
-Controller::~Controller(void)
-{
-}
+   Controller::~Controller(void)
+   {
+   }
 
-// - Operations
+   // - Operations
 
-void Controller::requestAction(const ActionEvent& action)
-{
-}
+   void Controller::requestAction(const ActionEvent& action)
+   {
+   }
+} // namespace c2d

@@ -35,47 +35,50 @@ class World;
 class Player;
 class NetStream;
 
-/// @author Jeroen Broekhuizen
-///
-/// Implement the server process of the Client/Server model.
-class ENGINE_API Server: public Process
+namespace c2d
 {
-public:
-   typedef std::map<int, Player*> ClientMap;
+   /// @author Jeroen Broekhuizen
+   ///
+   /// Implement the server process of the Client/Server model.
+   class ENGINE_API Server : public Process
+   {
+   public:
+      typedef std::map<int, Player*> ClientMap;
 
-                  Server();
-   virtual        ~Server();
+      Server();
+      virtual        ~Server();
 
-   virtual bool   destroy();
+      virtual bool   destroy();
 
-   bool           listen(int port);
+      bool           listen(int port);
 
-   void           addPlayer(int client, Player* player);
+      void           addPlayer(int client, Player* player);
 
-   void           sendToAllClients(const NetStream& stream);
-   void           sendToAllClients(const NetObject& object);
-   void           sendScriptEventToAllClients(const NetStream& stream);
+      void           sendToAllClients(const NetStream& stream);
+      void           sendToAllClients(const NetObject& object);
+      void           sendScriptEventToAllClients(const NetStream& stream);
 
-   virtual void   update(float delta);
+      virtual void   update(float delta);
 
- // network events
-   virtual void onNetEvent(int client, const NetEvent& event);
+      // network events
+      virtual void onNetEvent(int client, const NetEvent& event);
 
-protected:
- // notifications
-   virtual void notifyWorldChanged();
+   protected:
+      // notifications
+      virtual void notifyWorldChanged();
 
- // networking
-   void sendToActiveClient(const NetObject& stream);
+      // networking
+      void sendToActiveClient(const NetObject& stream);
 
-   void handleConnectEvent(const ConnectEvent& event);
-   void handleViewportEvent(const ViewportEvent& event);
+      void handleConnectEvent(const ConnectEvent& event);
+      void handleViewportEvent(const ViewportEvent& event);
 
-private:
+   private:
 
-   ClientMap                clients;
-   ServerWorldObserver      mWorldObserver;
-   int                      mActiveClient;
-};
+      ClientMap                clients;
+      ServerWorldObserver      mWorldObserver;
+      int                      mActiveClient;
+   };
+}
 
 #endif

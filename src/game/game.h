@@ -20,9 +20,13 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+namespace c2d
+{
+   class Client;
+   class Server;
+}
+
 class GameWindowFactory;
-class Client;
-class Server;
 class TimerData;
 
 /**
@@ -55,8 +59,8 @@ private:
 
    GameWindowFactory*   mpWindowFactory;
    TimerData*           mpTimerData;
-   Client*              mpClient;
-   Server*              mpServer;
+   c2d::Client*         mpClient;
+   c2d::Server*         mpServer;
 };
 
 #ifdef JENGINE_INLINE

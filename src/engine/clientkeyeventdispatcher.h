@@ -22,20 +22,23 @@
 
 #include "core/input/keyeventdispatcher.h"
 
-class Client;
-
-class ClientKeyEventDispatcher : public Input::KeyEventDispatcher
+namespace c2d
 {
-public:
-   explicit ClientKeyEventDispatcher(Client& client);
- 
- // dispatch
-   virtual void dispatch(const Input::KeyEvent& event) override;
+   class Client;
 
-private:
+   class ClientKeyEventDispatcher : public Input::KeyEventDispatcher
+   {
+   public:
+      explicit ClientKeyEventDispatcher(Client& client);
 
- // members
-   Client& mClient;
-};
+      // dispatch
+      virtual void dispatch(const Input::KeyEvent& event) override;
+
+   private:
+
+      // members
+      Client& mClient;
+   };
+}
 
 #endif // CLIENT_KEY_EVENT_LISTENER_H_

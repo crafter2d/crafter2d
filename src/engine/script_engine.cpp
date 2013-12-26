@@ -64,6 +64,8 @@
 #include "inputcontroller.h"
 #include "aicontroller.h"
 
+using namespace c2d;
+
 #define GET_THIS(type, variable)                   type& variable = accessor.getThis().getNativeObject<type>()
 #define DESTRUCT_THIS(type)                        delete accessor.getThis().useNativeObject<type>();
 

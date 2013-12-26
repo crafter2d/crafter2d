@@ -11,7 +11,7 @@ namespace Graphics
 
    namespace Utils
    {
-      CORE_API IndexBuffer* createIndexBuffer(Device& device, int batchsize, int vertsPerElement, int indicesPerElement);
+      CORE_API IndexBuffer* createIndexBuffer(Device& device, int batchsize, int vertsPerElement);
    }
 }
 

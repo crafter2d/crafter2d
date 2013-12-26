@@ -29,7 +29,6 @@
 
 #include "processnetobserver.h"
 
-class ActionMap;
 class ContentManager;
 class ModuleManager;
 class DataStream;
@@ -38,68 +37,73 @@ class Script;
 class String;
 class World;
 
-/// @author Jeroen Broekhuizen
-/// \brief Provides the basic functionality for the process.
-///
-/// Abstract base class for processes. This class provides the common functionality 
-/// needed for client and server processes.
-class ENGINE_API Process
+namespace c2d
 {
-public:
-   explicit       Process();
-   virtual        ~Process() = 0;
+   class ActionMap;
 
-   virtual bool   create(const String& classname, const String& basedir);
-   virtual bool   destroy();
-   virtual void   update (float delta);
+   /// @author Jeroen Broekhuizen
+   /// \brief Provides the basic functionality for the process.
+   ///
+   /// Abstract base class for processes. This class provides the common functionality 
+   /// needed for client and server processes.
+   class ENGINE_API Process
+   {
+   public:
+      explicit       Process();
+      virtual        ~Process() = 0;
 
-  // get/set
-   NetConnection*    getConnection();
-   ModuleManager&    getModuleManager();
-   ContentManager&   getContentManager();
-   ScriptManager&    getScriptManager();
+      virtual bool   create(const String& classname, const String& basedir);
+      virtual bool   destroy();
+      virtual void   update(float delta);
 
-   ActionMap*     getActionMap();
-   void           setActionMap(ActionMap* map);
+      // get/set
+      NetConnection*    getConnection();
+      ModuleManager&    getModuleManager();
+      ContentManager&   getContentManager();
+      ScriptManager&    getScriptManager();
 
-   bool           hasWorld() const;
-   const World&   getWorld() const;
-         World&   getWorld();
+      ActionMap*     getActionMap();
+      void           setActionMap(ActionMap* map);
 
-   bool           isInitialized();
-   void           setInitialized(bool init);
+      bool           hasWorld() const;
+      const World&   getWorld() const;
+      World&   getWorld();
 
-   bool           isActive() const;
-   void           setActive(bool active);
+      bool           isInitialized();
+      void           setInitialized(bool init);
 
- // operations
-   World* loadWorld(const String& filename);
-   void sendScriptEvent(int clientid, const DataStream& stream);
-   void swapLeakDetection();
+      bool           isActive() const;
+      void           setActive(bool active);
 
-  // events
-   virtual void onNetEvent(int clientid, const NetEvent& event) = 0;
+      // operations
+      World* loadWorld(const String& filename);
+      void sendScriptEvent(int clientid, const DataStream& stream);
+      void swapLeakDetection();
 
-protected:
- // notifications
-   virtual void notifyWorldChanged();
+      // events
+      virtual void onNetEvent(int clientid, const NetEvent& event) = 0;
 
-   ProcessNetObserver   mNetObserver;
-   NetConnection        conn;
-   ScriptManager        mScriptManager;
-   Script*              mpScript;
-   ActionMap*           actionMap;
-   bool                 initialized;
+   protected:
+      // notifications
+      virtual void notifyWorldChanged();
 
-private:
+      ProcessNetObserver   mNetObserver;
+      NetConnection        conn;
+      ScriptManager        mScriptManager;
+      Script*              mpScript;
+      ActionMap*           actionMap;
+      bool                 initialized;
 
- // members
-   ModuleManager*    mpModuleManager;
-   ContentManager*   mpContentManager;
-   World*            mpWorld;
-   bool              mActive;
-   bool              mDetecting;
-};
+   private:
+
+      // members
+      ModuleManager*    mpModuleManager;
+      ContentManager*   mpContentManager;
+      World*            mpWorld;
+      bool              mActive;
+      bool              mDetecting;
+   };
+}
 
 #ifdef JENGINE_INLINE
 #  include "process.inl"

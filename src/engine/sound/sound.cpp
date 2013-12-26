@@ -26,54 +26,53 @@
 
 #include "core/log/log.h"
 
-namespace JEngineSSE
+namespace c2d
 {
 
-/// \fn Sound::Sound(FMOD::Sound* psound)
-/// \brief initializes internal member variables. Remember to load the sounds via the
-/// \param psound a FMOD sound object
+   /// \fn Sound::Sound(FMOD::Sound* psound)
+   /// \brief initializes internal member variables. Remember to load the sounds via the
+   /// \param psound a FMOD sound object
    Sound::Sound(FMOD::Sound* psound):
-   mpSound(psound),
-   mpChannel(NULL)
-{
-}
+      mpSound(psound),
+      mpChannel(NULL)
+   {
+   }
 
-/// \fn Sound::clone()
-/// \brief Creates a clone of this sound object. In case you need multiple instances
-/// of a sound, it's best to clone a sound object to minimize allocated resources (the
-/// sound data is in memory only once after calling clone, while loading a sound twice
-/// would result in the data being twice in memory).
-/// \returns  clone of this sound object that is ready to be played
-Sound* Sound::clone()
-{
-	Sound* presult = new Sound(mpSound);
-   return presult;
-}
+   /// \fn Sound::clone()
+   /// \brief Creates a clone of this sound object. In case you need multiple instances
+   /// of a sound, it's best to clone a sound object to minimize allocated resources (the
+   /// sound data is in memory only once after calling clone, while loading a sound twice
+   /// would result in the data being twice in memory).
+   /// \returns  clone of this sound object that is ready to be played
+   Sound* Sound::clone()
+   {
+	   Sound* presult = new Sound(mpSound);
+      return presult;
+   }
 
-/// \fn Sound::setPosition(const Vector& pos)
-/// \brief Set the position of this sound object in 2D world space.
-/// \param pos the position in 2D world space
-void Sound::setPosition (const Vector& pos)
-{
-   // set the position of the sound
-}
+   /// \fn Sound::setPosition(const Vector& pos)
+   /// \brief Set the position of this sound object in 2D world space.
+   /// \param pos the position in 2D world space
+   void Sound::setPosition (const Vector& pos)
+   {
+      // set the position of the sound
+   }
 
-void Sound::pause()
-{
-   mpChannel->setPaused(true);
-}
+   void Sound::pause()
+   {
+      mpChannel->setPaused(true);
+   }
 
-void Sound::resume()
-{
-   mpChannel->setPaused(false);
-}
+   void Sound::resume()
+   {
+      mpChannel->setPaused(false);
+   }
 
-/// \fn Sound::stop()
-/// \brief Stops playing the sound in case it is still active.
-void Sound::stop() const
-{
-   ASSERT_PTR(mpChannel);
-   mpChannel->stop();
-}
-
-}
+   /// \fn Sound::stop()
+   /// \brief Stops playing the sound in case it is still active.
+   void Sound::stop() const
+   {
+      ASSERT_PTR(mpChannel);
+      mpChannel->stop();
+   }
+} // namespace c2d

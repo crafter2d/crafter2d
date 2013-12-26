@@ -47,150 +47,153 @@
 #include "player.h"
 #include "serverdirtyset.h"
 
-Server::Server():
-   Process(),
-   clients(),
-   mWorldObserver(*this),
-   mActiveClient(-1)
+namespace c2d
 {
-}
 
-Server::~Server()
-{
-}
-
-bool Server::destroy()
-{
-   if (conn.isConnected())
+   Server::Server() :
+      Process(),
+      clients(),
+      mWorldObserver(*this),
+      mActiveClient(-1)
    {
-      conn.setAccepting(false);
-
-      ServerDownEvent event;
-      sendToAllClients(event);
-
-      mpScript->run(UTEXT("onShutdown"));
    }
-   
-   return Process::destroy();
-}
 
-bool Server::listen(int port)
-{
-   if ( !conn.isConnected() )
+   Server::~Server()
    {
-      if ( !conn.listen(port) )
+   }
+
+   bool Server::destroy()
+   {
+      if ( conn.isConnected() )
       {
-         return false;
+         conn.setAccepting(false);
+
+         ServerDownEvent event;
+         sendToAllClients(event);
+
+         mpScript->run(UTEXT("onShutdown"));
       }
-      conn.setAccepting(true);
+
+      return Process::destroy();
    }
-   return true;
-}
 
-/// \fn Server::update (Uint32 tick)
-/// \brief Main update routine of the server process.
-///
-/// Updates the server side scenegraph and sends the changes to the connected clients.
-/// At the end it handles the incomming events.
-void Server::update(float delta)
-{
-   conn.update();
-
-   // update the graph
-   if ( hasWorld() )
+   bool Server::listen(int port)
    {
-      ServerDirtySet dirtyset;
-      getWorld().update(dirtyset, delta);
+      if ( !conn.isConnected() )
+      {
+         if ( !conn.listen(port) )
+         {
+            return false;
+         }
+         conn.setAccepting(true);
+      }
+      return true;
+   }
 
+   /// \fn Server::update (Uint32 tick)
+   /// \brief Main update routine of the server process.
+   ///
+   /// Updates the server side scenegraph and sends the changes to the connected clients.
+   /// At the end it handles the incomming events.
+   void Server::update(float delta)
+   {
+      conn.update();
+
+      // update the graph
+      if ( hasWorld() )
+      {
+         ServerDirtySet dirtyset;
+         getWorld().update(dirtyset, delta);
+
+         // send changes to the clients
+         ClientMap::iterator it = clients.begin();
+         for ( ; it != clients.end(); ++it )
+         {
+            AggregateEvent event;
+            dirtyset.collect(event);
+
+            if ( !event.isEmpty() )
+            {
+               int clientid = it->first;
+               conn.send(clientid, event);
+            }
+         }
+      }
+   }
+
+   // ----------------------------------
+   // - Notifications
+   // ----------------------------------
+
+   void Server::notifyWorldChanged()
+   {
+      World& world = getWorld();
+
+      getContentManager().setSimulator(world.getSimulator());
+
+      world.attach(mWorldObserver);
+
+      WorldChangedEvent event(world);
+      sendToAllClients(event);
+   }
+
+   // ----------------------------------
+   // - Sending
+   // ----------------------------------
+
+   void Server::sendToAllClients(const NetObject& object)
+   {
+      // copying a buffer is faster than packaging per client (trade-off)
+      BufferedStream bufstream;
+      NetObjectStream stream(bufstream);
+      stream << object;
+
+      sendToAllClients(stream);
+   }
+
+   void Server::sendToAllClients(const NetStream& stream)
+   {
       // send changes to the clients
       ClientMap::iterator it = clients.begin();
       for ( ; it != clients.end(); ++it )
       {
-         AggregateEvent event;
-         dirtyset.collect(event);
-
-         if ( !event.isEmpty() )
-         {
-            int clientid = it->first;
-            conn.send(clientid, event);
-         }
+         int clientid = it->first;
+         conn.send(clientid, stream);
       }
    }
-}
 
-// ----------------------------------
-// - Notifications
-// ----------------------------------
-
-void Server::notifyWorldChanged()
-{
-   World& world = getWorld();
-
-   getContentManager().setSimulator(world.getSimulator());
-
-   world.attach(mWorldObserver);
-
-   WorldChangedEvent event(world);
-   sendToAllClients(event);
-}
-
-// ----------------------------------
-// - Sending
-// ----------------------------------
-
-void Server::sendToAllClients(const NetObject& object)
-{
-   // copying a buffer is faster than packaging per client (trade-off)
-   BufferedStream bufstream;
-   NetObjectStream stream(bufstream);
-   stream << object;
-
-   sendToAllClients(stream);
-}
-
-void Server::sendToAllClients(const NetStream& stream)
-{
-   // send changes to the clients
-   ClientMap::iterator it = clients.begin();
-   for ( ; it != clients.end(); ++it)
+   void Server::sendToActiveClient(const NetObject& object)
    {
-      int clientid = it->first;
-      conn.send(clientid, stream);
+      conn.send(mActiveClient, object);
    }
-}
 
-void Server::sendToActiveClient(const NetObject& object)
-{
-  conn.send(mActiveClient, object);
-}
-
-void Server::sendScriptEventToAllClients(const NetStream& stream)
-{
-   ScriptEvent event(stream);
-   sendToAllClients(event);
-}
-
-// ----------------------------------
-// -- Event handling
-// ----------------------------------
-
-static const String sNetStream = UTEXT("engine.net.NetStream");
-static const String sOnEvent   = UTEXT("onEvent");
-
-/// \fn Server::onNetEvent(int client, const NetEvent& event)
-/// \brief Handles the incomming events.
-void Server::onNetEvent(int client, const NetEvent& event)
-{
-   ScopedValue<int> value(&mActiveClient, client, -1);
-
-   switch ( event.getType() )
+   void Server::sendScriptEventToAllClients(const NetStream& stream)
    {
+      ScriptEvent event(stream);
+      sendToAllClients(event);
+   }
+
+   // ----------------------------------
+   // -- Event handling
+   // ----------------------------------
+
+   static const String sNetStream = UTEXT("engine.net.NetStream");
+   static const String sOnEvent = UTEXT("onEvent");
+
+   /// \fn Server::onNetEvent(int client, const NetEvent& event)
+   /// \brief Handles the incomming events.
+   void Server::onNetEvent(int client, const NetEvent& event)
+   {
+      ScopedValue<int> value(&mActiveClient, client, -1);
+
+      switch ( event.getType() )
+      {
       case connectEvent:
          {
             const ConnectEvent& connectevent = dynamic_cast<const ConnectEvent&>(event);
             handleConnectEvent(connectevent);
-            break;
          }
+         break;
       case disconnectEvent:
          {
             AutoPtr<Player> player = clients[client];
@@ -210,8 +213,8 @@ void Server::onNetEvent(int client, const NetEvent& event)
             // fill in the event and put it in the stream
             DisconnectEvent event(client);
             sendToAllClients(event);
-            break;
          }
+         break;
       case scriptEvent:
          {
             const ScriptEvent& scriptevent = dynamic_cast<const ScriptEvent&>(event);
@@ -225,8 +228,8 @@ void Server::onNetEvent(int client, const NetEvent& event)
             args[0].setObject(mpScript->resolve(player));
             args[1].setObject(mpScript->instantiate(sNetStream, &stream));
             mpScript->run(sOnEvent, 2, args);
-            break;
          }
+         break;
       case actionEvent:
          {
             // find the player object
@@ -237,8 +240,8 @@ void Server::onNetEvent(int client, const NetEvent& event)
             Controller& controller = pplayer->getController().getController();
 
             controller.requestAction(inputevent);
-            break;
          }
+         break;
       case reqobjectEvent:
          {
             const RequestObjectEvent& request = dynamic_cast<const RequestObjectEvent&>(event);
@@ -253,73 +256,74 @@ void Server::onNetEvent(int client, const NetEvent& event)
                NewObjectEvent event(*pentity);
                sendToActiveClient(event);
             }
-            break;
          }
+         break;
       case viewportEvent:
          {
             const ViewportEvent& viewportevent = dynamic_cast<const ViewportEvent&>(event);
             handleViewportEvent(viewportevent);
-
-            break;
          }
+         break;
       default:
          Log::getInstance().error("Server: Received an unknown message.");
          break;
-   }
-}
-
-/// \fn Server::addPlayer(int client, Player* pplayer)
-/// \brief Adds a new player to the client list
-void Server::addPlayer(int clientid, Player* pplayer)
-{
-   clients[clientid] = pplayer;
-   pplayer->setClientId(clientid);
-
-   // send the reply to the connecting client
-   ConnectReplyEvent event(ConnectReplyEvent::eAccepted);
-   conn.send(clientid, event);
-
-   // notify other players about the new player
-   JoinEvent join(clientid);
-   BufferedStream bufstream;
-   NetObjectStream stream(bufstream);
-   stream << join;
-
-   ClientMap::iterator it = clients.begin();
-   for ( ; it != clients.end(); ++it)
-   {
-      Player* pother = it->second;
-      if ( pother!= pplayer )
-      {
-         conn.send(pother->getClientId(), stream);
       }
    }
-}
 
-void Server::handleConnectEvent(const ConnectEvent& event)
-{
-   // check if the script allows this new player
-   Variant retval = mpScript->run(UTEXT("onClientConnecting"));
-   int reason = retval.asInt();
-   if ( reason != 0 )
+   /// \fn Server::addPlayer(int client, Player* pplayer)
+   /// \brief Adds a new player to the client list
+   void Server::addPlayer(int clientid, Player* pplayer)
    {
-      ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
-      conn.send(mActiveClient, event);
+      clients[clientid] = pplayer;
+      pplayer->setClientId(clientid);
+
+      // send the reply to the connecting client
+      ConnectReplyEvent event(ConnectReplyEvent::eAccepted);
+      conn.send(clientid, event);
+
+      // notify other players about the new player
+      JoinEvent join(clientid);
+      BufferedStream bufstream;
+      NetObjectStream stream(bufstream);
+      stream << join;
+
+      ClientMap::iterator it = clients.begin();
+      for ( ; it != clients.end(); ++it )
+      {
+         Player* pother = it->second;
+         if ( pother != pplayer )
+         {
+            conn.send(pother->getClientId(), stream);
+         }
+      }
    }
-   else
+
+   void Server::handleConnectEvent(const ConnectEvent& event)
    {
-      // create the player object
-      Player* pplayer = new Player();
-      addPlayer(mActiveClient, pplayer);
+      // check if the script allows this new player
+      Variant retval = mpScript->run(UTEXT("onClientConnecting"));
+      int reason = retval.asInt();
+      if ( reason != 0 )
+      {
+         ConnectReplyEvent event(ConnectReplyEvent::eDenite, reason);
+         conn.send(mActiveClient, event);
+      }
+      else
+      {
+         // create the player object
+         Player* pplayer = new Player();
+         addPlayer(mActiveClient, pplayer);
 
-      // run the onClientConnect script
-      Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), pplayer));
-      mpScript->run(UTEXT("onClientConnect"), 1, &arg);
+         // run the onClientConnect script
+         Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), pplayer));
+         mpScript->run(UTEXT("onClientConnect"), 1, &arg);
+      }
    }
-}
 
-void Server::handleViewportEvent(const ViewportEvent& event)
-{
-   //Player& player = *clients[mActiveClient];
-   //event.update(player.getViewport());
-}
+   void Server::handleViewportEvent(const ViewportEvent& event)
+   {
+      //Player& player = *clients[mActiveClient];
+      //event.update(player.getViewport());
+   }
+
+} // namespace c2d

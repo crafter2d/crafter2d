@@ -17,6 +17,7 @@ namespace Graphics
       OGLRenderContext();
 
     // overrides
+      virtual void setRenderTarget(RenderTarget& target) override;
       virtual void setCodePath(CodePath& path) override;
       virtual void setBlendState(const BlendState& state) override;
       virtual void setVertexBuffer(const VertexBuffer& buffer) override;

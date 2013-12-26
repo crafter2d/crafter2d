@@ -97,7 +97,7 @@ void CollisionResolver::resolveContact(CollisionContact& contact)
       body.setPosition(body.getPosition() + contact.mNormal * linearMoveLeft);
    }
 
-   if ( contact.hasRight() != NULL )
+   if ( contact.hasRight() )
    {
       Body& body = contact.getRight().getBody();
       body.setPosition(body.getPosition() + contact.mNormal * linearMoveRight);

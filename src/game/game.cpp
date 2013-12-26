@@ -169,14 +169,14 @@ bool Game::initGame()
 
    String basedir = inifile.get(UTEXT("Process"), UTEXT("basedir"));
    
-   mpServer = new Server();
+   mpServer = new c2d::Server();
    if ( !mpServer->create(inifile.get(UTEXT("Process"), UTEXT("server")), basedir) )
    {
       Log::getInstance().error("FAILED to start the server.");
       return false;
    }
 
-   mpClient = new Client();
+   mpClient = new c2d::Client();
    mpClient->setWindowFactory(*mpWindowFactory);
    if ( !mpClient->create(inifile.get(UTEXT("Process"), UTEXT("client")), basedir) )
    {

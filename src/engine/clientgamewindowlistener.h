@@ -22,21 +22,24 @@
 
 #include "engine/window/gamewindowlistener.h"
 
-class Client;
-
-class ClientGameWindowListener : public GameWindowListener
+namespace c2d
 {
-public:
-   explicit ClientGameWindowListener(Client& client);
-   virtual ~ClientGameWindowListener();
+   class Client;
 
-  // notifications
-   virtual void onWindowResized();
-   virtual bool onWindowClosing();
-   virtual void onWindowClosed();
+   class ClientGameWindowListener : public GameWindowListener
+   {
+   public:
+      explicit ClientGameWindowListener(Client& client);
+      virtual ~ClientGameWindowListener();
 
-private:
-   Client& mClient;
-};
+      // notifications
+      virtual void onWindowResized();
+      virtual bool onWindowClosing();
+      virtual void onWindowClosed();
+
+   private:
+      Client& mClient;
+   };
+}
 
 #endif // CLIENT_GAME_WINDOW_LISTENER_H

@@ -23,50 +23,53 @@
 
 #include "engine/net/events/actionevent.h"
 
-InputController::InputController():
-   Controller(),
-   mActions(),
-   mpActionMap(NULL)
+namespace c2d
 {
-}
-
-// - Get/set
-
-void InputController::setActionMap(ActionMap& actionmap)
-{
-   mpActionMap = &actionmap;
-}
-
-// - Operations
-   
-void InputController::queueAction(const ActionEvent& actionevent)
-{
-   mActions.push(actionevent);
-}
-
-// - Overloads
-
-void InputController::requestAction(const ActionEvent& actionevent)
-{
-   queueAction(actionevent);
-}
-
-void InputController::performAction(Entity& entity)
-{
-   ASSERT_PTR(mpActionMap)
-
-   while ( !mActions.empty() )
+   InputController::InputController() :
+      Controller(),
+      mActions(),
+      mpActionMap(NULL)
    {
-      const ActionEvent& actionevent = mActions.front();
-
-      mpActionMap->processRemote(actionevent, entity);
-
-      mActions.pop();
    }
-}
 
-void InputController::clearActions()
-{
-   while ( !mActions.empty() )
-      mActions.pop();
+   // - Get/set
+
+   void InputController::setActionMap(ActionMap& actionmap)
+   {
+      mpActionMap = &actionmap;
+   }
+
+   // - Operations
+
+   void InputController::queueAction(const ActionEvent& actionevent)
+   {
+      mActions.push(actionevent);
+   }
+
+   // - Overloads
+
+   void InputController::requestAction(const ActionEvent& actionevent)
+   {
+      queueAction(actionevent);
+   }
+
+   void InputController::performAction(Entity& entity)
+   {
+      ASSERT_PTR(mpActionMap)
+
+      while ( !mActions.empty() )
+      {
+         const ActionEvent& actionevent = mActions.front();
+
+         mpActionMap->processRemote(actionevent, entity);
+
+         mActions.pop();
+      }
+   }
+
+   void InputController::clearActions()
+   {
+      while ( !mActions.empty() )
+         mActions.pop();
+   }
 }

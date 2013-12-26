@@ -21,15 +21,18 @@
 
 #include "client.h"
 
-ClientKeyEventDispatcher::ClientKeyEventDispatcher(Client& client):
-   KeyEventDispatcher(),
-   mClient(client)
+namespace c2d
 {
-}
+   ClientKeyEventDispatcher::ClientKeyEventDispatcher(Client& client) :
+      KeyEventDispatcher(),
+      mClient(client)
+   {
+   }
 
-// - Dispatch
+   // - Dispatch
 
-void ClientKeyEventDispatcher::dispatch(const Input::KeyEvent& event)
-{
-   mClient.onKeyEvent(event);
-}
+   void ClientKeyEventDispatcher::dispatch(const Input::KeyEvent& event)
+   {
+      mClient.onKeyEvent(event);
+   }
+} // namespace c2d

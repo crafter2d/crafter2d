@@ -23,13 +23,14 @@ namespace Graphics
 
       virtual void present();
 
-      virtual RenderContext*  createRenderContext();
-      virtual CodePath*       createCodePath();
-      virtual VertexBuffer*   createVertexBuffer();
-      virtual IndexBuffer*    createIndexBuffer();
-      virtual Texture*        createTexture(DataStream& imagedata);
-      virtual BlendState*     createBlendState(const BlendStateDesc& desc);
-      virtual Font*           createFont(const String& name, int pointsize);
+      virtual RenderContext*  createRenderContext() override;
+      virtual CodePath*       createCodePath() override;
+      virtual VertexBuffer*   createVertexBuffer() override;
+      virtual IndexBuffer*    createIndexBuffer() override;
+      virtual Texture*        createTexture(DataStream& imagedata) override;
+      virtual RenderTarget*   createRenderTarget() override;
+      virtual BlendState*     createBlendState(const BlendStateDesc& desc) override;
+      virtual Font*           createFont(const String& name, int pointsize) override;
 
    private:
 

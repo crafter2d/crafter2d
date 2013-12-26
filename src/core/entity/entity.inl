@@ -98,13 +98,13 @@ INLINE const Vector& Entity::getOffset() const
    return mOffset;
 }
 
-INLINE Controller& Entity::getController()
+INLINE c2d::Controller& Entity::getController()
 {
    ASSERT_PTR(mpController);
    return *mpController;
 }
 
-INLINE void Entity::setController(Controller* pcontroller)
+INLINE void Entity::setController(c2d::Controller* pcontroller)
 {
    mpController = pcontroller;
 }

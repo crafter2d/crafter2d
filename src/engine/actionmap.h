@@ -28,52 +28,56 @@
 
 class ActionEvent;
 class Entity;
-class Process;
 class Script;
 
-/// \brief The mapping of actions to Lua functions.
-///
-/// An ActionMap is used to map actions to Lua functions. It can be assigned to both the client and
-/// the server processes. By adding actions to the ActionMap that is assigned to the client will run
-/// local functions (thus in the client Lua state). In case an action is not present an action message
-/// will be send to the server which then takes care of the action.
-///
-/// Server side actions have a slightly different argument count than the client side actions.
-/// <code>function jumpAction(object, down)
-///   -- do something
-/// end</code>
-/// And client side:
-/// <code>function screenshotAction(down)
-///   -- take screenshot
-/// end</code>
-/// As you see there is no object available in the client side. To adjust the object, you need to
-/// define the action at the server side.
-
-class ActionMap
+namespace c2d
 {
-public:
-   ActionMap();
-   ~ActionMap();
+   class Process;
 
- // get/set
-   bool     hasProcess() const;
-   Process& getProcess();
-   void     setProcess(Process& process);
+   /// \brief The mapping of actions to Lua functions.
+   ///
+   /// An ActionMap is used to map actions to Lua functions. It can be assigned to both the client and
+   /// the server processes. By adding actions to the ActionMap that is assigned to the client will run
+   /// local functions (thus in the client Lua state). In case an action is not present an action message
+   /// will be send to the server which then takes care of the action.
+   ///
+   /// Server side actions have a slightly different argument count than the client side actions.
+   /// <code>function jumpAction(object, down)
+   ///   -- do something
+   /// end</code>
+   /// And client side:
+   /// <code>function screenshotAction(down)
+   ///   -- take screenshot
+   /// end</code>
+   /// As you see there is no object available in the client side. To adjust the object, you need to
+   /// define the action at the server side.
 
- // operations
-   void bind(int action, const String& function);
+   class ActionMap
+   {
+   public:
+      ActionMap();
+      ~ActionMap();
 
- // processing
-   void process(int action, bool down);
-   void processRemote(const ActionEvent& event, Entity& object);
+      // get/set
+      bool     hasProcess() const;
+      Process& getProcess();
+      void     setProcess(Process& process);
 
-private:
-   typedef std::map<int, String> Actions;
+      // operations
+      void bind(int action, const String& function);
 
-   Process* mpProcess;
-   Script*  mpScript;
-   Actions  mActions;
-};
+      // processing
+      void process(int action, bool down);
+      void processRemote(const ActionEvent& event, Entity& object);
+
+   private:
+      typedef std::map<int, String> Actions;
+
+      Process* mpProcess;
+      Script*  mpScript;
+      Actions  mActions;
+   };
+}
 
 #ifdef JENGINE_INLINE
 #  include "actionmap.inl"

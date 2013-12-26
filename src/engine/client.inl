@@ -19,42 +19,47 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE GameWindowFactory& Client::getWindowFactory()
+namespace c2d
 {
-   ASSERT_PTR(mpWindowFactory);
-   return *mpWindowFactory;
-}
 
-INLINE void Client::setWindowFactory(GameWindowFactory& factory)
-{
-   mpWindowFactory = &factory;
-}
+   INLINE GameWindowFactory& Client::getWindowFactory()
+   {
+      ASSERT_PTR(mpWindowFactory);
+      return *mpWindowFactory;
+   }
 
-INLINE bool Client::hasWindow() const
-{
-   return mpWindow != NULL;
-}
+   INLINE void Client::setWindowFactory(GameWindowFactory& factory)
+   {
+      mpWindowFactory = &factory;
+   }
 
-INLINE GameWindow& Client::getWindow()
-{
-   ASSERT_PTR(mpWindow);
-   return *mpWindow;
-}
+   INLINE bool Client::hasWindow() const
+   {
+      return mpWindow != NULL;
+   }
 
-INLINE Graphics::Device& Client::getDevice()
-{
-   ASSERT_PTR(mpDevice);
-   return *mpDevice;
-}
+   INLINE GameWindow& Client::getWindow()
+   {
+      ASSERT_PTR(mpWindow);
+      return *mpWindow;
+   }
 
-INLINE Graphics::RenderContext& Client::getRenderContext()
-{
-   ASSERT_PTR(mpRenderContext);
-   return *mpRenderContext;
-}
+   INLINE Graphics::Device& Client::getDevice()
+   {
+      ASSERT_PTR(mpDevice);
+      return *mpDevice;
+   }
 
-INLINE Input::InputDevice& Client::getInput()
-{
-   ASSERT_PTR(mpInputDevice);
-   return *mpInputDevice;
+   INLINE Graphics::RenderContext& Client::getRenderContext()
+   {
+      ASSERT_PTR(mpRenderContext);
+      return *mpRenderContext;
+   }
+
+   INLINE Input::InputDevice& Client::getInput()
+   {
+      ASSERT_PTR(mpInputDevice);
+      return *mpInputDevice;
+   }
+
 }

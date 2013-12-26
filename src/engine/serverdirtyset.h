@@ -27,21 +27,25 @@
 class AggregateEvent;
 class Entity;
 
-class ServerDirtySet : public DirtySet
+namespace c2d
 {
-public:
-   ServerDirtySet();
-   virtual ~ServerDirtySet();
-   
- // reporting
-           void collect(AggregateEvent& event);
-   virtual void reportDirty(Entity& entity);
 
-private:
- // typedefs
-   typedef std::vector<Entity*> Objects;
+   class ServerDirtySet : public DirtySet
+   {
+   public:
+      ServerDirtySet();
+      virtual ~ServerDirtySet();
 
-   Objects mObjects;
-};
+      // reporting
+      void collect(AggregateEvent& event);
+      virtual void reportDirty(Entity& entity);
+
+   private:
+      // typedefs
+      typedef std::vector<Entity*> Objects;
+
+      Objects mObjects;
+   };
+}
 
 #endif // SERVER_DIRTY_SET_H_

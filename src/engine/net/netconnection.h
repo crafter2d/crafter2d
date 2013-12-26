@@ -41,7 +41,6 @@
 class NetAddress;
 class NetObserver;
 class NetStream;
-class Process;
 class String;
 
 const int   MAX_PACKAGE_NUMBER            = 0xAFFFFFFF;

@@ -85,7 +85,7 @@ bool SpriteRenderer::create(Device& device)
       return false;
    }
 
-   mpIB = Utils::createIndexBuffer(device, batchsize, 4, 6);
+   mpIB = Utils::createIndexBuffer(device, batchsize, 4);
    if ( mpIB == NULL )
    {
       return false;

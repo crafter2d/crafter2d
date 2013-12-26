@@ -42,145 +42,150 @@
 #include "actionmap.h"
 #include "script_engine.h"
 
-Process::Process():
-   mNetObserver(*this),
-   conn(mNetObserver),
-   mpContentManager(NULL),
-   mScriptManager(),
-   mpScript(NULL),
-   actionMap(NULL),
-   initialized(false),
-   mpWorld(NULL),
-   mActive(true),
-   mDetecting(false)
+namespace c2d
 {
-}
 
-Process::~Process()
-{
-   try
-   {
-      destroy();
-   }
-   catch (...)
+   Process::Process() :
+      mNetObserver(*this),
+      conn(mNetObserver),
+      mpContentManager(NULL),
+      mScriptManager(),
+      mpScript(NULL),
+      actionMap(NULL),
+      initialized(false),
+      mpWorld(NULL),
+      mActive(true),
+      mDetecting(false)
    {
    }
-}
 
-// - Operations
-
-bool Process::create(const String& classname, const String& basedir)
-{
-   // initialize the modules
-   mpModuleManager = new ModuleManager();
-   if ( !mpModuleManager->initialize() )
+   Process::~Process()
    {
-      return false;
-   }
-
-   // initialize the content manager
-   mpContentManager = new ContentManager();
-   mpContentManager->setBaseDir(basedir);
-   mpContentManager->initialize(getModuleManager());
-
-   // initialize the scripting engine
-   mScriptManager.initialize();
-   mpScript = mScriptManager.load(classname, this, false);
-   if ( mpScript == NULL )
-   {
-      return false;
-   }
-
-   // make me a root objects
-   mScriptManager.addRootObject(mpScript->getThis());
-
-   // run the onCreated function
-   return mpScript->run(UTEXT("onCreated")).asBool();
-}
-
-bool Process::destroy()
-{
-   conn.shutdown();
-
-   delete mpWorld;
-   mpWorld = NULL;
-
-   delete mpScript;
-   mpScript = NULL;
-
-   delete actionMap;
-   actionMap = NULL;
-   
-   return true;
-}
-
-World* Process::loadWorld(const String& filename)
-{
-   AutoPtr<World> world = new World();
-   if ( world.hasPointer() )
-   {
-      WorldReader reader;
-      if ( reader.read(*world, filename) )
+      try
       {
-         mpWorld = world.release();
-         mpWorld->setScript(getScriptManager().load(UTEXT("engine.game.World"), mpWorld, false));
-
-         notifyWorldChanged();
-
-         return mpWorld;
+         destroy();
+      }
+      catch ( ... )
+      {
       }
    }
 
-   // we could not load the file
-   return NULL;
-}
+   // - Operations
 
-// - Notifications
-
-void Process::notifyWorldChanged()
-{
-}
-
-// - Get/set
-
-/// \fn Process::setActionMap(ActionMap* map)
-/// \brief Attach the new action map for this process.
-void Process::setActionMap(ActionMap* map)
-{
-   actionMap = map;
-   if ( actionMap != NULL )
-      actionMap->setProcess(*this);
-}
-
-// - Updating
-
-void Process::update(float tick)
-{
-   if ( conn.isConnected() )
-      conn.update();
-}
-
-// - Events
-
-void Process::sendScriptEvent(int clientid, const DataStream& stream)
-{
-   ScriptEvent event(stream);
-
-   conn.send(clientid, event);
-}
-
-void Process::swapLeakDetection()
-{
-   mDetecting = !mDetecting;
-
-   /*
-   if ( mDetecting )
+   bool Process::create(const String& classname, const String& basedir)
    {
+      // initialize the modules
+      mpModuleManager = new ModuleManager();
+      if ( !mpModuleManager->initialize() )
+      {
+         return false;
+      }
+
+      // initialize the content manager
+      mpContentManager = new ContentManager();
+      mpContentManager->setBaseDir(basedir);
+      mpContentManager->initialize(getModuleManager());
+
+      // initialize the scripting engine
+      mScriptManager.initialize();
+      mpScript = mScriptManager.load(classname, this, false);
+      if ( mpScript == NULL )
+      {
+         return false;
+      }
+
+      // make me a root objects
+      mScriptManager.addRootObject(mpScript->getThis());
+
+      // run the onCreated function
+      return mpScript->run(UTEXT("onCreated")).asBool();
+   }
+
+   bool Process::destroy()
+   {
+      conn.shutdown();
+
+      delete mpWorld;
+      mpWorld = NULL;
+
+      delete mpScript;
+      mpScript = NULL;
+
+      delete actionMap;
+      actionMap = NULL;
+
+      return true;
+   }
+
+   World* Process::loadWorld(const String& filename)
+   {
+      AutoPtr<World> world = new World();
+      if ( world.hasPointer() )
+      {
+         WorldReader reader;
+         if ( reader.read(*world, filename) )
+         {
+            mpWorld = world.release();
+            mpWorld->setScript(getScriptManager().load(UTEXT("engine.game.World"), mpWorld, false));
+
+            notifyWorldChanged();
+
+            return mpWorld;
+         }
+      }
+
+      // we could not load the file
+      return NULL;
+   }
+
+   // - Notifications
+
+   void Process::notifyWorldChanged()
+   {
+   }
+
+   // - Get/set
+
+   /// \fn Process::setActionMap(ActionMap* map)
+   /// \brief Attach the new action map for this process.
+   void Process::setActionMap(ActionMap* map)
+   {
+      actionMap = map;
+      if ( actionMap != NULL )
+         actionMap->setProcess(*this);
+   }
+
+   // - Updating
+
+   void Process::update(float tick)
+   {
+      if ( conn.isConnected() )
+         conn.update();
+   }
+
+   // - Events
+
+   void Process::sendScriptEvent(int clientid, const DataStream& stream)
+   {
+      ScriptEvent event(stream);
+
+      conn.send(clientid, event);
+   }
+
+   void Process::swapLeakDetection()
+   {
+      mDetecting = !mDetecting;
+
+      /*
+      if ( mDetecting )
+      {
       VLDEnable();
-   }
-   else
-   {
+      }
+      else
+      {
       VLDDisable();
+      }
+      */
    }
-   */
+
 }

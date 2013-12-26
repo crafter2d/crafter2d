@@ -23,19 +23,22 @@
 
 #include "client.h"
 
-ClientMouseEventDispatcher::ClientMouseEventDispatcher(Client& client):
-   MouseEventDispatcher(),
-   mClient(client)
+namespace c2d
 {
-}
+   ClientMouseEventDispatcher::ClientMouseEventDispatcher(Client& client) :
+      MouseEventDispatcher(),
+      mClient(client)
+   {
+   }
 
-ClientMouseEventDispatcher::~ClientMouseEventDispatcher()
-{
-}
+   ClientMouseEventDispatcher::~ClientMouseEventDispatcher()
+   {
+   }
 
-// - Dispatching
+   // - Dispatching
 
-void ClientMouseEventDispatcher::dispatch(const Input::MouseEvent& event)
-{
-   mClient.onMouseEvent(event);
-}
+   void ClientMouseEventDispatcher::dispatch(const Input::MouseEvent& event)
+   {
+      mClient.onMouseEvent(event);
+   }
+} // namespace c2d

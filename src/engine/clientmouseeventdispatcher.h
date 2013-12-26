@@ -22,21 +22,24 @@
 
 #include "core/input/mouseeventdispatcher.h"
 
-class Client;
-
-class ClientMouseEventDispatcher : public Input::MouseEventDispatcher
+namespace c2d
 {
-public:
-   explicit ClientMouseEventDispatcher(Client& client);
-   virtual ~ClientMouseEventDispatcher();
-   
- // overloads
-   virtual void dispatch(const Input::MouseEvent& event);
+   class Client;
 
-private:
+   class ClientMouseEventDispatcher : public Input::MouseEventDispatcher
+   {
+   public:
+      explicit ClientMouseEventDispatcher(Client& client);
+      virtual ~ClientMouseEventDispatcher();
 
- // members
-   Client& mClient;
-};
+      // overloads
+      virtual void dispatch(const Input::MouseEvent& event);
+
+   private:
+
+      // members
+      Client& mClient;
+   };
+}
 
 #endif // CLIENT_MOUSE_EVENT_DISPATCHER_H_

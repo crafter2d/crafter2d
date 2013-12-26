@@ -19,6 +19,7 @@ namespace Graphics
       ID3D11DeviceContext& getContext();
 
     // operations
+      virtual void setRenderTarget(RenderTarget& target) override;
       virtual void setCodePath(CodePath& path) override;
       virtual void setBlendState(const BlendState& state);
       virtual void setVertexBuffer(const VertexBuffer& buffer);

@@ -15,7 +15,7 @@
 #include "oglblendstate.h"
 #include "oglindexbuffer.h"
 #include "oglvertexbuffer.h"
-
+#include "oglrendertarget.h"
 
 using namespace Graphics;
 
@@ -30,6 +30,12 @@ OGLRenderContext::OGLRenderContext():
 void OGLRenderContext::onViewportChanged(const Viewport& viewport)
 {
    glViewport(viewport.getLeft(), viewport.getTop(), viewport.getWidth(), viewport.getHeight());
+}
+
+void OGLRenderContext::setRenderTarget(RenderTarget& target)
+{
+   OGLRenderTarget& ogltarget = static_cast<OGLRenderTarget&>(target);
+   glBindFramebuffer(GL_FRAMEBUFFER, ogltarget.getFBO());
 }
 
 void OGLRenderContext::setCodePath(CodePath& path)
@@ -72,7 +78,6 @@ void OGLRenderContext::setUniformBuffer(const UniformBuffer& buffer)
 void OGLRenderContext::setTexture(int stage, const Texture& texture)
 {
    ASSERT_PTR(mpCodePath);
-   //mpCodePath->bindTexture(*this, stage, texture);
    texture.enable(*this, stage);
 }
 

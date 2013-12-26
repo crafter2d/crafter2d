@@ -63,244 +63,252 @@
 #include "actionmap.h"
 #include "keymap.h"
 
+static const String sNetStream = UTEXT("engine.net.NetStream");
+static const String sScriptEvent = UTEXT("onScriptEvent");
+static const String sOnKeyEvent = UTEXT("onKeyEvent");
+static const String sOnMouseEvent = UTEXT("onMouseEvent");
+
 using namespace Graphics;
 using namespace Input;
 
-Client::Client():
-   Process(),
-   mpWindowFactory(NULL),
-   mpWindow(NULL),
-   mpDevice(NULL),
-   mpRenderContext(NULL),
-   mWindowListener(*this),
-   mKeyEventDispatcher(*this),
-   mMouseEventDispatcher(*this),
-   mSoundManager(),
-   mpWorldRenderer(NULL),
-   mpPlayer(NULL),
-   mpKeyMap(NULL),
-   mRequests(),
-   mServerId(-1)
+namespace c2d
 {
-}
 
-Client::~Client()
-{
-}
-
-// - Creation
-
-bool Client::destroy()
-{
-   mSoundManager.destroy();
-
-   mpWindow->destroy();
-   delete mpWindow;
-   mpWindow = NULL;
-
-   delete mpPlayer;
-   mpPlayer = NULL;
-
-   delete mpKeyMap;
-   mpKeyMap = NULL;
-
-   delete mpWorldRenderer;
-   mpWorldRenderer = NULL;
-
-   return Process::destroy();
-}
-
-bool Client::connect(const String& server, int port)
-{
-   // setup connection to the server
-   mServerId = conn.connect(server, port);
-   if ( mServerId == -1 )
+   Client::Client() :
+      Process(),
+      mpWindowFactory(NULL),
+      mpWindow(NULL),
+      mpDevice(NULL),
+      mpRenderContext(NULL),
+      mWindowListener(*this),
+      mKeyEventDispatcher(*this),
+      mMouseEventDispatcher(*this),
+      mSoundManager(),
+      mpWorldRenderer(NULL),
+      mpPlayer(NULL),
+      mpKeyMap(NULL),
+      mRequests(),
+      mServerId(-1)
    {
-      return false;
    }
 
-   mpPlayer = new Player();
-
-   // send login command
-   ConnectEvent event;
-   conn.send(mServerId, event);
-   return true;
-}
-
-void Client::disconnect()
-{
-   if ( conn.isConnected() )
+   Client::~Client()
    {
-      DisconnectEvent event;
-      conn.send(mServerId, event);
-   }
-}
-
-void Client::update(float delta)
-{
-   Process::update(delta);
-
-   mSoundManager.update();
-   mpInputDevice->update();
-   mpWindow->update();
-
-   if ( hasKeyMap() )
-   {
-      mpKeyMap->update();
    }
 
-   if ( hasWorld() )
+   // - Creation
+
+   bool Client::destroy()
    {
-      getWorld().updateClient(*mpRenderContext, delta);
+      mSoundManager.destroy();
+
+      mpWindow->destroy();
+      delete mpWindow;
+      mpWindow = NULL;
+
+      delete mpPlayer;
+      mpPlayer = NULL;
+
+      delete mpKeyMap;
+      mpKeyMap = NULL;
+
+      delete mpWorldRenderer;
+      mpWorldRenderer = NULL;
+
+      return Process::destroy();
    }
-}
 
-void Client::render(float delta)
-{
-   static const String sPaint = UTEXT("paint");
-
-   mpRenderContext->clear();
-   mpRenderContext->beginDraw();
-   
-   if ( mpWorldRenderer != NULL )
+   bool Client::connect(const String& server, int port)
    {
-      if ( mpPlayer->hasController() )
+      // setup connection to the server
+      mServerId = conn.connect(server, port);
+      if ( mServerId == -1 )
       {
-         // set the sound of the player
-         //Actor& controler = mpPlayer->getController();
-         //mSoundManager.setPlayerPosition(controler.getPosition());
+         return false;
       }
 
-      mpWorldRenderer->render(*mpRenderContext, delta);
+      mpPlayer = new Player();
+
+      // send login command
+      ConnectEvent event;
+      conn.send(mServerId, event);
+      return true;
    }
 
-   mpRenderContext->endDraw();
-
-   Variant arg((double)delta);
-   mpScript->run(sPaint, 1, &arg);
-
-   mpDevice->present();
-   mpWindow->display();
-}
-
-void Client::display()
-{
-   mpWindow->display();
-}
-
-//---------------------------------------------
-// - Get/set
-//---------------------------------------------
-
-INLINE Player& Client::getPlayer()
-{
-   ASSERT_PTR(mpPlayer);
-   return *mpPlayer;
-}
-
-INLINE bool Client::hasKeyMap() const
-{
-   return mpKeyMap != NULL;
-}
-
-INLINE KeyMap& Client::getKeyMap()
-{
-   ASSERT_PTR(mpKeyMap)
-   return *mpKeyMap;
-}
-
-INLINE void Client::setKeyMap(KeyMap* pkeymap)
-{
-   mpKeyMap = pkeymap;
-   if ( mpKeyMap != NULL )
+   void Client::disconnect()
    {
-      mpKeyMap->setClient(*this);
-   }
-}
-
-void Client::setWindow(GameWindow* pwindow)
-{
-   if ( mpWindow != pwindow )
-   {
-      delete mpWindow;
-      mpWindow = pwindow;
-
-      onWindowChanged();
-   }
-}
-
-// - Initialization
-
-bool Client::initDevice()
-{
-   AutoPtr<Driver> driver = mpWindow->loadDriver();
-   if ( !driver.hasPointer() )
-   {
-      return false;
+      if ( conn.isConnected() )
+      {
+         DisconnectEvent event;
+         conn.send(mServerId, event);
+      }
    }
 
-   return initGraphics(*driver) 
-       && initInput(*driver)
-       && initSound();
-}
-
-bool Client::initGraphics(Driver& driver)
-{
-   Log::getInstance() << "\n-- Initializing Graphics --\n\n";
-
-   static const Color color(75, 150, 230, 255);
-
-   mpDevice = driver.createGraphicsDevice(getContentManager());
-   if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
+   void Client::update(float delta)
    {
-      return false;
+      Process::update(delta);
+
+      mSoundManager.update();
+      mpInputDevice->update();
+      mpWindow->update();
+
+      if ( hasKeyMap() )
+      {
+         mpKeyMap->update();
+      }
+
+      if ( hasWorld() )
+      {
+         getWorld().updateClient(*mpRenderContext, delta);
+      }
    }
 
-   getContentManager().setDevice(*mpDevice);
-
-   mpRenderContext = mpDevice->createRenderContext();
-   mpRenderContext->setClearColor(color);
-   mpRenderContext->initialize(*mpDevice);
-
-   onWindowResized();
-
-   return true;
-}
-
-bool Client::initInput(Driver& driver)
-{
-   Log::getInstance() << "\n-- Initializing Input --\n\n";
-
-   mpInputDevice = driver.createInputDevice();
-   if ( mpInputDevice == NULL || !mpInputDevice->create(mpWindow->getHandle()) )
+   void Client::render(float delta)
    {
-      // failed to create input! can't proceed
-      return false;
+      static const String sPaint = UTEXT("paint");
+
+      mpRenderContext->clear();
+      mpRenderContext->beginDraw();
+
+      if ( mpWorldRenderer != NULL )
+      {
+         if ( mpPlayer->hasController() )
+         {
+            // set the sound of the player
+            //Actor& controler = mpPlayer->getController();
+            //mSoundManager.setPlayerPosition(controler.getPosition());
+         }
+
+         mpWorldRenderer->render(*mpRenderContext, delta);
+      }
+
+      mpRenderContext->endDraw();
+
+      Variant arg((double)delta);
+      mpScript->run(sPaint, 1, &arg);
+
+      mpDevice->present();
+      mpWindow->display();
    }
 
-   return true;
-}
-
-bool Client::initSound()
-{
-   Log::getInstance() << "\n-- Initializing Sound --\n\n";
-
-   return mSoundManager.initialize();
-}
-
-// - Operations
-
-void Client::sendToServer(NetObject& object)
-{
-   conn.send(mServerId, object);
-}
-
-// - Events
-
-void Client::onNetEvent(int client, const NetEvent& event)
-{
-   switch ( event.getType() )
+   void Client::display()
    {
+      mpWindow->display();
+   }
+
+   //---------------------------------------------
+   // - Get/set
+   //---------------------------------------------
+
+   INLINE Player& Client::getPlayer()
+   {
+      ASSERT_PTR(mpPlayer);
+      return *mpPlayer;
+   }
+
+   INLINE bool Client::hasKeyMap() const
+   {
+      return mpKeyMap != NULL;
+   }
+
+   INLINE KeyMap& Client::getKeyMap()
+   {
+      ASSERT_PTR(mpKeyMap)
+         return *mpKeyMap;
+   }
+
+   INLINE void Client::setKeyMap(KeyMap* pkeymap)
+   {
+      mpKeyMap = pkeymap;
+      if ( mpKeyMap != NULL )
+      {
+         mpKeyMap->setClient(*this);
+      }
+   }
+
+   void Client::setWindow(GameWindow* pwindow)
+   {
+      if ( mpWindow != pwindow )
+      {
+         delete mpWindow;
+         mpWindow = pwindow;
+
+         onWindowChanged();
+      }
+   }
+
+   // - Initialization
+
+   bool Client::initDevice()
+   {
+      AutoPtr<Driver> driver = mpWindow->loadDriver();
+      if ( !driver.hasPointer() )
+      {
+         return false;
+      }
+
+      return initGraphics(*driver)
+         && initInput(*driver)
+         && initSound();
+   }
+
+   bool Client::initGraphics(Driver& driver)
+   {
+      Log::getInstance() << "\n-- Initializing Graphics --\n\n";
+
+      static const Color color(75, 150, 230, 255);
+
+      mpDevice = driver.createGraphicsDevice(getContentManager());
+      if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
+      {
+         return false;
+      }
+
+      getContentManager().setDevice(*mpDevice);
+
+      mpRenderContext = mpDevice->createRenderContext();
+      mpRenderContext->setClearColor(color);
+      mpRenderContext->initialize(*mpDevice);
+
+      onWindowResized();
+
+      return true;
+   }
+
+   bool Client::initInput(Driver& driver)
+   {
+      Log::getInstance() << "\n-- Initializing Input --\n\n";
+
+      mpInputDevice = driver.createInputDevice();
+      if ( mpInputDevice == NULL || !mpInputDevice->create(mpWindow->getHandle()) )
+      {
+         // failed to create input! can't proceed
+         return false;
+      }
+
+      return true;
+   }
+
+   bool Client::initSound()
+   {
+      Log::getInstance() << "\n-- Initializing Sound --\n\n";
+
+      return mSoundManager.initialize();
+   }
+
+   // - Operations
+
+   void Client::sendToServer(NetObject& object)
+   {
+      conn.send(mServerId, object);
+   }
+
+   // - Events
+
+   void Client::onNetEvent(int client, const NetEvent& event)
+   {
+      switch ( event.getType() )
+      {
       case aggregateEvent:
          {
             const AggregateEvent& aevent = dynamic_cast<const AggregateEvent&>(event);
@@ -310,261 +318,257 @@ void Client::onNetEvent(int client, const NetEvent& event)
                const NetEvent& netevent = *events[index];
                onNetEvent(client, netevent);
             }
-            break;
-         };
+         }
+         break;
       case connectReplyEvent:
          {
             const ConnectReplyEvent& crevent = dynamic_cast<const ConnectReplyEvent&>(event);
             handleConnectReplyEvent(crevent);
-            break;
-         };
+         }
+         break;
       case joinEvent:
          {
             const JoinEvent& joinevent = dynamic_cast<const JoinEvent&>(event);
             handleJoinEvent(joinevent);
-            break;
          }
+         break;
       case disconnectEvent:
          {
             const DisconnectEvent& disconnectevent = dynamic_cast<const DisconnectEvent&>(event);
             handleDisconnectEvent(disconnectevent);
-            break;
          }
+         break;
       case serverdownEvent:
          {
             handleServerdownEvent();
-            break;
          }
+         break;
       case scriptEvent:
          {
             const ScriptEvent& scriptevent = dynamic_cast<const ScriptEvent&>(event);
             handleScriptEvent(scriptevent);
-            break;
          }
+         break;
       case worldchangedEvent:
          {
             const WorldChangedEvent& worldchangedevent = static_cast<const WorldChangedEvent&>(event);
             handleWorldChangedEvent(worldchangedevent);
-            break;
          }
+         break;
       case newobjectEvent:
          {
             const NewObjectEvent& newobjectevent = dynamic_cast<const NewObjectEvent&>(event);
             handleNewObjectEvent(newobjectevent);
-            break;
          }
+         break;
       case delobjectEvent:
          {
             const DeleteObjectEvent& delobjectevent = dynamic_cast<const DeleteObjectEvent&>(event);
             handleDeleteObjectEvent(delobjectevent);
-            break;
          }
+         break;
       case updobjectEvent:
          {
             const UpdateObjectEvent& updateobjectevent = dynamic_cast<const UpdateObjectEvent&>(event);
             handleUpdateObjectEvent(updateobjectevent);
-            break;
          }
+         break;
+      }
    }
-}
 
-void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
-{
-   ASSERT_PTR(mpScript);
-
-   switch ( event.getReply() )
+   void Client::handleConnectReplyEvent(const ConnectReplyEvent& event)
    {
+      ASSERT_PTR(mpScript);
+
+      switch ( event.getReply() )
+      {
       case ConnectReplyEvent::eAccepted:
-         {
-            // run the onConnected script
-            Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), mpPlayer));
-            mpScript->run(UTEXT("onConnected"), 1, &arg);
+      {
+                                          // run the onConnected script
+                                          Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), mpPlayer));
+                                          mpScript->run(UTEXT("onConnected"), 1, &arg);
 
-            initialized = true;
-            break;
-         }
+                                          initialized = true;
+      }
+         break;
       case ConnectReplyEvent::eDenite:
+      {
+                                        // run the Client_onConnectionDenite script
+                                        Variant arg(event.getReason());
+                                        mpScript->run(UTEXT("onConnectionDenite"), 1, &arg);
+      }
+         break;
+      }
+   }
+
+   void Client::handleJoinEvent(const JoinEvent& event)
+   {
+      // run the onConnected script
+      Variant arg(event.getId() + 1);
+      mpScript->run(UTEXT("onPlayerJoined"), 1, &arg);
+   }
+
+   void Client::handleDisconnectEvent(const DisconnectEvent& event)
+   {
+      // call the script
+      Variant arg(event.getId() + 1);
+      mpScript->run(UTEXT("onPlayerLeft"), 1, &arg);
+   }
+
+   void Client::handleServerdownEvent()
+   {
+      // server went down, run the onClientConnect script
+      mpScript->run(UTEXT("onServerDown"));
+   }
+
+   void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
+   {
+      World* pworld = loadWorld(event.getFilename());
+      if ( pworld == NULL )
+      {
+         // ee boehhh
+         Log::getInstance().error("Failed to load world!");
+         return;
+      }
+   }
+
+   void Client::handleNewObjectEvent(const NewObjectEvent& event)
+   {
+      ASSERT(hasWorld());
+
+      // a new object has been made on the server and is now also known on the client
+
+      AutoPtr<Entity> entity = getContentManager().loadContent<Entity>(event.getFileName());
+      if ( !entity.hasPointer() )
+      {
+         UNREACHABLE("Could not create the entity!");
+      }
+
+      entity->setId(event.getId());
+
+      // remove the request
+      Requests::iterator it = mRequests.find(entity->getId());
+      if ( it != mRequests.end() )
+         mRequests.erase(it);
+
+      // add the entity to the world
+      getWorld().addEntity(entity.release());
+   }
+
+   void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
+   {
+      getWorld().removeEntity(event.getId());
+   }
+
+   void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
+   {
+      Entity* pentity = getWorld().findEntity(event.getId());
+      if ( pentity == NULL )
+      {
+         if ( mRequests.find(event.getId()) == mRequests.end() )
          {
-            // run the Client_onConnectionDenite script
-            Variant arg(event.getReason());
-            mpScript->run(UTEXT("onConnectionDenite"), 1, &arg);
-            break;
+            // unknown object, must have been generated before the player entered the game
+            RequestObjectEvent event(event.getId());
+            conn.send(mServerId, event);
+
+            mRequests[event.getId()] = true;
          }
-   }
-}
-
-void Client::handleJoinEvent(const JoinEvent& event)
-{
-   // run the onConnected script
-   Variant arg(event.getId() + 1);
-   mpScript->run(UTEXT("onPlayerJoined"), 1, &arg);
-}
-
-void Client::handleDisconnectEvent(const DisconnectEvent& event)
-{
-   // call the script
-   Variant arg(event.getId() + 1);
-   mpScript->run(UTEXT("onPlayerLeft"), 1, &arg);
-}
-
-void Client::handleServerdownEvent()
-{
-   // server went down, run the onClientConnect script
-   mpScript->run(UTEXT("onServerDown"));
-}
-
-void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
-{
-   World* pworld = loadWorld(event.getFilename());
-   if ( pworld == NULL )
-   {
-      // ee boehhh
-      Log::getInstance().error("Failed to load world!");
-      return;
-   }
-}
-
-void Client::handleNewObjectEvent(const NewObjectEvent& event)
-{
-   ASSERT(hasWorld());
-
-   // a new object has been made on the server and is now also known on the client
-
-   AutoPtr<Entity> entity = getContentManager().loadContent<Entity>(event.getFileName());
-   if ( !entity.hasPointer() )
-   {
-      UNREACHABLE("Could not create the entity!");
-   }
-
-   entity->setId(event.getId());
-
-   // remove the request
-   Requests::iterator it = mRequests.find(entity->getId());
-   if ( it != mRequests.end() )
-      mRequests.erase(it);
-
-   // add the entity to the world
-   getWorld().addEntity(entity.release());
-}
-
-void Client::handleDeleteObjectEvent(const DeleteObjectEvent& event)
-{
-   getWorld().removeEntity(event.getId());
-}
-
-void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
-{
-   Entity* pentity = getWorld().findEntity(event.getId());
-   if ( pentity == NULL )
-   {
-      if ( mRequests.find(event.getId()) == mRequests.end() )
+      }
+      else
       {
-         // unknown object, must have been generated before the player entered the game
-         RequestObjectEvent event(event.getId());
-         conn.send(mServerId, event);
-
-         mRequests[event.getId()] = true;
+         event.update(*pentity);
       }
    }
-   else
+
+   void Client::handleScriptEvent(const ScriptEvent& event)
    {
-      event.update(*pentity);
+      DataStream& datastream = const_cast<DataStream&>(event.getStream());
+      NetStream stream(datastream);
+
+      // run the onClientConnect script
+      Variant arg(mpScript->instantiate(sNetStream, &stream));
+      mpScript->run(sScriptEvent, 1, &arg);
    }
-}
 
-static const String sNetStream    = UTEXT("engine.net.NetStream");
-static const String sScriptEvent  = UTEXT("onScriptEvent");
-static const String sOnKeyEvent   = UTEXT("onKeyEvent");
-static const String sOnMouseEvent = UTEXT("onMouseEvent");
+   // - Notifications
 
-void Client::handleScriptEvent(const ScriptEvent& event)
-{
-   DataStream& datastream = const_cast<DataStream&>(event.getStream());
-   NetStream stream(datastream);
-
-   // run the onClientConnect script
-   Variant arg(mpScript->instantiate(sNetStream, &stream));
-   mpScript->run(sScriptEvent, 1, &arg);
-}
-
-// - Notifications
-
-void Client::notifyWorldChanged()
-{
-   // need a new content manager, the simulator, etc, have changed
-   
-
-   World& world = getWorld();
-   world.initialize(*mpDevice);
-   world.onViewportChanged(*mpRenderContext);
-
-   mpWorldRenderer = world.createRenderer();
-   mpPlayer->initialize(world);
-
-   getContentManager().setSimulator(world.getSimulator());
-
-   // run the onWorldChanged script
-   Variant arg(mpScript->resolve(&world));
-   mpScript->run(UTEXT("onWorldChanged"), 1, &arg);
-
-   mpBackgroundMusic = mSoundManager.createTrack(UTEXT("../sounds/grassy_plain.ogg"));
-   mSoundManager.play(*mpBackgroundMusic);
-
-   Process::notifyWorldChanged();
-}
-
-void Client::onWindowChanged()
-{
-   if ( hasWindow() )
+   void Client::notifyWorldChanged()
    {
-      mpWindow->addListener(mWindowListener);
-      mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
-      mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
+      // need a new content manager, the simulator, etc, have changed
 
-      if ( !initDevice() )
+
+      World& world = getWorld();
+      world.initialize(*mpDevice);
+      world.onViewportChanged(*mpRenderContext);
+
+      mpWorldRenderer = world.createRenderer();
+      mpPlayer->initialize(world);
+
+      getContentManager().setSimulator(world.getSimulator());
+
+      // run the onWorldChanged script
+      Variant arg(mpScript->resolve(&world));
+      mpScript->run(UTEXT("onWorldChanged"), 1, &arg);
+
+      mpBackgroundMusic = mSoundManager.createTrack(UTEXT("../sounds/grassy_plain.ogg"));
+      mSoundManager.play(*mpBackgroundMusic);
+
+      Process::notifyWorldChanged();
+   }
+
+   void Client::onWindowChanged()
+   {
+      if ( hasWindow() )
       {
-         //setActive(false);
+         mpWindow->addListener(mWindowListener);
+         mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
+         mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
+
+         if ( !initDevice() )
+         {
+            //setActive(false);
+         }
       }
    }
-}
 
-void Client::onWindowResized()
-{
-   Graphics::Viewport viewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
-   mpRenderContext->setViewport(viewport);
-   
-   if ( hasWorld() )
+   void Client::onWindowResized()
    {
-      getWorld().onViewportChanged(*mpRenderContext);
+      Graphics::Viewport viewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
+      mpRenderContext->setViewport(viewport);
+
+      if ( hasWorld() )
+      {
+         getWorld().onViewportChanged(*mpRenderContext);
+      }
    }
-}
 
-void Client::onWindowClosing()
-{
-}
+   void Client::onWindowClosing()
+   {
+   }
 
-void Client::onWindowClosed()
-{
-   setActive(false);
-}
+   void Client::onWindowClosed()
+   {
+      setActive(false);
+   }
 
-// - Input
+   // - Input
 
-void Client::onKeyEvent(const Input::KeyEvent& event)
-{
-   Variant args[2];
-   args[0].setInt(event.getKey());
-   args[1].setBool(event.getEventType() == Input::KeyEvent::ePressed);
-   mpScript->run(sOnKeyEvent, 2, args);
-}
+   void Client::onKeyEvent(const Input::KeyEvent& event)
+   {
+      Variant args[2];
+      args[0].setInt(event.getKey());
+      args[1].setBool(event.getEventType() == Input::KeyEvent::ePressed);
+      mpScript->run(sOnKeyEvent, 2, args);
+   }
 
-void Client::onMouseEvent(const Input::MouseEvent& event)
-{
-   Variant args[4];
-   args[0].setInt(event.getLocation().x());
-   args[1].setInt(event.getLocation().y());
-   args[2].setInt(event.getButtons());
-   args[3].setInt(event.getEventType());
-   mpScript->run(sOnMouseEvent, 4, args);
-}
+   void Client::onMouseEvent(const Input::MouseEvent& event)
+   {
+      Variant args[4];
+      args[0].setInt(event.getLocation().x());
+      args[1].setInt(event.getLocation().y());
+      args[2].setInt(event.getButtons());
+      args[3].setInt(event.getEventType());
+      mpScript->run(sOnMouseEvent, 4, args);
+   }
 
+} // namespace c2d

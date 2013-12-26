@@ -25,35 +25,39 @@
 #include "net/events/aggregateevent.h"
 #include "net/events/updateobjectevent.h"
 
-ServerDirtySet::ServerDirtySet():
-   DirtySet(),
-   mObjects()
+namespace c2d
 {
-}
 
-ServerDirtySet::~ServerDirtySet()
-{
-}
-
-// - operations
-
-void ServerDirtySet::reportDirty(Entity& entity)
-{
-   mObjects.push_back(&entity);
-}
-
-void ServerDirtySet::collect(AggregateEvent& event)
-{
-   NetEventFactory& factory = NetEventFactory::getInstance();
-   for ( std::size_t index = 0; index < mObjects.size(); ++index )
+   ServerDirtySet::ServerDirtySet() :
+      DirtySet(),
+      mObjects()
    {
-      Entity& object = *mObjects[index];
-      UpdateObjectEvent* pevent = factory.createUpdateEvent();
-      pevent->initialize(object);
-
-      object.resetDirty();
-
-      event.add(pevent);
    }
-}
 
+   ServerDirtySet::~ServerDirtySet()
+   {
+   }
+
+   // - operations
+
+   void ServerDirtySet::reportDirty(Entity& entity)
+   {
+      mObjects.push_back(&entity);
+   }
+
+   void ServerDirtySet::collect(AggregateEvent& event)
+   {
+      NetEventFactory& factory = NetEventFactory::getInstance();
+      for ( std::size_t index = 0; index < mObjects.size(); ++index )
+      {
+         Entity& object = *mObjects[index];
+         UpdateObjectEvent* pevent = factory.createUpdateEvent();
+         pevent->initialize(object);
+
+         object.resetDirty();
+
+         event.add(pevent);
+      }
+   }
+
+} // namespace c2d

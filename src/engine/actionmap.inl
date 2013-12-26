@@ -19,13 +19,18 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE bool ActionMap::hasProcess() const
+namespace c2d
 {
-   return mpProcess != NULL;
-}
 
-INLINE Process& ActionMap::getProcess()
-{
-   ASSERT(hasProcess())
-   return *mpProcess;
-}
+   INLINE bool ActionMap::hasProcess() const
+   {
+      return mpProcess != NULL;
+   }
+
+   INLINE Process& ActionMap::getProcess()
+   {
+      ASSERT(hasProcess())
+         return *mpProcess;
+   }
+
+} // namespace c2d

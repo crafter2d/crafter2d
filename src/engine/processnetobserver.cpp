@@ -21,15 +21,20 @@
 
 #include "process.h"
 
-ProcessNetObserver::ProcessNetObserver(Process& process):
-   NetObserver(),
-   mProcess(process)
+namespace c2d
 {
-}
 
-// - Implementation
+   ProcessNetObserver::ProcessNetObserver(Process& process) :
+      NetObserver(),
+      mProcess(process)
+   {
+   }
 
-void ProcessNetObserver::onEvent(int clientid, const NetEvent& event)
-{
-   mProcess.onNetEvent(clientid, event);
+   // - Implementation
+
+   void ProcessNetObserver::onEvent(int clientid, const NetEvent& event)
+   {
+      mProcess.onNetEvent(clientid, event);
+   }
+
 }

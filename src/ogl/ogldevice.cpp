@@ -30,6 +30,7 @@
 #include "oglblendstate.h"
 #include "oglfont.h"
 #include "ogltexture.h"
+#include "oglrendertarget.h"
 #include "oglrendercontext.h"
 #include "oglindexbuffer.h"
 #include "oglvertexbuffer.h"
@@ -147,6 +148,11 @@ Texture* OGLDevice::createTexture(DataStream& data)
    }
 
    return presult;
+}
+
+RenderTarget* OGLDevice::createRenderTarget()
+{
+   return new OGLRenderTarget();
 }
 
 Font* OGLDevice::createFont(const String& name, int pointsize)
