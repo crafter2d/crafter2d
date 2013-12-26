@@ -1,16 +1,16 @@
--- JEngine SSE PreMake 4 configuration file
--- Copyright 2010, Jeroen Broekhuizen
+-- JEngine SSE PreMake 5 configuration file
+-- Copyright 2010-2013, Jeroen Broekhuizen
 
 -- create the project
-project "OGL"
+project "mod_ogl"
 	kind "SharedLib"
 	language "C++"
 	targetdir "bin"
 	flags { "NoPCH" }
-	location "build/ogl"
+	location "build/mods/mod_ogl"
 	
 -- set project files
-files { "src/ogl/**.cpp", "src/ogl/**.h", "src/ogl/**.inl" }
+files { "src/mods/mod_ogl/**.cpp", "src/mods/mod_ogl/**.h", "src/mods/mod_ogl/**.inl" }
 includedirs { "src" }
 
 -- set the include and library
