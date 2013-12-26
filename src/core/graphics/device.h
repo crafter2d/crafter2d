@@ -30,13 +30,13 @@ namespace Graphics
       
     // get/set
       ContentManager& getContentManager();
+      RenderContext&  getContext();
 
     // operations
-      virtual bool create(int windowhandle, int width, int height) = 0;
+      virtual bool create(int windowhandle, int width, int height);
       virtual void present() = 0;
 
     // creation
-      virtual RenderContext*  createRenderContext() = 0;
       virtual CodePath*       createCodePath() = 0;
       virtual VertexBuffer*   createVertexBuffer() = 0;
       virtual IndexBuffer*    createIndexBuffer() = 0;
@@ -46,10 +46,15 @@ namespace Graphics
       virtual Font*           createFont(const String& name, int pointsize) = 0;
               Effect*         createEffect(const String& filename);
 
+   protected:
+    // creations
+      virtual RenderContext*  createRenderContext() = 0;
+
    private:
 
     // data
       ContentManager& mContentManager;
+      RenderContext*  mpContext;
    };
 };
 

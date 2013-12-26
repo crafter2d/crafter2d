@@ -8,7 +8,8 @@ class CORE_API Module
 {
 public:
    enum Type { eContent,   // content loader/writer
-               ePlugin,    // system plugin
+               eSystem,    // a system implementation
+               ePlugin,    // general plugin
                eInvalid,
              };
 
