@@ -11,7 +11,7 @@ ShaderUniformBuffer::ShaderUniformBuffer(GLuint program, GLuint block):
    mBlock(block),
    mBuffer(0),
    mpElements(NULL),
-   mElementNr(NULL)
+   mElementNr(0)
 {
 }
 

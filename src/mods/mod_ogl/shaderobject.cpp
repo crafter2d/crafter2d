@@ -41,7 +41,7 @@ ShaderObject::~ ShaderObject()
 bool ShaderObject::create()
 {
 	program = glCreateProgram();
-	if ( program == NULL )
+	if ( program == 0 )
    {
       Log::getInstance().error("ShaderObject.create: Could not create program object.");
 		return false;
@@ -122,7 +122,7 @@ void ShaderObject::linkInput(VertexLayout& layout)
       VertexLayoutElement& field = layout[index];
       field.index = glGetAttribLocation(program, field.semantic.toUtf8().c_str());
    }
-   glUseProgram(NULL);
+   glUseProgram(0);
 }
 
 /// \fn ShaderObject::valid() const

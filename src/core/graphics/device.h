@@ -25,11 +25,13 @@ namespace Graphics
    class CORE_API Device
    {
    public:
-      explicit Device(ContentManager& contentmanager);
+      Device();
       virtual ~Device();
       
     // get/set
       ContentManager& getContentManager();
+      void            setContentManager(ContentManager& contentmanager);
+
       RenderContext&  getContext();
 
     // operations
@@ -53,7 +55,7 @@ namespace Graphics
    private:
 
     // data
-      ContentManager& mContentManager;
+      ContentManager* mpContentManager;
       RenderContext*  mpContext;
    };
 };

@@ -24,12 +24,14 @@
 
 #include "core/defines.h"
 #include "core/content/contentmanager.h"
+#include "core/graphics/graphicssystem.h"
 #include "core/entity/entity.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
 #include "core/math/xform.h"
 #include "core/input/input.h"
+#include "core/input/inputsystem.h"
 #include "core/input/keyevent.h"
 #include "core/input/mouseevent.h"
 #include "core/graphics/device.h"
@@ -38,6 +40,7 @@
 #include "core/graphics/viewport.h"
 #include "core/system/platform.h"
 #include "core/system/driver.h"
+#include "core/system/systemmanager.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
@@ -241,45 +244,43 @@ namespace c2d
 
    bool Client::initDevice()
    {
-      AutoPtr<Driver> driver = mpWindow->loadDriver();
-      if ( !driver.hasPointer() )
-      {
-         return false;
-      }
-
-      return initGraphics(*driver)
-         && initInput(*driver)
-         && initSound();
+      return initGraphics()
+          && initInput()
+          && initSound();
    }
 
-   bool Client::initGraphics(Driver& driver)
+   bool Client::initGraphics()
    {
-      Log::getInstance() << "\n-- Initializing Graphics --\n\n";
-
       static const Color color(75, 150, 230, 255);
 
-      mpDevice = driver.createGraphicsDevice(getContentManager());
-      if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
+      Log::getInstance() << "\n-- Initializing Graphics --\n\n";
+
+      GraphicsSystem& graphicssys = static_cast<GraphicsSystem&>(getSystemManager().getSystem(SystemKind::eGraphicsSystem));
+      Device& device = graphicssys.getDevice();
+      device.setContentManager(getContentManager());
+      if ( !device.create(mpWindow->getHandle(), 800, 600) )
       {
          return false;
       }
 
-      getContentManager().setDevice(*mpDevice);
+      getContentManager().setDevice(device);
 
-      mpRenderContext = mpDevice->createRenderContext();
+      mpDevice = &device;
+      mpRenderContext = &device.getContext();
       mpRenderContext->setClearColor(color);
-      mpRenderContext->initialize(*mpDevice);
+      mpRenderContext->initialize(device);
 
       onWindowResized();
 
       return true;
    }
 
-   bool Client::initInput(Driver& driver)
+   bool Client::initInput()
    {
       Log::getInstance() << "\n-- Initializing Input --\n\n";
 
-      mpInputDevice = driver.createInputDevice();
+      InputSystem& inputsys = static_cast<InputSystem&>(getSystemManager().getSystem(SystemKind::eInputSystem));
+      mpInputDevice = &inputsys.getDevice();
       if ( mpInputDevice == NULL || !mpInputDevice->create(mpWindow->getHandle()) )
       {
          // failed to create input! can't proceed
@@ -383,20 +384,20 @@ namespace c2d
       switch ( event.getReply() )
       {
       case ConnectReplyEvent::eAccepted:
-      {
-                                          // run the onConnected script
-                                          Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), mpPlayer));
-                                          mpScript->run(UTEXT("onConnected"), 1, &arg);
+         {
+            // run the onConnected script
+            Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), mpPlayer));
+            mpScript->run(UTEXT("onConnected"), 1, &arg);
 
-                                          initialized = true;
-      }
+            initialized = true;
+         }
          break;
       case ConnectReplyEvent::eDenite:
-      {
-                                        // run the Client_onConnectionDenite script
-                                        Variant arg(event.getReason());
-                                        mpScript->run(UTEXT("onConnectionDenite"), 1, &arg);
-      }
+         {
+            // run the Client_onConnectionDenite script
+            Variant arg(event.getReason());
+            mpScript->run(UTEXT("onConnectionDenite"), 1, &arg);
+         }
          break;
       }
    }

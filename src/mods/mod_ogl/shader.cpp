@@ -146,7 +146,7 @@ void Shader::release()
 VertexShader::VertexShader()
 {
 	handle(glCreateShader(GL_VERTEX_SHADER));
-	if ( handle() == NULL )
+	if ( handle() == 0 )
    {
       Log::getInstance().error("VertexShader: Can not create shader object.");
    }
@@ -159,7 +159,7 @@ VertexShader::VertexShader()
 FragmentShader::FragmentShader()
 {
 	handle(glCreateShader(GL_FRAGMENT_SHADER));
-	if ( handle() == NULL )
+	if ( handle() == 0 )
    {
       Log::getInstance().error("FragmentShader: Can not create shader object.");
    }

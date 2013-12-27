@@ -54,9 +54,9 @@ namespace c2d
 
    void KeyMap::update()
    {
-      ASSERT_PTR(mpClient)
+      ASSERT_PTR(mpClient);
 
-         ActionMap* pactionmap = mpClient->getActionMap();
+      ActionMap* pactionmap = mpClient->getActionMap();
       if ( pactionmap != NULL )
       {
          InputDevice& input = mpClient->getInput();

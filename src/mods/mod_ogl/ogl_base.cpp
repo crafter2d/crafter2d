@@ -21,8 +21,13 @@
 
 #include <Windows.h>
 
-#include "ogldevicefactory.h"
-#include "ogldriver.h"
+#include "core/graphics/graphicssystem.h"
+#include "core/input/inputsystem.h"
+#include "core/modules/modulecollection.h"
+#include "core/system/systemmodule.h"
+
+#include "ogldevice.h"
+#include "input/oglinputdevice.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule,
                       DWORD  ul_reason_for_call,
@@ -39,12 +44,17 @@ BOOL APIENTRY DllMain(HMODULE hModule,
    return TRUE;
 }
 
-extern "C" OGL_API Graphics::DeviceFactory* cdecl getDeviceFactory()
+extern "C" OGL_API ModuleCollection* cdecl getModuleCollection()
 {
-   return new Graphics::OGLDeviceFactory();
-}
+   ModuleCollection* pmodules = new ModuleCollection();
 
-extern "C" OGL_API Driver* cdecl getDriver()
-{
-   return new OGLDriver();
+   c2d::SystemModule* pmodule = new c2d::SystemModule();
+   pmodule->setSystem(new c2d::GraphicsSystem(new Graphics::OGLDevice()));
+   pmodules->add(pmodule);
+
+   pmodule = new c2d::SystemModule();
+   pmodule->setSystem(new c2d::InputSystem(new OGLInputDevice()));
+   pmodules->add(pmodule);
+
+   return pmodules;
 }

@@ -5,9 +5,17 @@
 
 namespace c2d
 {
-   GraphicsSystem::GraphicsSystem() :
+   GraphicsSystem::GraphicsSystem(Graphics::Device* pdevice) :
       System(SystemKind::eGraphicsSystem),
-      mpDevice(NULL)
+      mpDevice(pdevice)
    {
-   }                                                                                                                                                                                                                                   
+   }
+
+   // - Get/set
+
+   Graphics::Device& GraphicsSystem::getDevice()
+   {
+      ASSERT_PTR(mpDevice);
+      return *mpDevice;
+   }
 }

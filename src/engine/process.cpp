@@ -30,6 +30,7 @@
 #include "core/smartptr/autoptr.h"
 #include "core/content/contentmanager.h"
 #include "core/modules/modulemanager.h"
+#include "core/system/systemmanager.h"
 
 #include "script/vm/virtualclass.h"
 
@@ -85,6 +86,9 @@ namespace c2d
       mpContentManager = new ContentManager();
       mpContentManager->setBaseDir(basedir);
       mpContentManager->initialize(getModuleManager());
+
+      mpSystemManager = new SystemManager();
+      mpSystemManager->initialize(getModuleManager());
 
       // initialize the scripting engine
       mScriptManager.initialize();

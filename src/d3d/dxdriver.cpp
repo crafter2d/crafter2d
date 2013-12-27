@@ -26,7 +26,7 @@
 
 Graphics::Device* DXDriver::createGraphicsDevice(ContentManager& manager)
 {
-   return new Graphics::D3DDevice(manager);
+   return new Graphics::D3DDevice();
 }
 
 Input::InputDevice* DXDriver::createInputDevice()

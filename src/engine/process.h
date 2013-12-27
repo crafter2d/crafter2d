@@ -40,6 +40,7 @@ class World;
 namespace c2d
 {
    class ActionMap;
+   class SystemManager;
 
    /// @author Jeroen Broekhuizen
    /// \brief Provides the basic functionality for the process.
@@ -60,6 +61,7 @@ namespace c2d
       NetConnection*    getConnection();
       ModuleManager&    getModuleManager();
       ContentManager&   getContentManager();
+      SystemManager&    getSystemManager();
       ScriptManager&    getScriptManager();
 
       ActionMap*     getActionMap();
@@ -99,6 +101,7 @@ namespace c2d
       // members
       ModuleManager*    mpModuleManager;
       ContentManager*   mpContentManager;
+      SystemManager*    mpSystemManager;
       World*            mpWorld;
       bool              mActive;
       bool              mDetecting;

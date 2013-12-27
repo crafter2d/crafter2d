@@ -11,10 +11,10 @@ namespace Graphics
 
 namespace c2d
 {
-   class GraphicsSystem : public System
+   class CORE_API GraphicsSystem : public System
    {
    public:
-      GraphicsSystem();
+      explicit GraphicsSystem(Graphics::Device* pdevice);
 
     // query
       Graphics::Device& getDevice();

@@ -26,7 +26,7 @@ namespace Graphics
 /// \brief Set a new handle of the shader.
 INLINE void Shader::handle(GLuint shader)
 {
-   if ( mShader != NULL )
+   if ( mShader != 0 )
       release();
 
    mShader = shader;

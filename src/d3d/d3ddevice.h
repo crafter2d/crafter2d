@@ -13,7 +13,7 @@ namespace Graphics
    class D3DDevice : public Device
    {
    public:
-      explicit D3DDevice(ContentManager& contentmanager);
+      D3DDevice();
 
     // get/set
       ID3D11Device& getDevice() { return *mpDevice; }

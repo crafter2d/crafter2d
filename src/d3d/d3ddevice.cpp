@@ -13,8 +13,8 @@
 namespace Graphics
 {
 
-D3DDevice::D3DDevice(ContentManager& contentmanager):
-   Device(contentmanager),
+D3DDevice::D3DDevice():
+   Device(),
    mpDevice(NULL),
    mpContext(NULL),
    mpSwapChain(NULL),

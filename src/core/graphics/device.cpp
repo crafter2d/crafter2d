@@ -8,8 +8,8 @@
 namespace Graphics
 {
 
-   Device::Device(ContentManager& contentmanager):
-      mContentManager(contentmanager),
+   Device::Device():
+      mpContentManager(NULL),
       mpContext(NULL)
    {
    }
@@ -22,7 +22,13 @@ namespace Graphics
 
    ContentManager& Device::getContentManager()
    {
-      return mContentManager;
+      ASSERT_PTR(mpContentManager);
+      return *mpContentManager;
+   }
+
+   void Device::setContentManager(ContentManager& contentmanager)
+   {
+      mpContentManager = &contentmanager;
    }
 
    RenderContext& Device::getContext()
@@ -41,7 +47,7 @@ namespace Graphics
 
    Effect* Device::createEffect(const String& filename)
    {
-      return mContentManager.loadContent<Effect>(filename);
+      return mpContentManager->loadContent<Effect>(filename);
    }
 
 };

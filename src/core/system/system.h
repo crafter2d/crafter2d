@@ -2,11 +2,13 @@
 #ifndef __System_h__
 #define __System_h__
 
+#include "core/core_base.h"
+
 #include "systeminterface.h"
 
 namespace c2d
 {
-   class System
+   class CORE_API System
    {
    public:
     // query

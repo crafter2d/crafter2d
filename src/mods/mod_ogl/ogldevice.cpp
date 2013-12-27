@@ -39,8 +39,8 @@
 namespace Graphics
 {
 
-OGLDevice::OGLDevice(ContentManager& contentmanager) :
-   Device(contentmanager),
+OGLDevice::OGLDevice() :
+   Device(),
    mFreeTypeLib(NULL)
 {
 }
@@ -104,7 +104,7 @@ bool OGLDevice::create(int windowhandle, int width, int height)
    if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
       return false;
 
-   return true;
+   return Device::create(windowhandle, width, height);
 }
 
 RenderContext* OGLDevice::createRenderContext()

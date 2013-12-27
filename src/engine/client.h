@@ -131,8 +131,8 @@ namespace c2d
 
       // initialization
       bool initDevice();
-      bool initGraphics(Driver& driver);
-      bool initInput(Driver& driver);
+      bool initGraphics();
+      bool initInput();
       bool initSound();
 
       // event handlers

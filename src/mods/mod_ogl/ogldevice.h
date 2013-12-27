@@ -13,8 +13,11 @@ namespace Graphics
    class OGLDevice : public Device
    {
    public:
-      explicit OGLDevice(ContentManager& contentmanager);
-      virtual ~ OGLDevice();
+      OGLDevice();
+      virtual ~OGLDevice();
+
+    // get/set
+      
       
     // overloads
       virtual bool create(int windowhandle, int width, int height) override;
