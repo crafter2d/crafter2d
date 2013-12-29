@@ -1,7 +1,7 @@
 
 #include "win32deviceinfo.h"
 
-#include "d3d/d3ddevice.h"
+#include "mods/mod_d3d/d3ddevice.h"
 
 #include <d3d11_1.h>
 

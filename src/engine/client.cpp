@@ -35,7 +35,6 @@
 #include "core/input/keyevent.h"
 #include "core/input/mouseevent.h"
 #include "core/graphics/device.h"
-#include "core/graphics/devicefactory.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 #include "core/system/platform.h"
