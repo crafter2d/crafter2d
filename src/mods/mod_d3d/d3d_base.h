@@ -21,7 +21,7 @@
 #define D3D_BASE_H_
 
 #ifdef WIN32
-#ifdef D3D_EXPORTS
+#ifdef MOD_EXPORTS
 #define D3D_API __declspec(dllexport)
 #else
 #define D3D_API __declspec(dllimport)
@@ -29,7 +29,5 @@
 #else
 #define D3D_API
 #endif
-
-//extern "C" D3D_API Driver* cdecl getDeviceFactory();
 
 #endif // D3D_BASE_H_

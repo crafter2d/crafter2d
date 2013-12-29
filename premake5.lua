@@ -4,7 +4,7 @@
 solution "Crafter2D"
 	configurations { "Debug", "Release" }
 	location "build"
-	startproject "game"
+	startproject "Game"
 
 newoption 
 {
@@ -23,7 +23,6 @@ libdir = _OPTIONS["libdir"]
 package.path = package.path .. ";./projects/?.lua"
  
 require "proj-core"
-require "proj-d3d"
 require "proj-script"
 require "proj-engine"
 require "proj-game"
@@ -31,4 +30,5 @@ require "proj-gen"
 require "proj-unittest"
 require "proj-compiler"
 require "proj-modc2d"
+require "proj-modd3d"
 require "proj-modogl"

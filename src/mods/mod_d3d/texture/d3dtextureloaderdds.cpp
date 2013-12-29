@@ -9,7 +9,7 @@
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
 
-#include "d3d/d3ddevice.h"
+#include "../d3ddevice.h"
 
 #include "d3dtexture.h"
 #include "dds.h"

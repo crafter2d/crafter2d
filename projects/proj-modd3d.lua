@@ -2,20 +2,20 @@
 -- Copyright 2010, Jeroen Broekhuizen
 
 -- create the project
-project "D3D"
+project "mod_d3d"
 	kind "SharedLib"
 	language "C++"
 	targetdir "bin"
 	flags { "NoPCH" }
-	location "build/d3d"
+	location "build/mods/mod_d3d"
 	
 -- set project files
-files { "src/d3d/**.cpp", "src/d3d/**.h", "src/d3d/**.inl" }
+files { "src/mods/mod_d3d/**.cpp", "src/mods/mod_d3d/**.h", "src/mods/mod_d3d/**.inl" }
 includedirs { "src" }
 
 -- set the include and library
 if ( os.is("windows") ) then
-	defines { "WIN32", "D3D_EXPORTS" }
+	defines { "WIN32", "MOD_EXPORTS" }
 	
 	libdirs { }
 

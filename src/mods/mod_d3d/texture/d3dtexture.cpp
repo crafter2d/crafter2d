@@ -3,8 +3,8 @@
 
 #include "core/graphics/textureinfo.h"
 
-#include "d3d/d3ddevice.h"
-#include "d3d/d3drendercontext.h"
+#include "../d3ddevice.h"
+#include "../d3drendercontext.h"
 
 namespace Graphics
 {

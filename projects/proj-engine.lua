@@ -1,5 +1,5 @@
--- JEngine SSE PreMake 4 configuration file
--- Copyright 2010, Jeroen Broekhuizen
+-- JEngine SSE PreMake 5 configuration file
+-- Copyright 2010-2013, Jeroen Broekhuizen
 
 -- create the project
 project "Engine"

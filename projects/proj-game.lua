@@ -1,5 +1,5 @@
--- JEngine SSE PreMake 4 configuration file
--- Copyright 2010, Jeroen Broekhuizen
+-- JEngine SSE PreMake 5 configuration file
+-- Copyright 2010-2013, Jeroen Broekhuizen
 
 -- create the project
 project "Game"
@@ -9,7 +9,6 @@ project "Game"
 	flags { "NoPCH" }
 	location "build/game"
 	debugdir "bin"
-	dependson { "D3D" }
 	
 	files { "src/game/**.cpp", "src/game/**.h", "src/game/**.inl" }
 	links { "Core", "Engine", "Script" }
