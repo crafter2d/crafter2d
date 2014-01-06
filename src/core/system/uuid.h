@@ -8,27 +8,34 @@
 
 class DataStream;
 
-class CORE_API Uuid
+namespace c2d
 {
-public:
-   Uuid();
-   Uuid(const Uuid& that);
-   Uuid(uint64_t data1, uint16_t data2, uint16_t data3, uint8_t data4[8]);
+   class CORE_API Uuid
+   {
+   public:
+      Uuid();
+      Uuid(const Uuid& that);
+      Uuid(uint32_t data1, uint16_t data2, uint16_t data3, uint16_t data4, uint64_t data5);
 
- // operators
-   bool operator==(const Uuid& that) const;
+    // operators
+      bool operator<(const Uuid& that) const;
+      bool operator==(const Uuid& that) const;
 
- // streaming
-   void read(DataStream& stream);
-   void write(DataStream& stream);
+    // streaming
+      void read(DataStream& stream);
+      void write(DataStream& stream) const;
 
-private:
+   private:
+    // operations
+      uint64_t sum() const;
 
- // data
-   uint64_t mData1;
-   uint16_t mData2;
-   uint16_t mData3;
-   uint8_t  mData4[8];
-};
+    // data
+      uint32_t mData1;
+      uint16_t mData2;
+      uint16_t mData3;
+      uint16_t mData4;
+      uint64_t mData5;
+   };
+}
 
 #endif // UUID_H

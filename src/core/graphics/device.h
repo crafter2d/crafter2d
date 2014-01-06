@@ -7,7 +7,11 @@
 #include "core/graphics/codepath.h"
 #include "core/graphics/blendstatedesc.h"
 
-class ContentManager;
+namespace c2d
+{
+   class ContentManager;
+}
+
 class DataStream;
 class String;
 
@@ -29,8 +33,8 @@ namespace Graphics
       virtual ~Device();
       
     // get/set
-      ContentManager& getContentManager();
-      void            setContentManager(ContentManager& contentmanager);
+      c2d::ContentManager& getContentManager();
+      void                 setContentManager(c2d::ContentManager& contentmanager);
 
       RenderContext&  getContext();
 
@@ -55,8 +59,8 @@ namespace Graphics
    private:
 
     // data
-      ContentManager* mpContentManager;
-      RenderContext*  mpContext;
+      c2d::ContentManager* mpContentManager;
+      RenderContext*       mpContext;
    };
 };
 

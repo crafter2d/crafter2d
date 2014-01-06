@@ -4,7 +4,7 @@
 
 #include "core/content/contentreader.h"
 
-class TextureReader : public ContentReader
+class TextureReader : public c2d::ContentReader
 {
 public:
 

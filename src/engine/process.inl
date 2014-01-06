@@ -54,12 +54,6 @@ namespace c2d
       return *mpContentManager;
    }
 
-   INLINE SystemManager& Process::getSystemManager()
-   {
-      ASSERT_PTR(mpSystemManager);
-      return *mpSystemManager;
-   }
-
    INLINE bool Process::hasWorld() const
    {
       return mpWorld != NULL;

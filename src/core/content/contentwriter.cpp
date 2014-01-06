@@ -5,6 +5,9 @@
 
 #include "contentheader.h"
 
-ContentWriter::ContentWriter()
+namespace c2d
 {
-}
+   ContentWriter::ContentWriter()
+   {
+   }
+} // namespace c2d

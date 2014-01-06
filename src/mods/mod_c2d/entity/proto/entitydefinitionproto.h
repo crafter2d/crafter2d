@@ -6,7 +6,11 @@
 
 #include "core/string/string.h"
 
-class ContentManager;
+namespace c2d
+{
+   class ContentManager;
+}
+
 class ComponentFactories;
 class Entity;
 class DataStream;
@@ -22,7 +26,7 @@ public:
    typedef std::vector<EntityDefinitionProto*> Entities;
    typedef std::vector<ComponentDefinitionProto*> Components;
 
-   Entity* instantiate(ContentManager& manager, ComponentFactories& factories);
+   Entity* instantiate(c2d::ContentManager& manager, ComponentFactories& factories);
 
    void read(DataStream& stream);
    void write(DataStream& stream) const;

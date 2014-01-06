@@ -30,8 +30,4 @@
 #define OGL_API
 #endif
 
-#include "core/graphics/devicefactory.h"
-
-extern "C" OGL_API Graphics::DeviceFactory* cdecl getDeviceFactory();
-
 #endif // D3D_BASE_H_

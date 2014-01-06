@@ -25,8 +25,8 @@
 #include <tinyxml.h>
 
 #include "core/content/contentheader.h"
-#include "core/content/contentmodule.h"
 #include "core/content/contentreader.h"
+#include "core/modules/contentmodule.h"
 #include "core/modules/modulemanager.h"
 #include "core/streams/filereaderstream.h"
 #include "core/system/uuid.h"
@@ -35,63 +35,58 @@
 
 #include "content.h"
 
-ContentManager::ContentManager():
-   mModules(Module::eContent),
-   mBaseDir(),
-   mpDevice(NULL),
-   mpSimulator(NULL)
+namespace c2d
 {
-}
-
-// - Operations
-
-void ContentManager::initialize(ModuleManager& manager)
-{
-   manager.getModules(mModules);
-}
-
-IContent* ContentManager::load(const String& name)
-{
-   IContent* presult = NULL;
-
-   String path = File::concat(mBaseDir, name + UTEXT(".c2d"));
-   File* pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
-   if ( pfile != NULL )
+   ContentManager::ContentManager() :
+      mModules(),
+      mBaseDir(),
+      mpDevice(NULL),
+      mpSimulator(NULL)
    {
-      Uuid uuid;
-      FileReaderStream stream(*pfile);
-      uuid.read(stream);
-    
-      ContentModule* pmodule = findModule(uuid);
-      if ( pmodule != NULL )
-      {
-         ContentReader& reader = pmodule->getReader();
-         reader.setContentManager(*this);
-         reader.setGraphicsDevice(mpDevice);
-         reader.setPhysicsSimulator(mpSimulator);
+   }
 
-         presult = reader.read(stream);
-         if ( presult != NULL )
+   // - Operations
+
+   void ContentManager::initialize(ModuleManager& manager)
+   {
+      mModules = manager.filter(ModuleKind::eContentModule);
+   }
+
+   IContent* ContentManager::load(const String& name)
+   {
+      IContent* presult = NULL;
+
+      String path = File::concat(mBaseDir, name + UTEXT(".c2d"));
+      File* pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
+      if ( pfile != NULL )
+      {
+         Uuid uuid;
+         FileReaderStream stream(*pfile);
+         uuid.read(stream);
+
+         ContentModule* pmodule = findModule(uuid);
+         if ( pmodule != NULL )
          {
-            presult->setFilename(name);
+            ContentReader& reader = pmodule->getReader();
+            reader.setContentManager(*this);
+            reader.setGraphicsDevice(mpDevice);
+            reader.setPhysicsSimulator(mpSimulator);
+
+            presult = reader.read(stream);
+            if ( presult != NULL )
+            {
+               presult->setFilename(name);
+            }
          }
       }
+
+      return presult;
    }
 
-   return presult;
-}
+   // - Search
 
-// - Search
-
-ContentModule* ContentManager::findModule(const Uuid& uuid)
-{
-   for ( int index = 0; index < mModules.size(); ++index )
+   ContentModule* ContentManager::findModule(const Uuid& uuid)
    {
-      ContentModule& mod = static_cast<ContentModule&>(mModules[index]);
-      if ( mod.getUuid() == uuid )
-      {
-         return &mod;
-      }
+      return static_cast<ContentModule*>(mModules[uuid]);
    }
-   return NULL;
-}
+} // namespace c2d

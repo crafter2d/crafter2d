@@ -2,6 +2,8 @@
 #ifndef MODULE_MANAGER_H
 #define MODULE_MANAGER_H
 
+#include <vector>
+
 #include "core/core_base.h"
 
 #include "modulecollection.h"
@@ -9,29 +11,39 @@
 class String;
 class Module;
 
-class CORE_API ModuleManager
+namespace c2d
 {
-public:
-   ModuleManager();
-   ~ModuleManager();
+   class Uuid;
 
- // operations
-   bool initialize();
-   void deinitialize();
+   class CORE_API ModuleManager
+   {
+   public:
+      ModuleManager();
+      ~ModuleManager();
 
-   void getModules(ModuleCollection& modules);
+      // operations
+      bool initialize();
+      void deinitialize();
 
-private:
- // types
-   typedef std::vector<void*> ModuleHandles;
+      ModuleCollection filter(ModuleKind kind);
 
- // maintenance
-   void add(const String& filename);
-   void clear();
+    // query
+      Module* lookup(const Uuid& uuid);
 
- // data
-   ModuleHandles    mHandles;
-   ModuleCollection mModules;
-};
+   private:
+      // types
+      typedef std::vector<void*> ModuleHandles;
+
+      // maintenance
+      void add(Module* pmodule);
+      void add(ModuleCollection& collection);
+      void add(const String& filename);
+      void clear();
+
+      // data
+      ModuleHandles    mHandles;
+      ModuleCollection mModules;
+   };
+}
 
 #endif // MODULE_MANAGER_H

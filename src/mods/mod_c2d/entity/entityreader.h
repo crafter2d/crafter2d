@@ -6,7 +6,7 @@
 
 class ComponentFactories;
 
-class EntityReader : public ContentReader
+class EntityReader : public c2d::ContentReader
 {
 protected:
  // overrides

@@ -8,7 +8,7 @@ class ChildDefinitionProto;
 class EntityDefinitionProto;
 class LinkDefinitionProto;
 
-class EntityWriter : public ContentWriter
+class EntityWriter : public c2d::ContentWriter
 {
 public:
    EntityWriter();

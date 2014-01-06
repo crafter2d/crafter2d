@@ -3,53 +3,56 @@
 
 #include "core/defines.h"
 
-ContentReader::ContentReader():
-   mpDevice(NULL),
-   mpSimulator(NULL)
+namespace c2d
 {
-}
+   ContentReader::ContentReader() :
+      mpDevice(NULL),
+      mpSimulator(NULL)
+   {
+   }
 
-// - Get/set
+   // - Get/set
 
-ContentManager& ContentReader::getContentManager()
-{
-   ASSERT_PTR(mpContentManager);
-   return *mpContentManager;
-}
+   ContentManager& ContentReader::getContentManager()
+   {
+      ASSERT_PTR(mpContentManager);
+      return *mpContentManager;
+   }
 
-void ContentReader::setContentManager(ContentManager& manager)
-{
-   mpContentManager = &manager;
-}
+   void ContentReader::setContentManager(ContentManager& manager)
+   {
+      mpContentManager = &manager;
+   }
 
-bool ContentReader::hasGraphicsDevice() const
-{
-   return mpDevice != NULL;
-}
+   bool ContentReader::hasGraphicsDevice() const
+   {
+      return mpDevice != NULL;
+   }
 
-Graphics::Device& ContentReader::getGraphicsDevice()
-{
-   ASSERT_PTR(mpDevice);
-   return *mpDevice;
-}
+   Graphics::Device& ContentReader::getGraphicsDevice()
+   {
+      ASSERT_PTR(mpDevice);
+      return *mpDevice;
+   }
 
-void ContentReader::setGraphicsDevice(Graphics::Device* pdevice)
-{
-   mpDevice = pdevice;
-}
+   void ContentReader::setGraphicsDevice(Graphics::Device* pdevice)
+   {
+      mpDevice = pdevice;
+   }
 
-bool ContentReader::hasPhysicsSimulator() const
-{
-   return mpSimulator != NULL;
-}
+   bool ContentReader::hasPhysicsSimulator() const
+   {
+      return mpSimulator != NULL;
+   }
 
-Simulator& ContentReader::getPhysicsSimulator()
-{
-   ASSERT_PTR(mpSimulator);
-   return *mpSimulator;
-}
+   Simulator& ContentReader::getPhysicsSimulator()
+   {
+      ASSERT_PTR(mpSimulator);
+      return *mpSimulator;
+   }
 
-void ContentReader::setPhysicsSimulator(Simulator* psimulator)
-{
-   mpSimulator = psimulator;
+   void ContentReader::setPhysicsSimulator(Simulator* psimulator)
+   {
+      mpSimulator = psimulator;
+   }
 }

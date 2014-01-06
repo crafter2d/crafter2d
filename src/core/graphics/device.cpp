@@ -20,15 +20,16 @@ namespace Graphics
 
    // - Get/set
 
-   ContentManager& Device::getContentManager()
+   c2d::ContentManager& Device::getContentManager()
    {
       ASSERT_PTR(mpContentManager);
       return *mpContentManager;
    }
 
-   void Device::setContentManager(ContentManager& contentmanager)
+   void Device::setContentManager(c2d::ContentManager& contentmanager)
    {
       mpContentManager = &contentmanager;
+      mpContentManager->setDevice(*this);
    }
 
    RenderContext& Device::getContext()

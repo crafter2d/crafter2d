@@ -1,23 +1,61 @@
 
 #include "module.h"
 
-Module::Module(Type type):
-   mType(type)
-{
-}
+#include "core/defines.h"
 
-Module::~Module()
-{
-}
+#include "modulemanager.h"
 
-// - Get/set
-
-Module::Type Module::getType() const
+namespace c2d
 {
-   return mType;
-}
+   Module::Module(ModuleKind kind, const Uuid& uuid) :
+      mpManager(NULL),
+      mKind(kind),
+      mUuid(uuid)
+   {
+   }
 
-void Module::setType(Type type)
-{
-   mType = type;
+   Module::~Module()
+   {
+   }
+
+   // - Get/set
+
+   ModuleManager& Module::getModuleManager()
+   {
+      ASSERT_PTR(mpManager);
+      return *mpManager;
+   }
+
+   void Module::setModuleManager(ModuleManager& manager)
+   {
+      mpManager = &manager;
+   }
+
+   ModuleKind Module::getKind() const
+   {
+      return mKind;
+   }
+
+   const Uuid& Module::getUuid() const
+   {
+      return mUuid;
+   }
+
+   // - Operations
+
+   void Module::initialize()
+   {
+
+   }
+
+   Module& Module::lookupModule(const Uuid& uuid)
+   {
+      ASSERT_PTR(mpManager);
+      Module* pmodule = mpManager->lookup(uuid);
+      if ( pmodule == NULL )
+      {
+         throw new std::exception("");
+      }
+      return *pmodule;
+   }
 }

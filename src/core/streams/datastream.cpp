@@ -76,6 +76,11 @@ void DataStream::readUint16(uint16_t& value)
    readBytes(&value, sizeof(uint16_t));
 }
 
+void DataStream::readUint32(uint32_t& value)
+{
+   readBytes(&value, sizeof(uint32_t));
+}
+
 void DataStream::readUint64(uint64_t& value)
 {
    readBytes(&value, sizeof(uint64_t));
@@ -130,6 +135,11 @@ void DataStream::writeUint8(uint8_t value)
 void DataStream::writeUint16(uint16_t value)
 {
    writeBytes(&value, sizeof(uint16_t));
+}
+
+void DataStream::writeUint32(uint32_t value)
+{
+   writeBytes(&value, sizeof(uint32_t));
 }
 
 void DataStream::writeUint64(uint64_t value)

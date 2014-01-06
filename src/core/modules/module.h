@@ -2,31 +2,60 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+#include "core/system/uuid.h"
 #include "core/core_base.h"
 
-class CORE_API Module
+namespace c2d
 {
-public:
-   enum Type { eContent,   // content loader/writer
-               eSystem,    // a system implementation
-               ePlugin,    // general plugin
-               eInvalid,
-             };
+   class ModuleManager;
 
-   virtual ~Module();
+   // {371C78C7-3B7C-4E51-BF0B-354E9E44A470}
+   static const Uuid UUID_GraphicsModule(0x371C78C7, 0x3B7C, 0x4E51, 0xBF0B, 0x354E9E44A470);
+   // {CDD613E8-3EE9-4BA0-A67B-227B39F8AB28}
+   static const Uuid UUID_InputModule(0xCDD613E8, 0x3EE9, 0x4BA0, 0xA67B, 0x227B39F8AB28);
+   // {037F06A9-1388-43B8-B828-383B5B03EF5E}
+   static const Uuid UUID_ScriptModule(0x037F06A9, 0x1388, 0x43B8, 0xB828, 0x383B5B03EF5E);
 
- // query
-   Type getType() const;
-   void setType(Type type);
+   enum ModuleKind
+   {
+      eGraphicsModule,
+      eInputModule,
+      eScriptModule,
+      eContentModule,
+      ePluginModule,
+   };
 
-protected:
- // constructors
-   explicit Module(Type type);
+   class CORE_API Module
+   {
+   public:
+      virtual ~Module();
 
-private:
+    // get/set
+      ModuleManager& getModuleManager();
+      ModuleKind     getKind() const;
+      const Uuid&    getUuid() const;
 
- // data
-   Type mType;
-};
+    // operations
+      virtual void initialize();
+      
+   protected:
+    // constructors
+      Module(ModuleKind kind, const Uuid& uuid);
+
+    // operations
+      Module& lookupModule(const Uuid& uuid);
+
+   private:
+      friend class ModuleManager;
+
+    // get/set
+      void setModuleManager(ModuleManager& manager);
+
+    // data
+      ModuleManager* mpManager;
+      ModuleKind     mKind;
+      Uuid           mUuid;
+   };
+}
 
 #endif // MODULE_H

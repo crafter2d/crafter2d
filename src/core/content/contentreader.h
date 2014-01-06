@@ -10,36 +10,40 @@ namespace Graphics
 }
 
 class IContent;
-class ContentManager;
 class DataStream;
 class Simulator;
 
-class CORE_API ContentReader
+namespace c2d
 {
-public:
-   ContentReader();
+   class ContentManager;
 
- // get/set
-   ContentManager& getContentManager();
-   void            setContentManager(ContentManager& manager);
+   class CORE_API ContentReader
+   {
+   public:
+      ContentReader();
 
-   bool              hasGraphicsDevice() const;
-   Graphics::Device& getGraphicsDevice();
-   void              setGraphicsDevice(Graphics::Device* device);
+      // get/set
+      ContentManager& getContentManager();
+      void            setContentManager(ContentManager& manager);
 
-   bool       hasPhysicsSimulator() const;
-   Simulator& getPhysicsSimulator();
-   void       setPhysicsSimulator(Simulator* psimulator);
+      bool              hasGraphicsDevice() const;
+      Graphics::Device& getGraphicsDevice();
+      void              setGraphicsDevice(Graphics::Device* device);
 
-   /// Reads and instantiates the content from disc
-   virtual IContent* read(DataStream& stream) = 0;
+      bool       hasPhysicsSimulator() const;
+      Simulator& getPhysicsSimulator();
+      void       setPhysicsSimulator(Simulator* psimulator);
 
-private:
+      /// Reads and instantiates the content from disc
+      virtual IContent* read(DataStream& stream) = 0;
 
- // data
-   ContentManager*   mpContentManager;
-   Graphics::Device* mpDevice;
-   Simulator*        mpSimulator;
-};
+   private:
+
+      // data
+      ContentManager*   mpContentManager;
+      Graphics::Device* mpDevice;
+      Simulator*        mpSimulator;
+   };
+}
 
 #endif // CONTENT_READER_H

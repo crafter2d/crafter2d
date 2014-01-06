@@ -2,7 +2,7 @@
 #ifndef __GraphicsSystem_h__
 #define __GraphicsSystem_h__
 
-#include "core/system/system.h"
+#include "module.h"
 
 namespace Graphics
 {
@@ -11,13 +11,15 @@ namespace Graphics
 
 namespace c2d
 {
-   class CORE_API GraphicsSystem : public System
+   class CORE_API GraphicsModule : public Module
    {
    public:
-      explicit GraphicsSystem(Graphics::Device* pdevice);
+      GraphicsModule();
+      virtual ~GraphicsModule(); 
 
     // query
       Graphics::Device& getDevice();
+      void              setDevice(Graphics::Device* pdevice);
 
    private:
 

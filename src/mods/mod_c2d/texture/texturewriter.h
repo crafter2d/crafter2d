@@ -4,7 +4,7 @@
 
 #include "core/content/contentwriter.h"
 
-class TextureWriter : public ContentWriter
+class TextureWriter : public c2d::ContentWriter
 {
 public:
 

@@ -5,28 +5,48 @@
 #include <Windows.h>
 #include <tchar.h>
 
-#include "core/content/contentmodule.h"
+#include "core/streams/bufferedstream.h"
 #include "core/content/contentwriter.h"
 #include "core/content/contentmanager.h"
 #include "core/string/string.h"
+#include "core/modules/contentmodule.h"
 #include "core/modules/modulemanager.h"
+#include "core/vfs/stdiofile.h"
+
+using namespace c2d;
 
 void loadModules(const String& srcfile, const String& dstFile)
 {
-   ModuleCollection cmods(Module::eContent);
    ModuleManager mgr;
    mgr.initialize();
-   mgr.getModules(cmods);
+   ModuleCollection mods = mgr.filter(ModuleKind::eContentModule);
 
    int index = srcfile.lastIndexOf(L'.');
    String extension = srcfile.subStr(index + 1, srcfile.length() - index - 1);
 
-   for ( int index = 0; index < cmods.size(); ++index )
+   ModuleCollectionIterator it = mods.getIterator();
+   for ( ; it.isValid(); ++it )
    {
-      ContentModule& cmod = static_cast<ContentModule&>(cmods[index]);
+      ContentModule& cmod = static_cast<ContentModule&>(*it);
       if ( cmod.supports(extension) )
       {
-         cmod.write(srcfile, dstFile);
+         BufferedStream stream;
+         cmod.getUuid().write(stream);
+
+         try
+         {
+            ContentWriter& writer = cmod.getWriter();
+            if ( writer.write(stream, srcfile) )
+            {
+               StdioFile file;
+               file.open(dstFile, File::EBinary | File::EWrite);
+               file.write(stream.getData(), stream.getDataSize());
+               file.close();
+            }
+         }
+         catch ( std::exception* )
+         {
+         }
          break;
       }
    }

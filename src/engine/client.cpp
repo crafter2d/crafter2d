@@ -24,22 +24,22 @@
 
 #include "core/defines.h"
 #include "core/content/contentmanager.h"
-#include "core/graphics/graphicssystem.h"
 #include "core/entity/entity.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
 #include "core/math/xform.h"
 #include "core/input/input.h"
-#include "core/input/inputsystem.h"
 #include "core/input/keyevent.h"
 #include "core/input/mouseevent.h"
+#include "core/modules/graphicsmodule.h"
+#include "core/modules/modulemanager.h"
+#include "core/modules/inputmodule.h"
 #include "core/graphics/device.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 #include "core/system/platform.h"
 #include "core/system/driver.h"
-#include "core/system/systemmanager.h"
 
 #include "engine/script/script.h"
 #include "engine/script/scriptmanager.h"
@@ -254,20 +254,24 @@ namespace c2d
 
       Log::getInstance() << "\n-- Initializing Graphics --\n\n";
 
-      GraphicsSystem& graphicssys = static_cast<GraphicsSystem&>(getSystemManager().getSystem(SystemKind::eGraphicsSystem));
-      Device& device = graphicssys.getDevice();
-      device.setContentManager(getContentManager());
-      if ( !device.create(mpWindow->getHandle(), 800, 600) )
+      Module* pmodule = getModuleManager().lookup(UUID_GraphicsModule);
+      if ( pmodule == NULL )
+      {
+         Log::getInstance() << "Failed to load a graphics module.\n";
+         return false;
+      }
+
+      GraphicsModule& graphicsmod = static_cast<GraphicsModule&>(*pmodule);
+      mpDevice = &graphicsmod.getDevice();
+      mpDevice->setContentManager(getContentManager());
+      if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
       {
          return false;
       }
 
-      getContentManager().setDevice(device);
-
-      mpDevice = &device;
-      mpRenderContext = &device.getContext();
+      mpRenderContext = &mpDevice->getContext();
       mpRenderContext->setClearColor(color);
-      mpRenderContext->initialize(device);
+      mpRenderContext->initialize(*mpDevice);
 
       onWindowResized();
 
@@ -278,9 +282,16 @@ namespace c2d
    {
       Log::getInstance() << "\n-- Initializing Input --\n\n";
 
-      InputSystem& inputsys = static_cast<InputSystem&>(getSystemManager().getSystem(SystemKind::eInputSystem));
-      mpInputDevice = &inputsys.getDevice();
-      if ( mpInputDevice == NULL || !mpInputDevice->create(mpWindow->getHandle()) )
+      Module* pmodule = getModuleManager().lookup(UUID_InputModule);
+      if ( pmodule == NULL )
+      {
+         Log::getInstance() << "Failed to load a graphics module.\n";
+         return false;
+      }
+
+      InputModule& inputmod = static_cast<InputModule&>(*pmodule);
+      mpInputDevice = &inputmod.getDevice();
+      if ( !mpInputDevice->create(mpWindow->getHandle()) )
       {
          // failed to create input! can't proceed
          return false;
@@ -510,8 +521,8 @@ namespace c2d
       Variant arg(mpScript->resolve(&world));
       mpScript->run(UTEXT("onWorldChanged"), 1, &arg);
 
-      mpBackgroundMusic = mSoundManager.createTrack(UTEXT("../sounds/grassy_plain.ogg"));
-      mSoundManager.play(*mpBackgroundMusic);
+      //mpBackgroundMusic = mSoundManager.createTrack(UTEXT("../sounds/grassy_plain.ogg"));
+      //mSoundManager.play(*mpBackgroundMusic);
 
       Process::notifyWorldChanged();
    }

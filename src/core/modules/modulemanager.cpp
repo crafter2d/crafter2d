@@ -3,101 +3,128 @@
 
 #include <algorithm>
 
-#include "core/content/contentmodule.h"
 #include "core/smartptr/autoptr.h"
 #include "core/system/platform.h"
 #include "core/vfs/filesystem.h"
 
 #include "module.h"
 
-typedef Module* (*PGETMODULE)();
-typedef ModuleCollection* (*PGETMODULECOLLECTION)();
-
-ModuleManager::ModuleManager():
-   mModules()
+namespace c2d
 {
-}
+   typedef Module* (*PGETMODULE)();
+   typedef ModuleCollection* (*PGETMODULECOLLECTION)();
 
-ModuleManager::~ModuleManager()
-{
-   deinitialize();
-}
-
-// - Initialization
-
-bool ModuleManager::initialize()
-{
-   std::vector<String> filenames;
-   FileSystem& fs = FileSystem::getInstance();
-   if ( !fs.find(UTEXT("mod_*.dll"), filenames) )
+   ModuleManager::ModuleManager() :
+      mModules()
    {
-      return false;
    }
 
-   // load all modules
-   auto append = [this](const String& val){ add(val); };
-   std::for_each(filenames.begin(), filenames.end(), append);
-
-   return true;
-}
-
-void ModuleManager::deinitialize()
-{
-   clear();
-
-   auto close = [](void* pmodule) { Platform::getInstance().freeModule(pmodule); };
-   std::for_each(mHandles.begin(), mHandles.end(), close);
-}
-
-// - Query
-
-void ModuleManager::getModules(ModuleCollection& modules)
-{
-   modules.add(mModules);
-}
-
-// - Maintenance
-
-void ModuleManager::add(const String& filename)
-{
-   Platform& platform = Platform::getInstance();
-   void* pmodule = platform.loadModule(filename);
-   if ( pmodule != NULL )
+   ModuleManager::~ModuleManager()
    {
-      mHandles.push_back(pmodule);
+      deinitialize();
+   }
 
-      PGETMODULE pfunc = (PGETMODULE) platform.getFunctionAddress(pmodule, UTEXT("getModule"));
-      if ( pfunc != NULL )
+   // - Initialization
+
+   bool ModuleManager::initialize()
+   {
+      std::vector<String> filenames;
+      FileSystem& fs = FileSystem::getInstance();
+      if ( !fs.find(UTEXT("mod_*.dll"), filenames) )
       {
-         AutoPtr<Module> module = (*pfunc)();
-         if ( !module.hasPointer() )
-         {
-            throw std::exception("Could not get the module handle.");
-         }
-
-         mModules.add(module.release());
+         return false;
       }
-      else
+
+      // load all modules
+      auto append = [this](const String& val){ add(val); };
+      std::for_each(filenames.begin(), filenames.end(), append);
+
+      return true;
+   }
+
+   void ModuleManager::deinitialize()
+   {
+      clear();
+
+      auto close = [](void* pmodule) { Platform::getInstance().freeModule(pmodule); };
+      std::for_each(mHandles.begin(), mHandles.end(), close);
+   }
+
+   // - Query
+
+   ModuleCollection ModuleManager::filter(ModuleKind kind)
+   {
+      return mModules.filter(kind);
+   }
+
+   // - Maintenance
+
+   void ModuleManager::add(const String& filename)
+   {
+      Platform& platform = Platform::getInstance();
+      void* pmodule = platform.loadModule(filename);
+      if ( pmodule != NULL )
       {
-         PGETMODULECOLLECTION pcolfunc = (PGETMODULECOLLECTION) platform.getFunctionAddress(pmodule, UTEXT("getModuleCollection"));
-         if ( pcolfunc != NULL )
+         mHandles.push_back(pmodule);
+
+         PGETMODULE pfunc = (PGETMODULE)platform.getFunctionAddress(pmodule, UTEXT("getModule"));
+         if ( pfunc != NULL )
          {
-            AutoPtr<ModuleCollection> collection = (*pcolfunc)();
-            if ( collection.hasPointer() )
+            AutoPtr<Module> module = (*pfunc)();
+            if ( !module.hasPointer() )
             {
-               mModules.add(*collection);
+               throw std::exception("Could not get the module handle.");
+            }
+
+            add(module.release());
+         }
+         else
+         {
+            PGETMODULECOLLECTION pcolfunc = (PGETMODULECOLLECTION)platform.getFunctionAddress(pmodule, UTEXT("getModuleCollection"));
+            if ( pcolfunc != NULL )
+            {
+               AutoPtr<ModuleCollection> collection = (*pcolfunc)();
+               if ( collection.hasPointer() )
+               {
+                  add(*collection);
+               }
             }
          }
       }
    }
-}
 
-void ModuleManager::clear()
-{
-   for ( std::size_t index = 0; index < mModules.size(); ++index )
+   void ModuleManager::add(Module* pmodule)
    {
-      Module* pmodule = &mModules[index];
-      delete pmodule;
+      ASSERT_PTR(pmodule);
+      pmodule->setModuleManager(*this);
+      mModules.add(pmodule);
    }
-   mModules.clear();
+
+   void ModuleManager::add(ModuleCollection& collection)
+   {
+      ModuleCollectionIterator it = collection.getIterator();
+      for ( ; it.isValid(); ++it )
+      {
+         Module& module = *it;
+         add(&module);
+      }
+   }
+
+   void ModuleManager::clear()
+   {
+      ModuleCollectionIterator it = mModules.getIterator();
+      for ( ; it.isValid(); ++it )
+      {
+         Module& module = *it;
+         delete &module;
+      }
+      mModules.clear();
+   }
+
+   // - Query
+
+   Module* ModuleManager::lookup(const Uuid& uuid)
+   {
+      return mModules[uuid];
+   }
 }

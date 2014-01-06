@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2013 by Jeroen Broekhuizen                              *
- *   jengine.sse@live.nl                                                   *
+ *   crafter2d@outlook.com                                                 *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU Lesser General Public License as        *
@@ -21,10 +21,9 @@
 
 #include <Windows.h>
 
-#include "core/graphics/graphicssystem.h"
-#include "core/input/inputsystem.h"
+#include "core/modules/graphicsmodule.h"
+#include "core/modules/inputmodule.h"
 #include "core/modules/modulecollection.h"
-#include "core/system/systemmodule.h"
 
 #include "ogldevice.h"
 #include "input/oglinputdevice.h"
@@ -44,17 +43,19 @@ BOOL APIENTRY DllMain(HMODULE hModule,
    return TRUE;
 }
 
+using namespace c2d;
+
 extern "C" OGL_API ModuleCollection* cdecl getModuleCollection()
 {
    ModuleCollection* pmodules = new ModuleCollection();
 
-   c2d::SystemModule* pmodule = new c2d::SystemModule();
-   pmodule->setSystem(new c2d::GraphicsSystem(new Graphics::OGLDevice()));
+   GraphicsModule* pmodule = new GraphicsModule();
+   pmodule->setDevice(new Graphics::OGLDevice());
    pmodules->add(pmodule);
 
-   pmodule = new c2d::SystemModule();
-   pmodule->setSystem(new c2d::InputSystem(new OGLInputDevice()));
-   pmodules->add(pmodule);
+   InputModule* pinputmodule = new InputModule();
+   pinputmodule->setDevice(new OGLInputDevice());
+   pmodules->add(pinputmodule);
 
    return pmodules;
 }

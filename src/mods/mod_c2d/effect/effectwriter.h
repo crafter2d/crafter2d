@@ -13,7 +13,7 @@ class ASTEffect;
 class ASTTechnique;
 class DataStream;
 
-class EffectWriter : public ContentWriter
+class EffectWriter : public c2d::ContentWriter
 {
 protected:
 

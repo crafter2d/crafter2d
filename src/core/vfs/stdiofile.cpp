@@ -64,6 +64,11 @@ bool StdioFile::virOpen(const String& filename, int modus)
 
    std::string path = filename.toUtf8();
    mpFile = fopen(path.c_str(), mode);
+   if ( mpFile == NULL )
+   {
+      return false;
+   }
+
    setBuffer(Buffer::fromFile(mpFile));
 
    return true;

@@ -29,8 +29,6 @@
 
 #include "processnetobserver.h"
 
-class ContentManager;
-class ModuleManager;
 class DataStream;
 class NetEvent;
 class Script;
@@ -40,7 +38,8 @@ class World;
 namespace c2d
 {
    class ActionMap;
-   class SystemManager;
+   class ContentManager;
+   class ModuleManager;
 
    /// @author Jeroen Broekhuizen
    /// \brief Provides the basic functionality for the process.
@@ -61,7 +60,6 @@ namespace c2d
       NetConnection*    getConnection();
       ModuleManager&    getModuleManager();
       ContentManager&   getContentManager();
-      SystemManager&    getSystemManager();
       ScriptManager&    getScriptManager();
 
       ActionMap*     getActionMap();
@@ -69,7 +67,7 @@ namespace c2d
 
       bool           hasWorld() const;
       const World&   getWorld() const;
-      World&   getWorld();
+            World&   getWorld();
 
       bool           isInitialized();
       void           setInitialized(bool init);
@@ -101,7 +99,6 @@ namespace c2d
       // members
       ModuleManager*    mpModuleManager;
       ContentManager*   mpContentManager;
-      SystemManager*    mpSystemManager;
       World*            mpWorld;
       bool              mActive;
       bool              mDetecting;

@@ -10,7 +10,7 @@ namespace Graphics
    class VertexLayout;
 }
 
-class EffectReader : public ContentReader
+class EffectReader : public c2d::ContentReader
 {
 public:
 

@@ -2,8 +2,7 @@
 #ifndef __InputSystem_h__
 #define __InputSystem_h__
 
-#include "core/system/system.h"
-#include "core/core_base.h"
+#include "module.h"
 
 namespace Input
 {
@@ -12,13 +11,15 @@ namespace Input
 
 namespace c2d
 {
-   class CORE_API InputSystem : public System
+   class CORE_API InputModule : public Module
    {
    public:
-      InputSystem(Input::InputDevice* pdevice);
+      InputModule();
+      virtual ~InputModule();
 
     // get/set
       Input::InputDevice& getDevice();
+      void                setDevice(Input::InputDevice* pdevice);
 
    private:
 

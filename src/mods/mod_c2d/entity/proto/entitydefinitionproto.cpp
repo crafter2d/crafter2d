@@ -18,7 +18,7 @@
 
 // - Instantiation
 
-Entity* EntityDefinitionProto::instantiate(ContentManager& manager, ComponentFactories& factories)
+Entity* EntityDefinitionProto::instantiate(c2d::ContentManager& manager, ComponentFactories& factories)
 {
    Entity* pentity = new Entity();
    pentity->setName(mName);
