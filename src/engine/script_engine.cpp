@@ -29,32 +29,22 @@
 #include "core/resource/resourcemanager.h"
 #include "core/streams/datastream.h"
 #include "core/streams/bufferedstream.h"
+#include "core/script/scriptcall.h"
+#include "core/script/scriptregistrator.h"
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"
 #include "core/defines.h"
 
-#include "net/netstream.h"
-
-#include "script/vm/virtualmachine.h"
-#include "script/vm/virtualobject.h"
-#include "script/vm/virtualarray.h"
-#include "script/vm/virtualstackaccessor.h"
-
+#include "engine/net/netstream.h"
+#include "engine/window/gamewindowfactory.h"
 #include "engine/window/gamewindow.h"
-
-#include "script/scriptobject.h"
+#include "engine/world/layer.h"
+#include "engine/world/world.h"
 
 #include "physics/box2d/box2dbody.h"
 #include "physics/box2d/box2dsimulator.h"
 #include "physics/box2d/box2drevolutejoint.h"
 #include "physics/box2d/box2dropejoint.h"
-
-#include "ui/graphics.h"
-
-#include "window/gamewindowfactory.h"
-
-#include "world/layer.h"
-#include "world/world.h"
 
 #include "actionmap.h"
 #include "keymap.h"
@@ -66,43 +56,31 @@
 
 using namespace c2d;
 
-#define GET_THIS(type, variable)                   type& variable = accessor.getThis().getNativeObject<type>()
-#define DESTRUCT_THIS(type)                        delete accessor.getThis().useNativeObject<type>();
+#define GET_THIS(type, variable)                   type& variable = accessor.getObject<type>(0)
+#define DESTRUCT_THIS(type)                        delete accessor.useObject<type>(0);
 
-#define RETURN(type, pointer)                      accessor.setResult(*machine.instantiateNative(UTEXT(#type), pointer, false))
-#define RETURN_OWNED(type, pointer)                accessor.setResult(*machine.instantiateNativeUTEXT((#type), pointer, true))
-
-#define RETURN_CLASS(class, pointer)               accessor.setResult(*machine.instantiateNative(class, pointer, false))
-#define RETURN_CLASS_OWNED(class, pointer)         accessor.setResult(*machine.instantiateNative(class, pointer, true))
+#define RETURN_CLASS(class, pointer)               accessor.setResult(class, pointer, false)
+#define RETURN_CLASS_OWNED(class, pointer)         accessor.setResult(class, pointer, true)
 
 #define RETURN_CLASS_I(scriptable)                 accessor.setResult(machine.instantiateNative(scriptable, false));
 
-void Process_getFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
-{
-   //const String& name = accessor.getString(1);
-   //int size = accessor.getInt(2);
-
-   //FontPtr* pfont = new FontPtr(ResourceManager::getInstance().getFont(name, size));
-   //RETURN_CLASS_OWNED("engine.ui.Font"), FontPtr, pfont);
-}
-
-void Process_getContentManager(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Process_getContentManager(ScriptCall& accessor)
 {
    GET_THIS(Process, process);
 
    RETURN_CLASS(UTEXT("engine.game.ContentManager"), &process.getContentManager());
 }
 
-void Process_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Process_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(Server, server);
 
-   ActionMap* pmap = accessor.getObject(1).useNativeObject<ActionMap>();
+   ActionMap* pmap = accessor.useObject<ActionMap>(1);
 
    server.setActionMap(pmap);
 }
 
-void Process_loadWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Process_loadWorld(ScriptCall& accessor)
 {
    GET_THIS(Process, process);
 
@@ -112,14 +90,14 @@ void Process_loadWorld(VirtualMachine& machine, VirtualStackAccessor& accessor)
    RETURN_CLASS(UTEXT("engine.game.World"), pworld);
 }
 
-void Process_swapLeakDetection(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Process_swapLeakDetection(ScriptCall& accessor)
 {
    GET_THIS(Process, process);
 
    process.swapLeakDetection();
 }
 
-void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Server_listen(ScriptCall& accessor)
 {
    GET_THIS(Server, server);
 
@@ -128,17 +106,17 @@ void Server_listen(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(server.listen(port));
 }
 
-void Server_sendScriptEvent(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Server_sendScriptEvent(ScriptCall& accessor)
 {
    GET_THIS(Server, server);
 
    int client = accessor.getInt(1);
-   NetStream& stream = accessor.getObject(2).getNativeObject<NetStream>();
+   NetStream& stream = accessor.getObject<NetStream>(2);
 
    server.sendScriptEvent(client, stream);
 }
 
-void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_connect(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
@@ -148,30 +126,30 @@ void Client_connect(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(client.connect(ip, port));
 }
 
-void Client_isActive(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_isActive(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
    accessor.setResult(client.isActive());
 }
 
-void Client_getWindowFactory(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_getWindowFactory(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
    RETURN_CLASS(UTEXT("system.GameWindowFactory"), &client.getWindowFactory());
 }
 
-void Client_setWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_setWindow(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   GameWindow* pwindow = accessor.getObject(1).useNativeObject<GameWindow>();
+   GameWindow* pwindow = accessor.useObject<GameWindow>(1);
 
    client.setWindow(pwindow);
 }
 
-void Client_getPlayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_getPlayer(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
@@ -179,25 +157,25 @@ void Client_getPlayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
    RETURN_CLASS(UTEXT("engine.game.Player"), &player);
 }
 
-void Client_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   ActionMap* pmap = accessor.getObject(1).useNativeObject<ActionMap>();
+   ActionMap* pmap = accessor.useObject<ActionMap>(1);
 
    client.setActionMap(pmap);
 }
 
-void Client_setKeyMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_setKeyMap(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   KeyMap* pmap = accessor.getObject(1).useNativeObject<KeyMap>();
+   KeyMap* pmap = accessor.useObject<KeyMap>(1);
 
    client.setKeyMap(pmap);
 }
 
-void Client_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Client_getTexture(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
@@ -207,7 +185,7 @@ void Client_getTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
    RETURN_CLASS_OWNED(UTEXT("engine.core.Texture"), ptexture);
 }
 
-void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ContentManager_loadEntity(ScriptCall& accessor)
 {
    GET_THIS(ContentManager, contentmanager);
 
@@ -217,14 +195,14 @@ void ContentManager_loadEntity(VirtualMachine& machine, VirtualStackAccessor& ac
    RETURN_CLASS_OWNED(presult->getClassName(), presult);
 }
 
-void GameWindowFactory_createWindow(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void GameWindowFactory_createWindow(ScriptCall& accessor)
 {
    GET_THIS(GameWindowFactory, factory);
 
    RETURN_CLASS_OWNED(UTEXT("system.GameWindow"), factory.createWindow());
 }
 
-void GameWindow_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void GameWindow_create(ScriptCall& accessor)
 {
    GET_THIS(GameWindow, window);
 
@@ -237,7 +215,7 @@ void GameWindow_create(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(window.create(title, width, height, bitdepth, fullscreen));
 }
 
-void BufferedStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void BufferedStream_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -245,27 +223,27 @@ void BufferedStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor
    machine.registerNative(thisobject, pstream);
 }
 
-void BufferedStream_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void BufferedStream_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(BufferedStream);
 }
 
-void NetStream_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NetStream_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
-   BufferedStream& bufferedstream = accessor.getObject(1).getNativeObject<BufferedStream>();
+   BufferedStream& bufferedstream = accessor.getObject<BufferedStream>(1);
 
    NetStream* pstream = new NetStream(bufferedstream);
    machine.registerNative(thisobject, pstream);
 }
 
-void NetStream_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NetStream_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(NetStream);
 }
 
-void NetStream_writeInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NetStream_writeInt(ScriptCall& accessor)
 {
    GET_THIS(NetStream, stream);
 
@@ -274,7 +252,7 @@ void NetStream_writeInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
    stream.writeInt(value);
 }
 
-void NetStream_readInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NetStream_readInt(ScriptCall& accessor)
 {
    GET_THIS(NetStream, stream);
 
@@ -284,14 +262,14 @@ void NetStream_readInt(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(value);
 }
 
-void NetStream_clear(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NetStream_clear(ScriptCall& accessor)
 {
    GET_THIS(NetStream, stream);
 
    stream.clear();
 }
 
-void QueryBodyComponentMessage_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void QueryBodyComponentMessage_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -299,21 +277,21 @@ void QueryBodyComponentMessage_init(VirtualMachine& machine, VirtualStackAccesso
    machine.registerNative(thisobject, pmsg);
 }
 
-void QueryBodyComponentMessage_hasBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void QueryBodyComponentMessage_hasBody(ScriptCall& accessor)
 {
    GET_THIS(QueryBodyComponentMessage, msg);
 
    accessor.setResult(msg.hasBody());
 }
 
-void QueryBodyComponentMessage_getBody(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void QueryBodyComponentMessage_getBody(ScriptCall& accessor)
 {
    GET_THIS(QueryBodyComponentMessage, msg);
 
    RETURN_CLASS_I(msg.getBody());
 }
 
-void AnimationComponentMessage_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void AnimationComponentMessage_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -321,14 +299,14 @@ void AnimationComponentMessage_init(VirtualMachine& machine, VirtualStackAccesso
    machine.registerNative(thisobject, pmsg);
 }
 
-void AnimationComponentMessage_setAnimation(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void AnimationComponentMessage_setAnimation(ScriptCall& accessor)
 {
    GET_THIS(AnimationComponentMessage, msg);
 
    msg.setAnimation(accessor.getInt(1));
 }
 
-void Entity_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -336,19 +314,19 @@ void Entity_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.registerNative(thisobject, pentity);
 }
 
-void Entity_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(Entity);
 }
 
-void Entity_getId(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_getId(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
    accessor.setResult((int)entity.getId());
 }
 
-void Entity_sendComponentMessage(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_sendComponentMessage(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
@@ -356,7 +334,7 @@ void Entity_sendComponentMessage(VirtualMachine& machine, VirtualStackAccessor& 
    entity.sendComponentMessage(msg);
 }
 
-void Entity_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_hasLineOfSight(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
@@ -364,21 +342,21 @@ void Entity_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& access
    accessor.setResult(entity.hasLineOfSight(other));
 }
 
-void Entity_getPositionX(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_getPositionX(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
    accessor.setResult(entity.getPosition().x);
 }
 
-void Entity_getPositionY(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_getPositionY(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
    accessor.setResult(entity.getPosition().y);
 }
 
-void Entity_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_setPosition(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
@@ -388,7 +366,7 @@ void Entity_setPosition(VirtualMachine& machine, VirtualStackAccessor& accessor)
    entity.setPosition(Vector(xpos, ypos));
 }
 
-void Entity_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_setName(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
@@ -397,21 +375,21 @@ void Entity_setName(VirtualMachine& machine, VirtualStackAccessor& accessor)
    entity.setName(name);
 }
 
-void Entity_direction(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_direction(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
    accessor.setResult(entity.getDirection());
 }
 
-void Entity_flip(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_flip(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
    entity.flip();
 }
 
-void Entity_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Entity_setController(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
@@ -421,7 +399,7 @@ void Entity_setController(VirtualMachine& machine, VirtualStackAccessor& accesso
 }
 
 /*
-void Actor_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_add(ScriptCall& accessor)
 {
    GET_THIS(Actor, actor);
 
@@ -430,7 +408,7 @@ void Actor_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
    actor.add(&child);
 }
 
-void Actor_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Actor_hasLineOfSight(ScriptCall& accessor)
 {
    GET_THIS(Actor, actor);
 
@@ -440,30 +418,30 @@ void Actor_hasLineOfSight(VirtualMachine& machine, VirtualStackAccessor& accesso
 }
 */
 
-void Player_getClientId(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Player_getClientId(ScriptCall& accessor)
 {
    GET_THIS(Player, player);
 
    accessor.setResult(player.getClientId());
 }
 
-void Player_getController(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Player_getController(ScriptCall& accessor)
 {
    GET_THIS(Player, player);
 
-   RETURN(Entity, &player.getController());
+   RETURN_CLASS(UTEXT("engine.game.Entity"), &player.getController());
 }
 
-void Player_setController(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Player_setController(ScriptCall& accessor)
 {
    GET_THIS(Player, player);
 
-   Entity& entity = accessor.getObject(1).getNativeObject<Entity>();
+   Entity& entity = accessor.getObject<Entity>(1);
 
    player.setController(entity);
 }
 
-void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -471,19 +449,19 @@ void World_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.registerNative(thisobject, pworld);
 }
 
-void World_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(World);
 }
 
-void World_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_getName(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
    accessor.setResult(world.getName());
 }
 
-void World_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_add(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
@@ -492,7 +470,7 @@ void World_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
    world.addEntity(pentity);
 }
 
-void World_setObjectLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_setObjectLayer(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
@@ -501,7 +479,7 @@ void World_setObjectLayer(VirtualMachine& machine, VirtualStackAccessor& accesso
    world.setObjectLayer(layer);
 }
 
-void World_setFollowMode(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_setFollowMode(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
@@ -510,14 +488,14 @@ void World_setFollowMode(VirtualMachine& machine, VirtualStackAccessor& accessor
    world.setScrollMode(mode);
 }
 
-void World_getFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_getFollowActor(ScriptCall& accessor)
 {
    GET_THIS(World, world);
       
    RETURN_CLASS(UTEXT("engine.game.Entity"), world.getFollowObject());
 }
 
-void World_setFollowActor(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_setFollowActor(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
@@ -526,14 +504,14 @@ void World_setFollowActor(VirtualMachine& machine, VirtualStackAccessor& accesso
    world.setFollowObject(entity);
 }
 
-void World_getSimulator(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_getSimulator(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
    RETURN_CLASS_I(world.getSimulator());
 }
 
-void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_setFollowBorders(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
@@ -545,7 +523,7 @@ void World_setFollowBorders(VirtualMachine& machine, VirtualStackAccessor& acces
    world.setFollowBorders(left, right, top, bottom);
 }
 
-void World_setFollowBorderWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_setFollowBorderWidth(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
@@ -554,7 +532,7 @@ void World_setFollowBorderWidth(VirtualMachine& machine, VirtualStackAccessor& a
    world.setFollowBorderWidth(width);
 }
 
-void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_findEntity(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
@@ -564,14 +542,14 @@ void World_findEntity(VirtualMachine& machine, VirtualStackAccessor& accessor)
    RETURN_CLASS(UTEXT("engine.game.Actor"), pentity);
 }
 
-void World_getLayerCount(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_getLayerCount(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
    accessor.setResult(world.getLayerCount());
 }
  
-void World_getLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void World_getLayer(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
@@ -580,28 +558,28 @@ void World_getLayer(VirtualMachine& machine, VirtualStackAccessor& accessor)
    RETURN_CLASS(UTEXT("engine.game.Layer"), world.getLayer(index));
 }
 
-void Layer_getEffect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Layer_getEffect(ScriptCall& accessor)
 {
    GET_THIS(Layer, layer);
 
    RETURN_CLASS(UTEXT("engine.game.Effect"), const_cast<Graphics::Effect*>(&layer.getEffect()));
 }
 
-void Layer_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Layer_getWidth(ScriptCall& accessor)
 {
    GET_THIS(Layer, layer);
 
    accessor.setResult(layer.getWidth());
 }
 
-void Layer_getHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Layer_getHeight(ScriptCall& accessor)
 {
    GET_THIS(Layer, layer);
 
    accessor.setResult(layer.getHeight());
 }
 
-void Layer_getTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Layer_getTile(ScriptCall& accessor)
 {
    GET_THIS(Layer, layer);
 
@@ -612,7 +590,7 @@ void Layer_getTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(layer.getTile((LayerLevel)level, x, y));
 }
 
-void Layer_setTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Layer_setTile(ScriptCall& accessor)
 {
    GET_THIS(Layer, layer);
 
@@ -624,7 +602,7 @@ void Layer_setTile(VirtualMachine& machine, VirtualStackAccessor& accessor)
    layer.setTile((LayerLevel)level, x, y, t);
 }
 
-void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -632,12 +610,12 @@ void InputForceGenerator_init(VirtualMachine& machine, VirtualStackAccessor& acc
    machine.registerNative(thisobject, pgenerator);
 }
 
-void InputForceGenerator_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(InputForceGenerator);
 }
 
-void InputForceGenerator_getVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_getVelocity(ScriptCall& accessor)
 {
    GET_THIS(InputForceGenerator, generator);
 
@@ -648,7 +626,7 @@ void InputForceGenerator_getVelocity(VirtualMachine& machine, VirtualStackAccess
    accessor.setResult(Variant(pobject));
 }
 
-void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_setVelocity(ScriptCall& accessor)
 {
    GET_THIS(InputForceGenerator, generator);
 
@@ -658,7 +636,7 @@ void InputForceGenerator_setVelocity(VirtualMachine& machine, VirtualStackAccess
    generator.setVelocity(Vector(xvel, yvel));
 }
 
-void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputForceGenerator_setImpulse(ScriptCall& accessor)
 {
    GET_THIS(InputForceGenerator, generator);
 
@@ -668,7 +646,7 @@ void InputForceGenerator_setImpulse(VirtualMachine& machine, VirtualStackAccesso
    generator.setImpulse(Vector(ximp, yimp));
 }
 
-void InputController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputController_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -676,12 +654,12 @@ void InputController_init(VirtualMachine& machine, VirtualStackAccessor& accesso
    machine.registerNative(thisobject, pcontroller);
 }
 
-void InputController_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputController_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(InputController);
 }
 
-void InputController_setActionMap(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InputController_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(InputController, controller);
 
@@ -690,7 +668,7 @@ void InputController_setActionMap(VirtualMachine& machine, VirtualStackAccessor&
    controller.setActionMap(actionmap);
 }
 
-void AIController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void AIController_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -701,12 +679,12 @@ void AIController_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.registerNative(thisobject, pcontroller);
 }
 
-void AIController_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void AIController_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(AIController);
 }
 
-void Box2DSimulator_lineOfSight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Box2DSimulator_lineOfSight(ScriptCall& accessor)
 {
    //GET_THIS(Box2DSimulator, simulator);
 
@@ -716,7 +694,7 @@ void Box2DSimulator_lineOfSight(VirtualMachine& machine, VirtualStackAccessor& a
    accessor.setResult(false); //simulator.lineOfSight(from.getBody(), to.getBody()));
 }
 
-void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Box2DSimulator_createRevoluteJoint(ScriptCall& accessor)
 {
    /*
    GET_THIS(Box2DSimulator, simulator);
@@ -730,7 +708,7 @@ void Box2DSimulator_createRevoluteJoint(VirtualMachine& machine, VirtualStackAcc
    */
 }
 
-void Box2DSimulator_createRopeJoint(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Box2DSimulator_createRopeJoint(ScriptCall& accessor)
 {
    /*
    GET_THIS(Box2DSimulator, simulator);
@@ -741,7 +719,7 @@ void Box2DSimulator_createRopeJoint(VirtualMachine& machine, VirtualStackAccesso
    */
 }
 
-void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Box2DBody_addForceGenerator(ScriptCall& accessor)
 {
    GET_THIS(Box2DBody, body);
 
@@ -750,7 +728,7 @@ void Box2DBody_addForceGenerator(VirtualMachine& machine, VirtualStackAccessor& 
    body.addForceGenerator(pgenerator);
 }
 
-void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ActionMap_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -758,19 +736,19 @@ void ActionMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.registerNative(thisobject, pmap);
 }
 
-void ActionMap_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ActionMap_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(ActionMap);
 }
 
-void ActionMap_getProcess(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ActionMap_getProcess(ScriptCall& accessor)
 {
    GET_THIS(ActionMap, map);
    
    RETURN_CLASS(UTEXT("engine.Process"), &map.getProcess());
 }
 
-void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ActionMap_setProcess(ScriptCall& accessor)
 {
    GET_THIS(ActionMap, map);
 
@@ -779,7 +757,7 @@ void ActionMap_setProcess(VirtualMachine& machine, VirtualStackAccessor& accesso
    map.setProcess(process);
 }
 
-void ActionMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ActionMap_bind(ScriptCall& accessor)
 {
    GET_THIS(ActionMap, map);
 
@@ -789,7 +767,7 @@ void ActionMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
    map.bind(action, fnc);
 }
 
-void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void KeyMap_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -797,12 +775,12 @@ void KeyMap_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
    machine.registerNative(thisobject, pmap);
 }
 
-void KeyMap_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void KeyMap_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(KeyMap);
 }
 
-void KeyMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void KeyMap_bind(ScriptCall& accessor)
 {
    GET_THIS(KeyMap, map);
 
@@ -813,7 +791,7 @@ void KeyMap_bind(VirtualMachine& machine, VirtualStackAccessor& accessor)
 }
 
 /*
-void EngineGraphics_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_init(ScriptCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
 
@@ -821,12 +799,12 @@ void EngineGraphics_init(VirtualMachine& machine, VirtualStackAccessor& accessor
    machine.registerNative(thisobject, pgraphics);
 }
 
-void EngineGraphics_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(Graphics)
 }
 
-void EngineGraphics_doSetColor(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_doSetColor(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -838,7 +816,7 @@ void EngineGraphics_doSetColor(VirtualMachine& machine, VirtualStackAccessor& ac
    graphics.setColor(red, green, blue, alpha);
 }
 
-void EngineGraphics_nativeSetFont(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_nativeSetFont(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -847,7 +825,7 @@ void EngineGraphics_nativeSetFont(VirtualMachine& machine, VirtualStackAccessor&
    graphics.setFont(*(pfont->ptr()));
 }
 
-void EngineGraphics_translate(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_translate(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -857,7 +835,7 @@ void EngineGraphics_translate(VirtualMachine& machine, VirtualStackAccessor& acc
    graphics.translate(x, y);
 }
 
-void EngineGraphics_drawText(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_drawText(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -868,7 +846,7 @@ void EngineGraphics_drawText(VirtualMachine& machine, VirtualStackAccessor& acce
    graphics.drawText(x, y, text);
 }
 
-void EngineGraphics_native_drawTexture(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_native_drawTexture(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -881,7 +859,7 @@ void EngineGraphics_native_drawTexture(VirtualMachine& machine, VirtualStackAcce
    graphics.drawTexture(**ptexture, x, y, width, height);
 }
 
-void EngineGraphics_native_drawTexturePart(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_native_drawTexturePart(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -898,7 +876,7 @@ void EngineGraphics_native_drawTexturePart(VirtualMachine& machine, VirtualStack
    graphics.drawTexture(**ptexture, x, y, width, height, tx, ty, tw, th);
 }
 
-void EngineGraphics_native_fillRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_native_fillRect(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -910,7 +888,7 @@ void EngineGraphics_native_fillRect(VirtualMachine& machine, VirtualStackAccesso
    graphics.fillRect(x, y, width, height);
 }
 
-void EngineGraphics_native_drawRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_native_drawRect(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -922,7 +900,7 @@ void EngineGraphics_native_drawRect(VirtualMachine& machine, VirtualStackAccesso
    graphics.drawRect(x, y, width, height);
 }
 
-void EngineGraphics_native_drawRoundedRect(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void EngineGraphics_native_drawRoundedRect(ScriptCall& accessor)
 {
    GET_THIS(Graphics, graphics);
 
@@ -936,12 +914,12 @@ void EngineGraphics_native_drawRoundedRect(VirtualMachine& machine, VirtualStack
 
 */
 
-void Font_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Font_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(FontPtr);
 }
 
-void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Font_render(ScriptCall& accessor)
 {
    GET_THIS(FontPtr, font);
 
@@ -950,7 +928,7 @@ void Font_render(VirtualMachine& machine, VirtualStackAccessor& accessor)
    font->render(text);
 }
 
-void Font_getTextWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Font_getTextWidth(ScriptCall& accessor)
 {
    GET_THIS(FontPtr, font);
 
@@ -959,7 +937,7 @@ void Font_getTextWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(font->getTextWidth(text));
 }
 
-void Font_getTextHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Font_getTextHeight(ScriptCall& accessor)
 {
    GET_THIS(FontPtr, font);
 
@@ -968,59 +946,59 @@ void Font_getTextHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(font->getTextHeight(text));
 }
 
-void Font_getBaseLine(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Font_getBaseLine(ScriptCall& accessor)
 {
    GET_THIS(FontPtr, font);
 
    accessor.setResult(font->getBaseLine());
 }
 
-void Texture_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Texture_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(TexturePtr);
 }
 
-void Texture_getName(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Texture_getName(ScriptCall& accessor)
 {
    GET_THIS(TexturePtr, texture);
 
    accessor.setResult(texture->getName());
 }
 
-void Texture_getWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Texture_getWidth(ScriptCall& accessor)
 {
    GET_THIS(TexturePtr, texture);
 
    accessor.setResult(texture->getWidth());
 }
 
-void Texture_getHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Texture_getHeight(ScriptCall& accessor)
 {
    GET_THIS(TexturePtr, texture);
 
    accessor.setResult(texture->getHeight());
 }
 
-void Texture_getSourceWidth(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Texture_getSourceWidth(ScriptCall& accessor)
 {
    GET_THIS(TexturePtr, texture);
 
    accessor.setResult(texture->getSourceWidth());
 }
 
-void Texture_getSourceHeight(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Texture_getSourceHeight(ScriptCall& accessor)
 {
    GET_THIS(TexturePtr, texture);
 
    accessor.setResult(texture->getSourceHeight());
 }
 
-void FileSystem_getInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void FileSystem_getInstance(ScriptCall& accessor)
 {
    RETURN_CLASS(UTEXT("engine.io.FileSystem"), &FileSystem::getInstance());
 }
 
-void FileSystem_open(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void FileSystem_open(ScriptCall& accessor)
 {
    GET_THIS(FileSystem, fs);
 
@@ -1038,19 +1016,19 @@ void FileSystem_open(VirtualMachine& machine, VirtualStackAccessor& accessor)
    }   
 }
 
-void File_destruct(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void File_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(File);
 }
 
-void File_length(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void File_length(ScriptCall& accessor)
 {
    GET_THIS(File, file);
 
    accessor.setResult(file.size());
 }
 
-void File_readText(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void File_readText(ScriptCall& accessor)
 {
    GET_THIS(File, file);
 

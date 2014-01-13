@@ -56,6 +56,12 @@ void* VirtualObject::getNativeObjectPtr()
    return mpNativeObject;
 }
 
+void* VirtualObject::useNativeObjectPtr()
+{
+   mOwnsNative = false;
+   return mpNativeObject;
+}
+
 void VirtualObject::setNativeObject(void* pobject)
 {
    //ASSERT(mpNativeObject == NULL);

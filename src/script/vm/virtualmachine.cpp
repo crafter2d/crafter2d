@@ -69,6 +69,13 @@ VirtualMachine::~VirtualMachine()
    mCompiler.cleanUp();
 }
 
+// - Get/set
+
+VirtualContext& VirtualMachine::getContext()
+{
+   return mContext;
+}
+
 // - Initialization
 
 void VirtualMachine::initialize()

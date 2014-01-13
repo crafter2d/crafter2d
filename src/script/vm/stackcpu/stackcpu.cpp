@@ -10,6 +10,7 @@
 #include "script/bytecode/functionsymbol.h"
 #include "script/bytecode/valuesymbol.h"
 #include "script/common/classregistry.h"
+#include "script/common/callbackfunctor.h"
 #include "script/vm/virtualarray.h"
 #include "script/vm/virtualclass.h"
 #include "script/vm/virtualcontext.h"
@@ -182,24 +183,26 @@ void StackCPU::execute(VirtualContext& context)
 
                mCalls[mFP].callnative = true;
 
-               VirtualStackAccessor accessor(context, mStack, symbol.args);
-               (*context.mNativeRegistry.getCallback(symbol.func))(getVM(), accessor);
+               std::vector<Variant> args(symbol.args);
+               for ( int index = symbol.args; index > 0; --index )
+               {
+                  args[index] = mStack.pop();
+               }
+
+               VirtualCall accessor(getVM(), &args[0], symbol.args);
+               context.mNativeRegistry.getCallback(symbol.func).exec(accessor);
 
                mCalls[mFP].callnative = false;
 
                if ( mState == eExceptionHandling )
                {
                   VirtualObject& exception = mStack.popObject();
-                  
-                  mStack.pop(symbol.args);
 
                   handleException(context, exception);
                }
-               else 
+               else if ( accessor.hasResult() )
                {
-                  mStack.pop(symbol.args);
-                  if ( accessor.hasResult() )
-                     mStack.push(accessor.getResult());
+                  mStack.push(accessor.getResult());
                }
             }
             break;

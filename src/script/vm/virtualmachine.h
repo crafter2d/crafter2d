@@ -60,6 +60,9 @@ public:
    explicit VirtualMachine(VirtualContext& context);
    ~VirtualMachine();
 
+ // get/set
+   VirtualContext& getContext();
+
  // initialization
    void initialize();
    

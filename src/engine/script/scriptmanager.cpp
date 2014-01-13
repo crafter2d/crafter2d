@@ -32,7 +32,6 @@
 #include "script/vm/virtualobject.h"
 
 #include "script.h"
-#include "scriptobject.h"
 
 #include "engine/script_engine.h"
 

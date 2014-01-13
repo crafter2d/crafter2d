@@ -16,7 +16,7 @@ ClassRegistry::ClassRegistry():
 {
 }
 
-VMInterface::CallbackFnc ClassRegistry::getCallback(int index) const
+yas::CallbackFunctor& ClassRegistry::getCallback(int index) const
 {
    return mFunctions[index]->getCallback();
 }
@@ -63,9 +63,9 @@ void ClassRegistry::addClass(const String& name)
    mpCurrent = reg;
 }
 
-void ClassRegistry::addFunction(const String& name, VMInterface::CallbackFnc callback)
+void ClassRegistry::addFunction(const String& name, yas::CallbackFunctor* pcallback)
 {
-   FunctionRegistration* pregistration = FunctionRegistration::create(name, callback);
+   FunctionRegistration* pregistration = FunctionRegistration::create(name, pcallback);
    pregistration->setClassRegistration(*mpCurrent);
    pregistration->setIndex(mFunctions.size());
    mFunctions.push_back(pregistration);

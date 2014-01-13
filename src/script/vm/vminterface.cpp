@@ -13,58 +13,59 @@
 #include "virtualstackaccessor.h"
 #include "virtualarray.h"
 #include "virtualobject.h"
+#include "virtualcallbackfunctor.h"
 
-void Console_println(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Console_println(VirtualCall& accessor)
 {
    std::cout << accessor.getString(1).toUtf8() << std::endl;
 }
 
-void Console_print(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Console_print(VirtualCall& accessor)
 {
    std::cout << accessor.getString(1).toUtf8();
 }
 
-void ClassLoader_doLoadClass(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void ClassLoader_doLoadClass(VirtualCall& accessor)
 {
    const String& classname = accessor.getString(1);
-   accessor.setResult(machine.loadClass(classname));
+   accessor.setResult(accessor.getMachine().loadClass(classname));
 }
 
-void Class_doNewInstance(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Class_doNewInstance(VirtualCall& accessor)
 {
    VirtualObject& classobject = accessor.getObject(1);
 
    String name = classobject.getMember(0).asString().getString();
-   VirtualObject* pobject = machine.instantiate(name);
+   VirtualObject* pobject = accessor.getMachine().instantiate(name);
 
    accessor.setResult(*pobject);
 }
 
-void Function_doInvoke(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Function_doInvoke(VirtualCall& accessor)
 {
    VirtualObject& thisobject = accessor.getThis();
    VirtualObject& instance = accessor.getObject(1);
 
    String fncname = thisobject.getMember(0).asString().getString();
 
-   machine.execute(instance, fncname);
+   accessor.getMachine().execute(instance, fncname);
 }
 
-void Throwable_fillCallStack(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Throwable_fillCallStack(VirtualCall& accessor)
 {
-   String callstack = machine.buildCallStack();
+   String callstack = accessor.getMachine().buildCallStack();
 
    accessor.setResult(callstack);
 }
 
-void InternalArray_size(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InternalArray_size(VirtualCall& accessor)
 {
    VirtualArray& thisobject = accessor.getArray(0);
 
    accessor.setResult(thisobject.size());
 }
 
-void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InternalArray_resize(VirtualCall& accessor)
 {
    VirtualArray& thisobject = accessor.getArray(0);
 
@@ -73,7 +74,7 @@ void InternalArray_resize(VirtualMachine& machine, VirtualStackAccessor& accesso
    thisobject.resize(newsize);
 }
 
-void InternalString_equals(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InternalString_equals(VirtualCall& accessor)
 {
    const String& thisstring = accessor.getString(0);
    const String& thatstring = accessor.getString(1);
@@ -81,7 +82,7 @@ void InternalString_equals(VirtualMachine& machine, VirtualStackAccessor& access
    accessor.setResult(thisstring == thatstring);
 }
 
-void InternalString_subString(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InternalString_subString(VirtualCall& accessor)
 {
    const String& thisstring = accessor.getString(0);
    
@@ -91,14 +92,14 @@ void InternalString_subString(VirtualMachine& machine, VirtualStackAccessor& acc
    accessor.setResult(thisstring.subStr(pos, len));
 }
 
-void InternalString_length(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InternalString_length(VirtualCall& accessor)
 {
    const String& thisstring = accessor.getString(0);
 
    accessor.setResult((int) thisstring.length());
 }
 
-void InternalString_getChar(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InternalString_getChar(VirtualCall& accessor)
 {
    const String& thisstring = accessor.getString(0);
 
@@ -107,7 +108,7 @@ void InternalString_getChar(VirtualMachine& machine, VirtualStackAccessor& acces
    accessor.setResult(thisstring[index]);
 }
 
-void InternalString_indexOf(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InternalString_indexOf(VirtualCall& accessor)
 {
    const String& thisstring = accessor.getString(0);
 
@@ -116,7 +117,7 @@ void InternalString_indexOf(VirtualMachine& machine, VirtualStackAccessor& acces
    accessor.setResult(thisstring.indexOf(c));
 }
 
-void InternalString_lastIndexOf(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void InternalString_lastIndexOf(VirtualCall& accessor)
 {
    const String& thisstring = accessor.getString(0);
 
@@ -125,42 +126,42 @@ void InternalString_lastIndexOf(VirtualMachine& machine, VirtualStackAccessor& a
    accessor.setResult(thisstring.lastIndexOf(c));
 }
 
-void Char_isAlphaNum(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Char_isAlphaNum(VirtualCall& accessor)
 {
    UChar c = accessor.getChar(0);
 
    accessor.setResult(Char::isAlphaNum(c));
 }
 
-void Char_isAlpha(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Char_isAlpha(VirtualCall& accessor)
 {
    UChar c = accessor.getChar(0);
 
    accessor.setResult(Char::isAlpha(c));
 }
 
-void Char_isDigit(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Char_isDigit(VirtualCall& accessor)
 {
    UChar c = accessor.getChar(0);
 
    accessor.setResult(Char::isDigit(c));
 }
 
-void Char_isWhitespace(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Char_isWhitespace(VirtualCall& accessor)
 {
    UChar c = accessor.getChar(0);
 
    accessor.setResult(Char::isWhitespace(c));
 }
 
-void Math_sqrt(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Math_sqrt(VirtualCall& accessor)
 {
    double value = accessor.getReal(0);
 
    accessor.setResult(sqrt(value));
 }
 
-void Math_ceil(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void Math_ceil(VirtualCall& accessor)
 {
    double value = accessor.getReal(0);
 
@@ -170,40 +171,40 @@ void Math_ceil(VirtualMachine& machine, VirtualStackAccessor& accessor)
 SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)
 {
    registry.addClass(UTEXT("system.Console"));
-   registry.addFunction(UTEXT("println(string)"), Console_println);
-   registry.addFunction(UTEXT("print(string)"), Console_print);
+   registry.addFunction(UTEXT("println(string)"), new VirtualCallbackFunctor(Console_println));
+   registry.addFunction(UTEXT("print(string)"), new VirtualCallbackFunctor(Console_print));
 
    registry.addClass(UTEXT("system.ClassLoader"));
-   registry.addFunction(UTEXT("doLoadClass(string)"), ClassLoader_doLoadClass);
+   registry.addFunction(UTEXT("doLoadClass(string)"), new VirtualCallbackFunctor(ClassLoader_doLoadClass));
    
    registry.addClass(UTEXT("system.Class"));
-   registry.addFunction(UTEXT("doNewInstance(system.Class)"), Class_doNewInstance);
+   registry.addFunction(UTEXT("doNewInstance(system.Class)"), new VirtualCallbackFunctor(Class_doNewInstance));
 
    registry.addClass(UTEXT("system.Function"));
-   registry.addFunction(UTEXT("doInvoke(system.Object)"), Function_doInvoke);
+   registry.addFunction(UTEXT("doInvoke(system.Object)"), new VirtualCallbackFunctor(Function_doInvoke));
    
    registry.addClass(UTEXT("system.Throwable"));
-   registry.addFunction(UTEXT("fillCallStack()"), Throwable_fillCallStack);
+   registry.addFunction(UTEXT("fillCallStack()"), new VirtualCallbackFunctor(Throwable_fillCallStack));
 
    registry.addClass(UTEXT("system.InternalArray"));
-   registry.addFunction(UTEXT("size()"), InternalArray_size);
-   registry.addFunction(UTEXT("resize(int)"), InternalArray_resize);
+   registry.addFunction(UTEXT("size()"), new VirtualCallbackFunctor(InternalArray_size));
+   registry.addFunction(UTEXT("resize(int)"), new VirtualCallbackFunctor(InternalArray_resize));
 
    registry.addClass(UTEXT("system.InternalString"));
-   registry.addFunction(UTEXT("equals(string)"), InternalString_equals);
-   registry.addFunction(UTEXT("length()"), InternalString_length);
-   registry.addFunction(UTEXT("subString(int, int)"), InternalString_subString);
-   registry.addFunction(UTEXT("getChar(int)"), InternalString_getChar);
-   registry.addFunction(UTEXT("indexOf(char)"), InternalString_indexOf);
-   registry.addFunction(UTEXT("lastIndexOf(char)"), InternalString_lastIndexOf);
+   registry.addFunction(UTEXT("equals(string)"), new VirtualCallbackFunctor(InternalString_equals));
+   registry.addFunction(UTEXT("length()"), new VirtualCallbackFunctor(InternalString_length));
+   registry.addFunction(UTEXT("subString(int, int)"), new VirtualCallbackFunctor(InternalString_subString));
+   registry.addFunction(UTEXT("getChar(int)"), new VirtualCallbackFunctor(InternalString_getChar));
+   registry.addFunction(UTEXT("indexOf(char)"), new VirtualCallbackFunctor(InternalString_indexOf));
+   registry.addFunction(UTEXT("lastIndexOf(char)"), new VirtualCallbackFunctor(InternalString_lastIndexOf));
    
    registry.addClass(UTEXT("system.Char"));
-   registry.addFunction(UTEXT("isAlphaNum(char)"), Char_isAlphaNum);
-   registry.addFunction(UTEXT("isAlpha(char)"), Char_isAlpha);
-   registry.addFunction(UTEXT("isDigit(char)"), Char_isDigit);
-   registry.addFunction(UTEXT("isWhitespace(char)"), Char_isWhitespace);
+   registry.addFunction(UTEXT("isAlphaNum(char)"), new VirtualCallbackFunctor(Char_isAlphaNum));
+   registry.addFunction(UTEXT("isAlpha(char)"), new VirtualCallbackFunctor(Char_isAlpha));
+   registry.addFunction(UTEXT("isDigit(char)"), new VirtualCallbackFunctor(Char_isDigit));
+   registry.addFunction(UTEXT("isWhitespace(char)"), new VirtualCallbackFunctor(Char_isWhitespace));
    
    registry.addClass(UTEXT("engine.core.Math"));
-   registry.addFunction(UTEXT("sqrt(real)"), Math_sqrt);
-   registry.addFunction(UTEXT("ceil(real)"), Math_ceil);
+   registry.addFunction(UTEXT("sqrt(real)"), new VirtualCallbackFunctor(Math_sqrt));
+   registry.addFunction(UTEXT("ceil(real)"), new VirtualCallbackFunctor(Math_ceil));
 }

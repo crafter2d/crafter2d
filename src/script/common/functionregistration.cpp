@@ -6,18 +6,18 @@
 #include "classregistration.h"
 
 // static 
-FunctionRegistration* FunctionRegistration::create(const String& prototype, VMInterface::CallbackFnc callback)
+FunctionRegistration* FunctionRegistration::create(const String& prototype, yas::CallbackFunctor* pcallback)
 {
-   return new FunctionRegistration(prototype, callback);
+   return new FunctionRegistration(prototype, pcallback);
 }
 
 // - Constructors
 
-FunctionRegistration::FunctionRegistration(const String& prototype, VMInterface::CallbackFnc callback):
+FunctionRegistration::FunctionRegistration(const String& prototype, yas::CallbackFunctor* pcallback) :
    mpClass(NULL),
    mIndex(-1),
    mPrototype(prototype),
-   mCallback(callback)
+   mpCallback(pcallback)
 {
 }
 
@@ -25,7 +25,7 @@ FunctionRegistration::FunctionRegistration(const FunctionRegistration& that):
    mpClass(that.mpClass),
    mIndex(that.mIndex),
    mPrototype(that.mPrototype),
-   mCallback(that.mCallback)
+   mpCallback(that.mpCallback)
 {
 }
 
@@ -57,9 +57,9 @@ const String& FunctionRegistration::getPrototype() const
    return mPrototype;
 }
 
-VMInterface::CallbackFnc FunctionRegistration::getCallback() const
+yas::CallbackFunctor& FunctionRegistration::getCallback() const
 {
-   return mCallback;
+   return *mpCallback;
 }
 
 // - Maintenance

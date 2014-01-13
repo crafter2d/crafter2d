@@ -7,12 +7,18 @@
 #include "virtualstack.h"
 #include "virtualstring.h"
 #include "virtualcontext.h"
+#include "virtualmachine.h"
 
-class VirtualStackAccessor
+class VirtualCall
 {
 public:
-   VirtualStackAccessor(VirtualContext& context, VirtualStack& stack, int arguments): mContext(context), mStack(stack), mSize(arguments), mHasResult(false)
+   VirtualCall(VirtualMachine& machine, Variant* pargs, int arguments): mMachine(machine), mpArguments(pargs), mSize(arguments), mHasResult(false)
    {
+   }
+
+ // get/set
+   VirtualMachine& getMachine() {
+      return mMachine;
    }
 
  // query
@@ -90,7 +96,7 @@ public:
    }
 
    void setResult(const String& value) {
-      setResult(Variant(mContext.mStringCache.lookup(value)));
+      setResult(Variant(mMachine.getContext().mStringCache.lookup(value)));
    }
 
    void setResult(const Variant& value) {
@@ -101,13 +107,14 @@ public:
 private:
    Variant& getArgument(int index) const {
       ASSERT(index <= mSize);
-      return mStack[mStack.size() - mSize + index];
+      return mpArguments[index];
       // 0 1 2 3 -> ssize = 4; size = 3
       // index 0 -> 4 - 3 = 1
+      //return mStack[mStack.size() - mSize + index];
    }
 
-   VirtualContext&   mContext;
-   VirtualStack&     mStack;
+   VirtualMachine&   mMachine;
+   Variant*          mpArguments;
    Variant           mResult;
    int               mSize;
    bool              mHasResult;

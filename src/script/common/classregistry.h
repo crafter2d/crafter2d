@@ -9,6 +9,11 @@
 #include "script/script_base.h"
 #include "script/vm/vminterface.h"
 
+namespace yas
+{
+   class CallbackFunctor;
+}
+
 class ASTClass;
 class ASTFunction;
 class ClassRegistration;
@@ -22,13 +27,13 @@ class SCRIPT_API ClassRegistry
 public:
    ClassRegistry();
 
-   VMInterface::CallbackFnc getCallback(int index) const;
+   yas::CallbackFunctor& getCallback(int index) const;
    const FunctionRegistration& getFunction(int index) const;
 
  // maintenance
    void add(const ClassRegistry& that);
    void addClass(const String& name);
-   void addFunction(const String& name, VMInterface::CallbackFnc callback);
+   void addFunction(const String& name, yas::CallbackFunctor* pcallback);
 
  // search
    const FunctionRegistration* findCallback(const ASTClass& astclass, const ASTFunction& function) const;

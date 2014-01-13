@@ -37,6 +37,7 @@ public:
  // get/set
    bool  hasNativeObject() const;
    void* getNativeObjectPtr();
+   void* useNativeObjectPtr();
    template<typename T> T& getNativeObject();
    template<typename T> T* useNativeObject();
    void  setNativeObject(void* pobject);

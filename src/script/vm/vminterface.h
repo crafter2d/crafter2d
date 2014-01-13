@@ -6,11 +6,11 @@
 
 class ClassRegistry;
 class VirtualMachine;
-class VirtualStackAccessor;
+class VirtualCall;
 
 namespace VMInterface
 {
-   typedef void (*CallbackFnc)(VirtualMachine& machine, VirtualStackAccessor& accessor);
+   typedef void (*CallbackFnc)(VirtualCall& accessor);
 
    SCRIPT_API void registerCommonFunctions(ClassRegistry& registry);
 };
