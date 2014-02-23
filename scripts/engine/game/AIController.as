@@ -16,15 +16,13 @@ class AIController extends Controller
 	
 	public void updateAI(Entity actor)
 	{
-	/*
 		ArrayList<Player> players = mProcess.getPlayers();
 		foreach ( Player player : players )
 		{
 			actor.updateAI(player.getController());
 		}
-		*/
 		
-		Player player = mProcess.getPlayers();
-		actor.updateAI(player.getController());
+		// Player player = mProcess.getPlayers();
+		// actor.updateAI(player.getController());
 	}
 }
