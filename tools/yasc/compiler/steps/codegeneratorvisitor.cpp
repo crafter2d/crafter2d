@@ -135,11 +135,6 @@ void CodeGeneratorVisitor::visit(ASTField& ast)
 {
    ASTVariable& var = ast.getVariable();
 
-   if ( mpClass->getName() == UTEXT("ClassLoader") )
-   {
-      int aap  = 5;
-   }
-
    CIL::Field* pfield = new CIL::Field();
    pfield->setName(var.getName());
    pfield->setType(toCilType(var.getType()));

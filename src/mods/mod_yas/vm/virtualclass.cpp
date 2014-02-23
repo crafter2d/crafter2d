@@ -251,11 +251,6 @@ void VirtualClass::addInterface(VirtualClass& klass)
 
 void VirtualClass::build()
 {
-   if ( mName == UTEXT("engine.collections.ArrayList") )
-   {
-      int aap = 5;
-   }
-
    buildVariables();
    buildVirtualTable();
    buildInterfaceTable();

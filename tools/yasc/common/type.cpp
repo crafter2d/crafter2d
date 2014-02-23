@@ -18,11 +18,6 @@ namespace yasc
 
    Type* Type::fromString(const String& typestr)
    {
-      if ( typestr == SInt )
-      {
-         int aap = 5;
-      }
-
       int pos = typestr.lastIndexOf('[');
       if ( pos != -1 )
       {
