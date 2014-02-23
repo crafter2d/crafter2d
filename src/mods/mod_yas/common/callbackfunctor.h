@@ -2,7 +2,7 @@
 #ifndef __CallbackFunctor_h__
 #define __CallbackFunctor_h__
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
 class VirtualCall;
 

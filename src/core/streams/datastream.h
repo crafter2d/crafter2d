@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 
+#include "core/string/char.h"
 #include "core/core_base.h"
 
 class String;
@@ -38,16 +39,18 @@ public:
    virtual const char* getData() const = 0;
 
  // operators
-   DataStream&  operator<<(float f);
-   DataStream&  operator<<(int i);
    DataStream&  operator<<(bool b);
-   DataStream&  operator<<(char c);
+   DataStream&  operator<<(int i);
+   DataStream&  operator<<(float f);
+   DataStream&  operator<<(double d);
+   DataStream&  operator<<(UChar c);
    DataStream&  operator<<(const String& text);
 
-   DataStream&  operator>>(float& f);
-   DataStream&  operator>>(int& i);
    DataStream&  operator>>(bool& b);
-   DataStream&  operator>>(char& c);
+   DataStream&  operator>>(int& i);
+   DataStream&  operator>>(float& f);
+   DataStream&  operator>>(double& d);
+   DataStream&  operator>>(UChar& c);
    DataStream&  operator>>(String& str);
 
  // operations
@@ -61,8 +64,9 @@ public:
    virtual void writeUint32(uint32_t value);
    virtual void writeUint64(uint64_t value);
    virtual void writeFloat(float value);
+   virtual void writeDouble(double value);
    virtual void writeBool(bool value);
-   virtual void writeChar(char c);
+   virtual void writeChar(UChar c);
    virtual void writeString(const String& text);
            void writeBlob(const void* pdata, int size);
    
@@ -73,8 +77,9 @@ public:
    virtual void readUint32(uint32_t& value);
    virtual void readUint64(uint64_t& value);
    virtual void readFloat(float& value);
+   virtual void readDouble(double& value);
    virtual void readBool(bool& value);
-   virtual void readChar(char& value);
+   virtual void readChar(UChar& value);
    virtual void readString(String& value);
            void readBlob(void* pdata, int size);
 

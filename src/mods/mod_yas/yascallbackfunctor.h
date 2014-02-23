@@ -4,7 +4,7 @@
 
 #include "core/script/scriptregistrator.h"
 
-#include "script/common/callbackfunctor.h"
+#include "mod_yas/common/callbackfunctor.h"
 
 class YasScriptManager;
 

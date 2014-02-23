@@ -62,7 +62,7 @@ namespace Graphics
 
    protected:
     // operations
-      uchar*         ensureProperSize(int bytes, uchar* data, int width, int height);
+      uint8_t*       ensureProperSize(int bytes, uint8_t* data, int width, int height);
       void           flipIt(unsigned char* buffer);
 
       String mName;

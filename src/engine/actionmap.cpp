@@ -22,10 +22,10 @@
 #  include "actionmap.inl"
 #endif
 
-#include "net/events/actionevent.h"
+#include "core/script/scriptobject.h"
+#include "core/script/scriptmanager.h"
 
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
+#include "net/events/actionevent.h"
 
 #include "client.h"
 
@@ -75,8 +75,9 @@ namespace c2d
          const String& function = it->second;
 
          ASSERT_PTR(mpScript);
-         Variant arg(down);
-         mpScript->run(function, 1, &arg);
+         mpScript->prepareCall(1);
+         mpScript->arg(0, down);
+         mpScript->call(function);
       }
    }
 
@@ -84,14 +85,14 @@ namespace c2d
    {
       ASSERT_PTR(mpScript);
 
-      Variant args[2];
-      args[0].setObject(mpScript->resolve(&object));
-      args[1].setInt(event.getAction());
+      mpScript->prepareCall(2);
+      mpScript->arg(0, &object);
+      mpScript->arg(1, event.getAction());
 
       if ( event.isDown() )
-         mpScript->run(UTEXT("onKeyDown"), 2, args);
+         mpScript->call(UTEXT("onKeyDown"));
       else
-         mpScript->run(UTEXT("onKeyUp"), 2, args);
+         mpScript->call(UTEXT("onKeyUp"));
    }
 
 } // namespace c2d

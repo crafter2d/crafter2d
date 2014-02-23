@@ -2,7 +2,7 @@
 #ifndef VM_INTERFACE_H
 #define VM_INTERFACE_H
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
 class ClassRegistry;
 class VirtualMachine;

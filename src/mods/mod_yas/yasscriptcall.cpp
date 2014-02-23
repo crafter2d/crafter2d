@@ -1,14 +1,25 @@
 
 #include "yasscriptcall.h"
 
-#include "script/vm/virtualstackaccessor.h"
-#include "script/vm/virtualobject.h"
+#include "core/script/iscriptable.h"
+
+#include "mod_yas/vm/virtualstackaccessor.h"
+#include "mod_yas/vm/virtualobject.h"
+
+#include "yasscriptmanager.h"
 
 YasScriptCall::YasScriptCall(YasScriptManager& manager, VirtualCall& call) :
-   mCall(call),
-   mObject(manager)
+   mManager(manager),
+   mCall(call)
 {
 
+}
+
+c2d::ScriptObjectHandle YasScriptCall::newObject(const String& classname)
+{
+   YasScriptObject* presult = new YasScriptObject(mManager);
+   presult->setThis(*mCall.getMachine().instantiate(classname));
+   return c2d::ScriptObjectHandle(presult);
 }
 
 bool YasScriptCall::getBoolean(int arg)
@@ -36,10 +47,11 @@ const String& YasScriptCall::getString(int arg)
    return mCall.getString(arg);
 }
 
-c2d::ScriptObject& YasScriptCall::getObject(int arg)
+c2d::ScriptObjectHandle YasScriptCall::getObject(int arg)
 {
-   mObject.setObject(mCall.getObject(arg));
-   return mObject;
+   YasScriptObject* pobject = new YasScriptObject(mManager);
+   pobject->setThis(mCall.getObject(arg));
+   return c2d::ScriptObjectHandle(pobject);
 }
 
 void YasScriptCall::setResult(bool value)
@@ -60,6 +72,27 @@ void YasScriptCall::setResult(float value)
 void YasScriptCall::setResult(UChar value)
 {
    mCall.setResult(value);
+}
+
+void YasScriptCall::setResult(const String& value)
+{
+   mCall.setResult(value);
+}
+
+void YasScriptCall::setResult(Variant value)
+{
+   mCall.setResult(mManager.toValue(value));
+}
+
+void YasScriptCall::setResult(c2d::ScriptObjectHandle& object)
+{
+   YasScriptObject& yasobject = static_cast<YasScriptObject&>(*object);
+   mCall.setResult(yasobject.getThis());
+}
+
+void YasScriptCall::setResult(c2d::IScriptable& scriptable, bool owned)
+{
+   mCall.setResult(mCall.getMachine().instantiateNative(scriptable.getClassName(), &scriptable, owned));
 }
 
 void YasScriptCall::setResult(const String& classname, void* pobject, bool owned)

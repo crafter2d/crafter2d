@@ -31,12 +31,21 @@ public:
    WinFileSystem();
    virtual ~WinFileSystem();
 
+   virtual UChar getSeparator() const override;
    virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL) override;
-   virtual bool find(const String& mask, std::vector<String>& result) override;
+   virtual bool find(const String& mask, std::vector<String>& result, bool recursive) override;
 
 private:
    friend class FileSystem;
+
+   struct FindInfo
+   {
+      String path;
+      String filemask;
+   };
    
+   bool find(const FindInfo& findinfo, std::vector<String>& result, bool recursive);
+   bool recursiveFind(const FindInfo& findinfo, std::vector<String>& result);
 };
 
 #endif

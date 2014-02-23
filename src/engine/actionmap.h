@@ -28,11 +28,11 @@
 
 class ActionEvent;
 class Entity;
-class Script;
 
 namespace c2d
 {
    class Process;
+   class ScriptObject;
 
    /// \brief The mapping of actions to Lua functions.
    ///
@@ -73,9 +73,9 @@ namespace c2d
    private:
       typedef std::map<int, String> Actions;
 
-      Process* mpProcess;
-      Script*  mpScript;
-      Actions  mActions;
+      Process*       mpProcess;
+      ScriptObject*  mpScript;
+      Actions        mActions;
    };
 }
 

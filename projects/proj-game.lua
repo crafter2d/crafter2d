@@ -11,7 +11,7 @@ project "Game"
 	debugdir "bin"
 	
 	files { "src/game/**.cpp", "src/game/**.h", "src/game/**.inl" }
-	links { "Core", "Engine", "Script" }
+	links { "Core", "Engine" }
 	includedirs { "src" }
 	
 	configuration "Debug"

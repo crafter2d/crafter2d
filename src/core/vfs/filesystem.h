@@ -37,6 +37,7 @@ public:
    typedef void(*Callback)(const String& name, bool isdir, void* pdata);
 
    static FileSystem&   getInstance();
+   static UChar getNativeSeparator();
 
    virtual ~FileSystem();
 
@@ -50,8 +51,9 @@ public:
    void removePath(const String& path);
    void removeAll();
 
+   virtual UChar getSeparator() const = 0;
    virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL) = 0;
-   virtual bool find(const String& mask, std::vector<String>& result) = 0;
+   virtual bool find(const String& mask, std::vector<String>& result, bool recursive) = 0;
 
 protected:
    FileSystem();

@@ -6,16 +6,14 @@
 
 #include "core/string/string.h"
 
-#include "script/script_base.h"
-#include "script/vm/vminterface.h"
+#include "mod_yas/script_base.h"
+#include "mod_yas/vm/vminterface.h"
 
 namespace yas
 {
    class CallbackFunctor;
 }
 
-class ASTClass;
-class ASTFunction;
 class ClassRegistration;
 class FunctionRegistration;
 
@@ -26,6 +24,9 @@ class SCRIPT_API ClassRegistry
 
 public:
    ClassRegistry();
+   ~ClassRegistry();
+
+   ClassRegistry& operator=(const ClassRegistry& that);
 
    yas::CallbackFunctor& getCallback(int index) const;
    const FunctionRegistration& getFunction(int index) const;
@@ -34,10 +35,10 @@ public:
    void add(const ClassRegistry& that);
    void addClass(const String& name);
    void addFunction(const String& name, yas::CallbackFunctor* pcallback);
+   void clear();
 
  // search
-   const FunctionRegistration* findCallback(const ASTClass& astclass, const ASTFunction& function) const;
-   const FunctionRegistration* findCallback(const ASTClass& astclass, const String& fncname) const;
+   const FunctionRegistration* findCallback(const String& function) const;
 
 private:
  // operations

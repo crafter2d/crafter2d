@@ -2,6 +2,7 @@
 #include "yasscriptregistrator.h"
 
 #include "yascallbackfunctor.h"
+#include "yasscriptmanager.h"
 
 YasScriptRegistrator::YasScriptRegistrator(YasScriptManager& manager):
    mScriptManager(manager)
@@ -18,7 +19,7 @@ void YasScriptRegistrator::addFunction(const String& prototype, CallbackFnc call
    mRegistry.addFunction(prototype, new YasCallbackFunctor(mScriptManager, callback));
 }
 
-void YasScriptRegistrator::registerCallbacks(c2d::ScriptManager& manager)
+void YasScriptRegistrator::registerCallbacks()
 {
-   //manager.mVirtualMachine.mergeClassRegistry(mRegistry);
+   mScriptManager.getVM().mergeClassRegistry(mRegistry);
 }

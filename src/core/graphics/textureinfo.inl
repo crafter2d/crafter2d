@@ -42,12 +42,12 @@ INLINE void TextureInfo::setHeight(int height)
    mHeight = height;
 }
 
-INLINE uchar* TextureInfo::getData() const
+INLINE uint8_t* TextureInfo::getData() const
 {
    return mpData;
 }
 
-INLINE void TextureInfo::setData(uchar* pdata)
+INLINE void TextureInfo::setData(uint8_t* pdata)
 {
    mpData = pdata;
 }

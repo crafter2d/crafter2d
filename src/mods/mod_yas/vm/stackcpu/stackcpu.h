@@ -4,14 +4,14 @@
 
 #include <deque>
 
-#include "script/vm/cpu.h"
-#include "script/vm/virtualstack.h"
-#include "script/vm/virtualstackframe.h"
+#include "mod_yas/bytecode/cpu.h"
+#include "mod_yas/vm/virtualstack.h"
+#include "mod_yas/vm/virtualstackframe.h"
 
 class VirtualObject;
 class VirtualGuard;
 
-class SCRIPT_API StackCPU : public CPU
+class SCRIPT_API StackCPU : public ByteCode::CPU
 {
    typedef std::deque<VM::StackFrame> CallStack;
 
@@ -22,9 +22,8 @@ public:
    virtual ByteCode::IRGenerator* createIRGenerator();
 
  // execution
-   virtual Variant execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, Variant* pargs);
-   virtual Variant execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry);
-   virtual void    execute(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry);
+   virtual VirtualValue execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, VirtualValue* pargs);
+   virtual void         executeStatic(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry);
 
  // garbage collection
    virtual void mark();

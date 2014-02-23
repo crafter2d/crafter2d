@@ -2,7 +2,7 @@
 #ifndef VIRTUAL_EXCEPTION_H_
 #define VIRTUAL_EXCEPTION_H_
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
 class VirtualObject;
 

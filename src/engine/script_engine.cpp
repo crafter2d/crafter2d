@@ -26,11 +26,15 @@
 #include "core/graphics/font.h"
 #include "core/graphics/texture.h"
 #include "core/physics/inputforcegenerator.h"
+#include "core/physics/simulator.h"
 #include "core/resource/resourcemanager.h"
+#include "core/smartptr/autoptr.h"
 #include "core/streams/datastream.h"
 #include "core/streams/bufferedstream.h"
 #include "core/script/scriptcall.h"
+#include "core/script/scriptmanager.h"
 #include "core/script/scriptregistrator.h"
+#include "core/script/scriptobject.h"
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"
 #include "core/defines.h"
@@ -56,13 +60,13 @@
 
 using namespace c2d;
 
-#define GET_THIS(type, variable)                   type& variable = accessor.getObject<type>(0)
-#define DESTRUCT_THIS(type)                        delete accessor.useObject<type>(0);
+#define GET_THIS(type, variable)                   type& variable = accessor.getObject(0)->get<type>()
+#define DESTRUCT_THIS(type)                        delete accessor.getObject(0)->use<type>();
 
 #define RETURN_CLASS(class, pointer)               accessor.setResult(class, pointer, false)
 #define RETURN_CLASS_OWNED(class, pointer)         accessor.setResult(class, pointer, true)
 
-#define RETURN_CLASS_I(scriptable)                 accessor.setResult(machine.instantiateNative(scriptable, false));
+#define RETURN_CLASS_I(scriptable)                 accessor.setResult(scriptable, false);
 
 void Process_getContentManager(ScriptCall& accessor)
 {
@@ -75,7 +79,7 @@ void Process_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(Server, server);
 
-   ActionMap* pmap = accessor.useObject<ActionMap>(1);
+   ActionMap* pmap = accessor.getObject(1)->use<ActionMap>();
 
    server.setActionMap(pmap);
 }
@@ -111,7 +115,7 @@ void Server_sendScriptEvent(ScriptCall& accessor)
    GET_THIS(Server, server);
 
    int client = accessor.getInt(1);
-   NetStream& stream = accessor.getObject<NetStream>(2);
+   NetStream& stream = accessor.getObject(2)->get<NetStream>();
 
    server.sendScriptEvent(client, stream);
 }
@@ -144,7 +148,7 @@ void Client_setWindow(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   GameWindow* pwindow = accessor.useObject<GameWindow>(1);
+   GameWindow* pwindow = accessor.getObject(1)->use<GameWindow>();
 
    client.setWindow(pwindow);
 }
@@ -161,7 +165,7 @@ void Client_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   ActionMap* pmap = accessor.useObject<ActionMap>(1);
+   ActionMap* pmap = accessor.getObject(1)->use<ActionMap>();
 
    client.setActionMap(pmap);
 }
@@ -170,7 +174,7 @@ void Client_setKeyMap(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   KeyMap* pmap = accessor.useObject<KeyMap>(1);
+   KeyMap* pmap = accessor.getObject(1)->use<KeyMap>();
 
    client.setKeyMap(pmap);
 }
@@ -217,10 +221,8 @@ void GameWindow_create(ScriptCall& accessor)
 
 void BufferedStream_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   BufferedStream* pstream = new BufferedStream();
-   machine.registerNative(thisobject, pstream);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new BufferedStream());
 }
 
 void BufferedStream_destruct(ScriptCall& accessor)
@@ -230,12 +232,11 @@ void BufferedStream_destruct(ScriptCall& accessor)
 
 void NetStream_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   BufferedStream& bufferedstream = accessor.getObject<BufferedStream>(1);
-
+   BufferedStream& bufferedstream = accessor.getObject(1)->get<BufferedStream>();
    NetStream* pstream = new NetStream(bufferedstream);
-   machine.registerNative(thisobject, pstream);
+
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(pstream);
 }
 
 void NetStream_destruct(ScriptCall& accessor)
@@ -271,10 +272,8 @@ void NetStream_clear(ScriptCall& accessor)
 
 void QueryBodyComponentMessage_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   QueryBodyComponentMessage* pmsg = new QueryBodyComponentMessage();
-   machine.registerNative(thisobject, pmsg);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new QueryBodyComponentMessage());
 }
 
 void QueryBodyComponentMessage_hasBody(ScriptCall& accessor)
@@ -293,10 +292,8 @@ void QueryBodyComponentMessage_getBody(ScriptCall& accessor)
 
 void AnimationComponentMessage_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   AnimationComponentMessage* pmsg = new AnimationComponentMessage();
-   machine.registerNative(thisobject, pmsg);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new AnimationComponentMessage());
 }
 
 void AnimationComponentMessage_setAnimation(ScriptCall& accessor)
@@ -308,10 +305,8 @@ void AnimationComponentMessage_setAnimation(ScriptCall& accessor)
 
 void Entity_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   Entity* pentity = new Entity();
-   machine.registerNative(thisobject, pentity);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new Entity());
 }
 
 void Entity_destruct(ScriptCall& accessor)
@@ -330,7 +325,7 @@ void Entity_sendComponentMessage(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
-   ComponentMessage& msg = accessor.getObject(1).getNativeObject<ComponentMessage>();
+   ComponentMessage& msg = accessor.getObject(1)->get<ComponentMessage>();
    entity.sendComponentMessage(msg);
 }
 
@@ -338,7 +333,7 @@ void Entity_hasLineOfSight(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
-   Entity& other = accessor.getObject(1).getNativeObject<Entity>();
+   Entity& other = accessor.getObject(1)->get<Entity>();
    accessor.setResult(entity.hasLineOfSight(other));
 }
 
@@ -393,30 +388,10 @@ void Entity_setController(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
-   Controller* pcontroller = accessor.getObject(1).useNativeObject<Controller>();
+   Controller* pcontroller = accessor.getObject(1)->use<Controller>();
 
    entity.setController(pcontroller);
 }
-
-/*
-void Actor_add(ScriptCall& accessor)
-{
-   GET_THIS(Actor, actor);
-
-   Actor& child = accessor.getObject(1).getNativeObject<Actor>();
-
-   actor.add(&child);
-}
-
-void Actor_hasLineOfSight(ScriptCall& accessor)
-{
-   GET_THIS(Actor, actor);
-
-   Actor& to = accessor.getObject(1).getNativeObject<Actor>();
-
-   accessor.setResult(actor.hasLineOfSight(to));
-}
-*/
 
 void Player_getClientId(ScriptCall& accessor)
 {
@@ -436,17 +411,15 @@ void Player_setController(ScriptCall& accessor)
 {
    GET_THIS(Player, player);
 
-   Entity& entity = accessor.getObject<Entity>(1);
+   Entity& entity = accessor.getObject(1)->get<Entity>();
 
    player.setController(entity);
 }
 
 void World_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   World* pworld = new World();
-   machine.registerNative(thisobject, pworld);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new World());
 }
 
 void World_destruct(ScriptCall& accessor)
@@ -465,7 +438,7 @@ void World_add(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
-   Entity* pentity = accessor.getObject(1).useNativeObject<Entity>();
+   Entity* pentity = accessor.getObject(1)->use<Entity>();
 
    world.addEntity(pentity);
 }
@@ -499,7 +472,7 @@ void World_setFollowActor(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
-   Entity& entity = accessor.getObject(1).getNativeObject<Entity>();
+   Entity& entity = accessor.getObject(1)->get<Entity>();
 
    world.setFollowObject(entity);
 }
@@ -604,10 +577,8 @@ void Layer_setTile(ScriptCall& accessor)
 
 void InputForceGenerator_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   InputForceGenerator* pgenerator = new InputForceGenerator();
-   machine.registerNative(thisobject, pgenerator);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new InputForceGenerator());
 }
 
 void InputForceGenerator_destruct(ScriptCall& accessor)
@@ -619,11 +590,11 @@ void InputForceGenerator_getVelocity(ScriptCall& accessor)
 {
    GET_THIS(InputForceGenerator, generator);
 
-   VirtualObject* pobject = machine.instantiate(UTEXT("engine.core.Vector2D"));
-   pobject->setMember(0, Variant(generator.getVelocity().x));
-   pobject->setMember(1, Variant(generator.getVelocity().y));
-   
-   accessor.setResult(Variant(pobject));
+   ScriptObjectHandle object = accessor.newObject(UTEXT("engine.core.Vector2D"));
+   object->setMember(0, Variant(generator.getVelocity().x));
+   object->setMember(1, Variant(generator.getVelocity().y));
+
+   accessor.setResult(object);
 }
 
 void InputForceGenerator_setVelocity(ScriptCall& accessor)
@@ -648,10 +619,8 @@ void InputForceGenerator_setImpulse(ScriptCall& accessor)
 
 void InputController_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   InputController* pcontroller = new InputController();
-   machine.registerNative(thisobject, pcontroller);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new InputController());
 }
 
 void InputController_destruct(ScriptCall& accessor)
@@ -663,20 +632,19 @@ void InputController_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(InputController, controller);
 
-   ActionMap& actionmap = accessor.getObject(1).getNativeObject<ActionMap>();
+   ActionMap& actionmap = accessor.getObject(1)->get<ActionMap>();
 
    controller.setActionMap(actionmap);
 }
 
 void AIController_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
+   ScriptObjectHandle thisobject = accessor.getObject(0);
 
-   Process& process = accessor.getObject(1).getNativeObject<Process>();
-
-   AIController* pcontroller = new AIController(process);
-   pcontroller->setThis(thisobject);
-   machine.registerNative(thisobject, pcontroller);
+   AIController* pcontroller = new AIController();
+   pcontroller->setThis(thisobject.use());
+   
+   thisobject->setInstance(pcontroller);
 }
 
 void AIController_destruct(ScriptCall& accessor)
@@ -723,17 +691,15 @@ void Box2DBody_addForceGenerator(ScriptCall& accessor)
 {
    GET_THIS(Box2DBody, body);
 
-   ForceGenerator* pgenerator = accessor.getObject(1).useNativeObject<ForceGenerator>();
+   ForceGenerator* pgenerator = accessor.getObject(1)->use<ForceGenerator>();
 
    body.addForceGenerator(pgenerator);
 }
 
 void ActionMap_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   ActionMap* pmap = new ActionMap();
-   machine.registerNative(thisobject, pmap);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new ActionMap());
 }
 
 void ActionMap_destruct(ScriptCall& accessor)
@@ -752,7 +718,7 @@ void ActionMap_setProcess(ScriptCall& accessor)
 {
    GET_THIS(ActionMap, map);
 
-   Process& process = accessor.getObject(1).getNativeObject<Process>();
+   Process& process = accessor.getObject(1)->get<Process>();
 
    map.setProcess(process);
 }
@@ -769,10 +735,8 @@ void ActionMap_bind(ScriptCall& accessor)
 
 void KeyMap_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
-   KeyMap* pmap = new KeyMap();
-   machine.registerNative(thisobject, pmap);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new KeyMap);
 }
 
 void KeyMap_destruct(ScriptCall& accessor)
@@ -789,130 +753,6 @@ void KeyMap_bind(ScriptCall& accessor)
 
    map.bind(key, action);
 }
-
-/*
-void EngineGraphics_init(ScriptCall& accessor)
-{
-   VirtualObject& thisobject = accessor.getThis();
-
-   Graphics* pgraphics = new Graphics();
-   machine.registerNative(thisobject, pgraphics);
-}
-
-void EngineGraphics_destruct(ScriptCall& accessor)
-{
-   DESTRUCT_THIS(Graphics)
-}
-
-void EngineGraphics_doSetColor(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   float red = accessor.getReal(1);
-   float green = accessor.getReal(2);
-   float blue = accessor.getReal(3);
-   float alpha = accessor.getReal(4);
-
-   graphics.setColor(red, green, blue, alpha);
-}
-
-void EngineGraphics_nativeSetFont(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   FontPtr* pfont = (FontPtr*)accessor.getObject(1).getNativeObject();
-
-   graphics.setFont(*(pfont->ptr()));
-}
-
-void EngineGraphics_translate(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   float x = accessor.getInt(1);
-   float y = accessor.getInt(2);
-
-   graphics.translate(x, y);
-}
-
-void EngineGraphics_drawText(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   float x = accessor.getInt(1);
-   float y = accessor.getInt(2);
-   const String& text = accessor.getString(3);
-
-   graphics.drawText(x, y, text);
-}
-
-void EngineGraphics_native_drawTexture(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   TexturePtr* ptexture = (TexturePtr*) accessor.getObject(1).getNativeObject();
-   int x      = accessor.getInt(2);
-   int y      = accessor.getInt(3);
-   int width  = accessor.getInt(4);
-   int height = accessor.getInt(5);
-
-   graphics.drawTexture(**ptexture, x, y, width, height);
-}
-
-void EngineGraphics_native_drawTexturePart(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   TexturePtr* ptexture = (TexturePtr*) accessor.getObject(1).getNativeObject();
-   int x      = accessor.getInt(2);
-   int y      = accessor.getInt(3);
-   int width  = accessor.getInt(4);
-   int height = accessor.getInt(5);
-   float tx   = accessor.getReal(6);
-   float ty   = accessor.getReal(7);
-   float tw   = accessor.getReal(8);
-   float th   = accessor.getReal(9);
-
-   graphics.drawTexture(**ptexture, x, y, width, height, tx, ty, tw, th);
-}
-
-void EngineGraphics_native_fillRect(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   float x = accessor.getInt(1);
-   float y = accessor.getInt(2);
-   float width = accessor.getInt(3);
-   float height = accessor.getInt(4);
-
-   graphics.fillRect(x, y, width, height);
-}
-
-void EngineGraphics_native_drawRect(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   float x = accessor.getInt(1);
-   float y = accessor.getInt(2);
-   float width = accessor.getInt(3);
-   float height = accessor.getInt(4);
-
-   graphics.drawRect(x, y, width, height);
-}
-
-void EngineGraphics_native_drawRoundedRect(ScriptCall& accessor)
-{
-   GET_THIS(Graphics, graphics);
-
-   float x = accessor.getInt(1);
-   float y = accessor.getInt(2);
-   float width = accessor.getInt(3);
-   float height = accessor.getInt(4);
-
-   graphics.drawRoundedRect(x, y, width, height);
-}
-
-*/
 
 void Font_destruct(ScriptCall& accessor)
 {
@@ -1036,6 +876,7 @@ void File_readText(ScriptCall& accessor)
    char* pbuffer = new char[length];
    length = file.read(pbuffer, length);
 
+   /*
    VirtualArray* parray = machine.instantiateArray();
    parray->addLevel(length);
    
@@ -1043,190 +884,170 @@ void File_readText(ScriptCall& accessor)
    {
       (*parray)[index].setChar(pbuffer[index]);
    }
+   */
 
    delete[] pbuffer;
 
-   accessor.setResult(*parray);
+   //accessor.setResult(*parray);
 }
 
 // - Registration
 
-void script_engine_register(ScriptManager& manager)
+void script_engine_register(c2d::ScriptManager& manager)
 {
-   ScriptRegistrator registrator;
+   AutoPtr<ScriptRegistrator> pregistrator(manager.getRegistrator());
 
-   registrator.addClass(UTEXT("engine.game.Process"));
-   //registrator.addFunction(UTEXT("getFont"), Process_getFont);
-   registrator.addFunction(UTEXT("getContentManager()"), Process_getContentManager);
-   registrator.addFunction(UTEXT("setActionMap(engine.game.ActionMap)"), Process_setActionMap);
-   registrator.addFunction(UTEXT("loadWorld(string)"), Process_loadWorld);
-   registrator.addFunction(UTEXT("swapLeakDetection()"), Process_swapLeakDetection);
+   pregistrator->addClass(UTEXT("engine.game.Process"));
+   pregistrator->addFunction(UTEXT("getContentManager()"), Process_getContentManager);
+   pregistrator->addFunction(UTEXT("setActionMap(engine.game.ActionMap)"), Process_setActionMap);
+   pregistrator->addFunction(UTEXT("loadWorld(string)"), Process_loadWorld);
+   pregistrator->addFunction(UTEXT("swapLeakDetection()"), Process_swapLeakDetection);
 
-   registrator.addClass(UTEXT("engine.game.Server"));
-   registrator.addFunction(UTEXT("listen(int)"), Server_listen);
-   registrator.addFunction(UTEXT("sendScriptEvent(int, engine.net.NetStream)"), Server_sendScriptEvent);
+   pregistrator->addClass(UTEXT("engine.game.Server"));
+   pregistrator->addFunction(UTEXT("listen(int)"), Server_listen);
+   pregistrator->addFunction(UTEXT("sendScriptEvent(int, engine.net.NetStream)"), Server_sendScriptEvent);
 
-   registrator.addClass(UTEXT("engine.game.Client"));
-   registrator.addFunction(UTEXT("connect(string, int)"), Client_connect);
-   registrator.addFunction(UTEXT("isActive()"), Client_isActive);
-   registrator.addFunction(UTEXT("getWindowFactory()"), Client_getWindowFactory);
-   registrator.addFunction(UTEXT("setWindow(system.GameWindow)"), Client_setWindow);
-   registrator.addFunction(UTEXT("setKeyMap(engine.game.KeyMap)"), Client_setKeyMap);
-   registrator.addFunction(UTEXT("getPlayer()"), Client_getPlayer);
-   registrator.addFunction(UTEXT("getTexture(string)"), Client_getTexture);
+   pregistrator->addClass(UTEXT("engine.game.Client"));
+   pregistrator->addFunction(UTEXT("connect(string, int)"), Client_connect);
+   pregistrator->addFunction(UTEXT("isActive()"), Client_isActive);
+   pregistrator->addFunction(UTEXT("getWindowFactory()"), Client_getWindowFactory);
+   pregistrator->addFunction(UTEXT("setWindow(system.GameWindow)"), Client_setWindow);
+   pregistrator->addFunction(UTEXT("setKeyMap(engine.game.KeyMap)"), Client_setKeyMap);
+   pregistrator->addFunction(UTEXT("getPlayer()"), Client_getPlayer);
+   pregistrator->addFunction(UTEXT("getTexture(string)"), Client_getTexture);
 
-   registrator.addClass(UTEXT("engine.game.ContentManager"));
-   registrator.addFunction(UTEXT("loadEntity(string)"), ContentManager_loadEntity);
+   pregistrator->addClass(UTEXT("engine.game.ContentManager"));
+   pregistrator->addFunction(UTEXT("loadEntity(string)"), ContentManager_loadEntity);
 
-   registrator.addClass(UTEXT("system.GameWindowFactory"));
-   registrator.addFunction(UTEXT("createWindow()"), GameWindowFactory_createWindow);
+   pregistrator->addClass(UTEXT("system.GameWindowFactory"));
+   pregistrator->addFunction(UTEXT("createWindow()"), GameWindowFactory_createWindow);
 
-   registrator.addClass(UTEXT("system.GameWindow"));
-   registrator.addFunction(UTEXT("create(string, int, int, int, boolean)"), GameWindow_create);
+   pregistrator->addClass(UTEXT("system.GameWindow"));
+   pregistrator->addFunction(UTEXT("create(string, int, int, int, boolean)"), GameWindow_create);
 
-   registrator.addClass(UTEXT("engine.streams.BufferedStream"));
-   registrator.addFunction(UTEXT("BufferedStream()"), BufferedStream_init);
-   registrator.addFunction(UTEXT("finalize()"), BufferedStream_destruct);
+   pregistrator->addClass(UTEXT("engine.streams.BufferedStream"));
+   pregistrator->addFunction(UTEXT("BufferedStream()"), BufferedStream_init);
+   pregistrator->addFunction(UTEXT("finalize()"), BufferedStream_destruct);
 
-   registrator.addClass(UTEXT("engine.net.NetStream"));
-   registrator.addFunction(UTEXT("NetStream(engine.streams.BufferedStream)"), NetStream_init);
-   registrator.addFunction(UTEXT("finalize()"), NetStream_destruct);
-   registrator.addFunction(UTEXT("writeInt(int)"), NetStream_writeInt);
-   registrator.addFunction(UTEXT("readInt()"), NetStream_readInt);
-   registrator.addFunction(UTEXT("clear()"), NetStream_clear);
+   pregistrator->addClass(UTEXT("engine.net.NetStream"));
+   pregistrator->addFunction(UTEXT("NetStream(engine.streams.BufferedStream)"), NetStream_init);
+   pregistrator->addFunction(UTEXT("finalize()"), NetStream_destruct);
+   pregistrator->addFunction(UTEXT("writeInt(int)"), NetStream_writeInt);
+   pregistrator->addFunction(UTEXT("readInt()"), NetStream_readInt);
+   pregistrator->addFunction(UTEXT("clear()"), NetStream_clear);
 
-   registrator.addClass(UTEXT("engine.game.Entity"));
-   registrator.addFunction(UTEXT("Entity()"), Entity_init);
-   registrator.addFunction(UTEXT("finalize()"), Entity_destruct);
-   registrator.addFunction(UTEXT("getId()"), Entity_getId);
-   registrator.addFunction(UTEXT("getPositionX()"), Entity_getPositionX);
-   registrator.addFunction(UTEXT("getPositionY()"), Entity_getPositionY);
-   registrator.addFunction(UTEXT("setPosition(real, real)"), Entity_setPosition);
-   registrator.addFunction(UTEXT("setName(string)"), Entity_setName);
-   registrator.addFunction(UTEXT("direction()"), Entity_direction);
-   registrator.addFunction(UTEXT("flip()"), Entity_flip);
-   registrator.addFunction(UTEXT("setController(engine.game.Controller)"), Entity_setController);
-   registrator.addFunction(UTEXT("sendComponentMessage(engine.game.ComponentMessage)"), Entity_sendComponentMessage);
-   registrator.addFunction(UTEXT("hasLineOfSight(engine.game.Entity)"), Entity_hasLineOfSight);
+   pregistrator->addClass(UTEXT("engine.game.Entity"));
+   pregistrator->addFunction(UTEXT("Entity()"), Entity_init);
+   pregistrator->addFunction(UTEXT("finalize()"), Entity_destruct);
+   pregistrator->addFunction(UTEXT("getId()"), Entity_getId);
+   pregistrator->addFunction(UTEXT("getPositionX()"), Entity_getPositionX);
+   pregistrator->addFunction(UTEXT("getPositionY()"), Entity_getPositionY);
+   pregistrator->addFunction(UTEXT("setPosition(real, real)"), Entity_setPosition);
+   pregistrator->addFunction(UTEXT("setName(string)"), Entity_setName);
+   pregistrator->addFunction(UTEXT("direction()"), Entity_direction);
+   pregistrator->addFunction(UTEXT("flip()"), Entity_flip);
+   pregistrator->addFunction(UTEXT("setController(engine.game.Controller)"), Entity_setController);
+   pregistrator->addFunction(UTEXT("sendComponentMessage(engine.game.ComponentMessage)"), Entity_sendComponentMessage);
+   pregistrator->addFunction(UTEXT("hasLineOfSight(engine.game.Entity)"), Entity_hasLineOfSight);
 
-   registrator.addClass(UTEXT("engine.game.QueryBodyComponentMessage"));
-   registrator.addFunction(UTEXT("QueryBodyComponentMessage()"), QueryBodyComponentMessage_init);
-   registrator.addFunction(UTEXT("hasBody()"), QueryBodyComponentMessage_hasBody);
-   registrator.addFunction(UTEXT("getBody()"), QueryBodyComponentMessage_getBody);
+   pregistrator->addClass(UTEXT("engine.game.QueryBodyComponentMessage"));
+   pregistrator->addFunction(UTEXT("QueryBodyComponentMessage()"), QueryBodyComponentMessage_init);
+   pregistrator->addFunction(UTEXT("hasBody()"), QueryBodyComponentMessage_hasBody);
+   pregistrator->addFunction(UTEXT("getBody()"), QueryBodyComponentMessage_getBody);
 
-   registrator.addClass(UTEXT("engine.game.AnimationComponentMessage"));
-   registrator.addFunction(UTEXT("AnimationComponentMessage()"), AnimationComponentMessage_init);
-   registrator.addFunction(UTEXT("setAnimation(int)"), AnimationComponentMessage_setAnimation);
+   pregistrator->addClass(UTEXT("engine.game.AnimationComponentMessage"));
+   pregistrator->addFunction(UTEXT("AnimationComponentMessage()"), AnimationComponentMessage_init);
+   pregistrator->addFunction(UTEXT("setAnimation(int)"), AnimationComponentMessage_setAnimation);
 
-   /*
-   registrator.addClass(UTEXT("engine.game.Actor"));
-   registrator.addFunction(UTEXT("Actor()"), Actor_init);
-   registrator.addFunction(UTEXT("finalize()"), Actor_destruct);
-   registrator.addFunction(UTEXT("add(engine.game.Actor)"), Actor_add);
-   */
+   pregistrator->addClass(UTEXT("engine.game.Player"));
+   pregistrator->addFunction(UTEXT("getClientId()"), Player_getClientId);
+   pregistrator->addFunction(UTEXT("getController()"), Player_getController);
+   pregistrator->addFunction(UTEXT("setController(engine.game.Entity)"), Player_setController);
 
-   registrator.addClass(UTEXT("engine.game.Player"));
-   registrator.addFunction(UTEXT("getClientId()"), Player_getClientId);
-   registrator.addFunction(UTEXT("getController()"), Player_getController);
-   registrator.addFunction(UTEXT("setController(engine.game.Entity)"), Player_setController);
+   pregistrator->addClass(UTEXT("engine.game.World"));
+   pregistrator->addFunction(UTEXT("World()"), World_init);
+   pregistrator->addFunction(UTEXT("finalize()"), World_destruct);
+   pregistrator->addFunction(UTEXT("getName()"), World_getName);
+   pregistrator->addFunction(UTEXT("add(engine.game.Entity)"), World_add);
+   pregistrator->addFunction(UTEXT("setObjectLayer(int)"), World_setObjectLayer);
+   pregistrator->addFunction(UTEXT("setFollowMode(int)"), World_setFollowMode);
+   pregistrator->addFunction(UTEXT("getFollowActor()"), World_getFollowActor);
+   pregistrator->addFunction(UTEXT("setFollowActor(engine.game.Entity)"), World_setFollowActor);
+   pregistrator->addFunction(UTEXT("setFollowBorders(int, int, int, int)"), World_setFollowBorders);
+   pregistrator->addFunction(UTEXT("setFollowBorderWidth(int)"), World_setFollowBorderWidth);
+   pregistrator->addFunction(UTEXT("getSimulator()"), World_getSimulator);
+   pregistrator->addFunction(UTEXT("findEntity(int)"), World_findEntity);
+   pregistrator->addFunction(UTEXT("getLayerCount()"), World_getLayerCount);
+   pregistrator->addFunction(UTEXT("getLayer(int)"), World_getLayer);
 
-   registrator.addClass(UTEXT("engine.game.World"));
-   registrator.addFunction(UTEXT("World()"), World_init);
-   registrator.addFunction(UTEXT("finalize()"), World_destruct);
-   registrator.addFunction(UTEXT("getName()"), World_getName);
-   registrator.addFunction(UTEXT("add(engine.game.Entity)"), World_add);
-   registrator.addFunction(UTEXT("setObjectLayer(int)"), World_setObjectLayer);
-   registrator.addFunction(UTEXT("setFollowMode(int)"), World_setFollowMode);
-   registrator.addFunction(UTEXT("getFollowActor()"), World_getFollowActor);
-   registrator.addFunction(UTEXT("setFollowActor(engine.game.Entity)"), World_setFollowActor);
-   registrator.addFunction(UTEXT("setFollowBorders(int, int, int, int)"), World_setFollowBorders);
-   registrator.addFunction(UTEXT("setFollowBorderWidth(int)"), World_setFollowBorderWidth);
-   registrator.addFunction(UTEXT("getSimulator()"), World_getSimulator);
-   registrator.addFunction(UTEXT("findEntity(int)"), World_findEntity);
-   registrator.addFunction(UTEXT("getLayerCount()"), World_getLayerCount);
-   registrator.addFunction(UTEXT("getLayer(int)"), World_getLayer);
+   pregistrator->addClass(UTEXT("engine.game.Layer"));
+   pregistrator->addFunction(UTEXT("getEffect()"), Layer_getEffect);
+   pregistrator->addFunction(UTEXT("getWidth()"), Layer_getWidth);
+   pregistrator->addFunction(UTEXT("getHeight()"), Layer_getHeight);
+   pregistrator->addFunction(UTEXT("getTile(int, int)"), Layer_getTile);
+   pregistrator->addFunction(UTEXT("setTile(int, int, int)"), Layer_setTile);
 
-   registrator.addClass(UTEXT("engine.game.Layer"));
-   registrator.addFunction(UTEXT("getEffect()"), Layer_getEffect);
-   registrator.addFunction(UTEXT("getWidth()"), Layer_getWidth);
-   registrator.addFunction(UTEXT("getHeight()"), Layer_getHeight);
-   registrator.addFunction(UTEXT("getTile(int, int)"), Layer_getTile);
-   registrator.addFunction(UTEXT("setTile(int, int, int)"), Layer_setTile);
+   pregistrator->addClass(UTEXT("engine.game.Effect"));
 
-   registrator.addClass(UTEXT("engine.game.Effect"));
+   pregistrator->addClass(UTEXT("engine.game.InputForceGenerator"));
+   pregistrator->addFunction(UTEXT("InputForceGenerator()"), InputForceGenerator_init);
+   pregistrator->addFunction(UTEXT("finalize()"), InputForceGenerator_destruct);
+   pregistrator->addFunction(UTEXT("getVelocity()"), InputForceGenerator_getVelocity);
+   pregistrator->addFunction(UTEXT("setVelocity(real, real)"), InputForceGenerator_setVelocity);
+   pregistrator->addFunction(UTEXT("setImpulse(real, real)"), InputForceGenerator_setImpulse);
 
-   registrator.addClass(UTEXT("engine.game.InputForceGenerator"));
-   registrator.addFunction(UTEXT("InputForceGenerator()"), InputForceGenerator_init);
-   registrator.addFunction(UTEXT("finalize()"), InputForceGenerator_destruct);
-   registrator.addFunction(UTEXT("getVelocity()"), InputForceGenerator_getVelocity);
-   registrator.addFunction(UTEXT("setVelocity(real, real)"), InputForceGenerator_setVelocity);
-   registrator.addFunction(UTEXT("setImpulse(real, real)"), InputForceGenerator_setImpulse);
+   pregistrator->addClass(UTEXT("engine.game.InputController"));
+   pregistrator->addFunction(UTEXT("InputController()"), InputController_init);
+   pregistrator->addFunction(UTEXT("finalize()"), InputController_destruct);
+   pregistrator->addFunction(UTEXT("setActionMap(engine.game.ActionMap)"), InputController_setActionMap);
 
-   registrator.addClass(UTEXT("engine.game.InputController"));
-   registrator.addFunction(UTEXT("InputController()"), InputController_init);
-   registrator.addFunction(UTEXT("finalize()"), InputController_destruct);
-   registrator.addFunction(UTEXT("setActionMap(engine.game.ActionMap)"), InputController_setActionMap);
+   pregistrator->addClass(UTEXT("engine.game.AIController"));
+   pregistrator->addFunction(UTEXT("AIController()"), AIController_init);
+   pregistrator->addFunction(UTEXT("finalize()"), AIController_destruct);
 
-   registrator.addClass(UTEXT("engine.game.AIController"));
-   registrator.addFunction(UTEXT("AIController()"), AIController_init);
-   registrator.addFunction(UTEXT("finalize()"), AIController_destruct);
+   pregistrator->addClass(UTEXT("box2d.Box2DSimulator"));
+   pregistrator->addFunction(UTEXT("lineOfSight(engine.game.Entity, engine.game.Entity)"), Box2DSimulator_lineOfSight);
+   pregistrator->addFunction(UTEXT("createRevoluteJoint(box2d.Box2DBody, box2d.Box2DBody, real, real)"), Box2DSimulator_createRevoluteJoint);
+   pregistrator->addFunction(UTEXT("createRopeJoint(box2d.Box2DRopeJointDefinition)"), Box2DSimulator_createRopeJoint);
 
-   registrator.addClass(UTEXT("box2d.Box2DSimulator"));
-   registrator.addFunction(UTEXT("lineOfSight(engine.game.Entity, engine.game.Entity)"), Box2DSimulator_lineOfSight);
-   registrator.addFunction(UTEXT("createRevoluteJoint(box2d.Box2DBody, box2d.Box2DBody, real, real)"), Box2DSimulator_createRevoluteJoint);
-   registrator.addFunction(UTEXT("createRopeJoint(box2d.Box2DRopeJointDefinition)"), Box2DSimulator_createRopeJoint);
-
-   registrator.addClass(UTEXT("box2d.Box2DBody"));
-   registrator.addFunction(UTEXT("addForceGenerator(engine.game.ForceGenerator)"), Box2DBody_addForceGenerator);
+   pregistrator->addClass(UTEXT("box2d.Box2DBody"));
+   pregistrator->addFunction(UTEXT("addForceGenerator(engine.game.ForceGenerator)"), Box2DBody_addForceGenerator);
    
-   registrator.addClass(UTEXT("engine.game.ActionMap"));
-   registrator.addFunction(UTEXT("ActionMap()"), ActionMap_init);
-   registrator.addFunction(UTEXT("finalize()"), ActionMap_destruct);
-   registrator.addFunction(UTEXT("getProcess()"), ActionMap_getProcess);
-   registrator.addFunction(UTEXT("setProcess(engine.game.Process)"), ActionMap_setProcess);
-   registrator.addFunction(UTEXT("bind(int, string)"), ActionMap_bind);
+   pregistrator->addClass(UTEXT("engine.game.ActionMap"));
+   pregistrator->addFunction(UTEXT("ActionMap()"), ActionMap_init);
+   pregistrator->addFunction(UTEXT("finalize()"), ActionMap_destruct);
+   pregistrator->addFunction(UTEXT("getProcess()"), ActionMap_getProcess);
+   pregistrator->addFunction(UTEXT("setProcess(engine.game.Process)"), ActionMap_setProcess);
+   pregistrator->addFunction(UTEXT("bind(int, string)"), ActionMap_bind);
 
-   registrator.addClass(UTEXT("engine.game.KeyMap"));
-   registrator.addFunction(UTEXT("KeyMap()"), KeyMap_init);
-   registrator.addFunction(UTEXT("finalize()"), KeyMap_destruct);
-   registrator.addFunction(UTEXT("bind(int, int)"), KeyMap_bind);
+   pregistrator->addClass(UTEXT("engine.game.KeyMap"));
+   pregistrator->addFunction(UTEXT("KeyMap()"), KeyMap_init);
+   pregistrator->addFunction(UTEXT("finalize()"), KeyMap_destruct);
+   pregistrator->addFunction(UTEXT("bind(int, int)"), KeyMap_bind);
 
-   /*
-   registrator.addFunction(UTEXT("EngineGraphics_init"), EngineGraphics_init);
-   registrator.addFunction(UTEXT("EngineGraphics_destruct"), EngineGraphics_destruct);
-   registrator.addFunction(UTEXT("EngineGraphics_doSetColor"), EngineGraphics_doSetColor);
-   registrator.addFunction(UTEXT("EngineGraphics_nativeSetFont"), EngineGraphics_nativeSetFont);
-   registrator.addFunction(UTEXT("EngineGraphics_translate"), EngineGraphics_translate);
-   registrator.addFunction(UTEXT("EngineGraphics_drawText"), EngineGraphics_drawText);
-   registrator.addFunction(UTEXT("EngineGraphics_native_fillRect"), EngineGraphics_native_fillRect);
-   registrator.addFunction(UTEXT("EngineGraphics_native_drawRect"), EngineGraphics_native_drawRect);
-   registrator.addFunction(UTEXT("EngineGraphics_native_drawRoundedRect"), EngineGraphics_native_drawRoundedRect);
-   registrator.addFunction(UTEXT("EngineGraphics_native_drawTexture"), EngineGraphics_native_drawTexture);
-   */
+   pregistrator->addClass(UTEXT("engine.ui.Font"));
+   pregistrator->addFunction(UTEXT("finalize()"), Font_destruct);
+   pregistrator->addFunction(UTEXT("render(string)"), Font_render);
+   pregistrator->addFunction(UTEXT("getBaseLine()"), Font_getBaseLine);
+   pregistrator->addFunction(UTEXT("getTextWidth(string)"), Font_getTextWidth);
+   pregistrator->addFunction(UTEXT("getTextHeight(string)"), Font_getTextHeight);
 
-   registrator.addClass(UTEXT("engine.ui.Font"));
-   registrator.addFunction(UTEXT("finalize()"), Font_destruct);
-   registrator.addFunction(UTEXT("render(string)"), Font_render);
-   registrator.addFunction(UTEXT("getBaseLine()"), Font_getBaseLine);
-   registrator.addFunction(UTEXT("getTextWidth(string)"), Font_getTextWidth);
-   registrator.addFunction(UTEXT("getTextHeight(string)"), Font_getTextHeight);
+   pregistrator->addClass(UTEXT("engine.core.Texture"));
+   pregistrator->addFunction(UTEXT("finalize()"), Texture_destruct);
+   pregistrator->addFunction(UTEXT("getName()"), Texture_getName);
+   pregistrator->addFunction(UTEXT("getWidth()"), Texture_getWidth);
+   pregistrator->addFunction(UTEXT("getHeight()"), Texture_getHeight);
+   pregistrator->addFunction(UTEXT("getSourceWidth()"), Texture_getSourceWidth);
+   pregistrator->addFunction(UTEXT("getSourceHeight()"), Texture_getSourceHeight);
 
-   registrator.addClass(UTEXT("engine.core.Texture"));
-   registrator.addFunction(UTEXT("finalize()"), Texture_destruct);
-   registrator.addFunction(UTEXT("getName()"), Texture_getName);
-   registrator.addFunction(UTEXT("getWidth()"), Texture_getWidth);
-   registrator.addFunction(UTEXT("getHeight()"), Texture_getHeight);
-   registrator.addFunction(UTEXT("getSourceWidth()"), Texture_getSourceWidth);
-   registrator.addFunction(UTEXT("getSourceHeight()"), Texture_getSourceHeight);
+   pregistrator->addClass(UTEXT("engine.io.FileSystem"));
+   pregistrator->addFunction(UTEXT("getInstance()"), FileSystem_getInstance);
+   pregistrator->addFunction(UTEXT("open(string, int)"), FileSystem_open);
 
-   registrator.addClass(UTEXT("engine.io.FileSystem"));
-   registrator.addFunction(UTEXT("getInstance()"), FileSystem_getInstance);
-   registrator.addFunction(UTEXT("open(string, int)"), FileSystem_open);
+   pregistrator->addClass(UTEXT("engine.io.File"));
+   pregistrator->addFunction(UTEXT("finalize()"), File_destruct);
+   pregistrator->addFunction(UTEXT("length()"), File_length);
+   pregistrator->addFunction(UTEXT("readText()"), File_readText);
 
-   registrator.addClass(UTEXT("engine.io.File"));
-   registrator.addFunction(UTEXT("finalize()"), File_destruct);
-   registrator.addFunction(UTEXT("length()"), File_length);
-   registrator.addFunction(UTEXT("readText()"), File_readText);
-
-   registrator.registerCallbacks(manager);
+   pregistrator->registerCallbacks();
 }

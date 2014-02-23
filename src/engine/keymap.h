@@ -49,7 +49,7 @@ namespace c2d
    private:
       struct KeyInfo
       {
-         uint action;
+         int action;
          bool state;
       };
 

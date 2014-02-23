@@ -3,10 +3,9 @@
 
 #include "core/defines.h"
 
-#include "script/common/variant.h"
-
 #include "virtualclass.h"
 #include "virtualobject.h"
+#include "virtualvalue.h"
 
 #include <iostream>
 #include <algorithm>
@@ -56,7 +55,7 @@ void VirtualClassTable::mark()
       int statics = pclass->getStaticCount();
       for ( int index = 0; index < statics; index++ )
       {
-         Variant& var = pclass->getStatic(index);
+         VirtualValue& var = pclass->getStatic(index);
          if ( var.isObject() )
          {
             var.asObject().mark();

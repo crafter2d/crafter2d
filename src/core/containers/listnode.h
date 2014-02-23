@@ -27,11 +27,12 @@ template <class E>
 class ListNode
 {
 public:
-   ListNode(E& element, ListNode<E>* pprev, ListNode<E>* pnext);
+   ListNode(const E& element, ListNode<E>* pprev, ListNode<E>* pnext);
    
    bool           hasNext() const;
    ListNode<E>&   next();
    ListNode<E>*   nextptr();
+   const ListNode<E>* nextptr() const;
    void           next(ListNode<E>* pnext);
    
    bool           hasPrev() const;
@@ -40,9 +41,10 @@ public:
    void           prev(ListNode<E>* pprev);
 
    E&             data();
+   const E&       data() const;
 
 private:
-   E         _data;
+   const E   _data;
    ListNode* _pnext;
    ListNode* _pprev;
 };

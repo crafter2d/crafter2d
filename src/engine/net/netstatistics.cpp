@@ -43,19 +43,19 @@ NetStatistics::~NetStatistics()
 // - Operations
 //////////////////////////////////////////////////////////////////////////
 
-void NetStatistics::send(uint size)
+void NetStatistics::send(uint32_t size)
 {
    currentItem().addPackageSend();
    currentItem().addBytesSend(size);
 }
 
-void NetStatistics::received(uint size)
+void NetStatistics::received(uint32_t size)
 {
    currentItem().addPackageReceived();
    currentItem().addBytesReceived(size);
 }
 
-void NetStatistics::update(uint tick)
+void NetStatistics::update(uint32_t tick)
 {
    if ( tick - lastUpdate() >= 1000 )
    {

@@ -18,6 +18,14 @@ VirtualGuard& VirtualGuards::operator[](int index)
    return *mGuards[index];
 }
 
+// query
+
+int VirtualGuards::size() const
+{
+   return mGuards.size();
+}
+
+
 // - Maintenance
       
 void VirtualGuards::add(VirtualGuard* pguard)

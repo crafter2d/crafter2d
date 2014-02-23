@@ -25,22 +25,23 @@
 class NetStatisticsItem
 {
 public:
-   // Construction
-      NetStatisticsItem();
+   NetStatisticsItem();
 
-   // Operations
-      void addPackageSend();
-      void addPackageReceived();
+ // operations
+   void addPackageSend();
+   void addPackageReceived();
 
-      void addBytesSend(uint size);
-      void addBytesReceived(uint size);
+   void addBytesSend(uint32_t size);
+   void addBytesReceived(uint32_t size);
 
 private:
-   uint MBytesPerSecondRecv;
-   uint MBytesPerSecondSend;
 
-   uint MPackagesPerSecondRecv;
-   uint MPackagesPerSecondSend;
+ // data
+   uint32_t MBytesPerSecondRecv;
+   uint32_t MBytesPerSecondSend;
+
+   uint32_t MPackagesPerSecondRecv;
+   uint32_t MPackagesPerSecondSend;
 };
 
 #ifdef JENGINE_INLINE

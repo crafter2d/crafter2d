@@ -4,19 +4,19 @@
 #include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
-#include "script/ast/astfunction.h"
-#include "script/cil/cil.h"
-#include "script/cil/guard.h"
-#include "script/cil/switchtabel.h"
-#include "script/cil/switchtableentry.h"
-#include "script/cil/switchtables.h"
-#include "script/compiler/compilecontext.h"
-#include "script/vm/virtualclass.h"
-#include "script/vm/virtualcontext.h"
-#include "script/vm/virtualguard.h"
-#include "script/vm/virtualguards.h"
-#include "script/vm/virtualfunctiontableentry.h"
-#include "script/vm/virtuallookuptable.h"
+#include "mod_yas/cil/cil.h"
+#include "mod_yas/cil/function.h"
+#include "mod_yas/cil/guard.h"
+#include "mod_yas/cil/switchtabel.h"
+#include "mod_yas/cil/switchtableentry.h"
+#include "mod_yas/cil/switchtables.h"
+
+#include "mod_yas/vm/virtualclass.h"
+#include "mod_yas/vm/virtualcontext.h"
+#include "mod_yas/vm/virtualguard.h"
+#include "mod_yas/vm/virtualguards.h"
+#include "mod_yas/vm/VirtualFunction.h"
+#include "mod_yas/vm/virtuallookuptable.h"
 
 #include "block.h"
 #include "codepatch.h"
@@ -38,31 +38,30 @@ namespace ByteCode
 
    // - Operations
 
-   VirtualFunctionTableEntry* IRGenerator::generate(CompileContext& context, const ASTFunction& function)
+   bool IRGenerator::compile(VirtualContext& context, VirtualFunction& function)
    {
       const CIL::Instructions& instructions = function.getInstructions();
-      if ( instructions.empty() )
+      if ( instructions.isEmpty() )
       {
          throw std::exception();
       }
 
-      AutoPtr<VirtualFunctionTableEntry> result = new VirtualFunctionTableEntry();
-      
-      buildBlocks(context, *result, function);
+      buildBlocks(function);
 
-      if ( virGenerate(context, *result, function) )
+      if ( virGenerate(context, function) )
       {
-         result->updateGuards();
-         result->updateLookupTables();
+         function.updateGuards();
+         function.updateLookupTables();
 
          cleanup();
-         return result.release();
+
+         return true;
       }
 
-      return NULL;
+      return false;
    }
 
-   bool IRGenerator::virGenerate(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function)
+   bool IRGenerator::virGenerate(VirtualContext& context, VirtualFunction& entry)
    {
       PURE_VIRTUAL;
       return false;
@@ -118,95 +117,82 @@ namespace ByteCode
       return mBlocks;
    }
 
-   void IRGenerator::buildBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function)
+   void IRGenerator::buildBlocks(VirtualFunction& entry)
    {
-      const CIL::Instructions& instructions = function.getInstructions();
+      const CIL::Instructions& instructions = entry.getInstructions();
       allocateInstructionBlocks(instructions.size());
       createBlock(0);
 
-      buildGuards(entry, function.getGuards());      
-      buildTables(entry, function.getSwitchTables());
+      buildGuards(entry);
+      buildTables(entry);
       buildInstructions(instructions);
    }
 
-   void IRGenerator::buildGuards(VirtualFunctionTableEntry& entry, const CIL::Guards& cilguards)
+   void IRGenerator::buildGuards(VirtualFunction& entry)
    {
-      for ( int index = 0; index < cilguards.size(); ++index )
+      VirtualGuards& guards = entry.getGuards();
+      for ( int index = 0; index < guards.size(); ++index )
       {
-         const CIL::Guard& cilguard = cilguards[index];
-         buildGuardBlocks(entry, cilguard);
+         VirtualGuard& guard = guards[index];
+         buildGuardBlocks(guard);
       }
    }
 
-   void IRGenerator::buildGuardBlocks(VirtualFunctionTableEntry& entry, const CIL::Guard& cilguard)
+   void IRGenerator::buildGuardBlocks(VirtualGuard& guard)
    {
-      VirtualGuard* pguard = new VirtualGuard();
-      entry.addGuard(pguard);
-
       // For catch we create a new block. It is required for the stack code
       // generator, as it has to check whether the store local is an exception
       // handler or not.
 
-      Block& block_start = createBlock(cilguard.labels[CIL::Guard::sStart]);
-      Block& block_catch = createBlock(cilguard.labels[CIL::Guard::sCatch]);
-      Block& block_end   = createBlock(cilguard.labels[CIL::Guard::sEnd]);
-
-      block_start.pguard = pguard;
+      Block& block_start = createBlock(guard.locations[VirtualGuard::sStart]);
+      block_start.pguard = &guard;
       block_start.guard_type = VirtualGuard::sStart;
 
-      block_catch.pguard = pguard;
+      Block& block_catch = createBlock(guard.locations[VirtualGuard::sCatch]);
+      block_catch.pguard = &guard;
       block_catch.guard_type = VirtualGuard::sCatch;
 
-      block_end.pguard = pguard;
+      Block& block_end   = createBlock(guard.locations[VirtualGuard::sEnd]);
+      block_end.pguard = &guard;
       block_end.guard_type = VirtualGuard::sEnd;
-
-      if ( pguard->finalize )
+      
+      if ( guard.finalize )
       {
-         // If there is a final block, we link the start to the 
-
-         Block& block_final = createBlock(cilguard.labels[CIL::Guard::sFinal]);
-
-         block_final.pguard = pguard;
+         Block& block_final = createBlock(guard.locations[VirtualGuard::sFinal]);
+         block_final.pguard = &guard;
          block_final.guard_type = VirtualGuard::sFinal;
       }
    }
 
-   void IRGenerator::buildTables(VirtualFunctionTableEntry& entry, const CIL::SwitchTables& tables)
+   void IRGenerator::buildTables(VirtualFunction& entry)
    {
+      VirtualLookupTables& tables = entry.getLookupTables();
       for ( int index = 0; index < tables.size(); ++index )
       {
-         const CIL::SwitchTable& table = tables[index];
-         buildTableBlocks(entry, table);
+         VirtualLookupTable& table = tables[index];
+         buildTableBlocks(table);
       }
    }
 
-   void IRGenerator::buildTableBlocks(VirtualFunctionTableEntry& entry, const CIL::SwitchTable& table)
+   void IRGenerator::buildTableBlocks(VirtualLookupTable& table)
    {
-      VirtualLookupTable* plookup = new VirtualLookupTable();
-      entry.addLookupTable(plookup);
-
-      plookup->setEnd(table.getEnd());
       Block& block_end = createBlock(table.getEnd());
-      block_end.plookup = plookup;
-      block_end.lookup_type = 2;
+      block_end.plookup = &table;
+      block_end.lookup_type = Block::eEnd;
 
       if ( table.hasDefault() )
-      {
-         plookup->setDefault(table.getDefault());
-         
+      {       
          Block& block_default = createBlock(table.getDefault());
-         block_default.plookup = plookup;
-         block_default.lookup_type = 1;
+         block_default.plookup = &table;
+         block_default.lookup_type = Block::eDefault;
       }
 
-      for ( int index = 0; index < table.size(); ++index )
+      std::vector<int> values = table.getPositions();
+      for ( std::size_t index = 0; index < values.size(); ++index )
       {
-         const CIL::SwitchTableEntry& entry = table[index];
-
-         Block& block_case = createBlock(entry.label);
-         block_case.plookup = plookup;
-         block_case.lookup_value = entry.value;
-         block_case.lookup_type = 3;
+         Block& block_case = createBlock(values[index]);
+         block_case.plookup = &table;
+         block_case.lookup_type = Block::eValue;
       }
    }
 

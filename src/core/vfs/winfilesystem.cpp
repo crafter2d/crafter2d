@@ -21,6 +21,8 @@
 
 #include <windows.h>
 
+#include "core/defines.h"
+
 #include "file.h"
 #include "stdiofile.h"
 
@@ -31,6 +33,11 @@ WinFileSystem::WinFileSystem():
 
 WinFileSystem::~WinFileSystem()
 {
+}
+
+UChar WinFileSystem::getSeparator() const
+{
+   return L'\\';
 }
 
 bool WinFileSystem::recurseDirectory(const String& dir, Callback callback, void* pdata)
@@ -64,11 +71,12 @@ bool WinFileSystem::recurseDirectory(const String& dir, Callback callback, void*
    return true;
 }
 
-bool WinFileSystem::find(const String& mask, std::vector<String>& result)
+bool WinFileSystem::recursiveFind(const FindInfo& findinfo, std::vector<String>& result)
 {
    WIN32_FIND_DATA ffd;
 
-   HANDLE hFind = FindFirstFileEx(mask.toUtf16().c_str(), FindExInfoBasic, &ffd, FindExSearchNameMatch, NULL, 0);
+   String newmask = File::concat(findinfo.path, UTEXT("*"));
+   HANDLE hFind = FindFirstFileEx(newmask.toUtf16().c_str(), FindExInfoBasic, &ffd, FindExSearchNameMatch, NULL, 0);
    if ( hFind == INVALID_HANDLE_VALUE )
    {
       return true;
@@ -77,16 +85,62 @@ bool WinFileSystem::find(const String& mask, std::vector<String>& result)
    do
    {
       String name(ffd.cFileName);
-      result.push_back(name);
+
+      bool isdir = IS_SET(ffd.dwFileAttributes, FILE_ATTRIBUTE_DIRECTORY);
+      if ( isdir )
+      {
+         if ( name != UTEXT(".") && name != UTEXT("..") )
+         {
+            FindInfo rfind;
+            rfind.filemask = findinfo.filemask;
+            rfind.path = File::concat(findinfo.path, name);
+
+            find(rfind, result, true);
+         }
+      }
    }
    while ( FindNextFile(hFind, &ffd) != 0 );
 
-   DWORD dwError = GetLastError();
-
    FindClose(hFind);
 
-   if (dwError != ERROR_NO_MORE_FILES) 
-      return false;
-
    return true;
+}
+
+bool WinFileSystem::find(const FindInfo& findinfo, std::vector<String>& result, bool recursive)
+{
+   WIN32_FIND_DATA ffd;
+
+   String mask = File::concat(findinfo.path, findinfo.filemask);
+   HANDLE hFind = FindFirstFileEx(mask.toUtf16().c_str(), FindExInfoBasic, &ffd, FindExSearchNameMatch, NULL, 0);
+   if ( hFind != INVALID_HANDLE_VALUE )
+   {
+      do
+      {
+         String name(ffd.cFileName);
+
+         if ( !IS_SET(ffd.dwFileAttributes, FILE_ATTRIBUTE_DIRECTORY) )
+         {
+            result.push_back(File::concat(findinfo.path, name));
+         }     
+      }
+      while ( FindNextFile(hFind, &ffd) != 0 );
+
+      DWORD dwError = GetLastError();
+
+      FindClose(hFind);
+
+      if (dwError != ERROR_NO_MORE_FILES) 
+         return false;
+   }
+
+   return recursive ? recursiveFind(findinfo, result) : true;
+}
+
+bool WinFileSystem::find(const String& mask, std::vector<String>& result, bool recursive)
+{
+   FindInfo findinfo;
+   findinfo.filemask = File::extractFileName(mask);
+   findinfo.path = File::extractPath(mask);
+
+   return find(findinfo, result, recursive);
 }

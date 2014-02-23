@@ -4,8 +4,8 @@
 
 #include "core/string/string.h"
 
-#include "script/script_base.h"
-#include "script/vm/vminterface.h"
+#include "mod_yas/script_base.h"
+#include "mod_yas/vm/vminterface.h"
 
 namespace yas
 {

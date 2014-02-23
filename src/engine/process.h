@@ -23,15 +23,12 @@
 #include <map>
 
 #include "engine/engine_base.h"
-#include "engine/script/scriptmanager.h"
-
-#include "net/netconnection.h"
+#include "engine/net/netconnection.h"
 
 #include "processnetobserver.h"
 
 class DataStream;
 class NetEvent;
-class Script;
 class String;
 class World;
 
@@ -40,6 +37,8 @@ namespace c2d
    class ActionMap;
    class ContentManager;
    class ModuleManager;
+   class ScriptManager;
+   class ScriptObject;
 
    /// @author Jeroen Broekhuizen
    /// \brief Provides the basic functionality for the process.
@@ -89,8 +88,7 @@ namespace c2d
 
       ProcessNetObserver   mNetObserver;
       NetConnection        conn;
-      ScriptManager        mScriptManager;
-      Script*              mpScript;
+      ScriptObject*        mpScript;
       ActionMap*           actionMap;
       bool                 initialized;
 
@@ -99,6 +97,7 @@ namespace c2d
       // members
       ModuleManager*    mpModuleManager;
       ContentManager*   mpContentManager;
+      ScriptManager*    mpScriptManager;
       World*            mpWorld;
       bool              mActive;
       bool              mDetecting;

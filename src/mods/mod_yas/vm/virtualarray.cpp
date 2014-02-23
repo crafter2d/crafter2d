@@ -5,10 +5,9 @@
 
 #include "core/defines.h"
 
-#include "script/common/variant.h"
-
 #include "virtualarrayexception.h"
 #include "virtualobject.h"
+#include "virtualvalue.h"
 
 VirtualArray::VirtualArray():
    Collectable(),
@@ -25,24 +24,28 @@ VirtualArray::~VirtualArray()
    }
 }
 
-const Variant& VirtualArray::operator[](int index) const
+const VirtualValue& VirtualArray::operator[](int index) const
 {
    return at(index);
 }
 
-Variant& VirtualArray::operator[](int index)
+VirtualValue& VirtualArray::operator[](int index)
 {
    return at(index);
 }
 
 // - Query
 
-const Variant& VirtualArray::at(int index) const
+const VirtualValue& VirtualArray::at(int index) const
 {
-   return const_cast<VirtualArray&>(*this).at(index);
+   if ( index < 0 || index >= mSize )
+   {
+      throw new VirtualArrayException(VirtualArrayException::eOutOfBounds);
+   }
+   return mpArray[index];
 }
 
-Variant& VirtualArray::at(int index)
+VirtualValue& VirtualArray::at(int index)
 {
    if ( index < 0 || index >= mSize )
    {
@@ -60,7 +63,7 @@ int VirtualArray::size() const
 
 void VirtualArray::addLevel(int size)
 {
-   mpArray = new Variant[size];
+   mpArray = new VirtualValue[size];
    mSize   = size;
 }
 
@@ -70,7 +73,7 @@ void VirtualArray::resize(int newsize)
    {
       int count = MIN(mSize, newsize);
 
-      Variant* parray = new Variant[newsize];
+      VirtualValue* parray = new VirtualValue[newsize];
       for ( int index = 0; index < count; index++ )
       {
          parray[index] = mpArray[index];
@@ -88,7 +91,7 @@ void VirtualArray::doMark()
 {
    for ( int index = 0; index < mSize; index++ )
    {
-      Variant& variant = mpArray[index];
+      VirtualValue& variant = mpArray[index];
       if ( variant.isObject() )
       {
          variant.asObject().mark();

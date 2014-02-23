@@ -26,9 +26,8 @@
 #include "core/script/iscriptable.h"
 #include "core/defines.h"
 
-#include "script/compiler/compiler.h"
-#include "script/common/literal.h"
-#include "script/bytecode/program.h"
+#include "mod_yas/bytecode/generator.h"
+#include "mod_yas/bytecode/program.h"
 
 #include "stackcpu/stackcpu.h"
 
@@ -44,20 +43,15 @@
 
 VirtualMachine::VirtualMachine(VirtualContext& context):
    mContext(context),
-   mCallback(*this),
-   mCompiler(),
    mRootObjects(),
+   mGC(),
    mNativeObjects(),
    mState(eInit),
-   mpArrayClass(NULL),
-   mpStringClass(NULL),
    mpCPU(NULL),
-   mLoaded(false)
+   mpGenerator(NULL)
 {
    mpCPU = new StackCPU(*this);
-
-   mCompiler.setCPU(*mpCPU);
-   mCompiler.setCallback(mCallback);
+   context.mProgram.setByteCodeGenerator(mpCPU->createIRGenerator());
 }
 
 VirtualMachine::~VirtualMachine()
@@ -66,7 +60,6 @@ VirtualMachine::~VirtualMachine()
    // resulting in double delete.
    mState = eDestruct;
    mNativeObjects.clear();
-   mCompiler.cleanUp();
 }
 
 // - Get/set
@@ -83,16 +76,21 @@ void VirtualMachine::initialize()
    ClassRegistry registry;
    VMInterface::registerCommonFunctions(registry);
    mergeClassRegistry(registry);
-   mContext.mNativeRegistry.add(mCompiler.getClassRegistry());
+
+   mpGenerator = new ByteCode::Generator();
+   if ( mpGenerator == NULL )
+   {
+      throw new std::exception("Out of memory");
+   }
 
    // preload some common classes
    loadClass(UTEXT("system.Object"));
    loadClass(UTEXT("system.InternalArray"));
    loadClass(UTEXT("system.InternalString"));
+   loadClass(UTEXT("system.AssertionError"));
+   loadClass(UTEXT("system.NullPointerException"));
 
    // resolve the internal classes
-   mpArrayClass = &mContext.mClassTable.resolve(UTEXT("system.InternalArray"));
-   mpStringClass = &mContext.mClassTable.resolve(UTEXT("system.InternalString"));
    mpCPU->initialize(mContext);
 
    // pre-compile utility classes
@@ -100,11 +98,7 @@ void VirtualMachine::initialize()
    loadClass(UTEXT("system.System"));
 
    mState = eRunning;
-   mLoaded = true;
-
-   loadClass(UTEXT("system.AssertionError"));
-   loadClass(UTEXT("system.NullPointerException"));
-
+   
    // register the loaded classes with the ClassLoader instance
    std::vector<VirtualClass*> classes = mContext.mClassTable.asArray();
    for ( std::size_t index = 0; index < classes.size(); index++ )
@@ -123,7 +117,7 @@ bool VirtualMachine::loadClass(const String& classname)
 
 void VirtualMachine::mergeClassRegistry(const ClassRegistry& registry)
 {
-   mCompiler.setClassRegistry(registry);
+   mContext.mNativeRegistry.add(registry);
 }
 
 // - Stack access
@@ -145,12 +139,12 @@ bool VirtualMachine::execute(const String& classname, const String& function)
    if ( pentry == NULL )
       return false;
 
-   mpCPU->execute(mContext, *pclass, *pentry);
+   mpCPU->executeStatic(mContext, *pclass, *pentry);
 
    return true;
 }
 
-Variant VirtualMachine::execute(VirtualObject& object, const String& function, int argc, Variant* pargs)
+VirtualValue VirtualMachine::execute(VirtualObject& object, const String& function, int argc, VirtualValue* pargs)
 {
    const VirtualClass& vclass = object.getClass();
    const VirtualFunctionTableEntry* pentry = vclass.getVirtualFunctionTable().findByName(function);
@@ -196,11 +190,6 @@ VirtualObject* VirtualMachine::instantiate(const String& classname, int construc
       presult = &mpCPU->instantiate(mContext, *pclass, constructor);
    }
    return presult;
-}
-
-VirtualObject& VirtualMachine::instantiateNative(IScriptable& scriptable, bool owned)
-{
-   return *instantiateNative(scriptable.getClassName(), (void*)&scriptable, owned);
 }
 
 VirtualObject* VirtualMachine::instantiateNative(const String& classname, void* pobject, bool owned)
@@ -261,7 +250,6 @@ VirtualObject* VirtualMachine::lookupNative(void* pobject)
 
 VirtualArray* VirtualMachine::instantiateArray()
 {
-   ASSERT_PTR(mpArrayClass);
    VirtualArray* parray = new VirtualArray();
    mGC.collect(parray);
    return parray;
@@ -303,7 +291,7 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
       const VirtualFunctionTableEntry* pentry = object.getClass().getVirtualFunctionTable().findByName(sFinal);
       if ( pentry != NULL )
       {
-         mpCPU->execute(mContext, object, *pentry);
+         mpCPU->execute(mContext, object, *pentry, 0, NULL);
       }
    }
 }
@@ -315,10 +303,8 @@ VirtualClass* VirtualMachine::doLoadClass(const String& classname)
    VirtualClass* pclass = mContext.mClassTable.find(classname);
    if ( pclass == NULL )
    {
-      if ( mCompiler.compile(classname) )
-      {
-         pclass = mContext.mClassTable.find(classname);
-      }
+      // TODO : load the class from CIL
+      pclass = &mpGenerator->generate(mContext, classname);
    }
    return pclass;
 }
@@ -331,12 +317,12 @@ void VirtualMachine::classLoaded(VirtualClass* pclass)
 
    // execute the static initialization body
    VirtualFunctionTableEntry& entry = pclass->getVirtualFunctionTable()[0];
-   mpCPU->execute(mContext, *pclass, entry);
+   mpCPU->executeStatic(mContext, *pclass, entry);
 }
 
 void VirtualMachine::createClass(const VirtualClass& aclass)
 {
-   if ( mLoaded )
+   if ( mState > eDestruct )
    {
       static const String sClass = UTEXT("system.Class");
       static const String sFunction = UTEXT("system.Function");
@@ -358,10 +344,10 @@ void VirtualMachine::createClass(const VirtualClass& aclass)
       // notify the ClassLoader to add this class
       const VirtualClass& classloader = mContext.mClassTable.resolve(sClassLoader);
       const VirtualFunctionTableEntry& entry = classloader.getVirtualFunctionTable()[4];
-      const Variant& classloaderobject = classloader.getStatic(0);
+      const VirtualValue& classloaderobject = classloader.getStatic(0);
       ASSERT(classloaderobject.isObject());
 
-      Variant arg(object);
+      VirtualValue arg(object);
       mpCPU->execute(mContext, classloaderobject.asObject(), entry, 1, &arg);
    }
 }

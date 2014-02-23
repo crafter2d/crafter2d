@@ -21,8 +21,7 @@
 
 #include "core/defines.h"
 
-#include "script/common/variant.h"
-
+#include "virtualvalue.h"
 #include "virtualarray.h"
 #include "virtualmachine.h"
 
@@ -31,8 +30,7 @@ VirtualObject::VirtualObject():
    mpNativeObject(NULL),
    mpMembers(NULL),
    mMemberCount(0),
-   mOwnsNative(false),
-   mMarked(false)
+   mOwnsNative(false)
 {
 }
 
@@ -78,16 +76,6 @@ void VirtualObject::setOwner(bool owned)
    mOwnsNative = owned;
 }
 
-bool VirtualObject::isMarked() const
-{
-   return mMarked;
-}
-
-void VirtualObject::setMarked(bool marked)
-{
-   mMarked = marked;
-}
-
 // - Query
 
 const VirtualClass& VirtualObject::getClass() const
@@ -112,24 +100,28 @@ void VirtualObject::initialize(int variables)
    if ( variables > 0 )
    {
       delete[] mpMembers;
-      mpMembers = new Variant[variables];
+      mpMembers = new VirtualValue[variables];
       mMemberCount = variables;
    }
 }
 
-const Variant& VirtualObject::getMember(int index) const
+const VirtualValue& VirtualObject::getMember(int index) const
 {
    ASSERT(index >= 0);
    ASSERT(index < mMemberCount);
+
    return mpMembers[index];
 }
 
-Variant& VirtualObject::getMember(int index)
+VirtualValue& VirtualObject::getMember(int index)
 {
-   return const_cast<Variant&>(((const VirtualObject&)*this).getMember(index));
+   ASSERT(index >= 0);
+   ASSERT(index < mMemberCount);
+
+   return mpMembers[index];
 }
 
-void VirtualObject::setMember(int index, const Variant& value)
+void VirtualObject::setMember(int index, const VirtualValue& value)
 {
    ASSERT_PTR(mpMembers);
    ASSERT(index < mMemberCount);

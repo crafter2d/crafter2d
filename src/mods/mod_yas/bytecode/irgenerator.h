@@ -2,28 +2,27 @@
 #ifndef IR_GENERATOR_H
 #define IR_GENERATOR_H
 
-#include "script/cil/cil.h"
+#include "mod_yas/cil/cil.h"
 
 #include "block.h"
 
 namespace CIL
 {
-   class Guard;
-   class Guards;
-   class SwitchTable;
-   class SwitchTables;
+   class Function;
+   class Instructions;
 }
 
-class ASTFunction;
-class CompileContext;
-class VirtualContext;
 class VirtualClass;
-class VirtualFunctionTableEntry;
+class VirtualContext;
+class VirtualFunction;
+class VirtualGuard;
+class VirtualGuards;
+class VirtualLookupTable;
 
 namespace ByteCode
 {
-   class Program;
    class Patch;
+   class Resolver;
 
    class IRGenerator
    {
@@ -33,11 +32,12 @@ namespace ByteCode
       IRGenerator();
       virtual ~IRGenerator();
 
-      VirtualFunctionTableEntry* generate(CompileContext& context, const ASTFunction& function);
+    // operations
+      bool compile(VirtualContext& context, VirtualFunction& function);
 
    protected:
     // operations
-      virtual bool virGenerate(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function) = 0;
+      virtual bool virGenerate(VirtualContext& context, VirtualFunction& entry) = 0;
 
       void cleanup();
 
@@ -53,18 +53,19 @@ namespace ByteCode
    private:
 
     // block operations
-      void     buildBlocks(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function);
-      void     buildGuards(VirtualFunctionTableEntry& entry, const CIL::Guards& cilguards);
-      void     buildGuardBlocks(VirtualFunctionTableEntry& entry,const CIL::Guard& cilguard);
-      void     buildTables(VirtualFunctionTableEntry& entry, const CIL::SwitchTables& tables);
-      void     buildTableBlocks(VirtualFunctionTableEntry& entry, const CIL::SwitchTable& table);
+      void     buildBlocks(VirtualFunction& entry);
+      void     buildGuards(VirtualFunction& entry);
+      void     buildGuardBlocks(VirtualGuard& guard);
+      void     buildTables(VirtualFunction& entry);
+      void     buildTableBlocks(VirtualLookupTable& table);
       void     buildInstructions(const CIL::Instructions& instructions);
 
       void     allocateInstructionBlocks(int amount);
       Block&   createBlock(int target);
 
-      Blocks   mBlocks;
-      Patches  mPatches;
+    // data
+      Blocks         mBlocks;
+      Patches        mPatches;
    };
 }
 

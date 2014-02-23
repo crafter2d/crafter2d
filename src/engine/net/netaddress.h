@@ -46,19 +46,19 @@ public:
    NetAddress(const sockaddr_in& address);
 
  // operations
-   void removeAcknowledged(uint number);
+   void removeAcknowledged(uint32_t number);
 
  // members
    int         index;
    sockaddr_in addr;
 
-   uint  packageNumber;
-   uint  nextPackageNumber;
-   float lastTimeRecv;
-   float lastTimeSend;
+   uint32_t packageNumber;
+   uint32_t nextPackageNumber;
+   float    lastTimeRecv;
+   float    lastTimeSend;
 
-   int   waitAttempt;
-   float waitTimer;
+   int      waitAttempt;
+   float    waitTimer;
 
    SortedPackageList orderQueue;
    PackageQueue resendQueue;

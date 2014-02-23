@@ -32,7 +32,10 @@ namespace Graphics
    class VertexBuffer;
 };
 
-class Script;
+namespace c2d
+{
+   class ScriptObject;
+}
 
 /**
 @author Jeroen Broekhuizen
@@ -82,8 +85,9 @@ private:
    Vector         position;
    Particle*      activeList;
 	Particle*      freeList;
-	uint           mGeometryBufferSize;
-   Script*        updateScript;
+	uint32_t       mGeometryBufferSize;
+
+   c2d::ScriptObject*  updateScript;
 
    Graphics::Effect*        mpEffect;
    Graphics::VertexBuffer*  mGeometryBuffer;

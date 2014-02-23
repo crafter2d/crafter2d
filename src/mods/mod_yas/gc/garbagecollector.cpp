@@ -3,8 +3,8 @@
 
 #include "core/containers/listiterator.h"
 
-#include "script/vm/virtualobject.h"
-#include "script/vm/virtualmachine.h"
+#include "mod_yas/vm/virtualobject.h"
+#include "mod_yas/vm/virtualmachine.h"
 
 int VoidHash(void* pkey)
 {

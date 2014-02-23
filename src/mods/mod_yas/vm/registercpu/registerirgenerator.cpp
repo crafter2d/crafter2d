@@ -1,9 +1,9 @@
 
 #include "registerirgenerator.h"
 
-#include "script/ast/ast.h"
+#include "../virtualfunction.h"
 
-char* RegisterIRGenerator::generate(CompileContext& context, const ASTFunction& function)
+bool RegisterIRGenerator::virGenerate(VirtualContext& context, VirtualFunction& function)
 {
    using namespace CIL;
 

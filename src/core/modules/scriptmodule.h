@@ -2,14 +2,26 @@
 #ifndef __ScriptModule_h__
 #define __ScriptModule_h__
 
+#include "core/core_base.h"
+
 #include "module.h"
+
 namespace c2d
 {
-   class ScriptModule : public Module
+   class ScriptManager;
+
+   class CORE_API ScriptModule : public Module
    {
    public:
-      ScriptModule();
+      ScriptModule(ScriptManager* pmanager);
 
+    // query
+      ScriptManager& getManager();
+
+   private:
+
+    // data
+      ScriptManager* mpManager;
    };
 }
 

@@ -25,9 +25,8 @@
 #include "core/smartptr/autoptr.h"
 #include "core/smartptr/scopedvalue.h"
 #include "core/physics/simulator.h"
+#include "core/script/scriptobject.h"
 
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
 #include "engine/net/events/aggregateevent.h"
 #include "engine/net/events/connectevent.h"
 #include "engine/net/events/connectreplyevent.h"
@@ -71,7 +70,8 @@ namespace c2d
          ServerDownEvent event;
          sendToAllClients(event);
 
-         mpScript->run(UTEXT("onShutdown"));
+         mpScript->prepareCall(0);
+         mpScript->call(UTEXT("onShutdown"));
       }
 
       return Process::destroy();
@@ -199,10 +199,10 @@ namespace c2d
             AutoPtr<Player> player = clients[client];
 
             // run the onClientConnect script
-            Variant args[2];
-            args[0].setInt(client);
-            args[1].setObject(mpScript->resolve(player.getPointer()));
-            mpScript->run(UTEXT("onClientDisconnect"), 2, args);
+            mpScript->prepareCall(2);
+            mpScript->arg(0, client);
+            mpScript->arg(1, UTEXT("engine.game.Player"), player.getPointer());
+            mpScript->call(UTEXT("onClientDisconnect"));
 
             // remove the player from the client list
             ClientMap::iterator it = clients.find(client);
@@ -224,10 +224,10 @@ namespace c2d
 
             // run the onClientConnect script
             Player* player = clients[client];
-            Variant args[2];
-            args[0].setObject(mpScript->resolve(player));
-            args[1].setObject(mpScript->instantiate(sNetStream, &stream));
-            mpScript->run(sOnEvent, 2, args);
+            mpScript->prepareCall(2);
+            mpScript->arg(0, player);
+            mpScript->arg(1, sNetStream, &stream);
+            mpScript->call(sOnEvent);
          }
          break;
       case actionEvent:
@@ -301,7 +301,7 @@ namespace c2d
    void Server::handleConnectEvent(const ConnectEvent& event)
    {
       // check if the script allows this new player
-      Variant retval = mpScript->run(UTEXT("onClientConnecting"));
+      Variant retval = mpScript->call(UTEXT("onClientConnecting"));
       int reason = retval.asInt();
       if ( reason != 0 )
       {
@@ -315,8 +315,9 @@ namespace c2d
          addPlayer(mActiveClient, pplayer);
 
          // run the onClientConnect script
-         Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), pplayer));
-         mpScript->run(UTEXT("onClientConnect"), 1, &arg);
+         mpScript->prepareCall(1);
+         mpScript->arg(0, UTEXT("engine.game.Player"), pplayer);
+         mpScript->call(UTEXT("onClientConnect"));
       }
    }
 

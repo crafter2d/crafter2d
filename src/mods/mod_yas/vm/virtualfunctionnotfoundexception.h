@@ -20,7 +20,7 @@
 #ifndef VIRTUAL_FUNCTION_NOT_FOUND_EXCEPTION_H
 #define VIRTUAL_FUNCTION_NOT_FOUND_EXCEPTION_H
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
 #include "core/string/string.h"
 

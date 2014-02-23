@@ -24,6 +24,7 @@
 #include "listnode.h"
 
 template <class E> class ListIterator;
+template <class E> class ListConstIterator;
 
 /**
 @author Jeroen Broekhuizen
@@ -40,7 +41,9 @@ public:
    
  // Get/set interface
    ListIterator<E> getFront();
+   ListConstIterator<E> getFront() const;
    ListIterator<E> getTail();
+   ListConstIterator<E> getTail() const;
    ListIterator<E> get(int index);
 
  // Query
@@ -48,8 +51,8 @@ public:
    bool  isEmpty() const;
 
  // Operations
-   void  addFront(E& element);
-   void  addTail(E& element);
+   void  addFront(const E& element);
+   void  addTail(const E& element);
    
    void  insert(Iterator<E>& it, E& element);
    void  clear();
@@ -58,6 +61,7 @@ public:
 
 private:
    friend class ListIterator<E>;
+   friend class ListConstIterator<E>;
 
    ListNode<E>*   _phead;
    ListNode<E>*   _ptail;

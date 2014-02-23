@@ -5,8 +5,10 @@
 #include <vector>
 
 #include "core/script/scriptobject.h"
-#include "script/common/variant.h"
 
+#include "vm/virtualvalue.h"
+
+class Variant;
 class VirtualObject;
 class YasScriptManager;
 
@@ -16,8 +18,8 @@ public:
    YasScriptObject(YasScriptManager& manager);
 
  // get/set
-   VirtualObject& getObject();
-   void           setObject(VirtualObject& object);
+   VirtualObject& getThis();
+   void           setThis(VirtualObject& object);
 
  // arguments
    virtual void arg(int index, bool arg) override;
@@ -25,6 +27,11 @@ public:
    virtual void arg(int index, float arg) override;
    virtual void arg(int index, UChar arg) override;
    virtual void arg(int index, const String& arg) override;
+   virtual void arg(int index, void* pinstance) override;
+   virtual void arg(int index, const String& classname, void* pinstance) override;
+
+ // members
+  virtual void setMember(int index, const Variant& value) override;
 
  // overrides
    virtual void* getInstance() override;
@@ -32,16 +39,20 @@ public:
    virtual void  setInstance(void* pinstance, bool owned = true) override;
 
  // operations
-   virtual void prepareCall(int args);
-   virtual void call(const String& function);
+   virtual void prepareCall(int args) override;
+   virtual Variant call(const String& function) override;
+   virtual Variant call(const String& function, int argc, Variant* args) override;
 
 private:
-   typedef std::vector<Variant> Variants;
+   typedef std::vector<VirtualValue> Values;
+
+ // conversion
+   Variant toVariant(const Variant& value);
 
  // data
    YasScriptManager& mManager;
    VirtualObject*    mpObject;
-   Variants          mArguments;
+   Values            mArguments;
 };
 
 #endif // __YasScriptObject_h__

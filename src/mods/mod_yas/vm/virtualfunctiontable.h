@@ -5,6 +5,7 @@
 #include <vector>
 
 class String;
+class VirtualFunction;
 class VirtualFunctionTableEntry;
 
 class VirtualFunctionTable
@@ -15,6 +16,8 @@ public:
    VirtualFunctionTable();
    ~VirtualFunctionTable();
 
+   const VirtualFunctionTable& operator=(const VirtualFunctionTable& that);
+
  // query
    int size() const;
 
@@ -22,17 +25,17 @@ public:
          VirtualFunctionTableEntry& operator[](int index);
 
  // operations
-   void append(VirtualFunctionTableEntry* pentry);
-   void append(const VirtualFunctionTable& table);
-   void merge(const VirtualFunctionTable& that);
+   void setInits(VirtualFunction& static_init, VirtualFunction& var_init);
+   int  insert(VirtualFunction& function);
    void clear();
+   void update();
 
  // search
    const VirtualFunctionTableEntry* findByName(const String& name) const;
 
-   const VirtualFunctionTableEntry& resolveInterface(int index) const;
-
 private:
+
+ // data
    Entries mEntries;
 };
 

@@ -32,7 +32,7 @@ public:
    virtual ~MemoryBuffer();
 
  // get/set
-           uchar*          getData();
+           uint8_t*        getData();
            int             getDataSize();
 
  // query
@@ -54,7 +54,7 @@ private:
            void assign(void* pdata, int size);
            void free();
 
-   uchar*   mpData;
+   uint8_t* mpData;
    int      mDataSize;
    int      mCursor;
 };

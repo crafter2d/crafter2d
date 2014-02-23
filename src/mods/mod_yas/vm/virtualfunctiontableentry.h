@@ -6,34 +6,38 @@
 
 #include "virtualguards.h"
 
+class VirtualFunction;
 class VirtualLookupTable;
+class VirtualValue;
 
 class VirtualFunctionTableEntry
 {
 public:
-   typedef std::vector<VirtualLookupTable*> VirtualLookups;
+   static VirtualFunctionTableEntry* fromFunction(VirtualFunction& function);
 
    VirtualFunctionTableEntry();
    VirtualFunctionTableEntry(const VirtualFunctionTableEntry& that);
 
+ // interface
+   const String& getName() const;
+
+   int lookup(int tableid, const VirtualValue& value) const;
+
+   const VirtualGuard* findGuard(int ip) const;
+
+   void setFunction(VirtualFunction& function);
+
+   void update();
+   
  // maintenance
    VirtualFunctionTableEntry* clone() const;
 
-   void addLookupTable(VirtualLookupTable* ptable);
-   void updateLookupTables();
-
-   void addGuard(VirtualGuard* pguard);
-   void updateGuards();
-
  // data
-   String         mName;
-   VirtualGuards  guards;
-   VirtualLookups lookups;
-   int            mInstruction;
-   int            mArguments;
-   int            mLocals;
-   int            mInterface;
-   bool           returns;
+   VirtualFunction* mpFunction;
+   int              mInstruction;
+   int              mArguments;
+   int              mLocals;
+   bool             returns;
 };
 
 #endif // VIRTUAL_FUNCTION_TABLE_ENTRY_H_

@@ -6,8 +6,8 @@
 #include "core/string/char.h"
 #include "core/math/math.h"
 
-#include "script/common/classregistry.h"
-#include "script/common/functionregistration.h"
+#include "mod_yas/common/classregistry.h"
+#include "mod_yas/common/functionregistration.h"
 
 #include "virtualmachine.h"
 #include "virtualstackaccessor.h"
@@ -35,7 +35,7 @@ void Class_doNewInstance(VirtualCall& accessor)
 {
    VirtualObject& classobject = accessor.getObject(1);
 
-   String name = classobject.getMember(0).asString().getString();
+   String name = classobject.getMember(0).asString();
    VirtualObject* pobject = accessor.getMachine().instantiate(name);
 
    accessor.setResult(*pobject);
@@ -46,9 +46,9 @@ void Function_doInvoke(VirtualCall& accessor)
    VirtualObject& thisobject = accessor.getThis();
    VirtualObject& instance = accessor.getObject(1);
 
-   String fncname = thisobject.getMember(0).asString().getString();
+   String fncname = thisobject.getMember(0).asString();
 
-   accessor.getMachine().execute(instance, fncname);
+   accessor.getMachine().execute(instance, fncname, 0, NULL);
 }
 
 void Throwable_fillCallStack(VirtualCall& accessor)

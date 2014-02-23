@@ -24,11 +24,10 @@
 #include <map>
 
 #include "core/entity/idmanager.h"
-#include "core/string/string.h"
 #include "core/math/vector.h"
+#include "core/string/string.h"
 
 #include "engine/worldobserver.h"
-#include "engine/script/script.h"
 #include "engine/engine_base.h"
 
 #include "bounds.h"
@@ -40,6 +39,11 @@ namespace Graphics
    class Device;
    class RenderContext;
    class Viewport;
+}
+
+namespace c2d
+{
+   class ScriptObject;
 }
 
 class DirtySet;
@@ -121,9 +125,9 @@ public:
    void               setSimulationFactory(SimulationFactory& factory);
    Simulator&         getSimulator();
 
-   bool     hasScript() const;
-   Script&  getScript();
-   void     setScript(Script* pscript);
+   bool               hasScript() const;
+   c2d::ScriptObject& getScript();
+   void               setScript(c2d::ScriptObject* pscript);
 
  // observer interface
    void  attach(WorldObserver& observer);
@@ -187,7 +191,7 @@ private:
    Simulator*             mpSimulator;
    WorldSimulatorListener mSimulatorListener;
 
-   Script* mpScript;
+   c2d::ScriptObject* mpScript;
 
    LayerType _layerType;
    bool autoFollow;

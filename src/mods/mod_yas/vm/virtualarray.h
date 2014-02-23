@@ -2,11 +2,11 @@
 #ifndef VIRTUAL_ARRAY_H_
 #define VIRTUAL_ARRAY_H_
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
-#include "script/gc/collectable.h"
+#include "mod_yas/gc/collectable.h"
 
-class Variant;
+class VirtualValue;
 
 class SCRIPT_API VirtualArray : public Collectable
 {
@@ -14,12 +14,12 @@ public:
    VirtualArray();
    virtual ~VirtualArray();
 
-   const Variant& operator[](int index) const;
-         Variant& operator[](int index);
+   const VirtualValue& operator[](int index) const;
+         VirtualValue& operator[](int index);
 
  // query
-   const Variant& at(int index) const;
-         Variant& at(int index);
+   const VirtualValue& at(int index) const;
+         VirtualValue& at(int index);
 
    int size() const;
 
@@ -34,8 +34,8 @@ protected:
    virtual void doMark();
    
 private:
-   Variant* mpArray;
-   int      mSize;
+   VirtualValue* mpArray;
+   int           mSize;
 };
 
 #endif // VIRTUAL_ARRAY_H_

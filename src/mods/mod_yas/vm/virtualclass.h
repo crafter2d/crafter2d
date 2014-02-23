@@ -2,20 +2,31 @@
 #ifndef VIRTUAL_CLASS_H_
 #define VIRTUAL_CLASS_H_
 
-#include "script/script_base.h"
+#include <vector>
 
 #include "core/string/string.h"
 
-#include "virtualinstructiontable.h"
+#include "mod_yas/script_base.h"
+
+#include "virtualclasses.h"
 #include "virtualfunctiontable.h"
 
-class ASTClass;
-class Variant;
+namespace yasc
+{
+   class Types;
+}
+
+class VirtualField;
+class VirtualFunction;
+class VirtualValue;
 class VirtualObject;
 
 class SCRIPT_API VirtualClass
 {
 public:
+   typedef std::vector<VirtualFunction*> Functions;
+   typedef std::vector<VirtualField*> Fields;
+
    enum Flags {
       eNone = 0, 
       eInstantiatable = 1,
@@ -40,8 +51,11 @@ public:
    const VirtualFunctionTable& getVirtualFunctionTable() const;
          VirtualFunctionTable& getVirtualFunctionTable();
 
-   const ASTClass& getDefinition() const;
-   void            setDefinition(const ASTClass& definition);
+   const Fields& getFields() const;
+         Fields& getFields();
+
+   const Fields& getStaticFields() const;
+         Fields& getStaticFields();
 
    int  getVariableCount() const;
    void setVariableCount(int count);
@@ -55,36 +69,61 @@ public:
    const int*  getInterfaceLookupTable() const;
    void        setInterfaceLookupTable(int* ptable);
 
+   Functions& getFunctions();
+
    void setFlags(Flags flags);
 
  // query
    bool isNative() const;
    bool canInstantiate() const;
 
-   String getNativeClassName() const;
-
    bool isBaseClass(const VirtualClass& base) const;
    bool implements(const VirtualClass& interfce) const;
+
+   int getTotalVariables() const;
 
    const VirtualFunctionTableEntry* getDefaultConstructor() const;
 
  // operations
+   void addField(VirtualField* pfield);
+   void addStaticField(VirtualField* pfield);
+   void addFunction(VirtualFunction* pfunction);
+   void addInterface(VirtualClass& klass);
+
+   void build();
+
    void instantiate(VirtualObject& object) const;
 
-   const Variant& getStatic(int index) const;
-         Variant& getStatic(int index);
-   void           setStatic(int index, const Variant& value);
+   const VirtualValue& getStatic(int index) const;
+         VirtualValue& getStatic(int index);
+   void                setStatic(int index, const VirtualValue& value);
 
    void offsetCode(int offset);
+
+ // search
+   VirtualFunction* findExactMatch(const String& name, const yasc::Types& args);
    
 private:
+
+ // operations
+   void buildVariables();
+   void buildVirtualTable();
+   void buildInterfaceTable();
+   
+ // search
+   VirtualFunction* findExactMatch(const VirtualFunction& function);
+
+ // data
    String                  mName;
    String                  mBaseName;
    const VirtualClass*     mpBaseClass;
-   const ASTClass*         mpDefinition;
+   VirtualClasses          mInterfaces;
+   Fields                  mFields;
+   Fields                  mStaticFields;
+   Functions               mFunctions;
    VirtualFunctionTable    mVTable;
    VirtualObject*          mpClassObject;
-   Variant*                mpStatics;
+   VirtualValue*           mpStatics;
    int                     mStaticCount;
    int*                    mpInterfaceLookupTable;
    int                     mVariableCount;

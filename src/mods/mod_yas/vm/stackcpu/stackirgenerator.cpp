@@ -8,25 +8,30 @@
 #include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
-#include "script/ast/ast.h"
-#include "script/bytecode/block.h"
-#include "script/bytecode/program.h"
-#include "script/bytecode/symboltable.h"
-#include "script/bytecode/functionsymbol.h"
-#include "script/bytecode/valuesymbol.h"
-#include "script/bytecode/jumppatch.h"
-#include "script/bytecode/block.h"
-#include "script/bytecode/instruction.h"
-#include "script/cil/cil.h"
-#include "script/cil/switchtabel.h"
-#include "script/common/variant.h"
-#include "script/common/classregistration.h"
-#include "script/compiler/compilecontext.h"
-#include "script/compiler/functionresolver.h"
-#include "script/vm/virtualguard.h"
-#include "script/vm/virtualstring.h"
-#include "script/vm/virtualfunctiontableentry.h"
-#include "script/vm/virtuallookuptable.h"
+#include "mod_yas/bytecode/block.h"
+#include "mod_yas/bytecode/program.h"
+#include "mod_yas/bytecode/symboltable.h"
+#include "mod_yas/bytecode/functionsymbol.h"
+#include "mod_yas/bytecode/resolver.h"
+#include "mod_yas/bytecode/valuesymbol.h"
+#include "mod_yas/bytecode/jumppatch.h"
+#include "mod_yas/bytecode/block.h"
+#include "mod_yas/bytecode/instruction.h"
+
+#include "mod_yas/cil/cil.h"
+#include "mod_yas/cil/instructions.h"
+
+#include "mod_yas/common/type.h"
+#include "mod_yas/common/classregistry.h"
+
+#include "mod_yas/vm/virtualclass.h"
+#include "mod_yas/vm/virtualcontext.h"
+#include "mod_yas/vm/virtualfield.h"
+#include "mod_yas/vm/virtualguard.h"
+#include "mod_yas/vm/virtualstring.h"
+#include "mod_yas/vm/virtualfunction.h"
+#include "mod_yas/vm/virtuallookuptable.h"
+#include "mod_yas/vm/virtualvalue.h"
 
 struct OpcodeInfo
 {
@@ -44,26 +49,26 @@ StackIRGenerator::StackIRGenerator():
 {
 }
 
-bool StackIRGenerator::virGenerate(CompileContext& context, VirtualFunctionTableEntry& entry, const ASTFunction& function)
+bool StackIRGenerator::virGenerate(VirtualContext& context, VirtualFunction& entry)
 {
-   ByteCode::Program& program = context.getProgram();
+   generateInstructions(context, entry);
+   checkAndFixStack(context, entry);
 
-   generateInstructions(context, program, function);
-   checkAndFixStack(program, function);
+   int pos = buildCode(context);
+   entry.setFirstInstruction(pos);
 
-   entry.mInstruction = buildCode(program, function);
-
-   return entry.mInstruction > -1;
+   return pos > -1;
 }
 
-void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::Program& program, const ASTFunction& function)
+void StackIRGenerator::generateInstructions(VirtualContext& context, const VirtualFunction& function)
 {
    using namespace CIL;
    using namespace SBIL;
    using namespace ByteCode;
+   using namespace yasc;
 
-   FunctionResolver resolver;
-   std::stack<AutoPtr<ASTType>> types;
+   Resolver resolver(context);
+   std::stack<AutoPtr<Type>> types;
 
    const CIL::Instructions& instructions = function.getInstructions();
 
@@ -84,41 +89,40 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
 
          case CIL_dup:
             {
-               types.push(types.top()->clone());
+               types.push(types.top());
                INSERT(SBIL_dup, 0);
             }
             break;
          
          case CIL_new:
             {
-               ASTFunction& constructor = resolver.resolve(context, *inst.mString);
-               ASSERT(constructor.isConstructor());
-               ASSERT(constructor.getResourceIndex() >= 0);
+               VirtualFunction& constructor = resolver.resolveFunction(*inst.mString);
+               ASSERT(constructor.getIndex() >= 0);
 
                FunctionSymbol* psymbol = new FunctionSymbol();
-               psymbol->klass = constructor.getClass().getFullName();
-               psymbol->func = constructor.getResourceIndex();
-               psymbol->args = constructor.getArgumentCount() - 1;   // object is created in this instruction
-               psymbol->returns = !constructor.getType().isVoid();
-               int i = program.getSymbolTable().add(psymbol);
+               psymbol->klass = constructor.getClass().getName();
+               psymbol->func = constructor.getIndex();
+               psymbol->args = constructor.getArguments().size() - 1;   // object is created in this instruction
+               psymbol->returns = !constructor.getReturnType().isVoid();
+               int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < psymbol->args; ++arg )
                   types.pop();
 
-               types.push(constructor.getClass().createThisType());
+               types.push(Type::fromString(constructor.getClass().getName()));
 
                INSERT(SBIL_new, i);
             }
             break;
          case CIL_newarray:
             {
-               ASTType* ptype = ASTType::fromString(*inst.mString);
+               AutoPtr<Type> type = Type::fromString(*inst.mString);
 
-               int depth = ptype->getArrayDimension();
+               int depth = type->getArrayDimension();
                for ( int arg = 0; arg < depth; ++arg )
                   types.pop();
 
-               types.push(ptype);
+               types.push(type.release());
 
                INSERT(SBIL_new_array, depth);
             }
@@ -128,86 +132,84 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
 
          case CIL_call:
             {
-               ASTFunction& func = resolver.resolve(context, *inst.mString);
-               ASSERT(func.getResourceIndex() >= 0);
+               VirtualFunction& func = resolver.resolveFunction(*inst.mString);
+               ASSERT(func.getIndex() >= 0);
 
                FunctionSymbol* psymbol = new FunctionSymbol();
-               psymbol->klass = func.getClass().getFullName();
-               psymbol->func = func.getResourceIndex();
-               psymbol->args = func.getArgumentCount();
-               psymbol->returns = !func.getType().isVoid();
-               int i = program.getSymbolTable().add(psymbol);
+               psymbol->klass = func.getClass().getName();
+               psymbol->func = func.getIndex();
+               psymbol->args = func.getArguments().size();
+               psymbol->returns = !func.getReturnType().isVoid();
+               int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < func.getArguments().size(); ++arg )
                   types.pop();
 
                if ( psymbol->returns )
-                  types.push(func.getType().clone());
+                  types.push(func.getReturnType().clone());
 
                INSERT(SBIL_call, i);
             }
             break;
          case CIL_call_virt:
             {
-               ASTFunction& func = resolver.resolve(context, *inst.mString);
-               ASSERT(func.getResourceIndex() >= 0);
+               VirtualFunction& func = resolver.resolveFunction(*inst.mString);
+               ASSERT(func.getIndex() >= 0);
 
                FunctionSymbol* psymbol = new FunctionSymbol();
-               psymbol->klass = func.getClass().getFullName();
-               psymbol->func = func.getResourceIndex();
-               psymbol->args = func.getArgumentCount();
-               psymbol->returns = !func.getType().isVoid();
-               int i = program.getSymbolTable().add(psymbol);
+               psymbol->klass = func.getClass().getName();
+               psymbol->func = func.getIndex();
+               psymbol->args = func.getArguments().size();
+               psymbol->returns = !func.getReturnType().isVoid();
+               int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < func.getArguments().size(); ++arg )
                   types.pop();
 
                if ( psymbol->returns )
-                  types.push(func.getType().clone());
+                  types.push(func.getReturnType().clone());
 
                INSERT(SBIL_call_virt, i);
             }
             break;
          case CIL_call_interface:
             {
-               ASTFunction& func = resolver.resolve(context, *inst.mString);
+               VirtualFunction& func = resolver.resolveFunction(*inst.mString);
 
                FunctionSymbol* psymbol = new FunctionSymbol();
-               psymbol->func = func.getResourceIndex();
-               psymbol->args = func.getArgumentCount();
-               psymbol->returns = !func.getType().isVoid();
-               int i = program.getSymbolTable().add(psymbol);
+               psymbol->func = func.getIndex();
+               psymbol->args = func.getArguments().size();
+               psymbol->returns = !func.getReturnType().isVoid();
+               int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < func.getArguments().size(); ++arg )
                   types.pop();
 
                if ( psymbol->returns )
-                  types.push(func.getType().clone());
+                  types.push(func.getReturnType().clone());
 
                INSERT(SBIL_call_interface, i);
             }
             break;
          case CIL_call_native:
             {
-               const FunctionRegistration& funcreg = context.getClassRegistry().getFunction(inst.mInt);
-               if ( funcreg.getClassRegistration().name == UTEXT("system.Class") )
-               {
-                  int aap = 5;
-               }
-               ASTFunction& func = resolver.resolve(context, funcreg.getClassRegistration().name + UTEXT(".") + funcreg.getPrototype());
+               VirtualFunction& func = resolver.resolveFunction(*inst.mString);
+
+               const FunctionRegistration* pfuncreg = context.mNativeRegistry.findCallback(*inst.mString);
+               ASSERT_PTR(pfuncreg);
 
                FunctionSymbol* psymbol = new FunctionSymbol;
-               psymbol->func = inst.mInt;
-               psymbol->args = func.getArgumentCount();
-               psymbol->returns = !func.getType().isVoid();
-               int i = program.getSymbolTable().add(psymbol);
+               psymbol->func = pfuncreg->getIndex();
+               psymbol->args = func.getArguments().size();
+               psymbol->returns = !func.getReturnType().isVoid();
+               int i = context.mProgram.getSymbolTable().add(psymbol);
 
-               int args = func.getArgumentCount();
+               int args = func.getArguments().size();
                for ( int arg = 0; arg < args; ++arg )
                   types.pop();
 
                if ( psymbol->returns )
-                  types.push(func.getType().clone());
+                  types.push(func.getReturnType().clone());
 
                INSERT(SBIL_call_native, i);
             }
@@ -221,70 +223,70 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
          case CIL_bconv_str:
             INSERT(SBIL_bconv_str, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eString));
+            types.push(new Type(Type::eString));
             break;
          case CIL_iconv_real:
             INSERT(SBIL_iconv_real, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eReal));
+            types.push(new Type(Type::eReal));
             break;
          case CIL_iconv_str:
             INSERT(SBIL_iconv_str, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eString));
+            types.push(new Type(Type::eString));
             break;
          case CIL_rconv_int:
             INSERT(SBIL_rconv_int, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eInt));
+            types.push(new Type(Type::eInt));
             break;
          case CIL_rconv_str:
             INSERT(SBIL_rconv_str, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eString));
+            types.push(new Type(Type::eString));
             break;
          case CIL_cconv_str:
             INSERT(SBIL_cconv_str, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eString));
+            types.push(new Type(Type::eString));
             break;
          case CIL_sconv_bool:
             INSERT(SBIL_sconv_bool, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eBoolean));
+            types.push(new Type(Type::eBool));
             break;
          case CIL_sconv_int:
             INSERT(SBIL_sconv_int, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eInt));
+            types.push(new Type(Type::eInt));
             break;
          case CIL_sconv_real:
             INSERT(SBIL_sconv_real, 0);
             types.pop();
-            types.push(new ASTType(ASTType::eReal));
+            types.push(new Type(Type::eReal));
             break;
 
          // Math
 
          case CIL_add:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_iadd, 0);
-                     types.push(new ASTType(ASTType::eInt));
+                     types.push(new Type(Type::eInt));
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_radd, 0);
-                     types.push(new ASTType(ASTType::eReal));
+                     types.push(new Type(Type::eReal));
                      break;
-                  case ASTType::eString:
+                  case Type::eString:
                      INSERT(SBIL_sadd, 0);
-                     types.push(new ASTType(ASTType::eString));
+                     types.push(new Type(Type::eString));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -294,19 +296,19 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_sub:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_isub, 0);
-                     types.push(new ASTType(ASTType::eInt));
+                     types.push(new Type(Type::eInt));
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rsub, 0);
-                     types.push(new ASTType(ASTType::eReal));
+                     types.push(new Type(Type::eReal));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -316,19 +318,19 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_mul:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_imul, 0);
-                     types.push(new ASTType(ASTType::eInt));
+                     types.push(new Type(Type::eInt));
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rmul, 0);
-                     types.push(new ASTType(ASTType::eReal));
+                     types.push(new Type(Type::eReal));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -338,19 +340,19 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_div:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_idiv, 0);
-                     types.push(new ASTType(ASTType::eInt));
+                     types.push(new Type(Type::eInt));
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rdiv, 0);
-                     types.push(new ASTType(ASTType::eReal));
+                     types.push(new Type(Type::eReal));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -360,18 +362,18 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_neg:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_ineg, 0);
-                     types.push(new ASTType(ASTType::eInt));
+                     types.push(new Type(Type::eInt));
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rneg, 0);
-                     types.push(new ASTType(ASTType::eReal));
+                     types.push(new Type(Type::eReal));
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -381,15 +383,15 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_rem:
             INSERT(SBIL_irem, 0);
-            types.push(new ASTType(ASTType::eInt));
+            types.push(new Type(Type::eInt));
             break;
          case CIL_shl:
             INSERT(SBIL_shl, 0);
-            types.push(new ASTType(ASTType::eInt));
+            types.push(new Type(Type::eInt));
             break;
          case CIL_shr:
             INSERT(SBIL_shr, 0);
-            types.push(new ASTType(ASTType::eInt));
+            types.push(new Type(Type::eInt));
             break;
 
          case CIL_xor:
@@ -407,32 +409,32 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
 
          case CIL_cmpeq:
             {
-               AutoPtr<ASTType> ptype = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( ptype->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eBoolean:
+                  case Type::eBool:
                      INSERT(SBIL_bcmpeq, 0);
                      break;
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_icmpeq, 0);
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rcmpeq, 0);
                      break;
-                  case ASTType::eChar:
+                  case Type::eChar:
                      INSERT(SBIL_ccmpeq, 0);
                      break;
-                  case ASTType::eString:
+                  case Type::eString:
                      INSERT(SBIL_scmpeq, 0);
                      break;
-                  case ASTType::eGeneric:
-                  case ASTType::eObject:
+                  case Type::eGeneric:
+                  case Type::eObject:
                      INSERT(SBIL_ocmpeq, 0);
                      break;
-                  case ASTType::eArray:
+                  case Type::eArray:
                      INSERT(SBIL_acmpeq, 0);
                      break;
                   default:
@@ -440,38 +442,38 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                      break;
                }
 
-               types.push(new ASTType(ASTType::eBoolean));
+               types.push(new Type(Type::eBool));
             }
             break;
          case CIL_cmpne:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eBoolean:
+                  case Type::eBool:
                      INSERT(SBIL_bcmpne, 0);
                      break;
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_icmpne, 0);
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rcmpne, 0);
                      break;
-                  case ASTType::eChar:
+                  case Type::eChar:
                      INSERT(SBIL_ccmpne, 0);
                      break;
-                  case ASTType::eString:
+                  case Type::eString:
                      INSERT(SBIL_scmpne, 0);
                      break;
-                  case ASTType::eGeneric:
-                  case ASTType::eObject:
+                  case Type::eGeneric:
+                  case Type::eObject:
                      INSERT(SBIL_ocmpeq, 0);
                      INSERT(SBIL_not, 0);
                      break;
-                  case ASTType::eArray:
+                  case Type::eArray:
                      INSERT(SBIL_acmpeq, 0);
                      INSERT(SBIL_not, 0);
                      break;
@@ -479,132 +481,132 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new ASTType(ASTType::eBoolean));
+               types.push(new Type(Type::eBool));
             }
             break;
          case CIL_cmpgt:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_icmpgt, 0);
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rcmpgt, 0);
                      break;
-                  case ASTType::eChar:
+                  case Type::eChar:
                      INSERT(SBIL_ccmpgt, 0);
                      break;
-                  case ASTType::eString:
+                  case Type::eString:
                      INSERT(SBIL_scmpgt, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new ASTType(ASTType::eBoolean));
+               types.push(new Type(Type::eBool));
             }
             break;
          case CIL_cmpge:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_icmpge, 0);
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rcmpge, 0);
                      break;
-                  case ASTType::eChar:
+                  case Type::eChar:
                      INSERT(SBIL_ccmpge, 0);
                      break;
-                  case ASTType::eString:
+                  case Type::eString:
                      INSERT(SBIL_scmpge, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new ASTType(ASTType::eBoolean));
+               types.push(new Type(Type::eBool));
             }
             break;
          case CIL_cmple:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_icmple, 0);
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rcmple, 0);
                      break;
-                  case ASTType::eChar:
+                  case Type::eChar:
                      INSERT(SBIL_ccmple, 0);
                      break;
-                  case ASTType::eString:
+                  case Type::eString:
                      INSERT(SBIL_scmple, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new ASTType(ASTType::eBoolean));
+               types.push(new Type(Type::eBool));
             }
             break;
          case CIL_cmplt:
             {
-               AutoPtr<ASTType> type = types.top().release();
+               Type type = *types.top();
                types.pop();
                types.pop();
 
-               switch ( type->getKind() )
+               switch ( type.getKind() )
                {
-                  case ASTType::eInt:
+                  case Type::eInt:
                      INSERT(SBIL_icmplt, 0);
                      break;
-                  case ASTType::eReal:
+                  case Type::eReal:
                      INSERT(SBIL_rcmplt, 0);
                      break;
-                  case ASTType::eChar:
+                  case Type::eChar:
                      INSERT(SBIL_ccmplt, 0);
                      break;
-                  case ASTType::eString:
+                  case Type::eString:
                      INSERT(SBIL_scmplt, 0);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new ASTType(ASTType::eBoolean));
+               types.push(new Type(Type::eBool));
             }
             break;
          case CIL_isnull:
             INSERT(SBIL_isnull, 0);
-            types.push(new ASTType(ASTType::eBoolean));
+            types.push(new Type(Type::eBool));
             break;
 
          case CIL_jump:
             INSERT(SBIL_jump, 0);
             break;
          case CIL_jump_true:
-            ASSERT(types.top()->isBoolean());
+            ASSERT(types.top()->isBool());
             INSERT(SBIL_jump_true, 0);
             types.pop();
             break;
          case CIL_jump_false:
-            ASSERT(types.top()->isBoolean());
+            ASSERT(types.top()->isBool());
             INSERT(SBIL_jump_false, 0);
             types.pop();
             break;
@@ -626,7 +628,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             {
                INSERT(SBIL_pushi, inst.mInt);
             }
-            types.push(new ASTType(ASTType::eInt));
+            types.push(new Type(Type::eInt));
             break;
          case CIL_ldreal:
             if ( inst.mReal == 0.0 )
@@ -645,43 +647,42 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             {
                ValueSymbol* psymbol = new ValueSymbol();
                psymbol->value.setReal(inst.mReal);
-               int i = program.getSymbolTable().add(psymbol);
+               int i = context.mProgram.getSymbolTable().add(psymbol);
 
                INSERT(SBIL_push, i);
             }
-            types.push(new ASTType(ASTType::eReal));
+            types.push(new Type(Type::eReal));
             break;
          case CIL_ldchar:
             INSERT(SBIL_pushc, inst.mInt);
-            types.push(new ASTType(ASTType::eChar));
+            types.push(new Type(Type::eChar));
             break;
          case CIL_ldstr:
             {
                ValueSymbol* psymbol = new ValueSymbol();
-               psymbol->value.setString(context.getStringCache().lookup(*inst.mString));
-               int i = program.getSymbolTable().add(psymbol);
+               psymbol->value.setString(context.mProgram.getStringCache().lookup(*inst.mString));
+               int i = context.mProgram.getSymbolTable().add(psymbol);
 
                INSERT(SBIL_push, i);
-               types.push(new ASTType(ASTType::eString));
+               types.push(new Type(Type::eString));
             }
             break;
          case CIL_ldtrue:
             INSERT(SBIL_push_true, 0);
-            types.push(new ASTType(ASTType::eBoolean));
+            types.push(new Type(Type::eBool));
             break;
          case CIL_ldfalse:
             INSERT(SBIL_push_false, 0);
-            types.push(new ASTType(ASTType::eBoolean));
+            types.push(new Type(Type::eBool));
             break;
          case CIL_ldclass:
             {
-               ASTType* ptype = new ASTType(ASTType::eObject);
-               ptype->setObjectName(UTEXT("system.Class"));
-               ptype->setObjectClass(context.resolveClass(UTEXT("system.Class")));
-
                ValueSymbol* psymbol = new ValueSymbol();
-               psymbol->value.setString(context.getStringCache().lookup(*inst.mString));
-               int i = program.getSymbolTable().add(psymbol);
+               psymbol->value.setString(context.mProgram.getStringCache().lookup(*inst.mString));
+               int i = context.mProgram.getSymbolTable().add(psymbol);
+
+               Type* ptype = new Type(Type::eObject);
+               ptype->setObjectName(UTEXT("system.Class"));
 
                INSERT(SBIL_push_class, i);
                types.push(ptype);
@@ -689,31 +690,22 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_ldnull:
             INSERT(SBIL_push_null, 0);
-            types.push(new ASTType(ASTType::eNull));
+            types.push(new Type());
             break;
 
-         case CIL_ldfield:
-            {
-               AutoPtr<ASTType> type = types.top().release();
-               ASSERT(type->getKind() == ASTType::eObject);
-               types.pop();
-
-               const ASTClass& klass = type->getObjectClass();
-               const ASTField& field = klass.getField(inst.mInt);
-               INSERT(SBIL_ldfield, inst.mInt);
-               types.push(field.getVariable().getType().clone());
-            }
-            break;
-         case CIL_stfield:
-            INSERT(SBIL_stfield, inst.mInt);
-            types.pop(); // object
-            types.pop(); // value
-            break;
          case CIL_ldarg:
             {
-               const ASTType& argtype = function.getArguments()[inst.mInt];
                INSERT(SBIL_ldlocal, inst.mInt);
-               types.push(argtype.clone());
+
+               if ( inst.mInt == 0 && !function.getModifiers().isStatic() )
+               {
+                  types.push(Type::fromString(function.getClass().getName()));
+               }
+               else
+               {
+                  const Type& argtype = function.getArguments()[inst.mInt - 1];
+                  types.push(argtype.clone());
+               }
             }
             break;
          case CIL_starg:
@@ -722,9 +714,9 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             break;
          case CIL_ldloc:
             {
-               const ASTType& asttype = function.getLocals()[inst.mInt];
+               const Type& type = function.getLocals()[inst.mInt];
                INSERT(SBIL_ldlocal, inst.mInt + function.getArguments().size());
-               types.push(asttype.clone());
+               types.push(type.clone());
             }
             break;
          case CIL_stloc:
@@ -747,9 +739,9 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
             
                INSERT(SBIL_ldelem, inst.mInt);
                
-               AutoPtr<ASTType> type = types.top();
-               types.pop();                              // pop array
-               types.push(type->getArrayType().clone()); // push element
+               Type type = *types.top();
+               types.pop();                     // pop array
+               types.push(type.getArrayType().clone()); // push element
             }
             break;
          case CIL_stelem:
@@ -763,41 +755,78 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
                types.pop();   // pop array
             }
             break;
+         case CIL_ldfield:
+            {
+               Type type = *types.top();
+               ASSERT(type.getKind() == Type::eObject);
+               types.pop();
+               
+               String path = *inst.mString;
+               const VirtualField& field = resolver.resolveField(path);
+               INSERT(SBIL_ldfield, field.getIndex());
+
+               types.push(field.getType().clone());
+            }
+            break;
+         case CIL_stfield:
+            {
+               String path = *inst.mString;
+               const VirtualField& field = resolver.resolveField(path);
+
+               INSERT(SBIL_stfield, field.getIndex());
+
+               types.pop(); // object
+               types.pop(); // value
+            }
+            break;
          case CIL_ldstatic:
             {
-               const CIL::Instruction& previousinst = instructions[index - 1];
-               ASSERT(previousinst.opcode == CIL_ldstr);
+               const String& path = *inst.mString;
+               const VirtualField& field = resolver.resolveStaticField(path);
 
-               const ASTClass& klass = context.resolveClass(*previousinst.mString);
-               const ASTField& field = *klass.getStatics()[inst.mInt];
-               types.push(field.getVariable().getType().clone());
+               ValueSymbol* psymbol = new ValueSymbol();
+               psymbol->value.setString(context.mProgram.getStringCache().lookup(field.getClass().getName()));
+               int i = context.mProgram.getSymbolTable().add(psymbol);
 
-               INSERT(SBIL_ldstatic, inst.mInt);
+               INSERT(SBIL_push, i);
+               INSERT(SBIL_ldstatic, field.getIndex());
+
+               types.push(field.getType().clone());
             }
             break;
          case CIL_ststatic:
-            INSERT(SBIL_ststatic, inst.mInt);
-            types.pop();
+            {
+               const String& path = *inst.mString;
+               const VirtualField& field = resolver.resolveStaticField(path);
+
+               ValueSymbol* psymbol = new ValueSymbol();
+               psymbol->value.setString(context.mProgram.getStringCache().lookup(field.getClass().getName()));
+               int i = context.mProgram.getSymbolTable().add(psymbol);
+
+               INSERT(SBIL_push, i);
+               INSERT(SBIL_ststatic, field.getIndex());
+
+               types.pop();
+            }
             break;
 
          // specials
 
          case CIL_switch:
             {
-               CIL::SwitchTable* pciltable = (CIL::SwitchTable*)inst.mPtr;
-               INSERT(SBIL_switch, 0);
+               INSERT(SBIL_switch, inst.mInt);
             }
             break;
 
          case CIL_instanceof:
             {
                ValueSymbol* psymbol = new ValueSymbol();
-               psymbol->value.setString(context.getStringCache().lookup(*inst.mString));
-               int index = program.getSymbolTable().add(psymbol);
+               psymbol->value.setString(context.mProgram.getStringCache().lookup(*inst.mString));
+               int index = context.mProgram.getSymbolTable().add(psymbol);
                INSERT(SBIL_instanceof, index);
 
                types.pop();
-               types.push(new ASTType(ASTType::eBoolean));
+               types.push(new Type(Type::eBool));
             }
             break;
 
@@ -811,7 +840,7 @@ void StackIRGenerator::generateInstructions(CompileContext& context, ByteCode::P
    }
 }
 
-void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const ASTFunction& function)
+void StackIRGenerator::checkAndFixStack(VirtualContext& context, const VirtualFunction& function)
 {
    using namespace SBIL;
    using namespace ByteCode;
@@ -820,12 +849,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
    Calls calls;
 
    Blocks& blocks = getBlocks();
-
-   if ( function.getName() == UTEXT("create") && function.getClass().getName() == UTEXT("TileSet") )
-   {
-      int aap = 5;
-   }
-
+   
    // fill the stack
    for ( std::size_t index = 0; index < blocks.size(); ++index )
    {
@@ -847,7 +871,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
             case SBIL_call_native:
                {
                   int instarg = INST_ARG(pinst->inst);
-                  const FunctionSymbol& symbol = static_cast<const FunctionSymbol&>(program.getSymbolTable()[instarg]);
+                  const FunctionSymbol& symbol = static_cast<const FunctionSymbol&>(context.mProgram.getSymbolTable()[instarg]);
                   for ( int arg = 0; arg < symbol.args; ++arg )
                      calls.pop_back();
 
@@ -901,7 +925,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
    // now see what indices are still there that need an additional pop
    // skip the return value at the top of the stack
 
-   std::size_t size = calls.size() - function.getType().isVoid() ? 0 : 1;
+   std::size_t size = calls.size() - function.getReturnType().isVoid() ? 0 : 1;
    for ( std::size_t index = 0; index < size; ++index )
    {
       Instruction* inst = new Instruction;
@@ -912,7 +936,7 @@ void StackIRGenerator::checkAndFixStack(const ByteCode::Program& program, const 
    }
 }
 
-int StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& function)
+int StackIRGenerator::buildCode(VirtualContext& context)
 {
    using namespace SBIL;
    using namespace ByteCode;
@@ -941,13 +965,13 @@ int StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& f
       {
          switch ( pblock->lookup_type )
          {
-         case 1:
+         case Block::eDefault:
             pblock->plookup->setDefault(pos);
             break;
-         case 2:
+         case Block::eEnd:
             pblock->plookup->setEnd(pos);
             break;
-         case 3:
+         case Block::eValue:
             pblock->plookup->add(pblock->lookup_value, pos);
             break;
          }
@@ -987,7 +1011,7 @@ int StackIRGenerator::buildCode(ByteCode::Program& program, const ASTFunction& f
 
    applyPatches(pcode);
    
-   int start = program.linkCode(pcode, pos);
+   int start = context.mProgram.linkCode(pcode, pos);
 
    free(pcode);
 

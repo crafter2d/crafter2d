@@ -4,6 +4,7 @@
 #include "core/defines.h"
 #include "core/string/string.h"
 
+#include "virtualfunction.h"
 #include "virtualfunctiontableentry.h"
 
 VirtualFunctionTable::VirtualFunctionTable():
@@ -14,6 +15,15 @@ VirtualFunctionTable::VirtualFunctionTable():
 VirtualFunctionTable::~VirtualFunctionTable()
 {
    clear();
+}
+
+const VirtualFunctionTable& VirtualFunctionTable::operator=(const VirtualFunctionTable& that)
+{
+   for ( std::size_t index = 0; index < that.mEntries.size(); ++index )
+   {
+      mEntries.push_back(that.mEntries[index]->clone());
+   }
+   return *this;
 }
 
 // - Query
@@ -35,18 +45,40 @@ VirtualFunctionTableEntry& VirtualFunctionTable::operator[](int index)
 
 // - Operations
 
-void VirtualFunctionTable::append(VirtualFunctionTableEntry* pentry)
+void VirtualFunctionTable::setInits(VirtualFunction& static_init, VirtualFunction& var_init)
 {
-   mEntries.push_back(pentry);
+   if ( mEntries.empty() )
+   {
+      mEntries.push_back(VirtualFunctionTableEntry::fromFunction(static_init));
+      mEntries.push_back(VirtualFunctionTableEntry::fromFunction(var_init));
+   }
+   else
+   {
+      mEntries[0]->fromFunction(static_init);
+      mEntries[1]->fromFunction(var_init);
+   }
+
+   static_init.setIndex(0);
+   var_init.setIndex(1);
 }
 
-void VirtualFunctionTable::append(const VirtualFunctionTable& vtable)
+int VirtualFunctionTable::insert(VirtualFunction& function)
 {
-   for ( std::size_t index = 2; index < vtable.mEntries.size(); index++ )
+   // insert a function in the v-table, we can skip the first 2
+
+   for ( std::size_t index = 2; index < mEntries.size(); ++index )
    {
       VirtualFunctionTableEntry* pentry = mEntries[index];
-      append(pentry->clone());
+      if ( pentry->mpFunction->equals(function) )
+      {
+         pentry->setFunction(function);
+         return index;
+      }
    }
+
+   VirtualFunctionTableEntry* pentry = VirtualFunctionTableEntry::fromFunction(function);
+   mEntries.push_back(pentry);
+   return mEntries.size() - 1;
 }
 
 void VirtualFunctionTable::clear()
@@ -57,21 +89,11 @@ void VirtualFunctionTable::clear()
    }
 }
 
-void VirtualFunctionTable::merge(const VirtualFunctionTable& that)
+void VirtualFunctionTable::update()
 {
-   ASSERT(that.mEntries.size() <= mEntries.size());
-
-   for ( std::size_t index = 2; index < that.mEntries.size(); index++ )
+   for ( std::size_t index = 0; index < mEntries.size(); index++ )
    {
-      VirtualFunctionTableEntry* pentry = mEntries[index];
-      if ( pentry->mInstruction == -1 )
-      {
-         pentry->mInstruction = that.mEntries[index]->mInstruction;
-      }
-      if ( pentry->mInterface == -1 )
-      {
-         pentry->mInterface = that.mEntries[index]->mInterface;
-      }
+      mEntries[index]->update();
    }
 }
 
@@ -82,24 +104,10 @@ const VirtualFunctionTableEntry* VirtualFunctionTable::findByName(const String& 
    for ( std::size_t index = 0; index < mEntries.size(); index++ )
    {
       const VirtualFunctionTableEntry* pentry = mEntries[index];
-      if ( pentry->mName == name )
+      if ( pentry->getName() == name )
       {
          return pentry;
       }
    }
    return NULL;
-}
-
-const VirtualFunctionTableEntry& VirtualFunctionTable::resolveInterface(int interfaceid) const
-{
-   for ( std::size_t index = 0; index < mEntries.size(); index++ )
-   {
-      const VirtualFunctionTableEntry* pentry = mEntries[index];
-      if ( pentry->mInterface == interfaceid )
-      {
-         return *pentry;
-      }
-   }
-   
-   throw std::exception();
 }

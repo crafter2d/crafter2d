@@ -47,13 +47,13 @@ public:
       NetStatisticsItem&      currentItem();
       void                    currentItem(NetStatisticsItem* pcurrent);
 
-      uint                    lastUpdate() const;
-      void                    lastUpdate(uint tick);
+      uint32_t                lastUpdate() const;
+      void                    lastUpdate(uint32_t tick);
 
    // operations
-      void send(uint size);
-      void received(uint size);
-      void update(uint tick);
+      void send(uint32_t size);
+      void received(uint32_t size);
+      void update(uint32_t tick);
 
 private:
    // Get/set interface
@@ -66,8 +66,8 @@ private:
    // Members
       StatisticsItems      MItems;
       NetStatisticsItem*   MPCurrentItem;
-      uint                 MLastUpdate;
-      uint                 MLimit;
+      uint32_t             MLastUpdate;
+      uint32_t             MLimit;
 };
 
 #ifdef JENGINE_INLINE

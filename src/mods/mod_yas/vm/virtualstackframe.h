@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "script/common/variant.h"
+#include "virtualvalue.h"
 
 class VirtualClass;
 class VirtualFunctionTableEntry;
@@ -16,7 +16,7 @@ namespace VM
    class StackFrame
    {
    public:
-      typedef std::vector<Variant> Locals;
+      typedef std::vector<VirtualValue> Locals;
 
       StackFrame():
          pclass(NULL),

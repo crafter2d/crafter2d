@@ -4,10 +4,13 @@
 
 #include "core/string/string.h"
 
-class IScriptable
+namespace c2d
 {
-public:
-   virtual const String& getClassName() const = 0;
-};
+   class IScriptable
+   {
+   public:
+      virtual const String& getClassName() const = 0;
+   };
+}
 
 #endif // ISCRIPTABLE_H_

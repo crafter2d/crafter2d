@@ -17,45 +17,41 @@ VirtualStack::VirtualStack(int initialsize):
 
 VirtualStack::~VirtualStack()
 {
-   for ( Stack::size_type index = 0; index < mStack.size(); ++index )
-   {
-      delete mStack[index];
-   }
    mStack.clear();
 }
 
-const Variant& VirtualStack::operator[](int index) const
+const VirtualValue& VirtualStack::operator[](int index) const
 {
    ASSERT(index < mSize);
-   return *mStack[index];
+   return mStack[index];
 }
 
-Variant& VirtualStack::operator[](int index)
+VirtualValue& VirtualStack::operator[](int index)
 {
    ASSERT(index < mSize);
-   return *mStack[index];
+   return mStack[index];
 }
 
 // - Stack operations
 
-void VirtualStack::push(int count, Variant* pvalues)
+void VirtualStack::push(int count, VirtualValue* pvalues)
 {
    ensureFits(count);
 
    for ( int index = 0; index < count; ++index )
    {
-      *mStack[mSize++] = pvalues[index];
+      mStack[mSize++] = pvalues[index];
    }
 }
 
-void VirtualStack::push(const Variant& value)
+void VirtualStack::push(const VirtualValue& value)
 {
    top() = value;
 }
 
 void VirtualStack::pushInt(int value)
 {
-   top().setInt(value);
+   top().setNumber(value);
 }
 
 void VirtualStack::pushReal(double value)
@@ -65,7 +61,7 @@ void VirtualStack::pushReal(double value)
 
 void VirtualStack::pushBool(bool value)
 {
-   top().setBool(value);
+   top().setBoolean(value);
 }
 
 void VirtualStack::pushChar(UChar value)
@@ -88,9 +84,9 @@ void VirtualStack::pushArray(VirtualArray& array)
    top().setArray(array);
 }
 
-Variant VirtualStack::pop()
+VirtualValue VirtualStack::pop()
 {
-   return *mStack[--mSize];
+   return mStack[--mSize];
 }
 
 void VirtualStack::pop(int count)
@@ -99,56 +95,59 @@ void VirtualStack::pop(int count)
    ASSERT(mSize >= 0);
 }
 
+bool VirtualStack::popBool()
+{
+   return mStack[--mSize].asBoolean();
+}
+
 int VirtualStack::popInt()
 {
-   return mStack[--mSize]->asInt();
+   return mStack[--mSize].asNumber();
 }
 
 double VirtualStack::popReal()
 {
-   return mStack[--mSize]->asReal();
-}
-
-bool VirtualStack::popBool()
-{
-   return mStack[--mSize]->asBool();
+   return mStack[--mSize].asReal();
 }
 
 UChar VirtualStack::popChar()
 {
-   return mStack[--mSize]->asChar();
+   return mStack[--mSize].asChar();
 }
 
 const String& VirtualStack::popString()
 {
-   return mStack[--mSize]->asString().getString();
+   return mStack[--mSize].asString();
 }
 
 VirtualObject& VirtualStack::popObject()
 {
-   return mStack[--mSize]->asObject();
+   return mStack[--mSize].asObject();
 }
 
 VirtualArray& VirtualStack::popArray()
 {
-   return mStack[--mSize]->asArray();
+   return mStack[--mSize].asArray();
 }
 
-Variant& VirtualStack::back()
+VirtualValue& VirtualStack::back()
 {
-   return *mStack[mSize-1];
+   return mStack[mSize-1];
 }
 
-void VirtualStack::insert(int index, const Variant& value)
+void VirtualStack::insert(int index, const VirtualValue& value)
 {
    ensureFits(1);
 
+   mStack.insert(mStack.begin() + index, value);
+   /*
    for ( int idx = mSize-1; idx >= index; --idx )
    {
       mStack[idx+1] = mStack[idx];
    }
 
-   mStack[index] = new Variant(value);
+   mStack[index] = value;
+   */
 
    ++mSize;
 }
@@ -167,10 +166,10 @@ int VirtualStack::size() const
 
 // - Operations
 
-Variant& VirtualStack::top()
+VirtualValue& VirtualStack::top()
 {
    ensureFits(1);
-   return *mStack[mSize++];
+   return mStack[mSize++];
 }
 
 void VirtualStack::ensureFits(int amount)
@@ -187,7 +186,7 @@ void VirtualStack::fill(int from)
 {
    for ( std::size_t index = from; index < mStack.size(); index++ )
    {
-      mStack[index] = new Variant();
+      mStack[index];
    }
 }
 
@@ -195,14 +194,14 @@ void VirtualStack::mark()
 {
    for ( int index = 0; index < mSize; index++ )
    {
-      Variant& variant = *mStack[index];
-      if ( variant.isObject() )
+      VirtualValue& VirtualValue = mStack[index];
+      if ( VirtualValue.isObject() )
       {
-         variant.asObject().mark();
+         VirtualValue.asObject().mark();
       }
-      else if ( variant.isArray() )
+      else if ( VirtualValue.isArray() )
       {
-         variant.asArray().mark();
+         VirtualValue.asArray().mark();
       }
    }
 }

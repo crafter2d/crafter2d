@@ -2,13 +2,14 @@
 #ifndef REGISTER_IR_GENERATOR_H
 #define REGISTER_IR_GENERATOR_H
 
-#include "script/bytecode/irgenerator.h"
+#include "mod_yas/bytecode/irgenerator.h"
 
 class RegisterIRGenerator : public ByteCode::IRGenerator
 {
 public:
 
-   virtual char* RegisterIRGenerator::generate(CompileContext& context, const ASTFunction& function);
+protected:
+   virtual bool virGenerate(VirtualContext& context, VirtualFunction& entry) override;
 
 private:
 };

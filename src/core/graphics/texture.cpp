@@ -63,7 +63,7 @@ void Texture::release()
 
 // - Operations
 
-uchar* Texture::ensureProperSize(int bytes, uchar* pdata, int width, int height)
+uint8_t* Texture::ensureProperSize(int bytes, uint8_t* pdata, int width, int height)
 {
    _actualwidth  = Math::nextPowerOfTwo(width);
    _actualheight = Math::nextPowerOfTwo(height);
@@ -85,14 +85,14 @@ uchar* Texture::ensureProperSize(int bytes, uchar* pdata, int width, int height)
    _sourceHeight = static_cast<float>(height) / _actualheight;
 
    int size = _actualwidth * _actualheight * bytes;
-   uchar* pnewdata = new uchar[size];
+   uint8_t* pnewdata = new uint8_t[size];
    memset(pnewdata, 0, size);
 
    int rowwidth    = _actualwidth * bytes;
    int orgrowwidth = width * bytes;
 
-   uchar* pactual  = pnewdata;
-   uchar* porginal = pdata;
+   uint8_t* pactual  = pnewdata;
+   uint8_t* porginal = pdata;
    for ( int y = 0; y < height; ++y )
    {
       memcpy(pactual, porginal, orgrowwidth);

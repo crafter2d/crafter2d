@@ -27,9 +27,6 @@
 
 #include <vector>
 
-#include "compressedfile.h"
-#include "stdiofile.h"
-
 void tokenize(std::vector<String>& tokens, const String& str, char delimitor)
 {
    int start = 0;
@@ -59,6 +56,12 @@ FileSystem& FileSystem::getInstance()
 #endif
 
    return filesystem;
+}
+
+// static 
+UChar FileSystem::getNativeSeparator()
+{
+   return getInstance().getSeparator();
 }
 
 FileSystem::FileSystem():

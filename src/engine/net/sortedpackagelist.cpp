@@ -46,7 +46,7 @@ SortedPackageList::SortedPackageList():
 
 // - Operations
 
-void SortedPackageList::removeOldPackages(uint number)
+void SortedPackageList::removeOldPackages(uint32_t number)
 {
    ListIterator<PackageHandle> it = getFront();
    while ( it.isValid() )

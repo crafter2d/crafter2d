@@ -12,7 +12,7 @@
 class VirtualCall
 {
 public:
-   VirtualCall(VirtualMachine& machine, Variant* pargs, int arguments): mMachine(machine), mpArguments(pargs), mSize(arguments), mHasResult(false)
+   VirtualCall(VirtualMachine& machine, VirtualValue* pargs, int arguments): mMachine(machine), mpArguments(pargs), mSize(arguments), mHasResult(false)
    {
    }
 
@@ -28,38 +28,31 @@ public:
    }
 
    int getInt(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asInt();
+      return getArgument(argument).asNumber();
    }
 
    double getReal(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asReal();
+      return getArgument(argument).asReal();
    }
 
    const String& getString(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asString().getString();
+      return getArgument(argument).asString();
    }
 
    UChar getChar(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asChar();
+      return getArgument(argument).asChar();
    }
 
    bool getBoolean(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asBool();
+      return getArgument(argument).asBoolean();
    }
 
    VirtualObject& getObject(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asObject();
+      return getArgument(argument).asObject();
    }
 
    VirtualArray& getArray(int argument) const {
-      Variant& value = getArgument(argument);
-      return value.asArray();
+      return getArgument(argument).asArray();
    }
 
  // return value
@@ -67,45 +60,45 @@ public:
       return mHasResult;
    }
 
-   Variant& getResult() {
+   VirtualValue& getResult() {
       return mResult;
    }
 
    void setResult(VirtualObject& object) {
-      setResult(Variant(object));
+      setResult(VirtualValue(object));
    }
 
    void setResult(VirtualArray& array) {
-      setResult(Variant(array));
+      setResult(VirtualValue(array));
    }
 
    void setResult(int value) {
-      setResult(Variant(value));
+      setResult(VirtualValue(value));
    }
 
    void setResult(double value) {
-      setResult(Variant(value));
+      setResult(VirtualValue(value));
    }
 
    void setResult(bool value) {
-      setResult(Variant(value));
+      setResult(VirtualValue(value));
    }
 
    void setResult(UChar value) {
-      setResult(Variant(value));
+      setResult(VirtualValue(value));
    }
 
    void setResult(const String& value) {
-      setResult(Variant(mMachine.getContext().mStringCache.lookup(value)));
+      setResult(VirtualValue(mMachine.getContext().mStringCache.lookup(value)));
    }
 
-   void setResult(const Variant& value) {
+   void setResult(const VirtualValue& value) {
       mResult = value;
       mHasResult = true;
    }
 
 private:
-   Variant& getArgument(int index) const {
+   VirtualValue& getArgument(int index) const {
       ASSERT(index <= mSize);
       return mpArguments[index];
       // 0 1 2 3 -> ssize = 4; size = 3
@@ -114,8 +107,8 @@ private:
    }
 
    VirtualMachine&   mMachine;
-   Variant*          mpArguments;
-   Variant           mResult;
+   VirtualValue*     mpArguments;
+   VirtualValue      mResult;
    int               mSize;
    bool              mHasResult;
 };

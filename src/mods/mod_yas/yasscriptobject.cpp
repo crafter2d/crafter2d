@@ -3,8 +3,8 @@
 
 #include "core/defines.h"
 
-#include "script/vm/virtualobject.h"
-#include "script/vm/virtualmachine.h"
+#include "mod_yas/vm/virtualobject.h"
+#include "mod_yas/vm/virtualmachine.h"
 
 #include "yasscriptmanager.h"
 
@@ -16,13 +16,13 @@ YasScriptObject::YasScriptObject(YasScriptManager& manager) :
 
 // - Get/set
 
-VirtualObject& YasScriptObject::getObject()
+VirtualObject& YasScriptObject::getThis()
 {
    ASSERT_PTR(mpObject);
    return *mpObject;
 }
 
-void YasScriptObject::setObject(VirtualObject& object)
+void YasScriptObject::setThis(VirtualObject& object)
 {
    mpObject = &object;
 }
@@ -31,12 +31,12 @@ void YasScriptObject::setObject(VirtualObject& object)
 
 void YasScriptObject::arg(int index, bool arg)
 {
-   mArguments[index].setBool(arg);
+   mArguments[index].setBoolean(arg);
 }
 
 void YasScriptObject::arg(int index, int arg)
 {
-   mArguments[index].setInt(arg);
+   mArguments[index].setNumber(arg);
 }
 
 void YasScriptObject::arg(int index, float arg)
@@ -52,6 +52,30 @@ void YasScriptObject::arg(int index, UChar arg)
 void YasScriptObject::arg(int index, const String& arg)
 {
    mArguments[index].setString(mManager.getVM().getContext().mStringCache.lookup(arg));
+}
+
+void YasScriptObject::arg(int index, void* pinstance)
+{
+   VirtualObject* pobject = mManager.getVM().lookupNative(pinstance);
+   if ( pobject == NULL )
+   {
+      throw std::exception("Could not find object. Make sure it has been registered.");
+   }
+
+   mArguments[index].setObject(*pobject);
+}
+
+void YasScriptObject::arg(int index, const String& classname, void* pinstance)
+{
+   mArguments[index].setObject(*mManager.getVM().instantiateNative(classname, pinstance, false));
+}
+
+// - Member
+
+void YasScriptObject::setMember(int index, const Variant& value)
+{
+   VirtualValue yasvalue = mManager.toValue(value);
+   mpObject->setMember(index, yasvalue);
 }
 
 // - Instance
@@ -81,9 +105,18 @@ void YasScriptObject::prepareCall(int args)
    mArguments.resize(args);
 }
 
-void YasScriptObject::call(const String& function)
+Variant YasScriptObject::call(const String& function)
 {
-   mManager.getVM().execute(*mpObject, function, mArguments.size(), &mArguments[0]);
+   return mManager.execute(*mpObject, function, mArguments.size(), &mArguments[0]);
+}
 
-   mArguments.clear();
+Variant YasScriptObject::call(const String& function, int argc, Variant* args)
+{
+   mArguments.resize(argc);
+   for ( int index = 0; index < argc; ++index )
+   {
+      mArguments[index] = mManager.toValue(args[index]);
+   }
+
+   return mManager.execute(*mpObject, function, argc, &mArguments[0]);
 }

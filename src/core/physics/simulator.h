@@ -42,7 +42,7 @@ place each frame through a call to the run method.
 At startup the generateWorldShapes method is called so that the 
 */
 
-class CORE_API Simulator : public IScriptable
+class CORE_API Simulator : public c2d::IScriptable
 {
 public:
 

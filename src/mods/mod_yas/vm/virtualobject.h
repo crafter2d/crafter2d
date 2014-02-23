@@ -20,13 +20,13 @@
 #ifndef VIRTUAL_OBJECT_H_
 #define VIRTUAL_OBJECT_H_
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
-#include "script/gc/collectable.h"
+#include "mod_yas/gc/collectable.h"
 
-class Variant;
 class VirtualClass;
 class VirtualMachine;
+class VirtualValue;
 
 class SCRIPT_API VirtualObject : public Collectable
 {
@@ -45,16 +45,13 @@ public:
    bool isOwner() const;
    void setOwner(bool owned);
 
-   bool isMarked() const;
-   void setMarked(bool marked);
-
  // query
    const VirtualClass& getClass() const;
    void                setClass(const VirtualClass& definition);
 
-   const Variant& getMember(int index) const;
-         Variant& getMember(int index);
-   void           setMember(int index, const Variant& value);
+   const VirtualValue& getMember(int index) const;
+         VirtualValue& getMember(int index);
+   void                setMember(int index, const VirtualValue& value);
 
    int getMemberCount() const;
 
@@ -71,10 +68,9 @@ private:
  // members
    const VirtualClass*           mpClass;
    void*                         mpNativeObject;
-   Variant*                      mpMembers;
+   VirtualValue*                 mpMembers;
    int                           mMemberCount;
    bool                          mOwnsNative;
-   bool                          mMarked;
 };
 
 template<typename T>

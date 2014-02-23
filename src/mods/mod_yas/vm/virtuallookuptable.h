@@ -2,37 +2,37 @@
 #ifndef VIRTUAL_LOOKUP_TABLE_H_
 #define VIRTUAL_LOOKUP_TABLE_H_
 
+#include <vector>
 #include <map>
 
-#include "script/common/variant.h"
+class VirtualValue;
 
 class VirtualLookupTable
 {
-   class Entry
-   {
-   public:
-      Entry(int index): mActual(index) {}
-
-      int mActual;
-   };
-
-   typedef std::map<Variant, Entry*> EntryMap;
+   typedef std::map<VirtualValue, int> EntryMap;
 
 public:
    VirtualLookupTable();
 
  // get/set
+   bool hasDefault() const;
+   int  getDefault() const;
    void setDefault(int codeindex);
+
+   int  getEnd() const;
    void setEnd(int codeindex);
 
  // query
-   int lookup(const Variant& value) const;
+   int lookup(const VirtualValue& value) const;
+   std::vector<int> getPositions() const;
    
  // operations
-   void add(const Variant& variant, int codeindex);
+   void add(const VirtualValue& variant, int codeindex);
    void updatePosition(int offset);
 
 private:
+
+ // data
    EntryMap mEntries;
    int      mDefault;
    int      mEnd;

@@ -11,7 +11,7 @@ project "mod_ogl"
 	
 -- set project files
 files { "src/mods/mod_ogl/**.cpp", "src/mods/mod_ogl/**.h", "src/mods/mod_ogl/**.inl" }
-includedirs { "src" }
+includedirs { "src", "src/mods" }
 
 -- set the include and library
 if ( os.is("windows") ) then

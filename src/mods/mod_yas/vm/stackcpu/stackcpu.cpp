@@ -5,21 +5,21 @@
 #include "core/smartptr/scopedvalue.h"
 #include "core/defines.h"
 
-#include "script/bytecode/program.h"
-#include "script/bytecode/instruction.h"
-#include "script/bytecode/functionsymbol.h"
-#include "script/bytecode/valuesymbol.h"
-#include "script/common/classregistry.h"
-#include "script/common/callbackfunctor.h"
-#include "script/vm/virtualarray.h"
-#include "script/vm/virtualclass.h"
-#include "script/vm/virtualcontext.h"
-#include "script/vm/virtualexception.h"
-#include "script/vm/virtualguard.h"
-#include "script/vm/virtualobject.h"
-#include "script/vm/virtualfunctiontableentry.h"
-#include "script/vm/virtuallookuptable.h"
-#include "script/vm/virtualstackaccessor.h"
+#include "mod_yas/bytecode/program.h"
+#include "mod_yas/bytecode/instruction.h"
+#include "mod_yas/bytecode/functionsymbol.h"
+#include "mod_yas/bytecode/valuesymbol.h"
+#include "mod_yas/common/classregistry.h"
+#include "mod_yas/common/callbackfunctor.h"
+#include "mod_yas/vm/virtualarray.h"
+#include "mod_yas/vm/virtualclass.h"
+#include "mod_yas/vm/virtualcontext.h"
+#include "mod_yas/vm/virtualexception.h"
+#include "mod_yas/vm/virtualguard.h"
+#include "mod_yas/vm/virtualobject.h"
+#include "mod_yas/vm/virtualfunctiontableentry.h"
+#include "mod_yas/vm/virtuallookuptable.h"
+#include "mod_yas/vm/virtualstackaccessor.h"
 
 #include "stackirgenerator.h"
 
@@ -44,22 +44,12 @@ ByteCode::IRGenerator* StackCPU::createIRGenerator()
    return new StackIRGenerator();
 }
 
-Variant StackCPU::execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, Variant* pargs)
+VirtualValue StackCPU::execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, VirtualValue* pargs)
 {
+   mStack.push(VirtualValue(object));
    mStack.push(argc, pargs);
 
-   return execute(context, object, entry);
-}
-
-Variant StackCPU::execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry)
-{
-   Variant objectvariant(object);
-   if ( entry.mArguments > 1 )
-      mStack.insert(mStack.size() - (entry.mArguments - 1), objectvariant);
-   else
-      mStack.push(objectvariant);
-
-   execute(context, object.getClass(), entry);
+   executeStatic(context, object.getClass(), entry);
 
    // for now run the garbage collector here. have to find the right spot for it.
    if ( !isGarbageCollectionBlocked() )
@@ -67,10 +57,10 @@ Variant StackCPU::execute(VirtualContext& context, VirtualObject& object, const 
       getGC().gc(getVM());
    }
 
-   return entry.returns ? mStack.pop() : Variant();
+   return entry.returns ? mStack.pop() : VirtualValue();
 }
 
-void StackCPU::execute(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
+void StackCPU::executeStatic(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
 {
    ScopedValue<int> value(&mSavedFP, mFP, mSavedFP);
 
@@ -138,7 +128,7 @@ void StackCPU::execute(VirtualContext& context)
             {
                const FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
 
-               Variant value = mStack[mStack.size() - symbol.args];
+               VirtualValue& value = mStack[mStack.size() - symbol.args];
                const VirtualClass* pclass = NULL;
                if ( value.isObject() )
                {
@@ -164,7 +154,7 @@ void StackCPU::execute(VirtualContext& context)
             {
                FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
 
-               const Variant& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
+               VirtualValue& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
                if ( object.isEmpty() )
                {
                   throwException(context, UTEXT("system.NullPointerException"), String::empty());
@@ -183,8 +173,8 @@ void StackCPU::execute(VirtualContext& context)
 
                mCalls[mFP].callnative = true;
 
-               std::vector<Variant> args(symbol.args);
-               for ( int index = symbol.args; index > 0; --index )
+               std::vector<VirtualValue> args(symbol.args);
+               for ( int index = symbol.args - 1; index >= 0; --index )
                {
                   args[index] = mStack.pop();
                }
@@ -640,7 +630,7 @@ void StackCPU::execute(VirtualContext& context)
 
          case SBIL_ldfield:
             {
-               Variant obj = mStack.pop();
+               VirtualValue obj = mStack.pop();
                if ( obj.isEmpty() )
                   throwException(context, UTEXT("system.NullPointerException"), String::empty());
                else               
@@ -656,7 +646,7 @@ void StackCPU::execute(VirtualContext& context)
             break;
          case SBIL_ldlocal:
             {
-               Variant& value = mCalls[mFP].locals[arg];
+               VirtualValue& value = mCalls[mFP].locals[arg];
                mStack.push(value);
             }
             break;
@@ -672,7 +662,7 @@ void StackCPU::execute(VirtualContext& context)
                // - array object
                // the actual array object is below the indices in the stack
 
-               Variant& variant = mStack[mStack.size() - arg - 1];
+               VirtualValue& variant = mStack[mStack.size() - arg - 1];
                ASSERT(variant.isArray());
 
                VirtualArray* parray = &variant.asArray();
@@ -699,7 +689,7 @@ void StackCPU::execute(VirtualContext& context)
                // - array object
                // - value to store
 
-               Variant& variant = mStack[mStack.size() - arg - 1];
+               VirtualValue& variant = mStack[mStack.size() - arg - 1];
                ASSERT(variant.isArray());
 
                VirtualArray* parray = &variant.asArray();
@@ -713,7 +703,7 @@ void StackCPU::execute(VirtualContext& context)
 
                mStack.pop(1); // <-- pop array
 
-               Variant val = mStack.pop();
+               VirtualValue val = mStack.pop();
 
                if ( i >= parray->size() )
                   throwException(context, UTEXT("system.ArrayIndexOutOfBoundsException"), String::empty());
@@ -779,12 +769,12 @@ void StackCPU::execute(VirtualContext& context)
             mStack.pushBool(false);
             break;
          case SBIL_push_null:
-            mStack.push(Variant());
+            mStack.push(VirtualValue());
             break;
          case SBIL_push_class:
             {
-               const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[arg];
-               String classname = symbol.value.asString().getString();
+               const ValueSymbol& symbol = static_cast<const ValueSymbol&>(program.getSymbolTable()[arg]);
+               const String& classname = symbol.value.asString();
 
                if ( classname.isEmpty() )
                {
@@ -803,14 +793,13 @@ void StackCPU::execute(VirtualContext& context)
 
          case SBIL_switch:
             {
-               const VirtualLookupTable* ptable = mCalls[mFP].pentry->lookups[arg];
-               mIP = ptable->lookup(mStack.pop());
+               mIP = mCalls[mFP].pentry->lookup(arg, mStack.pop());
             }
             break;
          case SBIL_instanceof:
             {
-               const ValueSymbol& symbol = (const ValueSymbol&)program.getSymbolTable()[arg];
-               const VirtualClass& klass = context.mClassTable.resolve(symbol.value.asString().getString());
+               const ValueSymbol& symbol = static_cast<const ValueSymbol&>(program.getSymbolTable()[arg]);
+               const VirtualClass& klass = context.mClassTable.resolve(symbol.value.asString());
                
                if ( mStack.back().isEmpty() )
                {
@@ -898,7 +887,7 @@ void StackCPU::mark()
       VM::StackFrame::Locals& locals = mCalls[index].locals;
       for ( int idx = 0; idx < locals.size(); ++idx )
       {
-         Variant& variant = locals[idx];
+         VirtualValue& variant = locals[idx];
          if ( variant.isObject() )
          {
             variant.asObject().mark();
@@ -923,11 +912,11 @@ String StackCPU::buildCallStack() const
       ASSERT_PTR(frame.pentry);
 
       result += String("- ");
-      result += String(frame.pclass->getName() + '.' + frame.pentry->mName + '(');
+      result += String(frame.pclass->getName() + '.' + frame.pentry->getName() + '(');
 
       for ( int index = 0; index < frame.pentry->mArguments; index++ )
       {
-         const Variant& value = frame.locals[index];
+         const VirtualValue& value = frame.locals[index];
          result += value.typeAsString() + String(" = ") + value.toString();
 
          if ( index < frame.pentry->mArguments - 1 )
@@ -949,7 +938,7 @@ bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception
    while ( mFP >= 0 )
    {
       const VirtualFunctionTableEntry& entry = *mCalls[mFP].pentry;
-      const VirtualGuard* pguard = entry.guards.findGuard(mIP);
+      const VirtualGuard* pguard = entry.findGuard(mIP);
 
       if ( pguard != NULL )
       {

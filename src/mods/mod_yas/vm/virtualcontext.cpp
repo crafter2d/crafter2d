@@ -5,8 +5,8 @@
 
 VirtualContext::VirtualContext():
    mClassTable(),
-   mInstructions(),
-   mLiteralTable()
+   mNativeRegistry(),
+   mStringCache()
 {
 }
 

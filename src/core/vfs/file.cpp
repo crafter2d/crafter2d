@@ -23,17 +23,40 @@
 #include "core/string/string.h"
 
 #include "buffer.h"
+#include "filesystem.h"
 
 // static 
 String File::concat(const String& path, const String& filename)
 {
+   if ( path.isEmpty() )
+      return filename;
+   else if ( filename.isEmpty() )
+      return path;
+
    bool has = path[path.length()-1] == '/' || path[path.length()-1] == '\\'
            || filename[0] == '/' || filename[0] == '\\';
    if ( has )
    {
       return path + filename;
    }
-   return path + '/' + filename;
+   return path + FileSystem::getNativeSeparator() + filename;
+}
+
+// static
+String File::extractFileName(const String& filepath)
+{
+   int pos = filepath.lastIndexOf('/');
+   if ( pos == -1 )
+   {
+      pos = filepath.lastIndexOf('\\');
+   }
+
+   if ( pos != -1 )
+   {
+      return filepath.subStr(pos + 1, filepath.length() - pos - 1);
+   }
+
+   return filepath;
 }
 
 // static
@@ -53,7 +76,20 @@ String File::extractPath(const String& filepath)
    return UTEXT("");
 }
 
+// static 
+String File::toNativeSeparator(const String& filepath)
+{
+   UChar sep = FileSystem::getInstance().getSeparator();
+   String result = filepath;
+   if ( sep == L'/' )
+      result.replace(L'\\', sep);
+   else
+      result.replace(L'/', sep);
+   return result;
+}
+
 File::File():
+   mFilename(),
    mpBuffer(NULL)
 {
 }
@@ -76,6 +112,7 @@ void File::setBuffer(Buffer* pbuffer)
 
 bool File::open(const String& filename, int modus)
 {
+   mFilename = filename;
    if ( virOpen(filename, modus) )
    {
       getBuffer().setWritting(!IS_SET(modus, File::ERead));
@@ -89,6 +126,13 @@ bool File::open(const String& filename, int modus)
 void File::close()
 {
    virClose();
+}
+
+// - Get/set
+
+const String& File::getFileName() const
+{
+   return mFilename;
 }
 
 // - Reading & writting

@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE uchar* MemoryBuffer::getData()
+INLINE uint8_t* MemoryBuffer::getData()
 {
    return mpData;
 }

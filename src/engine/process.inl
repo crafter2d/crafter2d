@@ -39,7 +39,8 @@ namespace c2d
 
    INLINE ScriptManager& Process::getScriptManager()
    {
-      return mScriptManager;
+      ASSERT_PTR(mpScriptManager);
+      return *mpScriptManager;
    }
 
    INLINE ModuleManager& Process::getModuleManager()

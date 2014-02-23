@@ -56,6 +56,11 @@ void DataStream::copyTo(DataStream& that) const
 
 // - Reading
 
+void DataStream::readBool(bool& value)
+{
+   value = readByte() != 0;
+}
+
 void DataStream::readInt(int32_t& value)
 {
    readBytes(&value, sizeof(int32_t));
@@ -91,12 +96,12 @@ void DataStream::readFloat(float& value)
    readBytes(&value, sizeof(float));
 }
 
-void DataStream::readBool(bool& value)
+void DataStream::readDouble(double& value)
 {
-   value = readByte() != 0;
+   readBytes(&value, sizeof(double));
 }
 
-void DataStream::readChar(char& value)
+void DataStream::readChar(UChar& value)
 {
    value = readByte();
 }
@@ -116,6 +121,11 @@ void DataStream::readBlob(void* pdata, int size)
 }
 
 // - Writting
+
+void DataStream::writeBool(bool value)
+{
+   writeBytes(&value, 1);
+}
 
 void DataStream::writeInt(int value)
 {
@@ -149,15 +159,15 @@ void DataStream::writeUint64(uint64_t value)
 
 void DataStream::writeFloat(float value)
 {
-   writeBytes(&value, sizeof(value));
+   writeBytes(&value, sizeof(float));
 }
 
-void DataStream::writeBool(bool value)
+void DataStream::writeDouble(double value)
 {
-   writeBytes(&value, 1);
+   writeBytes(&value, sizeof(double));
 }
 
-void DataStream::writeChar(char value)
+void DataStream::writeChar(UChar value)
 {
    writeBytes(&value, 1);
 }

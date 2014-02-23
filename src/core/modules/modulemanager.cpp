@@ -30,7 +30,7 @@ namespace c2d
    {
       std::vector<String> filenames;
       FileSystem& fs = FileSystem::getInstance();
-      if ( !fs.find(UTEXT("mod_*.dll"), filenames) )
+      if ( !fs.find(UTEXT("mod_*.dll"), filenames, false) )
       {
          return false;
       }

@@ -23,11 +23,12 @@
 #include <cstdint>
 #include <string>
 
+#include "core/system/object.h"
 #include "core/core_base.h"
 
 #include "char.h"
 
-class CORE_API String
+class CORE_API String : public Object
 {
 public:
    static const String& empty();
@@ -70,6 +71,11 @@ public:
    int compare(const String& that) const;
    int hashCode() const;
 
+ // overrides
+   virtual Object* clone() const override;
+   virtual bool equals(const Object& that) const override;
+   virtual String toString() const;
+
  // operations
    const String& toLower();
    const String& toUpper();
@@ -81,6 +87,7 @@ public:
    void append(const String& that);
    void setTo(const UChar* ptext, uint32_t length);
 
+   void insert(int index, const String& text);
    void replace(UChar original, UChar newtext);
    void replace(int start, int length, const String& with);
    void remove(int start, int count);
@@ -104,7 +111,7 @@ private:
    friend class NumberConverter;
 
  // operations
-   UChar* getBuffer(int length);
+   UChar* getBuffer(uint32_t length);
 
  // static data
    static const String sEmpty;

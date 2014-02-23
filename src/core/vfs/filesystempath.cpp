@@ -42,9 +42,18 @@ FileSystemPath::~FileSystemPath()
 
 void FileSystemPath::fillInfo(const String& path)
 {
-   if ( UnzipFile::isZip(path) )
+   int index = path.indexOf(UTEXT(".zip"));
+   if ( index > 0 )
    {
-      mpUnzip = new UnzipFile(path);
+      String zipfile = path.subStr(0, index + 4); // include the .zip extension
+      if ( path.length() > index + 4 )
+      {
+         // skip the dir separator after the 
+         mPath = path.subStr(index + 5, path.length() - index - 5);
+      }
+
+      ASSERT(UnzipFile::isZip(zipfile));
+      mpUnzip = new UnzipFile(zipfile);
    }
 }
 
@@ -68,7 +77,7 @@ bool FileSystemPath::exists(const String& filename) const
 {
    if ( isZipped() )
    {
-      return mpUnzip->contains(filename);
+      return mpUnzip->contains(File::concat(mPath, filename));
    }
    else
    {
@@ -87,9 +96,9 @@ File* FileSystemPath::open(const String& filename, int modus) const
    {
       ASSERT(IS_SET(modus, File::ERead)); // only read
 
-      if ( mpUnzip->contains(filename) )
+      if ( mpUnzip->contains(file) )
       {
-         presult = new CompressedFile();
+         presult = new CompressedFile(*mpUnzip);
       }
    }
    else

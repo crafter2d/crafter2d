@@ -58,8 +58,8 @@ public:
    Reliability getReliability() const;
    void        setReliability(Reliability rel);
 
-   uint        getNumber() const;
-   void        setNumber(uint number);
+   uint32_t    getNumber() const;
+   void        setNumber(uint32_t number);
 
    float       getTimeStamp() const;
    void        setTimeStamp(float timestamp);
@@ -79,10 +79,10 @@ private:
    void        setDataSize(int size);
 
  // data
-   float mTimeStamp;
-   uint  mNumber;
-   uint  mInfo;  // packed info: 4 = type, 3 = reliability, 2&1 = datasize
-   char  mData[MaxDataSize];
+   float    mTimeStamp;
+   uint32_t mNumber;
+   uint32_t mInfo;  // packed info: 4 = type, 3 = reliability, 2&1 = datasize
+   char     mData[MaxDataSize];
 };
 
 typedef ObjectHandle<NetPackage> PackageHandle;

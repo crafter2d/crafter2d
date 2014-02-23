@@ -20,6 +20,7 @@
 #include "stringinterface.h"
 
 #include "string.h"
+#include "stringlist.h"
 
 unsigned long sCrcTable[256];
 bool          sCrcTableComputed = false;
@@ -63,10 +64,6 @@ unsigned long StringInterface::crc(const String& text)
 
 std::vector<String> StringInterface::tokenize(const String& text, char separator)
 {
-   if ( text == UTEXT("system.Object[], int") )
-   {
-      int aap = 5;
-   }
    std::vector<String> result;
    String value;
    for ( int index = 0; index < text.length(); ++index )
@@ -86,4 +83,25 @@ std::vector<String> StringInterface::tokenize(const String& text, char separator
       result.push_back(value.trim());
    }
    return result;
+}
+
+void StringInterface::split(const String& text, UChar ch, StringList& elements)
+{
+   String value;
+   for ( int index = 0; index < text.length(); ++index )
+   {
+      if ( text[index] == ch )
+      {
+         elements.add(value.trim());
+         value = "";
+      }
+      else
+      {
+         value += text[index];
+      }
+   }
+   if ( !value.isEmpty() )
+   {
+      elements.add(value.trim());
+   }
 }

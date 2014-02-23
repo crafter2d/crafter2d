@@ -34,7 +34,7 @@ class ForceGenerator;
 class Simulator;
 class Entity;
 
-class CORE_API Body : public IScriptable
+class CORE_API Body : public c2d::IScriptable
 {
 public:
    static bool hasInfo(const TiXmlElement& element);

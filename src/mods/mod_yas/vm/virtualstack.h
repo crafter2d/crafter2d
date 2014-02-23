@@ -2,14 +2,15 @@
 #ifndef VIRTUAL_STACK_H
 #define VIRTUAL_STACK_H
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
 #include <vector>
 
-#include "script/common/variant.h"
+#include "virtualvalue.h"
 
 class String;
 class VirtualArray;
+class VirtualString;
 
 class SCRIPT_API VirtualStack
 {
@@ -17,12 +18,12 @@ public:
    explicit VirtualStack(int initialsize = 32);
             ~VirtualStack();
 
-   const Variant& operator[](int index) const;
-         Variant& operator[](int index);
+   const VirtualValue& operator[](int index) const;
+         VirtualValue& operator[](int index);
 
  // stack operations
-   void push(int count, Variant* pvalues);
-   void push(const Variant& value);
+   void push(int count, VirtualValue* pvalues);
+   void push(const VirtualValue& value);
    void pushInt(int value);
    void pushReal(double value);
    void pushBool(bool value);
@@ -31,7 +32,7 @@ public:
    void pushObject(VirtualObject& object);
    void pushArray(VirtualArray& array);
 
-   Variant              pop();
+   VirtualValue              pop();
    void                 pop(int count);
    int                  popInt();
    double               popReal();
@@ -41,11 +42,11 @@ public:
    VirtualObject&       popObject();
    VirtualArray&        popArray();
 
-   void insert(int index, const Variant& value);
+   void insert(int index, const VirtualValue& value);
    void setSize(int size);
 
  // query
-   Variant& back();
+   VirtualValue& back();
 
    int size() const;
 
@@ -53,12 +54,12 @@ public:
    void mark();
 
 private:
-   typedef std::vector<Variant*> Stack;
+   typedef std::vector<VirtualValue> Stack;
 
  // operations
-   Variant& top();
-   void     ensureFits(int amount);
-   void     fill(int from);
+   VirtualValue& top();
+   void          ensureFits(int amount);
+   void          fill(int from);
 
    Stack mStack;
    int   mSize;

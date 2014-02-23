@@ -30,11 +30,10 @@
 #include "core/log/log.h"
 #include "core/physics/simulationfactory.h"
 #include "core/physics/simulator.h"
+#include "core/script/scriptobject.h"
 
 #include "engine/nodevisitor.h"
 #include "engine/process.h"
-#include "engine/script/scriptmanager.h"
-#include "engine/script/script.h"
 #include "engine/dirtyset.h"
 
 #include "layer.h"
@@ -405,8 +404,9 @@ void World::addEntity(Entity* pentity)
 
    notifyEntityAdded(*pentity);
 
-   Variant arg(mpScript->instantiate(pentity->getClassName(), pentity));
-   mpScript->run(UTEXT("onEntityAdded"), 1, &arg);
+   mpScript->prepareCall(1);
+   mpScript->arg(0, pentity->getClassName(), pentity);
+   mpScript->call(UTEXT("onEntityAdded"));
 }
 
 void World::removeEntity(Id id)
@@ -496,23 +496,23 @@ static const String sCollision = UTEXT("onObjectCollision");
 void World::notifyObjectWorldCollision(Entity& object, Bound& bound, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   Variant args[4];
-   args[0].setObject(mpScript->instantiate(object.getClassName(), &object));
-   args[1].setObject(mpScript->instantiate(sBound, &bound));
-   args[2].setInt(side);
-   args[3].setBool(begin);
-   mpScript->run(sCollision, 4, args);
+   mpScript->prepareCall(4);
+   mpScript->arg(0, object.getClassName(), &object);
+   mpScript->arg(1, sBound, &bound);
+   mpScript->arg(2, side);
+   mpScript->arg(3, begin);
+   mpScript->call(sCollision);
 }
 
 void World::notifyObjectObjectCollision(Entity& source, Entity& target, int side, bool begin)
 {
    ASSERT_PTR(mpScript);
-   Variant args[4];
-   args[0].setObject(mpScript->instantiate(source.getClassName(), &source));
-   args[1].setObject(mpScript->instantiate(target.getClassName(), &target));
-   args[2].setInt(side);
-   args[3].setBool(begin);
-   mpScript->run(sCollision, 4, args);
+   mpScript->prepareCall(4);
+   mpScript->arg(0, source.getClassName(), &source);
+   mpScript->arg(1, target.getClassName(), &target);
+   mpScript->arg(2, side);
+   mpScript->arg(3, begin);
+   mpScript->call(sCollision);
 }
 
 void World::onViewportChanged(Graphics::RenderContext& context)

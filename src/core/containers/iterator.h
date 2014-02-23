@@ -29,16 +29,15 @@ class Iterator
 {
 public:
 
-   virtual void operator++() = 0;
-
    const E&   operator*() const;
          E&   operator*();
 
+   virtual bool  isValid() const = 0;
+
+   virtual void  operator++() = 0;
    virtual void* key() = 0;
    virtual void  reset() = 0;
    virtual E&    item() = 0;
-
-   virtual bool  isValid() const = 0;
 
 protected:
    Iterator();

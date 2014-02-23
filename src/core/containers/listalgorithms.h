@@ -26,6 +26,14 @@ namespace ListAlgorithms
 {
    template <class E>
    void flush(List<E>& list);
+
+   template <class It, class Fnc>
+   inline void foreach(It& it, Fnc fnc) {
+      for ( ; it.isValid(); ++it )
+      {
+         fnc(*it);
+      }
+   }
 }
 
 #include "listalgorithms.inl"

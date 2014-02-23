@@ -20,6 +20,7 @@
 #ifndef FILE_H
 #define FILE_H
 
+#include "core/string/string.h"
 #include "core/core_base.h"
 
 #include <stdio.h>
@@ -39,7 +40,9 @@ public:
                EText = 8 };
 
    static String concat(const String& path, const String& filename);
+   static String extractFileName(const String& filepath);
    static String extractPath(const String& filepath);
+   static String toNativeSeparator(const String& filepath);
    static bool   exists(const String& filepath);
 
    File();
@@ -47,6 +50,9 @@ public:
 
    bool open(const String& filename, int modus = ERead | EBinary);
    void close();
+
+ // get/set
+   const String& getFileName() const;
 
  // reading
    int  read(void* ptr, int size);
@@ -72,6 +78,9 @@ protected:
    virtual void   virClose();
 
 private:
+
+ // data
+   String   mFilename;
    Buffer*  mpBuffer;
 };
 

@@ -3,9 +3,6 @@
 
 #include "core/defines.h"
 
-#include "script/ast/astclass.h"
-#include "script/ast/astfunction.h"
-
 #include "classregistration.h"
 #include "functionregistration.h"
 
@@ -14,6 +11,18 @@ ClassRegistry::ClassRegistry():
    mFunctions(),
    mpCurrent(NULL)
 {
+}
+
+ClassRegistry::~ClassRegistry()
+{
+   clear();
+}
+
+ClassRegistry& ClassRegistry::operator=(const ClassRegistry& that)
+{
+   clear();
+   add(that);
+   return *this;
 }
 
 yas::CallbackFunctor& ClassRegistry::getCallback(int index) const
@@ -70,7 +79,26 @@ void ClassRegistry::addFunction(const String& name, yas::CallbackFunctor* pcallb
    pregistration->setIndex(mFunctions.size());
    mFunctions.push_back(pregistration);
 
+   mpCurrent->functions.push_back(pregistration);
    mpCurrent->end++;
+}
+
+void ClassRegistry::clear()
+{
+   for ( int index = 0; index < mClasses.size(); ++index )
+   {
+      ClassRegistration* reg = mClasses[index];
+      delete reg;
+   }
+
+   for ( int index = 0; index < mFunctions.size(); ++index )
+   {
+      FunctionRegistration* pfunc = mFunctions[index];
+      delete pfunc;
+   }
+
+   mClasses.clear();
+   mFunctions.clear();
 }
 
 // - Operations
@@ -103,25 +131,27 @@ ClassRegistration* ClassRegistry::findClass(const String& name)
    return NULL;
 }
 
-const FunctionRegistration* ClassRegistry::findCallback(const ASTClass& astclass, const ASTFunction& function) const
+const FunctionRegistration* ClassRegistry::findCallback(const String& qualifiedname) const
 {
-   return findCallback(astclass, function.getPrototype());
-}
+   int indexB = qualifiedname.indexOf(L'(');
+   int index = qualifiedname.lastIndexOf(L'.', 0, indexB);
+   String klass = qualifiedname.subStr(0, index);
+   String function = qualifiedname.subStr(index + 1, qualifiedname.length() - index - 1);
 
-const FunctionRegistration* ClassRegistry::findCallback(const ASTClass& astclass, const String& fncname) const
-{
-   const ClassRegistration* pclass = findClass(astclass.getFullName());
+   //012345678901234567890123456789
+   //system.InternalString.length()
+
+   const ClassRegistration* pclass = findClass(klass);
    if ( pclass != NULL )
    {
       for ( int index = pclass->start; index < pclass->end; ++index )
       {
          const FunctionRegistration* pfuncreg = mFunctions[index];
-         if ( pfuncreg->getPrototype() == fncname )
+         if ( pfuncreg->getPrototype() == function )
          {
             return pfuncreg;
          }
       }
    }
-
    return NULL;
 }

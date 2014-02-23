@@ -29,12 +29,12 @@ INLINE void NetStatisticsItem::addPackageReceived()
    ++MPackagesPerSecondRecv;
 }
 
-INLINE void NetStatisticsItem::addBytesSend(uint size)
+INLINE void NetStatisticsItem::addBytesSend(uint32_t size)
 {
    MBytesPerSecondSend += size;
 }
 
-INLINE void NetStatisticsItem::addBytesReceived(uint size)
+INLINE void NetStatisticsItem::addBytesReceived(uint32_t size)
 {
    MBytesPerSecondRecv += size;
 }

@@ -24,14 +24,12 @@
 #include <map>
 #include <stack>
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
 #include "core/defines.h"
 
-#include "script/compiler/compiler.h"
-#include "script/gc/garbagecollector.h"
+#include "mod_yas/gc/garbagecollector.h"
 
-#include "virtualcompilecallback.h"
 #include "virtualfunctiontableentry.h"
 #include "virtualcontext.h"
 #include "virtualstack.h"
@@ -39,20 +37,18 @@
 
 namespace ByteCode
 {
-   class Program;
+   class CPU;
+   class Generator;
 }
 
 class ClassRegistry;
-class CPU;
 class String;
-class IScriptable;
-class Variant;
 class VirtualArrayException;
-class VirtualInstruction;
 class VirtualFunctionTableEntry;
 class VirtualException;
 class VirtualObject;
-class VirtualStackAccessor;
+class VirtualCall;
+class VirtualValue;
 
 class SCRIPT_API VirtualMachine
 {
@@ -71,8 +67,8 @@ public:
    void mergeClassRegistry(const ClassRegistry& registry);
 
  // execution
-   bool execute(const String& classname, const String& function);
-   Variant execute(VirtualObject& object, const String& function, int argc = 0, Variant* pargs = NULL);
+   bool         execute(const String& classname, const String& function);
+   VirtualValue execute(VirtualObject& object, const String& function, int argc = 0, VirtualValue* pargs = NULL);
 
  // exception handling
    String buildCallStack() const;
@@ -80,7 +76,6 @@ public:
 
  // object instantation
    VirtualObject*    instantiate(const String& classname, int constructor = -1);
-   VirtualObject&    instantiateNative(IScriptable& scriptable, bool owned);
    VirtualObject*    instantiateNative(const String& classname, void* pobject, bool owned = true);
    VirtualArray*     instantiateArray();
    void              release(VirtualObject& object);
@@ -95,13 +90,12 @@ public:
    void              unregisterNative(VirtualObject& object);
 
 private:
-   friend class VirtualCompileCallback;
    friend class GarbageCollector;
    
    typedef std::vector<VirtualObject*> Objects;
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
 
-   enum State { eInit, eRunning, eFinalizing, eReturn, eDestruct };
+   enum State { eInit, eDestruct, eRunning, eFinalizing, eReturn };
    
  // exception
    VirtualObject& instantiateArrayException(const VirtualArrayException& e);
@@ -114,18 +108,12 @@ private:
    void          createClass(const VirtualClass& aclass);
 
    VirtualContext&               mContext;
-   VirtualCompileCallback        mCallback;
-   Compiler                      mCompiler;
    Objects                       mRootObjects;
    GarbageCollector              mGC;
    NativeObjectMap               mNativeObjects;
    State                         mState;
-   VirtualClass*                 mpArrayClass;
-   VirtualClass*                 mpStringClass;
-   CPU*                          mpCPU;
-   ByteCode::Program*            mpProgram;
-   bool                          mRetVal;
-   bool                          mLoaded;
+   ByteCode::CPU*                mpCPU;
+   ByteCode::Generator*          mpGenerator;
 };
 
 #endif // VM_H_

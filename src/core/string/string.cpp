@@ -270,9 +270,25 @@ bool String::operator!=(const String& that) const
    return !operator==(that);
 }
 
+Object* String::clone() const
+{
+   return new String(*this);
+}
+
+bool String::equals(const Object& that) const
+{
+   const String& str = dynamic_cast<const String&>(that);
+   return operator==(str);
+}
+
+String String::toString() const
+{
+   return *this;
+}
+
 // - Operations
 
-UChar* String::getBuffer(int length)
+UChar* String::getBuffer(uint32_t length)
 {
    if ( mCapacity < length + 1 )
    {
@@ -360,6 +376,18 @@ void String::setTo(const UChar* ptext, uint32_t length)
    mLength = length;
 }
 
+void String::insert(int index, const String& text)
+{
+   uint32_t newlen = mLength + text.length();
+   wchar_t* pbuffer = getBuffer(newlen);
+
+   wmemmove(&pbuffer[index + text.length()], &pbuffer[index], mLength - index); 
+   wmemmove(&pbuffer[index], text.mpString, text.mLength);
+
+   mLength += text.mLength;
+   pbuffer[mLength] = 0;
+}
+
 void String::replace(UChar original, UChar newtext)
 {
    for ( uint32_t index = 0; index < mLength; ++index )
@@ -374,14 +402,22 @@ void String::replace(UChar original, UChar newtext)
 
 void String::replace(int start, int count, const String& with)
 {
+   wchar_t* ptemp = NULL;
    uint32_t remainder = wcslen(&mpString[start + count]);
-   wchar_t* ptemp = new wchar_t[remainder];
-   wmemcpy(ptemp, &mpString[start+count], remainder);
+   if ( remainder > 0 )
+   {
+      ptemp = new wchar_t[remainder];
+      wmemcpy(ptemp, &mpString[start+count], remainder);
+   }
 
    uint32_t newlen = mLength - count + with.mLength;
    wchar_t* pdata = getBuffer(newlen);
    wmemcpy(&mpString[start], with.mpString, with.mLength);
-   wmemcpy(&mpString[start + with.mLength], ptemp, remainder);
+
+   if ( remainder > 0 )
+   {
+      wmemcpy(&mpString[start + with.mLength], ptemp, remainder);
+   }
 
    mLength = newlen;
    mpString[newlen] = 0;
@@ -393,6 +429,7 @@ void String::remove(int start, int count)
    uint32_t len = wcslen(&mpString[start + count]);
    wmemmove(&mpString[start], &mpString[start + count], len);
    mLength = start + len;
+   mpString[mLength] = 0;
 }
 
 String String::subStr(int start, int count) const
@@ -413,10 +450,10 @@ String String::unescape() const
    {
       if ( mpString[index] == '\\' )
       {
-         char c = mpString[++index];
+         UChar c = mpString[++index];
          switch ( c )
          {
-         case 'u':
+         case L'u':
             index++;
             while ( hex_digit(mpString[index]) && dno < 4 )
             {

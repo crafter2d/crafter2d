@@ -39,8 +39,8 @@ namespace Graphics
       int      getHeight() const;
       void     setHeight(int height);
 
-      uchar*   getData() const;
-      void     setData(uchar* pdata);
+      uint8_t* getData() const;
+      void     setData(uint8_t* pdata);
 
       int      getDataSize() const;
       void     setDataSize(int size);
@@ -51,7 +51,7 @@ namespace Graphics
    private:
       int      mWidth;
       int      mHeight;
-      uchar*   mpData;
+      uint8_t* mpData;
       int      mDataSize;
       Format   mFormat;
    };

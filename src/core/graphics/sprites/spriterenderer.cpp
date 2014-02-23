@@ -78,7 +78,7 @@ bool SpriteRenderer::create(Device& device)
 
    const int batchsize = 256;
 
-   uint usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
+   int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
    mpVB = mpEffect->createVertexBuffer(device, batchsize * SpriteVertices, usage);
    if ( mpVB == NULL )
    {

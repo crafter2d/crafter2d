@@ -22,27 +22,24 @@
 
 #include <cassert>
 #include <exception>
+#include <cstdint>
 
 #undef NULL
 #define NULL nullptr
 
 // Uncomment next line to enable auto disconnecting after timeout
-//#define JENGINE_AUTODISCONNECT
+//#define CRAFTER_AUTODISCONNECT
 
 // Uncomment the next line to disable inlining.
-//#define JENGINE_INLINE
+//#define CRAFTER_INLINE
 
 #define JENGINE_STATISTICS_LIMIT    250
 
-#ifdef JENGINE_INLINE
+#ifdef CRAFTER_INLINE
 #  define INLINE inline
 #else
 #  define INLINE
 #endif
-
-typedef unsigned int    uint;
-typedef unsigned char   uchar;
-typedef void*           handle;
 
 #define SWAP(type,x,y) { type temp = x; x = y; y = temp; }
 

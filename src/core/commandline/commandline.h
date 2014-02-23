@@ -31,12 +31,15 @@ class CORE_API CommandLine
    typedef std::vector<CommandLineArgument> Arguments;
 
 public:
+   CommandLine();
    CommandLine(int argc, char *argv[]);
    ~CommandLine();
 
  // query
    int size() const;
    const CommandLineArgument& operator[](int index);
+
+   void set(int argc, char *argv[]);
 
  // searching
    bool                       hasArgument(const String& name) const;

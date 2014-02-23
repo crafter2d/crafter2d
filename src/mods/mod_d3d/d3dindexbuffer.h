@@ -31,7 +31,7 @@ namespace Graphics
     // data
       D3DDevice&    mDevice;
       ID3D11Buffer* mpBuffer;
-      uint          mFormat;
+      uint32_t      mFormat;
    };
 }
 

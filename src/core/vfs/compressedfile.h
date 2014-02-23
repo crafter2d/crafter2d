@@ -24,13 +24,15 @@
 
 #include "file.h"
 
+class UnzipFile;
+
 class CompressedFile : public File
 {
 public:
    static bool isCompressedFile(const String& file);
    static bool exists(const String& path, const String& file);
 
-   CompressedFile();
+   explicit CompressedFile(UnzipFile& unzipfile);
    virtual ~CompressedFile();
 
    virtual bool isValid() const;
@@ -38,13 +40,11 @@ public:
 protected:
  // operations
    virtual bool  virOpen(const String& filename, int modus);
-   virtual void  virClose();
-
+   
 private:
-   void decode(const String& filename);
-
-   String mZipFile;
-   String mFile;
+ //data
+   UnzipFile& mUnzipFile;
+   String     mFile;
 };
 
 #ifdef JENGINE_INLINE

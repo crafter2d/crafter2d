@@ -33,8 +33,7 @@
 #include "core/graphics/rendercontext.h"
 #include "core/resource/resourcemanager.h"
 
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
+#include "core/script/scriptobject.h"
 
 #include "process.h"
 #include "nodevisitor.h"
@@ -224,8 +223,8 @@ void ParticleSystem::update(float delta)
 				curpart->pos += curpart->vel;
                
 				// run the particle script
-            Variant arg((int)lifetime);
-				updateScript->run(UTEXT("updateParticle"), 1, &arg);
+            //Variant arg((int)lifetime);
+				//updateScript->run(UTEXT("updateParticle"), 1, &arg);
 
 				part = &curpart->next;
 			}
@@ -266,7 +265,7 @@ void ParticleSystem::update(float delta)
 /// vertex shader for rendering speed.
 void ParticleSystem::draw(Graphics::RenderContext& context) const
 {
-	uint num = 0;
+	uint32_t num = 0;
 	Particle* part = activeList;
    ParticleVertex* verts = reinterpret_cast<ParticleVertex*>(mGeometryBuffer->lock(context));
 

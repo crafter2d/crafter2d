@@ -3,9 +3,8 @@
 
 #include <sstream>
 
-#include "script/common/variant.h"
-#include "script/common/literaltable.h"
-#include "script/common/literal.h"
+#include "mod_yas/common/literaltable.h"
+#include "mod_yas/common/literal.h"
 
 VirtualInstructionTable::VirtualInstructionTable():
    mInstructions()

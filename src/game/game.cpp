@@ -33,7 +33,6 @@
 #include "core/vfs/filesystem.h"
 #include "core/smartptr/autoptr.h"
 
-#include "engine/script/script.h"
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"
 #include "engine/physics/physengine/physicsfactory.h"

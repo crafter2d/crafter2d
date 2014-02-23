@@ -23,7 +23,7 @@ namespace c2d
 
       virtual void addFunction(const String& prototype, CallbackFnc callback) = 0;
 
-      virtual void registerCallbacks(ScriptManager& manager) = 0;
+      virtual void registerCallbacks() = 0;
    };
 }
 

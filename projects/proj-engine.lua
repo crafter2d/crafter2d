@@ -11,7 +11,7 @@ project "Engine"
 	
 	files { "src/engine/**.cpp", "src/engine/**.h", "src/engine/**.inl" }
 	includedirs { "src" }
-	links { "Core", "Script" }
+	links { "Core" }
 
 	configuration "Debug"
 		defines { "_DEBUG", "TIXML_USE_STL" }

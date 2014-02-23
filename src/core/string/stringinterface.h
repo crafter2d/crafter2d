@@ -22,15 +22,19 @@
 
 #include <vector>
 
+#include "core/string/char.h"
 #include "core/core_base.h"
 
 class String;
+class StringList;
 
 namespace StringInterface
 {
 	CORE_API unsigned long crc(const String& text);
 
    CORE_API std::vector<String> tokenize(const String& text, char separator);
+
+   CORE_API void split(const String& text, UChar ch, StringList& elements);
 };
 
 #endif // STRING_INTERFACE_H

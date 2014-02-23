@@ -35,16 +35,16 @@ public:
 protected:
    bool           loadAVI(const char* filename);
 
-   uint     mFrameWidth;
-   uint     mFrameHeight;
-   uint     mWidth;
-   uint     mHeight;
-   uint     mNumberOfFrames;
-   uint     mFramesPerSecond;
-   uint     mCurrentFrame;
+   uint32_t mFrameWidth;
+   uint32_t mFrameHeight;
+   uint32_t mWidth;
+   uint32_t mHeight;
+   uint32_t mNumberOfFrames;
+   uint32_t mFramesPerSecond;
+   uint32_t mCurrentFrame;
    float    mUpdateRate;
    float    mFrameTime;
-   uchar*   mpData;
+   uint8_t* mpData;
 };
 
 #endif

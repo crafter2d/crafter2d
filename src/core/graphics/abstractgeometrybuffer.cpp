@@ -28,8 +28,8 @@ namespace Graphics
          return false;
       }
 
-      uint length = maxelements * vertsperelement;
-      uint usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
+      int length = maxelements * vertsperelement;
+      int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
       mpVB = mpEffect->createVertexBuffer(device, length, usage);
       if ( mpVB == NULL )
       {

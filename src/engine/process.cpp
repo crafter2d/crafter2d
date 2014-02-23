@@ -30,11 +30,10 @@
 #include "core/smartptr/autoptr.h"
 #include "core/content/contentmanager.h"
 #include "core/modules/modulemanager.h"
+#include "core/modules/scriptmodule.h"
+#include "core/script/scriptmanager.h"
+#include "core/script/scriptobject.h"
 
-#include "script/vm/virtualclass.h"
-
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
 #include "engine/net/events/scriptevent.h"
 #include "engine/world/world.h"
 #include "engine/world/worldreader.h"
@@ -49,7 +48,7 @@ namespace c2d
       mNetObserver(*this),
       conn(mNetObserver),
       mpContentManager(NULL),
-      mScriptManager(),
+      mpScriptManager(NULL),
       mpScript(NULL),
       actionMap(NULL),
       initialized(false),
@@ -87,18 +86,25 @@ namespace c2d
       mpContentManager->initialize(getModuleManager());
       
       // initialize the scripting engine
-      mScriptManager.initialize();
-      mpScript = mScriptManager.load(classname, this, false);
+      ScriptModule* pmod = static_cast<ScriptModule*>(mpModuleManager->lookup(UUID_ScriptModule));
+      if ( pmod == NULL )
+      {
+         return false;
+      }
+
+      mpScriptManager = &pmod->getManager();
+      script_engine_register(*mpScriptManager);
+      mpScript = mpScriptManager->load(classname, this, false);
       if ( mpScript == NULL )
       {
          return false;
       }
 
       // make me a root objects
-      mScriptManager.addRootObject(mpScript->getThis());
+      mpScriptManager->addRootObject(*mpScript);
 
       // run the onCreated function
-      return mpScript->run(UTEXT("onCreated")).asBool();
+      return mpScript->call(UTEXT("onCreated")).asBool();
    }
 
    bool Process::destroy()

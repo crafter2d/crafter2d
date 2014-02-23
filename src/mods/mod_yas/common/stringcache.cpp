@@ -3,7 +3,7 @@
 
 #include "core/string/string.h"
 
-#include "script/vm/virtualstring.h"
+#include "mod_yas/vm/virtualstring.h"
 
 StringCache::StringCache()
 {

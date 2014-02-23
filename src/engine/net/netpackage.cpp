@@ -107,12 +107,12 @@ void NetPackage::setTimeStamp(float timestamp)
    mTimeStamp = timestamp;
 }
 
-uint NetPackage::getNumber() const
+uint32_t NetPackage::getNumber() const
 {
    return mNumber;
 }
 
-void NetPackage::setNumber(uint number)
+void NetPackage::setNumber(uint32_t number)
 {
    mNumber = number;
 }

@@ -20,7 +20,7 @@
 #include "core/defines.h"
 
 template <class N>
-ListNode<N>::ListNode(N& element, ListNode<N>* pprev, ListNode<N>* pnext):
+ListNode<N>::ListNode(const N& element, ListNode<N>* pprev, ListNode<N>* pnext):
    _data(element),
    _pprev(pprev),
    _pnext(pnext)
@@ -41,6 +41,12 @@ ListNode<N>& ListNode<N>::next()
 
 template <class N>
 ListNode<N>* ListNode<N>::nextptr()
+{
+   return _pnext;
+}
+
+template <class N>
+const ListNode<N>* ListNode<N>::nextptr() const
 {
    return _pnext;
 }
@@ -78,5 +84,11 @@ void ListNode<N>::prev(ListNode<N>* pprev)
 template <class N>
 N& ListNode<N>::data()
 {
-   return _data;
+   return (N&) _data;
+}
+
+template <class N>
+const N& ListNode<N>::data() const
+{
+   return (const N&) _data;
 }

@@ -2,7 +2,7 @@
 #ifndef __VirtualCallbackFunctor_h__
 #define __VirtualCallbackFunctor_h__
 
-#include "script/common/callbackfunctor.h"
+#include "mod_yas/common/callbackfunctor.h"
 
 #include "vminterface.h"
 

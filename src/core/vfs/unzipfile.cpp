@@ -54,13 +54,21 @@ bool UnzipFile::open(const String& path)
    return _zip != NULL;
 }
 
+// zip file always has the / path separator
+std::string toZipPath(const String& path)
+{
+   String internalpath(path);
+   internalpath.replace(L'\\', L'/');
+   return internalpath.toUtf8();
+}
+
 bool UnzipFile::contains(const String& name) const
 {
    bool result = false;
    if ( _zip != NULL )
    {
-      std::string file = name.toUtf8();
-      result = unzLocateFile(_zip, file.c_str(), 2) != UNZ_OK;
+      std::string file = toZipPath(name);
+      result = unzLocateFile(_zip, file.c_str(), 2) == UNZ_OK;
    }
    return result;
 }
@@ -69,7 +77,7 @@ bool UnzipFile::readFile(const String& name, void*& pdata, int &size, bool cases
 {
    if ( _zip != NULL )
    {
-      std::string file = name.toUtf8();
+      std::string file = toZipPath(name);
       int result = unzLocateFile(_zip, file.c_str(), casesensitive ? 1 : 2);
       if ( result != UNZ_OK )
       {

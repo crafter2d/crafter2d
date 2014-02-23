@@ -8,12 +8,15 @@ namespace c2d
 {
    class Script;
    class ScriptObject;
+   class ScriptRegistrator;
 
    class ScriptManager
    {
    public:
 
-      virtual Script* load(const String& classname, void* pobject, bool owned) = 0;
+      virtual ScriptRegistrator* getRegistrator() = 0;
+
+      virtual ScriptObject* load(const String& classname, void* pobject, bool owned) = 0;
 
       virtual void addRootObject(ScriptObject& object) = 0;
    };

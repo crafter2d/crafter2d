@@ -38,11 +38,10 @@
 #include "core/graphics/device.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
+#include "core/script/scriptobject.h"
 #include "core/system/platform.h"
 #include "core/system/driver.h"
 
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
 #include "engine/window/gamewindow.h"
 
 #include "net/events/aggregateevent.h"
@@ -186,8 +185,9 @@ namespace c2d
 
       mpRenderContext->endDraw();
 
-      Variant arg((double)delta);
-      mpScript->run(sPaint, 1, &arg);
+      mpScript->prepareCall(1);
+      mpScript->arg(0, delta);
+      mpScript->call(sPaint);
 
       mpDevice->present();
       mpWindow->display();
@@ -396,8 +396,9 @@ namespace c2d
       case ConnectReplyEvent::eAccepted:
          {
             // run the onConnected script
-            Variant arg(mpScript->instantiate(UTEXT("engine.game.Player"), mpPlayer));
-            mpScript->run(UTEXT("onConnected"), 1, &arg);
+            mpScript->prepareCall(1);
+            mpScript->arg(0, UTEXT("engine.game.Player"), mpPlayer);
+            mpScript->call(UTEXT("onConnected"));
 
             initialized = true;
          }
@@ -406,7 +407,7 @@ namespace c2d
          {
             // run the Client_onConnectionDenite script
             Variant arg(event.getReason());
-            mpScript->run(UTEXT("onConnectionDenite"), 1, &arg);
+            mpScript->call(UTEXT("onConnectionDenite"), 1, &arg);
          }
          break;
       }
@@ -416,20 +417,20 @@ namespace c2d
    {
       // run the onConnected script
       Variant arg(event.getId() + 1);
-      mpScript->run(UTEXT("onPlayerJoined"), 1, &arg);
+      mpScript->call(UTEXT("onPlayerJoined"), 1, &arg);
    }
 
    void Client::handleDisconnectEvent(const DisconnectEvent& event)
    {
       // call the script
       Variant arg(event.getId() + 1);
-      mpScript->run(UTEXT("onPlayerLeft"), 1, &arg);
+      mpScript->call(UTEXT("onPlayerLeft"), 1, &arg);
    }
 
    void Client::handleServerdownEvent()
    {
       // server went down, run the onClientConnect script
-      mpScript->run(UTEXT("onServerDown"));
+      mpScript->call(UTEXT("onServerDown"));
    }
 
    void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
@@ -497,8 +498,9 @@ namespace c2d
       NetStream stream(datastream);
 
       // run the onClientConnect script
-      Variant arg(mpScript->instantiate(sNetStream, &stream));
-      mpScript->run(sScriptEvent, 1, &arg);
+      mpScript->prepareCall(1);
+      mpScript->arg(0, sNetStream, &stream);
+      mpScript->call(sScriptEvent);
    }
 
    // - Notifications
@@ -518,8 +520,9 @@ namespace c2d
       getContentManager().setSimulator(world.getSimulator());
 
       // run the onWorldChanged script
-      Variant arg(mpScript->resolve(&world));
-      mpScript->run(UTEXT("onWorldChanged"), 1, &arg);
+      mpScript->prepareCall(1);
+      mpScript->arg(0, &world);
+      mpScript->call(UTEXT("onWorldChanged"));
 
       //mpBackgroundMusic = mSoundManager.createTrack(UTEXT("../sounds/grassy_plain.ogg"));
       //mSoundManager.play(*mpBackgroundMusic);
@@ -569,7 +572,7 @@ namespace c2d
       Variant args[2];
       args[0].setInt(event.getKey());
       args[1].setBool(event.getEventType() == Input::KeyEvent::ePressed);
-      mpScript->run(sOnKeyEvent, 2, args);
+      mpScript->call(sOnKeyEvent, 2, args);
    }
 
    void Client::onMouseEvent(const Input::MouseEvent& event)
@@ -579,7 +582,7 @@ namespace c2d
       args[1].setInt(event.getLocation().y());
       args[2].setInt(event.getButtons());
       args[3].setInt(event.getEventType());
-      mpScript->run(sOnMouseEvent, 4, args);
+      mpScript->call(sOnMouseEvent, 4, args);
    }
 
 } // namespace c2d

@@ -49,9 +49,9 @@ bool CompressedFile::exists(const String& path, const String& file)
     return zipfile.contains(file);
 }
 
-CompressedFile::CompressedFile():
+CompressedFile::CompressedFile(UnzipFile& unzipFile):
    File(),
-   mZipFile(),
+   mUnzipFile(unzipFile),
    mFile()
 {
 }
@@ -63,39 +63,18 @@ CompressedFile::~CompressedFile()
 
 bool CompressedFile::virOpen(const String& filename, int modus)
 {
-   decode(filename);
+   ASSERT(IS_SET(modus, File::ERead))
+   
+   char* pdata = NULL;
+   int size = 0;
 
-   if ( IS_SET(modus, File::ERead) )
-   {
-      char* pdata = NULL;
-      int size = 0;
+   mUnzipFile.readFile(filename, (void*&)pdata, size);
 
-      UnzipFile zipfile(mZipFile);
-      zipfile.readFile(mFile, (void*&)pdata, size);
+   setBuffer(Buffer::fromMemory(pdata, size));
 
-      setBuffer(Buffer::fromMemory(pdata, size));
-
-      delete[] pdata;
-   }
-   else
-   {
-      setBuffer(new MemoryBuffer());
-   }
-
+   delete[] pdata;
+  
    return true;
-}
-
-void CompressedFile::virClose()
-{
-   if ( getBuffer().isWritting() )
-   {
-      MemoryBuffer& buffer = getBuffer().asMemoryBuffer();
-
-      ZipFile zipfile(mZipFile);
-      zipfile.addFile(mFile, buffer.getData(), buffer.getDataSize());
-   }
-
-   File::virClose();
 }
 
 bool CompressedFile::isValid() const
@@ -103,14 +82,3 @@ bool CompressedFile::isValid() const
    return true;
 }
 
-void CompressedFile::decode(const String& filename)
-{
-   int dot = filename.indexOf('.');
-   int len = dot + 4;
-
-   mZipFile = filename.subStr(0, len);
-
-   len = filename.length() - len - 1;
-
-   mFile = filename.subStr(dot + 5, len);
-}

@@ -60,7 +60,7 @@ MemoryBuffer& MemoryBuffer::asMemoryBuffer()
 void MemoryBuffer::assign(void* pdata, int size)
 {
    delete[] mpData;
-   mpData = new uchar[size];
+   mpData = new uint8_t[size];
    memcpy(mpData, pdata, size);
    mDataSize = size;
 }
@@ -95,7 +95,7 @@ int MemoryBuffer::write(const void* ptr, int size)
    if ( mCursor + size >= mDataSize )
    {
       int buffersize = mCursor + size;
-      uchar* pbuffer = new uchar[buffersize];
+      uint8_t* pbuffer = new uint8_t[buffersize];
       memmove(pbuffer, mpData, mDataSize);
 
       delete[] mpData;

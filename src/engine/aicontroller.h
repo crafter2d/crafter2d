@@ -23,21 +23,20 @@
 #include "core/entity/controller.h"
 #include "core/string/string.h"
 
-class Script;
 class VirtualObject;
 
 namespace c2d
 {
-   class Process;
+   class ScriptObject;
 
    class AIController : public Controller
    {
    public:
-      explicit AIController(Process& process);
+      explicit AIController();
       virtual ~AIController();
 
       // get/set
-      void setThis(VirtualObject& self);
+      void setThis(ScriptObject* pself);
 
       // operations
       virtual void performAction(Entity& actor);
@@ -46,7 +45,7 @@ namespace c2d
 
       static const String smFunc;
 
-      Script* mpScript;
+      ScriptObject* mpScript;
    };
 }
 

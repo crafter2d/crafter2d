@@ -16,14 +16,19 @@ public:
    const VirtualGuard& operator[](int index) const;
          VirtualGuard& operator[](int index);
 
-   // maintenance
+ // query
+   int size() const;
+
+ // maintenance
    void add(VirtualGuard* pguard);
    void updatePosition(int offset);
 
-   // lookup
+ // lookup
    const VirtualGuard* findGuard(int pos) const;
 
 private:
+
+ // data
    GuardVector mGuards;
 };
 

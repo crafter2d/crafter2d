@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "script/common/variant.h"
+#include "mod_yas/vm/virtualvalue.h"
 
 class VirtualGuard;
 class VirtualLookupTable;
@@ -19,6 +19,8 @@ namespace ByteCode
    class Block
    {
    public:
+      enum LookupType { eDefault, eEnd, eValue };
+
       int id;
       int start;
       int codepos;
@@ -30,8 +32,8 @@ namespace ByteCode
       int           guard_type;
 
       VirtualLookupTable* plookup;
-      Variant             lookup_value;
-      int                 lookup_type;
+      VirtualValue        lookup_value;
+      LookupType          lookup_type;
       
       Blocks to;
       Blocks from;

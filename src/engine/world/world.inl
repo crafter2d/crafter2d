@@ -162,13 +162,13 @@ INLINE bool World::hasScript() const
    return mpScript != NULL;
 }
 
-INLINE Script& World::getScript()
+INLINE c2d::ScriptObject& World::getScript()
 {
    ASSERT_PTR(mpScript);
    return *mpScript;
 }
    
-INLINE void World::setScript(Script* pscript)
+INLINE void World::setScript(c2d::ScriptObject* pscript)
 {
    mpScript = pscript;
 }

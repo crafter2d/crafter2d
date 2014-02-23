@@ -21,9 +21,9 @@
 
 // - Operators
 
-INLINE DataStream& DataStream::operator<<(float value)
+INLINE DataStream& DataStream::operator<<(bool value)
 {
-   writeFloat(value);
+   writeBool(value);
    return *this;
 }
 
@@ -33,13 +33,19 @@ INLINE DataStream& DataStream::operator<<(int value)
    return *this;
 }
 
-INLINE DataStream& DataStream::operator<<(bool value)
+INLINE DataStream& DataStream::operator<<(float value)
 {
-   writeBool(value);
+   writeFloat(value);
    return *this;
 }
 
-INLINE DataStream& DataStream::operator<<(char value)
+INLINE DataStream& DataStream::operator<<(double value)
+{
+   writeDouble(value);
+   return *this;
+}
+
+INLINE DataStream& DataStream::operator<<(UChar value)
 {
    writeChar(value);
    return *this;
@@ -51,9 +57,9 @@ INLINE DataStream& DataStream::operator<<(const String& value)
    return *this;
 }
 
-INLINE DataStream& DataStream::operator>>(float& value)
+INLINE DataStream& DataStream::operator>>(bool& value)
 {
-   readFloat(value);
+   readBool(value);
    return *this;
 }
 
@@ -63,13 +69,19 @@ INLINE DataStream& DataStream::operator>>(int& value)
    return *this;
 }
 
-INLINE DataStream& DataStream::operator>>(bool& value)
+INLINE DataStream& DataStream::operator>>(float& value)
 {
-   readBool(value);
+   readFloat(value);
    return *this;
 }
 
-INLINE DataStream& DataStream::operator>>(char& value)
+INLINE DataStream& DataStream::operator>>(double& value)
+{
+   readDouble(value);
+   return *this;
+}
+
+INLINE DataStream& DataStream::operator>>(UChar& value)
 {
    readChar(value);
    return *this;

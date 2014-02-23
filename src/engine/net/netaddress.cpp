@@ -54,7 +54,7 @@ NetAddress::NetAddress(const sockaddr_in& address):
 
 // operations
 
-void NetAddress::removeAcknowledged(uint number)
+void NetAddress::removeAcknowledged(uint32_t number)
 {
    std::size_t index = 0;
    for ( ; index < resendQueue.size(); ++index )

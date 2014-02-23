@@ -24,6 +24,11 @@
 
 #include "commandlineexception.h"
 
+CommandLine::CommandLine():
+   mArguments()
+{
+}
+
 CommandLine::CommandLine(int argc, char *argv[]):
    mArguments()
 {
@@ -44,6 +49,11 @@ int CommandLine::size() const
 const CommandLineArgument& CommandLine::operator[](int index)
 {
    return mArguments[index];
+}
+
+void CommandLine::set(int argc, char *argv[])
+{
+   parse(argc, argv);
 }
 
 // - Searching
@@ -92,43 +102,63 @@ void CommandLine::parse(int argc, const char* const argv[])
          String inputarg = String::fromUtf8(parg);
          CommandLineArgument argument;
 
-         int pos = inputarg.indexOf(L'=');
-         if ( pos == -1 )
+         if ( inputarg[0] == L'-' )
          {
-            argument.setName(String(argv[index]));
+            // - argument names take precedence over the = assignment
+            argument.setName(inputarg.subStr(1, inputarg.length() - 1));
 
-            if ( index+1 < argc )
+            if ( index + 1 < argc )
             {
-               // not in current argument, check if next starts with assignment
-               if ( strncmp(argv[index+1], "=", 1) == 0 )
+               String value = String::fromUtf8(argv[index + 1]);
+               if ( value[0] != L'-' )
                {
-                  if ( strlen(argv[index+1]) > 1 )
-                  {
-                     index++;
-                     String valuestr(argv[index]);
-                     argument.setValue(valuestr.subStr(1, valuestr.length() - 1));
-                  }
-                  else
-                  {
-                     // only '=' argument, so take the next argument as value
-                     if ( index + 2 < argc )
-                     {
-                        index += 2;
-                        argument.setValue(String(argv[index]));
-                     }
-                     else
-                     {
-                        // value is empty
-                     }
-                  }
+                  argument.setValue(value);
+                  ++index;
                }
             }
          }
          else
          {
-            // in there
-            argument.setName(inputarg.subStr(0, pos));
-            argument.setValue(inputarg.subStr(pos+1, inputarg.length() - pos - 1));
+            int pos = inputarg.indexOf(L'=');
+            if ( pos == -1 )
+            {
+               argument.setName(inputarg);
+
+               if ( index+1 < argc )
+               {
+                  // not in current argument, check if next starts with assignment
+                  String nextarg = String::fromUtf8(argv[index+1]);
+
+                  if ( nextarg[0] == L'=' )
+                  {
+                     if ( nextarg.length() > 1 )
+                     {
+                        // the = is attached to the value
+                        index++;
+                        argument.setValue(nextarg.subStr(1, nextarg.length() - 1));
+                     }
+                     else
+                     {
+                        // only '=' argument, so take the next argument as value
+                        if ( index + 2 < argc )
+                        {
+                           index += 2;
+                           argument.setValue(String::fromUtf8(argv[index]));
+                        }
+                        else
+                        {
+                           // value is empty
+                        }
+                     }
+                  }
+               }
+            }
+            else
+            {
+               // in there
+               argument.setName(inputarg.subStr(0, pos));
+               argument.setValue(inputarg.subStr(pos+1, inputarg.length() - pos - 1));
+            }
          }
 
          mArguments.push_back(argument);

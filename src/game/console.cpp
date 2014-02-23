@@ -33,8 +33,8 @@
 
 #include "core/log/log.h"
 
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
+#include "core/script/scriptobject.h"
+#include "core/script/scriptmanager.h"
 
 #include "game.h"
 

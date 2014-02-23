@@ -4,8 +4,8 @@
 
 #include "core/script/scriptregistrator.h"
 
-#include "script/common/classregistry.h"
-#include "script/script_base.h"
+#include "mod_yas/common/classregistry.h"
+#include "mod_yas/script_base.h"
 
 class YasScriptManager;
 
@@ -18,7 +18,7 @@ public:
    
    virtual void addFunction(const String& prototype, CallbackFnc callback) override;
 
-   virtual void registerCallbacks(c2d::ScriptManager& manager) override;
+   virtual void registerCallbacks() override;
 
 private:
 

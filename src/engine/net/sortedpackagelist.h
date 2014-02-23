@@ -32,7 +32,7 @@ class SortedPackageList : public SortedList< PackageHandle >
 public:
    SortedPackageList();
 
-   void removeOldPackages(uint number);
+   void removeOldPackages(uint32_t number);
 };
 
 #endif // SORTED_PACKAGE_LIST_H

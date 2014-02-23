@@ -21,9 +21,7 @@
 
 #include "core/defines.h"
 #include "core/smartptr/autoptr.h"
-
-#include "engine/script/script.h"
-#include "engine/script/scriptmanager.h"
+#include "core/script/scriptobject.h"
 
 #include "process.h"
 
@@ -33,11 +31,10 @@ namespace c2d
    // static
    const String AIController::smFunc("updateAI");
 
-   AIController::AIController(Process& process) :
+   AIController::AIController() :
       Controller(),
       mpScript(NULL)
    {
-      mpScript = new Script(process.getScriptManager());
    }
 
    AIController::~AIController()
@@ -48,17 +45,18 @@ namespace c2d
 
    // - Get/set
 
-   void AIController::setThis(VirtualObject& self)
+   void AIController::setThis(ScriptObject* pthis)
    {
-      mpScript->setThis(self);
+      mpScript = pthis;
    }
 
    // - Operations
 
    void AIController::performAction(Entity& entity)
    {
-      Variant arg(mpScript->resolve(&entity));
-      mpScript->run(smFunc, 1, &arg);
+      mpScript->prepareCall(1);
+      mpScript->arg(0, &entity);
+      mpScript->call(smFunc);
    }
 
 } // namespace c2d

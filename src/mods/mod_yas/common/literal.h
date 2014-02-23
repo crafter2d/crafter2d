@@ -2,7 +2,7 @@
 #ifndef LITERAL_H_
 #define LITERAL_H_
 
-#include "variant.h"
+#include "core/system/variant.h"
 
 class Literal
 {

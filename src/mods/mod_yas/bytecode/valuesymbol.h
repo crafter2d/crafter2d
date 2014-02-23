@@ -2,7 +2,7 @@
 #ifndef BYTECODE_VALUESYMBOL_H
 #define BYTECODE_VALUESYMBOL_H
 
-#include "script/common/variant.h"
+#include "mod_yas/vm/virtualvalue.h"
 
 #include "symbol.h"
 
@@ -11,7 +11,7 @@ namespace ByteCode
    class ValueSymbol : public Symbol
    {
    public:
-      Variant value;
+      VirtualValue value;
    };
 }
 

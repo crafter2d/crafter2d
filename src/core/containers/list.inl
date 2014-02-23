@@ -20,6 +20,7 @@
 #include "core/defines.h"
 
 #include "listiterator.h"
+#include "listconstiterator.h"
 
 template <class E>
 List<E>::List():
@@ -44,9 +45,21 @@ ListIterator<E> List<E>::getFront()
 }
 
 template <class E>
+ListConstIterator<E> List<E>::getFront() const
+{
+   return ListConstIterator<E>(*this, _phead);
+}
+
+template <class E>
 ListIterator<E> List<E>::getTail()
 {
    return ListIterator<E>(*this, _ptail);
+}
+
+template <class E>
+ListConstIterator<E> List<E>::getTail() const
+{
+   return ListConstIterator<E>(*this, _ptail);
 }
 
 template <class E>
@@ -68,7 +81,7 @@ ListIterator<E> List<E>::get(int index)
 // - Maintenance
 
 template <class E>
-void List<E>::addFront(E& element)
+void List<E>::addFront(const E& element)
 {
    if ( _phead == NULL )
    {
@@ -84,7 +97,7 @@ void List<E>::addFront(E& element)
 }
 
 template <class E>
-void List<E>::addTail(E& element)
+void List<E>::addTail(const E& element)
 {
    if ( _ptail == NULL )
    {

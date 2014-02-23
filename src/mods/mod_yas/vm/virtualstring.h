@@ -2,11 +2,11 @@
 #ifndef VIRTUAL_STRING_CACHE_H
 #define VIRTUAL_STRING_CACHE_H
 
-#include "script/script_base.h"
+#include "mod_yas/script_base.h"
 
 #include "core/string/string.h"
 
-#include "script/gc/collectable.h"
+#include "mod_yas/gc/collectable.h"
 
 class SCRIPT_API VirtualString : public Collectable
 {
