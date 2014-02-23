@@ -46,7 +46,7 @@ public:
 
    bool                hasBaseClass() const;
    const VirtualClass& getBaseClass() const;
-   void                setBaseClass(const VirtualClass& pbaseclass);
+   void                setBaseClass(VirtualClass& pbaseclass);
 
    const VirtualFunctionTable& getVirtualFunctionTable() const;
          VirtualFunctionTable& getVirtualFunctionTable();
@@ -116,7 +116,7 @@ private:
  // data
    String                  mName;
    String                  mBaseName;
-   const VirtualClass*     mpBaseClass;
+   VirtualClass*           mpBaseClass;
    VirtualClasses          mInterfaces;
    Fields                  mFields;
    Fields                  mStaticFields;

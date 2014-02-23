@@ -74,7 +74,7 @@ const VirtualClass& VirtualClass::getBaseClass() const
    return *mpBaseClass;
 }
    
-void VirtualClass::setBaseClass(const VirtualClass& baseclass)
+void VirtualClass::setBaseClass(VirtualClass& baseclass)
 {
    mpBaseClass = &baseclass;
 }
@@ -251,6 +251,11 @@ void VirtualClass::addInterface(VirtualClass& klass)
 
 void VirtualClass::build()
 {
+   if ( mName == UTEXT("engine.collections.ArrayList") )
+   {
+      int aap = 5;
+   }
+
    buildVariables();
    buildVirtualTable();
    buildInterfaceTable();
@@ -383,7 +388,7 @@ VirtualFunction* VirtualClass::findExactMatch(const String& name, const yasc::Ty
          return pfunction;
       }
    }
-   return NULL;
+   return hasBaseClass() ? mpBaseClass->findExactMatch(name, args) : NULL;
 }
 
 VirtualFunction* VirtualClass::findExactMatch(const VirtualFunction& function)
@@ -396,5 +401,5 @@ VirtualFunction* VirtualClass::findExactMatch(const VirtualFunction& function)
          return pfunc;
       }
    }
-   return NULL;
+   return hasBaseClass() ? mpBaseClass->findExactMatch(function) : NULL;
 }
