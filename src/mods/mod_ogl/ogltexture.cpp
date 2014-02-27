@@ -43,7 +43,7 @@ bool OGLTexture::create(Device& device, const TextureInfo& info)
       break;
    }
 
-   uchar* pdata = ensureProperSize(interval, info.getData(), _width, _height);
+   uint8_t* pdata = ensureProperSize(interval, info.getData(), _width, _height);
    if ( pdata != NULL )
    {
       mTarget = GL_TEXTURE_2D;

@@ -26,7 +26,7 @@ private:
    
    void generateInstructions(VirtualContext& context, const VirtualFunction& function);
    void checkAndFixStack(VirtualContext& context, const VirtualFunction& function);
-   int  buildCode(VirtualContext& context);
+   int  buildCode(VirtualContext& context, VirtualFunction& function);
 };
 
 #endif // STACK_IR_GENERATOR_H

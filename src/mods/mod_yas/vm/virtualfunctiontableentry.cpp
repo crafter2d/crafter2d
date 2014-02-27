@@ -22,7 +22,6 @@ VirtualFunctionTableEntry* VirtualFunctionTableEntry::fromFunction(VirtualFuncti
 
 VirtualFunctionTableEntry::VirtualFunctionTableEntry():
    mpFunction(NULL),
-   mInstruction(-1),
    mArguments(0),
    mLocals(0),
    returns(false)
@@ -31,7 +30,6 @@ VirtualFunctionTableEntry::VirtualFunctionTableEntry():
 
 VirtualFunctionTableEntry::VirtualFunctionTableEntry(const VirtualFunctionTableEntry& that):
    mpFunction(that.mpFunction),
-   mInstruction(that.mInstruction),
    mArguments(that.mArguments),
    mLocals(that.mLocals),
    returns(that.returns)
@@ -58,15 +56,9 @@ const VirtualGuard* VirtualFunctionTableEntry::findGuard(int ip) const
 void VirtualFunctionTableEntry::setFunction(VirtualFunction& function)
 {
    mpFunction = &function;
-   mInstruction = function.getFirstInstruction();
-   mArguments = function.getArguments().size() + function.getModifiers().isStatic() ? 0 : 1;
+   mArguments = function.getArguments().size() + (function.getModifiers().isStatic() ? 0 : 1);
    mLocals = function.getLocals().size();
    returns = !function.getReturnType().isVoid();
-}
-
-void VirtualFunctionTableEntry::update()
-{
-   mInstruction = mpFunction->getFirstInstruction();
 }
 
 // - Maintenance

@@ -26,15 +26,12 @@ public:
    const VirtualGuard* findGuard(int ip) const;
 
    void setFunction(VirtualFunction& function);
-
-   void update();
-   
+      
  // maintenance
    VirtualFunctionTableEntry* clone() const;
 
  // data
    VirtualFunction* mpFunction;
-   int              mInstruction;
    int              mArguments;
    int              mLocals;
    bool             returns;

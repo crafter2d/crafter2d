@@ -54,8 +54,8 @@ void VirtualFunctionTable::setInits(VirtualFunction& static_init, VirtualFunctio
    }
    else
    {
-      mEntries[0]->fromFunction(static_init);
-      mEntries[1]->fromFunction(var_init);
+      mEntries[0]->setFunction(static_init);
+      mEntries[1]->setFunction(var_init);
    }
 
    static_init.setIndex(0);
@@ -86,14 +86,6 @@ void VirtualFunctionTable::clear()
    for ( std::size_t index = 0; index < mEntries.size(); index++ )
    {
       delete mEntries[index];
-   }
-}
-
-void VirtualFunctionTable::update()
-{
-   for ( std::size_t index = 0; index < mEntries.size(); index++ )
-   {
-      mEntries[index]->update();
    }
 }
 

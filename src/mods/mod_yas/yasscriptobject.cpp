@@ -67,7 +67,7 @@ void YasScriptObject::arg(int index, void* pinstance)
 
 void YasScriptObject::arg(int index, const String& classname, void* pinstance)
 {
-   mArguments[index].setObject(*mManager.getVM().instantiateNative(classname, pinstance, false));
+   mArguments[index].setObject(mManager.getVM().instantiateNative(classname, pinstance, false));
 }
 
 // - Member
@@ -107,7 +107,7 @@ void YasScriptObject::prepareCall(int args)
 
 Variant YasScriptObject::call(const String& function)
 {
-   return mManager.execute(*mpObject, function, mArguments.size(), &mArguments[0]);
+   return mManager.execute(*mpObject, function, mArguments.size(), mArguments.data());
 }
 
 Variant YasScriptObject::call(const String& function, int argc, Variant* args)

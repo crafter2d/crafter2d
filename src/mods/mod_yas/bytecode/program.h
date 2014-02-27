@@ -8,8 +8,6 @@
 
 namespace ByteCode
 {
-   class IRGenerator;
-
    class Program
    {
    public:
@@ -22,24 +20,10 @@ namespace ByteCode
       const StringCache& getStringCache() const;
             StringCache& getStringCache();
 
-      IRGenerator& getByteCodeGenerator() const;
-      void         setByteCodeGenerator(IRGenerator* pgenerator);
-
-      int         getSize() const;
-      const char* getCode() const;
-
-    // operations
-      int linkCode(const char* pcode, unsigned int size);
-
    private:
-      void allocateCode(int size);
-
+    // data
       SymbolTable       mSymbolTable;
       StringCache       mStringCache;
-      IRGenerator*      mpIRGenerator;
-      char*             mpCode;
-      unsigned int      mCodeSize;
-      unsigned int      mCodeLength;
    };
 }
 

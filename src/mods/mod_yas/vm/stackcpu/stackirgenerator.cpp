@@ -54,10 +54,7 @@ bool StackIRGenerator::virGenerate(VirtualContext& context, VirtualFunction& ent
    generateInstructions(context, entry);
    checkAndFixStack(context, entry);
 
-   int pos = buildCode(context);
-   entry.setFirstInstruction(pos);
-
-   return pos > -1;
+   return buildCode(context, entry);
 }
 
 void StackIRGenerator::generateInstructions(VirtualContext& context, const VirtualFunction& function)
@@ -102,7 +99,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                FunctionSymbol* psymbol = new FunctionSymbol();
                psymbol->klass = constructor.getClass().getName();
                psymbol->func = constructor.getIndex();
-               psymbol->args = constructor.getArguments().size() - 1;   // object is created in this instruction
+               psymbol->args = constructor.getArguments().size();   // object is created in this instruction
                psymbol->returns = !constructor.getReturnType().isVoid();
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
@@ -138,11 +135,11 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                FunctionSymbol* psymbol = new FunctionSymbol();
                psymbol->klass = func.getClass().getName();
                psymbol->func = func.getIndex();
-               psymbol->args = func.getArguments().size();
+               psymbol->args = func.getArgumentCount();
                psymbol->returns = !func.getReturnType().isVoid();
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
-               for ( int arg = 0; arg < func.getArguments().size(); ++arg )
+               for ( int arg = 0; arg < psymbol->args; ++arg )
                   types.pop();
 
                if ( psymbol->returns )
@@ -159,11 +156,11 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                FunctionSymbol* psymbol = new FunctionSymbol();
                psymbol->klass = func.getClass().getName();
                psymbol->func = func.getIndex();
-               psymbol->args = func.getArguments().size();
+               psymbol->args = func.getArgumentCount();
                psymbol->returns = !func.getReturnType().isVoid();
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
-               for ( int arg = 0; arg < func.getArguments().size(); ++arg )
+               for ( int arg = 0; arg < psymbol->args; ++arg )
                   types.pop();
 
                if ( psymbol->returns )
@@ -178,11 +175,11 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
                FunctionSymbol* psymbol = new FunctionSymbol();
                psymbol->func = func.getIndex();
-               psymbol->args = func.getArguments().size();
+               psymbol->args = func.getArgumentCount();
                psymbol->returns = !func.getReturnType().isVoid();
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
-               for ( int arg = 0; arg < func.getArguments().size(); ++arg )
+               for ( int arg = 0; arg < psymbol->args; ++arg )
                   types.pop();
 
                if ( psymbol->returns )
@@ -200,12 +197,11 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
                FunctionSymbol* psymbol = new FunctionSymbol;
                psymbol->func = pfuncreg->getIndex();
-               psymbol->args = func.getArguments().size();
+               psymbol->args = func.getArgumentCount();
                psymbol->returns = !func.getReturnType().isVoid();
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
-               int args = func.getArguments().size();
-               for ( int arg = 0; arg < args; ++arg )
+               for ( int arg = 0; arg < psymbol->args; ++arg )
                   types.pop();
 
                if ( psymbol->returns )
@@ -681,11 +677,9 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                psymbol->value.setString(context.mProgram.getStringCache().lookup(*inst.mString));
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
-               Type* ptype = new Type(Type::eObject);
-               ptype->setObjectName(UTEXT("system.Class"));
-
                INSERT(SBIL_push_class, i);
-               types.push(ptype);
+                              
+               types.push(Type::fromString(UTEXT("system.Class")));
             }
             break;
          case CIL_ldnull:
@@ -703,7 +697,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                }
                else
                {
-                  const Type& argtype = function.getArguments()[inst.mInt - 1];
+                  const Type& argtype = function.getArguments()[inst.mInt - (function.getModifiers().isStatic() ? 0 : 1)];
                   types.push(argtype.clone());
                }
             }
@@ -715,12 +709,12 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
          case CIL_ldloc:
             {
                const Type& type = function.getLocals()[inst.mInt];
-               INSERT(SBIL_ldlocal, inst.mInt + function.getArguments().size());
+               INSERT(SBIL_ldlocal, inst.mInt + function.getArgumentCount());
                types.push(type.clone());
             }
             break;
          case CIL_stloc:
-            INSERT(SBIL_stlocal, inst.mInt + function.getArguments().size());
+            INSERT(SBIL_stlocal, inst.mInt + function.getArgumentCount());
             if ( pblock->pguard != NULL && pblock->start == index && pblock->guard_type == VirtualGuard::sCatch )
             {
                // no popping here, as this is the store exception instruction in case an exception was thrown.
@@ -936,7 +930,7 @@ void StackIRGenerator::checkAndFixStack(VirtualContext& context, const VirtualFu
    }
 }
 
-int StackIRGenerator::buildCode(VirtualContext& context)
+int StackIRGenerator::buildCode(VirtualContext& context, VirtualFunction& function)
 {
    using namespace SBIL;
    using namespace ByteCode;
@@ -1002,7 +996,7 @@ int StackIRGenerator::buildCode(VirtualContext& context)
             }
          }
 
-         *((int*)&pcode[pos]) = pinst->inst;
+         memmove(&pcode[pos], &pinst->inst, sizeof(int));
          pos += sizeof(int);
 
          pinst = pinst->next;
@@ -1011,9 +1005,7 @@ int StackIRGenerator::buildCode(VirtualContext& context)
 
    applyPatches(pcode);
    
-   int start = context.mProgram.linkCode(pcode, pos);
+   function.setCode(pcode, pos);
 
-   free(pcode);
-
-   return start;
+   return true;
 }

@@ -67,6 +67,11 @@ void CodeGeneratorVisitor::visit(ASTClass& ast)
    mpClass = &ast;
    mpClass->setCompiledClass(pclass);
 
+   if ( ast.getName() == UTEXT("ClassLoader") )
+   {
+      int aap = 5;
+   }
+
    // build the special initialization blocks
 
    handleStaticBlock(ast);

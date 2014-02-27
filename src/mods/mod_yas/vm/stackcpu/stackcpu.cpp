@@ -2,6 +2,7 @@
 #include "stackcpu.h"
 
 #include "core/conv/numberconverter.h"
+#include "core/smartptr/autoptr.h"
 #include "core/smartptr/scopedvalue.h"
 #include "core/defines.h"
 
@@ -15,6 +16,7 @@
 #include "mod_yas/vm/virtualclass.h"
 #include "mod_yas/vm/virtualcontext.h"
 #include "mod_yas/vm/virtualexception.h"
+#include "mod_yas/vm/virtualfunction.h"
 #include "mod_yas/vm/virtualguard.h"
 #include "mod_yas/vm/virtualobject.h"
 #include "mod_yas/vm/virtualfunctiontableentry.h"
@@ -23,14 +25,15 @@
 
 #include "stackirgenerator.h"
 
-#define OPCODE ((SBIL::Opcode)INST_OPCODE(*(int*)&pcode[mIP]))
-#define ARG    (INST_ARG(*(int*)&pcode[mIP]));
+#define OPCODE ((SBIL::Opcode)INST_OPCODE(*(int*)&mpCode[mIP]))
+#define ARG    (INST_ARG(*(int*)&mpCode[mIP]));
 
 StackCPU::StackCPU(VirtualMachine& vm):
    CPU(vm),
    mCalls(),
    mStack(),
    mpActiveGuard(NULL),
+   mpCode(NULL),
    mIP(0),
    mFP(-1),
    mSavedFP(-1),
@@ -60,21 +63,34 @@ VirtualValue StackCPU::execute(VirtualContext& context, VirtualObject& object, c
    return entry.returns ? mStack.pop() : VirtualValue();
 }
 
-void StackCPU::executeStatic(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
+void StackCPU::execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry)
 {
-   ScopedValue<int> value(&mSavedFP, mFP, mSavedFP);
+   VirtualValue objectvariant(object);
+   if ( entry.mArguments > 1 )
+      mStack.insert(mStack.size() - (entry.mArguments - 1), objectvariant);
+   else
+      mStack.push(objectvariant);
 
-   call(context, klass, entry);
-   execute(context);
+   executeStatic(context, object.getClass(), entry);
 }
 
-void StackCPU::execute(VirtualContext& context)
+void StackCPU::executeStatic(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
+{
+   // make sure that when we leave that we clean up the state to when we entered
+   // SavedFP is used to identify the starting stack frame
+   ScopedValue<int> value(&mSavedFP, mFP, mSavedFP);
+   ScopedValue<const char*> code(&mpCode);
+
+   call(context, klass, entry);
+   execute(context, entry);
+}
+
+void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry& entry)
 {
    using namespace ByteCode;
    using namespace SBIL;
 
-   Program& program = getProgram();
-   const char* pcode = program.getCode();
+   Program& program = context.mProgram;
 
    while ( mFP > mSavedFP )
    {
@@ -179,7 +195,7 @@ void StackCPU::execute(VirtualContext& context)
                   args[index] = mStack.pop();
                }
 
-               VirtualCall accessor(getVM(), &args[0], symbol.args);
+               VirtualCall accessor(getVM(), args.data(), symbol.args);
                context.mNativeRegistry.getCallback(symbol.func).exec(accessor);
 
                mCalls[mFP].callnative = false;
@@ -198,8 +214,9 @@ void StackCPU::execute(VirtualContext& context)
             break;
          case SBIL_ret:
             {
-               mIP = mCalls[mFP--].retaddress;
-               //mIP = program.getSize();
+               VM::StackFrame& frame = mCalls[mFP--];
+               mIP = frame.retaddress;
+               mpCode = frame.retcode;
             }
             break;
 
@@ -631,6 +648,7 @@ void StackCPU::execute(VirtualContext& context)
          case SBIL_ldfield:
             {
                VirtualValue obj = mStack.pop();
+               ASSERT(obj.isObject());
                if ( obj.isEmpty() )
                   throwException(context, UTEXT("system.NullPointerException"), String::empty());
                else               
@@ -783,7 +801,7 @@ void StackCPU::execute(VirtualContext& context)
                }
                else
                {
-                  VirtualClass& klass = context.mClassTable.resolve(classname);
+                  VirtualClass& klass = context.resolveClass(classname);
                   mStack.pushObject(klass.getClassObject());
                }
             }
@@ -847,13 +865,19 @@ void StackCPU::call(VirtualContext& context, int symbolindex)
 {
    using namespace ByteCode;
 
-   FunctionSymbol& symbol = (FunctionSymbol&)getProgram().getSymbolTable()[symbolindex];
+   FunctionSymbol& symbol = (FunctionSymbol&)context.mProgram.getSymbolTable()[symbolindex];
    const VirtualClass& klass = context.mClassTable.resolve(symbol.klass);
-   call(context, klass, klass.getVirtualFunctionTable()[symbol.func]);
+   const VirtualFunctionTableEntry& entry = klass.getVirtualFunctionTable()[symbol.func];
+   call(context, klass, entry);
 }
 
 void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry)
 {
+   if ( entry.mpFunction->hasCode() ) {} else
+   {
+      compile(context, entry);
+   }
+
    mFP++;
    if ( mFP >= mCalls.size() )
    {
@@ -871,9 +895,28 @@ void StackCPU::call(VirtualContext& context, const VirtualClass& klass, const Vi
    }
 
    frame.retaddress = mIP;
+   frame.retcode    = mpCode;
    frame.sp = mStack.size();
 
-   mIP = entry.mInstruction;
+   mIP = 0;
+   mpCode = entry.mpFunction->getCode();
+}
+
+void StackCPU::compile(VirtualContext& context, const VirtualFunctionTableEntry& entry)
+{
+   try
+   {
+      if ( entry.mpFunction->getName() == UTEXT("sendMessage") )
+      {
+         int aap = 5;
+      }
+      StackIRGenerator generator;
+      generator.compile(context, *entry.mpFunction);
+   }
+   catch ( std::exception* )
+   {
+
+   }
 }
 
 // - Garbage collection
@@ -955,6 +998,7 @@ bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception
          VM::StackFrame& frame = mCalls[mFP];
          mStack.setSize(frame.sp);
          mIP = frame.retaddress;
+         mpCode = frame.retcode;
 
          mFP--;
          if ( mFP >= 0 && mCalls[mFP].callnative )

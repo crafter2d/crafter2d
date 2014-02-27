@@ -71,7 +71,7 @@ bool D3DDevice::create(int windowhandle, int width, int height)
    CD3D11_VIEWPORT viewport(pbackbuffer, mpRenderTargetView);
    mpContext->RSSetViewports(1, &viewport);
    
-   return true;
+   return Device::create(windowhandle, width, height);
 }
 
 void D3DDevice::present()

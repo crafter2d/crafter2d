@@ -48,7 +48,7 @@ static int Keys[] =
 bool OGLInputDevice::isKeyDown(int key)
 {
    int sdlkey = Keys[key];
-   return mpKeyState[sdlkey];
+   return false; // mpKeyState[sdlkey];
 }
 
 bool OGLInputDevice::isMouseButtonDown(MouseButton button)

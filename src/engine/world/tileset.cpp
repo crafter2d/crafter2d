@@ -118,7 +118,11 @@ bool TileSet::load(const String& filename)
    const char* pfile = pmapelement->Attribute("name");
    if ( pfile == NULL )
    {
-      return false;
+      pfile = pmapelement->GetText();
+      if ( pfile == NULL )
+      {
+         return false;
+      }
    }
 
    mMapName = String::fromUtf8(pfile);

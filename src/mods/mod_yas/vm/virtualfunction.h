@@ -19,6 +19,7 @@ class VirtualFunction
 {
 public:
    VirtualFunction();
+   ~VirtualFunction();
 
  // get/set
    const String& getName() const;
@@ -29,9 +30,6 @@ public:
 
    const Modifiers& getModifiers() const;
    void             setModifiers(const Modifiers& modifiers);
-
-   int  getFirstInstruction() const;
-   void setFirstInstruction(int first);
 
    const yasc::Types& getArguments() const;
    void               setArguments(const yasc::Types& args);
@@ -50,19 +48,21 @@ public:
    const VirtualLookupTables& getLookupTables() const;
          VirtualLookupTables& getLookupTables();
 
+   bool        hasCode() const;
+   const char* getCode();
+   void        setCode(char* pcode, int len);
+
    int  getIndex() const;
    void setIndex(int index);
 
  // query
    bool equals(const VirtualFunction& that) const;
    int lookup(int tableid, const VirtualValue& value) const;
+   int getArgumentCount() const;
    
  // operations
    void addLookupTable(VirtualLookupTable* ptable);
-   void updateLookupTables();
-
    void addGuard(VirtualGuard* pguard);
-   void updateGuards();
 
  // search
    const VirtualGuard* findGuard(int ip) const;
@@ -79,8 +79,9 @@ private:
    VirtualGuards        mGuards;
    VirtualLookupTables  mLookups;
    CIL::Instructions    mInstructions;
+   char*                mpCode;
+   int                  mCodeLength;
    int                  mIndex;
-   int                  mFirstInstruction;
 };
 
 #endif // VIRTUAL_FUNCTION_H

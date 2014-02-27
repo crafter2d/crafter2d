@@ -22,9 +22,7 @@ VirtualClass::VirtualClass():
    mVTable(),
    mpClassObject(NULL),
    mpStatics(NULL),
-   mStaticCount(0),
    mpInterfaceLookupTable(NULL),
-   mVariableCount(0),
    mFlags(eNone)
 {
 }
@@ -111,26 +109,12 @@ VirtualClass::Fields& VirtualClass::getStaticFields()
 
 int VirtualClass::getVariableCount() const
 {
-   return mVariableCount;
+   return mFields.size();
 }
    
-void VirtualClass::setVariableCount(int count)
-{
-   mVariableCount = count;
-}
-
 int VirtualClass::getStaticCount() const
 {
-   return mStaticCount;
-}
-   
-void VirtualClass::setStaticCount(int count)
-{
-   ASSERT(mpStatics == NULL);
-
-   mStaticCount = count;
-   
-   mpStatics = new VirtualValue[mStaticCount];
+   return mStaticFields.size();
 }
 
 VirtualObject& VirtualClass::getClassObject() const
@@ -174,7 +158,7 @@ bool VirtualClass::isNative() const
 
 bool VirtualClass::canInstantiate() const
 {
-   return (mFlags & eInstantiatable) == eInstantiatable;
+   return true; // (mFlags & eInstantiatable) == eInstantiatable;
 }
 
 bool VirtualClass::isBaseClass(const VirtualClass& base) const
@@ -221,7 +205,7 @@ const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
 
 int VirtualClass::getTotalVariables() const
 {
-   return mFields.size() + hasBaseClass() ? getBaseClass().getTotalVariables() : 0;
+   return mFields.size() + (hasBaseClass() ? getBaseClass().getTotalVariables() : 0);
 }
 
 // - Operations
@@ -249,6 +233,15 @@ void VirtualClass::addInterface(VirtualClass& klass)
    mInterfaces.add(klass);
 }
 
+void VirtualClass::collectInterface(VirtualClasses& interfces)
+{
+   interfces.add(mInterfaces);
+   if ( hasBaseClass() )
+   {
+      mpBaseClass->collectInterface(interfces);
+   }
+}
+
 void VirtualClass::build()
 {
    buildVariables();
@@ -272,6 +265,8 @@ void VirtualClass::buildVariables()
       VirtualField* pfield = mStaticFields[index];
       pfield->setIndex(index);
    }
+
+   mpStatics = new VirtualValue[mStaticFields.size()];
 }
 
 void VirtualClass::buildVirtualTable()
@@ -297,10 +292,18 @@ void VirtualClass::buildInterfaceTable()
 {
    int max = 0;
 
-   // determine the highest number of used function
-   for ( int index = 0; index < mInterfaces.size(); ++index )
+   if ( mName == UTEXT("demo.Hero") )
    {
-      const VirtualClass& interfce = mInterfaces[index];
+      int aap = 5;
+   }
+
+   VirtualClasses interfaces;
+   collectInterface(interfaces);
+
+   // determine the highest number of used function
+   for ( int index = 0; index < interfaces.size(); ++index )
+   {
+      const VirtualClass& interfce = interfaces[index];
       const VirtualFunctionTable& table = interfce.getVirtualFunctionTable();
    
       if ( table.size() > max )
@@ -315,9 +318,9 @@ void VirtualClass::buildInterfaceTable()
       // and links to the actual function number in the virtual table.
 
       mpInterfaceLookupTable = new int[max + 1];
-      for ( int index = 0; index < mInterfaces.size(); ++index )
+      for ( int index = 0; index < interfaces.size(); ++index )
       {
-         const VirtualClass& iface = mInterfaces[index];
+         const VirtualClass& iface = interfaces[index];
          const VirtualFunctionTable& table = iface.getVirtualFunctionTable();
       
          for ( int entry = 0; entry < table.size(); ++entry )
@@ -341,14 +344,14 @@ void VirtualClass::buildInterfaceTable()
 void VirtualClass::instantiate(VirtualObject& object) const
 {
    object.setClass(*this);
-   object.initialize(mVariableCount);
+   object.initialize(getTotalVariables());
 }
 
 const VirtualValue& VirtualClass::getStatic(int index) const
 {
    ASSERT_PTR(mpStatics);
    ASSERT(index >= 0);
-   ASSERT(index < mStaticCount);
+   ASSERT(index < mStaticFields.size());
 
    return mpStatics[index];
 }
@@ -357,7 +360,7 @@ VirtualValue& VirtualClass::getStatic(int index)
 {
    ASSERT_PTR(mpStatics);
    ASSERT(index >= 0);
-   ASSERT(index < mStaticCount);
+   ASSERT(index < mStaticFields.size());
 
    return mpStatics[index];
 }
@@ -366,7 +369,7 @@ void VirtualClass::setStatic(int index, const VirtualValue& value)
 {
    ASSERT_PTR(mpStatics);
    ASSERT(index >= 0);
-   ASSERT(index < mStaticCount);
+   ASSERT(index < mStaticFields.size());
 
    mpStatics[index] = value;
 }

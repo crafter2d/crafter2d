@@ -77,7 +77,10 @@ const String& String::empty()
 String String::fromUtf8(const char* pdata)
 {
    String result;
-   result.setToUtf8(pdata, strlen(pdata));
+   if ( pdata != NULL )
+   {
+      result.setToUtf8(pdata, strlen(pdata));
+   }
    return result;
 }
 

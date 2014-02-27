@@ -17,9 +17,19 @@ VirtualFunction::VirtualFunction():
    mGuards(),
    mLookups(),
    mInstructions(),
-   mIndex(-1),
-   mFirstInstruction(-1)
+   mpCode(NULL),
+   mCodeLength(-1),
+   mIndex(-1)
 {
+}
+
+VirtualFunction::~VirtualFunction()
+{
+   if ( mpCode != NULL )
+   {
+      free(mpCode);
+      mpCode = NULL;
+   }
 }
 
 // - Get/set
@@ -111,6 +121,22 @@ VirtualLookupTables& VirtualFunction::getLookupTables()
    return mLookups;
 }
 
+bool VirtualFunction::hasCode() const
+{
+   return mpCode != NULL;
+}
+
+const char* VirtualFunction::getCode()
+{
+   return mpCode;
+}
+
+void VirtualFunction::setCode(char* pcode, int len)
+{
+   mpCode = pcode;
+   mCodeLength = len;
+}
+
 int VirtualFunction::getIndex() const
 {
    return mIndex;
@@ -119,16 +145,6 @@ int VirtualFunction::getIndex() const
 void VirtualFunction::setIndex(int index)
 {
    mIndex = index;
-}
-
-int VirtualFunction::getFirstInstruction() const
-{
-   return mFirstInstruction;
-}
-
-void VirtualFunction::setFirstInstruction(int first)
-{
-   mFirstInstruction = first;
 }
 
 // - Query
@@ -143,6 +159,11 @@ int VirtualFunction::lookup(int tableid, const VirtualValue& value) const
    return mLookups[tableid].lookup(value);
 }
 
+int VirtualFunction::getArgumentCount() const
+{
+   return mArguments.size() + (mModifiers.isStatic() ? 0 : 1);
+}
+
 // - Operations
 
 void VirtualFunction::addLookupTable(VirtualLookupTable* ptable)
@@ -150,23 +171,9 @@ void VirtualFunction::addLookupTable(VirtualLookupTable* ptable)
    mLookups.add(ptable);
 }
 
-void VirtualFunction::updateLookupTables()
-{
-   for ( std::size_t index = 0; index < mLookups.size(); ++index )
-   {
-      VirtualLookupTable& table = mLookups[index];
-      table.updatePosition(mFirstInstruction);
-   }
-}
-
 void VirtualFunction::addGuard(VirtualGuard* pguard)
 {
    mGuards.add(pguard);
-}
-
-void VirtualFunction::updateGuards()
-{
-   mGuards.updatePosition(mFirstInstruction);
 }
 
 // - Search

@@ -28,8 +28,7 @@ public:
    void setInits(VirtualFunction& static_init, VirtualFunction& var_init);
    int  insert(VirtualFunction& function);
    void clear();
-   void update();
-
+   
  // search
    const VirtualFunctionTableEntry* findByName(const String& name) const;
 

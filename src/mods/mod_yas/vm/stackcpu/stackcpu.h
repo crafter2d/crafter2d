@@ -30,6 +30,9 @@ public:
    
 protected:
 
+ // execution
+   virtual void execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry);
+
  // exception handling
    virtual String buildCallStack() const;
    virtual bool   handleException(VirtualContext& context, VirtualObject& exception);
@@ -38,15 +41,19 @@ private:
    enum State { eInit, eRunning, eExceptionHandling, eFinalizing, eReturn, eDestruct };
 
  // execution
-   void execute(VirtualContext& context);
+   void execute(VirtualContext& context, const VirtualFunctionTableEntry& entry);
 
    void call(VirtualContext& context, int symbolindex);
    void call(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry);
+
+   void compile(VirtualContext& context, const VirtualFunctionTableEntry& entry);
 
  // members
          CallStack      mCalls;
          VirtualStack   mStack;
    const VirtualGuard*  mpActiveGuard;
+
+   const char*    mpCode;
 
    int            mIP;
    int            mFP;

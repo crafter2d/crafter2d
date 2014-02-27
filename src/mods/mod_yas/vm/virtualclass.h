@@ -57,12 +57,9 @@ public:
    const Fields& getStaticFields() const;
          Fields& getStaticFields();
 
-   int  getVariableCount() const;
-   void setVariableCount(int count);
-
-   int  getStaticCount() const;
-   void setStaticCount(int count);
-
+   int getVariableCount() const;
+   int getStaticCount() const;
+   
    VirtualObject& getClassObject() const;
    void           setClassObject(VirtualObject* pobject);
 
@@ -89,6 +86,8 @@ public:
    void addStaticField(VirtualField* pfield);
    void addFunction(VirtualFunction* pfunction);
    void addInterface(VirtualClass& klass);
+
+   void collectInterface(VirtualClasses& interfces);
 
    void build();
 
@@ -124,9 +123,7 @@ private:
    VirtualFunctionTable    mVTable;
    VirtualObject*          mpClassObject;
    VirtualValue*           mpStatics;
-   int                     mStaticCount;
    int*                    mpInterfaceLookupTable;
-   int                     mVariableCount;
    Flags                   mFlags;
 };
 

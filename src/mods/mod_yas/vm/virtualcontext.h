@@ -11,15 +11,31 @@
 
 #include "virtualclasstable.h"
 
+namespace ByteCode
+{
+   class IRGenerator;
+}
+
 class SCRIPT_API VirtualContext
 {
 public:
    VirtualContext();
 
+   VirtualClass& resolveClass(const String& classname);
+
+   ByteCode::IRGenerator* createIRGenerator();
+
    VirtualClassTable       mClassTable;
    ClassRegistry           mNativeRegistry;
    StringCache             mStringCache;
    ByteCode::Program       mProgram;
+
+private:
+
+   friend class VirtualMachine;
+
+ // data
+   VirtualMachine*         mpVM;
 };
 
 #endif // VIRTUAL_CONTEXT_H_

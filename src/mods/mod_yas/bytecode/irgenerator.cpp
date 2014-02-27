@@ -50,9 +50,6 @@ namespace ByteCode
 
       if ( virGenerate(context, function) )
       {
-         function.updateGuards();
-         function.updateLookupTables();
-
          cleanup();
 
          return true;

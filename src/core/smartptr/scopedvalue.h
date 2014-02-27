@@ -26,6 +26,8 @@ template<class T>
 class ScopedValue
 {
 public:
+   ScopedValue(T* value): _value(value), _end(*value) {}
+   ScopedValue(T* value, T end): _value(value), _end(end) {}
    ScopedValue(T* value, T start, T end): _value(value), _end(end) { (*_value) = start; }
    ~ScopedValue() { (*_value) = _end; }
 

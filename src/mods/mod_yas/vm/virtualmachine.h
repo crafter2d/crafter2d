@@ -38,7 +38,6 @@
 namespace ByteCode
 {
    class CPU;
-   class Generator;
 }
 
 class ClassRegistry;
@@ -76,7 +75,7 @@ public:
 
  // object instantation
    VirtualObject*    instantiate(const String& classname, int constructor = -1);
-   VirtualObject*    instantiateNative(const String& classname, void* pobject, bool owned = true);
+   VirtualObject&    instantiateNative(const String& classname, void* pobject, bool owned = true);
    VirtualArray*     instantiateArray();
    void              release(VirtualObject& object);
 
@@ -91,6 +90,7 @@ public:
 
 private:
    friend class GarbageCollector;
+   friend class VirtualContext;
    
    typedef std::vector<VirtualObject*> Objects;
    typedef std::map<void*, VirtualObject*> NativeObjectMap;
@@ -104,8 +104,9 @@ private:
 
  // class loading
    VirtualClass* doLoadClass(const String& classname);
-   void          classLoaded(VirtualClass* pclass);
-   void          createClass(const VirtualClass& aclass);
+   void          classLoaded(VirtualClass& klass);
+   void          createClassObject(VirtualClass& klass);
+   void          registerClass(VirtualClass& aclass);
 
    VirtualContext&               mContext;
    Objects                       mRootObjects;
@@ -113,7 +114,6 @@ private:
    NativeObjectMap               mNativeObjects;
    State                         mState;
    ByteCode::CPU*                mpCPU;
-   ByteCode::Generator*          mpGenerator;
 };
 
 #endif // VM_H_

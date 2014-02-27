@@ -24,6 +24,7 @@ namespace VM
          locals(),
          sp(0),
          retaddress(-1),
+         retcode(NULL),
          callnative(false)
       {
       }
@@ -35,6 +36,7 @@ namespace VM
 
       int                              sp;
       int                              retaddress;
+      const char*                      retcode;
 
       bool                             callnative;
 

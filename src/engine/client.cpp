@@ -185,9 +185,9 @@ namespace c2d
 
       mpRenderContext->endDraw();
 
-      mpScript->prepareCall(1);
-      mpScript->arg(0, delta);
-      mpScript->call(sPaint);
+      //mpScript->prepareCall(1);
+      //mpScript->arg(0, delta);
+      //mpScript->call(sPaint);
 
       mpDevice->present();
       mpWindow->display();
