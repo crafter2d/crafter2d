@@ -105,10 +105,7 @@ private:
    void handleFieldBlock(ASTClass& ast);
    void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
-
- // emitting
-   void emitStaticVariableClassName();
-
+   
  // conversion
    CIL::Class* toCilClass(const ASTClass& klass);
    yasc::Type* toCilType(const ASTType& type);

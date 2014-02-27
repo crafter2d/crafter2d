@@ -292,11 +292,6 @@ void VirtualClass::buildInterfaceTable()
 {
    int max = 0;
 
-   if ( mName == UTEXT("demo.Hero") )
-   {
-      int aap = 5;
-   }
-
    VirtualClasses interfaces;
    collectInterface(interfaces);
 

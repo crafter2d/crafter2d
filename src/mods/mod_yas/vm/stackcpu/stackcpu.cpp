@@ -906,10 +906,6 @@ void StackCPU::compile(VirtualContext& context, const VirtualFunctionTableEntry&
 {
    try
    {
-      if ( entry.mpFunction->getName() == UTEXT("sendMessage") )
-      {
-         int aap = 5;
-      }
       StackIRGenerator generator;
       generator.compile(context, *entry.mpFunction);
    }

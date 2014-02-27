@@ -208,11 +208,6 @@ namespace CIL
          klass.addField(pfield);
       }
 
-      if ( name == UTEXT("system.ClassLoader") )
-      {
-         int aap = 5;
-      }
-
       // read the functions
       mStream.readUint32(count);
       for ( uint32_t index = 0; index < count; ++index )

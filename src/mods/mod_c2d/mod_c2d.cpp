@@ -19,6 +19,9 @@
 #include "texture/texturereader.h"
 #include "texture/texturewriter.h"
 
+#include "world/worldreader.h"
+#include "world/worldwriter.h"
+
 #ifdef WIN32
 #ifdef MOD_EXPORTS
 #define MOD_API __declspec(dllexport)
@@ -40,6 +43,8 @@ static const Uuid EntityUUID(0x89E326B3, 0x1606, 0x4137, 0xBA81, 0x8EBD5A158EEC)
 // {EEDD2CF4-ABA2-4831-9966-C14FE9F1CDFC}
 static const Uuid TextureUUID(0xEEDD2CF4, 0xABA2, 0x4831, 0x9966, 0xC14FE9F1CDFC);
 
+// {54034D72-41BF-4DC5-A2B8-F4DB28B3397E}
+static const Uuid WorldUUID(0x54034d72, 0x41bf, 0x4dc5, 0xa2b8, 0xf4db28b3397e);
 
 extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
 {
@@ -62,6 +67,12 @@ extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
    ptexturemod->setReader(new TextureReader());
    ptexturemod->setWriter(new TextureWriter());
    pmodules->add(ptexturemod);
+
+   ContentModule* pworldmod = new ContentModule(WorldUUID);
+   pworldmod->setSupportedFiles(UTEXT("world"));
+   pworldmod->setReader(new WorldReader());
+   pworldmod->setWriter(new WorldWriter());
+   pmodules->add(pworldmod);
 
    return pmodules;
 }

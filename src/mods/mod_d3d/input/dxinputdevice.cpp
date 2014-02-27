@@ -74,7 +74,7 @@ static int Keys[] =
 
 bool DXInputDevice::isKeyDown(int key)
 {
-   return false; //  (mKeyStates[Keys[key]] & 0x80) == 0x80;
+   return (mKeyStates[Keys[key]] & 0x80) == 0x80;
 }
 
 } // namespace Input

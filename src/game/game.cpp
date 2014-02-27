@@ -87,7 +87,7 @@ bool Game::create()
 
    FileSystem::getInstance().addPath(UTEXT("../"));
    FileSystem::getInstance().addPath(UTEXT("../bin"));
-   FileSystem::getInstance().addPath(UTEXT("../scripts"));
+   FileSystem::getInstance().addPath(UTEXT("../demo/scripts"));
    FileSystem::getInstance().addPath(UTEXT("../images"));
    
    // register the physics factory

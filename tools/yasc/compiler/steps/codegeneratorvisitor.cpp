@@ -67,11 +67,6 @@ void CodeGeneratorVisitor::visit(ASTClass& ast)
    mpClass = &ast;
    mpClass->setCompiledClass(pclass);
 
-   if ( ast.getName() == UTEXT("ClassLoader") )
-   {
-      int aap = 5;
-   }
-
    // build the special initialization blocks
 
    handleStaticBlock(ast);
@@ -1072,13 +1067,16 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             switch ( ast.getAccess() )
             {
                case ASTAccess::eField:
-                  // only emit loading this for current fields
-                  // with reference the object is already there
-                  mBuilder.emit(CIL_ldarg, 0);
-                  // fall through
                case ASTAccess::eRefField:
                   {
                      const ASTField& field = ast.getField();
+
+                     if ( ast.getAccess() == ASTAccess::eField && !field.getVariable().getModifiers().isStatic() )
+                     {
+                        // only emit loading this for current fields
+                        // with reference the object is already there
+                        mBuilder.emit(CIL_ldarg, 0);
+                     }
                      handleField(field);
                   }
                   break;
@@ -1242,7 +1240,6 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access)
                   bool isstatic = field.getVariable().getModifiers().isStatic();
                   if ( isstatic )
                   {
-                     // emitStaticVariableClassName();
                      mBuilder.emit(CIL_ststatic, field.getQualifiedName());
                   }
                   else
@@ -1417,7 +1414,6 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
          {
             varinit.getExpression().accept(*this);
 
-            //mBuilder.emit(CIL_ldstr, ast.getFullName());
             mBuilder.emit(CIL_ststatic, pfield->getQualifiedName());
          }
          else // array initializer
@@ -1427,7 +1423,6 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
             // var = new array[count]
             mBuilder.emit(CIL_ldint, arrayinit.getCount());
             mBuilder.emit(CIL_newarray, variable.getType().toString());
-            //mBuilder.emit(CIL_ldstr, ast.getFullName());
             mBuilder.emit(CIL_ststatic, pfield->getQualifiedName());
 
             int count = arrayinit.getCount();
@@ -1438,7 +1433,6 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
                vinit.getExpression().accept(*this);
 
                // var[index] = expr
-               //mBuilder.emit(CIL_ldstr, ast.getFullName());
                mBuilder.emit(CIL_ldstatic, pfield->getQualifiedName());
                mBuilder.emit(CIL_ldint, index);
                mBuilder.emit(CIL_stelem, 1);
@@ -1469,7 +1463,6 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
          }
 
          // class.var = init
-         //mBuilder.emit(CIL_ldstr, ast.getFullName());
          mBuilder.emit(CIL_ststatic, pfield->getQualifiedName());
       }
    }
@@ -1515,7 +1508,7 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
             varinit.getExpression().accept(*this);
 
             mBuilder.emit(CIL_ldarg, 0);
-            mBuilder.emit(CIL_stfield, variable.getName());
+            mBuilder.emit(CIL_stfield, pfield->getQualifiedName());
          }
          else // array initialization (currently only for one dimensional arrays)
          {
@@ -1601,20 +1594,6 @@ void CodeGeneratorVisitor::handleLiteral(const Literal& literal)
    {
       // should not get here
    }
-}
-
-void CodeGeneratorVisitor::emitStaticVariableClassName()
-{
-   // use one of the two
-   // - mCurrentType : call static of other class
-   // - mpClass : access static field of this class
-   String name;
-   if ( mCurrentType.isValid() )
-      name = mCurrentType.getObjectClass().getFullName();
-   else
-      name = mpClass->getFullName();
-
-   mBuilder.emit(CIL_ldstr, name);
 }
 
 // - Conversion
