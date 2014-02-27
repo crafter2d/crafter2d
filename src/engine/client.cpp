@@ -169,7 +169,6 @@ namespace c2d
       static const String sPaint = UTEXT("paint");
 
       mpRenderContext->clear();
-      mpRenderContext->beginDraw();
 
       if ( mpWorldRenderer != NULL )
       {
@@ -182,12 +181,10 @@ namespace c2d
 
          mpWorldRenderer->render(*mpRenderContext, delta);
       }
-
-      mpRenderContext->endDraw();
-
-      //mpScript->prepareCall(1);
-      //mpScript->arg(0, delta);
-      //mpScript->call(sPaint);
+      
+      mpScript->prepareCall(1);
+      mpScript->arg(0, delta);
+      mpScript->call(sPaint);
 
       mpDevice->present();
       mpWindow->display();
