@@ -7,7 +7,7 @@ namespace Ui {
 class LayerPanel;
 }
 
-#include <engine/world/layertype.h>
+#include "world/tilefield.h"
 
 class QItemSelection;
 class QMdiSubWindow;
@@ -51,7 +51,7 @@ private:
   // operations
     void createContextMenu();
     void setActiveWorld();
-    void setLevel(LayerLevel level);
+    void setLevel(QTileField::Level level);
 
     Ui::LayerPanel *ui;
 

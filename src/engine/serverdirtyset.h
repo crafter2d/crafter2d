@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#include "dirtyset.h"
+#include "core/world/dirtyset.h"
 
 class AggregateEvent;
 class Entity;

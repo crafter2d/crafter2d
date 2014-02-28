@@ -22,9 +22,6 @@ public:
     QSize getSize() const;
     const QPoint& getTexCoord() const;
 
-  // query
-    bool isValid() const;
-
   // painting
     void paint(QPainter &painter, int x, int y);
 
@@ -35,6 +32,6 @@ private:
     QPoint   mTexCoord;
 };
 
-Q_DECLARE_METATYPE(Tile)
+Q_DECLARE_METATYPE(Tile);
 
 #endif // TILE_H

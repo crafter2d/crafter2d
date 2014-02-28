@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Crafter Workshop</string>
   </property>
   <widget class="QMdiArea" name="centralWidget">
    <property name="viewMode">
@@ -44,15 +44,33 @@
      <addaction name="action_recent4"/>
      <addaction name="action_recent5"/>
     </widget>
-    <addaction name="actionNew"/>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>New</string>
+     </property>
+     <addaction name="actionFile_NewProject"/>
+     <addaction name="separator"/>
+     <addaction name="actionFile_NewWorld"/>
+     <addaction name="actionFile_NewLayer"/>
+     <addaction name="actionFile_NewScript"/>
+    </widget>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="actionFile_ImportWorld"/>
+    </widget>
+    <addaction name="menuNew"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionSave_As"/>
+    <addaction name="actionFile_Open"/>
+    <addaction name="actionFile_Save"/>
+    <addaction name="actionFile_SaveAs"/>
     <addaction name="separator"/>
     <addaction name="menuRecent_Projects"/>
     <addaction name="separator"/>
-    <addaction name="actionE_xit"/>
+    <addaction name="menuImport"/>
+    <addaction name="separator"/>
+    <addaction name="actionFile_Exit"/>
    </widget>
    <widget class="QMenu" name="menu_He">
     <property name="title">
@@ -64,29 +82,25 @@
     <property name="title">
      <string>View</string>
     </property>
-    <addaction name="actionViewProject"/>
-    <addaction name="actionViewLayers"/>
-    <addaction name="actionViewTiles"/>
+    <addaction name="actionView_Project"/>
+    <addaction name="actionView_Layers"/>
+    <addaction name="actionView_Tiles"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionEdit_Undo"/>
-    <addaction name="actionEdit_Redo"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
     <addaction name="separator"/>
-    <addaction name="actionEdit_layers"/>
-    <addaction name="actionEdit_bounds"/>
+    <addaction name="actionEdit_Layers"/>
+    <addaction name="actionEdit_Bounds"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuProject">
     <property name="title">
      <string>Project</string>
     </property>
-    <addaction name="actionAdd_world"/>
-    <addaction name="actionAdd_layer"/>
-    <addaction name="separator"/>
-    <addaction name="actionProject_Fix_world"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -101,21 +115,21 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionNew"/>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
+   <addaction name="actionFile_New"/>
+   <addaction name="actionFile_Open"/>
+   <addaction name="actionFile_Save"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionNew">
+  <action name="actionFile_New">
    <property name="icon">
     <iconset resource="crafter.qrc">
      <normaloff>:/images/document-new.png</normaloff>:/images/document-new.png</iconset>
    </property>
    <property name="text">
-    <string>New</string>
+    <string>New Project</string>
    </property>
   </action>
-  <action name="actionOpen">
+  <action name="actionFile_Open">
    <property name="icon">
     <iconset resource="crafter.qrc">
      <normaloff>:/images/document-open.png</normaloff>:/images/document-open.png</iconset>
@@ -124,7 +138,7 @@
     <string>Open</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="actionFile_Save">
    <property name="icon">
     <iconset resource="crafter.qrc">
      <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
@@ -133,12 +147,12 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actionSave_As">
+  <action name="actionFile_SaveAs">
    <property name="text">
     <string>Save As...</string>
    </property>
   </action>
-  <action name="actionE_xit">
+  <action name="actionFile_Exit">
    <property name="text">
     <string>E&amp;xit</string>
    </property>
@@ -148,7 +162,7 @@
     <string>About</string>
    </property>
   </action>
-  <action name="actionViewLayers">
+  <action name="actionView_Layers">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -156,7 +170,7 @@
     <string>Layers</string>
    </property>
   </action>
-  <action name="actionViewProject">
+  <action name="actionView_Project">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -167,7 +181,7 @@
     <string>Project</string>
    </property>
   </action>
-  <action name="actionViewTiles">
+  <action name="actionView_Tiles">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -203,17 +217,17 @@
     <string>&lt;recent5&gt;</string>
    </property>
   </action>
-  <action name="actionEdit_Undo">
+  <action name="actionUndo">
    <property name="text">
     <string>Undo</string>
    </property>
   </action>
-  <action name="actionEdit_Redo">
+  <action name="actionRedo">
    <property name="text">
     <string>Redo</string>
    </property>
   </action>
-  <action name="actionEdit_layers">
+  <action name="actionEdit_Layers">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -224,7 +238,7 @@
     <string>Edit layers</string>
    </property>
   </action>
-  <action name="actionEdit_bounds">
+  <action name="actionEdit_Bounds">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -232,19 +246,14 @@
     <string>Edit bounds</string>
    </property>
   </action>
-  <action name="actionAdd_world">
+  <action name="actionProject_AddWorld">
    <property name="text">
     <string>Add world</string>
    </property>
   </action>
-  <action name="actionAdd_layer">
+  <action name="actionProject_AddLayer">
    <property name="text">
     <string>Add layer</string>
-   </property>
-  </action>
-  <action name="actionProject_Fix_world">
-   <property name="text">
-    <string>Fix world</string>
    </property>
   </action>
   <action name="actionFlip_bound">
@@ -253,6 +262,31 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionFile_NewProject">
+   <property name="text">
+    <string>Project</string>
+   </property>
+  </action>
+  <action name="actionFile_NewWorld">
+   <property name="text">
+    <string>World</string>
+   </property>
+  </action>
+  <action name="actionFile_NewLayer">
+   <property name="text">
+    <string>Layer</string>
+   </property>
+  </action>
+  <action name="actionFile_ImportWorld">
+   <property name="text">
+    <string>World</string>
+   </property>
+  </action>
+  <action name="actionFile_NewScript">
+   <property name="text">
+    <string>Script</string>
    </property>
   </action>
  </widget>

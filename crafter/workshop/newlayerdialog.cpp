@@ -1,30 +1,42 @@
 #include "newlayerdialog.h"
 #include "ui_newlayerdialog.h"
 
-#include <engine/world/layer.h>
+#include "tilemap.h"
+#include "world/tilemapdesc.h"
 
 // static
-LayerDefinition* NewLayerDialog::getLayer()
+TileMap* NewLayerDialog::getMap()
 {
-    LayerDefinition* presult = NULL;
+    TileMap* presult = NULL;
+
     NewLayerDialog dialog;
     if ( dialog.exec() == DialogCode::Accepted )
     {
-        presult = new LayerDefinition();
-        presult->name = String::fromUtf8(dialog.getName().toUtf8().data());
-        presult->width = dialog.getWidth();
-        presult->height = dialog.getHeight();
-        presult->tileset = String::fromUtf8(dialog.getTileset().toUtf8().data());
-        presult->effect = String::fromUtf8(dialog.getEffect().toUtf8().data());
+        TileMapDesc desc;
+        desc.name = dialog.getName();
+        desc.effect = dialog.getEffect();
+        desc.tileset = dialog.getTileset();
+        desc.size = QSize(dialog.getWidth(), dialog.getHeight());
+
+        presult = new TileMap(desc);
     }
 
     return presult;
 }
 
 // static
-void NewLayerDialog::edit(LayerDefinition& definition)
+void NewLayerDialog::edit(TileMap& map)
 {
-
+    NewLayerDialog dialog;
+    dialog.setDesc(map.getDesc());
+    if ( dialog.exec() == DialogCode::Accepted )
+    {
+        TileMapDesc& desc = map.getDesc();
+        desc.name = dialog.getName();
+        desc.effect = dialog.getEffect();
+        desc.tileset = dialog.getTileset();
+        desc.size = QSize(dialog.getWidth(), dialog.getHeight());
+    }
 }
 
 NewLayerDialog::NewLayerDialog(QWidget *parent) :
@@ -63,5 +75,26 @@ QString NewLayerDialog::getEffect() const
 
 QString NewLayerDialog::getTileset() const
 {
-    return ui->editTileset->text();
+    if ( ui->TileRadioGroup->checkedId() == 0 )
+    {
+        return QString("");
+    }
+    else
+    {
+        QModelIndexList& selection = ui->listView->selectionModel()->selectedRows();
+        Q_ASSERT( selection.size() == 1 );
+        const QModelIndex& index = selection.at(0);
+        return QString("images/block.xml");
+    }
+    //return ui->editTileset->text();
+}
+
+void NewLayerDialog::setDesc(const TileMapDesc& desc)
+{
+    ui->editName->setText(desc.name);
+    ui->editEffect->setText(desc.effect);
+    ui->spinWidth->setValue(desc.size.width());
+    ui->spinHeight->setValue(desc.size.height());
+
+    ui->radioExisting->setChecked(true);
 }

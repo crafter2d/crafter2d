@@ -33,10 +33,9 @@
 #include "core/modules/scriptmodule.h"
 #include "core/script/scriptmanager.h"
 #include "core/script/scriptobject.h"
+#include "core/world/world.h"
 
 #include "engine/net/events/scriptevent.h"
-#include "engine/world/world.h"
-#include "engine/world/worldreader.h"
 
 #include "actionmap.h"
 #include "script_engine.h"
@@ -125,23 +124,14 @@ namespace c2d
 
    World* Process::loadWorld(const String& filename)
    {
-      AutoPtr<World> world = new World();
-      if ( world.hasPointer() )
+      mpWorld = getContentManager().loadContent<World>(filename);
+      if ( mpWorld != NULL )
       {
-         WorldReader reader;
-         if ( reader.read(*world, filename) )
-         {
-            mpWorld = world.release();
-            mpWorld->setScript(getScriptManager().load(UTEXT("engine.game.World"), mpWorld, false));
+         mpWorld->setScript(getScriptManager().load(UTEXT("engine.game.World"), mpWorld, false));
 
-            notifyWorldChanged();
-
-            return mpWorld;
-         }
+         notifyWorldChanged();
       }
-
-      // we could not load the file
-      return NULL;
+      return mpWorld;
    }
 
    // - Notifications

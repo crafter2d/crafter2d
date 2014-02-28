@@ -3,54 +3,19 @@
 #include <QFileInfo>
 #include <QPainter>
 
-#include <engine/world/bound.h>
-#include <engine/world/bounds.h>
-#include <engine/world/world.h>
-#include <engine/world/worldwriter.h>
-#include <engine/world/layer.h>
+#include <core/smartptr/autoptr.h>
 
 #include "stringinterface.h"
-#include "tile.h"
 #include "tilemap.h"
 
-// static
-TileWorld* TileWorld::fromWorld(World* pworld)
-{
-    TileWorld* ptileworld = new TileWorld(pworld);
+#include "world/tilemapdesc.h"
+#include "world/tilebound.h"
 
-    QString filename = toQString(pworld->getFilename());
-    QString path = QFileInfo(filename).absolutePath();
-    for ( int index = 0; index < pworld->getLayerCount(); ++index )
-    {
-        Layer* player = pworld->getLayer(index);
-
-        TileMap* pmap = new TileMap(*ptileworld, player);
-        pmap->load(path);
-
-        ptileworld->addMap(pmap);
-    }
-
-    if ( ptileworld->getMapCount() > 0 )
-    {
-        ptileworld->setActiveMap(ptileworld->getMap(0));
-    }
-
-    return ptileworld;
-}
-
-TileWorld::TileWorld():
-    QObject(NULL),
-    mpWorld(NULL),
+TileWorld::TileWorld(const TileWorldDesc& desc):
+    Resource(),
+    mDesc(desc),
     mMaps(),
-    mpActiveMap(NULL),
-    mpSelectedBound(NULL)
-{
-}
-
-TileWorld::TileWorld(World* pworld):
-    QObject(NULL),
-    mpWorld(pworld),
-    mMaps(),
+    mBounds(),
     mpActiveMap(NULL),
     mpSelectedBound(NULL)
 {
@@ -58,18 +23,23 @@ TileWorld::TileWorld(World* pworld):
 
 // - Get/set
 
+const QString& TileWorld::getName() const
+{
+    return mDesc.name;
+}
+
 bool TileWorld::hasSelectedBound() const
 {
     return mpSelectedBound != NULL;
 }
 
-Bound& TileWorld::getSelectedBound()
+TileBound& TileWorld::getSelectedBound()
 {
     Q_ASSERT(mpSelectedBound);
     return *mpSelectedBound;
 }
 
-void TileWorld::setSelectedBound(Bound* pbound)
+void TileWorld::setSelectedBound(TileBound *pbound)
 {
     if ( pbound != mpSelectedBound )
     {
@@ -77,24 +47,12 @@ void TileWorld::setSelectedBound(Bound* pbound)
     }
 }
 
+const TileWorldDesc& TileWorld::getDesc() const
+{
+    return mDesc;
+}
+
 // - Query
-
-QString TileWorld::getName() const
-{
-    QString result = mpWorld->getName().toUtf8().c_str();
-    return result;
-}
-
-QString TileWorld::getFileName() const
-{
-    QString result = mpWorld->getFilename().toUtf8().c_str();
-    return result;
-}
-
-void TileWorld::setFileName(const QString& filename)
-{
-    mpWorld->setFilename(String::fromUtf8(filename.toUtf8().data()));
-}
 
 QSize TileWorld::getMinimumSize() const
 {
@@ -102,7 +60,7 @@ QSize TileWorld::getMinimumSize() const
     for ( int index = 0; index < mMaps.size(); ++index )
     {
         TileMap* pmap = mMaps[index];
-        QSize minsize = pmap->getSize();
+        QSize minsize = pmap->getMinimumSize();
         if ( minsize.width() > result.width()
           || minsize.height() > result.height() )
         {
@@ -141,6 +99,11 @@ int TileWorld::getMapCount() const
     return mMaps.size();
 }
 
+const TileMap& TileWorld::getMap(int index) const
+{
+    return *mMaps[index];
+}
+
 TileMap& TileWorld::getMap(int index)
 {
     return *mMaps[index];
@@ -170,14 +133,11 @@ void TileWorld::paintBounds(QPainter& painter)
     painter.save();
     painter.setPen(pen);
 
-    const Bounds& bounds = mpWorld->getBounds();
-    for ( std::size_t index = 0; index < bounds.size(); ++index )
+    for ( int index = 0; index < mBounds.size(); ++index )
     {
-        const Bound& bound = *bounds[index];
-        const Vector& left = bound.getLeft();
-        const Vector& right = bound.getRight();
+        const TileBound& bound = *mBounds[index];
 
-        painter.drawLine(QPointF(left.x, left.y), QPointF(right.x, right.y));
+        painter.drawLine(bound.left(), bound.right());
     }
 
     if ( mpSelectedBound != NULL )
@@ -194,21 +154,15 @@ void TileWorld::paintSelectedBound(QPainter& painter)
     QPen pen(brush, 2);
     painter.setPen(pen);
 
-    const Vector& left = mpSelectedBound->getLeft();
-    const Vector& right = mpSelectedBound->getRight();
-    Vector vnormal = mpSelectedBound->getNormal();
+    QPointF normal = mpSelectedBound->getNormal().toPointF();
+    QPointF center = mpSelectedBound->getCenter();
 
-    QPointF posleft(left.x, left.y);
-    QPointF posright(right.x, right.y);
-    QPointF center = (posleft + posright) / 2;
-    QPointF normal(vnormal.x, vnormal.y);
-
-    painter.drawLine(posleft, posright);
+    painter.drawLine(mpSelectedBound->left(), mpSelectedBound->right());
     painter.drawLine(center, center + (normal * 5));
 
     painter.setBrush(brush);
-    painter.drawEllipse(posleft, 3, 3);
-    painter.drawEllipse(posright, 3, 3);
+    painter.drawEllipse(mpSelectedBound->left(), 3, 3);
+    painter.drawEllipse(mpSelectedBound->right(), 3, 3);
 }
 
 // - Maintenance
@@ -216,16 +170,8 @@ void TileWorld::paintSelectedBound(QPainter& painter)
 void TileWorld::addMap(TileMap* pmap)
 {
     mMaps.append(pmap);
-}
 
-void TileWorld::addMap(LayerDefinition* pdefinition)
-{
-    Layer* player = mpWorld->createLayer();
-    player->create(pdefinition);
-    mpWorld->addLayer(player);
-
-    TileMap* pmap = new TileMap(*this, player);
-    addMap(pmap);
+    connect(pmap, SIGNAL(mapChanged(TileMap&)), SLOT(on_mapChanged(TileMap&)));
 }
 
 void TileWorld::removeMap(TileMap& map)
@@ -249,53 +195,45 @@ void TileWorld::removeMap(TileMap& map)
         }
     }
 
-    Layer& layer = map.getLayer();
-    mpWorld->removeLayer(layer);
-    delete &layer;
-
     mMaps.remove(index);
 }
 
-Bound& TileWorld::addBound(const QPoint& mousepos)
+int TileWorld::getBoundCount() const
 {
-    Vector pos(mousepos.x(), mousepos.y());
-    return mpWorld->addBound(pos, pos);
+    return mBounds.size();
 }
 
-Tile TileWorld::getTile(const QPoint& mousepos, LayerLevel level)
+const TileBound& TileWorld::getBound(int index) const
+{
+    return *mBounds[index];
+}
+
+void TileWorld::addBound(TileBound* pbound)
+{
+    mBounds.append(pbound);
+}
+
+TileBound &TileWorld::addBound(const QPoint& mousepos)
+{
+    TileBound* pbound = new TileBound(mousepos, mousepos);
+    mBounds.append(pbound);
+    return *pbound;
+}
+
+bool TileWorld::setTile(const QPoint& mousepos, QTileField::Level level, const Tile& tile)
 {
     if ( mpActiveMap != NULL )
     {
-        return mpActiveMap->getTile(mousepos, level);
+        return mpActiveMap->setTile(mousepos, level, tile);
     }
-
-    return Tile();
+    return false;
 }
 
-bool TileWorld::setTile(const QPoint& mousepos, LayerLevel level, const Tile& tile)
-{
-    bool result = false;
-    if ( mpActiveMap != NULL )
-    {
-        result = mpActiveMap->setTile(mousepos, level, tile);
-    }
-    return result;
-}
-
-void TileWorld::clearTile(const QPoint& mousepos, LayerLevel level)
+void TileWorld::clearTile(const QPoint& mousepos, QTileField::Level level)
 {
     if ( mpActiveMap != NULL )
     {
         mpActiveMap->clearTile(mousepos, level);
-    }
-}
-
-void TileWorld::save()
-{
-    if ( mpWorld != NULL )
-    {
-        WorldWriter writer;
-        writer.write(*mpWorld, mpWorld->getFilename());
     }
 }
 
@@ -306,8 +244,6 @@ void TileWorld::moveUp(int index)
         TileMap* pmap = mMaps[index];
         mMaps.remove(index);
         mMaps.insert(index - 1, pmap);
-
-        mpWorld->moveLayer(&pmap->getLayer(), -1);
     }
 }
 
@@ -318,58 +254,42 @@ void TileWorld::moveDown(int index)
         TileMap* pmap = mMaps[index];
         mMaps.remove(index);
         mMaps.insert(index + 1, pmap);
-
-        mpWorld->moveLayer(&pmap->getLayer(), 1);
     }
 }
 
 void TileWorld::straightenBounds()
 {
-    Bounds& bounds = mpWorld->getBounds();
-    for ( std::size_t index = 0; index < bounds.size(); ++index )
+    for ( int index = 0; index < mBounds.size(); ++index )
     {
-        Bound* pbound = bounds[index];
+        TileBound* pbound = mBounds[index];
         pbound->straighten();
     }
 }
 
 // - Slots
 
-void TileWorld::mapChanged(TileMap& /* map */)
+void TileWorld::on_mapChanged(TileMap& /* map */)
 {
     emit worldDirty();
 }
 
 // - Searching
 
-Bound* TileWorld::findBound(const QPoint& mousepos)
+TileBound *TileWorld::findBound(const QPoint& mousepos)
 {
-    Bound* presult;
+    TileBound* presult = NULL;
     float nearest = 5.0f;
 
-    Vector pos(mousepos.x(), mousepos.y());
-    for ( int index = 0; index < mpWorld->getBoundCount(); ++index )
+    for ( int index = 0; index < mBounds.size(); ++index )
     {
         float distance;
-        Bound& bound = mpWorld->getBound(index);
-        if ( bound.hitTest(pos, distance) && distance < nearest )
+        TileBound* pbound = mBounds[index];
+        if ( pbound->hitTest(mousepos, distance) && distance < nearest )
         {
-            presult = &bound;
+            presult = pbound;
             nearest = distance;
         }
     }
 
     return presult;
-}
-
-// - Fixing
-// See TileWorld::fixMaps for explanation
-
-void TileWorld::fixMaps()
-{
-    TileMap* pmap;
-    foreach (pmap, mMaps)
-    {
-        pmap->fix();
-    }
 }

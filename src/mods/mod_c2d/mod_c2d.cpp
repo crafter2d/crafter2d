@@ -19,6 +19,9 @@
 #include "texture/texturereader.h"
 #include "texture/texturewriter.h"
 
+#include "tileset/tilesetreader.h"
+#include "tileset/tilesetwriter.h"
+
 #include "world/worldreader.h"
 #include "world/worldwriter.h"
 
@@ -43,8 +46,11 @@ static const Uuid EntityUUID(0x89E326B3, 0x1606, 0x4137, 0xBA81, 0x8EBD5A158EEC)
 // {EEDD2CF4-ABA2-4831-9966-C14FE9F1CDFC}
 static const Uuid TextureUUID(0xEEDD2CF4, 0xABA2, 0x4831, 0x9966, 0xC14FE9F1CDFC);
 
+// {F7150E51-BEC1-42AD-9C18-B5B69F86D05E}
+static const Uuid TileSetUUID(0xF7150E51, 0xBEC1, 0x42AD, 0x9C18, 0xB5B69F86D05E);
+
 // {54034D72-41BF-4DC5-A2B8-F4DB28B3397E}
-static const Uuid WorldUUID(0x54034d72, 0x41bf, 0x4dc5, 0xa2b8, 0xf4db28b3397e);
+static const Uuid WorldUUID(0x54034D72, 0x41BF, 0x4DC5, 0xA2B8, 0xF4DB28B3397E);
 
 extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
 {
@@ -57,7 +63,7 @@ extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
    pmodules->add(peffectmodule);
 
    ContentModule* pentitymod = new ContentModule(EntityUUID);
-   pentitymod->setSupportedFiles(UTEXT("xml"));
+   pentitymod->setSupportedFiles(UTEXT("entity"));
    pentitymod->setReader(new EntityReader());
    pentitymod->setWriter(new EntityWriter());
    pmodules->add(pentitymod);
@@ -67,6 +73,12 @@ extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
    ptexturemod->setReader(new TextureReader());
    ptexturemod->setWriter(new TextureWriter());
    pmodules->add(ptexturemod);
+
+   ContentModule* ptilesetmod = new ContentModule(TileSetUUID);
+   ptilesetmod->setSupportedFiles(UTEXT("tileset"));
+   ptilesetmod->setReader(new TileSetReader());
+   ptilesetmod->setWriter(new TileSetWriter());
+   pmodules->add(ptilesetmod);
 
    ContentModule* pworldmod = new ContentModule(WorldUUID);
    pworldmod->setSupportedFiles(UTEXT("world"));

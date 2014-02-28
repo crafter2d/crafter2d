@@ -21,8 +21,7 @@
 #define _PICKVISITOR_H_
 
 #include "core/math/vector.h"
-
-#include "nodevisitor.h"
+#include "core/world/nodevisitor.h"
 
 /// Implements the pick visitor. Use it to determine if the cursor is above
 /// an object.

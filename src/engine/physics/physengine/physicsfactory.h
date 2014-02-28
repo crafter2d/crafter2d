@@ -30,9 +30,11 @@ public:
    PhysicsFactory();
    virtual ~PhysicsFactory();
 
-   virtual const std::string& getName() const;
+   virtual const String& getName() const;
 
    virtual Simulator* createSimulator();
+
+   virtual bool isCreatedBy(const Simulator& simulator) const override;
 };
 
 #endif

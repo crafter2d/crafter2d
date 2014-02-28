@@ -1,10 +1,15 @@
 #include "projectpanel.h"
 #include "ui_projectpanel.h"
 
+#include <QVariant>
+
+#include "project/projecttreeworlditem.h"
+
 #include "mainwindow.h"
 #include "projectmodel.h"
 #include "project.h"
 #include "tileviewwindow.h"
+#include "tileworld.h"
 
 ProjectPanel::ProjectPanel(MainWindow& mainwindow) :
     DockPanel(mainwindow),
@@ -47,18 +52,21 @@ void ProjectPanel::on_projectChanged(Project *pproject)
 
 void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
 {
-    if ( index.row() < mpProject->getWorldCount() )
-    {
-        TileWorld& world = mpProject->getWorld(index.row());
+    QVariant data = mpProjectModel->resourceData(index);
+    if ( !data.isValid() )
+        return;
 
-        TileViewWindow* pwindow = getMainWindow().findWindow(&world);
+    if ( data.canConvert<TileWorldHandle>() )
+    {
+        TileWorldHandle& handle = data.value<TileWorldHandle>();
+        TileViewWindow* pwindow = getMainWindow().findWindow(*handle);
         if ( pwindow != NULL )
         {
             pwindow->activateWindow();
         }
         else
         {
-            getMainWindow().addWindow(world);
+            getMainWindow().addWindow(*handle);
         }
     }
 }

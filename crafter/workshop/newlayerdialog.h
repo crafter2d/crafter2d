@@ -7,15 +7,16 @@ namespace Ui {
 class NewLayerDialog;
 }
 
-struct LayerDefinition;
+class TileMap;
+struct TileMapDesc;
 
 class NewLayerDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    static LayerDefinition* getLayer();
-    static void edit(LayerDefinition& definition);
+    static TileMap* getMap();
+    static void edit(TileMap& map);
 
     explicit NewLayerDialog(QWidget *parent = 0);
     ~NewLayerDialog();
@@ -28,6 +29,8 @@ public:
 
     QString getEffect() const;
     QString getTileset() const;
+
+    void setDesc(const TileMapDesc& desc);
 
 private:
     Ui::NewLayerDialog *ui;

@@ -28,7 +28,6 @@ SOURCES += main.cpp\
     tilemapmodel.cpp \
     tile.cpp \
     newlayerdialog.cpp \
-    newworlddialog.cpp \
     projectpanel.cpp \
     layerpanel.cpp \
     tilespanel.cpp \
@@ -38,7 +37,28 @@ SOURCES += main.cpp\
     boundisland.cpp \
     resizelayerdialog.cpp \
     aboutdialog.cpp \
-    undosettile.cpp
+    worldwizard_pageworld.cpp \
+    worldwizard.cpp \
+    worldwizard_pagefinalize.cpp \
+    layerwizard_pagetileset.cpp \
+    layerwizard_pageinfo.cpp \
+    world/tileset.cpp \
+    project/projecttreeitem.cpp \
+    world/tilesetwriter.cpp \
+    world/tilesetreader.cpp \
+    world/tilefield.cpp \
+    world/tileworldreader.cpp \
+    world/tilemapdesc.cpp \
+    world/tileworlddesc.cpp \
+    world/tileworldimporter.cpp \
+    world/tilebound.cpp \
+    world/tileworldwriter.cpp \
+    project/projecttreeworlditem.cpp \
+    project/projecttreetextitem.cpp \
+    resource.cpp \
+    world/tileworldhandle.cpp \
+    scriptview.cpp \
+    script/yassyntaxhighlighter.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -53,7 +73,6 @@ HEADERS  += mainwindow.h \
     tilemapmodel.h \
     tile.h \
     newlayerdialog.h \
-    newworlddialog.h \
     projectpanel.h \
     layerpanel.h \
     tilespanel.h \
@@ -63,18 +82,42 @@ HEADERS  += mainwindow.h \
     boundisland.h \
     resizelayerdialog.h \
     aboutdialog.h \
-    undosettile.h
+    worldwizard_pageworld.h \
+    worldwizard.h \
+    worldwizard_pagefinalize.h \
+    layerwizard_pagetileset.h \
+    layerwizard_pageinfo.h \
+    world/tileset.h \
+    project/projecttreeitem.h \
+    world/tilesetwriter.h \
+    world/tilesetreader.h \
+    world/tilefield.h \
+    world/tileworldreader.h \
+    world/tilemapdesc.h \
+    world/tileworlddesc.h \
+    world/tileworldimporter.h \
+    world/tilebound.h \
+    world/tileworldwriter.h \
+    project/projecttreeworlditem.h \
+    project/projecttreetextitem.h \
+    resource.h \
+    world/tileworldhandle.h \
+    scriptview.h \
+    script/yassyntaxhighlighter.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
     tileview.ui \
     newlayerdialog.ui \
-    newworlddialog.ui \
     projectpanel.ui \
     layerpanel.ui \
     tilespanel.ui \
     resizelayerdialog.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    worldwizard_pageworld.ui \
+    layerwizard_pagetileset.ui \
+    layerwizard_pageinfo.ui \
+    scriptview.ui
 
 BaseDir = $$PWD/../build/workshop
 
@@ -88,8 +131,8 @@ Debug:MOC_DIR = $$BaseDir/debug/.moc
 Debug:RCC_DIR = $$BaseDir/debug/.rcc
 Debug:UI_DIR = $$BaseDir/debug/.ui
 
-BinDir = $$PWD/../../bin/
-SrcDir = $$PWD/../../src
+BinDir = $$PWD/../../../bin/
+SrcDir = $$PWD/../../../src
 
 win32:CONFIG(release, debug|release): LIBS += -L$$BinDir -lCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$BinDir -lCored

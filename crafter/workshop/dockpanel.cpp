@@ -28,8 +28,12 @@ void DockPanel::on_subWindowActivated(QMdiSubWindow *psubwindow)
     TileWorld* pworld = NULL;
     if ( psubwindow != NULL )
     {
-        TileView& view = dynamic_cast<TileViewWindow*>(psubwindow->widget())->getTileView();
-        pworld = &view.getWorld();
+        TileViewWindow* pwindow = dynamic_cast<TileViewWindow*>(psubwindow->widget());
+        if ( pwindow != NULL )
+        {
+            TileView& view = pwindow->getTileView();
+            pworld = &view.getWorld();
+        }
     }
 
     worldActivated(pworld);

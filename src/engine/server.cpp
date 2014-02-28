@@ -26,6 +26,7 @@
 #include "core/smartptr/scopedvalue.h"
 #include "core/physics/simulator.h"
 #include "core/script/scriptobject.h"
+#include "core/world/world.h"
 
 #include "engine/net/events/aggregateevent.h"
 #include "engine/net/events/connectevent.h"
@@ -41,7 +42,6 @@
 #include "engine/net/events/worldchangedevent.h"
 #include "engine/net/netstream.h"
 #include "engine/net/netobjectstream.h"
-#include "engine/world/world.h"
 
 #include "player.h"
 #include "serverdirtyset.h"

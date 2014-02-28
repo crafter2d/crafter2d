@@ -26,10 +26,9 @@
 #include "core/defines.h"
 #include "core/physics/bodydefinition.h"
 #include "core/physics/revolutejointdefinition.h"
-
-#include "engine/world/world.h"
-#include "engine/world/bound.h"
-#include "engine/world/bounds.h"
+#include "core/world/world.h"
+#include "core/world/bound.h"
+#include "core/world/bounds.h"
 
 #include "box2dbody.h"
 #include "box2draycastcallback.h"

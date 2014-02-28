@@ -1,7 +1,0 @@
-<?xml version="1.0">
-<effect name="char">
-   <code>
-      <vertex>vertex.cso</vertex>
-      <fragment>fragment.cso</fragment>
-   </code>
-</effect>

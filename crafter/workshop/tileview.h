@@ -3,19 +3,15 @@
 
 #include <QImage>
 #include <QWidget>
-#include <QUndoStack>
 
 #include <qpoint.h>
 #include <qvector.h>
 
-#include <engine/world/tileset.h>
-#include <engine/world/layertype.h>
+#include "world/tilefield.h"
 
 #include "tile.h"
 
-class Bound;
-class World;
-
+class TileBound;
 class TileWorld;
 
 namespace Ui {
@@ -41,14 +37,10 @@ public:
     EditMode getEditMode() const;
     void     setEditMode(EditMode mode);
 
-    LayerLevel getLevel() const;
-    void       setLevel(LayerLevel level);
+    QTileField::Level getLevel() const;
+    void              setLevel(QTileField::Level level);
 
     void setActiveTile(const Tile& tile);
-
-  // operations
-    void undo();
-    void redo();
 
 public slots:
     void worldUpdated();
@@ -71,10 +63,9 @@ private:
     Tile          mTile;
     TileWorld*    mpWorld;
     EditMode      mEditMode;
-    Bound*        mpSelectedBound;
+    TileBound*    mpSelectedBound;
     BoundEdge     mSelectedEdge;
-    LayerLevel    mLevel;
-    QUndoStack    mUndoStack;
+    QTileField::Level mLevel;
 };
 
 #endif // TILEVIEW_H

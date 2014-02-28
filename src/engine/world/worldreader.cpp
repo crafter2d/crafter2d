@@ -21,7 +21,6 @@
 
 #include "core/vfs/unzipfile.h"
 
-#include "worldversion1reader.h"
 #include "worldversion2reader.h"
 
 WorldReader::WorldReader()
@@ -41,9 +40,9 @@ bool WorldReader::read(World& world, const String& filename)
    AbstractWorldVersionReader* preader = NULL;
 
    if ( UnzipFile::isZip(filename) )
+   {
       preader = new WorldVersion2Reader(world);
-   else
-      preader = new WorldVersion1Reader(world);
+   }
 
    return preader != NULL && preader->read(filename);
 }

@@ -22,10 +22,8 @@
 
 #include "core/core_base.h"
 
-#include <string>
-
 class Simulator;
-class Body;
+class String;
 
 class CORE_API SimulationFactory
 {
@@ -35,11 +33,15 @@ public:
 
    /// \fn SimulationFactory::getName()
    /// Return the name of this factory. Used by registry to construct a derived factory.
-   virtual const std::string& getName() const = 0;
+   virtual const String& getName() const = 0;
 
    /// \fn SimulationFactory::createSimulator()
    /// Creates the simulator object used by the engine for updating the objects position and rotation.
    virtual Simulator* createSimulator() = 0;
+
+   /// \fn SimulationFactory::isCreatedBy()
+   /// Check is this simulator is the creator of this simulator
+   virtual bool isCreatedBy(const Simulator& simulator) const = 0;
 };
 
 #endif

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Demo">
+    <tileset>tilesets/forest-background.xml</tileset>
+    <tileset>tilesets/blocks.xml</tileset>
+    <world>worlds/map1.world</world>
+</project>

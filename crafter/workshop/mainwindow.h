@@ -37,7 +37,7 @@ public:
     void addWindow(TileWorld& world);
 
  // searching
-    TileViewWindow* findWindow(TileWorld* pworld);
+    TileViewWindow* findWindow(TileWorld &world);
 
 signals:
     void projectChanged(Project* newProject);
@@ -47,30 +47,26 @@ protected:
     virtual void closeEvent(QCloseEvent *pevent) override;
 
 private slots:
-    void on_actionNew_triggered();
-    void on_actionSave_triggered();
-    void on_actionOpen_triggered();
-    void on_actionOpenRecentFile_triggered();
+    void on_actionFile_NewProject_triggered();
+    void on_actionFile_NewWorld_triggered();
+    void on_actionFile_NewLayer_triggered();
+    void on_actionFile_Save_triggered();
+    void on_actionFile_Open_triggered();
+    void on_actionFile_OpenRecentFile_triggered();
+    void on_actionFile_Exit_triggered();
 
-    void on_actionEdit_layers_triggered();
-    void on_actionEdit_bounds_triggered();
+    void on_actionEdit_Layers_triggered();
+    void on_actionEdit_Bounds_triggered();
 
-    void on_actionViewProject_triggered();
-    void on_actionViewLayers_triggered();
-    void on_actionViewTiles_triggered();
-
-    void on_actionAdd_world_triggered();
-    void on_actionAdd_layer_triggered();
-
-    void on_actionProject_Fix_world_triggered();
-
-    void on_actionE_xit_triggered();
+    void on_actionView_Project_triggered();
+    void on_actionView_Layers_triggered();
+    void on_actionView_Tiles_triggered();
 
     void on_actionAbout_triggered();
 
-    void on_actionEdit_Undo_triggered();
+    void on_actionFile_ImportWorld_triggered();
 
-    void on_actionEdit_Redo_triggered();
+    void on_actionFile_NewScript_triggered();
 
 private:
     enum { MaxRecentFiles = 5 };

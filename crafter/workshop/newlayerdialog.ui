@@ -6,26 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>359</width>
-    <height>267</height>
+    <width>509</width>
+    <height>355</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QWidget" name="widget" native="true">
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </widget>
-      </item>
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="1">
        <widget class="QLineEdit" name="editName"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="spinWidth"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
@@ -34,8 +30,12 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="spinWidth"/>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_2">
@@ -57,15 +57,37 @@
       <item row="3" column="1">
        <widget class="QLineEdit" name="editEffect"/>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Tileset</string>
+      <item row="4" column="0" colspan="2">
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Tiles</string>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QRadioButton" name="radioButton">
+           <property name="text">
+            <string>New</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">TileRadioGroup</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioExisting">
+           <property name="text">
+            <string>Use existing</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">TileRadioGroup</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListView" name="listView"/>
+         </item>
+        </layout>
        </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="editTileset"/>
       </item>
      </layout>
     </widget>
@@ -117,4 +139,7 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="TileRadioGroup"/>
+ </buttongroups>
 </ui>

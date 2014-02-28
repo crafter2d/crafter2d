@@ -24,7 +24,7 @@
 
 #include <string>
 
-#include "world.h"
+#include "core/world/world.h"
 
 AbstractWorldVersionReader::AbstractWorldVersionReader(World& world):
    mFilename(),

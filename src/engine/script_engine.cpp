@@ -37,13 +37,13 @@
 #include "core/script/scriptobject.h"
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"
+#include "core/world/layer.h"
+#include "core/world/world.h"
 #include "core/defines.h"
 
 #include "engine/net/netstream.h"
 #include "engine/window/gamewindowfactory.h"
 #include "engine/window/gamewindow.h"
-#include "engine/world/layer.h"
-#include "engine/world/world.h"
 
 #include "physics/box2d/box2dbody.h"
 #include "physics/box2d/box2dsimulator.h"

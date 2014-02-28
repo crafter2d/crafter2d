@@ -5,6 +5,8 @@
 #include <QString>
 #include <QVector>
 
+class QDir;
+class QTileSet;
 class TileWorld;
 
 class Project : public QObject
@@ -12,7 +14,13 @@ class Project : public QObject
     Q_OBJECT
 
 public:
+    typedef QVector<QTileSet*> TileSets;
     typedef QVector<TileWorld*> Worlds;
+
+    static Project* createNew(QWidget *pparent = 0);
+
+    static Project& getActiveProject();
+    static void     setActiveProject(Project *pproject);
 
     Project();
 
@@ -25,19 +33,26 @@ public:
 
     const QString getFolder() const;
 
- // query
-    QString getFilename() const;
+    Worlds &getWorlds();
 
+ // query
     int        getWorldCount() const;
     TileWorld &getWorld(int index);
 
+    /// /brief Returns the full path of the file, relative from the project directory.
+    QString getFilePath(const QString& file);
+
  // operations
+    void create(QDir &path);
+
     void addWorld(TileWorld *pworld);
+    void addTileSet(QTileSet *ptileset);
+
     bool load(const QString& fileName);
     void save();
 
- // fixing
-    void fixMaps();
+ // search
+    QTileSet* lookupTileSet(const QString& name);
 
 signals:
     void dataChanged();
@@ -45,11 +60,20 @@ signals:
 private:
   // operations
     bool loadWorld(const QString& fileName);
+    bool loadTileset(const QString& filename);
+
+    void saveProjectResources();
+    void saveProjectFile();
+
+ // static data
+    static Project* spActiveProject;
 
  // data
-    QString mName;
-    QString mFileName;
-    Worlds  mWorlds;
+    QString  mName;
+    QString  mFileName;
+    QString  mBasePath;
+    TileSets mTileSets;
+    Worlds   mWorlds;
 };
 
 #endif // PROJECT_H

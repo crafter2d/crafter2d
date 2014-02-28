@@ -23,7 +23,7 @@
 #include "physicsbody.h"
 #include "physicssimulator.h"
 
-static const std::string sFactoryName = "physics";
+static const String sFactoryName = UTEXT("physics");
 
 PhysicsFactory::PhysicsFactory():
    SimulationFactory()
@@ -34,7 +34,7 @@ PhysicsFactory::~PhysicsFactory()
 {
 }
 
-const std::string& PhysicsFactory::getName() const
+const String& PhysicsFactory::getName() const
 {
    return sFactoryName;
 }
@@ -44,3 +44,8 @@ Simulator* PhysicsFactory::createSimulator()
    return new PhysicsSimulator();
 }
 
+bool PhysicsFactory::isCreatedBy(const Simulator& simulator) const
+{
+   const PhysicsSimulator* pbox2dsim = dynamic_cast<const PhysicsSimulator*>(&simulator);
+   return pbox2dsim != NULL;
+}

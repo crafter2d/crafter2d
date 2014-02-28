@@ -1,8 +1,0 @@
-<?xml version="1.0">
-<effect name="char">
-   <texture uniform="diffuseMap">char.png</texture>
-   <code type="CG" >
-      <vertex>simple_vert.cg</vertex>
-      <fragment>simple_frag.cg</fragment>
-   </code>
-</effect>

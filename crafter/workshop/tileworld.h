@@ -1,38 +1,34 @@
 #ifndef TILEWORLD_H
 #define TILEWORLD_H
 
-#include <QObject>
 #include <QVector>
 
-#include <engine/world/layertype.h>
+#include "resource.h"
+#include "world/tileworlddesc.h"
+#include "world/tilefield.h"
 
 class QSize;
 class QPainter;
 
-class Bound;
-class World;
-
-struct LayerDefinition;
+struct TileWorldDesc;
 
 class Tile;
+class TileBound;
 class TileMap;
 
-class TileWorld : public QObject
+class TileWorld : public Resource
 {
     Q_OBJECT
 
 public:
-    static TileWorld* fromWorld(World *pworld);
-
     enum Layout { eTopDown, eIsoMetric };
 
-    TileWorld();
+    explicit TileWorld(const TileWorldDesc& desc);
 
   // query
-    QString getName() const;
+    const TileWorldDesc& getDesc() const;
 
-    QString getFileName() const;
-    void setFileName(const QString& filename);
+    const QString& getName() const;
 
     QSize getMinimumSize() const;
 
@@ -41,55 +37,48 @@ public:
     void     setActiveMap(TileMap& active);
     void     setActiveMap(TileMap *active);
 
-    int      getMapCount() const;
-    TileMap& getMap(int index);
+    int            getMapCount() const;
+    const TileMap& getMap(int index) const;
+          TileMap& getMap(int index);
 
-    bool   hasSelectedBound() const;
-    Bound& getSelectedBound();
-    void   setSelectedBound(Bound* pbound);
+    bool       hasSelectedBound() const;
+    TileBound& getSelectedBound();
+    void       setSelectedBound(TileBound* pbound);
 
   // painting
     void paint(QPainter& painter);
 
   // maintenance
     void addMap(TileMap* pmap);
-    void addMap(LayerDefinition* pdefinition);
-
     void removeMap(TileMap& map);
 
-    Bound& addBound(const QPoint& mousepos);
+    int getBoundCount() const;
+    const TileBound& getBound(int index) const;
+    void addBound(TileBound* pbound);
+    TileBound& addBound(const QPoint& mousepos);
 
   // operations
-    Tile getTile(const QPoint& mousepos, LayerLevel level);
-    bool setTile(const QPoint& mousepos, LayerLevel level, const Tile &tile);
-    void clearTile(const QPoint& mousepos, LayerLevel level);
+    bool setTile(const QPoint& mousepos, QTileField::Level level, const Tile &tile);
+    void clearTile(const QPoint& mousepos, QTileField::Level level);
 
     void moveUp(int index);
     void moveDown(int index);
 
     void straightenBounds();
 
-    void save();
-
   // finding
-    Bound* findBound(const QPoint& mousepos);
-
-  // fixing
-    void fixMaps();
+    TileBound* findBound(const QPoint& mousepos);
 
 signals:
     void activeMapChanged(TileMap* pmap);
     void worldDirty();
 
 public slots:
-    void mapChanged(TileMap& map);
-
-protected:
-  // constructors
-    explicit TileWorld(World* pworld);
+    void on_mapChanged(TileMap& map);
 
 private:
     typedef QVector<TileMap*> Maps;
+    typedef QVector<TileBound*> Bounds;
 
     TileWorld(const TileWorld& that);
 
@@ -99,10 +88,11 @@ private:
     void paintSelectedBound(QPainter& painter);
 
   // data
-    World*   mpWorld;
-    Maps     mMaps;
-    TileMap* mpActiveMap;
-    Bound*   mpSelectedBound;
+    TileWorldDesc   mDesc;
+    Maps            mMaps;
+    Bounds          mBounds;
+    TileMap*        mpActiveMap;
+    TileBound*      mpSelectedBound;
 };
 
 #endif // TILEWORLD_H

@@ -6,12 +6,8 @@
 #include <QMouseEvent>
 #include <QPainter>
 
-#include <engine/world/bound.h>
-#include <engine/world/layer.h>
-#include <engine/world/world.h>
-
+#include "world/tilebound.h"
 #include "tileworld.h"
-#include "undosettile.h"
 
 TileView::TileView():
     QWidget(NULL),
@@ -21,7 +17,7 @@ TileView::TileView():
     mEditMode(eLayerMode),
     mpSelectedBound(NULL),
     mSelectedEdge(eNone),
-    mLevel(LayerLevel::eMid)
+    mLevel(QTileField::eMid)
 {
     ui->setupUi(this);
 
@@ -72,12 +68,12 @@ void TileView::setActiveTile(const Tile& tile)
     mTile = tile;
 }
 
-LayerLevel TileView::getLevel() const
+QTileField::Level TileView::getLevel() const
 {
     return mLevel;
 }
 
-void TileView::setLevel(LayerLevel level)
+void TileView::setLevel(QTileField::Level level)
 {
     mLevel = level;
 }
@@ -103,14 +99,13 @@ void TileView::prepare()
 
 bool TileView::selectBoundEdge(QMouseEvent *pevent)
 {
-    Vector pos(pevent->pos().x(), pevent->pos().y());
-    if ( mpSelectedBound->getLeft().distance(pos) <= 3 )
+    if ( QVector2D(mpSelectedBound->left() - pevent->pos()).lengthSquared() <= 3 )
     {
         // selected the edge for dragging
         mSelectedEdge = eLeft;
         return true;
     }
-    else if ( mpSelectedBound->getRight().distance(pos) <= 3 )
+    else if ( QVector2D(mpSelectedBound->right() - pevent->pos()).lengthSquared() <= 3 )
     {
         // selected the edge for dragging
         mSelectedEdge = eRight;
@@ -123,16 +118,6 @@ bool TileView::selectBoundEdge(QMouseEvent *pevent)
 void TileView::straightenBounds()
 {
 
-}
-
-void TileView::undo()
-{
-    mUndoStack.undo();
-}
-
-void TileView::redo()
-{
-    mUndoStack.redo();
 }
 
 // - Slots
@@ -187,10 +172,8 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
         switch ( mEditMode )
         {
         case eLayerMode:
+            if ( mpWorld->setTile(pevent->pos(), mLevel, mTile) )
             {
-                UndoSetTile* pundo = new UndoSetTile(*mpWorld, pevent->pos(), mLevel, mTile);
-                mUndoStack.push(pundo);
-
                 repaint();
             }
             break;
@@ -198,7 +181,7 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
             {
                 if ( pevent->modifiers() & Qt::CTRL )
                 {
-                    Bound& bound = mpWorld->addBound(pevent->pos());
+                    TileBound& bound = mpWorld->addBound(pevent->pos());
 
                     mpSelectedBound = &bound;
                     mSelectedEdge = eRight;
@@ -207,7 +190,7 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
                 }
                 else
                 {
-                    Bound* pbound = mpWorld->findBound(pevent->pos());
+                    TileBound* pbound = mpWorld->findBound(pevent->pos());
                     if ( pbound != NULL )
                     {
                         mpSelectedBound = pbound;
@@ -242,15 +225,13 @@ void TileView::mouseMoveEvent(QMouseEvent* pevent)
 {
     if ( mpSelectedBound != NULL )
     {
-        Vector pos(pevent->localPos().x(), pevent->localPos().y());
-
         switch ( mSelectedEdge )
         {
         case eLeft:
-            mpSelectedBound->setLeft(pos);
+            mpSelectedBound->setLeft(pevent->localPos());
             break;
         case eRight:
-            mpSelectedBound->setRight(pos);
+            mpSelectedBound->setRight(pevent->localPos());
             break;
         case eNone:
             // need offset of previous pos and this pevent->pos()

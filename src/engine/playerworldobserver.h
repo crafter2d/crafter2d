@@ -20,7 +20,7 @@
 #ifndef PLAYER_WORLD_OBSERVER_H_
 #define PLAYER_WORLD_OBSERVER_H_
 
-#include "worldobserver.h"
+#include "core/world/worldobserver.h"
 
 class Player;
 

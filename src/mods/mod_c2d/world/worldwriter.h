@@ -9,6 +9,11 @@ class WorldWriter : public c2d::ContentWriter
 public:
 
    virtual bool write(DataStream& stream, const String& filename) override;
+
+private:
+
+ // helpers
+   String readString(DataStream& stream);
 };
 
 #endif // WORLD_WRITER_H

@@ -41,6 +41,8 @@
 #include "core/script/scriptobject.h"
 #include "core/system/platform.h"
 #include "core/system/driver.h"
+#include "core/world/world.h"
+#include "core/world/worldrenderer.h"
 
 #include "engine/window/gamewindow.h"
 
@@ -56,9 +58,6 @@
 #include "net/events/worldchangedevent.h"
 #include "net/events/scriptevent.h"
 #include "net/netstream.h"
-
-#include "world/world.h"
-#include "world/worldrenderer.h"
 
 #include "player.h"
 #include "actionmap.h"
@@ -169,7 +168,7 @@ namespace c2d
       static const String sPaint = UTEXT("paint");
 
       mpRenderContext->clear();
-
+      
       if ( mpWorldRenderer != NULL )
       {
          if ( mpPlayer->hasController() )
@@ -181,7 +180,7 @@ namespace c2d
 
          mpWorldRenderer->render(*mpRenderContext, delta);
       }
-      
+
       mpScript->prepareCall(1);
       mpScript->arg(0, delta);
       mpScript->call(sPaint);

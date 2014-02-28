@@ -32,11 +32,11 @@
 #include "core/graphics/codepath.h"
 #include "core/graphics/rendercontext.h"
 #include "core/resource/resourcemanager.h"
+#include "core/world/nodevisitor.h"
 
 #include "core/script/scriptobject.h"
 
 #include "process.h"
-#include "nodevisitor.h"
 
 struct ParticleVertex {
 	Vector pos;

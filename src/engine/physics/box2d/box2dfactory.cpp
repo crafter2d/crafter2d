@@ -3,7 +3,7 @@
 
 #include "box2dsimulator.h"
 
-static const std::string sBox2DFactoryName = "box2d";
+static const String sBox2DFactoryName = UTEXT("box2d");
 
 Box2DFactory::Box2DFactory()
 {
@@ -13,7 +13,7 @@ Box2DFactory::~Box2DFactory()
 {
 }
 
-const std::string& Box2DFactory::getName() const
+const String& Box2DFactory::getName() const
 {
    return sBox2DFactoryName;
 }
@@ -22,3 +22,10 @@ Simulator* Box2DFactory::createSimulator()
 {
    return new Box2DSimulator();
 }
+
+bool Box2DFactory::isCreatedBy(const Simulator& simulator) const
+{
+   const Box2DSimulator* pbox2dsim = dynamic_cast<const Box2DSimulator*>(&simulator);
+   return pbox2dsim != NULL;
+}
+

@@ -25,11 +25,11 @@
 #include "core/vfs/unzipfile.h"
 #include "core/streams/arraystream.h"
 #include "core/physics/simulationfactoryregistry.h"
+#include "core/physics/simulationfactory.h"
 
-#include "bound.h"
-#include "layer.h"
-#include "world.h"
-#include "worldwriter.h"
+#include "core/world/bound.h"
+#include "core/world/layer.h"
+#include "core/world/world.h"
 
 DataStream& operator>>(DataStream& in, Layer& layer);
 
@@ -39,7 +39,7 @@ DataStream& operator>>(DataStream& in, Layer& layer);
 
 int WorldVersion2Reader::getCurrentVersion()
 {
-   return WorldWriter::getVersion();
+   return 2;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -100,7 +100,7 @@ bool WorldVersion2Reader::readSimulator(UnzipFile& zip)
          return false;
       }
 
-      std::string type = psimulator->Attribute("type");
+      String type = String::fromUtf8(psimulator->Attribute("type"));
 
       SimulationFactory* pfactory = SimulationFactoryRegistry::getInstance().findFactory(type);
       if ( pfactory == NULL )
@@ -109,7 +109,7 @@ bool WorldVersion2Reader::readSimulator(UnzipFile& zip)
          return false;
       }
 
-      getWorld().setSimulationFactory(*pfactory);
+      getWorld().setSimulator(pfactory->createSimulator());
    }
 
    return true;

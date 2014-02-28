@@ -20,11 +20,12 @@
 #ifndef SIMULATION_FACTORY_REGISTRY_H
 #define SIMULATION_FACTORY_REGISTRY_H
 
-#include "core/core_base.h"
-
-#include <string>
 #include <map>
 
+#include "core/core_base.h"
+#include "core/string/string.h"
+
+class Simulator;
 class SimulationFactory;
 
 class CORE_API SimulationFactoryRegistry
@@ -36,10 +37,11 @@ public:
 
    void addFactory(SimulationFactory* pfactory);
 
-   SimulationFactory* findFactory(const std::string& name);
+   SimulationFactory* findFactory(const String& name);
+   SimulationFactory* findFactory(Simulator& simulation);
 
 private:
-   typedef std::map<std::string, SimulationFactory*> FactoryMap;
+   typedef std::map<String, SimulationFactory*> FactoryMap;
 
    SimulationFactoryRegistry();
 

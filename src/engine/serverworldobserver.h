@@ -21,8 +21,7 @@
 #define SERVER_WORLD_OBSERVER_H
 
 #include "core/defines.h"
-
-#include "worldobserver.h"
+#include "core/world/worldobserver.h"
 
 namespace c2d
 {

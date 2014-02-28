@@ -1,18 +1,54 @@
 #include "project.h"
 
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <core/smartptr/autoptr.h>
-#include <core/string/string.h>
-
-#include <engine/world/layer.h>
-#include <engine/world/world.h>
-#include <engine/world/worldreader.h>
-
+#include "world/tileworldreader.h"
+#include "world/tileworldwriter.h"
+#include "world/tilesetreader.h"
+#include "world/tilesetwriter.h"
+#include "world/tileset.h"
 #include "tileworld.h"
+#include "newprojectdialog.h"
+
+// - Statics
+
+Project* Project::spActiveProject = NULL;
+
+Project* Project::createNew(QWidget* pparent)
+{
+    Project* pproject = NULL;
+
+    NewProjectDialog dialog(pparent);
+    if ( dialog.exec() == QDialog::Accepted )
+    {
+        QString projectname = dialog.getName();
+        QDir projectpath(dialog.getPath());
+        QString projectfile = projectpath.absoluteFilePath(projectname + ".craft");
+
+        pproject = new Project();
+        pproject->setName(projectname);
+        pproject->setFileName(projectfile);
+        pproject->create(projectpath);
+    }
+
+    return pproject;
+}
+
+Project& Project::getActiveProject()
+{
+    return *spActiveProject;
+}
+
+void Project::setActiveProject(Project *pproject)
+{
+    spActiveProject = pproject;
+}
+
+// - Project Implementation
 
 Project::Project():
     mName(),
@@ -48,6 +84,11 @@ const QString Project::getFolder() const
     return QFileInfo(mFileName).absolutePath();
 }
 
+Project::Worlds& Project::getWorlds()
+{
+    return mWorlds;
+}
+
 // - Query
 
 int Project::getWorldCount() const
@@ -60,7 +101,21 @@ TileWorld& Project::getWorld(int index)
     return *mWorlds[index];
 }
 
+QString Project::getFilePath(const QString& file)
+{
+    return getFolder() + QDir::separator() + file;
+}
+
 // - Operations
+
+void Project::create(QDir& path)
+{
+    // create the folders
+    path.mkdir("effects");
+    path.mkdir("images");
+    path.mkdir("tilesets");
+    path.mkdir("worlds");
+}
 
 void Project::addWorld(TileWorld* pworld)
 {
@@ -68,31 +123,59 @@ void Project::addWorld(TileWorld* pworld)
     emit dataChanged();
 }
 
+void Project::addTileSet(QTileSet *ptileset)
+{
+    mTileSets.append(ptileset);
+    emit dataChanged();
+}
+
 bool Project::loadWorld(const QString& fileName)
 {
-    String path = String::fromUtf8(fileName.toUtf8().data());
+    TileWorld* pworld = NULL;
 
-    AutoPtr<World> world = new World();
-
-    WorldReader reader;
-    if ( !reader.read(*world, path) )
+    QFile file(fileName);
+    if ( file.open(QIODevice::ReadOnly) )
     {
-        return false;
+        QTileWorldReader reader(file);
+        pworld = reader.read();
+        pworld->setResourceName(fileName);
+
+        addWorld(pworld);
+
+        return true;
     }
 
-    TileWorld* pworld = TileWorld::fromWorld(world.release());
-    addWorld(pworld);
+    return false;
+}
 
-    return true;
+bool Project::loadTileset(const QString& filename)
+{
+    QString path = mBasePath + QDir::separator() + filename;
+    QFile file(path);
+    if ( file.open(QIODevice::ReadOnly) )
+    {
+        TileSetReader reader(file);
+        QTileSet* ptileset = reader.read();
+        ptileset->setResourceName(filename);
+        addTileSet(ptileset);
+        return true;
+    }
+
+    return false;
 }
 
 bool Project::load(const QString &fileName)
 {
+    Project::setActiveProject(this);
+
     QFile file(fileName);
     file.open(QIODevice::ReadOnly);
 
     QXmlStreamReader stream;
     stream.setDevice(&file);
+
+    QFileInfo info(file);
+    mBasePath = info.absolutePath();
 
     setFileName(fileName);
 
@@ -113,8 +196,16 @@ bool Project::load(const QString &fileName)
                     }
                     else if ( stream.name() == "world" )
                     {
-                        QString filepath = stream.readElementText();
+                        QString filepath = mBasePath + QDir::separator() + stream.readElementText();
                         if ( !loadWorld(filepath) )
+                        {
+                            return false;
+                        }
+                    }
+                    else if ( stream.name() == "tileset" )
+                    {
+                        QString filepath = stream.readElementText();
+                        if ( !loadTileset(filepath) )
                         {
                             return false;
                         }
@@ -131,6 +222,45 @@ bool Project::load(const QString &fileName)
 
 void Project::save()
 {
+    saveProjectResources();
+    saveProjectFile();
+}
+
+void Project::saveProjectResources()
+{
+    QDir path(getFolder());
+
+    QTileSet* ptileset;
+    foreach (ptileset, mTileSets)
+    {
+        if ( ptileset->isDirty() )
+        {
+            QFile file(path.filePath(ptileset->getResourceName()));
+            if ( file.open(QIODevice::WriteOnly | QIODevice::Text) )
+            {
+                TileSetWriter writer(file);
+                writer.write(*ptileset);
+            }
+        }
+    }
+
+    TileWorld* pworld;
+    foreach (pworld, mWorlds)
+    {
+        if ( pworld->isDirty() )
+        {
+            QFile file(path.filePath(pworld->getResourceName()));
+            if ( file.open(QIODevice::WriteOnly) )
+            {
+                QTileWorldWriter writer(file);
+                writer.write(*pworld);
+            }
+        }
+    }
+}
+
+void Project::saveProjectFile()
+{
     QFile file(mFileName);
     file.open(QIODevice::WriteOnly);
 
@@ -141,28 +271,33 @@ void Project::save()
     stream.writeStartElement("project");
     stream.writeAttribute("name", mName);
 
+    QTileSet* ptileset;
+    foreach (ptileset, mTileSets)
+    {
+        stream.writeTextElement("tileset", ptileset->getResourceName());
+    }
+
     TileWorld* pworld;
     foreach (pworld, mWorlds)
     {
-        stream.writeTextElement("world", pworld->getFileName());
-
-        pworld->save();
+        stream.writeTextElement("world", pworld->getResourceName());
     }
 
     stream.writeEndElement();
     stream.writeEndDocument();
 }
 
-// - Fixing code
+// - Search
 
-// In some stage, a bug has been brought into live where index 0 it not tile 1! This
-// function will fix broken maps by substracting 1 of all tiles. Only -1 should mean that
-// there is no tile there.
-void Project::fixMaps()
+QTileSet* Project::lookupTileSet(const QString& name)
 {
-    TileWorld* pworld;
-    foreach (pworld, mWorlds)
+    QTileSet* pset = NULL;
+    foreach (pset, mTileSets)
     {
-        pworld->fixMaps();
+        if ( pset->getResourceName().contains(name) )
+        {
+            return pset;
+        }
     }
+    return NULL;
 }

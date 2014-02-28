@@ -4,6 +4,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <tchar.h>
+#include <tinyxml.h>
 
 #include "core/streams/bufferedstream.h"
 #include "core/content/contentwriter.h"
@@ -24,6 +25,22 @@ void loadModules(const String& srcfile, const String& dstFile)
    int index = srcfile.lastIndexOf(L'.');
    String extension = srcfile.subStr(index + 1, srcfile.length() - index - 1);
 
+   if ( extension == UTEXT("xml") )
+   {
+      TiXmlDocument doc(srcfile.toUtf8().c_str());
+      if ( !doc.LoadFile() )
+      {
+         // invalid file format
+         return;
+      }
+
+      TiXmlElement* proot = doc.FirstChildElement();
+      if ( proot != NULL )
+      {
+         extension = String::fromUtf8(proot->Value());
+      }
+   }
+
    ModuleCollectionIterator it = mods.getIterator();
    for ( ; it.isValid(); ++it )
    {
@@ -42,6 +59,8 @@ void loadModules(const String& srcfile, const String& dstFile)
                file.open(dstFile, File::EBinary | File::EWrite);
                file.write(stream.getData(), stream.getDataSize());
                file.close();
+
+               return;
             }
          }
          catch ( std::exception* )

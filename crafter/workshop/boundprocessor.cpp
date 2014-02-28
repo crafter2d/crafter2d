@@ -1,7 +1,7 @@
 #include "boundprocessor.h"
 
-#include <engine/world/bound.h>
-#include <engine/world/bounds.h>
+#include <core/world/bound.h>
+#include <core/world/bounds.h>
 
 #include "boundisland.h"
 

@@ -30,9 +30,11 @@ public:
    Box2DFactory();
    virtual ~Box2DFactory();
 
-   virtual const std::string& getName() const;
+   virtual const String& getName() const;
 
    virtual Simulator* createSimulator();
+
+   virtual bool isCreatedBy(const Simulator& simulator) const override;
 };
 
 #endif

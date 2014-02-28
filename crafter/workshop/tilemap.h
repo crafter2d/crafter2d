@@ -6,30 +6,38 @@
 #include <QSize>
 #include <QVector>
 
-#include <engine/world/layertype.h>
-#include <engine/world/tileset.h>
+#include "world/tilemapdesc.h"
+#include "world/tilefield.h"
 
 class QPainter;
 class QSize;
 
-class Layer;
 class Tile;
-class TileSet;
-class TileWorld;
+class QTileField;
+class QTileSet;
 
-class TileMap
+class TileMap : public QObject
 {
+    Q_OBJECT
+
 public:
-    explicit TileMap(TileWorld& world, Layer* player);
+    TileMap(const TileMapDesc& desc);
 
   // query
-    Layer& getLayer();
+    const QString& getName() const;
 
-    const QString getName() const;
-    const QSize &getSize() const;
+    const TileMapDesc& getDesc() const;
+          TileMapDesc& getDesc();
+    void               setDesc(const TileMapDesc& desc);
 
-    QSize getTileSize() const;
-    int   getTileCount() const;
+    const QTileField& getField() const;
+          QTileField& getField();
+
+    const QSize& getMinimumSize() const;
+
+    const QSize& getTileSize() const;
+    int          getTileCount() const;
+
     Tile& getTile(int tile);
 
     int indexOf(const Tile& tile) const;
@@ -39,31 +47,30 @@ public:
     void paint(QPainter& painter, Tile& tile, int x, int y);
 
   // operations
-    void load(const QString& path);
+    void setField(QTileField* pfield);
+    void setTileSet(QTileSet* ptileset);
 
-    Tile getTile(const QPoint& mousepos, LayerLevel level);
-    bool setTile(const QPoint& mousepos, LayerLevel level, const Tile &tile);
-    void clearTile(const QPoint& mousepos, LayerLevel level);
+    bool setTile(const QPoint& mousepos, QTileField::Level level, const Tile &tile);
+    void clearTile(const QPoint& mousepos, QTileField::Level level);
 
     void resize(const QSize& size);
 
-  // fixing
-    void fix();
+signals:
+    void mapChanged(TileMap& layer);
 
 private:
     typedef QVector<Tile*> Tiles;
 
   // operations
     void generateTiles();
+    bool setTile(const QPoint &mousepos, QTileField::Level level, int tileindex);
 
   // data
-    TileWorld&  mWorld;
-    Layer*      mpLayer;
-    QImage      mImage;
-    QSize       mSize;
-    TileSet     mTileSet;
+    TileMapDesc mDesc;
+    QTileField* mpField;
+    QTileSet*   mpTileSet;
+    QSize       mPixelSize;
     Tiles       mTiles;
-
 };
 
 #endif // TILEMAP_H

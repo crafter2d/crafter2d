@@ -1,7 +1,7 @@
 #include "boundisland.h"
 
 #include <math.h>
-#include <engine/world/bound.h>
+#include <core/world/bound.h>
 
 static const int MAXDISTANCE = 3;
 

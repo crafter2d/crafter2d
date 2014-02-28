@@ -8,10 +8,11 @@
 #include <QMdiSubWindow>
 #include <QMessageBox>
 
+#include "world/tileworldimporter.h"
+
 #include "aboutdialog.h"
 #include "newprojectdialog.h"
 #include "newlayerdialog.h"
-#include "newworlddialog.h"
 #include "project.h"
 #include "projectpanel.h"
 #include "layerpanel.h"
@@ -19,6 +20,10 @@
 #include "tileview.h"
 #include "tileviewwindow.h"
 #include "tileworld.h"
+#include "worldwizard.h"
+#include "scriptview.h"
+
+#pragma warning (disable: 4351)
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
@@ -31,8 +36,8 @@ MainWindow::MainWindow(QWidget *parent):
     ui->setupUi(this);
 
     QActionGroup* pgroup = new QActionGroup(this);
-    pgroup->addAction(ui->actionEdit_layers);
-    pgroup->addAction(ui->actionEdit_bounds);
+    pgroup->addAction(ui->actionEdit_Layers);
+    pgroup->addAction(ui->actionEdit_Bounds);
 
     restorePanels();
     readSettings();
@@ -88,7 +93,7 @@ void MainWindow::setRecentFileActions()
         QAction* paction = mpRecentFileActions[index];
         paction->setVisible(false);
 
-        connect(paction, SIGNAL(triggered()), this, SLOT(on_actionOpenRecentFile_triggered()));
+        connect(paction, SIGNAL(triggered()), this, SLOT(on_actionFile_OpenRecentFile_triggered()));
     }
 
     updateRecentFileList();
@@ -219,15 +224,15 @@ void MainWindow::addWindow(TileWorld& world)
 
 // - Search
 
-TileViewWindow* MainWindow::findWindow(TileWorld* pworld)
+TileViewWindow* MainWindow::findWindow(TileWorld& world)
 {
     QMdiSubWindow* psubwindow = NULL;
     QList<QMdiSubWindow*> subwindows = ui->centralWidget->subWindowList();
     foreach (psubwindow, subwindows)
     {
         TileViewWindow* pwindow = static_cast<TileViewWindow*>(psubwindow->widget());
-        TileWorld& world = pwindow->getTileView().getWorld();
-        if ( &world == pworld )
+        TileWorld& viewworld = pwindow->getTileView().getWorld();
+        if ( &viewworld == &world )
         {
             return pwindow;
         }
@@ -246,101 +251,24 @@ void MainWindow::closeEvent(QCloseEvent *pevent)
 
 // - Signal handlers
 
-void MainWindow::on_actionNew_triggered()
+void MainWindow::on_actionFile_NewProject_triggered()
 {
-    NewProjectDialog dialog;
-    int result = dialog.exec();
-
-    if ( result == QDialog::Accepted )
+    Project* pproject = Project::createNew(this);
+    if ( pproject != NULL )
     {
-        QString projectname = dialog.getName();
-        QDir projectpath(dialog.getPath());
-        QString projectfile = projectpath.absoluteFilePath(projectname + ".craft");
-
-        Project* pproject = new Project();
-        pproject->setName(projectname);
-        pproject->setFileName(projectfile);
-
         setProject(pproject);
         saveProject();
     }
 }
 
-void MainWindow::on_actionSave_triggered()
+void MainWindow::on_actionFile_NewWorld_triggered()
 {
-    saveProject();
-}
-
-void MainWindow::on_actionOpen_triggered()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Project"), "e:/devel", tr("Crafter Project Files (*.craft)"));
-
-    if ( !fileName.isEmpty() )
+    if ( mpProject != NULL )
     {
-        loadProject(fileName);
-    }
-}
+        TileWorld* pworld = WorldWizard::show();
 
-void MainWindow::on_actionOpenRecentFile_triggered()
-{
-    QAction *action = qobject_cast<QAction *>(sender());
-    if ( action != NULL )
-    {
-        loadProject(action->data().toString());
-    }
-}
-
-void MainWindow::on_actionE_xit_triggered()
-{
-    close();
-}
-
-void MainWindow::on_actionEdit_Undo_triggered()
-{
-    TileView* pview = getActiveView();
-    if ( pview != NULL )
-    {
-        pview->undo();
-    }
-}
-
-void MainWindow::on_actionEdit_Redo_triggered()
-{
-    TileView* pview = getActiveView();
-    if ( pview != NULL )
-    {
-        pview->redo();
-    }
-}
-
-void MainWindow::on_actionEdit_layers_triggered()
-{
-    TileView* pview = getActiveView();
-    if ( pview != NULL )
-    {
-        pview->setEditMode(TileView::eLayerMode);
-    }
-}
-
-void MainWindow::on_actionEdit_bounds_triggered()
-{
-    TileView* pview = getActiveView();
-    if ( pview != NULL )
-    {
-        pview->setEditMode(TileView::eBoundMode);
-    }
-}
-
-void MainWindow::on_actionAdd_world_triggered()
-{
-    TileWorld* pworld = NewWorldDialog::getWorld();
-    if ( pworld != NULL )
-    {
-        QString filename = QFileDialog::getSaveFileName(NULL, tr("Save Project"), mpProject->getFolder(), tr("Crafter World Files (*.jwl)"));
-        if ( !filename.isEmpty() )
+        if ( pworld != NULL )
         {
-            pworld->setFileName(filename);
-
             mpProject->addWorld(pworld);
         }
         else
@@ -350,42 +278,100 @@ void MainWindow::on_actionAdd_world_triggered()
     }
 }
 
-void MainWindow::on_actionAdd_layer_triggered()
+void MainWindow::on_actionFile_NewLayer_triggered()
 {
     TileView* pview = getActiveView();
     if ( pview != NULL )
     {
-        LayerDefinition* pdefinition = NewLayerDialog::getLayer();
-        if ( pdefinition != NULL )
+        TileMap* pmap = NewLayerDialog::getMap();
+        if ( pmap != NULL )
         {
-            pview->getWorld().addMap(pdefinition);
+            pview->getWorld().addMap(pmap);
         }
     }
 }
 
-void MainWindow::on_actionViewProject_triggered()
+void MainWindow::on_actionFile_NewScript_triggered()
 {
-    showPanel(mpProjectPanel, ui->actionViewProject->isChecked());
+    ScriptView* pview = new ScriptView();
+    pview->show();
+
+    ui->centralWidget->addSubWindow(pview);
 }
 
-void MainWindow::on_actionViewLayers_triggered()
+void MainWindow::on_actionFile_ImportWorld_triggered()
 {
-    showPanel(mpLayerPanel, ui->actionViewLayers->isChecked());
-}
-
-void MainWindow::on_actionViewTiles_triggered()
-{
-    showPanel(mpTilesPanel, ui->actionViewTiles->isChecked());
-}
-
-void MainWindow::on_actionProject_Fix_world_triggered()
-{
-    if ( mpProject != NULL )
+    QString filename = QFileDialog::getOpenFileName(this, "Import World");
+    if ( !filename.isNull() )
     {
-        mpProject->fixMaps();
-
-        repaint();
+        TileWorld* pworld = QTileWorldImporter::import(this, filename);
+        if ( pworld != NULL )
+        {
+            mpProject->addWorld(pworld);
+        }
     }
+}
+
+void MainWindow::on_actionFile_Save_triggered()
+{
+    saveProject();
+}
+
+void MainWindow::on_actionFile_Open_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Project"), "e:/devel", tr("Crafter Project Files (*.craft)"));
+
+    if ( !fileName.isEmpty() )
+    {
+        loadProject(fileName);
+    }
+}
+
+void MainWindow::on_actionFile_OpenRecentFile_triggered()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if ( action != NULL )
+    {
+        loadProject(action->data().toString());
+    }
+}
+
+void MainWindow::on_actionFile_Exit_triggered()
+{
+    close();
+}
+
+void MainWindow::on_actionEdit_Layers_triggered()
+{
+    TileView* pview = getActiveView();
+    if ( pview != NULL )
+    {
+        pview->setEditMode(TileView::eLayerMode);
+    }
+}
+
+void MainWindow::on_actionEdit_Bounds_triggered()
+{
+    TileView* pview = getActiveView();
+    if ( pview != NULL )
+    {
+        pview->setEditMode(TileView::eBoundMode);
+    }
+}
+
+void MainWindow::on_actionView_Project_triggered()
+{
+    showPanel(mpProjectPanel, ui->actionView_Project->isChecked());
+}
+
+void MainWindow::on_actionView_Layers_triggered()
+{
+    showPanel(mpLayerPanel, ui->actionView_Layers->isChecked());
+}
+
+void MainWindow::on_actionView_Tiles_triggered()
+{
+    showPanel(mpTilesPanel, ui->actionView_Tiles->isChecked());
 }
 
 void MainWindow::on_actionAbout_triggered()

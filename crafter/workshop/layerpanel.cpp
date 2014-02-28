@@ -7,8 +7,6 @@
 #include <QMdiSubWindow>
 #include <QMenu>
 
-#include <engine/world/layer.h>
-
 #include "newlayerdialog.h"
 #include "mainwindow.h"
 #include "resizelayerdialog.h"
@@ -92,7 +90,7 @@ void LayerPanel::setActiveWorld()
     }
 }
 
-void LayerPanel::setLevel(LayerLevel level)
+void LayerPanel::setLevel(QTileField::Level level)
 {
     TileView* pview = getMainWindow().getActiveView();
     if ( pview != NULL )
@@ -173,8 +171,7 @@ void LayerPanel::on_resizeact_triggered()
         Q_ASSERT(pmapmodel->hasWorld());
         TileWorld* pworld = pmapmodel->getWorld();
         TileMap& map = pworld->getMap(index.row());
-        Layer& layer = map.getLayer();
-        QSize size(layer.getDefinition().width, layer.getDefinition().height);
+        QSize size = map.getDesc().size;
 
         if ( ResizeLayerDialog::resize(NULL, size) )
         {
@@ -185,15 +182,15 @@ void LayerPanel::on_resizeact_triggered()
 
 void LayerPanel::on_buttonFront_clicked()
 {
-    setLevel(LayerLevel::eFront);
+    setLevel(QTileField::eFront);
 }
 
 void LayerPanel::on_buttonMid_clicked()
 {
-    setLevel(LayerLevel::eMid);
+    setLevel(QTileField::eMid);
 }
 
 void LayerPanel::on_buttonBack_clicked()
 {
-    setLevel(LayerLevel::eBack);
+    setLevel(QTileField::eBack);
 }

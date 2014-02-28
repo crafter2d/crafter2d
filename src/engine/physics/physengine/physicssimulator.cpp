@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "physicssimulator.h"
 
-#include "engine/world/bound.h"
-#include "engine/world/world.h"
+#include "core/world/bound.h"
+#include "core/world/world.h"
 
 #include "collisiondata.h"
 #include "collisiondetector.h"

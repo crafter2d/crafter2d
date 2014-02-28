@@ -24,7 +24,7 @@
 
 #include "core/streams/datastream.h"
 
-#include "engine/world/world.h"
+#include "core/world/world.h"
 
 IMPLEMENT_REPLICATABLE(WorldChangedEventId, WorldChangedEvent, NetEvent)
 

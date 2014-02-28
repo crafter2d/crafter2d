@@ -26,15 +26,15 @@ project "mod_c2d"
 
 	configuration "windows"
 		defines { "WIN32" }
-		includedirs { path.join(libdir, "tinyxml/include") }
-		libdirs { path.join(libdir, "tinyxml/lib") }
+		includedirs { path.join(libdir, "tinyxml/include"), path.join(libdir, "zlib/include") }
+		libdirs { path.join(libdir, "tinyxml/lib"), path.join(libdir, "zlib/lib") }
 		links { "d3dcompiler.lib" }
 	
 	configuration { "Debug", "windows" }
-		links { "tinyxmld_STL.lib" }
+		links { "tinyxmld_STL.lib", "zlib1_d.lib" }
 			
 	configuration { "Release", "windows" }
-		links { "tinyxml_STL.lib" }
+		links { "tinyxml_STL.lib", "zlib1.lib" }
 
 	configuration "linux"
 		defines { "LINUX" }

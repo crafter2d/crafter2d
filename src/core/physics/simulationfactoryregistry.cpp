@@ -60,8 +60,23 @@ void SimulationFactoryRegistry::addFactory(SimulationFactory* pfactory)
    mFactories[pfactory->getName()] = pfactory;
 }
 
-SimulationFactory* SimulationFactoryRegistry::findFactory(const std::string& name)
+SimulationFactory* SimulationFactoryRegistry::findFactory(const String& name)
 {
    FactoryMap::iterator it = mFactories.find(name);
    return ( it != mFactories.end() ) ? it->second : NULL;
+}
+
+SimulationFactory* SimulationFactoryRegistry::findFactory(Simulator& simulator)
+{
+   FactoryMap::iterator it = mFactories.begin();
+   for ( ; it != mFactories.end(); ++it )
+   {
+      SimulationFactory* pfactory = it->second;
+      if ( pfactory->isCreatedBy(simulator) )
+      {
+         return pfactory;
+      }
+   }
+
+   return NULL;
 }
