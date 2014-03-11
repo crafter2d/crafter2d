@@ -29,48 +29,48 @@
 namespace c2d
 {
 
-   /// \fn Sound::Sound(FMOD::Sound* psound)
+   /// \fn FModSound::FModSound(FMOD::Sound* psound)
    /// \brief initializes internal member variables. Remember to load the sounds via the
    /// \param psound a FMOD sound object
-   Sound::Sound(FMOD::Sound* psound):
+   FModSound::FModSound(FMOD::Sound* psound) :
       mpSound(psound),
       mpChannel(NULL)
    {
    }
 
-   /// \fn Sound::clone()
+   /// \fn FModSound::clone()
    /// \brief Creates a clone of this sound object. In case you need multiple instances
    /// of a sound, it's best to clone a sound object to minimize allocated resources (the
    /// sound data is in memory only once after calling clone, while loading a sound twice
    /// would result in the data being twice in memory).
    /// \returns  clone of this sound object that is ready to be played
-   Sound* Sound::clone()
+   Sound* FModSound::clone()
    {
-	   Sound* presult = new Sound(mpSound);
+      Sound* presult = new FModSound(mpSound);
       return presult;
    }
 
-   /// \fn Sound::setPosition(const Vector& pos)
+   /// \fn FModSound::setPosition(const Vector& pos)
    /// \brief Set the position of this sound object in 2D world space.
    /// \param pos the position in 2D world space
-   void Sound::setPosition (const Vector& pos)
+   void FModSound::setPosition(const Vector& pos)
    {
       // set the position of the sound
    }
 
-   void Sound::pause()
+   void FModSound::pause()
    {
       mpChannel->setPaused(true);
    }
 
-   void Sound::resume()
+   void FModSound::resume()
    {
       mpChannel->setPaused(false);
    }
 
-   /// \fn Sound::stop()
+   /// \fn FModSound::stop()
    /// \brief Stops playing the sound in case it is still active.
-   void Sound::stop() const
+   void FModSound::stop() const
    {
       ASSERT_PTR(mpChannel);
       mpChannel->stop();

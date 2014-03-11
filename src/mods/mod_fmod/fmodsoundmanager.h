@@ -2,6 +2,8 @@
 #ifndef FMOD_SOUND_MANAGER_H
 #define FMOD_SOUND_MANAGER_H
 
+#include "core/sound/soundmanager.h"
+
 namespace FMOD
 {
    class System;
@@ -13,22 +15,22 @@ namespace c2d
 {
    class Sound;
 
-   class SoundManager
+   class FModSoundManager : public SoundManager
    {
    public:
-      SoundManager();
+      FModSoundManager();
 
     // operations
-      bool initialize();
-      void destroy();
-      void update();
+      virtual bool initialize();
+      virtual void destroy();
+      virtual void update();
 
     // media player functions
-      bool play(const Sound& sound);
+      virtual bool play(const Sound& sound);
 
     // factory functions
-      Sound* createSound(const String& filename) const;
-      Sound* createTrack(const String& filename) const;
+      virtual Sound* createSound(const String& filename) const;
+      virtual Sound* createTrack(const String& filename) const;
 
    private:
 
