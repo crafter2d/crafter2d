@@ -17,9 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "sound.h"
+#include "fmodsound.h"
 #ifndef JENGINE_INLINE
-#  include "sound.inl"
+#  include "fmodsound.inl"
 #endif
 
 #include <fmod.hpp>

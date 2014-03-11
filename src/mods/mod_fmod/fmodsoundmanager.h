@@ -1,6 +1,6 @@
 
-#ifndef SOUND_MANAGER_H
-#define SOUND_MANAGER_H
+#ifndef FMOD_SOUND_MANAGER_H
+#define FMOD_SOUND_MANAGER_H
 
 namespace FMOD
 {
@@ -37,4 +37,4 @@ namespace c2d
    };
 }
 
-#endif // SOUND_MANAGER_H
+#endif // FMOD_SOUND_MANAGER_H

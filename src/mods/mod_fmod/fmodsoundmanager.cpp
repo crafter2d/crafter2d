@@ -1,5 +1,5 @@
 
-#include "soundmanager.h"
+#include "fmodsoundmanager.h"
 
 #include <fmod.hpp>
 #include <fmod_errors.h>
@@ -7,7 +7,7 @@
 #include "core/string/string.h"
 #include "core/defines.h"
 
-#include "sound.h"
+#include "fmodsound.h"
 
 #define SUCCEEEDED(r)(r == FMOD_OK)
 #define FAILED(r)(r != FMOD_OK)
