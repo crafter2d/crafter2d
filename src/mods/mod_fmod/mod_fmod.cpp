@@ -5,10 +5,9 @@
 // Windows Header Files:
 #include <windows.h>
 
-#include "core/modules/contentmodule.h"
 #include "core/modules/modulecollection.h"
-#include "core/graphics/effect.h"
-#include "core/system/uuid.h"
+#include "core/modules/soundmodule.h"
+#include "fmodsoundmanager.h"
 
 #ifdef WIN32
 #ifdef MOD_EXPORTS
@@ -22,9 +21,11 @@
 
 using namespace c2d;
 
-extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
+extern "C" MOD_API Module* cdecl getModule()
 {
    ModuleCollection* pmodules = new ModuleCollection();
 
-   return pmodules;
+   SoundModule* pmod = new SoundModule(new FModSoundManager());
+   
+   return pmod;
 }
