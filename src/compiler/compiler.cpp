@@ -56,9 +56,15 @@ void loadModules(const String& srcfile, const String& dstFile)
             if ( writer.write(stream, srcfile) )
             {
                StdioFile file;
-               file.open(dstFile, File::EBinary | File::EWrite);
-               file.write(stream.getData(), stream.getDataSize());
-               file.close();
+               if ( file.open(dstFile, File::EBinary | File::EWrite) )
+               {
+                  file.write(stream.getData(), stream.getDataSize());
+                  file.close();
+               }
+               else
+               {
+                  // error!
+               }
 
                return;
             }

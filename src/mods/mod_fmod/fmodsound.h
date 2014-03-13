@@ -43,11 +43,12 @@ namespace c2d
    public:
 	   virtual Sound*         clone();
 
-	   void           pause();
-      void           resume();
-	   void           stop() const;
+	   virtual void           pause();
+      virtual void           resume();
+      virtual void           stop() const;
 
-	   void           setPosition( const Vector& pos );
+      virtual void           setPosition(const Vector& pos);
+      virtual void           setLooping();
 
    private:
       friend class FModSoundManager;

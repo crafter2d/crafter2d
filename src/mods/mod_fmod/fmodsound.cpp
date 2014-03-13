@@ -58,6 +58,11 @@ namespace c2d
       // set the position of the sound
    }
 
+   void FModSound::setLooping()
+   {
+      mpSound->setMode(FMOD_LOOP_NORMAL);
+   }
+
    void FModSound::pause()
    {
       mpChannel->setPaused(true);

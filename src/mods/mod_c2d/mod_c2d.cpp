@@ -16,6 +16,9 @@
 #include "entity/entityreader.h"
 #include "entity/entitywriter.h"
 
+#include "sound/soundreader.h"
+#include "sound/soundwriter.h"
+
 #include "texture/texturereader.h"
 #include "texture/texturewriter.h"
 
@@ -43,6 +46,9 @@ static const Uuid EffectUUID(0x569B9122, 0x695E, 0x46D5, 0xA1F6, 0xec808010572d)
 // {89E326B3-1606-4137-BA81-8EBD5A158EEC}
 static const Uuid EntityUUID(0x89E326B3, 0x1606, 0x4137, 0xBA81, 0x8EBD5A158EEC);
 
+// {C21021BC-B904-4FC5-95B3-D7BC2218C92B}
+static const Uuid SoundUUID(0xC21021BC, 0xB904, 0x4FC5, 0x95B3, 0xD7BC2218C92B);
+
 // {EEDD2CF4-ABA2-4831-9966-C14FE9F1CDFC}
 static const Uuid TextureUUID(0xEEDD2CF4, 0xABA2, 0x4831, 0x9966, 0xC14FE9F1CDFC);
 
@@ -67,6 +73,12 @@ extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
    pentitymod->setReader(new EntityReader());
    pentitymod->setWriter(new EntityWriter());
    pmodules->add(pentitymod);
+
+   ContentModule* psoundmod = new ContentModule(SoundUUID);
+   psoundmod->setSupportedFiles(UTEXT("ogg"));
+   psoundmod->setReader(new SoundReader());
+   psoundmod->setWriter(new SoundWriter());
+   pmodules->add(psoundmod);
 
    ContentModule* ptexturemod = new ContentModule(TextureUUID);
    ptexturemod->setSupportedFiles(UTEXT("dds"));

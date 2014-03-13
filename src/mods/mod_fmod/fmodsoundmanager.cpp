@@ -4,6 +4,7 @@
 #include <fmod.hpp>
 #include <fmod_errors.h>
 
+#include "core/streams/datastream.h"
 #include "core/string/string.h"
 #include "core/defines.h"
 
@@ -88,10 +89,15 @@ namespace c2d
       return NULL;
    }
 
-   Sound* FModSoundManager::createTrack(const String& filename) const
+   Sound* FModSoundManager::createSound(const DataStream& stream) const
    {
+      FMOD_CREATESOUNDEXINFO info;
+      memset(&info, 0, sizeof(FMOD_CREATESOUNDEXINFO));
+      info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+      info.length = stream.getDataSize();
+
       FMOD::Sound* psound = NULL;
-      FMOD_RESULT result = mpSystem->createSound(filename.toUtf8().c_str(), FMOD_HARDWARE | FMOD_LOOP_NORMAL | FMOD_2D, 0, &psound);
+      FMOD_RESULT result = mpSystem->createSound(stream.getData(), FMOD_HARDWARE | FMOD_OPENMEMORY, &info, &psound);
       if ( SUCCEEEDED(result) )
       {
          return new FModSound(psound);

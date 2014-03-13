@@ -4,6 +4,7 @@
 
 #include "core/core_base.h"
 
+class DataStream;
 class String;
 
 namespace c2d
@@ -25,7 +26,7 @@ namespace c2d
 
       // factory functions
       virtual Sound* createSound(const String& filename) const = 0;
-      virtual Sound* createTrack(const String& filename) const = 0;
+      virtual Sound* createSound(const DataStream& stream) const = 0;
    };
 }
 

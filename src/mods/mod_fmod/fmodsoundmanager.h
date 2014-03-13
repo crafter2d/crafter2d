@@ -9,8 +9,6 @@ namespace FMOD
    class System;
 }
 
-class String;
-
 namespace c2d
 {
    class Sound;
@@ -30,7 +28,7 @@ namespace c2d
 
     // factory functions
       virtual Sound* createSound(const String& filename) const;
-      virtual Sound* createTrack(const String& filename) const;
+      virtual Sound* createSound(const DataStream& stream) const;
 
    private:
 

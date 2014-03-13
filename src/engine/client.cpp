@@ -40,6 +40,8 @@
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 #include "core/script/scriptobject.h"
+#include "core/sound/soundmanager.h"
+#include "core/sound/sound.h"
 #include "core/system/platform.h"
 #include "core/system/driver.h"
 #include "core/world/world.h"
@@ -526,15 +528,21 @@ namespace c2d
       mpPlayer->initialize(world);
 
       getContentManager().setSimulator(world.getSimulator());
+      getContentManager().setSoundManager(*mpSoundManager);
 
       // run the onWorldChanged script
       mpScript->prepareCall(1);
       mpScript->arg(0, &world);
       mpScript->call(UTEXT("onWorldChanged"));
 
-      //mpBackgroundMusic = mSoundManager.createTrack(UTEXT("../sounds/grassy_plain.ogg"));
-      //mSoundManager.play(*mpBackgroundMusic);
+      mpBackgroundMusic = getContentManager().loadContent<Sound>(UTEXT("sounds/grassy_plain"));
+      if ( mpBackgroundMusic != NULL )
+      {
+         mpBackgroundMusic->setLooping();
 
+         mpSoundManager->play(*mpBackgroundMusic);
+      }
+      
       Process::notifyWorldChanged();
    }
 

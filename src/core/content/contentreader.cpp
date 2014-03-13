@@ -7,7 +7,8 @@ namespace c2d
 {
    ContentReader::ContentReader() :
       mpDevice(NULL),
-      mpSimulator(NULL)
+      mpSimulator(NULL),
+      mpSoundManager(NULL)
    {
    }
 
@@ -54,5 +55,21 @@ namespace c2d
    void ContentReader::setPhysicsSimulator(Simulator* psimulator)
    {
       mpSimulator = psimulator;
+   }
+
+   bool ContentReader::hasSoundManager()
+   {
+      return mpSoundManager != NULL;
+   }
+
+   SoundManager& ContentReader::getSoundManager()
+   {
+      ASSERT_PTR(mpSoundManager);
+      return *mpSoundManager;
+   }
+
+   void ContentReader::setSoundManager(SoundManager* psoundmanager)
+   {
+      mpSoundManager = psoundmanager;
    }
 }

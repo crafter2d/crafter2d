@@ -2,13 +2,14 @@
 #ifndef SOUND_H
 #define SOUND_H
 
+#include "core/content/content.h"
 #include "core/core_base.h"
 
 class Vector;
 
 namespace c2d
 {
-   class CORE_API Sound
+   class CORE_API Sound : public IContent
    {
    public:
       virtual Sound*         clone() = 0;
@@ -16,6 +17,9 @@ namespace c2d
       virtual void           pause() = 0;
       virtual void           resume() = 0;
       virtual void           stop() const = 0;
+
+      /// use this method to make the sound looping (e.g. a track)
+      virtual void           setLooping() = 0;
 
       virtual void           setPosition(const Vector& pos) = 0;
    };
