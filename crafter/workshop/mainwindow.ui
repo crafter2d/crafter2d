@@ -101,6 +101,7 @@
     <property name="title">
      <string>Project</string>
     </property>
+    <addaction name="actionProject_Build"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -287,6 +288,11 @@
   <action name="actionFile_NewScript">
    <property name="text">
     <string>Script</string>
+   </property>
+  </action>
+  <action name="actionProject_Build">
+   <property name="text">
+    <string>Build</string>
    </property>
   </action>
  </widget>

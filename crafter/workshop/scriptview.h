@@ -9,6 +9,8 @@ namespace Ui {
 class ScriptView;
 }
 
+class ScriptFile;
+
 class ScriptView : public QTextEdit
 {
     Q_OBJECT
@@ -17,7 +19,13 @@ public:
     explicit ScriptView(QWidget *parent = 0);
     ~ScriptView();
 
+  // operations
+    void setScript(ScriptFile& script);
+
 private:
+
+  // get/set
+    void setHighlighter(YasSyntaxHighlighter *phighlighter);
 
   // data
     Ui::ScriptView *ui;

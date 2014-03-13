@@ -222,6 +222,15 @@ void MainWindow::addWindow(TileWorld& world)
     ui->centralWidget->addSubWindow(pwindow);
 }
 
+void MainWindow::addWindow(ScriptFile& script)
+{
+    ScriptView* pview = new ScriptView();
+    pview->setScript(script);
+    pview->show();
+
+    ui->centralWidget->addSubWindow(pview);
+}
+
 // - Search
 
 TileViewWindow* MainWindow::findWindow(TileWorld& world)
@@ -357,6 +366,11 @@ void MainWindow::on_actionEdit_Bounds_triggered()
     {
         pview->setEditMode(TileView::eBoundMode);
     }
+}
+
+void MainWindow::on_actionProject_Build_triggered()
+{
+    mpProject->build();
 }
 
 void MainWindow::on_actionView_Project_triggered()

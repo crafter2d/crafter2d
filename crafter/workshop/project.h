@@ -7,6 +7,7 @@
 
 class QDir;
 class QTileSet;
+class ScriptFile;
 class TileWorld;
 
 class Project : public QObject
@@ -16,6 +17,7 @@ class Project : public QObject
 public:
     typedef QVector<QTileSet*> TileSets;
     typedef QVector<TileWorld*> Worlds;
+    typedef QVector<ScriptFile*> Scripts;
 
     static Project* createNew(QWidget *pparent = 0);
 
@@ -34,6 +36,7 @@ public:
     const QString getFolder() const;
 
     Worlds &getWorlds();
+    Scripts& getScripts();
 
  // query
     int        getWorldCount() const;
@@ -50,6 +53,8 @@ public:
 
     bool load(const QString& fileName);
     void save();
+
+    void build();
 
  // search
     QTileSet* lookupTileSet(const QString& name);
@@ -74,6 +79,7 @@ private:
     QString  mBasePath;
     TileSets mTileSets;
     Worlds   mWorlds;
+    Scripts  mScripts;
 };
 
 #endif // PROJECT_H

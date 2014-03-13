@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tileset width="32" height="32" count="41">
+    <texture name="images/blocks.dds"/>
+</tileset>
