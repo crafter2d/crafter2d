@@ -7,6 +7,7 @@
 #include "core/vfs/filesystem.h"
 
 #include "generators/projectgenerator.h"
+#include "generators/modulegenerator.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,12 +26,21 @@ int main(int argc, char *argv[])
       ASSERT(argument.getType() == CommandLineArgument::eCommand);
 
       FileSystem& filesystem = FileSystem::getInstance();
-      filesystem.addPath("../scripts");
+      filesystem.addPath(UTEXT("../scripts"));
 
       Generator* pgenerator = NULL;
-      if ( argument.getName() == String("project") )
+      if ( argument.getName() == UTEXT("project") )
       {
          pgenerator = new ProjectGenerator();
+      }
+      else if ( argument.getName() == UTEXT("mod") )
+      {
+         pgenerator = new ModuleGenerator();
+      }
+      else
+      {
+         std::cerr << argument.getName().toUtf8() << " is not a valid target.";
+         return 1;
       }
 
       pgenerator->setFileSystem(filesystem);

@@ -18,13 +18,12 @@
 #endif
 
 // {{GUID}}
-static const Uuid {{Name}}Uuid();
+static const Uuid {{NAME}}Uuid();
 
 extern "C" MOD_API Module* cdecl getModule()
 {
-   {{BASE_CLASS}}* pmodule = new {{BASE_CLASS}}();
-   {{ADDITIONAL_INIT}}
-   pmodule->setUID({{NAME}}Uuid);
+   {{BASE_CLASS}}* pmodule = new {{BASE_CLASS}}({{NAME}}Uuid);
+   {{INIT}}
    pmodule->setReader(new {{NAME}}Reader());
    pmodule->setWriter(new {{NAME}}Writer());
    
