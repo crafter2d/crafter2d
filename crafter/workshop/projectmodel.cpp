@@ -1,7 +1,10 @@
 #include "projectmodel.h"
 
 #include "project/projecttreetextitem.h"
+#include "project/projecttreescriptitem.h"
 #include "project/projecttreeworlditem.h"
+
+#include "script/scriptfile.h"
 
 #include "project.h"
 #include "tileworld.h"
@@ -146,6 +149,14 @@ void ProjectModel::buildTree()
 {
     ProjectTreeItem* pscripts = new ProjectTreeTextItem("Scripts");
     mpRoot->addChild(pscripts);
+
+    Project::Scripts& scripts = mpProject->getScripts();
+    for ( int index = 0; index < scripts.size(); ++index )
+    {
+        ScriptFile& script = *scripts[index];
+        ProjectTreeItem* pitem = new ProjectTreeScriptItem(script);
+        pscripts->addChild(pitem);
+    }
 
     ProjectTreeItem* pworlds = new ProjectTreeTextItem("Worlds");
     mpRoot->addChild(pworlds);

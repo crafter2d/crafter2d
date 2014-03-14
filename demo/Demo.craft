@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Demo">
+	<script>scripts/demo/ClubAttackState.as</script>
+	<script>scripts/demo/DemoActionMap.as</script>
+	<script>scripts/demo/DemoClientActionMap.as</script>
+	<script>scripts/demo/GameClient.as</script>
+	<script>scripts/demo/GameServer.as</script>
+	<script>scripts/demo/Grudge.as</script>
+	<script>scripts/demo/Hero.as</script>
+	<script>scripts/demo/PatrolState.as</script>
     <tileset>tilesets/forest-background.xml</tileset>
     <tileset>tilesets/blocks.xml</tileset>
     <world>worlds/map1.world</world>

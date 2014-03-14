@@ -25,6 +25,17 @@ namespace c2d
       mpSimulator = &simulator;
    }
 
+   INLINE SoundManager& ContentManager::getSoundManager()
+   {
+      ASSERT_PTR(mpSoundManager);
+      return *mpSoundManager;
+   }
+
+   INLINE void ContentManager::setSoundManager(SoundManager& manager)
+   {
+      mpSoundManager = &manager;
+   }
+
    INLINE const String& ContentManager::getBaseDir() const
    {
       return mBaseDir;

@@ -10,7 +10,7 @@ class ProjectTreeItem
 {
 public:
 
-    enum Kind { eRoot, eText, eWorld, eTileSet, eInvalid };
+    enum Kind { eRoot, eText, eWorld, eTileSet, eScript, eInvalid };
 
     ProjectTreeItem();
     virtual ~ProjectTreeItem();

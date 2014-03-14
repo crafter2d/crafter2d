@@ -16,6 +16,7 @@ class Simulator;
 namespace c2d
 {
    class ContentManager;
+   class SoundManager;
 
    class CORE_API ContentReader
    {
@@ -34,6 +35,10 @@ namespace c2d
       Simulator& getPhysicsSimulator();
       void       setPhysicsSimulator(Simulator* psimulator);
 
+      bool          hasSoundManager();
+      SoundManager& getSoundManager();
+      void          setSoundManager(SoundManager* psoundmanager);
+
       /// Reads and instantiates the content from disc
       virtual IContent* read(DataStream& stream) = 0;
 
@@ -43,6 +48,7 @@ namespace c2d
       ContentManager*   mpContentManager;
       Graphics::Device* mpDevice;
       Simulator*        mpSimulator;
+      SoundManager*     mpSoundManager;
    };
 }
 

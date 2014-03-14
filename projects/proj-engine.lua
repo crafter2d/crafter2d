@@ -24,7 +24,7 @@ project "Engine"
 
 	-- Visual Studio
 	configuration "vs*"
-		links { "gdi32", "user32", "vfw32", "ws2_32", "fmodex_vc" }
+		links { "gdi32", "user32", "vfw32", "ws2_32" }
 		
 	configuration { "vs*", "Debug" }
 		links { "box2d_d", "tinyxmld_STL", "zlib1_d" }
@@ -39,11 +39,11 @@ project "Engine"
 	  
 	configuration { "cb-gcc", "Debug" }
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
-				"zlib1", "box2d_d", "tinyxmld_STL", "fmodex_vc" } 
+				"zlib1", "box2d_d", "tinyxmld_STL" } 
 	 
 	configuration { "cb-gcc", "Release" }
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
-					"zlib1", "box2d", "tinyxml_STL", "fmodex_vc" }
+					"zlib1", "box2d", "tinyxml_STL" }
 
 	-- Windows
 	configuration "Windows"

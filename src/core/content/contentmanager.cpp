@@ -71,6 +71,7 @@ namespace c2d
             reader.setContentManager(*this);
             reader.setGraphicsDevice(mpDevice);
             reader.setPhysicsSimulator(mpSimulator);
+            reader.setSoundManager(mpSoundManager);
 
             presult = reader.read(stream);
             if ( presult != NULL )

@@ -17,6 +17,7 @@ class TileMap;
 class TileView;
 class LayerPanel;
 class ProjectPanel;
+class ScriptFile;
 class TilesPanel;
 class TileViewWindow;
 class TileWorld;
@@ -35,6 +36,7 @@ public:
 
  // operations
     void addWindow(TileWorld& world);
+    void addWindow(ScriptFile& script);
 
  // searching
     TileViewWindow* findWindow(TileWorld &world);
@@ -67,6 +69,8 @@ private slots:
     void on_actionFile_ImportWorld_triggered();
 
     void on_actionFile_NewScript_triggered();
+
+    void on_actionProject_Build_triggered();
 
 private:
     enum { MaxRecentFiles = 5 };

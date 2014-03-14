@@ -35,10 +35,13 @@
 #include "core/modules/graphicsmodule.h"
 #include "core/modules/modulemanager.h"
 #include "core/modules/inputmodule.h"
+#include "core/modules/soundmodule.h"
 #include "core/graphics/device.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 #include "core/script/scriptobject.h"
+#include "core/sound/soundmanager.h"
+#include "core/sound/sound.h"
 #include "core/system/platform.h"
 #include "core/system/driver.h"
 #include "core/world/world.h"
@@ -83,7 +86,8 @@ namespace c2d
       mWindowListener(*this),
       mKeyEventDispatcher(*this),
       mMouseEventDispatcher(*this),
-      mSoundManager(),
+      mpSoundManager(NULL),
+      mpBackgroundMusic(NULL),
       mpWorldRenderer(NULL),
       mpPlayer(NULL),
       mpKeyMap(NULL),
@@ -100,7 +104,8 @@ namespace c2d
 
    bool Client::destroy()
    {
-      mSoundManager.destroy();
+      mpSoundManager->destroy();
+      mpSoundManager = NULL;
 
       mpWindow->destroy();
       delete mpWindow;
@@ -148,7 +153,7 @@ namespace c2d
    {
       Process::update(delta);
 
-      mSoundManager.update();
+      mpSoundManager->update();
       mpInputDevice->update();
       mpWindow->update();
 
@@ -300,7 +305,16 @@ namespace c2d
    {
       Log::getInstance() << "\n-- Initializing Sound --\n\n";
 
-      return mSoundManager.initialize();
+      Module* pmodule = getModuleManager().lookup(UUID_SoundModule);
+      if ( pmodule == NULL )
+      {
+         Log::getInstance() << "Failed to load a graphics module.\n";
+         return false;
+      }
+
+      SoundModule& soundmod = static_cast<SoundModule&>(*pmodule);
+      mpSoundManager = &soundmod.getSoundManager();
+      return mpSoundManager->initialize();
    }
 
    // - Operations
@@ -514,15 +528,21 @@ namespace c2d
       mpPlayer->initialize(world);
 
       getContentManager().setSimulator(world.getSimulator());
+      getContentManager().setSoundManager(*mpSoundManager);
 
       // run the onWorldChanged script
       mpScript->prepareCall(1);
       mpScript->arg(0, &world);
       mpScript->call(UTEXT("onWorldChanged"));
 
-      //mpBackgroundMusic = mSoundManager.createTrack(UTEXT("../sounds/grassy_plain.ogg"));
-      //mSoundManager.play(*mpBackgroundMusic);
+      mpBackgroundMusic = getContentManager().loadContent<Sound>(UTEXT("sounds/grassy_plain"));
+      if ( mpBackgroundMusic != NULL )
+      {
+         mpBackgroundMusic->setLooping();
 
+         mpSoundManager->play(*mpBackgroundMusic);
+      }
+      
       Process::notifyWorldChanged();
    }
 

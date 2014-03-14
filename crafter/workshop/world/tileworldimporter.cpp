@@ -14,7 +14,8 @@
 #include <core/world/bounds.h>
 #include <core/world/layer.h>
 #include <core/world/world.h>
-#include <core/world/worldreader.h>
+
+#include <engine/world/worldreader.h>
 
 #include "../project.h"
 #include "../tilemap.h"

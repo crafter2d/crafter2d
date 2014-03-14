@@ -38,6 +38,7 @@ namespace c2d
 {
    class ContentModule;
    class ModuleManager;
+   class SoundManager;
    class Uuid;
    /**
     * The content manager is responsible for loading content.
@@ -68,6 +69,9 @@ namespace c2d
       Simulator& getSimulator();
       void       setSimulator(Simulator& simulator);
 
+      SoundManager& getSoundManager();
+      void          setSoundManager(SoundManager& manager);
+
       const String& getBaseDir() const;
       void          setBaseDir(const String& basedir);
 
@@ -88,8 +92,9 @@ namespace c2d
       ModuleCollection  mModules;
       String            mBaseDir;
 
-      Graphics::Device* mpDevice;    // not owned
-      Simulator*        mpSimulator; // not owned
+      Graphics::Device* mpDevice;         // not owned
+      Simulator*        mpSimulator;      // not owned
+      SoundManager*     mpSoundManager;   // not owned
    };
 
    template<class T>

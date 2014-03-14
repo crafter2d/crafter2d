@@ -1,13 +1,14 @@
 
-#include "soundmanager.h"
+#include "fmodsoundmanager.h"
 
 #include <fmod.hpp>
 #include <fmod_errors.h>
 
+#include "core/streams/datastream.h"
 #include "core/string/string.h"
 #include "core/defines.h"
 
-#include "sound.h"
+#include "fmodsound.h"
 
 #define SUCCEEEDED(r)(r == FMOD_OK)
 #define FAILED(r)(r != FMOD_OK)
@@ -15,12 +16,13 @@
 namespace c2d
 {
 
-   SoundManager::SoundManager():
+   FModSoundManager::FModSoundManager() :
+      SoundManager(),
       mpSystem(NULL)
    {
    }
 
-   bool SoundManager::initialize()
+   bool FModSoundManager::initialize()
    {
       FMOD_RESULT result = FMOD::System_Create(&mpSystem);
       if ( result != FMOD_OK )
@@ -58,7 +60,7 @@ namespace c2d
       return true;
    }
 
-   void SoundManager::destroy()
+   void FModSoundManager::destroy()
    {
       FMOD_RESULT result = mpSystem->close();
       if ( FAILED(result) )
@@ -69,40 +71,46 @@ namespace c2d
       mpSystem->release();
    }
 
-   void SoundManager::update()
+   void FModSoundManager::update()
    {
       mpSystem->update();
    }
 
    // - Factory functions
 
-   Sound* SoundManager::createSound(const String& filename) const
+   Sound* FModSoundManager::createSound(const String& filename) const
    {
       FMOD::Sound* psound = NULL;
       FMOD_RESULT result = mpSystem->createSound(filename.toUtf8().c_str(), FMOD_HARDWARE, 0, &psound);
       if ( SUCCEEEDED(result) )
       {
-         return new Sound(psound);
+         return new FModSound(psound);
       }
       return NULL;
    }
 
-   Sound* SoundManager::createTrack(const String& filename) const
+   Sound* FModSoundManager::createSound(const DataStream& stream) const
    {
+      FMOD_CREATESOUNDEXINFO info;
+      memset(&info, 0, sizeof(FMOD_CREATESOUNDEXINFO));
+      info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+      info.length = stream.getDataSize();
+
       FMOD::Sound* psound = NULL;
-      FMOD_RESULT result = mpSystem->createSound(filename.toUtf8().c_str(), FMOD_HARDWARE | FMOD_LOOP_NORMAL | FMOD_2D, 0, &psound);
+      FMOD_RESULT result = mpSystem->createSound(stream.getData(), FMOD_HARDWARE | FMOD_OPENMEMORY, &info, &psound);
       if ( SUCCEEEDED(result) )
       {
-         return new Sound(psound);
+         return new FModSound(psound);
       }
       return NULL;
    }
 
    // - Media player functions
 
-   bool SoundManager::play(const Sound& sound)
+   bool FModSoundManager::play(const Sound& sound)
    {
-      FMOD_RESULT result = mpSystem->playSound(FMOD_CHANNEL_FREE, sound.mpSound, false, &sound.mpChannel);
+      const FModSound& fmodsound = static_cast<const FModSound&>(sound);
+      FMOD_RESULT result = mpSystem->playSound(FMOD_CHANNEL_FREE, fmodsound.mpSound, false, &fmodsound.mpChannel);
       return SUCCEEEDED(result);
    }
 

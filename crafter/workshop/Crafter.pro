@@ -58,7 +58,9 @@ SOURCES += main.cpp\
     resource.cpp \
     world/tileworldhandle.cpp \
     scriptview.cpp \
-    script/yassyntaxhighlighter.cpp
+    script/yassyntaxhighlighter.cpp \
+    script/scriptfile.cpp \
+    project/projecttreescriptitem.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -103,7 +105,9 @@ HEADERS  += mainwindow.h \
     resource.h \
     world/tileworldhandle.h \
     scriptview.h \
-    script/yassyntaxhighlighter.h
+    script/yassyntaxhighlighter.h \
+    script/scriptfile.h \
+    project/projecttreescriptitem.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
@@ -131,8 +135,8 @@ Debug:MOC_DIR = $$BaseDir/debug/.moc
 Debug:RCC_DIR = $$BaseDir/debug/.rcc
 Debug:UI_DIR = $$BaseDir/debug/.ui
 
-BinDir = $$PWD/../../../bin/
-SrcDir = $$PWD/../../../src
+BinDir = $$PWD/../../bin/
+SrcDir = $$PWD/../../src
 
 win32:CONFIG(release, debug|release): LIBS += -L$$BinDir -lCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$BinDir -lCored

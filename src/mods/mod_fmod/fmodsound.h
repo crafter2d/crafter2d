@@ -27,6 +27,7 @@ namespace FMOD
 }
 
 #include "core/math/vector.h"
+#include "core/sound/sound.h"
 
 namespace c2d
 {
@@ -37,25 +38,26 @@ namespace c2d
    The sound class represents a sound object that can be positioned and played somewhere 
    in your world. To load a sound the SoundManager::load function must be used.
     */
-   class Sound
+   class FModSound : public Sound
    {
    public:
-	   Sound*         clone();
+	   virtual Sound*         clone();
 
-	   void           pause();
-      void           resume();
-	   void           stop() const;
+	   virtual void           pause();
+      virtual void           resume();
+      virtual void           stop() const;
 
-	   void           setPosition( const Vector& pos );
+      virtual void           setPosition(const Vector& pos);
+      virtual void           setLooping();
 
    private:
-      friend class SoundManager;
+      friend class FModSoundManager;
 
     // constructors
-      explicit       Sound(FMOD::Sound* psound);
+      explicit       FModSound(FMOD::Sound* psound);
 
     // data
-      FMOD::Sound*   mpSound;
+      FMOD::Sound*           mpSound;
       mutable FMOD::Channel* mpChannel;
    };
 }

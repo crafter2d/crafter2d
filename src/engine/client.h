@@ -25,8 +25,7 @@
 #include <map>
 
 #include "core/entity/idmanager.h"
-
-#include "engine/sound/soundmanager.h"
+#include "core/sound/soundmanager.h"
 
 #include "clientgamewindowlistener.h"
 #include "clientkeyeventdispatcher.h"
@@ -155,7 +154,7 @@ namespace c2d
       ClientGameWindowListener   mWindowListener;
       ClientKeyEventDispatcher   mKeyEventDispatcher;
       ClientMouseEventDispatcher mMouseEventDispatcher;
-      SoundManager               mSoundManager;
+      SoundManager*              mpSoundManager;
       Sound*                     mpBackgroundMusic;
       WorldRenderer*             mpWorldRenderer;
       Player*                    mpPlayer;

@@ -3,9 +3,11 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QProcess>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include "script/scriptfile.h"
 #include "world/tileworldreader.h"
 #include "world/tileworldwriter.h"
 #include "world/tilesetreader.h"
@@ -53,7 +55,10 @@ void Project::setActiveProject(Project *pproject)
 Project::Project():
     mName(),
     mFileName(),
-    mWorlds()
+    mBasePath(),
+    mTileSets(),
+    mWorlds(),
+    mScripts()
 {
 }
 
@@ -87,6 +92,11 @@ const QString Project::getFolder() const
 Project::Worlds& Project::getWorlds()
 {
     return mWorlds;
+}
+
+Project::Scripts& Project::getScripts()
+{
+    return mScripts;
 }
 
 // - Query
@@ -194,6 +204,12 @@ bool Project::load(const QString &fileName)
                             setName(nameref.toString());
                         }
                     }
+                    else if ( stream.name() == "script" )
+                    {
+                        QString filepath = mBasePath + QDir::separator() + stream.readElementText();
+                        ScriptFile* pscript = new ScriptFile(filepath);
+                        mScripts.append(pscript);
+                    }
                     else if ( stream.name() == "world" )
                     {
                         QString filepath = mBasePath + QDir::separator() + stream.readElementText();
@@ -285,6 +301,36 @@ void Project::saveProjectFile()
 
     stream.writeEndElement();
     stream.writeEndDocument();
+}
+
+// - Building
+
+void Project::build()
+{
+    QProcess compiler;
+
+    QTileSet* ptileset;
+    foreach (ptileset, mTileSets)
+    {
+        QString outputpath = "../compiled/tilesets/" + ptileset->getTileMap() + ".c2d";
+
+        QStringList args;
+        args.append(outputpath);
+
+        compiler.start("compilerd.exe", args);
+    }
+
+    TileWorld* pworld;
+    foreach (pworld, mWorlds)
+    {
+        QString outputpath = "../compiled/worlds/" + pworld->getName() + ".c2d";
+
+        QStringList args;
+        args.append(pworld->getResourceName());
+        args.append(outputpath);
+
+        compiler.start("compilerd.exe", args);
+    }
 }
 
 // - Search
