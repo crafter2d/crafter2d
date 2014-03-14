@@ -21,6 +21,8 @@
 
 #include <math.h>
 
+#include "core/streams/datastream.h"
+
 Vector::Vector(void)
 {
 	x = y = 0.0f;
@@ -63,4 +65,16 @@ float Vector::distance(const Vector& that) const
    float ny = that.y - y;
 
    return (float)sqrt((nx * nx) + (ny * ny));
+}
+
+// - Friends
+
+DataStream& operator<<(DataStream& stream, const Vector& v)
+{
+   return stream << v.x << v.y;
+}
+
+DataStream& operator>>(DataStream& stream, Vector& v)
+{
+   return stream >> v.x >> v.y;
 }

@@ -1,20 +1,32 @@
 #include "scriptfile.h"
 
+#include <QFile>
+
 ScriptFile::ScriptFile():
-    QObject(0),
-    mPath()
+    Resource(),
+    mPath(),
+    mDocument(),
+    mLoaded(false)
 {
 }
 
 ScriptFile::ScriptFile(const QString& path):
-    QObject(0),
-    mPath(path)
+    Resource(),
+    mPath(path),
+    mDocument(),
+    mLoaded(false)
 {
 }
 
 ScriptFile::ScriptFile(const ScriptFile& that):
-    QObject(0),
-    mPath(that.mPath)
+    Resource(),
+    mPath(that.mPath),
+    mDocument(),
+    mLoaded(false)
+{
+}
+
+ScriptFile::~ScriptFile()
 {
 }
 
@@ -25,3 +37,42 @@ const QString& ScriptFile::getPath() const
     return mPath;
 }
 
+QTextDocument& ScriptFile::getDocument()
+{
+    return mDocument;
+}
+
+// - Query
+
+bool ScriptFile::isDirty() const
+{
+    return mDocument.isModified();
+}
+
+// - Operations
+
+void ScriptFile::ensureLoaded()
+{
+    if ( !mLoaded )
+    {
+        QFile file(mPath);
+
+        if ( file.open(QIODevice::ReadOnly) )
+        {
+            QString data(file.readAll());
+            mDocument.setPlainText(data);
+        }
+    }
+}
+
+void ScriptFile::save()
+{
+    QFile file(mPath);
+    if ( file.open(QIODevice::WriteOnly) )
+    {
+        QByteArray array;
+        QString text = mDocument.toPlainText();
+        array.append(text);
+        file.write(array);
+    }
+}

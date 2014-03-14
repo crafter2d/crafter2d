@@ -16,16 +16,15 @@ class ScriptView : public QTextEdit
     Q_OBJECT
 
 public:
-    explicit ScriptView(QWidget *parent = 0);
-    ~ScriptView();
-
-  // operations
-    void setScript(ScriptFile& script);
+             ScriptView(QWidget *parent = 0);
+    explicit ScriptView(ScriptFile &script);
+    virtual ~ScriptView();
 
 private:
 
-  // get/set
-    void setHighlighter(YasSyntaxHighlighter *phighlighter);
+  // operations
+    void installFont();
+    void installHighlighter();
 
   // data
     Ui::ScriptView *ui;

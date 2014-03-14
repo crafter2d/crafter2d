@@ -15,8 +15,8 @@ public:
     const QString& getResourceName() const;
     void           setResourceName(const QString& name);
 
-    bool isDirty() const;
-    void setDirty(bool dirty);
+    virtual bool isDirty() const;
+            void setDirty(bool dirty);
 
 private:
 

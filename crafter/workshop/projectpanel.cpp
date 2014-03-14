@@ -4,7 +4,7 @@
 #include <QVariant>
 
 #include "project/projecttreeworlditem.h"
-#include "script/scriptfile.h"
+#include "script/scripthandle.h"
 
 #include "mainwindow.h"
 #include "projectmodel.h"
@@ -44,7 +44,6 @@ void ProjectPanel::on_projectChanged(Project *pproject)
 {
     if ( mpProject != pproject )
     {
-        delete mpProject;
         mpProject = pproject;
 
         mpProjectModel->setProject(pproject);
@@ -70,9 +69,9 @@ void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
             getMainWindow().addWindow(*handle);
         }
     }
-    else if ( data.canConvert<ScriptFile>() )
+    else if ( data.canConvert<ScriptHandle>() )
     {
-        ScriptFile& script = data.value<ScriptFile>();
-        getMainWindow().addWindow(script);
+        ScriptHandle& script = data.value<ScriptHandle>();
+        getMainWindow().addWindow(*script);
     }
 }

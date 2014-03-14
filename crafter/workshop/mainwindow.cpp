@@ -224,8 +224,7 @@ void MainWindow::addWindow(TileWorld& world)
 
 void MainWindow::addWindow(ScriptFile& script)
 {
-    ScriptView* pview = new ScriptView();
-    pview->setScript(script);
+    ScriptView* pview = new ScriptView(script);
     pview->show();
 
     ui->centralWidget->addSubWindow(pview);

@@ -141,13 +141,12 @@ void Project::addTileSet(QTileSet *ptileset)
 
 bool Project::loadWorld(const QString& fileName)
 {
-    TileWorld* pworld = NULL;
-
-    QFile file(fileName);
+    QString path = mBasePath + QDir::separator() + fileName;
+    QFile file(path);
     if ( file.open(QIODevice::ReadOnly) )
     {
         QTileWorldReader reader(file);
-        pworld = reader.read();
+        TileWorld* pworld = reader.read();
         pworld->setResourceName(fileName);
 
         addWorld(pworld);
@@ -206,13 +205,15 @@ bool Project::load(const QString &fileName)
                     }
                     else if ( stream.name() == "script" )
                     {
-                        QString filepath = mBasePath + QDir::separator() + stream.readElementText();
+                        QString path = stream.readElementText();
+                        QString filepath = mBasePath + QDir::separator() + path;
                         ScriptFile* pscript = new ScriptFile(filepath);
+                        pscript->setResourceName(path);
                         mScripts.append(pscript);
                     }
                     else if ( stream.name() == "world" )
                     {
-                        QString filepath = mBasePath + QDir::separator() + stream.readElementText();
+                        QString filepath = stream.readElementText();
                         if ( !loadWorld(filepath) )
                         {
                             return false;
@@ -245,6 +246,15 @@ void Project::save()
 void Project::saveProjectResources()
 {
     QDir path(getFolder());
+
+    ScriptFile* pscript;
+    foreach (pscript, mScripts)
+    {
+        if ( pscript->isDirty() )
+        {
+            pscript->save();
+        }
+    }
 
     QTileSet* ptileset;
     foreach (ptileset, mTileSets)
@@ -286,6 +296,12 @@ void Project::saveProjectFile()
 
     stream.writeStartElement("project");
     stream.writeAttribute("name", mName);
+
+    ScriptFile* pscript;
+    foreach (pscript, mScripts)
+    {
+        stream.writeTextElement("script", pscript->getResourceName());
+    }
 
     QTileSet* ptileset;
     foreach (ptileset, mTileSets)
