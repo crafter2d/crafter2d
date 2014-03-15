@@ -261,6 +261,11 @@ int String::hashCode() const
    return str_hash(toUtf8()); // need to write it here
 }
 
+const UChar* String::constData() const
+{
+   return mpString;
+}
+
 // - Comparison
 
 bool String::operator==(const String& that) const

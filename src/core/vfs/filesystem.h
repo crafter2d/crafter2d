@@ -51,6 +51,9 @@ public:
    void removePath(const String& path);
    void removeAll();
 
+   virtual bool mkdir(const String& path) = 0;
+   virtual bool copyFile(const String& from, const String& to);
+
    virtual UChar getSeparator() const = 0;
    virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL) = 0;
    virtual bool find(const String& mask, std::vector<String>& result, bool recursive) = 0;

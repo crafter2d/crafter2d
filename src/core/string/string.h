@@ -71,6 +71,8 @@ public:
    int compare(const String& that) const;
    int hashCode() const;
 
+   const UChar* constData() const;
+
  // overrides
    virtual Object* clone() const override;
    virtual bool equals(const Object& that) const override;
