@@ -211,12 +211,14 @@ const TileBound& TileWorld::getBound(int index) const
 void TileWorld::addBound(TileBound* pbound)
 {
     mBounds.append(pbound);
+
+    setDirty(true);
 }
 
 TileBound &TileWorld::addBound(const QPoint& mousepos)
 {
     TileBound* pbound = new TileBound(mousepos, mousepos);
-    mBounds.append(pbound);
+    addBound(pbound);
     return *pbound;
 }
 

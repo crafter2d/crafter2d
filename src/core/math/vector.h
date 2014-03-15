@@ -24,6 +24,8 @@
 
 #include <math.h>
 
+class DataStream;
+
 class CORE_API Vector
 {
 public:
@@ -60,6 +62,8 @@ public:
    inline bool operator!= (const Vector& v) const;
 
    friend Vector operator*(float f, const Vector& v);
+   friend CORE_API DataStream& operator<<(DataStream& stream, const Vector& v);
+   friend CORE_API DataStream& operator>>(DataStream& stream, Vector& v);
 
 	float x, y;
 };

@@ -3,15 +3,15 @@
 
 #include "projecttreeitem.h"
 
-class ScriptFile;
+#include "../script/scripthandle.h"
 
 class ProjectTreeScriptItem : public ProjectTreeItem
 {
 public:
-    explicit ProjectTreeScriptItem(ScriptFile &script);
+    explicit ProjectTreeScriptItem(const ScriptHandle& script);
 
   // get/set
-    ScriptFile& getScript();
+    ScriptHandle& getScript();
 
   // query
     virtual QVariant data() override;
@@ -20,7 +20,7 @@ public:
 private:
 
   // data
-    ScriptFile& mScript;
+    ScriptHandle mScript;
 };
 
 #endif // PROJECTTREESCRIPTITEM_H

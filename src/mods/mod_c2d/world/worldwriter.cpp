@@ -1,6 +1,7 @@
 
 #include "worldwriter.h"
 
+#include "core/math/vector.h"
 #include "core/streams/filereaderstream.h"
 #include "core/vfs/stdiofile.h"
 
@@ -57,6 +58,20 @@ bool WorldWriter::write(DataStream& stream, const String& filename)
          stream.writeBlob(pdata, datasize);
 
          delete[] pdata;
+      }
+
+      // read the bounds
+      int boundCount;
+      filestream >> boundCount;
+      stream << boundCount;
+      for ( int index = 0; index < boundCount; ++index )
+      {
+         double leftx, lefty, rightx, righty;
+         filestream >> leftx >> lefty >> rightx >> righty;
+
+         Vector left((float)leftx, (float)lefty),
+            right((float)rightx, (float)righty);
+         stream << left << right;
       }
    }
    

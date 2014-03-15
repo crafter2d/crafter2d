@@ -4,20 +4,20 @@
 
 #include "../script/scriptfile.h"
 
-ProjectTreeScriptItem::ProjectTreeScriptItem(ScriptFile &script):
+ProjectTreeScriptItem::ProjectTreeScriptItem(const ScriptHandle& script):
     ProjectTreeItem(ProjectTreeItem::eScript),
     mScript(script)
 {
 }
 
-ScriptFile& ProjectTreeScriptItem::getScript()
+ScriptHandle& ProjectTreeScriptItem::getScript()
 {
     return mScript;
 }
 
 QVariant ProjectTreeScriptItem::data()
 {
-    return QFileInfo(mScript.getPath()).baseName();
+    return QFileInfo(mScript->getPath()).baseName();
 }
 
 QVariant ProjectTreeScriptItem::resourceData()

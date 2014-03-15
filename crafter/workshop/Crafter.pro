@@ -60,7 +60,8 @@ SOURCES += main.cpp\
     scriptview.cpp \
     script/yassyntaxhighlighter.cpp \
     script/scriptfile.cpp \
-    project/projecttreescriptitem.cpp
+    project/projecttreescriptitem.cpp \
+    script/scripthandle.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -107,7 +108,8 @@ HEADERS  += mainwindow.h \
     scriptview.h \
     script/yassyntaxhighlighter.h \
     script/scriptfile.h \
-    project/projecttreescriptitem.h
+    project/projecttreescriptitem.h \
+    script/scripthandle.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \

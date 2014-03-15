@@ -6,6 +6,7 @@
 #include "../tilemap.h"
 #include "../tileworld.h"
 
+#include "tilebound.h"
 #include "tileworlddesc.h"
 #include "tilemapdesc.h"
 #include "tilefield.h"
@@ -61,6 +62,18 @@ TileWorld* QTileWorldReader::read()
         pmap->setTileSet(ptileset);
 
         presult->addMap(pmap);
+    }
+
+    // read in the bounds
+
+    int bounds;
+    stream >> bounds;
+    for ( int index = 0; index < bounds; ++index )
+    {
+        QPointF left, right;
+        stream >> left >> right;
+        TileBound* pbound = new TileBound(left, right);
+        presult->addBound(pbound);
     }
 
     return presult;

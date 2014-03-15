@@ -1,24 +1,35 @@
 #ifndef SCRIPTFILE_H
 #define SCRIPTFILE_H
 
-#include <QObject>
+#include <QTextDocument>
 
-class ScriptFile : public QObject
+#include "..\resource.h"
+
+class ScriptFile : public Resource
 {
 public:
     ScriptFile();
     ScriptFile(const QString &path);
     ScriptFile(const ScriptFile& that);
+    virtual ~ScriptFile();
 
   // get/set
     const QString& getPath() const;
+    QTextDocument& getDocument();
+
+  // query
+    virtual bool isDirty() const override;
+
+  // operations
+    void ensureLoaded();
+    void save();
 
 private:
 
   // data
     QString mPath;
+    QTextDocument mDocument;
+    bool mLoaded;
 };
-
-Q_DECLARE_METATYPE(ScriptFile)
 
 #endif // SCRIPTFILE_H

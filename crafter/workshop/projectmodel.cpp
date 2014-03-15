@@ -11,7 +11,7 @@
 
 ProjectModel::ProjectModel():
     QAbstractItemModel(),
-    mpProject(),
+    mpProject(NULL),
     mpRoot(new ProjectTreeItem())
 {
     mpRoot->setRoot();

@@ -9,6 +9,7 @@
 #include "core/physics/simulationfactoryregistry.h"
 #include "core/streams/datastream.h"
 #include "core/string/string.h"
+#include "core/world/bound.h"
 #include "core/world/layer.h"
 #include "core/world/world.h"
 
@@ -23,7 +24,6 @@ IContent* WorldReader::read(DataStream& stream)
 
    World* pworld = new World();
    pworld->setName(name);
-   pworld->setSimulator(pfactory->createSimulator());
    pworld->setLayerType(layertype);
    
    int layercount;
@@ -71,6 +71,19 @@ IContent* WorldReader::read(DataStream& stream)
       TileField& field = player->getTileField();
       field.create(width, height, puncompressed);
    }
+
+   int boundCount;
+   stream >> boundCount;
+   for ( int index = 0; index < boundCount; ++index )
+   {
+      Vector left, right;
+      stream >> left >> right;
+      pworld->addBound(left, right);
+   }
+
+   // needs to be set here, otherwise the bounds are not added to the simulation
+   // to be changed that new bounds are added automatically to the simulation as well
+   pworld->setSimulator(pfactory->createSimulator());
 
    return pworld;
 }
