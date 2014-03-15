@@ -27,8 +27,8 @@ bool ProjectGenerator::generate(CommandLine& commandline)
    const CommandLineArgument& nameargument = commandline.getArgument(String("name"));
    bool force = commandline.hasArgument(String("force"));
 
-   std::string projectname = nameargument.getValue().toStdString();
-   std::string packagename = ppackageargument != NULL ? ppackageargument->getValue().toStdString() : projectname;
+   std::string projectname = nameargument.getValue().toUtf8();
+   std::string packagename = ppackageargument != NULL ? ppackageargument->getValue().toUtf8() : projectname;
 
    ctemplate::TemplateDictionary dict("values");
    dict.SetValue("PROJ", projectname);
@@ -49,8 +49,8 @@ bool ProjectGenerator::generate(CommandLine& commandline)
       }
    }
    
-   String clientfile = File::concat(String(packagename), String(projectname) + "Client.as");
-   String serverfile = File::concat(String(packagename), String(projectname) + "Server.as");
+   String clientfile = File::concat(String(packagename), String(projectname) + UTEXT("Client.as"));
+   String serverfile = File::concat(String(packagename), String(projectname) + UTEXT("Server.as"));
 
    return write(clientfile, String(clientoutput), force) && write(serverfile, String(serveroutput), force);
 }
