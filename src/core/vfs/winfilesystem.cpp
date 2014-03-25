@@ -44,9 +44,21 @@ UChar WinFileSystem::getSeparator() const
 
 // - Operations
 
-bool WinFileSystem::mkdir(const String& path)
+int WinFileSystem::mkdir(const String& path)
 {
-   return CreateDirectory(path.constData(), NULL) == TRUE;
+   if ( CreateDirectory(path.constData(), NULL) == FALSE )
+   {
+      DWORD error = GetLastError();
+      switch ( error )
+      {
+         case ERROR_ALREADY_EXISTS:
+            return ERR_PATH_EXISTS;
+         case ERROR_PATH_NOT_FOUND:
+            return ERR_PATH_NOT_FOUND;
+      }
+   }
+
+   return NO_ERR;
 }
 
 bool WinFileSystem::copyFile(const String& from, const String& to)

@@ -31,7 +31,7 @@ public:
    WinFileSystem();
    virtual ~WinFileSystem();
 
-   virtual bool mkdir(const String& path) override;
+   virtual int mkdir(const String& path) override;
    virtual bool copyFile(const String& from, const String& to);
 
    virtual UChar getSeparator() const override;

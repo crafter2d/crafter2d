@@ -34,6 +34,8 @@ private:
 
   // operations
     void buildTree();
+    void synchronizeTree();
+    void synchronizeWorlds(ProjectTreeItem& parent);
 
   // data
     Project* mpProject;

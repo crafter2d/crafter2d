@@ -29,6 +29,13 @@
 class File;
 class String;
 
+enum Errors
+{
+   NO_ERR,
+   ERR_PATH_EXISTS,
+   ERR_PATH_NOT_FOUND,
+};
+
 /// \brief Abstract base class of the virtual file system.
 
 class CORE_API FileSystem
@@ -51,8 +58,8 @@ public:
    void removePath(const String& path);
    void removeAll();
 
-   virtual bool mkdir(const String& path) = 0;
-   virtual bool copyFile(const String& from, const String& to);
+   virtual int mkdir(const String& path) = 0;
+   virtual bool copyFile(const String& from, const String& to) = 0;
 
    virtual UChar getSeparator() const = 0;
    virtual bool recurseDirectory(const String& dir, Callback callback, void* pdata = NULL) = 0;

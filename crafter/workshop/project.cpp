@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <QProcess>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -29,11 +30,15 @@ Project* Project::createNew(QWidget* pparent)
     {
         QString projectname = dialog.getName();
         QDir projectpath(dialog.getPath());
-        QString projectfile = projectpath.absoluteFilePath(projectname + ".craft");
+
+        int index = projectname.indexOf('.');
+        if ( index >= 0 )
+        {
+            projectname = projectname.left(index);
+        }
 
         pproject = new Project();
         pproject->setName(projectname);
-        pproject->setFileName(projectfile);
         pproject->create(projectpath);
     }
 
@@ -84,9 +89,9 @@ void Project::setFileName(const QString& name)
     mFileName = name;
 }
 
-const QString Project::getFolder() const
+const QString Project::getBasePath() const
 {
-    return QFileInfo(mFileName).absolutePath();
+    return mBasePath;
 }
 
 Project::Worlds& Project::getWorlds()
@@ -113,18 +118,117 @@ TileWorld& Project::getWorld(int index)
 
 QString Project::getFilePath(const QString& file)
 {
-    return getFolder() + QDir::separator() + file;
+    return mBasePath + QDir::separator() + file;
 }
 
 // - Operations
 
 void Project::create(QDir& path)
 {
+    setActiveProject(this);
+
+    // create the project path
+    if ( !path.exists(mName) )
+    {
+        path.mkdir(mName);
+    }
+    path.cd(mName);
+
+    // determine the file path (in the root of the project directory)
+    mBasePath = path.absolutePath();
+    QString projectfile = path.absoluteFilePath(mName + ".craft");
+    setFileName(projectfile);
+
     // create the folders
     path.mkdir("effects");
     path.mkdir("images");
+    path.mkdir("objects");
+    path.mkdir("scripts");
     path.mkdir("tilesets");
     path.mkdir("worlds");
+
+    if ( generateScripts(path) )
+    {
+        path.cd("scripts");
+        path.cd(mName);
+
+        QFileInfoList list = path.entryInfoList();
+        for ( int i = 0; i < list.size(); ++i )
+        {
+            QFileInfo fileInfo = list.at(i);
+            if ( fileInfo.isFile() )
+            {
+                QString filepath = path.absolutePath() + QDir::separator() + fileInfo.fileName();
+                mScripts.append(new ScriptFile(filepath));
+            }
+        }
+    }
+}
+
+bool Project::generateScripts(QDir& path)
+{
+    QProcess gen;
+    gen.setWorkingDirectory(QDir::currentPath());
+
+    QStringList arguments;
+    arguments.append("project");
+    arguments.append("name=" + mName);
+    arguments.append("path=" + path.absolutePath());
+
+#ifdef _DEBUG
+    gen.start("gend.exe", arguments);
+#else
+    gen.start("gen.exe", arguments);
+#endif
+
+    if ( gen.waitForFinished() )
+    {
+        QString message;
+
+        switch ( gen.exitStatus() )
+        {
+        case QProcess::CrashExit:
+            message = "";
+            break;
+
+        case QProcess::NormalExit:
+            if ( gen.exitCode() == 0 )
+            {
+                return true;
+            }
+            else
+            {
+                int exitcode = gen.exitCode();
+                switch ( exitcode )
+                {
+                case -1:
+                    message = "You should not see this message, it is a stupid mistake.";
+                    break;
+                case -2:
+                    {
+                        QByteArray error = gen.readAllStandardError();
+                        if ( !error.isEmpty() )
+                        {
+                            message += "The following error occurred while creating the script files:\n" + QString(error);
+                            break;
+                        }
+                        // else fall through and give general error message
+                    }
+                default:
+                    message = "An unknown error has occurred while running the gen utility.";
+                    break;
+                }
+            }
+        }
+
+        QMessageBox::critical(0, "Crafter Workshop", message, QMessageBox::Ok);
+    }
+    else
+    {
+        QMessageBox::critical(0, "Crafter Workshop", "Failed to launch the gen utility", QMessageBox::Ok);
+    }
+
+    return false;
 }
 
 void Project::addWorld(TileWorld* pworld)
@@ -245,7 +349,7 @@ void Project::save()
 
 void Project::saveProjectResources()
 {
-    QDir path(getFolder());
+    QDir path(mBasePath);
 
     ScriptFile* pscript;
     foreach (pscript, mScripts)

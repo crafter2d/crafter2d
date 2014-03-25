@@ -2,8 +2,8 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+class String;
 class CommandLine;
-class FileSystem;
 
 class Generator
 {
@@ -11,15 +11,15 @@ public:
    Generator();
    virtual ~Generator();
 
- // get/set
-   const FileSystem& getFileSystem() const;
-   void              setFileSystem(FileSystem& filesystem);
-
  // generation
    virtual bool generate(CommandLine& commandline) = 0;
 
-private:
-   FileSystem* mpFileSystem;
+protected:
+
+ // query
+   String getWorkingDir() const;
+   String getTemplateFile(const String& tpl) const;
+
 };
 
 #endif // GENERATOR_H

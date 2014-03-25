@@ -8,6 +8,9 @@ LayerWizard_PageInfo::LayerWizard_PageInfo(QWidget *parent) :
     ui->setupUi(this);
 
     registerField("layer.create", ui->checkCreate);
+    registerField("layer.name", ui->editName);
+    registerField("layer.width", ui->editWidth);
+    registerField("layer.height", ui->editHeight);
 
     connect(ui->checkCreate, SIGNAL(stateChanged(int)), SLOT(on_checkCreate_statechanged(int)));
 }

@@ -23,6 +23,11 @@ void TileWorldHandle::operator =(const TileWorldHandle& that)
     mpWorld = that.mpWorld;
 }
 
+bool TileWorldHandle::operator==(const TileWorld& that) const
+{
+    return mpWorld == &that;
+}
+
 // - Operations
 
 TileWorld& TileWorldHandle::operator*()

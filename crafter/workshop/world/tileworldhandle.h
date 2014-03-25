@@ -15,6 +15,7 @@ public:
     TileWorldHandle(TileWorld& world);
 
     void operator=(const TileWorldHandle& that);
+    bool operator==(const TileWorld& that) const;
 
   // operations
     TileWorld& operator*();

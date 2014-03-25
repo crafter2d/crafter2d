@@ -33,7 +33,7 @@ public:
     const QString& getFileName() const;
     void           setFileName(const QString& name);
 
-    const QString getFolder() const;
+    const QString getBasePath() const;
 
     Worlds &getWorlds();
     Scripts& getScripts();
@@ -69,6 +69,8 @@ private:
 
     void saveProjectResources();
     void saveProjectFile();
+
+    bool generateScripts(QDir& path);
 
  // static data
     static Project* spActiveProject;

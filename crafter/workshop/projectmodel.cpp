@@ -8,6 +8,7 @@
 
 #include "project.h"
 #include "tileworld.h"
+#include "world/tileworldhandle.h"
 
 ProjectModel::ProjectModel():
     QAbstractItemModel(),
@@ -99,12 +100,12 @@ int ProjectModel::rowCount(const QModelIndex &parent) const
     return parentItem->childCount();
 }
 
-int ProjectModel::columnCount(const QModelIndex &parent) const
+int ProjectModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return 1;
 }
 
-QVariant ProjectModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ProjectModel::headerData(int section, Qt::Orientation /*orientation*/, int role) const
 {
     if (role != Qt::DisplayRole)
             return QVariant();
@@ -139,15 +140,18 @@ QVariant ProjectModel::resourceData(const QModelIndex& index)
 
 void ProjectModel::onDataChanged()
 {
-    //beginResetModel();
-    //endResetModel();
+    beginResetModel();
+
+    synchronizeTree();
+
+    endResetModel();
 }
 
 // - Operations
 
 void ProjectModel::buildTree()
 {
-    ProjectTreeItem* pscripts = new ProjectTreeTextItem("Scripts");
+    ProjectTreeItem* pscripts = new ProjectTreeTextItem(ProjectTreeTextItem::eScript);
     mpRoot->addChild(pscripts);
 
     Project::Scripts& scripts = mpProject->getScripts();
@@ -158,7 +162,7 @@ void ProjectModel::buildTree()
         pscripts->addChild(pitem);
     }
 
-    ProjectTreeItem* pworlds = new ProjectTreeTextItem("Worlds");
+    ProjectTreeItem* pworlds = new ProjectTreeTextItem(ProjectTreeTextItem::eWorld);
     mpRoot->addChild(pworlds);
 
     Project::Worlds& worlds = mpProject->getWorlds();
@@ -167,5 +171,49 @@ void ProjectModel::buildTree()
         TileWorld& world = *worlds[index];
         ProjectTreeItem* pitem = new ProjectTreeWorldItem(world);
         pworlds->addChild(pitem);
+    }
+}
+
+void ProjectModel::synchronizeTree()
+{
+    for ( int index = 0; index < mpRoot->childCount(); ++index )
+    {
+        ProjectTreeTextItem* pchild = static_cast<ProjectTreeTextItem*>(mpRoot->child(index));
+
+        ProjectTreeTextItem::Category category = pchild->getCategory();
+        switch ( category )
+        {
+        case ProjectTreeTextItem::eWorld:
+            synchronizeWorlds(*pchild);
+            break;
+        case ProjectTreeTextItem::eScript:
+            break;
+        }
+    }
+}
+
+void ProjectModel::synchronizeWorlds(ProjectTreeItem& parent)
+{
+    for ( int index = 0; index < mpProject->getWorlds().size(); ++index )
+    {
+        TileWorld* pworld = mpProject->getWorlds()[index];
+
+        int elem = 0;
+        for ( ; elem < parent.childCount(); ++elem )
+        {
+            ProjectTreeWorldItem* pitem = static_cast<ProjectTreeWorldItem*>(parent.child(index));
+
+            TileWorldHandle world = pitem->data().value<TileWorldHandle>();
+            if ( world == *pworld )
+            {
+                break;
+            }
+        }
+
+        if ( elem >= parent.childCount() )
+        {
+            ProjectTreeItem* pitem = new ProjectTreeWorldItem(*pworld);
+            parent.addChild(pitem);
+        }
     }
 }

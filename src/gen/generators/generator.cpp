@@ -1,6 +1,12 @@
 
+#include <stdio.h>
+#include <iostream>
 #include "generator.h"
 
+#include <direct.h>
+
+#include "core/string/string.h"
+#include "core/vfs/file.h"
 #include "core/defines.h"
 
 Generator::Generator()
@@ -11,14 +17,23 @@ Generator::~Generator()
 {
 }
 
-// get/set
-const FileSystem& Generator::getFileSystem() const
+// - Query
+
+String Generator::getWorkingDir() const
 {
-   ASSERT_PTR(mpFileSystem);
-   return *mpFileSystem;
+   char cCurrentPath[FILENAME_MAX];
+
+   if (!getcwd(cCurrentPath, sizeof(cCurrentPath)))
+   {
+      return String::empty();
+   }
+
+   cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
+
+   return String::fromUtf8(cCurrentPath);
 }
 
-void Generator::setFileSystem(FileSystem& filesystem)
+String Generator::getTemplateFile(const String& tpl) const
 {
-   mpFileSystem = &filesystem;
+   return File::concat(File::concat(getWorkingDir(), UTEXT("../projects/templates")), tpl + UTEXT(".tpl"));
 }
