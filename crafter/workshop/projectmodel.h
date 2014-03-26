@@ -36,6 +36,7 @@ private:
     void buildTree();
     void synchronizeTree();
     void synchronizeWorlds(ProjectTreeItem& parent);
+    void synchronizeScripts(ProjectTreeItem& parent);
 
   // data
     Project* mpProject;

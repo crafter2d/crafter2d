@@ -22,6 +22,11 @@ void ScriptHandle::operator =(const ScriptHandle& that)
     mpScript = that.mpScript;
 }
 
+bool ScriptHandle::operator==(const ScriptFile& that) const
+{
+    return mpScript == &that;
+}
+
 // - Operations
 
 ScriptFile& ScriptHandle::operator *()

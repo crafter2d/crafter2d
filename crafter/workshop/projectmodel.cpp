@@ -9,6 +9,7 @@
 #include "project.h"
 #include "tileworld.h"
 #include "world/tileworldhandle.h"
+#include "script/scripthandle.h"
 
 ProjectModel::ProjectModel():
     QAbstractItemModel(),
@@ -213,6 +214,32 @@ void ProjectModel::synchronizeWorlds(ProjectTreeItem& parent)
         if ( elem >= parent.childCount() )
         {
             ProjectTreeItem* pitem = new ProjectTreeWorldItem(*pworld);
+            parent.addChild(pitem);
+        }
+    }
+}
+
+void ProjectModel::synchronizeScripts(ProjectTreeItem& parent)
+{
+    for ( int index = 0; index < mpProject->getScripts().size(); ++index )
+    {
+        ScriptFile* pscript = mpProject->getScripts()[index];
+
+        int elem = 0;
+        for ( ; elem < parent.childCount(); ++elem )
+        {
+            ProjectTreeScriptItem* pitem = static_cast<ProjectTreeScriptItem*>(parent.child(index));
+
+            ScriptHandle script = pitem->data().value<ScriptHandle>();
+            if ( script == *pscript )
+            {
+                break;
+            }
+        }
+
+        if ( elem >= parent.childCount() )
+        {
+            ProjectTreeItem* pitem = new ProjectTreeScriptItem(*pscript);
             parent.addChild(pitem);
         }
     }

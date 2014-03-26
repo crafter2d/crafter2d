@@ -14,6 +14,7 @@
 #include "world/tilesetreader.h"
 #include "world/tilesetwriter.h"
 #include "world/tileset.h"
+#include "project/projectbuilder.h"
 #include "tileworld.h"
 #include "newprojectdialog.h"
 
@@ -427,30 +428,10 @@ void Project::saveProjectFile()
 
 void Project::build()
 {
-    QProcess compiler;
+    QDir path(mBasePath);
 
-    QTileSet* ptileset;
-    foreach (ptileset, mTileSets)
-    {
-        QString outputpath = "../compiled/tilesets/" + ptileset->getTileMap() + ".c2d";
-
-        QStringList args;
-        args.append(outputpath);
-
-        compiler.start("compilerd.exe", args);
-    }
-
-    TileWorld* pworld;
-    foreach (pworld, mWorlds)
-    {
-        QString outputpath = "../compiled/worlds/" + pworld->getName() + ".c2d";
-
-        QStringList args;
-        args.append(pworld->getResourceName());
-        args.append(outputpath);
-
-        compiler.start("compilerd.exe", args);
-    }
+    ProjectBuilder builder;
+    builder.build(path, "build");
 }
 
 // - Search

@@ -15,6 +15,7 @@ public:
     ScriptHandle(ScriptFile& script);
 
     void operator=(const ScriptHandle& that);
+    bool operator==(const ScriptFile& that) const;
 
   // operations
     ScriptFile& operator*();

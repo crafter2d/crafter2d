@@ -16,7 +16,7 @@
 
 using namespace c2d;
 
-void loadModules(const String& srcfile, const String& dstFile)
+int loadModules(const String& srcfile, const String& dstFile)
 {
    ModuleManager mgr;
    mgr.initialize();
@@ -31,7 +31,7 @@ void loadModules(const String& srcfile, const String& dstFile)
       if ( !doc.LoadFile() )
       {
          // invalid file format
-         return;
+         return -4;
       }
 
       TiXmlElement* proot = doc.FirstChildElement();
@@ -60,21 +60,24 @@ void loadModules(const String& srcfile, const String& dstFile)
                {
                   file.write(stream.getData(), stream.getDataSize());
                   file.close();
+                  return 0;
                }
                else
                {
-                  // error!
+                  // error 
+                  return -1;
                }
-
-               return;
             }
          }
          catch ( std::exception* )
          {
+            return -2;
          }
          break;
       }
    }
+
+   return -3;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -88,8 +91,6 @@ int _tmain(int argc, _TCHAR* argv[])
    String srcfile = String::fromUtf8(argv[1]);
    String dstfile = String::fromUtf8(argv[2]);
 
-   loadModules(srcfile, dstfile);
-
-	return 0;
+   return loadModules(srcfile, dstfile);
 }
 
