@@ -16,6 +16,10 @@ private:
 
   // operations
     bool setupDestination(QDir &path, const QString& name);
+
+    void buildContent(QDir& path, const QString& name);
+    void buildScripts(QDir& path, const QString& name);
+
     void compile(const QString& source, const QString& dest);
 
   // data

@@ -64,6 +64,23 @@ UChar FileSystem::getNativeSeparator()
    return getInstance().getSeparator();
 }
 
+// static
+String FileSystem::toNativeSeparator(const String& path)
+{
+   UChar nativesep = getNativeSeparator();
+   UChar search = L'/';
+   if ( nativesep == L'/' )
+   {
+      search = L'\\';
+   }
+
+   String fixed(path);
+   fixed.replace(search, nativesep);
+   return fixed;
+}
+
+// - FileSystem implementation
+
 FileSystem::FileSystem():
    mPaths()
 {
@@ -75,7 +92,8 @@ FileSystem::~FileSystem()
 
 void FileSystem::addPath(const String& path)
 {
-   mPaths.add(path);
+   String fixedpath = toNativeSeparator(path);
+   mPaths.add(fixedpath);
 }
 
 void FileSystem::removePath(const String& path)

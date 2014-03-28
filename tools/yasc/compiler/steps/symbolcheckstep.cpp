@@ -714,7 +714,7 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
       // note: pclass already is correct class for this or super
 
       mCurrentType.setKind(ASTType::eObject);
-      mCurrentType.setObjectName(pclass->getName());
+      mCurrentType.setObjectName(pclass->getFullName());
       mCurrentType.setObjectClass(*pclass);
    }
 }

@@ -44,7 +44,8 @@ public:
    typedef void(*Callback)(const String& name, bool isdir, void* pdata);
 
    static FileSystem&   getInstance();
-   static UChar getNativeSeparator();
+   static UChar         getNativeSeparator();
+   static String        toNativeSeparator(const String& path);
 
    virtual ~FileSystem();
 
