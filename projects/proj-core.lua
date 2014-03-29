@@ -43,7 +43,7 @@ project "Core"
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1", "tinyxml_STL" }
 	
 	configuration "vs*"
-		links { "gdi32", "user32", "vfw32", "ws2_32" }
+		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp" }
 		
 	configuration "Debug"
 		links { "tinyxmld_STL", "zlib1_d" }

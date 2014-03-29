@@ -1,18 +1,24 @@
-Crafter 2D, version 0.6, Jeroen Broekhuizen
-Copyright 2009-2013
+Crafter 2D, version 0.7, Jeroen Broekhuizen
+Copyright 2009-2014
 
-Welcome to the first update of Crafter 2D! The topic of this new version is the new
-module system. With the modules developers can extend the engine with new features
-without having to change the core engine. In this version the content modules have
-been introduced. In later versions additional types will be added.
+Welcome to this new update of Crafter 2D! This new version improves the workflow
+in the Crafter Workshop application. It is now possible to create a new project
+from scratch and start editing new worlds! The new world wizard allows you to
+import art from another place and copies it to your local project folder.
 
-Besides the module system, the Crafter Workshop has been implemented and released
-before. With the Workshop you can create your games in a WYSIWYG manner. Currently
-the program is still limited in functionality, though in future release more will
-be added. In this release it has become part of the standard distribution.
+Editing script files is very limited and involves some outside the editor editing
+of project files (check wiki if you are interested). In later versions this will
+be greatly improved.
 
-Note: this release works only properly on Windows systems with DirectX. In an upcoming
-release the OpenGL path will be fixed and Linux support be restored.
+The biggest change in this version is the brand new command line script compiler
+YASC. It compiles the files into intermediary language files, which are loaded by
+the engine. This makes loading a lot faster at runtime as most of the checking
+has already been performed. Crafter Workshop uses this utility to compile the script
+files in the script folder.
+
+With this version most of the modules are created (still need to do the box2d module
+and perhaps some more). But my main focus will be on enhancing the Crafter Workshop
+to improve its usability.
 
 More information about the engine can be found on the wiki at the SourceForge.net
 website: http://sourceforge.net/projects/jenginesse/

@@ -1,5 +1,21 @@
-Crafter 2D, version 0.6, Jeroen Broekhuizen
-Copyright 2009-2013
+Crafter 2D, version 0.7, Jeroen Broekhuizen
+Copyright 2009-2014
+
+Change log 0.7
+--------------
+* Added modules for all supported content
+* Added FMOD sound module
+* Added YAS script module
+* Added YASC command line script compiler
+* Added minidump generation for crashes
+* Improved gen & compile utilities
+* Improved the Crafter Workshop
+   - Added basic script editing
+   - Added project building
+   - Enhanced new project wizard
+   - Fixed new world wizard
+   - Fixed some small bugs
+* Fixed bugs
 
 Change log 0.6
 --------------

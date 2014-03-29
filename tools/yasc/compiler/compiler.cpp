@@ -208,7 +208,6 @@ ASTRoot& Compiler::load(const String& classname)
    filename.replace('.', FileSystem::getNativeSeparator());
    filename += UTEXT(".as");
 
-   ASTRoot* presult = NULL;
    AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead | File::EText);
    if ( file.hasPointer() )
    {

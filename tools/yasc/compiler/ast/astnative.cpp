@@ -4,7 +4,8 @@
 #include "astvisitor.h"
 
 ASTNative::ASTNative():
-   ASTExpressionPart()
+   ASTExpressionPart(),
+   mIndex(-1)
 {
 }
 

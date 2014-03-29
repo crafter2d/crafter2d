@@ -16,16 +16,20 @@ project "Compiler"
 	links { "Core" }
 		
 	configuration "Debug"
-		defines { "_DEBUG" }
+		defines { "_DEBUG", "TIXML_USE_STL" }
 		targetsuffix "d"
 		flags { "Symbols" }
+		links { "tinyxmld_STL" }
 		
 	configuration "Release"
-		defines { "NDEBUG" }
+		defines { "NDEBUG", "TIXML_USE_STL" }
 		optimize "On"
+		links { "tinyxml_STL" }
 
 	configuration "windows"
 		defines { "WIN32" }
+		includedirs { path.join(libdir, "tinyxml/include") }
+		libdirs { 	path.join(libdir, "tinyxml/lib") }
 	
 	configuration "linux"
 		defines { "LINUX" }

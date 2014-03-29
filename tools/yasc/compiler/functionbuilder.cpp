@@ -110,7 +110,7 @@ void FunctionBuilder::end()
 
 void FunctionBuilder::createJumps()
 {
-   if ( mLabels.size() > 0 )
+   if ( !mLabels.empty() )
    {
       for ( std::size_t index = 0; index < mInstructions.size(); index++ )
       {
