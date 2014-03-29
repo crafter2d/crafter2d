@@ -64,7 +64,6 @@ EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
    const char* pclasstype = entity.Attribute("class");
    pentitydef->mClassName = (pclasstype != NULL ? String::fromUtf8(pclasstype) : UTEXT("engine.game.Entity"));
 
-   const TiXmlElement* pelement = NULL;
    for ( const TiXmlElement* pelement = entity.FirstChildElement(); pelement != NULL; pelement = pelement->NextSiblingElement() )
    {
       String name = String::fromUtf8(pelement->Value());
@@ -106,7 +105,7 @@ EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
 
 void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmlchild)
 {
-   ChildDefinitionProto* pchild = new ChildDefinitionProto();
+   AutoPtr<ChildDefinitionProto> pchild = new ChildDefinitionProto();
 
    const char* pid = xmlchild.Attribute("id");
    pchild->mID = String::fromUtf8(pid);
@@ -134,7 +133,7 @@ void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXm
    xmlchild.QueryFloatAttribute("offsety", &offsety);
    pchild->mOffset = Vector(offsetx, offsety);
 
-   entity.mChildren.push_back(pchild);
+   entity.mChildren.push_back(pchild.release());
 }
 
 void EntityLoader::loadLinkDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmllink)

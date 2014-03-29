@@ -15,7 +15,6 @@
 #include "effectfileparser.h"
 #include "effectvalidator.h"
 #include "effectshaderbuilder.h"
-#include "effectbuilder.h"
 #include "effectwriter.h"
 
 using namespace Graphics;

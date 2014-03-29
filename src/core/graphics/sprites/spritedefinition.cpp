@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "spritedefinition.h"
 
+#include "core/defines.h"
+
 namespace Graphics
 {
 

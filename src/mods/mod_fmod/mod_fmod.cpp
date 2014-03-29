@@ -23,9 +23,7 @@ using namespace c2d;
 
 extern "C" MOD_API Module* cdecl getModule()
 {
-   ModuleCollection* pmodules = new ModuleCollection();
-
    SoundModule* pmod = new SoundModule(new FModSoundManager());
-   
+
    return pmod;
 }

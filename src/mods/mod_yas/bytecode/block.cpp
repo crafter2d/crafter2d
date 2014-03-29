@@ -14,6 +14,8 @@ namespace ByteCode
       pguard(NULL),
       guard_type(-1),
       plookup(NULL),
+      lookup_value(),
+      lookup_type(eDefault),
       to(),
       from()
    {

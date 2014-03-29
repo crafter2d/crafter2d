@@ -987,13 +987,15 @@ int StackIRGenerator::buildCode(VirtualContext& context, VirtualFunction& functi
          if ( pos >= size )
          {
             size *= 2;
-            pcode = (char*)realloc(pcode, size);
-            if ( pcode == NULL )
+            char* pnew = (char*)realloc(pcode, size);
+            if ( pnew == NULL )
             {
                // out of memory?
                free(pcode);
                return -1;
             }
+
+            pcode = pnew;
          }
 
          memmove(&pcode[pos], &pinst->inst, sizeof(int));

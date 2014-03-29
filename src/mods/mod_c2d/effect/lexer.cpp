@@ -36,7 +36,6 @@ bool Lexer::next(UChar ch)
 
 bool Lexer::isEOF() const
 {
-   int length = mData.length();
    return mPos == mData.length();
 }
 

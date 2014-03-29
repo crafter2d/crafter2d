@@ -45,6 +45,7 @@ public:
    virtual Timer& getTimer() = 0;
 
  // operations
+   virtual void  initialize() = 0;
    virtual void* loadModule(const String& name) = 0;
    virtual void  freeModule(void* pmodule) = 0;
    virtual void* getFunctionAddress(void* module, const String& name) = 0;

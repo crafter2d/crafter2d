@@ -5,7 +5,12 @@
 #include "core/streams/datastream.h"
 
 MeshComponentDefinitionProto::MeshComponentDefinitionProto():
-   ComponentDefinitionProto(ComponentInterface::eMeshComponent)
+   ComponentDefinitionProto(ComponentInterface::eMeshComponent),
+   mWidth(0),
+   mHeight(0),
+   mTexture(),
+   mAnimationSpeed(0.0f),
+   mAnimations()
 {
 }
 

@@ -68,7 +68,7 @@ bool ShaderObject::link(VertexLayout& layout)
 	GLint linked;
 	GLenum glErr;
 
-	if (shaders.size() == 0)
+	if ( shaders.empty() )
    {
 		Log::getInstance().error("ShaderObject.link: there are no shaders to link.");
 		return false;

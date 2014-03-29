@@ -94,7 +94,7 @@ namespace ByteCode
 
       if ( !cilclass->getBaseName().isEmpty() )
       {
-         VirtualClass& baseclass = generate(context, cilclass->getBaseName());
+         VirtualClass& baseclass = context.resolveClass(cilclass->getBaseName());
          presult->setBaseClass(baseclass);
       }
 

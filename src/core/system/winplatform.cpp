@@ -20,10 +20,30 @@
 #include "winplatform.h"
 
 #include <Windows.h>
+#include <DbgHelp.h>
 
 #include "core/string/string.h"
 
 #include "wintimer.h"
+
+LONG WINAPI MyUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
+{
+   _MINIDUMP_EXCEPTION_INFORMATION ExInfo;
+
+   ExInfo.ThreadId = ::GetCurrentThreadId();
+   ExInfo.ExceptionPointers = ExceptionInfo;
+   ExInfo.ClientPointers = NULL;
+
+   HANDLE hFile = ::CreateFile(L"minidump.dmp", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+   if ( hFile != INVALID_HANDLE_VALUE )
+   {
+      MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &ExInfo, NULL, NULL);
+
+      ::CloseHandle(hFile);
+   }
+   
+   return EXCEPTION_EXECUTE_HANDLER;
+}
 
 WinPlatform::WinPlatform():
    Platform(),
@@ -47,6 +67,11 @@ Platform::OS WinPlatform::getOS() const
 Timer& WinPlatform::getTimer()
 {
    return mTimer;
+}
+
+void WinPlatform::initialize()
+{
+   SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);
 }
 
 void* WinPlatform::loadModule(const String& name)

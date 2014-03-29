@@ -19,7 +19,7 @@ using namespace Graphics;
 
 void EffectShaderBuilder::build(ASTEffect& effect)
 {
-   if ( effect.mTechniques.size() > 0 )
+   if ( !effect.mTechniques.empty() )
    {
       AutoPtr<AbstractBuilder> pbuilder = NULL;
       switch ( effect.getLanguage() )

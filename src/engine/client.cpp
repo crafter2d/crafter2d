@@ -83,6 +83,7 @@ namespace c2d
       mpWindow(NULL),
       mpDevice(NULL),
       mpRenderContext(NULL),
+      mpInputDevice(NULL),
       mWindowListener(*this),
       mKeyEventDispatcher(*this),
       mMouseEventDispatcher(*this),

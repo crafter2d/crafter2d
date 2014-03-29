@@ -71,12 +71,14 @@ ASTType* ASTType::fromString(const ASTEffect& effect, const String& typestr)
 }
 
 ASTType::ASTType():
-   mType(eUnknown)
+   mType(eUnknown),
+   mpStruct(NULL)
 {
 }
 
 ASTType::ASTType(Type type):
-   mType(type)
+   mType(type),
+   mpStruct(NULL)
 {
 }
 

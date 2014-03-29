@@ -11,7 +11,8 @@
 
 VirtualArray::VirtualArray():
    Collectable(),
-   mpArray(0)
+   mpArray(0),
+   mSize(0)
 {
 }
 

@@ -34,6 +34,7 @@ public:
    virtual Timer& getTimer() override;
 
  // operations
+   virtual void  initialize() override;
    virtual void* loadModule(const String& name) override;
    virtual void  freeModule(void* pmodule) override;
    virtual void* getFunctionAddress(void* module, const String& name) override;

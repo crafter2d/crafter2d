@@ -18,7 +18,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 Win32GameWindow::Win32GameWindow():
    GameWindow(),
-   mWnd(NULL)
+   mWnd(NULL),
+   mWidth(0),
+   mHeight(0)
 {
 }
 

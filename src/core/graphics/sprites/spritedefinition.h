@@ -20,7 +20,6 @@
 #ifndef SPRITE_DEFINITION_H
 #define SPRITE_DEFINITION_H
 
-#include "core/resource/resourcemanager.h"
 #include "core/string/string.h"
 #include "core/math/size.h"
 #include "core/core_base.h"
@@ -28,6 +27,7 @@
 namespace Graphics
 {
    class Animator;
+   class Texture;
 
    class CORE_API SpriteDefinition
    {
