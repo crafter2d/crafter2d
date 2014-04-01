@@ -5,12 +5,17 @@
 #include <cxxtest/TestSuite.h>
 
 #include "core/vfs/filesystem.h"
+#include "core/modules/modulemanager.h"
+#include "core/modules/modulecollection.h"
+#include "core/modules/scriptmodule.h"
+#include "core/script/scriptcall.h"
+#include "core/script/scriptobjecthandle.h"
+#include "core/script/scriptobject.h"
+#include "core/script/scriptmanager.h"
+#include "core/script/scriptregistrator.h"
 #include "core/smartptr/autoptr.h"
 
-#include "script/vm/virtualmachine.h"
-#include "script/vm/virtualstackaccessor.h"
-#include "script/vm/virtualobject.h"
-#include "script/common/functionregistration.h"
+using namespace c2d;
 
 class NativeClass
 {
@@ -23,31 +28,30 @@ public:
    int mul(int a, int b) { return a * b; }
 };
 
-void NativeClass_init(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NativeClass_init(ScriptCall& accessor)
 {
-   VirtualObject& thisobject = accessor.getThis();
-
    NativeClass* pnative = new NativeClass();
-   machine.registerNative(thisobject, pnative);
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(pnative);
 }
 
-void NativeClass_getIntValue(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NativeClass_getIntValue(ScriptCall& accessor)
 {
-   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
+   NativeClass* pnative = accessor.getObject(0)->get<NativeClass*>();
 
    accessor.setResult(pnative->getIntValue());
 }
 
-void NativeClass_getStringValue(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NativeClass_getStringValue(ScriptCall& accessor)
 {
-   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
+   NativeClass* pnative = accessor.getObject(0)->get<NativeClass*>();
 
    accessor.setResult(pnative->getStringValue());
 }
 
-void NativeClass_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NativeClass_add(ScriptCall& accessor)
 {
-   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
+   NativeClass* pnative = accessor.getObject(0)->get<NativeClass*>();
 
    int a = accessor.getInt(1);
    int b = accessor.getInt(2);
@@ -55,9 +59,9 @@ void NativeClass_add(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(pnative->add(a, b));
 }
 
-void NativeClass_sub(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NativeClass_sub(ScriptCall& accessor)
 {
-   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
+   NativeClass* pnative = accessor.getObject(0)->get<NativeClass*>();
 
    int a = accessor.getInt(1);
    int b = accessor.getInt(2);
@@ -65,9 +69,9 @@ void NativeClass_sub(VirtualMachine& machine, VirtualStackAccessor& accessor)
    accessor.setResult(pnative->sub(a, b));
 }
 
-void NativeClass_mul(VirtualMachine& machine, VirtualStackAccessor& accessor)
+void NativeClass_mul(ScriptCall& accessor)
 {
-   NativeClass* pnative = accessor.getThis().getNativeObject<NativeClass*>();
+   NativeClass* pnative = accessor.getObject(0)->get<NativeClass*>();
 
    int a = accessor.getInt(1);
    int b = accessor.getInt(2);
@@ -81,32 +85,33 @@ public:
 
    void testRun()
    {
-      ClassRegistry registry;
-      registry.addClass(UTEXT("NativeClass"));
-      registry.addFunction(UTEXT("NativeClass()"), NativeClass_init);
-      registry.addFunction(UTEXT("getIntValue()"), NativeClass_getIntValue);
-      registry.addFunction(UTEXT("getStringValue()"), NativeClass_getStringValue);
-      registry.addFunction(UTEXT("add(int, int)"), NativeClass_add);
-      registry.addFunction(UTEXT("sub(int, int)"), NativeClass_sub);
-      registry.addFunction(UTEXT("mul(int, int)"), NativeClass_mul);
+      ModuleManager modules;
+      TS_ASSERT(modules.initialize());
+      c2d::Module* pmodule = modules.lookup(c2d::UUID_ScriptModule);
+      TS_ASSERT(pmodule != NULL);
+      ScriptModule* pmod = static_cast<c2d::ScriptModule*>(pmodule);
+      ScriptManager& scriptmanager = pmod->getManager();
+
+      AutoPtr<ScriptRegistrator> pregistrator = scriptmanager.getRegistrator();
+
+      pregistrator->addClass(UTEXT("NativeClass"));
+      pregistrator->addFunction(UTEXT("NativeClass()"), NativeClass_init);
+      pregistrator->addFunction(UTEXT("getIntValue()"), NativeClass_getIntValue);
+      pregistrator->addFunction(UTEXT("getStringValue()"), NativeClass_getStringValue);
+      pregistrator->addFunction(UTEXT("add(int, int)"), NativeClass_add);
+      pregistrator->addFunction(UTEXT("sub(int, int)"), NativeClass_sub);
+      pregistrator->addFunction(UTEXT("mul(int, int)"), NativeClass_mul);
 
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();
-      fs.addPath(UTEXT("../scripts"));
-      fs.addPath(UTEXT("../src/unittest/tests"));
+      fs.addPath(UTEXT("data.zip\\scripts"));
+      fs.addPath(UTEXT("../src/unittest/exec"));
 
-      VirtualContext vc;
-      VirtualMachine vm(vc);
-      vm.mergeClassRegistry(registry);
-      vm.initialize();
+      AutoPtr<ScriptObject> script = scriptmanager.load(UTEXT("Test"));
+      scriptmanager.addRootObject(*script);
 
-      AutoPtr<VirtualObject> object = vm.instantiate(UTEXT("Test"));
-
-      TS_ASSERT(object.hasPointer());
-      if ( object.hasPointer() )
-      {
-         TS_ASSERT(vm.execute(*object, UTEXT("run")).isEmpty());
-      }
+      TS_ASSERT(script.hasPointer());
+      Variant result = script->call(UTEXT("run"));
    }
 
 };

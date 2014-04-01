@@ -20,6 +20,7 @@ public:
 
  // overrides
    virtual c2d::ScriptRegistrator* getRegistrator() override;
+   virtual c2d::ScriptObject* load(const String& classname) override;
    virtual c2d::ScriptObject* load(const String& classname, void* pobject, bool owned) override;
    virtual void addRootObject(c2d::ScriptObject& object) override;
 

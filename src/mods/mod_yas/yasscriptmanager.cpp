@@ -31,6 +31,15 @@ c2d::ScriptRegistrator* YasScriptManager::getRegistrator()
    return new YasScriptRegistrator(*this);
 }
 
+c2d::ScriptObject* YasScriptManager::load(const String& classname)
+{
+   VirtualObject* pobject = mVirtualMachine.instantiate(classname);
+
+   YasScriptObject* pscript = new YasScriptObject(*this);
+   pscript->setThis(*pobject);
+   return pscript;
+}
+
 c2d::ScriptObject* YasScriptManager::load(const String& classname, void* pobject, bool owned)
 {
    VirtualObject& object = mVirtualMachine.instantiateNative(classname, pobject, owned);

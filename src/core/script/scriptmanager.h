@@ -16,6 +16,7 @@ namespace c2d
 
       virtual ScriptRegistrator* getRegistrator() = 0;
 
+      virtual ScriptObject* load(const String& classname) = 0;
       virtual ScriptObject* load(const String& classname, void* pobject, bool owned) = 0;
 
       virtual void addRootObject(ScriptObject& object) = 0;

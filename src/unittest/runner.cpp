@@ -14,12 +14,12 @@
 int main( int argc, char *argv[] ) {
  return CxxTest::GuiTuiRunner<CxxTest::Win32Gui, CxxTest::StdioPrinter>( argc, argv ).run();
 }
-#include "D:/Devel/crafter2d/src/unittest/testbufferedstream.h"
+#include "E:/Devel/Crafter2D/src/unittest/testbufferedstream.h"
 
 static TestBufferedStream suite_TestBufferedStream;
 
 static CxxTest::List Tests_TestBufferedStream = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestBufferedStream( "D:/Devel/crafter2d/src/unittest/testbufferedstream.h", 9, "TestBufferedStream", suite_TestBufferedStream, Tests_TestBufferedStream );
+CxxTest::StaticSuiteDescription suiteDescription_TestBufferedStream( "E:/Devel/Crafter2D/src/unittest/testbufferedstream.h", 9, "TestBufferedStream", suite_TestBufferedStream, Tests_TestBufferedStream );
 
 static class TestDescription_TestBufferedStream_testReadWriteInt : public CxxTest::RealTestDescription {
 public:
@@ -33,12 +33,12 @@ public:
  void runTest() { suite_TestBufferedStream.testReadWriteFloat(); }
 } testDescription_TestBufferedStream_testReadWriteFloat;
 
-#include "D:/Devel/crafter2d/src/unittest/testcommandline.h"
+#include "E:/Devel/Crafter2D/src/unittest/testcommandline.h"
 
 static TestCommandLine suite_TestCommandLine;
 
 static CxxTest::List Tests_TestCommandLine = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestCommandLine( "D:/Devel/crafter2d/src/unittest/testcommandline.h", 10, "TestCommandLine", suite_TestCommandLine, Tests_TestCommandLine );
+CxxTest::StaticSuiteDescription suiteDescription_TestCommandLine( "E:/Devel/Crafter2D/src/unittest/testcommandline.h", 10, "TestCommandLine", suite_TestCommandLine, Tests_TestCommandLine );
 
 static class TestDescription_TestCommandLine_testSize : public CxxTest::RealTestDescription {
 public:
@@ -82,31 +82,12 @@ public:
  void runTest() { suite_TestCommandLine.testResolveInvalidCommand(); }
 } testDescription_TestCommandLine_testResolveInvalidCommand;
 
-#include "D:/Devel/crafter2d/src/unittest/testcompiler.h"
-
-static TestCompiler suite_TestCompiler;
-
-static CxxTest::List Tests_TestCompiler = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestCompiler( "D:/Devel/crafter2d/src/unittest/testcompiler.h", 16, "TestCompiler", suite_TestCompiler, Tests_TestCompiler );
-
-static class TestDescription_TestCompiler_testCompilation : public CxxTest::RealTestDescription {
-public:
- TestDescription_TestCompiler_testCompilation() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 42, "testCompilation" ) {}
- void runTest() { suite_TestCompiler.testCompilation(); }
-} testDescription_TestCompiler_testCompilation;
-
-static class TestDescription_TestCompiler_testCallback : public CxxTest::RealTestDescription {
-public:
- TestDescription_TestCompiler_testCallback() : CxxTest::RealTestDescription( Tests_TestCompiler, suiteDescription_TestCompiler, 64, "testCallback" ) {}
- void runTest() { suite_TestCompiler.testCallback(); }
-} testDescription_TestCompiler_testCallback;
-
-#include "D:/Devel/crafter2d/src/unittest/testhashmap.h"
+#include "E:/Devel/Crafter2D/src/unittest/testhashmap.h"
 
 static TestHashMap suite_TestHashMap;
 
 static CxxTest::List Tests_TestHashMap = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestHashMap( "D:/Devel/crafter2d/src/unittest/testhashmap.h", 14, "TestHashMap", suite_TestHashMap, Tests_TestHashMap );
+CxxTest::StaticSuiteDescription suiteDescription_TestHashMap( "E:/Devel/Crafter2D/src/unittest/testhashmap.h", 14, "TestHashMap", suite_TestHashMap, Tests_TestHashMap );
 
 static class TestDescription_TestHashMap_testInsertion : public CxxTest::RealTestDescription {
 public:
@@ -114,12 +95,12 @@ public:
  void runTest() { suite_TestHashMap.testInsertion(); }
 } testDescription_TestHashMap_testInsertion;
 
-#include "D:/Devel/crafter2d/src/unittest/testlist.h"
+#include "E:/Devel/Crafter2D/src/unittest/testlist.h"
 
 static TestList suite_TestList;
 
 static CxxTest::List Tests_TestList = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestList( "D:/Devel/crafter2d/src/unittest/testlist.h", 9, "TestList", suite_TestList, Tests_TestList );
+CxxTest::StaticSuiteDescription suiteDescription_TestList( "E:/Devel/Crafter2D/src/unittest/testlist.h", 9, "TestList", suite_TestList, Tests_TestList );
 
 static class TestDescription_TestList_testAddFront : public CxxTest::RealTestDescription {
 public:
@@ -187,53 +168,53 @@ public:
  void runTest() { suite_TestList.testClear(); }
 } testDescription_TestList_testClear;
 
-#include "D:/Devel/crafter2d/src/unittest/testvariant.h"
+#include "E:/Devel/Crafter2D/src/unittest/testvariant.h"
 
 static TestVariant suite_TestVariant;
 
 static CxxTest::List Tests_TestVariant = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestVariant( "D:/Devel/crafter2d/src/unittest/testvariant.h", 11, "TestVariant", suite_TestVariant, Tests_TestVariant );
+CxxTest::StaticSuiteDescription suiteDescription_TestVariant( "E:/Devel/Crafter2D/src/unittest/testvariant.h", 9, "TestVariant", suite_TestVariant, Tests_TestVariant );
 
 static class TestDescription_TestVariant_testInt : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVariant_testInt() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 15, "testInt" ) {}
+ TestDescription_TestVariant_testInt() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 13, "testInt" ) {}
  void runTest() { suite_TestVariant.testInt(); }
 } testDescription_TestVariant_testInt;
 
 static class TestDescription_TestVariant_testReal : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVariant_testReal() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 26, "testReal" ) {}
+ TestDescription_TestVariant_testReal() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 23, "testReal" ) {}
  void runTest() { suite_TestVariant.testReal(); }
 } testDescription_TestVariant_testReal;
 
 static class TestDescription_TestVariant_testBoolean : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVariant_testBoolean() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 38, "testBoolean" ) {}
+ TestDescription_TestVariant_testBoolean() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 34, "testBoolean" ) {}
  void runTest() { suite_TestVariant.testBoolean(); }
 } testDescription_TestVariant_testBoolean;
 
 static class TestDescription_TestVariant_testString : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVariant_testString() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 50, "testString" ) {}
+ TestDescription_TestVariant_testString() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 46, "testString" ) {}
  void runTest() { suite_TestVariant.testString(); }
 } testDescription_TestVariant_testString;
 
 static class TestDescription_TestVariant_testAssignment : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVariant_testAssignment() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 59, "testAssignment" ) {}
+ TestDescription_TestVariant_testAssignment() : CxxTest::RealTestDescription( Tests_TestVariant, suiteDescription_TestVariant, 55, "testAssignment" ) {}
  void runTest() { suite_TestVariant.testAssignment(); }
 } testDescription_TestVariant_testAssignment;
 
-#include "D:/Devel/crafter2d/src/unittest/testvirtualmachine.h"
+#include "E:/Devel/Crafter2D/src/unittest/testvirtualmachine.h"
 
 static TestVirtualMachine suite_TestVirtualMachine;
 
 static CxxTest::List Tests_TestVirtualMachine = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestVirtualMachine( "D:/Devel/crafter2d/src/unittest/testvirtualmachine.h", 78, "TestVirtualMachine", suite_TestVirtualMachine, Tests_TestVirtualMachine );
+CxxTest::StaticSuiteDescription suiteDescription_TestVirtualMachine( "E:/Devel/Crafter2D/src/unittest/testvirtualmachine.h", 82, "TestVirtualMachine", suite_TestVirtualMachine, Tests_TestVirtualMachine );
 
 static class TestDescription_TestVirtualMachine_testRun : public CxxTest::RealTestDescription {
 public:
- TestDescription_TestVirtualMachine_testRun() : CxxTest::RealTestDescription( Tests_TestVirtualMachine, suiteDescription_TestVirtualMachine, 82, "testRun" ) {}
+ TestDescription_TestVirtualMachine_testRun() : CxxTest::RealTestDescription( Tests_TestVirtualMachine, suiteDescription_TestVirtualMachine, 86, "testRun" ) {}
  void runTest() { suite_TestVirtualMachine.testRun(); }
 } testDescription_TestVirtualMachine_testRun;
 

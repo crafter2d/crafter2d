@@ -16,8 +16,9 @@ Variant::Variant():
 
 Variant::Variant(const Variant& that):
    mType(that.mType),
-   mValue(that.mValue)
+   mValue()
 {
+   operator=(that);
 }
 
 Variant::Variant(int value):

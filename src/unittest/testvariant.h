@@ -4,9 +4,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include "script/vm/virtualstring.h"
-
-#include "script/common/variant.h"
+#include "core/system/variant.h"
 
 class TestVariant : public CxxTest::TestSuite
 {
@@ -20,7 +18,6 @@ public:
       TS_ASSERT(v.asInt() == 100);
       TS_ASSERT_EQUALS(v.toReal(), 100.0);
       TS_ASSERT_EQUALS(v.toString(), UTEXT("100"));
-      TS_ASSERT_EQUALS(v.typeAsString(), UTEXT("int"));
    }
 
    void testReal()
@@ -32,7 +29,6 @@ public:
       TS_ASSERT_EQUALS(v.asReal(), 100.0);
       TS_ASSERT_EQUALS(v.toInt(), 100);
       TS_ASSERT_EQUALS(v.toString(), UTEXT("100"));
-      TS_ASSERT_EQUALS(v.typeAsString(), UTEXT("real"));
    }
 
    void testBoolean()
@@ -49,7 +45,7 @@ public:
 
    void testString()
    {
-      VirtualString value(UTEXT("100"));
+      String value(UTEXT("100"));
       Variant v(value);
       TS_ASSERT(v.isString());
       

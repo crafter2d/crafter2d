@@ -13,7 +13,7 @@ project "UnitTest"
 	-- set project files
 	files { "src/unittest/**.cpp", "src/unittest/**.h", "src/unittest/**.inl" }
 	includedirs { "src" }
-	links { "Core", "Engine", "Script" }
+	links { "Core", "Engine" }
 
 	configuration "Debug"
 		defines { "_DEBUG", "_CXXTEST_HAVE_EH" }
@@ -33,4 +33,4 @@ project "UnitTest"
 		local sln = solution()
 		local srcdir = path.join(sln.basedir, "src/unittest");
 		local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
-		--prebuildcommands { "python " .. gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }
+		prebuildcommands { "python " .. gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }

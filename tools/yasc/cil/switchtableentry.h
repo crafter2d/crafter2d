@@ -9,6 +9,11 @@ namespace CIL
    class SwitchTableEntry
    {
    public:
+      SwitchTableEntry();
+      SwitchTableEntry(const SwitchTableEntry& that);
+
+      const SwitchTableEntry operator=(const SwitchTableEntry& that);
+
       int      label;
       Variant  value;
    };
