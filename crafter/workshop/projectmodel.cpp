@@ -188,6 +188,7 @@ void ProjectModel::synchronizeTree()
             synchronizeWorlds(*pchild);
             break;
         case ProjectTreeTextItem::eScript:
+            synchronizeScripts(*pchild);
             break;
         }
     }
@@ -202,10 +203,10 @@ void ProjectModel::synchronizeWorlds(ProjectTreeItem& parent)
         int elem = 0;
         for ( ; elem < parent.childCount(); ++elem )
         {
-            ProjectTreeWorldItem* pitem = static_cast<ProjectTreeWorldItem*>(parent.child(index));
+            ProjectTreeWorldItem* pitem = static_cast<ProjectTreeWorldItem*>(parent.child(elem));
 
-            TileWorldHandle world = pitem->data().value<TileWorldHandle>();
-            if ( world == *pworld )
+            TileWorld& world = pitem->getWorld();
+            if ( &world == pworld )
             {
                 break;
             }
@@ -228,10 +229,10 @@ void ProjectModel::synchronizeScripts(ProjectTreeItem& parent)
         int elem = 0;
         for ( ; elem < parent.childCount(); ++elem )
         {
-            ProjectTreeScriptItem* pitem = static_cast<ProjectTreeScriptItem*>(parent.child(index));
+            ProjectTreeScriptItem* pitem = static_cast<ProjectTreeScriptItem*>(parent.child(elem));
 
-            ScriptHandle script = pitem->data().value<ScriptHandle>();
-            if ( script == *pscript )
+            ScriptFile& script = pitem->getScript();
+            if ( &script == pscript )
             {
                 break;
             }

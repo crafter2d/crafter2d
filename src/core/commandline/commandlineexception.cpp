@@ -19,6 +19,19 @@
  ***************************************************************************/
 #include "commandlineexception.h"
 
-CommandLineException::CommandLineException()
+CommandLineException::CommandLineException():
+   mMessage()
 {
+}
+
+CommandLineException::CommandLineException(const String& message):
+   mMessage(message)
+{
+}
+
+// - Get/set
+
+const String& CommandLineException::getMessage() const
+{
+   return mMessage;
 }

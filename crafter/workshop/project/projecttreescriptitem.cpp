@@ -10,9 +10,9 @@ ProjectTreeScriptItem::ProjectTreeScriptItem(const ScriptHandle& script):
 {
 }
 
-ScriptHandle& ProjectTreeScriptItem::getScript()
+ScriptFile& ProjectTreeScriptItem::getScript()
 {
-    return mScript;
+    return *mScript;
 }
 
 QVariant ProjectTreeScriptItem::data()

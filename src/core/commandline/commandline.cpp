@@ -68,7 +68,7 @@ const CommandLineArgument& CommandLine::getArgument(const String& name) const
    const CommandLineArgument* presult = findArgument(name);
    if ( presult == NULL )
    {
-      throw new CommandLineException();
+      throw new CommandLineException(UTEXT("Could not find argument '") + name + UTEXT("'"));
    }
    return *presult;
 }

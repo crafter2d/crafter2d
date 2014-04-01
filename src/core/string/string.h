@@ -95,6 +95,9 @@ public:
    void remove(int start, int count);
 
    String subStr(int start, int count) const;
+   String left(int to) const;
+   String right(int from) const;
+
    String unescape() const;
 
  // searching

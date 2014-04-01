@@ -244,6 +244,12 @@ void Project::addTileSet(QTileSet *ptileset)
     emit dataChanged();
 }
 
+void Project::addScript(ScriptFile* pscript)
+{
+    mScripts.append(pscript);
+    emit dataChanged();
+}
+
 bool Project::loadWorld(const QString& fileName)
 {
     QString path = mBasePath + QDir::separator() + fileName;

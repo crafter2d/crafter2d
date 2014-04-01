@@ -4,9 +4,11 @@
 
 #include "core/defines.h"
 #include "core/commandline/commandline.h"
+#include "core/commandline/commandlineexception.h"
 
 #include "generators/projectgenerator.h"
 #include "generators/modulegenerator.h"
+#include "generators/classgenerator.h"
 
 int main(int argc, char *argv[])
 {
@@ -33,14 +35,26 @@ int main(int argc, char *argv[])
       {
          pgenerator = new ModuleGenerator();
       }
+      else if ( argument.getName() == UTEXT("class") )
+      {
+         pgenerator = new ClassGenerator();
+      }
       else
       {
          std::cerr << argument.getName().toUtf8() << " is not a valid target.";
          return -1;
       }
 
-      if ( !pgenerator->generate(cmdline) )
+      try
       {
+         if ( !pgenerator->generate(cmdline) )
+         {
+            return -2;
+         }
+      }
+      catch ( CommandLineException& e )
+      {
+         std::cerr << e.getMessage().toUtf8();
          return -2;
       }
    }

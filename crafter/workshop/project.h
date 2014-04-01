@@ -50,6 +50,7 @@ public:
 
     void addWorld(TileWorld *pworld);
     void addTileSet(QTileSet *ptileset);
+    void addScript(ScriptFile* pscript);
 
     bool load(const QString& fileName);
     void save();

@@ -62,7 +62,9 @@ SOURCES += main.cpp\
     script/scriptfile.cpp \
     project/projecttreescriptitem.cpp \
     script/scripthandle.cpp \
-    project/projectbuilder.cpp
+    project/projectbuilder.cpp \
+    newscriptdialog.cpp \
+    script/scriptbuilder.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -111,7 +113,9 @@ HEADERS  += mainwindow.h \
     script/scriptfile.h \
     project/projecttreescriptitem.h \
     script/scripthandle.h \
-    project/projectbuilder.h
+    project/projectbuilder.h \
+    newscriptdialog.h \
+    script/scriptbuilder.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
@@ -125,7 +129,8 @@ FORMS    += mainwindow.ui \
     worldwizard_pageworld.ui \
     layerwizard_pagetileset.ui \
     layerwizard_pageinfo.ui \
-    scriptview.ui
+    scriptview.ui \
+    newscriptdialog.ui
 
 BaseDir = $$PWD/../build/workshop
 

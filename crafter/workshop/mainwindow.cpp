@@ -13,6 +13,7 @@
 #include "aboutdialog.h"
 #include "newprojectdialog.h"
 #include "newlayerdialog.h"
+#include "newscriptdialog.h"
 #include "project.h"
 #include "projectpanel.h"
 #include "layerpanel.h"
@@ -301,10 +302,11 @@ void MainWindow::on_actionFile_NewLayer_triggered()
 
 void MainWindow::on_actionFile_NewScript_triggered()
 {
-    ScriptView* pview = new ScriptView();
-    pview->show();
-
-    ui->centralWidget->addSubWindow(pview);
+    ScriptFile* pscript = NewScriptDialog::New(this, *mpProject);
+    if ( pscript != NULL )
+    {
+        addWindow(*pscript);
+    }
 }
 
 void MainWindow::on_actionFile_ImportWorld_triggered()

@@ -447,6 +447,20 @@ String String::subStr(int start, int count) const
    return result;
 }
 
+String String::left(int to) const
+{
+   String result;
+   result.setTo(mpString, to + 1);
+   return result;
+}
+
+String String::right(int from) const
+{
+   String result;
+   result.setTo(&mpString[from], mLength - from);
+   return result;
+}
+
 String String::unescape() const
 {
    String result;

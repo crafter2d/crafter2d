@@ -11,7 +11,7 @@ public:
     explicit ProjectTreeScriptItem(const ScriptHandle& script);
 
   // get/set
-    ScriptHandle& getScript();
+    ScriptFile& getScript();
 
   // query
     virtual QVariant data() override;

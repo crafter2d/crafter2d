@@ -21,11 +21,21 @@
 #define COMMAND_LINE_EXCEPTION_H
 
 #include "core/core_base.h"
+#include "core/string/string.h"
 
 class CORE_API CommandLineException
 {
 public:
    CommandLineException();
+   CommandLineException(const String& message);
+
+ // get/set
+   const String& getMessage() const;
+
+private:
+
+ // data
+   String mMessage;
 };
 
 #endif // COMMAND_LINE_EXCEPTION_H
