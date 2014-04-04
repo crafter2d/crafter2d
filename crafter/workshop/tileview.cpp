@@ -5,6 +5,7 @@
 #include <QPixmap>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPalette>
 
 #include "world/tilebound.h"
 #include "tileworld.h"
@@ -95,6 +96,12 @@ void TileView::prepare()
         QSize minsize = mpWorld->getMinimumSize();
         setMinimumSize(minsize);
     }
+
+    QPalette whitepalette(palette());
+    whitepalette.setColor(QPalette::Background, Qt::white);
+
+    this->setAutoFillBackground(true);
+    this->setPalette(whitepalette);
 }
 
 bool TileView::selectBoundEdge(QMouseEvent *pevent)
@@ -137,26 +144,26 @@ void TileView::keyPressEvent(QKeyEvent *pevent)
     {
     case eBoundMode:
         {
-            switch ( pevent->key() )
+            if ( mpWorld->hasSelectedBound() )
             {
-            case Qt::Key_F:
-                if ( mpWorld->hasSelectedBound() )
+                switch ( pevent->key() )
                 {
+                case Qt::Key_F:
                     mpWorld->getSelectedBound().flip();
-                    repaint();
-                    return;
+                    break;
+                case Qt::Key_S:
+                    mpWorld->straightenBounds();
+                    break;
                 }
-                break;
-            case Qt::Key_S:
-                mpWorld->straightenBounds();
-                break;
-            }
 
+                repaint();
+            }
         }
         break;
+    default:
+        QWidget::keyPressEvent(pevent);
+        break;
     }
-
-    QWidget::keyPressEvent(pevent);
 }
 
 void TileView::mousePressEvent(QMouseEvent *pevent)
@@ -172,6 +179,7 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
         switch ( mEditMode )
         {
         case eLayerMode:
+            mEditMode = ePaintMode;
             if ( mpWorld->setTile(pevent->pos(), mLevel, mTile) )
             {
                 repaint();
@@ -218,27 +226,45 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
 
 void TileView::mouseReleaseEvent(QMouseEvent *)
 {
+    if ( mEditMode == ePaintMode )
+    {
+        // leave paint mode and return to default
+        mEditMode = eLayerMode;
+    }
+
     mpSelectedBound = NULL;
 }
 
 void TileView::mouseMoveEvent(QMouseEvent* pevent)
 {
-    if ( mpSelectedBound != NULL )
+    switch ( mEditMode )
     {
-        switch ( mSelectedEdge )
+    case ePaintMode:
+        if ( mpWorld->setTile(pevent->pos(), mLevel, mTile) )
         {
-        case eLeft:
-            mpSelectedBound->setLeft(pevent->localPos());
-            break;
-        case eRight:
-            mpSelectedBound->setRight(pevent->localPos());
-            break;
-        case eNone:
-            // need offset of previous pos and this pevent->pos()
-            // mpSelectedBound->move();
-            break;
+            repaint();
         }
+        break;
 
-        repaint();
+    case eBoundMode:
+        if ( mpSelectedBound != NULL )
+        {
+            switch ( mSelectedEdge )
+            {
+            case eLeft:
+                mpSelectedBound->setLeft(pevent->localPos());
+                break;
+            case eRight:
+                mpSelectedBound->setRight(pevent->localPos());
+                break;
+            case eNone:
+                // need offset of previous pos and this pevent->pos()
+                // mpSelectedBound->move();
+                break;
+            }
+
+            repaint();
+        }
+        break;
     }
 }

@@ -66,20 +66,20 @@ void QTileField::resize(const QSize& newdim)
 {
     int datasize = newdim.width() * newdim.height() * 3;
     quint8* pfield = new quint8[datasize];
-    memset(pfield, -1, sizeof(quint8) * datasize);
-
-    int minwidth = qMin(newdim.width(), mDimension.width());
-    int minheight = qMin(newdim.height(), mDimension.height());
+    memset(pfield, 255, sizeof(quint8) * datasize);
 
     int srcsize = sizeof(quint8) * mDimension.width() * 3;
     int destsize = sizeof(quint8) * newdim.width() * 3;
 
-    quint8* psrc = pfield;
-    quint8* pdest = mpField;
+    int minwidth = qMin(srcsize, destsize);
+    int minheight = qMin(mDimension.height(), newdim.height());
+
+    quint8* psrc = mpField;
+    quint8* pdest = pfield;
 
     for ( int y = 0; y < minheight; ++y )
     {
-      memcpy(psrc, pdest, sizeof(quint8) * minwidth * 3);
+      memcpy(pdest, psrc, minwidth);
       psrc += srcsize;
       pdest += destsize;
     }

@@ -23,7 +23,7 @@ class TileView : public QWidget
     Q_OBJECT
 
 public:
-    enum EditMode { eLayerMode, eBoundMode };
+    enum EditMode { eLayerMode, eBoundMode, ePaintMode };
     enum BoundEdge { eNone, eLeft, eRight };
 
     TileView();

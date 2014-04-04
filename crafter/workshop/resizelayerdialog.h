@@ -2,6 +2,7 @@
 #define RESIZELAYERDIALOG_H
 
 #include <QDialog>
+#include <QSize>
 
 namespace Ui {
 class ResizeLayerDialog;
@@ -22,8 +23,17 @@ public:
     QSize getLayerSize() const;
     void  setLayerSize(const QSize& size);
 
+  // overloads
+    virtual void accept() override;
+
+private slots:
+
+
 private:
+
+  // data
     Ui::ResizeLayerDialog *ui;
+    QSize mOrigSize;
 };
 
 #endif // RESIZELAYERDIALOG_H

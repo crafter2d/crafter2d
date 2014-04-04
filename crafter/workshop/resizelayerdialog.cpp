@@ -1,6 +1,8 @@
 #include "resizelayerdialog.h"
 #include "ui_resizelayerdialog.h"
 
+#include <QMessageBox>
+
 // static
 bool ResizeLayerDialog::resize(QWidget* parent, QSize &size)
 {
@@ -19,7 +21,8 @@ bool ResizeLayerDialog::resize(QWidget* parent, QSize &size)
 
 ResizeLayerDialog::ResizeLayerDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ResizeLayerDialog)
+    ui(new Ui::ResizeLayerDialog),
+    mOrigSize()
 {
     ui->setupUi(this);
 }
@@ -38,6 +41,23 @@ QSize ResizeLayerDialog::getLayerSize() const
 
 void ResizeLayerDialog::setLayerSize(const QSize& size)
 {
+    mOrigSize = size;
+
     ui->spinWidth->setValue(size.width());
     ui->spinHeight->setValue(size.height());
+}
+
+// - Signal handling
+
+void ResizeLayerDialog::accept()
+{
+    int width = ui->spinWidth->value();
+    if ( width < mOrigSize.width() )
+    {
+        int result = QMessageBox::warning(this, "Crafter Workshop", "The new size is smaller that the original. Data will be lost after this action.", QMessageBox::Yes | QMessageBox::No);
+        if ( result == QMessageBox::Yes )
+        {
+            done(QDialog::Accepted);
+        }
+    }
 }

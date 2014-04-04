@@ -194,7 +194,7 @@ bool TileMap::setTile(const QPoint &mousepos, QTileField::Level level, int tilei
     int tiley = mousepos.y() / tilesize.height();
 
     if ( tilex >= 0 && tilex < mDesc.size.width()
-         && tiley >= 0 && tiley < mDesc.size.height() )
+      && tiley >= 0 && tiley < mDesc.size.height() )
     {
         mpField->set(level, tilex, tiley, tileindex);
         return true;
