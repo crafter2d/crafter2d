@@ -56,6 +56,19 @@ int VirtualLookupTable::lookup(const VirtualValue& value) const
    return mEnd;
 }
 
+const VirtualValue* VirtualLookupTable::lookup(int pos) const
+{
+   EntryMap::const_iterator it = mEntries.begin();
+   for ( ; it != mEntries.end(); ++it )
+   {
+      if ( it->second == pos )
+      {
+         return &it->first;
+      }
+   }
+   return NULL;
+}
+
 std::vector<int> VirtualLookupTable::getPositions() const
 {
    std::vector<int> entries;

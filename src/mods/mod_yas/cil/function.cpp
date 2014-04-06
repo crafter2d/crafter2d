@@ -3,7 +3,7 @@
 
 #include "core/defines.h"
 
-#include "mod_yas/common/type.h"
+#include "../common/type.h"
 
 namespace CIL
 {
@@ -11,6 +11,7 @@ namespace CIL
       mpClass(NULL),
       mArguments(),
       mLocals(),
+      mAnnotations(),
       mName(),
       mInstructions(),
       mGuards(),
@@ -90,6 +91,11 @@ namespace CIL
       mpReturnType = ptype;
    }
 
+   const StringList& Function::getAnnotations() const
+   {
+      return mAnnotations;
+   }
+
    const Modifiers& Function::getModifiers() const
    {
       return mModifiers;
@@ -137,6 +143,11 @@ namespace CIL
    void Function::addSwitchTable(SwitchTable* ptable)
    {
       mSwitchTables.add(ptable);
+   }
+
+   void Function::addAnnotation(const String& annotation)
+   {
+      mAnnotations.add(annotation);
    }
 
 } // namespace CIL

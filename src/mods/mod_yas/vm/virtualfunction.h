@@ -3,6 +3,7 @@
 #define VIRTUAL_FUNCTION_H
 
 #include "core/string/string.h"
+#include "core/string/stringlist.h"
 
 #include "mod_yas/common/modifiers.h"
 #include "mod_yas/common/types.h"
@@ -40,6 +41,8 @@ public:
    const yasc::Type& getReturnType() const;
    void              setReturnType(const yasc::Type& type);
 
+   const StringList& getAnnotations() const;
+
    const CIL::Instructions& getInstructions() const;
    void                     setInstructions(const CIL::Instructions& insts);
 
@@ -61,6 +64,7 @@ public:
    int getArgumentCount() const;
    
  // operations
+   void addAnnotation(const String& annotation);
    void addLookupTable(VirtualLookupTable* ptable);
    void addGuard(VirtualGuard* pguard);
 
@@ -78,6 +82,7 @@ private:
    yasc::Type*          mpReturnType;
    VirtualGuards        mGuards;
    VirtualLookupTables  mLookups;
+   StringList           mAnnotations;
    CIL::Instructions    mInstructions;
    char*                mpCode;
    int                  mCodeLength;

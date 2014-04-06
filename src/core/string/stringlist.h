@@ -13,9 +13,12 @@ public:
    StringList();
 
  // query
+   bool isEmpty() const;
    bool contains(const String& str) const;
+   int size() const;
 
    ListIterator<String> getFront();
+   ListConstIterator<String> getFront() const;
 
  // operations
    void add(const String& str);

@@ -121,7 +121,7 @@ namespace ByteCode
 
    void CPU::throwException(VirtualContext& context, const String& exceptionname, const String& reason)
    {
-      VirtualClass& klass = context.mClassTable.resolve(exceptionname);
+      VirtualClass& klass = context.resolveClass(exceptionname);
       VirtualObject& exception = instantiate(context, klass, -1);
       String callstack = buildCallStack();
 

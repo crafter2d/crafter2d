@@ -102,6 +102,8 @@ public:
       pregistrator->addFunction(UTEXT("sub(int, int)"), NativeClass_sub);
       pregistrator->addFunction(UTEXT("mul(int, int)"), NativeClass_mul);
 
+      pregistrator->registerCallbacks();
+
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();
       fs.addPath(UTEXT("data.zip\\scripts"));

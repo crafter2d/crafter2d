@@ -91,7 +91,17 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
    {
       const ASTFunctionArgument& arg = static_cast<const ASTFunctionArgument&>(nodes[index]);
       pfunction->addArgument(toCilType(arg.getVariable().getType()));
-   }      
+   }
+
+   if ( ast.hasAnnotations() )
+   {
+      const ASTAnnotations& annotations = ast.getAnnotations();
+      for ( int index = 0; index < annotations.size(); ++index )
+      {
+         const ASTAnnotation& anno = annotations[index];
+         pfunction->addAnnotation(anno.mName);
+      }
+   }
    
    if ( !ast.getModifiers().isPureNative() )
    {

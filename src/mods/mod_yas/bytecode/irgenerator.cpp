@@ -187,9 +187,14 @@ namespace ByteCode
       std::vector<int> values = table.getPositions();
       for ( std::size_t index = 0; index < values.size(); ++index )
       {
-         Block& block_case = createBlock(values[index]);
+         int pos = values[index];
+         const VirtualValue* pvalue = table.lookup(pos);
+         ASSERT_PTR(pvalue);
+
+         Block& block_case = createBlock(pos);
          block_case.plookup = &table;
          block_case.lookup_type = Block::eValue;
+         block_case.lookup_value = *pvalue;
       }
    }
 

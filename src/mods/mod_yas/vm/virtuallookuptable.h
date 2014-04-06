@@ -24,8 +24,10 @@ public:
 
  // query
    int lookup(const VirtualValue& value) const;
+   const VirtualValue* lookup(int pos) const;
+
    std::vector<int> getPositions() const;
-   
+      
  // operations
    void add(const VirtualValue& variant, int codeindex);
    void updatePosition(int offset);

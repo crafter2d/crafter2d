@@ -96,6 +96,11 @@ void VirtualFunction::setReturnType(const yasc::Type& type)
    mpReturnType = type.clone();
 }
 
+const StringList& VirtualFunction::getAnnotations() const
+{
+   return mAnnotations;
+}
+
 const CIL::Instructions& VirtualFunction::getInstructions() const
 {
    return mInstructions;
@@ -165,6 +170,11 @@ int VirtualFunction::getArgumentCount() const
 }
 
 // - Operations
+
+void VirtualFunction::addAnnotation(const String& annotation)
+{
+   mAnnotations.add(annotation);
+}
 
 void VirtualFunction::addLookupTable(VirtualLookupTable* ptable)
 {

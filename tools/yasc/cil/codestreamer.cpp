@@ -74,12 +74,25 @@ namespace CIL
    {
       mStream << function.getName() << function.getModifiers().toInt();
 
+      // annotations
       // arguments
       // local variables
       // return type
       // guards
       // switch tables
       // instructions
+
+      const StringList& annotations = function.getAnnotations();
+      mStream << annotations.size();
+      if ( annotations.size() > 0 )
+      {
+         ListConstIterator<String> it = annotations.getFront();
+         for ( ; it.isValid(); ++it )
+         {
+            const String& value = *it;
+            mStream << value;
+         }
+      }
 
       const yasc::Types& args = function.getArguments();
       mStream << args.size();
@@ -248,6 +261,7 @@ namespace CIL
          pfunction->addArgument(ptype);
       }
 
+      // annotations
       // arguments
       // local variables
       // return type
@@ -256,6 +270,14 @@ namespace CIL
       // instructions
 
       int argc;
+      mStream >> argc;
+      for ( int index = 0; index < argc; ++index )
+      {
+         String value;
+         mStream >> value;
+         pfunction->addAnnotation(value);
+      }
+
       mStream >> argc;
       for ( int index = 0; index < argc; ++index )
       {

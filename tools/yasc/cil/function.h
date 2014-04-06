@@ -3,6 +3,7 @@
 #define CIL_FUNCTION_H
 
 #include "core/string/string.h"
+#include "core/string/stringlist.h"
 
 #include "../common/types.h"
 #include "../common/modifiers.h"
@@ -41,6 +42,8 @@ namespace CIL
       const yasc::Type& getReturnType() const;
       void              setReturnType(yasc::Type* ptype);
 
+      const StringList& getAnnotations() const;
+
       const Modifiers& getModifiers() const;
       void             setModifiers(const Modifiers& modifiers);
 
@@ -55,6 +58,7 @@ namespace CIL
       void addLocal(yasc::Type* ptype);
       void addGuard(Guard* pguard);
       void addSwitchTable(SwitchTable* ptable);
+      void addAnnotation(const String& annotation);
 
    private:
 
@@ -62,6 +66,7 @@ namespace CIL
       Class*         mpClass;
       yasc::Types    mArguments;
       yasc::Types    mLocals;
+      StringList     mAnnotations;
       String         mName;
       Instructions   mInstructions;
       Guards         mGuards;

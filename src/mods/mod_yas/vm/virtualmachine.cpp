@@ -37,6 +37,7 @@
 #include "virtualobject.h"
 #include "virtualclass.h"
 #include "virtualexception.h"
+#include "virtualfunction.h"
 #include "virtualfunctiontable.h"
 #include "virtualfunctiontableentry.h"
 
@@ -327,24 +328,20 @@ void VirtualMachine::createClassObject(VirtualClass& klass)
       const VirtualFunctionTableEntry& function = table[index];
 
       VirtualArray* pannoarray = new VirtualArray();
-      /*
-      if ( function.hasAnnotations() )
+      const StringList& annotations = function.mpFunction->getAnnotations();
+      pannoarray->addLevel(annotations.size());
+      if ( annotations.size() > 0 )
       {
-         const ASTAnnotations& annotations = function.getAnnotations();
-         pannoarray->addLevel(annotations.size());
-         for ( int a = 0; a < annotations.size(); a++ )
+         int idx = 0;
+         ListConstIterator<String> it = annotations.getFront();
+         for ( ; it.isValid(); ++it )
          {
-            const ASTAnnotation& annotation = annotations[a];
+            const String& value = *it;
 
-            VirtualString& vname = mContext.getStringCache().lookup(annotation.mName);
-            (*pannoarray)[a] = Variant(vname);
+            VirtualString& vname = mContext.mStringCache.lookup(value);
+            (*pannoarray)[idx++] = VirtualValue(vname);
          }
       }
-      else
-      {
-         pannoarray->addLevel(0);
-      }
-      */
 
       VirtualObject* funcobject = new VirtualObject();
       funcobject->initialize(2);

@@ -134,6 +134,17 @@ namespace ByteCode
          pentry->setReturnType(function.getReturnType());
          pentry->setInstructions(function.getInstructions());
 
+         const StringList& annotations = function.getAnnotations();
+         if ( !annotations.isEmpty() )
+         {
+            ListConstIterator<String> it = annotations.getFront();
+            for ( ; it.isValid(); ++it )
+            {
+               const String& annotation = *it;
+               pentry->addAnnotation(annotation);
+            }
+         }
+
          const CIL::Guards& guards = function.getGuards();
          for ( int index = 0; index < guards.size(); ++index )
          {
@@ -164,10 +175,12 @@ namespace ByteCode
             VirtualValue value;
             for ( int e = 0; e < table.size(); ++e )
             {
-               const CIL::SwitchTableEntry& entry = table[index];
+               const CIL::SwitchTableEntry& entry = table[e];
                value.setTo(entry.value, context.mProgram.getStringCache());
                ptable->add(value, entry.label);
             }
+
+            pentry->addLookupTable(ptable);
          }
 
          presult->addFunction(pentry);
