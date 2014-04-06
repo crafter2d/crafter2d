@@ -22,6 +22,9 @@ public:
     QSize getSize() const;
     const QPoint& getTexCoord() const;
 
+  // qurey
+    bool isValid() const;
+
   // painting
     void paint(QPainter &painter, int x, int y);
 

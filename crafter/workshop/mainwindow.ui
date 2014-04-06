@@ -90,8 +90,8 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
+    <addaction name="actionEdit_Undo"/>
+    <addaction name="actionEdit_Redo"/>
     <addaction name="separator"/>
     <addaction name="actionEdit_Layers"/>
     <addaction name="actionEdit_Bounds"/>
@@ -123,7 +123,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionFile_New">
    <property name="icon">
-    <iconset resource="crafter.qrc">
+    <iconset>
      <normaloff>:/images/document-new.png</normaloff>:/images/document-new.png</iconset>
    </property>
    <property name="text">
@@ -132,7 +132,7 @@
   </action>
   <action name="actionFile_Open">
    <property name="icon">
-    <iconset resource="crafter.qrc">
+    <iconset>
      <normaloff>:/images/document-open.png</normaloff>:/images/document-open.png</iconset>
    </property>
    <property name="text">
@@ -141,7 +141,7 @@
   </action>
   <action name="actionFile_Save">
    <property name="icon">
-    <iconset resource="crafter.qrc">
+    <iconset>
      <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
    </property>
    <property name="text">
@@ -218,14 +218,20 @@
     <string>&lt;recent5&gt;</string>
    </property>
   </action>
-  <action name="actionUndo">
+  <action name="actionEdit_Undo">
    <property name="text">
     <string>Undo</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
   </action>
-  <action name="actionRedo">
+  <action name="actionEdit_Redo">
    <property name="text">
     <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="actionEdit_Layers">
@@ -297,8 +303,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="crafter.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

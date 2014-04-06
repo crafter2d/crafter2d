@@ -7,6 +7,7 @@
 
 #include "stringinterface.h"
 #include "tilemap.h"
+#include "tile.h"
 
 #include "world/tilemapdesc.h"
 #include "world/tilebound.h"
@@ -222,11 +223,25 @@ TileBound &TileWorld::addBound(const QPoint& mousepos)
     return *pbound;
 }
 
+Tile TileWorld::getTile(const QPoint& mousepos, QTileField::Level level) const
+{
+    Tile result;
+    if ( mpActiveMap != NULL )
+    {
+        result = mpActiveMap->getTile(mousepos, level);
+    }
+    return result;
+}
+
 bool TileWorld::setTile(const QPoint& mousepos, QTileField::Level level, const Tile& tile)
 {
     if ( mpActiveMap != NULL )
     {
-        return mpActiveMap->setTile(mousepos, level, tile);
+        if ( mpActiveMap->setTile(mousepos, level, tile) )
+        {
+            emit worldDirty();
+            return true;
+        }
     }
     return false;
 }

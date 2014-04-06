@@ -58,6 +58,7 @@ public:
     TileBound& addBound(const QPoint& mousepos);
 
   // operations
+    Tile getTile(const QPoint& mousepos, QTileField::Level level) const;
     bool setTile(const QPoint& mousepos, QTileField::Level level, const Tile &tile);
     void clearTile(const QPoint& mousepos, QTileField::Level level);
 

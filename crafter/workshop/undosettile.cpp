@@ -2,7 +2,7 @@
 
 #include "tileworld.h"
 
-UndoSetTile::UndoSetTile(TileWorld& world, const QPoint &pos, LayerLevel level, const Tile &tile):
+UndoSetTile::UndoSetTile(TileWorld& world, const QPoint &pos, QTileField::Level level, const Tile &tile):
     QUndoCommand(NULL),
     mWorld(world),
     mPos(pos),

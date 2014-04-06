@@ -52,13 +52,18 @@ private slots:
     void on_actionFile_NewProject_triggered();
     void on_actionFile_NewWorld_triggered();
     void on_actionFile_NewLayer_triggered();
+    void on_actionFile_NewScript_triggered();
     void on_actionFile_Save_triggered();
     void on_actionFile_Open_triggered();
     void on_actionFile_OpenRecentFile_triggered();
+    void on_actionFile_ImportWorld_triggered();
     void on_actionFile_Exit_triggered();
 
+    void on_actionEdit_Undo_triggered();
     void on_actionEdit_Layers_triggered();
     void on_actionEdit_Bounds_triggered();
+
+    void on_actionProject_Build_triggered();
 
     void on_actionView_Project_triggered();
     void on_actionView_Layers_triggered();
@@ -66,11 +71,8 @@ private slots:
 
     void on_actionAbout_triggered();
 
-    void on_actionFile_ImportWorld_triggered();
 
-    void on_actionFile_NewScript_triggered();
-
-    void on_actionProject_Build_triggered();
+    void on_actionEdit_Redo_triggered();
 
 private:
     enum { MaxRecentFiles = 5 };

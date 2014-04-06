@@ -64,7 +64,8 @@ SOURCES += main.cpp\
     script/scripthandle.cpp \
     project/projectbuilder.cpp \
     newscriptdialog.cpp \
-    script/scriptbuilder.cpp
+    script/scriptbuilder.cpp \
+    undosettile.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -115,7 +116,8 @@ HEADERS  += mainwindow.h \
     script/scripthandle.h \
     project/projectbuilder.h \
     newscriptdialog.h \
-    script/scriptbuilder.h
+    script/scriptbuilder.h \
+    undosettile.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \

@@ -186,6 +186,27 @@ void TileMap::generateTiles()
     }
 }
 
+Tile TileMap::getTile(const QPoint& mousepos, QTileField::Level level) const
+{
+    const QSize& tilesize = mpTileSet->getTileSize();
+
+    int tilex = mousepos.x() / tilesize.width();
+    int tiley = mousepos.y() / tilesize.height();
+
+    Tile result;
+    if ( tilex >= 0 && tilex < mDesc.size.width()
+      && tiley >= 0 && tiley < mDesc.size.height() )
+    {
+        int index = mpField->get(level, tilex, tiley);
+        if ( index < mTiles.size() )
+        {
+            result = *mTiles[index];
+        }
+    }
+
+    return result;
+}
+
 bool TileMap::setTile(const QPoint &mousepos, QTileField::Level level, int tileindex)
 {
     const QSize& tilesize = mpTileSet->getTileSize();
@@ -203,9 +224,16 @@ bool TileMap::setTile(const QPoint &mousepos, QTileField::Level level, int tilei
     return false;
 }
 
+/// Set the map cell at position mouspos to tile. If tile is invalid the cell is cleared.
 bool TileMap::setTile(const QPoint& mousepos, QTileField::Level level, const Tile& tile)
 {
-    return setTile(mousepos, level, indexOf(tile));
+    int index = 255;
+    if ( tile.isValid() )
+    {
+        index = indexOf(tile);
+    }
+
+    return setTile(mousepos, level, index);
 }
 
 void TileMap::clearTile(const QPoint& mousepos, QTileField::Level level)

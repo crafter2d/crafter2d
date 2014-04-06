@@ -351,6 +351,24 @@ void MainWindow::on_actionFile_Exit_triggered()
     close();
 }
 
+void MainWindow::on_actionEdit_Undo_triggered()
+{
+    TileView* pview = getActiveView();
+    if ( pview != NULL )
+    {
+        pview->undo();
+    }
+}
+
+void MainWindow::on_actionEdit_Redo_triggered()
+{
+    TileView* pview = getActiveView();
+    if ( pview != NULL )
+    {
+        pview->redo();
+    }
+}
+
 void MainWindow::on_actionEdit_Layers_triggered()
 {
     TileView* pview = getActiveView();

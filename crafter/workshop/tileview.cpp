@@ -9,6 +9,7 @@
 
 #include "world/tilebound.h"
 #include "tileworld.h"
+#include "undosettile.h"
 
 TileView::TileView():
     QWidget(NULL),
@@ -18,6 +19,7 @@ TileView::TileView():
     mEditMode(eLayerMode),
     mpSelectedBound(NULL),
     mSelectedEdge(eNone),
+    mUndoStack(),
     mLevel(QTileField::eMid)
 {
     ui->setupUi(this);
@@ -77,6 +79,18 @@ QTileField::Level TileView::getLevel() const
 void TileView::setLevel(QTileField::Level level)
 {
     mLevel = level;
+}
+
+// - Operations
+
+void TileView::undo()
+{
+    mUndoStack.undo();
+}
+
+void TileView::redo()
+{
+    mUndoStack.redo();
 }
 
 // - Painting
@@ -179,10 +193,11 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
         switch ( mEditMode )
         {
         case eLayerMode:
-            mEditMode = ePaintMode;
-            if ( mpWorld->setTile(pevent->pos(), mLevel, mTile) )
             {
-                repaint();
+                mEditMode = ePaintMode;
+
+                UndoSetTile* pundo = new UndoSetTile(*mpWorld, pevent->pos(), mLevel, mTile);
+                mUndoStack.push(pundo);
             }
             break;
         case eBoundMode:

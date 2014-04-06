@@ -3,9 +3,9 @@
 
 #include <QImage>
 #include <QWidget>
-
-#include <qpoint.h>
-#include <qvector.h>
+#include <QUndoStack>
+#include <QPoint>
+#include <QVector>
 
 #include "world/tilefield.h"
 
@@ -42,6 +42,10 @@ public:
 
     void setActiveTile(const Tile& tile);
 
+  // operations
+    void undo();
+    void redo();
+
 public slots:
     void worldUpdated();
 
@@ -65,6 +69,7 @@ private:
     EditMode      mEditMode;
     TileBound*    mpSelectedBound;
     BoundEdge     mSelectedEdge;
+    QUndoStack    mUndoStack;
     QTileField::Level mLevel;
 };
 
