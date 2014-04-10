@@ -13,7 +13,7 @@ class QPainter;
 class QSize;
 
 class Tile;
-class QTileField;
+class TileField;
 class QTileSet;
 
 class TileMap : public QObject
@@ -30,8 +30,8 @@ public:
           TileMapDesc& getDesc();
     void               setDesc(const TileMapDesc& desc);
 
-    const QTileField& getField() const;
-          QTileField& getField();
+    const TileField& getField() const;
+          TileField& getField();
 
     const QSize& getMinimumSize() const;
 
@@ -47,12 +47,12 @@ public:
     void paint(QPainter& painter, Tile& tile, int x, int y);
 
   // operations
-    void setField(QTileField* pfield);
+    void setField(TileField* pfield);
     void setTileSet(QTileSet* ptileset);
 
-    Tile getTile(const QPoint& mousepos, QTileField::Level level) const;
-    bool setTile(const QPoint& mousepos, QTileField::Level level, const Tile &tile);
-    void clearTile(const QPoint& mousepos, QTileField::Level level);
+    Tile getTile(const QPoint& mousepos, TileField::Level level) const;
+    bool setTile(const QPoint& mousepos, TileField::Level level, const Tile &tile);
+    void clearTile(const QPoint& mousepos, TileField::Level level);
 
     void resize(const QSize& size);
 
@@ -64,11 +64,11 @@ private:
 
   // operations
     void generateTiles();
-    bool setTile(const QPoint &mousepos, QTileField::Level level, int tileindex);
+    bool setTile(const QPoint &mousepos, TileField::Level level, int tileindex);
 
   // data
     TileMapDesc mDesc;
-    QTileField* mpField;
+    TileField* mpField;
     QTileSet*   mpTileSet;
     QSize       mPixelSize;
     Tiles       mTiles;

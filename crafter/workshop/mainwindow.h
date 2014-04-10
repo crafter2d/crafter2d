@@ -16,6 +16,7 @@ class Project;
 class TileMap;
 class TileView;
 class LayerPanel;
+class OutputPanel;
 class ProjectPanel;
 class ScriptFile;
 class TilesPanel;
@@ -56,14 +57,15 @@ private slots:
     void on_actionFile_Save_triggered();
     void on_actionFile_Open_triggered();
     void on_actionFile_OpenRecentFile_triggered();
-    void on_actionFile_ImportWorld_triggered();
     void on_actionFile_Exit_triggered();
 
     void on_actionEdit_Undo_triggered();
+    void on_actionEdit_Redo_triggered();
     void on_actionEdit_Layers_triggered();
     void on_actionEdit_Bounds_triggered();
 
     void on_actionProject_Build_triggered();
+    void on_actionProject_Run_triggered();
 
     void on_actionView_Project_triggered();
     void on_actionView_Layers_triggered();
@@ -71,8 +73,7 @@ private slots:
 
     void on_actionAbout_triggered();
 
-
-    void on_actionEdit_Redo_triggered();
+    void on_actionView_Output_triggered();
 
 private:
     enum { MaxRecentFiles = 5 };
@@ -107,6 +108,7 @@ private:
     ProjectPanel*   mpProjectPanel;
     LayerPanel*     mpLayerPanel;
     TilesPanel*     mpTilesPanel;
+    OutputPanel*    mpOutputPanel;
 };
 
 #endif // MAINWINDOW_H

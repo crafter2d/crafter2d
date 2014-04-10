@@ -26,6 +26,7 @@ namespace c2d
    class Server;
 }
 
+class CommandLine;
 class GameWindowFactory;
 class TimerData;
 
@@ -36,7 +37,7 @@ class TimerData;
 class Game
 {
 public:
-   Game();
+   explicit Game(CommandLine& cmdline);
    ~Game();
 
  // get/set interface
@@ -57,6 +58,7 @@ private:
    void                 endGame();
    void                 runFrame();
 
+   CommandLine&         mCommandLine;
    GameWindowFactory*   mpWindowFactory;
    TimerData*           mpTimerData;
    c2d::Client*         mpClient;

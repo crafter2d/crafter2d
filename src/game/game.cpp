@@ -25,12 +25,15 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "core/commandline/commandline.h"
+#include "core/commandline/commandlineargument.h"
 #include "core/inifile/inifile.h"
 #include "core/physics/simulationfactoryregistry.h"
 #include "core/system/platform.h"
 #include "core/system/timer.h"
 #include "core/system/timerdelta.h"
 #include "core/vfs/filesystem.h"
+#include "core/vfs/file.h"
 #include "core/smartptr/autoptr.h"
 
 #include "engine/tools/profiler/profiler.h"
@@ -48,7 +51,8 @@
     \fn Game::Game()
 	 \brief Initialized member variables
  */
-Game::Game():
+Game::Game(CommandLine& commandline):
+   mCommandLine(commandline),
    mpWindowFactory(NULL),
    mpTimerData(NULL),
    mpClient(NULL),
@@ -87,11 +91,7 @@ bool Game::create()
 
    Platform::getInstance().initialize();
 
-   FileSystem::getInstance().addPath(UTEXT("../"));
-   FileSystem::getInstance().addPath(UTEXT("../bin"));
-   FileSystem::getInstance().addPath(UTEXT("../data"));
-   FileSystem::getInstance().addPath(UTEXT("../data/scripts"));
-   FileSystem::getInstance().addPath(UTEXT("../data/images"));
+   FileSystem::getInstance().addPath(UTEXT("./"));
    
    // register the physics factory
    SimulationFactoryRegistry::getInstance().addFactory(new PhysicsFactory());
@@ -169,10 +169,25 @@ bool Game::initGame()
 {
    IniFile inifile(UTEXT("game.ini"));
 
-   String basedir = inifile.get(UTEXT("Process"), UTEXT("basedir"));
+   String path;
+   const CommandLineArgument* parg = mCommandLine.findArgument(UTEXT("path"));
+   if ( parg != NULL )
+   {
+      path = parg->getValue();
+   }
+   else
+   {
+      path = inifile.get(UTEXT("Process"), UTEXT("basedir"));
+   }
+
+   Log::getInstance().info("Using path: ");
+   Log::getInstance().info(path.toUtf8().c_str());
    
+   FileSystem::getInstance().addPath(path);
+   FileSystem::getInstance().addPath(File::concat(path, UTEXT("scripts")));
+  
    mpServer = new c2d::Server();
-   if ( !mpServer->create(inifile.get(UTEXT("Process"), UTEXT("server")), basedir) )
+   if ( !mpServer->create(inifile.get(UTEXT("Process"), UTEXT("server")), path) )
    {
       Log::getInstance().error("FAILED to start the server.");
       return false;
@@ -180,7 +195,7 @@ bool Game::initGame()
 
    mpClient = new c2d::Client();
    mpClient->setWindowFactory(*mpWindowFactory);
-   if ( !mpClient->create(inifile.get(UTEXT("Process"), UTEXT("client")), basedir) )
+   if ( !mpClient->create(inifile.get(UTEXT("Process"), UTEXT("client")), path) )
    {
       Log::getInstance().error("FAILED to start the client.");
       return false;

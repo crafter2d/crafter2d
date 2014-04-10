@@ -223,7 +223,7 @@ TileBound &TileWorld::addBound(const QPoint& mousepos)
     return *pbound;
 }
 
-Tile TileWorld::getTile(const QPoint& mousepos, QTileField::Level level) const
+Tile TileWorld::getTile(const QPoint& mousepos, TileField::Level level) const
 {
     Tile result;
     if ( mpActiveMap != NULL )
@@ -233,7 +233,7 @@ Tile TileWorld::getTile(const QPoint& mousepos, QTileField::Level level) const
     return result;
 }
 
-bool TileWorld::setTile(const QPoint& mousepos, QTileField::Level level, const Tile& tile)
+bool TileWorld::setTile(const QPoint& mousepos, TileField::Level level, const Tile& tile)
 {
     if ( mpActiveMap != NULL )
     {
@@ -246,11 +246,12 @@ bool TileWorld::setTile(const QPoint& mousepos, QTileField::Level level, const T
     return false;
 }
 
-void TileWorld::clearTile(const QPoint& mousepos, QTileField::Level level)
+void TileWorld::clearTile(const QPoint& mousepos, TileField::Level level)
 {
     if ( mpActiveMap != NULL )
     {
         mpActiveMap->clearTile(mousepos, level);
+        emit worldDirty();
     }
 }
 

@@ -51,7 +51,7 @@ TileWorld* QTileWorldReader::read()
     stream >> layerCount;
     for ( int index = 0; index < layerCount; ++index )
     {
-        QTileField* pfield = new QTileField();
+        TileField* pfield = new TileField();
         TileMapDesc desc;
         stream >> desc >> *pfield;
 

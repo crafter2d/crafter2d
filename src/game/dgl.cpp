@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "core/commandline/commandline.h"
 #include "core/smartptr/autoptr.h"
 
 #include "game.h"
@@ -70,10 +71,12 @@
 
 int main(int argc, char *argv[])
 {
-   //Win32GameWindowFactory windowfactory;
-   SDLGameWindowFactory windowfactory;
+   CommandLine cmd(argc, argv);
+   
+   Win32GameWindowFactory windowfactory;
+   //SDLGameWindowFactory windowfactory;
 
-   AutoPtr<Game> game = new Game();
+   AutoPtr<Game> game = new Game(cmd);
    game->setWindowFactory(windowfactory);
    if ( game->create() )
    {

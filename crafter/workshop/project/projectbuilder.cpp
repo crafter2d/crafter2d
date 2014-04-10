@@ -1,10 +1,15 @@
 #include "projectbuilder.h"
 
 #include <QDir>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QProcess>
 
-ProjectBuilder::ProjectBuilder()
+#include "../project.h"
+
+ProjectBuilder::ProjectBuilder(Project& project):
+    QThread(nullptr),
+    mProject(project)
 {
 }
 
@@ -26,17 +31,17 @@ BuildInfo sContentFolders[] = {
     { "worlds", "*.world" },
 };
 
-bool ProjectBuilder::build(QDir &path, const QString& name)
+void ProjectBuilder::run()
 {
-    if ( !setupDestination(path, name) )
+    const QString name = "build";
+
+    QDir path(mProject.getBasePath());
+
+    if ( setupDestination(path, name) )
     {
-        return false;
+        buildContent(path, name);
+        buildScripts(path, name);
     }
-
-    buildContent(path, name);
-    buildScripts(path, name);
-
-    return true;
 }
 
 bool ProjectBuilder::setupDestination(QDir& path, const QString& name)
@@ -65,7 +70,7 @@ bool ProjectBuilder::setupDestination(QDir& path, const QString& name)
         if ( !path.mkdir(name) )
         {
             // could not create the folder where the compiled file must be placed
-            return false;
+            emit messageAvailable("Could not create folder " + name + " in " + path.absolutePath());
         }
         else
         {
@@ -82,6 +87,57 @@ bool ProjectBuilder::setupDestination(QDir& path, const QString& name)
     }
 
     return true;
+}
+
+void ProjectBuilder::buildScripts(QDir& path, const QString& name)
+{
+    QString sourcepath = path.absolutePath() + QDir::separator() + "scripts";
+    QString destpath = path.absolutePath() + QDir::separator() + name + QDir::separator() + "scripts";
+
+    QDir destdir(path);
+    destdir.cd(name);
+    destdir.mkdir("scripts");
+
+    QString command;
+#ifdef _DEBUG
+    command = "yascd.exe -p ../scripts;";
+#else
+    command = "yasc.exe -p ../scripts;";
+#endif
+    command += sourcepath + " -r -o " + destpath + " " + sourcepath + QDir::separator() + "*.as";
+
+    QProcess yasc;
+    yasc.setWorkingDirectory(QDir::currentPath());
+    yasc.start(command);
+    if ( yasc.waitForFinished(60000) )
+    {
+        QString msg;
+
+        switch ( yasc.exitStatus() )
+        {
+        case QProcess::CrashExit:
+            msg = "An unknown error occured while compiling the scripts.";
+            break;
+        case QProcess::NormalExit:
+            {
+                int exitcode = yasc.exitCode();
+                if ( exitcode == 0 )
+                {
+                    return;
+                }
+                else
+                {
+                    msg = "One or more errors have been detected.\nPlease consult the compile log for more info.";
+                }
+            }
+            break;
+        }
+
+        if ( !msg.isEmpty() )
+        {
+            emit messageAvailable(msg);
+        }
+    }
 }
 
 void ProjectBuilder::buildContent(QDir& path, const QString& name)
@@ -108,50 +164,6 @@ void ProjectBuilder::buildContent(QDir& path, const QString& name)
             QString dest   = folderpath + info.baseName() + ".c2d";
 
             compile(source, dest);
-        }
-    }
-}
-
-void ProjectBuilder::buildScripts(QDir& path, const QString& name)
-{
-    QString sourcepath = path.absolutePath() + QDir::separator() + "scripts";
-    QString destpath = path.absolutePath() + QDir::separator() + name + QDir::separator() + "scripts";
-
-    QDir destdir(path);
-    destdir.cd(name);
-    destdir.mkdir("scripts");
-
-    QString command;
-#ifdef _DEBUG
-    command = "yascd.exe -p ../scripts;";
-#else
-    command = "yasc.exe -p ../scripts;";
-#endif
-    command += sourcepath + " -r -o " + destpath + " " + sourcepath + QDir::separator() + "*.as";
-
-    QProcess yasc;
-    yasc.setWorkingDirectory(QDir::currentPath());
-    yasc.start(command);
-    if ( yasc.waitForFinished(60000) )
-    {
-        switch ( yasc.exitStatus() )
-        {
-        case QProcess::CrashExit:
-            QMessageBox::critical(0, "Crafter Workshop", "An unknown error occured while compiling the scripts.", QMessageBox::Ok);
-            break;
-        case QProcess::NormalExit:
-            {
-                int exitcode = yasc.exitCode();
-                if ( exitcode == 0 )
-                {
-                    return;
-                }
-                else
-                {
-                    QMessageBox::critical(0, "Crafter Workshop", "One or more errors have been detected.\nPlease consult the compile log for more info.", QMessageBox::Ok);
-                }
-            }
-            break;
         }
     }
 }
@@ -189,14 +201,23 @@ void ProjectBuilder::compile(const QString& source, const QString& dest)
                 }
                 else
                 {
-                    message = "Failed to convert asset.";
+                    QFileInfo info(source);
+                    message = QString("Failed to convert asset '%0'").arg(info.baseName());
                     switch ( exitcode )
                     {
-
+                    case -1:
+                        break;
+                    case -2:
+                        break;
                     }
                 }
                 break;
             }
+        }
+
+        if ( !message.isEmpty() )
+        {
+            emit messageAvailable(message);
         }
     }
 }

@@ -90,7 +90,7 @@ void LayerPanel::setActiveWorld()
     }
 }
 
-void LayerPanel::setLevel(QTileField::Level level)
+void LayerPanel::setLevel(TileField::Level level)
 {
     TileView* pview = getMainWindow().getActiveView();
     if ( pview != NULL )
@@ -182,15 +182,15 @@ void LayerPanel::on_resizeact_triggered()
 
 void LayerPanel::on_buttonFront_clicked()
 {
-    setLevel(QTileField::eFront);
+    setLevel(TileField::eFront);
 }
 
 void LayerPanel::on_buttonMid_clicked()
 {
-    setLevel(QTileField::eMid);
+    setLevel(TileField::eMid);
 }
 
 void LayerPanel::on_buttonBack_clicked()
 {
-    setLevel(QTileField::eBack);
+    setLevel(TileField::eBack);
 }

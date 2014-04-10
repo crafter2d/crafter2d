@@ -15,6 +15,8 @@
 #include "world/tilesetwriter.h"
 #include "world/tileset.h"
 #include "project/projectbuilder.h"
+#include "project/projectmanager.h"
+#include "project/projectrunner.h"
 #include "tileworld.h"
 #include "newprojectdialog.h"
 
@@ -48,12 +50,14 @@ Project* Project::createNew(QWidget* pparent)
 
 Project& Project::getActiveProject()
 {
-    return *spActiveProject;
+    Project* pactiveproject = ProjectManager::getInstance().getActiveProject();
+    Q_ASSERT(pactiveproject != nullptr);
+    return *pactiveproject;
 }
 
 void Project::setActiveProject(Project *pproject)
 {
-    spActiveProject = pproject;
+    ProjectManager::getInstance().setActiveProject(pproject);
 }
 
 // - Project Implementation
@@ -434,10 +438,18 @@ void Project::saveProjectFile()
 
 void Project::build()
 {
-    QDir path(mBasePath);
+    ProjectBuilder* pbuilder = new ProjectBuilder(*this);
+    connect(pbuilder, SIGNAL(messageAvailable(QString)), this, SLOT(on_messageReady(QString)));
+    pbuilder->start();
+}
 
-    ProjectBuilder builder;
-    builder.build(path, "build");
+// - Running
+
+void Project::run()
+{
+    ProjectRunner* prunner = new ProjectRunner(*this);
+    connect(prunner, SIGNAL(messageReady(QString)), this, SLOT(on_messageReady(QString)));
+    prunner->start();
 }
 
 // - Search
@@ -453,4 +465,12 @@ QTileSet* Project::lookupTileSet(const QString& name)
         }
     }
     return NULL;
+}
+
+// - Slots
+
+void Project::on_messageReady(const QString& msg)
+{
+    // pass on to those that are interested
+    emit messageAvailable(msg);
 }

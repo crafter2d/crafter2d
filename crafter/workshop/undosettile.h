@@ -12,8 +12,9 @@ class TileWorld;
 class UndoSetTile : public QUndoCommand
 {
 public:
-    explicit UndoSetTile(TileWorld &world, const QPoint& pos, QTileField::Level level, const Tile &tile);
+    explicit UndoSetTile(TileWorld &world, const QPoint& pos, TileField::Level level, const Tile &tile);
 
+  // commands
     virtual void undo() override;
     virtual void redo() override;
 
@@ -23,7 +24,7 @@ private:
     TileWorld&  mWorld;
     QPoint      mPos;
     Tile        mTile;
-    QTileField::Level  mLevel;
+    TileField::Level  mLevel;
 };
 
 #endif // UNDOSETTILE_H

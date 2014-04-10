@@ -112,7 +112,7 @@ TileWorld *WorldWizard::createWorld()
         mapdesc.effect = "shaders/basic";
         mapdesc.size = QSize(width, height);
 
-        QTileField* pfield = new QTileField();
+        TileField* pfield = new TileField();
         pfield->create(QSize(width, height));
 
         TileMap* pmap = new TileMap(mapdesc);

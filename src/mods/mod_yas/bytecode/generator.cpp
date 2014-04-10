@@ -86,7 +86,8 @@ namespace ByteCode
       AutoPtr<CIL::Class> cilclass = loadCompiledClass(classname);
       if ( !cilclass.hasPointer() )
       {
-         throw new std::exception("Could not load class");
+         String msg = UTEXT("Could not load class ") + classname;
+         throw new std::exception(msg.toUtf8().c_str());
       }
 
       VirtualClass* presult = new VirtualClass();

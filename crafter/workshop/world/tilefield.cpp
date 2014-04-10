@@ -3,20 +3,20 @@
 #include <QByteArray>
 #include <QDataStream>
 
-QTileField* QTileField::fromByteArray(const QSize& dimension, QByteArray &data)
+TileField* TileField::fromByteArray(const QSize& dimension, QByteArray &data)
 {
-    QTileField* presult = new QTileField();
+    TileField* presult = new TileField();
     presult->create(dimension, (quint8*)data.constData());
     return presult;
 }
 
-QTileField::QTileField():
+TileField::TileField():
     mpField(nullptr),
     mDimension()
 {
 }
 
-QTileField::~QTileField()
+TileField::~TileField()
 {
     delete mpField;
     mpField = nullptr;
@@ -24,14 +24,14 @@ QTileField::~QTileField()
 
 // - Get/set
 
-quint8 QTileField::get(Level level, int x, int y) const
+quint8 TileField::get(Level level, int x, int y) const
 {
     Q_ASSERT(x >= 0 && y >= 0 && x < mDimension.width() && y < mDimension.height());
     int index = tileindex(level, x, y);
     return mpField[index];
 }
 
-void QTileField::set(Level level, int x, int y, quint8 tile)
+void TileField::set(Level level, int x, int y, quint8 tile)
 {
     Q_ASSERT( x >= 0 && y >= 0 && x < mDimension.width() && y < mDimension.height());
     int index = tileindex(level, x, y);
@@ -40,14 +40,14 @@ void QTileField::set(Level level, int x, int y, quint8 tile)
 
 // - Conversion
 
-QByteArray QTileField::toByteArray() const
+QByteArray TileField::toByteArray() const
 {
     return QByteArray((const char*)mpField, mDimension.width() * mDimension.height() * 3);
 }
 
 // - Operations
 
-void QTileField::create(const QSize& dimension, const quint8* pdata)
+void TileField::create(const QSize& dimension, const quint8* pdata)
 {
     mDimension = dimension;
     int size = dimension.width() * dimension.height() * 3;
@@ -62,7 +62,7 @@ void QTileField::create(const QSize& dimension, const quint8* pdata)
     }
 }
 
-void QTileField::resize(const QSize& newdim)
+void TileField::resize(const QSize& newdim)
 {
     int datasize = newdim.width() * newdim.height() * 3;
     quint8* pfield = new quint8[datasize];
@@ -91,7 +91,7 @@ void QTileField::resize(const QSize& newdim)
 
 // - Streaming
 
-QDataStream& operator<<(QDataStream& stream, const QTileField& field)
+QDataStream& operator<<(QDataStream& stream, const TileField& field)
 {
     QByteArray array = field.toByteArray();
     QByteArray compressed = qCompress(array);
@@ -99,7 +99,7 @@ QDataStream& operator<<(QDataStream& stream, const QTileField& field)
     return stream;
 }
 
-QDataStream& operator>>(QDataStream& stream, QTileField& field)
+QDataStream& operator>>(QDataStream& stream, TileField& field)
 {
     QSize dimension;
     QByteArray compressed;

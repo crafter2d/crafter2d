@@ -43,29 +43,32 @@ SOURCES += main.cpp\
     layerwizard_pagetileset.cpp \
     layerwizard_pageinfo.cpp \
     world/tileset.cpp \
-    project/projecttreeitem.cpp \
     world/tilesetwriter.cpp \
     world/tilesetreader.cpp \
     world/tilefield.cpp \
     world/tileworldreader.cpp \
     world/tilemapdesc.cpp \
     world/tileworlddesc.cpp \
-    world/tileworldimporter.cpp \
     world/tilebound.cpp \
     world/tileworldwriter.cpp \
+    project/projecttreeitem.cpp \
     project/projecttreeworlditem.cpp \
+    project/projecttreescriptitem.cpp \
     project/projecttreetextitem.cpp \
     resource.cpp \
     world/tileworldhandle.cpp \
     scriptview.cpp \
     script/yassyntaxhighlighter.cpp \
     script/scriptfile.cpp \
-    project/projecttreescriptitem.cpp \
     script/scripthandle.cpp \
     project/projectbuilder.cpp \
     newscriptdialog.cpp \
     script/scriptbuilder.cpp \
-    undosettile.cpp
+    undosettile.cpp \
+    undocleartile.cpp \
+    project/projectrunner.cpp \
+    outputpanel.cpp \
+    project/projectmanager.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -102,7 +105,6 @@ HEADERS  += mainwindow.h \
     world/tileworldreader.h \
     world/tilemapdesc.h \
     world/tileworlddesc.h \
-    world/tileworldimporter.h \
     world/tilebound.h \
     world/tileworldwriter.h \
     project/projecttreeworlditem.h \
@@ -117,7 +119,11 @@ HEADERS  += mainwindow.h \
     project/projectbuilder.h \
     newscriptdialog.h \
     script/scriptbuilder.h \
-    undosettile.h
+    undosettile.h \
+    undocleartile.h \
+    project/projectrunner.h \
+    outputpanel.h \
+    project/projectmanager.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
@@ -132,7 +138,8 @@ FORMS    += mainwindow.ui \
     layerwizard_pagetileset.ui \
     layerwizard_pageinfo.ui \
     scriptview.ui \
-    newscriptdialog.ui
+    newscriptdialog.ui \
+    outputpanel.ui
 
 BaseDir = $$PWD/../build/workshop
 
@@ -151,9 +158,6 @@ SrcDir = $$PWD/../../src
 
 win32:CONFIG(release, debug|release): LIBS += -L$$BinDir -lCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$BinDir -lCored
-
-win32:CONFIG(release, debug|release): LIBS += -L$$BinDir -lEngine
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$BinDir -lEngined
 
 INCLUDEPATH += $$SrcDir
 DEPENDPATH += $$SrcDir

@@ -1,37 +1,46 @@
 // Basic effect file
 
-texture diffuseMap
-sampler diffuseSampler
-language ogl
+texture diffuseMap : 0;
+sampler diffuseSampler : 0;
 
-cbuffer mpv
+cbuffer mpv : 0
 {
-	mat4 proj;
-	mat4 world;
-	mat4 object;
+	float4x4 proj;
+	float4x4 world;
+	float4x4 object;
 };
 
-struct VertexData
+struct InputData
 {
-	vec2 pos;
-	vec2 tex;
+	float2 pos : POSITION;
+	float2 tex : TEXCOORD0;
 };
 
-struct PixelData
+struct OutputData
 {
-	vec2 texCoord;
+	float4 pos : SV_POSITION;
+    float2 tex : TEXCOORD0;
 };
 
-void mainVertex()
+OutputData mainVertex(InputData input)
 {
-	PixelData.texCoord = tex;
-	gl_Position = vec4(pos, 0, 1) * world * proj;
+	OutputData data;
+	
+	float4 pos = float4(input.pos, 0.0f, 1.0f);
+	pos = mul(pos, object);
+	pos = mul(pos, world);
+	pos = mul(pos, proj);
+	
+	data.pos = pos;
+	data.tex = input.tex;
+	
+	return data;
 }
 
-void mainPixel()
+float4 mainPixel(OutputData input) : SV_TARGET
 {
-	vec4 color = texture2D(diffuseMap, PixelData.texCoord);
-	frag = color;
+	float4 texelColor = diffuseMap.Sample(diffuseSampler, input.tex);
+	return texelColor;
 }
 
 technique Basic

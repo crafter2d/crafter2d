@@ -6,15 +6,15 @@
 
 class QByteArray;
 
-class QTileField
+class TileField
 {
 public:
     enum Level { eFront, eMid, eBack };
 
-    static QTileField* fromByteArray(const QSize &dimension, QByteArray& data);
+    static TileField* fromByteArray(const QSize &dimension, QByteArray& data);
 
-    QTileField();
-    ~QTileField();
+    TileField();
+    ~TileField();
 
   // operations
     quint8 get(Level level, int x, int y) const;
@@ -25,11 +25,11 @@ public:
     void resize(const QSize& newdim);
 
   // conversion
-    QByteArray QTileField::toByteArray() const;
+    QByteArray TileField::toByteArray() const;
 
   // streaming
-    friend QDataStream& operator<<(QDataStream& stream, const QTileField& field);
-    friend QDataStream& operator>>(QDataStream& stream, QTileField& field);
+    friend QDataStream& operator<<(QDataStream& stream, const TileField& field);
+    friend QDataStream& operator>>(QDataStream& stream, TileField& field);
 
 private:
 
@@ -41,7 +41,7 @@ private:
     QSize   mDimension;
 };
 
-inline int QTileField::tileindex(Level level, int x, int y) const
+inline int TileField::tileindex(Level level, int x, int y) const
 {
    return (y * mDimension.width() + x) * 3 + (quint8)level;
 }

@@ -7,8 +7,14 @@
         <file>images/arrow-up.png</file>
         <file>images/list-add.png</file>
         <file>images/list-remove.png</file>
+		<file>images/edit-undo-8.png</file>
+		<file>images/edit-redo-8.png</file>
+		<file>images/edit-clear-3.png</file>
+		<file>images/paintbrush.png</file>
         <file>images/align-horizontal-center.png</file>
         <file>images/align-horizontal-left.png</file>
         <file>images/align-horizontal-right.png</file>
+		<file>images/media-playback-start-7.png</file>
+		<file>images/media-playback-stop-7.png</file>
     </qresource>
 </RCC>

@@ -42,12 +42,12 @@ void TileMap::setDesc(const TileMapDesc& desc)
     mDesc = desc;
 }
 
-const QTileField &TileMap::getField() const
+const TileField &TileMap::getField() const
 {
     return *mpField;
 }
 
-QTileField &TileMap::getField()
+TileField &TileMap::getField()
 {
     return *mpField;
 }
@@ -100,7 +100,7 @@ void TileMap::paint(QPainter& painter)
             {
                 for ( int level = 2; level >= 0; --level )
                 {
-                    int tile = mpField->get((QTileField::Level)level, x, y);
+                    int tile = mpField->get((TileField::Level)level, x, y);
                     if ( tile < 255 )
                     {
                         Tile* ptile = mTiles[tile];
@@ -129,7 +129,7 @@ void TileMap::paint(QPainter& painter, Tile& tile, int x, int y)
 
 // - Operations
 
-void TileMap::setField(QTileField* pfield)
+void TileMap::setField(TileField* pfield)
 {
     mpField = pfield;
 }
@@ -186,7 +186,7 @@ void TileMap::generateTiles()
     }
 }
 
-Tile TileMap::getTile(const QPoint& mousepos, QTileField::Level level) const
+Tile TileMap::getTile(const QPoint& mousepos, TileField::Level level) const
 {
     const QSize& tilesize = mpTileSet->getTileSize();
 
@@ -207,7 +207,7 @@ Tile TileMap::getTile(const QPoint& mousepos, QTileField::Level level) const
     return result;
 }
 
-bool TileMap::setTile(const QPoint &mousepos, QTileField::Level level, int tileindex)
+bool TileMap::setTile(const QPoint &mousepos, TileField::Level level, int tileindex)
 {
     const QSize& tilesize = mpTileSet->getTileSize();
 
@@ -225,7 +225,7 @@ bool TileMap::setTile(const QPoint &mousepos, QTileField::Level level, int tilei
 }
 
 /// Set the map cell at position mouspos to tile. If tile is invalid the cell is cleared.
-bool TileMap::setTile(const QPoint& mousepos, QTileField::Level level, const Tile& tile)
+bool TileMap::setTile(const QPoint& mousepos, TileField::Level level, const Tile& tile)
 {
     int index = 255;
     if ( tile.isValid() )
@@ -236,7 +236,7 @@ bool TileMap::setTile(const QPoint& mousepos, QTileField::Level level, const Til
     return setTile(mousepos, level, index);
 }
 
-void TileMap::clearTile(const QPoint& mousepos, QTileField::Level level)
+void TileMap::clearTile(const QPoint& mousepos, TileField::Level level)
 {
     setTile(mousepos, level, 255);
 }

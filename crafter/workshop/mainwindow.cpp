@@ -7,13 +7,13 @@
 #include <QSettings>
 #include <QMdiSubWindow>
 #include <QMessageBox>
-
-#include "world/tileworldimporter.h"
+#include <QProgressBar>
 
 #include "aboutdialog.h"
 #include "newprojectdialog.h"
 #include "newlayerdialog.h"
 #include "newscriptdialog.h"
+#include "outputpanel.h"
 #include "project.h"
 #include "projectpanel.h"
 #include "layerpanel.h"
@@ -199,6 +199,9 @@ void MainWindow::restorePanels()
 
     mpLayerPanel = new LayerPanel(*this);
     addDockWidget(Qt::RightDockWidgetArea, mpLayerPanel);
+
+    mpOutputPanel = new OutputPanel(*this);
+    addDockWidget(Qt::BottomDockWidgetArea, mpOutputPanel);
 }
 
 void MainWindow::showPanel(DockPanel* ppanel, bool show)
@@ -309,19 +312,6 @@ void MainWindow::on_actionFile_NewScript_triggered()
     }
 }
 
-void MainWindow::on_actionFile_ImportWorld_triggered()
-{
-    QString filename = QFileDialog::getOpenFileName(this, "Import World");
-    if ( !filename.isNull() )
-    {
-        TileWorld* pworld = QTileWorldImporter::import(this, filename);
-        if ( pworld != NULL )
-        {
-            mpProject->addWorld(pworld);
-        }
-    }
-}
-
 void MainWindow::on_actionFile_Save_triggered()
 {
     saveProject();
@@ -389,7 +379,18 @@ void MainWindow::on_actionEdit_Bounds_triggered()
 
 void MainWindow::on_actionProject_Build_triggered()
 {
-    mpProject->build();
+    if ( mpProject != NULL )
+    {
+        mpProject->build();
+    }
+}
+
+void MainWindow::on_actionProject_Run_triggered()
+{
+    if ( mpProject != NULL )
+    {
+        mpProject->run();
+    }
 }
 
 void MainWindow::on_actionView_Project_triggered()
@@ -406,6 +407,12 @@ void MainWindow::on_actionView_Tiles_triggered()
 {
     showPanel(mpTilesPanel, ui->actionView_Tiles->isChecked());
 }
+
+void MainWindow::on_actionView_Output_triggered()
+{
+    showPanel(mpOutputPanel, ui->actionView_Output->isChecked());
+}
+
 
 void MainWindow::on_actionAbout_triggered()
 {

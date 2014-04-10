@@ -54,12 +54,6 @@
      <addaction name="actionFile_NewLayer"/>
      <addaction name="actionFile_NewScript"/>
     </widget>
-    <widget class="QMenu" name="menuImport">
-     <property name="title">
-      <string>Import</string>
-     </property>
-     <addaction name="actionFile_ImportWorld"/>
-    </widget>
     <addaction name="menuNew"/>
     <addaction name="separator"/>
     <addaction name="actionFile_Open"/>
@@ -67,8 +61,6 @@
     <addaction name="actionFile_SaveAs"/>
     <addaction name="separator"/>
     <addaction name="menuRecent_Projects"/>
-    <addaction name="separator"/>
-    <addaction name="menuImport"/>
     <addaction name="separator"/>
     <addaction name="actionFile_Exit"/>
    </widget>
@@ -82,9 +74,16 @@
     <property name="title">
      <string>View</string>
     </property>
-    <addaction name="actionView_Project"/>
-    <addaction name="actionView_Layers"/>
-    <addaction name="actionView_Tiles"/>
+    <widget class="QMenu" name="menuWindows">
+     <property name="title">
+      <string>Windows</string>
+     </property>
+     <addaction name="actionView_Layers"/>
+     <addaction name="actionView_Output"/>
+     <addaction name="actionView_Project"/>
+     <addaction name="actionView_Tiles"/>
+    </widget>
+    <addaction name="menuWindows"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -102,6 +101,8 @@
      <string>Project</string>
     </property>
     <addaction name="actionProject_Build"/>
+    <addaction name="separator"/>
+    <addaction name="actionProject_Run"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -119,11 +120,16 @@
    <addaction name="actionFile_New"/>
    <addaction name="actionFile_Open"/>
    <addaction name="actionFile_Save"/>
+   <addaction name="separator"/>
+   <addaction name="actionEdit_Undo"/>
+   <addaction name="actionEdit_Redo"/>
+   <addaction name="separator"/>
+   <addaction name="actionProject_Run"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionFile_New">
    <property name="icon">
-    <iconset>
+    <iconset resource="crafter.qrc">
      <normaloff>:/images/document-new.png</normaloff>:/images/document-new.png</iconset>
    </property>
    <property name="text">
@@ -132,7 +138,7 @@
   </action>
   <action name="actionFile_Open">
    <property name="icon">
-    <iconset>
+    <iconset resource="crafter.qrc">
      <normaloff>:/images/document-open.png</normaloff>:/images/document-open.png</iconset>
    </property>
    <property name="text">
@@ -141,7 +147,7 @@
   </action>
   <action name="actionFile_Save">
    <property name="icon">
-    <iconset>
+    <iconset resource="crafter.qrc">
      <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
    </property>
    <property name="text">
@@ -219,6 +225,10 @@
    </property>
   </action>
   <action name="actionEdit_Undo">
+   <property name="icon">
+    <iconset resource="crafter.qrc">
+     <normaloff>:/images/edit-undo-8.png</normaloff>:/images/edit-undo-8.png</iconset>
+   </property>
    <property name="text">
     <string>Undo</string>
    </property>
@@ -227,6 +237,10 @@
    </property>
   </action>
   <action name="actionEdit_Redo">
+   <property name="icon">
+    <iconset resource="crafter.qrc">
+     <normaloff>:/images/edit-redo-8.png</normaloff>:/images/edit-redo-8.png</iconset>
+   </property>
    <property name="text">
     <string>Redo</string>
    </property>
@@ -301,8 +315,27 @@
     <string>Build</string>
    </property>
   </action>
+  <action name="actionProject_Run">
+   <property name="icon">
+    <iconset resource="crafter.qrc">
+     <normaloff>:/images/media-playback-start-7.png</normaloff>:/images/media-playback-start-7.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+  </action>
+  <action name="actionView_Output">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Output</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="crafter.qrc"/>
+ </resources>
  <connections/>
 </ui>

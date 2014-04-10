@@ -51,7 +51,7 @@ private:
   // operations
     void createContextMenu();
     void setActiveWorld();
-    void setLevel(QTileField::Level level);
+    void setLevel(TileField::Level level);
 
     Ui::LayerPanel *ui;
 

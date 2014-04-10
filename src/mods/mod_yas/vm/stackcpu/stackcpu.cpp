@@ -2,6 +2,7 @@
 #include "stackcpu.h"
 
 #include "core/conv/numberconverter.h"
+#include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
 #include "core/smartptr/scopedvalue.h"
 #include "core/defines.h"
@@ -909,9 +910,9 @@ void StackCPU::compile(VirtualContext& context, const VirtualFunctionTableEntry&
       StackIRGenerator generator;
       generator.compile(context, *entry.mpFunction);
    }
-   catch ( std::exception* )
+   catch ( std::exception* e )
    {
-
+      Log::getInstance().error("Exception during compilation: %s", e->what());
    }
 }
 

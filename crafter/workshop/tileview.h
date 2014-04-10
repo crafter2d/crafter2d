@@ -37,8 +37,8 @@ public:
     EditMode getEditMode() const;
     void     setEditMode(EditMode mode);
 
-    QTileField::Level getLevel() const;
-    void              setLevel(QTileField::Level level);
+    TileField::Level getLevel() const;
+    void              setLevel(TileField::Level level);
 
     void setActiveTile(const Tile& tile);
 
@@ -70,7 +70,7 @@ private:
     TileBound*    mpSelectedBound;
     BoundEdge     mSelectedEdge;
     QUndoStack    mUndoStack;
-    QTileField::Level mLevel;
+    TileField::Level mLevel;
 };
 
 #endif // TILEVIEW_H

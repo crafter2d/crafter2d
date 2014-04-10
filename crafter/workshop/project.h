@@ -57,11 +57,17 @@ public:
 
     void build();
 
+    void run();
+
  // search
     QTileSet* lookupTileSet(const QString& name);
 
+public slots:
+    void on_messageReady(const QString& msg);
+
 signals:
     void dataChanged();
+    void messageAvailable(const QString& msg);
 
 private:
   // operations
