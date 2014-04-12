@@ -1,9 +1,7 @@
 
 #include "winstring.h"
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
+#include <string>
 #include <iconv.h>
 
 uint32_t conv_utf8_to_utf16(wchar_t* pdest, uint32_t size, const char* psrc, uint32_t length)
@@ -45,38 +43,6 @@ uint32_t conv_utf8_to_utf16(wchar_t* pdest, uint32_t size, const char* psrc, uin
    *((wchar_t *) poutput) = L'\0';
 
    return (wchar_t *) poutput - pdest;
-   /*
-   int len = MultiByteToWideChar(CP_ACP, 0, psrc, length, pdest, size);
-
-   if ( len <= 0 )
-   {
-      DWORD err = ::GetLastError();
-      switch ( err )
-      {
-      case ERROR_INSUFFICIENT_BUFFER:
-         return -1;
-      case ERROR_INVALID_FLAGS:
-         return -2;
-      case ERROR_INVALID_PARAMETER:
-         return -3;
-      case ERROR_NO_UNICODE_TRANSLATION:
-         return -4;
-      default:
-         return -5;
-      }
-      len = 0;
-   }
-
-   if ( len <= length )
-   {
-      pdest[len] = 0;
-   }
-   else
-   {
-      pdest[length] = 0;
-   }
-
-   return len; */
 }
 
 char* conv_utf16_to_utf8(const wchar_t* psrc, uint32_t length)
@@ -88,10 +54,11 @@ char* conv_utf16_to_utf8(const wchar_t* psrc, uint32_t length)
       return NULL;
    }
 
-   uint32_t inleft = length * sizeof(wchar_t);
+   uint32_t totalsize = length * sizeof(wchar_t) + 1;
+   uint32_t inleft = totalsize;
    uint32_t outleft = inleft;
 
-   char* presult = new char[outleft + 1];
+   char* presult = (char*) malloc(totalsize);
 
    const wchar_t* pinput = psrc;
    char* poutput = presult;
@@ -106,18 +73,24 @@ char* conv_utf16_to_utf8(const wchar_t* psrc, uint32_t length)
          if ( errno == E2BIG )
          {
             // need to resize the buffer
+            char* ptemp = (char*) realloc(presult, totalsize + inleft);
+            if ( ptemp == NULL )
+            {
+               free(presult);
+               return NULL;
+            }
+            
+            presult = ptemp;
+            outleft += inleft;
+            totalsize += inleft;
          }
          else
          {
             break;
          }
       }
-      else
-      {
-         break;
-      }
    }
-   while ( 1 );
+   while ( inleft > 0 );
 
    iconv(cd, NULL, NULL, &poutput, &outleft);
    iconv_close(cd);
@@ -125,20 +98,4 @@ char* conv_utf16_to_utf8(const wchar_t* psrc, uint32_t length)
    *poutput = '\0';
 
    return presult;
-
-   /*
-   int utf8len = WideCharToMultiByte(CP_UTF8, 0, psrc, length, NULL, 0, NULL, NULL);
-
-   if ( utf8len <= 0 )
-   {
-      return NULL;
-   }
-
-   char* presult = new char[utf8len + 1]; // include eos
-
-   WideCharToMultiByte(CP_UTF8, 0, psrc, length, presult, utf8len, NULL, NULL);
-
-   presult[utf8len] = 0;
-
-   return presult;*/
 }

@@ -429,6 +429,7 @@ void String::replace(int start, int count, const String& with)
 
    mLength = newlen;
    mpString[newlen] = 0;
+   delete[] ptemp;
 }
 
 /// removes characters [start, start+count>.
