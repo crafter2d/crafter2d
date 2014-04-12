@@ -29,6 +29,7 @@ private:
   // data
     Ui::ScriptView *ui;
     YasSyntaxHighlighter* mpHighlighter;
+    int mTabWidth;
 
 };
 

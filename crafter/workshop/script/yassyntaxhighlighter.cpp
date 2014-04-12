@@ -29,7 +29,7 @@ YasSyntaxHighlighter::YasSyntaxHighlighter(QTextDocument *parent):
     rule.format = mSingleLineCommentFormat;
     mRules.append(rule);
 
-    mMultiLineCommentFormat.setForeground(Qt::green);
+    mMultiLineCommentFormat.setForeground(Qt::darkGreen);
 
     commentStartExpression = QRegExp("/\\*");
     commentEndExpression = QRegExp("\\*/");
