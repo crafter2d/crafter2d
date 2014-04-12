@@ -26,9 +26,11 @@ project "Core"
 		defines { "WIN32", "CORE_EXPORTS", "UNICODE" }
 		excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*", "src/core/string/linux*.*" }
 		includedirs { 	path.join(libdir, "zlib/include"),
-						path.join(libdir, "tinyxml/include") }
+						path.join(libdir, "tinyxml/include"),
+						path.join(libdir, "iconv/include") }
 		libdirs { 	path.join(libdir, "zlib/lib"),
-					path.join(libdir, "tinyxml/lib") }
+					path.join(libdir, "tinyxml/lib"),
+					path.join(libdir, "iconv/lib") }
 				
 	-- set IDE specific settings
 	configuration "cb-gcc"
@@ -43,7 +45,7 @@ project "Core"
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1", "tinyxml_STL" }
 	
 	configuration "vs*"
-		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp" }
+		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp", "libiconv" }
 		
 	configuration "Debug"
 		links { "tinyxmld_STL", "zlib1_d" }
