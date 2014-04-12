@@ -24,7 +24,7 @@ project "Core"
 	
 	configuration "Windows"
 		defines { "WIN32", "CORE_EXPORTS", "UNICODE" }
-		excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*", "src/core/string/linux*.*" }
+		excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*" }
 		includedirs { 	path.join(libdir, "zlib/include"),
 						path.join(libdir, "tinyxml/include"),
 						path.join(libdir, "iconv/include") }
@@ -59,5 +59,5 @@ project "Core"
 		if ( _ACTION == "cb-gcc" ) then
 			linkoptions { "-Xlinker", "-zmuldefs" }
 		end
-		excludes { "src/core/vfs/win*.*", "src/core/system/win*.*", "src/core/vfs/zip/*32.*", "src/core/string/win*.*" }		
+		excludes { "src/core/vfs/win*.*", "src/core/system/win*.*" }
 

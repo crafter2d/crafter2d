@@ -24,11 +24,8 @@
 
 #include "core/defines.h"
 
-#ifdef WIN32
-#  include "winstring.h"
-#endif
-
 #include "char.h"
+#include "utf.h"
 
 int hex_digit(char c)
 {
