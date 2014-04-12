@@ -557,7 +557,7 @@ namespace c2d
 
          if ( !initDevice() )
          {
-            //setActive(false);
+            setActive(false);
          }
       }
    }
