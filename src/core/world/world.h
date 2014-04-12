@@ -174,6 +174,12 @@ protected:
 
 private:
 
+ // operations
+   void calculateScrollSpeed();
+
+ // notifications
+   void objectLayerChanged();
+
  // data
    String      mName;
    Layers      layers;

@@ -139,7 +139,7 @@ public:
    void           scroll(Graphics::RenderContext& context, float x, float y);
    void           update(float delta);
 
-   void           calculateScrollSpeed(const Vector& area, int screenWidth, int screenHeight);
+   void           calculateScrollSpeed(const Vector& area);
  
  // editing
    void resize(int width, int height);

@@ -87,7 +87,7 @@ class GameClient extends Client
 			mLocalActionMap.setActor(controller);
 			
 			world.setFollowMode(0);
-			world.setObjectLayer(0);
+			world.setObjectLayer(1);
 			world.setFollowActor(controller);
 			world.setFollowBorders(150, 650, 100, 500);
 		}

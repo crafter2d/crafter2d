@@ -85,6 +85,8 @@ void World::initialize(Device& device)
       Layer* player = layers[index];
       player->initialize(device);
    }
+
+   calculateScrollSpeed();
 }
 
 /// \fn World::destroy()
@@ -124,7 +126,11 @@ void World::setObjectLayer(int objectlayerid)
 {
    if ( objectlayerid < layers.size() )
    {
-      _objectLayer = objectlayerid;
+      if ( objectlayerid != _objectLayer )
+      {
+         _objectLayer = objectlayerid;
+         objectLayerChanged();
+      }
    }
    else
    {
@@ -172,7 +178,7 @@ void World::updateClient(Graphics::RenderContext& context, float delta)
       scroll(context);
    }
 
-   for ( int i = 0; i < layers.size(); i++ )
+   for ( std::size_t i = 0; i < layers.size(); i++ )
    {
       Layer& layer = *layers[i];
       layer.update(delta);
@@ -191,7 +197,7 @@ void World::updateClient(Graphics::RenderContext& context, float delta)
 void World::draw(Graphics::RenderContext& context) const
 {
    // render the layers
-   for ( int i = 0; i < layers.size(); i++ )
+   for ( std::size_t i = 0; i < layers.size(); i++ )
    {
       Layer& layer = *layers[i];
       layer.draw(context);
@@ -211,16 +217,36 @@ void World::draw(Graphics::RenderContext& context) const
    context.endDraw();
 
    // render the layers
-   for ( int i = 0; i < layers.size(); i++ )
+   for ( std::size_t i = 0; i < layers.size(); i++ )
    {
       Layer& layer = *layers[i];
       layer.drawFront(context);
    }
 }
 
+void World::objectLayerChanged()
+{
+   calculateScrollSpeed();
+}
+
+void World::calculateScrollSpeed()
+{
+   Layer* pobjectlayer = layers[_objectLayer];
+   Vector area = pobjectlayer->getScrollArea();
+
+   for ( std::size_t index = 0; index < layers.size(); ++index )
+   {
+      Layer* player = layers[index];
+      if ( index != _objectLayer )
+      {
+         // calculate the scroll speed based on the object layer area
+         player->calculateScrollSpeed(area);
+      }
+   }
+}
+
 /// \fn World::scroll()
 /// \brief Scrolls the layers based on the follow mode given by the application
-
 // Move to the viewport!
 void World::scroll (Graphics::RenderContext& context)
 {
@@ -255,14 +281,14 @@ void World::scroll (Graphics::RenderContext& context)
 
       // get the window bounds
       if (x < followBorderWidth)
-         xScroll = -1 * (followBorderWidth - x);
+         xScroll = -1.0f * (followBorderWidth - x);
       else if (x > width - followBorderWidth)
-         xScroll = 1 * (followBorderWidth - (width-x));
+         xScroll = 1.0f * (followBorderWidth - (width-x));
 
       if (y < followBorderWidth)
-         yScroll = -1 * (followBorderWidth - y);
+         yScroll = -1.0f * (followBorderWidth - y);
       else if (y > height - followBorderWidth)
-         yScroll = 1 * (followBorderWidth - (height-y));
+         yScroll = 1.0f * (followBorderWidth - (height-y));
    }
 
    // scroll the layer
@@ -272,7 +298,9 @@ void World::scroll (Graphics::RenderContext& context)
       Vector prescroll = layer.getScroll();
 
       for ( Layers::size_type l = 0; l < layers.size(); ++l )
+      {
          layers[l]->scroll(context, xScroll, yScroll);
+      }
 
       Vector scroll = layer.getScroll();
 
@@ -291,6 +319,19 @@ void World::initializeBorders()
    topBorder = 50;
    bottomBorder = height - 50;
 }
+
+void World::onViewportChanged(Graphics::RenderContext& context)
+{
+   Layer* pobjectlayer = layers[_objectLayer];
+   Vector area = pobjectlayer->getScrollArea();
+
+   for ( int index = 0; index < layers.size(); ++index )
+   {
+      Layer* player = layers[index];
+      player->onViewportChanged(context);
+   }
+}
+
 
 Layer* World::createLayer()
 {
@@ -472,6 +513,8 @@ void World::notifyEntityRemoved(const Entity& entity)
    }
 }
 
+// - Script functions
+
 static const String sBound = UTEXT("engine.game.Bound");
 static const String sCollision = UTEXT("onObjectCollision");
 
@@ -495,22 +538,4 @@ void World::notifyObjectObjectCollision(Entity& source, Entity& target, int side
    mpScript->arg(2, side);
    mpScript->arg(3, begin);
    mpScript->call(sCollision);
-}
-
-void World::onViewportChanged(Graphics::RenderContext& context)
-{
-   Layer* pobjectlayer = layers[_objectLayer];
-   Vector area = pobjectlayer->getScrollArea();
-
-   for ( int index = 0; index < layers.size(); ++index )
-   {
-      Layer* player = layers[index];
-      player->onViewportChanged(context);
-
-      if ( index != _objectLayer )
-      {
-         // calculate the scroll speed based on the object layer area
-         player->calculateScrollSpeed(area, context.getViewport().getWidth(), context.getViewport().getHeight());
-      }
-   }
 }

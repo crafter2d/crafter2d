@@ -156,7 +156,7 @@ Vector Layer::getScrollArea() const
    return Vector(tileset().getTileWidth() * tilesX, tileHeight * tilesY);
 }
 
-void Layer::calculateScrollSpeed(const Vector& area, int screenWidth, int screenHeight)
+void Layer::calculateScrollSpeed(const Vector& area)
 {
    Vector thisarea = getScrollArea();
 
