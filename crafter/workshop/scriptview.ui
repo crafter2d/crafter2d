@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ScriptView</class>
- <widget class="QTextEdit" name="ScriptView">
+ <widget class="QPlainTextEdit" name="ScriptView">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,17 +10,17 @@
     <height>300</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <property name="frameShadow">
    <enum>QFrame::Sunken</enum>
   </property>
   <property name="verticalScrollBarPolicy">
    <enum>Qt::ScrollBarAlwaysOn</enum>
   </property>
-  <property name="acceptRichText">
-   <bool>false</bool>
+  <property name="lineWrapMode">
+   <enum>QPlainTextEdit::NoWrap</enum>
+  </property>
+  <property name="plainText">
+   <string notr="true"/>
   </property>
  </widget>
  <resources/>

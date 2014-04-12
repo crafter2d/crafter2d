@@ -68,7 +68,8 @@ SOURCES += main.cpp\
     undocleartile.cpp \
     project/projectrunner.cpp \
     outputpanel.cpp \
-    project/projectmanager.cpp
+    project/projectmanager.cpp \
+    script/scriptlinenumberarea.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -123,7 +124,8 @@ HEADERS  += mainwindow.h \
     undocleartile.h \
     project/projectrunner.h \
     outputpanel.h \
-    project/projectmanager.h
+    project/projectmanager.h \
+    script/scriptlinenumberarea.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \

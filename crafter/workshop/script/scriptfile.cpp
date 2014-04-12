@@ -1,6 +1,7 @@
 #include "scriptfile.h"
 
 #include <QFile>
+#include <QPlainTextDocumentLayout>
 
 ScriptFile::ScriptFile():
     Resource(),
@@ -60,6 +61,7 @@ void ScriptFile::ensureLoaded()
         if ( file.open(QIODevice::ReadOnly) )
         {
             QString data(file.readAll());
+            mDocument.setDocumentLayout(new QPlainTextDocumentLayout(&mDocument));
             mDocument.setPlainText(data);
         }
     }
