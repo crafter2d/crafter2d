@@ -1,40 +1,43 @@
 #include "tile.h"
 
-#include "tilemap.h"
+#include <QPainter>
+
+#include "world/tileset.h"
 
 Tile::Tile():
     QObject(nullptr),
-    mpMap(NULL),
+    mpTileSet(NULL),
     mTexCoord()
 {
 }
 
 Tile::Tile(const Tile& that):
     QObject(nullptr),
-    mpMap(that.mpMap),
+    mpTileSet(that.mpTileSet),
     mTexCoord(that.mTexCoord)
 {
 }
 
-Tile::Tile(TileMap &map, QPoint &texcoord):
+Tile::Tile(QTileSet &tileset, QPoint &texcoord):
     QObject(nullptr),
-    mpMap(&map),
+    mpTileSet(&tileset),
     mTexCoord(texcoord)
 {
 }
 
 Tile& Tile::operator=(const Tile& that)
 {
-    mpMap = that.mpMap;
+    mpTileSet = that.mpTileSet;
     mTexCoord = that.mTexCoord;
     return *this;
 }
 
 // - Get/set
 
-QSize Tile::getSize() const
+const QSize &Tile::getSize() const
 {
-    return mpMap != nullptr ? mpMap->getTileSize() : QSize();
+    Q_ASSERT(mpTileSet != nullptr);
+    return mpTileSet->getTileSize();
 }
 
 const QPoint& Tile::getTexCoord() const
@@ -46,15 +49,23 @@ const QPoint& Tile::getTexCoord() const
 
 bool Tile::isValid() const
 {
-    return mpMap != nullptr;
+    return mpTileSet != nullptr;
 }
 
 // - Painting
 
-void Tile::paint(QPainter& painter, int x, int y)
+void Tile::paint(QPainter& painter, int x, int y) const
 {
-    if ( mpMap != nullptr )
+    if ( mpTileSet != nullptr )
     {
-        mpMap->paint(painter, *this, x, y);
+        const QImage& texture = mpTileSet->getTexture();
+        const QSize& tilesize = mpTileSet->getTileSize();
+
+        painter.drawImage(x, y,
+                          texture,
+                          mTexCoord.x(),
+                          mTexCoord.y(),
+                          tilesize.width(),
+                          tilesize.height());
     }
 }

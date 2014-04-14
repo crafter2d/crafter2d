@@ -15,7 +15,6 @@ TileMap::TileMap(const TileMapDesc& desc):
     mDesc(desc),
     mpField(NULL),
     mpTileSet(NULL),
-    mTiles(),
     mPixelSize()
 {
 }
@@ -64,25 +63,23 @@ const QSize& TileMap::getTileSize() const
 
 int TileMap::getTileCount() const
 {
-    return mTiles.size();
+    return mpTileSet->getTileCount();
 }
 
-Tile& TileMap::getTile(int tile)
+const Tile &TileMap::getTile(int tile)
 {
-    return *mTiles[tile];
+    return (*mpTileSet)[tile];
+}
+
+const QTileSet& TileMap::getTileSet() const
+{
+    Q_ASSERT(mpTileSet != nullptr);
+    return *mpTileSet;
 }
 
 int TileMap::indexOf(const Tile& tile) const
 {
-    for ( int index = 0; index < mTiles.size(); index++ )
-    {
-        Tile* ptile = mTiles[index];
-        if ( ptile->getTexCoord() == tile.getTexCoord() )
-        {
-            return index;
-        }
-    }
-    return -1;
+    return mpTileSet->indexOf(tile);
 }
 
 // - Painting
@@ -100,11 +97,11 @@ void TileMap::paint(QPainter& painter)
             {
                 for ( int level = 2; level >= 0; --level )
                 {
-                    int tile = mpField->get((TileField::Level)level, x, y);
-                    if ( tile < 255 )
+                    int tileindex = mpField->get((TileField::Level)level, x, y);
+                    if ( tileindex < 255 )
                     {
-                        Tile* ptile = mTiles[tile];
-                        paint(painter, *ptile, posx, posy);
+                        const Tile& tile = (*mpTileSet)[tileindex];
+                        tile.paint(painter, posx, posy);
                     }
                 }
 
@@ -140,8 +137,6 @@ void TileMap::setTileSet(QTileSet* ptileset)
     {
         mpTileSet = ptileset;
 
-        generateTiles();
-
         const QSize& tilesize = mpTileSet->getTileSize();
         mPixelSize.setWidth(tilesize.width() * mDesc.size.width());
         mPixelSize.setHeight(tilesize.height() * mDesc.size.height());
@@ -165,27 +160,6 @@ void TileMap::resize(const QSize& size)
     }
 }
 
-void TileMap::generateTiles()
-{
-    Q_ASSERT(mpTileSet != NULL);
-    if ( mpTileSet->hasTexture() )
-    {
-        const QImage& image = mpTileSet->getTexture();
-        const QSize& tilesize = mpTileSet->getTileSize();
-        int maxFramesPerRow = static_cast<int>(image.width() / tilesize.width());
-
-        // build the texture coord lookup table
-        for (int tc = 0; tc < mpTileSet->getTileCount(); tc++)
-        {
-            // calculate starting texture coordinates
-            int x = (tc % maxFramesPerRow) * tilesize.width();
-            int y = (int) floorf ((float)tc / maxFramesPerRow) * tilesize.height();
-
-            mTiles.append(new Tile(*this, QPoint(x, y)));
-        }
-    }
-}
-
 Tile TileMap::getTile(const QPoint& mousepos, TileField::Level level) const
 {
     const QSize& tilesize = mpTileSet->getTileSize();
@@ -198,9 +172,9 @@ Tile TileMap::getTile(const QPoint& mousepos, TileField::Level level) const
       && tiley >= 0 && tiley < mDesc.size.height() )
     {
         int index = mpField->get(level, tilex, tiley);
-        if ( index < mTiles.size() )
+        if ( index < mpTileSet->getTileCount() )
         {
-            result = *mTiles[index];
+            result = (*mpTileSet)[index];
         }
     }
 

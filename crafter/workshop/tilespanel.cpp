@@ -7,21 +7,29 @@
 #include "tilemodel.h"
 #include "tileview.h"
 #include "tileworld.h"
+#include "tileselector.h"
 
 TilesPanel::TilesPanel(MainWindow &mainwindow) :
     DockPanel(mainwindow),
     ui(new Ui::TilesPanel),
-    mpTileModel(NULL)
+    mpTileModel(NULL),
+    mpSelector(nullptr)
 {
     ui->setupUi(this);
 
+    mpSelector = new TileSelector(0);
+    mpSelector->setVisible(true);
+
+    ui->scrollArea->setWidget(mpSelector);
+
+    /*
     mpTileModel = new TileModel();
     ui->listTiles->setModel(mpTileModel);
     ui->listTiles->setItemDelegate(new TileDelegate());
 
     connect(ui->listTiles->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(on_tile_selectionChanged(QItemSelection,QItemSelection)));
+            SLOT(on_tile_selectionChanged(QItemSelection,QItemSelection)));*/
 }
 
 TilesPanel::~TilesPanel()
@@ -37,14 +45,16 @@ void TilesPanel::worldActivated(TileWorld* pworld)
     {
         if ( pworld->hasActiveMap() )
         {
-            mpTileModel->setMap(pworld->getActiveMap());
+            //mpTileModel->setMap(pworld->getActiveMap());
+            const QTileSet& tileset = pworld->getActiveMap()->getTileSet();
+            mpSelector->setTileSet(&tileset);
         }
 
         connect(pworld, SIGNAL(activeMapChanged(TileMap*)), SLOT(on_world_activeMapChanged(TileMap*)));
     }
     else
     {
-        mpTileModel->clearMap();
+        //mpTileModel->clearMap();
     }
 }
 
@@ -52,6 +62,7 @@ void TilesPanel::worldActivated(TileWorld* pworld)
 
 void TilesPanel::on_tile_selectionChanged(const QItemSelection& selected, const QItemSelection& /* deselected */)
 {
+    /*
     TileView* pview = getMainWindow().getActiveView();
     if ( pview != NULL )
     {
@@ -70,10 +81,13 @@ void TilesPanel::on_tile_selectionChanged(const QItemSelection& selected, const 
             }
         }
     }
+    */
 }
 
 void TilesPanel::on_world_activeMapChanged(TileMap* tilemap)
 {
+    /*
     TileModel* pmodel = dynamic_cast<TileModel*>(ui->listTiles->model());
     pmodel->setMap(tilemap);
+    */
 }

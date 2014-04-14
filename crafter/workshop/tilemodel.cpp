@@ -44,7 +44,7 @@ QVariant TileModel::data(const QModelIndex &index, int role) const
 
     if ( mpMap != NULL )
     {
-        Tile& tile = mpMap->getTile(index.row());
+        const Tile& tile = mpMap->getTile(index.row());
 
         QVariant result;
         result.setValue(tile);

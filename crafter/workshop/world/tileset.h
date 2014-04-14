@@ -5,6 +5,10 @@
 
 #include <QImage>
 #include <QSize>
+#include <QVector>
+
+class QPainter;
+class Tile;
 
 class QTileSet : public Resource
 {
@@ -12,6 +16,8 @@ class QTileSet : public Resource
 
 public:
     QTileSet();
+
+    const Tile& operator[](int index) const;
 
   // get/set
     bool          hasTexture() const;
@@ -27,14 +33,25 @@ public:
     int  getTileCount() const;
     void setTileCount(int count);
 
+  // query
+    int indexOf(const Tile& tile) const;
+
+  // operations
+    void paintTile(QPainter& painter, int index, int x, int y);
+
 private:
+
+  // typedefs
+    typedef QVector<Tile*> QTiles;
 
   // operations
     void loadTexture();
+    void generateTiles();
 
   // data
     QString mTileMap;
     QImage  mTexture;
+    QTiles  mTiles;
     QSize   mTileSize;
     int     mTileCount;
 };

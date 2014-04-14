@@ -14,6 +14,7 @@
 #include "tileview.h"
 #include "tileviewwindow.h"
 #include "tileworld.h"
+#include "tilemap.h"
 
 LayerPanel::LayerPanel(MainWindow& parent):
     DockPanel(parent),

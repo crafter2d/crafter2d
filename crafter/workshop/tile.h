@@ -1,10 +1,10 @@
 #ifndef TILE_H
 #define TILE_H
 
+#include <QObject>
 #include <QPoint>
 
-#include "tilemap.h"
-
+class QTileSet;
 class QPainter;
 
 class Tile : public QObject
@@ -14,24 +14,24 @@ class Tile : public QObject
 public:
     Tile();
     Tile(const Tile& that);
-    Tile(TileMap& map, QPoint& texcoord);
+    Tile(QTileSet& tileset, QPoint& texcoord);
 
     Tile& operator=(const Tile& that);
 
   // get/set
-    QSize getSize() const;
+    const QSize& getSize() const;
     const QPoint& getTexCoord() const;
 
   // qurey
     bool isValid() const;
 
   // painting
-    void paint(QPainter &painter, int x, int y);
+    void paint(QPainter &painter, int x, int y) const;
 
 private:
 
   // data
-    TileMap* mpMap;
+    QTileSet* mpTileSet;
     QPoint   mTexCoord;
 };
 

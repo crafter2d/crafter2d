@@ -4,7 +4,6 @@
 #include <QImage>
 #include <QPoint>
 #include <QSize>
-#include <QVector>
 
 #include "world/tilemapdesc.h"
 #include "world/tilefield.h"
@@ -38,7 +37,9 @@ public:
     const QSize& getTileSize() const;
     int          getTileCount() const;
 
-    Tile& getTile(int tile);
+    const Tile& getTile(int tile);
+
+    const QTileSet& getTileSet() const;
 
     int indexOf(const Tile& tile) const;
 
@@ -60,18 +61,14 @@ signals:
     void mapChanged(TileMap& layer);
 
 private:
-    typedef QVector<Tile*> Tiles;
-
   // operations
-    void generateTiles();
     bool setTile(const QPoint &mousepos, TileField::Level level, int tileindex);
 
   // data
     TileMapDesc mDesc;
-    TileField* mpField;
+    TileField*  mpField;
     QTileSet*   mpTileSet;
     QSize       mPixelSize;
-    Tiles       mTiles;
 };
 
 #endif // TILEMAP_H
