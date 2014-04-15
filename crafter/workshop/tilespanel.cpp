@@ -2,9 +2,7 @@
 #include "ui_tilespanel.h"
 
 #include "mainwindow.h"
-#include "tiledelegate.h"
 #include "tilemap.h"
-#include "tilemodel.h"
 #include "tileview.h"
 #include "tileworld.h"
 #include "tileselector.h"

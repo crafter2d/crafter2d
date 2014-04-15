@@ -9,7 +9,6 @@ class TilesPanel;
 
 class Tile;
 class TileMap;
-class TileModel;
 class TileSelector;
 
 class TilesPanel : public DockPanel
@@ -18,7 +17,7 @@ class TilesPanel : public DockPanel
 
 public:
     explicit TilesPanel(MainWindow& mainwindow);
-    ~TilesPanel();
+    virtual ~TilesPanel();
 
 protected:
 

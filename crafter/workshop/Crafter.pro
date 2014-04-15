@@ -21,8 +21,6 @@ SOURCES += main.cpp\
     project.cpp \
     projectmodel.cpp \
     tileviewwindow.cpp \
-    tiledelegate.cpp \
-    tilemodel.cpp \
     tilemap.cpp \
     tileworld.cpp \
     tilemapmodel.cpp \
@@ -78,8 +76,6 @@ HEADERS  += mainwindow.h \
     project.h \
     projectmodel.h \
     tileviewwindow.h \
-    tiledelegate.h \
-    tilemodel.h \
     tilemap.h \
     tileworld.h \
     tilemapmodel.h \
