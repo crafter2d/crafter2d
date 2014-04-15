@@ -37,7 +37,11 @@ void ProjectRunner::run()
     connect(&mGame, SIGNAL(readyReadStandardError()), this, SLOT(readStandardError()));
 
     mGame.setWorkingDirectory(QDir::currentPath());
+#ifdef _DEBUG
     mGame.start("gamed.exe" + args);
+#else
+    mGame.start("game.exe" + args);
+#endif
 
     if ( !mGame.waitForStarted() )
     {
