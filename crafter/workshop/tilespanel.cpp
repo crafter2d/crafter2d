@@ -12,24 +12,14 @@
 TilesPanel::TilesPanel(MainWindow &mainwindow) :
     DockPanel(mainwindow),
     ui(new Ui::TilesPanel),
-    mpTileModel(NULL),
     mpSelector(nullptr)
 {
     ui->setupUi(this);
 
     mpSelector = new TileSelector(0);
-    mpSelector->setVisible(true);
+    connect(mpSelector, SIGNAL(tileSelected(const Tile*)), SLOT(on_tileSelected(const Tile*)));
 
-    ui->scrollArea->setWidget(mpSelector);
-
-    /*
-    mpTileModel = new TileModel();
-    ui->listTiles->setModel(mpTileModel);
-    ui->listTiles->setItemDelegate(new TileDelegate());
-
-    connect(ui->listTiles->selectionModel(),
-            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(on_tile_selectionChanged(QItemSelection,QItemSelection)));*/
+    ui->verticalLayout->addWidget(mpSelector);
 }
 
 TilesPanel::~TilesPanel()
@@ -41,53 +31,38 @@ TilesPanel::~TilesPanel()
 
 void TilesPanel::worldActivated(TileWorld* pworld)
 {
+    TileMap* pmap = nullptr;
     if ( pworld != NULL )
     {
+        connect(pworld, SIGNAL(activeMapChanged(TileMap*)), SLOT(on_world_activeMapChanged(TileMap*)));
+
         if ( pworld->hasActiveMap() )
         {
-            //mpTileModel->setMap(pworld->getActiveMap());
-            const QTileSet& tileset = pworld->getActiveMap()->getTileSet();
-            mpSelector->setTileSet(&tileset);
+            pmap = pworld->getActiveMap();
         }
+    }
 
-        connect(pworld, SIGNAL(activeMapChanged(TileMap*)), SLOT(on_world_activeMapChanged(TileMap*)));
-    }
-    else
-    {
-        //mpTileModel->clearMap();
-    }
+    on_world_activeMapChanged(pmap);
 }
 
 // - Slots
 
-void TilesPanel::on_tile_selectionChanged(const QItemSelection& selected, const QItemSelection& /* deselected */)
+void TilesPanel::on_tileSelected(const Tile* tile)
 {
-    /*
     TileView* pview = getMainWindow().getActiveView();
     if ( pview != NULL )
     {
-        QModelIndex index;
-        foreach(index, selected.indexes())
-        {
-            if ( index.model() != NULL )
-            {
-                QVariant var = index.model()->data(index);
-
-                if ( var.canConvert<Tile>() )
-                {
-                    Tile tile = var.value<Tile>();
-                    pview->setActiveTile(tile);
-                }
-            }
-        }
+        pview->setActiveTile(tile);
     }
-    */
 }
 
 void TilesPanel::on_world_activeMapChanged(TileMap* tilemap)
 {
-    /*
-    TileModel* pmodel = dynamic_cast<TileModel*>(ui->listTiles->model());
-    pmodel->setMap(tilemap);
-    */
+    const QTileSet* pset = nullptr;
+    if ( tilemap != nullptr )
+    {
+        pset = &tilemap->getTileSet();
+    }
+
+    mpSelector->setTileSet(pset);
 }

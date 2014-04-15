@@ -40,7 +40,7 @@ void TileViewWindow::setWorld(TileWorld& world)
     setWindowTitle(world.getName());
 }
 
-void TileViewWindow::setActiveTile(const Tile& tile)
+void TileViewWindow::setActiveTile(const Tile* tile)
 {
     mpTileView->setActiveTile(tile);
 }

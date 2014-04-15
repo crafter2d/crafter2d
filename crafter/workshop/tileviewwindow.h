@@ -20,7 +20,7 @@ public:
 
     TileView& getTileView();
 
-    void setActiveTile(const Tile& tile);
+    void setActiveTile(const Tile *tile);
 
 signals:
 

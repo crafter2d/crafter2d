@@ -67,9 +67,16 @@ void TileView::setEditMode(EditMode mode)
     mEditMode = mode;
 }
 
-void TileView::setActiveTile(const Tile& tile)
+void TileView::setActiveTile(const Tile* tile)
 {
-    mTile = tile;
+    if ( tile != nullptr )
+    {
+        mTile = *tile;
+    }
+    else
+    {
+        mTile = Tile();
+    }
 }
 
 TileField::Level TileView::getLevel() const
@@ -195,10 +202,13 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
         {
         case eLayerMode:
             {
-                mEditMode = ePaintMode;
+                if ( mTile.isValid() )
+                {
+                    mEditMode = ePaintMode;
 
-                UndoSetTile* pundo = new UndoSetTile(*mpWorld, pevent->pos(), mLevel, mTile);
-                mUndoStack.push(pundo);
+                    UndoSetTile* pundo = new UndoSetTile(*mpWorld, pevent->pos(), mLevel, mTile);
+                    mUndoStack.push(pundo);
+                }
             }
             break;
         case eBoundMode:

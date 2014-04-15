@@ -40,7 +40,7 @@ public:
     TileField::Level getLevel() const;
     void              setLevel(TileField::Level level);
 
-    void setActiveTile(const Tile& tile);
+    void setActiveTile(const Tile *tile);
 
   // operations
     void undo();
