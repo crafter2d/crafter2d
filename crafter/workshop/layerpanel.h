@@ -29,6 +29,7 @@ signals:
     void worldChanged();
 
 private slots:
+    void on_transparencySlider_valueChanged(int value);
     void on_layerSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     void on_buttonMoveUp_clicked();

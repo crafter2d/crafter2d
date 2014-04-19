@@ -40,6 +40,8 @@ public:
     TileField::Level getLevel() const;
     void              setLevel(TileField::Level level);
 
+    void setTransparency(double value);
+
     void setActiveTile(const Tile *tile);
 
   // operations
@@ -71,6 +73,7 @@ private:
     BoundEdge     mSelectedEdge;
     QUndoStack    mUndoStack;
     TileField::Level mLevel;
+    double           mTransparency;
 };
 
 #endif // TILEVIEW_H

@@ -21,7 +21,8 @@ TileView::TileView():
     mpSelectedBound(NULL),
     mSelectedEdge(eNone),
     mUndoStack(),
-    mLevel(TileField::eMid)
+    mLevel(TileField::eMid),
+    mTransparency(1.0f)
 {
     ui->setupUi(this);
 
@@ -89,6 +90,12 @@ void TileView::setLevel(TileField::Level level)
     mLevel = level;
 }
 
+void TileView::setTransparency(double value)
+{
+    mTransparency = value;
+    update();
+}
+
 // - Operations
 
 void TileView::undo()
@@ -106,6 +113,7 @@ void TileView::redo()
 void TileView::paintEvent(QPaintEvent * /*event*/)
 {
     QPainter painter(this);
+    painter.setOpacity(mTransparency);
     mpWorld->paint(painter);
 }
 

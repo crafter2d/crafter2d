@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>248</width>
     <height>300</height>
    </rect>
   </property>
@@ -54,7 +54,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="crafter.qrc">
+          <iconset>
            <normaloff>:/images/list-add.png</normaloff>:/images/list-add.png</iconset>
          </property>
         </widget>
@@ -65,7 +65,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="crafter.qrc">
+          <iconset>
            <normaloff>:/images/list-remove.png</normaloff>:/images/list-remove.png</iconset>
          </property>
         </widget>
@@ -76,7 +76,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="crafter.qrc">
+          <iconset>
            <normaloff>:/images/arrow-up.png</normaloff>:/images/arrow-up.png</iconset>
          </property>
         </widget>
@@ -87,7 +87,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="crafter.qrc">
+          <iconset>
            <normaloff>:/images/arrow-down.png</normaloff>:/images/arrow-down.png</iconset>
          </property>
         </widget>
@@ -98,7 +98,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="crafter.qrc">
+          <iconset>
            <normaloff>:/images/align-horizontal-right.png</normaloff>:/images/align-horizontal-right.png</iconset>
          </property>
          <property name="checkable">
@@ -115,7 +115,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="crafter.qrc">
+          <iconset>
            <normaloff>:/images/align-horizontal-center.png</normaloff>:/images/align-horizontal-center.png</iconset>
          </property>
          <property name="checkable">
@@ -132,7 +132,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="crafter.qrc">
+          <iconset>
            <normaloff>:/images/align-horizontal-left.png</normaloff>:/images/align-horizontal-left.png</iconset>
          </property>
          <property name="checkable">
@@ -146,11 +146,57 @@
     <item>
      <widget class="QTreeView" name="treeLayers"/>
     </item>
+    <item>
+     <widget class="QWidget" name="widget_2" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="leftMargin">
+        <number>5</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Transparency</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="transparencySlider">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="sliderPosition">
+          <number>100</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="crafter.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

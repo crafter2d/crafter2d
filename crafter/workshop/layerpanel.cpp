@@ -35,6 +35,8 @@ LayerPanel::LayerPanel(MainWindow& parent):
     pgroup->addButton(ui->buttonMid);
     pgroup->addButton(ui->buttonBack);
 
+    connect(ui->transparencySlider, SIGNAL(valueChanged(int)), SLOT(on_transparencySlider_valueChanged(int)));
+
     setActiveWorld();
 
     createContextMenu();
@@ -59,6 +61,12 @@ void LayerPanel::worldActivated(TileWorld* pworld)
     TileMapModel* pmapmodel = dynamic_cast<TileMapModel*>(ui->treeLayers->model());
     Q_ASSERT(pmapmodel != NULL);
     pmapmodel->setWorld(pworld);
+
+    if ( pworld != NULL && pworld->getMapCount() > 0 )
+    {
+        QModelIndex index = pmapmodel->index(0, 0);
+        ui->treeLayers->selectionModel()->select(index, QItemSelectionModel::Select);
+    }
 }
 
 void LayerPanel::contextMenuEvent(QContextMenuEvent *event)
@@ -118,6 +126,15 @@ void LayerPanel::on_layerSelectionChanged(const QItemSelection& selected, const 
     }
 }
 
+void LayerPanel::on_transparencySlider_valueChanged(int value)
+{
+    TileView* pview = getMainWindow().getActiveView();
+    if ( pview != NULL )
+    {
+        pview->setTransparency(value / 100.0);
+    }
+}
+
 void LayerPanel::on_buttonMoveUp_clicked()
 {
     TileMapModel* pmapmodel = dynamic_cast<TileMapModel*>(ui->treeLayers->model());
@@ -145,6 +162,23 @@ void LayerPanel::on_buttonMoveDown_clicked()
         }
     }
 }
+
+void LayerPanel::on_buttonFront_clicked()
+{
+    setLevel(TileField::eFront);
+}
+
+void LayerPanel::on_buttonMid_clicked()
+{
+    setLevel(TileField::eMid);
+}
+
+void LayerPanel::on_buttonBack_clicked()
+{
+    setLevel(TileField::eBack);
+}
+
+// - Actions
 
 void LayerPanel::on_deleteact_triggered()
 {
@@ -179,19 +213,4 @@ void LayerPanel::on_resizeact_triggered()
             map.resize(size);
         }
     }
-}
-
-void LayerPanel::on_buttonFront_clicked()
-{
-    setLevel(TileField::eFront);
-}
-
-void LayerPanel::on_buttonMid_clicked()
-{
-    setLevel(TileField::eMid);
-}
-
-void LayerPanel::on_buttonBack_clicked()
-{
-    setLevel(TileField::eBack);
 }
