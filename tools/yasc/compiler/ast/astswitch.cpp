@@ -122,27 +122,6 @@ bool ASTSwitch::hasReturn(bool& hasunreachablecode) const
    return result;
 }
 
-// - Operations
-   
-void ASTSwitch::validateCaseTypes(CompileContext& context)
-{
-   ASSERT_PTR(mpType);
-   ASSERT(mpType->isValueType());
-
-   const ASTNodes& cases = getChildren();
-   for ( int index = 0; index < cases.size(); index++ )
-   {
-      const ASTCase& ast = dynamic_cast<const ASTCase&>(cases[index]);
-      if ( ast.isCase() && !mpType->greater(ast.getType()) )
-      {
-         String number;
-         String ss;
-         ss = String("Case ") + NumberConverter::getInstance().format(number, index) + String(" should be of type ") + mpType->toString();
-         context.getLog().error(ss);
-      }
-   }
-}
-
 // - Visitor
 
 ACCEPT_IMPL(ASTSwitch);

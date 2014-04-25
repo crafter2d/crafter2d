@@ -16,6 +16,7 @@
 #include "steps/preloadvisitor.h"
 
 #include "exceptions/classnotfoundexception.h"
+#include "exceptions/filenotfoundexception.h"
 
 #include "compiler.h" 
 
@@ -94,7 +95,7 @@ bool CompileContext::loadClass(const String& classname)
          auto append = [this](ASTClass* pclass) { addClass(pclass); };
          std::for_each(classes.begin(), classes.end(), append);
       }
-      catch ( std::exception* )
+      catch ( FileNotFoundException* )
       {
          return false;
       }

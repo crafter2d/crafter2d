@@ -12,6 +12,7 @@
 ScriptView::ScriptView(QWidget* parent):
     QPlainTextEdit(parent),
     ui(new Ui::ScriptView),
+    mpScriptFile(nullptr),
     mpHighlighter(nullptr),
     mpLineNumberArea(nullptr),
     mCountCache(),
@@ -29,6 +30,7 @@ ScriptView::ScriptView(QWidget* parent):
 ScriptView::ScriptView(ScriptFile& script) :
     QPlainTextEdit(nullptr),
     ui(new Ui::ScriptView),
+    mpScriptFile(&script),
     mpHighlighter(nullptr),
     mpLineNumberArea(nullptr),
     mCountCache(),
@@ -53,7 +55,25 @@ ScriptView::~ScriptView()
     delete ui;
 }
 
+// - Get/set
+
+bool ScriptView::hasScriptFile() const
+{
+    return mpScriptFile != nullptr;
+}
+
+ScriptFile& ScriptView::getScriptFile()
+{
+    Q_ASSERT(hasScriptFile());
+    return *mpScriptFile;
+}
+
 // - Query
+
+int ScriptView::currentLine() const
+{
+    return textCursor().blockNumber() + 1;
+}
 
 int ScriptView::getLineNumberAreaWidth() const
 {
@@ -161,6 +181,26 @@ void ScriptView::paintLineNumberArea(QPaintEvent* pevent)
         top = bottom;
         bottom = top + (int) + blockBoundingRect(block).height();
         ++blocknumber;
+    }
+}
+
+// - Slots
+
+void ScriptView::setCurrentLine(int linenr)
+{
+    QTextCursor cursor(textCursor());
+
+    int move = linenr - currentLine();
+    if ( move != 0 )
+    {
+        if ( move < 0 )
+            cursor.movePosition(QTextCursor::Up, QTextCursor::MoveAnchor, move);
+        else
+            cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, move);
+
+        cursor.movePosition(QTextCursor::StartOfLine);
+
+        setTextCursor(cursor);
     }
 }
 

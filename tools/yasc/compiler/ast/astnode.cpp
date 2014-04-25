@@ -3,8 +3,7 @@
 
 ASTNode::ASTNode():
    mChildren(),
-   mLine(-1),
-   mPos(-1)
+   mPosition()
 {
 }
 
@@ -14,24 +13,14 @@ ASTNode::~ASTNode()
 
 // - Get/set
 
-int ASTNode::getLine() const
+const AntlrTextPosition& ASTNode::getPosition() const
 {
-   return mLine;
+   return mPosition;
 }
 
-void ASTNode::setLine(int line)
+void ASTNode::setPosition(const AntlrTextPosition& pos)
 {
-   mLine = line;
-}
-
-int ASTNode::getPos() const
-{
-   return mPos;
-}
-
-void ASTNode::setPos(int pos)
-{
-   mPos = pos;
+   mPosition = pos;
 }
 
 // - Query

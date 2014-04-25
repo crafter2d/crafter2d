@@ -84,14 +84,14 @@ private:
    bool isVariable(const ASTNode& node) const;
 
  // operations
+   void checkCondition(const ASTNode& node, const ASTType& type);
    void checkVarInit(ASTVariable& var);
+   void checkCaseTypes(const ASTSwitch& ast);
    void checkReturn(const ASTFunction& function);
    void checkFunctionAccess(const ASTClass& aclass, ASTAccess& access, bool isstatic);
-   void checkOperator(ASTUnary::Operator op);
+   void checkOperator(ASTNode& node, ASTUnary::Operator op);
    void checkUnknown(const ASTType& type);
 
-   CompileContext& mContext;
-   ASTClass*       mpClass;
    ASTFunction*    mpFunction;
    ASTType         mCurrentType;
    ScopeStack      mScopeStack;

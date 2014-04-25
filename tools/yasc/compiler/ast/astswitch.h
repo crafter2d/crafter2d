@@ -4,7 +4,6 @@
 
 #include "aststatement.h"
 
-class CompileContext;
 class ASTCase;
 class ASTType;
 
@@ -32,9 +31,6 @@ public:
    bool canLookup() const;
 
    virtual bool hasReturn(bool& hasunreachablecode) const;
-
- // operations
-   void validateCaseTypes(CompileContext& context);
 
  // visitor
    ACCEPT;

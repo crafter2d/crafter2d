@@ -9,6 +9,7 @@ ASTLocalVariable::ASTLocalVariable(ASTVariable* pvariable):
    ASTStatement(),
    mpVariable(pvariable)
 {
+   setPosition(pvariable->getPosition());
 }
 
 ASTLocalVariable::~ASTLocalVariable()

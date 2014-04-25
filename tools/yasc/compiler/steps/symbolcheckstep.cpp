@@ -23,6 +23,7 @@
 #include "core/smartptr/scopedvalue.h"
 #include "core/conv/numberconverter.h"
 
+#include "yasc/compiler/errornumbers.h"
 #include "yasc/compiler/ast/ast.h"
 #include "yasc/compiler/scope/scope.h"
 #include "yasc/compiler/scope/scopevariable.h"
@@ -44,9 +45,7 @@ When variable declared, they are added to the current scope.
 */
 
 SymbolCheckVisitor::SymbolCheckVisitor(CompileContext& context):
-   CompileStep(),
-   mContext(context),
-   mpClass(NULL),
+   CompileStep(context),
    mpFunction(NULL),
    mCurrentType(),
    mScopeStack(),
@@ -88,14 +87,14 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
 
    if ( ast.isConstructor() && ast.getName() != mpClass->getName() )
    {
-      mContext.getLog().error(UTEXT("Function ") + mpClass->getFullName() + '.' + ast.getName() + UTEXT(" must have a return type (or equal class name as constructor)."));
+      error(E0005, UTEXT("Function ") + ast.getName() + UTEXT(" must have a return type (or equal class name as constructor)."), ast);
    }
 
    if ( ast.hasBody() )
    {
       if ( ast.getModifiers().isAbstract() )
       {
-         mContext.getLog().error(UTEXT("Abstract function ") + mpClass->getName() + '.' + ast.getName() + UTEXT(" should not have a body."));
+         error(E0006, UTEXT("Abstract function ") + ast.getName() + UTEXT(" should not have a body."), ast);
       }
       else
       {
@@ -106,7 +105,7 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
    }
    else if ( !ast.getModifiers().isAbstract() && !ast.getModifiers().isPureNative() )
    {
-      mContext.getLog().error(UTEXT("Function ") + mpClass->getName() + '.' + ast.getName() + UTEXT(" requires a body."));
+      error(E0007, UTEXT("Function ") + ast.getName() + UTEXT(" requires a body."), ast);
    }
 
    mCurrentType.clear();
@@ -176,10 +175,7 @@ void SymbolCheckVisitor::visit(ASTExpressionStatement& ast)
 void SymbolCheckVisitor::visit(ASTIf& ast)
 {
    ast.getCondition().accept(*this);
-   if ( !mCurrentType.isBoolean() )
-   {
-      mContext.getLog().error(String("If condition expression must be of type boolean."));
-   }
+   checkCondition(ast, mCurrentType);
 
    ast.getStatement().accept(*this);
 
@@ -201,11 +197,7 @@ void SymbolCheckVisitor::visit(ASTFor& ast)
    if ( ast.hasCondition() )
    {
       ast.getCondition().accept(*this);
-
-      if ( !mCurrentType.isBoolean() )
-      {
-         mContext.getLog().error(String("For loop condition expression must be of type boolean."));
-      }
+      checkCondition(ast, mCurrentType);
    }
 
    visitChildren(ast); // <-- loop expressions
@@ -237,7 +229,7 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
          }
          else
          {
-            mContext.getLog().error(UTEXT("Container ") + var.getName() + UTEXT(" must be iterable for use in foreach."));
+            error(E0009, UTEXT("Container ") + var.getName() + UTEXT(" must be iterable for use in foreach."), ast);
          }
       }
       else if ( mCurrentType.isArray() )
@@ -249,7 +241,7 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
    }
    else
    {
-      mContext.getLog().error(UTEXT("Compiler error: missing required initializer for foreach variable ") + var.getName());
+      error(E0010, UTEXT("Missing required initializer for foreach variable ") + var.getName(), ast);
    }
 
    mpFunction->addLocal(iteratorvar.getType().clone());
@@ -264,11 +256,7 @@ void SymbolCheckVisitor::visit(ASTForeach& ast)
 void SymbolCheckVisitor::visit(ASTWhile& ast)
 {
    ast.getCondition().accept(*this);
-
-   if ( !mCurrentType.isBoolean() )
-   {
-      mContext.getLog().error(String("While loop condition must be of type boolean."));
-   }
+   checkCondition(ast, mCurrentType);
 
    ast.getBody().accept(*this);
 }
@@ -277,10 +265,7 @@ void SymbolCheckVisitor::visit(ASTDo& ast)
 {
    ast.getBody().accept(*this);
    ast.getCondition().accept(*this);
-   if ( !mCurrentType.isBoolean() )
-   {
-      mContext.getLog().error(UTEXT("Do loop condition must be of type boolean."));
-   }
+   checkCondition(ast, mCurrentType);
 }
 
 void SymbolCheckVisitor::visit(ASTSwitch& ast)
@@ -290,17 +275,17 @@ void SymbolCheckVisitor::visit(ASTSwitch& ast)
 
    if ( !mCurrentType.isValueType() )
    {
-      mContext.getLog().error(UTEXT("Switch statement value should be a value, found ") + mCurrentType.toString());
+      error(E0011, UTEXT("Switch statement value should be a value, found ") + mCurrentType.toString(), ast);
    }
 
    if ( ast.getDefaultCount() > 1 )
    {
-      mContext.getLog().error(UTEXT("A switch statement can have only one default case."));
+      error(E0012, UTEXT("A switch statement can have only one default case."), ast);
    }
 
    visitChildren(ast);
 
-   ast.validateCaseTypes(mContext);
+   checkCaseTypes(ast);
 }
 
 void SymbolCheckVisitor::visit(ASTCase& ast)
@@ -335,7 +320,7 @@ void SymbolCheckVisitor::visit(ASTReturn& ast)
    {
       if ( mpFunction->getType().isVoid() )
       {
-         mContext.getLog().error(UTEXT("Function ") + mpFunction->getName() + UTEXT(" is a void function and can not return an object or value."));
+         error(E0013, UTEXT("Void functions can not return an object or value."), ast);
       }
       else
       {
@@ -343,13 +328,13 @@ void SymbolCheckVisitor::visit(ASTReturn& ast)
 
          if ( !mCurrentType.greater(mpFunction->getType()) )
          {
-            mContext.getLog().error(UTEXT("Return type should be ") + mpFunction->getType().toString() + UTEXT(" but is ") + mCurrentType.toString());
+            error(E0014, UTEXT("Can not return value of type ") + mCurrentType.toString() + UTEXT(", it is not derived from ") + mpFunction->getType().toString(), ast);
          }
       }
    }
    else if ( !mpFunction->getType().isVoid() )
    {
-      mContext.getLog().error(UTEXT("Function ") + mpFunction->getName() + UTEXT(" should return a value of type ") + mpFunction->getType().toString());
+      error(E0015, UTEXT("Return a value of type ") + mpFunction->getType().toString(), ast);
    }
 }
 
@@ -384,7 +369,7 @@ void SymbolCheckVisitor::visit(ASTCatch& ast)
 
    if ( !ok )
    {
-      mContext.getLog().error(UTEXT("Catch expects a throwable object."));
+      error(E0016, UTEXT("Catch expects a throwable object."), ast);
    }
 
    ast.getBody().accept(*this);
@@ -399,12 +384,12 @@ void SymbolCheckVisitor::visit(ASTThrow& ast)
       const ASTClass* pthrowable = mContext.findClass(UTEXT("system.Throwable"));
       if ( !mCurrentType.getObjectClass().isBase(*pthrowable) )
       {
-         mContext.getLog().error(UTEXT("Throw expression object must be derived from Throwable."));
+         error(E0017, UTEXT("Throw argument must be derived from Throwable."), ast);
       }
    }
    else
    {
-      mContext.getLog().error(UTEXT("Throw requires an expression resulting in a throwable object."));
+      error(E0018, UTEXT("Throw requires an expression resulting in a throwable object."), ast);
    }
 }
 
@@ -416,7 +401,7 @@ void SymbolCheckVisitor::visit(ASTAssert& ast)
 
    if ( !mCurrentType.isBoolean() )
    {
-      mContext.getLog().error(UTEXT("The assert condition expression must be of type boolean."));
+      error(E0019, UTEXT("The assert condition expression must be of type boolean."), ast);
    }
 }
 
@@ -438,12 +423,12 @@ void SymbolCheckVisitor::visit(ASTExpression& ast)
 
          if ( !mCurrentType.greater(lefttype) )
          {
-            mContext.getLog().error(UTEXT("Invalid type for assignment. Can not assign ") + mCurrentType.toString() + UTEXT(" to ") + lefttype.toString());
+            error(E0020, UTEXT("Invalid type for assignment. Can not assign ") + mCurrentType.toString() + UTEXT(" to ") + lefttype.toString(), ast);
          }
       }
       else
       {
-         mContext.getLog().error(UTEXT("Can only assign to variables."));
+         error(E0021, UTEXT("Can only assign to variables."), ast);
       }
    }
 }
@@ -501,7 +486,7 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
             else
             {
                String op = UTEXT("+");
-               mContext.getLog().error(UTEXT("Can not execute operator ") + op + UTEXT(" on types ") + lefttype.toString() + UTEXT(" and ") + righttype.toString());
+               error(E0022, UTEXT("Can not execute operator ") + op + UTEXT(" on types ") + lefttype.toString() + UTEXT(" and ") + righttype.toString(), ast);
             }
          }
          break;
@@ -516,7 +501,7 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
 
             if ( !lefttype.isInt() || !righttype.isInt() )
             {
-               mContext.getLog().error(UTEXT("Bitwise operators only operate on int values."));
+               error(E0023, UTEXT("Bitwise operators only operate on int values."), ast);
             }
          }
          break;
@@ -527,7 +512,7 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
             if ( !lefttype.isBoolean() || !mCurrentType.isBoolean() )
             {
                String op = UTEXT("&&"); // add toString to Mode
-               mContext.getLog().error(UTEXT("Operator ") + op + UTEXT(" requires boolean expressions."));
+               error(E0024, UTEXT("Operator ") + op + UTEXT(" requires boolean expressions."), ast);
             }
          }
          break;
@@ -542,17 +527,13 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
             ASTType comp = ASTType::greaterType(lefttype, mCurrentType);
             if ( !comp.isValid() )
             {
-               mContext.getLog().error(UTEXT("Can not compare type ") + lefttype.toString() + UTEXT(" with type ") + mCurrentType.toString());
+               error(E0025, UTEXT("Can not compare ") + lefttype.toString() + UTEXT(" with ") + mCurrentType.toString(), ast);
             }
             else if ( ast.getMode() >= ASTConcatenate::eSmallerEqual )
             {
-               if ( comp.isObject() || comp.isArray() )
+               if ( comp.isObject() || comp.isArray() || comp.isBoolean() )
                {
-                  mContext.getLog().error(UTEXT("Operator is not supported on arrays and objects."));
-               }
-               else if ( comp.isBoolean() )
-               {
-                  mContext.getLog().error(UTEXT("Operator is not supported on boolean."));
+                  error(E0026, UTEXT("Invalid type ") + comp.toString() + UTEXT(" for operator."), ast);
                }
             }
 
@@ -566,8 +547,8 @@ void SymbolCheckVisitor::visit(ASTUnary& ast)
 {
    visitChildren(ast);
 
-   checkOperator(ast.getPre());
-   checkOperator(ast.getPost());
+   checkOperator(ast, ast.getPre());
+   checkOperator(ast, ast.getPost());
 }
 
 void SymbolCheckVisitor::visit(ASTInstanceOf& ast)
@@ -580,11 +561,11 @@ void SymbolCheckVisitor::visit(ASTInstanceOf& ast)
 
    if ( !(mCurrentType.isObject() || mCurrentType.isArray()) )
    {
-      mContext.getLog().error(UTEXT("Operator instanceof can only be called against objects/arrays."));
+      error(E0027, UTEXT("Operator instanceof can only be called against objects/arrays."), ast);
    }
    else if ( !mCurrentType.isDerivedFrom(ast.getInstanceType()) )
    {
-      mContext.getLog().error(UTEXT("Instanceof operator can never be true for ") + mCurrentType.toString() + UTEXT(" and ") + ast.getInstanceType().toString());
+      error(E0028, UTEXT("Instanceof operator can never be true for ") + mCurrentType.toString() + UTEXT(" and ") + ast.getInstanceType().toString(), ast);
    }
 
    mCurrentType = ASTType(ASTType::eBoolean);
@@ -618,7 +599,7 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
                if ( pfunction == NULL )
                {
                   String arguments = UTEXT("(") + signature.toString() + ')';
-                  mContext.getLog().error(UTEXT("No matching constructor ") + newclass.getFullName() + arguments + UTEXT(" defined."));
+                  error(E0029, UTEXT("No matching constructor ") + newclass.getFullName() + arguments + UTEXT(" defined."), ast);
                }
                else
                {
@@ -640,7 +621,7 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
 
                if ( !mCurrentType.isInt() )
                {
-                  mContext.getLog().error(UTEXT("Array size expression should be of type int."));
+                  error(E0030, UTEXT("Array size expression should be of type int."), ast);
                }
             }
 
@@ -676,7 +657,7 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
    {
       // statics do not have a this (thus also not a super)
       String str = ast.getKind() == ASTSuper::eThis ? UTEXT("this") : UTEXT("super");
-      mContext.getLog().error(UTEXT("Can not access ") + str + UTEXT(" from a static function."));
+      error(E0031, UTEXT("Can not access ") + str + UTEXT(" from a static function."), ast);
       return;
    }
 
@@ -703,7 +684,7 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
       else
       {
          String arguments = String("(") + signature.toString() + ')';
-         mContext.getLog().error(UTEXT("No constructor ") + pclass->getFullName() + arguments + UTEXT(" defined."));
+         error(E0032, UTEXT("No constructor ") + pclass->getFullName() + arguments + UTEXT(" defined."), ast);
       }
 
       // calls to this and super return nothing (void)
@@ -738,14 +719,14 @@ void SymbolCheckVisitor::visit(ASTNative& ast)
             String sidx;
             NumberConverter::getInstance().format(sidx, index);
             String func = mpClass->getFullName() + '.' + mpFunction->getName();
-            mContext.getLog().error(UTEXT("While calling native implementation of function ")
-                                  + func
-                                  + UTEXT("; argument ")
-                                  + sidx
-                                  + UTEXT(" of can not be mapped from ")
-                                  + mCurrentType.toString()
-                                  + UTEXT(" to ")
-                                  + sigtype.toString());
+            error(E0033, UTEXT("While calling native implementation of function ")
+                         + func
+                         + UTEXT("; argument ")
+                         + sidx
+                         + UTEXT(" of can not be mapped from ")
+                         + mCurrentType.toString()
+                         + UTEXT(" to ")
+                         + sigtype.toString(), ast);
          }
       }
 
@@ -753,7 +734,7 @@ void SymbolCheckVisitor::visit(ASTNative& ast)
       if ( !mpFunction->getSignature().bestMatch(signature, types) )
       {
          String arguments = signature.toString();
-         mContext.getLog().error(UTEXT("Arguments to native do not match ") + arguments);
+         error(E0034, UTEXT("Arguments to native do not match ") + arguments, ast);
       }
    }
 
@@ -819,7 +800,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                }
                else
                {
-                  mContext.getLog().error(UTEXT("Class ") + aclass.getName() + UTEXT(" has no member variable ") + name);
+                  error(E0035, UTEXT("Class ") + aclass.getName() + UTEXT(" has no member variable ") + name, ast);
                }
             }
             else
@@ -851,7 +832,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                      // none static members from a static function.
                      if ( mpFunction != NULL && (mpFunction->getModifiers().isStatic() && !var.getModifiers().isStatic()) )
                      {
-                        mContext.getLog().error(UTEXT("Can not access instance member ") + var.getName());
+                        error(E0036, UTEXT("Can not access instance member ") + var.getName(), ast);
                      }
 
                      // variable access on current class
@@ -862,14 +843,14 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                   }
                   else
                   {
-                     mContext.getLog().error(UTEXT("Identifier ") + name + UTEXT(" is not defined."));
+                     error(E0037, UTEXT("Identifier ") + name + UTEXT(" is not defined."), ast);
                   }
                }
             }
 
             if ( wasstatic && !ast.getVariable().getModifiers().isStatic() )
             {
-               mContext.getLog().error(UTEXT("Can not access non static variable ") + ast.getName() + UTEXT(" from static"));
+               error(E0038, UTEXT("Can not access non static variable ") + ast.getName() + UTEXT(" from static"), ast);
             }
          }
          break;
@@ -901,12 +882,12 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                      break;
                   case ASTType::eVoid:
                      {
-                        mContext.getLog().error(UTEXT("Can not invoke a method on a void object."));
+                        error(E0039, UTEXT("Can not invoke a method on a void object."), ast);
                      }
                      break;
                   default:
                      {
-                        mContext.getLog().error(UTEXT("Can not invoke method on basic types."));
+                        error(E0040, UTEXT("Can not invoke method on basic types."), ast);
                      }
                      break;
                }
@@ -922,7 +903,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
          {
             if ( !mCurrentType.isArray() )
             {
-               mContext.getLog().error(mCurrentType.toString() + UTEXT(" is not an array type."));
+               error(E0041, mCurrentType.toString() + UTEXT(" is not an array type."), ast);
             }
             else
             {
@@ -938,7 +919,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
 
                   if ( !mCurrentType.isInt() )
                   {
-                     mContext.getLog().error(UTEXT("Array access expression must be of type int."));
+                     error(E0042, UTEXT("Array access expression must be of type int."), ast);
                   }
                }
 
@@ -956,7 +937,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
          {
             if ( !mCurrentType.isObject() )
             {
-               mContext.getLog().warning(UTEXT("The class operator currently is only supported for objects."));
+               warning(W0002, UTEXT("The class operator currently is only supported for objects."), ast);
             }
 
             if ( !wasstatic )
@@ -974,7 +955,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
       case ASTAccess::eInvalid:
       default:
          {
-            mContext.getLog().error(String(UTEXT("Unknown access detected.")));
+            error(E0043, UTEXT("Unknown access detected."), ast);
          }
          break;
    }
@@ -1011,14 +992,22 @@ void SymbolCheckVisitor::checkVarInit(ASTVariable& var)
 
       if ( !mCurrentType.greater(var.getType()) )
       {
-         mContext.getLog().error(
+         error(E0044,
             UTEXT("Assigning wrong type to variable '")
             + var.getName() 
             + UTEXT("' was expecting ") 
             + var.getType().toString() 
             + UTEXT(" and got ") 
-            + mCurrentType.toString());
+            + mCurrentType.toString(), var.getPosition());
       }
+   }
+}
+
+void SymbolCheckVisitor::checkCondition(const ASTNode& node, const ASTType& type)
+{
+   if ( !type.isBoolean() )
+   {
+      error(E0008, UTEXT("Condition expression must return a boolean value."), node);
    }
 }
 
@@ -1032,11 +1021,26 @@ void SymbolCheckVisitor::checkReturn(const ASTFunction& function)
       bool hasunreachablecode = false;
       if ( !function.getBody().hasReturn(hasunreachablecode) )
       {
-         mContext.getLog().error(UTEXT("Function ") + function.getName() + UTEXT(" should return a value of type ") + function.getType().toString());
+         error(E0045, UTEXT("Function ") + function.getName() + UTEXT(" should return a value of type ") + function.getType().toString(), function.getPosition());
       }
       else if ( hasunreachablecode )
       {
-         mContext.getLog().warning(UTEXT("Unreachable code in ") + function.getName());
+         warning(W0003, UTEXT("Unreachable code in ") + function.getName(), function.getPosition());
+      }
+   }
+}
+
+void SymbolCheckVisitor::checkCaseTypes(const ASTSwitch& ast)
+{
+   const ASTType& casetype = ast.getType();
+   int total = ast.getTotalCount();
+   for ( int index = 0; index < total; index++ )
+   {
+      const ASTCase& astcase = ast.getCase(index);
+      if ( astcase.isCase() && !casetype.greater(astcase.getType()) )
+      {
+         String ss = UTEXT("Case {0} should be of type {1}.").arg(0, index).arg(1, casetype.toString());
+         error(E0059, ss, ast);
       }
    }
 }
@@ -1085,7 +1089,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& klass, ASTAccess& a
 
       if ( isstatic && !pfunction->getModifiers().isStatic() )
       {
-         mContext.getLog().error(UTEXT("Can not call non static function ") + pfunction->getName());
+         error(E0047, UTEXT("Can not call non static function ") + pfunction->getName(), access);
       }
       access.setFunction(*pfunction);
 
@@ -1118,11 +1122,11 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& klass, ASTAccess& a
    else
    {
       String arguments = UTEXT("(") + signature.toString() + ')';
-      mContext.getLog().error(UTEXT("No matching function ") + klass.getName() + '.' + access.getName() + arguments + UTEXT(" defined."));
+      error(E0048, UTEXT("No matching function ") + klass.getName() + '.' + access.getName() + arguments + UTEXT(" defined."), access);
    }
 }
 
-void SymbolCheckVisitor::checkOperator(ASTUnary::Operator op)
+void SymbolCheckVisitor::checkOperator(ASTNode& node, ASTUnary::Operator op)
 {
    switch ( op )
    {
@@ -1133,7 +1137,7 @@ void SymbolCheckVisitor::checkOperator(ASTUnary::Operator op)
          {
             if ( !mCurrentType.isNumeric() )
             {
-               mContext.getLog().error(UTEXT("Pre operator requires a numeric value."));
+               error(E0049, UTEXT("Pre operator requires a numeric value."), node);
             }
          }
          break;
@@ -1141,7 +1145,7 @@ void SymbolCheckVisitor::checkOperator(ASTUnary::Operator op)
          {
             if ( !mCurrentType.isBoolean() )
             {
-               mContext.getLog().error(UTEXT("Not operator requires a boolean value."));
+               error(E0050, UTEXT("Not operator requires a boolean value."), node);
             }
          }
          break;
@@ -1152,6 +1156,6 @@ void SymbolCheckVisitor::checkUnknown(const ASTType& type)
 {
    if ( type.isUnknown() )
    {
-      mContext.getLog().error(UTEXT("Unknown class type ") + type.getObjectName());
+      error(E0051, UTEXT("Unknown class type ") + type.getObjectName(), type.getPosition());
    }
 }

@@ -16,6 +16,7 @@
 #include "tileworld.h"
 #include "tilemap.h"
 #include "project.h"
+#include "project/projectmanager.h"
 
 #include "world/tileset.h"
 #include "world/tilemapdesc.h"
@@ -95,30 +96,33 @@ TileWorld *WorldWizard::createWorld()
 
         if ( field("tileset.create").toBool() )
         {
-            // create a new tileset
             ptileset = createTileSet();
         }
         else
         {
-            // select existing tileset
+            int index = field("tileset.tilesetid").toInt();
+            ptileset = ProjectManager::getInstance().getActiveProject()->getTileSets()[index];
         }
 
-        int width = field("layer.width").toString().toInt();
-        int height = field("layer.height").toString().toInt();
+        if ( ptileset != nullptr )
+        {
+            int width = field("layer.width").toString().toInt();
+            int height = field("layer.height").toString().toInt();
 
-        TileMapDesc mapdesc;
-        mapdesc.name = field("layer.name").toString();
-        mapdesc.tileset = ptileset->getResourceName();
-        mapdesc.effect = "shaders/basic";
-        mapdesc.size = QSize(width, height);
+            TileMapDesc mapdesc;
+            mapdesc.name = field("layer.name").toString();
+            mapdesc.tileset = ptileset->getResourceName();
+            mapdesc.effect = "shaders/basic";
+            mapdesc.size = QSize(width, height);
 
-        TileField* pfield = new TileField();
-        pfield->create(QSize(width, height));
+            TileField* pfield = new TileField();
+            pfield->create(QSize(width, height));
 
-        TileMap* pmap = new TileMap(mapdesc);
-        pmap->setTileSet(ptileset);
-        pmap->setField(pfield);
-        pworld->addMap(pmap);
+            TileMap* pmap = new TileMap(mapdesc);
+            pmap->setTileSet(ptileset);
+            pmap->setField(pfield);
+            pworld->addMap(pmap);
+        }
     }
 
     return pworld;
@@ -151,6 +155,7 @@ QTileSet* WorldWizard::createTileSet()
         if ( copyit && !QFile::copy(imagefile, finalpath) )
         {
             QMessageBox::critical(this, "Crafter Workshop", "Could not copy file to demo folder.", QMessageBox::Ok);
+            return nullptr;
         }
     }
 

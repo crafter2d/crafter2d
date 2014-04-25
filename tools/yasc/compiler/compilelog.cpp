@@ -3,6 +3,8 @@
 
 #include "core/string/string.h"
 
+#include "antlr/antlrtextposition.h"
+
 CompileLog::CompileLog():
    mLog(),
    mErrorCount(0)
@@ -11,7 +13,7 @@ CompileLog::CompileLog():
 
 // - Query
    
-const CompileLog::StringList& CompileLog::getLog() const
+const StringList& CompileLog::getLog() const
 {
    return mLog;
 }
@@ -23,32 +25,16 @@ bool CompileLog::hasErrors() const
 
 // - Logging
 
-void CompileLog::info(const std::string& info)
+void CompileLog::warning(int errnr, const String& classname, const String& msg, const AntlrTextPosition& pos)
 {
-   mLog.push_back(info);
+   String warn = UTEXT("{0}({1}): warning {2}: {3}").arg(0, classname).arg(1, pos.getLine()).arg(2, errnr).arg(3, msg);
+   mLog.add(warn);
 }
 
-void CompileLog::warning(const std::string& warning)
+void CompileLog::error(int errnr, const String& classname, const String& msg, const AntlrTextPosition& pos)
 {
-   mLog.push_back("Warning: " + warning);
-}
-
-void CompileLog::error(const std::string& error)
-{
-   mLog.push_back("Error: " + error);
-
-   mErrorCount++;
-}
-
-void CompileLog::warning(const String& warning)
-{
-   mLog.push_back("Warning: " + warning.toUtf8());
-}
-
-void CompileLog::error(const String& error)
-{
-   mLog.push_back("Error: " + error.toUtf8());
-
+   String err = UTEXT("{0}({1}): error {2}: {3}").arg(0, classname).arg(1, pos.getLine()).arg(2, errnr).arg(3, msg);
+   mLog.add(err);
    mErrorCount++;
 }
 

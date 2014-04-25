@@ -3,21 +3,37 @@
 YasSyntaxHighlighter::YasSyntaxHighlighter(QTextDocument *parent):
     QSyntaxHighlighter(parent),
     mRules(),
-    mKeywordFormat()
+    mKeywordFormat(),
+    mTypeFormat(),
+    mSingleLineCommentFormat(),
+    mMultiLineCommentFormat()
 {
     HighlightingRule rule;
+
+    mTypeFormat.setForeground(Qt::darkMagenta);
 
     mKeywordFormat.setForeground(Qt::darkBlue);
     mKeywordFormat.setFontWeight(QFont::Bold);
 
+    QStringList typePatterns;
+    foreach (const QString &pattern, typePatterns)
+    {
+        rule.pattern = QRegExp(pattern);
+        rule.format = mTypeFormat;
+        mRules.append(rule);
+    }
+
     QStringList keywordPatterns;
-    keywordPatterns << "\\bchar\\b" << "\\bclass\\b" << "\\bconst\\b"
-                    << "\\bdouble\\b" << "\\benum\\b" << "\\bexplicit\\b"
-                    << "\\bint\\b" << "\\bpackage\\b"
+    keywordPatterns << "\\bpackage\\b" << "\\buse\\b" << "\\bextends\\b"
+                    << "\\bclass\\b" << "\\binterface\\b" << "\\bimplements\\b"
                     << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b"
-                    << "\\bshort\\b" << "\\bsignals\\b" << "\\bsigned\\b"
-                    << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b"
-                    << "\\buse\\b" << "\\bvoid\\b" << "\\bvolatile\\b";
+                    << "\\bproperty\\b" << "\\breturn\\b" << "\\bif\\b"
+                    << "\\bswitch\\b" << "\\bcase\\b" << "\\bstatic\\b"
+                    << "\\bfor\\b" << "\\bwhile\\b" << "\\bforeach\\b"
+                    << "\\bbreak\\b" << "\\bcontinue\\b" << "\\bnull\\b"
+                    << "\\bboolean\\b" << "\\bchar\\b" << "\\bint\\b"
+                    << "\\breal\\b" << "\\bstring\\b" << "\\bvoid\\b";
+
     foreach (const QString &pattern, keywordPatterns) {
         rule.pattern = QRegExp(pattern);
         rule.format = mKeywordFormat;

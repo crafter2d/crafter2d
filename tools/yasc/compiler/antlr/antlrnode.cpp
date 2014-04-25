@@ -3,6 +3,8 @@
 
 #include "yasc/compiler/output/asParser.h"
 
+#include "antlrtextposition.h"
+
 AntlrNode::AntlrNode(ANTLR3_BASE_TREE_struct* pnode):
    mpNode(pnode)
 {
@@ -40,7 +42,13 @@ int AntlrNode::getLine() const
    return mpNode->getLine(mpNode);
 }
 
-int AntlrNode::getPosition() const
+int AntlrNode::getPos() const
 {
    return mpNode->getCharPositionInLine(mpNode);
 }
+
+AntlrTextPosition AntlrNode::getPosition() const
+{
+   return AntlrTextPosition(getLine(), getPos());
+}
+

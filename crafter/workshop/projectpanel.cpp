@@ -59,19 +59,11 @@ void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
     if ( data.canConvert<TileWorldHandle>() )
     {
         TileWorldHandle& handle = data.value<TileWorldHandle>();
-        TileViewWindow* pwindow = getMainWindow().findWindow(*handle);
-        if ( pwindow != NULL )
-        {
-            pwindow->activateWindow();
-        }
-        else
-        {
-            getMainWindow().addWindow(*handle);
-        }
+        getMainWindow().showWorld(*handle);
     }
     else if ( data.canConvert<ScriptHandle>() )
     {
         ScriptHandle& script = data.value<ScriptHandle>();
-        getMainWindow().addWindow(*script);
+        getMainWindow().showScript(*script);
     }
 }

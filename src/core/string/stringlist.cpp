@@ -51,3 +51,8 @@ void StringList::add(const String& str)
 {
    mStrings.addTail(str);
 }
+
+void StringList::clear()
+{
+   mStrings.clear();
+}

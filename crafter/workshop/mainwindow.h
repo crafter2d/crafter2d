@@ -19,6 +19,7 @@ class LayerPanel;
 class OutputPanel;
 class ProjectPanel;
 class ScriptFile;
+class ScriptView;
 class TilesPanel;
 class TileViewWindow;
 class TileWorld;
@@ -36,11 +37,15 @@ public:
     TileView *getActiveView();
 
  // operations
-    void addWindow(TileWorld& world);
-    void addWindow(ScriptFile& script);
+    void showWorld(TileWorld& world);
+    ScriptView *showScript(ScriptFile& script);
+
+  // error handling
+    void gotoError(const QString& classname, int line);
 
  // searching
     TileViewWindow* findWindow(TileWorld &world);
+    ScriptView*     findWindow(ScriptFile& file);
 
 signals:
     void projectChanged(Project* newProject);

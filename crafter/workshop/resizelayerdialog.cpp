@@ -55,9 +55,11 @@ void ResizeLayerDialog::accept()
     if ( width < mOrigSize.width() )
     {
         int result = QMessageBox::warning(this, "Crafter Workshop", "The new size is smaller that the original. Data will be lost after this action.", QMessageBox::Yes | QMessageBox::No);
-        if ( result == QMessageBox::Yes )
+        if ( result == QMessageBox::No )
         {
-            done(QDialog::Accepted);
+            return;
         }
     }
+
+    done(QDialog::Accepted);
 }

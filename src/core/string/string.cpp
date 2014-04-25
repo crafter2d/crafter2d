@@ -23,6 +23,7 @@
 #include <functional>
 
 #include "core/defines.h"
+#include "core/conv/numberconverter.h"
 
 #include "char.h"
 #include "utf.h"
@@ -220,6 +221,14 @@ String String::operator+(UChar c) const
 CORE_API String operator+(const UChar* pleft, const String& right)
 {
    return String(pleft) + right;
+}
+
+CORE_API String operator+(const UChar ch, const String& right)
+{
+   String result;
+   result = ch;
+   result += right;
+   return result;
 }
 
 // - Query
@@ -429,6 +438,15 @@ void String::replace(int start, int count, const String& with)
    delete[] ptemp;
 }
 
+void String::replace(const String& original, const String& with)
+{
+   int index = indexOf(original);
+   if ( index != -1 )
+   {
+      replace(index, original.length(), with);
+   }
+}
+
 /// removes characters [start, start+count>.
 void String::remove(int start, int count)
 {
@@ -499,6 +517,25 @@ String String::unescape() const
    result.mLength = pos;
    result.mpString[pos] = 0;
    return result;
+}
+
+// - Arguments
+
+String& String::arg(int arg, const String& value)
+{
+   String num;
+   String search = L'{' + NumberConverter::getInstance().format(num, arg) + L'}';
+   replace(search, value);
+   return *this;
+}
+
+String& String::arg(int arg, int value)
+{
+   String num;
+   NumberConverter& inst = NumberConverter::getInstance();
+   String search = L'{' + inst.format(num, arg) + L'}';
+   replace(search, inst.format(num, value));
+   return *this;
 }
 
 // - Searching

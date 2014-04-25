@@ -5,8 +5,7 @@
 #include "yasc/compiler/compilecontext.h"
 
 ResourceCheckVisitor::ResourceCheckVisitor(CompileContext& context):
-   CompileStep(),
-   mContext(context),
+   CompileStep(context),
    mOffset(0)
 {
 }

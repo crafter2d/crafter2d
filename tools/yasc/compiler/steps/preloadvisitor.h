@@ -91,11 +91,10 @@ private:
    void generateNativeCall(ASTFunction& function);
    void generateReturn(ASTFunction& function);
 
-   CompileContext&   mContext;
+ // data
    ClassResolver     mClassResolver;
    String            mPackage;
    ScopeStack        mScopeStack;
-   ASTClass*         mpClass;
    ASTFunction*      mpFunction;
    bool              mHasSuperCall;
    bool              mHasNativeCall;

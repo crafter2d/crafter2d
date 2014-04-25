@@ -37,6 +37,7 @@ public:
 
     Worlds &getWorlds();
     Scripts& getScripts();
+    TileSets& getTileSets();
 
  // query
     int        getWorldCount() const;
@@ -61,6 +62,7 @@ public:
 
  // search
     QTileSet* lookupTileSet(const QString& name);
+    ScriptFile* findScript(const QString& classname);
 
 public slots:
     void on_messageReady(const QString& msg);

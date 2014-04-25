@@ -124,9 +124,20 @@
    <addaction name="actionEdit_Undo"/>
    <addaction name="actionEdit_Redo"/>
    <addaction name="separator"/>
-   <addaction name="actionProject_Run"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionProject_Run"/>
+  </widget>
   <action name="actionFile_New">
    <property name="icon">
     <iconset resource="crafter.qrc">

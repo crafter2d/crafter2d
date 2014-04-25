@@ -40,8 +40,6 @@ public:
     TileField::Level getLevel() const;
     void              setLevel(TileField::Level level);
 
-    void setTransparency(double value);
-
     void setActiveTile(const Tile *tile);
 
   // operations
@@ -50,6 +48,7 @@ public:
 
 public slots:
     void worldUpdated();
+    void setTransparency(double value);
 
 protected:
   // overrides

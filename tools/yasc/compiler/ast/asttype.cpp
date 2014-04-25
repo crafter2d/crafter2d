@@ -97,8 +97,7 @@ ASTType::ASTType():
    mpTypeVariable(NULL),
    mArrayDimension(0),
    mpArrayType(NULL),
-   mLine(-1),
-   mPos(-1)
+   mPosition()
 {
 }
 
@@ -110,8 +109,7 @@ ASTType::ASTType(Kind kind):
    mpTypeVariable(NULL),
    mArrayDimension(0),
    mpArrayType(NULL),
-   mLine(-1),
-   mPos(-1)
+   mPosition()
 {
 }
 
@@ -123,8 +121,7 @@ ASTType::ASTType(const ASTType& that):
    mpTypeVariable(that.mpTypeVariable),
    mArrayDimension(that.mArrayDimension),
    mpArrayType(that.mpArrayType != NULL ? that.mpArrayType->clone() : NULL),
-   mLine(that.mLine),
-   mPos(that.mPos)
+   mPosition(that.mPosition)
 {
 }
 
@@ -142,8 +139,7 @@ const ASTType& ASTType::operator=(const ASTType& that)
    mpArrayType = that.mpArrayType != NULL ? that.mpArrayType->clone() : NULL;
    mTypeArguments = that.mTypeArguments;
    mpTypeVariable = that.mpTypeVariable;
-   mLine = that.mLine;
-   mPos = that.mPos;
+   mPosition = that.mPosition;
 
    return *this;
 }
@@ -247,24 +243,14 @@ void ASTType::setTypeVariable(const ASTTypeVariable& typevariable)
    mpTypeVariable = &typevariable;
 }
 
-int ASTType::getLine() const
+const AntlrTextPosition& ASTType::getPosition() const
 {
-   return mLine;
+   return mPosition;
 }
 
-void ASTType::setLine(int line)
+void ASTType::setPosition(const AntlrTextPosition& pos)
 {
-   mLine = line;
-}
-
-int ASTType::getPos() const
-{
-   return mPos;
-}
-
-void ASTType::setPos(int pos)
-{
-   mPos = pos;
+   mPosition = pos;
 }
 
 // - Query
@@ -364,14 +350,14 @@ bool ASTType::greater(const ASTType& that) const
    else if ( isObject() && that.isObject() )
    {
       // check if 'that' is a extending or implemented this
-      const ASTClass& thatclass = that.getObjectClass();
 
       if ( !(mTypeArguments == that.mTypeArguments) )
       {
          return false;
       }
 
-      return getObjectClass().isBase(thatclass) || getObjectClass().isImplementing(thatclass);
+      return getObjectClass().isBase(that.getObjectClass()) 
+          || getObjectClass().isImplementing(that.getObjectClass());
    }
    else if ( isArray() && that.isArray() )
    {

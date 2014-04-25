@@ -4,14 +4,13 @@
 #include "core/defines.h"
 
 #include "yasc/compiler/ast/ast.h"
+#include "yasc/compiler/errornumbers.h"
 #include "yasc/compiler/compilecontext.h"
 #include "yasc/compiler/scope/scopevariable.h"
 #include "yasc/compiler/scope/scopedscope.h"
 
 OOCheckVisitor::OOCheckVisitor(CompileContext& context):
-   CompileStep(),
-   mContext(context),
-   mpClass(NULL),
+   CompileStep(context),
    mpVariable(NULL),
    mpCurrentType(NULL),
    mScopeStack()
@@ -44,18 +43,18 @@ void OOCheckVisitor::visit(ASTClass& ast)
       {
          if ( !ast.getModifiers().isAbstract() )
          {
-            mContext.getLog().error(UTEXT("Class ") + mpClass->getName() + UTEXT(" must be defined as abstract."));
+            error(E0052, UTEXT("Class ") + mpClass->getName() + UTEXT(" must be defined as abstract."), ast);
          }
       }
       
       if ( ast.hasBaseClass() && ast.getBaseClass().getModifiers().isFinal() )
       {
-         mContext.getLog().error(UTEXT("Class ") + ast.getName() + UTEXT(" can not extend final class ") + ast.getBaseClass().getName());
+         error(E0053, UTEXT("Class ") + ast.getName() + UTEXT(" can not extend final class ") + ast.getBaseClass().getName(), ast);
       }
       
       if ( ast.getModifiers().isAbstract() && !mpClass->hasAbstractFunction() )
       {
-         mContext.getLog().warning(UTEXT("Class ") + ast.getName() + UTEXT(" is marked abstract without abstract functions."));
+         warning(W0004, UTEXT("Class ") + ast.getName() + UTEXT(" is marked abstract without abstract functions."), ast);
       }
    }
    else 
@@ -262,7 +261,7 @@ void OOCheckVisitor::visit(ASTExpression& ast)
       // ensure the variable is not final
       if ( mpVariable != NULL && mpVariable->getModifiers().isFinal() )
       {
-         mContext.getLog().error(UTEXT("Can not assign a value to final variable ") + mpVariable->getName());
+         error(E0054, UTEXT("Can not assign a value to final variable ") + mpVariable->getName(), ast);
       }
 
       mpCurrentType = NULL;
@@ -325,14 +324,14 @@ void OOCheckVisitor::visit(ASTAccess& ast)
             {
                if ( !function.getModifiers().isPublic() )
                {
-                  mContext.getLog().error(UTEXT("Method ") + mpCurrentType->getObjectClass().getName() + '.' + function.getName() + UTEXT(" is not accessible."));
+                  error(E0055, UTEXT("Method ") + mpCurrentType->getObjectClass().getName() + '.' + function.getName() + UTEXT(" is not accessible."), ast);
                }
             }
             else
             {
                if ( function.getModifiers().isPrivate() && !mpClass->isLocal(function) )
                {
-                  mContext.getLog().error(UTEXT("Can not access private function ") + function.getName());
+                  error(E0056, UTEXT("Can not access private function ") + function.getName(), ast);
                }
             }
          }
@@ -344,11 +343,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
                ASSERT(mpCurrentType->isObject() || mpCurrentType->isArray());
 
                const ASTVariable& var = ast.getVariable();
-
-               if ( !var.getModifiers().isPublic() )
-               {
-                  mContext.getLog().error(UTEXT("Can not access private variable ") + ast.getName());
-               }
+               checkPublicAccess(mpCurrentType->getObjectClass(), var);
 
                mpVariable = &var;
                mpCurrentType = &var.getType();
@@ -363,10 +358,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
                      pfield = mpClass->getBaseClass().findField(ast.getName());
                      if ( pfield != NULL )
                      {
-                        if ( pfield->getVariable().getModifiers().isPrivate() )
-                        {
-                           mContext.getLog().error(UTEXT("Can not access private variable ") + ast.getName());
-                        }
+                        checkPublicAccess(*mpClass, pfield->getVariable());
 
                         mpVariable = &pfield->getVariable();
                         mpCurrentType = &mpVariable->getType();
@@ -440,11 +432,11 @@ void OOCheckVisitor::validateClass(const ASTClass& klass)
 
 void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right)
 {
-   bool error = false;
+   bool haserror = false;
 
    if ( left.isNull() )
    {
-      error = ( !right.isObject() && !right.isArray() );
+      haserror = ( !right.isObject() && !right.isArray() );
 
       if ( concatenate.getMode() == ASTConcatenate::eEquals || concatenate.getMode() == ASTConcatenate::eUnequals )
       {
@@ -454,12 +446,20 @@ void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const 
    }
    else if ( right.isNull() )
    {
-      error = ( !left.isObject() && !left.isArray() );
+      haserror = ( !left.isObject() && !left.isArray() );
    }
 
-   if ( error )
+   if ( haserror )
    {
-      mContext.getLog().error(String("Invalid concatenation with null operator! Only == and != are supported."));
+      error(E0058, UTEXT("Invalid concatenation with null operator! Only == and != are supported."), concatenate);
+   }
+}
+
+void OOCheckVisitor::checkPublicAccess(const ASTClass& klass, const ASTVariable& var)
+{
+   if ( var.getModifiers().isPrivate() )
+   {
+      error(E0057, UTEXT("Can not access private variable ") + klass.getFullName() + L'.' + var.getName(),var.getPosition());
    }
 }
 
@@ -501,7 +501,7 @@ void OOCheckVisitor::checkInterfaceImplementation(const ASTClass& ast)
             const ASTFunction* pimplementation = ast.findExactMatch(function.getName(), function.getSignature());
             if ( pimplementation == NULL )
             {
-               mContext.getLog().error(UTEXT("Function ") + intrface.getFullName() + '.' + function.getPrototype() + UTEXT(" is not implemented."));
+               error(E0058, UTEXT("Function ") + intrface.getFullName() + '.' + function.getPrototype() + UTEXT(" is not implemented."), ast);
             }
          }
       }

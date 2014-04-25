@@ -22,11 +22,19 @@ public:
     explicit ScriptView(ScriptFile &script);
     virtual ~ScriptView();
 
+  // get/set
+    bool hasScriptFile() const;
+    ScriptFile& getScriptFile();
+
   // query
+    int currentLine() const;
     int getLineNumberAreaWidth() const;
 
   // operations
     void paintLineNumberArea(QPaintEvent* pevent);
+
+public slots:
+    void setCurrentLine(int linenr);
 
 protected:
   // overrides
@@ -45,10 +53,11 @@ private:
 
   // data
     Ui::ScriptView *ui;
+    ScriptFile*           mpScriptFile;
     YasSyntaxHighlighter* mpHighlighter;
     ScriptLineNumberArea* mpLineNumberArea;
     QPair<int, int>       mCountCache;
-    int mTabWidth;
+    int                   mTabWidth;
 
 };
 

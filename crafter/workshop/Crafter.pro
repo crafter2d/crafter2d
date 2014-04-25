@@ -68,7 +68,8 @@ SOURCES += main.cpp\
     outputpanel.cpp \
     project/projectmanager.cpp \
     tileselector.cpp \
-    script/scriptlinenumberarea.cpp
+    script/scriptlinenumberarea.cpp \
+    tilesetmodel.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -123,7 +124,8 @@ HEADERS  += mainwindow.h \
     outputpanel.h \
     project/projectmanager.h \
     tileselector.h \
-    script/scriptlinenumberarea.h
+    script/scriptlinenumberarea.h \
+    tilesetmodel.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \

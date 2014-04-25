@@ -217,21 +217,53 @@ void MainWindow::showPanel(DockPanel* ppanel, bool show)
     }
 }
 
-void MainWindow::addWindow(TileWorld& world)
+void MainWindow::showWorld(TileWorld& world)
 {
-    TileViewWindow* pwindow = new TileViewWindow();
-    pwindow->setWorld(world);
-    pwindow->show();
+    TileViewWindow* pwindow = findWindow(world);
+    if ( pwindow != NULL )
+    {
+        ui->centralWidget->setActiveSubWindow(dynamic_cast<QMdiSubWindow*>(pwindow->parent()));
+        pwindow->activateWindow();
+    }
+    else
+    {
+        TileViewWindow* pwindow = new TileViewWindow();
+        pwindow->setWorld(world);
+        pwindow->show();
 
-    ui->centralWidget->addSubWindow(pwindow);
+        ui->centralWidget->addSubWindow(pwindow);
+    }
 }
 
-void MainWindow::addWindow(ScriptFile& script)
+ScriptView* MainWindow::showScript(ScriptFile& script)
 {
-    ScriptView* pview = new ScriptView(script);
-    pview->show();
+    ScriptView* pview = findWindow(script);
+    if ( pview != NULL )
+    {
+        ui->centralWidget->setActiveSubWindow(dynamic_cast<QMdiSubWindow*>(pview->parent()));
+        pview->activateWindow();
+    }
+    else
+    {
+        pview = new ScriptView(script);
+        pview->show();
 
-    ui->centralWidget->addSubWindow(pview);
+        ui->centralWidget->addSubWindow(pview);
+    }
+
+    return pview;
+}
+
+// - Error handling
+
+void MainWindow::gotoError(const QString& classname, int line)
+{
+    ScriptFile* pfile = mpProject->findScript(classname);
+    if ( pfile != nullptr )
+    {
+        ScriptView* pview = showScript(*pfile);
+        pview->setCurrentLine(line);
+    }
 }
 
 // - Search
@@ -247,6 +279,21 @@ TileViewWindow* MainWindow::findWindow(TileWorld& world)
         if ( &viewworld == &world )
         {
             return pwindow;
+        }
+    }
+    return NULL;
+}
+
+ScriptView* MainWindow::findWindow(ScriptFile& file)
+{
+    QMdiSubWindow* psubwindow = NULL;
+    QList<QMdiSubWindow*> subwindows = ui->centralWidget->subWindowList();
+    foreach (psubwindow, subwindows)
+    {
+        ScriptView* pview = dynamic_cast<ScriptView*>(psubwindow->widget());
+        if ( pview != nullptr && pview->hasScriptFile() && &pview->getScriptFile() == &file )
+        {
+            return pview;
         }
     }
     return NULL;
@@ -308,7 +355,7 @@ void MainWindow::on_actionFile_NewScript_triggered()
     ScriptFile* pscript = NewScriptDialog::New(this, *mpProject);
     if ( pscript != NULL )
     {
-        addWindow(*pscript);
+        showScript(*pscript);
     }
 }
 

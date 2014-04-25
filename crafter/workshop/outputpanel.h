@@ -7,6 +7,7 @@ namespace Ui {
 class OutputPanel;
 }
 
+class QListWidgetItem;
 class Project;
 
 class OutputPanel : public DockPanel
@@ -23,6 +24,7 @@ public:
 public slots:
     void on_projectChanged(Project* pproject);
     void on_messageAvailable(const QString& msg);
+    void on_item_doubleClicked(QListWidgetItem* pitem);
 
 private:
     Ui::OutputPanel *ui;

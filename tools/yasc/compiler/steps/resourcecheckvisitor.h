@@ -32,7 +32,8 @@ protected:
    virtual bool performStep(ASTNode& node);
 
 private:
-   CompileContext& mContext;
+
+ // data
    int             mOffset;
 };
 

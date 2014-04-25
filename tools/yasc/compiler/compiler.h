@@ -49,8 +49,8 @@ private:
    void     save(ASTClass& ast);
 
  // error reporting
-   void reportError(CompileException& exception);
-   void displayErrors(const String& currentfile);
+   void reportException(CompileException& exception);
+   void reportLogEntries();
 
  // data
    CommandLine       mCommands;

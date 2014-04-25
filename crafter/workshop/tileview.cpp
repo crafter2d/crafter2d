@@ -22,7 +22,7 @@ TileView::TileView():
     mSelectedEdge(eNone),
     mUndoStack(),
     mLevel(TileField::eMid),
-    mTransparency(1.0f)
+    mTransparency(1.0)
 {
     ui->setupUi(this);
 
@@ -88,12 +88,6 @@ TileField::Level TileView::getLevel() const
 void TileView::setLevel(TileField::Level level)
 {
     mLevel = level;
-}
-
-void TileView::setTransparency(double value)
-{
-    mTransparency = value;
-    update();
 }
 
 // - Operations
@@ -163,7 +157,14 @@ void TileView::worldUpdated()
 {
     prepare();
 
-    repaint();
+    update();
+}
+
+void TileView::setTransparency(double value)
+{
+    mTransparency = value;
+
+    update();
 }
 
 // - Events

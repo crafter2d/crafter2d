@@ -53,11 +53,10 @@ private:
    void validateClass(const ASTClass& aclass);
    void validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right);
 
+   void checkPublicAccess(const ASTClass& klass, const ASTVariable& var);
    void checkVarInit(ASTVariable& var);
    void checkInterfaceImplementation(const ASTClass& ast);
 
-   CompileContext&      mContext;
-   ASTClass*            mpClass;
    ASTFunction*         mpFunction;
    const ASTVariable*   mpVariable;
    const ASTType*       mpCurrentType;

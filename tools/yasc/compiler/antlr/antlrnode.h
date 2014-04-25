@@ -6,6 +6,8 @@
 
 struct ANTLR3_BASE_TREE_struct;
 
+class AntlrTextPosition;
+
 class AntlrNode
 {
 public:
@@ -17,13 +19,18 @@ public:
    int       getChildCount() const;
    AntlrNode getChild(int index) const;
 
-   int getLine() const;
-   int getPosition() const;
+   AntlrTextPosition getPosition() const;
 
    String toString() const;
    int getType() const;
 
 private:
+
+ // get/set
+   int getLine() const;
+   int getPos() const;
+
+ // data
    ANTLR3_BASE_TREE_struct* mpNode;
 };
 

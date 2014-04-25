@@ -30,6 +30,9 @@ private:
 
     void compile(const QString& source, const QString& dest);
 
+  // error reporting
+    void reportErrors(const QString& errors);
+
   // data
     Project& mProject;
 };

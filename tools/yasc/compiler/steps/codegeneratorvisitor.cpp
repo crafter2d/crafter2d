@@ -25,9 +25,7 @@
 using namespace CIL;
 
 CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
-   CompileStep(),
-   mContext(context),
-   mpClass(NULL),
+   CompileStep(context),
    mpFunction(NULL),
    mpAccess(NULL),
    mpExpression(NULL),

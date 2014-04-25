@@ -112,8 +112,6 @@ private:
    Modifiers toCilModifiers(const ASTModifiers& modifiers);
          
  // data
-   CompileContext&      mContext;
-   ASTClass*            mpClass;
    ASTFunction*         mpFunction;
    const ASTAccess*     mpAccess;
    const ASTExpression* mpExpression;

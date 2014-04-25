@@ -3,6 +3,8 @@
 #define AST_NODE_H_
 
 #include "core/defines.h"
+
+#include "../antlr/antlrtextposition.h"
 #include "astnodes.h"
 
 class ASTVisitor;
@@ -15,11 +17,8 @@ public:
    virtual ~ASTNode();
 
  // get/set
-   int  getLine() const;
-   void setLine(int line);
-
-   int  getPos() const;
-   void setPos(int pos);
+   const AntlrTextPosition& getPosition() const;
+   void                     setPosition(const AntlrTextPosition& pos);
 
  // children
    bool hasChildren() const;
@@ -40,9 +39,8 @@ protected:
 private:
    friend class ASTVisitor;
 
-   ASTNodes     mChildren;
-   int          mLine;
-   int          mPos;
+   ASTNodes          mChildren;
+   AntlrTextPosition mPosition;
 };
 
 #define ACCEPT \

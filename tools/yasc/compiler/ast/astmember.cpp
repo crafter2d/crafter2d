@@ -5,6 +5,7 @@
 
 ASTMember::ASTMember(Kind kind):
    ASTNode(),
+   mpClass(NULL),
    mKind(kind)
 {
 }

@@ -21,6 +21,7 @@
 
 #include "core/smartptr/scopedvalue.h"
 
+#include "yasc/compiler/errornumbers.h"
 #include "yasc/compiler/antlr/antlrexception.h"
 #include "yasc/compiler/ast/ast.h"
 #include "yasc/compiler/compiler.h"
@@ -30,12 +31,10 @@
 #include "yasc/compiler/scope/scopevariable.h"
 
 PreloadVisitor::PreloadVisitor(CompileContext& context):
-   CompileStep(),
-   mContext(context),
+   CompileStep(context),
    mClassResolver(),
    mPackage(),
    mScopeStack(),
-   mpClass(NULL),
    mpFunction(NULL),
    mHasSuperCall(false),
    mHasNativeCall(false)
@@ -80,6 +79,8 @@ void PreloadVisitor::visit(ASTClass& ast)
 
    ScopedValue<ASTClass*> scopedclass(&mpClass, &ast, mpClass);
    mContext.addClass(&ast);
+
+   mpClass = &ast;
    
    if ( ast.getName() != UTEXT("Object") )
    {
@@ -90,9 +91,10 @@ void PreloadVisitor::visit(ASTClass& ast)
          ast.setBaseType(ptype);
       }
 
-      if ( !ast.hasBaseType() || !load(ast.getBaseType()) )
+      ASSERT(ast.hasBaseType());
+      if ( !load(ast.getBaseType()) )
       {
-         mContext.getLog().error(UTEXT("Can not determine base type of ") + ast.getFullName());
+         error(E0001, UTEXT("Can not load base type ") + ast.getBaseType().getObjectName(), ast);
       }
       else
       {
@@ -237,7 +239,7 @@ void PreloadVisitor::visit(ASTExpressionStatement& ast)
    }
    else
    {
-      mContext.getLog().error(UTEXT("Expression statement without expression."));
+      error(E0002, UTEXT("Expression statement without expression."), ast);
    }
 }
 
@@ -465,6 +467,11 @@ bool PreloadVisitor::load(ASTType& type)
    {
       const String& name = type.getObjectName();
 
+      if ( name == UTEXT("engine.game.ContentManager") )
+      {
+         int aap  = 5;
+      }
+
       ASTTypeList& args = type.getTypeArguments();
       for ( int index = 0; index < args.size(); ++index )
       {
@@ -478,8 +485,8 @@ bool PreloadVisitor::load(ASTType& type)
       }
       else if ( !tryLoad(type) )
       {
-         //throw new ClassNotFoundException(type.getObjectName());
          type.setKind(ASTType::eUnknown);
+         return false;
       }
    }
 
@@ -511,7 +518,7 @@ void PreloadVisitor::resolveType(ASTType& type)
 
       if ( !type.resolveType(mContext, ptypevariables) )
       {
-         mContext.getLog().error(String("Could not resolve type ") + type.toString());
+         error(E0003, UTEXT("Could not resolve type ") + type.toString(), type.getPosition());
          type.setKind(ASTType::eUnknown);
       }
    }
@@ -604,7 +611,7 @@ void PreloadVisitor::checkVarInit(ASTVariable& var, bool allowarray)
       {
          if ( !allowarray )
          {
-            mContext.getLog().error(UTEXT("It's not allowed to initialize variable ") + var.getName() + UTEXT(" with an array."));
+            error(E0004, UTEXT("It's not allowed to initialize variable ") + var.getName() + UTEXT(" with an array."), var.getPosition());
          }
          else
          {
@@ -617,7 +624,7 @@ void PreloadVisitor::checkVarInit(ASTVariable& var, bool allowarray)
       }
       else
       {
-         mContext.getLog().warning(UTEXT("Compiler warning: variable ") + var.getName() + UTEXT(" has an empty initializer object."));
+         warning(W0001, UTEXT("Compiler warning: variable ") + var.getName() + UTEXT(" has an empty initializer object."), var.getPosition());
       }
    }
 }

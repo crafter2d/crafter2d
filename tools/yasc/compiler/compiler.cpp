@@ -23,6 +23,7 @@
 #include "antlr/antlrinterface.h"
 
 #include "exceptions/classnotfoundexception.h"
+#include "exceptions/filenotfoundexception.h"
 
 #include "steps/preloadvisitor.h"
 #include "steps/symbolcheckstep.h"
@@ -159,15 +160,12 @@ bool Compiler::compile(const String& filename)
 
          success = true;
       }
-      else
-      {
-         ASSERT(mContext.getLog().hasErrors());
-         displayErrors(filename);
-      }
+      
+      reportLogEntries();
    }
    catch ( CompileException* pexception )
    {
-      reportError(*pexception);
+      reportException(*pexception);
    }
    catch ( std::exception* pex )
    {
@@ -181,7 +179,6 @@ bool Compiler::compile(const String& filename)
 
 void Compiler::createCompileSteps()
 {
-   // mCompileSteps.push_back(new PreloadVisitor(mContext));
    mCompileSteps.push_back(new SymbolCheckVisitor(mContext));
    mCompileSteps.push_back(new ResourceCheckVisitor(mContext));
    mCompileSteps.push_back(new OOCheckVisitor(mContext));
@@ -209,12 +206,12 @@ ASTRoot& Compiler::load(const String& classname)
    filename += UTEXT(".as");
 
    AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead | File::EText);
-   if ( file.hasPointer() )
+   if ( !file.hasPointer() )
    {
-      return load(*file);
+      throw new FileNotFoundException(filename);
    }
 
-   throw new std::exception("File not found!");
+   return load(*file);
 }
 
 ASTRoot& Compiler::load(File& file)
@@ -239,10 +236,10 @@ ASTRoot& Compiler::load(File& file)
    catch ( CompileException* pexception )
    {
       pexception->setFilename(file.getFileName());
-      reportError(*pexception);
+      reportException(*pexception);
    }
 
-   throw new std::exception("File not found!");
+   throw new FileNotFoundException(file.getFileName());
 }
 
 void Compiler::save(ASTClass& ast)
@@ -261,24 +258,21 @@ void Compiler::save(ASTClass& ast)
    }
 }
 
-void Compiler::reportError(CompileException& exception)
+void Compiler::reportException(CompileException& exception)
 {
    std::ofstream outfile("compilelog.txt", std::ios_base::app);
 
    outfile << "> " << exception.getFilename().toUtf8() << "(" << exception.getLine() << "): " << exception.asString().toUtf8() << std::endl;
 }
 
-void Compiler::displayErrors(const String& currentfile)
+void Compiler::reportLogEntries()
 {
-   std::ofstream outfile("compilelog.txt", std::ios_base::app);
+   //std::ofstream outfile("compilelog.txt", std::ios_base::app);
 
-   const CompileLog::StringList& log = mContext.getLog().getLog();
-   for ( std::size_t index = 0; index < log.size(); index++ )
-   {
-      outfile << "> " << currentfile.toUtf8() << ": " << log[index] << std::endl;
-   }
-
-   outfile.close();
-
+   const StringList& log = mContext.getLog().getLog();
+   //auto fnc = [this,&outfile](const String& msg) { outfile << msg.toUtf8() << std::endl; };
+   auto fnc = [this](const String& msg) { std::cout << msg.toUtf8() << std::endl; };
+   ListAlgorithms::foreach(log.getFront(), fnc);
+   
    mContext.getLog().clear();
 }

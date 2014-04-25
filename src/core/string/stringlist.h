@@ -22,6 +22,7 @@ public:
 
  // operations
    void add(const String& str);
+   void clear();
 
 private:
    typedef List<String> Strings;

@@ -4,6 +4,7 @@
 
 #include "core/string/string.h"
 
+#include "../antlr/antlrtextposition.h"
 #include "astmodifier.h"
 
 class ASTVariableInit;
@@ -25,6 +26,9 @@ public:
  // get/set
    const String& getName() const;
    void          setName(const String& name);
+
+   const AntlrTextPosition& getPosition() const;
+   void                     setPosition(const AntlrTextPosition& position);
 
    const ASTType& getType() const;
          ASTType& getType();
@@ -49,7 +53,10 @@ public:
    bool isArgument() const;
 
 private:
+
+ // data
    String            mName;
+   AntlrTextPosition mPosition;
    ASTModifiers      mModifiers;
    ASTType*          mpType;
    ASTVariableInit*  mpInit;

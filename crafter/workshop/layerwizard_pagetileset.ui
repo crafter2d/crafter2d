@@ -39,7 +39,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>GroupBox</string>
+      <string>Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="2">
@@ -128,6 +128,9 @@
     <widget class="QListView" name="listView">
      <property name="enabled">
       <bool>false</bool>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
     </widget>
    </item>

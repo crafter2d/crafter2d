@@ -109,6 +109,11 @@ Project::Scripts& Project::getScripts()
     return mScripts;
 }
 
+Project::TileSets& Project::getTileSets()
+{
+    return mTileSets;
+}
+
 // - Query
 
 int Project::getWorldCount() const
@@ -320,7 +325,7 @@ bool Project::load(const QString &fileName)
                     }
                     else if ( stream.name() == "script" )
                     {
-                        QString path = stream.readElementText();
+                        QString path = QDir::toNativeSeparators(stream.readElementText());
                         QString filepath = mBasePath + QDir::separator() + path;
                         ScriptFile* pscript = new ScriptFile(filepath);
                         pscript->setResourceName(path);
@@ -465,6 +470,22 @@ QTileSet* Project::lookupTileSet(const QString& name)
         }
     }
     return NULL;
+}
+
+ScriptFile* Project::findScript(const QString& classname)
+{
+    QString filename = classname;
+    filename = tr("scripts") + QDir::separator() + filename.replace('.', QDir::separator()) + ".as";
+
+    ScriptFile* pfile = nullptr;
+    foreach (pfile, mScripts)
+    {
+        if ( pfile->getResourceName() == filename )
+        {
+            return pfile;
+        }
+    }
+    return nullptr;
 }
 
 // - Slots

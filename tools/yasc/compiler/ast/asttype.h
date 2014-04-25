@@ -4,6 +4,7 @@
 
 #include "core/string/string.h"
 
+#include "../antlr/antlrtextposition.h"
 #include "asttypelist.h"
 
 class ASTClass;
@@ -55,11 +56,8 @@ public:
    const ASTTypeVariable& getTypeVariable() const;
    void                   setTypeVariable(const ASTTypeVariable& typevariable);
 
-   int  getLine() const;
-   void setLine(int line);
-
-   int  getPos() const;
-   void setPos(int pos);
+   const AntlrTextPosition& getPosition() const;
+   void                     setPosition(const AntlrTextPosition& pos);
 
  // query
    bool isValid() const;
@@ -100,15 +98,15 @@ private:
 
    void determineArrayDimension();
 
+ // data
    Kind                   mKind;
+   AntlrTextPosition      mPosition;
    String                 mObjectName;
    ASTClass*              mpObjectClass;
    ASTTypeList            mTypeArguments;
    const ASTTypeVariable* mpTypeVariable;
    ASTType*               mpArrayType;
    int                    mArrayDimension;
-   int                    mLine;
-   int                    mPos;
 };
 
 #endif // AST_TYPE_H_

@@ -63,6 +63,7 @@ public:
    String operator+(const String& that) const;
    String operator+(UChar c) const;
 
+   CORE_API friend String operator+(const UChar ch, const String& right);
    CORE_API friend String operator+(const UChar* pleft, const String& right);
 
  // query
@@ -92,6 +93,7 @@ public:
    void insert(int index, const String& text);
    void replace(UChar original, UChar newtext);
    void replace(int start, int length, const String& with);
+   void replace(const String& original, const String& with);
    void remove(int start, int count);
 
    String subStr(int start, int count) const;
@@ -99,6 +101,10 @@ public:
    String right(int from) const;
 
    String unescape() const;
+
+ // arguments
+   String& arg(int arg, const String& value);
+   String& arg(int arg, int value);
 
  // searching
    int indexOf(const String& that) const;

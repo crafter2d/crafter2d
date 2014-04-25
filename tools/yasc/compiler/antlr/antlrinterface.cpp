@@ -112,6 +112,7 @@ ASTType* AntlrParser::getType(const AntlrNode& node)
    AntlrNode typenode = node.getChild(0);
 
    ASTType* ptype = new ASTType();
+   ptype->setPosition(typenode.getPosition());
 
    int nodetype = typenode.getType();
    switch ( nodetype )
@@ -276,6 +277,7 @@ ASTNode* AntlrParser::handlePackage(const AntlrNode& node)
 
    ASTPackage* ppackage = new ASTPackage();
    ppackage->setName(identifier);
+   ppackage->setPosition(node.getPosition());
 
    mPackage = identifier;
    mClassResolver.insert(mPackage + UTEXT(".*"));
@@ -300,6 +302,7 @@ ASTNode* AntlrParser::handleUse(const AntlrNode& node)
 
    ASTUse* puse = new ASTUse();
    puse->setIdentifier(identifier);
+   puse->setPosition(node.getPosition());
 
    mClassResolver.insert(puse->getIdentifier());
 
@@ -405,6 +408,7 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
    String qualifiedname = mClassResolver.resolve(name);
 
    pclass->setName(name);
+   pclass->setPosition(namenode.getPosition());
    pclass->setFullName(qualifiedname);
    pclass->setResolver(mClassResolver);
 
@@ -513,16 +517,19 @@ void AntlrParser::handleFuncArguments(const AntlrNode& node, ASTFunction& functi
 
    while ( index < count )
    {
+      AntlrNode typenode = node.getChild(index);
+
       ASTVariable* pvariable = new ASTVariable();
       pvariable->setLocation(ASTVariable::eArgument);
-
-      AntlrNode typenode = node.getChild(index);
+      pvariable->setPosition(typenode.getPosition());      
       pvariable->setType(getType(typenode));
 
       AntlrNode namenode = node.getChild(index+1);
       pvariable->setName(namenode.toString());
 
       ASTFunctionArgument* pargument = new ASTFunctionArgument(pvariable);
+      pargument->setPosition(typenode.getPosition());
+
       function.addArgument(pargument);
 
       index += 2;
@@ -533,6 +540,7 @@ ASTMember* AntlrParser::handleConstructor(const AntlrNode& node)
 {
    ASTFunction* pfunction = new ASTFunction(ASTMember::eConstructor);
    pfunction->setType(ASTType::SVoidType.clone()); // <-- invalid type, constructors do not have return types
+   pfunction->setPosition(node.getPosition());
 
    AntlrNode modnode = node.getChild(0);
    handleModifiers(modnode, pfunction->getModifiers());
@@ -581,6 +589,7 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
    if ( type == FUNCTION_ARGUMENTS )
    {
       ASTFunction* pfunction = new ASTFunction(ASTMember::eFunction);
+      pfunction->setPosition(namenode.getPosition());
       pfunction->setModifiers(modifiers);
       pfunction->setType(ptype);
       pfunction->setName(name);
@@ -592,6 +601,7 @@ ASTMember* AntlrParser::handleInterfaceMember(const AntlrNode& node)
    else
    {
       ASTVariable* pvariable = new ASTVariable();
+      pvariable->setPosition(namenode.getPosition());
       pvariable->setLocation(ASTVariable::eField);
       pvariable->setModifiers(modifiers);
       pvariable->setType(ptype);
@@ -623,6 +633,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
    if ( type == FUNCTION_ARGUMENTS )
    {
       ASTFunction* pfunction = new ASTFunction(ASTMember::eFunction);
+      pfunction->setPosition(namenode.getPosition());
       pfunction->setModifiers(modifiers);
       pfunction->setType(ASTType::SVoidType.clone());
       pfunction->setName(name);
@@ -678,6 +689,7 @@ ASTMember* AntlrParser::handleFuncDecl(const AntlrNode& node)
 
    AntlrNode namenode = node.getChild(index++);
    pfunction->setName(namenode.toString());
+   pfunction->setPosition(typenode.getPosition());
 
    AntlrNode arguments = node.getChild(index++);
    handleFuncArguments(arguments, *pfunction);
@@ -724,6 +736,7 @@ ASTMember* AntlrParser::handleVoidFuncDecl(const AntlrNode& node)
 
    AntlrNode namenode = node.getChild(index++);
    pfunction->setName(namenode.toString());
+   pfunction->setPosition(namenode.getPosition());
 
    AntlrNode arguments = node.getChild(index++);
    handleFuncArguments(arguments, *pfunction);
@@ -775,6 +788,7 @@ ASTAnnotations* AntlrParser::handleAnnotations(const AntlrNode& node)
 ASTArrayInit* AntlrParser::handleArrayInit(const AntlrNode& node)
 {
    ASTArrayInit* parrayinit = new ASTArrayInit();
+   parrayinit->setPosition(node.getPosition());
 
    int count = node.getChildCount();
    for ( int index = 0; index < count; index++ )
@@ -790,6 +804,7 @@ ASTArrayInit* AntlrParser::handleArrayInit(const AntlrNode& node)
 ASTVariableInit* AntlrParser::handleVarInit(const AntlrNode& node)
 {
    ASTVariableInit* pinit = new ASTVariableInit();
+   pinit->setPosition(node.getPosition());
 
    if ( node.getType() == ARRAYINIT )
    {
@@ -828,15 +843,15 @@ ASTBlock* AntlrParser::handleBlock(const AntlrNode& node)
 
 ASTLocalVariable* AntlrParser::handleLocalVarDecl(const AntlrNode& node)
 {
-   ASTVariable* pvariable = new ASTVariable();
-   pvariable->setLocation(ASTVariable::eLocal);
-
    AntlrNode typenode = node.getChild(0);
-   pvariable->setType(getType(typenode));
-
    AntlrNode namenode = node.getChild(1);
-   pvariable->setName(namenode.toString());
 
+   ASTVariable* pvariable = new ASTVariable();
+   pvariable->setName(namenode.toString());
+   pvariable->setPosition(namenode.getPosition());
+   pvariable->setLocation(ASTVariable::eLocal);
+   pvariable->setType(getType(typenode));
+   
    int count = node.getChildCount();
    if ( count > 2 )
    {
@@ -850,6 +865,7 @@ ASTLocalVariable* AntlrParser::handleLocalVarDecl(const AntlrNode& node)
 ASTIf* AntlrParser::handleIf(const AntlrNode& node)
 {
    ASTIf* pif = new ASTIf();
+   pif->setPosition(node.getPosition());
 
    AntlrNode conditionnode = node.getChild(0);
    pif->setCondition(handleCompound(conditionnode));
@@ -874,6 +890,7 @@ ASTIf* AntlrParser::handleIf(const AntlrNode& node)
 ASTFor* AntlrParser::handleFor(const AntlrNode& node)
 {
    ASTFor* pfor = new ASTFor();
+   pfor->setPosition(node.getPosition());
 
    AntlrNode stmtnode = node.getChild(0);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(stmtnode));
@@ -924,6 +941,7 @@ ASTForeach* AntlrParser::handleForeach(const AntlrNode& node)
 
    AntlrNode namenode = node.getChild(1);
    pvariable->setName(namenode.toString());
+   pvariable->setPosition(namenode.getPosition());
 
    AntlrNode exprnode = node.getChild(2);
    pvariable->setInit(handleVarInit(exprnode));
@@ -933,6 +951,7 @@ ASTForeach* AntlrParser::handleForeach(const AntlrNode& node)
    ASSERT_PTR(pstatement);
 
    ASTForeach* pforeach = new ASTForeach();
+   pforeach->setPosition(node.getPosition());
    pforeach->setVariable(pvariable);
    pforeach->setBody(pstatement);
 
@@ -942,6 +961,7 @@ ASTForeach* AntlrParser::handleForeach(const AntlrNode& node)
 ASTWhile* AntlrParser::handleWhile(const AntlrNode& node)
 {
    ASTWhile* pwhile = new ASTWhile();
+   pwhile->setPosition(node.getPosition());
 
    AntlrNode condition = node.getChild(0);
    pwhile->setCondition(handleCompound(condition));
@@ -957,6 +977,7 @@ ASTWhile* AntlrParser::handleWhile(const AntlrNode& node)
 ASTDo* AntlrParser::handleDo(const AntlrNode& node)
 {
    ASTDo* pdo = new ASTDo();
+   pdo->setPosition(node.getPosition());
 
    AntlrNode body = node.getChild(0);
    ASTStatement* pstatement = dynamic_cast<ASTStatement*>(handleTree(body));
@@ -972,6 +993,7 @@ ASTDo* AntlrParser::handleDo(const AntlrNode& node)
 ASTSwitch* AntlrParser::handleSwitch(const AntlrNode& node)
 {
    ASTSwitch* pswitch = new ASTSwitch();
+   pswitch->setPosition(node.getPosition());
 
    AntlrNode condition = node.getChild(0);
    ASTNode* pexpr = handleTree(condition);
@@ -994,6 +1016,7 @@ ASTSwitch* AntlrParser::handleSwitch(const AntlrNode& node)
 ASTCase* AntlrParser::handleCase(const AntlrNode& node)
 {
    ASTCase* pcase = new ASTCase();
+   pcase->setPosition(node.getPosition());
 
    int bodyindex = 0;
    if ( node.getType() == CASE )
@@ -1043,6 +1066,7 @@ ASTCase* AntlrParser::handleCase(const AntlrNode& node)
 ASTReturn* AntlrParser::handleReturn(const AntlrNode& node)
 {
    ASTReturn* preturn = new ASTReturn();
+   preturn->setPosition(node.getPosition());
 
    if ( node.getChildCount() == 1 )
    {
@@ -1056,6 +1080,7 @@ ASTReturn* AntlrParser::handleReturn(const AntlrNode& node)
 ASTTry* AntlrParser::handleTry(const AntlrNode& node)
 {
    ASTTry* ptry = new ASTTry();
+   ptry->setPosition(node.getPosition());
 
    AntlrNode blocknode = node.getChild(0);
    ptry->setBody(handleBlock(blocknode));
@@ -1095,11 +1120,13 @@ ASTCatch* AntlrParser::handleCatch(const AntlrNode& node)
 
    AntlrNode namenode = node.getChild(1);
    pvariable->setName(namenode.toString());
+   pvariable->setPosition(namenode.getPosition());
 
    AntlrNode bodynode = node.getChild(2);
 
    ASTCatch* pcatch = new ASTCatch();
    pcatch->setVariable(new ASTLocalVariable(pvariable));
+   pcatch->setPosition(node.getPosition());
    pcatch->setBody(handleBlock(bodynode));
 
    return pcatch;
@@ -1110,6 +1137,7 @@ ASTThrow* AntlrParser::handleThrow(const AntlrNode& node)
    AntlrNode child = node.getChild(0);
 
    ASTThrow* pthrow = new ASTThrow();
+   pthrow->setPosition(node.getPosition());
    pthrow->setExpression(handleExpression(child));
    return pthrow;
 }
@@ -1119,9 +1147,8 @@ ASTAssert* AntlrParser::handleAssert(const AntlrNode& node)
    AntlrNode child = node.getChild(0);
 
    ASTAssert* passert = new ASTAssert();
+   passert->setPosition(node.getPosition());
    passert->setCondition(handleExpression(child));
-   passert->setLine(node.getLine());
-   passert->setPos(node.getPosition());
 
    return passert;
 }
@@ -1129,6 +1156,7 @@ ASTAssert* AntlrParser::handleAssert(const AntlrNode& node)
 ASTLoopControl* AntlrParser::handleLoopControl(const AntlrNode& node)
 {
    ASTLoopControl* pcontrol = new ASTLoopControl(node.getType() == BREAK ? ASTLoopControl::eBreak : ASTLoopControl::eContinue);
+   pcontrol->setPosition(node.getPosition());
    return pcontrol;
 }
 
@@ -1139,6 +1167,7 @@ ASTExpressionStatement* AntlrParser::handleExpressionStatement(const AntlrNode& 
    ASSERT_PTR(pexpression);
 
    ASTExpressionStatement* pstatement = new ASTExpressionStatement();
+   pstatement->setPosition(exprnode.getPosition());
    pstatement->setExpression(pexpression);
    return pstatement;
 }
@@ -1149,6 +1178,7 @@ ASTCompound* AntlrParser::handleCompound(const AntlrNode& node)
    ASTExpression* pexpression = dynamic_cast<ASTExpression*>(handleTree(comp));
 
    ASTCompound* pnode = new ASTCompound();
+   pnode->setPosition(node.getPosition());
    pnode->setExpression(pexpression);
 
    return pnode;
@@ -1159,6 +1189,7 @@ ASTExpression* AntlrParser::handleExpression(const AntlrNode& node)
    ASSERT(node.getType() == EXPRESSION);
 
    ASTExpression* pexpression = new ASTExpression();
+   pexpression->setPosition(node.getPosition());
 
    AntlrNode unarynode = node.getChild(0);
    pexpression->setLeft(handleTree(unarynode));
@@ -1265,6 +1296,7 @@ ASTNode* AntlrParser::handleConcatenate(const AntlrNode& node)
       }
 
       ASTConcatenate* pconcat = new ASTConcatenate(mode);
+      pconcat->setPosition(node.getPosition());
       pconcat->setLeft(presult);
       pconcat->setRight(pright);
 
@@ -1277,6 +1309,7 @@ ASTNode* AntlrParser::handleConcatenate(const AntlrNode& node)
 ASTNode* AntlrParser::handleInstanceOf(const AntlrNode& node)
 {
    ASTInstanceOf* pinstanceof = new ASTInstanceOf();
+   pinstanceof->setPosition(node.getPosition());
 
    AntlrNode left = node.getChild(0);
    ASTNode* pnode = handleTree(left);
@@ -1317,6 +1350,7 @@ ASTUnary::Operator handleUnaryOperator(const AntlrNode& node)
 ASTUnary* AntlrParser::handleUnary(const AntlrNode& node)
 {
    ASTUnary* punary = new ASTUnary();
+   punary->setPosition(node.getPosition());
 
    int index = 0;
 
@@ -1361,6 +1395,7 @@ ASTUnary* AntlrParser::handleUnary(const AntlrNode& node)
 ASTNew* AntlrParser::handleNew(const AntlrNode& node)
 {
    ASTNew* pnew = new ASTNew();
+   pnew->setPosition(node.getPosition());
 
    AntlrNode typenode = node.getChild(0);
    ASTType* ptype = getType(typenode);
@@ -1384,6 +1419,7 @@ ASTNew* AntlrParser::handleNew(const AntlrNode& node)
    {
       // make it an array type
       ASTType* parraytype = new ASTType(ASTType::eArray);
+      parraytype->setPosition(argsnode.getPosition());
       parraytype->setArrayDimension(1);
       parraytype->setArrayType(ptype);
       ptype = parraytype;
@@ -1407,6 +1443,8 @@ ASTNew* AntlrParser::handleNew(const AntlrNode& node)
 ASTNode* AntlrParser::handleSuper(const AntlrNode& node)
 {
    ASTSuper* psuper = new ASTSuper();
+   psuper->setPosition(node.getPosition());
+      
    switch ( node.getType() )
    {
    case SUPER:
@@ -1441,6 +1479,7 @@ ASTNode* AntlrParser::handleSuper(const AntlrNode& node)
 ASTNode* AntlrParser::handleNative(const AntlrNode& node)
 {
    ASTNative* pnative = new ASTNative();
+   pnative->setPosition(node.getPosition());
 
    int count = node.getChildCount();
    if ( count == 1 )
@@ -1464,6 +1503,7 @@ ASTNode* AntlrParser::handleNative(const AntlrNode& node)
 ASTCast* AntlrParser::handleCast(const AntlrNode& node)
 {
    ASTCast* pcast = new ASTCast();
+   pcast->setPosition(node.getPosition());
 
    AntlrNode typenode = node.getChild(0);
    pcast->setType(getType(typenode));
@@ -1477,6 +1517,8 @@ ASTCast* AntlrParser::handleCast(const AntlrNode& node)
 ASTAccess* AntlrParser::handleAccess(const AntlrNode& node)
 {
    ASTAccess* paccess = new ASTAccess();
+   paccess->setPosition(node.getPosition());
+
    int count = node.getChildCount();
 
    AntlrNode namenode = node.getChild(0);
@@ -1518,6 +1560,7 @@ ASTAccess* AntlrParser::handleAccess(const AntlrNode& node)
 ASTAccess* AntlrParser::handleArrayAccess(const AntlrNode& node)
 {
    ASTAccess* paccess = new ASTAccess();
+   paccess->setPosition(node.getPosition());
    paccess->setKind(ASTAccess::eArray);
 
    int count = node.getChildCount();
@@ -1535,6 +1578,7 @@ ASTAccess* AntlrParser::handleArrayAccess(const AntlrNode& node)
 ASTAccess* AntlrParser::handleClassAccess(const AntlrNode& node)
 {
    ASTAccess* paccess = new ASTAccess();
+   paccess->setPosition(node.getPosition());
    paccess->setKind(ASTAccess::eClass);
    return paccess;
 }
@@ -1592,6 +1636,7 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
    ASSERT(pliteral->getTableIndex() >= 0);
 
    ASTLiteral* pastliteral = new ASTLiteral(*pliteral, kind);
+   pastliteral->setPosition(node.getPosition());
    return pastliteral;
 }
 

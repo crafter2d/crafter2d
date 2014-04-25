@@ -6,6 +6,7 @@
 
 ASTVariable::ASTVariable():
    mName(),
+   mPosition(),
    mModifiers(),
    mpType(NULL),
    mpInit(NULL),
@@ -30,6 +31,16 @@ const String& ASTVariable::getName() const
 void ASTVariable::setName(const String& name)
 {
    mName = name;
+}
+
+const AntlrTextPosition& ASTVariable::getPosition() const
+{
+   return mPosition;
+}
+
+void ASTVariable::setPosition(const AntlrTextPosition& position)
+{
+   mPosition = position;
 }
 
 const ASTType& ASTVariable::getType() const

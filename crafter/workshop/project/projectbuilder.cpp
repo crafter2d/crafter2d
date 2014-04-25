@@ -120,14 +120,16 @@ void ProjectBuilder::buildScripts(QDir& path, const QString& name)
             break;
         case QProcess::NormalExit:
             {
+                QString errors(yasc.readAllStandardOutput());
+                if ( !errors.isEmpty() )
+                {
+                    reportErrors(errors);
+                }
+
                 int exitcode = yasc.exitCode();
                 if ( exitcode == 0 )
                 {
-                    return;
-                }
-                else
-                {
-                    msg = "One or more errors have been detected.\nPlease consult the compile log for more info.";
+                    msg = "Compilation successfull";
                 }
             }
             break;
@@ -219,5 +221,18 @@ void ProjectBuilder::compile(const QString& source, const QString& dest)
         {
             emit messageAvailable(message);
         }
+    }
+}
+
+// - Error reporting
+
+void ProjectBuilder::reportErrors(const QString& errors)
+{
+    QString error;
+    QStringList errorlist = errors.split('\n');
+    errorlist.removeAt(0); // remove info
+    foreach (error, errorlist)
+    {
+        emit messageAvailable(error);
     }
 }
