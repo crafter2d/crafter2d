@@ -1,8 +1,13 @@
 
 #include "d3ddevice.h"
 
+#include "core/smartptr/autoptr.h"
+
 #include "texture/d3dtexture.h"
 #include "texture/d3dtextureloaderdds.h"
+
+#include "text/d3dglyphprovider.h"
+#include "text/d3dfont.h"
 
 #include "d3dblendstate.h"
 #include "d3dcodepath.h"
@@ -19,7 +24,9 @@ D3DDevice::D3DDevice():
    mpContext(NULL),
    mpSwapChain(NULL),
    mpRenderTargetView(NULL),
-   mpBlendState(NULL)
+   mpBlendState(NULL),
+   mpD2DFactory(NULL),
+   mpDWriteFactory(NULL)
 {
 }
 
@@ -71,7 +78,30 @@ bool D3DDevice::create(int windowhandle, int width, int height)
    CD3D11_VIEWPORT viewport(pbackbuffer, mpRenderTargetView);
    mpContext->RSSetViewports(1, &viewport);
    
-   return Device::create(windowhandle, width, height);
+   return createD2D(windowhandle, width, height)
+       && Device::create(windowhandle, width, height);
+}
+
+bool D3DDevice::createD2D(int windowhandle, int width, int height)
+{
+   HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mpD2DFactory);
+   if ( FAILED(hr) )
+   {
+      return false;
+   }
+
+   IDXGIDevice* dxgiDevice;
+   mpDevice->QueryInterface<IDXGIDevice>(&dxgiDevice);
+   mpD2DFactory->CreateDevice(dxgiDevice, &mpD2DDevice);
+   dxgiDevice->Release();
+
+   hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory1), reinterpret_cast<IUnknown**>(&mpDWriteFactory));
+   if ( FAILED(hr) )
+   {
+      return false;
+   }
+
+   return true;
 }
 
 void D3DDevice::present()
@@ -126,8 +156,18 @@ BlendState* D3DDevice::createBlendState(const BlendStateDesc& desc)
    return presult;
 }
 
+GlyphProvider* D3DDevice::createGlyphProvider()
+{
+   return new D3DGlyphProvider(mpD2DDevice, mpDWriteFactory);
+}
+
 Font* D3DDevice::createFont(const String& name, int pointsize)
 {
+   AutoPtr<D3DFont> font = new D3DFont(mpDWriteFactory);
+   if ( font->create(name, pointsize) )
+   {
+      return font.release();
+   }
    return NULL;
 }
 

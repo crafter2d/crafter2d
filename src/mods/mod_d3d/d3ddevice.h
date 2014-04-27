@@ -5,6 +5,8 @@
 #include "core/graphics/device.h"
 
 #include <d3d11.h>
+#include <d2d1_1.h>
+#include <dwrite_1.h>
 
 #include "d3drendercontext.h"
 
@@ -30,15 +32,24 @@ namespace Graphics
       virtual Texture*        createTexture(DataStream& imagedata) override;
       virtual RenderTarget*   createRenderTarget() override;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) override;
+      virtual GlyphProvider*  createGlyphProvider();
       virtual Font*           createFont(const String& name, int pointsize) override;
 
    private:
 
+    // initialization
+      bool createD2D(int windowhandle, int width, int height);
+
+    // data
       ID3D11Device*           mpDevice;
       ID3D11DeviceContext*    mpContext;
       IDXGISwapChain*         mpSwapChain;
       ID3D11RenderTargetView* mpRenderTargetView;
       ID3D11BlendState*       mpBlendState;
+
+      ID2D1Factory1*          mpD2DFactory;
+      ID2D1Device*            mpD2DDevice;
+      IDWriteFactory1*        mpDWriteFactory;
    };
 }
 
