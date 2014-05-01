@@ -37,6 +37,7 @@
 #include "core/modules/inputmodule.h"
 #include "core/modules/soundmodule.h"
 #include "core/graphics/device.h"
+#include "core/graphics/font.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
 #include "core/script/scriptobject.h"
@@ -191,6 +192,8 @@ namespace c2d
       mpScript->arg(0, delta);
       mpScript->call(sPaint);
 
+      mpRenderContext->drawString(*mpFont, 24.0f, UTEXT("Hello World!"));
+
       mpDevice->present();
       mpWindow->display();
    }
@@ -274,6 +277,8 @@ namespace c2d
       mpRenderContext = &mpDevice->getContext();
       mpRenderContext->setClearColor(color);
       mpRenderContext->initialize(*mpDevice);
+
+      mpFont = &mpDevice->getFont(UTEXT("amersn"));      
 
       onWindowResized();
 

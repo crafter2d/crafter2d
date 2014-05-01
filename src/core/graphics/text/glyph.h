@@ -4,11 +4,12 @@
 
 #include <cstdint>
 
+#include "core/core_base.h"
 #include "core/math/size.h"
 
 namespace Graphics
 {
-   class Glyph
+   class CORE_API Glyph
    {
    public:
       Glyph();

@@ -8,6 +8,7 @@
 #include <d2d1_1.h>
 #include <dwrite_1.h>
 
+#include "text/d3dfontcollection.h"
 #include "d3drendercontext.h"
 
 namespace Graphics
@@ -22,18 +23,20 @@ namespace Graphics
 
     // overloads
       virtual bool create(int windowhandle, int width, int height);
-
       virtual void present();
 
-      virtual RenderContext*  createRenderContext() override;
       virtual CodePath*       createCodePath() override;
       virtual VertexBuffer*   createVertexBuffer() override;
       virtual IndexBuffer*    createIndexBuffer() override;
       virtual Texture*        createTexture(DataStream& imagedata) override;
       virtual RenderTarget*   createRenderTarget() override;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) override;
-      virtual GlyphProvider*  createGlyphProvider();
-      virtual Font*           createFont(const String& name, int pointsize) override;
+      virtual GlyphProvider*  createGlyphProvider(Font& font);
+      
+   protected:
+    // overrides
+      virtual RenderContext*  createRenderContext() override;
+      virtual Font*           createFont(const String& name) override;
 
    private:
 
@@ -49,7 +52,10 @@ namespace Graphics
 
       ID2D1Factory1*          mpD2DFactory;
       ID2D1Device*            mpD2DDevice;
+      ID2D1DeviceContext*     mpD2DContext;
       IDWriteFactory1*        mpDWriteFactory;
+
+      D3DFontCollection*      mpFontCollection;
    };
 }
 

@@ -3,6 +3,7 @@
 #define GLYPH_PROVIDER_H
 
 #include <cstdint>
+#include "core/string/string.h"
 
 namespace Graphics
 {
@@ -16,8 +17,7 @@ namespace Graphics
    {
    public:
 
-      virtual bool initialize(int width, int height) = 0;
-      virtual Glyph* getGlyph(Font& font, uint16_t glyphindex, float emsize) = 0;
+      virtual Glyph* getGlyph(UChar ch, float emsize) = 0;
    };
 }
 

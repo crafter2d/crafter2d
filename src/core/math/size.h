@@ -2,7 +2,9 @@
 #ifndef SIZE_H
 #define SIZE_H
 
-struct Size
+#include "core/core_base.h"
+
+struct CORE_API Size
 {
    Size();
    Size(const Size& that);

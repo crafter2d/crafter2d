@@ -7,6 +7,7 @@
 
 #include "viewport.h"
 #include "sprites/spriterenderer.h"
+#include "text/textrenderer.h"
 
 class Vector;
 class XForm;
@@ -35,6 +36,8 @@ namespace Graphics
       const Viewport& getViewport() const;
       void            setViewport(const Viewport& viewport);
 
+      TextRenderer& getTextRenderer();
+
     // initialization
       void initialize(Device& device);
 
@@ -51,6 +54,7 @@ namespace Graphics
       virtual void drawTriangles(int start, int count) = 0;
       virtual void drawTriangleFan(int start, int count) = 0;
       virtual void drawTriangleStrip(int start, int count) = 0;
+              void drawString(Font& font, float fontsizeem, const String& text);
      
       virtual void clear() = 0;
 
@@ -69,6 +73,7 @@ namespace Graphics
 
     // data
       SpriteRenderer mSpriteRenderer;
+      TextRenderer   mTextRenderer;
       Viewport       mViewport;
       Color          mClearColor;
    };

@@ -9,6 +9,7 @@ namespace ComponentInterface
       eMeshComponent,
       ePhysisComponent,
       eNetComponent,
+      eParticleComponent,
    };
 
    enum ComponentMessageType

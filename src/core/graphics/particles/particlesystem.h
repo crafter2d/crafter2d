@@ -17,39 +17,74 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef FONT_H_
-#define FONT_H_
+#ifndef PARTICLESYSTEM_H
+#define PARTICLESYSTEM_H
 
-#include <map>
+#include <vector>
 
-#include "core/string/string.h"
-#include "core/core_base.h"
+#include "core/entity/components/components.h"
+#include "core/math/vector.h"
+#include "core/defines.h"
+
+#include "particlemodules.h"
 
 namespace Graphics
 {
-   class CORE_API Font
-   {
+   class CodePath;
+   class Device;
+   class Effect;
+   class Particle;
+   class ParticleModule;
+   class VertexBuffer;   
+   class RenderContext;
+
+   /**
+   @author Jeroen Broekhuizen
+   */
+   class ParticleSystem
+   {	
    public:
-      Font();
+      ParticleSystem();
+	   ~ParticleSystem();
+	
+    // operations
+      bool create(Device& device);
+      void destroy();
 
     // get/set
-      const String& getFamilyName() const;
-      void          setFamilyName(const String& name);
+      int  getEmitRate() const;
+	   void setEmitRate(int rate);
+	   void setEmitCount(int count);
 
-    // query
-      virtual int      getBaseLine() const = 0;
+      Particle* getAliveParticles();
 
-    // sizes
-      virtual int      getTextWidth(const String& text) const = 0;
-      virtual int      getTextHeight(const String& text) const = 0;
+      void registerModule(ParticleModule* pmodule);
 
-    // rendering
-      virtual void     render(const String& text) = 0;
+    // painting
+      void update(float delta);
+	   void draw(RenderContext& context) const;
 
    private:
-    // data
-      String mFamilyName;
-   };
-};
 
-#endif // FONT_H_
+    // data
+      Vector            mPosition;
+      Particle*         mActiveList;
+	   Particle*         mFreeList;
+      Effect*           mpEffect;
+	   uint32_t          mGeometryBufferSize;
+      VertexBuffer*     mGeometryBuffer;
+      ParticleModules   mSpawnModules;
+      	
+	   int emitRate;
+      int emitCount;
+	   int active;
+      int maxActive;
+	   int lastUpdate;
+      int lastInit;
+   };
+}
+#ifdef JENGINE_INLINE
+#  include "particlesystem.inl"
+#endif
+
+#endif

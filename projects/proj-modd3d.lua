@@ -59,9 +59,9 @@ configuration "Debug"
 	defines { "_DEBUG" }
 	targetsuffix "d"
 	flags { "Symbols" }
-	links { "Core" }
+	links { "Core", "d2d1", "dwrite" }
 	
 configuration "Release"
 	defines { "NDEBUG" }
 	flags { "Optimize" }
-	links { "Core" }
+	links { "Core", "d2d1", "dwrite" }

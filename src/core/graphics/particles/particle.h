@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Jeroen Broekhuizen                              *
- *   jengine.sse@live.nl                                                   *
+ *   Copyright (C) 2014 by Jeroen Broekhuizen                              *
+ *   crafter2d@outlook.com                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU Library General Public License as       *
@@ -17,39 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef FONT_H_
-#define FONT_H_
+#ifndef PARTICLE_H
+#define PARTICLE_H
 
-#include <map>
-
-#include "core/string/string.h"
-#include "core/core_base.h"
+#include "core/math/color.h"
+#include "core/math/vector.h"
 
 namespace Graphics
 {
-   class CORE_API Font
+   class Particle
    {
    public:
-      Font();
+	   Particle();
 
-    // get/set
-      const String& getFamilyName() const;
-      void          setFamilyName(const String& name);
+	   void setColor (float r, float g, float b) {
+		   color.set (r,g,b);
+	   }
 
-    // query
-      virtual int      getBaseLine() const = 0;
-
-    // sizes
-      virtual int      getTextWidth(const String& text) const = 0;
-      virtual int      getTextHeight(const String& text) const = 0;
-
-    // rendering
-      virtual void     render(const String& text) = 0;
-
-   private:
-    // data
-      String mFamilyName;
+	   Vector pos, vel;
+	   Color color;
+	   float activeTime;
+      float lifeTime;
+      float state;
+	   float size;
+	   Particle *next;
    };
-};
+}
 
-#endif // FONT_H_
+#endif // PARTICLE_H

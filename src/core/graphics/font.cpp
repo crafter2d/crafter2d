@@ -23,6 +23,19 @@
 
 using namespace Graphics;
 
-Font::Font()
+Font::Font():
+   mFamilyName()
 {
+}
+
+// - Get/set
+
+const String& Font::getFamilyName() const
+{
+   return mFamilyName;
+}
+
+void Font::setFamilyName(const String& name)
+{
+   mFamilyName = name;
 }

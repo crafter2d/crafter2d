@@ -38,6 +38,7 @@ namespace Graphics
       void                 setContentManager(c2d::ContentManager& contentmanager);
 
       RenderContext&  getContext();
+      Font&           getFont(const String& name);
 
     // operations
       virtual bool create(int windowhandle, int width, int height);
@@ -50,15 +51,16 @@ namespace Graphics
       virtual Texture*        createTexture(DataStream& data) = 0;
       virtual RenderTarget*   createRenderTarget() = 0;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) = 0;
-      virtual GlyphProvider*  createGlyphProvider() = 0;
-      virtual Font*           createFont(const String& name, int pointsize) = 0;
+      virtual GlyphProvider*  createGlyphProvider(Font& font) = 0;
               Effect*         createEffect(const String& filename);
 
    protected:
     // creations
+      virtual Font*           createFont(const String& name) = 0;
       virtual RenderContext*  createRenderContext() = 0;
 
    private:
+      friend class TextRenderer;
 
     // data
       c2d::ContentManager* mpContentManager;

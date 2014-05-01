@@ -6,42 +6,32 @@
 
 #include "core/graphics/font.h"
 
-template <class T> inline void SafeRelease(T **ppT)
-{
-   if ( *ppT )
-   {
-      (*ppT)->Release();
-      *ppT = NULL;
-   }
-}
+class D3DFontCollection;
 
 namespace Graphics
 {
    class D3DFont : public Graphics::Font
    {
    public:
-      D3DFont(IDWriteFactory* pdwritefactory);
+      D3DFont(D3DFontCollection& collection, IDWriteFontFace* pfontface);
       virtual ~D3DFont();
-
-      // query
+      
+    // query
       virtual int      getBaseLine() const override;
 
-      // sizes
+    // sizes
       virtual int      getTextWidth(const String& text) const override;
       virtual int      getTextHeight(const String& text) const override;
-
-      // operations
-      bool create(const String& name, int pointsize);
-
-      // rendering
+      
+    // rendering
       virtual void     render(const String& text) override;
 
    private:
       friend class D3DGlyphProvider;
 
       // data
-      IDWriteFactory*   mpDWriteFactory;
-      IDWriteFontFace*  mpFontFace;
+      D3DFontCollection&   mCollection;
+      IDWriteFontFace*     mpFontFace;
    };
 }
 

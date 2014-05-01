@@ -1,19 +1,20 @@
 
 #include "d3dfont.h"
 
+#include "../d3dhelpers.h"
+
 namespace Graphics
 {
-   D3DFont::D3DFont(IDWriteFactory* pdwritefactory) :
-      Font(),
-      mpDWriteFactory(pdwritefactory),
-      mpFontFace(NULL)
+   D3DFont::D3DFont(D3DFontCollection& collection, IDWriteFontFace* pfontface) :
+      mCollection(collection),
+      mpFontFace(pfontface)
    {
-      mpDWriteFactory->AddRef();
+      mpFontFace->AddRef();
    }
 
    D3DFont::~D3DFont()
    {
-      SafeRelease(&mpDWriteFactory);
+      SafeRelease(&mpFontFace);
    }
 
    // - Query
@@ -39,23 +40,4 @@ namespace Graphics
    {
    }
 
-   // - Operations
-
-   bool D3DFont::create(const String& name, int pointsize)
-   {
-      IDWriteFontFile* pFontFile = NULL;
-      HRESULT hr = mpDWriteFactory->CreateFontFileReference(name.constData(), NULL, &pFontFile);
-      if ( FAILED(hr) )
-      {
-         return false;
-      }
-
-      IDWriteFontFile* fontFileArray[] = { pFontFile };
-      hr = mpDWriteFactory->CreateFontFace(DWRITE_FONT_FACE_TYPE_TRUETYPE,
-         1, fontFileArray, 0, DWRITE_FONT_SIMULATIONS_NONE, &mpFontFace);
-
-      SafeRelease(&pFontFile);
-
-      return SUCCEEDED(hr);
-   }
 }

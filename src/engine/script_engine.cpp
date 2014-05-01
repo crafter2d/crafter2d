@@ -23,7 +23,6 @@
 #include "core/entity/componentmessages/querybodycomponentmessage.h"
 #include "core/entity/componentmessages/animationcomponentmessage.h"
 #include "core/graphics/effect.h"
-#include "core/graphics/font.h"
 #include "core/graphics/texture.h"
 #include "core/physics/inputforcegenerator.h"
 #include "core/physics/simulator.h"
@@ -754,45 +753,6 @@ void KeyMap_bind(ScriptCall& accessor)
    map.bind(key, action);
 }
 
-void Font_destruct(ScriptCall& accessor)
-{
-   DESTRUCT_THIS(FontPtr);
-}
-
-void Font_render(ScriptCall& accessor)
-{
-   GET_THIS(FontPtr, font);
-
-   const String& text = accessor.getString(1);
-
-   font->render(text);
-}
-
-void Font_getTextWidth(ScriptCall& accessor)
-{
-   GET_THIS(FontPtr, font);
-
-   const String& text = accessor.getString(1);
-
-   accessor.setResult(font->getTextWidth(text));
-}
-
-void Font_getTextHeight(ScriptCall& accessor)
-{
-   GET_THIS(FontPtr, font);
-
-   const String& text = accessor.getString(1);
-
-   accessor.setResult(font->getTextHeight(text));
-}
-
-void Font_getBaseLine(ScriptCall& accessor)
-{
-   GET_THIS(FontPtr, font);
-
-   accessor.setResult(font->getBaseLine());
-}
-
 void Texture_destruct(ScriptCall& accessor)
 {
    DESTRUCT_THIS(TexturePtr);
@@ -1024,13 +984,6 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("KeyMap()"), KeyMap_init);
    pregistrator->addFunction(UTEXT("finalize()"), KeyMap_destruct);
    pregistrator->addFunction(UTEXT("bind(int, int)"), KeyMap_bind);
-
-   pregistrator->addClass(UTEXT("engine.ui.Font"));
-   pregistrator->addFunction(UTEXT("finalize()"), Font_destruct);
-   pregistrator->addFunction(UTEXT("render(string)"), Font_render);
-   pregistrator->addFunction(UTEXT("getBaseLine()"), Font_getBaseLine);
-   pregistrator->addFunction(UTEXT("getTextWidth(string)"), Font_getTextWidth);
-   pregistrator->addFunction(UTEXT("getTextHeight(string)"), Font_getTextHeight);
 
    pregistrator->addClass(UTEXT("engine.core.Texture"));
    pregistrator->addFunction(UTEXT("finalize()"), Texture_destruct);

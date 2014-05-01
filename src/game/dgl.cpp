@@ -22,9 +22,9 @@
 #include "core/smartptr/autoptr.h"
 
 #include "game.h"
-#include "sdlgamewindowfactory.h"
+// #include "sdlgamewindowfactory.h"
 #ifdef WIN32
-//#include "win32gamewindowfactory.h"
+#include "win32gamewindowfactory.h"
 #endif
 
 /*!
@@ -75,8 +75,8 @@ int main(int argc, char *argv[])
 {
    CommandLine cmd(argc, argv);
 
-   //Win32GameWindowFactory windowfactory;
-   SDLGameWindowFactory windowfactory;
+   Win32GameWindowFactory windowfactory;
+   //SDLGameWindowFactory windowfactory;
 
    AutoPtr<Game> game = new Game(cmd);
    game->setWindowFactory(windowfactory);

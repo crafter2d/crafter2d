@@ -6,6 +6,7 @@
 #include "texture/d3dtexture.h"
 #include "texture/d3dtextureloaderdds.h"
 
+#include "text/d3dfontcollection.h"
 #include "text/d3dglyphprovider.h"
 #include "text/d3dfont.h"
 
@@ -26,6 +27,8 @@ D3DDevice::D3DDevice():
    mpRenderTargetView(NULL),
    mpBlendState(NULL),
    mpD2DFactory(NULL),
+   mpD2DDevice(NULL),
+   mpD2DContext(NULL),
    mpDWriteFactory(NULL)
 {
 }
@@ -92,11 +95,27 @@ bool D3DDevice::createD2D(int windowhandle, int width, int height)
 
    IDXGIDevice* dxgiDevice;
    mpDevice->QueryInterface<IDXGIDevice>(&dxgiDevice);
-   mpD2DFactory->CreateDevice(dxgiDevice, &mpD2DDevice);
+   hr = mpD2DFactory->CreateDevice(dxgiDevice, &mpD2DDevice);
    dxgiDevice->Release();
+   if ( FAILED(hr) )
+   {
+      return false;
+   }
+
+   hr = mpD2DDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &mpD2DContext);
+   if (  FAILED(hr) )
+   {
+      return false;
+   }
 
    hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory1), reinterpret_cast<IUnknown**>(&mpDWriteFactory));
    if ( FAILED(hr) )
+   {
+      return false;
+   }
+
+   mpFontCollection = new D3DFontCollection();
+   if ( !mpFontCollection->initialize(mpDWriteFactory) )
    {
       return false;
    }
@@ -156,19 +175,16 @@ BlendState* D3DDevice::createBlendState(const BlendStateDesc& desc)
    return presult;
 }
 
-GlyphProvider* D3DDevice::createGlyphProvider()
+GlyphProvider* D3DDevice::createGlyphProvider(Font& font)
 {
-   return new D3DGlyphProvider(mpD2DDevice, mpDWriteFactory);
+   D3DGlyphProvider* pprovider = new D3DGlyphProvider(mpD2DContext, mpDWriteFactory);
+   pprovider->initialize(mpFontCollection->getCustomFontCollection(), font);
+   return pprovider;
 }
 
-Font* D3DDevice::createFont(const String& name, int pointsize)
+Font* D3DDevice::createFont(const String& name)
 {
-   AutoPtr<D3DFont> font = new D3DFont(mpDWriteFactory);
-   if ( font->create(name, pointsize) )
-   {
-      return font.release();
-   }
-   return NULL;
+   return mpFontCollection->createFont(name);
 }
 
 } // namespace Graphics

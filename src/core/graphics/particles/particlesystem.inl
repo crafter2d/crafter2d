@@ -17,39 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef FONT_H_
-#define FONT_H_
-
-#include <map>
-
-#include "core/string/string.h"
-#include "core/core_base.h"
 
 namespace Graphics
 {
-   class CORE_API Font
+   INLINE void ParticleSystem::setEmitRate(int rate)
    {
-   public:
-      Font();
+      emitRate = rate;
+   }
 
-    // get/set
-      const String& getFamilyName() const;
-      void          setFamilyName(const String& name);
+   INLINE int ParticleSystem::getEmitRate() const
+   {
+      return emitRate;
+   }
 
-    // query
-      virtual int      getBaseLine() const = 0;
+   INLINE void ParticleSystem::setEmitCount(int count)
+   {
+      emitCount = count;
+   }
 
-    // sizes
-      virtual int      getTextWidth(const String& text) const = 0;
-      virtual int      getTextHeight(const String& text) const = 0;
-
-    // rendering
-      virtual void     render(const String& text) = 0;
-
-   private:
-    // data
-      String mFamilyName;
-   };
-};
-
-#endif // FONT_H_
+   INLINE Particle* ParticleSystem::getAliveParticles()
+   {
+      return mActiveList;
+   }
+}

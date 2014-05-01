@@ -2,11 +2,12 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
+#include "core/core_base.h"
 #include "core/string/string.h"
 
 namespace c2d
 {
-   class Exception
+   class CORE_API Exception
    {
    public:
       Exception();

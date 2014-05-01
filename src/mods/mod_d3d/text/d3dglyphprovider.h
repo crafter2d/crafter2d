@@ -7,40 +7,28 @@
 
 #include "core/graphics/text/glyphprovider.h"
 
+class D3DTextRenderer;
+
 namespace Graphics
 {
    class D3DGlyphProvider : public GlyphProvider
    {
    public:
-      D3DGlyphProvider(ID2D1Device* pd2ddevice, IDWriteFactory* pdwfactory);
+      D3DGlyphProvider(ID2D1DeviceContext* pcontext, IDWriteFactory* pdwfactory);
       virtual ~D3DGlyphProvider();
 
-      virtual bool initialize(int width, int height) override;
+      bool initialize(IDWriteFontCollection* pcollection, Font& font);
 
-      virtual Glyph* getGlyph(Font& font, uint16_t glyphindex, float emsize) override;
+      virtual Glyph* getGlyph(UChar ch, float emsize) override;
 
    private:
-      struct DWGlyphData
-      {
-         FLOAT					offsetX;
-         FLOAT					offsetY;
-         LONG					maxWidth;
-         LONG					maxHeight;
-      };
-
-    // helpers
-      void initGlyphData(const DWRITE_FONT_METRICS& fontMetrics,
-                         const DWRITE_GLYPH_METRICS& glyphMetrics,
-                         float fontSize,
-                         DWGlyphData& outGlyphData);
+      
 
     // data
-      ID2D1Device*          mpD2DDevice;
       ID2D1DeviceContext*   mpD2DContext;
-      ID2D1Bitmap*          mpTargetBitmap;
-      ID2D1Bitmap1*         mpBitmap;
-      ID2D1SolidColorBrush* mpBrush;
       IDWriteFactory*       mpDWriteFactory;
+      IDWriteTextFormat*    mpTextFormat;
+      D3DTextRenderer*      mpTextRenderer;
       int                   mWidth;
       int                   mHeight;
    };

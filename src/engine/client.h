@@ -35,6 +35,7 @@
 namespace Graphics
 {
    class Device;
+   class Font;
    class RenderContext;
 };
 
@@ -159,6 +160,7 @@ namespace c2d
       WorldRenderer*             mpWorldRenderer;
       Player*                    mpPlayer;
       KeyMap*                    mpKeyMap;
+      Graphics::Font*            mpFont;
       Requests                   mRequests;
       int                        mServerId;
    };

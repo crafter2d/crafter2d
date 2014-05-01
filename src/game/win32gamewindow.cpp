@@ -29,7 +29,7 @@ bool Win32GameWindow::doCreate(const String& title, int width, int height, int b
    HINSTANCE hInstance = GetModuleHandle(NULL);
 
    static TCHAR szWindowClass[] = _T("win32app");
-   static TCHAR szTitle[] = _T("JEngine SSE");
+   static TCHAR szTitle[] = _T("Crafter 2D");
 
    WNDCLASSEX wcex;
    wcex.cbSize = sizeof(WNDCLASSEX);

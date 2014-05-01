@@ -3,7 +3,9 @@
 
 #include "core/content/contentmanager.h"
 
+#include "text/textrenderer.h"
 #include "effect.h"
+#include "rendercontext.h"
 
 namespace Graphics
 {
@@ -36,6 +38,12 @@ namespace Graphics
    {
       ASSERT_PTR(mpContext);
       return *mpContext;
+   }
+
+   Font& Device::getFont(const String& name)
+   {
+      TextRenderer& renderer = mpContext->getTextRenderer();
+      return renderer.getFont(name);
    }
 
    // - Creation

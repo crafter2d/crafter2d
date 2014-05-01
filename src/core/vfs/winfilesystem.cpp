@@ -66,36 +66,6 @@ bool WinFileSystem::copyFile(const String& from, const String& to)
    return SUCCEEDED(CopyFile2(from.constData(), to.constData(), NULL));
 }
 
-bool WinFileSystem::recurseDirectory(const String& dir, Callback callback, void* pdata)
-{
-   String localdir = dir;
-   if ( localdir[localdir.length() - 1] == '/' )
-      localdir += '*';
-   else
-      localdir += L"/*";
-
-   WIN32_FIND_DATA ffd;
-
-   HANDLE hFind = FindFirstFileEx(localdir.constData(), FindExInfoBasic, &ffd, FindExSearchNameMatch, NULL, 0);
-   if ( hFind == INVALID_HANDLE_VALUE )
-      return true;
-
-   do
-   {
-      bool dir = (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false;
-
-      String name(ffd.cFileName);
-      callback(name, dir, pdata);
-   }
-   while ( FindNextFile(hFind, &ffd) != 0 );
-
-   DWORD dwError = GetLastError();
-   if (dwError != ERROR_NO_MORE_FILES) 
-      return false;
-
-   return true;
-}
-
 bool WinFileSystem::recursiveFind(const FindInfo& findinfo, std::vector<String>& result)
 {
    WIN32_FIND_DATA ffd;

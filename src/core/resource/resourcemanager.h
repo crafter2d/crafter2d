@@ -30,11 +30,9 @@
 namespace Graphics
 {
    class Device;
-   class Font;
    class Texture;
 };
 
-typedef ResourcePtr<Graphics::Font> FontPtr;
 typedef ResourcePtr<Graphics::Texture> TexturePtr;
 
 /**
@@ -50,7 +48,6 @@ public:
 
  // resource retreival
    TexturePtr getTexture(Graphics::Device& device, const String& file);
-   FontPtr    getFont(Graphics::Device& device, const String& name, int size);
    
  // notifications
    void notifyResourceDeleted(const ResourceHandleBase& resource);

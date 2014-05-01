@@ -27,6 +27,14 @@ void RenderContext::setViewport(const Viewport& viewport)
 void RenderContext::initialize(Device& device)
 {
    mSpriteRenderer.create(device);
+   mTextRenderer.initialize(device);
+}
+
+// - Drawing
+
+void RenderContext::drawString(Font& font, float fontsizeem, const String& text)
+{
+   mTextRenderer.draw(font, fontsizeem, text);
 }
 
 // - Sprites

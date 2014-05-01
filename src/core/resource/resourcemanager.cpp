@@ -76,31 +76,6 @@ TexturePtr ResourceManager::getTexture(Graphics::Device& device, const String& f
    return TexturePtr(phandle);
 }
 
-FontPtr ResourceManager::getFont(Graphics::Device& device, const String& name, int size)
-{
-   ResourceHandle<Graphics::Font>* phandle = NULL;
-
-   if ( !mResources.contains(name) )
-   {
-      AutoPtr<Graphics::Font> font = device.createFont(name, size);
-      if ( !font.hasPointer() )
-         return FontPtr();
-
-      phandle = new ResourceHandle<Graphics::Font>(*this, font.release());
-      phandle->setName(name);
-
-      ResourceHandleBase* pbasehandle = phandle;
-      mResources.insert(name, pbasehandle);
-   }
-   else
-   {
-      phandle = static_cast<ResourceHandle<Graphics::Font>*>(*mResources.get(name));
-   }
-
-   ASSERT_PTR(phandle);
-   return FontPtr(phandle);
-}
-
 // - Notifications
 
 void ResourceManager::notifyResourceDeleted(const ResourceHandleBase& resource)

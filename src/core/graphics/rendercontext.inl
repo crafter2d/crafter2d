@@ -19,4 +19,9 @@ inline const Viewport& RenderContext::getViewport() const
    return mViewport;
 }
 
+inline TextRenderer& RenderContext::getTextRenderer()
+{
+   return mTextRenderer;
+}
+
 };
