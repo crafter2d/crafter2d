@@ -27,7 +27,6 @@
 #include "texturecoordlookup.h"
 
 struct Size;
-class TiXmlElement;
 
 namespace Graphics
 {

@@ -22,8 +22,6 @@
 #  include "effect.inl"
 #endif
 
-#include <tinyxml.h>
-
 #include "core/log/log.h"
 
 #include "effecttechnique.h"

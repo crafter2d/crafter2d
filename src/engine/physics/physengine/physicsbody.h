@@ -55,9 +55,6 @@ public:
    void  addShape(CollisionShape* pshape);
    const CollisionShapes& getShapes() const;
 
-  // loading
-   virtual void load(const TiXmlElement& element);
-
   // forces
    virtual void  addForce(const Vector& force);
    virtual void  addForce(const Vector& force, const Vector& location);

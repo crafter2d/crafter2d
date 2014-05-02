@@ -22,20 +22,9 @@
 #  include "body.inl"
 #endif
 
-#include <tinyxml.h>
-
 #include "bodylistener.h"
 #include "simulator.h"
 #include "forcegenerator.h"
-
-// ----------------------------------
-// - Static
-// ----------------------------------
-
-bool Body::hasInfo(const TiXmlElement& element)
-{
-   return element.FirstChildElement("body") != NULL;
-}
 
 // ----------------------------------
 // - Body
@@ -53,15 +42,6 @@ Body::Body(Simulator& simulator):
 Body::~Body()
 {
    cleanUp();
-}
-
-// ----------------------------------
-// - Loading
-// ----------------------------------
-
-void Body::load(const TiXmlElement& element)
-{
-   // nothing to be done
 }
 
 // ----------------------------------

@@ -22,8 +22,6 @@
 #  include "animator.inl"
 #endif
 
-#include <tinyxml.h>
-
 #include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/math/size.h"

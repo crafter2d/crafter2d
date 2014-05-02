@@ -20,7 +20,6 @@
 #include "box2dbody.h"
 
 #include <Box2D.h>
-#include <tinyxml.h>
 
 #include "core/defines.h"
 #include "core/math/xform.h"

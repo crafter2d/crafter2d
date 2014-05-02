@@ -22,8 +22,6 @@
 #  include "contentmanager.inl"
 #endif
 
-#include <tinyxml.h>
-
 #include "core/content/contentheader.h"
 #include "core/content/contentreader.h"
 #include "core/modules/contentmodule.h"

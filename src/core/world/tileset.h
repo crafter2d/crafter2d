@@ -30,8 +30,6 @@ namespace Graphics
    class Texture;
 }
 
-class TiXmlElement;
-
 enum TileInfoFlag {
    TileAnimate    = 1,
    TileSolid      = 2

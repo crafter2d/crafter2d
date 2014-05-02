@@ -29,7 +29,6 @@
 
 class IBodyListener;
 class JointDefinition;
-class TiXmlElement;
 class ForceGenerator;
 class Simulator;
 class Entity;
@@ -37,8 +36,6 @@ class Entity;
 class CORE_API Body : public c2d::IScriptable
 {
 public:
-   static bool hasInfo(const TiXmlElement& element);
-
    explicit Body(Simulator& simulator);
    virtual ~Body();
 
@@ -67,10 +64,7 @@ public:
  // maintenance
    void addListener(IBodyListener* plistener);
    void link(Body& to, const JointDefinition& definition);
-
- // loading
-   virtual void load(const TiXmlElement& element);
-
+   
  // generators
    void  addForceGenerator(ForceGenerator* pgenerator);
 

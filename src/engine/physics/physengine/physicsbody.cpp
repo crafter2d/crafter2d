@@ -24,7 +24,6 @@
 
 String PhysicsBody::sClassName = UTEXT("physicsbody");
 
-#include "physicsxml.h"
 #include "collisionshape.h"
 
 PhysicsBody::PhysicsBody(Simulator& simulator):
@@ -55,17 +54,6 @@ PhysicsBody::~PhysicsBody()
 const String& PhysicsBody::getClassName() const
 {
    return sClassName;
-}
-
-// ----------------------------------
-// - Loading
-// ----------------------------------
-
-void PhysicsBody::load(const TiXmlElement& element)
-{
-   Body::load(element);
-
-   PhysicsXML::parseXML(*this, element);
 }
 
 // ----------------------------------

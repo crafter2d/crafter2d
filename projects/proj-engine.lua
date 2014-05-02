@@ -14,12 +14,12 @@ project "Engine"
 	links { "Core" }
 
 	configuration "Debug"
-		defines { "_DEBUG", "TIXML_USE_STL" }
+		defines { "_DEBUG" }
 		targetsuffix "d"
 		flags { "Symbols" }
 		
 	configuration "Release"
-		defines { "NDEBUG", "TIXML_USE_STL" }
+		defines { "NDEBUG" }
 		flags { "Optimize" }
 
 	-- Visual Studio
@@ -27,10 +27,10 @@ project "Engine"
 		links { "gdi32", "user32", "vfw32", "ws2_32" }
 		
 	configuration { "vs*", "Debug" }
-		links { "box2d_d", "tinyxmld_STL", "zlib1_d" }
+		links { "box2d_d", "zlib1_d" }
 				
 	configuration { "vs*", "Release" }
-		links { "box2d", "tinyxml_STL", "zlib1" }
+		links { "box2d", "zlib1" }
 		
 	-- CB support
 	configuration "cb-gcc"
@@ -39,25 +39,21 @@ project "Engine"
 	  
 	configuration { "cb-gcc", "Debug" }
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
-				"zlib1", "box2d_d", "tinyxmld_STL" } 
+			"zlib1", "box2d_d" }
 	 
 	configuration { "cb-gcc", "Release" }
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
-					"zlib1", "box2d", "tinyxml_STL" }
+			"zlib1", "box2d" }
 
 	-- Windows
 	configuration "Windows"
 		defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 		
-		includedirs { 	path.join(libdir, "fmod/include"),
-						path.join(libdir, "zlib/include"),
-						path.join(libdir, "tinyxml/include"),
-						path.join(libdir, "box2d/include") }
+		includedirs { 	path.join(libdir, "zlib/include"),
+				path.join(libdir, "box2d/include") }
 
-		libdirs { 	path.join(libdir, "fmod/lib"),
-					path.join(libdir, "zlib/lib"),
-					path.join(libdir, "tinyxml/lib"),
-					path.join(libdir, "box2d/lib") }
+		libdirs { 	path.join(libdir, "zlib/lib"),
+				path.join(libdir, "box2d/lib") }
 
 	-- Linux
 	configuration "linux"
@@ -69,4 +65,4 @@ project "Engine"
 		defines { "LINUX" }
 	
 		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
-		links { "tinyxml", "Box2D" }
+		links { "Box2D" }

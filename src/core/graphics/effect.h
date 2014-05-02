@@ -26,8 +26,6 @@
 #include "core/string/string.h"
 #include "core/resource/resourcemanager.h"
 
-class TiXmlElement;
-
 namespace Graphics
 {
    class BlendState;
