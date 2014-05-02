@@ -14,21 +14,21 @@ project "Core"
 	includedirs { "src" }
 
 	configuration "Debug"
-		defines { "_DEBUG", "TIXML_USE_STL" }
+		defines { "_DEBUG" }
 		targetsuffix "d"
 		flags { "Symbols" }
 
 	configuration "Release"
-		defines { "NDEBUG", "TIXML_USE_STL" }
+		defines { "NDEBUG" }
 		flags { "Optimize" }
 	
 	configuration "Windows"
 		defines { "WIN32", "CORE_EXPORTS", "UNICODE" }
 		excludes { "src/core/vfs/linux*.*", "src/core/system/linux*.*" }
 		includedirs { 	path.join(libdir, "zlib/include"),
-				path.join(libdir, "iconv/include") }
+						path.join(libdir, "iconv/include") }
 		libdirs { 	path.join(libdir, "zlib/lib"),
-				path.join(libdir, "iconv/lib") }
+					path.join(libdir, "iconv/lib") }
 				
 	-- set IDE specific settings
 	configuration "cb-gcc"
