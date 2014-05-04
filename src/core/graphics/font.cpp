@@ -28,6 +28,10 @@ Font::Font():
 {
 }
 
+Font::~Font()
+{
+}
+
 // - Get/set
 
 const String& Font::getFamilyName() const

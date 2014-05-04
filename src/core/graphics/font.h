@@ -31,6 +31,7 @@ namespace Graphics
    {
    public:
       Font();
+      virtual ~Font();
 
     // get/set
       const String& getFamilyName() const;

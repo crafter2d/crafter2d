@@ -20,10 +20,11 @@ namespace Graphics
    uint32_t GlyphAtlas::insertGlyph(const Glyph& glyph)
    {
       uint32_t glyphindex = 0;
+      uint32_t sheetindex = 0;
 
-      for ( int index = 0; index < mCurSheets; ++index )
+      for ( sheetindex = 0; sheetindex < mCurSheets; ++sheetindex )
       {
-         GlyphSheet* psheet = mpSheets[index];
+         GlyphSheet* psheet = mpSheets[sheetindex];
 
          glyphindex = psheet->insertGlyph(glyph);
          if ( glyphindex != 0xffffff )
@@ -36,11 +37,16 @@ namespace Graphics
       {
          GlyphSheet* psheet = new GlyphSheet();
          mpSheets[mCurSheets] = psheet;
-         mCurSheets++;
+         sheetindex = mCurSheets++;
 
          glyphindex = psheet->insertGlyph(glyph);
       }
 
-      return glyphindex;
+      if ( glyphindex == 0xffffff )
+      {
+         return 0xffffff;
+      }
+
+      return (sheetindex << 16) | glyphindex;
    }
 }

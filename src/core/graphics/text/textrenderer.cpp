@@ -21,12 +21,16 @@ namespace Graphics
       return true;
    }
 
-   void TextRenderer::draw(Font& font, float fontsizeem, const String& text)
+   void TextRenderer::draw(Font& font, float fontsize, const String& text)
    {
-      Glyph* pglyph = mpProvider->getGlyph(text[0], fontsizeem);
-      if ( pglyph != NULL )
+      for ( int index = 0; index < text.length(); ++index )
       {
+         UChar ch = text[0];
+         Glyph* pglyph = mpProvider->getGlyph(ch, fontsize);
+         if ( pglyph != NULL )
+         {
 
+         }
       }
    }
 
