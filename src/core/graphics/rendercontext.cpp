@@ -32,9 +32,9 @@ void RenderContext::initialize(Device& device)
 
 // - Drawing
 
-void RenderContext::drawString(Font& font, float fontsizeem, const String& text)
+void RenderContext::drawText(const Vector& position, Font& font, float fontsizeem, const String& text)
 {
-   mTextRenderer.draw(font, fontsizeem, text);
+   mTextRenderer.draw(*this, position, font, fontsizeem, text);
 }
 
 // - Sprites

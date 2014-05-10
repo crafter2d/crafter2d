@@ -48,6 +48,7 @@ namespace Graphics
       virtual CodePath*       createCodePath() = 0;
       virtual VertexBuffer*   createVertexBuffer() = 0;
       virtual IndexBuffer*    createIndexBuffer() = 0;
+      virtual Texture*        createTexture(int width, int height, int bytesperpixel) = 0;
       virtual Texture*        createTexture(DataStream& data) = 0;
       virtual RenderTarget*   createRenderTarget() = 0;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) = 0;

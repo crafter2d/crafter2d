@@ -2,6 +2,8 @@
 #include "glyphsheet.h"
 
 #include "core/defines.h"
+#include "core/graphics/device.h"
+#include "core/graphics/texture.h"
 #include "core/math/size.h"
 
 #include "glyph.h"
@@ -15,11 +17,26 @@ namespace Graphics
       mTextureWidth(0),
       mTextureHeight(0),
       mLeft(0),
-      mTop(0)
+      mTop(0),
+      mDirty(false)
    {
    }
 
    // - Operations
+
+   bool GlyphSheet::create(Device& device)
+   {
+      mTextureWidth = 512;
+      mTextureHeight = 512;
+
+      mpTexture = device.createTexture(mTextureWidth, mTextureHeight, 1);
+      if ( mpTexture != NULL )
+      {
+         return false;
+      }
+
+      return true;
+   }
    
    uint32_t GlyphSheet::insertGlyph(const Glyph& glyph)
    {
@@ -50,11 +67,34 @@ namespace Graphics
          pdest += mTextureHeight;
       }
 
-      GlyphCoord coord;
-      coord.pos.set((1.0f / mTextureWidth) * mLeft, (1.0f / mTextureHeight) * mTop);
-      coord.size.set(static_cast<float>(mLeft) / mTextureWidth, static_cast<float>(mTop) / mTextureHeight);
-      mCoords.push_back(coord);
+      GlyphVertexData data;
+      data.mGlyphSize.set(size.width, size.height);
+      data.mGlyphAdvance = glyph.getAdvance();
+      data.mTexturePos.set((1.0f / mTextureWidth) * mLeft, (1.0f / mTextureHeight) * mTop);
+      data.mTextureDim.set(static_cast<float>(mLeft) / mTextureWidth, static_cast<float>(mTop) / mTextureHeight);
+      
+      mCoords.push_back(data);
+
+      mDirty = true;
 
       return mCoords.size();
+   }
+
+   void GlyphSheet::flush(RenderContext& context)
+   {
+      if ( mDirty )
+      {
+         mpTexture->update(context, mpTextureData, mTextureWidth);
+      }
+   }
+
+   const GlyphVertexData& GlyphSheet::getGlyphVertexData(uint32_t glyphindex) const
+   {
+      return mCoords[glyphindex & 0xffff];
+   }
+
+   const Texture& GlyphSheet::getGlyphTexture() const
+   {
+      return *mpTexture;
    }
 }

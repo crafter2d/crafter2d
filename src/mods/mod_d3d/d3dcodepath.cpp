@@ -84,7 +84,24 @@ bool D3DCodePath::createInputLayout(const DataStream& stream)
 
       memset(&desc, 0, sizeof(D3D11_INPUT_ELEMENT_DESC));
       desc.SemanticName = strdup(element.semantic.toUtf8().c_str());
-      desc.Format = DXGI_FORMAT_R32G32_FLOAT;
+      switch ( element.size )
+      {
+      case 1:
+         desc.Format = DXGI_FORMAT_R32_FLOAT;
+         break;
+      case 2:
+         desc.Format = DXGI_FORMAT_R32G32_FLOAT;
+         break;
+      case 3:
+         desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+         break;
+      case 4:
+         desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+         break;
+      default:
+         return false;
+      }
+      
       desc.AlignedByteOffset = element.pos;
       desc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
    }

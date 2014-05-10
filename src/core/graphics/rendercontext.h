@@ -54,7 +54,7 @@ namespace Graphics
       virtual void drawTriangles(int start, int count) = 0;
       virtual void drawTriangleFan(int start, int count) = 0;
       virtual void drawTriangleStrip(int start, int count) = 0;
-              void drawString(Font& font, float fontsizeem, const String& text);
+              void drawText(const Vector& position, Font& font, float fontsizeem, const String& text);
      
       virtual void clear() = 0;
 

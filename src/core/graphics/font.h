@@ -27,6 +27,8 @@
 
 namespace Graphics
 {
+   class GlyphAtlas;
+
    class CORE_API Font
    {
    public:
@@ -36,6 +38,9 @@ namespace Graphics
     // get/set
       const String& getFamilyName() const;
       void          setFamilyName(const String& name);
+
+      GlyphAtlas& getGlyphAtlas();
+      void        setGlyphAtlas(GlyphAtlas* patlas);
 
     // query
       virtual int      getBaseLine() const = 0;
@@ -48,8 +53,10 @@ namespace Graphics
       virtual void     render(const String& text) = 0;
 
    private:
+
     // data
-      String mFamilyName;
+      GlyphAtlas*    mpGlyphAtlas;
+      String         mFamilyName;
    };
 };
 

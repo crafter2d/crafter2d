@@ -45,4 +45,14 @@ namespace Graphics
       mpPixels = ppixels;
       mPitch = pitch;
    }
+
+   float Glyph::getAdvance() const
+   {
+      return mAdvance;
+   }
+
+   void Glyph::setAdvance(float advance)
+   {
+      mAdvance = advance;
+   }
 }

@@ -2,6 +2,7 @@
 #include "d3ddevice.h"
 
 #include "core/smartptr/autoptr.h"
+#include "core/graphics/textureinfo.h"
 
 #include "texture/d3dtexture.h"
 #include "texture/d3dtextureloaderdds.h"
@@ -159,6 +160,55 @@ IndexBuffer* D3DDevice::createIndexBuffer()
 RenderTarget* D3DDevice::createRenderTarget()
 {
    return NULL;
+}
+
+Texture* D3DDevice::createTexture(int width, int height, int bytesperpixel)
+{
+   DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+   switch ( bytesperpixel )
+   {
+   case 1:
+      format = DXGI_FORMAT_R8_UNORM;
+      break;
+   case 2:
+      format = DXGI_FORMAT_R8G8_UNORM;
+      break;
+   case 3:
+      return NULL; // not supported
+   }
+
+   // Create the render target texture
+   D3D11_TEXTURE2D_DESC desc;
+   ZeroMemory(&desc, sizeof(desc));
+   desc.Width = width;
+   desc.Height = height;
+   desc.MipLevels = 1;
+   desc.ArraySize = 1;
+   desc.Format = format;
+   desc.SampleDesc.Count = 1;
+   desc.Usage = D3D11_USAGE_DEFAULT;
+   desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+   ID3D11Texture2D *ptexture = NULL;
+   mpDevice->CreateTexture2D(&desc, NULL, &ptexture);
+   
+   // Create the shader-resource view
+   D3D11_SHADER_RESOURCE_VIEW_DESC srDesc;
+   srDesc.Format = desc.Format;
+   srDesc.ViewDimension = D3D10_SRV_DIMENSION_TEXTURE2D;
+   srDesc.Texture2D.MostDetailedMip = 0;
+   srDesc.Texture2D.MipLevels = 1;
+
+   ID3D11ShaderResourceView *pShaderResView = NULL;
+   mpDevice->CreateShaderResourceView(ptexture, &srDesc, &pShaderResView);
+
+   TextureInfo info;
+   info.setWidth(width);
+   info.setHeight(height);
+
+   D3DTexture* presult = new D3DTexture(pShaderResView, ptexture);
+   presult->create(*this, info);
+   return presult;
 }
 
 Texture* D3DDevice::createTexture(DataStream& imagedata)

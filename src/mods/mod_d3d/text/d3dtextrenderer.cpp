@@ -224,6 +224,7 @@ HRESULT D3DTextRenderer::DrawGlyphRun(void* clientDrawingContext,
    Graphics::Glyph* pglyph = (Graphics::Glyph*)clientDrawingContext;
    pglyph->setSize(Size(static_cast<float>(glyphdata.maxWidth), static_cast<float>(glyphdata.maxHeight)));
    pglyph->setPixels(pdata, destpitch);
+   pglyph->setAdvance(glyphRun->glyphAdvances[0]);
 
    mpBitmap->Unmap();
 

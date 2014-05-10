@@ -7,9 +7,14 @@
 
 #include "core/math/vector.h"
 
+#include "glyphvertexdata.h"
+
 namespace Graphics
 {
+   class Device;
    class Glyph;
+   class GlyphVertexData;
+   class RenderContext;
    class Texture;
 
    class GlyphSheet
@@ -18,25 +23,26 @@ namespace Graphics
       GlyphSheet();
 
     // operations
+      bool create(Device& device);
+
       uint32_t insertGlyph(const Glyph& glyph);
+      void     flush(RenderContext& context);
+
+      const GlyphVertexData& getGlyphVertexData(uint32_t glyphindex) const;
+      const Texture&         getGlyphTexture() const;
 
    private:
-      struct GlyphCoord
-      {
-         Vector pos;
-         Vector size;
-      };
-
-      typedef std::vector<GlyphCoord> Coords;
+      typedef std::vector<GlyphVertexData> VertexData;
 
     // data
-      uint8_t* mpTextureData;
-      Texture* mpTexture;
-      Coords   mCoords;
-      int      mTextureWidth;
-      int      mTextureHeight;
-      int      mTop;
-      int      mLeft;
+      uint8_t*    mpTextureData;
+      Texture*    mpTexture;
+      VertexData  mCoords;
+      int         mTextureWidth;
+      int         mTextureHeight;
+      int         mTop;
+      int         mLeft;
+      bool        mDirty;
    };
 }
 

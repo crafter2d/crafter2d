@@ -44,6 +44,8 @@ namespace Graphics
       virtual bool   create(Device& device, const TextureInfo& info) = 0;
       virtual void   release();
 
+      virtual void   update(RenderContext& context, const void* pdata, int rowpitch) = 0;
+
       virtual void   enable(RenderContext& context, int stage) const = 0;
       virtual void   disable(RenderContext& context) const = 0;
       

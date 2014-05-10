@@ -87,7 +87,7 @@ D3DTexture* D3DTextureLoaderDDS::load(D3DDevice& device, DataStream& imagedata)
    
    texture->Release();
 
-   D3DTexture* presult = new D3DTexture(textureView);
+   D3DTexture* presult = new D3DTexture(textureView, texture);
 
    TextureInfo info;
    info.setWidth(pheader->width);

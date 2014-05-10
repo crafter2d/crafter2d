@@ -23,12 +23,16 @@ namespace Graphics
       const uint8_t* getPixels() const;
       void           setPixels(uint8_t* ppixels, uint32_t pitch);
 
+      float getAdvance() const;
+      void  setAdvance(float advance);
+
    private:
 
     // data
       Size     mSize;
       uint8_t* mpPixels;
       uint32_t mPitch;
+      float    mAdvance;
    };
 }
 

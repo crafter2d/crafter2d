@@ -3,39 +3,60 @@
 #define TEXT_RENDERER_H
 
 #include <map>
+
+#include "core/math/matrix4.h"
+
 class String;
+class Vector;
 
 namespace Graphics
 {
    class Device;
+   class Effect;
    class Font;
    class GlyphProvider;
+   class VertexBuffer;
+   class IndexBuffer;
+   class UniformBuffer;
+   class RenderContext;
+   class TextLayout;
 
    class TextRenderer
    {
    public:
       TextRenderer();
 
+    // operations
       bool initialize(Device& device);
-      void draw(Font& font, float fontsizeem, const String& text);
+
+      void draw(RenderContext& context, const TextLayout& layout);
+      void draw(RenderContext& context, const Vector& position, Font& font, float fontsizeem, const String& text);
 
     // font
-      
-      Font& getFont(const String& name);
-      
-     
+      Font& getFont(const String& name);     
 
    private:
       typedef std::map<String, Font*> Fonts;
+
+      struct ConstantBuffer
+      {
+         Matrix4 projection;
+         Matrix4 world;
+         Matrix4 object;
+      };
 
     // font
       bool hasFont(const String& name);
       void addFont(Font* pfont);
 
     // data
-      Device*        mpDevice;
-      GlyphProvider* mpProvider;
-      Fonts          mFonts;
+      Device*           mpDevice;
+      Effect*           mpEffect;
+      VertexBuffer*     mpVB;
+      IndexBuffer*      mpIB;
+      UniformBuffer*    mpUB;
+      GlyphProvider*    mpProvider;
+      Fonts             mFonts;
    };
 }
 

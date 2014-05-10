@@ -24,6 +24,7 @@
 using namespace Graphics;
 
 Font::Font():
+   mpGlyphAtlas(NULL),
    mFamilyName()
 {
 }
@@ -42,4 +43,15 @@ const String& Font::getFamilyName() const
 void Font::setFamilyName(const String& name)
 {
    mFamilyName = name;
+}
+
+GlyphAtlas& Font::getGlyphAtlas()
+{
+   ASSERT_PTR(mpGlyphAtlas);
+   return *mpGlyphAtlas;
+}
+
+void Font::setGlyphAtlas(GlyphAtlas* patlas)
+{
+   mpGlyphAtlas = patlas;
 }

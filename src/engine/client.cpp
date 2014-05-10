@@ -192,7 +192,8 @@ namespace c2d
       mpScript->arg(0, delta);
       mpScript->call(sPaint);
 
-      mpRenderContext->drawString(*mpFont, 24.0f, UTEXT("Hello World!"));
+      Vector pos(50, 50);
+      mpRenderContext->drawText(pos, *mpFont, 24.0f, UTEXT("Hello World!"));
 
       mpDevice->present();
       mpWindow->display();
