@@ -6,6 +6,7 @@ namespace Graphics
 
 RenderContext::RenderContext():
    mSpriteRenderer(),
+   mTextRenderer(),
    mViewport(),
    mClearColor()
 {
@@ -18,6 +19,7 @@ void RenderContext::setViewport(const Viewport& viewport)
    mViewport = viewport;
 
    mSpriteRenderer.viewportChanged(*this, viewport);
+   mTextRenderer.viewportChanged(*this, viewport);
 
    onViewportChanged(viewport);
 }

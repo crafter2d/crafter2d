@@ -20,6 +20,7 @@ namespace Graphics
    class UniformBuffer;
    class RenderContext;
    class TextLayout;
+   class Viewport;
 
    class TextRenderer
    {
@@ -29,11 +30,14 @@ namespace Graphics
     // operations
       bool initialize(Device& device);
 
-      void draw(RenderContext& context, const TextLayout& layout);
+      void draw(RenderContext& context, TextLayout& layout);
       void draw(RenderContext& context, const Vector& position, Font& font, float fontsizeem, const String& text);
 
     // font
-      Font& getFont(const String& name);     
+      Font& getFont(const String& name);
+
+    // notifications
+      void viewportChanged(RenderContext& context, const Viewport& viewport);
 
    private:
       typedef std::map<String, Font*> Fonts;
@@ -55,6 +59,7 @@ namespace Graphics
       VertexBuffer*     mpVB;
       IndexBuffer*      mpIB;
       UniformBuffer*    mpUB;
+      ConstantBuffer    mConstants;
       GlyphProvider*    mpProvider;
       Fonts             mFonts;
    };

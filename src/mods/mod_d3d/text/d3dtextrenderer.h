@@ -83,7 +83,7 @@ private:
    ULONG                   mRefCount;
    ID2D1DeviceContext*     mpD2DContext;
    ID2D1SolidColorBrush*   mpBrush;
-   ID2D1Bitmap*            mpTarget;
+   ID2D1Bitmap1*           mpTarget;
    ID2D1Bitmap1*           mpBitmap;
    D2D1_SIZE_U             mSize;
 };

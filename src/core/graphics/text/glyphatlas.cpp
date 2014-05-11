@@ -82,7 +82,7 @@ namespace Graphics
 
    uint32_t GlyphAtlas::insertGlyph(const Glyph& glyph)
    {
-      uint32_t glyphindex = 0;
+      uint32_t glyphindex = 0xffffff;
       int32_t sheetindex = 0;
 
       for ( sheetindex = 0; sheetindex < mCurSheets; ++sheetindex )

@@ -21,6 +21,12 @@
 #include "glyphvertexdata.h"
 #include "textlayout.h"
 
+struct GlyphVertex
+{
+   Vector pos;
+   Vector tex;
+};
+
 namespace Graphics
 {
    TextRenderer::TextRenderer():
@@ -50,6 +56,10 @@ namespace Graphics
          return false;
       }
 
+      mConstants.projection.setIdentity();
+      mConstants.world.setIdentity();
+      mConstants.object.setIdentity();
+
       int batchsize = 256;
 
       int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
@@ -68,43 +78,107 @@ namespace Graphics
       return true;
    }
 
-   bool glyphSort(uint32_t i, uint32_t j) { return (i >> 16) < (j >> 16); }
+   void TextRenderer::viewportChanged(RenderContext& context, const Viewport& viewport)
+   {
+      mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
+
+      mpUB->set(context, &mConstants);
+   }
 
    void TextRenderer::draw(RenderContext& context, const Vector& position, Font& font, float fontsize, const String& text)
    {
+      float dpisize = (fontsize / 72.0f) * 96.0f;
+
       TextLayout layout;
-      if ( layout.create(context, position, font, fontsize, text) )
+      if ( layout.create(context, position, font, dpisize, text) )
       {
          draw(context, layout);
       }
    }
 
-   void TextRenderer::draw(RenderContext& context, const TextLayout& layout)
+   void TextRenderer::draw(RenderContext& context, TextLayout& layout)
    {
       mpEffect->enable(context);
       context.setUniformBuffer(*mpUB);
+      context.setVertexBuffer(*mpVB);
       context.setIndexBuffer(*mpIB);
 
-      GlyphVertex* pvertices = (GlyphVertex*)mpVB->lock(context);
+      Font& font = layout.getFont();
 
-      int start = 0;
-      int nrindices = 0;
-      const Texture* ptex = &atlas.getGlyphTexture(indices[0]);
-      for ( uint32_t index = 0; index < indices.size(); ++index )
+      TextLayoutInfo info;
+      layout.fill(info);
+
+      uint32_t vertex = 0;
+      
+      GlyphAtlas& atlas = font.getGlyphAtlas();
+      for ( uint32_t index = 0; index < info.sheetCount; ++index )
       {
-         uint32_t glyphindex = indices[index];
-         const Texture& texture = atlas.getGlyphTexture(glyphindex);
-         if ( &texture != ptex )
+         uint32_t amount = info.indicesPerSheet[index];
+         if ( amount > 0 )
          {
+            const Texture& texture = atlas.getGlyphTexture(info.data[vertex].glyphindex);
             context.setTexture(0, texture);
-            context.drawTriangles(start, nrindices);
 
-            start += nrindices;
-            nrindices = 0;
-            ptex = &texture;
+            GlyphVertex* pvertices = (GlyphVertex*)mpVB->lock(context);
+            int nrindices = 0;
+
+            pvertices[0].pos.x = 50;
+            pvertices[0].pos.y = 50;
+            pvertices[0].tex.x = 0;
+            pvertices[0].tex.y = 0;
+
+            pvertices[1].pos.x = 500;
+            pvertices[1].pos.y = 50;
+            pvertices[1].tex.x = 1;
+            pvertices[1].tex.y = 0;
+
+            pvertices[2].pos.x = 500;
+            pvertices[2].pos.y = 500;
+            pvertices[2].tex.x = 1;
+            pvertices[2].tex.y = 1;
+
+            pvertices[3].pos.x = 50;
+            pvertices[3].pos.y = 500;
+            pvertices[3].tex.x = 0;
+            pvertices[3].tex.y = 1;
+
+            nrindices = 6;
+
+            /*
+            for ( uint32_t d = 0; d < amount; ++d )
+            {
+               TextLayoutData& data = info.data[vertex++];
+               const GlyphVertexData& vertexdata = atlas.getGlyphVertexData(data.glyphindex);
+
+               pvertices[0].pos.x = data.pos.x;
+               pvertices[0].pos.y = data.pos.y;
+               pvertices[0].tex.x = vertexdata.mTexturePos.x;
+               pvertices[0].tex.y = vertexdata.mTexturePos.y;
+
+               pvertices[1].pos.x = data.pos.x + vertexdata.mGlyphSize.x;
+               pvertices[1].pos.y = data.pos.y;
+               pvertices[1].tex.x = vertexdata.mTexturePos.x + vertexdata.mTextureDim.x;
+               pvertices[1].tex.y = vertexdata.mTexturePos.y;
+
+               pvertices[2].pos.x = data.pos.x + vertexdata.mGlyphSize.x;
+               pvertices[2].pos.y = data.pos.y + vertexdata.mGlyphSize.y;
+               pvertices[2].tex.x = vertexdata.mTexturePos.x + vertexdata.mTextureDim.x;
+               pvertices[2].tex.y = vertexdata.mTexturePos.y + vertexdata.mTextureDim.y;
+
+               pvertices[3].pos.x = data.pos.x;
+               pvertices[3].pos.y = data.pos.y + vertexdata.mGlyphSize.y;
+               pvertices[3].tex.x = vertexdata.mTexturePos.x;
+               pvertices[3].tex.y = vertexdata.mTexturePos.y + vertexdata.mTextureDim.y;
+
+               pvertices += 4;
+               nrindices += 6;
+            }
+            */
+
+            mpVB->unlock(context);
+
+            context.drawTriangles(0, nrindices);
          }
-         
-         nrindices += 6;
       }
    }
 

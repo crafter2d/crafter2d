@@ -45,12 +45,14 @@ HRESULT D3DTextRenderer::initialize(ID2D1DeviceContext* pcontext, int width, int
       );
 
    // create the target bitmap that can be bound to the context
-   D2D1_BITMAP_PROPERTIES targetProperties;
+   D2D1_BITMAP_PROPERTIES1 targetProperties;
+   ZeroMemory(&targetProperties, sizeof(targetProperties));
    targetProperties.pixelFormat = pixelFormat;
    targetProperties.dpiX = dpiX;
    targetProperties.dpiY = dpiY;
+   targetProperties.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET;
 
-   HRESULT hr = mpD2DContext->CreateBitmap(mSize, targetProperties, &mpTarget);
+   HRESULT hr = mpD2DContext->CreateBitmap(mSize, NULL, 0 ,targetProperties, &mpTarget);
    if ( FAILED(hr) )
    {
       return hr;
@@ -71,7 +73,7 @@ HRESULT D3DTextRenderer::initialize(ID2D1DeviceContext* pcontext, int width, int
    }
 
    // create the brush used to draw the glyph
-   D2D1_COLOR_F color = { 0, 0, 0, 1 };
+   D2D1_COLOR_F color = { 1, 1, 1, 1 };
    hr = mpD2DContext->CreateSolidColorBrush(color, &mpBrush);
    if ( FAILED(hr) )
    {
@@ -194,29 +196,44 @@ HRESULT D3DTextRenderer::DrawGlyphRun(void* clientDrawingContext,
    D2D1_POINT_2F baseline = { 2.0f - glyphdata.offsetX, 2.0f - glyphdata.offsetY };
    
    mpD2DContext->SetTarget(mpTarget);
+   mpD2DContext->SetTransform(D2D1::Matrix3x2F::Identity());
    mpD2DContext->BeginDraw();
+   mpD2DContext->Clear(D2D1::ColorF(D2D1::ColorF::Black));
    mpD2DContext->DrawGlyphRun(baseline, glyphRun, mpBrush);
    mpD2DContext->EndDraw();
      
    // copy the glyph into the correct bitmap so we can extract it
    D2D1_MAPPED_RECT mapped;
-   mpBitmap->CopyFromBitmap(NULL, mpTarget, NULL);
-   HRESULT hr = mpBitmap->Map(D2D1_MAP_OPTIONS_READ, &mapped);
+   HRESULT hr = mpBitmap->CopyFromBitmap(NULL, mpTarget, NULL);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   hr = mpBitmap->Map(D2D1_MAP_OPTIONS_READ, &mapped);
    if ( FAILED(hr) )
    {
       return E_FAIL;
    }
 
-   uint32_t size = glyphdata.maxHeight * glyphdata.maxWidth * 4;
+   uint32_t size = glyphdata.maxHeight * glyphdata.maxWidth * sizeof(uint8_t);
    uint8_t* pdata = new uint8_t[size];
 
    const BYTE* psrc = mapped.bits;
    uint8_t* pdest = pdata;
-   uint32_t destpitch = glyphdata.maxWidth * 4;
+   uint32_t destpitch = glyphdata.maxWidth * sizeof(uint8_t);
 
    for ( int y = 0; y < glyphdata.maxHeight; ++y )
    {
-      memcpy(pdest, psrc, destpitch);
+      for ( int x = 0; x < glyphdata.maxWidth; ++x )
+      {
+         pdest[x] = psrc[x * 4];
+         if ( pdest[x] > 0 )
+         {
+            int aap = 5;
+         }
+      }
+
       psrc += mapped.pitch;
       pdest += destpitch;
    }

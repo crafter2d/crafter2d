@@ -30,10 +30,14 @@ namespace Graphics
       mTextureHeight = 512;
 
       mpTexture = device.createTexture(mTextureWidth, mTextureHeight, 1);
-      if ( mpTexture != NULL )
+      if ( mpTexture == NULL )
       {
          return false;
       }
+
+      uint32_t size = mTextureWidth * mTextureHeight * sizeof(uint8_t);
+      mpTextureData = new uint8_t[size];
+      memset(mpTextureData, 255, size);
 
       return true;
    }
@@ -58,26 +62,36 @@ namespace Graphics
          return 0xffffff;
       }
 
-      uint8_t* pdest = mpTextureData + (mTextureWidth * mTop * 4);
+      uint8_t* pdest = mpTextureData + (mTextureWidth * mTop) + mLeft;
       const uint8_t* psrc = glyph.getPixels();
       for ( int y = 0; y < size.height; ++y )
       {
+         for ( int x = 0; x < size.width; ++x )
+         {
+            uint8_t value = psrc[x + y * (int)size.width];
+            if ( value != 0 && value != 255 )
+            {
+               int aap = 5;
+            }
+         }
          memcpy(pdest, psrc, static_cast<int>(size.width));
-         psrc += mTextureWidth;
-         pdest += mTextureHeight;
+         psrc += static_cast<int>(size.width);
+         pdest += mTextureWidth;
       }
 
       GlyphVertexData data;
       data.mGlyphSize.set(size.width, size.height);
       data.mGlyphAdvance = glyph.getAdvance();
       data.mTexturePos.set((1.0f / mTextureWidth) * mLeft, (1.0f / mTextureHeight) * mTop);
-      data.mTextureDim.set(static_cast<float>(mLeft) / mTextureWidth, static_cast<float>(mTop) / mTextureHeight);
+      data.mTextureDim.set(static_cast<float>(mLeft + size.width) / mTextureWidth, static_cast<float>(mTop + size.height) / mTextureHeight);
       
       mCoords.push_back(data);
 
+      mLeft += size.width;
+
       mDirty = true;
 
-      return mCoords.size();
+      return mCoords.size() - 1;
    }
 
    void GlyphSheet::flush(RenderContext& context)
