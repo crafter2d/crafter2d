@@ -11,7 +11,8 @@ namespace Graphics
    public:
 
       Vector mGlyphSize;
-      float mGlyphAdvance;
+      float mBaseLine;
+      float mAdvance;
 
       Vector mTexturePos;
       Vector mTextureDim;

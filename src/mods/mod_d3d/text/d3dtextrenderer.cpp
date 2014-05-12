@@ -227,11 +227,7 @@ HRESULT D3DTextRenderer::DrawGlyphRun(void* clientDrawingContext,
    {
       for ( int x = 0; x < glyphdata.maxWidth; ++x )
       {
-         pdest[x] = psrc[x * 4];
-         if ( pdest[x] > 0 )
-         {
-            int aap = 5;
-         }
+         pdest[x] = psrc[(x+2) * 4];
       }
 
       psrc += mapped.pitch;
@@ -242,6 +238,7 @@ HRESULT D3DTextRenderer::DrawGlyphRun(void* clientDrawingContext,
    pglyph->setSize(Size(static_cast<float>(glyphdata.maxWidth), static_cast<float>(glyphdata.maxHeight)));
    pglyph->setPixels(pdata, destpitch);
    pglyph->setAdvance(glyphRun->glyphAdvances[0]);
+   pglyph->setBaseLine(baseline.y);
 
    mpBitmap->Unmap();
 

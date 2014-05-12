@@ -81,9 +81,10 @@ namespace Graphics
 
       GlyphVertexData data;
       data.mGlyphSize.set(size.width, size.height);
-      data.mGlyphAdvance = glyph.getAdvance();
+      data.mBaseLine = glyph.getBaseLine();
+      data.mAdvance = glyph.getAdvance();
       data.mTexturePos.set((1.0f / mTextureWidth) * mLeft, (1.0f / mTextureHeight) * mTop);
-      data.mTextureDim.set(static_cast<float>(mLeft + size.width) / mTextureWidth, static_cast<float>(mTop + size.height) / mTextureHeight);
+      data.mTextureDim.set(static_cast<float>(size.width) / mTextureWidth, static_cast<float>(size.height) / mTextureHeight);
       
       mCoords.push_back(data);
 

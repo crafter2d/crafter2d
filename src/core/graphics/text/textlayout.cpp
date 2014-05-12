@@ -56,9 +56,9 @@ namespace Graphics
          const GlyphVertexData& data = atlas.getGlyphVertexData(glyphindex);
          TextLayoutData layoutdata;
          layoutdata.glyphindex = glyphindex;
-         layoutdata.pos.set(positionx, position.y);
+         layoutdata.pos.set(positionx, position.y - data.mBaseLine);
          mData[index] = layoutdata;
-         positionx += data.mGlyphAdvance;
+         positionx += data.mAdvance;
 
          uint32_t sheet = glyphindex >> 16;
          mMaxSheetIndex = MAX(mMaxSheetIndex, sheet);

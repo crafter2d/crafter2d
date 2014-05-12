@@ -25,6 +25,7 @@
 #include <map>
 
 #include "core/entity/idmanager.h"
+#include "core/string/string.h"
 #include "core/sound/soundmanager.h"
 
 #include "clientgamewindowlistener.h"
@@ -147,6 +148,7 @@ namespace c2d
       void  handleUpdateObjectEvent(const UpdateObjectEvent& event);
       void  handleScriptEvent(const ScriptEvent& event);
 
+    // data
       GameWindowFactory*         mpWindowFactory;
       GameWindow*                mpWindow;
       Graphics::Device*          mpDevice;
@@ -161,6 +163,7 @@ namespace c2d
       Player*                    mpPlayer;
       KeyMap*                    mpKeyMap;
       Graphics::Font*            mpFont;
+      String                     mFpsMsg;
       Requests                   mRequests;
       int                        mServerId;
    };

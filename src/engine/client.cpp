@@ -93,6 +93,8 @@ namespace c2d
       mpWorldRenderer(NULL),
       mpPlayer(NULL),
       mpKeyMap(NULL),
+      mpFont(NULL),
+      mFpsMsg(UTEXT("FPS: 0")),
       mRequests(),
       mServerId(-1)
    {
@@ -173,6 +175,8 @@ namespace c2d
    void Client::render(float delta)
    {
       static const String sPaint = UTEXT("paint");
+      static float start = 0;
+      static int frame = 0;
 
       mpRenderContext->clear();
       
@@ -192,8 +196,17 @@ namespace c2d
       mpScript->arg(0, delta);
       mpScript->call(sPaint);
 
-      Vector pos(50, 50);
-      mpRenderContext->drawText(pos, *mpFont, 48.0f, UTEXT("Hello World!"));
+      frame++;
+      start += delta;
+      if ( start >= 1.0f )
+      {
+         mFpsMsg = UTEXT("FPS: {0}").arg(0, frame);
+         start = 0;
+         frame = 0;
+      }
+
+      Vector pos(10, 30);
+      mpRenderContext->drawText(pos, *mpFont, 48.0f, mFpsMsg);
 
       mpDevice->present();
       mpWindow->display();

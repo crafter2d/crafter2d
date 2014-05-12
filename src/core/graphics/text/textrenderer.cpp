@@ -9,6 +9,7 @@
 #include "core/graphics/device.h"
 #include "core/graphics/font.h"
 #include "core/graphics/effect.h"
+#include "core/graphics/blendstatedesc.h"
 #include "core/graphics/indexbuffer.h"
 #include "core/graphics/vertexbuffer.h"
 #include "core/graphics/uniformbuffer.h"
@@ -59,6 +60,10 @@ namespace Graphics
       mConstants.projection.setIdentity();
       mConstants.world.setIdentity();
       mConstants.object.setIdentity();
+
+      BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_ONE, true);
+      BlendState* pblendstate = mpDevice->createBlendState(desc);
+      mpEffect->setBlendState(pblendstate);
 
       int batchsize = 256;
 
@@ -122,29 +127,6 @@ namespace Graphics
             GlyphVertex* pvertices = (GlyphVertex*)mpVB->lock(context);
             int nrindices = 0;
 
-            pvertices[0].pos.x = 50;
-            pvertices[0].pos.y = 50;
-            pvertices[0].tex.x = 0;
-            pvertices[0].tex.y = 0;
-
-            pvertices[1].pos.x = 500;
-            pvertices[1].pos.y = 50;
-            pvertices[1].tex.x = 1;
-            pvertices[1].tex.y = 0;
-
-            pvertices[2].pos.x = 500;
-            pvertices[2].pos.y = 500;
-            pvertices[2].tex.x = 1;
-            pvertices[2].tex.y = 1;
-
-            pvertices[3].pos.x = 50;
-            pvertices[3].pos.y = 500;
-            pvertices[3].tex.x = 0;
-            pvertices[3].tex.y = 1;
-
-            nrindices = 6;
-
-            /*
             for ( uint32_t d = 0; d < amount; ++d )
             {
                TextLayoutData& data = info.data[vertex++];
@@ -173,7 +155,6 @@ namespace Graphics
                pvertices += 4;
                nrindices += 6;
             }
-            */
 
             mpVB->unlock(context);
 

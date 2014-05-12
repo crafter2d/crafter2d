@@ -22,9 +22,6 @@
 #  include "game.inl"
 #endif
 
-#include <iostream>
-#include <cstdlib>
-
 #include "core/commandline/commandline.h"
 #include "core/commandline/commandlineargument.h"
 #include "core/inifile/inifile.h"
@@ -234,27 +231,15 @@ void Game::runFrame()
    static float FREQ = 1.0f / 60.0f;
    static float cur = 0;
 
-   cur += delta;
+   //cur += delta;
    //if ( cur >= FREQ )
    {
-      static float start = 0;
-      static unsigned int frame = 0;
-
       mpServer->update(delta);
       
       mpClient->update(delta);
       mpClient->render(delta);
 
-      frame++;
-      start += delta;
-      if ( start >= 1.0f )
-      {
-         std::cout << "Fps: " << frame << std::endl;
-         start = 0;
-         frame = 0;
-      }
-
-      cur = 0.0f;
+      //cur = 0.0f;
    }
 
    // Profiler::getInstance().end();

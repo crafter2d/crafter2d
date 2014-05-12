@@ -8,7 +8,9 @@ namespace Graphics
    Glyph::Glyph() :
       mSize(),
       mpPixels(NULL),
-      mPitch(0)
+      mPitch(0),
+      mBaseLine(0.0f),
+      mAdvance(0.0f)
    {
    }
 
@@ -28,6 +30,16 @@ namespace Graphics
    void Glyph::setSize(const Size& size)
    {
       mSize = size;
+   }
+
+   float Glyph::getBaseLine() const
+   {
+      return mBaseLine;
+   }
+
+   void Glyph::setBaseLine(float baseline)
+   {
+      mBaseLine = baseline;
    }
 
    int Glyph::getPitch() const

@@ -19,6 +19,9 @@ namespace Graphics
       const Size& getSize() const;
       void        setSize(const Size& size);
 
+      float getBaseLine() const;
+      void  setBaseLine(float baseline);
+
       int            getPitch() const;
       const uint8_t* getPixels() const;
       void           setPixels(uint8_t* ppixels, uint32_t pitch);
@@ -32,6 +35,7 @@ namespace Graphics
       Size     mSize;
       uint8_t* mpPixels;
       uint32_t mPitch;
+      float    mBaseLine;
       float    mAdvance;
    };
 }
