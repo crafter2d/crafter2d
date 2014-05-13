@@ -104,7 +104,8 @@ namespace Graphics
    void TextRenderer::draw(RenderContext& context, TextLayout& layout)
    {
       mpEffect->enable(context);
-      context.setUniformBuffer(*mpUB);
+      mpEffect->setConstantBuffer(context, 0, *mpUB);
+
       context.setVertexBuffer(*mpVB);
       context.setIndexBuffer(*mpIB);
 

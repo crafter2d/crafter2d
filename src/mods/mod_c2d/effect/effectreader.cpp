@@ -46,12 +46,18 @@ EffectTechnique* EffectReader::readTechnique(DataStream& stream)
    char* pvertexshader = new char[vertexshaderlen];
    stream.readBlob(pvertexshader, vertexshaderlen);
 
+   int geometryshaderlen;
+   stream.readInt(geometryshaderlen);
+   char* pgeometryshader = new char[geometryshaderlen];
+   stream.readBlob(pgeometryshader, geometryshaderlen);
+
    int pixelshaderlen;
    stream.readInt(pixelshaderlen);
    char* ppixelshader = new char[pixelshaderlen];
    stream.readBlob(ppixelshader, pixelshaderlen);
 
    ArrayStream vertexshader(pvertexshader, vertexshaderlen);
+   ArrayStream geometryshader(pgeometryshader, geometryshaderlen);
    ArrayStream pixelshader(ppixelshader, pixelshaderlen);
 
    Device& device = getGraphicsDevice();
@@ -60,13 +66,14 @@ EffectTechnique* EffectReader::readTechnique(DataStream& stream)
 
    EffectTechnique* presult = NULL;
 
-   if ( ppath->create(playout, vertexshader, pixelshader) )
+   if ( ppath->create(playout, vertexshader, geometryshader, pixelshader) )
    {
       presult = new EffectTechnique();
       presult->setCodePath(ppath);
    }
 
    delete[] pvertexshader;
+   delete[] pgeometryshader;
    delete[] ppixelshader;
 
    return presult;

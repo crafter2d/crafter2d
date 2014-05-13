@@ -24,10 +24,10 @@ namespace Graphics
       virtual void setBlendState(const BlendState& state);
       virtual void setVertexBuffer(const VertexBuffer& buffer);
       virtual void setIndexBuffer(const IndexBuffer& buffer);
-      virtual void setUniformBuffer(const UniformBuffer& buffer);
       virtual void setTexture(int stage, const Texture& texture) override;
 
       // drawing instructions
+      virtual void drawPoints(int start, int count) override;
       virtual void drawTriangles(int start, int count);
       virtual void drawTriangleFan(int start, int count);
       virtual void drawTriangleStrip(int start, int count);

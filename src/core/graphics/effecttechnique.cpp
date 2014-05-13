@@ -58,4 +58,9 @@ void EffectTechnique::enable(RenderContext& context)
    context.setCodePath(*mpCodePath);
 }
 
+void EffectTechnique::setConstantBuffer(RenderContext& context, int index, const UniformBuffer& buffer)
+{
+   mpCodePath->setConstantBuffer(context, buffer);
+}
+
 } // namespace Graphics

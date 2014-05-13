@@ -26,9 +26,6 @@ namespace Graphics
 
       /// set the data into the uniform buffer
       virtual void set(RenderContext& context, const void* pdata) = 0;
-
-      /// enable the uniform buffer for rendering
-      virtual void enable(RenderContext& context) const = 0;
    };
 }
 

@@ -14,13 +14,15 @@ namespace Graphics
       D3DUniformBuffer();
       virtual ~D3DUniformBuffer();
 
+    // get/set
+      ID3D11Buffer* getBuffer() const;
+
+    // operations
       virtual bool create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr) override;
       virtual void release() override;
 
       virtual void set(RenderContext& context, const void* pdata) override;
-
-      virtual void enable(RenderContext& context) const override;
-         
+               
    private:
 
     // helpers

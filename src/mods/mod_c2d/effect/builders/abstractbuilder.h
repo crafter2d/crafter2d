@@ -24,6 +24,7 @@ public:
 protected:
 
    virtual void buildVertexShader(const ASTEffect& effect, ASTTechnique& technique) = 0;
+   virtual void buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique) = 0;
    virtual void buildPixelShader(const ASTEffect& effect, ASTTechnique& technique) = 0;
 
    Graphics::VertexLayout* buildInputLayout(const ASTStruct& input);

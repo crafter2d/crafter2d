@@ -30,6 +30,7 @@ namespace Graphics
 
     // operations
       void enable(RenderContext& context);
+      void setConstantBuffer(RenderContext& context, int index, const UniformBuffer& buffer);
 
    private:
 

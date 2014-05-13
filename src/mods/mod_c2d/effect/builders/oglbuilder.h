@@ -14,6 +14,7 @@ class OglBuilder : public AbstractBuilder
 protected:
  // overrides
    virtual void buildVertexShader(const ASTEffect& effect, ASTTechnique& technique) override;
+   virtual void buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique) override;
    virtual void buildPixelShader(const ASTEffect& effect, ASTTechnique& technique) override;
 
 private:

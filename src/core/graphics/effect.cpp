@@ -116,4 +116,10 @@ void Effect::enable(RenderContext& context) const
    mpActiveTechnique->enable(context);
 }
 
+void Effect::setConstantBuffer(RenderContext& context, int index, const UniformBuffer& buffer)
+{
+   ASSERT_PTR(mpActiveTechnique);
+   mpActiveTechnique->setConstantBuffer(context, index, buffer);
+}
+
 } // end namespace

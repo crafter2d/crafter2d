@@ -2,16 +2,18 @@
 #ifndef PARTICLE_MODULE_LIFETIME_H
 #define PARTICLE_MODULE_LIFETIME_H
 
-#include "particlemodulespawn.h"
+#include "particle.h"
 
 namespace Graphics
 {
-   class ParticleModuleLifetime : public ParticleModuleSpawn
+   class ParticleModuleLifetime
    {
    public:
       ParticleModuleLifetime();
 
-      virtual void exec(Particle& particle) override;
+      inline void exec(Particle& particle) {
+         particle.lifeTime = mLifeTime;
+      }
 
    private:
 

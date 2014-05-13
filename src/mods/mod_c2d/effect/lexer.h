@@ -12,6 +12,7 @@ public:
  // query
    UChar getChar();
    bool next(UChar ch);
+   bool next(const String& str);
 
    bool isEOF() const;
 

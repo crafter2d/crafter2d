@@ -19,11 +19,18 @@
  ***************************************************************************/
 #include "color.h"
 
+const Color Color::sWhite = Color(1,1,1);
 const Color Color::sBlack = Color(0,0,0);
 const Color Color::sRed   = Color(1,0,0);
 const Color Color::sBlue  = Color(0,0,1);
 
 // static 
+
+const Color& Color::white()
+{
+   return sWhite;
+}
+
 const Color& Color::black()
 {
    return sBlack;

@@ -26,6 +26,8 @@
 #include "core/string/string.h"
 #include "core/resource/resourcemanager.h"
 
+class TiXmlElement;
+
 namespace Graphics
 {
    class BlendState;
@@ -63,6 +65,7 @@ namespace Graphics
 
       void setBlendState(BlendState* pblendstate);
       void setActiveTechnique(const String& name);
+      void setConstantBuffer(RenderContext& context, int index, const UniformBuffer& buffer);
 
       void enable(RenderContext& context) const;
 	

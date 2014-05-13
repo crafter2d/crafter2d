@@ -9,10 +9,12 @@ class ASTType;
 class ASTFunctionArgument
 {
 public:
+   ASTFunctionArgument(): mpType(NULL), mName(), mArraySize(-1) {}
 
  // data
    ASTType* mpType;
    String   mName;
+   int      mArraySize;
 };
 
 #endif // AST_FUNCTION_ARGUMENT_H

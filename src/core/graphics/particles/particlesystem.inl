@@ -35,8 +35,18 @@ namespace Graphics
       emitCount = count;
    }
 
-   INLINE Particle* ParticleSystem::getAliveParticles()
+   INLINE void ParticleSystem::setPosition(const Vector& pos)
+   {
+      mPosition = pos;
+   }
+
+   INLINE const Particle* ParticleSystem::getActiveParticles() const
    {
       return mActiveList;
+   }
+
+   INLINE const Texture& ParticleSystem::getTexture() const
+   {
+      return *mpTexture;
    }
 }

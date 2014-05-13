@@ -74,6 +74,7 @@ void EffectWriter::write(DataStream& stream, const ASTTechnique& technique)
    write(stream, *technique.mpLayout);
 
    stream.write(technique.mVertex.mCompiledCode);
+   stream.write(technique.mGeometry.mCompiledCode);
    stream.write(technique.mPixel.mCompiledCode);
 }
 

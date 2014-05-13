@@ -6,6 +6,7 @@
 #include "core/math/color.h"
 
 #include "viewport.h"
+#include "particles/particlesystemrenderer.h"
 #include "sprites/spriterenderer.h"
 #include "text/textrenderer.h"
 
@@ -17,6 +18,7 @@ namespace Graphics
    class BlendState;
    class CodePath;
    class Effect;
+   class ParticleSystem;
    class Sprite;
    class RenderTarget;
    class IndexBuffer;
@@ -40,6 +42,7 @@ namespace Graphics
 
     // initialization
       void initialize(Device& device);
+      void destroy();
 
     // operations
       virtual void setRenderTarget(RenderTarget& target) = 0;
@@ -47,10 +50,10 @@ namespace Graphics
       virtual void setBlendState(const BlendState& state) = 0;
       virtual void setVertexBuffer(const VertexBuffer& buffer) = 0;
       virtual void setIndexBuffer(const IndexBuffer& buffer) = 0;
-      virtual void setUniformBuffer(const UniformBuffer& buffer) = 0;
       virtual void setTexture(int stage, const Texture& texture) = 0;
 
     // drawing instructions
+      virtual void drawPoints(int start, int count) = 0;
       virtual void drawTriangles(int start, int count) = 0;
       virtual void drawTriangleFan(int start, int count) = 0;
       virtual void drawTriangleStrip(int start, int count) = 0;
@@ -64,6 +67,7 @@ namespace Graphics
 
       void setSpriteOffset(const Vector& offset);
       void drawSprite(const Sprite& sprite);
+      void drawParticles(const ParticleSystem& particles);
 
    protected:
     // notifications
@@ -72,10 +76,11 @@ namespace Graphics
    private:
 
     // data
-      SpriteRenderer mSpriteRenderer;
-      TextRenderer   mTextRenderer;
-      Viewport       mViewport;
-      Color          mClearColor;
+      SpriteRenderer         mSpriteRenderer;
+      ParticleSystemRenderer mParticleRenderer;
+      TextRenderer           mTextRenderer;
+      Viewport               mViewport;
+      Color                  mClearColor;
    };
 };
 

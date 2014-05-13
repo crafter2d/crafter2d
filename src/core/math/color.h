@@ -25,6 +25,7 @@
 class CORE_API Color
 {
 public:
+   static const Color& white();
    static const Color& black();
    static const Color& red();
    static const Color& blue();
@@ -34,6 +35,8 @@ public:
    Color(int red, int green, int blue, int alpha);
 	Color(float red, float green, float blue, float alpha=1.0f);
 	~Color();
+
+   const Color& operator=(const Color& that);
 
  // get/set
    float getRed() const;
@@ -52,6 +55,7 @@ public:
 	void set(float red, float green, float blue, float alpha=1.0f);
 
 private:
+   static const Color sWhite;
    static const Color sBlack;
    static const Color sRed;
    static const Color sBlue;

@@ -19,6 +19,15 @@ namespace Graphics
       release();
    }
 
+   // - Get/set
+
+   ID3D11Buffer* D3DUniformBuffer::getBuffer() const
+   {
+      return mpBuffer;
+   }
+
+   // - Operations
+
    bool D3DUniformBuffer::create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr)
    {
       D3DDevice& d3ddevice = static_cast<D3DDevice&>(device);
@@ -51,13 +60,7 @@ namespace Graphics
       D3DRenderContext& d3dcontext = static_cast<D3DRenderContext&>(context);
       d3dcontext.getContext().UpdateSubresource(mpBuffer, 0, NULL, pdata, 0, 0);
    }
-
-   void D3DUniformBuffer::enable(RenderContext& context) const
-   {
-      D3DRenderContext& d3dcontext = static_cast<D3DRenderContext&>(context);
-      d3dcontext.getContext().VSSetConstantBuffers(0, 1, &mpBuffer);
-   }
-
+   
    // - Helpers
 
    int D3DUniformBuffer::determineSize(UNIFORM_BUFFER_DESC* pdescs, int nr)

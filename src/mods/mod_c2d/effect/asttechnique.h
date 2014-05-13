@@ -17,6 +17,7 @@ public:
    String                  mName;
    Graphics::VertexLayout* mpLayout;
    ASTShader               mVertex;
+   ASTShader               mGeometry;
    ASTShader               mPixel;
 };
 

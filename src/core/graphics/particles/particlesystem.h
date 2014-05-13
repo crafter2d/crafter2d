@@ -25,23 +25,24 @@
 #include "core/entity/components/components.h"
 #include "core/math/vector.h"
 #include "core/defines.h"
-
-#include "particlemodules.h"
+#include "core/core_base.h"
 
 namespace Graphics
 {
+   class BlendState;
    class CodePath;
    class Device;
    class Effect;
    class Particle;
-   class ParticleModule;
-   class VertexBuffer;   
+   class IndexBuffer;
+   class VertexBuffer;
    class RenderContext;
+   class Texture;
 
    /**
    @author Jeroen Broekhuizen
    */
-   class ParticleSystem
+   class CORE_API ParticleSystem
    {	
    public:
       ParticleSystem();
@@ -56,31 +57,36 @@ namespace Graphics
 	   void setEmitRate(int rate);
 	   void setEmitCount(int count);
 
-      Particle* getAliveParticles();
+      void setPosition(const Vector& pos);
 
-      void registerModule(ParticleModule* pmodule);
-
+      const Particle* getActiveParticles() const;
+      const Texture& getTexture() const;
+            
     // painting
       void update(float delta);
 	   void draw(RenderContext& context) const;
 
    private:
+      class InitPolicy;
+      class UpdatePolicy;
 
     // data
       Vector            mPosition;
       Particle*         mActiveList;
 	   Particle*         mFreeList;
-      Effect*           mpEffect;
-	   uint32_t          mGeometryBufferSize;
-      VertexBuffer*     mGeometryBuffer;
-      ParticleModules   mSpawnModules;
+      
+      Texture*          mpTexture;
+      
+      InitPolicy*    mpInitPolicy;
+      UpdatePolicy*  mpUpdatePolicy;
       	
-	   int emitRate;
+      bool dirty;
+      float emittime;
+      float updatetime;
+	   float emitRate;
       int emitCount;
 	   int active;
       int maxActive;
-	   int lastUpdate;
-      int lastInit;
    };
 }
 #ifdef JENGINE_INLINE

@@ -9,6 +9,7 @@
 static const String sVoid(UTEXT("void"));
 
 // DirectX HSLS
+static const String sFloat(UTEXT("float"));
 static const String sFloat2(UTEXT("float2"));
 static const String sFloat3(UTEXT("float3"));
 static const String sFloat4(UTEXT("float4"));
@@ -29,7 +30,11 @@ ASTType* ASTType::fromString(const ASTEffect& effect, const String& typestr)
 {
    ASTType* presult = new ASTType();
 
-   if ( typestr == sFloat2 || typestr == sVec2 )
+   if ( typestr == sFloat )
+   {
+      presult->mType = ASTType::eFloat;
+   }
+   else if ( typestr == sFloat2 || typestr == sVec2 )
    {
       presult->mType = ASTType::eFloat2;
    }
@@ -72,12 +77,14 @@ ASTType* ASTType::fromString(const ASTEffect& effect, const String& typestr)
 
 ASTType::ASTType():
    mType(eUnknown),
+   mTemplateClass(),
    mpStruct(NULL)
 {
 }
 
 ASTType::ASTType(Type type):
    mType(type),
+   mTemplateClass(),
    mpStruct(NULL)
 {
 }
@@ -87,6 +94,16 @@ ASTType::ASTType(Type type):
 ASTType::Type ASTType::getType() const
 {
    return mType;
+}
+
+const String& ASTType::getTemplateClass() const
+{
+   return mTemplateClass;
+}
+
+void ASTType::setTemplateClass(const String tmplclass)
+{
+   mTemplateClass = tmplclass;
 }
 
 const ASTStruct& ASTType::getStruct() const
@@ -112,28 +129,48 @@ bool ASTType::isUnknown() const
 
 String ASTType::toDirectX() const
 {
+   String result;
+   
    switch ( mType )
    {
+   case ASTType::eFloat:
+      result = sFloat;
+      break;
    case ASTType::eFloat2:
-      return sFloat2;
+      result = sFloat2;
+      break;
    case ASTType::eFloat3:
-      return sFloat3;
+      result = sFloat3;
+      break;
    case ASTType::eFloat4:
-      return sFloat4;
+      result = sFloat4;
+      break;
    case ASTType::eMat2:
-      return sMat2x2;
+      result = sMat2x2;
+      break;
    case ASTType::eMat3:
-      return sMat3x3;
+      result = sMat3x3;
+      break;
    case ASTType::eMat4:
-      return sMat4x4;
+      result = sMat4x4;
+      break;
+   case ASTType::eStruct:
+      result = mpStruct->mName;
+      break;
 
    case ASTType::eVoid:
       return sVoid;
-   case ASTType::eStruct:
-      return mpStruct->mName;
+   
+   default:
+      throw new std::exception("Invalid type!");
    }
 
-   return UTEXT("Unknown");
+   if ( !mTemplateClass.isEmpty() )
+   {
+      result = mTemplateClass + L'<' + result + L'>';
+   }
+
+   return result;
 }
 
 String ASTType::toOpenGL() const

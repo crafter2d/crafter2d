@@ -7,6 +7,7 @@
 
 #include "lexer.h"
 
+#include "astannotation.h"
 #include "asteffect.h"
 #include "astbuffer.h"
 #include "astfunction.h"
@@ -17,6 +18,15 @@
 #include "asttechnique.h"
 #include "asttexture.h"
 #include "asttype.h"
+
+static const String sTechnique(UTEXT("technique"));
+static const String sStruct(UTEXT("struct"));
+static const String sBuffer(UTEXT("cbuffer"));
+static const String sTexture(UTEXT("texture"));
+static const String sSampler(UTEXT("sampler"));
+static const String sLanguage(UTEXT("language"));
+static const String sPoint(UTEXT("point"));
+static const String sInOut(UTEXT("inout"));
 
 EffectFileParser::EffectFileParser():
    mpEffect(NULL)
@@ -38,40 +48,27 @@ ASTEffect* EffectFileParser::parseDeclarations(Lexer& lexer)
 
    while ( !lexer.isEOF() )
    {
-      String token = lexer.getToken();
-
-      if ( token.isEmpty() )
-      {
-         // we are done
-         break;
-      }
-
-      if ( token == UTEXT("struct") )
+      if ( lexer.next(sStruct) )
       {
          ASTStruct* pstruct = parseStruct(lexer);
          mpEffect->addStruct(pstruct);
       }
-      else if ( token == UTEXT("cbuffer") )
+      else if ( lexer.next(sBuffer) )
       {
          ASTBuffer* pbuffer = parseBuffer(lexer);
          mpEffect->addBuffer(pbuffer);
       }
-      else if ( token == UTEXT("texture") )
+      else if ( lexer.next(sTexture) )
       {
          ASTTexture* ptexture = parseTexture(lexer);
          mpEffect->addTexture(ptexture);
       }
-      else if ( token == UTEXT("sampler") )
+      else if ( lexer.next(sSampler) )
       {
          ASTSampler* psampler = parseSampler(lexer);
          mpEffect->addSampler(psampler);
       }
-      else if ( token == UTEXT("technique") )
-      {
-         ASTTechnique *ptechnique = parseTechnique(lexer);
-         mpEffect->addTechnique(ptechnique);
-      }
-      else if ( token == UTEXT("language") )
+      else if ( lexer.next(sLanguage) )
       {
          String lang = lexer.getToken();
          lexer.next(L';');
@@ -85,9 +82,14 @@ ASTEffect* EffectFileParser::parseDeclarations(Lexer& lexer)
             mpEffect->setLanguage(ASTEffect::eOpenGL);
          }
       }
+      else if ( lexer.next(sTechnique) )
+      {
+         ASTTechnique *ptechnique = parseTechnique(lexer);
+         mpEffect->addTechnique(ptechnique);
+      }
       else
       {
-         ASTFunction* pfunction = parseFunction(lexer, token);
+         ASTFunction* pfunction = parseFunction(lexer);
          mpEffect->addFunction(pfunction);
       }
    }
@@ -189,6 +191,11 @@ ASTTechnique* EffectFileParser::parseTechnique(Lexer& lexer)
          presult->mVertex.mTarget = lexer.getIdentifier();
          presult->mVertex.mEntry = lexer.getIdentifier();
       }
+      else if ( token == UTEXT("geometry") )
+      {
+         presult->mGeometry.mTarget = lexer.getIdentifier();
+         presult->mGeometry.mEntry = lexer.getIdentifier();
+      }
       else if ( token == UTEXT("pixel") )
       {
          presult->mPixel.mTarget = lexer.getIdentifier();
@@ -213,6 +220,8 @@ ASTTexture* EffectFileParser::parseTexture(Lexer& lexer)
       presult->mRegister = lexer.getNumber();
    }
 
+   lexer.next(L';');
+
    return presult;
 }
 
@@ -226,21 +235,43 @@ ASTSampler* EffectFileParser::parseSampler(Lexer& lexer)
       presult->mRegister = lexer.getNumber();
    }
 
+   lexer.next(L';');
+
    return presult;
 }
 
-ASTFunction* EffectFileParser::parseFunction(Lexer& lexer, const String& type)
+ASTType* EffectFileParser::parseType(Lexer& lexer)
 {
-   ASTType* ptype = ASTType::fromString(*mpEffect, type);
+   String tmpl;
+   String type = lexer.getIdentifier();
+   if ( lexer.next(L'<') )
+   {
+      tmpl = lexer.getIdentifier();
+      lexer.next(L'>');
+   }
+
+   ASTType* ptype = ASTType::fromString(*mpEffect, tmpl.isEmpty() ? type : tmpl);
    if ( ptype == NULL || ptype->isUnknown() )
    {
       throw std::exception(("Invalid token: " + type.toUtf8()).c_str());
    }
 
-   ASTFunction* pfunc = new ASTFunction();
-   pfunc->mName = lexer.getIdentifier();
-   pfunc->mpType = ptype;
+   if ( !tmpl.isEmpty() )
+   {
+      ptype->setTemplateClass(type);
+   }
 
+   return ptype;
+}
+
+ASTFunction* EffectFileParser::parseFunction(Lexer& lexer)
+{
+   ASTFunction* pfunc = new ASTFunction();
+   parseAnnotations(lexer, *pfunc);
+
+   pfunc->mpType = parseType(lexer);
+   pfunc->mName = lexer.getIdentifier();
+   
    parseArguments(lexer, *pfunc);
 
    if ( lexer.next(':') )
@@ -275,14 +306,65 @@ void EffectFileParser::parseArguments(Lexer& lexer, ASTFunction& func)
 ASTFunctionArgument* EffectFileParser::parseArgument(Lexer& lexer)
 {
    ASTFunctionArgument* parg = new ASTFunctionArgument();
-   parg->mpType = ASTType::fromString(*mpEffect, lexer.getIdentifier());
+   parg->mpType = parseType(lexer);
    parg->mName = lexer.getIdentifier();
+
+   if ( lexer.next(L'[') )
+   {
+      parg->mArraySize = lexer.getNumber();
+
+      lexer.next(L']');
+   }
+
    return parg;
+}
+
+void EffectFileParser::parseAnnotations(Lexer& lexer, ASTFunction& function)
+{
+   if ( lexer.next(L'[') )
+   {
+      do
+      {
+         ASTAnnotation* panno = parseAnnotation(lexer);
+         if ( panno != NULL )
+         {
+            function.addAnnotation(panno);
+         }
+      }
+      while ( lexer.next(L',') && !lexer.isEOF() );
+
+      lexer.next(L']');
+   }
+}
+
+ASTAnnotation* EffectFileParser::parseAnnotation(Lexer& lexer)
+{
+   ASTAnnotation* panno = new ASTAnnotation();
+   panno->name = lexer.getIdentifier();
+
+   if ( lexer.next(L'(') )
+   {
+      String value = lexer.getIdentifier();
+      if ( value.isEmpty() )
+      {
+         int number = lexer.getNumber();
+         panno->setValue(number);
+      }
+      else
+      {
+         panno->setValue(value);
+      }
+
+      lexer.next(L')');
+   }
+
+   return panno;
 }
 
 String EffectFileParser::readStructBody(Lexer& lexer)
 {
    String body;
+   int depth = 1;
 
    if ( lexer.next(L'{') )
    {
@@ -291,7 +373,15 @@ String EffectFileParser::readStructBody(Lexer& lexer)
          UChar ch = lexer.getChar();
          if ( ch == L'}' )
          {
-            break;
+            depth--;
+            if ( depth == 0 )
+            {
+               break;
+            }
+         }
+         else if ( ch == L'{' )
+         {
+            depth++;
          }
 
          body += ch;

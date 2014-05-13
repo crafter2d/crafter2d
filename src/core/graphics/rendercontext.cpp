@@ -6,6 +6,7 @@ namespace Graphics
 
 RenderContext::RenderContext():
    mSpriteRenderer(),
+   mParticleRenderer(),
    mTextRenderer(),
    mViewport(),
    mClearColor()
@@ -19,6 +20,7 @@ void RenderContext::setViewport(const Viewport& viewport)
    mViewport = viewport;
 
    mSpriteRenderer.viewportChanged(*this, viewport);
+   mParticleRenderer.viewportChanged(*this, viewport);
    mTextRenderer.viewportChanged(*this, viewport);
 
    onViewportChanged(viewport);
@@ -29,7 +31,13 @@ void RenderContext::setViewport(const Viewport& viewport)
 void RenderContext::initialize(Device& device)
 {
    mSpriteRenderer.create(device);
+   mParticleRenderer.create(device);
    mTextRenderer.initialize(device);
+}
+
+void RenderContext::destroy()
+{
+   mParticleRenderer.destroy();
 }
 
 // - Drawing
@@ -44,11 +52,13 @@ void RenderContext::drawText(const Vector& position, Font& font, float fontsizee
 void RenderContext::beginDraw()
 {
    mSpriteRenderer.beginDraw(*this);
+   mParticleRenderer.beginDraw(*this);
 }
 
 void RenderContext::endDraw()
 {
    mSpriteRenderer.endDraw(*this);
+   mParticleRenderer.endDraw(*this);
 }
 
 void RenderContext::setSpriteOffset(const Vector& offset)
@@ -59,6 +69,11 @@ void RenderContext::setSpriteOffset(const Vector& offset)
 void RenderContext::drawSprite(const Sprite& sprite)
 {
    mSpriteRenderer.draw(sprite);
+}
+
+void RenderContext::drawParticles(const ParticleSystem& particles)
+{
+   mParticleRenderer.drawParticles(particles);
 }
 
 } // namespace Graphics

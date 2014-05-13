@@ -57,7 +57,14 @@ bool D3DDevice::create(int windowhandle, int width, int height)
    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-   HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE, NULL, creationFlags, NULL, 0, D3D11_SDK_VERSION,
+   D3D_FEATURE_LEVEL requestedlevel[] = {
+      D3D_FEATURE_LEVEL_11_0,
+      D3D_FEATURE_LEVEL_10_1,
+      D3D_FEATURE_LEVEL_10_0,
+   };
+
+   HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE, NULL, 
+                                              creationFlags, requestedlevel, 3, D3D11_SDK_VERSION,
                                               &sd, &mpSwapChain, &mpDevice, &level, &mpContext);
    if ( FAILED(hr) )
    {

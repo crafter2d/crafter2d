@@ -2,14 +2,15 @@
 #ifndef AST_TYPE_H
 #define AST_TYPE_H
 
+#include "core/string/string.h"
+
 class ASTEffect;
 class ASTStruct;
-class String;
 
 class ASTType
 {
 public:
-   enum Type { eVoid, eFloat2, eFloat3, eFloat4, eMat2, eMat3, eMat4, eStruct, eUnknown };
+   enum Type { eVoid, eFloat, eFloat2, eFloat3, eFloat4, eMat2, eMat3, eMat4, eStruct, eUnknown };
 
    static ASTType* fromString(const ASTEffect& effect, const String& typestr);
 
@@ -18,6 +19,9 @@ public:
 
  // get/set
    Type getType() const;
+
+   const String& getTemplateClass() const;
+   void          setTemplateClass(const String tmplclass);
 
    const ASTStruct& getStruct() const;
 
@@ -33,6 +37,7 @@ private:
 
  // data
    Type              mType;
+   String            mTemplateClass;
    const ASTStruct*  mpStruct;
 };
 

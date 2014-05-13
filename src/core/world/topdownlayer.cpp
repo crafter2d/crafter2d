@@ -116,10 +116,10 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
    if ( verts_to_render > 0 )
    {
       getEffect().enable(context);
+      getEffect().setConstantBuffer(context, 0, *ub);
 
       context.setVertexBuffer(*vb);
       context.setIndexBuffer(*ib);
-      context.setUniformBuffer(*ub);
       context.setTexture(0, mpTileSet->getTexture());
       context.drawTriangles(0, verts_to_render);
 
@@ -133,10 +133,10 @@ void TopDownLayer::drawFront(Graphics::RenderContext& context)
    if ( verts_to_render_front > 0 )
    {
       getEffect().enable(context);
+      getEffect().setConstantBuffer(context, 0, *ub);
 
       context.setVertexBuffer(*pfrontvb);
       context.setIndexBuffer(*ib);
-      context.setUniformBuffer(*ub);
       context.setTexture(0, mpTileSet->getTexture());
       context.drawTriangles(0, verts_to_render_front);
 

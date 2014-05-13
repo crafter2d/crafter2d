@@ -59,11 +59,6 @@ void D3DRenderContext::setIndexBuffer(const IndexBuffer& buffer)
    buffer.enable(*this);
 }
 
-void D3DRenderContext::setUniformBuffer(const UniformBuffer& buffer)
-{
-   buffer.enable(*this);
-}
-
 void D3DRenderContext::setTexture(int stage, const Texture& texture)
 {
    texture.enable(*this, stage);
@@ -77,6 +72,12 @@ void D3DRenderContext::clear()
    const float clear[4] = { color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() };
 
    mpContext->ClearRenderTargetView(mpRenderTargetView, clear);
+}
+
+void D3DRenderContext::drawPoints(int start, int count)
+{
+   mpContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+   mpContext->DrawIndexed(count, start, 0);
 }
 
 void D3DRenderContext::drawTriangles(int start, int count)

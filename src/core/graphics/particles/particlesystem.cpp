@@ -23,30 +23,60 @@
 #endif
 
 #include "core/containers/listalgorithms.h"
+#include "core/content/contentmanager.h"
 #include "core/log/log.h"
 #include "core/streams/datastream.h"
 #include "core/system/timer.h"
-#include "core/graphics/vertexbuffer.h"
 #include "core/graphics/device.h"
-#include "core/graphics/codepath.h"
 #include "core/graphics/rendercontext.h"
-#include "core/resource/resourcemanager.h"
-#include "core/script/scriptobject.h"
-#include "core/world/nodevisitor.h"
+#include "core/graphics/texture.h"
+#include "core/math/color.h"
+#include "core/math/vector3.h"
 
 #include "particle.h"
-#include "particlemodule.h"
-#include "particlemodulespawn.h"
-
-struct ParticleVertex {
-	Vector pos;
-	Color diffuse;
-	Vector tex;
-	Vector offset;
-};
+#include "particlemoduleinitsize.h"
+#include "particlemoduleinitvel.h"
+#include "particlemodulelifetime.h"
+#include "particlemodulesize.h"
+#include "particlemodulevelocity.h"
 
 namespace Graphics
 {
+
+   class ParticleSystem::InitPolicy
+   {
+   public:
+
+      inline void operator()(Particle& particle)
+      {
+         mSize.exec(particle);
+         mVel.exec(particle);
+         mLifetime.exec(particle);
+      }
+
+      ParticleModuleInitSize mSize;
+      ParticleModuleInitVel  mVel;
+      ParticleModuleLifetime mLifetime;
+   };
+
+   class ParticleSystem::UpdatePolicy
+   {
+   public:
+
+      void init()
+      {
+         mVel.setRange(Vector(0, -15), Vector(0, -20));
+      }
+
+      inline void operator()(Particle& particle, float delta)
+      {
+         mSize.exec(particle, delta);
+         mVel.exec(particle, delta);
+      }
+
+      ParticleModuleSize mSize;
+      ParticleModuleVelocity mVel;
+   };
 
 // - ParticleSystem
 
@@ -54,18 +84,16 @@ namespace Graphics
 /// \brief Initializes member variables.
 ParticleSystem::ParticleSystem():
    mPosition(),
-	mActiveList(0),
-   mFreeList(0),
-   mpEffect(NULL),
-   mGeometryBufferSize(0),
-   mGeometryBuffer(NULL),
-   mSpawnModules(),
+	mActiveList(NULL),
+   mFreeList(NULL),
+   mpTexture(NULL),
+   dirty(false),
+   emittime(0.0f),
+   updatetime(0.0f),
    emitRate(0),
    emitCount(0),
    active(0),
-   maxActive(70),
-	lastUpdate(0),
-   lastInit(0)
+   maxActive(2000)
 {
 }
 
@@ -80,23 +108,22 @@ ParticleSystem::~ParticleSystem()
 /// \brief Creates and initializes the particle system components neccessary for rendering.
 bool ParticleSystem::create(Device& device)
 {
-   // load effect
-   mpEffect = device.createEffect(UTEXT("shaders/basic"));
-   if ( mpEffect == NULL )
+   mpTexture = device.getContentManager().loadContent<Graphics::Texture>(UTEXT("images/particle"));
+   if ( mpTexture == NULL )
    {
       return false;
    }
 
-   mGeometryBufferSize = 256;
-   int size  = mGeometryBufferSize * 4;
-   int usage = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
+   // add some default modules
 
-	// generate the vertex buffer
-	mGeometryBuffer = mpEffect->createVertexBuffer(device, size, usage);
-   if ( mGeometryBuffer == NULL )
-	{
-      return false;
-   }
+   mpInitPolicy = new InitPolicy();
+   mpUpdatePolicy = new UpdatePolicy();
+   mpUpdatePolicy->init();
+
+   emittime = 0.0f;
+   updatetime = 0.0f;
+   emitRate = 1.0f;
+   emitCount = 100;
 
 	srand(TIMER.getTick() * 1000);
 	return true;
@@ -106,18 +133,6 @@ bool ParticleSystem::create(Device& device)
 /// \brief Release all dynamic objects inside this particle system.
 void ParticleSystem::destroy()
 {
-   if ( mpEffect != NULL )
-   {
-      delete mpEffect;
-      mpEffect = NULL;
-   }
-
-   if ( mGeometryBuffer != NULL )
-   {
-      delete mGeometryBuffer;
-      mGeometryBuffer = NULL;
-   }
-
    // release the particle lists of this particle system
    while ( mActiveList != NULL )
    {
@@ -139,64 +154,78 @@ void ParticleSystem::destroy()
 /// and put in the active list.
 void ParticleSystem::update(float delta)
 {
-	if ( delta > 100 )
-   {
-		Particle** part = &mActiveList;
-		while ( *part != NULL)
-      {
-			Particle *curpart = *part;
-			float lifetime = curpart->activeTime;
+   static const float step = 1.0f / 60.0f;
 
-			if (lifetime >= curpart->lifeTime)
+	updatetime += delta;
+   if ( updatetime >= step )
+   {
+      Particle* prev = NULL;
+		Particle* part = mActiveList;
+		while ( part != NULL)
+      {
+			part->activeTime += delta;
+
+			if ( part->activeTime >= part->lifeTime )
          {
-				// particle's time is up
-				// now add it to the free list
-				*part = curpart->next;
-				curpart->next = mFreeList;
-				mFreeList = curpart;
+            (*mpUpdatePolicy)(*part, delta);
+
+            part->pos += part->vel * delta;
+            prev = part;
+				part = part->next;
+			}
+			else
+         {
+            // particle's time is up
+				// add it to the free list
+				Particle* pcur = part;
+            part = part->next;
+            if ( pcur == mActiveList )
+               mActiveList = part;
+            else
+               prev->next = part;
+            
+            pcur->next = mFreeList;
+				mFreeList = pcur;
 
 				active--;
 			}
-			else
-         {
-            curpart->activeTime += delta;
-				curpart->pos += curpart->vel;
-
-				part = &curpart->next;
-			}
 		}
+
+      dirty = true;
+      updatetime = 0.0f;
 	}
 
-	if ( delta > emitRate && active < maxActive)
+   emittime += delta;
+	if ( emittime > emitRate && active < maxActive )
    {
-		for ( int i = 0; i < emitCount; i++ )
+      int amount = MIN(emitCount, maxActive - active);
+		for ( int i = 0; i < amount; ++i )
       {
 			// fetch a particle from the free list
 			Particle *part = mFreeList;
-			if (!part)
-				part = new Particle();
-			else
+			if ( part != NULL )
 				mFreeList = mFreeList->next;
+			else
+            part = new Particle();
+			
 			part->next = mActiveList;
 			mActiveList = part;
 
 			// initialize the particle
 			part->pos = mPosition;
-			part->pos.x += rand()%6;
-			part->pos.y += rand()%4;
-			part->vel = Vector (0, -1.0f-rand()%2);
-			part->color = Color(1,1,0);
+         part->vel.set(0, 0);
+			part->color.set(0, 0, 1);
 			part->activeTime = 0;
-         part->lifeTime = (rand()%2000) / 1000.0f;
 			part->state = 0;
-			part->size = 20;
+			part->size = 0;
 
-         auto fnc = [this,part](ParticleModule* pmodule) { static_cast<ParticleModuleSpawn*>(pmodule)->exec(*part); };
-         ListIterator<ParticleModule*> it = mSpawnModules.getFront();
-         ListAlgorithms::foreach(it, fnc);
+         (*mpInitPolicy)(*part);
 
 			active++;
 		}
+
+      dirty = true;
+      emittime = 0.0f;
 	}
 }
 
@@ -205,74 +234,7 @@ void ParticleSystem::update(float delta)
 /// vertex shader for rendering speed.
 void ParticleSystem::draw(RenderContext& context) const
 {
-	uint32_t num = 0;
-	Particle* part = mActiveList;
-   ParticleVertex* verts = reinterpret_cast<ParticleVertex*>(mGeometryBuffer->lock(context));
-
-   mpEffect->enable(context);
-
-	while ( part != NULL )
-   {
-		float halfSize = part->size * 0.5f;
-
-		// create the rectangle
-		verts[0].pos = part->pos;
-		verts[0].diffuse = part->color;
-		verts[0].tex.set (0,0);
-		verts[0].offset.set (-halfSize,-halfSize);
-
-		verts[1].pos = part->pos;
-		verts[1].diffuse = part->color;
-		verts[1].tex.set (0,1);
-		verts[1].offset.set (-halfSize,halfSize);
-
-		verts[2].pos = part->pos;
-		verts[2].diffuse = part->color;
-		verts[2].tex.set (1,1);
-		verts[2].offset.set (halfSize,halfSize);
-
-		verts[3].pos = part->pos;
-		verts[3].diffuse = part->color;
-		verts[3].tex.set (1,0);
-		verts[3].offset.set (halfSize,-halfSize);
-
-		verts += 4;
-
-		// check buffer limit
-      if ( ++num >= mGeometryBufferSize )
-      {
-			// buffer full -> render contents and continue
-			mGeometryBuffer->unlock(context);
-
-			mGeometryBuffer->enable(context);
-         context.drawTriangles(0, num * 4);
-			mGeometryBuffer->disable(context);
-
-			verts = reinterpret_cast<ParticleVertex*>(mGeometryBuffer->lock (context));
-			num = 0;
-		}
-
-		part = part->next;
-	}
-
-	// render any remaining particles
-	mGeometryBuffer->unlock(context);
-	if ( num != 0 )
-   {
-		mGeometryBuffer->enable(context);
-		context.drawTriangles(0, num * 4);
-		mGeometryBuffer->disable(context);
-	}
-}
-
-void ParticleSystem::registerModule(ParticleModule* pmodule)
-{
-   switch ( pmodule->getKind() )
-   {
-   case eSpawnModule:
-      mSpawnModules.add(pmodule);
-      break;
-   }
+   context.drawParticles(*this);
 }
 
 } // namespace Graphics

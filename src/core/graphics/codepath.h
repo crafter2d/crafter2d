@@ -56,11 +56,12 @@ namespace Graphics
 	        \brief Load in the vertex and fragment shaders. This function should be called before any of the other functions.
            \param playout the layout of the vertex structure
 		     \param vertexshader the vertex shader binary or source
-		     \param fragmentshader the pixel shader binary or source
+           \param geometryshader the geometry shader binary or source [optional]
+		     \param pixelshader the pixel shader binary or source [optional]
 	        \retval true if the vertex & pixel shaders are loaded correctly
 		     \retval false loading failed, consult the log file for possible reasons.
        */
-      virtual bool create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader) = 0;
+      virtual bool create(VertexLayout* playout, DataStream& vertexshader, DataStream& geometryshader, DataStream& pixelshader) = 0;
 
 	   /// \brief Releases the shaders.
 	   virtual void release () = 0;
@@ -75,7 +76,10 @@ namespace Graphics
       virtual UniformBuffer* getUniformBuffer(const String& name) const = 0;
 
       /// \brief binds the texture to the uniform to the stage (unit)
-      virtual bool bindTexture(RenderContext& context, int stage, const Texture& uniform) = 0;
+      virtual void bindTexture(RenderContext& context, int stage, const Texture& uniform) = 0;
+
+      /// \brief set the constant buffer to the active shaders
+      virtual void setConstantBuffer(RenderContext& context, const UniformBuffer& buffer) = 0;
 
    protected:
 

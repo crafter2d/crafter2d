@@ -30,6 +30,7 @@ bool AbstractBuilder::build(ASTEffect& effect)
       ASTTechnique* ptechnique = effect.mTechniques[index];
 
       buildVertexShader(effect, *ptechnique);
+      buildGeometryShader(effect, *ptechnique);
       buildPixelShader(effect, *ptechnique);
    }
 

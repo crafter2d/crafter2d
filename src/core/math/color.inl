@@ -54,6 +54,15 @@ inline Color::~Color()
 {
 }
 
+inline const Color& Color::operator=(const Color& that)
+{
+   mRed = that.mRed;
+   mGreen = that.mGreen;
+   mBlue = that.mBlue;
+   mAlpha = that.mAlpha;
+   return *this;
+}
+
 inline float Color::getRed() const
 {
    return mRed;

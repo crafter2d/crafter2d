@@ -24,14 +24,40 @@ bool Lexer::next(UChar ch)
 {
    skipWhitespace();
 
-   if ( mData[mPos] == ch )
+   if ( !isEOF() && mData[mPos] == ch )
    {
       mPos++;
       mColumn++;
+      skipWhitespace();
       return true;
    }
 
    return false;
+}
+
+bool Lexer::next(const String& token)
+{
+   skipWhitespace();
+
+   bool result = false;
+   if ( token.length() < (mData.length() - mPos) )
+   {
+      int pos = mPos;
+      for ( uint32_t index = 0; index < token.length(); ++index, ++pos )
+      {
+         if ( token[index] != mData[pos] )
+         {
+            return false;
+         }
+      }
+
+      mPos = pos;
+      result = true;
+   }
+
+   skipWhitespace();
+
+   return result;
 }
 
 bool Lexer::isEOF() const
@@ -56,6 +82,8 @@ String Lexer::getToken()
       result += ch;
    }
 
+   skipWhitespace();
+
    return result;
 }
 
@@ -66,14 +94,17 @@ int Lexer::getNumber()
    String number;
    while ( !isEOF())
    {
-      UChar ch = mData[mPos++];
+      UChar ch = mData[mPos];
       if ( Char::isWhitespace(ch) || !Char::isDigit(ch) )
       {
          break;
       }
 
+      ++mPos;
       number += ch;
    }
+
+   skipWhitespace();
 
    return NumberConverter::getInstance().toInt(number);
 }
@@ -85,9 +116,10 @@ String Lexer::getIdentifier()
    String result;
    if ( !isEOF() )
    {
-      UChar ch = mData[mPos++];
+      UChar ch = mData[mPos];
       if ( Char::isAlpha(ch) || ch == L'_' )
       {
+         mPos++;
          result += ch;
          while ( !isEOF() )
          {
@@ -104,6 +136,8 @@ String Lexer::getIdentifier()
          }
       }
    }
+
+   skipWhitespace();
    
    return result;
 }

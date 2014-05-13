@@ -126,10 +126,10 @@ void SpriteRenderer::endDraw(RenderContext& context)
       renderSprites(context);
 
       mpEffect->enable(context);
+      mpEffect->setConstantBuffer(context, 0, *mpUB);
 
       context.setVertexBuffer(*mpVB);
       context.setIndexBuffer(*mpIB);
-      context.setUniformBuffer(*mpUB);
 
       int start = 0;
       int indices = 6;

@@ -15,6 +15,9 @@ class CORE_API ParticleComponent : public Component
 public:
    ParticleComponent();
 
+ // get/set
+   void setParticleSystem(Graphics::ParticleSystem* psystem);
+
  // overrides
    virtual void registerComponent(Components& components) override;
    virtual void handleMessage(ComponentMessage& message) override;

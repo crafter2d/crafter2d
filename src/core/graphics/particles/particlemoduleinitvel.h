@@ -4,16 +4,18 @@
 
 #include "core/math/vector.h"
 
-#include "particlemodulespawn.h"
+#include "particle.h"
 
 namespace Graphics
 {
-   class ParticleModuleInitVel : public ParticleModuleSpawn
+   class ParticleModuleInitVel
    {
    public:
       ParticleModuleInitVel();
 
-      virtual void exec(Particle& particle) override;
+      inline void exec(Particle& particle) {
+         particle.vel = mInitVel;
+      }
 
    private:
 

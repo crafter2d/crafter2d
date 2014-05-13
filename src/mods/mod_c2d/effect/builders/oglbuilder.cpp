@@ -27,6 +27,11 @@ void OglBuilder::buildVertexShader(const ASTEffect& effect, ASTTechnique& techni
    technique.mVertex.mCompiledCode.writeBlob(source.c_str(), source.length() + 1);
 }
 
+void OglBuilder::buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique)
+{
+
+}
+
 void OglBuilder::buildPixelShader(const ASTEffect& effect, ASTTechnique& technique)
 {
    const ASTFunction* pfunction = effect.findFunction(technique.mPixel.mEntry);

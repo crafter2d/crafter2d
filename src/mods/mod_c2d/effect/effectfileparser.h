@@ -2,6 +2,7 @@
 #ifndef EFFECT_FILE_PARSER_H
 #define EFFECT_FILE_PARSER_H
 
+class ASTAnnotation;
 class ASTEffect;
 class ASTBuffer;
 class ASTStruct;
@@ -11,6 +12,7 @@ class ASTFunctionArgument;
 class ASTSampler;
 class ASTTechnique;
 class ASTTexture;
+class ASTType;
 class Lexer;
 class String;
 
@@ -28,13 +30,16 @@ private:
    ASTStruct*           parseStruct(Lexer& lexer);
    ASTStructEntry*      parseStructEntry(Lexer& lexer);
    ASTBuffer*           parseBuffer(Lexer& lexer);
-   ASTFunction*         parseFunction(Lexer& lexer, const String& type);
+   ASTType*             parseType(Lexer& lexer);
+   ASTFunction*         parseFunction(Lexer& lexer);
    ASTFunctionArgument* parseArgument(Lexer& lexer);
    ASTTechnique*        parseTechnique(Lexer& lexer);
    ASTTexture*          parseTexture(Lexer& lexer);
    ASTSampler*          parseSampler(Lexer& lexer);
+   ASTAnnotation*       parseAnnotation(Lexer& lexer);
 
    void parseArguments(Lexer& lexer, ASTFunction& func);
+   void parseAnnotations(Lexer& lexer, ASTFunction& function);
 
    String readStructBody(Lexer& lexer);
    String readFunctionBody(Lexer& lexer);
