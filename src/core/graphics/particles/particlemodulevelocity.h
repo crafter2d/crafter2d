@@ -18,11 +18,8 @@ namespace Graphics
       void setRange(const Vector& start, const Vector& end);
 
     // interface
-      void exec(Particle& particle, float delta) {
-         if ( mRange != Vector::zero() )
-         {
-            particle.vel += mRange * delta;
-         }
+      void exec(Particle& particle) {
+         particle.vel = mStart + mRange * (particle.activeTime / particle.lifeTime);
       }
 
    private:

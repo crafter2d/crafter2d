@@ -49,6 +49,9 @@ VertexLayout* AbstractBuilder::buildInputLayout(const ASTStruct& input)
 
       switch ( entry.ptype->getType() )
       {
+      case ASTType::eFloat:
+         pelement->size = 1;
+         break;
       case ASTType::eFloat2:
          pelement->size = 2;
          break;

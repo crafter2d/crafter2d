@@ -10,36 +10,11 @@ cbuffer mpv : 0
 	float4x4 object;
 };
 
-cbuffer cbImmutable
-{
-    float2 g_positions[4] =
-    {
-        float2( -1, -1 ),
-        float2(  1, -1 ),
-        float2(  1,  1 ),
-        float2( -1,  1 ),
-    };
-    float2 g_texcoords[4] = 
-    { 
-        float2(0,0), 
-        float2(1,0),
-        float2(1,1),
-        float2(0,1),
-    };
-};
-
 struct VSDataIn
 {
 	float2 pos : POSITION;
 	float4 col : COLOR0;
 	float  radius: RADIUS;
-};
-
-struct VSDataOut
-{
-	float2 pos : POSITION;
-	float4 col : COLOR0;
-	float radius : RADIUS;
 };
 
 struct PSDataIn
@@ -49,36 +24,32 @@ struct PSDataIn
 	float4 col : COLOR0;
 };
 
-VSDataOut mainVertex(VSDataIn input)
+VSDataIn mainVertex(VSDataIn input)
 {
-	VSDataOut data;
-	
-	data.pos = input.pos;
-	data.col = input.col;
-	data.radius = input.radius;
-	
-	return data;
+	return input;
 }
 
 [maxvertexcount(4), inputtype(point)]
-void mainGeometry(VSDataOut input[1], TriangleStream<PSDataIn> SpriteStream)
+void mainGeometry(VSDataIn input[1], TriangleStream<PSDataIn> stream)
 {
     PSDataIn output;
+	output.col = input[0].col;
     
-    // Emit two new triangles
-    for( int i = 0; i < 4; i++ )
-    {
-		float2 pos = input[0].pos + (g_positions[i] * input[0].radius);
-        float4 position = float4(pos, 0.0f, 1.0f);
-		position = mul(position, proj);
-		
-        output.pos = position;
-		output.tex = g_texcoords[i];
-        output.col = input[0].col;        
-		
-        SpriteStream.Append(output);
-    }
-    SpriteStream.RestartStrip();
+	output.pos = mul(float4(input[0].pos.x - input[0].radius, input[0].pos.y - input[0].radius, 0.0f, 1.0f), proj);
+	output.tex = float2(0, 0);
+	stream.Append(output);
+	
+	output.pos = mul(float4(input[0].pos.x + input[0].radius, input[0].pos.y - input[0].radius, 0.0f, 1.0f), proj);
+	output.tex = float2(1, 0);
+	stream.Append(output);
+	
+	output.pos = mul(float4(input[0].pos.x - input[0].radius, input[0].pos.y + input[0].radius, 0.0f, 1.0f), proj);
+	output.tex = float2(0, 1);
+	stream.Append(output);
+	
+	output.pos = mul(float4(input[0].pos.x + input[0].radius, input[0].pos.y + input[0].radius, 0.0f, 1.0f), proj);
+	output.tex = float2(1, 1);
+	stream.Append(output);
 }
 
 float4 mainPixel(PSDataIn input) : SV_TARGET

@@ -53,7 +53,6 @@ public:
    void removeAll();
 
  // update & drawing
-   void initialize();
    void update(float delta);
    void draw(Graphics::RenderContext& context) const;
 

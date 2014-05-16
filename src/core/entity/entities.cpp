@@ -56,15 +56,6 @@ void Entities::removeAll()
 
 // - update & drawing
 
-void Entities::initialize()
-{
-   for ( std::size_t index = 0; index < mEntities.size(); ++index )
-   {
-      Entity* pentity = mEntities[index];
-      pentity->initialize();
-   }
-}
-
 void Entities::update(float delta)
 {
    for ( std::size_t index = 0; index < mEntities.size(); ++index )

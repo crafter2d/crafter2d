@@ -65,13 +65,13 @@ namespace Graphics
 
       void init()
       {
-         mVel.setRange(Vector(0, -15), Vector(0, -20));
+         mVel.setRange(Vector(0, -15), Vector(0, -30));
       }
 
-      inline void operator()(Particle& particle, float delta)
+      inline void operator()(Particle& particle)
       {
-         mSize.exec(particle, delta);
-         mVel.exec(particle, delta);
+         mSize.exec(particle);
+         mVel.exec(particle);
       }
 
       ParticleModuleSize mSize;
@@ -165,9 +165,9 @@ void ParticleSystem::update(float delta)
       {
 			part->activeTime += delta;
 
-			if ( part->activeTime >= part->lifeTime )
+			if ( part->activeTime < part->lifeTime )
          {
-            (*mpUpdatePolicy)(*part, delta);
+            (*mpUpdatePolicy)(*part);
 
             part->pos += part->vel * delta;
             prev = part;

@@ -43,7 +43,6 @@ namespace c2d
    class Controller;
 }
 
-class MeshComponent;
 class NodeVisitor;
 
 /// \brief Base class for all entities that can be shown in your game.
@@ -99,7 +98,6 @@ public:
    bool hasLineOfSight(const Entity& that) const;
 
  // operations
-   void initialize();
    void destroy();
 
    void addComponent(Component* pcomponent);
@@ -123,16 +121,10 @@ public:
    virtual void accept(NodeVisitor& visitor);
 
 private:
-
- // get/set
-   bool                 hasMesh() const;
-   const MeshComponent& getMesh() const;
-         MeshComponent& getMesh();
-
+   
  // data
    Id                   mId;
    mutable Components   mComponents;
-   MeshComponent*       mpMeshComponent;
    c2d::Controller*     mpController;
    Entity*              mpParent;
    Entities             mChildren;

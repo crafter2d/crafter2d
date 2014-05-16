@@ -69,6 +69,10 @@ void DxBuilder::buildVertexShader(const ASTEffect& effect, ASTTechnique& techniq
 void DxBuilder::buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique)
 {
    const ASTFunction* pfunction = effect.findFunction(technique.mGeometry.mEntry);
+   if ( pfunction == NULL )
+   {
+      return;
+   }
 
    String code = UTEXT("// generated geometry shader\n\n");
 
@@ -179,8 +183,20 @@ String DxBuilder::buildStructs(const ASTEffect& effect, const ASTFunction& funct
       const ASTFunctionArgument* parg = function.mArguments[index];
       if ( parg->mpType->isStruct() )
       {
+         int s = 0;
          const ASTStruct& aststruct = parg->mpType->getStruct();
-         structs.push_back(&aststruct);
+         for ( ; s < structs.size(); ++s )
+         {
+            if ( structs[s] == &aststruct )
+            {
+               break;
+            }
+         }
+
+         if ( s == structs.size() )
+         {
+            structs.push_back(&aststruct);
+         }
       }
    }
 

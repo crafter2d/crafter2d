@@ -6,8 +6,8 @@
 namespace Graphics
 {
    ParticleModuleSize::ParticleModuleSize():
-      mBeginSize(10),
-      mEndSize(50)
+      mBegin(10),
+      mRange(40)
    {
    }
 

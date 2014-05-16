@@ -5,8 +5,6 @@
 #include "core/graphics/blendstate.h"
 #include "core/graphics/device.h"
 #include "core/graphics/rendercontext.h"
-#include "core/graphics/utils.h"
-#include "core/graphics/indexbuffer.h"
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/vertexbuffer.h"
 
@@ -27,7 +25,6 @@ namespace Graphics
       mpEffect(NULL),
       mVertexBufferSize(0),
       mpVertexBuffer(NULL),
-      mpIndexBuffer(NULL),
       mpUniformBuffer(NULL)
    {
    }
@@ -53,18 +50,11 @@ namespace Graphics
 
       mpEffect->setBlendState(pblendstate);
 
-      mVertexBufferSize = 2000;
-      int size  = mVertexBufferSize * 4;
-      int usage = VertexBuffer::eStream | VertexBuffer::eWriteOnly;
-	   mpVertexBuffer = mpEffect->createVertexBuffer(device, size, usage);
+      mVertexBufferSize = 2048;
+      int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
+      mpVertexBuffer = mpEffect->createVertexBuffer(device, mVertexBufferSize, usage);
       if ( mpVertexBuffer == NULL )
 	   {
-         return false;
-      }
-
-      mpIndexBuffer = Utils::createIndexBuffer(device, size, 4);
-      if ( mpIndexBuffer == NULL )
-      {
          return false;
       }
 
@@ -101,12 +91,6 @@ namespace Graphics
          mpVertexBuffer = NULL;
       }
 
-      if ( mpIndexBuffer != NULL )
-      {
-         delete mpIndexBuffer;
-         mpIndexBuffer = NULL;
-      }
-
       if ( mpUniformBuffer != NULL )
       {
          delete mpUniformBuffer;
@@ -139,51 +123,46 @@ namespace Graphics
       mpEffect->setConstantBuffer(context, 0, *mpUniformBuffer);
 
       context.setVertexBuffer(*mpVertexBuffer);
-      context.setIndexBuffer(*mpIndexBuffer);
-
+     
       uint32_t num = 0;
-      uint32_t total = 0;
       ParticleVertex* verts = reinterpret_cast<ParticleVertex*>(mpVertexBuffer->lock(context));
       for ( std::size_t index = 0; index < mParticles.size(); ++index )
       {
          const ParticleSystem& system = *mParticles[index];
+         const Particle* part = system.getActiveParticles();
 
          context.setTexture(0, system.getTexture());
-
-         const Particle* part = system.getActiveParticles();
-	      while ( part != NULL )
+         
+         while ( part != NULL )
          {
-		      float radius = part->size * 0.5f;
-
-            verts->pos.x  = part->pos.x;
-            verts->pos.y  = part->pos.y;
-            verts->col    = part->color;
-            verts->radius = radius;
-
-            ++verts;
-            ++total;
-
-		      // check buffer limit
-            if ( ++num >= mVertexBufferSize )
+            while ( part != NULL && num < mVertexBufferSize )
             {
-			      // buffer full -> render contents and continue
-			      mpVertexBuffer->unlock(context);
+               ParticleVertex& v = verts[num++];
+               v.pos = part->pos;
+               v.col = part->color;
+               v.radius = part->size * 0.5f;
+
+               part = part->next;
+            }
+
+            if ( part != NULL )
+            {
+               // buffer full -> render contents and continue
+               mpVertexBuffer->unlock(context);
 
                context.drawPoints(0, num);
-			
-               verts = reinterpret_cast<ParticleVertex*>(mpVertexBuffer->lock (context));
-			      num = 0;
-		      }
 
-		      part = part->next;
-	      }
+               verts = reinterpret_cast<ParticleVertex*>(mpVertexBuffer->lock(context));
+               num = 0;
+            }
+         }
+
+         mpVertexBuffer->unlock(context);
+
+         if ( num > 0 )
+         {
+            context.drawPoints(0, num);
+         }
       }
-
-	   mpVertexBuffer->unlock(context);
-
-	   if ( num > 0 )
-      {
-         context.drawPoints(0, num);
-	   }
    }
 }

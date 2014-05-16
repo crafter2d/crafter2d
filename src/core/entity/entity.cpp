@@ -35,7 +35,6 @@ using namespace Graphics;
 Entity::Entity():
    mId(-1),
    mComponents(*this),
-   mpMeshComponent(NULL),
    mpController(NULL),
    mpParent(NULL),
    mChildren(),
@@ -70,23 +69,6 @@ void Entity::setName(const String& name)
 
       setDirty(eNameDirty);
    }
-}
-
-bool Entity::hasMesh() const
-{
-   return mpMeshComponent != NULL;
-}
-
-const MeshComponent& Entity::getMesh() const
-{
-   ASSERT_PTR(mpMeshComponent);
-   return *mpMeshComponent;
-}
-
-MeshComponent& Entity::getMesh()
-{
-   ASSERT_PTR(mpMeshComponent);
-   return *mpMeshComponent;
 }
 
 void Entity::setTransform(const XForm& transform)
@@ -147,17 +129,6 @@ bool Entity::hasLineOfSight(const Entity& that) const
 
 // - Operations
 
-void Entity::initialize()
-{
-   Component* pcomponent = mComponents.findComponent(ComponentInterface::eMeshComponent);
-   if ( pcomponent != NULL )
-   {
-      mpMeshComponent = static_cast<MeshComponent*>(pcomponent);
-   }
-
-   mChildren.initialize();
-}
-
 void Entity::destroy()
 {
    if ( mpParent != NULL )
@@ -187,10 +158,8 @@ void Entity::update(float delta)
 
 void Entity::draw(Graphics::RenderContext& context) const
 {
-   if ( hasMesh() )
-   {
-      getMesh().render(context);
-   }
+   ComponentMessage message(ComponentInterface::eRenderMsg, &context);
+   mComponents.postMessage(message);
 
    mChildren.draw(context);
 }
