@@ -54,6 +54,13 @@ namespace Graphics
       return mpContext != NULL;
    }
 
+   void Device::destroy()
+   {
+      mpContext->destroy();
+      delete mpContext;
+      mpContext = NULL;
+   }
+
    Effect* Device::createEffect(const String& filename)
    {
       return mpContentManager->loadContent<Effect>(filename);

@@ -6,6 +6,7 @@
 #include "core/defines.h"
 
 #include "meshcomponentdefinitionproto.h"
+#include "particlecomponentdefinitionproto.h"
 #include "physicscomponentdefinitionproto.h"
 
 // static 
@@ -19,6 +20,9 @@ ComponentDefinitionProto* ComponentDefinitionProto::fromStream(DataStream& strea
    {
    case ComponentInterface::eMeshComponent:
       presult = new MeshComponentDefinitionProto();
+      break;
+   case ComponentInterface::eParticleComponent:
+      presult = new ParticleComponentDefinitionProto();
       break;
    case ComponentInterface::ePhysisComponent:
       presult = new PhysicsComponentDefinitionProto();

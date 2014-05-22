@@ -129,11 +129,16 @@ bool Entity::hasLineOfSight(const Entity& that) const
 
 // - Operations
 
+void Entity::initialize()
+{
+   mChildren.initialize();
+}
+
 void Entity::destroy()
 {
    if ( mpParent != NULL )
    {
-      mpParent->remove(*this);
+      mpParent->detach(*this);
       mpParent = NULL;
    }
 }
@@ -181,9 +186,9 @@ void Entity::add(Entity* pentity)
    mChildren.add(pentity);
 }
 
-void Entity::remove(Entity& entity)
+void Entity::detach(Entity& entity)
 {
-   mChildren.remove(entity);
+   mChildren.detach(entity);
 }
 
 // - Visitor

@@ -25,7 +25,6 @@
 #include "core/defines.h"
 #include "core/content/contentmanager.h"
 #include "core/entity/entity.h"
-#include "core/entity/components/particlecomponent.h"
 #include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
@@ -41,7 +40,6 @@
 #include "core/graphics/font.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
-#include "core/graphics/particles/particlesystem.h"
 #include "core/script/scriptobject.h"
 #include "core/sound/soundmanager.h"
 #include "core/sound/sound.h"
@@ -114,7 +112,9 @@ namespace c2d
       mpSoundManager->destroy();
       mpSoundManager = NULL;
 
-      delete mpRenderContext;
+      mpRenderContext = NULL; // not owned
+
+      mpDevice->destroy();
       delete mpDevice;
 
       mpWindow->destroy();
@@ -477,22 +477,6 @@ namespace c2d
          // ee boehhh
          Log::getInstance().error("Failed to load world!");
          return;
-      }
-
-      if ( mpParticleEntity == NULL && hasWorld() )
-      {
-         Graphics::ParticleSystem* psystem = new Graphics::ParticleSystem();
-         psystem->create(*mpDevice);
-
-         ParticleComponent* pcomp = new ParticleComponent();
-         pcomp->setParticleSystem(psystem);
-
-         mpParticleEntity = new Entity();
-         mpParticleEntity->addComponent(pcomp);
-         mpParticleEntity->setPosition(Vector(200, 450));
-         mpParticleEntity->setClassName(UTEXT("engine.game.Entity"));
-
-         getWorld().addEntity(mpParticleEntity);
       }
    }
 

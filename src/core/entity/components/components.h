@@ -15,12 +15,14 @@ class Components
 {
 public:
    Components(Entity& entity);
+   ~Components();
 
  // get/set
    Entity& getEntity();
 
  // maintenance
    void addComponent(Component* pcomponent);
+   void clear();
 
  // messaging
    void subscribeMessageType(Component& component, ComponentInterface::ComponentMessageType messagetype);

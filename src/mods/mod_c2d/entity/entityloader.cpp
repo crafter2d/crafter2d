@@ -12,8 +12,8 @@
 #include "proto/entitydefinitionproto.h"
 #include "proto/linkdefinitionproto.h"
 
-#include "componentloader.h"
 #include "meshcomponentloader.h"
+#include "particlecomponentloader.h"
 #include "physicscomponentloader.h"
 
 static String sChild(UTEXT("child"));
@@ -24,6 +24,7 @@ EntityLoader::EntityLoader():
    mLoaders()
 {
   registerLoader(new MeshComponentLoader());
+  registerLoader(new ParticleComponentLoader());
   registerLoader(new PhysicsComponentLoader());
 }
 

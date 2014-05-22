@@ -22,8 +22,9 @@ namespace Graphics
       ID3D11Device& getDevice() { return *mpDevice; }
 
     // overloads
-      virtual bool create(int windowhandle, int width, int height);
-      virtual void present();
+      virtual bool create(int windowhandle, int width, int height) override;
+      virtual void destroy() override;
+      virtual void present() override;
 
       virtual CodePath*       createCodePath() override;
       virtual VertexBuffer*   createVertexBuffer() override;
@@ -49,7 +50,6 @@ namespace Graphics
       ID3D11DeviceContext*    mpContext;
       IDXGISwapChain*         mpSwapChain;
       ID3D11RenderTargetView* mpRenderTargetView;
-      ID3D11BlendState*       mpBlendState;
 
       ID2D1Factory1*          mpD2DFactory;
       ID2D1Device*            mpD2DDevice;

@@ -18,7 +18,9 @@ namespace Graphics
 
       virtual bool create(const VertexLayout& layout, int length, int usage) override;
       virtual void release() override;
-
+      
+      virtual void update(RenderContext& context, void* pdata, int count) override;
+      
       virtual void*  lock(RenderContext& context) override;
       virtual void   unlock(RenderContext& context) override;
 

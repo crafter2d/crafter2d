@@ -80,6 +80,8 @@ namespace Graphics
         */
        virtual void unlock(RenderContext& context) = 0;
 
+       virtual void update(RenderContext& context, void* pdata, int count) = 0;
+
 	   /*!
            \fn VertexBuffer::enable()
 	        \brief Enables the vertex buffer for use during rendering. Call disable to stop using this buffer.

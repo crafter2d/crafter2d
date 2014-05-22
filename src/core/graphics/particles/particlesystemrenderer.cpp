@@ -20,7 +20,7 @@ struct ParticleVertex {
 namespace Graphics
 {
    ParticleSystemRenderer::ParticleSystemRenderer():
-      mParticles(),
+      mParticleSystems(),
       mConstants(),
       mpEffect(NULL),
       mVertexBufferSize(0),
@@ -109,12 +109,12 @@ namespace Graphics
 
    void ParticleSystemRenderer::beginDraw(RenderContext& context)
    {
-      mParticles.clear();
+      mParticleSystems.clear();
    }
 
-   void ParticleSystemRenderer::drawParticles(const ParticleSystem& particles)
+   void ParticleSystemRenderer::drawParticles(const ParticleSystem& particlesystem)
    {
-      mParticles.push_back(&particles);
+      mParticleSystems.push_back(&particlesystem);
    }
    
    void ParticleSystemRenderer::endDraw(RenderContext& context)
@@ -124,44 +124,30 @@ namespace Graphics
 
       context.setVertexBuffer(*mpVertexBuffer);
      
-      uint32_t num = 0;
-      ParticleVertex* verts = reinterpret_cast<ParticleVertex*>(mpVertexBuffer->lock(context));
-      for ( std::size_t index = 0; index < mParticles.size(); ++index )
+      for ( std::size_t index = 0; index < mParticleSystems.size(); ++index )
       {
-         const ParticleSystem& system = *mParticles[index];
-         const Particle* part = system.getActiveParticles();
+         const ParticleSystem& system = *mParticleSystems[index];
+         int particleCount = system.getActiveParticleCount();
 
-         context.setTexture(0, system.getTexture());
-         
-         while ( part != NULL )
+         if ( particleCount > 0 )
          {
-            while ( part != NULL && num < mVertexBufferSize )
-            {
-               ParticleVertex& v = verts[num++];
-               v.pos = part->pos;
-               v.col = part->color;
-               v.radius = part->size * 0.5f;
+            const Particles& particles = system.getActiveParticles();
+            ParticleVertex* verts = reinterpret_cast<ParticleVertex*>(mpVertexBuffer->lock(context));
 
-               part = part->next;
+            for ( int pidx = 0; pidx < particleCount; ++pidx )
+            {
+               auto particle = particles[pidx];
+
+               ParticleVertex& v = verts[pidx];
+               v.pos = particle.pos;
+               v.col = particle.color;
+               v.radius = particle.size * 0.5f;
             }
 
-            if ( part != NULL )
-            {
-               // buffer full -> render contents and continue
-               mpVertexBuffer->unlock(context);
+            mpVertexBuffer->unlock(context);
 
-               context.drawPoints(0, num);
-
-               verts = reinterpret_cast<ParticleVertex*>(mpVertexBuffer->lock(context));
-               num = 0;
-            }
-         }
-
-         mpVertexBuffer->unlock(context);
-
-         if ( num > 0 )
-         {
-            context.drawPoints(0, num);
+            context.setTexture(0, system.getTexture());
+            context.drawPoints(0, particleCount);
          }
       }
    }

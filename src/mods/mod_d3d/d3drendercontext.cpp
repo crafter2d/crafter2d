@@ -77,15 +77,13 @@ void D3DRenderContext::clear()
 void D3DRenderContext::drawPoints(int start, int count)
 {
    mpContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-   mpContext->DrawIndexed(count, start, 0);
+   mpContext->Draw(count, start);
 }
 
 void D3DRenderContext::drawTriangles(int start, int count)
 {
    mpContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
    mpContext->DrawIndexed(count, start, 0);
-
-   // ID3D11RasterizerState state;
 }
 
 void D3DRenderContext::drawTriangleFan(int start, int count)

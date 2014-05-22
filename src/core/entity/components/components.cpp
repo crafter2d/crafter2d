@@ -12,6 +12,11 @@ Components::Components(Entity& entity):
 {
 }
 
+Components::~Components()
+{
+   clear();
+}
+
 // - Get/set
 
 Entity& Components::getEntity()
@@ -25,6 +30,22 @@ void Components::addComponent(Component* pcomponent)
 {
    mComponents[pcomponent->getType()] = pcomponent;
    pcomponent->registerComponent(*this);
+}
+
+void Components::clear()
+{
+   ComponentMap::iterator it = mComponents.begin();
+   for ( ; it != mComponents.end(); ++it )
+   {
+      Component* pcomponent = it->second;
+      delete pcomponent;
+   }
+   mComponents.clear();
+   
+   for ( int index = 0; index < ComponentInterface::eNUM_MESSAGE_TYPES; ++index )
+   {
+      mMessageToComponent[index].clear();
+   }
 }
 
 // - Messaging

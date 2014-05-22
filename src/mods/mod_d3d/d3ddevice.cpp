@@ -13,6 +13,7 @@
 
 #include "d3dblendstate.h"
 #include "d3dcodepath.h"
+#include "d3dhelpers.h"
 #include "d3dindexbuffer.h"
 #include "d3drendercontext.h"
 #include "d3dvertexbuffer.h"
@@ -26,7 +27,6 @@ D3DDevice::D3DDevice():
    mpContext(NULL),
    mpSwapChain(NULL),
    mpRenderTargetView(NULL),
-   mpBlendState(NULL),
    mpD2DFactory(NULL),
    mpD2DDevice(NULL),
    mpD2DContext(NULL),
@@ -82,6 +82,16 @@ bool D3DDevice::create(int windowhandle, int width, int height)
    mpDevice->CreateRenderTargetView(pbackbuffer, NULL, &mpRenderTargetView);
    pbackbuffer->Release();
 
+   D3D11_RASTERIZER_DESC desc;
+   ZeroMemory(&desc, sizeof(desc));
+   desc.FillMode = D3D11_FILL_SOLID;
+   desc.CullMode = D3D11_CULL_NONE;
+   desc.DepthClipEnable = FALSE;
+
+   ID3D11RasterizerState* prasterizerstate;
+   mpDevice->CreateRasterizerState(&desc, &prasterizerstate);
+   mpContext->RSSetState(prasterizerstate);
+
    // set the buffer view
    mpContext->OMSetRenderTargets(1, &mpRenderTargetView, NULL);
 
@@ -129,6 +139,22 @@ bool D3DDevice::createD2D(int windowhandle, int width, int height)
    }
 
    return true;
+}
+
+void D3DDevice::destroy()
+{
+   Device::destroy();
+
+   delete mpFontCollection;
+   
+   SafeRelease(&mpDWriteFactory);
+   SafeRelease(&mpD2DContext);
+   SafeRelease(&mpD2DDevice);
+   SafeRelease(&mpD2DFactory);
+   SafeRelease(&mpSwapChain);
+   SafeRelease(&mpRenderTargetView);
+   SafeRelease(&mpContext);
+   SafeRelease(&mpDevice);
 }
 
 void D3DDevice::present()

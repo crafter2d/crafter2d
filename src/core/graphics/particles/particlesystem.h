@@ -23,9 +23,13 @@
 #include <vector>
 
 #include "core/entity/components/components.h"
+#include "core/math/range.h"
 #include "core/math/vector.h"
+#include "core/math/vectorrange.h"
 #include "core/defines.h"
 #include "core/core_base.h"
+
+#include "particles.h"
 
 namespace Graphics
 {
@@ -53,13 +57,26 @@ namespace Graphics
       void destroy();
 
     // get/set
-      int  getEmitRate() const;
-	   void setEmitRate(int rate);
-	   void setEmitCount(int count);
+	   void  setEmitRate(float rate);
+      void  setGravity(float gravity);
+
+      float       getInitSize() const;
+      void        setInitSize(float size);
+      Range       getInitSizeRange() const;
+      void        setInitSizeRange(const Range& range);
+      float       getInitLifeTime() const;
+      void        setInitLifeTime(float lifetime);
+      Range       getInitLifeTimeRange() const;
+      void        setInitLifeTimeRange(const Range& range);
+      const Vector& getInitVelocity() const;
+      void        setInitVelocity(const Vector& vel);
+      const VectorRange& getInitVelocityRange() const;
+      void        setInitVelocityRange(const VectorRange& range);
 
       void setPosition(const Vector& pos);
 
-      const Particle* getActiveParticles() const;
+      int getActiveParticleCount() const;
+      const Particles& getActiveParticles() const;
       const Texture& getTexture() const;
             
     // painting
@@ -67,25 +84,29 @@ namespace Graphics
 	   void draw(RenderContext& context) const;
 
    private:
-      class InitPolicy;
-      class UpdatePolicy;
+
+    // Operations
+      void initParticle(Particle& particle);
+      void updateParticle(Particle& particle, float delta, int& index);
 
     // data
       Vector            mPosition;
-      Particle*         mActiveList;
-	   Particle*         mFreeList;
-      
+      Particles         mParticles;      
       Texture*          mpTexture;
-      
-      InitPolicy*    mpInitPolicy;
-      UpdatePolicy*  mpUpdatePolicy;
+
+      float       mInitSize;
+      Range       mInitSizeRange;
+      float       mInitLifeTime;
+      Range       mInitLifeTimeRange;
+      Vector      mInitVelocity;
+      VectorRange mInitVelocityRange;
       	
-      bool dirty;
       float emittime;
       float updatetime;
-	   float emitRate;
-      int emitCount;
-	   int active;
+	   float mEmitRate;
+      float mGravity;
+
+      int active;
       int maxActive;
    };
 }

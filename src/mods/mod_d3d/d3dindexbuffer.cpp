@@ -2,6 +2,7 @@
 #include "d3dindexbuffer.h"
 
 #include "d3ddevice.h"
+#include "d3dhelpers.h"
 #include "d3drendercontext.h"
 
 namespace Graphics
@@ -51,8 +52,7 @@ bool D3DIndexBuffer::create(IndexFormat format, int elements, void* data)
 
 void D3DIndexBuffer::release()
 {
-   mpBuffer->Release();
-   mpBuffer = NULL;
+   SafeRelease(&mpBuffer);
 }
 
 void D3DIndexBuffer::enable(RenderContext& context) const

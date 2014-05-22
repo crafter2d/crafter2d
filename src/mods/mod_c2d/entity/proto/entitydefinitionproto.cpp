@@ -83,6 +83,7 @@ Entity* EntityDefinitionProto::instantiate(c2d::ContentManager& manager, Compone
       }
    }
 
+   pentity->initialize();
    pentity->addComponent(new NetComponent());
 
    return pentity;

@@ -188,11 +188,12 @@ void ProjectBuilder::compile(const QString& source, const QString& dest)
     if ( compiler.waitForFinished() )
     {
         QString message;
+        QFileInfo info(source);
 
         switch ( compiler.exitStatus() )
         {
         case QProcess::CrashExit:
-            message = "";
+            message = tr("Crash while compiling asset '%0'").arg(info.baseName());
             break;
         case QProcess::NormalExit:
             {
@@ -203,7 +204,7 @@ void ProjectBuilder::compile(const QString& source, const QString& dest)
                 }
                 else
                 {
-                    QFileInfo info(source);
+
                     message = QString("Failed to convert asset '%0'").arg(info.baseName());
                     switch ( exitcode )
                     {

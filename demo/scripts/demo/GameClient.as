@@ -77,6 +77,10 @@ class GameClient extends Client
 		{
 			ControllerMessage msg = (ControllerMessage)message;
 			World world = getWorld();
+
+			Vector2D position = new Vector2D();
+			position.set(200, 445);
+			Entity fountain = Entity.construct(this, "Fountain", position, "objects/fountain");
 					
 			int controllerid = msg.getControllerId();
 			Entity controller = (Entity) world.findEntity(controllerid);

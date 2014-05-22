@@ -22,11 +22,7 @@
 #  include "particlesystem.inl"
 #endif
 
-#include "core/containers/listalgorithms.h"
 #include "core/content/contentmanager.h"
-#include "core/log/log.h"
-#include "core/streams/datastream.h"
-#include "core/system/timer.h"
 #include "core/graphics/device.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/texture.h"
@@ -34,66 +30,28 @@
 #include "core/math/vector3.h"
 
 #include "particle.h"
-#include "particlemoduleinitsize.h"
-#include "particlemoduleinitvel.h"
-#include "particlemodulelifetime.h"
-#include "particlemodulesize.h"
-#include "particlemodulevelocity.h"
 
 namespace Graphics
 {
-
-   class ParticleSystem::InitPolicy
-   {
-   public:
-
-      inline void operator()(Particle& particle)
-      {
-         mSize.exec(particle);
-         mVel.exec(particle);
-         mLifetime.exec(particle);
-      }
-
-      ParticleModuleInitSize mSize;
-      ParticleModuleInitVel  mVel;
-      ParticleModuleLifetime mLifetime;
-   };
-
-   class ParticleSystem::UpdatePolicy
-   {
-   public:
-
-      void init()
-      {
-         mVel.setRange(Vector(0, -15), Vector(0, -30));
-      }
-
-      inline void operator()(Particle& particle)
-      {
-         mSize.exec(particle);
-         mVel.exec(particle);
-      }
-
-      ParticleModuleSize mSize;
-      ParticleModuleVelocity mVel;
-   };
-
-// - ParticleSystem
 
 /// \fn ParticleSystem::ParticleSystem()
 /// \brief Initializes member variables.
 ParticleSystem::ParticleSystem():
    mPosition(),
-	mActiveList(NULL),
-   mFreeList(NULL),
-   mpTexture(NULL),
-   dirty(false),
+   mParticles(),
+	mpTexture(NULL),
+   mInitSize(),
+   mInitSizeRange(),
+   mInitLifeTime(),
+   mInitLifeTimeRange(),
+   mInitVelocity(),
+   mInitVelocityRange(),
    emittime(0.0f),
    updatetime(0.0f),
-   emitRate(0),
-   emitCount(0),
+   mEmitRate(0.0f),
+   mGravity(0.0f),
    active(0),
-   maxActive(2000)
+   maxActive(0)
 {
 }
 
@@ -114,18 +72,12 @@ bool ParticleSystem::create(Device& device)
       return false;
    }
 
-   // add some default modules
-
-   mpInitPolicy = new InitPolicy();
-   mpUpdatePolicy = new UpdatePolicy();
-   mpUpdatePolicy->init();
-
    emittime = 0.0f;
    updatetime = 0.0f;
-   emitRate = 1.0f;
-   emitCount = 100;
+   active = 0;
+   maxActive = 2000;
+   mParticles.initialize(maxActive);
 
-	srand(TIMER.getTick() * 1000);
 	return true;
 }
 
@@ -133,19 +85,7 @@ bool ParticleSystem::create(Device& device)
 /// \brief Release all dynamic objects inside this particle system.
 void ParticleSystem::destroy()
 {
-   // release the particle lists of this particle system
-   while ( mActiveList != NULL )
-   {
-      Particle* temp = mActiveList;
-      mActiveList = mActiveList->next;
-      delete temp;
-   }
-   while ( mFreeList != NULL )
-   {
-      Particle* temp = mFreeList;
-      mFreeList = mFreeList->next;
-      delete temp;
-   }
+   delete mpTexture;
 }
 
 /// \fn ParticleSystem::doUpdate (float delta)
@@ -159,73 +99,57 @@ void ParticleSystem::update(float delta)
 	updatetime += delta;
    if ( updatetime >= step )
    {
-      Particle* prev = NULL;
-		Particle* part = mActiveList;
-		while ( part != NULL)
+		for ( int index = 0; index < active; )
       {
-			part->activeTime += delta;
-
-			if ( part->activeTime < part->lifeTime )
-         {
-            (*mpUpdatePolicy)(*part);
-
-            part->pos += part->vel * delta;
-            prev = part;
-				part = part->next;
-			}
-			else
-         {
-            // particle's time is up
-				// add it to the free list
-				Particle* pcur = part;
-            part = part->next;
-            if ( pcur == mActiveList )
-               mActiveList = part;
-            else
-               prev->next = part;
-            
-            pcur->next = mFreeList;
-				mFreeList = pcur;
-
-				active--;
-			}
+         Particle& particle = mParticles[index];
+         updateParticle(particle, delta, index);			
 		}
 
-      dirty = true;
       updatetime = 0.0f;
 	}
 
    emittime += delta;
-	if ( emittime > emitRate && active < maxActive )
+   while ( emittime > mEmitRate && active < maxActive )
    {
-      int amount = MIN(emitCount, maxActive - active);
-		for ( int i = 0; i < amount; ++i )
-      {
-			// fetch a particle from the free list
-			Particle *part = mFreeList;
-			if ( part != NULL )
-				mFreeList = mFreeList->next;
-			else
-            part = new Particle();
-			
-			part->next = mActiveList;
-			mActiveList = part;
+      // fetch a particle from the free list
+      Particle& particle = mParticles[active++];
+      initParticle(particle);
 
-			// initialize the particle
-			part->pos = mPosition;
-         part->vel.set(0, 0);
-			part->color.set(0, 0, 1);
-			part->activeTime = 0;
-			part->state = 0;
-			part->size = 0;
+      emittime -= mEmitRate;
+   }
+}
 
-         (*mpInitPolicy)(*part);
+void ParticleSystem::initParticle(Particle& particle)
+{
+   // initialize the particle
+   particle.pos = mPosition;
+   particle.color.set(0, 0, 1);
+   particle.activeTime = 0;
+   particle.size = mInitSize + mInitSizeRange.getRandom();
+   particle.vel = mInitVelocity + mInitVelocityRange.getRandomVector();
+   particle.lifeTime = mInitLifeTime + mInitLifeTimeRange.getRandom();
+}
 
-			active++;
-		}
+void ParticleSystem::updateParticle(Particle& particle, float delta, int& index)
+{
+   particle.activeTime += delta;
 
-      dirty = true;
-      emittime = 0.0f;
+	if ( particle.activeTime < particle.lifeTime )
+   {
+      Vector forces;
+      forces.y = mGravity;
+
+      particle.vel += forces * delta;
+      particle.pos += particle.vel * delta;
+            
+      index++;
+	}
+	else
+   {
+      // particle's time is up
+		// add it to the free list
+      active--;
+      mParticles.swap(index, active);      
 	}
 }
 

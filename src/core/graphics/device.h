@@ -42,6 +42,7 @@ namespace Graphics
 
     // operations
       virtual bool create(int windowhandle, int width, int height);
+      virtual void destroy();
       virtual void present() = 0;
 
     // creation

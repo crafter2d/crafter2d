@@ -35,13 +35,11 @@ void Entities::add(Entity* pentity)
    mEntities.push_back(pentity);
 }
 
-void Entities::remove(Entity& entity)
+void Entities::detach(Entity& entity)
 {
    EntityMap::iterator it = std::find(mEntities.begin(), mEntities.end(), &entity);
    ASSERT(it != mEntities.end());
    mEntities.erase(it);
-
-   delete &entity;
 }
 
 void Entities::removeAll()
@@ -55,6 +53,15 @@ void Entities::removeAll()
 }
 
 // - update & drawing
+
+void Entities::initialize()
+{
+   for ( std::size_t index = 0; index < mEntities.size(); ++index )
+   {
+      Entity* pentity = mEntities[index];
+      pentity->initialize();
+   }
+}
 
 void Entities::update(float delta)
 {

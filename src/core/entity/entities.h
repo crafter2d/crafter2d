@@ -49,10 +49,11 @@ public:
 
  // maintenance
    void add(Entity* pentity);
-   void remove(Entity& entity);
+   void detach(Entity& entity);
    void removeAll();
 
  // update & drawing
+   void initialize();
    void update(float delta);
    void draw(Graphics::RenderContext& context) const;
 

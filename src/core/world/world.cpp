@@ -114,6 +114,16 @@ void World::destroy()
       bounds.clear();
    }
 
+   if ( mEntities.size() > 0 )
+   {
+      EntityMap::iterator it = mEntities.begin();
+      for ( ;it != mEntities.end(); ++it )
+      {
+         Entity* pentity = it->second;
+         delete pentity;
+      }
+   }
+
    delete mpScript;
    mpScript = NULL;
 }

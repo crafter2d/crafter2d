@@ -1,0 +1,13 @@
+<?xml version="1.0">
+<entity name="fountain">
+   <particlesystem emitrate="100" gravity="30">
+      <init>
+	     <lifetime value="5" range="-1:2" />
+		 <size value="10" range="-2,4" />
+		 <velocity value="0,-100" range="-10,0:10,0" />
+	  </init>
+	  <update>
+		 <!-- <velocity range="0,-15" /> -->
+	  </update>
+   </particlesystem>
+</entity>

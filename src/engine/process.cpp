@@ -59,13 +59,6 @@ namespace c2d
 
    Process::~Process()
    {
-      try
-      {
-         destroy();
-      }
-      catch ( ... )
-      {
-      }
    }
 
    // - Operations

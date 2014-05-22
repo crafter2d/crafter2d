@@ -98,6 +98,7 @@ public:
    bool hasLineOfSight(const Entity& that) const;
 
  // operations
+   void initialize();
    void destroy();
 
    void addComponent(Component* pcomponent);
@@ -115,7 +116,7 @@ public:
  // maintenance
    Entities& getChildren();
    void      add(Entity* pentity);
-   void      remove(Entity& entity);
+   void      detach(Entity& entity);
 
  // visitor
    virtual void accept(NodeVisitor& visitor);

@@ -20,19 +20,14 @@
 
 namespace Graphics
 {
-   INLINE void ParticleSystem::setEmitRate(int rate)
+   INLINE void ParticleSystem::setGravity(float gravity)
    {
-      emitRate = rate;
+      mGravity = gravity;
    }
 
-   INLINE int ParticleSystem::getEmitRate() const
+   INLINE void ParticleSystem::setEmitRate(float rate)
    {
-      return emitRate;
-   }
-
-   INLINE void ParticleSystem::setEmitCount(int count)
-   {
-      emitCount = count;
+      mEmitRate = 1.0f / rate;
    }
 
    INLINE void ParticleSystem::setPosition(const Vector& pos)
@@ -40,13 +35,78 @@ namespace Graphics
       mPosition = pos;
    }
 
-   INLINE const Particle* ParticleSystem::getActiveParticles() const
+   INLINE int ParticleSystem::getActiveParticleCount() const
    {
-      return mActiveList;
+      return active;
+   }
+
+   INLINE const Particles& ParticleSystem::getActiveParticles() const
+   {
+      return mParticles;
    }
 
    INLINE const Texture& ParticleSystem::getTexture() const
    {
       return *mpTexture;
+   }
+
+   INLINE float ParticleSystem::getInitSize() const
+   {
+      return mInitSize;
+   }
+
+   INLINE void ParticleSystem::setInitSize(float size)
+   {
+      mInitSize = size;
+   }
+
+   INLINE Range ParticleSystem::getInitSizeRange() const
+   {
+      return mInitSizeRange;
+   }
+
+   INLINE void ParticleSystem::setInitSizeRange(const Range& range)
+   {
+      mInitSizeRange = range;
+   }
+
+   INLINE float ParticleSystem::getInitLifeTime() const
+   {
+      return mInitLifeTime;
+   }
+
+   INLINE void ParticleSystem::setInitLifeTime(float lifetime)
+   {
+      mInitLifeTime = lifetime;
+   }
+
+   INLINE Range ParticleSystem::getInitLifeTimeRange() const
+   {
+      return mInitLifeTimeRange;
+   }
+
+   INLINE void ParticleSystem::setInitLifeTimeRange(const Range& range)
+   {
+      mInitLifeTimeRange = range;
+   }
+
+   INLINE const Vector& ParticleSystem::getInitVelocity() const
+   {
+      return mInitVelocity;
+   }
+
+   INLINE void ParticleSystem::setInitVelocity(const Vector& vel)
+   {
+      mInitVelocity = vel;
+   }
+
+   INLINE const VectorRange& ParticleSystem::getInitVelocityRange() const
+   {
+      return mInitVelocityRange;
+   }
+      
+   INLINE void ParticleSystem::setInitVelocityRange(const VectorRange& range)
+   {
+      mInitVelocityRange = range;
    }
 }

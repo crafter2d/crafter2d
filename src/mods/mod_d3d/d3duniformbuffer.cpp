@@ -4,6 +4,7 @@
 #include "core/defines.h"
 
 #include "d3ddevice.h"
+#include "d3dhelpers.h"
 #include "d3drendercontext.h"
 
 namespace Graphics
@@ -51,8 +52,7 @@ namespace Graphics
 
    void D3DUniformBuffer::release()
    {
-      mpBuffer->Release();
-      mpBuffer = NULL;
+      SafeRelease(&mpBuffer);
    }
 
    void D3DUniformBuffer::set(RenderContext& context, const void* pdata)

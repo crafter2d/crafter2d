@@ -30,8 +30,8 @@ void RenderContext::setViewport(const Viewport& viewport)
 
 void RenderContext::initialize(Device& device)
 {
-   mSpriteRenderer.create(device);
    mParticleRenderer.create(device);
+   mSpriteRenderer.create(device);
    mTextRenderer.initialize(device);
 }
 

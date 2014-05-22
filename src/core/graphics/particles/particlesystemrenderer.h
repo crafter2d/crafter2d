@@ -11,7 +11,6 @@ namespace Graphics
 {
    class Device;
    class Effect;
-   class IndexBuffer;
    class ParticleSystem;
    class RenderContext;
    class UniformBuffer;
@@ -35,7 +34,7 @@ namespace Graphics
       void endDraw(RenderContext& context);
 
    private:
-      typedef std::vector<const ParticleSystem*> Particles;
+      typedef std::vector<const ParticleSystem*> ParticleSystems;
 
       struct ConstantBuffer
       {
@@ -45,13 +44,12 @@ namespace Graphics
       };
 
     // data
-      Particles         mParticles;
+      ParticleSystems   mParticleSystems;
       ConstantBuffer    mConstants;
 
       Effect*           mpEffect;
 	   uint32_t          mVertexBufferSize;
       VertexBuffer*     mpVertexBuffer;
-      IndexBuffer*      mpIndexBuffer;
       UniformBuffer*    mpUniformBuffer;
    };
 }

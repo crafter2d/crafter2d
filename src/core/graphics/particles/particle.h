@@ -34,13 +34,12 @@ namespace Graphics
 		   color.set (r,g,b);
 	   }
 
-	   Vector pos, vel;
-	   Color color;
-	   float activeTime;
-      float lifeTime;
-      float state;
-	   float size;
-	   Particle *next;
+	   Vector pos;
+      Vector vel;
+	   Color  color;
+      float  size;
+	   float  activeTime;
+      float  lifeTime;
    };
 }
 

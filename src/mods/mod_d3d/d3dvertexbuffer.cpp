@@ -46,6 +46,15 @@ void D3DVertexBuffer::release()
    mpBuffer->Release();
 }
 
+void D3DVertexBuffer::update(RenderContext& context, void* pdata, int count)
+{
+   D3D11_BOX box = { 0 };
+   box.back = 1;
+   box.bottom = 1;
+   box.right = count * mStride + 1;
+   D3DRenderContext::asContext(context).UpdateSubresource(mpBuffer, 0, &box, pdata, count * mStride, 0);
+}
+
 void* D3DVertexBuffer::lock(RenderContext& context)
 {
    D3D11_MAPPED_SUBRESOURCE mappedResource;
