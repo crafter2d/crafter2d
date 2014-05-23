@@ -152,6 +152,16 @@ VertexShader::VertexShader()
    }
 }
 
+GeometryShader::GeometryShader():
+   Shader()
+{
+   handle(glCreateShader(GL_GEOMETRY_SHADER));
+   if ( handle() == 0 )
+   {
+      Log::getInstance().error("GeometryShader: can not create shader object.");
+   }
+}
+
 /*!
     \fn FragmentShader::FragmentShader()
 	 \brief Creates a fragment shader object. Note that fragment shaders are only available on the latests graphic cards.

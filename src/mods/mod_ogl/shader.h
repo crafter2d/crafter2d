@@ -71,6 +71,12 @@ namespace Graphics
        VertexShader();
    };
 
+   class GeometryShader : public Shader
+   {
+   public:
+      GeometryShader();
+   };
+
    /**
    @author Jeroen Broekhuizen
    \brief Implements the fragment shader object. With fragment shaders you can make custom fragment effects not possible in the

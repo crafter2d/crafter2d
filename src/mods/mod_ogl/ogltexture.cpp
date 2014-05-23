@@ -68,6 +68,10 @@ bool OGLTexture::create(Device& device, const TextureInfo& info)
 	return success;
 }
 
+void OGLTexture::update(RenderContext& context, const void* pdata, int rowpitch)
+{
+}
+
 /// \fn Texture::release()
 /// \brief Releases the texture if not already done so.
 /// \return Nothing

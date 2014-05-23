@@ -31,7 +31,7 @@ ShaderPath::ShaderPath():
 	\retval true the shader objects have been successfully linked.
 	\retval false otherwise, consult the log file for compiler/linker specific errors.
  */
-bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader)
+bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStream& geometryshader, DataStream& pixelshader)
 {
 	Log& log = Log::getInstance ();
 	shader.create();
@@ -45,6 +45,17 @@ bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStr
       log.error("ShaderPath.load: Failed to compile vertex shader");
 		return false;
 	}
+
+   // try to load the geometry shader
+   if ( geometryshader.getDataSize() > 0 )
+   {
+      AutoPtr<GeometryShader> gs = new GeometryShader();
+      if ( !gs->compile(geometryshader.getData(), geometryshader.getDataSize()) )
+      {
+         log.error("ShaderPath.load: Failed to compile geometry shader");
+         return false;
+      }
+   }
 	
 	// try to load and add the fragment shader
    AutoPtr<FragmentShader> fs = new FragmentShader();
@@ -80,9 +91,13 @@ UniformBuffer* ShaderPath::getUniformBuffer(const String& name) const
    return shader.getUniformBuffer(name);
 }
 
-bool ShaderPath::bindTexture(RenderContext& context, int stage, const Texture& texture)
+void ShaderPath::bindTexture(RenderContext& context, int stage, const Texture& texture)
 {
-   bool result = shader.bindTexture(stage, texture);
+   shader.bindTexture(stage, texture);
    texture.enable(context, stage);
-   return result;
+}
+
+void ShaderPath::setConstantBuffer(RenderContext& context, const UniformBuffer& buffer)
+{
+   static_cast<const ShaderUniformBuffer&>(buffer).enable();
 }

@@ -14,14 +14,14 @@ namespace Graphics
    class OGLFont : public Font
    {
    public:
-      OGLFont();
+      explicit OGLFont(FT_Face face);
       virtual ~OGLFont();
 
     // query
       virtual int getBaseLine() const;
 
     // operations
-      bool initialize(FT_Face face, int pointsize);
+      bool initialize(int pointsize);
 
     // sizes
       virtual int getTextWidth(const String& text) const;

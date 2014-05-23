@@ -70,11 +70,6 @@ void OGLRenderContext::setIndexBuffer(const IndexBuffer& buffer)
    mpIndexBuffer->enable(*this);
 }
 
-void OGLRenderContext::setUniformBuffer(const UniformBuffer& buffer)
-{
-   buffer.enable(*this);
-}
-
 void OGLRenderContext::setTexture(int stage, const Texture& texture)
 {
    ASSERT_PTR(mpCodePath);
@@ -87,6 +82,10 @@ void OGLRenderContext::clear()
 
    glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void OGLRenderContext::drawPoints(int start, int count)
+{
 }
 
 void OGLRenderContext::drawTriangles(int start, int count)

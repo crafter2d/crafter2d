@@ -29,7 +29,22 @@ void OglBuilder::buildVertexShader(const ASTEffect& effect, ASTTechnique& techni
 
 void OglBuilder::buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique)
 {
+   const ASTFunction* pfunction = effect.findFunction(technique.mGeometry.mEntry);
+   if ( pfunction != NULL )
+   {
+      String code = UTEXT("#version 410\n");
+      for ( std::size_t index = 0; index < effect.mBuffers.size(); ++index )
+      {
+         const ASTBuffer* pbuffer = effect.mBuffers[index];
+         code += UTEXT("layout (std140) uniform ") + pbuffer->mName + UTEXT(" {") + pbuffer->mBody + UTEXT("};\n\n");
+      }
 
+      code += buildVertexStructs(effect, technique, *pfunction);
+      code += buildFunction(*pfunction);
+
+      std::string source = code.toUtf8();
+      technique.mGeometry.mCompiledCode.writeBlob(source.c_str(), source.length() + 1);
+   }
 }
 
 void OglBuilder::buildPixelShader(const ASTEffect& effect, ASTTechnique& technique)
@@ -67,26 +82,26 @@ String OglBuilder::buildVertexStructs(const ASTEffect& effect, ASTTechnique& tec
    {
       const ASTStruct* pstruct = effect.mStructs[index];
 
+      // check if this struct is used as input attributes
+      for ( std::size_t edx = 0; edx < pstruct->mEntries.size(); ++edx )
+      {
+         const ASTStructEntry* pentry = pstruct->mEntries[edx];
+
+         if ( function.mBody.indexOf(pentry->name) != -1 )
+         {
+            // seems this entry is used in the function body, so must be the input
+            technique.mpLayout = buildInputLayout(*pstruct);
+
+            result += buildInputStruct(*pstruct);
+
+            break;
+         }
+      }
+
       if ( function.mBody.indexOf(pstruct->mName) != -1 )
       {
          // this is the output struct
          result += buildInputOutputStruct(*pstruct, UTEXT("out"));
-      }
-      else
-      {
-         for ( std::size_t edx = 0; edx < pstruct->mEntries.size(); ++edx )
-         {
-            const ASTStructEntry* pentry = pstruct->mEntries[edx];
-
-            if ( function.mBody.indexOf(pentry->name) != -1 )
-            {
-               // seems this entry is used in the function body, so must be the input
-               technique.mpLayout = buildInputLayout(*pstruct);
-
-               result += buildInputStruct(*pstruct);
-               break;
-            }
-         }
       }
    }
    return result;

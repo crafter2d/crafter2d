@@ -8,30 +8,29 @@
 
 namespace Graphics
 {
+   class OGLTexture : public Texture
+   {
+   public:
+      OGLTexture();
 
-class OGLTexture : public Texture
-{
-public:
-   OGLTexture();
+    // creation
+      virtual bool   create(Device& device, const TextureInfo& info) override;
+      virtual void   update(RenderContext& context, const void* pdata, int rowpitch) override;
+      virtual void   release() override;
 
- // creation
-   virtual bool   create(Device& device, const TextureInfo& info) override;
-   virtual void   release() override;
+    // enable/disable
+      virtual void   enable(RenderContext& context, int stage) const override;
+      virtual void   disable(RenderContext& context) const override;
 
- // enable/disable
-   virtual void   enable(RenderContext& context, int stage) const override;
-   virtual void   disable(RenderContext& context) const override;
+    // query
+      virtual bool   isValid() const override;
 
- // query
-   virtual bool   isValid() const override;
+   private:
+      static GLenum  getRenderTarget();
 
-private:
-   static GLenum  getRenderTarget();
-
-   GLuint mID;
-   GLenum mTarget;
-};
-
+      GLuint mID;
+      GLenum mTarget;
+   };
 };
 
 #endif // OGL_TEXTURE_H

@@ -20,8 +20,7 @@ namespace Graphics
       /// set the data into the uniform buffer
       virtual void set(RenderContext& context, const void* pdata) override;
 
-      /// enable the uniform buffer for rendering
-      virtual void enable(RenderContext& context) const override;
+      void enable() const;
 
    private:
 

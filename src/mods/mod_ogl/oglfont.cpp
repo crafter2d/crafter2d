@@ -9,8 +9,9 @@
 
 using namespace Graphics;
 
-OGLFont::OGLFont():
-   Font()
+OGLFont::OGLFont(FT_Face face):
+   Font(),
+   mFace(face)
 {
 }
 
@@ -19,7 +20,7 @@ OGLFont::~OGLFont()
    FT_Done_Face(mFace);
 }
 
-bool OGLFont::initialize(FT_Face face, int pointsize)
+bool OGLFont::initialize(int pointsize)
 {
    if ( mFace->charmap == 0 && mFace->num_charmaps > 0 )
       FT_Select_Charmap(mFace, mFace->charmaps[0]->encoding );
@@ -64,7 +65,7 @@ int OGLFont::getTextWidth(const String& text) const
    int result = 0;
    FontChar* pfontchar = NULL;
 
-   for ( int index = 0; index < text.length(); ++index )
+   for ( uint32_t index = 0; index < text.length(); ++index )
    {
       UChar character = text[index];
       Characters::const_iterator it = mCharacters.find(character);
@@ -95,7 +96,7 @@ void OGLFont::render(const String& text)
 {
    FontChar* pfontchar = NULL;
 
-   for ( int index = 0; index < text.length(); ++index )
+   for ( uint32_t index = 0; index < text.length(); ++index )
    {
       UChar character = text[index];
       Characters::iterator it = mCharacters.find(character);

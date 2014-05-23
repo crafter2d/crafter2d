@@ -177,6 +177,8 @@ String ASTType::toOpenGL() const
 {
    switch ( mType )
    {
+   case ASTType::eFloat:
+      return sFloat;
    case ASTType::eFloat2:
       return sVec2;
    case ASTType::eFloat3:

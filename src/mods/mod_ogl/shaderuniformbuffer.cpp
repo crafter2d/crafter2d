@@ -104,7 +104,7 @@ void ShaderUniformBuffer::set(RenderContext& context, const void* pdata)
    glBufferData(GL_UNIFORM_BUFFER, mBufferSize, pdata, GL_DYNAMIC_DRAW);
 }
 
-void ShaderUniformBuffer::enable(RenderContext& context) const
+void ShaderUniformBuffer::enable() const
 {
    glBindBuffer(GL_UNIFORM_BUFFER, mBuffer);
 }

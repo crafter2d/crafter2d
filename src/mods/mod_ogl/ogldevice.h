@@ -16,9 +16,6 @@ namespace Graphics
       OGLDevice();
       virtual ~OGLDevice();
 
-    // get/set
-      
-      
     // overloads
       virtual bool create(int windowhandle, int width, int height) override;
 
@@ -28,12 +25,17 @@ namespace Graphics
       virtual VertexBuffer*   createVertexBuffer() override;
       virtual IndexBuffer*    createIndexBuffer() override;
       virtual Texture*        createTexture(DataStream& data) override;
+      virtual Texture*        createTexture(int width, int height, int bytesperpixel) override;
       virtual RenderTarget*   createRenderTarget() override;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) override;
-      virtual Font*           createFont(const String& name, int pointsize) override;
+      virtual GlyphProvider*  createGlyphProvider(Font& font);
 
     // presenting
       virtual void present() override;
+
+   protected:
+    // overrides
+      virtual Font*           createFont(const String& name) override;
 
    private:
     // query

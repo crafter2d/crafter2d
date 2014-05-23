@@ -150,25 +150,14 @@ Texture* OGLDevice::createTexture(DataStream& data)
    return presult;
 }
 
+Texture* OGLDevice::createTexture(int width, int height, int bytesperpixel)
+{
+   return NULL;
+}
+
 RenderTarget* OGLDevice::createRenderTarget()
 {
    return new OGLRenderTarget();
-}
-
-Font* OGLDevice::createFont(const String& name, int pointsize)
-{
-   FT_Face face;
-   const std::string file = name.toUtf8();
-   FT_Error error = FT_New_Face(mFreeTypeLib, file.c_str(), 0, &face);
-	if ( error != 0 )
-   {
-      return NULL;
-   }
-  
-   OGLFont* pfont = new OGLFont();
-   pfont->initialize(face, pointsize);
-
-   return pfont;
 }
 
 BlendState* OGLDevice::createBlendState(const BlendStateDesc& desc)
@@ -217,6 +206,27 @@ GLenum OGLDevice::toGLBlendState(BlendStateDesc::BlendFactor blendfactor)
          break;
    }
    return factor;
+}
+
+GlyphProvider* OGLDevice::createGlyphProvider(Font& font)
+{
+   return NULL;
+}
+
+Font* OGLDevice::createFont(const String& name)
+{
+   FT_Face face;
+   const std::string file = name.toUtf8();
+   FT_Error error = FT_New_Face(mFreeTypeLib, file.c_str(), 0, &face);
+   if ( error != 0 )
+   {
+      return NULL;
+   }
+
+   OGLFont* pfont = new OGLFont(face);
+   pfont->setFamilyName(name);
+
+   return pfont;
 }
 
 // - Presenting

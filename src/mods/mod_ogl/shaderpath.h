@@ -24,13 +24,14 @@ namespace Graphics
       virtual UniformBuffer* getUniformBuffer(const String& name) const override;
 
     // operations
-      virtual bool     create(VertexLayout* playout, DataStream& vertexshader, DataStream& pixelshader) override;
+      virtual bool     create(VertexLayout* playout, DataStream& vertexshader, DataStream& geometryshader, DataStream& pixelshader) override;
 	   virtual void     release() override;
 
       virtual void     enable(RenderContext& context) const override;
 	   virtual void     disable(RenderContext& context) const override;
 
-      virtual bool     bindTexture(RenderContext& context, int stage, const Texture& uniform) override;
+      virtual void     bindTexture(RenderContext& context, int stage, const Texture& uniform) override;
+      virtual void     setConstantBuffer(RenderContext& context, const UniformBuffer& buffer) override;
 
    private:
 
