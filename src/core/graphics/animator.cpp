@@ -63,6 +63,11 @@ void Animator::addAnimation(int start, int length)
    mAnimations.add(panimation);
 }
 
+void Animator::flip()
+{
+   mTextureCoords.flip();
+}
+
 void Animator::determineFrameCount()
 {
    mAnimFrameCount = 0;

@@ -22,11 +22,12 @@ private:
  // generations
    String buildTextures(const ASTEffect& effect, const ASTFunction& function);
    String buildVertexStructs(const ASTEffect& effect, ASTTechnique& technique, const ASTFunction& function);
+   String buildGeometryStructs(const ASTEffect& effect, const ASTFunction& function);
    String buildPixelStructs(const ASTEffect& effect, const ASTFunction& function);
    String buildFunction(const ASTFunction& function);
 
    String buildInputStruct(const ASTStruct& str);
-   String buildInputOutputStruct(const ASTStruct& str, const String& direction);
+   String buildInputOutputStruct(const ASTStruct& str, const String& direction, bool asarray = false);
 };
 
 #endif // OGL_BUILDER_H

@@ -539,9 +539,10 @@ String& String::arg(int arg, int value)
 
 // - Searching
 
-int String::indexOf(const String& that) const
+int String::indexOf(const String& that, int start) const
 {
-   wchar_t* ploc = wcsstr(mpString, that.mpString);
+   ASSERT(start >= 0 && start < mLength);
+   wchar_t* ploc = wcsstr(&mpString[start], that.mpString);
    return ploc == NULL ? -1 : ploc - mpString;
 }
 

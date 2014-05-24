@@ -38,21 +38,11 @@ class DemoActionMap extends ActionMap
 				case 1: // move left
 				{
 					velocity.setX(-20.0);
-					
-					if ( object.direction() )
-					{
-						object.flip();
-					}
 					break;
 				}
 				case 2: // move right
 				{
 					velocity.setX(20.0);
-					
-					if ( !object.direction() )
-					{
-						object.flip();
-					}
 					break;
 				}
 			}

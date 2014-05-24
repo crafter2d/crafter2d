@@ -55,6 +55,8 @@ bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStr
          log.error("ShaderPath.load: Failed to compile geometry shader");
          return false;
       }
+
+      shader.addShader(gs.release());
    }
 	
 	// try to load and add the fragment shader

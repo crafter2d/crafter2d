@@ -109,16 +109,6 @@ INLINE void Entity::setController(c2d::Controller* pcontroller)
    mpController = pcontroller;
 }
 
-INLINE bool Entity::getDirection() const
-{
-   return mDirection;
-}
-
-INLINE void Entity::setDirection(bool direction)
-{
-   mDirection = direction;
-}
-
 bool Entity::isDirty() const
 {
    return mDirtyFlag != 0;

@@ -54,6 +54,7 @@ namespace Graphics
       bool initialize(Device& device);
       void update(float delta);
       void setAnimation(int index);
+      void flip();
 
    private:
 
@@ -65,6 +66,27 @@ namespace Graphics
       XForm             mTransform;
       Size              mHalfSize;
    };
+
+   inline const Size& Sprite::getHalfSize() const {
+      return mHalfSize;
+   }
+
+   inline const TextureCoordinate& Sprite::getTextureCoordinate() const {
+      return mTexCoordinate;
+   }
+
+   inline void Sprite::setTextureCoordinate(const TextureCoordinate& coordinate) {
+      mTexCoordinate = coordinate;
+   }
+
+   inline const XForm& Sprite::getTransform() const {
+      return mTransform;
+   }
+
+   inline void Sprite::setTransform(const XForm& xform) {
+      mTransform = xform;
+   }
+
 }
 
 #endif // SPRITE_H

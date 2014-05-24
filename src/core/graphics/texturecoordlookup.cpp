@@ -77,6 +77,14 @@ void TextureCoordLookup::generateFromTexture(const Graphics::Texture& texture, c
 	}
 }
 
+void TextureCoordLookup::flip()
+{
+   for ( int index = 0; index < _frameCount; ++index )
+   {
+      _lookupTable[index].flip();
+   }
+}
+
 const TextureCoordinate& TextureCoordLookup::operator[](int index) const
 {
    ASSERT(index < _frameCount);

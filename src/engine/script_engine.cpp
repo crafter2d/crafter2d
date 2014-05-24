@@ -369,13 +369,6 @@ void Entity_setName(ScriptCall& accessor)
    entity.setName(name);
 }
 
-void Entity_direction(ScriptCall& accessor)
-{
-   GET_THIS(Entity, entity);
-
-   accessor.setResult(entity.getDirection());
-}
-
 void Entity_flip(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
@@ -904,7 +897,6 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("getPositionY()"), Entity_getPositionY);
    pregistrator->addFunction(UTEXT("setPosition(real, real)"), Entity_setPosition);
    pregistrator->addFunction(UTEXT("setName(string)"), Entity_setName);
-   pregistrator->addFunction(UTEXT("direction()"), Entity_direction);
    pregistrator->addFunction(UTEXT("flip()"), Entity_flip);
    pregistrator->addFunction(UTEXT("setController(engine.game.Controller)"), Entity_setController);
    pregistrator->addFunction(UTEXT("sendComponentMessage(engine.game.ComponentMessage)"), Entity_sendComponentMessage);

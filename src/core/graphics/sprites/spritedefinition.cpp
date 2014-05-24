@@ -42,12 +42,6 @@ void SpriteDefinition::setSize(const Size& size)
 {
    mSize = size;
 }
-
-const Texture& SpriteDefinition::getTexture() const
-{
-   ASSERT_PTR(mpTexture);
-   return *mpTexture;
-}
    
 void SpriteDefinition::setTexture(Texture* ptexture)
 {
@@ -57,12 +51,6 @@ void SpriteDefinition::setTexture(Texture* ptexture)
 bool SpriteDefinition::hasSpriteAnimator() const
 {
    return mpAnimator != NULL;
-}
-
-const Animator& SpriteDefinition::getSpriteAnimator() const
-{
-   ASSERT_PTR(mpAnimator);
-   return *mpAnimator;
 }
 
 void SpriteDefinition::setSpriteAnimator(Animator* panimator)

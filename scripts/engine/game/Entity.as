@@ -10,7 +10,7 @@ class Entity implements Collidable
 	private AIState mState;
 	private Body mBody;
 	
-	private int mDirection = FACE_LEFT;
+	private int mDirection = FACE_RIGHT;
 	private int mOnGround = 0;
 	
 	// static flags
@@ -241,7 +241,6 @@ class Entity implements Collidable
 	
 	public native void setName(string name);
 	public native boolean hasLineOfSight(Entity to);
-	public native boolean direction();
 	public native void flip();
 		
 	protected native void sendComponentMessage(ComponentMessage message);

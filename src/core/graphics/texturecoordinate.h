@@ -35,14 +35,17 @@ namespace Graphics
       TextureCoordinate();
       TextureCoordinate(const TextureCoordinate& that);
 
-      void initialize(const Vertex& tl, const Vertex& br);
-
+    // get/set
       const Vertex& get(int index) const;
 
       const Vertex& getTopLeft() const;
       const Vertex& getTopRight() const;
       const Vertex& getBottomLeft() const;
       const Vertex& getBottomRight() const;
+
+    // operations
+      void initialize(const Vertex& tl, const Vertex& br);
+      void flip();
 
    private:
       Vertex mCoordinates[4];

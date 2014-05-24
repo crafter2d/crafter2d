@@ -38,34 +38,9 @@ Sprite::Sprite(SpriteDefinition* pdefinition):
 
 // - Query
 
-const Size& Sprite::getHalfSize() const
-{
-   return mHalfSize;
-}
-
 const Texture& Sprite::getTexture() const
 {
    return mpDefinition->getTexture();
-}
-
-const TextureCoordinate& Sprite::getTextureCoordinate() const
-{
-   return mTexCoordinate;
-}
-
-void Sprite::setTextureCoordinate(const TextureCoordinate& coordinate)
-{
-   mTexCoordinate = coordinate;
-}
-
-const XForm& Sprite::getTransform() const
-{
-   return mTransform;
-}
-
-void Sprite::setTransform(const XForm& xform)
-{
-   mTransform = xform;
 }
 
 // - Operations
@@ -98,6 +73,12 @@ void Sprite::setAnimation(int index)
       mAnimState.setActiveAnimation(index);
       mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
    }
+}
+
+void Sprite::flip()
+{
+   mpDefinition->getSpriteAnimator().flip();
+   mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
 }
 
 } // Graphics

@@ -41,6 +41,8 @@ namespace Graphics
        virtual void* lock(RenderContext& context) override;
        virtual void unlock(RenderContext& context) override;
 
+       virtual void update(RenderContext& context, void* pdata, int count) override;
+
        virtual void enable(RenderContext& context) const;
        virtual void disable(RenderContext& context) const;
 

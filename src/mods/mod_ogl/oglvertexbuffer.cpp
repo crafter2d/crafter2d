@@ -159,6 +159,11 @@ void OGLVertexBuffer::unlock(RenderContext& context)
 	}
 }
 
+void OGLVertexBuffer::update(RenderContext& context, void* pdata, int count)
+{
+   // not yet implemented
+}
+
 /*!
     \fn VertexBufferObject::enable()
  */

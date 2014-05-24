@@ -49,6 +49,7 @@ void MeshComponent::registerComponent(Components& components)
    components.subscribeMessageType(*this, ComponentInterface::eUpdatedMsg);
    components.subscribeMessageType(*this, ComponentInterface::eUpdateMsg);
    components.subscribeMessageType(*this, ComponentInterface::eAnimationMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eFlipMsg);
    components.subscribeMessageType(*this, ComponentInterface::eRenderMsg);
 }
 
@@ -74,6 +75,9 @@ void MeshComponent::handleMessage(ComponentMessage& message)
          AnimationComponentMessage& msg = static_cast<AnimationComponentMessage&>(message);
          mpSprite->setAnimation(msg.getAnimation());
       }
+      break;
+   case eFlipMsg:
+      mpSprite->flip();
       break;
    case eRenderMsg:
       {

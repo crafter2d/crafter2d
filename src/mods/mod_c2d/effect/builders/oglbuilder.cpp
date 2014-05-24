@@ -1,8 +1,11 @@
 
 #include "oglbuilder.h"
 
+#include "core/defines.h"
+
 #include "../astbuffer.h"
 #include "../asteffect.h"
+#include "../astfunctionargument.h"
 #include "../aststructentry.h"
 #include "../asttechnique.h"
 #include "../asttype.h"
@@ -32,14 +35,25 @@ void OglBuilder::buildGeometryShader(const ASTEffect& effect, ASTTechnique& tech
    const ASTFunction* pfunction = effect.findFunction(technique.mGeometry.mEntry);
    if ( pfunction != NULL )
    {
-      String code = UTEXT("#version 410\n");
+      String code = UTEXT("#version 150\n");
+
+      const ASTAnnotation* panno = pfunction->findAnnotation(UTEXT("maxvertexcount"));
+      if ( panno == NULL )
+      {
+         // code += UTEXT("[maxvertexcount({0})]").arg(0, panno->intvalue);
+         return;
+      }
+
+      code += UTEXT("layout(points) in;\n");
+      code += UTEXT("layout(triangle_strip, max_vertices=4) out;\n");
+
       for ( std::size_t index = 0; index < effect.mBuffers.size(); ++index )
       {
          const ASTBuffer* pbuffer = effect.mBuffers[index];
          code += UTEXT("layout (std140) uniform ") + pbuffer->mName + UTEXT(" {") + pbuffer->mBody + UTEXT("};\n\n");
       }
 
-      code += buildVertexStructs(effect, technique, *pfunction);
+      code += buildGeometryStructs(effect, *pfunction);
       code += buildFunction(*pfunction);
 
       std::string source = code.toUtf8();
@@ -74,6 +88,23 @@ String OglBuilder::buildTextures(const ASTEffect& effect, const ASTFunction& fun
    return result;
 }
 
+int findIndexOf(const String& src, const String& find)
+{
+   int index = 0;
+   do
+   {
+      index = src.indexOf(find, index + 1);
+      if ( index == -1 )
+         break;
+
+      if ( !Char::isAlphaNum(src[index + find.length()]) )
+         break;
+
+   } while ( true );
+
+   return index;
+}
+
 // Vertex structures have input attributes (may not be in a block) and an output struct
 String OglBuilder::buildVertexStructs(const ASTEffect& effect, ASTTechnique& technique, const ASTFunction& function)
 {
@@ -87,7 +118,8 @@ String OglBuilder::buildVertexStructs(const ASTEffect& effect, ASTTechnique& tec
       {
          const ASTStructEntry* pentry = pstruct->mEntries[edx];
 
-         if ( function.mBody.indexOf(pentry->name) != -1 )
+         int index = findIndexOf(function.mBody, pentry->name);
+         if ( index > 0 && function.mBody[index - 1] != L'.' )
          {
             // seems this entry is used in the function body, so must be the input
             technique.mpLayout = buildInputLayout(*pstruct);
@@ -104,6 +136,28 @@ String OglBuilder::buildVertexStructs(const ASTEffect& effect, ASTTechnique& tec
          result += buildInputOutputStruct(*pstruct, UTEXT("out"));
       }
    }
+   return result;
+}
+
+String OglBuilder::buildGeometryStructs(const ASTEffect& effect, const ASTFunction& function)
+{
+   String result;
+
+   if ( function.mArguments.size() != 2 )
+   {
+      // invalid, requires arg1 = input & arg2 = output
+      return result;
+   }
+
+   ASTFunctionArgument* parg = function.mArguments[0];
+   ASSERT(parg->mpType->isStruct());
+   const ASTStruct& inputstruct = parg->mpType->getStruct();
+   result += buildInputOutputStruct(inputstruct, UTEXT("in"), true);
+
+   parg = function.mArguments[1];
+   ASSERT(parg->mpType->isStruct());
+   result += buildInputOutputStruct(parg->mpType->getStruct(), UTEXT("out"));
+
    return result;
 }
 
@@ -146,7 +200,7 @@ String OglBuilder::buildInputStruct(const ASTStruct& str)
 }
 
 // Exports the struct to an output uniform.
-String OglBuilder::buildInputOutputStruct(const ASTStruct& str, const String& direction)
+String OglBuilder::buildInputOutputStruct(const ASTStruct& str, const String& direction, bool asarray)
 {
    String result = direction + L' ' + str.mName + UTEXT("Struct {\n");
    for ( std::size_t index = 0; index < str.mEntries.size(); ++index )
@@ -154,7 +208,13 @@ String OglBuilder::buildInputOutputStruct(const ASTStruct& str, const String& di
       const ASTStructEntry* pentry = str.mEntries[index];
       result += UTEXT("  ") + pentry->ptype->toOpenGL() + L' ' + pentry->name + UTEXT(";\n");
    }
-   result += UTEXT("} ") + str.mName + UTEXT(";\n\n");
+   result += UTEXT("} ") + str.mName;
+   if ( asarray )
+   {
+      result += UTEXT("[]");
+   }
+   
+   result += UTEXT(";\n\n");
 
    return result;
 }

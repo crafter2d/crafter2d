@@ -134,7 +134,6 @@ private:
    String               mName;
    String               mClassName;
    unsigned int		   mDirtyFlag;
-   bool                 mDirection;
 };
 
 #ifdef JENGINE_INLINE

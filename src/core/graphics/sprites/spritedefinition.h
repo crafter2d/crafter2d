@@ -23,6 +23,7 @@
 #include "core/string/string.h"
 #include "core/math/size.h"
 #include "core/core_base.h"
+#include "core/defines.h"
 
 namespace Graphics
 {
@@ -43,6 +44,7 @@ namespace Graphics
 
       bool            hasSpriteAnimator() const;
       const Animator& getSpriteAnimator() const;
+            Animator& getSpriteAnimator();
       void            setSpriteAnimator(Animator* panimator);
 
    private:
@@ -52,6 +54,21 @@ namespace Graphics
       Texture*    mpTexture;
       Animator*   mpAnimator;
    };
+
+   inline const Animator& SpriteDefinition::getSpriteAnimator() const {
+      ASSERT_PTR(mpAnimator);
+      return *mpAnimator;
+   }
+
+   inline Animator& SpriteDefinition::getSpriteAnimator() {
+      ASSERT_PTR(mpAnimator);
+      return *mpAnimator;
+   }
+
+   inline const Texture& SpriteDefinition::getTexture() const {
+      ASSERT_PTR(mpTexture);
+      return *mpTexture;
+   }
 }
 
 #endif // SPRITE_DEFINITION_H

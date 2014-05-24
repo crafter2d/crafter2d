@@ -107,7 +107,7 @@ public:
    String& arg(int arg, int value);
 
  // searching
-   int indexOf(const String& that) const;
+   int indexOf(const String& that, int start = 0) const;
    int indexOf(UChar character, int start = 0) const;
    int lastIndexOf(UChar character) const;
    int lastIndexOf(UChar character, int start, int end) const;

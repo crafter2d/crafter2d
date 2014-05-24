@@ -24,50 +24,42 @@ class DemoClientActionMap extends ActionMap
 	
 	public void walkLeft(boolean down)
 	{
-		real speed = 0.0;
+		InputForceGenerator force = (InputForceGenerator) mEntity.getForceGenerator();
+		Vector2D velocity = force.getVelocity();
+		
 		if ( down )
 		{
-			speed = -100.0;
+			velocity.setX(-100.0);
 			mEntity.setAnimation(1);
+			mEntity.setFaceDirection(Entity.FACE_LEFT);
 		}
 		else
 		{
+			velocity.setX(0.0);
 			mEntity.setAnimation(0);
 		}
-	
-		InputForceGenerator force = (InputForceGenerator) mEntity.getForceGenerator();
-		Vector2D velocity = force.getVelocity();
-		velocity.setX(speed);
-		force.setVelocity(velocity);
 		
-		if ( mEntity.direction() )
-		{
-			mEntity.flip();
-		}
+		force.setVelocity(velocity);
 	}
 	
 	public void walkRight(boolean down)
 	{
-		real speed = 0.0;
+		InputForceGenerator force = (InputForceGenerator) mEntity.getForceGenerator();
+		Vector2D velocity = force.getVelocity();
+		
 		if ( down )
 		{
-			speed = 100.0;
+			velocity.setX(100.0);
 			mEntity.setAnimation(1);
+			mEntity.setFaceDirection(Entity.FACE_RIGHT);
 		}
 		else
 		{
+			velocity.setX(0.0);
 			mEntity.setAnimation(0);
 		}
 			
-		InputForceGenerator force = (InputForceGenerator) mEntity.getForceGenerator();
-		Vector2D velocity = force.getVelocity();
-		velocity.setX(speed);
 		force.setVelocity(velocity);
-		
-		if ( !mEntity.direction() )
-		{
-			mEntity.flip();
-		}
 	}
 
 	public void jump(boolean down)

@@ -44,6 +44,17 @@ void TextureCoordinate::initialize(const Vertex& tl, const Vertex& br)
    mCoordinates[BottomLeft].set(tl.x, br.y);
 }
 
+void TextureCoordinate::flip()
+{
+   Vertex tmp = mCoordinates[TopLeft];
+   mCoordinates[TopLeft] = mCoordinates[TopRight];
+   mCoordinates[TopRight] = tmp;
+
+   tmp = mCoordinates[BottomLeft];
+   mCoordinates[BottomLeft] = mCoordinates[BottomRight];
+   mCoordinates[BottomRight] = tmp;
+}
+
 const Vertex& TextureCoordinate::get(int index) const
 {
    return mCoordinates[index];

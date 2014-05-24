@@ -27,7 +27,7 @@ YasSyntaxHighlighter::YasSyntaxHighlighter(QTextDocument *parent):
     keywordPatterns << "\\bpackage\\b" << "\\buse\\b" << "\\bextends\\b"
                     << "\\bclass\\b" << "\\binterface\\b" << "\\bimplements\\b"
                     << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b"
-                    << "\\bproperty\\b" << "\\breturn\\b" << "\\bif\\b"
+                    << "\\bproperty\\b" << "\\breturn\\b" << "\\bif\\b" << "\\belse\\b"
                     << "\\bswitch\\b" << "\\bcase\\b" << "\\bstatic\\b"
                     << "\\bfor\\b" << "\\bwhile\\b" << "\\bforeach\\b"
                     << "\\bbreak\\b" << "\\bcontinue\\b" << "\\bnull\\b"

@@ -42,8 +42,7 @@ Entity::Entity():
    mOffset(),
    mName(),
    mClassName(),
-   mDirtyFlag(false),
-   mDirection(true)
+   mDirtyFlag(false)
 {
    if ( ((int)mId) == -1 )
    {
@@ -150,7 +149,8 @@ void Entity::addComponent(Component* pcomponent)
 
 void Entity::flip()
 {
-   mDirection = !mDirection;
+   ComponentMessage message(ComponentInterface::eFlipMsg);
+   mComponents.postMessage(message);
 }
 
 void Entity::update(float delta)

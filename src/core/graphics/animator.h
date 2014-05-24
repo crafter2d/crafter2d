@@ -52,6 +52,7 @@ namespace Graphics
     // operations
       void initialize(const Texture& texture, const Size& meshsize);
       void addAnimation(int start, int length);
+      void flip();
 
     // Animation
       bool animate(AnimationState& state) const;

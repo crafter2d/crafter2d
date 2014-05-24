@@ -44,6 +44,7 @@ namespace Graphics
 
     // Operations
       void generateFromTexture(const Graphics::Texture& texture, const Size& framesize, int framecount);
+      void flip();
    
       const TextureCoordinate& operator[](int index) const;
 
