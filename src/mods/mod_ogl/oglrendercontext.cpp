@@ -86,6 +86,7 @@ void OGLRenderContext::clear()
 
 void OGLRenderContext::drawPoints(int start, int count)
 {
+   glDrawArrays(GL_POINTS, start, count);
 }
 
 void OGLRenderContext::drawTriangles(int start, int count)

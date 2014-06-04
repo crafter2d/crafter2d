@@ -121,6 +121,13 @@ void ShaderObject::linkInput(VertexLayout& layout)
    {
       VertexLayoutElement& field = layout[index];
       field.index = glGetAttribLocation(program, field.semantic.toUtf8().c_str());
+      GLenum err = glGetError();
+      if ( err != GL_NO_ERROR )
+      {
+         char* perr = (char*)gluErrorString(err);
+         String msg(UTEXT("Could not bind attribute '{0}' for shader.").arg(0, field.semantic));
+         Log::getInstance().error(msg.toUtf8().c_str());
+      }
    }
    glUseProgram(0);
 }

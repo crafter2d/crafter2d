@@ -150,13 +150,10 @@ void* OGLVertexBuffer::lock(RenderContext& context)
 void OGLVertexBuffer::unlock(RenderContext& context)
 {
 	if (locked) {
-		glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-
-      glBindBuffer(GL_ARRAY_BUFFER, 0);
-      glBindVertexArray(0);
-		locked = false;
-	}
+      glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+      glUnmapBuffer(GL_ARRAY_BUFFER);
+      locked = false;
+   }
 }
 
 void OGLVertexBuffer::update(RenderContext& context, void* pdata, int count)
