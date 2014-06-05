@@ -2,6 +2,7 @@
 #include "ogltexture.h"
 
 #include "core/graphics/textureinfo.h"
+#include "core/math/math.h"
 
 namespace Graphics
 {
@@ -15,6 +16,43 @@ OGLTexture::OGLTexture():
 
 // - Creation
 
+bool OGLTexture::create(int width, int height, int bytes)
+{
+   mTarget = GL_TEXTURE_2D;
+   mBytes = bytes;
+
+   switch ( bytes )
+   {
+   case 1:
+      mFormat = GL_LUMINANCE;
+      break;
+   case 3:
+      mFormat = GL_BGR;
+      break;
+   case 4:
+      mFormat = GL_RGBA;
+      break;
+   }
+
+   _actualwidth = Math::nextPowerOfTwo(width);
+   _actualheight = Math::nextPowerOfTwo(height);
+
+   glGenTextures(1, &mID);
+   glBindTexture(mTarget, mID);
+   if ( mID == 0 )
+   {
+      return false;
+   }
+
+   glTexParameteri(mTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameteri(mTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+   glTexParameteri(mTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glTexParameteri(mTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+   return true;
+}
+
 bool OGLTexture::create(Device& device, const TextureInfo& info)
 {
    bool success = false;
@@ -22,28 +60,29 @@ bool OGLTexture::create(Device& device, const TextureInfo& info)
    _width  = info.getWidth();
    _height = info.getHeight();
 
-   GLenum format = GL_RGBA;
-   GLint  interval = 4;
+   mFormat = GL_RGBA;
+   mBytes  = 4;
 
    switch ( info.getFormat() )
    {
-   case TextureInfo::Alpha:
-      // not implemented yet
+   case TextureInfo::eLuminance:
+      mFormat = GL_LUMINANCE;
+      mBytes = 1;
       break;
-   case TextureInfo::RGB:
-      format   = GL_RGB;
-      interval = 3;
+   case TextureInfo::eRGB:
+      mFormat = GL_RGB;
+      mBytes  = 3;
       break;
-   case TextureInfo::BGR:
-      format   = GL_BGR;
-      interval = 3;
+   case TextureInfo::eBGR:
+      mFormat = GL_BGR;
+      mBytes  = 3;
       break;
-   case TextureInfo::RGBA:
+   case TextureInfo::eRGBA:
    default:
       break;
    }
 
-   uint8_t* pdata = ensureProperSize(interval, info.getData(), _width, _height);
+   uint8_t* pdata = ensureProperSize(mBytes, info.getData(), _width, _height);
    if ( pdata != NULL )
    {
       mTarget = GL_TEXTURE_2D;
@@ -51,7 +90,7 @@ bool OGLTexture::create(Device& device, const TextureInfo& info)
       // generate the GL texture
       glGenTextures (1, &mID);
 	   glBindTexture (mTarget, mID);
-      glTexImage2D (mTarget, 0, interval, _actualwidth, _actualheight, 0, format, GL_UNSIGNED_BYTE, pdata);
+      glTexImage2D(mTarget, 0, mBytes, _actualwidth, _actualheight, 0, mFormat, GL_UNSIGNED_BYTE, pdata);
 
       glTexParameteri(mTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(mTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -70,6 +109,8 @@ bool OGLTexture::create(Device& device, const TextureInfo& info)
 
 void OGLTexture::update(RenderContext& context, const void* pdata, int rowpitch)
 {
+   glBindTexture(mTarget, mID);
+   glTexImage2D(mTarget, 0, mBytes, _actualwidth, _actualheight, 0, mFormat, GL_UNSIGNED_BYTE, pdata);
 }
 
 /// \fn Texture::release()

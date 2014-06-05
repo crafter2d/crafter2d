@@ -30,7 +30,7 @@ TextureInfo::TextureInfo():
    mHeight(0),
    mpData(NULL),
    mDataSize(0),
-   mFormat(RGB)
+   mFormat(eRGB)
 {
 }
 

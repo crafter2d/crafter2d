@@ -51,6 +51,13 @@ bool OGLFont::initialize(int pointsize)
    return true;
 }
 
+// - Get/set
+
+FT_Face OGLFont::getFace() const
+{
+   return mFace;
+}
+
 // - Query
 
 int OGLFont::getBaseLine() const

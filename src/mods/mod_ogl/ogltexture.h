@@ -14,6 +14,7 @@ namespace Graphics
       OGLTexture();
 
     // creation
+              bool   create(int width, int height, int bytes);
       virtual bool   create(Device& device, const TextureInfo& info) override;
       virtual void   update(RenderContext& context, const void* pdata, int rowpitch) override;
       virtual void   release() override;
@@ -30,6 +31,8 @@ namespace Graphics
 
       GLuint mID;
       GLenum mTarget;
+      GLenum mFormat;
+      GLuint mBytes;
    };
 };
 

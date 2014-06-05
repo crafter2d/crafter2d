@@ -24,6 +24,8 @@
 #include "core/graphics/blendstatedesc.h"
 #include "core/graphics/textureinfo.h"
 
+#include "text/oglglyphprovider.h"
+
 #include "texture/textureloaderfactory.h"
 #include "texture/abstracttextureloader.h"
 
@@ -85,13 +87,6 @@ bool OGLDevice::create(int windowhandle, int width, int height)
    int maxTextureSize = 0;
    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
    log << "Max texture size:\t" << maxTextureSize << "\n";
-
-   // see if required buffer objects are supported
-   if ( !GL_ARB_vertex_buffer_object || !GL_ARB_uniform_buffer_object )
-   {
-      log << "Required buffer objects are not available. Can not proceed.\n";
-      return false;
-   }
    
    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
    glShadeModel(GL_SMOOTH);
@@ -152,7 +147,9 @@ Texture* OGLDevice::createTexture(DataStream& data)
 
 Texture* OGLDevice::createTexture(int width, int height, int bytesperpixel)
 {
-   return NULL;
+   OGLTexture* ptexture = new OGLTexture();
+   ptexture->create(width, height, bytesperpixel);
+   return ptexture;
 }
 
 RenderTarget* OGLDevice::createRenderTarget()
@@ -210,13 +207,15 @@ GLenum OGLDevice::toGLBlendState(BlendStateDesc::BlendFactor blendfactor)
 
 GlyphProvider* OGLDevice::createGlyphProvider(Font& font)
 {
-   return NULL;
+   OGLGlyphProvider* pprovider = new OGLGlyphProvider(mFreeTypeLib);
+   pprovider->initialize(static_cast<OGLFont&>(font));
+   return pprovider;
 }
 
 Font* OGLDevice::createFont(const String& name)
 {
    FT_Face face;
-   const std::string file = name.toUtf8();
+   const std::string file = name.toUtf8() + ".ttf";
    FT_Error error = FT_New_Face(mFreeTypeLib, file.c_str(), 0, &face);
    if ( error != 0 )
    {

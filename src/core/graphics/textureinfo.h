@@ -28,7 +28,7 @@ namespace Graphics
    class CORE_API TextureInfo
    {
    public:
-      enum Format {Alpha, RGBA, RGB, BGR};
+      enum Format { eLuminance, eRGBA, eRGB, eBGR };
 
       TextureInfo();
       ~TextureInfo();

@@ -17,6 +17,9 @@ namespace Graphics
       explicit OGLFont(FT_Face face);
       virtual ~OGLFont();
 
+    // get/set
+      FT_Face getFace() const;
+
     // query
       virtual int getBaseLine() const;
 

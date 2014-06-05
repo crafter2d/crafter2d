@@ -49,9 +49,9 @@ bool TextureLoaderSoil::virLoad(DataStream& data, TextureInfo& info)
 
    switch ( channels )
    {
-   case 1: info.setFormat(TextureInfo::Alpha);  break;
-   case 3: info.setFormat(TextureInfo::RGB);    break;
-   case 4: info.setFormat(TextureInfo::RGBA);   break;
+   case 1: info.setFormat(TextureInfo::eLuminance);  break;
+   case 3: info.setFormat(TextureInfo::eRGB);    break;
+   case 4: info.setFormat(TextureInfo::eRGBA);   break;
    }
 
    info.setData(pimage);
