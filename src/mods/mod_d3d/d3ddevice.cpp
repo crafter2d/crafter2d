@@ -2,7 +2,6 @@
 #include "d3ddevice.h"
 
 #include "core/smartptr/autoptr.h"
-#include "core/graphics/textureinfo.h"
 
 #include "texture/d3dtexture.h"
 #include "texture/d3dtextureloaderdds.h"
@@ -234,13 +233,9 @@ Texture* D3DDevice::createTexture(int width, int height, int bytesperpixel)
 
    ID3D11ShaderResourceView *pShaderResView = NULL;
    mpDevice->CreateShaderResourceView(ptexture, &srDesc, &pShaderResView);
-
-   TextureInfo info;
-   info.setWidth(width);
-   info.setHeight(height);
-
+   
    D3DTexture* presult = new D3DTexture(pShaderResView, ptexture);
-   presult->create(*this, info);
+   presult->create(*this, width, height);
    return presult;
 }
 

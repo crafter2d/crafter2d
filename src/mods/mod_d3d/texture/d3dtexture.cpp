@@ -1,9 +1,8 @@
 
 #include "d3dtexture.h"
 
-#include "core/graphics/textureinfo.h"
-
 #include "../d3ddevice.h"
+#include "../d3dhelpers.h"
 #include "../d3drendercontext.h"
 
 namespace Graphics
@@ -19,10 +18,10 @@ namespace Graphics
 
    // - Operations
 
-   bool D3DTexture::create(Device& device, const TextureInfo& info)
+   bool D3DTexture::create(Device& device, int width, int height)
    {
-      _width = info.getWidth();
-      _height = info.getHeight();
+      _width = width;
+      _height = height;
 
       _sourceWidth = 1.0f;
       _sourceHeight = 1.0f;
@@ -41,6 +40,13 @@ namespace Graphics
       D3DDevice& d3ddevice = static_cast<D3DDevice&>(device);
       HRESULT hr = d3ddevice.getDevice().CreateSamplerState( &sampDesc, &mpSampler);
       return SUCCEEDED(hr);
+   }
+
+   void D3DTexture::release()
+   {
+      SafeRelease(&mpSampler);
+      SafeRelease(&mpTexture);
+      SafeRelease(&mpResource);
    }
 
    void D3DTexture::update(RenderContext& context, const void* pdata, int rowpitch)

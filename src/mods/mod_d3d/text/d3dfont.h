@@ -19,13 +19,6 @@ namespace Graphics
     // query
       virtual int      getBaseLine() const override;
 
-    // sizes
-      virtual int      getTextWidth(const String& text) const override;
-      virtual int      getTextHeight(const String& text) const override;
-      
-    // rendering
-      virtual void     render(const String& text) override;
-
    private:
       friend class D3DGlyphProvider;
 

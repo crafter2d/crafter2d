@@ -20,7 +20,7 @@
 #ifndef ABSTRACT_TEXTURE_LOADER_H_
 #define ABSTRACT_TEXTURE_LOADER_H_
 
-#include "core/graphics/textureinfo.h"
+#include "textureinfo.h"
 
 class DataStream;
 class File;

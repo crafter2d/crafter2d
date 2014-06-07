@@ -26,28 +26,12 @@ namespace Graphics
     // operations
       bool initialize(int pointsize);
 
-    // sizes
-      virtual int getTextWidth(const String& text) const;
-      virtual int getTextHeight(const String& text) const;
-
-    // rendering
-      virtual void render(const String& text);
-
    private:
-      typedef std::map<UChar, FontChar*> Characters;
-
-    // loading
-      FontChar* loadGlyph(UChar character);
-
     // helpers
-      FT_BBox        measure(char c);
-
-      unsigned char* invertMonoBitmap(FT_Bitmap& bitmap);
-      unsigned char* invertBitmap(FT_Bitmap& bitmap, int width, int height);
+      FT_BBox measure(char c);
 
     // members
       FT_Face     mFace;
-      Characters  mCharacters;
       int         mWidth;
       int         mHeight;
       int         mBaseHeight;

@@ -62,14 +62,14 @@ INLINE void TextureInfo::setDataSize(int size)
    mDataSize = size;
 }
 
-INLINE TextureInfo::Format TextureInfo::getFormat() const
+INLINE int TextureInfo::getChannels() const
 {
-   return mFormat;
+   return mChannels;
 }
 
-void TextureInfo::setFormat(Format format)
+void TextureInfo::setChannels(int channels)
 {
-   mFormat = format;
+   mChannels = channels;
 }
 
 };

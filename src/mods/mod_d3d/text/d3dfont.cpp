@@ -23,21 +23,4 @@ namespace Graphics
    {
       return 0;
    }
-
-   // - Sizes
-
-   int D3DFont::getTextWidth(const String& text) const
-   {
-      return 0;
-   }
-
-   int D3DFont::getTextHeight(const String& text) const
-   {
-      return 0;
-   }
-
-   void D3DFont::render(const String& text)
-   {
-   }
-
 }

@@ -14,21 +14,20 @@ namespace Graphics
       OGLTexture();
 
     // creation
-              bool   create(int width, int height, int bytes);
-      virtual bool   create(Device& device, const TextureInfo& info) override;
+      bool   create(int width, int height, int bytes);
+
+    // overrides
       virtual void   update(RenderContext& context, const void* pdata, int rowpitch) override;
       virtual void   release() override;
 
-    // enable/disable
       virtual void   enable(RenderContext& context, int stage) const override;
       virtual void   disable(RenderContext& context) const override;
 
-    // query
       virtual bool   isValid() const override;
 
    private:
-      static GLenum  getRenderTarget();
 
+    // data
       GLuint mID;
       GLenum mTarget;
       GLenum mFormat;

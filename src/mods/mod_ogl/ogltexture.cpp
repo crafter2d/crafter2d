@@ -1,7 +1,6 @@
 
 #include "ogltexture.h"
 
-#include "core/graphics/textureinfo.h"
 #include "core/math/math.h"
 
 namespace Graphics
@@ -51,60 +50,6 @@ bool OGLTexture::create(int width, int height, int bytes)
    glTexParameteri(mTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
    return true;
-}
-
-bool OGLTexture::create(Device& device, const TextureInfo& info)
-{
-   bool success = false;
-
-   _width  = info.getWidth();
-   _height = info.getHeight();
-
-   mFormat = GL_RGBA;
-   mBytes  = 4;
-
-   switch ( info.getFormat() )
-   {
-   case TextureInfo::eLuminance:
-      mFormat = GL_LUMINANCE;
-      mBytes = 1;
-      break;
-   case TextureInfo::eRGB:
-      mFormat = GL_RGB;
-      mBytes  = 3;
-      break;
-   case TextureInfo::eBGR:
-      mFormat = GL_BGR;
-      mBytes  = 3;
-      break;
-   case TextureInfo::eRGBA:
-   default:
-      break;
-   }
-
-   uint8_t* pdata = ensureProperSize(mBytes, info.getData(), _width, _height);
-   if ( pdata != NULL )
-   {
-      mTarget = GL_TEXTURE_2D;
-
-      // generate the GL texture
-      glGenTextures (1, &mID);
-	   glBindTexture (mTarget, mID);
-      glTexImage2D(mTarget, 0, mBytes, _actualwidth, _actualheight, 0, mFormat, GL_UNSIGNED_BYTE, pdata);
-
-      glTexParameteri(mTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-      glTexParameteri(mTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-      glTexParameteri(mTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(mTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-      if ( pdata != info.getData() )
-         delete[] pdata;
-
-      success = true;
-   }
-
-	return success;
 }
 
 void OGLTexture::update(RenderContext& context, const void* pdata, int rowpitch)

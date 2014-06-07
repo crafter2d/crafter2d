@@ -16,8 +16,10 @@ namespace Graphics
       D3DTexture(ID3D11ShaderResourceView* presource, ID3D11Resource* ptexture);
       
     // operations
-      virtual bool   create(Device& device, const TextureInfo& info) override;
+      bool create(Device& device, int width, int height);
 
+    // overrides
+      virtual void   release() override;
       virtual void   update(RenderContext& context, const void* pdata, int rowpitch) override;
 
       virtual void   enable(RenderContext& context, int stage) const override;

@@ -31,6 +31,12 @@ SpriteDefinition::SpriteDefinition():
 {
 }
 
+SpriteDefinition::~SpriteDefinition()
+{
+   delete mpTexture;
+   delete mpAnimator;
+}
+
 // - Get/set
 
 const Size& SpriteDefinition::getSize() const

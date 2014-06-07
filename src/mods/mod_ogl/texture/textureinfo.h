@@ -25,11 +25,9 @@
 
 namespace Graphics
 {
-   class CORE_API TextureInfo
+   class TextureInfo
    {
    public:
-      enum Format { eLuminance, eRGBA, eRGB, eBGR };
-
       TextureInfo();
       ~TextureInfo();
 
@@ -45,15 +43,15 @@ namespace Graphics
       int      getDataSize() const;
       void     setDataSize(int size);
 
-      Format   getFormat() const;
-      void     setFormat(Format format);
+      int      getChannels() const;
+      void     setChannels(int channels);
 
    private:
       int      mWidth;
       int      mHeight;
       uint8_t* mpData;
       int      mDataSize;
-      Format   mFormat;
+      int      mChannels;
    };
 };
 

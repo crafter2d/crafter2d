@@ -6,7 +6,7 @@
 #include "core/graphics/text/glyph.h"
 #include "core/defines.h"
 
-#include "../oglfont.h"
+#include "oglfont.h"
 
 namespace Graphics
 {
@@ -19,7 +19,7 @@ namespace Graphics
    void OGLGlyphProvider::initialize(OGLFont& font)
    {
       mpFont = &font;
-      mpFont->initialize(12.0f);
+      mpFont->initialize(12);
    }
 
    Glyph* OGLGlyphProvider::getGlyph(UChar ch, float emsize)
@@ -62,10 +62,12 @@ namespace Graphics
       }
 
       Glyph* presult = new Glyph();
-      presult->setSize(Size(width, height));
-      presult->setAdvance(slot->advance.x >> 6);
-      presult->setBaseLine(bitmap_glyph->top);
+      presult->setSize(Size(static_cast<float>(width), static_cast<float>(height)));
+      presult->setAdvance(static_cast<float>(slot->advance.x >> 6));
+      presult->setBaseLine(static_cast<float>(bitmap_glyph->top));
       presult->setPixels(pdata, width);
+
+      FT_Done_Glyph(glyph);
 
       return presult;
    }

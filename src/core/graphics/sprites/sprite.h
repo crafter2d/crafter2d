@@ -35,6 +35,7 @@ namespace Graphics
    {
    public:
       explicit Sprite(SpriteDefinition* definition);
+      ~Sprite();
 
     // get/set
       const Size&              getSize() const;

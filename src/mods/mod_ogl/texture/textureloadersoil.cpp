@@ -47,13 +47,7 @@ bool TextureLoaderSoil::virLoad(DataStream& data, TextureInfo& info)
      return false;
    }
 
-   switch ( channels )
-   {
-   case 1: info.setFormat(TextureInfo::eLuminance);  break;
-   case 3: info.setFormat(TextureInfo::eRGB);    break;
-   case 4: info.setFormat(TextureInfo::eRGBA);   break;
-   }
-
+   info.setChannels(channels);
    info.setData(pimage);
    info.setDataSize(width * height * channels);
    info.setWidth(width);

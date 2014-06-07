@@ -29,7 +29,6 @@ namespace Graphics
 {
    class Device;
    class RenderContext;
-   class TextureInfo;
 
    /**
    @author Jeroen Broekhuizen
@@ -41,7 +40,6 @@ namespace Graphics
       explicit       Texture();
       virtual        ~Texture();
 
-      virtual bool   create(Device& device, const TextureInfo& info) = 0;
       virtual void   release();
 
       virtual void   update(RenderContext& context, const void* pdata, int rowpitch) = 0;

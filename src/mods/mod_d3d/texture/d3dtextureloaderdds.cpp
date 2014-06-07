@@ -3,7 +3,6 @@
 
 #include <memory>
 
-#include "core/graphics/textureinfo.h"
 #include "core/smartptr/autoptr.h"
 #include "core/streams/datastream.h"
 #include "core/vfs/filesystem.h"
@@ -88,12 +87,7 @@ D3DTexture* D3DTextureLoaderDDS::load(D3DDevice& device, DataStream& imagedata)
    texture->Release();
 
    D3DTexture* presult = new D3DTexture(textureView, texture);
-
-   TextureInfo info;
-   info.setWidth(pheader->width);
-   info.setHeight(pheader->height);
-
-   presult->create(device, info);
+   presult->create(device, pheader->width, pheader->height);
 
    return presult;
 }

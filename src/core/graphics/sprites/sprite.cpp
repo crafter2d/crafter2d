@@ -36,6 +36,11 @@ Sprite::Sprite(SpriteDefinition* pdefinition):
    ASSERT_PTR(mpDefinition);
 }
 
+Sprite::~Sprite()
+{
+   delete mpDefinition;
+}
+
 // - Query
 
 const Texture& Sprite::getTexture() const

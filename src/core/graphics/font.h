@@ -44,14 +44,7 @@ namespace Graphics
 
     // query
       virtual int      getBaseLine() const = 0;
-
-    // sizes
-      virtual int      getTextWidth(const String& text) const = 0;
-      virtual int      getTextHeight(const String& text) const = 0;
-
-    // rendering
-      virtual void     render(const String& text) = 0;
-
+      
    private:
 
     // data
