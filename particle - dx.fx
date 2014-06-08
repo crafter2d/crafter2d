@@ -6,8 +6,7 @@ sampler diffuseSampler : 0;
 cbuffer mpv : 0
 {
 	float4x4 proj;
-	float4x4 world;
-	float4x4 object;
+	float2 world;
 };
 
 struct VSDataIn
@@ -26,7 +25,9 @@ struct PSDataIn
 
 VSDataIn mainVertex(VSDataIn input)
 {
-	return input;
+	VSDataIn data = input;
+	data.pos -= world;
+	return data;
 }
 
 [maxvertexcount(4), inputtype(point)]

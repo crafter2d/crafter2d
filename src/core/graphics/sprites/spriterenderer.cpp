@@ -99,7 +99,7 @@ void SpriteRenderer::setOffset(RenderContext& context, const Vector& offset)
    if ( mOffset != offset )
    {
       mConstants.world.translate(-(offset - mOffset));
-      mpUB->set(context, &mConstants);
+      mpUB->set(context, &mConstants, sizeof(mConstants));
 
       mOffset = offset;
    }
@@ -109,7 +109,7 @@ void SpriteRenderer::viewportChanged(RenderContext& context, const Viewport& vie
 {
    mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
 
-   mpUB->set(context, &mConstants);
+   mpUB->set(context, &mConstants, sizeof(mConstants));
 }
 
 // - Drawing

@@ -55,7 +55,7 @@ namespace Graphics
       SafeRelease(&mpBuffer);
    }
 
-   void D3DUniformBuffer::set(RenderContext& context, const void* pdata)
+   void D3DUniformBuffer::set(RenderContext& context, const void* pdata, const int size)
    {
       D3DRenderContext& d3dcontext = static_cast<D3DRenderContext&>(context);
       d3dcontext.getContext().UpdateSubresource(mpBuffer, 0, NULL, pdata, 0, 0);
@@ -65,13 +65,16 @@ namespace Graphics
 
    int D3DUniformBuffer::determineSize(UNIFORM_BUFFER_DESC* pdescs, int nr)
    {
-      int result = 0;
+      float result = 0;
       for ( int index = 0; index < nr; ++index )
       {
          UNIFORM_BUFFER_DESC& desc = pdescs[index];
          result += desc.size;
       }
-      return result;
+
+      result = ceilf(result / 16.0f) * 16.0f;
+
+      return (int) result;
    }
 
 } // namespace Graphics

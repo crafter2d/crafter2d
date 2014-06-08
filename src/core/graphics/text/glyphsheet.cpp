@@ -66,14 +66,6 @@ namespace Graphics
       const uint8_t* psrc = glyph.getPixels();
       for ( int y = 0; y < size.height; ++y )
       {
-         for ( int x = 0; x < size.width; ++x )
-         {
-            uint8_t value = psrc[x + y * (int)size.width];
-            if ( value != 0 && value != 255 )
-            {
-               int aap = 5;
-            }
-         }
          memcpy(pdest, psrc, static_cast<int>(size.width));
          psrc += static_cast<int>(size.width);
          pdest += mTextureWidth;

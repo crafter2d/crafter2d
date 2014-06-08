@@ -20,13 +20,16 @@ bool OGLTexture::create(int width, int height, int bytes)
    mTarget = GL_TEXTURE_2D;
    mBytes = bytes;
 
+   _width = width;
+   _height = height;
+
    switch ( bytes )
    {
    case 1:
       mFormat = GL_LUMINANCE;
       break;
    case 3:
-      mFormat = GL_BGR;
+      mFormat = GL_RGB;
       break;
    case 4:
       mFormat = GL_RGBA;

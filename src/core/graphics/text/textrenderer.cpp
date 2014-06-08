@@ -87,7 +87,7 @@ namespace Graphics
    {
       mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
 
-      mpUB->set(context, &mConstants);
+      mpUB->set(context, &mConstants, sizeof(mConstants));
    }
 
    void TextRenderer::draw(RenderContext& context, const Vector& position, Font& font, float fontsize, const String& text)

@@ -25,7 +25,7 @@ namespace Graphics
       virtual void release() = 0;
 
       /// set the data into the uniform buffer
-      virtual void set(RenderContext& context, const void* pdata) = 0;
+      virtual void set(RenderContext& context, const void* pdata, const int size) = 0;
    };
 }
 

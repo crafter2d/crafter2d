@@ -21,7 +21,7 @@ namespace Graphics
       virtual bool create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr) override;
       virtual void release() override;
 
-      virtual void set(RenderContext& context, const void* pdata) override;
+      virtual void set(RenderContext& context, const void* pdata, const int size) override;
                
    private:
 

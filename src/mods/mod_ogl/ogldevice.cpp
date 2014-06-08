@@ -135,7 +135,7 @@ Texture* OGLDevice::createTexture(DataStream& data)
    {
       const TextureInfo& info = loader->getTextureInfo();
       AutoPtr<OGLTexture> result = new OGLTexture();
-      if ( result->create(info.getWidth(), info.getHeight(), info.getChannels()) )
+      if ( !result->create(info.getWidth(), info.getHeight(), info.getChannels()) )
       {
          return NULL;
       }

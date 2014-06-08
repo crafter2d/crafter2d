@@ -39,8 +39,6 @@ void ShaderUniformBuffer::release()
 
 bool ShaderUniformBuffer::createBuffer()
 {
-   glGetActiveUniformBlockiv(mProgram, mBuffer, GL_UNIFORM_BLOCK_DATA_SIZE, &mBufferSize);
-
    glGenBuffers(1, &mBuffer);
    glBindBuffer(GL_UNIFORM_BUFFER, mBuffer);
    glBufferData(GL_UNIFORM_BUFFER, mBufferSize, NULL, GL_DYNAMIC_DRAW);
@@ -69,8 +67,7 @@ bool ShaderUniformBuffer::createUniforms(UNIFORM_BUFFER_DESC* pdescs, int nr)
       element.name = String::fromUtf8(pname);
 
       glGetActiveUniformsiv(mProgram, 1, &pindices[index], GL_UNIFORM_OFFSET, &element.offset);
-      glGetActiveUniformsiv(mProgram, 1, &pindices[index], GL_UNIFORM_SIZE  , &element.size);
-
+      
       int offset = 0;
       for ( int src = 0; src < nr; ++src )
       {
@@ -78,6 +75,7 @@ bool ShaderUniformBuffer::createUniforms(UNIFORM_BUFFER_DESC* pdescs, int nr)
          if ( desc.name == element.name )
          {
             element.source_offset = offset;
+            element.size = desc.size;
             break;
          }
          else
@@ -88,25 +86,20 @@ bool ShaderUniformBuffer::createUniforms(UNIFORM_BUFFER_DESC* pdescs, int nr)
    }
 
    // determine total buffer size that needs to be allocated
-   mBufferSize = 0;
-   for ( int index = 0; index < nr; ++index )
-   {
-      UNIFORM_BUFFER_DESC& desc = pdescs[index];
-      mBufferSize += desc.size;
-   }
+   glGetActiveUniformBlockiv(mProgram, mBlock, GL_UNIFORM_BLOCK_DATA_SIZE, &mBufferSize);
 
    return true;
 }
 
-void ShaderUniformBuffer::set(RenderContext& context, const void* pdata)
+void ShaderUniformBuffer::set(RenderContext& context, const void* pdata, const int size)
 {
    glBindBuffer(GL_UNIFORM_BUFFER, mBuffer);
-   glBufferData(GL_UNIFORM_BUFFER, mBufferSize, pdata, GL_DYNAMIC_DRAW);
+   glBufferSubData(GL_UNIFORM_BUFFER, 0, size, pdata);
 }
 
 void ShaderUniformBuffer::enable() const
 {
-   glBindBuffer(GL_UNIFORM_BUFFER, mBuffer);
+   glBindBufferRange(GL_UNIFORM_BUFFER, mBlock, mBuffer, 0, mBufferSize);
 }
 
 } // namespace Graphics

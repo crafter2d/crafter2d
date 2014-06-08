@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "core/math/matrix4.h"
+#include "core/math/vertex.h"
 
 namespace Graphics
 {
@@ -27,6 +28,7 @@ namespace Graphics
       void destroy();
 
       void viewportChanged(RenderContext& context, const Viewport& viewport);
+      void setOffset(RenderContext& context, const Vector& offset);
 
     // drawing
       void beginDraw(RenderContext& context);
@@ -39,8 +41,7 @@ namespace Graphics
       struct ConstantBuffer
       {
          Matrix4 projection;
-         Matrix4 world;
-         Matrix4 object;
+         Vertex  world;
       };
 
     // data

@@ -60,19 +60,14 @@ namespace Graphics
 
       UNIFORM_BUFFER_DESC descs[] = {
          { UTEXT("proj"), sizeof(float)* 16 },
-         { UTEXT("world"), sizeof(float)* 16 },
-         { UTEXT("object"), sizeof(float)* 16 },
+         { UTEXT("world"), sizeof(float)* 2 },
       };
 
       mpUniformBuffer = mpEffect->createUniformBuffer(UTEXT("mpv"));
-      if ( mpUniformBuffer == NULL || !mpUniformBuffer->create(device, descs, 3) )
+      if ( mpUniformBuffer == NULL || !mpUniformBuffer->create(device, descs, 2) )
       {
          return false;
       }
-
-      mConstants.projection.setIdentity();
-      mConstants.world.setIdentity();
-      mConstants.object.setIdentity();
 
       return true;
    }
@@ -102,7 +97,16 @@ namespace Graphics
    {
       mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
 
-      mpUniformBuffer->set(context, &mConstants);
+      mpUniformBuffer->set(context, &mConstants, sizeof(mConstants));
+   }
+
+   void ParticleSystemRenderer::setOffset(RenderContext& context, const Vector& offset)
+   {
+      if ( mConstants.world.x != offset.x || mConstants.world.y != offset.y )
+      {
+         mConstants.world.set(offset.x, offset.y);
+         mpUniformBuffer->set(context, &mConstants, sizeof(mConstants));
+      }
    }
 
    // - Drawing

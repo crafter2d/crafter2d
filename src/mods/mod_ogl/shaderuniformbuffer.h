@@ -18,7 +18,7 @@ namespace Graphics
       virtual void release() override;
 
       /// set the data into the uniform buffer
-      virtual void set(RenderContext& context, const void* pdata) override;
+      virtual void set(RenderContext& context, const void* pdata, const int size) override;
 
       void enable() const;
 

@@ -145,7 +145,7 @@ void Layer::onViewportChanged(Graphics::RenderContext& context)
    mConstants.world.setIdentity();
    mConstants.object.setIdentity();
 
-   ub->set(context, &mConstants);
+   ub->set(context, &mConstants, sizeof(mConstants));
 }
 
 Vector Layer::getScrollArea() const
@@ -285,7 +285,7 @@ void Layer::scroll(Graphics::RenderContext& context, float x, float y)
 
          mConstants.world.translate(-(xscroll - oldxscroll), -(yscroll - oldyscroll), 0);
 
-         ub->set(context, &mConstants);
+         ub->set(context, &mConstants, sizeof(mConstants));
       }
    }
 }

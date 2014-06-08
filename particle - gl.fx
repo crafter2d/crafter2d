@@ -7,8 +7,7 @@ language ogl
 cbuffer mpv
 {
 	mat4 proj;
-	mat4 world;
-	mat4 object;
+	vec2 world;
 };
 
 struct VertexData
@@ -28,7 +27,7 @@ VertexData mainVertex()
 {
 	VertexData.col = col;
 	VertexData.radius = radius;
-	gl_Position = vec4(pos, 0, 1);
+	gl_Position = vec4(pos.x - world.x, pos.y - world.y, 0, 1);
 }
 
 [maxvertexcount(4), inputtype(point), outputtype(trianglestrip)]
@@ -39,17 +38,17 @@ void mainGeometry(VertexData data, PixelData outdata)
 	PixelData.color = VertexData[0].col;
 	EmitVertex();
 	
-	gl_Position = vec4(gl_in[0].gl_Position.x + VertexData[0].radius, gl_in[0].gl_Position.y - VertexData[0].radius, 0, 1) * proj;
+	gl_Position = vec4(gl_in[0].gl_Position.x  + VertexData[0].radius, gl_in[0].gl_Position.y - VertexData[0].radius, 0, 1) * proj;
 	PixelData.texCoord = vec2(1, 0);
 	PixelData.color = VertexData[0].col;
 	EmitVertex();
 	
-	gl_Position = vec4(gl_in[0].gl_Position.x - VertexData[0].radius, gl_in[0].gl_Position.y + VertexData[0].radius, 0, 1) * proj;
+	gl_Position = vec4(gl_in[0].gl_Position.x  - VertexData[0].radius, gl_in[0].gl_Position.y + VertexData[0].radius, 0, 1) * proj;
 	PixelData.texCoord = vec2(0, 1);
 	PixelData.color = VertexData[0].col;
 	EmitVertex();
 	
-	gl_Position = vec4(gl_in[0].gl_Position.x + VertexData[0].radius, gl_in[0].gl_Position.y + VertexData[0].radius, 0, 1) * proj;
+	gl_Position = vec4(gl_in[0].gl_Position.x  + VertexData[0].radius, gl_in[0].gl_Position.y + VertexData[0].radius, 0, 1) * proj;
 	PixelData.texCoord = vec2(1, 1);
 	PixelData.color = VertexData[0].col;
 	EmitVertex();
