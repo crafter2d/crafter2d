@@ -12,7 +12,7 @@
 bool ModuleGenerator::generate(CommandLine& commandline)
 {
    // get the module name
-   const CommandLineArgument* parg = commandline.findArgument(UTEXT("name"));
+   const CommandLineArgument* parg = commandline.getArgument(UTEXT("name"));
    if ( parg != NULL )
    {
       String modname = parg->getValue();
@@ -24,7 +24,7 @@ bool ModuleGenerator::generate(CommandLine& commandline)
       if ( system.mkdir(path) )
       {
          // see what type of module to create
-         parg = commandline.findArgument(UTEXT("type"));
+         parg = commandline.getArgument(UTEXT("type"));
          if ( parg != NULL )
          {
             if ( parg->getValue() == UTEXT("content") )
@@ -60,7 +60,7 @@ bool ModuleGenerator::generateContentModule(CommandLine& commandline, const Stri
    baseHeader = "modules/contentmodule.h";
    baseClass = "ContentModule";
 
-   const CommandLineArgument* parg = commandline.findArgument(UTEXT("supports"));
+   const CommandLineArgument* parg = commandline.getArgument(UTEXT("supports"));
    if ( parg != NULL )
    {
       std::string exts = parg->getValue().toUtf8();

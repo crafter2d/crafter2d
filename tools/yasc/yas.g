@@ -1,4 +1,4 @@
-grammar as;
+grammar yas;
 
 options 
 {

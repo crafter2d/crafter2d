@@ -92,7 +92,6 @@ Section "Source" SecSource
   
   SetOutPath "$INSTDIR"
   File .gitignore
-  File cp.exe
   File Doxyfile
   File gen.bat
   File gen.sh
@@ -103,6 +102,9 @@ Section "Source" SecSource
   
   SetOutPath "$INSTDIR\src"
   File /r src\*.*
+  
+  SetOutPath "$INSTDIR\tools"
+  File /r tools\*.*
   
   SetOutPath "$INSTDIR\projects"
   File /r projects\*.*

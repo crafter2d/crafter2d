@@ -6,7 +6,7 @@
 #include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 
-#include "yasc/compiler/output/asLexer.h"
+#include "yasc/compiler/output/yasLexer.h"
 
 // static
 AntlrStream* AntlrStream::fromFile(const String& filename)

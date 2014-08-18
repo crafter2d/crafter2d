@@ -24,11 +24,16 @@ ProjectGenerator::ProjectGenerator():
 
 bool ProjectGenerator::generate(CommandLine& commandline)
 {
-   const CommandLineArgument* ppackageargument = commandline.findArgument(String("package"));
-   const CommandLineArgument& nameargument = commandline.getArgument(String("name"));
-   bool force = commandline.hasArgument(String("force"));
+   const CommandLineArgument* ppackageargument = commandline.getArgument(String("package"));
+   const CommandLineArgument* pnameargument = commandline.getArgument(String("name"));
+   const CommandLineArgument* ppathargument = commandline.getArgument(UTEXT("path"));
 
-   std::string projectname = nameargument.getValue().toUtf8();
+   if ( pnameargument == NULL || ppathargument == NULL )
+   {
+      return false;
+   }
+
+   std::string projectname = pnameargument->getValue().toUtf8();
    std::string packagename = ppackageargument != NULL ? ppackageargument->getValue().toUtf8() : projectname;
 
    ctemplate::TemplateDictionary dict("values");
@@ -49,9 +54,7 @@ bool ProjectGenerator::generate(CommandLine& commandline)
 
    // The path that we assume here is: projectdir\scripts\package
    // where projectdir is the directory of a Crafter Workshop project
-   
-   const CommandLineArgument& pathargument = commandline.getArgument(UTEXT("path"));
-   String path = File::concat(File::concat(pathargument.getValue(), UTEXT("scripts")), String(packagename));
+   String path = File::concat(File::concat(ppathargument->getValue(), UTEXT("scripts")), String(packagename));
    int result = FileSystem::getInstance().mkdir(path);
    if ( result == ERR_PATH_NOT_FOUND )
    {
@@ -66,6 +69,8 @@ bool ProjectGenerator::generate(CommandLine& commandline)
 
    String servercontent = String::fromUtf8(serveroutput.c_str());
    String clientcontent = String::fromUtf8(clientoutput.c_str());
+
+   bool force = commandline.hasArgument(String("force"));
 
    return write(clientfile, clientcontent, force) 
        && write(serverfile, servercontent, force);

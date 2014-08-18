@@ -9,8 +9,8 @@
 #include "core/string/string.h"
 #include "core/system/variant.h"
 
-#include "yasc/compiler/output/asLexer.h"
-#include "yasc/compiler/output/asParser.h"
+#include "yasc/compiler/output/yasLexer.h"
+#include "yasc/compiler/output/yasParser.h"
 #include "yasc/compiler/ast/astannotation.h"
 #include "yasc/compiler/compilecontext.h"
 #include "yasc/common/literal.h"
@@ -34,7 +34,7 @@ AntlrParser::AntlrParser(CompileContext& context):
 ASTRoot* AntlrParser::parse(File& file)
 {
    AutoPtr<AntlrStream> stream = AntlrStream::fromFile(file);
-   pasLexer lexer = asLexerNew(stream->getStream());
+   pyasLexer lexer = yasLexerNew(stream->getStream());
    if ( lexer == NULL )
    {
       throw new AntlrException(UTEXT("failed to instantiate lexer"));
@@ -49,7 +49,7 @@ ASTRoot* AntlrParser::parse(File& file)
       throw new AntlrException(UTEXT("Can not open token stream"));
    }
 
-   pasParser parser = asParserNew(tstream);
+   pyasParser parser = yasParserNew(tstream);
    if ( parser == NULL )
    {
       lexer->free(lexer);
@@ -61,7 +61,7 @@ ASTRoot* AntlrParser::parse(File& file)
    try
    {
       parser->pParser->rec->displayRecognitionError = reportError;
-      asParser_script_return ast = parser->script(parser);
+      yasParser_script_return ast = parser->script(parser);
 
       if ( parser->pParser->rec->state->errorCount > 0 )
       {

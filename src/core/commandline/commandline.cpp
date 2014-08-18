@@ -22,8 +22,6 @@
 #include "core/defines.h"
 #include "core/string/string.h"
 
-#include "commandlineexception.h"
-
 CommandLine::CommandLine():
    mArguments()
 {
@@ -60,20 +58,11 @@ void CommandLine::set(int argc, char *argv[])
 
 bool CommandLine::hasArgument(const String& name) const
 {
-   return findArgument(name) != NULL;
+   return getArgument(name) != NULL;
 }
 
-const CommandLineArgument& CommandLine::getArgument(const String& name) const
-{
-   const CommandLineArgument* presult = findArgument(name);
-   if ( presult == NULL )
-   {
-      throw new CommandLineException(UTEXT("Could not find argument '") + name + UTEXT("'"));
-   }
-   return *presult;
-}
-
-const CommandLineArgument* CommandLine::findArgument(const String& name) const
+/// Returns pointer to the argument if it was specified on the command line
+const CommandLineArgument* CommandLine::getArgument(const String& name) const
 {
    for ( std::size_t index = 0; index < mArguments.size(); index++ )
    {

@@ -155,11 +155,13 @@ Debug:MOC_DIR = $$BaseDir/debug/.moc
 Debug:RCC_DIR = $$BaseDir/debug/.rcc
 Debug:UI_DIR = $$BaseDir/debug/.ui
 
-BinDir = $$PWD/../../bin/
+DebugBinDir = $$PWD/../../bin/
+ReleaseBinDir = $$PWD/../../binrel/
+
 SrcDir = $$PWD/../../src
 
-win32:CONFIG(release, debug|release): LIBS += -L$$BinDir -lCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$BinDir -lCored
+win32:CONFIG(release, debug|release): LIBS += -L$$ReleaseBinDir -lCore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$DebugBinDir -lCored
 
 INCLUDEPATH += $$SrcDir
 DEPENDPATH += $$SrcDir

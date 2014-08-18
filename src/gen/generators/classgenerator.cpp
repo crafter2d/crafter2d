@@ -3,6 +3,7 @@
 
 #include <io.h>
 #include <iostream>
+#include <algorithm>
 #include <ctemplate/template.h>
 
 #include "core/string/string.h"
@@ -11,19 +12,43 @@
 #include "core/vfs/filesystem.h"
 #include "core/vfs/stdiofile.h"
 
+template<class T>
+int inline findAndReplace(T& source, const T& find, const T& replace)
+{
+   int num = 0;
+   std::size_t fLen = find.size();
+   std::size_t rLen = replace.size();
+   for ( std::size_t pos = 0; (pos = source.find(find, pos)) != T::npos; pos += rLen )
+   {
+      num++;
+      source.replace(pos, fLen, replace);
+   }
+   return num;
+}
+
 bool ClassGenerator::generate(CommandLine& commandline)
 {
-   const CommandLineArgument& nameargument = commandline.getArgument(UTEXT("name"));
-   const CommandLineArgument* pbaseargument = commandline.findArgument(UTEXT("base"));
-   const CommandLineArgument& pathargument = commandline.getArgument(UTEXT("path"));
+   const CommandLineArgument* pnameargument = commandline.getArgument(UTEXT("name"));
+   const CommandLineArgument* pbaseargument = commandline.getArgument(UTEXT("base"));
+   const CommandLineArgument* ppathargument = commandline.getArgument(UTEXT("path"));
+
+   if ( pnameargument == NULL || ppathargument == NULL )
+   {
+      return false;
+   }
 
    String package;
-   String name = nameargument.getValue();
+   String name = pnameargument->getValue();
    int pos = name.lastIndexOf(L'.');
    if ( pos == -1 )
    {
-      const CommandLineArgument& packageargument = commandline.getArgument(UTEXT("package"));
-      package = packageargument.getValue();
+      const CommandLineArgument* ppackageargument = commandline.getArgument(UTEXT("package"));
+      if ( ppackageargument == NULL )
+      {
+         return false;
+      }
+
+      package = ppackageargument->getValue();
    }
    else
    {
@@ -47,9 +72,12 @@ bool ClassGenerator::generate(CommandLine& commandline)
       return false;
    }
 
+   // needed so that Crafter Workshop does not show invalid empty lines
+   findAndReplace(expanded, std::string("\r\n"), std::string("\n"));
+
    String path = package;
    path.replace('.', FileSystem::getInstance().getNativeSeparator());
-   path = File::concat(File::concat(pathargument.getValue(), UTEXT("scripts")), File::concat(path, name + UTEXT(".as")));
+   path = File::concat(File::concat(ppathargument->getValue(), UTEXT("scripts")), File::concat(path, name + UTEXT(".as")));
 
    return writeFile(path, String(expanded));
 }

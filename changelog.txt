@@ -1,5 +1,20 @@
-Crafter 2D, version 0.7, Jeroen Broekhuizen
+Crafter 2D, version 0.8, Jeroen Broekhuizen
 Copyright 2009-2014
+
+Change log 0.8
+--------------
+* Added basic text rendering
+* Added Play button in Crafter Workshop
+* Added class generation ability in Crafter Workshop
+* Added YAS compile error display in Crafter Workshop
+* Redesigned & improved tile list in Crafter Workshop
+* Improved particle system (now uses geometry shaders!)
+* Fixed OpenGL driver
+* Fixed undo/redo in Crafter Workshop
+* Fixed broken annotations in YAS
+* Ficed unit testing in YAS
+* Fixed multi-layer rendering bug
+* Fixed many small bugs in Crafter Workshop
 
 Change log 0.7
 --------------

@@ -4,7 +4,6 @@
 
 #include "core/defines.h"
 #include "core/commandline/commandline.h"
-#include "core/commandline/commandlineexception.h"
 
 #include "generators/projectgenerator.h"
 #include "generators/modulegenerator.h"
@@ -45,16 +44,8 @@ int main(int argc, char *argv[])
          return -1;
       }
 
-      try
+      if ( !pgenerator->generate(cmdline) )
       {
-         if ( !pgenerator->generate(cmdline) )
-         {
-            return -2;
-         }
-      }
-      catch ( CommandLineException& e )
-      {
-         std::cerr << e.getMessage().toUtf8();
          return -2;
       }
    }

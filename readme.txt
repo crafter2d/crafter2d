@@ -1,33 +1,32 @@
-Crafter 2D, version 0.7, Jeroen Broekhuizen
+Crafter 2D, version 0.8, Jeroen Broekhuizen
 Copyright 2009-2014
 
-Welcome to this new update of Crafter 2D! This new version improves the workflow
-in the Crafter Workshop application. It is now possible to create a new project
-from scratch and start editing new worlds! The new world wizard allows you to
-import art from another place and copies it to your local project folder.
+Welcome to this latest update of Crafter 2D! In this release many improvements are
+implemented in the Crafter Workshop. The most visible improvement is the redesigned
+Tile selection component. In previous versions the tiles were displayed in a long
+vertical list, making it difficult to find the right tile. In this version, the new
+component displays the tiles in a grid. Effort has also been spend in the scripting
+department of the Workshop. It is now possible to compile the scripts. Any errors
+are now click-able, leading you directly to the location where the error was found.
 
-Editing script files is very limited and involves some outside the editor editing
-of project files (check wiki if you are interested). In later versions this will
-be greatly improved.
+In Crafter 2D the particle system has been improved. Using the newly added geometry
+shader support it can now render a huge amount of particles. In upcoming versions
+more capabilities will be added. Also the OpenGL driver has been repaired and is fully
+functional again (on par with the DirectX driver). This has been done for Linux 
+support which still is on the roadmap (even numerous GCC compile issues have been
+fixed). 
 
-The biggest change in this version is the brand new command line script compiler
-YASC. It compiles the files into intermediary language files, which are loaded by
-the engine. This makes loading a lot faster at runtime as most of the checking
-has already been performed. Crafter Workshop uses this utility to compile the script
-files in the script folder.
-
-With this version most of the modules are created (still need to do the box2d module
-and perhaps some more). But my main focus will be on enhancing the Crafter Workshop
-to improve its usability.
+Last but not least, a new text rendering system has been implemented allowing us to
+render text on screen. Currently it is only used for rendering the frame counter,
+but more uses will be added in a later version.
 
 More information about the engine can be found on the wiki at the SourceForge.net
 website: http://sourceforge.net/projects/jenginesse/
 
-UPDATING:
-When upgrading from a previous version of Crafter 2D (or JEngine SSE), you will need
-to use the new basic.fx effect file. It is currently coded used by the engine. The
-old format is no longer supported. Check the wiki for more information on the format
-of the new effect file.
+REMARKS:
+This engine still is in pre-alpha phase and many developments still take place, so
+features can be broken, replaced or removed in later versions. The aim is to keep
+games created in these early versions running or able to be upgraded with minimal effort.
 
 RUNNING DEMO:
 To run the demo application, navigate to the bin directory and execute the game.exe 
@@ -47,7 +46,6 @@ is wrong. A reproduction scenario would be appreciated.
 For questions or functionality requests you can move to the forums.
 
 KNOWN BUGS:
-
 * Script compiler leaks memory, will be fixed in future patch
 * Bugs/compile errors in scripts might crash the engine (not fool proof yet)
 

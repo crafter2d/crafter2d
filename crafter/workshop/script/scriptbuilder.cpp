@@ -41,6 +41,11 @@ ScriptFile* ScriptBuilder::build(Project& project, const QString& name, const QS
         arguments.append("base=" + baseclass);
     }
 
+    if ( name.indexOf('.') == -1 )
+    {
+        arguments.append("package=" + project.getName());
+    }
+
     QProcess gen;
     gen.start("gend.exe", arguments);
     if ( gen.waitForFinished() )
@@ -52,7 +57,7 @@ ScriptFile* ScriptBuilder::build(Project& project, const QString& name, const QS
             {
                 QString filename = name;
                 filename.replace('.', QDir::separator());
-                QString resourcepath = QString("scripts") + QDir::separator() + filename + ".as";
+                QString resourcepath = QString("scripts") + QDir::separator() + project.getName() + QDir::separator() + filename + ".as";
                 QString filepath = project.getBasePath() + QDir::separator() + resourcepath;
                 ScriptFile* pscript = new ScriptFile(filepath);
                 pscript->setResourceName(resourcepath);

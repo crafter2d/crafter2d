@@ -82,7 +82,7 @@ Game::~Game()
 bool Game::create()
 {
    Log& log = Log::getInstance();
-   log << "Crafter 2D V0.7 - Copyright 2013 - Jeroen Broekhuizen\n";
+   log << "Crafter 2D V0.8 - Copyright 2013 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "--------------------------------------------------------\n";
 
@@ -177,12 +177,12 @@ bool Game::initGame()
       path = inifile.get(UTEXT("Process"), UTEXT("basedir"));
    }
 
-   Log::getInstance().info("Using path: ");
-   Log::getInstance().info(path.toUtf8().c_str());
+   Log::getInstance().info(("Using path: " + path.toUtf8()).c_str());
    
    FileSystem::getInstance().addPath(path);
    FileSystem::getInstance().addPath(File::concat(path, UTEXT("scripts")));
   
+   Log::getInstance().info("Starting server.");
    mpServer = new c2d::Server();
    if ( !mpServer->create(inifile.get(UTEXT("Process"), UTEXT("server")), path) )
    {
@@ -190,6 +190,7 @@ bool Game::initGame()
       return false;
    }
 
+   Log::getInstance().info("Starting client.");
    mpClient = new c2d::Client();
    mpClient->setWindowFactory(*mpWindowFactory);
    if ( !mpClient->create(inifile.get(UTEXT("Process"), UTEXT("client")), path) )

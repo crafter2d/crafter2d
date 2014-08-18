@@ -1,7 +1,7 @@
 
 #include "antlrnode.h"
 
-#include "yasc/compiler/output/asParser.h"
+#include "yasc/compiler/output/yasParser.h"
 
 #include "antlrtextposition.h"
 

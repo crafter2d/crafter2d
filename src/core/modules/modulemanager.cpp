@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+#include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
 #include "core/system/platform.h"
 #include "core/system/exception.h"
@@ -37,6 +38,8 @@ namespace c2d
       }
 
       // load all modules
+      Log::getInstance().info("Loading modules...");
+
       auto append = [this](const String& val){ add(val); };
       std::for_each(filenames.begin(), filenames.end(), append);
 
@@ -66,6 +69,8 @@ namespace c2d
       void* pmodule = platform.loadModule(filename);
       if ( pmodule != NULL )
       {
+         Log::getInstance().info(("Module " + filename.toUtf8()).c_str());
+
          mHandles.push_back(pmodule);
 
          PGETMODULE pfunc = (PGETMODULE)platform.getFunctionAddress(pmodule, UTEXT("getModule"));

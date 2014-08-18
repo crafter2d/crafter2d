@@ -43,8 +43,7 @@ public:
 
  // searching
    bool                       hasArgument(const String& name) const;
-   const CommandLineArgument& getArgument(const String& name) const;
-   const CommandLineArgument* findArgument(const String& name) const;
+   const CommandLineArgument* getArgument(const String& name) const;
 
 private:
  // parsing
