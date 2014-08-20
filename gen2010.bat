@@ -1,2 +1,2 @@
 @echo off
-premake4 --libdir=D:\Devel\jenginesse\externallibs\vs2012 vs2010
+premake5 --libdir=F:\Devel\crafter2d\externallibs\x32 vs2010
