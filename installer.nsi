@@ -56,6 +56,7 @@ Section "Engine" SecEngine
   File changelog.txt
   File license.txt
   File readme.txt
+  File vcredist_x86.exe
 
   SetOutPath "$INSTDIR\bin"
   File /r bin\*
@@ -63,23 +64,8 @@ Section "Engine" SecEngine
   SetOutPath "$INSTDIR\demo"
   File /r demo\*
   
-  SetOutPath "$INSTDIR\images"
-  File /x original images\*
-  
-  SetOutPath "$INSTDIR\objects"
-  File objects\*
-  
   SetOutPath "$INSTDIR\scripts"
   File /r scripts\*
-  
-  SetOutPath "$INSTDIR\shaders"
-  File shaders\*
-  
-  SetOutPath "$INSTDIR\sounds"
-  File sounds\*
-  
-  SetOutPath "$INSTDIR\worlds"
-  File worlds\*
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -93,8 +79,7 @@ Section "Source" SecSource
   SetOutPath "$INSTDIR"
   File .gitignore
   File Doxyfile
-  File gen.bat
-  File gen.sh
+  File gen2010.bat
   File installer.nsi
   File premake5.exe
   File premake5.lua
