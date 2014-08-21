@@ -21,7 +21,15 @@ render text on screen. Currently it is only used for rendering the frame counter
 but more uses will be added in a later version.
 
 More information about the engine can be found on the wiki at the SourceForge.net
-website: http://sourceforge.net/projects/jenginesse/
+website: http://sourceforge.net/projects/crafter2d/
+
+NOTE:
+The format of the compile yas files have been changed slightly. In technical terms,
+YAS used doubles before as container for reals. As the rest of the engine uses floats,
+this requires a lot of conversions when giving for example positions of entities
+to the scripts. To remove those conversions, the double has been replaced by floats.
+The result is that you MUST recompile your scripts before you run your game in
+version 0.8.
 
 REMARKS:
 This engine still is in pre-alpha phase and many developments still take place, so

@@ -9,6 +9,7 @@ Change log 0.8
 * Added YAS compile error display in Crafter Workshop
 * Redesigned & improved tile list in Crafter Workshop
 * Improved particle system (now uses geometry shaders!)
+* Compiled yas file format has been changed (recompile your scripts!)
 * Fixed OpenGL driver
 * Fixed undo/redo in Crafter Workshop
 * Fixed broken annotations in YAS
