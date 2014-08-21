@@ -8,7 +8,7 @@
 #include "list.h"
 
 template <class E>
-class CORE_API ListConstIterator : public ConstIterator<E>
+class ListConstIterator : public ConstIterator<E>
 {
 public:
 

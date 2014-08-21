@@ -265,7 +265,7 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
          case SBIL_sconv_real:
             {
                const String& value = mStack.popString();
-               double result = NumberConverter::getInstance().toDouble(value);
+               float result = NumberConverter::getInstance().toFloat(value);
                mStack.pushReal(result);  
             }
             break;
@@ -327,35 +327,35 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
 
          case SBIL_radd:
             {
-               double right = mStack.popReal();
-               double left = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushReal(left + right);
             }
             break;
          case SBIL_rsub:
             {
-               double right = mStack.popReal();
-               double left = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushReal(left - right);
             }
             break;
          case SBIL_rmul:
             {
-               double right = mStack.popReal();
-               double left = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushReal(left * right);
             }
             break;
          case SBIL_rdiv:
             {
-               double right = mStack.popReal();
-               double left = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushReal(left / right);
             }
             break;
          case SBIL_rneg:
             {
-               double left = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushReal(-left);
             }
             break;
@@ -474,43 +474,43 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
             break;
          case SBIL_rcmpeq:
             {
-               double right = mStack.popReal();
-               double left  = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushBool(left == right);
             }
             break;
          case SBIL_rcmpne:
             {
-               double right = mStack.popReal();
-               double left  = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushBool(left != right);
             }
             break;
          case SBIL_rcmpgt:
             {
-               double right = mStack.popReal();
-               double left  = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushBool(left > right);
             }
             break;
          case SBIL_rcmpge:
             {
-               double right = mStack.popReal();
-               double left  = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushBool(left >= right);
             }
             break;
          case SBIL_rcmple:
             {
-               double right = mStack.popReal();
-               double left  = mStack.popReal();
+               float right = mStack.popReal();
+               float left = mStack.popReal();
                mStack.pushBool(left <= right);
             }
             break;
          case SBIL_rcmplt:
             {
-               double right = mStack.popReal();
-               double left  = mStack.popReal();
+               float right = mStack.popReal();
+               float left  = mStack.popReal();
                mStack.pushBool(left < right);
             }
             break;

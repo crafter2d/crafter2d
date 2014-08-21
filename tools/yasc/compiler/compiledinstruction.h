@@ -11,7 +11,7 @@ struct CompiledInstruction
    union Value
    {
       int mInt;
-      double mReal;
+      float mReal;
       void* mPtr;
    };
 };

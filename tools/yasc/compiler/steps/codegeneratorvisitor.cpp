@@ -1298,7 +1298,7 @@ void CodeGeneratorVisitor::handleField(const ASTField& field)
       if ( variable.getType().isInt() )
          mBuilder.emit(CIL_ldint, 1);
       else
-         mBuilder.emit(CIL_ldreal, 1.0);
+         mBuilder.emit(CIL_ldreal, 1.0f);
 
       if ( IS_SET(mLoadFlags, ePreIncr) || IS_SET(mLoadFlags, ePostIncr) )
          mBuilder.emit(CIL_add);
@@ -1326,7 +1326,7 @@ void CodeGeneratorVisitor::handleField(const ASTField& field)
          if ( variable.getType().isInt() )
             mBuilder.emit(CIL_ldint, 1);
          else
-            mBuilder.emit(CIL_ldreal, 1.0);
+            mBuilder.emit(CIL_ldreal, 1.0f);
 
          if ( IS_SET(flags, ePostIncr) )
             mBuilder.emit(CIL_sub);
@@ -1356,7 +1356,7 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable)
       if ( variable.getType().isInt() )
          mBuilder.emit(CIL_ldint, 1);
       else
-         mBuilder.emit(CIL_ldreal, 1.0);
+         mBuilder.emit(CIL_ldreal, 1.0f);
 
       if ( IS_SET(mLoadFlags, ePreIncr) || IS_SET(mLoadFlags, ePostIncr) )
          mBuilder.emit(CIL_add);
@@ -1379,7 +1379,7 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable)
          if ( variable.getType().isInt() )
             mBuilder.emit(CIL_ldint, 1);
          else
-            mBuilder.emit(CIL_ldreal, 1.0);
+            mBuilder.emit(CIL_ldreal, 1.0f);
 
          if ( IS_SET(flags, ePostIncr) )
             mBuilder.emit(CIL_sub);
@@ -1459,7 +1459,7 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
                mBuilder.emit(CIL_ldint, 0);
                break;
             case ASTType::eReal:
-               mBuilder.emit(CIL_ldreal, 0.0);
+               mBuilder.emit(CIL_ldreal, 0.0f);
                break;
             case ASTType::eString:
                mBuilder.emit(CIL_ldstr, String());
@@ -1553,7 +1553,7 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
                mBuilder.emit(CIL_ldint, 0);
                break;
             case ASTType::eReal:
-               mBuilder.emit(CIL_ldreal, 0.0);
+               mBuilder.emit(CIL_ldreal, 0.0f);
                break;
             case ASTType::eString:
                mBuilder.emit(CIL_ldstr, String());

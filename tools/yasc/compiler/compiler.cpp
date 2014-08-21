@@ -88,7 +88,7 @@ int Compiler::exec()
    String mask = File::toNativeSeparator(mCommands[mCommands.size() - 1].getName());
 
    // get the root 
-   const CommandLineArgument* prootarg = mCommands.findArgument(UTEXT("p"));
+   const CommandLineArgument* prootarg = mCommands.getArgument(UTEXT("p"));
    if ( prootarg != NULL )
    {
       StringList rootpaths;
@@ -101,14 +101,14 @@ int Compiler::exec()
 
    // see if we should find the files recursively
    bool recursive = false;
-   const CommandLineArgument* precursearg = mCommands.findArgument(UTEXT("r"));
+   const CommandLineArgument* precursearg = mCommands.getArgument(UTEXT("r"));
    if ( precursearg != NULL )
    {
       recursive = true;
    }
 
    // find the output dir
-   const CommandLineArgument* parg = mCommands.findArgument(UTEXT("o"));
+   const CommandLineArgument* parg = mCommands.getArgument(UTEXT("o"));
    if ( parg != NULL )
    {
       mOutputDir = parg->getValue();

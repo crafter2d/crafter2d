@@ -17,7 +17,7 @@ public:
    VirtualValue(const VirtualValue& that);
    VirtualValue(bool value);
    VirtualValue(int value);
-   VirtualValue(double value);
+   VirtualValue(float value);
    VirtualValue(UChar value);
    VirtualValue(VirtualString& value);
    VirtualValue(VirtualObject& object);
@@ -44,8 +44,8 @@ public:
    void setNumber(int value);
 
    bool   isReal() const;
-   double asReal() const;
-   void   setReal(double value);
+   float  asReal() const;
+   void   setReal(float value);
 
    bool  isChar() const;
    UChar asChar() const;
@@ -80,7 +80,7 @@ private:
    union {
       bool           boolean;
       int            number;
-      double         real;
+      float          real;
       UChar          uchar;
       VirtualString* string;
       VirtualObject* object;
@@ -89,7 +89,7 @@ private:
 };
 
 #ifdef CRAFTER_INLINE
-#  include "virtualvalue.h"
+#  include "virtualvalue.inl"
 #endif
 
 #endif // VIRTUAL_VALUE_H

@@ -31,7 +31,7 @@ public:
  // emitting
    void emit(CIL::Opcode opcode);
    void emit(CIL::Opcode opcode, int arg);
-   void emit(CIL::Opcode opcode, double arg);
+   void emit(CIL::Opcode opcode, float arg);
    void emit(CIL::Opcode opcode, const String& arg);
 
  // building

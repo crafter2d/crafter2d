@@ -15,6 +15,7 @@ public:
  // conversion
    int toInt(UChar value);
    int toInt(const String& value);
+   float toFloat(const String& value);
    double toDouble(const String& value);
 
    String& format(String& result, int value);

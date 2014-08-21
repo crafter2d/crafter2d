@@ -25,7 +25,7 @@ public:
    void push(int count, VirtualValue* pvalues);
    void push(const VirtualValue& value);
    void pushInt(int value);
-   void pushReal(double value);
+   void pushReal(float value);
    void pushBool(bool value);
    void pushChar(UChar value);
    void pushString(VirtualString& value);
@@ -35,7 +35,7 @@ public:
    VirtualValue              pop();
    void                 pop(int count);
    int                  popInt();
-   double               popReal();
+   float                popReal();
    bool                 popBool();
    UChar                popChar();
    const String&        popString();

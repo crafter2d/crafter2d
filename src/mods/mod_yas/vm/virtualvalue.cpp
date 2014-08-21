@@ -39,7 +39,7 @@ VirtualValue::VirtualValue(int value):
    mValue.number = value;
 }
 
-VirtualValue::VirtualValue(double value):
+VirtualValue::VirtualValue(float value):
    mKind(eReal),
    mValue()
 {
@@ -274,13 +274,13 @@ String VirtualValue::toString() const
 void VirtualValue::int2real()
 {
    ASSERT(isNumber());
-   setReal((double)asNumber());
+   setReal(static_cast<float>(asNumber()));
 }
 
 void VirtualValue::real2int()
 {
    ASSERT(isReal());
-   setNumber((int)asReal());
+   setNumber(static_cast<int>(asReal()));
 }
 
 void VirtualValue::setTo(const Variant& value, StringCache& stringcache)

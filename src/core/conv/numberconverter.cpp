@@ -35,6 +35,11 @@ int NumberConverter::toInt(const String& value)
    return wcstol(value.mpString, NULL, 10);
 }
 
+float NumberConverter::toFloat(const String& value)
+{
+   return wcstof(value.mpString, NULL);
+}
+
 double NumberConverter::toDouble(const String& value)
 {
    return wcstod(value.mpString, NULL);

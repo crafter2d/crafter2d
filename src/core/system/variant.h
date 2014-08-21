@@ -14,7 +14,7 @@ public:
             Variant();
             Variant(const Variant& that);
    explicit Variant(int value);
-   explicit Variant(double value);
+   explicit Variant(float value);
    explicit Variant(UChar value);
    explicit Variant(bool value);
    explicit Variant(const String& value);
@@ -34,8 +34,8 @@ public:
    int asInt() const;
    void setInt(int value);
 
-   double asReal() const;
-   void setReal(double value);
+   float asReal() const;
+   void setReal(float value);
 
    bool asBool() const;
    void setBool(bool value);
@@ -61,7 +61,7 @@ public:
  // display
    String  toString() const;
    int     toInt() const;
-   double  toReal() const;
+   float   toReal() const;
    
  // streaming
    friend CORE_API DataStream& operator<<(DataStream& stream, const Variant& variant);
@@ -83,7 +83,7 @@ private:
    {
       bool     mBoolean;
       int      mInt;
-      double   mReal;
+      float    mReal;
       UChar    mChar;
       Object*  mpObject;
    };

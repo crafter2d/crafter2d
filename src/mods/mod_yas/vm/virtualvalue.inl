@@ -51,7 +51,7 @@ INLINE int VirtualValue::asNumber() const
    return mValue.number;
 }
 
-INLINE double VirtualValue::asReal() const
+INLINE float VirtualValue::asReal() const
 {
    return mValue.real;
 }
@@ -83,7 +83,7 @@ INLINE void VirtualValue::setNumber(int value)
    mValue.number = value;
 }
 
-INLINE void VirtualValue::setReal(double value)
+INLINE void VirtualValue::setReal(float value)
 {
    mKind = eReal;
    mValue.real = value;

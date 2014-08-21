@@ -48,7 +48,7 @@ namespace CIL
       union
       {
          int mInt;
-         double mReal;
+         float mReal;
          String* mString;
       };
    };

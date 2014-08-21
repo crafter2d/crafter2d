@@ -156,14 +156,14 @@ void Char_isWhitespace(VirtualCall& accessor)
 
 void Math_sqrt(VirtualCall& accessor)
 {
-   double value = accessor.getReal(0);
+   float value = accessor.getReal(0);
 
    accessor.setResult(sqrt(value));
 }
 
 void Math_ceil(VirtualCall& accessor)
 {
-   double value = accessor.getReal(0);
+   float value = accessor.getReal(0);
 
    accessor.setResult(ceil(value));
 }

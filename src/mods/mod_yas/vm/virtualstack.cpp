@@ -54,7 +54,7 @@ void VirtualStack::pushInt(int value)
    top().setNumber(value);
 }
 
-void VirtualStack::pushReal(double value)
+void VirtualStack::pushReal(float value)
 {
    top().setReal(value);
 }
@@ -105,7 +105,7 @@ int VirtualStack::popInt()
    return mStack[--mSize].asNumber();
 }
 
-double VirtualStack::popReal()
+float VirtualStack::popReal()
 {
    return mStack[--mSize].asReal();
 }

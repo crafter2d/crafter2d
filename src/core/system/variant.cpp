@@ -28,7 +28,7 @@ Variant::Variant(int value):
    mValue.mInt = value;
 }
 
-Variant::Variant(double value):
+Variant::Variant(float value):
    mType(eReal),
    mValue()
 {
@@ -217,12 +217,12 @@ void Variant::setInt(int value)
    mValue.mInt = value;
 }
 
-double Variant::asReal() const
+float Variant::asReal() const
 {
    return mValue.mReal;
 }
 
-void Variant::setReal(double value)
+void Variant::setReal(float value)
 {
    mType = eReal;
    mValue.mReal = value;
@@ -346,12 +346,12 @@ int Variant::toInt() const
    return asInt(); // currently no other int types
 }
 
-double Variant::toReal() const
+float Variant::toReal() const
 {
    switch ( mType )
    {
       case eInt:
-         return asInt();
+         return static_cast<float>(asInt());
       case eReal:
          return asReal();
    }

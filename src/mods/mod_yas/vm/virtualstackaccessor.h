@@ -31,7 +31,7 @@ public:
       return getArgument(argument).asNumber();
    }
 
-   double getReal(int argument) const {
+   float getReal(int argument) const {
       return getArgument(argument).asReal();
    }
 
@@ -76,7 +76,7 @@ public:
       setResult(VirtualValue(value));
    }
 
-   void setResult(double value) {
+   void setResult(float value) {
       setResult(VirtualValue(value));
    }
 

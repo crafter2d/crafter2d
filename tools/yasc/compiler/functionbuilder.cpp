@@ -74,7 +74,7 @@ void FunctionBuilder::emit(CIL::Opcode opcode, int arg)
    mInstructions.add(inst);
 }
 
-void FunctionBuilder::emit(CIL::Opcode opcode, double arg)
+void FunctionBuilder::emit(CIL::Opcode opcode, float arg)
 {
    CIL::Instruction inst;
    inst.opcode = opcode;

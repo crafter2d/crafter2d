@@ -167,7 +167,7 @@ bool Game::initGame()
    IniFile inifile(UTEXT("game.ini"));
 
    String path;
-   const CommandLineArgument* parg = mCommandLine.findArgument(UTEXT("path"));
+   const CommandLineArgument* parg = mCommandLine.getArgument(UTEXT("path"));
    if ( parg != NULL )
    {
       path = parg->getValue();
