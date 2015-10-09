@@ -120,12 +120,12 @@ void Box2DBody::applyForce(const Vector& force)
 
 void Box2DBody::applyForce(const Vector& force, const Vector& pos)
 {
-   mBody.ApplyForce(b2Vec2(force.x, force.y), Box2DSimulator::vectorToB2(pos));
+   mBody.ApplyForce(b2Vec2(force.x, force.y), Box2DSimulator::vectorToB2(pos), true);
 }
 
 void Box2DBody::applyImpulse(const Vector& impulse)
 {
-   mBody.ApplyLinearImpulse(b2Vec2(impulse.x, impulse.y), mBody.GetWorldCenter());
+   mBody.ApplyLinearImpulse(b2Vec2(impulse.x, impulse.y), mBody.GetWorldCenter(), true);
 }
 
 // - Notifications

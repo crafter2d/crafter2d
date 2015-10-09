@@ -53,10 +53,11 @@ bool D3DDevice::create(int windowhandle, int width, int height)
    UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if defined(_DEBUG)
    // If the project is in a debug build, enable debugging via SDK Layers with this flag.
-   creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+   //creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
    D3D_FEATURE_LEVEL requestedlevel[] = {
+      D3D_FEATURE_LEVEL_11_1,
       D3D_FEATURE_LEVEL_11_0,
       D3D_FEATURE_LEVEL_10_1,
       D3D_FEATURE_LEVEL_10_0,

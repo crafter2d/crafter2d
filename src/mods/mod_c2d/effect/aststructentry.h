@@ -9,7 +9,7 @@ class ASTType;
 class ASTStructEntry
 {
 public:
-   ASTStructEntry(): ptype(NULL), name(), location(), slot(L'') {}
+   ASTStructEntry(): ptype(NULL), name(), location(), slot(0) {}
    
    ASTType* ptype;
    String   name;

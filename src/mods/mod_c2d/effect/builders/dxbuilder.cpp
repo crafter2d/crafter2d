@@ -228,7 +228,7 @@ String DxBuilder::buildStructEntry(const ASTStructEntry& entry)
    if ( !entry.location.isEmpty() )
    {
       result += UTEXT(" : ") + entry.location;
-      if ( entry.slot != L'' )
+      if ( entry.slot != 0 )
       {
          result += entry.slot;
       }

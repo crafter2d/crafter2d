@@ -217,7 +217,7 @@ void Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& definition)
 void Box2DSimulator::notifyWorldChanged()
 {
    b2Vec2 gravity(0, 9);
-   mpb2World = new b2World(gravity, true);
+   mpb2World = new b2World(gravity);
    mpb2World->SetContactListener(&mContactListener);
 
    const Bounds& bounds = getWorld().getBounds();
@@ -231,8 +231,8 @@ void Box2DSimulator::notifyWorldChanged()
       def.type     = b2_staticBody;
       def.userData = const_cast<Bound*>(&bound);
 
-      b2PolygonShape ground;
-      ground.SetAsEdge(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
+      b2EdgeShape ground;
+      ground.Set(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
       /*
       b2EdgeShape ground;
       ground.Set(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));*/
