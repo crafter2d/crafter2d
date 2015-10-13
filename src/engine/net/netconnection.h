@@ -36,7 +36,6 @@
 #include "netclients.h"
 #include "netpackage.h"
 #include "netsocket.h"
-#include "sortedpackagelist.h"
 
 class NetAddress;
 class NetObserver;
@@ -92,7 +91,7 @@ private:
    NetAddress& findOrCreate(const NetAddress& address);
 
    void        process(NetAddress& client);
-   void        processPackage(NetAddress& client, NetPackage& package);
+   void        processPackage(NetAddress& client, const NetPackage& package);
 
    void        receive();
 

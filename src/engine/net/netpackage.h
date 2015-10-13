@@ -25,6 +25,14 @@
 
 class NetObject;
 
+#define TYPE_MASK 0xFF000000
+#define RELI_MASK 0x00FF0000
+#define SIZE_MASK 0x0000FFFF
+
+#define TYPE_SHIFT 24
+#define RELI_SHIFT 16
+#define SIZE_SHIFT 0 
+
 class NetPackage
 {
 public:
@@ -48,25 +56,54 @@ public:
 
    NetPackage();
    NetPackage(const NetPackage& that);
+   NetPackage(NetPackage&& that);
    NetPackage(PacketType type, Reliability reliability, int packagenr, int datasize = 0, const char* pdata = NULL);
    ~NetPackage();
 
+   NetPackage& operator=(NetPackage&& that);
+
  // get/set
-   PacketType  getType() const;
-   void        setType(PacketType type);
+   PacketType getType() const {
+      return (PacketType)((mInfo & TYPE_MASK) >> TYPE_SHIFT);
+   }
 
-   Reliability getReliability() const;
-   void        setReliability(Reliability rel);
+   void setType(PacketType type) {
+      mInfo |= (type << TYPE_SHIFT) & TYPE_MASK;
+   }
 
-   uint32_t    getNumber() const;
-   void        setNumber(uint32_t number);
+   Reliability getReliability() const {
+      return (Reliability)((mInfo & RELI_MASK) >> RELI_SHIFT);
+   }
+ 
+   void setReliability(Reliability rel) {
+      mInfo |= (rel << RELI_SHIFT) & RELI_MASK;
+   }
 
-   float       getTimeStamp() const;
-   void        setTimeStamp(float timestamp);
+   uint32_t getNumber() const {
+      return mNumber;
+   }
 
-   int         getDataSize() const;
-   const char* getData() const;
-   void        setData(int datasize, const char* pdata);
+   void setNumber(uint32_t number) {
+      mNumber = number;
+   }
+
+   float getTimeStamp() const {
+      return mTimeStamp;
+   }
+
+   void setTimeStamp(float timestamp) {
+      mTimeStamp = timestamp;
+   }
+
+   int getDataSize() const {
+      return mInfo & SIZE_MASK;
+   }
+
+   const char* getData() const {
+      return mData;
+   }
+
+   void setData(int datasize, const char* pdata);
 
  // query
    int         getSize() const;
@@ -76,7 +113,10 @@ public:
 
 private:
  // get/set
-   void        setDataSize(int size);
+   void setDataSize(int size) {
+      mInfo |= size & SIZE_MASK;
+   }
+
 
  // data
    float    mTimeStamp;
@@ -86,5 +126,13 @@ private:
 };
 
 typedef ObjectHandle<NetPackage> PackageHandle;
+
+struct lessPackage
+{
+   bool operator()(const PackageHandle& left, const PackageHandle& right)
+   {
+      return left->getNumber() < right->getNumber();
+   }
+};
 
 #endif // _NETPACKAGE_H_

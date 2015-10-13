@@ -20,6 +20,7 @@
 #include "netaddress.h"
 
 #include <cstring>
+#include <algorithm>
 
 INLINE
 NetAddress::NetAddress():
@@ -30,7 +31,7 @@ NetAddress::NetAddress():
    lastTimeSend(0),
    waitAttempt(0),
    waitTimer(0),
-   orderQueue(),
+   mOrderQueue(),
    resendQueue(),
    pstatistics(0)
 {
@@ -47,7 +48,7 @@ NetAddress::NetAddress(const sockaddr_in& address):
    lastTimeSend(0),
    waitAttempt(0),
    waitTimer(0),
-   orderQueue(),
+   mOrderQueue(),
    resendQueue(),
    pstatistics(0)
 {
@@ -58,18 +59,13 @@ NetAddress::NetAddress(const sockaddr_in& address):
 
 void NetAddress::removeAcknowledged(uint32_t number)
 {
-   std::size_t index = 0;
-   for ( ; index < resendQueue.size(); ++index )
-   {
-      ObjectHandle<NetPackage>& package = resendQueue[index];
-      if ( package->getNumber() >= number )
+   resendQueue.erase(
+      std::remove_if(resendQueue.begin(), resendQueue.end(), [&number](const PackageHandle& p)
       {
-         break;
-      }
-   }
-
-   if ( index < resendQueue.size() )
-   {
-      resendQueue.erase(resendQueue.begin(), resendQueue.begin() + (++index));
-   }
+         if (p->getNumber() < number)
+         {
+            return true;
+         }
+         return false;
+      }), resendQueue.end());
 }

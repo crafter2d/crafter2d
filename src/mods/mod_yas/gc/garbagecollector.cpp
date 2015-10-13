@@ -1,6 +1,8 @@
 
 #include "garbagecollector.h"
 
+#include <algorithm>
+
 #include "core/containers/listiterator.h"
 
 #include "mod_yas/vm/virtualobject.h"
@@ -36,7 +38,7 @@ GarbageCollector::~GarbageCollector()
 
 void GarbageCollector::collect(Collectable* pcollectable)
 {
-   mCollectables.addTail(pcollectable);
+   mCollectables.push_back(pcollectable);
 }
 
 void GarbageCollector::gc(VirtualMachine& vm)
@@ -52,22 +54,19 @@ void GarbageCollector::phaseMark(VirtualMachine& vm)
 
 void GarbageCollector::phaseCollect(VirtualMachine& vm)
 {
-   ListIterator<Collectable*> it = mCollectables.getFront();
-   while ( it.isValid() )
+   auto end = std::remove_if(mCollectables.begin(), mCollectables.end(), [&vm](Collectable* pobject)
    {
-      Collectable* pobject = *it;
       if ( pobject->isMarked() )
       {
          pobject->setMarked(false);
-
-         ++it;
+         return false;
       }
       else
       {
-         it.remove();
-
          pobject->finalize(vm);
-         //delete pobject;
+         return true;
       }
-   }
+   });
+   
+   mCollectables.erase(end, mCollectables.end());
 }

@@ -3,7 +3,7 @@
 #ifndef GARBAGE_COLLECTOR_H
 #define GARBAGE_COLLECTOR_H
 
-#include "core/containers/list.h"
+#include <vector>
 
 class Collectable;
 class VirtualMachine;
@@ -20,7 +20,7 @@ public:
    void gc(VirtualMachine& vm);
 
 private:
-   typedef List<Collectable*> Collectables;
+   typedef std::vector<Collectable*> Collectables;
 
  // phases
    void phaseMark(VirtualMachine& vm);

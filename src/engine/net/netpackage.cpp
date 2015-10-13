@@ -26,14 +26,6 @@
 const int NetPackage::HeaderSize     = sizeof(float) + sizeof(int) * 2;
 const int NetPackage::MaxPackageSize = HeaderSize + MaxDataSize;
 
-#define TYPE_MASK 0xFF000000
-#define RELI_MASK 0x00FF0000
-#define SIZE_MASK 0x0000FFFF
-
-#define TYPE_SHIFT 24
-#define RELI_SHIFT 16
-#define SIZE_SHIFT 0 
-
 // - NetPackage implementation
 
 NetPackage::NetPackage():
@@ -71,66 +63,29 @@ NetPackage::NetPackage(const NetPackage& that):
    }
 }
 
+NetPackage::NetPackage(NetPackage&& that):
+   mTimeStamp(Timer::getInstance().getTick()),
+   mNumber(that.mNumber),
+   mInfo(that.mInfo),
+   mData()
+{
+   memmove(mData, that.mData, that.getDataSize());
+}
+
 NetPackage::~NetPackage()
 {
 }
 
+NetPackage& NetPackage::operator=(NetPackage&& that)
+{
+   mTimeStamp = that.mTimeStamp;
+   mNumber = that.mNumber;
+   mInfo = that.mInfo;
+   memmove(mData, that.mData, that.getDataSize());
+   return *this;
+}
+
 // - Get/set
-
-NetPackage::PacketType NetPackage::getType() const
-{
-   return (PacketType)((mInfo & TYPE_MASK) >> TYPE_SHIFT);
-}
-
-void NetPackage::setType(PacketType type)
-{
-   mInfo |= (type << TYPE_SHIFT) & TYPE_MASK;
-}
-
-NetPackage::Reliability NetPackage::getReliability() const
-{
-   return (Reliability)((mInfo & RELI_MASK) >> RELI_SHIFT);
-}
-
-void NetPackage::setReliability(Reliability rel)
-{
-   mInfo |= (rel << RELI_SHIFT) & RELI_MASK;
-}
-
-float NetPackage::getTimeStamp() const
-{
-   return mTimeStamp;
-}
-
-void NetPackage::setTimeStamp(float timestamp)
-{
-   mTimeStamp = timestamp;
-}
-
-uint32_t NetPackage::getNumber() const
-{
-   return mNumber;
-}
-
-void NetPackage::setNumber(uint32_t number)
-{
-   mNumber = number;
-}
-
-int NetPackage::getDataSize() const
-{
-   return mInfo & SIZE_MASK;
-}
-
-void NetPackage::setDataSize(int size)
-{
-   mInfo |= size & SIZE_MASK;
-}
-
-const char* NetPackage::getData() const
-{
-   return mData;
-}
 
 void NetPackage::setData(int datasize, const char* pdata)
 {

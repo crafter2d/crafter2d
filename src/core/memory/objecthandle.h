@@ -39,6 +39,9 @@ public:
  // operations
    const T* operator->() const;
          T* operator->();
+   const T& operator*() const {
+      return *mpObject;
+   }
    T& operator*();
 
    T* ptr();

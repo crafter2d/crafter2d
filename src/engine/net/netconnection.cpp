@@ -22,6 +22,7 @@
 #  include "netconnection.inl"
 #endif
 
+#include <algorithm>
 #include <string.h>
 
 #include "core/smartptr/autoptr.h"
@@ -209,20 +210,19 @@ void NetConnection::process(NetAddress& client)
       }
    }
 
-   ListIterator<PackageHandle> it = client.orderQueue.getFront();
-   while ( it.isValid() )
+   auto it = client.mOrderQueue.begin();
+   for (; it != client.mOrderQueue.end(); it++ )
    {
-      PackageHandle& handle = *it;
-
+      auto& handle = *it;
       if ( handle->getNumber() == client.nextPackageNumber )
       {
          client.waitAttempt = 0;
 
          // first remove it from the pile
-         PackageHandle package(handle);
-         it.remove();
+         //PackageHandle package(handle);
+         //it.remove();
 
-         processPackage(client, *package);
+         processPackage(client, *handle);
       }
       else if ( handle->getNumber() > client.nextPackageNumber )
       {
@@ -232,9 +232,14 @@ void NetConnection::process(NetAddress& client)
          break;
       }
    }
+
+   if (it != client.mOrderQueue.begin())
+   {
+      client.mOrderQueue.erase(client.mOrderQueue.begin(), it);
+   }
 }
 
-void NetConnection::processPackage(NetAddress& client, NetPackage& package)
+void NetConnection::processPackage(NetAddress& client, const NetPackage& package)
 {
    NetObject* pobject = NULL;
    ArrayStream arraystream(package.getData(), package.getDataSize());
@@ -384,7 +389,7 @@ void NetConnection::receive()
                {
                   // add the requested message at the front of the queue,
                   // so it gets checked first
-                  client.orderQueue.addFront(package);
+                  client.mOrderQueue.insert(package);
                   break;
                }
             case NetPackage::eEvent:
@@ -393,11 +398,23 @@ void NetConnection::receive()
                   if ( reliability == NetPackage::eReliableSequenced )
                   {
                      // the older packages are no longer valid, can be removed
-                     client.orderQueue.removeOldPackages(package->getNumber());
+                     //client.mOrderQueue.removeOldPackages(package->getNumber());
+                     for (auto it = client.mOrderQueue.begin(); it != client.mOrderQueue.end(); )
+                     {
+                        const auto& p = *it;
+                        if (p->getNumber() < package->getNumber())
+                        {
+                           it = client.mOrderQueue.erase(it);
+                        }
+                        else
+                        {
+                           break;
+                        }
+                     }
                      client.nextPackageNumber = package->getNumber();
                   }
 
-                  client.orderQueue.add(package);
+                  client.mOrderQueue.insert(package);
                   break;
                }
             case NetPackage::eInvalid:

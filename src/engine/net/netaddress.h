@@ -25,7 +25,9 @@
 #else
 #include <netinet/in.h>
 #endif
+
 #include <vector>
+#include <set>
 
 #include "core/memory/objecthandle.h"
 
@@ -40,7 +42,7 @@ class NetAddress
 public:
    static const int SOCKADDR_SIZE = sizeof(sockaddr_in);
 
-   typedef std::vector< ObjectHandle<NetPackage> > PackageQueue;
+   typedef std::vector< PackageHandle > PackageQueue;
 
    NetAddress();
    NetAddress(const sockaddr_in& address);
@@ -60,7 +62,8 @@ public:
    int      waitAttempt;
    float    waitTimer;
 
-   SortedPackageList orderQueue;
+   std::set<PackageHandle, lessPackage> mOrderQueue;
+   //SortedPackageList orderQueue;
    PackageQueue resendQueue;
 
    NetStatistics* pstatistics;
