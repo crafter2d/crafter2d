@@ -296,7 +296,11 @@ namespace c2d
 
       mpRenderContext = &mpDevice->getContext();
       mpRenderContext->setClearColor(color);
-      mpRenderContext->initialize(*mpDevice);
+      if ( !mpRenderContext->initialize(*mpDevice) )
+      {
+         Log::getInstance() << "Failed to initialize the rendering context.\n";
+         return false;
+      }
 
       mpFont = &mpDevice->getFont(UTEXT("amersn"));      
 
