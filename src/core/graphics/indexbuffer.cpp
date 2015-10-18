@@ -3,7 +3,9 @@
 
 using namespace Graphics;
 
-IndexBuffer::IndexBuffer()
+IndexBuffer::IndexBuffer():
+   mFormat(eInt),
+   mElements(0)
 {
 }
 

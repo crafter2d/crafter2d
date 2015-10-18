@@ -54,12 +54,12 @@ namespace Graphics
       void addFont(Font* pfont);
 
     // data
+      ConstantBuffer    mConstants;
       Device*           mpDevice;
       Effect*           mpEffect;
       VertexBuffer*     mpVB;
       IndexBuffer*      mpIB;
       UniformBuffer*    mpUB;
-      ConstantBuffer    mConstants;
       GlyphProvider*    mpProvider;
       Fonts             mFonts;
    };

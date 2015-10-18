@@ -31,7 +31,7 @@ namespace CIL
       return mInsts.empty();
    }
 
-   int Instructions::size() const
+   size_t Instructions::size() const
    {
       return mInsts.size();
    }

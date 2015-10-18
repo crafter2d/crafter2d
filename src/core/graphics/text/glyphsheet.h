@@ -21,6 +21,7 @@ namespace Graphics
    {
    public:
       GlyphSheet();
+      ~GlyphSheet();
 
     // operations
       bool create(Device& device);

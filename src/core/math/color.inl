@@ -54,53 +54,13 @@ inline Color::~Color()
 {
 }
 
-inline const Color& Color::operator=(const Color& that)
+inline Color& Color::operator=(const Color& that)
 {
    mRed = that.mRed;
    mGreen = that.mGreen;
    mBlue = that.mBlue;
    mAlpha = that.mAlpha;
    return *this;
-}
-
-inline float Color::getRed() const
-{
-   return mRed;
-}
-
-inline void Color::setRed(float red)
-{
-   mRed = red;
-}
-
-inline float Color::getGreen() const
-{
-   return mGreen;
-}
-
-inline void Color::setGreen(float green)
-{
-   mGreen = green;
-}
-
-inline float Color::getBlue() const
-{
-   return mBlue;
-}
-
-inline void Color::setBlue(float blue)
-{
-   mBlue = blue;
-}
-
-inline float Color::getAlpha() const
-{
-   return mAlpha;
-}
-
-inline void Color::setAlpha(float alpha)
-{
-   mAlpha = alpha;
 }
 
 inline void Color::set(float red, float green, float blue, float alpha) 

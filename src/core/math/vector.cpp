@@ -23,48 +23,10 @@
 
 #include "core/streams/datastream.h"
 
-Vector::Vector(void)
-{
-	x = y = 0.0f;
-}
-
 Vector& Vector::zero()
 {
    static Vector _zero;
    return _zero;
-}
-
-Vector::Vector(float _x, float _y): x(_x), y(_y)
-{
-}
-
-Vector::~Vector(void)
-{
-}
-
-float Vector::length ()
-{
-	float len = dot (*this);
-	return (float)sqrt (len);
-}
-
-float Vector::normalize ()
-{
-	float len = length ();
-	if (len == 0)
-		return 0;
-
-	// normalize
-	*this /= len;
-	return len;
-}
-
-float Vector::distance(const Vector& that) const
-{
-   float nx = that.x - x;
-   float ny = that.y - y;
-
-   return (float)sqrt((nx * nx) + (ny * ny));
 }
 
 // - Friends

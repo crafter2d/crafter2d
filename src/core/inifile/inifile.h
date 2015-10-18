@@ -38,7 +38,7 @@ class IniFileProperty;
 class CORE_API IniFile
 {
 public:
-   IniFile(const String& filename);
+   explicit IniFile(const String& filename);
 
  // query
    const String& get(const String& name);

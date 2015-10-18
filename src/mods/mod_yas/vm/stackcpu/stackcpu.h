@@ -16,17 +16,17 @@ class SCRIPT_API StackCPU : public ByteCode::CPU
    typedef std::deque<VM::StackFrame> CallStack;
 
 public:
-   StackCPU(VirtualMachine& vm);
+   explicit StackCPU(VirtualMachine& vm);
 
  // query
    virtual ByteCode::IRGenerator* createIRGenerator();
 
  // execution
-   virtual VirtualValue execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, VirtualValue* pargs);
-   virtual void         executeStatic(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry);
+   virtual VirtualValue execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry, int argc, VirtualValue* pargs) override;
+   virtual void         executeStatic(VirtualContext& context, const VirtualClass& klass, const VirtualFunctionTableEntry& entry) override;
 
  // garbage collection
-   virtual void mark();
+   virtual void mark() override;
    
 protected:
 

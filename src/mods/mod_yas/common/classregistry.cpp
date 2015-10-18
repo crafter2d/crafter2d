@@ -22,6 +22,7 @@ ClassRegistry& ClassRegistry::operator=(const ClassRegistry& that)
 {
    clear();
    add(that);
+   mpCurrent = NULL;
    return *this;
 }
 
@@ -85,16 +86,14 @@ void ClassRegistry::addFunction(const String& name, yas::CallbackFunctor* pcallb
 
 void ClassRegistry::clear()
 {
-   for ( int index = 0; index < mClasses.size(); ++index )
+   for ( auto preg : mClasses )
    {
-      ClassRegistration* reg = mClasses[index];
-      delete reg;
+      delete preg;
    }
 
-   for ( int index = 0; index < mFunctions.size(); ++index )
+   for ( auto pfuncreg : mFunctions )
    {
-      FunctionRegistration* pfunc = mFunctions[index];
-      delete pfunc;
+      delete pfuncreg;
    }
 
    mClasses.clear();

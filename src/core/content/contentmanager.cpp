@@ -39,7 +39,8 @@ namespace c2d
       mModules(),
       mBaseDir(),
       mpDevice(NULL),
-      mpSimulator(NULL)
+      mpSimulator(NULL),
+      mpSoundManager(NULL)
    {
    }
 

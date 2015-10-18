@@ -22,6 +22,7 @@
 
 #include <cassert>
 #include <exception>
+#include <stdexcept>
 #include <cstdint>
 
 #undef NULL
@@ -63,7 +64,7 @@
 #define ASSERT_MSG(cond,msg)  assert(cond && msg);
 #define ASSERT_PTR(ptr)       assert(ptr != NULL);
 #define PURE_VIRTUAL          assert(false && "Pure virtual!"); throw std::exception();
-#define UNREACHABLE(msg)      assert(false && msg);
+#define UNREACHABLE(msg)      std::runtime_error(msg);
 
 // MATH
 

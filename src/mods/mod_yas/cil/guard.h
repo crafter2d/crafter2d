@@ -12,6 +12,12 @@ namespace CIL
       static const int sFinal = 2;
       static const int sEnd   = 3;
 
+      Guard() :
+         finalize(false),
+         labels()
+      {
+      }
+
       Guard* clone() const;
 
       bool finalize;

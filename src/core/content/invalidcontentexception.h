@@ -25,9 +25,9 @@
 class InvalidContentException
 {
 public:
-   InvalidContentException();
-   InvalidContentException(const String& reason);
-   InvalidContentException(const InvalidContentException& that);
+            InvalidContentException();
+   explicit InvalidContentException(const String& reason);
+            InvalidContentException(const InvalidContentException& that);
 
    const String& getReason() const;
 
