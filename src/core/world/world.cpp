@@ -207,10 +207,9 @@ void World::updateClient(Graphics::RenderContext& context, float delta)
 void World::draw(Graphics::RenderContext& context) const
 {
    // render the layers
-   for ( std::size_t i = 0; i < layers.size(); i++ )
+   for ( auto player : layers )
    {
-      Layer& layer = *layers[i];
-      layer.draw(context);
+      player->draw(context);
    }
    
    // scroll the viewpoint to the right position
@@ -218,19 +217,16 @@ void World::draw(Graphics::RenderContext& context) const
    context.setSpriteOffset(scroll);
 
    context.beginDraw();
-   EntityMap::const_iterator it = mEntities.begin();
-   for ( ; it != mEntities.end(); ++it )
+   for ( auto& it : mEntities )
    {
-      Entity* pentity = it->second;
-      pentity->draw(context);
+      it.second->draw(context);
    }
    context.endDraw();
 
    // render the layers
-   for ( std::size_t i = 0; i < layers.size(); i++ )
+   for ( auto player : layers )
    {
-      Layer& layer = *layers[i];
-      layer.drawFront(context);
+      player->drawFront(context);
    }
 }
 

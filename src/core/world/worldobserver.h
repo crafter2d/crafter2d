@@ -38,7 +38,6 @@ public:
    void detach();
 
  // notifications
-   virtual void notifyLayerAdded(Layer& layer);
    virtual void notifyScrollChange(const Vector& scrollposition);
 
    virtual void notifyEntityAdded(const Entity& entity);
