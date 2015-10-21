@@ -241,7 +241,7 @@ namespace c2d
    INLINE KeyMap& Client::getKeyMap()
    {
       ASSERT_PTR(mpKeyMap)
-         return *mpKeyMap;
+      return *mpKeyMap;
    }
 
    INLINE void Client::setKeyMap(KeyMap* pkeymap)
@@ -358,12 +358,11 @@ namespace c2d
       {
       case aggregateEvent:
          {
-            const AggregateEvent& aevent = dynamic_cast<const AggregateEvent&>(event);
+            const AggregateEvent& aevent = static_cast<const AggregateEvent&>(event);
             const AggregateEvent::Events events = aevent.getEvents();
-            for ( std::size_t index = 0; index < events.size(); index++ )
+            for ( auto pevent : events )
             {
-               const NetEvent& netevent = *events[index];
-               onNetEvent(client, netevent);
+               onNetEvent(client, *pevent);
             }
          }
          break;
@@ -404,19 +403,19 @@ namespace c2d
          break;
       case newobjectEvent:
          {
-            const NewObjectEvent& newobjectevent = dynamic_cast<const NewObjectEvent&>(event);
+            const NewObjectEvent& newobjectevent = static_cast<const NewObjectEvent&>(event);
             handleNewObjectEvent(newobjectevent);
          }
          break;
       case delobjectEvent:
          {
-            const DeleteObjectEvent& delobjectevent = dynamic_cast<const DeleteObjectEvent&>(event);
+            const DeleteObjectEvent& delobjectevent = static_cast<const DeleteObjectEvent&>(event);
             handleDeleteObjectEvent(delobjectevent);
          }
          break;
       case updobjectEvent:
          {
-            const UpdateObjectEvent& updateobjectevent = dynamic_cast<const UpdateObjectEvent&>(event);
+            const UpdateObjectEvent& updateobjectevent = static_cast<const UpdateObjectEvent&>(event);
             handleUpdateObjectEvent(updateobjectevent);
          }
          break;

@@ -67,7 +67,7 @@ namespace c2d
       if ( it == mActions.end() )
       {
          ActionEvent event(action, down);
-         c2d::Client& client = dynamic_cast<c2d::Client&>(getProcess());
+         c2d::Client& client = static_cast<c2d::Client&>(getProcess());
          client.sendToServer(event);
       }
       else
