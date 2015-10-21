@@ -41,7 +41,7 @@ namespace Graphics
       TextRenderer& getTextRenderer();
 
     // initialization
-      void initialize(Device& device);
+      bool initialize(Device& device);
       void destroy();
 
     // operations

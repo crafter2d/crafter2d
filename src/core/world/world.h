@@ -139,7 +139,6 @@ public:
    Layer* createLayer();
    int    addLayer(Layer* player);
    void   removeLayer(Layer& layer);
-   int    layerIndex(const Layer& layer);
    void   moveLayer(Layer* player, int offset);
 
    Bound& addBound(const Vector& p1, const Vector& p2);
@@ -165,7 +164,6 @@ protected:
    void           initializeBorders();
    
  // notifications
-   void notifyLayerAdded(Layer& layer);
    void notifyScrollChange(const Vector& scrollposition);
    void notifyEntityAdded(const Entity& entity);
    void notifyEntityRemoved(const Entity& entity);

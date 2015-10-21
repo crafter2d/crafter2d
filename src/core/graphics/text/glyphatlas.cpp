@@ -18,7 +18,7 @@ namespace Graphics
       mMaxSheets(maxsheets),
       mCurSheets(0)
    {
-      memset(mpSheets, 0, sizeof(mpSheets));
+      memset(mpSheets, 0, sizeof(mpSheets) * maxsheets);
    }
 
    // - Get/set

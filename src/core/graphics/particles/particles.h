@@ -11,7 +11,18 @@ namespace Graphics
    class Particles
    {
    public:
-      Particles(): mppParticles(NULL), mSize(0) {}
+      Particles():
+         mppParticles(NULL), 
+         mSize(0) {
+      }
+
+      ~Particles () {
+         try
+         {
+            delete[] mppParticles;
+         }
+         catch ( ... ) {}
+      }
 
     // query
       __forceinline const Particle& operator[](int index) const {

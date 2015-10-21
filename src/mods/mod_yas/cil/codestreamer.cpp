@@ -1,6 +1,8 @@
 
 #include "codestreamer.h"
 
+#include <memory>
+
 #include "core/streams/datastream.h"
 
 #include "../common/type.h"
@@ -333,15 +335,15 @@ namespace CIL
 
    Guard* CodeStreamer::readGuard()
    {
-      Guard* pguard = new Guard();
+      std::unique_ptr<Guard> guard(new Guard());
 
-      mStream >> pguard->finalize 
-              >> pguard->labels[0]
-              >> pguard->labels[1]
-              >> pguard->labels[2]
-              >> pguard->labels[3];
+      mStream >> guard->finalize 
+              >> guard->labels[0]
+              >> guard->labels[1]
+              >> guard->labels[2]
+              >> guard->labels[3];
 
-      return pguard;
+      return guard.release();
    }
 
    SwitchTable* CodeStreamer::readTable()

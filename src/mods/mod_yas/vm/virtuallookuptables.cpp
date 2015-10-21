@@ -1,6 +1,8 @@
 
 #include "virtuallookuptables.h"
 
+#include "virtuallookuptable.h"
+
 VirtualLookupTables::~VirtualLookupTables()
 {
    clear();

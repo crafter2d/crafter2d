@@ -13,11 +13,10 @@ class Entity;
 class CORE_API Component
 {
 public:
-   Component(ComponentInterface::ComponentType type);
+   explicit Component(ComponentInterface::ComponentType type);
 
  // get/set
-   const Entity& getEntity() const;
-         Entity& getEntity();
+   Entity& getEntity();
 
    ComponentInterface::ComponentType getType() const;
 

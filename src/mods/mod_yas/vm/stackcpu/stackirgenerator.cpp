@@ -919,7 +919,7 @@ void StackIRGenerator::checkAndFixStack(VirtualContext& context, const VirtualFu
    // now see what indices are still there that need an additional pop
    // skip the return value at the top of the stack
 
-   std::size_t size = calls.size() - function.getReturnType().isVoid() ? 0 : 1;
+   std::size_t size = calls.size() - (function.getReturnType().isVoid() ? 0 : 1);
    for ( std::size_t index = 0; index < size; ++index )
    {
       Instruction* inst = new Instruction;
@@ -930,7 +930,7 @@ void StackIRGenerator::checkAndFixStack(VirtualContext& context, const VirtualFu
    }
 }
 
-int StackIRGenerator::buildCode(VirtualContext& context, VirtualFunction& function)
+bool StackIRGenerator::buildCode(VirtualContext& context, VirtualFunction& function)
 {
    using namespace SBIL;
    using namespace ByteCode;
@@ -992,7 +992,7 @@ int StackIRGenerator::buildCode(VirtualContext& context, VirtualFunction& functi
             {
                // out of memory?
                free(pcode);
-               return -1;
+               return false;
             }
 
             pcode = pnew;

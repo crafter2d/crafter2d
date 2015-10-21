@@ -20,7 +20,7 @@ namespace CIL
             Instruction& operator[](int index);
     // query
       bool isEmpty() const;
-      int size() const;
+      size_t size() const;
 
     // operations
       void add(const Instruction& inst);

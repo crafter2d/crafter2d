@@ -52,10 +52,6 @@ void WorldObserver::detach()
 
 // - Notifications
 
-void WorldObserver::notifyLayerAdded(Layer& layer)
-{
-}
-
 void WorldObserver::notifyScrollChange(const Vector& scrollposition)
 {
 }

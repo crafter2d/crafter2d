@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-class VirtualValue;
+#include "virtualvalue.h"
 
 class VirtualLookupTable
 {

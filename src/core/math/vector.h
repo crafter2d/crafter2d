@@ -31,124 +31,140 @@ class CORE_API Vector
 public:
    static Vector& zero();
 
-	Vector(void);
-	Vector(float _x, float _y);
-   Vector(const Vector& v): x(v.x), y(v.y) {}
-	~Vector(void);
+   Vector() :
+      x(0),
+      y(0)
+   {
+   }
 
-	float normalize ();
-	float length ();
-   float distance(const Vector& that) const;
+   Vector(float _x, float _y) :
+      x(_x),
+      y(_y)
+   {
+   }
 
-	inline void set (float _x, float _y);
-   inline void addScaled(const Vector& v, float scale);
-	inline float dot (const Vector& v) const;
-   inline float cross(const Vector& v) const;
+   Vector(const Vector& v):
+      x(v.x),
+      y(v.y) 
+   {
+   }
 
-   inline Vector& operator-();
-	inline void operator= (const Vector& v);
-	inline void operator*= (const float& f);
-	inline void operator/= (const float& f);
-	inline void operator+= (const Vector& v);
-	inline void operator-= (const Vector& v);
+   ~Vector() {
+   }
 
-	inline Vector operator+ (const Vector& v) const;
-	inline Vector operator- (const Vector& v) const;
-   inline Vector operator* (const Vector& v) const;
-	inline Vector operator* (const float f) const;
-   inline Vector operator/ (const float f) const;
+   bool operator== (const Vector& v) const {
+      return (fabs(v.x - x) < 0.001) && (fabs(v.y - y) < 0.001);
+   }
+   
+   bool operator!= (const Vector& v) const {
+      return (fabs(v.x - x) >= 0.001) && (fabs(v.y - y) >= 0.001);
+   }
 
-   inline bool operator== (const Vector& v) const;
-   inline bool operator!= (const Vector& v) const;
+ // - Operations
+   
+   float normalize()
+   {
+      float len = length();
+      if ( len == 0 )
+         return 0;
 
-   friend Vector operator*(float f, const Vector& v);
+      // normalize
+      *this /= len;
+      return len;
+   }
+
+	float length()
+   {
+      float len = dot(*this);
+      return (float) sqrt(len);
+   }
+
+   float distance(const Vector& that) const
+   {
+      float nx = that.x - x;
+      float ny = that.y - y;
+
+      return (float) sqrt((nx * nx) + (ny * ny));
+   }
+
+   void set(float _x, float _y) {
+      x = _x;
+      y = _y;
+   }
+
+   void addScaled(const Vector& v, float scale) {
+      x += v.x * scale;
+      y += v.y * scale;
+   }
+	
+   float dot (const Vector& v) const {
+      return (x * v.x + y * v.y);
+   }
+
+   float cross(const Vector& v) const {
+      return (x * v.y) - (y * v.x);
+   }
+
+ // Operators
+
+   Vector operator-() {
+      return Vector(-x, -y);
+   }
+
+   Vector& operator= (const Vector& v) {
+      x = v.x;
+      y = v.y;
+      return *this;
+   }
+
+   void operator*= (float f) {
+      x *= f;
+      y *= f;
+   }
+
+   void operator/= (float f) {
+      x /= f;
+      y /= f;
+   }
+
+   void operator+= (const Vector& v) {
+      x += v.x;
+      y += v.y;
+   }
+
+   void operator-= (const Vector& v) {
+      x -= v.x;
+      y -= v.y;
+   }
+
+   Vector operator+ (const Vector& v) const {
+      return Vector(x + v.x, y + v.y);
+   }
+
+   Vector operator- (const Vector& v) const {
+      return Vector(x - v.x, y - v.y);
+   }
+
+   Vector operator* (const Vector& v) const {
+      return Vector(x * v.x, y * v.y);
+   }
+
+   Vector operator* (const float f) const {
+      return Vector(x * f, y * f);
+   }
+
+   Vector operator/ (const float f) const {
+      return Vector(x / f, y / f);
+   }   
+
+   friend Vector operator*(float f, const Vector& v) {
+      return Vector(v.x * f, v.y * f);
+   }
+
    friend CORE_API DataStream& operator<<(DataStream& stream, const Vector& v);
    friend CORE_API DataStream& operator>>(DataStream& stream, Vector& v);
 
 	float x, y;
 };
-
-inline void Vector::addScaled(const Vector& v, float scale)
-{
-   x += v.x * scale;
-   y += v.y * scale;
-}
-
-inline float Vector::dot (const Vector& v) const {
-	return (x * v.x + y * v.y);
-}
-
-inline float Vector::cross(const Vector& v) const
-{
-   return (x * v.y) - (y * v.x);
-}
-
-inline Vector& Vector::operator-()
-{
-   x = -x;
-   y = -y;
-
-   return *this;
-}
-
-inline void Vector::operator= (const Vector& v) {
-	x = v.x; y = v.y;
-}
-
-inline void Vector::operator*= (const float& f) {
-	x *= f; y *= f;
-}
-
-inline void Vector::operator/= (const float& f) {
-	x /= f; y /= f;
-}
-
-inline void Vector::operator+= (const Vector& v) {
-	x += v.x; y += v.y;
-}
-
-inline void Vector::operator-= (const Vector& v) {
-	x -= v.x; y -= v.y;
-}
-
-inline void Vector::set (float _x, float _y) {
-	x = _x; y = _y;
-}
-
-inline Vector Vector::operator+ (const Vector& v) const {
-	return Vector (x+v.x, y+v.y);
-}
-
-inline Vector Vector::operator- (const Vector& v) const {
-	return Vector (x-v.x, y-v.y);
-}
-
-inline Vector Vector::operator* (const float f) const {
-	return Vector (x*f, y*f);
-}
-
-inline Vector Vector::operator* (const Vector& v) const
-{
-   return Vector(x*v.x, y*v.y);
-}
-
-inline Vector Vector::operator/ (const float f) const {
-	return Vector (x/f, y/f);
-}
-
-bool Vector::operator== (const Vector& v) const
-{
-   return ((fabs(v.x-x)<0.001) && (fabs(v.y-y)<0.001));
-}
-
-bool Vector::operator!= (const Vector& v) const
-{
-   return !operator==(v);
-}
-
-inline Vector operator*(float f, const Vector& v)
-{
-   return Vector(f * v.x, f * v.y);
-}
 
 #endif

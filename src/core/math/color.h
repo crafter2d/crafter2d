@@ -36,20 +36,20 @@ public:
 	Color(float red, float green, float blue, float alpha=1.0f);
 	~Color();
 
-   const Color& operator=(const Color& that);
+   Color& operator=(const Color& that);
 
  // get/set
-   float getRed() const;
-   void  setRed(float red);
+   float getRed() const { return mRed; }
+   void  setRed(float red) { mRed = red; }
 
-   float getGreen() const;
-   void  setGreen(float green);
+   float getGreen() const { return mGreen; }
+   void  setGreen(float green) { mGreen = green; }
 
-   float getBlue() const;
-   void  setBlue(float blue);
+   float getBlue() const { return mBlue; }
+   void  setBlue(float blue) { mBlue = blue; }
 
-   float getAlpha() const;
-   void  setAlpha(float alpha);
+   float getAlpha() const { return mAlpha; }
+   void  setAlpha(float alpha) { mAlpha = alpha; }
 
  // operations
 	void set(float red, float green, float blue, float alpha=1.0f);

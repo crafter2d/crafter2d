@@ -9,7 +9,7 @@
 class VirtualCallbackFunctor : public yas::CallbackFunctor
 {
 public:
-   VirtualCallbackFunctor(VMInterface::CallbackFnc callback);
+   explicit VirtualCallbackFunctor(VMInterface::CallbackFnc callback);
 
  // overrides
    virtual void exec(VirtualCall& call) override;

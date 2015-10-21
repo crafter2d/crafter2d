@@ -68,11 +68,10 @@ void VirtualClassTable::print(const LiteralTable& literals)
 {
    using std::cout;
 
-   Classes::iterator it = mClasses.begin();
-   for ( ; it != mClasses.end(); ++it )
+   for ( auto it : mClasses )
    {
-      VirtualClass* pclass = it->second;
       /*
+      VirtualClass* pclass = it.second;
       std::string code = pclass->getInstructions().toString(literals);
 
       cout << "=====================================" << std::endl;
@@ -87,11 +86,9 @@ void VirtualClassTable::print(const LiteralTable& literals)
 std::vector<VirtualClass*> VirtualClassTable::asArray()
 {
    std::vector<VirtualClass*> array;
-   Classes::iterator it = mClasses.begin();
-   for ( ; it != mClasses.end(); ++it )
+   for ( auto it : mClasses )
    {
-      VirtualClass* pclass = it->second;
-      array.push_back(pclass);
+      array.push_back(it.second);
    }
    return array;
 }
@@ -100,7 +97,7 @@ std::vector<VirtualClass*> VirtualClassTable::asArray()
 
 VirtualClass* VirtualClassTable::find(const String& name) const
 {
-   Classes::const_iterator it = mClasses.find(name);
+   auto it = mClasses.find(name);
    return it != mClasses.end() ? it->second : NULL;
 }
 

@@ -32,7 +32,7 @@ public:
       eLoadGraphics = 2,
    };
 
-   ContentLoader(Process& process);
+   explicit ContentLoader(Process& process);
 
  // get/set
    Simulator& getSimulator();

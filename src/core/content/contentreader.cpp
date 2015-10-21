@@ -6,6 +6,7 @@
 namespace c2d
 {
    ContentReader::ContentReader() :
+      mpContentManager(NULL),
       mpDevice(NULL),
       mpSimulator(NULL),
       mpSoundManager(NULL)

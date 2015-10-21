@@ -117,6 +117,7 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
             {
                // n sizes
                // NewArray dimension
+               assert(arg == 1);
                
                // no full support yet for multi-dimensional arrays
                VirtualArray* parray = instantiateArray();
@@ -925,9 +926,8 @@ void StackCPU::mark()
    for ( int index = 0; index <= mFP; ++index )
    {
       VM::StackFrame::Locals& locals = mCalls[index].locals;
-      for ( int idx = 0; idx < locals.size(); ++idx )
+      for ( auto& variant : locals )
       {
-         VirtualValue& variant = locals[idx];
          if ( variant.isObject() )
          {
             variant.asObject().mark();

@@ -64,6 +64,9 @@ int VirtualArray::size() const
 
 void VirtualArray::addLevel(int size)
 {
+   if ( mpArray != NULL ) {
+      throw std::runtime_error("multi dimensional arrays are not supported!");
+   }
    mpArray = new VirtualValue[size];
    mSize   = size;
 }

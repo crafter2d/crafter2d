@@ -14,8 +14,8 @@ class Entity;
 class Components
 {
 public:
-   Components(Entity& entity);
-   ~Components();
+   explicit Components(Entity& entity);
+           ~Components();
 
  // get/set
    Entity& getEntity();

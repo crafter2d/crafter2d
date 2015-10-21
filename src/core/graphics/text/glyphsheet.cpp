@@ -22,6 +22,16 @@ namespace Graphics
    {
    }
 
+   GlyphSheet::~GlyphSheet()
+   {
+      try
+      {
+         delete[] mpTextureData;
+         delete mpTexture;
+      }
+      catch ( ... ) {}
+   }
+
    // - Operations
 
    bool GlyphSheet::create(Device& device)

@@ -31,7 +31,14 @@ struct GlyphVertex
 namespace Graphics
 {
    TextRenderer::TextRenderer():
-      mpProvider(NULL)
+      mConstants(),
+      mpDevice(NULL),
+      mpEffect(NULL),
+      mpVB(NULL),
+      mpIB(NULL),
+      mpUB(NULL),
+      mpProvider(NULL),
+      mFonts()
    {
    }
 

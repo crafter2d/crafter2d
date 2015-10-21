@@ -28,11 +28,11 @@ void RenderContext::setViewport(const Viewport& viewport)
 
 // - Initialization
 
-void RenderContext::initialize(Device& device)
+bool RenderContext::initialize(Device& device)
 {
-   mParticleRenderer.create(device);
-   mSpriteRenderer.create(device);
-   mTextRenderer.initialize(device);
+   return mParticleRenderer.create(device)
+       && mSpriteRenderer.create(device)
+       && mTextRenderer.initialize(device);
 }
 
 void RenderContext::destroy()
