@@ -35,9 +35,8 @@ AggregateEvent::AggregateEvent():
 AggregateEvent::~AggregateEvent()
 {
    NetEventFactory& factory = NetEventFactory::getInstance();
-   for ( std::size_t index = 0; index < mEvents.size(); ++index )
+   for ( auto pevent : mEvents )
    {
-      NetEvent* pevent = mEvents[index];
       factory.release(pevent);
    }
 }
