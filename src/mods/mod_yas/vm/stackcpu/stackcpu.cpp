@@ -867,7 +867,7 @@ void StackCPU::call(VirtualContext& context, int symbolindex)
 {
    using namespace ByteCode;
 
-   FunctionSymbol& symbol = (FunctionSymbol&)context.mProgram.getSymbolTable()[symbolindex];
+   const FunctionSymbol& symbol = static_cast<const FunctionSymbol&>(context.mProgram.getSymbolTable()[symbolindex]);
    const VirtualClass& klass = context.mClassTable.resolve(symbol.klass);
    const VirtualFunctionTableEntry& entry = klass.getVirtualFunctionTable()[symbol.func];
    call(context, klass, entry);

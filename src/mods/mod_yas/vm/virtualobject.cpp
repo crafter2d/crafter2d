@@ -145,13 +145,14 @@ void VirtualObject::doMark()
 {
    for ( int index = 0; index < mMemberCount; index++ )
    {
-      if ( mpMembers[index].isObject() )
+      auto& member = mpMembers[index];
+      if ( member.isObject() )
       {
-         mpMembers[index].asObject().mark();
+         member.asObject().mark();
       }
-      else if ( mpMembers[index].isArray() )
+      else if ( member.isArray() )
       {
-         mpMembers[index].asArray().mark();
+         member.asArray().mark();
       }
    }
 }

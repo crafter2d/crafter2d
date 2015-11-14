@@ -13,7 +13,7 @@
 #include "world/tilebound.h"
 
 TileWorld::TileWorld(const TileWorldDesc& desc):
-    Resource(),
+    Resource(Resource::eWorld),
     mDesc(desc),
     mMaps(),
     mBounds(),

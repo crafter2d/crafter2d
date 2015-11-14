@@ -15,7 +15,7 @@ DESTDIR = $$PWD/../../bin
 RESOURCES = crafter.qrc
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     newprojectdialog.cpp \
     tileview.cpp \
     project.cpp \
@@ -50,8 +50,6 @@ SOURCES += main.cpp\
     world/tilebound.cpp \
     world/tileworldwriter.cpp \
     project/projecttreeitem.cpp \
-    project/projecttreeworlditem.cpp \
-    project/projecttreescriptitem.cpp \
     project/projecttreetextitem.cpp \
     resource.cpp \
     world/tileworldhandle.cpp \
@@ -69,7 +67,10 @@ SOURCES += main.cpp\
     project/projectmanager.cpp \
     tileselector.cpp \
     script/scriptlinenumberarea.cpp \
-    tilesetmodel.cpp
+    tilesetmodel.cpp \
+    resourcehandle.cpp \
+    project/projecttreeobjectitem.cpp \
+    project/projecttreerootitem.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -106,14 +107,12 @@ HEADERS  += mainwindow.h \
     world/tileworlddesc.h \
     world/tilebound.h \
     world/tileworldwriter.h \
-    project/projecttreeworlditem.h \
     project/projecttreetextitem.h \
     resource.h \
     world/tileworldhandle.h \
     scriptview.h \
     script/yassyntaxhighlighter.h \
     script/scriptfile.h \
-    project/projecttreescriptitem.h \
     script/scripthandle.h \
     project/projectbuilder.h \
     newscriptdialog.h \
@@ -125,7 +124,10 @@ HEADERS  += mainwindow.h \
     project/projectmanager.h \
     tileselector.h \
     script/scriptlinenumberarea.h \
-    tilesetmodel.h
+    tilesetmodel.h \
+    resourcehandle.h \
+    project/projecttreeobjectitem.h \
+    project/projecttreerootitem.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \

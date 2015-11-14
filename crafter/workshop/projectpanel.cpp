@@ -3,8 +3,8 @@
 
 #include <QVariant>
 
-#include "project/projecttreeworlditem.h"
-#include "script/scripthandle.h"
+#include "project/projecttreeobjectitem.h"
+#include "script/scriptfile.h"
 
 #include "mainwindow.h"
 #include "projectmodel.h"
@@ -56,14 +56,17 @@ void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
     if ( !data.isValid() )
         return;
 
-    if ( data.canConvert<TileWorldHandle>() )
+    if ( data.canConvert<ResourceHandle>() )
     {
-        TileWorldHandle& handle = data.value<TileWorldHandle>();
-        getMainWindow().showWorld(*handle);
-    }
-    else if ( data.canConvert<ScriptHandle>() )
-    {
-        ScriptHandle& script = data.value<ScriptHandle>();
-        getMainWindow().showScript(*script);
+        ResourceHandle& handle = data.value<ResourceHandle>();
+        switch ( handle->getType() )
+        {
+            case Resource::eWorld:
+                getMainWindow().showWorld(static_cast<TileWorld&>(*handle));
+                break;
+            case Resource::eScript:
+                getMainWindow().showScript(static_cast<ScriptFile&>(*handle));
+                break;
+        }
     }
 }

@@ -4,15 +4,12 @@
 #include <QList>
 #include <QVariant>
 
-// see Simple Tree Model example
-
 class ProjectTreeItem
 {
 public:
 
-    enum Kind { eRoot, eText, eWorld, eTileSet, eScript, eInvalid };
+    enum Kind { eRoot, eText, eObject, eInvalid };
 
-    ProjectTreeItem();
     virtual ~ProjectTreeItem();
 
   // get/set
@@ -36,6 +33,7 @@ public:
 
   // operations
     void addChild(ProjectTreeItem* pitem);
+    void clear();
 
 protected:
     explicit ProjectTreeItem(Kind kind);

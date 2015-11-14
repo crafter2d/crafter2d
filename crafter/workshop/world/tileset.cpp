@@ -11,6 +11,7 @@
 #include "../tile.h"
 
 QTileSet::QTileSet():
+    Resource(Resource::eTileSet),
     mTileMap(),
     mTexture(),
     mTiles(),

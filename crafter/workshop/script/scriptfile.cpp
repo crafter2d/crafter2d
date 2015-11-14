@@ -4,7 +4,7 @@
 #include <QPlainTextDocumentLayout>
 
 ScriptFile::ScriptFile():
-    Resource(),
+    Resource(Resource::eScript),
     mPath(),
     mDocument(),
     mLoaded(false)
@@ -12,7 +12,7 @@ ScriptFile::ScriptFile():
 }
 
 ScriptFile::ScriptFile(const QString& path):
-    Resource(),
+    Resource(Resource::eScript),
     mPath(path),
     mDocument(),
     mLoaded(false)
@@ -20,7 +20,7 @@ ScriptFile::ScriptFile(const QString& path):
 }
 
 ScriptFile::ScriptFile(const ScriptFile& that):
-    Resource(),
+    Resource(Resource::eScript),
     mPath(that.mPath),
     mDocument(),
     mLoaded(false)

@@ -1,20 +1,19 @@
 #include "projectmodel.h"
 
 #include "project/projecttreetextitem.h"
-#include "project/projecttreescriptitem.h"
-#include "project/projecttreeworlditem.h"
+#include "project/projecttreeobjectitem.h"
+#include "project/projecttreerootitem.h"
 
+#include "world/tileset.h"
+#include "tileworld.h"
 #include "script/scriptfile.h"
 
 #include "project.h"
-#include "tileworld.h"
-#include "world/tileworldhandle.h"
-#include "script/scripthandle.h"
 
 ProjectModel::ProjectModel():
     QAbstractItemModel(),
     mpProject(NULL),
-    mpRoot(new ProjectTreeItem())
+    mpRoot(new ProjectTreeRootItem())
 {
     mpRoot->setRoot();
 }
@@ -133,8 +132,8 @@ QVariant ProjectModel::resourceData(const QModelIndex& index)
     if ( !index.isValid() )
         return QVariant();
 
-    ProjectTreeItem *item = static_cast<ProjectTreeItem*>(index.internalPointer());
-    return item->resourceData();
+    ProjectTreeItem *pitem = static_cast<ProjectTreeItem*>(index.internalPointer());
+    return pitem->resourceData();
 }
 
 // - Slots
@@ -143,7 +142,8 @@ void ProjectModel::onDataChanged()
 {
     beginResetModel();
 
-    synchronizeTree();
+    mpRoot->clear();
+    buildTree();
 
     endResetModel();
 }
@@ -152,29 +152,41 @@ void ProjectModel::onDataChanged()
 
 void ProjectModel::buildTree()
 {
-    ProjectTreeItem* pscripts = new ProjectTreeTextItem(ProjectTreeTextItem::eScript);
+    auto pscripts = new ProjectTreeTextItem("Scripts");
     mpRoot->addChild(pscripts);
 
     Project::Scripts& scripts = mpProject->getScripts();
-    for ( int index = 0; index < scripts.size(); ++index )
+    for ( auto pscript : scripts )
     {
-        ScriptFile& script = *scripts[index];
-        ProjectTreeItem* pitem = new ProjectTreeScriptItem(script);
+        ResourceHandle handle(*pscript);
+        auto pitem = new ProjectTreeObjectItem(handle);
         pscripts->addChild(pitem);
     }
 
-    ProjectTreeItem* pworlds = new ProjectTreeTextItem(ProjectTreeTextItem::eWorld);
+    auto ptilesets = new ProjectTreeTextItem("TileSets");
+    mpRoot->addChild(ptilesets);
+
+    auto& tilesets = mpProject->getTileSets();
+    for ( auto ptileset : tilesets )
+    {
+        ResourceHandle handle(*ptileset);
+        auto pitem = new ProjectTreeObjectItem(handle);
+        ptilesets->addChild(pitem);
+    }
+
+    ProjectTreeItem* pworlds = new ProjectTreeTextItem("Worlds");
     mpRoot->addChild(pworlds);
 
     Project::Worlds& worlds = mpProject->getWorlds();
-    for ( int index = 0; index < worlds.size(); ++index )
+    for ( auto pworld : worlds )
     {
-        TileWorld& world = *worlds[index];
-        ProjectTreeItem* pitem = new ProjectTreeWorldItem(world);
+        ResourceHandle handle(*pworld);
+        auto pitem = new ProjectTreeObjectItem(handle);
         pworlds->addChild(pitem);
     }
 }
 
+/*
 void ProjectModel::synchronizeTree()
 {
     for ( int index = 0; index < mpRoot->childCount(); ++index )
@@ -196,10 +208,9 @@ void ProjectModel::synchronizeTree()
 
 void ProjectModel::synchronizeWorlds(ProjectTreeItem& parent)
 {
-    for ( int index = 0; index < mpProject->getWorlds().size(); ++index )
+    auto& worlds = mpProject->getWorlds();
+    for ( auto pworld : worlds )
     {
-        TileWorld* pworld = mpProject->getWorlds()[index];
-
         int elem = 0;
         for ( ; elem < parent.childCount(); ++elem )
         {
@@ -222,10 +233,9 @@ void ProjectModel::synchronizeWorlds(ProjectTreeItem& parent)
 
 void ProjectModel::synchronizeScripts(ProjectTreeItem& parent)
 {
-    for ( int index = 0; index < mpProject->getScripts().size(); ++index )
+    auto& scripts = mpProject->getScripts();
+    for ( auto pscript : scripts )
     {
-        ScriptFile* pscript = mpProject->getScripts()[index];
-
         int elem = 0;
         for ( ; elem < parent.childCount(); ++elem )
         {
@@ -245,3 +255,4 @@ void ProjectModel::synchronizeScripts(ProjectTreeItem& parent)
         }
     }
 }
+*/

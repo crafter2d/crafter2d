@@ -1,11 +1,11 @@
 #ifndef TILEWORLDHANDLE_H
 #define TILEWORLDHANDLE_H
 
-#include <QObject>
+#include "resourcehandle.h"
 
 class TileWorld;
 
-class TileWorldHandle : public QObject
+class TileWorldHandle : public ResourceHandle
 {
     Q_OBJECT
 

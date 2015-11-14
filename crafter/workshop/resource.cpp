@@ -1,7 +1,8 @@
 #include "resource.h"
 
-Resource::Resource():
-    QObject(0),
+Resource::Resource(Type type):
+    QObject(nullptr),
+    mType(type),
     mName(),
     mDirty(false)
 {

@@ -49,16 +49,15 @@ void VirtualClassTable::insert(VirtualClass* ptype)
 void VirtualClassTable::mark()
 {
    Classes::iterator it = mClasses.begin();
-   for ( ; it != mClasses.end(); ++it )
+   for ( auto& it : mClasses )
    {
-      VirtualClass* pclass = it->second;
-      int statics = pclass->getStaticCount();
-      for ( int index = 0; index < statics; index++ )
+      VirtualClass& klass = *it.second;
+      auto& values = klass.getStaticValues();
+      for ( auto& value : values )
       {
-         VirtualValue& var = pclass->getStatic(index);
-         if ( var.isObject() )
+         if ( value.isObject() )
          {
-            var.asObject().mark();
+            value.asObject().mark();
          }
       }
    }

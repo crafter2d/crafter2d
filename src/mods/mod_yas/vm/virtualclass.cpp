@@ -21,7 +21,7 @@ VirtualClass::VirtualClass():
    mFunctions(),
    mVTable(),
    mpClassObject(NULL),
-   mpStatics(NULL),
+   mStaticValues(),
    mpInterfaceLookupTable(NULL),
    mFlags(eNone)
 {
@@ -30,9 +30,6 @@ VirtualClass::VirtualClass():
 VirtualClass::~VirtualClass()
 {
    setInterfaceLookupTable(NULL);
-
-   delete[] mpStatics;
-   mpStatics = NULL;
 }
 
 // - Get/set
@@ -266,7 +263,7 @@ void VirtualClass::buildVariables()
       pfield->setIndex(index);
    }
 
-   mpStatics = new VirtualValue[mStaticFields.size()];
+   mStaticValues.resize(mStaticFields.size());
 }
 
 void VirtualClass::buildVirtualTable()
@@ -344,29 +341,26 @@ void VirtualClass::instantiate(VirtualObject& object) const
 
 const VirtualValue& VirtualClass::getStatic(int index) const
 {
-   ASSERT_PTR(mpStatics);
    ASSERT(index >= 0);
-   ASSERT(index < mStaticFields.size());
+   ASSERT(index < mStaticValues.size());
 
-   return mpStatics[index];
+   return mStaticValues[index];
 }
 
 VirtualValue& VirtualClass::getStatic(int index)
 {
-   ASSERT_PTR(mpStatics);
    ASSERT(index >= 0);
-   ASSERT(index < mStaticFields.size());
+   ASSERT(index < mStaticValues.size());
 
-   return mpStatics[index];
+   return mStaticValues[index];
 }
 
 void VirtualClass::setStatic(int index, const VirtualValue& value)
 {
-   ASSERT_PTR(mpStatics);
    ASSERT(index >= 0);
    ASSERT(index < mStaticFields.size());
 
-   mpStatics[index] = value;
+   mStaticValues[index] = value;
 }
 
 // - Searching

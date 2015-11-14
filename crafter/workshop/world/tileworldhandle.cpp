@@ -1,19 +1,23 @@
 #include "tileworldhandle.h"
 
+#include <QFileInfo>
+
+#include "tileworld.h"
+
 TileWorldHandle::TileWorldHandle():
-    QObject(0),
+    ResourceHandle(),
     mpWorld(0)
 {
 }
 
 TileWorldHandle::TileWorldHandle(const TileWorldHandle& that):
-    QObject(0),
+    ResourceHandle(),
     mpWorld(that.mpWorld)
 {
 }
 
 TileWorldHandle::TileWorldHandle(TileWorld &world):
-    QObject(NULL),
+    ResourceHandle(world),
     mpWorld(&world)
 {
 }

@@ -2,15 +2,6 @@
 
 #include <QtGlobal>
 
-ProjectTreeItem::ProjectTreeItem():
-    mKind(eInvalid),
-    mpParent(NULL),
-    mChildren(),
-    mData()
-{
-
-}
-
 ProjectTreeItem::ProjectTreeItem(Kind kind):
     mKind(kind),
     mpParent(NULL),
@@ -21,7 +12,7 @@ ProjectTreeItem::ProjectTreeItem(Kind kind):
 
 ProjectTreeItem::~ProjectTreeItem()
 {
-    qDeleteAll(mChildren);
+    clear();
 }
 
 // - Get/set
@@ -76,6 +67,11 @@ int ProjectTreeItem::childCount() const
 ProjectTreeItem* ProjectTreeItem::child(int index)
 {
     return mChildren.value(index);
+}
+
+void ProjectTreeItem::clear()
+{
+    qDeleteAll(mChildren);
 }
 
 int ProjectTreeItem::indexOf(const ProjectTreeItem& item) const

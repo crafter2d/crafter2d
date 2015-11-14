@@ -136,11 +136,10 @@ void ParticleSystem::updateParticle(Particle& particle, float delta, int& index)
 
 	if ( particle.activeTime < particle.lifeTime )
    {
-      Vector forces;
-      forces.y = mGravity;
+      Vector forces(0, mGravity);
 
-      particle.vel += forces * delta;
-      particle.pos += particle.vel * delta;
+      particle.vel += (forces * delta);
+      particle.pos += (particle.vel * delta);
             
       index++;
 	}

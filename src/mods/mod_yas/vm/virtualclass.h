@@ -10,6 +10,7 @@
 
 #include "virtualclasses.h"
 #include "virtualfunctiontable.h"
+#include "virtualvalue.h"
 
 namespace yasc
 {
@@ -18,7 +19,6 @@ namespace yasc
 
 class VirtualField;
 class VirtualFunction;
-class VirtualValue;
 class VirtualObject;
 
 class SCRIPT_API VirtualClass
@@ -26,6 +26,7 @@ class SCRIPT_API VirtualClass
 public:
    typedef std::vector<VirtualFunction*> Functions;
    typedef std::vector<VirtualField*> Fields;
+   typedef std::vector<VirtualValue> Values;
 
    enum Flags {
       eNone = 0, 
@@ -56,6 +57,8 @@ public:
 
    const Fields& getStaticFields() const;
          Fields& getStaticFields();
+
+   const Values& getStaticValues() const { return mStaticValues; }
 
    int getVariableCount() const;
    int getStaticCount() const;
@@ -122,7 +125,7 @@ private:
    Functions               mFunctions;
    VirtualFunctionTable    mVTable;
    VirtualObject*          mpClassObject;
-   VirtualValue*           mpStatics;
+   Values                  mStaticValues;
    int*                    mpInterfaceLookupTable;
    Flags                   mFlags;
 };

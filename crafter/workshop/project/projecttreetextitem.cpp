@@ -1,25 +1,12 @@
 #include "projecttreetextitem.h"
 
-ProjectTreeTextItem::ProjectTreeTextItem(Category category):
+ProjectTreeTextItem::ProjectTreeTextItem(const QString &text):
     ProjectTreeItem(ProjectTreeItem::eText),
-    mCategory(category)
+    mText(text)
 {
-}
-
-ProjectTreeTextItem::Category ProjectTreeTextItem::getCategory()
-{
-    return mCategory;
 }
 
 QVariant ProjectTreeTextItem::data()
 {
-    switch ( mCategory )
-    {
-    case eWorld:
-        return "Worlds";
-    case eScript:
-        return "Scripts";
-    }
-
-    return QVariant("<invalid>");
+    return mText;
 }

@@ -8,16 +8,7 @@
 class ProjectTreeTextItem : public ProjectTreeItem
 {
 public:
-    enum Category
-    {
-        eWorld,
-        eScript
-    };
-
-    ProjectTreeTextItem(Category category);
-
-  // get/set
-    Category getCategory();
+    explicit ProjectTreeTextItem(const QString& text);
 
   // query
     virtual QVariant data() override;
@@ -25,7 +16,7 @@ public:
 private:
 
   // data
-    Category mCategory;
+    QString mText;
 };
 
 #endif // PROJECTTREETEXTITEM_H
