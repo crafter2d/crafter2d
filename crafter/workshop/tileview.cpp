@@ -8,7 +8,8 @@
 #include <QPalette>
 
 #include "world/tilebound.h"
-#include "tileworld.h"
+#include "world/tileworld.h"
+
 #include "undocleartile.h"
 #include "undosettile.h"
 

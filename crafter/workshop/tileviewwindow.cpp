@@ -2,8 +2,9 @@
 
 #include <QScrollArea>
 
+#include "world/tileworld.h"
+
 #include "tileview.h"
-#include "tileworld.h"
 
 TileViewWindow::TileViewWindow(QWidget *parent) :
     QScrollArea(parent),

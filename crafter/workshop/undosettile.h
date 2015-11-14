@@ -4,8 +4,8 @@
 #include <QUndoCommand>
 #include <QPoint>
 
+#include "world/tile.h"
 #include "world/tilefield.h"
-#include "tile.h"
 
 class TileWorld;
 

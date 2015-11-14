@@ -1,10 +1,11 @@
 #include "tilespanel.h"
 #include "ui_tilespanel.h"
 
+#include "world/tilemap.h"
+#include "world/tileworld.h"
+
 #include "mainwindow.h"
-#include "tilemap.h"
 #include "tileview.h"
-#include "tileworld.h"
 #include "tileselector.h"
 
 TilesPanel::TilesPanel(MainWindow &mainwindow) :

@@ -1,6 +1,6 @@
 #include "undocleartile.h"
 
-#include "tileworld.h"
+#include "world/tileworld.h"
 
 UndoClearTile::UndoClearTile(TileWorld& world, const QPoint& pos, TileField::Level level):
     mWorld(world),

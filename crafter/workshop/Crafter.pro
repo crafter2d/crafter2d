@@ -21,10 +21,7 @@ SOURCES += main.cpp\
     project.cpp \
     projectmodel.cpp \
     tileviewwindow.cpp \
-    tilemap.cpp \
-    tileworld.cpp \
     tilemapmodel.cpp \
-    tile.cpp \
     newlayerdialog.cpp \
     projectpanel.cpp \
     layerpanel.cpp \
@@ -70,7 +67,10 @@ SOURCES += main.cpp\
     tilesetmodel.cpp \
     resourcehandle.cpp \
     project/projecttreeobjectitem.cpp \
-    project/projecttreerootitem.cpp
+    project/projecttreerootitem.cpp \
+    world/tileworld.cpp \
+    world/tilemap.cpp \
+    world/tile.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -78,10 +78,7 @@ HEADERS  += mainwindow.h \
     project.h \
     projectmodel.h \
     tileviewwindow.h \
-    tilemap.h \
-    tileworld.h \
     tilemapmodel.h \
-    tile.h \
     newlayerdialog.h \
     projectpanel.h \
     layerpanel.h \
@@ -127,7 +124,10 @@ HEADERS  += mainwindow.h \
     tilesetmodel.h \
     resourcehandle.h \
     project/projecttreeobjectitem.h \
-    project/projecttreerootitem.h
+    project/projecttreerootitem.h \
+    world/tileworld.h \
+    world/tilemap.h \
+    world/tile.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \

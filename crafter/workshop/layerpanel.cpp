@@ -7,14 +7,15 @@
 #include <QMdiSubWindow>
 #include <QMenu>
 
+#include "world/tileworld.h"
+#include "world/tilemap.h"
+
 #include "newlayerdialog.h"
 #include "mainwindow.h"
 #include "resizelayerdialog.h"
 #include "tilemapmodel.h"
 #include "tileview.h"
 #include "tileviewwindow.h"
-#include "tileworld.h"
-#include "tilemap.h"
 
 LayerPanel::LayerPanel(MainWindow& parent):
     DockPanel(parent),

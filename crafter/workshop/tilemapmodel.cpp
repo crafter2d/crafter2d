@@ -1,7 +1,7 @@
 #include "tilemapmodel.h"
 
-#include "tilemap.h"
-#include "tileworld.h"
+#include "world/tilemap.h"
+#include "world/tileworld.h"
 
 TileMapModel::TileMapModel():
     QAbstractTableModel(NULL),
@@ -86,7 +86,7 @@ int TileMapModel::rowCount(const QModelIndex &/*parent*/) const
     return 0;
 }
 
-int TileMapModel::columnCount(const QModelIndex &parent) const
+int TileMapModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return 2;
 }

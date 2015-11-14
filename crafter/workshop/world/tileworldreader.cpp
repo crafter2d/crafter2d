@@ -3,9 +3,9 @@
 #include <QIODevice>
 
 #include "../project.h"
-#include "../tilemap.h"
-#include "../tileworld.h"
 
+#include "tilemap.h"
+#include "tileworld.h"
 #include "tilebound.h"
 #include "tileworlddesc.h"
 #include "tilemapdesc.h"

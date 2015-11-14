@@ -7,9 +7,8 @@
 #include <QPoint>
 #include <QVector>
 
+#include "world/tile.h"
 #include "world/tilefield.h"
-
-#include "tile.h"
 
 class TileBound;
 class TileWorld;

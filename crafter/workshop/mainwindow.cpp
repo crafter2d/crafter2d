@@ -9,6 +9,8 @@
 #include <QMessageBox>
 #include <QProgressBar>
 
+#include "world/tileworld.h"
+
 #include "aboutdialog.h"
 #include "newprojectdialog.h"
 #include "newlayerdialog.h"
@@ -20,7 +22,6 @@
 #include "tilespanel.h"
 #include "tileview.h"
 #include "tileviewwindow.h"
-#include "tileworld.h"
 #include "worldwizard.h"
 #include "scriptview.h"
 

@@ -9,8 +9,8 @@
 #include "tilemap.h"
 #include "tile.h"
 
-#include "world/tilemapdesc.h"
-#include "world/tilebound.h"
+#include "tilemapdesc.h"
+#include "tilebound.h"
 
 TileWorld::TileWorld(const TileWorldDesc& desc):
     Resource(Resource::eWorld),

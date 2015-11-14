@@ -12,15 +12,16 @@
 #include "worldwizard_pageworld.h"
 #include "worldwizard_pagefinalize.h"
 
-#include "stringinterface.h"
-#include "tileworld.h"
-#include "tilemap.h"
-#include "project.h"
 #include "project/projectmanager.h"
 
+#include "world/tilemap.h"
+#include "world/tileworld.h"
 #include "world/tileset.h"
 #include "world/tilemapdesc.h"
 #include "world/tileworlddesc.h"
+
+#include "stringinterface.h"
+#include "project.h"
 
 // static
 TileWorld* WorldWizard::show()

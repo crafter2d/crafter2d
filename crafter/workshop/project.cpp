@@ -8,16 +8,17 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include "project/projectbuilder.h"
+#include "project/projectmanager.h"
+#include "project/projectrunner.h"
 #include "script/scriptfile.h"
 #include "world/tileworldreader.h"
 #include "world/tileworldwriter.h"
 #include "world/tilesetreader.h"
 #include "world/tilesetwriter.h"
 #include "world/tileset.h"
-#include "project/projectbuilder.h"
-#include "project/projectmanager.h"
-#include "project/projectrunner.h"
-#include "tileworld.h"
+#include "world/tileworld.h"
+
 #include "newprojectdialog.h"
 
 // - Statics

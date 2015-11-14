@@ -3,14 +3,13 @@
 
 #include <QVector>
 
-#include "resource.h"
-#include "world/tileworlddesc.h"
-#include "world/tilefield.h"
+#include "../resource.h"
+
+#include "tileworlddesc.h"
+#include "tilefield.h"
 
 class QSize;
 class QPainter;
-
-struct TileWorldDesc;
 
 class Tile;
 class TileBound;

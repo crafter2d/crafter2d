@@ -1,6 +1,6 @@
 #include "undosettile.h"
 
-#include "tileworld.h"
+#include "world/tileworld.h"
 
 UndoSetTile::UndoSetTile(TileWorld& world, const QPoint &pos, TileField::Level level, const Tile &tile):
     QUndoCommand(NULL),

@@ -5,12 +5,12 @@
 
 #include "project/projecttreeobjectitem.h"
 #include "script/scriptfile.h"
+#include "world/tileworld.h"
 
 #include "mainwindow.h"
 #include "projectmodel.h"
 #include "project.h"
 #include "tileviewwindow.h"
-#include "tileworld.h"
 
 ProjectPanel::ProjectPanel(MainWindow& mainwindow) :
     DockPanel(mainwindow),

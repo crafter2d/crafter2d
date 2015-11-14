@@ -5,7 +5,7 @@
 #include "project/projecttreerootitem.h"
 
 #include "world/tileset.h"
-#include "tileworld.h"
+#include "world/tileworld.h"
 #include "script/scriptfile.h"
 
 #include "project.h"
@@ -185,74 +185,3 @@ void ProjectModel::buildTree()
         pworlds->addChild(pitem);
     }
 }
-
-/*
-void ProjectModel::synchronizeTree()
-{
-    for ( int index = 0; index < mpRoot->childCount(); ++index )
-    {
-        ProjectTreeTextItem* pchild = static_cast<ProjectTreeTextItem*>(mpRoot->child(index));
-
-        ProjectTreeTextItem::Category category = pchild->getCategory();
-        switch ( category )
-        {
-        case ProjectTreeTextItem::eWorld:
-            synchronizeWorlds(*pchild);
-            break;
-        case ProjectTreeTextItem::eScript:
-            synchronizeScripts(*pchild);
-            break;
-        }
-    }
-}
-
-void ProjectModel::synchronizeWorlds(ProjectTreeItem& parent)
-{
-    auto& worlds = mpProject->getWorlds();
-    for ( auto pworld : worlds )
-    {
-        int elem = 0;
-        for ( ; elem < parent.childCount(); ++elem )
-        {
-            ProjectTreeWorldItem* pitem = static_cast<ProjectTreeWorldItem*>(parent.child(elem));
-
-            TileWorld& world = pitem->getWorld();
-            if ( &world == pworld )
-            {
-                break;
-            }
-        }
-
-        if ( elem >= parent.childCount() )
-        {
-            ProjectTreeItem* pitem = new ProjectTreeWorldItem(*pworld);
-            parent.addChild(pitem);
-        }
-    }
-}
-
-void ProjectModel::synchronizeScripts(ProjectTreeItem& parent)
-{
-    auto& scripts = mpProject->getScripts();
-    for ( auto pscript : scripts )
-    {
-        int elem = 0;
-        for ( ; elem < parent.childCount(); ++elem )
-        {
-            ProjectTreeScriptItem* pitem = static_cast<ProjectTreeScriptItem*>(parent.child(elem));
-
-            ScriptFile& script = pitem->getScript();
-            if ( &script == pscript )
-            {
-                break;
-            }
-        }
-
-        if ( elem >= parent.childCount() )
-        {
-            ProjectTreeItem* pitem = new ProjectTreeScriptItem(*pscript);
-            parent.addChild(pitem);
-        }
-    }
-}
-*/

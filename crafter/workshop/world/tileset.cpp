@@ -8,7 +8,8 @@
 #include <qmath.h>
 
 #include "../project.h"
-#include "../tile.h"
+
+#include "tile.h"
 
 QTileSet::QTileSet():
     Resource(Resource::eTileSet),

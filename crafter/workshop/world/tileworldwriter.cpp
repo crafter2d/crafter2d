@@ -2,10 +2,9 @@
 
 #include <QDataStream>
 
-#include "../tilemap.h"
-#include "../tileworld.h"
-
 #include "tilebound.h"
+#include "tilemap.h"
+#include "tileworld.h"
 #include "tileworlddesc.h"
 
 QTileWorldWriter::QTileWorldWriter(QIODevice& device):

@@ -6,8 +6,8 @@
 
 #include <qmath.h>
 
+#include "world/tile.h"
 #include "world/tileset.h"
-#include "tile.h"
 
 TileSelector::TileSelector(QWidget *parent) :
     QAbstractScrollArea(parent),
@@ -80,7 +80,6 @@ void TileSelector::paintEvent(QPaintEvent* /*event*/)
                 painter.setBrush(previousbrush);
                 painter.setPen(previouspen);
             }
-
 
             tile.paint(painter, x, y);
 

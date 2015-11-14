@@ -1,7 +1,7 @@
 #include "newlayerdialog.h"
 #include "ui_newlayerdialog.h"
 
-#include "tilemap.h"
+#include "world/tilemap.h"
 #include "world/tilemapdesc.h"
 
 // static
