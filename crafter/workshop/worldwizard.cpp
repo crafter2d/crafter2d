@@ -7,8 +7,7 @@
 
 #include "core/smartptr/autoptr.h"
 
-#include "layerwizard_pageinfo.h"
-#include "layerwizard_pagetileset.h"
+#include "worldwizard_pagelayer.h"
 #include "worldwizard_pageworld.h"
 #include "worldwizard_pagefinalize.h"
 
@@ -41,8 +40,7 @@ WorldWizard::WorldWizard(QWidget *parent) :
     QWizard(parent)
 {
     setPage(Page_World, new WorldWizard_PageWorld());
-    setPage(Page_Layer, new LayerWizard_PageInfo());
-    setPage(Page_TileSet, new LayerWizard_PageTileSet());
+    setPage(Page_Layer, new WorldWizard_PageLayer());
     setPage(Page_Finalize, new WorldWizard_PageFinalize());
 
     setStartId(Page_World);
@@ -64,12 +62,6 @@ int WorldWizard::nextId() const
         return Page_Layer;
 
     case Page_Layer:
-        if ( field("layer.create").toBool() )
-            return Page_TileSet;
-        else
-            return Page_Finalize;
-
-    case Page_TileSet:
         return Page_Finalize;
 
     case Page_Finalize:
@@ -93,37 +85,26 @@ TileWorld *WorldWizard::createWorld()
 
     if ( field("layer.create").toBool() )
     {
-        QTileSet* ptileset = nullptr;
+        QString tileset = field("layer.tileset").toString();
+        auto ptileset = ProjectManager::getInstance().getActiveProject()->lookupTileSet(tileset);
+        Q_ASSERT(ptileset != nullptr);
 
-        if ( field("tileset.create").toBool() )
-        {
-            ptileset = createTileSet();
-        }
-        else
-        {
-            int index = field("tileset.tilesetid").toInt();
-            ptileset = ProjectManager::getInstance().getActiveProject()->getTileSets()[index];
-        }
+        int width = field("layer.width").toString().toInt();
+        int height = field("layer.height").toString().toInt();
 
-        if ( ptileset != nullptr )
-        {
-            int width = field("layer.width").toString().toInt();
-            int height = field("layer.height").toString().toInt();
+        TileMapDesc mapdesc;
+        mapdesc.name = field("layer.name").toString();
+        mapdesc.tileset = ptileset->getResourceName();
+        mapdesc.effect = "shaders/basic";
+        mapdesc.size = QSize(width, height);
 
-            TileMapDesc mapdesc;
-            mapdesc.name = field("layer.name").toString();
-            mapdesc.tileset = ptileset->getResourceName();
-            mapdesc.effect = "shaders/basic";
-            mapdesc.size = QSize(width, height);
+        TileField* pfield = new TileField();
+        pfield->create(QSize(width, height));
 
-            TileField* pfield = new TileField();
-            pfield->create(QSize(width, height));
-
-            TileMap* pmap = new TileMap(mapdesc);
-            pmap->setTileSet(ptileset);
-            pmap->setField(pfield);
-            pworld->addMap(pmap);
-        }
+        TileMap* pmap = new TileMap(mapdesc);
+        pmap->setTileSet(ptileset);
+        pmap->setField(pfield);
+        pworld->addMap(pmap);
     }
 
     return pworld;

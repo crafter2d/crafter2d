@@ -6,6 +6,7 @@
 #include "project/projecttreeobjectitem.h"
 #include "script/scriptfile.h"
 #include "world/tileworld.h"
+#include "world/tileset.h"
 
 #include "mainwindow.h"
 #include "projectmodel.h"
@@ -50,6 +51,8 @@ void ProjectPanel::on_projectChanged(Project *pproject)
     }
 }
 
+#include "newtilesetdialog.h"
+
 void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
 {
     QVariant data = mpProjectModel->resourceData(index);
@@ -66,6 +69,9 @@ void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
                 break;
             case Resource::eScript:
                 getMainWindow().showScript(static_cast<ScriptFile&>(*handle));
+                break;
+            case Resource::eTileSet:
+                NewTileSetDialog::edit(static_cast<QTileSet&>(*handle));
                 break;
         }
     }

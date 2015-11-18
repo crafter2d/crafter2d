@@ -35,8 +35,6 @@ SOURCES += main.cpp\
     worldwizard_pageworld.cpp \
     worldwizard.cpp \
     worldwizard_pagefinalize.cpp \
-    layerwizard_pagetileset.cpp \
-    layerwizard_pageinfo.cpp \
     world/tileset.cpp \
     world/tilesetwriter.cpp \
     world/tilesetreader.cpp \
@@ -70,7 +68,9 @@ SOURCES += main.cpp\
     project/projecttreerootitem.cpp \
     world/tileworld.cpp \
     world/tilemap.cpp \
-    world/tile.cpp
+    world/tile.cpp \
+    newtilesetdialog.cpp \
+    worldwizard_pagelayer.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -92,8 +92,6 @@ HEADERS  += mainwindow.h \
     worldwizard_pageworld.h \
     worldwizard.h \
     worldwizard_pagefinalize.h \
-    layerwizard_pagetileset.h \
-    layerwizard_pageinfo.h \
     world/tileset.h \
     project/projecttreeitem.h \
     world/tilesetwriter.h \
@@ -127,7 +125,9 @@ HEADERS  += mainwindow.h \
     project/projecttreerootitem.h \
     world/tileworld.h \
     world/tilemap.h \
-    world/tile.h
+    world/tile.h \
+    newtilesetdialog.h \
+    worldwizard_pagelayer.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
@@ -139,11 +139,11 @@ FORMS    += mainwindow.ui \
     resizelayerdialog.ui \
     aboutdialog.ui \
     worldwizard_pageworld.ui \
-    layerwizard_pagetileset.ui \
-    layerwizard_pageinfo.ui \
     scriptview.ui \
     newscriptdialog.ui \
-    outputpanel.ui
+    outputpanel.ui \
+    newtilesetdialog.ui \
+    worldwizard_pagelayer.ui
 
 BaseDir = $$PWD/../build/workshop
 

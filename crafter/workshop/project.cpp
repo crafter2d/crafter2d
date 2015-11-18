@@ -462,12 +462,11 @@ void Project::run()
 
 QTileSet* Project::lookupTileSet(const QString& name)
 {
-    QTileSet* pset = NULL;
-    foreach (pset, mTileSets)
+    for (auto ptileset : mTileSets)
     {
-        if ( pset->getResourceName().contains(name) )
+        if ( ptileset->getResourceName().contains(name) )
         {
-            return pset;
+            return ptileset;
         }
     }
     return NULL;
@@ -478,8 +477,7 @@ ScriptFile* Project::findScript(const QString& classname)
     QString filename = classname;
     filename = tr("scripts") + QDir::separator() + filename.replace('.', QDir::separator()) + ".as";
 
-    ScriptFile* pfile = nullptr;
-    foreach (pfile, mScripts)
+    for (auto pfile : mScripts)
     {
         if ( pfile->getResourceName() == filename )
         {
