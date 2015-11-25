@@ -1,0 +1,2 @@
+before_install:
+  - ./projects/install-premake5.sh
