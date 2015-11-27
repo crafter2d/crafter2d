@@ -1,6 +1,8 @@
 
 #include "glyphsheet.h"
 
+#include <string.h>
+
 #include "core/defines.h"
 #include "core/graphics/device.h"
 #include "core/graphics/texture.h"

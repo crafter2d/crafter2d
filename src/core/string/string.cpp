@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "string.h"
 
+#include <cwctype>
 #include <string.h>
 #include <functional>
 
@@ -321,13 +322,27 @@ UChar* String::getBuffer(uint32_t length)
 
 const String& String::toLower()
 {
+#ifdef WINDOWS
    _wcslwr_s(mpString, mLength + 1);
+#else
+   for ( uint32_t index = 0; index < mLength; ++index )
+   {
+      mpString[index] = std::towlower(mpString[index]);
+   }
+#endif
    return *this;
 }
 
 const String& String::toUpper()
 {
+#ifdef WINDOWS
    _wcsupr_s(mpString, mLength + 1);
+#else
+   for ( uint32_t index = 0; index < mLength; ++index )
+   {
+      mpString[index] = std::towupper(mpString[index]);
+   }
+#endif
    return *this;
 }
 

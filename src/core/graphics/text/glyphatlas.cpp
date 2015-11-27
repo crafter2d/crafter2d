@@ -1,6 +1,8 @@
 
 #include "glyphatlas.h"
 
+#include <string.h>
+
 #include "core/defines.h"
 
 #include "glyph.h"

@@ -33,7 +33,7 @@ struct Vertex
       return *this;
    }
 
-   __forceinline void set(float _x, float _y) {
+   void set(float _x, float _y) {
       x = _x;
       y = _y;
    }

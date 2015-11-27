@@ -73,7 +73,7 @@ public:
       return len;
    }
 
-	float length()
+   float length()
    {
       float len = dot(*this);
       return (float) sqrt(len);
@@ -117,7 +117,6 @@ public:
       return *this;
    }
 
-   __forceinline
    void operator*= (float f) {
       x *= f;
       y *= f;
@@ -146,12 +145,10 @@ public:
       return Vector(x - v.x, y - v.y);
    }
 
-   __forceinline
    Vector operator* (const Vector& v) const {
       return Vector(x * v.x, y * v.y);
    }
 
-   __forceinline
    Vector operator* (const float f) const {
       return Vector(x * f, y * f);
    }

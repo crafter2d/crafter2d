@@ -22,7 +22,11 @@
 
 #include "core/core_base.h"
 
+#ifdef WINDOWS
 #include <zip.h>
+#else
+#include <minizip/zip.h>
+#endif
 
 class String;
 
