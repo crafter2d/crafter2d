@@ -5,4 +5,7 @@ unzip /tmp/premake5-src.zip
 cd premake-5.0.0-alpha6/build/gmake.unix
 make
 cd ../../../
+cd bin/release
+ls -all
+cd ../../
 export PATH=$PATH:$PWD/premake-5.0.0-alpha6/bin/release
