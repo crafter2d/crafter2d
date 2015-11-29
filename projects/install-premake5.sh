@@ -8,5 +8,4 @@ cd ../../../
 cd premake-5.0.0-alpha6/bin/release
 ls -all
 ./premake5 --version
-export PATH=$PATH:$PWD
 cd ../../../
