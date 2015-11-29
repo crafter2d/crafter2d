@@ -5,7 +5,7 @@ before_install:
   - ./projects/install-premake5.sh
 
 script:
-  - ./premake5 gmake
+  - premake5 gmake
   - cd build
   - make
 
