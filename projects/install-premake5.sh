@@ -7,5 +7,6 @@ make
 cd ../../../
 cd premake-5.0.0-alpha6/bin/release
 ls -all
-cd ../../
-export PATH=$PATH:$PWD/premake-5.0.0-alpha6/bin/release
+./premake5 --version
+export PATH=$PATH:$PWD
+cd ../../../
