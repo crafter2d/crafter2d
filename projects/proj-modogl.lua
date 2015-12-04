@@ -44,7 +44,7 @@ project "mod_ogl"
 		}
 		
 	filter "system:Linux"
-		buildoptions { "-W", "-Wall", "-O0" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		defines { "LINUX" }
 		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 		links { "GLee", "freetype", "SOIL" }

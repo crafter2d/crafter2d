@@ -40,7 +40,7 @@ project "mod_ui"
 
 	filter "system:linux"
 		defines { "LINUX" }
-		buildoptions { "-W", "-Wall", "-O0" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		
 	-- Set IDE specific settings
 	filter "action:cb-gcc"

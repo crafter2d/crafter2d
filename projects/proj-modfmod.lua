@@ -34,7 +34,7 @@ project "mod_fmod"
 	--- Linux
 	filter "system:Linux"
 		defines { "LINUX" }
-		buildoptions { "-W", "-Wall", "-O0" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		if ( _ACTION == "cb-gcc" ) then
 			linkoptions { "-Xlinker", "-zmuldefs" }
 		end

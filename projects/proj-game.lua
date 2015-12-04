@@ -40,7 +40,7 @@ project "Game"
 	filter "system:Linux"
 		defines { "LINUX" }		
 		links { "SDL", "tinyxml" }
-		buildoptions { "-W", "-Wall", "-O0" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 	
 	-- Toolsets
 	filter { "action:vs*", "Debug" }

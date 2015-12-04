@@ -41,7 +41,7 @@ project "Gen"
 	filter "system:Linux"
 		defines { "LINUX" }
 		--links { "SDL", "tinyxml" }
-		buildoptions { "-W", "-Wall", "-O0" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		
 	filter "action:cb-gcc"
 		linkoptions { "-Xlinker", "-zmuldefs" }

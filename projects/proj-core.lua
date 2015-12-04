@@ -37,7 +37,7 @@ project "Core"
 	filter "system:Linux"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
-		buildoptions { "-std=c++11", "-W", "-Wall", "-O0", "-Wunused-parameter" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter" }
 		if ( _ACTION == "cb-gcc" ) then
 			linkoptions { "-Xlinker", "-zmuldefs" }
 		end

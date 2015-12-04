@@ -34,7 +34,7 @@ project "Compiler"
 	
 	filter "system:Linux"
 		defines { "LINUX" }
-		buildoptions { "-W", "-Wall", "-O0" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		
 	filter "action:cb-gcc"
 		linkoptions { "-Xlinker", "-zmuldefs" }

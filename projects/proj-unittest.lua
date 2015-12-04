@@ -32,4 +32,7 @@ project "UnitTest"
 						
 		libdirs { 	path.join(libdir, "zlib/lib") }
 		
+	filter "system:linux"
+		defines { "LINUX" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		
