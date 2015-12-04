@@ -1,79 +1,74 @@
--- JEngine SSE PreMake 5 configuration file
--- Copyright 2010-2013, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "mod_ogl"
 	kind "SharedLib"
 	language "C++"
-	targetdir "bin"
+	targetdir "../bin"
+	location "../build/mods/mod_ogl"
 	flags { "NoPCH" }
-	location "build/mods/mod_ogl"
 	
--- set project files
-files { "src/mods/mod_ogl/**.cpp", "src/mods/mod_ogl/**.h", "src/mods/mod_ogl/**.inl" }
-includedirs { "src", "src/mods" }
-
--- set the include and library
-if ( os.is("windows") ) then
-   defines { "WIN32", "OGL_EXPORTS" }
+	-- set project files
+	files { "../src/mods/mod_ogl/**.cpp", "../src/mods/mod_ogl/**.h", "../src/mods/mod_ogl/**.inl" }
+	includedirs { "../src", "../src/mods" }
+	removeprebuildcommands { cxxcommand }
 	
-   includedirs {
-      path.join(libdir, "glee/include"),
-	  path.join(libdir, "sdl/include"),
-      path.join(libdir, "soil/include"),
-	  path.join(libdir, "freetype2/include"),
-   }
+	filter "configurations:Debug"
+		defines { "_DEBUG" }
+		targetsuffix "d"
+		flags { "Symbols" }
+		links { "Core", "SDL" }
+	
+	filter "configurations:Release"
+		defines { "NDEBUG" }
+		flags { "Optimize" }
+		links { "Core", "SDL" }
 
-   libdirs {
-      path.join(libdir, "glee/lib"),
-	  path.join(libdir, "sdl/lib"),
-      path.join(libdir, "soil/lib"),
-	  path.join(libdir, "freetype2/lib"),
-   }
+	-- set the system specific settings
+	filter "system:Windows"
+		defines { "WIN32", "OGL_EXPORTS" }
+	
+		includedirs {
+			path.join(libdir, "glee/include"),
+			path.join(libdir, "sdl/include"),
+			path.join(libdir, "soil/include"),
+			path.join(libdir, "freetype2/include"),
+		}
+
+		libdirs {
+			path.join(libdir, "glee/lib"),
+			path.join(libdir, "sdl/lib"),
+			path.join(libdir, "soil/lib"),
+			path.join(libdir, "freetype2/lib"),
+		}
+		
+	filter "system:Linux"
+		buildoptions { "-W", "-Wall", "-O0" }
+		defines { "LINUX" }
+		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
+		links { "GLee", "freetype", "SOIL" }
 
 	-- set IDE specific settings
-	if ( _ACTION == "cb-gcc" ) then
-	
-		buildoptions { "-W", "-Wall", "-O0" }
-		linkoptions { "--allow-multiple-definition" }
-       
-		configuration "Debug"
-			links { "GLee_d", "SOIL_d", "freetype242MT_D" } 
-		 
-		configuration "Release"
-			links { "GLee_d", "SOIL", "freetype242MT" }
-
-	else
+	filter "action:vs*"
 		links { "opengl32", "glu32" }
 		
-		configuration "Debug"
-			links { "GLee_d", "SOIL_d", "freetype242MT_D" }
-					
-		configuration "Release"
-			links { "GLee", "SOIL", "freetype242MT_D" }
-   end -- win32
-   
-elseif ( os.is("linux") ) then
-	
-	buildoptions { "-W", "-Wall", "-O0" }
-	if ( _ACTION == "cb-gcc" ) then
-		linkoptions { "-Xlinker", "-zmuldefs" }
-	end
-   
-	defines { "LINUX" }
-	
-	includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
-	links { "GLee", "freetype", "SOIL" }
+	filter { "action:vs*", "Debug" }
+		links { "GLee_d", "SOIL_d", "freetype242MT_D" }
+				
+	filter { "action:vs*", "Release" }
+		links { "GLee", "SOIL", "freetype242MT_D" }
+		
+	filter "action:cb-gcc"
+		buildoptions { "-W", "-Wall", "-O0" }
+		linkoptions { "--allow-multiple-definition", "-Xlinker", "-zmuldefs" }
+       
+	filter { "action:cb-gcc", "Debug" }
+		links { "GLee_d", "SOIL_d", "freetype242MT_D" } 
+	 
+	filter { "action:cb-gcc", "Release" }
+		links { "GLee_d", "SOIL", "freetype242MT" }
 
-end
-
-configuration "Debug"
-	defines { "_DEBUG" }
-	targetsuffix "d"
-	flags { "Symbols" }
-	links { "Core", "SDL" }
 	
-configuration "Release"
-	defines { "NDEBUG" }
-	flags { "Optimize" }
-	links { "Core", "SDL" }
+   
+	

@@ -1,67 +1,43 @@
--- JEngine SSE PreMake 4 configuration file
--- Copyright 2010, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "mod_d3d"
 	kind "SharedLib"
 	language "C++"
-	targetdir "bin"
+	targetdir "../bin"
+	location "../build/mods/mod_d3d"
 	flags { "NoPCH" }
-	location "build/mods/mod_d3d"
 	
--- set project files
-files { "src/mods/mod_d3d/**.cpp", "src/mods/mod_d3d/**.h", "src/mods/mod_d3d/**.inl" }
-includedirs { "src" }
-
--- set the include and library
-if ( os.is("windows") ) then
-	defines { "WIN32", "MOD_EXPORTS" }
+	-- set project files
+	files { "../src/mods/mod_d3d/**.cpp", "../src/mods/mod_d3d/**.h", "../src/mods/mod_d3d/**.inl" }
+	includedirs { "../src" }
+	removeprebuildcommands { cxxcommand }
 	
-	libdirs { }
-
-	-- set IDE specific settings
-	if ( _ACTION == "cb-gcc" ) then
+	filter "configurations:Debug"
+		defines { "_DEBUG" }
+		targetsuffix "d"
+		flags { "Symbols" }
+		links { "Core", "d2d1", "dwrite" }
 	
-		buildoptions { "-W", "-Wall", "-O0" }
-		linkoptions { "--allow-multiple-definition" }
-	  
-		configuration "Debug"
-			links { } 
-		 
-		configuration "Release"
-			links {  }
+	filter "configurations:Release"
+		defines { "NDEBUG" }
+		flags { "Optimize" }
+		links { "Core", "d2d1", "dwrite" }
 
-	else
+	filter "system:Windows"
+		defines { "WIN32", "MOD_EXPORTS" }
+		libdirs { }
+
+	-- Linux is actually not supported for DirectX
+	
+	filter "system:Linux"
+		buildoptions { "-W", "-Wall", "-O0" }   
+		defines { "LINUX" }
+		includedirs {  }
 		links {  }
 		
-		configuration "Debug"
-			links {  }
-					
-		configuration "Release"
-			links {  }
-   end -- win32
-   
-elseif ( os.is("linux") ) then
-	
-	buildoptions { "-W", "-Wall", "-O0" }
-	if ( _ACTION == "cb-gcc" ) then
-		linkoptions { "-Xlinker", "-zmuldefs" }
-	end
-   
-	defines { "LINUX" }
-	
-	includedirs {  }
-	links {  }
-
-end
-
-configuration "Debug"
-	defines { "_DEBUG" }
-	targetsuffix "d"
-	flags { "Symbols" }
-	links { "Core", "d2d1", "dwrite" }
-	
-configuration "Release"
-	defines { "NDEBUG" }
-	flags { "Optimize" }
-	links { "Core", "d2d1", "dwrite" }
+	filter "action:cb-gcc"
+		buildoptions { "-W", "-Wall", "-O0" }
+		linkoptions { "--allow-multiple-definition", "-Xlinker", "-zmuldefs" }
+		links {}

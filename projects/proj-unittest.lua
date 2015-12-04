@@ -1,36 +1,35 @@
--- JEngine SSE PreMake 4 configuration file
--- Copyright 2010, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "UnitTest"
 	kind "ConsoleApp"
 	language "C++"
-	targetdir "bin"
+	debugdir "../bin"
+	targetdir "../bin"
+	location "../build/unittest"
 	flags { "NoPCH" }
-	location "build/unittest"
-	debugdir "bin"
 	
 	-- set project files
-	files { "src/unittest/**.cpp", "src/unittest/**.h", "src/unittest/**.inl" }
-	includedirs { "src" }
+	files { "../src/unittest/**.cpp", "../src/unittest/**.h", "../src/unittest/**.inl" }
+	includedirs { "../src" }
 	links { "Core", "Engine" }
-
-	configuration "Debug"
+	prebuildcommands { cxxcommand }
+	
+	-- set up unit test framework
+	filter "configurations:Debug"
 		defines { "_DEBUG", "_CXXTEST_HAVE_EH" }
 		targetsuffix "d"
 		flags { "Symbols" }
 		
-	configuration "Release"
+	filter "configurations:Release"
 		defines { "NDEBUG", "_CXXTEST_HAVE_EH" }
 		flags { "Optimize" }
 		
-	configuration "windows"
+	filter "system:windows"
 		includedirs { 	path.join(libdir, "cxxtest"),
 						path.join(libdir, "zlib/include") }
 						
 		libdirs { 	path.join(libdir, "zlib/lib") }
 		
-		local sln = solution()
-		local srcdir = path.join(sln.basedir, "src/unittest");
-		local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
-		prebuildcommands { "python " .. gencmd .. " --gui=Win32Gui -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\"" }
+		

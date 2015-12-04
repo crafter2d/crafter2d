@@ -1,10 +1,5 @@
--- Crafter 2D PreMake 4 configuration file
--- Copyright 2010-2013, Jeroen Broekhuizen
-
-solution "Crafter2D"
-	configurations { "Debug", "Release" }
-	location "build"
-	startproject "Game"
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 newoption 
 {
@@ -18,7 +13,19 @@ if not _OPTIONS["libdir"] then
 end
 
 libdir = _OPTIONS["libdir"]
+
+solution "Crafter2D"
+	configurations { "Debug", "Release" }
+	location "build"
+	startproject "Game"
+	floatingpoint "Fast"
+	vectorextensions "SSE2"
 	
+	local sln = solution()
+	local srcdir = path.join(sln.basedir, "src/unittest");
+	local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
+
+	cxxcommand = "python " .. gencmd .. " --error-printer -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\""
 
 package.path = package.path .. ";./projects/?.lua"
  

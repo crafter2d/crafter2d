@@ -1,39 +1,40 @@
--- JEngine SSE PreMake 4 configuration file
--- Copyright 2010, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "Compiler"
 	kind "ConsoleApp"
 	language "C++"
-	targetdir "bin"
+	targetdir "../bin"
+	debugdir "../bin"
+	location "../build/compiler"
 	flags { "NoPCH" }
-	location "build/compiler"
-	debugdir "bin"
 	
 	-- set project files
-	files { "src/compiler/**.cpp", "src/compiler/**.h", "src/compiler/**.inl" }
-	includedirs { "src" }
+	files { "../src/compiler/**.cpp", "../src/compiler/**.h", "../src/compiler/**.inl" }
+	includedirs { "../src" }
 	links { "Core" }
+	removeprebuildcommands { cxxcommand }
 		
-	configuration "Debug"
+	filter "configurations:Debug"
 		defines { "_DEBUG", "TIXML_USE_STL" }
 		targetsuffix "d"
 		flags { "Symbols" }
 		links { "tinyxmld_STL" }
 		
-	configuration "Release"
+	filter "configurations:Release"
 		defines { "NDEBUG", "TIXML_USE_STL" }
 		optimize "On"
 		links { "tinyxml_STL" }
 
-	configuration "windows"
+	filter "system:Windows"
 		defines { "WIN32" }
 		includedirs { path.join(libdir, "tinyxml/include") }
 		libdirs { 	path.join(libdir, "tinyxml/lib") }
 	
-	configuration "linux"
+	filter "system:Linux"
 		defines { "LINUX" }
 		buildoptions { "-W", "-Wall", "-O0" }
-		if ( _ACTION == "cb-gcc" ) then
-			linkoptions { "-Xlinker", "-zmuldefs" }
-		end
+		
+	filter "action:cb-gcc"
+		linkoptions { "-Xlinker", "-zmuldefs" }

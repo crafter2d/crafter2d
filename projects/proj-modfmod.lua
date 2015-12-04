@@ -5,34 +5,34 @@
 project "mod_fmod"
 	kind "SharedLib"
 	language "C++"
-	targetdir "bin"
+	targetdir "../bin"
+	location "../build/mods/mod_fmod"
 	flags { "NoPCH" }
-	location "build/mods/mod_fmod"
 	
 	-- set project files
-	files { "src/mods/mod_fmod/**.cpp", "src/mods/mod_fmod/**.h", "src/mods/mod_fmod/**.inl" }
-	includedirs { "src" }
+	files { "../src/mods/mod_fmod/**.cpp", "../src/mods/mod_fmod/**.h", "../src/mods/mod_fmod/**.inl" }
+	includedirs { "../src" }
 	links { "Core" }
-	defines { "MOD_EXPORTS" }
+	removeprebuildcommands { cxxcommand }
 		
-	configuration "Debug"
+	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		flags { "Symbols" }
 		targetsuffix "d"
 		
-	configuration "Release"
+	filter "configurations:Release"
 		defines { "NDEBUG" }
 		optimize "On"
 
 	--- Windows
-	configuration "windows"
-		defines { "WIN32" }
+	filter "system:Windows"
+		defines { "WIN32", "MOD_EXPORTS" }
 		includedirs { path.join(libdir, "fmod/include") }
 		libdirs { path.join(libdir, "fmod/lib") }
 		links { "fmodex_vc" }
 
 	--- Linux
-	configuration "linux"
+	filter "system:Linux"
 		defines { "LINUX" }
 		buildoptions { "-W", "-Wall", "-O0" }
 		if ( _ACTION == "cb-gcc" ) then

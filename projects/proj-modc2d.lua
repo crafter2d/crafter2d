@@ -1,44 +1,46 @@
--- JEngine SSE PreMake 5 configuration file
--- Copyright 2013, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "mod_c2d"
 	kind "SharedLib"
 	language "C++"
-	targetdir "bin"
+	targetdir "../bin"
+	location "../build/mods/mod_c2d"
 	flags { "NoPCH" }
-	location "build/mods/mod_c2d"
-	
-	-- set project files
-	files { "src/mods/mod_c2d/**.cpp", "src/mods/mod_c2d/**.h", "src/mods/mod_c2d/**.inl" }
-	includedirs { "src" }
-	links { "Core", "Engine" }
-	defines { "MOD_EXPORTS", "TIXML_USE_STL" }
 		
-	configuration "Debug"
+	-- set project files
+	files { "../src/mods/mod_c2d/**.cpp", "../src/mods/mod_c2d/**.h", "../src/mods/mod_c2d/**.inl" }
+	includedirs { "../src" }
+	links { "Core", "Engine" }
+	defines { "TIXML_USE_STL" }
+	removeprebuildcommands { cxxcommand }
+		
+	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		flags { "Symbols" }
 		targetsuffix "d"
 		
-	configuration "Release"
+	filter "configurations:Release"
 		defines { "NDEBUG" }
 		optimize "On"
 
-	configuration "windows"
-		defines { "WIN32" }
+	filter "system:Windows"
+		defines { "WIN32", "MOD_EXPORTS" }
 		includedirs { path.join(libdir, "tinyxml/include"), path.join(libdir, "zlib/include") }
 		libdirs { path.join(libdir, "tinyxml/lib"), path.join(libdir, "zlib/lib") }
 		links { "d3dcompiler.lib" }
 	
-	configuration { "Debug", "windows" }
+	filter { "system:Windows", "Debug" }
 		links { "tinyxmld_STL.lib", "zlib1_d.lib" }
 			
-	configuration { "Release", "windows" }
+	filter { "system:Windows", "Release" }
 		links { "tinyxml_STL.lib", "zlib1.lib" }
 
-	configuration "linux"
+	filter "system;Linux"
 		defines { "LINUX" }
 		buildoptions { "-W", "-Wall", "-O0" }
-		if ( _ACTION == "cb-gcc" ) then
-			linkoptions { "-Xlinker", "-zmuldefs" }
-		end
+		
+	filter "action:cb-gcc"
+		linkoptions { "-Xlinker", "-zmuldefs" }
+		

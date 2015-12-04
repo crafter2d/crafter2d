@@ -1,29 +1,31 @@
--- JEngine SSE PreMake 5 configuration file
--- Copyright 2010-2013, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "Game"
 	kind "ConsoleApp"
 	language "C++"
-	targetdir "bin"
+	targetdir "../bin"
+	debugdir "../bin"
+	location "../build/game"
 	flags { "NoPCH" }
-	location "build/game"
-	debugdir "bin"
 	
-	files { "src/game/**.cpp", "src/game/**.h", "src/game/**.inl" }
+	files { "../src/game/**.cpp", "../src/game/**.h", "../src/game/**.inl" }
+	includedirs { "../src" }
 	links { "Core", "Engine" }
-	includedirs { "src" }
+	removeprebuildcommands { cxxcommand }
 	
-	configuration "Debug"
+	filter "configurations:Debug"
 		defines { "_DEBUG", "TIXML_USE_STL" }
 		targetsuffix "d"
 		flags { "Symbols" }
 		
-	configuration "Release"
+	filter "configurations:Release"
 		defines { "NDEBUG", "TIXML_USE_STL" }
 		flags { "Optimize" }
 
-	configuration "windows"
+	-- System
+	filter "system:Windows"
 		defines { "WIN32" }
 		includedirs { 	path.join(libdir, "sdl/include"),
 						path.join(libdir, "tinyxml/include")
@@ -34,20 +36,19 @@ project "Game"
 				}
 		
 		links { "SDLmain", "SDL", "user32", "vfw32", "ws2_32" }
+
+	filter "system:Linux"
+		defines { "LINUX" }		
+		links { "SDL", "tinyxml" }
+		buildoptions { "-W", "-Wall", "-O0" }
 	
-	configuration "windows and Debug"
+	-- Toolsets
+	filter { "action:vs*", "Debug" }
 		links { "tinyxmld_STL" }
 			
-	configuration "windows and Release"
+	filter { "action:vs*", "Release" }
 		links { "tinyxml_STL" }
-
-	configuration "linux"
-		buildoptions { "-W", "-Wall", "-O0" }
-		if ( _ACTION == "cb-gcc" ) then
-			linkoptions { "-Xlinker", "-zmuldefs" }
-		end
-	   
-		defines { "LINUX" }
-		
-		links { "SDL", "tinyxml" }
+	
+	filter "action:cb-gcc"
+		linkoptions { "-Xlinker", "-zmuldefs" }
 

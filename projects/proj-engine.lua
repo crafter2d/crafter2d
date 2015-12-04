@@ -1,29 +1,30 @@
--- JEngine SSE PreMake 5 configuration file
--- Copyright 2010-2013, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "Engine"
 	kind "SharedLib"
 	language "C++"
-	targetdir "bin"
+	targetdir "../bin"
+	location "../build/engine"
 	flags { "NoPCH" }
-	location "build/engine"
 	
-	files { "src/engine/**.cpp", "src/engine/**.h", "src/engine/**.inl" }
-	includedirs { "src" }
+	files { "../src/engine/**.cpp", "../src/engine/**.h", "../src/engine/**.inl" }
+	includedirs { "../src" }
 	links { "Core" }
+	removeprebuildcommands { cxxcommand }
 
-	configuration "Debug"
+	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
 		flags { "Symbols" }
 		
-	configuration "Release"
+	filter "configurations:Release"
 		defines { "NDEBUG" }
 		flags { "Optimize" }
 
 	-- Visual Studio
-	configuration "vs*"
+	filter "action:vs*"
 		links { "gdi32", "user32", "vfw32", "ws2_32" }
 		
 	configuration { "vs*", "Debug" }
@@ -35,18 +36,18 @@ project "Engine"
 	-- CB support
 	configuration "cb-gcc"
 		buildoptions { "-W", "-Wall", "-O0" }
-		linkoptions { "--allow-multiple-definition" }
+		linkoptions { "--allow-multiple-definition", "-Xlinker", "-zmuldefs" }
 	  
-	configuration { "cb-gcc", "Debug" }
+	filter { "action:cb-gcc", "Debug" }
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
 			"zlib1", "box2d_d" }
 	 
-	configuration { "cb-gcc", "Release" }
+	filter { "action:cb-gcc", "Release" }
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
 			"zlib1", "box2d" }
 
-	-- Windows
-	configuration "Windows"
+	-- Platforms
+	filter "system:Windows"
 		defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 		
 		includedirs { 	path.join(libdir, "zlib/include"),
@@ -55,14 +56,8 @@ project "Engine"
 		libdirs { 	path.join(libdir, "zlib/lib"),
 				path.join(libdir, "box2d/lib") }
 
-	-- Linux
-	configuration "linux"
+	filter "system:Linux"
 		buildoptions { "-W", "-Wall", "-O0" }
-		if ( _ACTION == "cb-gcc" ) then
-			linkoptions { "-Xlinker", "-zmuldefs" }
-		end
-	   
 		defines { "LINUX" }
-	
 		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 		links { "Box2D" }

@@ -1,44 +1,48 @@
--- JEngine SSE PreMake 5 configuration file
--- Copyright 2013, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "mod_ui"
 	kind "SharedLib"
 	language "C++"
-	targetdir "bin"
+	targetdir "../bin"
+	location "../build/mods/mod_ui"
 	flags { "NoPCH" }
-	location "build/mods/mod_ui"
 	
 	-- set project files
-	files { "src/mods/mod_ui/**.cpp", "src/mods/mod_ui/**.h", "src/mods/mod_ui/**.inl" }
-	includedirs { "src" }
+	files { "../src/mods/mod_ui/**.cpp", "../src/mods/mod_ui/**.h", "../src/mods/mod_ui/**.inl" }
+	includedirs { "../src" }
 	links { "Core" }
-	defines { "MOD_EXPORTS", "TIXML_USE_STL" }
+	defines { "TIXML_USE_STL" }
+	removeprebuildcommands { cxxcommand }
 		
-	configuration "Debug"
+	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		flags { "Symbols" }
 		targetsuffix "d"
 		
-	configuration "Release"
+	filter "configurations:Release"
 		defines { "NDEBUG" }
 		optimize "On"
 
-	configuration "windows"
-		defines { "WIN32" }
+	-- Set system specific settings
+	filter "system:Windows"
+		defines { "WIN32", "MOD_EXPORTS" }
 		includedirs { path.join(libdir, "tinyxml/include") }
 		libdirs { path.join(libdir, "tinyxml/lib") }
 		links { "d3dcompiler.lib" }
 	
-	configuration { "Debug", "windows" }
+	filter { "system:Windows", "Debug" }
 		links { "tinyxmld_STL.lib" }
 			
-	configuration { "Release", "windows" }
+	filter { "system:Windows", "Release" }
 		links { "tinyxml_STL.lib" }
 
-	configuration "linux"
+	filter "system:linux"
 		defines { "LINUX" }
 		buildoptions { "-W", "-Wall", "-O0" }
-		if ( _ACTION == "cb-gcc" ) then
-			linkoptions { "-Xlinker", "-zmuldefs" }
-		end
+		
+	-- Set IDE specific settings
+	filter "action:cb-gcc"
+		linkoptions { "-Xlinker", "-zmuldefs" }
+		

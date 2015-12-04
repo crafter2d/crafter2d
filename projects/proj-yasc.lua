@@ -1,43 +1,44 @@
--- JEngine SSE PreMake 5 configuration file
--- Copyright 2013, Jeroen Broekhuizen
+-- Crafter 2D PreMake 5 configuration file
+-- Copyright 2010-2015, Jeroen Broekhuizen
 
 -- create the project
 project "Yasc"
 	kind "ConsoleApp"
 	language "C++"
-	targetdir "bin"
+	debugdir "../bin"
+	targetdir "../bin"
+	location "../build/yasc"
 	flags { "NoPCH" }
-	location "build/yasc"
-	debugdir "bin"
 	
 	-- set project files
-	files { "tools/yasc/**.cpp", "tools/yasc/**.c", "tools/yasc/**.h", "tools/yasc/**.inl" }
-	includedirs { "src", "tools" }
+	files { "../tools/yasc/**.cpp", "../tools/yasc/**.c", "../tools/yasc/**.h", "../tools/yasc/**.inl" }
+	includedirs { "../src", "../tools" }
 	links { "Core" }
+	removeprebuildcommands { cxxcommand }
 		
-	configuration "Debug"
+	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
 		flags { "Symbols" }
 		
-	configuration "Release"
+	filter "configurations:Release"
 		defines { "NDEBUG" }
 		optimize "On"
 
-	configuration "windows"
+	filter "system:Windows"
 		defines { "WIN32" }
 		includedirs { path.join(libdir, "antlr/include") }
 		libdirs { path.join(libdir, "antlr/lib") }
 	
-	configuration { "Debug", "windows" }
+	filter { "system:Windows", "Debug" }
 		links { "antlr3cd.lib" }
 			
-	configuration { "Release", "windows" }
+	filter { "system:Windows", "Release" }
 		links { "antlr3c.lib" }
 
-	configuration "linux"
+	filter "system:Linux"
 		defines { "LINUX" }
 		buildoptions { "-W", "-Wall", "-O0" }
-		if ( _ACTION == "cb-gcc" ) then
-			linkoptions { "-Xlinker", "-zmuldefs" }
-		end
+		
+	filter "action:cb-gcc"
+		linkoptions { "-Xlinker", "-zmuldefs" }
