@@ -20,7 +20,7 @@
 #ifndef BOX2D_RAYCAST_CALLBACK_H
 #define BOX2D_RAYCAST_CALLBACK_H
 
-#include <Box2D.h>
+#include <Box2D/Box2D.h>
 
 #include "core/math/vector.h"
 

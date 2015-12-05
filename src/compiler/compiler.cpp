@@ -1,9 +1,12 @@
 // compiler.cpp : Defines the entry point for the console application.
 //
 
+#ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <tchar.h>
+#endif
+
 #include <tinyxml.h>
 
 #include "core/streams/bufferedstream.h"
@@ -80,7 +83,7 @@ int loadModules(const String& srcfile, const String& dstFile)
    return -3;
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char *argv[])
 {
    if ( argc < 3 )
    {

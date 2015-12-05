@@ -2,7 +2,7 @@
 #ifndef BOX2D_CONTACT_LISTENER
 #define BOX2D_CONTACT_LISTENER
 
-#include <Box2D.h>
+#include <Box2D/Box2D.h>
 
 class Box2DSimulator;
 

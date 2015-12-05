@@ -19,12 +19,10 @@ project "Core"
 		defines { "_DEBUG" }
 		targetsuffix "d"
 		flags { "Symbols" }
-		links { "zlib1_d" }
 
 	filter "configurations:Release"
 		defines { "NDEBUG" }
 		flags { "Optimize" }
-		links { "zlib1" }
 	
 	filter "system:Windows"
 		defines { "WIN32", "CORE_EXPORTS", "UNICODE" }
@@ -38,20 +36,24 @@ project "Core"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter" }
-		if ( _ACTION == "cb-gcc" ) then
-			linkoptions { "-Xlinker", "-zmuldefs" }
-		end
+        links { "z", "minizip", "SDL2" }
 				
 	-- set IDE specific settings
 	filter "action:vs*"
 		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp", "libiconv" }
+
+    filter { "action:vs*", "Debug" }
+		links { "zlib1_d" }
+
+    filter { "action:vs*", "Release" }
+        links { "zlib1" }
 		
 	filter "action:cb-gcc"
 		buildoptions { "-W", "-Wall", "-O0" }
-		linkoptions { "--allow-multiple-definition" }
+		linkoptions { "--allow-multiple-definition", "-Xlinker", "-zmuldefs" }
 	  
 	filter { "action:cb-gcc", "Debug" }
-		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1" }
+		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32" }
 	 
 	filter { "action:cb-gcc", "Release" }
-		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32", "zlib1" }
+		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32" }

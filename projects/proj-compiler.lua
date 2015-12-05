@@ -20,13 +20,11 @@ project "Compiler"
 		defines { "_DEBUG", "TIXML_USE_STL" }
 		targetsuffix "d"
 		flags { "Symbols" }
-		links { "tinyxmld_STL" }
 		
 	filter "configurations:Release"
 		defines { "NDEBUG", "TIXML_USE_STL" }
 		optimize "On"
-		links { "tinyxml_STL" }
-
+		
 	filter "system:Windows"
 		defines { "WIN32" }
 		includedirs { path.join(libdir, "tinyxml/include") }
@@ -35,6 +33,14 @@ project "Compiler"
 	filter "system:Linux"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        links { "tinyxml" }
 		
 	filter "action:cb-gcc"
 		linkoptions { "-Xlinker", "-zmuldefs" }
+
+    filter { "action:vs*", "Debug" }
+        links { "tinyxmld_STL" }
+
+    filter { "action:vs*", "Debug" }
+        links { "tinyxml_STL" }
+

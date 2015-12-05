@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "box2dsimulator.h"
 
-#include <Box2D.h>
+#include <Box2D/Box2D.h>
 
 #include "core/math/matrix4.h"
 #include "core/math/size.h"
