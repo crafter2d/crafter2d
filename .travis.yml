@@ -1,9 +1,6 @@
 language: cpp
 compiler: gcc
 
-before_install:
-  - ./projects/install-premake5.sh
-
 addons:
   apt:
     sources:
@@ -13,6 +10,10 @@ addons:
     - g++-4.9
     - zlib1g-dev
     - minizip-dev
+
+before_install:
+  - ./projects/install-premake5.sh
+  - export CXX="g++-4.8" CC="gcc-4.8"
 
 script:
   - premake-5.0.0-alpha6/bin/release/premake5 gmake
