@@ -13,7 +13,7 @@ addons:
 
 before_install:
   - ./projects/install-premake5.sh
-  - export CXX="g++-4.8" CC="gcc-4.8"
+  - export CXX="g++-4.9" CC="gcc-4.9"
 
 script:
   - premake-5.0.0-alpha6/bin/release/premake5 gmake
