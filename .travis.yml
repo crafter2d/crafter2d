@@ -8,8 +8,10 @@ addons:
     packages:
     - gcc-4.9
     - g++-4.9
+    - libsdl1.2-dev
     - zlib1g-dev
-    - minizip-dev
+    - libfreetype6-dev
+    - libbox2d-dev
 
 before_install:
   - ./projects/install-premake5.sh
