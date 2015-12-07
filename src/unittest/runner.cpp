@@ -4,19 +4,19 @@
 #define CXXTEST_RUNNING
 #endif
 
+#define _CXXTEST_HAVE_STD
 #include <cxxtest/TestListener.h>
 #include <cxxtest/TestTracker.h>
 #include <cxxtest/TestRunner.h>
 #include <cxxtest/RealDescriptions.h>
 #include <cxxtest/TestMain.h>
-#include <cxxtest/StdioPrinter.h>
-#include <cxxtest/Win32Gui.h>
+#include <cxxtest/ErrorPrinter.h>
 
 int main( int argc, char *argv[] ) {
  int status;
-    CxxTest::GuiTuiRunner<CxxTest::Win32Gui, CxxTest::StdioPrinter>  tmp;
+    CxxTest::ErrorPrinter tmp;
     CxxTest::RealWorldDescription::_worldName = "cxxtest";
-    status = CxxTest::Main< CxxTest::GuiTuiRunner<CxxTest::Win32Gui, CxxTest::StdioPrinter>  >( tmp, argc, argv );
+    status = CxxTest::Main< CxxTest::ErrorPrinter >( tmp, argc, argv );
     return status;
 }
 bool suite_TestHashMap_init = false;
@@ -32,79 +32,6 @@ public:
  TestDescription_suite_TestHashMap_testInsertion() : CxxTest::RealTestDescription( Tests_TestHashMap, suiteDescription_TestHashMap, 26, "testInsertion" ) {}
  void runTest() { suite_TestHashMap.testInsertion(); }
 } testDescription_suite_TestHashMap_testInsertion;
-
-#include "/home/jeroen/Devel/crafter2d/src/unittest/testlist.h"
-
-static TestList suite_TestList;
-
-static CxxTest::List Tests_TestList = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_TestList( "/home/jeroen/Devel/crafter2d/src/unittest/testlist.h", 9, "TestList", suite_TestList, Tests_TestList );
-
-static class TestDescription_suite_TestList_testAddFront : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testAddFront() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 25, "testAddFront" ) {}
- void runTest() { suite_TestList.testAddFront(); }
-} testDescription_suite_TestList_testAddFront;
-
-static class TestDescription_suite_TestList_testAddTail : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testAddTail() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 26, "testAddTail" ) {}
- void runTest() { suite_TestList.testAddTail(); }
-} testDescription_suite_TestList_testAddTail;
-
-static class TestDescription_suite_TestList_testInsert : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testInsert() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 27, "testInsert" ) {}
- void runTest() { suite_TestList.testInsert(); }
-} testDescription_suite_TestList_testInsert;
-
-static class TestDescription_suite_TestList_testGetFront : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testGetFront() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 28, "testGetFront" ) {}
- void runTest() { suite_TestList.testGetFront(); }
-} testDescription_suite_TestList_testGetFront;
-
-static class TestDescription_suite_TestList_testGetTail : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testGetTail() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 29, "testGetTail" ) {}
- void runTest() { suite_TestList.testGetTail(); }
-} testDescription_suite_TestList_testGetTail;
-
-static class TestDescription_suite_TestList_testRandomAccess : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testRandomAccess() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 30, "testRandomAccess" ) {}
- void runTest() { suite_TestList.testRandomAccess(); }
-} testDescription_suite_TestList_testRandomAccess;
-
-static class TestDescription_suite_TestList_testSize : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testSize() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 31, "testSize" ) {}
- void runTest() { suite_TestList.testSize(); }
-} testDescription_suite_TestList_testSize;
-
-static class TestDescription_suite_TestList_testIteratorIncrement : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testIteratorIncrement() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 32, "testIteratorIncrement" ) {}
- void runTest() { suite_TestList.testIteratorIncrement(); }
-} testDescription_suite_TestList_testIteratorIncrement;
-
-static class TestDescription_suite_TestList_testIteratorRemove : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testIteratorRemove() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 33, "testIteratorRemove" ) {}
- void runTest() { suite_TestList.testIteratorRemove(); }
-} testDescription_suite_TestList_testIteratorRemove;
-
-static class TestDescription_suite_TestList_testIteratorInvalidRemove : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testIteratorInvalidRemove() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 34, "testIteratorInvalidRemove" ) {}
- void runTest() { suite_TestList.testIteratorInvalidRemove(); }
-} testDescription_suite_TestList_testIteratorInvalidRemove;
-
-static class TestDescription_suite_TestList_testClear : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_TestList_testClear() : CxxTest::RealTestDescription( Tests_TestList, suiteDescription_TestList, 35, "testClear" ) {}
- void runTest() { suite_TestList.testClear(); }
-} testDescription_suite_TestList_testClear;
 
 #include "/home/jeroen/Devel/crafter2d/src/unittest/testvariant.h"
 

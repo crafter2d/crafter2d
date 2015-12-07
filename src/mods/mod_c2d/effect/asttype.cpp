@@ -162,7 +162,7 @@ String ASTType::toDirectX() const
       return sVoid;
    
    default:
-      throw new std::exception("Invalid type!");
+      throw new std::runtime_error("Invalid type!");
    }
 
    if ( !mTemplateClass.isEmpty() )

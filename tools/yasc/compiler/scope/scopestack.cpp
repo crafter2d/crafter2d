@@ -42,11 +42,11 @@ ScopeVariable* ScopeStack::find(const String& name)
    {
       Scope* pscope = mScopes[index];
       ScopeVariable* pvariable = pscope->find(name);
-      if ( pvariable != NULL )
+      if ( pvariable != nullptr )
       {
          return pvariable;
       }
    }
 
-   return NULL;
+   return nullptr;
 }

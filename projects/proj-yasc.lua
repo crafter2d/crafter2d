@@ -39,6 +39,7 @@ project "Yasc"
 	filter "system:Linux"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        links { "antlr3c" }
 		
 	filter "action:cb-gcc"
 		linkoptions { "-Xlinker", "-zmuldefs" }

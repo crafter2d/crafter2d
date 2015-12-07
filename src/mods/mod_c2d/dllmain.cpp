@@ -1,5 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 
+#ifdef WIN32
+
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
@@ -18,3 +20,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 	return TRUE;
 }
+
+#endif // WIN32
+

@@ -2,7 +2,6 @@
 #include "effectshaderbuilder.h"
 
 #include <vector>
-#include <d3dcompiler.h>
 
 #include "core/graphics/vertexlayout.h"
 #include "core/graphics/vertexlayoutelement.h"
@@ -10,7 +9,10 @@
 #include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
+#ifdef WIN32
+#include <d3dcompiler.h>
 #include "builders/dxbuilder.h"
+#endif
 #include "builders/oglbuilder.h"
 
 #include "asteffect.h"
@@ -24,15 +26,17 @@ void EffectShaderBuilder::build(ASTEffect& effect)
       AutoPtr<AbstractBuilder> pbuilder = NULL;
       switch ( effect.getLanguage() )
       {
+#ifdef WIN32
       case ASTEffect::eDirectX:
          pbuilder = new DxBuilder();
          break;
+#endif
       case ASTEffect::eOpenGL:
          pbuilder = new OglBuilder();
          break;
 
       default:
-         throw new std::exception("No language specified!");
+         throw new std::runtime_error("No language specified!");
       }
 
       pbuilder->build(effect);

@@ -3,7 +3,11 @@
 #include <iostream>
 #include "generator.h"
 
+#ifdef WIN32
 #include <direct.h>
+#elif LINUX
+#include <unistd.h>
+#endif
 
 #include "core/string/string.h"
 #include "core/vfs/file.h"

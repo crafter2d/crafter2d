@@ -1,6 +1,8 @@
 
 #include "effectvalidator.h"
 
+#include <stdexcept>
+
 #include "asteffect.h"
 #include "astfunction.h"
 #include "astfunctionargument.h"
@@ -28,14 +30,14 @@ void EffectValidator::validateFunctions(const ASTEffect& effect)
             if ( parg->mpType->isUnknown() )
             {
                String error = UTEXT("Argument ") + parg->mName + UTEXT(" of function ") + pfunction->mName + UTEXT(" has unknown type.");
-               throw std::exception(error.toUtf8().c_str());
+               throw std::runtime_error(error.toUtf8().c_str());
             }
          }
 
          if ( pfunction->mpType->isUnknown() )
          {
             String error = UTEXT("Could not resolve return type of function ") + pfunction->mName;
-            throw std::exception(error.toUtf8().c_str());
+            throw std::runtime_error(error.toUtf8().c_str());
          }
       }
    }
@@ -53,7 +55,7 @@ void EffectValidator::validateTechniques(const ASTEffect& effect)
          if ( pfunction == NULL )
          {
             String error = UTEXT("Can not resolve vertex shader function ") + ptechnique->mVertex.mEntry + UTEXT(" in technique ") + ptechnique->mName;
-            throw std::exception(error.toUtf8().c_str());
+            throw std::runtime_error(error.toUtf8().c_str());
          }
       }
 
@@ -63,7 +65,7 @@ void EffectValidator::validateTechniques(const ASTEffect& effect)
          if ( pfunction == NULL )
          {
             String error = UTEXT("Can not resolve vertex shader function ") + ptechnique->mPixel.mEntry + UTEXT(" in technique ") + ptechnique->mName;
-            throw std::exception(error.toUtf8().c_str());
+            throw std::runtime_error(error.toUtf8().c_str());
          }
       }
    }

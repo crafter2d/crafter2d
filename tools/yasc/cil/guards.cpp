@@ -70,6 +70,6 @@ namespace CIL
             return pguard;
          }
       }
-      return NULL;
+      return nullptr;
    }
 }

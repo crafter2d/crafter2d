@@ -37,9 +37,10 @@ project "mod_c2d"
 	filter { "system:Windows", "Release" }
 		links { "tinyxml_STL.lib", "zlib1.lib" }
 
-	filter "system;Linux"
+	filter "system:Linux"
 		defines { "LINUX" }
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        removefiles { "../src/mods/mod_c2d/effect/builders/dx*" }
+		buildoptions { "-std=c++11", "-W", "-Wall", "-O0" }
 		
 	filter "action:cb-gcc"
 		linkoptions { "-Xlinker", "-zmuldefs" }

@@ -1,9 +1,14 @@
 
 #include "projectgenerator.h"
 
-#include <fstream>
+#ifdef WIN32
 #include <direct.h>
 #include <io.h>
+#elif LINUX
+#include <unistd.h>
+#endif
+
+#include <fstream>
 #include <iostream>
 #include <ctemplate/template.h>
 

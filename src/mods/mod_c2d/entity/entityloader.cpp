@@ -2,6 +2,7 @@
 #include "entityloader.h"
 
 #include <tinyxml.h>
+#include <stdexcept>
 
 #include "core/content/contentmanager.h"
 #include "core/physics/revolutejointdefinition.h"
@@ -122,7 +123,7 @@ void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXm
       const char* pfile = xmlchild.Attribute("file");
       if ( pfile == NULL )
       {
-         throw std::exception("Should have a file reference!");
+         throw std::runtime_error("Should have a file reference!");
       }
 
       pchild->mRefType = ChildDefinitionProto::eFileReference;

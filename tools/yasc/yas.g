@@ -3,8 +3,8 @@ grammar yas;
 options 
 {
     output		= AST;
-    language		= C;
-    ASTLabelType	= pANTLR3_BASE_TREE;
+    language		= Cpp;
+    //ASTLabelType	= pANTLR3_BASE_TREE;
     backtrack           = true;
 }
 

@@ -1,7 +1,10 @@
 
 #include "classgenerator.h"
 
+#ifdef WIN32
 #include <io.h>
+#endif
+
 #include <iostream>
 #include <algorithm>
 #include <ctemplate/template.h>

@@ -2,7 +2,6 @@
 #include "testcommandline.h"
 
 #include "core/commandline/commandline.h"
-#include "core/commandline/commandlineexception.h"
 
 static int   sArgc = 6;
 static char* sArgv[] = { "unittest.exe", "doit", "argument=value", "argument2", "=", "anothervalue" };
@@ -27,31 +26,33 @@ void TestCommandLine::testSpaceSeparatedArgument()
    String name("argument2");
    TS_ASSERT_THROWS_NOTHING(mCmdLine.getArgument(name));
 
-   const CommandLineArgument& arg = mCmdLine.getArgument(name);
-   TS_ASSERT(arg.getValue() == UTEXT("anothervalue"));
+   auto pargument = mCmdLine.getArgument(name);
+   TS_ASSERT(pargument != nullptr);
+   TS_ASSERT(pargument->getValue() == UTEXT("anothervalue"));
 }
 
 void TestCommandLine::testFindValidArgument()
 {
-   const CommandLineArgument* pargument = mCmdLine.findArgument(UTEXT("argument"));
+   const CommandLineArgument* pargument = mCmdLine.getArgument(UTEXT("argument"));
    TS_ASSERT(pargument != NULL);
 }
 
 void TestCommandLine::testFindNonExistingArgument()
 {
-   const CommandLineArgument* pargument = mCmdLine.findArgument(UTEXT("non-existing-argument"));
+   const CommandLineArgument* pargument = mCmdLine.getArgument(UTEXT("non-existing-argument"));
    TS_ASSERT(pargument == NULL);
 }
 
 void TestCommandLine::testResolveCommand()
 {
-   const CommandLineArgument& arg = mCmdLine.getArgument(UTEXT("argument"));
+   auto pargument = mCmdLine.getArgument(UTEXT("argument"));
 
-   TS_ASSERT(arg.getType() == CommandLineArgument::eArgument);
-   TS_ASSERT(arg.getValue() == UTEXT("value"));
+   TS_ASSERT(pargument != NULL);
+   TS_ASSERT(pargument->getType() == CommandLineArgument::eArgument);
+   TS_ASSERT(pargument->getValue() == UTEXT("value"));
 }
 
 void TestCommandLine::testResolveInvalidCommand()
 {
-   TS_ASSERT_THROWS(mCmdLine.getArgument(UTEXT("non-existing-argument")), CommandLineException*);
+   //TS_ASSERT_THROWS(mCmdLine.getArgument(UTEXT("non-existing-argument")), CommandLineException*);
 }

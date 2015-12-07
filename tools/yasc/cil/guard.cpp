@@ -1,7 +1,7 @@
 
 #include "guard.h"
 
-#include <string>
+#include <string.h>
 
 namespace CIL
 {

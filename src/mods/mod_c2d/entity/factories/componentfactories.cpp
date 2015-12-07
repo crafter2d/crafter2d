@@ -20,5 +20,5 @@ Component* ComponentFactories::instantiate(ComponentDefinitionProto& definition)
       }
    }
 
-   return NULL;
+   return nullptr;
 }

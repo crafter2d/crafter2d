@@ -40,7 +40,7 @@ project "Gen"
 
 	filter "system:Linux"
 		defines { "LINUX" }
-		--links { "SDL", "tinyxml" }
+		links { "ctemplate", "tinyxml" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		
 	filter "action:cb-gcc"

@@ -109,7 +109,7 @@ ASTStruct* EffectFileParser::parseStruct(Lexer& lexer)
    
    if ( !lexer.next(L'{') )
    {
-      throw std::exception("{ expected.");
+      throw std::logic_error("{ expected.");
    }
 
    while ( !lexer.next('}') )
@@ -144,7 +144,7 @@ ASTStructEntry* EffectFileParser::parseStructEntry(Lexer& lexer)
 
    if ( !lexer.next(L';') )
    {
-      throw std::exception("; expected");
+      throw std::logic_error("; expected");
    }
 
    return pentry;
@@ -164,7 +164,7 @@ ASTBuffer* EffectFileParser::parseBuffer(Lexer& lexer)
    if ( presult->mBody.isEmpty() )
    {
       // meh!
-      throw std::exception(("could not parse the body of struct " + presult->mName.toUtf8()).c_str());
+      throw std::logic_error(("could not parse the body of struct " + presult->mName.toUtf8()).c_str());
    }
 
    lexer.next(';');
@@ -179,7 +179,7 @@ ASTTechnique* EffectFileParser::parseTechnique(Lexer& lexer)
 
    if ( !lexer.next('{') )
    {
-      throw std::exception(("expected a block opener for technique " + presult->mName.toUtf8()).c_str());
+      throw std::logic_error(("expected a block opener for technique " + presult->mName.toUtf8()).c_str());
    }
 
    while ( !lexer.next('}') )
@@ -203,7 +203,7 @@ ASTTechnique* EffectFileParser::parseTechnique(Lexer& lexer)
       }
       else
       {
-         throw std::exception(("Invalid shader type in technique " + presult->mName.toUtf8()).c_str());
+         throw std::logic_error(("Invalid shader type in technique " + presult->mName.toUtf8()).c_str());
       }
    }
 
@@ -253,7 +253,7 @@ ASTType* EffectFileParser::parseType(Lexer& lexer)
    ASTType* ptype = ASTType::fromString(*mpEffect, tmpl.isEmpty() ? type : tmpl);
    if ( ptype == NULL || ptype->isUnknown() )
    {
-      throw std::exception(("Invalid token: " + type.toUtf8()).c_str());
+      throw std::logic_error(("Invalid token: " + type.toUtf8()).c_str());
    }
 
    if ( !tmpl.isEmpty() )
@@ -288,7 +288,7 @@ void EffectFileParser::parseArguments(Lexer& lexer, ASTFunction& func)
 {
    if ( !lexer.next(L'(') )
    {
-      throw std::exception("Function arguments expected!");
+      throw std::logic_error("Function arguments expected!");
    }
 
    if ( !lexer.next(L')') )
@@ -455,5 +455,5 @@ void EffectFileParser::determineLanguage()
       }
    }
 
-   throw new std::exception("No language was specified, and could not determine the language automatically.");
+   throw new std::logic_error("No language was specified, and could not determine the language automatically.");
 }

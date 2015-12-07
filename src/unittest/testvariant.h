@@ -22,7 +22,7 @@ public:
 
    void testReal()
    {
-      double i = 100.0;
+      float i = 100.0;
       Variant v(i);
 
       TS_ASSERT(v.isReal());
