@@ -10,8 +10,8 @@ newoption
 
 newoption
 {
-	trigger = "travis"
-	description   = "Generates make files for Travis-testing"
+	trigger     = "travis",
+	description = "Generates make files for Travis-testing"
 }
 
 if not _OPTIONS["libdir"] then
