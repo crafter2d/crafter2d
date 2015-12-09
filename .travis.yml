@@ -9,7 +9,7 @@ addons:
     - gcc-4.9
     - g++-4.9
     - libsdl1.2-dev
-	- libzip-dev
+    - libzip-dev
     - zlib1g-dev
     - libfreetype6-dev
     - libbox2d-dev
