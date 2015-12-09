@@ -24,20 +24,17 @@
 
 #include "compressedfile.h"
 #include "stdiofile.h"
-#include "unzipfile.h"
 #include "zipfile.h"
 
 FileSystemPath::FileSystemPath(const String& path):
    mPath(path),
-   mpUnzip(NULL)
+   mZip()
 {
    fillInfo(path);
 }
 
 FileSystemPath::~FileSystemPath()
 {
-   delete mpUnzip;
-   mpUnzip = NULL;
 }
 
 void FileSystemPath::fillInfo(const String& path)
@@ -52,8 +49,8 @@ void FileSystemPath::fillInfo(const String& path)
          mPath = path.subStr(index + 5, path.length() - index - 5);
       }
 
-      ASSERT(UnzipFile::isZip(zipfile));
-      mpUnzip = new UnzipFile(zipfile);
+      ASSERT(ZipFile::isZip(zipfile));
+      mZip = std::make_unique<ZipFile>(zipfile);
    }
 }
 
@@ -70,14 +67,14 @@ const String& FileSystemPath::getPath() const
 
 bool FileSystemPath::isZipped() const
 {
-   return mpUnzip != NULL;
+   return mZip.get() != nullptr;
 }
 
 bool FileSystemPath::exists(const String& filename) const
 {
    if ( isZipped() )
    {
-      return mpUnzip->contains(File::concat(mPath, filename));
+      return mZip->contains(File::concat(mPath, filename));
    }
    else
    {
@@ -96,9 +93,9 @@ File* FileSystemPath::open(const String& filename, int modus) const
    {
       ASSERT(IS_SET(modus, File::ERead)); // only read
 
-      if ( mpUnzip->contains(file) )
+      if ( mZip->contains(file) )
       {
-         presult = new CompressedFile(*mpUnzip);
+         presult = new CompressedFile(*mZip);
       }
    }
    else

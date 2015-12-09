@@ -20,10 +20,12 @@
 #ifndef FILESYSTEM_PATH_H_
 #define FILESYSTEM_PATH_H_
 
+#include <memory>
+
 #include "core/string/string.h"
 
 class File;
-class UnzipFile;
+class ZipFile;
 
 class FileSystemPath
 {
@@ -48,8 +50,8 @@ private:
  // initialization
    void fillInfo(const String& path);
 
-   String      mPath;
-   UnzipFile*  mpUnzip;
+   String   mPath;
+   std::unique_ptr<ZipFile> mZip;
 };
 
 #endif // FILESYSTEM_PATH_H_

@@ -24,7 +24,7 @@
 
 #include "file.h"
 
-class UnzipFile;
+class ZipFile;
 
 class CompressedFile : public File
 {
@@ -32,7 +32,7 @@ public:
    static bool isCompressedFile(const String& file);
    static bool exists(const String& path, const String& file);
 
-   explicit CompressedFile(UnzipFile& unzipfile);
+   explicit CompressedFile(ZipFile& unzipfile);
    virtual ~CompressedFile();
 
    virtual bool isValid() const;
@@ -43,8 +43,8 @@ protected:
    
 private:
  //data
-   UnzipFile& mUnzipFile;
-   String     mFile;
+   ZipFile& mZipFile;
+   String   mFile;
 };
 
 #ifdef JENGINE_INLINE

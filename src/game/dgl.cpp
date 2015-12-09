@@ -77,8 +77,11 @@ int main(int argc, char *argv[])
 {
    CommandLine cmd(argc, argv);
 
-   //Win32GameWindowFactory windowfactory;
+#ifdef WIN32
+   Win32GameWindowFactory windowfactory;
+#else
    SDLGameWindowFactory windowfactory;
+#endif
 
    AutoPtr<Game> game = new Game(cmd);
    game->setWindowFactory(windowfactory);

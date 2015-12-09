@@ -22,30 +22,36 @@
 
 #include "core/core_base.h"
 
-#ifdef WINDOWS
 #include <zip.h>
-#else
-#include <minizip/zip.h>
-#endif
+#include <memory>
+#include <string>
 
 class String;
 
 class CORE_API ZipFile
 {
+   using ZipPtr = std::unique_ptr<zip_t, int(*)(zip_t*)>;
+
 public:
+   static bool isZip(const String& path);
+
             ZipFile();
    explicit ZipFile(const String& path);
             ~ZipFile();
+
+   bool contains(const String& name) const;
 
    bool create(const String& path);
    bool open(const String& path);
 
    void addFile(const String& name, void* pdata, int size);
+   bool readFile(const String& name, void*& pdata, int &size, bool casesensitive);
 
 private:
-   zip_fileinfo constructInfo();
+   bool open(const String& path, int flags);
 
-   zipFile _zip;
+   ZipPtr      mZip;
+   std::string mError;
 };
 
 #endif

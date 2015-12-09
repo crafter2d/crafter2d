@@ -19,80 +19,119 @@
  ***************************************************************************/
 #include "zipfile.h"
 
-#include <time.h>
-
 #include "core/string/string.h"
 
+bool ZipFile::isZip(const String& path)
+{
+   ZipFile zip;
+   return zip.open(path);
+}
+
 ZipFile::ZipFile():
-   _zip(NULL)
+   mZip(nullptr, nullptr)
 {
 }
 
 ZipFile::ZipFile(const String &path):
-   _zip(NULL)
+   mZip(nullptr, nullptr)
 {
    open(path);
 }
 
 ZipFile::~ZipFile()
 {
-   zipClose(_zip, NULL);
 }
 
 bool ZipFile::open(const String& path)
 {
-   std::string p = path.toUtf8();
-   _zip = zipOpen(p.c_str(), APPEND_STATUS_ADDINZIP);
-   return _zip != NULL;
+   return open(path, 0);
 }
 
 bool ZipFile::create(const String& path)
 {
+   return open(path, ZIP_CREATE);
+}
+
+bool ZipFile::open(const String& path, int flags)
+{
+   int error = 0;
    std::string p = path.toUtf8();
-   _zip = zipOpen(p.c_str(), APPEND_STATUS_CREATE);
-   return _zip != NULL;
+   auto pzip = zip_open(p.c_str(), flags, &error);
+
+   if ( pzip == NULL )
+   {
+      mError = zip_strerror(mZip.get());
+      return false;
+   }
+
+   mZip = { pzip, zip_close };
+
+   return true;
+}
+
+// zip file always has the / path separator
+std::string toZipPath(const String& path)
+{
+   String internalpath(path);
+   internalpath.replace(L'\\', L'/');
+   return internalpath.toUtf8();
+}
+
+bool ZipFile::contains(const String& name) const
+{
+   std::string file = name.toUtf8();
+   auto index = zip_name_locate(mZip.get(), file.c_str(), 0);
+   return index >= 0;
 }
 
 void ZipFile::addFile(const String& name, void* pdata, int size)
 {
-   const zip_fileinfo info = constructInfo();
+   struct zip_source* psource = zip_source_buffer(mZip.get(), pdata, size, 0);
 
    std::string file = name.toUtf8();
-   zipOpenNewFileInZip(_zip, 
-                       file.c_str(),
-                       &info,
-                       NULL,
-                       0,
-                       NULL,
-                       0,
-                       NULL,                       // comments
-                       0,                          // method (store)
-                       Z_DEFAULT_COMPRESSION);     // compression
-
-   zipWriteInFileInZip(_zip, pdata, size);
-
-   zipCloseFileInZip(_zip);
+   if ( zip_file_add(mZip.get(), file.c_str(), psource, ZIP_FL_ENC_UTF_8) < 0 )
+   {
+      zip_source_free(psource);
+      mError = zip_strerror(mZip.get());
+   }
 }
 
-zip_fileinfo ZipFile::constructInfo()
+bool ZipFile::readFile(const String& name, void*& pdata, int &size, bool casesensitive)
 {
-   time_t rawtime;
-   struct tm * timeinfo;
+   std::string file = name.toUtf8();
+   auto index = zip_name_locate(mZip.get(), file.c_str(), 0);
+   if ( index < 0 )
+   {
+      return false;
+   }
 
-   time(&rawtime);
-   timeinfo = localtime(&rawtime);
+   struct zip_stat stat;
+   if ( zip_stat_index(mZip.get(), index, 0, &stat) != 0 )
+   {
+      mError = zip_strerror(mZip.get());
+      return false;
+   }
 
-   zip_fileinfo info;
-   info.tmz_date.tm_sec  = timeinfo->tm_sec;
-   info.tmz_date.tm_min  = timeinfo->tm_min;
-   info.tmz_date.tm_hour = timeinfo->tm_hour;
-   info.tmz_date.tm_mday = timeinfo->tm_mday;
-   info.tmz_date.tm_mon  = timeinfo->tm_mon;
-   info.tmz_date.tm_year = timeinfo->tm_year;
+   struct zip_file* pfile = zip_fopen(mZip.get(), file.c_str(), 0);
 
-   info.dosDate     = 0;
-   info.internal_fa = 0;
-   info.external_fa = 0;
+   if ( pfile != NULL )
+   {
+      size = stat.size;
+      pdata = new char[size + 1];
+      memset(pdata, 0, size + 1);
 
-   return info;
+      auto read = zip_fread(pfile, pdata, size);
+      if ( read < 0 )
+      {
+         delete[] pdata;
+         size = 0;
+         return false;
+      }
+
+      zip_fclose(pfile);
+
+      return true;
+   }
+
+   return false;
 }

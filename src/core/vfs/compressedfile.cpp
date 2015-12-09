@@ -24,7 +24,6 @@
 
 #include "buffer.h"
 #include "memorybuffer.h"
-#include "unzipfile.h"
 #include "zipfile.h"
 
 // static
@@ -36,7 +35,7 @@ bool CompressedFile::isCompressedFile(const String& file)
    if ( dot < slash )
    {
       String zip = file.subStr(0, dot+3);
-      return UnzipFile::isZip(zip);
+      return ZipFile::isZip(zip);
    }
 
    return false;
@@ -45,13 +44,13 @@ bool CompressedFile::isCompressedFile(const String& file)
 // static
 bool CompressedFile::exists(const String& path, const String& file)
 {
-    UnzipFile zipfile(path);
+    ZipFile zipfile(path);
     return zipfile.contains(file);
 }
 
-CompressedFile::CompressedFile(UnzipFile& unzipFile):
+CompressedFile::CompressedFile(ZipFile& zipFile):
    File(),
-   mUnzipFile(unzipFile),
+   mZipFile(zipFile),
    mFile()
 {
 }
@@ -68,7 +67,7 @@ bool CompressedFile::virOpen(const String& filename, int modus)
    char* pdata = NULL;
    int size = 0;
 
-   mUnzipFile.readFile(filename, (void*&)pdata, size);
+   mZipFile.readFile(filename, (void*&)pdata, size, false);
 
    setBuffer(Buffer::fromMemory(pdata, size));
 

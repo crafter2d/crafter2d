@@ -87,7 +87,7 @@ namespace ByteCode
       if ( !cilclass.hasPointer() )
       {
          String msg = UTEXT("Could not load class ") + classname;
-         throw new std::exception(msg.toUtf8().c_str());
+         throw new std::runtime_error(msg.toUtf8().c_str());
       }
 
       VirtualClass* presult = new VirtualClass();
@@ -138,10 +138,8 @@ namespace ByteCode
          const StringList& annotations = function.getAnnotations();
          if ( !annotations.isEmpty() )
          {
-            ListConstIterator<String> it = annotations.getFront();
-            for ( ; it.isValid(); ++it )
+            for ( auto& annotation : annotations )
             {
-               const String& annotation = *it;
                pentry->addAnnotation(annotation);
             }
          }

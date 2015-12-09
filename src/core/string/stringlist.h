@@ -28,6 +28,14 @@ public:
       return mStrings.begin();
    }
 
+   iterator end() {
+      return mStrings.end();
+   }
+
+   const_iterator end() const {
+      return mStrings.end();
+   }
+
  // operations
    void add(const String& str);
    void clear();

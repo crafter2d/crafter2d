@@ -333,11 +333,8 @@ void VirtualMachine::createClassObject(VirtualClass& klass)
       if ( annotations.size() > 0 )
       {
          int idx = 0;
-         ListConstIterator<String> it = annotations.getFront();
-         for ( ; it.isValid(); ++it )
+         for ( auto& value : annotations )
          {
-            const String& value = *it;
-
             VirtualString& vname = mContext.mStringCache.lookup(value);
             (*pannoarray)[idx++] = VirtualValue(vname);
          }

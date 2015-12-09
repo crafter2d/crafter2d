@@ -36,17 +36,17 @@ project "Core"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter" }
-        links { "z", "minizip", "SDL2" }
+        links { "zip", "SDL2" }
 				
 	-- set IDE specific settings
 	filter "action:vs*"
 		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp", "libiconv" }
 
     filter { "action:vs*", "Debug" }
-		links { "zlib1_d" }
+		links { "zipd" }
 
     filter { "action:vs*", "Release" }
-        links { "zlib1" }
+        links { "zip" }
 		
 	filter "action:cb-gcc"
 		buildoptions { "-W", "-Wall", "-O0" }
