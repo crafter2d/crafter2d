@@ -30,39 +30,31 @@ CollisionData::CollisionData():
 
 CollisionData::~CollisionData()
 {
-   ListAlgorithms::flush<CollisionContact*>(mContacts);
+   clear();
 }
 
 // maintenance
 
 void CollisionData::addContact(CollisionContact* pcontact)
 {
-   mContacts.addTail(pcontact);
+   mContacts.push_back(pcontact);
 }
 
-CollisionData::ContactIterator CollisionData::getIterator()
-{
-   return mContacts.getFront();
-}
 
 // resolve preparation
 
 void CollisionData::prepare(float timestep)
 {
-   ContactIterator it = mContacts.getFront();
-   while ( it.isValid() )
+   for ( auto pcontact : mContacts )
    {
-      CollisionContact* pcontact = *it;
       pcontact->prepare(timestep);
-      ++it;
    }
 }
 
-void CollisionData::adjustPositions(float timestep)
+void CollisionData::adjustPositions(float /* timestep */)
 {
-   int iterations = 1;
-
    /*
+   int iterations = 1;
    int usediterations = 0;
    while ( usediterations < iterations )
    {
@@ -80,6 +72,15 @@ void CollisionData::adjustPositions(float timestep)
    }*/
 }
 
-void CollisionData::adjustVelocities(float timestep)
+void CollisionData::adjustVelocities(float /* timestep */)
 {
+}
+
+void CollisionData::clear()
+{
+   for ( auto pcontact : mContacts )
+   {
+      delete pcontact;
+   }
+   mContacts.clear();
 }

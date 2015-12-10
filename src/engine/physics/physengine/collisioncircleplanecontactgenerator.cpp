@@ -45,7 +45,7 @@ bool CollisionCirclePlaneContactGenerator::docollide(CollisionData& data, const 
 
    CollisionContact* pcontact = new CollisionContact();
    pcontact->setLeft(new CollisionContactBody(*circle.getBody()));
-   if ( plane.getBody() != NULL )
+   if ( plane.getBody() != nullptr )
       pcontact->setRight(new CollisionContactBody(*plane.getBody()));
 
    pcontact->mPoint       = collisionpoint;

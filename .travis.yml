@@ -8,18 +8,19 @@ addons:
     packages:
     - gcc-4.9
     - g++-4.9
+    - cmake
     - libsdl1.2-dev
     - zlib1g-dev
     - libfreetype6-dev
-    - libbox2d-dev
 
 before_install:
   - ./projects/install-libzip.sh
   - ./projects/install-premake5.sh
+  - ./projects/install-box2d.sh
   - export CXX="g++-4.9" CC="gcc-4.9"
 
 script:
-  - premake-5.0.0-alpha6/bin/release/premake5 --travis --with-libzip=../libzip-1.0.1 gmake
+  - premake-5.0.0-alpha6/bin/release/premake5 --travis --with-libzip=../libzip-1.0.1 --with-box2d=../Box2D-master gmake
   - cd build
   - make
 

@@ -1,5 +1,7 @@
 #include "collisioncirclecirclecontactgenerator.h"
 
+#include "core/defines.h"
+
 #include "collisiondata.h"
 #include "collisioncircle.h"
 #include "collisioncontactbody.h"

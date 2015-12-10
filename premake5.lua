@@ -21,6 +21,13 @@ newoption
     description = "Path to the libzip directory (required for Travis)"
 }
 
+newoption
+{
+    trigger     = "with-box2d",
+    value       = "path",
+    description = "Path to the box2d directory (required for Travis)"
+}
+
 if not _OPTIONS["libdir"] then
 	_OPTIONS["libdir"] = path.join(path.join(os.getcwd(), "../externallibs"), _ACTION)
 end
@@ -43,9 +50,9 @@ solution "Crafter2D"
 package.path = package.path .. ";./projects/?.lua"
  
 require "proj-core"
+require "proj-engine"
 
 if not _OPTIONS["travis"] then
-	require "proj-engine"
 	require "proj-game"
 	require "proj-gen"
 	require "proj-unittest"

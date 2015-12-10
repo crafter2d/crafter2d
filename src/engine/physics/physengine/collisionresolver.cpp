@@ -63,15 +63,9 @@ void CollisionResolver::doResolve(CollisionData& collisiondata, float timestep)
 
    collisiondata.adjustPositions(timestep);
 
-   CollisionData::ContactIterator iterator = collisiondata.getIterator();
-
-   while ( iterator.isValid() )
+   for ( auto pcontact : collisiondata )
    {
-      CollisionContact& contact = *(*iterator);
-
-      resolveContact(contact);
-
-      ++iterator;
+      resolveContact(*pcontact);
    }
 }
 
@@ -104,7 +98,7 @@ void CollisionResolver::resolveContact(CollisionContact& contact)
    }
 }
 
-void CollisionResolver::calculateInertia(PhysicsBody& body, float& linearInertia, float& angularInertia)
+void CollisionResolver::calculateInertia(PhysicsBody& body, float& linearInertia, float& /* angularInertia */)
 {
    linearInertia = body.getInverseMass();
 

@@ -23,6 +23,28 @@ project "Engine"
 		defines { "NDEBUG" }
 		flags { "Optimize" }
 
+    -- Platforms
+	filter "system:Windows"
+		defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
+		
+		includedirs { 	path.join(libdir, "zlib/include"),
+				path.join(libdir, "box2d/include") }
+
+		libdirs { 	path.join(libdir, "zlib/lib"),
+				path.join(libdir, "box2d/lib") }
+
+	filter "system:Linux"
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+		defines { "LINUX" }
+		includedirs { "/usr/include", "/usr/local/include" }
+
+        if _OPTIONS["with-box2d"] then
+            includedirs { path.join(_OPTIONS["with-box2d"], "Box2D"), _OPTIONS["with-box2d"] .. "/Box2D/Box2D" }
+            links { _OPTIONS["with-box2d"] .. "/Box2D/Build/Box2D/Box2D" }
+        else
+		    links { "Box2D" }
+        end
+
 	-- Visual Studio
 	filter "action:vs*"
 		links { "gdi32", "user32", "vfw32", "ws2_32" }
@@ -46,18 +68,3 @@ project "Engine"
 		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32",
 			"zlib1", "box2d" }
 
-	-- Platforms
-	filter "system:Windows"
-		defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
-		
-		includedirs { 	path.join(libdir, "zlib/include"),
-				path.join(libdir, "box2d/include") }
-
-		libdirs { 	path.join(libdir, "zlib/lib"),
-				path.join(libdir, "box2d/lib") }
-
-	filter "system:Linux"
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
-		defines { "LINUX" }
-		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
-		links { "Box2D" }

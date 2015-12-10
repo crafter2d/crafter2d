@@ -20,25 +20,31 @@
 #ifndef COLLISION_DATA_H_
 #define COLLISION_DATA_H_
 
-#include "collisioncontact.h"
+#include <list>
 
-#include "core/containers/list.h"
-#include "core/containers/listiterator.h"
+#include "collisioncontact.h"
 
 class CollisionData 
 {
 public:
-   typedef List<CollisionContact*> ContactList;
-   typedef ListIterator<CollisionContact*> ContactIterator;
+   using ContactList = std::list<CollisionContact*>;
+   using ContactIterator = std::list<CollisionContact*>::iterator;
 
    CollisionData();
    ~CollisionData();
 
  // insertion
    void addContact(CollisionContact* pcontact);
+   void clear();
 
  // iteration
-   ContactIterator getIterator();
+   ContactIterator begin() {
+      return mContacts.begin();
+   }
+   
+   ContactIterator end() {
+      return mContacts.end();
+   }
 
  // resolver
    void prepare(float timestep);
