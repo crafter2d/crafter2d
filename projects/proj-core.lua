@@ -36,7 +36,7 @@ project "Core"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter" }
-        links { "SDL2" }
+        links { "SDL" }
 
         if _OPTIONS["with-libzip"] then
             includedirs { path.join(_OPTIONS["with-libzip"], "lib") }
