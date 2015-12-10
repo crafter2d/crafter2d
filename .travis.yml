@@ -14,8 +14,8 @@ addons:
     - libbox2d-dev
 
 before_install:
-  - ./projects/install-premake5.sh
   - ./projects/install-libzip.sh
+  - ./projects/install-premake5.sh
   - export CXX="g++-4.9" CC="gcc-4.9"
 
 script:
