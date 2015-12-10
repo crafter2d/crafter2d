@@ -12,7 +12,6 @@ project "mod_ogl"
 	-- set project files
 	files { "../src/mods/mod_ogl/**.cpp", "../src/mods/mod_ogl/**.h", "../src/mods/mod_ogl/**.inl" }
 	includedirs { "../src", "../src/mods" }
-	removeprebuildcommands { cxxcommand }
 	
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

@@ -2,7 +2,7 @@
 #ifndef TEST_HASHMAP_H
 #define TEST_HASHMAP_H
 
-#include <cxxtest/TestSuite.h>
+#include <UnitTest++.h>
 
 #include "core/containers/hashmap.h"
 
@@ -11,32 +11,31 @@ unsigned int hashInt(const int& value)
    return value;
 }
 
-class TestHashMap : public CxxTest::TestSuite
+SUITE(TestHashMap)
 {
-   class Test
+   class Value
    {
    public:
-      Test(int k, int v): key(k), value(v) {}
+      Value(int k, int v): key(k), value(v) {}
 
       int key;
       int value;
    };
 
-public:
-   void testInsertion()
+   TEST(testInsertion)
    {
-      Test test1(1, 100);
-      Test test2(2, 200);
+      Value test1(1, 100);
+      Value test2(2, 200);
 
-      HashMap<int,Test> map;
+      HashMap<int, Value> map;
       map.setHashFunction(hashInt);
-      TS_ASSERT(map.isEmpty());
+      CHECK(map.isEmpty());
 
       map.insert(test1.key, test1);
       map.insert(test2.key, test2);
 
-      TS_ASSERT_EQUALS(map.size(), 2);
-      TS_ASSERT(!map.isEmpty());
+      CHECK_EQUAL(map.size(), 2);
+      CHECK(!map.isEmpty());
    }
 };
 

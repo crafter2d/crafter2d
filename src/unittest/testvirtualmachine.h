@@ -2,7 +2,7 @@
 #ifndef TEST_VIRTUALMACHINE_H
 #define TEST_VIRTUALMACHINE_H
 
-#include <cxxtest/TestSuite.h>
+#include <UnitTest++.h>
 
 #include "core/vfs/filesystem.h"
 #include "core/modules/modulemanager.h"
@@ -79,16 +79,20 @@ void NativeClass_mul(ScriptCall& accessor)
    accessor.setResult(pnative->mul(a, b));
 }
 
-class TestVirtualMachine : public CxxTest::TestSuite
+SUITE(TestVirtualMachine)
 {
-public:
-
-   void testRun()
+   TEST(testRun)
    {
       ModuleManager modules;
-      TS_ASSERT(modules.initialize());
+      CHECK(modules.initialize());
       c2d::Module* pmodule = modules.lookup(c2d::UUID_ScriptModule);
-      TS_ASSERT(pmodule != NULL);
+      CHECK(pmodule != nullptr);
+      if ( pmodule == nullptr )
+      {
+         // no need to continue testing as it seems there is no script module available
+         return;
+      }
+
       ScriptModule* pmod = static_cast<c2d::ScriptModule*>(pmodule);
       ScriptManager& scriptmanager = pmod->getManager();
 
@@ -112,7 +116,7 @@ public:
       AutoPtr<ScriptObject> script = scriptmanager.load(UTEXT("Test"));
       scriptmanager.addRootObject(*script);
 
-      TS_ASSERT(script.hasPointer());
+      CHECK(script.hasPointer());
       Variant result = script->call(UTEXT("run"));
    }
 

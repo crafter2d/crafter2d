@@ -41,12 +41,6 @@ solution "Crafter2D"
 	floatingpoint "Fast"
 	vectorextensions "SSE2"
 	
-	local sln = solution()
-	local srcdir = path.join(sln.basedir, "src/unittest");
-	local gencmd = path.join(libdir, "cxxtest/cxxtestgen.py")
-
-	cxxcommand = "python " .. gencmd .. " --error-printer -o \"" .. path.join(srcdir, "runner.cpp") .. "\" \""  .. path.join(srcdir, "*.h") .. "\""
-
 package.path = package.path .. ";./projects/?.lua"
  
 require "proj-core"

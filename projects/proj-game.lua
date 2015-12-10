@@ -13,7 +13,6 @@ project "Game"
 	files { "../src/game/**.cpp", "../src/game/**.h", "../src/game/**.inl" }
 	includedirs { "../src" }
 	links { "Core", "Engine" }
-	removeprebuildcommands { cxxcommand }
 	
 	filter "configurations:Debug"
 		defines { "_DEBUG", "TIXML_USE_STL" }

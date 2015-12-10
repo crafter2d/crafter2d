@@ -14,7 +14,6 @@ project "mod_c2d"
 	includedirs { "../src" }
 	links { "Core", "Engine" }
 	defines { "TIXML_USE_STL" }
-	removeprebuildcommands { cxxcommand }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

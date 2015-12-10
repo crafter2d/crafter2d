@@ -14,7 +14,6 @@ project "Yasc"
 	files { "../tools/yasc/**.cpp", "../tools/yasc/**.c", "../tools/yasc/**.h", "../tools/yasc/**.inl" }
 	includedirs { "../src", "../tools" }
 	links { "Core" }
-	removeprebuildcommands { cxxcommand }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

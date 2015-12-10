@@ -27,7 +27,7 @@ CommandLine::CommandLine():
 {
 }
 
-CommandLine::CommandLine(int argc, char *argv[]):
+CommandLine::CommandLine(int argc, const char *argv[]):
    mArguments()
 {
    parse(argc, argv);

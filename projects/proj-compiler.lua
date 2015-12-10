@@ -14,7 +14,6 @@ project "Compiler"
 	files { "../src/compiler/**.cpp", "../src/compiler/**.h", "../src/compiler/**.inl" }
 	includedirs { "../src" }
 	links { "Core" }
-	removeprebuildcommands { cxxcommand }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG", "TIXML_USE_STL" }

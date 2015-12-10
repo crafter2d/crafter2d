@@ -12,7 +12,6 @@ project "mod_yas"
 	files { "../src/mods/mod_yas/**.cpp", "../src/mods/mod_yas/**.c", "../src/mods/mod_yas/**.h", "../src/mods/mod_yas/**.inl" }
 	includedirs { "../src", "../src/mods" }
 	links { "Core" }
-	removeprebuildcommands { cxxcommand }
 	
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
