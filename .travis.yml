@@ -9,17 +9,17 @@ addons:
     - gcc-4.9
     - g++-4.9
     - libsdl1.2-dev
-    - libzip-dev
     - zlib1g-dev
     - libfreetype6-dev
     - libbox2d-dev
 
 before_install:
   - ./projects/install-premake5.sh
+  - ./projects/install-libzip.sh
   - export CXX="g++-4.9" CC="gcc-4.9"
 
 script:
-  - premake-5.0.0-alpha6/bin/release/premake5 --travis gmake
+  - premake-5.0.0-alpha6/bin/release/premake5 --travis --with-libzip=../libzip-1.0.1 gmake
   - cd build
   - make
 

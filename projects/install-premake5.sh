@@ -4,8 +4,6 @@ wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha6/pre
 unzip /tmp/premake5-src.zip
 cd premake-5.0.0-alpha6/build/gmake.unix
 make
-cd ../../../
-cd premake-5.0.0-alpha6/bin/release
-ls -all
+cd ../bin/release
 ./premake5 --version
 cd ../../../

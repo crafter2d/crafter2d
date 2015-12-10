@@ -14,6 +14,13 @@ newoption
 	description = "Generates make files for Travis-testing"
 }
 
+newoption
+{
+    trigger     = "with-libzip",
+    value       = "path",
+    description = "Path to the libzip directory (required for Travis)"
+}
+
 if not _OPTIONS["libdir"] then
 	_OPTIONS["libdir"] = path.join(path.join(os.getcwd(), "../externallibs"), _ACTION)
 end

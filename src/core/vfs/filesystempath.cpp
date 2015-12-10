@@ -50,7 +50,7 @@ void FileSystemPath::fillInfo(const String& path)
       }
 
       ASSERT(ZipFile::isZip(zipfile));
-      mZip = std::make_unique<ZipFile>(zipfile);
+      mZip.reset(new ZipFile(zipfile));
    }
 }
 

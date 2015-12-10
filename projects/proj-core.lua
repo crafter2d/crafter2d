@@ -36,7 +36,14 @@ project "Core"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter" }
-        links { "zip", "SDL2" }
+        links { "SDL2" }
+
+        if _OPTIONS["with-libzip"] then
+            includedirs { path.join(_OPTIONS["with-libzip"], "lib") }
+            links { path.join(_OPTIONS["with-libzip"], "lib/.libs/zip") }
+        else
+            links { "zip" }
+        end
 				
 	-- set IDE specific settings
 	filter "action:vs*"

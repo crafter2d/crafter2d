@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "zipfile.h"
 
+#include <string.h>
+
 #include "core/string/string.h"
 
 bool ZipFile::isZip(const String& path)
