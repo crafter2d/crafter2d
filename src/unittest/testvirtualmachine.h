@@ -110,8 +110,8 @@ SUITE(TestVirtualMachine)
 
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();
-      fs.addPath(UTEXT("data.zip\\scripts"));
-      fs.addPath(UTEXT("../src/unittest/compiledtests"));
+      fs.addPath(UTEXT("data.zip/scripts"));
+      fs.addPath(UTEXT("../src/unittest/test.zip/test"));
 
       AutoPtr<ScriptObject> script = scriptmanager.load(UTEXT("Test"));
       scriptmanager.addRootObject(*script);
