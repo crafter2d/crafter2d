@@ -1,6 +1,5 @@
 build
 data
-output
 premake5
 
 *.pro.user*

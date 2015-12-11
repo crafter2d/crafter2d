@@ -45,7 +45,7 @@ class TestRunner
 		run();
 	}
 	
-	public void run()
+	public boolean run()
 	{
 		System.console.println("\nRunning tests");
 		
@@ -61,6 +61,8 @@ class TestRunner
 		System.console.println("Test results");
 		System.console.println("Nr test: " + mTests);
 		System.console.println("Failures: " + mFailures);
+		
+		return mFailures == 0;
 	}
 	
 	private void runPretest(Object instance, Function[] functions)

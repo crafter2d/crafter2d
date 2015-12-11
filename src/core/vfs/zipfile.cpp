@@ -81,7 +81,7 @@ std::string toZipPath(const String& path)
 
 bool ZipFile::contains(const String& name) const
 {
-   std::string file = name.toUtf8();
+   std::string file = toZipPath(name);
    auto index = zip_name_locate(mZip.get(), file.c_str(), 0);
    return index >= 0;
 }
@@ -90,7 +90,7 @@ void ZipFile::addFile(const String& name, void* pdata, int size)
 {
    struct zip_source* psource = zip_source_buffer(mZip.get(), pdata, size, 0);
 
-   std::string file = name.toUtf8();
+   std::string file = toZipPath(name);
    if ( zip_file_add(mZip.get(), file.c_str(), psource, ZIP_FL_ENC_UTF_8) < 0 )
    {
       zip_source_free(psource);
@@ -100,7 +100,7 @@ void ZipFile::addFile(const String& name, void* pdata, int size)
 
 bool ZipFile::readFile(const String& name, void*& pdata, int &size, bool casesensitive)
 {
-   std::string file = name.toUtf8();
+   std::string file = toZipPath(name);
    auto index = zip_name_locate(mZip.get(), file.c_str(), 0);
    if ( index < 0 )
    {

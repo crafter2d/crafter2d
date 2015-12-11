@@ -95,9 +95,8 @@ int Compiler::exec()
       String roots = prootarg->getValue();
       StringInterface::split(roots, L';', rootpaths);
 
-      auto it = rootpaths.getFront();
       auto fnc = [this](const String& path) { FileSystem::getInstance().addPath(path); };
-      ListAlgorithms::foreach(it, fnc);
+      std::for_each(rootpaths.begin(), rootpaths.end(), fnc);
    }
 
    // see if we should find the files recursively
@@ -271,10 +270,12 @@ void Compiler::reportLogEntries()
    //std::ofstream outfile("compilelog.txt", std::ios_base::app);
 
    const StringList& log = mContext.getLog().getLog();
-   //auto fnc = [this,&outfile](const String& msg) { outfile << msg.toUtf8() << std::endl; };
-   auto it = log.getFront();
-   auto fnc = [this](const String& msg) { std::cout << msg.toUtf8() << std::endl; };
-   ListAlgorithms::foreach(it, fnc);
-   
-   mContext.getLog().clear();
+   if ( !log.isEmpty() )
+   {
+      //auto fnc = [this,&outfile](const String& msg) { outfile << msg.toUtf8() << std::endl; };
+      auto fnc = [this](const String& msg) { std::cout << msg.toUtf8() << std::endl; };
+      std::for_each(log.begin(), log.end(), fnc);
+
+      mContext.getLog().clear();
+   }
 }

@@ -111,13 +111,15 @@ SUITE(TestVirtualMachine)
       FileSystem& fs = FileSystem::getInstance();
       fs.removeAll();
       fs.addPath(UTEXT("data.zip\\scripts"));
-      fs.addPath(UTEXT("../src/unittest/exec"));
+      fs.addPath(UTEXT("../src/unittest/compiledtests"));
 
       AutoPtr<ScriptObject> script = scriptmanager.load(UTEXT("Test"));
       scriptmanager.addRootObject(*script);
 
       CHECK(script.hasPointer());
       Variant result = script->call(UTEXT("run"));
+      CHECK(result.isBool());
+      CHECK(result.asBool());
    }
 
 };
