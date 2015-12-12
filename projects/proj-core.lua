@@ -12,7 +12,6 @@ project "Core"
 	-- set project files
 	files { "../src/core/**.cpp", "../src/core/**.c", "../src/core/**.h", "../src/core/**.inl" }
 	includedirs { "../src" }
-	removeprebuildcommands { cxxcommand }
 
 	-- set up the build settings 
 	filter "configurations:Debug"

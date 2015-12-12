@@ -13,7 +13,6 @@ project "Gen"
 	-- set project files
 	files { "../src/gen/**.cpp", "../src/gen/**.h", "../src/gen/**.inl" }
 	includedirs { "../src" }
-	removeprebuildcommands { cxxcommand }
 
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

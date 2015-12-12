@@ -12,7 +12,6 @@ project "Engine"
 	files { "../src/engine/**.cpp", "../src/engine/**.h", "../src/engine/**.inl" }
 	includedirs { "../src" }
 	links { "Core" }
-	removeprebuildcommands { cxxcommand }
 
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

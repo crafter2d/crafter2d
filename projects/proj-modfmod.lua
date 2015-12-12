@@ -13,7 +13,6 @@ project "mod_fmod"
 	files { "../src/mods/mod_fmod/**.cpp", "../src/mods/mod_fmod/**.h", "../src/mods/mod_fmod/**.inl" }
 	includedirs { "../src" }
 	links { "Core" }
-	removeprebuildcommands { cxxcommand }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

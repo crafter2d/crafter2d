@@ -14,7 +14,6 @@ project "mod_ui"
 	includedirs { "../src" }
 	links { "Core" }
 	defines { "TIXML_USE_STL" }
-	removeprebuildcommands { cxxcommand }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

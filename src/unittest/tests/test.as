@@ -8,7 +8,7 @@ use UnitTest.*;
 
 class Test
 {
-	public void run()
+	public boolean run()
 	{
 		TestRunner tr = TestRunner.getInstance();
 		//tr.addClass(TestFile.class);
@@ -24,6 +24,6 @@ class Test
 		tr.addClass(TestException.class);
 		tr.addClass(TestSwitch.class);
 		
-		tr.run();
+		return tr.run();
 	}
 }

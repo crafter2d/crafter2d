@@ -2,66 +2,68 @@
 #ifndef TEST_VARIANT_H
 #define TEST_VARIANT_H
 
-#include <cxxtest/TestSuite.h>
+#include <UnitTest++.h>
 
 #include "core/system/variant.h"
 
-class TestVariant : public CxxTest::TestSuite
+std::ostream& operator<<(std::ostream& stream, const String& str)
 {
-public:
+   return stream << str.toUtf8();
+}
 
-   void testInt()
+SUITE(TestVariant)
+{
+   TEST(testInt)
    {
       Variant v(100);
 
-      TS_ASSERT(v.isInt());
-      TS_ASSERT(v.asInt() == 100);
-      TS_ASSERT_EQUALS(v.toReal(), 100.0);
-      TS_ASSERT_EQUALS(v.toString(), UTEXT("100"));
+      CHECK(v.isInt());
+      CHECK(v.asInt() == 100);
+      CHECK_EQUAL(100.0f, v.toReal());
+      CHECK_EQUAL(UTEXT("100"), v.toString());
    }
 
-   void testReal()
+   TEST(testReal)
    {
       float i = 100.0;
       Variant v(i);
 
-      TS_ASSERT(v.isReal());
-      TS_ASSERT_EQUALS(v.asReal(), 100.0);
-      TS_ASSERT_EQUALS(v.toInt(), 100);
-      TS_ASSERT_EQUALS(v.toString(), UTEXT("100"));
+      CHECK(v.isReal());
+      CHECK_EQUAL(100.0f, v.asReal());
+      CHECK_EQUAL(100, v.toInt());
+      CHECK_EQUAL(UTEXT("100"), v.toString());
    }
 
-   void testBoolean()
+   TEST(testBoolean)
    {
       Variant vtrue(true);
 
-      TS_ASSERT(vtrue.isBool());
-      TS_ASSERT(vtrue.asBool());
-      TS_ASSERT_EQUALS(vtrue.toString(), UTEXT("true"));
+      CHECK(vtrue.isBool());
+      CHECK(vtrue.asBool());
+      CHECK_EQUAL(vtrue.toString(), UTEXT("true"));
 
       Variant vfalse(false);
-      TS_ASSERT_EQUALS(vfalse.toString(), UTEXT("false"));
+      CHECK_EQUAL(vfalse.toString(), UTEXT("false"));
    }
 
-   void testString()
+   TEST(testString)
    {
       String value(UTEXT("100"));
       Variant v(value);
-      TS_ASSERT(v.isString());
-      
-      TS_ASSERT(v.toInt() == 100);
+      CHECK(v.isString());
+      CHECK(v.toInt() == 100);
    }
 
-   void testAssignment()
+   TEST(testAssignment)
    {
       Variant a(100);
       Variant b;
       b = a;
 
-      TS_ASSERT(a.isInt());
-      TS_ASSERT(b.isInt());
+      CHECK(a.isInt());
+      CHECK(b.isInt());
 
-      TS_ASSERT(a.asInt() == b.asInt());
+      CHECK_EQUAL(a.asInt(), b.asInt());
    }
 };
 

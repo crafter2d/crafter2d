@@ -2,25 +2,69 @@
 #ifndef TEST_COMMANDLINE_H
 #define TEST_COMMANDLINE_H
 
-#include <cxxtest/TestSuite.h>
+#include <UnitTest++.h>
 
 #include "core/containers/list.h"
 #include "core/commandline/commandline.h"
 
-class TestCommandLine : public CxxTest::TestSuite
+static const int   sArgc = 6;
+static const char* sArgv[] = { "unittest.exe", "doit", "argument=value", "argument2", "=", "anothervalue" };
+
+SUITE(TestCommandLine)
 {
-   CommandLine mCmdLine;
+   class Fixture
+   {
+   public:
+      Fixture() :
+         mCmdLine(sArgc, sArgv)
+      {
+      }
 
-public:
-   TestCommandLine();
+      CommandLine mCmdLine;
+   };
 
-   void testSize();
-   void testSingleCommand();
-   void testSpaceSeparatedArgument();
-   void testFindValidArgument();
-   void testFindNonExistingArgument();
-   void testResolveCommand();
-   void testResolveInvalidCommand();
+   TEST_FIXTURE(Fixture, testSize)
+   {
+      CHECK_EQUAL(mCmdLine.size(), 3);
+   }
+
+   TEST_FIXTURE(Fixture, testSingleCommand)
+   {
+      CHECK(mCmdLine.hasArgument(UTEXT("doit")));
+   }
+
+   TEST_FIXTURE(Fixture, testSpaceSeparatedArgument)
+   {
+      auto parg = mCmdLine.getArgument(UTEXT("argument2"));
+      CHECK(parg != nullptr);
+      CHECK(parg->getValue() == UTEXT("anothervalue"));
+   }
+
+   TEST_FIXTURE(Fixture, testFindValidArgument)
+   {
+      const CommandLineArgument* pargument = mCmdLine.getArgument(UTEXT("argument"));
+      CHECK(pargument != NULL);
+   }
+
+   TEST_FIXTURE(Fixture, testFindNonExistingArgument)
+   {
+      const CommandLineArgument* pargument = mCmdLine.getArgument(UTEXT("non-existing-argument"));
+      CHECK(pargument == NULL);
+   }
+
+   TEST_FIXTURE(Fixture, testResolveCommand)
+   {
+      auto pargument = mCmdLine.getArgument(UTEXT("argument"));
+
+      CHECK(pargument != NULL);
+      CHECK(pargument->getType() == CommandLineArgument::eArgument);
+      CHECK(pargument->getValue() == UTEXT("value"));
+   }
+
+   TEST_FIXTURE(Fixture, testResolveInvalidCommand)
+   {
+      //TS_ASSERT_THROWS(mCmdLine.getArgument(UTEXT("non-existing-argument")), CommandLineException*);
+   }
 };
 
 #endif // TEST_COMMANDLINE_H

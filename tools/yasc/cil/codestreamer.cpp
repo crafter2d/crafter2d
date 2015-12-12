@@ -86,11 +86,9 @@ namespace CIL
       mStream << annotations.size();
       if ( annotations.size() > 0 )
       {
-         ListConstIterator<String> it = annotations.getFront();
-         for ( ; it.isValid(); ++it )
+         for ( auto& annotation : annotations )
          {
-            const String& value = *it;
-            mStream << value;
+            mStream << annotation;
          }
       }
 

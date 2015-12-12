@@ -12,7 +12,6 @@ project "mod_d3d"
 	-- set project files
 	files { "../src/mods/mod_d3d/**.cpp", "../src/mods/mod_d3d/**.h", "../src/mods/mod_d3d/**.inl" }
 	includedirs { "../src" }
-	removeprebuildcommands { cxxcommand }
 	
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
