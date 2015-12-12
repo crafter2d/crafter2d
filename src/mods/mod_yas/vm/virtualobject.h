@@ -22,6 +22,8 @@
 
 #include "mod_yas/script_base.h"
 
+#include "core/defines.h"
+
 #include "mod_yas/gc/collectable.h"
 
 class VirtualClass;

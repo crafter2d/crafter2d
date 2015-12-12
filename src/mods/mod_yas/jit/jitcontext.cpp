@@ -8,5 +8,5 @@ JITContext::JITContext():
 
 void JITContext::add(JITFunction* pfunction)
 {
-   mFunctions.addTail(pfunction);
+   mFunctions.push_back(pfunction);
 }

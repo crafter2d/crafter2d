@@ -2,6 +2,7 @@
 #include "garbagecollector.h"
 
 #include <algorithm>
+#include <cstring>
 
 #include "core/containers/listiterator.h"
 
@@ -15,7 +16,7 @@ int VoidHash(void* pkey)
 		return 0;
 	
 	unsigned int hashOffset = 0;
-	unsigned int keySize = strlen((char*)pkey);
+	unsigned int keySize = std::strlen((char*)pkey);
 
 	for ( unsigned int i = 0; i < keySize; i++)
 	{

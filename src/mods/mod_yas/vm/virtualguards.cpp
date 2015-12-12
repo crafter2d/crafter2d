@@ -46,7 +46,7 @@ void VirtualGuards::updatePosition(int offset)
 
 const VirtualGuard* VirtualGuards::findGuard(int pos) const
 {
-   const VirtualGuard* pbestguard = NULL;
+   const VirtualGuard* pbestguard = nullptr;
    int bestdist = 0xFFFFFFF;
 
    for ( std::size_t index = 0; index < mGuards.size(); ++index )

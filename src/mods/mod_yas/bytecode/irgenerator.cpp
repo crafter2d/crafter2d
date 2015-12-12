@@ -15,7 +15,7 @@
 #include "mod_yas/vm/virtualcontext.h"
 #include "mod_yas/vm/virtualguard.h"
 #include "mod_yas/vm/virtualguards.h"
-#include "mod_yas/vm/VirtualFunction.h"
+#include "mod_yas/vm/virtualfunction.h"
 #include "mod_yas/vm/virtuallookuptable.h"
 
 #include "block.h"

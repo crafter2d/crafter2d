@@ -20,28 +20,49 @@
 #ifndef SORTED_LIST_H_
 #define SORTED_LIST_H_
 
-#include "list.h"
+#include <vector>
 
 template <class E>
-class SortedList : public List<E>
+class SortedList
 {
+   using List = std::vector<E>;
 public:
+   using iterator = typename List::iterator;
+
  // types
    typedef int(*CompareFnc)(const E& left, const E& right);
 
    SortedList();
-   virtual ~SortedList() {}
+   ~SortedList() {}
+   
+   iterator begin() {
+      return mList.begin();
+   }
+   
+   iterator end() {
+      return mList.end();
+   }
 
  // get/set interface
    void setCompareFnc(CompareFnc comparefunction);
 
  // operations
-   void add(E& element);
+   void add(E& element) {
+      mList.push_back(element);
+   }
+   
+   void erase(iterator first, iterator last) {
+      mList.erase(first, last);
+   }
+   
+   void sort();
 
 private:
    bool ensureSorted();
-
-   CompareFnc  _pcomparefnc;
+ 
+ // data
+   List        mList;
+   CompareFnc  mpCompareFnc;
 };
 
 #include "sortedlist.inl"

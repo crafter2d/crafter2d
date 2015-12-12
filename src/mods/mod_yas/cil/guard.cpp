@@ -1,7 +1,7 @@
 
 #include "guard.h"
 
-#include <string>
+#include <cstring>
 
 namespace CIL
 {
@@ -9,7 +9,7 @@ namespace CIL
    {
       Guard* pguard = new Guard();
       pguard->finalize = finalize;
-      memcpy(pguard->labels, labels, sizeof(int) * 4);
+      std::memcpy(pguard->labels, labels, sizeof(int) * 4);
       return pguard;
    }
 }

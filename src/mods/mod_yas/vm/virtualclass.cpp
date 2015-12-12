@@ -321,7 +321,7 @@ void VirtualClass::buildInterfaceTable()
             const VirtualFunction* plookupfunc = findExactMatch(func);
             if ( plookupfunc == NULL )
             {
-               throw std::exception("Invalid class!");
+               throw std::runtime_error("Invalid class!");
             }
 
             ASSERT(func.getIndex() <= max);

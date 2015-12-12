@@ -61,17 +61,17 @@ namespace ByteCode
             }
             else
             {
-               throw std::exception("Could not find function.");
+               throw std::runtime_error("Could not find function.");
             }
          }
          else
          {
-            throw std::exception("Invalid prototype: no arguments");
+            throw std::runtime_error("Invalid prototype: no arguments");
          }
       }
       else
       {
-         throw std::exception("Invalid prototype: can not get class!!");
+         throw std::runtime_error("Invalid prototype: can not get class!!");
       }
    }
 
@@ -94,11 +94,11 @@ namespace ByteCode
             }
          }
 
-         throw std::exception("Could not resolve attribute.");
+         throw std::runtime_error("Could not resolve attribute.");
       }
       else
       {
-         throw std::exception("Invalid attribute name.");
+         throw std::runtime_error("Invalid attribute name.");
       }
    }
 
@@ -121,11 +121,11 @@ namespace ByteCode
             }
          }
 
-         throw std::exception("Could not resolve attribute.");
+         throw std::runtime_error("Could not resolve attribute.");
       }
       else
       {
-         throw std::exception("Invalid attribute name.");
+         throw std::runtime_error("Invalid attribute name.");
       }
    }
 

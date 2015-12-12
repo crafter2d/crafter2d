@@ -14,28 +14,6 @@ namespace CIL
       return *this;
    }
 
-   const Instruction& Instructions::operator[](int index) const
-   {
-      return mInsts[index];
-   }
-
-   Instruction& Instructions::operator[](int index)
-   {
-      return mInsts[index];
-   }
-
-   // - Query
-
-   bool Instructions::isEmpty() const
-   {
-      return mInsts.empty();
-   }
-
-   size_t Instructions::size() const
-   {
-      return mInsts.size();
-   }
-
    // - Operations
 
    void Instructions::add(const Instruction& inst)
