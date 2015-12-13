@@ -11,6 +11,7 @@ project "mod_yas"
 	-- set project files
 	files { "../src/mods/mod_yas/**.cpp", "../src/mods/mod_yas/**.c", "../src/mods/mod_yas/**.h", "../src/mods/mod_yas/**.inl" }
 	includedirs { "../src", "../src/mods" }
+    libdirs { "../bin" }
 	links { "Core" }
 	
 	filter "configurations:Debug"

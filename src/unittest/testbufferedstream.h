@@ -2,7 +2,7 @@
 #ifndef TEST_BUFFERED_STREAM_H
 #define TEST_BUFFERED_STREAM_H
 
-#include <UnitTest++.h>
+#include <unittest++/UnitTest++.h>
 
 #include "core/streams/bufferedstream.h"
 

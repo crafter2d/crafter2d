@@ -2,7 +2,7 @@
 #ifndef TEST_HASHMAP_H
 #define TEST_HASHMAP_H
 
-#include <UnitTest++.h>
+#include <unittest++/UnitTest++.h>
 
 #include "core/containers/hashmap.h"
 

@@ -15,7 +15,7 @@ using namespace c2d;
 #endif
 
 extern "C" SCRIPT_API Module* DECL getModule()
-{
+{  
    ScriptModule* pmodule = new ScriptModule(new YasScriptManager());
    return pmodule;
 }

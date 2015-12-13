@@ -52,12 +52,15 @@ UChar LinuxFileSystem::getSeparator() const
 
 bool LinuxFileSystem::doRecurseDirectory(const String& dir, const String& mask, std::vector<String>& result, bool recursive)
 {
-   const char* pdir = dir.toUtf8().c_str();
-   const char* pmask = mask.toUtf8().c_str();
+   std::string path = dir.toUtf8();
+   std::string searchmask = mask.toUtf8();
+   
+   const char* pdir = path.c_str();
+   const char* pmask = searchmask.c_str();
 
    dirent** pentries = NULL;
    int      count    = scandir(pdir, &pentries, NULL, alphasort);
-
+   
    struct stat s;
 
    for ( int index = 0; index < count; index++ )
@@ -101,6 +104,6 @@ bool LinuxFileSystem::find(const String& mask, std::vector<String>& result, bool
       dir     = '.';
       pattern = mask;
    }
-
+   
    return doRecurseDirectory(dir, pattern, result, recursive);
 }

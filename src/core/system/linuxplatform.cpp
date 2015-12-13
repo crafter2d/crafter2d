@@ -19,6 +19,10 @@
  ***************************************************************************/
 #include "linuxplatform.h"
 
+#include <dlfcn.h>
+
+#include "core/log/log.h"
+#include "core/string/string.h"
 #include "core/defines.h"
 
 #include "linuxtimer.h"
@@ -54,14 +58,27 @@ void LinuxPlatform::initialize()
 
 void* LinuxPlatform::loadModule(const String& name)
 {
-   return NULL;
+   std::string path = name.toUtf8();
+   void* phandle = dlopen(path.c_str(), RTLD_LAZY);
+   if ( phandle == nullptr )
+   {
+      Log::getInstance().info("Error opening module %s : %s", path.c_str(), dlerror());
+   }
+   return phandle;
 }
 
 void LinuxPlatform::freeModule(void* pmodule)
 {
+   dlclose(pmodule);
 }
 
 void* LinuxPlatform::getFunctionAddress(void* module, const String& name)
 {
-   return NULL;
+   std::string symbol = name.toUtf8();
+   void* psymbol = dlsym(module, symbol.c_str());
+   if ( psymbol == nullptr )
+   {
+      Log::getInstance().info("Could not find symbol %s : %s", symbol.c_str(), dlerror());
+   }  
+   return psymbol;
 }

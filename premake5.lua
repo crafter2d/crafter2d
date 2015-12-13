@@ -46,11 +46,11 @@ package.path = package.path .. ";./projects/?.lua"
 require "proj-core"
 require "proj-engine"
 require "proj-modyas"
+require "proj-unittest"
 
 if not _OPTIONS["travis"] then
 	require "proj-game"
 	require "proj-gen"
-	require "proj-unittest"
 	require "proj-compiler"
 	require "proj-modc2d"
 	require "proj-modfmod"
