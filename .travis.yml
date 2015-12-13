@@ -9,10 +9,10 @@ addons:
     - gcc-4.9
     - g++-4.9
     - cmake
-    - libsdl1.2-dev
     - zlib1g-dev
+    - libsdl1.2-dev
     - libfreetype6-dev
-    - unittest++
+    - libunittest++-dev
 
 before_install:
   - ./projects/install-libzip.sh
