@@ -59,7 +59,7 @@ void YasScriptObject::arg(int index, void* pinstance)
    VirtualObject* pobject = mManager.getVM().lookupNative(pinstance);
    if ( pobject == NULL )
    {
-      throw std::exception("Could not find object. Make sure it has been registered.");
+      throw std::runtime_error("Could not find object. Make sure it has been registered.");
    }
 
    mArguments[index].setObject(*pobject);

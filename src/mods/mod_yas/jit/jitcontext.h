@@ -2,13 +2,13 @@
 #ifndef JIT_CONTEXT_H
 #define JIT_CONTEXT_H
 
-#include "core/containers/list.h"
+#include <list>
 
 class JITFunction;
 
 class JITContext
 {
-   typedef List<JITFunction*> Functions;
+   using Functions = std::list<JITFunction*>;
 
 public:
    JITContext();

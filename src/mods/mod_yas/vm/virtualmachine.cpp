@@ -196,7 +196,7 @@ VirtualObject& VirtualMachine::instantiateNative(const String& classname, void* 
       presult = instantiate(classname);
       if ( presult == NULL )
       {
-         throw std::exception("Could not instantiate object!");
+         throw std::runtime_error("Could not instantiate object!");
       }
 
       mNativeObjects.insert(std::pair<void*, VirtualObject*>(pobject, presult));

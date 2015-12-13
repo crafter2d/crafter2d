@@ -19,19 +19,21 @@
  ***************************************************************************/
 #include "core/defines.h"
 
+#include <algorithm>
+
 #include "listiterator.h"
 
 template <class E>
 INLINE SortedList<E>::SortedList():
-   List<E>(),
-   _pcomparefnc(NULL)
+   mList(),
+   mpCompareFnc(NULL)
 {
 }
 
 template <class E>
 INLINE void SortedList<E>::setCompareFnc(CompareFnc pcomparefunction)
 {
-   _pcomparefnc = pcomparefunction;
+   mpCompareFnc = pcomparefunction;
 }
 
 template<class E>
@@ -42,7 +44,7 @@ INLINE bool SortedList<E>::ensureSorted()
    {
       ListIterator<E> prev = it;
       ++it;
-      if ( it.isValid() && (*_pcomparefnc)(prev.item(), it.item()) > 0 )
+      if ( it.isValid() && (*mpCompareFnc)(prev.item(), it.item()) > 0 )
       {
          return false;
       }
@@ -50,6 +52,13 @@ INLINE bool SortedList<E>::ensureSorted()
    return true;
 }
 
+template<class E>
+INLINE void SortedList<E>::sort()
+{
+   std::sort(mList.begin(), mList.end(), mpCompareFnc);
+}
+
+/*
 template <class E>
 INLINE void SortedList<E>::add(E& element)
 {
@@ -63,3 +72,4 @@ INLINE void SortedList<E>::add(E& element)
 
    ASSERT(ensureSorted());
 }
+*/

@@ -2,7 +2,7 @@
 #ifndef TEST_COMMANDLINE_H
 #define TEST_COMMANDLINE_H
 
-#include <UnitTest++.h>
+#include <unittest++/UnitTest++.h>
 
 #include "core/containers/list.h"
 #include "core/commandline/commandline.h"

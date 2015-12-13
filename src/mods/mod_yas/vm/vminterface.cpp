@@ -2,6 +2,7 @@
 #include "vminterface.h"
 
 #include <iostream>
+#include <cmath>
 
 #include "core/string/char.h"
 #include "core/math/math.h"
@@ -158,14 +159,14 @@ void Math_sqrt(VirtualCall& accessor)
 {
    float value = accessor.getReal(0);
 
-   accessor.setResult(sqrt(value));
+   accessor.setResult(sqrtf(value));
 }
 
 void Math_ceil(VirtualCall& accessor)
 {
    float value = accessor.getReal(0);
 
-   accessor.setResult(ceil(value));
+   accessor.setResult(ceilf(value));
 }
 
 SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)

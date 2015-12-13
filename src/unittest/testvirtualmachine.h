@@ -2,7 +2,7 @@
 #ifndef TEST_VIRTUALMACHINE_H
 #define TEST_VIRTUALMACHINE_H
 
-#include <UnitTest++.h>
+#include <unittest++/UnitTest++.h>
 
 #include "core/vfs/filesystem.h"
 #include "core/modules/modulemanager.h"
@@ -82,11 +82,10 @@ void NativeClass_mul(ScriptCall& accessor)
 SUITE(TestVirtualMachine)
 {
    TEST(testRun)
-   {
+   {      
       ModuleManager modules;
       CHECK(modules.initialize());
       c2d::Module* pmodule = modules.lookup(c2d::UUID_ScriptModule);
-      CHECK(pmodule != nullptr);
       if ( pmodule == nullptr )
       {
          // no need to continue testing as it seems there is no script module available
@@ -96,7 +95,7 @@ SUITE(TestVirtualMachine)
       ScriptModule* pmod = static_cast<c2d::ScriptModule*>(pmodule);
       ScriptManager& scriptmanager = pmod->getManager();
 
-      AutoPtr<ScriptRegistrator> pregistrator = scriptmanager.getRegistrator();
+      std::unique_ptr<ScriptRegistrator> pregistrator(scriptmanager.getRegistrator());
 
       pregistrator->addClass(UTEXT("NativeClass"));
       pregistrator->addFunction(UTEXT("NativeClass()"), NativeClass_init);
@@ -113,10 +112,10 @@ SUITE(TestVirtualMachine)
       fs.addPath(UTEXT("data.zip/scripts"));
       fs.addPath(UTEXT("../src/unittest/test.zip/test"));
 
-      AutoPtr<ScriptObject> script = scriptmanager.load(UTEXT("Test"));
+      std::unique_ptr<ScriptObject> script(scriptmanager.load(UTEXT("Test")));
       scriptmanager.addRootObject(*script);
 
-      CHECK(script.hasPointer());
+      CHECK(script.get() != nullptr);
       Variant result = script->call(UTEXT("run"));
       CHECK(result.isBool());
       CHECK(result.asBool());

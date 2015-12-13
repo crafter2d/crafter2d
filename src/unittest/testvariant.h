@@ -2,7 +2,7 @@
 #ifndef TEST_VARIANT_H
 #define TEST_VARIANT_H
 
-#include <UnitTest++.h>
+#include <unittest++/UnitTest++.h>
 
 #include "core/system/variant.h"
 

@@ -24,6 +24,8 @@
 
 #include <fstream>
 
+class String;
+
 class CORE_API Log
 {
 public:
@@ -38,10 +40,12 @@ public:
 	Log&  operator<< (unsigned char u);
 	Log&  operator<< (const char* s);
    Log&  operator<< (float f);
+   Log&  operator<< (const std::string& str);
 
    Log&  put(char c);
 	Log&  put(char* str);
-
+   
+   void  info(const String& msg);
    void  info(const char* msg, ...);
    void  warning(const char* msg, ...);
    void  error(const char* msg, ...);
@@ -52,6 +56,7 @@ private:
    Log();
 
    void writeInfo(const std::string& type, const char* msg);
+   void writeInfo(const std::string& type, const std::string& msg);
 
    std::ofstream file;
 };

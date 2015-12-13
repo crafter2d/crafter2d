@@ -48,13 +48,12 @@ SortedPackageList::SortedPackageList():
 
 void SortedPackageList::removeOldPackages(uint32_t number)
 {
-   ListIterator<PackageHandle> it = getFront();
-   while ( it.isValid() )
+   sort();
+   auto it = begin();
+   while ( (*it)->getNumber() < number )
    {
-      PackageHandle& package = *it;
-      if ( package->getNumber() < number )
-      {
-         it.remove();
-      }
+      it++;
    }
+   
+   erase(begin(), it);
 }

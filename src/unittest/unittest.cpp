@@ -1,5 +1,5 @@
 
-#include <UnitTest++.h>
+#include <unittest++/UnitTest++.h>
 
 #include "testbufferedstream.h"
 #include "testcommandline.h"

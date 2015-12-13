@@ -57,6 +57,13 @@ INLINE Log& Log::operator<< (float f)
    return *this; 
 }
 
+INLINE Log& Log::operator<< (const std::string& str)
+{
+   file << str;
+   flush();
+   return *this;
+}
+
 INLINE Log& Log::put(char c)
 { 
    file << c;

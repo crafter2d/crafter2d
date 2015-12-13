@@ -24,6 +24,8 @@
 
 #include <stdarg.h>
 
+#include "core/string/string.h"
+
 static const std::string SInfo    = "Info";
 static const std::string SWarning = "Warning";
 static const std::string SError   = "Error";
@@ -50,6 +52,11 @@ Log::~Log()
    catch(...)
    {
    }
+}
+
+void Log::info(const String& msg)
+{
+   writeInfo(SInfo, msg.toUtf8());
 }
 
 void Log::info(const char* msg, ...)
@@ -95,6 +102,11 @@ void Log::error(const char* msg, ...)
 }
 
 void Log::writeInfo(const std::string& type, const char* msg)
+{
+   *this << type.c_str() << " - " << msg << '\n';
+}
+
+void Log::writeInfo(const std::string& type, const std::string& msg)
 {
    *this << type.c_str() << " - " << msg << '\n';
 }

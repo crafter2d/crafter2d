@@ -848,7 +848,7 @@ void File_readText(ScriptCall& accessor)
 
 void script_engine_register(c2d::ScriptManager& manager)
 {
-   AutoPtr<ScriptRegistrator> pregistrator(manager.getRegistrator());
+   std::unique_ptr<ScriptRegistrator> pregistrator(manager.getRegistrator());
 
    pregistrator->addClass(UTEXT("engine.game.Process"));
    pregistrator->addFunction(UTEXT("getContentManager()"), Process_getContentManager);

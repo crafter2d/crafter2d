@@ -8,8 +8,14 @@
 
 using namespace c2d;
 
-extern "C" SCRIPT_API Module* cdecl getModule()
-{
+#ifdef WIN32
+#define DECL cdecl
+#else
+#define DECL
+#endif
+
+extern "C" SCRIPT_API Module* DECL getModule()
+{  
    ScriptModule* pmodule = new ScriptModule(new YasScriptManager());
    return pmodule;
 }

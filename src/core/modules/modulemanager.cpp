@@ -32,7 +32,11 @@ namespace c2d
    {
       std::vector<String> filenames;
       FileSystem& fs = FileSystem::getInstance();
+   #ifdef WIN32
       if ( !fs.find(UTEXT("mod_*.dll"), filenames, false) )
+   #else
+      if ( !fs.find(UTEXT("libmod_*.so"), filenames, false) )
+   #endif
       {
          return false;
       }
@@ -65,12 +69,12 @@ namespace c2d
 
    void ModuleManager::add(const String& filename)
    {
+      Log::getInstance().info(UTEXT("Loading module ") + filename);
+      
       Platform& platform = Platform::getInstance();
       void* pmodule = platform.loadModule(filename);
       if ( pmodule != NULL )
       {
-         Log::getInstance().info(("Module " + filename.toUtf8()).c_str());
-
          mHandles.push_back(pmodule);
 
          PGETMODULE pfunc = (PGETMODULE)platform.getFunctionAddress(pmodule, UTEXT("getModule"));

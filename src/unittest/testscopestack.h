@@ -2,7 +2,7 @@
 #ifndef TEST_SCOPE_STACK_H
 #define TEST_SCOPE_STACK_H
 
-#include <UnitTest++.h>
+#include <unittest++/UnitTest++.h>
 
 SUITE(TestScopeStack)
 {

@@ -12,6 +12,7 @@ addons:
     - libsdl1.2-dev
     - zlib1g-dev
     - libfreetype6-dev
+    - unittest++
 
 before_install:
   - ./projects/install-libzip.sh
