@@ -25,5 +25,5 @@ script:
   - premake-5.0.0-alpha6/bin/release/premake5 --travis --with-libzip=../libzip-1.0.1 --with-box2d=../Box2D-master gmake
   - cd build
   - make
-  - cd bin && ./UnitTestd
+  - cd ../bin && ./UnitTestd
 
