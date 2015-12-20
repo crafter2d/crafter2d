@@ -13,7 +13,6 @@ project "UnitTest"
 	-- set project files
 	files { "../src/unittest/**.cpp", "../src/unittest/**.h", "../src/unittest/**.inl" }
 	includedirs { "../src" }
-	links { "Core", "Engine" }
 	
 	-- set up unit test framework
 	filter "configurations:Debug"
@@ -31,10 +30,12 @@ project "UnitTest"
 						path.join(libdir, "zlib/include") }
 						
 		libdirs { 	path.join(libdir, "zlib/lib"), path.join(libdir, "unittest/lib") }
-		links { "unittest++" }
+	    links { "Core", "Engine", "unittest++" }
 		
 	filter "system:linux"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        libdirs { "../bin" }
+        linkoptions { "-lCored", "-lEngined" }
 		links { "unittest++" }
 		
