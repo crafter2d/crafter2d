@@ -36,13 +36,14 @@ project "Engine"
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		defines { "LINUX" }
 		includedirs { "/usr/include", "/usr/local/include" }
+        links { "Box2D" }
 
-        if _OPTIONS["with-box2d"] then
-            includedirs { path.join(_OPTIONS["with-box2d"], "Box2D"), _OPTIONS["with-box2d"] .. "/Box2D/Box2D" }
-            links { _OPTIONS["with-box2d"] .. "/Box2D/Build/Box2D/Box2D" }
-        else
-		    links { "Box2D" }
-        end
+--        if _OPTIONS["with-box2d"] then
+--            includedirs { path.join(_OPTIONS["with-box2d"], "Box2D"), _OPTIONS["with-box2d"] .. "/Box2D/Box2D" }
+--            links { _OPTIONS["with-box2d"] .. "/Box2D/Build/Box2D/Box2D" }
+--        else
+--		    links { "Box2D" }
+--        end
 
 	-- Visual Studio
 	filter "action:vs*"

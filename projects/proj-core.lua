@@ -35,14 +35,14 @@ project "Core"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter" }
-        links { "SDL" }
+        links { "SDL", "zip" }
 
-        if _OPTIONS["with-libzip"] then
-            includedirs { path.join(_OPTIONS["with-libzip"], "lib") }
-            links { path.join(_OPTIONS["with-libzip"], "lib/.libs/zip") }
-        else
-            links { "zip" }
-        end
+--        if _OPTIONS["with-libzip"] then
+--            includedirs { path.join(_OPTIONS["with-libzip"], "lib") }
+--            links { path.join(_OPTIONS["with-libzip"], "lib/.libs/zip") }
+--        else
+--            links { "zip" }
+--        end
 				
 	-- set IDE specific settings
 	filter "action:vs*"
@@ -53,13 +53,3 @@ project "Core"
 
     filter { "action:vs*", "Release" }
         links { "zip" }
-		
-	filter "action:cb-gcc"
-		buildoptions { "-W", "-Wall", "-O0" }
-		linkoptions { "--allow-multiple-definition", "-Xlinker", "-zmuldefs" }
-	  
-	filter { "action:cb-gcc", "Debug" }
-		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32" }
-	 
-	filter { "action:cb-gcc", "Release" }
-		links { "mingw32", "gdi32", "user32", "vfw32", "ws2_32" }
