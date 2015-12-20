@@ -1,6 +1,8 @@
 -- Crafter 2D PreMake 5 configuration file
 -- Copyright 2010-2015, Jeroen Broekhuizen
 
+local pkgconf = require 'pkg-config'
+
 -- create the project
 project "Core"
 	kind "SharedLib"
@@ -34,8 +36,9 @@ project "Core"
 	filter "system:Linux"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter" }
-        links { "SDL", "zip" }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter", pkgconf.load('libzip').cflags }
+        linkoptions { pkgconf.load('libzip').libs }
+        links { "SDL" }
 
 --        if _OPTIONS["with-libzip"] then
 --            includedirs { path.join(_OPTIONS["with-libzip"], "lib") }
