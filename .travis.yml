@@ -23,7 +23,7 @@ before_install:
   - export CXX="g++-4.9" CC="gcc-4.9"
 
 script:
-  - premake5 --travis --with-libzip=../libzip-1.0.1 --with-box2d=../Box2D-master gmake
+  - premake-core/bin/release/premake5 --travis --with-libzip=../libzip-1.0.1 --with-box2d=../Box2D-master gmake
   - cd build
   - make
   - cd ../bin && LD_LIBRARY_PATH=. ./UnitTestd

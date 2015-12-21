@@ -8,4 +8,6 @@ set -ex
 
 git clone https://github.com/premake/premake-core.git premake-core
 cd premake-core
+git submodule init
+git submodule update
 make -f Bootstrap.mak linux
