@@ -12,6 +12,7 @@ addons:
     - cmake
     - zlib1g-dev
     - libsdl1.2-dev
+    - libssl-dev
     - libfreetype6-dev
     - libunittest++-dev
 
