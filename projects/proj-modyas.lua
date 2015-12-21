@@ -12,7 +12,6 @@ project "mod_yas"
 	files { "../src/mods/mod_yas/**.cpp", "../src/mods/mod_yas/**.c", "../src/mods/mod_yas/**.h", "../src/mods/mod_yas/**.inl" }
 	includedirs { "../src", "../src/mods" }
     libdirs { "../bin" }
-	links { "Core" }
 	
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
@@ -27,7 +26,10 @@ project "mod_yas"
 		defines { "WIN32", "SCRIPT_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 		includedirs { path.join(libdir, "zlib/include") }
 		libdirs { path.join(libdir, "zlib/lib") }
+    	links { "Core" }
 
 	filter "system:linux"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        libdirs { "../bin" }
+        linkoptions { "-lCored" }
