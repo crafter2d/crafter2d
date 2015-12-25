@@ -25,6 +25,7 @@
 #include "core/commandline/commandline.h"
 #include "core/commandline/commandlineargument.h"
 #include "core/inifile/inifile.h"
+#include "core/log/log.h"
 #include "core/physics/simulationfactoryregistry.h"
 #include "core/system/platform.h"
 #include "core/system/timer.h"
@@ -42,7 +43,7 @@
 #include "engine/client.h"
 #include "engine/server.h"
 
-#include "console.h"
+// #include "console.h"
 
 /*!
     \fn Game::Game()
@@ -86,7 +87,7 @@ bool Game::create()
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "--------------------------------------------------------\n";
 
-   Platform::getInstance().initialize();
+   c2d::Platform::getInstance().initialize();
 
    FileSystem::getInstance().addPath(UTEXT("./"));
    
@@ -95,8 +96,8 @@ bool Game::create()
    SimulationFactoryRegistry::getInstance().addFactory(new Box2DFactory());
 
    // initialize the console
-   Console& console = Console::getInstance();
-   console.create();
+   //Console& console = Console::getInstance();
+   //console.create();
 
    if ( !NetConnection::initialize() )
    {
@@ -106,7 +107,7 @@ bool Game::create()
    NetObjectFactory::getInstance().initialize();
 
    // reload the contents of the log file for the console
-   console.reload();
+   //console.reload();
 
    log << "\n-- Running Game --\n\n";
 
@@ -116,7 +117,8 @@ bool Game::create()
    // (after that, the game has to keep track of it's own state)
    if ( !initGame() )
    {
-      console.error("Aborted after failed game initialization.");
+      //console.error("Aborted after failed game initialization.");
+      log << "Aborted after failed game initialization.";
       return false;
    }
 

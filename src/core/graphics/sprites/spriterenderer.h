@@ -45,6 +45,7 @@ namespace Graphics
    {
    public:
       SpriteRenderer();
+      ~SpriteRenderer();
 
     // operations
       bool create(Device& device);
@@ -70,6 +71,9 @@ namespace Graphics
          Matrix4 world;
          Matrix4 object;
       };
+
+    // operations
+      void release();
 
     // rendering
       void renderSprites(RenderContext& context);

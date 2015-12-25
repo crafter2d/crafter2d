@@ -187,11 +187,6 @@ int SDLGameWindow::getWindowFlags(bool fullscreen)
   return flags;
 }
 
-Driver* SDLGameWindow::loadDriver()
-{
-   return doLoadDriver(UTEXT("OGLd.dll"));
-}
-
 int SDLGameWindow::getHandle() const
 {
    return -1;

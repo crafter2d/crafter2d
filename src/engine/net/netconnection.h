@@ -22,7 +22,7 @@
 
 #include "engine/engine_base.h"
 
-#ifdef WIN32
+#if defined(WIN32)
 #include <winsock2.h>
 #else
 #include <sys/types.h>

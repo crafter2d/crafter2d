@@ -8,10 +8,10 @@
 
 using namespace c2d;
 
-#ifdef WIN32
-#define DECL cdecl
+#if defined(WIN32)
+  #define DECL cdecl
 #else
-#define DECL
+  #define DECL
 #endif
 
 extern "C" SCRIPT_API Module* DECL getModule()

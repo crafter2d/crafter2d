@@ -2,6 +2,7 @@
 #include "d3ddevice.h"
 
 #include "core/smartptr/autoptr.h"
+#include "core/window/gamewindow.h"
 
 #include "texture/d3dtexture.h"
 #include "texture/d3dtextureloaderdds.h"
@@ -33,8 +34,10 @@ D3DDevice::D3DDevice():
 {
 }
 
-bool D3DDevice::create(int windowhandle, int width, int height)
+bool D3DDevice::create(GameWindow& window, int width, int height)
 {
+   int windowhandle = window.getHandle();
+
    D3D_FEATURE_LEVEL level;
    DXGI_SWAP_CHAIN_DESC sd;
    ZeroMemory(&sd, sizeof(sd));
@@ -93,14 +96,15 @@ bool D3DDevice::create(int windowhandle, int width, int height)
    mpContext->RSSetState(prasterizerstate);
 
    // set the buffer view
-   mpContext->OMSetRenderTargets(1, &mpRenderTargetView, NULL);
+   ID3D11RenderTargetView* const targets[1] = { mpRenderTargetView };
+   mpContext->OMSetRenderTargets(1, targets, NULL);
 
    // set the viewport
    CD3D11_VIEWPORT viewport(pbackbuffer, mpRenderTargetView);
    mpContext->RSSetViewports(1, &viewport);
    
    return createD2D(windowhandle, width, height)
-       && Device::create(windowhandle, width, height);
+       && Device::create(window, width, height);
 }
 
 bool D3DDevice::createD2D(int windowhandle, int width, int height)

@@ -46,8 +46,8 @@ void Box2DContactListener::collision(b2Contact* pcontact, bool begin)
    b2Fixture* pa = pcontact->GetFixtureA();
    b2Fixture* pb = pcontact->GetFixtureB();
 
-   int typeA = *((int *)pa->GetUserData());
-   int typeB = *((int *)pb->GetUserData());
+   int typeA = *(int *)pa->GetUserData();
+   int typeB = *(int *)pb->GetUserData();
 
    if ( pa->IsSensor() && typeB == Box2DSimulator::eObject )
    {

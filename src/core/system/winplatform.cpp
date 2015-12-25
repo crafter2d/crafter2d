@@ -28,6 +28,7 @@
 
 LONG WINAPI MyUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
 {
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
    _MINIDUMP_EXCEPTION_INFORMATION ExInfo;
 
    ExInfo.ThreadId = ::GetCurrentThreadId();
@@ -43,6 +44,9 @@ LONG WINAPI MyUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo
    }
    
    return EXCEPTION_EXECUTE_HANDLER;
+#else
+   return 0;
+#endif 
 }
 
 WinPlatform::WinPlatform():
@@ -55,7 +59,7 @@ WinPlatform::~WinPlatform()
 {
 }
 
-Platform::OS WinPlatform::getOS() const
+c2d::Platform::OS WinPlatform::getOS() const
 {
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
    return Platform::eWindows;
@@ -71,16 +75,17 @@ Timer& WinPlatform::getTimer()
 
 void WinPlatform::initialize()
 {
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
    SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);
+#endif
 }
 
 void* WinPlatform::loadModule(const String& name)
 {
-   std::wstring uname = name.toUtf16();
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-   return LoadLibraryEx(uname.c_str(), NULL, 0);
+   return LoadLibraryEx(name.c_str(), NULL, 0);
 #else
-   return LoadPackagedLibrary(uname.c_str(), 0);
+   return LoadPackagedLibrary(name.c_str(), 0);
 #endif
 }
 

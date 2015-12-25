@@ -1,101 +1,53 @@
 
 #include "utf.h"
 
+#include <codecvt>
+#include <locale>
 #include <string>
-#include <iconv.h>
 
-uint32_t conv_utf8_to_utf16(wchar_t* pdest, uint32_t size, const char* psrc, uint32_t length)
+/*
+std::u32string conv_utf8_to_utf32(const char* const psrc, std::size_t length)
 {
-   if ( length == 0 )
-   {
-      pdest[0] = 0;
-      return 0;
-   }
-
-   iconv_t cd;
-   cd = iconv_open("WCHAR_T", "UTF-8");
-   if ( cd == (iconv_t)-1 )
-   {
-      pdest[0] = 0;
-      return 0;
-   }
-
-   size_t inleft = length;
-   size_t outleft = size * sizeof(wchar_t);
-   const char* pinput = psrc;
-   char* poutput = (char*) pdest;
-   size_t converted = iconv (cd, (char **) &pinput, &inleft, (char**) &poutput, &outleft);
-   if ( converted == (size_t) -1 )
-   {
-      if ( errno == EINVAL )
-      {
-          // invalid sequence, we ignore the rest
-      }
-      else
-      {
-
-      }
-   }
-
-   iconv(cd, NULL, NULL, &poutput, &outleft);
-   iconv_close(cd);
-
-   *((wchar_t *) poutput) = L'\0';
-
-   return (wchar_t *) poutput - pdest;
+   std::wstring_convert<std::codecvt_utf8<__int32>, __int32> utf32conv;
+   return (std::u32string)(utf32conv.from_bytes(psrc, &psrc[length]));
 }
 
-char* conv_utf16_to_utf8(const wchar_t* psrc, uint32_t length)
+std::u32string conv_utf8_to_utf32(const std::string& src)
 {
-   iconv_t cd;
-   cd = iconv_open("UTF-8", "WCHAR_T");
-   if ( cd == (iconv_t)-1 )
-   {
-      return NULL;
-   }
+   std::wstring_convert<std::codecvt_utf8<__int32>, __int32> utf32conv;
+   return utf32conv.from_bytes(src);
+}
 
-   size_t totalsize = length * sizeof(wchar_t) + 1;
-   size_t inleft = totalsize;
-   size_t outleft = inleft;
+std::string conv_utf16_to_utf8(const std::u16string& src)
+{
+   std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
+   return conv.to_bytes(src);
+}
 
-   char* presult = (char*) malloc(totalsize);
+std::string conv_utf32_to_utf8(const std::u32string& src)
+{
+   std::wstring_convert<std::codecvt_utf8<__int32>, __int32> conv;
+   return conv.to_bytes(src);
+}
+*/
 
-   const wchar_t* pinput = psrc;
-   char* poutput = presult;
+std::string conv_wchar_to_utf8(const std::wstring& src)
+{
+   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+   return converter.to_bytes(src);
+}
 
-   do
-   {
-      errno = 0;
+std::wstring conv_utf8_to_wchar(const char* const psrc, std::size_t length)
+{
+   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+   if ( length == 0 )
+      return converter.from_bytes(psrc);
+   else
+      return converter.from_bytes(psrc, &psrc[length]);
+}
 
-      size_t converted = iconv (cd, (char **) &pinput, &inleft, (char**) &poutput, &outleft);
-      if ( converted == (size_t)-1 )
-      {
-         if ( errno == E2BIG )
-         {
-            // need to resize the buffer
-            char* ptemp = (char*) realloc(presult, totalsize + inleft);
-            if ( ptemp == NULL )
-            {
-               free(presult);
-               return NULL;
-            }
-            
-            presult = ptemp;
-            outleft += inleft;
-            totalsize += inleft;
-         }
-         else
-         {
-            break;
-         }
-      }
-   }
-   while ( inleft > 0 );
-
-   iconv(cd, NULL, NULL, &poutput, &outleft);
-   iconv_close(cd);
-
-   *poutput = '\0';
-
-   return presult;
+std::wstring conv_utf8_to_wchar(const std::string& src)
+{
+   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+   return converter.from_bytes(src);
 }

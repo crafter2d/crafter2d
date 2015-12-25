@@ -48,12 +48,13 @@ public:
    static Matrix4 b2ToMatrix(const b2Transform& tf);
    static b2Vec2 vectorToB2(const Vector& v);
 
-   enum BodyType { eBound, eObject };
+   static const int eBound = 1;
+   static const int eObject = 2;
 
    struct BodyInfo {
-      BodyInfo(BodyType type): mType(type) {}
+      BodyInfo(int type): mType(type) {}
 
-      BodyType mType;
+      int mType;
    };
 
    Box2DSimulator();

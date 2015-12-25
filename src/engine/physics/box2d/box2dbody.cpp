@@ -102,7 +102,7 @@ b2Fixture* Box2DBody::createSensor(float halfx, float halfy, const b2Vec2& cente
    b2FixtureDef sensordef;
    sensordef.isSensor = true;
    sensordef.shape    = &sensor;
-   sensordef.userData = (void*)Box2DSimulator::eObject;
+   sensordef.userData = (void*)& Box2DSimulator::eObject;
 
    return mBody.CreateFixture(&sensordef);
 }

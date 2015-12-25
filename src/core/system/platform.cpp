@@ -21,38 +21,38 @@
 
 #include "core/defines.h"
 
-#ifdef WIN32
-#  include "winplatform.h"
-#elif WINRT
-#  include "winplatform.h"
+#if defined(WIN32)
+#include "winplatform.h"
 #elif LINUX
-#  include "linuxplatform.h"
-#endif
-
-Platform& Platform::getInstance()
-{
-#ifdef WIN32
-   static WinPlatform platform;
-#elif WINRT
-   static WinPlatform platform;
-#elif LINUX
-   static LinuxPlatform platform;
+# include "linuxplatform.h"
 #else
-   ASSERT_MSG("Unknown platform!");
+ASSERT_MSG("Unknown platform!");
 #endif
 
-   return platform;
-}
-
-Platform::Platform()
+namespace c2d
 {
-}
+#ifdef WIN32
+   Platform* Platform::spPlatform = new WinPlatform();
+#elif LINUX
+   Platform* Platform::spPlatform = new LinuxPlatform();
+#endif
 
-Platform::~Platform()
-{
-}
+   Platform& Platform::getInstance()
+   {
+      ASSERT_PTR(spPlatform);
+      return *spPlatform;
+   }
 
-Timer& Platform::getTimer()
-{
-   PURE_VIRTUAL
+   Platform::Platform()
+   {
+   }
+
+   Platform::~Platform()
+   {
+   }
+
+   Timer& Platform::getTimer()
+   {
+      PURE_VIRTUAL
+   }
 }

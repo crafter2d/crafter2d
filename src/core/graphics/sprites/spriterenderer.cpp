@@ -49,6 +49,11 @@ SpriteRenderer::SpriteRenderer():
 {
 }
 
+SpriteRenderer::~SpriteRenderer()
+{
+   release();
+}
+
 static const int SpriteVertices = 4;
 static const int SpriteIndices  = 6;
 
@@ -92,6 +97,14 @@ bool SpriteRenderer::create(Device& device)
    }
 
    return true;
+}
+
+void SpriteRenderer::release()
+{
+   delete mpVB;
+   delete mpIB;
+   delete mpUB;
+   delete mpEffect;
 }
 
 void SpriteRenderer::setOffset(RenderContext& context, const Vector& offset)

@@ -48,7 +48,7 @@ namespace Graphics
 
    // - Creation
 
-   bool Device::create(int windowhandle, int width, int height)
+   bool Device::create(GameWindow& window, int width, int height)
    {
       mpContext = createRenderContext();
       return mpContext != NULL;

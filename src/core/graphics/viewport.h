@@ -32,6 +32,8 @@ namespace Graphics
       Viewport(int left, int top, int width, int height);
       ~Viewport();
 
+      Viewport& operator=(const Viewport& that);
+
     // get/set
       int  getLeft() const;
       void setLeft(int left);

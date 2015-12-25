@@ -1,0 +1,388 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\engine\actionmap.cpp" />
+    <ClCompile Include="..\..\..\src\engine\aicontroller.cpp" />
+    <ClCompile Include="..\..\..\src\engine\callback.cpp" />
+    <ClCompile Include="..\..\..\src\engine\client.cpp" />
+    <ClCompile Include="..\..\..\src\engine\clientgamewindowlistener.cpp" />
+    <ClCompile Include="..\..\..\src\engine\clientkeyeventdispatcher.cpp" />
+    <ClCompile Include="..\..\..\src\engine\clientmouseeventdispatcher.cpp" />
+    <ClCompile Include="..\..\..\src\engine\engine_base.cpp" />
+    <ClCompile Include="..\..\..\src\engine\game.cpp" />
+    <ClCompile Include="..\..\..\src\engine\hashtable.cpp" />
+    <ClCompile Include="..\..\..\src\engine\inputcontroller.cpp" />
+    <ClCompile Include="..\..\..\src\engine\keymap.cpp" />
+    <ClCompile Include="..\..\..\src\engine\movie.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\actionevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\aggregateevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\connectevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\connectreplyevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\deleteobjectevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\disconnectevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\joinevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\netevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\newobjectevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\requestobjectevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\scriptevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\serverdownevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\updateobjectevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\viewportevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\events\worldchangedevent.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netaddress.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netclients.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netconnection.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\neteventfactory.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netobject.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netobjectfactory.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netobjectstream.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netpackage.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netsocket.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netsocketexception.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netstatistics.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netstatisticsitem.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netstream.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\runtimeinfo.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\sortedpackagelist.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dbody.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dcontactlistener.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dfactory.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2draycastcallback.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2drevolutejoint.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dropejoint.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dsimulator.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionbox.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncircle.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncirclecirclecontactgenerator.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncircleplanecontactgenerator.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncontact.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncontactbody.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncontactgenerator.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisiondata.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisiondetector.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionplane.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionresolver.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionresolverinfo.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionshape.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionshapes.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\physicsbody.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\physicsfactory.cpp" />
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\physicssimulator.cpp" />
+    <ClCompile Include="..\..\..\src\engine\pickvisitor.cpp" />
+    <ClCompile Include="..\..\..\src\engine\player.cpp" />
+    <ClCompile Include="..\..\..\src\engine\playerworldobserver.cpp" />
+    <ClCompile Include="..\..\..\src\engine\process.cpp" />
+    <ClCompile Include="..\..\..\src\engine\processnetobserver.cpp" />
+    <ClCompile Include="..\..\..\src\engine\script_engine.cpp" />
+    <ClCompile Include="..\..\..\src\engine\server.cpp" />
+    <ClCompile Include="..\..\..\src\engine\serverdirtyset.cpp" />
+    <ClCompile Include="..\..\..\src\engine\serverworldobserver.cpp" />
+    <ClCompile Include="..\..\..\src\engine\state.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\engine\actionmap.h" />
+    <ClInclude Include="..\..\..\src\engine\aicontroller.h" />
+    <ClInclude Include="..\..\..\src\engine\callback.h" />
+    <ClInclude Include="..\..\..\src\engine\client.h" />
+    <ClInclude Include="..\..\..\src\engine\clientgamewindowlistener.h" />
+    <ClInclude Include="..\..\..\src\engine\clientkeyeventdispatcher.h" />
+    <ClInclude Include="..\..\..\src\engine\clientmouseeventdispatcher.h" />
+    <ClInclude Include="..\..\..\src\engine\engine_base.h" />
+    <ClInclude Include="..\..\..\src\engine\game.h" />
+    <ClInclude Include="..\..\..\src\engine\hashtable.h" />
+    <ClInclude Include="..\..\..\src\engine\inputcontroller.h" />
+    <ClInclude Include="..\..\..\src\engine\keymap.h" />
+    <ClInclude Include="..\..\..\src\engine\keys.h" />
+    <ClInclude Include="..\..\..\src\engine\movie.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\actionevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\aggregateevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\connectevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\connectreplyevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\deleteobjectevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\disconnectevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\joinevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\netevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\newobjectevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\requestobjectevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\scriptevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\serverdownevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\updateobjectevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\viewportevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\events\worldchangedevent.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netaddress.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netclients.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netconnection.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netdefines.h" />
+    <ClInclude Include="..\..\..\src\engine\net\neteventfactory.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netobject.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netobjectfactory.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netobjectstream.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netobserver.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netpackage.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netsocket.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netsocketexception.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netstatistics.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netstatisticsitem.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netstream.h" />
+    <ClInclude Include="..\..\..\src\engine\net\runtimeinfo.h" />
+    <ClInclude Include="..\..\..\src\engine\net\sortedpackagelist.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dbody.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dcontactlistener.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dfactory.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2djoint.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2draycastcallback.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2drevolutejoint.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dropejoint.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dsimulator.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionbox.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncircle.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncirclecirclecontactgenerator.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncircleplanecontactgenerator.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncontact.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncontactbody.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncontactgenerator.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisiondata.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisiondetector.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionplane.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionresolver.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionresolverinfo.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionshape.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionshapes.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\physicsbody.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\physicsfactory.h" />
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\physicssimulator.h" />
+    <ClInclude Include="..\..\..\src\engine\pickvisitor.h" />
+    <ClInclude Include="..\..\..\src\engine\player.h" />
+    <ClInclude Include="..\..\..\src\engine\playerworldobserver.h" />
+    <ClInclude Include="..\..\..\src\engine\process.h" />
+    <ClInclude Include="..\..\..\src\engine\processnetobserver.h" />
+    <ClInclude Include="..\..\..\src\engine\script_engine.h" />
+    <ClInclude Include="..\..\..\src\engine\server.h" />
+    <ClInclude Include="..\..\..\src\engine\serverdirtyset.h" />
+    <ClInclude Include="..\..\..\src\engine\serverworldobserver.h" />
+    <ClInclude Include="..\..\..\src\engine\state.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\engine\actionmap.inl" />
+    <None Include="..\..\..\src\engine\client.inl" />
+    <None Include="..\..\..\src\engine\game.inl" />
+    <None Include="..\..\..\src\engine\net\events\actionevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\connectevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\connectreplyevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\deleteobjectevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\netevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\newobjectevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\requestobjectevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\updateobjectevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\viewportevent.inl" />
+    <None Include="..\..\..\src\engine\net\events\worldchangedevent.inl" />
+    <None Include="..\..\..\src\engine\net\netconnection.inl" />
+    <None Include="..\..\..\src\engine\net\netobject.inl" />
+    <None Include="..\..\..\src\engine\net\netobjectfactory.inl" />
+    <None Include="..\..\..\src\engine\net\netstatistics.inl" />
+    <None Include="..\..\..\src\engine\net\netstatisticsitem.inl" />
+    <None Include="..\..\..\src\engine\net\runtimeinfo.inl" />
+    <None Include="..\..\..\src\engine\physics\physengine\collisionresolverinfo.inl" />
+    <None Include="..\..\..\src\engine\physics\physengine\physicsbody.inl" />
+    <None Include="..\..\..\src\engine\pickvisitor.inl" />
+    <None Include="..\..\..\src\engine\player.inl" />
+    <None Include="..\..\..\src\engine\process.inl" />
+    <None Include="..\..\..\src\engine\state.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{755ab10c-b219-4180-a337-6a3f72e2d0c5}</ProjectGuid>
+    <Keyword>DynamicLibrary</Keyword>
+    <ProjectName>engine</ProjectName>
+    <RootNamespace>engine</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>true</AppContainerApplication>
+    <ApplicationType>Windows Store</ApplicationType>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.10240.0</WindowsTargetPlatformMinVersion>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalIncludeDirectories>../../../src;$(ProjectDir);$(GeneratedFilesDir);$(IntDir);F:\Devel\externallibs\uwp\box2d\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;ENGINE_EXPORTS;WIN32;_WINDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <AdditionalDependencies>WindowsApp.lib;Core.lib;Box2Dd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)\;F:\Devel\externallibs\uwp\box2d\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

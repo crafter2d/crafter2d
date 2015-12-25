@@ -13,8 +13,13 @@
 
 namespace c2d
 {
-   typedef Module* (*PGETMODULE)();
-   typedef ModuleCollection* (*PGETMODULECOLLECTION)();
+   ModuleManager ModuleManager::sInstance;
+
+   // static 
+   ModuleManager& ModuleManager::getInstance()
+   {
+      return sInstance;
+   }
 
    ModuleManager::ModuleManager() :
       mModules()
@@ -32,7 +37,7 @@ namespace c2d
    {
       std::vector<String> filenames;
       FileSystem& fs = FileSystem::getInstance();
-   #ifdef WIN32
+   #if defined(WIN32)
       if ( !fs.find(UTEXT("mod_*.dll"), filenames, false) )
    #else
       if ( !fs.find(UTEXT("libmod_*.so"), filenames, false) )
@@ -54,7 +59,7 @@ namespace c2d
    {
       clear();
 
-      auto close = [](void* pmodule) { Platform::getInstance().freeModule(pmodule); };
+      auto close = [](void* pmodule) { c2d::Platform::getInstance().freeModule(pmodule); };
       std::for_each(mHandles.begin(), mHandles.end(), close);
    }
 
@@ -67,11 +72,31 @@ namespace c2d
 
    // - Maintenance
 
+   void ModuleManager::exec(PGETMODULE pfunc)
+   {
+      ASSERT_PTR(pfunc);
+      std::unique_ptr<Module> module((*pfunc)());
+      if ( !module )
+      {
+         throw c2d::Exception(UTEXT("Could not get the module handle."));
+      }
+      add(module.release());
+   }
+
+   void ModuleManager::exec(PGETMODULECOLLECTION pfunc)
+   {
+      std::unique_ptr<ModuleCollection> collection((*pfunc)());
+      if ( collection )
+      {
+         add(*collection);
+      }
+   }
+
    void ModuleManager::add(const String& filename)
    {
       Log::getInstance().info(UTEXT("Loading module ") + filename);
       
-      Platform& platform = Platform::getInstance();
+      Platform& platform = c2d::Platform::getInstance();
       void* pmodule = platform.loadModule(filename);
       if ( pmodule != NULL )
       {

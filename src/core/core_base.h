@@ -20,14 +20,17 @@
 #ifndef CORE_BASE_H_
 #define CORE_BASE_H_
 
-#ifdef WIN32
-    #ifdef CORE_EXPORTS
+#if defined(WIN32)
+  #ifdef CORE_EXPORTS
     #define CORE_API __declspec(dllexport)
-    #else
+    #define CORE_TEMPLATE
+  #else
     #define CORE_API __declspec(dllimport)
-    #endif
+    #define CORE_TEMPLATE extern
+  #endif
 #else
     #define CORE_API
+    #define CORE_TEMPLATE
 #endif
 
 #endif // CORE_BASE_H_

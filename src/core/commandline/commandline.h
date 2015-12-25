@@ -32,7 +32,7 @@ class CORE_API CommandLine
 
 public:
    CommandLine();
-   CommandLine(int argc, const char *argv[]);
+   CommandLine(int argc, const char * const argv[]);
    ~CommandLine();
 
  // query

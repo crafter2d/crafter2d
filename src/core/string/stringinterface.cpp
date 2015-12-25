@@ -71,7 +71,7 @@ std::vector<String> StringInterface::tokenize(const String& text, char separator
       if ( text[index] == separator )
       {
          result.push_back(value.trim());
-         value.setTo(NULL, 0);
+         value.clear();
       }
       else
       {

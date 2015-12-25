@@ -22,6 +22,7 @@
 #include <cwctype>
 #include <string.h>
 #include <functional>
+#include <algorithm>
 
 #include "core/defines.h"
 #include "core/conv/numberconverter.h"
@@ -84,118 +85,114 @@ String String::fromUtf8(const char* pdata)
 }
 
 String::String():
-   mpString(NULL),
-   mCapacity(0),
-   mLength(0)
+   mData()
+{
+}
+
+String::String(const String& that) :
+   mData(that.mData)
+{
+}
+
+String::String(String&& that) :
+   mData(std::move(that.mData))
+{
+}
+
+String::String(UChar ch):
+   mData(&ch, 1)
 {
 }
 
 String::String(const UChar* pdata):
-   mpString(NULL),
-   mCapacity(0),
-   mLength(0)
+   mData(pdata)
 {
-   setTo(pdata, wcslen(pdata));
 }
 
 String::String(const std::string& that):
-   mpString(NULL),
-   mCapacity(0),
-   mLength(0)
+   mData()
 {
-   setToUtf8(that.c_str(), that.length());
+   setToUtf8(that);
 }
 
 String::String(const std::wstring& that):
-   mpString(NULL),
-   mCapacity(0),
-   mLength(0)
+   mData(that)
 {
-   setTo(that.c_str(), that.length());
-}
-
-String::String(const String& that):
-   mpString(NULL),
-   mCapacity(0),
-   mLength(0)
-{
-   wchar_t* pdata = getBuffer(that.mLength);
-   wmemcpy(pdata, that.mpString, that.mLength);
-   mLength = that.mLength;
-   mpString[mLength] = 0;
 }
 
 String::~String()
 {
-   free(mpString);
 }
 
 const UChar String::operator[](int index) const
 {
-   return mpString[index];
+   return mData[index];
 }
 
 UChar String::operator[](int index)
 {
-   return mpString[index];
+   return mData[index];
 }
 
 const String& String::operator=(const UChar c)
 {
-   wchar_t* pbuffer = getBuffer(1);
-   pbuffer[0] = c;
-   mLength = 1;
+   mData = c;
    return *this;
 }
 
 const String& String::operator=(const String& that)
 {
-   setTo(that.mpString, that.mLength);
+   mData = that.mData;
+   return *this;
+}
+
+const String& String::operator=(String&& that)
+{
+   mData = std::move(that.mData);
    return *this;
 }
 
 const String& String::operator=(const UChar* pstring)
 {
-   setTo(pstring, wcslen(pstring));
+   mData.assign(pstring);
    return *this;
 }
 
 const String& String::operator=(const std::string& that)
 {
-   setToUtf8(that.c_str(), that.length());
+   setToUtf8(that);
    return *this;
 }
 
 bool String::operator<=(const String& that) const
 {
-   return compare(that) <= 0;
+   return mData <= that.mData;
 }
 
 bool String::operator<(const String& that) const
 {
-   return compare(that) < 0;
+   return mData < that.mData;
 }
 
 bool String::operator>(const String& that) const
 {
-   return compare(that) > 0;
+   return mData > that.mData;
 }
 
 bool String::operator>=(const String& that) const
 {
-   return compare(that) >= 0;
+   return mData >= that.mData;
 }
 
 const String& String::operator+=(UChar c)
 {
-   wchar_t* pdata = getBuffer(mLength + 1);
-   pdata[mLength++] = c;
-   pdata[mLength] = 0;
+   mData += c;
    return *this;
 }
 
 const String& String::operator+=(const UChar* pdata)
 {
+   mData.append(pdata);
    return *this;
 }
 
@@ -236,30 +233,17 @@ CORE_API String operator+(const UChar ch, const String& right)
 
 bool String::isEmpty() const
 {
-   return mLength == 0;
+   return mData.empty();
 }
 
 uint32_t String::length() const
 {
-   return mLength;
+   return mData.length();
 }
 
 int String::compare(const String& that) const
 {
-   if ( mLength == 0 && that.mLength == 0 )
-   {
-      return 0;
-   }
-   if ( mLength == 0 )
-   {
-      return -1;
-   }
-   else if ( that.mLength == 0 )
-   {
-      return 1;
-   }
-
-   return wcscmp(mpString, that.mpString);
+   return mData.compare(that.mData);
 }
 
 int String::hashCode() const
@@ -268,16 +252,11 @@ int String::hashCode() const
    return str_hash(toUtf8()); // need to write it here
 }
 
-const UChar* String::constData() const
-{
-   return mpString;
-}
-
 // - Comparison
 
 bool String::operator==(const String& that) const
 {
-   return (mLength == that.mLength) && wcsncmp(mpString, that.mpString, mLength) == 0;
+   return mData == that.mData;
 }
 
 bool String::operator!=(const String& that) const
@@ -303,46 +282,15 @@ String String::toString() const
 
 // - Operations
 
-UChar* String::getBuffer(uint32_t length)
-{
-   if ( mCapacity < length + 1 )
-   {
-      wchar_t* presult = (wchar_t*) realloc(mpString, (length + 1) * sizeof(wchar_t));
-      if ( presult == NULL )
-      {
-         // no more memory!!
-      }
-
-      mpString = presult;
-      mCapacity = length + 1;
-   }
-
-   return mpString;
-}
-
 const String& String::toLower()
 {
-#ifdef WINDOWS
-   _wcslwr_s(mpString, mLength + 1);
-#else
-   for ( uint32_t index = 0; index < mLength; ++index )
-   {
-      mpString[index] = std::towlower(mpString[index]);
-   }
-#endif
+   std::transform(mData.begin(), mData.end(), mData.begin(), tolower);
    return *this;
 }
 
 const String& String::toUpper()
 {
-#ifdef WINDOWS
-   _wcsupr_s(mpString, mLength + 1);
-#else
-   for ( uint32_t index = 0; index < mLength; ++index )
-   {
-      mpString[index] = std::towupper(mpString[index]);
-   }
-#endif
+   std::transform(mData.begin(), mData.end(), mData.begin(), toupper);
    return *this;
 }
 
@@ -355,78 +303,40 @@ const String& String::trim()
 
 void String::trimLeft()
 {
-   uint32_t index = 0;
-   for ( index = 0; index < mLength; ++index )
+   auto it = std::find_if_not(mData.begin(), mData.end(), Char::isWhitespace);
+   if ( it != mData.end() )
    {
-      if ( !Char::isWhitespace(mpString[index]) )
-      {
-         break;
-      }
-   }
-
-   if ( index > 0 )
-   {
-      // move the string to left
-      mLength -= index;
-      wmemmove(mpString, &mpString[index], mLength);
+      mData.erase(mData.begin(), it);
    }
 }
 
 void String::trimRight()
 {
-   int index = mLength - 1;
-   for ( ; index >= 0; --index )
+   auto it = std::find_if_not(mData.rbegin(), mData.rend(), Char::isWhitespace);
+   if ( it != mData.rend() )
    {
-      wchar_t c = mpString[index];
-      if ( !Char::isWhitespace(c) )
-      {
-         break;
-      }
+      mData.erase(it.base(), mData.end());
    }
-
-   mLength = index + 1;
-   mpString[mLength] = 0;
 }
 
 void String::append(const String& that)
 {
-   wchar_t* pdata = getBuffer(mLength + that.mLength);
-   wchar_t* pstart = &pdata[mLength];
-   wmemmove(pstart, that.mpString, that.mLength);
-   mLength += that.mLength;
-   pdata[mLength] = 0;
+   mData.append(that.mData);
 }
 
-void String::setTo(const UChar* ptext, uint32_t length)
+void String::assign(const UChar* ptext, std::size_t length)
 {
-   wchar_t* pbuffer = getBuffer(length);
-   wcsncpy(pbuffer, ptext, length);
-   pbuffer[length] = 0;
-   mLength = length;
+   mData.assign(ptext, length);
 }
 
 void String::insert(int index, const String& text)
 {
-   uint32_t newlen = mLength + text.length();
-   wchar_t* pbuffer = getBuffer(newlen);
-
-   wmemmove(&pbuffer[index + text.length()], &pbuffer[index], mLength - index); 
-   wmemmove(&pbuffer[index], text.mpString, text.mLength);
-
-   mLength += text.mLength;
-   pbuffer[mLength] = 0;
+   mData.insert(index, text.mData);
 }
 
 void String::replace(UChar original, UChar newtext)
 {
-   for ( uint32_t index = 0; index < mLength; ++index )
-   {
-      wchar_t c = mpString[index];
-      if ( c == original )
-      {
-         mpString[index] = newtext;
-      }
-   }
+   std::replace(mData.begin(), mData.end(), original, newtext);
 }
 
 void String::replace(const String& original, const String& with)
@@ -440,54 +350,36 @@ void String::replace(const String& original, const String& with)
 
 void String::replace(int start, int count, const String& with)
 {
-   wchar_t* ptemp = NULL;
-   uint32_t remainder = wcslen(&mpString[start + count]);
-   if ( remainder > 0 )
-   {
-      ptemp = new wchar_t[remainder];
-      wmemcpy(ptemp, &mpString[start+count], remainder);
-   }
-
-   uint32_t newlen = mLength - count + with.mLength;
-   wchar_t* pdata = getBuffer(newlen);
-   wmemcpy(&mpString[start], with.mpString, with.mLength);
-
-   if ( remainder > 0 )
-   {
-      wmemcpy(&mpString[start + with.mLength], ptemp, remainder);
-   }
-
-   mLength = newlen;
-   mpString[newlen] = 0;
+   mData.replace(start, count, with.mData);
 }
 
 /// removes characters [start, start+count>.
 void String::remove(int start, int count)
 {
-   uint32_t len = wcslen(&mpString[start + count]);
-   wmemmove(&mpString[start], &mpString[start + count], len);
-   mLength = start + len;
-   mpString[mLength] = 0;
+   mData.erase(start, count);
+}
+
+void String::clear()
+{
+   mData.clear();
 }
 
 String String::subStr(int start, int count) const
 {
    String result;
-   result.setTo(&mpString[start], count);
+   result.mData = mData.substr(start, count);
    return result;
 }
 
 String String::left(int to) const
 {
-   String result;
-   result.setTo(mpString, to + 1);
-   return result;
+   return subStr(0, to);
 }
 
 String String::right(int from) const
 {
    String result;
-   result.setTo(&mpString[from], mLength - from);
+   result.mData = mData.substr(from, mData.length() - from);
    return result;
 }
 
@@ -495,41 +387,43 @@ String String::unescape() const
 {
    String result;
    uint32_t pos = 0;
-   char digs[9]="\0\0\0\0\0\0\0\0";
+   char digs[9]= "\0\0\0\0\0\0\0\0";
    int dno = 0;
-   wchar_t* pdata = result.getBuffer(mLength);
-   for ( uint32_t index = 0; index < mLength; ++index )
+
+   result.mData.reserve(mData.length());
+
+   for ( uint32_t index = 0; index < mData.length(); ++index )
    {
-      if ( mpString[index] == '\\' )
+      UChar ch = mData[index];
+      if ( ch == '\\' )
       {
-         UChar c = mpString[++index];
+         UChar c = mData[++index];
          switch ( c )
          {
          case L'u':
             index++;
-            while ( hex_digit(mpString[index]) && dno < 4 )
+            while ( isxdigit(mData[index]) && dno < 4 )
             {
-               digs[dno++] = mpString[index++];
+               digs[dno++] = static_cast<char>(mData[index++]);
             }
 
             if (dno > 0)
             {
-               pdata[pos++] = (wchar_t) strtol(digs, NULL, 16);
+               result.mData[pos++] = (wchar_t) strtol(digs, NULL, 16);
             }
             break;
 
          default:
-            pdata[pos++] = convertEscape(c);
+            result.mData[pos++] = convertEscape(c);
             break;
          }
       }
       else
       {
-         pdata[pos++] = mpString[index];
+         result.mData[pos++] = ch;
       }
    }
-   result.mLength = pos;
-   result.mpString[pos] = 0;
+
    return result;
 }
 
@@ -554,64 +448,49 @@ String& String::arg(int arg, int value)
 
 // - Searching
 
-int String::indexOf(const String& that, int start) const
+std::size_t String::indexOf(const String& that, int start) const
 {
-   ASSERT(start >= 0 && start < mLength);
-   wchar_t* ploc = wcsstr(&mpString[start], that.mpString);
-   return ploc == NULL ? -1 : ploc - mpString;
+   ASSERT(start >= 0 && start < mData.length());
+   return mData.find(that.mData, start);
 }
 
-int String::indexOf(UChar character, int start) const
+std::size_t String::indexOf(UChar character, int start) const
 {
-   wchar_t* ploc = wcschr(&mpString[start], character);
-   return ploc == NULL ? -1 : ploc - mpString;
+   return mData.find(character, start);
 }
 
-int String::lastIndexOf(UChar character) const
+std::size_t String::lastIndexOf(UChar character) const
 {
-   wchar_t* ppos = wcsrchr(mpString, character);
-   return ppos == NULL ? -1 : ppos - mpString;
+   return mData.rfind(character);
 }
 
-int String::lastIndexOf(UChar character, int start, int end) const
+std::size_t String::lastIndexOf(UChar character, int start, int end) const
 {
-   wchar_t* presult = NULL;
-   wchar_t* ploc = &mpString[start];
-   do
+   auto index = mData.rfind(character, end);
+   if ( index >= start )
    {
-      ploc = wcschr(ploc, character);
-      if ( ploc != NULL && ploc < &mpString[end] )
-      {
-         presult = ploc;
-         ploc++;
-      }
+      return index;
    }
-   while ( ploc != NULL && ploc < &mpString[end] );
-
-   return presult == NULL ? -1 : presult - &mpString[start];
+   return -1;
 }
 
 // - Conversion
 
 std::string String::toUtf8() const
 {
-   std::string result;
-   if ( mLength > 0 )
+   if ( !mData.empty() )
    {
-      char* pdata = conv_utf16_to_utf8(mpString, mLength);
-      result.assign(pdata);
-      delete[] pdata;
+      return conv_wchar_to_utf8(mData);
    }
-   return result;
+   return std::string();
 }
 
-void String::setToUtf8(const char* pdata, uint32_t length)
+void String::setToUtf8(const char* pdata, std::size_t length)
 {
-   wchar_t* pbuffer = getBuffer(length);
-   mLength = conv_utf8_to_utf16(pbuffer, length, pdata, length);
+   mData = conv_utf8_to_wchar(pdata, length);
 }
 
-std::wstring String::toUtf16() const
+void String::setToUtf8(const std::string& value)
 {
-   return std::wstring(mpString, mLength);
+   mData = conv_utf8_to_wchar(value);
 }

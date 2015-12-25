@@ -90,7 +90,7 @@ String WorldWriter::readString(DataStream& stream)
       stream.readBlob(pdata, bytes);
       pdata[chars] = 0;
 
-      result.setTo(pdata, chars);
+      result.assign(pdata, chars);
    }
    return result;
 }

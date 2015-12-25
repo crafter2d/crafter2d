@@ -38,7 +38,7 @@ namespace c2d
          return false;
       }
 
-      FMOD_SPEAKERMODE speakermode = FMOD_SPEAKERMODE_STEREO;
+      /*FMOD_SPEAKERMODE speakermode = FMOD_SPEAKERMODE_STEREO;
       result = mpSystem->getDriverCaps(0, NULL, NULL, &speakermode);
       if ( FAILED(result) )
       {
@@ -49,7 +49,7 @@ namespace c2d
       if ( FAILED(result) )
       {
          return false;
-      }
+      }*/
 
       result = mpSystem->init(32, FMOD_INIT_NORMAL, 0);
       if ( FAILED(result) )
@@ -81,7 +81,7 @@ namespace c2d
    Sound* FModSoundManager::createSound(const String& filename) const
    {
       FMOD::Sound* psound = NULL;
-      FMOD_RESULT result = mpSystem->createSound(filename.toUtf8().c_str(), FMOD_HARDWARE, 0, &psound);
+      FMOD_RESULT result = mpSystem->createSound(filename.toUtf8().c_str(), FMOD_DEFAULT, 0, &psound);
       if ( SUCCEEEDED(result) )
       {
          return new FModSound(psound);
@@ -97,7 +97,7 @@ namespace c2d
       info.length = stream.getDataSize();
 
       FMOD::Sound* psound = NULL;
-      FMOD_RESULT result = mpSystem->createSound(stream.getData(), FMOD_HARDWARE | FMOD_OPENMEMORY, &info, &psound);
+      FMOD_RESULT result = mpSystem->createSound(stream.getData(), FMOD_DEFAULT | FMOD_OPENMEMORY, &info, &psound);
       if ( SUCCEEEDED(result) )
       {
          return new FModSound(psound);
@@ -110,7 +110,7 @@ namespace c2d
    bool FModSoundManager::play(const Sound& sound)
    {
       const FModSound& fmodsound = static_cast<const FModSound&>(sound);
-      FMOD_RESULT result = mpSystem->playSound(FMOD_CHANNEL_FREE, fmodsound.mpSound, false, &fmodsound.mpChannel);
+      FMOD_RESULT result = mpSystem->playSound(fmodsound.mpSound, 0, false, &fmodsound.mpChannel);
       return SUCCEEEDED(result);
    }
 

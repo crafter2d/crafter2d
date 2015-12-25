@@ -30,6 +30,7 @@ namespace Graphics
    {
    public:
       RenderContext();
+      virtual ~RenderContext();
 
     // get/set
       const Color& getClearColor() const;

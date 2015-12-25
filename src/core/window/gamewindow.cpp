@@ -60,6 +60,11 @@ void GameWindow::doDestroy()
 {
 }
 
+bool GameWindow::initDevice(Graphics::Device& device)
+{
+   return true;
+}
+
 // - Query
    
 int GameWindow::getWidth() const
@@ -70,27 +75,6 @@ int GameWindow::getWidth() const
 int GameWindow::getHeight() const
 {
    return 0;
-}
-
-// - Operations
-
-typedef Driver* (*PDRIVER)();
-
-Driver* GameWindow::doLoadDriver(const String& driver)
-{
-   void* pmodule = Platform::getInstance().loadModule(driver);
-   if ( pmodule == NULL )
-   {
-      return NULL;
-   }
-
-   PDRIVER pdriverfnc = (PDRIVER)Platform::getInstance().getFunctionAddress(pmodule, UTEXT("getDriver"));
-   if ( pdriverfnc == NULL )
-   {
-      return NULL;
-   }
-
-   return pdriverfnc();
 }
 
 // - Dispatchers

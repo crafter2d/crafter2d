@@ -23,7 +23,7 @@
 #include "platform.h"
 #include "wintimer.h"
 
-class WinPlatform : public Platform
+class WinPlatform : public c2d::Platform
 {
 public:
    WinPlatform();

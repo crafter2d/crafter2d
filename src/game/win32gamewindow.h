@@ -2,7 +2,7 @@
 #ifndef WIN32_GAMEWINDOW_H
 #define WIN32_GAMEWINDOW_H
 
-#include "engine/window/gamewindow.h"
+#include "core/window/gamewindow.h"
 
 #include <windows.h>
 
@@ -15,8 +15,6 @@ public:
    virtual int getHandle() const;
    virtual int getWidth() const;
    virtual int getHeight() const;
-
-   virtual Driver* loadDriver() override;
 
  // overloads
    virtual void resize(int width, int height);

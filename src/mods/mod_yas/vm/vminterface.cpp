@@ -115,7 +115,7 @@ void InternalString_indexOf(VirtualCall& accessor)
 
    UChar c = accessor.getChar(1);
 
-   accessor.setResult(thisstring.indexOf(c));
+   accessor.setResult(static_cast<int>(thisstring.indexOf(c)));
 }
 
 void InternalString_lastIndexOf(VirtualCall& accessor)
@@ -124,7 +124,7 @@ void InternalString_lastIndexOf(VirtualCall& accessor)
 
    UChar c = accessor.getChar(1);
 
-   accessor.setResult(thisstring.lastIndexOf(c));
+   accessor.setResult(static_cast<int>(thisstring.lastIndexOf(c)));
 }
 
 void Char_isAlphaNum(VirtualCall& accessor)

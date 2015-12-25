@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "spritedefinition.h"
 
+#include "core/graphics/animator.h"
+#include "core/graphics/texture.h"
 #include "core/defines.h"
 
 namespace Graphics

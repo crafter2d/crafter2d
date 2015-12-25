@@ -21,15 +21,15 @@
 
 #include <cstring>
 
-#ifdef WIN32
-#include <ws2tcpip.h>
+#if defined(WIN32)
+#  include <ws2tcpip.h>
 #else
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
+#  include <unistd.h>
+#  include <fcntl.h>
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <arpa/inet.h>
+#  include <netdb.h>
 
 #define SOCKET_ERROR -1
 #endif

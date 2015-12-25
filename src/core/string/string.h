@@ -28,6 +28,9 @@
 
 #include "char.h"
 
+CORE_TEMPLATE template class CORE_API std::allocator<wchar_t>;
+CORE_TEMPLATE template class CORE_API std::basic_string<wchar_t>;
+
 class CORE_API String : public Object
 {
 public:
@@ -36,6 +39,8 @@ public:
 
             String();
             String(const String& that);
+            String(String&& that);
+   explicit String(UChar ch);
    explicit String(const UChar* pdata);
    explicit String(const std::string& that);
    explicit String(const std::wstring& that);
@@ -44,8 +49,9 @@ public:
    const UChar operator[](int index) const;
          UChar operator[](int index);
 
-   const String& operator=(const UChar c);
    const String& operator=(const String& that);
+   const String& operator=(String&& that);
+   const String& operator=(const UChar c);
    const String& operator=(const UChar* pstring);
    const String& operator=(const std::string& that);
 
@@ -72,7 +78,9 @@ public:
    int compare(const String& that) const;
    int hashCode() const;
 
-   const UChar* constData() const;
+   const UChar* c_str() const {
+      return mData.c_str();
+   }
 
  // overrides
    virtual Object* clone() const override;
@@ -88,13 +96,14 @@ public:
    void trimRight();
 
    void append(const String& that);
-   void setTo(const UChar* ptext, uint32_t length);
+   void assign(const UChar* ptext, std::size_t length);
 
    void insert(int index, const String& text);
    void replace(UChar original, UChar newtext);
    void replace(int start, int length, const String& with);
    void replace(const String& original, const String& with);
    void remove(int start, int count);
+   void clear();
 
    String subStr(int start, int count) const;
    String left(int to) const;
@@ -107,30 +116,25 @@ public:
    String& arg(int arg, int value);
 
  // searching
-   int indexOf(const String& that, int start = 0) const;
-   int indexOf(UChar character, int start = 0) const;
-   int lastIndexOf(UChar character) const;
-   int lastIndexOf(UChar character, int start, int end) const;
+   std::size_t indexOf(const String& that, int start = 0) const;
+   std::size_t indexOf(UChar character, int start = 0) const;
+   std::size_t lastIndexOf(UChar character) const;
+   std::size_t lastIndexOf(UChar character, int start, int end) const;
 
  // conversion
    std::string  toUtf8() const;
-   std::wstring toUtf16() const;
 
-   void setToUtf8(const char* pdata, uint32_t length);
+   void setToUtf8(const char* pdata, std::size_t length = 0);
+   void setToUtf8(const std::string& value);
 
 private:
    friend class NumberConverter;
-
- // operations
-   UChar* getBuffer(uint32_t length);
-
+   
  // static data
    static const String sEmpty;
 
  // data
-   UChar*   mpString;
-   uint32_t mCapacity;
-   uint32_t mLength;   // not including the eos character
+   std::wstring mData;
 };
 
 #define UTEXT(text) String(L ## text)

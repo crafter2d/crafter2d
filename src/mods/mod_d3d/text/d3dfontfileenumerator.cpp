@@ -61,8 +61,7 @@ HRESULT D3DFontFileEnumerator::MoveNext(OUT BOOL* hasCurrentFile)
    {
       const String& filename = mpCollection->getFile(mPos);
 
-      std::wstring file = filename.toUtf16();
-      HRESULT hr = mpDWFactory->CreateFontFileReference(file.c_str(), NULL, &mpDWFile);
+      HRESULT hr = mpDWFactory->CreateFontFileReference(filename.c_str(), NULL, &mpDWFile);
       if ( SUCCEEDED(hr) )
       {
          mPos++;

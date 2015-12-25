@@ -47,8 +47,7 @@
 #include "core/system/driver.h"
 #include "core/world/world.h"
 #include "core/world/worldrenderer.h"
-
-#include "engine/window/gamewindow.h"
+#include "core/window/gamewindow.h"
 
 #include "net/events/aggregateevent.h"
 #include "net/events/newobjectevent.h"
@@ -269,8 +268,8 @@ namespace c2d
    bool Client::initDevice()
    {
       return initGraphics()
-          && initInput()
-          && initSound();
+         && initInput()
+         && initSound();
    }
 
    bool Client::initGraphics()
@@ -289,7 +288,7 @@ namespace c2d
       GraphicsModule& graphicsmod = static_cast<GraphicsModule&>(*pmodule);
       mpDevice = &graphicsmod.getDevice();
       mpDevice->setContentManager(getContentManager());
-      if ( !mpDevice->create(mpWindow->getHandle(), 800, 600) )
+      if ( !mpDevice->create(*mpWindow, 800, 600) )
       {
          return false;
       }

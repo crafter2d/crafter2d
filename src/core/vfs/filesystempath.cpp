@@ -27,7 +27,7 @@
 #include "zipfile.h"
 
 FileSystemPath::FileSystemPath(const String& path):
-   mPath(path),
+   mPath(),
    mZip()
 {
    fillInfo(path);
@@ -45,12 +45,16 @@ void FileSystemPath::fillInfo(const String& path)
       String zipfile = path.subStr(0, index + 4); // include the .zip extension
       if ( path.length() > index + 4 )
       {
-         // skip the dir separator after the 
+         // skip the dir separator after the zip filename
          mPath = path.subStr(index + 5, path.length() - index - 5);
       }
 
       ASSERT(ZipFile::isZip(zipfile));
       mZip.reset(new ZipFile(zipfile));
+   }
+   else
+   {
+      mPath = path;
    }
 }
 

@@ -45,4 +45,13 @@ Viewport::~Viewport()
 {
 }
 
+Viewport& Viewport::operator=(const Viewport& that)
+{
+   mLeft = that.mLeft;
+   mTop = that.mTop;
+   mWidth = that.mWidth;
+   mHeight = that.mHeight;
+   return *this;
+}
+
 };

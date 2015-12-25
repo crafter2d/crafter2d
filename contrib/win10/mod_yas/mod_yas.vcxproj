@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\block.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\codepatch.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\cpu.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\generator.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\instruction.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\irgenerator.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\jumppatch.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\program.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\resolver.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\symboltable.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\cil.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\class.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\codestreamer.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\field.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\function.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\guard.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\guards.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\instructions.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\switchtable.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\switchtables.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\classregistry.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\functionregistration.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\literal.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\literaltable.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\modifiers.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\stringcache.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\type.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\types.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\gc\collectable.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\gc\garbagecollector.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\mod_yas.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\script_base.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\registercpu\registerirgenerator.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\stackcpu\stackcpu.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\stackcpu\stackirgenerator.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualarray.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualarrayexception.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualcallbackfunctor.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualclass.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualclasses.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualclasstable.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualcontext.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualexception.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfield.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfunction.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfunctionnotfoundexception.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfunctiontable.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfunctiontableentry.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualguards.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualinstruction.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualinstructiontable.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptable.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptables.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualmachine.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualobject.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualstack.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualstackaccessor.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualstring.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualvalue.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\vminterface.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yascallbackfunctor.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yasscriptcall.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yasscriptmanager.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yasscriptobject.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yasscriptregistrator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\block.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\codepatch.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\cpu.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\functionsymbol.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\generator.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\instruction.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\irgenerator.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\jumppatch.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\program.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\resolver.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\symbol.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\symboltable.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\valuesymbol.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\cil.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\class.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\codestreamer.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\field.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\function.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\guard.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\guards.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\instructions.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\switchtabel.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\switchtableentry.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\switchtables.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\callbackfunctor.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\classregistration.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\classregistry.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\functionregistration.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\literal.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\literaltable.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\modifiers.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\stringcache.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\type.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\types.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\gc\collectable.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\gc\garbagecollector.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\script_base.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\registercpu\registerirgenerator.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\stackcpu\sbil.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\stackcpu\stackcpu.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\stackcpu\stackirgenerator.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualarray.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualarrayexception.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualcallbackfunctor.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualclass.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualclasses.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualclasstable.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualcontext.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualexception.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfield.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfunction.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfunctionnotfoundexception.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfunctiontable.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfunctiontableentry.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualguard.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualguards.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualinstruction.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualinstructiontable.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptable.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptableentry.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptables.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualmachine.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualobject.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualstack.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualstackaccessor.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualstackframe.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualstring.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualvalue.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\vminterface.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yascallbackfunctor.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yasscriptcall.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yasscriptmanager.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yasscriptobject.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yasscriptregistrator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\mods\mod_yas\cil\cil.def" />
+    <None Include="..\..\..\src\mods\mod_yas\vm\stackcpu\sbil.def" />
+    <None Include="..\..\..\src\mods\mod_yas\vm\virtualarrayexception.inl" />
+    <None Include="..\..\..\src\mods\mod_yas\vm\virtualvalue.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2ddce892-95a6-4126-b555-8de4a7bf2199}</ProjectGuid>
+    <Keyword>DynamicLibrary</Keyword>
+    <ProjectName>mod_yas</ProjectName>
+    <RootNamespace>mod_yas</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>true</AppContainerApplication>
+    <ApplicationType>Windows Store</ApplicationType>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.10240.0</WindowsTargetPlatformMinVersion>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(GeneratedFilesDir);$(IntDir);../../../src;../../../src/mods;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDLL;SCRIPT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>WindowsApp.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -25,33 +25,39 @@
 class String;
 class Timer;
 
-class CORE_API Platform
+namespace c2d
 {
-public:
-   static Platform&  getInstance();
-
-   enum OS
+   class CORE_API Platform
    {
-      eWindows,
-      eWindowsRT,
-      eWindowsPhone,
-      eLinux,
+   public:
+      static Platform&  getInstance();
+
+      enum OS
+      {
+         eWindows,
+         eWindowsRT,
+         eWindowsPhone,
+         eLinux,
+      };
+
+      virtual ~Platform();
+
+      // query
+      virtual OS getOS() const = 0;
+      virtual Timer& getTimer() = 0;
+
+      // operations
+      virtual void  initialize() = 0;
+      virtual void* loadModule(const String& name) = 0;
+      virtual void  freeModule(void* pmodule) = 0;
+      virtual void* getFunctionAddress(void* module, const String& name) = 0;
+
+   protected:
+      Platform();
+
+   private:
+      static Platform* spPlatform;
    };
-
-   virtual ~Platform();
-
- // query
-   virtual OS getOS() const = 0;
-   virtual Timer& getTimer() = 0;
-
- // operations
-   virtual void  initialize() = 0;
-   virtual void* loadModule(const String& name) = 0;
-   virtual void  freeModule(void* pmodule) = 0;
-   virtual void* getFunctionAddress(void* module, const String& name) = 0;
-
-protected:
-   Platform();
-};
+}
 
 #endif

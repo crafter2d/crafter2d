@@ -59,7 +59,7 @@ Graphics::D3DFont* D3DFontCollection::createFont(const String& name)
 {
    String filename = name + UTEXT(".ttf");
    IDWriteFontFile* pFontFile = NULL;
-   HRESULT hr = mpDWriteFactory->CreateFontFileReference(filename.constData(), NULL, &pFontFile);
+   HRESULT hr = mpDWriteFactory->CreateFontFileReference(filename.c_str(), NULL, &pFontFile);
    if ( FAILED(hr) )
    {
       return false;

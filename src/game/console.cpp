@@ -36,7 +36,7 @@
 #include "core/script/scriptobject.h"
 #include "core/script/scriptmanager.h"
 
-#include "game.h"
+#include "engine/game.h"
 
 Console::Console()
 {

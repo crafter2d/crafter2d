@@ -13,6 +13,7 @@ namespace c2d
 }
 
 class DataStream;
+class GameWindow;
 class String;
 
 namespace Graphics
@@ -41,7 +42,7 @@ namespace Graphics
       Font&           getFont(const String& name);
 
     // operations
-      virtual bool create(int windowhandle, int width, int height);
+      virtual bool create(GameWindow& window, int width, int height);
       virtual void destroy();
       virtual void present() = 0;
 

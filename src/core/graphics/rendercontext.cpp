@@ -13,6 +13,10 @@ RenderContext::RenderContext():
 {
 }
 
+RenderContext::~RenderContext()
+{
+}
+
 // - Get/set
 
 void RenderContext::setViewport(const Viewport& viewport)

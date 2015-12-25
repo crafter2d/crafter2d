@@ -41,7 +41,7 @@ namespace Graphics
 
       HRESULT hr;
       hr = mpDWriteFactory->CreateTextFormat(
-         family.constData(),
+         family.c_str(),
          pcollection, 
          DWRITE_FONT_WEIGHT_NORMAL, 
          DWRITE_FONT_STYLE_NORMAL,

@@ -5,3 +5,5 @@ premake5
 *.pro.user*
 *.pro.autosave*
 *.so*
+/contrib/win10/ipch
+/contrib/win10/Debug

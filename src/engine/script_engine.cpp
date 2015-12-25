@@ -38,11 +38,11 @@
 #include "core/vfs/filesystem.h"
 #include "core/world/layer.h"
 #include "core/world/world.h"
+#include "core/window/gamewindowfactory.h"
+#include "core/window/gamewindow.h"
 #include "core/defines.h"
 
 #include "engine/net/netstream.h"
-#include "engine/window/gamewindowfactory.h"
-#include "engine/window/gamewindow.h"
 
 #include "physics/box2d/box2dbody.h"
 #include "physics/box2d/box2dsimulator.h"

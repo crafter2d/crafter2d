@@ -209,7 +209,7 @@ VirtualObject& VirtualMachine::instantiateNative(const String& classname, void* 
 
 VirtualObject& VirtualMachine::instantiateArrayException(const VirtualArrayException& e)
 {
-   VirtualObject* presult;
+   VirtualObject* presult = nullptr;
 
    switch ( e.getKind() )
    {

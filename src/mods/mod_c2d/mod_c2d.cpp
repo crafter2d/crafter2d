@@ -28,14 +28,14 @@
 #include "world/worldreader.h"
 #include "world/worldwriter.h"
 
-#ifdef WIN32
-#ifdef MOD_EXPORTS
-#define MOD_API __declspec(dllexport)
+#if defined(WIN32)
+  #ifdef MOD_EXPORTS
+    #define MOD_API __declspec(dllexport)
+  #else
+    #define MOD_API __declspec(dllimport)
+  #endif
 #else
-#define MOD_API __declspec(dllimport)
-#endif
-#else
-#define MOD_API
+  #define MOD_API
 #endif
 
 using namespace c2d;

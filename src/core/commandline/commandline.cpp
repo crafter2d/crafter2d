@@ -27,7 +27,7 @@ CommandLine::CommandLine():
 {
 }
 
-CommandLine::CommandLine(int argc, const char *argv[]):
+CommandLine::CommandLine(int argc, const char * const argv[]):
    mArguments()
 {
    parse(argc, argv);
@@ -88,7 +88,7 @@ void CommandLine::parse(int argc, const char* const argv[])
       for ( int index = 1; index < argc; index++ )
       {
          const char* parg = argv[index];
-         String inputarg = String::fromUtf8(parg);
+         String inputarg(parg);
          CommandLineArgument argument;
 
          if ( inputarg[0] == L'-' )
@@ -98,7 +98,7 @@ void CommandLine::parse(int argc, const char* const argv[])
 
             if ( index + 1 < argc )
             {
-               String value = String::fromUtf8(argv[index + 1]);
+               String value(argv[index + 1]);
                if ( value[0] != L'-' )
                {
                   argument.setValue(value);
@@ -116,7 +116,7 @@ void CommandLine::parse(int argc, const char* const argv[])
                if ( index+1 < argc )
                {
                   // not in current argument, check if next starts with assignment
-                  String nextarg = String::fromUtf8(argv[index+1]);
+                  String nextarg(argv[index+1]);
 
                   if ( nextarg[0] == L'=' )
                   {
@@ -132,7 +132,7 @@ void CommandLine::parse(int argc, const char* const argv[])
                         if ( index + 2 < argc )
                         {
                            index += 2;
-                           argument.setValue(String::fromUtf8(argv[index]));
+                           argument.setValue(String(argv[index]));
                         }
                         else
                         {

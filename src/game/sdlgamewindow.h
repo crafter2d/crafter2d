@@ -24,7 +24,7 @@
 
 #include "core/math/color.h"
 
-#include "engine/window/gamewindow.h"
+#include "core/window/gamewindow.h"
 
 struct SDL_KeyboardEvent;
 struct SDL_MouseMotionEvent;
@@ -50,7 +50,6 @@ public:
    void         setBackgroundColor(const Color& color);
 
  // query
-   virtual Driver* loadDriver() override;
    virtual int getHandle() const;
    int getWidth() const;
    int getHeight() const;

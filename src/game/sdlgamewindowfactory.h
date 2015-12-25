@@ -20,7 +20,7 @@
 #ifndef SDL_GAME_WINDOW_FACTORY_H_
 #define SDL_GAME_WINDOW_FACTORY_H_
 
-#include "engine/window/gamewindowfactory.h"
+#include "core/window/gamewindowfactory.h"
 
 class SDLGameWindowFactory : public GameWindowFactory
 {

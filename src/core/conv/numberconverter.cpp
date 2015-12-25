@@ -1,7 +1,8 @@
 
 #include "numberconverter.h"
 
-#include <string.h>
+#include <codecvt>
+#include <string>
 
 #include "core/defines.h"
 #include "core/string/string.h"
@@ -27,38 +28,39 @@ NumberConverter::NumberConverter()
 
 int NumberConverter::toInt(UChar value)
 {
-   return wcstol(&value, NULL, 10);
+   String str;
+   str += value;
+   return toInt(str);
 }
 
 int NumberConverter::toInt(const String& value)
 {
-   return wcstol(value.mpString, NULL, 10);
+   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
+   return std::stoi(convert.to_bytes(value.mData.c_str()), NULL, 10);
 }
 
 float NumberConverter::toFloat(const String& value)
 {
-   return wcstof(value.mpString, NULL);
+   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
+   return std::stof(convert.to_bytes(value.mData.c_str()), NULL);
 }
 
 double NumberConverter::toDouble(const String& value)
 {
-   return wcstod(value.mpString, NULL);
+   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
+   return std::stod(convert.to_bytes(value.mData.c_str()), NULL);
 }
 
 String& NumberConverter::format(String& result, int value)
 {
-   wchar_t buff[256];
-   memset(buff, 0, sizeof(wchar_t) * 256);
-   int len = swprintf(buff, 10, L"%d", value);
-   result.setTo(buff, len);
+   auto s = std::to_string(value);
+   result.setToUtf8(s);
    return result;
 }
 
 String& NumberConverter::format(String& result, double value)
 {
-   wchar_t buff[256];
-   memset(buff, 0, sizeof(wchar_t) * 256);
-   int len = swprintf(buff, 10, L"%Lf", value);
-   result.setTo(buff, len);
+   auto s = std::to_string(value);
+   result.setToUtf8(s);
    return result;
 }

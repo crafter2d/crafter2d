@@ -1,0 +1,708 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\core\commandline\commandline.cpp" />
+    <ClCompile Include="..\..\..\src\core\commandline\commandlineargument.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\hashinterface.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\hashmap.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\hashmapbucket.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\hashmapiterator.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\iterator.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\list.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\listalgorithms.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\listeners.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\listiterator.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\listnode.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\sortedlist.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\tree.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\treedepthfirstiterator.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\treeiterator.cpp" />
+    <ClCompile Include="..\..\..\src\core\containers\treenode.cpp" />
+    <ClCompile Include="..\..\..\src\core\content\content.cpp" />
+    <ClCompile Include="..\..\..\src\core\content\contentheader.cpp" />
+    <ClCompile Include="..\..\..\src\core\content\contentloader.cpp" />
+    <ClCompile Include="..\..\..\src\core\content\contentmanager.cpp" />
+    <ClCompile Include="..\..\..\src\core\content\contentreader.cpp" />
+    <ClCompile Include="..\..\..\src\core\content\contentwriter.cpp" />
+    <ClCompile Include="..\..\..\src\core\content\invalidcontentexception.cpp" />
+    <ClCompile Include="..\..\..\src\core\conv\numberconverter.cpp" />
+    <ClCompile Include="..\..\..\src\core\core_base.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\componentdefinitions\componentdefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\componentdefinitions\meshcomponentdefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\componentdefinitions\physicscomponentdefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\componentmessages\animationcomponentmessage.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\componentmessages\componentmessage.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\componentmessages\netstreamcomponentmessage.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\componentmessages\querybodycomponentmessage.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\components\component.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\components\components.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\components\meshcomponent.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\components\netcomponent.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\components\particlecomponent.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\components\physicscomponent.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\controller.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\entities.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\entity.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\entitydefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\entitylinkdefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\entity\idmanager.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\abstractgeometrybuffer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\animation.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\animationset.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\animation\animationstate.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\animator.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\blendstate.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\blendstatedesc.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\codepath.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\defaultdeviceinfo.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\device.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\effect.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\effecttechnique.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\font.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\geometrybuffer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\indexbuffer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\particles\particle.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\particles\particlesystem.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\particles\particlesystemrenderer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\rendercontext.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\rendertarget.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\sprites\sprite.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\sprites\spritebatch.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\sprites\spritedefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\sprites\spritefactory.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\sprites\spriterenderer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\texture.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\texturecoordinate.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\texturecoordlookup.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\text\glyph.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\text\glyphatlas.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\text\glyphsheet.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\text\textlayout.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\text\textrenderer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\utils.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\vertexbuffer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\vertexlayout.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\viewport.cpp" />
+    <ClCompile Include="..\..\..\src\core\inifile\inifile.cpp" />
+    <ClCompile Include="..\..\..\src\core\inifile\inifileexception.cpp" />
+    <ClCompile Include="..\..\..\src\core\inifile\inifileparser.cpp" />
+    <ClCompile Include="..\..\..\src\core\inifile\inifileproperty.cpp" />
+    <ClCompile Include="..\..\..\src\core\inifile\inifilesection.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\input.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\inputevent.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\keyevent.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\keyeventdispatcher.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\keylistener.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\keylisteners.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\mouseevent.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\mouseeventdispatcher.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\mouselistener.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\mouselisteners.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\mousewheellistener.cpp" />
+    <ClCompile Include="..\..\..\src\core\input\mousewheellisteners.cpp" />
+    <ClCompile Include="..\..\..\src\core\log\log.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\color.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\math.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\matrix2x2.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\matrix4.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\point.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\range.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\rect.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\vector.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\vector3.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\vectorrange.cpp" />
+    <ClCompile Include="..\..\..\src\core\math\xform.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\contentmodule.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\graphicsmodule.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\inputmodule.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\module.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\modulecollection.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\modulecollectioniterator.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\modulemanager.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\pluginmodule.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\scriptmodule.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\soundmodule.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\bodies.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\body.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\bodydefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\forcegenerator.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\forcegenerators.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\gravityforcegenerator.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\inputforcegenerator.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\jointdefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\revolutejointdefinition.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\simulationfactory.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\simulationfactoryregistry.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\simulator.cpp" />
+    <ClCompile Include="..\..\..\src\core\physics\simulatorlistener.cpp" />
+    <ClCompile Include="..\..\..\src\core\resource\resourcehandle.cpp" />
+    <ClCompile Include="..\..\..\src\core\resource\resourcehandlebase.cpp" />
+    <ClCompile Include="..\..\..\src\core\resource\resourcemanager.cpp" />
+    <ClCompile Include="..\..\..\src\core\script\scriptobjecthandle.cpp" />
+    <ClCompile Include="..\..\..\src\core\smartptr\autoptr.cpp" />
+    <ClCompile Include="..\..\..\src\core\smartptr\countbase.cpp" />
+    <ClCompile Include="..\..\..\src\core\smartptr\refcount.cpp" />
+    <ClCompile Include="..\..\..\src\core\smartptr\scopedvalue.cpp" />
+    <ClCompile Include="..\..\..\src\core\smartptr\sharedcount.cpp" />
+    <ClCompile Include="..\..\..\src\core\smartptr\sharedptr.cpp" />
+    <ClCompile Include="..\..\..\src\core\smartptr\weakcount.cpp" />
+    <ClCompile Include="..\..\..\src\core\smartptr\weakptr.cpp" />
+    <ClCompile Include="..\..\..\src\core\sound\sound.cpp" />
+    <ClCompile Include="..\..\..\src\core\sound\soundmanager.cpp" />
+    <ClCompile Include="..\..\..\src\core\streams\arraystream.cpp" />
+    <ClCompile Include="..\..\..\src\core\streams\bufferedstream.cpp" />
+    <ClCompile Include="..\..\..\src\core\streams\datastream.cpp" />
+    <ClCompile Include="..\..\..\src\core\streams\filereaderstream.cpp" />
+    <ClCompile Include="..\..\..\src\core\streams\filestream.cpp" />
+    <ClCompile Include="..\..\..\src\core\streams\filewriterstream.cpp" />
+    <ClCompile Include="..\..\..\src\core\streams\streamwrapper.cpp" />
+    <ClCompile Include="..\..\..\src\core\string\char.cpp" />
+    <ClCompile Include="..\..\..\src\core\string\string.cpp" />
+    <ClCompile Include="..\..\..\src\core\string\stringinterface.cpp" />
+    <ClCompile Include="..\..\..\src\core\string\stringlist.cpp" />
+    <ClCompile Include="..\..\..\src\core\string\utf.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\driver.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\exception.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\platform.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\timer.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\timerdata.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\timerdelta.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\uuid.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\variant.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\winplatform.cpp" />
+    <ClCompile Include="..\..\..\src\core\system\wintimer.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\buffer.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\compressedfile.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\file.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\filebuffer.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\filesystem.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\filesystempath.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\filesystempaths.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\memorybuffer.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\stdiofile.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\winfilesystem.cpp" />
+    <ClCompile Include="..\..\..\src\core\vfs\zipfile.cpp" />
+    <ClCompile Include="..\..\..\src\core\window\gamewindow.cpp" />
+    <ClCompile Include="..\..\..\src\core\window\gamewindowfactory.cpp" />
+    <ClCompile Include="..\..\..\src\core\window\gamewindowlistener.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\bound.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\bounds.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\dirtyset.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\isodiamondlayer.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\isometricrendervisitor.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\layer.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\layerfactory.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\nodevisitor.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\rendervisitor.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\sortedobjectlist.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\tilefield.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\tileset.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\topdownlayer.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\topdownworldrenderer.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\world.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\worldobserver.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\worldrenderer.cpp" />
+    <ClCompile Include="..\..\..\src\core\world\worldsimulatorlistener.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\core\commandline\commandline.h" />
+    <ClInclude Include="..\..\..\src\core\commandline\commandlineargument.h" />
+    <ClInclude Include="..\..\..\src\core\containers\constiterator.h" />
+    <ClInclude Include="..\..\..\src\core\containers\hashinterface.h" />
+    <ClInclude Include="..\..\..\src\core\containers\hashmap.h" />
+    <ClInclude Include="..\..\..\src\core\containers\hashmapbucket.h" />
+    <ClInclude Include="..\..\..\src\core\containers\hashmapiterator.h" />
+    <ClInclude Include="..\..\..\src\core\containers\iterator.h" />
+    <ClInclude Include="..\..\..\src\core\containers\list.h" />
+    <ClInclude Include="..\..\..\src\core\containers\listalgorithms.h" />
+    <ClInclude Include="..\..\..\src\core\containers\listconstiterator.h" />
+    <ClInclude Include="..\..\..\src\core\containers\listeners.h" />
+    <ClInclude Include="..\..\..\src\core\containers\listiterator.h" />
+    <ClInclude Include="..\..\..\src\core\containers\listnode.h" />
+    <ClInclude Include="..\..\..\src\core\containers\sortedlist.h" />
+    <ClInclude Include="..\..\..\src\core\containers\stack.h" />
+    <ClInclude Include="..\..\..\src\core\containers\tree.h" />
+    <ClInclude Include="..\..\..\src\core\containers\treedepthfirstiterator.h" />
+    <ClInclude Include="..\..\..\src\core\containers\treeiterator.h" />
+    <ClInclude Include="..\..\..\src\core\containers\treenode.h" />
+    <ClInclude Include="..\..\..\src\core\content\content.h" />
+    <ClInclude Include="..\..\..\src\core\content\contentheader.h" />
+    <ClInclude Include="..\..\..\src\core\content\contentloader.h" />
+    <ClInclude Include="..\..\..\src\core\content\contentmanager.h" />
+    <ClInclude Include="..\..\..\src\core\content\contentreader.h" />
+    <ClInclude Include="..\..\..\src\core\content\contentwriter.h" />
+    <ClInclude Include="..\..\..\src\core\content\invalidcontentexception.h" />
+    <ClInclude Include="..\..\..\src\core\conv\lexical.h" />
+    <ClInclude Include="..\..\..\src\core\conv\numberconverter.h" />
+    <ClInclude Include="..\..\..\src\core\core_base.h" />
+    <ClInclude Include="..\..\..\src\core\defines.h" />
+    <ClInclude Include="..\..\..\src\core\entity\componentdefinitions\componentdefinition.h" />
+    <ClInclude Include="..\..\..\src\core\entity\componentdefinitions\meshcomponentdefinition.h" />
+    <ClInclude Include="..\..\..\src\core\entity\componentdefinitions\physicscomponentdefinition.h" />
+    <ClInclude Include="..\..\..\src\core\entity\componentmessages\animationcomponentmessage.h" />
+    <ClInclude Include="..\..\..\src\core\entity\componentmessages\componentmessage.h" />
+    <ClInclude Include="..\..\..\src\core\entity\componentmessages\netstreamcomponentmessage.h" />
+    <ClInclude Include="..\..\..\src\core\entity\componentmessages\querybodycomponentmessage.h" />
+    <ClInclude Include="..\..\..\src\core\entity\components\component.h" />
+    <ClInclude Include="..\..\..\src\core\entity\components\componentinterface.h" />
+    <ClInclude Include="..\..\..\src\core\entity\components\components.h" />
+    <ClInclude Include="..\..\..\src\core\entity\components\componentstructs.h" />
+    <ClInclude Include="..\..\..\src\core\entity\components\meshcomponent.h" />
+    <ClInclude Include="..\..\..\src\core\entity\components\netcomponent.h" />
+    <ClInclude Include="..\..\..\src\core\entity\components\particlecomponent.h" />
+    <ClInclude Include="..\..\..\src\core\entity\components\physicscomponent.h" />
+    <ClInclude Include="..\..\..\src\core\entity\controller.h" />
+    <ClInclude Include="..\..\..\src\core\entity\entities.h" />
+    <ClInclude Include="..\..\..\src\core\entity\entity.h" />
+    <ClInclude Include="..\..\..\src\core\entity\entitydefinition.h" />
+    <ClInclude Include="..\..\..\src\core\entity\entitylinkdefinition.h" />
+    <ClInclude Include="..\..\..\src\core\entity\idmanager.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\abstractgeometrybuffer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\animation.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\animationset.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\animation\animationstate.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\animator.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\blendstate.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\blendstatedesc.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\codepath.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\defaultdeviceinfo.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\device.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\deviceinfo.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\effect.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\effecttechnique.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\font.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\geometrybuffer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\indexbuffer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\particles\particle.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\particles\particles.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\particles\particlesystem.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\particles\particlesystemrenderer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\rendercontext.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\rendertarget.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\sprites\sprite.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\sprites\spritebatch.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\sprites\spritedefinition.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\sprites\spritefactory.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\sprites\spriterenderer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\texture.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\texturecoordinate.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\texturecoordlookup.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\text\glyph.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\text\glyphatlas.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\text\glyphmap.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\text\glyphprovider.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\text\glyphsheet.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\text\glyphvertexdata.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\text\textlayout.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\text\textrenderer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\uniformbuffer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\utils.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\vertexbuffer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\vertexlayout.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\vertexlayoutelement.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\viewport.h" />
+    <ClInclude Include="..\..\..\src\core\inifile\inifile.h" />
+    <ClInclude Include="..\..\..\src\core\inifile\inifileexception.h" />
+    <ClInclude Include="..\..\..\src\core\inifile\inifileparser.h" />
+    <ClInclude Include="..\..\..\src\core\inifile\inifileproperty.h" />
+    <ClInclude Include="..\..\..\src\core\inifile\inifilesection.h" />
+    <ClInclude Include="..\..\..\src\core\input\input.h" />
+    <ClInclude Include="..\..\..\src\core\input\inputevent.h" />
+    <ClInclude Include="..\..\..\src\core\input\key.h" />
+    <ClInclude Include="..\..\..\src\core\input\keyevent.h" />
+    <ClInclude Include="..\..\..\src\core\input\keyeventdispatcher.h" />
+    <ClInclude Include="..\..\..\src\core\input\keylistener.h" />
+    <ClInclude Include="..\..\..\src\core\input\keylisteners.h" />
+    <ClInclude Include="..\..\..\src\core\input\mouseevent.h" />
+    <ClInclude Include="..\..\..\src\core\input\mouseeventdispatcher.h" />
+    <ClInclude Include="..\..\..\src\core\input\mouselistener.h" />
+    <ClInclude Include="..\..\..\src\core\input\mouselisteners.h" />
+    <ClInclude Include="..\..\..\src\core\input\mousewheellistener.h" />
+    <ClInclude Include="..\..\..\src\core\input\mousewheellisteners.h" />
+    <ClInclude Include="..\..\..\src\core\log\log.h" />
+    <ClInclude Include="..\..\..\src\core\math\color.h" />
+    <ClInclude Include="..\..\..\src\core\math\math.h" />
+    <ClInclude Include="..\..\..\src\core\math\matrix2x2.h" />
+    <ClInclude Include="..\..\..\src\core\math\matrix4.h" />
+    <ClInclude Include="..\..\..\src\core\math\point.h" />
+    <ClInclude Include="..\..\..\src\core\math\range.h" />
+    <ClInclude Include="..\..\..\src\core\math\rect.h" />
+    <ClInclude Include="..\..\..\src\core\math\size.h" />
+    <ClInclude Include="..\..\..\src\core\math\vector.h" />
+    <ClInclude Include="..\..\..\src\core\math\vector3.h" />
+    <ClInclude Include="..\..\..\src\core\math\vectorrange.h" />
+    <ClInclude Include="..\..\..\src\core\math\vertex.h" />
+    <ClInclude Include="..\..\..\src\core\math\vertex4.h" />
+    <ClInclude Include="..\..\..\src\core\math\xform.h" />
+    <ClInclude Include="..\..\..\src\core\modules\contentmodule.h" />
+    <ClInclude Include="..\..\..\src\core\modules\graphicsmodule.h" />
+    <ClInclude Include="..\..\..\src\core\modules\inputmodule.h" />
+    <ClInclude Include="..\..\..\src\core\modules\module.h" />
+    <ClInclude Include="..\..\..\src\core\modules\modulecollection.h" />
+    <ClInclude Include="..\..\..\src\core\modules\modulecollectioniterator.h" />
+    <ClInclude Include="..\..\..\src\core\modules\modulemanager.h" />
+    <ClInclude Include="..\..\..\src\core\modules\pluginmodule.h" />
+    <ClInclude Include="..\..\..\src\core\modules\scriptmodule.h" />
+    <ClInclude Include="..\..\..\src\core\modules\soundmodule.h" />
+    <ClInclude Include="..\..\..\src\core\physics\bodies.h" />
+    <ClInclude Include="..\..\..\src\core\physics\body.h" />
+    <ClInclude Include="..\..\..\src\core\physics\bodydefinition.h" />
+    <ClInclude Include="..\..\..\src\core\physics\bodylistener.h" />
+    <ClInclude Include="..\..\..\src\core\physics\forcegenerator.h" />
+    <ClInclude Include="..\..\..\src\core\physics\forcegenerators.h" />
+    <ClInclude Include="..\..\..\src\core\physics\gravityforcegenerator.h" />
+    <ClInclude Include="..\..\..\src\core\physics\inputforcegenerator.h" />
+    <ClInclude Include="..\..\..\src\core\physics\jointdefinition.h" />
+    <ClInclude Include="..\..\..\src\core\physics\revolutejointdefinition.h" />
+    <ClInclude Include="..\..\..\src\core\physics\simulationfactory.h" />
+    <ClInclude Include="..\..\..\src\core\physics\simulationfactoryregistry.h" />
+    <ClInclude Include="..\..\..\src\core\physics\simulator.h" />
+    <ClInclude Include="..\..\..\src\core\physics\simulatorlistener.h" />
+    <ClInclude Include="..\..\..\src\core\resource\resourcehandle.h" />
+    <ClInclude Include="..\..\..\src\core\resource\resourcehandlebase.h" />
+    <ClInclude Include="..\..\..\src\core\resource\resourcemanager.h" />
+    <ClInclude Include="..\..\..\src\core\resource\resourceptr.h" />
+    <ClInclude Include="..\..\..\src\core\script\iscriptable.h" />
+    <ClInclude Include="..\..\..\src\core\script\script.h" />
+    <ClInclude Include="..\..\..\src\core\script\scriptcall.h" />
+    <ClInclude Include="..\..\..\src\core\script\scriptmanager.h" />
+    <ClInclude Include="..\..\..\src\core\script\scriptobject.h" />
+    <ClInclude Include="..\..\..\src\core\script\scriptobjecthandle.h" />
+    <ClInclude Include="..\..\..\src\core\script\scriptregistrator.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\autoptr.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\countbase.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\countimpl.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\refcount.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\scopedvalue.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\sharedcount.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\sharedptr.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\weakcount.h" />
+    <ClInclude Include="..\..\..\src\core\smartptr\weakptr.h" />
+    <ClInclude Include="..\..\..\src\core\sound\sound.h" />
+    <ClInclude Include="..\..\..\src\core\sound\soundmanager.h" />
+    <ClInclude Include="..\..\..\src\core\streams\arraystream.h" />
+    <ClInclude Include="..\..\..\src\core\streams\bufferedstream.h" />
+    <ClInclude Include="..\..\..\src\core\streams\datastream.h" />
+    <ClInclude Include="..\..\..\src\core\streams\filereaderstream.h" />
+    <ClInclude Include="..\..\..\src\core\streams\filestream.h" />
+    <ClInclude Include="..\..\..\src\core\streams\filewriterstream.h" />
+    <ClInclude Include="..\..\..\src\core\streams\streamwrapper.h" />
+    <ClInclude Include="..\..\..\src\core\string\char.h" />
+    <ClInclude Include="..\..\..\src\core\string\string.h" />
+    <ClInclude Include="..\..\..\src\core\string\stringinterface.h" />
+    <ClInclude Include="..\..\..\src\core\string\stringlist.h" />
+    <ClInclude Include="..\..\..\src\core\string\utf.h" />
+    <ClInclude Include="..\..\..\src\core\system\driver.h" />
+    <ClInclude Include="..\..\..\src\core\system\exception.h" />
+    <ClInclude Include="..\..\..\src\core\system\object.h" />
+    <ClInclude Include="..\..\..\src\core\system\platform.h" />
+    <ClInclude Include="..\..\..\src\core\system\timer.h" />
+    <ClInclude Include="..\..\..\src\core\system\timerdata.h" />
+    <ClInclude Include="..\..\..\src\core\system\timerdataimpl.h" />
+    <ClInclude Include="..\..\..\src\core\system\timerdelta.h" />
+    <ClInclude Include="..\..\..\src\core\system\uuid.h" />
+    <ClInclude Include="..\..\..\src\core\system\variant.h" />
+    <ClInclude Include="..\..\..\src\core\system\winplatform.h" />
+    <ClInclude Include="..\..\..\src\core\system\wintimer.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\buffer.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\compressedfile.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\file.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\filebuffer.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\filesystem.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\filesystempath.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\filesystempaths.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\memorybuffer.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\stdiofile.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\winfilesystem.h" />
+    <ClInclude Include="..\..\..\src\core\vfs\zipfile.h" />
+    <ClInclude Include="..\..\..\src\core\window\gamewindow.h" />
+    <ClInclude Include="..\..\..\src\core\window\gamewindowfactory.h" />
+    <ClInclude Include="..\..\..\src\core\window\gamewindowlistener.h" />
+    <ClInclude Include="..\..\..\src\core\world\bound.h" />
+    <ClInclude Include="..\..\..\src\core\world\bounds.h" />
+    <ClInclude Include="..\..\..\src\core\world\dirtyset.h" />
+    <ClInclude Include="..\..\..\src\core\world\isodiamondlayer.h" />
+    <ClInclude Include="..\..\..\src\core\world\isometricrendervisitor.h" />
+    <ClInclude Include="..\..\..\src\core\world\layer.h" />
+    <ClInclude Include="..\..\..\src\core\world\layerfactory.h" />
+    <ClInclude Include="..\..\..\src\core\world\layertype.h" />
+    <ClInclude Include="..\..\..\src\core\world\nodevisitor.h" />
+    <ClInclude Include="..\..\..\src\core\world\rendervisitor.h" />
+    <ClInclude Include="..\..\..\src\core\world\sortedobjectlist.h" />
+    <ClInclude Include="..\..\..\src\core\world\tilefield.h" />
+    <ClInclude Include="..\..\..\src\core\world\tileset.h" />
+    <ClInclude Include="..\..\..\src\core\world\topdownlayer.h" />
+    <ClInclude Include="..\..\..\src\core\world\topdownworldrenderer.h" />
+    <ClInclude Include="..\..\..\src\core\world\world.h" />
+    <ClInclude Include="..\..\..\src\core\world\worldobserver.h" />
+    <ClInclude Include="..\..\..\src\core\world\worldrenderer.h" />
+    <ClInclude Include="..\..\..\src\core\world\worldsimulatorlistener.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\core\containers\constiterator.inl" />
+    <None Include="..\..\..\src\core\containers\hashmap.inl" />
+    <None Include="..\..\..\src\core\containers\hashmapbucket.inl" />
+    <None Include="..\..\..\src\core\containers\hashmapiterator.inl" />
+    <None Include="..\..\..\src\core\containers\iterator.inl" />
+    <None Include="..\..\..\src\core\containers\list.inl" />
+    <None Include="..\..\..\src\core\containers\listalgorithms.inl" />
+    <None Include="..\..\..\src\core\containers\listconstiterator.inl" />
+    <None Include="..\..\..\src\core\containers\listiterator.inl" />
+    <None Include="..\..\..\src\core\containers\listnode.inl" />
+    <None Include="..\..\..\src\core\containers\sortedlist.inl" />
+    <None Include="..\..\..\src\core\containers\tree.inl" />
+    <None Include="..\..\..\src\core\containers\treedepthfirstiterator.inl" />
+    <None Include="..\..\..\src\core\containers\treeiterator.inl" />
+    <None Include="..\..\..\src\core\containers\treenode.inl" />
+    <None Include="..\..\..\src\core\content\contentmanager.inl" />
+    <None Include="..\..\..\src\core\entity\components\component.inl" />
+    <None Include="..\..\..\src\core\entity\components\meshcomponent.inl" />
+    <None Include="..\..\..\src\core\entity\components\physicscomponent.inl" />
+    <None Include="..\..\..\src\core\entity\entity.inl" />
+    <None Include="..\..\..\src\core\graphics\animation.inl" />
+    <None Include="..\..\..\src\core\graphics\animationset.inl" />
+    <None Include="..\..\..\src\core\graphics\animation\animationstate.inl" />
+    <None Include="..\..\..\src\core\graphics\animator.inl" />
+    <None Include="..\..\..\src\core\graphics\effect.inl" />
+    <None Include="..\..\..\src\core\graphics\geometrybuffer.inl" />
+    <None Include="..\..\..\src\core\graphics\particles\particlesystem.inl" />
+    <None Include="..\..\..\src\core\graphics\rendercontext.inl" />
+    <None Include="..\..\..\src\core\graphics\texture.inl" />
+    <None Include="..\..\..\src\core\graphics\texturecoordlookup.inl" />
+    <None Include="..\..\..\src\core\graphics\viewport.inl" />
+    <None Include="..\..\..\src\core\inifile\inifileproperty.inl" />
+    <None Include="..\..\..\src\core\inifile\inifilesection.inl" />
+    <None Include="..\..\..\src\core\input\inputevent.inl" />
+    <None Include="..\..\..\src\core\log\log.inl" />
+    <None Include="..\..\..\src\core\math\color.inl" />
+    <None Include="..\..\..\src\core\math\point.inl" />
+    <None Include="..\..\..\src\core\math\rect.inl" />
+    <None Include="..\..\..\src\core\math\size.inl" />
+    <None Include="..\..\..\src\core\math\vector3.inl" />
+    <None Include="..\..\..\src\core\modules\contentmodule.inl" />
+    <None Include="..\..\..\src\core\physics\body.inl" />
+    <None Include="..\..\..\src\core\physics\bodydefinition.inl" />
+    <None Include="..\..\..\src\core\resource\resourcehandle.inl" />
+    <None Include="..\..\..\src\core\resource\resourceptr.inl" />
+    <None Include="..\..\..\src\core\script\scriptobjecthandle.inl" />
+    <None Include="..\..\..\src\core\smartptr\autoptr.inl" />
+    <None Include="..\..\..\src\core\smartptr\countbase.inl" />
+    <None Include="..\..\..\src\core\smartptr\countimpl.inl" />
+    <None Include="..\..\..\src\core\smartptr\refcount.inl" />
+    <None Include="..\..\..\src\core\smartptr\sharedcount.inl" />
+    <None Include="..\..\..\src\core\smartptr\sharedptr.inl" />
+    <None Include="..\..\..\src\core\smartptr\weakcount.inl" />
+    <None Include="..\..\..\src\core\smartptr\weakptr.inl" />
+    <None Include="..\..\..\src\core\streams\datastream.inl" />
+    <None Include="..\..\..\src\core\streams\streamwrapper.inl" />
+    <None Include="..\..\..\src\core\system\timerdata.inl" />
+    <None Include="..\..\..\src\core\system\timerdataimpl.inl" />
+    <None Include="..\..\..\src\core\system\variant.inl" />
+    <None Include="..\..\..\src\core\vfs\buffer.inl" />
+    <None Include="..\..\..\src\core\vfs\compressedfile.inl" />
+    <None Include="..\..\..\src\core\vfs\memorybuffer.inl" />
+    <None Include="..\..\..\src\core\world\bound.inl" />
+    <None Include="..\..\..\src\core\world\isometricrendervisitor.inl" />
+    <None Include="..\..\..\src\core\world\layer.inl" />
+    <None Include="..\..\..\src\core\world\nodevisitor.inl" />
+    <None Include="..\..\..\src\core\world\sortedobjectlist.inl" />
+    <None Include="..\..\..\src\core\world\tileset.inl" />
+    <None Include="..\..\..\src\core\world\world.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{902e7cf4-458b-4d87-92c5-36b9c6ae4bda}</ProjectGuid>
+    <Keyword>DynamicLibrary</Keyword>
+    <ProjectName>core</ProjectName>
+    <RootNamespace>core</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>true</AppContainerApplication>
+    <ApplicationType>Windows Store</ApplicationType>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.10240.0</WindowsTargetPlatformMinVersion>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalIncludeDirectories>F:\Devel\crafter2d\src;F:\Devel\externallibs\uwp\libzip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;CORE_EXPORTS;WIN32;_WINDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <AdditionalLibraryDirectories>F:\Devel\externallibs\uwp\libzip\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zipd.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

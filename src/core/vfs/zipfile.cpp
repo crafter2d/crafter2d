@@ -62,7 +62,10 @@ bool ZipFile::open(const String& path, int flags)
 
    if ( pzip == NULL )
    {
-      mError = zip_strerror(mZip.get());
+      char buf[128]{};
+      zip_error_to_str(buf, sizeof(buf), error, errno);
+      mError = buf;
+
       return false;
    }
 

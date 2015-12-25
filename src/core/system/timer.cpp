@@ -27,7 +27,7 @@
 // static 
 Timer& Timer::getInstance()
 {
-   return Platform::getInstance().getTimer();
+   return c2d::Platform::getInstance().getTimer();
 }
 
 Timer::Timer()

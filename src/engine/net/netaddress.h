@@ -20,7 +20,7 @@
 #ifndef NET_ADDRESS_H
 #define NET_ADDRESS_H
 
-#ifdef WIN32
+#if defined(WIN32)
 #include <winsock2.h>
 #else
 #include <netinet/in.h>

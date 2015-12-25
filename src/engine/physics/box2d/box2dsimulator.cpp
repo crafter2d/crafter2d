@@ -130,7 +130,7 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
             fixturedef.friction = 0.3f;
             fixturedef.restitution = 0.2f;
             fixturedef.shape    = &shape;
-            fixturedef.userData = (void*)Box2DSimulator::eObject;
+            fixturedef.userData = (void*)& Box2DSimulator::eObject;
 
             pboxbody->CreateFixture(&fixturedef);
          }
@@ -144,7 +144,7 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
             fixturedef.density  = 1;
             fixturedef.friction = 1;
             fixturedef.shape    = &shape;
-            fixturedef.userData = (void*)Box2DSimulator::eObject;
+            fixturedef.userData = (void*)& Box2DSimulator::eObject;
 
             pboxbody->CreateFixture(&fixturedef);
          }
@@ -241,7 +241,7 @@ void Box2DSimulator::notifyWorldChanged()
       fixturedef.shape    = &ground;
       fixturedef.density  = 1;
       fixturedef.friction = 0.3f;
-      fixturedef.userData = (void*)eBound;
+      fixturedef.userData = (void*)& eBound;
 
       b2Body* pbody = mpb2World->CreateBody(&def);
       pbody->CreateFixture(&fixturedef);

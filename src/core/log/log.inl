@@ -59,7 +59,7 @@ INLINE Log& Log::operator<< (float f)
 
 INLINE Log& Log::operator<< (const std::string& str)
 {
-   file << str;
+   file << str.c_str();
    flush();
    return *this;
 }

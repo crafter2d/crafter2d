@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "netstream.h"
 
-#ifdef WIN32
+#if defined(WIN32)
 #  include <winsock2.h>
 #else
 #  include <arpa/inet.h>

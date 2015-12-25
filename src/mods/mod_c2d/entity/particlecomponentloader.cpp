@@ -94,7 +94,7 @@ float ParticleComponentLoader::loadValue(const TiXmlElement& xmlElement, const c
    float result = 0.0f;
    if ( xmlElement.QueryFloatAttribute(pname, &result) == TIXML_WRONG_TYPE )
    {
-      std::cout << "Invalid type!" << std::endl;
+      throw new std::runtime_error("Invalid type!");
    }
    return result;
 }

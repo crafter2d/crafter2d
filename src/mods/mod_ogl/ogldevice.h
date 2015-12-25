@@ -17,7 +17,7 @@ namespace Graphics
       virtual ~OGLDevice();
 
     // overloads
-      virtual bool create(int windowhandle, int width, int height) override;
+      virtual bool create(GameWindow& window, int width, int height) override;
 
     // creation
       virtual RenderContext*  createRenderContext() override;

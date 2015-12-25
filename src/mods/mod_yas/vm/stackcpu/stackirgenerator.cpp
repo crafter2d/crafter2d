@@ -69,7 +69,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
    const CIL::Instructions& instructions = function.getInstructions();
 
-   Block* pblock;
+   Block* pblock = nullptr;
 
    for ( unsigned index = 0; index < instructions.size(); ++index )
    {
@@ -77,6 +77,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
       if ( hasBlock(index) )
          pblock = getBlock(index);
+      ASSERT_PTR(pblock);
 
       switch ( inst.opcode )
       {

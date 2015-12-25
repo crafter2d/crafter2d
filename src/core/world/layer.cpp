@@ -160,8 +160,8 @@ void Layer::calculateScrollSpeed(const Vector& area)
 {
    Vector thisarea = getScrollArea();
 
-   scrollSpeedX = thisarea.x / area.x;
-   scrollSpeedY = thisarea.y / area.y;
+   scrollSpeedX = thisarea.x > 0.0f ? thisarea.x / area.x : 0.0f;
+   scrollSpeedY = thisarea.y > 0.0f ? thisarea.y / area.y : 0.0f;
 }
 
 void Layer::update(float delta)

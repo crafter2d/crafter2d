@@ -18,13 +18,20 @@ namespace c2d
    class CORE_API ModuleManager
    {
    public:
-      ModuleManager();
+      typedef Module* (*PGETMODULE)();
+      typedef ModuleCollection* (*PGETMODULECOLLECTION)();
+
+      static ModuleManager& getInstance();
+
       ~ModuleManager();
 
       // operations
       bool initialize();
       void deinitialize();
 
+      void exec(PGETMODULE pfunc);
+      void exec(PGETMODULECOLLECTION pfunc);
+      
       ModuleCollection filter(ModuleKind kind);
 
     // query
@@ -34,11 +41,15 @@ namespace c2d
       // types
       typedef std::vector<void*> ModuleHandles;
 
+      ModuleManager();
+
       // maintenance
       void add(Module* pmodule);
       void add(ModuleCollection& collection);
       void add(const String& filename);
       void clear();
+
+      static ModuleManager sInstance;
 
       // data
       ModuleHandles    mHandles;

@@ -20,7 +20,7 @@
 #ifndef GAME_WINDOW_H_
 #define GAME_WINDOW_H_
 
-#include "engine/engine_base.h"
+#include "core/core_base.h"
 
 #include <vector>
 
@@ -32,11 +32,16 @@ namespace Input
    class KeyEvent;
 }
 
+namespace Graphics
+{
+   class Device;
+}
+
 class Driver;
 class GameWindowListener;
 class String;
 
-class ENGINE_API GameWindow
+class CORE_API GameWindow
 {
    typedef std::vector<GameWindowListener*> Listeners;
 
@@ -49,12 +54,12 @@ public:
    void destroy();
 
  // query
-   virtual Driver* loadDriver() = 0;
    virtual int getHandle() const = 0;
    virtual int getWidth() const;
    virtual int getHeight() const;
 
  // operations
+   virtual bool initDevice(Graphics::Device& device);
    virtual void resize(int width, int height) = 0;
    virtual void toggleFullscreen() = 0;
    virtual void update() = 0;
@@ -72,8 +77,6 @@ protected:
  // creation
    virtual bool doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen);
    virtual void doDestroy();
-
-   Driver* doLoadDriver(const String& driver);
 
  // listener notification
    void fireWindowClosed();
