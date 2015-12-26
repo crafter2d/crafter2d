@@ -288,7 +288,7 @@ namespace c2d
       GraphicsModule& graphicsmod = static_cast<GraphicsModule&>(*pmodule);
       mpDevice = &graphicsmod.getDevice();
       mpDevice->setContentManager(getContentManager());
-      if ( !mpDevice->create(*mpWindow, 800, 600) )
+      if ( !mpDevice->create(*mpWindow) )
       {
          return false;
       }

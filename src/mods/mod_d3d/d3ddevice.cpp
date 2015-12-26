@@ -34,7 +34,7 @@ D3DDevice::D3DDevice():
 {
 }
 
-bool D3DDevice::create(GameWindow& window, int width, int height)
+bool D3DDevice::create(GameWindow& window)
 {
    int windowhandle = window.getHandle();
 
@@ -42,8 +42,8 @@ bool D3DDevice::create(GameWindow& window, int width, int height)
    DXGI_SWAP_CHAIN_DESC sd;
    ZeroMemory(&sd, sizeof(sd));
    sd.BufferCount = 1;
-   sd.BufferDesc.Width = width;
-   sd.BufferDesc.Height = height;
+   sd.BufferDesc.Width = window.getWidth();
+   sd.BufferDesc.Height = window.getHeight();
    sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
    sd.BufferDesc.RefreshRate.Numerator = 60;
    sd.BufferDesc.RefreshRate.Denominator = 1;
@@ -103,11 +103,11 @@ bool D3DDevice::create(GameWindow& window, int width, int height)
    CD3D11_VIEWPORT viewport(pbackbuffer, mpRenderTargetView);
    mpContext->RSSetViewports(1, &viewport);
    
-   return createD2D(windowhandle, width, height)
-       && Device::create(window, width, height);
+   return createD2D()
+       && Device::create(window);
 }
 
-bool D3DDevice::createD2D(int windowhandle, int width, int height)
+bool D3DDevice::createD2D()
 {
    HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mpD2DFactory);
    if ( FAILED(hr) )

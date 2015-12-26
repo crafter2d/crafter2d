@@ -42,7 +42,7 @@ namespace Graphics
       Font&           getFont(const String& name);
 
     // operations
-      virtual bool create(GameWindow& window, int width, int height);
+      virtual bool create(GameWindow& window);
       virtual void destroy();
       virtual void present() = 0;
 

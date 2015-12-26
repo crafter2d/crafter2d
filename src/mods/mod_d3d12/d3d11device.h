@@ -24,7 +24,7 @@ namespace Graphics
 
       void set(ID3D11Device3* pd3dDevice, ID3D11DeviceContext3* pd3dContext, IDXGISwapChain3* pswapChain);
 
-      virtual bool create(GameWindow& window, int width, int height) override;
+      virtual bool create(GameWindow& window) override;
       virtual void destroy() override;
       virtual void present() override;
 

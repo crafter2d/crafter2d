@@ -34,7 +34,7 @@ namespace Graphics
       m_swapChain = DX::SafeAcquire(pswapChain);
    }
 
-   bool D3D11Device::create(GameWindow& window, int width, int height)
+   bool D3D11Device::create(GameWindow& window)
    {
       window.initDevice(*this);
 
@@ -68,11 +68,11 @@ namespace Graphics
       m_d3dContext->RSSetState(prasterizerstate);
 
       // Set the 3D rendering viewport to target the entire window.
-      m_screenViewport = CD3D11_VIEWPORT(0.0f, 0.0f, width, height);
+      m_screenViewport = CD3D11_VIEWPORT(0.0f, 0.0f, window.getWidth(), window.getHeight());
       m_d3dContext->RSSetViewports(1, &m_screenViewport);
       
       return createD2D()
-         && Device::create(window, width, height);
+         && Device::create(window);
    }
 
    bool D3D11Device::createD2D()

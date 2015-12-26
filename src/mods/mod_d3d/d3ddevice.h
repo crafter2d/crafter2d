@@ -22,7 +22,7 @@ namespace Graphics
       ID3D11Device& getDevice() { return *mpDevice; }
 
     // overloads
-      virtual bool create(GameWindow& window, int width, int height) override;
+      virtual bool create(GameWindow& window) override;
       virtual void destroy() override;
       virtual void present() override;
 
@@ -43,7 +43,7 @@ namespace Graphics
    private:
 
     // initialization
-      bool createD2D(int windowhandle, int width, int height);
+      bool createD2D();
 
     // data
       ID3D11Device*           mpDevice;
