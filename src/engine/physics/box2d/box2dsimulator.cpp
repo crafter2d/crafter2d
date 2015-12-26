@@ -38,6 +38,10 @@
 
 const String Box2DSimulator::sClassName = UTEXT("box2d.Box2DSimulator");
 
+
+const int Box2DSimulator::eBound = 1;
+const int Box2DSimulator::eObject = 2;
+   
 // static
 Vector Box2DSimulator::b2ToVector(const b2Vec2& b2)
 {

@@ -48,8 +48,8 @@ public:
    static Matrix4 b2ToMatrix(const b2Transform& tf);
    static b2Vec2 vectorToB2(const Vector& v);
 
-   static const int eBound = 1;
-   static const int eObject = 2;
+   static const int eBound;
+   static const int eObject;
 
    struct BodyInfo {
       BodyInfo(int type): mType(type) {}
