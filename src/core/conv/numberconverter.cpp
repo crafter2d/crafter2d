@@ -1,6 +1,7 @@
 
 #include "numberconverter.h"
 
+#include <locale>
 #include <codecvt>
 #include <string>
 

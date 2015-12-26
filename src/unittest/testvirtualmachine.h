@@ -83,9 +83,9 @@ SUITE(TestVirtualMachine)
 {
    TEST(testRun)
    {      
-      ModuleManager modules;
-      CHECK(modules.initialize());
-      c2d::Module* pmodule = modules.lookup(c2d::UUID_ScriptModule);
+      auto& modulemgr = ModuleManager::getInstance();
+      CHECK(modulemgr.initialize());
+      c2d::Module* pmodule = modulemgr.lookup(c2d::UUID_ScriptModule);
       if ( pmodule == nullptr )
       {
          // no need to continue testing as it seems there is no script module available

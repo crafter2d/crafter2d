@@ -24,7 +24,7 @@
 
 class LinuxTimer;
 
-class LinuxPlatform : public Platform
+class LinuxPlatform : public c2d::Platform
 {
 public:
    LinuxPlatform();

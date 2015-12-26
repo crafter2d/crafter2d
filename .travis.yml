@@ -7,8 +7,8 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gcc-4.9
-    - g++-4.9
+    - gcc-5
+    - g++-5
     - cmake
     - zlib1g-dev
     - libsdl1.2-dev
@@ -20,7 +20,7 @@ before_install:
   - ./projects/install-libzip.sh
   - ./projects/install-premake5.sh
   - ./projects/install-box2d.sh
-  - export CXX="g++-4.9" CC="gcc-4.9"
+  - export CXX="g++-5" CC="gcc-5"
 
 script:
   - premake-core/bin/release/premake5 --travis --with-libzip=../libzip-1.0.1 --with-box2d=../Box2D-master gmake

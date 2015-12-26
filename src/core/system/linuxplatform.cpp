@@ -39,7 +39,7 @@ LinuxPlatform::~LinuxPlatform()
 }
 // - Query
 
-Platform::OS LinuxPlatform::getOS() const
+c2d::Platform::OS LinuxPlatform::getOS() const
 {
    return Platform::eLinux;
 }
