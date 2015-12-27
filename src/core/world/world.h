@@ -161,7 +161,7 @@ public:
 protected:
 
    void           scroll(Graphics::RenderContext& context);
-   void           initializeBorders();
+   void           initializeBorders(const Graphics::Viewport & viewport);
    
  // notifications
    void notifyScrollChange(const Vector& scrollposition);

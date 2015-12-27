@@ -1,6 +1,8 @@
 build
 data
 premake5
+Debug/
+Release/
 
 *.pro.user*
 *.pro.autosave*

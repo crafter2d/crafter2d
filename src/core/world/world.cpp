@@ -64,7 +64,6 @@ World::World():
    followObject(NULL)
 
 {
-   initializeBorders();
 }
 
 /*!
@@ -159,18 +158,16 @@ void World::setSimulator(Simulator* psimulator)
 
 void World::update(DirtySet& set, float delta)
 {
-   EntityMap::iterator it = mEntities.begin();
-   for ( ; it != mEntities.end(); ++it )
+   for ( auto& it : mEntities )
    {
-      Entity* pentity = it->second;
-      pentity->update(delta);
+      it.second->update(delta);
    }
 
    getSimulator().run(delta);
 
-   for ( it = mEntities.begin(); it != mEntities.end(); ++it )
+   for ( auto& it : mEntities )
    {
-      Entity* pentity = it->second;
+      Entity* pentity = it.second;
       if ( pentity->isDirty() )
       {
          set.reportDirty(*pentity);
@@ -188,17 +185,14 @@ void World::updateClient(Graphics::RenderContext& context, float delta)
       scroll(context);
    }
 
-   for ( std::size_t i = 0; i < layers.size(); i++ )
+   for ( auto player : layers )
    {
-      Layer& layer = *layers[i];
-      layer.update(delta);
+      player->update(delta);
    }
 
-   EntityMap::iterator it = mEntities.begin();
-   for ( ; it != mEntities.end(); ++it )
+   for ( auto& it : mEntities )
    {
-      Entity* pentity = it->second;
-      pentity->update(delta);
+      it.second->update(delta);
    }
 }
 
@@ -315,15 +309,15 @@ void World::scroll (Graphics::RenderContext& context)
    }
 }
 
-void World::initializeBorders()
+void World::initializeBorders(const Graphics::Viewport& viewport)
 {
-   // set the follow object borders default values
-   int width = 800, height = 600;
+   static const int BorderSize = 50;
 
-   leftBorder = 50;
-   rightBorder = width - 50;
-   topBorder = 50;
-   bottomBorder = height - 50;
+   // set the follow object borders default values
+   leftBorder = BorderSize;
+   rightBorder = viewport.getWidth() - BorderSize;
+   topBorder = BorderSize;
+   bottomBorder = viewport.getHeight() - BorderSize;
 }
 
 void World::onViewportChanged(Graphics::RenderContext& context)
@@ -336,6 +330,8 @@ void World::onViewportChanged(Graphics::RenderContext& context)
       Layer* player = layers[index];
       player->onViewportChanged(context);
    }
+
+   initializeBorders(context.getViewport());
 }
 
 
