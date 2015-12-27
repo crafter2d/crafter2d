@@ -321,7 +321,7 @@ namespace c2d
 
       InputModule& inputmod = static_cast<InputModule&>(*pmodule);
       mpInputDevice = &inputmod.getDevice();
-      if ( !mpInputDevice->create(mpWindow->getHandle()) )
+      if ( !mpInputDevice->create(*mpWindow) )
       {
          // failed to create input! can't proceed
          return false;

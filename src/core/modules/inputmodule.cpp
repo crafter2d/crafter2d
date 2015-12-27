@@ -7,8 +7,13 @@
 namespace c2d
 {
    InputModule::InputModule() :
+      InputModule(NULL)
+   {
+   }
+
+   InputModule::InputModule(Input::InputDevice* pdevice) :
       Module(eInputModule, UUID_InputModule),
-      mpDevice(NULL)
+      mpDevice(pdevice)
    {
    }
 

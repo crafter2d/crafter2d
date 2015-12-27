@@ -1,6 +1,8 @@
 
 #include "dxinputdevice.h"
 
+#include "core/window/gamewindow.h"
+
 namespace Input
 {
 
@@ -12,7 +14,7 @@ DXInputDevice::DXInputDevice():
 {
 }
 
-bool DXInputDevice::create(int windowhandle)
+bool DXInputDevice::create(GameWindow& window)
 {
    HMODULE hDLL = GetModuleHandle(NULL);
    HRESULT hr = DirectInput8Create(hDLL, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&mpInput, NULL);
@@ -27,7 +29,7 @@ bool DXInputDevice::create(int windowhandle)
       return false;
    }
 
-   hr = mpKeyboard->SetCooperativeLevel((HWND)windowhandle, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+   hr = mpKeyboard->SetCooperativeLevel((HWND)window.getHandle(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
    hr = mpKeyboard->SetDataFormat(&c_dfDIKeyboard);
 
    return true;

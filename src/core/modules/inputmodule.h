@@ -15,6 +15,7 @@ namespace c2d
    {
    public:
       InputModule();
+      explicit InputModule(Input::InputDevice* pdevice);
       virtual ~InputModule();
 
     // get/set

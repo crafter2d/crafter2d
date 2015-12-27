@@ -5,15 +5,26 @@
 #include <wrl/client.h>
 #include <dxgi1_4.h>
 #include <d3d11_3.h>
+#include <map>
 
 #include "core/window/gamewindow.h"
 
 ref class WindowEventHandler;
 
+class AppInputDevice;
+
 class AppGameWindow : public GameWindow
 {
 public:
    AppGameWindow();
+
+   AppInputDevice& getInputDevice() {
+      return *mpInput;
+   }
+
+   void setInputDevice(AppInputDevice& input) {
+      mpInput = &input;
+   }
 
    // query
    virtual int getHandle() const override;
@@ -34,14 +45,13 @@ protected:
 private:
 
  // operations
-   void setWindow();
+   void setWindow(Windows::UI::Core::CoreWindow^ window);
    void updateRenderTargetSize();
-
    DXGI_MODE_ROTATION computeDisplayRotation();
    
  // data members
    Platform::Agile<Windows::UI::Core::CoreWindow> mWindow;
-   WindowEventHandler^ mpHandler;
+   WindowEventHandler^ mHandler;
 
    // d3d variables
    Microsoft::WRL::ComPtr<ID3D11Device3>        m_d3dDevice;
@@ -49,14 +59,15 @@ private:
    Microsoft::WRL::ComPtr<IDXGISwapChain3>      m_swapChain;
 
    float	m_dpi;
-   // This is the DPI that will be reported back to the app. It takes into account whether the app supports high resolution screens or not.
-   float m_effectiveDpi;
-
+   float m_effectiveDpi; // This is the DPI that will be reported back to the app. It takes into account whether the app supports high resolution screens or not.
+   
    Windows::Foundation::Size						m_d3dRenderTargetSize;
    Windows::Foundation::Size						m_outputSize;
    Windows::Foundation::Size						m_logicalSize;
 
    Windows::Graphics::Display::DisplayOrientations	m_nativeOrientation;
    Windows::Graphics::Display::DisplayOrientations	m_currentOrientation;
+
+   AppInputDevice* mpInput;
 };
 

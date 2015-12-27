@@ -71,27 +71,19 @@ void App::Load(Platform::String^ entryPoint)
 
 #include "core/modules/modulecollection.h"
 #include "core/modules/modulemanager.h"
-/*
-#include "mod_c2d/mod_c2d.h"
-#include "mod_d3d12/mod_d3d12.h"
-#include "mod_yas/mod_yas.h"
-*/
+#include "core/modules/inputmodule.h"
+#include "appinputdevice.h"
 
 // This method is called after the window becomes active.
 void App::Run()
 {
-   
    auto& mgr = c2d::ModuleManager::getInstance();
    if ( !mgr.initialize() )
    {
       return;
    }
 
-   /*
-   mgr.exec(getScriptModule);
-   mgr.exec(getC2DModuleCollecion);
-   mgr.exec(getGraphicsModuleCollection);
-   */
+   mgr.add(new c2d::InputModule(new AppInputDevice()));
 
    m_main->create();
    m_main->run();

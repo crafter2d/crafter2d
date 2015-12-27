@@ -31,6 +31,8 @@ namespace c2d
 
       void exec(PGETMODULE pfunc);
       void exec(PGETMODULECOLLECTION pfunc);
+
+      void add(Module* pmodule);
       
       ModuleCollection filter(ModuleKind kind);
 
@@ -44,7 +46,6 @@ namespace c2d
       ModuleManager();
 
       // maintenance
-      void add(Module* pmodule);
       void add(ModuleCollection& collection);
       void add(const String& filename);
       void clear();

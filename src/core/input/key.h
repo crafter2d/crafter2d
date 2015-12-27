@@ -29,6 +29,8 @@ namespace Key
    const int NUM_7 = 19;
    const int NUM_8 = 20;
    const int NUM_9 = 21;
+
+   const int MAX_KEY = 22;
 }
 
 #endif // KEY_H

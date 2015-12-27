@@ -11,7 +11,7 @@ class OGLInputDevice : public Input::InputDevice
 public:
    OGLInputDevice();
 
-   virtual bool create(int windowhandle) override;
+   virtual bool create(GameWindow& window) override;
    virtual void update() override;
 
    virtual bool isKeyDown(int key) override;

@@ -5,8 +5,11 @@
 
 #include "core/defines.h"
 #include "core/graphics/device.h"
+#include "core/input/key.h"
 
 #include "mods/mod_d3d12/d3d11device.h"
+
+#include "appinputdevice.h"
 
 using namespace Microsoft::WRL;
 using namespace Windows::ApplicationModel;
@@ -47,18 +50,43 @@ namespace DisplayMetrics
 
 ref class WindowEventHandler sealed
 {
-public:
+   using WindowPtr = Platform::Agile<CoreWindow>;
+   using KeyMap = std::map<VirtualKey, int>;
 
-   void setWindow(CoreWindow^ window)
+   AppGameWindow& mAppWindow;
+   WindowPtr mWindow;
+   KeyMap mKeyMap;
+
+internal:
+   WindowEventHandler(AppGameWindow& appwindow, WindowPtr window):
+      mAppWindow(appwindow),
+      mWindow(window)
    {
-      window->SizeChanged +=
+      registerHandlers();
+
+      mKeyMap.insert({ VirtualKey::S, Key::DOWN });
+      mKeyMap.insert({ VirtualKey::W, Key::UP });
+      mKeyMap.insert({ VirtualKey::A, Key::LEFT });
+      mKeyMap.insert({ VirtualKey::D, Key::RIGHT });
+      mKeyMap.insert({ VirtualKey::Space, Key::SPACE });
+   }
+
+   void registerHandlers()
+   {
+      mWindow->SizeChanged +=
          ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &WindowEventHandler::OnWindowSizeChanged);
 
-      window->VisibilityChanged +=
+      mWindow->VisibilityChanged +=
          ref new TypedEventHandler<CoreWindow^, VisibilityChangedEventArgs^>(this, &WindowEventHandler::OnVisibilityChanged);
 
-      window->Closed +=
+      mWindow->Closed +=
          ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>(this, &WindowEventHandler::OnWindowClosed);
+
+      mWindow->KeyDown +=
+         ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &WindowEventHandler::OnKeyDown);
+
+      mWindow->KeyUp +=
+         ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &WindowEventHandler::OnKeyUp);
 
       DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
 
@@ -86,6 +114,25 @@ public:
    {
    }
 
+   // Input event handlers
+   void OnKeyUp(Windows::UI::Core::CoreWindow ^ sender, Windows::UI::Core::KeyEventArgs ^ args)
+   {
+      auto it = mKeyMap.find(args->VirtualKey);
+      if ( it != mKeyMap.end() )
+      {
+         mAppWindow.getInputDevice().set(it->second, false);
+      }
+   }
+
+   void OnKeyDown(Windows::UI::Core::CoreWindow ^ sender, Windows::UI::Core::KeyEventArgs ^ args)
+   {
+      auto it = mKeyMap.find(args->VirtualKey);
+      if ( it != mKeyMap.end() )
+      {
+         mAppWindow.getInputDevice().set(it->second, true);
+      }
+   }
+
    // DisplayInformation event handlers.
    void OnDpiChanged(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args)
    {
@@ -98,20 +145,21 @@ public:
    void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args)
    {
    }
-
 };
 
 AppGameWindow::AppGameWindow() :
    GameWindow(),
-   mWindow(CoreWindow::GetForCurrentThread()),
-   mpHandler(nullptr)
+   mWindow(),
+   mHandler()
 {
 }
 
 bool AppGameWindow::doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen)
 {
-   mpHandler = ref new WindowEventHandler();
-   mpHandler->setWindow(mWindow.Get());
+   setWindow(CoreWindow::GetForCurrentThread());
+
+   mHandler = ref new WindowEventHandler(*this, mWindow);
+
    return true;
 }
 
@@ -134,8 +182,6 @@ int AppGameWindow::getHeight() const
 
 bool AppGameWindow::initDevice(Graphics::Device& device)
 {
-   setWindow();
-
    UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if defined(_DEBUG)
    // If the project is in a debug build, enable debugging via SDK Layers with this flag.
@@ -276,8 +322,10 @@ void AppGameWindow::display()
 
 // - Operations
 
-void AppGameWindow::setWindow()
+void AppGameWindow::setWindow(CoreWindow^ window)
 {
+   mWindow = window;
+
    DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
 
    m_logicalSize = Windows::Foundation::Size(mWindow->Bounds.Width, mWindow->Bounds.Height);

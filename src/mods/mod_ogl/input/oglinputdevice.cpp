@@ -9,7 +9,7 @@ OGLInputDevice::OGLInputDevice():
 {
 }
 
-bool OGLInputDevice::create(int windowhandle)
+bool OGLInputDevice::create(GameWindow& window)
 {
    return true;
 }

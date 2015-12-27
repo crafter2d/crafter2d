@@ -22,6 +22,8 @@
 
 #include "core/core_base.h"
 
+class GameWindow;
+
 namespace Input
 {
    class CORE_API InputDevice
@@ -31,7 +33,7 @@ namespace Input
 
       InputDevice();
 
-      virtual bool create(int windowhandle) = 0;
+      virtual bool create(GameWindow& window) = 0;
       virtual void update() = 0;
 
       virtual bool isKeyDown(int key);

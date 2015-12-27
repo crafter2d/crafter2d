@@ -8,7 +8,7 @@ namespace Input
    }
 
    // overrides
-   bool D3DInput::create(int windowhandle)
+   bool D3DInput::create(GameWindow& window)
    {
       return true;
    }
