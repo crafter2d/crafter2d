@@ -8,7 +8,6 @@ RenderContext::RenderContext():
    mSpriteRenderer(),
    mParticleRenderer(),
    mTextRenderer(),
-   mViewport(),
    mClearColor()
 {
 }
@@ -19,15 +18,11 @@ RenderContext::~RenderContext()
 
 // - Get/set
 
-void RenderContext::setViewport(const Viewport& viewport)
+void RenderContext::viewportChanged(const Viewport& viewport)
 {
-   mViewport = viewport;
-
    mSpriteRenderer.viewportChanged(*this, viewport);
    mParticleRenderer.viewportChanged(*this, viewport);
    mTextRenderer.viewportChanged(*this, viewport);
-
-   onViewportChanged(viewport);
 }
 
 // - Initialization

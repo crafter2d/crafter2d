@@ -5,4 +5,9 @@ class DerivedClass extends BaseClass
 	{
 		mMember = value;
 	}
+	
+	public string getBaseValue()
+	{
+		return super.getBaseValue();
+	}
 }

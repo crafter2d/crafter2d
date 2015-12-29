@@ -12,5 +12,10 @@ class BaseClass
 	public int getMemberBase()
 	{
 		return mMember;
-	}	
+	}
+	
+	public string getBaseValue()
+	{
+		return "value";
+	}
 }

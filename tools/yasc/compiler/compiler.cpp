@@ -112,6 +112,7 @@ int Compiler::exec()
    if ( parg != NULL )
    {
       mOutputDir = parg->getValue();
+      createOutputDir();
    }
    else
    {
@@ -183,6 +184,30 @@ void Compiler::createCompileSteps()
    mCompileSteps.push_back(new ResourceCheckVisitor(mContext));
    mCompileSteps.push_back(new OOCheckVisitor(mContext));
    mCompileSteps.push_back(new CodeGeneratorVisitor(mContext));
+}
+
+#include "core/vfs/filesystem.h"
+
+void Compiler::createOutputDir()
+{
+   String path;
+   auto parts = StringInterface::tokenize(mOutputDir, '\\');
+   for ( String& part : parts )
+   {
+      if ( !path.isEmpty() )
+      {
+         path = File::concat(path, part);
+      }
+      else
+      {
+         path = part;
+      }
+      
+      if ( part[0] != L'.' )
+      {
+         FileSystem::getInstance().mkdir(path);
+      }      
+   }
 }
 
 bool Compiler::performSteps(ASTNode& node, Steps& steps)
@@ -257,6 +282,8 @@ void Compiler::save(ASTClass& ast)
       }
    }
 }
+
+// - Error logging
 
 void Compiler::reportException(CompileException& exception)
 {

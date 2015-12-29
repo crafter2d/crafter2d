@@ -94,10 +94,4 @@ void D3DRenderContext::drawTriangleStrip(int start, int count)
 {
 }
 
-// - Notifications
-
-void D3DRenderContext::onViewportChanged(const Viewport& viewport)
-{
-}
-
 } // namespace Graphics

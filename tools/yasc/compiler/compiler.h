@@ -40,6 +40,7 @@ private:
 
  // operations
    void createCompileSteps();
+   void createOutputDir();
    void cleanUp();
 
    bool performSteps(ASTNode& node, Steps& steps);
@@ -47,6 +48,7 @@ private:
    ASTRoot& load(const String& classname);
    ASTRoot& load(File& file);
    void     save(ASTClass& ast);
+
 
  // error reporting
    void reportException(CompileException& exception);

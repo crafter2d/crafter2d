@@ -128,6 +128,7 @@ private:
    int                  mState;
    bool                 mRightHandSide;
    bool                 mStore;
+   bool                 mWasSuper;
 };
 
 #endif // CODE_GENERATOR_VISITOR_H_

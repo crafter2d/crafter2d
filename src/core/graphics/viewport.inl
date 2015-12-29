@@ -21,45 +21,5 @@
 
 namespace Graphics
 {
-
-INLINE int Viewport::getLeft() const
-{
-   return mLeft;
-}
-
-INLINE void Viewport::setLeft(int left)
-{
-   mLeft = left;
-}
-
-INLINE int Viewport::getTop() const
-{
-   return mTop;
-}
-
-INLINE void Viewport::setTop(int top)
-{
-   mTop = top;
-}
-
-INLINE int Viewport::getWidth() const
-{
-   return mWidth;
-}
-
-INLINE void Viewport::setWidth(int width)
-{
-   mWidth = width;
-}
-
-INLINE int Viewport::getHeight() const
-{
-   return mHeight;
-}
-
-INLINE void Viewport::setHeight(int height)
-{
-   mHeight = height;
-}
-
+   
 };

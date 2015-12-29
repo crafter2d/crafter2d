@@ -70,6 +70,7 @@ static const String sNetStream = UTEXT("engine.net.NetStream");
 static const String sScriptEvent = UTEXT("onScriptEvent");
 static const String sOnKeyEvent = UTEXT("onKeyEvent");
 static const String sOnMouseEvent = UTEXT("onMouseEvent");
+static const String sOnWindowSizeChangedEvent = UTEXT("onWindowResized");
 
 using namespace Graphics;
 using namespace Input;
@@ -93,6 +94,7 @@ namespace c2d
       mpParticleEntity(NULL),
       mpPlayer(NULL),
       mpKeyMap(NULL),
+      mViewport(),
       mpFont(NULL),
       mFpsMsg(UTEXT("FPS: 0")),
       mRequests(),
@@ -550,7 +552,7 @@ namespace c2d
 
       World& world = getWorld();
       world.initialize(*mpDevice);
-      world.onViewportChanged(*mpRenderContext);
+      world.onViewportChanged(*mpRenderContext, mViewport);
 
       mpWorldRenderer = world.createRenderer();
       mpPlayer->initialize(world);
@@ -591,13 +593,18 @@ namespace c2d
 
    void Client::onWindowResized()
    {
-      Graphics::Viewport viewport(0, 0, mpWindow->getWidth(), mpWindow->getHeight());
-      mpRenderContext->setViewport(viewport);
+      mViewport.resize(mpWindow->getWidth(), mpWindow->getHeight());
+      mpRenderContext->viewportChanged(mViewport);
 
       if ( hasWorld() )
       {
-         getWorld().onViewportChanged(*mpRenderContext);
+         getWorld().onViewportChanged(*mpRenderContext, mViewport);
       }
+
+      Variant args[2];
+      args[0].setInt(mViewport.getWidth());
+      args[1].setInt(mViewport.getHeight());
+      //mpScript->call(sOnWindowSizeChangedEvent, 2, args);
    }
 
    void Client::onWindowClosing()

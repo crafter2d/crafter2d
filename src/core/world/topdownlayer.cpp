@@ -86,10 +86,8 @@ bool TopDownLayer::initialize(Graphics::Device& device)
 	return true;
 }
 
-void TopDownLayer::onViewportChanged(Graphics::RenderContext& context)
+void TopDownLayer::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
-   const Graphics::Viewport& viewport = context.getViewport();
-
 	// calculate the maximum number of tiles on the screen
 	maxTilesX = MIN(viewport.getWidth()  / mpTileSet->getTileWidth() , getWidth());
    maxTilesY = MIN(viewport.getHeight() / mpTileSet->getTileHeight(), getHeight());
@@ -98,7 +96,7 @@ void TopDownLayer::onViewportChanged(Graphics::RenderContext& context)
 	xscrollMax = MAX((getWidth() - maxTilesX) * tileWidth , 0);
 	yscrollMax = MAX((getHeight() - maxTilesY) * tileHeight, 0);
 
-   Layer::onViewportChanged(context);
+   Layer::onViewportChanged(context, viewport);
 }
 
 /// \fn Layer::draw()

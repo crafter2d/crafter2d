@@ -37,7 +37,8 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mExpr(0),
    mState(0),
    mRightHandSide(false),
-   mStore(false)
+   mStore(false),
+   mWasSuper(false)
 {
 }
 
@@ -988,6 +989,10 @@ void CodeGeneratorVisitor::visit(const ASTSuper& ast)
       String name = pclass->getFullName() + '.' + ast.getConstructor().getPrototype();
       mBuilder.emit(CIL_call, name);
    }
+   else if ( ast.isSuper() )
+   {
+      mWasSuper = true;
+   }
    else if ( ast.isThis() )
    {
       mBuilder.emit(CIL_ldarg, 0);
@@ -1141,7 +1146,13 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
             visitChildren(ast);
 
-            if ( function.getModifiers().isPureNative() )
+            if ( mWasSuper )
+            {
+               String name = function.getClass().getFullName() + '.' + function.getPrototype();
+               mBuilder.emit(CIL_call, name);
+               mWasSuper = false;
+            }
+            else if ( function.getModifiers().isPureNative() )
             {
                const String qualifiedname = function.getClass().getFullName() + '.' + function.getPrototype();
                mBuilder.emit(CIL_call_native, qualifiedname);

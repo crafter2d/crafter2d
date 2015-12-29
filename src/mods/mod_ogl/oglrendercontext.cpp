@@ -27,10 +27,12 @@ OGLRenderContext::OGLRenderContext():
 {
 }
 
+/*
 void OGLRenderContext::onViewportChanged(const Viewport& viewport)
 {
    glViewport(viewport.getLeft(), viewport.getTop(), viewport.getWidth(), viewport.getHeight());
 }
+*/
 
 void OGLRenderContext::setRenderTarget(RenderTarget& target)
 {

@@ -27,6 +27,7 @@
 
 #include "core/entity/entity.h"
 #include "core/graphics/rendercontext.h"
+#include "core/graphics/viewport.h"
 #include "core/log/log.h"
 #include "core/physics/simulator.h"
 #include "core/script/scriptobject.h"
@@ -61,8 +62,8 @@ World::World():
    bottomBorder(0),
    _objectLayer(0),
    followMode(FollowMouse),
-   followObject(NULL)
-
+   followObject(NULL),
+   mBorderSet(false)
 {
 }
 
@@ -311,16 +312,18 @@ void World::scroll (Graphics::RenderContext& context)
 
 void World::initializeBorders(const Graphics::Viewport& viewport)
 {
-   static const int BorderSize = 50;
-
-   // set the follow object borders default values
-   leftBorder = BorderSize;
-   rightBorder = viewport.getWidth() - BorderSize;
-   topBorder = BorderSize;
-   bottomBorder = viewport.getHeight() - BorderSize;
+   if ( !mBorderSet )
+   {
+      static const int Margin = 100;
+      // set the follow object borders default values
+      leftBorder = Margin;
+      rightBorder = viewport.getWidth() - Margin;
+      topBorder = Margin;
+      bottomBorder = viewport.getHeight() - Margin;
+   }
 }
 
-void World::onViewportChanged(Graphics::RenderContext& context)
+void World::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
    Layer* pobjectlayer = layers[_objectLayer];
    Vector area = pobjectlayer->getScrollArea();
@@ -328,10 +331,10 @@ void World::onViewportChanged(Graphics::RenderContext& context)
    for ( int index = 0; index < layers.size(); ++index )
    {
       Layer* player = layers[index];
-      player->onViewportChanged(context);
+      player->onViewportChanged(context, viewport);
    }
 
-   initializeBorders(context.getViewport());
+   initializeBorders(viewport);
 }
 
 

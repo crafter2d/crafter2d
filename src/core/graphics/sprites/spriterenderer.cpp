@@ -25,6 +25,7 @@
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/utils.h"
 #include "core/graphics/vertexbuffer.h"
+#include "core/graphics/viewport.h"
 #include "core/math/size.h"
 #include "core/math/xform.h"
 

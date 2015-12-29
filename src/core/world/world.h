@@ -153,7 +153,7 @@ public:
    void notifyObjectWorldCollision(Entity& object, Bound& bound, int side, bool begin);
    void notifyObjectObjectCollision(Entity& object, Entity& target, int side, bool begin);
 
-   void onViewportChanged(Graphics::RenderContext& context);
+   void onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport);
 
  // rendering
    WorldRenderer* createRenderer();
@@ -197,6 +197,8 @@ private:
    int _objectLayer;
    FollowMode followMode;
    Entity* followObject;
+
+   bool mBorderSet;
 };
 
 #ifdef JENGINE_INLINE

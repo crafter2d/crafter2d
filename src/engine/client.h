@@ -25,6 +25,7 @@
 #include <map>
 
 #include "core/entity/idmanager.h"
+#include "core/graphics/viewport.h"
 #include "core/string/string.h"
 #include "core/sound/soundmanager.h"
 
@@ -105,6 +106,8 @@ namespace c2d
 
       Input::InputDevice&  getInput();
 
+      Graphics::Viewport& getViewport() { return mViewport; }
+
       // operations
       bool           connect(const String& server, int port);
       void           disconnect();
@@ -165,6 +168,7 @@ namespace c2d
       Player*                    mpPlayer;
       KeyMap*                    mpKeyMap;
       Graphics::Font*            mpFont;
+      Graphics::Viewport         mViewport;
       String                     mFpsMsg;
       Requests                   mRequests;
       int                        mServerId;

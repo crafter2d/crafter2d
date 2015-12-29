@@ -5,7 +5,6 @@
 #include "core/core_base.h"
 #include "core/math/color.h"
 
-#include "viewport.h"
 #include "particles/particlesystemrenderer.h"
 #include "sprites/spriterenderer.h"
 #include "text/textrenderer.h"
@@ -35,10 +34,7 @@ namespace Graphics
     // get/set
       const Color& getClearColor() const;
       void         setClearColor(const Color& color);
-
-      const Viewport& getViewport() const;
-      void            setViewport(const Viewport& viewport);
-
+      
       TextRenderer& getTextRenderer();
 
     // initialization
@@ -70,9 +66,8 @@ namespace Graphics
       void drawSprite(const Sprite& sprite);
       void drawParticles(const ParticleSystem& particles);
 
-   protected:
-    // notifications
-      virtual void onViewportChanged(const Viewport& viewport) = 0;
+   // notifications
+      void viewportChanged(const Graphics::Viewport& viewport);
 
    private:
 
@@ -80,7 +75,6 @@ namespace Graphics
       SpriteRenderer         mSpriteRenderer;
       ParticleSystemRenderer mParticleRenderer;
       TextRenderer           mTextRenderer;
-      Viewport               mViewport;
       Color                  mClearColor;
    };
 };

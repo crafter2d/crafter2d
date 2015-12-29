@@ -32,11 +32,7 @@ namespace Graphics
       virtual void drawTriangleFan(int start, int count);
       virtual void drawTriangleStrip(int start, int count);
       virtual void clear();
-
-   protected:
-    // notifications
-      virtual void onViewportChanged(const Viewport& viewport);
-
+      
    private:
 
       ID3D11DeviceContext*    mpContext;

@@ -31,11 +31,7 @@ namespace Graphics
       virtual void drawTriangleStrip(int start, int count) override;
 
       virtual void clear() override;
-
-   protected:
-      // notifications
-      virtual void onViewportChanged(const Viewport& viewport) override;
-
+      
    private:
 
       ID3D11DeviceContext3*	   m_d3dContext;

@@ -43,15 +43,19 @@ namespace ByteCode
          pos = funcproto.indexOf('(');
          if ( pos > 0 )
          {
+            yasc::Types signature;
+
             String funcname = funcproto.subStr(0, pos);
             String args = funcproto.subStr(pos + 1, funcproto.length() - pos - 2);
-            std::vector<String> arguments = StringInterface::tokenize(args, ',');
-            yasc::Types signature;
-            for ( std::size_t index = 0; index < arguments.size(); ++index )
+            if ( !args.isEmpty() )
             {
-               String& arg = arguments[index];
-               yasc::Type* ptype = yasc::Type::fromString(arg);
-               signature.add(ptype);
+               std::vector<String> arguments = StringInterface::tokenize(args, ',');
+               for ( std::size_t index = 0; index < arguments.size(); ++index )
+               {
+                  String& arg = arguments[index];
+                  yasc::Type* ptype = yasc::Type::fromString(arg);
+                  signature.add(ptype);
+               }
             }
 
             VirtualFunction* pfunction = klass.findExactMatch(funcname, signature);

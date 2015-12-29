@@ -14,6 +14,7 @@
 #include "core/graphics/vertexbuffer.h"
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/rendercontext.h"
+#include "core/graphics/viewport.h"
 #include "core/graphics/utils.h"
 #include "core/math/vector.h"
 

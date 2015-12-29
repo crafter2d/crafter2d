@@ -33,17 +33,17 @@ public:
    virtual LayerType getType() const;
 
  // creation
-   virtual bool initialize(Graphics::Device& device);
+   virtual bool initialize(Graphics::Device& device) override;
 
  // operations
    virtual void draw(Graphics::RenderContext& context) override;
    virtual void drawFront(Graphics::RenderContext& context) override;
    
  // coordinate conversion
-   virtual Point pointToTile(const Point& point);
+   virtual Point pointToTile(const Point& point) override;
 
  // notifications
-   virtual void onViewportChanged(Graphics::RenderContext& context);
+   virtual void onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport) override;
 
 private:
 

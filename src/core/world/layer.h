@@ -50,6 +50,7 @@ namespace Graphics
    class IndexBuffer;
    class VertexBuffer;
    class UniformBuffer;
+   class Viewport;
 };
 
 class Point;
@@ -145,7 +146,7 @@ public:
    void resize(int width, int height);
 
  // notifications
-   virtual void onViewportChanged(Graphics::RenderContext& context);
+   virtual void onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport);
 
 protected:
  // operations

@@ -136,11 +136,10 @@ void Layer::release()
    delete mpEffect;
 }
 
-/// \fn Layer::onViewportChanged(const Graphics::RenderContext& context)
+/// \fn Layer::onViewportChanged(const Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 /// \brief Called when the viewports dimensions have been changed. 
-void Layer::onViewportChanged(Graphics::RenderContext& context)
+void Layer::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
-   const Graphics::Viewport& viewport = context.getViewport();
    mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1.0f, 1.0f);
    mConstants.world.setIdentity();
    mConstants.object.setIdentity();

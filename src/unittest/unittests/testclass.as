@@ -31,4 +31,12 @@ class TestClass
 		// currently fails, needs to be implemented
 		// DerivedClass.mStaticMember = 123;
 	}
+	
+	@test
+	void testCallSuperFunction()
+	{
+		DerivedClass klass = new DerivedClass();
+		string value = klass.getBaseValue();
+		assert value == "value";
+	}
 }

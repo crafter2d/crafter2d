@@ -103,7 +103,7 @@ internal:
    // Window event handlers.
    void OnWindowSizeChanged(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::WindowSizeChangedEventArgs^ args)
    {
-
+      mAppWindow.resize(args->Size.Width, args->Size.Height);
    }
 
    void OnVisibilityChanged(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::VisibilityChangedEventArgs^ args)
@@ -305,6 +305,7 @@ bool AppGameWindow::initDevice(Graphics::Device& device)
 
 void AppGameWindow::resize(int width, int height)
 {
+   fireWindowResized();
 }
 
 void AppGameWindow::toggleFullscreen()

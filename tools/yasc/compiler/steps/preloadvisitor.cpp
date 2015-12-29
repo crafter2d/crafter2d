@@ -467,11 +467,6 @@ bool PreloadVisitor::load(ASTType& type)
    {
       const String& name = type.getObjectName();
 
-      if ( name == UTEXT("engine.game.ContentManager") )
-      {
-         int aap  = 5;
-      }
-
       ASTTypeList& args = type.getTypeArguments();
       for ( int index = 0; index < args.size(); ++index )
       {

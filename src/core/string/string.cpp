@@ -386,7 +386,6 @@ String String::right(int from) const
 String String::unescape() const
 {
    String result;
-   uint32_t pos = 0;
    char digs[9]= "\0\0\0\0\0\0\0\0";
    int dno = 0;
 
@@ -409,18 +408,18 @@ String String::unescape() const
 
             if (dno > 0)
             {
-               result.mData[pos++] = (wchar_t) strtol(digs, NULL, 16);
+               result.mData += (wchar_t) strtol(digs, NULL, 16);
             }
             break;
 
          default:
-            result.mData[pos++] = convertEscape(c);
+            result.mData += convertEscape(c);
             break;
          }
       }
       else
       {
-         result.mData[pos++] = ch;
+         result.mData += ch;
       }
    }
 

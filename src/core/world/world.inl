@@ -62,6 +62,7 @@ INLINE void World::setFollowBorders(int left, int right, int top, int bottom)
    rightBorder = right;
    topBorder = top;
    bottomBorder = bottom;
+   mBorderSet = true;
 }
 
 INLINE const String& World::getName() const

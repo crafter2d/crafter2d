@@ -24,6 +24,7 @@
 #include "core/entity/componentmessages/animationcomponentmessage.h"
 #include "core/graphics/effect.h"
 #include "core/graphics/texture.h"
+#include "core/graphics/viewport.h"
 #include "core/physics/inputforcegenerator.h"
 #include "core/physics/simulator.h"
 #include "core/resource/resourcemanager.h"
@@ -186,6 +187,13 @@ void Client_getTexture(ScriptCall& accessor)
 
    TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(client.getDevice(), name));
    RETURN_CLASS_OWNED(UTEXT("engine.core.Texture"), ptexture);
+}
+
+void Client_getViewport(ScriptCall& accessor)
+{
+   GET_THIS(Client, client);
+
+   RETURN_CLASS(UTEXT("engine.game.Viewport"), &client.getViewport());
 }
 
 void ContentManager_loadEntity(ScriptCall& accessor)
@@ -567,6 +575,20 @@ void Layer_setTile(ScriptCall& accessor)
    layer.setTile((LayerLevel)level, x, y, t);
 }
 
+void Viewport_getWidth(ScriptCall& accessor)
+{
+   GET_THIS(Graphics::Viewport, viewport);
+
+   accessor.setResult(viewport.getWidth());
+}
+
+void Viewport_getHeight(ScriptCall& accessor)
+{
+   GET_THIS(Graphics::Viewport, viewport);
+
+   accessor.setResult(viewport.getHeight());
+}
+
 void InputForceGenerator_init(ScriptCall& accessor)
 {
    ScriptObjectHandle thisobject = accessor.getObject(0);
@@ -868,6 +890,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("setKeyMap(engine.game.KeyMap)"), Client_setKeyMap);
    pregistrator->addFunction(UTEXT("getPlayer()"), Client_getPlayer);
    pregistrator->addFunction(UTEXT("getTexture(string)"), Client_getTexture);
+   pregistrator->addFunction(UTEXT("getViewport()"), Client_getViewport);
 
    pregistrator->addClass(UTEXT("engine.game.ContentManager"));
    pregistrator->addFunction(UTEXT("loadEntity(string)"), ContentManager_loadEntity);
@@ -940,6 +963,10 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("setTile(int, int, int)"), Layer_setTile);
 
    pregistrator->addClass(UTEXT("engine.game.Effect"));
+
+   pregistrator->addClass(UTEXT("engine.game.Viewport"));
+   pregistrator->addFunction(UTEXT("getWidth()"), Viewport_getWidth);
+   pregistrator->addFunction(UTEXT("getHeight()"), Viewport_getHeight);
 
    pregistrator->addClass(UTEXT("engine.game.InputForceGenerator"));
    pregistrator->addFunction(UTEXT("InputForceGenerator()"), InputForceGenerator_init);

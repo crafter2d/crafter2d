@@ -35,17 +35,23 @@ namespace Graphics
       Viewport& operator=(const Viewport& that);
 
     // get/set
-      int  getLeft() const;
-      void setLeft(int left);
+      int  getLeft() const { return mLeft; }
+      void setLeft(int left) { mLeft = left; }
 
-      int  getTop() const;
-      void setTop(int top);
+      int  getTop() const { return mTop; }
+      void setTop(int top) { mTop = top; }
 
-      int  getWidth() const;
-      void setWidth(int width);
+      int  getWidth() const { return mWidth; }
+      void setWidth(int width) { mWidth = width; }
 
-      int  getHeight() const;
-      void setHeight(int height);
+      int  getHeight() const { return mHeight; }
+      void setHeight(int height) { mHeight = height; }
+
+    // operations
+      void resize(int width, int height) {
+         mWidth = width;
+         mHeight = height;
+      }
 
    private:
       int mLeft;

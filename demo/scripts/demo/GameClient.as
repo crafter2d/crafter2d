@@ -90,10 +90,16 @@ class GameClient extends Client
 			
 			mLocalActionMap.setActor(controller);
 			
+			Viewport viewport = getViewport();
+			int left = 150;
+			int top = 100;
+			int right = viewport.getWidth() - 150;
+			int bottom = viewport.getHeight() - 100;
+			
 			world.setFollowMode(0);
 			world.setObjectLayer(1);
 			world.setFollowActor(controller);
-			world.setFollowBorders(150, 650, 100, 500);
+			world.setFollowBorders(left, right, top, bottom);
 		}
 		else if ( message instanceof ActionMessage )
 		{
@@ -102,5 +108,10 @@ class GameClient extends Client
 			Entity entity = (Entity) getWorld().findEntity(action.getActorId());
 			mLocalActionMap.onKeyDown(entity, action.getAction());
 		}
+	}
+	
+	public void onWorldChanged(World world)
+	{
+		super.onWorldChanged(world);
 	}
 }

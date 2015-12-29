@@ -33,6 +33,7 @@ abstract class Client extends Process
 	public native void setKeyMap(KeyMap map);
 	public native boolean isActive();
 	public native Player getPlayer();
+	public native Viewport getViewport();
 	
 	public boolean create()
 	{

@@ -100,10 +100,4 @@ namespace Graphics
 
       m_d3dContext->ClearRenderTargetView(m_d3dRenderTargetView, clear);
    }
-
-   // notifications
-   void D3D11RenderContext::onViewportChanged(const Viewport& viewport)
-   {
-   }
-
 }

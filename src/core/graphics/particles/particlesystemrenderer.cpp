@@ -7,6 +7,7 @@
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/vertexbuffer.h"
+#include "core/graphics/viewport.h"
 
 #include "particle.h"
 #include "particlesystem.h"
