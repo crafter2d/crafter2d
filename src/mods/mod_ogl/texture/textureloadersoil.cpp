@@ -20,7 +20,7 @@
 
 #include "textureloadersoil.h"
 
-#include <SOIL.h>
+#include "../SOIL/SOIL.h"
 
 #include "core/vfs/file.h"
 #include "core/smartptr/autoptr.h"

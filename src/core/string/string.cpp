@@ -124,12 +124,7 @@ String::~String()
 {
 }
 
-const UChar String::operator[](int index) const
-{
-   return mData[index];
-}
-
-UChar String::operator[](int index)
+UChar String::operator[](int index) const
 {
    return mData[index];
 }

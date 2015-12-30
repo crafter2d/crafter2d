@@ -46,9 +46,8 @@ public:
    explicit String(const std::wstring& that);
            ~String();
 
-   const UChar operator[](int index) const;
-         UChar operator[](int index);
-
+   UChar operator[](int index) const;
+   
    const String& operator=(const String& that);
    const String& operator=(String&& that);
    const String& operator=(const UChar c);
