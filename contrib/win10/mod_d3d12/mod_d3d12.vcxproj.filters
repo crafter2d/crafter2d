@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="texture">
+      <UniqueIdentifier>{1bde8436-658e-4227-8dc7-d74415f0e277}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="text">
+      <UniqueIdentifier>{75248b08-c20f-4104-8aff-a31427cf0799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{69184d7e-1e42-4e9c-833c-0de21a3561f4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\dllmain.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\mod_d3d12.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3d11device.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3d11rendercontext.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3dcodepath.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3duniformbuffer.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3dindexbuffer.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3dvertexbuffer.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3dblendstate.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\texture\d3dtexture.cpp">
+      <Filter>texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\texture\d3dtextureloader.cpp">
+      <Filter>texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\texture\d3dtextureloaderdds.cpp">
+      <Filter>texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\texture\dds.cpp">
+      <Filter>texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\text\d3dfont.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\text\d3dfontcollection.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\text\d3dfontcollectionloader.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\text\d3dfontfileenumerator.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\text\d3dglyphprovider.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\text\d3dtextrenderer.cpp">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\input\d3dinput.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\mod_d3d12.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3d11device.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3d11rendercontext.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dcodepath.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3duniformbuffer.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dxhelpers.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dindexbuffer.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dvertexbuffer.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dblendstate.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\texture\d3dtexture.h">
+      <Filter>texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\texture\d3dtextureloader.h">
+      <Filter>texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\texture\d3dtextureloaderdds.h">
+      <Filter>texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\texture\dds.h">
+      <Filter>texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\text\d3dfont.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\text\d3dfontcollection.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\text\d3dfontcollectionloader.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\text\d3dfontfileenumerator.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\text\d3dglyphprovider.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\text\d3dtextrenderer.h">
+      <Filter>text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\input\d3dinput.h">
+      <Filter>input</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

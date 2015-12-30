@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="effect">
+      <UniqueIdentifier>{5ef34899-789d-4e3f-a86e-7babe5dc2ce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="effect\builders">
+      <UniqueIdentifier>{730fd93e-652e-4eb2-bf7d-0ec3b9a7a9d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entity">
+      <UniqueIdentifier>{c5c3f66c-2974-443a-a9b0-a3a446f1951f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entity\factories">
+      <UniqueIdentifier>{2d870236-c7a8-45cd-843b-9496c225b67d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entity\protos">
+      <UniqueIdentifier>{2a27ad3a-9007-41ee-b4ff-ba9cba1bee3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound">
+      <UniqueIdentifier>{2dc3f56e-d915-4a62-9b09-87f08cc7a16d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="texture">
+      <UniqueIdentifier>{92ccb8e7-ec24-462b-96bf-c6c0921ea117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tileset">
+      <UniqueIdentifier>{f0a66b00-f26d-4f7b-a5e7-9936fb327b52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world">
+      <UniqueIdentifier>{987c3978-add9-4608-90f7-180e7339a589}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\dllmain.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\mod_c2d.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\astannotation.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\asteffect.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\asttype.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\effectfileparser.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\effectreader.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\effectshaderbuilder.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\effectvalidator.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\effectwriter.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\lexer.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\builders\abstractbuilder.cpp">
+      <Filter>effect\builders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\builders\dxbuilder.cpp">
+      <Filter>effect\builders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\effect\builders\oglbuilder.cpp">
+      <Filter>effect\builders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\componentloader.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\entityloader.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\entityreader.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\entitywriter.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\meshcomponentloader.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\particlecomponentloader.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\physicscomponentloader.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\factories\componentfactories.cpp">
+      <Filter>entity\factories</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\factories\componentfactory.cpp">
+      <Filter>entity\factories</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\factories\meshcomponentfactory.cpp">
+      <Filter>entity\factories</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\factories\particlecomponentfactory.cpp">
+      <Filter>entity\factories</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\factories\physicscomponentfactory.cpp">
+      <Filter>entity\factories</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\proto\childdefinitionproto.cpp">
+      <Filter>entity\protos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\proto\componentdefinitionproto.cpp">
+      <Filter>entity\protos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\proto\entitydefinitionproto.cpp">
+      <Filter>entity\protos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\proto\linkdefinitionproto.cpp">
+      <Filter>entity\protos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\proto\meshcomponentdefinitionproto.cpp">
+      <Filter>entity\protos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\proto\particlecomponentdefinitionproto.cpp">
+      <Filter>entity\protos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\entity\proto\physicscomponentdefinitionproto.cpp">
+      <Filter>entity\protos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\sound\soundreader.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\sound\soundwriter.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\texture\texturereader.cpp">
+      <Filter>texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\texture\texturewriter.cpp">
+      <Filter>texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\world\worldreader.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\world\worldwriter.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\tileset\tilesetreader.cpp">
+      <Filter>tileset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\tileset\tilesetwriter.cpp">
+      <Filter>tileset</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\targetver.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\astannotation.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\astbuffer.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\asteffect.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\astfunction.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\astfunctionargument.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\astnode.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\astsampler.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\astshader.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\aststruct.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\aststructentry.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\asttechnique.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\asttexture.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\asttype.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\effectfileparser.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\effectinputlayout.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\effectreader.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\effectshaderbuilder.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\effectvalidator.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\effectwriter.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\lexer.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\builders\abstractbuilder.h">
+      <Filter>effect\builders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\builders\dxbuilder.h">
+      <Filter>effect\builders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\builders\oglbuilder.h">
+      <Filter>effect\builders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\componentloader.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\entityloader.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\entityreader.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\entitywriter.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\meshcomponentloader.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\particlecomponentloader.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\physicscomponentloader.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\factories\componentfactories.h">
+      <Filter>entity\factories</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\factories\componentfactory.h">
+      <Filter>entity\factories</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\factories\meshcomponentfactory.h">
+      <Filter>entity\factories</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\factories\particlecomponentfactory.h">
+      <Filter>entity\factories</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\factories\physicscomponentfactory.h">
+      <Filter>entity\factories</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\proto\childdefinitionproto.h">
+      <Filter>entity\protos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\proto\componentdefinitionproto.h">
+      <Filter>entity\protos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\proto\entitydefinitionproto.h">
+      <Filter>entity\protos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\proto\linkdefinitionproto.h">
+      <Filter>entity\protos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\proto\meshcomponentdefinitionproto.h">
+      <Filter>entity\protos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\proto\particlecomponentdefinitionproto.h">
+      <Filter>entity\protos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\entity\proto\physicscomponentdefinitionproto.h">
+      <Filter>entity\protos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\sound\soundreader.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\sound\soundwriter.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\texture\texturereader.h">
+      <Filter>texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\texture\texturewriter.h">
+      <Filter>texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\world\worldreader.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\world\worldwriter.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\tileset\tilesetreader.h">
+      <Filter>tileset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\tileset\tilesetwriter.h">
+      <Filter>tileset</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

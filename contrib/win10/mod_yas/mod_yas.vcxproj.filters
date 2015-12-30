@@ -1,0 +1,439 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="vm">
+      <UniqueIdentifier>{34599da6-d6d8-40cd-943e-74169e43f059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vm\stackcpu">
+      <UniqueIdentifier>{e2573858-ac10-4e51-a3f2-cf5e214b120c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vm\registercpu">
+      <UniqueIdentifier>{9d22d557-8c18-4584-a158-ee241b8743cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bytecode">
+      <UniqueIdentifier>{72a29962-5610-4d8a-a79b-f23ae5e0dbc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cil">
+      <UniqueIdentifier>{9ef225a7-07ac-4317-a17e-be95697af57b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{a9aef12c-7c9e-4d59-949f-49d5db937c41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gc">
+      <UniqueIdentifier>{bc3f8500-2eb3-4610-80c0-dc34c2b7bf4e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\mod_yas.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\script_base.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yascallbackfunctor.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yasscriptcall.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yasscriptmanager.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yasscriptobject.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\yasscriptregistrator.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualarray.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualarrayexception.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualcallbackfunctor.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualclass.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualclasses.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualclasstable.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualcontext.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualexception.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfield.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfunction.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfunctionnotfoundexception.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfunctiontable.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualfunctiontableentry.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualguards.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualinstruction.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualinstructiontable.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptable.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptables.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualmachine.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualobject.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualstack.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualstackaccessor.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualstring.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\virtualvalue.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\vminterface.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\stackcpu\stackcpu.cpp">
+      <Filter>vm\stackcpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\stackcpu\stackirgenerator.cpp">
+      <Filter>vm\stackcpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\vm\registercpu\registerirgenerator.cpp">
+      <Filter>vm\registercpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\cil.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\class.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\codestreamer.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\field.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\function.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\guard.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\guards.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\instructions.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\switchtable.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\cil\switchtables.cpp">
+      <Filter>cil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\block.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\codepatch.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\cpu.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\generator.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\instruction.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\irgenerator.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\jumppatch.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\program.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\resolver.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\bytecode\symboltable.cpp">
+      <Filter>bytecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\classregistry.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\functionregistration.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\literal.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\literaltable.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\modifiers.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\stringcache.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\type.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\common\types.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\gc\collectable.cpp">
+      <Filter>gc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_yas\gc\garbagecollector.cpp">
+      <Filter>gc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\script_base.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yascallbackfunctor.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yasscriptcall.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yasscriptmanager.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yasscriptobject.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\yasscriptregistrator.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualarray.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualarrayexception.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualcallbackfunctor.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualclass.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualclasses.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualclasstable.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualcontext.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualexception.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfield.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfunction.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfunctionnotfoundexception.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfunctiontable.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualfunctiontableentry.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualguard.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualguards.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualinstruction.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualinstructiontable.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptable.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptableentry.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtuallookuptables.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualmachine.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualobject.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualstack.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualstackaccessor.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualstackframe.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualstring.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\virtualvalue.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\vminterface.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\stackcpu\sbil.h">
+      <Filter>vm\stackcpu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\stackcpu\stackcpu.h">
+      <Filter>vm\stackcpu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\stackcpu\stackirgenerator.h">
+      <Filter>vm\stackcpu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\vm\registercpu\registerirgenerator.h">
+      <Filter>vm\registercpu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\cil.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\class.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\codestreamer.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\field.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\function.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\guard.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\guards.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\instructions.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\switchtabel.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\switchtableentry.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\cil\switchtables.h">
+      <Filter>cil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\block.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\codepatch.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\cpu.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\functionsymbol.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\generator.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\instruction.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\irgenerator.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\jumppatch.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\program.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\resolver.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\symbol.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\symboltable.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\valuesymbol.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\callbackfunctor.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\classregistration.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\classregistry.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\functionregistration.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\literal.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\literaltable.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\modifiers.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\stringcache.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\type.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\common\types.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\gc\collectable.h">
+      <Filter>gc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\gc\garbagecollector.h">
+      <Filter>gc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\mods\mod_yas\vm\virtualarrayexception.inl">
+      <Filter>vm</Filter>
+    </None>
+    <None Include="..\..\..\src\mods\mod_yas\vm\virtualvalue.inl">
+      <Filter>vm</Filter>
+    </None>
+    <None Include="..\..\..\src\mods\mod_yas\vm\stackcpu\sbil.def">
+      <Filter>vm\stackcpu</Filter>
+    </None>
+    <None Include="..\..\..\src\mods\mod_yas\cil\cil.def">
+      <Filter>cil</Filter>
+    </None>
+  </ItemGroup>
+</Project>

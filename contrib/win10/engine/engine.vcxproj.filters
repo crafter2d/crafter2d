@@ -1,0 +1,471 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{2be88c8f-164a-4720-9330-ed5ba9d8e5c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\events">
+      <UniqueIdentifier>{4ced096c-b11f-4511-b0b2-9e5138f449bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics">
+      <UniqueIdentifier>{3cbd689c-b7d5-4a87-81db-dabb86c173bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics\box2d">
+      <UniqueIdentifier>{1b80f8e8-50c0-4f91-88d5-57141ecfa28d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics\physengine">
+      <UniqueIdentifier>{4160957e-aeaa-4cc9-8be9-b87e8813ff7c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\engine\actionmap.cpp" />
+    <ClCompile Include="..\..\..\src\engine\aicontroller.cpp" />
+    <ClCompile Include="..\..\..\src\engine\callback.cpp" />
+    <ClCompile Include="..\..\..\src\engine\client.cpp" />
+    <ClCompile Include="..\..\..\src\engine\clientgamewindowlistener.cpp" />
+    <ClCompile Include="..\..\..\src\engine\clientkeyeventdispatcher.cpp" />
+    <ClCompile Include="..\..\..\src\engine\clientmouseeventdispatcher.cpp" />
+    <ClCompile Include="..\..\..\src\engine\engine_base.cpp" />
+    <ClCompile Include="..\..\..\src\engine\game.cpp" />
+    <ClCompile Include="..\..\..\src\engine\hashtable.cpp" />
+    <ClCompile Include="..\..\..\src\engine\inputcontroller.cpp" />
+    <ClCompile Include="..\..\..\src\engine\keymap.cpp" />
+    <ClCompile Include="..\..\..\src\engine\movie.cpp" />
+    <ClCompile Include="..\..\..\src\engine\pickvisitor.cpp" />
+    <ClCompile Include="..\..\..\src\engine\player.cpp" />
+    <ClCompile Include="..\..\..\src\engine\playerworldobserver.cpp" />
+    <ClCompile Include="..\..\..\src\engine\process.cpp" />
+    <ClCompile Include="..\..\..\src\engine\processnetobserver.cpp" />
+    <ClCompile Include="..\..\..\src\engine\script_engine.cpp" />
+    <ClCompile Include="..\..\..\src\engine\server.cpp" />
+    <ClCompile Include="..\..\..\src\engine\serverdirtyset.cpp" />
+    <ClCompile Include="..\..\..\src\engine\serverworldobserver.cpp" />
+    <ClCompile Include="..\..\..\src\engine\state.cpp" />
+    <ClCompile Include="..\..\..\src\engine\net\netaddress.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netclients.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netconnection.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\neteventfactory.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netobject.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netobjectfactory.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netobjectstream.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netpackage.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netsocket.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netsocketexception.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netstatistics.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netstatisticsitem.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\netstream.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\runtimeinfo.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\sortedpackagelist.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\actionevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\aggregateevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\connectevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\connectreplyevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\deleteobjectevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\disconnectevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\joinevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\netevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\newobjectevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\requestobjectevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\scriptevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\serverdownevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\updateobjectevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\viewportevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\net\events\worldchangedevent.cpp">
+      <Filter>net\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dbody.cpp">
+      <Filter>physics\box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dcontactlistener.cpp">
+      <Filter>physics\box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dfactory.cpp">
+      <Filter>physics\box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2draycastcallback.cpp">
+      <Filter>physics\box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2drevolutejoint.cpp">
+      <Filter>physics\box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dropejoint.cpp">
+      <Filter>physics\box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\box2d\box2dsimulator.cpp">
+      <Filter>physics\box2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionbox.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncircle.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncirclecirclecontactgenerator.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncircleplanecontactgenerator.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncontact.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncontactbody.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisioncontactgenerator.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisiondata.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisiondetector.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionplane.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionresolver.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionresolverinfo.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionshape.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\collisionshapes.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\physicsbody.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\physicsfactory.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\physics\physengine\physicssimulator.cpp">
+      <Filter>physics\physengine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\engine\actionmap.h" />
+    <ClInclude Include="..\..\..\src\engine\aicontroller.h" />
+    <ClInclude Include="..\..\..\src\engine\callback.h" />
+    <ClInclude Include="..\..\..\src\engine\client.h" />
+    <ClInclude Include="..\..\..\src\engine\clientgamewindowlistener.h" />
+    <ClInclude Include="..\..\..\src\engine\clientkeyeventdispatcher.h" />
+    <ClInclude Include="..\..\..\src\engine\clientmouseeventdispatcher.h" />
+    <ClInclude Include="..\..\..\src\engine\engine_base.h" />
+    <ClInclude Include="..\..\..\src\engine\game.h" />
+    <ClInclude Include="..\..\..\src\engine\hashtable.h" />
+    <ClInclude Include="..\..\..\src\engine\inputcontroller.h" />
+    <ClInclude Include="..\..\..\src\engine\keymap.h" />
+    <ClInclude Include="..\..\..\src\engine\keys.h" />
+    <ClInclude Include="..\..\..\src\engine\movie.h" />
+    <ClInclude Include="..\..\..\src\engine\pickvisitor.h" />
+    <ClInclude Include="..\..\..\src\engine\player.h" />
+    <ClInclude Include="..\..\..\src\engine\playerworldobserver.h" />
+    <ClInclude Include="..\..\..\src\engine\process.h" />
+    <ClInclude Include="..\..\..\src\engine\processnetobserver.h" />
+    <ClInclude Include="..\..\..\src\engine\script_engine.h" />
+    <ClInclude Include="..\..\..\src\engine\server.h" />
+    <ClInclude Include="..\..\..\src\engine\serverdirtyset.h" />
+    <ClInclude Include="..\..\..\src\engine\serverworldobserver.h" />
+    <ClInclude Include="..\..\..\src\engine\state.h" />
+    <ClInclude Include="..\..\..\src\engine\net\netaddress.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netclients.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netconnection.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netdefines.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\neteventfactory.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netobject.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netobjectfactory.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netobjectstream.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netobserver.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netpackage.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netsocket.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netsocketexception.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netstatistics.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netstatisticsitem.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\netstream.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\runtimeinfo.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\sortedpackagelist.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\actionevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\aggregateevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\connectevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\connectreplyevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\deleteobjectevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\disconnectevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\joinevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\netevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\newobjectevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\requestobjectevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\scriptevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\serverdownevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\updateobjectevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\viewportevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\net\events\worldchangedevent.h">
+      <Filter>net\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dbody.h">
+      <Filter>physics\box2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dcontactlistener.h">
+      <Filter>physics\box2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dfactory.h">
+      <Filter>physics\box2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2djoint.h">
+      <Filter>physics\box2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2draycastcallback.h">
+      <Filter>physics\box2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2drevolutejoint.h">
+      <Filter>physics\box2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dropejoint.h">
+      <Filter>physics\box2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\box2d\box2dsimulator.h">
+      <Filter>physics\box2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionbox.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncircle.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncirclecirclecontactgenerator.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncircleplanecontactgenerator.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncontact.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncontactbody.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisioncontactgenerator.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisiondata.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisiondetector.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionplane.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionresolver.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionresolverinfo.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionshape.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\collisionshapes.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\physicsbody.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\physicsfactory.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\physics\physengine\physicssimulator.h">
+      <Filter>physics\physengine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\engine\actionmap.inl" />
+    <None Include="..\..\..\src\engine\client.inl" />
+    <None Include="..\..\..\src\engine\game.inl" />
+    <None Include="..\..\..\src\engine\pickvisitor.inl" />
+    <None Include="..\..\..\src\engine\player.inl" />
+    <None Include="..\..\..\src\engine\process.inl" />
+    <None Include="..\..\..\src\engine\state.inl" />
+    <None Include="..\..\..\src\engine\net\netconnection.inl">
+      <Filter>net</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\netobject.inl">
+      <Filter>net</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\netobjectfactory.inl">
+      <Filter>net</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\netstatistics.inl">
+      <Filter>net</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\netstatisticsitem.inl">
+      <Filter>net</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\runtimeinfo.inl">
+      <Filter>net</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\actionevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\connectevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\connectreplyevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\deleteobjectevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\netevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\newobjectevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\requestobjectevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\updateobjectevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\viewportevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\net\events\worldchangedevent.inl">
+      <Filter>net\events</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\physics\physengine\collisionresolverinfo.inl">
+      <Filter>physics\physengine</Filter>
+    </None>
+    <None Include="..\..\..\src\engine\physics\physengine\physicsbody.inl">
+      <Filter>physics\physengine</Filter>
+    </None>
+  </ItemGroup>
+</Project>

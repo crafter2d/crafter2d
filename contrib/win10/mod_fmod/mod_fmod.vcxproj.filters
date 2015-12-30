@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\mods\mod_fmod\dllmain.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_fmod\fmodsound.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_fmod\fmodsoundmanager.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_fmod\mod_fmod.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\mods\mod_fmod\fmodsound.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_fmod\fmodsoundmanager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\mods\mod_fmod\fmodsound.inl" />
+  </ItemGroup>
+</Project>
