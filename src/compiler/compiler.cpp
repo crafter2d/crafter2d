@@ -21,7 +21,7 @@ using namespace c2d;
 
 int loadModules(const String& srcfile, const String& dstFile)
 {
-   ModuleManager mgr;
+   ModuleManager& mgr = ModuleManager::getInstance();
    mgr.initialize();
    ModuleCollection mods = mgr.filter(ModuleKind::eContentModule);
 
@@ -72,8 +72,9 @@ int loadModules(const String& srcfile, const String& dstFile)
                }
             }
          }
-         catch ( std::exception* )
+         catch ( std::exception& ex )
          {
+            printf("Failed to compile the file: %s", ex.what());
             return -2;
          }
          break;
@@ -93,7 +94,15 @@ int main(int argc, char *argv[])
 
    String srcfile = String::fromUtf8(argv[1]);
    String dstfile = String::fromUtf8(argv[2]);
-
-   return loadModules(srcfile, dstfile);
+   
+   int ret = loadModules(srcfile, dstfile);
+   if ( ret == 0 )
+   {
+      printf("Compiled successfully!");
+   }
+   else
+   {
+      printf("Failed to compile");
+   }
 }
 

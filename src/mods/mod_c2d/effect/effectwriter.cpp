@@ -1,6 +1,8 @@
 
 #include "effectwriter.h"
 
+#include <memory>
+
 #include "core/streams/datastream.h"
 #include "core/graphics/effect.h"
 #include "core/graphics/effecttechnique.h"
@@ -34,15 +36,20 @@ bool EffectWriter::write(DataStream& stream, const String& filename)
       try
       {
          EffectFileParser parser;
-         ASTEffect* pasteffect = parser.parse(content);
+         std::unique_ptr<ASTEffect> asteffect(parser.parse(content));
+         if ( !asteffect )
+         {
+            printf("Could not parse the file.");
+            return false;
+         }
 
          EffectValidator validator;
-         validator.validate(*pasteffect);
+         validator.validate(*asteffect);
 
          EffectShaderBuilder shaderbuilder;
-         shaderbuilder.build(*pasteffect);
+         shaderbuilder.build(*asteffect);
          
-         write(stream, *pasteffect);
+         write(stream, *asteffect);
       }
       catch (std::exception& e)
       {
@@ -53,7 +60,8 @@ bool EffectWriter::write(DataStream& stream, const String& filename)
       return true;
    }
 
-   return true;
+   printf("Could not open the file!");
+   return false;
 }
    
 void EffectWriter::write(DataStream& stream, const ASTEffect& effect)

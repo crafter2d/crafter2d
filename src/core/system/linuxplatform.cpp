@@ -75,10 +75,5 @@ void LinuxPlatform::freeModule(void* pmodule)
 void* LinuxPlatform::getFunctionAddress(void* module, const String& name)
 {
    std::string symbol = name.toUtf8();
-   void* psymbol = dlsym(module, symbol.c_str());
-   if ( psymbol == nullptr )
-   {
-      Log::getInstance().info("Could not find symbol %s : %s", symbol.c_str(), dlerror());
-   }  
-   return psymbol;
+   return dlsym(module, symbol.c_str());
 }

@@ -19,7 +19,10 @@
  ***************************************************************************/
 #include "ogl_base.h"
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#endif
 
 #include "core/modules/graphicsmodule.h"
 #include "core/modules/inputmodule.h"
@@ -28,6 +31,7 @@
 #include "ogldevice.h"
 #include "input/oglinputdevice.h"
 
+#ifdef WIN32
 BOOL APIENTRY DllMain(HMODULE hModule,
                       DWORD  ul_reason_for_call,
                       LPVOID lpReserved)
@@ -42,10 +46,11 @@ BOOL APIENTRY DllMain(HMODULE hModule,
    }
    return TRUE;
 }
+#endif
 
 using namespace c2d;
 
-extern "C" OGL_API ModuleCollection* cdecl getModuleCollection()
+extern "C" OGL_API ModuleCollection* OGL_DECL getModuleCollection()
 {
    ModuleCollection* pmodules = new ModuleCollection();
 

@@ -1,9 +1,11 @@
 // mod_effect.cpp : Defines the exported functions for the DLL application.
 //
 
+#ifdef WIN32
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
+#endif
 
 #include "core/modules/contentmodule.h"
 #include "core/modules/modulecollection.h"
@@ -29,6 +31,7 @@
 #include "world/worldwriter.h"
 
 #if defined(WIN32)
+  #define MOD_DECL cdecl
   #ifdef MOD_EXPORTS
     #define MOD_API __declspec(dllexport)
   #else
@@ -36,6 +39,7 @@
   #endif
 #else
   #define MOD_API
+  #define MOD_DECL
 #endif
 
 using namespace c2d;
@@ -58,7 +62,7 @@ static const Uuid TileSetUUID(0xF7150E51, 0xBEC1, 0x42AD, 0x9C18, 0xB5B69F86D05E
 // {54034D72-41BF-4DC5-A2B8-F4DB28B3397E}
 static const Uuid WorldUUID(0x54034D72, 0x41BF, 0x4DC5, 0xA2B8, 0xF4DB28B3397E);
 
-extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
+extern "C" MOD_API ModuleCollection* MOD_DECL getModuleCollection()
 {
    ModuleCollection* pmodules = new ModuleCollection();
 

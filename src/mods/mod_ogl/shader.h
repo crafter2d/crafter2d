@@ -20,7 +20,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <GL/GLee.h>
+#include <GL/glew.h>
 
 class String;
 

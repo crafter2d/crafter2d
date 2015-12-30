@@ -21,13 +21,15 @@
 #define OG_BASE_H_
 
 #ifdef WIN32
-#ifdef OGL_EXPORTS
-#define OGL_API __declspec(dllexport)
+  #ifdef OGL_EXPORTS
+    #define OGL_API __declspec(dllexport)
+  #else
+    #define OGL_API __declspec(dllimport)
+  #endif
+  #define OGL_DECL cdecl
 #else
-#define OGL_API __declspec(dllimport)
-#endif
-#else
-#define OGL_API
+  #define OGL_API
+  #define OGL_DECL
 #endif
 
 #endif // D3D_BASE_H_

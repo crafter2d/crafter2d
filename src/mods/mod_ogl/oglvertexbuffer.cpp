@@ -20,7 +20,7 @@
 
 #include "oglvertexbuffer.h"
 
-#include <GL/GLee.h>
+#include <GL/glew.h>
 
 #include "core/graphics/vertexlayout.h"
 #include "core/graphics/vertexlayoutelement.h"

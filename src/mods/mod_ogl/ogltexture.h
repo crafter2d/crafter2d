@@ -4,7 +4,7 @@
 
 #include "core/graphics/texture.h"
 
-#include <GL/GLee.h>
+#include <GL/glew.h>
 
 namespace Graphics
 {

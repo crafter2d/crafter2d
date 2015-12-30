@@ -1,7 +1,7 @@
 
 #include "oglrendertarget.h"
 
-#include <GL/GLee.h>
+#include <GL/glew.h>
 
 namespace Graphics
 {

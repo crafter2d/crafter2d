@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "OGLdevice.h"
+#include "ogldevice.h"
 
 #include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
@@ -56,7 +56,7 @@ OGLDevice::~OGLDevice()
 bool OGLDevice::supportGLSL() const
 {
    // GLSL is only supported if both vertex- and fragment shaders are available
-   return (GLEE_ARB_shading_language_100 && GLEE_ARB_shader_objects && GLEE_ARB_vertex_shader);
+   return (GLEW_ARB_shading_language_100 && GLEW_ARB_shader_objects && GLEW_ARB_vertex_shader);
 }
 
 // - Creation
@@ -65,11 +65,17 @@ bool OGLDevice::create(GameWindow& window, int width, int height)
 {
    Log& log = Log::getInstance();
    GLint units;
+   
+   GLenum err = glewInit();
+   if ( err != GLEW_OK )
+   {
+      log << "Failed to initialize GLEW: " << (char*)glewGetErrorString(err) << "\n";
+   }
 
    log << "Graphics card:\t\t" << (char*)glGetString(GL_VENDOR) << "\n";
    log << "OpenGL version:\t\t" << (char*)glGetString(GL_VERSION) << "\n";
 
-   if ( !GLEE_VERSION_3_2 )
+   if ( !GLEW_VERSION_3_2 )
    {
       log << "OpenGL version 3.2 is required to run this application.\n";
       return false;

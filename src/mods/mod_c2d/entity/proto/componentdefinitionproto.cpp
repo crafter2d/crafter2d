@@ -28,7 +28,7 @@ ComponentDefinitionProto* ComponentDefinitionProto::fromStream(DataStream& strea
       presult = new PhysicsComponentDefinitionProto();
       break;
    default:
-      throw std::exception("Invalid component type.");
+      throw std::runtime_error("Invalid component type.");
    }
 
    presult->read(stream);

@@ -20,7 +20,7 @@
 #ifndef VERTEXBUFFER_OBJECT_H
 #define VERTEXBUFFER_OBJECT_H
 
-#include <GL/GLee.h>
+#include <GL/glew.h>
 
 #include "core/graphics/vertexbuffer.h"
 

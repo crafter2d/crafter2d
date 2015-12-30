@@ -3,7 +3,6 @@
 
 #include "core/entity/components/physicscomponent.h"
 #include "core/physics/bodydefinition.h"
-#include "core/smartptr/autoptr.h"
 #include "core/physics/simulator.h"
 
 #include "../proto/physicscomponentdefinitionproto.h"
@@ -38,7 +37,7 @@ Component* PhysicsComponentFactory::instantiate(const ComponentDefinitionProto& 
    }
    */
         
-   AutoPtr<PhysicsComponent> result = new PhysicsComponent();
-   result->setBody(mSimulator.createBody(physicsdef.mDefinition));
-   return result.release();
+   PhysicsComponent* presult = new PhysicsComponent();
+   presult->setBody(mSimulator.createBody(physicsdef.mDefinition));
+   return presult;
 }
