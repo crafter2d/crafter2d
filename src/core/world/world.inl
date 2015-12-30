@@ -75,22 +75,6 @@ INLINE void World::setName(const String& name)
    mName = name;
 }
 
-INLINE const Bound& World::getBound(int index) const
-{
-   ASSERT(index < bounds.size())
-   return *bounds[index];
-}
-
-INLINE Bound& World::getBound(int index)
-{
-   return const_cast<Bound&>(me().getBound(index));
-}
-
-INLINE int World::getBoundCount() const
-{
-   return bounds.size();
-}
-
 /// \fn World::getBounds() const
 /// \brief Returns the bounds of this world.
 INLINE const Bounds& World::getBounds() const
@@ -107,12 +91,11 @@ INLINE Bounds& World::getBounds()
 /// \brief Returns a specific layer.
 INLINE Layer* World::getLayer(int index)
 {
-   return const_cast<Layer*>(me().getLayer(index));
+   return layers[index];
 }
 
 INLINE const Layer* World::getLayer(int index) const
 {
-   ASSERT_MSG(index >= 0 && index < layers.size(), "World::getLayer = Invalid layer index.");
    return layers[index];
 }
 
@@ -156,13 +139,4 @@ INLINE c2d::ScriptObject& World::getScript()
 INLINE void World::setScript(c2d::ScriptObject* pscript)
 {
    mpScript = pscript;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - Self
-//////////////////////////////////////////////////////////////////////////
-
-INLINE const World& World::me()
-{
-   return static_cast<const World&>(*this);
 }

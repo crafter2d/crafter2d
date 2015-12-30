@@ -80,9 +80,8 @@ World::~World()
 /// \brief Loads world information from a file and preprocesses this information for use during the game
 void World::initialize(Device& device)
 {
-   for ( std::size_t index = 0; index < layers.size(); index++ )
+   for ( auto player : layers )
    {
-      Layer* player = layers[index];
       player->initialize(device);
    }
 
@@ -100,26 +99,27 @@ void World::destroy()
 
    if ( layers.size() > 0 )
    {
-      for ( Layers::size_type idx = 0; idx < layers.size(); ++idx )
-         delete layers[idx];
+      for ( auto player : layers )
+         delete player;
 
       layers.clear();
    }
 
    if ( bounds.size() > 0 )
    {
-      for ( Bounds::size_type idx = 0; idx < bounds.size(); ++idx )
-         delete bounds[idx];
+      for ( auto pbound : bounds )
+      {
+         delete pbound;
+      }
 
       bounds.clear();
    }
 
    if ( mEntities.size() > 0 )
    {
-      EntityMap::iterator it = mEntities.begin();
-      for ( ;it != mEntities.end(); ++it )
+      for ( auto& it : mEntities )
       {
-         Entity* pentity = it->second;
+         Entity* pentity = it.second;
          delete pentity;
       }
    }
@@ -218,7 +218,7 @@ void World::draw(Graphics::RenderContext& context) const
    }
    context.endDraw();
 
-   // render the layers
+   // render the front layers
    for ( auto player : layers )
    {
       player->drawFront(context);
@@ -235,10 +235,9 @@ void World::calculateScrollSpeed()
    Layer* pobjectlayer = layers[_objectLayer];
    Vector area = pobjectlayer->getScrollArea();
 
-   for ( std::size_t index = 0; index < layers.size(); ++index )
+   for ( auto player : layers )
    {
-      Layer* player = layers[index];
-      if ( index != _objectLayer )
+      if ( player != pobjectlayer )
       {
          // calculate the scroll speed based on the object layer area
          player->calculateScrollSpeed(area);
@@ -282,14 +281,14 @@ void World::scroll (Graphics::RenderContext& context)
 
       // get the window bounds
       if (x < followBorderWidth)
-         xScroll = -1.0f * (followBorderWidth - x);
+         xScroll = -(followBorderWidth - x);
       else if (x > width - followBorderWidth)
-         xScroll = 1.0f * (followBorderWidth - (width-x));
+         xScroll = followBorderWidth - (width-x);
 
       if (y < followBorderWidth)
-         yScroll = -1.0f * (followBorderWidth - y);
+         yScroll = -(followBorderWidth - y);
       else if (y > height - followBorderWidth)
-         yScroll = 1.0f * (followBorderWidth - (height-y));
+         yScroll = followBorderWidth - (height-y);
    }
 
    // scroll the layer
@@ -298,15 +297,17 @@ void World::scroll (Graphics::RenderContext& context)
       Layer& layer = *layers[getObjectLayer()];
       Vector prescroll = layer.getScroll();
 
-      for ( Layers::size_type l = 0; l < layers.size(); ++l )
+      for ( auto player : layers )
       {
-         layers[l]->scroll(context, xScroll, yScroll);
+         player->scroll(context, xScroll, yScroll);
       }
 
       Vector scroll = layer.getScroll();
 
       if ( scroll != prescroll )
+      {
          notifyScrollChange(scroll);
+      }
    }
 }
 
@@ -328,9 +329,8 @@ void World::onViewportChanged(Graphics::RenderContext& context, const Graphics::
    Layer* pobjectlayer = layers[_objectLayer];
    Vector area = pobjectlayer->getScrollArea();
 
-   for ( int index = 0; index < layers.size(); ++index )
+   for ( auto player : layers )
    {
-      Layer* player = layers[index];
       player->onViewportChanged(context, viewport);
    }
 

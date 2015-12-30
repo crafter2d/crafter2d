@@ -49,6 +49,14 @@ public:
    {
    }
 
+   Vector(Vector&& v) :
+      x(v.x),
+      y(v.y)
+   {
+      v.x = 0;
+      v.y = 0;
+   }
+
    ~Vector() {
    }
 
@@ -57,7 +65,7 @@ public:
    }
    
    bool operator!= (const Vector& v) const {
-      return (fabs(v.x - x) >= 0.001) && (fabs(v.y - y) >= 0.001);
+      return (fabs(v.x - x) >= 0.001) || (fabs(v.y - y) >= 0.001);
    }
 
  // - Operations
@@ -114,6 +122,17 @@ public:
    Vector& operator= (const Vector& v) {
       x = v.x;
       y = v.y;
+      return *this;
+   }
+
+
+   Vector& operator= (Vector&& v) {
+      x = v.x;
+      y = v.y;
+
+      v.x = 0;
+      v.y = 0;
+
       return *this;
    }
 

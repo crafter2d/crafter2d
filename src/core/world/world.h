@@ -101,10 +101,6 @@ public:
    const String&   getName() const;
    void            setName(const String& name);
 
-   const Bound&   getBound(int index) const;
-         Bound&   getBound(int index);
-         int      getBoundCount() const;
-
    const Bounds&  getBounds() const;
          Bounds&  getBounds();
 
@@ -167,9 +163,7 @@ protected:
    void notifyScrollChange(const Vector& scrollposition);
    void notifyEntityAdded(const Entity& entity);
    void notifyEntityRemoved(const Entity& entity);
-
-   const World&   me();
-
+   
 private:
 
  // operations
