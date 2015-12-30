@@ -56,6 +56,8 @@ void ParticleComponent::handleMessage(ComponentMessage& message)
          render(*pcontext);
       }
       break;
+   default:
+      break;
    }
 }
 

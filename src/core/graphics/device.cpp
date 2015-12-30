@@ -50,6 +50,8 @@ namespace Graphics
 
    bool Device::create(GameWindow& window)
    {
+      C2D_UNUSED(window);
+      
       mpContext = createRenderContext();
       return mpContext != NULL;
    }

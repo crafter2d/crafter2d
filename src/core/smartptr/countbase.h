@@ -9,6 +9,7 @@ class CORE_API CountBase
 public:
    CountBase();
    CountBase(const CountBase& that);
+   virtual ~CountBase();
 
  // query
    int useCount() const;

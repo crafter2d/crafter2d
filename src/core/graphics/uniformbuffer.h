@@ -18,6 +18,8 @@ namespace Graphics
    class UniformBuffer
    {
    public:
+   
+      virtual ~UniformBuffer() {}
 
       /// create the buffer
       virtual bool create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr) = 0;

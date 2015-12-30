@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "input.h"
 
+#include "core/defines.h"
+
 namespace Input
 {
 
@@ -26,13 +28,19 @@ InputDevice::InputDevice()
 {
 }
 
+InputDevice::~InputDevice()
+{
+}
+
 bool InputDevice::isKeyDown(int key)
 {
+   C2D_UNUSED(key);
    return false;
 }
 
 bool InputDevice::isMouseButtonDown(MouseButton button)
 {
+   C2D_UNUSED(button);
    return false;
 }
 

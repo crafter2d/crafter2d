@@ -13,8 +13,8 @@ namespace Graphics
       
    bool DefaultDeviceInfo::buildCustomDevice(Device& device)
    {
+      C2D_UNUSED(device);
       UNREACHABLE("default device info does not build custom device");
-      return false;
    }
 
 } // namespace Graphics

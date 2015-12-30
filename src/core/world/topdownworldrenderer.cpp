@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "topdownworldrenderer.h"
 
+#include "core/defines.h"
+
 #include "world.h"
 
 TopDownWorldRenderer::TopDownWorldRenderer(World& world):
@@ -34,6 +36,8 @@ TopDownWorldRenderer::~TopDownWorldRenderer()
 
 void TopDownWorldRenderer::render(Graphics::RenderContext& context, float delta)
 {
+   C2D_UNUSED(delta);
+   
    // draw the scenegraph
    getWorld().draw(context);
 

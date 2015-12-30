@@ -20,6 +20,8 @@
 
 #include "mousewheellistener.h"
 
+#include "core/defines.h"
+
 namespace Input
 {
 
@@ -35,6 +37,7 @@ MouseWheelListener::~MouseWheelListener()
 
 void MouseWheelListener::onMouseWheel(const MouseEvent& event)
 {
+   C2D_UNUSED(event);
 }
 
 } // namespace Input

@@ -15,6 +15,7 @@ namespace c2d
    {
    public:
       SoundManager();
+      virtual ~SoundManager();
 
       // operations
       virtual bool initialize() = 0;

@@ -60,6 +60,8 @@ void EffectTechnique::enable(RenderContext& context)
 
 void EffectTechnique::setConstantBuffer(RenderContext& context, int index, const UniformBuffer& buffer)
 {
+   C2D_UNUSED(index);
+   
    mpCodePath->setConstantBuffer(context, buffer);
 }
 

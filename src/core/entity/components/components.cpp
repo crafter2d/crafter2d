@@ -34,10 +34,9 @@ void Components::addComponent(Component* pcomponent)
 
 void Components::clear()
 {
-   ComponentMap::iterator it = mComponents.begin();
-   for ( ; it != mComponents.end(); ++it )
+   for ( auto& it : mComponents )
    {
-      Component* pcomponent = it->second;
+      Component* pcomponent = it.second;
       delete pcomponent;
    }
    mComponents.clear();

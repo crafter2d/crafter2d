@@ -43,6 +43,9 @@ void NetComponent::handleMessage(ComponentMessage& message)
          handleStreamMessage(netmessage);
       }
       break;
+      
+   default:
+      break;
    }
 }
 

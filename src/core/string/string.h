@@ -36,6 +36,8 @@ class CORE_API String : public Object
 public:
    static const String& empty();
    static String fromUtf8(const char* pdata);
+   
+   static const std::size_t npos = -1;
 
             String();
             String(const String& that);

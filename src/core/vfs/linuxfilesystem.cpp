@@ -25,6 +25,7 @@
 #include <fnmatch.h>
 
 #include "core/string/string.h"
+#include "core/defines.h"
 
 LinuxFileSystem::LinuxFileSystem():
    FileSystem()
@@ -37,11 +38,14 @@ LinuxFileSystem::~LinuxFileSystem()
 
 int LinuxFileSystem::mkdir(const String& path)
 {
+   C2D_UNUSED(path);
    return NO_ERR;
 }
 
 bool LinuxFileSystem::copyFile(const String& from, const String& to)
 {
+   C2D_UNUSED(from);
+   C2D_UNUSED(to);
    return true;
 }
 

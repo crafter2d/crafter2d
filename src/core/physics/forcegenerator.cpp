@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "forcegenerator.h"
 
+#include "core/defines.h"
+
 ForceGenerator::ForceGenerator()
 {
 }
@@ -29,4 +31,5 @@ ForceGenerator::~ForceGenerator()
 
 void ForceGenerator::applyForce(Body& body) const
 {
+   C2D_UNUSED(body);
 }

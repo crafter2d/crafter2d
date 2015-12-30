@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "controller.h"
 
+#include "core/defines.h"
+
 namespace c2d
 {
    Controller::Controller(void)
@@ -33,5 +35,6 @@ namespace c2d
 
    void Controller::requestAction(const ActionEvent& action)
    {
+      C2D_UNUSED(action);
    }
 } // namespace c2d

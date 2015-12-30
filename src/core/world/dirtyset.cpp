@@ -29,7 +29,3 @@ DirtySet::~DirtySet()
 {
 }
 
-void DirtySet::reportDirty(Entity& entity)
-{
-   PURE_VIRTUAL;
-}

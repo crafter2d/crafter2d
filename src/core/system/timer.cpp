@@ -37,31 +37,3 @@ Timer::Timer()
 Timer::~Timer()
 {
 }
-
-TimerData* Timer::createData() const
-{
-   PURE_VIRTUAL
-   return NULL;
-}
-
-void Timer::releaseData(TimerData*& pdata)
-{
-   PURE_VIRTUAL
-}
-   
-void Timer::start(TimerData& info)
-{
-   PURE_VIRTUAL
-}
-
-float Timer::getInterval(const TimerData& info)
-{
-   PURE_VIRTUAL
-   return 0;
-}
-
-float Timer::getTick() const
-{
-   PURE_VIRTUAL
-   return 0;
-}

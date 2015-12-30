@@ -14,6 +14,7 @@ class CORE_API Component
 {
 public:
    explicit Component(ComponentInterface::ComponentType type);
+   virtual ~Component();
 
  // get/set
    Entity& getEntity();

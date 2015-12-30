@@ -59,7 +59,7 @@ public:
    virtual int getHeight() const;
 
  // operations
-   virtual bool initDevice(Graphics::Device& device);
+   virtual bool initDevice(Graphics::Device& device) = 0;
    virtual void resize(int width, int height) = 0;
    virtual void toggleFullscreen() = 0;
    virtual void update() = 0;
@@ -75,8 +75,8 @@ public:
 
 protected:
  // creation
-   virtual bool doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen);
-   virtual void doDestroy();
+   virtual bool doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen) = 0;
+   virtual void doDestroy() = 0;
 
  // listener notification
    void fireWindowClosed();

@@ -52,6 +52,8 @@ const Texture& Sprite::getTexture() const
 
 bool Sprite::initialize(Device& device)
 {
+   C2D_UNUSED(device);
+   
    mHalfSize = mpDefinition->getSize() / 2.0f;
 
    setAnimation(0);

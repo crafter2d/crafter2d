@@ -137,7 +137,7 @@ void IsoDiamondLayer::draw(Graphics::RenderContext& context)
 
 void IsoDiamondLayer::drawTile(float** pdata, LayerLevel level, int x, int y, int xpos, int ypos)
 {
-   int texId = mTileMap.get(LayerLevel::eBack, x, y);
+   int texId = mTileMap.get(level, x, y);
    if ( texId >= 0 )
    {
       float tx = texcoordLookup[texId].x;
@@ -157,6 +157,7 @@ void IsoDiamondLayer::drawTile(float** pdata, LayerLevel level, int x, int y, in
 
 void IsoDiamondLayer::drawFront(Graphics::RenderContext& context)
 {
+   C2D_UNUSED(context);
    // nothing here yet
 }
 

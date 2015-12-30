@@ -114,6 +114,8 @@ namespace Graphics
 
    void ParticleSystemRenderer::beginDraw(RenderContext& context)
    {
+      C2D_UNUSED(context);
+      
       mParticleSystems.clear();
    }
 

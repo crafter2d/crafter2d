@@ -19,9 +19,11 @@
  ***************************************************************************/
 #include "zipfile.h"
 
+#include <memory>
 #include <string.h>
 
 #include "core/string/string.h"
+#include "core/defines.h"
 
 bool ZipFile::isZip(const String& path)
 {
@@ -103,6 +105,8 @@ void ZipFile::addFile(const String& name, void* pdata, int size)
 
 bool ZipFile::readFile(const String& name, void*& pdata, int &size, bool casesensitive)
 {
+   C2D_UNUSED(casesensitive);
+   
    std::string file = toZipPath(name);
    auto index = zip_name_locate(mZip.get(), file.c_str(), 0);
    if ( index < 0 )
@@ -122,18 +126,19 @@ bool ZipFile::readFile(const String& name, void*& pdata, int &size, bool casesen
    if ( pfile != NULL )
    {
       size = stat.size;
-      pdata = new char[size + 1];
-      memset(pdata, 0, size + 1);
+      std::unique_ptr<char[]> result(new char[size + 1]);
+      memset(result.get(), 0, size + 1);
 
-      auto read = zip_fread(pfile, pdata, size);
+      auto read = zip_fread(pfile, result.get(), size);
       if ( read < 0 )
       {
-         delete[] pdata;
          size = 0;
          return false;
       }
 
       zip_fclose(pfile);
+      
+      pdata = result.release();
 
       return true;
    }

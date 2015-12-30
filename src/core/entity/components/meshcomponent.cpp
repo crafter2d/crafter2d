@@ -55,14 +55,14 @@ void MeshComponent::registerComponent(Components& components)
 
 void MeshComponent::handleMessage(ComponentMessage& message)
 {
-	using namespace ComponentInterface;
+   using namespace ComponentInterface;
 
-	switch ( message.getMessageType() )
-	{
+   switch ( message.getMessageType() )
+   {
    case eUpdatedMsg:
-		{
+      {
          mpSprite->setTransform(getEntity().getTransform());
-		}
+      }
       break;
    case eUpdateMsg:
       {
@@ -84,8 +84,11 @@ void MeshComponent::handleMessage(ComponentMessage& message)
          RenderContext* pcontext = static_cast<RenderContext*>(message.getData());
          render(*pcontext);
       }
-		break;
-	}
+      break;
+      
+   default:
+      break;
+   }
 }
 
 void MeshComponent::update(float delta)

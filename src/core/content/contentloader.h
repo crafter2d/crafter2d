@@ -43,8 +43,10 @@ protected:
    Process& getProcess();
 
 private:
+
+ // data
+   Process&   mProcess;
    Simulator* mpSimulator;
-   Process& mProcess;
 };
 
 #endif // CONTENT_LOADER_H

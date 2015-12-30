@@ -41,8 +41,8 @@ namespace Graphics
       VertexData  mCoords;
       int         mTextureWidth;
       int         mTextureHeight;
-      int         mTop;
       int         mLeft;
+      int         mTop;
       bool        mDirty;
    };
 }

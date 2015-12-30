@@ -14,7 +14,7 @@ namespace c2d
    class CORE_API InputModule : public Module
    {
    public:
-      InputModule();
+               InputModule();
       explicit InputModule(Input::InputDevice* pdevice);
       virtual ~InputModule();
 

@@ -59,6 +59,6 @@ namespace c2d
 
    bool ContentModule::supports(const String& ext) const
    {
-      return mSupportedFiles.indexOf(ext) > -1;
+      return mSupportedFiles.indexOf(ext) != String::npos;
    }
 }

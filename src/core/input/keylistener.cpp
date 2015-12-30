@@ -20,6 +20,8 @@
 
 #include "keylistener.h"
 
+#include "core/defines.h"
+
 namespace Input
 {
 
@@ -35,10 +37,12 @@ KeyListener::~KeyListener()
 
 void KeyListener::onKeyPressed(const KeyEvent& event)
 {
+   C2D_UNUSED(event);
 }
 
 void KeyListener::onKeyReleased(const KeyEvent& event)
 {
+   C2D_UNUSED(event);
 }
 
 } // namespace Input

@@ -56,6 +56,8 @@ void PhysicsComponent::handleMessage(ComponentMessage& message)
             query.setBody(*mpBody);
          }
          break;
+      default:
+         break;
    }
 }
 

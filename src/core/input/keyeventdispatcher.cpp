@@ -20,6 +20,8 @@
 
 #include "keyeventdispatcher.h"
 
+#include "core/defines.h"
+
 namespace Input
 {
 
@@ -35,6 +37,7 @@ KeyEventDispatcher::~KeyEventDispatcher()
 
 void KeyEventDispatcher::dispatch(const KeyEvent& event)
 {
+   C2D_UNUSED(event);
 }
 
 } // namespace Input

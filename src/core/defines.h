@@ -63,8 +63,12 @@
 #define ASSERT(cond)          assert(cond);
 #define ASSERT_MSG(cond,msg)  assert(cond && msg);
 #define ASSERT_PTR(ptr)       assert(ptr != NULL);
-#define PURE_VIRTUAL          assert(false && "Pure virtual!"); throw std::runtime_error("Pure virtual");
-#define UNREACHABLE(msg)      std::runtime_error(msg);
+#define PURE_VIRTUAL          throw std::runtime_error("Pure virtual");
+#define UNREACHABLE(msg)      throw std::runtime_error(msg);
+
+// Warning prevention
+
+#define C2D_UNUSED(var) (void)(var)
 
 // MATH
 

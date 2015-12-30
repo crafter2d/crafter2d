@@ -30,10 +30,6 @@ DataStream::DataStream()
 {
 }
 
-DataStream::DataStream(const DataStream& that)
-{
-}
-
 DataStream::~DataStream()
 {
 }
@@ -196,6 +192,7 @@ void DataStream::readBytes(void* pbuffer, int amount)
 
 const char* DataStream::readBytes(int amount)
 {
+   C2D_UNUSED(amount);
    return NULL;
 }
 
@@ -206,6 +203,8 @@ char DataStream::readByte()
 
 void DataStream::writeBytes(const void* pbuffer, int amount)
 {
+   C2D_UNUSED(pbuffer);
+   C2D_UNUSED(amount);
 }
 
 void DataStream::write(const DataStream& that)

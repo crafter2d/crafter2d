@@ -50,6 +50,9 @@ bool AbstractTextureLoader::load(DataStream& data)
 
 bool AbstractTextureLoader::virLoad(DataStream& data, TextureInfo& info)
 {
+   C2D_UNUSED(data);
+   C2D_UNUSED(info);
+   
    PURE_VIRTUAL
    return false;
 }

@@ -20,6 +20,8 @@
 
 #include "simulatorlistener.h"
 
+#include "core/defines.h"
+
 SimulatorListener::SimulatorListener()
 {
 }
@@ -30,8 +32,16 @@ SimulatorListener::~SimulatorListener()
 
 void SimulatorListener::collideObjectWorld(Entity& source, Bound& bound, int side, bool begin)
 {
+   C2D_UNUSED(source);
+   C2D_UNUSED(bound);
+   C2D_UNUSED(side);
+   C2D_UNUSED(begin);
 }
 
 void SimulatorListener::collideObjectObject(Entity& source, Entity& target, int side, bool begin)
 {
+   C2D_UNUSED(source);
+   C2D_UNUSED(target);
+   C2D_UNUSED(side);
+   C2D_UNUSED(begin);
 }

@@ -32,6 +32,7 @@ namespace Input
       enum MouseButton { eLeft, eMiddle, eRight };
 
       InputDevice();
+      virtual ~InputDevice();
 
       virtual bool create(GameWindow& window) = 0;
       virtual void update() = 0;

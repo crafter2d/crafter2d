@@ -12,6 +12,10 @@ namespace c2d
       mpSoundManager(NULL)
    {
    }
+   
+   ContentReader::~ContentReader()
+   {
+   }
 
    // - Get/set
 

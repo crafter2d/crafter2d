@@ -130,6 +130,8 @@ void SpriteRenderer::viewportChanged(RenderContext& context, const Viewport& vie
 
 void SpriteRenderer::beginDraw(RenderContext& context)
 {
+   C2D_UNUSED(context);
+   
    mSprites.clear();
 }
    

@@ -12,6 +12,8 @@ namespace c2d
    class CORE_API Sound : public IContent
    {
    public:
+      virtual ~Sound();
+   
       virtual Sound*         clone() = 0;
 
       virtual void           pause() = 0;

@@ -45,11 +45,11 @@ using namespace Graphics;
 /// fn World::World
 /// brief Currently does nothing
 World::World():
+   mName(),
    layers(),
    bounds(),
    mEntities(),
    mObservers(),
-   mName(),
    mpSimulator(NULL),
    mSimulatorListener(*this),
    mpScript(NULL),

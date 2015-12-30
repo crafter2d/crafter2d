@@ -19,14 +19,17 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-void NodeVisitor::visitWorld(World* object)
+void NodeVisitor::visitWorld(World* pobject)
 {
+   C2D_UNUSED(pobject);
 }
 
-void NodeVisitor::visitEntity(Entity* object)
+void NodeVisitor::visitEntity(Entity* pobject)
 {
+   C2D_UNUSED(pobject);
 }
 
 void NodeVisitor::visitParticleSystem(ParticleSystem* pobject)
 {
+   C2D_UNUSED(pobject);
 }

@@ -31,7 +31,6 @@ class CORE_API DataStream
 {
 public:
             DataStream();
-            DataStream(const DataStream& that);
    virtual ~DataStream() = 0;
 
  // query

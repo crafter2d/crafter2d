@@ -54,12 +54,15 @@ void WorldObserver::detach()
 
 void WorldObserver::notifyScrollChange(const Vector& scrollposition)
 {
+   C2D_UNUSED(scrollposition);
 }
 
 void WorldObserver::notifyEntityAdded(const Entity& entity)
 {
+   C2D_UNUSED(entity);
 }
 
 void WorldObserver::notifyEntityRemoved(const Entity& entity)
 {
+   C2D_UNUSED(entity);
 }

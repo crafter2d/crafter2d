@@ -51,18 +51,8 @@ void GameWindow::destroy()
    doDestroy();
 }
 
-bool GameWindow::doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen)
-{
-   return false;
-}
-
 void GameWindow::doDestroy()
 {
-}
-
-bool GameWindow::initDevice(Graphics::Device& device)
-{
-   return true;
 }
 
 // - Query

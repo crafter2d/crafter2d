@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "gravityforcegenerator.h"
 
+#include "core/defines.h"
+
 #include "body.h"
 
 GravityForceGenerator::GravityForceGenerator(const Vector& gravity):
@@ -29,5 +31,6 @@ GravityForceGenerator::GravityForceGenerator(const Vector& gravity):
 
 void GravityForceGenerator::applyForce(Body& body) const
 {
+   C2D_UNUSED(body);
    //body.addForce(mGravity * body.getMass());
 }

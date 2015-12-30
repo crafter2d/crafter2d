@@ -32,8 +32,8 @@
 
 Body::Body(Simulator& simulator):
    mSimulator(simulator),
-   mpEntity(NULL),
    mTransform(),
+   mpEntity(NULL),
    mpListener(NULL),
    mForceGenerators()
 {
@@ -87,14 +87,18 @@ void Body::addForceGenerator(ForceGenerator* pgenerator)
 
 void Body::applyForce(const Vector& force)
 {
+   C2D_UNUSED(force);
 }
 
 void Body::applyForce(const Vector& force, const Vector& pos)
 {
+   C2D_UNUSED(force);
+   C2D_UNUSED(pos);
 }
 
 void Body::applyImpulse(const Vector& impulse)
 {
+   C2D_UNUSED(impulse);
 }
 
 // ----------------------------------
@@ -118,11 +122,6 @@ void Body::firePositionChanged()
 // ----------------------------------
 // -- Integration
 // ----------------------------------
-
-void Body::integrate(float timestep)
-{
-   PURE_VIRTUAL
-}
 
 void Body::finalize()
 {

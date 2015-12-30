@@ -14,6 +14,10 @@ Component::Component(ComponentType type):
 {
 }
 
+Component::~Component()
+{
+}
+
 // - Get/set
 
 Entity& Component::getEntity()

@@ -31,6 +31,7 @@ ResourceHandle<T>::ResourceHandle(ResourceManager& manager, T* presource):
 template<class T>
 ResourceHandle<T>::~ResourceHandle()
 {
+   release();
 }
 
 // - Get/set

@@ -15,6 +15,9 @@ namespace c2d
 
       template<class T> T& get();
       template<class T> T* use();
+      
+      ScriptObject() = default;
+      virtual ~ScriptObject() {};
 
     // arguments
       virtual void arg(int index, bool arg) = 0;

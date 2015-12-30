@@ -20,16 +20,16 @@
 #include "commandlineargument.h"
 
 CommandLineArgument::CommandLineArgument():
-   mType(eCommand),
    mName(),
-   mValue()
+   mValue(),
+   mType(eCommand)
 {
 }
 
 CommandLineArgument::CommandLineArgument(const CommandLineArgument& that):
-   mType(that.mType),
    mName(that.mName),
-   mValue(that.mValue)
+   mValue(that.mValue),
+   mType(that.mType)
 {
 }
 

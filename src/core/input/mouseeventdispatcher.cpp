@@ -35,7 +35,8 @@ MouseEventDispatcher::~MouseEventDispatcher()
 
 void MouseEventDispatcher::dispatch(const MouseEvent& event)
 {
-  PURE_VIRTUAL;
+   C2D_UNUSED(event);
+   PURE_VIRTUAL;
 }
 
 } // namespace Input

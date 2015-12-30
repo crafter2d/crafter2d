@@ -37,10 +37,3 @@ World& WorldRenderer::getWorld()
 {
    return mWorld;
 }
-
-// - Rendering
-
-void WorldRenderer::render(Graphics::RenderContext& context, float delta)
-{
-   PURE_VIRTUAL
-}

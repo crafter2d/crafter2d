@@ -119,6 +119,11 @@ bool Variant::operator<=(const Variant& that) const
 
       case eString:
          return asString() <= that.asString();
+      
+      case eBool:
+      case eObject:
+      case eEmpty:
+         UNREACHABLE("Invalid type");
    }
 
    return false;
@@ -142,6 +147,11 @@ bool Variant::operator<(const Variant& that) const
 
       case eString:
          return asString() < that.asString();
+      
+      case eBool:
+      case eObject:
+      case eEmpty:
+         UNREACHABLE("Invalid type");
    }
 
    return false;
@@ -165,6 +175,11 @@ bool Variant::operator>(const Variant& that) const
 
       case eString:
          return asString() > that.asString();
+      
+      case eBool:
+      case eObject:
+      case eEmpty:
+         UNREACHABLE("Invalid type");
    }
 
    return false;
@@ -188,6 +203,11 @@ bool Variant::operator>=(const Variant& that) const
 
       case eString:
          return asString() >= that.asString();
+      
+      case eBool:
+      case eObject:
+      case eEmpty:
+         UNREACHABLE("Invalid type");
    }
 
    return false;
@@ -323,9 +343,11 @@ String Variant::toString() const
          return asString();
       case eObject:
          return mValue.mpObject->toString();
+         
+      case eEmpty:
+      default:
+         return String::empty();
    }
-
-   return String();
 }
 
 int Variant::toInt() const
@@ -333,7 +355,7 @@ int Variant::toInt() const
    switch ( mType )
    {
    case eInt:
-      break;
+      return asInt();
    case eReal:
       return static_cast<int>(asReal());
    case eString:
@@ -342,8 +364,6 @@ int Variant::toInt() const
    default:
       UNREACHABLE("Can not convert this type to int!");
    }
-
-   return asInt(); // currently no other int types
 }
 
 float Variant::toReal() const
@@ -354,9 +374,10 @@ float Variant::toReal() const
          return static_cast<float>(asInt());
       case eReal:
          return asReal();
+      
+      default:
+         UNREACHABLE("Can not convert type to real!");
    }
-
-   return 0.0;
 }
 
 // - Streaming

@@ -10,4 +10,9 @@ namespace c2d
    ContentWriter::ContentWriter()
    {
    }
+   
+   ContentWriter::~ContentWriter()
+   {
+   }
+   
 } // namespace c2d

@@ -6,4 +6,8 @@ namespace c2d
    SoundManager::SoundManager()
    {
    }
+   
+   SoundManager::~SoundManager()
+   {
+   }
 }

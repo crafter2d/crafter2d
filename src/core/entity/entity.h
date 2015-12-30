@@ -133,7 +133,7 @@ private:
    Vector               mOffset;
    String               mName;
    String               mClassName;
-   unsigned int		   mDirtyFlag;
+   int                  mDirtyFlag;
 };
 
 #ifdef JENGINE_INLINE

@@ -13,7 +13,6 @@ ResourceHandleBase::ResourceHandleBase(ResourceManager& manager):
 
 ResourceHandleBase::~ResourceHandleBase()
 {
-   release();
 }
 
 // - Get/set

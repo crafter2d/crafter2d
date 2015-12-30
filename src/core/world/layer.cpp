@@ -180,6 +180,7 @@ void Layer::update(float delta)
 /// \return Nothing
 void Layer::draw(Graphics::RenderContext& context)
 {
+   C2D_UNUSED(context);
    PURE_VIRTUAL
 }
 

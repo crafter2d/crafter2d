@@ -22,6 +22,7 @@ namespace c2d
    {
    public:
       ContentReader();
+      virtual ~ContentReader();
 
       // get/set
       ContentManager& getContentManager();

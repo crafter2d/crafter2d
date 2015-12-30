@@ -4,8 +4,8 @@
 #include "core/streams/datastream.h"
 
 ContentHeader::ContentHeader():
-   mName(),
-   mModule()
+   mModule(),
+   mName()
 {
 }
 

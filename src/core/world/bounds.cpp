@@ -59,7 +59,7 @@ void Bounds::closeGaps(float delta)
 
 Bounds::Side Bounds::findNeighbour(Bound* porig, float delta, Bound*& pneighbour)
 {
-   for ( int index = 0; index < size(); ++index )
+   for ( std::size_t index = 0; index < size(); ++index )
    {
       Bound* pbound = operator[](index);
 

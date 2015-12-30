@@ -13,6 +13,7 @@ namespace c2d
    {
    public:
       ContentWriter();
+      virtual ~ContentWriter();
 
       virtual bool write(DataStream& stream, const String& filename) = 0;
    };

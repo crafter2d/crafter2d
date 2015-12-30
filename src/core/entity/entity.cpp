@@ -123,6 +123,7 @@ void Entity::setOffset(const Vector& offset)
 
 bool Entity::hasLineOfSight(const Entity& that) const
 {
+   C2D_UNUSED(that);
    return false;
 }
 
@@ -195,6 +196,7 @@ void Entity::detach(Entity& entity)
 
 void Entity::accept(NodeVisitor& visitor)
 {
+   C2D_UNUSED(visitor);
    PURE_VIRTUAL;
 }
 

@@ -13,6 +13,10 @@ CountBase::CountBase(const CountBase& that):
 {
 }
 
+CountBase::~CountBase()
+{
+}
+
 // query
    
 INLINE int CountBase::useCount() const
