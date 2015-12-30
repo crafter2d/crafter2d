@@ -15,6 +15,7 @@ addons:
     - libssl-dev
     - libglew-dev
     - libfreetype6-dev
+    - libtinyxml-dev
     - libunittest++-dev
 
 before_install:
