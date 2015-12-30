@@ -61,7 +61,7 @@ bool OGLDevice::supportGLSL() const
 
 // - Creation
 
-bool OGLDevice::create(GameWindow& window, int width, int height)
+bool OGLDevice::create(GameWindow& window)
 {
    Log& log = Log::getInstance();
    GLint units;
@@ -104,7 +104,7 @@ bool OGLDevice::create(GameWindow& window, int width, int height)
    if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
       return false;
 
-   return Device::create(window, width, height);
+   return Device::create(window);
 }
 
 RenderContext* OGLDevice::createRenderContext()
