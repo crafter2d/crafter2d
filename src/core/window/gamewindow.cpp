@@ -25,6 +25,7 @@
 #include "core/input/keyeventdispatcher.h"
 #include "core/system/platform.h"
 #include "core/string/string.h"
+#include "core/defines.h"
 
 #include "gamewindowlistener.h"
 
@@ -53,6 +54,12 @@ void GameWindow::destroy()
 
 void GameWindow::doDestroy()
 {
+}
+
+bool GameWindow::initDevice(Graphics::Device& device)
+{
+   C2D_UNUSED(device);
+   return true;
 }
 
 // - Query

@@ -59,7 +59,7 @@ public:
    virtual int getHeight() const;
 
  // operations
-   virtual bool initDevice(Graphics::Device& device) = 0;
+   virtual bool initDevice(Graphics::Device& device);
    virtual void resize(int width, int height) = 0;
    virtual void toggleFullscreen() = 0;
    virtual void update() = 0;

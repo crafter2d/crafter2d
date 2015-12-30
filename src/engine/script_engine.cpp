@@ -678,6 +678,7 @@ void Box2DSimulator_lineOfSight(ScriptCall& accessor)
 
 void Box2DSimulator_createRevoluteJoint(ScriptCall& accessor)
 {
+   C2D_UNUSED(accessor);
    /*
    GET_THIS(Box2DSimulator, simulator);
 
@@ -692,6 +693,7 @@ void Box2DSimulator_createRevoluteJoint(ScriptCall& accessor)
 
 void Box2DSimulator_createRopeJoint(ScriptCall& accessor)
 {
+   C2D_UNUSED(accessor);
    /*
    GET_THIS(Box2DSimulator, simulator);
 

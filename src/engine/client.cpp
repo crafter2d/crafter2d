@@ -94,8 +94,8 @@ namespace c2d
       mpParticleEntity(NULL),
       mpPlayer(NULL),
       mpKeyMap(NULL),
-      mViewport(),
       mpFont(NULL),
+      mViewport(),
       mFpsMsg(UTEXT("FPS: 0")),
       mRequests(),
       mServerId(-1)
@@ -423,6 +423,8 @@ namespace c2d
             const UpdateObjectEvent& updateobjectevent = static_cast<const UpdateObjectEvent&>(event);
             handleUpdateObjectEvent(updateobjectevent);
          }
+         break;
+      default:
          break;
       }
    }
