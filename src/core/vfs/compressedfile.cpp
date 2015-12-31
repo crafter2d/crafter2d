@@ -29,8 +29,8 @@
 // static
 bool CompressedFile::isCompressedFile(const String& file)
 {
-   int dot = file.indexOf('.');
-   int slash = file.lastIndexOf('/');
+   std::size_t dot = file.indexOf('.');
+   std::size_t slash = file.lastIndexOf('/');
 
    if ( dot < slash )
    {

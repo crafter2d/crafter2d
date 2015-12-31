@@ -31,9 +31,9 @@ namespace ByteCode
 
    VirtualFunction& Resolver::resolveFunction(const String& prototype)
    {
-      int pos = prototype.lastIndexOf('(');
+      std::size_t pos = prototype.lastIndexOf('(');
       pos = prototype.lastIndexOf('.', 0, pos);
-      if ( pos != -1 )
+      if ( pos != String::npos )
       {
          String classname = prototype.subStr(0, pos);
          String funcproto = prototype.subStr(pos + 1, prototype.length() - pos - 1);
@@ -41,7 +41,7 @@ namespace ByteCode
          VirtualClass& klass = resolveClass(classname);
 
          pos = funcproto.indexOf('(');
-         if ( pos > 0 )
+         if ( pos != String::npos )
          {
             yasc::Types signature;
 
@@ -81,8 +81,8 @@ namespace ByteCode
 
    VirtualField& Resolver::resolveField(const String& name)
    {
-      int pos = name.lastIndexOf('.');
-      if ( pos != -1 )
+      std::size_t pos = name.lastIndexOf('.');
+      if ( pos != String::npos )
       {
          String classname = name.subStr(0, pos);
          String attrname = name.subStr(pos + 1, name.length() - pos - 1);
@@ -108,8 +108,8 @@ namespace ByteCode
 
    VirtualField& Resolver::resolveStaticField(const String& name)
    {
-      int pos = name.lastIndexOf('.');
-      if ( pos != -1 )
+      std::size_t pos = name.lastIndexOf('.');
+      if ( pos != String::npos )
       {
          String classname = name.subStr(0, pos);
          String attrname = name.subStr(pos + 1, name.length() - pos - 1);

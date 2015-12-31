@@ -42,8 +42,8 @@ bool ClassGenerator::generate(CommandLine& commandline)
 
    String package;
    String name = pnameargument->getValue();
-   int pos = name.lastIndexOf(L'.');
-   if ( pos == -1 )
+   std::size_t pos = name.lastIndexOf(L'.');
+   if ( pos == String::npos )
    {
       const CommandLineArgument* ppackageargument = commandline.getArgument(UTEXT("package"));
       if ( ppackageargument == NULL )

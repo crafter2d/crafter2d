@@ -29,10 +29,10 @@
 
 void tokenize(std::vector<String>& tokens, const String& str, char delimitor)
 {
-   int start = 0;
-   int pos = str.indexOf(delimitor);
+   std::size_t start = 0;
+   std::size_t pos = str.indexOf(delimitor);
 
-   while ( pos != -1 )
+   while ( pos != String::npos )
    {
       String token = str.subStr(start, pos - start);
       tokens.push_back(token);

@@ -64,8 +64,8 @@ bool TileSetWriter::write(DataStream& stream, const String& filename)
    }
 
    String texturename = String::fromUtf8(pfile);
-   int index = texturename.indexOf(L'.');
-   if ( index >= 0 )
+   std::size_t index = texturename.indexOf(L'.');
+   if ( index != String::npos )
    {
       texturename = texturename.subStr(0, index);
    }

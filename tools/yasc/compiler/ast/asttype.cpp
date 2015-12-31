@@ -35,8 +35,8 @@ ASTType ASTType::greaterType(const ASTType& left, const ASTType& right)
 // static 
 ASTType* ASTType::fromString(const String& type)
 {
-   int pos = type.lastIndexOf('[');
-   if ( pos != -1 )
+   std::size_t pos = type.lastIndexOf('[');
+   if ( pos != String::npos )
    {
       String arraytype = type.subStr(0, pos);
       ASTType* parray = new ASTType(ASTType::eArray);

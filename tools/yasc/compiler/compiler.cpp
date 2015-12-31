@@ -116,7 +116,7 @@ int Compiler::exec()
    }
    else
    {
-      mOutputDir = ".";
+      mOutputDir = UTEXT(".");
    }
 
    // preload required internal classes
@@ -153,9 +153,8 @@ bool Compiler::compile(const String& filename)
          std::vector<ASTClass*> classes;
          root.collectClasses(classes);
 
-         for ( std::size_t index = 0; index < classes.size(); ++index )
+         for ( auto* pclass : classes )
          {
-            ASTClass* pclass = classes[index];
             save(*pclass);
          }
 
@@ -185,8 +184,6 @@ void Compiler::createCompileSteps()
    mCompileSteps.push_back(new OOCheckVisitor(mContext));
    mCompileSteps.push_back(new CodeGeneratorVisitor(mContext));
 }
-
-#include "core/vfs/filesystem.h"
 
 void Compiler::createOutputDir()
 {

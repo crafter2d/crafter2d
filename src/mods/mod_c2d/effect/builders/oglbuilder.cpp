@@ -90,11 +90,11 @@ String OglBuilder::buildTextures(const ASTEffect& effect, const ASTFunction& fun
 
 int findIndexOf(const String& src, const String& find)
 {
-   int index = 0;
+   std::size_t index = 0;
    do
    {
       index = src.indexOf(find, index + 1);
-      if ( index == -1 )
+      if ( index == String::npos )
          break;
 
       if ( !Char::isAlphaNum(src[index + find.length()]) )
@@ -130,7 +130,7 @@ String OglBuilder::buildVertexStructs(const ASTEffect& effect, ASTTechnique& tec
          }
       }
 
-      if ( function.mBody.indexOf(pstruct->mName) != -1 )
+      if ( function.mBody.indexOf(pstruct->mName) != String::npos )
       {
          // this is the output struct
          result += buildInputOutputStruct(*pstruct, UTEXT("out"));
@@ -169,7 +169,7 @@ String OglBuilder::buildPixelStructs(const ASTEffect& effect, const ASTFunction&
    {
       const ASTStruct* pstruct = effect.mStructs[index];
 
-      if ( function.mBody.indexOf(pstruct->mName) != -1 )
+      if ( function.mBody.indexOf(pstruct->mName) != String::npos )
       {
          result += buildInputOutputStruct(*pstruct, UTEXT("in"));
       }

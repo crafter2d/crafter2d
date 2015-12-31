@@ -25,7 +25,7 @@ int loadModules(const String& srcfile, const String& dstFile)
    mgr.initialize();
    ModuleCollection mods = mgr.filter(ModuleKind::eContentModule);
 
-   int index = srcfile.lastIndexOf(L'.');
+   std::size_t index = srcfile.lastIndexOf(L'.');
    String extension = srcfile.subStr(index + 1, srcfile.length() - index - 1);
 
    if ( extension == UTEXT("xml") )

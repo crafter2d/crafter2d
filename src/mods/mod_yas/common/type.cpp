@@ -18,8 +18,8 @@ namespace yasc
 
    Type* Type::fromString(const String& typestr)
    {
-      int pos = typestr.lastIndexOf('[');
-      if ( pos != -1 )
+      std::size_t pos = typestr.lastIndexOf('[');
+      if ( pos != String::npos )
       {
          String arraytype = typestr.subStr(0, pos);
 

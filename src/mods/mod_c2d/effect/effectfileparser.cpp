@@ -442,8 +442,8 @@ void EffectFileParser::determineLanguage()
 
          for ( int index = 0; index < count; ++index )
          {
-            int pos = pfunction->mBody.indexOf(identifiers[index]);
-            if ( pos != -1 )
+            std::size_t pos = pfunction->mBody.indexOf(identifiers[index]);
+            if ( pos != String::npos )
             {
                mpEffect->setLanguage(ASTEffect::eOpenGL);
                return;

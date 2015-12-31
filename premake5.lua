@@ -54,7 +54,6 @@ require "proj-compiler"
 
 if not _OPTIONS["travis"] then
 	require "proj-gen"
-	require "proj-compiler"
 	require "proj-modfmod"
 	require "proj-modd3d"
 	require "proj-modui"

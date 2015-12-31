@@ -45,8 +45,8 @@ String File::concat(const String& path, const String& filename)
 // static
 String File::extractFileName(const String& filepath)
 {
-   int pos = filepath.lastIndexOf('/');
-   if ( pos == -1 )
+   std::size_t pos = filepath.lastIndexOf('/');
+   if ( pos == String::npos )
    {
       pos = filepath.lastIndexOf('\\');
    }
@@ -62,8 +62,8 @@ String File::extractFileName(const String& filepath)
 // static
 String File::extractPath(const String& filepath)
 {
-   int pos = filepath.lastIndexOf('/');
-   if ( pos == -1 )
+   std::size_t pos = filepath.lastIndexOf('/');
+   if ( pos == String::npos )
    {
       pos = filepath.lastIndexOf('\\');
    }

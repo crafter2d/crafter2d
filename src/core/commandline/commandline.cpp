@@ -108,8 +108,8 @@ void CommandLine::parse(int argc, const char* const argv[])
          }
          else
          {
-            int pos = inputarg.indexOf(L'=');
-            if ( pos == -1 )
+            std::size_t pos = inputarg.indexOf(L'=');
+            if ( pos == String::npos )
             {
                argument.setName(inputarg);
 

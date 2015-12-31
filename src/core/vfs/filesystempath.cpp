@@ -40,7 +40,7 @@ FileSystemPath::~FileSystemPath()
 void FileSystemPath::fillInfo(const String& path)
 {
    auto index = path.indexOf(UTEXT(".zip"));
-   if ( index > 0 )
+   if ( index != String::npos )
    {
       String zipfile = path.subStr(0, index + 4); // include the .zip extension
       if ( path.length() > index + 4 )

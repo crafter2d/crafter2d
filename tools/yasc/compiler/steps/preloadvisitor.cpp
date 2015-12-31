@@ -572,7 +572,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
             {
                // add to class path
                std::size_t pos = qualifiedname.lastIndexOf('.');
-               if ( pos != -1 )
+               if ( pos != String::npos )
                {
                   String path = qualifiedname.subStr(0, pos) + UTEXT(".*");
                   mClassResolver.insert(path);

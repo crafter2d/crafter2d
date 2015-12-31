@@ -24,11 +24,11 @@ const ClassResolver& ClassResolver::operator=(const ClassResolver& that)
 void ClassResolver::insert(const String& path)
 {
    String qualifiedpath = path;
-   if ( path.indexOf('*') == -1 )
+   if ( path.indexOf('*') == String::npos )
    {
       // no * so replace last part with *
-      int pos = path.lastIndexOf('.');
-      if ( pos == -1 )
+      std::size_t pos = path.lastIndexOf('.');
+      if ( pos == String::npos )
       {
          return;
       }
@@ -46,13 +46,10 @@ String ClassResolver::resolve(const String& classname) const
    String lowerclassname(classname);
    lowerclassname.toLower();
 
-   Paths::const_iterator it = mPaths.begin();
-   for ( ; it != mPaths.end(); ++it )
+   for ( auto& path : mPaths )
    {
-      const String& path = (*it);
-
-      int pos = path.lastIndexOf('*');
-      if ( pos != -1 )
+      std::size_t pos = path.lastIndexOf('*');
+      if ( pos != String::npos )
       {
          String fullclassname = path.subStr(0, pos) + classname;
          if ( checkClassExists(fullclassname) )

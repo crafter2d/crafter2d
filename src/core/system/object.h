@@ -2,12 +2,14 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "core/core_base.h"
+
 class String;
 
-class Object
+class CORE_API Object
 {
 public:
-   virtual ~Object() {}
+   virtual ~Object() {};
 
    virtual Object* clone() const = 0;
    virtual bool equals(const Object& that) const = 0;

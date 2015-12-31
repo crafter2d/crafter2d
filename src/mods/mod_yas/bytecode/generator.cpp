@@ -57,8 +57,8 @@ namespace ByteCode
    CIL::Class* loadCompiledClass(const String& classname)
    {
       String filename;
-      int index = classname.indexOf(L'<');
-      if ( index != -1 )
+      std::size_t index = classname.indexOf(L'<');
+      if ( index != String::npos )
       {
          filename = classname.subStr(0, index);
       }

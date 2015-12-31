@@ -132,8 +132,10 @@ ClassRegistration* ClassRegistry::findClass(const String& name)
 
 const FunctionRegistration* ClassRegistry::findCallback(const String& qualifiedname) const
 {
-   int indexB = qualifiedname.indexOf(L'(');
-   int index = qualifiedname.lastIndexOf(L'.', 0, indexB);
+   std::size_t indexB = qualifiedname.indexOf(L'(');
+   std::size_t index = qualifiedname.lastIndexOf(L'.', 0, indexB);
+   ASSERT(indexB != String::npos && index != String::npos);
+
    String klass = qualifiedname.subStr(0, index);
    String function = qualifiedname.subStr(index + 1, qualifiedname.length() - index - 1);
 

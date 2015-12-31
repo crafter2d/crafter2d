@@ -34,13 +34,13 @@ bool WorldWriter::write(DataStream& stream, const String& filename)
          String tileset = readString(filestream);
          filestream >> width >> height;
 
-         int pos = effect.indexOf(L'.');
-         if ( pos >= 0 )
+         std::size_t pos = effect.indexOf(L'.');
+         if ( pos != String::npos )
          {
             effect = effect.subStr(0, pos);
          }
          pos = tileset.indexOf(L'.');
-         if ( pos >= 0 )
+         if ( pos != String::npos )
          {
             tileset = tileset.subStr(0, pos);
          }

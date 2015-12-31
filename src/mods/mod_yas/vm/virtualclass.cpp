@@ -191,8 +191,8 @@ bool VirtualClass::implements(const VirtualClass& interfce) const
 const VirtualFunctionTableEntry* VirtualClass::getDefaultConstructor() const
 {
    String name = mName;
-   int pos = mName.lastIndexOf('.');
-   if ( pos != -1 )
+   std::size_t pos = mName.lastIndexOf('.');
+   if ( pos != String::npos )
    {
       name.remove(0, pos + 1);
    }
