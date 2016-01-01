@@ -40,7 +40,7 @@ project "mod_c2d"
 		defines { "LINUX" }
         removefiles { "../src/mods/mod_c2d/effect/builders/dx*" }
 		buildoptions { "-std=c++11", "-W", "-Wall", "-O0" }
-        libdirs { "..\bin" }
+        libdirs { "../bin" }
 		
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored" }

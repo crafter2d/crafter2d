@@ -13,6 +13,7 @@ public:
    static ComponentDefinitionProto* fromStream(DataStream& stream);
 
    explicit ComponentDefinitionProto(ComponentInterface::ComponentType type);
+   virtual ~ComponentDefinitionProto();
 
  // get/set
    ComponentInterface::ComponentType getType() const;

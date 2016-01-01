@@ -14,6 +14,7 @@ public:
    typedef std::vector<int> Animations;
 
    MeshComponentDefinitionProto();
+   virtual ~MeshComponentDefinitionProto();
 
  // data
    int         mWidth;

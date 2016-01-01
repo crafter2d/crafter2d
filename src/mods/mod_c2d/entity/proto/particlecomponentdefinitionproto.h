@@ -12,6 +12,7 @@ class ParticleComponentDefinitionProto : public ComponentDefinitionProto
 {
 public:
    ParticleComponentDefinitionProto();
+   virtual ~ParticleComponentDefinitionProto();
 
  // data
    int   emitCount;

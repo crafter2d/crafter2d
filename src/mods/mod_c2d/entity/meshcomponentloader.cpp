@@ -1,6 +1,7 @@
 
 #include "meshcomponentloader.h"
 
+#include <memory>
 #include <tinyxml.h>
 
 #include "core/string/string.h"
@@ -27,7 +28,7 @@ const String& MeshComponentLoader::getXmlTag() const
 
 ComponentDefinitionProto* MeshComponentLoader::load(const TiXmlElement& element)
 {
-   AutoPtr<MeshComponentDefinitionProto> pdefinition = new MeshComponentDefinitionProto();
+   std::unique_ptr<MeshComponentDefinitionProto> pdefinition(new MeshComponentDefinitionProto());
 
    int width, height;
    if ( element.QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||

@@ -8,6 +8,10 @@ ParticleComponentDefinitionProto::ParticleComponentDefinitionProto():
 {
 }
 
+ParticleComponentDefinitionProto::~ParticleComponentDefinitionProto()
+{
+}
+
 // - Overrides
 
 void ParticleComponentDefinitionProto::virRead(DataStream& stream)

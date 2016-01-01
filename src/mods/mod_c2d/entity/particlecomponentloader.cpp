@@ -5,6 +5,7 @@
 
 #include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
+#include "core/defines.h"
 
 #include "proto/particlecomponentdefinitionproto.h"
 
@@ -76,6 +77,8 @@ bool ParticleComponentLoader::loadInit(const TiXmlElement& initElement, Particle
 
 bool ParticleComponentLoader::loadUpdate(const TiXmlElement& updateElement, ParticleComponentDefinitionProto& proto)
 {
+   C2D_UNUSED(proto);
+   
    const TiXmlElement* pXmlElement = updateElement.FirstChildElement("size");
    if ( pXmlElement != NULL )
    {

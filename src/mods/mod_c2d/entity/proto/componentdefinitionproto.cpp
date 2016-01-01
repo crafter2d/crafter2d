@@ -40,6 +40,10 @@ ComponentDefinitionProto::ComponentDefinitionProto(ComponentInterface::Component
 {
 }
 
+ComponentDefinitionProto::~ComponentDefinitionProto()
+{
+}
+
 // - Get/set
 
 ComponentInterface::ComponentType ComponentDefinitionProto::getType() const

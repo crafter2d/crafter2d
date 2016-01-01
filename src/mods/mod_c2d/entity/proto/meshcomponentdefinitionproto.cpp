@@ -14,6 +14,10 @@ MeshComponentDefinitionProto::MeshComponentDefinitionProto():
 {
 }
 
+MeshComponentDefinitionProto::~MeshComponentDefinitionProto()
+{
+}
+
 void MeshComponentDefinitionProto::virRead(DataStream& stream)
 {
    stream >> mWidth >> mHeight >> mTexture >> mAnimationSpeed;
