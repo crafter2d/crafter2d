@@ -22,6 +22,7 @@ before_install:
   - ./projects/install-libzip.sh
   - ./projects/install-premake5.sh
   - ./projects/install-box2d.sh
+  - ./projects/install-libantlr3.sh
   - export CXX="g++-5" CC="gcc-5"
 
 script:
