@@ -2,6 +2,8 @@
 #ifndef AST_VISITOR_H_
 #define AST_VISITOR_H_
 
+#include "core/defines.h"
+
 class ASTNode;
 class ASTRoot;
 class ASTPackage;
@@ -47,8 +49,8 @@ class ASTLiteral;
    virtual void visit(aclass& ast)
 
 #define VISIT_IMPL(aclass) \
-   void ASTVisitor::visit(const aclass& ast) {} \
-   void ASTVisitor::visit(aclass& ast) {}
+   void ASTVisitor::visit(const aclass& ast) { C2D_UNUSED(ast); } \
+   void ASTVisitor::visit(aclass& ast) { C2D_UNUSED(ast); }
 
 class ASTVisitor
 {

@@ -91,37 +91,37 @@ ASTType* ASTType::fromString(const String& type)
 
 ASTType::ASTType():
    mKind(eInvalid),
+   mPosition(),
    mObjectName(),
    mpObjectClass(NULL),
    mTypeArguments(),
    mpTypeVariable(NULL),
    mArrayDimension(0),
-   mpArrayType(NULL),
-   mPosition()
+   mpArrayType(NULL)
 {
 }
 
 ASTType::ASTType(Kind kind):
    mKind(kind),
+   mPosition(),
    mObjectName(),
    mpObjectClass(NULL),
    mTypeArguments(),
    mpTypeVariable(NULL),
    mArrayDimension(0),
-   mpArrayType(NULL),
-   mPosition()
+   mpArrayType(NULL)
 {
 }
 
 ASTType::ASTType(const ASTType& that):
    mKind(that.mKind),
+   mPosition(that.mPosition),
    mObjectName(that.mObjectName),
    mpObjectClass(that.mpObjectClass),
    mTypeArguments(that.mTypeArguments),
    mpTypeVariable(that.mpTypeVariable),
    mArrayDimension(that.mArrayDimension),
-   mpArrayType(that.mpArrayType != NULL ? that.mpArrayType->clone() : NULL),
-   mPosition(that.mPosition)
+   mpArrayType(that.mpArrayType != NULL ? that.mpArrayType->clone() : NULL)
 {
 }
 
@@ -392,6 +392,9 @@ bool ASTType::greater(const ASTType& that) const
 
          case eString:
             return mKind == eString || mKind == eInt || mKind == eReal || mKind == eBoolean || mKind == eChar;
+            
+         default:
+            break;
       }
    }
 

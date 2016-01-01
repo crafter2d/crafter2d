@@ -165,6 +165,7 @@ void CodeGeneratorVisitor::visit(const ASTVariableInit& ast)
 
 void CodeGeneratorVisitor::visit(const ASTArrayInit& ast)
 {
+   C2D_UNUSED(ast);
    // do nothing, implemented elsewhere
 }
 
@@ -662,6 +663,9 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
 
          case ASTExpression::ePlusAssign:
             break;
+            
+         default:
+            break;
       }
    }
    else
@@ -876,6 +880,9 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
             mBuilder.addLabel(labelFinish);
          }
          break;
+         
+      default:
+         break;
    }
 }
 
@@ -931,6 +938,8 @@ void CodeGeneratorVisitor::visit(const ASTUnary& ast)
          case ASTUnary::eNot:
             mBuilder.emit(CIL_not);
             break;
+         default:
+            break;
       }
    }
 }
@@ -965,6 +974,9 @@ void CodeGeneratorVisitor::visit(const ASTNew& ast)
 
             mBuilder.emit(CIL_newarray, ast.getType().toString());
          }
+         break;
+         
+      case ASTNew::eInvalid:
          break;
    }
 }
@@ -1067,6 +1079,8 @@ void CodeGeneratorVisitor::visit(const ASTCast& ast)
             else if ( mCurrentType.isReal() )
                mBuilder.emit(CIL_rconv_str);
             break;
+         default:
+            break;
       }
    }
 }
@@ -1096,8 +1110,13 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
                case ASTAccess::eArgument:
                case ASTAccess::eLocal:
-                  const ASTVariable& var = ast.getVariable();
-                  handleVariable(var);
+                  {
+                     const ASTVariable& var = ast.getVariable();
+                     handleVariable(var);
+                  }
+                  break;
+                  
+               default:
                   break;
             }
 
@@ -1212,6 +1231,9 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
             // the function/variable access pushes it's own label.
          }
          break;
+         
+      case ASTAccess::eInvalid:
+         break;
    }
 
    mpAccess = &ast;
@@ -1270,6 +1292,9 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access)
                   }
                }
                break;
+               
+            default:
+               break;
             }            
          }
          break;
@@ -1289,13 +1314,15 @@ void CodeGeneratorVisitor::handleAssignment(const ASTAccess& access)
             UNREACHABLE("");
          }
          break;
+         
+      default:
+         break;
    }
 }
 
 void CodeGeneratorVisitor::handleField(const ASTField& field)
 {
    const ASTVariable& variable = field.getVariable();
-   bool isargument = variable.isArgument();
    bool isstatic = variable.getModifiers().isStatic();
 
    Opcode store = (isstatic ? CIL_ststatic : CIL_stfield);
@@ -1354,8 +1381,7 @@ void CodeGeneratorVisitor::handleField(const ASTField& field)
 void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable)
 {
    bool isargument = variable.isArgument();
-   bool isstatic = variable.getModifiers().isStatic();
-
+   
    Opcode store = (isargument ? CIL_ldarg : CIL_stloc);
    Opcode load  = (isargument ? CIL_ldarg : CIL_ldloc);
 
@@ -1479,6 +1505,9 @@ void CodeGeneratorVisitor::handleStaticBlock(ASTClass& ast)
             case ASTType::eArray:
                mBuilder.emit(CIL_ldnull);
                break;
+               
+            default:
+               break;
          }
 
          // class.var = init
@@ -1573,6 +1602,9 @@ void CodeGeneratorVisitor::handleFieldBlock(ASTClass& ast)
             case ASTType::eArray:
             case ASTType::eGeneric:
                mBuilder.emit(CIL_ldnull);
+               break;
+               
+            default:
                break;
          }
 

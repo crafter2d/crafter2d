@@ -36,6 +36,9 @@ void PrettyPrintVisitor::visit(const ASTConcatenate& concatenate)
       {
          case ASTConcatenate::eAnd: cout << " and "; break;
          case ASTConcatenate::eOr:  cout << " or ";  break;
+         
+         default: 
+            break;
       }
 
       concatenate.getRight().accept(*this);

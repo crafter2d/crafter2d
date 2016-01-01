@@ -41,6 +41,8 @@ void ASTAssert::setCondition(ASTExpression* pcondition)
    
 bool ASTAssert::hasReturn(bool& hasunreachablecode) const
 {
+   C2D_UNUSED(hasunreachablecode);
+   
    return false;
 }
 

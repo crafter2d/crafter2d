@@ -19,12 +19,6 @@ bool CompileStep::step(ASTNode& node)
    return performStep(node);
 }
 
-bool CompileStep::performStep(ASTNode& node)
-{
-   UNREACHABLE("");
-   return false;
-}
-
 // - Error reporting
 
 void CompileStep::warning(int errnr, const String& msg, const ASTNode& node)

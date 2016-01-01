@@ -39,8 +39,9 @@ project "Game"
 	filter "system:Linux"
 		defines { "LINUX" }		
         excludes { "../src/game/win32*.*" }
-		links { "SDL", "tinyxml" }
+        libdirs { "../bin" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        links { "SDL", "tinyxml" }
 
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored", "-lEngined" }

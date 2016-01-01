@@ -1,6 +1,8 @@
 
 #include "astreturn.h"
 
+#include "core/defines.h"
+
 #include "astexpression.h"
 #include "astvisitor.h"
 
@@ -42,6 +44,7 @@ void ASTReturn::setExpression(ASTExpression* pexpression)
 
 bool ASTReturn::hasReturn(bool& hasunreachablecode) const
 {
+   C2D_UNUSED(hasunreachablecode);
    return true;
 }
 

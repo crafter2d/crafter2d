@@ -302,10 +302,13 @@ void OOCheckVisitor::visit(ASTNew& ast)
 
 void OOCheckVisitor::visit(ASTSuper& ast)
 {
+   C2D_UNUSED(ast);
 }
 
 void OOCheckVisitor::visit(ASTNative& ast)
 {
+   C2D_UNUSED(ast);
+   
    mHasNativeCall = true;
 }
 
@@ -366,7 +369,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
                   }
                   else
                   {
-                     ScopeVariable* pvariable = mScopeStack.find(ast.getName());
+                     // ScopeVariable* pvariable = mScopeStack.find(ast.getName());
                   }
                }
                else
@@ -384,6 +387,9 @@ void OOCheckVisitor::visit(ASTAccess& ast)
             mpCurrentType = &ast.getStaticType();
          }
          break;
+         
+      default:
+         break;
    }
 }
 
@@ -396,6 +402,7 @@ void OOCheckVisitor::visit(ASTCompound& compound)
 
 bool OOCheckVisitor::isFinal(ASTNode& expr)
 {
+   C2D_UNUSED(expr);
    return false;
 }
 

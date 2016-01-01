@@ -37,6 +37,7 @@ project "Engine"
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		defines { "LINUX" }
 		includedirs { "/usr/include", "/usr/local/include" }
+        libdirs { "../bin" }
         links { "Box2D" }
 
     filter { "system:linux", "Debug" }

@@ -22,8 +22,10 @@ public:
    ACCEPT;
 
 private:
-   ASTType*       mpType;
+
+ // data
    const Literal& mLiteral;
+   ASTType*       mpType;
 };
 
 #endif // AST_LITERAL_H_

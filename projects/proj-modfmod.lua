@@ -34,6 +34,7 @@ project "mod_fmod"
 	filter "system:Linux"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        libdirs { "../bin" }
 
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored" }

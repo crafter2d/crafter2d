@@ -44,6 +44,7 @@ project "mod_ogl"
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		defines { "LINUX" }
 		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
+        libdirs { "../bin" }
 		links { "GLEW", "freetype" }
 
     filter { "system:linux", "Debug" }

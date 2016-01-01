@@ -401,6 +401,8 @@ void PreloadVisitor::visit(ASTSuper& ast)
 
 void PreloadVisitor::visit(ASTNative& ast)
 {
+   C2D_UNUSED(ast);
+   
    mHasNativeCall = true;
 }
 
@@ -446,6 +448,9 @@ void PreloadVisitor::visit(ASTAccess& ast)
       case ASTAccess::eClass:
          {
          }
+         break;
+         
+      default:
          break;
    }
 }

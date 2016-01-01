@@ -53,9 +53,6 @@ Compiler::Compiler(int argc, char* pargv[]):
    mPhase(ePreload),
    mOutputDir()
 {
-   String l = UTEXT("char[]");
-   yasc::Type* pl = yasc::Type::fromString(l);
-
    mCommands.set(argc, pargv);
 
    createCompileSteps();

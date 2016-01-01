@@ -119,6 +119,8 @@ namespace yasc
       case eArray:
          delete mInfo.mpArray;
          break;
+      default:
+         break;
       }
    }
 

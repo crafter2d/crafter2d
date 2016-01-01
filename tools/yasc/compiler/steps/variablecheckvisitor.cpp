@@ -28,6 +28,7 @@ bool VariableCheckVisitor::isVariableImpl(const ASTNode& node)
 
 void VariableCheckVisitor::visit(const ASTExpression& ast)
 {
+   C2D_UNUSED(ast);
 }
 
 void VariableCheckVisitor::visit(const ASTUnary& ast)
@@ -54,6 +55,9 @@ void VariableCheckVisitor::visit(const ASTAccess& ast)
 
       case ASTAccess::eArray:
          mVariable = true;
+         break;
+         
+      default:
          break;
    }
 }

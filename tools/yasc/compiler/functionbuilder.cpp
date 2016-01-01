@@ -126,6 +126,8 @@ void FunctionBuilder::createJumps()
                   inst.mInt = target - index;
                }
                break;
+            default:
+               break;
          }
       }
    }

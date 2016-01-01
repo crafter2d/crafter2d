@@ -39,6 +39,7 @@ project "Yasc"
 	filter "system:Linux"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        libdirs { "../bin" }
         links { "antlr3c" }
 
     filter { "system:linux", "Debug" }

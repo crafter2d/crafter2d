@@ -540,6 +540,10 @@ void SymbolCheckVisitor::visit(ASTConcatenate& ast)
             mCurrentType = ASTType(ASTType::eBoolean);
          }
          break;
+         
+      case ASTConcatenate::eInvalid:
+         error(E0001, UTEXT("Invalid compiler state!"), ast);
+         break;
    }
 }
 
@@ -627,6 +631,10 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
 
             mCurrentType = ast.getType();
          }
+         break;
+         
+      case ASTNew::eInvalid:
+         error(E0001, UTEXT("Invalid compiler state!"), ast);
          break;
    }
 }
@@ -1148,6 +1156,9 @@ void SymbolCheckVisitor::checkOperator(ASTNode& node, ASTUnary::Operator op)
                error(E0050, UTEXT("Not operator requires a boolean value."), node);
             }
          }
+         break;
+         
+      case ASTUnary::eNone:
          break;
       }
 }

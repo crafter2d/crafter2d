@@ -41,6 +41,7 @@ project "Gen"
 		defines { "LINUX" }
 		links { "ctemplate", "tinyxml" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        libdir { "..\bin" }
 		
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored" }

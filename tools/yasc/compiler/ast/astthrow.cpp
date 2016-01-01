@@ -1,6 +1,8 @@
 
 #include "astthrow.h"
 
+#include "core/defines.h"
+
 #include "astexpression.h"
 #include "astvisitor.h"
 
@@ -37,6 +39,7 @@ void ASTThrow::setExpression(ASTExpression* pexpression)
 
 bool ASTThrow::hasReturn(bool& hasunreachablecode) const
 {
+   C2D_UNUSED(hasunreachablecode);
    return true;
 }
 
