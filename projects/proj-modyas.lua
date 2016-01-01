@@ -22,6 +22,7 @@ project "mod_yas"
 		defines { "NDEBUG" }
 		flags { "Optimize" }
 
+    -- Systems
 	filter "system:Windows"
 		defines { "WIN32", "SCRIPT_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 		includedirs { path.join(libdir, "zlib/include") }
@@ -32,4 +33,9 @@ project "mod_yas"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
         libdirs { "../bin" }
+
+    filter { "system:linux", "Debug" }
         linkoptions { "-lCored" }
+
+    filter { "system:linux", "Release" }
+        linkoptions { "-lCore" }

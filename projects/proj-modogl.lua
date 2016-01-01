@@ -12,21 +12,21 @@ project "mod_ogl"
 	-- set project files
 	files { "../src/mods/mod_ogl/**.cpp", "../src/mods/mod_ogl/**.h", "../src/mods/mod_ogl/**.inl" }
 	includedirs { "../src", "../src/mods" }
-	
+	links { "SDL" }
+
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
 		flags { "Symbols" }
-		links { "Core", "SDL" }
-	
+			
 	filter "configurations:Release"
 		defines { "NDEBUG" }
 		flags { "Optimize" }
-		links { "Core", "SDL" }
 
 	-- set the system specific settings
 	filter "system:Windows"
 		defines { "WIN32", "OGL_EXPORTS" }
+        links { "Core" }
 	
 		includedirs {
 			path.join(libdir, "glee/include"),
@@ -46,6 +46,13 @@ project "mod_ogl"
 		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
 		links { "GLEW", "freetype" }
 
+    filter { "system:linux", "Debug" }
+        linkoptions { "-lCored" }
+
+    filter { "system:linux", "Release" }
+        linkoptions { "-lCore" }
+
+
 	-- set IDE specific settings
 	filter "action:vs*"
 		links { "opengl32", "glu32" }
@@ -55,4 +62,5 @@ project "mod_ogl"
 				
 	filter { "action:vs*", "Release" }
 		links { "Glew", "freetype242MT" }
+
 

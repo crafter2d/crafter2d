@@ -12,10 +12,9 @@ project "mod_c2d"
 	-- set project files
 	files { "../src/mods/mod_c2d/**.cpp", "../src/mods/mod_c2d/**.h", "../src/mods/mod_c2d/**.inl" }
 	includedirs { "../src" }
-	links { "Core", "Engine" }
 	defines { "TIXML_USE_STL" }
-		
-	filter "configurations:Debug"
+
+    filter "configurations:Debug"
 		defines { "_DEBUG" }
 		flags { "Symbols" }
 		targetsuffix "d"
@@ -24,11 +23,12 @@ project "mod_c2d"
 		defines { "NDEBUG" }
 		optimize "On"
 
+    -- Systems
 	filter "system:Windows"
 		defines { "WIN32", "MOD_EXPORTS" }
 		includedirs { path.join(libdir, "tinyxml/include"), path.join(libdir, "zlib/include") }
 		libdirs { path.join(libdir, "tinyxml/lib"), path.join(libdir, "zlib/lib") }
-		links { "d3dcompiler.lib" }
+		links { "Core", "Engine", "d3dcompiler.lib" }
 	
 	filter { "system:Windows", "Debug" }
 		links { "tinyxmld_STL.lib", "zlib1_d.lib" }
@@ -41,6 +41,9 @@ project "mod_c2d"
         removefiles { "../src/mods/mod_c2d/effect/builders/dx*" }
 		buildoptions { "-std=c++11", "-W", "-Wall", "-O0" }
 		
-	filter "action:cb-gcc"
-		linkoptions { "-Xlinker", "-zmuldefs" }
-		
+    filter { "system:linux", "Debug" }
+        linkoptions { "-lCored" }
+
+    filter { "system:linux", "Release" }
+        linkoptions { "-lCore" }
+

@@ -18,14 +18,14 @@ project "Gen"
 		defines { "_DEBUG" }
 		targetsuffix "d"
 		flags { "Symbols" }
-		links { "Core" }
-	
+		
 	filter "configurations:Release"
 		defines { "NDEBUG" }
 		flags { "Optimize" }
-		links { "Core" }
-
+		
+    -- Systems
 	filter "system:Windows"
+        links { "Core" }
 		includedirs { path.join(libdir, "ctemplate/include"),
 					  path.join(libdir, "icu/include")}
 
@@ -42,5 +42,9 @@ project "Gen"
 		links { "ctemplate", "tinyxml" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
 		
-	filter "action:cb-gcc"
-		linkoptions { "-Xlinker", "-zmuldefs" }
+    filter { "system:linux", "Debug" }
+        linkoptions { "-lCored" }
+
+    filter { "system:linux", "Release" }
+        linkoptions { "-lCore" }
+

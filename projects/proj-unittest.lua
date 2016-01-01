@@ -36,6 +36,10 @@ project "UnitTest"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
         libdirs { "../bin" }
-        linkoptions { "-lCored", "-lEngined" }
 		links { "unittest++" }
-		
+
+    filter { "system:linux", "Debug" }
+        linkoptions { "-lCored", "-lEngined" }
+
+    filter { "system:linux", "Release" }
+        linkoptions { "-lCore", "-lEngine" }

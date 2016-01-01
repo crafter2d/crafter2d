@@ -51,11 +51,12 @@ require "proj-modogl"
 require "proj-unittest"
 require "proj-game"
 require "proj-compiler"
+require "proj-yasc"
 
 if not _OPTIONS["travis"] then
 	require "proj-gen"
 	require "proj-modfmod"
 	require "proj-modd3d"
 	require "proj-modui"
-	require "proj-yasc"
 end
+

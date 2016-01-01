@@ -13,7 +13,6 @@ project "Yasc"
 	-- set project files
 	files { "../tools/yasc/**.cpp", "../tools/yasc/**.c", "../tools/yasc/**.h", "../tools/yasc/**.inl" }
 	includedirs { "../src", "../tools" }
-	links { "Core" }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
@@ -24,10 +23,12 @@ project "Yasc"
 		defines { "NDEBUG" }
 		optimize "On"
 
+    -- Systems
 	filter "system:Windows"
 		defines { "WIN32" }
 		includedirs { path.join(libdir, "antlr/include") }
 		libdirs { path.join(libdir, "antlr/lib") }
+    	links { "Core" }
 	
 	filter { "system:Windows", "Debug" }
 		links { "antlr3cd.lib" }
@@ -39,6 +40,10 @@ project "Yasc"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
         links { "antlr3c" }
-		
-	filter "action:cb-gcc"
-		linkoptions { "-Xlinker", "-zmuldefs" }
+
+    filter { "system:linux", "Debug" }
+        linkoptions { "-lCored" }
+
+    filter { "system:linux", "Release" }
+        linkoptions { "-lCore" }
+
