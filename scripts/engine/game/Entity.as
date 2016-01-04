@@ -187,8 +187,8 @@ class Entity implements Collidable
 	{
 		if ( isOnGround() )
 		{
-			Vector2D vel = new Vector2D(0, -25.0);
-			mGenerator.setImpulse(vel);
+			Vector2D impulse = new Vector2D(0, mBody.getMass() * -10.0);
+			mGenerator.setImpulse(impulse);
 		}
 	}
 	

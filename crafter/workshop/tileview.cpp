@@ -129,19 +129,28 @@ void TileView::prepare()
     this->setPalette(whitepalette);
 }
 
+float distance(const QPointF& p1, const QPointF& p2)
+{
+    return QVector2D(p1).distanceToPoint(QVector2D(p2));
+}
+
 bool TileView::selectBoundEdge(QMouseEvent *pevent)
 {
-    if ( QVector2D(mpSelectedBound->left() - pevent->pos()).lengthSquared() <= 3 )
+    if ( distance(mpSelectedBound->left(), pevent->pos()) <= 3.0f )
     {
         // selected the edge for dragging
         mSelectedEdge = eLeft;
         return true;
     }
-    else if ( QVector2D(mpSelectedBound->right() - pevent->pos()).lengthSquared() <= 3 )
+    else if ( distance(mpSelectedBound->right(), pevent->pos()) <= 3.0f )
     {
         // selected the edge for dragging
         mSelectedEdge = eRight;
         return true;
+    }
+    else
+    {
+        mSelectedEdge = eNone;
     }
 
     return false;
@@ -243,6 +252,11 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
 
                         mpWorld->setSelectedBound(pbound);
                     }
+                    else
+                    {
+                        mpSelectedBound = nullptr;
+                        mSelectedEdge = eNone;
+                    }
                 }
 
                 repaint();
@@ -253,10 +267,10 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
     case Qt::RightButton:
         if ( mEditMode == eLayerMode )
         {
+            mEditMode = eEraseMode;
+
             UndoClearTile* pundo = new UndoClearTile(*mpWorld, pevent->pos(), mLevel);
             mUndoStack.push(pundo);
-            //mpWorld->clearTile(pevent->pos(), mLevel);
-            //repaint();
         }
         break;
     }
@@ -264,7 +278,7 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
 
 void TileView::mouseReleaseEvent(QMouseEvent *)
 {
-    if ( mEditMode == ePaintMode )
+    if ( mEditMode == ePaintMode || mEditMode == eEraseMode )
     {
         // leave paint mode and return to default
         mEditMode = eLayerMode;
@@ -278,9 +292,23 @@ void TileView::mouseMoveEvent(QMouseEvent* pevent)
     switch ( mEditMode )
     {
     case ePaintMode:
-        if ( mpWorld->setTile(pevent->pos(), mLevel, mTile) )
         {
-            repaint();
+            Tile tile = mpWorld->getTile(pevent->pos(), mLevel);
+            if ( tile != mTile )
+            {
+                UndoSetTile* pundo = new UndoSetTile(*mpWorld, pevent->pos(), mLevel, mTile);
+                mUndoStack.push(pundo);
+            }
+        }
+        break;
+    case eEraseMode:
+        {
+            Tile tile = mpWorld->getTile(pevent->pos(), mLevel);
+            if ( tile.isValid() )
+            {
+                UndoClearTile* pundo = new UndoClearTile(*mpWorld, pevent->pos(), mLevel);
+                mUndoStack.push(pundo);
+            }
         }
         break;
 

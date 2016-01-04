@@ -100,8 +100,7 @@ void TileMap::paint(QPainter& painter)
                     int tileindex = mpField->get((TileField::Level)level, x, y);
                     if ( tileindex < 255 )
                     {
-                        const Tile& tile = (*mpTileSet)[tileindex];
-                        tile.paint(painter, posx, posy);
+                        mpTileSet->paintTile(painter, tileindex, posx, posy);
                     }
                 }
 
@@ -111,17 +110,6 @@ void TileMap::paint(QPainter& painter)
             posy += tilesize.height();
         }
     }
-}
-
-void TileMap::paint(QPainter& painter, Tile& tile, int x, int y)
-{
-    Q_ASSERT(mpTileSet != NULL);
-    const QPoint& texcoords = tile.getTexCoord();
-    painter.drawImage(x, y, mpTileSet->getTexture(),
-                      texcoords.x(),
-                      texcoords.y(),
-                      mpTileSet->getTileSize().width(),
-                      mpTileSet->getTileSize().height());
 }
 
 // - Operations

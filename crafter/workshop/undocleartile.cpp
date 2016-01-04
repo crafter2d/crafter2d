@@ -5,24 +5,44 @@
 UndoClearTile::UndoClearTile(TileWorld& world, const QPoint& pos, TileField::Level level):
     mWorld(world),
     mLevel(level),
-    mTile(),
-    mPos(pos)
+    mTiles()
 {
+    Tile tile = world.getTile(pos, mLevel);
+    mTiles.append({tile, pos});
+}
+
+// merging
+
+int UndoClearTile::id() const
+{
+    return 2;
+}
+
+bool UndoClearTile::mergeWith(const QUndoCommand* pcommand)
+{
+    const UndoClearTile* pclearcmd = dynamic_cast<const UndoClearTile*>(pcommand);
+    if ( pclearcmd != nullptr && &pclearcmd->mWorld == &mWorld && pclearcmd->mLevel == mLevel )
+    {
+        mTiles.append(pclearcmd->mTiles);
+        return true;
+    }
+    return false;
 }
 
 // commands
 
 void UndoClearTile::undo()
 {
-    mWorld.setTile(mPos, mLevel, mTile);
+    for ( auto& info : mTiles )
+    {
+        mWorld.setTile(info.pos, mLevel, info.tile);
+    }
 }
 
 void UndoClearTile::redo()
 {
-    if ( !mTile.isValid() )
+    for ( auto& info : mTiles )
     {
-        // only update the first time we get here, otherwise redo/undo/redo does not work correctly
-        mTile = mWorld.getTile(mPos, mLevel);
+        mWorld.clearTile(info.pos, mLevel);
     }
-    mWorld.clearTile(mPos, mLevel);
 }

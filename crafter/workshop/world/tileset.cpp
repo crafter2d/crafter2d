@@ -23,7 +23,7 @@ QTileSet::QTileSet():
 
 const Tile& QTileSet::operator[](int index) const
 {
-    return *mTiles[index];
+    return mTiles[index];
 }
 
 // - Get/set
@@ -80,17 +80,9 @@ void QTileSet::setTileCount(int count)
 
 // - Query
 
-int QTileSet::indexOf(const Tile& tile) const
+int QTileSet::indexOf(const Tile& item) const
 {
-    for ( int index = 0; index < mTiles.size(); index++ )
-    {
-        Tile* ptile = mTiles[index];
-        if ( ptile->getTexCoord() == tile.getTexCoord() )
-        {
-            return index;
-        }
-    }
-    return -1;
+    return mTiles.indexOf(item);
 }
 
 // - Operations
@@ -110,6 +102,8 @@ void QTileSet::generateTiles()
 {
     Q_ASSERT(!mTexture.isNull());
 
+    mTiles.clear();
+
     int maxFramesPerRow = static_cast<int>(mTexture.width() / mTileSize.width());
 
     // build the texture coord lookup table
@@ -119,19 +113,22 @@ void QTileSet::generateTiles()
         int x = (tc % maxFramesPerRow) * mTileSize.width();
         int y = (int) qFloor((float)tc / maxFramesPerRow) * mTileSize.height();
 
-        mTiles.append(new Tile(*this, QPoint(x, y)));
+        mTiles.append(Tile(x, y));
     }
 }
 
-void QTileSet::paintTile(QPainter& painter, int index, int x, int y)
+void QTileSet::paintTile(QPainter& painter, int index, int x, int y) const
 {
-        Q_ASSERT(!mTexture.isNull());
-        const Tile* ptile = mTiles[index];
-        const QPoint& texcoords = ptile->getTexCoord();
+    Q_ASSERT(!mTexture.isNull());
+    if ( index < mTiles.size() )
+    {
+        const Tile& tile = mTiles[index];
+        const QPoint& texcoords = tile.getTexCoord();
         painter.drawImage(x, y,
                           mTexture,
                           texcoords.x(),
                           texcoords.y(),
                           mTileSize.width(),
                           mTileSize.height());
+    }
 }

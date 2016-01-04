@@ -23,6 +23,14 @@ public:
    ShapeType getShapeType() const;
    void      setShapeType(ShapeType type);
 
+   float getMass() const {
+      return mMass;
+   }
+
+   void setMass(float mass) {
+      mMass = mass;
+   }
+
    float getRadius() const;
    void  setRadius(float radius);
 
@@ -46,6 +54,7 @@ private:
 
  // data
    ShapeType   mShapeType;
+   float       mMass;
    float       mInfoA;     // used for radius and dimension
    float       mInfoB;
    bool        mStatic;

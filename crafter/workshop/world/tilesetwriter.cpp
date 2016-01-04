@@ -1,13 +1,16 @@
 #include "tilesetwriter.h"
 
+#include <QFile>
 #include <QIODevice>
 #include <QXmlStreamWriter>
 #include <QVariant>
 
+#include "../project/projectmanager.h"
+#include "../project.h"
+
 #include "tileset.h"
 
-TileSetWriter::TileSetWriter(QIODevice& device):
-    mDevice(device)
+TileSetWriter::TileSetWriter()
 {
 }
 
@@ -15,19 +18,25 @@ TileSetWriter::TileSetWriter(QIODevice& device):
 
 void TileSetWriter::write(const QTileSet& tileset)
 {
-    QXmlStreamWriter writer(&mDevice);
-    writer.setAutoFormatting(true);
-    writer.writeStartDocument();
+    QString path = Project::getActiveProject().getFilePath(tileset);
+    QFile file(path);
 
-    writer.writeStartElement("tileset");
-    writer.writeAttribute("width", QVariant(tileset.getTileSize().width()).toString());
-    writer.writeAttribute("height", QVariant(tileset.getTileSize().height()).toString());
-    writer.writeAttribute("count", QVariant(tileset.getTileCount()).toString());
+    if ( file.open(QIODevice::WriteOnly | QIODevice::Text) )
+    {
+        QXmlStreamWriter writer(&file);
+        writer.setAutoFormatting(true);
+        writer.writeStartDocument();
 
-    writer.writeStartElement("texture");
-    writer.writeAttribute("name", tileset.getTileMap());
-    writer.writeEndElement(); // </texture>
+        writer.writeStartElement("tileset");
+        writer.writeAttribute("width", QVariant(tileset.getTileSize().width()).toString());
+        writer.writeAttribute("height", QVariant(tileset.getTileSize().height()).toString());
+        writer.writeAttribute("count", QVariant(tileset.getTileCount()).toString());
 
-    writer.writeEndElement(); // </tileset>
-    writer.writeEndDocument();
+        writer.writeStartElement("texture");
+        writer.writeAttribute("name", tileset.getTileMap());
+        writer.writeEndElement(); // </texture>
+
+        writer.writeEndElement(); // </tileset>
+        writer.writeEndDocument();
+    }
 }

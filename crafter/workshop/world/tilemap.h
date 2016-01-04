@@ -45,7 +45,6 @@ public:
 
   // painting
     void paint(QPainter& painter);
-    void paint(QPainter& painter, Tile& tile, int x, int y);
 
   // operations
     void setField(TileField* pfield);

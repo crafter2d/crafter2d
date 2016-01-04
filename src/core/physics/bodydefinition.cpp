@@ -5,8 +5,9 @@
 #  include "bodydefinition.inl"
 #endif
 
-BodyDefinition::BodyDefinition():
+BodyDefinition::BodyDefinition() :
    mShapeType(eInvalidType),
+   mMass(0.0f),
    mInfoA(0.0f),
    mInfoB(0.0f),
    mStatic(false),

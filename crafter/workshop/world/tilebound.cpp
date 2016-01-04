@@ -44,21 +44,32 @@ const QVector2D& TileBound::getNormal() const
 
 // - Query
 
+static bool is_between (float x, float bound1, float bound2, float tolerance)
+{
+   // Handles cases when 'bound1' is greater than 'bound2' and when
+   // 'bound2' is greater than 'bound1'.
+   return (((x >= (bound1 - tolerance)) && (x <= (bound2 + tolerance))) ||
+      ((x >= (bound2 - tolerance)) && (x <= (bound1 + tolerance))));
+}
+
 bool TileBound::hitTest(const QPointF& point, float& distance)
 {
-    float linelength = QVector2D(mLeft - mRight).length();
+    if ( is_between(point.x(), mLeft.x(), mRight.x(), 3.001f) && is_between(point.y(), mLeft.y(), mRight.y(), 3.001f) )
+    {
+        float A = mLeft.y() - mRight.y();
+        float B = mRight.x() - mLeft.x();
+        float C = mLeft.x() * mRight.y() - mRight.x() * mLeft.y();
 
-    float u = ( ( ( point.x() - mLeft.x() ) * ( mRight.x() - mLeft.x() ) ) +
-                ( ( point.y() - mLeft.y() ) * ( mRight.y() - mLeft.y() ) ) ) /
-            ( linelength * linelength );
+        float dist = std::abs(A*point.x() + B*point.y() + C) / std::sqrt(A * A + B * B);
 
-    if ( u < -0.001f || u > 1.001f )
-        return false;   // closest point does not fall within the line segment
+        if ( dist <= 3.001f )
+        {
+            distance = dist;
+            return true;
+        }
+    }
 
-    QVector2D intersection(mLeft + (mRight - mLeft) * u);
-    distance = QVector2D(point).distanceToPoint(intersection);
-
-    return true;
+    return false;
 }
 
 QPointF TileBound::getCenter() const

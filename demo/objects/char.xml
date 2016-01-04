@@ -2,11 +2,13 @@
 <!-- char sprite -->
 
 <entity class="demo.Hero" name="char">
-   <sprite width=48 height=62>
-	  <texture>images/char</texture>
+   <sprite width=128 height=128>
+	  <texture>images/naturegirl</texture>
       <animations speed=125>
-         <anim length=1 />
-         <anim length=7 />
+         <anim length=9 name="idle" />
+         <anim length=8 name="run" />
+		 <anim length=5 name="slide" />
+		 <anim length=10 name="jump" />
       </animations>
    </sprite>
    <body inertia="1" mass="80" rotate="0">

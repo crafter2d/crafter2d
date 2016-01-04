@@ -163,6 +163,12 @@ bool AppGameWindow::doCreate(const String& title, int width, int height, int bit
    return true;
 }
 
+void AppGameWindow::doDestroy()
+{
+   delete mHandler;
+   mHandler = nullptr;
+}
+
 int AppGameWindow::getHandle() const
 {
    return 0;

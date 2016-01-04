@@ -41,6 +41,7 @@ public:
 protected:
 
    virtual bool doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen) override;
+   virtual void doDestroy() override;
 
 private:
 

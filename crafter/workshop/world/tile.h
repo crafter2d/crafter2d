@@ -4,34 +4,31 @@
 #include <QObject>
 #include <QPoint>
 
-class QTileSet;
-class QPainter;
-
 class Tile : public QObject
 {
     Q_OBJECT
 
 public:
-    Tile();
-    Tile(const Tile& that);
-    Tile(QTileSet& tileset, QPoint& texcoord);
+             Tile();
+             Tile(const Tile& that);
+    explicit Tile(QPoint& texcoord);
+             Tile(int x, int y);
+
+    bool operator==(const Tile& that) const;
+    bool operator!=(const Tile& that) const;
 
     Tile& operator=(const Tile& that);
+    Tile& operator=(Tile&& that);
 
   // get/set
-    const QSize& getSize() const;
     const QPoint& getTexCoord() const;
 
   // qurey
     bool isValid() const;
 
-  // painting
-    void paint(QPainter &painter, int x, int y) const;
-
 private:
 
   // data
-    QTileSet* mpTileSet;
     QPoint   mTexCoord;
 };
 

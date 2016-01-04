@@ -21,7 +21,10 @@
 	<child id="16" ref="bridgepart" offsetx="180.0" offsety="0.0" />
 	<child id="17" ref="bridgepart" offsetx="192.0" offsety="0.0" />
 	<child id="18" ref="bridgepart" offsetx="204.0" offsety="0.0" />
-	<child id="19" file="objects/bridgeside" offsetx="216.0" offsety="0.0" />
+	<child id="19" ref="bridgepart" offsetx="216.0" offsety="0.0" />
+	<child id="20" ref="bridgepart" offsetx="228.0" offsety="0.0" />
+	<child id="21" ref="bridgepart" offsetx="240.0" offsety="0.0" />
+	<child id="22" file="objects/bridgeside" offsetx="252.0" offsety="0.0" />
 	
 	<link left="1" right="2" anchorx="6.0" anchory="0.0" type="revolute" />
 	<link left="2" right="3" anchorx="18.0" anchory="0.0" type="revolute" />
@@ -41,6 +44,9 @@
 	<link left="16" right="17" anchorx="186.0" anchory="0.0" type="revolute" />
 	<link left="17" right="18" anchorx="198.0" anchory="0.0" type="revolute" />
 	<link left="18" right="19" anchorx="210.0" anchory="0.0" type="revolute" />
+	<link left="19" right="20" anchorx="222.0" anchory="0.0" type="revolute" />
+	<link left="20" right="21" anchorx="234.0" anchory="0.0" type="revolute" />
+	<link left="21" right="22" anchorx="246.0" anchory="0.0" type="revolute" />
 
 	<!-- example inlined definition // -->
 	<entity name="bridgepart" >

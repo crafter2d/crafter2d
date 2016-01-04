@@ -7,6 +7,7 @@
 #include <QMessageBox>
 
 #include "world/tileset.h"
+#include "world/tilesetwriter.h"
 
 #include "project.h"
 
@@ -14,7 +15,13 @@ void NewTileSetDialog::edit(QTileSet& tileset)
 {
     NewTileSetDialog dlg;
     dlg.set(tileset);
-    dlg.exec();
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+        dlg.apply(tileset);
+
+        TileSetWriter writer;
+        writer.write(tileset);
+    }
 }
 
 NewTileSetDialog::NewTileSetDialog(QWidget *parent) :
@@ -65,6 +72,7 @@ void NewTileSetDialog::apply(QTileSet& tileset)
 {
     tileset.setTileCount(ui->editCount->text().toInt());
     tileset.setTileSize(QSize(ui->editWidth->text().toInt(), ui->editHeight->text().toInt()));
+    tileset.setTileMap(tr("Images") + QDir::separator() + ui->cmbImage->currentText());
 }
 
 void NewTileSetDialog::on_btnImport_clicked()

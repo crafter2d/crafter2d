@@ -49,7 +49,7 @@ ComponentDefinitionProto* MeshComponentLoader::load(const TiXmlElement& element)
          // throw error;
       }
 
-      pdefinition->mTexture.fromUtf8(pvalue->Value());
+      pdefinition->mTexture.setToUtf8(pvalue->Value());
    }
 
    const TiXmlElement* pXmlAnimation = element.FirstChildElement("animations");

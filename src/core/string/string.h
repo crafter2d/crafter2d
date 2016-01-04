@@ -46,7 +46,7 @@ public:
    explicit String(const UChar* pdata);
    explicit String(const std::string& that);
    explicit String(const std::wstring& that);
-           ~String();
+   virtual ~String();
 
    UChar operator[](int index) const;
    

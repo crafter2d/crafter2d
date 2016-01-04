@@ -84,7 +84,7 @@ class GameServer extends Server
 		pos.set(300, 40); Entity.construct(this, "box", pos, "objects/box");
 		pos.set(300, 80); Entity.construct(this, "box", pos, "objects/box");
 		*/
-		pos.set(727, 422);
+		pos.set(512, 772);
 		Entity.construct(this, "bridge", pos, "objects/bridge");
 		
 		/*

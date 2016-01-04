@@ -50,18 +50,16 @@ void TileSelector::paintEvent(QPaintEvent* /*event*/)
     if ( mpTileSet != nullptr )
     {
         int count = mpTileSet->getTileCount();
+        const QSize& tilesize = mpTileSet->getTileSize();
 
         int x = 2, y = 2;
         for ( int index = 1; index <= count; ++index )
         {
-            const Tile& tile = get(index-1);
-
             if ( (index - 1) == mSelectedIndex )
             {
                 const QBrush& previousbrush = painter.brush();
                 const QPen& previouspen = painter.pen();
 
-                const QSize& tilesize = tile.getSize();
                 QRectF bounds(x-2, y-2, tilesize.width() + 4, tilesize.height()+2);
 
                 QColor color;
@@ -81,16 +79,16 @@ void TileSelector::paintEvent(QPaintEvent* /*event*/)
                 painter.setPen(previouspen);
             }
 
-            tile.paint(painter, x, y);
+            mpTileSet->paintTile(painter, index - 1, x, y);
 
             if ( index % mHorizontalTiles == 0 )
             {
                 x = 2;
-                y += mpTileSet->getTileSize().height() + 4;
+                y += tilesize.height() + 4;
             }
             else
             {
-                x += mpTileSet->getTileSize().width() + 4;
+                x += tilesize.width() + 4;
             }
         }
     }

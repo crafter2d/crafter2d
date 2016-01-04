@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset width="51" height="50" count="60">
-    <texture name="images/forest-background.dds"/>
+<tileset width="128" height="128" count="48">
+    <texture name="images\BG"/>
 </tileset>

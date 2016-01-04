@@ -128,9 +128,10 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
          {
             b2PolygonShape shape;
             shape.SetAsBox(definition.getWidth(), definition.getHeight());
-
+            float area = (definition.getWidth() * 2) * (definition.getHeight() * 2);
+            
             b2FixtureDef fixturedef;
-            fixturedef.density  = 1;
+            fixturedef.density = 1; // definition.getMass() / area;
             fixturedef.friction = 0.3f;
             fixturedef.restitution = 0.2f;
             fixturedef.shape    = &shape;
@@ -143,9 +144,10 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
          {
             b2CircleShape shape;
             shape.m_radius = definition.getRadius() / 30;
+            float area = PI * definition.getRadius();
 
             b2FixtureDef fixturedef;
-            fixturedef.density  = 1;
+            fixturedef.density = 1; // definition.getMass() / area;
             fixturedef.friction = 1;
             fixturedef.shape    = &shape;
             fixturedef.userData = (void*)& Box2DSimulator::eObject;

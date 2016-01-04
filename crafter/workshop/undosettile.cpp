@@ -5,24 +5,43 @@
 UndoSetTile::UndoSetTile(TileWorld& world, const QPoint &pos, TileField::Level level, const Tile &tile):
     QUndoCommand(NULL),
     mWorld(world),
-    mPos(pos),
-    mTile(tile),
-    mLevel(level)
+    mLevel(level),
+    mTiles()
 {
+    mTiles.append({tile, pos});
+}
+
+// merging
+
+int UndoSetTile::id() const
+{
+    return 1;
+}
+
+bool UndoSetTile::mergeWith(const QUndoCommand* pcommand)
+{
+    const UndoSetTile* psetcmd = dynamic_cast<const UndoSetTile*>(pcommand);
+    if ( psetcmd != nullptr && &psetcmd->mWorld == &mWorld && psetcmd->mLevel == mLevel )
+    {
+        mTiles.append(psetcmd->mTiles);
+        return true;
+    }
+    return false;
 }
 
 // - Operations
 
 void UndoSetTile::undo()
 {
-    Tile prevTile = mWorld.getTile(mPos, mLevel);
-    mWorld.setTile(mPos, mLevel, mTile);
-    mTile = prevTile;
+    redo();
 }
 
 void UndoSetTile::redo()
 {
-    Tile prevTile = mWorld.getTile(mPos, mLevel);
-    mWorld.setTile(mPos, mLevel, mTile);
-    mTile = prevTile;
+    for ( auto& info : mTiles )
+    {
+        Tile prevTile = mWorld.getTile(info.pos, mLevel);
+        mWorld.setTile(info.pos, mLevel, info.tile);
+        info.tile = prevTile;
+    }
 }

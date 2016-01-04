@@ -66,6 +66,11 @@ void Box2DBody::setHalfSize(const Size& size)
    mHalfHeight = size.height;
 }
 
+float Box2DBody::getMass() const
+{
+   return mBody.GetMass();
+}
+
 // query
 
 const String& Box2DBody::getClassName() const

@@ -1,71 +1,62 @@
 #include "tile.h"
 
-#include <QPainter>
-
 #include "world/tileset.h"
 
 Tile::Tile():
     QObject(nullptr),
-    mpTileSet(NULL),
-    mTexCoord()
+    mTexCoord(-1, -1)
 {
 }
 
 Tile::Tile(const Tile& that):
     QObject(nullptr),
-    mpTileSet(that.mpTileSet),
     mTexCoord(that.mTexCoord)
 {
 }
 
-Tile::Tile(QTileSet &tileset, QPoint &texcoord):
+Tile::Tile(QPoint &texcoord):
     QObject(nullptr),
-    mpTileSet(&tileset),
     mTexCoord(texcoord)
 {
 }
 
+Tile::Tile(int x, int y):
+    QObject(nullptr),
+    mTexCoord(x, y)
+{
+}
+
+bool Tile::operator==(const Tile& that) const
+{
+    return mTexCoord == that.mTexCoord;
+}
+
+bool Tile::operator!=(const Tile& that) const
+{
+    return mTexCoord != that.mTexCoord;
+}
+
 Tile& Tile::operator=(const Tile& that)
 {
-    mpTileSet = that.mpTileSet;
+    mTexCoord = that.mTexCoord;
+    return *this;
+}
+
+Tile& Tile::operator=(Tile&& that)
+{
     mTexCoord = that.mTexCoord;
     return *this;
 }
 
 // - Get/set
 
-const QSize &Tile::getSize() const
-{
-    Q_ASSERT(mpTileSet != nullptr);
-    return mpTileSet->getTileSize();
-}
-
 const QPoint& Tile::getTexCoord() const
 {
     return mTexCoord;
 }
 
-// - Query
-
 bool Tile::isValid() const
 {
-    return mpTileSet != nullptr;
+    return mTexCoord.x() >= 0 && mTexCoord.y() >= 0;
 }
 
-// - Painting
-
-void Tile::paint(QPainter& painter, int x, int y) const
-{
-    if ( mpTileSet != nullptr )
-    {
-        const QImage& texture = mpTileSet->getTexture();
-        const QSize& tilesize = mpTileSet->getTileSize();
-
-        painter.drawImage(x, y,
-                          texture,
-                          mTexCoord.x(),
-                          mTexCoord.y(),
-                          tilesize.width(),
-                          tilesize.height());
-    }
-}

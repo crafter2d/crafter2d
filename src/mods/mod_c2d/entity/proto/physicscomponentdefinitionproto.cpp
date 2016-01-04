@@ -17,11 +17,14 @@ void PhysicsComponentDefinitionProto::virRead(DataStream& stream)
 {
    BodyDefinition::ShapeType shapetype;
    bool isstatic, isfixedrot;
+   float mass;
 
    stream.readInt((int&)shapetype);
+   stream.readFloat(mass);
    stream.readBool(isstatic);
    stream.readBool(isfixedrot);
 
+   mDefinition.setMass(mass);
    mDefinition.setStatic(isstatic);
    mDefinition.setFixedRotation(isfixedrot);
 
@@ -48,6 +51,7 @@ void PhysicsComponentDefinitionProto::virRead(DataStream& stream)
 void PhysicsComponentDefinitionProto::virWrite(DataStream& stream) const
 {
    stream.writeInt((int)mDefinition.getShapeType());
+   stream.writeFloat(mDefinition.getMass());
    stream.writeBool(mDefinition.isStatic());
    stream.writeBool(mDefinition.isFixedRotation());
 

@@ -26,6 +26,10 @@ ComponentDefinitionProto* PhysicsComponentLoader::load(const TiXmlElement& eleme
    if ( isstatic > 0 )
       def.setStatic(true);
 
+   float mass = 0.0f;
+   element.QueryFloatAttribute("mass", &mass);
+   def.setMass(mass);
+
    int rotate = 1;
    if ( element.QueryIntAttribute("rotate", &rotate) == TIXML_SUCCESS && rotate == 0 )
       def.setFixedRotation(true);

@@ -7,6 +7,7 @@
 
 class QDir;
 class QTileSet;
+class Resource;
 class ScriptFile;
 class TileWorld;
 
@@ -43,8 +44,10 @@ public:
     int        getWorldCount() const;
     TileWorld &getWorld(int index);
 
+    QString getFilePath(const Resource& resource) const;
+
     /// /brief Returns the full path of the file, relative from the project directory.
-    QString getFilePath(const QString& file);
+    QString getFilePath(const QString& file) const;
 
  // operations
     void create(QDir &path);

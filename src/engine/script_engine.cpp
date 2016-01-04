@@ -712,6 +712,13 @@ void Box2DBody_addForceGenerator(ScriptCall& accessor)
    body.addForceGenerator(pgenerator);
 }
 
+void Box2DBody_getMass(ScriptCall& accessor)
+{
+   GET_THIS(Box2DBody, body);
+
+   accessor.setResult(body.getMass());
+}
+
 void ActionMap_init(ScriptCall& accessor)
 {
    ScriptObjectHandle thisobject = accessor.getObject(0);
@@ -993,6 +1000,7 @@ void script_engine_register(c2d::ScriptManager& manager)
 
    pregistrator->addClass(UTEXT("box2d.Box2DBody"));
    pregistrator->addFunction(UTEXT("addForceGenerator(engine.game.ForceGenerator)"), Box2DBody_addForceGenerator);
+   pregistrator->addFunction(UTEXT("getMass()"), Box2DBody_getMass);
    
    pregistrator->addClass(UTEXT("engine.game.ActionMap"));
    pregistrator->addFunction(UTEXT("ActionMap()"), ActionMap_init);

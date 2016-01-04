@@ -29,7 +29,7 @@ class DemoClientActionMap extends ActionMap
 		
 		if ( down )
 		{
-			velocity.setX(-100.0);
+			velocity.setX(-128.0);
 			mEntity.setAnimation(1);
 			mEntity.setFaceDirection(Entity.FACE_LEFT);
 		}
@@ -49,7 +49,7 @@ class DemoClientActionMap extends ActionMap
 		
 		if ( down )
 		{
-			velocity.setX(100.0);
+			velocity.setX(128.0);
 			mEntity.setAnimation(1);
 			mEntity.setFaceDirection(Entity.FACE_RIGHT);
 		}

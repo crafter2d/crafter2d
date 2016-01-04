@@ -127,7 +127,12 @@ TileWorld& Project::getWorld(int index)
     return *mWorlds[index];
 }
 
-QString Project::getFilePath(const QString& file)
+QString Project::getFilePath(const Resource& resource) const
+{
+    return mBasePath + QDir::separator() + resource.getResourceName();
+}
+
+QString Project::getFilePath(const QString& file) const
 {
     return mBasePath + QDir::separator() + file;
 }
@@ -382,12 +387,8 @@ void Project::saveProjectResources()
     {
         if ( ptileset->isDirty() )
         {
-            QFile file(path.filePath(ptileset->getResourceName()));
-            if ( file.open(QIODevice::WriteOnly | QIODevice::Text) )
-            {
-                TileSetWriter writer(file);
-                writer.write(*ptileset);
-            }
+            TileSetWriter writer;
+            writer.write(*ptileset);
         }
     }
 

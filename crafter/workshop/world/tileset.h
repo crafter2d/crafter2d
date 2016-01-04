@@ -34,15 +34,15 @@ public:
     void setTileCount(int count);
 
   // query
-    int indexOf(const Tile& tile) const;
+    int indexOf(const Tile& item) const;
 
   // operations
-    void paintTile(QPainter& painter, int index, int x, int y);
+    void paintTile(QPainter& painter, int index, int x, int y) const;
 
 private:
 
   // typedefs
-    typedef QVector<Tile*> QTiles;
+    typedef QVector<Tile> QTiles;
 
   // operations
     void loadTexture();

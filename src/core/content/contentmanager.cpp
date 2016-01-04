@@ -56,6 +56,8 @@ namespace c2d
       IContent* presult = NULL;
 
       String path = name + UTEXT(".c2d");
+      path.toLower();
+
       File* pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
       if ( pfile != NULL )
       {

@@ -38,6 +38,8 @@ public:
 
    void setHalfSize(const Size& size);
 
+   float getMass() const;
+
  // query
    int getSide(const b2Fixture& sensor) const;
    virtual const String& getClassName() const;
