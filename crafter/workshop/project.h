@@ -6,9 +6,10 @@
 #include <QVector>
 
 class QDir;
-class QTileSet;
+class Entity;
 class Resource;
 class ScriptFile;
+class TileSet;
 class TileWorld;
 
 class Project : public QObject
@@ -16,7 +17,8 @@ class Project : public QObject
     Q_OBJECT
 
 public:
-    typedef QVector<QTileSet*> TileSets;
+    using Entities = QVector<Entity*>;
+    typedef QVector<TileSet*> TileSets;
     typedef QVector<TileWorld*> Worlds;
     typedef QVector<ScriptFile*> Scripts;
 
@@ -36,6 +38,7 @@ public:
 
     const QString getBasePath() const;
 
+    Entities& getEntities() { return mEntities; }
     Worlds &getWorlds();
     Scripts& getScripts();
     TileSets& getTileSets();
@@ -53,7 +56,7 @@ public:
     void create(QDir &path);
 
     void addWorld(TileWorld *pworld);
-    void addTileSet(QTileSet *ptileset);
+    void addTileSet(TileSet *ptileset);
     void addScript(ScriptFile* pscript);
 
     bool load(const QString& fileName);
@@ -64,7 +67,7 @@ public:
     void run();
 
  // search
-    QTileSet* lookupTileSet(const QString& name);
+    TileSet* lookupTileSet(const QString& name);
     ScriptFile* findScript(const QString& classname);
 
 public slots:
@@ -78,6 +81,7 @@ private:
   // operations
     bool loadWorld(const QString& fileName);
     bool loadTileset(const QString& filename);
+    void loadObjects();
 
     void saveProjectResources();
     void saveProjectFile();
@@ -91,6 +95,7 @@ private:
     QString  mName;
     QString  mFileName;
     QString  mBasePath;
+    Entities mEntities;
     TileSets mTileSets;
     Worlds   mWorlds;
     Scripts  mScripts;

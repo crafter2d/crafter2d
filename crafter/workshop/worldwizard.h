@@ -4,7 +4,7 @@
 #include <QWizard>
 
 class TileWorld;
-class QTileSet;
+class TileSet;
 
 class WorldWizard : public QWizard
 {
@@ -32,7 +32,7 @@ private:
 
   // operations
     TileWorld*  createWorld();
-    QTileSet*   createTileSet();
+    TileSet*    createTileSet();
 
 };
 

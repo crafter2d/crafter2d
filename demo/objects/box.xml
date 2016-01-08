@@ -1,11 +1,11 @@
-<?xml version="1.0">
+<?xml version="1.0"?>
 <!-- char sprite -->
 
 <entity name="box">
-   <sprite width=32 height=32>
+   <sprite width="32" height="32">
       <texture>images/box</texture>
-      <animations speed=125>
-         <anim length=1>0</anim>
+      <animations speed="125">
+         <anim length="1">0</anim>
       </animations>
    </sprite>
    <body inertia="1" mass="80">

@@ -10,12 +10,12 @@
 class QPainter;
 class Tile;
 
-class QTileSet : public Resource
+class TileSet : public Resource
 {
     Q_OBJECT
 
 public:
-    QTileSet();
+    TileSet();
 
     const Tile& operator[](int index) const;
 

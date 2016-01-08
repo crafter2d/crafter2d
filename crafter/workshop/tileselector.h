@@ -4,7 +4,7 @@
 #include <QAbstractScrollArea>
 
 class Tile;
-class QTileSet;
+class TileSet;
 
 class TileSelector : public QAbstractScrollArea
 {
@@ -13,8 +13,8 @@ public:
     explicit TileSelector(QWidget *parent = 0);
 
   // get/set
-    const QTileSet& getTileSet() const;
-    void            setTileSet(const QTileSet* ptileset);
+    const TileSet& getTileSet() const;
+    void            setTileSet(const TileSet* ptileset);
 
 signals:
     void tileSelected(const Tile* ptile);
@@ -40,7 +40,7 @@ private:
     void clearSelection();
 
   // data
-    const QTileSet* mpTileSet;
+    const TileSet* mpTileSet;
     int             mSelectedIndex;
     int             mHorizontalTiles;
     int             mScrollPos;

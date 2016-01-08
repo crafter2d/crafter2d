@@ -1,11 +1,11 @@
-<?xml version="1.0">
+<?xml version="1.0"?>
 <!-- char sprite -->
 
 <entity name="bridgeside" >
-	<sprite width=12 height=8>
+	<sprite width="12" height="8">
 		<texture>images/bridgepart</texture>
-		<animations speed=125>
-			<anim length=1>0</anim>
+		<animations speed="125">
+			<anim length="1">0</anim>
 		</animations>
 	</sprite>
 	<body inertia="1" mass="80" static="1">

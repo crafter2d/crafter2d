@@ -1,7 +1,7 @@
 #ifndef TILESETSTREAMER_H
 #define TILESETSTREAMER_H
 
-class QTileSet;
+class TileSet;
 
 class TileSetWriter
 {
@@ -9,7 +9,7 @@ public:
     explicit TileSetWriter();
 
   // writing
-    void write(const QTileSet &tileset);
+    void write(const TileSet &tileset);
 };
 
 #endif // TILESETSTREAMER_H

@@ -1,14 +1,14 @@
-<?xml version="1.0">
+<?xml version="1.0"?>
 <!-- char sprite -->
 
 <entity class="demo.Hero" name="char">
-   <sprite width=128 height=128>
+   <sprite width="128" height="128">
 	  <texture>images/naturegirl</texture>
-      <animations speed=125>
-         <anim length=9 name="idle" />
-         <anim length=8 name="run" />
-		 <anim length=5 name="slide" />
-		 <anim length=10 name="jump" />
+      <animations speed="125">
+         <anim length="9" name="idle" />
+         <anim length="8" name="run" />
+		 <anim length="5" name="slide" />
+		 <anim length="10" name="jump" />
       </animations>
    </sprite>
    <body inertia="1" mass="80" rotate="0">

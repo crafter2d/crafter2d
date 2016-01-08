@@ -14,12 +14,12 @@ TileSetReader::TileSetReader(QIODevice& device):
 
 // - Loading
 
-QTileSet* TileSetReader::read()
+TileSet* TileSetReader::read()
 {
     QXmlStreamReader reader;
     reader.setDevice(&mDevice);
 
-    QTileSet* presult = new QTileSet();
+    TileSet* presult = new TileSet();
 
     while ( !reader.atEnd() )
     {

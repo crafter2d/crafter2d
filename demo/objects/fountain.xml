@@ -1,4 +1,4 @@
-<?xml version="1.0">
+<?xml version="1.0"?>
 <entity name="fountain">
    <particlesystem emitrate="100" gravity="30">
       <init>

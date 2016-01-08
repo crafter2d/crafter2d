@@ -11,7 +11,7 @@
 
 #include "project.h"
 
-void NewTileSetDialog::edit(QTileSet& tileset)
+void NewTileSetDialog::edit(TileSet& tileset)
 {
     NewTileSetDialog dlg;
     dlg.set(tileset);
@@ -55,7 +55,7 @@ void NewTileSetDialog::setupUp()
     ui->cmbImage->addItems(images);
 }
 
-void NewTileSetDialog::set(const QTileSet& tileset)
+void NewTileSetDialog::set(const TileSet& tileset)
 {
     ui->editName->setText(QFileInfo(tileset.getResourceName()).baseName());
     ui->editName->setReadOnly(true);
@@ -68,7 +68,7 @@ void NewTileSetDialog::set(const QTileSet& tileset)
     ui->cmbImage->setCurrentText(QFileInfo(path).baseName());
 }
 
-void NewTileSetDialog::apply(QTileSet& tileset)
+void NewTileSetDialog::apply(TileSet& tileset)
 {
     tileset.setTileCount(ui->editCount->text().toInt());
     tileset.setTileSize(QSize(ui->editWidth->text().toInt(), ui->editHeight->text().toInt()));

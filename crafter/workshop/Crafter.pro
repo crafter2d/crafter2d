@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -70,7 +70,13 @@ SOURCES += main.cpp\
     world/tilemap.cpp \
     world/tile.cpp \
     newtilesetdialog.cpp \
-    worldwizard_pagelayer.cpp
+    worldwizard_pagelayer.cpp \
+    object/entity.cpp \
+    object/entityreader.cpp \
+    object/entitycomponent.cpp \
+    object/spritecomponent.cpp \
+    object/spriteanimation.cpp \
+    object/physicscomponent.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -127,7 +133,13 @@ HEADERS  += mainwindow.h \
     world/tilemap.h \
     world/tile.h \
     newtilesetdialog.h \
-    worldwizard_pagelayer.h
+    worldwizard_pagelayer.h \
+    object/entity.h \
+    object/entityreader.h \
+    object/entitycomponent.h \
+    object/spritecomponent.h \
+    object/spriteanimation.h \
+    object/physicscomponent.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \

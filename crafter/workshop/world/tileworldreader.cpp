@@ -55,7 +55,7 @@ TileWorld* QTileWorldReader::read()
         TileMapDesc desc;
         stream >> desc >> *pfield;
 
-        QTileSet* ptileset = project.lookupTileSet(desc.tileset);
+        TileSet* ptileset = project.lookupTileSet(desc.tileset);
 
         TileMap* pmap = new TileMap(desc);
         pmap->setField(pfield);

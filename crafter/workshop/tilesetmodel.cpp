@@ -25,12 +25,12 @@ int TileSetModel::rowCount(const QModelIndex &/*parent*/) const
     return 0;
 }
 
-int TileSetModel::columnCount(const QModelIndex &parent) const
+int TileSetModel::columnCount(const QModelIndex& /* parent */) const
 {
     return 1;
 }
 
-QVariant TileSetModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant TileSetModel::headerData(int section, Qt::Orientation /* orientation */, int role) const
 {
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -52,7 +52,7 @@ QVariant TileSetModel::data(const QModelIndex &index, int role) const
     {
     case 0:
         {
-            QTileSet* ptileset = mpProject->getTileSets()[index.row()];
+            TileSet* ptileset = mpProject->getTileSets()[index.row()];
             QString name = ptileset->getResourceName();
             if ( name.isEmpty() )
             {

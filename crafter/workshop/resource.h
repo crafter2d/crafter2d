@@ -9,7 +9,7 @@ class Resource : public QObject
     Q_OBJECT
 
 public:
-    enum Type { eWorld, eTileSet, eScript, };
+    enum Type { eWorld, eTileSet, eScript, eObject };
 
   // get/set
     Type getType() const { return mType; }

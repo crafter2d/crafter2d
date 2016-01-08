@@ -3,7 +3,7 @@
 
 class QIODevice;
 
-class QTileSet;
+class TileSet;
 
 class TileSetReader
 {
@@ -11,7 +11,7 @@ public:
     TileSetReader(QIODevice &device);
 
   // reading
-    QTileSet* read();
+    TileSet* read();
 
 private:
 

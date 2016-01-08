@@ -71,7 +71,7 @@ const Tile &TileMap::getTile(int tile)
     return (*mpTileSet)[tile];
 }
 
-const QTileSet& TileMap::getTileSet() const
+const TileSet& TileMap::getTileSet() const
 {
     Q_ASSERT(mpTileSet != nullptr);
     return *mpTileSet;
@@ -119,7 +119,7 @@ void TileMap::setField(TileField* pfield)
     mpField = pfield;
 }
 
-void TileMap::setTileSet(QTileSet* ptileset)
+void TileMap::setTileSet(TileSet* ptileset)
 {
     if ( mpTileSet != ptileset )
     {

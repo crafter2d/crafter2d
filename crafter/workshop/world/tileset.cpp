@@ -11,7 +11,7 @@
 
 #include "tile.h"
 
-QTileSet::QTileSet():
+TileSet::TileSet():
     Resource(Resource::eTileSet),
     mTileMap(),
     mTexture(),
@@ -21,34 +21,34 @@ QTileSet::QTileSet():
 {
 }
 
-const Tile& QTileSet::operator[](int index) const
+const Tile& TileSet::operator[](int index) const
 {
     return mTiles[index];
 }
 
 // - Get/set
 
-bool QTileSet::hasTexture() const
+bool TileSet::hasTexture() const
 {
     return !mTexture.isNull();
 }
 
-const QImage& QTileSet::getTexture() const
+const QImage& TileSet::getTexture() const
 {
     return mTexture;
 }
 
-void QTileSet::setTexture(const QImage &texture)
+void TileSet::setTexture(const QImage &texture)
 {
     mTexture = texture;
 }
 
-const QString& QTileSet::getTileMap() const
+const QString& TileSet::getTileMap() const
 {
     return mTileMap;
 }
 
-void QTileSet::setTileMap(const QString &map, bool forceReload)
+void TileSet::setTileMap(const QString &map, bool forceReload)
 {
     if ( mTileMap != map || forceReload )
     {
@@ -58,36 +58,36 @@ void QTileSet::setTileMap(const QString &map, bool forceReload)
     }
 }
 
-const QSize& QTileSet::getTileSize() const
+const QSize& TileSet::getTileSize() const
 {
     return mTileSize;
 }
 
-void QTileSet::setTileSize(const QSize& size)
+void TileSet::setTileSize(const QSize& size)
 {
     mTileSize = size;
 }
 
-int QTileSet::getTileCount() const
+int TileSet::getTileCount() const
 {
     return mTileCount;
 }
 
-void QTileSet::setTileCount(int count)
+void TileSet::setTileCount(int count)
 {
     mTileCount = count;
 }
 
 // - Query
 
-int QTileSet::indexOf(const Tile& item) const
+int TileSet::indexOf(const Tile& item) const
 {
     return mTiles.indexOf(item);
 }
 
 // - Operations
 
-void QTileSet::loadTexture()
+void TileSet::loadTexture()
 {
     QPixmap pixmap;
     if ( pixmap.load(Project::getActiveProject().getFilePath(mTileMap)) )
@@ -98,7 +98,7 @@ void QTileSet::loadTexture()
     }
 }
 
-void QTileSet::generateTiles()
+void TileSet::generateTiles()
 {
     Q_ASSERT(!mTexture.isNull());
 
@@ -117,7 +117,7 @@ void QTileSet::generateTiles()
     }
 }
 
-void QTileSet::paintTile(QPainter& painter, int index, int x, int y) const
+void TileSet::paintTile(QPainter& painter, int index, int x, int y) const
 {
     Q_ASSERT(!mTexture.isNull());
     if ( index < mTiles.size() )

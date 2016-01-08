@@ -71,7 +71,7 @@ void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
                 getMainWindow().showScript(static_cast<ScriptFile&>(*handle));
                 break;
             case Resource::eTileSet:
-                NewTileSetDialog::edit(static_cast<QTileSet&>(*handle));
+                NewTileSetDialog::edit(static_cast<TileSet&>(*handle));
                 break;
         }
     }

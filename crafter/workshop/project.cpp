@@ -1,6 +1,7 @@
 #include "project.h"
 
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -8,6 +9,8 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include "object/entity.h"
+#include "object/entityreader.h"
 #include "project/projectbuilder.h"
 #include "project/projectmanager.h"
 #include "project/projectrunner.h"
@@ -253,7 +256,7 @@ void Project::addWorld(TileWorld* pworld)
     emit dataChanged();
 }
 
-void Project::addTileSet(QTileSet *ptileset)
+void Project::addTileSet(TileSet *ptileset)
 {
     mTileSets.append(ptileset);
     emit dataChanged();
@@ -290,13 +293,34 @@ bool Project::loadTileset(const QString& filename)
     if ( file.open(QIODevice::ReadOnly) )
     {
         TileSetReader reader(file);
-        QTileSet* ptileset = reader.read();
+        TileSet* ptileset = reader.read();
         ptileset->setResourceName(filename);
         addTileSet(ptileset);
         return true;
     }
 
     return false;
+}
+
+void Project::loadObjects()
+{
+    QString path = mBasePath + QDir::separator() + "objects";
+    QDirIterator it(path, QStringList() << "*.xml");
+    while ( it.hasNext() )
+    {
+        QString filename = it.next();
+        QFile file(filename);
+        if ( file.open(QIODevice::ReadOnly) )
+        {
+            EntityReader reader(file);
+            Entity* pentity = reader.read();
+            if ( pentity != nullptr )
+            {
+                pentity->setResourceName(filename);
+                mEntities.append(pentity);
+            }
+        }
+    }
 }
 
 bool Project::load(const QString &fileName)
@@ -360,6 +384,8 @@ bool Project::load(const QString &fileName)
         }
     }
 
+    loadObjects();
+
     return true;
 }
 
@@ -382,7 +408,7 @@ void Project::saveProjectResources()
         }
     }
 
-    QTileSet* ptileset;
+    TileSet* ptileset;
     foreach (ptileset, mTileSets)
     {
         if ( ptileset->isDirty() )
@@ -425,7 +451,7 @@ void Project::saveProjectFile()
         stream.writeTextElement("script", pscript->getResourceName());
     }
 
-    QTileSet* ptileset;
+    TileSet* ptileset;
     foreach (ptileset, mTileSets)
     {
         stream.writeTextElement("tileset", ptileset->getResourceName());
@@ -461,7 +487,7 @@ void Project::run()
 
 // - Search
 
-QTileSet* Project::lookupTileSet(const QString& name)
+TileSet* Project::lookupTileSet(const QString& name)
 {
     for (auto ptileset : mTileSets)
     {

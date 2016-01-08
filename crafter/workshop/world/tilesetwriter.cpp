@@ -16,7 +16,7 @@ TileSetWriter::TileSetWriter()
 
 // - Storage
 
-void TileSetWriter::write(const QTileSet& tileset)
+void TileSetWriter::write(const TileSet& tileset)
 {
     QString path = Project::getActiveProject().getFilePath(tileset);
     QFile file(path);

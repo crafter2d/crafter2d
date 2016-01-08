@@ -110,7 +110,7 @@ TileWorld *WorldWizard::createWorld()
     return pworld;
 }
 
-QTileSet* WorldWizard::createTileSet()
+TileSet* WorldWizard::createTileSet()
 {
     QString imagefile = field("tileset.image").toString();
     QFileInfo info(imagefile);
@@ -145,14 +145,14 @@ QTileSet* WorldWizard::createTileSet()
     int height = field("tileset.height").toString().toInt();
     int count = field("tileset.count").toString().toInt();
 
-    AutoPtr<QTileSet> presult = new QTileSet();
+    TileSet* presult = new TileSet();
     presult->setResourceName("tilesets/" + field("tileset.name").toString() + ".xml");
     presult->setTileMap("images/" + info.baseName());
     presult->setTileSize(QSize(width, height));
     presult->setTileCount(count);
     presult->setDirty(true);
 
-    project.addTileSet(presult.release());
+    project.addTileSet(presult);
 
-    return presult.getPointer();
+    return presult;
 }

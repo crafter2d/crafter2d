@@ -7,14 +7,14 @@ namespace Ui {
 class newtilesetdialog;
 }
 
-class QTileSet;
+class TileSet;
 
 class NewTileSetDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    static void NewTileSetDialog::edit(QTileSet& tileset);
+    static void NewTileSetDialog::edit(TileSet& tileset);
 
     explicit NewTileSetDialog(QWidget *parent = 0);
     ~NewTileSetDialog();
@@ -25,8 +25,8 @@ private slots:
 private:
 
     void setupUp();
-    void set(const QTileSet& tileset);
-    void apply(QTileSet& tileset);
+    void set(const TileSet& tileset);
+    void apply(TileSet& tileset);
 
     Ui::newtilesetdialog *ui;
 };

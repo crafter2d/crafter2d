@@ -13,7 +13,7 @@ class QSize;
 
 class Tile;
 class TileField;
-class QTileSet;
+class TileSet;
 
 class TileMap : public QObject
 {
@@ -39,7 +39,7 @@ public:
 
     const Tile& getTile(int tile);
 
-    const QTileSet& getTileSet() const;
+    const TileSet& getTileSet() const;
 
     int indexOf(const Tile& tile) const;
 
@@ -48,7 +48,7 @@ public:
 
   // operations
     void setField(TileField* pfield);
-    void setTileSet(QTileSet* ptileset);
+    void setTileSet(TileSet* ptileset);
 
     Tile getTile(const QPoint& mousepos, TileField::Level level) const;
     bool setTile(const QPoint& mousepos, TileField::Level level, const Tile &tile);
@@ -66,7 +66,7 @@ private:
   // data
     TileMapDesc mDesc;
     TileField*  mpField;
-    QTileSet*   mpTileSet;
+    TileSet*    mpTileSet;
     QSize       mPixelSize;
 };
 

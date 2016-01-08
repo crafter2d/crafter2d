@@ -4,6 +4,7 @@
 #include "project/projecttreeobjectitem.h"
 #include "project/projecttreerootitem.h"
 
+#include "object/entity.h"
 #include "world/tileset.h"
 #include "world/tileworld.h"
 #include "script/scriptfile.h"
@@ -152,6 +153,17 @@ void ProjectModel::onDataChanged()
 
 void ProjectModel::buildTree()
 {
+    auto pentities = new ProjectTreeTextItem("Objects");
+    mpRoot->addChild(pentities);
+
+    auto& entities = mpProject->getEntities();
+    for ( auto pentity : entities )
+    {
+        ResourceHandle handle(*pentity);
+        auto pitem = new ProjectTreeObjectItem(handle);
+        pentities->addChild(pitem);
+    }
+
     auto pscripts = new ProjectTreeTextItem("Scripts");
     mpRoot->addChild(pscripts);
 

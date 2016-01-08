@@ -20,13 +20,13 @@ TileSelector::TileSelector(QWidget *parent) :
 
 // - Get/set
 
-const QTileSet& TileSelector::getTileSet() const
+const TileSet& TileSelector::getTileSet() const
 {
     Q_ASSERT(mpTileSet != nullptr);
     return *mpTileSet;
 }
 
-void TileSelector::setTileSet(const QTileSet *ptileset)
+void TileSelector::setTileSet(const TileSet *ptileset)
 {
     if ( mpTileSet != ptileset )
     {
