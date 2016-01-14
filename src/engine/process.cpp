@@ -66,7 +66,11 @@ namespace c2d
    bool Process::create(const String& classname, const String& basedir)
    {
       // initialize the modules
-      mpModuleManager = &ModuleManager::getInstance();
+      mpModuleManager = new ModuleManager();
+      if ( !mpModuleManager->initialize() )
+      {
+         return -1;
+      }
 
       // initialize the content manager
       mpContentManager = new ContentManager();

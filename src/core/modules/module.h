@@ -17,6 +17,8 @@ namespace c2d
    static const Uuid UUID_ScriptModule(0x037F06A9, 0x1388, 0x43B8, 0xB828, 0x383B5B03EF5E);
    // {E6A027CB-1553-4B7F-86EA-8E8D503118AC}
    static const Uuid UUID_SoundModule(0xE6A027CB, 0x1553, 0x4B7F, 0x86EA, 0x8E8D503118AC);
+   // {F3DE8A7F-581C-4054-88FB-2EAA0A186CAE}
+   static const Uuid UUID_UiModule(0xF3DE8A7F, 0x581c, 0x4054, 0x88fb, 0x2EAA0A186CAE);
 
    enum ModuleKind
    {
@@ -26,6 +28,7 @@ namespace c2d
       eContentModule,
       ePluginModule,
       eSoundModule,
+      eUiModule,
    };
 
    class CORE_API Module

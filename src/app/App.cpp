@@ -77,42 +77,10 @@ void App::Load(Platform::String^ entryPoint)
 // This method is called after the window becomes active.
 void App::Run()
 {
-   auto& mgr = c2d::ModuleManager::getInstance();
-   if ( !mgr.initialize() )
-   {
-      return;
-   }
-
-   mgr.add(new c2d::InputModule(new AppInputDevice()));
+   //mgr.add(new c2d::InputModule(new AppInputDevice()));
 
    m_main->create();
    m_main->run();
-
-   /*
-	while (!m_windowClosed)
-	{
-		if (m_windowVisible)
-		{
-			CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
-
-			//PIXBeginEvent(commandQueue, 0, L"Update");
-			{
-            m_main->update();
-			}
-			//PIXEndEvent(commandQueue);
-
-			//PIXBeginEvent(commandQueue, 0, L"Render");
-			{
-            m_main->render();
-			}
-			//PIXEndEvent(commandQueue);
-		}
-		else
-		{
-			CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessOneAndAllPending);
-		}
-	}
-   */
 }
 
 // Required for IFrameworkView.

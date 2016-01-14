@@ -87,10 +87,11 @@ protected:
    void dispatch(const Input::KeyEvent& keyevent);
 
 private:
+   using KeyDispatchers = std::vector<Input::KeyEventDispatcher*>;
 
  // members
    Listeners                     mListeners;
-   Input::KeyEventDispatcher*    mpKeyDispatcher;
+   KeyDispatchers    mKeyDispatchers;
    Input::MouseEventDispatcher*  mpMouseDispatcher;
 };
 

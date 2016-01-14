@@ -31,7 +31,7 @@
 
 GameWindow::GameWindow():
    mListeners(),
-   mpKeyDispatcher(NULL),
+   mKeyDispatchers(),
    mpMouseDispatcher(NULL)
 {
 }
@@ -78,7 +78,7 @@ int GameWindow::getHeight() const
 
 void GameWindow::setKeyEventDispatcher(Input::KeyEventDispatcher& dispatcher)
 {
-  mpKeyDispatcher = &dispatcher;
+   mKeyDispatchers.push_back(&dispatcher);
 }
 
 void GameWindow::setMouseEventDispatcher(Input::MouseEventDispatcher& dispatcher)
@@ -96,9 +96,9 @@ void GameWindow::dispatch(const Input::MouseEvent& mouseevent)
 
 void GameWindow::dispatch(const Input::KeyEvent& keyevent)
 {
-   if ( mpKeyDispatcher != NULL )
+   for ( auto pdispatcher : mKeyDispatchers )
    {
-      mpKeyDispatcher->dispatch(keyevent);
+      pdispatcher->dispatch(keyevent);
    }
 }
 

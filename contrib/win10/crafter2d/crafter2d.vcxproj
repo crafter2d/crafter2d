@@ -195,13 +195,11 @@
     <ClInclude Include="..\..\..\src\app\App.h" />
     <ClInclude Include="..\..\..\src\app\appgamewindow.h" />
     <ClInclude Include="..\..\..\src\app\appgamewindowfactory.h" />
-    <ClInclude Include="..\..\..\src\app\appinputdevice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\app\App.cpp" />
     <ClCompile Include="..\..\..\src\app\appgamewindow.cpp" />
     <ClCompile Include="..\..\..\src\app\appgamewindowfactory.cpp" />
-    <ClCompile Include="..\..\..\src\app\appinputdevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\bin\data.zip">

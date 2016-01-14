@@ -68,6 +68,7 @@ private slots:
     void on_actionEdit_Redo_triggered();
     void on_actionEdit_Layers_triggered();
     void on_actionEdit_Bounds_triggered();
+    void on_actionEdit_Objects_triggered();
 
     void on_actionProject_Build_triggered();
     void on_actionProject_Run_triggered();

@@ -94,6 +94,7 @@
     <addaction name="separator"/>
     <addaction name="actionEdit_Layers"/>
     <addaction name="actionEdit_Bounds"/>
+    <addaction name="actionEdit_Objects"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuProject">
@@ -341,6 +342,14 @@
    </property>
    <property name="text">
     <string>Output</string>
+   </property>
+  </action>
+  <action name="actionEdit_Objects">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Edit objects</string>
    </property>
   </action>
  </widget>

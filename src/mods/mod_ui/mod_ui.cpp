@@ -5,10 +5,9 @@
 // Windows Header Files:
 #include <windows.h>
 
-#include "core/modules/pluginmodule.h"
-#include "core/system/uuid.h"
+#include "core/modules/uimodule.h"
 
-#include "uipluginmodule.h"
+// #include "rocketui.h"
 
 #ifdef WIN32
 #ifdef MOD_EXPORTS
@@ -22,12 +21,12 @@
 
 using namespace c2d;
 
-// {72A392DA-FF9B-4E88-83B1-B9DCF0CA1042}
-static const Uuid UiUuid(0x72A392DA, 0xFF9B, 0x4E88, 0x83B1, 0xB9DCF0CA1042);
-
 extern "C" MOD_API Module* cdecl getModule()
 {
-   ui::UiPluginModule* pmodule = new ui::UiPluginModule(UiUuid);
+   return new UiModule(); // new RocketUI());
+}
 
-   return pmodule;
+extern "C" MOD_API void deleteModule(Module* pmodule)
+{
+   delete pmodule;
 }

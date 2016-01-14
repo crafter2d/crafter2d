@@ -21,8 +21,7 @@ namespace c2d
       typedef Module* (*PGETMODULE)();
       typedef ModuleCollection* (*PGETMODULECOLLECTION)();
 
-      static ModuleManager& getInstance();
-
+      ModuleManager();
       ~ModuleManager();
 
       // operations
@@ -42,9 +41,7 @@ namespace c2d
    private:
       // types
       typedef std::vector<void*> ModuleHandles;
-
-      ModuleManager();
-
+      
       // maintenance
       void add(ModuleCollection& collection);
       void add(const String& filename);

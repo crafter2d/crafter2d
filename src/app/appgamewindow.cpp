@@ -6,6 +6,7 @@
 #include "core/defines.h"
 #include "core/graphics/device.h"
 #include "core/input/key.h"
+#include "core/input/keyevent.h"
 
 #include "mods/mod_d3d12/d3d11device.h"
 
@@ -117,19 +118,31 @@ internal:
    // Input event handlers
    void OnKeyUp(Windows::UI::Core::CoreWindow ^ sender, Windows::UI::Core::KeyEventArgs ^ args)
    {
+      using namespace Input;
+
       auto it = mKeyMap.find(args->VirtualKey);
       if ( it != mKeyMap.end() )
       {
-         mAppWindow.getInputDevice().set(it->second, false);
+         // sender->GetKeyState(VirtualKey::Control).Value
+         int modifiers = 0; // getModifiers();
+
+         KeyEvent keyevent(it->second, KeyEvent::eReleased, modifiers);
+         mAppWindow.handleEvent(keyevent);
       }
    }
 
    void OnKeyDown(Windows::UI::Core::CoreWindow ^ sender, Windows::UI::Core::KeyEventArgs ^ args)
    {
+      using namespace Input;
+
       auto it = mKeyMap.find(args->VirtualKey);
       if ( it != mKeyMap.end() )
       {
-         mAppWindow.getInputDevice().set(it->second, true);
+         // sender->GetKeyState(VirtualKey::Control).Value
+         int modifiers = 0; // getModifiers();
+
+         KeyEvent keyevent(it->second, KeyEvent::ePressed, modifiers);
+         mAppWindow.handleEvent(keyevent);
       }
    }
 
@@ -154,6 +167,10 @@ AppGameWindow::AppGameWindow() :
 {
 }
 
+AppGameWindow::~AppGameWindow()
+{
+}
+
 bool AppGameWindow::doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen)
 {
    setWindow(CoreWindow::GetForCurrentThread());
@@ -165,8 +182,12 @@ bool AppGameWindow::doCreate(const String& title, int width, int height, int bit
 
 void AppGameWindow::doDestroy()
 {
-   delete mHandler;
    mHandler = nullptr;
+}
+
+void AppGameWindow::handleEvent(const Input::KeyEvent& event)
+{
+   dispatch(event);
 }
 
 int AppGameWindow::getHandle() const

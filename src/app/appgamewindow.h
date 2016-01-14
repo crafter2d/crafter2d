@@ -13,19 +13,18 @@ ref class WindowEventHandler;
 
 class AppInputDevice;
 
+
+namespace Input
+{
+   class KeyEvent;
+}
+
 class AppGameWindow : public GameWindow
 {
 public:
    AppGameWindow();
-
-   AppInputDevice& getInputDevice() {
-      return *mpInput;
-   }
-
-   void setInputDevice(AppInputDevice& input) {
-      mpInput = &input;
-   }
-
+   virtual ~AppGameWindow();
+   
    // query
    virtual int getHandle() const override;
    virtual int getWidth() const override;
@@ -37,6 +36,8 @@ public:
    virtual void toggleFullscreen() override;
    virtual void update() override;
    virtual void display() override;
+
+   void handleEvent(const Input::KeyEvent& event);
 
 protected:
 
@@ -68,7 +69,5 @@ private:
 
    Windows::Graphics::Display::DisplayOrientations	m_nativeOrientation;
    Windows::Graphics::Display::DisplayOrientations	m_currentOrientation;
-
-   AppInputDevice* mpInput;
 };
 

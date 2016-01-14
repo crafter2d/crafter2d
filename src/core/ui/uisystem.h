@@ -1,5 +1,5 @@
 /***************************************************************************
-*   Copyright (C) 2013 by Jeroen Broekhuizen                              *
+*   Copyright (C) 2016 by Jeroen Broekhuizen                              *
 *   crafter2d@outlook.com                                                 *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,55 +17,43 @@
 *   Free Software Foundation, Inc.,                                       *
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
-#include "system.h"
-#ifndef C2D_INLINE
-#  include "system.inl"
-#endif
+#ifndef UI_SYSTEM_H
+#define UI_SYSTEM_H
 
-#include "core/graphics/device.h"
+#include "core/core_base.h"
 
-#include "frame.h"
-
-namespace ui
+namespace Graphics
 {
-   // - Statics
-
-   System* System::mpInstance = NULL;
-
-   System& System::createSystem(Graphics::Device& device)
-   {
-      ASSERT_MSG(mpInstance == NULL, "Create system may be called only once.");
-      mpInstance = new System(device);
-      return *mpInstance;
-   }
-
-   void System::deleteSystem()
-   {
-      ASSERT_PTR(mpInstance);
-      delete mpInstance;
-      mpInstance = NULL;
-   }
-
-   System& System::getInstance()
-   {
-      ASSERT_PTR(mpInstance);
-      return *mpInstance;
-   }
-
-   // - Implementation
-
-   System::System(Graphics::Device& device) :
-      mDevice(device),
-      mContext(device.getContext()),
-      mWindowManager(),
-      mpLookAndFeel(NULL)
-   {
-   }
-
-   // - Notifications
-
-   void System::onLookAndFeelChanged()
-   {
-      mWindowManager.onLookAndFeelChanged();
-   }
+   class Device;
 }
+
+namespace Input
+{
+   class KeyEvent;
+   class MouseEvent;
+}
+
+namespace c2d
+{
+   class ScriptManager;
+
+   class CORE_API UiSystem
+   {
+   public:
+      explicit UiSystem();
+      virtual ~UiSystem();
+
+      virtual bool initialize(ScriptManager& scriptmanager, Graphics::Device& device, int width, int height);
+      
+    // input notifications
+      virtual void onKeyEvent(const Input::KeyEvent& event);
+      virtual void onMouseEvent(const Input::MouseEvent& event);
+      
+   private:
+
+      Graphics::Device* mpDevice;
+      ScriptManager*    mpScriptManager;
+   };
+}
+
+#endif // UI_SYSTEM_H

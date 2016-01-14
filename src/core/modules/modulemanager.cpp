@@ -13,14 +13,6 @@
 
 namespace c2d
 {
-   ModuleManager ModuleManager::sInstance;
-
-   // static 
-   ModuleManager& ModuleManager::getInstance()
-   {
-      return sInstance;
-   }
-
    ModuleManager::ModuleManager() :
       mModules()
    {

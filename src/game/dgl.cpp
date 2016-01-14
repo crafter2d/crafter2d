@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include "core/commandline/commandline.h"
-#include "core/modules/modulemanager.h"
 #include "core/smartptr/autoptr.h"
 
 #include "engine/game.h"
@@ -77,13 +76,7 @@
 int main(int argc, char *argv[])
 {
    CommandLine cmd(argc, argv);
-
-   auto& modulemgr = c2d::ModuleManager::getInstance();
-   if ( !modulemgr.initialize() )
-   {
-      return -1;
-   }
-
+   
 #ifdef WIN32
    Win32GameWindowFactory windowfactory;
 #else

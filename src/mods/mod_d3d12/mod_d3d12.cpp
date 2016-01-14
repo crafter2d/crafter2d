@@ -15,7 +15,7 @@ using namespace c2d;
 #define DECL
 #endif
 
-extern "C" MOD_API Module* cdecl getModule()
+extern "C" MOD_API ModuleCollection* cdecl getModuleCollection()
 {
    ModuleCollection* pmodules = new ModuleCollection();
 
@@ -23,11 +23,9 @@ extern "C" MOD_API Module* cdecl getModule()
    pmodule->setDevice(new Graphics::D3D11Device());
    pmodules->add(pmodule);
 
-   /*
    InputModule* pinputmodule = new InputModule;
    pinputmodule->setDevice(new Input::D3DInput());
    pmodules->add(pinputmodule);
-   */
-
-   return pmodule;
+   
+   return pmodules;
 }

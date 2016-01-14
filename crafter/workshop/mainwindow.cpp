@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent):
     QActionGroup* pgroup = new QActionGroup(this);
     pgroup->addAction(ui->actionEdit_Layers);
     pgroup->addAction(ui->actionEdit_Bounds);
+    pgroup->addAction(ui->actionEdit_Objects);
 
     restorePanels();
     readSettings();
@@ -422,6 +423,15 @@ void MainWindow::on_actionEdit_Bounds_triggered()
     if ( pview != NULL )
     {
         pview->setEditMode(TileView::eBoundMode);
+    }
+}
+
+void MainWindow::on_actionEdit_Objects_triggered()
+{
+    TileView* pview = getActiveView();
+    if ( pview != NULL )
+    {
+        pview->setEditMode(TileView::eObjectMode);
     }
 }
 
