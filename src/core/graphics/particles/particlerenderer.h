@@ -21,7 +21,7 @@ namespace c2d
    public:
       using ParticleSystems = std::vector<const Graphics::ParticleSystem*>;
       
-      virtual ~IParticleRenderer() = 0;
+      virtual ~IParticleRenderer() {};
 
       virtual bool create(Graphics::Device& device) = 0;
       virtual void render(Graphics::RenderContext& context, const ParticleSystems& systems) = 0;

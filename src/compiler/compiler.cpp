@@ -21,7 +21,7 @@ using namespace c2d;
 
 int loadModules(const String& srcfile, const String& dstFile)
 {
-   ModuleManager& mgr = ModuleManager::getInstance();
+   ModuleManager mgr;
    mgr.initialize();
    ModuleCollection mods = mgr.filter(ModuleKind::eContentModule);
 
