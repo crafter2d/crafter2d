@@ -28,7 +28,9 @@ c2d::ParticleRendererGeometry::ParticleRendererGeometry():
 {
 }
 
-
+c2d::ParticleRendererGeometry::~ParticleRendererGeometry()
+{
+}
 
 bool c2d::ParticleRendererGeometry::create(Graphics::Device& device)
 {
@@ -56,6 +58,8 @@ bool c2d::ParticleRendererGeometry::create(Graphics::Device& device)
    {
       return false;
    }
+   
+   return true;
 }
 
 void c2d::ParticleRendererGeometry::destroy()

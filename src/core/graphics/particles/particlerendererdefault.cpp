@@ -8,6 +8,10 @@ c2d::ParticleRendererDefault::ParticleRendererDefault() :
 {
 }
 
+c2d::ParticleRendererDefault::~ParticleRendererDefault()
+{
+}
+
 bool c2d::ParticleRendererDefault::create(Graphics::Device & device)
 {
    return false;

@@ -2,7 +2,6 @@
 #ifndef PARTICLE_SYSTEM_RENDER_H
 #define PARTICLE_SYSTEM_RENDER_H
 
-#include <cstdint>
 #include <vector>
 
 #include "particlerenderer.h"

@@ -2,6 +2,8 @@
 #ifndef PARTICLE_RENDERER_GEOMETRY_H
 #define PARTICLE_RENDERER_GEOMETRY_H
 
+#include <cstdint>
+
 #include "core/math/matrix4.h"
 #include "core/math/vertex.h"
 
@@ -20,6 +22,7 @@ namespace c2d
    {
    public:
       ParticleRendererGeometry();
+      virtual ~ParticleRendererGeometry();
 
       virtual bool create(Graphics::Device& device) override;
       virtual void render(Graphics::RenderContext& context, const ParticleSystems& systems) override;

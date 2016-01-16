@@ -2,6 +2,8 @@
 #ifndef PARTICLE_RENDERER_DEFAULT_H
 #define PARTICLE_RENDERER_DEFAULT_H
 
+#include <cstdint>
+
 #include "particlerenderer.h"
 
 namespace Graphics
@@ -17,6 +19,7 @@ namespace c2d
    {
    public:
       ParticleRendererDefault();
+      virtual ~ParticleRendererDefault();
 
       virtual bool create(Graphics::Device& device) override;
       virtual void render(Graphics::RenderContext& context, const ParticleSystems& systems) override;
