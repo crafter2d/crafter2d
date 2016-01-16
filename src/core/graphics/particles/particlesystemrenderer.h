@@ -5,8 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "core/math/matrix4.h"
-#include "core/math/vertex.h"
+#include "particlerenderer.h"
 
 namespace Graphics
 {
@@ -36,22 +35,10 @@ namespace Graphics
       void endDraw(RenderContext& context);
 
    private:
-      typedef std::vector<const ParticleSystem*> ParticleSystems;
-
-      struct ConstantBuffer
-      {
-         Matrix4 projection;
-         Vertex  world;
-      };
-
+     
     // data
-      ParticleSystems   mParticleSystems;
-      ConstantBuffer    mConstants;
-
-      Effect*           mpEffect;
-	   uint32_t          mVertexBufferSize;
-      VertexBuffer*     mpVertexBuffer;
-      UniformBuffer*    mpUniformBuffer;
+      c2d::IParticleRenderer::ParticleSystems  mParticleSystems;
+      c2d::IParticleRenderer*                  mpRenderer;
    };
 }
 

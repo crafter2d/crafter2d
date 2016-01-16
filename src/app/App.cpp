@@ -69,16 +69,9 @@ void App::Load(Platform::String^ entryPoint)
 	}
 }
 
-#include "core/modules/modulecollection.h"
-#include "core/modules/modulemanager.h"
-#include "core/modules/inputmodule.h"
-#include "appinputdevice.h"
-
 // This method is called after the window becomes active.
 void App::Run()
 {
-   //mgr.add(new c2d::InputModule(new AppInputDevice()));
-
    m_main->create();
    m_main->run();
 }

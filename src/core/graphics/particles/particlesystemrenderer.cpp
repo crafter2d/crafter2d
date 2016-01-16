@@ -7,26 +7,16 @@
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/vertexbuffer.h"
-#include "core/graphics/viewport.h"
 
 #include "particle.h"
 #include "particlesystem.h"
-
-struct ParticleVertex {
-	Vertex pos;
-   Color  col;
-   float  radius;
-};
+#include "particlerendererdefault.h"
 
 namespace Graphics
 {
    ParticleSystemRenderer::ParticleSystemRenderer():
       mParticleSystems(),
-      mConstants(),
-      mpEffect(NULL),
-      mVertexBufferSize(0),
-      mpVertexBuffer(NULL),
-      mpUniformBuffer(NULL)
+      mpRenderer(NULL)
    {
    }
 
@@ -34,80 +24,25 @@ namespace Graphics
 
    bool ParticleSystemRenderer::create(Device& device)
    {
-      // load effect
-      mpEffect = device.createEffect(UTEXT("shaders/particle"));
-      if ( mpEffect == NULL )
-      {
-         return false;
-      }
-
-      // create the blend state
-      BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_ONE, true);
-      BlendState* pblendstate = device.createBlendState(desc);
-      if ( pblendstate == NULL )
-      {
-         return false;
-      }
-
-      mpEffect->setBlendState(pblendstate);
-
-      mVertexBufferSize = 2048;
-      int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
-      mpVertexBuffer = mpEffect->createVertexBuffer(device, mVertexBufferSize, usage);
-      if ( mpVertexBuffer == NULL )
-	   {
-         return false;
-      }
-
-      UNIFORM_BUFFER_DESC descs[] = {
-         { UTEXT("proj"), sizeof(float)* 16 },
-         { UTEXT("world"), sizeof(float)* 2 },
-      };
-
-      mpUniformBuffer = mpEffect->createUniformBuffer(UTEXT("mpv"));
-      if ( mpUniformBuffer == NULL || !mpUniformBuffer->create(device, descs, 2) )
-      {
-         return false;
-      }
+      mpRenderer = new c2d::ParticleRendererDefault();
 
       return true;
    }
 
    void ParticleSystemRenderer::destroy()
    {
-      if ( mpEffect != NULL )
-      {
-         delete mpEffect;
-         mpEffect = NULL;
-      }
-
-      if ( mpVertexBuffer != NULL )
-      {
-         delete mpVertexBuffer;
-         mpVertexBuffer = NULL;
-      }
-
-      if ( mpUniformBuffer != NULL )
-      {
-         delete mpUniformBuffer;
-         mpUniformBuffer = NULL;
-      }
+      delete mpRenderer;
+      mpRenderer = nullptr;
    }
 
    void ParticleSystemRenderer::viewportChanged(RenderContext& context, const Viewport& viewport)
    {
-      mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
-
-      mpUniformBuffer->set(context, &mConstants, sizeof(mConstants));
+      mpRenderer->viewportChanged(context, viewport);
    }
 
    void ParticleSystemRenderer::setOffset(RenderContext& context, const Vector& offset)
    {
-      if ( mConstants.world.x != offset.x || mConstants.world.y != offset.y )
-      {
-         mConstants.world.set(offset.x, offset.y);
-         mpUniformBuffer->set(context, &mConstants, sizeof(mConstants));
-      }
+      mpRenderer->setOffset(context, offset);
    }
 
    // - Drawing
@@ -126,36 +61,6 @@ namespace Graphics
    
    void ParticleSystemRenderer::endDraw(RenderContext& context)
    {
-      mpEffect->enable(context);
-      mpEffect->setConstantBuffer(context, 0, *mpUniformBuffer);
-
-      context.setVertexBuffer(*mpVertexBuffer);
-     
-      for ( std::size_t index = 0; index < mParticleSystems.size(); ++index )
-      {
-         const ParticleSystem& system = *mParticleSystems[index];
-         int particleCount = system.getActiveParticleCount();
-
-         if ( particleCount > 0 )
-         {
-            const Particles& particles = system.getActiveParticles();
-            ParticleVertex* verts = reinterpret_cast<ParticleVertex*>(mpVertexBuffer->lock(context));
-
-            for ( int pidx = 0; pidx < particleCount; ++pidx )
-            {
-               auto particle = particles[pidx];
-
-               ParticleVertex& v = verts[pidx];
-               v.pos = particle.pos;
-               v.col = particle.color;
-               v.radius = particle.size * 0.5f;
-            }
-
-            mpVertexBuffer->unlock(context);
-
-            context.setTexture(0, system.getTexture());
-            context.drawPoints(0, particleCount);
-         }
-      }
+      mpRenderer->render(context, mParticleSystems);
    }
 }

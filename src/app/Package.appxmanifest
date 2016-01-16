@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="ff17efb4-0ef9-4d54-8088-888ebd47a6d8" Publisher="CN=Jeroen" Version="1.0.0.0" />
+  <Identity Name="31495JBApps.crafter2ddemo" Publisher="CN=AF533B3D-6022-4EBD-A797-E68AD867FA91" Version="1.1.0.0" />
   <mp:PhoneIdentity PhoneProductId="ff17efb4-0ef9-4d54-8088-888ebd47a6d8" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>crafter2d</DisplayName>
-    <PublisherDisplayName>Jeroen</PublisherDisplayName>
+    <DisplayName>crafter2d demo</DisplayName>
+    <PublisherDisplayName>JB Soft</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="crafter2d.App">
-      <uap:VisualElements DisplayName="crafter2d" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="crafter2d" BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="crafter2d demo" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="crafter2d" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />

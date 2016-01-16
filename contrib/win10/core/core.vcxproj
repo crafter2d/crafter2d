@@ -88,6 +88,8 @@
     <ClCompile Include="..\..\..\src\core\graphics\geometrybuffer.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\indexbuffer.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\particles\particle.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\particles\particlerendererdefault.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\particles\particlerenderergeometry.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\particles\particlesystem.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\particles\particlesystemrenderer.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\rendercontext.cpp" />
@@ -300,6 +302,9 @@
     <ClInclude Include="..\..\..\src\core\graphics\geometrybuffer.h" />
     <ClInclude Include="..\..\..\src\core\graphics\indexbuffer.h" />
     <ClInclude Include="..\..\..\src\core\graphics\particles\particle.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\particles\particlerenderer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\particles\particlerendererdefault.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\particles\particlerenderergeometry.h" />
     <ClInclude Include="..\..\..\src\core\graphics\particles\particles.h" />
     <ClInclude Include="..\..\..\src\core\graphics\particles\particlesystem.h" />
     <ClInclude Include="..\..\..\src\core\graphics\particles\particlesystemrenderer.h" />
@@ -610,7 +615,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <GenerateManifest>false</GenerateManifest>
     <IgnoreImportLibrary>false</IgnoreImportLibrary>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>false</GenerateManifest>
@@ -664,7 +670,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalIncludeDirectories>F:\Devel\crafter2d\src;F:\Devel\externallibs\uwp\libzip\include;$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;WIN32;_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS;_DEBUG;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

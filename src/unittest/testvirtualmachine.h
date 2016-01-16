@@ -83,7 +83,7 @@ SUITE(TestVirtualMachine)
 {
    TEST(testRun)
    {      
-      auto& modulemgr = ModuleManager::getInstance();
+      ModuleManager modulemgr;
       CHECK(modulemgr.initialize());
       c2d::Module* pmodule = modulemgr.lookup(c2d::UUID_ScriptModule);
       if ( pmodule == nullptr )

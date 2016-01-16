@@ -10,8 +10,6 @@
 
 #include "mods/mod_d3d12/d3d11device.h"
 
-#include "appinputdevice.h"
-
 using namespace Microsoft::WRL;
 using namespace Windows::ApplicationModel;
 using namespace Windows::ApplicationModel::Core;

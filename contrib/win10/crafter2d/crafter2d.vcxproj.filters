@@ -7,6 +7,12 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{5ef93b34-eb14-4648-b9e9-b141f6c36e43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Content\arm">
+      <UniqueIdentifier>{a7caaa9d-e19d-4f9d-b104-f182c32a275a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\x86">
+      <UniqueIdentifier>{519db313-242d-436e-b002-3ded62119d9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\app\App.cpp" />
@@ -20,22 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\app\crafter2d_TemporaryKey.pfx" />
-    <None Include="..\Debug\core.dll">
-      <Filter>Content</Filter>
-    </None>
-    <None Include="..\Debug\engine.dll">
-      <Filter>Content</Filter>
-    </None>
-    <None Include="..\Debug\zipd.dll">
-      <Filter>Content</Filter>
-    </None>
-    <None Include="..\Debug\mod_d3d12.dll">
-      <Filter>Content</Filter>
-    </None>
     <None Include="..\..\..\bin\game.ini">
-      <Filter>Content</Filter>
-    </None>
-    <None Include="..\Debug\mod_yas.dll">
       <Filter>Content</Filter>
     </None>
     <None Include="..\..\..\bin\data.zip">
@@ -44,17 +35,61 @@
     <None Include="..\..\..\bin\game.zip">
       <Filter>Content</Filter>
     </None>
-    <None Include="..\Debug\mod_c2d.dll">
-      <Filter>Content</Filter>
-    </None>
-    <None Include="..\Debug\mod_fmod.dll">
-      <Filter>Content</Filter>
-    </None>
     <None Include="..\Debug\fmod_X86.dll">
-      <Filter>Content</Filter>
+      <Filter>Content\x86</Filter>
     </None>
     <None Include="..\Debug\fmodL_X86.dll">
-      <Filter>Content</Filter>
+      <Filter>Content\x86</Filter>
+    </None>
+    <None Include="..\Debug\zipd.dll">
+      <Filter>Content\x86</Filter>
+    </None>
+    <None Include="..\ARM\Debug\zip_armd.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="..\ARM\Debug\fmod_ARM.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="..\ARM\Debug\fmodL_ARM.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="Package.StoreAssociation.xml" />
+    <None Include="crafter2d_StoreKey.pfx" />
+    <None Include="..\ARM\Debug\core.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="..\ARM\Debug\engine.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="..\ARM\Debug\mod_c2d.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="..\ARM\Debug\mod_d3d12.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="..\ARM\Debug\mod_fmod.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="..\ARM\Debug\mod_yas.dll">
+      <Filter>Content\arm</Filter>
+    </None>
+    <None Include="..\Debug\core.dll">
+      <Filter>Content\x86</Filter>
+    </None>
+    <None Include="..\Debug\engine.dll">
+      <Filter>Content\x86</Filter>
+    </None>
+    <None Include="..\Debug\mod_c2d.dll">
+      <Filter>Content\x86</Filter>
+    </None>
+    <None Include="..\Debug\mod_d3d12.dll">
+      <Filter>Content\x86</Filter>
+    </None>
+    <None Include="..\Debug\mod_fmod.dll">
+      <Filter>Content\x86</Filter>
+    </None>
+    <None Include="..\Debug\mod_yas.dll">
+      <Filter>Content\x86</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
