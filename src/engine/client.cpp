@@ -522,10 +522,9 @@ namespace c2d
          if ( mRequests.find(event.getId()) == mRequests.end() )
          {
             // unknown object, must have been generated before the player entered the game
-            RequestObjectEvent event(event.getId());
-            conn.send(mServerId, event);
-
-            mRequests[event.getId()] = true;
+            RequestObjectEvent requestevent(event.getId());
+            conn.send(mServerId, requestevent);
+            mRequests[requestevent.getId()] = true;
          }
       }
       else

@@ -10,6 +10,7 @@ ShaderUniformBuffer::ShaderUniformBuffer(GLuint program, GLuint block):
    mProgram(program),
    mBlock(block),
    mBuffer(0),
+   mBufferSize(0),
    mpElements(NULL),
    mElementNr(0)
 {

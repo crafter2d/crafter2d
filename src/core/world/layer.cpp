@@ -65,6 +65,7 @@ Layer::Layer():
    maxTilesY(0),
    verts(0),
    verts_to_render(0),
+   verts_to_render_front(0),
    animateTiles(true),
    dirty(true),
    mpTileSet(NULL),

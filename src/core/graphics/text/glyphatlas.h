@@ -22,6 +22,7 @@ namespace Graphics
    {
    public:
       GlyphAtlas(Device& device, GlyphProvider* pprovider, int maxsheets);
+      ~GlyphAtlas();
 
     // get/set
       GlyphProvider& getProvider();

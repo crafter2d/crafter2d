@@ -17,7 +17,7 @@ FileReaderStream::FileReaderStream(File& file):
 
 FileReaderStream::~FileReaderStream()
 {
-   delete mpData;
+   delete[] mpData;
    mpData = 0;
    mSize  = 0;
 }

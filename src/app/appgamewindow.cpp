@@ -195,12 +195,12 @@ int AppGameWindow::getHandle() const
 
 int AppGameWindow::getWidth() const
 {
-   return mWindow->Bounds.Width;
+   return m_outputSize.Width;
 }
 
 int AppGameWindow::getHeight() const
 {
-   return mWindow->Bounds.Height;
+   return m_outputSize.Height;
 }
 
 // overloads

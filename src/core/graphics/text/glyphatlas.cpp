@@ -20,7 +20,23 @@ namespace Graphics
       mMaxSheets(maxsheets),
       mCurSheets(0)
    {
-      memset(mpSheets, 0, sizeof(mpSheets) * maxsheets);
+      memset(mpSheets, 0, sizeof(*mpSheets) * maxsheets);
+   }
+
+   GlyphAtlas::~GlyphAtlas()
+   {
+      for ( auto it : mGlyphMaps )
+      {
+         delete it.second;
+      }
+
+      for ( int index = 0; index < mMaxSheets; ++index )
+      {
+         delete mpSheets[index];
+      }
+
+      delete[] mpSheets;
+      mpSheets = nullptr;
    }
 
    // - Get/set

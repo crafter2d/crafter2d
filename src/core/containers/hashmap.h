@@ -60,7 +60,8 @@ class HashMap
 public:
    typedef unsigned int(*HashFnc)(const K& key);
 
-   HashMap(int size = 256);
+   explicit HashMap(int size = 256);
+   ~HashMap();
 
  // get/set
    void setHashFunction(HashFnc hashfunc);

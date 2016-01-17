@@ -100,7 +100,7 @@ namespace Graphics
 
    void TextRenderer::draw(RenderContext& context, const Vector& position, Font& font, float fontsize, const String& text)
    {
-      float dpisize = (fontsize / 72.0f) * 96.0f;
+      float dpisize = (fontsize / 72.0f) * 216.0f; // 96.0f;
 
       TextLayout layout;
       if ( layout.create(context, position, font, dpisize, text) )

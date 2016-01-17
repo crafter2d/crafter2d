@@ -25,12 +25,16 @@
 #include "collisioncontactbody.h"
 
 CollisionContact::CollisionContact():
-   mpLeft(NULL),
-   mpRight(NULL),
    mPoint(),
    mNormal(),
    mVelocity(),
-   mPenetration(0)
+   mPenetration(0),
+   mRestitution(0),
+   mpLeft(NULL),
+   mpRight(NULL),
+   mContactBasis(),
+   mContactVelocity(),
+   mDesiredDeltaVelocity(0.0f)
 {
 }
 

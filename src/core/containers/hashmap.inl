@@ -33,6 +33,14 @@ HashMap<K,E>::HashMap(int size):
    }
 }
 
+template <typename K, class E>
+HashMap<K,E>::~HashMap()
+{
+   clear();
+
+   delete[] mpBuckets;
+}
+
 // - Get/set
 
 template <typename K, class E>
@@ -220,17 +228,14 @@ void HashMap<K,E>::clear()
 {
    for ( int index = 0; index < mSize; index++ )
    {
-      if ( mpBuckets[index] != NULL )
+      HashMapBucket<K,E>* pbucket = mpBuckets[index];
+      while ( pbucket != NULL )
       {
-         HashMapBucket<K,E>* pbucket = mpBuckets[index];
-         while ( pbucket != NULL )
-         {
-            HashMapBucket<K,E>* pnext = pbucket->getNext();
-            delete pbucket;
-            pbucket = pnext;
-         }
-
-         mpBuckets[index] = NULL;
+         HashMapBucket<K,E>* pnext = pbucket->getNext();
+         delete pbucket;
+         pbucket = pnext;
       }
+
+      mpBuckets[index] = NULL;
    }
 }
