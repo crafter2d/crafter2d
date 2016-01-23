@@ -22,7 +22,7 @@ namespace Graphics
     // get/set
       ID3D11Device3& getDevice() { return *m_d3dDevice; }
 
-      void set(ID3D11Device3* pd3dDevice, ID3D11DeviceContext3* pd3dContext, IDXGISwapChain3* pswapChain);
+      void set(ID3D11Device3* pd3dDevice, ID3D11DeviceContext3* pd3dContext, IDXGISwapChain3* pswapChain, float dpi);
 
       virtual bool create(GameWindow& window) override;
       virtual void destroy() override;
@@ -66,5 +66,7 @@ namespace Graphics
       // DirectWrite drawing components.
       IDWriteFactory3*		m_dwriteFactory;
       D3DFontCollection*   mpFontCollection;
+
+      float m_dpi;
    };
 }

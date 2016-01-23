@@ -184,6 +184,7 @@ bool Game::initGame()
    FileSystem::getInstance().addPath(path);
    FileSystem::getInstance().addPath(File::concat(path, UTEXT("scripts")));
   
+   /*
    Log::getInstance().info("Starting server.");
    mpServer = new c2d::Server();
    if ( !mpServer->create(inifile.get(UTEXT("Process"), UTEXT("server")), path) )
@@ -191,6 +192,7 @@ bool Game::initGame()
       Log::getInstance().error("FAILED to start the server.");
       return false;
    }
+   */
 
    Log::getInstance().info("Starting client.");
    mpClient = new c2d::Client();
@@ -237,7 +239,7 @@ void Game::runFrame()
    //cur += delta;
    //if ( cur >= FREQ )
    {
-      mpServer->update(delta);
+      //mpServer->update(delta);
       
       mpClient->update(delta);
       mpClient->render(delta);

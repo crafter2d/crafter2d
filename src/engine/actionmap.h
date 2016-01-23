@@ -67,7 +67,7 @@ namespace c2d
       void bind(int action, const String& function);
 
       // processing
-      void process(int action, bool down);
+      void process(int action, bool down, float delta);
       void processRemote(const ActionEvent& event, Entity& object);
 
    private:

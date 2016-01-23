@@ -40,6 +40,8 @@ public:
 
    float getMass() const;
 
+   Vector getLinearVelocity() const;
+
  // query
    int getSide(const b2Fixture& sensor) const;
    virtual const String& getClassName() const;

@@ -52,7 +52,7 @@ namespace c2d
       mKeys[key] = info;
    }
 
-   void KeyMap::update()
+   void KeyMap::update(float delta)
    {
       ASSERT_PTR(mpClient);
 
@@ -69,16 +69,16 @@ namespace c2d
 
             if ( input.isKeyDown(key) )
             {
-               if ( !info.state )
+               //if ( !info.state )
                {
                   info.state = true;
-                  pactionmap->process(info.action, true);
+                  pactionmap->process(info.action, true, delta);
                }
             }
             else if ( info.state )
             {
                info.state = false;
-               pactionmap->process(info.action, false);
+               pactionmap->process(info.action, false, delta);
             }
          }
       }

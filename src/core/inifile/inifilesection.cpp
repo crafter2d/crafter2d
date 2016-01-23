@@ -22,29 +22,44 @@
 #  include "inifilesection.inl"
 #endif
 
-#include "core/containers/hashinterface.h"
-
+#include "inifileexception.h"
 #include "inifileproperty.h"
 
 IniFileSection::IniFileSection(const String& name):
    mProperties(),
    mName(name)
 {
-   mProperties.setHashFunction(HashInterface::hashString);
+}
+
+IniFileSection::~IniFileSection()
+{
+   clear();
 }
 
 // - Query
 
 const String& IniFileSection::get(const String& name)
 {
-   IniFileProperty** pproperty = mProperties.get(name);
-   ASSERT_PTR(pproperty);
-   return (*pproperty)->getValue();
+   auto it = mProperties.find(name);
+   if ( it == mProperties.end() )
+   {
+      throw new IniFileException(name + UTEXT(" is not a valid property."));
+   }
+   return it->second->getValue();
 }
 
 // - Operations
 
 void IniFileSection::add(IniFileProperty* pproperty)
 {
-   mProperties.insert(pproperty->getName(), pproperty);
+   mProperties.insert({ pproperty->getName(), pproperty });
+}
+
+void IniFileSection::clear()
+{
+   for ( auto& pair : mProperties )
+   {
+      delete pair.second;
+   }
+   mProperties.clear();
 }

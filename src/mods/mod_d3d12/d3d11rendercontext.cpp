@@ -19,13 +19,15 @@ namespace Graphics
       return static_cast<D3D11RenderContext&>(context).getContext();
    }
 
-   D3D11RenderContext::D3D11RenderContext(ID3D11DeviceContext3* pcontext, ID3D11RenderTargetView1* targetview):
+   D3D11RenderContext::D3D11RenderContext(ID3D11DeviceContext3* pcontext, ID3D11RenderTargetView1* targetview, float dpi):
       RenderContext(),
       m_d3dContext(pcontext),
       m_d3dRenderTargetView(targetview)
    {
       DX::SafeAcquire(m_d3dContext);
       DX::SafeAcquire(m_d3dRenderTargetView);
+
+      setDpi(dpi);
    }
 
    D3D11RenderContext::~D3D11RenderContext()

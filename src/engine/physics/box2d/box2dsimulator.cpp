@@ -222,7 +222,7 @@ void Box2DSimulator::createRopeJoint(Box2DRopeJointDefinition& definition)
 
 void Box2DSimulator::notifyWorldChanged()
 {
-   b2Vec2 gravity(0, 9);
+   b2Vec2 gravity(0, 9.18f);
    mpb2World = new b2World(gravity);
    mpb2World->SetContactListener(&mContactListener);
 

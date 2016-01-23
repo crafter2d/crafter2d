@@ -18,8 +18,8 @@ namespace Graphics
       mCoords(),
       mTextureWidth(0),
       mTextureHeight(0),
-      mLeft(0),
-      mTop(0),
+      mLeft(1),
+      mTop(1),
       mDirty(false)
    {
    }
@@ -49,7 +49,7 @@ namespace Graphics
 
       uint32_t size = mTextureWidth * mTextureHeight * sizeof(uint8_t);
       mpTextureData = new uint8_t[size];
-      memset(mpTextureData, 255, size);
+      memset(mpTextureData, 0, size);
 
       return true;
    }
@@ -78,8 +78,8 @@ namespace Graphics
       const uint8_t* psrc = glyph.getPixels();
       for ( int y = 0; y < size.height; ++y )
       {
-         memcpy(pdest, psrc, static_cast<int>(size.width));
-         psrc += static_cast<int>(size.width);
+         memcpy(pdest, psrc, glyph.getPitch());
+         psrc += glyph.getPitch();
          pdest += mTextureWidth;
       }
 
@@ -92,7 +92,7 @@ namespace Graphics
       
       mCoords.push_back(data);
 
-      mLeft += size.width;
+      mLeft += size.width + 1;
 
       mDirty = true;
 

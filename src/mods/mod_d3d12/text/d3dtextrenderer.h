@@ -12,7 +12,7 @@ public:
    virtual ~D3DTextRenderer();
 
  // operations
-   HRESULT initialize(ID2D1DeviceContext* pcontext, int width, int height);
+   HRESULT initialize(ID2D1Factory1* pfactory, ID2D1DeviceContext* pcontext, int width, int height);
 
  // IUknown interface
    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** pobject);
@@ -67,8 +67,9 @@ public:
 private:
    struct DWGlyphData
    {
-      FLOAT					offsetX;
-      FLOAT					offsetY;
+      float					offsetX;
+      float					offsetY;
+      float             advance;
       int					maxWidth;
       int					maxHeight;
    };
@@ -81,6 +82,7 @@ private:
 
  // data
    ULONG                   mRefCount;
+   ID2D1Factory1*          mpD2DFactory;
    ID2D1DeviceContext*     mpD2DContext;
    ID2D1SolidColorBrush*   mpBrush;
    ID2D1Bitmap1*           mpTarget;

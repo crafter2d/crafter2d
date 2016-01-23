@@ -27,11 +27,12 @@ namespace Graphics
    {
    }
 
-   void D3D11Device::set(ID3D11Device3* pd3dDevice, ID3D11DeviceContext3* pd3dContext, IDXGISwapChain3* pswapChain)
+   void D3D11Device::set(ID3D11Device3* pd3dDevice, ID3D11DeviceContext3* pd3dContext, IDXGISwapChain3* pswapChain, float dpi)
    {
       m_d3dDevice = DX::SafeAcquire(pd3dDevice);
       m_d3dContext = DX::SafeAcquire(pd3dContext);
       m_swapChain = DX::SafeAcquire(pswapChain);
+      m_dpi = dpi;
    }
 
    bool D3D11Device::create(GameWindow& window)
@@ -108,7 +109,7 @@ namespace Graphics
          return false;
       }
 
-      float m_dpi = 96.0f;
+      //float m_dpi = 96.0f;
       // Create a Direct2D target bitmap associated with the
       // swap chain back buffer and set it as the current target.
       D2D1_BITMAP_PROPERTIES1 bitmapProperties =
@@ -132,9 +133,8 @@ namespace Graphics
          return false;
       }
 
-      float m_effectiveDpi = 96.0f;
       m_d2dContext->SetTarget(m_d2dTargetBitmap);
-      m_d2dContext->SetDpi(m_effectiveDpi, m_effectiveDpi);
+      m_d2dContext->SetDpi(m_dpi, m_dpi);
 
       // Grayscale text anti-aliasing is recommended for all Windows Store apps.
       m_d2dContext->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE);
@@ -145,6 +145,7 @@ namespace Graphics
       {
          return false;
       }
+
 
       mpFontCollection = new D3DFontCollection();
       if ( !mpFontCollection->initialize(m_dwriteFactory) )
@@ -265,7 +266,7 @@ namespace Graphics
 
    GlyphProvider* D3D11Device::createGlyphProvider(Font& font)
    {
-      D3DGlyphProvider* pprovider = new D3DGlyphProvider(m_d2dContext, m_dwriteFactory);
+      D3DGlyphProvider* pprovider = new D3DGlyphProvider(m_d2dFactory, m_d2dContext, m_dwriteFactory);
       pprovider->initialize(mpFontCollection->getCustomFontCollection(), font);
       return pprovider;
    }
@@ -277,7 +278,7 @@ namespace Graphics
 
    RenderContext* D3D11Device::createRenderContext()
    {
-      return new D3D11RenderContext(m_d3dContext, m_d3dRenderTargetView);
+      return new D3D11RenderContext(m_d3dContext, m_d3dRenderTargetView, m_dpi);
    }
 
    // Helpers
@@ -285,6 +286,8 @@ namespace Graphics
    // Recreate all device resources and set them back to the current state.
    void D3D11Device::handleDeviceLost()
    {
+      int aap = 5;
+      aap *= 5;
       //m_swapChain = nullptr;
 
       /*

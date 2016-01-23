@@ -16,7 +16,8 @@
 
 namespace Graphics
 {
-   D3DGlyphProvider::D3DGlyphProvider(ID2D1DeviceContext* pd2dcontext, IDWriteFactory* pdwfactory) :
+   D3DGlyphProvider::D3DGlyphProvider(ID2D1Factory1* pfactory, ID2D1DeviceContext* pd2dcontext, IDWriteFactory* pdwfactory) :
+      mpD2DFactory(pfactory),
       mpD2DContext(pd2dcontext),
       mpTextFormat(NULL),
       mpDWriteFactory(pdwfactory),
@@ -24,6 +25,7 @@ namespace Graphics
       mWidth(512),
       mHeight(512)
    {
+      mpD2DFactory->AddRef();
       mpD2DContext->AddRef();
       mpDWriteFactory->AddRef();
    }
@@ -56,7 +58,7 @@ namespace Graphics
 
       mpTextRenderer = new D3DTextRenderer();
       mpTextRenderer->AddRef();
-      hr = mpTextRenderer->initialize(mpD2DContext, 512, 512);
+      hr = mpTextRenderer->initialize(mpD2DFactory, mpD2DContext, 512, 512);
       if ( FAILED(hr) )
       {
          return false;
@@ -75,7 +77,7 @@ namespace Graphics
       hr = mpDWriteFactory->CreateTextLayout(&ch, 1, mpTextFormat, 512, 512, &ptextlayout);
       if ( SUCCEEDED(hr) )
       {
-         DWRITE_TEXT_RANGE range = { 0, 0 };
+         DWRITE_TEXT_RANGE range = { 0, 1 };
          ptextlayout->SetFontSize(emsize, range);
 
          AutoPtr<Glyph> glyph = new Glyph();

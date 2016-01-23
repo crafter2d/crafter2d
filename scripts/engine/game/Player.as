@@ -3,6 +3,8 @@ package engine.game;
 
 class Player
 {
+	public native Player();
+	
 	public native int getClientId();
 	
 	public native Entity getController();

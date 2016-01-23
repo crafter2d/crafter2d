@@ -91,7 +91,6 @@ namespace c2d
       mpSoundManager(NULL),
       mpBackgroundMusic(NULL),
       mpWorldRenderer(NULL),
-      mpParticleEntity(NULL),
       mpPlayer(NULL),
       mpKeyMap(NULL),
       mpFont(NULL),
@@ -170,7 +169,7 @@ namespace c2d
 
       if ( hasKeyMap() )
       {
-         mpKeyMap->update();
+         mpKeyMap->update(delta);
       }
 
       if ( hasWorld() )
@@ -196,12 +195,12 @@ namespace c2d
             //mSoundManager.setPlayerPosition(controler.getPosition());
          }
 
-         mpWorldRenderer->render(*mpRenderContext, delta);
+         //mpWorldRenderer->render(*mpRenderContext, delta);
       }
 
-      mpScript->prepareCall(1);
-      mpScript->arg(0, delta);
-      mpScript->call(sPaint);
+      //mpScript->prepareCall(1);
+      //mpScript->arg(0, delta);
+      //mpScript->call(sPaint);
 
       frame++;
       start += delta;
@@ -212,8 +211,8 @@ namespace c2d
          frame = 0;
       }
 
-      Vector pos(10, 30);
-      mpRenderContext->drawText(pos, *mpFont, 48.0f, mFpsMsg);
+      Vector pos(40, 100);
+      mpRenderContext->drawText(pos, *mpFont, 10.0f, mFpsMsg);
 
       mpDevice->present();
       mpWindow->display();
@@ -582,8 +581,8 @@ namespace c2d
       if ( hasWindow() )
       {
          mpWindow->addListener(mWindowListener);
-         mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
-         mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
+         //mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
+         //mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
 
          if ( !initDevice() )
          {

@@ -14,7 +14,7 @@ namespace Graphics
    class D3DGlyphProvider : public GlyphProvider
    {
    public:
-      D3DGlyphProvider(ID2D1DeviceContext* pcontext, IDWriteFactory* pdwfactory);
+      D3DGlyphProvider(ID2D1Factory1* pfactory, ID2D1DeviceContext* pcontext, IDWriteFactory* pdwfactory);
       virtual ~D3DGlyphProvider();
 
       bool initialize(IDWriteFontCollection* pcollection, Font& font);
@@ -25,6 +25,7 @@ namespace Graphics
       
 
     // data
+      ID2D1Factory1*        mpD2DFactory;
       ID2D1DeviceContext*   mpD2DContext;
       IDWriteFactory*       mpDWriteFactory;
       IDWriteTextFormat*    mpTextFormat;

@@ -22,6 +22,7 @@
 #include "glyphprovider.h"
 #include "glyphvertexdata.h"
 #include "textlayout.h"
+#include "glyphmap.h"
 
 struct GlyphVertex
 {
@@ -100,11 +101,52 @@ namespace Graphics
 
    void TextRenderer::draw(RenderContext& context, const Vector& position, Font& font, float fontsize, const String& text)
    {
-      float dpisize = (fontsize / 72.0f) * 216.0f; // 96.0f;
+      float dpisize = (fontsize / 72.0f) * context.getDpi();
+
+      int x = 10;
+      int y = 100;
 
       TextLayout layout;
       if ( layout.create(context, position, font, dpisize, text) )
       {
+         auto index = font.getGlyphAtlas().getGlyphMap(dpisize).lookup(L'F');
+         if ( false && index != 0xffffff )
+         {
+            const Texture& tex = font.getGlyphAtlas().getGlyphTexture(index);
+
+            mpEffect->enable(context);
+            mpEffect->setConstantBuffer(context, 0, *mpUB);
+
+            context.setVertexBuffer(*mpVB);
+            context.setIndexBuffer(*mpIB);
+            context.setTexture(0, tex);
+
+            GlyphVertex* pvertices = (GlyphVertex*) mpVB->lock(context);
+            pvertices[0].pos.x = x;
+            pvertices[0].pos.y = y;
+            pvertices[0].tex.x = 0;
+            pvertices[0].tex.y = 0;
+
+            pvertices[1].pos.x = x + 512;
+            pvertices[1].pos.y = y;
+            pvertices[1].tex.x = 1;
+            pvertices[1].tex.y = 0;
+
+            pvertices[2].pos.x = x + 512;
+            pvertices[2].pos.y = y + 512;
+            pvertices[2].tex.x = 1;
+            pvertices[2].tex.y = 1;
+
+            pvertices[3].pos.x = x;
+            pvertices[3].pos.y = y + 512;
+            pvertices[3].tex.x = 0;
+            pvertices[3].tex.y = 1;
+
+            mpVB->unlock(context);
+
+            context.drawTriangles(0, 6);
+         }
+         
          draw(context, layout);
       }
    }

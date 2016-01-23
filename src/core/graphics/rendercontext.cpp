@@ -8,7 +8,8 @@ RenderContext::RenderContext():
    mSpriteRenderer(),
    mParticleRenderer(),
    mTextRenderer(),
-   mClearColor()
+   mClearColor(),
+   mDpi(96.0f)
 {
 }
 

@@ -11,7 +11,7 @@ namespace Graphics
    public:
       static ID3D11DeviceContext3& asContext(RenderContext& context);
 
-      D3D11RenderContext(ID3D11DeviceContext3* pcontext, ID3D11RenderTargetView1* targetview);
+      D3D11RenderContext(ID3D11DeviceContext3* pcontext, ID3D11RenderTargetView1* targetview, float dpi);
       virtual ~D3D11RenderContext();
 
       // query

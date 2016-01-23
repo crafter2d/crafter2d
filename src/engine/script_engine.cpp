@@ -161,6 +161,14 @@ void Client_getPlayer(ScriptCall& accessor)
    RETURN_CLASS(UTEXT("engine.game.Player"), &player);
 }
 
+void Client_setPlayer(ScriptCall& accessor)
+{
+   GET_THIS(Client, client);
+
+   Player* pplayer = accessor.getObject(1)->use<Player>();
+   client.setPlayer(pplayer);
+}
+
 void Client_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
@@ -391,6 +399,12 @@ void Entity_setController(ScriptCall& accessor)
    Controller* pcontroller = accessor.getObject(1)->use<Controller>();
 
    entity.setController(pcontroller);
+}
+
+void Player_init(ScriptCall& accessor)
+{
+   ScriptObjectHandle thisobject = accessor.getObject(0);
+   thisobject->setInstance(new Player());
 }
 
 void Player_getClientId(ScriptCall& accessor)
@@ -719,6 +733,19 @@ void Box2DBody_getMass(ScriptCall& accessor)
    accessor.setResult(body.getMass());
 }
 
+void Box2DBody_getLinearVelocity(ScriptCall& accessor)
+{
+   GET_THIS(Box2DBody, body);
+
+   Vector vel = body.getLinearVelocity();
+
+   ScriptObjectHandle object = accessor.newObject(UTEXT("engine.core.Vector2D"));
+   object->setMember(0, Variant(vel.x));
+   object->setMember(1, Variant(vel.y));
+
+   accessor.setResult(object);
+}
+
 void ActionMap_init(ScriptCall& accessor)
 {
    ScriptObjectHandle thisobject = accessor.getObject(0);
@@ -898,6 +925,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("setWindow(system.GameWindow)"), Client_setWindow);
    pregistrator->addFunction(UTEXT("setKeyMap(engine.game.KeyMap)"), Client_setKeyMap);
    pregistrator->addFunction(UTEXT("getPlayer()"), Client_getPlayer);
+   pregistrator->addFunction(UTEXT("setPlayer(engine.game.Player)"), Client_setPlayer);
    pregistrator->addFunction(UTEXT("getTexture(string)"), Client_getTexture);
    pregistrator->addFunction(UTEXT("getViewport()"), Client_getViewport);
 
@@ -944,6 +972,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("setAnimation(int)"), AnimationComponentMessage_setAnimation);
 
    pregistrator->addClass(UTEXT("engine.game.Player"));
+   pregistrator->addFunction(UTEXT("Player()"), Player_init);
    pregistrator->addFunction(UTEXT("getClientId()"), Player_getClientId);
    pregistrator->addFunction(UTEXT("getController()"), Player_getController);
    pregistrator->addFunction(UTEXT("setController(engine.game.Entity)"), Player_setController);
@@ -1001,6 +1030,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addClass(UTEXT("box2d.Box2DBody"));
    pregistrator->addFunction(UTEXT("addForceGenerator(engine.game.ForceGenerator)"), Box2DBody_addForceGenerator);
    pregistrator->addFunction(UTEXT("getMass()"), Box2DBody_getMass);
+   pregistrator->addFunction(UTEXT("getLinearVelocity()"), Box2DBody_getLinearVelocity);
    
    pregistrator->addClass(UTEXT("engine.game.ActionMap"));
    pregistrator->addFunction(UTEXT("ActionMap()"), ActionMap_init);

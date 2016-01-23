@@ -24,10 +24,47 @@ class GameClient extends Client
 			return false;
 		}
 		setWindow(window);
-	
-		//MessageBox.showInformation("This is a messagebox!");
-			
-		return connect("localhost", 7000);
+		
+		Player player = new Player();
+		setPlayer(player);
+		addPlayer(player);
+		
+		if ( !createWorld("worlds/map1") )
+		{
+			// meh, something went terribly wrong..
+			return false;
+		}
+		
+		Vector2D position = new Vector2D();	
+		position.set(100, 30);
+		
+		Hero hero = (Hero)Entity.construct(this, "Hero", position, "objects/char");
+		hero.setForceGenerator(new InputForceGenerator());
+		
+		Viewport viewport = getViewport();
+		int left = 150;
+		int top = 100;
+		int right = viewport.getWidth() - 150;
+		int bottom = viewport.getHeight() - 100;
+
+		World world = getWorld();
+		world.setFollowMode(0);
+		world.setObjectLayer(1);
+		world.setFollowActor(hero);
+		world.setFollowBorders(left, right, top, bottom);
+		
+		mLocalActionMap = new DemoClientActionMap();
+		mLocalActionMap.setActor(hero);
+		setActionMap(mLocalActionMap);
+		
+		KeyMap map = new KeyMap();
+		map.bind(Key.LEFT, 1); 	// left (276)
+		map.bind(Key.RIGHT, 2); 	// right (275)
+		map.bind(Key.SPACE, 3); 	// space -> jump (32)
+		//map.bind(100, 6);   // leak detection
+		setKeyMap(map);
+		
+		return true; // connect("localhost", 7000);
 	}
 	
 	public void onConnected(Player player)

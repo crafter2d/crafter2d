@@ -1,4 +1,5 @@
 
+
 package engine.game;
 
 use system.*;
@@ -16,13 +17,7 @@ abstract class Client extends Process
 	public Client()
 	{
 		super();
-		
-		//FontManager mgr = FontManager.getInstance();
-		//mgr.setProcess(this);
-		
-		//TextureManager tmgr = TextureManager.getInstance();
-		//tmgr.setProcess(this);
-		
+			
 		mMouseDispatcher = new MouseEventDispatcher();
 		mKeyDispatcher = new KeyEventDispatcher();
 	}
@@ -33,6 +28,7 @@ abstract class Client extends Process
 	public native void setKeyMap(KeyMap map);
 	public native boolean isActive();
 	public native Player getPlayer();
+	public native void setPlayer(Player player);
 	public native Viewport getViewport();
 	
 	public boolean create()

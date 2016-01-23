@@ -61,7 +61,7 @@ namespace c2d
       mActions[action] = function;
    }
 
-   void ActionMap::process(int action, bool down)
+   void ActionMap::process(int action, bool down, float delta)
    {
       Actions::const_iterator it = mActions.find(action);
       if ( it == mActions.end() )
@@ -75,8 +75,9 @@ namespace c2d
          const String& function = it->second;
 
          ASSERT_PTR(mpScript);
-         mpScript->prepareCall(1);
+         mpScript->prepareCall(2);
          mpScript->arg(0, down);
+         mpScript->arg(1, delta);
          mpScript->call(function);
       }
    }

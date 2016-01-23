@@ -40,12 +40,11 @@ void InputForceGenerator::setVelocity(const Vector& vel)
 
 void InputForceGenerator::setImpulse(const Vector& impulse)
 {
-   mImpulse = impulse;
+   mImpulse += impulse;
 }
 
 void InputForceGenerator::applyForce(Body& body) const
 {
-   body.applyForce(mVelocity);
    body.applyImpulse(mImpulse);
 
    mImpulse = Vector::zero();

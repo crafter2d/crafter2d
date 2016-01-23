@@ -37,7 +37,7 @@ IniFileParser::IniFileParser(const  String& filename, IniFile& inifile)
 void IniFileParser::parse(const String& filename, IniFile& inifile)
 {
    IniFileSection* pcurrentsection = new IniFileSection(UTEXT("global"));
-   inifile.mSections.insert(pcurrentsection->getName(), pcurrentsection);
+   inifile.add(pcurrentsection);
 
    AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead | File::EText);
    if ( file.hasPointer() )
@@ -50,7 +50,7 @@ void IniFileParser::parse(const String& filename, IniFile& inifile)
          if ( c == '[' )
          {
             pcurrentsection = parseSection(*file);
-            inifile.mSections.insert(pcurrentsection->getName(), pcurrentsection);
+            inifile.add(pcurrentsection);
          }
          else if ( c == ';' )
          {

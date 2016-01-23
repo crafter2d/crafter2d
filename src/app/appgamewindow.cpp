@@ -320,10 +320,12 @@ bool AppGameWindow::initDevice(Graphics::Device& device)
    // ensures that the application will only render after each VSync, minimizing power consumption.
    dxgiDevice->SetMaximumFrameLatency(1);
 
+   m_swapChain->SetRotation(displayRotation);
+
    auto pd3ddevice = dynamic_cast<Graphics::D3D11Device*>(&device);
    ASSERT_PTR(pd3ddevice);
 
-   pd3ddevice->set(m_d3dDevice.Get(), m_d3dContext.Get(), m_swapChain.Get());
+   pd3ddevice->set(m_d3dDevice.Get(), m_d3dContext.Get(), m_swapChain.Get(), m_effectiveDpi);
 
    return true;
 }

@@ -138,6 +138,16 @@ private:
    std::wstring mData;
 };
 
+namespace std {
+   template <> struct hash<String>
+   {
+      size_t operator()(const String& element) const
+      {
+         return element.hashCode();
+      }
+   };
+}
+
 #define UTEXT(text) String(L ## text)
 
 #endif // STRING_H_

@@ -71,6 +71,11 @@ float Box2DBody::getMass() const
    return mBody.GetMass();
 }
 
+Vector Box2DBody::getLinearVelocity() const
+{
+   return Vector(mBody.GetLinearVelocity().x, mBody.GetLinearVelocity().y);
+}
+
 // query
 
 const String& Box2DBody::getClassName() const

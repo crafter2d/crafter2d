@@ -59,7 +59,6 @@ class ScriptEvent;
 class WorldChangedEvent;
 
 class Driver;
-class Entity;
 class GameWindow;
 class GameWindowFactory;
 class WorldRenderer;
@@ -89,6 +88,9 @@ namespace c2d
 
       // get/set
       Player&        getPlayer();
+      void setPlayer(Player* pplayer) {
+         mpPlayer = pplayer;
+      }
 
       bool           hasKeyMap() const;
       KeyMap&        getKeyMap();
@@ -164,7 +166,6 @@ namespace c2d
       SoundManager*              mpSoundManager;
       Sound*                     mpBackgroundMusic;
       WorldRenderer*             mpWorldRenderer;
-      Entity*                    mpParticleEntity;
       Player*                    mpPlayer;
       KeyMap*                    mpKeyMap;
       Graphics::Font*            mpFont;

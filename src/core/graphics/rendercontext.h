@@ -41,6 +41,10 @@ namespace Graphics
       bool initialize(Device& device);
       void destroy();
 
+   // get/set
+      float getDpi() const { return mDpi; }
+      void setDpi(float dpi) { mDpi = dpi; }
+
     // operations
       virtual void setRenderTarget(RenderTarget& target) = 0;
       virtual void setCodePath(CodePath& path) = 0;
@@ -76,6 +80,7 @@ namespace Graphics
       ParticleSystemRenderer mParticleRenderer;
       TextRenderer           mTextRenderer;
       Color                  mClearColor;
+      float                  mDpi;
    };
 };
 

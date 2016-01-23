@@ -10,6 +10,7 @@
 
 D3DTextRenderer::D3DTextRenderer():
    mRefCount(0),
+   mpD2DFactory(NULL),
    mpD2DContext(NULL),
    mpBrush(NULL),
    mpTarget(NULL),
@@ -28,15 +29,18 @@ D3DTextRenderer::~D3DTextRenderer()
 
 // - Operations
 
-HRESULT D3DTextRenderer::initialize(ID2D1DeviceContext* pcontext, int width, int height)
+HRESULT D3DTextRenderer::initialize(ID2D1Factory1* pfactory, ID2D1DeviceContext* pcontext, int width, int height)
 {
+   mpD2DFactory = pfactory;
+   mpD2DFactory->AddRef();
+
    mpD2DContext = pcontext;
    mpD2DContext->AddRef();
 
    mSize.width = width;
    mSize.height = height;
 
-   float dpiX, dpiY;
+   float dpiX = 96, dpiY = 96;
    mpD2DContext->GetDpi(&dpiX, &dpiY);
 
    D2D1_PIXEL_FORMAT pixelFormat = D2D1::PixelFormat(
@@ -88,6 +92,13 @@ void D3DTextRenderer::initGlyphData(const DWRITE_FONT_METRICS& fontMetrics,
                                     float fontSize,
                                     DWGlyphData& outGlyphData)
 {
+   
+
+   float dpiX, dpiY;
+   mpD2DContext->GetDpi(&dpiX, &dpiY);
+   float dip = dpiX / 96.0f;
+   float invdip = 1.0f / dip;
+
    // Calculate pixel-space coordinates
    FLOAT fscale = fontSize / static_cast<FLOAT>(fontMetrics.designUnitsPerEm);
 
@@ -101,12 +112,13 @@ void D3DTextRenderer::initGlyphData(const DWRITE_FONT_METRICS& fontMetrics,
 
    FLOAT aw = static_cast<FLOAT>(glyphMetrics.advanceWidth) * fscale;
    FLOAT ah = static_cast<FLOAT>(glyphMetrics.advanceHeight) * fscale;
-
+   
    // Set up glyph data
-   outGlyphData.offsetX = floor(l);
-   outGlyphData.offsetY = floor(t) - floor(v);
-   outGlyphData.maxWidth = static_cast<int>(aw - r - l + 2.0f);
-   outGlyphData.maxHeight = static_cast<int>(ah - b - t + 2.0f);
+   outGlyphData.offsetX = floorf(l * invdip);
+   outGlyphData.offsetY = floorf((t * invdip) - v);
+   outGlyphData.advance = static_cast<int>(ceilf(aw * dip));
+   outGlyphData.maxWidth = static_cast<int>(ceilf((aw - r - l) * dip));
+   outGlyphData.maxHeight = static_cast<int>(ceilf((ah - b - t) * dip));
 }
 
 // IUnknown interface
@@ -168,7 +180,9 @@ HRESULT D3DTextRenderer::GetPixelsPerDip(
         _In_opt_ void* clientDrawingContext,
         _Out_ FLOAT* pixelsPerDip)
 {
-   *pixelsPerDip = 96.0f;
+   float dpiX, dpiY;
+   mpD2DContext->GetDpi(&dpiX, &dpiY);
+   *pixelsPerDip = dpiX / 96.0f;
    return S_OK;
 }
 
@@ -190,21 +204,75 @@ HRESULT D3DTextRenderer::DrawGlyphRun(void* clientDrawingContext,
    if ( FAILED(hResult) )
       return E_FAIL;
 
-   DWGlyphData glyphdata;
-   initGlyphData(fontmetrics, glyphMetrics, glyphRun->fontEmSize, glyphdata);
+   ID2D1PathGeometry* pPathGeometry = NULL;
+   HRESULT hr = mpD2DFactory->CreatePathGeometry(&pPathGeometry);
 
-   D2D1_POINT_2F baseline = { 2.0f - glyphdata.offsetX, 2.0f - glyphdata.offsetY };
-   
+   // Write to the path geometry using the geometry sink.
+   ID2D1GeometrySink* pSink = NULL;
+   if ( SUCCEEDED(hr) )
+   {
+      hr = pPathGeometry->Open(&pSink);
+   }
+
+   if ( SUCCEEDED(hr) )
+   {
+      hr = glyphRun->fontFace->GetGlyphRunOutline(
+            glyphRun->fontEmSize,
+            glyphRun->glyphIndices,
+            glyphRun->glyphAdvances,
+            glyphRun->glyphOffsets,
+            glyphRun->glyphCount,
+            glyphRun->isSideways,
+            glyphRun->bidiLevel % 2,
+            pSink
+            );
+   }
+
+   // Close the geometry sink
+   if ( SUCCEEDED(hr) )
+   {
+      hr = pSink->Close();
+   }
+
+   // Initialize a matrix to translate the origin of the glyph run.
+   D2D1::Matrix3x2F const matrix = D2D1::Matrix3x2F(
+      1.0f, 0.0f,
+      0.0f, 1.0f,
+      baselineOriginX, baselineOriginY
+      );
+
+   D2D1_RECT_F bounds;
+   pPathGeometry->GetBounds(matrix, &bounds);
+
+   // Create the transformed geometry
+   ID2D1TransformedGeometry* pTransformedGeometry = NULL;
+   if ( SUCCEEDED(hr) )
+   {
+      hr = mpD2DFactory->CreateTransformedGeometry(
+         pPathGeometry,
+         &matrix,
+         &pTransformedGeometry
+         );
+   }
+
    mpD2DContext->SetTarget(mpTarget);
    mpD2DContext->SetTransform(D2D1::Matrix3x2F::Identity());
    mpD2DContext->BeginDraw();
    mpD2DContext->Clear(D2D1::ColorF(D2D1::ColorF::Black));
-   mpD2DContext->DrawGlyphRun(baseline, glyphRun, mpBrush);
+   mpD2DContext->FillGeometry(pTransformedGeometry, mpBrush);
    mpD2DContext->EndDraw();
+
+   DX::SafeRelease(&pTransformedGeometry);
+   DX::SafeRelease(&pPathGeometry);
+   DX::SafeRelease(&pSink);
+
+
+   DWGlyphData glyphdata;
+   initGlyphData(fontmetrics, glyphMetrics, glyphRun->fontEmSize, glyphdata);
      
    // copy the glyph into the correct bitmap so we can extract it
    D2D1_MAPPED_RECT mapped;
-   HRESULT hr = mpBitmap->CopyFromBitmap(NULL, mpTarget, NULL);
+   hr = mpBitmap->CopyFromBitmap(NULL, mpTarget, NULL);
    if ( FAILED(hr) )
    {
       return hr;
@@ -216,29 +284,40 @@ HRESULT D3DTextRenderer::DrawGlyphRun(void* clientDrawingContext,
       return E_FAIL;
    }
 
+   float dpiX, dpiY;
+   mpD2DContext->GetDpi(&dpiX, &dpiY);
+   float dip = dpiX / 96.0f;
+   float invdip = 1.0f / dip;
+
+   int left = floorf(bounds.left * invdip);
+   int top = floorf(bounds.top * invdip);
+   int bottom = ceilf(bounds.bottom * dip);
+   int right = ceilf(bounds.right * dip);
+
+   glyphdata.maxWidth = right - left;
+   glyphdata.maxHeight = bottom - top;
+
    uint32_t size = glyphdata.maxHeight * glyphdata.maxWidth * sizeof(uint8_t);
    uint8_t* pdata = new uint8_t[size];
 
-   const BYTE* psrc = mapped.bits;
-   uint8_t* pdest = pdata;
    uint32_t destpitch = glyphdata.maxWidth * sizeof(uint8_t);
+   uint8_t* pdest = pdata;
 
-   for ( int y = 0; y < glyphdata.maxHeight; ++y )
+   const BYTE* psrc = mapped.bits;
+
+   for ( int srcy = top; srcy < bottom; ++srcy )
    {
-      for ( int x = 0; x < glyphdata.maxWidth; ++x )
+      for ( int srcx = left; srcx < right; ++srcx, ++pdest )
       {
-         pdest[x] = psrc[(x+2) * 4];
+         *pdest = psrc[srcy * mapped.pitch + (srcx + 2) * 4];
       }
-
-      psrc += mapped.pitch;
-      pdest += destpitch;
    }
 
    Graphics::Glyph* pglyph = (Graphics::Glyph*)clientDrawingContext;
    pglyph->setSize(Size(static_cast<float>(glyphdata.maxWidth), static_cast<float>(glyphdata.maxHeight)));
    pglyph->setPixels(pdata, destpitch);
-   pglyph->setAdvance(glyphRun->glyphAdvances[0]);
-   pglyph->setBaseLine(baseline.y);
+   pglyph->setAdvance(glyphdata.advance);
+   pglyph->setBaseLine(baselineOriginX);
 
    mpBitmap->Unmap();
 

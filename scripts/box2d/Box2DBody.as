@@ -1,6 +1,7 @@
 
 package box2d;
 
+use engine.core.*;
 use engine.game.*;
 
 class Box2DBody extends Body
@@ -11,6 +12,11 @@ class Box2DBody extends Body
 	}
 	
 	public real getMass()
+	{
+		return native;
+	}
+	
+	public Vector2D getLinearVelocity()
 	{
 		return native;
 	}

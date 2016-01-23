@@ -19,6 +19,12 @@
     <Filter Include="Content\x86\release">
       <UniqueIdentifier>{ae47d77e-e50c-41d3-aa93-28ab79bdad63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Content\arm\debug">
+      <UniqueIdentifier>{41603b4b-210b-4bc0-a279-795b1a317dfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\arm\release">
+      <UniqueIdentifier>{758d506c-3f87-40ee-b92b-51a71a46172a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\app\App.cpp" />
@@ -41,62 +47,8 @@
     <None Include="..\..\..\bin\game.zip">
       <Filter>Content</Filter>
     </None>
-    <None Include="..\ARM\Debug\zip_armd.dll">
-      <Filter>Content\arm</Filter>
-    </None>
-    <None Include="..\ARM\Debug\fmod_ARM.dll">
-      <Filter>Content\arm</Filter>
-    </None>
-    <None Include="..\ARM\Debug\fmodL_ARM.dll">
-      <Filter>Content\arm</Filter>
-    </None>
     <None Include="Package.StoreAssociation.xml" />
     <None Include="crafter2d_StoreKey.pfx" />
-    <None Include="..\ARM\Debug\core.dll">
-      <Filter>Content\arm</Filter>
-    </None>
-    <None Include="..\ARM\Debug\engine.dll">
-      <Filter>Content\arm</Filter>
-    </None>
-    <None Include="..\ARM\Debug\mod_c2d.dll">
-      <Filter>Content\arm</Filter>
-    </None>
-    <None Include="..\ARM\Debug\mod_d3d12.dll">
-      <Filter>Content\arm</Filter>
-    </None>
-    <None Include="..\ARM\Debug\mod_fmod.dll">
-      <Filter>Content\arm</Filter>
-    </None>
-    <None Include="..\ARM\Debug\mod_yas.dll">
-      <Filter>Content\arm</Filter>
-    </None>
-    <None Include="..\Debug\core.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
-    <None Include="..\Debug\engine.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
-    <None Include="..\Debug\fmod_X86.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
-    <None Include="..\Debug\fmodL_X86.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
-    <None Include="..\Debug\mod_c2d.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
-    <None Include="..\Debug\mod_d3d12.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
-    <None Include="..\Debug\mod_fmod.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
-    <None Include="..\Debug\mod_yas.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
-    <None Include="..\Debug\zipd.dll">
-      <Filter>Content\x86\debug</Filter>
-    </None>
     <None Include="..\Win32\Release\mod_yas.dll">
       <Filter>Content\x86\release</Filter>
     </None>
@@ -124,6 +76,90 @@
     <None Include="..\Win32\Release\zip.dll">
       <Filter>Content\x86\release</Filter>
     </None>
+    <None Include="..\Win32\Debug\core.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\Win32\Debug\engine.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\Win32\Debug\fmod_X86.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\Win32\Debug\fmodL_X86.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\Win32\Debug\mod_c2d.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\Win32\Debug\mod_d3d12.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\Win32\Debug\mod_fmod.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\Win32\Debug\mod_yas.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\Win32\Debug\zipd.dll">
+      <Filter>Content\x86\debug</Filter>
+    </None>
+    <None Include="..\..\..\bin\amersn.ttf">
+      <Filter>Content</Filter>
+    </None>
+    <None Include="..\ARM\Debug\core.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Debug\engine.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Debug\fmod_ARM.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Debug\fmodL_ARM.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Debug\mod_c2d.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Debug\mod_d3d12.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Debug\mod_fmod.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Debug\mod_yas.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Debug\zip_armd.dll">
+      <Filter>Content\arm\debug</Filter>
+    </None>
+    <None Include="..\ARM\Release\core.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
+    <None Include="..\ARM\Release\engine.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
+    <None Include="..\ARM\Release\fmod_ARM.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
+    <None Include="..\ARM\Release\fmodL_ARM.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
+    <None Include="..\ARM\Release\mod_c2d.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
+    <None Include="..\ARM\Release\mod_d3d12.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
+    <None Include="..\ARM\Release\mod_fmod.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
+    <None Include="..\ARM\Release\mod_yas.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
+    <None Include="..\ARM\Release\zip_ARM.dll">
+      <Filter>Content\arm\release</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="..\..\..\src\app\Package.appxmanifest" />
@@ -150,10 +186,5 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="..\..\..\bin\amersn.ttf">
-      <Filter>Content</Filter>
-    </Font>
   </ItemGroup>
 </Project>

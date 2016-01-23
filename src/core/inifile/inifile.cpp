@@ -34,9 +34,12 @@
 IniFile::IniFile(const String& filename):
    mSections()
 {
-   mSections.setHashFunction(HashInterface::hashString);
-   
    IniFileParser parser(filename, *this);
+}
+
+IniFile::~IniFile()
+{
+   clear();
 }
 
 // - Query
@@ -48,12 +51,29 @@ const String& IniFile::get(const String& name)
 
 const String& IniFile::get(const String& section, const String& name)
 {
-   if ( !mSections.contains(section) )
+   auto it = mSections.find(section);
+   if ( it == mSections.end() )
    {
       throw new IniFileException(UTEXT("Section ") + name + UTEXT(" could not be found."));
    }
 
-   IniFileSection** psection = mSections.get(section);
+   IniFileSection* psection = it->second;
    ASSERT_PTR(psection);
-   return (*psection)->get(name);
+   return psection->get(name);
+}
+
+/// - Operations
+
+void IniFile::add(IniFileSection* psection)
+{
+   mSections.insert({ psection->getName(), psection });
+}
+
+void IniFile::clear()
+{
+   for ( auto& it : mSections )
+   {
+      delete it.second;
+   }
+   mSections.clear();
 }

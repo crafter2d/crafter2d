@@ -20,7 +20,8 @@
 #ifndef INI_FILE_SECTION_H
 #define INI_FILE_SECTION_H
 
-#include "core/containers/hashmap.h"
+#include <unordered_map>
+
 #include "core/string/string.h"
 
 class IniFileProperty;
@@ -29,6 +30,7 @@ class IniFileSection
 {
 public:
    explicit IniFileSection(const String& name);
+   ~IniFileSection();
 
  // get/set
    const String& getName() const;
@@ -38,10 +40,11 @@ public:
 
  // operations
    void add(IniFileProperty* pproperty);
+   void clear();
 
 private:
  // types
-   typedef HashMap<String, IniFileProperty*> Properties;
+   typedef std::unordered_map<String, IniFileProperty*> Properties;
 
    Properties  mProperties;
    String      mName;

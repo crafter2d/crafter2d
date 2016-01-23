@@ -20,9 +20,9 @@
 #ifndef INI_FILE_H
 #define INI_FILE_H
 
-#include "core/core_base.h"
+#include <unordered_map>
 
-#include "core/containers/hashmap.h"
+#include "core/core_base.h"
 #include "core/string/string.h"
 
 class File;
@@ -39,16 +39,20 @@ class CORE_API IniFile
 {
 public:
    explicit IniFile(const String& filename);
+   ~IniFile();
 
  // query
    const String& get(const String& name);
    const String& get(const String& section, const String& name);
 
+   void add(IniFileSection* psection);
+   void clear();
+
 private:
    friend class IniFileParser;
 
  // types
-   typedef HashMap<String, IniFileSection*> Sections;
+   typedef std::unordered_map<String, IniFileSection*> Sections;
 
    Sections mSections;
 };

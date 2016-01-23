@@ -16,7 +16,7 @@ namespace Graphics
 
    Glyph::~Glyph()
    {
-      delete mpPixels;
+      delete[] mpPixels;
       mpPixels = NULL;
    }
 

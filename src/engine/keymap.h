@@ -44,7 +44,7 @@ namespace c2d
 
       // operations
       void bind(int key, int action);
-      void update();
+      void update(float delta);
 
    private:
       struct KeyInfo
