@@ -298,7 +298,7 @@ void SDLGameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
 
 void SDLGameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
 {
-   Point location(event.x, event.y);
+   c2d::Point location(event.x, event.y);
    MouseEvent::Button button = toMouseEventButton(event.button);
    int keymodifiers = getModifiers();
 

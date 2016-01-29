@@ -30,13 +30,13 @@ Component* MeshComponentFactory::instantiate(const ComponentDefinitionProto& def
    Texture* ptexture = mDevice.getContentManager().loadContent<Texture>(meshdef.mTexture);
    panimator->initialize(*ptexture, meshsize);
 
-   SpriteDefinition* pspritedef = new SpriteDefinition();
+   auto pspritedef = new c2d::SpriteDefinition();
    pspritedef->setSize(meshsize);
    pspritedef->setTexture(ptexture);
    pspritedef->setSpriteAnimator(panimator);
 
    MeshComponent* presult = new MeshComponent();
-   presult->setSprite(SpriteFactory::create(mDevice, pspritedef));
+   presult->setSprite(c2d::SpriteFactory::create(mDevice, pspritedef));
    return presult;
 }
 
