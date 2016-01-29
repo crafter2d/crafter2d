@@ -39,6 +39,10 @@ namespace Graphics
    class UniformBuffer;
    class VertexBuffer;
    class IndexBuffer;
+}
+
+namespace c2d
+{
    class Sprite;
 
    class CORE_API SpriteRenderer
@@ -48,13 +52,13 @@ namespace Graphics
       ~SpriteRenderer();
 
     // operations
-      bool create(Device& device);
-      void setOffset(RenderContext& context, const Vector& offset);
-      void viewportChanged(RenderContext& context, const Viewport& viewport);
+      bool create(Graphics::Device& device);
+      void setOffset(Graphics::RenderContext& context, const Vector& offset);
+      void viewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport);
 
     // drawing
-      void beginDraw(RenderContext& context);
-      void endDraw(RenderContext& context);
+      void beginDraw(Graphics::RenderContext& context);
+      void endDraw(Graphics::RenderContext& context);
 
       void draw(const Sprite& sprite);
 
@@ -76,17 +80,18 @@ namespace Graphics
       void release();
 
     // rendering
-      void renderSprites(RenderContext& context);
+      void renderSprites(Graphics::RenderContext& context);
       void renderSprite(const Sprite& sprite, PTVertex* pbuffer);
 
     // data
       SpriteBatch    mSprites;
-      ConstantBuffer mConstants;
       Vector         mOffset;
-      Effect*        mpEffect;
-      UniformBuffer* mpUB;
-      VertexBuffer*  mpVB;
-      IndexBuffer*   mpIB;
+      ConstantBuffer mConstants;
+
+      Graphics::Effect*        mpEffect;
+      Graphics::UniformBuffer* mpUB;
+      Graphics::VertexBuffer*  mpVB;
+      Graphics::IndexBuffer*   mpIB;
    };
 }
 

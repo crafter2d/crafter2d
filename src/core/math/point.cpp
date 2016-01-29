@@ -20,26 +20,20 @@
 #include "point.h"
 
 // static
-Point& Point::zero()
+c2d::Point& c2d::Point::zero()
 {
   static Point sZero;
   return sZero;
 }
 
-Point::Point():
-   mX(0),
-   mY(0)
+c2d::Point::Point():
+   x(0),
+   y(0)
 {
 }
 
-Point::Point(int x, int y):
-   mX(x),
-   mY(y)
+c2d::Point::Point(float _x, float _y):
+   x(_x),
+   y(_y)
 {
-}
-
-void Point::offset(int dx, int dy)
-{
-   mX += dx;
-   mY += dy;
 }

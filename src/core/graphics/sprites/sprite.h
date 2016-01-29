@@ -25,12 +25,17 @@
 #include "core/graphics/texture.h"
 #include "core/graphics/texturecoordinate.h"
 #include "core/graphics/animation/animationstate.h"
+#include "spritedefinition.h"
 
 namespace Graphics
 {
-   class SpriteDefinition;
    class Texture;
+}
 
+namespace c2d
+{
+   class SpriteDefinition;
+ 
    class CORE_API Sprite
    {
    public:
@@ -38,21 +43,32 @@ namespace Graphics
       ~Sprite();
 
     // get/set
-      const Size&              getSize() const;
-      void                     setSize(const Size& size);
+      const Size& getHalfSize() const {
+         return mHalfSize;
+      }
 
-      const Size&              getHalfSize() const;
+      const Graphics::Texture& getTexture() const {
+         return mpDefinition->getTexture();
+      }
 
-      const Texture&           getTexture() const;
+      const Graphics::TextureCoordinate& getTextureCoordinate() const {
+         return mTexCoordinate;
+      }
 
-      const TextureCoordinate& getTextureCoordinate() const;
-      void                     setTextureCoordinate(const TextureCoordinate& coordinate);
+      void setTextureCoordinate(const Graphics::TextureCoordinate& coordinate) {
+         mTexCoordinate = coordinate;
+      }
 
-      const XForm&             getTransform() const;
-      void                     setTransform(const XForm& xform);
+      const XForm& getTransform() const {
+         return mTransform;
+      }
+
+      void setTransform(const XForm& xform) {
+         mTransform = xform;
+      }
 
     // operations
-      bool initialize(Device& device);
+      bool initialize(Graphics::Device& device);
       void update(float delta);
       void setAnimation(int index);
       void flip();
@@ -62,32 +78,12 @@ namespace Graphics
     // data
       SpriteDefinition* mpDefinition;
 
-      AnimationState    mAnimState;
-      TextureCoordinate mTexCoordinate;
+      Graphics::AnimationState    mAnimState;
+      Graphics::TextureCoordinate mTexCoordinate;
+
       XForm             mTransform;
       Size              mHalfSize;
    };
-
-   inline const Size& Sprite::getHalfSize() const {
-      return mHalfSize;
-   }
-
-   inline const TextureCoordinate& Sprite::getTextureCoordinate() const {
-      return mTexCoordinate;
-   }
-
-   inline void Sprite::setTextureCoordinate(const TextureCoordinate& coordinate) {
-      mTexCoordinate = coordinate;
-   }
-
-   inline const XForm& Sprite::getTransform() const {
-      return mTransform;
-   }
-
-   inline void Sprite::setTransform(const XForm& xform) {
-      mTransform = xform;
-   }
-
 }
 
 #endif // SPRITE_H

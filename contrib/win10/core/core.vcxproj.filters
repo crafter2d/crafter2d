@@ -92,6 +92,9 @@
     <Filter Include="sound">
       <UniqueIdentifier>{c1d83940-9664-4d7b-aeef-210fc385ea47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{17ea6b73-b288-4e40-a122-0a6fb312faa2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\core\core_base.cpp" />
@@ -703,6 +706,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\core\graphics\particles\particlerenderergeometry.cpp">
       <Filter>graphics\particles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\core\modules\uimodule.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\core\ui\uisystem.cpp">
+      <Filter>ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1407,6 +1416,12 @@
     <ClInclude Include="..\..\..\src\core\graphics\particles\particlerenderergeometry.h">
       <Filter>graphics\particles</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\core\modules\uimodule.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\core\ui\uisystem.h">
+      <Filter>ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\core\system\timerdata.inl">
@@ -1473,9 +1488,6 @@
       <Filter>graphics\animation</Filter>
     </None>
     <None Include="..\..\..\src\core\math\color.inl">
-      <Filter>math</Filter>
-    </None>
-    <None Include="..\..\..\src\core\math\point.inl">
       <Filter>math</Filter>
     </None>
     <None Include="..\..\..\src\core\math\rect.inl">

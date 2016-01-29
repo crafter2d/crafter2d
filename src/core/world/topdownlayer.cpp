@@ -221,13 +221,13 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
    pfrontvb->unlock(context);
 }
 
-Point TopDownLayer::pointToTile(const Point& point)
+c2d::Point TopDownLayer::pointToTile(const c2d::Point& point)
 {
-   if ( point.x() < 0 || point.y() < 0)
-      return Point();
+   if ( point.x < 0 || point.y < 0)
+      return c2d::Point();
 
-   int tileX = (point.x() + xscroll) / tileWidth;
-   int tileY = (point.y() + yscroll) / tileHeight;
+   int tileX = (point.x + xscroll) / tileWidth;
+   int tileY = (point.y + yscroll) / tileHeight;
 
-   return Point(tileX, tileY);
+   return c2d::Point(tileX, tileY);
 }

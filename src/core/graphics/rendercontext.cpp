@@ -67,7 +67,7 @@ void RenderContext::setSpriteOffset(const Vector& offset)
    mParticleRenderer.setOffset(*this, offset);
 }
 
-void RenderContext::drawSprite(const Sprite& sprite)
+void RenderContext::drawSprite(const c2d::Sprite& sprite)
 {
    mSpriteRenderer.draw(sprite);
 }

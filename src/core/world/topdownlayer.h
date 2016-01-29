@@ -40,7 +40,7 @@ public:
    virtual void drawFront(Graphics::RenderContext& context) override;
    
  // coordinate conversion
-   virtual Point pointToTile(const Point& point) override;
+   virtual c2d::Point pointToTile(const c2d::Point& point) override;
 
  // notifications
    virtual void onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport) override;

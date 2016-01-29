@@ -36,192 +36,191 @@
 #include "core/math/matrix4.h"
 #include "core/math/vector.h"
 
-namespace Graphics
-{
-
-SpriteRenderer::SpriteRenderer():
-   mSprites(),
-   mConstants(),
-   mOffset(),
-   mpEffect(NULL),
-   mpUB(NULL),
-   mpVB(NULL),
-   mpIB(NULL)
-{
-}
-
-SpriteRenderer::~SpriteRenderer()
-{
-   release();
-}
+using namespace Graphics;
 
 static const int SpriteVertices = 4;
-static const int SpriteIndices  = 6;
+static const int SpriteIndices = 6;
 
-bool SpriteRenderer::create(Device& device)
+namespace c2d
 {
-   mpEffect = device.createEffect(UTEXT("shaders/basic"));
-   if ( mpEffect == NULL )
-   {
-      return false;
-   }
-   
-   UNIFORM_BUFFER_DESC descs[] = {
-      { UTEXT("proj"), sizeof(float)* 16 },
-      { UTEXT("world"), sizeof(float)* 16 },
-      { UTEXT("object"), sizeof(float)* 16 },
-   };
 
-   mpUB = mpEffect->createUniformBuffer(UTEXT("mpv"));
-   if ( !mpUB->create(device, descs, 3) )
+   c2d::SpriteRenderer::SpriteRenderer() :
+      mSprites(),
+      mConstants(),
+      mOffset(),
+      mpEffect(NULL),
+      mpUB(NULL),
+      mpVB(NULL),
+      mpIB(NULL)
    {
-      return false;
    }
 
-   mConstants.projection.setIdentity();
-   mConstants.world.setIdentity();
-   mConstants.object.setIdentity();
-
-   const int batchsize = 256;
-
-   int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
-   mpVB = mpEffect->createVertexBuffer(device, batchsize * SpriteVertices, usage);
-   if ( mpVB == NULL )
+   c2d::SpriteRenderer::~SpriteRenderer()
    {
-      return false;
+      release();
    }
 
-   mpIB = Utils::createIndexBuffer(device, batchsize, 4);
-   if ( mpIB == NULL )
+   bool SpriteRenderer::create(Device& device)
    {
-      return false;
-   }
-
-   return true;
-}
-
-void SpriteRenderer::release()
-{
-   delete mpVB;
-   delete mpIB;
-   delete mpUB;
-   delete mpEffect;
-}
-
-void SpriteRenderer::setOffset(RenderContext& context, const Vector& offset)
-{
-   if ( mOffset != offset )
-   {
-      mConstants.world.translate(-(offset - mOffset));
-      mpUB->set(context, &mConstants, sizeof(mConstants));
-
-      mOffset = offset;
-   }
-}
-
-void SpriteRenderer::viewportChanged(RenderContext& context, const Viewport& viewport)
-{
-   mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
-
-   mpUB->set(context, &mConstants, sizeof(mConstants));
-}
-
-// - Drawing
-
-void SpriteRenderer::beginDraw(RenderContext& context)
-{
-   C2D_UNUSED(context);
-   
-   mSprites.clear();
-}
-   
-void SpriteRenderer::endDraw(RenderContext& context)
-{
-   if ( mSprites.size() > 0 )
-   {
-      renderSprites(context);
-
-      mpEffect->enable(context);
-      mpEffect->setConstantBuffer(context, 0, *mpUB);
-
-      context.setVertexBuffer(*mpVB);
-      context.setIndexBuffer(*mpIB);
-
-      int start = 0;
-      int indices = 6;
-      const Texture* ptex = &mSprites[0].getTexture();
-      for ( int index = 1; index < mSprites.size(); ++index )
+      mpEffect = device.createEffect(UTEXT("shaders/basic"));
+      if ( mpEffect == NULL )
       {
-         const Sprite& sprite = mSprites[index];
-         if ( &sprite.getTexture() != ptex )
+         return false;
+      }
+
+      UNIFORM_BUFFER_DESC descs[] = {
+         { UTEXT("proj"), sizeof(float) * 16 },
+         { UTEXT("world"), sizeof(float) * 16 },
+         { UTEXT("object"), sizeof(float) * 16 },
+      };
+
+      mpUB = mpEffect->createUniformBuffer(UTEXT("mpv"));
+      if ( !mpUB->create(device, descs, 3) )
+      {
+         return false;
+      }
+
+      mConstants.projection.setIdentity();
+      mConstants.world.setIdentity();
+      mConstants.object.setIdentity();
+
+      const int batchsize = 256;
+
+      int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
+      mpVB = mpEffect->createVertexBuffer(device, batchsize * SpriteVertices, usage);
+      if ( mpVB == NULL )
+      {
+         return false;
+      }
+
+      mpIB = Utils::createIndexBuffer(device, batchsize, 4);
+      if ( mpIB == NULL )
+      {
+         return false;
+      }
+
+      return true;
+   }
+
+   void SpriteRenderer::release()
+   {
+      delete mpVB;
+      delete mpIB;
+      delete mpUB;
+      delete mpEffect;
+   }
+
+   void SpriteRenderer::setOffset(RenderContext& context, const Vector& offset)
+   {
+      if ( mOffset != offset )
+      {
+         mConstants.world.translate(-(offset - mOffset));
+         mpUB->set(context, &mConstants, sizeof(mConstants));
+
+         mOffset = offset;
+      }
+   }
+
+   void SpriteRenderer::viewportChanged(RenderContext& context, const Viewport& viewport)
+   {
+      mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
+
+      mpUB->set(context, &mConstants, sizeof(mConstants));
+   }
+
+   // - Drawing
+
+   void SpriteRenderer::beginDraw(RenderContext& context)
+   {
+      C2D_UNUSED(context);
+
+      mSprites.clear();
+   }
+
+   void SpriteRenderer::endDraw(RenderContext& context)
+   {
+      if ( mSprites.size() > 0 )
+      {
+         renderSprites(context);
+
+         mpEffect->enable(context);
+         mpEffect->setConstantBuffer(context, 0, *mpUB);
+
+         context.setVertexBuffer(*mpVB);
+         context.setIndexBuffer(*mpIB);
+
+         int start = 0;
+         int indices = 6;
+         const Texture* ptex = &mSprites.front()->getTexture();
+         for ( auto psprite : mSprites )
+         {
+            if ( &psprite->getTexture() != ptex )
+            {
+               context.setTexture(0, *ptex);
+               context.drawTriangles(start, indices);
+
+               start += indices;
+               indices = 0;
+               ptex = &psprite->getTexture();
+            }
+
+            indices += 6;
+         }
+
+         if ( indices > 0 )
          {
             context.setTexture(0, *ptex);
             context.drawTriangles(start, indices);
-
-            start += indices;
-            indices = 0;
-            ptex = &sprite.getTexture();
          }
 
-         indices += 6;
+         mpVB->disable(context);
+         mpIB->disable(context);
       }
+   }
 
-      if ( indices > 0 )
+   void SpriteRenderer::draw(const Sprite& sprite)
+   {
+      mSprites.add(sprite);
+   }
+
+   void SpriteRenderer::renderSprites(RenderContext& context)
+   {
+      PTVertex* pvertices = static_cast<PTVertex*>(mpVB->lock(context));
+
+      mSprites.sort();
+      for ( auto psprite : mSprites )
       {
-         context.setTexture(0, *ptex);
-         context.drawTriangles(start, indices);
+         renderSprite(*psprite, pvertices);
+
+         pvertices += 4;
       }
 
-      mpVB->disable(context);
-      mpIB->disable(context);
+      mpVB->unlock(context);
    }
-}
 
-void SpriteRenderer::draw(const Sprite& sprite)
-{
-   mSprites.add(sprite);
-}
-
-void SpriteRenderer::renderSprites(RenderContext& context)
-{
-   PTVertex* pvertices = static_cast<PTVertex*>(mpVB->lock(context));
-
-   mSprites.sort();
-   for ( int index = 0; index < mSprites.size(); ++index )
+   void SpriteRenderer::renderSprite(const Sprite& sprite, PTVertex* pbuffer)
    {
-      const Sprite& sprite = mSprites[index];
+      const TextureCoordinate& coordinate = sprite.getTextureCoordinate();
+      const XForm& xform = sprite.getTransform();
+      const Size& size = sprite.getHalfSize();
 
-      renderSprite(sprite, pvertices);
+      int offsets[4][2] = { {-1, -1}, {1, -1}, {1, 1}, {-1, 1} };
+      int texindex[] = { TextureCoordinate::TopLeft, TextureCoordinate::TopRight, TextureCoordinate::BottomRight, TextureCoordinate::BottomLeft };
 
-      pvertices += 4;
+      // create the vertices
+
+      Vector point;
+      for ( int index = 0; index < 4; ++index )
+      {
+         point.x = size.width * offsets[index][0];
+         point.y = size.height * offsets[index][1];
+         point = xform.transform(point);
+
+         const Vertex& tex = coordinate.get(texindex[index]);
+
+         pbuffer[index].pos = point;
+         pbuffer[index].tex = tex;
+      }
    }
 
-   mpVB->unlock(context);
-}
-
-void SpriteRenderer::renderSprite(const Sprite& sprite, PTVertex* pbuffer)
-{
-   const TextureCoordinate& coordinate = sprite.getTextureCoordinate();
-   const XForm& xform = sprite.getTransform();
-   const Size& size = sprite.getHalfSize();
-
-   int offsets[4][2] = { {-1, -1}, {1, -1}, {1, 1}, {-1, 1} };
-   int texindex[] = { TextureCoordinate::TopLeft, TextureCoordinate::TopRight, TextureCoordinate::BottomRight, TextureCoordinate::BottomLeft };
-
-   // create the vertices
-
-   Vector point;
-   for ( int index = 0; index < 4; ++index )
-   {
-      point.x = size.width * offsets[index][0];
-      point.y = size.height * offsets[index][1];
-      point = xform.transform(point);
-
-      const Vertex& tex = coordinate.get(texindex[index]);
-
-      pbuffer[index].pos = point;
-      pbuffer[index].tex = tex;
-   }
-}
-
-} // namespace Graphics
+} // namespace c2d

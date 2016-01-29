@@ -67,7 +67,7 @@ namespace Graphics
       void endDraw();
 
       void setSpriteOffset(const Vector& offset);
-      void drawSprite(const Sprite& sprite);
+      void drawSprite(const c2d::Sprite& sprite);
       void drawParticles(const ParticleSystem& particles);
 
    // notifications
@@ -76,7 +76,7 @@ namespace Graphics
    private:
 
     // data
-      SpriteRenderer         mSpriteRenderer;
+      c2d::SpriteRenderer    mSpriteRenderer;
       ParticleSystemRenderer mParticleRenderer;
       TextRenderer           mTextRenderer;
       Color                  mClearColor;

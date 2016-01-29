@@ -1,8 +1,5 @@
 
 #include "meshcomponent.h"
-#ifndef JENGINE_INLINE
-#  include "meshcomponent.inl"
-#endif
 
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/sprites/sprite.h"

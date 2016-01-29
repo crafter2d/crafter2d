@@ -7,7 +7,8 @@
 
 #include "core/modules/uimodule.h"
 
-// #include "rocketui.h"
+#include "yauisystem.h"
+
 
 #ifdef WIN32
 #ifdef MOD_EXPORTS
@@ -23,10 +24,6 @@ using namespace c2d;
 
 extern "C" MOD_API Module* cdecl getModule()
 {
-   return new UiModule(); // new RocketUI());
+   return new UiModule(new YaUiSystem());
 }
 
-extern "C" MOD_API void deleteModule(Module* pmodule)
-{
-   delete pmodule;
-}

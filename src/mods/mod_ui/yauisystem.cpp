@@ -17,47 +17,21 @@
 *   Free Software Foundation, Inc.,                                       *
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
-#ifndef UI_SYSTEM_H
-#define UI_SYSTEM_H
+#include "yauisystem.h"
 
-#include "core/core_base.h"
-
-namespace Graphics
+bool c2d::YaUiSystem::initialize(ScriptManager & scriptmanager, Graphics::Device & device, float width, float height)
 {
-   class Device;
-   class RenderContext;
-}
-
-namespace Input
-{
-   class KeyEvent;
-   class MouseEvent;
-}
-
-namespace c2d
-{
-   class ScriptManager;
-
-   class CORE_API UiSystem
+   if ( UiSystem::initialize(scriptmanager, device, width, height) )
    {
-   public:
-      UiSystem();
-      virtual ~UiSystem();
-
-      virtual bool initialize(ScriptManager& scriptmanager, Graphics::Device& device, float width, float height);
-
-      virtual void update(Graphics::RenderContext& context, float delta) = 0;
-      virtual void render(Graphics::RenderContext& context) = 0;
-      
-    // input notifications
-      virtual void onKeyEvent(const Input::KeyEvent& event);
-      virtual void onMouseEvent(const Input::MouseEvent& event);
-      
-   private:
-
-      Graphics::Device* mpDevice;
-      ScriptManager*    mpScriptManager;
-   };
+      return true;
+   }
+   return false;
 }
 
-#endif // UI_SYSTEM_H
+void c2d::YaUiSystem::update(Graphics::RenderContext & context, float delta)
+{
+}
+
+void c2d::YaUiSystem::render(Graphics::RenderContext & context)
+{
+}

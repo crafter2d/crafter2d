@@ -53,7 +53,10 @@ namespace Graphics
    class Viewport;
 };
 
-class Point;
+namespace c2d
+{
+   class Point;
+}
 
 struct LayerDefinition
 {
@@ -135,7 +138,7 @@ public:
 
    Vector         getScrollArea() const;
 
-   virtual Point  pointToTile(const Point& point) = 0;
+   virtual c2d::Point pointToTile(const c2d::Point& point) = 0;
 
    void           scroll(Graphics::RenderContext& context, float x, float y);
    void           update(float delta);

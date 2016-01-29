@@ -29,7 +29,10 @@ namespace Graphics
 {
    class Animator;
    class Texture;
+}
 
+namespace c2d
+{
    class CORE_API SpriteDefinition
    {
    public:
@@ -37,39 +40,48 @@ namespace Graphics
       ~SpriteDefinition();
 
     // get/set
-      const Size& getSize() const;
-      void        setSize(const Size& size);
+      const Size& getSize() const {
+         return mSize;
+      }
 
-      const Texture& getTexture() const;
-      void           setTexture(Texture* ptexture);
+      void setSize(const Size& size) {
+         mSize = size;
+      }
 
-      bool            hasSpriteAnimator() const;
-      const Animator& getSpriteAnimator() const;
-            Animator& getSpriteAnimator();
-      void            setSpriteAnimator(Animator* panimator);
+      const Graphics::Texture& getTexture() const {
+         ASSERT_PTR(mpTexture);
+         return *mpTexture;
+      }
+
+      void setTexture(Graphics::Texture* ptexture) {
+         mpTexture = ptexture;
+      }
+
+      bool hasSpriteAnimator() const {
+         return mpAnimator != nullptr;
+      }
+
+      const Graphics::Animator& getSpriteAnimator() const {
+         ASSERT_PTR(mpAnimator);
+         return *mpAnimator;
+      }
+      
+      Graphics::Animator& getSpriteAnimator() {
+         ASSERT_PTR(mpAnimator);
+         return *mpAnimator;
+      }
+
+      void setSpriteAnimator(Graphics::Animator* panimator) {
+         mpAnimator = panimator;
+      }
 
    private:
 
     // data
-      Size        mSize;
-      Texture*    mpTexture;
-      Animator*   mpAnimator;
+      Size                 mSize;
+      Graphics::Texture*   mpTexture;
+      Graphics::Animator*  mpAnimator;
    };
-
-   inline const Animator& SpriteDefinition::getSpriteAnimator() const {
-      ASSERT_PTR(mpAnimator);
-      return *mpAnimator;
-   }
-
-   inline Animator& SpriteDefinition::getSpriteAnimator() {
-      ASSERT_PTR(mpAnimator);
-      return *mpAnimator;
-   }
-
-   inline const Texture& SpriteDefinition::getTexture() const {
-      ASSERT_PTR(mpTexture);
-      return *mpTexture;
-   }
 }
 
 #endif // SPRITE_DEFINITION_H

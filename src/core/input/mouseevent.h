@@ -27,9 +27,6 @@
 
 #include "inputevent.h"
 
-struct SDL_MouseButtonEvent;
-struct SDL_MouseMotionEvent;
-
 namespace Input
 {
    class CORE_API MouseEvent : public InputEvent
@@ -51,19 +48,15 @@ namespace Input
          eMotion
       };
 
-    // statics
-      static MouseEvent FromSDL(SDL_MouseButtonEvent& event);
-      static MouseEvent FromSDL(SDL_MouseMotionEvent& event);
-
     // construction
-      MouseEvent(int buttons, EventType eventtype, int keymodifiers, const Point& location, const Point& relative = Point::zero());
+      MouseEvent(int buttons, EventType eventtype, int keymodifiers, const c2d::Point& location, const c2d::Point& relative = c2d::Point::zero());
       virtual ~MouseEvent();
 
     // get/set
-            int       getButtons() const   { return mButtons; }
-            EventType getEventType() const { return mEventType; }
-      const Point&    getLocation() const  { return mLocation; }
-      const Point&    getRelative() const  { return mRelative; }        
+            int         getButtons() const   { return mButtons; }
+            EventType   getEventType() const { return mEventType; }
+      const c2d::Point& getLocation() const  { return mLocation; }
+      const c2d::Point& getRelative() const  { return mRelative; }
 
     // query
       bool isLeftButtonDown() const { return IS_SET(mButtons, eLeft); }
@@ -75,12 +68,11 @@ namespace Input
 
    private:
      // statics
-      static Button toMouseEventButton(int sdlbutton);
 
-      int       mButtons;
-      EventType mEventType;
-      Point     mLocation;
-      Point     mRelative;
+      int         mButtons;
+      EventType   mEventType;
+      c2d::Point  mLocation;
+      c2d::Point  mRelative;
    };
 }
 

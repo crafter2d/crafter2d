@@ -23,47 +23,19 @@
 #include "core/graphics/texture.h"
 #include "core/defines.h"
 
-namespace Graphics
+namespace c2d
 {
+   SpriteDefinition::SpriteDefinition() :
+      mSize(),
+      mpTexture(NULL),
+      mpAnimator(NULL)
+   {
+   }
 
-SpriteDefinition::SpriteDefinition():
-   mSize(),
-   mpTexture(NULL),
-   mpAnimator(NULL)
-{
-}
+   SpriteDefinition::~SpriteDefinition()
+   {
+      delete mpTexture;
+      delete mpAnimator;
+   }
 
-SpriteDefinition::~SpriteDefinition()
-{
-   delete mpTexture;
-   delete mpAnimator;
-}
-
-// - Get/set
-
-const Size& SpriteDefinition::getSize() const
-{
-   return mSize;
-}
-   
-void SpriteDefinition::setSize(const Size& size)
-{
-   mSize = size;
-}
-   
-void SpriteDefinition::setTexture(Texture* ptexture)
-{
-   mpTexture = ptexture;
-}
-
-bool SpriteDefinition::hasSpriteAnimator() const
-{
-   return mpAnimator != NULL;
-}
-
-void SpriteDefinition::setSpriteAnimator(Animator* panimator)
-{
-   mpAnimator = panimator;
-}
-
-} // namespace Graphics
+} // namespace c2d

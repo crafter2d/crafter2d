@@ -22,27 +22,28 @@
 
 #include "core/core_base.h"
 
-class CORE_API Point
+namespace c2d
 {
-public:
-   static Point& zero();
+   class CORE_API Point
+   {
+   public:
+      static Point& zero();
 
-   Point();
-   Point(int x, int y);
+      Point();
+      Point(float _x, float _y);
 
-   int   x() const;
-   void  x(int xvalue);
+      Point operator-(const Point& that) const {
+         return Point(x - that.x, y - that.y);
+      }
 
-   int   y() const;
-   void  y(int yvalue);
+      void offset(float dx, float dy) {
+         x += dx;
+         y += dy;
+      }
 
-   void offset(int dx, int dy);
-
-private:
-   int mX;
-   int mY;
-};
-
-#include "point.inl"
+      float x;
+      float y;
+   };
+}
 
 #endif

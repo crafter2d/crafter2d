@@ -161,15 +161,15 @@ void IsoDiamondLayer::drawFront(Graphics::RenderContext& context)
    // nothing here yet
 }
 
-Point IsoDiamondLayer::pointToTile(const Point& point)
+c2d::Point IsoDiamondLayer::pointToTile(const c2d::Point& point)
 {
-   Point p(point.x() - getXOffset() + xscroll, point.y() + yscroll);
+   c2d::Point p(point.x - getXOffset() + xscroll, point.y + yscroll);
 
-   int y = (2 * p.y() - p.x()) / 2;
-   int x = p.x() + y;
+   int y = (2 * p.y - p.x) / 2;
+   int x = p.x + y;
 
    float xtile = static_cast<float>(x) / tileheight() + 0.5;
    float ytile = static_cast<float>(y) / tileheight() + 0.5;
 
-   return Point(xtile, ytile);
+   return c2d::Point(xtile, ytile);
 }

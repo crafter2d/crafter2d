@@ -25,7 +25,7 @@ namespace Input
 
 // - Construction
 
-MouseEvent::MouseEvent(int buttons, EventType eventtype, int keymodifiers, const Point& location, const Point& relative):
+MouseEvent::MouseEvent(int buttons, EventType eventtype, int keymodifiers, const c2d::Point& location, const c2d::Point& relative):
    InputEvent(keymodifiers),
    mButtons(buttons),
    mEventType(eventtype),

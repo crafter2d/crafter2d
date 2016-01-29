@@ -33,6 +33,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mod_fmod", "mod_fmod\mod_fm
 		{902E7CF4-458B-4D87-92C5-36B9C6AE4BDA} = {902E7CF4-458B-4D87-92C5-36B9C6AE4BDA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mod_ui", "mod_ui\mod_ui.vcxproj", "{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{902E7CF4-458B-4D87-92C5-36B9C6AE4BDA} = {902E7CF4-458B-4D87-92C5-36B9C6AE4BDA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -133,6 +138,18 @@ Global
 		{E8E6332B-797A-486D-9A47-221974CE075B}.Release|x64.Build.0 = Release|x64
 		{E8E6332B-797A-486D-9A47-221974CE075B}.Release|x86.ActiveCfg = Release|Win32
 		{E8E6332B-797A-486D-9A47-221974CE075B}.Release|x86.Build.0 = Release|Win32
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Debug|ARM.ActiveCfg = Debug|ARM
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Debug|ARM.Build.0 = Debug|ARM
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Debug|x64.ActiveCfg = Debug|x64
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Debug|x64.Build.0 = Debug|x64
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Debug|x86.ActiveCfg = Debug|Win32
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Debug|x86.Build.0 = Debug|Win32
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Release|ARM.ActiveCfg = Release|ARM
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Release|ARM.Build.0 = Release|ARM
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Release|x64.ActiveCfg = Release|x64
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Release|x64.Build.0 = Release|x64
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Release|x86.ActiveCfg = Release|Win32
+		{9E5C4AF0-5A61-4177-82F8-89BAB2EA4BD2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

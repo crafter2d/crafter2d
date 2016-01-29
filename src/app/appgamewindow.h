@@ -24,6 +24,8 @@ class AppGameWindow : public GameWindow
 public:
    AppGameWindow();
    virtual ~AppGameWindow();
+
+   int getDPI() const { return m_effectiveDpi; }
    
    // query
    virtual int getHandle() const override;

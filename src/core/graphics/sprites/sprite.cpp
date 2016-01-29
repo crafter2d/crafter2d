@@ -23,69 +23,62 @@
 
 #include "spritedefinition.h"
 
-namespace Graphics
+namespace c2d
 {
 
-Sprite::Sprite(SpriteDefinition* pdefinition):
-   mpDefinition(pdefinition),
-   mAnimState(),
-   mTexCoordinate(),
-   mTransform(),
-   mHalfSize()
-{
-   ASSERT_PTR(mpDefinition);
-}
-
-Sprite::~Sprite()
-{
-   delete mpDefinition;
-}
-
-// - Query
-
-const Texture& Sprite::getTexture() const
-{
-   return mpDefinition->getTexture();
-}
-
-// - Operations
-
-bool Sprite::initialize(Device& device)
-{
-   C2D_UNUSED(device);
-   
-   mHalfSize = mpDefinition->getSize() / 2.0f;
-
-   setAnimation(0);
-
-   return true;
-}
-
-void Sprite::update(float delta)
-{
-   if ( mpDefinition->hasSpriteAnimator() )
+   Sprite::Sprite(SpriteDefinition* pdefinition) :
+      mpDefinition(pdefinition),
+      mAnimState(),
+      mTexCoordinate(),
+      mTransform(),
+      mHalfSize()
    {
-      mAnimState.update(delta);
-      if ( mpDefinition->getSpriteAnimator().animate(mAnimState) )
+      ASSERT_PTR(mpDefinition);
+   }
+
+   Sprite::~Sprite()
+   {
+      delete mpDefinition;
+   }
+
+   // - Operations
+
+   bool Sprite::initialize(Graphics::Device& device)
+   {
+      C2D_UNUSED(device);
+
+      mHalfSize = mpDefinition->getSize() / 2.0f;
+
+      setAnimation(0);
+
+      return true;
+   }
+
+   void Sprite::update(float delta)
+   {
+      if ( mpDefinition->hasSpriteAnimator() )
       {
+         mAnimState.update(delta);
+         if ( mpDefinition->getSpriteAnimator().animate(mAnimState) )
+         {
+            mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
+         }
+      }
+   }
+
+   void Sprite::setAnimation(int index)
+   {
+      if ( mpDefinition->hasSpriteAnimator() )
+      {
+         mAnimState.setActiveAnimation(index);
          mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
       }
    }
-}
 
-void Sprite::setAnimation(int index)
-{
-   if ( mpDefinition->hasSpriteAnimator() )
+   void Sprite::flip()
    {
-      mAnimState.setActiveAnimation(index);
+      mpDefinition->getSpriteAnimator().flip();
       mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
    }
-}
 
-void Sprite::flip()
-{
-   mpDefinition->getSpriteAnimator().flip();
-   mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
-}
-
-} // Graphics
+} // namespace c2d

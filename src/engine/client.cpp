@@ -629,8 +629,8 @@ namespace c2d
    void Client::onMouseEvent(const Input::MouseEvent& event)
    {
       Variant args[4];
-      args[0].setInt(event.getLocation().x());
-      args[1].setInt(event.getLocation().y());
+      args[0].setReal(event.getLocation().x);
+      args[1].setReal(event.getLocation().y);
       args[2].setInt(event.getButtons());
       args[3].setInt(event.getEventType());
       mpScript->call(sOnMouseEvent, 4, args);

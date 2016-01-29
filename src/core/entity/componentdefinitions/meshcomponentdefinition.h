@@ -12,13 +12,18 @@ public:
    MeshComponentDefinition();
 
  // get/set
-   const Graphics::SpriteDefinition& getSpriteDefinition() const;
-         Graphics::SpriteDefinition& getSpriteDefinition();
+   const c2d::SpriteDefinition& getSpriteDefinition() const {
+      return mSpriteDefinition;
+   }
+   
+   c2d::SpriteDefinition& getSpriteDefinition() {
+      return mSpriteDefinition;
+   }
 
 private:
 
  // data
-   Graphics::SpriteDefinition mSpriteDefinition;
+   c2d::SpriteDefinition mSpriteDefinition;
 };
 
 #endif // MESH_COMPONENT_DEFINITION_H

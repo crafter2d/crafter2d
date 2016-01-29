@@ -150,6 +150,7 @@
     <ClCompile Include="..\..\..\src\core\modules\pluginmodule.cpp" />
     <ClCompile Include="..\..\..\src\core\modules\scriptmodule.cpp" />
     <ClCompile Include="..\..\..\src\core\modules\soundmodule.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\uimodule.cpp" />
     <ClCompile Include="..\..\..\src\core\physics\bodies.cpp" />
     <ClCompile Include="..\..\..\src\core\physics\body.cpp" />
     <ClCompile Include="..\..\..\src\core\physics\bodydefinition.cpp" />
@@ -199,6 +200,7 @@
     <ClCompile Include="..\..\..\src\core\system\variant.cpp" />
     <ClCompile Include="..\..\..\src\core\system\winplatform.cpp" />
     <ClCompile Include="..\..\..\src\core\system\wintimer.cpp" />
+    <ClCompile Include="..\..\..\src\core\ui\uisystem.cpp" />
     <ClCompile Include="..\..\..\src\core\vfs\buffer.cpp" />
     <ClCompile Include="..\..\..\src\core\vfs\compressedfile.cpp" />
     <ClCompile Include="..\..\..\src\core\vfs\file.cpp" />
@@ -375,6 +377,7 @@
     <ClInclude Include="..\..\..\src\core\modules\pluginmodule.h" />
     <ClInclude Include="..\..\..\src\core\modules\scriptmodule.h" />
     <ClInclude Include="..\..\..\src\core\modules\soundmodule.h" />
+    <ClInclude Include="..\..\..\src\core\modules\uimodule.h" />
     <ClInclude Include="..\..\..\src\core\physics\bodies.h" />
     <ClInclude Include="..\..\..\src\core\physics\body.h" />
     <ClInclude Include="..\..\..\src\core\physics\bodydefinition.h" />
@@ -435,6 +438,7 @@
     <ClInclude Include="..\..\..\src\core\system\variant.h" />
     <ClInclude Include="..\..\..\src\core\system\winplatform.h" />
     <ClInclude Include="..\..\..\src\core\system\wintimer.h" />
+    <ClInclude Include="..\..\..\src\core\ui\uisystem.h" />
     <ClInclude Include="..\..\..\src\core\vfs\buffer.h" />
     <ClInclude Include="..\..\..\src\core\vfs\compressedfile.h" />
     <ClInclude Include="..\..\..\src\core\vfs\file.h" />
@@ -506,7 +510,6 @@
     <None Include="..\..\..\src\core\input\inputevent.inl" />
     <None Include="..\..\..\src\core\log\log.inl" />
     <None Include="..\..\..\src\core\math\color.inl" />
-    <None Include="..\..\..\src\core\math\point.inl" />
     <None Include="..\..\..\src\core\math\rect.inl" />
     <None Include="..\..\..\src\core\math\size.inl" />
     <None Include="..\..\..\src\core\math\vector3.inl" />

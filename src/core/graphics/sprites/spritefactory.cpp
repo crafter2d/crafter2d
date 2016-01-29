@@ -25,7 +25,7 @@
 #include "sprite.h"
 #include "spritedefinition.h"
 
-namespace Graphics
+namespace c2d
 {
 
    Sprite* SpriteFactory::create(Graphics::Device& device, SpriteDefinition* pdefinition)
@@ -37,4 +37,4 @@ namespace Graphics
       return NULL;
    }
 
-} // namespace Graphics
+} // namespace c2d

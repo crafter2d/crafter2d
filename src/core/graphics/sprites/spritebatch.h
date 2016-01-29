@@ -22,7 +22,7 @@
 
 #include <vector>
 
-namespace Graphics
+namespace c2d
 {
    class Sprite;
 
@@ -30,19 +30,39 @@ namespace Graphics
    {
    public:
 
-      const Sprite& operator[](int index) const;
+      using Sprites = std::vector<const Sprite*>;
+      using iterator = Sprites::iterator;
 
     // query
-      int size() const;
+      int size() const {
+         return mSprites.size();
+      }
 
-      void add(const Sprite& sprite);
-      void clear();
+      const Sprite* front() {
+         return mSprites.front();
+      }
+
+      iterator begin() {
+         return mSprites.begin();
+      }
+
+      iterator end() {
+         return mSprites.end();
+      }
+
+    // maintenance
+      void add(const Sprite& sprite) {
+         mSprites.push_back(&sprite);
+      }
+
+      void clear() {
+         mSprites.clear();
+      }
 
       void sort();
 
    private:
-      typedef std::vector<const Sprite*> Sprites;
-
+      
     // data
       Sprites mSprites;
    };

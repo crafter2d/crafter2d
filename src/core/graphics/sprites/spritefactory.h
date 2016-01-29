@@ -25,6 +25,10 @@
 namespace Graphics
 {
    class Device;
+}
+
+namespace c2d
+{
    class Sprite;
    class SpriteDefinition;
 

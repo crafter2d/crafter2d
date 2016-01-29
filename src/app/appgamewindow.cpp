@@ -7,6 +7,7 @@
 #include "core/graphics/device.h"
 #include "core/input/key.h"
 #include "core/input/keyevent.h"
+#include "core/math/point.h"
 
 #include "mods/mod_d3d12/d3d11device.h"
 
@@ -19,6 +20,7 @@ using namespace Windows::UI::Input;
 using namespace Windows::System;
 using namespace Windows::Foundation;
 using namespace Windows::Graphics::Display;
+using namespace Windows::Devices::Input;
 
 namespace DX
 {
@@ -47,6 +49,8 @@ namespace DisplayMetrics
    static const float HeightThreshold = 1080.0f;	// 1080p height.
 };
 
+using namespace Input;
+
 ref class WindowEventHandler sealed
 {
    using WindowPtr = Platform::Agile<CoreWindow>;
@@ -55,11 +59,23 @@ ref class WindowEventHandler sealed
    AppGameWindow& mAppWindow;
    WindowPtr mWindow;
    KeyMap mKeyMap;
+   uint32 mPointerId;
+   bool mPointerInUse;
+   c2d::Point mPointerPosition;
+   c2d::Point mFirstPosition;
+   int mCurrentKey;
+   bool mJump;
 
 internal:
    WindowEventHandler(AppGameWindow& appwindow, WindowPtr window):
       mAppWindow(appwindow),
-      mWindow(window)
+      mWindow(window),
+      mKeyMap(),
+      mPointerId(0),
+      mPointerInUse(false),
+      mPointerPosition(),
+      mFirstPosition(),
+      mJump(false)
    {
       registerHandlers();
 
@@ -80,6 +96,15 @@ internal:
 
       mWindow->Closed +=
          ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>(this, &WindowEventHandler::OnWindowClosed);
+
+      mWindow->PointerPressed +=
+         ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &WindowEventHandler::OnPointerPressed);
+
+      mWindow->PointerMoved +=
+         ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &WindowEventHandler::OnPointerMoved);
+
+      mWindow->PointerReleased +=
+         ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &WindowEventHandler::OnPointerReleased);
 
       mWindow->KeyDown +=
          ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &WindowEventHandler::OnKeyDown);
@@ -113,11 +138,90 @@ internal:
    {
    }
 
+   // Mouse/touch input
+
+   void OnPointerPressed(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::PointerEventArgs^ args)
+   {
+      auto device = args->CurrentPoint->PointerDevice;
+      auto deviceType = device->PointerDeviceType;
+
+      if ( deviceType != PointerDeviceType::Mouse )
+      {
+         c2d::Point position(DX::ConvertDipsToPixels(args->CurrentPoint->Position.X, mAppWindow.getDPI()), DX::ConvertDipsToPixels(args->CurrentPoint->Position.Y, mAppWindow.getDPI()));
+         if ( position.x > 350 && position.y > 600 )
+         {
+            KeyEvent keyevent(Key::SPACE, KeyEvent::ePressed, 0);
+            mAppWindow.handleEvent(keyevent);
+            mJump = true;
+         }
+         else if ( !mPointerInUse )
+         {
+            mPointerId = args->CurrentPoint->PointerId;
+            mPointerInUse = true;
+            mPointerPosition = position;
+            mFirstPosition = position;
+         }
+      }
+   }
+
+   void OnPointerMoved(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::PointerEventArgs^ args)
+   {
+      uint32 pointerId = args->CurrentPoint->PointerId;
+      if ( pointerId == mPointerId )
+      {
+         c2d::Point position = c2d::Point(args->CurrentPoint->Position.X, args->CurrentPoint->Position.Y);
+         c2d::Point delta = position - mFirstPosition;
+
+         int key = -1;
+         if ( delta.x > 16.0f )
+         {  
+            key = Key::RIGHT;
+         }
+         else if ( delta.x < -16.0f )
+         {
+            key = Key::LEFT;
+         }
+
+         if ( key != -1 )
+         {
+            if ( key != mCurrentKey )
+            {
+               KeyEvent keyevent(key, KeyEvent::eReleased, 0);
+               mAppWindow.handleEvent(keyevent);
+            }
+
+            mCurrentKey = key;
+            KeyEvent keyevent(mCurrentKey, KeyEvent::ePressed, 0);
+            mAppWindow.handleEvent(keyevent);
+         }
+      }
+   }
+
+   void OnPointerReleased(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::PointerEventArgs^ args)
+   {
+      uint32 pointerId = args->CurrentPoint->PointerId;
+      c2d::Point position(DX::ConvertDipsToPixels(args->CurrentPoint->Position.X, mAppWindow.getDPI()), DX::ConvertDipsToPixels(args->CurrentPoint->Position.Y, mAppWindow.getDPI()));
+      if ( position.x > 350 && position.y > 600 && mJump )
+      {
+         KeyEvent keyevent(Key::SPACE, KeyEvent::eReleased, 0);
+         mAppWindow.handleEvent(keyevent);
+
+         mJump = false;
+      }
+      
+      if ( pointerId == mPointerId )
+      {
+         mPointerInUse = false;
+         mPointerId = 0;
+
+         KeyEvent keyevent(mCurrentKey, KeyEvent::eReleased, 0);
+         mAppWindow.handleEvent(keyevent);
+      }
+   }
+
    // Input event handlers
    void OnKeyUp(Windows::UI::Core::CoreWindow ^ sender, Windows::UI::Core::KeyEventArgs ^ args)
    {
-      using namespace Input;
-
       auto it = mKeyMap.find(args->VirtualKey);
       if ( it != mKeyMap.end() )
       {

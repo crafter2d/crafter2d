@@ -2,6 +2,7 @@
 #ifndef MESH_COMPONENT_H
 #define MESH_COMPONENT_H
 
+#include "core/defines.h"
 #include "core/math/xform.h"
 #include "core/string/string.h"
 
@@ -10,6 +11,10 @@
 namespace Graphics
 {
    class RenderContext;
+}
+
+namespace c2d
+{
    class Sprite;
 }
 
@@ -23,8 +28,14 @@ public:
    const Vector& getPosition() const;
    float         getAngle() const;
 
-   const Graphics::Sprite& getSprite() const;
-   void                    setSprite(Graphics::Sprite* psprite);
+   const c2d::Sprite& getSprite() const {
+      ASSERT_PTR(mpSprite);
+      return *mpSprite;
+   }
+
+   void setSprite(c2d::Sprite* psprite) {
+      mpSprite = psprite;
+   }
 
  // operations
    void render(Graphics::RenderContext& context) const;
@@ -35,16 +46,10 @@ public:
    virtual void update(float delta);
 
 private:
- // operations
-   void updateBuffers(Graphics::RenderContext& context);
 
  // members
-   XForm                         mTransform;
-   Graphics::Sprite*             mpSprite;
+   XForm        mTransform;
+   c2d::Sprite* mpSprite;
 };
-
-#ifdef JENGINE_INLINE
-#  include "meshcomponent.inl"
-#endif
 
 #endif // MESH_COMPONENT_H

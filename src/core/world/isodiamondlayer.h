@@ -41,7 +41,7 @@ public:
    virtual void drawFront(Graphics::RenderContext& context);
 
  // coordinate conversion
-   virtual Point  pointToTile(const Point& point);
+   virtual c2d::Point pointToTile(const c2d::Point& point);
 
  // notifications
    virtual void onViewportChanged(const Graphics::Viewport& viewport);
