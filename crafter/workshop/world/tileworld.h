@@ -57,8 +57,8 @@ public:
     TileBound& addBound(const QPoint& mousepos);
 
   // operations
-    Tile getTile(const QPoint& mousepos, TileField::Level level) const;
-    bool setTile(const QPoint& mousepos, TileField::Level level, const Tile &tile);
+    int  getTile(const QPoint& mousepos, TileField::Level level) const;
+    bool setTile(const QPoint& mousepos, TileField::Level level, int tile);
     void clearTile(const QPoint& mousepos, TileField::Level level);
 
     void moveUp(int index);

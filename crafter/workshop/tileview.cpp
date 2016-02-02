@@ -8,6 +8,7 @@
 #include <QPalette>
 
 #include "world/tilebound.h"
+#include "world/tileset.h"
 #include "world/tileworld.h"
 
 #include "undocleartile.h"
@@ -16,7 +17,7 @@
 TileView::TileView():
     QWidget(NULL),
     ui(new Ui::TileView),
-    mTile(),
+    mTile(TileSet::INVALID_TILE),
     mpWorld(NULL),
     mEditMode(eLayerMode),
     mpSelectedBound(NULL),
@@ -69,16 +70,9 @@ void TileView::setEditMode(EditMode mode)
     mEditMode = mode;
 }
 
-void TileView::setActiveTile(const Tile* tile)
+void TileView::setActiveTile(int tile)
 {
-    if ( tile != nullptr )
-    {
-        mTile = *tile;
-    }
-    else
-    {
-        mTile = Tile();
-    }
+    mTile = tile;
 }
 
 TileField::Level TileView::getLevel() const
@@ -221,7 +215,7 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
         {
         case eLayerMode:
             {
-                if ( mTile.isValid() )
+                if ( mTile != TileSet::INVALID_TILE )
                 {
                     mEditMode = ePaintMode;
 
@@ -293,7 +287,7 @@ void TileView::mouseMoveEvent(QMouseEvent* pevent)
     {
     case ePaintMode:
         {
-            Tile tile = mpWorld->getTile(pevent->pos(), mLevel);
+            int tile = mpWorld->getTile(pevent->pos(), mLevel);
             if ( tile != mTile )
             {
                 UndoSetTile* pundo = new UndoSetTile(*mpWorld, pevent->pos(), mLevel, mTile);
@@ -303,8 +297,8 @@ void TileView::mouseMoveEvent(QMouseEvent* pevent)
         break;
     case eEraseMode:
         {
-            Tile tile = mpWorld->getTile(pevent->pos(), mLevel);
-            if ( tile.isValid() )
+            int tile = mpWorld->getTile(pevent->pos(), mLevel);
+            if ( tile != TileSet::INVALID_TILE )
             {
                 UndoClearTile* pundo = new UndoClearTile(*mpWorld, pevent->pos(), mLevel);
                 mUndoStack.push(pundo);

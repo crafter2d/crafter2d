@@ -105,10 +105,17 @@
     <addaction name="separator"/>
     <addaction name="actionProject_Run"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="actionTools_TextureSplitter"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menuView"/>
    <addaction name="menuProject"/>
+   <addaction name="menuTools"/>
    <addaction name="menu_He"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -350,6 +357,11 @@
    </property>
    <property name="text">
     <string>Edit objects</string>
+   </property>
+  </action>
+  <action name="actionTools_TextureSplitter">
+   <property name="text">
+    <string>Texture Splitter</string>
    </property>
   </action>
  </widget>

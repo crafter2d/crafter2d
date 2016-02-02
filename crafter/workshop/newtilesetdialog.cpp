@@ -29,8 +29,6 @@ NewTileSetDialog::NewTileSetDialog(QWidget *parent) :
     ui(new Ui::newtilesetdialog)
 {
     ui->setupUi(this);
-
-    setupUp();
 }
 
 NewTileSetDialog::~NewTileSetDialog()
@@ -38,21 +36,17 @@ NewTileSetDialog::~NewTileSetDialog()
     delete ui;
 }
 
-void NewTileSetDialog::setupUp()
+void NewTileSetDialog::on_btnSelectPath_clicked()
 {
-    QStringList filters;
-    filters << "*.dds";
     QString path = Project::getActiveProject().getBasePath() + QDir::separator() + "Images";
-    QDir dir(path);
-    dir.setNameFilters(filters);
-
-    QStringList images;
-    QFileInfoList list = dir.entryInfoList();
-    for ( auto& info : list )
+    QString tilesetpath = QFileDialog::getExistingDirectory(nullptr, "Select image directory", path);
+    if ( !tilesetpath.isNull() )
     {
-        images << info.baseName();
+        if ( tilesetpath.startsWith(path) )
+        {
+            ui->editImagePath->setText(tilesetpath.right(tilesetpath.length() - path.length()));
+        }
     }
-    ui->cmbImage->addItems(images);
 }
 
 void NewTileSetDialog::set(const TileSet& tileset)
@@ -60,55 +54,10 @@ void NewTileSetDialog::set(const TileSet& tileset)
     ui->editName->setText(QFileInfo(tileset.getResourceName()).baseName());
     ui->editName->setReadOnly(true);
 
-    ui->editCount->setText(QString::number(tileset.getTileCount()));
-    ui->editWidth->setText(QString::number(tileset.getTileSize().width()));
-    ui->editHeight->setText(QString::number(tileset.getTileSize().height()));
-
-    QString path = Project::getActiveProject().getFilePath(tileset.getTileMap());
-    ui->cmbImage->setCurrentText(QFileInfo(path).baseName());
+    ui->editImagePath->setText(tileset.getImagePath());
 }
 
 void NewTileSetDialog::apply(TileSet& tileset)
 {
-    tileset.setTileCount(ui->editCount->text().toInt());
-    tileset.setTileSize(QSize(ui->editWidth->text().toInt(), ui->editHeight->text().toInt()));
-    tileset.setTileMap(tr("Images") + QDir::separator() + ui->cmbImage->currentText());
-}
-
-void NewTileSetDialog::on_btnImport_clicked()
-{
-    QString imagefile = QFileDialog::getOpenFileName(nullptr, tr("Select image"), "", "Images (*.dds *.png *.bmp");
-    if ( imagefile.isNull() )
-    {
-        return;
-    }
-
-    QFileInfo info(imagefile);
-    Project& project = Project::getActiveProject();
-    QString finalpath = project.getBasePath() + QDir::separator() + "images" + QDir::separator() + info.fileName();
-    if ( finalpath != imagefile )
-    {
-        bool copyit = true;
-        if ( QFile::exists(finalpath) )
-        {
-            QMessageBox::StandardButton result =
-                    QMessageBox::warning(this, "Crafter Workshop",
-                                         "There is already an image with that name.\nDo you want to overwrite the existing file?",
-                                         QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-            if ( result == QMessageBox::Cancel )
-            {
-                return;
-            }
-
-            copyit = result == QMessageBox::Yes;
-        }
-
-        if ( copyit && !QFile::copy(imagefile, finalpath) )
-        {
-            QMessageBox::critical(this, "Crafter Workshop", "Could not copy file to demo folder.", QMessageBox::Ok);
-            return;
-        }
-    }
-
-    ui->cmbImage->addItem(info.baseName());
+   tileset.setImagePath(ui->editImagePath->text());
 }

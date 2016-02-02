@@ -15,26 +15,25 @@ class TileSet : public Resource
     Q_OBJECT
 
 public:
+    static const int INVALID_TILE = 255;
+
     TileSet();
 
-    const Tile& operator[](int index) const;
 
   // get/set
-    bool          hasTexture() const;
-    const QImage& getTexture() const;
-    void          setTexture(const QImage& texture);
+    const QString& getImagePath() const {
+        return mImagePath;
+    }
 
-    const QString& getTileMap() const;
-    void           setTileMap(const QString& map, bool forceReload = false);
+    void setImagePath(const QString& path);
 
-    const QSize& getTileSize() const;
-    void         setTileSize(const QSize& size);
+    const QSize& getTileSize() const {
+        return mTileSize;
+    }
 
-    int  getTileCount() const;
-    void setTileCount(int count);
-
-  // query
-    int indexOf(const Tile& item) const;
+    int  getTileCount() const {
+        return mTiles.size();
+    }
 
   // operations
     void paintTile(QPainter& painter, int index, int x, int y) const;
@@ -42,18 +41,12 @@ public:
 private:
 
   // typedefs
-    typedef QVector<Tile> QTiles;
-
-  // operations
-    void loadTexture();
-    void generateTiles();
+    using QImages = QVector<QImage>;
 
   // data
-    QString mTileMap;
-    QImage  mTexture;
-    QTiles  mTiles;
+    QString mImagePath;
+    QImages mTiles;
     QSize   mTileSize;
-    int     mTileCount;
 };
 
 #endif // TILESET_H

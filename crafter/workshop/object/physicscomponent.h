@@ -1,6 +1,8 @@
 #ifndef PHYSICSCOMPONENT_H
 #define PHYSICSCOMPONENT_H
 
+#include <cassert>
+
 #include "entitycomponent.h"
 
 class PhysicsComponent : public EntityComponent
@@ -62,7 +64,7 @@ public:
     }
 
     void setWidth(float width) {
-        Q_ASSERT(mType == eBox);
+        assert(mType == eBox);
         mInfoA = width;
     }
 
@@ -71,7 +73,7 @@ public:
     }
 
     void setHeight(float height) {
-        Q_ASSERT(mType == eBox);
+        assert(mType == eBox);
         mInfoB = height;
     }
 
@@ -80,7 +82,7 @@ public:
     }
 
     void setRadius(float radius) {
-        Q_ASSERT(mType == eCircle);
+        assert(mType == eCircle);
         mInfoA = radius;
     }
 

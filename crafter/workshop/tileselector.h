@@ -17,7 +17,7 @@ public:
     void            setTileSet(const TileSet* ptileset);
 
 signals:
-    void tileSelected(const Tile* ptile);
+    void tileSelected(int tile);
 
 public slots:
 
@@ -30,18 +30,15 @@ protected:
 
 private:
 
-  // get/set
-    const Tile& get(int index);
-
   // operations
     void tilesetChanged();
 
-    void setSelection(int index);
+    void setSelection(int tile);
     void clearSelection();
 
   // data
     const TileSet* mpTileSet;
-    int             mSelectedIndex;
+    int             mSelectedTile;
     int             mHorizontalTiles;
     int             mScrollPos;
 };

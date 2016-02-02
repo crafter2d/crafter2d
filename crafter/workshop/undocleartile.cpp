@@ -7,7 +7,7 @@ UndoClearTile::UndoClearTile(TileWorld& world, const QPoint& pos, TileField::Lev
     mLevel(level),
     mTiles()
 {
-    Tile tile = world.getTile(pos, mLevel);
+    int tile = world.getTile(pos, mLevel);
     mTiles.append({tile, pos});
 }
 

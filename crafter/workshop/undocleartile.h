@@ -5,7 +5,6 @@
 #include <QUndoCommand>
 #include <QVector>
 
-#include "world/tile.h"
 #include "world/tilefield.h"
 
 class TileWorld;
@@ -14,7 +13,7 @@ class UndoClearTile : public QUndoCommand
 {
     struct TileInfo
     {
-        Tile   tile;
+        int    tile;
         QPoint pos;
     };
 

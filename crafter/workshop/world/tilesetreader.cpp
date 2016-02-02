@@ -30,32 +30,7 @@ TileSet* TileSetReader::read()
             {
                 if ( reader.name() == "tileset" )
                 {
-                    QStringRef ref;
-                    QSize size;
-                    ref = reader.attributes().value("width");
-                    if ( ref.isEmpty() )
-                    {
-                        // should not happen
-                    }
-                    else
-                        size.setWidth(ref.toInt(NULL));
 
-                    ref = reader.attributes().value("height");
-                    if ( ref.isEmpty() )
-                    {
-                        // should not happen
-                    }
-                    else
-                        size.setHeight(ref.toInt(NULL));
-
-                    ref = reader.attributes().value("count");
-                    if ( ref.isEmpty() )
-                    {
-                        // should not happen
-                    }
-
-                    presult->setTileSize(size);
-                    presult->setTileCount(ref.toInt(NULL));
                 }
                 else if ( reader.name() == "texture" )
                 {
@@ -71,7 +46,7 @@ TileSet* TileSetReader::read()
                         mapname = reader.readElementText();
                     }
 
-                    presult->setTileMap(mapname);
+                    presult->setImagePath(mapname);
                 }
             }
             break;

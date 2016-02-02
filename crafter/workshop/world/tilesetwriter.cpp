@@ -28,12 +28,9 @@ void TileSetWriter::write(const TileSet& tileset)
         writer.writeStartDocument();
 
         writer.writeStartElement("tileset");
-        writer.writeAttribute("width", QVariant(tileset.getTileSize().width()).toString());
-        writer.writeAttribute("height", QVariant(tileset.getTileSize().height()).toString());
-        writer.writeAttribute("count", QVariant(tileset.getTileCount()).toString());
 
         writer.writeStartElement("texture");
-        writer.writeAttribute("name", tileset.getTileMap());
+        writer.writeAttribute("name", tileset.getImagePath());
         writer.writeEndElement(); // </texture>
 
         writer.writeEndElement(); // </tileset>

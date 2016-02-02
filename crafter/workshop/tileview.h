@@ -7,7 +7,6 @@
 #include <QPoint>
 #include <QVector>
 
-#include "world/tile.h"
 #include "world/tilefield.h"
 
 class TileBound;
@@ -39,7 +38,7 @@ public:
     TileField::Level getLevel() const;
     void              setLevel(TileField::Level level);
 
-    void setActiveTile(const Tile *tile);
+    void setActiveTile(int tile);
 
   // operations
     void undo();
@@ -64,7 +63,7 @@ private:
     void straightenBounds();
 
     Ui::TileView *ui;
-    Tile          mTile;
+    int           mTile;
     TileWorld*    mpWorld;
     EditMode      mEditMode;
     TileBound*    mpSelectedBound;

@@ -16,7 +16,7 @@ TilesPanel::TilesPanel(MainWindow &mainwindow) :
     ui->setupUi(this);
 
     mpSelector = new TileSelector(0);
-    connect(mpSelector, SIGNAL(tileSelected(const Tile*)), SLOT(on_tileSelected(const Tile*)));
+    connect(mpSelector, SIGNAL(tileSelected(int)), SLOT(on_tileSelected(int)));
 
     ui->verticalLayout->addWidget(mpSelector);
 }
@@ -46,7 +46,7 @@ void TilesPanel::worldActivated(TileWorld* pworld)
 
 // - Slots
 
-void TilesPanel::on_tileSelected(const Tile* tile)
+void TilesPanel::on_tileSelected(int tile)
 {
     TileView* pview = getMainWindow().getActiveView();
     if ( pview != NULL )

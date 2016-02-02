@@ -6,13 +6,12 @@
 
 #include <qmath.h>
 
-#include "world/tile.h"
 #include "world/tileset.h"
 
 TileSelector::TileSelector(QWidget *parent) :
     QAbstractScrollArea(parent),
     mpTileSet(nullptr),
-    mSelectedIndex(-1),
+    mSelectedTile(-1),
     mHorizontalTiles(0),
     mScrollPos(0)
 {
@@ -35,11 +34,6 @@ void TileSelector::setTileSet(const TileSet *ptileset)
     }
 }
 
-const Tile& TileSelector::get(int index)
-{
-    return (*mpTileSet)[index];
-}
-
 // - Overrides
 
 void TileSelector::paintEvent(QPaintEvent* /*event*/)
@@ -55,7 +49,7 @@ void TileSelector::paintEvent(QPaintEvent* /*event*/)
         int x = 2, y = 2;
         for ( int index = 1; index <= count; ++index )
         {
-            if ( (index - 1) == mSelectedIndex )
+            if ( (index - 1) == mSelectedTile )
             {
                 const QBrush& previousbrush = painter.brush();
                 const QPen& previouspen = painter.pen();
@@ -159,16 +153,18 @@ void TileSelector::tilesetChanged()
     viewport()->update();
 }
 
-void TileSelector::setSelection(int index)
+void TileSelector::setSelection(int tile)
 {
-    mSelectedIndex = index;
+    if ( mSelectedTile != tile )
+    {
+        mSelectedTile = tile;
+        emit tileSelected(tile);
 
-    emit tileSelected(index == -1 ? nullptr : &get(index));
-
-    viewport()->update();
+        viewport()->update();
+    }
 }
 
 void TileSelector::clearSelection()
 {
-    setSelection(-1);
+    setSelection(TileSet::INVALID_TILE);
 }

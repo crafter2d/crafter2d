@@ -2,7 +2,7 @@
 
 #include "world/tileworld.h"
 
-UndoSetTile::UndoSetTile(TileWorld& world, const QPoint &pos, TileField::Level level, const Tile &tile):
+UndoSetTile::UndoSetTile(TileWorld& world, const QPoint &pos, TileField::Level level, int tile):
     QUndoCommand(NULL),
     mWorld(world),
     mLevel(level),
@@ -40,7 +40,7 @@ void UndoSetTile::redo()
 {
     for ( auto& info : mTiles )
     {
-        Tile prevTile = mWorld.getTile(info.pos, mLevel);
+        int prevTile = mWorld.getTile(info.pos, mLevel);
         mWorld.setTile(info.pos, mLevel, info.tile);
         info.tile = prevTile;
     }

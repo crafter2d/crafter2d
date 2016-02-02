@@ -20,11 +20,10 @@ public:
     ~NewTileSetDialog();
 
 private slots:
-    void on_btnImport_clicked();
+    void on_btnSelectPath_clicked();
 
 private:
 
-    void setupUp();
     void set(const TileSet& tileset);
     void apply(TileSet& tileset);
 

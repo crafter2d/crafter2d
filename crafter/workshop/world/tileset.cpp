@@ -9,126 +9,60 @@
 
 #include "../project.h"
 
-#include "tile.h"
-
 TileSet::TileSet():
     Resource(Resource::eTileSet),
-    mTileMap(),
-    mTexture(),
+    mImagePath(),
     mTiles(),
-    mTileSize(),
-    mTileCount(-1)
+    mTileSize()
 {
-}
-
-const Tile& TileSet::operator[](int index) const
-{
-    return mTiles[index];
 }
 
 // - Get/set
 
-bool TileSet::hasTexture() const
+struct compareNames
 {
-    return !mTexture.isNull();
-}
-
-const QImage& TileSet::getTexture() const
-{
-    return mTexture;
-}
-
-void TileSet::setTexture(const QImage &texture)
-{
-    mTexture = texture;
-}
-
-const QString& TileSet::getTileMap() const
-{
-    return mTileMap;
-}
-
-void TileSet::setTileMap(const QString &map, bool forceReload)
-{
-    if ( mTileMap != map || forceReload )
+    bool operator()(const QString& s1,const QString& s2)
     {
-        mTileMap = map;
-
-        loadTexture();
+        if ( s1.length() < s2.length() )
+        {
+            return true;
+        }
+        else if ( s1.length() > s2.length() )
+        {
+            return false;
+        }
+        return s1.compare(s2) <= 0;
     }
-}
+} compare;
 
-const QSize& TileSet::getTileSize() const
+void TileSet::setImagePath(const QString& path)
 {
-    return mTileSize;
-}
+    QStringList filters;
+    filters << "*.png";
 
-void TileSet::setTileSize(const QSize& size)
-{
-    mTileSize = size;
-}
+    QDir dir(Project::getActiveProject().getFilePath(path));
+    QStringList images = dir.entryList(filters, QDir::Files);
+    std::sort(images.begin(), images.end(), compare);
+    mTiles.resize(images.size());
 
-int TileSet::getTileCount() const
-{
-    return mTileCount;
-}
+    for ( int index = 0; index < images.size(); index++ )
+    {
+        mTiles[index].load(dir.absoluteFilePath(images[index]));
+    }
 
-void TileSet::setTileCount(int count)
-{
-    mTileCount = count;
-}
-
-// - Query
-
-int TileSet::indexOf(const Tile& item) const
-{
-    return mTiles.indexOf(item);
+    if ( !mTiles.empty() )
+    {
+        mTileSize = mTiles[0].size();
+    }
 }
 
 // - Operations
 
-void TileSet::loadTexture()
-{
-    QPixmap pixmap;
-    if ( pixmap.load(Project::getActiveProject().getFilePath(mTileMap)) )
-    {
-        mTexture = pixmap.toImage();
-
-        generateTiles();
-    }
-}
-
-void TileSet::generateTiles()
-{
-    Q_ASSERT(!mTexture.isNull());
-
-    mTiles.clear();
-
-    int maxFramesPerRow = static_cast<int>(mTexture.width() / mTileSize.width());
-
-    // build the texture coord lookup table
-    for (int tc = 0; tc < mTileCount; tc++)
-    {
-        // calculate starting texture coordinates
-        int x = (tc % maxFramesPerRow) * mTileSize.width();
-        int y = (int) qFloor((float)tc / maxFramesPerRow) * mTileSize.height();
-
-        mTiles.append(Tile(x, y));
-    }
-}
-
 void TileSet::paintTile(QPainter& painter, int index, int x, int y) const
 {
-    Q_ASSERT(!mTexture.isNull());
     if ( index < mTiles.size() )
     {
-        const Tile& tile = mTiles[index];
-        const QPoint& texcoords = tile.getTexCoord();
-        painter.drawImage(x, y,
-                          mTexture,
-                          texcoords.x(),
-                          texcoords.y(),
-                          mTileSize.width(),
-                          mTileSize.height());
+        const QImage& tile = mTiles[index];
+        painter.drawImage(x, y, tile);
     }
 }

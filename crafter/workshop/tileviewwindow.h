@@ -3,7 +3,6 @@
 
 #include <QScrollArea>
 
-class Tile;
 class TileView;
 class TileWorld;
 
@@ -20,7 +19,7 @@ public:
 
     TileView& getTileView();
 
-    void setActiveTile(const Tile *tile);
+    void setActiveTile(int tile);
 
 signals:
 

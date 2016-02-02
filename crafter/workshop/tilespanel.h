@@ -7,7 +7,6 @@ namespace Ui {
 class TilesPanel;
 }
 
-class Tile;
 class TileMap;
 class TileSelector;
 
@@ -25,7 +24,7 @@ protected:
     virtual void worldActivated(TileWorld* pworld) override;
 
 private slots:
-    void on_tileSelected(const Tile *tile);
+    void on_tileSelected(int tile);
     void on_world_activeMapChanged(TileMap *map);
 
 private:

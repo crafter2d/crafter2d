@@ -9,7 +9,6 @@
 #include "world/tilesetreader.h"
 
 #include "project.h"
-#include "tile.h"
 
 TileMap::TileMap(const TileMapDesc& desc):
     mDesc(desc),
@@ -56,37 +55,17 @@ const QSize& TileMap::getMinimumSize() const
     return mPixelSize;
 }
 
-const QSize& TileMap::getTileSize() const
-{
-    return mpTileSet->getTileSize();
-}
-
-int TileMap::getTileCount() const
-{
-    return mpTileSet->getTileCount();
-}
-
-const Tile &TileMap::getTile(int tile)
-{
-    return (*mpTileSet)[tile];
-}
-
 const TileSet& TileMap::getTileSet() const
 {
     Q_ASSERT(mpTileSet != nullptr);
     return *mpTileSet;
 }
 
-int TileMap::indexOf(const Tile& tile) const
-{
-    return mpTileSet->indexOf(tile);
-}
-
 // - Painting
 
 void TileMap::paint(QPainter& painter)
 {
-    if ( mpTileSet != NULL && mpTileSet->hasTexture() )
+    if ( mpTileSet != NULL )
     {
         int posy = 0;
         const QSize& tilesize = mpTileSet->getTileSize();
@@ -97,10 +76,10 @@ void TileMap::paint(QPainter& painter)
             {
                 for ( int level = 2; level >= 0; --level )
                 {
-                    int tileindex = mpField->get((TileField::Level)level, x, y);
-                    if ( tileindex < 255 )
+                    int tile = mpField->get((TileField::Level)level, x, y);
+                    if ( tile < 255 )
                     {
-                        mpTileSet->paintTile(painter, tileindex, posx, posy);
+                        mpTileSet->paintTile(painter, tile, posx, posy);
                     }
                 }
 
@@ -148,28 +127,24 @@ void TileMap::resize(const QSize& size)
     }
 }
 
-Tile TileMap::getTile(const QPoint& mousepos, TileField::Level level) const
+int TileMap::getTile(const QPoint& mousepos, TileField::Level level) const
 {
     const QSize& tilesize = mpTileSet->getTileSize();
 
     int tilex = mousepos.x() / tilesize.width();
     int tiley = mousepos.y() / tilesize.height();
 
-    Tile result;
     if ( tilex >= 0 && tilex < mDesc.size.width()
       && tiley >= 0 && tiley < mDesc.size.height() )
     {
-        int index = mpField->get(level, tilex, tiley);
-        if ( index < mpTileSet->getTileCount() )
-        {
-            result = (*mpTileSet)[index];
-        }
+        return mpField->get(level, tilex, tiley);
     }
 
-    return result;
+    return TileSet::INVALID_TILE;
 }
 
-bool TileMap::setTile(const QPoint &mousepos, TileField::Level level, int tileindex)
+/// Set the map cell at position mouspos to tile. If tile is invalid the cell is cleared.
+bool TileMap::setTile(const QPoint &mousepos, TileField::Level level, int tile)
 {
     const QSize& tilesize = mpTileSet->getTileSize();
 
@@ -179,26 +154,14 @@ bool TileMap::setTile(const QPoint &mousepos, TileField::Level level, int tilein
     if ( tilex >= 0 && tilex < mDesc.size.width()
       && tiley >= 0 && tiley < mDesc.size.height() )
     {
-        mpField->set(level, tilex, tiley, tileindex);
+        mpField->set(level, tilex, tiley, tile);
         return true;
     }
 
     return false;
 }
 
-/// Set the map cell at position mouspos to tile. If tile is invalid the cell is cleared.
-bool TileMap::setTile(const QPoint& mousepos, TileField::Level level, const Tile& tile)
-{
-    int index = 255;
-    if ( tile.isValid() )
-    {
-        index = indexOf(tile);
-    }
-
-    return setTile(mousepos, level, index);
-}
-
 void TileMap::clearTile(const QPoint& mousepos, TileField::Level level)
 {
-    setTile(mousepos, level, 255);
+    setTile(mousepos, level, TileSet::INVALID_TILE);
 }

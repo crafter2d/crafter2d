@@ -141,15 +141,9 @@ TileSet* WorldWizard::createTileSet()
         }
     }
 
-    int width = field("tileset.width").toString().toInt();
-    int height = field("tileset.height").toString().toInt();
-    int count = field("tileset.count").toString().toInt();
-
     TileSet* presult = new TileSet();
     presult->setResourceName("tilesets/" + field("tileset.name").toString() + ".xml");
-    presult->setTileMap("images/" + info.baseName());
-    presult->setTileSize(QSize(width, height));
-    presult->setTileCount(count);
+    presult->setImagePath("images/" + info.baseName());
     presult->setDirty(true);
 
     project.addTileSet(presult);

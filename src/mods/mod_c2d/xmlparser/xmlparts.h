@@ -135,8 +135,8 @@ namespace c2d
    };
 }
 
-#define ELEMENT_DEF(name) class name : public Element { public: name##::##name##();
-#define ELEMENT_IMP(name) }; name##::##name(): Element(#name) {
+#define ELEMENT_DEF(name) class name : public Element { public: name ## :: ## name ## ();
+#define ELEMENT_IMP(name) }; name ## :: ## name(): Element(#name) {
 #define ELEMENT_END }
 
 #define ATTRIBUTE(type, name) type name;

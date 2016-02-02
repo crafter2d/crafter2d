@@ -68,7 +68,6 @@ SOURCES += main.cpp\
     project/projecttreerootitem.cpp \
     world/tileworld.cpp \
     world/tilemap.cpp \
-    world/tile.cpp \
     newtilesetdialog.cpp \
     worldwizard_pagelayer.cpp \
     object/entity.cpp \
@@ -76,7 +75,8 @@ SOURCES += main.cpp\
     object/entitycomponent.cpp \
     object/spritecomponent.cpp \
     object/spriteanimation.cpp \
-    object/physicscomponent.cpp
+    object/physicscomponent.cpp \
+    texture/texturesplitter.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -131,7 +131,6 @@ HEADERS  += mainwindow.h \
     project/projecttreerootitem.h \
     world/tileworld.h \
     world/tilemap.h \
-    world/tile.h \
     newtilesetdialog.h \
     worldwizard_pagelayer.h \
     object/entity.h \
@@ -139,7 +138,8 @@ HEADERS  += mainwindow.h \
     object/entitycomponent.h \
     object/spritecomponent.h \
     object/spriteanimation.h \
-    object/physicscomponent.h
+    object/physicscomponent.h \
+    texture/texturesplitter.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
@@ -155,7 +155,8 @@ FORMS    += mainwindow.ui \
     newscriptdialog.ui \
     outputpanel.ui \
     newtilesetdialog.ui \
-    worldwizard_pagelayer.ui
+    worldwizard_pagelayer.ui \
+    texture/texturesplitter.ui
 
 BaseDir = $$PWD/../build/workshop
 

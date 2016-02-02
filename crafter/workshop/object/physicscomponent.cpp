@@ -5,7 +5,7 @@ PhysicsComponent::PhysicsComponent():
     mInfoA(0.0f),
     mInfoB(0.0f),
     mMass(0.0f),
-    mStatic(false),
+    mFlags()
 {
 
 }

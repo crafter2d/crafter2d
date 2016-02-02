@@ -5,7 +5,6 @@
 #include <QPoint>
 #include <QVector>
 
-#include "world/tile.h"
 #include "world/tilefield.h"
 
 class TileWorld;
@@ -14,14 +13,14 @@ class UndoSetTile : public QUndoCommand
 {
     struct TileInfo
     {
-        Tile   tile;
+        int    tile;
         QPoint pos;
     };
 
     using Tiles = QVector<TileInfo>;
 
 public:
-    UndoSetTile(TileWorld &world, const QPoint& pos, TileField::Level level, const Tile &tile);
+    UndoSetTile(TileWorld &world, const QPoint& pos, TileField::Level level, int tile);
 
   // merging
     virtual int id() const override;

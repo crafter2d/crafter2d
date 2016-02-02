@@ -34,11 +34,6 @@ public:
 
     const QSize& getMinimumSize() const;
 
-    const QSize& getTileSize() const;
-    int          getTileCount() const;
-
-    const Tile& getTile(int tile);
-
     const TileSet& getTileSet() const;
 
     int indexOf(const Tile& tile) const;
@@ -50,8 +45,8 @@ public:
     void setField(TileField* pfield);
     void setTileSet(TileSet* ptileset);
 
-    Tile getTile(const QPoint& mousepos, TileField::Level level) const;
-    bool setTile(const QPoint& mousepos, TileField::Level level, const Tile &tile);
+    int  getTile(const QPoint& mousepos, TileField::Level level) const;
+    bool setTile(const QPoint& mousepos, TileField::Level level, int tile);
     void clearTile(const QPoint& mousepos, TileField::Level level);
 
     void resize(const QSize& size);
@@ -60,8 +55,6 @@ signals:
     void mapChanged(TileMap& layer);
 
 private:
-  // operations
-    bool setTile(const QPoint &mousepos, TileField::Level level, int tileindex);
 
   // data
     TileMapDesc mDesc;

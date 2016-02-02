@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QProgressBar>
 
+#include "texture/texturesplitter.h"
 #include "world/tileworld.h"
 
 #include "aboutdialog.h"
@@ -476,4 +477,10 @@ void MainWindow::on_actionAbout_triggered()
 {
     AboutDialog dialog;
     dialog.exec();
+}
+
+void MainWindow::on_actionTools_TextureSplitter_triggered()
+{
+    TextureSplitter splitter;
+    splitter.exec();
 }
