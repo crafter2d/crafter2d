@@ -41,7 +41,12 @@ void SpriteAtlasReader::readAtlas(SpriteAtlas& atlas)
                         sheet.clear();
 
                         QString imageName = reader.attributes().value("name").toString();
-                        sheet.load(mPath + QDir::separator() + imageName);
+                        int index = imageName.indexOf('/');
+                        if ( index != -1 )
+                        {
+                            imageName = imageName.right(imageName.length() - index - 1);
+                        }
+                        sheet.load(mPath + QDir::separator() + imageName + ".png");
                     }
                     else if ( reader.name() == "tile" )
                     {

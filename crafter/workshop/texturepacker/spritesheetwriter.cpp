@@ -9,7 +9,7 @@
 #include "spritesheet.h"
 
 static const QString sAtlasFilename("tileatlas.xml");
-static const QString sSheetFilename("tilesheet_%1.png");
+static const QString sSheetFilename("tilesheet_%1");
 
 const QString& SpriteAtlasWriter::atlasFilename()
 {
@@ -57,7 +57,7 @@ void SpriteAtlasWriter::writeSheet(QXmlStreamWriter& writer, const SpriteSheet& 
     QString imageFilename = sSheetFilename.arg(mSheetIndex++);
 
     writer.writeStartElement("tilesheet");
-    writer.writeAttribute("name", imageFilename);
+    writer.writeAttribute("name", "tileatlas/" + imageFilename);
     writer.writeAttribute("width", QString::number(sheet.image().width()));
     writer.writeAttribute("height", QString::number(sheet.image().height()));
 
@@ -78,5 +78,5 @@ void SpriteAtlasWriter::writeSheet(QXmlStreamWriter& writer, const SpriteSheet& 
     }
     writer.writeEndElement();
 
-    sheet.save(mPath + QDir::separator() + imageFilename);
+    sheet.save(mPath + QDir::separator() + imageFilename + ".png");
 }
