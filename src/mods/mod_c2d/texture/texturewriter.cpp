@@ -25,7 +25,7 @@ bool TextureWriter::write(DataStream& stream, const String& filename)
       {
          int flags = squish::kDxt3;// | squish::kColourClusterFit;
          int size = squish::GetStorageRequirements(image.getWidth(), image.getHeight(), flags);
-         auto data = std::make_unique<unsigned char[]>(size);
+         std::unique_ptr<unsigned char[]> data(new unsigned char[size]);
          squish::CompressImage(image.getBytes(), image.getWidth(), image.getHeight(), data.get(), flags);
 
          ArrayStream imagestream((char*)data.get(), size);

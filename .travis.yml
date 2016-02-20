@@ -17,17 +17,17 @@ addons:
     - libfreetype6-dev
     - libtinyxml-dev
     - libunittest++-dev
-	- libsquish-dev
 
 before_install:
   - ./projects/install-libzip.sh
   - ./projects/install-premake5.sh
   - ./projects/install-box2d.sh
   - ./projects/install-libantlr3.sh
+  - ./projects/install-libsquish.sh
   - export CXX="g++-5" CC="gcc-5"
 
 script:
-  - premake-core/bin/release/premake5 --travis --with-libzip=../libzip-1.0.1 --with-box2d=../Box2D-master gmake
+  - premake-core/bin/release/premake5 --travis gmake
   - cd build
   - make
   - cd ../bin && LD_LIBRARY_PATH=. ./UnitTestd

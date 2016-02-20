@@ -14,20 +14,6 @@ newoption
 	description = "Generates make files for Travis-testing"
 }
 
-newoption
-{
-    trigger     = "with-libzip",
-    value       = "path",
-    description = "Path to the libzip directory (required for Travis)"
-}
-
-newoption
-{
-    trigger     = "with-box2d",
-    value       = "path",
-    description = "Path to the box2d directory (required for Travis)"
-}
-
 if not _OPTIONS["libdir"] then
 	_OPTIONS["libdir"] = path.join(path.join(os.getcwd(), "../externallibs"), _ACTION)
 end
@@ -48,6 +34,7 @@ require "proj-engine"
 require "proj-modyas"
 require "proj-modc2d"
 require "proj-modogl"
+require "proj-modui"
 require "proj-unittest"
 require "proj-game"
 require "proj-compiler"
@@ -57,6 +44,5 @@ if not _OPTIONS["travis"] then
 	require "proj-gen"
 	require "proj-modfmod"
 	require "proj-modd3d"
-	require "proj-modui"
 end
 
