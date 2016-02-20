@@ -4,12 +4,6 @@
 
 namespace c2d
 {
-   class TextureAtlas
-   {
-   public:
-
-      bool load(const )
-   };
 }
 
 #endif // TEXTURE_ATLAS_H
