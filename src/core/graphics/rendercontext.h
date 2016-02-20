@@ -7,6 +7,7 @@
 
 #include "particles/particlesystemrenderer.h"
 #include "sprites/spriterenderer.h"
+#include "tiles/tileatlas.h"
 #include "text/textrenderer.h"
 
 class Vector;
@@ -32,19 +33,34 @@ namespace Graphics
       virtual ~RenderContext();
 
     // get/set
-      const Color& getClearColor() const;
-      void         setClearColor(const Color& color);
+      const Color& getClearColor() const {
+         return mClearColor;
+      }
+
+      void setClearColor(const Color& color) {
+         mClearColor = color;
+      }
       
-      TextRenderer& getTextRenderer();
+      float getDpi() const {
+         return mDpi;
+      }
+
+      void setDpi(float dpi) {
+         mDpi = dpi;
+      }
+
+      TextRenderer& getTextRenderer() {
+         return mTextRenderer;
+      }
+
+      c2d::TileAtlas& getSpriteAtlas() {
+         return mTileAtlas;
+      }
 
     // initialization
       bool initialize(Device& device);
       void destroy();
-
-   // get/set
-      float getDpi() const { return mDpi; }
-      void setDpi(float dpi) { mDpi = dpi; }
-
+      
     // operations
       virtual void setRenderTarget(RenderTarget& target) = 0;
       virtual void setCodePath(CodePath& path) = 0;
@@ -76,6 +92,7 @@ namespace Graphics
    private:
 
     // data
+      c2d::TileAtlas         mTileAtlas;
       c2d::SpriteRenderer    mSpriteRenderer;
       ParticleSystemRenderer mParticleRenderer;
       TextRenderer           mTextRenderer;
@@ -83,7 +100,5 @@ namespace Graphics
       float                  mDpi;
    };
 };
-
-#include "rendercontext.inl"
 
 #endif // RENDER_CONTEXT_H

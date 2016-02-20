@@ -51,10 +51,6 @@ using namespace Graphics;
 Layer::Layer():
    tileWidth(0),
    tileHeight(0),
-   tileCount(0),
-   texTileWidth(0),
-   texTileHeight(0),
-   maxTilesOnRow(0),
    xscroll(0),
    yscroll(0),
    xscrollMax(0),
@@ -63,7 +59,6 @@ Layer::Layer():
    scrollSpeedY(1),
    maxTilesX(0),
    maxTilesY(0),
-   verts(0),
    verts_to_render(0),
    verts_to_render_front(0),
    animateTiles(true),
@@ -74,7 +69,6 @@ Layer::Layer():
    pfrontvb(NULL),
    ib(NULL),
    ub(NULL),
-   texcoordLookup(0),
    mpDefinition(NULL),
    mpEffect(NULL),
    mConstants()
@@ -117,7 +111,6 @@ bool Layer::initialize(Device& device)
       return false;
    }
 
-   tileCount = tileset().getTileCount();
    tileWidth = tileset().getTileWidth();
    tileHeight = tileset().getTileHeight();
 
@@ -133,7 +126,6 @@ void Layer::release()
    delete ib;
    delete vb;
    delete pfrontvb;
-	delete[] texcoordLookup;
    delete mpEffect;
 }
 
@@ -211,10 +203,10 @@ bool Layer::createBuffers(Device& device, int width, int height)
 {
    ASSERT_PTR(mpEffect);
 
-   const int batchsize = width * height * 2;
-   int size = batchsize * 4; // each tile is 4 vertices
+   const int batchsize = width * height;
    int usage = VertexBuffer::eWriteOnly | VertexBuffer::eDynamic;
 
+   int size = 2 * batchsize * 4; // two layers, each tile is 4 vertices
    vb = mpEffect->createVertexBuffer(device, size, usage);
    if ( vb == NULL )
    {
@@ -222,6 +214,7 @@ bool Layer::createBuffers(Device& device, int width, int height)
       return false;
    }
 
+   size = batchsize * 4; // one layers, each tile is 4 vertices
    pfrontvb = mpEffect->createVertexBuffer(device, size, usage);
    if ( pfrontvb == NULL )
    {

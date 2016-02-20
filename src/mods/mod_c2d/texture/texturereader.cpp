@@ -4,17 +4,25 @@
 #include "core/graphics/device.h"
 #include "core/graphics/texture.h"
 #include "core/streams/bufferedstream.h"
-#include "core/defines.h"
 
 IContent* TextureReader::read(DataStream& stream)
 {
+   if ( !hasGraphicsDevice() )
+   {
+      return nullptr;
+   }
+
+   int width, height, format;
+   stream >> width >> height >> format;
+
    BufferedStream datastream;
    stream.read(datastream);
 
-   if ( hasGraphicsDevice() )
-   {
-      return getGraphicsDevice().createTexture(datastream);
-   }
+   Graphics::TextureDescription desc;
+   desc.width = width;
+   desc.height = height;
+   desc.format = Graphics::eFormat_DTX3;
+   desc.pinitData = datastream.getData();
 
-   return NULL;
+   return getGraphicsDevice().createTexture(desc);
 }

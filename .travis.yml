@@ -17,6 +17,7 @@ addons:
     - libfreetype6-dev
     - libtinyxml-dev
     - libunittest++-dev
+	- libsquish-dev
 
 before_install:
   - ./projects/install-libzip.sh

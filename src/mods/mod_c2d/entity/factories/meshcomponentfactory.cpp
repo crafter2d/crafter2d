@@ -5,9 +5,11 @@
 #include "core/entity/components/meshcomponent.h"
 #include "core/graphics/device.h"
 #include "core/graphics/animator.h"
+#include "core/graphics/rendercontext.h"
 #include "core/graphics/sprites/sprite.h"
 #include "core/graphics/sprites/spritedefinition.h"
 #include "core/graphics/sprites/spritefactory.h"
+#include "core/graphics/tiles/tileatlas.h"
 
 #include "../proto/meshcomponentdefinitionproto.h"
 
@@ -26,13 +28,10 @@ Component* MeshComponentFactory::instantiate(const ComponentDefinitionProto& def
    const MeshComponentDefinitionProto& meshdef = static_cast<const MeshComponentDefinitionProto&>(definition);
 
    Size meshsize(meshdef.mWidth, meshdef.mHeight);
-   Animator* panimator = createAnimator(meshdef);
-   Texture* ptexture = mDevice.getContentManager().loadContent<Texture>(meshdef.mTexture);
-   panimator->initialize(*ptexture, meshsize);
+   c2d::Animator* panimator = createAnimator(meshdef);
 
    auto pspritedef = new c2d::SpriteDefinition();
    pspritedef->setSize(meshsize);
-   pspritedef->setTexture(ptexture);
    pspritedef->setSpriteAnimator(panimator);
 
    MeshComponent* presult = new MeshComponent();
@@ -40,19 +39,25 @@ Component* MeshComponentFactory::instantiate(const ComponentDefinitionProto& def
    return presult;
 }
 
-Animator* MeshComponentFactory::createAnimator(const MeshComponentDefinitionProto& definition) const
+c2d::Animator* MeshComponentFactory::createAnimator(const MeshComponentDefinitionProto& definition) const
 {
-   Animator* presult = new Animator();
+   auto& atlas = mDevice.getContext().getSpriteAtlas();
+
+   c2d::Animator* presult = new c2d::Animator();
    presult->setAnimationSpeed(definition.mAnimationSpeed);
 
-   int start = 0;
    for ( uint32_t index = 0; index < definition.mAnimations.size(); ++index )
    {
-      int length = definition.mAnimations[index];
+      auto& animationdef = definition.mAnimations[index];
 
-      presult->addAnimation(start, length);
+      c2d::Animator::Animation& animation = presult->emplaceAnimation();
+      animation.reserve(animationdef.frames.size());
 
-      start += length;
+      for ( auto& name : animationdef.frames )
+      {
+         int index = atlas.lookup(name);
+         animation.push_back(index);
+      }
    }
 
    return presult;

@@ -110,6 +110,7 @@
      <string>&amp;Tools</string>
     </property>
     <addaction name="actionTools_TextureSplitter"/>
+    <addaction name="actionTools_TexturePacker"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -362,6 +363,11 @@
   <action name="actionTools_TextureSplitter">
    <property name="text">
     <string>Texture Splitter</string>
+   </property>
+  </action>
+  <action name="actionTools_TexturePacker">
+   <property name="text">
+    <string>Texture Packer</string>
    </property>
   </action>
  </widget>

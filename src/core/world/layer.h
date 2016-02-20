@@ -120,15 +120,9 @@ public:
          TileSet& tileset();
    void           setTileSet(TileSet* ptileset);
 
-   int            tilecount() const;
    int            tilewidth() const;
    int            tileheight() const;
-
-   const Vector&  tilecoordinates(int index) const;
-
-   float          getTexTileWidth() const { return texTileWidth; }
-   float          getTexTileHeight() const { return texTileHeight; }
-
+   
    const Graphics::Effect& getEffect() const;
          Graphics::Effect& getEffect();
 
@@ -155,14 +149,12 @@ protected:
  // operations
    void           setVertex(float** data, float x, float y, float texX, float texY);
 
-   int tileWidth, tileHeight, tileCount;
-   float texTileWidth, texTileHeight;
-   int maxTilesOnRow;
+   int tileWidth, tileHeight;
    float xscroll, yscroll;
    float xscrollMax, yscrollMax;
    float scrollSpeedX, scrollSpeedY;
    int maxTilesX, maxTilesY;
-   int verts, verts_to_render, verts_to_render_front;
+   int verts_to_render, verts_to_render_front;
    bool animateTiles;
    bool dirty;
 
@@ -173,7 +165,6 @@ protected:
    Graphics::VertexBuffer* pfrontvb;
    Graphics::IndexBuffer* ib;
    Graphics::UniformBuffer* ub;
-   Vector* texcoordLookup;
 
 private:
    struct ConstantBuffer

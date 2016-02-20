@@ -20,70 +20,60 @@
 #ifndef ANIMATOR_H_
 #define ANIMATOR_H_
 
+#include <vector>
+
 #include "core/smartptr/sharedptr.h"
 #include "core/core_base.h"
-
-#include "animationset.h"
-#include "texturecoordlookup.h"
 
 struct Size;
 
 namespace Graphics
 {
-   class AnimationState;
    class Texture;
    class TextureCoordinate;
+}
+
+namespace c2d
+{
+   class AnimationState;
 
    class CORE_API Animator
    {
    public:
+      using Animation = std::vector<int>;
+
       Animator();
       ~Animator();
 
     // get/set
-      void setAnimationSpeed(float milliseconds);
-
-      int  getAnimation() const;
-      bool setAnimation(int animation);
-
-    // query
-      const TextureCoordinate& getTextureCoordinate(const AnimationState& state) const;
-
+      void setAnimationSpeed(float milliseconds) {
+         mAnimationSpeed = milliseconds;
+      }
+      
     // operations
-      void initialize(const Texture& texture, const Size& meshsize);
-      void addAnimation(int start, int length);
+      Animation& emplaceAnimation();
       void flip();
 
     // Animation
+      void setAnimation(AnimationState& state, int index);
       bool animate(AnimationState& state) const;
 
    private:
-    // get/set
-      const AnimationSet&  getAnimations() const;
-            AnimationSet&  getAnimations();
+      using Animations = std::vector<Animation>;
 
     // query
       bool canAnimate(AnimationState& state) const;
 
     // animation
       void nextFrame(AnimationState& state) const;
-
-    // operations
-      void determineFrameCount();
-
-      TextureCoordLookup mTextureCoords;
-      AnimationSet       mAnimations;
-	   float    mAnimationSpeed;
-	   float    mAnimationDelta;
-      float    mAnimFrameWidth;
-      int      mAnimFrameCount;
+      
+    // data
+      Animations  mAnimations;
+	   float       mAnimationSpeed;
+      int         mAnimFrameCount;
    };
 
    typedef SharedPtr<Animator> AnimatorPtr;
 }
-
-#ifdef JENGINE_INLINE
-#  include "animator.inl"
-#endif
 
 #endif

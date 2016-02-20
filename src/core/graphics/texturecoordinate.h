@@ -20,35 +20,27 @@
 #ifndef _TEXTURE_COORDINATE
 #define _TEXTURE_COORDINATE
 
+#include "core/core_base.h"
+
 #include "core/math/vertex.h"
 
-namespace Graphics
+namespace c2d
 {
-   class TextureCoordinate
+   class CORE_API TextureCoordinate
    {
    public:
-      static const int TopLeft = 0;
-      static const int TopRight = 1;
-      static const int BottomRight = 2;
-      static const int BottomLeft = 3;
-
       TextureCoordinate();
       TextureCoordinate(const TextureCoordinate& that);
-
-    // get/set
-      const Vertex& get(int index) const;
-
-      const Vertex& getTopLeft() const;
-      const Vertex& getTopRight() const;
-      const Vertex& getBottomLeft() const;
-      const Vertex& getBottomRight() const;
-
+      TextureCoordinate& operator=(const TextureCoordinate& that);
+      
     // operations
-      void initialize(const Vertex& tl, const Vertex& br);
       void flip();
 
-   private:
-      Vertex mCoordinates[4];
+    // values      
+      float left;
+      float top;
+      float right;
+      float bottom;
    };
 }
 

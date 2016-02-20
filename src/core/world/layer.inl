@@ -150,11 +150,6 @@ INLINE TileField& Layer::getTileField()
    return mTileMap;
 }
 
-INLINE int Layer::tilecount() const
-{
-   return tileCount;
-}
-
 INLINE int Layer::tilewidth() const
 {
    return tileWidth;
@@ -163,12 +158,6 @@ INLINE int Layer::tilewidth() const
 INLINE int Layer::tileheight() const
 {
    return tileHeight;
-}
-
-INLINE const Vector& Layer::tilecoordinates(int index) const
-{
-   assert(texcoordLookup != NULL && "Texture coordinate lookup table not initialized.");
-   return texcoordLookup[index];
 }
 
 INLINE Vector Layer::getScrollSpeed() const

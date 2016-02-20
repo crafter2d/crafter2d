@@ -73,12 +73,12 @@ namespace c2d
       }
 
       float& asFloat() {
-         assert(mType == eInt);
+         assert(mType == eFloat);
          return *reinterpret_cast<float*>(mpData);
       }
 
       bool& asBool() {
-         assert(mType == eInt);
+         assert(mType == eBool);
          return *reinterpret_cast<bool*>(mpData);
       }
 
@@ -135,15 +135,15 @@ namespace c2d
    };
 }
 
-#define ELEMENT_DEF(name) class name : public Element { public: name();
-#define ELEMENT_IMP(name) }; name::name(): Element(#name) {
+#define ELEMENT_DEF(name) class name : public c2d::Element { public: name();
+#define ELEMENT_IMP(name) }; name::name(): c2d::Element(#name) {
 #define ELEMENT_END }
 
 #define ATTRIBUTE(type, name) type name;
 #define ATTRIBUTE_INIT(name, requirement, type, default) name = default; registerAttribute(new Attribute(#name, &name, type, requirement));
 
-#define CHILD(type, name) std::vector<type> name##s;
-#define CHILD_INIT(type, name, rel, empty) registerChild(new ChildImp<type>(#name, name##s, rel, empty));
+#define CHILD(type) std::vector<type> type##s;
+#define CHILD_INIT(type, rel, empty) registerChild(new ChildImp<type>(#type, type##s, rel, empty));
 
 #endif // XML_PARTS_H
 

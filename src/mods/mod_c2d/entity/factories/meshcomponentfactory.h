@@ -4,9 +4,13 @@
 
 #include "componentfactory.h"
 
-namespace Graphics
+namespace c2d
 {
    class Animator;
+}
+
+namespace Graphics
+{
    class Device;
 }
 
@@ -22,7 +26,7 @@ public:
 private:
 
  // operations
-   Graphics::Animator* createAnimator(const MeshComponentDefinitionProto& definition) const;
+   c2d::Animator* createAnimator(const MeshComponentDefinitionProto& definition) const;
 
  // data
    Graphics::Device& mDevice;

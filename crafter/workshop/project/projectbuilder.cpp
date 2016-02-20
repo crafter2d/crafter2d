@@ -15,18 +15,16 @@ ProjectBuilder::ProjectBuilder(Project& project):
 
 // - Operations
 
-int sFolderCount = 6;
 struct BuildInfo
 {
     QString path;
     QString filter;
-};
-
-BuildInfo sContentFolders[] = {
-    { "images", "*.dds" },
+} sContentFolders[] = {
     { "objects", "*.xml" },
     { "shaders", "*.fx" },
     { "sounds", "*.ogg" },
+    { "tileatlas", "*.png" },
+    { "tileatlas", "*.xml" },
     { "tilesets", "*.xml" },
     { "worlds", "*.world" },
 };
@@ -46,45 +44,35 @@ void ProjectBuilder::run()
 
 bool ProjectBuilder::setupDestination(QDir& path, const QString& name)
 {
-    if ( path.exists(name) )
-    {
-        path.cd(name);
-        for ( int index = 0; index < sFolderCount; ++index )
-        {
-            BuildInfo& info = sContentFolders[index];
-            path.cd(info.path);
-
-            QFileInfoList infos = path.entryInfoList();
-            for ( int index = 0; index < infos.size(); ++index )
-            {
-                const QFileInfo& info = infos.at(index);
-                path.remove(info.fileName());
-            }
-
-            path.cdUp();
-        }
-        path.cdUp();
-    }
-    else
+    if ( !path.exists(name) )
     {
         if ( !path.mkdir(name) )
         {
             // could not create the folder where the compiled file must be placed
             emit messageAvailable("Could not create folder " + name + " in " + path.absolutePath());
         }
+    }
+
+    path.cd(name);
+    for ( BuildInfo& info : sContentFolders )
+    {
+        if ( !path.exists(info.path) )
+        {
+            path.mkdir(info.path);
+        }
         else
         {
-            path.cd(name);
-
-            for ( int index = 0; index < sFolderCount; ++index )
+            path.cd(info.path);
+            QFileInfoList infos = path.entryInfoList();
+            for ( const QFileInfo& info : infos )
             {
-                BuildInfo& info = sContentFolders[index];
-                path.mkdir(info.path);
+                path.remove(info.fileName());
             }
-
             path.cdUp();
         }
     }
+
+    path.cdUp();
 
     return true;
 }
@@ -93,6 +81,8 @@ void ProjectBuilder::buildScripts(QDir& path, const QString& name)
 {
     QString sourcepath = path.absolutePath() + QDir::separator() + "scripts";
     QString destpath = path.absolutePath() + QDir::separator() + name + QDir::separator() + "scripts";
+
+    emit messageAvailable("Compiling scripts in " + sourcepath);
 
     QDir destdir(path);
     destdir.cd(name);
@@ -146,10 +136,8 @@ void ProjectBuilder::buildContent(QDir& path, const QString& name)
 {
     QString destpath = path.absolutePath() + QDir::separator() + name + QDir::separator();
 
-    for ( int index = 0; index < sFolderCount; ++index )
+    for ( BuildInfo& info : sContentFolders )
     {
-        BuildInfo& info = sContentFolders[index];
-
         QDir folder(path);
         folder.cd(info.path);
 
@@ -159,9 +147,8 @@ void ProjectBuilder::buildContent(QDir& path, const QString& name)
         filters << info.filter;
 
         QFileInfoList infos = folder.entryInfoList(filters);
-        for ( int index = 0; index < infos.size(); ++index )
+        for ( const QFileInfo& info : infos )
         {
-            const QFileInfo& info = infos.at(index);
             QString source = info.absoluteFilePath();
             QString dest   = folderpath + info.baseName() + ".c2d";
 
@@ -185,7 +172,7 @@ void ProjectBuilder::compile(const QString& source, const QString& dest)
     compiler.start("compiler.exe", arguments);
 #endif
 
-    if ( compiler.waitForFinished() )
+    if ( compiler.waitForFinished(60000) )
     {
         QString message;
         QFileInfo info(source);
@@ -204,7 +191,6 @@ void ProjectBuilder::compile(const QString& source, const QString& dest)
                 }
                 else
                 {
-
                     message = QString("Failed to convert asset '%0'").arg(info.baseName());
                     switch ( exitcode )
                     {

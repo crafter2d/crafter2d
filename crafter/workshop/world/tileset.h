@@ -3,7 +3,6 @@
 
 #include "../resource.h"
 
-#include <QImage>
 #include <QSize>
 #include <QVector>
 
@@ -19,7 +18,6 @@ public:
 
     TileSet();
 
-
   // get/set
     const QString& getImagePath() const {
         return mImagePath;
@@ -31,21 +29,32 @@ public:
         return mTileSize;
     }
 
-    int  getTileCount() const {
+    int getTileCount() const {
         return mTiles.size();
     }
 
   // operations
-    void paintTile(QPainter& painter, int index, int x, int y) const;
+    void paintTile(QPainter& painter, const QPoint &pos, int index) const;
 
 private:
+    friend class TileSetWriter;
+    friend class TileSetReader;
+
+    struct Tile
+    {
+        QString name;
+        int spriteindex;
+    };
 
   // typedefs
-    using QImages = QVector<QImage>;
+    using Tiles = QVector<Tile>;
+
+  // operations
+    void determineTileSize();
 
   // data
     QString mImagePath;
-    QImages mTiles;
+    Tiles   mTiles;
     QSize   mTileSize;
 };
 

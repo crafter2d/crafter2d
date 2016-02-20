@@ -29,9 +29,19 @@ void TileSetWriter::write(const TileSet& tileset)
 
         writer.writeStartElement("tileset");
 
-        writer.writeStartElement("texture");
-        writer.writeAttribute("name", tileset.getImagePath());
-        writer.writeEndElement(); // </texture>
+        const QSize& size = tileset.getTileSize();
+        writer.writeAttribute("tilewidth", QString::number(size.width()));
+        writer.writeAttribute("tileheight", QString::number(size.height()));
+
+        for ( int index = 0; index < tileset.mTiles.size(); ++index )
+        {
+            auto& tile = tileset.mTiles[index];
+
+            writer.writeStartElement("tile");
+            writer.writeAttribute("id", QString::number(index));
+            writer.writeAttribute("name", tile.name);
+            writer.writeEndElement(); // </tile>
+        }
 
         writer.writeEndElement(); // </tileset>
         writer.writeEndDocument();

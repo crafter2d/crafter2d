@@ -53,6 +53,7 @@ public:
    void setIdentity();
    void set(const Vector& position, float angle);
 
+   Vector transform(float x, float y) const;
    Vector transform(const Vector& pos) const;
 
  // conversion

@@ -19,36 +19,15 @@
  ***************************************************************************/
 #include "animationstate.h"
 
-#ifndef JENGINE_INLINE
-#  include "animationstate.inl"
-#endif
-
-namespace Graphics
+namespace c2d
 {
 
    AnimationState::AnimationState():
       mDelta(0.0f),
       mAnimation(0),
       mAnimFrame(0),
-      mTexIndex(0)
+      mTileIndex(0)
    {
-   }
-
-   // - Operations
-
-   void AnimationState::update(float delta)
-   {
-      mDelta += delta;
-   }
-
-   void AnimationState::setActiveAnimation(int index)
-   {
-      if ( mAnimation != index )
-      {
-         mAnimation = index;
-         mAnimFrame = 0;
-         mTexIndex  = 0;
-      }
    }
 
 } // namespace Graphics

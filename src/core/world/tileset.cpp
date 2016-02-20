@@ -35,7 +35,13 @@
 //////////////////////////////////////////////////////////////////////////
 
 TileInfo::TileInfo():
-   flag(0),
+   coords(),
+   sheet(0),
+   flag(0)
+{
+}
+
+TileAnimation::TileAnimation():
    anim_index(0),
    anim_length(0),
    anim_speed(0),
@@ -49,7 +55,6 @@ TileInfo::TileInfo():
 
 TileSet::TileSet():
    IContent(),
-   mpMap(NULL),
    mpInfo(NULL),
    mTileCount(0),
    mTileWidth(0),
@@ -59,7 +64,6 @@ TileSet::TileSet():
 
 TileSet::~TileSet()
 {
-   delete mpMap;
    delete[] mpInfo;
    mTileCount = 0;
 }
@@ -88,6 +92,7 @@ bool TileSet::update(float tick)
    {
       TileInfo& info = mpInfo[index];
 
+      /*
       if ( info.flag & TileAnimate )
       {
          // only process animated tiles
@@ -102,6 +107,7 @@ bool TileSet::update(float tick)
 
          index += info.anim_length - 1;
       }
+      */
    }
 
    return dirty;

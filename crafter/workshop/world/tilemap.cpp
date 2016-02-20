@@ -79,7 +79,7 @@ void TileMap::paint(QPainter& painter)
                     int tile = mpField->get((TileField::Level)level, x, y);
                     if ( tile < 255 )
                     {
-                        mpTileSet->paintTile(painter, tile, posx, posy);
+                        mpTileSet->paintTile(painter, QPoint(posx, posy), tile);
                     }
                 }
 

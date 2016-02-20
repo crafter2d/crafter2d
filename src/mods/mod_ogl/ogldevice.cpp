@@ -22,12 +22,10 @@
 #include "core/log/log.h"
 #include "core/smartptr/autoptr.h"
 #include "core/graphics/blendstatedesc.h"
+#include "core/graphics/image.h"
 
 #include "text/oglglyphprovider.h"
 #include "text/oglfont.h"
-
-#include "texture/textureloaderfactory.h"
-#include "texture/abstracttextureloader.h"
 
 #include "oglblendstate.h"
 #include "ogltexture.h"
@@ -136,18 +134,17 @@ IndexBuffer* OGLDevice::createIndexBuffer()
 /// \return A pointer to the created texture.
 Texture* OGLDevice::createTexture(DataStream& data)
 {
-   AutoPtr<AbstractTextureLoader> loader = TextureLoaderFactory::constructLoader(UTEXT(""));
-   if ( loader.hasPointer() && loader->load(data) )
+   c2d::Image image;
+   if ( image.load(data) )
    {
-      const TextureInfo& info = loader->getTextureInfo();
       AutoPtr<OGLTexture> result = new OGLTexture();
-      if ( !result->create(info.getWidth(), info.getHeight(), info.getChannels()) )
+      if ( !result->create(image.getWidth(), image.getHeight(), image.getFormat()) )
       {
          return NULL;
       }
 
       OGLRenderContext dummy;
-      result->update(dummy, info.getData(), info.getWidth());
+      result->update(dummy, image.getBytes(), image.getWidth());
 
       return result.release();
    }

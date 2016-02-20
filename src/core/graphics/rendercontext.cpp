@@ -5,6 +5,7 @@ namespace Graphics
 {
 
 RenderContext::RenderContext():
+   mTileAtlas(),
    mSpriteRenderer(),
    mParticleRenderer(),
    mTextRenderer(),

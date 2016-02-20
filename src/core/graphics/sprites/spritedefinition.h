@@ -26,13 +26,14 @@
 #include "core/defines.h"
 
 namespace Graphics
-{
-   class Animator;
+{   
    class Texture;
 }
 
 namespace c2d
 {
+   class Animator;
+
    class CORE_API SpriteDefinition
    {
    public:
@@ -61,17 +62,17 @@ namespace c2d
          return mpAnimator != nullptr;
       }
 
-      const Graphics::Animator& getSpriteAnimator() const {
+      const Animator& getSpriteAnimator() const {
          ASSERT_PTR(mpAnimator);
          return *mpAnimator;
       }
       
-      Graphics::Animator& getSpriteAnimator() {
+      Animator& getSpriteAnimator() {
          ASSERT_PTR(mpAnimator);
          return *mpAnimator;
       }
 
-      void setSpriteAnimator(Graphics::Animator* panimator) {
+      void setSpriteAnimator(Animator* panimator) {
          mpAnimator = panimator;
       }
 
@@ -80,7 +81,7 @@ namespace c2d
     // data
       Size                 mSize;
       Graphics::Texture*   mpTexture;
-      Graphics::Animator*  mpAnimator;
+      Animator*            mpAnimator;
    };
 }
 

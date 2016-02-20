@@ -73,6 +73,12 @@ void c2d::XmlParser::parseAttribute(TiXmlElement* pxmlElement, c2d::Attribute& a
    case Attribute::eInt:
       result = pxmlElement->QueryIntAttribute(attribute.getName().c_str(), &attribute.asInt());
       break;
+   case Attribute::eFloat:
+      result = pxmlElement->QueryFloatAttribute(attribute.getName().c_str(), &attribute.asFloat());
+      break;
+   case Attribute::eBool:
+      result = pxmlElement->QueryBoolAttribute(attribute.getName().c_str(), &attribute.asBool());
+      break;
    }
 
    switch ( result )

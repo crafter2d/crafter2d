@@ -5,6 +5,8 @@
 #include <QString>
 #include <QVector>
 
+#include "texturepacker/spriteatlas.h"
+
 class QDir;
 class Entity;
 class Resource;
@@ -36,21 +38,30 @@ public:
     const QString& getFileName() const;
     void           setFileName(const QString& name);
 
-    const QString getBasePath() const;
+    const QString getBasePath() const {
+        return mBasePath;
+    }
 
     Entities& getEntities() { return mEntities; }
-    Worlds &getWorlds();
-    Scripts& getScripts();
-    TileSets& getTileSets();
+    Worlds &getWorlds() { return mWorlds; }
+    Scripts& getScripts() { return mScripts; }
+    TileSets& getTileSets() { return mTileSets; }
+    SpriteAtlas& getSpriteAtlas() { return mSpriteAtlas; }
 
  // query
-    int        getWorldCount() const;
-    TileWorld &getWorld(int index);
-
     QString getFilePath(const Resource& resource) const;
 
     /// /brief Returns the full path of the file, relative from the project directory.
     QString getFilePath(const QString& file) const;
+
+    /// Returns all files from the given basepath\path
+    /// filter : a list of all accepted extensions
+    QStringList getFiles(const QString& path, const QStringList &filter);
+
+    const QString& getImagePath() const;
+    const QString& getScriptPath() const;
+    const QString& getTileAtlasPath() const;
+
 
  // operations
     void create(QDir &path);
@@ -78,6 +89,10 @@ signals:
     void messageAvailable(const QString& msg);
 
 private:
+    enum PathName { eImagePath, eScriptPath, eTileAtlasPath, ePathCount };
+  // get/set
+    void setBasePath(const QString& path);
+
   // operations
     bool loadWorld(const QString& fileName);
     bool loadTileset(const QString& filename);
@@ -85,6 +100,8 @@ private:
 
     void saveProjectResources();
     void saveProjectFile();
+
+    void traverseDirectory(QDir& dir, const QStringList& filter, QStringList &result);
 
     bool generateScripts(QDir& path);
 
@@ -95,10 +112,12 @@ private:
     QString  mName;
     QString  mFileName;
     QString  mBasePath;
+    QStringList mPaths;
     Entities mEntities;
     TileSets mTileSets;
     Worlds   mWorlds;
     Scripts  mScripts;
+    SpriteAtlas mSpriteAtlas;
 };
 
 #endif // PROJECT_H

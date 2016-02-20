@@ -73,8 +73,6 @@
     <ClCompile Include="..\..\..\src\core\entity\entitylinkdefinition.cpp" />
     <ClCompile Include="..\..\..\src\core\entity\idmanager.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\abstractgeometrybuffer.cpp" />
-    <ClCompile Include="..\..\..\src\core\graphics\animation.cpp" />
-    <ClCompile Include="..\..\..\src\core\graphics\animationset.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\animation\animationstate.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\animator.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\blendstate.cpp" />
@@ -86,6 +84,7 @@
     <ClCompile Include="..\..\..\src\core\graphics\effecttechnique.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\font.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\geometrybuffer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\image.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\indexbuffer.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\particles\particle.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\particles\particlerendererdefault.cpp" />
@@ -101,12 +100,13 @@
     <ClCompile Include="..\..\..\src\core\graphics\sprites\spriterenderer.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\texture.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\texturecoordinate.cpp" />
-    <ClCompile Include="..\..\..\src\core\graphics\texturecoordlookup.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\text\glyph.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\text\glyphatlas.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\text\glyphsheet.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\text\textlayout.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\text\textrenderer.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\tiles\tileatlas.cpp" />
+    <ClCompile Include="..\..\..\src\core\graphics\tiles\tilesheet.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\utils.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\vertexbuffer.cpp" />
     <ClCompile Include="..\..\..\src\core\graphics\vertexlayout.cpp" />
@@ -288,8 +288,6 @@
     <ClInclude Include="..\..\..\src\core\entity\entitylinkdefinition.h" />
     <ClInclude Include="..\..\..\src\core\entity\idmanager.h" />
     <ClInclude Include="..\..\..\src\core\graphics\abstractgeometrybuffer.h" />
-    <ClInclude Include="..\..\..\src\core\graphics\animation.h" />
-    <ClInclude Include="..\..\..\src\core\graphics\animationset.h" />
     <ClInclude Include="..\..\..\src\core\graphics\animation\animationstate.h" />
     <ClInclude Include="..\..\..\src\core\graphics\animator.h" />
     <ClInclude Include="..\..\..\src\core\graphics\blendstate.h" />
@@ -302,6 +300,7 @@
     <ClInclude Include="..\..\..\src\core\graphics\effecttechnique.h" />
     <ClInclude Include="..\..\..\src\core\graphics\font.h" />
     <ClInclude Include="..\..\..\src\core\graphics\geometrybuffer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\image.h" />
     <ClInclude Include="..\..\..\src\core\graphics\indexbuffer.h" />
     <ClInclude Include="..\..\..\src\core\graphics\particles\particle.h" />
     <ClInclude Include="..\..\..\src\core\graphics\particles\particlerenderer.h" />
@@ -317,9 +316,10 @@
     <ClInclude Include="..\..\..\src\core\graphics\sprites\spritedefinition.h" />
     <ClInclude Include="..\..\..\src\core\graphics\sprites\spritefactory.h" />
     <ClInclude Include="..\..\..\src\core\graphics\sprites\spriterenderer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\stb\stb_dxt.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\stb\stb_image.h" />
     <ClInclude Include="..\..\..\src\core\graphics\texture.h" />
     <ClInclude Include="..\..\..\src\core\graphics\texturecoordinate.h" />
-    <ClInclude Include="..\..\..\src\core\graphics\texturecoordlookup.h" />
     <ClInclude Include="..\..\..\src\core\graphics\text\glyph.h" />
     <ClInclude Include="..\..\..\src\core\graphics\text\glyphatlas.h" />
     <ClInclude Include="..\..\..\src\core\graphics\text\glyphmap.h" />
@@ -328,6 +328,8 @@
     <ClInclude Include="..\..\..\src\core\graphics\text\glyphvertexdata.h" />
     <ClInclude Include="..\..\..\src\core\graphics\text\textlayout.h" />
     <ClInclude Include="..\..\..\src\core\graphics\text\textrenderer.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\tiles\tileatlas.h" />
+    <ClInclude Include="..\..\..\src\core\graphics\tiles\tilesheet.h" />
     <ClInclude Include="..\..\..\src\core\graphics\uniformbuffer.h" />
     <ClInclude Include="..\..\..\src\core\graphics\utils.h" />
     <ClInclude Include="..\..\..\src\core\graphics\vertexbuffer.h" />
@@ -494,16 +496,11 @@
     <None Include="..\..\..\src\core\entity\components\meshcomponent.inl" />
     <None Include="..\..\..\src\core\entity\components\physicscomponent.inl" />
     <None Include="..\..\..\src\core\entity\entity.inl" />
-    <None Include="..\..\..\src\core\graphics\animation.inl" />
-    <None Include="..\..\..\src\core\graphics\animationset.inl" />
-    <None Include="..\..\..\src\core\graphics\animation\animationstate.inl" />
-    <None Include="..\..\..\src\core\graphics\animator.inl" />
     <None Include="..\..\..\src\core\graphics\effect.inl" />
     <None Include="..\..\..\src\core\graphics\geometrybuffer.inl" />
     <None Include="..\..\..\src\core\graphics\particles\particlesystem.inl" />
     <None Include="..\..\..\src\core\graphics\rendercontext.inl" />
     <None Include="..\..\..\src\core\graphics\texture.inl" />
-    <None Include="..\..\..\src\core\graphics\texturecoordlookup.inl" />
     <None Include="..\..\..\src\core\graphics\viewport.inl" />
     <None Include="..\..\..\src\core\inifile\inifileproperty.inl" />
     <None Include="..\..\..\src\core\inifile\inifilesection.inl" />

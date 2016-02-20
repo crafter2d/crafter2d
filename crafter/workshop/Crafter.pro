@@ -76,7 +76,16 @@ SOURCES += main.cpp\
     object/spritecomponent.cpp \
     object/spriteanimation.cpp \
     object/physicscomponent.cpp \
-    texture/texturesplitter.cpp
+    texture/texturesplitter.cpp \
+    texturepacker/texturepacker.cpp \
+    texturepacker/texturepackerview.cpp \
+    texturepacker/maxrectsalgorithm.cpp \
+    texturepacker/sprite.cpp \
+    texturepacker/spritesheet.cpp \
+    texturepacker/spriteatlas.cpp \
+    texturepacker/spritesheetwriter.cpp \
+    texturepacker/spritesheetreader.cpp \
+    helpers/rotateimagepainter.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -139,7 +148,16 @@ HEADERS  += mainwindow.h \
     object/spritecomponent.h \
     object/spriteanimation.h \
     object/physicscomponent.h \
-    texture/texturesplitter.h
+    texture/texturesplitter.h \
+    texturepacker/texturepacker.h \
+    texturepacker/texturepackerview.h \
+    texturepacker/maxrectsalgorithm.h \
+    texturepacker/sprite.h \
+    texturepacker/spritesheet.h \
+    texturepacker/spriteatlas.h \
+    texturepacker/spritesheetwriter.h \
+    texturepacker/spritesheetreader.h \
+    helpers/rotateimagepainter.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
@@ -156,7 +174,8 @@ FORMS    += mainwindow.ui \
     outputpanel.ui \
     newtilesetdialog.ui \
     worldwizard_pagelayer.ui \
-    texture/texturesplitter.ui
+    texture/texturesplitter.ui \
+    texturepacker/texturepacker.ui
 
 BaseDir = $$PWD/../build/workshop
 

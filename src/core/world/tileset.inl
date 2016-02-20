@@ -24,17 +24,6 @@ INLINE TileInfo& TileSet::operator[](int idx)
    return mpInfo[idx];
 }
 
-INLINE Graphics::Texture& TileSet::getTexture()
-{
-   ASSERT_PTR(mpMap);
-   return *mpMap;
-}
-
-INLINE void TileSet::setTexture(Graphics::Texture* ptexture)
-{
-   mpMap = ptexture;
-}
-
 INLINE int TileSet::getTileCount() const
 {
    return mTileCount;

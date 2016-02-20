@@ -3,12 +3,35 @@
 
 <entity class="demo.Hero" name="char">
    <sprite width="128" height="128">
-	  <texture>images/naturegirl</texture>
       <animations speed="125">
-         <anim length="9" name="idle" />
-         <anim length="8" name="run" />
-		 <anim length="5" name="slide" />
-		 <anim length="10" name="jump" />
+         <anim name="idle">
+			<tile name="naturegirl/idle_1.png" />
+			<tile name="naturegirl/idle_2.png" />
+			<tile name="naturegirl/idle_3.png" />
+			<tile name="naturegirl/idle_4.png" />
+			<tile name="naturegirl/idle_5.png" />
+			<tile name="naturegirl/idle_6.png" />
+			<tile name="naturegirl/idle_7.png" />
+			<tile name="naturegirl/idle_8.png" />
+			<tile name="naturegirl/idle_9.png" />
+		 </anim>
+         <anim name="run">
+			<tile name="naturegirl/run_1.png" />
+			<tile name="naturegirl/run_2.png" />
+			<tile name="naturegirl/run_3.png" />
+			<tile name="naturegirl/run_4.png" />
+			<tile name="naturegirl/run_5.png" />
+			<tile name="naturegirl/run_6.png" />
+			<tile name="naturegirl/run_7.png" />
+			<tile name="naturegirl/run_8.png" />
+		 </anim>
+		 <anim name="slide">
+			<tile name="naturegirl/slide_1.png" />
+			<tile name="naturegirl/slide_2.png" />
+			<tile name="naturegirl/slide_3.png" />
+			<tile name="naturegirl/slide_4.png" />
+			<tile name="naturegirl/slide_5.png" />
+		 </anim>
       </animations>
    </sprite>
    <body inertia="1" mass="80" rotate="0">

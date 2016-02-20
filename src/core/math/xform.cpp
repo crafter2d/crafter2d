@@ -107,6 +107,20 @@ void XForm::asMatrix(Matrix4& mat) const
    mat.translate(mPosition);
 }
 
+Vector XForm::transform(float x, float y) const
+{
+   float sin = sinf(mAngle);
+   float cos = cosf(mAngle);
+
+   // 3x3 Matrix
+   // cos  -sin   p.x
+   // sin   cos   p.y
+   // 0    0      1
+
+   return Vector(cos * x + -sin * y + mPosition.x,
+                 sin * x +  cos * y + mPosition.y);
+}
+
 Vector XForm::transform(const Vector& pos) const
 {
    float sin = sinf(mAngle);

@@ -1,23 +1,36 @@
 
 #include "texturewriter.h"
 
+#include <memory>
+#include <squish.h>
+
+#include "core/graphics/image.h"
 #include "core/streams/arraystream.h"
-#include "core/vfs/stdiofile.h"
 
 bool TextureWriter::write(DataStream& stream, const String& filename)
 {
-   StdioFile file;
-
-   if ( file.open(filename, File::EBinary | File::ERead) )
+   c2d::Image image;
+   if ( image.load(filename) )
    {
-      int datalen = file.size();
+      stream.writeInt(image.getWidth());
+      stream.writeInt(image.getHeight());
+      stream.writeInt(image.getFormat());
 
-      char* pbuffer = new char[datalen];
-      int actualsize = file.read(pbuffer, datalen);
-      file.close();
+      if ( image.getFormat() != 4 )
+      {
+         int size = image.getWidth() * image.getHeight() * image.getFormat();
+         stream.writeBlob(image.getBytes(), size);
+      }
+      else
+      {
+         int flags = squish::kDxt3;// | squish::kColourClusterFit;
+         int size = squish::GetStorageRequirements(image.getWidth(), image.getHeight(), flags);
+         auto data = std::make_unique<unsigned char[]>(size);
+         squish::CompressImage(image.getBytes(), image.getWidth(), image.getHeight(), data.get(), flags);
 
-      ArrayStream arraystream(pbuffer, actualsize);
-      stream.write(arraystream);
+         ArrayStream imagestream((char*)data.get(), size);
+         stream.write(imagestream);
+      }
 
       return true;
    }

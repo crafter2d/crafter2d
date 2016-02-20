@@ -47,16 +47,8 @@ namespace c2d
          return mHalfSize;
       }
 
-      const Graphics::Texture& getTexture() const {
-         return mpDefinition->getTexture();
-      }
-
-      const Graphics::TextureCoordinate& getTextureCoordinate() const {
-         return mTexCoordinate;
-      }
-
-      void setTextureCoordinate(const Graphics::TextureCoordinate& coordinate) {
-         mTexCoordinate = coordinate;
+      int getTile() const {
+         return mTile;
       }
 
       const XForm& getTransform() const {
@@ -78,11 +70,11 @@ namespace c2d
     // data
       SpriteDefinition* mpDefinition;
 
-      Graphics::AnimationState    mAnimState;
-      Graphics::TextureCoordinate mTexCoordinate;
-
+      AnimationState    mAnimState;
       XForm             mTransform;
       Size              mHalfSize;
+      int               mTile;
+      bool              mFlipped;
    };
 }
 

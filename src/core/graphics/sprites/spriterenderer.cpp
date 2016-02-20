@@ -26,6 +26,7 @@
 #include "core/graphics/utils.h"
 #include "core/graphics/vertexbuffer.h"
 #include "core/graphics/viewport.h"
+#include "core/graphics/tiles/tileatlas.h"
 #include "core/math/size.h"
 #include "core/math/xform.h"
 
@@ -149,19 +150,22 @@ namespace c2d
          context.setVertexBuffer(*mpVB);
          context.setIndexBuffer(*mpIB);
 
+         auto& atlas = context.getSpriteAtlas();
+
          int start = 0;
          int indices = 6;
-         const Texture* ptex = &mSprites.front()->getTexture();
+         int sheet = mSprites.front()->getTile() >> 16;
          for ( auto psprite : mSprites )
          {
-            if ( &psprite->getTexture() != ptex )
+            int thissheet = psprite->getTile() >> 16;
+            if ( sheet != thissheet )
             {
-               context.setTexture(0, *ptex);
+               atlas.bind(context, sheet);
                context.drawTriangles(start, indices);
 
                start += indices;
                indices = 0;
-               ptex = &psprite->getTexture();
+               sheet = thissheet;
             }
 
             indices += 6;
@@ -169,7 +173,7 @@ namespace c2d
 
          if ( indices > 0 )
          {
-            context.setTexture(0, *ptex);
+            atlas.bind(context, sheet);
             context.drawTriangles(start, indices);
          }
 
@@ -186,11 +190,12 @@ namespace c2d
    void SpriteRenderer::renderSprites(RenderContext& context)
    {
       PTVertex* pvertices = static_cast<PTVertex*>(mpVB->lock(context));
+      TileAtlas& atlas = context.getSpriteAtlas();
 
       mSprites.sort();
       for ( auto psprite : mSprites )
       {
-         renderSprite(*psprite, pvertices);
+         renderSprite(atlas, *psprite, pvertices);
 
          pvertices += 4;
       }
@@ -198,29 +203,24 @@ namespace c2d
       mpVB->unlock(context);
    }
 
-   void SpriteRenderer::renderSprite(const Sprite& sprite, PTVertex* pbuffer)
+   void SpriteRenderer::renderSprite(const TileAtlas& atlas, const Sprite& sprite, PTVertex* pbuffer)
    {
-      const TextureCoordinate& coordinate = sprite.getTextureCoordinate();
       const XForm& xform = sprite.getTransform();
-      const Size& size = sprite.getHalfSize();
-
-      int offsets[4][2] = { {-1, -1}, {1, -1}, {1, 1}, {-1, 1} };
-      int texindex[] = { TextureCoordinate::TopLeft, TextureCoordinate::TopRight, TextureCoordinate::BottomRight, TextureCoordinate::BottomLeft };
+      const Size& halfsize = sprite.getHalfSize();
+      const TextureCoordinate& coords = atlas.getCoordinate(sprite.getTile());
 
       // create the vertices
+      pbuffer[0].pos = xform.transform(-halfsize.width, -halfsize.height);
+      pbuffer[0].tex.set(coords.left, coords.top);
 
-      Vector point;
-      for ( int index = 0; index < 4; ++index )
-      {
-         point.x = size.width * offsets[index][0];
-         point.y = size.height * offsets[index][1];
-         point = xform.transform(point);
+      pbuffer[1].pos = xform.transform(halfsize.width, -halfsize.height);
+      pbuffer[1].tex.set(coords.right, coords.top);
 
-         const Vertex& tex = coordinate.get(texindex[index]);
+      pbuffer[2].pos = xform.transform(halfsize.width, halfsize.height);
+      pbuffer[2].tex.set(coords.right, coords.bottom);
 
-         pbuffer[index].pos = point;
-         pbuffer[index].tex = tex;
-      }
+      pbuffer[3].pos = xform.transform(-halfsize.width, halfsize.height);
+      pbuffer[3].tex.set(coords.left, coords.bottom);
    }
 
 } // namespace c2d

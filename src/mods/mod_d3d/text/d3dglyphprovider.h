@@ -9,6 +9,14 @@
 
 class D3DTextRenderer;
 
+/// The DirectWrite glyph provider implementation for use on Windows devices.
+///
+/// Links
+/// https://msdn.microsoft.com/en-us/library/xwf9s90b.aspx#Y798
+/// https://www.microsoft.com/typography/OTSPEC/vmtx.htm
+/// Custom renderer : https://msdn.microsoft.com/en-us/library/windows/desktop/dd941787(v=vs.85).aspx
+/// GetBounds : https://msdn.microsoft.com/en-us/library/windows/desktop/dd742751(v=vs.85).aspx
+
 namespace Graphics
 {
    class D3DGlyphProvider : public GlyphProvider
@@ -22,7 +30,6 @@ namespace Graphics
       virtual Glyph* getGlyph(UChar ch, float emsize) override;
 
    private:
-      
 
     // data
       ID2D1DeviceContext*   mpD2DContext;

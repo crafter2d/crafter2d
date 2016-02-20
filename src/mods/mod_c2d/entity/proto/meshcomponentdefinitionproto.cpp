@@ -8,7 +8,6 @@ MeshComponentDefinitionProto::MeshComponentDefinitionProto():
    ComponentDefinitionProto(ComponentInterface::eMeshComponent),
    mWidth(0),
    mHeight(0),
-   mTexture(),
    mAnimationSpeed(0.0f),
    mAnimations()
 {
@@ -20,25 +19,41 @@ MeshComponentDefinitionProto::~MeshComponentDefinitionProto()
 
 void MeshComponentDefinitionProto::virRead(DataStream& stream)
 {
-   stream >> mWidth >> mHeight >> mTexture >> mAnimationSpeed;
+   stream >> mWidth >> mHeight >> mAnimationSpeed;
 
    uint32_t size = 0;
    stream.readUint(size);
+   mAnimations.resize(size);
+
    for ( uint32_t index = 0; index < size; ++index )
    {
-      int length;
-      stream >> length;
-      mAnimations.push_back(length);
+      Animation& animation = mAnimations[index];
+      stream >> animation.name;
+
+      uint32_t frameCount;
+      stream.readUint(frameCount);
+      for ( uint32_t idx = 0; idx < frameCount; ++idx )
+      {
+         String name;
+         stream >> name;
+         animation.frames.push_back(name);
+      }
    }
 }
 
 void MeshComponentDefinitionProto::virWrite(DataStream& stream) const
 {
-   stream << mWidth << mHeight << mTexture << mAnimationSpeed;
+   stream << mWidth << mHeight << mAnimationSpeed;
 
    stream.writeUint(mAnimations.size());
-   for ( std::size_t index = 0; index < mAnimations.size(); ++index )
+   for ( auto& animation : mAnimations )
    {
-      stream << mAnimations[index];
+      stream.writeString(animation.name);
+      stream.writeUint(animation.frames.size());
+
+      for ( auto& frame : animation.frames )
+      {
+         stream << frame;
+      }
    }
 }

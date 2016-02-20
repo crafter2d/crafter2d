@@ -83,6 +83,8 @@ private slots:
 
     void on_actionTools_TextureSplitter_triggered();
 
+    void on_actionTools_TexturePacker_triggered();
+
 private:
     enum { MaxRecentFiles = 5 };
 

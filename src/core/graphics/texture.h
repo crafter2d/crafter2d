@@ -30,6 +30,23 @@ namespace Graphics
    class Device;
    class RenderContext;
 
+   enum TextureFormat {
+      eFormat_Luminance,
+      eFormat_RG,
+      eFormat_RGBA,
+      eFormat_DTX1,
+      eFormat_DTX3,
+      eFormat_DTX5,
+   };
+
+   struct TextureDescription
+   {
+      int width;
+      int height;
+      TextureFormat format;
+      const void* pinitData;
+   };
+
    /**
    @author Jeroen Broekhuizen
    \brief Wrapper class around an OpenGL texture. Use this class to load and display textures on your objects.

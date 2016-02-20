@@ -70,9 +70,12 @@ Project::Project():
     mName(),
     mFileName(),
     mBasePath(),
+    mPaths(),
+    mEntities(),
     mTileSets(),
     mWorlds(),
-    mScripts()
+    mScripts(),
+    mSpriteAtlas()
 {
 }
 
@@ -98,37 +101,17 @@ void Project::setFileName(const QString& name)
     mFileName = name;
 }
 
-const QString Project::getBasePath() const
+void Project::setBasePath(const QString& path)
 {
-    return mBasePath;
-}
+    mBasePath = path;
 
-Project::Worlds& Project::getWorlds()
-{
-    return mWorlds;
-}
-
-Project::Scripts& Project::getScripts()
-{
-    return mScripts;
-}
-
-Project::TileSets& Project::getTileSets()
-{
-    return mTileSets;
+    mPaths.clear();
+    mPaths.append(mBasePath + QDir::separator() + "images");
+    mPaths.append(mBasePath + QDir::separator() + "scripts");
+    mPaths.append(mBasePath + QDir::separator() + "tileatlas");
 }
 
 // - Query
-
-int Project::getWorldCount() const
-{
-    return mWorlds.size();
-}
-
-TileWorld& Project::getWorld(int index)
-{
-    return *mWorlds[index];
-}
 
 QString Project::getFilePath(const Resource& resource) const
 {
@@ -138,6 +121,52 @@ QString Project::getFilePath(const Resource& resource) const
 QString Project::getFilePath(const QString& file) const
 {
     return mBasePath + QDir::separator() + file;
+}
+
+const QString& Project::getImagePath() const
+{
+    return mPaths[eImagePath];
+}
+
+const QString& Project::getScriptPath() const
+{
+    return mPaths[eScriptPath];
+}
+
+const QString& Project::getTileAtlasPath() const
+{
+    return mPaths[eTileAtlasPath];
+}
+
+QStringList Project::getFiles(const QString& path, const QStringList& filter)
+{
+    QStringList result;
+    QString lookpath = getFilePath(path);
+    QDir dir(lookpath);
+    traverseDirectory(dir, filter, result);
+    return result;
+}
+
+void Project::traverseDirectory(QDir& dir, const QStringList& filter, QStringList& result)
+{
+    QFileInfoList infos = dir.entryInfoList();
+    for ( auto& info : infos )
+    {
+        if ( info.isDir() )
+        {
+            if ( info.fileName() != ".." && info.fileName() != "." )
+            {
+                dir.cd(info.fileName());
+                traverseDirectory(dir, filter, result);
+                dir.cdUp();
+            }
+        }
+        else if ( filter.contains(info.suffix()) )
+        {
+            QString filePath = info.filePath();
+            result.append(filePath.right(filePath.length() - mBasePath.length()));
+        }
+    }
 }
 
 // - Operations
@@ -154,7 +183,7 @@ void Project::create(QDir& path)
     path.cd(mName);
 
     // determine the file path (in the root of the project directory)
-    mBasePath = path.absolutePath();
+    setBasePath(path.absolutePath());
     QString projectfile = path.absoluteFilePath(mName + ".craft");
     setFileName(projectfile);
 
@@ -163,6 +192,7 @@ void Project::create(QDir& path)
     path.mkdir("images");
     path.mkdir("objects");
     path.mkdir("scripts");
+    path.mkdir("tileatlas");
     path.mkdir("tilesets");
     path.mkdir("worlds");
 
@@ -334,7 +364,9 @@ bool Project::load(const QString &fileName)
     stream.setDevice(&file);
 
     QFileInfo info(file);
-    mBasePath = info.absolutePath();
+    setBasePath(info.absolutePath());
+
+    mSpriteAtlas.load(getTileAtlasPath());
 
     setFileName(fileName);
 

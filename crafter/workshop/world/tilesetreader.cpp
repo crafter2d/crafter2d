@@ -5,6 +5,8 @@
 #include <QPixmap>
 #include <QXmlStreamReader>
 
+#include "../texturepacker/spriteatlas.h"
+#include "../project.h"
 #include "tileset.h"
 
 TileSetReader::TileSetReader(QIODevice& device):
@@ -20,6 +22,8 @@ TileSet* TileSetReader::read()
     reader.setDevice(&mDevice);
 
     TileSet* presult = new TileSet();
+
+    const SpriteAtlas& atlas = Project::getActiveProject().getSpriteAtlas();
 
     while ( !reader.atEnd() )
     {
@@ -48,6 +52,13 @@ TileSet* TileSetReader::read()
 
                     presult->setImagePath(mapname);
                 }
+                else if ( reader.name() == "tile" )
+                {
+                    TileSet::Tile tile;
+                    tile.name = reader.attributes().value("name").toString();
+                    tile.spriteindex = atlas.lookup(tile.name);
+                    presult->mTiles.append(qMove(tile));
+                }
             }
             break;
         case QXmlStreamReader::Invalid:
@@ -61,6 +72,8 @@ TileSet* TileSetReader::read()
             return NULL;
         }
     }
+
+    presult->determineTileSize();
 
     return presult;
 }

@@ -11,7 +11,12 @@
 class MeshComponentDefinitionProto : public ComponentDefinitionProto
 {
 public:
-   typedef std::vector<int> Animations;
+   struct Animation
+   {
+      String name;
+      std::vector<String> frames;
+   };
+   using Animations = std::vector<Animation>;
 
    MeshComponentDefinitionProto();
    virtual ~MeshComponentDefinitionProto();
@@ -19,7 +24,6 @@ public:
  // data
    int         mWidth;
    int         mHeight;
-   String      mTexture;
    float       mAnimationSpeed;
    Animations  mAnimations;
 

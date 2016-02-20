@@ -1,6 +1,9 @@
 
 #include "d3d11device.h"
 
+#include <algorithm>
+#include <memory>
+
 #include "core/window/gamewindow.h"
 
 #include "d3dxhelpers.h"
@@ -242,6 +245,100 @@ namespace Graphics
 
       D3DTexture* presult = new D3DTexture(pShaderResView, ptexture);
       presult->create(*this, width, height);
+      return presult;
+   }
+
+
+   Texture* D3D11Device::createTexture(const TextureDescription& texdesc)
+   {
+      bool bc = false;
+      DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
+      int blockSize = 0;
+
+      switch ( texdesc.format )
+      {
+      case eFormat_Luminance:
+         format = DXGI_FORMAT_R8_UNORM;
+         blockSize = 1;
+         break;
+      case eFormat_RG:
+         format = DXGI_FORMAT_R8G8_UNORM;
+         blockSize = 2;
+         break;
+      case eFormat_RGBA:
+         format = DXGI_FORMAT_R8G8B8A8_UNORM;
+         blockSize = 4;
+         break;
+      case eFormat_DTX1:
+         bc = true;
+         format = DXGI_FORMAT_BC1_UNORM;
+         blockSize = 8;
+         break;
+      case eFormat_DTX3:
+         bc = true;
+         format = DXGI_FORMAT_BC3_UNORM;
+         blockSize = 16;
+         break;
+      case eFormat_DTX5:
+         bc = true;
+         format = DXGI_FORMAT_BC5_UNORM;
+         blockSize = 16;
+         break;
+      }
+
+      std::unique_ptr<D3D11_SUBRESOURCE_DATA> initData;
+      if ( texdesc.pinitData != nullptr )
+      {
+         initData.reset(new D3D11_SUBRESOURCE_DATA);
+         initData->pSysMem = texdesc.pinitData;
+         if ( bc )
+         {
+            size_t numBlocksWide = std::max<size_t>(1, (texdesc.width + 3) / 4);
+            initData->SysMemPitch = numBlocksWide * blockSize;
+         }
+         else
+         {
+            initData->SysMemPitch = texdesc.width * blockSize;
+         }
+      }
+
+      // Create the render target texture
+      D3D11_TEXTURE2D_DESC desc;
+      ZeroMemory(&desc, sizeof(desc));
+      desc.Width = texdesc.width;
+      desc.Height = texdesc.height;
+      desc.MipLevels = 1;
+      desc.ArraySize = 1;
+      desc.Format = format;
+      desc.SampleDesc.Count = 1;
+      desc.Usage = D3D11_USAGE_DEFAULT;
+      desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+      ID3D11Texture2D *ptexture = NULL;
+      HRESULT hr = m_d3dDevice->CreateTexture2D(&desc, initData.get(), &ptexture);
+      if ( FAILED(hr) )
+      {
+         return nullptr;
+      }
+
+      // Create the shader-resource view
+      D3D11_SHADER_RESOURCE_VIEW_DESC srDesc;
+      memset(&srDesc, 0, sizeof(srDesc));
+      srDesc.ViewDimension = D3D10_SRV_DIMENSION_TEXTURE2D;
+      srDesc.Format = format;
+      srDesc.Texture2D.MostDetailedMip = 0;
+      srDesc.Texture2D.MipLevels = 1;
+
+      ID3D11ShaderResourceView *pShaderResView = NULL;
+      hr = m_d3dDevice->CreateShaderResourceView(ptexture, &srDesc, &pShaderResView);
+      if ( FAILED(hr) )
+      {
+         ptexture->Release();
+         return nullptr;
+      }
+
+      D3DTexture* presult = new D3DTexture(pShaderResView, ptexture);
+      presult->create(*this, texdesc.width, texdesc.height);
       return presult;
    }
 

@@ -73,7 +73,7 @@ void TileSelector::paintEvent(QPaintEvent* /*event*/)
                 painter.setPen(previouspen);
             }
 
-            mpTileSet->paintTile(painter, index - 1, x, y);
+            mpTileSet->paintTile(painter, QPoint(x, y), index - 1);
 
             if ( index % mHorizontalTiles == 0 )
             {

@@ -22,7 +22,7 @@
 
 #include "core/core_base.h"
 #include "core/content/content.h"
-#include "core/string/string.h"
+#include "core/graphics/texturecoordinate.h"
 
 namespace Graphics
 {
@@ -37,13 +37,20 @@ enum TileInfoFlag {
 
 /// Structure contains animation information for a tile. Every tile can have a certain amount of information.
 struct CORE_API TileInfo {
-   int   flag;
+   c2d::TextureCoordinate coords;
+   int    sheet;
+   int    flag;
+
+   TileInfo();
+};
+
+struct CORE_API TileAnimation {
    int   anim_index;
    int   anim_length;
    float anim_speed;
    float anim_update;
 
-   TileInfo();
+   TileAnimation();
 };
 
 /// Implements a tileset container. In this container we can store information about every tile in the tile bitmap.
@@ -51,7 +58,7 @@ class CORE_API TileSet : public IContent
 {
 public:
    TileSet();
-   ~TileSet();
+   virtual ~TileSet();
 
    TileInfo& operator[](int idx);
 
@@ -64,20 +71,13 @@ public:
 
    int   getTileHeight() const;
    void  setTileHeight(int height);
-
-   Graphics::Texture& getTexture();
-   void               setTexture(Graphics::Texture* ptexture);
-
+   
  // operations
    bool update(float tick);
 
 private:
-
- // loading
-   bool loadTexture(Graphics::Device& device);
-
+   
  // data
-   Graphics::Texture*   mpMap;
    TileInfo*            mpInfo;
    int                  mTileCount;
    int                  mTileWidth;

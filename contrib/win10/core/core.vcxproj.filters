@@ -95,6 +95,12 @@
     <Filter Include="ui">
       <UniqueIdentifier>{17ea6b73-b288-4e40-a122-0a6fb312faa2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="graphics\stb">
+      <UniqueIdentifier>{9439e4af-ca96-4ec0-8e58-cce30a11fc6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\tiles">
+      <UniqueIdentifier>{fb8997a1-ed84-4745-a333-ee6b647d39e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\core\core_base.cpp" />
@@ -278,12 +284,6 @@
     <ClCompile Include="..\..\..\src\core\graphics\abstractgeometrybuffer.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\core\graphics\animation.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\core\graphics\animationset.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\core\graphics\animator.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -327,9 +327,6 @@
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\core\graphics\texturecoordinate.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\core\graphics\texturecoordlookup.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\core\graphics\utils.cpp">
@@ -713,6 +710,15 @@
     <ClCompile Include="..\..\..\src\core\ui\uisystem.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\core\graphics\tiles\tileatlas.cpp">
+      <Filter>graphics\tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\core\graphics\tiles\tilesheet.cpp">
+      <Filter>graphics\tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\core\graphics\image.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\core\core_base.h" />
@@ -909,12 +915,6 @@
     <ClInclude Include="..\..\..\src\core\graphics\abstractgeometrybuffer.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\core\graphics\animation.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\core\graphics\animationset.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\core\graphics\animator.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -961,9 +961,6 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\core\graphics\texturecoordinate.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\core\graphics\texturecoordlookup.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\core\graphics\uniformbuffer.h">
@@ -1422,6 +1419,21 @@
     <ClInclude Include="..\..\..\src\core\ui\uisystem.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\core\graphics\stb\stb_dxt.h">
+      <Filter>graphics\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\core\graphics\stb\stb_image.h">
+      <Filter>graphics\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\core\graphics\tiles\tileatlas.h">
+      <Filter>graphics\tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\core\graphics\tiles\tilesheet.h">
+      <Filter>graphics\tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\core\graphics\image.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\core\system\timerdata.inl">
@@ -1454,15 +1466,6 @@
     <None Include="..\..\..\src\core\modules\contentmodule.inl">
       <Filter>modules</Filter>
     </None>
-    <None Include="..\..\..\src\core\graphics\animation.inl">
-      <Filter>graphics</Filter>
-    </None>
-    <None Include="..\..\..\src\core\graphics\animationset.inl">
-      <Filter>graphics</Filter>
-    </None>
-    <None Include="..\..\..\src\core\graphics\animator.inl">
-      <Filter>graphics</Filter>
-    </None>
     <None Include="..\..\..\src\core\graphics\effect.inl">
       <Filter>graphics</Filter>
     </None>
@@ -1475,17 +1478,11 @@
     <None Include="..\..\..\src\core\graphics\texture.inl">
       <Filter>graphics</Filter>
     </None>
-    <None Include="..\..\..\src\core\graphics\texturecoordlookup.inl">
-      <Filter>graphics</Filter>
-    </None>
     <None Include="..\..\..\src\core\graphics\viewport.inl">
       <Filter>graphics</Filter>
     </None>
     <None Include="..\..\..\src\core\graphics\particles\particlesystem.inl">
       <Filter>graphics\particles</Filter>
-    </None>
-    <None Include="..\..\..\src\core\graphics\animation\animationstate.inl">
-      <Filter>graphics\animation</Filter>
     </None>
     <None Include="..\..\..\src\core\math\color.inl">
       <Filter>math</Filter>

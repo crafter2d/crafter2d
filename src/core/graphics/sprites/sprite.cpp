@@ -29,9 +29,9 @@ namespace c2d
    Sprite::Sprite(SpriteDefinition* pdefinition) :
       mpDefinition(pdefinition),
       mAnimState(),
-      mTexCoordinate(),
       mTransform(),
-      mHalfSize()
+      mHalfSize(),
+      mFlipped(false)
    {
       ASSERT_PTR(mpDefinition);
    }
@@ -61,7 +61,7 @@ namespace c2d
          mAnimState.update(delta);
          if ( mpDefinition->getSpriteAnimator().animate(mAnimState) )
          {
-            mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
+            mTile = mAnimState.getTileIndex();
          }
       }
    }
@@ -70,15 +70,15 @@ namespace c2d
    {
       if ( mpDefinition->hasSpriteAnimator() )
       {
-         mAnimState.setActiveAnimation(index);
-         mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
+         mpDefinition->getSpriteAnimator().setAnimation(mAnimState, index);
+         
+         mTile = mAnimState.getTileIndex();
       }
    }
 
    void Sprite::flip()
    {
-      mpDefinition->getSpriteAnimator().flip();
-      mTexCoordinate = mpDefinition->getSpriteAnimator().getTextureCoordinate(mAnimState);
+      mFlipped = !mFlipped;
    }
 
 } // namespace c2d

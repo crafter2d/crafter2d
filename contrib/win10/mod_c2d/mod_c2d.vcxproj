@@ -64,10 +64,13 @@
     <ClCompile Include="..\..\..\src\mods\mod_c2d\sound\soundwriter.cpp" />
     <ClCompile Include="..\..\..\src\mods\mod_c2d\texture\texturereader.cpp" />
     <ClCompile Include="..\..\..\src\mods\mod_c2d\texture\texturewriter.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\tileatlas\tileatlasreader.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\tileatlas\tileatlaswriter.cpp" />
     <ClCompile Include="..\..\..\src\mods\mod_c2d\tileset\tilesetreader.cpp" />
     <ClCompile Include="..\..\..\src\mods\mod_c2d\tileset\tilesetwriter.cpp" />
     <ClCompile Include="..\..\..\src\mods\mod_c2d\world\worldreader.cpp" />
     <ClCompile Include="..\..\..\src\mods\mod_c2d\world\worldwriter.cpp" />
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\xmlparser\xmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\mods\mod_c2d\effect\astannotation.h" />
@@ -117,10 +120,14 @@
     <ClInclude Include="..\..\..\src\mods\mod_c2d\targetver.h" />
     <ClInclude Include="..\..\..\src\mods\mod_c2d\texture\texturereader.h" />
     <ClInclude Include="..\..\..\src\mods\mod_c2d\texture\texturewriter.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\tileatlas\tileatlasreader.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\tileatlas\tileatlaswriter.h" />
     <ClInclude Include="..\..\..\src\mods\mod_c2d\tileset\tilesetreader.h" />
     <ClInclude Include="..\..\..\src\mods\mod_c2d\tileset\tilesetwriter.h" />
     <ClInclude Include="..\..\..\src\mods\mod_c2d\world\worldreader.h" />
     <ClInclude Include="..\..\..\src\mods\mod_c2d\world\worldwriter.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\xmlparser\xmlparser.h" />
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\xmlparser\xmlparts.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3fa7ba2b-2c26-4e4b-87c1-b8bf0ce52f0a}</ProjectGuid>
@@ -229,7 +236,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
       <PreprocessorDefinitions>_DEBUG;MOD_EXPORTS;WIN32;_WINDLL;TIXML_USE_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\Devel\externallibs\uwp\tinyxml\include;$(ProjectDir);$(GeneratedFilesDir);$(IntDir);../../../src;F:\Devel\externallibs\uwp\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\Devel\externallibs\uwp\tinyxml\include;$(ProjectDir);$(GeneratedFilesDir);$(IntDir);../../../src;F:\Devel\externallibs\uwp\zlib\include;F:\Devel\externallibs\uwp\libsquish\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
@@ -237,8 +244,8 @@
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;F:\Devel\externallibs\uwp\tinyxml\lib;F:\Devel\externallibs\uwp\zlib\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>WindowsApp.lib;core.lib;tinyxmld.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;F:\Devel\externallibs\uwp\tinyxml\lib;F:\Devel\externallibs\uwp\zlib\lib;F:\Devel\externallibs\uwp\libsquish\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>WindowsApp.lib;core.lib;tinyxmld.lib;zlibstaticd.lib;squishd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

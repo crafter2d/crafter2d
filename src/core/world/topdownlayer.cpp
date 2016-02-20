@@ -53,6 +53,11 @@ bool TopDownLayer::initialize(Graphics::Device& device)
       return false;
    }
 
+   /*const int batch = getWidth() * getHeight() * 4;
+   mpData = new pv[batch * 2];
+   mpFrontData = new pv[batch];*/
+
+   /*
    const Graphics::Texture& diffuse = mpTileSet->getTexture();
    float dx = diffuse.getSourceWidth() / diffuse.getWidth();
    float dy = diffuse.getSourceHeight() / diffuse.getHeight();
@@ -82,6 +87,7 @@ bool TopDownLayer::initialize(Graphics::Device& device)
 
    texTileWidth -= 0.001f;
    texTileHeight -= 0.001f;
+   */
 
 	return true;
 }
@@ -106,7 +112,7 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
 {
    if ( dirty )
    {
-      updateBuffers(context);		
+      updateBuffers(context);
 
       dirty = false;
 	}
@@ -116,9 +122,10 @@ void TopDownLayer::draw(Graphics::RenderContext& context)
       getEffect().enable(context);
       getEffect().setConstantBuffer(context, 0, *ub);
 
+      context.getSpriteAtlas().bind(context, 0);
+
       context.setVertexBuffer(*vb);
       context.setIndexBuffer(*ib);
-      context.setTexture(0, mpTileSet->getTexture());
       context.drawTriangles(0, verts_to_render);
 
       vb->disable(context);
@@ -135,7 +142,6 @@ void TopDownLayer::drawFront(Graphics::RenderContext& context)
 
       context.setVertexBuffer(*pfrontvb);
       context.setIndexBuffer(*ib);
-      context.setTexture(0, mpTileSet->getTexture());
       context.drawTriangles(0, verts_to_render_front);
 
       vb->disable(context);
@@ -151,25 +157,22 @@ void TopDownLayer::updateTile(pv** pdata, int& indices, LayerLevel level, int x,
       TileInfo& info = (*mpTileSet)[texId];
 
       // see if the tile can be animated
-      if (animateTiles && info.flag & TileAnimate)
-            texId += info.anim_index;
+      //if ( animateTiles && (info.flag & TileAnimate) )
+      //      texId += info.anim_index;
 
-		// calculate the position of the vertex
-		float texX = texcoordLookup[texId].x;
-		float texY = texcoordLookup[texId].y;
-
+      //pv* pvertices = level == eFront ? mpFrontData : mpData;
+      
       pv* pvertices = *pdata;
       pvertices[0].pos.set(xpos, ypos);
-      pvertices[0].tex.set(texX, texY);
-
       pvertices[1].pos.set(xpos+tileset().getTileWidth(), ypos);
-      pvertices[1].tex.set(texX+texTileWidth, texY);
-
-      pvertices[2].pos.set(xpos+tileset().getTileWidth(), ypos+tileset().getTileHeight());
-      pvertices[2].tex.set(texX+texTileWidth, texY+texTileHeight);
-     
+      pvertices[2].pos.set(xpos + tileset().getTileWidth(), ypos + tileset().getTileHeight());
       pvertices[3].pos.set(xpos, ypos+tileset().getTileHeight());
-      pvertices[3].tex.set(texX, texY+texTileHeight);
+
+      pvertices[0].tex.set(info.coords.left, info.coords.top);
+      pvertices[1].tex.set(info.coords.right, info.coords.top);
+      pvertices[2].tex.set(info.coords.right, info.coords.bottom);
+      pvertices[3].tex.set(info.coords.left, info.coords.bottom);
+
 
       (*pdata) += 4;
 		indices += 6;

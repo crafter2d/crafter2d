@@ -32,6 +32,12 @@
     <Filter Include="world">
       <UniqueIdentifier>{987c3978-add9-4608-90f7-180e7339a589}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tileatlas">
+      <UniqueIdentifier>{f04ae84e-4343-49fb-8d41-34d14a8e38f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xmlparser">
+      <UniqueIdentifier>{d23260fc-0722-4e6c-9d3f-a41dcdaafd6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\mods\mod_c2d\dllmain.cpp" />
@@ -152,6 +158,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\mods\mod_c2d\tileset\tilesetwriter.cpp">
       <Filter>tileset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\tileatlas\tileatlasreader.cpp">
+      <Filter>tileatlas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\tileatlas\tileatlaswriter.cpp">
+      <Filter>tileatlas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_c2d\xmlparser\xmlparser.cpp">
+      <Filter>xmlparser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -305,6 +320,18 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\mods\mod_c2d\tileset\tilesetwriter.h">
       <Filter>tileset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\tileatlas\tileatlasreader.h">
+      <Filter>tileatlas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\tileatlas\tileatlaswriter.h">
+      <Filter>tileatlas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\xmlparser\xmlparser.h">
+      <Filter>xmlparser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_c2d\xmlparser\xmlparts.h">
+      <Filter>xmlparser</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

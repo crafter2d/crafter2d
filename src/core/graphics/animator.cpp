@@ -18,27 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "animator.h"
-#ifndef JENGINE_INLINE
-#  include "animator.inl"
-#endif
 
 #include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/math/size.h"
 #include "core/smartptr/autoptr.h"
 
-#include "animation.h"
 #include "animation/animationstate.h"
 
-namespace Graphics
+namespace c2d
 {
 
 Animator::Animator():
-   mTextureCoords(),
    mAnimations(),
    mAnimationSpeed(0),
-   mAnimationDelta(0),
-   mAnimFrameWidth(0),
    mAnimFrameCount(0)
 {
 }
@@ -49,41 +42,10 @@ Animator::~Animator()
 
 // - Operations
 
-void Animator::initialize(const Texture& texture, const Size& meshsize)
+Animator::Animation& Animator::emplaceAnimation()
 {
-   determineFrameCount();
-   mAnimFrameWidth = texture.getWidth() / meshsize.width;
-   mTextureCoords.generateFromTexture(texture, meshsize, mAnimFrameCount);
-}
-
-void Animator::addAnimation(int start, int length)
-{
-   Animation* panimation = new Animation();
-   panimation->generate(start, length);
-   mAnimations.add(panimation);
-}
-
-void Animator::flip()
-{
-   mTextureCoords.flip();
-}
-
-void Animator::determineFrameCount()
-{
-   mAnimFrameCount = 0;
-   for ( int anim = 0; anim < getAnimations().size(); ++anim )
-   {
-      const Animation& animation = getAnimations()[anim];
-      for ( Animation::size_type frameindex = 0; frameindex < animation.size(); ++frameindex )
-      {
-         int frame = animation[frameindex];
-         if ( frame > mAnimFrameCount )
-            mAnimFrameCount = frame;
-      }
-   }
-
-   // make sure that the count is max + 1 (otherwise the last frame gets no texture coordinates.
-   ++mAnimFrameCount;
+   mAnimations.emplace_back();
+   return mAnimations.back();
 }
 
 //--------------
@@ -91,7 +53,7 @@ void Animator::determineFrameCount()
 
 bool Animator::canAnimate(AnimationState& state) const
 {
-   return !mAnimations.isEmpty() && mAnimations[state.mAnimation].size() > 1;
+   return !mAnimations.empty() && mAnimations[state.mAnimation].size() > 1;
 }
 
 bool Animator::animate(AnimationState& state) const
@@ -108,6 +70,16 @@ bool Animator::animate(AnimationState& state) const
    return false;
 }
 
+void Animator::setAnimation(AnimationState& state, int index)
+{
+   const Animation& animation = mAnimations[state.mAnimation];
+
+   state.mDelta = 0.0f;
+   state.mAnimation = index;
+   state.mAnimFrame = 0;
+   state.mTileIndex = animation[0];
+}
+
 /// \fn AnimObject::nextFrame()
 void Animator::nextFrame(AnimationState& state) const
 {
@@ -118,12 +90,7 @@ void Animator::nextFrame(AnimationState& state) const
       state.mAnimFrame = 0;
    }
 
-   state.mTexIndex = animation[state.mAnimFrame];
+   state.mTileIndex = animation[state.mAnimFrame];
 }
 
-const TextureCoordinate& Animator::getTextureCoordinate(const AnimationState& state) const
-{
-   return mTextureCoords[state.mTexIndex];
-}
-
-} // namespace Graphics
+} // namespace c2d

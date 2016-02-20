@@ -19,65 +19,39 @@
  ***************************************************************************/
 #include "texturecoordinate.h"
 
-namespace Graphics
+#include <utility>
+
+namespace c2d
 {
 
 TextureCoordinate::TextureCoordinate():
-   mCoordinates()
+   left(0.0f),
+   top(0.0f),
+   right(0.0f),
+   bottom(0.0f)
 {
 }
 
 TextureCoordinate::TextureCoordinate(const TextureCoordinate& that):
-   mCoordinates()
+   left(that.left),
+   top(that.top),
+   right(that.right),
+   bottom(that.bottom)
 {
-   mCoordinates[TopLeft] = that.getTopLeft();
-   mCoordinates[TopRight] = that.getTopRight();
-   mCoordinates[BottomRight] = that.getBottomRight();
-   mCoordinates[BottomLeft] = that.getBottomLeft();
 }
 
-void TextureCoordinate::initialize(const Vertex& tl, const Vertex& br)
+TextureCoordinate& TextureCoordinate::operator=(const TextureCoordinate& that)
 {
-   mCoordinates[TopLeft] =  tl;
-   mCoordinates[TopRight].set(br.x, tl.y);
-   mCoordinates[BottomRight] = br;
-   mCoordinates[BottomLeft].set(tl.x, br.y);
+   left = that.left;
+   top = that.top;
+   right = that.right;
+   bottom = that.bottom;
+   return *this;
 }
 
 void TextureCoordinate::flip()
 {
-   Vertex tmp = mCoordinates[TopLeft];
-   mCoordinates[TopLeft] = mCoordinates[TopRight];
-   mCoordinates[TopRight] = tmp;
-
-   tmp = mCoordinates[BottomLeft];
-   mCoordinates[BottomLeft] = mCoordinates[BottomRight];
-   mCoordinates[BottomRight] = tmp;
-}
-
-const Vertex& TextureCoordinate::get(int index) const
-{
-   return mCoordinates[index];
-}
-
-const Vertex& TextureCoordinate::getTopLeft() const
-{
-   return mCoordinates[TopLeft];
-}
-
-const Vertex& TextureCoordinate::getTopRight() const
-{
-   return mCoordinates[TopRight];
-}
-
-const Vertex& TextureCoordinate::getBottomLeft() const
-{
-   return mCoordinates[BottomLeft];
-}
-
-const Vertex& TextureCoordinate::getBottomRight() const
-{
-   return mCoordinates[BottomRight];
+   std::swap(left, right);
 }
 
 } // namespace Graphics

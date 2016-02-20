@@ -18,13 +18,14 @@
 #include "entity/entityreader.h"
 #include "entity/entitywriter.h"
 
-#include "spritesheet/spritesheetwriter.h"
-
 #include "sound/soundreader.h"
 #include "sound/soundwriter.h"
 
 #include "texture/texturereader.h"
 #include "texture/texturewriter.h"
+
+#include "tileatlas/tileatlasreader.h"
+#include "tileatlas/tileatlaswriter.h"
 
 #include "tileset/tilesetreader.h"
 #include "tileset/tilesetwriter.h"
@@ -52,14 +53,14 @@ static const Uuid EffectUUID(0x569B9122, 0x695E, 0x46D5, 0xA1F6, 0xec808010572d)
 // {89E326B3-1606-4137-BA81-8EBD5A158EEC}
 static const Uuid EntityUUID(0x89E326B3, 0x1606, 0x4137, 0xBA81, 0x8EBD5A158EEC);
 
-// {7E8CA75D-5E6C-4543-9079-5DC95C50881C}
-static const Uuid SpriteSheetUUID(0x7e8ca75d, 0x5E6C, 0x4543, 0x9079, 0x5DC95C50881C);
-
 // {C21021BC-B904-4FC5-95B3-D7BC2218C92B}
 static const Uuid SoundUUID(0xC21021BC, 0xB904, 0x4FC5, 0x95B3, 0xD7BC2218C92B);
 
 // {EEDD2CF4-ABA2-4831-9966-C14FE9F1CDFC}
 static const Uuid TextureUUID(0xEEDD2CF4, 0xABA2, 0x4831, 0x9966, 0xC14FE9F1CDFC);
+
+// {7E8CA75D-5E6C-4543-9079-5DC95C50881C}
+static const Uuid TileAtlasUUID(0x7e8ca75d, 0x5E6C, 0x4543, 0x9079, 0x5DC95C50881C);
 
 // {F7150E51-BEC1-42AD-9C18-B5B69F86D05E}
 static const Uuid TileSetUUID(0xF7150E51, 0xBEC1, 0x42AD, 0x9C18, 0xB5B69F86D05E);
@@ -90,22 +91,22 @@ extern "C" MOD_API ModuleCollection* MOD_DECL getModuleCollection()
    pmodules->add(psoundmod);
 
    ContentModule* ptexturemod = new ContentModule(TextureUUID);
-   ptexturemod->setSupportedFiles(UTEXT("dds"));
+   ptexturemod->setSupportedFiles(UTEXT("dds,png"));
    ptexturemod->setReader(new TextureReader());
    ptexturemod->setWriter(new TextureWriter());
    pmodules->add(ptexturemod);
+
+   ContentModule* ptileatlasmod = new ContentModule(TileAtlasUUID);
+   ptileatlasmod->setSupportedFiles(UTEXT("tileatlas"));
+   ptileatlasmod->setReader(new TileAtlasReader());
+   ptileatlasmod->setWriter(new TileAtlasWriter());
+   pmodules->add(ptileatlasmod);
 
    ContentModule* ptilesetmod = new ContentModule(TileSetUUID);
    ptilesetmod->setSupportedFiles(UTEXT("tileset"));
    ptilesetmod->setReader(new TileSetReader());
    ptilesetmod->setWriter(new TileSetWriter());
    pmodules->add(ptilesetmod);
-   
-   ContentModule* pspritesheetmod = new ContentModule(SpriteSheetUUID);
-   pspritesheetmod->setSupportedFiles(UTEXT("TextureAtlas"));
-   pspritesheetmod->setReader(new TileSetReader());
-   pspritesheetmod->setWriter(new SpriteSheetWriter());
-   pmodules->add(pspritesheetmod);   
 
    ContentModule* pworldmod = new ContentModule(WorldUUID);
    pworldmod->setSupportedFiles(UTEXT("world"));

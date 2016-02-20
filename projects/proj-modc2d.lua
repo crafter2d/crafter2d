@@ -26,15 +26,15 @@ project "mod_c2d"
     -- Systems
 	filter "system:Windows"
 		defines { "WIN32", "MOD_EXPORTS" }
-		includedirs { path.join(libdir, "tinyxml/include"), path.join(libdir, "zlib/include") }
-		libdirs { path.join(libdir, "tinyxml/lib"), path.join(libdir, "zlib/lib") }
+		includedirs { path.join(libdir, "tinyxml/include"), path.join(libdir, "zlib/include"), path.join(libdir, "libsquish/include") }
+		libdirs { path.join(libdir, "tinyxml/lib"), path.join(libdir, "zlib/lib"), path.join(libdir, "libsquish/lib") }
 		links { "Core", "Engine", "d3dcompiler.lib" }
 	
 	filter { "system:Windows", "Debug" }
-		links { "tinyxmld_STL.lib", "zlib1_d.lib" }
+		links { "tinyxmld_STL.lib", "zlib1_d.lib", "squishd.lib" }
 			
 	filter { "system:Windows", "Release" }
-		links { "tinyxml_STL.lib", "zlib1.lib" }
+		links { "tinyxml_STL.lib", "zlib1.lib", "squish.lib" }
 
 	filter "system:Linux"
 		defines { "LINUX" }

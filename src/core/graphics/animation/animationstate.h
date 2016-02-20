@@ -20,7 +20,7 @@
 #ifndef ANIMATION_STATE_H
 #define ANIMATION_STATE_H
 
-namespace Graphics
+namespace c2d
 {
    class AnimationState
    {
@@ -28,28 +28,28 @@ namespace Graphics
       AnimationState();
 
     // get/set
-      int   getActiveAnimation() const;
-      void  setActiveAnimation(int index);
+      int getAnimation() const {
+         return mAnimation;
+      }
+
+      int getTileIndex() const {
+         return mTileIndex;
+      }
 
     // operations
-      void update(float delta);
+      void update(float delta) {
+         mDelta += delta;
+      }
 
    private:
       friend class Animator;
-
-    // operations
-      void animationChanged();
-
+      
     // data
       float mDelta;
-      int   mAnimation; // which animation
-      int   mAnimFrame; // frame within the animation
-      int   mTexIndex;  // index for texture coord lookup
+      int   mAnimation;    // which animation
+      int   mAnimFrame;    // frame within the animation
+      int   mTileIndex;    // index for texture coord lookup in tileatlas
    };
 }
-
-#ifdef JENGINE_INLINE
-#  include "animationstate.inl"
-#endif
 
 #endif // ANIMATION_STATE_H

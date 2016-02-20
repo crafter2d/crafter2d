@@ -44,6 +44,7 @@ namespace Graphics
 namespace c2d
 {
    class Sprite;
+   class TileAtlas;
 
    class CORE_API SpriteRenderer
    {
@@ -81,7 +82,7 @@ namespace c2d
 
     // rendering
       void renderSprites(Graphics::RenderContext& context);
-      void renderSprite(const Sprite& sprite, PTVertex* pbuffer);
+      void renderSprite(const TileAtlas& atlas, const Sprite& sprite, PTVertex* pbuffer);
 
     // data
       SpriteBatch    mSprites;

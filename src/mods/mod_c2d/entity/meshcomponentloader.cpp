@@ -40,18 +40,6 @@ ComponentDefinitionProto* MeshComponentLoader::load(const TiXmlElement& element)
    pdefinition->mWidth = width;
    pdefinition->mHeight = height;
 
-   const TiXmlElement* ptextureelement = element.FirstChildElement("texture");
-   if ( ptextureelement != NULL )
-   {
-      const TiXmlText* pvalue = dynamic_cast<const TiXmlText*>(ptextureelement->FirstChild());
-      if ( pvalue == NULL )
-      {
-         // throw error;
-      }
-
-      pdefinition->mTexture.setToUtf8(pvalue->Value());
-   }
-
    const TiXmlElement* pXmlAnimation = element.FirstChildElement("animations");
    if ( pXmlAnimation != NULL )
    {
@@ -60,14 +48,24 @@ ComponentDefinitionProto* MeshComponentLoader::load(const TiXmlElement& element)
 		   pdefinition->mAnimationSpeed = 100;
       pdefinition->mAnimationSpeed /= 1000.0f;
 
-      const TiXmlElement* panim = NULL;
-      for ( panim = pXmlAnimation->FirstChildElement("anim"); panim != NULL; panim = panim->NextSiblingElement("anim") )
+      for ( auto panim = pXmlAnimation->FirstChildElement("anim"); panim != NULL; panim = panim->NextSiblingElement("anim") )
       {
-         int length;
-         if ( panim->QueryIntAttribute("length", &length) == TIXML_SUCCESS )
+         MeshComponentDefinitionProto::Animation animation;
+
+         std::string name;
+         panim->QueryStringAttribute("name", &name);
+         animation.name.setToUtf8(name);
+
+         for ( auto panimtile = panim->FirstChildElement("tile"); panimtile != nullptr; panimtile = panimtile->NextSiblingElement("tile") )
          {
-            pdefinition->mAnimations.push_back(length);
+            std::string name;            
+            if ( panimtile->QueryStringAttribute("name", &name) == TIXML_SUCCESS )
+            {
+               animation.frames.push_back(String(name));
+            }
          }
+
+         pdefinition->mAnimations.push_back(std::move(animation));
       }
    }
 

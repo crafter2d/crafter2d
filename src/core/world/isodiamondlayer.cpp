@@ -49,6 +49,7 @@ bool IsoDiamondLayer::initialize(Graphics::Device& device)
    tileWidth = 40;
    tileHeight = 20;
 
+   /*
    _halfTileWidth  = static_cast<float>(tileWidth) / 2;
    _halfTileHeight = static_cast<float>(tileHeight) / 2;
 
@@ -75,7 +76,7 @@ bool IsoDiamondLayer::initialize(Graphics::Device& device)
 		texcoordLookup[tc+1].x = static_cast<float>((tc % maxTilesOnRow) * texTileWidth);
 		texcoordLookup[tc+1].y = floorf ((float)tc / maxTilesOnRow) * texTileHeight;
 	}
-
+   */
    return true;
 }
 
@@ -140,8 +141,7 @@ void IsoDiamondLayer::drawTile(float** pdata, LayerLevel level, int x, int y, in
    int texId = mTileMap.get(level, x, y);
    if ( texId >= 0 )
    {
-      float tx = texcoordLookup[texId].x;
-      float ty = texcoordLookup[texId].y;
+      /*TileInfo& info = (*mpTileSet)[texId];
 
       float halfwidth  = texTileWidth / 2;
       float halfheight = texTileHeight / 2;
@@ -151,7 +151,7 @@ void IsoDiamondLayer::drawTile(float** pdata, LayerLevel level, int x, int y, in
       setVertex(pdata, xpos + _halfTileWidth, ypos,                     tx + texTileWidth,ty + halfheight);
       setVertex(pdata, xpos,                  ypos + _halfTileHeight,   tx + halfwidth,   ty + texTileHeight);
 
-      verts_to_render += 4;
+      verts_to_render += 4;*/
    }
 }
 
@@ -168,8 +168,8 @@ c2d::Point IsoDiamondLayer::pointToTile(const c2d::Point& point)
    int y = (2 * p.y - p.x) / 2;
    int x = p.x + y;
 
-   float xtile = static_cast<float>(x) / tileheight() + 0.5;
-   float ytile = static_cast<float>(y) / tileheight() + 0.5;
+   float xtile = static_cast<float>(x) / tileheight() + 0.5f;
+   float ytile = static_cast<float>(y) / tileheight() + 0.5f;
 
    return c2d::Point(xtile, ytile);
 }

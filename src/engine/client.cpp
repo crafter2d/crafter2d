@@ -302,6 +302,8 @@ namespace c2d
          return false;
       }
 
+      getContentManager().loadContent<TileAtlas>(UTEXT("tileatlas/tileatlas"));
+
       mpFont = &mpDevice->getFont(UTEXT("amersn"));      
 
       onWindowResized();
