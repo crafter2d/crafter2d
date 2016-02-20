@@ -159,6 +159,13 @@ Texture* OGLDevice::createTexture(int width, int height, int bytesperpixel)
    return ptexture;
 }
 
+Texture* OGLDevice::createTexture(const TextureDescription& desc)
+{
+   OGLTexture* ptexture = new OGLTexture();
+   ptexture->create(desc.width, desc.height, 4);
+   return ptexture;
+}
+
 RenderTarget* OGLDevice::createRenderTarget()
 {
    return new OGLRenderTarget();
