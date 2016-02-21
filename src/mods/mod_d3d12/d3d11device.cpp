@@ -269,19 +269,19 @@ namespace Graphics
          format = DXGI_FORMAT_R8G8B8A8_UNORM;
          blockSize = 4;
          break;
-      case eFormat_DTX1:
+      case eFormat_BC1:
          bc = true;
          format = DXGI_FORMAT_BC1_UNORM;
          blockSize = 8;
          break;
-      case eFormat_DTX3:
+      case eFormat_BC2:
          bc = true;
-         format = DXGI_FORMAT_BC3_UNORM;
+         format = DXGI_FORMAT_BC2_UNORM;
          blockSize = 16;
          break;
-      case eFormat_DTX5:
+      case eFormat_BC3:
          bc = true;
-         format = DXGI_FORMAT_BC5_UNORM;
+         format = DXGI_FORMAT_BC3_UNORM;
          blockSize = 16;
          break;
       }
@@ -383,8 +383,6 @@ namespace Graphics
    // Recreate all device resources and set them back to the current state.
    void D3D11Device::handleDeviceLost()
    {
-      int aap = 5;
-      aap *= 5;
       //m_swapChain = nullptr;
 
       /*

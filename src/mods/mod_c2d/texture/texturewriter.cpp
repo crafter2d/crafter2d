@@ -23,7 +23,11 @@ bool TextureWriter::write(DataStream& stream, const String& filename)
       }
       else
       {
-         int flags = squish::kDxt3;// | squish::kColourClusterFit;
+         // https://technet.microsoft.com/en-us/subscriptions/downloads/ff471324(v=vs.85).aspx
+         // libSquish is based on DX9 texture format specification
+         // Based on the table for Texture2D the DXT5 maps to the new BC3 format
+
+         int flags = squish::kDxt5 | squish::kColourClusterFit;
          int size = squish::GetStorageRequirements(image.getWidth(), image.getHeight(), flags);
          std::unique_ptr<unsigned char[]> data(new unsigned char[size]);
          squish::CompressImage(image.getBytes(), image.getWidth(), image.getHeight(), data.get(), flags);

@@ -34,9 +34,9 @@ namespace Graphics
       eFormat_Luminance,
       eFormat_RG,
       eFormat_RGBA,
-      eFormat_DTX1,
-      eFormat_DTX3,
-      eFormat_DTX5,
+      eFormat_BC1,      // libSquish DTX1
+      eFormat_BC2,      // libSquish DXT3
+      eFormat_BC3,      // libSquish DTX5
    };
 
    struct TextureDescription
