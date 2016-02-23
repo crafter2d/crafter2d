@@ -5,9 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="texture">
-      <UniqueIdentifier>{1bde8436-658e-4227-8dc7-d74415f0e277}</UniqueIdentifier>
-    </Filter>
     <Filter Include="text">
       <UniqueIdentifier>{75248b08-c20f-4104-8aff-a31427cf0799}</UniqueIdentifier>
     </Filter>
@@ -25,18 +22,6 @@
     <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3dindexbuffer.cpp" />
     <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3dvertexbuffer.cpp" />
     <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3dblendstate.cpp" />
-    <ClCompile Include="..\..\..\src\mods\mod_d3d12\texture\d3dtexture.cpp">
-      <Filter>texture</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\mods\mod_d3d12\texture\d3dtextureloader.cpp">
-      <Filter>texture</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\mods\mod_d3d12\texture\d3dtextureloaderdds.cpp">
-      <Filter>texture</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\mods\mod_d3d12\texture\dds.cpp">
-      <Filter>texture</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\mods\mod_d3d12\text\d3dfont.cpp">
       <Filter>text</Filter>
     </ClCompile>
@@ -58,6 +43,7 @@
     <ClCompile Include="..\..\..\src\mods\mod_d3d12\input\d3dinput.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\mods\mod_d3d12\d3dtexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\mods\mod_d3d12\mod_d3d12.h" />
@@ -69,18 +55,6 @@
     <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dindexbuffer.h" />
     <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dvertexbuffer.h" />
     <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dblendstate.h" />
-    <ClInclude Include="..\..\..\src\mods\mod_d3d12\texture\d3dtexture.h">
-      <Filter>texture</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\mods\mod_d3d12\texture\d3dtextureloader.h">
-      <Filter>texture</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\mods\mod_d3d12\texture\d3dtextureloaderdds.h">
-      <Filter>texture</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\mods\mod_d3d12\texture\dds.h">
-      <Filter>texture</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\mods\mod_d3d12\text\d3dfont.h">
       <Filter>text</Filter>
     </ClInclude>
@@ -102,5 +76,6 @@
     <ClInclude Include="..\..\..\src\mods\mod_d3d12\input\d3dinput.h">
       <Filter>input</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_d3d12\d3dtexture.h" />
   </ItemGroup>
 </Project>

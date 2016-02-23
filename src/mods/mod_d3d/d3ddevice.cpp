@@ -7,9 +7,6 @@
 #include "core/smartptr/autoptr.h"
 #include "core/window/gamewindow.h"
 
-#include "texture/d3dtexture.h"
-#include "texture/d3dtextureloaderdds.h"
-
 #include "text/d3dfontcollection.h"
 #include "text/d3dglyphprovider.h"
 #include "text/d3dfont.h"
@@ -18,6 +15,7 @@
 #include "d3dcodepath.h"
 #include "d3dhelpers.h"
 #include "d3dindexbuffer.h"
+#include "d3dtexture.h"
 #include "d3drendercontext.h"
 #include "d3dvertexbuffer.h"
 
@@ -284,12 +282,12 @@ Texture* D3DDevice::createTexture(const TextureDescription& texdesc)
       break;
    case eFormat_BC2:
       bc = true;
-      format = DXGI_FORMAT_BC3_UNORM;
+      format = DXGI_FORMAT_BC2_UNORM;
       blockSize = 16;
       break;
    case eFormat_BC3:
       bc = true;
-      format = DXGI_FORMAT_BC5_UNORM;
+      format = DXGI_FORMAT_BC3_UNORM;
       blockSize = 16;
       break;
    }

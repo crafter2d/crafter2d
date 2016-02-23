@@ -22,6 +22,7 @@
 #include <Windows.h>
 #include <DbgHelp.h>
 
+#include "core/log/log.h"
 #include "core/string/string.h"
 
 #include "wintimer.h"
@@ -83,10 +84,17 @@ void WinPlatform::initialize()
 void* WinPlatform::loadModule(const String& name)
 {
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-   return LoadLibraryEx(name.c_str(), NULL, 0);
+   HMODULE handle = LoadLibraryEx(name.c_str(), NULL, 0);
 #else
-   return LoadPackagedLibrary(name.c_str(), 0);
+   HMODULE handle = LoadPackagedLibrary(name.c_str(), 0);
 #endif
+
+   if ( handle == NULL )
+   {
+      DWORD error = GetLastError();
+      Log::getInstance().error("Could not load library %s (error %d)", name.toUtf8().c_str(), error);
+   }
+   return handle;
 }
 
 void WinPlatform::freeModule(void* pmodule)

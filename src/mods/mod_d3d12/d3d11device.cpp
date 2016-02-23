@@ -13,12 +13,11 @@
 #include "text/d3dglyphprovider.h"
 #include "text/d3dfont.h"
 
-#include "texture/d3dtexture.h"
-#include "texture/d3dtextureloaderdds.h"
 
 #include "d3dblendstate.h"
 #include "d3dcodepath.h"
 #include "d3dindexbuffer.h"
+#include "d3dtexture.h"
 #include "d3dvertexbuffer.h"
 #include "d3duniformbuffer.h"
 
@@ -340,13 +339,6 @@ namespace Graphics
       D3DTexture* presult = new D3DTexture(pShaderResView, ptexture);
       presult->create(*this, texdesc.width, texdesc.height);
       return presult;
-   }
-
-   Texture* D3D11Device::createTexture(DataStream& imagedata)
-   {
-      D3DTextureLoaderDDS loader;
-      D3DTexture* ptexture = loader.load(*this, imagedata);
-      return ptexture;
    }
 
    RenderTarget* D3D11Device::createRenderTarget()

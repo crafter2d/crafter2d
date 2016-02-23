@@ -6,9 +6,9 @@
 #include "core/graphics/uniformbuffer.h"
 #include "core/graphics/effect.h"
 
-#include "texture/d3dtexture.h"
 #include "d3dcodepath.h"
 #include "d3dblendstate.h"
+#include "d3dtexture.h"
 
 namespace Graphics
 {
