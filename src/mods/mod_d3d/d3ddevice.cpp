@@ -277,17 +277,17 @@ Texture* D3DDevice::createTexture(const TextureDescription& texdesc)
       format = DXGI_FORMAT_R8G8B8A8_UNORM;
       blockSize = 4;
       break;
-   case eFormat_DTX1:
+   case eFormat_BC1:
       bc = true;
       format = DXGI_FORMAT_BC1_UNORM;
       blockSize = 8;
       break;
-   case eFormat_DTX3:
+   case eFormat_BC2:
       bc = true;
       format = DXGI_FORMAT_BC3_UNORM;
       blockSize = 16;
       break;
-   case eFormat_DTX5:
+   case eFormat_BC3:
       bc = true;
       format = DXGI_FORMAT_BC5_UNORM;
       blockSize = 16;
@@ -348,13 +348,6 @@ Texture* D3DDevice::createTexture(const TextureDescription& texdesc)
    D3DTexture* presult = new D3DTexture(pShaderResView, ptexture);
    presult->create(*this, texdesc.width, texdesc.height);
    return presult;
-}
-
-Texture* D3DDevice::createTexture(DataStream& imagedata)
-{
-   D3DTextureLoaderDDS loader;
-   D3DTexture* ptexture = loader.load(*this, imagedata);
-   return ptexture;
 }
 
 BlendState* D3DDevice::createBlendState(const BlendStateDesc& desc)

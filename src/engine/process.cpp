@@ -46,12 +46,13 @@ namespace c2d
    Process::Process() :
       mNetObserver(*this),
       conn(mNetObserver),
+      mpModuleManager(nullptr),
       mpContentManager(NULL),
       mpScriptManager(NULL),
       mpScript(NULL),
       actionMap(NULL),
-      initialized(false),
       mpWorld(NULL),
+      mInitialized(false),
       mActive(true),
       mDetecting(false)
    {

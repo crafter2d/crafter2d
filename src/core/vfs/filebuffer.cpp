@@ -64,6 +64,11 @@ int FileBuffer::write(const void* ptr, int size)
 int FileBuffer::size()
 {
    int currentpos = ftell(mpFile);
+   if ( currentpos == -1 )
+   {
+      return -1;
+   }
+
    fseek(mpFile, 0, SEEK_END);
    int size = ftell(mpFile);
    fseek(mpFile, currentpos, SEEK_SET);

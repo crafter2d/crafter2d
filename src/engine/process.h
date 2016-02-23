@@ -90,7 +90,6 @@ namespace c2d
       NetConnection        conn;
       ScriptObject*        mpScript;
       ActionMap*           actionMap;
-      bool                 initialized;
 
    private:
 
@@ -99,6 +98,7 @@ namespace c2d
       ContentManager*   mpContentManager;
       ScriptManager*    mpScriptManager;
       World*            mpWorld;
+      bool              mInitialized;
       bool              mActive;
       bool              mDetecting;
    };

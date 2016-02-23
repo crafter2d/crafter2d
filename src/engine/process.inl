@@ -27,7 +27,7 @@ namespace c2d
    /// up correctly.
    INLINE void Process::setInitialized(bool init)
    {
-      initialized = init;
+      mInitialized = init;
    }
 
    /// \fn Process::getConnection()
@@ -83,7 +83,7 @@ namespace c2d
    /// \brief Returns the initialize flag.
    INLINE bool Process::isInitialized()
    {
-      return initialized;
+      return mInitialized;
    }
 
    INLINE bool Process::isActive() const

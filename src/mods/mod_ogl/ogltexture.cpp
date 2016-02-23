@@ -55,6 +55,52 @@ bool OGLTexture::create(int width, int height, int bytes)
    return true;
 }
 
+bool OGLTexture::create(const TextureDescription& desc)
+{
+   create(desc.width, desc.height, 4);
+
+   int blockSize = 0;
+   bool bc = false;
+   switch ( desc.format )
+   {
+   case Graphics::eFormat_Luminance:
+      mFormat = GL_LUMINANCE;
+      mBytes = 1;
+      break;
+   case Graphics::eFormat_RGBA:
+      mFormat = GL_RGBA;
+      mBytes = 4;
+      break;
+   case Graphics::eFormat_BC1:
+      bc = true;
+      blockSize = 8;
+      mBytes = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+      break;
+   case Graphics::eFormat_BC2:
+      bc = true;
+      blockSize = 16;
+      mBytes = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+      break;
+   case Graphics::eFormat_BC3:
+      bc = true;
+      blockSize = 16;
+      mBytes = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+      break;
+   }
+
+   if ( bc )
+   {
+      size_t size = ((desc.width + 3) / 4) * ((desc.height + 3) / 4) * blockSize;
+      glCompressedTexImage2D(mTarget, 0, mBytes, desc.width, desc.height, 0, size, desc.pinitData);
+   }
+   else
+   {
+      glTexImage2D(mTarget, 0, mBytes, _actualwidth, _actualheight, 0, mFormat, GL_UNSIGNED_BYTE, desc.pinitData);
+   }
+
+   return true;
+}
+
 void OGLTexture::update(RenderContext& context, const void* pdata, int rowpitch)
 {
    glBindTexture(mTarget, mID);

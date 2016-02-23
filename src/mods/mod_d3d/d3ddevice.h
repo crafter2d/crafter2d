@@ -31,7 +31,6 @@ namespace Graphics
       virtual IndexBuffer*    createIndexBuffer() override;
       virtual Texture*        createTexture(int width, int height, int bytesperpixel) override;
       virtual Texture*        createTexture(const TextureDescription& desc) override;
-      virtual Texture*        createTexture(DataStream& imagedata) override;
       virtual RenderTarget*   createRenderTarget() override;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) override;
       virtual GlyphProvider*  createGlyphProvider(Font& font);

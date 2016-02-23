@@ -443,7 +443,7 @@ namespace c2d
             mpScript->arg(0, UTEXT("engine.game.Player"), mpPlayer);
             mpScript->call(UTEXT("onConnected"));
 
-            initialized = true;
+            setInitialized(true);
          }
          break;
       case ConnectReplyEvent::eDenite:

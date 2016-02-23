@@ -19,15 +19,17 @@
  ***************************************************************************/
 #include "resourcemanager.h"
 
+#include <memory>
+
 #include "core/smartptr/autoptr.h"
 #include "core/containers/hashinterface.h"
 #include "core/graphics/font.h"
 #include "core/graphics/texture.h"
-#include "core/graphics/device.h"
 
 #include "resourcehandle.h"
 
 ResourceManager::ResourceManager():
+   mContentManager(),
    mResources()
 {
    mResources.setHashFunction(HashInterface::hashString);
@@ -49,16 +51,15 @@ static String sPath = UTEXT("../images/");
 
 /// \fn ResourceManager::loadTexture (const std::string& file)
 /// \brief Returns a texture from a the given file.
-TexturePtr ResourceManager::getTexture(Graphics::Device& device, const String& file)
+TexturePtr ResourceManager::getTexture(const String& file)
 {
    ResourceHandle<Graphics::Texture>* phandle = NULL;
 
    if ( !mResources.contains(file) )
    {
       String path = sPath + file;
-      DataStream* pstream = NULL;
-      AutoPtr<Graphics::Texture> texture = device.createTexture(*pstream); // TODO!
-      if ( !texture.hasPointer() )
+      std::unique_ptr<Graphics::Texture> texture(mContentManager.loadContent<Graphics::Texture>(path));
+      if ( !(texture) )
          return TexturePtr();
 
       phandle = new ResourceHandle<Graphics::Texture>(*this, texture.release());

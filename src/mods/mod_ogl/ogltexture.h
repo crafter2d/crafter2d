@@ -14,7 +14,8 @@ namespace Graphics
       OGLTexture();
 
     // creation
-      bool   create(int width, int height, int bytes);
+      bool create(int width, int height, int bytes);
+      bool create(const TextureDescription& desc);
 
     // overrides
       virtual void   update(RenderContext& context, const void* pdata, int rowpitch) override;

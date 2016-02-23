@@ -75,7 +75,7 @@ bool LinuxFileSystem::doRecurseDirectory(const String& dir, const String& mask, 
       stat(path.toUtf8().c_str(), &s);
       if ( S_ISDIR(s.st_mode) )
       {
-         if ( recursive && (path != UTEXT(".") || path != UTEXT("..")) )
+         if ( recursive && path != UTEXT(".") && path != UTEXT("..") )
          {
             doRecurseDirectory(path, mask, result, recursive);
          }

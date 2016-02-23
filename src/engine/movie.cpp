@@ -22,13 +22,17 @@
 #include "core/log/log.h"
 #include "core/math/math.h"
 
-Movie::Movie()
- : mNumberOfFrames(0),
+Movie::Movie():
+   mFrameWidth(0),
+   mFrameHeight(0),
+   mWidth(0),
+   mHeight(0),
+   mNumberOfFrames(0),
    mFramesPerSecond(0),
    mCurrentFrame(0),
    mUpdateRate(0.0f),
    mFrameTime(0.0f),
-   mpData(NULL)
+   mpData(nullptr)
 {
 }
 

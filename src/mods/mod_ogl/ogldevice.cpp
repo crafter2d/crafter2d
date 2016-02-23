@@ -132,26 +132,6 @@ IndexBuffer* OGLDevice::createIndexBuffer()
 /// \fn OGLDevice::createTexture()
 /// \brief Creates a new empty texture.
 /// \return A pointer to the created texture.
-Texture* OGLDevice::createTexture(DataStream& data)
-{
-   c2d::Image image;
-   if ( image.load(data) )
-   {
-      AutoPtr<OGLTexture> result = new OGLTexture();
-      if ( !result->create(image.getWidth(), image.getHeight(), image.getFormat()) )
-      {
-         return NULL;
-      }
-
-      OGLRenderContext dummy;
-      result->update(dummy, image.getBytes(), image.getWidth());
-
-      return result.release();
-   }
-
-   return NULL;
-}
-
 Texture* OGLDevice::createTexture(int width, int height, int bytesperpixel)
 {
    OGLTexture* ptexture = new OGLTexture();
@@ -162,7 +142,7 @@ Texture* OGLDevice::createTexture(int width, int height, int bytesperpixel)
 Texture* OGLDevice::createTexture(const TextureDescription& desc)
 {
    OGLTexture* ptexture = new OGLTexture();
-   ptexture->create(desc.width, desc.height, 4);
+   ptexture->create(desc);
    return ptexture;
 }
 

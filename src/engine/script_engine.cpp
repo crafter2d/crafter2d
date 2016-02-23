@@ -193,7 +193,7 @@ void Client_getTexture(ScriptCall& accessor)
 
    const String& name = accessor.getString(1);
 
-   TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(client.getDevice(), name));
+   TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(name));
    RETURN_CLASS_OWNED(UTEXT("engine.core.Texture"), ptexture);
 }
 

@@ -23,13 +23,13 @@
 #include <string>
 
 #include "core/containers/hashmap.h"
+#include "core/content/contentmanager.h"
 #include "core/string/string.h"
 
 #include "resourceptr.h"
 
 namespace Graphics
 {
-   class Device;
    class Texture;
 };
 
@@ -47,7 +47,7 @@ public:
    ~ResourceManager();
 
  // resource retreival
-   TexturePtr getTexture(Graphics::Device& device, const String& file);
+   TexturePtr getTexture(const String& file);
    
  // notifications
    void notifyResourceDeleted(const ResourceHandleBase& resource);
@@ -56,9 +56,10 @@ private:
    typedef HashMap<String, ResourceHandleBase*> Resources;
 
    explicit ResourceManager();
-   ResourceManager& operator=(const ResourceManager& mgr);
+   ResourceManager& operator=(const ResourceManager& mgr) = delete;
    
  // members
+   c2d::ContentManager mContentManager;
 	Resources   mResources;
 };
 

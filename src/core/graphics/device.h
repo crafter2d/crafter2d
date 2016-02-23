@@ -54,7 +54,6 @@ namespace Graphics
       virtual IndexBuffer*    createIndexBuffer() = 0;
       virtual Texture*        createTexture(int width, int height, int bytesperpixel) = 0;
       virtual Texture*        createTexture(const TextureDescription& desc) = 0;
-      virtual Texture*        createTexture(DataStream& data) = 0;
       virtual RenderTarget*   createRenderTarget() = 0;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) = 0;
       virtual GlyphProvider*  createGlyphProvider(Font& font) = 0;
