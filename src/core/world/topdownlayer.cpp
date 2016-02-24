@@ -163,15 +163,29 @@ void TopDownLayer::updateTile(pv** pdata, int& indices, LayerLevel level, int x,
       //pv* pvertices = level == eFront ? mpFrontData : mpData;
       
       pv* pvertices = *pdata;
-      pvertices[0].pos.set(xpos, ypos);
-      pvertices[1].pos.set(xpos+tileset().getTileWidth(), ypos);
-      pvertices[2].pos.set(xpos + tileset().getTileWidth(), ypos + tileset().getTileHeight());
-      pvertices[3].pos.set(xpos, ypos+tileset().getTileHeight());
-
-      pvertices[0].tex.set(info.coords.left, info.coords.top);
-      pvertices[1].tex.set(info.coords.right, info.coords.top);
-      pvertices[2].tex.set(info.coords.right, info.coords.bottom);
-      pvertices[3].tex.set(info.coords.left, info.coords.bottom);
+      
+      if ( IS_SET(info.flag, TileRotated) )
+      {
+         pvertices[0].pos.set(xpos, ypos);
+         pvertices[0].tex.set(info.coords.right, info.coords.top);
+         pvertices[1].pos.set(xpos + tileset().getTileWidth(), ypos);
+         pvertices[1].tex.set(info.coords.right, info.coords.bottom);
+         pvertices[2].pos.set(xpos + tileset().getTileWidth(), ypos + tileset().getTileHeight());
+         pvertices[2].tex.set(info.coords.left, info.coords.bottom);
+         pvertices[3].pos.set(xpos, ypos + tileset().getTileHeight());
+         pvertices[3].tex.set(info.coords.left, info.coords.top);
+      }
+      else
+      {
+         pvertices[0].pos.set(xpos, ypos);
+         pvertices[0].tex.set(info.coords.left, info.coords.top);
+         pvertices[1].pos.set(xpos + tileset().getTileWidth(), ypos);
+         pvertices[1].tex.set(info.coords.right, info.coords.top);
+         pvertices[2].pos.set(xpos + tileset().getTileWidth(), ypos + tileset().getTileHeight());
+         pvertices[2].tex.set(info.coords.right, info.coords.bottom);
+         pvertices[3].pos.set(xpos, ypos + tileset().getTileHeight());
+         pvertices[3].tex.set(info.coords.left, info.coords.bottom);
+      }
 
 
       (*pdata) += 4;

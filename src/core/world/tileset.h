@@ -32,7 +32,8 @@ namespace Graphics
 
 enum TileInfoFlag {
    TileAnimate    = 1,
-   TileSolid      = 2
+   TileSolid      = 2,
+   TileRotated    = 4,
 };
 
 /// Structure contains animation information for a tile. Every tile can have a certain amount of information.

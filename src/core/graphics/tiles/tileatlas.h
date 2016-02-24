@@ -26,6 +26,10 @@ namespace c2d
          return mSheets[index >> 16].getCoordinate(index & 0xffff);
       }
 
+      const TileSheet::Tile& getTile(int index) const {
+         return mSheets[index >> 16].getTile(index & 0xffff);
+      }
+
       TileSheet& emplace();
 
       void reserve(int count);

@@ -39,6 +39,10 @@ namespace c2d
          return mTiles[index].coord;
       }
 
+      const Tile& getTile(int index) const {
+         return mTiles[index];
+      }
+
       void add(const String& name, const Tile& tile);
 
       int lookup(const String& name) const;

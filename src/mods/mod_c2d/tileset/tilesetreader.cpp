@@ -27,10 +27,12 @@ IContent* TileSetReader::read(DataStream& stream)
       stream >> name;
       int tileindex = atlas.lookup(name);
 
+      auto& tile = atlas.getTile(tileindex);
+
       TileInfo& info = (*presult)[index];
-      info.coords = atlas.getCoordinate(tileindex);
+      info.coords = tile.coord;
       info.sheet = tileindex >> 16;
-      info.flag = 0;
+      info.flag = tile.rotated ? TileRotated : 0;
    }
    /*
    int tileanimations;
