@@ -18,13 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "datastream.h"
-#ifndef JENGINE_INLINE
-#  include "datastream.inl"
-#endif
 
 #include <cstring>
 
 #include "core/string/string.h"
+#include "core/defines.h"
 
 DataStream::DataStream()
 {
@@ -62,11 +60,6 @@ void DataStream::readBool(bool& value)
 void DataStream::readInt(int32_t& value)
 {
    readBytes(&value, sizeof(int32_t));
-}
-
-void DataStream::readUint(uint32_t& value)
-{
-   readBytes(&value, sizeof(uint32_t));
 }
 
 void DataStream::readUint8(uint8_t& value)
@@ -128,11 +121,6 @@ void DataStream::writeBool(bool value)
 void DataStream::writeInt(int value)
 {
    writeBytes(&value, sizeof(int));
-}
-
-void DataStream::writeUint(uint32_t value)
-{
-   writeBytes(&value, sizeof(uint32_t));
 }
 
 void DataStream::writeUint8(uint8_t value)

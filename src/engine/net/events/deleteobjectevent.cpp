@@ -44,11 +44,11 @@ DeleteObjectEvent::DeleteObjectEvent(const Entity& entity):
 void DeleteObjectEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
-   stream.writeUint(mId);
+   stream.writeUint32(mId);
 }
 
 void DeleteObjectEvent::doUnpack(DataStream& stream)
 {
    NetEvent::doUnpack(stream);
-   stream.readUint(mId);
+   stream.readUint32(mId);
 }

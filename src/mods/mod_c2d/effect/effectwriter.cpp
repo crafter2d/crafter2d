@@ -66,7 +66,7 @@ bool EffectWriter::write(DataStream& stream, const String& filename)
    
 void EffectWriter::write(DataStream& stream, const ASTEffect& effect)
 {
-   stream.writeUint(effect.mTechniques.size());
+   stream.writeUint32(effect.mTechniques.size());
 
    for ( std::size_t index = 0; index < effect.mTechniques.size(); ++index )
    {

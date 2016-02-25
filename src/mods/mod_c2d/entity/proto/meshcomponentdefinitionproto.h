@@ -4,6 +4,7 @@
 
 #include <vector>
 
+#include "core/graphics/animator.h"
 #include "core/string/string.h"
 
 #include "componentdefinitionproto.h"
@@ -13,7 +14,7 @@ class MeshComponentDefinitionProto : public ComponentDefinitionProto
 public:
    struct Animation
    {
-      String name;
+      c2d::Animator::AnimationType type;
       std::vector<String> frames;
    };
    using Animations = std::vector<Animation>;

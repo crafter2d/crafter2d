@@ -11,6 +11,11 @@ class DemoClientActionMap extends ActionMap
 	private real mMass;
 	private real mLastJump = 0.0;
 	
+	private int ANIM_IDLE = 0;
+	private int ANIM_WALK = 1;
+	private int ANIM_RUN = 2;
+	private int ANIM_JUMP = 3;
+	
 	public void setActor(Entity entity)
 	{
 		mEntity = entity;
@@ -33,12 +38,12 @@ class DemoClientActionMap extends ActionMap
 		if ( down )
 		{
 			desiredvel = -10.0;
-			mEntity.setAnimation(1);
+			mEntity.setAnimation(ANIM_RUN);
 			mEntity.setFaceDirection(Entity.FACE_LEFT);
 		}
 		else
 		{
-			mEntity.setAnimation(0);
+			mEntity.setAnimation(ANIM_IDLE);
 		}
 		
 		real velchange = desiredvel - velocity.x;
@@ -56,12 +61,12 @@ class DemoClientActionMap extends ActionMap
 		if ( down )
 		{
 			desiredvel = 10.0;
-			mEntity.setAnimation(1);
+			mEntity.setAnimation(ANIM_RUN);
 			mEntity.setFaceDirection(Entity.FACE_RIGHT);
 		}
 		else
 		{
-			mEntity.setAnimation(0);
+			mEntity.setAnimation(ANIM_IDLE);
 		}
 			
 		real velchange = desiredvel - velocity.x;

@@ -22,16 +22,16 @@ void MeshComponentDefinitionProto::virRead(DataStream& stream)
    stream >> mWidth >> mHeight >> mAnimationSpeed;
 
    uint32_t size = 0;
-   stream.readUint(size);
+   stream.readUint32(size);
    mAnimations.resize(size);
 
    for ( uint32_t index = 0; index < size; ++index )
    {
-      Animation& animation = mAnimations[index];
-      stream >> animation.name;
-
       uint32_t frameCount;
-      stream.readUint(frameCount);
+      Animation& animation = mAnimations[index];
+      stream.readUint32((uint32_t&)animation.type);
+      stream.readUint32(frameCount);
+
       for ( uint32_t idx = 0; idx < frameCount; ++idx )
       {
          String name;
@@ -45,11 +45,11 @@ void MeshComponentDefinitionProto::virWrite(DataStream& stream) const
 {
    stream << mWidth << mHeight << mAnimationSpeed;
 
-   stream.writeUint(mAnimations.size());
+   stream.writeUint32(mAnimations.size());
    for ( auto& animation : mAnimations )
    {
-      stream.writeString(animation.name);
-      stream.writeUint(animation.frames.size());
+      stream.writeUint32(animation.type);
+      stream.writeUint32(animation.frames.size());
 
       for ( auto& frame : animation.frames )
       {

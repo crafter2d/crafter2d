@@ -43,11 +43,11 @@ RequestObjectEvent::RequestObjectEvent(const Id& id):
 void RequestObjectEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
-   stream.writeUint(mId);
+   stream.writeUint32(mId);
 }
 
 void RequestObjectEvent::doUnpack(DataStream& stream)
 {
    NetEvent::doUnpack(stream);
-   stream.readUint(mId);
+   stream.readUint32(mId);
 }

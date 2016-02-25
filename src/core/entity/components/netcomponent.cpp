@@ -74,7 +74,7 @@ void NetComponent::writeToStream(DataStream& stream)
 {
    Entity& entity = getEntity();
 
-   stream.writeUint(mDirtyFlag);
+   stream.writeUint32(mDirtyFlag);
 
    if ( IS_SET(mDirtyFlag, Entity::ePositionDirty) )
    {
@@ -96,7 +96,7 @@ void NetComponent::readFromStream(DataStream& stream)
 {
    Entity& entity = getEntity();
 
-   stream.readUint(mDirtyFlag);
+   stream.readUint32(mDirtyFlag);
    ASSERT(mDirtyFlag > 0);
 
    if ( IS_SET(mDirtyFlag, Entity::ePositionDirty) )

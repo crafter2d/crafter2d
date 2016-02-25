@@ -70,7 +70,7 @@ namespace c2d
       mpModuleManager = new ModuleManager();
       if ( !mpModuleManager->initialize() )
       {
-         return -1;
+         return false;
       }
 
       // initialize the content manager

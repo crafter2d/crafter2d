@@ -1,11 +1,10 @@
 #include "boundprocessor.h"
 
-#include <core/world/bound.h>
-#include <core/world/bounds.h>
-
+#include "world/tilebound.h"
 #include "boundisland.h"
 
-BoundProcessor::BoundProcessor()
+BoundProcessor::BoundProcessor():
+    mIslands()
 {
 }
 
@@ -29,10 +28,9 @@ void BoundProcessor::cleanup()
 
 void BoundProcessor::buildIslands(Bounds& bounds)
 {
-    for ( std::size_t index = 0; index < bounds.size(); ++index )
+    for ( auto& bound : bounds )
     {
-        Bound* pbound = bounds[index];
-        BoundIsland* pisland = findIsland(*pbound);
+        BoundIsland* pisland = findIsland(bound);
         if ( pisland == NULL )
         {
             pisland = new BoundIsland();
@@ -40,7 +38,7 @@ void BoundProcessor::buildIslands(Bounds& bounds)
         }
 
         Q_ASSERT(pisland);
-        pisland->add(*pbound);
+        pisland->add(bound);
     }
 }
 
@@ -55,7 +53,7 @@ void BoundProcessor::processIslands()
 
 // - Searching
 
-BoundIsland* BoundProcessor::findIsland(Bound& bound)
+BoundIsland* BoundProcessor::findIsland(TileBound& bound)
 {
     BoundIsland* pisland = NULL;
     foreach (pisland, mIslands)

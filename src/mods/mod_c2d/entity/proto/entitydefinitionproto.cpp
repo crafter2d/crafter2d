@@ -97,7 +97,7 @@ void EntityDefinitionProto::read(DataStream& stream)
 
    stream >> mName >> mClassName;
 
-   stream.readUint(size);
+   stream.readUint32(size);
    for ( uint32_t index = 0; index < size; ++index )
    {
       ChildDefinitionProto* pchild = new ChildDefinitionProto();
@@ -105,7 +105,7 @@ void EntityDefinitionProto::read(DataStream& stream)
       mChildren.push_back(pchild);
    }
 
-   stream.readUint(size);
+   stream.readUint32(size);
    for ( uint32_t index = 0; index < size; ++index )
    {
       EntityDefinitionProto* pentity = new EntityDefinitionProto();
@@ -113,7 +113,7 @@ void EntityDefinitionProto::read(DataStream& stream)
       mEntities.push_back(pentity);
    }
 
-   stream.readUint(size);
+   stream.readUint32(size);
    for ( uint32_t index = 0; index < size; ++index )
    {
       LinkDefinitionProto* plink = new LinkDefinitionProto();
@@ -121,7 +121,7 @@ void EntityDefinitionProto::read(DataStream& stream)
       mLinks.push_back(plink);
    }
 
-   stream.readUint(size);
+   stream.readUint32(size);
    for ( uint32_t index = 0; index < size; ++index )
    {
       ComponentDefinitionProto* pcomponent = ComponentDefinitionProto::fromStream(stream);
@@ -133,28 +133,28 @@ void EntityDefinitionProto::write(DataStream& stream) const
 {
    stream << mName << mClassName;
 
-   stream.writeUint(mChildren.size());
+   stream.writeUint32(mChildren.size());
    for ( std::size_t index = 0; index < mChildren.size(); ++index )
    {
       const ChildDefinitionProto* pchild = mChildren[index];
       pchild->write(stream);
    }
 
-   stream.writeUint(mEntities.size());
+   stream.writeUint32(mEntities.size());
    for ( std::size_t index = 0; index < mEntities.size(); ++index )
    {
       const EntityDefinitionProto* pentity = mEntities[index];
       pentity->write(stream);
    }
 
-   stream.writeUint(mLinks.size());
+   stream.writeUint32(mLinks.size());
    for ( std::size_t index = 0; index < mLinks.size(); ++index )
    {
       const LinkDefinitionProto* plink = mLinks[index];
       plink->write(stream);
    }
 
-   stream.writeUint(mComponents.size());
+   stream.writeUint32(mComponents.size());
    for ( std::size_t index = 0; index < mComponents.size(); ++index )
    {
       const ComponentDefinitionProto* pcomponent = mComponents[index];

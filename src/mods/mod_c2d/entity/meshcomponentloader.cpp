@@ -1,6 +1,7 @@
 
 #include "meshcomponentloader.h"
 
+#include <map>
 #include <memory>
 #include <tinyxml.h>
 
@@ -11,6 +12,15 @@
 #include "proto/meshcomponentdefinitionproto.h"
 
 static String sId(UTEXT("sprite"));
+
+std::map<std::string, c2d::Animator::AnimationType> AnimationMap = {
+   { "idle", c2d::Animator::eIdle },
+   { "walk", c2d::Animator::eWalking },
+   { "run", c2d::Animator::eRunning },
+   { "jump", c2d::Animator::eJumping },
+   { "slide", c2d::Animator::eSliding },
+   { "die", c2d::Animator::eDying },
+};
 
 using namespace Graphics;
 
@@ -54,7 +64,8 @@ ComponentDefinitionProto* MeshComponentLoader::load(const TiXmlElement& element)
 
          std::string name;
          panim->QueryStringAttribute("name", &name);
-         animation.name.setToUtf8(name);
+         auto it = AnimationMap.find(name);
+         animation.type = it != AnimationMap.end() ? it->second : c2d::Animator::eInvalid;
 
          for ( auto panimtile = panim->FirstChildElement("tile"); panimtile != nullptr; panimtile = panimtile->NextSiblingElement("tile") )
          {

@@ -34,6 +34,7 @@ Animator::Animator():
    mAnimationSpeed(0),
    mAnimFrameCount(0)
 {
+   mAnimations.resize(eInvalid);
 }
 
 Animator::~Animator()
@@ -41,6 +42,11 @@ Animator::~Animator()
 }
 
 // - Operations
+
+void Animator::add(AnimationType type, Animation&& animation)
+{
+   mAnimations[type] = std::move(animation);
+}
 
 Animator::Animation& Animator::emplaceAnimation()
 {
@@ -72,12 +78,15 @@ bool Animator::animate(AnimationState& state) const
 
 void Animator::setAnimation(AnimationState& state, int index)
 {
-   const Animation& animation = mAnimations[state.mAnimation];
+   if ( state.mAnimation != index )
+   {
+      const Animation& animation = mAnimations[index];
 
-   state.mDelta = 0.0f;
-   state.mAnimation = index;
-   state.mAnimFrame = 0;
-   state.mTileIndex = animation[0];
+      state.mDelta = 0.0f;
+      state.mAnimation = index;
+      state.mAnimFrame = 0;
+      state.mTileIndex = animation[0];
+   }
 }
 
 /// \fn AnimObject::nextFrame()

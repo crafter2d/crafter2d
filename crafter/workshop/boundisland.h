@@ -3,7 +3,7 @@
 
 #include <QVector>
 
-class Bound;
+class TileBound;
 
 class BoundIsland
 {
@@ -13,26 +13,26 @@ public:
     BoundIsland();
 
   // query
-    bool belongsTo(Bound& bound) const;
+    bool belongsTo(TileBound& bound) const;
 
   // maintenance
-    void add(Bound& bound);
+    void add(TileBound& bound);
 
   // operations
     void process();
 
 private:
-    typedef QVector<Bound*> Bounds;
+    typedef QVector<TileBound> Bounds;
 
   // statics
-    static Side getConnectionSide(const Bound& bound, const Bound& other);
-    static bool areConnected(const Bound& left, const Bound& right);
+    static Side getConnectionSide(const TileBound& bound, const TileBound& other);
+    static bool areConnected(const TileBound& left, const TileBound& right);
 
   // operations
     void createChain();
 
   // searching
-    const Bound* findConnectedBound(const Bound &bound) const;
+    const TileBound* findConnectedBound(const TileBound &bound) const;
 
   // bounds
     Bounds mBounds;

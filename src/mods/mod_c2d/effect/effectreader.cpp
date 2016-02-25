@@ -17,7 +17,7 @@ IContent* EffectReader::read(DataStream& stream)
    Effect* presult = new Effect();
 
    uint32_t techniques;
-   stream.readUint(techniques);
+   stream.readUint32(techniques);
    for ( uint32_t index = 0; index < techniques; ++index )
    {
       EffectTechnique* ptechnique = readTechnique(stream);

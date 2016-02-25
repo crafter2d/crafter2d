@@ -3,8 +3,6 @@
 #include <QFileInfo>
 #include <QPainter>
 
-#include <core/smartptr/autoptr.h>
-
 #include "stringinterface.h"
 #include "tilemap.h"
 

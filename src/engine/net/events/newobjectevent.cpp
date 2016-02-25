@@ -47,7 +47,7 @@ void NewObjectEvent::doPack(DataStream& stream) const
 {
    NetEvent::doPack(stream);
    
-   stream.writeUint(mId);
+   stream.writeUint32(mId);
    stream.writeString(mFileName);
 }
 
@@ -55,7 +55,7 @@ void NewObjectEvent::doUnpack(DataStream& stream)
 {
    NetEvent::doUnpack(stream);
       
-   stream.readUint(mId);
+   stream.readUint32(mId);
    stream.readString(mFileName);
 }
 

@@ -27,7 +27,6 @@ SOURCES += main.cpp\
     layerpanel.cpp \
     tilespanel.cpp \
     dockpanel.cpp \
-    stringinterface.cpp \
     boundprocessor.cpp \
     boundisland.cpp \
     resizelayerdialog.cpp \
@@ -99,7 +98,6 @@ HEADERS  += mainwindow.h \
     layerpanel.h \
     tilespanel.h \
     dockpanel.h \
-    stringinterface.h \
     boundprocessor.h \
     boundisland.h \
     resizelayerdialog.h \
@@ -191,11 +189,3 @@ Debug:UI_DIR = $$BaseDir/debug/.ui
 
 DebugBinDir = $$PWD/../../bin/
 ReleaseBinDir = $$PWD/../../binrel/
-
-SrcDir = $$PWD/../../src
-
-win32:CONFIG(release, debug|release): LIBS += -L$$ReleaseBinDir -lCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$DebugBinDir -lCored
-
-INCLUDEPATH += $$SrcDir
-DEPENDPATH += $$SrcDir

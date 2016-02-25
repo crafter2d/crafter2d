@@ -42,6 +42,8 @@ namespace c2d
    public:
       using Animation = std::vector<int>;
 
+      enum AnimationType { eIdle, eWalking, eRunning, eJumping, eSliding, eDying, eInvalid };
+
       Animator();
       ~Animator();
 
@@ -51,6 +53,7 @@ namespace c2d
       }
       
     // operations
+      void add(AnimationType type, Animation&& animation);
       Animation& emplaceAnimation();
       void flip();
 

@@ -3,13 +3,14 @@
 
 #include <QVector>
 
-class Bound;
-class Bounds;
+class TileBound;
 class BoundIsland;
 
 class BoundProcessor
 {
 public:
+    using Bounds = QVector<TileBound>;
+
     BoundProcessor();
 
   // operations
@@ -24,7 +25,7 @@ private:
     void processIslands();
 
   // searching
-    BoundIsland* findIsland(Bound& bound);
+    BoundIsland* findIsland(TileBound &bound);
 
   // data
     Islands mIslands;

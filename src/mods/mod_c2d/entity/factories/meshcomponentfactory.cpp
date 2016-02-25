@@ -49,8 +49,14 @@ c2d::Animator* MeshComponentFactory::createAnimator(const MeshComponentDefinitio
    for ( uint32_t index = 0; index < definition.mAnimations.size(); ++index )
    {
       auto& animationdef = definition.mAnimations[index];
+      if ( animationdef.type == c2d::Animator::eInvalid )
+      {
+         // invalid will be replaced by custom where the user can specify their own animation name.
+         // he should later query the id based on the name in script.
+         continue;
+      }
 
-      c2d::Animator::Animation& animation = presult->emplaceAnimation();
+      c2d::Animator::Animation animation;
       animation.reserve(animationdef.frames.size());
 
       for ( auto& name : animationdef.frames )
@@ -58,6 +64,8 @@ c2d::Animator* MeshComponentFactory::createAnimator(const MeshComponentDefinitio
          int index = atlas.lookup(name);
          animation.push_back(index);
       }
+
+      presult->add(animationdef.type, std::move(animation));
    }
 
    return presult;

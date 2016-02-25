@@ -12,10 +12,6 @@ public:
  // overrides
    virtual const String& getXmlTag() const override;
    virtual ComponentDefinitionProto* load(const TiXmlElement& element) override;
-
-private:
-
- // data
 };
 
 #endif // MESH_COMPONENT_LOADER_H
