@@ -207,20 +207,29 @@ namespace c2d
    {
       const XForm& xform = sprite.getTransform();
       const Size& halfsize = sprite.getHalfSize();
-      const TextureCoordinate& coords = atlas.getCoordinate(sprite.getTile());
+      const TileSheet::Tile& tileinfo = atlas.getTile(sprite.getTile());
 
       // create the vertices
       pbuffer[0].pos = xform.transform(-halfsize.width, -halfsize.height);
-      pbuffer[0].tex.set(coords.left, coords.top);
-
       pbuffer[1].pos = xform.transform(halfsize.width, -halfsize.height);
-      pbuffer[1].tex.set(coords.right, coords.top);
-
       pbuffer[2].pos = xform.transform(halfsize.width, halfsize.height);
-      pbuffer[2].tex.set(coords.right, coords.bottom);
-
       pbuffer[3].pos = xform.transform(-halfsize.width, halfsize.height);
-      pbuffer[3].tex.set(coords.left, coords.bottom);
+      
+
+      if ( sprite.isFlipped() )
+      {
+         pbuffer[0].tex.set(tileinfo.coord.right, tileinfo.coord.top);
+         pbuffer[1].tex.set(tileinfo.coord.left, tileinfo.coord.top);
+         pbuffer[2].tex.set(tileinfo.coord.left, tileinfo.coord.bottom);
+         pbuffer[3].tex.set(tileinfo.coord.right, tileinfo.coord.bottom);
+      }
+      else
+      {
+         pbuffer[0].tex.set(tileinfo.coord.left, tileinfo.coord.top);
+         pbuffer[1].tex.set(tileinfo.coord.right, tileinfo.coord.top);
+         pbuffer[2].tex.set(tileinfo.coord.right, tileinfo.coord.bottom);
+         pbuffer[3].tex.set(tileinfo.coord.left, tileinfo.coord.bottom);
+      }
    }
 
 } // namespace c2d

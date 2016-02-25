@@ -59,6 +59,10 @@ namespace c2d
          mTransform = xform;
       }
 
+      bool isFlipped() const {
+         return mFlipped;
+      }
+
     // operations
       bool initialize(Graphics::Device& device);
       void update(float delta);
