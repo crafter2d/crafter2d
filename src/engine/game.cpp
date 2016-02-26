@@ -225,27 +225,30 @@ void Game::endGame()
     \fn Game::runFrame()
 	 \brief Called when next frame should be rendered. Overload it to render your own custom objects.
 	 \returns Nothing
+
+    http://gafferongames.com/game-physics/fix-your-timestep/
  */
 void Game::runFrame()
 {
    //Profiler::getInstance().begin();
-   
+
+   static const float FREQ = 1.0f / 60.0f;
+   static float accumulator = 0.0f;
+
    TimerDelta timerdelta(getTimerData());
    float delta = timerdelta.getDelta();
 
-   static float FREQ = 1.0f / 60.0f;
-   static float cur = 0;
-
-   //cur += delta;
-   //if ( cur >= FREQ )
+   accumulator += delta;
+   while ( accumulator >= FREQ )
    {
       //mpServer->update(delta);
       
-      mpClient->update(delta);
-      mpClient->render(delta);
-
-      //cur = 0.0f;
+      mpClient->update(FREQ);
+      
+      accumulator -= FREQ;
    }
+
+   mpClient->render(delta);
 
    // Profiler::getInstance().end();
    // Profiler::getInstance().draw(*GuiManager::getInstance().getDefaultFont());

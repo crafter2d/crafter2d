@@ -54,25 +54,23 @@ b2Vec2 Box2DSimulator::vectorToB2(const Vector& v)
    return b2Vec2(v.x / 30, v.y / 30);
 }
 
+/*
 Matrix4 Box2DSimulator::b2ToMatrix(const b2Transform& tf)
 {
-   /*
    return Matrix4(
       tf.q.c     , tf.q.s     , 0, 0,
       -tf.q.s    , tf.q.c     , 0, 0,
       0          , 0          , 1, 0,
       tf.p.x * 30, tf.p.y * 30, 0, 1
    );
-   */
-   return Matrix4();
 }
+*/
 
 Box2DSimulator::Box2DSimulator():
    Simulator(),
    mpb2World(NULL),
    mContactListener(*this),
-   mJoints(),
-   mDelta(0.0f)
+   mJoints()
 {
 }
 
@@ -239,9 +237,6 @@ void Box2DSimulator::notifyWorldChanged()
 
       b2EdgeShape ground;
       ground.Set(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));
-      /*
-      b2EdgeShape ground;
-      ground.Set(vectorToB2(bound.getLeft()), vectorToB2(bound.getRight()));*/
 
       b2FixtureDef fixturedef;
       fixturedef.shape    = &ground;
@@ -256,21 +251,12 @@ void Box2DSimulator::notifyWorldChanged()
 
 void Box2DSimulator::run(float timestep)
 {
-   static const float step = 1.0f / 60.0f;
+   static const int velocityIterations = 8;
+   static const int positionIterations = 3;
 
-   mDelta += timestep;
-   if ( mDelta >= step )
-   {
-      static const int velocityIterations = 8;
-      static const int positionIterations = 3;
+   getBodies().integrate(timestep);
 
-      getBodies().integrate(step);
+   mpb2World->Step(timestep, velocityIterations, positionIterations);
 
-      mpb2World->Step(step, velocityIterations, positionIterations);
-      //mpb2World->ClearForces();
-
-      getBodies().finalize();
-
-      mDelta = 0.0f;
-   }
+   getBodies().finalize();
 }

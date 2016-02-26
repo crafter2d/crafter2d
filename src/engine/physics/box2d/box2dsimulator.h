@@ -45,8 +45,8 @@ class Box2DSimulator : public Simulator
 {
 public:
    static Vector b2ToVector(const b2Vec2& b2);
-   static Matrix4 b2ToMatrix(const b2Transform& tf);
    static b2Vec2 vectorToB2(const Vector& v);
+   //static Matrix4 b2ToMatrix(const b2Transform& tf);
 
    static const int eBound;
    static const int eObject;
@@ -90,7 +90,6 @@ private:
    b2World*             mpb2World;
    Box2DContactListener mContactListener;
    Joints               mJoints;
-   float                mDelta;
 
    static const String  sClassName;
 };
