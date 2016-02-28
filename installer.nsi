@@ -53,10 +53,8 @@ Section "Engine" SecEngine
   SectionIn 1 2
   
   SetOutPath "$INSTDIR"
-  File changelog.txt
   File license.txt
-  File readme.txt
-  File vcredist_x86.exe
+  File readme.md
 
   SetOutPath "$INSTDIR\bin"
   File /r bin\*
@@ -83,7 +81,17 @@ Section "Source" SecSource
   File installer.nsi
   File premake5.exe
   File premake5.lua
-  File vera.bat
+  File coverity_model.c
+  File basic-dx.fx
+  File basic-gl.fx
+  File particle-dx.fx
+  File particle-gl.fx
+  
+  SetOutPath "$INSTDIR\crafter"
+  File /r crafter\*.*
+  
+  SetOutPath "$INSTDIR\contrib"
+  File /r contrib\*.*
   
   SetOutPath "$INSTDIR\src"
   File /r src\*.*

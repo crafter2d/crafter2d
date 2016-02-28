@@ -55,7 +55,6 @@ class Simulator;
 class WorldRenderer;
 
 /**
-@author Jeroen Broekhuizen
 \brief Represents a complete world consisting off unlimited layers.
 
 In JEngine a world is a collection of one or more layers (Layer objects) displayed

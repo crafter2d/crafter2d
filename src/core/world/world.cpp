@@ -42,8 +42,6 @@
 
 using namespace Graphics;
 
-/// fn World::World
-/// brief Currently does nothing
 World::World():
    mName(),
    layers(),
@@ -67,10 +65,6 @@ World::World():
 {
 }
 
-/*!
-    \fn World::~World
-	 \brief Currently does nothing
- */
 World::~World()
 {
    destroy();
