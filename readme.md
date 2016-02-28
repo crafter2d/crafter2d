@@ -1,5 +1,4 @@
 #Crafter 2D
-==========
 
 [![Travis (Linux) Build Status](https://travis-ci.org/crafter2d/crafter2d.svg?branch=master)](https://travis-ci.org/crafter2d/crafter2d.svg?branch=master)
 
