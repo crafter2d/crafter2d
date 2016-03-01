@@ -1,7 +1,7 @@
 #Crafter 2D
 
 [![Travis (Linux) Build Status](https://travis-ci.org/crafter2d/crafter2d.svg?branch=master)](https://travis-ci.org/crafter2d/crafter2d.svg?branch=master)
-[![Coverity Scan Status](https://scan.coverity.com/projects/crafter2d-crafter2d)](https://scan.coverity.com/projects/6692/badge.svg)
+[![Coverity Scan Status](https://scan.coverity.com/projects/6692/badge.svg)](https://scan.coverity.com/projects/crafter2d-crafter2d)
 
 Crafter 2D is an open source game platform for creating 2D games. In the accompanying Crafter Workshop
 application you can design your games.
