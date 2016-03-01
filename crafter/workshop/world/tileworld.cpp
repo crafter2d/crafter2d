@@ -3,9 +3,7 @@
 #include <QFileInfo>
 #include <QPainter>
 
-#include "stringinterface.h"
 #include "tilemap.h"
-
 #include "tilemapdesc.h"
 #include "tilebound.h"
 #include "tileset.h"

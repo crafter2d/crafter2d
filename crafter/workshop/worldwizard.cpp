@@ -5,8 +5,6 @@
 #include <QMessageBox>
 #include <QVariant>
 
-#include "core/smartptr/autoptr.h"
-
 #include "worldwizard_pagelayer.h"
 #include "worldwizard_pageworld.h"
 #include "worldwizard_pagefinalize.h"
@@ -19,7 +17,6 @@
 #include "world/tilemapdesc.h"
 #include "world/tileworlddesc.h"
 
-#include "stringinterface.h"
 #include "project.h"
 
 // static

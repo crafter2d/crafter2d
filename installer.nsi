@@ -77,7 +77,7 @@ Section "Source" SecSource
   SetOutPath "$INSTDIR"
   File .gitignore
   File Doxyfile
-  File gen2010.bat
+  File gen.bat
   File installer.nsi
   File premake5.exe
   File premake5.lua

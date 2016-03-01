@@ -83,7 +83,7 @@ Game::~Game()
 bool Game::create()
 {
    Log& log = Log::getInstance();
-   log << "Crafter 2D V0.8 - Copyright 2013 - Jeroen Broekhuizen\n";
+   log << "Crafter 2D V0.9 - Copyright 2013 - Jeroen Broekhuizen\n";
    log << "Released under LGPL, see license.txt file for more info.\n";
    log << "--------------------------------------------------------\n";
 

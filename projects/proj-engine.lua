@@ -26,12 +26,8 @@ project "Engine"
 	filter "system:Windows"
 		defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
     	links { "Core" }
-		
-		includedirs { 	path.join(libdir, "zlib/include"),
-				path.join(libdir, "box2d/include") }
-
-		libdirs { 	path.join(libdir, "zlib/lib"),
-				path.join(libdir, "box2d/lib") }
+		includedirs { path.join(libdir, "box2d/include") }
+		libdirs { path.join(libdir, "box2d/lib") }
 
 	filter "system:Linux"
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
@@ -51,8 +47,8 @@ project "Engine"
 		links { "gdi32", "user32", "vfw32", "ws2_32" }
 		
 	configuration { "vs*", "Debug" }
-		links { "box2d_d", "zlib1_d" }
+		links { "box2d_d" }
 				
 	configuration { "vs*", "Release" }
-		links { "box2d", "zlib1" }
+		links { "box2d" }
 
