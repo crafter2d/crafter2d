@@ -16,45 +16,52 @@
 #include "core/modules/contentmodule.h"
 #include "core/modules/modulemanager.h"
 #include "core/vfs/stdiofile.h"
+#include "core/system/exception.h"
 
 using namespace c2d;
 
-int loadModules(const String& srcfile, const String& dstFile)
+static const int SUCCESS               = 0;
+static const int ERR_FILEINUSE         = -1;
+static const int ERR_NOCOMPILER        = -2;
+static const int ERR_EXCEPTION         = -3;
+static const int ERR_INVALIDFILEFORMAT = -4;
+
+int compile(const String& srcfile, const String& dstFile)
 {
-   ModuleManager mgr;
-   mgr.initialize();
-   ModuleCollection mods = mgr.filter(ModuleKind::eContentModule);
-
-   std::size_t index = srcfile.lastIndexOf(L'.');
-   String extension = srcfile.subStr(index + 1, srcfile.length() - index - 1);
-
-   if ( extension == UTEXT("xml") )
+   try
    {
-      TiXmlDocument doc(srcfile.toUtf8().c_str());
-      if ( !doc.LoadFile() )
-      {
-         // invalid file format
-         return -4;
-      }
+      ModuleManager mgr;
+      mgr.initialize();
+      ModuleCollection mods = mgr.filter(ModuleKind::eContentModule);
 
-      TiXmlElement* proot = doc.FirstChildElement();
-      if ( proot != NULL )
-      {
-         extension = String::fromUtf8(proot->Value());
-      }
-   }
+      std::size_t index = srcfile.lastIndexOf(L'.');
+      String extension = srcfile.subStr(index + 1, srcfile.length() - index - 1);
 
-   ModuleCollectionIterator it = mods.getIterator();
-   for ( ; it.isValid(); ++it )
-   {
-      ContentModule& cmod = static_cast<ContentModule&>(*it);
-      if ( cmod.supports(extension) )
+      if ( extension == UTEXT("xml") )
       {
-         BufferedStream stream;
-         cmod.getUuid().write(stream);
-
-         try
+         TiXmlDocument doc(srcfile.toUtf8().c_str());
+         if ( !doc.LoadFile() )
          {
+            // invalid file format
+            return ERR_INVALIDFILEFORMAT;
+         }
+
+         TiXmlElement* proot = doc.FirstChildElement();
+         if ( proot != NULL )
+         {
+            extension = String::fromUtf8(proot->Value());
+         }
+      }
+
+      ModuleCollectionIterator it = mods.getIterator();
+      for ( ; it.isValid(); ++it )
+      {
+         ContentModule& cmod = static_cast<ContentModule&>(*it);
+         if ( cmod.supports(extension) )
+         {
+            BufferedStream stream;
+            cmod.getUuid().write(stream);
+
             ContentWriter& writer = cmod.getWriter();
             if ( writer.write(stream, srcfile) )
             {
@@ -63,25 +70,30 @@ int loadModules(const String& srcfile, const String& dstFile)
                {
                   file.write(stream.getData(), stream.getDataSize());
                   file.close();
-                  return 0;
+                  return SUCCESS;
                }
                else
                {
                   // error 
-                  return -1;
+                  return ERR_FILEINUSE;
                }
             }
          }
-         catch ( std::exception& ex )
-         {
-            printf("Failed to compile the file: %s", ex.what());
-            return -2;
-         }
-         break;
       }
    }
-
-   return -3;
+   catch ( c2d::Exception& e )
+   {
+      std::string err = e.getReason().toUtf8();
+      printf("Failed to compile the file: %s", err.c_str());
+      return ERR_EXCEPTION;
+   }
+   catch ( std::exception& ex )
+   {
+      printf("Failed to compile the file: %s", ex.what());
+      return ERR_EXCEPTION;
+   }
+   
+   return ERR_NOCOMPILER;
 }
 
 int main(int argc, char *argv[])
@@ -95,8 +107,8 @@ int main(int argc, char *argv[])
    String srcfile = String::fromUtf8(argv[1]);
    String dstfile = String::fromUtf8(argv[2]);
    
-   int ret = loadModules(srcfile, dstfile);
-   if ( ret == 0 )
+   int ret = compile(srcfile, dstfile);
+   if ( ret == SUCCESS )
    {
       printf("Compiled successfully!");
    }

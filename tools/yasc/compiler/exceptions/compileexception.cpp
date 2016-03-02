@@ -32,10 +32,3 @@ CompileException::~CompileException()
 {
 }
 
-// - Query
-   
-String CompileException::asString() const
-{
-   PURE_VIRTUAL;
-   return String::empty();
-}

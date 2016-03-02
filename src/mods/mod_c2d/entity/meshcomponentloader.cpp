@@ -44,7 +44,7 @@ ComponentDefinitionProto* MeshComponentLoader::load(const TiXmlElement& element)
    if ( element.QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
 		  element.QueryIntAttribute ("height", &height) != TIXML_SUCCESS )
    {
-      // throw error
+      throw std::runtime_error("Mesh does not contain width and/or height attribute.");
    }
 
    pdefinition->mWidth = width;

@@ -31,6 +31,7 @@ namespace c2d
       mAnimState(),
       mTransform(),
       mHalfSize(),
+      mTile(0),
       mFlipped(false)
    {
       ASSERT_PTR(mpDefinition);
