@@ -15,10 +15,11 @@ TilesPanel::TilesPanel(MainWindow &mainwindow) :
 {
     ui->setupUi(this);
 
-    mpSelector = new TileSelector(0);
+    mpSelector = new TileSelector(ui->scrollArea);
     connect(mpSelector, SIGNAL(tileSelected(int)), SLOT(on_tileSelected(int)));
+    mpSelector->show();
 
-    ui->verticalLayout->addWidget(mpSelector);
+    ui->scrollArea->setWidget(mpSelector);
 }
 
 TilesPanel::~TilesPanel()

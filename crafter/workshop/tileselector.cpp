@@ -3,18 +3,23 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
+#include <QAbstractScrollArea>
 
 #include <qmath.h>
 
+#include "helpers/rotateimagepainter.h"
 #include "world/tileset.h"
 
-TileSelector::TileSelector(QWidget *parent) :
-    QAbstractScrollArea(parent),
+TileSelector::TileSelector(QAbstractScrollArea *parea) :
+    QWidget(nullptr),
+    mpScrollArea(parea),
     mpTileSet(nullptr),
     mSelectedTile(-1),
-    mHorizontalTiles(0),
-    mScrollPos(0)
+    mHorizontalTiles(0)
 {
+    setAutoFillBackground(true);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setBackgroundRole(QPalette::HighlightedText);
 }
 
 // - Get/set
@@ -38,44 +43,39 @@ void TileSelector::setTileSet(const TileSet *ptileset)
 
 void TileSelector::paintEvent(QPaintEvent* /*event*/)
 {
-    QPainter painter(viewport());
-    painter.translate(0, mScrollPos);
+    QPainter painter(this);
 
     if ( mpTileSet != nullptr )
     {
+        const QColor grayColor(200, 200, 200);
+
         int count = mpTileSet->getTileCount();
         const QSize& tilesize = mpTileSet->getTileSize();
 
         int x = 2, y = 2;
-        for ( int index = 1; index <= count; ++index )
+        for ( int index = 0; index <= count; ++index )
         {
-            if ( (index - 1) == mSelectedTile )
+            if ( index == mSelectedTile )
             {
-                const QBrush& previousbrush = painter.brush();
-                const QPen& previouspen = painter.pen();
+                RotateImagePainter rpainter(painter);
 
                 QRectF bounds(x-2, y-2, tilesize.width() + 4, tilesize.height()+2);
 
-                QColor color;
-                color.setRgb(200, 200, 200);
                 QLinearGradient gradient(QPointF(bounds.width() / 2, bounds.top()), QPointF(bounds.width()/2, bounds.bottom()));
                 gradient.setColorAt(0, QColor(240, 240, 240));
-                gradient.setColorAt(1, color);
+                gradient.setColorAt(1, grayColor);
 
-                QPen pen(color);
+                QPen pen(grayColor);
                 QBrush brush(gradient);
                 painter.setBrush(brush);
                 painter.setPen(pen);
 
                 painter.drawRoundedRect(bounds, 2, 2);
-
-                painter.setBrush(previousbrush);
-                painter.setPen(previouspen);
             }
 
-            mpTileSet->paintTile(painter, QPoint(x, y), index - 1);
+            mpTileSet->paintTile(painter, QPoint(x, y), index);
 
-            if ( index % mHorizontalTiles == 0 )
+            if ( (index + 1) % mHorizontalTiles == 0 )
             {
                 x = 2;
                 y += tilesize.height() + 4;
@@ -95,13 +95,6 @@ void TileSelector::resizeEvent(QResizeEvent *e)
     tilesetChanged();
 }
 
-void TileSelector::scrollContentsBy(int /*dx*/, int dy)
-{
-    mScrollPos += dy;
-
-    viewport()->scroll(0, dy);
-}
-
 void TileSelector::mousePressEvent(QMouseEvent *pevent)
 {
     if ( mpTileSet != nullptr )
@@ -115,7 +108,7 @@ void TileSelector::mousePressEvent(QMouseEvent *pevent)
             const QSize& tilesize = mpTileSet->getTileSize();
             QPoint mousepos = pevent->pos();
             int tilex = mousepos.x() / (tilesize.width() + 4.0f);
-            int tiley = (mousepos.y() - mScrollPos) / (tilesize.height() + 4.0f);
+            int tiley = mousepos.y() / (tilesize.height() + 4.0f);
             int tileindex = tiley * mHorizontalTiles + tilex;
 
             if ( tileindex < mpTileSet->getTileCount() )
@@ -124,6 +117,7 @@ void TileSelector::mousePressEvent(QMouseEvent *pevent)
             }
         }
 
+        update();
     }
 }
 
@@ -131,7 +125,7 @@ void TileSelector::mousePressEvent(QMouseEvent *pevent)
 
 void TileSelector::tilesetChanged()
 {
-    QScrollBar* vbar = verticalScrollBar();
+    QScrollBar* vbar = mpScrollArea->verticalScrollBar();
 
     int height = 0;
     if ( mpTileSet != nullptr )
@@ -144,13 +138,14 @@ void TileSelector::tilesetChanged()
         int lines = qCeil(static_cast<float>(mpTileSet->getTileCount()) / mHorizontalTiles);
         height = lines * (tilesize.height() + 4);
 
-        vbar->setPageStep(viewport()->height());
+        vbar->setPageStep(windowSize.height());
         vbar->setSingleStep(tilesize.height());
     }
 
-    vbar->setRange(0, height - viewport()->height());
+    vbar->setRange(0, height - this->height());
 
-    viewport()->update();
+    setMinimumHeight(height);
+    update();
 }
 
 void TileSelector::setSelection(int tile)
@@ -159,8 +154,6 @@ void TileSelector::setSelection(int tile)
     {
         mSelectedTile = tile;
         emit tileSelected(tile);
-
-        viewport()->update();
     }
 }
 
