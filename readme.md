@@ -9,6 +9,10 @@ application you can design your games.
 ## Credits
 Development and fixing by:
  - Jeroen Broekhuizen
+ 
+Graphics
+ - Icons : Open Icon Library (https://sourceforge.net/projects/openiconlibrary/)
+ - Tileset & chars : Game Art 2D (http://www.gameart2d.com/)
 
 ## Remarks
 This engine still is in an early phase and many developments still take place, so features can be broken,
