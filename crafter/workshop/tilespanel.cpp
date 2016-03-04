@@ -58,7 +58,7 @@ void TilesPanel::on_tileSelected(int tile)
 
 void TilesPanel::on_world_activeMapChanged(TileMap* tilemap)
 {
-    const TileSet* pset = nullptr;
+    TileSet* pset = nullptr;
     if ( tilemap != nullptr )
     {
         pset = &tilemap->getTileSet();

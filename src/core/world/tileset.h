@@ -39,6 +39,7 @@ enum TileInfoFlag {
 /// Structure contains animation information for a tile. Every tile can have a certain amount of information.
 struct CORE_API TileInfo {
    c2d::TextureCoordinate coords;
+   Vector offset;
    int    sheet;
    int    flag;
 

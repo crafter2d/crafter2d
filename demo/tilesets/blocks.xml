@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset tilewidth="128" tileheight="128">
-    <tile id="0" name="nature/1.png" index="53"/>
-    <tile id="1" name="nature/2.png" index="59"/>
-    <tile id="2" name="nature/3.png" index="60"/>
-    <tile id="3" name="nature/4.png" index="62"/>
-    <tile id="4" name="nature/5.png" index="63"/>
-    <tile id="5" name="nature/6.png" index="64"/>
-    <tile id="6" name="nature/7.png" index="65"/>
-    <tile id="7" name="nature/8.png" index="66"/>
-    <tile id="8" name="nature/9.png" index="67"/>
-    <tile id="9" name="nature/10.png" index="54"/>
-    <tile id="10" name="nature/11.png" index="55"/>
-    <tile id="11" name="nature/12.png" index="56"/>
-    <tile id="12" name="nature/13.png" index="31"/>
-    <tile id="13" name="nature/14.png" index="47"/>
-    <tile id="14" name="nature/15.png" index="61"/>
-    <tile id="15" name="nature/16.png" index="57"/>
-    <tile id="16" name="nature/17.png" index="15"/>
-    <tile id="17" name="nature/18.png" index="58"/>
+    <tile id="0" name="nature/1.png"/>
+    <tile id="1" name="nature/2.png"/>
+    <tile id="2" name="nature/3.png"/>
+    <tile id="3" name="nature/4.png"/>
+    <tile id="4" name="nature/5.png"/>
+    <tile id="5" name="nature/6.png"/>
+    <tile id="6" name="nature/7.png"/>
+    <tile id="7" name="nature/8.png"/>
+    <tile id="8" name="nature/9.png"/>
+    <tile id="9" name="nature/10.png"/>
+    <tile id="10" name="nature/11.png"/>
+    <tile id="11" name="nature/12.png"/>
+    <tile id="12" name="nature/13.png"/>
+    <tile id="13" name="nature/14.png"/>
+    <tile id="14" name="nature/15.png"/>
+    <tile id="15" name="nature/16.png"/>
+    <tile id="16" name="nature/17.png" offsety="29"/>
+    <tile id="17" name="nature/18.png"/>
 </tileset>

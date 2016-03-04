@@ -11,73 +11,99 @@
 
 TileSet::TileSet():
     Resource(Resource::eTileSet),
-    mImagePath(),
     mTiles(),
     mTileSize()
 {
 }
 
-// - Get/set
-
-struct compareNames
+TileSet::TileSet(const TileSet& that):
+    Resource(that),
+    mTiles(that.mTiles),
+    mTileSize(that.mTileSize)
 {
-    bool operator()(const QString& s1,const QString& s2)
-    {
-        if ( s1.length() < s2.length() )
-        {
-            return true;
-        }
-        else if ( s1.length() > s2.length() )
-        {
-            return false;
-        }
-        return s1.compare(s2) <= 0;
-    }
-} compare;
-
-void TileSet::setImagePath(const QString& path)
-{
-    mImagePath = path;
-
-    QStringList filters;
-    filters << "*.png";
-
-    QDir dir(Project::getActiveProject().getFilePath(path));
-    QStringList images = dir.entryList(filters, QDir::Files);
-    std::sort(images.begin(), images.end(), compare);
-
-    auto& atlas = Project::getActiveProject().getSpriteAtlas();
-
-    mTiles.clear();
-    mTiles.resize(images.size());
-    for ( int index = 0; index < images.size(); index++ )
-    {
-        QString name = dir.absoluteFilePath(images[index]);
-        name = name.right(name.length() - Project::getActiveProject().getImagePath().length() - 1).toLower();
-
-        Tile& tile = mTiles[index];
-        tile.name = name;
-        tile.spriteindex = atlas.lookup(name);
-    }
 }
 
-void TileSet::determineTileSize()
+TileSet& TileSet::operator=(TileSet&& that)
+{
+    Resource::operator =(that);
+    mTiles = std::move(that.mTiles);
+    mTileSize = that.mTileSize;
+    return *this;
+}
+
+// - Get/set
+
+void TileSet::update()
 {
     if ( !mTiles.empty() )
     {
         auto& atlas = Project::getActiveProject().getSpriteAtlas();
         mTileSize = atlas.bounds(mTiles[0].spriteindex).size();
+
+        emit updated();
     }
 }
 
+// - Query
+
+bool TileSet::empty() const
+{
+    return mTiles.empty();
+}
+
+bool TileSet::contains(const QString& name) const
+{
+    for ( const Tile& tile : mTiles )
+    {
+        if ( tile.name == name )
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+QString TileSet::getPath() const
+{
+    QString path;
+    if ( !mTiles.empty() )
+    {
+        const Tile& tile = mTiles[0];
+        int index = tile.name.lastIndexOf('/');
+        if ( index > 0 )
+        {
+            path = tile.name.left(index);
+        }
+    }
+    return path;
+}
+
+QString TileSet::getFullPath() const
+{
+    return Project::getActiveProject().getImagePath() + '/' + getPath();
+}
+
 // - Operations
+
+void TileSet::add(const QString& name, int spriteindex)
+{
+    Tile tile;
+    tile.name = name;
+    tile.spriteindex = spriteindex;
+    mTiles.append(tile);
+}
+
+void TileSet::clear()
+{
+    mTiles.clear();
+    mTileSize = QSize(0, 0);
+}
 
 void TileSet::paintTile(QPainter& painter, const QPoint& pos, int index) const
 {
     if ( index < mTiles.size() )
     {
-        Project::getActiveProject().getSpriteAtlas().paint(painter, pos, mTiles[index].spriteindex);
-        //const QImage& tile = mTiles[index].image;
-        //painter.drawImage(x, y, tile);
+        const Tile& tile = mTiles[index];
+        Project::getActiveProject().getSpriteAtlas().paint(painter, pos + tile.offset, tile.spriteindex);
     }
 }

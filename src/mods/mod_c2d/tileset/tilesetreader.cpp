@@ -24,13 +24,15 @@ IContent* TileSetReader::read(DataStream& stream)
    for ( int index = 0; index < tilecount; ++index )
    {
       String name;
-      stream >> name;
+      float offsetx, offsety;
+      stream >> name >> offsetx >> offsety;
       int tileindex = atlas.lookup(name);
 
       auto& tile = atlas.getTile(tileindex);
 
       TileInfo& info = (*presult)[index];
       info.coords = tile.coord;
+      info.offset.set(offsetx, offsety);
       info.sheet = tileindex >> 16;
       info.flag = tile.rotated ? TileRotated : 0;
    }

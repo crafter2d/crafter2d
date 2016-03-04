@@ -140,7 +140,6 @@ TileSet* WorldWizard::createTileSet()
 
     TileSet* presult = new TileSet();
     presult->setResourceName("tilesets/" + field("tileset.name").toString() + ".xml");
-    presult->setImagePath("images/" + info.baseName());
     presult->setDirty(true);
 
     project.addTileSet(presult);

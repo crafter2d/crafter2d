@@ -35,6 +35,7 @@ public:
     const QSize& getMinimumSize() const;
 
     const TileSet& getTileSet() const;
+          TileSet& getTileSet();
 
     int indexOf(const Tile& tile) const;
 

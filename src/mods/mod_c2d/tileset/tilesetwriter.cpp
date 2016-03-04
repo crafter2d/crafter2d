@@ -19,11 +19,15 @@ namespace local
 
       ATTRIBUTE(int, id)
       ATTRIBUTE(std::string, name)
-      
+      ATTRIBUTE(float, offsetx)
+      ATTRIBUTE(float, offsety)
+
    ELEMENT_IMP(tile)
 
       ATTRIBUTE_INIT(id, Attribute::eMandatory, Attribute::eInt, -1)
       ATTRIBUTE_INIT(name, Attribute::eMandatory, Attribute::eString, "")
+      ATTRIBUTE_INIT(offsetx, Attribute::eOptional, Attribute::eFloat, 0)
+      ATTRIBUTE_INIT(offsety, Attribute::eOptional, Attribute::eFloat, 0)
 
    ELEMENT_END
 
@@ -57,7 +61,7 @@ bool TileSetWriter::write(DataStream& stream, const String& filename)
       for ( auto& tile : ts.tiles )
       {
          String name(tile.name);
-         stream.writeString(name);
+         stream << name << tile.offsetx << tile.offsety;
       }
    }
 

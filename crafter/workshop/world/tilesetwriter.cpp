@@ -40,6 +40,16 @@ void TileSetWriter::write(const TileSet& tileset)
             writer.writeStartElement("tile");
             writer.writeAttribute("id", QString::number(index));
             writer.writeAttribute("name", tile.name);
+
+            if ( tile.offset.x() != 0 )
+            {
+                writer.writeAttribute("offsetx", QString::number(tile.offset.x()));
+            }
+            if ( tile.offset.y() != 0 )
+            {
+                writer.writeAttribute("offsety", QString::number(tile.offset.y()));
+            }
+
             writer.writeEndElement(); // </tile>
         }
 

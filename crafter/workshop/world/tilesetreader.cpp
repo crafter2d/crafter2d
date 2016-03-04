@@ -36,27 +36,21 @@ TileSet* TileSetReader::read()
                 {
 
                 }
-                else if ( reader.name() == "texture" )
-                {
-                    QString mapname;
-                    QStringRef ref = reader.attributes().value("name");
-                    if ( !ref.isNull() && !ref.isEmpty() )
-                    {
-                        // import old format where texture name was an attribute
-                        mapname = ref.toString();
-                    }
-                    else
-                    {
-                        mapname = reader.readElementText();
-                    }
-
-                    presult->setImagePath(mapname);
-                }
                 else if ( reader.name() == "tile" )
                 {
                     TileSet::Tile tile;
                     tile.name = reader.attributes().value("name").toString();
                     tile.spriteindex = atlas.lookup(tile.name);
+
+                    if ( reader.attributes().hasAttribute("offsetx") )
+                    {
+                        tile.offset.setX(reader.attributes().value("offsetx").toInt());
+                    }
+                    if ( reader.attributes().hasAttribute("offsety") )
+                    {
+                        tile.offset.setY(reader.attributes().value("offsety").toInt());
+                    }
+
                     presult->mTiles.append(qMove(tile));
                 }
             }
@@ -73,7 +67,7 @@ TileSet* TileSetReader::read()
         }
     }
 
-    presult->determineTileSize();
+    presult->update();
 
     return presult;
 }

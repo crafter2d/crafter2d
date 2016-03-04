@@ -7,26 +7,40 @@ class Tile;
 class TileSet;
 class QAbstractScrollArea;
 
+class TileContextInfo
+{
+public:
+    TileContextInfo();
+
+    QPoint pos;
+    TileSet* tileset;
+    int tile;
+};
+
 class TileSelector : public QWidget
 {
     Q_OBJECT
 public:
     explicit TileSelector(QAbstractScrollArea* parea);
+    virtual ~TileSelector();
 
   // get/set
     const TileSet& getTileSet() const;
-    void           setTileSet(const TileSet* ptileset);
+    void           setTileSet(TileSet *ptileset);
 
 signals:
     void tileSelected(int tile);
-
-public slots:
+    void contextMenuPopup(TileContextInfo& info);
 
 protected:
   // overrides
     virtual void paintEvent(QPaintEvent *event) override;
     virtual void resizeEvent(QResizeEvent *e) override;
+    virtual void contextMenuEvent(QContextMenuEvent *pevent) override;
     virtual void mousePressEvent(QMouseEvent *pevent) override;
+
+private slots:
+    void on_tileset_updated();
 
 private:
 
@@ -38,7 +52,7 @@ private:
 
   // data
     QAbstractScrollArea* mpScrollArea;
-    const TileSet*       mpTileSet;
+    TileSet*             mpTileSet;
     int                  mSelectedTile;
     int                  mHorizontalTiles;
 };

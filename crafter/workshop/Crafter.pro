@@ -84,7 +84,8 @@ SOURCES += main.cpp\
     texturepacker/spriteatlas.cpp \
     texturepacker/spritesheetwriter.cpp \
     texturepacker/spritesheetreader.cpp \
-    helpers/rotateimagepainter.cpp
+    helpers/rotateimagepainter.cpp \
+    tilepropertiesdialog.cpp \
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -155,7 +156,8 @@ HEADERS  += mainwindow.h \
     texturepacker/spriteatlas.h \
     texturepacker/spritesheetwriter.h \
     texturepacker/spritesheetreader.h \
-    helpers/rotateimagepainter.h
+    helpers/rotateimagepainter.h \
+    tilepropertiesdialog.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
@@ -173,7 +175,8 @@ FORMS    += mainwindow.ui \
     newtilesetdialog.ui \
     worldwizard_pagelayer.ui \
     texture/texturesplitter.ui \
-    texturepacker/texturepacker.ui
+    texturepacker/texturepacker.ui \
+    tilepropertiesdialog.ui
 
 BaseDir = $$PWD/../build/workshop
 

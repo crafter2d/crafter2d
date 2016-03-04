@@ -10,6 +10,13 @@
 #include "helpers/rotateimagepainter.h"
 #include "world/tileset.h"
 
+TileContextInfo::TileContextInfo():
+    pos(),
+    tileset(nullptr),
+    tile(TileSet::INVALID_TILE)
+{
+}
+
 TileSelector::TileSelector(QAbstractScrollArea *parea) :
     QWidget(nullptr),
     mpScrollArea(parea),
@@ -19,7 +26,12 @@ TileSelector::TileSelector(QAbstractScrollArea *parea) :
 {
     setAutoFillBackground(true);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    setBackgroundRole(QPalette::HighlightedText);
+    setPalette( QPalette( Qt::white ) );
+}
+
+TileSelector::~TileSelector()
+{
+    mpTileSet = nullptr;
 }
 
 // - Get/set
@@ -30,11 +42,12 @@ const TileSet& TileSelector::getTileSet() const
     return *mpTileSet;
 }
 
-void TileSelector::setTileSet(const TileSet *ptileset)
+void TileSelector::setTileSet(TileSet* ptileset)
 {
     if ( mpTileSet != ptileset )
     {
         mpTileSet = ptileset;
+        connect(mpTileSet, SIGNAL(updated()), SLOT(on_tileset_updated()));
         tilesetChanged();
     }
 }
@@ -93,6 +106,16 @@ void TileSelector::resizeEvent(QResizeEvent *e)
     QWidget::resizeEvent(e);
 
     tilesetChanged();
+}
+
+void TileSelector::contextMenuEvent(QContextMenuEvent *pevent)
+{
+    TileContextInfo info;
+    info.pos = pevent->globalPos();
+    info.tile = mSelectedTile;
+    info.tileset = mpTileSet;
+
+    emit contextMenuPopup(info);
 }
 
 void TileSelector::mousePressEvent(QMouseEvent *pevent)
@@ -160,4 +183,12 @@ void TileSelector::setSelection(int tile)
 void TileSelector::clearSelection()
 {
     setSelection(TileSet::INVALID_TILE);
+}
+
+// - Slots
+
+void TileSelector::on_tileset_updated()
+{
+    mSelectedTile = -1;
+    tilesetChanged();
 }

@@ -8,6 +8,22 @@ Resource::Resource(Type type):
 {
 }
 
+Resource::Resource(const Resource& that):
+    QObject(nullptr),
+    mType(that.mType),
+    mName(that.mName),
+    mDirty(true)
+{
+}
+
+Resource& Resource::operator=(const Resource& that)
+{
+    mType = that.mType;
+    mName = that.mName;
+    mDirty = true;
+    return *this;
+}
+
 // - Get/set
 
 const QString& Resource::getResourceName() const

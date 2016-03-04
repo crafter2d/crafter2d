@@ -61,6 +61,12 @@ const TileSet& TileMap::getTileSet() const
     return *mpTileSet;
 }
 
+TileSet& TileMap::getTileSet()
+{
+    Q_ASSERT(mpTileSet != nullptr);
+    return *mpTileSet;
+}
+
 // - Painting
 
 void TileMap::paint(QPainter& painter)

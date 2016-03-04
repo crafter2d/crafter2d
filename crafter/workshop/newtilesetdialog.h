@@ -3,11 +3,13 @@
 
 #include <QDialog>
 
+#include "world/tileset.h"
+#include "tileselector.h"
+
 namespace Ui {
 class newtilesetdialog;
 }
 
-class TileSet;
 
 class NewTileSetDialog : public QDialog
 {
@@ -16,18 +18,26 @@ class NewTileSetDialog : public QDialog
 public:
     static void NewTileSetDialog::edit(TileSet& tileset);
 
-    explicit NewTileSetDialog(QWidget *parent = 0);
+    explicit NewTileSetDialog(TileSet &tileset, QWidget *parent = 0);
     ~NewTileSetDialog();
 
 private slots:
     void on_btnSelectPath_clicked();
+    void on_contentMenuPopup_triggered(TileContextInfo &info);
+
+    void on_actionProperties_triggered();
 
 private:
 
-    void set(const TileSet& tileset);
+  // operations
+    void setupUi();
     void apply(TileSet& tileset);
+    void refresh();
 
     Ui::newtilesetdialog *ui;
+    TileSelector* mpSelector;
+    TileSet       mTileSet;
+    TileContextInfo mInfo;
 };
 
 #endif // NEWTILESETDIALOG_H

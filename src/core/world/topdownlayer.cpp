@@ -159,6 +159,9 @@ void TopDownLayer::updateTile(pv** pdata, int& indices, LayerLevel level, int x,
       // see if the tile can be animated
       //if ( animateTiles && (info.flag & TileAnimate) )
       //      texId += info.anim_index;
+
+      xpos += info.offset.x;
+      ypos += info.offset.y;
             
       pv* pvertices = *pdata;
       

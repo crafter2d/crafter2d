@@ -16,15 +16,27 @@ class TileSet : public Resource
 public:
     static const int INVALID_TILE = 255;
 
-    TileSet();
+    struct Tile
+    {
+        QString name;
+        QPoint offset;
+        int spriteindex;
+    };
 
-  // get/set
-    const QString& getImagePath() const {
-        return mImagePath;
+    TileSet();
+    TileSet(const TileSet& that);
+
+    TileSet& operator=(TileSet&& that);
+
+    Tile& operator[](int index) {
+        return mTiles[index];
     }
 
-    void setImagePath(const QString& path);
+    const Tile& operator[](int index) const {
+        return mTiles[index];
+    }
 
+  // get/set
     const QSize& getTileSize() const {
         return mTileSize;
     }
@@ -33,27 +45,30 @@ public:
         return mTiles.size();
     }
 
+  // Query
+    bool empty() const;
+    bool contains(const QString& name) const;
+    QString getPath() const;
+    QString getFullPath() const;
+
   // operations
+    void add(const QString& name, int spriteindex);
+    void clear();
+    void update();
+
     void paintTile(QPainter& painter, const QPoint &pos, int index) const;
+
+signals:
+    void updated();
 
 private:
     friend class TileSetWriter;
     friend class TileSetReader;
 
-    struct Tile
-    {
-        QString name;
-        int spriteindex;
-    };
-
   // typedefs
     using Tiles = QVector<Tile>;
 
-  // operations
-    void determineTileSize();
-
   // data
-    QString mImagePath;
     Tiles   mTiles;
     QSize   mTileSize;
 };

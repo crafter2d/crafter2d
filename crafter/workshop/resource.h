@@ -22,6 +22,8 @@ public:
 
 protected:
     explicit Resource(Type type);
+             Resource(const Resource& that);
+    Resource& operator=(const Resource& that);
 
 private:
 

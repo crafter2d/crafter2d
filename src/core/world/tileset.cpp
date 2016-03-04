@@ -36,6 +36,7 @@
 
 TileInfo::TileInfo():
    coords(),
+   offset(),
    sheet(0),
    flag(0)
 {

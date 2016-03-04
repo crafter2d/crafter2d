@@ -106,9 +106,9 @@ void Project::setBasePath(const QString& path)
     mBasePath = path;
 
     mPaths.clear();
-    mPaths.append(mBasePath + QDir::separator() + "images");
-    mPaths.append(mBasePath + QDir::separator() + "scripts");
-    mPaths.append(mBasePath + QDir::separator() + "tileatlas");
+    mPaths.append(mBasePath + "/images");
+    mPaths.append(mBasePath + "/scripts");
+    mPaths.append(mBasePath + "/tileatlas");
 }
 
 // - Query
