@@ -595,6 +595,8 @@ namespace c2d
 
    void Client::onWindowResized()
    {
+      mpDevice->resize(mpWindow->getWidth(), mpWindow->getHeight());
+
       mViewport.resize(mpWindow->getWidth(), mpWindow->getHeight());
       mpRenderContext->viewportChanged(mViewport);
 

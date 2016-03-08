@@ -125,18 +125,16 @@ void GameWindow::removeListener(GameWindowListener& listener)
 
 void GameWindow::fireWindowClosed()
 {
-   for ( Listeners::iterator it = mListeners.begin(); it != mListeners.end(); ++it )
+   for ( auto plistener : mListeners )
    {
-      GameWindowListener* plistener = (*it);
       plistener->onWindowClosed();
    }
 }
 
 void GameWindow::fireWindowResized()
 {
-   for ( Listeners::iterator it = mListeners.begin(); it != mListeners.end(); ++it )
+   for ( auto plistener : mListeners )
    {
-      GameWindowListener* plistener = (*it);
       plistener->onWindowResized();
    }
 }

@@ -314,7 +314,7 @@ bool AppGameWindow::initDevice(Graphics::Device& device)
    UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if defined(_DEBUG)
    // If the project is in a debug build, enable debugging via SDK Layers with this flag.
-   //creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+   creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
    D3D_FEATURE_LEVEL requestedlevel[] = {
@@ -368,64 +368,7 @@ bool AppGameWindow::initDevice(Graphics::Device& device)
    d3ddevice.As(&m_d3dDevice);
    d3dcontext.As(&m_d3dContext);
 
-   updateRenderTargetSize();
-
-   // The width and height of the swap chain must be based on the window's
-   // natively-oriented width and height. If the window is not in the native
-   // orientation, the dimensions must be reversed.
-   DXGI_MODE_ROTATION displayRotation = computeDisplayRotation();
-
-   bool swapDimensions = displayRotation == DXGI_MODE_ROTATION_ROTATE90 || displayRotation == DXGI_MODE_ROTATION_ROTATE270;
-   m_d3dRenderTargetSize.Width = swapDimensions ? m_outputSize.Height : m_outputSize.Width;
-   m_d3dRenderTargetSize.Height = swapDimensions ? m_outputSize.Width : m_outputSize.Height;
-
-   // Otherwise, create a new one using the same adapter as the existing Direct3D device.
-   DXGI_SCALING scaling = DisplayMetrics::SupportHighResolutions ? DXGI_SCALING_NONE : DXGI_SCALING_STRETCH;
-   DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
-
-   swapChainDesc.Width = lround(m_d3dRenderTargetSize.Width);		// Match the size of the window.
-   swapChainDesc.Height = lround(m_d3dRenderTargetSize.Height);
-   swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;				// This is the most common swap chain format.
-   swapChainDesc.Stereo = false;
-   swapChainDesc.SampleDesc.Count = 1;								// Don't use multi-sampling.
-   swapChainDesc.SampleDesc.Quality = 0;
-   swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-   swapChainDesc.BufferCount = 2;									// Use double-buffering to minimize latency.
-   swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;	// All Windows Store apps must use this SwapEffect.
-   swapChainDesc.Flags = 0;
-   swapChainDesc.Scaling = scaling;
-   swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
-
-   // This sequence obtains the DXGI factory that was used to create the Direct3D device above.
-   ComPtr<IDXGIDevice3> dxgiDevice;
-   m_d3dDevice.As(&dxgiDevice);
-
-   ComPtr<IDXGIAdapter> dxgiAdapter;
-   dxgiDevice->GetAdapter(&dxgiAdapter);
-
-   ComPtr<IDXGIFactory4> dxgiFactory;
-   dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory));
-
-   ComPtr<IDXGISwapChain1> swapChain;
-   hr = dxgiFactory->CreateSwapChainForCoreWindow(
-      m_d3dDevice.Get(),
-      reinterpret_cast<IUnknown*>(mWindow.Get()),
-      &swapChainDesc,
-      nullptr,
-      &swapChain
-      );
-   if ( FAILED(hr) )
-   {
-      return false;
-   }
-
-   swapChain.As(&m_swapChain);
-
-   // Ensure that DXGI does not queue more than one frame at a time. This both reduces latency and
-   // ensures that the application will only render after each VSync, minimizing power consumption.
-   dxgiDevice->SetMaximumFrameLatency(1);
-
-   m_swapChain->SetRotation(displayRotation);
+   createWindowSizeDependentResources();
 
    auto pd3ddevice = dynamic_cast<Graphics::D3D11Device*>(&device);
    ASSERT_PTR(pd3ddevice);
@@ -437,7 +380,15 @@ bool AppGameWindow::initDevice(Graphics::Device& device)
 
 void AppGameWindow::resize(int width, int height)
 {
-   fireWindowResized();
+   Windows::Foundation::Size size(width, height);
+   if ( m_logicalSize != size )
+   {
+      m_logicalSize = size;
+
+      createWindowSizeDependentResources();
+
+      fireWindowResized();
+   }
 }
 
 void AppGameWindow::toggleFullscreen()
@@ -465,6 +416,77 @@ void AppGameWindow::setWindow(CoreWindow^ window)
    m_nativeOrientation = currentDisplayInformation->NativeOrientation;
    m_currentOrientation = currentDisplayInformation->CurrentOrientation;
    m_dpi = currentDisplayInformation->LogicalDpi;
+}
+
+bool AppGameWindow::createWindowSizeDependentResources()
+{
+   updateRenderTargetSize();
+
+   // The width and height of the swap chain must be based on the window's
+   // natively-oriented width and height. If the window is not in the native
+   // orientation, the dimensions must be reversed.
+   DXGI_MODE_ROTATION displayRotation = computeDisplayRotation();
+
+   bool swapDimensions = displayRotation == DXGI_MODE_ROTATION_ROTATE90 || displayRotation == DXGI_MODE_ROTATION_ROTATE270;
+   m_d3dRenderTargetSize.Width = swapDimensions ? m_outputSize.Height : m_outputSize.Width;
+   m_d3dRenderTargetSize.Height = swapDimensions ? m_outputSize.Width : m_outputSize.Height;
+
+   if ( m_swapChain != nullptr )
+   {
+      
+   }
+   else
+   {
+      // Otherwise, create a new one using the same adapter as the existing Direct3D device.
+      DXGI_SCALING scaling = DisplayMetrics::SupportHighResolutions ? DXGI_SCALING_NONE : DXGI_SCALING_STRETCH;
+      DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
+
+      swapChainDesc.Width = lround(m_d3dRenderTargetSize.Width);		// Match the size of the window.
+      swapChainDesc.Height = lround(m_d3dRenderTargetSize.Height);
+      swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;				// This is the most common swap chain format.
+      swapChainDesc.Stereo = false;
+      swapChainDesc.SampleDesc.Count = 1;								// Don't use multi-sampling.
+      swapChainDesc.SampleDesc.Quality = 0;
+      swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+      swapChainDesc.BufferCount = 2;									// Use double-buffering to minimize latency.
+      swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;	// All Windows Store apps must use this SwapEffect.
+      swapChainDesc.Flags = 0;
+      swapChainDesc.Scaling = scaling;
+      swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+
+      // This sequence obtains the DXGI factory that was used to create the Direct3D device above.
+      ComPtr<IDXGIDevice3> dxgiDevice;
+      m_d3dDevice.As(&dxgiDevice);
+
+      ComPtr<IDXGIAdapter> dxgiAdapter;
+      dxgiDevice->GetAdapter(&dxgiAdapter);
+
+      ComPtr<IDXGIFactory4> dxgiFactory;
+      dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory));
+
+      ComPtr<IDXGISwapChain1> swapChain;
+      HRESULT hr = dxgiFactory->CreateSwapChainForCoreWindow(
+         m_d3dDevice.Get(),
+         reinterpret_cast<IUnknown*>(mWindow.Get()),
+         &swapChainDesc,
+         nullptr,
+         &swapChain
+         );
+      if ( FAILED(hr) )
+      {
+         return false;
+      }
+
+      swapChain.As(&m_swapChain);
+
+      // Ensure that DXGI does not queue more than one frame at a time. This both reduces latency and
+      // ensures that the application will only render after each VSync, minimizing power consumption.
+      dxgiDevice->SetMaximumFrameLatency(1);
+   }
+
+   m_swapChain->SetRotation(displayRotation);
+
+   return true;
 }
 
 // Determine the dimensions of the render target and whether it will be scaled down.

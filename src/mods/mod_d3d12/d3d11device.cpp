@@ -24,6 +24,7 @@
 namespace Graphics
 {
    D3D11Device::D3D11Device() :
+      Device(),
       m_d3dFeatureLevel(),
       mpFontCollection(nullptr)
    {
@@ -45,20 +46,6 @@ namespace Graphics
       ASSERT_PTR(m_d3dContext);
       ASSERT_PTR(m_swapChain);
 
-
-      // create & set the rendertarget view
-      ID3D11Texture2D* pbackbuffer = NULL;
-      HRESULT hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*) & pbackbuffer);
-      if ( FAILED(hr) )
-      {
-         return false;
-      }
-      m_d3dDevice->CreateRenderTargetView1(pbackbuffer, NULL, &m_d3dRenderTargetView);
-      pbackbuffer->Release();
-
-      ID3D11RenderTargetView* const targets[1] = { m_d3dRenderTargetView };
-      m_d3dContext->OMSetRenderTargets(1, targets, NULL);
-
       // create and set rasterizer
       D3D11_RASTERIZER_DESC desc;
       ZeroMemory(&desc, sizeof(desc));
@@ -70,16 +57,11 @@ namespace Graphics
       m_d3dDevice->CreateRasterizerState(&desc, &prasterizerstate);
       m_d3dContext->RSSetState(prasterizerstate);
 
-      // Set the 3D rendering viewport to target the entire window.
-      m_screenViewport = CD3D11_VIEWPORT(0.0f, 0.0f, window.getWidth(), window.getHeight());
-      m_d3dContext->RSSetViewports(1, &m_screenViewport);
-      
-      return createD2D()
-         && Device::create(window);
-   }
+      if ( !Device::create(window) )
+      {
+         return false;
+      }
 
-   bool D3D11Device::createD2D()
-   {
       // Initialize Direct2D resources.
       D2D1_FACTORY_OPTIONS options;
       ZeroMemory(&options, sizeof(D2D1_FACTORY_OPTIONS));
@@ -111,7 +93,60 @@ namespace Graphics
          return false;
       }
 
-      //float m_dpi = 96.0f;
+      // Initialize the DirectWrite Factory.
+      hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory3), reinterpret_cast<IUnknown**>(&m_dwriteFactory));
+      if ( FAILED(hr) )
+      {
+         return false;
+      }
+
+      mpFontCollection = new D3DFontCollection();
+      if ( !mpFontCollection->initialize(m_dwriteFactory) )
+      {
+         return false;
+      }      
+      
+      return createWindowSizeDependendResources(window.getWidth(), window.getHeight());
+   }
+
+   bool D3D11Device::createWindowSizeDependendResources(int width, int height)
+   {
+      D3D11RenderContext& context = static_cast<D3D11RenderContext&>(getContext());
+      context.release();
+      
+      // Clear the previous window size specific context.
+      ID3D11RenderTargetView* nullViews[] = { nullptr };
+      m_d3dContext->OMSetRenderTargets(ARRAYSIZE(nullViews), nullViews, nullptr);
+      DX::SafeRelease(&m_d3dRenderTargetView);
+      m_d2dContext->SetTarget(nullptr);
+      DX::SafeRelease(&m_d2dTargetBitmap);
+      m_d3dContext->Flush1(D3D11_CONTEXT_TYPE_ALL, nullptr);
+
+      ASSERT(m_swapChain != nullptr);
+      HRESULT hr = m_swapChain->ResizeBuffers(2, width, height, DXGI_FORMAT_B8G8R8A8_UNORM, 0);
+      if ( FAILED(hr) )
+      {
+         return false;
+      }
+
+      // create & set the rendertarget view
+      ID3D11Texture2D* pbackbuffer = NULL;
+      hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*) & pbackbuffer);
+      if ( FAILED(hr) )
+      {
+         return false;
+      }
+      m_d3dDevice->CreateRenderTargetView1(pbackbuffer, NULL, &m_d3dRenderTargetView);
+      
+      DX::SafeRelease(&pbackbuffer);
+
+      ID3D11RenderTargetView* const targets[1] = { m_d3dRenderTargetView };
+      m_d3dContext->OMSetRenderTargets(1, targets, NULL);
+
+      // Set the 3D rendering viewport to target the entire window.
+      m_screenViewport = CD3D11_VIEWPORT(0.0f, 0.0f, width, height);
+      m_d3dContext->RSSetViewports(1, &m_screenViewport);
+
       // Create a Direct2D target bitmap associated with the
       // swap chain back buffer and set it as the current target.
       D2D1_BITMAP_PROPERTIES1 bitmapProperties =
@@ -135,25 +170,15 @@ namespace Graphics
          return false;
       }
 
+      DX::SafeRelease(&dxgiBackBuffer);
+
       m_d2dContext->SetTarget(m_d2dTargetBitmap);
       m_d2dContext->SetDpi(m_dpi, m_dpi);
 
       // Grayscale text anti-aliasing is recommended for all Windows Store apps.
       m_d2dContext->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE);
 
-      // Initialize the DirectWrite Factory.
-      hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory3), reinterpret_cast<IUnknown**>(&m_dwriteFactory));
-      if ( FAILED(hr) )
-      {
-         return false;
-      }
-
-
-      mpFontCollection = new D3DFontCollection();
-      if ( !mpFontCollection->initialize(m_dwriteFactory) )
-      {
-         return false;
-      }
+      context.setTargetView(m_d3dRenderTargetView);
 
       return true;
    }
@@ -185,6 +210,11 @@ namespace Graphics
       {
          //DX::ThrowIfFailed(hr);
       }
+   }
+
+   void D3D11Device::resize(int width, int height)
+   {
+      createWindowSizeDependendResources(width, height);
    }
 
    CodePath* D3D11Device::createCodePath()

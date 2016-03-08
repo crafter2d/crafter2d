@@ -320,9 +320,6 @@ void World::initializeBorders(const Graphics::Viewport& viewport)
 
 void World::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
-   Layer* pobjectlayer = layers[_objectLayer];
-   Vector area = pobjectlayer->getScrollArea();
-
    for ( auto player : layers )
    {
       player->onViewportChanged(context, viewport);

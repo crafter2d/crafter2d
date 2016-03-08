@@ -41,6 +41,16 @@ namespace Graphics
       return *m_d3dContext;
    }
 
+   void D3D11RenderContext::setTargetView(ID3D11RenderTargetView1* ptargetview)
+   {
+      m_d3dRenderTargetView = DX::SafeAcquire(ptargetview);
+   }
+
+   void D3D11RenderContext::release()
+   {
+      DX::SafeRelease(&m_d3dRenderTargetView);
+   }
+
    void D3D11RenderContext::setRenderTarget(RenderTarget& target)
    {
    }

@@ -57,10 +57,6 @@ private:
    void updateBuffers(Graphics::RenderContext& context);
    void updateTile(pv** pdata, int& verts, LayerLevel level, int x, int y, float xpos, float ypos);
 
-
- // data
-   //pv* mpData;
-   //pv* mpFrontData;
 };
 
 #endif

@@ -30,10 +30,3 @@ WorldRenderer::WorldRenderer(World& world):
 WorldRenderer::~WorldRenderer()
 {
 }
-
-// - Get/set
-   
-World& WorldRenderer::getWorld()
-{
-   return mWorld;
-}

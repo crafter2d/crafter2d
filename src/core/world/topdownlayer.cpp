@@ -53,56 +53,22 @@ bool TopDownLayer::initialize(Graphics::Device& device)
       return false;
    }
 
-   /*const int batch = getWidth() * getHeight() * 4;
-   mpData = new pv[batch * 2];
-   mpFrontData = new pv[batch];*/
-
-   /*
-   const Graphics::Texture& diffuse = mpTileSet->getTexture();
-   float dx = diffuse.getSourceWidth() / diffuse.getWidth();
-   float dy = diffuse.getSourceHeight() / diffuse.getHeight();
-
-   texTileWidth  = dx * tileWidth;
-   texTileHeight = dy * tileHeight;
-
-   static const int border = 0;
-   float borderx = dx * (tileWidth + border*2);
-   float bordery = dy * (tileHeight + border*2);
-
-   float offsetx = (borderx - texTileWidth) / 2;
-   float offsety = (bordery - texTileHeight) / 2;
-
-   // get number of tiles on one row in the diffuseMap
-	maxTilesOnRow = diffuse.getWidth() / (tileWidth + border*2);
-
-   // build the texture coord lookup table
-   delete[] texcoordLookup;
-	texcoordLookup = new Vector[tileCount];
-	for (int tc = 0; tc < tileCount; tc++)
-   {
-		// calculate starting texture coordinates
-		texcoordLookup[tc].x = offsetx + static_cast<float>(tc % maxTilesOnRow) * borderx + 0.0005f;
-		texcoordLookup[tc].y = offsety + floorf ((float)tc / maxTilesOnRow) * bordery;
-	}
-
-   texTileWidth -= 0.001f;
-   texTileHeight -= 0.001f;
-   */
-
 	return true;
 }
 
 void TopDownLayer::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
 	// calculate the maximum number of tiles on the screen
-	maxTilesX = MIN(viewport.getWidth()  / mpTileSet->getTileWidth() , getWidth());
-   maxTilesY = MIN(viewport.getHeight() / mpTileSet->getTileHeight(), getHeight());
+	maxTilesX = MIN(viewport.getWidth()  / mpTileSet->getTileWidth() + 1, getWidth());
+   maxTilesY = MIN(viewport.getHeight() / mpTileSet->getTileHeight() + 1, getHeight());
 
 	// calculate maximum tiles to scroll
 	xscrollMax = MAX((getWidth() - maxTilesX) * tileWidth , 0);
 	yscrollMax = MAX((getHeight() - maxTilesY) * tileHeight, 0);
 
    Layer::onViewportChanged(context, viewport);
+
+   dirty = true;
 }
 
 /// \fn Layer::draw()

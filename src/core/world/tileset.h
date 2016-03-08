@@ -20,6 +20,8 @@
 #ifndef TILESET_H_
 #define TILESET_H_
 
+#include <vector>
+
 #include "core/core_base.h"
 #include "core/content/content.h"
 #include "core/graphics/texturecoordinate.h"
@@ -59,20 +61,29 @@ struct CORE_API TileAnimation {
 class CORE_API TileSet : public IContent
 {
 public:
-   TileSet();
+   using TileInfos = std::vector<TileInfo>;
+
+   TileSet(int tilewidth, int tileheight);
    virtual ~TileSet();
 
-   TileInfo& operator[](int idx);
+   TileInfo& operator[](int index) {
+      return mInfos[index];
+   }
 
  // get/set
-   int   getTileCount() const;
-   void  setTileCount(int count);
+   int size() const {
+      return mInfos.size();
+   }
 
-   int   getTileWidth() const;
-   void  setTileWidth(int width);
+   int getTileWidth() const {
+      return mTileWidth;
+   }
 
-   int   getTileHeight() const;
-   void  setTileHeight(int height);
+   int getTileHeight() const {
+      return mTileHeight;
+   }
+
+   void setTileInfos(TileInfos&& infos);
    
  // operations
    bool update(float tick);
@@ -80,14 +91,9 @@ public:
 private:
    
  // data
-   TileInfo*            mpInfo;
-   int                  mTileCount;
-   int                  mTileWidth;
-   int                  mTileHeight;
+   TileInfos   mInfos;
+   int         mTileWidth;
+   int         mTileHeight;
 };
-
-#ifdef JENGINE_INLINE
-#  include "tileset.inl"
-#endif
 
 #endif // TILESET_H_

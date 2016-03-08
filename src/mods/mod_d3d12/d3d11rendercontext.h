@@ -17,6 +17,9 @@ namespace Graphics
       // query
       ID3D11DeviceContext3& getContext();
 
+      void setTargetView(ID3D11RenderTargetView1* ptargetview);
+      void release();
+
       virtual void setRenderTarget(RenderTarget& target) override;
       virtual void setCodePath(CodePath& path) override;
       virtual void setBlendState(const BlendState& state) override;

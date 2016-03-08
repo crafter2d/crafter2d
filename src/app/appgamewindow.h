@@ -49,6 +49,7 @@ protected:
 private:
 
  // operations
+   bool createWindowSizeDependentResources();
    void setWindow(Windows::UI::Core::CoreWindow^ window);
    void updateRenderTargetSize();
    DXGI_MODE_ROTATION computeDisplayRotation();

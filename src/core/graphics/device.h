@@ -47,6 +47,7 @@ namespace Graphics
       virtual bool create(GameWindow& window);
       virtual void destroy();
       virtual void present() = 0;
+      virtual void resize(int width, int height) = 0;
 
     // creation
       virtual CodePath*       createCodePath() = 0;

@@ -38,7 +38,9 @@ public:
    virtual void render(Graphics::RenderContext& context, float delta) = 0;
 
  // get/set
-   World& getWorld();
+   World& getWorld() {
+      return mWorld;
+   }
 
 private:
    World& mWorld;

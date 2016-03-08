@@ -18,17 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "tileset.h"
-#ifndef JENGINE_INLINE
-#  include "tileset.inl"
-#endif
-
-#include <cstring>
-
-#include "core/content/contentmanager.h"
-#include "core/graphics/device.h"
-#include "core/graphics/texture.h"
-#include "core/log/log.h"
-#include "core/string/string.h"
 
 //////////////////////////////////////////////////////////////////////////
 // - TileInfo
@@ -54,33 +43,23 @@ TileAnimation::TileAnimation():
 // - Construction
 //////////////////////////////////////////////////////////////////////////
 
-TileSet::TileSet():
+TileSet::TileSet(int tilewidth, int tileheight):
    IContent(),
-   mpInfo(NULL),
-   mTileCount(0),
-   mTileWidth(0),
-   mTileHeight(0)
+   mInfos(),
+   mTileWidth(tilewidth),
+   mTileHeight(tileheight)
 {
 }
 
 TileSet::~TileSet()
 {
-   delete[] mpInfo;
-   mTileCount = 0;
 }
 
 // - Get/set
 
-void TileSet::setTileCount(int count)
+void TileSet::setTileInfos(TileInfos&& infos)
 {
-   if ( count != mTileCount )
-   {
-      mTileCount = count;
-
-      delete mpInfo;
-      mpInfo = new TileInfo[count];
-      memset(mpInfo, 0, sizeof(TileInfo) * count);
-   }
+   mInfos = std::move(infos);
 }
 
 // - Operations
@@ -89,11 +68,9 @@ bool TileSet::update(float tick)
 {
    bool dirty = false;
 
-   for ( int index = 0; index < mTileCount; ++index )
-   {
-      TileInfo& info = mpInfo[index];
-
-      /*
+   /*
+   for ( auto& info : mInfos )
+   { 
       if ( info.flag & TileAnimate )
       {
          // only process animated tiles
@@ -108,8 +85,8 @@ bool TileSet::update(float tick)
 
          index += info.anim_length - 1;
       }
-      */
    }
+   */
 
    return dirty;
 }

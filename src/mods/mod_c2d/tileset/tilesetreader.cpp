@@ -10,18 +10,14 @@
 
 IContent* TileSetReader::read(DataStream& stream)
 {
-   TileSet* presult = new TileSet();
-
    int tilecount, tilewidth, tileheight;
-   
    stream >> tilewidth >> tileheight >> tilecount;
-   presult->setTileWidth(tilewidth);
-   presult->setTileHeight(tileheight);
-   presult->setTileCount(tilecount);
    
    auto& atlas = getGraphicsDevice().getContext().getSpriteAtlas();
 
-   for ( int index = 0; index < tilecount; ++index )
+   std::vector<TileInfo> infos;
+   infos.resize(tilecount);
+   for ( auto& info : infos )
    {
       String name;
       float offsetx, offsety;
@@ -30,12 +26,15 @@ IContent* TileSetReader::read(DataStream& stream)
 
       auto& tile = atlas.getTile(tileindex);
 
-      TileInfo& info = (*presult)[index];
       info.coords = tile.coord;
       info.offset.set(offsetx, offsety);
       info.sheet = tileindex >> 16;
       info.flag = tile.rotated ? TileRotated : 0;
    }
+
+   TileSet* presult = new TileSet(tilewidth, tileheight);
+   presult->setTileInfos(std::move(infos));
+
    /*
    int tileanimations;
    stream >> tileanimations;
