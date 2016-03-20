@@ -710,12 +710,12 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
          case CIL_ldloc:
             {
                const Type& type = function.getLocals()[inst.mInt];
-               INSERT(SBIL_ldlocal, inst.mInt + function.getArgumentCount());
+               INSERT(SBIL_ldlocal, (inst.mInt + function.getArgumentCount()));
                types.push(type.clone());
             }
             break;
          case CIL_stloc:
-            INSERT(SBIL_stlocal, inst.mInt + function.getArgumentCount());
+            INSERT(SBIL_stlocal, (inst.mInt + function.getArgumentCount()));
             if ( pblock->pguard != NULL && pblock->start == index && pblock->guard_type == VirtualGuard::sCatch )
             {
                // no popping here, as this is the store exception instruction in case an exception was thrown.
