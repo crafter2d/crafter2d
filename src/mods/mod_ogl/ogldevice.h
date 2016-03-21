@@ -18,6 +18,7 @@ namespace Graphics
 
     // overloads
       virtual bool create(GameWindow& window) override;
+      virtual void resize(int width, int height) override;
 
     // creation
       virtual RenderContext*  createRenderContext() override;

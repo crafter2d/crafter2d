@@ -105,6 +105,11 @@ bool OGLDevice::create(GameWindow& window)
    return Device::create(window);
 }
 
+void OGLDevice::resize(int width, int height)
+{
+
+}
+
 RenderContext* OGLDevice::createRenderContext()
 {
    return new OGLRenderContext();
