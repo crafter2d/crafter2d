@@ -80,11 +80,13 @@ void ShaderPath::release ()
 
 void ShaderPath::enable(RenderContext& context) const
 {
+   C2D_UNUSED(context);
 	shader.enable();
 }
 
 void ShaderPath::disable(RenderContext& context) const
 {
+   C2D_UNUSED(context);
 	shader.disable();
 }
 
@@ -101,5 +103,6 @@ void ShaderPath::bindTexture(RenderContext& context, int stage, const Texture& t
 
 void ShaderPath::setConstantBuffer(RenderContext& context, const UniformBuffer& buffer)
 {
+   C2D_UNUSED(context);
    static_cast<const ShaderUniformBuffer&>(buffer).enable();
 }

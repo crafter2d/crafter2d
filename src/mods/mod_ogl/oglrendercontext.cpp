@@ -100,6 +100,8 @@ void OGLRenderContext::drawTriangles(int start, int count)
 
 void OGLRenderContext::drawTriangleFan(int start, int count)
 {
+   C2D_UNUSED(start);
+   
    ASSERT_PTR(mpIndexBuffer);
 
    glDrawElements(GL_TRIANGLE_FAN, count, mpIndexBuffer->getNativeType(), 0);
@@ -107,6 +109,8 @@ void OGLRenderContext::drawTriangleFan(int start, int count)
 
 void OGLRenderContext::drawTriangleStrip(int start, int count)
 {
+   C2D_UNUSED(start);
+   
    ASSERT_PTR(mpIndexBuffer);
 
    glDrawElements(GL_TRIANGLE_STRIP, count, mpIndexBuffer->getNativeType(), 0);

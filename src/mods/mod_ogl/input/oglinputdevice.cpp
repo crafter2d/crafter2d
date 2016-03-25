@@ -1,6 +1,8 @@
 
 #include "oglinputdevice.h"
 
+#include "core/defines.h"
+
 #include <SDL/SDL.h>
 
 OGLInputDevice::OGLInputDevice():
@@ -11,6 +13,7 @@ OGLInputDevice::OGLInputDevice():
 
 bool OGLInputDevice::create(GameWindow& window)
 {
+   C2D_UNUSED(window);
    return true;
 }
 
@@ -53,5 +56,6 @@ bool OGLInputDevice::isKeyDown(int key)
 
 bool OGLInputDevice::isMouseButtonDown(MouseButton button)
 {
+   C2D_UNUSED(button);
    return false;
 }

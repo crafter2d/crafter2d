@@ -24,6 +24,8 @@ namespace Graphics
 
    Glyph* OGLGlyphProvider::getGlyph(UChar ch, float emsize)
    {
+      C2D_UNUSED(emsize);
+      
       FT_Face face = mpFont->getFace();
       FT_GlyphSlot slot = face->glyph;
 

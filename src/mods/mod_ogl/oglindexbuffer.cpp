@@ -9,6 +9,7 @@ using namespace Graphics;
 
 OGLIndexBuffer::OGLIndexBuffer():
    IndexBuffer(),
+   mBuffer(0),
    mNativeType(0),
    mLocked(false)
 {
@@ -65,17 +66,20 @@ void OGLIndexBuffer::release()
 
 void OGLIndexBuffer::enable(RenderContext& context) const
 {
+   C2D_UNUSED(context);
    ASSERT(!mLocked);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
 }
 
 void OGLIndexBuffer::disable(RenderContext& context) const
 {
+   C2D_UNUSED(context);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void* OGLIndexBuffer::lock(RenderContext& context)
 {
+   C2D_UNUSED(context);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
 	void* pointer = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
 	if ( pointer != NULL )
@@ -87,6 +91,7 @@ void* OGLIndexBuffer::lock(RenderContext& context)
 
 void OGLIndexBuffer::unlock(RenderContext& context)
 {
+   C2D_UNUSED(context);
    ASSERT(mLocked);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);

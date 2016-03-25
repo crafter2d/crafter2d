@@ -105,7 +105,7 @@ GLcharARB* Shader::load (const String& filename, int& length)
    if ( !pfile.hasPointer() )
    {
       Log::getInstance().error("Shader.load: Can not open shader file: %s", filename);
-		return false;
+		return nullptr;
 	}
 
 	// determine file length
@@ -116,7 +116,7 @@ GLcharARB* Shader::load (const String& filename, int& length)
 	if ( source == NULL )
    {
       Log::getInstance().error("Shader.load: No memory available for source.");
-		return false;
+		return nullptr;
 	}
 
 	memset(source, 0, length+1);

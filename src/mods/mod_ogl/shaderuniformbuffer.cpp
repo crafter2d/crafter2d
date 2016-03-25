@@ -24,6 +24,8 @@ ShaderUniformBuffer::~ShaderUniformBuffer()
 
 bool ShaderUniformBuffer::create(Device& device, UNIFORM_BUFFER_DESC* pdescs, int nr)
 {
+   C2D_UNUSED(device);
+   
    ASSERT(mProgram != GL_INVALID_INDEX);
    ASSERT(mBlock != GL_INVALID_INDEX);
 
@@ -94,6 +96,7 @@ bool ShaderUniformBuffer::createUniforms(UNIFORM_BUFFER_DESC* pdescs, int nr)
 
 void ShaderUniformBuffer::set(RenderContext& context, const void* pdata, const int size)
 {
+   C2D_UNUSED(context);
    glBindBuffer(GL_UNIFORM_BUFFER, mBuffer);
    glBufferSubData(GL_UNIFORM_BUFFER, 0, size, pdata);
 }
