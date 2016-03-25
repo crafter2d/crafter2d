@@ -9,6 +9,7 @@ namespace ByteCode
    public:
       
       Patch();
+      virtual ~Patch();
 
     // get/set
       int  getOffset() const;
@@ -18,7 +19,7 @@ namespace ByteCode
 
    private:
 
-      int               mOffset;
+      int mOffset;
    };
 }
 

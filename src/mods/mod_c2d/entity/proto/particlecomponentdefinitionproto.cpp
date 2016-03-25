@@ -4,7 +4,16 @@
 #include "core/streams/datastream.h"
 
 ParticleComponentDefinitionProto::ParticleComponentDefinitionProto():
-   ComponentDefinitionProto(ComponentInterface::eParticleComponent)
+   ComponentDefinitionProto(ComponentInterface::eParticleComponent),
+   emitCount(0),
+   emitRate(0.0f),
+   gravity(0.0f),
+   initSize(0.0f),
+   initSizeRange(),
+   initLifeTime(0.0f),
+   initLifeTimeRange(),
+   initVelocity(),
+   initVelocityRange()
 {
 }
 

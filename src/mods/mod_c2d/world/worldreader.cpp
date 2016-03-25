@@ -46,12 +46,13 @@ IContent* WorldReader::read(DataStream& stream)
       // the algorithm as used by Qt5
 
       // get the expected length from the data
-      uLongf explen = (pdata[0] << 24) | (pdata[1] << 16) |
-                      (pdata[2] <<  8) | (pdata[3]      );
+      uint32_t explen = (pdata[0] << 24) | (pdata[1] << 16) |
+                        (pdata[2] <<  8) | (pdata[3]      );
+      uint64_t len = explen;
 
       // decompress the field data
       uint8_t* puncompressed = new uint8_t[explen];
-      uncompress(puncompressed, &explen, pdata + 4, datasize - 4);
+      uncompress(puncompressed, &len, pdata + 4, datasize - 4);
       delete[] pdata;
 
       LayerDefinition* pdefinition = new LayerDefinition();
