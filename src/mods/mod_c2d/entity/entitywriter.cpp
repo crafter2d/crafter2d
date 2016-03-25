@@ -6,6 +6,8 @@
 #include "core/streams/datastream.h"
 #include "core/defines.h"
 
+#include <memory>
+
 #include "proto/entitydefinitionproto.h"
 #include "proto/meshcomponentdefinitionproto.h"
 #include "proto/physicscomponentdefinitionproto.h"
@@ -24,11 +26,13 @@ EntityWriter::EntityWriter():
 bool EntityWriter::write(DataStream& stream, const String& filename)
 {
    EntityLoader loader;
-   EntityDefinitionProto* pdefinition = loader.load(filename);
-   if ( pdefinition != NULL )
+   std::unique_ptr<EntityDefinitionProto> definition(loader.load(filename));
+   if ( definition )
    {
-      pdefinition->write(stream);
+      definition->write(stream);
+      
+      return true;
    }
 
-   return true;
+   return false;
 }

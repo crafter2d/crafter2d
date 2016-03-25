@@ -9,7 +9,9 @@ namespace Graphics
 OGLTexture::OGLTexture():
    Texture(),
    mID(0),
-   mTarget(0)
+   mTarget(0),
+   mFormat(0),
+   mBytes(0)
 {
 }
 

@@ -16,7 +16,8 @@ JITFunction* JITFunction::create(JITContext& context, const JITSignature& signat
 }
 
 JITFunction::JITFunction(JITContext& context):
-   mContext(context)
+   mContext(context),
+   mpSignature(nullptr)
 {
 }
 

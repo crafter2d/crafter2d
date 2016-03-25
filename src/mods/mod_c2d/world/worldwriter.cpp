@@ -1,6 +1,8 @@
 
 #include "worldwriter.h"
 
+#include <memory>
+
 #include "core/math/vector.h"
 #include "core/streams/filereaderstream.h"
 #include "core/vfs/stdiofile.h"
@@ -86,11 +88,11 @@ String WorldWriter::readString(DataStream& stream)
    if ( bytes != 0xFFFFFFFF )
    {
       int chars = bytes / sizeof(wchar_t);
-      wchar_t* pdata = new wchar_t[chars+1];
-      stream.readBlob(pdata, bytes);
-      pdata[chars] = 0;
+      std::unique_ptr<wchar_t[]> data(new wchar_t[chars+1]);
+      stream.readBlob(data.get(), bytes);
+      data[chars] = 0;
 
-      result.assign(pdata, chars);
+      result.assign(data.get(), chars);
    }
    return result;
 }

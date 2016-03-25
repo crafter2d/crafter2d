@@ -9,7 +9,10 @@ using namespace Graphics;
 
 OGLFont::OGLFont(FT_Face face):
    Font(),
-   mFace(face)
+   mFace(face),
+   mWidth(0),
+   mHeight(0),
+   mBaseHeight(0)
 {
 }
 
