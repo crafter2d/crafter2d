@@ -9,8 +9,8 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include "object/entity.h"
-#include "object/entityreader.h"
+#include "entity/entity.h"
+#include "entity/entityreader.h"
 #include "project/projectbuilder.h"
 #include "project/projectmanager.h"
 #include "project/projectrunner.h"

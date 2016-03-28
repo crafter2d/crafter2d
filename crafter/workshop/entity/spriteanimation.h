@@ -2,11 +2,34 @@
 #define SPRITEANIMATION_H
 
 #include <QString>
+#include <QVector>
+
+class SpriteAnimationTile
+{
+public:
+
+    SpriteAnimationTile();
+    explicit SpriteAnimationTile(const QString& tilename);
+
+    const QString& getName() const {
+        return mName;
+    }
+
+    void setName(const QString& name) {
+        mName = name;
+    }
+
+private:
+
+    QString mName;
+};
 
 
 class SpriteAnimation
 {
 public:
+    using Tiles = QVector<SpriteAnimationTile>;
+
     SpriteAnimation();
     SpriteAnimation(const SpriteAnimation& that);
     SpriteAnimation(SpriteAnimation&& that);
@@ -22,18 +45,12 @@ public:
         mName = name;
     }
 
-    int getFrameCount() const {
-        return mFrameCount;
-    }
-
-    void setFrameCount(int count) {
-        mFrameCount = count;
-    }
+    void addTile(const QString& tilename);
 
 private:
 
     QString mName;
-    int     mFrameCount;
+    Tiles   mTiles;
 };
 
 #endif // SPRITEANIMATION_H

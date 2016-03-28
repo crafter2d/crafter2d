@@ -14,8 +14,12 @@ class SpriteComponent : public EntityComponent
     using Animations = QVector<SpriteAnimation>;
 
 public:
+    static const QString sComponentName;
+    static ComponentId   sComponentId;
+
     SpriteComponent();
 
+  // get/set
     const QSize& getSize() const {
         return mSize;
     }
@@ -24,30 +28,24 @@ public:
         mSize = size;
     }
 
-    const QString& getTextureName() const {
-        return mTexName;
-    }
-
-    void setTextureName(const QString& filename) {
-        mTexName = filename;
-    }
-
     int getAnimationSpeed() const {
-        return mSpeed;
+        return mAnimSpeed;
     }
 
     void setAnimationSpeed(int speed) {
-        mSpeed = speed;
+        mAnimSpeed = speed;
     }
 
     void addAnimation(SpriteAnimation&& that);
 
+  // query
+    virtual ComponentId componentId() const override;
+
 private:
 
-    QSize mSize;
-    QString mTexName;
-    int mSpeed;
+    QSize       mSize;
     Animations  mAnimations;
+    int         mAnimSpeed;
 };
 
 #endif // SPRITECOMPONENT_H

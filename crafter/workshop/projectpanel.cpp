@@ -3,11 +3,14 @@
 
 #include <QVariant>
 
+#include "entity/entity.h"
 #include "project/projecttreeobjectitem.h"
 #include "script/scriptfile.h"
 #include "world/tileworld.h"
 #include "world/tileset.h"
 
+#include "newentitydialog.h"
+#include "newtilesetdialog.h"
 #include "mainwindow.h"
 #include "projectmodel.h"
 #include "project.h"
@@ -51,8 +54,6 @@ void ProjectPanel::on_projectChanged(Project *pproject)
     }
 }
 
-#include "newtilesetdialog.h"
-
 void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
 {
     QVariant data = mpProjectModel->resourceData(index);
@@ -64,6 +65,9 @@ void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
         ResourceHandle& handle = data.value<ResourceHandle>();
         switch ( handle->getType() )
         {
+            case Resource::eObject:
+                NewEntityDialog::edit(static_cast<Entity&>(*handle));
+                break;
             case Resource::eWorld:
                 getMainWindow().showWorld(static_cast<TileWorld&>(*handle));
                 break;

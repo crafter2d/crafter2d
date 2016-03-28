@@ -314,7 +314,7 @@ bool AppGameWindow::initDevice(Graphics::Device& device)
    UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if defined(_DEBUG)
    // If the project is in a debug build, enable debugging via SDK Layers with this flag.
-   creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+   // creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
    D3D_FEATURE_LEVEL requestedlevel[] = {

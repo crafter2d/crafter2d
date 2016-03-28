@@ -1,15 +1,15 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <QVector>
+#include <QMap>
 
 #include "../resource.h"
 
-class EntityComponent;
+#include "entitycomponent.h"
 
 class Entity : public Resource
 {
-    using Components = QVector<EntityComponent*>;
+    using Components = QMap<ComponentId, EntityComponent*>;
 
 public:
     Entity();
@@ -32,6 +32,18 @@ public:
     }
 
     void addComponent(EntityComponent* pcomponent);
+
+    template <class ComponentType>
+    ComponentType* component()
+    {
+        auto it = mComponents.find(ComponentType::sComponentId);
+        if (it != mComponents.end())
+        {
+            return static_cast<ComponentType*>(*it);
+        }
+
+        return nullptr;
+    }
 
 private:
 

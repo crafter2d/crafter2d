@@ -1,37 +1,50 @@
 #include "spriteanimation.h"
 
+SpriteAnimationTile::SpriteAnimationTile():
+    mName()
+{
+}
+
+SpriteAnimationTile::SpriteAnimationTile(const QString& tilename):
+    mName(tilename)
+{
+}
+
+// - Animation
+
 SpriteAnimation::SpriteAnimation():
     mName(),
-    mFrameCount(0)
+    mTiles()
 {
 }
 
 SpriteAnimation::SpriteAnimation(const SpriteAnimation& that):
     mName(that.mName),
-    mFrameCount(that.mFrameCount)
+    mTiles(that.mTiles)
 {
 }
 
 SpriteAnimation::SpriteAnimation(SpriteAnimation&& that):
     mName(std::move(that.mName)),
-    mFrameCount(that.mFrameCount)
+    mTiles(std::move(that.mTiles))
 {
-    that.mFrameCount = 0;
 }
 
 SpriteAnimation& SpriteAnimation::operator=(const SpriteAnimation& that)
 {
     mName = that.mName;
-    mFrameCount = that.mFrameCount;
+    mTiles = that.mTiles;
     return *this;
 }
 
 SpriteAnimation& SpriteAnimation::operator=(SpriteAnimation&& that)
 {
     mName = std::move(that.mName);
-    mFrameCount = that.mFrameCount;
-
-    that.mFrameCount = 0;
-
+    mTiles = std::move(that.mTiles);
     return *this;
+}
+
+void SpriteAnimation::addTile(const QString &tilename)
+{
+    mTiles.append(SpriteAnimationTile(tilename));
 }

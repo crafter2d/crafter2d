@@ -89,24 +89,6 @@ SpriteComponent* EntityReader::readSpriteComponent(QDomElement &element)
 
     sprite->setSize(size);
 
-    QDomElement texelement = element.firstChildElement("texture");
-    if ( !texelement.isNull() )
-    {
-        QString filename = texelement.text();
-        if ( !filename.isEmpty() )
-        {
-            sprite->setTextureName(filename);
-        }
-        else
-        {
-            // texture name should not be empty!
-        }
-    }
-    else
-    {
-        // save error string!
-    }
-
     QDomElement animationelement = element.firstChildElement("animations");
     if ( !animationelement.isNull() )
     {
@@ -123,13 +105,18 @@ SpriteComponent* EntityReader::readSpriteComponent(QDomElement &element)
                 animation.setName(animelement.attribute("name"));
             }
 
-            if ( !animelement.hasAttribute("length") ) // || !animelement.hasAttribute("framecount") )
+            QDomElement tileelement = animelement.firstChildElement("tile");
+            while ( !tileelement.isNull() )
             {
-                // error! mandatory field
-            }
+                QString tilename = animelement.attribute("name");
+                if ( tilename.isNull() || tilename.isEmpty() )
+                {
+                    // invalid name!
+                }
 
-            int framecount = animelement.attribute("length").toInt();
-            animation.setFrameCount(framecount);
+                animation.addTile(tilename);
+                tileelement = tileelement.nextSiblingElement("tile");
+            }
 
             sprite->addAnimation(std::move(animation));
 

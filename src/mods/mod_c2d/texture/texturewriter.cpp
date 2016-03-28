@@ -1,6 +1,8 @@
 
 #include "texturewriter.h"
 
+#ifdef C2D_EXPORT_WRITERS
+
 #include <memory>
 #include <squish.h>
 
@@ -41,3 +43,5 @@ bool TextureWriter::write(DataStream& stream, const String& filename)
 
    return false;
 }
+
+#endif // C2D_EXPORT_WRITERS

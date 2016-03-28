@@ -93,7 +93,9 @@ extern "C" MOD_API ModuleCollection* MOD_DECL getModuleCollection()
    ContentModule* ptexturemod = new ContentModule(TextureUUID);
    ptexturemod->setSupportedFiles(UTEXT("dds,png"));
    ptexturemod->setReader(new TextureReader());
+#ifdef C2D_EXPORT_WRITERS
    ptexturemod->setWriter(new TextureWriter());
+#endif
    pmodules->add(ptexturemod);
 
    ContentModule* ptileatlasmod = new ContentModule(TileAtlasUUID);

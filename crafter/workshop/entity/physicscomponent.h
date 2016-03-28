@@ -11,6 +11,9 @@ public:
     enum ShapeType { eBox, eCircle, eInvalid };
     enum Flags { eFixedRotation = 1, eStatic = 2 };
 
+    static const QString sComponentName;
+    static ComponentId   sComponentId;
+
     PhysicsComponent();
 
     bool isStatic() const {
@@ -85,6 +88,9 @@ public:
         assert(mType == eCircle);
         mInfoA = radius;
     }
+
+  // query
+    virtual ComponentId componentId() const override;
 
 private:
 

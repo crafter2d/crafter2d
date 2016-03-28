@@ -69,12 +69,13 @@ SOURCES += main.cpp\
     world/tilemap.cpp \
     newtilesetdialog.cpp \
     worldwizard_pagelayer.cpp \
-    object/entity.cpp \
-    object/entityreader.cpp \
-    object/entitycomponent.cpp \
-    object/spritecomponent.cpp \
-    object/spriteanimation.cpp \
-    object/physicscomponent.cpp \
+    entity/entity.cpp \
+    entity/entityreader.cpp \
+    entity/entitycomponentregistry.cpp \
+    entity/entitycomponent.cpp \
+    entity/spritecomponent.cpp \
+    entity/spriteanimation.cpp \
+    entity/physicscomponent.cpp \
     texture/texturesplitter.cpp \
     texturepacker/texturepacker.cpp \
     texturepacker/texturepackerview.cpp \
@@ -86,6 +87,7 @@ SOURCES += main.cpp\
     texturepacker/spritesheetreader.cpp \
     helpers/rotateimagepainter.cpp \
     tilepropertiesdialog.cpp \
+    newentitydialog.cpp
 
 HEADERS  += mainwindow.h \
     newprojectdialog.h \
@@ -141,12 +143,13 @@ HEADERS  += mainwindow.h \
     world/tilemap.h \
     newtilesetdialog.h \
     worldwizard_pagelayer.h \
-    object/entity.h \
-    object/entityreader.h \
-    object/entitycomponent.h \
-    object/spritecomponent.h \
-    object/spriteanimation.h \
-    object/physicscomponent.h \
+    entity/entity.h \
+    entity/entityreader.h \
+    entity/entitycomponent.h \
+    entity/spritecomponent.h \
+    entity/spriteanimation.h \
+    entity/physicscomponent.h \
+    entity/entitycomponentregistry.h \
     texture/texturesplitter.h \
     texturepacker/texturepacker.h \
     texturepacker/texturepackerview.h \
@@ -157,7 +160,8 @@ HEADERS  += mainwindow.h \
     texturepacker/spritesheetwriter.h \
     texturepacker/spritesheetreader.h \
     helpers/rotateimagepainter.h \
-    tilepropertiesdialog.h
+    tilepropertiesdialog.h \
+    newentitydialog.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog.ui \
@@ -176,7 +180,8 @@ FORMS    += mainwindow.ui \
     worldwizard_pagelayer.ui \
     texture/texturesplitter.ui \
     texturepacker/texturepacker.ui \
-    tilepropertiesdialog.ui
+    tilepropertiesdialog.ui \
+    newentitydialog.ui
 
 BaseDir = $$PWD/../build/workshop
 

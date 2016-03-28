@@ -4,7 +4,7 @@
 #include "project/projecttreeobjectitem.h"
 #include "project/projecttreerootitem.h"
 
-#include "object/entity.h"
+#include "entity/entity.h"
 #include "world/tileset.h"
 #include "world/tileworld.h"
 #include "script/scriptfile.h"
