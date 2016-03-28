@@ -21,9 +21,9 @@ namespace ByteCode
    public:
       enum LookupType { eDefault, eEnd, eValue };
 
-      int id;
-      int start;
-      int codepos;
+      int      id;
+      uint32_t start;
+      uint32_t codepos;
 
       Instruction* pstart;
       Instruction* pcurrent;

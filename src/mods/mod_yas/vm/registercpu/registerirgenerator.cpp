@@ -1,11 +1,15 @@
 
 #include "registerirgenerator.h"
 
+#include "core/defines.h"
+
 #include "../virtualfunction.h"
 
 bool RegisterIRGenerator::virGenerate(VirtualContext& context, VirtualFunction& function)
 {
    using namespace CIL;
+   
+   C2D_UNUSED(context);
 
    const CIL::Instructions& instructions = function.getInstructions();
    for ( unsigned index = 0; index < instructions.size(); ++index )
@@ -15,8 +19,10 @@ bool RegisterIRGenerator::virGenerate(VirtualContext& context, VirtualFunction& 
       switch ( inst.opcode )
       {
          case CIL_nop:
+         case CIL_last:
             break;
          
+         case CIL_dup:
          case CIL_new:
             {
             }
@@ -84,7 +90,23 @@ bool RegisterIRGenerator::virGenerate(VirtualContext& context, VirtualFunction& 
          case CIL_ldstatic:
          case CIL_ststatic:
             break;
+            
+         case CIL_switch:
+         case CIL_instanceof:
+         case CIL_throw:
+            break;
+            
+         case CIL_bconv_str:
+         case CIL_iconv_real:
+         case CIL_iconv_str:
+         case CIL_rconv_int:
+         case CIL_rconv_str:
+         case CIL_cconv_str:
+         case CIL_sconv_bool:
+         case CIL_sconv_int:
+         case CIL_sconv_real:
+            break;
       }
    }
-   return NULL;
+   return false;
 }

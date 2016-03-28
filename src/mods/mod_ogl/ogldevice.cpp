@@ -107,7 +107,8 @@ bool OGLDevice::create(GameWindow& window)
 
 void OGLDevice::resize(int width, int height)
 {
-
+   C2D_UNUSED(width);
+   C2D_UNUSED(height);
 }
 
 RenderContext* OGLDevice::createRenderContext()
@@ -159,14 +160,19 @@ RenderTarget* OGLDevice::createRenderTarget()
 BlendState* OGLDevice::createBlendState(const BlendStateDesc& desc)
 {
    GLenum sfactor = toGLBlendState(desc.getSourceFactor());
-   GLenum dfactor = toGLBlendState(desc.getDestFactor());  
+   GLenum dfactor = toGLBlendState(desc.getDestFactor());
+   
+   if ( sfactor == GL_INVALID_ENUM || dfactor == GL_INVALID_ENUM )
+   {
+      return nullptr;
+   }
 
    return new OGLBlendState(sfactor, dfactor, desc.isEnabled());
 }
 
 GLenum OGLDevice::toGLBlendState(BlendStateDesc::BlendFactor blendfactor)
 {
-   GLenum factor;
+   GLenum factor = GL_INVALID_ENUM;
 
    switch ( blendfactor )
    {
@@ -199,6 +205,9 @@ GLenum OGLDevice::toGLBlendState(BlendStateDesc::BlendFactor blendfactor)
          break;
       case BlendStateDesc::BS_DST_INV_ALPHA:
          factor = GL_ONE_MINUS_DST_ALPHA;
+         break;
+      case BlendStateDesc::BS_INVALID:
+      default:
          break;
    }
    return factor;

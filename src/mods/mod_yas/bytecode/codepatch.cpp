@@ -10,6 +10,10 @@ namespace ByteCode
       mOffset(-1)
    {
    }
+   
+   Patch::~Patch()
+   {
+   }
 
    // - Get/set
 

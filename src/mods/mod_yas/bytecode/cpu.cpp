@@ -60,12 +60,6 @@ namespace ByteCode
       return *mpStringClass;
    }
 
-   ByteCode::IRGenerator* CPU::createIRGenerator()
-   {
-      PURE_VIRTUAL;
-      return NULL;
-   }
-
    bool CPU::isGarbageCollectionBlocked() const
    {
       return mBlockGC == true;
@@ -134,18 +128,6 @@ namespace ByteCode
          std::string m = msg.toUtf8();
          Log::getInstance().error(m.c_str());
       }
-   }
-
-   bool CPU::handleException(VirtualContext& context, VirtualObject& exception)
-   {
-      PURE_VIRTUAL;
-      return false;
-   }
-
-   String CPU::buildCallStack() const
-   {
-      PURE_VIRTUAL;
-      return String();
    }
 
    void CPU::displayException(const VirtualException& exception)

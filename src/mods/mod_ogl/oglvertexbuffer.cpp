@@ -136,6 +136,8 @@ void OGLVertexBuffer::release()
  */
 void* OGLVertexBuffer::lock(RenderContext& context)
 {
+   C2D_UNUSED(context);
+   
    glBindVertexArray(mVAO);
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	void* pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -149,6 +151,8 @@ void* OGLVertexBuffer::lock(RenderContext& context)
  */
 void OGLVertexBuffer::unlock(RenderContext& context)
 {
+   C2D_UNUSED(context);
+   
 	if (locked) {
       glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
       glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -158,6 +162,9 @@ void OGLVertexBuffer::unlock(RenderContext& context)
 
 void OGLVertexBuffer::update(RenderContext& context, void* pdata, int count)
 {
+   C2D_UNUSED(context);
+   C2D_UNUSED(pdata);
+   C2D_UNUSED(count);
    // not yet implemented
 }
 
@@ -166,6 +173,8 @@ void OGLVertexBuffer::update(RenderContext& context, void* pdata, int count)
  */
 void OGLVertexBuffer::enable(RenderContext& context) const
 {
+   C2D_UNUSED(context);
+   
    glBindVertexArray(mVAO);
 }
 
@@ -174,6 +183,8 @@ void OGLVertexBuffer::enable(RenderContext& context) const
  */
 void OGLVertexBuffer::disable(RenderContext& context) const
 {
+   C2D_UNUSED(context);
+   
    glBindVertexArray(0);
 }
 

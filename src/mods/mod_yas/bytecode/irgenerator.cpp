@@ -58,23 +58,17 @@ namespace ByteCode
       return false;
    }
 
-   bool IRGenerator::virGenerate(VirtualContext& context, VirtualFunction& entry)
-   {
-      PURE_VIRTUAL;
-      return false;
-   };
-
    void IRGenerator::cleanup()
    {
-      for ( std::size_t index = 0; index < mBlocks.size(); ++index )
+      for ( auto pblock : mBlocks )
       {
-         delete mBlocks[index];
+         delete pblock;
       }
       mBlocks.clear();
 
-      for ( std::size_t index = 0; index < mPatches.size(); ++index )
+      for ( auto ppatch : mPatches )
       {
-         delete mPatches[index];
+         delete ppatch;
       }
       mPatches.clear();
    }

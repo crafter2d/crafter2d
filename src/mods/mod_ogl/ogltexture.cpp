@@ -9,7 +9,9 @@ namespace Graphics
 OGLTexture::OGLTexture():
    Texture(),
    mID(0),
-   mTarget(0)
+   mTarget(0),
+   mFormat(0),
+   mBytes(0)
 {
 }
 
@@ -67,6 +69,10 @@ bool OGLTexture::create(const TextureDescription& desc)
       mFormat = GL_LUMINANCE;
       mBytes = 1;
       break;
+   case Graphics::eFormat_RG:
+      mFormat = GL_RG;
+      mBytes = 2;
+      break;
    case Graphics::eFormat_RGBA:
       mFormat = GL_RGBA;
       mBytes = 4;
@@ -103,6 +109,9 @@ bool OGLTexture::create(const TextureDescription& desc)
 
 void OGLTexture::update(RenderContext& context, const void* pdata, int rowpitch)
 {
+   C2D_UNUSED(context);
+   C2D_UNUSED(rowpitch);
+   
    glBindTexture(mTarget, mID);
    glTexImage2D(mTarget, 0, mBytes, _actualwidth, _actualheight, 0, mFormat, GL_UNSIGNED_BYTE, pdata);
 }
@@ -126,12 +135,15 @@ void OGLTexture::release()
 /// \param[in] active when true the texture is made active, when false it is deactivated
 void OGLTexture::enable(RenderContext& context, int stage) const
 {
+   C2D_UNUSED(context);
+   
 	glActiveTexture (GL_TEXTURE0 + stage);
 	glBindTexture(mTarget, mID);
 }
 
 void OGLTexture::disable(RenderContext& context) const
 {
+   C2D_UNUSED(context);
 }
 
 // - Query

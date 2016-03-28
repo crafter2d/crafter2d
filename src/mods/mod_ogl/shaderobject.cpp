@@ -124,8 +124,8 @@ void ShaderObject::linkInput(VertexLayout& layout)
       GLenum err = glGetError();
       if ( err != GL_NO_ERROR )
       {
-         char* perr = (char*)gluErrorString(err);
-         String msg(UTEXT("Could not bind attribute '{0}' for shader.").arg(0, field.semantic));
+         String oglerr(std::string((const char*)gluErrorString(err)));
+         String msg(UTEXT("Could not bind attribute '{0}' for shader: {1}").arg(0, field.semantic).arg(1, oglerr));
          Log::getInstance().error(msg.toUtf8().c_str());
       }
    }
@@ -170,6 +170,8 @@ ShaderUniformBuffer* ShaderObject::getUniformBuffer(const String& name) const
 
 bool ShaderObject::bindTexture(int stage, const Texture& texture)
 {
+   C2D_UNUSED(texture);
+   
    std::string uni = "diffuseMap"; // texture.getUniform().toUtf8();
    GLint texloc = glGetUniformLocation(program, uni.c_str());
    glProgramUniform1i(program, texloc, stage);
