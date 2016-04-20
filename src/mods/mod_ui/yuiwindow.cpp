@@ -17,24 +17,9 @@
 *   Free Software Foundation, Inc.,                                       *
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
-#ifndef YAUI_SYSTEM_H
-#define YAUI_SYSTEM_H
-
-#include "core/ui/uisystem.h"
+#include "yuiwindow.h"
 
 namespace c2d
 {
-   // The Yet Another UI system
-   class YaUiSystem : public UiSystem
-   {
-   public:
 
-      virtual bool initialize(ScriptManager& scriptmanager, Graphics::Device& device, float width, float height) override;
-
-      virtual void update(Graphics::RenderContext& context, float delta) override;
-      virtual void render(Graphics::RenderContext& context) override;
-   };
-}
-
-#endif // YAUI_SYSTEM_H
-
+} // namespace c2d

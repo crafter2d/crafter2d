@@ -5,12 +5,12 @@
 
 #include "core/modules/uimodule.h"
 
-#include "yauisystem.h"
+#include "yuisystem.h"
 
 using namespace c2d;
 
 extern "C" MOD_API Module* MOD_DECL getModule()
 {
-   return new UiModule(new YaUiSystem());
+   return new UiModule(new YuiSystem());
 }
 

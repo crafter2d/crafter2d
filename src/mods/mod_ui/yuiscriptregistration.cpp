@@ -17,21 +17,42 @@
 *   Free Software Foundation, Inc.,                                       *
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
-#include "yauisystem.h"
+#include "yuiscriptregistration.h"
 
-bool c2d::YaUiSystem::initialize(ScriptManager & scriptmanager, Graphics::Device & device, float width, float height)
+#include <memory>
+
+#include "core/script/scriptcall.h"
+#include "core/script/scriptmacros.h"
+#include "core/script/scriptmanager.h"
+#include "core/script/scriptobject.h"
+#include "core/script/scriptregistrator.h"
+
+#include "yuisystem.h"
+#include "yuiwindow.h"
+
+namespace c2d
 {
-   if ( UiSystem::initialize(scriptmanager, device, width, height) )
-   {
-      return true;
-   }
-   return false;
+
+void yui_load(ScriptCall& accessor)
+{
+   GET_THIS(c2d::YuiSystem, system);
+
+   const String& file = accessor.getString(1);
+   c2d::YuiWindow* pwindow = system.load(file);
+
+   RETURN_CLASS_OWNED(UTEXT("ui.YuiWindow"), pwindow);
 }
 
-void c2d::YaUiSystem::update(Graphics::RenderContext & context, float delta)
+void YuiRegisterScripts(ScriptManager & scriptmanager)
 {
+   std::unique_ptr<ScriptRegistrator> registrator(scriptmanager.getRegistrator());
+
+   registrator->addClass(UTEXT("ui.Yui"));
+   registrator->addFunction(UTEXT("load(String)"), yui_load);
+
+   registrator->addClass(UTEXT("ui.YuiWindow"));
+
+   registrator->registerCallbacks();
 }
 
-void c2d::YaUiSystem::render(Graphics::RenderContext & context)
-{
-}
+} // namespace c2d
