@@ -8,7 +8,7 @@
 #endif
 
 #include "core/modules/contentmodule.h"
-#include "core/modules/modulecollection.h"
+#include "core/modules/modulemanager.h"
 #include "core/graphics/effect.h"
 #include "core/system/uuid.h"
 
@@ -68,27 +68,22 @@ static const Uuid TileSetUUID(0xF7150E51, 0xBEC1, 0x42AD, 0x9C18, 0xB5B69F86D05E
 // {54034D72-41BF-4DC5-A2B8-F4DB28B3397E}
 static const Uuid WorldUUID(0x54034D72, 0x41BF, 0x4DC5, 0xA2B8, 0xF4DB28B3397E);
 
-extern "C" MOD_API ModuleCollection* MOD_DECL getModuleCollection()
+extern "C" MOD_API Modules* MOD_DECL getModules()
 {
-   ModuleCollection* pmodules = new ModuleCollection();
-
    ContentModule* peffectmodule = new ContentModule(EffectUUID);
    peffectmodule->setSupportedFiles(UTEXT("fx"));
    peffectmodule->setReader(new EffectReader());
    peffectmodule->setWriter(new EffectWriter());
-   pmodules->add(peffectmodule);
 
    ContentModule* pentitymod = new ContentModule(EntityUUID);
    pentitymod->setSupportedFiles(UTEXT("entity"));
    pentitymod->setReader(new EntityReader());
    pentitymod->setWriter(new EntityWriter());
-   pmodules->add(pentitymod);
 
    ContentModule* psoundmod = new ContentModule(SoundUUID);
    psoundmod->setSupportedFiles(UTEXT("ogg"));
    psoundmod->setReader(new SoundReader());
    psoundmod->setWriter(new SoundWriter());
-   pmodules->add(psoundmod);
 
    ContentModule* ptexturemod = new ContentModule(TextureUUID);
    ptexturemod->setSupportedFiles(UTEXT("dds,png"));
@@ -96,25 +91,27 @@ extern "C" MOD_API ModuleCollection* MOD_DECL getModuleCollection()
 #ifdef C2D_EXPORT_WRITERS
    ptexturemod->setWriter(new TextureWriter());
 #endif
-   pmodules->add(ptexturemod);
 
    ContentModule* ptileatlasmod = new ContentModule(TileAtlasUUID);
    ptileatlasmod->setSupportedFiles(UTEXT("tileatlas"));
    ptileatlasmod->setReader(new TileAtlasReader());
    ptileatlasmod->setWriter(new TileAtlasWriter());
-   pmodules->add(ptileatlasmod);
 
    ContentModule* ptilesetmod = new ContentModule(TileSetUUID);
    ptilesetmod->setSupportedFiles(UTEXT("tileset"));
    ptilesetmod->setReader(new TileSetReader());
    ptilesetmod->setWriter(new TileSetWriter());
-   pmodules->add(ptilesetmod);
 
    ContentModule* pworldmod = new ContentModule(WorldUUID);
    pworldmod->setSupportedFiles(UTEXT("world"));
    pworldmod->setReader(new WorldReader());
    pworldmod->setWriter(new WorldWriter());
-   pmodules->add(pworldmod);
 
-   return pmodules;
+   return Modules::create({ peffectmodule, pentitymod, psoundmod, ptexturemod, ptileatlasmod, ptilesetmod, pworldmod });
+}
+
+extern "C" MOD_API void MOD_DECL freeModules(Modules* pmodules)
+{
+   ASSERT(pmodules->count == 7);
+   Modules::free(pmodules);
 }

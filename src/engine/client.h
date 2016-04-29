@@ -23,6 +23,7 @@
 #include "engine_base.h"
 
 #include <map>
+#include <memory>
 
 #include "core/entity/idmanager.h"
 #include "core/graphics/viewport.h"
@@ -67,6 +68,7 @@ class Player;
 namespace c2d
 {
    class KeyMap;
+   class UiSystem;
 
    /// \brief The client side process. It handles user input and rendering of the server objects.
    ///
@@ -141,6 +143,7 @@ namespace c2d
       bool initGraphics();
       bool initInput();
       bool initSound();
+      bool initUI();
 
       // event handlers
       void  handleConnectReplyEvent(const ConnectReplyEvent& event);
@@ -166,6 +169,7 @@ namespace c2d
       SoundManager*              mpSoundManager;
       Sound*                     mpBackgroundMusic;
       WorldRenderer*             mpWorldRenderer;
+      UiSystem*                  mpUI;
       Player*                    mpPlayer;
       KeyMap*                    mpKeyMap;
       Graphics::Font*            mpFont;

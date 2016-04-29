@@ -175,6 +175,10 @@ void D3DDevice::present()
    }
 }
 
+void D3DDevice::resize(int width, int height)
+{
+}
+
 RenderContext* D3DDevice::createRenderContext()
 {
    return new D3DRenderContext(mpContext, mpRenderTargetView);

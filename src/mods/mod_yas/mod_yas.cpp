@@ -1,6 +1,6 @@
 
 #include "core/modules/scriptmodule.h"
-#include "core/modules/module.h"
+#include "core/modules/modulemanager.h"
 
 #include "script_base.h"
 
@@ -14,8 +14,15 @@ using namespace c2d;
   #define DECL
 #endif
 
-extern "C" SCRIPT_API Module* DECL getModule()
+extern "C" SCRIPT_API Modules* DECL getModules()
 {  
    ScriptModule* pmodule = new ScriptModule(new YasScriptManager());
-   return pmodule;
+   return Modules::create(pmodule);
+}
+
+extern "C" SCRIPT_API void DECL freeModules(Modules* pmodules)
+{
+   ASSERT(pmodules->count == 1);
+   ASSERT(pmodules->modules[0]->getKind() == c2d::eScriptModule);
+   Modules::free(pmodules);
 }

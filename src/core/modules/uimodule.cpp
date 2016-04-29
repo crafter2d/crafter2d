@@ -1,9 +1,11 @@
 
 #include "uimodule.h"
 
+#include "core/ui/uisystem.h"
+
 c2d::UiModule::UiModule(UiSystem* psystem) :
    Module(ModuleKind::eUiModule, UUID_UiModule),
-   mpSystem(psystem)
+   mSystem(psystem)
 {
 }
 

@@ -36,6 +36,7 @@
 #include "core/modules/modulemanager.h"
 #include "core/modules/inputmodule.h"
 #include "core/modules/soundmodule.h"
+#include "core/modules/uimodule.h"
 #include "core/graphics/device.h"
 #include "core/graphics/font.h"
 #include "core/graphics/rendercontext.h"
@@ -270,7 +271,8 @@ namespace c2d
    {
       return initGraphics()
          && initInput()
-         && initSound();
+         && initSound()
+         && initUI();
    }
 
    bool Client::initGraphics()
@@ -328,6 +330,18 @@ namespace c2d
       {
          // failed to create input! can't proceed
          return false;
+      }
+
+      return true;
+   }
+
+   bool Client::initUI()
+   {
+      Module* pmodule = getModuleManager().lookup(UUID_UiModule);
+      if ( pmodule != nullptr )
+      {
+         UiModule& uimodule = static_cast<UiModule&>(*pmodule);
+         mpUI = &uimodule.getSystem();
       }
 
       return true;

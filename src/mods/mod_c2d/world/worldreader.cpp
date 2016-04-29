@@ -48,7 +48,7 @@ IContent* WorldReader::read(DataStream& stream)
       // get the expected length from the data
       uint32_t explen = (pdata[0] << 24) | (pdata[1] << 16) |
                         (pdata[2] <<  8) | (pdata[3]      );
-      uint64_t len = explen;
+      uLongf len = explen;
 
       // decompress the field data
       uint8_t* puncompressed = new uint8_t[explen];

@@ -5,25 +5,36 @@
 // Windows Header Files:
 #include <windows.h>
 
-#include "core/modules/modulecollection.h"
+#include "core/defines.h"
+#include "core/modules/modulemanager.h"
 #include "core/modules/soundmodule.h"
+
 #include "fmodsoundmanager.h"
 
 #ifdef WIN32
+#define DECL cdecl
 #ifdef MOD_EXPORTS
 #define MOD_API __declspec(dllexport)
 #else
 #define MOD_API __declspec(dllimport)
+#define DECL cdecl
 #endif
 #else
 #define MOD_API
+#define DECL
 #endif
 
 using namespace c2d;
 
-extern "C" MOD_API Module* cdecl getModule()
+extern "C" MOD_API Modules* DECL getModules()
 {
    SoundModule* pmod = new SoundModule(new FModSoundManager());
+   return Modules::create(pmod);
+}
 
-   return pmod;
+extern "C" MOD_API void DECL freeModules(Modules* pmodules)
+{
+   ASSERT(pmodules->count == 1);
+   ASSERT(pmodules->modules[0]->getKind() == c2d::eSoundModule);
+   Modules::free(pmodules);
 }

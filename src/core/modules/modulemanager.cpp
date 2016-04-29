@@ -3,8 +3,8 @@
 
 #include <algorithm>
 
+#include "core/defines.h"
 #include "core/log/log.h"
-#include "core/smartptr/autoptr.h"
 #include "core/system/platform.h"
 #include "core/system/exception.h"
 #include "core/vfs/filesystem.h"
@@ -13,6 +13,42 @@
 
 namespace c2d
 {
+   // static 
+   Modules* Modules::create(Module* pmodule)
+   {
+      Modules* pmodules = new Modules;
+      pmodules->count = 1;
+      pmodules->modules = new Module*[1];
+      pmodules->modules[0] = pmodule;
+      return pmodules;
+   }
+
+   // static 
+   Modules* Modules::create(std::initializer_list<Module*> modulelist)
+   {
+      Modules* pmodules = new Modules;
+      pmodules->count = modulelist.size();
+      pmodules->modules = new Module*[modulelist.size()];
+
+      int index = 0;
+      for ( auto pmodule : modulelist )
+      {
+         pmodules->modules[index++] = pmodule;
+      }
+      return pmodules;
+   }
+
+   // static 
+   void Modules::free(Modules* pmodules)
+   {
+      for ( int index = 0; index < pmodules->count; ++index )
+      {
+         delete pmodules->modules[index];
+      }
+      delete[] pmodules->modules;
+      delete pmodules;
+   }
+
    ModuleManager::ModuleManager() :
       mModules()
    {
@@ -51,8 +87,7 @@ namespace c2d
    {
       clear();
 
-      auto close = [](void* pmodule) { c2d::Platform::getInstance().freeModule(pmodule); };
-      std::for_each(mHandles.begin(), mHandles.end(), close);
+      
    }
 
    // - Query
@@ -64,26 +99,6 @@ namespace c2d
 
    // - Maintenance
 
-   void ModuleManager::exec(PGETMODULE pfunc)
-   {
-      ASSERT_PTR(pfunc);
-      std::unique_ptr<Module> module((*pfunc)());
-      if ( !module )
-      {
-         throw c2d::Exception(UTEXT("Could not get the module handle."));
-      }
-      add(module.release());
-   }
-
-   void ModuleManager::exec(PGETMODULECOLLECTION pfunc)
-   {
-      std::unique_ptr<ModuleCollection> collection((*pfunc)());
-      if ( collection )
-      {
-         add(*collection);
-      }
-   }
-
    void ModuleManager::add(const String& filename)
    {
       Log::getInstance().info(UTEXT("Loading module ") + filename);
@@ -92,60 +107,43 @@ namespace c2d
       void* pmodule = platform.loadModule(filename);
       if ( pmodule != NULL )
       {
-         mHandles.push_back(pmodule);
+         ModuleHandle handle;
+         handle.phandle = pmodule;
 
-         PGETMODULE pfunc = (PGETMODULE)platform.getFunctionAddress(pmodule, UTEXT("getModule"));
+         PGETMODULES pfunc = (PGETMODULES)platform.getFunctionAddress(pmodule, UTEXT("getModules"));
          if ( pfunc != NULL )
          {
-            AutoPtr<Module> module = (*pfunc)();
-            if ( !module.hasPointer() )
+            Modules* pmodules = (*pfunc)();
+            if ( pmodules != nullptr )
             {
-               throw c2d::Exception(UTEXT("Could not get the module handle."));
-            }
-
-            add(module.release());
-         }
-         else
-         {
-            PGETMODULECOLLECTION pcolfunc = (PGETMODULECOLLECTION)platform.getFunctionAddress(pmodule, UTEXT("getModuleCollection"));
-            if ( pcolfunc != NULL )
-            {
-               AutoPtr<ModuleCollection> collection = (*pcolfunc)();
-               if ( collection.hasPointer() )
+               for ( int index = 0; index < pmodules->count; index++ )
                {
-                  add(*collection);
+                  auto pmodule = pmodules->modules[index];
+                  add(pmodule);
+                  handle.modules.push_back(pmodule);
                }
             }
          }
+
+         mHandles.push_back(std::move(handle));
       }
    }
 
    void ModuleManager::add(Module* pmodule)
    {
-      ASSERT_PTR(pmodule);
       pmodule->setModuleManager(*this);
       mModules.add(pmodule);
    }
 
-   void ModuleManager::add(ModuleCollection& collection)
-   {
-      ModuleCollectionIterator it = collection.getIterator();
-      for ( ; it.isValid(); ++it )
-      {
-         Module& module = *it;
-         add(&module);
-      }
-   }
-
    void ModuleManager::clear()
    {
-      ModuleCollectionIterator it = mModules.getIterator();
-      for ( ; it.isValid(); ++it )
-      {
-         Module& module = *it;
-         delete &module;
-      }
       mModules.clear();
+
+      Platform& platform = Platform::getInstance();
+      for ( auto& handle : mHandles )
+      {
+         platform.freeModule(handle.phandle);
+      }
    }
 
    // - Query

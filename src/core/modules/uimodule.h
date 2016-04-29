@@ -2,6 +2,8 @@
 #ifndef UI_MODULE_H
 #define UI_MODULE_H
 
+#include <memory>
+
 #include "module.h"
 
 namespace c2d
@@ -16,12 +18,12 @@ namespace c2d
 
       // get/set
       UiSystem& getSystem() {
-         return *mpSystem;
+         return *mSystem;
       }
 
    private:
 
-      UiSystem* mpSystem;
+      std::unique_ptr<UiSystem> mSystem;
    };
 }
 

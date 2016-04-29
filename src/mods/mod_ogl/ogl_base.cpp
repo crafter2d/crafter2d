@@ -24,6 +24,8 @@
 #include <Windows.h>
 #endif
 
+#include "core/defines.h"
+#include "core/modules/modulemanager.h"
 #include "core/modules/graphicsmodule.h"
 #include "core/modules/inputmodule.h"
 #include "core/modules/modulecollection.h"
@@ -50,17 +52,19 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 using namespace c2d;
 
-extern "C" OGL_API ModuleCollection* OGL_DECL getModuleCollection()
+extern "C" MOD_API Modules* DECL getModules()
 {
-   ModuleCollection* pmodules = new ModuleCollection();
-
    GraphicsModule* pmodule = new GraphicsModule();
    pmodule->setDevice(new Graphics::OGLDevice());
-   pmodules->add(pmodule);
 
    InputModule* pinputmodule = new InputModule();
    pinputmodule->setDevice(new OGLInputDevice());
-   pmodules->add(pinputmodule);
 
-   return pmodules;
+   return Modules::create({ pmodule, pinputmodule });
+}
+
+extern "C" MOD_API void DECL freeModules(Modules* pmodules)
+{
+   ASSERT(pmodules->count == 2);
+   Modules::free(pmodules);
 }

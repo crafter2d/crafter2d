@@ -11,7 +11,6 @@ namespace c2d
 {
    class Module;
 
-   typedef std::map<Uuid, Module*> ModuleMap;
 
    class CORE_API ModuleCollectionIterator
    {

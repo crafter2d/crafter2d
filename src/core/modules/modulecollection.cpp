@@ -10,6 +10,11 @@ namespace c2d
    {
    }
 
+   ModuleCollection::ModuleCollection(ModuleCollection&& that):
+      mModules(std::move(that.mModules))
+   {
+   }
+
    ModuleCollection::~ModuleCollection()
    {
       mModules.clear();
@@ -19,8 +24,14 @@ namespace c2d
 
    Module* ModuleCollection::operator[](const Uuid& uuid)
    {
-      ModuleMap::iterator it = mModules.find(uuid);
+      auto it = mModules.find(uuid);
       return it != mModules.end() ? it->second : NULL;
+   }
+
+   ModuleCollection& ModuleCollection::operator=(ModuleCollection&& that)
+   {
+      std::swap(mModules, that.mModules);
+      return *this;
    }
 
    ModuleCollection& ModuleCollection::operator=(const ModuleCollection& that)
@@ -29,12 +40,7 @@ namespace c2d
       add(that);
       return *this;
    }
-
-   ModuleCollectionIterator ModuleCollection::getIterator()
-   {
-      return ModuleCollectionIterator(mModules.begin(), mModules.end());
-   }
-
+   
    // - Query
 
    int ModuleCollection::size() const
@@ -46,7 +52,7 @@ namespace c2d
 
    void ModuleCollection::add(Module* pmodule)
    {
-      ModuleMap::iterator it = mModules.find(pmodule->getUuid());
+      auto it = mModules.find(pmodule->getUuid());
       if ( it != mModules.end() && it->second != pmodule )
       {
          throw new c2d::Exception(UTEXT("Can not add module with duplicate key."));
@@ -57,9 +63,9 @@ namespace c2d
 
    void ModuleCollection::add(const ModuleCollection& that)
    {
-      for ( ModuleMap::const_iterator it = that.mModules.begin(); it != that.mModules.end(); ++it )
+      for ( auto& pair : mModules )
       {
-         Module* pmodule = it->second;
+         Module* pmodule = pair.second;
          add(pmodule);
       }
    }
@@ -74,9 +80,9 @@ namespace c2d
    ModuleCollection ModuleCollection::filter(ModuleKind kind)
    {
       ModuleCollection result;
-      for ( ModuleMap::iterator it = mModules.begin(); it != mModules.end(); ++it )
+      for ( auto& pair : mModules )
       {
-         Module* pmodule = it->second;
+         Module* pmodule = pair.second;
          if ( pmodule->getKind() == kind )
          {
             result.add(pmodule);

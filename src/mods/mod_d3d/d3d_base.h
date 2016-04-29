@@ -21,13 +21,15 @@
 #define D3D_BASE_H_
 
 #ifdef WIN32
+#define DECL cdecl
 #ifdef MOD_EXPORTS
-#define D3D_API __declspec(dllexport)
+#define MOD_API __declspec(dllexport)
 #else
-#define D3D_API __declspec(dllimport)
+#define MOD_API __declspec(dllimport)
 #endif
 #else
-#define D3D_API
+#define MOD_API
+#define DECL
 #endif
 
 #endif // D3D_BASE_H_

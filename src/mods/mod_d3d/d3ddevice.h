@@ -25,6 +25,7 @@ namespace Graphics
       virtual bool create(GameWindow& window) override;
       virtual void destroy() override;
       virtual void present() override;
+      virtual void resize(int width, int height) override;
 
       virtual CodePath*       createCodePath() override;
       virtual VertexBuffer*   createVertexBuffer() override;

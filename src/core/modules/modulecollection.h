@@ -2,8 +2,9 @@
 #ifndef MODULE_COLLECTION_H
 #define MODULE_COLLECTION_H
 
+#include <map>
+
 #include "module.h"
-#include "modulecollectioniterator.h"
 
 namespace c2d
 {
@@ -17,19 +18,22 @@ namespace c2d
 
    class CORE_API ModuleCollection
    {
+      using ModuleMap = std::map<Uuid, Module*>;
+
    public:
       ModuleCollection();
+      ModuleCollection(ModuleCollection&& that);
       ~ModuleCollection();
-
-    // operators
-      const Module* operator[](const Uuid& uuid) const;
-            Module* operator[](const Uuid& uuid);
-
-      ModuleCollectionIterator getIterator();
-
+      ModuleCollection& operator=(ModuleCollection&& that);
       ModuleCollection& operator=(const ModuleCollection& that);
 
+      typedef ModuleMap::iterator iterator;
+
+      iterator begin() { return mModules.begin(); }
+      iterator end() { return mModules.end(); }
+      
     // query
+      Module* operator[](const Uuid& uuid);
       int size() const;
 
     // maintenance
