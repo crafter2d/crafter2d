@@ -11,7 +11,7 @@
 class VirtualObject;
 class VirtualGuard;
 
-class SCRIPT_API StackCPU : public ByteCode::CPU
+class StackCPU : public ByteCode::CPU
 {
    typedef std::deque<VM::StackFrame> CallStack;
 

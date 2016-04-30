@@ -3,15 +3,15 @@
 #define SCRIPT_BASE_H_
 
 #if defined(WIN32)
+  #define DECL cdecl
   #ifdef SCRIPT_EXPORTS
-    #define SCRIPT_API __declspec(dllexport)
-    #define SCRIPT_EXTERN
+    #define MOD_API __declspec(dllexport)
   #else
-    #define SCRIPT_API __declspec(dllimport)
-    #define SCRIPT_EXTERN extern
+    #define MOD_API __declspec(dllimport)
   #endif
 #else
-  #define SCRIPT_API
+  #define DECL
+  #define MOD_API
 #endif
 
 #endif // SCRIPT_BASE_H_

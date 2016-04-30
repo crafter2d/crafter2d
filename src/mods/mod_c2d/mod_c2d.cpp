@@ -68,6 +68,16 @@ static const Uuid TileSetUUID(0xF7150E51, 0xBEC1, 0x42AD, 0x9C18, 0xB5B69F86D05E
 // {54034D72-41BF-4DC5-A2B8-F4DB28B3397E}
 static const Uuid WorldUUID(0x54034D72, 0x41BF, 0x4DC5, 0xA2B8, 0xF4DB28B3397E);
 
+extern "C" MOD_API ModuleInfo* MOD_DECL getModuleInfo()
+{
+   return ModuleInfo::create(1, {});
+}
+
+extern "C" MOD_API void MOD_DECL freeModuleInfo(ModuleInfo* pinfo)
+{
+   ModuleInfo::free(pinfo);
+}
+
 extern "C" MOD_API Modules* MOD_DECL getModules()
 {
    ContentModule* peffectmodule = new ContentModule(EffectUUID);

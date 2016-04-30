@@ -9,7 +9,7 @@
 
 class YasScriptManager;
 
-class SCRIPT_API YasScriptRegistrator : public c2d::ScriptRegistrator
+class YasScriptRegistrator : public c2d::ScriptRegistrator
 {
 public:
    YasScriptRegistrator(YasScriptManager& manager);

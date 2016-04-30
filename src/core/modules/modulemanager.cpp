@@ -10,6 +10,7 @@
 #include "core/vfs/filesystem.h"
 
 #include "module.h"
+#include "modulefile.h"
 
 namespace c2d
 {
@@ -50,13 +51,14 @@ namespace c2d
    }
 
    ModuleManager::ModuleManager() :
+      mFiles(),
       mModules()
    {
    }
 
    ModuleManager::~ModuleManager()
    {
-      deinitialize();
+      clear();
    }
 
    // - Initialization
@@ -77,19 +79,64 @@ namespace c2d
       // load all modules
       Log::getInstance().info("Loading modules...");
 
-      auto append = [this](const String& val){ add(val); };
+      auto append = [this](const String& val){ load(val); };
       std::for_each(filenames.begin(), filenames.end(), append);
+
+      using FilePtrs = std::vector<ModuleFile*>;
+      FilePtrs files;
+      for ( auto& file : mFiles )
+      {
+         files.push_back(&file);
+      }
+
+      FilePtrs::iterator it = files.begin();
+      while ( !files.empty() )
+      {
+         ModuleFile& file = **it;
+         const ModuleInfo& info = file.getInfo();
+
+         bool mayLoad = true;
+         if ( info.numDependencies > 0 )
+         {
+            for ( int index = 0; index < info.numDependencies; ++index )
+            {
+               const Uuid& uuid = info.dependencies[index];
+               if ( mModules[uuid] == nullptr )
+               {
+                  mayLoad = false;
+                  break;
+               }
+            }
+         }
+
+         if ( mayLoad )
+         {
+            file.load();
+            Modules& modules = file.getModules();
+            for ( int index = 0; index < modules.count; index++ )
+            {
+               auto pmodule = modules.modules[index];
+               add(pmodule);
+            }
+
+            files.erase(it);
+            it = files.begin();
+         }
+         else
+         {
+            it++;
+         }
+
+         if ( it == files.end() && !files.empty() )
+         {
+            Log::getInstance().error("Circular dependency detected while trying to load the modules.");
+            break;
+         }
+      }
 
       return true;
    }
-
-   void ModuleManager::deinitialize()
-   {
-      clear();
-
-      
-   }
-
+   
    // - Query
 
    ModuleCollection ModuleManager::filter(ModuleKind kind)
@@ -99,33 +146,18 @@ namespace c2d
 
    // - Maintenance
 
-   void ModuleManager::add(const String& filename)
+   void ModuleManager::load(const String& filename)
    {
       Log::getInstance().info(UTEXT("Loading module ") + filename);
-      
-      Platform& platform = c2d::Platform::getInstance();
-      void* pmodule = platform.loadModule(filename);
-      if ( pmodule != NULL )
+
+      ModuleFile file(filename);
+      if ( file.isValid() )
       {
-         ModuleHandle handle;
-         handle.phandle = pmodule;
-
-         PGETMODULES pfunc = (PGETMODULES)platform.getFunctionAddress(pmodule, UTEXT("getModules"));
-         if ( pfunc != NULL )
-         {
-            Modules* pmodules = (*pfunc)();
-            if ( pmodules != nullptr )
-            {
-               for ( int index = 0; index < pmodules->count; index++ )
-               {
-                  auto pmodule = pmodules->modules[index];
-                  add(pmodule);
-                  handle.modules.push_back(pmodule);
-               }
-            }
-         }
-
-         mHandles.push_back(std::move(handle));
+         mFiles.push_back(std::move(file));
+      }
+      else
+      {
+         Log::getInstance().warning(UTEXT("Could not successfully load module ") + filename);
       }
    }
 
@@ -138,12 +170,7 @@ namespace c2d
    void ModuleManager::clear()
    {
       mModules.clear();
-
-      Platform& platform = Platform::getInstance();
-      for ( auto& handle : mHandles )
-      {
-         platform.freeModule(handle.phandle);
-      }
+      mFiles.clear();
    }
 
    // - Query

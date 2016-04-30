@@ -6,7 +6,7 @@
 
 class VirtualMachine;
 
-class SCRIPT_API Collectable
+class Collectable
 {
 public:
             Collectable();

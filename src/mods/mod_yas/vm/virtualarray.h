@@ -8,7 +8,7 @@
 
 class VirtualValue;
 
-class SCRIPT_API VirtualArray : public Collectable
+class VirtualArray : public Collectable
 {
 public:
    VirtualArray();

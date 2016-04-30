@@ -47,6 +47,7 @@ public:
    
    void  info(const String& msg);
    void  info(const char* msg, ...);
+   void  warning(const String& msg);   
    void  warning(const char* msg, ...);
    void  error(const char* msg, ...);
 

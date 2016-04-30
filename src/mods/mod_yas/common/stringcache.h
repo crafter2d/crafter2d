@@ -9,7 +9,7 @@
 class String;
 class VirtualString;
 
-class SCRIPT_API StringCache
+class StringCache
 {
 public:
    StringCache();

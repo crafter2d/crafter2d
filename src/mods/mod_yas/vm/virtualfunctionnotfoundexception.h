@@ -24,7 +24,7 @@
 
 #include "core/string/string.h"
 
-class SCRIPT_API VirtualFunctionNotFoundException
+class VirtualFunctionNotFoundException
 {
 public:
    VirtualFunctionNotFoundException(const String& aclass, const String& function);

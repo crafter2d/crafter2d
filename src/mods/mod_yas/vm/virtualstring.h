@@ -8,7 +8,7 @@
 
 #include "mod_yas/gc/collectable.h"
 
-class SCRIPT_API VirtualString : public Collectable
+class VirtualString : public Collectable
 {
 public:
             VirtualString();

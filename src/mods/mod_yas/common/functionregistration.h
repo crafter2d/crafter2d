@@ -14,7 +14,7 @@ namespace yas
 
 class ClassRegistration;
 
-class SCRIPT_API FunctionRegistration
+class FunctionRegistration
 {
 public:
    static FunctionRegistration* create(const String& prototype, yas::CallbackFunctor* pcallback);

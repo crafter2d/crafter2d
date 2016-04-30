@@ -26,6 +26,16 @@
 
 using namespace c2d;
 
+extern "C" MOD_API ModuleInfo* DECL getModuleInfo()
+{
+   return ModuleInfo::create(1, {});
+}
+
+extern "C" MOD_API void DECL freeModuleInfo(ModuleInfo* pinfo)
+{
+   ModuleInfo::free(pinfo);
+}
+
 extern "C" MOD_API Modules* DECL getModules()
 {
    SoundModule* pmod = new SoundModule(new FModSoundManager());

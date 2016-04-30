@@ -21,7 +21,7 @@ class VirtualField;
 class VirtualFunction;
 class VirtualObject;
 
-class SCRIPT_API VirtualClass
+class VirtualClass
 {
 public:
    typedef std::vector<VirtualFunction*> Functions;

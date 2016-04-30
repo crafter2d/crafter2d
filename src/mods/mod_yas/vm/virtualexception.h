@@ -6,7 +6,7 @@
 
 class VirtualObject;
 
-class SCRIPT_API VirtualException
+class VirtualException
 {
 public:
             VirtualException();

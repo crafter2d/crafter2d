@@ -73,6 +73,11 @@ void Log::info(const char* msg, ...)
    writeInfo(SInfo, text);
 }
 
+void Log::warning(const String& msg)
+{
+   writeInfo(SWarning, msg.toUtf8());
+}
+
 void Log::warning(const char* msg, ...)
 {
    ASSERT_PTR(msg);

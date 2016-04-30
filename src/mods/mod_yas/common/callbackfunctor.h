@@ -8,7 +8,7 @@ class VirtualCall;
 
 namespace yas
 {
-   class SCRIPT_API CallbackFunctor
+   class CallbackFunctor
    {
    public:
       

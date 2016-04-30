@@ -49,7 +49,7 @@ class VirtualObject;
 class VirtualCall;
 class VirtualValue;
 
-class SCRIPT_API VirtualMachine
+class VirtualMachine
 {
 public:
    explicit VirtualMachine(VirtualContext& context);

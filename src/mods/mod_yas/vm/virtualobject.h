@@ -30,7 +30,7 @@ class VirtualClass;
 class VirtualMachine;
 class VirtualValue;
 
-class SCRIPT_API VirtualObject : public Collectable
+class VirtualObject : public Collectable
 {
 public:
    VirtualObject();

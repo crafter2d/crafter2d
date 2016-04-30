@@ -12,7 +12,7 @@ class String;
 class VirtualArray;
 class VirtualString;
 
-class SCRIPT_API VirtualStack
+class VirtualStack
 {
 public:
    explicit VirtualStack(int initialsize = 32);

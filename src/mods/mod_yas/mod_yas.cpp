@@ -1,6 +1,7 @@
 
 #include "core/modules/scriptmodule.h"
 #include "core/modules/modulemanager.h"
+#include "core/modules/moduleinfo.h"
 
 #include "script_base.h"
 
@@ -8,19 +9,23 @@
 
 using namespace c2d;
 
-#if defined(WIN32)
-  #define DECL cdecl
-#else
-  #define DECL
-#endif
+extern "C" MOD_API ModuleInfo* DECL getModuleInfo()
+{
+   return ModuleInfo::create(1, {});
+}
 
-extern "C" SCRIPT_API Modules* DECL getModules()
+extern "C" MOD_API void DECL freeModuleInfo(ModuleInfo* pinfo)
+{
+   ModuleInfo::free(pinfo);
+}
+
+extern "C" MOD_API Modules* DECL getModules()
 {  
    ScriptModule* pmodule = new ScriptModule(new YasScriptManager());
    return Modules::create(pmodule);
 }
 
-extern "C" SCRIPT_API void DECL freeModules(Modules* pmodules)
+extern "C" MOD_API void DECL freeModules(Modules* pmodules)
 {
    ASSERT(pmodules->count == 1);
    ASSERT(pmodules->modules[0]->getKind() == c2d::eScriptModule);

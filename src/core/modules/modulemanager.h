@@ -14,6 +14,7 @@ class Module;
 
 namespace c2d
 {
+   class ModuleFile;
    class Uuid;
 
    struct CORE_API Modules
@@ -29,16 +30,14 @@ namespace c2d
    class CORE_API ModuleManager
    {
    public:
-      typedef ModuleInfo* (*PGETMODULEINFO)();
-      typedef Modules* (*PGETMODULES)();
-      typedef void     (*PFREEMODULES)();
-
       ModuleManager();
       ~ModuleManager();
 
+      ModuleManager(const ModuleManager& that) = delete;
+      ModuleManager& operator=(const ModuleManager& that) = delete;
+
       // operations
       bool initialize();
-      void deinitialize();
       
       ModuleCollection filter(ModuleKind kind);
 
@@ -47,23 +46,17 @@ namespace c2d
 
    private:
     // types
-      struct ModuleHandle
-      {
-         std::vector<Module*> modules;
-         void* phandle;
-      };
-
-      using ModuleHandles = std::vector<ModuleHandle>;
+      using ModuleFiles = std::vector<ModuleFile>;
       
     // maintenance
+      void load(const String& filename);
       void add(Module* pmodule);
-      void add(const String& filename);
       void clear();
 
       static ModuleManager sInstance;
 
     // data
-      ModuleHandles    mHandles;
+      ModuleFiles      mFiles;
       ModuleCollection mModules;
    };
 }

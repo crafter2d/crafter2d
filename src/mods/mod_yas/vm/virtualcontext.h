@@ -16,7 +16,7 @@ namespace ByteCode
    class IRGenerator;
 }
 
-class SCRIPT_API VirtualContext
+class VirtualContext
 {
 public:
    VirtualContext();

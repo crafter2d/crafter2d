@@ -17,7 +17,7 @@ namespace yas
 class ClassRegistration;
 class FunctionRegistration;
 
-class SCRIPT_API ClassRegistry
+class ClassRegistry
 {
    typedef std::vector<ClassRegistration*> Classes;
    typedef std::vector<FunctionRegistration*> Functions;

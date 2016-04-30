@@ -169,7 +169,7 @@ void Math_ceil(VirtualCall& accessor)
    accessor.setResult(ceilf(value));
 }
 
-SCRIPT_API void VMInterface::registerCommonFunctions(ClassRegistry& registry)
+void VMInterface::registerCommonFunctions(ClassRegistry& registry)
 {
    registry.addClass(UTEXT("system.Console"));
    registry.addFunction(UTEXT("println(string)"), new VirtualCallbackFunctor(Console_println));

@@ -12,11 +12,14 @@
 
 using namespace c2d;
 
-extern "C" MOD_API ModuleInfo* getModuleInfo()
+extern "C" MOD_API ModuleInfo* MOD_DECL getModuleInfo()
 {
-   auto result = std::make_unique<ModuleInfo>();
-   result->setDependencies({ UUID_ScriptModule });
-   return result.release();
+   return ModuleInfo::create(1, { UUID_ScriptModule });
+}
+
+extern "C" MOD_API void MOD_DECL freeModuleInfo(ModuleInfo* pinfo)
+{
+   ModuleInfo::free(pinfo);
 }
 
 extern "C" MOD_API Modules* MOD_DECL getModules()

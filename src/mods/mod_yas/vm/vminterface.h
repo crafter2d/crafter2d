@@ -2,8 +2,6 @@
 #ifndef VM_INTERFACE_H
 #define VM_INTERFACE_H
 
-#include "mod_yas/script_base.h"
-
 class ClassRegistry;
 class VirtualMachine;
 class VirtualCall;
@@ -12,7 +10,7 @@ namespace VMInterface
 {
    typedef void (*CallbackFnc)(VirtualCall& accessor);
 
-   SCRIPT_API void registerCommonFunctions(ClassRegistry& registry);
+   void registerCommonFunctions(ClassRegistry& registry);
 };
 
 #endif // VM_INTERFACE_H
