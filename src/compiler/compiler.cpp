@@ -53,10 +53,9 @@ int compile(const String& srcfile, const String& dstFile)
          }
       }
 
-      ModuleCollectionIterator it = mods.getIterator();
-      for ( ; it.isValid(); ++it )
+      for ( auto& pair : mods )
       {
-         ContentModule& cmod = static_cast<ContentModule&>(*it);
+         ContentModule& cmod = static_cast<ContentModule&>(*pair.second);
          if ( cmod.supports(extension) )
          {
             BufferedStream stream;
