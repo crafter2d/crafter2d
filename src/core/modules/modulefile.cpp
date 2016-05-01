@@ -49,15 +49,18 @@ c2d::ModuleFile& c2d::ModuleFile::operator=(ModuleFile&& that)
 
 c2d::ModuleFile::~ModuleFile()
 {
-   if ( mpInfo != nullptr )
+   if ( mpHandle != nullptr )
    {
-      (*mpFreeModuleInfo)(mpInfo);
+      if ( mpInfo != nullptr )
+      {
+         (*mpFreeModuleInfo)(mpInfo);
+      }
+      if ( mpModules != nullptr )
+      {
+         (*mpFreeModules)(mpModules);
+      }
+      Platform::getInstance().freeModule(mpHandle);
    }
-   if ( mpModules != nullptr )
-   {
-      (*mpFreeModules)(mpModules);
-   }
-   Platform::getInstance().freeModule(mpHandle);
 }
 
 void c2d::ModuleFile::move(ModuleFile& that)
