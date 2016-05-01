@@ -32,10 +32,8 @@ project "Compiler"
 	filter "system:Linux"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+        libdirs { "../bin" }
         links { "tinyxml" }
-		
-	filter "action:cb-gcc"
-		linkoptions { "-Xlinker", "-zmuldefs" }
 
     filter { "action:vs*", "Debug" }
         links { "tinyxmld_STL" }

@@ -1,6 +1,7 @@
 
 #include "fmodsoundmanager.h"
 
+#include <string.h>
 #include <fmod.hpp>
 #include <fmod_errors.h>
 

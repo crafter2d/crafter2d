@@ -21,15 +21,16 @@ project "Gen"
 		
 	filter "configurations:Release"
 		defines { "NDEBUG" }
-		flags { "Optimize" }
+		optimize "On"
 		
     -- Systems
 	filter "system:Windows"
-        links { "Core" }
+        defines { "WIN32" }
 		includedirs { path.join(libdir, "ctemplate/include"),
 					  path.join(libdir, "icu/include")}
 
 		libdirs { path.join(libdir, "ctemplate/lib") }
+        links { "Core" }
 	
 	filter { "system:Windows", "Debug" }
 		links { "libctemplate-debug" }
@@ -41,11 +42,10 @@ project "Gen"
 		defines { "LINUX" }
 		links { "ctemplate", "tinyxml" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
-        libdir { "..\bin" }
-		
-    filter { "system:linux", "Debug" }
-        linkoptions { "-lCored" }
+        libdirs { "..\bin" }
+
+	filter { "system:linux", "Debug" }
+        linkoptions { "-lCored", "-lEngined" }
 
     filter { "system:linux", "Release" }
-        linkoptions { "-lCore" }
-
+        linkoptions { "-lCore", "-lEngine" }
