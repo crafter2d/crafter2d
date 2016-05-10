@@ -21,7 +21,6 @@
 
 #include <memory>
 
-#include "core/smartptr/autoptr.h"
 #include "core/containers/hashinterface.h"
 #include "core/graphics/font.h"
 #include "core/graphics/texture.h"

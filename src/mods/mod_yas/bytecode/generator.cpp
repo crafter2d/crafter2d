@@ -1,7 +1,6 @@
 
 #include "generator.h"
 
-#include "core/smartptr/autoptr.h"
 #include "core/streams/filereaderstream.h"
 #include "core/string/string.h"
 #include "core/string/stringinterface.h"
@@ -67,8 +66,8 @@ namespace ByteCode
          filename = classname;
       }
 
-      AutoPtr<File> file = FileSystem::getInstance().open(filename + UTEXT(".cas"), File::ERead | File::EBinary);
-      if ( file.hasPointer() )
+      std::unique_ptr<File> file(FileSystem::getInstance().open(filename + UTEXT(".cas"), File::ERead | File::EBinary));
+      if ( file )
       {
          CIL::Class* pcilclass = new CIL::Class();
 
@@ -78,13 +77,13 @@ namespace ByteCode
 
          return pcilclass;
       }
-      return NULL;
+      return nullptr;
    }
 
    VirtualClass* Generator::loadClass(VirtualContext& context, const String& classname)
    {
-      AutoPtr<CIL::Class> cilclass = loadCompiledClass(classname);
-      if ( !cilclass.hasPointer() )
+      std::unique_ptr<CIL::Class> cilclass(loadCompiledClass(classname));
+      if ( !cilclass )
       {
          String msg = UTEXT("Could not load class ") + classname;
          throw new std::runtime_error(msg.toUtf8().c_str());

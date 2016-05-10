@@ -37,7 +37,6 @@
 #include "core/graphics/texture.h"
 #include "core/graphics/utils.h"
 #include "core/math/matrix4.h"
-#include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"

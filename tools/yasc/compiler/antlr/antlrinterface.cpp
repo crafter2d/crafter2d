@@ -2,10 +2,10 @@
 #include "antlrinterface.h"
 
 #include <iostream>
+#include <memory>
 
 #include "core/defines.h"
 #include "core/conv/numberconverter.h"
-#include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 #include "core/system/variant.h"
 
@@ -33,7 +33,7 @@ AntlrParser::AntlrParser(CompileContext& context):
 
 ASTRoot* AntlrParser::parse(File& file)
 {
-   AutoPtr<AntlrStream> stream = AntlrStream::fromFile(file);
+   std::unique_ptr<AntlrStream> stream(AntlrStream::fromFile(file));
    pyasLexer lexer = yasLexerNew(stream->getStream());
    if ( lexer == NULL )
    {
@@ -69,7 +69,7 @@ ASTRoot* AntlrParser::parse(File& file)
       }
       else
       {
-         AutoPtr<ASTRoot> astroot(new ASTRoot());
+         std::unique_ptr<ASTRoot> astroot(new ASTRoot());
 
          AntlrNode root(ast.tree);
          if ( !root.isNil() )
@@ -1599,7 +1599,7 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
          break;
       case FLOAT:
          kind = ASTType::eReal;
-         value.setReal(NumberConverter::getInstance().toDouble(valuestr));
+         value.setReal(NumberConverter::getInstance().toFloat(valuestr));
          break;
       case CHAR:
          kind = ASTType::eChar;

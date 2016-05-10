@@ -27,7 +27,6 @@
 // #include <vld.h>
 
 #include "core/log/log.h"
-#include "core/smartptr/autoptr.h"
 #include "core/content/contentmanager.h"
 #include "core/modules/modulemanager.h"
 #include "core/modules/scriptmodule.h"

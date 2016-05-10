@@ -281,19 +281,19 @@ namespace CIL
       mStream >> argc;
       for ( int index = 0; index < argc; ++index )
       {
-         yasc::Type* ptype = readType();
-         pfunction->addArgument(ptype);
+         yasc::Type type = readType();
+         pfunction->addArgument(type);
       }
 
       mStream >> argc;
       for ( int index = 0; index < argc; ++index )
       {
-         yasc::Type* ptype = readType();
-         pfunction->addLocal(ptype);
+         yasc::Type type = readType();
+         pfunction->addLocal(type);
       }
 
-      yasc::Type* prettype = readType();
-      pfunction->setReturnType(prettype);
+      yasc::Type rettype = readType();
+      pfunction->setReturnType(rettype);
 
       int guardc;
       mStream >> guardc;
@@ -324,7 +324,7 @@ namespace CIL
       return pfunction;
    }
 
-   yasc::Type* CodeStreamer::readType()
+   yasc::Type CodeStreamer::readType()
    {
       String type;
       mStream >> type;

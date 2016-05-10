@@ -22,7 +22,6 @@
 #include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/math/size.h"
-#include "core/smartptr/autoptr.h"
 
 #include "animation/animationstate.h"
 

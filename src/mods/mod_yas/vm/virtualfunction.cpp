@@ -13,7 +13,7 @@ VirtualFunction::VirtualFunction():
    mModifiers(),
    mArguments(),
    mLocals(),
-   mpReturnType(NULL),
+   mReturnType(),
    mGuards(),
    mLookups(),
    mInstructions(),
@@ -87,13 +87,12 @@ void VirtualFunction::setArguments(const yasc::Types& args)
 
 const yasc::Type& VirtualFunction::getReturnType() const
 {
-   ASSERT_PTR(mpReturnType);
-   return *mpReturnType;
+   return mReturnType;
 }
 
 void VirtualFunction::setReturnType(const yasc::Type& type)
 {
-   mpReturnType = type.clone();
+   mReturnType = type;
 }
 
 const StringList& VirtualFunction::getAnnotations() const

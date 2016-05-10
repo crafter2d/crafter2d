@@ -19,7 +19,8 @@
  ***************************************************************************/
 
 #include "core/commandline/commandline.h"
-#include "core/smartptr/autoptr.h"
+
+#include <memory>
 
 #include "engine/game.h"
 // #include "sdlgamewindowfactory.h"
@@ -83,7 +84,7 @@ int main(int argc, char *argv[])
    SDLGameWindowFactory windowfactory;
 #endif
 
-   AutoPtr<Game> game = new Game(cmd);
+   std::unique_ptr<Game> game(new Game(cmd));
    game->setWindowFactory(windowfactory);
    if ( game->create() )
    {

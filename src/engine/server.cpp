@@ -19,10 +19,11 @@
  ***************************************************************************/
 #include "server.h"
 
+#include <memory>
+
 #include "core/content/contentmanager.h"
 #include "core/entity/controller.h"
 #include "core/log/log.h"
-#include "core/smartptr/autoptr.h"
 #include "core/smartptr/scopedvalue.h"
 #include "core/physics/simulator.h"
 #include "core/script/scriptobject.h"
@@ -196,12 +197,12 @@ namespace c2d
          break;
       case disconnectEvent:
          {
-            AutoPtr<Player> player = clients[client];
+            std::unique_ptr<Player> player(clients[client]);
 
             // run the onClientConnect script
             mpScript->prepareCall(2);
             mpScript->arg(0, client);
-            mpScript->arg(1, UTEXT("engine.game.Player"), player.getPointer());
+            mpScript->arg(1, UTEXT("engine.game.Player"), player.get());
             mpScript->call(UTEXT("onClientDisconnect"));
 
             // remove the player from the client list

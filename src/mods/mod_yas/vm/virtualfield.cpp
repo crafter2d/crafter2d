@@ -1,29 +1,26 @@
 
 #include "virtualfield.h"
 
-#include "../common/type.h"
-
 #include "core/defines.h"
 
 VirtualField::VirtualField():
+   mType(),
    mName(),
    mpClass(NULL),
-   mpType(NULL),
    mIndex(-1)
 {
 }
 
 VirtualField::VirtualField(const String& name, const yasc::Type& type):
+   mType(type),
    mName(name),
    mpClass(NULL),
-   mpType(type.clone()),
    mIndex(-1)
 {
 }
 
 VirtualField::~VirtualField()
 {
-   setType(NULL);
 }
 
 // - Get/set
@@ -51,19 +48,12 @@ void VirtualField::setClass(VirtualClass& klass)
 
 const yasc::Type& VirtualField::getType() const
 {
-   ASSERT_PTR(mpType);
-   return *mpType;
+   return mType;
 }
 
 void VirtualField::setType(const yasc::Type& type)
 {
-   mpType = type.clone();
-}
-
-void VirtualField::setType(yasc::Type* ptype)
-{
-   delete mpType;
-   mpType = ptype;
+   mType = type;
 }
 
 int VirtualField::getIndex() const

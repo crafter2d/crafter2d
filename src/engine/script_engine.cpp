@@ -28,7 +28,6 @@
 #include "core/physics/inputforcegenerator.h"
 #include "core/physics/simulator.h"
 #include "core/resource/resourcemanager.h"
-#include "core/smartptr/autoptr.h"
 #include "core/streams/datastream.h"
 #include "core/streams/bufferedstream.h"
 #include "core/script/scriptcall.h"

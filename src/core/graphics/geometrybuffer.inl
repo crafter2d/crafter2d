@@ -1,7 +1,7 @@
 
 #include "core/defines.h"
 
-#include "core/smartptr/autoptr.h"
+#include <memory>
 
 namespace Graphics
 {
@@ -9,24 +9,24 @@ namespace Graphics
    template <class T>
    GeometryBuffer<T>* GeometryBuffer<T>::createTriangleBuffer(Device& device, const String& effect, int elements)
    {
-      AutoPtr<GeometryBuffer<T> > buffer = new GeometryBuffer<T>();
+      std::unique_ptr<GeometryBuffer<T>> buffer(new GeometryBuffer<T>());
       if ( buffer->create(device, effect, elements, 3) )
       {
          return buffer.release();
       }
-      return NULL;
+      return nullptr;
    }
 
    // static 
    template <class T>
    GeometryBuffer<T>* GeometryBuffer<T>::createRectangleBuffer(Device& device, const String& effect, int maxrects)
    {
-      AutoPtr<GeometryBuffer<T> > buffer = new GeometryBuffer<T>();
+      std::unique_ptr<GeometryBuffer<T>> buffer(new GeometryBuffer<T>());
       if ( buffer->create(device, effect, maxrects, 4) )
       {
          return buffer.release();
       }
-      return NULL;
+      return nullptr;
    }
 
    // - Class implementation

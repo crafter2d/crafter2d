@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <stack>
+#include <memory>
 #include <string.h>
 
-#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
 #include "mod_yas/bytecode/block.h"
@@ -65,7 +65,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
    using namespace yasc;
 
    Resolver resolver(context);
-   std::stack<AutoPtr<Type>> types;
+   std::deque<Type> types;
 
    const CIL::Instructions& instructions = function.getInstructions();
 
@@ -87,7 +87,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
          case CIL_dup:
             {
-               types.push(types.top());
+               types.emplace_back(types.back());
                INSERT(SBIL_dup, 0);
             }
             break;
@@ -105,22 +105,23 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < psymbol->args; ++arg )
-                  types.pop();
+                  types.pop_back();
 
-               types.push(Type::fromString(constructor.getClass().getName()));
+               types.push_back(Type::fromString(constructor.getClass().getName()));
 
                INSERT(SBIL_new, i);
             }
             break;
          case CIL_newarray:
             {
-               AutoPtr<Type> type = Type::fromString(*inst.mString);
+               Type type = Type::fromString(*inst.mString);
+               ASSERT(type.isArray());
 
-               int depth = type->getArrayDimension();
+               int depth = type.getArrayDimension();
                for ( int arg = 0; arg < depth; ++arg )
-                  types.pop();
+                  types.pop_back();
 
-               types.push(type.release());
+               types.push_back(type);
 
                INSERT(SBIL_new_array, depth);
             }
@@ -141,10 +142,10 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < psymbol->args; ++arg )
-                  types.pop();
+                  types.pop_back();
 
                if ( psymbol->returns )
-                  types.push(func.getReturnType().clone());
+                  types.push_back(func.getReturnType());
 
                INSERT(SBIL_call, i);
             }
@@ -162,10 +163,10 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < psymbol->args; ++arg )
-                  types.pop();
+                  types.pop_back();
 
                if ( psymbol->returns )
-                  types.push(func.getReturnType().clone());
+                  types.push_back(func.getReturnType());
 
                INSERT(SBIL_call_virt, i);
             }
@@ -181,10 +182,10 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < psymbol->args; ++arg )
-                  types.pop();
+                  types.pop_back();
 
                if ( psymbol->returns )
-                  types.push(func.getReturnType().clone());
+                  types.push_back(func.getReturnType());
 
                INSERT(SBIL_call_interface, i);
             }
@@ -203,10 +204,10 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
                for ( int arg = 0; arg < psymbol->args; ++arg )
-                  types.pop();
+                  types.pop_back();
 
                if ( psymbol->returns )
-                  types.push(func.getReturnType().clone());
+                  types.push_back(func.getReturnType());
 
                INSERT(SBIL_call_native, i);
             }
@@ -219,71 +220,71 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
          case CIL_bconv_str:
             INSERT(SBIL_bconv_str, 0);
-            types.pop();
-            types.push(new Type(Type::eString));
+            types.pop_back();
+            types.emplace_back(Type::eString);
             break;
          case CIL_iconv_real:
             INSERT(SBIL_iconv_real, 0);
-            types.pop();
-            types.push(new Type(Type::eReal));
+            types.pop_back();
+            types.emplace_back(Type::eReal);
             break;
          case CIL_iconv_str:
             INSERT(SBIL_iconv_str, 0);
-            types.pop();
-            types.push(new Type(Type::eString));
+            types.pop_back();
+            types.emplace_back(Type::eString);
             break;
          case CIL_rconv_int:
             INSERT(SBIL_rconv_int, 0);
-            types.pop();
-            types.push(new Type(Type::eInt));
+            types.pop_back();
+            types.emplace_back(Type::eInt);
             break;
          case CIL_rconv_str:
             INSERT(SBIL_rconv_str, 0);
-            types.pop();
-            types.push(new Type(Type::eString));
+            types.pop_back();
+            types.emplace_back(Type::eString);
             break;
          case CIL_cconv_str:
             INSERT(SBIL_cconv_str, 0);
-            types.pop();
-            types.push(new Type(Type::eString));
+            types.pop_back();
+            types.emplace_back(Type::eString);
             break;
          case CIL_sconv_bool:
             INSERT(SBIL_sconv_bool, 0);
-            types.pop();
-            types.push(new Type(Type::eBool));
+            types.pop_back();
+            types.emplace_back(Type::eBool);
             break;
          case CIL_sconv_int:
             INSERT(SBIL_sconv_int, 0);
-            types.pop();
-            types.push(new Type(Type::eInt));
+            types.pop_back();
+            types.emplace_back(Type::eInt);
             break;
          case CIL_sconv_real:
             INSERT(SBIL_sconv_real, 0);
-            types.pop();
-            types.push(new Type(Type::eReal));
+            types.pop_back();
+            types.emplace_back(Type::eReal);
             break;
 
          // Math
 
          case CIL_add:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_iadd, 0);
-                     types.push(new Type(Type::eInt));
+                     types.emplace_back(Type::eInt);
                      break;
                   case Type::eReal:
                      INSERT(SBIL_radd, 0);
-                     types.push(new Type(Type::eReal));
+                     types.emplace_back(Type::eReal);
                      break;
                   case Type::eString:
                      INSERT(SBIL_sadd, 0);
-                     types.push(new Type(Type::eString));
+                     types.emplace_back(Type::eString);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -293,19 +294,19 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             break;
          case CIL_sub:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_isub, 0);
-                     types.push(new Type(Type::eInt));
+                     types.emplace_back(Type::eInt);
                      break;
                   case Type::eReal:
                      INSERT(SBIL_rsub, 0);
-                     types.push(new Type(Type::eReal));
+                     types.emplace_back(Type::eReal);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -315,19 +316,19 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             break;
          case CIL_mul:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_imul, 0);
-                     types.push(new Type(Type::eInt));
+                     types.emplace_back(Type::eInt);
                      break;
                   case Type::eReal:
                      INSERT(SBIL_rmul, 0);
-                     types.push(new Type(Type::eReal));
+                     types.emplace_back(Type::eReal);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -337,19 +338,19 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             break;
          case CIL_div:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_idiv, 0);
-                     types.push(new Type(Type::eInt));
+                     types.emplace_back(Type::eInt);
                      break;
                   case Type::eReal:
                      INSERT(SBIL_rdiv, 0);
-                     types.push(new Type(Type::eReal));
+                     types.emplace_back(Type::eReal);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -359,18 +360,18 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             break;
          case CIL_neg:
             {
-               Type type = *types.top();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_ineg, 0);
-                     types.push(new Type(Type::eInt));
+                     types.emplace_back(Type::eInt);
                      break;
                   case Type::eReal:
                      INSERT(SBIL_rneg, 0);
-                     types.push(new Type(Type::eReal));
+                     types.emplace_back(Type::eReal);
                      break;
                   default:
                      UNREACHABLE("Invalid type");
@@ -380,15 +381,15 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             break;
          case CIL_rem:
             INSERT(SBIL_irem, 0);
-            types.push(new Type(Type::eInt));
+            types.emplace_back(Type::eInt);
             break;
          case CIL_shl:
             INSERT(SBIL_shl, 0);
-            types.push(new Type(Type::eInt));
+            types.emplace_back(Type::eInt);
             break;
          case CIL_shr:
             INSERT(SBIL_shr, 0);
-            types.push(new Type(Type::eInt));
+            types.emplace_back(Type::eInt);
             break;
 
          case CIL_xor:
@@ -406,11 +407,11 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
          case CIL_cmpeq:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eBool:
                      INSERT(SBIL_bcmpeq, 0);
@@ -439,16 +440,16 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                      break;
                }
 
-               types.push(new Type(Type::eBool));
+               types.emplace_back(Type::eBool);
             }
             break;
          case CIL_cmpne:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eBool:
                      INSERT(SBIL_bcmpne, 0);
@@ -478,16 +479,16 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new Type(Type::eBool));
+               types.emplace_back(Type::eBool);
             }
             break;
          case CIL_cmpgt:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_icmpgt, 0);
@@ -505,16 +506,16 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new Type(Type::eBool));
+               types.emplace_back(Type::eBool);
             }
             break;
          case CIL_cmpge:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_icmpge, 0);
@@ -532,16 +533,16 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new Type(Type::eBool));
+               types.emplace_back(Type::eBool);
             }
             break;
          case CIL_cmple:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_icmple, 0);
@@ -559,16 +560,16 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new Type(Type::eBool));
+               types.emplace_back(Type::eBool);
             }
             break;
          case CIL_cmplt:
             {
-               Type type = *types.top();
-               types.pop();
-               types.pop();
+               Type::Kind kind = types.back().getKind();
+               types.pop_back();
+               types.pop_back();
 
-               switch ( type.getKind() )
+               switch ( kind )
                {
                   case Type::eInt:
                      INSERT(SBIL_icmplt, 0);
@@ -586,26 +587,26 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                      UNREACHABLE("Invalid type");
                      break;
                }
-               types.push(new Type(Type::eBool));
+               types.emplace_back(Type::eBool);
             }
             break;
          case CIL_isnull:
             INSERT(SBIL_isnull, 0);
-            types.push(new Type(Type::eBool));
+            types.emplace_back(Type::eBool);
             break;
 
          case CIL_jump:
             INSERT(SBIL_jump, 0);
             break;
          case CIL_jump_true:
-            ASSERT(types.top()->isBool());
+            ASSERT(types.back().isBool());
             INSERT(SBIL_jump_true, 0);
-            types.pop();
+            types.pop_back();
             break;
          case CIL_jump_false:
-            ASSERT(types.top()->isBool());
+            ASSERT(types.back().isBool());
             INSERT(SBIL_jump_false, 0);
-            types.pop();
+            types.pop_back();
             break;
 
          case CIL_ldint:
@@ -625,7 +626,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             {
                INSERT(SBIL_pushi, inst.mInt);
             }
-            types.push(new Type(Type::eInt));
+            types.emplace_back(Type::eInt);
             break;
          case CIL_ldreal:
             if ( inst.mReal == 0.0 )
@@ -648,11 +649,11 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
                INSERT(SBIL_push, i);
             }
-            types.push(new Type(Type::eReal));
+            types.emplace_back(Type::eReal);
             break;
          case CIL_ldchar:
             INSERT(SBIL_pushc, inst.mInt);
-            types.push(new Type(Type::eChar));
+            types.emplace_back(Type::eChar);
             break;
          case CIL_ldstr:
             {
@@ -661,16 +662,16 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                int i = context.mProgram.getSymbolTable().add(psymbol);
 
                INSERT(SBIL_push, i);
-               types.push(new Type(Type::eString));
+               types.emplace_back(Type::eString);
             }
             break;
          case CIL_ldtrue:
             INSERT(SBIL_push_true, 0);
-            types.push(new Type(Type::eBool));
+            types.emplace_back(Type::eBool);
             break;
          case CIL_ldfalse:
             INSERT(SBIL_push_false, 0);
-            types.push(new Type(Type::eBool));
+            types.emplace_back(Type::eBool);
             break;
          case CIL_ldclass:
             {
@@ -680,12 +681,12 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
                INSERT(SBIL_push_class, i);
                               
-               types.push(Type::fromString(UTEXT("system.Class")));
+               types.push_back(Type::fromString(UTEXT("system.Class")));
             }
             break;
          case CIL_ldnull:
             INSERT(SBIL_push_null, 0);
-            types.push(new Type());
+            types.emplace_back();
             break;
 
          case CIL_ldarg:
@@ -694,24 +695,24 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
                if ( inst.mInt == 0 && !function.getModifiers().isStatic() )
                {
-                  types.push(Type::fromString(function.getClass().getName()));
+                  types.push_back(Type::fromString(function.getClass().getName()));
                }
                else
                {
                   const Type& argtype = function.getArguments()[inst.mInt - (function.getModifiers().isStatic() ? 0 : 1)];
-                  types.push(argtype.clone());
+                  types.push_back(argtype);
                }
             }
             break;
          case CIL_starg:
             INSERT(SBIL_stlocal, inst.mInt);
-            types.pop();
+            types.pop_back();
             break;
          case CIL_ldloc:
             {
                const Type& type = function.getLocals()[inst.mInt];
                INSERT(SBIL_ldlocal, (inst.mInt + function.getArgumentCount()));
-               types.push(type.clone());
+               types.push_back(type);
             }
             break;
          case CIL_stloc:
@@ -723,44 +724,43 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             }
             else
             {
-               types.pop();
+               types.pop_back();
             }
             break;
          case CIL_ldelem:
             {
                // pop indices
                for ( int ei = 0; ei < inst.mInt; ++ ei )
-                  types.pop();
+                  types.pop_back();
             
                INSERT(SBIL_ldelem, inst.mInt);
                
-               Type type = *types.top();
-               types.pop();                     // pop array
-               types.push(type.getArrayType().clone()); // push element
+               Type arraytype = types.back().getArrayType();
+               types.pop_back();                      // pop array
+               types.push_back(std::move(arraytype)); // push element
             }
             break;
          case CIL_stelem:
             {
                // pop indices
                for ( int ei = 0; ei < inst.mInt; ++ei )
-                  types.pop();
+                  types.pop_back();
 
                INSERT(SBIL_stelem, inst.mInt);
-               types.pop();   // pop element
-               types.pop();   // pop array
+               types.pop_back();   // pop element
+               types.pop_back();   // pop array
             }
             break;
          case CIL_ldfield:
             {
-               Type type = *types.top();
-               ASSERT(type.getKind() == Type::eObject);
-               types.pop();
+               ASSERT(types.back().isObject());
                
                String path = *inst.mString;
                const VirtualField& field = resolver.resolveField(path);
                INSERT(SBIL_ldfield, field.getIndex());
 
-               types.push(field.getType().clone());
+               types.pop_back(); // object
+               types.push_back(field.getType());
             }
             break;
          case CIL_stfield:
@@ -770,8 +770,8 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
 
                INSERT(SBIL_stfield, field.getIndex());
 
-               types.pop(); // object
-               types.pop(); // value
+               types.pop_back(); // object
+               types.pop_back(); // value
             }
             break;
          case CIL_ldstatic:
@@ -786,7 +786,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                INSERT(SBIL_push, i);
                INSERT(SBIL_ldstatic, field.getIndex());
 
-               types.push(field.getType().clone());
+               types.push_back(field.getType());
             }
             break;
          case CIL_ststatic:
@@ -801,7 +801,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                INSERT(SBIL_push, i);
                INSERT(SBIL_ststatic, field.getIndex());
 
-               types.pop();
+               types.pop_back(); // value
             }
             break;
 
@@ -820,15 +820,15 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
                int index = context.mProgram.getSymbolTable().add(psymbol);
                INSERT(SBIL_instanceof, index);
 
-               types.pop();
-               types.push(new Type(Type::eBool));
+               types.pop_back(); // value
+               types.emplace_back(Type::eBool);
             }
             break;
 
          // exceptions
             
          case CIL_throw:
-            types.pop();
+            types.pop_back();
             INSERT(SBIL_throw, 0);
             break;
       }

@@ -10,7 +10,6 @@
 #include "core/string/stringlist.h"
 #include "core/string/stringinterface.h"
 #include "core/conv/lexical.h"
-#include "core/smartptr/autoptr.h"
 #include "core/streams/filewriterstream.h"
 #include "core/vfs/stdiofile.h"
 #include "core/vfs/filesystem.h"
@@ -164,7 +163,7 @@ bool Compiler::compile(const String& filename)
    {
       reportException(*pexception);
    }
-   catch ( std::exception* pex )
+   catch ( std::exception* )
    {
       // log it!
    }
@@ -224,8 +223,8 @@ ASTRoot& Compiler::load(const String& classname)
    filename.replace('.', FileSystem::getNativeSeparator());
    filename += UTEXT(".as");
 
-   AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead | File::EText);
-   if ( !file.hasPointer() )
+   std::unique_ptr<File> file(FileSystem::getInstance().open(filename, File::ERead | File::EText));
+   if ( !file )
    {
       throw new FileNotFoundException(filename);
    }
@@ -263,8 +262,8 @@ ASTRoot& Compiler::load(File& file)
 
 void Compiler::save(ASTClass& ast)
 {
-   AutoPtr<CIL::Class> klass = ast.useCompiledClass();
-   if ( klass.hasPointer() )
+   std::unique_ptr<CIL::Class> klass(ast.useCompiledClass());
+   if ( klass )
    {
       String filename = File::concat(mOutputDir, ast.getFullName()) + UTEXT(".cas");
       StdioFile file;

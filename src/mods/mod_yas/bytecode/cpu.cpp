@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include "core/log/log.h"
-#include "core/smartptr/autoptr.h"
 #include "core/smartptr/scopedvalue.h"
 #include "core/defines.h"
 

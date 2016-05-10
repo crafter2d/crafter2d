@@ -27,7 +27,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/string/string.h"
 #include "core/math/math.h"

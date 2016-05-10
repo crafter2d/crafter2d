@@ -7,6 +7,7 @@
 
 #include "mod_yas/common/modifiers.h"
 #include "mod_yas/common/types.h"
+#include "mod_yas/common/type.h"
 
 #include "virtualguards.h"
 #include "virtuallookuptables.h"
@@ -79,7 +80,7 @@ private:
    Modifiers            mModifiers;
    yasc::Types          mArguments;
    yasc::Types          mLocals;
-   yasc::Type*          mpReturnType;
+   yasc::Type           mReturnType;
    VirtualGuards        mGuards;
    VirtualLookupTables  mLookups;
    StringList           mAnnotations;

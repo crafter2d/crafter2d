@@ -25,7 +25,6 @@
 #include "core/defines.h"
 #include "core/content/contentmanager.h"
 #include "core/entity/entity.h"
-#include "core/smartptr/autoptr.h"
 #include "core/log/log.h"
 #include "core/math/color.h"
 #include "core/math/xform.h"
@@ -507,8 +506,8 @@ namespace c2d
 
       // a new object has been made on the server and is now also known on the client
 
-      AutoPtr<Entity> entity = getContentManager().loadContent<Entity>(event.getFileName());
-      if ( !entity.hasPointer() )
+      std::unique_ptr<Entity> entity(getContentManager().loadContent<Entity>(event.getFileName()));
+      if ( !entity )
       {
          UNREACHABLE("Could not create the entity!");
       }

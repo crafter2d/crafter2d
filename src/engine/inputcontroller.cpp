@@ -19,8 +19,6 @@
  ***************************************************************************/
 #include "inputcontroller.h"
 
-#include "core/smartptr/autoptr.h"
-
 #include "engine/net/events/actionevent.h"
 
 namespace c2d

@@ -10,23 +10,27 @@ namespace yasc
    {
    }
 
+   Types::Types(const Types& that) :
+      mTypes(that.mTypes)
+   {
+   }
+
    Types::~Types()
    {
-      clear();
    }
 
    const Types& Types::operator=(const Types& that)
    {
       for ( std::size_t index = 0; index < that.mTypes.size(); ++index )
       {
-         mTypes.push_back(that.mTypes[index]->clone());
+         mTypes.push_back(that.mTypes[index]);
       }
       return *this;
    }
 
    const Type& Types::operator[](int index) const
    {
-      return *mTypes[index];
+      return mTypes[index];
    }
 
    // - Query
@@ -38,20 +42,7 @@ namespace yasc
 
    bool Types::equals(const Types& that) const
    {
-      if ( size() != that.size() )
-      {
-         return false;
-      }
-
-      for ( std::size_t index = 0; index < mTypes.size(); ++index )
-      {
-         if ( !mTypes[index]->equals(*that.mTypes[index]) )
-         {
-            return false;
-         }
-      }
-
-      return true;
+      return mTypes == that.mTypes;
    }
 
    bool Types::compareSignature(bool isstatic, const Types& that) const
@@ -62,30 +53,23 @@ namespace yasc
          return false;
       }
 
-      for ( std::size_t index = 0; index < cnt; ++index )
-      {
-         if ( !mTypes[index + 1]->equals(*that.mTypes[index]) )
-         {
-            return false;
-         }
-      }
-
-      return true;
+      return std::equal(mTypes.begin() + 1, mTypes.end(), that.mTypes.begin());
    }
 
    // - Operations
 
-   void Types::add(Type* ptype)
+   void Types::add(const Type& type)
    {
-      mTypes.push_back(ptype);
+      mTypes.push_back(type);
+   }
+
+   void Types::add(Type&& type)
+   {
+      mTypes.push_back(std::move(type));
    }
 
    void Types::clear()
    {
-      for ( std::size_t index = 0; index < mTypes.size(); ++index )
-      {
-         delete mTypes[index];
-      }
       mTypes.clear();
    }
 }

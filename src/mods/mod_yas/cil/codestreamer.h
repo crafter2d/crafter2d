@@ -41,7 +41,7 @@ namespace CIL
     // reading
       Field*       readField();
       Function*    readFunction(const String& klass);
-      yasc::Type*  readType();
+      yasc::Type   readType();
       Guard*       readGuard();
       SwitchTable* readTable();
       Instruction  readInstruction();

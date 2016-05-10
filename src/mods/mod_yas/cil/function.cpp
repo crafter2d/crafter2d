@@ -11,19 +11,18 @@ namespace CIL
       mpClass(NULL),
       mArguments(),
       mLocals(),
+      mReturnType(),
       mAnnotations(),
       mName(),
       mInstructions(),
       mGuards(),
       mSwitchTables(),
-      mpReturnType(NULL),
       mModifiers()
    {
    }
 
    Function::~Function()
    {
-      setReturnType(NULL);
    }
 
    // - Get/set
@@ -81,14 +80,12 @@ namespace CIL
 
    const yasc::Type& Function::getReturnType() const
    {
-      ASSERT_PTR(mpReturnType);
-      return *mpReturnType;
+      return mReturnType;
    }
 
-   void Function::setReturnType(yasc::Type* ptype)
+   void Function::setReturnType(const yasc::Type& type)
    {
-      delete mpReturnType;
-      mpReturnType = ptype;
+      mReturnType = type;
    }
 
    const StringList& Function::getAnnotations() const
@@ -125,14 +122,14 @@ namespace CIL
 
    // - Operations
 
-   void Function::addArgument(yasc::Type* ptype)
+   void Function::addArgument(const yasc::Type& type)
    {
-      mArguments.add(ptype);
+      mArguments.add(type);
    }
 
-   void Function::addLocal(yasc::Type* ptype)
+   void Function::addLocal(const yasc::Type& type)
    {
-      mLocals.add(ptype);
+      mLocals.add(type);
    }
 
    void Function::addGuard(Guard* pguard)

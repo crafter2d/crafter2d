@@ -1,7 +1,6 @@
 
 #include "resolver.h"
 
-#include "core/smartptr/autoptr.h"
 #include "core/streams/filereaderstream.h"
 #include "core/string/string.h"
 #include "core/string/stringinterface.h"
@@ -53,8 +52,7 @@ namespace ByteCode
                for ( std::size_t index = 0; index < arguments.size(); ++index )
                {
                   String& arg = arguments[index];
-                  yasc::Type* ptype = yasc::Type::fromString(arg);
-                  signature.add(ptype);
+                  signature.add(yasc::Type::fromString(arg));
                }
             }
 

@@ -19,9 +19,6 @@
  ***************************************************************************/
 #include "timer.h"
 
-#include "core/smartptr/autoptr.h"
-#include "core/defines.h"
-
 #include "platform.h"
 
 // static 

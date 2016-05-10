@@ -6,7 +6,6 @@
 #include "core/defines.h"
 #include "core/string/string.h"
 #include "core/conv/lexical.h"
-#include "core/smartptr/autoptr.h"
 
 #include "ast/astclass.h"
 #include "ast/astroot.h"

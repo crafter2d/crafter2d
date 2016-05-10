@@ -13,7 +13,7 @@ project "Gen"
 	-- set project files
 	files { "../src/gen/**.cpp", "../src/gen/**.h", "../src/gen/**.inl" }
 	includedirs { "../src" }
-
+	
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
@@ -25,6 +25,7 @@ project "Gen"
 		
     -- Systems
 	filter "system:Windows"
+		defines { "WIN32", "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS" }
         links { "Core" }
 		includedirs { path.join(libdir, "ctemplate/include"),
 					  path.join(libdir, "icu/include")}

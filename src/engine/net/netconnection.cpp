@@ -23,9 +23,9 @@
 #endif
 
 #include <algorithm>
+#include <memory>
 #include <string.h>
 
-#include "core/smartptr/autoptr.h"
 #include "core/streams/arraystream.h"
 #include "core/streams/bufferedstream.h"
 #include "core/string/string.h"
@@ -246,7 +246,7 @@ void NetConnection::processPackage(NetAddress& client, const NetPackage& package
    NetObjectStream stream(arraystream);
    stream >> &pobject;
 
-   AutoPtr<NetEvent> event(static_cast<NetEvent*>(pobject));
+   std::unique_ptr<NetEvent> event(static_cast<NetEvent*>(pobject));
    mObserver.onEvent(client.index, *event);
 
    client.nextPackageNumber++;

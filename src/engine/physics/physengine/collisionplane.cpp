@@ -19,13 +19,13 @@
  ***************************************************************************/
 #include "collisionplane.h"
 
-#include "core/smartptr/autoptr.h"
+#include <memory>
 
 CollisionPlane* CollisionPlane::construct(const Vector& left, const Vector& right)
 {
    Vector diff = right - left;
 
-   AutoPtr<CollisionPlane> plane = new CollisionPlane();
+   std::unique_ptr<CollisionPlane> plane(new CollisionPlane());
    plane->mNormal.set(-diff.y, diff.x);
    plane->mNormal.normalize();
    plane->mLeft = left;

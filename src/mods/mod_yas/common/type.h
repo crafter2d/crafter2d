@@ -2,6 +2,8 @@
 #ifndef TYPE_H
 #define TYPE_H
 
+#include <memory>
+
 #include "core/string/string.h"
 
 namespace yasc
@@ -10,18 +12,28 @@ namespace yasc
    {
    public:
       enum Kind { eInt, eReal, eBool, eChar, eString, eObject, eArray, eGeneric, eVoid, eNull };
+      
+      static const String sInt;
+      static const String sReal;
+      static const String sChar;
+      static const String sString;
+      static const String sBool;
+      static const String sVoid;
+      static const String sInvalid;
 
-      static Type* fromString(const String& typestr);
-      static Type* newObjectType(const String& classname);
+      static Type fromString(const String& typestr);
 
       Type();
       Type(Kind kind);
+      Type(Type&& that);
       Type(const Type& that);
       ~Type();
 
-      const Type& operator=(const Type& that);
+      bool operator==(const Type& that) const;
+      Type& operator=(const Type& that);
+      Type& operator=(Type&& that);
 
-      // query
+    // query
       Kind getKind() const;
 
       bool isNull() const;
@@ -36,22 +48,22 @@ namespace yasc
 
       bool equals(const Type& that) const;
 
-      // object interface
+    // object interface
       const String& getObjectName() const;
       void          setObjectName(const String& name);
 
-      // array interface
+    // array interface
       int         getArrayDimension() const;
       const Type& getArrayType() const;
 
-      // operations
+    // operations
       void assign(const Type& that);
-      Type* clone() const;
       String toString() const;
 
    private:
+      friend class TypeManager;
 
-      // types
+    // types
       struct ObjectInfo
       {
          String  mObjectName;
@@ -59,22 +71,21 @@ namespace yasc
 
       struct ArrayInfo
       {
-         Type*   mpType;
-         int     mDimension;
+         std::unique_ptr<Type> mType;
+         int  mDimension;
       };
 
-      union Info
-      {
-         ObjectInfo*    mpObject;
-         ArrayInfo*     mpArray;
-      };
-
-      // operations
+    // operations
       void determineArrayDimension();
+      void move(Type&& that);
 
-      // data
-      Kind  mKind;
-      Info  mInfo;
+    // data      
+      Kind mKind;
+      union
+      {
+         ObjectInfo mObject;
+         ArrayInfo  mArray;
+      };
    };
 }
 

@@ -20,7 +20,6 @@
 #include "aicontroller.h"
 
 #include "core/defines.h"
-#include "core/smartptr/autoptr.h"
 #include "core/script/scriptobject.h"
 
 #include "process.h"

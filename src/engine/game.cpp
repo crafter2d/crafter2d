@@ -32,7 +32,6 @@
 #include "core/system/timerdelta.h"
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
-#include "core/smartptr/autoptr.h"
 
 #include "engine/tools/profiler/profiler.h"
 #include "engine/tools/profiler/profilerinstance.h"

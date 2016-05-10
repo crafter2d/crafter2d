@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "inifile.h"
 
+#include "core/defines.h"
 #include "core/containers/hashinterface.h"
 #include "core/string/char.h"
 #include "core/string/string.h"
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
-#include "core/smartptr/autoptr.h"
 
 #include "inifileexception.h"
 #include "inifileparser.h"

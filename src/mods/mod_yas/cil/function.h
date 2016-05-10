@@ -40,7 +40,7 @@ namespace CIL
       void                setSwitchTables(const SwitchTables& tables);
 
       const yasc::Type& getReturnType() const;
-      void              setReturnType(yasc::Type* ptype);
+      void              setReturnType(const yasc::Type& type);
 
       const StringList& getAnnotations() const;
 
@@ -54,8 +54,8 @@ namespace CIL
       bool isMemberOf(const Class& klass) const;
 
     // operation
-      void addArgument(yasc::Type* ptype);
-      void addLocal(yasc::Type* ptype);
+      void addArgument(const yasc::Type& type);
+      void addLocal(const yasc::Type& type);
       void addGuard(Guard* pguard);
       void addSwitchTable(SwitchTable* ptable);
       void addAnnotation(const String& annotation);
@@ -66,12 +66,12 @@ namespace CIL
       Class*         mpClass;
       yasc::Types    mArguments;
       yasc::Types    mLocals;
+      yasc::Type     mReturnType;
       StringList     mAnnotations;
       String         mName;
       Instructions   mInstructions;
       Guards         mGuards;
       SwitchTables   mSwitchTables;
-      yasc::Type*    mpReturnType;
       Modifiers      mModifiers;
    };
 }

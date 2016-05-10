@@ -1,7 +1,6 @@
 
 #include "irgenerator.h"
 
-#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
 #include "mod_yas/cil/cil.h"

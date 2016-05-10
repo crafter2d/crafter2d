@@ -13,7 +13,6 @@
 #include <ctemplate/template.h>
 
 #include "core/commandline/commandline.h"
-#include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 #include "core/vfs/stdiofile.h"
 #include "core/vfs/filesystem.h"

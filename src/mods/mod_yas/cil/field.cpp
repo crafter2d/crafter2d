@@ -9,13 +9,12 @@ namespace CIL
 {
    Field::Field():
       mName(),
-      mpType(NULL)
+      mType()
    {
    }
 
    Field::~Field()
    {
-      setType(NULL);
    }
 
     // - Get/set
@@ -32,13 +31,11 @@ namespace CIL
 
    const yasc::Type& Field::getType() const
    {
-      ASSERT_PTR(mpType);
-      return *mpType;
+      return mType;
    }
 
-   void Field::setType(yasc::Type* ptype)
+   void Field::setType(const yasc::Type& type)
    {
-      delete mpType;
-      mpType = ptype;
+      mType = type;
    }
 }

@@ -4,10 +4,7 @@
 
 #include "core/string/string.h"
 
-namespace yasc
-{
-   class Type;
-}
+#include "mod_yas/common/type.h"
 
 class VirtualClass;
 
@@ -32,13 +29,11 @@ public:
    void setIndex(int index);
 
 private:
- // get/set
-   void setType(yasc::Type* ptype);
 
  // data
+   yasc::Type     mType;
    String         mName;
    VirtualClass*  mpClass;
-   yasc::Type*    mpType;
    int            mIndex;
 };
 

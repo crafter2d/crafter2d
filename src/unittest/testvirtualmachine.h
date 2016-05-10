@@ -13,7 +13,6 @@
 #include "core/script/scriptobject.h"
 #include "core/script/scriptmanager.h"
 #include "core/script/scriptregistrator.h"
-#include "core/smartptr/autoptr.h"
 
 using namespace c2d;
 

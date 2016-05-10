@@ -3,7 +3,6 @@
 
 #include "core/vfs/file.h"
 #include "core/vfs/filesystem.h"
-#include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 
 #include "yasc/compiler/output/yasLexer.h"
@@ -11,7 +10,7 @@
 // static
 AntlrStream* AntlrStream::fromFile(const String& filename)
 {
-   AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead);
+   std::unique_ptr<File> file(FileSystem::getInstance().open(filename, File::ERead));
    return fromFile(*file);
 }
 
@@ -24,10 +23,10 @@ AntlrStream* AntlrStream::fromFile(File& file)
 
    String code;
    int size = file.size();
-   AutoPtr<char> data = new char[size+1];
-   memset(data.getPointer(), 0, size);
-   int read = file.read(data.getPointer(), size);
-   code.setToUtf8(data.getPointer(), read);
+   std::unique_ptr<char[]> data(new char[size+1]);
+   memset(data.get(), 0, size);
+   int read = file.read(data.get(), size);
+   code.setToUtf8(data.get(), read);
    
    return fromString(code);
 }

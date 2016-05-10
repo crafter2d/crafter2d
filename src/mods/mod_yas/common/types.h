@@ -4,14 +4,15 @@
 
 #include <vector>
 
+#include "type.h"
+
 namespace yasc
 {
-   class Type;
-
    class Types
    {
    public:
       Types();
+      Types(const Types& that);
       ~Types();
 
       const Types& operator=(const Types& that);
@@ -23,11 +24,12 @@ namespace yasc
       bool compareSignature(bool isstatic, const Types& that) const;
 
       // operations
-      void add(Type* ptype);
+      void add(const Type& type);
+      void add(Type&& type);
       void clear();
 
    private:
-      typedef std::vector<Type*> TypeList;
+      typedef std::vector<Type> TypeList;
 
       // data
       TypeList mTypes;

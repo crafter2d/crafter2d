@@ -19,7 +19,8 @@
  ***************************************************************************/
 #include "spritefactory.h"
 
-#include "core/smartptr/autoptr.h"
+#include <memory>
+
 #include "core/graphics/device.h"
 
 #include "sprite.h"
@@ -30,11 +31,11 @@ namespace c2d
 
    Sprite* SpriteFactory::create(Graphics::Device& device, SpriteDefinition* pdefinition)
    {
-      AutoPtr<Sprite> result = new Sprite(pdefinition);
+      std::unique_ptr<Sprite> result(new Sprite(pdefinition));
       if ( result->initialize(device) )
          return result.release();
 
-      return NULL;
+      return nullptr;
    }
 
 } // namespace c2d

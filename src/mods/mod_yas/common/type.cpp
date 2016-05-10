@@ -1,156 +1,151 @@
 
 #include "type.h"
 
+#include <map>
+
 #include "core/defines.h"
 
 namespace yasc
 {
-
-   static const String SInt = UTEXT("int");
-   static const String SReal = UTEXT("real");
-   static const String SChar = UTEXT("char");
-   static const String SString = UTEXT("string");
-   static const String SBool = UTEXT("boolean");
-   static const String SVoid = UTEXT("void");
-   static const String SInvalid = UTEXT("<unknown>");
-
    // - Statics
 
-   Type* Type::fromString(const String& typestr)
+   const String Type::sInt(L"int");
+   const String Type::sReal(L"real");
+   const String Type::sChar(L"char");
+   const String Type::sString(L"string");
+   const String Type::sBool(L"boolean");
+   const String Type::sVoid(L"void");
+   const String Type::sInvalid(L"<unknown>");
+
+   static std::map<String, Type::Kind> sTypeMap = {
+      { Type::sInt, Type::eInt },
+      { Type::sReal, Type::eReal },
+      { Type::sChar, Type::eChar },
+      { Type::sString, Type::eString },
+      { Type::sBool, Type::eBool },
+      { Type::sVoid, Type::eVoid },
+   };
+
+   Type Type::fromString(const String& typestr)
    {
-      std::size_t pos = typestr.lastIndexOf('[');
-      if ( pos != String::npos )
-      {
-         String arraytype = typestr.subStr(0, pos);
+      Type result;
 
-         ArrayInfo* pinfo = new ArrayInfo;
-         pinfo->mDimension = 1;
-         pinfo->mpType = fromString(arraytype);
-
-         Type* parray = new Type(Type::eArray);
-         parray->mInfo.mpArray = pinfo;
-         parray->determineArrayDimension();
-         return parray;
-      }
-
-      if ( typestr == SBool )
+      auto it = sTypeMap.find(typestr);
+      if ( it != sTypeMap.end() )
       {
-         return new Type(Type::eBool);
-      }
-      else if ( typestr == SInt  )
-      {
-         return new Type(Type::eInt);
-      }
-      else if ( typestr == SReal )
-      {
-         return new Type(Type::eReal);
-      }
-      else if ( typestr == SChar )
-      {
-         return new Type(Type::eChar);
-      }
-      else if ( typestr == SString )
-      {
-         return new Type(Type::eString);
-      }
-      else if ( typestr == SVoid )
-      {
-         return new Type(Type::eVoid);
+         result.mKind = it->second;
       }
       else
       {
-         ObjectInfo* pinfo = new ObjectInfo;
-
-         // todo, what with generics?
-         Type::Kind kind = eObject;
-         if ( typestr[0] == '~' )
+         std::size_t pos = typestr.lastIndexOf('[');
+         if ( pos != String::npos )
          {
-            kind = Type::eGeneric;
-            pinfo->mObjectName = typestr.subStr(1, typestr.length() - 1);
+            String arraytype = typestr.subStr(0, pos);
+
+            result.mKind = Type::eArray;
+            result.mArray.mDimension = 1;
+            result.mArray.mType.reset(new Type(fromString(arraytype)));
+            result.determineArrayDimension();
          }
          else
          {
-            pinfo->mObjectName = typestr;
+            // todo, what with generics?
+            result.mKind = Type::eObject;
+            if ( typestr[0] == '~' )
+            {
+               result.mKind = Type::eGeneric;
+               result.mObject.mObjectName = typestr.right(1);
+            }
+            else
+            {
+               result.mObject.mObjectName = typestr;
+            }
          }
-      
-         Type* ptype = new Type(kind);
-         ptype->mInfo.mpObject = pinfo;
-         return ptype;
       }
-      return NULL;
-   }
 
-   // static 
-   Type* Type::newObjectType(const String& classname)
-   {
-      Type* presult = new Type(eObject);
-      presult->setObjectName(classname);
-      return presult;
+      ASSERT(result.mKind != eNull);
+      return result;
    }
 
    // - Implementation
 
    Type::Type():
       mKind(eNull),
-      mInfo()
+      mObject(),
+      mArray()
    {
    }
 
    Type::Type(Kind kind):
       mKind(kind),
-      mInfo()
+      mObject(),
+      mArray()
    {
    }
 
+   Type::Type(Type&& that):
+      mKind(that.mKind),
+      mObject(),
+      mArray()
+   {
+      move(std::move(that));
+   }
+
    Type::Type(const Type& that):
-      mKind(eNull),
-      mInfo()
+      mKind(that.mKind),
+      mObject(),
+      mArray()
    {
       assign(that);
    }
 
    Type::~Type()
    {
-      switch ( mKind )
-      {
-      case eObject:
-         delete mInfo.mpObject;
-         break;
-      case eArray:
-         delete mInfo.mpArray;
-         break;
-      }
    }
 
-   const Type& Type::operator=(const Type& that)
+   bool Type::operator==(const Type& that) const
    {
+      return equals(that);
+   }
+
+   Type& Type::operator=(const Type& that)
+   {
+      mKind = that.mKind;
       assign(that);
+      return *this;
+   }
+
+   Type& Type::operator=(Type&& that)
+   {
+      mKind = that.mKind;
+      move(std::move(that));
       return *this;
    }
 
    void Type::assign(const Type& that)
    {
-      mKind = that.mKind;
       if ( mKind == eObject )
       {
-         mInfo.mpObject = new ObjectInfo();
-         mInfo.mpObject->mObjectName = that.mInfo.mpObject->mObjectName;
+         mObject.mObjectName = that.mObject.mObjectName;
       }
       else if ( mKind == eArray )
       {
-         ArrayInfo& thatarray = *that.mInfo.mpArray;
-
-         mInfo.mpArray = new ArrayInfo();
-         mInfo.mpArray->mDimension = thatarray.mDimension;
-         mInfo.mpArray->mpType = thatarray.mpType->clone();
+         mArray.mDimension = that.mArray.mDimension;
+         mArray.mType.reset(new Type(*that.mArray.mType));
       }
    }
 
-   Type* Type::clone() const
+   void Type::move(Type&& that)
    {
-      Type* presult = new Type();
-      presult->assign(*this);
-      return presult;
+      if ( mKind == eObject )
+      {
+         mObject.mObjectName = std::move(that.mObject.mObjectName);
+      }
+      else if ( mKind == eArray )
+      {
+         mArray.mDimension = that.mArray.mDimension;
+         mArray.mType.swap(that.mArray.mType);
+      }
    }
 
    // - Query
@@ -226,25 +221,25 @@ namespace yasc
    const String& Type::getObjectName() const
    {
       ASSERT(mKind == eObject);
-      return mInfo.mpObject->mObjectName;
+      return mObject.mObjectName;
    }
 
    void Type::setObjectName(const String& name)
    {
       ASSERT(mKind == eObject);
-      mInfo.mpObject->mObjectName = name;
+      mObject.mObjectName = name;
    }
 
    int Type::getArrayDimension() const
    {
       ASSERT(mKind == eArray);
-      return mInfo.mpArray->mDimension;
+      return mArray.mDimension;
    }
 
    const Type& Type::getArrayType() const
    {
       ASSERT(mKind == eArray);
-      return *mInfo.mpArray->mpType;
+      return *mArray.mType;
    }
 
    // - Operations
@@ -253,11 +248,10 @@ namespace yasc
    {
       ASSERT(isArray());
 
-      ArrayInfo& info = *mInfo.mpArray;
-      if ( info.mpType->isArray() )
+      if ( mArray.mType->isArray() )
       {
-         info.mpType->determineArrayDimension();
-         info.mDimension = info.mpType->getArrayDimension();
+         mArray.mType->determineArrayDimension();
+         mArray.mDimension = mArray.mType->getArrayDimension();
       }
    }
 
@@ -268,25 +262,25 @@ namespace yasc
       switch ( mKind )
       {
          case eBool:
-            type = SBool;
+            type = sBool;
             break;
          case eInt:
-            type = SInt;
+            type = sInt;
             break;
          case eReal:
-            type = SReal;
+            type = sReal;
             break;
          case eChar:
-            type = SChar;
+            type = sChar;
             break;
          case eString:
-            type = SString;
+            type = sString;
             break;
          case eGeneric:
             type = '~';
             // fall through
          case eObject:
-            type += mInfo.mpObject->mObjectName;
+            type += mObject.mObjectName;
             /*
             if ( !mTypeArguments.empty() )
             {
@@ -300,16 +294,15 @@ namespace yasc
             }*/
             break;
          case eArray:
-            type = mInfo.mpArray->mpType->toString() + UTEXT("[]");
+            type = mArray.mType->toString() + UTEXT("[]");
             break;
          case eVoid:
-            type = SVoid;
+            type = sVoid;
             break;
          default:
-            type = SInvalid;
+            type = sInvalid;
       }
 
       return type;
    }
-
 }

@@ -23,7 +23,6 @@
 #include "core/string/string.h"
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
-#include "core/smartptr/autoptr.h"
 
 #include "inifile.h"
 #include "inifileproperty.h"
@@ -39,8 +38,8 @@ void IniFileParser::parse(const String& filename, IniFile& inifile)
    IniFileSection* pcurrentsection = new IniFileSection(UTEXT("global"));
    inifile.add(pcurrentsection);
 
-   AutoPtr<File> file = FileSystem::getInstance().open(filename, File::ERead | File::EText);
-   if ( file.hasPointer() )
+   std::unique_ptr<File> file(FileSystem::getInstance().open(filename, File::ERead | File::EText));
+   if ( file )
    {
       skipWhiteSpace(*file);
 

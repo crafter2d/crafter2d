@@ -4,10 +4,7 @@
 
 #include "core/string/string.h"
 
-namespace yasc
-{
-   class Type;
-}
+#include "mod_yas/common/type.h"
 
 namespace CIL
 {
@@ -24,13 +21,13 @@ namespace CIL
       void          setName(const String& name);
 
       const yasc::Type& getType() const;
-      void              setType(yasc::Type* ptype);
+      void              setType(const yasc::Type& type);
 
    private:
 
     // data
       String      mName;
-      yasc::Type* mpType; // owned
+      yasc::Type  mType;
    };
 };
 

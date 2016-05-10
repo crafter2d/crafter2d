@@ -1,7 +1,8 @@
 
 #include "astsignature.h"
 
-#include "core/smartptr/autoptr.h"
+#include <memory>
+
 #include "core/defines.h"
 
 #include "../ast/asttype.h"
@@ -65,7 +66,7 @@ bool ASTSignature::bestMatch(const ASTSignature& that, const ASTTypeList& types)
 
    for ( std::size_t index = 0; index < mTypes.size(); index++ )
    {
-      AutoPtr<ASTType> ptype = mTypes[index]->clone();
+      std::unique_ptr<ASTType> ptype(mTypes[index]->clone());
       const ASTType& thattype = *that.mTypes[index];
       
       if ( ptype->isGeneric() && thattype.isGeneric() )
