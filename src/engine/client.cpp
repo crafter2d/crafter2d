@@ -319,7 +319,7 @@ namespace c2d
       Module* pmodule = getModuleManager().lookup(UUID_InputModule);
       if ( pmodule == NULL )
       {
-         Log::getInstance() << "Failed to load a graphics module.\n";
+         Log::getInstance() << "Failed to load an input module.\n";
          return false;
       }
 
@@ -353,7 +353,7 @@ namespace c2d
       Module* pmodule = getModuleManager().lookup(UUID_SoundModule);
       if ( pmodule == NULL )
       {
-         Log::getInstance() << "Failed to load a graphics module.\n";
+         Log::getInstance() << "Failed to load a sound module.\n";
          return false;
       }
 

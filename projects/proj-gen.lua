@@ -21,7 +21,7 @@ project "Gen"
 		
 	filter "configurations:Release"
 		defines { "NDEBUG" }
-		flags { "Optimize" }
+		optimize "On"
 		
     -- Systems
 	filter "system:Windows"
@@ -42,11 +42,10 @@ project "Gen"
 		defines { "LINUX" }
 		links { "ctemplate", "tinyxml" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
-        libdir { "..\bin" }
-		
-    filter { "system:linux", "Debug" }
-        linkoptions { "-lCored" }
+        libdirs { "..\bin" }
+
+	filter { "system:linux", "Debug" }
+        linkoptions { "-lCored", "-lEngined" }
 
     filter { "system:linux", "Release" }
-        linkoptions { "-lCore" }
-
+        linkoptions { "-lCore", "-lEngine" }
