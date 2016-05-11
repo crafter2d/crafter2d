@@ -6,7 +6,6 @@
 #include <tinyxml.h>
 
 #include "core/string/string.h"
-#include "core/smartptr/autoptr.h"
 #include "core/graphics/animator.h"
 
 #include "proto/meshcomponentdefinitionproto.h"

@@ -145,7 +145,8 @@
     <ClCompile Include="..\..\..\src\core\modules\inputmodule.cpp" />
     <ClCompile Include="..\..\..\src\core\modules\module.cpp" />
     <ClCompile Include="..\..\..\src\core\modules\modulecollection.cpp" />
-    <ClCompile Include="..\..\..\src\core\modules\modulecollectioniterator.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\modulefile.cpp" />
+    <ClCompile Include="..\..\..\src\core\modules\moduleinfo.cpp" />
     <ClCompile Include="..\..\..\src\core\modules\modulemanager.cpp" />
     <ClCompile Include="..\..\..\src\core\modules\pluginmodule.cpp" />
     <ClCompile Include="..\..\..\src\core\modules\scriptmodule.cpp" />
@@ -168,7 +169,6 @@
     <ClCompile Include="..\..\..\src\core\resource\resourcehandlebase.cpp" />
     <ClCompile Include="..\..\..\src\core\resource\resourcemanager.cpp" />
     <ClCompile Include="..\..\..\src\core\script\scriptobjecthandle.cpp" />
-    <ClCompile Include="..\..\..\src\core\smartptr\autoptr.cpp" />
     <ClCompile Include="..\..\..\src\core\smartptr\countbase.cpp" />
     <ClCompile Include="..\..\..\src\core\smartptr\refcount.cpp" />
     <ClCompile Include="..\..\..\src\core\smartptr\scopedvalue.cpp" />
@@ -374,7 +374,8 @@
     <ClInclude Include="..\..\..\src\core\modules\inputmodule.h" />
     <ClInclude Include="..\..\..\src\core\modules\module.h" />
     <ClInclude Include="..\..\..\src\core\modules\modulecollection.h" />
-    <ClInclude Include="..\..\..\src\core\modules\modulecollectioniterator.h" />
+    <ClInclude Include="..\..\..\src\core\modules\modulefile.h" />
+    <ClInclude Include="..\..\..\src\core\modules\moduleinfo.h" />
     <ClInclude Include="..\..\..\src\core\modules\modulemanager.h" />
     <ClInclude Include="..\..\..\src\core\modules\pluginmodule.h" />
     <ClInclude Include="..\..\..\src\core\modules\scriptmodule.h" />
@@ -405,7 +406,6 @@
     <ClInclude Include="..\..\..\src\core\script\scriptobject.h" />
     <ClInclude Include="..\..\..\src\core\script\scriptobjecthandle.h" />
     <ClInclude Include="..\..\..\src\core\script\scriptregistrator.h" />
-    <ClInclude Include="..\..\..\src\core\smartptr\autoptr.h" />
     <ClInclude Include="..\..\..\src\core\smartptr\countbase.h" />
     <ClInclude Include="..\..\..\src\core\smartptr\countimpl.h" />
     <ClInclude Include="..\..\..\src\core\smartptr\refcount.h" />
@@ -516,7 +516,6 @@
     <None Include="..\..\..\src\core\resource\resourcehandle.inl" />
     <None Include="..\..\..\src\core\resource\resourceptr.inl" />
     <None Include="..\..\..\src\core\script\scriptobjecthandle.inl" />
-    <None Include="..\..\..\src\core\smartptr\autoptr.inl" />
     <None Include="..\..\..\src\core\smartptr\countbase.inl" />
     <None Include="..\..\..\src\core\smartptr\countimpl.inl" />
     <None Include="..\..\..\src\core\smartptr\refcount.inl" />

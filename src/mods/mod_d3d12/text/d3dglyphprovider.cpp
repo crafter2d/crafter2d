@@ -1,11 +1,11 @@
 
 #include "d3dglyphprovider.h"
 
+#include <memory>
 #include <stdio.h>
 #include <string.h>
 
 #include "core/defines.h"
-#include "core/smartptr/autoptr.h"
 #include "core/graphics/text/glyph.h"
 #include "core/math/size.h"
 
@@ -80,8 +80,8 @@ namespace Graphics
          DWRITE_TEXT_RANGE range = { 0, 1 };
          ptextlayout->SetFontSize(emsize, range);
 
-         AutoPtr<Glyph> glyph = new Glyph();
-         hr = ptextlayout->Draw(glyph.getPointer(), mpTextRenderer, 0, 0);
+         auto glyph = std::make_unique<Glyph>();
+         hr = ptextlayout->Draw(glyph.get(), mpTextRenderer, 0, 0);
          if ( SUCCEEDED(hr) )
          {
             return glyph.release();

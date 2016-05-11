@@ -2,11 +2,11 @@
 #include "entityloader.h"
 
 #include <tinyxml.h>
+#include <memory>
 #include <stdexcept>
 
 #include "core/content/contentmanager.h"
 #include "core/physics/revolutejointdefinition.h"
-#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
 #include "proto/childdefinitionproto.h"
@@ -107,7 +107,7 @@ EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
 
 void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmlchild)
 {
-   AutoPtr<ChildDefinitionProto> pchild = new ChildDefinitionProto();
+   std::unique_ptr<ChildDefinitionProto> pchild(new ChildDefinitionProto());
 
    const char* pid = xmlchild.Attribute("id");
    pchild->mID = String::fromUtf8(pid);

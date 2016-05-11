@@ -266,9 +266,6 @@
     <ClCompile Include="..\..\..\src\core\modules\modulecollection.cpp">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\core\modules\modulecollectioniterator.cpp">
-      <Filter>modules</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\core\modules\modulemanager.cpp">
       <Filter>modules</Filter>
     </ClCompile>
@@ -445,9 +442,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\core\resource\resourcemanager.cpp">
       <Filter>resource</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\core\smartptr\autoptr.cpp">
-      <Filter>smartptr</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\core\smartptr\countbase.cpp">
       <Filter>smartptr</Filter>
@@ -719,6 +713,12 @@
     <ClCompile Include="..\..\..\src\core\graphics\image.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\core\modules\moduleinfo.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\core\modules\modulefile.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\core\core_base.h" />
@@ -895,9 +895,6 @@
       <Filter>modules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\core\modules\modulecollection.h">
-      <Filter>modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\core\modules\modulecollectioniterator.h">
       <Filter>modules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\core\modules\modulemanager.h">
@@ -1109,9 +1106,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\core\resource\resourceptr.h">
       <Filter>resource</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\core\smartptr\autoptr.h">
-      <Filter>smartptr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\core\smartptr\countbase.h">
       <Filter>smartptr</Filter>
@@ -1434,6 +1428,12 @@
     <ClInclude Include="..\..\..\src\core\graphics\image.h">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\core\modules\moduleinfo.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\core\modules\modulefile.h">
+      <Filter>modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\core\system\timerdata.inl">
@@ -1504,9 +1504,6 @@
     </None>
     <None Include="..\..\..\src\core\resource\resourceptr.inl">
       <Filter>resource</Filter>
-    </None>
-    <None Include="..\..\..\src\core\smartptr\autoptr.inl">
-      <Filter>smartptr</Filter>
     </None>
     <None Include="..\..\..\src\core\smartptr\countbase.inl">
       <Filter>smartptr</Filter>

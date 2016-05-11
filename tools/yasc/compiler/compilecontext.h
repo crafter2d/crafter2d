@@ -2,7 +2,7 @@
 #ifndef COMPILE_CONTEXT_H_
 #define COMPILE_CONTEXT_H_
 
-#include <map>
+#include <unordered_map>
 
 #include "core/string/string.h"
 
@@ -17,7 +17,7 @@ class Compiler;
 
 class CompileContext
 {
-   typedef std::map<String, ASTClass*> ClassMap;
+   typedef std::unordered_map<String, ASTClass*> ClassMap;
 
 public:
    explicit CompileContext(Compiler& compiler);

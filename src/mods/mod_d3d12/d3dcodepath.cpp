@@ -5,7 +5,6 @@
 #include "core/graphics/texture.h"
 #include "core/graphics/vertexlayout.h"
 #include "core/graphics/vertexlayoutelement.h"
-#include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 #include "core/streams/filereaderstream.h"
 #include "core/vfs/file.h"

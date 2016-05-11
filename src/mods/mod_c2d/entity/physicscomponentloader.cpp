@@ -2,8 +2,8 @@
 #include "physicscomponentloader.h"
 
 #include <tinyxml.h>
+#include <memory>
 
-#include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 #include "core/defines.h"
 
@@ -18,7 +18,7 @@ const String& PhysicsComponentLoader::getXmlTag() const
 
 ComponentDefinitionProto* PhysicsComponentLoader::load(const TiXmlElement& element)
 {
-   AutoPtr<PhysicsComponentDefinitionProto> result = new PhysicsComponentDefinitionProto();
+   std::unique_ptr<PhysicsComponentDefinitionProto> result(new PhysicsComponentDefinitionProto());
    BodyDefinition& def = result->mDefinition;
    
    int isstatic = 0;

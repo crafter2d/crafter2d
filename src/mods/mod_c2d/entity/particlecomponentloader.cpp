@@ -1,9 +1,9 @@
 
 #include "particlecomponentloader.h"
 
+#include <memory>
 #include <tinyxml.h>
 
-#include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 #include "core/defines.h"
 
@@ -25,7 +25,7 @@ const String& ParticleComponentLoader::getXmlTag() const
 
 ComponentDefinitionProto* ParticleComponentLoader::load(const TiXmlElement& element)
 {
-   AutoPtr<ParticleComponentDefinitionProto> proto = new ParticleComponentDefinitionProto();
+   std::unique_ptr<ParticleComponentDefinitionProto> proto(new ParticleComponentDefinitionProto());
 
    if ( element.QueryFloatAttribute("emitrate", &proto->emitRate) != TIXML_SUCCESS )
    {

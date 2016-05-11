@@ -23,16 +23,18 @@
 #define MOD_D3D12_H_
 
 #if defined(WIN32)
-#ifdef MOD_EXPORTS
-#define MOD_API __declspec(dllexport)
-#define MOD_TEMPLATE
+  #define MOD_DECL cdecl
+  #ifdef MOD_EXPORTS
+    #define MOD_API __declspec(dllexport)
+    #define MOD_TEMPLATE
+  #else
+    #define MOD_API __declspec(dllimport)
+    #define MOD_TEMPLATE extern
+  #endif
 #else
-#define MOD_API __declspec(dllimport)
-#define MOD_TEMPLATE extern
-#endif
-#else
-#define MOD_API
-#define MOD_TEMPLATE
+  #define MOD_DECL
+  #define MOD_API
+  #define MOD_TEMPLATE
 #endif
 
 #endif // MOD_D3D12_H_

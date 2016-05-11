@@ -2,7 +2,7 @@
 #ifndef VIRTUAL_CLASS_TABLE_H_
 #define VIRTUAL_CLASS_TABLE_H_
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 #include "core/string/string.h"
@@ -12,7 +12,7 @@ class VirtualClass;
 
 class VirtualClassTable
 {
-   typedef std::map<String, VirtualClass*> Classes;
+   typedef std::unordered_map<String, VirtualClass*> Classes;
 
 public:
    VirtualClassTable();

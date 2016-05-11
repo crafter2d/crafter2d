@@ -21,7 +21,7 @@
 #define VM_H_
 
 #include <deque>
-#include <map>
+#include <unordered_map>
 #include <stack>
 
 #include "mod_yas/script_base.h"
@@ -93,7 +93,7 @@ private:
    friend class VirtualContext;
    
    typedef std::vector<VirtualObject*> Objects;
-   typedef std::map<void*, VirtualObject*> NativeObjectMap;
+   typedef std::unordered_map<void*, VirtualObject*> NativeObjectMap;
 
    enum State { eInit, eDestruct, eRunning, eFinalizing, eReturn };
    

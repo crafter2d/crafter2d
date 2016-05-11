@@ -7,7 +7,6 @@
 #include "core/graphics/vertexlayout.h"
 #include "core/graphics/vertexlayoutelement.h"
 #include "core/conv/numberconverter.h"
-#include "core/smartptr/autoptr.h"
 #include "core/defines.h"
 
 #include "../astannotation.h"
