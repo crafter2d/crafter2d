@@ -243,8 +243,8 @@ int String::compare(const String& that) const
 
 int String::hashCode() const
 {
-   std::hash<std::string> str_hash;
-   return str_hash(toUtf8()); // need to write it here
+   std::hash<std::wstring> str_hash;
+   return str_hash(mData); // need to write it here
 }
 
 // - Comparison
