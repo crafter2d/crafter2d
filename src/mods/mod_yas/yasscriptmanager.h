@@ -7,8 +7,9 @@
 #include "mod_yas/vm/virtualcontext.h"
 #include "mod_yas/vm/virtualmachine.h"
 
-class Variant;
 class YasScriptObject;
+class Variant;
+class VirtualObject;
 
 class YasScriptManager : public c2d::ScriptManager
 {
@@ -25,6 +26,7 @@ public:
    virtual void addRootObject(c2d::ScriptObject& object) override;
 
  // operations
+   void registerObject(VirtualObject& object);
    void registerObject(YasScriptObject& object);
 
  // execution

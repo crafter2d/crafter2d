@@ -10,7 +10,6 @@ public:
    static const int sFinal = 2;
    static const int sEnd   = 3;
 
-
    void updatePosition(int offset) {
       locations[0] += offset;
       locations[1] += offset;
@@ -18,8 +17,8 @@ public:
       locations[3] += offset;
    }
 
+   int locations[4];
    bool finalize;
-   int  locations[4];
 };
 
 #endif // VM_GUARD_H

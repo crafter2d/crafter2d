@@ -9,6 +9,10 @@ QueryBodyComponentMessage::QueryBodyComponentMessage():
 {
 }
 
+QueryBodyComponentMessage::~QueryBodyComponentMessage()
+{
+}
+
 // - Get/set
 
 bool QueryBodyComponentMessage::hasBody() const

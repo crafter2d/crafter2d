@@ -11,12 +11,15 @@ class CORE_API ComponentMessage
 {
 public:
 	ComponentMessage(ComponentInterface::ComponentMessageType messagetype, void* pdata = NULL);
+   virtual ~ComponentMessage();
 
  // get/set
 	ComponentInterface::ComponentMessageType getMessageType() const;
 	void* getData() const;
 
 private:
+
+ // data members
 	ComponentInterface::ComponentMessageType mMessageType;
 	void* mpData;
 };

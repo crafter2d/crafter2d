@@ -54,6 +54,26 @@ c2d::ScriptObjectHandle YasScriptCall::getObject(int arg)
    return c2d::ScriptObjectHandle(pobject);
 }
 
+void* YasScriptCall::useInstance(int arg)
+{
+   return mCall.getObject(arg).useNativeObjectPtr();
+}
+
+void* YasScriptCall::getInstance(int arg)
+{
+   ASSERT(mCall.getObject(arg).hasNativeObject());
+   return mCall.getObject(arg).getNativeObjectPtr();
+}
+
+void YasScriptCall::setInstance(int arg, void* pobject, bool owned)
+{
+   auto& virtualobject = mCall.getObject(arg);
+   virtualobject.setNativeObject(pobject);
+   virtualobject.setOwner(owned);
+
+   mManager.registerObject(virtualobject);
+}
+
 void YasScriptCall::setResult(bool value)
 {
    mCall.setResult(value);

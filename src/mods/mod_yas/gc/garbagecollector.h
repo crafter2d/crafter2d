@@ -21,12 +21,14 @@ public:
 
 private:
    typedef std::vector<Collectable*> Collectables;
+   enum State { eIdle, eRunning };
 
  // phases
    void phaseMark(VirtualMachine& vm);
    void phaseCollect(VirtualMachine& vm);
 
    Collectables mCollectables;
+   State mState;
 };
 
 #endif // GARBAGE_COLLECTOR_H

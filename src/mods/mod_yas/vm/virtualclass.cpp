@@ -3,6 +3,9 @@
 
 #include "core/defines.h"
 
+#include "mod_yas/cil/cil.h"
+
+#include "virtualcontext.h"
 #include "virtualobject.h"
 #include "virtualfield.h"
 #include "virtualfunction.h"
@@ -239,11 +242,44 @@ void VirtualClass::collectInterface(VirtualClasses& interfces)
    }
 }
 
-void VirtualClass::build()
+void VirtualClass::build(VirtualContext& context)
 {
+   buildFinalize(context);
    buildVariables();
    buildVirtualTable();
    buildInterfaceTable();
+}
+
+using namespace CIL;
+
+void VirtualClass::buildFinalize(VirtualContext& context)
+{
+   static String sFinalize(L".finalize()");
+   String fnc = mName + sFinalize;
+   auto* pfuncreg = context.mNativeRegistry.findCallback(fnc);
+   if ( pfuncreg != nullptr )
+   {
+      CIL::Instruction inst;
+      CIL::Instructions instructions;
+      inst.opcode = CIL_ldarg;
+      inst.mInt = 0;
+      instructions.add(inst);
+
+      inst.opcode = CIL_call_native;
+      inst.mString = new String(fnc);
+      instructions.add(inst);
+
+      inst.opcode = CIL_ret;
+      inst.mInt = 0;
+      instructions.add(inst);
+
+      VirtualFunction* pfunc = new VirtualFunction();
+      pfunc->setName(UTEXT("finalize"));
+      pfunc->setInstructions(instructions);
+      pfunc->setReturnType(yasc::Type(yasc::Type::eVoid));
+
+      addFunction(pfunc);
+   }
 }
 
 void VirtualClass::buildVariables()

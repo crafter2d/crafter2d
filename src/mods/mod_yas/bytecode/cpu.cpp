@@ -61,7 +61,7 @@ namespace ByteCode
 
    bool CPU::isGarbageCollectionBlocked() const
    {
-      return mBlockGC == true;
+      return mBlockGC;
    }
 
    // - Operations

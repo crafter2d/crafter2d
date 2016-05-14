@@ -127,9 +127,19 @@ namespace CIL
       mArguments.add(type);
    }
 
+   void Function::addArgument(yasc::Type&& type)
+   {
+      mArguments.add(std::move(type));
+   }
+
    void Function::addLocal(const yasc::Type& type)
    {
       mLocals.add(type);
+   }
+
+   void Function::addLocal(yasc::Type&& type)
+   {
+      mLocals.add(std::move(type));
    }
 
    void Function::addGuard(Guard* pguard)

@@ -180,9 +180,9 @@ void VirtualFunction::addLookupTable(VirtualLookupTable* ptable)
    mLookups.add(ptable);
 }
 
-void VirtualFunction::addGuard(VirtualGuard* pguard)
+void VirtualFunction::addGuard(const VirtualGuard& guard)
 {
-   mGuards.add(pguard);
+   mGuards.add(guard);
 }
 
 // - Search

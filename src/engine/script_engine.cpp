@@ -59,8 +59,10 @@
 
 using namespace c2d;
 
-#define GET_THIS(type, variable)                   type& variable = accessor.getObject(0)->get<type>()
-#define DESTRUCT_THIS(type)                        delete accessor.getObject(0)->use<type>();
+#define INIT_THIS(type)                            accessor.setInstance(0, new type(), true)
+#define INIT_THIS_OBJ(obj)                         accessor.setInstance(0, obj, true)
+#define GET_THIS(type, variable)                   type& variable = accessor.get<type>(0)
+#define DESTRUCT_THIS(type)                        delete accessor.use<type>(0);
 
 #define RETURN_CLASS(class, pointer)               accessor.setResult(class, pointer, false)
 #define RETURN_CLASS_OWNED(class, pointer)         accessor.setResult(class, pointer, true)
@@ -78,7 +80,7 @@ void Process_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(Server, server);
 
-   ActionMap* pmap = accessor.getObject(1)->use<ActionMap>();
+   ActionMap* pmap = accessor.use<ActionMap>(1);
 
    server.setActionMap(pmap);
 }
@@ -114,7 +116,7 @@ void Server_sendScriptEvent(ScriptCall& accessor)
    GET_THIS(Server, server);
 
    int client = accessor.getInt(1);
-   NetStream& stream = accessor.getObject(2)->get<NetStream>();
+   NetStream& stream = accessor.get<NetStream>(2);
 
    server.sendScriptEvent(client, stream);
 }
@@ -147,7 +149,7 @@ void Client_setWindow(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   GameWindow* pwindow = accessor.getObject(1)->use<GameWindow>();
+   GameWindow* pwindow = accessor.use<GameWindow>(1);
 
    client.setWindow(pwindow);
 }
@@ -164,7 +166,7 @@ void Client_setPlayer(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   Player* pplayer = accessor.getObject(1)->use<Player>();
+   Player* pplayer = accessor.use<Player>(1);
    client.setPlayer(pplayer);
 }
 
@@ -172,7 +174,7 @@ void Client_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   ActionMap* pmap = accessor.getObject(1)->use<ActionMap>();
+   ActionMap* pmap = accessor.use<ActionMap>(1);
 
    client.setActionMap(pmap);
 }
@@ -181,7 +183,7 @@ void Client_setKeyMap(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   KeyMap* pmap = accessor.getObject(1)->use<KeyMap>();
+   KeyMap* pmap = accessor.use<KeyMap>(1);
 
    client.setKeyMap(pmap);
 }
@@ -235,8 +237,7 @@ void GameWindow_create(ScriptCall& accessor)
 
 void BufferedStream_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new BufferedStream());
+   INIT_THIS(BufferedStream);
 }
 
 void BufferedStream_destruct(ScriptCall& accessor)
@@ -246,11 +247,9 @@ void BufferedStream_destruct(ScriptCall& accessor)
 
 void NetStream_init(ScriptCall& accessor)
 {
-   BufferedStream& bufferedstream = accessor.getObject(1)->get<BufferedStream>();
+   BufferedStream& bufferedstream = accessor.get<BufferedStream>(1);
    NetStream* pstream = new NetStream(bufferedstream);
-
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(pstream);
+   INIT_THIS_OBJ(pstream);
 }
 
 void NetStream_destruct(ScriptCall& accessor)
@@ -286,8 +285,12 @@ void NetStream_clear(ScriptCall& accessor)
 
 void QueryBodyComponentMessage_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new QueryBodyComponentMessage());
+   INIT_THIS(QueryBodyComponentMessage);
+}
+
+void QueryBodyComponentMessage_destruct(ScriptCall& accessor)
+{
+   DESTRUCT_THIS(QueryBodyComponentMessage);
 }
 
 void QueryBodyComponentMessage_hasBody(ScriptCall& accessor)
@@ -306,8 +309,12 @@ void QueryBodyComponentMessage_getBody(ScriptCall& accessor)
 
 void AnimationComponentMessage_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new AnimationComponentMessage());
+   INIT_THIS(AnimationComponentMessage);
+}
+
+void AnimationComponentMessage_destruct(ScriptCall& accessor)
+{
+   DESTRUCT_THIS(AnimationComponentMessage);
 }
 
 void AnimationComponentMessage_setAnimation(ScriptCall& accessor)
@@ -319,8 +326,7 @@ void AnimationComponentMessage_setAnimation(ScriptCall& accessor)
 
 void Entity_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new Entity());
+   INIT_THIS(Entity);
 }
 
 void Entity_destruct(ScriptCall& accessor)
@@ -339,7 +345,7 @@ void Entity_sendComponentMessage(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
-   ComponentMessage& msg = accessor.getObject(1)->get<ComponentMessage>();
+   ComponentMessage& msg = accessor.get<ComponentMessage>(1);
    entity.sendComponentMessage(msg);
 }
 
@@ -347,7 +353,7 @@ void Entity_hasLineOfSight(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
-   Entity& other = accessor.getObject(1)->get<Entity>();
+   Entity& other = accessor.get<Entity>(1);
    accessor.setResult(entity.hasLineOfSight(other));
 }
 
@@ -395,15 +401,14 @@ void Entity_setController(ScriptCall& accessor)
 {
    GET_THIS(Entity, entity);
 
-   Controller* pcontroller = accessor.getObject(1)->use<Controller>();
+   Controller* pcontroller = accessor.use<Controller>(1);
 
    entity.setController(pcontroller);
 }
 
 void Player_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new Player());
+   INIT_THIS(Player);
 }
 
 void Player_getClientId(ScriptCall& accessor)
@@ -424,15 +429,14 @@ void Player_setController(ScriptCall& accessor)
 {
    GET_THIS(Player, player);
 
-   Entity& entity = accessor.getObject(1)->get<Entity>();
+   Entity& entity = accessor.get<Entity>(1);
 
    player.setController(entity);
 }
 
 void World_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new World());
+   INIT_THIS(World);
 }
 
 void World_destruct(ScriptCall& accessor)
@@ -451,7 +455,7 @@ void World_add(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
-   Entity* pentity = accessor.getObject(1)->use<Entity>();
+   Entity* pentity = accessor.use<Entity>(1);
 
    world.addEntity(pentity);
 }
@@ -485,7 +489,7 @@ void World_setFollowActor(ScriptCall& accessor)
 {
    GET_THIS(World, world);
 
-   Entity& entity = accessor.getObject(1)->get<Entity>();
+   Entity& entity = accessor.get<Entity>(1);
 
    world.setFollowObject(entity);
 }
@@ -604,8 +608,7 @@ void Viewport_getHeight(ScriptCall& accessor)
 
 void InputForceGenerator_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new InputForceGenerator());
+   INIT_THIS(InputForceGenerator);
 }
 
 void InputForceGenerator_destruct(ScriptCall& accessor)
@@ -646,8 +649,7 @@ void InputForceGenerator_setImpulse(ScriptCall& accessor)
 
 void InputController_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new InputController());
+   INIT_THIS(InputController);
 }
 
 void InputController_destruct(ScriptCall& accessor)
@@ -659,7 +661,7 @@ void InputController_setActionMap(ScriptCall& accessor)
 {
    GET_THIS(InputController, controller);
 
-   ActionMap& actionmap = accessor.getObject(1)->get<ActionMap>();
+   ActionMap& actionmap = accessor.get<ActionMap>(1);
 
    controller.setActionMap(actionmap);
 }
@@ -720,7 +722,7 @@ void Box2DBody_addForceGenerator(ScriptCall& accessor)
 {
    GET_THIS(Box2DBody, body);
 
-   ForceGenerator* pgenerator = accessor.getObject(1)->use<ForceGenerator>();
+   ForceGenerator* pgenerator = accessor.use<ForceGenerator>(1);
 
    body.addForceGenerator(pgenerator);
 }
@@ -747,8 +749,7 @@ void Box2DBody_getLinearVelocity(ScriptCall& accessor)
 
 void ActionMap_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new ActionMap());
+   INIT_THIS(ActionMap);
 }
 
 void ActionMap_destruct(ScriptCall& accessor)
@@ -767,7 +768,7 @@ void ActionMap_setProcess(ScriptCall& accessor)
 {
    GET_THIS(ActionMap, map);
 
-   Process& process = accessor.getObject(1)->get<Process>();
+   Process& process = accessor.get<Process>(1);
 
    map.setProcess(process);
 }
@@ -784,8 +785,7 @@ void ActionMap_bind(ScriptCall& accessor)
 
 void KeyMap_init(ScriptCall& accessor)
 {
-   ScriptObjectHandle thisobject = accessor.getObject(0);
-   thisobject->setInstance(new KeyMap);
+   INIT_THIS(KeyMap);
 }
 
 void KeyMap_destruct(ScriptCall& accessor)
@@ -963,11 +963,13 @@ void script_engine_register(c2d::ScriptManager& manager)
 
    pregistrator->addClass(UTEXT("engine.game.QueryBodyComponentMessage"));
    pregistrator->addFunction(UTEXT("QueryBodyComponentMessage()"), QueryBodyComponentMessage_init);
+   pregistrator->addFunction(UTEXT("finalize()"), QueryBodyComponentMessage_destruct);
    pregistrator->addFunction(UTEXT("hasBody()"), QueryBodyComponentMessage_hasBody);
    pregistrator->addFunction(UTEXT("getBody()"), QueryBodyComponentMessage_getBody);
 
    pregistrator->addClass(UTEXT("engine.game.AnimationComponentMessage"));
    pregistrator->addFunction(UTEXT("AnimationComponentMessage()"), AnimationComponentMessage_init);
+   pregistrator->addFunction(UTEXT("finalize()"), AnimationComponentMessage_destruct);
    pregistrator->addFunction(UTEXT("setAnimation(int)"), AnimationComponentMessage_setAnimation);
 
    pregistrator->addClass(UTEXT("engine.game.Player"));

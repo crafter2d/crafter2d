@@ -85,7 +85,7 @@ public:
 
  // observing
    VirtualObject*    lookupNative(void* pobject);
-   void              registerNative(VirtualObject& object, void* pnative);
+   void              registerNative(VirtualObject& object);
    void              unregisterNative(VirtualObject& object);
 
 private:

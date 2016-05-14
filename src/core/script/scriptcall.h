@@ -16,6 +16,14 @@ namespace c2d
    class ScriptCall
    {
    public:
+      template<class T> T& get(int arg) {
+         return *static_cast<T*>(getInstance(arg));
+      }
+
+      template<class T> T* use(int arg) {
+         return static_cast<T*>(useInstance(arg));
+      }
+
       virtual ScriptObjectHandle newObject(const String& classname) = 0;
 
       virtual bool getBoolean(int arg) = 0;
@@ -24,6 +32,10 @@ namespace c2d
       virtual UChar getChar(int arg) = 0;
       virtual const String& getString(int arg) = 0;
       virtual ScriptObjectHandle getObject(int arg) = 0;
+
+      virtual void* useInstance(int arg) = 0;
+      virtual void* getInstance(int arg) = 0;
+      virtual void setInstance(int arg, void* pobject, bool owned) = 0;
 
       virtual void setResult(bool value) = 0;
       virtual void setResult(int value) = 0;

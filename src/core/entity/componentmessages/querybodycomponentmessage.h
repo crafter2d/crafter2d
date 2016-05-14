@@ -11,6 +11,7 @@ class CORE_API QueryBodyComponentMessage : public ComponentMessage
 {
 public:
    QueryBodyComponentMessage();
+   virtual ~QueryBodyComponentMessage();
 
    bool hasBody() const;
    Body& getBody();

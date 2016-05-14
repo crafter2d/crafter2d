@@ -55,7 +55,9 @@ namespace CIL
 
     // operation
       void addArgument(const yasc::Type& type);
+      void addArgument(yasc::Type&& type);
       void addLocal(const yasc::Type& type);
+      void addLocal(yasc::Type&& type);
       void addGuard(Guard* pguard);
       void addSwitchTable(SwitchTable* ptable);
       void addAnnotation(const String& annotation);

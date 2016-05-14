@@ -11,7 +11,7 @@ namespace yasc
    class Type
    {
    public:
-      enum Kind { eInt, eReal, eBool, eChar, eString, eObject, eArray, eGeneric, eVoid, eNull };
+      enum Kind { eNull, eInt, eReal, eBool, eChar, eString, eVoid, eObject, eArray, eGeneric };
       
       static const String sInt;
       static const String sReal;
@@ -50,14 +50,12 @@ namespace yasc
 
     // object interface
       const String& getObjectName() const;
-      void          setObjectName(const String& name);
 
     // array interface
       int         getArrayDimension() const;
       const Type& getArrayType() const;
 
     // operations
-      void assign(const Type& that);
       String toString() const;
 
    private:

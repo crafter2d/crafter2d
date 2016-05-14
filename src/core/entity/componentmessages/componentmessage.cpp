@@ -7,6 +7,10 @@ ComponentMessage::ComponentMessage(ComponentInterface::ComponentMessageType mess
 {
 }
 
+ComponentMessage::~ComponentMessage()
+{
+}
+
 // - Get/set
 
 ComponentInterface::ComponentMessageType ComponentMessage::getMessageType() const

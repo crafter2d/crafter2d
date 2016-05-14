@@ -7,6 +7,10 @@ AnimationComponentMessage::AnimationComponentMessage():
 {
 }
 
+AnimationComponentMessage::~AnimationComponentMessage()
+{
+}
+
 // - Get/set
 
 int AnimationComponentMessage::getAnimation() const

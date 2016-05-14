@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include "core/containers/listiterator.h"
+#include "core/smartptr/scopedvalue.h"
 
 #include "mod_yas/vm/virtualobject.h"
 #include "mod_yas/vm/virtualmachine.h"
@@ -27,7 +28,8 @@ int VoidHash(void* pkey)
 }
 
 GarbageCollector::GarbageCollector():
-   mCollectables()
+   mCollectables(),
+   mState(eIdle)
 {
 }
 
@@ -44,8 +46,12 @@ void GarbageCollector::collect(Collectable* pcollectable)
 
 void GarbageCollector::gc(VirtualMachine& vm)
 {
-   phaseMark(vm);
-   phaseCollect(vm);
+   if ( mState == eIdle )
+   {
+      ScopedValue<State> state(&mState, eRunning, eIdle);
+      phaseMark(vm);
+      phaseCollect(vm);
+   }
 }
 
 void GarbageCollector::phaseMark(VirtualMachine& vm)

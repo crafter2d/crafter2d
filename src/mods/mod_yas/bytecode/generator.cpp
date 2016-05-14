@@ -148,14 +148,14 @@ namespace ByteCode
          {
             const CIL::Guard& guard = guards[index];
             
-            VirtualGuard* pguard = new VirtualGuard();
-            pguard->finalize = guard.finalize;
-            pguard->locations[VirtualGuard::sStart] = guard.labels[CIL::Guard::sStart];
-            pguard->locations[VirtualGuard::sCatch] = guard.labels[CIL::Guard::sCatch];
-            pguard->locations[VirtualGuard::sEnd] = guard.labels[CIL::Guard::sEnd];
-            pguard->locations[VirtualGuard::sFinal] = guard.labels[CIL::Guard::sFinal];
+            VirtualGuard vguard;
+            vguard.finalize = guard.finalize;
+            vguard.locations[VirtualGuard::sStart] = guard.labels[CIL::Guard::sStart];
+            vguard.locations[VirtualGuard::sCatch] = guard.labels[CIL::Guard::sCatch];
+            vguard.locations[VirtualGuard::sEnd] = guard.labels[CIL::Guard::sEnd];
+            vguard.locations[VirtualGuard::sFinal] = guard.labels[CIL::Guard::sFinal];
 
-            pentry->addGuard(pguard);
+            pentry->addGuard(vguard);
          }
 
          const CIL::SwitchTables& tables = function.getSwitchTables();
@@ -184,7 +184,7 @@ namespace ByteCode
          presult->addFunction(pentry);
       }
 
-      presult->build();
+      presult->build(context);
 
       return presult;
    }

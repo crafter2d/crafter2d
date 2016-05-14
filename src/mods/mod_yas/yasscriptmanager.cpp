@@ -57,9 +57,9 @@ void YasScriptManager::addRootObject(c2d::ScriptObject& object)
 
 // - Operations
 
-void YasScriptManager::registerObject(YasScriptObject& object)
+void YasScriptManager::registerObject(VirtualObject& object)
 {
-   mVirtualMachine.registerNative(object.getThis(), object.getInstance());
+   mVirtualMachine.registerNative(object);
 }
 
 // - Execution

@@ -17,6 +17,7 @@ namespace yasc
    class Types;
 }
 
+class VirtualContext;
 class VirtualField;
 class VirtualFunction;
 class VirtualObject;
@@ -92,7 +93,7 @@ public:
 
    void collectInterface(VirtualClasses& interfces);
 
-   void build();
+   void build(VirtualContext& context);
 
    void instantiate(VirtualObject& object) const;
 
@@ -108,6 +109,7 @@ public:
 private:
 
  // operations
+   void buildFinalize(VirtualContext& context);
    void buildVariables();
    void buildVirtualTable();
    void buildInterfaceTable();

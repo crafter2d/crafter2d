@@ -251,13 +251,10 @@ void VirtualMachine::release(VirtualObject& object)
 
 // - Native interface
 
-void VirtualMachine::registerNative(VirtualObject& object, void* pnative)
+void VirtualMachine::registerNative(VirtualObject& object)
 {
-   //ASSERT(!object.hasNativeObject());
-   //object.setNativeObject(pnative);
-   //object.setOwner(true);
-
-   std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObject*>(pnative, &object));
+   ASSERT(object.hasNativeObject());
+   std::pair<NativeObjectMap::iterator,bool> ret = mNativeObjects.insert(std::pair<void*, VirtualObject*>(object.getNativeObjectPtr(), &object));
    ASSERT(ret.second);
 }
 
@@ -272,8 +269,6 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
    ASSERT(it != mNativeObjects.end());
    mNativeObjects.erase(it);
 
-   object.setNativeObject(NULL);
-
    if ( object.isOwner() )
    {
       static String sFinal = UTEXT("finalize");
@@ -283,6 +278,8 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
          mpCPU->execute(mContext, object, *pentry, 0, NULL);
       }
    }
+
+   object.setNativeObject(NULL);
 }
 
 // - Class loading

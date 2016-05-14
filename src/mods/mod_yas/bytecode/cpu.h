@@ -55,6 +55,9 @@ namespace ByteCode
       VirtualClass&     getStringClass();
 
       bool isGarbageCollectionBlocked() const;
+      void setGCBlock(bool blocked) {
+         mBlockGC = blocked;
+      }
 
       virtual void execute(VirtualContext& context, VirtualObject& object, const VirtualFunctionTableEntry& entry) = 0;
 

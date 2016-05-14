@@ -23,6 +23,10 @@ public:
    virtual const String& getString(int arg) override;
    virtual c2d::ScriptObjectHandle getObject(int arg) override;
 
+   virtual void* useInstance(int arg) override;
+   virtual void* getInstance(int arg) override;
+   virtual void setInstance(int arg, void* pobject, bool owned) override;
+
    virtual void setResult(bool value) override;
    virtual void setResult(int value) override;
    virtual void setResult(float value) override;

@@ -43,8 +43,9 @@ namespace yasc
             String arraytype = typestr.subStr(0, pos);
 
             result.mKind = Type::eArray;
+            result.mObject.mObjectName.~String();
+            new (&result.mArray.mType) std::unique_ptr<Type>(new Type(fromString(arraytype)));
             result.mArray.mDimension = 1;
-            result.mArray.mType.reset(new Type(fromString(arraytype)));
             result.determineArrayDimension();
          }
          else
@@ -71,32 +72,29 @@ namespace yasc
 
    Type::Type():
       mKind(eNull),
-      mObject(),
-      mArray()
+      mObject()
    {
    }
 
    Type::Type(Kind kind):
       mKind(kind),
-      mObject(),
-      mArray()
+      mObject()
    {
+      ASSERT(kind < eObject || kind == eNull);
    }
 
    Type::Type(Type&& that):
-      mKind(that.mKind),
-      mObject(),
-      mArray()
+      mKind(eNull),
+      mObject()
    {
-      move(std::move(that));
+      operator=(std::move(that));
    }
 
    Type::Type(const Type& that):
-      mKind(that.mKind),
-      mObject(),
-      mArray()
+      mKind(eNull),
+      mObject()
    {
-      assign(that);
+      operator=(that);
    }
 
    Type::~Type()
@@ -110,42 +108,80 @@ namespace yasc
 
    Type& Type::operator=(const Type& that)
    {
+      if ( that.mKind == eObject )
+      {
+         if ( mKind == eArray )
+         {
+            mArray.mType.std::unique_ptr<Type>::~unique_ptr();
+            new (&mObject.mObjectName) String(that.mObject.mObjectName);
+         }
+         else
+         {
+            mObject.mObjectName = that.mObject.mObjectName;
+         }
+      }
+      else if ( that.mKind == eArray )
+      {
+         if ( mKind != eArray )
+         {
+            mObject.mObjectName.~String();
+            new (&mArray.mType) std::unique_ptr<Type>(new Type(*that.mArray.mType));
+         }
+         else
+         {
+            mArray.mType.reset(new Type(*that.mArray.mType));
+         }
+         mArray.mDimension = that.mArray.mDimension;
+      }
+      else
+      {
+         if ( mKind == eArray )
+         {
+            mArray.mType.std::unique_ptr<Type>::~unique_ptr();
+            new (&mObject.mObjectName) String();
+         }
+      }
       mKind = that.mKind;
-      assign(that);
       return *this;
    }
 
    Type& Type::operator=(Type&& that)
    {
+      if ( that.mKind == eObject )
+      {
+         if ( mKind == eArray )
+         {
+            mArray.mType.std::unique_ptr<Type>::~unique_ptr();
+            new (&mObject.mObjectName) String(std::move(that.mObject.mObjectName));
+         }
+         else
+         {
+            mObject.mObjectName = std::move(that.mObject.mObjectName);
+         }
+      }
+      else if ( that.mKind == eArray )
+      {
+         if ( mKind != eArray )
+         {
+            mObject.mObjectName.~String();
+            new (&mArray.mType) std::unique_ptr<Type>(std::move(that.mArray.mType));
+         }
+         else
+         {
+            mArray.mType.swap(that.mArray.mType);
+         }
+         mArray.mDimension = that.mArray.mDimension;
+      }
+      else
+      {
+         if ( mKind == eArray )
+         {
+            mArray.mType.std::unique_ptr<Type>::~unique_ptr();
+            new (&mObject.mObjectName) String();
+         }
+      }
       mKind = that.mKind;
-      move(std::move(that));
       return *this;
-   }
-
-   void Type::assign(const Type& that)
-   {
-      if ( mKind == eObject )
-      {
-         mObject.mObjectName = that.mObject.mObjectName;
-      }
-      else if ( mKind == eArray )
-      {
-         mArray.mDimension = that.mArray.mDimension;
-         mArray.mType.reset(new Type(*that.mArray.mType));
-      }
-   }
-
-   void Type::move(Type&& that)
-   {
-      if ( mKind == eObject )
-      {
-         mObject.mObjectName = std::move(that.mObject.mObjectName);
-      }
-      else if ( mKind == eArray )
-      {
-         mArray.mDimension = that.mArray.mDimension;
-         mArray.mType.swap(that.mArray.mType);
-      }
    }
 
    // - Query
@@ -162,7 +198,7 @@ namespace yasc
       else if ( mKind == eArray )
       {
          return getArrayDimension() == that.getArrayDimension()
-               && getArrayType().equals(that.getArrayType());
+             && getArrayType() == that.getArrayType();
       }
 
       return true;
@@ -222,12 +258,6 @@ namespace yasc
    {
       ASSERT(mKind == eObject);
       return mObject.mObjectName;
-   }
-
-   void Type::setObjectName(const String& name)
-   {
-      ASSERT(mKind == eObject);
-      mObject.mObjectName = name;
    }
 
    int Type::getArrayDimension() const

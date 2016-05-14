@@ -95,7 +95,7 @@ void YasScriptObject::setInstance(void* pinstance, bool owned)
    mpObject->setNativeObject(pinstance);
    mpObject->setOwner(owned);
 
-   mManager.registerObject(*this);
+   mManager.registerObject(*mpObject);
 }
 
 // - Operations

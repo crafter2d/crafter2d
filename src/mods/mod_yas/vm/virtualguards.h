@@ -4,23 +4,33 @@
 
 #include <vector>
 
-class VirtualGuard;
+#include "virtualguard.h"
 
 class VirtualGuards
 {
-   typedef std::vector<VirtualGuard*> GuardVector;
+   using Guards = std::vector<VirtualGuard>;
 
 public:
    VirtualGuards();
 
-   const VirtualGuard& operator[](int index) const;
-         VirtualGuard& operator[](int index);
+   const VirtualGuard& operator[](int index) const {
+      return mGuards[index];
+   }
+
+   VirtualGuard& operator[](int index) {
+      return mGuards[index];
+   }
 
  // query
-   int size() const;
+   int size() const {
+      return mGuards.size();
+   }
 
  // maintenance
-   void add(VirtualGuard* pguard);
+   void add(const VirtualGuard& guard) {
+      mGuards.push_back(guard);
+   }
+
    void updatePosition(int offset);
 
  // lookup
@@ -29,7 +39,7 @@ public:
 private:
 
  // data
-   GuardVector mGuards;
+   Guards mGuards;
 };
 
 #endif // VM_GUARDS_H

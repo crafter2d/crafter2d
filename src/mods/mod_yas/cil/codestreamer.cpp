@@ -281,15 +281,13 @@ namespace CIL
       mStream >> argc;
       for ( int index = 0; index < argc; ++index )
       {
-         yasc::Type type = readType();
-         pfunction->addArgument(type);
+         pfunction->addArgument(readType());
       }
 
       mStream >> argc;
       for ( int index = 0; index < argc; ++index )
       {
-         yasc::Type type = readType();
-         pfunction->addLocal(type);
+         pfunction->addLocal(readType());
       }
 
       yasc::Type rettype = readType();

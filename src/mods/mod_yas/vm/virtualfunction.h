@@ -67,7 +67,7 @@ public:
  // operations
    void addAnnotation(const String& annotation);
    void addLookupTable(VirtualLookupTable* ptable);
-   void addGuard(VirtualGuard* pguard);
+   void addGuard(const VirtualGuard& guard);
 
  // search
    const VirtualGuard* findGuard(int ip) const;

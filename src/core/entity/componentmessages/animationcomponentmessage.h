@@ -10,6 +10,7 @@ class CORE_API AnimationComponentMessage : public ComponentMessage
 {
 public:
    AnimationComponentMessage();
+   virtual ~AnimationComponentMessage();
 
    int  getAnimation() const;
    void setAnimation(int index);
