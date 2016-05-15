@@ -11,7 +11,7 @@ namespace yasc
    class Type
    {
    public:
-      enum Kind { eNull, eInt, eReal, eBool, eChar, eString, eVoid, eObject, eArray, eGeneric };
+      enum Kind { eNull, eInt, eReal, eBool, eChar, eString, eVoid, eGeneric, eObject, eArray };
       
       static const String sInt;
       static const String sReal;
@@ -64,11 +64,26 @@ namespace yasc
     // types
       struct ObjectInfo
       {
+         ObjectInfo(String&& name);
+         ObjectInfo(const String& name);
+         ObjectInfo(ObjectInfo&& that);
+         ObjectInfo(const ObjectInfo& that);
+         ObjectInfo& operator=(ObjectInfo&& that);
+         ObjectInfo& operator=(const ObjectInfo& that);
+         ~ObjectInfo() {}
+
          String  mObjectName;
       };
 
       struct ArrayInfo
       {
+         ArrayInfo(Type* ptype);
+         ArrayInfo(ArrayInfo&& that);
+         ArrayInfo(const ArrayInfo& that);
+         ArrayInfo& operator=(ArrayInfo&& that);
+         ArrayInfo& operator=(const ArrayInfo& that);
+         ~ArrayInfo() {}
+
          std::unique_ptr<Type> mType;
          int  mDimension;
       };
