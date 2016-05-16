@@ -259,22 +259,6 @@ bool String::operator!=(const String& that) const
    return !operator==(that);
 }
 
-Object* String::clone() const
-{
-   return new String(*this);
-}
-
-bool String::equals(const Object& that) const
-{
-   const String& str = dynamic_cast<const String&>(that);
-   return operator==(str);
-}
-
-String String::toString() const
-{
-   return *this;
-}
-
 // - Operations
 
 const String& String::toLower()

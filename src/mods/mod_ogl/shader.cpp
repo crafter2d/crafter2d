@@ -22,10 +22,10 @@
 #  include "shader.inl"
 #endif
 
+#include <memory>
 #include <string.h>
 #include <GL/glu.h>
 
-#include "core/smartptr/autoptr.h"
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
 #include "core/log/log.h"
@@ -101,8 +101,8 @@ bool Shader::compile( const char* source, int length )
 /// \returns pointer to the source code loaded, user must release memory.
 GLcharARB* Shader::load (const String& filename, int& length)
 {
-   AutoPtr<File> pfile = FileSystem::getInstance().open(filename, File::ERead | File::EBinary);
-   if ( !pfile.hasPointer() )
+   std::unique_ptr<File> pfile(FileSystem::getInstance().open(filename, File::ERead | File::EBinary));
+   if ( !pfile )
    {
       Log::getInstance().error("Shader.load: Can not open shader file: %s", filename);
 		return nullptr;

@@ -85,6 +85,7 @@ private:
       int      mInt;
       float    mReal;
       UChar    mChar;
+      String*  mpString;
       Object*  mpObject;
    };
    

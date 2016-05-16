@@ -1,6 +1,7 @@
 
 #include "variant.h"
 
+#include "core/system/object.h"
 #include "core/streams/datastream.h"
 #include "core/conv/lexical.h"
 #include "core/conv/numberconverter.h"
@@ -53,12 +54,16 @@ Variant::Variant(const String& value):
    mType(eString),
    mValue()
 {
-   mValue.mpObject = value.clone();
+   mValue.mpString = new String(value);
 }
 
 Variant::~Variant()
 {
-   if ( mType >= eString )
+   if ( mType == eString )
+   {
+      delete mValue.mpString;
+   }
+   else if ( mType == eObject )
    {
       delete mValue.mpObject;
    }
@@ -273,17 +278,31 @@ void Variant::setBool(bool value)
 
 const String& Variant::asString() const
 {
-   return *static_cast<String*>(mValue.mpObject);
+   return *(mValue.mpString);
 }
 
 void Variant::setString(const String& value)
 {
-   mType = eString;
-   mValue.mpObject = value.clone();
+   if ( mType == eString )
+   {
+      *mValue.mpString = value;
+   }
+   else
+   {
+      if ( mType == eObject )
+         delete mValue.mpObject;
+      mType = eString;
+      mValue.mpString = new String(value);
+   }
 }
 
 void Variant::setObject(const Object& obj)
 {
+   if ( mType == eString )
+      delete mValue.mpString;
+   else if ( mType == eObject )
+      delete mValue.mpObject;
+
    mType = eObject;
    mValue.mpObject = obj.clone();
 }

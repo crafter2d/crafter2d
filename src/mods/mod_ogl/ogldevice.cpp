@@ -20,7 +20,6 @@
 #include "ogldevice.h"
 
 #include "core/log/log.h"
-#include "core/smartptr/autoptr.h"
 #include "core/graphics/blendstatedesc.h"
 #include "core/graphics/image.h"
 

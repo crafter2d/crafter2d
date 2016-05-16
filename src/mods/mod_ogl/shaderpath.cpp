@@ -1,11 +1,12 @@
 
 #include "shaderpath.h"
 
+#include <memory>
+
 #include "core/graphics/texture.h"
 #include "core/log/log.h"
 #include "core/streams/datastream.h"
 #include "core/string/string.h"
-#include "core/smartptr/autoptr.h"
 
 #include "shaderuniformbuffer.h"
 
@@ -39,7 +40,7 @@ bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStr
    setVertexLayout(playout);
 
 	// try to load and add the vertex shader
-   AutoPtr<VertexShader> vs = new VertexShader();
+   std::unique_ptr<VertexShader> vs(new VertexShader());
    if ( !vs->compile(vertexshader.getData(), vertexshader.getDataSize()) )
    {
       log.error("ShaderPath.load: Failed to compile vertex shader");
@@ -49,7 +50,7 @@ bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStr
    // try to load the geometry shader
    if ( geometryshader.getDataSize() > 0 )
    {
-      AutoPtr<GeometryShader> gs = new GeometryShader();
+      std::unique_ptr<GeometryShader> gs(new GeometryShader());
       if ( !gs->compile(geometryshader.getData(), geometryshader.getDataSize()) )
       {
          log.error("ShaderPath.load: Failed to compile geometry shader");
@@ -60,7 +61,7 @@ bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStr
    }
 	
 	// try to load and add the fragment shader
-   AutoPtr<FragmentShader> fs = new FragmentShader();
+   std::unique_ptr<FragmentShader> fs(new FragmentShader());
    if ( !fs->compile(pixelshader.getData(), pixelshader.getDataSize()) )
    {
       log.error("ShaderPath.load: Failed to load or compile fragment shader");

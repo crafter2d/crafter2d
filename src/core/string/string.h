@@ -23,7 +23,6 @@
 #include <cstdint>
 #include <string>
 
-#include "core/system/object.h"
 #include "core/core_base.h"
 
 #include "char.h"
@@ -31,7 +30,7 @@
 CORE_TEMPLATE template class CORE_API std::allocator<wchar_t>;
 CORE_TEMPLATE template class CORE_API std::basic_string<wchar_t>;
 
-class CORE_API String : public Object
+class CORE_API String
 {
 public:
    static const String& empty();
@@ -46,7 +45,7 @@ public:
    explicit String(const UChar* pdata);
    explicit String(const std::string& that);
    explicit String(const std::wstring& that);
-   virtual ~String();
+           ~String();
 
    UChar operator[](int index) const;
    
@@ -82,11 +81,6 @@ public:
    const UChar* c_str() const {
       return mData.c_str();
    }
-
- // overrides
-   virtual Object* clone() const override;
-   virtual bool equals(const Object& that) const override;
-   virtual String toString() const;
 
  // operations
    const String& toLower();
