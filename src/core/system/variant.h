@@ -10,9 +10,21 @@ class Object;
 
 class CORE_API Variant
 {
+   enum MetaType
+   {
+      eEmpty,
+      eBool,
+      eInt,
+      eReal,
+      eChar,
+      eString,
+      eObject,
+   };
+
 public:
             Variant();
             Variant(const Variant& that);
+            Variant(Variant&& that);
    explicit Variant(int value);
    explicit Variant(float value);
    explicit Variant(UChar value);
@@ -28,7 +40,8 @@ public:
    bool operator>(const Variant& that) const;
    bool operator>=(const Variant& that) const;
 
-   const Variant& operator=(const Variant& that);
+   Variant& operator=(const Variant& that);
+   Variant& operator=(Variant&& that);
 
  // getters
    int asInt() const;
@@ -62,23 +75,16 @@ public:
    String  toString() const;
    int     toInt() const;
    float   toReal() const;
+
+ // operations
+   void reset(MetaType type);
    
  // streaming
    friend CORE_API DataStream& operator<<(DataStream& stream, const Variant& variant);
    friend CORE_API DataStream& operator>>(DataStream& stream, Variant& variant);
 
 private:
-   enum MetaType
-   {
-      eEmpty,
-      eBool,
-      eInt,
-      eReal,
-      eChar,
-      eString,
-      eObject,
-   };
-
+   
    union Value
    {
       bool     mBoolean;

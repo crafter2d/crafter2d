@@ -16,10 +16,18 @@ Variant::Variant():
 }
 
 Variant::Variant(const Variant& that):
-   mType(that.mType),
+   mType(eEmpty),
    mValue()
 {
    operator=(that);
+}
+
+Variant::Variant(Variant&& that) :
+   mType(that.mType),
+   mValue(that.mValue)
+{
+   that.mType = eEmpty;
+   that.mValue.mInt = 0;
 }
 
 Variant::Variant(int value):
@@ -218,13 +226,32 @@ bool Variant::operator>=(const Variant& that) const
    return false;
 }
 
-const Variant& Variant::operator=(const Variant& that)
+Variant& Variant::operator=(const Variant& that)
+{
+   if ( that.mType <= eChar )
+   {
+      reset(that.mType);
+      mValue = that.mValue;
+   }
+   else if ( that.mType == eString )
+   {
+      setString(*that.mValue.mpString);
+   }
+   else
+   {
+      setObject(*that.mValue.mpObject);
+   }
+
+   return *this;
+}
+
+Variant& Variant::operator=(Variant&& that)
 {
    mType = that.mType;
-   if ( mType > eChar )
-      mValue.mpObject = that.mValue.mpObject->clone();
-   else
-      mValue = that.mValue;
+   mValue = that.mValue;
+
+   that.mType = eEmpty;
+   that.mValue.mInt = 0;
 
    return *this;
 }
@@ -238,7 +265,7 @@ int Variant::asInt() const
 
 void Variant::setInt(int value)
 {
-   mType = eInt;
+   reset(eInt);
    mValue.mInt = value;
 }
 
@@ -249,7 +276,7 @@ float Variant::asReal() const
 
 void Variant::setReal(float value)
 {
-   mType = eReal;
+   reset(eReal);
    mValue.mReal = value;
 }
 
@@ -261,7 +288,7 @@ UChar Variant::asChar() const
 
 void Variant::setChar(UChar value)
 {
-   mType = eChar;
+   reset(eChar);
    mValue.mChar = value;
 }
 
@@ -272,7 +299,7 @@ bool Variant::asBool() const
 
 void Variant::setBool(bool value)
 {
-   mType = eBool;
+   reset(eBool);
    mValue.mBoolean = value;
 }
 
@@ -285,12 +312,15 @@ void Variant::setString(const String& value)
 {
    if ( mType == eString )
    {
+      ASSERT_PTR(mValue.mpString);
       *mValue.mpString = value;
    }
    else
    {
       if ( mType == eObject )
+      {
          delete mValue.mpObject;
+      }
       mType = eString;
       mValue.mpString = new String(value);
    }
@@ -298,12 +328,7 @@ void Variant::setString(const String& value)
 
 void Variant::setObject(const Object& obj)
 {
-   if ( mType == eString )
-      delete mValue.mpString;
-   else if ( mType == eObject )
-      delete mValue.mpObject;
-
-   mType = eObject;
+   reset(eObject);
    mValue.mpObject = obj.clone();
 }
 
@@ -342,6 +367,17 @@ bool Variant::isString() const
 bool Variant::isObject() const
 {
    return mType == eObject;
+}
+
+// - Operations
+
+void Variant::reset(MetaType type)
+{
+   if ( mType == eString )
+      delete mValue.mpString;
+   else if ( mType == eObject )
+      delete mValue.mpObject;
+   mType = type;
 }
 
 // - Display
@@ -430,20 +466,38 @@ CORE_API DataStream& operator<<(DataStream& stream, const Variant& variant)
 
 CORE_API DataStream& operator>>(DataStream& stream, Variant& variant)
 {
-   stream >> (int&)variant.mType;
-   switch ( variant.mType )
+   Variant::MetaType type;
+   stream >> (int&)type;
+
+   switch ( type )
    {
    case Variant::eBool:
-      stream >> variant.mValue.mBoolean;
+      {
+         bool value;
+         stream >> value;
+         variant.setBool(value);
+      }
       break;
    case Variant::eInt:
-      stream >> variant.mValue.mInt;
+      {
+         int value;
+         stream >> value;
+         variant.setInt(value);
+      }
       break;
    case Variant::eReal:
-      stream >> variant.mValue.mReal;
+      {
+         float value;
+         stream >> value;
+         variant.setReal(value);
+      }
       break;
    case Variant::eChar:
-      stream >> variant.mValue.mChar;
+      {
+         UChar value;
+         stream >> value;
+         variant.setChar(value);
+      }
       break;
    case Variant::eString:
       {
