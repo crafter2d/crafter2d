@@ -307,12 +307,15 @@ void World::initializeBorders(const Graphics::Viewport& viewport)
 {
    if ( !mBorderSet )
    {
-      static const int Margin = 100;
+      //static const int Margin = 150;
+      const int horizMargin = viewport.getWidth() / 4;
+      const int vertMargin = viewport.getHeight() / 4;
+
       // set the follow object borders default values
-      leftBorder = Margin;
-      rightBorder = viewport.getWidth() - Margin;
-      topBorder = Margin;
-      bottomBorder = viewport.getHeight() - Margin;
+      leftBorder = horizMargin;
+      rightBorder = viewport.getWidth() - horizMargin;
+      topBorder = vertMargin;
+      bottomBorder = viewport.getHeight() - vertMargin;
    }
 }
 

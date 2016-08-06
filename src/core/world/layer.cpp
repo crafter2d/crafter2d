@@ -275,25 +275,18 @@ void Layer::scroll(Graphics::RenderContext& context, float x, float y)
    {
       float oldxscroll = xscroll;
 	   xscroll += (x * scrollSpeedX);
-      if ( xscroll < 0 )
-         xscroll = 0;
-      else if ( xscroll > xscrollMax )
-         xscroll = xscrollMax;
+      xscroll = std::max(0.0f, std::min(xscrollMax, xscroll));
 
       float oldyscroll = yscroll;
 	   yscroll += (y * scrollSpeedY);
-      if ( yscroll < 0 )
-         yscroll = 0;
-      else if ( yscroll > yscrollMax )
-         yscroll = yscrollMax;
+      yscroll = std::max(0.0f, std::min(yscrollMax, yscroll));
 
       if ( oldxscroll != xscroll || oldyscroll != yscroll )
       {
-         dirty = true;
-
          mConstants.world.setTranslation(-xscroll, -yscroll, 0);
-
          ub->set(context, &mConstants, sizeof(mConstants));
+
+         dirty = true;
       }
    }
 }
