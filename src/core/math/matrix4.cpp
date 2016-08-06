@@ -91,6 +91,13 @@ Matrix4& Matrix4::translate(float x, float y, float z)
    return *this;
 }
 
+void Matrix4::setTranslation(float x, float y, float z)
+{
+   mMatrix[3] = x;
+   mMatrix[7] = y;
+   mMatrix[11] = z;
+}
+
 Matrix4& Matrix4::translate(const Vector& position)
 {
    return translate(position.x, position.y, 0);

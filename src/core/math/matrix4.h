@@ -29,6 +29,7 @@ public:
 
    void setIdentity();
    void setArray(const float* pmatrix);
+   void setTranslation(float x, float y, float z);
 
    //Matrix4 transpose();
       

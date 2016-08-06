@@ -14,8 +14,15 @@ public:
    virtual ~ComponentMessage();
 
  // get/set
-	ComponentInterface::ComponentMessageType getMessageType() const;
-	void* getData() const;
+	ComponentInterface::ComponentMessageType getMessageType() const
+   {
+      return mMessageType;
+   }
+
+   void* getData() const
+   {
+      return mpData;
+   }
 
 private:
 

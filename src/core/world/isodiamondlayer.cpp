@@ -90,11 +90,9 @@ float IsoDiamondLayer::getXOffset() const
    return _xstart;
 }
 
-void IsoDiamondLayer::onViewportChanged(const Graphics::Viewport& viewport)
+void IsoDiamondLayer::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
-   // calculate maximum tiles to scroll
-	xscrollMax = MAX((tileWidth * getWidth()) - viewport.getWidth(), 0);
-	yscrollMax = MAX((tileHeight * getHeight()) - viewport.getHeight(), 0);
+   Layer::onViewportChanged(context, viewport);
 }
 
 void IsoDiamondLayer::draw(Graphics::RenderContext& context)

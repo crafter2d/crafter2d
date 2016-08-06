@@ -10,15 +10,3 @@ ComponentMessage::ComponentMessage(ComponentInterface::ComponentMessageType mess
 ComponentMessage::~ComponentMessage()
 {
 }
-
-// - Get/set
-
-ComponentInterface::ComponentMessageType ComponentMessage::getMessageType() const
-{
-	return mMessageType;
-}
-
-void* ComponentMessage::getData() const
-{
-	return mpData;
-}

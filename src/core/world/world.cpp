@@ -78,8 +78,6 @@ void World::initialize(Device& device)
    {
       player->initialize(device);
    }
-
-   calculateScrollSpeed();
 }
 
 /// \fn World::destroy()
@@ -325,6 +323,9 @@ void World::onViewportChanged(Graphics::RenderContext& context, const Graphics::
       player->onViewportChanged(context, viewport);
    }
 
+   calculateScrollSpeed();
+
+   mBorderSet = false;
    initializeBorders(viewport);
 }
 

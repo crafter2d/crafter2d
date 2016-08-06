@@ -128,31 +128,46 @@ void Layer::release()
    delete mpEffect;
 }
 
+#include <algorithm>
+
 /// \fn Layer::onViewportChanged(const Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 /// \brief Called when the viewports dimensions have been changed. 
 void Layer::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
-   mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1.0f, 1.0f);
-   mConstants.world.setIdentity();
-   mConstants.object.setIdentity();
+   // calculate maximum pixels to scroll
+   xscrollMax = std::max(getWidth() * tileWidth - viewport.getWidth(), 0);
+   yscrollMax = std::max(getHeight() * tileHeight - viewport.getHeight(), 0);
 
+   // update scroll position to stay within the valid boundaries
+   xscroll = std::max(0.0f, std::min(xscrollMax, xscroll));
+   yscroll = std::max(0.0f, std::min(yscrollMax, yscroll));
+
+   mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1.0f, 1.0f);
+   mConstants.world.setTranslation(-xscroll, -yscroll, 0.0f);
    ub->set(context, &mConstants, sizeof(mConstants));
+
+   dirty = true;
 }
 
 Vector Layer::getScrollArea() const
 {
-   float tilesX = (float) MAX(getWidth() - maxTilesX, 0);
-   float tilesY = (float) MAX(getHeight() - maxTilesY, 0);
-
-   return Vector(tileset().getTileWidth() * tilesX, tileHeight * tilesY);
+   return Vector(xscrollMax, yscrollMax);
 }
 
 void Layer::calculateScrollSpeed(const Vector& area)
 {
-   Vector thisarea = getScrollArea();
+   scrollSpeedX = 0.0f;
+   scrollSpeedY = 0.0f;
 
-   scrollSpeedX = thisarea.x > 0.0f ? thisarea.x / area.x : 0.0f;
-   scrollSpeedY = thisarea.y > 0.0f ? thisarea.y / area.y : 0.0f;
+   if ( xscrollMax > 0.0f && area.x > 0.0f )
+   {
+      scrollSpeedX = xscrollMax / area.x;
+   }
+
+   if ( yscrollMax > 0.0f && area.y > 0.0f )
+   {
+      scrollSpeedY = yscrollMax / area.y;
+   }
 }
 
 void Layer::update(float delta)
@@ -260,23 +275,23 @@ void Layer::scroll(Graphics::RenderContext& context, float x, float y)
    {
       float oldxscroll = xscroll;
 	   xscroll += (x * scrollSpeedX);
-	   if (xscroll < 0)
+      if ( xscroll < 0 )
          xscroll = 0;
-	   else if (xscroll > xscrollMax)
+      else if ( xscroll > xscrollMax )
          xscroll = xscrollMax;
 
       float oldyscroll = yscroll;
 	   yscroll += (y * scrollSpeedY);
-	   if (yscroll < 0)
+      if ( yscroll < 0 )
          yscroll = 0;
-	   else if (yscroll > yscrollMax)
+      else if ( yscroll > yscrollMax )
          yscroll = yscrollMax;
 
       if ( oldxscroll != xscroll || oldyscroll != yscroll )
       {
          dirty = true;
 
-         mConstants.world.translate(-(xscroll - oldxscroll), -(yscroll - oldyscroll), 0);
+         mConstants.world.setTranslation(-xscroll, -yscroll, 0);
 
          ub->set(context, &mConstants, sizeof(mConstants));
       }

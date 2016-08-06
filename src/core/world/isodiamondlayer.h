@@ -43,8 +43,9 @@ public:
  // coordinate conversion
    virtual c2d::Point pointToTile(const c2d::Point& point);
 
+protected:
  // notifications
-   virtual void onViewportChanged(const Graphics::Viewport& viewport);
+   virtual void onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport) override;
    
 private:
 

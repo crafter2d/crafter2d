@@ -12,8 +12,15 @@ public:
    AnimationComponentMessage();
    virtual ~AnimationComponentMessage();
 
-   int  getAnimation() const;
-   void setAnimation(int index);
+   int  getAnimation() const
+   {
+      return mAnimation;
+   }
+
+   void setAnimation(int index)
+   {
+      mAnimation = index;
+   }
 
 private:
 

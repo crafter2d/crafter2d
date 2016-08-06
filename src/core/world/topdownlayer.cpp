@@ -20,6 +20,8 @@
 
 #include "topdownlayer.h"
 
+#include <algorithm>
+
 #include "core/math/point.h"
 #include "core/math/xform.h"
 #include "core/math/matrix4.h"
@@ -59,16 +61,10 @@ bool TopDownLayer::initialize(Graphics::Device& device)
 void TopDownLayer::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
 	// calculate the maximum number of tiles on the screen
-	maxTilesX = MIN(viewport.getWidth()  / mpTileSet->getTileWidth() + 1, getWidth());
-   maxTilesY = MIN(viewport.getHeight() / mpTileSet->getTileHeight() + 1, getHeight());
-
-	// calculate maximum tiles to scroll
-	xscrollMax = MAX((getWidth() - maxTilesX) * tileWidth , 0);
-	yscrollMax = MAX((getHeight() - maxTilesY) * tileHeight, 0);
+	maxTilesX = std::min(viewport.getWidth()  / mpTileSet->getTileWidth() + 1, getWidth());
+   maxTilesY = std::min(viewport.getHeight() / mpTileSet->getTileHeight() + 1, getHeight());
 
    Layer::onViewportChanged(context, viewport);
-
-   dirty = true;
 }
 
 /// \fn Layer::draw()
@@ -153,8 +149,7 @@ void TopDownLayer::updateTile(pv** pdata, int& indices, LayerLevel level, int x,
          pvertices[3].pos.set(xpos, ypos + tileset().getTileHeight());
          pvertices[3].tex.set(info.coords.left, info.coords.bottom);
       }
-
-
+      
       (*pdata) += 4;
 		indices += 6;
    }
