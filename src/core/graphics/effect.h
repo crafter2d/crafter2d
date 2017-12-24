@@ -47,10 +47,10 @@ namespace Graphics
    {
    public:
     // types
-      typedef std::vector<EffectTechnique*> Techniques;
+      using Techniques = std::vector<EffectTechnique*>;
 
       Effect();
-	   ~Effect();
+	  virtual ~Effect();
 
     // get/set
       const String& getName() const;

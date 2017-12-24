@@ -103,8 +103,8 @@ namespace Graphics
    {
       float dpisize = (fontsize / 72.0f) * context.getDpi();
 
-      int x = 10;
-      int y = 100;
+      float x = 10.0f;
+      float y = 100.0f;
 
       TextLayout layout;
       if ( layout.create(context, position, font, dpisize, text) )
@@ -124,23 +124,23 @@ namespace Graphics
             GlyphVertex* pvertices = (GlyphVertex*) mpVB->lock(context);
             pvertices[0].pos.x = x;
             pvertices[0].pos.y = y;
-            pvertices[0].tex.x = 0;
-            pvertices[0].tex.y = 0;
+            pvertices[0].tex.x = 0.0f;
+            pvertices[0].tex.y = 0.0f;
 
-            pvertices[1].pos.x = x + 512;
+            pvertices[1].pos.x = x + 512.0f;
             pvertices[1].pos.y = y;
-            pvertices[1].tex.x = 1;
-            pvertices[1].tex.y = 0;
+            pvertices[1].tex.x = 1.0f;
+            pvertices[1].tex.y = 0.0f;
 
-            pvertices[2].pos.x = x + 512;
-            pvertices[2].pos.y = y + 512;
-            pvertices[2].tex.x = 1;
-            pvertices[2].tex.y = 1;
+            pvertices[2].pos.x = x + 512.0f;
+            pvertices[2].pos.y = y + 512.0f;
+            pvertices[2].tex.x = 1.0f;
+            pvertices[2].tex.y = 1.0f;
 
             pvertices[3].pos.x = x;
-            pvertices[3].pos.y = y + 512;
-            pvertices[3].tex.x = 0;
-            pvertices[3].tex.y = 1;
+            pvertices[3].pos.y = y + 512.0f;
+            pvertices[3].tex.x = 0.0f;
+            pvertices[3].tex.y = 1.0f;
 
             mpVB->unlock(context);
 

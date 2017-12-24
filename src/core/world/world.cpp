@@ -284,22 +284,22 @@ void World::scroll (Graphics::RenderContext& context)
    }
 
    // scroll the layer
-   if ( xScroll != 0 || yScroll != 0 )
+   //if ( xScroll != 0 || yScroll != 0 )
    {
-      Layer& layer = *layers[getObjectLayer()];
-      Vector prescroll = layer.getScroll();
+      //Layer& layer = *layers[getObjectLayer()];
+      //Vector prescroll = layer.getScroll();
 
       for ( auto player : layers )
       {
          player->scroll(context, xScroll, yScroll);
       }
 
-      Vector scroll = layer.getScroll();
+      //Vector scroll = layer.getScroll();
 
-      if ( scroll != prescroll )
-      {
-         notifyScrollChange(scroll);
-      }
+      //if ( scroll != prescroll )
+      //{
+      //   notifyScrollChange(scroll);
+      //}
    }
 }
 
@@ -495,10 +495,8 @@ void World::notifyScrollChange(const Vector& scrollposition)
 
 void World::notifyEntityAdded(const Entity& entity)
 {
-   Observers::iterator it = mObservers.begin();
-   for ( ; it != mObservers.end(); ++it )
+   for ( WorldObserver* pobserver : mObservers )
    {
-      WorldObserver* pobserver = *it;
       pobserver->notifyEntityAdded(entity);
    }
 }

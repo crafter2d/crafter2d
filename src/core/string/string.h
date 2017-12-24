@@ -27,8 +27,8 @@
 
 #include "char.h"
 
-CORE_TEMPLATE template class CORE_API std::allocator<wchar_t>;
-CORE_TEMPLATE template class CORE_API std::basic_string<wchar_t>;
+//CORE_TEMPLATE template class CORE_API std::allocator<wchar_t>;
+//CORE_TEMPLATE template class CORE_API std::basic_string<wchar_t>;
 
 class CORE_API String
 {

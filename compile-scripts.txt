@@ -1,0 +1,11 @@
+-p ..\scripts;..\demo\scripts -r -o ..\data\scripts ..\demo\scripts\*.as
+
+-p ..\scripts;..\src\unittest\unittests -r -o ..\src\unittest\compiledtests ..\src\unittest\unittests\*.as
+
+-p ..\scripts -r -o ..\compiled ..\scripts\*.as
+
+
+..\demo\tileatlas\tileatlas.xml ..\demo\build\tileatlas\tileatlas.c2d
+..\demo\tileatlas\tilesheet_1.png ..\demo\build\tileatlas\tilesheet_1.c2d
+
+..\demo\objects\char.xml ..\demo\build\objects\char.c2d

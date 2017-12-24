@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <includedir>
+        <dir name="F:/Devel/externallibs/x32/"/>
+    </includedir>
+    <defines>
+        <define name="Crafter 2D"/>
+    </defines>
+    <paths>
+        <dir name="F:/Devel/crafter2d/src"/>
+    </paths>
+    <libraries>
+        <library>sdl</library>
+        <library>windows</library>
+    </libraries>
+</project>

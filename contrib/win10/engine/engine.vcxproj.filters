@@ -406,7 +406,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\src\engine\actionmap.inl" />
     <None Include="..\..\..\src\engine\client.inl" />
     <None Include="..\..\..\src\engine\game.inl" />
     <None Include="..\..\..\src\engine\pickvisitor.inl" />

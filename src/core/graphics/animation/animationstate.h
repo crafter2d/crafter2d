@@ -45,10 +45,10 @@ namespace c2d
       friend class Animator;
       
     // data
-      float mDelta;
-      int   mAnimation;    // which animation
-      int   mAnimFrame;    // frame within the animation
-      int   mTileIndex;    // index for texture coord lookup in tileatlas
+      float    mDelta;
+      int      mAnimation;    // which animation
+      size_t   mAnimFrame;    // frame within the animation
+      int      mTileIndex;    // index for texture coord lookup in tileatlas
    };
 }
 

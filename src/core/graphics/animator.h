@@ -20,9 +20,9 @@
 #ifndef ANIMATOR_H_
 #define ANIMATOR_H_
 
+#include <array>
 #include <vector>
 
-#include "core/smartptr/sharedptr.h"
 #include "core/core_base.h"
 
 struct Size;
@@ -40,10 +40,9 @@ namespace c2d
    class CORE_API Animator
    {
    public:
-      using Animation = std::vector<int>;
-
       enum AnimationType { eIdle, eWalking, eRunning, eJumping, eSliding, eDying, eInvalid };
-
+      using Animation = std::vector<int>;
+	  
       Animator();
       ~Animator();
 
@@ -54,15 +53,13 @@ namespace c2d
       
     // operations
       void add(AnimationType type, Animation&& animation);
-      Animation& emplaceAnimation();
-      void flip();
 
     // Animation
       void setAnimation(AnimationState& state, int index);
       bool animate(AnimationState& state) const;
 
    private:
-      using Animations = std::vector<Animation>;
+      using Animations = std::array<Animation, eInvalid>;
 
     // query
       bool canAnimate(AnimationState& state) const;
@@ -76,7 +73,6 @@ namespace c2d
       int         mAnimFrameCount;
    };
 
-   typedef SharedPtr<Animator> AnimatorPtr;
 }
 
 #endif

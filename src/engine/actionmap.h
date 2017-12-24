@@ -20,7 +20,7 @@
 #ifndef _ACTIONMAP_H
 #define _ACTIONMAP_H
 
-#include <map>
+#include <unordered_map>
 
 #include "core/string/string.h"
 
@@ -59,9 +59,16 @@ namespace c2d
       ~ActionMap();
 
       // get/set
-      bool     hasProcess() const;
-      Process& getProcess();
-      void     setProcess(Process& process);
+      bool hasProcess() const {
+         return mpProcess != nullptr;
+      }
+
+      Process& getProcess() {
+         ASSERT_PTR(mpProcess);
+         return *mpProcess;
+      }
+
+      void setProcess(Process& process);
 
       // operations
       void bind(int action, const String& function);
@@ -71,16 +78,12 @@ namespace c2d
       void processRemote(const ActionEvent& event, Entity& object);
 
    private:
-      typedef std::map<int, String> Actions;
+      typedef std::unordered_map<int, String> Actions;
 
       Process*       mpProcess;
       ScriptObject*  mpScript;
       Actions        mActions;
    };
 }
-
-#ifdef JENGINE_INLINE
-#  include "actionmap.inl"
-#endif
 
 #endif

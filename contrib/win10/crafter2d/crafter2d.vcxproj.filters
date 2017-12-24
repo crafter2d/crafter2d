@@ -103,9 +103,6 @@
     <None Include="..\Win32\Debug\zipd.dll">
       <Filter>Content\x86\debug</Filter>
     </None>
-    <None Include="..\..\..\bin\amersn.ttf">
-      <Filter>Content</Filter>
-    </None>
     <None Include="..\ARM\Debug\core.dll">
       <Filter>Content\arm\debug</Filter>
     </None>
@@ -186,5 +183,8 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\bin\amersn.ttf" />
   </ItemGroup>
 </Project>

@@ -33,7 +33,6 @@ Animator::Animator():
    mAnimationSpeed(0),
    mAnimFrameCount(0)
 {
-   mAnimations.resize(eInvalid);
 }
 
 Animator::~Animator()
@@ -45,12 +44,6 @@ Animator::~Animator()
 void Animator::add(AnimationType type, Animation&& animation)
 {
    mAnimations[type] = std::move(animation);
-}
-
-Animator::Animation& Animator::emplaceAnimation()
-{
-   mAnimations.emplace_back();
-   return mAnimations.back();
 }
 
 //--------------

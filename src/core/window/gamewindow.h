@@ -43,8 +43,6 @@ class String;
 
 class CORE_API GameWindow
 {
-   typedef std::vector<GameWindowListener*> Listeners;
-
 public:
    GameWindow();
    virtual ~GameWindow() = 0;
@@ -88,6 +86,7 @@ protected:
 
 private:
    using KeyDispatchers = std::vector<Input::KeyEventDispatcher*>;
+   using Listeners = std::vector<GameWindowListener*>;
 
  // members
    Listeners                     mListeners;
