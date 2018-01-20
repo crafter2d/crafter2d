@@ -18,6 +18,7 @@ namespace Graphics
 
 class ASTBuffer;
 class ASTSampler;
+class ASTDefine;
 class ASTTechnique;
 class ASTTexture;
 
@@ -30,6 +31,7 @@ public:
    typedef std::vector<ASTTechnique*> Techniques;
    typedef std::vector<ASTTexture*> Textures;
    typedef std::vector<ASTSampler*> Samplers;
+   typedef std::vector<ASTDefine*> Defines;
 
    enum Language { eDirectX, eOpenGL, eUnsupported };
 
@@ -49,6 +51,7 @@ public:
    void addTechnique(ASTTechnique* ptechnique) { mTechniques.push_back(ptechnique); }
    void addTexture(ASTTexture* ptexture) { mTextures.push_back(ptexture); }
    void addSampler(ASTSampler* psampler) { mSamplers.push_back(psampler); }
+   void addDefine(ASTDefine* pdefine) { mDefines.push_back(pdefine); }
 
  // finding
    const ASTStruct* findStruct(const String& name) const;
@@ -62,6 +65,7 @@ public:
    Techniques mTechniques;
    Textures mTextures;
    Samplers mSamplers;
+   Defines mDefines;
 
    Graphics::VertexLayout* mpLayout;
 };

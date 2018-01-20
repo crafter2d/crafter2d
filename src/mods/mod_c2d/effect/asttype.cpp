@@ -9,6 +9,7 @@
 static const String sVoid(UTEXT("void"));
 
 // DirectX HSLS
+static const String sUint(UTEXT("uint"));
 static const String sFloat(UTEXT("float"));
 static const String sFloat2(UTEXT("float2"));
 static const String sFloat3(UTEXT("float3"));
@@ -58,6 +59,10 @@ ASTType* ASTType::fromString(const ASTEffect& effect, const String& typestr)
    {
       presult->mType = ASTType::eMat4;
    }
+   else if ( typestr == sUint )
+   {
+      presult->mType = ASTType::eUint;
+   }
    else if ( typestr == sVoid )
    {
       presult->mType = ASTType::eVoid;
@@ -78,14 +83,14 @@ ASTType* ASTType::fromString(const ASTEffect& effect, const String& typestr)
 ASTType::ASTType():
    mType(eUnknown),
    mTemplateClass(),
-   mpStruct(NULL)
+   mpStruct(nullptr)
 {
 }
 
 ASTType::ASTType(Type type):
    mType(type),
    mTemplateClass(),
-   mpStruct(NULL)
+   mpStruct(nullptr)
 {
 }
 
@@ -133,6 +138,9 @@ String ASTType::toDirectX() const
    
    switch ( mType )
    {
+   case ASTType::eUint:
+      result = sUint;
+      break;
    case ASTType::eFloat:
       result = sFloat;
       break;
@@ -177,6 +185,8 @@ String ASTType::toOpenGL() const
 {
    switch ( mType )
    {
+   case ASTType::eUint:
+      return sUint;
    case ASTType::eFloat:
       return sFloat;
    case ASTType::eFloat2:

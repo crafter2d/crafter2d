@@ -23,6 +23,7 @@ public:
    VirtualValue(VirtualObject& object);
    VirtualValue(VirtualArray& array);
    VirtualValue& operator=(const VirtualValue& that);
+   VirtualValue& operator=(VirtualValue&& that);
 
  // comparison
    bool operator==(const VirtualValue& that) const;

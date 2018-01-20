@@ -19,15 +19,17 @@ class D3DTextRenderer;
 
 namespace Graphics
 {
+   class GlyphAtlas;
+
    class D3DGlyphProvider : public GlyphProvider
    {
    public:
-      D3DGlyphProvider(ID2D1DeviceContext* pcontext, IDWriteFactory* pdwfactory);
+      D3DGlyphProvider(ID2D1DeviceContext* pcontext, IDWriteFactory* pdwfactory, GlyphAtlas& atlas);
       virtual ~D3DGlyphProvider();
 
       bool initialize(IDWriteFontCollection* pcollection, Font& font);
 
-      virtual Glyph* getGlyph(UChar ch, float emsize) override;
+      virtual uint32_t getGlyph(UChar ch) override;
 
    private:
 

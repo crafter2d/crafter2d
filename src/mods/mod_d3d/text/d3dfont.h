@@ -6,14 +6,12 @@
 
 #include "core/graphics/font.h"
 
-class D3DFontCollection;
-
 namespace Graphics
 {
-   class D3DFont : public Graphics::Font
+   class D3DFont : public Font
    {
    public:
-      D3DFont(D3DFontCollection& collection, IDWriteFontFace* pfontface);
+      D3DFont(IDWriteFontFace* pfontface, GlyphProvider* pprovider);
       virtual ~D3DFont();
       
     // query
@@ -23,7 +21,6 @@ namespace Graphics
       friend class D3DGlyphProvider;
 
       // data
-      D3DFontCollection&   mCollection;
       IDWriteFontFace*     mpFontFace;
    };
 }

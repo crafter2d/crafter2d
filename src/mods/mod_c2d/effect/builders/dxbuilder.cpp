@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <d3dcompiler.h>
+#include <d3d11.h>
 
 #include "core/graphics/vertexlayout.h"
 #include "core/graphics/vertexlayoutelement.h"
@@ -11,6 +12,7 @@
 
 #include "../astannotation.h"
 #include "../astbuffer.h"
+#include "../astdefine.h"
 #include "../asteffect.h"
 #include "../aststruct.h"
 #include "../aststructentry.h"
@@ -27,21 +29,23 @@ void DxBuilder::buildVertexShader(const ASTEffect& effect, ASTTechnique& techniq
    if ( pfunction->mArguments.size() == 1 && pfunction->mArguments[0]->mpType->isStruct() )
    {
       const ASTStruct& input = pfunction->mArguments[0]->mpType->getStruct();
-      technique.mpLayout = buildInputLayout(input);
+      buildInputLayout(input, technique.mLayout);
    }
 
    String code = UTEXT("// generated vertex shader\n\n");
+
+   code += buildDefines(effect);
    
    String num;
    NumberConverter& conv = NumberConverter::getInstance();
-   for ( std::size_t index = 0; index < effect.mBuffers.size(); ++index )
+   for ( size_t index = 0; index < effect.mBuffers.size(); ++index )
    {
       const ASTBuffer* pbuffer = effect.mBuffers[index];
       code += UTEXT("cbuffer ") + pbuffer->mName;
 
-      int reg = pbuffer->mRegister;
+      size_t reg = pbuffer->mRegister;
       if ( reg == -1 )
-         reg = (int) index;
+         reg =  index;
       
       code += UTEXT(" : register(b") + conv.format(num, reg) + UTEXT(")\n{") + pbuffer->mBody + UTEXT("};\n\n");
    }
@@ -165,6 +169,37 @@ void DxBuilder::buildPixelShader(const ASTEffect& effect, ASTTechnique& techniqu
    technique.mPixel.mCompiledCode.writeBlob(presult->GetBufferPointer(), presult->GetBufferSize());
 }
 
+uint32_t DxBuilder::toNativeType(const ASTType& type)
+{
+   switch ( type.getType() )
+   {
+   case ASTType::eUint:
+      return DXGI_FORMAT_R32_UINT;
+   case ASTType::eFloat:
+      return DXGI_FORMAT_R32_FLOAT;
+   case ASTType::eFloat2:
+      return DXGI_FORMAT_R32G32_FLOAT;
+   case ASTType::eFloat3:
+      return DXGI_FORMAT_R32G32B32_FLOAT;
+   case ASTType::eFloat4:
+      return DXGI_FORMAT_R32G32B32A32_FLOAT;
+   }
+   return 0;
+}
+
+String DxBuilder::buildDefines(const ASTEffect& effect)
+{
+   NumberConverter& conv = NumberConverter::getInstance();
+   String result;
+   String num;
+
+   for (auto pdefine : effect.mDefines)
+   {
+      result += UTEXT("#define ") + pdefine->mName + UTEXT(" ") + conv.format(num, pdefine->mValue) + L'\n';
+   }
+
+   return result;
+}
 
 String DxBuilder::buildStructs(const ASTEffect& effect, const ASTFunction& function)
 {
@@ -177,12 +212,11 @@ String DxBuilder::buildStructs(const ASTEffect& effect, const ASTFunction& funct
       structs.push_back(&aststruct);
    }   
    
-   for ( std::size_t index = 0; index < function.mArguments.size(); ++index )
+   for (const ASTFunctionArgument* parg : function.mArguments )
    {
-      const ASTFunctionArgument* parg = function.mArguments[index];
       if ( parg->mpType->isStruct() )
       {
-         int s = 0;
+         size_t s = 0;
          const ASTStruct& aststruct = parg->mpType->getStruct();
          for ( ; s < structs.size(); ++s )
          {
@@ -200,9 +234,8 @@ String DxBuilder::buildStructs(const ASTEffect& effect, const ASTFunction& funct
    }
 
    String code;
-   for ( std::size_t index = 0; index < structs.size(); ++index )
+   for ( const ASTStruct* pstruct : structs )
    {
-      const ASTStruct* pstruct = structs[index];
       code += buildStruct(*pstruct);
    }
    return code;
@@ -211,9 +244,8 @@ String DxBuilder::buildStructs(const ASTEffect& effect, const ASTFunction& funct
 String DxBuilder::buildStruct(const ASTStruct& str)
 {
    String result = UTEXT("struct ") + str.mName + UTEXT("\n{\n");
-   for ( std::size_t index = 0; index < str.mEntries.size(); ++index )
+   for ( const ASTStructEntry* pentry : str.mEntries )
    {
-      const ASTStructEntry* pentry = str.mEntries[index];
       result += UTEXT("  ") + buildStructEntry(*pentry) + L'\n';
    }
    result += UTEXT("};\n\n");
@@ -247,11 +279,9 @@ String DxBuilder::buildFunction(const ASTFunction& function)
    }
 
    code += function.mpType->toDirectX() + ' ' + function.mName + '(';
-   for ( std::size_t index = 0; index < function.mArguments.size(); ++index )
+   for ( const ASTFunctionArgument* parg : function.mArguments )
    {
-      const ASTFunctionArgument* parg = function.mArguments[index];
-
-      if ( index > 0 )
+      if ( parg != *function.mArguments.begin() )
       {
          code += UTEXT(", ");
       }

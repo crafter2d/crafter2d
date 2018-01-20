@@ -2,6 +2,8 @@
 #ifndef EFFECT_READER_H
 #define EFFECT_READER_H
 
+#include <memory>
+
 #include "core/content/contentreader.h"
 
 namespace Graphics
@@ -20,7 +22,7 @@ private:
 
  // reading
    Graphics::EffectTechnique* readTechnique(DataStream& stream);
-   Graphics::VertexLayout*    readVertexLayout(DataStream& stream);
+   std::unique_ptr<Graphics::VertexLayout> readVertexLayout(DataStream& stream);
 };
 
 #endif // EFFECT_READER_H

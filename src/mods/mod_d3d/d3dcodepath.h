@@ -31,7 +31,7 @@ namespace Graphics
 	   virtual void      disable(RenderContext& context) const override;
 
       virtual void      bindTexture(RenderContext& context, int stage, const Texture& uniform) override;
-      virtual void      setConstantBuffer(RenderContext& context, const UniformBuffer& buffer) override;
+      virtual void      setConstantBuffer(RenderContext& context, int slot, const UniformBuffer& buffer) override;
 
    private:
 

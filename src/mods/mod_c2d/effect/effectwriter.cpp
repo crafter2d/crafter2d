@@ -68,9 +68,8 @@ void EffectWriter::write(DataStream& stream, const ASTEffect& effect)
 {
    stream.writeUint32(effect.mTechniques.size());
 
-   for ( std::size_t index = 0; index < effect.mTechniques.size(); ++index )
+   for (const ASTTechnique* ptechnique : effect.mTechniques)
    {
-      const ASTTechnique* ptechnique = effect.mTechniques[index];
       write(stream, *ptechnique);
    }
 }
@@ -79,7 +78,7 @@ void EffectWriter::write(DataStream& stream, const ASTTechnique& technique)
 {
    stream << technique.mName;
 
-   write(stream, *technique.mpLayout);
+   write(stream, technique.mLayout);
 
    stream.write(technique.mVertex.mCompiledCode);
    stream.write(technique.mGeometry.mCompiledCode);
@@ -88,11 +87,9 @@ void EffectWriter::write(DataStream& stream, const ASTTechnique& technique)
 
 void EffectWriter::write(DataStream& stream, const VertexLayout& layout)
 {
-   stream << layout.getSize();
-   for ( int index = 0; index < layout.getSize(); ++index )
-   {
-      const VertexLayoutElement& element = layout[index];
-      
-      stream << element.pos << element.size << element.semantic;
+   stream << layout.getSize() << layout.getStride();
+   for (const VertexLayoutElement& element : layout )
+   {      
+      stream << element.semantic << element.pos << element.type;
    }
 }

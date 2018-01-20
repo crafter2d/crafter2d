@@ -21,6 +21,7 @@
 #define DATA_STREAM_H
 
 #include <stdint.h>
+#include <vector>
 
 #include "core/string/char.h"
 #include "core/core_base.h"
@@ -83,7 +84,7 @@ public:
       return *this;
    }
 
-   DataStream&  operator>>(uint32_t i) {
+   DataStream&  operator>>(uint32_t& i) {
       readUint32(i);
       return *this;
    }
@@ -135,6 +136,7 @@ public:
    virtual void readChar(UChar& value);
    virtual void readString(String& value);
            void readBlob(void* pdata, int size);
+           const char* readBlob(int size);
 
    void write(const DataStream& that);
    void read(DataStream& that);

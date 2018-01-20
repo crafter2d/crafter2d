@@ -31,23 +31,28 @@ std::string conv_utf32_to_utf8(const std::u32string& src)
 }
 */
 
+using Converter = std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>;
+
+Converter& getConverter()
+{
+   static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+   return converter;
+}
+
 std::string conv_wchar_to_utf8(const std::wstring& src)
 {
-   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-   return converter.to_bytes(src);
+   return getConverter().to_bytes(src);
 }
 
 std::wstring conv_utf8_to_wchar(const char* const psrc, std::size_t length)
 {
-   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
    if ( length == 0 )
-      return converter.from_bytes(psrc);
+      return getConverter().from_bytes(psrc);
    else
-      return converter.from_bytes(psrc, &psrc[length]);
+      return getConverter().from_bytes(psrc, &psrc[length]);
 }
 
 std::wstring conv_utf8_to_wchar(const std::string& src)
 {
-   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-   return converter.from_bytes(src);
+   return getConverter().from_bytes(src);
 }

@@ -4,10 +4,7 @@
 
 #include "astshader.h"
 
-namespace Graphics
-{
-   class VertexLayout;
-}
+#include "core/graphics/vertexlayout.h"
 
 class ASTTechnique
 {
@@ -15,7 +12,7 @@ public:
 
  // data
    String                  mName;
-   Graphics::VertexLayout* mpLayout;
+   Graphics::VertexLayout  mLayout;
    ASTShader               mVertex;
    ASTShader               mGeometry;
    ASTShader               mPixel;

@@ -11,14 +11,14 @@ namespace Graphics
 {
    class OGLFont;
 
-   class OGLGlyphProvider : public Graphics::GlyphProvider
+   class OGLGlyphProvider : public GlyphProvider
    {
    public:
       OGLGlyphProvider(FT_Library library);
 
       void initialize(OGLFont& font);
 
-      virtual Graphics::Glyph* getGlyph(UChar ch, float emsize) override;
+      virtual bool getGlyph(UChar ch, float emsize, Glyph& glyph) override;
 
    private:
 

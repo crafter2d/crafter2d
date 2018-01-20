@@ -15,6 +15,7 @@ log.txt
 *.exe
 *.sdf
 *.VC.db
+*.tmp
 
 *.pro.user*
 *.pro.autosave*

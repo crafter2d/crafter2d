@@ -37,7 +37,6 @@ public:
    std::vector<VirtualClass*> asArray();
    
 private:
-   void resolveTypes();
 
    Classes mClasses;
 };

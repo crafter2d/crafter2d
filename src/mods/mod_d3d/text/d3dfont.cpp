@@ -5,8 +5,8 @@
 
 namespace Graphics
 {
-   D3DFont::D3DFont(D3DFontCollection& collection, IDWriteFontFace* pfontface) :
-      mCollection(collection),
+   D3DFont::D3DFont(IDWriteFontFace* pfontface, GlyphProvider* pprovider) :
+      Font(pprovider),
       mpFontFace(pfontface)
    {
       mpFontFace->AddRef();

@@ -79,7 +79,7 @@ namespace Graphics
       virtual void bindTexture(RenderContext& context, int stage, const Texture& uniform) = 0;
 
       /// \brief set the constant buffer to the active shaders
-      virtual void setConstantBuffer(RenderContext& context, const UniformBuffer& buffer) = 0;
+      virtual void setConstantBuffer(RenderContext& context, int slot, const UniformBuffer& buffer) = 0;
 
    protected:
 

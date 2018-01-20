@@ -10,6 +10,7 @@
 #include "astannotation.h"
 #include "asteffect.h"
 #include "astbuffer.h"
+#include "astdefine.h"
 #include "astfunction.h"
 #include "astfunctionargument.h"
 #include "astsampler.h"
@@ -22,6 +23,7 @@
 static const String sTechnique(UTEXT("technique"));
 static const String sStruct(UTEXT("struct"));
 static const String sBuffer(UTEXT("cbuffer"));
+static const String sDefine(UTEXT("#define"));
 static const String sTexture(UTEXT("texture"));
 static const String sSampler(UTEXT("sampler"));
 static const String sLanguage(UTEXT("language"));
@@ -67,6 +69,11 @@ ASTEffect* EffectFileParser::parseDeclarations(Lexer& lexer)
       {
          ASTSampler* psampler = parseSampler(lexer);
          mpEffect->addSampler(psampler);
+      }
+      else if (lexer.next(sDefine))
+      {
+         ASTDefine* pdefine = parseDefine(lexer);
+         mpEffect->addDefine(pdefine);
       }
       else if ( lexer.next(sLanguage) )
       {
@@ -144,7 +151,8 @@ ASTStructEntry* EffectFileParser::parseStructEntry(Lexer& lexer)
 
    if ( !lexer.next(L';') )
    {
-      throw std::logic_error("; expected");
+      String errormsg = String("; expected at line {0} col {1}.").arg(0, lexer.getLine()).arg(1, lexer.getColumn());
+      throw std::logic_error(errormsg.toUtf8());
    }
 
    return pentry;
@@ -238,6 +246,14 @@ ASTSampler* EffectFileParser::parseSampler(Lexer& lexer)
    lexer.next(L';');
 
    return presult;
+}
+
+ASTDefine* EffectFileParser::parseDefine(Lexer& lexer)
+{
+   ASTDefine* pdefine = new ASTDefine();
+   pdefine->mName = lexer.getIdentifier();
+   pdefine->mValue = lexer.getNumber();
+   return pdefine;
 }
 
 ASTType* EffectFileParser::parseType(Lexer& lexer)

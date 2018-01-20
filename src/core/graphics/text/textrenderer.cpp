@@ -28,27 +28,39 @@ struct GlyphVertex
 {
    Vector pos;
    Vector tex;
+   uint32_t matidx;
 };
 
 namespace Graphics
 {
    TextRenderer::TextRenderer():
+      mFonts(),
+      mTexts(),
       mConstants(),
-      mpDevice(NULL),
-      mpEffect(NULL),
-      mpVB(NULL),
-      mpIB(NULL),
-      mpUB(NULL),
-      mpProvider(NULL),
-      mFonts()
+      mpDevice(nullptr),
+      mAtlas(),
+      mpEffect(nullptr),
+      mpVB(nullptr),
+      mpIB(nullptr),
+      mpUB(nullptr),
+      mpTransformUB(nullptr)
    {
+   }
+
+   TextRenderer::~TextRenderer()
+   {
+      delete mpVB;
+      delete mpIB;
+      delete mpUB;
+      delete mpTransformUB;
+      delete mpEffect;
    }
 
    bool TextRenderer::initialize(Device& device)
    {
       mpDevice = &device;
 
-      mpEffect = device.createEffect(UTEXT("shaders/basic"));
+      mpEffect = device.createEffect(UTEXT("shaders/font"));
       if ( mpEffect == NULL )
       {
          return false;
@@ -60,8 +72,18 @@ namespace Graphics
             { UTEXT("object"), sizeof(float) * 16 },
       };
 
+      UNIFORM_BUFFER_DESC transformDesc[] = {
+         { UTEXT("transforms"), sizeof(float) * 16 * 92 }
+      };
+
       mpUB = mpEffect->createUniformBuffer(UTEXT("mpv"));
       if ( !mpUB->create(device, descs, 3) )
+      {
+         return false;
+      }
+
+      mpTransformUB = mpEffect->createUniformBuffer(UTEXT("TransformVars"));
+      if ( !mpTransformUB->create(device, transformDesc, 1) )
       {
          return false;
       }
@@ -75,7 +97,6 @@ namespace Graphics
       mpEffect->setBlendState(pblendstate);
 
       int batchsize = 256;
-
       int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
       mpVB = mpEffect->createVertexBuffer(device, batchsize * 4, usage);
       if ( mpVB == NULL )
@@ -89,129 +110,98 @@ namespace Graphics
          return false;
       }
 
+      mAtlas = std::make_unique<GlyphAtlas>(device);
+
       return true;
    }
 
    void TextRenderer::viewportChanged(RenderContext& context, const Viewport& viewport)
    {
-      mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
+      mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1.0f, 1.0f);
 
       mpUB->set(context, &mConstants, sizeof(mConstants));
    }
-
-   void TextRenderer::draw(RenderContext& context, const Vector& position, Font& font, float fontsize, const String& text)
+   
+   void TextRenderer::draw(const TextLayout& layout)
    {
-      float dpisize = (fontsize / 72.0f) * context.getDpi();
-
-      float x = 10.0f;
-      float y = 100.0f;
-
-      TextLayout layout;
-      if ( layout.create(context, position, font, dpisize, text) )
-      {
-         auto index = font.getGlyphAtlas().getGlyphMap(dpisize).lookup(L'F');
-         if ( false && index != 0xffffff )
-         {
-            const Texture& tex = font.getGlyphAtlas().getGlyphTexture(index);
-
-            mpEffect->enable(context);
-            mpEffect->setConstantBuffer(context, 0, *mpUB);
-
-            context.setVertexBuffer(*mpVB);
-            context.setIndexBuffer(*mpIB);
-            context.setTexture(0, tex);
-
-            GlyphVertex* pvertices = (GlyphVertex*) mpVB->lock(context);
-            pvertices[0].pos.x = x;
-            pvertices[0].pos.y = y;
-            pvertices[0].tex.x = 0.0f;
-            pvertices[0].tex.y = 0.0f;
-
-            pvertices[1].pos.x = x + 512.0f;
-            pvertices[1].pos.y = y;
-            pvertices[1].tex.x = 1.0f;
-            pvertices[1].tex.y = 0.0f;
-
-            pvertices[2].pos.x = x + 512.0f;
-            pvertices[2].pos.y = y + 512.0f;
-            pvertices[2].tex.x = 1.0f;
-            pvertices[2].tex.y = 1.0f;
-
-            pvertices[3].pos.x = x;
-            pvertices[3].pos.y = y + 512.0f;
-            pvertices[3].tex.x = 0.0f;
-            pvertices[3].tex.y = 1.0f;
-
-            mpVB->unlock(context);
-
-            context.drawTriangles(0, 6);
-         }
-         
-         draw(context, layout);
-      }
+      mTexts.push_back(&layout);
    }
 
-   void TextRenderer::draw(RenderContext& context, TextLayout& layout)
+   void TextRenderer::render(RenderContext& context)
    {
-      mpEffect->enable(context);
-      mpEffect->setConstantBuffer(context, 0, *mpUB);
-
-      context.setVertexBuffer(*mpVB);
-      context.setIndexBuffer(*mpIB);
-
-      Font& font = layout.getFont();
-
-      TextLayoutInfo info;
-      layout.fill(info);
-
-      uint32_t vertex = 0;
-      
-      GlyphAtlas& atlas = font.getGlyphAtlas();
-      for ( uint32_t index = 0; index < info.sheetCount; ++index )
+      if ( !mTexts.empty() )
       {
-         uint32_t amount = info.indicesPerSheet[index];
-         if ( amount > 0 )
+         mAtlas->flush(context);
+
+         mpEffect->enable(context);
+         mpEffect->setConstantBuffer(context, 0, *mpUB);
+         mpEffect->setConstantBuffer(context, 1, *mpTransformUB);
+
+         context.setVertexBuffer(*mpVB);
+         context.setIndexBuffer(*mpIB);
+
+         Matrix4 mats[92];
+         int index = 0;
+
+         GlyphVertex* pvertices = (GlyphVertex*)mpVB->lock(context);
+         int nrindices = 0;
+
+         for (const TextLayout* playout : mTexts)
          {
-            const Texture& texture = atlas.getGlyphTexture(info.data[vertex].glyphindex);
-            context.setTexture(0, texture);
+            const auto& glyphdata = playout->getGlyphData();
+            const Vector& pos = playout->getPosition();
+            mats[index].setTranslation(pos.x, pos.y, 0.0f);
 
-            GlyphVertex* pvertices = (GlyphVertex*)mpVB->lock(context);
-            int nrindices = 0;
-
-            for ( uint32_t d = 0; d < amount; ++d )
+            for (const auto& pair : glyphdata)
             {
-               TextLayoutData& data = info.data[vertex++];
-               const GlyphVertexData& vertexdata = atlas.getGlyphVertexData(data.glyphindex);
+               mAtlas->bind(context, pair.first);
 
-               pvertices[0].pos.x = data.pos.x;
-               pvertices[0].pos.y = data.pos.y;
-               pvertices[0].tex.x = vertexdata.mTexturePos.x;
-               pvertices[0].tex.y = vertexdata.mTexturePos.y;
+               for (const TextLayoutData& data : pair.second)
+               {
+                  const GlyphVertexData& vertexdata = mAtlas->getGlyphVertexData(data.glyphindex);
 
-               pvertices[1].pos.x = data.pos.x + vertexdata.mGlyphSize.x;
-               pvertices[1].pos.y = data.pos.y;
-               pvertices[1].tex.x = vertexdata.mTexturePos.x + vertexdata.mTextureDim.x;
-               pvertices[1].tex.y = vertexdata.mTexturePos.y;
+                  pvertices[0].pos.x = data.pos.x;
+                  pvertices[0].pos.y = data.pos.y;
+                  pvertices[0].tex.x = vertexdata.mTexturePos.x;
+                  pvertices[0].tex.y = vertexdata.mTexturePos.y;
+                  pvertices[0].matidx = index;
 
-               pvertices[2].pos.x = data.pos.x + vertexdata.mGlyphSize.x;
-               pvertices[2].pos.y = data.pos.y + vertexdata.mGlyphSize.y;
-               pvertices[2].tex.x = vertexdata.mTexturePos.x + vertexdata.mTextureDim.x;
-               pvertices[2].tex.y = vertexdata.mTexturePos.y + vertexdata.mTextureDim.y;
+                  pvertices[1].pos.x = data.pos.x + vertexdata.mGlyphSize.x;
+                  pvertices[1].pos.y = data.pos.y;
+                  pvertices[1].tex.x = vertexdata.mTexturePos.x + vertexdata.mTextureDim.x;
+                  pvertices[1].tex.y = vertexdata.mTexturePos.y;
+                  pvertices[1].matidx = index;
 
-               pvertices[3].pos.x = data.pos.x;
-               pvertices[3].pos.y = data.pos.y + vertexdata.mGlyphSize.y;
-               pvertices[3].tex.x = vertexdata.mTexturePos.x;
-               pvertices[3].tex.y = vertexdata.mTexturePos.y + vertexdata.mTextureDim.y;
+                  pvertices[2].pos.x = data.pos.x + vertexdata.mGlyphSize.x;
+                  pvertices[2].pos.y = data.pos.y + vertexdata.mGlyphSize.y;
+                  pvertices[2].tex.x = vertexdata.mTexturePos.x + vertexdata.mTextureDim.x;
+                  pvertices[2].tex.y = vertexdata.mTexturePos.y + vertexdata.mTextureDim.y;
+                  pvertices[2].matidx = index;
 
-               pvertices += 4;
-               nrindices += 6;
+                  pvertices[3].pos.x = data.pos.x;
+                  pvertices[3].pos.y = data.pos.y + vertexdata.mGlyphSize.y;
+                  pvertices[3].tex.x = vertexdata.mTexturePos.x;
+                  pvertices[3].tex.y = vertexdata.mTexturePos.y + vertexdata.mTextureDim.y;
+                  pvertices[3].matidx = index;
+
+                  pvertices += 4;
+                  nrindices += 6;
+               }
             }
 
             mpVB->unlock(context);
 
+            mpTransformUB->set(context, &mats, sizeof(Matrix4) * 92);
+
             context.drawTriangles(0, nrindices);
+
+            index++;
          }
+
+         
       }
+
+      mTexts.clear();
    }
 
    // - Font
@@ -223,25 +213,14 @@ namespace Graphics
 
    Font& TextRenderer::getFont(const String& name)
    {
-      Font* pfont = NULL;
       Fonts::iterator it = mFonts.find(name);
-      if ( it == mFonts.end() )
+      if (it != mFonts.end())
       {
-         pfont = mpDevice->createFont(name);
-
-         GlyphProvider* pprovider = mpDevice->createGlyphProvider(*pfont);
-         if ( pprovider == NULL )
-         {
-            throw new c2d::Exception(UTEXT("Could not create glyph provider!"));
-         }
-
-         GlyphAtlas* patlas = new GlyphAtlas(*mpDevice, pprovider, 100);
-         pfont->setGlyphAtlas(patlas);
+         return *it->second;
       }
-      else
-      {
-         pfont = it->second;
-      }
+    
+      Font* pfont = mpDevice->createFont(name);
+      mFonts.emplace(name, pfont);
 
       return *pfont;
    }

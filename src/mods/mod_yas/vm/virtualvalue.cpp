@@ -81,6 +81,13 @@ VirtualValue& VirtualValue::operator=(const VirtualValue& that)
    return *this;
 }
 
+VirtualValue& VirtualValue::operator=(VirtualValue&& that)
+{
+   mKind = that.mKind;
+   mValue = that.mValue;
+   return *this;
+}
+
 // - Comparison
 
 bool VirtualValue::operator==(const VirtualValue& that) const

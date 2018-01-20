@@ -21,37 +21,42 @@
 
 #include "core/defines.h"
 
-using namespace Graphics;
+#include "text/glyph.h"
+#include "text/glyphprovider.h"
 
-Font::Font():
-   mpGlyphAtlas(NULL),
-   mFamilyName()
+namespace Graphics
 {
-}
 
-Font::~Font()
-{
-}
+   Font::Font(GlyphProvider* pprovider) :
+      mpGlyphProvider(pprovider),
+      mGlyphMap(0),
+      mFamilyName(),
+      mSize(0.0f)
+   {
+      assert(pprovider != nullptr);
+   }
 
-// - Get/set
+   Font::~Font()
+   {
+      delete mpGlyphProvider;
+   }
 
-const String& Font::getFamilyName() const
-{
-   return mFamilyName;
-}
+   // - Get/set
+   
+   uint32_t Font::getGlyph(UChar ch)
+   {
+      auto it = mGlyphMap.find(ch);
+      if (it != mGlyphMap.end())
+      {
+         return it->second;
+      }
+      
+      uint32_t glyphindex = mpGlyphProvider->getGlyph(ch);
+      if ( glyphindex != 0xffffff )
+      {
+         mGlyphMap.emplace(ch, glyphindex);
+      }
+      return glyphindex;
+   }
 
-void Font::setFamilyName(const String& name)
-{
-   mFamilyName = name;
-}
-
-GlyphAtlas& Font::getGlyphAtlas()
-{
-   ASSERT_PTR(mpGlyphAtlas);
-   return *mpGlyphAtlas;
-}
-
-void Font::setGlyphAtlas(GlyphAtlas* patlas)
-{
-   mpGlyphAtlas = patlas;
 }

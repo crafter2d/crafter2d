@@ -33,12 +33,12 @@ namespace Graphics
       const Texture&         getGlyphTexture() const;
 
    private:
-      typedef std::vector<GlyphVertexData> VertexData;
+      using VertexData = std::vector<GlyphVertexData>;
 
     // data
+      VertexData  mCoords;
       uint8_t*    mpTextureData;
       Texture*    mpTexture;
-      VertexData  mCoords;
       int         mTextureWidth;
       int         mTextureHeight;
       int         mLeft;

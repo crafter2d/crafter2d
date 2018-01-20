@@ -19,7 +19,7 @@ class FunctionRegistration;
 
 class ClassRegistry
 {
-   typedef std::vector<ClassRegistration*> Classes;
+   typedef std::vector<ClassRegistration> Classes;
    typedef std::vector<FunctionRegistration*> Functions;
 
 public:
@@ -28,8 +28,6 @@ public:
 
    ClassRegistry& operator=(const ClassRegistry& that);
 
-   yas::CallbackFunctor& getCallback(int index) const;
-   const FunctionRegistration& getFunction(int index) const;
 
  // maintenance
    void add(const ClassRegistry& that);
@@ -38,11 +36,14 @@ public:
    void clear();
 
  // search
-   const FunctionRegistration* findCallback(const String& function) const;
+   FunctionRegistration* findCallback(const String& function);
 
 private:
  // operations
    void renumber();
+
+   const FunctionRegistration& getFunction(int index) const;
+   yas::CallbackFunctor& getFunctionCallback(int index) const;
 
  // searching
    const ClassRegistration* findClass(const String& name) const;

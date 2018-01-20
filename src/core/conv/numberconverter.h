@@ -19,6 +19,7 @@ public:
    double toDouble(const String& value);
 
    String& format(String& result, int value);
+   String& format(String& result, unsigned int value);
    String& format(String& result, double value);
 
 private:

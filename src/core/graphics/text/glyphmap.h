@@ -12,7 +12,7 @@ namespace Graphics
 
    class GlyphMap
    {
-      typedef std::map<UChar, uint32_t> GlyphLookup;
+      using GlyphLookup = ::std::map<UChar, uint32_t>;
 
    public:
       explicit GlyphMap(float fontsize) : mFontSize(fontsize), mLookup() {}
@@ -33,8 +33,8 @@ namespace Graphics
    private:
 
     //data
-      float       mFontSize;
       GlyphLookup mLookup;
+      float       mFontSize;
    };
 }
 

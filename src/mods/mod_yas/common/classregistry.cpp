@@ -1,6 +1,8 @@
 
 #include "classregistry.h"
 
+#include <memory>
+
 #include "core/defines.h"
 
 #include "classregistration.h"
@@ -9,7 +11,7 @@
 ClassRegistry::ClassRegistry():
    mClasses(),
    mFunctions(),
-   mpCurrent(NULL)
+   mpCurrent(nullptr)
 {
 }
 
@@ -22,11 +24,11 @@ ClassRegistry& ClassRegistry::operator=(const ClassRegistry& that)
 {
    clear();
    add(that);
-   mpCurrent = NULL;
+   mpCurrent = nullptr;
    return *this;
 }
 
-yas::CallbackFunctor& ClassRegistry::getCallback(int index) const
+yas::CallbackFunctor& ClassRegistry::getFunctionCallback(int index) const
 {
    return mFunctions[index]->getCallback();
 }
@@ -40,62 +42,30 @@ const FunctionRegistration& ClassRegistry::getFunction(int index) const
 
 void ClassRegistry::add(const ClassRegistry& that)
 {
-   for ( std::size_t index = 0; index < that.mClasses.size(); ++index )
-   {
-      const ClassRegistration& thatreg = *that.mClasses[index];
-
-      ClassRegistration* reg = new ClassRegistration();
-      reg->name = thatreg.name;
-      reg->start = thatreg.start + mFunctions.size();
-      reg->end = thatreg.end + mFunctions.size();
-
-      mClasses.push_back(reg);
-   }
-
-   for ( std::size_t index = 0; index < that.mFunctions.size(); ++index )
-   {
-      const FunctionRegistration* preg = that.mFunctions[index];
-
-      mFunctions.push_back(preg->clone());
-   }
+   mClasses.insert(mClasses.end(), that.mClasses.begin(), that.mClasses.end());
+   mFunctions.insert(mFunctions.end(), that.mFunctions.begin(), that.mFunctions.end());
 
    renumber();
 }
 
 void ClassRegistry::addClass(const String& name)
 {
-   ClassRegistration* reg = new ClassRegistration();
-   reg->name = name;
-   reg->start = mFunctions.size();
-   reg->end = reg->start;
-
-   mClasses.push_back(reg);
-   mpCurrent = reg;
+   mClasses.emplace_back(name, mFunctions.size(), mFunctions.size());
+   mpCurrent = &mClasses.back();
 }
 
-void ClassRegistry::addFunction(const String& name, yas::CallbackFunctor* pcallback)
+void ClassRegistry::addFunction(const String& prototype, yas::CallbackFunctor* pcallback)
 {
-   FunctionRegistration* pregistration = FunctionRegistration::create(name, pcallback);
+   auto pregistration = std::make_unique<FunctionRegistration>(prototype, pcallback);
    pregistration->setClassRegistration(*mpCurrent);
    pregistration->setIndex(mFunctions.size());
-   mFunctions.push_back(pregistration);
 
-   mpCurrent->functions.push_back(pregistration);
-   mpCurrent->end++;
+   mpCurrent->addFunction(*pregistration);
+   mFunctions.push_back(pregistration.release());
 }
 
 void ClassRegistry::clear()
 {
-   for ( auto preg : mClasses )
-   {
-      delete preg;
-   }
-
-   for ( auto pfuncreg : mFunctions )
-   {
-      delete pfuncreg;
-   }
-
    mClasses.clear();
    mFunctions.clear();
 }
@@ -119,18 +89,17 @@ const ClassRegistration* ClassRegistry::findClass(const String& name) const
 
 ClassRegistration* ClassRegistry::findClass(const String& name)
 {
-   for ( std::size_t index = 0; index < mClasses.size(); index++ )
+   for ( ClassRegistration& registration : mClasses)
    {
-      ClassRegistration& reg = *mClasses[index];
-      if ( reg.name == name )
+      if (registration.mName == name )
       {
-         return &reg;
+         return &registration;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
-const FunctionRegistration* ClassRegistry::findCallback(const String& qualifiedname) const
+FunctionRegistration* ClassRegistry::findCallback(const String& qualifiedname)
 {
    std::size_t indexB = qualifiedname.indexOf(L'(');
    std::size_t index = qualifiedname.lastIndexOf(L'.', 0, indexB);
@@ -143,16 +112,15 @@ const FunctionRegistration* ClassRegistry::findCallback(const String& qualifiedn
    //system.InternalString.length()
 
    const ClassRegistration* pclass = findClass(klass);
-   if ( pclass != NULL )
+   if ( pclass )
    {
-      for ( int index = pclass->start; index < pclass->end; ++index )
+      for ( FunctionRegistration* pfunction : pclass->mFunctions )
       {
-         const FunctionRegistration* pfuncreg = mFunctions[index];
-         if ( pfuncreg->getPrototype() == function )
+         if ( pfunction->getPrototype() == function )
          {
-            return pfuncreg;
+            return pfunction;
          }
       }
    }
-   return NULL;
+   return nullptr;
 }

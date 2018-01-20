@@ -111,6 +111,11 @@ void DataStream::readBlob(void* pdata, int size)
    memcpy(pdata, ptr, size);
 }
 
+const char* DataStream::readBlob(int size)
+{
+   return readBytes(size);
+}
+
 // - Writting
 
 void DataStream::writeBool(bool value)
@@ -118,14 +123,14 @@ void DataStream::writeBool(bool value)
    writeBytes(&value, 1);
 }
 
-void DataStream::writeInt(int value)
+void DataStream::writeInt(int32_t value)
 {
-   writeBytes(&value, sizeof(int));
+   writeBytes(&value, sizeof(int32_t));
 }
 
 void DataStream::writeUint8(uint8_t value)
 {
-   writeBytes(&value, 1);
+   writeBytes(&value, sizeof(uint8_t));
 }
 
 void DataStream::writeUint16(uint16_t value)

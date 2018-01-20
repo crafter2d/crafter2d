@@ -91,7 +91,7 @@ public:
    void trimRight();
 
    void append(const String& that);
-   void assign(const UChar* ptext, std::size_t length);
+   void assign(const UChar* ptext, size_t length);
 
    void insert(int index, const String& text);
    void replace(UChar original, UChar newtext);

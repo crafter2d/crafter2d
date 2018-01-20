@@ -41,14 +41,7 @@ void RenderContext::destroy()
    mParticleRenderer.destroy();
 }
 
-// - Drawing
-
-void RenderContext::drawText(const Vector& position, Font& font, float fontsizeem, const String& text)
-{
-   mTextRenderer.draw(*this, position, font, fontsizeem, text);
-}
-
-// - Sprites
+// - Rendering
 
 void RenderContext::beginDraw()
 {
@@ -60,6 +53,7 @@ void RenderContext::endDraw()
 {
    mSpriteRenderer.endDraw(*this);
    mParticleRenderer.endDraw(*this);
+   mTextRenderer.render(*this);
 }
 
 void RenderContext::setSpriteOffset(const Vector& offset)
@@ -76,6 +70,11 @@ void RenderContext::drawSprite(const c2d::Sprite& sprite)
 void RenderContext::drawParticles(const ParticleSystem& particles)
 {
    mParticleRenderer.drawParticles(particles);
+}
+
+void RenderContext::drawText(const TextLayout& textlayout)
+{
+   mTextRenderer.draw(textlayout);
 }
 
 } // namespace Graphics

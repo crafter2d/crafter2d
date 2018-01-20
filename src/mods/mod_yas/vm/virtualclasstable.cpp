@@ -97,7 +97,7 @@ std::vector<VirtualClass*> VirtualClassTable::asArray()
 VirtualClass* VirtualClassTable::find(const String& name) const
 {
    auto it = mClasses.find(name);
-   return it != mClasses.end() ? it->second : NULL;
+   return it != mClasses.end() ? it->second : nullptr;
 }
 
 const VirtualClass& VirtualClassTable::resolve(const String& name) const

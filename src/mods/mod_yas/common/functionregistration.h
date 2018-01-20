@@ -17,7 +17,11 @@ class ClassRegistration;
 class FunctionRegistration
 {
 public:
-   static FunctionRegistration* create(const String& prototype, yas::CallbackFunctor* pcallback);
+   FunctionRegistration();
+   FunctionRegistration(const String& prototype, yas::CallbackFunctor* pcallback);
+   FunctionRegistration(const FunctionRegistration& that);
+   FunctionRegistration(FunctionRegistration&& source);
+   FunctionRegistration& operator=(FunctionRegistration&& source);
    
  // get/set
    int getIndex() const;
@@ -29,17 +33,18 @@ public:
    const String& getPrototype() const;
    yas::CallbackFunctor& getCallback() const;
 
+   void execute(VirtualCall& call);
+
  // maintenance
    FunctionRegistration* clone() const;
 
 private:
-   FunctionRegistration(const String& prototype, yas::CallbackFunctor* pcallback);
-   FunctionRegistration(const FunctionRegistration& that);
+   
 
-   const ClassRegistration*   mpClass;
-   int                        mIndex;
    String                     mPrototype;
+   const ClassRegistration*   mpClass;
    yas::CallbackFunctor*      mpCallback;
+   int                        mIndex;
 };
 
 #endif // FUNCTION_REGISTRATION_H

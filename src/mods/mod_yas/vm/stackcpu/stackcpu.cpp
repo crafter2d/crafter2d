@@ -9,6 +9,7 @@
 #include "mod_yas/bytecode/program.h"
 #include "mod_yas/bytecode/instruction.h"
 #include "mod_yas/bytecode/functionsymbol.h"
+#include "mod_yas/bytecode/nativefunctionsymbol.h"
 #include "mod_yas/bytecode/valuesymbol.h"
 #include "mod_yas/common/classregistry.h"
 #include "mod_yas/common/callbackfunctor.h"
@@ -37,7 +38,8 @@ StackCPU::StackCPU(VirtualMachine& vm):
    mIP(0),
    mFP(-1),
    mSavedFP(-1),
-   mState()
+   mState(), 
+   mGcCounter(0)
 {
    mCalls.resize(8);
 }
@@ -55,9 +57,11 @@ VirtualValue StackCPU::execute(VirtualContext& context, VirtualObject& object, c
    executeStatic(context, object.getClass(), entry);
 
    // for now run the garbage collector here. have to find the right spot for it.
-   if ( !isGarbageCollectionBlocked() )
+   if ( !isGarbageCollectionBlocked() && ++mGcCounter > 60 )
    {
       getGC().gc(getVM());
+
+      mGcCounter = 0;
    }
 
    return entry.returns ? mStack.pop() : VirtualValue();
@@ -78,7 +82,7 @@ void StackCPU::executeStatic(VirtualContext& context, const VirtualClass& klass,
 {
    // make sure that when we leave that we clean up the state to when we entered
    // SavedFP is used to identify the starting stack frame
-   ScopedValue<int> value(&mSavedFP, mFP, mSavedFP);
+   ScopedValue<size_t> value(&mSavedFP, mFP, mSavedFP);
    ScopedValue<const char*> code(&mpCode);
 
    call(context, klass, entry);
@@ -143,7 +147,7 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
             break;
          case SBIL_call_virt:
             {
-               const FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
+               const FunctionSymbol& symbol = static_cast<const FunctionSymbol&>(program.getSymbolTable()[arg]);
 
                VirtualValue& value = mStack[mStack.size() - symbol.args];
                const VirtualClass* pclass = NULL;
@@ -186,31 +190,32 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
             break;
          case SBIL_call_native:
             {
-               FunctionSymbol& symbol = (FunctionSymbol&)program.getSymbolTable()[arg];
+               const NativeFunctionSymbol& symbol = static_cast<const NativeFunctionSymbol&>(program.getSymbolTable()[arg]);
 
-               mCalls[mFP].callnative = true;
-
-               std::vector<VirtualValue> args(symbol.args);
-               for ( int index = symbol.args - 1; index >= 0; --index )
                {
-                  args[index] = mStack.pop();
+                  ScopedValue<bool> value(&mCalls[mFP].callnative, true, false);
+
+                  std::vector<VirtualValue> args(symbol.args);
+                  for (int index = symbol.args - 1; index >= 0; --index)
+                  {
+                     args[index] = mStack.pop();
+                  }
+
+                  VirtualCall accessor(getVM(), args.data(), symbol.args);
+                  symbol.pnativefunction->execute(accessor);
+
+                  if (accessor.hasResult())
+                  {
+                     mStack.push(accessor.getResult());
+                  }
                }
-
-               VirtualCall accessor(getVM(), args.data(), symbol.args);
-               context.mNativeRegistry.getCallback(symbol.func).exec(accessor);
-
-               mCalls[mFP].callnative = false;
 
                if ( mState == eExceptionHandling )
                {
                   VirtualObject& exception = mStack.popObject();
 
                   handleException(context, exception);
-               }
-               else if ( accessor.hasResult() )
-               {
-                  mStack.push(accessor.getResult());
-               }
+               } 
             }
             break;
          case SBIL_ret:
@@ -922,7 +927,7 @@ void StackCPU::mark()
 {
    mStack.mark();
    
-   for ( int index = 0; index <= mFP; ++index )
+   for ( size_t index = 0; index <= mFP; ++index )
    {
       VM::StackFrame::Locals& locals = mCalls[index].locals;
       for ( auto& variant : locals )

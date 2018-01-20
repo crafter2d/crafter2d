@@ -5,6 +5,7 @@
 class ASTAnnotation;
 class ASTEffect;
 class ASTBuffer;
+class ASTDefine;
 class ASTStruct;
 class ASTStructEntry;
 class ASTFunction;
@@ -36,6 +37,7 @@ private:
    ASTTechnique*        parseTechnique(Lexer& lexer);
    ASTTexture*          parseTexture(Lexer& lexer);
    ASTSampler*          parseSampler(Lexer& lexer);
+   ASTDefine*           parseDefine(Lexer& lexer);
    ASTAnnotation*       parseAnnotation(Lexer& lexer);
 
    void parseArguments(Lexer& lexer, ASTFunction& func);

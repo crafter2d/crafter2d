@@ -18,9 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "actionmap.h"
-#ifndef JENGINE_INLINE
-#  include "actionmap.inl"
-#endif
 
 #include "core/script/scriptobject.h"
 #include "core/script/scriptmanager.h"

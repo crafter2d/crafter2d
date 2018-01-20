@@ -12,6 +12,7 @@
 #include "mod_yas/bytecode/program.h"
 #include "mod_yas/bytecode/symboltable.h"
 #include "mod_yas/bytecode/functionsymbol.h"
+#include "mod_yas/bytecode/nativefunctionsymbol.h"
 #include "mod_yas/bytecode/resolver.h"
 #include "mod_yas/bytecode/valuesymbol.h"
 #include "mod_yas/bytecode/jumppatch.h"
@@ -194,11 +195,11 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             {
                VirtualFunction& func = resolver.resolveFunction(*inst.mString);
 
-               const FunctionRegistration* pfuncreg = context.mNativeRegistry.findCallback(*inst.mString);
+               auto pfuncreg = context.mNativeRegistry.findCallback(*inst.mString);
                ASSERT_PTR(pfuncreg);
 
-               FunctionSymbol* psymbol = new FunctionSymbol;
-               psymbol->func = pfuncreg->getIndex();
+               NativeFunctionSymbol* psymbol = new NativeFunctionSymbol;
+               psymbol->pnativefunction = pfuncreg;
                psymbol->args = func.getArgumentCount();
                psymbol->returns = !func.getReturnType().isVoid();
                int i = context.mProgram.getSymbolTable().add(psymbol);
@@ -863,7 +864,6 @@ void StackIRGenerator::checkAndFixStack(VirtualContext& context, const VirtualFu
             case SBIL_call:
             case SBIL_call_interface:
             case SBIL_call_virt:
-            case SBIL_call_native:
                {
                   int instarg = INST_ARG(pinst->inst);
                   const FunctionSymbol& symbol = static_cast<const FunctionSymbol&>(context.mProgram.getSymbolTable()[instarg]);
@@ -872,6 +872,18 @@ void StackIRGenerator::checkAndFixStack(VirtualContext& context, const VirtualFu
 
                   // push return value
                   if ( symbol.returns )
+                     calls.push_back(pinst);
+               }
+               break;
+            case SBIL_call_native:
+               {
+                  int instarg = INST_ARG(pinst->inst);
+                  const NativeFunctionSymbol& symbol = static_cast<const NativeFunctionSymbol&>(context.mProgram.getSymbolTable()[instarg]);
+                  for (int arg = 0; arg < symbol.args; ++arg)
+                     calls.pop_back();
+
+                  // push return value
+                  if (symbol.returns)
                      calls.push_back(pinst);
                }
                break;

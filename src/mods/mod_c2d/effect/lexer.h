@@ -9,6 +9,14 @@ class Lexer
 public:
    Lexer(const String& data);
 
+ // get/set
+   int getLine() const {
+      return mLine;
+   }
+   int getColumn() const {
+      return mColumn;
+   }
+
  // query
    UChar getChar();
    bool next(UChar ch);

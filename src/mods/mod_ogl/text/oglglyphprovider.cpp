@@ -22,7 +22,7 @@ namespace Graphics
       mpFont->initialize(12);
    }
 
-   Glyph* OGLGlyphProvider::getGlyph(UChar ch, float emsize)
+   bool OGLGlyphProvider::getGlyph(UChar ch, float emsize, Glyph& glyph)
    {
       C2D_UNUSED(emsize);
       
@@ -33,19 +33,19 @@ namespace Graphics
       int error = FT_Load_Glyph(face, faceindex, FT_LOAD_DEFAULT);
       if ( error != 0 )
       {
-         return NULL;
+         return false;
       }
 
-      FT_Glyph glyph;
-      error = FT_Get_Glyph(slot, &glyph);
-      error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, true);
+      FT_Glyph ftglyph;
+      error = FT_Get_Glyph(slot, &ftglyph);
+      error = FT_Glyph_To_Bitmap(&ftglyph, FT_RENDER_MODE_NORMAL, NULL, true);
       if ( error != 0 )
       {
-         FT_Done_Glyph(glyph);
-         return NULL;
+         FT_Done_Glyph(ftglyph);
+         return false;
       }
 
-      FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)glyph;
+      FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)ftglyph;
 
       int width = bitmap_glyph->bitmap.width;
       int height = bitmap_glyph->bitmap.rows;
@@ -63,14 +63,13 @@ namespace Graphics
          }
       }
 
-      Glyph* presult = new Glyph();
-      presult->setSize(Size(static_cast<float>(width), static_cast<float>(height)));
-      presult->setAdvance(static_cast<float>(slot->advance.x >> 6));
-      presult->setBaseLine(static_cast<float>(bitmap_glyph->top));
-      presult->setPixels(pdata, width);
+      glyph.setSize(Size(static_cast<float>(width), static_cast<float>(height)));
+      glyph.setAdvance(static_cast<float>(slot->advance.x >> 6));
+      glyph.setBaseLine(static_cast<float>(bitmap_glyph->top));
+      glyph.setPixels(pdata, width);
 
-      FT_Done_Glyph(glyph);
+      FT_Done_Glyph(ftglyph);
 
-      return presult;
+      return true;
    }
 }

@@ -9,11 +9,14 @@
 
 namespace Graphics
 {
-   class CORE_API Glyph
+   class CORE_API Glyph final
    {
    public:
       Glyph();
+      Glyph(Glyph&& from);
       ~Glyph();
+
+      Glyph& operator=(Glyph&& from);
       
     // get/set
       const Size& getSize() const;

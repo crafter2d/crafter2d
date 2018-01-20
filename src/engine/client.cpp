@@ -95,6 +95,7 @@ namespace c2d
       mpKeyMap(NULL),
       mpFont(NULL),
       mViewport(),
+      mFPSMessage(),
       mFpsMsg(UTEXT("FPS: 0")),
       mRequests(),
       mServerId(-1)
@@ -181,7 +182,7 @@ namespace c2d
    void Client::render(float delta)
    {
       static const String sPaint = UTEXT("paint");
-      static float start = 0;
+      static float start = 1.0;
       static int frame = 0;
 
       mpRenderContext->clear();
@@ -207,12 +208,13 @@ namespace c2d
       if ( start >= 1.0f )
       {
          mFpsMsg = UTEXT("FPS: {0}").arg(0, frame);
+         mFPSMessage.create(Vector(20, 50), *mpFont, mFpsMsg);
          start = 0;
          frame = 0;
       }
 
       Vector pos(40, 100);
-      mpRenderContext->drawText(pos, *mpFont, 10.0f, mFpsMsg);
+      mpRenderContext->drawText(mFPSMessage);
 
       mpDevice->present();
       mpWindow->display();
@@ -305,7 +307,8 @@ namespace c2d
 
       getContentManager().loadContent<TileAtlas>(UTEXT("tileatlas/tileatlas"));
 
-      mpFont = &mpDevice->getFont(UTEXT("amersn"));      
+      mpFont = &mpDevice->getFont(UTEXT("amersn"));
+      mFPSMessage = TextLayout(mpRenderContext->getTextRenderer());
 
       onWindowResized();
 

@@ -178,7 +178,7 @@ void VirtualStack::ensureFits(int amount)
    {
       int oldsize = mStack.size();
       mStack.resize(mStack.size() * 2);
-      fill(oldsize);
+      //fill(oldsize);
    }
 }
 

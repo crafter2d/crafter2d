@@ -27,6 +27,7 @@
 
 #include "core/entity/idmanager.h"
 #include "core/graphics/viewport.h"
+#include "core/graphics/text/textlayout.h"
 #include "core/string/string.h"
 #include "core/sound/soundmanager.h"
 
@@ -174,6 +175,7 @@ namespace c2d
       KeyMap*                    mpKeyMap;
       Graphics::Font*            mpFont;
       Graphics::Viewport         mViewport;
+      Graphics::TextLayout       mFPSMessage;
       String                     mFpsMsg;
       Requests                   mRequests;
       int                        mServerId;

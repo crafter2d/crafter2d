@@ -29,7 +29,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\engine\actionmap.cpp" />
     <ClCompile Include="..\..\..\src\engine\aicontroller.cpp" />
-    <ClCompile Include="..\..\..\src\engine\callback.cpp" />
     <ClCompile Include="..\..\..\src\engine\client.cpp" />
     <ClCompile Include="..\..\..\src\engine\clientgamewindowlistener.cpp" />
     <ClCompile Include="..\..\..\src\engine\clientkeyeventdispatcher.cpp" />
@@ -108,7 +107,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\engine\actionmap.h" />
     <ClInclude Include="..\..\..\src\engine\aicontroller.h" />
-    <ClInclude Include="..\..\..\src\engine\callback.h" />
     <ClInclude Include="..\..\..\src\engine\client.h" />
     <ClInclude Include="..\..\..\src\engine\clientgamewindowlistener.h" />
     <ClInclude Include="..\..\..\src\engine\clientkeyeventdispatcher.h" />

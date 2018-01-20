@@ -21,7 +21,6 @@ namespace Graphics
    class Effect;
    class Font;
    class BlendState;
-   class GlyphProvider;
    class RenderContext;
    class RenderTarget;
    class Texture;
@@ -57,7 +56,6 @@ namespace Graphics
       virtual Texture*        createTexture(const TextureDescription& desc) = 0;
       virtual RenderTarget*   createRenderTarget() = 0;
       virtual BlendState*     createBlendState(const BlendStateDesc& desc) = 0;
-      virtual GlyphProvider*  createGlyphProvider(Font& font) = 0;
               Effect*         createEffect(const String& filename);
 
    protected:

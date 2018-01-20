@@ -20,36 +20,50 @@
 #ifndef FONT_H_
 #define FONT_H_
 
-#include <map>
+#include <unordered_map>
 
 #include "core/string/string.h"
 #include "core/core_base.h"
 
 namespace Graphics
 {
-   class GlyphAtlas;
+   class GlyphProvider;
 
    class CORE_API Font
    {
    public:
-      Font();
+      explicit Font(GlyphProvider* pprovider);
       virtual ~Font();
 
     // get/set
-      const String& getFamilyName() const;
-      void          setFamilyName(const String& name);
+      const String& getFamilyName() const {
+         return mFamilyName;
+      }
 
-      GlyphAtlas& getGlyphAtlas();
-      void        setGlyphAtlas(GlyphAtlas* patlas);
+      void setFamilyName(const String& name) {
+         mFamilyName = name;
+      }
 
+      float getSize() const {
+         return mSize;
+      }
+      void setSize(float size) {
+         mSize = size;
+      }
+
+      uint32_t getGlyph(UChar ch);
+      
     // query
       virtual int      getBaseLine() const = 0;
       
    private:
+      using GlyphMap = std::unordered_map<UChar, uint32_t>;
 
     // data
-      GlyphAtlas*    mpGlyphAtlas;
+      GlyphProvider* mpGlyphProvider;
+      GlyphMap       mGlyphMap;
       String         mFamilyName;
+      float          mSize;
    };
 };
 

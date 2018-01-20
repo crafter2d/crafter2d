@@ -53,14 +53,14 @@ namespace Graphics
       C2D_UNUSED(window);
       
       mpContext = createRenderContext();
-      return mpContext != NULL;
+      return mpContext != nullptr;
    }
 
    void Device::destroy()
    {
       mpContext->destroy();
       delete mpContext;
-      mpContext = NULL;
+      mpContext = nullptr;
    }
 
    Effect* Device::createEffect(const String& filename)

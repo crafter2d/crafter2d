@@ -1,13 +1,15 @@
 
 #include "lexer.h"
 
+#include <cassert>
+
 #include "core/conv/numberconverter.h"
 #include "core/string/char.h"
 
 Lexer::Lexer(const String& data):
    mData(data),
    mPos(0),
-   mLine(0),
+   mLine(1),
    mColumn(0)
 {
 }
@@ -16,8 +18,14 @@ Lexer::Lexer(const String& data):
 
 UChar Lexer::getChar()
 {
+   UChar ch = mData[mPos++];
+   if ( ch == '\n' )
+   {
+      mColumn = 0;
+      mLine++;
+   }
    mColumn++;
-   return mData[mPos++];
+   return ch;
 }
 
 bool Lexer::next(UChar ch)
@@ -51,6 +59,7 @@ bool Lexer::next(const String& token)
          }
       }
 
+      mColumn += token.length();
       mPos = pos;
       result = true;
    }
@@ -79,6 +88,7 @@ String Lexer::getToken()
       {
          break;
       }
+      mColumn++;
       result += ch;
    }
 
@@ -92,16 +102,11 @@ int Lexer::getNumber()
    skipWhitespace();
 
    String number;
-   while ( !isEOF())
+   while ( !isEOF() && Char::isDigit(mData[mPos]) )
    {
-      UChar ch = mData[mPos];
-      if ( Char::isWhitespace(ch) || !Char::isDigit(ch) )
-      {
-         break;
-      }
-
+      number += mData[mPos];
+      ++mColumn;
       ++mPos;
-      number += ch;
    }
 
    skipWhitespace();
@@ -159,7 +164,7 @@ void Lexer::skipWhitespace()
          break;
       }
 
-      if ( ch == '\n' || '\r' )
+      if ( ch == '\n' )
       {
          mLine++;
          mColumn = 0;
@@ -172,12 +177,8 @@ void Lexer::skipWhitespace()
 
 void Lexer::skipComment()
 {
-   while ( true )
+   while ( !isEOF() && mData[mPos] != '\n')
    {
-      UChar ch = mData[mPos++];
-      if ( ch == '\n' )
-      {
-         break;
-      }
+      mPos++;
    }
 }

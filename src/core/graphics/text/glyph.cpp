@@ -14,10 +14,31 @@ namespace Graphics
    {
    }
 
+   Glyph::Glyph(Glyph&& from):
+      mSize(from.mSize),
+      mpPixels(from.mpPixels),
+      mPitch(from.mPitch),
+      mBaseLine(from.mBaseLine),
+      mAdvance(from.mAdvance)
+   {      
+      from.mpPixels = nullptr;
+   }
+
    Glyph::~Glyph()
    {
       delete[] mpPixels;
       mpPixels = NULL;
+   }
+
+   Glyph& Glyph::operator=(Glyph&& from)
+   {
+      mSize = from.mSize;
+      mpPixels = from.mpPixels;
+      mPitch = from.mPitch;
+      mBaseLine = from.mBaseLine;
+      mAdvance = from.mAdvance;
+      from.mpPixels = nullptr;
+      return *this;
    }
 
    // - Get/set

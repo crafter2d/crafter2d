@@ -4,7 +4,6 @@
 
 #include "abstractbuilder.h"
 
-class ASTStruct;
 class ASTStructEntry;
 class String;
 
@@ -16,9 +15,12 @@ protected:
    virtual void buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique) override;
    virtual void buildPixelShader(const ASTEffect& effect, ASTTechnique& technique) override;
 
+   virtual uint32_t toNativeType(const ASTType& type) override;
+
 private:
 
  // operations
+   String buildDefines(const ASTEffect& effect);
    String buildStructs(const ASTEffect& effect, const ASTFunction& function);
    String buildStruct(const ASTStruct& str);
    String buildStructEntry(const ASTStructEntry& entry);

@@ -5,138 +5,70 @@
 
 #include "core/defines.h"
 
+#include "../rendercontext.h"
+
 #include "glyph.h"
-#include "glyphmap.h"
-#include "glyphprovider.h"
 #include "glyphsheet.h"
 
 namespace Graphics
 {
-   GlyphAtlas::GlyphAtlas(Device& device, GlyphProvider* pprovider, int maxsheets) :
+   GlyphAtlas::GlyphAtlas(Device& device) :
       mDevice(device),
-      mpProvider(pprovider),
-      mGlyphMaps(),
-      mpSheets(new GlyphSheet * [maxsheets]),
-      mMaxSheets(maxsheets),
-      mCurSheets(0)
+      mSheets()
    {
-      memset(mpSheets, 0, sizeof(*mpSheets) * maxsheets);
    }
 
    GlyphAtlas::~GlyphAtlas()
    {
-      for ( auto it : mGlyphMaps )
-      {
-         delete it.second;
-      }
-
-      for ( int index = 0; index < mMaxSheets; ++index )
-      {
-         delete mpSheets[index];
-      }
-
-      delete[] mpSheets;
-      mpSheets = nullptr;
    }
-
-   // - Get/set
-
-   GlyphProvider& GlyphAtlas::getProvider()
-   {
-      ASSERT_PTR(mpProvider);
-      return *mpProvider;
-   }
-
-   // - Query
-
-   GlyphMap& GlyphAtlas::getGlyphMap(float size)
-   {
-      GlyphMaps::iterator it = mGlyphMaps.find(size);
-      if ( it != mGlyphMaps.end() )
-      {
-         return *it->second;
-      }
-
-      GlyphMap* pmap = new GlyphMap(size);
-      mGlyphMaps.insert(std::make_pair(size, pmap));
-      return *pmap;
-   }
-   
+ 
    // - Operations
 
-   uint32_t GlyphAtlas::getGlyph(GlyphMap& map, UChar ch)
+   uint32_t GlyphAtlas::insert(const Glyph& glyph)
    {
-      uint32_t glyphindex = map.lookup(ch);
-      if ( glyphindex == 0xffffff )
-      {
-         Glyph* pglyph = mpProvider->getGlyph(ch, map.getFontSize());
-         if ( pglyph != NULL )
-         {
-            glyphindex = insertGlyph(*pglyph);
-            if ( glyphindex != 0xffffff )
-            {
-               map.insert(ch, glyphindex);
-            }
+      uint32_t glyphindex = 0xffffff;
+      int32_t sheetindex = 0;
 
-            delete pglyph;
+      for (GlyphSheet& sheet : mSheets)
+      {
+         glyphindex = sheet.insertGlyph(glyph);
+         if (glyphindex != 0xffffff)
+         {
+            break;
          }
+         sheetindex++;
       }
-      return glyphindex;
+
+      if (glyphindex == 0xffffff)
+      {
+         mSheets.emplace_back();
+         auto& sheet = mSheets.back();
+         sheet.create(mDevice);
+
+         glyphindex = sheet.insertGlyph(glyph);
+      }
+
+      return (sheetindex << 16) | glyphindex;
    }
 
    const GlyphVertexData& GlyphAtlas::getGlyphVertexData(uint32_t glyphindex) const
    {
       uint32_t sheetindex = glyphindex >> 16;
       ASSERT(sheetindex != 0xfffff);
-      return mpSheets[sheetindex]->getGlyphVertexData(glyphindex);
+      return mSheets[sheetindex].getGlyphVertexData(glyphindex);
    }
 
-   const Texture& GlyphAtlas::getGlyphTexture(uint32_t glyphindex) const
+   void GlyphAtlas::bind(RenderContext& context, uint32_t sheet) const
    {
-      uint32_t sheetindex = glyphindex >> 16;
-      ASSERT(sheetindex != 0xfffff);
-      return mpSheets[sheetindex]->getGlyphTexture();
+      assert(sheet >= 0 && sheet < mSheets.size());
+      context.setTexture(0, mSheets[sheet].getGlyphTexture());
    }
-
-   uint32_t GlyphAtlas::insertGlyph(const Glyph& glyph)
-   {
-      uint32_t glyphindex = 0xffffff;
-      int32_t sheetindex = 0;
-
-      for ( sheetindex = 0; sheetindex < mCurSheets; ++sheetindex )
-      {
-         GlyphSheet* psheet = mpSheets[sheetindex];
-
-         glyphindex = psheet->insertGlyph(glyph);
-         if ( glyphindex != 0xffffff )
-         {
-            break;
-         }
-      }
-      
-      if ( glyphindex == 0xffffff && mCurSheets < mMaxSheets )
-      {
-         GlyphSheet* psheet = new GlyphSheet();
-         psheet->create(mDevice);
-         mpSheets[mCurSheets] = psheet;
-         sheetindex = mCurSheets++;
-
-         glyphindex = psheet->insertGlyph(glyph);
-      }
-
-      if ( glyphindex == 0xffffff )
-      {
-         return 0xffffff;
-      }
-
-      return (sheetindex << 16) | glyphindex;
-   }
-
+   
    void GlyphAtlas::flush(RenderContext& context)
    {
-      for ( int sheet = 0; sheet < mCurSheets; ++sheet )
+      for (GlyphSheet& sheet : mSheets)
       {
-         mpSheets[sheet]->flush(context);
+         sheet.flush(context);
       }
    }
 }

@@ -13,9 +13,9 @@
 namespace Graphics
 {
    GlyphSheet::GlyphSheet() :
-      mpTextureData(NULL),
-      mpTexture(NULL),
       mCoords(),
+      mpTextureData(nullptr),
+      mpTexture(nullptr),
       mTextureWidth(0),
       mTextureHeight(0),
       mLeft(1),
@@ -104,6 +104,7 @@ namespace Graphics
       if ( mDirty )
       {
          mpTexture->update(context, mpTextureData, mTextureWidth);
+         mDirty = false;
       }
    }
 

@@ -2,9 +2,13 @@
 #ifndef TEXT_RENDERER_H
 #define TEXT_RENDERER_H
 
-#include <map>
+#include <memory>
+#include <unordered_map>
+#include <vector>
 
 #include "core/math/matrix4.h"
+
+#include "glyphatlas.h"
 
 class String;
 class Vector;
@@ -14,7 +18,7 @@ namespace Graphics
    class Device;
    class Effect;
    class Font;
-   class GlyphProvider;
+   class GlyphAtlas;
    class VertexBuffer;
    class IndexBuffer;
    class UniformBuffer;
@@ -22,16 +26,22 @@ namespace Graphics
    class TextLayout;
    class Viewport;
 
-   class TextRenderer
+   class TextRenderer final
    {
    public:
       TextRenderer();
+      ~TextRenderer();
+
+    // get/set
+      GlyphAtlas& getGlyphAtlas() {
+         return *mAtlas;
+      }
 
     // operations
       bool initialize(Device& device);
 
-      void draw(RenderContext& context, TextLayout& layout);
-      void draw(RenderContext& context, const Vector& position, Font& font, float fontsizeem, const String& text);
+      void draw(const TextLayout& layout);
+      void render(RenderContext& context);
 
     // font
       Font& getFont(const String& name);
@@ -40,7 +50,10 @@ namespace Graphics
       void viewportChanged(RenderContext& context, const Viewport& viewport);
 
    private:
-      typedef std::map<String, Font*> Fonts;
+      using Fonts = std::unordered_map<String, Font*>;
+      using Texts = std::vector<const TextLayout*>;
+
+      friend class TextLayout;
 
       struct ConstantBuffer
       {
@@ -49,19 +62,26 @@ namespace Graphics
          Matrix4 object;
       };
 
+      struct TransformBuffer
+      {
+         Matrix4 transforms[92];
+      };
+
     // font
       bool hasFont(const String& name);
       void addFont(Font* pfont);
 
     // data
+      Fonts             mFonts;
+      Texts             mTexts;
       ConstantBuffer    mConstants;
       Device*           mpDevice;
+      std::unique_ptr<GlyphAtlas> mAtlas;
       Effect*           mpEffect;
       VertexBuffer*     mpVB;
       IndexBuffer*      mpIB;
       UniformBuffer*    mpUB;
-      GlyphProvider*    mpProvider;
-      Fonts             mFonts;
+      UniformBuffer*    mpTransformUB;      
    };
 }
 

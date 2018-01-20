@@ -1,6 +1,8 @@
 
 #include "effectreader.h" 
 
+#include <cstdint>
+
 #include "core/graphics/device.h"
 #include "core/graphics/effect.h"
 #include "core/graphics/effecttechnique.h"
@@ -39,57 +41,48 @@ EffectTechnique* EffectReader::readTechnique(DataStream& stream)
    String name;
    stream >> name;
 
-   VertexLayout* playout = readVertexLayout(stream);
+   auto layout = readVertexLayout(stream);
 
    int vertexshaderlen;
    stream.readInt(vertexshaderlen);
-   char* pvertexshader = new char[vertexshaderlen];
-   stream.readBlob(pvertexshader, vertexshaderlen);
+   const char* pvertexShader = stream.readBlob(vertexshaderlen);
 
    int geometryshaderlen;
    stream.readInt(geometryshaderlen);
-   char* pgeometryshader = new char[geometryshaderlen];
-   stream.readBlob(pgeometryshader, geometryshaderlen);
-
+   const char* pgeometryShader = stream.readBlob(geometryshaderlen);
+   
    int pixelshaderlen;
    stream.readInt(pixelshaderlen);
-   char* ppixelshader = new char[pixelshaderlen];
-   stream.readBlob(ppixelshader, pixelshaderlen);
+   const char* ppixelShader = stream.readBlob(pixelshaderlen);
 
-   ArrayStream vertexshader(pvertexshader, vertexshaderlen);
-   ArrayStream geometryshader(pgeometryshader, geometryshaderlen);
-   ArrayStream pixelshader(ppixelshader, pixelshaderlen);
+   ArrayStream vertexshader(pvertexShader, vertexshaderlen);
+   ArrayStream geometryshader(pgeometryShader, geometryshaderlen);
+   ArrayStream pixelshader(ppixelShader, pixelshaderlen);
 
    Device& device = getGraphicsDevice();
    CodePath* ppath = device.createCodePath();
    ASSERT_PTR(ppath);
 
-   EffectTechnique* presult = NULL;
-
-   if ( ppath->create(playout, vertexshader, geometryshader, pixelshader) )
+   if ( ppath->create(layout.release(), vertexshader, geometryshader, pixelshader) )
    {
-      presult = new EffectTechnique();
-      presult->setCodePath(ppath);
+      auto result = std::make_unique<EffectTechnique>();
+      result->setCodePath(ppath);
+      return result.release();
    }
-
-   delete[] pvertexshader;
-   delete[] pgeometryshader;
-   delete[] ppixelshader;
-
-   return presult;
+   
+   return nullptr;
 }
 
-Graphics::VertexLayout* EffectReader::readVertexLayout(DataStream& stream)
+std::unique_ptr<Graphics::VertexLayout> EffectReader::readVertexLayout(DataStream& stream)
 {
-   int size = 0;
-   stream >> size;
-   VertexLayout* playout = new VertexLayout();
-   for ( int index = 0; index < size; ++index )
-   {
-      VertexLayoutElement* pelement = new VertexLayoutElement;
-      stream >> pelement->pos >> pelement->size >> pelement->semantic;
+   int size = 0, stride = 0;
+   stream >> size >> stride;
+   auto layout = std::make_unique<VertexLayout>(size);
+   layout->setStride(stride);
 
-      playout->add(pelement);
+   for ( VertexLayoutElement& element : *layout )
+   {
+      stream >> element.semantic >> element.pos >> element.type;
    }
-   return playout;
+   return layout;
 }

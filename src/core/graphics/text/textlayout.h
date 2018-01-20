@@ -4,7 +4,9 @@
 
 #include <cstdint>
 #include <vector>
+#include <unordered_map>
 
+#include "core/core_base.h"
 #include "core/math/vector.h"
 
 class String;
@@ -12,50 +14,62 @@ class String;
 namespace Graphics
 {
    class Font;
-   class RenderContext;
+   class TextRenderer;
 
    class TextLayoutData
    {
    public:
+      TextLayoutData() :
+         glyphindex(0),
+         pos()
+      {
+      }
+
+      TextLayoutData(uint32_t gl, const Vector& p) :
+         glyphindex(gl),
+         pos(p)
+      {
+      }
+
       uint32_t glyphindex;
       Vector   pos;
    };
 
-   typedef std::vector<TextLayoutData> TextLayoutDatas;
-   typedef std::vector<uint32_t> IntVector;
+   using TextLayoutDatas = ::std::vector<TextLayoutData>;
+   using SheetMap = ::std::unordered_map<uint32_t, TextLayoutDatas>;
 
-   class TextLayoutInfo
+   class CORE_API TextLayout
    {
    public:
-      uint32_t        sheetCount;
-      uint32_t*       indicesPerSheet;
-      uint32_t        dataCount;
-      TextLayoutData* data;
-   };
+               TextLayout();
+      explicit TextLayout(TextRenderer& renderer);
+               TextLayout(TextLayout&& other);
 
-   class TextLayout
-   {
-   public:
-      TextLayout();
+      TextLayout& operator=(TextLayout&& other);
 
     // get/set
-      Font& getFont();
+      const Font& getFont() const {
+         return *mpFont;
+      }
+
+      const SheetMap& getGlyphData() const {
+         return mData;
+      }
+
+      const Vector& getPosition() const {
+         return mPosition;
+      }
 
     // operations
-      bool create(RenderContext& context, const Vector& position, Font& font, float fontsize, const String& text);
-      void fill(TextLayoutInfo& info);
+      bool create(const Vector& position, Font& font, const String& text);
 
    private:
-    // operations
-      void sort();
 
     // data
-      Font*             mpFont;
-      TextLayoutDatas   mData;
-      TextLayoutDatas   mSortedData;
-      IntVector         mGlyphIndices;
-      IntVector         mVerticesPerSheet;
-      uint32_t          mMaxSheetIndex;
+      SheetMap      mData;
+      Vector        mPosition;
+      TextRenderer* mpTextRenderer;
+      Font*         mpFont;
    };
 }
 

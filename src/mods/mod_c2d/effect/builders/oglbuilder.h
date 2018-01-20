@@ -17,6 +17,8 @@ protected:
    virtual void buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique) override;
    virtual void buildPixelShader(const ASTEffect& effect, ASTTechnique& technique) override;
 
+   virtual uint32_t toNativeType(const ASTType& type) override;
+
 private:
 
  // generations

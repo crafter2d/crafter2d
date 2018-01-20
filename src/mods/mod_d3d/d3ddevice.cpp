@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <memory>
 
-#include "core/smartptr/autoptr.h"
 #include "core/window/gamewindow.h"
 
 #include "text/d3dfontcollection.h"
@@ -359,16 +358,15 @@ BlendState* D3DDevice::createBlendState(const BlendStateDesc& desc)
    return presult;
 }
 
-GlyphProvider* D3DDevice::createGlyphProvider(Font& font)
-{
-   D3DGlyphProvider* pprovider = new D3DGlyphProvider(mpD2DContext, mpDWriteFactory);
-   pprovider->initialize(mpFontCollection->getCustomFontCollection(), font);
-   return pprovider;
-}
-
 Font* D3DDevice::createFont(const String& name)
 {
-   return mpFontCollection->createFont(name);
+   D3DGlyphProvider* pprovider = new D3DGlyphProvider(mpD2DContext, mpDWriteFactory, getContext().getTextRenderer().getGlyphAtlas());
+   return mpFontCollection->createFont(name, pprovider);
+
+   
+   //pprovider->initialize(mpFontCollection->getCustomFontCollection(), *font);
+   //font->setGlyphProvider(pprovider);
+   //return font.release();
 }
 
 } // namespace Graphics

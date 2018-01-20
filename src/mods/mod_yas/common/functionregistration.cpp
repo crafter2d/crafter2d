@@ -3,30 +3,51 @@
 
 #include "core/defines.h"
 
-#include "classregistration.h"
+#include "mod_yas/common/callbackfunctor.h"
 
-// static 
-FunctionRegistration* FunctionRegistration::create(const String& prototype, yas::CallbackFunctor* pcallback)
-{
-   return new FunctionRegistration(prototype, pcallback);
-}
+#include "classregistration.h"
 
 // - Constructors
 
+FunctionRegistration::FunctionRegistration():
+   mPrototype(),
+   mpClass(nullptr),
+   mpCallback(nullptr),
+   mIndex(-1)
+{
+}
+
 FunctionRegistration::FunctionRegistration(const String& prototype, yas::CallbackFunctor* pcallback) :
-   mpClass(NULL),
-   mIndex(-1),
    mPrototype(prototype),
-   mpCallback(pcallback)
+   mpClass(nullptr),
+   mpCallback(pcallback),
+   mIndex(-1)
 {
 }
 
 FunctionRegistration::FunctionRegistration(const FunctionRegistration& that):
-   mpClass(that.mpClass),
-   mIndex(that.mIndex),
    mPrototype(that.mPrototype),
-   mpCallback(that.mpCallback)
+   mpClass(that.mpClass),
+   mpCallback(that.mpCallback),
+   mIndex(that.mIndex)
 {
+}
+
+FunctionRegistration::FunctionRegistration(FunctionRegistration&& source):
+   mPrototype(std::move(source.mPrototype)),
+   mpClass(source.mpClass),
+   mpCallback(source.mpCallback),
+   mIndex(source.mIndex)
+{
+}
+
+FunctionRegistration& FunctionRegistration::operator=(FunctionRegistration&& source)
+{
+   mPrototype = std::move(source.mPrototype);
+   mpClass = source.mpClass;
+   mpCallback = source.mpCallback;
+   mIndex = source.mIndex;
+   return *this;
 }
 
 // - Get/set
@@ -60,6 +81,13 @@ const String& FunctionRegistration::getPrototype() const
 yas::CallbackFunctor& FunctionRegistration::getCallback() const
 {
    return *mpCallback;
+}
+
+// - Execution
+
+void FunctionRegistration::execute(VirtualCall& call)
+{
+   mpCallback->exec(call);
 }
 
 // - Maintenance

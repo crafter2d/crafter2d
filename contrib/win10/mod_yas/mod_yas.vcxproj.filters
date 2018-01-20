@@ -421,6 +421,9 @@
     <ClInclude Include="..\..\..\src\mods\mod_yas\gc\garbagecollector.h">
       <Filter>gc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\mods\mod_yas\bytecode\nativefunctionsymbol.h">
+      <Filter>bytecode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\mods\mod_yas\vm\virtualarrayexception.inl">

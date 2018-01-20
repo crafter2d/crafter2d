@@ -4,39 +4,42 @@
 
 #include <dwrite_1.h>
 
-class D3DFontCollection;
-
-class D3DFontCollectionLoader : public IDWriteFontCollectionLoader
+namespace Graphics
 {
-public:
- // singleton
-   static D3DFontCollectionLoader& getInstance();
+   class D3DFontCollection;
 
- // get/set
-   void setCollection(D3DFontCollection& pcollection);
+   class D3DFontCollectionLoader : public IDWriteFontCollectionLoader
+   {
+   public:
+      // singleton
+      static D3DFontCollectionLoader& getInstance();
 
- // IUnknown interface
-   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** pobject);
-   ULONG   STDMETHODCALLTYPE AddRef();
-   ULONG   STDMETHODCALLTYPE Release();
+      // get/set
+      void setCollection(D3DFontCollection& pcollection);
 
- // overrides
-   HRESULT STDMETHODCALLTYPE CreateEnumeratorFromKey(
-      IDWriteFactory* factory,
-      void const* collectionKey,                      // [collectionKeySize] in bytes
-      UINT32 collectionKeySize,
-      OUT IDWriteFontFileEnumerator** fontFileEnumerator) override;
+      // IUnknown interface
+      HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** pobject);
+      ULONG   STDMETHODCALLTYPE AddRef();
+      ULONG   STDMETHODCALLTYPE Release();
 
-private:
-   D3DFontCollectionLoader();
+      // overrides
+      HRESULT STDMETHODCALLTYPE CreateEnumeratorFromKey(
+         IDWriteFactory* factory,
+         void const* collectionKey,                      // [collectionKeySize] in bytes
+         UINT32 collectionKeySize,
+         OUT IDWriteFontFileEnumerator** fontFileEnumerator) override;
 
- // singleton
-   static D3DFontCollectionLoader* spInstance;
+   private:
+      D3DFontCollectionLoader();
 
- // data
-   ULONG mRefCount;
+      // singleton
+      static D3DFontCollectionLoader* spInstance;
 
-   D3DFontCollection* mpCollection;
-};
+      // data
+      ULONG mRefCount;
+
+      D3DFontCollection* mpCollection;
+   };
+}
 
 #endif // D3D_FONT_COLLECTION_LOADER_H

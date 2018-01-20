@@ -4,33 +4,37 @@
 
 #include <dwrite_1.h>
 
-class D3DFontCollection;
+#include "d3dfontcollection.h"
 
-class D3DFontFileEnumerator : public IDWriteFontFileEnumerator
+namespace Graphics
 {
-public:
-   D3DFontFileEnumerator(IDWriteFactory* pdwfactory);
+   class D3DFontFileEnumerator : public IDWriteFontFileEnumerator
+   {
+   public:
+      D3DFontFileEnumerator(IDWriteFactory* pdwfactory);
 
- // get/set
-   void setCollection(D3DFontCollection& collection);
+      // get/set
+      void setCollection(D3DFontCollection& collection);
 
- // IUnknown interface
-   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** pobject);
-   ULONG   STDMETHODCALLTYPE AddRef();
-   ULONG   STDMETHODCALLTYPE Release();
+      // IUnknown interface
+      HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** pobject);
+      ULONG   STDMETHODCALLTYPE AddRef();
+      ULONG   STDMETHODCALLTYPE Release();
 
- // overrides
-   virtual HRESULT STDMETHODCALLTYPE MoveNext(OUT BOOL* hasCurrentFile);
-   virtual HRESULT STDMETHODCALLTYPE GetCurrentFontFile(OUT IDWriteFontFile** fontFile);
+      // overrides
+      virtual HRESULT STDMETHODCALLTYPE MoveNext(OUT BOOL* hasCurrentFile);
+      virtual HRESULT STDMETHODCALLTYPE GetCurrentFontFile(OUT IDWriteFontFile** fontFile);
 
-private:
+   private:
+      using Iterator = D3DFontCollection::Files::const_iterator;
 
-  // data
-   IDWriteFactory*    mpDWFactory;
-   IDWriteFontFile*   mpDWFile;
-   ULONG              mRefCount;
-   D3DFontCollection* mpCollection;
-   int                mPos;
-};
+      // data
+      IDWriteFactory *   mpDWFactory;
+      IDWriteFontFile*   mpDWFile;
+      ULONG              mRefCount;
+      D3DFontCollection* mpCollection;
+      Iterator           mIterator;
+   };
+}
 
 #endif // D3D_FONT_FILE_ENUMERATOR_H

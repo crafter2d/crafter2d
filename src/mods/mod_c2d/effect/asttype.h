@@ -10,7 +10,7 @@ class ASTStruct;
 class ASTType
 {
 public:
-   enum Type { eVoid, eFloat, eFloat2, eFloat3, eFloat4, eMat2, eMat3, eMat4, eStruct, eUnknown };
+   enum Type { eVoid, eFloat, eFloat2, eFloat3, eFloat4, eUint, eMat2, eMat3, eMat4, eStruct, eUnknown };
 
    static ASTType* fromString(const ASTEffect& effect, const String& typestr);
 

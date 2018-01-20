@@ -55,11 +55,13 @@ private:
 
    const char*    mpCode;
 
-   int            mIP;
-   int            mFP;
+   size_t         mIP;
+   size_t         mFP;
 
-   int            mSavedFP;
+   size_t         mSavedFP;
    State          mState;
+
+   int            mGcCounter;
 };
 
 #endif // STACK_CPU_H

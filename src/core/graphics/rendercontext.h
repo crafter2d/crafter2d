@@ -56,7 +56,7 @@ namespace Graphics
       c2d::TileAtlas& getSpriteAtlas() {
          return mTileAtlas;
       }
-
+      
     // initialization
       bool initialize(Device& device);
       void destroy();
@@ -74,20 +74,20 @@ namespace Graphics
       virtual void drawTriangles(int start, int count) = 0;
       virtual void drawTriangleFan(int start, int count) = 0;
       virtual void drawTriangleStrip(int start, int count) = 0;
-              void drawText(const Vector& position, Font& font, float fontsizeem, const String& text);
      
       virtual void clear() = 0;
 
-    // drawing sprites
+    // drawing systems
       void beginDraw();
       void endDraw();
 
       void setSpriteOffset(const Vector& offset);
       void drawSprite(const c2d::Sprite& sprite);
       void drawParticles(const ParticleSystem& particles);
+      void drawText(const TextLayout& textlayout);
 
    // notifications
-      void viewportChanged(const Graphics::Viewport& viewport);
+      void viewportChanged(const Viewport& viewport);
 
    private:
 

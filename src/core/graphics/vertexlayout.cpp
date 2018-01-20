@@ -9,8 +9,8 @@
 namespace Graphics
 {
 
-   VertexLayout::VertexLayout():
-      mElements(),
+   VertexLayout::VertexLayout(size_t size):
+      mElements(size),
       mStride(0)
    {
    }
@@ -24,42 +24,23 @@ namespace Graphics
 
    VertexLayoutElement& VertexLayout::operator[](int index)
    {
-      return *mElements[index];
+      return mElements[index];
    }
 
    const VertexLayoutElement& VertexLayout::operator[](int index) const
    {
-      return *mElements[index];
-   }
-
-   // - Get/set
-
-   int VertexLayout::getSize() const
-   {
-      return mElements.size();
-   }
-
-   int VertexLayout::getStride() const
-   {
-      return mStride;
+      return mElements[index];
    }
 
    // - Operations
 
-   void VertexLayout::add(VertexLayoutElement* pelement)
+   void VertexLayout::emplace_back(const String& semantic, uint32_t pos, uint32_t type)
    {
-      mElements.push_back(pelement);
-
-      mStride += sizeof(float)* pelement->size;
+      mElements.emplace_back(semantic, pos, type);
    }
 
    void VertexLayout::clear()
    {
-      for ( std::size_t index = 0; index < mElements.size(); ++index )
-      {
-         VertexLayoutElement* pelement = mElements[index];
-         delete pelement;
-      }
       mElements.clear();
    }
 

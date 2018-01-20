@@ -59,6 +59,13 @@ String& NumberConverter::format(String& result, int value)
    return result;
 }
 
+String& NumberConverter::format(String& result, unsigned int value)
+{
+   auto s = std::to_string(value);
+   result.setToUtf8(s);
+   return result;
+}
+
 String& NumberConverter::format(String& result, double value)
 {
    auto s = std::to_string(value);

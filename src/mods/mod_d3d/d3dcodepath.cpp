@@ -5,7 +5,6 @@
 #include "core/graphics/texture.h"
 #include "core/graphics/vertexlayout.h"
 #include "core/graphics/vertexlayoutelement.h"
-#include "core/smartptr/autoptr.h"
 #include "core/string/string.h"
 #include "core/streams/filereaderstream.h"
 #include "core/vfs/file.h"
@@ -21,10 +20,10 @@ namespace Graphics
 D3DCodePath::D3DCodePath(D3DDevice& device):
    CodePath(),
    mDevice(device),
-   mpInputLayout(NULL),
-   mpVertexShader(NULL),
-   mpGeometryShader(NULL),
-   mpPixelShader(NULL)
+   mpInputLayout(nullptr),
+   mpVertexShader(nullptr),
+   mpGeometryShader(nullptr),
+   mpPixelShader(nullptr)
 {
 }
 
@@ -101,24 +100,7 @@ bool D3DCodePath::createInputLayout(const DataStream& stream)
 
       memset(&desc, 0, sizeof(D3D11_INPUT_ELEMENT_DESC));
       desc.SemanticName = strdup(element.semantic.toUtf8().c_str());
-      switch ( element.size )
-      {
-      case 1:
-         desc.Format = DXGI_FORMAT_R32_FLOAT;
-         break;
-      case 2:
-         desc.Format = DXGI_FORMAT_R32G32_FLOAT;
-         break;
-      case 3:
-         desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
-         break;
-      case 4:
-         desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-         break;
-      default:
-         return false;
-      }
-      
+      desc.Format = static_cast<DXGI_FORMAT>(element.type);
       desc.AlignedByteOffset = element.pos;
       desc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
    }
@@ -175,15 +157,15 @@ void D3DCodePath::bindTexture(RenderContext& context, int stage, const Texture& 
    uniform.enable(context, stage);
 }
 
-void D3DCodePath::setConstantBuffer(RenderContext& context, const UniformBuffer& buffer)
+void D3DCodePath::setConstantBuffer(RenderContext& context, int slot, const UniformBuffer& buffer)
 {
    ID3D11DeviceContext& d3dcontext = D3DRenderContext::asContext(context);
    ID3D11Buffer* pbuffer = static_cast<const D3DUniformBuffer&>(buffer).getBuffer();
 
-   d3dcontext.VSSetConstantBuffers(0, 1, &pbuffer);
+   d3dcontext.VSSetConstantBuffers(slot, 1, &pbuffer);
    if ( mpGeometryShader != NULL )
    {
-      d3dcontext.GSSetConstantBuffers(0, 1, &pbuffer);
+      d3dcontext.GSSetConstantBuffers(slot, 1, &pbuffer);
    }
 }
 

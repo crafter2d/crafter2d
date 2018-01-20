@@ -75,6 +75,11 @@ void OglBuilder::buildPixelShader(const ASTEffect& effect, ASTTechnique& techniq
    technique.mPixel.mCompiledCode.writeBlob(source.c_str(), source.length() + 1);
 }
 
+uint32_t OglBuilder::toNativeType(const ASTType& type)
+{
+   return 0;
+}
+
 // OpenGL uses samplers to access the texture.
 String OglBuilder::buildTextures(const ASTEffect& effect, const ASTFunction& function)
 {
@@ -122,7 +127,7 @@ String OglBuilder::buildVertexStructs(const ASTEffect& effect, ASTTechnique& tec
          if ( index > 0 && function.mBody[index - 1] != L'.' )
          {
             // seems this entry is used in the function body, so must be the input
-            technique.mpLayout = buildInputLayout(*pstruct);
+            buildInputLayout(*pstruct, technique.mLayout);
 
             result += buildInputStruct(*pstruct);
 
