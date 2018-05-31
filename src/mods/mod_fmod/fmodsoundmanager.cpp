@@ -19,7 +19,7 @@ namespace c2d
 
    FModSoundManager::FModSoundManager() :
       SoundManager(),
-      mpSystem(NULL)
+      mpSystem(nullptr)
    {
    }
 
@@ -40,7 +40,7 @@ namespace c2d
       }
 
       /*FMOD_SPEAKERMODE speakermode = FMOD_SPEAKERMODE_STEREO;
-      result = mpSystem->getDriverCaps(0, NULL, NULL, &speakermode);
+      result = mpSystem->getDriverCaps(0, nullptr, nullptr, &speakermode);
       if ( FAILED(result) )
       {
          return false;
@@ -81,13 +81,13 @@ namespace c2d
 
    Sound* FModSoundManager::createSound(const String& filename) const
    {
-      FMOD::Sound* psound = NULL;
+      FMOD::Sound* psound = nullptr;
       FMOD_RESULT result = mpSystem->createSound(filename.toUtf8().c_str(), FMOD_DEFAULT, 0, &psound);
       if ( SUCCEEEDED(result) )
       {
          return new FModSound(psound);
       }
-      return NULL;
+      return nullptr;
    }
 
    Sound* FModSoundManager::createSound(const DataStream& stream) const
@@ -97,13 +97,13 @@ namespace c2d
       info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
       info.length = stream.getDataSize();
 
-      FMOD::Sound* psound = NULL;
+      FMOD::Sound* psound = nullptr;
       FMOD_RESULT result = mpSystem->createSound(stream.getData(), FMOD_DEFAULT | FMOD_OPENMEMORY, &info, &psound);
       if ( SUCCEEEDED(result) )
       {
          return new FModSound(psound);
       }
-      return NULL;
+      return nullptr;
    }
 
    // - Media player functions

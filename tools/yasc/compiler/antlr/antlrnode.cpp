@@ -14,7 +14,7 @@ AntlrNode::AntlrNode(ANTLR3_BASE_TREE_struct* pnode):
 
 bool AntlrNode::isNil() const
 {
-   return mpNode == NULL || mpNode->isNilNode(mpNode);
+   return mpNode == nullptr || mpNode->isNilNode(mpNode);
 }
    
 int AntlrNode::getChildCount() const

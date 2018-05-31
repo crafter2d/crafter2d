@@ -47,5 +47,5 @@ Simulator* PhysicsFactory::createSimulator()
 bool PhysicsFactory::isCreatedBy(const Simulator& simulator) const
 {
    const PhysicsSimulator* pbox2dsim = dynamic_cast<const PhysicsSimulator*>(&simulator);
-   return pbox2dsim != NULL;
+   return pbox2dsim != nullptr;
 }

@@ -8,7 +8,7 @@
 namespace CIL
 {
    Function::Function():
-      mpClass(NULL),
+      mpClass(nullptr),
       mArguments(),
       mLocals(),
       mAnnotations(),
@@ -16,14 +16,14 @@ namespace CIL
       mInstructions(),
       mGuards(),
       mSwitchTables(),
-      mpReturnType(NULL),
+      mpReturnType(nullptr),
       mModifiers()
    {
    }
 
    Function::~Function()
    {
-      setReturnType(NULL);
+      setReturnType(nullptr);
    }
 
    // - Get/set

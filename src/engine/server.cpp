@@ -248,7 +248,7 @@ namespace c2d
             const RequestObjectEvent& request = dynamic_cast<const RequestObjectEvent&>(event);
 
             Entity* pentity = getWorld().findEntity(request.getId());
-            if ( pentity == NULL )
+            if ( pentity == nullptr )
             {
                Log::getInstance().error("Server - Could not find matching object for request");
             }

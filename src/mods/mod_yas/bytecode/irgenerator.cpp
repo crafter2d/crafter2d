@@ -82,7 +82,7 @@ namespace ByteCode
    Block& IRGenerator::createBlock(int target)
    {
       Block* ptarget = mBlocks[target];
-      if ( ptarget == NULL )
+      if ( ptarget == nullptr )
       {
          ptarget = new Block();
          ptarget->id = mBlocks.size();
@@ -94,7 +94,7 @@ namespace ByteCode
 
    bool IRGenerator::hasBlock(int index) const
    {
-      return mBlocks[index] != NULL;
+      return mBlocks[index] != nullptr;
    }
    
    Block* IRGenerator::getBlock(int index)

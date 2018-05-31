@@ -8,7 +8,7 @@
 namespace CIL
 {
    Function::Function():
-      mpClass(NULL),
+      mpClass(nullptr),
       mArguments(),
       mLocals(),
       mReturnType(),

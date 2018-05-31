@@ -68,7 +68,7 @@ Matrix4 Box2DSimulator::b2ToMatrix(const b2Transform& tf)
 
 Box2DSimulator::Box2DSimulator():
    Simulator(),
-   mpb2World(NULL),
+   mpb2World(nullptr),
    mContactListener(*this),
    mJoints()
 {
@@ -107,7 +107,7 @@ void Box2DSimulator::cleanUp()
    mJoints.clear();
 
    delete mpb2World;
-   mpb2World = NULL;
+   mpb2World = nullptr;
 }
 
 Body& Box2DSimulator::createBody(const BodyDefinition& definition)

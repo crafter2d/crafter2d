@@ -24,7 +24,7 @@
 #include "world.h"
 
 WorldObserver::WorldObserver():
-   mpWorld(NULL)
+   mpWorld(nullptr)
 {
 }
 
@@ -36,7 +36,7 @@ WorldObserver::~WorldObserver()
 
 void WorldObserver::attach(World& world)
 {
-   ASSERT_MSG(mpWorld == NULL, "Can not attach to a world. First detach from current!");
+   ASSERT_MSG(mpWorld == nullptr, "Can not attach to a world. First detach from current!");
    mpWorld = & world;
 
    mpWorld->attach(*this);
@@ -44,7 +44,7 @@ void WorldObserver::attach(World& world)
    
 void WorldObserver::detach()
 {
-   if ( mpWorld != NULL )
+   if ( mpWorld != nullptr )
    {
       mpWorld->detach(*this);
    }

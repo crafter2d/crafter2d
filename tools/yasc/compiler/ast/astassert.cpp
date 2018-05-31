@@ -8,13 +8,13 @@
 
 ASTAssert::ASTAssert():
    ASTStatement(),
-   mpCondition(NULL)
+   mpCondition(nullptr)
 {
 }
 
 ASTAssert::~ASTAssert()
 {
-   setCondition(NULL);
+   setCondition(nullptr);
 }
 
 // - Get/set

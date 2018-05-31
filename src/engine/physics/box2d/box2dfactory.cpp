@@ -26,6 +26,6 @@ Simulator* Box2DFactory::createSimulator()
 bool Box2DFactory::isCreatedBy(const Simulator& simulator) const
 {
    const Box2DSimulator* pbox2dsim = dynamic_cast<const Box2DSimulator*>(&simulator);
-   return pbox2dsim != NULL;
+   return pbox2dsim != nullptr;
 }
 

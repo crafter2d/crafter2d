@@ -18,10 +18,10 @@ VirtualArray::VirtualArray():
 
 VirtualArray::~VirtualArray()
 {
-   if ( mpArray != NULL )
+   if ( mpArray != nullptr )
    {
       delete[] mpArray;
-      mpArray = NULL;
+      mpArray = nullptr;
    }
 }
 
@@ -64,7 +64,7 @@ int VirtualArray::size() const
 
 void VirtualArray::addLevel(int size)
 {
-   if ( mpArray != NULL ) {
+   if ( mpArray != nullptr ) {
       throw std::runtime_error("multi dimensional arrays are not supported!");
    }
    mpArray = new VirtualValue[size];

@@ -33,8 +33,8 @@ StackCPU::StackCPU(VirtualMachine& vm):
    CPU(vm),
    mCalls(),
    mStack(),
-   mpActiveGuard(NULL),
-   mpCode(NULL),
+   mpActiveGuard(nullptr),
+   mpCode(nullptr),
    mIP(0),
    mFP(-1),
    mSavedFP(-1),
@@ -150,7 +150,7 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
                const FunctionSymbol& symbol = static_cast<const FunctionSymbol&>(program.getSymbolTable()[arg]);
 
                VirtualValue& value = mStack[mStack.size() - symbol.args];
-               const VirtualClass* pclass = NULL;
+               const VirtualClass* pclass = nullptr;
                if ( value.isObject() )
                {
                   const VirtualObject& object = value.asObject();
@@ -165,8 +165,8 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
                   pclass = &getArrayClass();
                }
 
-               if ( pclass == NULL )
-                  throwException(context, UTEXT("system.NullPointerException"), String::empty());
+               if ( pclass == nullptr )
+                  throwException(context, UTEXT("system.nullptrPointerException"), String::empty());
                else
                   call(context, *pclass, pclass->getVirtualFunctionTable()[symbol.func]);
             }
@@ -178,7 +178,7 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
                VirtualValue& object = mStack[mStack.size() - symbol.args]; // find the object to call the method on
                if ( object.isEmpty() )
                {
-                  throwException(context, UTEXT("system.NullPointerException"), String::empty());
+                  throwException(context, UTEXT("system.nullptrPointerException"), String::empty());
                }
 
                const VirtualClass& theclass = object.asObject().getClass();
@@ -656,7 +656,7 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
                VirtualValue obj = mStack.pop();
                ASSERT(obj.isObject());
                if ( obj.isEmpty() )
-                  throwException(context, UTEXT("system.NullPointerException"), String::empty());
+                  throwException(context, UTEXT("system.nullptrPointerException"), String::empty());
                else               
                   mStack.push(obj.asObject().getMember(arg));
             }
@@ -827,7 +827,7 @@ void StackCPU::execute(VirtualContext& context, const VirtualFunctionTableEntry&
                
                if ( mStack.back().isEmpty() )
                {
-                  throwException(context, UTEXT("system.NullPointerException"), String::empty());
+                  throwException(context, UTEXT("system.nullptrPointerException"), String::empty());
                }
                else
                {
@@ -984,7 +984,7 @@ bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception
       const VirtualFunctionTableEntry& entry = *mCalls[mFP].pentry;
       const VirtualGuard* pguard = entry.findGuard(mIP);
 
-      if ( pguard != NULL )
+      if ( pguard != nullptr )
       {
          mStack.pushObject(exception);
 

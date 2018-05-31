@@ -33,8 +33,8 @@
 Body::Body(Simulator& simulator):
    mSimulator(simulator),
    mTransform(),
-   mpEntity(NULL),
-   mpListener(NULL),
+   mpEntity(nullptr),
+   mpListener(nullptr),
    mForceGenerators()
 {
 }
@@ -113,7 +113,7 @@ void Body::notifyPositionChanged()
 
 void Body::firePositionChanged()
 {
-   if ( mpListener != NULL )
+   if ( mpListener != nullptr )
    {
       mpListener->onPositionChanged(*this);
    }

@@ -27,7 +27,7 @@
 
 BufferedStream::BufferedStream():
    DataStream(),
-   mpBuffer(NULL),
+   mpBuffer(nullptr),
    mSize(0),
    mLength(0),
    mPos(0)
@@ -47,7 +47,7 @@ BufferedStream::BufferedStream(const DataStream& that):
 
 BufferedStream::BufferedStream(int reservesize):
    DataStream(),
-   mpBuffer(NULL),
+   mpBuffer(nullptr),
    mSize(0),
    mLength(0),
    mPos(0)
@@ -58,7 +58,7 @@ BufferedStream::BufferedStream(int reservesize):
 BufferedStream::~BufferedStream()
 {
    free(mpBuffer);
-   mpBuffer = NULL;
+   mpBuffer = nullptr;
 }
 
 // - Allocation

@@ -10,14 +10,14 @@ class WeakCount
 {
 public:
    WeakCount():
-      mpCounter(NULL)
+      mpCounter(nullptr)
    {
    }
 
    WeakCount(const WeakCount& that):
       mpCounter(that.mpCounter)
    {
-      if ( mpCounter != NULL )
+      if ( mpCounter != nullptr )
       {
          mpCounter->addWeakRef();
       }
@@ -26,7 +26,7 @@ public:
    WeakCount(CountBase* pcounter):
       mpCounter(pcounter)
    {
-      if ( mpCounter != NULL )
+      if ( mpCounter != nullptr )
       {
          mpCounter->addWeakRef();
       }
@@ -34,7 +34,7 @@ public:
 
    ~WeakCount()
    {
-      if ( mpCounter != NULL )
+      if ( mpCounter != nullptr )
       {
          mpCounter->releaseWeakRef();
       }

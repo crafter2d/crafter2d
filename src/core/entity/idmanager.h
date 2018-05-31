@@ -20,7 +20,9 @@
 #ifndef ID_MANAGER_H_
 #define ID_MANAGER_H_
 
-typedef unsigned int Id;
+#include <cstdint>
+
+typedef uint32_t Id;
 
 class IdManager
 {

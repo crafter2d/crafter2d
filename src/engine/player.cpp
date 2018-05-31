@@ -30,7 +30,7 @@
 
 Player::Player():
    mWorldObserver(*this),
-   mpController(NULL),
+   mpController(nullptr),
    mClientId(0)
 {
 }

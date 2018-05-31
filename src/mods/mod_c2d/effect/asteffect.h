@@ -81,7 +81,7 @@ const ASTStruct* ASTEffect::findStruct(const String& name) const
          return pstruct;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 inline
@@ -95,7 +95,7 @@ const ASTFunction* ASTEffect::findFunction(const String& name) const
          return pfunction;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 #endif // AST_EFFECT_H

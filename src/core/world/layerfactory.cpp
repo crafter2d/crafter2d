@@ -51,5 +51,5 @@ Layer* LayerFactory::create(LayerType type)
    default:          ASSERT_MSG(false, "Invalid layer type!");
    }
 
-   return NULL;
+   return nullptr;
 }

@@ -19,24 +19,24 @@ ASTClass::ASTClass():
    mKind(eClass),
    mResolver(),
    mModifiers(),
-   mpBaseType(NULL),
+   mpBaseType(nullptr),
    mInterfaces(),
-   mpTypeVariables(NULL),
+   mpTypeVariables(nullptr),
    mFunctions(),
    mFunctionTable(),
    mName(),
    mFullName(),
    mStatics(),
    mFields(),
-   mpCompiledClass(NULL)
+   mpCompiledClass(nullptr)
 {
 }
 
 ASTClass::~ASTClass()
 {
-   setBaseType(NULL);
-   setTypeVariables(NULL);
-   setCompiledClass(NULL);
+   setBaseType(nullptr);
+   setTypeVariables(nullptr);
+   setCompiledClass(nullptr);
 }
 
 // - Get/set
@@ -53,7 +53,7 @@ void ASTClass::setKind(Kind kind)
 
 bool ASTClass::hasBaseType() const
 {
-   return mpBaseType != NULL;
+   return mpBaseType != nullptr;
 }
    
 const ASTType& ASTClass::getBaseType() const
@@ -193,7 +193,7 @@ CIL::Class& ASTClass::getCompiledClass()
 CIL::Class* ASTClass::useCompiledClass()
 {
    CIL::Class* presult = mpCompiledClass;
-   mpCompiledClass = NULL;
+   mpCompiledClass = nullptr;
    return presult;
 }
 
@@ -263,7 +263,7 @@ bool ASTClass::isNative() const
 
 bool ASTClass::isGeneric() const
 {
-   return mpTypeVariables != NULL;
+   return mpTypeVariables != nullptr;
 }
 
 bool ASTClass::isTypeName(const String& name) const
@@ -323,10 +323,10 @@ void ASTClass::addInterface(ASTType* ptype)
 bool ASTClass::isMember(const String& name) const
 {
    const ASTMember* pmember = findField(name);
-   if ( pmember == NULL )
+   if ( pmember == nullptr )
    {
       pmember = findStatic(name);
-      if ( pmember == NULL )
+      if ( pmember == nullptr )
       {
          return mFunctions.hasFunction(name);
       }
@@ -488,7 +488,7 @@ ASTField* ASTClass::findStatic(const String& name, SearchScope scope)
          return pstatic;
       }
    }
-   return scope == eAll && hasBaseClass() ? getBaseClass().findStatic(name, eAll) : NULL;
+   return scope == eAll && hasBaseClass() ? getBaseClass().findStatic(name, eAll) : nullptr;
 }
 
 const ASTField* ASTClass::findField(const String& name, SearchScope scope) const
@@ -506,7 +506,7 @@ ASTField* ASTClass::findField(const String& name, SearchScope scope)
          return pvariable;
       }
    }
-   return scope == eAll && hasBaseClass() ? getBaseClass().findField(name) : NULL;
+   return scope == eAll && hasBaseClass() ? getBaseClass().findField(name) : nullptr;
 }
 
 const ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types) const
@@ -517,7 +517,7 @@ const ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignatur
 ASTFunction* ASTClass::findBestMatch(const String& name, const ASTSignature& signature, const ASTTypeList& types)
 {
    ASTFunction* pfunction = mFunctions.findBestMatch(name, signature, types);
-   if ( pfunction == NULL && hasBaseClass() )
+   if ( pfunction == nullptr && hasBaseClass() )
    {
       pfunction = getBaseClass().findBestMatch(name, signature, types);
    }
@@ -532,7 +532,7 @@ const ASTFunction* ASTClass::findExactMatch(const String& name, const ASTSignatu
 ASTFunction* ASTClass::findExactMatch(const String& name, const ASTSignature& signature)
 {
    ASTFunction* pfunction = mFunctions.findExactMatch(name, signature);
-   if ( pfunction == NULL && hasBaseClass() )
+   if ( pfunction == nullptr && hasBaseClass() )
    {
       pfunction = getBaseClass().findExactMatch(name, signature);
    }

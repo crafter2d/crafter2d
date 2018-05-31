@@ -23,7 +23,7 @@
 #include "core/defines.h"
 
 RenderVisitor::RenderVisitor():
-   _pviewport(NULL)
+   _pviewport(nullptr)
 {
 }
 

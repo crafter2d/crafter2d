@@ -21,7 +21,7 @@
 
 template<class E>
 INLINE Tree<E>::Tree():
-   _proot(NULL)
+   _proot(nullptr)
 {
 }
 
@@ -33,7 +33,7 @@ INLINE Tree<E>::~Tree()
 template<class E>
 bool Tree<E>::hasRoot() const
 {
-   return _proot != NULL;
+   return _proot != nullptr;
 }
 
 template<class E>
@@ -55,7 +55,7 @@ INLINE void Tree<E>::insert(TreeNode<E>* pposition, E& element)
 {
    TreeNode<E>* pnode = new TreeNode<E>(&element, pposition);
 
-   if ( pposition == NULL )
+   if ( pposition == nullptr )
       _proot = pnode;
 }
 
@@ -67,7 +67,7 @@ INLINE void Tree<E>::insert(Iterator<E>& it, E& element)
 template<class E>
 INLINE TreeNode<E>* Tree<E>::findElement(const E& element)
 {
-   return _proot != NULL ? findElement(*_proot, element) : NULL;
+   return _proot != nullptr ? findElement(*_proot, element) : nullptr;
 }
 
 template<class E>
@@ -81,7 +81,7 @@ INLINE TreeNode<E>* Tree<E>::findElement(TreeNode<E>& node, const E& element)
       while ( it.isValid() )
       {
          TreeNode<E>* pnode = findElement(it.item(), element);
-         if ( pnode != NULL )
+         if ( pnode != nullptr )
          {
             return pnode;
          }
@@ -90,5 +90,5 @@ INLINE TreeNode<E>* Tree<E>::findElement(TreeNode<E>& node, const E& element)
       }
    }
 
-   return NULL;
+   return nullptr;
 }

@@ -57,7 +57,7 @@ public:
    NetPackage();
    NetPackage(const NetPackage& that);
    NetPackage(NetPackage&& that);
-   NetPackage(PacketType type, Reliability reliability, int packagenr, int datasize = 0, const char* pdata = NULL);
+   NetPackage(PacketType type, Reliability reliability, int packagenr, int datasize = 0, const char* pdata = nullptr);
    ~NetPackage();
 
    NetPackage& operator=(NetPackage&& that);

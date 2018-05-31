@@ -5,7 +5,7 @@
 
 INLINE bool PhysicsComponent::hasBody() const
 {
-   return mpBody != NULL;
+   return mpBody != nullptr;
 }
 
 INLINE const Body& PhysicsComponent::getBody() const

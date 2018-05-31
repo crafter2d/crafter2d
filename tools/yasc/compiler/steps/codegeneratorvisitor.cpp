@@ -26,11 +26,11 @@ using namespace CIL;
 
 CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    CompileStep(context),
-   mpFunction(NULL),
-   mpAccess(NULL),
-   mpExpression(NULL),
+   mpFunction(nullptr),
+   mpAccess(nullptr),
+   mpExpression(nullptr),
    mCurrentType(),
-   mpSwitchTable(NULL),
+   mpSwitchTable(nullptr),
    mScopeStack(),
    mLoopFlowStack(),
    mLoadFlags(0),
@@ -779,15 +779,15 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
       case ASTConcatenate::eEquals:
          {
-            SET_FLAG(mState, eStateNoNull);
+            SET_FLAG(mState, eStateNonullptr);
 
             concatenate.getRight().accept(*this);
 
-            CLEAR_FLAG(mState, eStateNoNull);
+            CLEAR_FLAG(mState, eStateNonullptr);
 
             switch ( mCurrentType.getKind() )
             {
-               case ASTType::eNull:
+               case ASTType::enullptr:
                   mBuilder.emit(CIL_isnull);
                   break;
                default:
@@ -798,15 +798,15 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
       case ASTConcatenate::eUnequals:
          {
-            SET_FLAG(mState, eStateNoNull);
+            SET_FLAG(mState, eStateNonullptr);
 
             concatenate.getRight().accept(*this);
 
-            CLEAR_FLAG(mState, eStateNoNull);
+            CLEAR_FLAG(mState, eStateNonullptr);
 
             switch ( mCurrentType.getKind() )
             {
-               case ASTType::eNull:
+               case ASTType::enullptr:
                   mBuilder.emit(CIL_isnull);
                   mBuilder.emit(CIL_not);
                   break;
@@ -1241,9 +1241,9 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
 void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 {
-   if ( ast.getType().isNull() )
+   if ( ast.getType().isnullptr() )
    {
-      if ( !IS_SET(mState, eStateNoNull) )
+      if ( !IS_SET(mState, eStateNonullptr) )
       {
          mBuilder.emit(CIL_ldnull);
       }

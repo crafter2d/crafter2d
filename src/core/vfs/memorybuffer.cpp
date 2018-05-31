@@ -27,7 +27,7 @@
 
 MemoryBuffer::MemoryBuffer():
    Buffer(),
-   mpData(NULL),
+   mpData(nullptr),
    mDataSize(0),
    mCursor(0)
 {
@@ -68,7 +68,7 @@ void MemoryBuffer::assign(void* pdata, int size)
 void MemoryBuffer::free()
 {
    delete[] mpData;
-   mpData    = NULL;
+   mpData    = nullptr;
    mDataSize = 0;
    mCursor   = 0;
 }

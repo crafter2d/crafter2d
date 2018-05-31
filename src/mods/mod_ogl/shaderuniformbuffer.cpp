@@ -11,7 +11,7 @@ ShaderUniformBuffer::ShaderUniformBuffer(GLuint program, GLuint block):
    mBlock(block),
    mBuffer(0),
    mBufferSize(0),
-   mpElements(NULL),
+   mpElements(nullptr),
    mElementNr(0)
 {
 }
@@ -44,7 +44,7 @@ bool ShaderUniformBuffer::createBuffer()
 {
    glGenBuffers(1, &mBuffer);
    glBindBuffer(GL_UNIFORM_BUFFER, mBuffer);
-   glBufferData(GL_UNIFORM_BUFFER, mBufferSize, NULL, GL_DYNAMIC_DRAW);
+   glBufferData(GL_UNIFORM_BUFFER, mBufferSize, nullptr, GL_DYNAMIC_DRAW);
    glBindBufferBase(GL_UNIFORM_BUFFER, mBlock, mBuffer);
 
    return true;

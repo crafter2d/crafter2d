@@ -7,7 +7,7 @@
 namespace c2d
 {
    InputModule::InputModule() :
-      InputModule(NULL)
+      InputModule(nullptr)
    {
    }
 
@@ -20,7 +20,7 @@ namespace c2d
    InputModule::~InputModule()
    {
       delete mpDevice;
-      mpDevice = NULL;
+      mpDevice = nullptr;
    }
 
    // - Get/set

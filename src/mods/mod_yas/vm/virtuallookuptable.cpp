@@ -66,7 +66,7 @@ const VirtualValue* VirtualLookupTable::lookup(int pos) const
          return &it->first;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 std::vector<int> VirtualLookupTable::getPositions() const

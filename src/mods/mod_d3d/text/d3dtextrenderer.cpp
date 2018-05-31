@@ -10,10 +10,10 @@
 
 D3DTextRenderer::D3DTextRenderer():
    mRefCount(0),
-   mpD2DContext(NULL),
-   mpBrush(NULL),
-   mpTarget(NULL),
-   mpBitmap(NULL),
+   mpD2DContext(nullptr),
+   mpBrush(nullptr),
+   mpTarget(nullptr),
+   mpBitmap(nullptr),
    mSize()
 {
 }
@@ -52,7 +52,7 @@ HRESULT D3DTextRenderer::initialize(ID2D1DeviceContext* pcontext, int width, int
    targetProperties.dpiY = dpiY;
    targetProperties.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET;
 
-   HRESULT hr = mpD2DContext->CreateBitmap(mSize, NULL, 0 ,targetProperties, &mpTarget);
+   HRESULT hr = mpD2DContext->CreateBitmap(mSize, nullptr, 0 ,targetProperties, &mpTarget);
    if ( FAILED(hr) )
    {
       return hr;
@@ -66,7 +66,7 @@ HRESULT D3DTextRenderer::initialize(ID2D1DeviceContext* pcontext, int width, int
    mapProperties.dpiY = dpiY;
    mapProperties.bitmapOptions = D2D1_BITMAP_OPTIONS_CPU_READ | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
 
-   hr = mpD2DContext->CreateBitmap(mSize, NULL, 0, mapProperties, &mpBitmap);
+   hr = mpD2DContext->CreateBitmap(mSize, nullptr, 0, mapProperties, &mpBitmap);
    if ( FAILED(hr) )
    {
       return hr;
@@ -121,7 +121,7 @@ HRESULT D3DTextRenderer::QueryInterface(REFIID iid, void** pobject)
    }
    else
    {
-      *pobject = NULL;
+      *pobject = nullptr;
       return E_NOINTERFACE;
    }
 }
@@ -204,7 +204,7 @@ HRESULT D3DTextRenderer::DrawGlyphRun(void* clientDrawingContext,
      
    // copy the glyph into the correct bitmap so we can extract it
    D2D1_MAPPED_RECT mapped;
-   HRESULT hr = mpBitmap->CopyFromBitmap(NULL, mpTarget, NULL);
+   HRESULT hr = mpBitmap->CopyFromBitmap(nullptr, mpTarget, nullptr);
    if ( FAILED(hr) )
    {
       return hr;

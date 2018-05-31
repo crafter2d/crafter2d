@@ -13,7 +13,7 @@ bool ModuleGenerator::generate(CommandLine& commandline)
 {
    // get the module name
    const CommandLineArgument* parg = commandline.getArgument(UTEXT("name"));
-   if ( parg != NULL )
+   if ( parg != nullptr )
    {
       String modname = parg->getValue();
 
@@ -25,7 +25,7 @@ bool ModuleGenerator::generate(CommandLine& commandline)
       {
          // see what type of module to create
          parg = commandline.getArgument(UTEXT("type"));
-         if ( parg != NULL )
+         if ( parg != nullptr )
          {
             if ( parg->getValue() == UTEXT("content") )
             {
@@ -61,7 +61,7 @@ bool ModuleGenerator::generateContentModule(CommandLine& commandline, const Stri
    baseClass = "ContentModule";
 
    const CommandLineArgument* parg = commandline.getArgument(UTEXT("supports"));
-   if ( parg != NULL )
+   if ( parg != nullptr )
    {
       std::string exts = parg->getValue().toUtf8();
       init = "pmodule->setSupportedFiles(UTEXT(\"" + exts + "\"));";

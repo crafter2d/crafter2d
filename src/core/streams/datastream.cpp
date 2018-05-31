@@ -40,7 +40,7 @@ int DataStream::getDataSize() const
 
 const char* DataStream::getData() const
 {
-   return NULL;
+   return nullptr;
 }
 
 // - Operations
@@ -186,7 +186,7 @@ void DataStream::readBytes(void* pbuffer, int amount)
 const char* DataStream::readBytes(int amount)
 {
    C2D_UNUSED(amount);
-   return NULL;
+   return nullptr;
 }
 
 char DataStream::readByte()

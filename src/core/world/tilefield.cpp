@@ -7,7 +7,7 @@
 #include "core/defines.h"
 
 TileField::TileField():
-   mpMap(NULL),
+   mpMap(nullptr),
    mWidth(0),
    mHeight(0)
 {
@@ -16,7 +16,7 @@ TileField::TileField():
 TileField::~TileField()
 {
    delete[] mpMap;
-   mpMap = NULL;
+   mpMap = nullptr;
 }
 
 // get/set

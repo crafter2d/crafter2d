@@ -11,7 +11,7 @@ namespace yasc
    class Type
    {
    public:
-      enum Kind { eNull, eInt, eReal, eBool, eChar, eString, eVoid, eGeneric, eObject, eArray };
+      enum Kind { enullptr, eInt, eReal, eBool, eChar, eString, eVoid, eGeneric, eObject, eArray };
       
       static const String sInt;
       static const String sReal;
@@ -36,7 +36,7 @@ namespace yasc
     // query
       Kind getKind() const;
 
-      bool isNull() const;
+      bool isnullptr() const;
       bool isVoid() const;
       bool isBool() const;
       bool isInt() const;

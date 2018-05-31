@@ -42,7 +42,7 @@ INLINE Log& Log::operator<< (unsigned char u)
 	
 INLINE Log& Log::operator<< (const char* s)
 {
-   if ( s != NULL )
+   if ( s != nullptr )
    {
       file << s;
       flush ();

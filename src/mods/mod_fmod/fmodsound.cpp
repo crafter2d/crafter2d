@@ -34,7 +34,7 @@ namespace c2d
    /// \param psound a FMOD sound object
    FModSound::FModSound(FMOD::Sound* psound) :
       mpSound(psound),
-      mpChannel(NULL)
+      mpChannel(nullptr)
    {
    }
 

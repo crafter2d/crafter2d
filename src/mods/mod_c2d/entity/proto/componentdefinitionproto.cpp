@@ -15,7 +15,7 @@ ComponentDefinitionProto* ComponentDefinitionProto::fromStream(DataStream& strea
    ComponentInterface::ComponentType type;
    stream.readInt((int&) type);
 
-   ComponentDefinitionProto* presult = NULL;
+   ComponentDefinitionProto* presult = nullptr;
    switch ( type )
    {
    case ComponentInterface::eMeshComponent:

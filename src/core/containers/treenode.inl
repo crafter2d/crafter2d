@@ -42,7 +42,7 @@ INLINE TreeNode<E>::~TreeNode()
 template<class E>
 INLINE bool TreeNode<E>::hasParent() const
 {
-   return _pparent != NULL;
+   return _pparent != nullptr;
 }
 
 template<class E>
@@ -62,7 +62,7 @@ template <class E>
 INLINE TreeNode<E>* TreeNode<E>::getChild(int index)
 {
    ListNode< TreeNode<E> >* pnode = _children.get(index);
-   return pnode != NULL ? &pnode->data() : NULL;
+   return pnode != nullptr ? &pnode->data() : nullptr;
 }
 
 template<class E>
@@ -89,7 +89,7 @@ int TreeNode<E>::getDepth() const
 {
    int depth = 0;
    TreeNode<E>* pcurrent = _pparent;
-   while ( pcurrent != NULL )
+   while ( pcurrent != nullptr )
    {
       ++depth;
       pcurrent = pcurrent->_pparent;

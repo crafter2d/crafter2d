@@ -24,8 +24,8 @@
 
 template <class E>
 List<E>::List():
-   _phead(NULL),
-   _ptail(NULL),
+   _phead(nullptr),
+   _ptail(nullptr),
    _size(0)
 {
 }
@@ -83,13 +83,13 @@ ListIterator<E> List<E>::get(int index)
 template <class E>
 void List<E>::addFront(const E& element)
 {
-   if ( _phead == NULL )
+   if ( _phead == nullptr )
    {
-      _ptail = _phead = new ListNode<E>(element, NULL, NULL);
+      _ptail = _phead = new ListNode<E>(element, nullptr, nullptr);
    }
    else
    {
-      _phead->prev( new ListNode<E>(element, NULL, _phead) );
+      _phead->prev( new ListNode<E>(element, nullptr, _phead) );
       _phead = _phead->prevptr();
    }
 
@@ -99,13 +99,13 @@ void List<E>::addFront(const E& element)
 template <class E>
 void List<E>::addTail(const E& element)
 {
-   if ( _ptail == NULL )
+   if ( _ptail == nullptr )
    {
-      _ptail = _phead = new ListNode<E>(element, NULL, NULL);
+      _ptail = _phead = new ListNode<E>(element, nullptr, nullptr);
    }
    else
    {
-      _ptail->next( new ListNode<E>(element, _ptail, NULL) );
+      _ptail->next( new ListNode<E>(element, _ptail, nullptr) );
       _ptail = _ptail->nextptr();
    }
    
@@ -122,9 +122,9 @@ void List<E>::insert(Iterator<E>& it, E& element)
       ListNode<E>* pnode = static_cast<ListNode<E>*>(it.key());
       ASSERT_PTR(pnode);
 
-      if ( _phead == NULL )
+      if ( _phead == nullptr )
       {
-         _phead = _ptail = new ListNode<E>(element, NULL, NULL);
+         _phead = _ptail = new ListNode<E>(element, nullptr, nullptr);
       }
       else if ( !pnode->hasPrev() )
       {
@@ -147,14 +147,14 @@ template <class E>
 void List<E>::clear()
 {
    ListNode<E>* pcurrent = _phead;
-   while ( pcurrent != NULL )
+   while ( pcurrent != nullptr )
    {
       ListNode<E>* pnext = pcurrent->nextptr();
       delete pcurrent;
       pcurrent = pnext;
    }
 
-   _phead = _ptail = NULL;
+   _phead = _ptail = nullptr;
    _size = 0;
 }
 
@@ -164,7 +164,7 @@ void List<E>::remove(Iterator<E>& it)
    ListNode<E>* pnode = static_cast<ListNode<E>*>(it.key());
    if ( _phead == _ptail )
    {
-      _phead = _ptail = NULL;
+      _phead = _ptail = nullptr;
    }
    else
    {

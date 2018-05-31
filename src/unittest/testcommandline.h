@@ -43,20 +43,20 @@ SUITE(TestCommandLine)
    TEST_FIXTURE(Fixture, testFindValidArgument)
    {
       const CommandLineArgument* pargument = mCmdLine.getArgument(UTEXT("argument"));
-      CHECK(pargument != NULL);
+      CHECK(pargument != nullptr);
    }
 
    TEST_FIXTURE(Fixture, testFindNonExistingArgument)
    {
       const CommandLineArgument* pargument = mCmdLine.getArgument(UTEXT("non-existing-argument"));
-      CHECK(pargument == NULL);
+      CHECK(pargument == nullptr);
    }
 
    TEST_FIXTURE(Fixture, testResolveCommand)
    {
       auto pargument = mCmdLine.getArgument(UTEXT("argument"));
 
-      CHECK(pargument != NULL);
+      CHECK(pargument != nullptr);
       CHECK(pargument->getType() == CommandLineArgument::eArgument);
       CHECK(pargument->getValue() == UTEXT("value"));
    }

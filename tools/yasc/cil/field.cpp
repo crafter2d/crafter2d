@@ -9,13 +9,13 @@ namespace CIL
 {
    Field::Field():
       mName(),
-      mpType(NULL)
+      mpType(nullptr)
    {
    }
 
    Field::~Field()
    {
-      setType(NULL);
+      setType(nullptr);
    }
 
     // - Get/set

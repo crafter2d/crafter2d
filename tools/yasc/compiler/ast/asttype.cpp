@@ -86,18 +86,18 @@ ASTType* ASTType::fromString(const String& type)
       ptype->setObjectName(value);
       return ptype;
    }
-   return NULL;
+   return nullptr;
 }
 
 ASTType::ASTType():
    mKind(eInvalid),
    mPosition(),
    mObjectName(),
-   mpObjectClass(NULL),
+   mpObjectClass(nullptr),
    mTypeArguments(),
-   mpTypeVariable(NULL),
+   mpTypeVariable(nullptr),
    mArrayDimension(0),
-   mpArrayType(NULL)
+   mpArrayType(nullptr)
 {
 }
 
@@ -105,11 +105,11 @@ ASTType::ASTType(Kind kind):
    mKind(kind),
    mPosition(),
    mObjectName(),
-   mpObjectClass(NULL),
+   mpObjectClass(nullptr),
    mTypeArguments(),
-   mpTypeVariable(NULL),
+   mpTypeVariable(nullptr),
    mArrayDimension(0),
-   mpArrayType(NULL)
+   mpArrayType(nullptr)
 {
 }
 
@@ -121,7 +121,7 @@ ASTType::ASTType(const ASTType& that):
    mTypeArguments(that.mTypeArguments),
    mpTypeVariable(that.mpTypeVariable),
    mArrayDimension(that.mArrayDimension),
-   mpArrayType(that.mpArrayType != NULL ? that.mpArrayType->clone() : NULL)
+   mpArrayType(that.mpArrayType != nullptr ? that.mpArrayType->clone() : nullptr)
 {
 }
 
@@ -136,7 +136,7 @@ const ASTType& ASTType::operator=(const ASTType& that)
    mObjectName = that.mObjectName;
    mpObjectClass = that.mpObjectClass;
    mArrayDimension = that.mArrayDimension;
-   mpArrayType = that.mpArrayType != NULL ? that.mpArrayType->clone() : NULL;
+   mpArrayType = that.mpArrayType != nullptr ? that.mpArrayType->clone() : nullptr;
    mTypeArguments = that.mTypeArguments;
    mpTypeVariable = that.mpTypeVariable;
    mPosition = that.mPosition;
@@ -168,7 +168,7 @@ void ASTType::setObjectName(const String& name)
 
 bool ASTType::hasObjectClass() const
 {
-   return mpObjectClass != NULL;
+   return mpObjectClass != nullptr;
 }
 
 const ASTClass& ASTType::getObjectClass() const
@@ -289,9 +289,9 @@ bool ASTType::isValueType() const
    return isNumeric() || isChar() || isString();
 }
 
-bool ASTType::isNull() const
+bool ASTType::isnullptr() const
 {
-   return mKind == eNull;
+   return mKind == enullptr;
 }
 
 bool ASTType::isArray() const
@@ -331,7 +331,7 @@ bool ASTType::isString() const
 
 bool ASTType::equals(const ASTType& that) const
 {
-   if ( (isObject() || isArray()) && that.isNull() )
+   if ( (isObject() || isArray()) && that.isnullptr() )
    {
       return true;
    }
@@ -343,7 +343,7 @@ bool ASTType::equals(const ASTType& that) const
 /// \brief Test whether that is greater than this type
 bool ASTType::greater(const ASTType& that) const
 {
-   if ( isNull() && (that.isObject() || that.isArray() || that.isString() || that.isGeneric()) )
+   if ( isnullptr() && (that.isObject() || that.isArray() || that.isString() || that.isGeneric()) )
    {
       return true;
    }
@@ -428,10 +428,10 @@ void ASTType::replaceArgument(const ASTType& type)
 
 bool ASTType::resolveType(CompileContext& context, const ASTTypeVariables* ptypevariables)
 {
-   if ( ptypevariables != NULL )
+   if ( ptypevariables != nullptr )
    {
       const ASTTypeVariable* ptypevariable = ptypevariables->find(mObjectName);
-      if ( ptypevariable != NULL )
+      if ( ptypevariable != nullptr )
       {
          mKind = ASTType::eGeneric;
          mpTypeVariable = ptypevariable;
@@ -469,8 +469,8 @@ void ASTType::clear()
 {
    mKind = eInvalid;
 
-   mpObjectClass = NULL;
-   setArrayType(NULL);
+   mpObjectClass = nullptr;
+   setArrayType(nullptr);
 
    mTypeArguments.clear();
 }
@@ -518,7 +518,7 @@ String ASTType::toString() const
          type = '~';
          // fall through
       case eObject:
-         type += mpObjectClass != NULL ? mpObjectClass->getFullName() : mObjectName;
+         type += mpObjectClass != nullptr ? mpObjectClass->getFullName() : mObjectName;
          if ( !mTypeArguments.empty() )
          {
             type += '<';

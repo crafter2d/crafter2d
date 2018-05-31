@@ -10,7 +10,7 @@ JITType::JITType():
    mLayoutFlags(0),
    mAbi(),
    mSize(0),
-   mpSubType(NULL),
+   mpSubType(nullptr),
    mComponents()
 {
 }
@@ -20,7 +20,7 @@ JITType::JITType(const JITType& that):
    mLayoutFlags(that.mLayoutFlags),
    mAbi(that.mAbi),
    mSize(that.mSize),
-   mpSubType(NULL),
+   mpSubType(nullptr),
    mComponents()
 {
    assignComponents(that.mComponents);
@@ -42,7 +42,7 @@ JITType& JITType::operator=(const JITType& that)
 JITType* JITType::createComplex(JITType::Kind kind, std::vector<JITType*>& types)
 {
    JITType* ptype = new JITType();
-   if ( ptype != NULL )
+   if ( ptype != nullptr )
    {
       ptype->mKind = kind;
       ptype->mLayoutFlags = eLayoutNeeded;
@@ -53,7 +53,7 @@ JITType* JITType::createComplex(JITType::Kind kind, std::vector<JITType*>& types
          JITType::JITComponent& component = ptype->mComponents[index];
          component.ptype = types[index];
          component.offset = JIT_OFFSET_NOT_SET;
-         component.pname = NULL;
+         component.pname = nullptr;
       }
    }
 
@@ -63,7 +63,7 @@ JITType* JITType::createComplex(JITType::Kind kind, std::vector<JITType*>& types
 JITType* JITType::createSignature(JIT::Abi abi, JITType* preturntype, std::vector<JITType*>& params)
 {
    JITType* ptype = createComplex(eSignature, params);
-   if ( ptype != NULL )
+   if ( ptype != nullptr )
    {
       ptype->mAbi = abi;
       ptype->mLayoutFlags = 0;

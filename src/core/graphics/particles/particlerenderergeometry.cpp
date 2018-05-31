@@ -36,7 +36,7 @@ bool c2d::ParticleRendererGeometry::create(Graphics::Device& device)
 {
    // load effect
    mpEffect = device.createEffect(UTEXT("shaders/particle"));
-   if ( mpEffect == NULL )
+   if ( mpEffect == nullptr )
    {
       return false;
    }
@@ -44,7 +44,7 @@ bool c2d::ParticleRendererGeometry::create(Graphics::Device& device)
    // create the blend state
    BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_ONE, true);
    BlendState* pblendstate = device.createBlendState(desc);
-   if ( pblendstate == NULL )
+   if ( pblendstate == nullptr )
    {
       return false;
    }
@@ -54,7 +54,7 @@ bool c2d::ParticleRendererGeometry::create(Graphics::Device& device)
    mVertexBufferSize = 2048;
    int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
    mpVertexBuffer = mpEffect->createVertexBuffer(device, mVertexBufferSize, usage);
-   if ( mpVertexBuffer == NULL )
+   if ( mpVertexBuffer == nullptr )
    {
       return false;
    }
@@ -64,10 +64,10 @@ bool c2d::ParticleRendererGeometry::create(Graphics::Device& device)
 
 void c2d::ParticleRendererGeometry::destroy()
 {
-   if ( mpUniformBuffer != NULL )
+   if ( mpUniformBuffer != nullptr )
    {
       delete mpUniformBuffer;
-      mpUniformBuffer = NULL;
+      mpUniformBuffer = nullptr;
    }
 }
 

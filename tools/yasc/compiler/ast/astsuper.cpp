@@ -5,7 +5,7 @@
 
 ASTSuper::ASTSuper():
    ASTExpressionPart(),
-   mpConstructor(NULL),
+   mpConstructor(nullptr),
    mKind(eThis),
    mCall(false)
 {
@@ -15,7 +15,7 @@ ASTSuper::ASTSuper():
   
 bool ASTSuper::hasConstructor() const
 {
-   return mpConstructor != NULL;
+   return mpConstructor != nullptr;
 }
 
 const ASTFunction& ASTSuper::getConstructor() const

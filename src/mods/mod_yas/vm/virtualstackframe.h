@@ -19,12 +19,12 @@ namespace VM
       typedef std::vector<VirtualValue> Locals;
 
       StackFrame():
-         pclass(NULL),
-         pentry(NULL),
+         pclass(nullptr),
+         pentry(nullptr),
          locals(),
          sp(0),
          retaddress(-1),
-         retcode(NULL),
+         retcode(nullptr),
          callnative(false)
       {
       }

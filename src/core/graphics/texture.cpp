@@ -71,7 +71,7 @@ uint8_t* Texture::ensureProperSize(int bytes, uint8_t* pdata, int width, int hei
    {
       Log::getInstance().error("Image size of ... is too big!");
       delete[] pdata;
-      return NULL;
+      return nullptr;
    }
 
    // make the texture rectangular

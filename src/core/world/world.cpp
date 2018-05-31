@@ -48,9 +48,9 @@ World::World():
    bounds(),
    mEntities(),
    mObservers(),
-   mpSimulator(NULL),
+   mpSimulator(nullptr),
    mSimulatorListener(*this),
-   mpScript(NULL),
+   mpScript(nullptr),
    _layerType(ETopDown),
    autoFollow(true),
    followBorderWidth(5),
@@ -60,7 +60,7 @@ World::World():
    bottomBorder(0),
    _objectLayer(0),
    followMode(FollowMouse),
-   followObject(NULL),
+   followObject(nullptr),
    mBorderSet(false)
 {
 }
@@ -84,10 +84,10 @@ void World::initialize(Device& device)
 /// \brief Destroys the world object
 void World::destroy()
 {
-   followObject = NULL;
+   followObject = nullptr;
 
    delete mpSimulator;
-   mpSimulator = NULL;
+   mpSimulator = nullptr;
 
    if ( layers.size() > 0 )
    {
@@ -117,7 +117,7 @@ void World::destroy()
    }
 
    delete mpScript;
-   mpScript = NULL;
+   mpScript = nullptr;
 }
 
 // - Get/set
@@ -247,7 +247,7 @@ void World::scroll (Graphics::RenderContext& context)
 
    if ( followMode == FollowObject )
    {
-      if ( followObject != NULL )
+      if ( followObject != nullptr )
       {
          Vector pos = followObject->getPosition();
          Layer& layer = *layers[getObjectLayer()];
@@ -396,11 +396,11 @@ WorldRenderer* World::createRenderer()
       case ETopDown:
          return new TopDownWorldRenderer(*this);
       case EIsoDiamond:
-         return NULL;
+         return nullptr;
 
       case EInvalidLayerType:
       default:
-         return NULL;
+         return nullptr;
    }
 }
 
@@ -411,7 +411,7 @@ WorldRenderer* World::createRenderer()
 Entity* World::findEntity(Id id)
 {
    EntityMap::iterator it = mEntities.find(id);
-   return it != mEntities.end() ? it->second : NULL;
+   return it != mEntities.end() ? it->second : nullptr;
 }
 
 Entity& World::resolveEntity(Id id)

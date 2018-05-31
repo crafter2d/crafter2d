@@ -3,10 +3,10 @@
 
 template<class T>
 SharedPtr<T>::SharedPtr(T* pointer):
-   mpCount(NULL),
+   mpCount(nullptr),
    mpPointer(pointer)
 {
-   if ( pointer != NULL )
+   if ( pointer != nullptr )
    {
       mpCount = new CountImpl<T>(pointer);
    }
@@ -62,7 +62,7 @@ T& SharedPtr<T>::operator*()
 template<class T>
 bool SharedPtr<T>::hasPointer() const
 {
-   return mpPointer != NULL;
+   return mpPointer != nullptr;
 }
 
 template<class T>
@@ -90,7 +90,7 @@ bool SharedPtr<T>::isUnique() const
 template<class T>
 int SharedPtr<T>::useCount() const
 {
-   return mpCount != NULL ? mpCount->useCount() : 0;
+   return mpCount != nullptr ? mpCount->useCount() : 0;
 }
 
 // - Operations
@@ -98,7 +98,7 @@ int SharedPtr<T>::useCount() const
 template<class T>
 void SharedPtr<T>::inc()
 {
-   if ( mpCount != NULL )
+   if ( mpCount != nullptr )
    {
       mpCount->addRef();
    }
@@ -107,7 +107,7 @@ void SharedPtr<T>::inc()
 template<class T>
 void SharedPtr<T>::dec()
 {
-   if ( mpCount != NULL )
+   if ( mpCount != nullptr )
    {
       mpCount->releaseRef();
    }
@@ -118,6 +118,6 @@ void SharedPtr<T>::reset()
 {
    dec();
 
-   mpCount   = NULL;
-   mpPointer = NULL;
+   mpCount   = nullptr;
+   mpPointer = nullptr;
 }

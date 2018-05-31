@@ -26,7 +26,7 @@
 namespace Graphics
 {
    CodePath::CodePath():
-      mpVertexLayout(NULL)
+      mpVertexLayout(nullptr)
    {
    }
 
@@ -39,7 +39,7 @@ namespace Graphics
 
    bool CodePath::hasVertexLayout() const
    {
-      return mpVertexLayout != NULL;
+      return mpVertexLayout != nullptr;
    }
 
    const VertexLayout& CodePath::getVertexLayout() const

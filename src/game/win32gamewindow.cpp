@@ -8,7 +8,7 @@
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
    Win32GameWindow* pwindow = reinterpret_cast<Win32GameWindow*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
-   if ( pwindow != NULL )
+   if ( pwindow != nullptr )
    {
       return pwindow->handleMessage(message, wParam, lParam);
    }
@@ -18,7 +18,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 Win32GameWindow::Win32GameWindow():
    GameWindow(),
-   mWnd(NULL),
+   mWnd(nullptr),
    mWidth(0),
    mHeight(0)
 {
@@ -26,7 +26,7 @@ Win32GameWindow::Win32GameWindow():
 
 bool Win32GameWindow::doCreate(const String& title, int width, int height, int bitdepth, bool fullscreen)
 {
-   HINSTANCE hInstance = GetModuleHandle(NULL);
+   HINSTANCE hInstance = GetModuleHandle(nullptr);
 
    static TCHAR szWindowClass[] = _T("win32app");
    static TCHAR szTitle[] = _T("Crafter 2D");
@@ -39,9 +39,9 @@ bool Win32GameWindow::doCreate(const String& title, int width, int height, int b
    wcex.cbWndExtra     = 0;
    wcex.hInstance      = hInstance;
    wcex.hIcon          = 0; //LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-   wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
+   wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-   wcex.lpszMenuName   = NULL;
+   wcex.lpszMenuName   = nullptr;
    wcex.lpszClassName  = szWindowClass;
    wcex.hIconSm        = 0; //LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
@@ -60,13 +60,13 @@ bool Win32GameWindow::doCreate(const String& title, int width, int height, int b
       CW_USEDEFAULT, CW_USEDEFAULT,
       client.right - client.left, 
       client.bottom - client.top,
-      NULL,
-      NULL,
+	  nullptr,
+	  nullptr,
       hInstance,
-      NULL
+	  nullptr
    );
 
-   if ( mWnd == NULL )
+   if ( mWnd == nullptr )
    {
       DWORD error = GetLastError();
       return false;
@@ -85,7 +85,7 @@ bool Win32GameWindow::doCreate(const String& title, int width, int height, int b
 
 void Win32GameWindow::doDestroy()
 {
-   if ( mWnd != NULL )
+   if ( mWnd != nullptr)
    {
       ::DestroyWindow(mWnd);
    }
@@ -119,7 +119,7 @@ void Win32GameWindow::toggleFullscreen()
 void Win32GameWindow::update()
 {
    MSG msg;
-   while ( ::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) )
+   while ( ::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) )
    {
       TranslateMessage(&msg);
       DispatchMessage(&msg);

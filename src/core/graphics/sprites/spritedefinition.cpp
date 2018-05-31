@@ -27,8 +27,8 @@ namespace c2d
 {
    SpriteDefinition::SpriteDefinition() :
       mSize(),
-      mpTexture(NULL),
-      mpAnimator(NULL)
+      mpTexture(nullptr),
+      mpAnimator(nullptr)
    {
    }
 

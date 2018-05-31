@@ -52,7 +52,7 @@ void EffectValidator::validateTechniques(const ASTEffect& effect)
       if ( !ptechnique->mVertex.mEntry.isEmpty() )
       {
          const ASTFunction* pfunction = effect.findFunction(ptechnique->mVertex.mEntry);
-         if ( pfunction == NULL )
+         if ( pfunction == nullptr )
          {
             String error = UTEXT("Can not resolve vertex shader function ") + ptechnique->mVertex.mEntry + UTEXT(" in technique ") + ptechnique->mName;
             throw std::runtime_error(error.toUtf8().c_str());
@@ -62,7 +62,7 @@ void EffectValidator::validateTechniques(const ASTEffect& effect)
       if ( !ptechnique->mPixel.mEntry.isEmpty() )
       {
          const ASTFunction* pfunction = effect.findFunction(ptechnique->mPixel.mEntry);
-         if ( pfunction == NULL )
+         if ( pfunction == nullptr )
          {
             String error = UTEXT("Can not resolve vertex shader function ") + ptechnique->mPixel.mEntry + UTEXT(" in technique ") + ptechnique->mName;
             throw std::runtime_error(error.toUtf8().c_str());

@@ -27,7 +27,7 @@ public:
          if ( panno->name == name )
             return panno;
       }
-      return NULL;
+      return nullptr;
    }
 
  // data   

@@ -32,7 +32,7 @@
 GameWindow::GameWindow():
    mListeners(),
    mKeyDispatchers(),
-   mpMouseDispatcher(NULL)
+   mpMouseDispatcher(nullptr)
 {
 }
 
@@ -88,7 +88,7 @@ void GameWindow::setMouseEventDispatcher(Input::MouseEventDispatcher& dispatcher
 
 void GameWindow::dispatch(const Input::MouseEvent& mouseevent)
 {
-   if ( mpMouseDispatcher != NULL )
+   if ( mpMouseDispatcher != nullptr )
    {
       mpMouseDispatcher->dispatch(mouseevent);
    }

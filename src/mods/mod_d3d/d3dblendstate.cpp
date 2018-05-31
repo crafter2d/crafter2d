@@ -8,7 +8,7 @@
 namespace Graphics
 {
    D3DBlendState::D3DBlendState():
-      mpBlendState(NULL)
+      mpBlendState(nullptr)
    {
    }
 
@@ -32,7 +32,7 @@ namespace Graphics
 
    void D3DBlendState::enable(ID3D11DeviceContext& context) const
    {
-      context.OMSetBlendState(mpBlendState, NULL, 0xffffffff);
+      context.OMSetBlendState(mpBlendState, nullptr, 0xffffffff);
    }
 
    // - Helpers

@@ -59,5 +59,5 @@ void ASTTypeVariables::clear()
 const ASTTypeVariable* ASTTypeVariables::find(const String& id) const
 {
    TypeVariableMap::const_iterator it = mTypeVariables.find(id);
-   return it != mTypeVariables.end() ? it->second : NULL;
+   return it != mTypeVariables.end() ? it->second : nullptr;
 }

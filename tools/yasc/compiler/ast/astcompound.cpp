@@ -6,13 +6,13 @@
 
 ASTCompound::ASTCompound():
    ASTExpressionPart(),
-   mpExpression(NULL)
+   mpExpression(nullptr)
 {
 }
 
 ASTCompound::~ASTCompound()
 {
-   setExpression(NULL);
+   setExpression(nullptr);
 }
 
 // - Get/set

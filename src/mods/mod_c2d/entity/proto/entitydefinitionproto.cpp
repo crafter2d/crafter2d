@@ -30,7 +30,7 @@ Entity* EntityDefinitionProto::instantiate(c2d::ContentManager& manager, Compone
    {
       ChildDefinitionProto* pchilddef = mChildren[index];
 
-      Entity* pchild = NULL;
+      Entity* pchild = nullptr;
       switch ( pchilddef->mRefType )
       {
       case ChildDefinitionProto::eFileReference:
@@ -77,7 +77,7 @@ Entity* EntityDefinitionProto::instantiate(c2d::ContentManager& manager, Compone
    {
       ComponentDefinitionProto* pcomponentdef = mComponents[index];
       Component* pcomponent = factories.instantiate(*pcomponentdef);
-      if ( pcomponent != NULL )
+      if ( pcomponent != nullptr )
       {
          pentity->addComponent(pcomponent);
       }

@@ -42,7 +42,7 @@ namespace Graphics
       mTextureHeight = 512;
 
       mpTexture = device.createTexture(mTextureWidth, mTextureHeight, 1);
-      if ( mpTexture == NULL )
+      if ( mpTexture == nullptr )
       {
          return false;
       }

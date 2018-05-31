@@ -61,7 +61,7 @@ namespace Graphics
       mpDevice = &device;
 
       mpEffect = device.createEffect(UTEXT("shaders/font"));
-      if ( mpEffect == NULL )
+      if ( mpEffect == nullptr )
       {
          return false;
       }
@@ -99,13 +99,13 @@ namespace Graphics
       int batchsize = 256;
       int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
       mpVB = mpEffect->createVertexBuffer(device, batchsize * 4, usage);
-      if ( mpVB == NULL )
+      if ( mpVB == nullptr )
       {
          return false;
       }
 
       mpIB = Utils::createIndexBuffer(device, batchsize, 4);
-      if ( mpIB == NULL )
+      if ( mpIB == nullptr )
       {
          return false;
       }

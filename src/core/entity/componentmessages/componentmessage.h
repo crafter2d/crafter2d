@@ -10,7 +10,7 @@
 class CORE_API ComponentMessage
 {
 public:
-	ComponentMessage(ComponentInterface::ComponentMessageType messagetype, void* pdata = NULL);
+	ComponentMessage(ComponentInterface::ComponentMessageType messagetype, void* pdata = nullptr);
    virtual ~ComponentMessage();
 
  // get/set

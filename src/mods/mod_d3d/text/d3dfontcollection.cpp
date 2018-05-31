@@ -39,7 +39,7 @@ namespace Graphics
 
       pdwfactory->RegisterFontCollectionLoader(ploader);
 
-      HRESULT hr = pdwfactory->CreateCustomFontCollection(ploader, NULL, 0, &mpFontCollection);
+      HRESULT hr = pdwfactory->CreateCustomFontCollection(ploader, nullptr, 0, &mpFontCollection);
       if (FAILED(hr))
       {
          return false;
@@ -51,8 +51,8 @@ namespace Graphics
    D3DFont* D3DFontCollection::createFont(const String& name, D3DGlyphProvider* pprovider)
    {
       String filename = name + UTEXT(".ttf");
-      IDWriteFontFile* pFontFile = NULL;
-      HRESULT hr = mpDWriteFactory->CreateFontFileReference(filename.c_str(), NULL, &pFontFile);
+      IDWriteFontFile* pFontFile = nullptr;
+      HRESULT hr = mpDWriteFactory->CreateFontFileReference(filename.c_str(), nullptr, &pFontFile);
       if (FAILED(hr))
       {
          return nullptr;

@@ -12,7 +12,7 @@ namespace Graphics
       Texture(),
       mpTexture(ptexture),
       mpResource(presource),
-      mpSampler(NULL)
+      mpSampler(nullptr)
    {
    }
 
@@ -52,7 +52,7 @@ namespace Graphics
    void D3DTexture::update(RenderContext& context, const void* pdata, int rowpitch)
    {
       ID3D11DeviceContext& d3dcontext = D3DRenderContext::asContext(context);
-      d3dcontext.UpdateSubresource(mpTexture, D3D11CalcSubresource(0, 0, 1), NULL, pdata, rowpitch, 0);
+      d3dcontext.UpdateSubresource(mpTexture, D3D11CalcSubresource(0, 0, 1), nullptr, pdata, rowpitch, 0);
    }
 
    void D3DTexture::enable(RenderContext& context, int stage) const
@@ -68,7 +68,7 @@ namespace Graphics
 
    bool D3DTexture::isValid() const
    {
-      return mpResource != NULL;
+      return mpResource != nullptr;
    }
 
 } // namespace Graphics

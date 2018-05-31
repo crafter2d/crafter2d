@@ -26,7 +26,7 @@ namespace c2d
    InputController::InputController() :
       Controller(),
       mActions(),
-      mpActionMap(NULL)
+      mpActionMap(nullptr)
    {
    }
 

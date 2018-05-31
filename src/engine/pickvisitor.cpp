@@ -25,13 +25,13 @@
 #include "core/entity/entity.h"
 
 PickVisitor::PickVisitor(): 
-   mpPicked(NULL),
+   mpPicked(nullptr),
    mPickPos()
 {
 }
 
 PickVisitor::PickVisitor(const Vector& pos):
-   mpPicked(NULL),
+   mpPicked(nullptr),
    mPickPos(pos)
 {
 }

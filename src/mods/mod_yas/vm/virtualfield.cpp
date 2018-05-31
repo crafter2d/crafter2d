@@ -6,7 +6,7 @@
 VirtualField::VirtualField():
    mType(),
    mName(),
-   mpClass(NULL),
+   mpClass(nullptr),
    mIndex(-1)
 {
 }
@@ -14,7 +14,7 @@ VirtualField::VirtualField():
 VirtualField::VirtualField(const String& name, const yasc::Type& type):
    mType(type),
    mName(name),
-   mpClass(NULL),
+   mpClass(nullptr),
    mIndex(-1)
 {
 }

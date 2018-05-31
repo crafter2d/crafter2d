@@ -29,19 +29,19 @@ ComponentDefinitionProto* ParticleComponentLoader::load(const TiXmlElement& elem
 
    if ( element.QueryFloatAttribute("emitrate", &proto->emitRate) != TIXML_SUCCESS )
    {
-      return NULL;
+      return nullptr;
    }
 
    proto->gravity = loadValue(element, "gravity");
 
    const TiXmlElement* pXmlInitElement = element.FirstChildElement("init");
-   if ( pXmlInitElement != NULL )
+   if ( pXmlInitElement != nullptr )
    {
       loadInit(*pXmlInitElement, *proto);
    }
 
    const TiXmlElement* pXmlUpdateElement = element.FirstChildElement("update");
-   if ( pXmlUpdateElement != NULL )
+   if ( pXmlUpdateElement != nullptr )
    {
       loadUpdate(*pXmlUpdateElement, *proto);
    }
@@ -52,21 +52,21 @@ ComponentDefinitionProto* ParticleComponentLoader::load(const TiXmlElement& elem
 bool ParticleComponentLoader::loadInit(const TiXmlElement& initElement, ParticleComponentDefinitionProto& proto)
 {
    const TiXmlElement* pXmlElement = initElement.FirstChildElement("size");
-   if ( pXmlElement != NULL )
+   if ( pXmlElement != nullptr )
    {
       proto.initSize = loadValue(*pXmlElement, "value");
       proto.initSizeRange = loadValueRange(*pXmlElement, "range");
    }
 
    pXmlElement = initElement.FirstChildElement("lifetime");
-   if ( pXmlElement != NULL )
+   if ( pXmlElement != nullptr )
    {
       proto.initLifeTime = loadValue(*pXmlElement, "value");
       proto.initLifeTimeRange = loadValueRange(*pXmlElement, "range");
    }
 
    pXmlElement = initElement.FirstChildElement("velocity");
-   if ( pXmlElement != NULL )
+   if ( pXmlElement != nullptr )
    {
       proto.initVelocity = loadVector(*pXmlElement, "value");
       proto.initVelocityRange = loadVectorRange(*pXmlElement, "range");
@@ -80,12 +80,12 @@ bool ParticleComponentLoader::loadUpdate(const TiXmlElement& updateElement, Part
    C2D_UNUSED(proto);
    
    const TiXmlElement* pXmlElement = updateElement.FirstChildElement("size");
-   if ( pXmlElement != NULL )
+   if ( pXmlElement != nullptr )
    {
    }
 
    pXmlElement = updateElement.FirstChildElement("velocity");
-   if ( pXmlElement != NULL )
+   if ( pXmlElement != nullptr )
    {
    }
 

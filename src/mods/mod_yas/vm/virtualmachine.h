@@ -67,7 +67,7 @@ public:
 
  // execution
    bool         execute(const String& classname, const String& function);
-   VirtualValue execute(VirtualObject& object, const String& function, int argc = 0, VirtualValue* pargs = NULL);
+   VirtualValue execute(VirtualObject& object, const String& function, int argc = 0, VirtualValue* pargs = nullptr);
 
  // exception handling
    String buildCallStack() const;

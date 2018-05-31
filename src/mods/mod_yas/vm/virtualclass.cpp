@@ -17,22 +17,22 @@
 VirtualClass::VirtualClass():
    mName(),
    mBaseName(),
-   mpBaseClass(NULL),
+   mpBaseClass(nullptr),
    mInterfaces(),
    mFields(),
    mStaticFields(),
    mFunctions(),
    mVTable(),
-   mpClassObject(NULL),
+   mpClassObject(nullptr),
    mStaticValues(),
-   mpInterfaceLookupTable(NULL),
+   mpInterfaceLookupTable(nullptr),
    mFlags(eNone)
 {
 }
 
 VirtualClass::~VirtualClass()
 {
-   setInterfaceLookupTable(NULL);
+   setInterfaceLookupTable(nullptr);
 }
 
 // - Get/set
@@ -64,7 +64,7 @@ void VirtualClass::setBaseName(const String& name)
 
 bool VirtualClass::hasBaseClass() const
 {
-   return mpBaseClass != NULL;
+   return mpBaseClass != nullptr;
 }
 
 const VirtualClass& VirtualClass::getBaseClass() const
@@ -355,7 +355,7 @@ void VirtualClass::buildInterfaceTable()
          {
             const VirtualFunction& func = *table[entry].mpFunction;
             const VirtualFunction* plookupfunc = findExactMatch(func);
-            if ( plookupfunc == NULL )
+            if ( plookupfunc == nullptr )
             {
                throw std::runtime_error("Invalid class!");
             }
@@ -411,7 +411,7 @@ VirtualFunction* VirtualClass::findExactMatch(const String& name, const yasc::Ty
          return pfunction;
       }
    }
-   return hasBaseClass() ? mpBaseClass->findExactMatch(name, args) : NULL;
+   return hasBaseClass() ? mpBaseClass->findExactMatch(name, args) : nullptr;
 }
 
 VirtualFunction* VirtualClass::findExactMatch(const VirtualFunction& function)
@@ -424,5 +424,5 @@ VirtualFunction* VirtualClass::findExactMatch(const VirtualFunction& function)
          return pfunc;
       }
    }
-   return hasBaseClass() ? mpBaseClass->findExactMatch(function) : NULL;
+   return hasBaseClass() ? mpBaseClass->findExactMatch(function) : nullptr;
 }

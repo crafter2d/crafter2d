@@ -18,5 +18,5 @@ IContent* SoundReader::read(DataStream& stream)
       return getSoundManager().createSound(datastream);
    }
 
-   return NULL;
+   return nullptr;
 }

@@ -30,8 +30,8 @@ CollisionContact::CollisionContact():
    mVelocity(),
    mPenetration(0),
    mRestitution(0),
-   mpLeft(NULL),
-   mpRight(NULL),
+   mpLeft(nullptr),
+   mpRight(nullptr),
    mContactBasis(),
    mContactVelocity(),
    mDesiredDeltaVelocity(0.0f)
@@ -46,7 +46,7 @@ CollisionContact::~CollisionContact()
 
 bool CollisionContact::hasLeft()
 {
-   return mpLeft != NULL;
+   return mpLeft != nullptr;
 }
 
 CollisionContactBody& CollisionContact::getLeft()
@@ -66,7 +66,7 @@ void CollisionContact::setLeft(CollisionContactBody* pleft)
 
 bool CollisionContact::hasRight()
 {
-   return mpRight != NULL;
+   return mpRight != nullptr;
 }
 
 CollisionContactBody& CollisionContact::getRight()
@@ -88,19 +88,19 @@ void CollisionContact::setRight(CollisionContactBody* pright)
 
 void CollisionContact::prepare(float timestep)
 {
-   if ( mpLeft == NULL )
+   if ( mpLeft == nullptr )
       mpLeft = mpRight;
    
    ASSERT_PTR(mpLeft);
 
    mpLeft->prepare(mPoint);
-   if ( mpRight != NULL )
+   if ( mpRight != nullptr )
       mpRight->prepare(mPoint);
 
    calculateContactBasis();
 
    mContactVelocity = calculateLocalVelocity(*mpLeft, timestep);
-   if ( mpRight != NULL )
+   if ( mpRight != nullptr )
       mContactVelocity -= calculateLocalVelocity(*mpRight, timestep);
 
    calculateDesiredDeltaVelocity(timestep);
@@ -135,7 +135,7 @@ void CollisionContact::calculateDesiredDeltaVelocity(float timestep)
    const static float velocityLimit = 0.25f;
 
    float velocityfromacc = (mpLeft->getRelativeContact() * timestep).dot(mNormal);
-   if ( mpRight != NULL )
+   if ( mpRight != nullptr )
       velocityfromacc -= (mpRight->getRelativeContact() * timestep).dot(mNormal);
 
    float restitution = mRestitution;

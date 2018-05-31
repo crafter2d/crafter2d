@@ -9,10 +9,10 @@
 ASTCase::ASTCase():
    ASTNode(),
    mKind(eCase),
-   mpType(NULL),
+   mpType(nullptr),
    mValue(),
-   mpValueExpression(NULL),
-   mpBody(NULL)
+   mpValueExpression(nullptr),
+   mpBody(nullptr)
 {
 }
 
@@ -20,8 +20,8 @@ ASTCase::~ASTCase()
 {
    delete mpType;
 
-   setValueExpression(NULL);
-   setBody(NULL);
+   setValueExpression(nullptr);
+   setBody(nullptr);
 }
 
 // - Get/set
@@ -48,7 +48,7 @@ void ASTCase::setValue(const Variant& value)
 
 bool ASTCase::hasValueExpression() const
 {
-   return mpValueExpression != NULL;
+   return mpValueExpression != nullptr;
 }
 
 const ASTUnary& ASTCase::getValueExpression() const

@@ -6,24 +6,24 @@
 #include "astvisitor.h"
 
 ASTFor::ASTFor():
-   mpInitialization(NULL),
-   mpCondition(NULL),
-   mpBody(NULL)
+   mpInitialization(nullptr),
+   mpCondition(nullptr),
+   mpBody(nullptr)
 {
 }
 
 ASTFor::~ASTFor()
 {
-   setInitializer(NULL);
-   setCondition(NULL);
-   setBody(NULL);
+   setInitializer(nullptr);
+   setCondition(nullptr);
+   setBody(nullptr);
 }
 
 // - Get/set
 
 bool ASTFor::hasInitializer() const
 {
-   return mpInitialization != NULL;
+   return mpInitialization != nullptr;
 }
 
 const ASTLocalVariable& ASTFor::getInitializer() const
@@ -44,7 +44,7 @@ void ASTFor::setInitializer(ASTLocalVariable* pvariable)
 
 bool ASTFor::hasCondition() const
 {
-   return mpCondition != NULL;
+   return mpCondition != nullptr;
 }
 
 const ASTExpression& ASTFor::getCondition() const

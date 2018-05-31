@@ -35,7 +35,7 @@ PreloadVisitor::PreloadVisitor(CompileContext& context):
    mClassResolver(),
    mPackage(),
    mScopeStack(),
-   mpFunction(NULL),
+   mpFunction(nullptr),
    mHasSuperCall(false),
    mHasNativeCall(false)
 {
@@ -479,7 +479,7 @@ bool PreloadVisitor::load(ASTType& type)
          load(argtype);
       }
 
-      if ( mpClass->isTypeName(name) || (mpFunction != NULL && mpFunction->isTypeName(name)) )
+      if ( mpClass->isTypeName(name) || (mpFunction != nullptr && mpFunction->isTypeName(name)) )
       {
          // name is not a type for the typename of this generic class
       }
@@ -506,8 +506,8 @@ void PreloadVisitor::resolveType(ASTType& type)
 {
    if ( !type.isVoid() && !type.isUnknown() )
    {
-      const ASTTypeVariables* ptypevariables = NULL;
-      if ( mpFunction != NULL && mpFunction->hasTypeVariables() )
+      const ASTTypeVariables* ptypevariables = nullptr;
+      if ( mpFunction != nullptr && mpFunction->hasTypeVariables() )
       {
          ptypevariables = &mpFunction->getTypeVariables();
       }
@@ -529,7 +529,7 @@ void PreloadVisitor::resolveType(ASTType& type)
 void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
 {
    ASTAccess* paccess = dynamic_cast<ASTAccess*>(&unary.getParts()[0]);
-   if ( paccess != NULL )
+   if ( paccess != nullptr )
    {
       if ( mpClass->isMember(paccess->getName()) )
       {
@@ -538,7 +538,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
       }
 
       ScopeVariable* pvariable = mScopeStack.find(paccess->getName());
-      if ( pvariable == NULL )
+      if ( pvariable == nullptr )
       {
          String name;
          String qualifiedname;
@@ -564,12 +564,12 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
             done = tryLoad(type);
             if ( !done )
             {
-               pcurrent = pcurrent->hasNext() ? &pcurrent->getNext() : NULL;
+               pcurrent = pcurrent->hasNext() ? &pcurrent->getNext() : nullptr;
                name += '.';
                count++;
             }
          }
-         while ( !done && pcurrent != NULL );
+         while ( !done && pcurrent != nullptr );
 
          if ( done )
          {

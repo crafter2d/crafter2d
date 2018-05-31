@@ -2,14 +2,14 @@
 #include "sharedcount.h"
 
 WeakCount::WeakCount():
-   mpCounter(NULL)
+   mpCounter(nullptr)
 {
 }
 
 WeakCount::WeakCount(const WeakCount& that):
    mpCounter(that.mpCounter)
 {
-   if ( mpCounter != NULL )
+   if ( mpCounter != nullptr )
    {
       mpCounter->addWeakRef();
    }
@@ -18,7 +18,7 @@ WeakCount::WeakCount(const WeakCount& that):
 WeakCount::WeakCount(const SharedCount& that):
    mpCounter(that.mpCounter)
 {
-   if ( mpCounter != NULL )
+   if ( mpCounter != nullptr )
    {
       mpCounter->addWeakRef();
    }
@@ -26,7 +26,7 @@ WeakCount::WeakCount(const SharedCount& that):
 
 WeakCount::~WeakCount()
 {
-   if ( mpCounter != NULL )
+   if ( mpCounter != nullptr )
    {
       mpCounter->releaseWeakRef();
    }

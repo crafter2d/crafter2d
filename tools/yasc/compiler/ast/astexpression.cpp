@@ -5,16 +5,16 @@
 
 ASTExpression::ASTExpression():
    ASTNode(),
-   mpLeft(NULL),
-   mpRight(NULL),
+   mpLeft(nullptr),
+   mpRight(nullptr),
    mKind(eInvalid)
 {
 }
 
 ASTExpression::~ASTExpression()
 {
-   setLeft(NULL);
-   setRight(NULL);
+   setLeft(nullptr);
+   setRight(nullptr);
 }
 
 // - Get/set
@@ -42,7 +42,7 @@ ASTNode& ASTExpression::getLeft()
 ASTNode* ASTExpression::useLeft()
 {
    ASTNode* pleft = mpLeft;
-   mpLeft = NULL;
+   mpLeft = nullptr;
    return pleft;
 }
 
@@ -54,7 +54,7 @@ void ASTExpression::setLeft(ASTNode* pleft)
 
 bool ASTExpression::hasRight() const
 {
-   return mpRight != NULL;
+   return mpRight != nullptr;
 }
 
 const ASTExpression& ASTExpression::getRight() const
@@ -70,7 +70,7 @@ ASTExpression& ASTExpression::getRight()
 ASTExpression* ASTExpression::useRight()
 {
    ASTExpression* pright = mpRight;
-   mpRight = NULL;
+   mpRight = nullptr;
    return pright;
 }
 

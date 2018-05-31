@@ -6,15 +6,15 @@
 
 ASTCast::ASTCast():
    ASTExpressionPart(),
-   mpType(NULL),
-   mpNode(NULL)
+   mpType(nullptr),
+   mpNode(nullptr)
 {
 }
 
 ASTCast::~ASTCast()
 {
-   setType(NULL);
-   setNode(NULL);
+   setType(nullptr);
+   setNode(nullptr);
 }
 
 // - Get/set

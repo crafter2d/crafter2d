@@ -11,8 +11,8 @@ ASTFunctionTable::ASTFunctionTable():
    mFunctions()
 {
    // reserve space for the initializer functions
-   mFunctions.push_back(NULL);
-   mFunctions.push_back(NULL);
+   mFunctions.push_back(nullptr);
+   mFunctions.push_back(nullptr);
 }
 
 const ASTFunctionTable& ASTFunctionTable::operator=(const ASTFunctionTable& that)

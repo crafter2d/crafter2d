@@ -35,9 +35,9 @@
 // ----------------------------------
 
 CollisionContactGenerator* CollisionDetector::mRegistry[CollisionShape::eTypeCount][CollisionShape::eTypeCount] = {
-   { NULL, NULL },
-   { NULL, NULL }, 
-   { NULL, NULL }
+   { nullptr, nullptr },
+   { nullptr, nullptr }, 
+   { nullptr, nullptr }
 };
 
 void CollisionDetector::initRegistry()
@@ -88,7 +88,7 @@ bool CollisionDetector::collideShapes(const CollisionShape& one, const Collision
 {
    CollisionContactGenerator* pgenerator = mRegistry[one.getType()][two.getType()];
 
-   if ( pgenerator != NULL )
+   if ( pgenerator != nullptr )
    {
       return pgenerator->collide(mData, one, two);
    }

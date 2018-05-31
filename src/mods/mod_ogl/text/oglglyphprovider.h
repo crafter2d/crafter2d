@@ -14,11 +14,11 @@ namespace Graphics
    class OGLGlyphProvider : public GlyphProvider
    {
    public:
-      OGLGlyphProvider(FT_Library library);
+      OGLGlyphProvider(FT_Library library, GlyphAtlas& atlas);
 
       void initialize(OGLFont& font);
 
-      virtual bool getGlyph(UChar ch, float emsize, Glyph& glyph) override;
+      virtual uint32_t getGlyph(UChar ch) override;
 
    private:
 

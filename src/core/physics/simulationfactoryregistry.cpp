@@ -63,7 +63,7 @@ void SimulationFactoryRegistry::addFactory(SimulationFactory* pfactory)
 SimulationFactory* SimulationFactoryRegistry::findFactory(const String& name)
 {
    FactoryMap::iterator it = mFactories.find(name);
-   return ( it != mFactories.end() ) ? it->second : NULL;
+   return ( it != mFactories.end() ) ? it->second : nullptr;
 }
 
 SimulationFactory* SimulationFactoryRegistry::findFactory(Simulator& simulator)
@@ -78,5 +78,5 @@ SimulationFactory* SimulationFactoryRegistry::findFactory(Simulator& simulator)
       }
    }
 
-   return NULL;
+   return nullptr;
 }

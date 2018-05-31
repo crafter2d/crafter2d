@@ -29,7 +29,7 @@ using namespace Input;
 namespace c2d
 {
    KeyMap::KeyMap() :
-      mpClient(NULL),
+      mpClient(nullptr),
       mKeys()
    {
    }
@@ -57,7 +57,7 @@ namespace c2d
       ASSERT_PTR(mpClient);
 
       ActionMap* pactionmap = mpClient->getActionMap();
-      if ( pactionmap != NULL )
+      if ( pactionmap != nullptr )
       {
          InputDevice& input = mpClient->getInput();
 

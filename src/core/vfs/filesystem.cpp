@@ -126,13 +126,13 @@ File* FileSystem::open(const String& filename, int modus) const
    {
       const FileSystemPath& path = mPaths[index];
       File* pfile = path.open(filename, modus);
-      if ( pfile != NULL )
+      if ( pfile != nullptr )
       {
          return pfile;
       }
    }
 
-   return NULL;
+   return nullptr;
 }
 
 typedef std::vector<String> Tokens;

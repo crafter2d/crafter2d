@@ -133,7 +133,7 @@ ASTClass* CompileContext::findClass(const String& name)
    lowercasename.toLower();
 
    ClassMap::iterator it = mClasses.find(lowercasename);
-   return it != mClasses.end() ? it->second : NULL;
+   return it != mClasses.end() ? it->second : nullptr;
 }
 
 const ASTClass& CompileContext::resolveClass(const String& classname) const
@@ -144,7 +144,7 @@ const ASTClass& CompileContext::resolveClass(const String& classname) const
 ASTClass& CompileContext::resolveClass(const String& classname)
 {
    ASTClass* pclass = findClass(classname);
-   if ( pclass == NULL )
+   if ( pclass == nullptr )
    {
       throw new ClassNotFoundException(classname);
    }

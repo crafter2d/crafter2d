@@ -26,9 +26,9 @@
 #include "virtualmachine.h"
 
 VirtualObject::VirtualObject():
-   mpClass(NULL),
-   mpNativeObject(NULL),
-   mpMembers(NULL),
+   mpClass(nullptr),
+   mpNativeObject(nullptr),
+   mpMembers(nullptr),
    mMemberCount(0),
    mOwnsNative(false)
 {
@@ -37,16 +37,16 @@ VirtualObject::VirtualObject():
 VirtualObject::~VirtualObject()
 {
    delete[] mpMembers;
-   mpMembers = NULL;
+   mpMembers = nullptr;
    
-   ASSERT(!mOwnsNative || mpNativeObject == NULL);
+   ASSERT(!mOwnsNative || mpNativeObject == nullptr);
 }
 
 // - Get/set
 
 bool VirtualObject::hasNativeObject() const
 {
-   return mpNativeObject != NULL;
+   return mpNativeObject != nullptr;
 }
 
 void* VirtualObject::getNativeObjectPtr()
@@ -62,7 +62,7 @@ void* VirtualObject::useNativeObjectPtr()
 
 void VirtualObject::setNativeObject(void* pobject)
 {
-   //ASSERT(mpNativeObject == NULL);
+   //ASSERT(mpNativeObject == nullptr);
    mpNativeObject = pobject;
 }
 
@@ -133,7 +133,7 @@ void VirtualObject::setMember(int index, const VirtualValue& value)
 
 void VirtualObject::finalize(VirtualMachine& vm)
 {
-   if ( mpNativeObject != NULL )
+   if ( mpNativeObject != nullptr )
    {
       vm.unregisterNative(*this);
    }

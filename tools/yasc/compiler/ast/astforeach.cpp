@@ -6,18 +6,18 @@
 
 ASTForeach::ASTForeach():
    ASTStatement(),
-   mpVariable(NULL),
+   mpVariable(nullptr),
    mpIterator(new ASTVariable()),
-   mpBody(NULL)
+   mpBody(nullptr)
 {
    createIteratorVariable();
 }
 
 ASTForeach::~ASTForeach()
 {
-   setVariable(NULL);
-   setIteratorVariable(NULL);
-   setBody(NULL);
+   setVariable(nullptr);
+   setIteratorVariable(nullptr);
+   setBody(nullptr);
 }
 
 // - Get/set

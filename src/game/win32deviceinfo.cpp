@@ -47,7 +47,7 @@ bool Win32DeviceInfo::buildCustomDevice(Graphics::Device& device)
 		);
 
    IDXGISwapChain1* pswapChain;
-   HRESULT hr = dxgiFactory->CreateSwapChainForHwnd(&d3d11device, (HWND)mWnd, &swapChainDesc, NULL, NULL, &pswapChain);
+   HRESULT hr = dxgiFactory->CreateSwapChainForHwnd(&d3d11device, (HWND)mWnd, &swapChainDesc, nullptr, nullptr, &pswapChain);
    if ( FAILED(hr) )
    {
       return false;

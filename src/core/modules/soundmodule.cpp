@@ -17,7 +17,7 @@ namespace c2d
    SoundModule::~SoundModule()
    {
       delete mpSoundManager;
-      mpSoundManager = NULL;
+      mpSoundManager = nullptr;
    }
 
    // - Get/set

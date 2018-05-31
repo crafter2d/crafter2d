@@ -7,15 +7,15 @@
 ASTConcatenate::ASTConcatenate(Mode mode):
    ASTNode(),
    mMode(mode),
-   mpLeft(NULL),
-   mpRight(NULL)
+   mpLeft(nullptr),
+   mpRight(nullptr)
 {
 }
 
 ASTConcatenate::~ASTConcatenate()
 {
-   setLeft(NULL);
-   setRight(NULL);
+   setLeft(nullptr);
+   setRight(nullptr);
 }
 
 // - Get/set
@@ -38,7 +38,7 @@ ASTNode& ASTConcatenate::getLeft()
 ASTNode* ASTConcatenate::useLeft()
 {
    ASTNode* pleft = mpLeft;
-   mpLeft = NULL;
+   mpLeft = nullptr;
    return pleft;
 }
 
@@ -50,7 +50,7 @@ void ASTConcatenate::setLeft(ASTNode* pleft)
 
 bool ASTConcatenate::hasRight() const
 {
-   return mpRight != NULL;
+   return mpRight != nullptr;
 }
 
 const ASTNode& ASTConcatenate::getRight() const
@@ -66,7 +66,7 @@ ASTNode& ASTConcatenate::getRight()
 ASTNode* ASTConcatenate::useRight()
 {
    ASTNode* pright = mpRight;
-   mpRight = NULL;
+   mpRight = nullptr;
    return pright;
 }
 

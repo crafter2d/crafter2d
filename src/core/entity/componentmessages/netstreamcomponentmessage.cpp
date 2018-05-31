@@ -4,7 +4,7 @@
 #include "core/entity/components/componentinterface.h"
 
 NetStreamComponentMessage::NetStreamComponentMessage(DataStream& stream, bool write):
-   ComponentMessage(ComponentInterface::eNetStreamMsg, NULL),
+   ComponentMessage(ComponentInterface::eNetStreamMsg, nullptr),
    mStream(stream),
    mWrite(write)
 {

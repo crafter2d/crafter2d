@@ -31,7 +31,7 @@ static const String sPoint(UTEXT("point"));
 static const String sInOut(UTEXT("inout"));
 
 EffectFileParser::EffectFileParser():
-   mpEffect(NULL)
+   mpEffect(nullptr)
 {
 }
 
@@ -267,7 +267,7 @@ ASTType* EffectFileParser::parseType(Lexer& lexer)
    }
 
    ASTType* ptype = ASTType::fromString(*mpEffect, tmpl.isEmpty() ? type : tmpl);
-   if ( ptype == NULL || ptype->isUnknown() )
+   if ( ptype == nullptr || ptype->isUnknown() )
    {
       throw std::logic_error(("Invalid token: " + type.toUtf8()).c_str());
    }
@@ -342,7 +342,7 @@ void EffectFileParser::parseAnnotations(Lexer& lexer, ASTFunction& function)
       do
       {
          ASTAnnotation* panno = parseAnnotation(lexer);
-         if ( panno != NULL )
+         if ( panno != nullptr )
          {
             function.addAnnotation(panno);
          }
@@ -451,7 +451,7 @@ void EffectFileParser::determineLanguage()
       ASTTechnique* ptechnique = mpEffect->mTechniques[0];
       const ASTFunction* pfunction = mpEffect->findFunction(ptechnique->mVertex.mEntry);
 
-      if ( pfunction != NULL )
+      if ( pfunction != nullptr )
       {
          String identifiers[] = { UTEXT("gl_"), UTEXT("vec2"), UTEXT("mat4") };
          int count = sizeof(identifiers) / sizeof(String);

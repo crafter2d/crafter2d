@@ -13,7 +13,7 @@
 
 PhysicsComponent::PhysicsComponent():
    Component(ComponentInterface::ePhysisComponent),
-   mpBody(NULL)
+   mpBody(nullptr)
 {
 }
 

@@ -8,8 +8,8 @@ ASTVariable::ASTVariable():
    mName(),
    mPosition(),
    mModifiers(),
-   mpType(NULL),
-   mpInit(NULL),
+   mpType(nullptr),
+   mpInit(nullptr),
    mLocation(eInvalidLoc),
    mResourceIndex(-1)
 {
@@ -17,8 +17,8 @@ ASTVariable::ASTVariable():
 
 ASTVariable::~ASTVariable()
 {
-   setType(NULL);
-   setInit(NULL);
+   setType(nullptr);
+   setInit(nullptr);
 }
 
 // - Get/set
@@ -76,7 +76,7 @@ void ASTVariable::setModifiers(const ASTModifiers& modifiers)
 
 bool ASTVariable::hasInit() const
 {
-   return mpInit != NULL;
+   return mpInit != nullptr;
 }
 
 const ASTVariableInit& ASTVariable::getInit() const

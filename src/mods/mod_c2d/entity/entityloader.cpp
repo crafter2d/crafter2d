@@ -44,13 +44,13 @@ EntityDefinitionProto* EntityLoader::load(const String& filename)
    TiXmlDocument doc(name.c_str());
    if ( !doc.LoadFile() )
    {
-      return NULL;
+      return nullptr;
    }
 
    TiXmlElement* pbase = doc.FirstChildElement("entity");
-   if ( pbase == NULL )
+   if ( pbase == nullptr )
    {
-      return NULL;
+      return nullptr;
    }
    
    return loadDefinition(*pbase);
@@ -64,9 +64,9 @@ EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
    pentitydef->mName = String::fromUtf8(pname);
 
    const char* pclasstype = entity.Attribute("class");
-   pentitydef->mClassName = (pclasstype != NULL ? String::fromUtf8(pclasstype) : UTEXT("engine.game.Entity"));
+   pentitydef->mClassName = (pclasstype != nullptr ? String::fromUtf8(pclasstype) : UTEXT("engine.game.Entity"));
 
-   for ( const TiXmlElement* pelement = entity.FirstChildElement(); pelement != NULL; pelement = pelement->NextSiblingElement() )
+   for ( const TiXmlElement* pelement = entity.FirstChildElement(); pelement != nullptr; pelement = pelement->NextSiblingElement() )
    {
       String name = String::fromUtf8(pelement->Value());
 
@@ -92,7 +92,7 @@ EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
             ASSERT_PTR(ploader);
 
             ComponentDefinitionProto* pdefinition = ploader->load(*pelement);
-            if ( pdefinition == NULL )
+            if ( pdefinition == nullptr )
             {
                // throw and error!
             }
@@ -113,7 +113,7 @@ void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXm
    pchild->mID = String::fromUtf8(pid);
 
    const char* pref = xmlchild.Attribute("ref");
-   if ( pref != NULL )
+   if ( pref != nullptr )
    {
       pchild->mRefType = ChildDefinitionProto::eLocalReference;
       pchild->mRef = String::fromUtf8(pref);
@@ -121,7 +121,7 @@ void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXm
    else
    {
       const char* pfile = xmlchild.Attribute("file");
-      if ( pfile == NULL )
+      if ( pfile == nullptr )
       {
          throw std::runtime_error("Should have a file reference!");
       }
@@ -140,21 +140,21 @@ void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXm
 
 void EntityLoader::loadLinkDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmllink)
 {
-   LinkDefinitionProto* presult = NULL;
+   LinkDefinitionProto* presult = nullptr;
    int left, right;
 
    if ( xmllink.QueryIntAttribute("left", &left) == TIXML_SUCCESS
      && xmllink.QueryIntAttribute("right", &right) == TIXML_SUCCESS )
    {
       const char* ptype = xmllink.Attribute("type");
-      if ( ptype == NULL )
+      if ( ptype == nullptr )
       {
          // throw error!!
       }
 
       String type = String::fromUtf8(ptype);
       
-      JointDefinition* pjoint = NULL;
+      JointDefinition* pjoint = nullptr;
       if ( type == UTEXT("revolute" ) )
       {
          float anchorx, anchory;

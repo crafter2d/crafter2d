@@ -43,7 +43,7 @@ ListIterator<E>& ListIterator<E>::operator=(const ListIterator& that)
 template <class E>
 void ListIterator<E>::operator++()
 {
-   if ( mpNode != NULL )
+   if ( mpNode != nullptr )
    {
       mpNode = mpNode->nextptr();
    }
@@ -71,13 +71,13 @@ void* ListIterator<E>::key()
 template <class E>
 bool ListIterator<E>::isValid() const
 {
-   return mpNode != NULL;
+   return mpNode != nullptr;
 }
 
 template <class E>
 void ListIterator<E>::remove()
 {
-   if ( mpNode != NULL )
+   if ( mpNode != nullptr )
    {
       ListNode<E>* ptemp = mpNode->nextptr();
       mpList->remove(*this);

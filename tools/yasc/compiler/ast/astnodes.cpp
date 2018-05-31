@@ -48,7 +48,7 @@ void ASTNodes::remove(ASTNode** pnode)
    mNodes.erase(mNodes.begin() + index);
 
    delete *pnode;
-   *pnode = NULL;
+   *pnode = nullptr;
 }
 
 void ASTNodes::detach(const ASTNode& node)

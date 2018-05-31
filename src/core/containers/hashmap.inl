@@ -21,15 +21,15 @@
 
 template <typename K, class E>
 HashMap<K,E>::HashMap(int size):
-   mHashFnc(NULL),
-   mpBuckets(NULL),
+   mHashFnc(nullptr),
+   mpBuckets(nullptr),
    mSize(size),
    mCount(0)
 {
    mpBuckets = new HashMapBucket<K,E>*[size];
    for ( int index = 0; index < size; index++ )
    {
-      mpBuckets[index] = NULL;
+      mpBuckets[index] = nullptr;
    }
 }
 
@@ -68,10 +68,10 @@ bool HashMap<K,E>::contains(const K& key) const
 {
    ASSERT_PTR(mHashFnc);
    unsigned int hash = (*mHashFnc)(key) % mSize;
-   if ( mpBuckets[hash] != NULL )
+   if ( mpBuckets[hash] != nullptr )
    {
       HashMapBucket<K,E>* pbucket = mpBuckets[hash];
-      for ( ; pbucket != NULL; pbucket = pbucket->getNext() )
+      for ( ; pbucket != nullptr; pbucket = pbucket->getNext() )
       {
          if ( pbucket->getKey() == key )
          {
@@ -86,15 +86,15 @@ bool HashMap<K,E>::contains(const K& key) const
 template <typename K, class E>
 E* HashMap<K,E>::get(const K& key)
 {
-   E* presult = NULL;
+   E* presult = nullptr;
    ASSERT_PTR(mHashFnc);
    unsigned int hash = (*mHashFnc)(key) % mSize;
    HashMapBucket<K,E>* pbucket = mpBuckets[hash];
-   if ( pbucket != NULL )
+   if ( pbucket != nullptr )
    {
       if ( pbucket->hasNext() )
       {
-         for ( ; pbucket != NULL; pbucket = pbucket->getNext() )
+         for ( ; pbucket != nullptr; pbucket = pbucket->getNext() )
          {
             if ( pbucket->getKey() == key )
             {
@@ -124,7 +124,7 @@ template <typename K, class E>
 void HashMap<K,E>::insert(const K& key, E& element)
 {
    unsigned int hash = (*mHashFnc)(key) % mSize;
-   if ( mpBuckets[hash] == NULL )
+   if ( mpBuckets[hash] == nullptr )
    {
       // first element
       HashMapBucket<K,E>* pbucket = new HashMapBucket<K,E>(key, element);
@@ -134,7 +134,7 @@ void HashMap<K,E>::insert(const K& key, E& element)
    {
       // look if something is already there
       HashMapBucket<K,E>* pbucket = mpBuckets[hash];
-      for ( ; pbucket != NULL; pbucket = pbucket->getNext() )
+      for ( ; pbucket != nullptr; pbucket = pbucket->getNext() )
       {
          if ( pbucket->getKey() == key )
          {
@@ -156,13 +156,13 @@ void HashMap<K,E>::remove(const K& key)
 {
    unsigned int hash = (*mHashFnc)(key) % mSize;
    HashMapBucket<K,E>* pbucket = mpBuckets[hash];
-   if ( pbucket->getNext() != NULL )
+   if ( pbucket->getNext() != nullptr )
    {
-      for ( HashMapBucket<K,E>* pprev = NULL; pbucket != NULL; pprev = pbucket, pbucket = pbucket->getNext() )
+      for ( HashMapBucket<K,E>* pprev = nullptr; pbucket != nullptr; pprev = pbucket, pbucket = pbucket->getNext() )
       {
          if ( pbucket->getKey() == key )
          {
-            if ( pprev != NULL )
+            if ( pprev != nullptr )
             {
                pprev->setNext(pbucket->getNext());
             }
@@ -178,7 +178,7 @@ void HashMap<K,E>::remove(const K& key)
    }
    else
    {
-      mpBuckets[hash] = NULL;
+      mpBuckets[hash] = nullptr;
       delete pbucket;
    }
 
@@ -192,13 +192,13 @@ void HashMap<K,E>::remove(HashMapIterator<K,E>& it)
    /*
    unsigned int hash = (*mHashFnc)(it.mpBucket->getKey()) % mSize;
    HashMapBucket<K,E>* pbucket = mpBuckets[hash];
-   if ( pbucket->getNext() != NULL )
+   if ( pbucket->getNext() != nullptr )
    {
-      for ( HashMapBucket<K,E>* pprev = NULL; pbucket != NULL; pprev = pbucket, pbucket = pbucket->getNext() )
+      for ( HashMapBucket<K,E>* pprev = nullptr; pbucket != nullptr; pprev = pbucket, pbucket = pbucket->getNext() )
       {
          if ( pbucket == it.mpBucket )
          {
-            if ( pprev != NULL )
+            if ( pprev != nullptr )
             {
                pprev->setNext(pbucket->getNext());
             }
@@ -215,7 +215,7 @@ void HashMap<K,E>::remove(HashMapIterator<K,E>& it)
    else
    {
       ASSERT(pbucket == it.mpBucket);
-      mpBuckets[hash] = NULL;
+      mpBuckets[hash] = nullptr;
       delete pbucket;
    }
 
@@ -229,13 +229,13 @@ void HashMap<K,E>::clear()
    for ( int index = 0; index < mSize; index++ )
    {
       HashMapBucket<K,E>* pbucket = mpBuckets[index];
-      while ( pbucket != NULL )
+      while ( pbucket != nullptr )
       {
          HashMapBucket<K,E>* pnext = pbucket->getNext();
          delete pbucket;
          pbucket = pnext;
       }
 
-      mpBuckets[index] = NULL;
+      mpBuckets[index] = nullptr;
    }
 }

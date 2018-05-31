@@ -35,7 +35,7 @@ bool ClassGenerator::generate(CommandLine& commandline)
    const CommandLineArgument* pbaseargument = commandline.getArgument(UTEXT("base"));
    const CommandLineArgument* ppathargument = commandline.getArgument(UTEXT("path"));
 
-   if ( pnameargument == NULL || ppathargument == NULL )
+   if ( pnameargument == nullptr || ppathargument == nullptr )
    {
       return false;
    }
@@ -46,7 +46,7 @@ bool ClassGenerator::generate(CommandLine& commandline)
    if ( pos == String::npos )
    {
       const CommandLineArgument* ppackageargument = commandline.getArgument(UTEXT("package"));
-      if ( ppackageargument == NULL )
+      if ( ppackageargument == nullptr )
       {
          return false;
       }
@@ -62,7 +62,7 @@ bool ClassGenerator::generate(CommandLine& commandline)
    ctemplate::TemplateDictionary dict("values");
    dict.SetValue("NAME", name.toUtf8());
    dict.SetValue("PACKAGE", package.toUtf8());
-   if ( pbaseargument != NULL )
+   if ( pbaseargument != nullptr )
    {
       dict.SetValue("BASE", "extends " + pbaseargument->getValue().toUtf8());
    }

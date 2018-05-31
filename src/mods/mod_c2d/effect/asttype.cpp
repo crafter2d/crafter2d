@@ -70,7 +70,7 @@ ASTType* ASTType::fromString(const ASTEffect& effect, const String& typestr)
    else
    {
       const ASTStruct* pstruct = effect.findStruct(typestr);
-      if ( pstruct != NULL )
+      if ( pstruct != nullptr )
       {
          presult->mType = ASTType::eStruct;
          presult->mpStruct = pstruct;

@@ -59,7 +59,7 @@ enum NetObjectId
 
 /// Add this macro to the class implementation file which should be able to replicate
 #define ABSTRACT_IMPLEMENT_REPLICATABLE(id, className, baseName)           \
-   RuntimeInfo className::info(id, #className, #baseName, NULL);           \
+   RuntimeInfo className::info(id, #className, #baseName, nullptr);           \
    RuntimeInfo& className::getRuntimeInfo() const {                        \
       return info;                                                         \
    }                                                                       \

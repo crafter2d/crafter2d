@@ -7,15 +7,15 @@
 
 ASTCatch::ASTCatch():
    ASTNode(),
-   mpVariable(NULL),
-   mpBody(NULL)
+   mpVariable(nullptr),
+   mpBody(nullptr)
 {
 }
 
 ASTCatch::~ASTCatch()
 {
-   setVariable(NULL);
-   setBody(NULL);
+   setVariable(nullptr);
+   setBody(nullptr);
 }
 
 // - Get/set

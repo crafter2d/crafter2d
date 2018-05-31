@@ -32,7 +32,7 @@ int FileStream::getDataSize() const
 const char* FileStream::getData() const
 {
    // not supported!
-   return NULL;
+   return nullptr;
 }
 
 // - Buffering

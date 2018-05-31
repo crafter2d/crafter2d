@@ -9,15 +9,15 @@
 
 ASTWhile::ASTWhile():
    ASTStatement(),
-   mpCondition(NULL),
-   mpBody(NULL)
+   mpCondition(nullptr),
+   mpBody(nullptr)
 {
 }
 
 ASTWhile::~ASTWhile()
 {
-   setCondition(NULL);
-   setBody(NULL);
+   setCondition(nullptr);
+   setBody(nullptr);
 }
 
 // - Get/set

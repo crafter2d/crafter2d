@@ -25,9 +25,6 @@
 #include <stdexcept>
 #include <cstdint>
 
-#undef NULL
-#define NULL nullptr
-
 // Uncomment next line to enable auto disconnecting after timeout
 //#define CRAFTER_AUTODISCONNECT
 
@@ -62,7 +59,7 @@
 
 #define ASSERT(cond)          assert(cond);
 #define ASSERT_MSG(cond,msg)  assert(cond && msg);
-#define ASSERT_PTR(ptr)       assert(ptr != NULL);
+#define ASSERT_PTR(ptr)       assert(ptr != nullptr);
 #define PURE_VIRTUAL          throw std::runtime_error("Pure virtual");
 #define UNREACHABLE(msg)      throw std::runtime_error(msg);
 

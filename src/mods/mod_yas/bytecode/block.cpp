@@ -9,11 +9,11 @@ namespace ByteCode
       id(0),
       start(0),
       codepos(0),
-      pstart(NULL),
-      pcurrent(NULL),
-      pguard(NULL),
+      pstart(nullptr),
+      pcurrent(nullptr),
+      pguard(nullptr),
       guard_type(-1),
-      plookup(NULL),
+      plookup(nullptr),
       lookup_value(),
       lookup_type(eDefault),
       to(),
@@ -23,7 +23,7 @@ namespace ByteCode
 
    void Block::addInstruction(Instruction* pinst)
    {
-      if ( pstart == NULL )
+      if ( pstart == nullptr )
       {
          pstart = pinst;
          pcurrent = pinst;

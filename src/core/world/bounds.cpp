@@ -38,7 +38,7 @@ Bounds::~Bounds()
 
 void Bounds::closeGaps(float delta)
 {
-   Bound* pother = NULL;
+   Bound* pother = nullptr;
 
    for ( int idx = 0; idx < size(); ++idx )
    {

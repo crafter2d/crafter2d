@@ -90,7 +90,7 @@ String File::toNativeSeparator(const String& filepath)
 
 File::File():
    mFilename(),
-   mpBuffer(NULL)
+   mpBuffer(nullptr)
 {
 }
 
@@ -177,7 +177,7 @@ int File::tell() const
 
 bool File::eof() const
 {
-   return mpBuffer != NULL ? mpBuffer->eof() : true;
+   return mpBuffer != nullptr ? mpBuffer->eof() : true;
 }
 
 // - Query
@@ -196,5 +196,5 @@ bool File::virOpen(const String& , int)
 void File::virClose()
 {
    delete mpBuffer;
-   mpBuffer = NULL;
+   mpBuffer = nullptr;
 }

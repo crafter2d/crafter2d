@@ -90,7 +90,7 @@ private:
 
    enum State
    {
-      eStateNoNull = 1
+      eStateNonullptr = 1
    };
 
    typedef std::stack<LoopFlow> LoopFlowStack;

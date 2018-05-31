@@ -14,7 +14,7 @@ ASTField::ASTField(ASTVariable* pvariable):
 
 ASTField::~ASTField()
 {
-   setVariable(NULL);
+   setVariable(nullptr);
 }
 
 // - Get/set

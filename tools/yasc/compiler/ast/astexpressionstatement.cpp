@@ -12,14 +12,14 @@ ASTExpressionStatement::ASTExpressionStatement(ASTExpression* pexpression):
 
 ASTExpressionStatement::~ASTExpressionStatement()
 {
-   setExpression(NULL);
+   setExpression(nullptr);
 }
 
 // - Get/set
 
 bool ASTExpressionStatement::hasExpression() const
 {
-   return mpExpression != NULL;
+   return mpExpression != nullptr;
 }
 
 const ASTExpression& ASTExpressionStatement::getExpression() const

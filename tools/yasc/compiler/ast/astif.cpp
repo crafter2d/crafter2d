@@ -7,17 +7,17 @@
 
 ASTIf::ASTIf():
    ASTStatement(),
-   mpCondition(NULL),
-   mpStatement(NULL),
-   mpElseStatement(NULL)
+   mpCondition(nullptr),
+   mpStatement(nullptr),
+   mpElseStatement(nullptr)
 {
 }
 
 ASTIf::~ASTIf()
 {
-   setCondition(NULL);
-   setStatement(NULL);
-   setElseStatement(NULL);
+   setCondition(nullptr);
+   setStatement(nullptr);
+   setElseStatement(nullptr);
 }
 
 // - Get/set
@@ -56,7 +56,7 @@ void ASTIf::setStatement(ASTStatement* pstatement)
 
 bool ASTIf::hasElseStatement() const
 {
-   return mpElseStatement != NULL;
+   return mpElseStatement != nullptr;
 }
 
 const ASTStatement& ASTIf::getElseStatement() const

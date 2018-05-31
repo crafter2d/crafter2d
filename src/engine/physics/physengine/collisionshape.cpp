@@ -23,8 +23,8 @@
 #include "core/defines.h"
 
 CollisionShape::CollisionShape(Type type):
-   mpNext(NULL),
-   mpBody(NULL),
+   mpNext(nullptr),
+   mpBody(nullptr),
    mType(type)
 {
 }

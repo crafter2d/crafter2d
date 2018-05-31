@@ -35,7 +35,7 @@ ComponentDefinitionProto* PhysicsComponentLoader::load(const TiXmlElement& eleme
       def.setFixedRotation(true);
 
    const TiXmlElement* pshapeelement = dynamic_cast<const TiXmlElement*>(element.FirstChild("shape"));
-   if ( pshapeelement != NULL )
+   if ( pshapeelement != nullptr )
    {
       String shapetype = String::fromUtf8(pshapeelement->Attribute("type"));
       if ( !shapetype.isEmpty() )

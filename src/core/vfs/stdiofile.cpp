@@ -31,7 +31,7 @@ bool StdioFile::exists(const String& file)
 
    bool result = false;
    FILE* pfile = fopen(filename.c_str(), "r");
-   if ( pfile != NULL )
+   if ( pfile != nullptr )
    {
       result = true;
       fclose(pfile);
@@ -42,7 +42,7 @@ bool StdioFile::exists(const String& file)
 
 StdioFile::StdioFile():
    File(),
-   mpFile(NULL)
+   mpFile(nullptr)
 {
 }
 
@@ -64,7 +64,7 @@ bool StdioFile::virOpen(const String& filename, int modus)
 
    std::string path = filename.toUtf8();
    mpFile = fopen(path.c_str(), mode);
-   if ( mpFile == NULL )
+   if ( mpFile == nullptr )
    {
       return false;
    }
@@ -78,14 +78,14 @@ void StdioFile::virClose()
 {
    File::virClose();
 
-   if ( mpFile != NULL )
+   if ( mpFile != nullptr )
    {
       fclose(mpFile);
-      mpFile = NULL;
+      mpFile = nullptr;
    }   
 }
 
 bool StdioFile::isValid() const
 {
-   return mpFile != NULL;
+   return mpFile != nullptr;
 }

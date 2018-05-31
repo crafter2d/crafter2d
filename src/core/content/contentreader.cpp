@@ -6,10 +6,10 @@
 namespace c2d
 {
    ContentReader::ContentReader() :
-      mpContentManager(NULL),
-      mpDevice(NULL),
-      mpSimulator(NULL),
-      mpSoundManager(NULL)
+      mpContentManager(nullptr),
+      mpDevice(nullptr),
+      mpSimulator(nullptr),
+      mpSoundManager(nullptr)
    {
    }
    
@@ -32,7 +32,7 @@ namespace c2d
 
    bool ContentReader::hasGraphicsDevice() const
    {
-      return mpDevice != NULL;
+      return mpDevice != nullptr;
    }
 
    Graphics::Device& ContentReader::getGraphicsDevice()
@@ -48,7 +48,7 @@ namespace c2d
 
    bool ContentReader::hasPhysicsSimulator() const
    {
-      return mpSimulator != NULL;
+      return mpSimulator != nullptr;
    }
 
    Simulator& ContentReader::getPhysicsSimulator()
@@ -64,7 +64,7 @@ namespace c2d
 
    bool ContentReader::hasSoundManager()
    {
-      return mpSoundManager != NULL;
+      return mpSoundManager != nullptr;
    }
 
    SoundManager& ContentReader::getSoundManager()

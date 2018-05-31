@@ -9,7 +9,7 @@ class ASTType;
 class ASTFunctionArgument
 {
 public:
-   ASTFunctionArgument(): mpType(NULL), mName(), mArraySize(-1) {}
+   ASTFunctionArgument(): mpType(nullptr), mName(), mArraySize(-1) {}
 
  // data
    ASTType* mpType;

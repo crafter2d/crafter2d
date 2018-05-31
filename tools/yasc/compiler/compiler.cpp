@@ -85,7 +85,7 @@ int Compiler::exec()
 
    // get the root 
    const CommandLineArgument* prootarg = mCommands.getArgument(UTEXT("p"));
-   if ( prootarg != NULL )
+   if ( prootarg != nullptr )
    {
       StringList rootpaths;
       String roots = prootarg->getValue();
@@ -98,14 +98,14 @@ int Compiler::exec()
    // see if we should find the files recursively
    bool recursive = false;
    const CommandLineArgument* precursearg = mCommands.getArgument(UTEXT("r"));
-   if ( precursearg != NULL )
+   if ( precursearg != nullptr )
    {
       recursive = true;
    }
 
    // find the output dir
    const CommandLineArgument* parg = mCommands.getArgument(UTEXT("o"));
-   if ( parg != NULL )
+   if ( parg != nullptr )
    {
       mOutputDir = parg->getValue();
       createOutputDir();

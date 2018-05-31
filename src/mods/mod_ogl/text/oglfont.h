@@ -14,7 +14,7 @@ namespace Graphics
    class OGLFont : public Font
    {
    public:
-      explicit OGLFont(FT_Face face);
+      explicit OGLFont(GlyphProvider* pprovider, FT_Face face);
       virtual ~OGLFont();
 
     // get/set
@@ -24,7 +24,7 @@ namespace Graphics
       virtual int getBaseLine() const;
 
     // operations
-      bool initialize(int pointsize);
+      bool initialize(float pointsize);
 
    private:
     // helpers

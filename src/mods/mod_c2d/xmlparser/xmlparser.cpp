@@ -41,7 +41,7 @@ void c2d::XmlParser::parseElement(TiXmlElement* pxmlElement, c2d::Element& eleme
    {
       TiXmlElement* pxmlChild = pxmlElement->FirstChildElement(pchild->getName());
 
-      if ( pxmlChild == NULL && !pchild->mAllowEmpty )
+      if ( pxmlChild == nullptr && !pchild->mAllowEmpty )
       {
          // error!
          continue;

@@ -64,7 +64,7 @@ bool CompressedFile::virOpen(const String& filename, int modus)
 {
    ASSERT(IS_SET(modus, File::ERead))
    
-   char* pdata = NULL;
+   char* pdata = nullptr;
    int size = 0;
 
    mZipFile.readFile(filename, (void*&)pdata, size, false);

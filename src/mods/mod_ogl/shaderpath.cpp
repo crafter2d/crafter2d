@@ -23,7 +23,7 @@ ShaderPath::ShaderPath():
 	\brief Loads in a vertex and fragment shader.
 
 	This function loads the supplied vertex and fragment shaders into the shader
-	object of this path. Both parameters are optional and maybe NULL. The shader
+	object of this path. Both parameters are optional and maybe nullptr. The shader
 	files should contain valid GLSL code, otherwise an linking error message will
 	be saved in the log file.
 
@@ -102,7 +102,7 @@ void ShaderPath::bindTexture(RenderContext& context, int stage, const Texture& t
    texture.enable(context, stage);
 }
 
-void ShaderPath::setConstantBuffer(RenderContext& context, const UniformBuffer& buffer)
+void ShaderPath::setConstantBuffer(RenderContext& context, int slot, const UniformBuffer& buffer)
 {
    C2D_UNUSED(context);
    static_cast<const ShaderUniformBuffer&>(buffer).enable();

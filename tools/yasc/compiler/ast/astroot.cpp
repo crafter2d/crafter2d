@@ -31,7 +31,7 @@ void ASTRoot::collectClasses(std::vector<ASTClass*>& classes)
    {
       ASTNode& node = nodes[index];
       ASTClass* pclass = dynamic_cast<ASTClass*>(&node);
-      if ( pclass != NULL )
+      if ( pclass != nullptr )
       {
          classes.push_back(pclass);
       }

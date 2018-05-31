@@ -14,15 +14,15 @@
 
 ASTSwitch::ASTSwitch():
    ASTStatement(),
-   mpExpression(NULL),
-   mpType(NULL)
+   mpExpression(nullptr),
+   mpType(nullptr)
 {
 }
 
 ASTSwitch::~ASTSwitch()
 {
-   setExpression(NULL);
-   setType(NULL);
+   setExpression(nullptr);
+   setType(nullptr);
 }
 
 // - Get/set

@@ -34,7 +34,7 @@ NetStatistics::StatisticsItems& NetStatistics::items()
 INLINE
 bool NetStatistics::hasCurrentItem() const
 {
-   return MPCurrentItem != NULL;
+   return MPCurrentItem != nullptr;
 }
 
 INLINE NetStatisticsItem& NetStatistics::currentItem()

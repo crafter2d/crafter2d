@@ -11,5 +11,5 @@ template<class T>
 void CountImpl<T>::dispose()
 {
    delete mpData;
-   mpData = NULL;
+   mpData = nullptr;
 }

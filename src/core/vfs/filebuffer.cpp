@@ -27,7 +27,7 @@
 
 FileBuffer::FileBuffer():
    Buffer(),
-   mpFile(NULL)
+   mpFile(nullptr)
 {
 }
 

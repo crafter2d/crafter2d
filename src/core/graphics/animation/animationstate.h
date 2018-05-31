@@ -20,6 +20,8 @@
 #ifndef ANIMATION_STATE_H
 #define ANIMATION_STATE_H
 
+#include <cstdint>
+
 namespace c2d
 {
    class AnimationState
@@ -47,7 +49,7 @@ namespace c2d
     // data
       float    mDelta;
       int      mAnimation;    // which animation
-      size_t   mAnimFrame;    // frame within the animation
+      uint32_t mAnimFrame;    // frame within the animation
       int      mTileIndex;    // index for texture coord lookup in tileatlas
    };
 }

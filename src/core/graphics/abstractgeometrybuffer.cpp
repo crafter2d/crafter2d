@@ -14,9 +14,9 @@
 namespace Graphics
 {
    AbstractGeometryBuffer::AbstractGeometryBuffer() :
-      mpEffect(NULL),
-      mpVB(NULL),
-      mpIB(NULL)
+      mpEffect(nullptr),
+      mpVB(nullptr),
+      mpIB(nullptr)
    {
    }
 
@@ -25,7 +25,7 @@ namespace Graphics
    bool AbstractGeometryBuffer::create(Device& device, const String& effect, int maxelements, int vertsperelement)
    {
       mpEffect = device.createEffect(effect);
-      if ( mpEffect == NULL )
+      if ( mpEffect == nullptr )
       {
          return false;
       }
@@ -33,13 +33,13 @@ namespace Graphics
       int length = maxelements * vertsperelement;
       int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
       mpVB = mpEffect->createVertexBuffer(device, length, usage);
-      if ( mpVB == NULL )
+      if ( mpVB == nullptr )
       {
          return false;
       }
 
       mpIB = Utils::createIndexBuffer(device, maxelements, vertsperelement);
-      if ( mpIB == NULL )
+      if ( mpIB == nullptr )
       {
          return false;
       }

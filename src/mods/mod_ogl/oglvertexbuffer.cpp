@@ -31,7 +31,7 @@ namespace Graphics
 {
 
 #define FLAG_LOCKED		   8192
-#define BUFFER_OFFSET(i)   ((char *)NULL + (i))
+#define BUFFER_OFFSET(i)   ((char *)nullptr + (i))
 
 
 /*!
@@ -141,7 +141,7 @@ void* OGLVertexBuffer::lock(RenderContext& context)
    glBindVertexArray(mVAO);
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	void* pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-	if (pointer != NULL)
+	if (pointer != nullptr)
 		locked = true;
 	return pointer;
 }

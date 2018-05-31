@@ -66,7 +66,7 @@ static MouseEvent::Button toMouseEventButton(int sdlbutton)
 
 SDLGameWindow::SDLGameWindow():
    GameWindow(),
-   mpWindow(NULL),
+   mpWindow(nullptr),
    mBackgroundColor(),
    mBitDepth(32),
    mFlags(0)
@@ -109,11 +109,11 @@ bool SDLGameWindow::doCreate(const String& title, int width, int height, int bit
 
 void SDLGameWindow::doDestroy()
 {
-   if ( mpWindow != NULL )
+   if ( mpWindow != nullptr)
    {
       // release main window
       SDL_FreeSurface (mpWindow);
-      mpWindow = NULL;
+      mpWindow = nullptr;
    }
 
    if ( SDL_WasInit(SDL_INIT_VIDEO) )
@@ -157,7 +157,7 @@ int SDLGameWindow::getWindowFlags(bool fullscreen)
    const SDL_VideoInfo *videoInfo;
    videoInfo = SDL_GetVideoInfo();
 
-   if (videoInfo == NULL)
+   if ( videoInfo == nullptr )
    {
       log << "Can't get video information about graphics card.";
       return 0;
@@ -210,7 +210,7 @@ void SDLGameWindow::resize(int width, int height)
 {
   // try to set the new video mode
    mpWindow = SDL_SetVideoMode(width, height, mBitDepth, mFlags);
-   if ( mpWindow == NULL )
+   if ( mpWindow == nullptr)
    {
       Log::getInstance() << "Could not resize window to " << width << "x" << height << ": " << SDL_GetError();
    }
@@ -291,7 +291,7 @@ void SDLGameWindow::onMouseMotionEvent(SDL_MouseMotionEvent& event)
 
    MouseEvent mouseevent(buttons, MouseEvent::eMotion, keymodifiers, location, relative);
 
-   if ( mpMouseDispatcher != NULL )
+   if ( mpMouseDispatcher != nullptr )
       mpMouseDispatcher->dispatch(mouseevent);
       */
 }

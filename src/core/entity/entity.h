@@ -56,8 +56,8 @@ public:
    virtual ~Entity();
 
  // get/set
-   uint32_t       getId() const;
-   void           setId(uint32_t id);
+   Id             getId() const { return mId; }
+   void           setId(Id id) { mId = id; }
 
    bool           hasParent() const;
    const Entity&  getParent() const;
@@ -90,10 +90,7 @@ public:
 
    c2d::Controller& getController();
    void             setController(c2d::Controller* pcontroller);
-
-   bool           getDirection() const;
-   void           setDirection(bool direction);
-
+   
  // query
    bool hasLineOfSight(const Entity& that) const;
 
@@ -107,7 +104,6 @@ public:
 
  // update & drawing
    void update(float delta);
-   void updateClient(float delta);
    void draw(Graphics::RenderContext& context) const;
 
  // messaging

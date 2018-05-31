@@ -31,7 +31,7 @@ template<class E>
 void* TreeDepthFirstIterator<E>::key()
 {
    if ( _stack.empty() )
-      return NULL;
+      return nullptr;
    else
       return _stack.top().pnode;
 }

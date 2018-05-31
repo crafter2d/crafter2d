@@ -157,7 +157,7 @@ bool ShaderObject::valid() const
 
 ShaderUniformBuffer* ShaderObject::getUniformBuffer(const String& name) const
 {
-   ShaderUniformBuffer* presult = NULL;
+   ShaderUniformBuffer* presult = nullptr;
    std::string uname = name.toUtf8();
    GLuint index = glGetUniformBlockIndex(program, uname.c_str());
    if ( index != GL_INVALID_INDEX )

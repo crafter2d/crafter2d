@@ -30,7 +30,7 @@ class WeakCount;
 class SharedCount
 {
 public:
-   template<class T> SharedCount(T* pdata): mpCounter(NULL)
+   template<class T> SharedCount(T* pdata): mpCounter(nullptr)
    {
       mpCounter = new CountImpl<T>(pdata);
    }
@@ -39,7 +39,7 @@ public:
 
    SharedCount(const SharedCount& that): mpCounter(that.mpCounter)
    {
-      if ( mpCounter != NULL )
+      if ( mpCounter != nullptr )
       {
          mpCounter->addRef();
       }
@@ -47,7 +47,7 @@ public:
 
    ~SharedCount()
    {
-      if ( mpCounter != NULL )
+      if ( mpCounter != nullptr )
       {
          mpCounter->releaseRef();
       }
@@ -73,7 +73,7 @@ public:
 
    int count() const
    {
-      return mpCounter == NULL ? 0 : mpCounter->useCount();
+      return mpCounter == nullptr ? 0 : mpCounter->useCount();
    }
 
  // operations
@@ -81,7 +81,7 @@ public:
    void reset()
    {
       mpCounter->releaseRef();
-      mpCounter = NULL;
+      mpCounter = nullptr;
    }
 
 

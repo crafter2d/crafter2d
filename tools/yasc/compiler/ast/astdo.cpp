@@ -7,15 +7,15 @@
 
 ASTDo::ASTDo():
    ASTStatement(),
-   mpCondition(NULL),
-   mpBody(NULL)
+   mpCondition(nullptr),
+   mpBody(nullptr)
 {
 }
 
 ASTDo::~ASTDo()
 {
-   setCondition(NULL);
-   setBody(NULL);
+   setCondition(nullptr);
+   setBody(nullptr);
 }
 
 // - Get/set

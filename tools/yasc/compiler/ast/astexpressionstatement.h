@@ -9,7 +9,7 @@ class ASTExpression;
 class ASTExpressionStatement : public ASTStatement
 {
 public:
-   explicit ASTExpressionStatement(ASTExpression* pexpression = NULL);
+   explicit ASTExpressionStatement(ASTExpression* pexpression = nullptr);
    virtual ~ASTExpressionStatement();
 
  // get/set

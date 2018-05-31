@@ -30,7 +30,7 @@ ListNode<N>::ListNode(const N& element, ListNode<N>* pprev, ListNode<N>* pnext):
 template <class E>
 bool ListNode<E>::hasNext() const
 {
-   return _pnext != NULL;
+   return _pnext != nullptr;
 }
 
 template <class N>
@@ -60,7 +60,7 @@ void ListNode<N>::next(ListNode<N>* pnext)
 template <class E>
 bool ListNode<E>::hasPrev() const
 {
-   return _pprev != NULL;
+   return _pprev != nullptr;
 }
 
 template <class N>

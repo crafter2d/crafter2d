@@ -20,9 +20,9 @@ namespace Graphics
    D3DGlyphProvider::D3DGlyphProvider(ID2D1DeviceContext* pd2dcontext, IDWriteFactory* pdwfactory, GlyphAtlas& atlas) :
       GlyphProvider(atlas),
       mpD2DContext(pd2dcontext),
-      mpTextFormat(NULL),
+      mpTextFormat(nullptr),
       mpDWriteFactory(pdwfactory),
-      mpTextRenderer(NULL),
+      mpTextRenderer(nullptr),
       mWidth(512),
       mHeight(512)
    {
@@ -69,7 +69,7 @@ namespace Graphics
    uint32_t D3DGlyphProvider::getGlyph(UChar ch)
    {
       HRESULT hr = S_OK;
-      IDWriteTextLayout* ptextlayout = NULL;
+      IDWriteTextLayout* ptextlayout = nullptr;
 
       ASSERT_PTR(mpTextFormat);
 

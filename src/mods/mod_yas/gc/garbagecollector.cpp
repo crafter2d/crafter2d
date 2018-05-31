@@ -13,7 +13,7 @@
 int VoidHash(void* pkey)
 {
 	unsigned char* keyPtr = (unsigned char*)pkey;
-	if ( pkey == NULL )
+	if ( pkey == nullptr )
 		return 0;
 	
 	unsigned int hashOffset = 0;

@@ -10,22 +10,21 @@
 
 namespace Graphics
 {
-   OGLGlyphProvider::OGLGlyphProvider(FT_Library library) :
+   OGLGlyphProvider::OGLGlyphProvider(FT_Library library, GlyphAtlas& atlas) :
+      GlyphProvider(atlas),
       mLibrary(library),
-      mpFont(NULL)
+      mpFont(nullptr)
    {
    }
 
    void OGLGlyphProvider::initialize(OGLFont& font)
    {
       mpFont = &font;
-      mpFont->initialize(12);
+      mpFont->initialize(font.getSize());
    }
 
-   bool OGLGlyphProvider::getGlyph(UChar ch, float emsize, Glyph& glyph)
+   uint32_t OGLGlyphProvider::getGlyph(UChar ch)
    {
-      C2D_UNUSED(emsize);
-      
       FT_Face face = mpFont->getFace();
       FT_GlyphSlot slot = face->glyph;
 
@@ -33,16 +32,16 @@ namespace Graphics
       int error = FT_Load_Glyph(face, faceindex, FT_LOAD_DEFAULT);
       if ( error != 0 )
       {
-         return false;
+         return 0xffffff;
       }
 
       FT_Glyph ftglyph;
       error = FT_Get_Glyph(slot, &ftglyph);
-      error = FT_Glyph_To_Bitmap(&ftglyph, FT_RENDER_MODE_NORMAL, NULL, true);
+      error = FT_Glyph_To_Bitmap(&ftglyph, FT_RENDER_MODE_NORMAL, nullptr, true);
       if ( error != 0 )
       {
          FT_Done_Glyph(ftglyph);
-         return false;
+         return 0xffffff;
       }
 
       FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)ftglyph;
@@ -54,22 +53,32 @@ namespace Graphics
       uint8_t* pdata = new uint8_t[datasize];
       memset(pdata, 0, datasize);
 
-      for ( int j = 0; j < height; j++ )
+      uint8_t* psrc = bitmap_glyph->bitmap.buffer;
+      uint8_t* pdest = pdata;
+
+      for ( int h = 0; h < height; ++h )
       {
+         memcpy(pdest, psrc, sizeof(uint8_t) * width);
+         pdest += width;
+         psrc += width;
+         /*
          for ( int i = 0; i < width; i++ )
          {
             uint8_t pos = i + j * width;
             pdata[pos] = bitmap_glyph->bitmap.buffer[pos];
          }
+         */
       }
 
+      Glyph glyph;
       glyph.setSize(Size(static_cast<float>(width), static_cast<float>(height)));
       glyph.setAdvance(static_cast<float>(slot->advance.x >> 6));
       glyph.setBaseLine(static_cast<float>(bitmap_glyph->top));
       glyph.setPixels(pdata, width);
+      uint32_t result = insertGlyph(glyph);
 
       FT_Done_Glyph(ftglyph);
 
-      return true;
+      return result;
    }
 }

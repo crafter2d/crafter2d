@@ -8,14 +8,14 @@
 ASTTypeVariable::ASTTypeVariable():
    mId(),
    mMode(eNormal),
-   mpOther(NULL),
+   mpOther(nullptr),
    mIndex(-1)
 {
 }
 
 ASTTypeVariable::~ASTTypeVariable()
 {
-   setOther(NULL);
+   setOther(nullptr);
 }
 
 // get/set

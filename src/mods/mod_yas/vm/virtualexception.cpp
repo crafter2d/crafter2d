@@ -6,7 +6,7 @@
 #include "virtualobject.h"
 
 VirtualException::VirtualException():
-   mpException(NULL)
+   mpException(nullptr)
 {
 }
 

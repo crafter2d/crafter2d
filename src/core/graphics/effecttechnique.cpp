@@ -11,17 +11,17 @@ namespace Graphics
 {
 
 EffectTechnique::EffectTechnique():
-   mpCodePath(NULL)
+   mpCodePath(nullptr)
 {
 }
 
 EffectTechnique::~EffectTechnique()
 {
-   if( mpCodePath != NULL )
+   if( mpCodePath != nullptr )
    {
 		// release the path
 		delete mpCodePath;
-		mpCodePath = NULL;
+		mpCodePath = nullptr;
 	}
 }
 
@@ -43,7 +43,7 @@ UniformBuffer* EffectTechnique::createUniformBuffer(const String& name) const
 VertexBuffer* EffectTechnique::createVertexBuffer(Device& device, int length, int usage)
 {
    VertexBuffer* presult = device.createVertexBuffer();
-   if ( presult != NULL )
+   if ( presult != nullptr )
    {
       ASSERT_PTR(mpCodePath);
       presult->create(mpCodePath->getVertexLayout(), length, usage);

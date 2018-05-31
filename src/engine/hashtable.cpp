@@ -135,11 +135,11 @@ ub4 HashTable::hash(const std::string& key, register ub4 initval)
 bool HashTable::create (ub4 s)
 {
 	table = new bucket*[s];
-	if (table == NULL)
+	if (table == nullptr)
 		return false;
 
 	for (ub4 i = 0; i < s; i++)
-		table[i] = NULL;
+		table[i] = nullptr;
 	size = s;
 	return true;
 }
@@ -149,7 +149,7 @@ void* HashTable::insert (const std::string& key, void* data)
 	ub4 k = hash(key) % size;
 	bucket* b = new bucket(key, data);
 
-	if (table[k] == NULL)
+	if (table[k] == nullptr)
    {
 		// just insert here
 		table[k] = b;
@@ -170,14 +170,14 @@ void* HashTable::insert (const std::string& key, void* data)
 		b->next = table[k];
 		table[k] = b;
 	}
-	return NULL;
+	return nullptr;
 }
 
 void* HashTable::lookup (const std::string& key)
 {
-	if (size == 0) return NULL;
+	if (size == 0) return nullptr;
 	ub4 k = hash (key) % size;
-	if (!table[k]) return NULL;
+	if (!table[k]) return nullptr;
 
 	if (table[k]->next) {
 		// multiple items on this spot, so do string compared
@@ -188,7 +188,7 @@ void* HashTable::lookup (const std::string& key)
 				return temp->data;
 
 		// when we arrive here it wasn't there
-		return NULL;
+		return nullptr;
 	}
 	else {
 		// only one item on this spot, return it's data
@@ -197,7 +197,7 @@ void* HashTable::lookup (const std::string& key)
          return temp->data;
 	}
 
-   return NULL;
+   return nullptr;
 }
 
 void HashTable::enumerate(void (*func)(const std::string&, void *, void *), void* param)
@@ -205,21 +205,21 @@ void HashTable::enumerate(void (*func)(const std::string&, void *, void *), void
    unsigned i;
     bucket *temp;
     for (i=0; i < size; i++)
-        if ((table)[i] != NULL)
-            for (temp = (table)[i]; temp != NULL; temp = temp->next)
+        if ((table)[i] != nullptr)
+            for (temp = (table)[i]; temp != nullptr; temp = temp->next)
                 func(temp->key, temp->data, param);
 }
 
 void* HashTable::remove (const std::string& key)
 {
 	ub4 k = hash (key) % size;
-	if (!table[k]) return NULL;
+	if (!table[k]) return nullptr;
 
 	if (table[k]->next)
    {
 		// multiple entries, remove correct one
 		bucket* temp = table[k];
-		for (bucket* prev = NULL; temp; prev = temp, temp = temp->next)
+		for (bucket* prev = nullptr; temp; prev = temp, temp = temp->next)
          if ( temp->key.compare(key) == 0)
          {
 				void* old = temp->data;
@@ -230,14 +230,14 @@ void* HashTable::remove (const std::string& key)
 				delete temp;
 				return old;
 			}
-		return NULL;
+		return nullptr;
 	}
 	else 
    {
 		// remove the only object
 		void *old = table[k]->data;
 		delete table[k];
-		table[k] = NULL;
+		table[k] = nullptr;
 		return old;
 	}
 }

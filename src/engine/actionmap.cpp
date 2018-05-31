@@ -30,15 +30,15 @@ namespace c2d
 {
 
    ActionMap::ActionMap() :
-      mpProcess(NULL),
-      mpScript(NULL),
+      mpProcess(nullptr),
+      mpScript(nullptr),
       mActions()
    {
    }
 
    ActionMap::~ActionMap()
    {
-      mpProcess = NULL;
+      mpProcess = nullptr;
    }
 
    // - Get/set

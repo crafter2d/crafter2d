@@ -23,7 +23,7 @@
 #include "profileritem.h"
 
 ProfilerInstance::ProfilerInstance(const std::string& name):
-   mpItem(NULL)
+   mpItem(nullptr)
 {
    mpItem = Profiler::getInstance().findOrCreateItem(name);
    mpItem->begin();

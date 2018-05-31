@@ -23,7 +23,7 @@
 inline SharedCount::SharedCount(WeakCount& that):
    mpCounter(that.mpCounter) 
 {
-   if ( mpCounter != NULL )
+   if ( mpCounter != nullptr )
    {
       mpCounter->addRef();
    }

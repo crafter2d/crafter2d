@@ -77,7 +77,7 @@ namespace yasc
          ptype->mInfo.mpObject = pinfo;
          return ptype;
       }
-      return NULL;
+      return nullptr;
    }
 
    // static 
@@ -91,7 +91,7 @@ namespace yasc
    // - Implementation
 
    Type::Type():
-      mKind(eNull),
+      mKind(enullptr),
       mInfo()
    {
    }
@@ -103,7 +103,7 @@ namespace yasc
    }
 
    Type::Type(const Type& that):
-      mKind(eNull),
+      mKind(enullptr),
       mInfo()
    {
       assign(that);
@@ -180,9 +180,9 @@ namespace yasc
       return mKind;
    }
 
-   bool Type::isNull() const
+   bool Type::isnullptr() const
    {
-      return mKind == eNull;
+      return mKind == enullptr;
    }
 
    bool Type::isVoid() const

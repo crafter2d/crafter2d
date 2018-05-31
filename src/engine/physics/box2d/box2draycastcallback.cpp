@@ -23,7 +23,7 @@
 
 Box2DRayCastCallback::Box2DRayCastCallback():
    b2RayCastCallback(),
-   mpObject(NULL),
+   mpObject(nullptr),
    mPos(),
    mDistance(0)
 {
@@ -33,7 +33,7 @@ Box2DRayCastCallback::Box2DRayCastCallback():
    
 bool Box2DRayCastCallback::hasCollision() const
 {
-   return mpObject != NULL;
+   return mpObject != nullptr;
 }
 
 // - Collision reporting

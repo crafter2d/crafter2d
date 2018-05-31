@@ -30,7 +30,7 @@ template<class T>
 class SharedPtr
 {
 public:
-   explicit SharedPtr(T* pointer = NULL);
+   explicit SharedPtr(T* pointer = nullptr);
    explicit SharedPtr(WeakPtr<T>& that);
             SharedPtr(const SharedPtr<T>& that);
            ~SharedPtr();

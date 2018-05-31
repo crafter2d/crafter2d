@@ -42,7 +42,7 @@ NetEvent* NetEventFactory::create(int type)
       default:                   break;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 UpdateObjectEvent* NetEventFactory::createUpdateEvent()

@@ -4,7 +4,7 @@
 #include "core/defines.h"
 
 ComponentFactory::ComponentFactory(ComponentInterface::ComponentType type):
-   mpContentManager(NULL),
+   mpContentManager(nullptr),
    mComponentType(type)
 {
 }

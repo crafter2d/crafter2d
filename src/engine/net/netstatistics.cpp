@@ -26,7 +26,7 @@
 
 NetStatistics::NetStatistics():
    MItems(),
-   MPCurrentItem(NULL),
+   MPCurrentItem(nullptr),
    MLastUpdate(0),
    MLimit(JENGINE_STATISTICS_LIMIT)
 {
@@ -35,7 +35,7 @@ NetStatistics::NetStatistics():
 
 NetStatistics::~NetStatistics()
 {
-   currentItem(NULL);
+   currentItem(nullptr);
    items().clear();
 }
 

@@ -4,7 +4,7 @@
 namespace c2d
 {
    inline ScriptObjectHandle::ScriptObjectHandle():
-      mpObject(NULL),
+      mpObject(nullptr),
       mOwner(false)
    {
    }

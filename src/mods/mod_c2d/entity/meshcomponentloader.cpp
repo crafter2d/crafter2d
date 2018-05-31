@@ -50,14 +50,14 @@ ComponentDefinitionProto* MeshComponentLoader::load(const TiXmlElement& element)
    pdefinition->mHeight = height;
 
    const TiXmlElement* pXmlAnimation = element.FirstChildElement("animations");
-   if ( pXmlAnimation != NULL )
+   if ( pXmlAnimation != nullptr )
    {
       // query the animation speed (in mm)
       if ( pXmlAnimation->QueryFloatAttribute("speed", &pdefinition->mAnimationSpeed) != TIXML_SUCCESS )
 		   pdefinition->mAnimationSpeed = 100;
       pdefinition->mAnimationSpeed /= 1000.0f;
 
-      for ( auto panim = pXmlAnimation->FirstChildElement("anim"); panim != NULL; panim = panim->NextSiblingElement("anim") )
+      for ( auto panim = pXmlAnimation->FirstChildElement("anim"); panim != nullptr; panim = panim->NextSiblingElement("anim") )
       {
          MeshComponentDefinitionProto::Animation animation;
 

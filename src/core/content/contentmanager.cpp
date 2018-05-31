@@ -38,9 +38,9 @@ namespace c2d
    ContentManager::ContentManager() :
       mModules(),
       mBaseDir(),
-      mpDevice(NULL),
-      mpSimulator(NULL),
-      mpSoundManager(NULL)
+      mpDevice(nullptr),
+      mpSimulator(nullptr),
+      mpSoundManager(nullptr)
    {
    }
 
@@ -53,20 +53,20 @@ namespace c2d
 
    IContent* ContentManager::load(const String& name)
    {
-      IContent* presult = NULL;
+      IContent* presult = nullptr;
 
       String path = name + UTEXT(".c2d");
       path.toLower();
 
       File* pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
-      if ( pfile != NULL )
+      if ( pfile != nullptr )
       {
          Uuid uuid;
          FileReaderStream stream(*pfile);
          uuid.read(stream);
 
          ContentModule* pmodule = findModule(uuid);
-         if ( pmodule != NULL )
+         if ( pmodule != nullptr )
          {
             ContentReader& reader = pmodule->getReader();
             reader.setContentManager(*this);
@@ -75,7 +75,7 @@ namespace c2d
             reader.setSoundManager(mpSoundManager);
 
             presult = reader.read(stream);
-            if ( presult != NULL )
+            if ( presult != nullptr )
             {
                presult->setFilename(name);
             }

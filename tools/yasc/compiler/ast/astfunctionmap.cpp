@@ -141,7 +141,7 @@ ASTFunction* ASTFunctionMap::findBestMatch(const String& name, const ASTSignatur
          }
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 ASTFunction* ASTFunctionMap::findExactMatch(const String& name, const ASTSignature& signature)
@@ -160,7 +160,7 @@ ASTFunction* ASTFunctionMap::findExactMatch(const String& name, const ASTSignatu
          }
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 // - Visitor

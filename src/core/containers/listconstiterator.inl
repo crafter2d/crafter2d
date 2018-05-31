@@ -11,7 +11,7 @@ ListConstIterator<E>::ListConstIterator(const List<E>& list, const ListNode<E>* 
 template <class E>
 void ListConstIterator<E>::operator++()
 {
-   if ( mpNode != NULL )
+   if ( mpNode != nullptr )
    {
       mpNode = mpNode->nextptr();
    }
@@ -38,5 +38,5 @@ const E& ListConstIterator<E>::item() const
 template <class E>
 bool ListConstIterator<E>::isValid() const
 {
-   return mpNode != NULL;
+   return mpNode != nullptr;
 }

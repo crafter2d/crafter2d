@@ -38,7 +38,7 @@ namespace Graphics
       }
       else
       {
-         *pobject = NULL;
+         *pobject = nullptr;
          return E_NOINTERFACE;
       }
    }
@@ -68,7 +68,7 @@ namespace Graphics
    {
 
       D3DFontFileEnumerator* penumerator = new D3DFontFileEnumerator(factory);
-      if (penumerator == NULL)
+      if (penumerator == nullptr)
       {
          return E_OUTOFMEMORY;
       }

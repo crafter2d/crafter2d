@@ -7,8 +7,8 @@
 
 ASTVariableInit::ASTVariableInit():
    ASTNode(),
-   mpExpression(NULL),
-   mpArrayInit(NULL)
+   mpExpression(nullptr),
+   mpArrayInit(nullptr)
 {
 }
 
@@ -19,7 +19,7 @@ ASTVariableInit::~ASTVariableInit()
 // - Get/set
 bool ASTVariableInit::hasExpression() const
 {
-   return mpExpression != NULL;
+   return mpExpression != nullptr;
 }
 
 const ASTExpression& ASTVariableInit::getExpression() const
@@ -40,7 +40,7 @@ void ASTVariableInit::setExpression(ASTExpression* pexpression)
 
 bool ASTVariableInit::hasArrayInit() const
 {
-   return mpArrayInit != NULL;
+   return mpArrayInit != nullptr;
 }
 
 const ASTArrayInit& ASTVariableInit::getArrayInit() const

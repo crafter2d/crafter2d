@@ -11,8 +11,8 @@
 
 OOCheckVisitor::OOCheckVisitor(CompileContext& context):
    CompileStep(context),
-   mpVariable(NULL),
-   mpCurrentType(NULL),
+   mpVariable(nullptr),
+   mpCurrentType(nullptr),
    mScopeStack()
 {
 }
@@ -105,7 +105,7 @@ void OOCheckVisitor::visit(ASTFunction& ast)
       {
          ASTClass& baseclass = mpClass->getBaseClass();
          ASTFunction* pbasefunc = baseclass.findExactMatch(ast.getName(), ast.getSignature());
-         if ( pbasefunc != NULL )
+         if ( pbasefunc != nullptr )
          {
             ast.setBaseFunction(*pbasefunc);
          }
@@ -252,19 +252,19 @@ void  OOCheckVisitor::visit(ASTAssert& ast)
 
 void OOCheckVisitor::visit(ASTExpression& ast)
 {
-   mpCurrentType = NULL;
+   mpCurrentType = nullptr;
 
    ast.getLeft().accept(*this);
 
    if ( ast.hasRight() )
    {
       // ensure the variable is not final
-      if ( mpVariable != NULL && mpVariable->getModifiers().isFinal() )
+      if ( mpVariable != nullptr && mpVariable->getModifiers().isFinal() )
       {
          error(E0054, UTEXT("Can not assign a value to final variable ") + mpVariable->getName(), ast);
       }
 
-      mpCurrentType = NULL;
+      mpCurrentType = nullptr;
 
       ast.getRight().accept(*this);
    }
@@ -272,20 +272,20 @@ void OOCheckVisitor::visit(ASTExpression& ast)
 
 void OOCheckVisitor::visit(ASTConcatenate& ast)
 {
-   mpCurrentType = NULL;
+   mpCurrentType = nullptr;
 
    ast.getLeft().accept(*this);
    if ( ast.hasRight() )
    {
       const ASTType* plefttype = mpCurrentType;
 
-      mpCurrentType = NULL;
+      mpCurrentType = nullptr;
 
       ast.getRight().accept(*this);
 
-      if ( plefttype != NULL && mpCurrentType != NULL )
+      if ( plefttype != nullptr && mpCurrentType != nullptr )
       {
-         validateNullConcatenate(ast, *plefttype, *mpCurrentType);
+         validatenullptrConcatenate(ast, *plefttype, *mpCurrentType);
       }
    }
 }
@@ -323,7 +323,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
       case ASTAccess::eFunction:
          {
             const ASTFunction& function = ast.getFunction();
-            if ( mpCurrentType != NULL )
+            if ( mpCurrentType != nullptr )
             {
                if ( !function.getModifiers().isPublic() )
                {
@@ -341,7 +341,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
          break;
       case ASTAccess::eVariable:
          {
-            if ( mpCurrentType != NULL )
+            if ( mpCurrentType != nullptr )
             {
                ASSERT(mpCurrentType->isObject() || mpCurrentType->isArray());
 
@@ -354,12 +354,12 @@ void OOCheckVisitor::visit(ASTAccess& ast)
             else
             {
                const ASTField* pfield = mpClass->findField(ast.getName(), ASTClass::eLocal);
-               if ( pfield == NULL )
+               if ( pfield == nullptr )
                {
                   if ( mpClass->hasBaseClass() )
                   {
                      pfield = mpClass->getBaseClass().findField(ast.getName());
-                     if ( pfield != NULL )
+                     if ( pfield != nullptr )
                      {
                         checkPublicAccess(*mpClass, pfield->getVariable());
 
@@ -437,28 +437,28 @@ void OOCheckVisitor::validateClass(const ASTClass& klass)
     checkInterfaceImplementation(klass);
 }
 
-void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right)
+void OOCheckVisitor::validatenullptrConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right)
 {
    bool haserror = false;
 
-   if ( left.isNull() )
+   if ( left.isnullptr() )
    {
       haserror = ( !right.isObject() && !right.isArray() );
 
       if ( concatenate.getMode() == ASTConcatenate::eEquals || concatenate.getMode() == ASTConcatenate::eUnequals )
       {
-         // swap left/right side so null is always on righthand side (easier for code generation)
+         // swap left/right side so nullptr is always on righthand side (easier for code generation)
          concatenate.swapSides();
       }
    }
-   else if ( right.isNull() )
+   else if ( right.isnullptr() )
    {
       haserror = ( !left.isObject() && !left.isArray() );
    }
 
    if ( haserror )
    {
-      error(E0058, UTEXT("Invalid concatenation with null operator! Only == and != are supported."), concatenate);
+      error(E0058, UTEXT("Invalid concatenation with nullptr operator! Only == and != are supported."), concatenate);
    }
 }
 
@@ -506,7 +506,7 @@ void OOCheckVisitor::checkInterfaceImplementation(const ASTClass& ast)
          {
             ASTFunction& function = functions.getNext(it);
             const ASTFunction* pimplementation = ast.findExactMatch(function.getName(), function.getSignature());
-            if ( pimplementation == NULL )
+            if ( pimplementation == nullptr )
             {
                error(E0058, UTEXT("Function ") + intrface.getFullName() + '.' + function.getPrototype() + UTEXT(" is not implemented."), ast);
             }

@@ -241,7 +241,7 @@ void NetConnection::process(NetAddress& client)
 
 void NetConnection::processPackage(NetAddress& client, const NetPackage& package)
 {
-   NetObject* pobject = NULL;
+   NetObject* pobject = nullptr;
    ArrayStream arraystream(package.getData(), package.getDataSize());
    NetObjectStream stream(arraystream);
    stream >> &pobject;
@@ -430,7 +430,7 @@ void NetConnection::receive()
             case NetSocketException::eConnReset:
                {
                   NetAddress *pclient = mClients.find(address); 
-                  if ( pclient != NULL )
+                  if ( pclient != nullptr )
                   {
                      mClients.remove(pclient->index);
                   }
@@ -461,7 +461,7 @@ NetAddress& NetConnection::addNewClient(const NetAddress& address)
 NetAddress& NetConnection::findOrCreate(const NetAddress& client)
 {
    NetAddress* pclient = mClients.find(client);
-   if ( pclient == NULL )
+   if ( pclient == nullptr )
    {
       if ( IS_SET(mFlags, eAccept) )
       {

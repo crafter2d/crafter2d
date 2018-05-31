@@ -13,19 +13,19 @@ ASTAccess::ASTAccess():
    mName(),
    mKind(eInvalid),
    mVarAccess(eInvalidAccess),
-   mpNext(NULL),
-   mpPrevious(NULL),
-   mpFunction(NULL),
-   mpField(NULL),
-   mpVariable(NULL),
-   mpStaticType(NULL),
+   mpNext(nullptr),
+   mpPrevious(nullptr),
+   mpFunction(nullptr),
+   mpField(nullptr),
+   mpVariable(nullptr),
+   mpStaticType(nullptr),
    mTypeArguments()
 {
 }
 
 ASTAccess::~ASTAccess()
 {
-   setStaticType(NULL);
+   setStaticType(nullptr);
 }
 
 // - Get/set
@@ -62,7 +62,7 @@ void ASTAccess::setAccess(VarAccess access)
 
 bool ASTAccess::hasNext() const
 {
-   return mpNext != NULL;
+   return mpNext != nullptr;
 }
 
 ASTAccess& ASTAccess::getNext()
@@ -77,7 +77,7 @@ void ASTAccess::setNext(ASTAccess& next)
 
 bool ASTAccess::hasPrevious() const
 {
-   return mpPrevious != NULL;
+   return mpPrevious != nullptr;
 }
 
 ASTAccess& ASTAccess::getPrevious()

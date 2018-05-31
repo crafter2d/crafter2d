@@ -15,5 +15,5 @@ ComponentLoader::~ComponentLoader()
 
 ComponentDefinitionProto* ComponentLoader::load(const TiXmlElement& element)
 {
-   return NULL;
+   return nullptr;
 }

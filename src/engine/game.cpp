@@ -50,10 +50,10 @@
  */
 Game::Game(CommandLine& commandline):
    mCommandLine(commandline),
-   mpWindowFactory(NULL),
-   mpTimerData(NULL),
-   mpClient(NULL),
-   mpServer(NULL)
+   mpWindowFactory(nullptr),
+   mpTimerData(nullptr),
+   mpClient(nullptr),
+   mpServer(nullptr)
 {
 }
 
@@ -169,7 +169,7 @@ bool Game::initGame()
 
    String path;
    const CommandLineArgument* parg = mCommandLine.getArgument(UTEXT("path"));
-   if ( parg != NULL )
+   if ( parg != nullptr )
    {
       path = parg->getValue();
    }
@@ -214,10 +214,10 @@ bool Game::initGame()
 void Game::endGame()
 {
    delete mpClient;
-   mpClient = NULL;
+   mpClient = nullptr;
 
    delete mpServer;
-   mpServer = NULL;
+   mpServer = nullptr;
 }
 
 /*!

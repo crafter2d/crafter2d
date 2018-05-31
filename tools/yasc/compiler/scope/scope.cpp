@@ -43,5 +43,5 @@ ScopeVariable* Scope::find(const String& name)
          return pvariable;
       }
    }
-   return NULL;
+   return nullptr;
 }

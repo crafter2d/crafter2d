@@ -63,7 +63,7 @@ namespace yasc
          }
       }
 
-      ASSERT(result.mKind != eNull);
+      ASSERT(result.mKind != enullptr);
       return result;
    }
 
@@ -138,14 +138,14 @@ namespace yasc
    // - Implementation
 
    Type::Type():
-      mKind(eNull)
+      mKind(enullptr)
    {
    }
 
    Type::Type(Kind kind):
       mKind(kind)
    {
-      ASSERT(kind < eObject || kind == eNull);
+      ASSERT(kind < eObject || kind == enullptr);
    }
 
    Type::Type(Type&& that):
@@ -313,9 +313,9 @@ namespace yasc
       return mKind;
    }
 
-   bool Type::isNull() const
+   bool Type::isnullptr() const
    {
-      return mKind == eNull;
+      return mKind == enullptr;
    }
 
    bool Type::isVoid() const

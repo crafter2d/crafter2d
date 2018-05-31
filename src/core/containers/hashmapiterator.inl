@@ -22,7 +22,7 @@
 template <typename K, class E>
 HashMapIterator<K,E>::HashMapIterator(HashMap<K,E>& hashmap):
    mpHashMap(&hashmap),
-   mpBucket(NULL),
+   mpBucket(nullptr),
    mIndex(-1)
 {
    initialize();
@@ -44,7 +44,7 @@ void HashMapIterator<K,E>::initialize()
 {
    for ( mIndex = 0; mIndex < mpHashMap->mSize; ++mIndex )
    {
-      if ( mpHashMap->mpBuckets[mIndex] != NULL )
+      if ( mpHashMap->mpBuckets[mIndex] != nullptr )
       {
          mpBucket = mpHashMap->mpBuckets[mIndex];
          break;
@@ -60,11 +60,11 @@ void HashMapIterator<K,E>::operator++()
    if ( isValid() )
    {
       mpBucket = mpBucket->getNext();
-      if ( mpBucket == NULL )
+      if ( mpBucket == nullptr )
       {
          for ( ++mIndex; mIndex < mpHashMap->mSize; ++mIndex )
          {
-            if ( mpHashMap->mpBuckets[mIndex] != NULL )
+            if ( mpHashMap->mpBuckets[mIndex] != nullptr )
             {
                mpBucket = mpHashMap->mpBuckets[mIndex];
                break;
@@ -103,5 +103,5 @@ void HashMapIterator<K,E>::remove()
 template <typename K, class E>
 bool HashMapIterator<K,E>::isValid() const
 {
-   return mpBucket != NULL;
+   return mpBucket != nullptr;
 }

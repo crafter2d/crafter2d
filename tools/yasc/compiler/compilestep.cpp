@@ -8,7 +8,7 @@
 
 CompileStep::CompileStep(CompileContext& context):
    mContext(context),
-   mpClass(NULL)
+   mpClass(nullptr)
 {
 }
 

@@ -91,7 +91,7 @@ void Console::printf (const char* msg, ...)
 
    char text[256];
 	va_list ap;
-	if (msg == NULL)
+	if (msg == nullptr)
 		return;
 
 	// format the input text

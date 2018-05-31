@@ -8,9 +8,9 @@ namespace Graphics
 {
    D3DFontFileEnumerator::D3DFontFileEnumerator(IDWriteFactory* pdwfactory) :
       mpDWFactory(pdwfactory),
-      mpDWFile(NULL),
+      mpDWFile(nullptr),
       mRefCount(0),
-      mpCollection(NULL),
+      mpCollection(nullptr),
       mIterator()
    {
    }
@@ -36,7 +36,7 @@ namespace Graphics
       }
       else
       {
-         *pobject = NULL;
+         *pobject = nullptr;
          return E_NOINTERFACE;
       }
    }
@@ -64,7 +64,7 @@ namespace Graphics
       {
          const String& filename = *mIterator;
 
-         HRESULT hr = mpDWFactory->CreateFontFileReference(filename.c_str(), NULL, &mpDWFile);
+         HRESULT hr = mpDWFactory->CreateFontFileReference(filename.c_str(), nullptr, &mpDWFile);
          if (SUCCEEDED(hr))
          {
             mIterator++;

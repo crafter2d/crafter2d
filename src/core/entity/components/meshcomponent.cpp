@@ -16,7 +16,7 @@ using namespace Graphics;
 MeshComponent::MeshComponent():
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
-   mpSprite(NULL)
+   mpSprite(nullptr)
 {
 }
 

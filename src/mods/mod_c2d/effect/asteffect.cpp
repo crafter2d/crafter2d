@@ -9,7 +9,7 @@ ASTEffect::ASTEffect():
    mTechniques(),
    mTextures(),
    mSamplers(),
-   mpLayout(NULL)
+   mpLayout(nullptr)
 {
 }
 

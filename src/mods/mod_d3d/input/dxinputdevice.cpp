@@ -8,22 +8,22 @@ namespace Input
 
 DXInputDevice::DXInputDevice():
    InputDevice(),
-   mpInput(NULL),
-   mpKeyboard(NULL),
+   mpInput(nullptr),
+   mpKeyboard(nullptr),
    mKeyStates()
 {
 }
 
 bool DXInputDevice::create(GameWindow& window)
 {
-   HMODULE hDLL = GetModuleHandle(NULL);
-   HRESULT hr = DirectInput8Create(hDLL, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&mpInput, NULL);
+   HMODULE hDLL = GetModuleHandle(nullptr);
+   HRESULT hr = DirectInput8Create(hDLL, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&mpInput, nullptr);
    if ( FAILED(hr) )
    {
       return false;
    }
 
-   hr = mpInput->CreateDevice(GUID_SysKeyboard, &mpKeyboard, NULL);
+   hr = mpInput->CreateDevice(GUID_SysKeyboard, &mpKeyboard, nullptr);
    if ( FAILED(hr) )
    {
       return false;

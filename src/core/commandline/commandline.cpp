@@ -58,7 +58,7 @@ void CommandLine::set(int argc, char *argv[])
 
 bool CommandLine::hasArgument(const String& name) const
 {
-   return getArgument(name) != NULL;
+   return getArgument(name) != nullptr;
 }
 
 /// Returns pointer to the argument if it was specified on the command line
@@ -72,7 +72,7 @@ const CommandLineArgument* CommandLine::getArgument(const String& name) const
          return &arg;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 // - Parsing

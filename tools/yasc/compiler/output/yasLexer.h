@@ -156,7 +156,7 @@ has the callable functions (rules) shown below,
       pyasLexer->THROW(pyasLexer)
  *  - 
  void
-      pyasLexer->LITNULL(pyasLexer)
+      pyasLexer->LITnullptr(pyasLexer)
  *  - 
  void
       pyasLexer->LITTRUE(pyasLexer)
@@ -529,7 +529,7 @@ struct yasLexer_Ctx_struct
      (*mTHROW)	(struct yasLexer_Ctx_struct * ctx);
 
      void
-     (*mLITNULL)	(struct yasLexer_Ctx_struct * ctx);
+     (*mLITnullptr)	(struct yasLexer_Ctx_struct * ctx);
 
      void
      (*mLITTRUE)	(struct yasLexer_Ctx_struct * ctx);
@@ -792,7 +792,7 @@ lexer
 #define LINE_COMMENT      59
 #define LITERAL      60
 #define LITFALSE      61
-#define LITNULL      62
+#define LITnullptr      62
 #define LITTRUE      63
 #define LOCALVARDECL      64
 #define MINUS      65

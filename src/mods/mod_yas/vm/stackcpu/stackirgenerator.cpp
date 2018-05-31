@@ -718,7 +718,7 @@ void StackIRGenerator::generateInstructions(VirtualContext& context, const Virtu
             break;
          case CIL_stloc:
             INSERT(SBIL_stlocal, (inst.mInt + function.getArgumentCount()));
-            if ( pblock->pguard != NULL && pblock->start == index && pblock->guard_type == VirtualGuard::sCatch )
+            if ( pblock->pguard != nullptr && pblock->start == index && pblock->guard_type == VirtualGuard::sCatch )
             {
                // no popping here, as this is the store exception instruction in case an exception was thrown.
                // so currently there is nothing on the types stack.
@@ -855,7 +855,7 @@ void StackIRGenerator::checkAndFixStack(VirtualContext& context, const VirtualFu
       Block* pblock = blocks[index];
 
       Instruction* pinst = pblock->pstart;
-      while ( pinst != NULL )
+      while ( pinst != nullptr )
       {
          SBIL::Opcode opcode = (SBIL::Opcode) INST_OPCODE(pinst->inst);
 
@@ -905,7 +905,7 @@ void StackIRGenerator::checkAndFixStack(VirtualContext& context, const VirtualFu
                break;
             case SBIL_stlocal:
                {
-                  if ( pinst == pblock->pstart && pblock->pguard != NULL && pblock->guard_type == VirtualGuard::sCatch )
+                  if ( pinst == pblock->pstart && pblock->pguard != nullptr && pblock->guard_type == VirtualGuard::sCatch )
                   {
                      // special case, as it could be that this is the storage of an exception which
                      // is push on the stack whenever the it is thrown.
@@ -964,11 +964,11 @@ bool StackIRGenerator::buildCode(VirtualContext& context, VirtualFunction& funct
       Block* pblock = blocks[index];
       pblock->codepos = pos;
 
-      if ( pblock->pguard != NULL )
+      if ( pblock->pguard != nullptr )
       {
          pblock->pguard->locations[pblock->guard_type] = pos;
       }
-      else if ( pblock->plookup != NULL )
+      else if ( pblock->plookup != nullptr )
       {
          switch ( pblock->lookup_type )
          {
@@ -985,7 +985,7 @@ bool StackIRGenerator::buildCode(VirtualContext& context, VirtualFunction& funct
       }
 
       Instruction* pinst = pblock->pstart;
-      while ( pinst != NULL )
+      while ( pinst != nullptr )
       {
          SBIL::Opcode opcode = (SBIL::Opcode) INST_OPCODE(pinst->inst);
          if ( opcode == SBIL_jump || opcode == SBIL_jump_true || opcode == SBIL_jump_false )
@@ -1001,7 +1001,7 @@ bool StackIRGenerator::buildCode(VirtualContext& context, VirtualFunction& funct
          {
             size *= 2;
             char* pnew = (char*)realloc(pcode, size);
-            if ( pnew == NULL )
+            if ( pnew == nullptr )
             {
                // out of memory?
                free(pcode);

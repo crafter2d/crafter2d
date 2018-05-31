@@ -19,13 +19,13 @@ ASTFunction::ASTFunction(ASTMember::Kind kind):
    mName(),
    mArguments(),
    mLocals(),
-   mpAnnotations(NULL),
+   mpAnnotations(nullptr),
    mModifiers(),
-   mpTypeVariables(NULL),
-   mpType(NULL),
-   mpClass(NULL),
-   mpBaseFunction(NULL),
-   mpBody(NULL),
+   mpTypeVariables(nullptr),
+   mpType(nullptr),
+   mpClass(nullptr),
+   mpBaseFunction(nullptr),
+   mpBody(nullptr),
    mpSignature(new ASTSignature()),
    mResourceIndex(-1),
    mLocalVariableCount(0)
@@ -34,8 +34,8 @@ ASTFunction::ASTFunction(ASTMember::Kind kind):
 
 ASTFunction::~ASTFunction()
 {
-   setType(NULL);
-   setBody(NULL);
+   setType(nullptr);
+   setBody(nullptr);
 
    delete mpSignature;
 }
@@ -70,7 +70,7 @@ void ASTFunction::setType(ASTType* ptype)
 
 bool ASTFunction::hasTypeVariables() const
 {
-   return mpTypeVariables != NULL;
+   return mpTypeVariables != nullptr;
 }
 
 const ASTTypeVariables& ASTFunction::getTypeVariables() const
@@ -93,7 +93,7 @@ void ASTFunction::setTypeVariables(ASTTypeVariables* ptypes)
 
 bool ASTFunction::hasAnnotations() const 
 {
-   return mpAnnotations != NULL;
+   return mpAnnotations != nullptr;
 }
 
 const ASTAnnotations& ASTFunction::getAnnotations() const
@@ -166,7 +166,7 @@ const ASTBlock& ASTFunction::getBody() const
 
 bool ASTFunction::hasBody() const
 {
-   return mpBody != NULL;
+   return mpBody != nullptr;
 }
 
 ASTBlock& ASTFunction::getBody()
@@ -220,12 +220,12 @@ bool ASTFunction::isDefaultConstructor() const
 
 bool ASTFunction::isGeneric() const
 {
-   return mpTypeVariables != NULL && mpTypeVariables->size() > 0;
+   return mpTypeVariables != nullptr && mpTypeVariables->size() > 0;
 }
 
 bool ASTFunction::isVirtual() const
 {
-   return mpBaseFunction != NULL;
+   return mpBaseFunction != nullptr;
 }
 
 const ASTNodes& ASTFunction::getArgumentNodes() const
@@ -272,7 +272,7 @@ void ASTFunction::addLocal(ASTType* plocal)
 void ASTFunction::cleanup()
 {
    delete mpBody;
-   mpBody = NULL;
+   mpBody = nullptr;
 }
 
 // - Visitor

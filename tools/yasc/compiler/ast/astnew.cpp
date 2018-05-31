@@ -8,14 +8,14 @@
 ASTNew::ASTNew():
    ASTExpressionPart(),
    mKind(eInvalid),
-   mpType(NULL),
-   mpConstructor(NULL)
+   mpType(nullptr),
+   mpConstructor(nullptr)
 {
 }
 
 ASTNew::~ASTNew()
 {
-   setType(NULL);
+   setType(nullptr);
 }
 
 // - Get/set

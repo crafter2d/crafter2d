@@ -25,7 +25,7 @@ namespace c2d
    Module* ModuleCollection::operator[](const Uuid& uuid)
    {
       auto it = mModules.find(uuid);
-      return it != mModules.end() ? it->second : NULL;
+      return it != mModules.end() ? it->second : nullptr;
    }
 
    ModuleCollection& ModuleCollection::operator=(ModuleCollection&& that)

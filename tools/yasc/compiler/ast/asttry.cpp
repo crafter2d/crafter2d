@@ -9,16 +9,16 @@
 
 ASTTry::ASTTry():
    ASTStatement(),
-   mpBody(NULL),
-   mpFinally(NULL),
+   mpBody(nullptr),
+   mpFinally(nullptr),
    mResourceIndex(-1)
 {
 }
 
 ASTTry::~ASTTry()
 {
-   setBody(NULL);
-   setFinallyBlock(NULL);
+   setBody(nullptr);
+   setFinallyBlock(nullptr);
 }
 
 // - Get/set
@@ -41,7 +41,7 @@ void ASTTry::setBody(ASTBlock* pbody)
 
 bool ASTTry::hasFinallyBlock() const
 {
-   return mpFinally != NULL;
+   return mpFinally != nullptr;
 }
 
 const ASTBlock& ASTTry::getFinallyBlock() const

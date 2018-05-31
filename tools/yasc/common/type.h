@@ -9,7 +9,7 @@ namespace yasc
    class Type
    {
    public:
-      enum Kind { eInt, eReal, eBool, eChar, eString, eObject, eArray, eGeneric, eVoid, eNull };
+      enum Kind { eInt, eReal, eBool, eChar, eString, eObject, eArray, eGeneric, eVoid, enullptr };
 
       static Type* fromString(const String& typestr);
       static Type* newObjectType(const String& classname);
@@ -24,7 +24,7 @@ namespace yasc
       // query
       Kind getKind() const;
 
-      bool isNull() const;
+      bool isnullptr() const;
       bool isVoid() const;
       bool isBool() const;
       bool isInt() const;

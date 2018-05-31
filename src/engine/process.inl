@@ -57,7 +57,7 @@ namespace c2d
 
    INLINE bool Process::hasWorld() const
    {
-      return mpWorld != NULL;
+      return mpWorld != nullptr;
    }
 
    INLINE const World& Process::getWorld() const

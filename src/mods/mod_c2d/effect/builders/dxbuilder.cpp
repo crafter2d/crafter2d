@@ -59,7 +59,7 @@ void DxBuilder::buildVertexShader(const ASTEffect& effect, ASTTechnique& techniq
    uint32_t flags = D3DCOMPILE_ENABLE_STRICTNESS;
 
    ID3DBlob *presult, *perror;
-   HRESULT hr = D3DCompile(data.c_str(), data.length(), NULL, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, entry.c_str(), target.c_str(), flags, 0, &presult, &perror);
+   HRESULT hr = D3DCompile(data.c_str(), data.length(), nullptr, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, entry.c_str(), target.c_str(), flags, 0, &presult, &perror);
    if ( FAILED(hr) )
    {
       std::string d3derror = "Shader compile error: " + std::string((const char*)perror->GetBufferPointer());
@@ -72,7 +72,7 @@ void DxBuilder::buildVertexShader(const ASTEffect& effect, ASTTechnique& techniq
 void DxBuilder::buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique)
 {
    const ASTFunction* pfunction = effect.findFunction(technique.mGeometry.mEntry);
-   if ( pfunction == NULL )
+   if ( pfunction == nullptr )
    {
       return;
    }
@@ -102,7 +102,7 @@ void DxBuilder::buildGeometryShader(const ASTEffect& effect, ASTTechnique& techn
    uint32_t flags = D3DCOMPILE_ENABLE_STRICTNESS;
 
    ID3DBlob *presult, *perror;
-   HRESULT hr = D3DCompile(data.c_str(), data.length(), NULL, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, entry.c_str(), target.c_str(), flags, 0, &presult, &perror);
+   HRESULT hr = D3DCompile(data.c_str(), data.length(), nullptr, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, entry.c_str(), target.c_str(), flags, 0, &presult, &perror);
    if ( FAILED(hr) )
    {
       std::string d3derror = "Shader compile error: " + std::string((const char*)perror->GetBufferPointer());
@@ -159,7 +159,7 @@ void DxBuilder::buildPixelShader(const ASTEffect& effect, ASTTechnique& techniqu
    uint32_t flags = D3DCOMPILE_ENABLE_STRICTNESS;
 
    ID3DBlob *presult, *perror;
-   HRESULT hr = D3DCompile(data.c_str(), data.length(), NULL, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, entry.c_str(), target.c_str(), flags, 0, &presult, &perror);
+   HRESULT hr = D3DCompile(data.c_str(), data.length(), nullptr, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, entry.c_str(), target.c_str(), flags, 0, &presult, &perror);
    if ( FAILED(hr) )
    {
       std::string d3derror = "Shader compile error: " + std::string((const char*)perror->GetBufferPointer());
@@ -273,7 +273,7 @@ String DxBuilder::buildFunction(const ASTFunction& function)
    String code;
 
    const ASTAnnotation* panno = function.findAnnotation(UTEXT("maxvertexcount"));
-   if ( panno != NULL )
+   if ( panno != nullptr )
    {
       code += UTEXT("[maxvertexcount({0})]").arg(0, panno->intvalue);
    }
@@ -288,7 +288,7 @@ String DxBuilder::buildFunction(const ASTFunction& function)
       else
       {
          const ASTAnnotation* panno = function.findAnnotation(UTEXT("inputtype"));
-         if ( panno != NULL )
+         if ( panno != nullptr )
          {
             code += panno->strvalue + L' ';
          }

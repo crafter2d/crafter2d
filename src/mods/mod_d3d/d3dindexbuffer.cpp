@@ -11,7 +11,7 @@ namespace Graphics
 D3DIndexBuffer::D3DIndexBuffer(D3DDevice& device):
    IndexBuffer(),
    mDevice(device),
-   mpBuffer(NULL)
+   mpBuffer(nullptr)
 {
 }
 
@@ -26,7 +26,7 @@ bool D3DIndexBuffer::create(IndexFormat format, int elements, void* data)
 
    D3D11_USAGE usage = D3D11_USAGE_DEFAULT;
    int cpuflags = 0;
-   if ( data == NULL )
+   if ( data == nullptr )
    {
       usage = D3D11_USAGE_DYNAMIC;
       cpuflags = D3D11_CPU_ACCESS_WRITE;

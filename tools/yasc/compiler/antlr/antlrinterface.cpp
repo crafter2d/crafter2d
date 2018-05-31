@@ -25,7 +25,7 @@ AntlrParser::AntlrParser(CompileContext& context):
    mContext(context),
    mClassResolver(),
    mPackage(),
-   mpClass(NULL)
+   mpClass(nullptr)
 {
 }
 
@@ -35,14 +35,14 @@ ASTRoot* AntlrParser::parse(File& file)
 {
    std::unique_ptr<AntlrStream> stream(AntlrStream::fromFile(file));
    pyasLexer lexer = yasLexerNew(stream->getStream());
-   if ( lexer == NULL )
+   if ( lexer == nullptr )
    {
       throw new AntlrException(UTEXT("failed to instantiate lexer"));
    }
 
    pANTLR3_COMMON_TOKEN_STREAM tstream;
    tstream = antlr3CommonTokenStreamSourceNew(ANTLR3_SIZE_HINT, TOKENSOURCE(lexer));
-   if ( tstream == NULL )
+   if ( tstream == nullptr )
    {
       lexer->free(lexer);
 
@@ -50,7 +50,7 @@ ASTRoot* AntlrParser::parse(File& file)
    }
 
    pyasParser parser = yasParserNew(tstream);
-   if ( parser == NULL )
+   if ( parser == nullptr )
    {
       lexer->free(lexer);
       tstream->free(tstream);
@@ -102,7 +102,7 @@ ASTRoot* AntlrParser::parse(File& file)
       throw;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 ASTType* AntlrParser::getType(const AntlrNode& node)
@@ -257,7 +257,7 @@ ASTNode* AntlrParser::handleTree(const AntlrNode& node)
          break;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 ASTNode* AntlrParser::handlePackage(const AntlrNode& node)
@@ -645,7 +645,7 @@ ASTMember* AntlrParser::handleInterfaceVoidMember(const AntlrNode& node)
    else
    {
       UNREACHABLE("Void type member variables are not supported");
-      return NULL;
+      return nullptr;
       /*
       ASTVariable* pvariable = new ASTVariable();
       pvariable->setLocation(ASTVariable::eField);
@@ -763,7 +763,7 @@ ASTMember* AntlrParser::handleVoidFuncDecl(const AntlrNode& node)
 ASTAnnotations* AntlrParser::handleAnnotations(const AntlrNode& node)
 {
    int count = node.getChildCount();
-   ASTAnnotations* pannotations = NULL;
+   ASTAnnotations* pannotations = nullptr;
 
    if ( count > 0 )
    {
@@ -1034,7 +1034,7 @@ ASTCase* AntlrParser::handleCase(const AntlrNode& node)
       pcase->setKind(ASTCase::eDefault);
    }
 
-   ASTNode* pbody = NULL;
+   ASTNode* pbody = nullptr;
    AntlrNode bodynode = node.getChild(bodyindex);
    if ( node.getChildCount() == (bodyindex + 1) )
    {
@@ -1617,15 +1617,15 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
          kind = ASTType::eBoolean;
          value.setBool(false);
          break;
-      case LITNULL:
-         kind = ASTType::eNull;
+      case LITnullptr:
+         kind = ASTType::enullptr;
          break;
       default:
          break;
    }
 
    Literal* pliteral = mContext.getLiteralTable().find(value);
-   if ( pliteral == NULL )
+   if ( pliteral == nullptr )
    {
       pliteral = new Literal();
       pliteral->setValue(value);
@@ -1668,7 +1668,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 {
    pANTLR3_EXCEPTION	ex = recognizer->state->exception;
 
-   if ( ex->streamName == NULL )
+   if ( ex->streamName == nullptr )
    {
       if ( ((pANTLR3_COMMON_TOKEN)(ex->token))->type == ANTLR3_TOKEN_EOF )
       {
@@ -1694,7 +1694,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // correct stream. Then we can see that the token we are looking at
 		   // is just something that should not be there and throw this exception.
 		   //
-         if ( tokenNames == NULL )
+         if ( tokenNames == nullptr )
          {
             message = UTEXT("Extraneous input...");
          }
@@ -1717,7 +1717,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // token. Perhaps a missing ';' at line end or a missing ',' in an
 		   // expression list, and such like.
 		   //
-         if ( tokenNames == NULL )
+         if ( tokenNames == nullptr )
          {
             message = UTEXT("Missing token...");
          }
@@ -1756,7 +1756,7 @@ static void reportError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * toke
 		   // for down to something small. Knowing what you are parsing may be
 		   // able to allow you to be even more specific about an error.
 		   //
-         if ( tokenNames == NULL )
+         if ( tokenNames == nullptr )
          {
             message = UTEXT("Syntax error...");
          }

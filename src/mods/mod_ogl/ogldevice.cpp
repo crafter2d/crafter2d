@@ -39,7 +39,7 @@ namespace Graphics
 
 OGLDevice::OGLDevice() :
    Device(),
-   mFreeTypeLib(NULL)
+   mFreeTypeLib(nullptr)
 {
 }
 
@@ -226,7 +226,7 @@ Font* OGLDevice::createFont(const String& name)
    FT_Error error = FT_New_Face(mFreeTypeLib, file.c_str(), 0, &face);
    if ( error != 0 )
    {
-      return NULL;
+      return nullptr;
    }
 
    OGLFont* pfont = new OGLFont(face);

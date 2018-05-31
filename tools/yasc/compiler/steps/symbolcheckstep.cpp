@@ -46,7 +46,7 @@ When variable declared, they are added to the current scope.
 
 SymbolCheckVisitor::SymbolCheckVisitor(CompileContext& context):
    CompileStep(context),
-   mpFunction(NULL),
+   mpFunction(nullptr),
    mCurrentType(),
    mScopeStack(),
    mStatic(false)
@@ -300,7 +300,7 @@ void SymbolCheckVisitor::visit(ASTCase& ast)
       // convert the value expression to a value for the lookup table
       ASTUnary& expressionnode = ast.getValueExpression();
       const ASTLiteral* pliteral = dynamic_cast<const ASTLiteral*>(&expressionnode.getParts()[0]);
-      if ( pliteral != NULL )
+      if ( pliteral != nullptr )
       {
          // we can use a lookup table for fast lookup
          ast.setValue(pliteral->getLiteral().getValue());
@@ -600,7 +600,7 @@ void SymbolCheckVisitor::visit(ASTNew& ast)
                const ASTClass& newclass = ast.getType().getObjectClass();
                const ASTFunction* pfunction = newclass.findBestMatch(newclass.getName(), signature, before.getTypeArguments());
 
-               if ( pfunction == NULL )
+               if ( pfunction == nullptr )
                {
                   String arguments = UTEXT("(") + signature.toString() + ')';
                   error(E0029, UTEXT("No matching constructor ") + newclass.getFullName() + arguments + UTEXT(" defined."), ast);
@@ -685,7 +685,7 @@ void SymbolCheckVisitor::visit(ASTSuper& ast)
 
       ASTTypeList types;
       ASTFunction* pconstructor = pclass->findBestMatch(pclass->getName(), signature, types);
-      if ( pconstructor != NULL )
+      if ( pconstructor != nullptr )
       {
          ast.setConstructor(pconstructor);
       }
@@ -768,7 +768,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
             if ( mCurrentType.isValid() )
             {
                const ASTClass& aclass = mCurrentType.getObjectClass();
-               const ASTField* pfield = NULL;
+               const ASTField* pfield = nullptr;
 
                if ( wasstatic )
                {
@@ -779,7 +779,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                   pfield = aclass.findField(name); // <-- here type of variable can be a generic, so map it to the declaration
                }
 
-               if ( pfield != NULL )
+               if ( pfield != nullptr )
                {
                   // variable access of reference class
 
@@ -816,7 +816,7 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                //
                // local variable
                const ScopeVariable* pvariable = mScopeStack.find(name);
-               if ( pvariable != NULL )
+               if ( pvariable != nullptr )
                {
                   const ASTVariable& var = pvariable->getVariable();
 
@@ -829,16 +829,16 @@ void SymbolCheckVisitor::visit(ASTAccess& ast)
                {
                   // variable access on own class or local variable
                   ASTField* pfield = mpClass->findField(name);
-                  if ( pfield == NULL )
+                  if ( pfield == nullptr )
                      pfield = mpClass->findStatic(name);
 
-                  if ( pfield != NULL )
+                  if ( pfield != nullptr )
                   {
                      const ASTVariable& var = pfield->getVariable();
 
                      // if in a function (not the case for member intialization) check if we aren't accessing
                      // none static members from a static function.
-                     if ( mpFunction != NULL && (mpFunction->getModifiers().isStatic() && !var.getModifiers().isStatic()) )
+                     if ( mpFunction != nullptr && (mpFunction->getModifiers().isStatic() && !var.getModifiers().isStatic()) )
                      {
                         error(E0036, UTEXT("Can not access instance member ") + var.getName(), ast);
                      }
@@ -1067,7 +1067,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& klass, ASTAccess& a
       signature.append(mCurrentType.clone());
    }
 
-   const ASTTypeList* ptypelist = NULL;
+   const ASTTypeList* ptypelist = nullptr;
    if ( access.hasTypeArguments() )
       ptypelist = &access.getTypeArguments();
    else
@@ -1075,7 +1075,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& klass, ASTAccess& a
 
    const ASTFunction* pfunction = klass.findBestMatch(access.getName(), signature, *ptypelist);
 
-   if ( pfunction != NULL )
+   if ( pfunction != nullptr )
    {
       const ASTSignature& funcsig = pfunction->getSignature();
 
@@ -1116,7 +1116,7 @@ void SymbolCheckVisitor::checkFunctionAccess(const ASTClass& klass, ASTAccess& a
          if ( arg.isGeneric() )
          {
             const ASTTypeVariable* pvariable = klass.getTypeVariables().find(arg.getObjectName());
-            if ( pvariable != NULL )
+            if ( pvariable != nullptr )
             {
                mCurrentType.replaceArgument(before.getTypeArguments()[pvariable->getIndex()]);
             }

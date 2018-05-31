@@ -22,8 +22,8 @@ namespace ByteCode
    CPU::CPU(VirtualMachine& vm):
       mVM(vm),
       mGC(),
-      mpArrayClass(NULL),
-      mpStringClass(NULL),
+      mpArrayClass(nullptr),
+      mpStringClass(nullptr),
       mObjectCache(),
       mBlockGC(false)
    {
@@ -85,7 +85,7 @@ namespace ByteCode
 
       // run field initialization expressions
       const VirtualFunctionTableEntry* pentry = &klass.getVirtualFunctionTable()[1];
-      execute(context, *pobject, *pentry, 0, NULL);
+      execute(context, *pobject, *pentry, 0, nullptr);
 
       // run the constructor (entry)
       pentry = (constructor == -1) ? klass.getDefaultConstructor() : &klass.getVirtualFunctionTable()[constructor];

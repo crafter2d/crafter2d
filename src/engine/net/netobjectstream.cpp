@@ -38,7 +38,7 @@ NetEvent* NetObjectStream::readEvent()
    readInt(type);
 
    NetEvent* pevent = NetEventFactory::getInstance().create(type);
-   if ( pevent == NULL )
+   if ( pevent == nullptr )
    {
       pevent = static_cast<NetEvent*>(NetObjectFactory::getInstance().createObject(type));
    }

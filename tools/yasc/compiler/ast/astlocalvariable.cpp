@@ -14,7 +14,7 @@ ASTLocalVariable::ASTLocalVariable(ASTVariable* pvariable):
 
 ASTLocalVariable::~ASTLocalVariable()
 {
-   setVariable(NULL);
+   setVariable(nullptr);
 }
 
 // - Get/set

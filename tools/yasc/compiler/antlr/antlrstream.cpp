@@ -18,7 +18,7 @@ AntlrStream* AntlrStream::fromFile(File& file)
 {
    if ( !file.isValid() )
    {
-      return NULL;
+      return nullptr;
    }
 
    String code;
@@ -39,7 +39,7 @@ AntlrStream* AntlrStream::fromString(const String& code)
 }
 
 AntlrStream::AntlrStream(const std::string& data):
-   mpStream(NULL),
+   mpStream(nullptr),
    mData(data)
 {
 
@@ -54,7 +54,7 @@ AntlrStream::~AntlrStream()
 
 ANTLR3_INPUT_STREAM_struct* AntlrStream::getStream() const
 {
-   if ( mpStream == NULL )
+   if ( mpStream == nullptr )
    {
       mpStream = antlr3StringStreamNew((pANTLR3_UINT8)mData.c_str(), ANTLR3_ENC_UTF8, mData.length(), (pANTLR3_UINT8)"expression");
    }

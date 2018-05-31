@@ -11,7 +11,7 @@ namespace Graphics
 {
 
    D3DUniformBuffer::D3DUniformBuffer():
-      mpBuffer(NULL)
+      mpBuffer(nullptr)
    {
    }
 
@@ -43,7 +43,7 @@ namespace Graphics
       constantBufferDesc.MiscFlags = 0;
       constantBufferDesc.StructureByteStride = 0;
 
-      HRESULT hr = d3ddevice.getDevice().CreateBuffer(&constantBufferDesc, NULL, &mpBuffer);
+      HRESULT hr = d3ddevice.getDevice().CreateBuffer(&constantBufferDesc, nullptr, &mpBuffer);
       if ( FAILED(hr) )
          return false;
 
@@ -58,7 +58,7 @@ namespace Graphics
    void D3DUniformBuffer::set(RenderContext& context, const void* pdata, const int size)
    {
       D3DRenderContext& d3dcontext = static_cast<D3DRenderContext&>(context);
-      d3dcontext.getContext().UpdateSubresource(mpBuffer, 0, NULL, pdata, 0, 0);
+      d3dcontext.getContext().UpdateSubresource(mpBuffer, 0, nullptr, pdata, 0, 0);
    }
    
    // - Helpers

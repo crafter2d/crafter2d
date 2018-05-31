@@ -25,7 +25,7 @@ VirtualClassTable::~VirtualClassTable()
 
 bool VirtualClassTable::contains(const String& name) const
 {
-   return find(name) != NULL;
+   return find(name) != nullptr;
 }
 
 // - Operations

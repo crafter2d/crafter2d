@@ -62,7 +62,7 @@ bool ZipFile::open(const String& path, int flags)
    std::string p = path.toUtf8();
    auto pzip = zip_open(p.c_str(), flags, &error);
 
-   if ( pzip == NULL )
+   if ( pzip == nullptr )
    {
       char buf[128]{};
       zip_error_to_str(buf, sizeof(buf), error, errno);
@@ -123,7 +123,7 @@ bool ZipFile::readFile(const String& name, void*& pdata, int &size, bool casesen
 
    struct zip_file* pfile = zip_fopen(mZip.get(), file.c_str(), 0);
 
-   if ( pfile != NULL )
+   if ( pfile != nullptr )
    {
       size = stat.size;
       std::unique_ptr<char[]> result(new char[size + 1]);

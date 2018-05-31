@@ -49,10 +49,10 @@ namespace c2d
       mSprites(),
       mConstants(),
       mOffset(),
-      mpEffect(NULL),
-      mpUB(NULL),
-      mpVB(NULL),
-      mpIB(NULL)
+      mpEffect(nullptr),
+      mpUB(nullptr),
+      mpVB(nullptr),
+      mpIB(nullptr)
    {
    }
 
@@ -64,7 +64,7 @@ namespace c2d
    bool SpriteRenderer::create(Device& device)
    {
       mpEffect = device.createEffect(UTEXT("shaders/basic"));
-      if ( mpEffect == NULL )
+      if ( mpEffect == nullptr )
       {
          return false;
       }
@@ -89,13 +89,13 @@ namespace c2d
 
       int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
       mpVB = mpEffect->createVertexBuffer(device, batchsize * SpriteVertices, usage);
-      if ( mpVB == NULL )
+      if ( mpVB == nullptr )
       {
          return false;
       }
 
       mpIB = Utils::createIndexBuffer(device, batchsize, 4);
-      if ( mpIB == NULL )
+      if ( mpIB == nullptr )
       {
          return false;
       }

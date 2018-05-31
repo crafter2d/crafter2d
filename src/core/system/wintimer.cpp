@@ -54,7 +54,7 @@ QueryData::QueryData():
 
 WinTimer::WinTimer():
    Timer(),
-   mpData(NULL)
+   mpData(nullptr)
 {
    mpData = new QueryData();
 }
@@ -62,7 +62,7 @@ WinTimer::WinTimer():
 WinTimer::~WinTimer()
 {
    delete mpData;
-   mpData = NULL;
+   mpData = nullptr;
 }
 
 TimerData* WinTimer::createData() const
@@ -75,7 +75,7 @@ void WinTimer::releaseData(TimerData*& pdata)
    TimerDataImpl<LARGE_INTEGER>* pmydata = dynamic_cast< TimerDataImpl<LARGE_INTEGER>* >(pdata);
 
    delete pmydata;
-   pdata = NULL;
+   pdata = nullptr;
 }
 
 void WinTimer::start(TimerData& info)

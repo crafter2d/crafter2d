@@ -12,7 +12,7 @@ namespace Graphics
    {
    public:
       Particles():
-         mppParticles(NULL), 
+         mppParticles(nullptr), 
          mSize(0) {
       }
 

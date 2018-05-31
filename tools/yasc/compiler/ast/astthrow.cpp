@@ -8,13 +8,13 @@
 
 ASTThrow::ASTThrow():
    ASTStatement(),
-   mpExpression(NULL)
+   mpExpression(nullptr)
 {
 }
 
 ASTThrow::~ASTThrow()
 {
-   setExpression(NULL);
+   setExpression(nullptr);
 }
 
 // - Get/set

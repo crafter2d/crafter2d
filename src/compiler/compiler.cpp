@@ -47,7 +47,7 @@ int compile(const String& srcfile, const String& dstFile)
          }
 
          TiXmlElement* proot = doc.FirstChildElement();
-         if ( proot != NULL )
+         if ( proot != nullptr )
          {
             extension = String::fromUtf8(proot->Value());
          }

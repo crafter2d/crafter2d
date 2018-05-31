@@ -40,7 +40,7 @@ E* ObjectAllocator<E>::get()
    }
    else
    {
-      ASSERT(mFunc != NULL);
+      ASSERT(mFunc != nullptr);
       return (*mFunc)();
    }
 }

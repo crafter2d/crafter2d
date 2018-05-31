@@ -46,11 +46,11 @@ namespace c2d
       mNetObserver(*this),
       conn(mNetObserver),
       mpModuleManager(nullptr),
-      mpContentManager(NULL),
-      mpScriptManager(NULL),
-      mpScript(NULL),
-      actionMap(NULL),
-      mpWorld(NULL),
+      mpContentManager(nullptr),
+      mpScriptManager(nullptr),
+      mpScript(nullptr),
+      actionMap(nullptr),
+      mpWorld(nullptr),
       mInitialized(false),
       mActive(true),
       mDetecting(false)
@@ -79,7 +79,7 @@ namespace c2d
       
       // initialize the scripting engine
       ScriptModule* pmod = static_cast<ScriptModule*>(mpModuleManager->lookup(UUID_ScriptModule));
-      if ( pmod == NULL )
+      if ( pmod == nullptr )
       {
          return false;
       }
@@ -87,7 +87,7 @@ namespace c2d
       mpScriptManager = &pmod->getManager();
       script_engine_register(*mpScriptManager);
       mpScript = mpScriptManager->load(classname, this, false);
-      if ( mpScript == NULL )
+      if ( mpScript == nullptr )
       {
          return false;
       }
@@ -104,13 +104,13 @@ namespace c2d
       conn.shutdown();
 
       delete mpWorld;
-      mpWorld = NULL;
+      mpWorld = nullptr;
 
       delete mpScript;
-      mpScript = NULL;
+      mpScript = nullptr;
 
       delete actionMap;
-      actionMap = NULL;
+      actionMap = nullptr;
 
       return true;
    }
@@ -118,7 +118,7 @@ namespace c2d
    World* Process::loadWorld(const String& filename)
    {
       mpWorld = getContentManager().loadContent<World>(filename);
-      if ( mpWorld != NULL )
+      if ( mpWorld != nullptr )
       {
          mpWorld->setScript(getScriptManager().load(UTEXT("engine.game.World"), mpWorld, false));
 
@@ -140,7 +140,7 @@ namespace c2d
    void Process::setActionMap(ActionMap* map)
    {
       actionMap = map;
-      if ( actionMap != NULL )
+      if ( actionMap != nullptr )
          actionMap->setProcess(*this);
    }
 

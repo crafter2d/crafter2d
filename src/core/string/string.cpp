@@ -77,7 +77,7 @@ const String& String::empty()
 String String::fromUtf8(const char* pdata)
 {
    String result;
-   if ( pdata != NULL )
+   if ( pdata != nullptr )
    {
       result.setToUtf8(pdata, strlen(pdata));
    }
@@ -387,7 +387,7 @@ String String::unescape() const
 
             if (dno > 0)
             {
-               result.mData += (wchar_t) strtol(digs, NULL, 16);
+               result.mData += (wchar_t) strtol(digs, nullptr, 16);
             }
             break;
 

@@ -7,7 +7,7 @@ namespace Graphics
 {
    Glyph::Glyph() :
       mSize(),
-      mpPixels(NULL),
+      mpPixels(nullptr),
       mPitch(0),
       mBaseLine(0.0f),
       mAdvance(0.0f)
@@ -27,7 +27,7 @@ namespace Graphics
    Glyph::~Glyph()
    {
       delete[] mpPixels;
-      mpPixels = NULL;
+      mpPixels = nullptr;
    }
 
    Glyph& Glyph::operator=(Glyph&& from)

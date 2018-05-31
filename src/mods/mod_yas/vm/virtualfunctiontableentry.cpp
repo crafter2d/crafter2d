@@ -21,7 +21,7 @@ VirtualFunctionTableEntry* VirtualFunctionTableEntry::fromFunction(VirtualFuncti
 // - Implementation
 
 VirtualFunctionTableEntry::VirtualFunctionTableEntry():
-   mpFunction(NULL),
+   mpFunction(nullptr),
    mArguments(0),
    mLocals(0),
    returns(false)

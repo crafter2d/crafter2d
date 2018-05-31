@@ -39,7 +39,7 @@ ResourceHandle<T>::~ResourceHandle()
 template<class T>
 bool ResourceHandle<T>::hasResource() const
 {
-   return mpResource != NULL;
+   return mpResource != nullptr;
 }
 
 template<class T>
@@ -70,6 +70,6 @@ void ResourceHandle<T>::release()
    ResourceHandleBase::release();
 
    delete mpResource;
-   mpResource = NULL;
+   mpResource = nullptr;
 }
 

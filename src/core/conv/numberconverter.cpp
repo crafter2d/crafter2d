@@ -12,7 +12,7 @@
 NumberConverter& NumberConverter::getInstance()
 {
    static NumberConverter* pconverter;
-   if ( pconverter == NULL )
+   if ( pconverter == nullptr )
    {
       pconverter = new NumberConverter();
    }
@@ -37,19 +37,19 @@ int NumberConverter::toInt(UChar value)
 int NumberConverter::toInt(const String& value)
 {
    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
-   return std::stoi(convert.to_bytes(value.mData.c_str()), NULL, 10);
+   return std::stoi(convert.to_bytes(value.mData.c_str()), nullptr, 10);
 }
 
 float NumberConverter::toFloat(const String& value)
 {
    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
-   return std::stof(convert.to_bytes(value.mData.c_str()), NULL);
+   return std::stof(convert.to_bytes(value.mData.c_str()), nullptr);
 }
 
 double NumberConverter::toDouble(const String& value)
 {
    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
-   return std::stod(convert.to_bytes(value.mData.c_str()), NULL);
+   return std::stod(convert.to_bytes(value.mData.c_str()), nullptr);
 }
 
 String& NumberConverter::format(String& result, int value)

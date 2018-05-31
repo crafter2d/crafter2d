@@ -8,20 +8,20 @@
 
 ASTReturn::ASTReturn():
    ASTStatement(),
-   mpExpression(NULL)
+   mpExpression(nullptr)
 {
 }
 
 ASTReturn::~ASTReturn()
 {
-   setExpression(NULL);
+   setExpression(nullptr);
 }
 
 // - Get/set
 
 bool ASTReturn::hasExpression() const
 {
-   return mpExpression != NULL;
+   return mpExpression != nullptr;
 }
 
 const ASTExpression& ASTReturn::getExpression() const

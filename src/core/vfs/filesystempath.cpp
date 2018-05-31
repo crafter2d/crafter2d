@@ -90,7 +90,7 @@ bool FileSystemPath::exists(const String& filename) const
 
 File* FileSystemPath::open(const String& filename, int modus) const
 {
-   File* presult = NULL;
+   File* presult = nullptr;
    String file = File::concat(mPath, filename);
 
    if ( isZipped() )
@@ -107,13 +107,13 @@ File* FileSystemPath::open(const String& filename, int modus) const
       if ( IS_SET(modus, File::ERead) && !StdioFile::exists(file) )
       {
          // for read-mode the file must exist
-         return NULL;
+         return nullptr;
       }
 
       presult = new StdioFile();
    }
 
-   if ( presult != NULL )
+   if ( presult != nullptr )
    {
       presult->open(file, modus);
    }

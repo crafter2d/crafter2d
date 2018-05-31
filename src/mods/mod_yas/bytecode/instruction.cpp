@@ -6,7 +6,7 @@
 namespace ByteCode
 {
    Instruction::Instruction():
-      next(NULL),
+      next(nullptr),
       inst(0)
    {
    }

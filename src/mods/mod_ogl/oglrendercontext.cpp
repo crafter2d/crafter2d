@@ -20,10 +20,10 @@
 using namespace Graphics;
 
 OGLRenderContext::OGLRenderContext():
-   mpEffect(NULL),
-   mpCodePath(NULL),
-   mpVertexBuffer(NULL),
-   mpIndexBuffer(NULL)
+   mpEffect(nullptr),
+   mpCodePath(nullptr),
+   mpVertexBuffer(nullptr),
+   mpIndexBuffer(nullptr)
 {
 }
 

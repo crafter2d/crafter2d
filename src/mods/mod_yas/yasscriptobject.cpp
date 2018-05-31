@@ -10,7 +10,7 @@
 
 YasScriptObject::YasScriptObject(YasScriptManager& manager) :
    mManager(manager),
-   mpObject(NULL)
+   mpObject(nullptr)
 {
 }
 
@@ -57,7 +57,7 @@ void YasScriptObject::arg(int index, const String& arg)
 void YasScriptObject::arg(int index, void* pinstance)
 {
    VirtualObject* pobject = mManager.getVM().lookupNative(pinstance);
-   if ( pobject == NULL )
+   if ( pobject == nullptr )
    {
       throw std::runtime_error("Could not find object. Make sure it has been registered.");
    }

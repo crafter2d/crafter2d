@@ -62,14 +62,14 @@ Layer::Layer():
    verts_to_render_front(0),
    animateTiles(true),
    dirty(true),
-   mpTileSet(NULL),
+   mpTileSet(nullptr),
    mTileMap(),
-   vb(NULL),
-   pfrontvb(NULL),
-   ib(NULL),
-   ub(NULL),
-   mpDefinition(NULL),
-   mpEffect(NULL),
+   vb(nullptr),
+   pfrontvb(nullptr),
+   ib(nullptr),
+   ub(nullptr),
+   mpDefinition(nullptr),
+   mpEffect(nullptr),
    mConstants()
 {
 }
@@ -99,7 +99,7 @@ bool Layer::create(LayerDefinition* pdefinition)
 bool Layer::initialize(Device& device)
 {
    mpEffect = device.createEffect(UTEXT("shaders/basic")); //mpDefinition->effect);
-   if ( mpEffect == NULL )
+   if ( mpEffect == nullptr )
    {
       return false;
    }
@@ -222,7 +222,7 @@ bool Layer::createBuffers(Device& device, int width, int height)
 
    int size = 2 * batchsize * 4; // two layers, each tile is 4 vertices
    vb = mpEffect->createVertexBuffer(device, size, usage);
-   if ( vb == NULL )
+   if ( vb == nullptr )
    {
       Log::getInstance().error("Could not create the vertex buffer.");
       return false;
@@ -230,14 +230,14 @@ bool Layer::createBuffers(Device& device, int width, int height)
 
    size = batchsize * 4; // one layers, each tile is 4 vertices
    pfrontvb = mpEffect->createVertexBuffer(device, size, usage);
-   if ( pfrontvb == NULL )
+   if ( pfrontvb == nullptr )
    {
       Log::getInstance().error("Could not create the vertex buffer.");
       return false;
    }
 
    ib = Utils::createIndexBuffer(device, batchsize, 4);
-   if ( ib == NULL )
+   if ( ib == nullptr )
    {
       return false;
    }
@@ -254,7 +254,7 @@ bool Layer::createUniformBuffers(Graphics::Device& device)
    };
 
    ub = getEffect().createUniformBuffer(UTEXT("mpv"));
-   if ( ub == NULL || !ub->create(device, descs, 3) )
+   if ( ub == nullptr || !ub->create(device, descs, 3) )
    {
       // could not create the uniform buffer object
       // perhaps wrong name??

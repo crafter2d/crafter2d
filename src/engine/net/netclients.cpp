@@ -102,5 +102,5 @@ NetAddress* NetClients::find(const NetAddress& address)
       }
    }
 
-   return NULL;
+   return nullptr;
 }

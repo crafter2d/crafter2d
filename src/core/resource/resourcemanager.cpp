@@ -52,7 +52,7 @@ static String sPath = UTEXT("../images/");
 /// \brief Returns a texture from a the given file.
 TexturePtr ResourceManager::getTexture(const String& file)
 {
-   ResourceHandle<Graphics::Texture>* phandle = NULL;
+   ResourceHandle<Graphics::Texture>* phandle = nullptr;
 
    if ( !mResources.contains(file) )
    {

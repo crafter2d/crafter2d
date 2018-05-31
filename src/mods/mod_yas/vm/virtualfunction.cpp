@@ -9,7 +9,7 @@
 
 VirtualFunction::VirtualFunction():
    mName(),
-   mpClass(NULL),
+   mpClass(nullptr),
    mModifiers(),
    mArguments(),
    mLocals(),
@@ -17,7 +17,7 @@ VirtualFunction::VirtualFunction():
    mGuards(),
    mLookups(),
    mInstructions(),
-   mpCode(NULL),
+   mpCode(nullptr),
    mCodeLength(-1),
    mIndex(-1)
 {
@@ -25,10 +25,10 @@ VirtualFunction::VirtualFunction():
 
 VirtualFunction::~VirtualFunction()
 {
-   if ( mpCode != NULL )
+   if ( mpCode != nullptr )
    {
       free(mpCode);
-      mpCode = NULL;
+      mpCode = nullptr;
    }
 }
 
@@ -127,7 +127,7 @@ VirtualLookupTables& VirtualFunction::getLookupTables()
 
 bool VirtualFunction::hasCode() const
 {
-   return mpCode != NULL;
+   return mpCode != nullptr;
 }
 
 const char* VirtualFunction::getCode()

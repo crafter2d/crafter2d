@@ -38,8 +38,8 @@ namespace Graphics
 Effect::Effect():
    mName(),
    mTechniques(),
-   mpActiveTechnique(NULL),
-   mpBlendState(NULL)
+   mpActiveTechnique(nullptr),
+   mpBlendState(nullptr)
 {
 }
 
@@ -59,7 +59,7 @@ Effect::~Effect()
  */
 void Effect::destroy()
 {
-	setBlendState(NULL);
+	setBlendState(nullptr);
 
    for ( std::size_t index = 0; index < mTechniques.size(); ++index )
    {
@@ -74,7 +74,7 @@ void Effect::addTechnique(EffectTechnique* ptechnique)
 
    mTechniques.push_back(ptechnique);
 
-   if ( mpActiveTechnique == NULL )
+   if ( mpActiveTechnique == nullptr )
    {
       mpActiveTechnique = ptechnique;
    }

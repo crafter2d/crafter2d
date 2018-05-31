@@ -23,14 +23,14 @@ namespace Graphics
 
 D3DDevice::D3DDevice():
    Device(),
-   mpDevice(NULL),
-   mpContext(NULL),
-   mpSwapChain(NULL),
-   mpRenderTargetView(NULL),
-   mpD2DFactory(NULL),
-   mpD2DDevice(NULL),
-   mpD2DContext(NULL),
-   mpDWriteFactory(NULL)
+   mpDevice(nullptr),
+   mpContext(nullptr),
+   mpSwapChain(nullptr),
+   mpRenderTargetView(nullptr),
+   mpD2DFactory(nullptr),
+   mpD2DDevice(nullptr),
+   mpD2DContext(nullptr),
+   mpDWriteFactory(nullptr)
 {
 }
 
@@ -66,7 +66,7 @@ bool D3DDevice::create(GameWindow& window)
       D3D_FEATURE_LEVEL_10_0,
    };
 
-   HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE, NULL, 
+   HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE, nullptr, 
                                               creationFlags, requestedlevel, 3, D3D11_SDK_VERSION,
                                               &sd, &mpSwapChain, &mpDevice, &level, &mpContext);
    if ( FAILED(hr) )
@@ -74,7 +74,7 @@ bool D3DDevice::create(GameWindow& window)
       return false;
    }
 
-   ID3D11Texture2D* pbackbuffer = NULL;
+   ID3D11Texture2D* pbackbuffer = nullptr;
 
    // create & set the rendertarget view
    hr = mpSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)& pbackbuffer);
@@ -82,7 +82,7 @@ bool D3DDevice::create(GameWindow& window)
    {
       return false;
    }
-   mpDevice->CreateRenderTargetView(pbackbuffer, NULL, &mpRenderTargetView);
+   mpDevice->CreateRenderTargetView(pbackbuffer, nullptr, &mpRenderTargetView);
    pbackbuffer->Release();
 
    D3D11_RASTERIZER_DESC desc;
@@ -97,7 +97,7 @@ bool D3DDevice::create(GameWindow& window)
 
    // set the buffer view
    ID3D11RenderTargetView* const targets[1] = { mpRenderTargetView };
-   mpContext->OMSetRenderTargets(1, targets, NULL);
+   mpContext->OMSetRenderTargets(1, targets, nullptr);
 
    // set the viewport
    CD3D11_VIEWPORT viewport(pbackbuffer, mpRenderTargetView);
@@ -200,7 +200,7 @@ IndexBuffer* D3DDevice::createIndexBuffer()
 
 RenderTarget* D3DDevice::createRenderTarget()
 {
-   return NULL;
+   return nullptr;
 }
 
 Texture* D3DDevice::createTexture(int width, int height, int bytesperpixel)
@@ -215,7 +215,7 @@ Texture* D3DDevice::createTexture(int width, int height, int bytesperpixel)
       format = DXGI_FORMAT_R8G8_UNORM;
       break;
    case 3:
-      return NULL; // not supported
+      return nullptr; // not supported
    }
 
    // Create the render target texture
@@ -230,8 +230,8 @@ Texture* D3DDevice::createTexture(int width, int height, int bytesperpixel)
    desc.Usage = D3D11_USAGE_DEFAULT;
    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
    
-   ID3D11Texture2D *ptexture = NULL;
-   HRESULT hr = mpDevice->CreateTexture2D(&desc, NULL, &ptexture);
+   ID3D11Texture2D *ptexture = nullptr;
+   HRESULT hr = mpDevice->CreateTexture2D(&desc, nullptr, &ptexture);
    if ( FAILED(hr) )
    {
       return nullptr;
@@ -245,7 +245,7 @@ Texture* D3DDevice::createTexture(int width, int height, int bytesperpixel)
    srDesc.Texture2D.MostDetailedMip = 0;
    srDesc.Texture2D.MipLevels = 1;
 
-   ID3D11ShaderResourceView *pShaderResView = NULL;
+   ID3D11ShaderResourceView *pShaderResView = nullptr;
    hr = mpDevice->CreateShaderResourceView(ptexture, &srDesc, &pShaderResView);
    if ( FAILED(hr) )
    {
@@ -323,7 +323,7 @@ Texture* D3DDevice::createTexture(const TextureDescription& texdesc)
    desc.Usage = D3D11_USAGE_DEFAULT;
    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
-   ID3D11Texture2D *ptexture = NULL;
+   ID3D11Texture2D *ptexture = nullptr;
    HRESULT hr = mpDevice->CreateTexture2D(&desc, initData.get(), &ptexture);
    if ( FAILED(hr) )
    {
@@ -338,7 +338,7 @@ Texture* D3DDevice::createTexture(const TextureDescription& texdesc)
    srDesc.Texture2D.MostDetailedMip = 0;
    srDesc.Texture2D.MipLevels = 1;
 
-   ID3D11ShaderResourceView *pShaderResView = NULL;
+   ID3D11ShaderResourceView *pShaderResView = nullptr;
    hr = mpDevice->CreateShaderResourceView(ptexture, &srDesc, &pShaderResView);
    if ( FAILED(hr) )
    {

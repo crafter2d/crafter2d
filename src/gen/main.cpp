@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
       const CommandLineArgument& argument = cmdline[0];
       ASSERT(argument.getType() == CommandLineArgument::eCommand);
 
-      Generator* pgenerator = NULL;
+      Generator* pgenerator = nullptr;
       if ( argument.getName() == UTEXT("project") )
       {
          pgenerator = new ProjectGenerator();

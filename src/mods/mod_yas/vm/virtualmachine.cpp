@@ -47,7 +47,7 @@ VirtualMachine::VirtualMachine(VirtualContext& context):
    mGC(),
    mNativeObjects(),
    mState(eInit),
-   mpCPU(NULL)
+   mpCPU(nullptr)
 {
    mpCPU = new StackCPU(*this);
 
@@ -101,7 +101,7 @@ void VirtualMachine::initialize()
 
 bool VirtualMachine::loadClass(const String& classname)
 {
-   return doLoadClass(classname) != NULL;
+   return doLoadClass(classname) != nullptr;
 }
 
 void VirtualMachine::mergeClassRegistry(const ClassRegistry& registry)
@@ -121,11 +121,11 @@ void VirtualMachine::addRootObject(VirtualObject& object)
 bool VirtualMachine::execute(const String& classname, const String& function)
 {
    const VirtualClass* pclass = doLoadClass(classname);
-   if ( pclass == NULL )
+   if ( pclass == nullptr )
       return false;
 
    const VirtualFunctionTableEntry* pentry = pclass->getVirtualFunctionTable().findByName(function);
-   if ( pentry == NULL )
+   if ( pentry == nullptr )
       return false;
 
    mpCPU->executeStatic(mContext, *pclass, *pentry);
@@ -137,7 +137,7 @@ VirtualValue VirtualMachine::execute(VirtualObject& object, const String& functi
 {
    const VirtualClass& vclass = object.getClass();
    const VirtualFunctionTableEntry* pentry = vclass.getVirtualFunctionTable().findByName(function);
-   if ( pentry == NULL )
+   if ( pentry == nullptr )
    {
       throw new VirtualFunctionNotFoundException(object.getClass().getName(), function);
    }
@@ -172,9 +172,9 @@ String VirtualMachine::buildCallStack() const
 /// and access violation when the garbage collector runs.
 VirtualObject* VirtualMachine::instantiate(const String& classname, int constructor)
 {
-   VirtualObject* presult = NULL;
+   VirtualObject* presult = nullptr;
    VirtualClass* pclass = doLoadClass(classname);
-   if ( pclass != NULL )
+   if ( pclass != nullptr )
    {
       presult = &mpCPU->instantiate(mContext, *pclass, constructor);
    }
@@ -185,7 +185,7 @@ VirtualObject& VirtualMachine::instantiateNative(const String& classname, void* 
 {
    ASSERT_PTR(pobject);
 
-   VirtualObject* presult = NULL;
+   VirtualObject* presult = nullptr;
    NativeObjectMap::iterator it = mNativeObjects.find(pobject);
    if ( it != mNativeObjects.end() )
    {
@@ -194,7 +194,7 @@ VirtualObject& VirtualMachine::instantiateNative(const String& classname, void* 
    else
    {
       presult = instantiate(classname);
-      if ( presult == NULL )
+      if ( presult == nullptr )
       {
          throw std::runtime_error("Could not instantiate object!");
       }
@@ -234,7 +234,7 @@ VirtualObject* VirtualMachine::lookupNative(void* pobject)
       ASSERT(it->second->getNativeObjectPtr() == pobject);
       return it->second;
    }
-   return NULL;
+   return nullptr;
 }
 
 VirtualArray* VirtualMachine::instantiateArray()
@@ -273,13 +273,13 @@ void VirtualMachine::unregisterNative(VirtualObject& object)
    {
       static String sFinal = UTEXT("finalize");
       const VirtualFunctionTableEntry* pentry = object.getClass().getVirtualFunctionTable().findByName(sFinal);
-      if ( pentry != NULL )
+      if ( pentry != nullptr )
       {
-         mpCPU->execute(mContext, object, *pentry, 0, NULL);
+         mpCPU->execute(mContext, object, *pentry, 0, nullptr);
       }
    }
 
-   object.setNativeObject(NULL);
+   object.setNativeObject(nullptr);
 }
 
 // - Class loading
@@ -292,7 +292,7 @@ VirtualClass* VirtualMachine::doLoadClass(const String& classname)
    }
    catch ( ... )
    {
-      return NULL;
+      return nullptr;
    }
 }
 

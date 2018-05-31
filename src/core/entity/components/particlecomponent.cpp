@@ -10,7 +10,7 @@ using namespace Graphics;
 
 ParticleComponent::ParticleComponent():
    Component(ComponentInterface::eParticleComponent),
-   mpSystem(NULL)
+   mpSystem(nullptr)
 {
 }
 

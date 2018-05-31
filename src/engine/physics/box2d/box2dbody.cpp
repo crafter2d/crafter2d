@@ -38,16 +38,16 @@ Box2DBody::Box2DBody(Simulator& simulator, b2Body& body):
    mBody(body),
    mHalfWidth(0),
    mHalfHeight(0),
-   mpBottomSensor(NULL),
-   mpLeftSensor(NULL),
-   mpRightSensor(NULL)
+   mpBottomSensor(nullptr),
+   mpLeftSensor(nullptr),
+   mpRightSensor(nullptr)
 {
    mBody.SetUserData(this);
 }
 
 Box2DBody::~Box2DBody()
 {
-   if ( mBody.GetWorld() != NULL )
+   if ( mBody.GetWorld() != nullptr )
    {
       mBody.GetWorld()->DestroyBody(&mBody);
    }

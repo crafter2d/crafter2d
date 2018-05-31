@@ -69,5 +69,5 @@ void Components::postMessage(ComponentMessage& message)
 Component* Components::findComponent(ComponentInterface::ComponentType type)
 {
    ComponentMap::iterator it = mComponents.find(type);
-   return ( it != mComponents.end() ) ? it->second : NULL;
+   return ( it != mComponents.end() ) ? it->second : nullptr;
 }

@@ -35,8 +35,8 @@ using namespace Graphics;
 Entity::Entity():
    mId(-1),
    mComponents(*this),
-   mpController(NULL),
-   mpParent(NULL),
+   mpController(nullptr),
+   mpParent(nullptr),
    mChildren(),
    mTransform(),
    mOffset(),
@@ -136,10 +136,10 @@ void Entity::initialize()
 
 void Entity::destroy()
 {
-   if ( mpParent != NULL )
+   if ( mpParent != nullptr )
    {
       mpParent->detach(*this);
-      mpParent = NULL;
+      mpParent = nullptr;
    }
 }
 

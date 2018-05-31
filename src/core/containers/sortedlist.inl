@@ -26,7 +26,7 @@
 template <class E>
 INLINE SortedList<E>::SortedList():
    mList(),
-   mpCompareFnc(NULL)
+   mpCompareFnc(nullptr)
 {
 }
 

@@ -58,7 +58,7 @@ bool NetSocket::resolve(NetAddress& address, const String& name)
 	if (address.addr.sin_addr.s_addr == INADDR_NONE)
    {
       hostent *host_info = gethostbyname(addr.c_str());
-		if (host_info == NULL)
+		if (host_info == nullptr)
       {
 			return false;
       }
@@ -145,7 +145,7 @@ bool NetSocket::select(bool read, bool write)
    timeVal.tv_usec = 0;
 
    // poll (non-blocking) if there is data waiting
-   return (::select(mSocket+1, &readSet, NULL, NULL, &timeVal) > 0);
+   return (::select(mSocket+1, &readSet, nullptr, nullptr, &timeVal) > 0);
 }
 
 int NetSocket::receive(NetAddress& from, NetPackage& package)

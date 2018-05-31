@@ -11,7 +11,7 @@ ASTUnary::ASTUnary():
    ASTNode(),
    mPre(eNone),
    mPost(eNone),
-   mpAccess(NULL)
+   mpAccess(nullptr)
 {
 }
 
@@ -50,7 +50,7 @@ void ASTUnary::addPart(ASTExpressionPart* ppart)
 {
    ASTAccess* paccess = dynamic_cast<ASTAccess*>(ppart);
 
-   if ( mpAccess != NULL )
+   if ( mpAccess != nullptr )
    {
       ASSERT_PTR(paccess);
 
@@ -59,7 +59,7 @@ void ASTUnary::addPart(ASTExpressionPart* ppart)
 
       mpAccess = paccess;
    }
-   else if ( getChildren().isEmpty() && paccess != NULL )
+   else if ( getChildren().isEmpty() && paccess != nullptr )
    {
       mpAccess = paccess;
    }

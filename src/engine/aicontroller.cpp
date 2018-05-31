@@ -32,14 +32,14 @@ namespace c2d
 
    AIController::AIController() :
       Controller(),
-      mpScript(NULL)
+      mpScript(nullptr)
    {
    }
 
    AIController::~AIController()
    {
       delete mpScript;
-      mpScript = NULL;
+      mpScript = nullptr;
    }
 
    // - Get/set

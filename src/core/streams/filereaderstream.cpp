@@ -8,7 +8,7 @@
 
 FileReaderStream::FileReaderStream(File& file):
    FileStream(file),
-   mpData(NULL),
+   mpData(nullptr),
    mSize(file.size()),
    mPos(0)
 {

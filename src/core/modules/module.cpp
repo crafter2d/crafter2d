@@ -8,7 +8,7 @@
 namespace c2d
 {
    Module::Module(ModuleKind kind, const Uuid& uuid) :
-      mpManager(NULL),
+      mpManager(nullptr),
       mKind(kind),
       mUuid(uuid)
    {
@@ -52,7 +52,7 @@ namespace c2d
    {
       ASSERT_PTR(mpManager);
       Module* pmodule = mpManager->lookup(uuid);
-      if ( pmodule == NULL )
+      if ( pmodule == nullptr )
       {
          throw new std::exception();
       }

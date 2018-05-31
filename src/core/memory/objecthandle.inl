@@ -21,8 +21,8 @@
 
 template<class T>
 ObjectHandle<T>::ObjectHandle():
-   mpAllocator(NULL),
-   mpObject(NULL),
+   mpAllocator(nullptr),
+   mpObject(nullptr),
    mOwned(false)
 {
 }
@@ -69,7 +69,7 @@ ObjectHandle<T>& ObjectHandle<T>::operator=(const ObjectHandle& that)
 template<class T>
 bool ObjectHandle<T>::hasObject() const
 {
-   return mpObject != NULL;
+   return mpObject != nullptr;
 }
 
 // - Operations

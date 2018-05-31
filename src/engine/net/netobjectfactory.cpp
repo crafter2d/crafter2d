@@ -59,7 +59,7 @@ void NetObjectFactory::buildHierarchy()
       if ( !pinfo->hasBaseObject() )
       {
          RuntimeInfo* pbase = find(pinfo->getBase());
-         if ( pbase != NULL )
+         if ( pbase != nullptr )
             pinfo->setBaseObject(pbase);
       }
    }
@@ -85,10 +85,10 @@ void NetObjectFactory::registerObject(int id, RuntimeInfo& info)
 NetObject* NetObjectFactory::createObject(const std::string& name)
 {
    RuntimeInfo* pinfo = find(name);
-   if ( pinfo != NULL )
+   if ( pinfo != nullptr )
       return createObject(pinfo->getId());
    else
-      return NULL;
+      return nullptr;
 }
 
 NetObject* NetObjectFactory::createObject(int id)
@@ -110,5 +110,5 @@ RuntimeInfo* NetObjectFactory::find(const std::string& name)
          return pinfo;
    }
    
-   return NULL;
+   return nullptr;
 }

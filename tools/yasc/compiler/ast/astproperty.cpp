@@ -7,13 +7,13 @@
 ASTProperty::ASTProperty():
    ASTMember(ASTMember::eProperty),
    mName(),
-   mpType(NULL)
+   mpType(nullptr)
 {
 }
 
 ASTProperty::~ASTProperty()
 {
-   setType(NULL);
+   setType(nullptr);
 }
 
 // - Get/set

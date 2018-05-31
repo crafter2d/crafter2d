@@ -33,12 +33,12 @@ void OglBuilder::buildVertexShader(const ASTEffect& effect, ASTTechnique& techni
 void OglBuilder::buildGeometryShader(const ASTEffect& effect, ASTTechnique& technique)
 {
    const ASTFunction* pfunction = effect.findFunction(technique.mGeometry.mEntry);
-   if ( pfunction != NULL )
+   if ( pfunction != nullptr )
    {
       String code = UTEXT("#version 150\n");
 
       const ASTAnnotation* panno = pfunction->findAnnotation(UTEXT("maxvertexcount"));
-      if ( panno == NULL )
+      if ( panno == nullptr )
       {
          // code += UTEXT("[maxvertexcount({0})]").arg(0, panno->intvalue);
          return;

@@ -12,7 +12,7 @@ ASTFunctionArgument::ASTFunctionArgument(ASTVariable* pvariable):
 
 ASTFunctionArgument::~ASTFunctionArgument()
 {
-   setVariable(NULL);
+   setVariable(nullptr);
 }
 
 // - Get/set

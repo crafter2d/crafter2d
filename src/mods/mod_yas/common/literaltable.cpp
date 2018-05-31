@@ -22,7 +22,7 @@ const Literal& LiteralTable::operator[](int index) const
 
 bool LiteralTable::contains(const Literal& literal) const
 {
-   return find(literal.getValue()) != NULL;
+   return find(literal.getValue()) != nullptr;
 }
 
 int LiteralTable::indexOf(const Literal& literal) const
@@ -90,5 +90,5 @@ Literal* LiteralTable::find(const Variant& value)
          return pliteral;
       }
    }
-   return NULL;
+   return nullptr;
 }

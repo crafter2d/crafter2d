@@ -9,7 +9,7 @@
 using namespace ComponentInterface;
 
 Component::Component(ComponentType type):
-   mpComponents(NULL),
+   mpComponents(nullptr),
    mType(type)
 {
 }

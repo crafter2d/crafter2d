@@ -12,7 +12,7 @@ namespace Graphics
 D3DVertexBuffer::D3DVertexBuffer(D3DDevice& device):
    VertexBuffer(),
    mDevice(device),
-   mpBuffer(NULL),
+   mpBuffer(nullptr),
    mStride(0)
 {
 }
@@ -34,7 +34,7 @@ bool D3DVertexBuffer::create(const VertexLayout& layout, int length, int usage)
    desc.MiscFlags = 0;
    desc.StructureByteStride = 0;
 
-   HRESULT hr = mDevice.getDevice().CreateBuffer(&desc, NULL, &mpBuffer);
+   HRESULT hr = mDevice.getDevice().CreateBuffer(&desc, nullptr, &mpBuffer);
    if ( FAILED(hr) )
       return false;
 
@@ -62,7 +62,7 @@ void* D3DVertexBuffer::lock(RenderContext& context)
    if ( FAILED(hr) )
    {
       // meh!!
-      return NULL;
+      return nullptr;
    }
    return mappedResource.pData;
 }

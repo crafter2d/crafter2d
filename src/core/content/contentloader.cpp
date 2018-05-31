@@ -23,7 +23,7 @@
 
 ContentLoader::ContentLoader(Process& process):
    mProcess(process),
-   mpSimulator(NULL)
+   mpSimulator(nullptr)
 {
 }
 

@@ -10,8 +10,8 @@ namespace c2d
    ContentModule::ContentModule(const Uuid& uuid) :
       Module(eContentModule, uuid),
       mSupportedFiles(),
-      mpReader(NULL),
-      mpWriter(NULL)
+      mpReader(nullptr),
+      mpWriter(nullptr)
    {
    }
 

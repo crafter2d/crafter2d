@@ -8,14 +8,14 @@ namespace c2d
 {
    GraphicsModule::GraphicsModule() :
       Module(eGraphicsModule, UUID_GraphicsModule),
-      mpDevice(NULL)
+      mpDevice(nullptr)
    {
    }
 
    GraphicsModule::~GraphicsModule()
    {
       delete mpDevice;
-      mpDevice = NULL;
+      mpDevice = nullptr;
    }
 
    //  -Get/set

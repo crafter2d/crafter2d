@@ -46,7 +46,7 @@ UChar WinFileSystem::getSeparator() const
 
 int WinFileSystem::mkdir(const String& path)
 {
-   if ( CreateDirectory(path.c_str(), NULL) == FALSE )
+   if ( CreateDirectory(path.c_str(), nullptr) == FALSE )
    {
       DWORD error = GetLastError();
       switch ( error )
@@ -63,7 +63,7 @@ int WinFileSystem::mkdir(const String& path)
 
 bool WinFileSystem::copyFile(const String& from, const String& to)
 {
-  return SUCCEEDED(CopyFile2(from.c_str(), to.c_str(), NULL));
+  return SUCCEEDED(CopyFile2(from.c_str(), to.c_str(), nullptr));
 }
 
 bool WinFileSystem::recursiveFind(const FindInfo& findinfo, std::vector<String>& result)
@@ -71,7 +71,7 @@ bool WinFileSystem::recursiveFind(const FindInfo& findinfo, std::vector<String>&
    WIN32_FIND_DATA ffd;
 
    String mask = File::concat(findinfo.path, UTEXT("*"));
-   HANDLE hFind = FindFirstFileEx(mask.c_str(), FindExInfoBasic, &ffd, FindExSearchNameMatch, NULL, 0);
+   HANDLE hFind = FindFirstFileEx(mask.c_str(), FindExInfoBasic, &ffd, FindExSearchNameMatch, nullptr, 0);
    if ( hFind == INVALID_HANDLE_VALUE )
    {
       return true;
@@ -106,7 +106,7 @@ bool WinFileSystem::find(const FindInfo& findinfo, std::vector<String>& result, 
    WIN32_FIND_DATA ffd;
 
    String mask = File::concat(findinfo.path, findinfo.filemask);
-   HANDLE hFind = FindFirstFileEx(mask.c_str(), FindExInfoBasic, &ffd, FindExSearchNameMatch, NULL, 0);
+   HANDLE hFind = FindFirstFileEx(mask.c_str(), FindExInfoBasic, &ffd, FindExSearchNameMatch, nullptr, 0);
    if ( hFind != INVALID_HANDLE_VALUE )
    {
       do

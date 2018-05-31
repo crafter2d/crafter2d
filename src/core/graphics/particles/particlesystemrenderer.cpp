@@ -16,7 +16,7 @@ namespace Graphics
 {
    ParticleSystemRenderer::ParticleSystemRenderer():
       mParticleSystems(),
-      mpRenderer(NULL)
+      mpRenderer(nullptr)
    {
    }
 

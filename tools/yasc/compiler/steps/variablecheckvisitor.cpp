@@ -12,7 +12,7 @@ bool VariableCheckVisitor::isVariable(const ASTNode& node)
 
 VariableCheckVisitor::VariableCheckVisitor():
    ASTVisitor(),
-   mVariable(NULL)
+   mVariable(nullptr)
 {
 }
 

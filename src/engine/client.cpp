@@ -80,20 +80,20 @@ namespace c2d
 
    Client::Client() :
       Process(),
-      mpWindowFactory(NULL),
-      mpWindow(NULL),
-      mpDevice(NULL),
-      mpRenderContext(NULL),
-      mpInputDevice(NULL),
+      mpWindowFactory(nullptr),
+      mpWindow(nullptr),
+      mpDevice(nullptr),
+      mpRenderContext(nullptr),
+      mpInputDevice(nullptr),
       mWindowListener(*this),
       mKeyEventDispatcher(*this),
       mMouseEventDispatcher(*this),
-      mpSoundManager(NULL),
-      mpBackgroundMusic(NULL),
-      mpWorldRenderer(NULL),
-      mpPlayer(NULL),
-      mpKeyMap(NULL),
-      mpFont(NULL),
+      mpSoundManager(nullptr),
+      mpBackgroundMusic(nullptr),
+      mpWorldRenderer(nullptr),
+      mpPlayer(nullptr),
+      mpKeyMap(nullptr),
+      mpFont(nullptr),
       mViewport(),
       mFPSMessage(),
       mFpsMsg(UTEXT("FPS: 0")),
@@ -111,25 +111,25 @@ namespace c2d
    bool Client::destroy()
    {
       mpSoundManager->destroy();
-      mpSoundManager = NULL;
+      mpSoundManager = nullptr;
 
-      mpRenderContext = NULL; // not owned
+      mpRenderContext = nullptr; // not owned
 
       mpDevice->destroy();
       delete mpDevice;
 
       mpWindow->destroy();
       delete mpWindow;
-      mpWindow = NULL;
+      mpWindow = nullptr;
 
       delete mpPlayer;
-      mpPlayer = NULL;
+      mpPlayer = nullptr;
 
       delete mpKeyMap;
-      mpKeyMap = NULL;
+      mpKeyMap = nullptr;
 
       delete mpWorldRenderer;
-      mpWorldRenderer = NULL;
+      mpWorldRenderer = nullptr;
 
       return Process::destroy();
    }
@@ -187,7 +187,7 @@ namespace c2d
 
       mpRenderContext->clear();
       
-      if ( mpWorldRenderer != NULL )
+      if ( mpWorldRenderer != nullptr )
       {
          if ( mpPlayer->hasController() )
          {
@@ -237,7 +237,7 @@ namespace c2d
 
    INLINE bool Client::hasKeyMap() const
    {
-      return mpKeyMap != NULL;
+      return mpKeyMap != nullptr;
    }
 
    INLINE KeyMap& Client::getKeyMap()
@@ -249,7 +249,7 @@ namespace c2d
    INLINE void Client::setKeyMap(KeyMap* pkeymap)
    {
       mpKeyMap = pkeymap;
-      if ( mpKeyMap != NULL )
+      if ( mpKeyMap != nullptr )
       {
          mpKeyMap->setClient(*this);
       }
@@ -283,7 +283,7 @@ namespace c2d
       Log::getInstance() << "\n-- Initializing Graphics --\n\n";
 
       Module* pmodule = getModuleManager().lookup(UUID_GraphicsModule);
-      if ( pmodule == NULL )
+      if ( pmodule == nullptr )
       {
          Log::getInstance() << "Failed to load a graphics module.\n";
          return false;
@@ -320,7 +320,7 @@ namespace c2d
       Log::getInstance() << "\n-- Initializing Input --\n\n";
 
       Module* pmodule = getModuleManager().lookup(UUID_InputModule);
-      if ( pmodule == NULL )
+      if ( pmodule == nullptr )
       {
          Log::getInstance() << "Failed to load an input module.\n";
          return false;
@@ -354,7 +354,7 @@ namespace c2d
       Log::getInstance() << "\n-- Initializing Sound --\n\n";
 
       Module* pmodule = getModuleManager().lookup(UUID_SoundModule);
-      if ( pmodule == NULL )
+      if ( pmodule == nullptr )
       {
          Log::getInstance() << "Failed to load a sound module.\n";
          return false;
@@ -495,7 +495,7 @@ namespace c2d
    void Client::handleWorldChangedEvent(const WorldChangedEvent& event)
    {
       World* pworld = loadWorld(event.getFilename());
-      if ( pworld == NULL )
+      if ( pworld == nullptr )
       {
          // ee boehhh
          Log::getInstance().error("Failed to load world!");
@@ -534,7 +534,7 @@ namespace c2d
    void Client::handleUpdateObjectEvent(const UpdateObjectEvent& event)
    {
       Entity* pentity = getWorld().findEntity(event.getId());
-      if ( pentity == NULL )
+      if ( pentity == nullptr )
       {
          if ( mRequests.find(event.getId()) == mRequests.end() )
          {
@@ -584,7 +584,7 @@ namespace c2d
       mpScript->call(UTEXT("onWorldChanged"));
 
       mpBackgroundMusic = getContentManager().loadContent<Sound>(UTEXT("sounds/grassy_plain"));
-      if ( mpBackgroundMusic != NULL )
+      if ( mpBackgroundMusic != nullptr )
       {
          mpBackgroundMusic->setLooping();
 

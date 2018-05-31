@@ -856,7 +856,7 @@ void FileSystem_open(ScriptCall& accessor)
    int modus = accessor.getInt(2);
 
    File* pfile = fs.open(name, modus);
-   if ( pfile != NULL )
+   if ( pfile != nullptr )
    {
       RETURN_CLASS_OWNED(UTEXT("engine.io.File"), pfile);
    }

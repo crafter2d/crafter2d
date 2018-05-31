@@ -19,19 +19,9 @@
  ***************************************************************************/
 #include "core/defines.h"
 
-INLINE uint32_t Entity::getId() const
-{
-   return mId;
-}
-
-INLINE void Entity::setId(uint32_t id)
-{
-   mId = id;
-}
-
 INLINE bool Entity::hasParent() const
 {
-   return mpParent != NULL;
+   return mpParent != nullptr;
 }
 
 INLINE const Entity& Entity::getParent() const

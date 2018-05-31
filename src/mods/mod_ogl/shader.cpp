@@ -60,7 +60,7 @@ bool Shader::compile(const String& filename)
 {
    int length = 0;
    GLchar* code = load(filename, length);
-   if( code != NULL )
+   if( code != nullptr )
    {
       bool suc = compile( code, length );
       delete[] code;
@@ -113,7 +113,7 @@ GLcharARB* Shader::load (const String& filename, int& length)
 
 	// read in the complete data
 	GLchar* source = new GLchar[length+1];
-	if ( source == NULL )
+	if ( source == nullptr )
    {
       Log::getInstance().error("Shader.load: No memory available for source.");
 		return nullptr;

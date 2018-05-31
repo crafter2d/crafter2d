@@ -82,7 +82,7 @@ void* OGLIndexBuffer::lock(RenderContext& context)
    C2D_UNUSED(context);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
 	void* pointer = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
-	if ( pointer != NULL )
+	if ( pointer != nullptr )
    {
 		mLocked = true;
    }

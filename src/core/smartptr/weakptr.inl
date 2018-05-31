@@ -1,8 +1,8 @@
 
 template <class T>
 WeakPtr<T>::WeakPtr():
-   mpCount(NULL),
-   mpPointer(NULL)
+   mpCount(nullptr),
+   mpPointer(nullptr)
 {
 }
 
@@ -11,7 +11,7 @@ WeakPtr<T>::WeakPtr(const WeakPtr& ptr):
    mpCount(ptr.mpCount),
    mpPointer(ptr.mpPointer)
 {
-   if ( mpCount != NULL )
+   if ( mpCount != nullptr )
    {
       mpCount->addWeakRef();
    }
@@ -22,7 +22,7 @@ WeakPtr<T>::WeakPtr(SharedPtr<T>& ptr):
    mpCount(ptr.mpCount),
    mpPointer(ptr.mpPointer)
 {
-   if ( mpCount != NULL )
+   if ( mpCount != nullptr )
    {
       mpCount->addWeakRef();
    }
@@ -31,7 +31,7 @@ WeakPtr<T>::WeakPtr(SharedPtr<T>& ptr):
 template <class T>
 WeakPtr<T>::~WeakPtr()
 {
-   if ( mpCount != NULL )
+   if ( mpCount != nullptr )
    {
       mpCount->releaseWeakRef();
    }

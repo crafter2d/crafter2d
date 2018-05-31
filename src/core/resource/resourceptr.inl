@@ -21,7 +21,7 @@
 
 template<class T>
 ResourcePtr<T>::ResourcePtr():
-   mpHandle(NULL)
+   mpHandle(nullptr)
 {
 }
    
@@ -29,7 +29,7 @@ template<class T>
 ResourcePtr<T>::ResourcePtr(ResourceHandle<T>* phandle):
    mpHandle(phandle)
 {
-   if ( mpHandle != NULL )
+   if ( mpHandle != nullptr )
    {
       mpHandle->addRef();
    }
@@ -45,10 +45,10 @@ ResourcePtr<T>::ResourcePtr(const ResourcePtr<T>& that):
 template<class T>
 ResourcePtr<T>::~ResourcePtr()
 {
-   if ( mpHandle != NULL )
+   if ( mpHandle != nullptr )
    {
       mpHandle->subRef();
-      mpHandle = NULL;
+      mpHandle = nullptr;
    }
 }
 
@@ -70,7 +70,7 @@ ResourcePtr<T>& ResourcePtr<T>::operator=(const ResourcePtr<T>& that)
 template<class T>
 bool ResourcePtr<T>::isValid() const
 {
-   return mpHandle != NULL;
+   return mpHandle != nullptr;
 }
 
 template<class T>

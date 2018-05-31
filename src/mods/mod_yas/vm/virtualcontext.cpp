@@ -8,7 +8,7 @@
 #include "virtualmachine.h"
 
 VirtualContext::VirtualContext():
-   mpVM(NULL),
+   mpVM(nullptr),
    mClassTable(),
    mNativeRegistry(),
    mStringCache()
@@ -22,7 +22,7 @@ VirtualClass& VirtualContext::resolveClass(const String& classname)
    ASSERT_PTR(mpVM);
 
    VirtualClass* pklass = mClassTable.find(classname);
-   if ( pklass != NULL )
+   if ( pklass != nullptr )
       return *pklass;
 
    ByteCode::Generator generator;

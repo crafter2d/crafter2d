@@ -127,7 +127,7 @@ INLINE Simulator& World::getSimulator()
 
 INLINE bool World::hasScript() const
 {
-   return mpScript != NULL;
+   return mpScript != nullptr;
 }
 
 INLINE c2d::ScriptObject& World::getScript()

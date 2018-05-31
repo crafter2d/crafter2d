@@ -101,5 +101,5 @@ const VirtualFunctionTableEntry* VirtualFunctionTable::findByName(const String& 
          return pentry;
       }
    }
-   return NULL;
+   return nullptr;
 }

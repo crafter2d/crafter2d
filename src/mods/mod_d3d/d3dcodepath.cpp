@@ -47,7 +47,7 @@ bool D3DCodePath::create(VertexLayout* playout, DataStream& vertexshader, DataSt
 
 bool D3DCodePath::loadVertexShader(DataStream& stream)
 {
-   HRESULT hr = mDevice.getDevice().CreateVertexShader(stream.getData(), stream.getDataSize(), NULL, &mpVertexShader);
+   HRESULT hr = mDevice.getDevice().CreateVertexShader(stream.getData(), stream.getDataSize(), nullptr, &mpVertexShader);
    if ( FAILED(hr) )
    {
       return false;
@@ -65,7 +65,7 @@ bool D3DCodePath::loadGeometryShader(DataStream& stream)
 {
    if ( stream.getDataSize() > 0 )
    {
-      HRESULT hr = mDevice.getDevice().CreateGeometryShader(stream.getData(), stream.getDataSize(), NULL, &mpGeometryShader);
+      HRESULT hr = mDevice.getDevice().CreateGeometryShader(stream.getData(), stream.getDataSize(), nullptr, &mpGeometryShader);
       if ( FAILED(hr) )
       {
          return false;
@@ -78,7 +78,7 @@ bool D3DCodePath::loadPixelShader(DataStream& stream)
 {
    if ( stream.getDataSize() > 0 )
    {
-      HRESULT hr = mDevice.getDevice().CreatePixelShader(stream.getData(), stream.getDataSize(), NULL, &mpPixelShader);
+      HRESULT hr = mDevice.getDevice().CreatePixelShader(stream.getData(), stream.getDataSize(), nullptr, &mpPixelShader);
       if ( FAILED(hr) )
       {
          return false;
@@ -125,30 +125,30 @@ bool D3DCodePath::createInputLayout(const DataStream& stream)
 void D3DCodePath::release()
 {
    mpInputLayout->Release();
-   mpInputLayout = NULL;
+   mpInputLayout = nullptr;
 
    mpVertexShader->Release();
-   mpVertexShader = NULL;
+   mpVertexShader = nullptr;
 
    mpPixelShader->Release();
-   mpPixelShader = NULL;
+   mpPixelShader = nullptr;
 }
 
 void D3DCodePath::enable(RenderContext& context) const
 {
    ID3D11DeviceContext& d3dcontext = D3DRenderContext::asContext(context);
    d3dcontext.IASetInputLayout(mpInputLayout);
-   d3dcontext.VSSetShader(mpVertexShader, NULL, 0);
-   d3dcontext.GSSetShader(mpGeometryShader, NULL, 0);
-   d3dcontext.PSSetShader(mpPixelShader, NULL, 0);
+   d3dcontext.VSSetShader(mpVertexShader, nullptr, 0);
+   d3dcontext.GSSetShader(mpGeometryShader, nullptr, 0);
+   d3dcontext.PSSetShader(mpPixelShader, nullptr, 0);
 }
 
 void D3DCodePath::disable(RenderContext& context) const
 {
-   if ( mpGeometryShader != NULL )
+   if ( mpGeometryShader != nullptr )
    {
       ID3D11DeviceContext& d3dcontext = D3DRenderContext::asContext(context);
-      d3dcontext.GSSetConstantBuffers(0, 0, NULL);
+      d3dcontext.GSSetConstantBuffers(0, 0, nullptr);
    }
 }
 
@@ -163,7 +163,7 @@ void D3DCodePath::setConstantBuffer(RenderContext& context, int slot, const Unif
    ID3D11Buffer* pbuffer = static_cast<const D3DUniformBuffer&>(buffer).getBuffer();
 
    d3dcontext.VSSetConstantBuffers(slot, 1, &pbuffer);
-   if ( mpGeometryShader != NULL )
+   if ( mpGeometryShader != nullptr )
    {
       d3dcontext.GSSetConstantBuffers(slot, 1, &pbuffer);
    }

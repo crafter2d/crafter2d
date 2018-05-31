@@ -11,8 +11,8 @@ namespace Graphics
 {
 
    Device::Device():
-      mpContentManager(NULL),
-      mpContext(NULL)
+      mpContentManager(nullptr),
+      mpContext(nullptr)
    {
    }
 

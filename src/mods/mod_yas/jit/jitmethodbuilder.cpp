@@ -24,5 +24,5 @@ JITValue* JITMethodBuilder::addMul(JITValue* value1, JITValue* value2)
 
 JITValue* JITMethodBuilder::applyArith(JITValue* value1, JITValue* value2, bool intonly, bool floatonly, bool overflowcheck)
 {
-   return NULL;
+   return nullptr;
 }

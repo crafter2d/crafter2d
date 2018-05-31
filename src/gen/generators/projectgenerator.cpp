@@ -32,13 +32,13 @@ bool ProjectGenerator::generate(CommandLine& commandline)
    const CommandLineArgument* pnameargument = commandline.getArgument(String("name"));
    const CommandLineArgument* ppathargument = commandline.getArgument(UTEXT("path"));
 
-   if ( pnameargument == NULL || ppathargument == NULL )
+   if ( pnameargument == nullptr || ppathargument == nullptr )
    {
       return false;
    }
 
    std::string projectname = pnameargument->getValue().toUtf8();
-   std::string packagename = ppackageargument != NULL ? ppackageargument->getValue().toUtf8() : projectname;
+   std::string packagename = ppackageargument != nullptr ? ppackageargument->getValue().toUtf8() : projectname;
 
    ctemplate::TemplateDictionary dict("values");
    dict.SetValue("PROJ", projectname);

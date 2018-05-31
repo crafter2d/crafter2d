@@ -21,7 +21,7 @@
 
 INLINE bool RuntimeInfo::hasBaseObject() const
 {
-   return _pbaseobject != NULL;
+   return _pbaseobject != nullptr;
 }
 
 INLINE RuntimeInfo::CreateObjectFnc RuntimeInfo::getCreateObjectFnc() const

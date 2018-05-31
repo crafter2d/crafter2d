@@ -31,7 +31,7 @@ INLINE void Player::setClientId(int clientid)
 
 INLINE bool Player::hasController() const
 {
-   return mpController != NULL;
+   return mpController != nullptr;
 }
 
 INLINE Entity& Player::getController()

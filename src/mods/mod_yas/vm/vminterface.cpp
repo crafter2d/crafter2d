@@ -49,7 +49,7 @@ void Function_doInvoke(VirtualCall& accessor)
 
    String fncname = thisobject.getMember(0).asString();
 
-   accessor.getMachine().execute(instance, fncname, 0, NULL);
+   accessor.getMachine().execute(instance, fncname, 0, nullptr);
 }
 
 void Throwable_fillCallStack(VirtualCall& accessor)

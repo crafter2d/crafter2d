@@ -23,7 +23,7 @@ IContent* EffectReader::read(DataStream& stream)
    for ( uint32_t index = 0; index < techniques; ++index )
    {
       EffectTechnique* ptechnique = readTechnique(stream);
-      if ( ptechnique != NULL )
+      if ( ptechnique != nullptr )
       {
          presult->addTechnique(ptechnique);
       }

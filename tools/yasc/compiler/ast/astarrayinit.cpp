@@ -7,7 +7,7 @@
 
 ASTArrayInit::ASTArrayInit():
    ASTNode(),
-   mpType(NULL)
+   mpType(nullptr)
 {
 }
 

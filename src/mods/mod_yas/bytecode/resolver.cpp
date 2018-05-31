@@ -57,7 +57,7 @@ namespace ByteCode
             }
 
             VirtualFunction* pfunction = klass.findExactMatch(funcname, signature);
-            if ( pfunction != NULL )
+            if ( pfunction != nullptr )
             {
                return *pfunction;
             }

@@ -7,7 +7,7 @@
 
 OGLInputDevice::OGLInputDevice():
    InputDevice(),
-   mpKeyState(NULL)
+   mpKeyState(nullptr)
 {
 }
 
@@ -19,7 +19,7 @@ bool OGLInputDevice::create(GameWindow& window)
 
 void OGLInputDevice::update()
 {
-   mpKeyState = SDL_GetKeyState(NULL);
+   mpKeyState = SDL_GetKeyState(nullptr);
 }
 
 static int Keys[] =

@@ -5,7 +5,7 @@ template <typename K, class E>
 HashMapBucket<K,E>::HashMapBucket(K key, E& element):
    mKey(key),
    mElement(element),
-   mpNext(NULL)
+   mpNext(nullptr)
 {
 }
 
@@ -32,7 +32,7 @@ void HashMapBucket<K,E>::setElement(E& element)
 template <typename K, class E>
 bool HashMapBucket<K,E>::hasNext() const
 {
-   return mpNext != NULL;
+   return mpNext != nullptr;
 }
 
 template <typename K, class E>

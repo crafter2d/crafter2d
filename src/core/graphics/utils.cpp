@@ -39,9 +39,9 @@ namespace Utils
       }
 
       IndexBuffer* presult = device.createIndexBuffer();
-      if ( presult == NULL || !presult->create(IndexBuffer::eShort, batchsize * indicesPerElement, &indices.front()) )
+      if ( presult == nullptr || !presult->create(IndexBuffer::eShort, batchsize * indicesPerElement, &indices.front()) )
       {
-         return NULL;
+         return nullptr;
       }
 
       return presult;

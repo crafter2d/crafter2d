@@ -35,7 +35,7 @@ namespace c2d
 
    INLINE bool Client::hasWindow() const
    {
-      return mpWindow != NULL;
+      return mpWindow != nullptr;
    }
 
    INLINE GameWindow& Client::getWindow()

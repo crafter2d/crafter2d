@@ -84,7 +84,7 @@ IniFileProperty* IniFileParser::parseProperty(File& file)
    char equals = file.getc();
    if ( equals != '=' )
    {
-      return NULL;
+      return nullptr;
    }
 
    skipWhiteSpace(file);

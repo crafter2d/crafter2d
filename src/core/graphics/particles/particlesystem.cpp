@@ -39,7 +39,7 @@ namespace Graphics
 ParticleSystem::ParticleSystem():
    mPosition(),
    mParticles(),
-	mpTexture(NULL),
+	mpTexture(nullptr),
    mInitSize(),
    mInitSizeRange(),
    mInitLifeTime(),
@@ -67,7 +67,7 @@ ParticleSystem::~ParticleSystem()
 bool ParticleSystem::create(Device& device)
 {
    mpTexture = device.getContentManager().loadContent<Graphics::Texture>(UTEXT("images/particle"));
-   if ( mpTexture == NULL )
+   if ( mpTexture == nullptr )
    {
       return false;
    }

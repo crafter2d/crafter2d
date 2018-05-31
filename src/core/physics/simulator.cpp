@@ -22,9 +22,9 @@
 #include "core/defines.h"
 
 Simulator::Simulator():
-   mpWorld(NULL),
+   mpWorld(nullptr),
    mBodies(),
-   mpListener(NULL)
+   mpListener(nullptr)
 {
 }
 
@@ -38,7 +38,7 @@ Simulator::~Simulator()
 
 bool Simulator::hasListener() const
 {
-   return mpListener != NULL;
+   return mpListener != nullptr;
 }
 
 SimulatorListener& Simulator::getListener()

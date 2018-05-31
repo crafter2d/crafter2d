@@ -8,15 +8,15 @@
 
 ASTInstanceOf::ASTInstanceOf():
    ASTNode(),
-   mpInstanceType(NULL),
-   mpObject(NULL)
+   mpInstanceType(nullptr),
+   mpObject(nullptr)
 {
 }
 
 ASTInstanceOf::~ASTInstanceOf()
 {
-   setInstanceType(NULL);
-   setObject(NULL);
+   setInstanceType(nullptr);
+   setObject(nullptr);
 }
 
 // - Get/set

@@ -7,8 +7,8 @@
 
 using namespace Graphics;
 
-OGLFont::OGLFont(FT_Face face):
-   Font(),
+OGLFont::OGLFont(GlyphProvider* pprovider, FT_Face face):
+   Font(pprovider),
    mFace(face),
    mWidth(0),
    mHeight(0),
@@ -21,12 +21,12 @@ OGLFont::~OGLFont()
    FT_Done_Face(mFace);
 }
 
-bool OGLFont::initialize(int pointsize)
+bool OGLFont::initialize(float pointsize)
 {
    if ( mFace->charmap == 0 && mFace->num_charmaps > 0 )
       FT_Select_Charmap(mFace, mFace->charmaps[0]->encoding );
 
-	FT_Set_Char_Size(mFace, 0, pointsize << 6, 96, 96);
+	FT_Set_Char_Size(mFace, 0, pointsize * 64, 96, 96);
 
    if ( !FT_IS_SCALABLE(mFace) )
    {
