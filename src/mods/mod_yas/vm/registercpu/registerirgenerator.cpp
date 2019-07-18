@@ -3,13 +3,15 @@
 
 #include "core/defines.h"
 
+#include "mod_yas/bytecode/resolver.h"
+
 #include "../virtualfunction.h"
 
 bool RegisterIRGenerator::virGenerate(VirtualContext& context, VirtualFunction& function)
 {
    using namespace CIL;
    
-   C2D_UNUSED(context);
+   ByteCode::Resolver resolver(context);
 
    const CIL::Instructions& instructions = function.getInstructions();
    for ( unsigned index = 0; index < instructions.size(); ++index )
@@ -20,11 +22,12 @@ bool RegisterIRGenerator::virGenerate(VirtualContext& context, VirtualFunction& 
       {
          case CIL_nop:
          case CIL_last:
+         case CIL_dup:
             break;
          
-         case CIL_dup:
          case CIL_new:
             {
+               VirtualFunction& constructor = resolver.resolveFunction(*inst.mString);
             }
             break;
          case CIL_newarray:

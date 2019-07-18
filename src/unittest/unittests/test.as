@@ -23,6 +23,7 @@ class Test
 		tr.addClass(TestGenerics.class);
 		tr.addClass(TestException.class);
 		tr.addClass(TestSwitch.class);
+		tr.addClass(TestAssignment.class);
 		
 		return tr.run();
 	}

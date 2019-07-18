@@ -10,4 +10,9 @@ class DerivedClass extends BaseClass
 	{
 		return super.getBaseValue();
 	}
+	
+	public int getStaticProtectedMember()
+	{
+		return BaseClass.mStaticProtectedMember;
+	}
 }

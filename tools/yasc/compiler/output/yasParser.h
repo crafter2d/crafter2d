@@ -1658,7 +1658,7 @@ parser
 #define LINE_COMMENT      59
 #define LITERAL      60
 #define LITFALSE      61
-#define LITnullptr      62
+#define LITNULL      62
 #define LITTRUE      63
 #define LOCALVARDECL      64
 #define MINUS      65

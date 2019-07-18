@@ -28,8 +28,16 @@ class TestClass
 	@test
 	void testUseStaticOfBaseClass()
 	{
-		// currently fails, needs to be implemented
-		// DerivedClass.mStaticMember = 123;
+		DerivedClass.mStaticMember = 125;
+		assert BaseClass.mStaticMember == 125;
+	}
+	
+	@test
+	void testUseProtectedStaticOfBaseClass()
+	{
+		DerivedClass klass = new DerivedClass();
+		int value = klass.getStaticProtectedMember();
+		assert value == 1;
 	}
 	
 	@test

@@ -529,7 +529,7 @@ struct yasLexer_Ctx_struct
      (*mTHROW)	(struct yasLexer_Ctx_struct * ctx);
 
      void
-     (*mLITnullptr)	(struct yasLexer_Ctx_struct * ctx);
+     (*mLITNULL)	(struct yasLexer_Ctx_struct * ctx);
 
      void
      (*mLITTRUE)	(struct yasLexer_Ctx_struct * ctx);

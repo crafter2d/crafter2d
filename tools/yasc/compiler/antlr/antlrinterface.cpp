@@ -1617,8 +1617,8 @@ ASTLiteral* AntlrParser::handleLiteral(const AntlrNode& node)
          kind = ASTType::eBoolean;
          value.setBool(false);
          break;
-      case LITnullptr:
-         kind = ASTType::enullptr;
+      case LITNULL:
+         kind = ASTType::eNull;
          break;
       default:
          break;

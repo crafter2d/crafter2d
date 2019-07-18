@@ -51,9 +51,10 @@ private:
    bool isFinal(ASTNode& expr);
    
    void validateClass(const ASTClass& aclass);
-   void validatenullptrConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right);
+   void validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right);
 
    void checkPublicAccess(const ASTClass& klass, const ASTVariable& var);
+   void checkProtectedAccess(const ASTClass& klass, const ASTVariable& var);
    void checkVarInit(ASTVariable& var);
    void checkInterfaceImplementation(const ASTClass& ast);
 

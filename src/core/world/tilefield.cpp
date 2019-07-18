@@ -86,8 +86,9 @@ void TileField::load(DataStream& stream)
 {
    stream >> mWidth >> mHeight;
 
-   int size = sizeof(uint8_t) * mWidth * mHeight * 3;
-   mpMap = new uint8_t[size];
+   int dimension = mWidth * mHeight * 3;
+   int size = sizeof(uint8_t) * dimension;
+   mpMap = new uint8_t[dimension];
 
    stream.readBlob(mpMap, size);
 }

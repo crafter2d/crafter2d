@@ -16,6 +16,8 @@ namespace c2d
       ScriptObjectHandle(const ScriptObjectHandle& that);
       ~ScriptObjectHandle();
 
+      operator bool();
+
       ScriptObjectHandle& operator=(const ScriptObjectHandle& that);
 
       ScriptObject* operator->();

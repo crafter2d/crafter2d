@@ -285,7 +285,7 @@ void OOCheckVisitor::visit(ASTConcatenate& ast)
 
       if ( plefttype != nullptr && mpCurrentType != nullptr )
       {
-         validatenullptrConcatenate(ast, *plefttype, *mpCurrentType);
+         validateNullConcatenate(ast, *plefttype, *mpCurrentType);
       }
    }
 }
@@ -344,9 +344,21 @@ void OOCheckVisitor::visit(ASTAccess& ast)
             if ( mpCurrentType != nullptr )
             {
                ASSERT(mpCurrentType->isObject() || mpCurrentType->isArray());
-
                const ASTVariable& var = ast.getVariable();
-               checkPublicAccess(mpCurrentType->getObjectClass(), var);
+
+               if ( &mpCurrentType->getObjectClass() == mpClass ) // accessing static member
+               {
+                  // we can access all members of ourselfs
+               }
+               else if ( mpClass->isBase(mpCurrentType->getObjectClass()) )
+               {
+                  // member of base classes, protected access required
+                  checkProtectedAccess(mpCurrentType->getObjectClass(), var);
+               }
+               else
+               {
+                  checkPublicAccess(mpCurrentType->getObjectClass(), var);
+               }
 
                mpVariable = &var;
                mpCurrentType = &var.getType();
@@ -361,7 +373,7 @@ void OOCheckVisitor::visit(ASTAccess& ast)
                      pfield = mpClass->getBaseClass().findField(ast.getName());
                      if ( pfield != nullptr )
                      {
-                        checkPublicAccess(*mpClass, pfield->getVariable());
+                        checkProtectedAccess(*mpClass, pfield->getVariable());
 
                         mpVariable = &pfield->getVariable();
                         mpCurrentType = &mpVariable->getType();
@@ -437,11 +449,11 @@ void OOCheckVisitor::validateClass(const ASTClass& klass)
     checkInterfaceImplementation(klass);
 }
 
-void OOCheckVisitor::validatenullptrConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right)
+void OOCheckVisitor::validateNullConcatenate(ASTConcatenate& concatenate, const ASTType& left, const ASTType& right)
 {
    bool haserror = false;
 
-   if ( left.isnullptr() )
+   if ( left.isNull() )
    {
       haserror = ( !right.isObject() && !right.isArray() );
 
@@ -451,7 +463,7 @@ void OOCheckVisitor::validatenullptrConcatenate(ASTConcatenate& concatenate, con
          concatenate.swapSides();
       }
    }
-   else if ( right.isnullptr() )
+   else if ( right.isNull() )
    {
       haserror = ( !left.isObject() && !left.isArray() );
    }
@@ -464,9 +476,18 @@ void OOCheckVisitor::validatenullptrConcatenate(ASTConcatenate& concatenate, con
 
 void OOCheckVisitor::checkPublicAccess(const ASTClass& klass, const ASTVariable& var)
 {
+   checkProtectedAccess(klass, var);
+   if ( var.getModifiers().isProtected()  )
+   {
+      error(E0059, UTEXT("Can not access protected variable ") + klass.getFullName() + L'.' + var.getName(), var.getPosition());
+   }
+}
+
+void OOCheckVisitor::checkProtectedAccess(const ASTClass& klass, const ASTVariable& var)
+{
    if ( var.getModifiers().isPrivate() )
    {
-      error(E0057, UTEXT("Can not access private variable ") + klass.getFullName() + L'.' + var.getName(),var.getPosition());
+      error(E0064, UTEXT("Can not access private variable ") + klass.getFullName() + L'.' + var.getName(), var.getPosition());
    }
 }
 

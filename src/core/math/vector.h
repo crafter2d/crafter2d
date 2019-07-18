@@ -31,25 +31,25 @@ class CORE_API Vector
 public:
    static Vector& zero();
 
-   Vector() :
+   Vector() noexcept :
       x(0),
       y(0)
    {
    }
 
-   Vector(float _x, float _y) :
+   Vector(float _x, float _y) noexcept :
       x(_x),
       y(_y)
    {
    }
 
-   Vector(const Vector& v):
+   Vector(const Vector& v) noexcept :
       x(v.x),
       y(v.y) 
    {
    }
 
-   Vector(Vector&& v) :
+   Vector(Vector&& v) noexcept :
       x(v.x),
       y(v.y)
    {

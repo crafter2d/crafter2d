@@ -531,19 +531,19 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
    ASTAccess* paccess = dynamic_cast<ASTAccess*>(&unary.getParts()[0]);
    if ( paccess != nullptr )
    {
-      if ( mpClass->isMember(paccess->getName()) )
-      {
-         // it's a member field, so nothing to do here
-         return;
-      }
+      ASTClass* pclass = nullptr;
+      ASTAccess* pcurrent = paccess;
 
-      ScopeVariable* pvariable = mScopeStack.find(paccess->getName());
-      if ( pvariable == nullptr )
+      bool isself = mpClass->getName() == paccess->getName();
+      if ( isself )
+      {
+         pclass = mpClass;
+      }
+      else if ( !mpClass->isMember(paccess->getName())
+         && mScopeStack.find(paccess->getName()) == nullptr )
       {
          String name;
          String qualifiedname;
-         ASTAccess* pcurrent = paccess;
-         ASTType type(ASTType::eObject);
          int count = 0;
          bool done = false;
 
@@ -559,6 +559,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
             }
 
             // not a variable, so see if it is a static class
+            ASTType type(ASTType::eObject);
             type.setObjectName(qualifiedname);
 
             done = tryLoad(type);
@@ -568,8 +569,7 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
                name += '.';
                count++;
             }
-         }
-         while ( !done && pcurrent != nullptr );
+         } while ( !done && pcurrent != nullptr );
 
          if ( done )
          {
@@ -588,15 +588,20 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
                nodes.erase(0, count);
             }
 
-            ASTType* ptype = new ASTType(ASTType::eObject);
-            ptype->setObjectName(pcurrent->getName());
-            ptype->setObjectClass(mContext.resolveClass(qualifiedname));
-
-            // make it a static access
-            pcurrent->setName(qualifiedname);
-            pcurrent->setKind(ASTAccess::eStatic);
-            pcurrent->setStaticType(ptype);
+            pclass = &mContext.resolveClass(qualifiedname);
          }
+      }
+
+      if ( pclass )
+      {
+         ASTType* ptype = new ASTType(ASTType::eObject);
+         ptype->setObjectName(pclass->getName());
+         ptype->setObjectClass(*pclass);
+
+         // make it a static access
+         pcurrent->setName(pclass->getFullName());
+         pcurrent->setKind(ASTAccess::eStatic);
+         pcurrent->setStaticType(ptype);
       }
    }
 }

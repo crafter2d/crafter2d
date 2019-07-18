@@ -31,6 +31,11 @@ namespace c2d
       return *this;
    }
 
+   inline ScriptObjectHandle::operator bool()
+   {
+      return mpObject != nullptr;
+   }
+
    inline ScriptObject* ScriptObjectHandle::operator->()
    {
       return mpObject;

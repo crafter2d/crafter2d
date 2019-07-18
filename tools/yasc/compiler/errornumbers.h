@@ -68,6 +68,7 @@ enum Errors
    E0061,
    E0062,
    E0063,
+   E0064,
 };
 
 enum Warnings

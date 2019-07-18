@@ -16,7 +16,7 @@ class CompileContext;
 class ASTType
 {
 public:
-   enum Kind { enullptr, eBoolean, eInt, eReal, eChar, eString, eVoid, eObject, eArray, eGeneric, eUnknown, eInvalid };
+   enum Kind { eNull, eBoolean, eInt, eReal, eChar, eString, eVoid, eObject, eArray, eGeneric, eUnknown, eInvalid };
 
    static ASTType SVoidType;
 
@@ -67,7 +67,7 @@ public:
    bool isUnknown() const;
    bool isValueType() const;
    
-   bool isnullptr() const;
+   bool isNull() const;
    bool isArray() const;
    bool isObject() const;
    bool isBoolean() const;

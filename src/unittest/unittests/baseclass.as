@@ -2,6 +2,7 @@
 class BaseClass
 {
 	public static int mStaticMember = 0;
+	protected static int mStaticProtectedMember = 1;
 	protected int mMember = 0;
 	
 	public void setMemberBase(int value)

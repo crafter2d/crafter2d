@@ -37,3 +37,4 @@ Package.StoreAssociation.xml
 /crafter/build*
 
 /rel
+/src/unittest/test

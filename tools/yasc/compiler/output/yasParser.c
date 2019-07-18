@@ -130,7 +130,7 @@
 #define	    FOLLOWPUSH(x)
 #define	    FOLLOWPOP()
 #else
-#define	    FOLLOWPUSH(x)			FOLLOWSTACK->push(FOLLOWSTACK, ((void *)(&(x))), nullptr)
+#define	    FOLLOWPUSH(x)			FOLLOWSTACK->push(FOLLOWSTACK, ((void *)(&(x))), NULL)
 #define	    FOLLOWPOP()				FOLLOWSTACK->pop(FOLLOWSTACK)
 #endif
 #define	    PRECOVER()				RECOGNIZER->recover(RECOGNIZER)
@@ -249,7 +249,7 @@ pANTLR3_UINT8   yasParserTokenNames[125+4]
         (pANTLR3_UINT8) "LINE_COMMENT",
         (pANTLR3_UINT8) "LITERAL",
         (pANTLR3_UINT8) "LITFALSE",
-        (pANTLR3_UINT8) "LITnullptr",
+        (pANTLR3_UINT8) "LITNULL",
         (pANTLR3_UINT8) "LITTRUE",
         (pANTLR3_UINT8) "LOCALVARDECL",
         (pANTLR3_UINT8) "MINUS",
@@ -604,7 +604,7 @@ yasParserNew   (pANTLR3_COMMON_TOKEN_STREAM instream)
 {
 	// See if we can create a new parser with the standard constructor
 	//
-	return yasParserNewSSD(instream, nullptr);
+	return yasParserNewSSD(instream, NULL);
 }
 
 /** \brief Create a new yasParser parser and return a context for it.
@@ -620,11 +620,11 @@ yasParserNewSSD   (pANTLR3_COMMON_TOKEN_STREAM instream, pANTLR3_RECOGNIZER_SHAR
 
     ctx	= (pyasParser) ANTLR3_CALLOC(1, sizeof(yasParser));
 
-    if	(ctx == nullptr)
+    if	(ctx == NULL)
     {
 		// Failed to allocate memory for parser context
 		//
-        return  nullptr;
+        return  NULL;
     }
 
     /* -------------------------------------------------------------------
@@ -1716,9 +1716,9 @@ static  ANTLR3_BITSET_LIST FOLLOW_numeric_literal_in_literal2818	= { FOLLOW_nume
 /** Bitset defining follow set for error recovery in rule state: FOLLOW_boolean_literal_in_literal2823  */
 static	ANTLR3_BITWORD FOLLOW_boolean_literal_in_literal2823_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
 static  ANTLR3_BITSET_LIST FOLLOW_boolean_literal_in_literal2823	= { FOLLOW_boolean_literal_in_literal2823_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_LITnullptr_in_literal2828  */
-static	ANTLR3_BITWORD FOLLOW_LITnullptr_in_literal2828_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_LITnullptr_in_literal2828	= { FOLLOW_LITnullptr_in_literal2828_bits, 1	};
+/** Bitset defining follow set for error recovery in rule state: FOLLOW_LITNULL_in_literal2828  */
+static	ANTLR3_BITWORD FOLLOW_LITNULL_in_literal2828_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
+static  ANTLR3_BITSET_LIST FOLLOW_LITNULL_in_literal2828	= { FOLLOW_LITNULL_in_literal2828_bits, 1	};
 /** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_identifier2874  */
 static	ANTLR3_BITWORD FOLLOW_ID_in_identifier2874_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
 static  ANTLR3_BITSET_LIST FOLLOW_ID_in_identifier2874	= { FOLLOW_ID_in_identifier2874_bits, 1	};
@@ -1814,7 +1814,7 @@ static const ANTLR3_INT32 dfa7_special[4] =
     };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa7_T_empty	    nullptr
+#define dfa7_T_empty	    NULL
 
 static const ANTLR3_INT32 dfa7_T0[] =
     {
@@ -1831,7 +1831,7 @@ static const ANTLR3_INT32 dfa7_T0[] =
  */
 static const ANTLR3_INT32 * const dfa7_transitions[] =
 {
-    dfa7_T0, dfa7_T0, nullptr, nullptr
+    dfa7_T0, dfa7_T0, NULL, NULL
 };
 
 
@@ -1893,7 +1893,7 @@ static const ANTLR3_INT32 dfa15_special[20] =
     };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa15_T_empty	    nullptr
+#define dfa15_T_empty	    NULL
 
 static const ANTLR3_INT32 dfa15_T0[] =
     {
@@ -2027,7 +2027,7 @@ static const ANTLR3_INT32 dfa15_T15[] =
  */
 static const ANTLR3_INT32 * const dfa15_transitions[] =
 {
-    dfa15_T11, dfa15_T10, dfa15_T4, dfa15_T12, dfa15_T5, nullptr, nullptr, nullptr, 
+    dfa15_T11, dfa15_T10, dfa15_T4, dfa15_T12, dfa15_T5, NULL, NULL, NULL, 
     dfa15_T13, dfa15_T9, dfa15_T3, dfa15_T1, dfa15_T15, dfa15_T8, dfa15_T7, 
     dfa15_T0, dfa15_T14, dfa15_T2, dfa15_T6, dfa15_T2
 };
@@ -2085,7 +2085,7 @@ static const ANTLR3_INT32 dfa20_special[4] =
     };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa20_T_empty	    nullptr
+#define dfa20_T_empty	    NULL
 
 static const ANTLR3_INT32 dfa20_T0[] =
     {
@@ -2103,7 +2103,7 @@ static const ANTLR3_INT32 dfa20_T0[] =
  */
 static const ANTLR3_INT32 * const dfa20_transitions[] =
 {
-    dfa20_T0, dfa20_T0, nullptr, nullptr
+    dfa20_T0, dfa20_T0, NULL, NULL
 };
 
 
@@ -2158,15 +2158,15 @@ script(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    declaration1.tree = nullptr;
+    declaration1.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:46:9: ( declaration )
@@ -2249,19 +2249,19 @@ declaration(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    package_decl2.tree = nullptr;
+    package_decl2.tree = NULL;
 
-    use_decl3.tree = nullptr;
+    use_decl3.tree = NULL;
 
-    type_decl4.tree = nullptr;
+    type_decl4.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:50:2: ( ( package_decl )? ( use_decl )* type_decl )
@@ -2433,31 +2433,31 @@ package_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    T_PACKAGE5       = nullptr;
-    char_literal7       = nullptr;
-    char_literal9       = nullptr;
-    identifier6.tree = nullptr;
+    T_PACKAGE5       = NULL;
+    char_literal7       = NULL;
+    char_literal9       = NULL;
+    identifier6.tree = NULL;
 
-    identifier8.tree = nullptr;
+    identifier8.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    T_PACKAGE5_tree   = nullptr;
-    char_literal7_tree   = nullptr;
-    char_literal9_tree   = nullptr;
+    T_PACKAGE5_tree   = NULL;
+    char_literal7_tree   = NULL;
+    char_literal9_tree   = NULL;
 
-    stream_T_PACKAGE   = nullptr;
-    #define CREATE_stream_T_PACKAGE  if (stream_T_PACKAGE == nullptr) {stream_T_PACKAGE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token T_PACKAGE"); } 
-    stream_121   = nullptr;
-    #define CREATE_stream_121  if (stream_121 == nullptr) {stream_121 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 121"); } 
-    stream_SEP   = nullptr;
-    #define CREATE_stream_SEP  if (stream_SEP == nullptr) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_T_PACKAGE   = NULL;
+    #define CREATE_stream_T_PACKAGE  if (stream_T_PACKAGE == NULL) {stream_T_PACKAGE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token T_PACKAGE"); } 
+    stream_121   = NULL;
+    #define CREATE_stream_121  if (stream_121 == NULL) {stream_121 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 121"); } 
+    stream_SEP   = NULL;
+    #define CREATE_stream_SEP  if (stream_SEP == NULL) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:56:2: ( T_PACKAGE identifier ( '.' identifier )* ';' -> ^( T_PACKAGE ( identifier )+ ) )
@@ -2473,7 +2473,7 @@ package_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_T_PACKAGE; stream_T_PACKAGE->add(stream_T_PACKAGE, T_PACKAGE5, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_T_PACKAGE; stream_T_PACKAGE->add(stream_T_PACKAGE, T_PACKAGE5, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_identifier_in_package_decl330);
@@ -2489,7 +2489,7 @@ package_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier6.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier6.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:56:25: ( '.' identifier )*
 
@@ -2521,7 +2521,7 @@ package_decl(pyasParser ctx)
             	            return retval;
             	        }
             	         
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal7, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal7, NULL); }
 
 
             	        FOLLOWPUSH(FOLLOW_identifier_in_package_decl335);
@@ -2537,7 +2537,7 @@ package_decl(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier8.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier8.tree, NULL); }
 
             	    }
             	    break;
@@ -2560,7 +2560,7 @@ package_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal9, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal9, NULL); }
 
 
             /* AST REWRITE
@@ -2575,7 +2575,7 @@ package_decl(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -2585,10 +2585,10 @@ package_decl(pyasParser ctx)
             	    {
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-            	        stream_T_PACKAGE == nullptr ? nullptr : stream_T_PACKAGE->nextNode(stream_T_PACKAGE)
+            	        stream_T_PACKAGE == NULL ? NULL : stream_T_PACKAGE->nextNode(stream_T_PACKAGE)
             	        , root_1));
 
-            	        if ((stream_identifier == nullptr || !stream_identifier->hasNext(stream_identifier))  )
+            	        if ((stream_identifier == NULL || !stream_identifier->hasNext(stream_identifier))  )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -2597,7 +2597,7 @@ package_decl(pyasParser ctx)
             	        else
             	        {
             	        	while ( (stream_identifier->hasNext(stream_identifier))  ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
             	        	}
             	        	stream_identifier->reset(stream_identifier);
@@ -2610,7 +2610,7 @@ package_decl(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -2632,10 +2632,10 @@ package_decl(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_T_PACKAGE != nullptr) stream_T_PACKAGE->free(stream_T_PACKAGE);
-        if (stream_121 != nullptr) stream_121->free(stream_121);
-        if (stream_SEP != nullptr) stream_SEP->free(stream_SEP);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_T_PACKAGE != NULL) stream_T_PACKAGE->free(stream_T_PACKAGE);
+        if (stream_121 != NULL) stream_121->free(stream_121);
+        if (stream_SEP != NULL) stream_SEP->free(stream_SEP);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -2689,37 +2689,37 @@ use_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    USE10       = nullptr;
-    char_literal12       = nullptr;
-    char_literal14       = nullptr;
-    char_literal16       = nullptr;
-    identifier11.tree = nullptr;
+    USE10       = NULL;
+    char_literal12       = NULL;
+    char_literal14       = NULL;
+    char_literal16       = NULL;
+    identifier11.tree = NULL;
 
-    identifier13.tree = nullptr;
+    identifier13.tree = NULL;
 
-    use_identifier15.tree = nullptr;
+    use_identifier15.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    USE10_tree   = nullptr;
-    char_literal12_tree   = nullptr;
-    char_literal14_tree   = nullptr;
-    char_literal16_tree   = nullptr;
+    USE10_tree   = NULL;
+    char_literal12_tree   = NULL;
+    char_literal14_tree   = NULL;
+    char_literal16_tree   = NULL;
 
-    stream_121   = nullptr;
-    #define CREATE_stream_121  if (stream_121 == nullptr) {stream_121 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 121"); } 
-    stream_USE   = nullptr;
-    #define CREATE_stream_USE  if (stream_USE == nullptr) {stream_USE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token USE"); } 
-    stream_SEP   = nullptr;
-    #define CREATE_stream_SEP  if (stream_SEP == nullptr) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
-    stream_use_identifier   = nullptr;
-    #define CREATE_stream_use_identifier  if (stream_use_identifier == nullptr) {stream_use_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule use_identifier"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_121   = NULL;
+    #define CREATE_stream_121  if (stream_121 == NULL) {stream_121 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 121"); } 
+    stream_USE   = NULL;
+    #define CREATE_stream_USE  if (stream_USE == NULL) {stream_USE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token USE"); } 
+    stream_SEP   = NULL;
+    #define CREATE_stream_SEP  if (stream_SEP == NULL) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
+    stream_use_identifier   = NULL;
+    #define CREATE_stream_use_identifier  if (stream_use_identifier == NULL) {stream_use_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule use_identifier"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:59:9: ( USE identifier ( '.' identifier )* ( '.' use_identifier )? ';' -> ^( USE ( identifier )+ ( use_identifier )? ) )
@@ -2735,7 +2735,7 @@ use_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_USE; stream_USE->add(stream_USE, USE10, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_USE; stream_USE->add(stream_USE, USE10, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_identifier_in_use_decl362);
@@ -2751,7 +2751,7 @@ use_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier11.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier11.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:59:26: ( '.' identifier )*
 
@@ -2801,7 +2801,7 @@ use_decl(pyasParser ctx)
             	            return retval;
             	        }
             	         
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal12, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal12, NULL); }
 
 
             	        FOLLOWPUSH(FOLLOW_identifier_in_use_decl367);
@@ -2817,7 +2817,7 @@ use_decl(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier13.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier13.tree, NULL); }
 
             	    }
             	    break;
@@ -2857,7 +2857,7 @@ use_decl(pyasParser ctx)
             	            return retval;
             	        }
             	         
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal14, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal14, NULL); }
 
 
             	        FOLLOWPUSH(FOLLOW_use_identifier_in_use_decl374);
@@ -2873,7 +2873,7 @@ use_decl(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_use_identifier; stream_use_identifier->add(stream_use_identifier, use_identifier15.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_use_identifier; stream_use_identifier->add(stream_use_identifier, use_identifier15.tree, NULL); }
 
             	    }
             	    break;
@@ -2891,7 +2891,7 @@ use_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal16, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal16, NULL); }
 
 
             /* AST REWRITE
@@ -2906,7 +2906,7 @@ use_decl(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -2916,10 +2916,10 @@ use_decl(pyasParser ctx)
             	    {
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-            	        stream_USE == nullptr ? nullptr : stream_USE->nextNode(stream_USE)
+            	        stream_USE == NULL ? NULL : stream_USE->nextNode(stream_USE)
             	        , root_1));
 
-            	        if ((stream_identifier == nullptr || !stream_identifier->hasNext(stream_identifier))  )
+            	        if ((stream_identifier == NULL || !stream_identifier->hasNext(stream_identifier))  )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -2928,7 +2928,7 @@ use_decl(pyasParser ctx)
             	        else
             	        {
             	        	while ( (stream_identifier->hasNext(stream_identifier))  ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
             	        	}
             	        	stream_identifier->reset(stream_identifier);
@@ -2936,12 +2936,12 @@ use_decl(pyasParser ctx)
             	        }
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:59:94: ( use_identifier )?
             	        {
-            	        	if ( (stream_use_identifier != nullptr && stream_use_identifier->hasNext(stream_use_identifier))  )
+            	        	if ( (stream_use_identifier != NULL && stream_use_identifier->hasNext(stream_use_identifier))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_use_identifier == nullptr ? nullptr : stream_use_identifier->nextTree(stream_use_identifier));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_use_identifier == NULL ? NULL : stream_use_identifier->nextTree(stream_use_identifier));
 
             	        	}
-            	        	if ( stream_use_identifier != nullptr) stream_use_identifier->reset(stream_use_identifier);
+            	        	if ( stream_use_identifier != NULL) stream_use_identifier->reset(stream_use_identifier);
 
             	        }
 
@@ -2952,7 +2952,7 @@ use_decl(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -2974,11 +2974,11 @@ use_decl(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_121 != nullptr) stream_121->free(stream_121);
-        if (stream_USE != nullptr) stream_USE->free(stream_USE);
-        if (stream_SEP != nullptr) stream_SEP->free(stream_SEP);
-        if (stream_use_identifier != nullptr) stream_use_identifier->free(stream_use_identifier);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_121 != NULL) stream_121->free(stream_121);
+        if (stream_USE != NULL) stream_USE->free(stream_USE);
+        if (stream_SEP != NULL) stream_SEP->free(stream_SEP);
+        if (stream_use_identifier != NULL) stream_use_identifier->free(stream_use_identifier);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -3014,17 +3014,17 @@ use_identifier(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    MUL18       = nullptr;
-    identifier17.tree = nullptr;
+    MUL18       = NULL;
+    identifier17.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    MUL18_tree   = nullptr;
+    MUL18_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -3169,17 +3169,17 @@ type_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    class_decl19.tree = nullptr;
+    class_decl19.tree = NULL;
 
-    interface_decl20.tree = nullptr;
+    interface_decl20.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -3328,45 +3328,45 @@ class_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    CLASS22       = nullptr;
-    char_literal26       = nullptr;
-    char_literal28       = nullptr;
-    modifiers21.tree = nullptr;
+    CLASS22       = NULL;
+    char_literal26       = NULL;
+    char_literal28       = NULL;
+    modifiers21.tree = NULL;
 
-    identifier23.tree = nullptr;
+    identifier23.tree = NULL;
 
-    typeinfos24.tree = nullptr;
+    typeinfos24.tree = NULL;
 
-    class_inheritance25.tree = nullptr;
+    class_inheritance25.tree = NULL;
 
-    class_member27.tree = nullptr;
+    class_member27.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    CLASS22_tree   = nullptr;
-    char_literal26_tree   = nullptr;
-    char_literal28_tree   = nullptr;
+    CLASS22_tree   = NULL;
+    char_literal26_tree   = NULL;
+    char_literal28_tree   = NULL;
 
-    stream_127   = nullptr;
-    #define CREATE_stream_127  if (stream_127 == nullptr) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
-    stream_CLASS   = nullptr;
-    #define CREATE_stream_CLASS  if (stream_CLASS == nullptr) {stream_CLASS = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token CLASS"); } 
-    stream_128   = nullptr;
-    #define CREATE_stream_128  if (stream_128 == nullptr) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
-    stream_typeinfos   = nullptr;
-    #define CREATE_stream_typeinfos  if (stream_typeinfos == nullptr) {stream_typeinfos = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule typeinfos"); }
-    stream_class_inheritance   = nullptr;
-    #define CREATE_stream_class_inheritance  if (stream_class_inheritance == nullptr) {stream_class_inheritance = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule class_inheritance"); }
-    stream_modifiers   = nullptr;
-    #define CREATE_stream_modifiers  if (stream_modifiers == nullptr) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
-    stream_class_member   = nullptr;
-    #define CREATE_stream_class_member  if (stream_class_member == nullptr) {stream_class_member = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule class_member"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_127   = NULL;
+    #define CREATE_stream_127  if (stream_127 == NULL) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
+    stream_CLASS   = NULL;
+    #define CREATE_stream_CLASS  if (stream_CLASS == NULL) {stream_CLASS = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token CLASS"); } 
+    stream_128   = NULL;
+    #define CREATE_stream_128  if (stream_128 == NULL) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
+    stream_typeinfos   = NULL;
+    #define CREATE_stream_typeinfos  if (stream_typeinfos == NULL) {stream_typeinfos = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule typeinfos"); }
+    stream_class_inheritance   = NULL;
+    #define CREATE_stream_class_inheritance  if (stream_class_inheritance == NULL) {stream_class_inheritance = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule class_inheritance"); }
+    stream_modifiers   = NULL;
+    #define CREATE_stream_modifiers  if (stream_modifiers == NULL) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
+    stream_class_member   = NULL;
+    #define CREATE_stream_class_member  if (stream_class_member == NULL) {stream_class_member = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule class_member"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:75:2: ( modifiers CLASS identifier ( typeinfos )? class_inheritance '{' ( class_member )* '}' -> ^( CLASS modifiers identifier ( typeinfos )? class_inheritance ( class_member )* ) )
@@ -3385,7 +3385,7 @@ class_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers21.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers21.tree, NULL); }
 
             CLASS22 = (pANTLR3_COMMON_TOKEN) MATCHT(CLASS, &FOLLOW_CLASS_in_class_decl443);
             if  (HASEXCEPTION())
@@ -3397,7 +3397,7 @@ class_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_CLASS; stream_CLASS->add(stream_CLASS, CLASS22, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_CLASS; stream_CLASS->add(stream_CLASS, CLASS22, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_identifier_in_class_decl445);
@@ -3413,7 +3413,7 @@ class_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier23.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier23.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:75:31: ( typeinfos )?
             {
@@ -3445,7 +3445,7 @@ class_decl(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfos; stream_typeinfos->add(stream_typeinfos, typeinfos24.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfos; stream_typeinfos->add(stream_typeinfos, typeinfos24.tree, NULL); }
 
             	    }
             	    break;
@@ -3466,7 +3466,7 @@ class_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_class_inheritance; stream_class_inheritance->add(stream_class_inheritance, class_inheritance25.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_class_inheritance; stream_class_inheritance->add(stream_class_inheritance, class_inheritance25.tree, NULL); }
 
             char_literal26 = (pANTLR3_COMMON_TOKEN) MATCHT(127, &FOLLOW_127_in_class_decl452);
             if  (HASEXCEPTION())
@@ -3478,7 +3478,7 @@ class_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal26, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal26, NULL); }
 
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:75:64: ( class_member )*
@@ -3532,7 +3532,7 @@ class_decl(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_class_member; stream_class_member->add(stream_class_member, class_member27.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_class_member; stream_class_member->add(stream_class_member, class_member27.tree, NULL); }
 
             	    }
             	    break;
@@ -3555,7 +3555,7 @@ class_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal28, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal28, NULL); }
 
 
             /* AST REWRITE
@@ -3570,7 +3570,7 @@ class_decl(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -3580,34 +3580,34 @@ class_decl(pyasParser ctx)
             	    {
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-            	        stream_CLASS == nullptr ? nullptr : stream_CLASS->nextNode(stream_CLASS)
+            	        stream_CLASS == NULL ? NULL : stream_CLASS->nextNode(stream_CLASS)
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == nullptr ? nullptr : stream_modifiers->nextTree(stream_modifiers));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == NULL ? NULL : stream_modifiers->nextTree(stream_modifiers));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:75:114: ( typeinfos )?
             	        {
-            	        	if ( (stream_typeinfos != nullptr && stream_typeinfos->hasNext(stream_typeinfos))  )
+            	        	if ( (stream_typeinfos != NULL && stream_typeinfos->hasNext(stream_typeinfos))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfos == nullptr ? nullptr : stream_typeinfos->nextTree(stream_typeinfos));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfos == NULL ? NULL : stream_typeinfos->nextTree(stream_typeinfos));
 
             	        	}
-            	        	if ( stream_typeinfos != nullptr) stream_typeinfos->reset(stream_typeinfos);
+            	        	if ( stream_typeinfos != NULL) stream_typeinfos->reset(stream_typeinfos);
 
             	        }
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_class_inheritance == nullptr ? nullptr : stream_class_inheritance->nextTree(stream_class_inheritance));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_class_inheritance == NULL ? NULL : stream_class_inheritance->nextTree(stream_class_inheritance));
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:75:143: ( class_member )*
             	        {
-            	        	while ( (stream_class_member != nullptr && stream_class_member->hasNext(stream_class_member))  )
+            	        	while ( (stream_class_member != NULL && stream_class_member->hasNext(stream_class_member))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_class_member == nullptr ? nullptr : stream_class_member->nextTree(stream_class_member));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_class_member == NULL ? NULL : stream_class_member->nextTree(stream_class_member));
 
             	        	}
-            	        	if (stream_class_member != nullptr) stream_class_member->reset(stream_class_member);
+            	        	if (stream_class_member != NULL) stream_class_member->reset(stream_class_member);
 
             	        }
 
@@ -3618,7 +3618,7 @@ class_decl(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -3640,14 +3640,14 @@ class_decl(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_127 != nullptr) stream_127->free(stream_127);
-        if (stream_CLASS != nullptr) stream_CLASS->free(stream_CLASS);
-        if (stream_128 != nullptr) stream_128->free(stream_128);
-        if (stream_typeinfos != nullptr) stream_typeinfos->free(stream_typeinfos);
-        if (stream_class_inheritance != nullptr) stream_class_inheritance->free(stream_class_inheritance);
-        if (stream_modifiers != nullptr) stream_modifiers->free(stream_modifiers);
-        if (stream_class_member != nullptr) stream_class_member->free(stream_class_member);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_127 != NULL) stream_127->free(stream_127);
+        if (stream_CLASS != NULL) stream_CLASS->free(stream_CLASS);
+        if (stream_128 != NULL) stream_128->free(stream_128);
+        if (stream_typeinfos != NULL) stream_typeinfos->free(stream_typeinfos);
+        if (stream_class_inheritance != NULL) stream_class_inheritance->free(stream_class_inheritance);
+        if (stream_modifiers != NULL) stream_modifiers->free(stream_modifiers);
+        if (stream_class_member != NULL) stream_class_member->free(stream_class_member);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -3689,21 +3689,21 @@ class_inheritance(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    EXTENDS29       = nullptr;
-    IMPL31       = nullptr;
-    type30.tree = nullptr;
+    EXTENDS29       = NULL;
+    IMPL31       = NULL;
+    type30.tree = NULL;
 
-    type_list32.tree = nullptr;
+    type_list32.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    EXTENDS29_tree   = nullptr;
-    IMPL31_tree   = nullptr;
+    EXTENDS29_tree   = NULL;
+    IMPL31_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:79:2: ( ( EXTENDS type )? ( IMPL type_list )? )
@@ -3877,19 +3877,19 @@ class_member(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    class_func_decl33.tree = nullptr;
+    class_func_decl33.tree = NULL;
 
-    class_var_decl34.tree = nullptr;
+    class_var_decl34.tree = NULL;
 
-    class_property_decl35.tree = nullptr;
+    class_property_decl35.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -4180,29 +4180,29 @@ class_var_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal39       = nullptr;
-    modifiers36.tree = nullptr;
+    char_literal39       = NULL;
+    modifiers36.tree = NULL;
 
-    type37.tree = nullptr;
+    type37.tree = NULL;
 
-    variables_decl38.tree = nullptr;
+    variables_decl38.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal39_tree   = nullptr;
+    char_literal39_tree   = NULL;
 
-    stream_SEP   = nullptr;
-    #define CREATE_stream_SEP  if (stream_SEP == nullptr) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
-    stream_variables_decl   = nullptr;
-    #define CREATE_stream_variables_decl  if (stream_variables_decl == nullptr) {stream_variables_decl = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule variables_decl"); }
-    stream_modifiers   = nullptr;
-    #define CREATE_stream_modifiers  if (stream_modifiers == nullptr) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_SEP   = NULL;
+    #define CREATE_stream_SEP  if (stream_SEP == NULL) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
+    stream_variables_decl   = NULL;
+    #define CREATE_stream_variables_decl  if (stream_variables_decl == NULL) {stream_variables_decl = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule variables_decl"); }
+    stream_modifiers   = NULL;
+    #define CREATE_stream_modifiers  if (stream_modifiers == NULL) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:89:2: ( modifiers type variables_decl ';' -> ^( VARIABLE_DECL modifiers type variables_decl ) )
@@ -4221,7 +4221,7 @@ class_var_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers36.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers36.tree, NULL); }
 
             FOLLOWPUSH(FOLLOW_type_in_class_var_decl534);
             type37=type(ctx);
@@ -4236,7 +4236,7 @@ class_var_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type37.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type37.tree, NULL); }
 
             FOLLOWPUSH(FOLLOW_variables_decl_in_class_var_decl536);
             variables_decl38=variables_decl(ctx);
@@ -4251,7 +4251,7 @@ class_var_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_variables_decl; stream_variables_decl->add(stream_variables_decl, variables_decl38.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_variables_decl; stream_variables_decl->add(stream_variables_decl, variables_decl38.tree, NULL); }
 
             char_literal39 = (pANTLR3_COMMON_TOKEN) MATCHT(SEP, &FOLLOW_SEP_in_class_var_decl538);
             if  (HASEXCEPTION())
@@ -4263,7 +4263,7 @@ class_var_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal39, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal39, NULL); }
 
 
             /* AST REWRITE
@@ -4278,7 +4278,7 @@ class_var_decl(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -4291,11 +4291,11 @@ class_var_decl(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, VARIABLE_DECL, (pANTLR3_UINT8)"VARIABLE_DECL")
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == nullptr ? nullptr : stream_modifiers->nextTree(stream_modifiers));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == NULL ? NULL : stream_modifiers->nextTree(stream_modifiers));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_variables_decl == nullptr ? nullptr : stream_variables_decl->nextTree(stream_variables_decl));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_variables_decl == NULL ? NULL : stream_variables_decl->nextTree(stream_variables_decl));
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
             	    }
@@ -4304,7 +4304,7 @@ class_var_decl(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -4326,10 +4326,10 @@ class_var_decl(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_SEP != nullptr) stream_SEP->free(stream_SEP);
-        if (stream_variables_decl != nullptr) stream_variables_decl->free(stream_variables_decl);
-        if (stream_modifiers != nullptr) stream_modifiers->free(stream_modifiers);
-        if (stream_type != nullptr) stream_type->free(stream_type);
+        if (stream_SEP != NULL) stream_SEP->free(stream_SEP);
+        if (stream_variables_decl != NULL) stream_variables_decl->free(stream_variables_decl);
+        if (stream_modifiers != NULL) stream_modifiers->free(stream_modifiers);
+        if (stream_type != NULL) stream_type->free(stream_type);
     }
 
 
@@ -4374,29 +4374,29 @@ class_property_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    PROPERTY40       = nullptr;
-    char_literal43       = nullptr;
-    type41.tree = nullptr;
+    PROPERTY40       = NULL;
+    char_literal43       = NULL;
+    type41.tree = NULL;
 
-    identifier42.tree = nullptr;
+    identifier42.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    PROPERTY40_tree   = nullptr;
-    char_literal43_tree   = nullptr;
+    PROPERTY40_tree   = NULL;
+    char_literal43_tree   = NULL;
 
-    stream_PROPERTY   = nullptr;
-    #define CREATE_stream_PROPERTY  if (stream_PROPERTY == nullptr) {stream_PROPERTY = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token PROPERTY"); } 
-    stream_SEP   = nullptr;
-    #define CREATE_stream_SEP  if (stream_SEP == nullptr) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_PROPERTY   = NULL;
+    #define CREATE_stream_PROPERTY  if (stream_PROPERTY == NULL) {stream_PROPERTY = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token PROPERTY"); } 
+    stream_SEP   = NULL;
+    #define CREATE_stream_SEP  if (stream_SEP == NULL) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:93:2: ( PROPERTY type identifier ';' -> ^( PROPERTY_DECL type identifier ) )
@@ -4412,7 +4412,7 @@ class_property_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_PROPERTY; stream_PROPERTY->add(stream_PROPERTY, PROPERTY40, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_PROPERTY; stream_PROPERTY->add(stream_PROPERTY, PROPERTY40, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_type_in_class_property_decl569);
@@ -4428,7 +4428,7 @@ class_property_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type41.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type41.tree, NULL); }
 
             FOLLOWPUSH(FOLLOW_identifier_in_class_property_decl571);
             identifier42=identifier(ctx);
@@ -4443,7 +4443,7 @@ class_property_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier42.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier42.tree, NULL); }
 
             char_literal43 = (pANTLR3_COMMON_TOKEN) MATCHT(SEP, &FOLLOW_SEP_in_class_property_decl573);
             if  (HASEXCEPTION())
@@ -4455,7 +4455,7 @@ class_property_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal43, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal43, NULL); }
 
 
             /* AST REWRITE
@@ -4470,7 +4470,7 @@ class_property_decl(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -4483,9 +4483,9 @@ class_property_decl(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, PROPERTY_DECL, (pANTLR3_UINT8)"PROPERTY_DECL")
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
             	    }
@@ -4494,7 +4494,7 @@ class_property_decl(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -4516,10 +4516,10 @@ class_property_decl(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_PROPERTY != nullptr) stream_PROPERTY->free(stream_PROPERTY);
-        if (stream_SEP != nullptr) stream_SEP->free(stream_SEP);
-        if (stream_type != nullptr) stream_type->free(stream_type);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_PROPERTY != NULL) stream_PROPERTY->free(stream_PROPERTY);
+        if (stream_SEP != NULL) stream_SEP->free(stream_SEP);
+        if (stream_type != NULL) stream_type->free(stream_type);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -4613,57 +4613,57 @@ class_func_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    T_VOID56       = nullptr;
-    modifiers44.tree = nullptr;
+    T_VOID56       = NULL;
+    modifiers44.tree = NULL;
 
-    identifier45.tree = nullptr;
+    identifier45.tree = NULL;
 
-    member_decl_rest46.tree = nullptr;
+    member_decl_rest46.tree = NULL;
 
-    annotations47.tree = nullptr;
+    annotations47.tree = NULL;
 
-    modifiers48.tree = nullptr;
+    modifiers48.tree = NULL;
 
-    typeinfos49.tree = nullptr;
+    typeinfos49.tree = NULL;
 
-    type50.tree = nullptr;
+    type50.tree = NULL;
 
-    identifier51.tree = nullptr;
+    identifier51.tree = NULL;
 
-    member_decl_rest52.tree = nullptr;
+    member_decl_rest52.tree = NULL;
 
-    annotations53.tree = nullptr;
+    annotations53.tree = NULL;
 
-    modifiers54.tree = nullptr;
+    modifiers54.tree = NULL;
 
-    typeinfos55.tree = nullptr;
+    typeinfos55.tree = NULL;
 
-    identifier57.tree = nullptr;
+    identifier57.tree = NULL;
 
-    member_decl_rest58.tree = nullptr;
+    member_decl_rest58.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    T_VOID56_tree   = nullptr;
+    T_VOID56_tree   = NULL;
 
-    stream_T_VOID   = nullptr;
-    #define CREATE_stream_T_VOID  if (stream_T_VOID == nullptr) {stream_T_VOID = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token T_VOID"); } 
-    stream_typeinfos   = nullptr;
-    #define CREATE_stream_typeinfos  if (stream_typeinfos == nullptr) {stream_typeinfos = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule typeinfos"); }
-    stream_annotations   = nullptr;
-    #define CREATE_stream_annotations  if (stream_annotations == nullptr) {stream_annotations = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule annotations"); }
-    stream_member_decl_rest   = nullptr;
-    #define CREATE_stream_member_decl_rest  if (stream_member_decl_rest == nullptr) {stream_member_decl_rest = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule member_decl_rest"); }
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
-    stream_modifiers   = nullptr;
-    #define CREATE_stream_modifiers  if (stream_modifiers == nullptr) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_T_VOID   = NULL;
+    #define CREATE_stream_T_VOID  if (stream_T_VOID == NULL) {stream_T_VOID = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token T_VOID"); } 
+    stream_typeinfos   = NULL;
+    #define CREATE_stream_typeinfos  if (stream_typeinfos == NULL) {stream_typeinfos = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule typeinfos"); }
+    stream_annotations   = NULL;
+    #define CREATE_stream_annotations  if (stream_annotations == NULL) {stream_annotations = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule annotations"); }
+    stream_member_decl_rest   = NULL;
+    #define CREATE_stream_member_decl_rest  if (stream_member_decl_rest == NULL) {stream_member_decl_rest = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule member_decl_rest"); }
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_modifiers   = NULL;
+    #define CREATE_stream_modifiers  if (stream_modifiers == NULL) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -4701,7 +4701,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers44.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers44.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_identifier_in_class_func_decl602);
         	        identifier45=identifier(ctx);
@@ -4716,7 +4716,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier45.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier45.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_member_decl_rest_in_class_func_decl604);
         	        member_decl_rest46=member_decl_rest(ctx);
@@ -4731,7 +4731,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_member_decl_rest; stream_member_decl_rest->add(stream_member_decl_rest, member_decl_rest46.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_member_decl_rest; stream_member_decl_rest->add(stream_member_decl_rest, member_decl_rest46.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : modifiers, identifier, member_decl_rest
@@ -4745,7 +4745,7 @@ class_func_decl(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -4758,11 +4758,11 @@ class_func_decl(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, CONSTRUCTOR_DECL, (pANTLR3_UINT8)"CONSTRUCTOR_DECL")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == nullptr ? nullptr : stream_modifiers->nextTree(stream_modifiers));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == NULL ? NULL : stream_modifiers->nextTree(stream_modifiers));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_member_decl_rest == nullptr ? nullptr : stream_member_decl_rest->nextTree(stream_member_decl_rest));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_member_decl_rest == NULL ? NULL : stream_member_decl_rest->nextTree(stream_member_decl_rest));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -4771,7 +4771,7 @@ class_func_decl(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -4793,7 +4793,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_annotations; stream_annotations->add(stream_annotations, annotations47.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_annotations; stream_annotations->add(stream_annotations, annotations47.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_modifiers_in_class_func_decl627);
         	        modifiers48=modifiers(ctx);
@@ -4808,7 +4808,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers48.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers48.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:98:26: ( typeinfos )?
         	        {
@@ -4840,7 +4840,7 @@ class_func_decl(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfos; stream_typeinfos->add(stream_typeinfos, typeinfos49.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfos; stream_typeinfos->add(stream_typeinfos, typeinfos49.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -4861,7 +4861,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type50.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type50.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_identifier_in_class_func_decl634);
         	        identifier51=identifier(ctx);
@@ -4876,7 +4876,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier51.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier51.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_member_decl_rest_in_class_func_decl636);
         	        member_decl_rest52=member_decl_rest(ctx);
@@ -4891,7 +4891,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_member_decl_rest; stream_member_decl_rest->add(stream_member_decl_rest, member_decl_rest52.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_member_decl_rest; stream_member_decl_rest->add(stream_member_decl_rest, member_decl_rest52.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : identifier, type, annotations, member_decl_rest, modifiers, typeinfos
@@ -4905,7 +4905,7 @@ class_func_decl(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -4918,26 +4918,26 @@ class_func_decl(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, FUNCTION_DECL, (pANTLR3_UINT8)"FUNCTION_DECL")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_annotations == nullptr ? nullptr : stream_annotations->nextTree(stream_annotations));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_annotations == NULL ? NULL : stream_annotations->nextTree(stream_annotations));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == nullptr ? nullptr : stream_modifiers->nextTree(stream_modifiers));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == NULL ? NULL : stream_modifiers->nextTree(stream_modifiers));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:98:112: ( typeinfos )?
         	        	        {
-        	        	        	if ( (stream_typeinfos != nullptr && stream_typeinfos->hasNext(stream_typeinfos))  )
+        	        	        	if ( (stream_typeinfos != NULL && stream_typeinfos->hasNext(stream_typeinfos))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfos == nullptr ? nullptr : stream_typeinfos->nextTree(stream_typeinfos));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfos == NULL ? NULL : stream_typeinfos->nextTree(stream_typeinfos));
 
         	        	        	}
-        	        	        	if ( stream_typeinfos != nullptr) stream_typeinfos->reset(stream_typeinfos);
+        	        	        	if ( stream_typeinfos != NULL) stream_typeinfos->reset(stream_typeinfos);
 
         	        	        }
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_member_decl_rest == nullptr ? nullptr : stream_member_decl_rest->nextTree(stream_member_decl_rest));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_member_decl_rest == NULL ? NULL : stream_member_decl_rest->nextTree(stream_member_decl_rest));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -4946,7 +4946,7 @@ class_func_decl(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -4968,7 +4968,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_annotations; stream_annotations->add(stream_annotations, annotations53.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_annotations; stream_annotations->add(stream_annotations, annotations53.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_modifiers_in_class_func_decl663);
         	        modifiers54=modifiers(ctx);
@@ -4983,7 +4983,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers54.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers54.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:99:26: ( typeinfos )?
         	        {
@@ -5015,7 +5015,7 @@ class_func_decl(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfos; stream_typeinfos->add(stream_typeinfos, typeinfos55.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfos; stream_typeinfos->add(stream_typeinfos, typeinfos55.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -5033,7 +5033,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_T_VOID; stream_T_VOID->add(stream_T_VOID, T_VOID56, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_T_VOID; stream_T_VOID->add(stream_T_VOID, T_VOID56, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_identifier_in_class_func_decl670);
@@ -5049,7 +5049,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier57.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier57.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_member_decl_rest_in_class_func_decl672);
         	        member_decl_rest58=member_decl_rest(ctx);
@@ -5064,7 +5064,7 @@ class_func_decl(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_member_decl_rest; stream_member_decl_rest->add(stream_member_decl_rest, member_decl_rest58.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_member_decl_rest; stream_member_decl_rest->add(stream_member_decl_rest, member_decl_rest58.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : identifier, member_decl_rest, annotations, typeinfos, modifiers
@@ -5078,7 +5078,7 @@ class_func_decl(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -5091,24 +5091,24 @@ class_func_decl(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, VOID_FUNCDECL, (pANTLR3_UINT8)"VOID_FUNCDECL")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_annotations == nullptr ? nullptr : stream_annotations->nextTree(stream_annotations));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_annotations == NULL ? NULL : stream_annotations->nextTree(stream_annotations));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == nullptr ? nullptr : stream_modifiers->nextTree(stream_modifiers));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == NULL ? NULL : stream_modifiers->nextTree(stream_modifiers));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:99:113: ( typeinfos )?
         	        	        {
-        	        	        	if ( (stream_typeinfos != nullptr && stream_typeinfos->hasNext(stream_typeinfos))  )
+        	        	        	if ( (stream_typeinfos != NULL && stream_typeinfos->hasNext(stream_typeinfos))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfos == nullptr ? nullptr : stream_typeinfos->nextTree(stream_typeinfos));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfos == NULL ? NULL : stream_typeinfos->nextTree(stream_typeinfos));
 
         	        	        	}
-        	        	        	if ( stream_typeinfos != nullptr) stream_typeinfos->reset(stream_typeinfos);
+        	        	        	if ( stream_typeinfos != NULL) stream_typeinfos->reset(stream_typeinfos);
 
         	        	        }
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_member_decl_rest == nullptr ? nullptr : stream_member_decl_rest->nextTree(stream_member_decl_rest));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_member_decl_rest == NULL ? NULL : stream_member_decl_rest->nextTree(stream_member_decl_rest));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -5117,7 +5117,7 @@ class_func_decl(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -5142,13 +5142,13 @@ class_func_decl(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_T_VOID != nullptr) stream_T_VOID->free(stream_T_VOID);
-        if (stream_typeinfos != nullptr) stream_typeinfos->free(stream_typeinfos);
-        if (stream_annotations != nullptr) stream_annotations->free(stream_annotations);
-        if (stream_member_decl_rest != nullptr) stream_member_decl_rest->free(stream_member_decl_rest);
-        if (stream_type != nullptr) stream_type->free(stream_type);
-        if (stream_modifiers != nullptr) stream_modifiers->free(stream_modifiers);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_T_VOID != NULL) stream_T_VOID->free(stream_T_VOID);
+        if (stream_typeinfos != NULL) stream_typeinfos->free(stream_typeinfos);
+        if (stream_annotations != NULL) stream_annotations->free(stream_annotations);
+        if (stream_member_decl_rest != NULL) stream_member_decl_rest->free(stream_member_decl_rest);
+        if (stream_type != NULL) stream_type->free(stream_type);
+        if (stream_modifiers != NULL) stream_modifiers->free(stream_modifiers);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -5188,19 +5188,19 @@ member_decl_rest(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal61       = nullptr;
-    func_arguments59.tree = nullptr;
+    char_literal61       = NULL;
+    func_arguments59.tree = NULL;
 
-    block60.tree = nullptr;
+    block60.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal61_tree   = nullptr;
+    char_literal61_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:103:2: ( func_arguments ( block | ';' ) )
@@ -5384,45 +5384,45 @@ interface_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    INTRFACE63       = nullptr;
-    char_literal67       = nullptr;
-    char_literal69       = nullptr;
-    modifiers62.tree = nullptr;
+    INTRFACE63       = NULL;
+    char_literal67       = NULL;
+    char_literal69       = NULL;
+    modifiers62.tree = NULL;
 
-    identifier64.tree = nullptr;
+    identifier64.tree = NULL;
 
-    typeinfos65.tree = nullptr;
+    typeinfos65.tree = NULL;
 
-    iface_inheritance66.tree = nullptr;
+    iface_inheritance66.tree = NULL;
 
-    iface_member68.tree = nullptr;
+    iface_member68.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    INTRFACE63_tree   = nullptr;
-    char_literal67_tree   = nullptr;
-    char_literal69_tree   = nullptr;
+    INTRFACE63_tree   = NULL;
+    char_literal67_tree   = NULL;
+    char_literal69_tree   = NULL;
 
-    stream_127   = nullptr;
-    #define CREATE_stream_127  if (stream_127 == nullptr) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
-    stream_128   = nullptr;
-    #define CREATE_stream_128  if (stream_128 == nullptr) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
-    stream_INTRFACE   = nullptr;
-    #define CREATE_stream_INTRFACE  if (stream_INTRFACE == nullptr) {stream_INTRFACE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token INTRFACE"); } 
-    stream_typeinfos   = nullptr;
-    #define CREATE_stream_typeinfos  if (stream_typeinfos == nullptr) {stream_typeinfos = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule typeinfos"); }
-    stream_iface_inheritance   = nullptr;
-    #define CREATE_stream_iface_inheritance  if (stream_iface_inheritance == nullptr) {stream_iface_inheritance = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule iface_inheritance"); }
-    stream_iface_member   = nullptr;
-    #define CREATE_stream_iface_member  if (stream_iface_member == nullptr) {stream_iface_member = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule iface_member"); }
-    stream_modifiers   = nullptr;
-    #define CREATE_stream_modifiers  if (stream_modifiers == nullptr) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_127   = NULL;
+    #define CREATE_stream_127  if (stream_127 == NULL) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
+    stream_128   = NULL;
+    #define CREATE_stream_128  if (stream_128 == NULL) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
+    stream_INTRFACE   = NULL;
+    #define CREATE_stream_INTRFACE  if (stream_INTRFACE == NULL) {stream_INTRFACE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token INTRFACE"); } 
+    stream_typeinfos   = NULL;
+    #define CREATE_stream_typeinfos  if (stream_typeinfos == NULL) {stream_typeinfos = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule typeinfos"); }
+    stream_iface_inheritance   = NULL;
+    #define CREATE_stream_iface_inheritance  if (stream_iface_inheritance == NULL) {stream_iface_inheritance = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule iface_inheritance"); }
+    stream_iface_member   = NULL;
+    #define CREATE_stream_iface_member  if (stream_iface_member == NULL) {stream_iface_member = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule iface_member"); }
+    stream_modifiers   = NULL;
+    #define CREATE_stream_modifiers  if (stream_modifiers == NULL) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:109:2: ( modifiers INTRFACE identifier ( typeinfos )? iface_inheritance '{' ( iface_member )* '}' -> ^( INTRFACE modifiers identifier ( typeinfos )? iface_inheritance ( iface_member )* ) )
@@ -5441,7 +5441,7 @@ interface_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers62.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers62.tree, NULL); }
 
             INTRFACE63 = (pANTLR3_COMMON_TOKEN) MATCHT(INTRFACE, &FOLLOW_INTRFACE_in_interface_decl724);
             if  (HASEXCEPTION())
@@ -5453,7 +5453,7 @@ interface_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_INTRFACE; stream_INTRFACE->add(stream_INTRFACE, INTRFACE63, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_INTRFACE; stream_INTRFACE->add(stream_INTRFACE, INTRFACE63, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_identifier_in_interface_decl726);
@@ -5469,7 +5469,7 @@ interface_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier64.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier64.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:109:34: ( typeinfos )?
             {
@@ -5501,7 +5501,7 @@ interface_decl(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfos; stream_typeinfos->add(stream_typeinfos, typeinfos65.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfos; stream_typeinfos->add(stream_typeinfos, typeinfos65.tree, NULL); }
 
             	    }
             	    break;
@@ -5522,7 +5522,7 @@ interface_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_iface_inheritance; stream_iface_inheritance->add(stream_iface_inheritance, iface_inheritance66.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_iface_inheritance; stream_iface_inheritance->add(stream_iface_inheritance, iface_inheritance66.tree, NULL); }
 
             char_literal67 = (pANTLR3_COMMON_TOKEN) MATCHT(127, &FOLLOW_127_in_interface_decl733);
             if  (HASEXCEPTION())
@@ -5534,7 +5534,7 @@ interface_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal67, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal67, NULL); }
 
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:109:67: ( iface_member )*
@@ -5586,7 +5586,7 @@ interface_decl(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_iface_member; stream_iface_member->add(stream_iface_member, iface_member68.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_iface_member; stream_iface_member->add(stream_iface_member, iface_member68.tree, NULL); }
 
             	    }
             	    break;
@@ -5609,7 +5609,7 @@ interface_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal69, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal69, NULL); }
 
 
             /* AST REWRITE
@@ -5624,7 +5624,7 @@ interface_decl(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -5634,34 +5634,34 @@ interface_decl(pyasParser ctx)
             	    {
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-            	        stream_INTRFACE == nullptr ? nullptr : stream_INTRFACE->nextNode(stream_INTRFACE)
+            	        stream_INTRFACE == NULL ? NULL : stream_INTRFACE->nextNode(stream_INTRFACE)
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == nullptr ? nullptr : stream_modifiers->nextTree(stream_modifiers));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == NULL ? NULL : stream_modifiers->nextTree(stream_modifiers));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:109:121: ( typeinfos )?
             	        {
-            	        	if ( (stream_typeinfos != nullptr && stream_typeinfos->hasNext(stream_typeinfos))  )
+            	        	if ( (stream_typeinfos != NULL && stream_typeinfos->hasNext(stream_typeinfos))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfos == nullptr ? nullptr : stream_typeinfos->nextTree(stream_typeinfos));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfos == NULL ? NULL : stream_typeinfos->nextTree(stream_typeinfos));
 
             	        	}
-            	        	if ( stream_typeinfos != nullptr) stream_typeinfos->reset(stream_typeinfos);
+            	        	if ( stream_typeinfos != NULL) stream_typeinfos->reset(stream_typeinfos);
 
             	        }
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_iface_inheritance == nullptr ? nullptr : stream_iface_inheritance->nextTree(stream_iface_inheritance));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_iface_inheritance == NULL ? NULL : stream_iface_inheritance->nextTree(stream_iface_inheritance));
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:109:150: ( iface_member )*
             	        {
-            	        	while ( (stream_iface_member != nullptr && stream_iface_member->hasNext(stream_iface_member))  )
+            	        	while ( (stream_iface_member != NULL && stream_iface_member->hasNext(stream_iface_member))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_iface_member == nullptr ? nullptr : stream_iface_member->nextTree(stream_iface_member));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_iface_member == NULL ? NULL : stream_iface_member->nextTree(stream_iface_member));
 
             	        	}
-            	        	if (stream_iface_member != nullptr) stream_iface_member->reset(stream_iface_member);
+            	        	if (stream_iface_member != NULL) stream_iface_member->reset(stream_iface_member);
 
             	        }
 
@@ -5672,7 +5672,7 @@ interface_decl(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -5694,14 +5694,14 @@ interface_decl(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_127 != nullptr) stream_127->free(stream_127);
-        if (stream_128 != nullptr) stream_128->free(stream_128);
-        if (stream_INTRFACE != nullptr) stream_INTRFACE->free(stream_INTRFACE);
-        if (stream_typeinfos != nullptr) stream_typeinfos->free(stream_typeinfos);
-        if (stream_iface_inheritance != nullptr) stream_iface_inheritance->free(stream_iface_inheritance);
-        if (stream_iface_member != nullptr) stream_iface_member->free(stream_iface_member);
-        if (stream_modifiers != nullptr) stream_modifiers->free(stream_modifiers);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_127 != NULL) stream_127->free(stream_127);
+        if (stream_128 != NULL) stream_128->free(stream_128);
+        if (stream_INTRFACE != NULL) stream_INTRFACE->free(stream_INTRFACE);
+        if (stream_typeinfos != NULL) stream_typeinfos->free(stream_typeinfos);
+        if (stream_iface_inheritance != NULL) stream_iface_inheritance->free(stream_iface_inheritance);
+        if (stream_iface_member != NULL) stream_iface_member->free(stream_iface_member);
+        if (stream_modifiers != NULL) stream_modifiers->free(stream_modifiers);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -5737,17 +5737,17 @@ iface_inheritance(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    EXTENDS70       = nullptr;
-    type_list71.tree = nullptr;
+    EXTENDS70       = NULL;
+    type_list71.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    EXTENDS70_tree   = nullptr;
+    EXTENDS70_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:113:2: ( ( EXTENDS type_list )? )
@@ -5890,39 +5890,39 @@ iface_member(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    T_VOID77       = nullptr;
-    modifiers72.tree = nullptr;
+    T_VOID77       = NULL;
+    modifiers72.tree = NULL;
 
-    type73.tree = nullptr;
+    type73.tree = NULL;
 
-    identifier74.tree = nullptr;
+    identifier74.tree = NULL;
 
-    iface_func_field75.tree = nullptr;
+    iface_func_field75.tree = NULL;
 
-    modifiers76.tree = nullptr;
+    modifiers76.tree = NULL;
 
-    identifier78.tree = nullptr;
+    identifier78.tree = NULL;
 
-    iface_func_field79.tree = nullptr;
+    iface_func_field79.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    T_VOID77_tree   = nullptr;
+    T_VOID77_tree   = NULL;
 
-    stream_T_VOID   = nullptr;
-    #define CREATE_stream_T_VOID  if (stream_T_VOID == nullptr) {stream_T_VOID = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token T_VOID"); } 
-    stream_modifiers   = nullptr;
-    #define CREATE_stream_modifiers  if (stream_modifiers == nullptr) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
-    stream_iface_func_field   = nullptr;
-    #define CREATE_stream_iface_func_field  if (stream_iface_func_field == nullptr) {stream_iface_func_field = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule iface_func_field"); }
+    stream_T_VOID   = NULL;
+    #define CREATE_stream_T_VOID  if (stream_T_VOID == NULL) {stream_T_VOID = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token T_VOID"); } 
+    stream_modifiers   = NULL;
+    #define CREATE_stream_modifiers  if (stream_modifiers == NULL) {stream_modifiers = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifiers"); }
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_iface_func_field   = NULL;
+    #define CREATE_stream_iface_func_field  if (stream_iface_func_field == NULL) {stream_iface_func_field = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule iface_func_field"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -5960,7 +5960,7 @@ iface_member(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers72.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers72.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_type_in_iface_member788);
         	        type73=type(ctx);
@@ -5975,7 +5975,7 @@ iface_member(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type73.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type73.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_identifier_in_iface_member790);
         	        identifier74=identifier(ctx);
@@ -5990,7 +5990,7 @@ iface_member(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier74.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier74.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_iface_func_field_in_iface_member792);
         	        iface_func_field75=iface_func_field(ctx);
@@ -6005,7 +6005,7 @@ iface_member(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_iface_func_field; stream_iface_func_field->add(stream_iface_func_field, iface_func_field75.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_iface_func_field; stream_iface_func_field->add(stream_iface_func_field, iface_func_field75.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : modifiers, type, identifier, iface_func_field
@@ -6019,7 +6019,7 @@ iface_member(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -6032,13 +6032,13 @@ iface_member(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, IFACE_MEMBER, (pANTLR3_UINT8)"IFACE_MEMBER")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == nullptr ? nullptr : stream_modifiers->nextTree(stream_modifiers));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == NULL ? NULL : stream_modifiers->nextTree(stream_modifiers));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_iface_func_field == nullptr ? nullptr : stream_iface_func_field->nextTree(stream_iface_func_field));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_iface_func_field == NULL ? NULL : stream_iface_func_field->nextTree(stream_iface_func_field));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -6047,7 +6047,7 @@ iface_member(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -6069,7 +6069,7 @@ iface_member(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers76.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_modifiers; stream_modifiers->add(stream_modifiers, modifiers76.tree, NULL); }
 
         	        T_VOID77 = (pANTLR3_COMMON_TOKEN) MATCHT(T_VOID, &FOLLOW_T_VOID_in_iface_member816);
         	        if  (HASEXCEPTION())
@@ -6081,7 +6081,7 @@ iface_member(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_T_VOID; stream_T_VOID->add(stream_T_VOID, T_VOID77, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_T_VOID; stream_T_VOID->add(stream_T_VOID, T_VOID77, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_identifier_in_iface_member818);
@@ -6097,7 +6097,7 @@ iface_member(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier78.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier78.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_iface_func_field_in_iface_member820);
         	        iface_func_field79=iface_func_field(ctx);
@@ -6112,7 +6112,7 @@ iface_member(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_iface_func_field; stream_iface_func_field->add(stream_iface_func_field, iface_func_field79.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_iface_func_field; stream_iface_func_field->add(stream_iface_func_field, iface_func_field79.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : modifiers, identifier, iface_func_field
@@ -6126,7 +6126,7 @@ iface_member(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -6139,11 +6139,11 @@ iface_member(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, IFACE_VOID_MEMBER, (pANTLR3_UINT8)"IFACE_VOID_MEMBER")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == nullptr ? nullptr : stream_modifiers->nextTree(stream_modifiers));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_modifiers == NULL ? NULL : stream_modifiers->nextTree(stream_modifiers));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_iface_func_field == nullptr ? nullptr : stream_iface_func_field->nextTree(stream_iface_func_field));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_iface_func_field == NULL ? NULL : stream_iface_func_field->nextTree(stream_iface_func_field));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -6152,7 +6152,7 @@ iface_member(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -6177,11 +6177,11 @@ iface_member(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_T_VOID != nullptr) stream_T_VOID->free(stream_T_VOID);
-        if (stream_modifiers != nullptr) stream_modifiers->free(stream_modifiers);
-        if (stream_type != nullptr) stream_type->free(stream_type);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
-        if (stream_iface_func_field != nullptr) stream_iface_func_field->free(stream_iface_func_field);
+        if (stream_T_VOID != NULL) stream_T_VOID->free(stream_T_VOID);
+        if (stream_modifiers != NULL) stream_modifiers->free(stream_modifiers);
+        if (stream_type != NULL) stream_type->free(stream_type);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
+        if (stream_iface_func_field != NULL) stream_iface_func_field->free(stream_iface_func_field);
     }
 
 
@@ -6225,23 +6225,23 @@ iface_func_field(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal80       = nullptr;
-    char_literal82       = nullptr;
-    char_literal84       = nullptr;
-    expression81.tree = nullptr;
+    char_literal80       = NULL;
+    char_literal82       = NULL;
+    char_literal84       = NULL;
+    expression81.tree = NULL;
 
-    func_arguments83.tree = nullptr;
+    func_arguments83.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal80_tree   = nullptr;
-    char_literal82_tree   = nullptr;
-    char_literal84_tree   = nullptr;
+    char_literal80_tree   = NULL;
+    char_literal82_tree   = NULL;
+    char_literal84_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -6464,31 +6464,31 @@ typeinfos(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal85       = nullptr;
-    char_literal87       = nullptr;
-    char_literal89       = nullptr;
-    typeinfo86.tree = nullptr;
+    char_literal85       = NULL;
+    char_literal87       = NULL;
+    char_literal89       = NULL;
+    typeinfo86.tree = NULL;
 
-    typeinfo88.tree = nullptr;
+    typeinfo88.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal85_tree   = nullptr;
-    char_literal87_tree   = nullptr;
-    char_literal89_tree   = nullptr;
+    char_literal85_tree   = NULL;
+    char_literal87_tree   = NULL;
+    char_literal89_tree   = NULL;
 
-    stream_GREATER   = nullptr;
-    #define CREATE_stream_GREATER  if (stream_GREATER == nullptr) {stream_GREATER = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token GREATER"); } 
-    stream_SMALLER   = nullptr;
-    #define CREATE_stream_SMALLER  if (stream_SMALLER == nullptr) {stream_SMALLER = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SMALLER"); } 
-    stream_119   = nullptr;
-    #define CREATE_stream_119  if (stream_119 == nullptr) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
-    stream_typeinfo   = nullptr;
-    #define CREATE_stream_typeinfo  if (stream_typeinfo == nullptr) {stream_typeinfo = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule typeinfo"); }
+    stream_GREATER   = NULL;
+    #define CREATE_stream_GREATER  if (stream_GREATER == NULL) {stream_GREATER = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token GREATER"); } 
+    stream_SMALLER   = NULL;
+    #define CREATE_stream_SMALLER  if (stream_SMALLER == NULL) {stream_SMALLER = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SMALLER"); } 
+    stream_119   = NULL;
+    #define CREATE_stream_119  if (stream_119 == NULL) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
+    stream_typeinfo   = NULL;
+    #define CREATE_stream_typeinfo  if (stream_typeinfo == NULL) {stream_typeinfo = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule typeinfo"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:129:2: ( '<' typeinfo ( ',' typeinfo )* '>' -> ^( TYPEINFOS ( typeinfo )+ ) )
@@ -6504,7 +6504,7 @@ typeinfos(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_SMALLER; stream_SMALLER->add(stream_SMALLER, char_literal85, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_SMALLER; stream_SMALLER->add(stream_SMALLER, char_literal85, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_typeinfo_in_typeinfos877);
@@ -6520,7 +6520,7 @@ typeinfos(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_typeinfo; stream_typeinfo->add(stream_typeinfo, typeinfo86.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_typeinfo; stream_typeinfo->add(stream_typeinfo, typeinfo86.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:129:17: ( ',' typeinfo )*
 
@@ -6552,7 +6552,7 @@ typeinfos(pyasParser ctx)
             	            return retval;
             	        }
             	         
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal87, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal87, NULL); }
 
 
             	        FOLLOWPUSH(FOLLOW_typeinfo_in_typeinfos882);
@@ -6568,7 +6568,7 @@ typeinfos(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfo; stream_typeinfo->add(stream_typeinfo, typeinfo88.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_typeinfo; stream_typeinfo->add(stream_typeinfo, typeinfo88.tree, NULL); }
 
             	    }
             	    break;
@@ -6591,7 +6591,7 @@ typeinfos(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_GREATER; stream_GREATER->add(stream_GREATER, char_literal89, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_GREATER; stream_GREATER->add(stream_GREATER, char_literal89, NULL); }
 
 
             /* AST REWRITE
@@ -6606,7 +6606,7 @@ typeinfos(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -6619,7 +6619,7 @@ typeinfos(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPEINFOS, (pANTLR3_UINT8)"TYPEINFOS")
             	        , root_1));
 
-            	        if ((stream_typeinfo == nullptr || !stream_typeinfo->hasNext(stream_typeinfo))  )
+            	        if ((stream_typeinfo == NULL || !stream_typeinfo->hasNext(stream_typeinfo))  )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -6628,7 +6628,7 @@ typeinfos(pyasParser ctx)
             	        else
             	        {
             	        	while ( (stream_typeinfo->hasNext(stream_typeinfo))  ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfo == nullptr ? nullptr : stream_typeinfo->nextTree(stream_typeinfo));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_typeinfo == NULL ? NULL : stream_typeinfo->nextTree(stream_typeinfo));
 
             	        	}
             	        	stream_typeinfo->reset(stream_typeinfo);
@@ -6641,7 +6641,7 @@ typeinfos(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -6663,10 +6663,10 @@ typeinfos(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_GREATER != nullptr) stream_GREATER->free(stream_GREATER);
-        if (stream_SMALLER != nullptr) stream_SMALLER->free(stream_SMALLER);
-        if (stream_119 != nullptr) stream_119->free(stream_119);
-        if (stream_typeinfo != nullptr) stream_typeinfo->free(stream_typeinfo);
+        if (stream_GREATER != NULL) stream_GREATER->free(stream_GREATER);
+        if (stream_SMALLER != NULL) stream_SMALLER->free(stream_SMALLER);
+        if (stream_119 != NULL) stream_119->free(stream_119);
+        if (stream_typeinfo != NULL) stream_typeinfo->free(stream_typeinfo);
     }
 
 
@@ -6710,23 +6710,23 @@ typeinfo(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set92       = nullptr;
-    identifier90.tree = nullptr;
+    set92       = NULL;
+    identifier90.tree = NULL;
 
-    identifier91.tree = nullptr;
+    identifier91.tree = NULL;
 
-    identifier93.tree = nullptr;
+    identifier93.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set92_tree   = nullptr;
+    set92_tree   = NULL;
 
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -6813,7 +6813,7 @@ typeinfo(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier90.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier90.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : identifier
@@ -6827,7 +6827,7 @@ typeinfo(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -6840,7 +6840,7 @@ typeinfo(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPEINFO, (pANTLR3_UINT8)"TYPEINFO")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -6849,7 +6849,7 @@ typeinfo(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -6901,7 +6901,7 @@ typeinfo(pyasParser ctx)
         	            CONSTRUCTEX();
         	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
         	            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-        	            EXCEPTION->expectingSet = nullptr;
+        	            EXCEPTION->expectingSet = NULL;
 
         	            goto ruletypeinfoEx;
         	        }
@@ -6943,7 +6943,7 @@ typeinfo(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -6990,31 +6990,31 @@ func_arguments(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal94       = nullptr;
-    char_literal96       = nullptr;
-    char_literal98       = nullptr;
-    func_arg_decl95.tree = nullptr;
+    char_literal94       = NULL;
+    char_literal96       = NULL;
+    char_literal98       = NULL;
+    func_arg_decl95.tree = NULL;
 
-    func_arg_decl97.tree = nullptr;
+    func_arg_decl97.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal94_tree   = nullptr;
-    char_literal96_tree   = nullptr;
-    char_literal98_tree   = nullptr;
+    char_literal94_tree   = NULL;
+    char_literal96_tree   = NULL;
+    char_literal98_tree   = NULL;
 
-    stream_116   = nullptr;
-    #define CREATE_stream_116  if (stream_116 == nullptr) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
-    stream_117   = nullptr;
-    #define CREATE_stream_117  if (stream_117 == nullptr) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
-    stream_119   = nullptr;
-    #define CREATE_stream_119  if (stream_119 == nullptr) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
-    stream_func_arg_decl   = nullptr;
-    #define CREATE_stream_func_arg_decl  if (stream_func_arg_decl == nullptr) {stream_func_arg_decl = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule func_arg_decl"); }
+    stream_116   = NULL;
+    #define CREATE_stream_116  if (stream_116 == NULL) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
+    stream_117   = NULL;
+    #define CREATE_stream_117  if (stream_117 == NULL) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
+    stream_119   = NULL;
+    #define CREATE_stream_119  if (stream_119 == NULL) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
+    stream_func_arg_decl   = NULL;
+    #define CREATE_stream_func_arg_decl  if (stream_func_arg_decl == NULL) {stream_func_arg_decl = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule func_arg_decl"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:137:2: ( '(' ( func_arg_decl ( ',' func_arg_decl )* )? ')' -> ^( FUNCTION_ARGUMENTS ( func_arg_decl )* ) )
@@ -7030,7 +7030,7 @@ func_arguments(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal94, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal94, NULL); }
 
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:137:8: ( func_arg_decl ( ',' func_arg_decl )* )?
@@ -7068,7 +7068,7 @@ func_arguments(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_func_arg_decl; stream_func_arg_decl->add(stream_func_arg_decl, func_arg_decl95.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_func_arg_decl; stream_func_arg_decl->add(stream_func_arg_decl, func_arg_decl95.tree, NULL); }
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:137:23: ( ',' func_arg_decl )*
 
@@ -7100,7 +7100,7 @@ func_arguments(pyasParser ctx)
             	        	            return retval;
             	        	        }
             	        	         
-            	        	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal96, nullptr); }
+            	        	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal96, NULL); }
 
 
             	        	        FOLLOWPUSH(FOLLOW_func_arg_decl_in_func_arguments957);
@@ -7116,7 +7116,7 @@ func_arguments(pyasParser ctx)
             	        	            return retval;
             	        	        }
 
-            	        	        if ( BACKTRACKING==0 ) { CREATE_stream_func_arg_decl; stream_func_arg_decl->add(stream_func_arg_decl, func_arg_decl97.tree, nullptr); }
+            	        	        if ( BACKTRACKING==0 ) { CREATE_stream_func_arg_decl; stream_func_arg_decl->add(stream_func_arg_decl, func_arg_decl97.tree, NULL); }
 
             	        	    }
             	        	    break;
@@ -7145,7 +7145,7 @@ func_arguments(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal98, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal98, NULL); }
 
 
             /* AST REWRITE
@@ -7160,7 +7160,7 @@ func_arguments(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -7175,12 +7175,12 @@ func_arguments(pyasParser ctx)
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:137:77: ( func_arg_decl )*
             	        {
-            	        	while ( (stream_func_arg_decl != nullptr && stream_func_arg_decl->hasNext(stream_func_arg_decl))  )
+            	        	while ( (stream_func_arg_decl != NULL && stream_func_arg_decl->hasNext(stream_func_arg_decl))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_func_arg_decl == nullptr ? nullptr : stream_func_arg_decl->nextTree(stream_func_arg_decl));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_func_arg_decl == NULL ? NULL : stream_func_arg_decl->nextTree(stream_func_arg_decl));
 
             	        	}
-            	        	if (stream_func_arg_decl != nullptr) stream_func_arg_decl->reset(stream_func_arg_decl);
+            	        	if (stream_func_arg_decl != NULL) stream_func_arg_decl->reset(stream_func_arg_decl);
 
             	        }
 
@@ -7191,7 +7191,7 @@ func_arguments(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -7213,10 +7213,10 @@ func_arguments(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_116 != nullptr) stream_116->free(stream_116);
-        if (stream_117 != nullptr) stream_117->free(stream_117);
-        if (stream_119 != nullptr) stream_119->free(stream_119);
-        if (stream_func_arg_decl != nullptr) stream_func_arg_decl->free(stream_func_arg_decl);
+        if (stream_116 != NULL) stream_116->free(stream_116);
+        if (stream_117 != NULL) stream_117->free(stream_117);
+        if (stream_119 != NULL) stream_119->free(stream_119);
+        if (stream_func_arg_decl != NULL) stream_func_arg_decl->free(stream_func_arg_decl);
     }
 
 
@@ -7260,21 +7260,21 @@ func_arg_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal101       = nullptr;
-    type99.tree = nullptr;
+    char_literal101       = NULL;
+    type99.tree = NULL;
 
-    identifier100.tree = nullptr;
+    identifier100.tree = NULL;
 
-    expression102.tree = nullptr;
+    expression102.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal101_tree   = nullptr;
+    char_literal101_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:141:2: ( type identifier ( '=' expression )? )
@@ -7423,19 +7423,19 @@ variables_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal104       = nullptr;
-    identifier103.tree = nullptr;
+    char_literal104       = NULL;
+    identifier103.tree = NULL;
 
-    variable_init105.tree = nullptr;
+    variable_init105.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal104_tree   = nullptr;
+    char_literal104_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:145:2: ( identifier ( '=' variable_init )? )
@@ -7567,17 +7567,17 @@ variable_init(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    array_init106.tree = nullptr;
+    array_init106.tree = NULL;
 
-    expression107.tree = nullptr;
+    expression107.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -7602,7 +7602,7 @@ variable_init(pyasParser ctx)
             case INCR:
             case INT:
             case LITFALSE:
-            case LITnullptr:
+            case LITNULL:
             case LITTRUE:
             case MINUS:
             case NATIVE:
@@ -7749,31 +7749,31 @@ array_init(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal108       = nullptr;
-    char_literal110       = nullptr;
-    char_literal112       = nullptr;
-    variable_init109.tree = nullptr;
+    char_literal108       = NULL;
+    char_literal110       = NULL;
+    char_literal112       = NULL;
+    variable_init109.tree = NULL;
 
-    variable_init111.tree = nullptr;
+    variable_init111.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal108_tree   = nullptr;
-    char_literal110_tree   = nullptr;
-    char_literal112_tree   = nullptr;
+    char_literal108_tree   = NULL;
+    char_literal110_tree   = NULL;
+    char_literal112_tree   = NULL;
 
-    stream_127   = nullptr;
-    #define CREATE_stream_127  if (stream_127 == nullptr) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
-    stream_128   = nullptr;
-    #define CREATE_stream_128  if (stream_128 == nullptr) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
-    stream_119   = nullptr;
-    #define CREATE_stream_119  if (stream_119 == nullptr) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
-    stream_variable_init   = nullptr;
-    #define CREATE_stream_variable_init  if (stream_variable_init == nullptr) {stream_variable_init = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule variable_init"); }
+    stream_127   = NULL;
+    #define CREATE_stream_127  if (stream_127 == NULL) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
+    stream_128   = NULL;
+    #define CREATE_stream_128  if (stream_128 == NULL) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
+    stream_119   = NULL;
+    #define CREATE_stream_119  if (stream_119 == NULL) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
+    stream_variable_init   = NULL;
+    #define CREATE_stream_variable_init  if (stream_variable_init == NULL) {stream_variable_init = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule variable_init"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:154:2: ( '{' variable_init ( ',' variable_init )* '}' -> ^( ARRAYINIT ( variable_init )+ ) )
@@ -7789,7 +7789,7 @@ array_init(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal108, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal108, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_variable_init_in_array_init1046);
@@ -7805,7 +7805,7 @@ array_init(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_variable_init; stream_variable_init->add(stream_variable_init, variable_init109.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_variable_init; stream_variable_init->add(stream_variable_init, variable_init109.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:154:22: ( ',' variable_init )*
 
@@ -7837,7 +7837,7 @@ array_init(pyasParser ctx)
             	            return retval;
             	        }
             	         
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal110, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal110, NULL); }
 
 
             	        FOLLOWPUSH(FOLLOW_variable_init_in_array_init1051);
@@ -7853,7 +7853,7 @@ array_init(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_variable_init; stream_variable_init->add(stream_variable_init, variable_init111.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_variable_init; stream_variable_init->add(stream_variable_init, variable_init111.tree, NULL); }
 
             	    }
             	    break;
@@ -7876,7 +7876,7 @@ array_init(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal112, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal112, NULL); }
 
 
             /* AST REWRITE
@@ -7891,7 +7891,7 @@ array_init(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -7904,7 +7904,7 @@ array_init(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ARRAYINIT, (pANTLR3_UINT8)"ARRAYINIT")
             	        , root_1));
 
-            	        if ((stream_variable_init == nullptr || !stream_variable_init->hasNext(stream_variable_init))  )
+            	        if ((stream_variable_init == NULL || !stream_variable_init->hasNext(stream_variable_init))  )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -7913,7 +7913,7 @@ array_init(pyasParser ctx)
             	        else
             	        {
             	        	while ( (stream_variable_init->hasNext(stream_variable_init))  ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_variable_init == nullptr ? nullptr : stream_variable_init->nextTree(stream_variable_init));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_variable_init == NULL ? NULL : stream_variable_init->nextTree(stream_variable_init));
 
             	        	}
             	        	stream_variable_init->reset(stream_variable_init);
@@ -7926,7 +7926,7 @@ array_init(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -7948,10 +7948,10 @@ array_init(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_127 != nullptr) stream_127->free(stream_127);
-        if (stream_128 != nullptr) stream_128->free(stream_128);
-        if (stream_119 != nullptr) stream_119->free(stream_119);
-        if (stream_variable_init != nullptr) stream_variable_init->free(stream_variable_init);
+        if (stream_127 != NULL) stream_127->free(stream_127);
+        if (stream_128 != NULL) stream_128->free(stream_128);
+        if (stream_119 != NULL) stream_119->free(stream_119);
+        if (stream_variable_init != NULL) stream_variable_init->free(stream_variable_init);
     }
 
 
@@ -7985,17 +7985,17 @@ modifiers(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    modifier113.tree = nullptr;
+    modifier113.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
-    stream_modifier   = nullptr;
-    #define CREATE_stream_modifier  if (stream_modifier == nullptr) {stream_modifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifier"); }
+    stream_modifier   = NULL;
+    #define CREATE_stream_modifier  if (stream_modifier == NULL) {stream_modifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule modifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:158:2: ( ( modifier )* -> ^( MODIFIERS ( modifier )* ) )
@@ -8040,7 +8040,7 @@ modifiers(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_modifier; stream_modifier->add(stream_modifier, modifier113.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_modifier; stream_modifier->add(stream_modifier, modifier113.tree, NULL); }
 
             	    }
             	    break;
@@ -8065,7 +8065,7 @@ modifiers(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -8080,12 +8080,12 @@ modifiers(pyasParser ctx)
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:158:36: ( modifier )*
             	        {
-            	        	while ( (stream_modifier != nullptr && stream_modifier->hasNext(stream_modifier))  )
+            	        	while ( (stream_modifier != NULL && stream_modifier->hasNext(stream_modifier))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_modifier == nullptr ? nullptr : stream_modifier->nextTree(stream_modifier));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_modifier == NULL ? NULL : stream_modifier->nextTree(stream_modifier));
 
             	        	}
-            	        	if (stream_modifier != nullptr) stream_modifier->reset(stream_modifier);
+            	        	if (stream_modifier != NULL) stream_modifier->reset(stream_modifier);
 
             	        }
 
@@ -8096,7 +8096,7 @@ modifiers(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -8118,7 +8118,7 @@ modifiers(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_modifier != nullptr) stream_modifier->free(stream_modifier);
+        if (stream_modifier != NULL) stream_modifier->free(stream_modifier);
     }
 
 
@@ -8151,16 +8151,16 @@ modifier(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set114       = nullptr;
+    set114       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set114_tree   = nullptr;
+    set114_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:161:9: ( STATIC | FINAL | NATIVE | ABSTRACT | PUBLIC | PRIVATE | PROT )
@@ -8192,7 +8192,7 @@ modifier(pyasParser ctx)
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
                 EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-                EXCEPTION->expectingSet = nullptr;
+                EXCEPTION->expectingSet = NULL;
 
                 goto rulemodifierEx;
             }
@@ -8249,17 +8249,17 @@ annotations(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    annotation115.tree = nullptr;
+    annotation115.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
-    stream_annotation   = nullptr;
-    #define CREATE_stream_annotation  if (stream_annotation == nullptr) {stream_annotation = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule annotation"); }
+    stream_annotation   = NULL;
+    #define CREATE_stream_annotation  if (stream_annotation == NULL) {stream_annotation = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule annotation"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:173:2: ( ( annotation )* -> ^( ANNOTATIONS ( annotation )* ) )
@@ -8298,7 +8298,7 @@ annotations(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_annotation; stream_annotation->add(stream_annotation, annotation115.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_annotation; stream_annotation->add(stream_annotation, annotation115.tree, NULL); }
 
             	    }
             	    break;
@@ -8323,7 +8323,7 @@ annotations(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -8338,12 +8338,12 @@ annotations(pyasParser ctx)
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:173:40: ( annotation )*
             	        {
-            	        	while ( (stream_annotation != nullptr && stream_annotation->hasNext(stream_annotation))  )
+            	        	while ( (stream_annotation != NULL && stream_annotation->hasNext(stream_annotation))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_annotation == nullptr ? nullptr : stream_annotation->nextTree(stream_annotation));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_annotation == NULL ? NULL : stream_annotation->nextTree(stream_annotation));
 
             	        	}
-            	        	if (stream_annotation != nullptr) stream_annotation->reset(stream_annotation);
+            	        	if (stream_annotation != NULL) stream_annotation->reset(stream_annotation);
 
             	        }
 
@@ -8354,7 +8354,7 @@ annotations(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -8376,7 +8376,7 @@ annotations(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_annotation != nullptr) stream_annotation->free(stream_annotation);
+        if (stream_annotation != NULL) stream_annotation->free(stream_annotation);
     }
 
 
@@ -8418,25 +8418,25 @@ annotation(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal116       = nullptr;
-    identifier117.tree = nullptr;
+    char_literal116       = NULL;
+    identifier117.tree = NULL;
 
-    annotation_arguments118.tree = nullptr;
+    annotation_arguments118.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal116_tree   = nullptr;
+    char_literal116_tree   = NULL;
 
-    stream_124   = nullptr;
-    #define CREATE_stream_124  if (stream_124 == nullptr) {stream_124 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 124"); } 
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
-    stream_annotation_arguments   = nullptr;
-    #define CREATE_stream_annotation_arguments  if (stream_annotation_arguments == nullptr) {stream_annotation_arguments = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule annotation_arguments"); }
+    stream_124   = NULL;
+    #define CREATE_stream_124  if (stream_124 == NULL) {stream_124 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 124"); } 
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_annotation_arguments   = NULL;
+    #define CREATE_stream_annotation_arguments  if (stream_annotation_arguments == NULL) {stream_annotation_arguments = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule annotation_arguments"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:177:2: ( '@' identifier ( annotation_arguments )? -> ^( ANNOTATION identifier annotation_arguments ) )
@@ -8452,7 +8452,7 @@ annotation(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_124; stream_124->add(stream_124, char_literal116, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_124; stream_124->add(stream_124, char_literal116, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_identifier_in_annotation1181);
@@ -8468,7 +8468,7 @@ annotation(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier117.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier117.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:177:19: ( annotation_arguments )?
             {
@@ -8500,7 +8500,7 @@ annotation(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_annotation_arguments; stream_annotation_arguments->add(stream_annotation_arguments, annotation_arguments118.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_annotation_arguments; stream_annotation_arguments->add(stream_annotation_arguments, annotation_arguments118.tree, NULL); }
 
             	    }
             	    break;
@@ -8520,7 +8520,7 @@ annotation(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -8533,9 +8533,9 @@ annotation(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ANNOTATION, (pANTLR3_UINT8)"ANNOTATION")
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_annotation_arguments == nullptr ? nullptr : stream_annotation_arguments->nextTree(stream_annotation_arguments));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_annotation_arguments == NULL ? NULL : stream_annotation_arguments->nextTree(stream_annotation_arguments));
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
             	    }
@@ -8544,7 +8544,7 @@ annotation(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -8566,9 +8566,9 @@ annotation(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_124 != nullptr) stream_124->free(stream_124);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
-        if (stream_annotation_arguments != nullptr) stream_annotation_arguments->free(stream_annotation_arguments);
+        if (stream_124 != NULL) stream_124->free(stream_124);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
+        if (stream_annotation_arguments != NULL) stream_annotation_arguments->free(stream_annotation_arguments);
     }
 
 
@@ -8603,18 +8603,18 @@ annotation_arguments(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal119       = nullptr;
-    char_literal120       = nullptr;
+    char_literal119       = NULL;
+    char_literal120       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal119_tree   = nullptr;
-    char_literal120_tree   = nullptr;
+    char_literal119_tree   = NULL;
+    char_literal120_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:181:2: ( '(' ')' )
@@ -8710,25 +8710,25 @@ block(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal121       = nullptr;
-    char_literal123       = nullptr;
-    block_stmt122.tree = nullptr;
+    char_literal121       = NULL;
+    char_literal123       = NULL;
+    block_stmt122.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal121_tree   = nullptr;
-    char_literal123_tree   = nullptr;
+    char_literal121_tree   = NULL;
+    char_literal123_tree   = NULL;
 
-    stream_127   = nullptr;
-    #define CREATE_stream_127  if (stream_127 == nullptr) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
-    stream_128   = nullptr;
-    #define CREATE_stream_128  if (stream_128 == nullptr) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
-    stream_block_stmt   = nullptr;
-    #define CREATE_stream_block_stmt  if (stream_block_stmt == nullptr) {stream_block_stmt = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block_stmt"); }
+    stream_127   = NULL;
+    #define CREATE_stream_127  if (stream_127 == NULL) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
+    stream_128   = NULL;
+    #define CREATE_stream_128  if (stream_128 == NULL) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
+    stream_block_stmt   = NULL;
+    #define CREATE_stream_block_stmt  if (stream_block_stmt == NULL) {stream_block_stmt = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block_stmt"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:186:7: ( '{' ( block_stmt )* '}' -> ^( BLOCK ( block_stmt )* ) )
@@ -8744,7 +8744,7 @@ block(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal121, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal121, NULL); }
 
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:186:13: ( block_stmt )*
@@ -8768,7 +8768,7 @@ block(pyasParser ctx)
                 case INCR:
                 case INT:
                 case LITFALSE:
-                case LITnullptr:
+                case LITNULL:
                 case LITTRUE:
                 case MINUS:
                 case NATIVE:
@@ -8816,7 +8816,7 @@ block(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_block_stmt; stream_block_stmt->add(stream_block_stmt, block_stmt122.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_block_stmt; stream_block_stmt->add(stream_block_stmt, block_stmt122.tree, NULL); }
 
             	    }
             	    break;
@@ -8839,7 +8839,7 @@ block(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal123, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal123, NULL); }
 
 
             /* AST REWRITE
@@ -8854,7 +8854,7 @@ block(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -8869,12 +8869,12 @@ block(pyasParser ctx)
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:186:40: ( block_stmt )*
             	        {
-            	        	while ( (stream_block_stmt != nullptr && stream_block_stmt->hasNext(stream_block_stmt))  )
+            	        	while ( (stream_block_stmt != NULL && stream_block_stmt->hasNext(stream_block_stmt))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_block_stmt == nullptr ? nullptr : stream_block_stmt->nextTree(stream_block_stmt));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_block_stmt == NULL ? NULL : stream_block_stmt->nextTree(stream_block_stmt));
 
             	        	}
-            	        	if (stream_block_stmt != nullptr) stream_block_stmt->reset(stream_block_stmt);
+            	        	if (stream_block_stmt != NULL) stream_block_stmt->reset(stream_block_stmt);
 
             	        }
 
@@ -8885,7 +8885,7 @@ block(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -8907,9 +8907,9 @@ block(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_127 != nullptr) stream_127->free(stream_127);
-        if (stream_128 != nullptr) stream_128->free(stream_128);
-        if (stream_block_stmt != nullptr) stream_block_stmt->free(stream_block_stmt);
+        if (stream_127 != NULL) stream_127->free(stream_127);
+        if (stream_128 != NULL) stream_128->free(stream_128);
+        if (stream_block_stmt != NULL) stream_block_stmt->free(stream_block_stmt);
     }
 
 
@@ -8947,17 +8947,17 @@ block_stmt(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    local_var_decl124.tree = nullptr;
+    local_var_decl124.tree = NULL;
 
-    stmt125.tree = nullptr;
+    stmt125.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -9025,7 +9025,7 @@ block_stmt(pyasParser ctx)
             case INCR:
             case INT:
             case LITFALSE:
-            case LITnullptr:
+            case LITNULL:
             case LITTRUE:
             case MINUS:
             case NATIVE:
@@ -9338,169 +9338,169 @@ stmt(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    IF127       = nullptr;
-    ELSE130       = nullptr;
-    FOR132       = nullptr;
-    char_literal133       = nullptr;
-    char_literal135       = nullptr;
-    FOREACH137       = nullptr;
-    char_literal138       = nullptr;
-    char_literal141       = nullptr;
-    char_literal143       = nullptr;
-    WHILE145       = nullptr;
-    DO148       = nullptr;
-    WHILE150       = nullptr;
-    SWITCH152       = nullptr;
-    char_literal154       = nullptr;
-    char_literal156       = nullptr;
-    RETURN157       = nullptr;
-    char_literal159       = nullptr;
-    TRY160       = nullptr;
-    THROW164       = nullptr;
-    char_literal166       = nullptr;
-    T_ASSERT167       = nullptr;
-    char_literal169       = nullptr;
-    char_literal171       = nullptr;
-    BREAK172       = nullptr;
-    char_literal173       = nullptr;
-    CONTINUE174       = nullptr;
-    char_literal175       = nullptr;
-    block126.tree = nullptr;
+    IF127       = NULL;
+    ELSE130       = NULL;
+    FOR132       = NULL;
+    char_literal133       = NULL;
+    char_literal135       = NULL;
+    FOREACH137       = NULL;
+    char_literal138       = NULL;
+    char_literal141       = NULL;
+    char_literal143       = NULL;
+    WHILE145       = NULL;
+    DO148       = NULL;
+    WHILE150       = NULL;
+    SWITCH152       = NULL;
+    char_literal154       = NULL;
+    char_literal156       = NULL;
+    RETURN157       = NULL;
+    char_literal159       = NULL;
+    TRY160       = NULL;
+    THROW164       = NULL;
+    char_literal166       = NULL;
+    T_ASSERT167       = NULL;
+    char_literal169       = NULL;
+    char_literal171       = NULL;
+    BREAK172       = NULL;
+    char_literal173       = NULL;
+    CONTINUE174       = NULL;
+    char_literal175       = NULL;
+    block126.tree = NULL;
 
-    compound_expression128.tree = nullptr;
+    compound_expression128.tree = NULL;
 
-    stmt129.tree = nullptr;
+    stmt129.tree = NULL;
 
-    stmt131.tree = nullptr;
+    stmt131.tree = NULL;
 
-    for_declaration134.tree = nullptr;
+    for_declaration134.tree = NULL;
 
-    stmt136.tree = nullptr;
+    stmt136.tree = NULL;
 
-    type139.tree = nullptr;
+    type139.tree = NULL;
 
-    identifier140.tree = nullptr;
+    identifier140.tree = NULL;
 
-    expression142.tree = nullptr;
+    expression142.tree = NULL;
 
-    stmt144.tree = nullptr;
+    stmt144.tree = NULL;
 
-    compound_expression146.tree = nullptr;
+    compound_expression146.tree = NULL;
 
-    stmt147.tree = nullptr;
+    stmt147.tree = NULL;
 
-    stmt149.tree = nullptr;
+    stmt149.tree = NULL;
 
-    compound_expression151.tree = nullptr;
+    compound_expression151.tree = NULL;
 
-    compound_expression153.tree = nullptr;
+    compound_expression153.tree = NULL;
 
-    switch_case155.tree = nullptr;
+    switch_case155.tree = NULL;
 
-    expression158.tree = nullptr;
+    expression158.tree = NULL;
 
-    block161.tree = nullptr;
+    block161.tree = NULL;
 
-    catch_block162.tree = nullptr;
+    catch_block162.tree = NULL;
 
-    finally_block163.tree = nullptr;
+    finally_block163.tree = NULL;
 
-    expression165.tree = nullptr;
+    expression165.tree = NULL;
 
-    expression168.tree = nullptr;
+    expression168.tree = NULL;
 
-    expression170.tree = nullptr;
+    expression170.tree = NULL;
 
-    stmt_expression176.tree = nullptr;
+    stmt_expression176.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    IF127_tree   = nullptr;
-    ELSE130_tree   = nullptr;
-    FOR132_tree   = nullptr;
-    char_literal133_tree   = nullptr;
-    char_literal135_tree   = nullptr;
-    FOREACH137_tree   = nullptr;
-    char_literal138_tree   = nullptr;
-    char_literal141_tree   = nullptr;
-    char_literal143_tree   = nullptr;
-    WHILE145_tree   = nullptr;
-    DO148_tree   = nullptr;
-    WHILE150_tree   = nullptr;
-    SWITCH152_tree   = nullptr;
-    char_literal154_tree   = nullptr;
-    char_literal156_tree   = nullptr;
-    RETURN157_tree   = nullptr;
-    char_literal159_tree   = nullptr;
-    TRY160_tree   = nullptr;
-    THROW164_tree   = nullptr;
-    char_literal166_tree   = nullptr;
-    T_ASSERT167_tree   = nullptr;
-    char_literal169_tree   = nullptr;
-    char_literal171_tree   = nullptr;
-    BREAK172_tree   = nullptr;
-    char_literal173_tree   = nullptr;
-    CONTINUE174_tree   = nullptr;
-    char_literal175_tree   = nullptr;
+    IF127_tree   = NULL;
+    ELSE130_tree   = NULL;
+    FOR132_tree   = NULL;
+    char_literal133_tree   = NULL;
+    char_literal135_tree   = NULL;
+    FOREACH137_tree   = NULL;
+    char_literal138_tree   = NULL;
+    char_literal141_tree   = NULL;
+    char_literal143_tree   = NULL;
+    WHILE145_tree   = NULL;
+    DO148_tree   = NULL;
+    WHILE150_tree   = NULL;
+    SWITCH152_tree   = NULL;
+    char_literal154_tree   = NULL;
+    char_literal156_tree   = NULL;
+    RETURN157_tree   = NULL;
+    char_literal159_tree   = NULL;
+    TRY160_tree   = NULL;
+    THROW164_tree   = NULL;
+    char_literal166_tree   = NULL;
+    T_ASSERT167_tree   = NULL;
+    char_literal169_tree   = NULL;
+    char_literal171_tree   = NULL;
+    BREAK172_tree   = NULL;
+    char_literal173_tree   = NULL;
+    CONTINUE174_tree   = NULL;
+    char_literal175_tree   = NULL;
 
-    stream_116   = nullptr;
-    #define CREATE_stream_116  if (stream_116 == nullptr) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
-    stream_117   = nullptr;
-    #define CREATE_stream_117  if (stream_117 == nullptr) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
-    stream_127   = nullptr;
-    #define CREATE_stream_127  if (stream_127 == nullptr) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
-    stream_128   = nullptr;
-    #define CREATE_stream_128  if (stream_128 == nullptr) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
-    stream_122   = nullptr;
-    #define CREATE_stream_122  if (stream_122 == nullptr) {stream_122 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 122"); } 
-    stream_WHILE   = nullptr;
-    #define CREATE_stream_WHILE  if (stream_WHILE == nullptr) {stream_WHILE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WHILE"); } 
-    stream_SEP   = nullptr;
-    #define CREATE_stream_SEP  if (stream_SEP == nullptr) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
-    stream_SWITCH   = nullptr;
-    #define CREATE_stream_SWITCH  if (stream_SWITCH == nullptr) {stream_SWITCH = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SWITCH"); } 
-    stream_ELSE   = nullptr;
-    #define CREATE_stream_ELSE  if (stream_ELSE == nullptr) {stream_ELSE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ELSE"); } 
-    stream_RETURN   = nullptr;
-    #define CREATE_stream_RETURN  if (stream_RETURN == nullptr) {stream_RETURN = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token RETURN"); } 
-    stream_FOR   = nullptr;
-    #define CREATE_stream_FOR  if (stream_FOR == nullptr) {stream_FOR = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token FOR"); } 
-    stream_DO   = nullptr;
-    #define CREATE_stream_DO  if (stream_DO == nullptr) {stream_DO = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token DO"); } 
-    stream_FOREACH   = nullptr;
-    #define CREATE_stream_FOREACH  if (stream_FOREACH == nullptr) {stream_FOREACH = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token FOREACH"); } 
-    stream_T_ASSERT   = nullptr;
-    #define CREATE_stream_T_ASSERT  if (stream_T_ASSERT == nullptr) {stream_T_ASSERT = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token T_ASSERT"); } 
-    stream_THROW   = nullptr;
-    #define CREATE_stream_THROW  if (stream_THROW == nullptr) {stream_THROW = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token THROW"); } 
-    stream_TRY   = nullptr;
-    #define CREATE_stream_TRY  if (stream_TRY == nullptr) {stream_TRY = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token TRY"); } 
-    stream_IF   = nullptr;
-    #define CREATE_stream_IF  if (stream_IF == nullptr) {stream_IF = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token IF"); } 
-    stream_expression   = nullptr;
-    #define CREATE_stream_expression  if (stream_expression == nullptr) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
-    stream_compound_expression   = nullptr;
-    #define CREATE_stream_compound_expression  if (stream_compound_expression == nullptr) {stream_compound_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule compound_expression"); }
-    stream_catch_block   = nullptr;
-    #define CREATE_stream_catch_block  if (stream_catch_block == nullptr) {stream_catch_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule catch_block"); }
-    stream_finally_block   = nullptr;
-    #define CREATE_stream_finally_block  if (stream_finally_block == nullptr) {stream_finally_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule finally_block"); }
-    stream_stmt   = nullptr;
-    #define CREATE_stream_stmt  if (stream_stmt == nullptr) {stream_stmt = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule stmt"); }
-    stream_block   = nullptr;
-    #define CREATE_stream_block  if (stream_block == nullptr) {stream_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block"); }
-    stream_switch_case   = nullptr;
-    #define CREATE_stream_switch_case  if (stream_switch_case == nullptr) {stream_switch_case = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule switch_case"); }
-    stream_for_declaration   = nullptr;
-    #define CREATE_stream_for_declaration  if (stream_for_declaration == nullptr) {stream_for_declaration = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule for_declaration"); }
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_116   = NULL;
+    #define CREATE_stream_116  if (stream_116 == NULL) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
+    stream_117   = NULL;
+    #define CREATE_stream_117  if (stream_117 == NULL) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
+    stream_127   = NULL;
+    #define CREATE_stream_127  if (stream_127 == NULL) {stream_127 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 127"); } 
+    stream_128   = NULL;
+    #define CREATE_stream_128  if (stream_128 == NULL) {stream_128 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 128"); } 
+    stream_122   = NULL;
+    #define CREATE_stream_122  if (stream_122 == NULL) {stream_122 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 122"); } 
+    stream_WHILE   = NULL;
+    #define CREATE_stream_WHILE  if (stream_WHILE == NULL) {stream_WHILE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WHILE"); } 
+    stream_SEP   = NULL;
+    #define CREATE_stream_SEP  if (stream_SEP == NULL) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
+    stream_SWITCH   = NULL;
+    #define CREATE_stream_SWITCH  if (stream_SWITCH == NULL) {stream_SWITCH = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SWITCH"); } 
+    stream_ELSE   = NULL;
+    #define CREATE_stream_ELSE  if (stream_ELSE == NULL) {stream_ELSE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ELSE"); } 
+    stream_RETURN   = NULL;
+    #define CREATE_stream_RETURN  if (stream_RETURN == NULL) {stream_RETURN = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token RETURN"); } 
+    stream_FOR   = NULL;
+    #define CREATE_stream_FOR  if (stream_FOR == NULL) {stream_FOR = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token FOR"); } 
+    stream_DO   = NULL;
+    #define CREATE_stream_DO  if (stream_DO == NULL) {stream_DO = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token DO"); } 
+    stream_FOREACH   = NULL;
+    #define CREATE_stream_FOREACH  if (stream_FOREACH == NULL) {stream_FOREACH = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token FOREACH"); } 
+    stream_T_ASSERT   = NULL;
+    #define CREATE_stream_T_ASSERT  if (stream_T_ASSERT == NULL) {stream_T_ASSERT = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token T_ASSERT"); } 
+    stream_THROW   = NULL;
+    #define CREATE_stream_THROW  if (stream_THROW == NULL) {stream_THROW = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token THROW"); } 
+    stream_TRY   = NULL;
+    #define CREATE_stream_TRY  if (stream_TRY == NULL) {stream_TRY = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token TRY"); } 
+    stream_IF   = NULL;
+    #define CREATE_stream_IF  if (stream_IF == NULL) {stream_IF = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token IF"); } 
+    stream_expression   = NULL;
+    #define CREATE_stream_expression  if (stream_expression == NULL) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
+    stream_compound_expression   = NULL;
+    #define CREATE_stream_compound_expression  if (stream_compound_expression == NULL) {stream_compound_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule compound_expression"); }
+    stream_catch_block   = NULL;
+    #define CREATE_stream_catch_block  if (stream_catch_block == NULL) {stream_catch_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule catch_block"); }
+    stream_finally_block   = NULL;
+    #define CREATE_stream_finally_block  if (stream_finally_block == NULL) {stream_finally_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule finally_block"); }
+    stream_stmt   = NULL;
+    #define CREATE_stream_stmt  if (stream_stmt == NULL) {stream_stmt = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule stmt"); }
+    stream_block   = NULL;
+    #define CREATE_stream_block  if (stream_block == NULL) {stream_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block"); }
+    stream_switch_case   = NULL;
+    #define CREATE_stream_switch_case  if (stream_switch_case == NULL) {stream_switch_case = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule switch_case"); }
+    stream_for_declaration   = NULL;
+    #define CREATE_stream_for_declaration  if (stream_for_declaration == NULL) {stream_for_declaration = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule for_declaration"); }
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -9585,7 +9585,7 @@ stmt(pyasParser ctx)
             case INCR:
             case INT:
             case LITFALSE:
-            case LITnullptr:
+            case LITNULL:
             case LITTRUE:
             case MINUS:
             case NATIVE:
@@ -9657,7 +9657,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_IF; stream_IF->add(stream_IF, IF127, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_IF; stream_IF->add(stream_IF, IF127, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_compound_expression_in_stmt1273);
@@ -9673,7 +9673,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_compound_expression; stream_compound_expression->add(stream_compound_expression, compound_expression128.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_compound_expression; stream_compound_expression->add(stream_compound_expression, compound_expression128.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_stmt_in_stmt1275);
         	        stmt129=stmt(ctx);
@@ -9688,7 +9688,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt129.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt129.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:195:32: ( options {greedy=true; } : ELSE stmt )?
         	        {
@@ -9723,7 +9723,7 @@ stmt(pyasParser ctx)
         	        	            return retval;
         	        	        }
         	        	         
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_ELSE; stream_ELSE->add(stream_ELSE, ELSE130, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_ELSE; stream_ELSE->add(stream_ELSE, ELSE130, NULL); }
 
 
         	        	        FOLLOWPUSH(FOLLOW_stmt_in_stmt1289);
@@ -9739,7 +9739,7 @@ stmt(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt131.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt131.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -9759,7 +9759,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -9769,21 +9769,21 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_IF == nullptr ? nullptr : stream_IF->nextNode(stream_IF)
+        	        	        stream_IF == NULL ? NULL : stream_IF->nextNode(stream_IF)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_compound_expression == nullptr ? nullptr : stream_compound_expression->nextTree(stream_compound_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_compound_expression == NULL ? NULL : stream_compound_expression->nextTree(stream_compound_expression));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == nullptr ? nullptr : stream_stmt->nextTree(stream_stmt));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == NULL ? NULL : stream_stmt->nextTree(stream_stmt));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:195:103: ( stmt )?
         	        	        {
-        	        	        	if ( (stream_stmt != nullptr && stream_stmt->hasNext(stream_stmt))  )
+        	        	        	if ( (stream_stmt != NULL && stream_stmt->hasNext(stream_stmt))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == nullptr ? nullptr : stream_stmt->nextTree(stream_stmt));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == NULL ? NULL : stream_stmt->nextTree(stream_stmt));
 
         	        	        	}
-        	        	        	if ( stream_stmt != nullptr) stream_stmt->reset(stream_stmt);
+        	        	        	if ( stream_stmt != NULL) stream_stmt->reset(stream_stmt);
 
         	        	        }
 
@@ -9794,7 +9794,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -9813,7 +9813,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_FOR; stream_FOR->add(stream_FOR, FOR132, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_FOR; stream_FOR->add(stream_FOR, FOR132, NULL); }
 
 
         	        char_literal133 = (pANTLR3_COMMON_TOKEN) MATCHT(116, &FOLLOW_116_in_stmt1313);
@@ -9826,7 +9826,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal133, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal133, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_for_declaration_in_stmt1315);
@@ -9842,7 +9842,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_for_declaration; stream_for_declaration->add(stream_for_declaration, for_declaration134.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_for_declaration; stream_for_declaration->add(stream_for_declaration, for_declaration134.tree, NULL); }
 
         	        char_literal135 = (pANTLR3_COMMON_TOKEN) MATCHT(117, &FOLLOW_117_in_stmt1317);
         	        if  (HASEXCEPTION())
@@ -9854,7 +9854,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal135, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal135, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_stmt_in_stmt1319);
@@ -9870,7 +9870,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt136.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt136.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : stmt, FOR, for_declaration
@@ -9884,7 +9884,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -9894,12 +9894,12 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_FOR == nullptr ? nullptr : stream_FOR->nextNode(stream_FOR)
+        	        	        stream_FOR == NULL ? NULL : stream_FOR->nextNode(stream_FOR)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == nullptr ? nullptr : stream_stmt->nextTree(stream_stmt));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == NULL ? NULL : stream_stmt->nextTree(stream_stmt));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_for_declaration == nullptr ? nullptr : stream_for_declaration->nextTree(stream_for_declaration));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_for_declaration == NULL ? NULL : stream_for_declaration->nextTree(stream_for_declaration));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -9908,7 +9908,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -9927,7 +9927,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_FOREACH; stream_FOREACH->add(stream_FOREACH, FOREACH137, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_FOREACH; stream_FOREACH->add(stream_FOREACH, FOREACH137, NULL); }
 
 
         	        char_literal138 = (pANTLR3_COMMON_TOKEN) MATCHT(116, &FOLLOW_116_in_stmt1340);
@@ -9940,7 +9940,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal138, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal138, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_type_in_stmt1342);
@@ -9956,7 +9956,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type139.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type139.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_identifier_in_stmt1344);
         	        identifier140=identifier(ctx);
@@ -9971,7 +9971,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier140.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier140.tree, NULL); }
 
         	        char_literal141 = (pANTLR3_COMMON_TOKEN) MATCHT(122, &FOLLOW_122_in_stmt1346);
         	        if  (HASEXCEPTION())
@@ -9983,7 +9983,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_122; stream_122->add(stream_122, char_literal141, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_122; stream_122->add(stream_122, char_literal141, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_expression_in_stmt1348);
@@ -9999,7 +9999,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression142.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression142.tree, NULL); }
 
         	        char_literal143 = (pANTLR3_COMMON_TOKEN) MATCHT(117, &FOLLOW_117_in_stmt1350);
         	        if  (HASEXCEPTION())
@@ -10011,7 +10011,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal143, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal143, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_stmt_in_stmt1352);
@@ -10027,7 +10027,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt144.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt144.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : stmt, FOREACH, type, identifier, expression
@@ -10041,7 +10041,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -10051,16 +10051,16 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_FOREACH == nullptr ? nullptr : stream_FOREACH->nextNode(stream_FOREACH)
+        	        	        stream_FOREACH == NULL ? NULL : stream_FOREACH->nextNode(stream_FOREACH)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == nullptr ? nullptr : stream_stmt->nextTree(stream_stmt));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == NULL ? NULL : stream_stmt->nextTree(stream_stmt));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -10069,7 +10069,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -10088,7 +10088,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_WHILE; stream_WHILE->add(stream_WHILE, WHILE145, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_WHILE; stream_WHILE->add(stream_WHILE, WHILE145, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_compound_expression_in_stmt1375);
@@ -10104,7 +10104,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_compound_expression; stream_compound_expression->add(stream_compound_expression, compound_expression146.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_compound_expression; stream_compound_expression->add(stream_compound_expression, compound_expression146.tree, NULL); }
 
         	        FOLLOWPUSH(FOLLOW_stmt_in_stmt1377);
         	        stmt147=stmt(ctx);
@@ -10119,7 +10119,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt147.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt147.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : compound_expression, WHILE, stmt
@@ -10133,7 +10133,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -10143,12 +10143,12 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_WHILE == nullptr ? nullptr : stream_WHILE->nextNode(stream_WHILE)
+        	        	        stream_WHILE == NULL ? NULL : stream_WHILE->nextNode(stream_WHILE)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_compound_expression == nullptr ? nullptr : stream_compound_expression->nextTree(stream_compound_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_compound_expression == NULL ? NULL : stream_compound_expression->nextTree(stream_compound_expression));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == nullptr ? nullptr : stream_stmt->nextTree(stream_stmt));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == NULL ? NULL : stream_stmt->nextTree(stream_stmt));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -10157,7 +10157,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -10176,7 +10176,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_DO; stream_DO->add(stream_DO, DO148, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_DO; stream_DO->add(stream_DO, DO148, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_stmt_in_stmt1399);
@@ -10192,7 +10192,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt149.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_stmt; stream_stmt->add(stream_stmt, stmt149.tree, NULL); }
 
         	        WHILE150 = (pANTLR3_COMMON_TOKEN) MATCHT(WHILE, &FOLLOW_WHILE_in_stmt1401);
         	        if  (HASEXCEPTION())
@@ -10204,7 +10204,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_WHILE; stream_WHILE->add(stream_WHILE, WHILE150, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_WHILE; stream_WHILE->add(stream_WHILE, WHILE150, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_compound_expression_in_stmt1403);
@@ -10220,7 +10220,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_compound_expression; stream_compound_expression->add(stream_compound_expression, compound_expression151.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_compound_expression; stream_compound_expression->add(stream_compound_expression, compound_expression151.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : DO, compound_expression, stmt
@@ -10234,7 +10234,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -10244,12 +10244,12 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_DO == nullptr ? nullptr : stream_DO->nextNode(stream_DO)
+        	        	        stream_DO == NULL ? NULL : stream_DO->nextNode(stream_DO)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == nullptr ? nullptr : stream_stmt->nextTree(stream_stmt));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_stmt == NULL ? NULL : stream_stmt->nextTree(stream_stmt));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_compound_expression == nullptr ? nullptr : stream_compound_expression->nextTree(stream_compound_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_compound_expression == NULL ? NULL : stream_compound_expression->nextTree(stream_compound_expression));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -10258,7 +10258,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -10277,7 +10277,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_SWITCH; stream_SWITCH->add(stream_SWITCH, SWITCH152, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_SWITCH; stream_SWITCH->add(stream_SWITCH, SWITCH152, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_compound_expression_in_stmt1424);
@@ -10293,7 +10293,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_compound_expression; stream_compound_expression->add(stream_compound_expression, compound_expression153.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_compound_expression; stream_compound_expression->add(stream_compound_expression, compound_expression153.tree, NULL); }
 
         	        char_literal154 = (pANTLR3_COMMON_TOKEN) MATCHT(127, &FOLLOW_127_in_stmt1426);
         	        if  (HASEXCEPTION())
@@ -10305,7 +10305,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal154, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_127; stream_127->add(stream_127, char_literal154, NULL); }
 
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:200:35: ( switch_case )*
@@ -10342,7 +10342,7 @@ stmt(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_switch_case; stream_switch_case->add(stream_switch_case, switch_case155.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_switch_case; stream_switch_case->add(stream_switch_case, switch_case155.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -10365,7 +10365,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal156, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_128; stream_128->add(stream_128, char_literal156, NULL); }
 
 
         	        /* AST REWRITE
@@ -10380,7 +10380,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -10390,19 +10390,19 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_SWITCH == nullptr ? nullptr : stream_SWITCH->nextNode(stream_SWITCH)
+        	        	        stream_SWITCH == NULL ? NULL : stream_SWITCH->nextNode(stream_SWITCH)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_compound_expression == nullptr ? nullptr : stream_compound_expression->nextTree(stream_compound_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_compound_expression == NULL ? NULL : stream_compound_expression->nextTree(stream_compound_expression));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:200:87: ( switch_case )*
         	        	        {
-        	        	        	while ( (stream_switch_case != nullptr && stream_switch_case->hasNext(stream_switch_case))  )
+        	        	        	while ( (stream_switch_case != NULL && stream_switch_case->hasNext(stream_switch_case))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_switch_case == nullptr ? nullptr : stream_switch_case->nextTree(stream_switch_case));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_switch_case == NULL ? NULL : stream_switch_case->nextTree(stream_switch_case));
 
         	        	        	}
-        	        	        	if (stream_switch_case != nullptr) stream_switch_case->reset(stream_switch_case);
+        	        	        	if (stream_switch_case != NULL) stream_switch_case->reset(stream_switch_case);
 
         	        	        }
 
@@ -10413,7 +10413,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -10432,7 +10432,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_RETURN; stream_RETURN->add(stream_RETURN, RETURN157, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_RETURN; stream_RETURN->add(stream_RETURN, RETURN157, NULL); }
 
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:201:11: ( expression )?
@@ -10448,7 +10448,7 @@ stmt(pyasParser ctx)
         	                case INCR:
         	                case INT:
         	                case LITFALSE:
-        	                case LITnullptr:
+        	                case LITNULL:
         	                case LITTRUE:
         	                case MINUS:
         	                case NATIVE:
@@ -10483,7 +10483,7 @@ stmt(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression158.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression158.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -10501,7 +10501,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal159, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal159, NULL); }
 
 
         	        /* AST REWRITE
@@ -10516,7 +10516,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -10526,17 +10526,17 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_RETURN == nullptr ? nullptr : stream_RETURN->nextNode(stream_RETURN)
+        	        	        stream_RETURN == NULL ? NULL : stream_RETURN->nextNode(stream_RETURN)
         	        	        , root_1));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:201:45: ( expression )?
         	        	        {
-        	        	        	if ( (stream_expression != nullptr && stream_expression->hasNext(stream_expression))  )
+        	        	        	if ( (stream_expression != NULL && stream_expression->hasNext(stream_expression))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
         	        	        	}
-        	        	        	if ( stream_expression != nullptr) stream_expression->reset(stream_expression);
+        	        	        	if ( stream_expression != NULL) stream_expression->reset(stream_expression);
 
         	        	        }
 
@@ -10547,7 +10547,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -10566,7 +10566,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_TRY; stream_TRY->add(stream_TRY, TRY160, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_TRY; stream_TRY->add(stream_TRY, TRY160, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_block_in_stmt1477);
@@ -10582,7 +10582,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_block; stream_block->add(stream_block, block161.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_block; stream_block->add(stream_block, block161.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:202:14: ( catch_block )*
 
@@ -10617,7 +10617,7 @@ stmt(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_catch_block; stream_catch_block->add(stream_catch_block, catch_block162.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_catch_block; stream_catch_block->add(stream_catch_block, catch_block162.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -10660,7 +10660,7 @@ stmt(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_finally_block; stream_finally_block->add(stream_finally_block, finally_block163.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_finally_block; stream_finally_block->add(stream_finally_block, finally_block163.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -10680,7 +10680,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -10690,30 +10690,30 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_TRY == nullptr ? nullptr : stream_TRY->nextNode(stream_TRY)
+        	        	        stream_TRY == NULL ? NULL : stream_TRY->nextNode(stream_TRY)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_block == nullptr ? nullptr : stream_block->nextTree(stream_block));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_block == NULL ? NULL : stream_block->nextTree(stream_block));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:202:61: ( catch_block )*
         	        	        {
-        	        	        	while ( (stream_catch_block != nullptr && stream_catch_block->hasNext(stream_catch_block))  )
+        	        	        	while ( (stream_catch_block != NULL && stream_catch_block->hasNext(stream_catch_block))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_catch_block == nullptr ? nullptr : stream_catch_block->nextTree(stream_catch_block));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_catch_block == NULL ? NULL : stream_catch_block->nextTree(stream_catch_block));
 
         	        	        	}
-        	        	        	if (stream_catch_block != nullptr) stream_catch_block->reset(stream_catch_block);
+        	        	        	if (stream_catch_block != NULL) stream_catch_block->reset(stream_catch_block);
 
         	        	        }
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:202:74: ( finally_block )?
         	        	        {
-        	        	        	if ( (stream_finally_block != nullptr && stream_finally_block->hasNext(stream_finally_block))  )
+        	        	        	if ( (stream_finally_block != NULL && stream_finally_block->hasNext(stream_finally_block))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_finally_block == nullptr ? nullptr : stream_finally_block->nextTree(stream_finally_block));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_finally_block == NULL ? NULL : stream_finally_block->nextTree(stream_finally_block));
 
         	        	        	}
-        	        	        	if ( stream_finally_block != nullptr) stream_finally_block->reset(stream_finally_block);
+        	        	        	if ( stream_finally_block != NULL) stream_finally_block->reset(stream_finally_block);
 
         	        	        }
 
@@ -10724,7 +10724,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -10743,7 +10743,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_THROW; stream_THROW->add(stream_THROW, THROW164, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_THROW; stream_THROW->add(stream_THROW, THROW164, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_expression_in_stmt1508);
@@ -10759,7 +10759,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression165.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression165.tree, NULL); }
 
         	        char_literal166 = (pANTLR3_COMMON_TOKEN) MATCHT(SEP, &FOLLOW_SEP_in_stmt1510);
         	        if  (HASEXCEPTION())
@@ -10771,7 +10771,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal166, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal166, NULL); }
 
 
         	        /* AST REWRITE
@@ -10786,7 +10786,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -10796,10 +10796,10 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_THROW == nullptr ? nullptr : stream_THROW->nextNode(stream_THROW)
+        	        	        stream_THROW == NULL ? NULL : stream_THROW->nextNode(stream_THROW)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -10808,7 +10808,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -10827,7 +10827,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_T_ASSERT; stream_T_ASSERT->add(stream_T_ASSERT, T_ASSERT167, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_T_ASSERT; stream_T_ASSERT->add(stream_T_ASSERT, T_ASSERT167, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_expression_in_stmt1531);
@@ -10843,7 +10843,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression168.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression168.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:204:24: ( ':' expression )?
         	        {
@@ -10872,7 +10872,7 @@ stmt(pyasParser ctx)
         	        	            return retval;
         	        	        }
         	        	         
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_122; stream_122->add(stream_122, char_literal169, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_122; stream_122->add(stream_122, char_literal169, NULL); }
 
 
         	        	        FOLLOWPUSH(FOLLOW_expression_in_stmt1536);
@@ -10888,7 +10888,7 @@ stmt(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression170.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression170.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -10906,7 +10906,7 @@ stmt(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal171, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal171, NULL); }
 
 
         	        /* AST REWRITE
@@ -10921,7 +10921,7 @@ stmt(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -10931,19 +10931,19 @@ stmt(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_T_ASSERT == nullptr ? nullptr : stream_T_ASSERT->nextNode(stream_T_ASSERT)
+        	        	        stream_T_ASSERT == NULL ? NULL : stream_T_ASSERT->nextNode(stream_T_ASSERT)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:204:74: ( expression )?
         	        	        {
-        	        	        	if ( (stream_expression != nullptr && stream_expression->hasNext(stream_expression))  )
+        	        	        	if ( (stream_expression != NULL && stream_expression->hasNext(stream_expression))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
         	        	        	}
-        	        	        	if ( stream_expression != nullptr) stream_expression->reset(stream_expression);
+        	        	        	if ( stream_expression != NULL) stream_expression->reset(stream_expression);
 
         	        	        }
 
@@ -10954,7 +10954,7 @@ stmt(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -11082,33 +11082,33 @@ stmt(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_116 != nullptr) stream_116->free(stream_116);
-        if (stream_117 != nullptr) stream_117->free(stream_117);
-        if (stream_127 != nullptr) stream_127->free(stream_127);
-        if (stream_128 != nullptr) stream_128->free(stream_128);
-        if (stream_122 != nullptr) stream_122->free(stream_122);
-        if (stream_WHILE != nullptr) stream_WHILE->free(stream_WHILE);
-        if (stream_SEP != nullptr) stream_SEP->free(stream_SEP);
-        if (stream_SWITCH != nullptr) stream_SWITCH->free(stream_SWITCH);
-        if (stream_ELSE != nullptr) stream_ELSE->free(stream_ELSE);
-        if (stream_RETURN != nullptr) stream_RETURN->free(stream_RETURN);
-        if (stream_FOR != nullptr) stream_FOR->free(stream_FOR);
-        if (stream_DO != nullptr) stream_DO->free(stream_DO);
-        if (stream_FOREACH != nullptr) stream_FOREACH->free(stream_FOREACH);
-        if (stream_T_ASSERT != nullptr) stream_T_ASSERT->free(stream_T_ASSERT);
-        if (stream_THROW != nullptr) stream_THROW->free(stream_THROW);
-        if (stream_TRY != nullptr) stream_TRY->free(stream_TRY);
-        if (stream_IF != nullptr) stream_IF->free(stream_IF);
-        if (stream_expression != nullptr) stream_expression->free(stream_expression);
-        if (stream_compound_expression != nullptr) stream_compound_expression->free(stream_compound_expression);
-        if (stream_catch_block != nullptr) stream_catch_block->free(stream_catch_block);
-        if (stream_finally_block != nullptr) stream_finally_block->free(stream_finally_block);
-        if (stream_stmt != nullptr) stream_stmt->free(stream_stmt);
-        if (stream_block != nullptr) stream_block->free(stream_block);
-        if (stream_switch_case != nullptr) stream_switch_case->free(stream_switch_case);
-        if (stream_for_declaration != nullptr) stream_for_declaration->free(stream_for_declaration);
-        if (stream_type != nullptr) stream_type->free(stream_type);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_116 != NULL) stream_116->free(stream_116);
+        if (stream_117 != NULL) stream_117->free(stream_117);
+        if (stream_127 != NULL) stream_127->free(stream_127);
+        if (stream_128 != NULL) stream_128->free(stream_128);
+        if (stream_122 != NULL) stream_122->free(stream_122);
+        if (stream_WHILE != NULL) stream_WHILE->free(stream_WHILE);
+        if (stream_SEP != NULL) stream_SEP->free(stream_SEP);
+        if (stream_SWITCH != NULL) stream_SWITCH->free(stream_SWITCH);
+        if (stream_ELSE != NULL) stream_ELSE->free(stream_ELSE);
+        if (stream_RETURN != NULL) stream_RETURN->free(stream_RETURN);
+        if (stream_FOR != NULL) stream_FOR->free(stream_FOR);
+        if (stream_DO != NULL) stream_DO->free(stream_DO);
+        if (stream_FOREACH != NULL) stream_FOREACH->free(stream_FOREACH);
+        if (stream_T_ASSERT != NULL) stream_T_ASSERT->free(stream_T_ASSERT);
+        if (stream_THROW != NULL) stream_THROW->free(stream_THROW);
+        if (stream_TRY != NULL) stream_TRY->free(stream_TRY);
+        if (stream_IF != NULL) stream_IF->free(stream_IF);
+        if (stream_expression != NULL) stream_expression->free(stream_expression);
+        if (stream_compound_expression != NULL) stream_compound_expression->free(stream_compound_expression);
+        if (stream_catch_block != NULL) stream_catch_block->free(stream_catch_block);
+        if (stream_finally_block != NULL) stream_finally_block->free(stream_finally_block);
+        if (stream_stmt != NULL) stream_stmt->free(stream_stmt);
+        if (stream_block != NULL) stream_block->free(stream_block);
+        if (stream_switch_case != NULL) stream_switch_case->free(stream_switch_case);
+        if (stream_for_declaration != NULL) stream_for_declaration->free(stream_for_declaration);
+        if (stream_type != NULL) stream_type->free(stream_type);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -11154,23 +11154,23 @@ for_declaration(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    SEP178       = nullptr;
-    SEP180       = nullptr;
-    for_init177.tree = nullptr;
+    SEP178       = NULL;
+    SEP180       = NULL;
+    for_init177.tree = NULL;
 
-    expression179.tree = nullptr;
+    expression179.tree = NULL;
 
-    expression_list181.tree = nullptr;
+    expression_list181.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    SEP178_tree   = nullptr;
-    SEP180_tree   = nullptr;
+    SEP178_tree   = NULL;
+    SEP180_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:211:2: ( ( for_init )? SEP ( expression )? SEP ( expression_list )? )
@@ -11250,7 +11250,7 @@ for_declaration(pyasParser ctx)
                     case INCR:
                     case INT:
                     case LITFALSE:
-                    case LITnullptr:
+                    case LITNULL:
                     case LITTRUE:
                     case MINUS:
                     case NATIVE:
@@ -11321,7 +11321,7 @@ for_declaration(pyasParser ctx)
                     case INCR:
                     case INT:
                     case LITFALSE:
-                    case LITnullptr:
+                    case LITNULL:
                     case LITTRUE:
                     case MINUS:
                     case NATIVE:
@@ -11428,29 +11428,29 @@ for_init(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal184       = nullptr;
-    type182.tree = nullptr;
+    char_literal184       = NULL;
+    type182.tree = NULL;
 
-    identifier183.tree = nullptr;
+    identifier183.tree = NULL;
 
-    expression185.tree = nullptr;
+    expression185.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal184_tree   = nullptr;
+    char_literal184_tree   = NULL;
 
-    stream_123   = nullptr;
-    #define CREATE_stream_123  if (stream_123 == nullptr) {stream_123 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 123"); } 
-    stream_expression   = nullptr;
-    #define CREATE_stream_expression  if (stream_expression == nullptr) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_123   = NULL;
+    #define CREATE_stream_123  if (stream_123 == NULL) {stream_123 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 123"); } 
+    stream_expression   = NULL;
+    #define CREATE_stream_expression  if (stream_expression == NULL) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:214:9: ( type identifier '=' expression -> ^( LOCALVARDECL type identifier expression ) )
@@ -11469,7 +11469,7 @@ for_init(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type182.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type182.tree, NULL); }
 
             FOLLOWPUSH(FOLLOW_identifier_in_for_init1610);
             identifier183=identifier(ctx);
@@ -11484,7 +11484,7 @@ for_init(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier183.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier183.tree, NULL); }
 
             char_literal184 = (pANTLR3_COMMON_TOKEN) MATCHT(123, &FOLLOW_123_in_for_init1612);
             if  (HASEXCEPTION())
@@ -11496,7 +11496,7 @@ for_init(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_123; stream_123->add(stream_123, char_literal184, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_123; stream_123->add(stream_123, char_literal184, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_expression_in_for_init1614);
@@ -11512,7 +11512,7 @@ for_init(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression185.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression185.tree, NULL); }
 
             /* AST REWRITE
              * elements          : type, expression, identifier
@@ -11526,7 +11526,7 @@ for_init(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -11539,11 +11539,11 @@ for_init(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, LOCALVARDECL, (pANTLR3_UINT8)"LOCALVARDECL")
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
             	    }
@@ -11552,7 +11552,7 @@ for_init(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -11574,10 +11574,10 @@ for_init(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_123 != nullptr) stream_123->free(stream_123);
-        if (stream_expression != nullptr) stream_expression->free(stream_expression);
-        if (stream_type != nullptr) stream_type->free(stream_type);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_123 != NULL) stream_123->free(stream_123);
+        if (stream_expression != NULL) stream_expression->free(stream_expression);
+        if (stream_type != NULL) stream_type->free(stream_type);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -11630,37 +11630,37 @@ catch_block(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    CATCH186       = nullptr;
-    char_literal187       = nullptr;
-    char_literal190       = nullptr;
-    type188.tree = nullptr;
+    CATCH186       = NULL;
+    char_literal187       = NULL;
+    char_literal190       = NULL;
+    type188.tree = NULL;
 
-    identifier189.tree = nullptr;
+    identifier189.tree = NULL;
 
-    block191.tree = nullptr;
+    block191.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    CATCH186_tree   = nullptr;
-    char_literal187_tree   = nullptr;
-    char_literal190_tree   = nullptr;
+    CATCH186_tree   = NULL;
+    char_literal187_tree   = NULL;
+    char_literal190_tree   = NULL;
 
-    stream_116   = nullptr;
-    #define CREATE_stream_116  if (stream_116 == nullptr) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
-    stream_117   = nullptr;
-    #define CREATE_stream_117  if (stream_117 == nullptr) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
-    stream_CATCH   = nullptr;
-    #define CREATE_stream_CATCH  if (stream_CATCH == nullptr) {stream_CATCH = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token CATCH"); } 
-    stream_block   = nullptr;
-    #define CREATE_stream_block  if (stream_block == nullptr) {stream_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block"); }
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_116   = NULL;
+    #define CREATE_stream_116  if (stream_116 == NULL) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
+    stream_117   = NULL;
+    #define CREATE_stream_117  if (stream_117 == NULL) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
+    stream_CATCH   = NULL;
+    #define CREATE_stream_CATCH  if (stream_CATCH == NULL) {stream_CATCH = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token CATCH"); } 
+    stream_block   = NULL;
+    #define CREATE_stream_block  if (stream_block == NULL) {stream_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block"); }
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:218:2: ( CATCH '(' type identifier ')' block -> ^( CATCH type identifier block ) )
@@ -11676,7 +11676,7 @@ catch_block(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_CATCH; stream_CATCH->add(stream_CATCH, CATCH186, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_CATCH; stream_CATCH->add(stream_CATCH, CATCH186, NULL); }
 
 
             char_literal187 = (pANTLR3_COMMON_TOKEN) MATCHT(116, &FOLLOW_116_in_catch_block1646);
@@ -11689,7 +11689,7 @@ catch_block(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal187, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal187, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_type_in_catch_block1648);
@@ -11705,7 +11705,7 @@ catch_block(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type188.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type188.tree, NULL); }
 
             FOLLOWPUSH(FOLLOW_identifier_in_catch_block1650);
             identifier189=identifier(ctx);
@@ -11720,7 +11720,7 @@ catch_block(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier189.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier189.tree, NULL); }
 
             char_literal190 = (pANTLR3_COMMON_TOKEN) MATCHT(117, &FOLLOW_117_in_catch_block1652);
             if  (HASEXCEPTION())
@@ -11732,7 +11732,7 @@ catch_block(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal190, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal190, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_block_in_catch_block1654);
@@ -11748,7 +11748,7 @@ catch_block(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_block; stream_block->add(stream_block, block191.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_block; stream_block->add(stream_block, block191.tree, NULL); }
 
             /* AST REWRITE
              * elements          : identifier, block, CATCH, type
@@ -11762,7 +11762,7 @@ catch_block(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -11772,14 +11772,14 @@ catch_block(pyasParser ctx)
             	    {
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-            	        stream_CATCH == nullptr ? nullptr : stream_CATCH->nextNode(stream_CATCH)
+            	        stream_CATCH == NULL ? NULL : stream_CATCH->nextNode(stream_CATCH)
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_block == nullptr ? nullptr : stream_block->nextTree(stream_block));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_block == NULL ? NULL : stream_block->nextTree(stream_block));
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
             	    }
@@ -11788,7 +11788,7 @@ catch_block(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -11810,12 +11810,12 @@ catch_block(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_116 != nullptr) stream_116->free(stream_116);
-        if (stream_117 != nullptr) stream_117->free(stream_117);
-        if (stream_CATCH != nullptr) stream_CATCH->free(stream_CATCH);
-        if (stream_block != nullptr) stream_block->free(stream_block);
-        if (stream_type != nullptr) stream_type->free(stream_type);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_116 != NULL) stream_116->free(stream_116);
+        if (stream_117 != NULL) stream_117->free(stream_117);
+        if (stream_CATCH != NULL) stream_CATCH->free(stream_CATCH);
+        if (stream_block != NULL) stream_block->free(stream_block);
+        if (stream_type != NULL) stream_type->free(stream_type);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -11852,21 +11852,21 @@ finally_block(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    FINALLY192       = nullptr;
-    block193.tree = nullptr;
+    FINALLY192       = NULL;
+    block193.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    FINALLY192_tree   = nullptr;
+    FINALLY192_tree   = NULL;
 
-    stream_FINALLY   = nullptr;
-    #define CREATE_stream_FINALLY  if (stream_FINALLY == nullptr) {stream_FINALLY = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token FINALLY"); } 
-    stream_block   = nullptr;
-    #define CREATE_stream_block  if (stream_block == nullptr) {stream_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block"); }
+    stream_FINALLY   = NULL;
+    #define CREATE_stream_FINALLY  if (stream_FINALLY == NULL) {stream_FINALLY = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token FINALLY"); } 
+    stream_block   = NULL;
+    #define CREATE_stream_block  if (stream_block == NULL) {stream_block = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:222:2: ( FINALLY block -> ^( FINALLY block ) )
@@ -11882,7 +11882,7 @@ finally_block(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_FINALLY; stream_FINALLY->add(stream_FINALLY, FINALLY192, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_FINALLY; stream_FINALLY->add(stream_FINALLY, FINALLY192, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_block_in_finally_block1684);
@@ -11898,7 +11898,7 @@ finally_block(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_block; stream_block->add(stream_block, block193.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_block; stream_block->add(stream_block, block193.tree, NULL); }
 
             /* AST REWRITE
              * elements          : block, FINALLY
@@ -11912,7 +11912,7 @@ finally_block(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -11922,10 +11922,10 @@ finally_block(pyasParser ctx)
             	    {
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-            	        stream_FINALLY == nullptr ? nullptr : stream_FINALLY->nextNode(stream_FINALLY)
+            	        stream_FINALLY == NULL ? NULL : stream_FINALLY->nextNode(stream_FINALLY)
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_block == nullptr ? nullptr : stream_block->nextTree(stream_block));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_block == NULL ? NULL : stream_block->nextTree(stream_block));
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
             	    }
@@ -11934,7 +11934,7 @@ finally_block(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -11956,8 +11956,8 @@ finally_block(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_FINALLY != nullptr) stream_FINALLY->free(stream_FINALLY);
-        if (stream_block != nullptr) stream_block->free(stream_block);
+        if (stream_FINALLY != NULL) stream_FINALLY->free(stream_FINALLY);
+        if (stream_block != NULL) stream_block->free(stream_block);
     }
 
 
@@ -12011,37 +12011,37 @@ switch_case(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    CASE194       = nullptr;
-    char_literal196       = nullptr;
-    DEFAULT198       = nullptr;
-    char_literal199       = nullptr;
-    unary_expression195.tree = nullptr;
+    CASE194       = NULL;
+    char_literal196       = NULL;
+    DEFAULT198       = NULL;
+    char_literal199       = NULL;
+    unary_expression195.tree = NULL;
 
-    block_stmt197.tree = nullptr;
+    block_stmt197.tree = NULL;
 
-    block_stmt200.tree = nullptr;
+    block_stmt200.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    CASE194_tree   = nullptr;
-    char_literal196_tree   = nullptr;
-    DEFAULT198_tree   = nullptr;
-    char_literal199_tree   = nullptr;
+    CASE194_tree   = NULL;
+    char_literal196_tree   = NULL;
+    DEFAULT198_tree   = NULL;
+    char_literal199_tree   = NULL;
 
-    stream_122   = nullptr;
-    #define CREATE_stream_122  if (stream_122 == nullptr) {stream_122 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 122"); } 
-    stream_DEFAULT   = nullptr;
-    #define CREATE_stream_DEFAULT  if (stream_DEFAULT == nullptr) {stream_DEFAULT = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token DEFAULT"); } 
-    stream_CASE   = nullptr;
-    #define CREATE_stream_CASE  if (stream_CASE == nullptr) {stream_CASE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token CASE"); } 
-    stream_unary_expression   = nullptr;
-    #define CREATE_stream_unary_expression  if (stream_unary_expression == nullptr) {stream_unary_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule unary_expression"); }
-    stream_block_stmt   = nullptr;
-    #define CREATE_stream_block_stmt  if (stream_block_stmt == nullptr) {stream_block_stmt = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block_stmt"); }
+    stream_122   = NULL;
+    #define CREATE_stream_122  if (stream_122 == NULL) {stream_122 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 122"); } 
+    stream_DEFAULT   = NULL;
+    #define CREATE_stream_DEFAULT  if (stream_DEFAULT == NULL) {stream_DEFAULT = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token DEFAULT"); } 
+    stream_CASE   = NULL;
+    #define CREATE_stream_CASE  if (stream_CASE == NULL) {stream_CASE = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token CASE"); } 
+    stream_unary_expression   = NULL;
+    #define CREATE_stream_unary_expression  if (stream_unary_expression == NULL) {stream_unary_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule unary_expression"); }
+    stream_block_stmt   = NULL;
+    #define CREATE_stream_block_stmt  if (stream_block_stmt == NULL) {stream_block_stmt = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule block_stmt"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -12097,7 +12097,7 @@ switch_case(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_CASE; stream_CASE->add(stream_CASE, CASE194, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_CASE; stream_CASE->add(stream_CASE, CASE194, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_unary_expression_in_switch_case1713);
@@ -12113,7 +12113,7 @@ switch_case(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_unary_expression; stream_unary_expression->add(stream_unary_expression, unary_expression195.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_unary_expression; stream_unary_expression->add(stream_unary_expression, unary_expression195.tree, NULL); }
 
         	        char_literal196 = (pANTLR3_COMMON_TOKEN) MATCHT(122, &FOLLOW_122_in_switch_case1715);
         	        if  (HASEXCEPTION())
@@ -12125,7 +12125,7 @@ switch_case(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_122; stream_122->add(stream_122, char_literal196, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_122; stream_122->add(stream_122, char_literal196, NULL); }
 
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:226:30: ( block_stmt )*
@@ -12149,7 +12149,7 @@ switch_case(pyasParser ctx)
         	            case INCR:
         	            case INT:
         	            case LITFALSE:
-        	            case LITnullptr:
+        	            case LITNULL:
         	            case LITTRUE:
         	            case MINUS:
         	            case NATIVE:
@@ -12197,7 +12197,7 @@ switch_case(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_block_stmt; stream_block_stmt->add(stream_block_stmt, block_stmt197.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_block_stmt; stream_block_stmt->add(stream_block_stmt, block_stmt197.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -12222,7 +12222,7 @@ switch_case(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -12232,19 +12232,19 @@ switch_case(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_CASE == nullptr ? nullptr : stream_CASE->nextNode(stream_CASE)
+        	        	        stream_CASE == NULL ? NULL : stream_CASE->nextNode(stream_CASE)
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_unary_expression == nullptr ? nullptr : stream_unary_expression->nextTree(stream_unary_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_unary_expression == NULL ? NULL : stream_unary_expression->nextTree(stream_unary_expression));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:226:73: ( block_stmt )*
         	        	        {
-        	        	        	while ( (stream_block_stmt != nullptr && stream_block_stmt->hasNext(stream_block_stmt))  )
+        	        	        	while ( (stream_block_stmt != NULL && stream_block_stmt->hasNext(stream_block_stmt))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_block_stmt == nullptr ? nullptr : stream_block_stmt->nextTree(stream_block_stmt));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_block_stmt == NULL ? NULL : stream_block_stmt->nextTree(stream_block_stmt));
 
         	        	        	}
-        	        	        	if (stream_block_stmt != nullptr) stream_block_stmt->reset(stream_block_stmt);
+        	        	        	if (stream_block_stmt != NULL) stream_block_stmt->reset(stream_block_stmt);
 
         	        	        }
 
@@ -12255,7 +12255,7 @@ switch_case(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -12274,7 +12274,7 @@ switch_case(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_DEFAULT; stream_DEFAULT->add(stream_DEFAULT, DEFAULT198, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_DEFAULT; stream_DEFAULT->add(stream_DEFAULT, DEFAULT198, NULL); }
 
 
         	        char_literal199 = (pANTLR3_COMMON_TOKEN) MATCHT(122, &FOLLOW_122_in_switch_case1740);
@@ -12287,7 +12287,7 @@ switch_case(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_122; stream_122->add(stream_122, char_literal199, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_122; stream_122->add(stream_122, char_literal199, NULL); }
 
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:227:16: ( block_stmt )*
@@ -12311,7 +12311,7 @@ switch_case(pyasParser ctx)
         	            case INCR:
         	            case INT:
         	            case LITFALSE:
-        	            case LITnullptr:
+        	            case LITNULL:
         	            case LITTRUE:
         	            case MINUS:
         	            case NATIVE:
@@ -12359,7 +12359,7 @@ switch_case(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_block_stmt; stream_block_stmt->add(stream_block_stmt, block_stmt200.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_block_stmt; stream_block_stmt->add(stream_block_stmt, block_stmt200.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -12384,7 +12384,7 @@ switch_case(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -12394,17 +12394,17 @@ switch_case(pyasParser ctx)
         	        	    {
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, 
-        	        	        stream_DEFAULT == nullptr ? nullptr : stream_DEFAULT->nextNode(stream_DEFAULT)
+        	        	        stream_DEFAULT == NULL ? NULL : stream_DEFAULT->nextNode(stream_DEFAULT)
         	        	        , root_1));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:227:47: ( block_stmt )*
         	        	        {
-        	        	        	while ( (stream_block_stmt != nullptr && stream_block_stmt->hasNext(stream_block_stmt))  )
+        	        	        	while ( (stream_block_stmt != NULL && stream_block_stmt->hasNext(stream_block_stmt))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_block_stmt == nullptr ? nullptr : stream_block_stmt->nextTree(stream_block_stmt));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_block_stmt == NULL ? NULL : stream_block_stmt->nextTree(stream_block_stmt));
 
         	        	        	}
-        	        	        	if (stream_block_stmt != nullptr) stream_block_stmt->reset(stream_block_stmt);
+        	        	        	if (stream_block_stmt != NULL) stream_block_stmt->reset(stream_block_stmt);
 
         	        	        }
 
@@ -12415,7 +12415,7 @@ switch_case(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -12440,11 +12440,11 @@ switch_case(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_122 != nullptr) stream_122->free(stream_122);
-        if (stream_DEFAULT != nullptr) stream_DEFAULT->free(stream_DEFAULT);
-        if (stream_CASE != nullptr) stream_CASE->free(stream_CASE);
-        if (stream_unary_expression != nullptr) stream_unary_expression->free(stream_unary_expression);
-        if (stream_block_stmt != nullptr) stream_block_stmt->free(stream_block_stmt);
+        if (stream_122 != NULL) stream_122->free(stream_122);
+        if (stream_DEFAULT != NULL) stream_DEFAULT->free(stream_DEFAULT);
+        if (stream_CASE != NULL) stream_CASE->free(stream_CASE);
+        if (stream_unary_expression != NULL) stream_unary_expression->free(stream_unary_expression);
+        if (stream_block_stmt != NULL) stream_block_stmt->free(stream_block_stmt);
     }
 
 
@@ -12494,33 +12494,33 @@ local_var_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal203       = nullptr;
-    char_literal205       = nullptr;
-    type201.tree = nullptr;
+    char_literal203       = NULL;
+    char_literal205       = NULL;
+    type201.tree = NULL;
 
-    identifier202.tree = nullptr;
+    identifier202.tree = NULL;
 
-    variable_init204.tree = nullptr;
+    variable_init204.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal203_tree   = nullptr;
-    char_literal205_tree   = nullptr;
+    char_literal203_tree   = NULL;
+    char_literal205_tree   = NULL;
 
-    stream_123   = nullptr;
-    #define CREATE_stream_123  if (stream_123 == nullptr) {stream_123 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 123"); } 
-    stream_SEP   = nullptr;
-    #define CREATE_stream_SEP  if (stream_SEP == nullptr) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
-    stream_variable_init   = nullptr;
-    #define CREATE_stream_variable_init  if (stream_variable_init == nullptr) {stream_variable_init = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule variable_init"); }
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_123   = NULL;
+    #define CREATE_stream_123  if (stream_123 == NULL) {stream_123 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 123"); } 
+    stream_SEP   = NULL;
+    #define CREATE_stream_SEP  if (stream_SEP == NULL) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
+    stream_variable_init   = NULL;
+    #define CREATE_stream_variable_init  if (stream_variable_init == NULL) {stream_variable_init = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule variable_init"); }
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:231:2: ( type identifier ( '=' variable_init )? ';' -> ^( LOCALVARDECL type identifier ( variable_init )? ) )
@@ -12539,7 +12539,7 @@ local_var_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type201.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type201.tree, NULL); }
 
             FOLLOWPUSH(FOLLOW_identifier_in_local_var_decl1772);
             identifier202=identifier(ctx);
@@ -12554,7 +12554,7 @@ local_var_decl(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier202.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier202.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:231:20: ( '=' variable_init )?
             {
@@ -12583,7 +12583,7 @@ local_var_decl(pyasParser ctx)
             	            return retval;
             	        }
             	         
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_123; stream_123->add(stream_123, char_literal203, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_123; stream_123->add(stream_123, char_literal203, NULL); }
 
 
             	        FOLLOWPUSH(FOLLOW_variable_init_in_local_var_decl1777);
@@ -12599,7 +12599,7 @@ local_var_decl(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_variable_init; stream_variable_init->add(stream_variable_init, variable_init204.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_variable_init; stream_variable_init->add(stream_variable_init, variable_init204.tree, NULL); }
 
             	    }
             	    break;
@@ -12617,7 +12617,7 @@ local_var_decl(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal205, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal205, NULL); }
 
 
             /* AST REWRITE
@@ -12632,7 +12632,7 @@ local_var_decl(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -12645,18 +12645,18 @@ local_var_decl(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, LOCALVARDECL, (pANTLR3_UINT8)"LOCALVARDECL")
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:231:83: ( variable_init )?
             	        {
-            	        	if ( (stream_variable_init != nullptr && stream_variable_init->hasNext(stream_variable_init))  )
+            	        	if ( (stream_variable_init != NULL && stream_variable_init->hasNext(stream_variable_init))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_variable_init == nullptr ? nullptr : stream_variable_init->nextTree(stream_variable_init));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_variable_init == NULL ? NULL : stream_variable_init->nextTree(stream_variable_init));
 
             	        	}
-            	        	if ( stream_variable_init != nullptr) stream_variable_init->reset(stream_variable_init);
+            	        	if ( stream_variable_init != NULL) stream_variable_init->reset(stream_variable_init);
 
             	        }
 
@@ -12667,7 +12667,7 @@ local_var_decl(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -12689,11 +12689,11 @@ local_var_decl(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_123 != nullptr) stream_123->free(stream_123);
-        if (stream_SEP != nullptr) stream_SEP->free(stream_SEP);
-        if (stream_variable_init != nullptr) stream_variable_init->free(stream_variable_init);
-        if (stream_type != nullptr) stream_type->free(stream_type);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_123 != NULL) stream_123->free(stream_123);
+        if (stream_SEP != NULL) stream_SEP->free(stream_SEP);
+        if (stream_variable_init != NULL) stream_variable_init->free(stream_variable_init);
+        if (stream_type != NULL) stream_type->free(stream_type);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -12730,21 +12730,21 @@ stmt_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal207       = nullptr;
-    expression206.tree = nullptr;
+    char_literal207       = NULL;
+    expression206.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal207_tree   = nullptr;
+    char_literal207_tree   = NULL;
 
-    stream_SEP   = nullptr;
-    #define CREATE_stream_SEP  if (stream_SEP == nullptr) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
-    stream_expression   = nullptr;
-    #define CREATE_stream_expression  if (stream_expression == nullptr) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
+    stream_SEP   = NULL;
+    #define CREATE_stream_SEP  if (stream_SEP == NULL) {stream_SEP = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SEP"); } 
+    stream_expression   = NULL;
+    #define CREATE_stream_expression  if (stream_expression == NULL) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:237:2: ( expression ';' -> ^( STMT_EXPR expression ) )
@@ -12763,7 +12763,7 @@ stmt_expression(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression206.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression206.tree, NULL); }
 
             char_literal207 = (pANTLR3_COMMON_TOKEN) MATCHT(SEP, &FOLLOW_SEP_in_stmt_expression1815);
             if  (HASEXCEPTION())
@@ -12775,7 +12775,7 @@ stmt_expression(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal207, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_SEP; stream_SEP->add(stream_SEP, char_literal207, NULL); }
 
 
             /* AST REWRITE
@@ -12790,7 +12790,7 @@ stmt_expression(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -12803,7 +12803,7 @@ stmt_expression(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, STMT_EXPR, (pANTLR3_UINT8)"STMT_EXPR")
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
             	    }
@@ -12812,7 +12812,7 @@ stmt_expression(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -12834,8 +12834,8 @@ stmt_expression(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_SEP != nullptr) stream_SEP->free(stream_SEP);
-        if (stream_expression != nullptr) stream_expression->free(stream_expression);
+        if (stream_SEP != NULL) stream_SEP->free(stream_SEP);
+        if (stream_expression != NULL) stream_expression->free(stream_expression);
     }
 
 
@@ -12875,25 +12875,25 @@ compound_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal208       = nullptr;
-    char_literal210       = nullptr;
-    expression209.tree = nullptr;
+    char_literal208       = NULL;
+    char_literal210       = NULL;
+    expression209.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal208_tree   = nullptr;
-    char_literal210_tree   = nullptr;
+    char_literal208_tree   = NULL;
+    char_literal210_tree   = NULL;
 
-    stream_116   = nullptr;
-    #define CREATE_stream_116  if (stream_116 == nullptr) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
-    stream_117   = nullptr;
-    #define CREATE_stream_117  if (stream_117 == nullptr) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
-    stream_expression   = nullptr;
-    #define CREATE_stream_expression  if (stream_expression == nullptr) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
+    stream_116   = NULL;
+    #define CREATE_stream_116  if (stream_116 == NULL) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
+    stream_117   = NULL;
+    #define CREATE_stream_117  if (stream_117 == NULL) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
+    stream_expression   = NULL;
+    #define CREATE_stream_expression  if (stream_expression == NULL) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:241:2: ( '(' expression ')' -> ^( COMPOUNT expression ) )
@@ -12909,7 +12909,7 @@ compound_expression(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal208, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal208, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_expression_in_compound_expression1844);
@@ -12925,7 +12925,7 @@ compound_expression(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression209.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression209.tree, NULL); }
 
             char_literal210 = (pANTLR3_COMMON_TOKEN) MATCHT(117, &FOLLOW_117_in_compound_expression1846);
             if  (HASEXCEPTION())
@@ -12937,7 +12937,7 @@ compound_expression(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal210, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal210, NULL); }
 
 
             /* AST REWRITE
@@ -12952,7 +12952,7 @@ compound_expression(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -12965,7 +12965,7 @@ compound_expression(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, COMPOUNT, (pANTLR3_UINT8)"COMPOUNT")
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
             	    }
@@ -12974,7 +12974,7 @@ compound_expression(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -12996,9 +12996,9 @@ compound_expression(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_116 != nullptr) stream_116->free(stream_116);
-        if (stream_117 != nullptr) stream_117->free(stream_117);
-        if (stream_expression != nullptr) stream_expression->free(stream_expression);
+        if (stream_116 != NULL) stream_116->free(stream_116);
+        if (stream_117 != NULL) stream_117->free(stream_117);
+        if (stream_expression != NULL) stream_expression->free(stream_expression);
     }
 
 
@@ -13038,19 +13038,19 @@ expression_list(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal212       = nullptr;
-    expression211.tree = nullptr;
+    char_literal212       = NULL;
+    expression211.tree = NULL;
 
-    expression213.tree = nullptr;
+    expression213.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal212_tree   = nullptr;
+    char_literal212_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:245:2: ( expression ( ',' expression )* )
@@ -13196,25 +13196,25 @@ expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    or_expression214.tree = nullptr;
+    or_expression214.tree = NULL;
 
-    assignment_operator215.tree = nullptr;
+    assignment_operator215.tree = NULL;
 
-    expression216.tree = nullptr;
+    expression216.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
-    stream_expression   = nullptr;
-    #define CREATE_stream_expression  if (stream_expression == nullptr) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
-    stream_or_expression   = nullptr;
-    #define CREATE_stream_or_expression  if (stream_or_expression == nullptr) {stream_or_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule or_expression"); }
-    stream_assignment_operator   = nullptr;
-    #define CREATE_stream_assignment_operator  if (stream_assignment_operator == nullptr) {stream_assignment_operator = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule assignment_operator"); }
+    stream_expression   = NULL;
+    #define CREATE_stream_expression  if (stream_expression == NULL) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
+    stream_or_expression   = NULL;
+    #define CREATE_stream_or_expression  if (stream_or_expression == NULL) {stream_or_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule or_expression"); }
+    stream_assignment_operator   = NULL;
+    #define CREATE_stream_assignment_operator  if (stream_assignment_operator == NULL) {stream_assignment_operator = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule assignment_operator"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:249:2: ( or_expression ( assignment_operator expression )? -> ^( EXPRESSION or_expression ( assignment_operator expression )? ) )
@@ -13233,7 +13233,7 @@ expression(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_or_expression; stream_or_expression->add(stream_or_expression, or_expression214.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_or_expression; stream_or_expression->add(stream_or_expression, or_expression214.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:249:18: ( assignment_operator expression )?
             {
@@ -13267,7 +13267,7 @@ expression(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_assignment_operator; stream_assignment_operator->add(stream_assignment_operator, assignment_operator215.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_assignment_operator; stream_assignment_operator->add(stream_assignment_operator, assignment_operator215.tree, NULL); }
 
             	        FOLLOWPUSH(FOLLOW_expression_in_expression1896);
             	        expression216=expression(ctx);
@@ -13282,7 +13282,7 @@ expression(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression216.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression216.tree, NULL); }
 
             	    }
             	    break;
@@ -13302,7 +13302,7 @@ expression(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -13315,19 +13315,19 @@ expression(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, EXPRESSION, (pANTLR3_UINT8)"EXPRESSION")
             	        , root_1));
 
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_or_expression == nullptr ? nullptr : stream_or_expression->nextTree(stream_or_expression));
+            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_or_expression == NULL ? NULL : stream_or_expression->nextTree(stream_or_expression));
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:249:85: ( assignment_operator expression )?
             	        {
-            	        	if ( (stream_assignment_operator != nullptr && stream_assignment_operator->hasNext(stream_assignment_operator)) || (stream_expression != nullptr && stream_expression->hasNext(stream_expression))  )
+            	        	if ( (stream_assignment_operator != NULL && stream_assignment_operator->hasNext(stream_assignment_operator)) || (stream_expression != NULL && stream_expression->hasNext(stream_expression))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_assignment_operator == nullptr ? nullptr : stream_assignment_operator->nextTree(stream_assignment_operator));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_assignment_operator == NULL ? NULL : stream_assignment_operator->nextTree(stream_assignment_operator));
 
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
             	        	}
-            	        	if ( stream_assignment_operator != nullptr) stream_assignment_operator->reset(stream_assignment_operator);
-            	        	if ( stream_expression != nullptr) stream_expression->reset(stream_expression);
+            	        	if ( stream_assignment_operator != NULL) stream_assignment_operator->reset(stream_assignment_operator);
+            	        	if ( stream_expression != NULL) stream_expression->reset(stream_expression);
 
             	        }
 
@@ -13338,7 +13338,7 @@ expression(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -13360,9 +13360,9 @@ expression(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_expression != nullptr) stream_expression->free(stream_expression);
-        if (stream_or_expression != nullptr) stream_or_expression->free(stream_or_expression);
-        if (stream_assignment_operator != nullptr) stream_assignment_operator->free(stream_assignment_operator);
+        if (stream_expression != NULL) stream_expression->free(stream_expression);
+        if (stream_or_expression != NULL) stream_or_expression->free(stream_or_expression);
+        if (stream_assignment_operator != NULL) stream_assignment_operator->free(stream_assignment_operator);
     }
 
 
@@ -13395,16 +13395,16 @@ assignment_operator(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set217       = nullptr;
+    set217       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set217_tree   = nullptr;
+    set217_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:253:2: ( '=' | '+=' | '-=' )
@@ -13436,7 +13436,7 @@ assignment_operator(pyasParser ctx)
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
                 EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-                EXCEPTION->expectingSet = nullptr;
+                EXCEPTION->expectingSet = NULL;
 
                 goto ruleassignment_operatorEx;
             }
@@ -13499,19 +13499,19 @@ or_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    OR219       = nullptr;
-    and_expression218.tree = nullptr;
+    OR219       = NULL;
+    and_expression218.tree = NULL;
 
-    and_expression220.tree = nullptr;
+    and_expression220.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    OR219_tree   = nullptr;
+    OR219_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:259:2: ( and_expression ( OR ^ and_expression )* )
@@ -13655,19 +13655,19 @@ and_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    AND222       = nullptr;
-    bit_or_expression221.tree = nullptr;
+    AND222       = NULL;
+    bit_or_expression221.tree = NULL;
 
-    bit_or_expression223.tree = nullptr;
+    bit_or_expression223.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    AND222_tree   = nullptr;
+    AND222_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:263:2: ( bit_or_expression ( AND ^ bit_or_expression )* )
@@ -13811,19 +13811,19 @@ bit_or_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    BITOR225       = nullptr;
-    bit_xor_expression224.tree = nullptr;
+    BITOR225       = NULL;
+    bit_xor_expression224.tree = NULL;
 
-    bit_xor_expression226.tree = nullptr;
+    bit_xor_expression226.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    BITOR225_tree   = nullptr;
+    BITOR225_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:267:2: ( bit_xor_expression ( BITOR ^ bit_xor_expression )* )
@@ -13967,19 +13967,19 @@ bit_xor_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    BITXOR228       = nullptr;
-    bit_and_expression227.tree = nullptr;
+    BITXOR228       = NULL;
+    bit_and_expression227.tree = NULL;
 
-    bit_and_expression229.tree = nullptr;
+    bit_and_expression229.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    BITXOR228_tree   = nullptr;
+    BITXOR228_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:271:2: ( bit_and_expression ( BITXOR ^ bit_and_expression )* )
@@ -14123,19 +14123,19 @@ bit_and_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    BITAND231       = nullptr;
-    instanceof_expression230.tree = nullptr;
+    BITAND231       = NULL;
+    instanceof_expression230.tree = NULL;
 
-    instanceof_expression232.tree = nullptr;
+    instanceof_expression232.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    BITAND231_tree   = nullptr;
+    BITAND231_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:275:2: ( instanceof_expression ( BITAND ^ instanceof_expression )* )
@@ -14279,19 +14279,19 @@ instanceof_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    INST_OF234       = nullptr;
-    equal_expression233.tree = nullptr;
+    INST_OF234       = NULL;
+    equal_expression233.tree = NULL;
 
-    type235.tree = nullptr;
+    type235.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    INST_OF234_tree   = nullptr;
+    INST_OF234_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:279:2: ( equal_expression ( INST_OF ^ type )? )
@@ -14427,19 +14427,19 @@ equal_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set237       = nullptr;
-    relational_expression236.tree = nullptr;
+    set237       = NULL;
+    relational_expression236.tree = NULL;
 
-    relational_expression238.tree = nullptr;
+    relational_expression238.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set237_tree   = nullptr;
+    set237_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:283:2: ( relational_expression ( ( EQUAL | UNEQUAL ) ^ relational_expression )* )
@@ -14509,7 +14509,7 @@ equal_expression(pyasParser ctx)
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
             	            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-            	            EXCEPTION->expectingSet = nullptr;
+            	            EXCEPTION->expectingSet = NULL;
 
             	            goto ruleequal_expressionEx;
             	        }
@@ -14600,19 +14600,19 @@ relational_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    shift_expression239.tree = nullptr;
+    shift_expression239.tree = NULL;
 
-    relational_operator240.tree = nullptr;
+    relational_operator240.tree = NULL;
 
-    shift_expression241.tree = nullptr;
+    shift_expression241.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:287:2: ( shift_expression ( relational_operator ^ shift_expression )? )
@@ -14742,16 +14742,16 @@ relational_operator(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set242       = nullptr;
+    set242       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set242_tree   = nullptr;
+    set242_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:291:2: ( SEQUAL | SMALLER | GREATER | GEQUAL )
@@ -14783,7 +14783,7 @@ relational_operator(pyasParser ctx)
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
                 EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-                EXCEPTION->expectingSet = nullptr;
+                EXCEPTION->expectingSet = NULL;
 
                 goto rulerelational_operatorEx;
             }
@@ -14846,19 +14846,19 @@ shift_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set244       = nullptr;
-    additive_expression243.tree = nullptr;
+    set244       = NULL;
+    additive_expression243.tree = NULL;
 
-    additive_expression245.tree = nullptr;
+    additive_expression245.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set244_tree   = nullptr;
+    set244_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:298:2: ( additive_expression ( ( SHIFTL | SHIFTR ) ^ additive_expression )* )
@@ -14928,7 +14928,7 @@ shift_expression(pyasParser ctx)
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
             	            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-            	            EXCEPTION->expectingSet = nullptr;
+            	            EXCEPTION->expectingSet = NULL;
 
             	            goto ruleshift_expressionEx;
             	        }
@@ -15017,19 +15017,19 @@ additive_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set247       = nullptr;
-    multiplicative_expression246.tree = nullptr;
+    set247       = NULL;
+    multiplicative_expression246.tree = NULL;
 
-    multiplicative_expression248.tree = nullptr;
+    multiplicative_expression248.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set247_tree   = nullptr;
+    set247_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:302:2: ( multiplicative_expression ( ( PLUS | MINUS ) ^ multiplicative_expression )* )
@@ -15099,7 +15099,7 @@ additive_expression(pyasParser ctx)
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
             	            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-            	            EXCEPTION->expectingSet = nullptr;
+            	            EXCEPTION->expectingSet = NULL;
 
             	            goto ruleadditive_expressionEx;
             	        }
@@ -15188,19 +15188,19 @@ multiplicative_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set250       = nullptr;
-    unary_expression249.tree = nullptr;
+    set250       = NULL;
+    unary_expression249.tree = NULL;
 
-    unary_expression251.tree = nullptr;
+    unary_expression251.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set250_tree   = nullptr;
+    set250_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:306:2: ( unary_expression ( ( MUL | DIV | REM ) ^ unary_expression )* )
@@ -15271,7 +15271,7 @@ multiplicative_expression(pyasParser ctx)
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
             	            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-            	            EXCEPTION->expectingSet = nullptr;
+            	            EXCEPTION->expectingSet = NULL;
 
             	            goto rulemultiplicative_expressionEx;
             	        }
@@ -15385,45 +15385,45 @@ unary_expression(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal252       = nullptr;
-    char_literal254       = nullptr;
-    type253.tree = nullptr;
+    char_literal252       = NULL;
+    char_literal254       = NULL;
+    type253.tree = NULL;
 
-    unary_expression255.tree = nullptr;
+    unary_expression255.tree = NULL;
 
-    unary_pre_operator256.tree = nullptr;
+    unary_pre_operator256.tree = NULL;
 
-    primary257.tree = nullptr;
+    primary257.tree = NULL;
 
-    selector258.tree = nullptr;
+    selector258.tree = NULL;
 
-    unary_post_oparator259.tree = nullptr;
+    unary_post_oparator259.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal252_tree   = nullptr;
-    char_literal254_tree   = nullptr;
+    char_literal252_tree   = NULL;
+    char_literal254_tree   = NULL;
 
-    stream_116   = nullptr;
-    #define CREATE_stream_116  if (stream_116 == nullptr) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
-    stream_117   = nullptr;
-    #define CREATE_stream_117  if (stream_117 == nullptr) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
-    stream_selector   = nullptr;
-    #define CREATE_stream_selector  if (stream_selector == nullptr) {stream_selector = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule selector"); }
-    stream_unary_pre_operator   = nullptr;
-    #define CREATE_stream_unary_pre_operator  if (stream_unary_pre_operator == nullptr) {stream_unary_pre_operator = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule unary_pre_operator"); }
-    stream_primary   = nullptr;
-    #define CREATE_stream_primary  if (stream_primary == nullptr) {stream_primary = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule primary"); }
-    stream_unary_expression   = nullptr;
-    #define CREATE_stream_unary_expression  if (stream_unary_expression == nullptr) {stream_unary_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule unary_expression"); }
-    stream_unary_post_oparator   = nullptr;
-    #define CREATE_stream_unary_post_oparator  if (stream_unary_post_oparator == nullptr) {stream_unary_post_oparator = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule unary_post_oparator"); }
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_116   = NULL;
+    #define CREATE_stream_116  if (stream_116 == NULL) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
+    stream_117   = NULL;
+    #define CREATE_stream_117  if (stream_117 == NULL) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
+    stream_selector   = NULL;
+    #define CREATE_stream_selector  if (stream_selector == NULL) {stream_selector = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule selector"); }
+    stream_unary_pre_operator   = NULL;
+    #define CREATE_stream_unary_pre_operator  if (stream_unary_pre_operator == NULL) {stream_unary_pre_operator = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule unary_pre_operator"); }
+    stream_primary   = NULL;
+    #define CREATE_stream_primary  if (stream_primary == NULL) {stream_primary = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule primary"); }
+    stream_unary_expression   = NULL;
+    #define CREATE_stream_unary_expression  if (stream_unary_expression == NULL) {stream_unary_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule unary_expression"); }
+    stream_unary_post_oparator   = NULL;
+    #define CREATE_stream_unary_post_oparator  if (stream_unary_post_oparator == NULL) {stream_unary_post_oparator = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule unary_post_oparator"); }
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -15477,7 +15477,7 @@ unary_expression(pyasParser ctx)
             case INCR:
             case INT:
             case LITFALSE:
-            case LITnullptr:
+            case LITNULL:
             case LITTRUE:
             case MINUS:
             case NATIVE:
@@ -15525,7 +15525,7 @@ unary_expression(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal252, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal252, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_type_in_unary_expression2216);
@@ -15541,7 +15541,7 @@ unary_expression(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type253.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type253.tree, NULL); }
 
         	        char_literal254 = (pANTLR3_COMMON_TOKEN) MATCHT(117, &FOLLOW_117_in_unary_expression2218);
         	        if  (HASEXCEPTION())
@@ -15553,7 +15553,7 @@ unary_expression(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal254, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal254, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_unary_expression_in_unary_expression2220);
@@ -15569,7 +15569,7 @@ unary_expression(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_unary_expression; stream_unary_expression->add(stream_unary_expression, unary_expression255.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_unary_expression; stream_unary_expression->add(stream_unary_expression, unary_expression255.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : unary_expression, type
@@ -15583,7 +15583,7 @@ unary_expression(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -15596,9 +15596,9 @@ unary_expression(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, CAST, (pANTLR3_UINT8)"CAST")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_unary_expression == nullptr ? nullptr : stream_unary_expression->nextTree(stream_unary_expression));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_unary_expression == NULL ? NULL : stream_unary_expression->nextTree(stream_unary_expression));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -15607,7 +15607,7 @@ unary_expression(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -15651,7 +15651,7 @@ unary_expression(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_unary_pre_operator; stream_unary_pre_operator->add(stream_unary_pre_operator, unary_pre_operator256.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_unary_pre_operator; stream_unary_pre_operator->add(stream_unary_pre_operator, unary_pre_operator256.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -15672,7 +15672,7 @@ unary_expression(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_primary; stream_primary->add(stream_primary, primary257.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_primary; stream_primary->add(stream_primary, primary257.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:311:32: ( selector )*
 
@@ -15708,7 +15708,7 @@ unary_expression(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_selector; stream_selector->add(stream_selector, selector258.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_selector; stream_selector->add(stream_selector, selector258.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -15752,7 +15752,7 @@ unary_expression(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_unary_post_oparator; stream_unary_post_oparator->add(stream_unary_post_oparator, unary_post_oparator259.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_unary_post_oparator; stream_unary_post_oparator->add(stream_unary_post_oparator, unary_post_oparator259.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -15772,7 +15772,7 @@ unary_expression(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -15787,36 +15787,36 @@ unary_expression(pyasParser ctx)
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:311:76: ( unary_pre_operator )?
         	        	        {
-        	        	        	if ( (stream_unary_pre_operator != nullptr && stream_unary_pre_operator->hasNext(stream_unary_pre_operator))  )
+        	        	        	if ( (stream_unary_pre_operator != NULL && stream_unary_pre_operator->hasNext(stream_unary_pre_operator))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_unary_pre_operator == nullptr ? nullptr : stream_unary_pre_operator->nextTree(stream_unary_pre_operator));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_unary_pre_operator == NULL ? NULL : stream_unary_pre_operator->nextTree(stream_unary_pre_operator));
 
         	        	        	}
-        	        	        	if ( stream_unary_pre_operator != nullptr) stream_unary_pre_operator->reset(stream_unary_pre_operator);
+        	        	        	if ( stream_unary_pre_operator != NULL) stream_unary_pre_operator->reset(stream_unary_pre_operator);
 
         	        	        }
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_primary == nullptr ? nullptr : stream_primary->nextTree(stream_primary));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_primary == NULL ? NULL : stream_primary->nextTree(stream_primary));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:311:104: ( selector )*
         	        	        {
-        	        	        	while ( (stream_selector != nullptr && stream_selector->hasNext(stream_selector))  )
+        	        	        	while ( (stream_selector != NULL && stream_selector->hasNext(stream_selector))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_selector == nullptr ? nullptr : stream_selector->nextTree(stream_selector));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_selector == NULL ? NULL : stream_selector->nextTree(stream_selector));
 
         	        	        	}
-        	        	        	if (stream_selector != nullptr) stream_selector->reset(stream_selector);
+        	        	        	if (stream_selector != NULL) stream_selector->reset(stream_selector);
 
         	        	        }
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:311:114: ( unary_post_oparator )?
         	        	        {
-        	        	        	if ( (stream_unary_post_oparator != nullptr && stream_unary_post_oparator->hasNext(stream_unary_post_oparator))  )
+        	        	        	if ( (stream_unary_post_oparator != NULL && stream_unary_post_oparator->hasNext(stream_unary_post_oparator))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_unary_post_oparator == nullptr ? nullptr : stream_unary_post_oparator->nextTree(stream_unary_post_oparator));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_unary_post_oparator == NULL ? NULL : stream_unary_post_oparator->nextTree(stream_unary_post_oparator));
 
         	        	        	}
-        	        	        	if ( stream_unary_post_oparator != nullptr) stream_unary_post_oparator->reset(stream_unary_post_oparator);
+        	        	        	if ( stream_unary_post_oparator != NULL) stream_unary_post_oparator->reset(stream_unary_post_oparator);
 
         	        	        }
 
@@ -15827,7 +15827,7 @@ unary_expression(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -15852,14 +15852,14 @@ unary_expression(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_116 != nullptr) stream_116->free(stream_116);
-        if (stream_117 != nullptr) stream_117->free(stream_117);
-        if (stream_selector != nullptr) stream_selector->free(stream_selector);
-        if (stream_unary_pre_operator != nullptr) stream_unary_pre_operator->free(stream_unary_pre_operator);
-        if (stream_primary != nullptr) stream_primary->free(stream_primary);
-        if (stream_unary_expression != nullptr) stream_unary_expression->free(stream_unary_expression);
-        if (stream_unary_post_oparator != nullptr) stream_unary_post_oparator->free(stream_unary_post_oparator);
-        if (stream_type != nullptr) stream_type->free(stream_type);
+        if (stream_116 != NULL) stream_116->free(stream_116);
+        if (stream_117 != NULL) stream_117->free(stream_117);
+        if (stream_selector != NULL) stream_selector->free(stream_selector);
+        if (stream_unary_pre_operator != NULL) stream_unary_pre_operator->free(stream_unary_pre_operator);
+        if (stream_primary != NULL) stream_primary->free(stream_primary);
+        if (stream_unary_expression != NULL) stream_unary_expression->free(stream_unary_expression);
+        if (stream_unary_post_oparator != NULL) stream_unary_post_oparator->free(stream_unary_post_oparator);
+        if (stream_type != NULL) stream_type->free(stream_type);
     }
 
 
@@ -15892,16 +15892,16 @@ unary_pre_operator(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set260       = nullptr;
+    set260       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set260_tree   = nullptr;
+    set260_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:315:2: ( PLUS | MINUS | NOT | BITCOMPL | '++' | '--' )
@@ -15933,7 +15933,7 @@ unary_pre_operator(pyasParser ctx)
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
                 EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-                EXCEPTION->expectingSet = nullptr;
+                EXCEPTION->expectingSet = NULL;
 
                 goto ruleunary_pre_operatorEx;
             }
@@ -15989,16 +15989,16 @@ unary_post_oparator(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set261       = nullptr;
+    set261       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set261_tree   = nullptr;
+    set261_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:324:2: ( '++' | '--' )
@@ -16030,7 +16030,7 @@ unary_post_oparator(pyasParser ctx)
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
                 EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-                EXCEPTION->expectingSet = nullptr;
+                EXCEPTION->expectingSet = NULL;
 
                 goto ruleunary_post_oparatorEx;
             }
@@ -16134,49 +16134,49 @@ primary(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    NEW267       = nullptr;
-    SUPER270       = nullptr;
-    THIS272       = nullptr;
-    NATIVE274       = nullptr;
-    compound_expression262.tree = nullptr;
+    NEW267       = NULL;
+    SUPER270       = NULL;
+    THIS272       = NULL;
+    NATIVE274       = NULL;
+    compound_expression262.tree = NULL;
 
-    literal263.tree = nullptr;
+    literal263.tree = NULL;
 
-    identifier264.tree = nullptr;
+    identifier264.tree = NULL;
 
-    type_argument265.tree = nullptr;
+    type_argument265.tree = NULL;
 
-    arguments266.tree = nullptr;
+    arguments266.tree = NULL;
 
-    type268.tree = nullptr;
+    type268.tree = NULL;
 
-    new_arguments269.tree = nullptr;
+    new_arguments269.tree = NULL;
 
-    arguments271.tree = nullptr;
+    arguments271.tree = NULL;
 
-    arguments273.tree = nullptr;
+    arguments273.tree = NULL;
 
-    arguments275.tree = nullptr;
+    arguments275.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    NEW267_tree   = nullptr;
-    SUPER270_tree   = nullptr;
-    THIS272_tree   = nullptr;
-    NATIVE274_tree   = nullptr;
+    NEW267_tree   = NULL;
+    SUPER270_tree   = NULL;
+    THIS272_tree   = NULL;
+    NATIVE274_tree   = NULL;
 
-    stream_type_argument   = nullptr;
-    #define CREATE_stream_type_argument  if (stream_type_argument == nullptr) {stream_type_argument = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type_argument"); }
-    stream_arguments   = nullptr;
-    #define CREATE_stream_arguments  if (stream_arguments == nullptr) {stream_arguments = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule arguments"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
-    stream_literal   = nullptr;
-    #define CREATE_stream_literal  if (stream_literal == nullptr) {stream_literal = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule literal"); }
+    stream_type_argument   = NULL;
+    #define CREATE_stream_type_argument  if (stream_type_argument == NULL) {stream_type_argument = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type_argument"); }
+    stream_arguments   = NULL;
+    #define CREATE_stream_arguments  if (stream_arguments == NULL) {stream_arguments = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule arguments"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_literal   = NULL;
+    #define CREATE_stream_literal  if (stream_literal == NULL) {stream_literal = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule literal"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -16197,7 +16197,7 @@ primary(pyasParser ctx)
             case FLOAT:
             case INT:
             case LITFALSE:
-            case LITnullptr:
+            case LITNULL:
             case LITTRUE:
             case STRING:
             	{
@@ -16289,7 +16289,7 @@ primary(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_literal; stream_literal->add(stream_literal, literal263.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_literal; stream_literal->add(stream_literal, literal263.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : literal
@@ -16303,7 +16303,7 @@ primary(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -16316,7 +16316,7 @@ primary(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, LITERAL, (pANTLR3_UINT8)"LITERAL")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_literal == nullptr ? nullptr : stream_literal->nextTree(stream_literal));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_literal == NULL ? NULL : stream_literal->nextTree(stream_literal));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -16325,7 +16325,7 @@ primary(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -16347,7 +16347,7 @@ primary(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier264.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier264.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:330:15: ( type_argument )?
         	        {
@@ -16385,7 +16385,7 @@ primary(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_type_argument; stream_type_argument->add(stream_type_argument, type_argument265.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_type_argument; stream_type_argument->add(stream_type_argument, type_argument265.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -16423,7 +16423,7 @@ primary(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_arguments; stream_arguments->add(stream_arguments, arguments266.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_arguments; stream_arguments->add(stream_arguments, arguments266.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -16443,7 +16443,7 @@ primary(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -16456,27 +16456,27 @@ primary(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ACCESS, (pANTLR3_UINT8)"ACCESS")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:330:68: ( type_argument )?
         	        	        {
-        	        	        	if ( (stream_type_argument != nullptr && stream_type_argument->hasNext(stream_type_argument))  )
+        	        	        	if ( (stream_type_argument != NULL && stream_type_argument->hasNext(stream_type_argument))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type_argument == nullptr ? nullptr : stream_type_argument->nextTree(stream_type_argument));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type_argument == NULL ? NULL : stream_type_argument->nextTree(stream_type_argument));
 
         	        	        	}
-        	        	        	if ( stream_type_argument != nullptr) stream_type_argument->reset(stream_type_argument);
+        	        	        	if ( stream_type_argument != NULL) stream_type_argument->reset(stream_type_argument);
 
         	        	        }
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:330:83: ( arguments )?
         	        	        {
-        	        	        	if ( (stream_arguments != nullptr && stream_arguments->hasNext(stream_arguments))  )
+        	        	        	if ( (stream_arguments != NULL && stream_arguments->hasNext(stream_arguments))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_arguments == nullptr ? nullptr : stream_arguments->nextTree(stream_arguments));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_arguments == NULL ? NULL : stream_arguments->nextTree(stream_arguments));
 
         	        	        	}
-        	        	        	if ( stream_arguments != nullptr) stream_arguments->reset(stream_arguments);
+        	        	        	if ( stream_arguments != NULL) stream_arguments->reset(stream_arguments);
 
         	        	        }
 
@@ -16487,7 +16487,7 @@ primary(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -16756,10 +16756,10 @@ primary(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_type_argument != nullptr) stream_type_argument->free(stream_type_argument);
-        if (stream_arguments != nullptr) stream_arguments->free(stream_arguments);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
-        if (stream_literal != nullptr) stream_literal->free(stream_literal);
+        if (stream_type_argument != NULL) stream_type_argument->free(stream_type_argument);
+        if (stream_arguments != NULL) stream_arguments->free(stream_arguments);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
+        if (stream_literal != NULL) stream_literal->free(stream_literal);
     }
 
 
@@ -16822,47 +16822,47 @@ selector(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal276       = nullptr;
-    char_literal280       = nullptr;
-    CLASS281       = nullptr;
-    char_literal282       = nullptr;
-    char_literal284       = nullptr;
-    identifier277.tree = nullptr;
+    char_literal276       = NULL;
+    char_literal280       = NULL;
+    CLASS281       = NULL;
+    char_literal282       = NULL;
+    char_literal284       = NULL;
+    identifier277.tree = NULL;
 
-    type_argument278.tree = nullptr;
+    type_argument278.tree = NULL;
 
-    arguments279.tree = nullptr;
+    arguments279.tree = NULL;
 
-    expression283.tree = nullptr;
+    expression283.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal276_tree   = nullptr;
-    char_literal280_tree   = nullptr;
-    CLASS281_tree   = nullptr;
-    char_literal282_tree   = nullptr;
-    char_literal284_tree   = nullptr;
+    char_literal276_tree   = NULL;
+    char_literal280_tree   = NULL;
+    CLASS281_tree   = NULL;
+    char_literal282_tree   = NULL;
+    char_literal284_tree   = NULL;
 
-    stream_125   = nullptr;
-    #define CREATE_stream_125  if (stream_125 == nullptr) {stream_125 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 125"); } 
-    stream_126   = nullptr;
-    #define CREATE_stream_126  if (stream_126 == nullptr) {stream_126 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 126"); } 
-    stream_CLASS   = nullptr;
-    #define CREATE_stream_CLASS  if (stream_CLASS == nullptr) {stream_CLASS = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token CLASS"); } 
-    stream_121   = nullptr;
-    #define CREATE_stream_121  if (stream_121 == nullptr) {stream_121 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 121"); } 
-    stream_expression   = nullptr;
-    #define CREATE_stream_expression  if (stream_expression == nullptr) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
-    stream_type_argument   = nullptr;
-    #define CREATE_stream_type_argument  if (stream_type_argument == nullptr) {stream_type_argument = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type_argument"); }
-    stream_arguments   = nullptr;
-    #define CREATE_stream_arguments  if (stream_arguments == nullptr) {stream_arguments = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule arguments"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_125   = NULL;
+    #define CREATE_stream_125  if (stream_125 == NULL) {stream_125 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 125"); } 
+    stream_126   = NULL;
+    #define CREATE_stream_126  if (stream_126 == NULL) {stream_126 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 126"); } 
+    stream_CLASS   = NULL;
+    #define CREATE_stream_CLASS  if (stream_CLASS == NULL) {stream_CLASS = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token CLASS"); } 
+    stream_121   = NULL;
+    #define CREATE_stream_121  if (stream_121 == NULL) {stream_121 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 121"); } 
+    stream_expression   = NULL;
+    #define CREATE_stream_expression  if (stream_expression == NULL) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
+    stream_type_argument   = NULL;
+    #define CREATE_stream_type_argument  if (stream_type_argument == NULL) {stream_type_argument = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type_argument"); }
+    stream_arguments   = NULL;
+    #define CREATE_stream_arguments  if (stream_arguments == NULL) {stream_arguments = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule arguments"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -16948,7 +16948,7 @@ selector(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal276, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal276, NULL); }
 
 
         	        FOLLOWPUSH(FOLLOW_identifier_in_selector2433);
@@ -16964,7 +16964,7 @@ selector(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier277.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier277.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:337:26: ( type_argument )?
         	        {
@@ -17002,7 +17002,7 @@ selector(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_type_argument; stream_type_argument->add(stream_type_argument, type_argument278.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_type_argument; stream_type_argument->add(stream_type_argument, type_argument278.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -17040,7 +17040,7 @@ selector(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_arguments; stream_arguments->add(stream_arguments, arguments279.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_arguments; stream_arguments->add(stream_arguments, arguments279.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -17060,7 +17060,7 @@ selector(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -17073,27 +17073,27 @@ selector(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ACCESS, (pANTLR3_UINT8)"ACCESS")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:337:78: ( type_argument )?
         	        	        {
-        	        	        	if ( (stream_type_argument != nullptr && stream_type_argument->hasNext(stream_type_argument))  )
+        	        	        	if ( (stream_type_argument != NULL && stream_type_argument->hasNext(stream_type_argument))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type_argument == nullptr ? nullptr : stream_type_argument->nextTree(stream_type_argument));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type_argument == NULL ? NULL : stream_type_argument->nextTree(stream_type_argument));
 
         	        	        	}
-        	        	        	if ( stream_type_argument != nullptr) stream_type_argument->reset(stream_type_argument);
+        	        	        	if ( stream_type_argument != NULL) stream_type_argument->reset(stream_type_argument);
 
         	        	        }
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:337:93: ( arguments )?
         	        	        {
-        	        	        	if ( (stream_arguments != nullptr && stream_arguments->hasNext(stream_arguments))  )
+        	        	        	if ( (stream_arguments != NULL && stream_arguments->hasNext(stream_arguments))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_arguments == nullptr ? nullptr : stream_arguments->nextTree(stream_arguments));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_arguments == NULL ? NULL : stream_arguments->nextTree(stream_arguments));
 
         	        	        	}
-        	        	        	if ( stream_arguments != nullptr) stream_arguments->reset(stream_arguments);
+        	        	        	if ( stream_arguments != NULL) stream_arguments->reset(stream_arguments);
 
         	        	        }
 
@@ -17104,7 +17104,7 @@ selector(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -17123,7 +17123,7 @@ selector(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal280, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_121; stream_121->add(stream_121, char_literal280, NULL); }
 
 
         	        CLASS281 = (pANTLR3_COMMON_TOKEN) MATCHT(CLASS, &FOLLOW_CLASS_in_selector2463);
@@ -17136,7 +17136,7 @@ selector(pyasParser ctx)
         	            return retval;
         	        }
         	         
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_CLASS; stream_CLASS->add(stream_CLASS, CLASS281, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_CLASS; stream_CLASS->add(stream_CLASS, CLASS281, NULL); }
 
 
         	        /* AST REWRITE
@@ -17151,7 +17151,7 @@ selector(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -17171,7 +17171,7 @@ selector(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -17221,7 +17221,7 @@ selector(pyasParser ctx)
         	        	                return retval;
         	        	            }
         	        	             
-        	        	            if ( BACKTRACKING==0 ) { CREATE_stream_125; stream_125->add(stream_125, char_literal282, nullptr); }
+        	        	            if ( BACKTRACKING==0 ) { CREATE_stream_125; stream_125->add(stream_125, char_literal282, NULL); }
 
 
         	        	            FOLLOWPUSH(FOLLOW_expression_in_selector2484);
@@ -17237,7 +17237,7 @@ selector(pyasParser ctx)
         	        	                return retval;
         	        	            }
 
-        	        	            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression283.tree, nullptr); }
+        	        	            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression283.tree, NULL); }
 
         	        	            char_literal284 = (pANTLR3_COMMON_TOKEN) MATCHT(126, &FOLLOW_126_in_selector2486);
         	        	            if  (HASEXCEPTION())
@@ -17249,7 +17249,7 @@ selector(pyasParser ctx)
         	        	                return retval;
         	        	            }
         	        	             
-        	        	            if ( BACKTRACKING==0 ) { CREATE_stream_126; stream_126->add(stream_126, char_literal284, nullptr); }
+        	        	            if ( BACKTRACKING==0 ) { CREATE_stream_126; stream_126->add(stream_126, char_literal284, NULL); }
 
 
         	        	        }
@@ -17293,7 +17293,7 @@ selector(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -17306,7 +17306,7 @@ selector(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ARRAYACCESS, (pANTLR3_UINT8)"ARRAYACCESS")
         	        	        , root_1));
 
-        	        	        if ((stream_expression == nullptr || !stream_expression->hasNext(stream_expression))  )
+        	        	        if ((stream_expression == NULL || !stream_expression->hasNext(stream_expression))  )
         	        	        {
         	        	            CONSTRUCTEX();
         	        	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -17315,7 +17315,7 @@ selector(pyasParser ctx)
         	        	        else
         	        	        {
         	        	        	while ( (stream_expression->hasNext(stream_expression))  ) {
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
         	        	        	}
         	        	        	stream_expression->reset(stream_expression);
@@ -17328,7 +17328,7 @@ selector(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -17353,14 +17353,14 @@ selector(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_125 != nullptr) stream_125->free(stream_125);
-        if (stream_126 != nullptr) stream_126->free(stream_126);
-        if (stream_CLASS != nullptr) stream_CLASS->free(stream_CLASS);
-        if (stream_121 != nullptr) stream_121->free(stream_121);
-        if (stream_expression != nullptr) stream_expression->free(stream_expression);
-        if (stream_type_argument != nullptr) stream_type_argument->free(stream_type_argument);
-        if (stream_arguments != nullptr) stream_arguments->free(stream_arguments);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_125 != NULL) stream_125->free(stream_125);
+        if (stream_126 != NULL) stream_126->free(stream_126);
+        if (stream_CLASS != NULL) stream_CLASS->free(stream_CLASS);
+        if (stream_121 != NULL) stream_121->free(stream_121);
+        if (stream_expression != NULL) stream_expression->free(stream_expression);
+        if (stream_type_argument != NULL) stream_type_argument->free(stream_type_argument);
+        if (stream_arguments != NULL) stream_arguments->free(stream_arguments);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -17399,21 +17399,21 @@ new_name(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    identifier285.tree = nullptr;
+    identifier285.tree = NULL;
 
-    basictype286.tree = nullptr;
+    basictype286.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
-    stream_basictype   = nullptr;
-    #define CREATE_stream_basictype  if (stream_basictype == nullptr) {stream_basictype = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule basictype"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_basictype   = NULL;
+    #define CREATE_stream_basictype  if (stream_basictype == NULL) {stream_basictype = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule basictype"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -17476,7 +17476,7 @@ new_name(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier285.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier285.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : identifier
@@ -17490,7 +17490,7 @@ new_name(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -17503,7 +17503,7 @@ new_name(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPE, (pANTLR3_UINT8)"TYPE")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -17512,7 +17512,7 @@ new_name(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -17534,7 +17534,7 @@ new_name(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_basictype; stream_basictype->add(stream_basictype, basictype286.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_basictype; stream_basictype->add(stream_basictype, basictype286.tree, NULL); }
 
         	        /* AST REWRITE
         	         * elements          : basictype
@@ -17548,7 +17548,7 @@ new_name(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -17561,7 +17561,7 @@ new_name(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPE, (pANTLR3_UINT8)"TYPE")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_basictype == nullptr ? nullptr : stream_basictype->nextTree(stream_basictype));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_basictype == NULL ? NULL : stream_basictype->nextTree(stream_basictype));
 
         	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
         	        	    }
@@ -17570,7 +17570,7 @@ new_name(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -17595,8 +17595,8 @@ new_name(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_basictype != nullptr) stream_basictype->free(stream_basictype);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_basictype != NULL) stream_basictype->free(stream_basictype);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -17634,17 +17634,17 @@ new_arguments(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    arguments287.tree = nullptr;
+    arguments287.tree = NULL;
 
-    array_argument288.tree = nullptr;
+    array_argument288.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -17791,25 +17791,25 @@ array_argument(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal289       = nullptr;
-    char_literal291       = nullptr;
-    expression290.tree = nullptr;
+    char_literal289       = NULL;
+    char_literal291       = NULL;
+    expression290.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal289_tree   = nullptr;
-    char_literal291_tree   = nullptr;
+    char_literal289_tree   = NULL;
+    char_literal291_tree   = NULL;
 
-    stream_125   = nullptr;
-    #define CREATE_stream_125  if (stream_125 == nullptr) {stream_125 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 125"); } 
-    stream_126   = nullptr;
-    #define CREATE_stream_126  if (stream_126 == nullptr) {stream_126 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 126"); } 
-    stream_expression   = nullptr;
-    #define CREATE_stream_expression  if (stream_expression == nullptr) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
+    stream_125   = NULL;
+    #define CREATE_stream_125  if (stream_125 == NULL) {stream_125 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 125"); } 
+    stream_126   = NULL;
+    #define CREATE_stream_126  if (stream_126 == NULL) {stream_126 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 126"); } 
+    stream_expression   = NULL;
+    #define CREATE_stream_expression  if (stream_expression == NULL) {stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:352:2: ( ( '[' expression ']' )+ -> ^( ARRAYARGUMENTS ( expression )+ ) )
@@ -17856,7 +17856,7 @@ array_argument(pyasParser ctx)
             	                return retval;
             	            }
             	             
-            	            if ( BACKTRACKING==0 ) { CREATE_stream_125; stream_125->add(stream_125, char_literal289, nullptr); }
+            	            if ( BACKTRACKING==0 ) { CREATE_stream_125; stream_125->add(stream_125, char_literal289, NULL); }
 
 
             	            FOLLOWPUSH(FOLLOW_expression_in_array_argument2566);
@@ -17872,7 +17872,7 @@ array_argument(pyasParser ctx)
             	                return retval;
             	            }
 
-            	            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression290.tree, nullptr); }
+            	            if ( BACKTRACKING==0 ) { CREATE_stream_expression; stream_expression->add(stream_expression, expression290.tree, NULL); }
 
             	            char_literal291 = (pANTLR3_COMMON_TOKEN) MATCHT(126, &FOLLOW_126_in_array_argument2568);
             	            if  (HASEXCEPTION())
@@ -17884,7 +17884,7 @@ array_argument(pyasParser ctx)
             	                return retval;
             	            }
             	             
-            	            if ( BACKTRACKING==0 ) { CREATE_stream_126; stream_126->add(stream_126, char_literal291, nullptr); }
+            	            if ( BACKTRACKING==0 ) { CREATE_stream_126; stream_126->add(stream_126, char_literal291, NULL); }
 
 
             	        }
@@ -17928,7 +17928,7 @@ array_argument(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -17941,7 +17941,7 @@ array_argument(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ARRAYARGUMENTS, (pANTLR3_UINT8)"ARRAYARGUMENTS")
             	        , root_1));
 
-            	        if ((stream_expression == nullptr || !stream_expression->hasNext(stream_expression))  )
+            	        if ((stream_expression == NULL || !stream_expression->hasNext(stream_expression))  )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -17950,7 +17950,7 @@ array_argument(pyasParser ctx)
             	        else
             	        {
             	        	while ( (stream_expression->hasNext(stream_expression))  ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == nullptr ? nullptr : stream_expression->nextTree(stream_expression));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression == NULL ? NULL : stream_expression->nextTree(stream_expression));
 
             	        	}
             	        	stream_expression->reset(stream_expression);
@@ -17963,7 +17963,7 @@ array_argument(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -17985,9 +17985,9 @@ array_argument(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_125 != nullptr) stream_125->free(stream_125);
-        if (stream_126 != nullptr) stream_126->free(stream_126);
-        if (stream_expression != nullptr) stream_expression->free(stream_expression);
+        if (stream_125 != NULL) stream_125->free(stream_125);
+        if (stream_126 != NULL) stream_126->free(stream_126);
+        if (stream_expression != NULL) stream_expression->free(stream_expression);
     }
 
 
@@ -18027,25 +18027,25 @@ arguments(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal292       = nullptr;
-    char_literal294       = nullptr;
-    expression_list293.tree = nullptr;
+    char_literal292       = NULL;
+    char_literal294       = NULL;
+    expression_list293.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal292_tree   = nullptr;
-    char_literal294_tree   = nullptr;
+    char_literal292_tree   = NULL;
+    char_literal294_tree   = NULL;
 
-    stream_116   = nullptr;
-    #define CREATE_stream_116  if (stream_116 == nullptr) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
-    stream_117   = nullptr;
-    #define CREATE_stream_117  if (stream_117 == nullptr) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
-    stream_expression_list   = nullptr;
-    #define CREATE_stream_expression_list  if (stream_expression_list == nullptr) {stream_expression_list = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression_list"); }
+    stream_116   = NULL;
+    #define CREATE_stream_116  if (stream_116 == NULL) {stream_116 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 116"); } 
+    stream_117   = NULL;
+    #define CREATE_stream_117  if (stream_117 == NULL) {stream_117 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 117"); } 
+    stream_expression_list   = NULL;
+    #define CREATE_stream_expression_list  if (stream_expression_list == NULL) {stream_expression_list = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression_list"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:356:2: ( '(' ( expression_list )? ')' -> ^( ARGUMENTS ( expression_list )? ) )
@@ -18061,7 +18061,7 @@ arguments(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal292, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_116; stream_116->add(stream_116, char_literal292, NULL); }
 
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:356:9: ( expression_list )?
@@ -18077,7 +18077,7 @@ arguments(pyasParser ctx)
                     case INCR:
                     case INT:
                     case LITFALSE:
-                    case LITnullptr:
+                    case LITNULL:
                     case LITTRUE:
                     case MINUS:
                     case NATIVE:
@@ -18112,7 +18112,7 @@ arguments(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_expression_list; stream_expression_list->add(stream_expression_list, expression_list293.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_expression_list; stream_expression_list->add(stream_expression_list, expression_list293.tree, NULL); }
 
             	    }
             	    break;
@@ -18130,7 +18130,7 @@ arguments(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal294, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_117; stream_117->add(stream_117, char_literal294, NULL); }
 
 
             /* AST REWRITE
@@ -18145,7 +18145,7 @@ arguments(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -18160,12 +18160,12 @@ arguments(pyasParser ctx)
 
             	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:356:50: ( expression_list )?
             	        {
-            	        	if ( (stream_expression_list != nullptr && stream_expression_list->hasNext(stream_expression_list))  )
+            	        	if ( (stream_expression_list != NULL && stream_expression_list->hasNext(stream_expression_list))  )
             	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression_list == nullptr ? nullptr : stream_expression_list->nextTree(stream_expression_list));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_expression_list == NULL ? NULL : stream_expression_list->nextTree(stream_expression_list));
 
             	        	}
-            	        	if ( stream_expression_list != nullptr) stream_expression_list->reset(stream_expression_list);
+            	        	if ( stream_expression_list != NULL) stream_expression_list->reset(stream_expression_list);
 
             	        }
 
@@ -18176,7 +18176,7 @@ arguments(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -18198,9 +18198,9 @@ arguments(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_116 != nullptr) stream_116->free(stream_116);
-        if (stream_117 != nullptr) stream_117->free(stream_117);
-        if (stream_expression_list != nullptr) stream_expression_list->free(stream_expression_list);
+        if (stream_116 != NULL) stream_116->free(stream_116);
+        if (stream_117 != NULL) stream_117->free(stream_117);
+        if (stream_expression_list != NULL) stream_expression_list->free(stream_expression_list);
     }
 
 
@@ -18241,23 +18241,23 @@ type_list(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal296       = nullptr;
-    type295.tree = nullptr;
+    char_literal296       = NULL;
+    type295.tree = NULL;
 
-    type297.tree = nullptr;
+    type297.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal296_tree   = nullptr;
+    char_literal296_tree   = NULL;
 
-    stream_119   = nullptr;
-    #define CREATE_stream_119  if (stream_119 == nullptr) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_119   = NULL;
+    #define CREATE_stream_119  if (stream_119 == NULL) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:360:2: ( type ( ',' type )* -> ^( TYPELIST ( type )+ ) )
@@ -18276,7 +18276,7 @@ type_list(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type295.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type295.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:360:9: ( ',' type )*
 
@@ -18308,7 +18308,7 @@ type_list(pyasParser ctx)
             	            return retval;
             	        }
             	         
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal296, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal296, NULL); }
 
 
             	        FOLLOWPUSH(FOLLOW_type_in_type_list2635);
@@ -18324,7 +18324,7 @@ type_list(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type297.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type297.tree, NULL); }
 
             	    }
             	    break;
@@ -18349,7 +18349,7 @@ type_list(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -18362,7 +18362,7 @@ type_list(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPELIST, (pANTLR3_UINT8)"TYPELIST")
             	        , root_1));
 
-            	        if ((stream_type == nullptr || !stream_type->hasNext(stream_type))  )
+            	        if ((stream_type == NULL || !stream_type->hasNext(stream_type))  )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -18371,7 +18371,7 @@ type_list(pyasParser ctx)
             	        else
             	        {
             	        	while ( (stream_type->hasNext(stream_type))  ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
             	        	}
             	        	stream_type->reset(stream_type);
@@ -18384,7 +18384,7 @@ type_list(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -18406,8 +18406,8 @@ type_list(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_119 != nullptr) stream_119->free(stream_119);
-        if (stream_type != nullptr) stream_type->free(stream_type);
+        if (stream_119 != NULL) stream_119->free(stream_119);
+        if (stream_type != NULL) stream_type->free(stream_type);
     }
 
 
@@ -18460,31 +18460,31 @@ type(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    identifier298.tree = nullptr;
+    identifier298.tree = NULL;
 
-    type_argument299.tree = nullptr;
+    type_argument299.tree = NULL;
 
-    array_decl300.tree = nullptr;
+    array_decl300.tree = NULL;
 
-    basictype301.tree = nullptr;
+    basictype301.tree = NULL;
 
-    array_decl302.tree = nullptr;
+    array_decl302.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
 
-    stream_type_argument   = nullptr;
-    #define CREATE_stream_type_argument  if (stream_type_argument == nullptr) {stream_type_argument = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type_argument"); }
-    stream_basictype   = nullptr;
-    #define CREATE_stream_basictype  if (stream_basictype == nullptr) {stream_basictype = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule basictype"); }
-    stream_array_decl   = nullptr;
-    #define CREATE_stream_array_decl  if (stream_array_decl == nullptr) {stream_array_decl = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule array_decl"); }
-    stream_identifier   = nullptr;
-    #define CREATE_stream_identifier  if (stream_identifier == nullptr) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
+    stream_type_argument   = NULL;
+    #define CREATE_stream_type_argument  if (stream_type_argument == NULL) {stream_type_argument = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type_argument"); }
+    stream_basictype   = NULL;
+    #define CREATE_stream_basictype  if (stream_basictype == NULL) {stream_basictype = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule basictype"); }
+    stream_array_decl   = NULL;
+    #define CREATE_stream_array_decl  if (stream_array_decl == NULL) {stream_array_decl = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule array_decl"); }
+    stream_identifier   = NULL;
+    #define CREATE_stream_identifier  if (stream_identifier == NULL) {stream_identifier = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule identifier"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
@@ -18547,7 +18547,7 @@ type(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier298.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_identifier; stream_identifier->add(stream_identifier, identifier298.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:363:19: ( type_argument )?
         	        {
@@ -18579,7 +18579,7 @@ type(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_type_argument; stream_type_argument->add(stream_type_argument, type_argument299.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_type_argument; stream_type_argument->add(stream_type_argument, type_argument299.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -18629,7 +18629,7 @@ type(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_array_decl; stream_array_decl->add(stream_array_decl, array_decl300.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_array_decl; stream_array_decl->add(stream_array_decl, array_decl300.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -18654,7 +18654,7 @@ type(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -18667,27 +18667,27 @@ type(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPE, (pANTLR3_UINT8)"TYPE")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == nullptr ? nullptr : stream_identifier->nextTree(stream_identifier));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_identifier == NULL ? NULL : stream_identifier->nextTree(stream_identifier));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:363:71: ( type_argument )?
         	        	        {
-        	        	        	if ( (stream_type_argument != nullptr && stream_type_argument->hasNext(stream_type_argument))  )
+        	        	        	if ( (stream_type_argument != NULL && stream_type_argument->hasNext(stream_type_argument))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type_argument == nullptr ? nullptr : stream_type_argument->nextTree(stream_type_argument));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type_argument == NULL ? NULL : stream_type_argument->nextTree(stream_type_argument));
 
         	        	        	}
-        	        	        	if ( stream_type_argument != nullptr) stream_type_argument->reset(stream_type_argument);
+        	        	        	if ( stream_type_argument != NULL) stream_type_argument->reset(stream_type_argument);
 
         	        	        }
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:363:86: ( array_decl )*
         	        	        {
-        	        	        	while ( (stream_array_decl != nullptr && stream_array_decl->hasNext(stream_array_decl))  )
+        	        	        	while ( (stream_array_decl != NULL && stream_array_decl->hasNext(stream_array_decl))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_array_decl == nullptr ? nullptr : stream_array_decl->nextTree(stream_array_decl));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_array_decl == NULL ? NULL : stream_array_decl->nextTree(stream_array_decl));
 
         	        	        	}
-        	        	        	if (stream_array_decl != nullptr) stream_array_decl->reset(stream_array_decl);
+        	        	        	if (stream_array_decl != NULL) stream_array_decl->reset(stream_array_decl);
 
         	        	        }
 
@@ -18698,7 +18698,7 @@ type(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -18720,7 +18720,7 @@ type(pyasParser ctx)
         	            return retval;
         	        }
 
-        	        if ( BACKTRACKING==0 ) { CREATE_stream_basictype; stream_basictype->add(stream_basictype, basictype301.tree, nullptr); }
+        	        if ( BACKTRACKING==0 ) { CREATE_stream_basictype; stream_basictype->add(stream_basictype, basictype301.tree, NULL); }
 
         	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:364:14: ( array_decl )*
 
@@ -18764,7 +18764,7 @@ type(pyasParser ctx)
         	        	            return retval;
         	        	        }
 
-        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_array_decl; stream_array_decl->add(stream_array_decl, array_decl302.tree, nullptr); }
+        	        	        if ( BACKTRACKING==0 ) { CREATE_stream_array_decl; stream_array_decl->add(stream_array_decl, array_decl302.tree, NULL); }
 
         	        	    }
         	        	    break;
@@ -18789,7 +18789,7 @@ type(pyasParser ctx)
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
         	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	retval.tree    = root_0;
@@ -18802,16 +18802,16 @@ type(pyasParser ctx)
         	        	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPE, (pANTLR3_UINT8)"TYPE")
         	        	        , root_1));
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_basictype == nullptr ? nullptr : stream_basictype->nextTree(stream_basictype));
+        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_basictype == NULL ? NULL : stream_basictype->nextTree(stream_basictype));
 
         	        	        // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:364:52: ( array_decl )*
         	        	        {
-        	        	        	while ( (stream_array_decl != nullptr && stream_array_decl->hasNext(stream_array_decl))  )
+        	        	        	while ( (stream_array_decl != NULL && stream_array_decl->hasNext(stream_array_decl))  )
         	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_array_decl == nullptr ? nullptr : stream_array_decl->nextTree(stream_array_decl));
+        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_array_decl == NULL ? NULL : stream_array_decl->nextTree(stream_array_decl));
 
         	        	        	}
-        	        	        	if (stream_array_decl != nullptr) stream_array_decl->reset(stream_array_decl);
+        	        	        	if (stream_array_decl != NULL) stream_array_decl->reset(stream_array_decl);
 
         	        	        }
 
@@ -18822,7 +18822,7 @@ type(pyasParser ctx)
 
 
         	        	retval.tree = root_0; // set result root
-        	        	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+        	        	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
         	        }
@@ -18847,10 +18847,10 @@ type(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_type_argument != nullptr) stream_type_argument->free(stream_type_argument);
-        if (stream_basictype != nullptr) stream_basictype->free(stream_basictype);
-        if (stream_array_decl != nullptr) stream_array_decl->free(stream_array_decl);
-        if (stream_identifier != nullptr) stream_identifier->free(stream_identifier);
+        if (stream_type_argument != NULL) stream_type_argument->free(stream_type_argument);
+        if (stream_basictype != NULL) stream_basictype->free(stream_basictype);
+        if (stream_array_decl != NULL) stream_array_decl->free(stream_array_decl);
+        if (stream_identifier != NULL) stream_identifier->free(stream_identifier);
     }
 
 
@@ -18897,31 +18897,31 @@ type_argument(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal303       = nullptr;
-    char_literal305       = nullptr;
-    char_literal307       = nullptr;
-    type304.tree = nullptr;
+    char_literal303       = NULL;
+    char_literal305       = NULL;
+    char_literal307       = NULL;
+    type304.tree = NULL;
 
-    type306.tree = nullptr;
+    type306.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal303_tree   = nullptr;
-    char_literal305_tree   = nullptr;
-    char_literal307_tree   = nullptr;
+    char_literal303_tree   = NULL;
+    char_literal305_tree   = NULL;
+    char_literal307_tree   = NULL;
 
-    stream_GREATER   = nullptr;
-    #define CREATE_stream_GREATER  if (stream_GREATER == nullptr) {stream_GREATER = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token GREATER"); } 
-    stream_SMALLER   = nullptr;
-    #define CREATE_stream_SMALLER  if (stream_SMALLER == nullptr) {stream_SMALLER = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SMALLER"); } 
-    stream_119   = nullptr;
-    #define CREATE_stream_119  if (stream_119 == nullptr) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
-    stream_type   = nullptr;
-    #define CREATE_stream_type  if (stream_type == nullptr) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
+    stream_GREATER   = NULL;
+    #define CREATE_stream_GREATER  if (stream_GREATER == NULL) {stream_GREATER = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token GREATER"); } 
+    stream_SMALLER   = NULL;
+    #define CREATE_stream_SMALLER  if (stream_SMALLER == NULL) {stream_SMALLER = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SMALLER"); } 
+    stream_119   = NULL;
+    #define CREATE_stream_119  if (stream_119 == NULL) {stream_119 = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 119"); } 
+    stream_type   = NULL;
+    #define CREATE_stream_type  if (stream_type == NULL) {stream_type = antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule type"); }
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:368:2: ( '<' type ( ',' type )? '>' -> ^( TYPEARGUMENT ( type )+ ) )
@@ -18937,7 +18937,7 @@ type_argument(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_SMALLER; stream_SMALLER->add(stream_SMALLER, char_literal303, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_SMALLER; stream_SMALLER->add(stream_SMALLER, char_literal303, NULL); }
 
 
             FOLLOWPUSH(FOLLOW_type_in_type_argument2726);
@@ -18953,7 +18953,7 @@ type_argument(pyasParser ctx)
                 return retval;
             }
 
-            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type304.tree, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type304.tree, NULL); }
 
             // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:368:13: ( ',' type )?
             {
@@ -18982,7 +18982,7 @@ type_argument(pyasParser ctx)
             	            return retval;
             	        }
             	         
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal305, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_119; stream_119->add(stream_119, char_literal305, NULL); }
 
 
             	        FOLLOWPUSH(FOLLOW_type_in_type_argument2731);
@@ -18998,7 +18998,7 @@ type_argument(pyasParser ctx)
             	            return retval;
             	        }
 
-            	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type306.tree, nullptr); }
+            	        if ( BACKTRACKING==0 ) { CREATE_stream_type; stream_type->add(stream_type, type306.tree, NULL); }
 
             	    }
             	    break;
@@ -19016,7 +19016,7 @@ type_argument(pyasParser ctx)
                 return retval;
             }
              
-            if ( BACKTRACKING==0 ) { CREATE_stream_GREATER; stream_GREATER->add(stream_GREATER, char_literal307, nullptr); }
+            if ( BACKTRACKING==0 ) { CREATE_stream_GREATER; stream_GREATER->add(stream_GREATER, char_literal307, NULL); }
 
 
             /* AST REWRITE
@@ -19031,7 +19031,7 @@ type_argument(pyasParser ctx)
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != nullptr ? retval.tree : nullptr);
+            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
 
             	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	retval.tree    = root_0;
@@ -19044,7 +19044,7 @@ type_argument(pyasParser ctx)
             	        (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPEARGUMENT, (pANTLR3_UINT8)"TYPEARGUMENT")
             	        , root_1));
 
-            	        if ((stream_type == nullptr || !stream_type->hasNext(stream_type))  )
+            	        if ((stream_type == NULL || !stream_type->hasNext(stream_type))  )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -19053,7 +19053,7 @@ type_argument(pyasParser ctx)
             	        else
             	        {
             	        	while ( (stream_type->hasNext(stream_type))  ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type == nullptr ? nullptr : stream_type->nextTree(stream_type));
+            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_type == NULL ? NULL : stream_type->nextTree(stream_type));
 
             	        	}
             	        	stream_type->reset(stream_type);
@@ -19066,7 +19066,7 @@ type_argument(pyasParser ctx)
 
 
             	retval.tree = root_0; // set result root
-            	if (stream_retval != nullptr) stream_retval->free(stream_retval);
+            	if (stream_retval != NULL) stream_retval->free(stream_retval);
 
 
             }
@@ -19088,10 +19088,10 @@ type_argument(pyasParser ctx)
 
     	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
     	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-        if (stream_GREATER != nullptr) stream_GREATER->free(stream_GREATER);
-        if (stream_SMALLER != nullptr) stream_SMALLER->free(stream_SMALLER);
-        if (stream_119 != nullptr) stream_119->free(stream_119);
-        if (stream_type != nullptr) stream_type->free(stream_type);
+        if (stream_GREATER != NULL) stream_GREATER->free(stream_GREATER);
+        if (stream_SMALLER != NULL) stream_SMALLER->free(stream_SMALLER);
+        if (stream_119 != NULL) stream_119->free(stream_119);
+        if (stream_type != NULL) stream_type->free(stream_type);
     }
 
 
@@ -19126,18 +19126,18 @@ array_decl(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    char_literal308       = nullptr;
-    char_literal309       = nullptr;
+    char_literal308       = NULL;
+    char_literal309       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    char_literal308_tree   = nullptr;
-    char_literal309_tree   = nullptr;
+    char_literal308_tree   = NULL;
+    char_literal309_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:372:2: ( ( '[' ']' ) )
@@ -19232,16 +19232,16 @@ basictype(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set310       = nullptr;
+    set310       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set310_tree   = nullptr;
+    set310_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:376:2: ( T_CHAR | T_INT | T_REAL | T_STRING | T_BOOL )
@@ -19273,7 +19273,7 @@ basictype(pyasParser ctx)
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
                 EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-                EXCEPTION->expectingSet = nullptr;
+                EXCEPTION->expectingSet = NULL;
 
                 goto rulebasictypeEx;
             }
@@ -19312,7 +19312,7 @@ basictype(pyasParser ctx)
 
 /**
  * $ANTLR start literal
- * F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:383:1: literal : ( STRING | CHAR | numeric_literal | boolean_literal | LITnullptr );
+ * F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:383:1: literal : ( STRING | CHAR | numeric_literal | boolean_literal | LITNULL );
  */
 static yasParser_literal_return
 literal(pyasParser ctx)
@@ -19324,7 +19324,7 @@ literal(pyasParser ctx)
 
     pANTLR3_COMMON_TOKEN    STRING311;
     pANTLR3_COMMON_TOKEN    CHAR312;
-    pANTLR3_COMMON_TOKEN    LITnullptr315;
+    pANTLR3_COMMON_TOKEN    LITNULL315;
     yasParser_numeric_literal_return numeric_literal313;
     #undef	RETURN_TYPE_numeric_literal313
     #define	RETURN_TYPE_numeric_literal313 yasParser_numeric_literal_return
@@ -19335,32 +19335,32 @@ literal(pyasParser ctx)
 
     pANTLR3_BASE_TREE STRING311_tree;
     pANTLR3_BASE_TREE CHAR312_tree;
-    pANTLR3_BASE_TREE LITnullptr315_tree;
+    pANTLR3_BASE_TREE LITNULL315_tree;
 
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    STRING311       = nullptr;
-    CHAR312       = nullptr;
-    LITnullptr315       = nullptr;
-    numeric_literal313.tree = nullptr;
+    STRING311       = NULL;
+    CHAR312       = NULL;
+    LITNULL315       = NULL;
+    numeric_literal313.tree = NULL;
 
-    boolean_literal314.tree = nullptr;
+    boolean_literal314.tree = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    STRING311_tree   = nullptr;
-    CHAR312_tree   = nullptr;
-    LITnullptr315_tree   = nullptr;
+    STRING311_tree   = NULL;
+    CHAR312_tree   = NULL;
+    LITNULL315_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         {
-            //  F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:383:9: ( STRING | CHAR | numeric_literal | boolean_literal | LITnullptr )
+            //  F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:383:9: ( STRING | CHAR | numeric_literal | boolean_literal | LITNULL )
 
             ANTLR3_UINT32 alt87;
 
@@ -19390,7 +19390,7 @@ literal(pyasParser ctx)
             		alt87=4;
             	}
                 break;
-            case LITnullptr:
+            case LITNULL:
             	{
             		alt87=5;
             	}
@@ -19509,12 +19509,12 @@ literal(pyasParser ctx)
         	    }
         	    break;
         	case 5:
-        	    // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:387:4: LITnullptr
+        	    // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:387:4: LITNULL
         	    {
         	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
 
-        	        LITnullptr315 = (pANTLR3_COMMON_TOKEN) MATCHT(LITnullptr, &FOLLOW_LITnullptr_in_literal2828);
+        	        LITNULL315 = (pANTLR3_COMMON_TOKEN) MATCHT(LITNULL, &FOLLOW_LITNULL_in_literal2828);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleliteralEx;
@@ -19525,8 +19525,8 @@ literal(pyasParser ctx)
         	        }
 
         	        if ( BACKTRACKING==0 ) {
-        	        LITnullptr315_tree = (pANTLR3_BASE_TREE)(ADAPTOR->create(ADAPTOR, LITnullptr315));
-        	        ADAPTOR->addChild(ADAPTOR, root_0, LITnullptr315_tree);
+        	        LITNULL315_tree = (pANTLR3_BASE_TREE)(ADAPTOR->create(ADAPTOR, LITNULL315));
+        	        ADAPTOR->addChild(ADAPTOR, root_0, LITNULL315_tree);
         	        }
 
         	    }
@@ -19582,16 +19582,16 @@ numeric_literal(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set316       = nullptr;
+    set316       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set316_tree   = nullptr;
+    set316_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:391:2: ( INT | FLOAT )
@@ -19623,7 +19623,7 @@ numeric_literal(pyasParser ctx)
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
                 EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-                EXCEPTION->expectingSet = nullptr;
+                EXCEPTION->expectingSet = NULL;
 
                 goto rulenumeric_literalEx;
             }
@@ -19679,16 +19679,16 @@ boolean_literal(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    set317       = nullptr;
+    set317       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    set317_tree   = nullptr;
+    set317_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:396:2: ( LITTRUE | LITFALSE )
@@ -19720,7 +19720,7 @@ boolean_literal(pyasParser ctx)
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
                 EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-                EXCEPTION->expectingSet = nullptr;
+                EXCEPTION->expectingSet = NULL;
 
                 goto ruleboolean_literalEx;
             }
@@ -19776,16 +19776,16 @@ identifier(pyasParser ctx)
     /* Initialize rule variables
      */
 
-    root_0 = nullptr;
+    root_0 = NULL;
 
-    ID318       = nullptr;
+    ID318       = NULL;
     retval.start = LT(1); retval.stop = retval.start;
 
 
-    ID318_tree   = nullptr;
+    ID318_tree   = NULL;
 
 
-    retval.tree  = nullptr;
+    retval.tree  = NULL;
 
     {
         // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:401:2: ( ID )

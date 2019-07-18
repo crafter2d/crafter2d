@@ -289,9 +289,9 @@ bool ASTType::isValueType() const
    return isNumeric() || isChar() || isString();
 }
 
-bool ASTType::isnullptr() const
+bool ASTType::isNull() const
 {
-   return mKind == enullptr;
+   return mKind == eNull;
 }
 
 bool ASTType::isArray() const
@@ -331,7 +331,7 @@ bool ASTType::isString() const
 
 bool ASTType::equals(const ASTType& that) const
 {
-   if ( (isObject() || isArray()) && that.isnullptr() )
+   if ( (isObject() || isArray()) && that.isNull() )
    {
       return true;
    }
@@ -343,7 +343,7 @@ bool ASTType::equals(const ASTType& that) const
 /// \brief Test whether that is greater than this type
 bool ASTType::greater(const ASTType& that) const
 {
-   if ( isnullptr() && (that.isObject() || that.isArray() || that.isString() || that.isGeneric()) )
+   if ( isNull() && (that.isObject() || that.isArray() || that.isString() || that.isGeneric()) )
    {
       return true;
    }

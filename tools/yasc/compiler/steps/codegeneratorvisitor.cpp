@@ -644,7 +644,22 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
    {
       mExpr++;
 
+      bool calcassign = ast.getKind() == ASTExpression::ePlusAssign || ast.getKind() == ASTExpression::eMinAssign;
+      if ( calcassign )
+      {
+         // load the value to add
+         ast.getLeft().accept(*this);
+      }
+
       ast.getRight().accept(*this);
+
+      if ( calcassign )
+      {
+         if ( ast.getKind() == ASTExpression::ePlusAssign )
+            mBuilder.emit(CIL_add);
+         else
+            mBuilder.emit(CIL_sub);
+      }
 
       mStore = true;
 
@@ -653,20 +668,9 @@ void CodeGeneratorVisitor::visit(const ASTExpression& ast)
 
       mStore = false;
 
+      ASSERT_PTR(mpAccess);
       ASSERT(mpAccess->getAccess() != ASTAccess::eInvalidAccess);
-
-      switch ( ast.getKind() )
-      {
-         case ASTExpression::eAssign:
-            handleAssignment(*mpAccess);
-            break;
-
-         case ASTExpression::ePlusAssign:
-            break;
-            
-         default:
-            break;
-      }
+      handleAssignment(*mpAccess);
    }
    else
    {
@@ -779,15 +783,15 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
       case ASTConcatenate::eEquals:
          {
-            SET_FLAG(mState, eStateNonullptr);
+            SET_FLAG(mState, eStateNoNull);
 
             concatenate.getRight().accept(*this);
 
-            CLEAR_FLAG(mState, eStateNonullptr);
+            CLEAR_FLAG(mState, eStateNoNull);
 
             switch ( mCurrentType.getKind() )
             {
-               case ASTType::enullptr:
+               case ASTType::eNull:
                   mBuilder.emit(CIL_isnull);
                   break;
                default:
@@ -798,15 +802,15 @@ void CodeGeneratorVisitor::visit(const ASTConcatenate& concatenate)
 
       case ASTConcatenate::eUnequals:
          {
-            SET_FLAG(mState, eStateNonullptr);
+            SET_FLAG(mState, eStateNoNull);
 
             concatenate.getRight().accept(*this);
 
-            CLEAR_FLAG(mState, eStateNonullptr);
+            CLEAR_FLAG(mState, eStateNoNull);
 
             switch ( mCurrentType.getKind() )
             {
-               case ASTType::enullptr:
+               case ASTType::eNull:
                   mBuilder.emit(CIL_isnull);
                   mBuilder.emit(CIL_not);
                   break;
@@ -1241,9 +1245,9 @@ void CodeGeneratorVisitor::visit(const ASTAccess& ast)
 
 void CodeGeneratorVisitor::visit(const ASTLiteral& ast)
 {
-   if ( ast.getType().isnullptr() )
+   if ( ast.getType().isNull() )
    {
-      if ( !IS_SET(mState, eStateNonullptr) )
+      if ( !IS_SET(mState, eStateNoNull) )
       {
          mBuilder.emit(CIL_ldnull);
       }
@@ -1382,51 +1386,58 @@ void CodeGeneratorVisitor::handleVariable(const ASTVariable& variable)
 {
    bool isargument = variable.isArgument();
    
-   Opcode store = (isargument ? CIL_ldarg : CIL_stloc);
    Opcode load  = (isargument ? CIL_ldarg : CIL_ldloc);
+   mBuilder.emit(load, variable.getResourceIndex());
 
    if ( mLoadFlags > 0 )
    {
-      // if not local, the object is already on the stack
-      mBuilder.emit(load, variable.getResourceIndex());
-
-      if ( variable.getType().isInt() )
-         mBuilder.emit(CIL_ldint, 1);
-      else
-         mBuilder.emit(CIL_ldreal, 1.0f);
-
-      if ( IS_SET(mLoadFlags, ePreIncr) || IS_SET(mLoadFlags, ePostIncr) )
-         mBuilder.emit(CIL_add);
-      else if ( IS_SET(mLoadFlags, ePreDecr) || IS_SET(mLoadFlags, ePostDecr) )
-         mBuilder.emit(CIL_sub);
-
-      if ( mLoadFlags > eKeep )
+      if ( IS_SET(mLoadFlags, ePreIncr) || IS_SET(mLoadFlags, ePreDecr) )
       {
-         mBuilder.emit(CIL_dup);
-      }
+         // pre
+		   // - increment value
+         // - dup it (if required)
 
-      int flags = mLoadFlags;
-      mLoadFlags = 0;
+         if (variable.getType().isInt())
+            mBuilder.emit(CIL_ldint, 1);
+         else
+            mBuilder.emit(CIL_ldreal, 1.0f);
 
-      mBuilder.emit(store, variable.getResourceIndex());
-      
-      if ( flags > eKeep )
+         if ( IS_SET(mLoadFlags, ePreIncr) )
+            mBuilder.emit(CIL_add);
+         else
+            mBuilder.emit(CIL_sub);
+
+         if ( mLoadFlags > eKeep )
+         {
+            mBuilder.emit(CIL_dup);
+         }
+	   }
+      else // post operator
       {
-         // revert if it should be a post operator
+         assert(IS_SET(mLoadFlags, ePostIncr) || IS_SET(mLoadFlags, ePostDecr));
+
+         // post
+         // - dup to keep original value (if required)
+         // - incr/decr value
+
+         if ( mLoadFlags > eKeep )
+         {
+            mBuilder.emit(CIL_dup);
+         }
+
          if ( variable.getType().isInt() )
             mBuilder.emit(CIL_ldint, 1);
          else
             mBuilder.emit(CIL_ldreal, 1.0f);
 
-         if ( IS_SET(flags, ePostIncr) )
-            mBuilder.emit(CIL_sub);
-         else if ( IS_SET(flags, ePostDecr) )
+         if ( IS_SET(mLoadFlags, ePostIncr) )
             mBuilder.emit(CIL_add);
+         else
+            mBuilder.emit(CIL_sub);
       }
-   }
-   else
-   {
-      mBuilder.emit(load, variable.getResourceIndex());
+
+      Opcode store = (isargument ? CIL_ldarg : CIL_stloc);
+      mBuilder.emit(store, variable.getResourceIndex());
    }
 }
 

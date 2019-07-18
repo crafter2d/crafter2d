@@ -426,7 +426,7 @@ static ANTLR3_INLINE
 	mTHROW    (pyasLexer ctx);
 static ANTLR3_INLINE 
  void
-	mLITnullptr    (pyasLexer ctx);
+	mLITNULL    (pyasLexer ctx);
 static ANTLR3_INLINE 
  void
 	mLITTRUE    (pyasLexer ctx);
@@ -625,7 +625,7 @@ static const char * getGrammarFileName()
  * \param[in]    instream Pointer to an initialized input stream
  * \return
  *     - Success pyasLexer initialized for the lex start
- *     - Fail nullptr
+ *     - Fail NULL
  */
 ANTLR3_API pyasLexer yasLexerNew
 (
@@ -634,7 +634,7 @@ pANTLR3_INPUT_STREAM
 {
 	// See if we can create a new lexer with the standard constructor
 	//
-	return yasLexerNewSSD(instream, nullptr);
+	return yasLexerNewSSD(instream, NULL);
 }
 
 /** \brief Create a new lexer called yasLexer
@@ -643,7 +643,7 @@ pANTLR3_INPUT_STREAM
  * \param[state] state Previously created shared recognizer stat
  * \return
  *     - Success pyasLexer initialized for the lex start
- *     - Fail nullptr
+ *     - Fail NULL
  */
 ANTLR3_API pyasLexer yasLexerNewSSD
 (pANTLR3_INPUT_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
@@ -652,10 +652,10 @@ ANTLR3_API pyasLexer yasLexerNewSSD
 
     ctx = (pyasLexer) ANTLR3_CALLOC(1, sizeof(yasLexer));
 
-    if  (ctx == nullptr)
+    if  (ctx == NULL)
     {
         // Failed to allocate memory for lexer context
-        return  nullptr;
+        return  NULL;
     }
 
     /* -------------------------------------------------------------------
@@ -675,10 +675,10 @@ ANTLR3_API pyasLexer yasLexerNewSSD
 
     /* Check that we allocated the memory correctly
      */
-    if	(ctx->pLexer == nullptr)
+    if	(ctx->pLexer == NULL)
     {
 		ANTLR3_FREE(ctx);
-		return  nullptr;
+		return  NULL;
     }
     /* Install the implementation of our yasLexer interface
      */
@@ -723,7 +723,7 @@ ANTLR3_API pyasLexer yasLexerNewSSD
     ctx->mCATCH	= mCATCH;
     ctx->mFINALLY	= mFINALLY;
     ctx->mTHROW	= mTHROW;
-    ctx->mLITnullptr	= mLITnullptr;
+    ctx->mLITNULL	= mLITNULL;
     ctx->mLITTRUE	= mLITTRUE;
     ctx->mLITFALSE	= mLITFALSE;
     ctx->mAND	= mAND;
@@ -830,7 +830,7 @@ static const ANTLR3_INT32 dfa9_special[5] =
     };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa9_T_empty	    nullptr
+#define dfa9_T_empty	    NULL
 
 static const ANTLR3_INT32 dfa9_T0[] =
     {
@@ -850,7 +850,7 @@ static const ANTLR3_INT32 dfa9_T1[] =
  */
 static const ANTLR3_INT32 * const dfa9_transitions[] =
 {
-    dfa9_T1, dfa9_T0, nullptr, nullptr, nullptr
+    dfa9_T1, dfa9_T0, NULL, NULL, NULL
 };
 
 
@@ -878,7 +878,7 @@ ANTLR3_CYCLIC_DFA cdfa9
 /* End of Cyclic DFA 9
  * ---------------------
  *//** Static dfa state tables for Cyclic dfa:
- *    1:1: Tokens : ( T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T_PACKAGE | USE | CLASS | INTRFACE | SUPER | THIS | EXTENDS | IMPL | NEW | INST_OF | T_ASSERT | PROPERTY | FOR | FOREACH | WHILE | DO | SWITCH | CASE | DEFAULT | BREAK | CONTINUE | RETURN | IF | ELSE | TRY | CATCH | FINALLY | THROW | LITnullptr | LITTRUE | LITFALSE | AND | OR | MUL | DIV | REM | PLUS | MINUS | BITCOMPL | NOT | BITAND | BITOR | BITXOR | INCR | DECR | EQUAL | UNEQUAL | SEQUAL | SMALLER | GREATER | GEQUAL | SHIFTL | SHIFTR | T_CHAR | T_INT | T_REAL | T_STRING | T_BOOL | T_VOID | STATIC | FINAL | ABSTRACT | NATIVE | SYNC | PUBLIC | PROT | PRIVATE | SEP | ID | INT | FLOAT | WHITESPACE | STRING | CHAR | COMMENT | LINE_COMMENT );
+ *    1:1: Tokens : ( T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T_PACKAGE | USE | CLASS | INTRFACE | SUPER | THIS | EXTENDS | IMPL | NEW | INST_OF | T_ASSERT | PROPERTY | FOR | FOREACH | WHILE | DO | SWITCH | CASE | DEFAULT | BREAK | CONTINUE | RETURN | IF | ELSE | TRY | CATCH | FINALLY | THROW | LITNULL | LITTRUE | LITFALSE | AND | OR | MUL | DIV | REM | PLUS | MINUS | BITCOMPL | NOT | BITAND | BITOR | BITXOR | INCR | DECR | EQUAL | UNEQUAL | SEQUAL | SMALLER | GREATER | GEQUAL | SHIFTL | SHIFTR | T_CHAR | T_INT | T_REAL | T_STRING | T_BOOL | T_VOID | STATIC | FINAL | ABSTRACT | NATIVE | SYNC | PUBLIC | PROT | PRIVATE | SEP | ID | INT | FLOAT | WHITESPACE | STRING | CHAR | COMMENT | LINE_COMMENT );
  */
 static const ANTLR3_INT32 dfa20_eot[310] =
     {
@@ -1011,7 +1011,7 @@ static const ANTLR3_INT32 dfa20_special[310] =
     };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa20_T_empty	    nullptr
+#define dfa20_T_empty	    NULL
 
 static const ANTLR3_INT32 dfa20_T0[] =
     {
@@ -1948,48 +1948,48 @@ static const ANTLR3_INT32 dfa20_T179[] =
  */
 static const ANTLR3_INT32 * const dfa20_transitions[] =
 {
-    dfa20_T126, nullptr, nullptr, dfa20_T27, nullptr, dfa20_T23, dfa20_T131, nullptr, 
-    dfa20_T174, nullptr, nullptr, nullptr, nullptr, nullptr, dfa20_T89, dfa20_T87, dfa20_T45, 
+    dfa20_T126, NULL, NULL, dfa20_T27, NULL, dfa20_T23, dfa20_T131, NULL, 
+    dfa20_T174, NULL, NULL, NULL, NULL, NULL, dfa20_T89, dfa20_T87, dfa20_T45, 
     dfa20_T167, dfa20_T54, dfa20_T76, dfa20_T101, dfa20_T163, dfa20_T28, 
     dfa20_T128, dfa20_T26, dfa20_T112, dfa20_T0, dfa20_T8, dfa20_T125, dfa20_T127, 
-    nullptr, dfa20_T136, nullptr, nullptr, dfa20_T104, nullptr, dfa20_T173, dfa20_T24, 
-    dfa20_T146, nullptr, nullptr, dfa20_T165, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 
-    nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, dfa20_T12, dfa20_T73, dfa20_T77, 
+    NULL, dfa20_T136, NULL, NULL, dfa20_T104, NULL, dfa20_T173, dfa20_T24, 
+    dfa20_T146, NULL, NULL, dfa20_T165, NULL, NULL, NULL, NULL, NULL, NULL, 
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, dfa20_T12, dfa20_T73, dfa20_T77, 
     dfa20_T7, dfa20_T2, dfa20_T13, dfa20_T64, dfa20_T122, dfa20_T44, dfa20_T106, 
     dfa20_T3, dfa20_T16, dfa20_T36, dfa20_T105, dfa20_T60, dfa20_T111, dfa20_T162, 
     dfa20_T15, dfa20_T164, dfa20_T86, dfa20_T157, dfa20_T53, dfa20_T118, 
     dfa20_T135, dfa20_T37, dfa20_T141, dfa20_T179, dfa20_T51, dfa20_T3, 
-    dfa20_T79, dfa20_T56, dfa20_T148, dfa20_T175, nullptr, nullptr, nullptr, nullptr, 
-    nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, dfa20_T144, 
-    nullptr, dfa20_T11, dfa20_T123, dfa20_T40, dfa20_T78, dfa20_T3, dfa20_T4, 
+    dfa20_T79, dfa20_T56, dfa20_T148, dfa20_T175, NULL, NULL, NULL, NULL, 
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, dfa20_T144, 
+    NULL, dfa20_T11, dfa20_T123, dfa20_T40, dfa20_T78, dfa20_T3, dfa20_T4, 
     dfa20_T74, dfa20_T159, dfa20_T62, dfa20_T121, dfa20_T5, dfa20_T92, dfa20_T102, 
-    nullptr, dfa20_T17, dfa20_T34, dfa20_T151, dfa20_T140, dfa20_T67, dfa20_T14, 
+    NULL, dfa20_T17, dfa20_T34, dfa20_T151, dfa20_T140, dfa20_T67, dfa20_T14, 
     dfa20_T156, dfa20_T3, dfa20_T176, dfa20_T95, dfa20_T166, dfa20_T3, dfa20_T158, 
     dfa20_T52, dfa20_T119, dfa20_T134, dfa20_T29, dfa20_T142, dfa20_T178, 
-    dfa20_T49, nullptr, dfa20_T80, dfa20_T55, dfa20_T150, dfa20_T171, dfa20_T154, 
+    dfa20_T49, NULL, dfa20_T80, dfa20_T55, dfa20_T150, dfa20_T171, dfa20_T154, 
     dfa20_T143, dfa20_T10, dfa20_T108, dfa20_T30, dfa20_T41, dfa20_T84, 
-    nullptr, dfa20_T1, dfa20_T3, dfa20_T160, dfa20_T68, dfa20_T3, dfa20_T25, 
-    nullptr, dfa20_T91, dfa20_T103, dfa20_T18, dfa20_T39, dfa20_T152, dfa20_T138, 
-    dfa20_T66, dfa20_T3, dfa20_T155, nullptr, dfa20_T3, dfa20_T96, dfa20_T3, 
-    nullptr, dfa20_T3, dfa20_T58, dfa20_T120, dfa20_T133, dfa20_T48, nullptr, 
+    NULL, dfa20_T1, dfa20_T3, dfa20_T160, dfa20_T68, dfa20_T3, dfa20_T25, 
+    NULL, dfa20_T91, dfa20_T103, dfa20_T18, dfa20_T39, dfa20_T152, dfa20_T138, 
+    dfa20_T66, dfa20_T3, dfa20_T155, NULL, dfa20_T3, dfa20_T96, dfa20_T3, 
+    NULL, dfa20_T3, dfa20_T58, dfa20_T120, dfa20_T133, dfa20_T48, NULL, 
     dfa20_T137, dfa20_T177, dfa20_T50, dfa20_T81, dfa20_T59, dfa20_T149, 
     dfa20_T170, dfa20_T3, dfa20_T3, dfa20_T9, dfa20_T107, dfa20_T32, dfa20_T42, 
-    dfa20_T85, dfa20_T3, nullptr, dfa20_T3, dfa20_T65, nullptr, dfa20_T22, dfa20_T90, 
-    dfa20_T99, dfa20_T3, dfa20_T38, dfa20_T153, dfa20_T139, dfa20_T63, nullptr, 
-    dfa20_T3, nullptr, dfa20_T93, nullptr, nullptr, dfa20_T57, dfa20_T117, dfa20_T132, 
+    dfa20_T85, dfa20_T3, NULL, dfa20_T3, dfa20_T65, NULL, dfa20_T22, dfa20_T90, 
+    dfa20_T99, dfa20_T3, dfa20_T38, dfa20_T153, dfa20_T139, dfa20_T63, NULL, 
+    dfa20_T3, NULL, dfa20_T93, NULL, NULL, dfa20_T57, dfa20_T117, dfa20_T132, 
     dfa20_T46, dfa20_T124, dfa20_T3, dfa20_T3, dfa20_T82, dfa20_T3, dfa20_T147, 
-    dfa20_T172, nullptr, nullptr, dfa20_T6, dfa20_T110, dfa20_T31, dfa20_T43, 
-    dfa20_T3, nullptr, nullptr, dfa20_T169, dfa20_T20, dfa20_T113, dfa20_T100, 
-    nullptr, dfa20_T3, dfa20_T3, dfa20_T3, dfa20_T61, nullptr, dfa20_T94, dfa20_T3, 
-    dfa20_T3, dfa20_T130, dfa20_T47, dfa20_T161, nullptr, nullptr, nullptr, dfa20_T83, 
-    nullptr, dfa20_T145, dfa20_T3, dfa20_T3, dfa20_T109, dfa20_T35, dfa20_T3, 
-    nullptr, dfa20_T168, dfa20_T19, dfa20_T114, dfa20_T97, nullptr, nullptr, nullptr, 
-    dfa20_T71, dfa20_T3, nullptr, nullptr, dfa20_T129, dfa20_T3, dfa20_T3, dfa20_T3, 
-    dfa20_T3, nullptr, nullptr, dfa20_T3, dfa20_T33, nullptr, dfa20_T3, dfa20_T21, 
-    dfa20_T115, dfa20_T98, dfa20_T72, nullptr, dfa20_T3, nullptr, nullptr, nullptr, 
-    nullptr, nullptr, dfa20_T3, nullptr, dfa20_T3, dfa20_T116, dfa20_T88, dfa20_T69, 
-    nullptr, nullptr, nullptr, dfa20_T3, dfa20_T3, dfa20_T70, nullptr, nullptr, dfa20_T75, 
-    dfa20_T3, nullptr
+    dfa20_T172, NULL, NULL, dfa20_T6, dfa20_T110, dfa20_T31, dfa20_T43, 
+    dfa20_T3, NULL, NULL, dfa20_T169, dfa20_T20, dfa20_T113, dfa20_T100, 
+    NULL, dfa20_T3, dfa20_T3, dfa20_T3, dfa20_T61, NULL, dfa20_T94, dfa20_T3, 
+    dfa20_T3, dfa20_T130, dfa20_T47, dfa20_T161, NULL, NULL, NULL, dfa20_T83, 
+    NULL, dfa20_T145, dfa20_T3, dfa20_T3, dfa20_T109, dfa20_T35, dfa20_T3, 
+    NULL, dfa20_T168, dfa20_T19, dfa20_T114, dfa20_T97, NULL, NULL, NULL, 
+    dfa20_T71, dfa20_T3, NULL, NULL, dfa20_T129, dfa20_T3, dfa20_T3, dfa20_T3, 
+    dfa20_T3, NULL, NULL, dfa20_T3, dfa20_T33, NULL, dfa20_T3, dfa20_T21, 
+    dfa20_T115, dfa20_T98, dfa20_T72, NULL, dfa20_T3, NULL, NULL, NULL, 
+    NULL, NULL, dfa20_T3, NULL, dfa20_T3, dfa20_T116, dfa20_T88, dfa20_T69, 
+    NULL, NULL, NULL, dfa20_T3, dfa20_T3, dfa20_T70, NULL, NULL, dfa20_T75, 
+    dfa20_T3, NULL
 };
 
 
@@ -2000,7 +2000,7 @@ ANTLR3_CYCLIC_DFA cdfa20
     =	{
 	    20,		    /* Decision number of this dfa	    */
 	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"1:1: Tokens : ( T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T_PACKAGE | USE | CLASS | INTRFACE | SUPER | THIS | EXTENDS | IMPL | NEW | INST_OF | T_ASSERT | PROPERTY | FOR | FOREACH | WHILE | DO | SWITCH | CASE | DEFAULT | BREAK | CONTINUE | RETURN | IF | ELSE | TRY | CATCH | FINALLY | THROW | LITnullptr | LITTRUE | LITFALSE | AND | OR | MUL | DIV | REM | PLUS | MINUS | BITCOMPL | NOT | BITAND | BITOR | BITXOR | INCR | DECR | EQUAL | UNEQUAL | SEQUAL | SMALLER | GREATER | GEQUAL | SHIFTL | SHIFTR | T_CHAR | T_INT | T_REAL | T_STRING | T_BOOL | T_VOID | STATIC | FINAL | ABSTRACT | NATIVE | SYNC | PUBLIC | PROT | PRIVATE | SEP | ID | INT | FLOAT | WHITESPACE | STRING | CHAR | COMMENT | LINE_COMMENT );",
+	    (const pANTLR3_UCHAR)"1:1: Tokens : ( T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T_PACKAGE | USE | CLASS | INTRFACE | SUPER | THIS | EXTENDS | IMPL | NEW | INST_OF | T_ASSERT | PROPERTY | FOR | FOREACH | WHILE | DO | SWITCH | CASE | DEFAULT | BREAK | CONTINUE | RETURN | IF | ELSE | TRY | CATCH | FINALLY | THROW | LITNULL | LITTRUE | LITFALSE | AND | OR | MUL | DIV | REM | PLUS | MINUS | BITCOMPL | NOT | BITAND | BITOR | BITXOR | INCR | DECR | EQUAL | UNEQUAL | SEQUAL | SMALLER | GREATER | GEQUAL | SHIFTL | SHIFTR | T_CHAR | T_INT | T_REAL | T_STRING | T_BOOL | T_VOID | STATIC | FINAL | ABSTRACT | NATIVE | SYNC | PUBLIC | PROT | PRIVATE | SEP | ID | INT | FLOAT | WHITESPACE | STRING | CHAR | COMMENT | LINE_COMMENT );",
 	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
 
 	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
@@ -3779,20 +3779,20 @@ void mTHROW(pyasLexer ctx)
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
 static ANTLR3_INLINE
-void mLITnullptr(pyasLexer ctx)
+void mLITNULL(pyasLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
     _type	    = LITnullptr;
 
 
-    // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:433:9: ( 'nullptr' )
-    // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:433:11: 'nullptr'
+    // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:433:9: ( 'NULL' )
+    // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:433:11: 'NULL'
     {
         MATCHS(lit_31);
         if  (HASEXCEPTION())
         {
-            goto ruleLITnullptrEx;
+            goto ruleLITNULLEx;
         }
 
 
@@ -3803,11 +3803,11 @@ void mLITnullptr(pyasLexer ctx)
 	LEXSTATE->type = _type;
     // This is where rules clean up and exit
     //
-    goto ruleLITnullptrEx; /* Prevent compiler warnings */
-    ruleLITnullptrEx: ;
+    goto ruleLITNULLEx; /* Prevent compiler warnings */
+    ruleLITNULLEx: ;
 
 }
-// $ANTLR end LITnullptr
+// $ANTLR end LITNULL
 
 //   Comes from: 434:9: ( 'true' )
 /** \brief Lexer rule generated by ANTLR3
@@ -7443,7 +7443,7 @@ static void
 mTokens(pyasLexer ctx)
 {
     {
-        //  F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:1:8: ( T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T_PACKAGE | USE | CLASS | INTRFACE | SUPER | THIS | EXTENDS | IMPL | NEW | INST_OF | T_ASSERT | PROPERTY | FOR | FOREACH | WHILE | DO | SWITCH | CASE | DEFAULT | BREAK | CONTINUE | RETURN | IF | ELSE | TRY | CATCH | FINALLY | THROW | LITnullptr | LITTRUE | LITFALSE | AND | OR | MUL | DIV | REM | PLUS | MINUS | BITCOMPL | NOT | BITAND | BITOR | BITXOR | INCR | DECR | EQUAL | UNEQUAL | SEQUAL | SMALLER | GREATER | GEQUAL | SHIFTL | SHIFTR | T_CHAR | T_INT | T_REAL | T_STRING | T_BOOL | T_VOID | STATIC | FINAL | ABSTRACT | NATIVE | SYNC | PUBLIC | PROT | PRIVATE | SEP | ID | INT | FLOAT | WHITESPACE | STRING | CHAR | COMMENT | LINE_COMMENT )
+        //  F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:1:8: ( T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T_PACKAGE | USE | CLASS | INTRFACE | SUPER | THIS | EXTENDS | IMPL | NEW | INST_OF | T_ASSERT | PROPERTY | FOR | FOREACH | WHILE | DO | SWITCH | CASE | DEFAULT | BREAK | CONTINUE | RETURN | IF | ELSE | TRY | CATCH | FINALLY | THROW | LITNULL | LITTRUE | LITFALSE | AND | OR | MUL | DIV | REM | PLUS | MINUS | BITCOMPL | NOT | BITAND | BITOR | BITXOR | INCR | DECR | EQUAL | UNEQUAL | SEQUAL | SMALLER | GREATER | GEQUAL | SHIFTL | SHIFTR | T_CHAR | T_INT | T_REAL | T_STRING | T_BOOL | T_VOID | STATIC | FINAL | ABSTRACT | NATIVE | SYNC | PUBLIC | PROT | PRIVATE | SEP | ID | INT | FLOAT | WHITESPACE | STRING | CHAR | COMMENT | LINE_COMMENT )
 
         ANTLR3_UINT32 alt20;
 
@@ -8032,10 +8032,10 @@ mTokens(pyasLexer ctx)
     	    }
     	    break;
     	case 42:
-    	    // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:1:279: LITnullptr
+    	    // F:\\Devel\\crafter2d\\tools\\yasc\\yas.g:1:279: LITNULL
     	    {
-    	        /* 1:279: LITnullptr */
-    	        mLITnullptr(ctx );
+    	        /* 1:279: LITNULL */
+    	        mLITNULL(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
