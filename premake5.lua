@@ -1,5 +1,5 @@
 -- Crafter 2D PreMake 5 configuration file
--- Copyright 2010-2015, Jeroen Broekhuizen
+-- Copyright 2010-2019, Jeroen Broekhuizen
 
 newoption 
 {
@@ -15,10 +15,18 @@ newoption
 }
 
 if not _OPTIONS["libdir"] then
-	_OPTIONS["libdir"] = path.join(path.join(os.getcwd(), "../externallibs"), _ACTION)
+	_OPTIONS["libdir"] = path.join(os.getcwd(), "../externallibs")
 end
 
-libdir = _OPTIONS["libdir"]
+libdir = path.join(_OPTIONS["libdir"], _ACTION)
+pkgconf.setPrefix(libdir)
+
+function setDefaultProjectSettings()
+	flags { "NoPCH" }
+	language "C++"
+	systemversion "10.0.17763.0"
+	targetdir "../bin"
+end
 
 solution "Crafter2D"
 	configurations { "Debug", "Release" }
@@ -26,8 +34,6 @@ solution "Crafter2D"
 	startproject "Game"
 	floatingpoint "Fast"
 	vectorextensions "SSE2"
-	
-package.path = package.path .. ";./projects/?.lua"
  
 require "proj-core"
 require "proj-engine"
@@ -38,6 +44,7 @@ require "proj-modui"
 require "proj-unittest"
 require "proj-game"
 require "proj-compiler"
+require "proj-yas"
 require "proj-yasc"
 
 if not _OPTIONS["travis"] then

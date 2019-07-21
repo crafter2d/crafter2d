@@ -1,0 +1,10 @@
+prefix=iconv
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: IConv
+Description: iconv library
+Version: 1.0
+Cflags: ${includedir}
+Libs: libiconv
+Libdir: ${libdir}

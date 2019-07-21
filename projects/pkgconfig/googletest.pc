@@ -1,0 +1,10 @@
+prefix=googletest
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: googletest
+Description: The google test library
+Version: 1.8.1
+Cflags: ${includedir}
+Libs: gtest
+Libdir: ${libdir}

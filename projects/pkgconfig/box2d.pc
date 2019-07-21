@@ -1,0 +1,10 @@
+prefix=box2d
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: Box2D
+Description: Box2D physics library
+Version: 2.3.0
+Cflags: ${includedir}
+Libs: Box2D
+Libdir: ${libdir}

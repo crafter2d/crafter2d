@@ -4,11 +4,10 @@
 -- create the project
 project "Gen"
 	kind "ConsoleApp"
-	language "C++"
 	debugdir "../bin"
-	targetdir "../bin"
 	location "../build/gen"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
 	-- set project files
 	files { "../src/gen/**.cpp", "../src/gen/**.h", "../src/gen/**.inl" }
@@ -17,7 +16,7 @@ project "Gen"
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
-		flags { "Symbols" }
+		symbols "On"
 		
 	filter "configurations:Release"
 		defines { "NDEBUG" }

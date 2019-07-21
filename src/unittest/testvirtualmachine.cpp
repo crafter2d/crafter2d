@@ -1,8 +1,5 @@
 
-#ifndef TEST_VIRTUALMACHINE_H
-#define TEST_VIRTUALMACHINE_H
-
-#include <unittest++/UnitTest++.h>
+#include <gtest/gtest.h>
 
 #include "core/vfs/filesystem.h"
 #include "core/modules/modulemanager.h"
@@ -78,48 +75,36 @@ void NativeClass_mul(ScriptCall& accessor)
    accessor.setResult(pnative->mul(a, b));
 }
 
-SUITE(TestVirtualMachine)
+TEST(VirtualMachine, Run)
 {
-   TEST(testRun)
-   {      
-      ModuleManager modulemgr;
-      CHECK(modulemgr.initialize());
-      c2d::Module* pmodule = modulemgr.lookup(c2d::UUID_ScriptModule);
-      if ( pmodule == nullptr )
-      {
-         // no need to continue testing as it seems there is no script module available
-         return;
-      }
+   ModuleManager modulemgr;
+   EXPECT_TRUE(modulemgr.initialize());
+   c2d::Module* pmodule = modulemgr.lookup(c2d::UUID_ScriptModule);
+   ASSERT_NE(pmodule, nullptr);
 
-      ScriptModule* pmod = static_cast<c2d::ScriptModule*>(pmodule);
-      ScriptManager& scriptmanager = pmod->getManager();
+   ScriptModule* pmod = static_cast<c2d::ScriptModule*>(pmodule);
+   ScriptManager& scriptmanager = pmod->getManager();
 
-      std::unique_ptr<ScriptRegistrator> pregistrator(scriptmanager.getRegistrator());
+   std::unique_ptr<ScriptRegistrator> pregistrator(scriptmanager.getRegistrator());
 
-      pregistrator->addClass(UTEXT("NativeClass"));
-      pregistrator->addFunction(UTEXT("NativeClass()"), NativeClass_init);
-      pregistrator->addFunction(UTEXT("getIntValue()"), NativeClass_getIntValue);
-      pregistrator->addFunction(UTEXT("getStringValue()"), NativeClass_getStringValue);
-      pregistrator->addFunction(UTEXT("add(int, int)"), NativeClass_add);
-      pregistrator->addFunction(UTEXT("sub(int, int)"), NativeClass_sub);
-      pregistrator->addFunction(UTEXT("mul(int, int)"), NativeClass_mul);
+   pregistrator->addClass(UTEXT("NativeClass"));
+   pregistrator->addFunction(UTEXT("NativeClass()"), NativeClass_init);
+   pregistrator->addFunction(UTEXT("getIntValue()"), NativeClass_getIntValue);
+   pregistrator->addFunction(UTEXT("getStringValue()"), NativeClass_getStringValue);
+   pregistrator->addFunction(UTEXT("add(int, int)"), NativeClass_add);
+   pregistrator->addFunction(UTEXT("sub(int, int)"), NativeClass_sub);
+   pregistrator->addFunction(UTEXT("mul(int, int)"), NativeClass_mul);
 
-      pregistrator->registerCallbacks();
+   pregistrator->registerCallbacks();
 
-      FileSystem& fs = FileSystem::getInstance();
-      fs.removeAll();
-      fs.addPath(UTEXT("data.zip/scripts"));
-      fs.addPath(UTEXT("../src/unittest/test.zip/test"));
+   FileSystem& fs = FileSystem::getInstance();
+   fs.removeAll();
+   fs.addPath(UTEXT("data.zip/scripts"));
+   fs.addPath(UTEXT("../src/unittest/test.zip/test"));
 
-      std::unique_ptr<ScriptObject> script(scriptmanager.load(UTEXT("Test")));
-      scriptmanager.addRootObject(*script);
-
-      CHECK(script.get() != nullptr);
-      Variant result = script->call(UTEXT("run"));
-      CHECK(result.isBool());
-      CHECK(result.asBool());
-   }
-
-};
-
-#endif // TEST_VIRTUALMACHINE_H
+   std::unique_ptr<ScriptObject> script(scriptmanager.load(UTEXT("Test")));
+   EXPECT_NE(script.get(), nullptr);
+   Variant result = script->call(UTEXT("run"));
+   EXPECT_TRUE(result.isBool());
+   EXPECT_TRUE(result.asBool());
+}

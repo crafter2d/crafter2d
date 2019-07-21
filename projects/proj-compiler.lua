@@ -4,11 +4,10 @@
 -- create the project
 project "Compiler"
 	kind "ConsoleApp"
-	language "C++"
-	targetdir "../bin"
 	debugdir "../bin"
 	location "../build/compiler"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
 	-- set project files
 	files { "../src/compiler/**.cpp", "../src/compiler/**.h", "../src/compiler/**.inl" }
@@ -18,7 +17,7 @@ project "Compiler"
 	filter "configurations:Debug"
 		defines { "_DEBUG", "TIXML_USE_STL" }
 		targetsuffix "d"
-		flags { "Symbols" }
+		symbols "On"
 		
 	filter "configurations:Release"
 		defines { "NDEBUG", "TIXML_USE_STL" }
@@ -26,8 +25,8 @@ project "Compiler"
 		
 	filter "system:Windows"
 		defines { "WIN32" }
-		includedirs { path.join(libdir, "tinyxml/include") }
-		libdirs { 	path.join(libdir, "tinyxml/lib") }
+		includedirs { pkgconf.cflags('tinyxml') }
+		libdirs { pkgconf.libdir('tinyxml') }
 	
 	filter "system:Linux"
 		defines { "LINUX" }
@@ -36,8 +35,8 @@ project "Compiler"
         links { "tinyxml" }
 
     filter { "action:vs*", "Debug" }
-        links { "tinyxmld_STL" }
+        links { pkgconf.libs('tinyxml') .. 'd' }
 
     filter { "action:vs*", "Debug" }
-        links { "tinyxml_STL" }
+        links { pkgconf.libs('tinyxml') }
 

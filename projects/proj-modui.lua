@@ -4,10 +4,9 @@
 -- create the project
 project "mod_ui"
 	kind "SharedLib"
-	language "C++"
-	targetdir "../bin"
 	location "../build/mods/mod_ui"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
 	-- set project files
 	files { "../src/mods/mod_ui/**.cpp", "../src/mods/mod_ui/**.h", "../src/mods/mod_ui/**.inl" }
@@ -17,7 +16,7 @@ project "mod_ui"
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
-		flags { "Symbols" }
+		symbols "On"
 		targetsuffix "d"
 		
 	filter "configurations:Release"

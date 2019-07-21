@@ -1,0 +1,10 @@
+prefix=tinyxml
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: TinyXML
+Description: TinyXML library
+Version: 2.6.2
+Cflags: ${includedir}
+Libs: tinyxml_STL
+Libdir: ${libdir}

@@ -4,11 +4,10 @@
 -- create the project
 project "Yasc"
 	kind "ConsoleApp"
-	language "C++"
 	debugdir "../bin"
-	targetdir "../bin"
 	location "../build/yasc"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
 	-- set project files
 	files { "../tools/yasc/**.cpp", "../tools/yasc/**.c", "../tools/yasc/**.h", "../tools/yasc/**.inl" }
@@ -17,7 +16,7 @@ project "Yasc"
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
-		flags { "Symbols" }
+		symbols "On"
 		
 	filter "configurations:Release"
 		defines { "NDEBUG" }

@@ -4,10 +4,9 @@
 -- create the project
 project "mod_ogl"
 	kind "SharedLib"
-	language "C++"
-	targetdir "../bin"
 	location "../build/mods/mod_ogl"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
 	-- set project files
 	files { "../src/mods/mod_ogl/**.cpp", "../src/mods/mod_ogl/**.h", "../src/mods/mod_ogl/**.inl" }
@@ -17,11 +16,11 @@ project "mod_ogl"
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
-		flags { "Symbols" }
+		symbols "On"
 			
 	filter "configurations:Release"
 		defines { "NDEBUG" }
-		flags { "Optimize" }
+		optimize "On"
 
 	-- set the system specific settings
 	filter "system:Windows"

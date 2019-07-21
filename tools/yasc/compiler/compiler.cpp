@@ -78,6 +78,12 @@ int Compiler::exec()
 {
    std::cout << "Yet Another Compiler, Copyright J.Broekhuizen, 2013" << std::endl;
 
+   if ( mCommands.size() == 0 )
+   {
+      std::cout << "No arguments specified" << std::endl;
+      return 2;
+   }
+
    FileSystem::getInstance().addPath(UTEXT("."));
 
    // last argument is the file

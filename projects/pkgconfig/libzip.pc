@@ -1,0 +1,10 @@
+prefix=libzip
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: libzip
+Description: LibZip library
+Version: 1.0.1
+Cflags: ${includedir}
+Libs: zip
+Libdir: ${libdir}

@@ -4,11 +4,10 @@
 -- create the project
 project "Game"
 	kind "ConsoleApp"
-	language "C++"
-	targetdir "../bin"
 	debugdir "../bin"
 	location "../build/game"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
     -- set project files
 	files { "../src/game/**.cpp", "../src/game/**.h", "../src/game/**.inl" }
@@ -17,21 +16,21 @@ project "Game"
 	filter "configurations:Debug"
 		defines { "_DEBUG", "TIXML_USE_STL" }
 		targetsuffix "d"
-		flags { "Symbols" }
+		symbols "On"
 		
 	filter "configurations:Release"
 		defines { "NDEBUG", "TIXML_USE_STL" }
-		flags { "Optimize" }
+		optimize "On"
 
 	-- System
 	filter "system:Windows"
 		defines { "WIN32" }
 		includedirs { 	path.join(libdir, "sdl/include"),
-						path.join(libdir, "tinyxml/include")
+						pkgconf.cflags('tinyxml')
 					}
 
 		libdirs { 	path.join(libdir, "sdl/lib"),
-					path.join(libdir, "tinyxml/lib"),
+					pkgconf.libdir('tinyxml'),
 				}
 		
 		links { "Core", "Engine", "SDLmain", "SDL", "user32", "vfw32", "ws2_32" }
@@ -51,8 +50,8 @@ project "Game"
 
 	-- Toolsets
 	filter { "action:vs*", "Debug" }
-		links { "tinyxmld_STL" }
+		links { pkgconf.libs('tinyxml') .. 'd' }
 			
 	filter { "action:vs*", "Release" }
-		links { "tinyxml_STL" }
+		links { pkgconf.libs('tinyxml') }
 

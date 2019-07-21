@@ -4,10 +4,9 @@
 -- create the project
 project "mod_c2d"
 	kind "SharedLib"
-	language "C++"
-	targetdir "../bin"
 	location "../build/mods/mod_c2d"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 		
 	-- set project files
 	files { "../src/mods/mod_c2d/**.cpp", "../src/mods/mod_c2d/**.h", "../src/mods/mod_c2d/**.inl" }
@@ -16,7 +15,7 @@ project "mod_c2d"
 
     filter "configurations:Debug"
 		defines { "_DEBUG" }
-		flags { "Symbols" }
+		symbols "On"
 		targetsuffix "d"
 		
 	filter "configurations:Release"

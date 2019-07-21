@@ -4,10 +4,9 @@
 -- create the project
 project "mod_fmod"
 	kind "SharedLib"
-	language "C++"
-	targetdir "../bin"
 	location "../build/mods/mod_fmod"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
 	-- set project files
 	files { "../src/mods/mod_fmod/**.cpp", "../src/mods/mod_fmod/**.h", "../src/mods/mod_fmod/**.inl" }
@@ -16,7 +15,7 @@ project "mod_fmod"
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
-		flags { "Symbols" }
+		symbols "On"
 		targetsuffix "d"
 		
 	filter "configurations:Release"

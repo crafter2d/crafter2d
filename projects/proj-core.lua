@@ -1,15 +1,14 @@
 -- Crafter 2D PreMake 5 configuration file
 -- Copyright 2010-2015, Jeroen Broekhuizen
 
-local pkgconf = require 'pkg-config'
+-- local pkgconf = require "pkg-config"
 
 -- create the project
 project "Core"
 	kind "SharedLib"
-	language "C++"
-	targetdir "../bin"
-	flags { "NoPCH" }
 	location "../build/core"
+	
+	setDefaultProjectSettings()
 	
 	-- set project files
 	files { "../src/core/**.cpp", "../src/core/**.c", "../src/core/**.h", "../src/core/**.inl" }
@@ -19,25 +18,23 @@ project "Core"
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
-		flags { "Symbols" }
+		symbols "On"
 
 	filter "configurations:Release"
 		defines { "NDEBUG" }
-		flags { "Optimize" }
+		optimize "On"
 	
 	filter "system:Windows"
 		defines { "WIN32", "CORE_EXPORTS", "UNICODE" }
 		excludes { "../src/core/vfs/linux*.*", "../src/core/system/linux*.*" }
-		includedirs { 	path.join(libdir, "zlib/include"),
-						path.join(libdir, "iconv/include") }
-		libdirs { 	path.join(libdir, "zlib/lib"),
-					path.join(libdir, "iconv/lib") }
+		includedirs { pkgconf.cflags('libzip'), pkgconf.cflags('iconv') }
+		libdirs { pkgconf.libdir('libzip'), pkgconf.libdir('iconv') }
 					
 	filter "system:Linux"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter", pkgconf.load('libzip').cflags }
-        linkoptions { pkgconf.load('libzip').libs }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter", pkgconf.cflags('libzip') }
+        linkoptions { pkgconf.libs('libzip') }
         links { "SDL" }
 
 --        if _OPTIONS["with-libzip"] then
@@ -49,10 +46,4 @@ project "Core"
 				
 	-- set IDE specific settings
 	filter "action:vs*"
-		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp", "libiconv" }
-
-    filter { "action:vs*", "Debug" }
-		links { "zipd" }
-
-    filter { "action:vs*", "Release" }
-        links { "zip" }
+		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp", pkgconf.libs('iconv'), pkgconf.libs('libzip') }

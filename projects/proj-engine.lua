@@ -4,10 +4,9 @@
 -- create the project
 project "Engine"
 	kind "SharedLib"
-	language "C++"
-	targetdir "../bin"
 	location "../build/engine"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
     -- set project files
 	files { "../src/engine/**.cpp", "../src/engine/**.h", "../src/engine/**.inl" }
@@ -16,18 +15,18 @@ project "Engine"
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
-		flags { "Symbols" }
+		symbols "On"
 		
 	filter "configurations:Release"
 		defines { "NDEBUG" }
-		flags { "Optimize" }
+		optimize "On"
 
     -- Platforms
 	filter "system:Windows"
 		defines { "WIN32", "ENGINE_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
     	links { "Core" }
-		includedirs { path.join(libdir, "box2d/include") }
-		libdirs { path.join(libdir, "box2d/lib") }
+		includedirs { pkgconf.cflags('box2d') }
+		libdirs { pkgconf.libdir('box2d') }
 
 	filter "system:Linux"
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
@@ -47,8 +46,8 @@ project "Engine"
 		links { "gdi32", "user32", "vfw32", "ws2_32" }
 		
 	configuration { "vs*", "Debug" }
-		links { "box2d_d" }
+		links { pkgconf.libs('box2d') .. '_d' }
 				
 	configuration { "vs*", "Release" }
-		links { "box2d" }
+		links { pkgconf.libs('box2d') }
 

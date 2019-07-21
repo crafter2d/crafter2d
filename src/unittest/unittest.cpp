@@ -1,14 +1,8 @@
 
-#include <unittest++/UnitTest++.h>
-
-#include "testbufferedstream.h"
-#include "testcommandline.h"
-#include "testhashmap.h"
-#include "testscopestack.h"
-#include "testvariant.h"
-#include "testvirtualmachine.h"
+#include <gtest/gtest.h>
 
 int main(int argc, char *argv[]) 
 {
-   return UnitTest::RunAllTests();
+   testing::InitGoogleTest(&argc, argv);
+   return RUN_ALL_TESTS();
 }

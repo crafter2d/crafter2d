@@ -1,16 +1,21 @@
 -- pkg-config library from https://github.com/tarruda/premake-pkgconfig
 
-premake.modules.pkgconfig = {}
-local pkgconfig = premake.modules.pkgconfig
+local p = premake
+
+p.modules.pkgconfig = {}
+p.modules.pkgconfig._VERSION = p._VERSION
+
+local pkgconfig = p.modules.pkgconfig
 
 local pathsplit
-if os.get() == 'windows' then
+if os.target() == 'windows' then
   pathsplit = '[^;]+'
 else
   pathsplit = '[^:]+'
 end
 
 pkgconfig.path = {}
+pkgconfig.prefix = ''
 
 do
   local tab = {}
@@ -52,7 +57,7 @@ function pkgconfig.readpc(name, extrapaths)
   for i = 1, #paths do
     local p = paths[i]
     local fp = path.join(p, string.format('%s.pc', name))
-    if os.isfile(fp) then
+	if os.isfile(fp) then
       local handle = io.open(fp)
       local rv = handle:read('*a')
       handle:close()
@@ -84,6 +89,14 @@ function pkgconfig.parse(pc)
   return rv
 end
 
+function pkgconfig.addPath(p)
+  pkgconfig.path = table.join(pkgconfig.path, { p })
+end
+
+function pkgconfig.setPrefix(p)
+   pkgconfig.prefix = p
+end
+
 function pkgconfig.load(name, extrapaths)
   local pc = pkgconfig.readpc(name, extrapaths)
   if pc then
@@ -92,5 +105,21 @@ function pkgconfig.load(name, extrapaths)
   end
 end
 
-return pkgconfig;
+function pkgconfig.cflags(lib, extrapaths)
+  local cf = pkgconfig.load(lib, extrapaths).cflags
+  if _TARGET_OS == 'windows' then
+    cf = path.join(pkgconfig.prefix, cf)
+  end
+  return cf
+end
+
+function pkgconfig.libs(lib, extrapaths)
+  return pkgconf.load(lib, extrapaths).libs
+end
+
+function pkgconfig.libdir(lib, extrapaths)
+  return path.join(pkgconfig.prefix, pkgconf.load(lib, extrapaths).libdir)
+end
+
+return p.modules.pkgconfig;
 

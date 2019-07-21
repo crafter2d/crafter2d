@@ -4,10 +4,9 @@
 -- create the project
 project "mod_d3d"
 	kind "SharedLib"
-	language "C++"
-	targetdir "../bin"
 	location "../build/mods/mod_d3d"
-	flags { "NoPCH" }
+	
+	setDefaultProjectSettings()
 	
 	-- set project files
 	files { "../src/mods/mod_d3d/**.cpp", "../src/mods/mod_d3d/**.h", "../src/mods/mod_d3d/**.inl" }
@@ -16,12 +15,12 @@ project "mod_d3d"
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
 		targetsuffix "d"
-		flags { "Symbols" }
+		symbols "On"
 		links { "Core", "d2d1", "dwrite" }
 	
 	filter "configurations:Release"
 		defines { "NDEBUG" }
-		flags { "Optimize" }
+		optimize "On"
 		links { "Core", "d2d1", "dwrite" }
 
 	filter "system:Windows"
