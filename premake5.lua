@@ -34,22 +34,27 @@ solution "Crafter2D"
 	startproject "Game"
 	floatingpoint "Fast"
 	vectorextensions "SSE2"
- 
+
 require "proj-core"
 require "proj-engine"
-require "proj-modyas"
-require "proj-modc2d"
-require "proj-modogl"
-require "proj-modui"
 require "proj-unittest"
 require "proj-game"
-require "proj-compiler"
-require "proj-yas"
-require "proj-yasc"
 
+group "Mods"
+	require "proj-modyas"
+	require "proj-modc2d"
+	require "proj-modogl"
+	require "proj-modui"
 if not _OPTIONS["travis"] then
-	require "proj-gen"
 	require "proj-modfmod"
 	require "proj-modd3d"
+end
+
+group "Tools"
+	require "proj-compiler"
+	require "proj-yas"
+	require "proj-yasc"
+if not _OPTIONS["travis"] then
+	require "proj-gen"
 end
 
