@@ -11,6 +11,7 @@
 #include "core/string/stringinterface.h"
 #include "core/conv/lexical.h"
 #include "core/streams/filewriterstream.h"
+#include "core/system/platform.h"
 #include "core/vfs/stdiofile.h"
 #include "core/vfs/filesystem.h"
 #include "core/defines.h"
@@ -84,12 +85,24 @@ int Compiler::exec()
       return 2;
    }
 
+   if ( mCommands.hasArgument(UTEXT("help")) )
+   {
+      printHelp();
+      return 0;
+   }
+
    FileSystem::getInstance().addPath(UTEXT("."));
 
-   // last argument is the file
+   // last argument must be the file mask to compile
    String mask = File::toNativeSeparator(mCommands[mCommands.size() - 1].getName());
+   int pos = mask.lastIndexOf(c2d::Platform::getInstance().preferedSlash());
+   if ( pos > 0 )
+   {
+      String path = mask.subStr(0, pos);
+      FileSystem::getInstance().addPath(path);
+   }
 
-   // get the root 
+   // get the additional paths 
    const CommandLineArgument* prootarg = mCommands.getArgument(UTEXT("p"));
    if ( prootarg != nullptr )
    {
@@ -304,4 +317,16 @@ void Compiler::reportLogEntries()
 
       mContext.getLog().clear();
    }
+}
+
+// - Argument handling
+
+void Compiler::printHelp()
+{
+   std::cout << "Yasc [options] filemask" << std::endl;
+   std::cout << "  filemask\tOptional path followed by filename or file mask (*). If a path is present it is used as source path." << std::endl << std::endl;
+   std::cout << "Options" << std::endl;
+   std::cout << "  -r\tRecursive lookup for files" << std::endl;
+   std::cout << "  -p\tAdd additional source paths (seperated by semi-colon)" << std::endl;
+   std::cout << "  -o\tOutput directory of the compiled sources" << std::endl;
 }

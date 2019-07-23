@@ -49,6 +49,8 @@ private:
    ASTRoot& load(File& file);
    void     save(ASTClass& ast);
 
+ // Arguments
+   void printHelp();
 
  // error reporting
    void reportException(CompileException& exception);
