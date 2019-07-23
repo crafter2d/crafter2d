@@ -39,6 +39,7 @@ public:
    virtual void* loadModule(const String& name) override;
    virtual void  freeModule(void* pmodule) override;
    virtual void* getFunctionAddress(void* module, const String& name) override;
+   virtual UChar preferedSlash() override;
    
 private:
   
