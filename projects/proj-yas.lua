@@ -11,7 +11,7 @@ project "Yas"
 	
 	-- set project files
 	files { "../src/tools/yas/**.cpp", "../src/tools/yas/**.c", "../src/tools/yas/**.h", "../src/tools/yas/**.inl" }
-	includedirs { "../src", "../tools" }
+	includedirs { "../src", "../src/tools" }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

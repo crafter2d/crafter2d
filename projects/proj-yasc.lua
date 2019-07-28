@@ -5,13 +5,13 @@
 project "Yasc"
 	kind "ConsoleApp"
 	debugdir "../bin"
-	location "../build/yasc"
+	location "../build/tools/yasc"
 	
 	setDefaultProjectSettings()
 	
 	-- set project files
-	files { "../tools/yasc/**.cpp", "../tools/yasc/**.c", "../tools/yasc/**.h", "../tools/yasc/**.inl" }
-	includedirs { "../src", "../tools" }
+	files { "../src/tools/yasc/**.cpp", "../src/tools/yasc/**.c", "../src/tools/yasc/**.h", "../src/tools/yasc/**.inl" }
+	includedirs { "../src", "../src/tools" }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
