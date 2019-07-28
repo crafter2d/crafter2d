@@ -5,12 +5,12 @@
 project "Compiler"
 	kind "ConsoleApp"
 	debugdir "../bin"
-	location "../build/compiler"
+	location "../build/tools/compiler"
 	
 	setDefaultProjectSettings()
 	
 	-- set project files
-	files { "../src/compiler/**.cpp", "../src/compiler/**.h", "../src/compiler/**.inl" }
+	files { "../src/tools/compiler/**.cpp", "../src/tools/compiler/**.h", "../src/tools/compiler/**.inl" }
 	includedirs { "../src" }
 	links { "Core" }
 		
