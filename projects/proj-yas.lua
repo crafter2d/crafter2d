@@ -5,12 +5,12 @@
 project "Yas"
 	kind "ConsoleApp"
 	debugdir "../bin"
-	location "../build/yas"
+	location "../build/tools/yas"
 	
 	setDefaultProjectSettings()
 	
 	-- set project files
-	files { "../tools/yas/**.cpp", "../tools/yas/**.c", "../tools/yas/**.h", "../tools/yas/**.inl" }
+	files { "../src/tools/yas/**.cpp", "../src/tools/yas/**.c", "../src/tools/yas/**.h", "../src/tools/yas/**.inl" }
 	includedirs { "../src", "../tools" }
 		
 	filter "configurations:Debug"
