@@ -79,10 +79,7 @@ public:
 
    const Fields& getStatics() const;
    const Fields& getFields() const;
-
-   const ClassResolver& getResolver() const;
-   void                 setResolver(const ClassResolver& resolver);
-   
+      
    CIL::Class& getCompiledClass();
    CIL::Class* useCompiledClass();
    void        setCompiledClass(CIL::Class* pclass);
@@ -151,7 +148,6 @@ private:
    ASTFunction* findExactMatchLocal(const String& name, const ASTSignature& signature);
 
    Kind              mKind;
-   ClassResolver     mResolver;
    ASTModifiers      mModifiers;
    ASTType*          mpBaseType;
    ASTTypeList       mInterfaces;

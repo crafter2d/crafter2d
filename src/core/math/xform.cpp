@@ -41,10 +41,6 @@ XForm::XForm(const Vector& position, float angle):
 {
 }
 
-XForm::~XForm()
-{
-}
-
 const XForm& XForm::operator=(const XForm& that)
 {
    mPosition = that.mPosition;

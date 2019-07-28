@@ -35,6 +35,8 @@
 
 namespace c2d
 {
+   static String sEXTENSION(UTEXT(".c2d"));
+
    ContentManager::ContentManager() :
       mModules(),
       mBaseDir(),
@@ -55,7 +57,7 @@ namespace c2d
    {
       IContent* presult = nullptr;
 
-      String path = name + UTEXT(".c2d");
+      String path = name + sEXTENSION;
       path.toLower();
 
       File* pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);

@@ -11,7 +11,6 @@ project "mod_c2d"
 	-- set project files
 	files { "../src/mods/mod_c2d/**.cpp", "../src/mods/mod_c2d/**.h", "../src/mods/mod_c2d/**.inl" }
 	includedirs { "../src" }
-	defines { "TIXML_USE_STL" }
 
     filter "configurations:Debug"
 		defines { "_DEBUG" }
@@ -25,15 +24,15 @@ project "mod_c2d"
     -- Systems
 	filter "system:Windows"
 		defines { "WIN32", "MOD_EXPORTS" }
-		includedirs { path.join(libdir, "tinyxml/include"), path.join(libdir, "zlib/include"), path.join(libdir, "libsquish/include") }
-		libdirs { path.join(libdir, "tinyxml/lib"), path.join(libdir, "zlib/lib"), path.join(libdir, "libsquish/lib") }
-		links { "Core", "Engine", "d3dcompiler.lib" }
+		includedirs { path.join(libdir, "zlib/include"), path.join(libdir, "libsquish/include") }
+		libdirs { path.join(libdir, "zlib/lib"), path.join(libdir, "libsquish/lib") }
+		links { "Core", "Engine", "Xml", "d3dcompiler.lib" }
 	
 	filter { "system:Windows", "Debug" }
-		links { "tinyxmld_STL.lib", "zlib1_d.lib", "squishd.lib" }
+		links { "zlib1_d.lib", "squishd.lib" }
 			
 	filter { "system:Windows", "Release" }
-		links { "tinyxml_STL.lib", "zlib1.lib", "squish.lib" }
+		links { "zlib1.lib", "squish.lib" }
 
 	filter "system:Linux"
 		defines { "LINUX" }
@@ -42,8 +41,8 @@ project "mod_c2d"
         libdirs { "../bin" }
 		
     filter { "system:linux", "Debug" }
-        linkoptions { "-lCored" }
+        linkoptions { "-lCored", "-lXml" }
 
     filter { "system:linux", "Release" }
-        linkoptions { "-lCore" }
+        linkoptions { "-lCore", "-lXml" }
 

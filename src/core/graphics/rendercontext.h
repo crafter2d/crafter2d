@@ -54,7 +54,11 @@ namespace Graphics
       }
 
       c2d::TileAtlas& getSpriteAtlas() {
-         return mTileAtlas;
+         return *mpTileAtlas;
+      }
+
+      void setSpriteAtlas(c2d::TileAtlas* patlas) {
+         mpTileAtlas = patlas;
       }
       
     // initialization
@@ -92,7 +96,7 @@ namespace Graphics
    private:
 
     // data
-      c2d::TileAtlas         mTileAtlas;
+      c2d::TileAtlas*        mpTileAtlas;
       c2d::SpriteRenderer    mSpriteRenderer;
       ParticleSystemRenderer mParticleRenderer;
       TextRenderer           mTextRenderer;

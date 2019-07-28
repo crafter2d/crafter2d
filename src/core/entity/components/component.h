@@ -19,7 +19,9 @@ public:
  // get/set
    Entity& getEntity();
 
-   ComponentInterface::ComponentType getType() const;
+   ComponentInterface::ComponentType getType() const {
+      return mType;
+   }
 
  // operations
    virtual void registerComponent(Components& components);
@@ -36,9 +38,5 @@ private:
    Components*                       mpComponents;
    ComponentInterface::ComponentType mType;
 };
-
-#ifdef JENGINE_INLINE
-#  include "entitycomponent.inl"
-#endif
 
 #endif // ENTITY_COMPONENT_H

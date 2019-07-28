@@ -165,6 +165,8 @@ namespace c2d
    {
       pmodule->setModuleManager(*this);
       mModules.add(pmodule);
+
+      pmodule->initialize();
    }
 
    void ModuleManager::clear()

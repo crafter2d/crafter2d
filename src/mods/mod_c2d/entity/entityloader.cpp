@@ -1,8 +1,6 @@
 
 #include "entityloader.h"
 
-#include <tinyxml.h>
-#include <memory>
 #include <stdexcept>
 
 #include "core/content/contentmanager.h"
@@ -13,6 +11,9 @@
 #include "proto/entitydefinitionproto.h"
 #include "proto/linkdefinitionproto.h"
 
+#include "xml/xmlparser/xmlparser.h"
+#include "xml/xmlparser/xmlparts.h"
+
 #include "meshcomponentloader.h"
 #include "particlecomponentloader.h"
 #include "physicscomponentloader.h"
@@ -21,157 +22,155 @@ static String sChild(UTEXT("child"));
 static String sEntity(UTEXT("entity"));
 static String sLink(UTEXT("link"));
 
-EntityLoader::EntityLoader():
-   mLoaders()
+namespace c2d
 {
-  registerLoader(new MeshComponentLoader());
-  registerLoader(new ParticleComponentLoader());
-  registerLoader(new PhysicsComponentLoader());
-}
-
-// - Operations
-
-void EntityLoader::registerLoader(ComponentLoader* ploader)
-{
-   mLoaders.insert(std::make_pair(ploader->getXmlTag(), ploader));
-}
-
-// - Loading
-
-EntityDefinitionProto* EntityLoader::load(const String& filename)
-{
-   std::string name = filename.toUtf8();
-   TiXmlDocument doc(name.c_str());
-   if ( !doc.LoadFile() )
+   namespace entity_definitions
    {
-      return nullptr;
+      ELEMENT_DEF(child)
+         ATTRIBUTE(int, id)
+         ATTRIBUTE(std::string, ref)
+         ATTRIBUTE(std::string, file)
+         ATTRIBUTE(float, offsetx)
+         ATTRIBUTE(float, offsety)
+      ELEMENT_IMP(child)
+         ATTRIBUTE_INIT(id, Attribute::eMandatory, Attribute::eInt, 0);
+         ATTRIBUTE_INIT(ref, Attribute::eOptional, Attribute::eString, "");
+         ATTRIBUTE_INIT(file, Attribute::eOptional, Attribute::eString, "");
+         ATTRIBUTE_INIT(offsetx, Attribute::eMandatory, Attribute::eInt, 0);
+         ATTRIBUTE_INIT(offsety, Attribute::eMandatory, Attribute::eFloat, 0.0f);
+      ELEMENT_END
+
+      ELEMENT_DEF(link)
+         ATTRIBUTE(int, left)
+         ATTRIBUTE(int, right)
+         ATTRIBUTE(float, anchorx)
+         ATTRIBUTE(float, anchory)
+         ATTRIBUTE(std::string, type)
+      ELEMENT_IMP(link)
+         ATTRIBUTE_INIT(left, Attribute::eMandatory, Attribute::eInt, 0)
+         ATTRIBUTE_INIT(right, Attribute::eMandatory, Attribute::eInt, 0)
+         ATTRIBUTE_INIT(anchorx, Attribute::eMandatory, Attribute::eFloat, 0.0f)
+         ATTRIBUTE_INIT(anchory, Attribute::eMandatory, Attribute::eFloat, 0.0f)
+         ATTRIBUTE_INIT(type, Attribute::eMandatory, Attribute::eString, "")
+      ELEMENT_END
+
+      ELEMENT_DEF(entity)
+
+         ATTRIBUTE(std::string, name)
+         ATTRIBUTE(std::string, klass)
+
+         CHILD(entity)
+         CHILD(sprite)
+         CHILD(child)
+         CHILD(link)
+         CHILD(body)
+
+      ELEMENT_IMP(entity)
+
+         ATTRIBUTE_INIT(name, Attribute::eMandatory, Attribute::eString, "")
+         ATTRIBUTE_INIT_NAMED(klass, class, Attribute::eOptional, Attribute::eString, "engine.game.Entity")
+
+         CHILD_INIT(entity, Child::eZeroOrAny, true)
+         CHILD_INIT(sprite, Child::eZeroOrAny, true)
+         CHILD_INIT(child, Child::eZeroOrAny, true)
+         CHILD_INIT(link, Child::eZeroOrAny, true)
+         CHILD_INIT(body, Child::eZeroOrAny, true)
+
+      ELEMENT_END
    }
 
-   TiXmlElement* pbase = doc.FirstChildElement("entity");
-   if ( pbase == nullptr )
+   EntityLoader::EntityLoader()
    {
-      return nullptr;
    }
-   
-   return loadDefinition(*pbase);
-}
 
-EntityDefinitionProto* EntityLoader::loadDefinition(const TiXmlElement& entity)
-{
-   EntityDefinitionProto* pentitydef = new EntityDefinitionProto();
+   // - Loading
 
-   const char* pname = entity.Attribute("name");
-   pentitydef->mName = String::fromUtf8(pname);
-
-   const char* pclasstype = entity.Attribute("class");
-   pentitydef->mClassName = (pclasstype != nullptr ? String::fromUtf8(pclasstype) : UTEXT("engine.game.Entity"));
-
-   for ( const TiXmlElement* pelement = entity.FirstChildElement(); pelement != nullptr; pelement = pelement->NextSiblingElement() )
+   EntityDefinitionProto* EntityLoader::load(const String& filename)
    {
-      String name = String::fromUtf8(pelement->Value());
+      XmlParser parser;
+      entity_definitions::entity ent;
 
-      if ( name == sChild )
+      if ( parser.parse(ent, filename) )
       {
-         loadChildDefinition(*pentitydef, *pelement);
+         return createDefinition(ent);
       }
-      else if ( name == sLink )
+
+      throw new std::runtime_error("parsing failed");
+   }
+
+   EntityDefinitionProto* EntityLoader::createDefinition(const entity_definitions::entity& ent)
+   {
+      auto pentitydef = std::make_unique<EntityDefinitionProto>();
+      pentitydef->mName = ent.name;
+      pentitydef->mClassName = ent.klass;
+
+      MeshComponentLoader::load(*pentitydef, ent.sprites);
+      PhysicsComponentLoader::load(*pentitydef, ent.bodys);
+
+      loadChildDefinitions(*pentitydef, ent.childs);
+      loadLinkDefinitions(*pentitydef, ent.links);
+      loadEntityDefinitions(*pentitydef, ent.entitys);
+
+      return pentitydef.release();
+   }
+
+   void EntityLoader::loadEntityDefinitions(EntityDefinitionProto& entity, const std::vector<entity_definitions::entity>& entities)
+   {
+      for ( auto& ent : entities )
       {
-         loadLinkDefinition(*pentitydef, *pelement);
+         auto pchildentity = createDefinition(ent);
+         entity.mEntities.push_back(pchildentity);
       }
-      else if ( name == sEntity )
+   }
+
+   void EntityLoader::loadChildDefinitions(EntityDefinitionProto& entity, const std::vector<entity_definitions::child>& children)
+   {
+      for ( auto& child : children )
       {
-         EntityDefinitionProto* pentity = loadDefinition(*pelement);
-         pentitydef->mEntities.push_back(pentity);
-      }
-      else
-      {
-         Loaders::iterator it = mLoaders.find(name);
-         if ( it != mLoaders.end() )
+         auto pchild = std::make_unique<ChildDefinitionProto>();
+         pchild->mID = child.id;
+
+         if ( !child.ref.empty() )
          {
-            ComponentLoader* ploader = it->second;
-            ASSERT_PTR(ploader);
-
-            ComponentDefinitionProto* pdefinition = ploader->load(*pelement);
-            if ( pdefinition == nullptr )
-            {
-               // throw and error!
-            }
-
-            pentitydef->mComponents.push_back(pdefinition);
+            pchild->mRefType = ChildDefinitionProto::eLocalReference;
+            pchild->mRef = child.ref;
          }
+         else if ( !child.file.empty() )
+         {
+            pchild->mRefType = ChildDefinitionProto::eFileReference;
+            pchild->mRef = child.file;
+         }
+         else
+         {
+            throw new std::runtime_error("Should either have a file or local reference!");
+         }
+
+         pchild->mOffset = Vector(child.offsetx, child.offsety);
+
+         entity.mChildren.push_back(pchild.release());
       }
    }
 
-   return pentitydef;
-}
-
-void EntityLoader::loadChildDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmlchild)
-{
-   std::unique_ptr<ChildDefinitionProto> pchild(new ChildDefinitionProto());
-
-   const char* pid = xmlchild.Attribute("id");
-   pchild->mID = String::fromUtf8(pid);
-
-   const char* pref = xmlchild.Attribute("ref");
-   if ( pref != nullptr )
+   void EntityLoader::loadLinkDefinitions(EntityDefinitionProto& entity, const std::vector<entity_definitions::link>& links)
    {
-      pchild->mRefType = ChildDefinitionProto::eLocalReference;
-      pchild->mRef = String::fromUtf8(pref);
-   }
-   else
-   {
-      const char* pfile = xmlchild.Attribute("file");
-      if ( pfile == nullptr )
+      for ( auto& link : links )
       {
-         throw std::runtime_error("Should have a file reference!");
-      }
+         auto presult = std::make_unique<LinkDefinitionProto>();
+         presult->mLeft = link.left;
+         presult->mRight = link.right;
 
-      pchild->mRefType = ChildDefinitionProto::eFileReference;
-      pchild->mRef = String::fromUtf8(pfile);
+         JointDefinition* pjoint = nullptr;
+         if ( link.type == "revolute" )
+         {
+            RevoluteJointDefinition* prevolute = new RevoluteJointDefinition();
+            prevolute->anchor.set(link.anchorx, link.anchory);
+
+            pjoint = prevolute;
+         }
+
+         presult->mpJointDef = pjoint;
+   
+         entity.mLinks.push_back(presult.release());
+      }
    }
-
-   float offsetx, offsety;
-   xmlchild.QueryFloatAttribute("offsetx", &offsetx);
-   xmlchild.QueryFloatAttribute("offsety", &offsety);
-   pchild->mOffset = Vector(offsetx, offsety);
-
-   entity.mChildren.push_back(pchild.release());
-}
-
-void EntityLoader::loadLinkDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmllink)
-{
-   LinkDefinitionProto* presult = nullptr;
-   int left, right;
-
-   if ( xmllink.QueryIntAttribute("left", &left) == TIXML_SUCCESS
-     && xmllink.QueryIntAttribute("right", &right) == TIXML_SUCCESS )
-   {
-      const char* ptype = xmllink.Attribute("type");
-      if ( ptype == nullptr )
-      {
-         // throw error!!
-      }
-
-      String type = String::fromUtf8(ptype);
-      
-      JointDefinition* pjoint = nullptr;
-      if ( type == UTEXT("revolute" ) )
-      {
-         float anchorx, anchory;
-         xmllink.QueryFloatAttribute("anchorx", &anchorx);
-         xmllink.QueryFloatAttribute("anchory", &anchory);
-
-         RevoluteJointDefinition* prevolute = new RevoluteJointDefinition();
-         prevolute->anchor.set(anchorx, anchory);
-
-         pjoint = prevolute;
-      }
-
-      presult = new LinkDefinitionProto();
-      presult->mLeft = left;
-      presult->mRight = right;
-      presult->mpJointDef = pjoint;
-   }
-
-   entity.mLinks.push_back(presult);
 }

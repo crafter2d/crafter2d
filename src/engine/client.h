@@ -40,6 +40,7 @@ namespace Graphics
 {
    class Device;
    class Font;
+   class Renderable;
    class RenderContext;
 };
 
@@ -69,7 +70,6 @@ class Player;
 namespace c2d
 {
    class KeyMap;
-   class UiSystem;
 
    /// \brief The client side process. It handles user input and rendering of the server objects.
    ///
@@ -94,6 +94,12 @@ namespace c2d
       void setPlayer(Player* pplayer) {
          mpPlayer = pplayer;
       }
+
+      Graphics::Renderable& getOverlay() {
+         ASSERT_PTR(mpOverlay);
+         return *mpOverlay;
+      }
+      void setOverlay(Graphics::Renderable* prenderable);
 
       bool           hasKeyMap() const;
       KeyMap&        getKeyMap();
@@ -144,7 +150,6 @@ namespace c2d
       bool initGraphics();
       bool initInput();
       bool initSound();
-      bool initUI();
 
       // event handlers
       void  handleConnectReplyEvent(const ConnectReplyEvent& event);
@@ -170,7 +175,7 @@ namespace c2d
       SoundManager*              mpSoundManager;
       Sound*                     mpBackgroundMusic;
       WorldRenderer*             mpWorldRenderer;
-      UiSystem*                  mpUI;
+      Graphics::Renderable*      mpOverlay;
       Player*                    mpPlayer;
       KeyMap*                    mpKeyMap;
       Graphics::Font*            mpFont;

@@ -20,26 +20,44 @@
 #ifndef YAUI_SYSTEM_H
 #define YAUI_SYSTEM_H
 
-#include "core/ui/uisystem.h"
+#include "core/graphics/renderable.h"
 
+namespace Graphics
+{
+   class Device;
+   class RenderContext;
+}
+
+class Client;
 class String;
 
 namespace c2d
 {
+   class ContentManager;
+   class ScriptManager;
    class YuiWindow;
 
    // The Yet Another UI system
-   class YuiSystem : public UiSystem
+   class YuiSystem : public Graphics::Renderable
    {
    public:
-
+    // construct
+      YuiSystem();
+      
     // overrides
-      virtual bool initialize(ScriptManager& scriptmanager, Graphics::Device& device, float width, float height) override;
-      virtual void update(Graphics::RenderContext& context, float delta) override;
-      virtual void render(Graphics::RenderContext& context) override;
+      void update(Graphics::RenderContext& context, float delta);
+      void render(Graphics::RenderContext& context);
 
     // operations
+      bool initialize(ContentManager& contentmgr, ScriptManager& scriptmgr, int width, int height);
+      void setTheme(const String& themefile);
       YuiWindow* load(const String& file);
+
+   private:
+
+    // members
+      ContentManager* mpContentManager;
+      ScriptManager*  mpScriptManager;
    };
 }
 

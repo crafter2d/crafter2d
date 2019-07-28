@@ -3,16 +3,15 @@
 
 #include <memory>
 #include <vector>
-#include <tinyxml.h>
 
 #include "core/log/log.h"
 #include "core/streams/datastream.h"
 #include "core/string/string.h"
 
-#include "../xmlparser/xmlparser.h"
-#include "../xmlparser/xmlparts.h"
+#include "xml/xmlparser/xmlparser.h"
+#include "xml/xmlparser/xmlparts.h"
 
-using namespace c2d;
+using namespace c2d::xml;
 
 namespace local_atlas
 {

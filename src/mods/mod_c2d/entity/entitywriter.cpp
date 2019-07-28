@@ -1,8 +1,6 @@
 
 #include "entitywriter.h"
 
-#include <tinyxml.h>
-
 #include "core/streams/datastream.h"
 #include "core/defines.h"
 
@@ -25,7 +23,7 @@ EntityWriter::EntityWriter():
 
 bool EntityWriter::write(DataStream& stream, const String& filename)
 {
-   EntityLoader loader;
+   c2d::EntityLoader loader;
    std::unique_ptr<EntityDefinitionProto> definition(loader.load(filename));
    if ( definition )
    {

@@ -23,7 +23,7 @@ public:
    String& format(String& result, double value);
 
 private:
-   NumberConverter();
+   NumberConverter() = default;
 };
 
 #endif // NUMBER_CONVERTER_H

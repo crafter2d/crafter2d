@@ -410,7 +410,6 @@ ASTNode* AntlrParser::handleClass(const AntlrNode& node)
    pclass->setName(name);
    pclass->setPosition(namenode.getPosition());
    pclass->setFullName(qualifiedname);
-   pclass->setResolver(mClassResolver);
 
    if ( count > 2 )
    {

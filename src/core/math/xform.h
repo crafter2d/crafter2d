@@ -36,7 +36,6 @@ public:
 
    XForm();
    XForm(const Vector& position, float angle);
-   ~XForm();
 
    const XForm& operator=(const XForm& that);
 

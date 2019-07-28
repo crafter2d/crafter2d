@@ -18,20 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "console.h"
-#ifndef JENGINE_INLINE
-#  include "console.inl"
-#endif
 
 #include <fstream>
 #include <stdarg.h>
 
-/*
-#include "gui/guidialog/guidialog.h"
-#include "gui/edit/guiedit.h"
-#include "gui/guilistbox.h"
-*/
-
 #include "core/log/log.h"
+#include "core/defines.h"
 
 #include "core/script/scriptobject.h"
 #include "core/script/scriptmanager.h"
@@ -42,34 +34,10 @@ Console::Console()
 {
 }
 
-Console::~Console()
-{
-   // controls will be automatically be released.
-   //lines = 0;
-   //input = 0;
-}
-
 Console& Console::getInstance()
 {
    static Console console;
    return console;
-}
-
-void Console::create()
-{
-   /*
-	GuiRect rect(0, 450, 0, 300);
-	GuiStyle style = GUI_NODESTROY | GUI_BORDER | GUI_BACKGROUND | GUI_VISIBLE;
-   GuiWnd::create(0x03000, rect, "Console", style);
-
-	rect.set(5,440,5,275);
-   lines = new GuiListBox();
-   lines->create(0x03001, rect, "Log", GUI_BORDER|GUI_BACKGROUND|GUI_VISIBLE, this);
-
-	rect.set(5, 440, 280, 295);
-   input = new GuiEditBox();
-   input->create(0x03002, rect, "", GUI_BORDER | GUI_BACKGROUND|GUI_VISIBLE, this);
-   */
 }
 
 void Console::reload()

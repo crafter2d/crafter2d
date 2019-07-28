@@ -36,22 +36,14 @@ const FileSystemPath& FileSystemPaths::operator[](int index) const
 
 // - Query
 
-class Pred
+FileSystemPaths::Paths::const_iterator FileSystemPaths::find(const String& path) const
 {
-public:
-   Pred(const String& path): mPath(path) {}
-
-   bool operator()(FileSystemPath* ppath) {
-      return (*ppath) == mPath;
-   }
-
-private:
-   const String& mPath;
-};
+   return std::find_if(mPaths.begin(), mPaths.end(), [&path](FileSystemPath* ppath) { return (*ppath) == path; });
+}
 
 bool FileSystemPaths::contains(const String& path) const
 {
-   return std::find_if(mPaths.begin(), mPaths.end(), Pred(path)) != mPaths.end();
+   return find(path) != mPaths.end();
 }
 
 int FileSystemPaths::size() const
@@ -72,8 +64,8 @@ void FileSystemPaths::add(const String& path)
 
 void FileSystemPaths::remove(const String& path)
 {
-   Paths::iterator it = std::find_if(mPaths.begin(), mPaths.end(), Pred(path));
-   if ( it != mPaths.end() )
+   Paths::const_iterator it = find(path);
+   if ( it != mPaths.cend() )
    {
       mPaths.erase(it);
    }

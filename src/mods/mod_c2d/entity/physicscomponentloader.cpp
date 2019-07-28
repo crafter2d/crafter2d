@@ -1,67 +1,56 @@
 
 #include "physicscomponentloader.h"
 
-#include <tinyxml.h>
-#include <memory>
-
 #include "core/string/string.h"
 #include "core/defines.h"
 
+#include "proto/entitydefinitionproto.h"
 #include "proto/physicscomponentdefinitionproto.h"
 
-static const String sXmlTag(UTEXT("body"));
-
-const String& PhysicsComponentLoader::getXmlTag() const
+namespace c2d
 {
-   return sXmlTag;
-}
 
-ComponentDefinitionProto* PhysicsComponentLoader::load(const TiXmlElement& element)
-{
-   std::unique_ptr<PhysicsComponentDefinitionProto> result(new PhysicsComponentDefinitionProto());
-   BodyDefinition& def = result->mDefinition;
-   
-   int isstatic = 0;
-   element.QueryIntAttribute("static", &isstatic);
-   if ( isstatic > 0 )
-      def.setStatic(true);
+   // - static 
 
-   float mass = 0.0f;
-   element.QueryFloatAttribute("mass", &mass);
-   def.setMass(mass);
-
-   int rotate = 1;
-   if ( element.QueryIntAttribute("rotate", &rotate) == TIXML_SUCCESS && rotate == 0 )
-      def.setFixedRotation(true);
-
-   const TiXmlElement* pshapeelement = dynamic_cast<const TiXmlElement*>(element.FirstChild("shape"));
-   if ( pshapeelement != nullptr )
+   void PhysicsComponentLoader::load(EntityDefinitionProto& entity, const std::vector<entity_definitions::body>& bodies)
    {
-      String shapetype = String::fromUtf8(pshapeelement->Attribute("type"));
-      if ( !shapetype.isEmpty() )
+      PhysicsComponentLoader loader;
+      for ( auto& body : bodies )
       {
-         if ( shapetype == UTEXT("box") )
-         {
-            float width;
-            float height;
-
-            pshapeelement->QueryFloatAttribute("halfx", &width);
-            pshapeelement->QueryFloatAttribute("halfy", &height);
-            
-            def.setShapeType(BodyDefinition::eBox);
-            def.setWidth(width / 30.0f);
-            def.setHeight(height / 30.0f);
-         }
-         else if ( shapetype == UTEXT("circle") )
-         {
-            float radius = 0.0f;
-            pshapeelement->QueryFloatAttribute("radius", &radius);
-            
-            def.setShapeType(BodyDefinition::eCircle);
-            def.setRadius(radius / 30.0f);
-         }
+         auto pcomponent = loader.load(body);
+         entity.mComponents.push_back(pcomponent);
       }
    }
 
-   return result.release();
+   ComponentDefinitionProto* PhysicsComponentLoader::load(const entity_definitions::body& element)
+   {
+      auto result = std::make_unique<PhysicsComponentDefinitionProto>();
+      BodyDefinition& def = result->mDefinition;
+
+      def.setStatic(element.statik);
+      def.setFixedRotation(!element.rotate);
+      def.setMass(element.mass);
+
+      ASSERT(element.shapes.size() == 1);
+      auto& shape = element.shapes[0];
+
+      if ( shape.type == "box" )
+      {
+         def.setShapeType(BodyDefinition::eBox);
+         def.setWidth(shape.halfx / 30.0f);
+         def.setHeight(shape.halfy / 30.0f);
+      }
+      else if ( shape.type == "circle" )
+      {
+         def.setShapeType(BodyDefinition::eCircle);
+         def.setRadius(shape.radius / 30.0f);
+      }
+      else
+      {
+         // invalid type
+      }
+
+      return result.release();
+   }
+
 }

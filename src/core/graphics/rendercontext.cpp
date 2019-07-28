@@ -5,7 +5,7 @@ namespace Graphics
 {
 
 RenderContext::RenderContext():
-   mTileAtlas(),
+   mpTileAtlas(nullptr),
    mSpriteRenderer(),
    mParticleRenderer(),
    mTextRenderer(),
@@ -16,6 +16,7 @@ RenderContext::RenderContext():
 
 RenderContext::~RenderContext()
 {
+   delete mpTileAtlas;
 }
 
 // - Get/set

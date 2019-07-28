@@ -9,14 +9,14 @@
 
 IContent * c2d::TileAtlasReader::read(DataStream & stream)
 {
-   auto& atlas = getGraphicsDevice().getContext().getSpriteAtlas();
+   auto atlas = std::make_unique<TileAtlas>();
    
    int nsheets = 0;
    stream.readInt(nsheets);
-   atlas.reserve(nsheets);
+   atlas->reserve(nsheets);
    for ( int index = 0; index < nsheets; index++ )
    {
-      c2d::TileSheet& sheet = atlas.emplace();
+      c2d::TileSheet& sheet = atlas->emplace();
 
       String textureName;
       stream.readString(textureName);
@@ -36,5 +36,5 @@ IContent * c2d::TileAtlasReader::read(DataStream & stream)
       }
    }
 
-   return nullptr;
+   return atlas.release();
 }

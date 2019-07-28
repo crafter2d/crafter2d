@@ -6,10 +6,12 @@ use engine.input.*;
 use engine.messages.*;
 use engine.collections.*;
 use engine.game.*;
+use ui.*;
 
 class GameClient extends Client
-{
+{		
 	private DemoClientActionMap mLocalActionMap;
+	private YuiSystem mYuiSystem;
 	
 	public GameClient()
 	{
@@ -17,13 +19,14 @@ class GameClient extends Client
 	}
 	
 	public boolean create()
-	{
+	{		
 		GameWindow window = getWindowFactory().createWindow();
 		if ( !window.create("GameWindow", 800, 600, 32, false) )
 		{
 			return false;
 		}
 		setWindow(window);
+		initUI();
 		
 		Player player = new Player();
 		setPlayer(player);
@@ -53,16 +56,7 @@ class GameClient extends Client
 		world.setFollowActor(hero);
 		world.setFollowBorders(left, right, top, bottom);
 		
-		mLocalActionMap = new DemoClientActionMap();
-		mLocalActionMap.setActor(hero);
-		setActionMap(mLocalActionMap);
-		
-		KeyMap map = new KeyMap();
-		map.bind(Key.LEFT, 1); 	// left (276)
-		map.bind(Key.RIGHT, 2); 	// right (275)
-		map.bind(Key.SPACE, 3); 	// space -> jump (32)
-		//map.bind(100, 6);   // leak detection
-		setKeyMap(map);
+		initKeymap(hero);
 		
 		return true; // connect("localhost", 7000);
 	}
@@ -77,7 +71,7 @@ class GameClient extends Client
 		KeyMap map = new KeyMap();
 		map.bind(Key.LEFT, 1); 	// left (276)
 		map.bind(Key.RIGHT, 2); 	// right (275)
-		map.bind(KEY.SPACE, 3); 	// space -> jump (32)
+		map.bind(Key.SPACE, 3); 	// space -> jump (32)
 		//map.bind(100, 6);   // leak detection
 		setKeyMap(map);
 	}
@@ -150,5 +144,34 @@ class GameClient extends Client
 	public void onWorldChanged(World world)
 	{
 		super.onWorldChanged(world);
+	}
+	
+	private void initKeymap(Hero hero)
+	{
+		mLocalActionMap = new DemoClientActionMap();
+		mLocalActionMap.setActor(hero);
+		setActionMap(mLocalActionMap);
+		
+		KeyMap map = new KeyMap();
+		map.bind(Key.LEFT, 1); 	// left (276)
+		map.bind(Key.RIGHT, 2); 	// right (275)
+		map.bind(Key.SPACE, 3); 	// space -> jump (32)
+		//map.bind(100, 6);   // leak detection
+		setKeyMap(map);
+	}
+	
+	private boolean initUI()
+	{
+		GameWindow window = getWindow();
+		
+		mYuiSystem = new YuiSystem();
+		if ( !mYuiSystem.initialize(getContentManager(), getScriptManager(), window.getWidth(), window.getHeight()) )
+		{
+			return false;
+		}
+		
+		setOverlay(mYuiSystem);
+		
+		return true;
 	}
 }

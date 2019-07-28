@@ -1,13 +1,12 @@
 
-#include "meshcomponentloader.h"
-
 #include <map>
-#include <memory>
-#include <tinyxml.h>
+
+#include "meshcomponentloader.h"
 
 #include "core/string/string.h"
 #include "core/graphics/animator.h"
 
+#include "proto/entitydefinitionproto.h"
 #include "proto/meshcomponentdefinitionproto.h"
 
 static String sId(UTEXT("sprite"));
@@ -22,62 +21,53 @@ std::map<std::string, c2d::Animator::AnimationType> AnimationMap = {
 };
 
 using namespace Graphics;
-
-MeshComponentLoader::MeshComponentLoader():
-   ComponentLoader()
+namespace c2d
 {
-}
 
-// - Overrides
+   // - statics
 
-const String& MeshComponentLoader::getXmlTag() const
-{
-   return sId;
-}
-
-ComponentDefinitionProto* MeshComponentLoader::load(const TiXmlElement& element)
-{
-   std::unique_ptr<MeshComponentDefinitionProto> pdefinition(new MeshComponentDefinitionProto());
-
-   int width, height;
-   if ( element.QueryIntAttribute ("width", &width) != TIXML_SUCCESS ||
-		  element.QueryIntAttribute ("height", &height) != TIXML_SUCCESS )
+   void MeshComponentLoader::load(EntityDefinitionProto& entity, const std::vector<entity_definitions::sprite>& sprites)
    {
-      throw std::runtime_error("Mesh does not contain width and/or height attribute.");
+      MeshComponentLoader loader;
+      for ( auto& sprite : sprites )
+      {
+         auto pcomponent = loader.load(sprite);
+         entity.mComponents.push_back(pcomponent);
+      }
    }
 
-   pdefinition->mWidth = width;
-   pdefinition->mHeight = height;
+   // - constructs
 
-   const TiXmlElement* pXmlAnimation = element.FirstChildElement("animations");
-   if ( pXmlAnimation != nullptr )
+   MeshComponentLoader::MeshComponentLoader()
    {
-      // query the animation speed (in mm)
-      if ( pXmlAnimation->QueryFloatAttribute("speed", &pdefinition->mAnimationSpeed) != TIXML_SUCCESS )
-		   pdefinition->mAnimationSpeed = 100;
-      pdefinition->mAnimationSpeed /= 1000.0f;
+   }
 
-      for ( auto panim = pXmlAnimation->FirstChildElement("anim"); panim != nullptr; panim = panim->NextSiblingElement("anim") )
+   ComponentDefinitionProto* MeshComponentLoader::load(const entity_definitions::sprite& sprite)
+   {
+      auto pdefinition = std::make_unique<MeshComponentDefinitionProto>();
+      pdefinition->mWidth = sprite.width;
+      pdefinition->mHeight = sprite.height;
+
+      auto& animations = sprite.animationss[0];
+
+      // query the animation speed (in mm)
+      pdefinition->mAnimationSpeed = animations.speed / 1000.0f;
+
+      for ( auto& anim : animations.anims )
       {
          MeshComponentDefinitionProto::Animation animation;
 
-         std::string name;
-         panim->QueryStringAttribute("name", &name);
-         auto it = AnimationMap.find(name);
+         auto it = AnimationMap.find(anim.name);
          animation.type = it != AnimationMap.end() ? it->second : c2d::Animator::eInvalid;
 
-         for ( auto panimtile = panim->FirstChildElement("tile"); panimtile != nullptr; panimtile = panimtile->NextSiblingElement("tile") )
+         for ( auto& tile : anim.tiles )
          {
-            std::string name;            
-            if ( panimtile->QueryStringAttribute("name", &name) == TIXML_SUCCESS )
-            {
-               animation.frames.push_back(String(name));
-            }
+            animation.frames.push_back(String(tile.name));
          }
 
          pdefinition->mAnimations.push_back(std::move(animation));
       }
-   }
 
-   return pdefinition.release();
+      return pdefinition.release();
+   }
 }

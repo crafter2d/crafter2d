@@ -2,38 +2,41 @@
 #ifndef ENTITY_LOADER_H
 #define ENTITY_LOADER_H
 
-#include <map>
+#include <vector>
 
 #include "core/string/string.h"
 
-class ComponentLoader;
 class ChildDefinitionProto;
 class EntityDefinitionProto;
 class LinkDefinitionProto;
 class TiXmlElement;
 
-class EntityLoader
+namespace c2d
 {
-public:
-   EntityLoader();
+   namespace entity_definitions
+   {
+      class entity;
+      class link;
+      class child;
+   }
 
- // loading
-   EntityDefinitionProto* load(const String& filename);
+   class EntityLoader
+   {
+   public:
+      EntityLoader();
 
-private:
-   typedef std::map<String, ComponentLoader*> Loaders;
-   
- // loading
-   EntityDefinitionProto*  loadDefinition(const TiXmlElement& entity);
+      // loading
+      EntityDefinitionProto* load(const String& filename);
 
-   void loadChildDefinition(EntityDefinitionProto& entity, const TiXmlElement& childelement);
-   void loadLinkDefinition(EntityDefinitionProto& entity, const TiXmlElement& xmllink);
+   private:
 
- // registration
-   void registerLoader(ComponentLoader* ploader);
-    
- // data
-   Loaders mLoaders;
-};
+      // loading
+      EntityDefinitionProto* createDefinition(const entity_definitions::entity& ent);
+
+      void loadEntityDefinitions(EntityDefinitionProto& entity, const std::vector<entity_definitions::entity>& entities);
+      void loadChildDefinitions(EntityDefinitionProto& entity, const std::vector<entity_definitions::child>& childelement);
+      void loadLinkDefinitions(EntityDefinitionProto& entity, const std::vector<entity_definitions::link>& xmllink);
+   };
+}
 
 #endif // ENTITY_LOADER_H

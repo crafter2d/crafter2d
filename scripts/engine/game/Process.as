@@ -1,7 +1,6 @@
 
 package engine.game;
 
-use engine.ui.*;
 use engine.core.*;
 use engine.collections.*;
 use engine.messages.*;
@@ -99,8 +98,8 @@ abstract class Process
 	
 	// - Natives
 	
-	//public native Font getFont(string name, int size);
-	//public native Texture getTexture(string name);
 	public native ContentManager getContentManager();
+	public native ScriptManager getScriptManager();
+	
 	private native World loadWorld(string filename);
 }

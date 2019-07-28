@@ -13,10 +13,10 @@
 
 using namespace Graphics;
 
-MeshComponent::MeshComponent():
+MeshComponent::MeshComponent(c2d::Sprite* psprite):
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
-   mpSprite(nullptr)
+   mpSprite(psprite)
 {
 }
 

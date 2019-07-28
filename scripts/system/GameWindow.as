@@ -5,5 +5,26 @@ use engine.input.*;
 
 class GameWindow
 {
-	public native boolean create(string title, int width, int height, int bitdepth, boolean fullscreen);
+	private int mWidth;
+	private int mHeight;
+	
+	public boolean create(string title, int width, int height, int bitdepth, boolean fullscreen)
+	{
+		mWidth = width;
+		mHeight = height;
+		
+		return native(title, width, height, bitdepth, fullscreen);
+	}
+	
+	public native void setUiSystem(UiSystem system);
+	
+	public int getWidth()
+	{
+		return mWidth;
+	}
+	
+	public int getHeight()
+	{
+		return mHeight;
+	}
 }

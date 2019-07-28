@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tileatlas>
+	<tilesheet name="tileatlas/uisheet_1" width="128" height="128">
+		<tile name="corner" x="0" y="0" w="18" h="18" />
+		<tile name="fill" x="18" y="0" w="18" h="18" />
+	</tilesheet>
+</tileatlas>

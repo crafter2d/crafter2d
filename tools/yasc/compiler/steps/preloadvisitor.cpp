@@ -118,7 +118,10 @@ void PreloadVisitor::visit(ASTClass& ast)
    for ( int index = 0; index < intrfaces.size(); index++ )
    {
       ASTType& type = intrfaces[index];
-      load(type);
+      if ( !load(type) )
+      {
+         error(E0065, UTEXT("Could not resolve interface ") + type.getObjectName(), ast);
+      }
    }
 
    ast.ensureDefaultConstructor();
@@ -589,6 +592,15 @@ void PreloadVisitor::checkStaticAccess(ASTUnary& unary)
             }
 
             pclass = &mContext.resolveClass(qualifiedname);
+
+            if ( pclass->getFullName() != qualifiedname )
+            {
+               error(E0066, UTEXT("Unknown variable ") + name, unary);
+
+               pclass = nullptr;
+
+               paccess->setKind(ASTAccess::eInvalid);
+            }
          }
       }
 

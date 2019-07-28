@@ -5,7 +5,9 @@
    <sprite width="32" height="32">
       <texture>images/box</texture>
       <animations speed="125">
-         <anim length="1">0</anim>
+         <anim name="idle">
+			<tile name="box.png" />
+		 </anim>
       </animations>
    </sprite>
    <body inertia="1" mass="80">

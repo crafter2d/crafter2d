@@ -6,12 +6,14 @@
 #include <string>
 #include <vector>
 
-namespace c2d
+#include "xml/xml_base.h"
+
+namespace c2d::xml
 {
    class Attribute;
    class Child;
 
-   class Element
+   class XML_API Element
    {
    public:
       using Attributes = std::vector<Attribute*>;
@@ -44,7 +46,7 @@ namespace c2d
       std::string mName;
    };
 
-   class Attribute
+   class XML_API Attribute
    {
    public:
       enum Type { eString, eInt, eFloat, eBool };
@@ -88,7 +90,7 @@ namespace c2d
       Requirement mRequirement;
    };
 
-   class Child
+   class XML_API Child
    {
    public:
       enum Relation { eZeroOrOne, eZeroOrAny, eOne, eOneOrAny };
@@ -135,15 +137,22 @@ namespace c2d
    };
 }
 
-#define ELEMENT_DEF(name) class name : public c2d::Element { public: name();
-#define ELEMENT_IMP(name) }; name::name(): c2d::Element(#name) {
-#define ELEMENT_END }
+#define ELEMENT_DEF(name) class name : public c2d::xml::Element { public:
+#define ELEMENT_IMP(name) name::name(): c2d::xml::Element(#name) {
+//#define ELEMENT_BASE_DEF(name) class name : public c2d::Element { public: name(const std::string&);
+//#define ELEMENT_BASE_IMP(name) }; name::name(const std::string& name): c2d::Element(name) {
+//#define ELEMENT_DERIVED_DEF(name, base) class name : public base { public: name();
+//#define ELEMENT_DERIVED_IMP(name, base) }; name::name(): base(#name) {
+#define ELEMENT_END } };
 
 #define ATTRIBUTE(type, name) type name;
 #define ATTRIBUTE_INIT(name, requirement, type, default) name = default; registerAttribute(new Attribute(#name, &name, type, requirement));
+#define ATTRIBUTE_INIT_NAMED(name, realname, requirement, type, default) name = default; registerAttribute(new Attribute(#realname, &name, type, requirement));
 
 #define CHILD(type) std::vector<type> type##s;
+#define CHILD_NAMED(type, xmlname) std::vector<type> xmlname##s;
 #define CHILD_INIT(type, rel, empty) registerChild(new ChildImp<type>(#type, type##s, rel, empty));
+#define CHILD_INIT_NAMED(type, xmlname, rel, empty) registerChild(new ChildImp<type>(#xmlname, xmlname##s, rel, empty));
 
 #endif // XML_PARTS_H
 

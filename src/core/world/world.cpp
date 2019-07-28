@@ -474,23 +474,12 @@ void World::accept(NodeVisitor& nv)
 // - Notifications
 //////////////////////////////////////////////////////////////////////////
 
-class WorldScrollNotify : public std::unary_function<WorldObserver*, void>
-{
-public:
-   explicit WorldScrollNotify(const Vector& scrollposition): _scrollposition(scrollposition) {}
-
-   void operator()(WorldObserver* pobserver) const
-   {
-      pobserver->notifyScrollChange(_scrollposition);
-   }
-
-private:
-   Vector _scrollposition;
-};
-
 void World::notifyScrollChange(const Vector& scrollposition)
 {
-   std::for_each(mObservers.begin(), mObservers.end(), WorldScrollNotify(scrollposition));
+   for ( WorldObserver* pobserver : mObservers )
+   {
+      pobserver->notifyScrollChange(scrollposition);
+   }
 }
 
 void World::notifyEntityAdded(const Entity& entity)
@@ -503,10 +492,8 @@ void World::notifyEntityAdded(const Entity& entity)
 
 void World::notifyEntityRemoved(const Entity& entity)
 {
-   Observers::iterator it = mObservers.begin();
-   for ( ; it != mObservers.end(); ++it )
+   for ( WorldObserver* pobserver : mObservers )
    {
-      WorldObserver* pobserver = *it;
       pobserver->notifyEntityRemoved(entity);
    }
 }

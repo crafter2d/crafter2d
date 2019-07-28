@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "core/core_base.h"
+#include "core/content/content.h"
+
 #include "tilesheet.h"
 
 namespace Graphics
@@ -15,7 +17,7 @@ namespace c2d
 {
    class TextureCoordinate;
 
-   class CORE_API TileAtlas
+   class CORE_API TileAtlas : public IContent
    {
    public:
       TileAtlas();

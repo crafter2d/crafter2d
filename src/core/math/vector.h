@@ -57,9 +57,6 @@ public:
       v.y = 0;
    }
 
-   ~Vector() {
-   }
-
    bool operator== (const Vector& v) const {
       return (fabs(v.x - x) < 0.001) && (fabs(v.y - y) < 0.001);
    }

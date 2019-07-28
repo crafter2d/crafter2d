@@ -90,7 +90,7 @@ private:
 
  // members
    Listeners                     mListeners;
-   KeyDispatchers    mKeyDispatchers;
+   KeyDispatchers                mKeyDispatchers;
    Input::MouseEventDispatcher*  mpMouseDispatcher;
 };
 

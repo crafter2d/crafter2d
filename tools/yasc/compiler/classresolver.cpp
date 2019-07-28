@@ -1,21 +1,30 @@
 
 #include "classresolver.h"
 
+#include "core/defines.h"
 #include "core/vfs/filesystem.h"
 #include "core/string/string.h"
 
 using namespace std;
 
+static UChar sSTAR{ '*' };
+static UChar sDOT{ '.' };
+
 ClassResolver::ClassResolver():
    mPaths()
 {
-   mPaths.insert(UTEXT("*"));
-   mPaths.insert(UTEXT("system.*"));
+   mPaths.insert(UTEXT(""));
+   mPaths.insert(UTEXT("system."));
 }
 
-const ClassResolver& ClassResolver::operator=(const ClassResolver& that)
+ClassResolver::ClassResolver(ClassResolver&& that):
+   mPaths(std::move(that.mPaths))
 {
-   mPaths = that.mPaths;
+}
+
+ClassResolver& ClassResolver::operator=(ClassResolver&& that)
+{
+   mPaths = std::move(that.mPaths);
    return *this;
 }
 
@@ -23,43 +32,35 @@ const ClassResolver& ClassResolver::operator=(const ClassResolver& that)
 
 void ClassResolver::insert(const String& path)
 {
-   String qualifiedpath = path;
-   if ( path.indexOf('*') == String::npos )
+   if ( path.isEmpty() )
+      return;
+
+   std::size_t pos = String::npos;
+   if ( path[path.length() - 1] == sSTAR )
    {
-      // no * so replace last part with *
-      std::size_t pos = path.lastIndexOf('.');
-      if ( pos == String::npos )
-      {
-         return;
-      }
-      else
-      {
-         qualifiedpath.replace(pos+1, path.length() - (pos + 1), UTEXT("*"));
-      }
+      ASSERT(path[path.length() - 2] == sDOT);
+      pos = path.length() - 2;
+   }
+   else
+   {
+      pos = path.lastIndexOf('.');
    }
 
-   mPaths.insert(qualifiedpath);
+   if ( pos != String::npos )
+   {
+      String qualifiedpath = path.subStr(0, pos + 1);
+      mPaths.insert(std::move(qualifiedpath));
+   }
 }
 
 String ClassResolver::resolve(const String& classname) const
 {
-   String lowerclassname(classname);
-   lowerclassname.toLower();
-
    for ( auto& path : mPaths )
-   {
-      std::size_t pos = path.lastIndexOf('*');
-      if ( pos != String::npos )
+   {    
+      String fullclassname = path + classname;
+      if ( checkClassExists(fullclassname) )
       {
-         String fullclassname = path.subStr(0, pos) + classname;
-         if ( checkClassExists(fullclassname) )
-         {
-            return fullclassname;
-         }
-      }
-      else if ( path.compare(lowerclassname) == 0 )
-      {
-         return classname;
+         return fullclassname;
       }
    }
 

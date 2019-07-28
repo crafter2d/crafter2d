@@ -22,6 +22,7 @@ libdir = path.join(_OPTIONS["libdir"], _ACTION)
 pkgconf.setPrefix(libdir)
 
 function setDefaultProjectSettings()
+	cppdialect "C++17"
 	flags { "NoPCH" }
 	language "C++"
 	systemversion "10.0.17763.0"
@@ -39,6 +40,7 @@ require "proj-core"
 require "proj-engine"
 require "proj-unittest"
 require "proj-game"
+require "proj-xml"
 
 group "Mods"
 	require "proj-modyas"

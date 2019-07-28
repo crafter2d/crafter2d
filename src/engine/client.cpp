@@ -38,8 +38,10 @@
 #include "core/modules/uimodule.h"
 #include "core/graphics/device.h"
 #include "core/graphics/font.h"
+#include "core/graphics/renderable.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/viewport.h"
+#include "core/ui/uisystem.h"
 #include "core/script/scriptobject.h"
 #include "core/sound/soundmanager.h"
 #include "core/sound/sound.h"
@@ -91,6 +93,7 @@ namespace c2d
       mpSoundManager(nullptr),
       mpBackgroundMusic(nullptr),
       mpWorldRenderer(nullptr),
+      mpOverlay(nullptr),
       mpPlayer(nullptr),
       mpKeyMap(nullptr),
       mpFont(nullptr),
@@ -177,6 +180,11 @@ namespace c2d
       {
          getWorld().updateClient(*mpRenderContext, delta);
       }
+
+      if ( mpOverlay )
+      {
+         mpOverlay->update(*mpRenderContext, delta);
+      }
    }
 
    void Client::render(float delta)
@@ -215,6 +223,11 @@ namespace c2d
 
       Vector pos(40, 100);
       mpRenderContext->drawText(mFPSMessage);
+
+      if ( mpOverlay )
+      {
+         mpOverlay->render(*mpRenderContext);
+      }
 
       mpDevice->present();
       mpWindow->display();
@@ -255,6 +268,12 @@ namespace c2d
       }
    }
 
+   void Client::setOverlay(Graphics::Renderable* prenderable)
+   {
+      delete mpOverlay;
+      mpOverlay = prenderable;
+   }
+
    void Client::setWindow(GameWindow* pwindow)
    {
       if ( mpWindow != pwindow )
@@ -272,8 +291,7 @@ namespace c2d
    {
       return initGraphics()
          && initInput()
-         && initSound()
-         && initUI();
+         && initSound();
    }
 
    bool Client::initGraphics()
@@ -305,7 +323,8 @@ namespace c2d
          return false;
       }
 
-      getContentManager().loadContent<TileAtlas>(UTEXT("tileatlas/tileatlas"));
+      auto patlas = getContentManager().loadContent<TileAtlas>(UTEXT("tileatlas/tileatlas"));
+      mpRenderContext->setSpriteAtlas(patlas);
 
       mpFont = &mpDevice->getFont(UTEXT("amersn"));
       mFPSMessage = TextLayout(mpRenderContext->getTextRenderer());
@@ -332,18 +351,6 @@ namespace c2d
       {
          // failed to create input! can't proceed
          return false;
-      }
-
-      return true;
-   }
-
-   bool Client::initUI()
-   {
-      Module* pmodule = getModuleManager().lookup(UUID_UiModule);
-      if ( pmodule != nullptr )
-      {
-         UiModule& uimodule = static_cast<UiModule&>(*pmodule);
-         mpUI = &uimodule.getSystem();
       }
 
       return true;
@@ -390,19 +397,19 @@ namespace c2d
          break;
       case connectReplyEvent:
          {
-            const ConnectReplyEvent& crevent = dynamic_cast<const ConnectReplyEvent&>(event);
+            const ConnectReplyEvent& crevent = static_cast<const ConnectReplyEvent&>(event);
             handleConnectReplyEvent(crevent);
          }
          break;
       case joinEvent:
          {
-            const JoinEvent& joinevent = dynamic_cast<const JoinEvent&>(event);
+            const JoinEvent& joinevent = static_cast<const JoinEvent&>(event);
             handleJoinEvent(joinevent);
          }
          break;
       case disconnectEvent:
          {
-            const DisconnectEvent& disconnectevent = dynamic_cast<const DisconnectEvent&>(event);
+            const DisconnectEvent& disconnectevent = static_cast<const DisconnectEvent&>(event);
             handleDisconnectEvent(disconnectevent);
          }
          break;
@@ -413,7 +420,7 @@ namespace c2d
          break;
       case scriptEvent:
          {
-            const ScriptEvent& scriptevent = dynamic_cast<const ScriptEvent&>(event);
+            const ScriptEvent& scriptevent = static_cast<const ScriptEvent&>(event);
             handleScriptEvent(scriptevent);
          }
          break;

@@ -45,6 +45,9 @@ public:
 private:
    typedef std::vector<FileSystemPath*> Paths;
 
+   Paths::const_iterator find(const String& path) const;
+
+
    Paths mPaths;
 };
 

@@ -2,17 +2,19 @@
 #ifndef XML_PARSER_H
 #define XML_PARSER_H
 
+#include <xml/xml_base.h>
+
 #include <string>
 
 class String;
 class TiXmlElement;
 
-namespace c2d
+namespace c2d::xml
 {
    class Attribute;
    class Element;
 
-   class XmlParser
+   class XML_API XmlParser
    {
    public:
 

@@ -17,7 +17,6 @@
 ASTClass::ASTClass():
    ASTNode(),
    mKind(eClass),
-   mResolver(),
    mModifiers(),
    mpBaseType(nullptr),
    mInterfaces(),
@@ -389,16 +388,6 @@ ASTType* ASTClass::createThisType() const
    presult->setObjectName(getFullName());
    presult->setObjectClass(const_cast<ASTClass&>(*this));
    return presult;
-}
-
-const ClassResolver& ASTClass::getResolver() const
-{
-   return mResolver;
-}
-
-void ASTClass::setResolver(const ClassResolver& resolver)
-{
-   mResolver = resolver;
 }
 
 void ASTClass::collectInterfaces(ASTTypeList& interfaces) const

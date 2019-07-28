@@ -1,18 +1,15 @@
 
-
 package engine.game;
 
 use system.*;
-//use engine.ui.*;
 use engine.input.*;
 use engine.core.*;
 
 abstract class Client extends Process
 {
-	//private EngineGraphics 			mGraphics = new EngineGraphics();
 	private MouseEventDispatcher 	mMouseDispatcher;
 	private KeyEventDispatcher		mKeyDispatcher;
-	private GameWindow 				mWindow;
+	private GameWindow 			mWindow;
 		
 	public Client()
 	{
@@ -30,6 +27,7 @@ abstract class Client extends Process
 	public native Player getPlayer();
 	public native void setPlayer(Player player);
 	public native Viewport getViewport();
+	public native void setOverlay(Renderable overlay);
 	
 	public boolean create()
 	{
@@ -51,19 +49,6 @@ abstract class Client extends Process
 	{
 		mWindow = window;
 		native;
-	}
-	
-	/*
-	public EngineGraphics getGraphics()
-	{
-		return mGraphics;
-	}
-	*/
-	
-	public void paint(real delta)
-	{		
-		//Canvas canvas = Canvas.getInstance();
-		//canvas.paint(mGraphics);
 	}
 	
 	// - Connection

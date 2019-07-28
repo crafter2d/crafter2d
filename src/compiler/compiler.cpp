@@ -1,12 +1,6 @@
 // compiler.cpp : Defines the entry point for the console application.
 //
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <tchar.h>
-#endif
-
 #include <tinyxml.h>
 
 #include "core/streams/bufferedstream.h"
@@ -17,6 +11,7 @@
 #include "core/modules/modulemanager.h"
 #include "core/vfs/stdiofile.h"
 #include "core/system/exception.h"
+#include "core/system/platform.h"
 
 using namespace c2d;
 
@@ -26,73 +21,95 @@ static const int ERR_NOCOMPILER        = -2;
 static const int ERR_EXCEPTION         = -3;
 static const int ERR_INVALIDFILEFORMAT = -4;
 
+String determineExtension(const String& filename)
+{
+   std::size_t index = filename.lastIndexOf(L'.');
+   String extension = filename.subStr(index + 1, filename.length() - index - 1);
+
+   if ( extension == UTEXT("xml") )
+   {
+      TiXmlDocument doc(filename.toUtf8().c_str());
+      if ( !doc.LoadFile() )
+      {
+         throw new std::exception("File does not contain proper XML.");
+      }
+
+      TiXmlElement* proot = doc.FirstChildElement();
+      if ( proot != nullptr )
+      {
+         extension = String::fromUtf8(proot->Value());
+      }
+   }
+   return extension;
+}
+
+ContentModule& resolveModule(ModuleManager& mgr, const String& extension)
+{
+   ModuleCollection mods = mgr.filter(ModuleKind::eContentModule);
+   for ( auto& pair : mods )
+   {
+      ContentModule& cmod = static_cast<ContentModule&>(*pair.second);
+      if ( cmod.supports(extension) )
+      {
+         return cmod;
+      }
+   }
+
+   throw new std::exception("There is no compiler found for this file");
+}
+
+void save(const String& filename, const DataStream& stream)
+{
+   String outfile = filename;
+   int pos = outfile.lastIndexOf(L'.');
+   // if there is no dot or if there is a dir separator after it we append the extention
+   if ( pos < 0 || outfile.indexOf(Platform::getInstance().preferedSlash(), pos) > pos )
+   {
+      outfile += UTEXT(".c2d");
+   }
+
+   StdioFile file;
+   if ( !file.open(outfile, File::EBinary | File::EWrite) )
+   {
+      throw new Exception(UTEXT("Could not open file ") + outfile);
+   }
+
+   file.write(stream.getData(), stream.getDataSize());
+   file.close();
+}
+
 int compile(const String& srcfile, const String& dstFile)
 {
    try
    {
       ModuleManager mgr;
-      mgr.initialize();
-      ModuleCollection mods = mgr.filter(ModuleKind::eContentModule);
+      mgr.initialize();      
+            
+      BufferedStream stream;
 
-      std::size_t index = srcfile.lastIndexOf(L'.');
-      String extension = srcfile.subStr(index + 1, srcfile.length() - index - 1);
+      String extension = determineExtension(srcfile);
+      ContentModule& cmod = resolveModule(mgr, extension);
+      cmod.getUuid().write(stream);
 
-      if ( extension == UTEXT("xml") )
+      ContentWriter& writer = cmod.getWriter();
+      if ( writer.write(stream, srcfile) )
       {
-         TiXmlDocument doc(srcfile.toUtf8().c_str());
-         if ( !doc.LoadFile() )
-         {
-            // invalid file format
-            return ERR_INVALIDFILEFORMAT;
-         }
-
-         TiXmlElement* proot = doc.FirstChildElement();
-         if ( proot != nullptr )
-         {
-            extension = String::fromUtf8(proot->Value());
-         }
-      }
-
-      for ( auto& pair : mods )
-      {
-         ContentModule& cmod = static_cast<ContentModule&>(*pair.second);
-         if ( cmod.supports(extension) )
-         {
-            BufferedStream stream;
-            cmod.getUuid().write(stream);
-
-            ContentWriter& writer = cmod.getWriter();
-            if ( writer.write(stream, srcfile) )
-            {
-               StdioFile file;
-               if ( file.open(dstFile, File::EBinary | File::EWrite) )
-               {
-                  file.write(stream.getData(), stream.getDataSize());
-                  file.close();
-                  return SUCCESS;
-               }
-               else
-               {
-                  // error 
-                  return ERR_FILEINUSE;
-               }
-            }
-         }
+         save(dstFile, stream);
       }
    }
-   catch ( c2d::Exception& e )
+   catch ( c2d::Exception* pex )
    {
-      std::string err = e.getReason().toUtf8();
+      std::string err = pex->getReason().toUtf8();
       printf("Failed to compile the file: %s", err.c_str());
       return ERR_EXCEPTION;
    }
-   catch ( std::exception& ex )
+   catch ( std::exception* pex )
    {
-      printf("Failed to compile the file: %s", ex.what());
+      printf("Failed to compile the file: %s", pex->what());
       return ERR_EXCEPTION;
    }
    
-   return ERR_NOCOMPILER;
+   return SUCCESS;
 }
 
 int main(int argc, char *argv[])

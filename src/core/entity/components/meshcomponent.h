@@ -18,10 +18,10 @@ namespace c2d
    class Sprite;
 }
 
-class CORE_API MeshComponent : public Component
+class CORE_API MeshComponent final : public Component
 {
 public:
-   MeshComponent();
+   explicit MeshComponent(c2d::Sprite* psprite);
    virtual ~MeshComponent();
 
  // get/set
@@ -32,11 +32,7 @@ public:
       ASSERT_PTR(mpSprite);
       return *mpSprite;
    }
-
-   void setSprite(c2d::Sprite* psprite) {
-      mpSprite = psprite;
-   }
-
+   
  // operations
    void render(Graphics::RenderContext& context) const;
 

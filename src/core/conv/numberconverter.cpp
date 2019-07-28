@@ -19,12 +19,6 @@ NumberConverter& NumberConverter::getInstance()
    return *pconverter;
 }
 
-// - Interface
-
-NumberConverter::NumberConverter()
-{
-}
-
 // - Conversions
 
 int NumberConverter::toInt(UChar value)

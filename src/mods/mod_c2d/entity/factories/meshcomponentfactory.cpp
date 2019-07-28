@@ -34,21 +34,18 @@ Component* MeshComponentFactory::instantiate(const ComponentDefinitionProto& def
    pspritedef->setSize(meshsize);
    pspritedef->setSpriteAnimator(panimator);
 
-   MeshComponent* presult = new MeshComponent();
-   presult->setSprite(c2d::SpriteFactory::create(mDevice, pspritedef));
-   return presult;
+   return new MeshComponent(c2d::SpriteFactory::create(mDevice, pspritedef));
 }
 
 c2d::Animator* MeshComponentFactory::createAnimator(const MeshComponentDefinitionProto& definition) const
 {
    auto& atlas = mDevice.getContext().getSpriteAtlas();
 
-   c2d::Animator* presult = new c2d::Animator();
+   auto presult = std::make_unique<c2d::Animator>();
    presult->setAnimationSpeed(definition.mAnimationSpeed);
 
-   for ( uint32_t index = 0; index < definition.mAnimations.size(); ++index )
+   for ( const auto& animationdef : definition.mAnimations )
    {
-      auto& animationdef = definition.mAnimations[index];
       if ( animationdef.type == c2d::Animator::eInvalid )
       {
          // invalid will be replaced by custom where the user can specify their own animation name.
@@ -68,5 +65,5 @@ c2d::Animator* MeshComponentFactory::createAnimator(const MeshComponentDefinitio
       presult->add(animationdef.type, std::move(animation));
    }
 
-   return presult;
+   return presult.release();
 }

@@ -21,27 +21,41 @@
 
 #include "yuiscriptregistration.h"
 
-bool c2d::YuiSystem::initialize(ScriptManager & scriptmanager, Graphics::Device & device, float width, float height)
+#include "core/vfs/filesystem.h"
+
+#include "engine/client.h"
+
+namespace c2d
 {
-   if ( UiSystem::initialize(scriptmanager, device, width, height) )
+   YuiSystem::YuiSystem():
+      mpContentManager(nullptr),
+      mpScriptManager(nullptr)
    {
+   }
+
+   bool YuiSystem::initialize(ContentManager& contentmgr, ScriptManager& scriptmgr, int width, int height)
+   {
+      mpContentManager = &contentmgr;
+      mpScriptManager = &scriptmgr;
+
       return true;
    }
 
-   YuiRegisterScripts(scriptmanager);
+   void YuiSystem::update(Graphics::RenderContext & context, float delta)
+   {
+   }
 
-   return false;
-}
+   void YuiSystem::render(Graphics::RenderContext & context)
+   {
+   }
 
-void c2d::YuiSystem::update(Graphics::RenderContext & context, float delta)
-{
-}
+   void YuiSystem::setTheme(const String& themefile)
+   {
 
-void c2d::YuiSystem::render(Graphics::RenderContext & context)
-{
-}
+   }
 
-c2d::YuiWindow* c2d::YuiSystem::load(const String & file)
-{
-   return nullptr;
+   c2d::YuiWindow* YuiSystem::load(const String & file)
+   {
+      return nullptr;
+   }
 }

@@ -20,27 +20,21 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
-//#include "gui/guiwindow.h"
-
 #include "core/log/log.h"
 
-//class GuiEditBox;
-//class GuiListBox;
-
-class Console // : public GuiWindow
+class Console
 {
 public:
-   ~Console(void);
-
    static Console&   getInstance();
 
-   void              create();
    void              reload();
 
    void              show();
    void              hide();
 
-   void              print(const std::string& msg);
+   void              print(const std::string& msg) {
+      print(msg.c_str());
+   }
    void              print(const char* msg);
    void              printf(const char* msg, ...);
 
@@ -51,15 +45,7 @@ public:
 
 protected:
                      Console();
-   void              operator=(const Console& con);
-
-private:
-   //GuiListBox *lines;
-   //GuiEditBox *input;
+   void              operator=(const Console& con) = delete;
 };
-
-#ifdef JENGINE_INLINE
-#  include "console.inl"
-#endif
 
 #endif

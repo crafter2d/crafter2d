@@ -8,7 +8,7 @@ template<typename Target, typename Source>
 class Lexer
 {
 public:
-   Lexer() {}
+   Lexer() = default;
 
    bool operator<<(const Source& source) {
       mStream << source;

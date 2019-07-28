@@ -32,6 +32,7 @@
 #include "core/streams/bufferedstream.h"
 #include "core/script/scriptcall.h"
 #include "core/script/scriptmanager.h"
+#include "core/script/scriptmacros.h"
 #include "core/script/scriptregistrator.h"
 #include "core/script/scriptobject.h"
 #include "core/vfs/file.h"
@@ -59,21 +60,18 @@
 
 using namespace c2d;
 
-#define INIT_THIS(type)                            accessor.setInstance(0, new type(), true)
-#define INIT_THIS_OBJ(obj)                         accessor.setInstance(0, obj, true)
-#define GET_THIS(type, variable)                   type& variable = accessor.get<type>(0)
-#define DESTRUCT_THIS(type)                        delete accessor.use<type>(0);
-
-#define RETURN_CLASS(class, pointer)               accessor.setResult(class, pointer, false)
-#define RETURN_CLASS_OWNED(class, pointer)         accessor.setResult(class, pointer, true)
-
-#define RETURN_CLASS_I(scriptable)                 accessor.setResult(scriptable, false);
-
 void Process_getContentManager(ScriptCall& accessor)
 {
    GET_THIS(Process, process);
 
    RETURN_CLASS(UTEXT("engine.game.ContentManager"), &process.getContentManager());
+}
+
+void Process_getScriptManager(ScriptCall& accessor)
+{
+   GET_THIS(Process, process);
+
+   RETURN_CLASS(UTEXT("engine.game.ScriptManager"), &process.getScriptManager());
 }
 
 void Process_setActionMap(ScriptCall& accessor)
@@ -203,6 +201,14 @@ void Client_getViewport(ScriptCall& accessor)
    GET_THIS(Client, client);
 
    RETURN_CLASS(UTEXT("engine.game.Viewport"), &client.getViewport());
+}
+
+void Client_setOverlay(ScriptCall& accessor)
+{
+   GET_THIS(Client, client);
+
+   Graphics::Renderable* prenderable = accessor.use<Graphics::Renderable>(1);
+   client.setOverlay(prenderable);
 }
 
 void ContentManager_loadEntity(ScriptCall& accessor)
@@ -909,6 +915,7 @@ void script_engine_register(c2d::ScriptManager& manager)
 
    pregistrator->addClass(UTEXT("engine.game.Process"));
    pregistrator->addFunction(UTEXT("getContentManager()"), Process_getContentManager);
+   pregistrator->addFunction(UTEXT("getScriptManager()"), Process_getScriptManager);
    pregistrator->addFunction(UTEXT("setActionMap(engine.game.ActionMap)"), Process_setActionMap);
    pregistrator->addFunction(UTEXT("loadWorld(string)"), Process_loadWorld);
    pregistrator->addFunction(UTEXT("swapLeakDetection()"), Process_swapLeakDetection);
@@ -927,6 +934,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("setPlayer(engine.game.Player)"), Client_setPlayer);
    pregistrator->addFunction(UTEXT("getTexture(string)"), Client_getTexture);
    pregistrator->addFunction(UTEXT("getViewport()"), Client_getViewport);
+   pregistrator->addFunction(UTEXT("setOverlay(engine.game.Renderable)"), Client_setOverlay);
 
    pregistrator->addClass(UTEXT("engine.game.ContentManager"));
    pregistrator->addFunction(UTEXT("loadEntity(string)"), ContentManager_loadEntity);

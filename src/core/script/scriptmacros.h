@@ -2,6 +2,9 @@
 #ifndef SCRIPT_MACROS_H
 #define SCRIPT_MACROS_H
 
+#define INIT_THIS(type)                            accessor.setInstance(0, new type(), true)
+#define INIT_THIS_OBJ(obj)                         accessor.setInstance(0, obj, true)
+
 #define GET_THIS(type, variable)                   type& variable = accessor.getObject(0)->get<type>()
 #define DESTRUCT_THIS(type)                        delete accessor.getObject(0)->use<type>();
 

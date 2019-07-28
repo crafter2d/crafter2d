@@ -1,8 +1,7 @@
 
 #include "component.h"
-#ifndef JENGINE_INLINE
-#  include "component.inl"
-#endif
+
+#include "core/defines.h"
 
 #include "components.h"
 
