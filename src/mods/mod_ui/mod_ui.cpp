@@ -24,9 +24,10 @@ static const Uuid YuiModuleUUID(0x469939F4, 0x52C0, 0x414f, 0xABAD, 0xF927274895
 class YuiModule : public c2d::Module
 {
 public:
-   YuiModule() : Module(ModuleKind::eUiModule, YuiModuleUUID) {}
+   YuiModule() : Module(ModuleKind::eExtensionModule, YuiModuleUUID) {}
 
-   void initialize() override {
+   void initialize() override
+   {
       FileSystem::getInstance().addPath(UTEXT("mod_ui.zip"));
 
       ScriptModule* pscriptmodule = static_cast<ScriptModule*>(getModuleManager().lookup(UUID_ScriptModule));
