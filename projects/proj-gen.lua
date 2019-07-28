@@ -5,12 +5,12 @@
 project "Gen"
 	kind "ConsoleApp"
 	debugdir "../bin"
-	location "../build/gen"
+	location "../build/tools/gen"
 	
 	setDefaultProjectSettings()
 	
 	-- set project files
-	files { "../src/gen/**.cpp", "../src/gen/**.h", "../src/gen/**.inl" }
+	files { "../src/tools/gen/**.cpp", "../src/tools/gen/**.h", "../src/tools/gen/**.inl" }
 	includedirs { "../src" }
 	
 	filter "configurations:Debug"
