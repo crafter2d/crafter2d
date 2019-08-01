@@ -68,8 +68,6 @@ namespace Graphics
 
       UNIFORM_BUFFER_DESC descs[] = {
             { UTEXT("proj"), sizeof(float) * 16 },
-            { UTEXT("world"), sizeof(float) * 16 },
-            { UTEXT("object"), sizeof(float) * 16 },
       };
 
       UNIFORM_BUFFER_DESC transformDesc[] = {
@@ -77,7 +75,7 @@ namespace Graphics
       };
 
       mpUB = mpEffect->createUniformBuffer(UTEXT("mpv"));
-      if ( !mpUB->create(device, descs, 3) )
+      if ( !mpUB->create(device, descs, 1) )
       {
          return false;
       }
@@ -89,8 +87,6 @@ namespace Graphics
       }
 
       mConstants.projection.setIdentity();
-      mConstants.world.setIdentity();
-      mConstants.object.setIdentity();
 
       BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_ONE, true);
       BlendState* pblendstate = mpDevice->createBlendState(desc);

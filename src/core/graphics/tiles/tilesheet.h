@@ -47,7 +47,7 @@ namespace c2d
 
       int lookup(const String& name) const;
 
-      void bind(Graphics::RenderContext& context);
+      void bind(Graphics::RenderContext& context) const;
 
    private:
 

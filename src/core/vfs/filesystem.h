@@ -57,6 +57,9 @@ public:
    void removePath(const String& path);
    void removeAll();
 
+   /// Creates any part of the given path
+   bool mkpath(const String& path);
+
    virtual int mkdir(const String& path) = 0;
    virtual bool copyFile(const String& from, const String& to) = 0;
 

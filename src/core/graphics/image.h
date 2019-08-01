@@ -38,6 +38,8 @@ namespace c2d
       bool load(DataStream& data);
       bool load(const String& filename);
 
+      void addAlphaChannel();
+
    private:
 
     // data

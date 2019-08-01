@@ -27,6 +27,10 @@
 
 #include <vector>
 
+#include "core/string/stringinterface.h"
+
+#include "file.h"
+
 void tokenize(std::vector<String>& tokens, const String& str, char delimitor)
 {
    std::size_t start = 0;
@@ -68,12 +72,8 @@ UChar FileSystem::getNativeSeparator()
 String FileSystem::toNativeSeparator(const String& path)
 {
    UChar nativesep = getNativeSeparator();
-   UChar search = L'/';
-   if ( nativesep == L'/' )
-   {
-      search = L'\\';
-   }
-
+   UChar search = nativesep == L'/' ? L'\\' : L'/';
+   
    String fixed(path);
    fixed.replace(search, nativesep);
    return fixed;
@@ -104,6 +104,29 @@ void FileSystem::removePath(const String& path)
 void FileSystem::removeAll()
 {
    mPaths.removeAll();
+}
+
+static String sPrevDir(UTEXT(".."));
+
+bool FileSystem::mkpath(const String& path)
+{
+   String createpath;
+   auto parts = StringInterface::tokenize(path, getSeparator());
+   if ( parts.back().indexOf(L'.') > 0 )
+   {
+      parts.erase(parts.end() - 1);
+   }
+
+   for ( const String& part : parts )
+   {
+      createpath = File::concat(createpath, part);
+      
+      if ( part[0] != L'.' || part.length() > 1 && part[1] != L'.' ) // skip dir navigation & files
+      {
+         mkdir(createpath);
+      }
+   }
+   return true;
 }
 
 bool FileSystem::exists(const String& filename) const

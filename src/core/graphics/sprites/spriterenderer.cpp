@@ -153,7 +153,7 @@ namespace c2d
          auto& atlas = context.getSpriteAtlas();
 
          int start = 0;
-         int indices = 6;
+         int indices = 0;
          int sheet = mSprites.front()->getTile() >> 16;
          for ( auto psprite : mSprites )
          {

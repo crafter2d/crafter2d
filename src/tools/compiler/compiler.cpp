@@ -7,11 +7,12 @@
 #include "core/content/contentwriter.h"
 #include "core/content/contentmanager.h"
 #include "core/string/string.h"
+#include "core/string/stringinterface.h"
 #include "core/modules/contentmodule.h"
 #include "core/modules/modulemanager.h"
 #include "core/vfs/stdiofile.h"
+#include "core/vfs/filesystem.h"
 #include "core/system/exception.h"
-#include "core/system/platform.h"
 
 using namespace c2d;
 
@@ -20,6 +21,7 @@ static const int ERR_FILEINUSE         = -1;
 static const int ERR_NOCOMPILER        = -2;
 static const int ERR_EXCEPTION         = -3;
 static const int ERR_INVALIDFILEFORMAT = -4;
+static const int ERR_UNKNOWN           = -5;
 
 String determineExtension(const String& filename)
 {
@@ -61,12 +63,14 @@ ContentModule& resolveModule(ModuleManager& mgr, const String& extension)
 void save(const String& filename, const DataStream& stream)
 {
    String outfile = filename;
-   int pos = outfile.lastIndexOf(L'.');
+   size_t pos = outfile.lastIndexOf(L'.');
    // if there is no dot or if there is a dir separator after it we append the extention
-   if ( pos < 0 || outfile.indexOf(Platform::getInstance().preferedSlash(), pos) > pos )
+   if ( pos < 0 || outfile.indexOf(FileSystem::getNativeSeparator(), pos) > pos )
    {
       outfile += UTEXT(".c2d");
    }
+
+   FileSystem::getInstance().mkpath(outfile);
 
    StdioFile file;
    if ( !file.open(outfile, File::EBinary | File::EWrite) )
@@ -83,18 +87,23 @@ int compile(const String& srcfile, const String& dstFile)
    try
    {
       ModuleManager mgr;
-      mgr.initialize();      
-            
-      BufferedStream stream;
-
+      mgr.initialize();
+      
       String extension = determineExtension(srcfile);
       ContentModule& cmod = resolveModule(mgr, extension);
+      
+      BufferedStream stream;
       cmod.getUuid().write(stream);
 
       ContentWriter& writer = cmod.getWriter();
       if ( writer.write(stream, srcfile) )
       {
          save(dstFile, stream);
+      }
+      else
+      {
+         printf("Error - Could not process source file '%ls'\n", srcfile.c_str());
+         return ERR_UNKNOWN;
       }
    }
    catch ( c2d::Exception* pex )

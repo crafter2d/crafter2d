@@ -58,7 +58,7 @@ void yui_load(ScriptCall& accessor)
    const String& file = accessor.getString(1);
    c2d::YuiWindow* pwindow = system.load(file);
 
-   RETURN_CLASS_OWNED(UTEXT("ui.YuiWindow"), pwindow);
+   RETURN_CLASS(UTEXT("ui.YuiWindow"), pwindow);
 }
 
 void yui_setTheme(ScriptCall& accessor)
@@ -76,8 +76,8 @@ void YuiRegisterScripts(ScriptManager & scriptmanager)
    registrator->addClass(UTEXT("ui.YuiSystem"));
    registrator->addFunction(UTEXT("YuiSystem()"), yui_init);
    registrator->addFunction(UTEXT("initialize(engine.game.ContentManager, engine.game.ScriptManager, int, int)"), yui_initialize);
-   registrator->addFunction(UTEXT("load(String)"), yui_load);
-   registrator->addFunction(UTEXT("setTheme(String"), yui_setTheme);
+   registrator->addFunction(UTEXT("load(string)"), yui_load);
+   registrator->addFunction(UTEXT("setTheme(string)"), yui_setTheme);
 
    registrator->addClass(UTEXT("ui.YuiWindow"));
 

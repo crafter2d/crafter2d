@@ -85,25 +85,3 @@ std::vector<String> StringInterface::tokenize(const String& text, char separator
    }
    return result;
 }
-
-void StringInterface::split(const String& text, UChar seperator, StringList& elements)
-{
-   String value;
-   for ( std::size_t index = 0; index < text.length(); ++index )
-   {
-      UChar ch = text[index];
-      if ( ch == seperator )
-      {
-         elements.add(value.trim());
-         value = "";
-      }
-      else
-      {
-         value += ch;
-      }
-   }
-   if ( !value.isEmpty() )
-   {
-      elements.add(value.trim());
-   }
-}

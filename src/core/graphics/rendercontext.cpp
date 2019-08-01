@@ -54,7 +54,6 @@ void RenderContext::endDraw()
 {
    mSpriteRenderer.endDraw(*this);
    mParticleRenderer.endDraw(*this);
-   mTextRenderer.render(*this);
 }
 
 void RenderContext::setSpriteOffset(const Vector& offset)

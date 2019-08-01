@@ -77,8 +77,3 @@ void* LinuxPlatform::getFunctionAddress(void* module, const String& name)
    std::string symbol = name.toUtf8();
    return dlsym(module, symbol.c_str());
 }
-
-UChar LinuxPlatform::preferedSlash()
-{
-   return L'/';
-}

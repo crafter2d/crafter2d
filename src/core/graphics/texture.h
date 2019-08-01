@@ -31,11 +31,9 @@ namespace Graphics
    class RenderContext;
 
    enum TextureFormat {
-      eFormat_Luminance,
+      eFormat_Luminance = 1,
       eFormat_RG,
       eFormat_RGBA,
-      eFormat_BC1,      // libSquish DTX1
-      eFormat_BC2,      // libSquish DXT3
       eFormat_BC3,      // libSquish DTX5
    };
 

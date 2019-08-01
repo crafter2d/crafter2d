@@ -278,16 +278,6 @@ Texture* D3DDevice::createTexture(const TextureDescription& texdesc)
       format = DXGI_FORMAT_R8G8B8A8_UNORM;
       blockSize = 4;
       break;
-   case eFormat_BC1:
-      bc = true;
-      format = DXGI_FORMAT_BC1_UNORM;
-      blockSize = 8;
-      break;
-   case eFormat_BC2:
-      bc = true;
-      format = DXGI_FORMAT_BC2_UNORM;
-      blockSize = 16;
-      break;
    case eFormat_BC3:
       bc = true;
       format = DXGI_FORMAT_BC3_UNORM;

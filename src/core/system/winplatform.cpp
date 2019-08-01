@@ -107,8 +107,3 @@ void* WinPlatform::getFunctionAddress(void* pmodule, const String& name)
    std::string uname = name.toUtf8();
    return GetProcAddress((HMODULE)pmodule, uname.c_str());
 }
-
-UChar WinPlatform::preferedSlash()
-{
-   return L'\\';
-}

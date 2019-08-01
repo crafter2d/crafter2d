@@ -68,8 +68,6 @@ abstract class Process
 		return mWorld;
 	}
 	
-	public native void setActionMap(ActionMap map);
-	
 	/// does not call the native function
 	protected void setInternalWorld(World world)
 	{
@@ -100,6 +98,7 @@ abstract class Process
 	
 	public native ContentManager getContentManager();
 	public native ScriptManager getScriptManager();
+	public native void setActionMap(ActionMap map);
 	
 	private native World loadWorld(string filename);
 }

@@ -36,7 +36,7 @@ namespace c2d
 
       void reserve(int count);
 
-      void bind(Graphics::RenderContext& context, int sheet) {
+      void bind(Graphics::RenderContext& context, int sheet) const {
          mSheets[sheet].bind(context);
       }
 

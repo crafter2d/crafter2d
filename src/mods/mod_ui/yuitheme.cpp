@@ -5,16 +5,10 @@
 #include "core/graphics/tiles/tileatlas.h"
 #include "core/string/string.h"
 
-
-
 namespace c2d
 {
-   bool YuiTheme::load(ContentManager& contentmgr, const String& filename)
+   YuiTheme::YuiTheme(TileAtlas* patlas):
+      mpAtlas(patlas)
    {
-      bool result = false;
-      
-      contentmgr.loadContent<YuiTheme>(filename);
-
-      return result;
    }
 }

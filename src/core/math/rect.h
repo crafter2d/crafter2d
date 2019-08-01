@@ -28,10 +28,15 @@ namespace c2d
    {
    public:
       Rect();
+      Rect(float x, float y, float width, float height);
 
     // query
-      float width() const;
-      float height() const;
+      float width() const {
+         return right - left;
+      }
+      float height() const {
+         return bottom - top;
+      }
 
     // data
       float left;

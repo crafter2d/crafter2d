@@ -21,7 +21,7 @@ IContent* TextureReader::read(DataStream& stream)
    Graphics::TextureDescription desc;
    desc.width = width;
    desc.height = height;
-   desc.format = Graphics::eFormat_BC3;
+   desc.format = (Graphics::TextureFormat)format;
    desc.pinitData = datastream.getData();
 
    return getGraphicsDevice().createTexture(desc);

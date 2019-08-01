@@ -95,7 +95,7 @@ int Compiler::exec()
 
    // last argument must be the file mask to compile
    String mask = File::toNativeSeparator(mCommands[mCommands.size() - 1].getName());
-   int pos = mask.lastIndexOf(c2d::Platform::getInstance().preferedSlash());
+   int pos = mask.lastIndexOf(FileSystem::getNativeSeparator());
    if ( pos > 0 )
    {
       String path = mask.subStr(0, pos);
@@ -106,9 +106,8 @@ int Compiler::exec()
    const CommandLineArgument* prootarg = mCommands.getArgument(UTEXT("p"));
    if ( prootarg != nullptr )
    {
-      StringList rootpaths;
       String roots = prootarg->getValue();
-      StringInterface::split(roots, L';', rootpaths);
+      auto rootpaths = StringInterface::tokenize(roots, L';');
 
       auto fnc = [this](const String& path) { FileSystem::getInstance().addPath(path); };
       std::for_each(rootpaths.begin(), rootpaths.end(), fnc);
@@ -127,7 +126,7 @@ int Compiler::exec()
    if ( parg != nullptr )
    {
       mOutputDir = parg->getValue();
-      createOutputDir();
+      FileSystem::getInstance().mkpath(mOutputDir);
    }
    else
    {
@@ -198,28 +197,6 @@ void Compiler::createCompileSteps()
    mCompileSteps.push_back(new ResourceCheckVisitor(mContext));
    mCompileSteps.push_back(new OOCheckVisitor(mContext));
    mCompileSteps.push_back(new CodeGeneratorVisitor(mContext));
-}
-
-void Compiler::createOutputDir()
-{
-   String path;
-   auto parts = StringInterface::tokenize(mOutputDir, '\\');
-   for ( String& part : parts )
-   {
-      if ( !path.isEmpty() )
-      {
-         path = File::concat(path, part);
-      }
-      else
-      {
-         path = part;
-      }
-      
-      if ( part[0] != L'.' )
-      {
-         FileSystem::getInstance().mkdir(path);
-      }      
-   }
 }
 
 bool Compiler::performSteps(ASTNode& node, Steps& steps)

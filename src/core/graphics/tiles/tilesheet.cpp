@@ -22,7 +22,7 @@ int c2d::TileSheet::lookup(const String & name) const
    return it != mLookup.end() ? it->second : -1;
 }
 
-void c2d::TileSheet::bind(Graphics::RenderContext& context)
+void c2d::TileSheet::bind(Graphics::RenderContext& context) const
 {
    mpTexture->enable(context, 0);
 }

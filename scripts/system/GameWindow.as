@@ -16,8 +16,6 @@ class GameWindow
 		return native(title, width, height, bitdepth, fullscreen);
 	}
 	
-	public native void setUiSystem(UiSystem system);
-	
 	public int getWidth()
 	{
 		return mWidth;

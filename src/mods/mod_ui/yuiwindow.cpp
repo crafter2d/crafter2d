@@ -19,7 +19,57 @@
 ***************************************************************************/
 #include "yuiwindow.h"
 
+#include "core/graphics/device.h"
+#include "core/graphics/effect.h"
+#include "core/graphics/indexbuffer.h"
+#include "core/graphics/rendercontext.h"
+#include "core/graphics/uniformbuffer.h"
+#include "core/graphics/rendercontext.h"
+#include "core/graphics/utils.h"
+#include "core/graphics/vertexbuffer.h"
+#include "core/graphics/viewport.h"
+
+#include "yuibatchrenderer.h"
+
+using namespace Graphics;
+
 namespace c2d
 {
+   YuiWindow::YuiWindow(YuiSystem& system) :
+      mSystem(system)
+   {
+   }
+
+   bool YuiWindow::create()
+   {
+      mWindowRect.top = 20;
+      mWindowRect.left = 10;
+      mWindowRect.bottom = 80;
+      mWindowRect.right = 150;
+
+      Rect leftcorner(mWindowRect.left, mWindowRect.top, 18, 18);
+      Rect rightcorner(mWindowRect.right - 18, mWindowRect.top, 18, 18);
+
+      mRenderList.reserve(7);
+      mRenderList.push_back({ leftcorner, 0 });
+      mRenderList.push_back({ rightcorner, 1 });
+      mRenderList.emplace_back(Rect(mWindowRect.left, mWindowRect.bottom - 18, 18, 18), 2);
+      mRenderList.emplace_back(Rect(rightcorner.left, mWindowRect.bottom - 18, 18, 18), 3);
+
+      float sideborder_height = mWindowRect.height() - 36;
+      mRenderList.emplace_back(Rect(leftcorner.right, mWindowRect.top, mWindowRect.width() - 36, mWindowRect.height()), 4);
+      mRenderList.emplace_back(Rect(leftcorner.left, leftcorner.bottom, 18, sideborder_height), 4);
+      mRenderList.emplace_back(Rect(rightcorner.left, rightcorner.bottom, 18, sideborder_height), 4);
+
+      return true;
+   }
+
+   void YuiWindow::render(YuiBatchRenderer& renderer)
+   {
+      for ( auto& pair : mRenderList )
+      {
+         renderer.renderRect(pair.first, pair.second);
+      }
+   }
 
 } // namespace c2d

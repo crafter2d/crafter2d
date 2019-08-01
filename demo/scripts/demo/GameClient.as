@@ -12,6 +12,7 @@ class GameClient extends Client
 {		
 	private DemoClientActionMap mLocalActionMap;
 	private YuiSystem mYuiSystem;
+	private YuiWindow mWindow;
 	
 	public GameClient()
 	{
@@ -169,8 +170,10 @@ class GameClient extends Client
 		{
 			return false;
 		}
-		
+		mYuiSystem.setTheme("ui/theme");
 		setOverlay(mYuiSystem);
+		
+		mWindow = mYuiSystem.load("ui/load");
 		
 		return true;
 	}

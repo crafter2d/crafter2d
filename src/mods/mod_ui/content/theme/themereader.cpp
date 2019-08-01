@@ -14,6 +14,6 @@ namespace c2d
       String atlas;
       stream.readString(atlas);
       auto patlas = getContentManager().loadContent<TileAtlas>(atlas);
-      return new YuiTheme();
+      return new YuiTheme(patlas);
    }
 }

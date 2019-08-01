@@ -21,15 +21,20 @@
 
 #include "yuiscriptregistration.h"
 
+#include "core/content/contentmanager.h"
 #include "core/vfs/filesystem.h"
 
-#include "engine/client.h"
+#include "yuitheme.h"
+#include "yuiwindow.h"
 
 namespace c2d
 {
    YuiSystem::YuiSystem():
       mpContentManager(nullptr),
-      mpScriptManager(nullptr)
+      mpScriptManager(nullptr),
+      mpCurrentTheme(nullptr),
+      mRenderer(),
+      mWindows()
    {
    }
 
@@ -38,7 +43,14 @@ namespace c2d
       mpContentManager = &contentmgr;
       mpScriptManager = &scriptmgr;
 
+      mRenderer.create(contentmgr.getDevice());
+
       return true;
+   }
+
+   void YuiSystem::viewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
+   {
+      mRenderer.viewportChanged(context, viewport);
    }
 
    void YuiSystem::update(Graphics::RenderContext & context, float delta)
@@ -47,15 +59,33 @@ namespace c2d
 
    void YuiSystem::render(Graphics::RenderContext & context)
    {
+      if ( mpCurrentTheme )
+      {
+         mRenderer.beginRendering(context, mpCurrentTheme->getAtlas());
+
+         for ( auto pwindow : mWindows )
+         {
+            pwindow->render(mRenderer);
+         }
+
+         mRenderer.endRendering();
+      }
    }
 
    void YuiSystem::setTheme(const String& themefile)
    {
-
+      mpCurrentTheme = mpContentManager->loadContent<YuiTheme>(themefile);
    }
 
-   c2d::YuiWindow* YuiSystem::load(const String & file)
+   YuiWindow* YuiSystem::load(const String & file)
    {
-      return nullptr;
+      auto pwindow = std::make_unique<YuiWindow>(*this);
+      if ( !pwindow->create() )
+      {
+         return nullptr;
+      }
+
+      mWindows.push_back(pwindow.release());
+      return mWindows.back();
    }
 }

@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "core/core_base.h"
 #include "core/math/matrix4.h"
 
 #include "glyphatlas.h"
@@ -26,7 +27,7 @@ namespace Graphics
    class TextLayout;
    class Viewport;
 
-   class TextRenderer final
+   class CORE_API TextRenderer final
    {
    public:
       TextRenderer();
@@ -58,8 +59,6 @@ namespace Graphics
       struct ConstantBuffer
       {
          Matrix4 projection;
-         Matrix4 world;
-         Matrix4 object;
       };
 
       struct TransformBuffer

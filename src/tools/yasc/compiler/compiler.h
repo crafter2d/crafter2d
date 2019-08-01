@@ -40,7 +40,6 @@ private:
 
  // operations
    void createCompileSteps();
-   void createOutputDir();
    void cleanUp();
 
    bool performSteps(ASTNode& node, Steps& steps);

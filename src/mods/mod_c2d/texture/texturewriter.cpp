@@ -7,6 +7,7 @@
 #include <squish.h>
 
 #include "core/graphics/image.h"
+#include "core/graphics/texture.h"
 #include "core/streams/arraystream.h"
 
 bool TextureWriter::write(DataStream& stream, const String& filename)
@@ -16,12 +17,31 @@ bool TextureWriter::write(DataStream& stream, const String& filename)
    {
       stream.writeInt(image.getWidth());
       stream.writeInt(image.getHeight());
-      stream.writeInt(image.getFormat());
+      //stream.writeInt(image.getFormat());
 
       if ( image.getFormat() != 4 )
       {
+         int format;
+         switch ( image.getFormat() )
+         {
+         case 1:
+            format = Graphics::eFormat_Luminance;
+            break;
+         case 2:
+            format = Graphics::eFormat_RG;
+            break;
+         case 3:
+            format = Graphics::eFormat_RGBA;
+            image.addAlphaChannel();
+            break;
+         default:
+            throw new std::runtime_error("Invalid texture format detected");
+         }
+
+         stream.writeInt(format);
          int size = image.getWidth() * image.getHeight() * image.getFormat();
-         stream.writeBlob(image.getBytes(), size);
+         ArrayStream imagestream((const char*)image.getBytes(), size);
+         stream.write(imagestream);
       }
       else
       {
@@ -29,6 +49,7 @@ bool TextureWriter::write(DataStream& stream, const String& filename)
          // libSquish is based on DX9 texture format specification
          // Based on the table for Texture2D the DXT5 maps to the new BC3 format
 
+         stream.writeInt(4);
          int flags = squish::kDxt5 | squish::kColourClusterFit;
          int size = squish::GetStorageRequirements(image.getWidth(), image.getHeight(), flags);
          std::unique_ptr<unsigned char[]> data(new unsigned char[size]);
@@ -39,6 +60,10 @@ bool TextureWriter::write(DataStream& stream, const String& filename)
       }
 
       return true;
+   }
+   else
+   {
+      // error!
    }
 
    return false;

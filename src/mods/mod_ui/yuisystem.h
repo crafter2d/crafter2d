@@ -20,12 +20,17 @@
 #ifndef YAUI_SYSTEM_H
 #define YAUI_SYSTEM_H
 
+#include <vector>
+
 #include "core/graphics/renderable.h"
+
+#include "yuibatchrenderer.h"
 
 namespace Graphics
 {
    class Device;
    class RenderContext;
+   class Viewport;
 }
 
 class Client;
@@ -36,6 +41,7 @@ namespace c2d
    class ContentManager;
    class ScriptManager;
    class YuiWindow;
+   class YuiTheme;
 
    // The Yet Another UI system
    class YuiSystem : public Graphics::Renderable
@@ -45,8 +51,9 @@ namespace c2d
       YuiSystem();
       
     // overrides
-      void update(Graphics::RenderContext& context, float delta);
-      void render(Graphics::RenderContext& context);
+      void viewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport) override;
+      void update(Graphics::RenderContext& context, float delta) override;
+      void render(Graphics::RenderContext& context) override;
 
     // operations
       bool initialize(ContentManager& contentmgr, ScriptManager& scriptmgr, int width, int height);
@@ -54,10 +61,14 @@ namespace c2d
       YuiWindow* load(const String& file);
 
    private:
+      using Windows = std::vector<YuiWindow*>;
 
     // members
-      ContentManager* mpContentManager;
-      ScriptManager*  mpScriptManager;
+      ContentManager*   mpContentManager;
+      ScriptManager*    mpScriptManager;
+      YuiTheme*         mpCurrentTheme;
+      YuiBatchRenderer  mRenderer;
+      Windows           mWindows;
    };
 }
 

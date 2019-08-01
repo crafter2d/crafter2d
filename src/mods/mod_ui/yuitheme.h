@@ -3,18 +3,34 @@
 
 #include "core/content/content.h"
 
+namespace Graphics
+{
+   class RenderContext;
+}
+
 class String;
 
 namespace c2d
 {
    class ContentManager;
+   class TileAtlas;
 
    class YuiTheme : public IContent
    {
    public:
+      explicit YuiTheme(TileAtlas* patlas);
+
+      const TileAtlas& getAtlas() const {
+         return *mpAtlas;
+      }
 
     // operations
-      bool load(ContentManager& contentmgr, const String& filename);
+      void bind(Graphics::RenderContext& context);
+
+   private:
+
+    // members
+      TileAtlas* mpAtlas;
    };
 }
 

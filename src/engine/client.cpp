@@ -187,7 +187,6 @@ namespace c2d
 
    void Client::render(float delta)
    {
-      static const String sPaint = UTEXT("paint");
       static float start = 1.0;
       static int frame = 0;
 
@@ -205,27 +204,24 @@ namespace c2d
          mpWorldRenderer->render(*mpRenderContext, delta);
       }
 
-      //mpScript->prepareCall(1);
-      //mpScript->arg(0, delta);
-      //mpScript->call(sPaint);
+      if ( mpOverlay )
+      {
+         mpOverlay->render(*mpRenderContext);
+      }
 
       frame++;
       start += delta;
       if ( start >= 1.0f )
       {
          mFpsMsg = UTEXT("FPS: {0}").arg(0, frame);
-         mFPSMessage.create(Vector(20, 50), *mpFont, mFpsMsg);
+         mFPSMessage.create(Vector(30, 30), *mpFont, mFpsMsg);
          start = 0;
          frame = 0;
       }
 
-      Vector pos(40, 100);
       mpRenderContext->drawText(mFPSMessage);
 
-      if ( mpOverlay )
-      {
-         mpOverlay->render(*mpRenderContext);
-      }
+      mpRenderContext->getTextRenderer().render(*mpRenderContext);
 
       mpDevice->present();
       mpWindow->display();
@@ -268,8 +264,16 @@ namespace c2d
 
    void Client::setOverlay(Graphics::Renderable* prenderable)
    {
-      delete mpOverlay;
-      mpOverlay = prenderable;
+      if ( prenderable != mpOverlay )
+      {
+         delete mpOverlay;
+         mpOverlay = prenderable;
+
+         if ( mpOverlay )
+         {
+            mpOverlay->viewportChanged(*mpRenderContext, mViewport);
+         }
+      }
    }
 
    void Client::setWindow(GameWindow* pwindow)
@@ -624,6 +628,11 @@ namespace c2d
       if ( hasWorld() )
       {
          getWorld().onViewportChanged(*mpRenderContext, mViewport);
+      }
+
+      if ( mpOverlay )
+      {
+         mpOverlay->viewportChanged(*mpRenderContext, mViewport);
       }
 
       Variant args[2];

@@ -31,4 +31,13 @@ namespace c2d
       bottom(0)
    {
    }
+
+   Rect::Rect(float x, float y, float width, float height):
+      left(x),
+      right(x + width),
+      top(y),
+      bottom(y + height)
+   {
+   }
+
 }
