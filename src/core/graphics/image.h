@@ -12,6 +12,7 @@ namespace c2d
    {
    public:
       Image();
+      Image(int width, int height, int format);
       ~Image();
 
     // get/set
@@ -37,6 +38,7 @@ namespace c2d
 
       bool load(DataStream& data);
       bool load(const String& filename);
+      void save(const String& filename);
 
       void addAlphaChannel();
 

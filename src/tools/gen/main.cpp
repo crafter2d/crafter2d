@@ -5,48 +5,38 @@
 #include "core/defines.h"
 #include "core/commandline/commandline.h"
 
-#include "generators/projectgenerator.h"
-#include "generators/modulegenerator.h"
-#include "generators/classgenerator.h"
+#include "generators/generatormanager.h"
+
+using namespace c2d::gen;
 
 int main(int argc, char *argv[])
 {
    CommandLine cmdline(argc, argv);
 
-   std::cout << "Gen tool - Copyright 2014 - Jeroen Broekhuizen" << std::endl;
+   std::cout << "Gen tool - Copyright 2019 - Jeroen Broekhuizen" << std::endl;
 
    if ( cmdline.size() == 0 )
    {
       // print help information
-      std::cout << "Invalid arguments.";
+      std::cout << "No generation command found.";
    }
    else
    {
       const CommandLineArgument& argument = cmdline[0];
       ASSERT(argument.getType() == CommandLineArgument::eCommand);
 
-      Generator* pgenerator = nullptr;
-      if ( argument.getName() == UTEXT("project") )
+      Generator* pgenerator = GeneratorManager::getInstance().find(argument.getName());
+      if ( pgenerator )
       {
-         pgenerator = new ProjectGenerator();
-      }
-      else if ( argument.getName() == UTEXT("mod") )
-      {
-         pgenerator = new ModuleGenerator();
-      }
-      else if ( argument.getName() == UTEXT("class") )
-      {
-         pgenerator = new ClassGenerator();
+         if ( !pgenerator->generate(cmdline) )
+         {
+            return -2;
+         }
       }
       else
       {
-         std::cerr << argument.getName().toUtf8() << " is not a valid target.";
+         std::cerr << argument.getName().toUtf8() << " is not a valid command.";
          return -1;
-      }
-
-      if ( !pgenerator->generate(cmdline) )
-      {
-         return -2;
       }
    }
 

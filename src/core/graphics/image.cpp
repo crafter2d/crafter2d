@@ -5,11 +5,14 @@
 #define STBI_NO_LINEAR
 
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "core/defines.h"
 #include "core/string/string.h"
 #include "core/streams/datastream.h"
+
 #include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
 
 namespace c2d
 {
@@ -18,6 +21,14 @@ namespace c2d
       mWidth(-1),
       mHeight(-1),
       mFormat(-1)
+   {
+   }
+
+   Image::Image(int width, int height, int format):
+      mpBytes((stbi_uc*)STBI_MALLOC(width * height * format)),
+      mWidth(width),
+      mHeight(height),
+      mFormat(format)
    {
    }
 
@@ -47,6 +58,11 @@ namespace c2d
          return false;
       }
       return true;
+   }
+
+   void Image::save(const String& filename)
+   {
+      stbi_write_png(filename.toUtf8().c_str(), mWidth, mHeight, mFormat, mpBytes, 0);
    }
 
    void Image::addAlphaChannel()

@@ -6,15 +6,21 @@
 
 class String;
 
-class ModuleGenerator : public Generator
+namespace c2d::gen
 {
-public:
-   virtual bool generate(CommandLine& commandline) override;
+   class ModuleGenerator : public Generator
+   {
+   public:
+    // overrides
+      UChar getBriefCommand() const override;
+      const String& getCommand() const override;
+      virtual bool generate(CommandLine& commandline) override;
 
-private:
+   private:
 
- // file generation
-   bool generateContentModule(CommandLine& commandline, const String& path, const String& name);
-};
+      // file generation
+      bool generateContentModule(CommandLine& commandline, const String& path, const String& name);
+   };
+}
 
 #endif // MODULE_GENERATOR_H

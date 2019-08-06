@@ -6,17 +6,22 @@
 
 class String;
 
-class ProjectGenerator : public Generator
+namespace c2d::gen
 {
-public:
-   ProjectGenerator();
+   class ProjectGenerator : public Generator
+   {
+   public:
+      ProjectGenerator();
 
- // generation
-   virtual bool generate(CommandLine& commandline);
+    // overrides
+      UChar getBriefCommand() const override;
+      const String& getCommand() const override;
+      bool generate(CommandLine& commandline) override;
 
-private:
- // operations
-   bool write(const String& filename, const String& output, bool force);
-};
+   private:
+      // operations
+      bool write(const String& filename, const String& output, bool force);
+   };
+}
 
 #endif // PROJECT_GENERATOR_H
