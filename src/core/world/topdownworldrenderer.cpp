@@ -34,10 +34,8 @@ TopDownWorldRenderer::~TopDownWorldRenderer()
 
 // - Rendering
 
-void TopDownWorldRenderer::render(Graphics::RenderContext& context, float delta)
+void TopDownWorldRenderer::render(Graphics::RenderContext& context)
 {
-   C2D_UNUSED(delta);
-   
    // draw the scenegraph
    getWorld().draw(context);
 

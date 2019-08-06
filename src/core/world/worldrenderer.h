@@ -35,7 +35,7 @@ public:
    explicit WorldRenderer(World& world);
    virtual ~WorldRenderer() = 0;
 
-   virtual void render(Graphics::RenderContext& context, float delta) = 0;
+   virtual void render(Graphics::RenderContext& context) = 0;
 
  // get/set
    World& getWorld() {

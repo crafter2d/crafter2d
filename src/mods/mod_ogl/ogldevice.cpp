@@ -21,7 +21,6 @@
 
 #include "core/log/log.h"
 #include "core/graphics/blendstatedesc.h"
-#include "core/graphics/image.h"
 
 #include "text/oglglyphprovider.h"
 #include "text/oglfont.h"

@@ -23,6 +23,7 @@ namespace c2d
    class YuiBatchRenderer
    {
    public:
+      YuiBatchRenderer() = default;
 
       bool create(Graphics::Device& device);
       void viewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport);

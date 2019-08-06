@@ -26,6 +26,8 @@
 
 class DataStream;
 
+static const float sEpsilon = 0.001f;
+
 class CORE_API Vector
 {
 public:
@@ -58,11 +60,11 @@ public:
    }
 
    bool operator== (const Vector& v) const {
-      return (fabs(v.x - x) < 0.001) && (fabs(v.y - y) < 0.001);
+      return (fabs(v.x - x) < sEpsilon) && (fabs(v.y - y) < sEpsilon);
    }
    
    bool operator!= (const Vector& v) const {
-      return (fabs(v.x - x) >= 0.001) || (fabs(v.y - y) >= 0.001);
+      return (fabs(v.x - x) >= sEpsilon) || (fabs(v.y - y) >= sEpsilon);
    }
 
  // - Operations
@@ -116,14 +118,14 @@ public:
       return Vector(-x, -y);
    }
 
-   Vector& operator= (const Vector& v) {
+   Vector& operator= (const Vector& v) noexcept {
       x = v.x;
       y = v.y;
       return *this;
    }
 
 
-   Vector& operator= (Vector&& v) {
+   Vector& operator= (Vector&& v) noexcept {
       x = v.x;
       y = v.y;
 

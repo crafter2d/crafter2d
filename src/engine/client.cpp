@@ -201,7 +201,7 @@ namespace c2d
             //mSoundManager.setPlayerPosition(controler.getPosition());
          }
 
-         mpWorldRenderer->render(*mpRenderContext, delta);
+         mpWorldRenderer->render(*mpRenderContext);
       }
 
       if ( mpOverlay )

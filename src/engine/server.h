@@ -40,7 +40,7 @@ namespace c2d
    /// @author Jeroen Broekhuizen
    ///
    /// Implement the server process of the Client/Server model.
-   class ENGINE_API Server : public Process
+   class Server : public Process
    {
    public:
       typedef std::map<int, Player*> ClientMap;

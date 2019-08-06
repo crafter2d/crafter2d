@@ -45,7 +45,7 @@ namespace c2d
    ///
    /// Abstract base class for processes. This class provides the common functionality 
    /// needed for client and server processes.
-   class ENGINE_API Process
+   class Process
    {
    public:
       explicit       Process();

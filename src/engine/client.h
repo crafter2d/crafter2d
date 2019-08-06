@@ -75,7 +75,7 @@ namespace c2d
    ///
    /// The Client class implements the client process of the Client/Server model this engine is build
    /// upon.
-   class ENGINE_API Client : public Process
+   class Client : public Process
    {
    public:
       typedef std::map<Id, bool> Requests;

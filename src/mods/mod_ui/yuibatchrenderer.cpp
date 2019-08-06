@@ -69,8 +69,6 @@ namespace c2d
       mpContext = &context;
       mpAtlas = &atlas;
 
-      
-
       mpData = reinterpret_cast<PTVertex*>(mpVB->lock(context));
    }
 
