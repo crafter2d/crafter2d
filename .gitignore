@@ -38,3 +38,5 @@ Package.StoreAssociation.xml
 
 /rel
 /src/unittest/test
+*.suo
+/.vs

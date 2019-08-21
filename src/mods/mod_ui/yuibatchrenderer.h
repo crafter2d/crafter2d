@@ -3,6 +3,7 @@
 
 #include "core/math/matrix4.h"
 #include "core/math/vertex.h"
+#include "core/math/rect.h"
 
 namespace Graphics
 {
@@ -17,7 +18,6 @@ namespace Graphics
 
 namespace c2d
 {
-   class Rect;
    class TileAtlas;
 
    class YuiBatchRenderer
@@ -31,7 +31,7 @@ namespace c2d
       void beginRendering(Graphics::RenderContext& context, const TileAtlas& atlas);
       void endRendering();
 
-      void renderRect(const Rect& rect, int tile);
+      void renderRect(const RectF& rect, int tile);
 
    private:
       struct PTVertex

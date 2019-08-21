@@ -18,26 +18,3 @@
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
 #include "rect.h"
-#ifdef JENGINE_INLINE
-#  include "rect.inl"
-#endif
-
-namespace c2d
-{
-   Rect::Rect() :
-      left(0),
-      right(0),
-      top(0),
-      bottom(0)
-   {
-   }
-
-   Rect::Rect(float x, float y, float width, float height):
-      left(x),
-      right(x + width),
-      top(y),
-      bottom(y + height)
-   {
-   }
-
-}

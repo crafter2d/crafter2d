@@ -20,11 +20,11 @@ namespace c2d
       void render(YuiBatchRenderer& renderer);
 
    private:
-      using List = std::vector<std::pair<Rect, int>>;
+      using List = std::vector<std::pair<RectF, int>>;
 
       // members
       YuiSystem&     mSystem;
-      Rect           mWindowRect;
+      RectF          mWindowRect;
       List           mRenderList;
    };
 }

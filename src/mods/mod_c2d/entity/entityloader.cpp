@@ -1,6 +1,7 @@
 
 #include "entityloader.h"
 
+#include <memory>
 #include <stdexcept>
 
 #include "core/content/contentmanager.h"

@@ -30,11 +30,35 @@ namespace c2d
       mHeight(height),
       mFormat(format)
    {
+      memset(mpBytes, 0, width * height * format);
+   }
+
+   Image::Image(Image&& that) noexcept:
+      mpBytes(that.mpBytes),
+      mWidth(that.mWidth),
+      mHeight(that.mHeight),
+      mFormat(that.mFormat)
+   {
+      that.mpBytes = nullptr;
    }
 
    Image::~Image()
    {
       stbi_image_free(mpBytes);
+   }
+
+   Image& Image::operator=(Image&& that) noexcept
+   {
+      if ( this != &that )
+      {
+         mpBytes = that.mpBytes;
+         mWidth = that.mWidth;
+         mHeight = that.mHeight;
+         mFormat = that.mFormat;
+
+         that.mpBytes = nullptr;
+      }
+      return *this;
    }
 
    bool Image::load(DataStream& data)
@@ -70,5 +94,51 @@ namespace c2d
       // the conversion functions frees the old image, so no need to do that here as well
       mpBytes = stbi__convert_format(mpBytes, mFormat, STBI_rgb_alpha, mWidth, mHeight);
       mFormat = 4;
+   }
+
+   /// For now we only support the same image format
+   bool Image::paint(int xpos, int ypos, const Image& image)
+   {
+      ASSERT(image.mWidth <= mWidth);
+      ASSERT(image.mHeight <= mHeight);
+
+      if ( image.getFormat() != mFormat )
+         return false;
+
+      size_t srcpitch = mFormat * image.mWidth;
+      size_t dstpitch = mFormat * mWidth;
+      stbi_uc* psrcdata = image.mpBytes;
+      stbi_uc* pdstdata = &mpBytes[ypos * dstpitch + xpos * mFormat];
+      for ( int y = 0; y < image.mHeight; ++y )
+      {
+         memcpy(pdstdata, psrcdata, srcpitch);
+         pdstdata += dstpitch;
+         psrcdata += srcpitch;
+      }
+
+      return true;
+   }
+
+   bool Image::paintRotated90(int xpos, int ypos, const Image& image)
+   {
+      ASSERT(image.mWidth <= mWidth);
+      ASSERT(image.mHeight <= mHeight);
+
+      if ( image.getFormat() != mFormat )
+         return false;
+
+      size_t srcpitch = mFormat * image.mWidth;
+      size_t dstpitch = mFormat * mWidth;
+      for ( int r = 0; r < image.mHeight; ++r )
+      {
+         for ( int c = 0; c < image.mWidth; ++c )
+         {
+            stbi_uc* pdest = &mpBytes[(ypos + c) * dstpitch + ((xpos + image.mHeight - r - 1) * mFormat)];
+            stbi_uc* psrc  = &image.mpBytes[r * srcpitch + c * mFormat];
+            memcpy(pdest, psrc, mFormat);
+         }
+      }
+
+      return true;
    }
 }

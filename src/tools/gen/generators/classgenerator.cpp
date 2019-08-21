@@ -44,7 +44,7 @@ namespace c2d::gen
       return sCommand;
    }
 
-   bool ClassGenerator::generate(CommandLine& commandline)
+   bool ClassGenerator::generate(const CommandLine& commandline)
    {
       const CommandLineArgument* pnameargument = commandline.getArgument(UTEXT("name"));
       const CommandLineArgument* pbaseargument = commandline.getArgument(UTEXT("base"));

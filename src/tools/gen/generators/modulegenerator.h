@@ -14,12 +14,12 @@ namespace c2d::gen
     // overrides
       UChar getBriefCommand() const override;
       const String& getCommand() const override;
-      virtual bool generate(CommandLine& commandline) override;
+      virtual bool generate(const CommandLine& commandline) override;
 
    private:
 
       // file generation
-      bool generateContentModule(CommandLine& commandline, const String& path, const String& name);
+      bool generateContentModule(const CommandLine& commandline, const String& path, const String& name);
    };
 }
 

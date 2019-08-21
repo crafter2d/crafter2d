@@ -10,7 +10,6 @@
 #include "core/graphics/utils.h"
 #include "core/graphics/vertexbuffer.h"
 #include "core/graphics/viewport.h"
-#include "core/math/rect.h"
 
 using namespace Graphics;
 
@@ -92,7 +91,7 @@ namespace c2d
       mpContext = nullptr;
    }
 
-   void YuiBatchRenderer::renderRect(const Rect& rect, int tile)
+   void YuiBatchRenderer::renderRect(const RectF& rect, int tile)
    {
       auto& tileinfo = mpAtlas->getTile(tile);
 

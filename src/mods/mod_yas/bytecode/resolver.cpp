@@ -1,6 +1,8 @@
 
 #include "resolver.h"
 
+#include <stdexcept>
+
 #include "core/streams/filereaderstream.h"
 #include "core/string/string.h"
 #include "core/string/stringinterface.h"

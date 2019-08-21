@@ -29,7 +29,7 @@ project "Core"
 		excludes { "../src/core/vfs/linux*.*", "../src/core/system/linux*.*" }
 		includedirs { pkgconf.cflags('libzip'), pkgconf.cflags('iconv') }
 		libdirs { pkgconf.libdir('libzip'), pkgconf.libdir('iconv') }
-					
+							
 	filter "system:Linux"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
@@ -46,4 +46,10 @@ project "Core"
 				
 	-- set IDE specific settings
 	filter "action:vs*"
-		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp", pkgconf.libs('iconv'), pkgconf.libs('libzip') }
+		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp", pkgconf.libs('iconv') }
+		
+	filter { "action:vs*", "configurations:Debug" }
+		links { pkgconf.libs('libzip') .. 'd' }
+		
+	filter { "action:vs*", "configurations:Release" }
+		links { pkgconf.libs('libzip') }

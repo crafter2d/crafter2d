@@ -24,30 +24,59 @@
 
 namespace c2d
 {
-   class CORE_API Rect
+   template<typename T>
+   class Rect
    {
    public:
-      Rect();
-      Rect(float x, float y, float width, float height);
+      Rect() :
+         left(0),
+         right(0),
+         top(0),
+         bottom(0)
+      {
+      }
+
+      Rect(T x, T y, T width, T height) :
+         left(x),
+         right(x + width),
+         top(y),
+         bottom(y + height)
+      {
+      }
 
     // query
-      float width() const {
+      T width() const {
          return right - left;
       }
-      float height() const {
+      T height() const {
          return bottom - top;
       }
 
-    // data
-      float left;
-      float right;
-      float top;
-      float bottom;
-   };
-}
+      void set(T x, T y, T width, T height) {
+         left = x;
+         top = y;
+         right = x + width;
+         bottom = y + height;
+      }
 
-#ifdef JENGINE_INLINE
-#  include "rect.inl"
-#endif
+      bool contains(const Rect<T>& rect) const
+      {
+         return rect.left >= left
+             && rect.top >= top
+             && rect.right <= right
+             && rect.bottom <= bottom;
+      }
+
+    // data
+      T left;
+      T right;
+      T top;
+      T bottom;
+   };
+
+   using RectF = Rect<float>;
+   using RectI = Rect<int>;
+
+}
 
 #endif // RECT_H

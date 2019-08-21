@@ -47,19 +47,19 @@ namespace c2d
       mWindowRect.bottom = 80;
       mWindowRect.right = 150;
 
-      Rect leftcorner(mWindowRect.left, mWindowRect.top, 18, 18);
-      Rect rightcorner(mWindowRect.right - 18, mWindowRect.top, 18, 18);
+      RectF leftcorner(mWindowRect.left, mWindowRect.top, 18, 18);
+      RectF rightcorner(mWindowRect.right - 18, mWindowRect.top, 18, 18);
 
       mRenderList.reserve(7);
       mRenderList.push_back({ leftcorner, 0 });
       mRenderList.push_back({ rightcorner, 1 });
-      mRenderList.emplace_back(Rect(mWindowRect.left, mWindowRect.bottom - 18, 18, 18), 2);
-      mRenderList.emplace_back(Rect(rightcorner.left, mWindowRect.bottom - 18, 18, 18), 3);
+      mRenderList.emplace_back(RectF(mWindowRect.left, mWindowRect.bottom - 18, 18, 18), 2);
+      mRenderList.emplace_back(RectF(rightcorner.left, mWindowRect.bottom - 18, 18, 18), 3);
 
       float sideborder_height = mWindowRect.height() - 36;
-      mRenderList.emplace_back(Rect(leftcorner.right, mWindowRect.top, mWindowRect.width() - 36, mWindowRect.height()), 4);
-      mRenderList.emplace_back(Rect(leftcorner.left, leftcorner.bottom, 18, sideborder_height), 4);
-      mRenderList.emplace_back(Rect(rightcorner.left, rightcorner.bottom, 18, sideborder_height), 4);
+      mRenderList.emplace_back(RectF(leftcorner.right, mWindowRect.top, mWindowRect.width() - 36, mWindowRect.height()), 4);
+      mRenderList.emplace_back(RectF(leftcorner.left, leftcorner.bottom, 18, sideborder_height), 4);
+      mRenderList.emplace_back(RectF(rightcorner.left, rightcorner.bottom, 18, sideborder_height), 4);
 
       return true;
    }

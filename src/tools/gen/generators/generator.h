@@ -18,7 +18,7 @@ namespace c2d::gen
       // interface
       virtual UChar getBriefCommand() const = 0;
       virtual const String& getCommand() const = 0;
-      virtual bool generate(CommandLine& commandline) = 0;
+      virtual bool generate(const CommandLine& commandline) = 0;
 
    protected:
 

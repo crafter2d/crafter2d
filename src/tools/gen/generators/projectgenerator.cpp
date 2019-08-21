@@ -41,7 +41,7 @@ namespace c2d::gen
       return sCommand;
    }
 
-   bool ProjectGenerator::generate(CommandLine& commandline)
+   bool ProjectGenerator::generate(const CommandLine& commandline)
    {
       const CommandLineArgument* ppackageargument = commandline.getArgument(String("package"));
       const CommandLineArgument* pnameargument = commandline.getArgument(String("name"));

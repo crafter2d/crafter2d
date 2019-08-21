@@ -3,6 +3,8 @@
 
 #include "core/core_base.h"
 
+#include "core/math/rect.h"
+
 class DataStream;
 class String;
 
@@ -13,7 +15,9 @@ namespace c2d
    public:
       Image();
       Image(int width, int height, int format);
+      Image(Image&& that) noexcept;
       ~Image();
+      Image& operator=(Image&& that) noexcept;
 
     // get/set
       unsigned char* getBytes() const {
@@ -41,6 +45,9 @@ namespace c2d
       void save(const String& filename);
 
       void addAlphaChannel();
+
+      bool paint(int x, int y, const Image& image);
+      bool paintRotated90(int x, int y, const Image& image);
 
    private:
 

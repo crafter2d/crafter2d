@@ -24,7 +24,7 @@ namespace c2d::gen
       return sCommand;
    }
 
-   bool ModuleGenerator::generate(CommandLine& commandline)
+   bool ModuleGenerator::generate(const CommandLine& commandline)
    {
       // get the module name
       const CommandLineArgument* parg = commandline.getArgument(UTEXT("name"));
@@ -65,7 +65,7 @@ namespace c2d::gen
       return false;
    }
 
-   bool ModuleGenerator::generateContentModule(CommandLine& commandline, const String& path, const String& name)
+   bool ModuleGenerator::generateContentModule(const CommandLine& commandline, const String& path, const String& name)
    {
       FileSystem::getInstance().copyFile(UTEXT("../projects/templates/mod_dllmain.tpl"), File::concat(path, UTEXT("dllmain.cpp")));
 

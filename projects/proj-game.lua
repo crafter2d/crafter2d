@@ -14,24 +14,20 @@ project "Game"
 	includedirs { "../src" }
 	
 	filter "configurations:Debug"
-		defines { "_DEBUG", "TIXML_USE_STL" }
+		defines { "_DEBUG" }
 		targetsuffix "d"
 		symbols "On"
 		
 	filter "configurations:Release"
-		defines { "NDEBUG", "TIXML_USE_STL" }
+		defines { "NDEBUG" }
 		optimize "On"
 
 	-- System
 	filter "system:Windows"
 		defines { "WIN32" }
-		includedirs { 	path.join(libdir, "sdl/include"),
-						pkgconf.cflags('tinyxml')
-					}
+		includedirs { path.join(libdir, "sdl/include") }
 
-		libdirs { 	path.join(libdir, "sdl/lib"),
-					pkgconf.libdir('tinyxml'),
-				}
+		libdirs { path.join(libdir, "sdl/lib") }
 		
 		links { "Core", "Engine", "SDLmain", "SDL", "user32", "vfw32", "ws2_32" }
 
@@ -40,18 +36,10 @@ project "Game"
         excludes { "../src/game/win32*.*" }
         libdirs { "../bin" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
-        links { "SDL", "tinyxml" }
+        links { "SDL" }
 
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored", "-lEngined" }
 
     filter { "system:linux", "Release" }
         linkoptions { "-lCore", "-lEngine" }
-
-	-- Toolsets
-	filter { "action:vs*", "Debug" }
-		links { pkgconf.libs('tinyxml') .. 'd' }
-			
-	filter { "action:vs*", "Release" }
-		links { pkgconf.libs('tinyxml') }
-

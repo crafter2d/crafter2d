@@ -1,6 +1,8 @@
 
 #include "particlecomponentloader.h"
 
+#include <memory>
+
 #include "core/string/string.h"
 #include "core/defines.h"
 

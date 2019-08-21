@@ -46,7 +46,7 @@ project "Engine"
 		links { "gdi32", "user32", "vfw32", "ws2_32" }
 		
 	configuration { "vs*", "Debug" }
-		links { pkgconf.libs('box2d') .. '_d' }
+		links { pkgconf.libs('box2d') .. 'd' }
 				
 	configuration { "vs*", "Release" }
 		links { pkgconf.libs('box2d') }

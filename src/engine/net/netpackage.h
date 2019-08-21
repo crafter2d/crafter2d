@@ -129,7 +129,7 @@ typedef ObjectHandle<NetPackage> PackageHandle;
 
 struct lessPackage
 {
-   bool operator()(const PackageHandle& left, const PackageHandle& right)
+   bool operator()(const PackageHandle& left, const PackageHandle& right) const
    {
       return left->getNumber() < right->getNumber();
    }

@@ -16,7 +16,7 @@ namespace c2d::gen
     // overrides
       UChar getBriefCommand() const override;
       const String& getCommand() const override;
-      bool generate(CommandLine& commandline) override;
+      bool generate(const CommandLine& commandline) override;
 
    private:
       // operations

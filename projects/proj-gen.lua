@@ -25,14 +25,14 @@ project "Gen"
     -- Systems
 	filter "system:Windows"
 		defines { "WIN32", "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS" }
-        links { "Core" }
+        links { "Core", "Xml" }
 		includedirs { path.join(libdir, "ctemplate/include"),
 					  path.join(libdir, "icu/include")}
 
 		libdirs { path.join(libdir, "ctemplate/lib") }
 	
 	filter { "system:Windows", "Debug" }
-		links { "libctemplate-debug" }
+		links { "libctemplated" }
 			
 	filter { "system:Windows", "Release" }
 		links { "libctemplate" }
@@ -44,7 +44,7 @@ project "Gen"
         libdirs { "..\bin" }
 
 	filter { "system:linux", "Debug" }
-        linkoptions { "-lCored", "-lEngined" }
+        linkoptions { "-lCored", "-lEngined", "-lXml" }
 
     filter { "system:linux", "Release" }
-        linkoptions { "-lCore", "-lEngine" }
+        linkoptions { "-lCore", "-lEngine", "-lXml" }

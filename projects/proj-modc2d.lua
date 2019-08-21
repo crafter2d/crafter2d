@@ -29,10 +29,10 @@ project "mod_c2d"
 		links { "Core", "Engine", "Xml", "d3dcompiler.lib" }
 	
 	filter { "system:Windows", "Debug" }
-		links { "zlib1_d.lib", "squishd.lib" }
+		links { "zlibd.lib", "squishd.lib" }
 			
 	filter { "system:Windows", "Release" }
-		links { "zlib1.lib", "squish.lib" }
+		links { "zlib.lib", "squish.lib" }
 
 	filter "system:Linux"
 		defines { "LINUX" }
@@ -41,7 +41,7 @@ project "mod_c2d"
         libdirs { "../bin" }
 		
     filter { "system:linux", "Debug" }
-        linkoptions { "-lCored", "-lXml" }
+        linkoptions { "-lCored", "-lXmld" }
 
     filter { "system:linux", "Release" }
         linkoptions { "-lCore", "-lXml" }
