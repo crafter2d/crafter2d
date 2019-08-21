@@ -1,8 +1,6 @@
 // compiler.cpp : Defines the entry point for the console application.
 //
 
-#include <tinyxml.h>
-
 #include "core/streams/bufferedstream.h"
 #include "core/content/contentwriter.h"
 #include "core/content/contentmanager.h"
@@ -13,6 +11,8 @@
 #include "core/vfs/stdiofile.h"
 #include "core/vfs/filesystem.h"
 #include "core/system/exception.h"
+
+#include "xml/xml/xmltools.h"
 
 using namespace c2d;
 
@@ -30,17 +30,7 @@ String determineExtension(const String& filename)
 
    if ( extension == UTEXT("xml") )
    {
-      TiXmlDocument doc(filename.toUtf8().c_str());
-      if ( !doc.LoadFile() )
-      {
-         throw new std::exception("File does not contain proper XML.");
-      }
-
-      TiXmlElement* proot = doc.FirstChildElement();
-      if ( proot != nullptr )
-      {
-         extension = String::fromUtf8(proot->Value());
-      }
+      extension = c2d::xml::tools::rootElement(filename);
    }
    return extension;
 }
