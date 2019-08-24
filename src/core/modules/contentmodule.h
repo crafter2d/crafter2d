@@ -2,6 +2,8 @@
 #ifndef CONTENT_MODULE_H
 #define CONTENT_MODULE_H
 
+#include <vector>
+
 #include "core/string/string.h"
 #include "core/modules/module.h"
 #include "core/defines.h"
@@ -42,9 +44,9 @@ namespace c2d
    private:
 
       // data
-      String         mSupportedFiles;
-      ContentReader* mpReader;
-      ContentWriter* mpWriter;
+      std::vector<String>  mSupportedFiles;
+      ContentReader*       mpReader;
+      ContentWriter*       mpWriter;
    };
 }
 

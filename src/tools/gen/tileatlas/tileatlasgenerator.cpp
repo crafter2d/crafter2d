@@ -88,7 +88,9 @@ namespace c2d::gen
    {
       Image sheet(2048, 2048, 4);
 
-      String sheetname = mName + UTEXT("sheet_{0}").arg(0, mSheetIndex++);
+      size_t pos = mOut.lastIndexOf(FileSystem::getNativeSeparator());
+      String path = mOut.right(pos + 1);
+      String sheetname = File::concat(path, mName + UTEXT("sheet_{0}").arg(0, mSheetIndex++));
 
       writer.startElement(UTEXT("tilesheet"));
       writer.setAttribute(UTEXT("name"), sheetname);
@@ -103,6 +105,7 @@ namespace c2d::gen
             sheet.paint(node.mCoords.left, node.mCoords.top, node.mImage);
 
          String name = node.mFilename.right(mPath.length() + 1);
+         name.replace(L'\\', L'/');
 
          writer.startElement(UTEXT("tile"));
          writer.setAttribute(UTEXT("name"), name);
@@ -112,7 +115,7 @@ namespace c2d::gen
          writer.setAttribute(UTEXT("h"), node.mCoords.height());
          if ( node.mRotated )
          {
-            writer.setAttribute(UTEXT("rotated"), UTEXT("true"));
+            writer.setAttribute(UTEXT("r"), UTEXT("true"));
          }
          writer.endElement();
       }

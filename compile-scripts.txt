@@ -1,5 +1,13 @@
--p ..\scripts;..\demo\scripts -r -o ..\data\scripts ..\demo\scripts\*.as
+# build the demo script files
+yasc -p ..\scripts;..\src\mods\mod_ui\scripts -r -o ..\demo\build\scripts ..\demo\scripts\*.as
 
+# generate the tile atlas
+gen t -path ..\demo\images -out ..\demo\tileatlas -name tile
+
+# compile all files (that can be compiled)
+compiler ..\demo\* ..\demo\build
+
+# compile the unit test script files
 -p ..\scripts;..\src\unittest\unittests -r -o ..\src\unittest\compiledtests ..\src\unittest\unittests\*.as
 
 -p ..\scripts -r -o ..\compiled ..\scripts\*.as
