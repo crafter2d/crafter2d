@@ -11,4 +11,15 @@ class Hero extends Entity
 	{
 		setInitialFaceDirection(Entity.FACE_RIGHT);
 	}
+	
+	public void collide(Object target, int side, boolean begin)
+	{
+		super.collide(target, side, begin);
+		
+		if ( target instanceof Mushroom )
+		{
+			Entity entity = (Entity)target;
+			entity.remove();
+		}
+	}
 }

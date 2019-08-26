@@ -218,17 +218,37 @@ namespace c2d
 
       if ( sprite.isFlipped() )
       {
-         pbuffer[0].tex.set(tileinfo.coord.right, tileinfo.coord.top);
-         pbuffer[1].tex.set(tileinfo.coord.left, tileinfo.coord.top);
-         pbuffer[2].tex.set(tileinfo.coord.left, tileinfo.coord.bottom);
-         pbuffer[3].tex.set(tileinfo.coord.right, tileinfo.coord.bottom);
+         if ( tileinfo.rotated )
+         {
+            pbuffer[0].tex.set(tileinfo.coord.left, tileinfo.coord.top);
+            pbuffer[1].tex.set(tileinfo.coord.left, tileinfo.coord.bottom);
+            pbuffer[2].tex.set(tileinfo.coord.right, tileinfo.coord.bottom);
+            pbuffer[3].tex.set(tileinfo.coord.right, tileinfo.coord.top);
+         }
+         else
+         {
+            pbuffer[0].tex.set(tileinfo.coord.right, tileinfo.coord.top);
+            pbuffer[1].tex.set(tileinfo.coord.left, tileinfo.coord.top);
+            pbuffer[2].tex.set(tileinfo.coord.left, tileinfo.coord.bottom);
+            pbuffer[3].tex.set(tileinfo.coord.right, tileinfo.coord.bottom);
+         }
       }
       else
       {
-         pbuffer[0].tex.set(tileinfo.coord.left, tileinfo.coord.top);
-         pbuffer[1].tex.set(tileinfo.coord.right, tileinfo.coord.top);
-         pbuffer[2].tex.set(tileinfo.coord.right, tileinfo.coord.bottom);
-         pbuffer[3].tex.set(tileinfo.coord.left, tileinfo.coord.bottom);
+         if ( tileinfo.rotated )
+         {
+            pbuffer[0].tex.set(tileinfo.coord.right, tileinfo.coord.top);
+            pbuffer[1].tex.set(tileinfo.coord.right, tileinfo.coord.bottom);
+            pbuffer[2].tex.set(tileinfo.coord.left, tileinfo.coord.bottom);
+            pbuffer[3].tex.set(tileinfo.coord.left, tileinfo.coord.top);
+         }
+         else
+         {
+            pbuffer[0].tex.set(tileinfo.coord.left, tileinfo.coord.top);
+            pbuffer[1].tex.set(tileinfo.coord.right, tileinfo.coord.top);
+            pbuffer[2].tex.set(tileinfo.coord.right, tileinfo.coord.bottom);
+            pbuffer[3].tex.set(tileinfo.coord.left, tileinfo.coord.bottom);
+         }
       }
    }
 

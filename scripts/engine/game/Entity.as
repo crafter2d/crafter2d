@@ -9,6 +9,7 @@ class Entity implements Collidable
 	private Controller mController;
 	private AIState mState;
 	private Body mBody;
+	private World mWorld;
 	
 	private int mDirection = FACE_RIGHT;
 	private int mOnGround = 0;
@@ -33,6 +34,8 @@ class Entity implements Collidable
 		World world = process.getWorld();
 		world.add(object);
 		
+		object.mWorld = world;
+		
 		return object;
 	}
 	
@@ -50,6 +53,11 @@ class Entity implements Collidable
 	
 	public void onCreated()
 	{
+	}
+	
+	public void remove()
+	{
+		mWorld.remove(this);
 	}
 	
 	// - Get/set

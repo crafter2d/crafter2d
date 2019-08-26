@@ -466,6 +466,14 @@ void World_add(ScriptCall& accessor)
    world.addEntity(pentity);
 }
 
+void World_remove(ScriptCall& accessor)
+{
+   GET_THIS(World, world);
+
+   Entity& entity = accessor.get<Entity>(1);
+   world.removeEntity(entity.getId());
+}
+
 void World_setObjectLayer(ScriptCall& accessor)
 {
    GET_THIS(World, world);
@@ -991,6 +999,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("finalize()"), World_destruct);
    pregistrator->addFunction(UTEXT("getName()"), World_getName);
    pregistrator->addFunction(UTEXT("add(engine.game.Entity)"), World_add);
+   pregistrator->addFunction(UTEXT("remove(engine.game.Entity)"), World_remove);
    pregistrator->addFunction(UTEXT("setObjectLayer(int)"), World_setObjectLayer);
    pregistrator->addFunction(UTEXT("setFollowMode(int)"), World_setFollowMode);
    pregistrator->addFunction(UTEXT("getFollowActor()"), World_getFollowActor);

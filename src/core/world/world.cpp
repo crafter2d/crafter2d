@@ -435,11 +435,14 @@ void World::addEntity(Entity* pentity)
 void World::removeEntity(Id id)
 {
    EntityMap::iterator it = mEntities.find(id);
-   ASSERT(it != mEntities.end());
+   if ( it != mEntities.end() )
+   {
+      notifyEntityRemoved(*(it->second));
 
-   notifyEntityRemoved(*(it->second));
+      delete it->second;
 
-   mEntities.erase(it);
+      mEntities.erase(it);
+   }
 }
 
 //////////////////////////////////////////////////////////////////////////

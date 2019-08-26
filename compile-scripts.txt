@@ -10,7 +10,8 @@ compiler ..\demo\* ..\demo\build
 # compile the unit test script files
 -p ..\scripts;..\src\unittest\unittests -r -o ..\src\unittest\compiledtests ..\src\unittest\unittests\*.as
 
--p ..\scripts -r -o ..\compiled ..\scripts\*.as
+# compile the engine scripts
+yasc -p ..\scripts -r -o ..\data\scripts ..\scripts\*.as
 
 
 ..\demo\tileatlas\tileatlas.xml ..\demo\build\tileatlas\tileatlas.c2d

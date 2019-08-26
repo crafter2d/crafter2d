@@ -12,6 +12,7 @@ class CORE_API PhysicsComponent : public Component, IBodyListener
 {
 public:
    PhysicsComponent();
+   virtual ~PhysicsComponent();
 
  // get/set
    bool              hasBody() const;

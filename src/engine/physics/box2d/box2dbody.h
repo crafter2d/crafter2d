@@ -35,6 +35,11 @@ public:
 
  // get/set
    b2Body& getBox2DBody();
+   b2Body* useBox2DBody() {
+      auto ptmp = mpBody;
+      mpBody = nullptr;
+      return ptmp;
+   }
 
    void setHalfSize(const Size& size);
 
@@ -45,6 +50,12 @@ public:
  // query
    int getSide(const b2Fixture& sensor) const;
    virtual const String& getClassName() const;
+   bool isAlive() const {
+      return mpBody != nullptr;
+   }
+   bool isDead() const {
+      return mpBody == nullptr;
+   }
    
  // forces
    virtual void applyForce(const Vector& force);
@@ -66,7 +77,7 @@ protected:
 private:
    b2Fixture* createSensor(float halfx, float halfy, const b2Vec2& center);
 
-   b2Body& mBody;
+   b2Body* mpBody;
    float   mHalfWidth;
    float   mHalfHeight;
 

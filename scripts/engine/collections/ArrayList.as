@@ -41,7 +41,10 @@ class ArrayList<T> implements Iterable<T>
 		int index = indexOf(element);
 		if ( index < mElements )
 		{
-			// copy all from index+1 to index
+			for ( ; index < mElements; index++ )
+			{
+				mArray[index] = mArray[index + 1];
+			}
 		}
 	}
 	

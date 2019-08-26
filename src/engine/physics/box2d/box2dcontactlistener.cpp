@@ -86,6 +86,9 @@ void Box2DContactListener::collisionObjectObject(b2Contact* pcontact, b2Fixture&
    if ( side > 0 && mSimulator.hasListener() )
    {
       Box2DBody* pobjectbody = static_cast<Box2DBody*>(object.GetBody()->GetUserData());
-      mSimulator.getListener().collideObjectObject(pbody->getEntity(), pobjectbody->getEntity(), side, begin);
+      if ( pobjectbody->isAlive() )
+      {
+         mSimulator.getListener().collideObjectObject(pbody->getEntity(), pobjectbody->getEntity(), side, begin);
+      }
    }
 }

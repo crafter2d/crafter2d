@@ -35,21 +35,21 @@ String Box2DBody::sClassName = UTEXT("box2d.Box2DBody");
 
 Box2DBody::Box2DBody(Simulator& simulator, b2Body& body):
    Body(simulator),
-   mBody(body),
+   mpBody(&body),
    mHalfWidth(0),
    mHalfHeight(0),
    mpBottomSensor(nullptr),
    mpLeftSensor(nullptr),
    mpRightSensor(nullptr)
 {
-   mBody.SetUserData(this);
+   mpBody->SetUserData(this);
 }
 
 Box2DBody::~Box2DBody()
 {
-   if ( mBody.GetWorld() != nullptr )
+   if ( mpBody && mpBody->GetWorld() != nullptr )
    {
-      mBody.GetWorld()->DestroyBody(&mBody);
+      mpBody->GetWorld()->DestroyBody(mpBody);
    }
 }
 
@@ -57,7 +57,8 @@ Box2DBody::~Box2DBody()
 
 b2Body& Box2DBody::getBox2DBody()
 {
-   return mBody;
+   ASSERT_PTR(mpBody);
+   return *mpBody;
 }
 
 void Box2DBody::setHalfSize(const Size& size)
@@ -68,12 +69,12 @@ void Box2DBody::setHalfSize(const Size& size)
 
 float Box2DBody::getMass() const
 {
-   return mBody.GetMass();
+   return mpBody->GetMass();
 }
 
 Vector Box2DBody::getLinearVelocity() const
 {
-   return Vector(mBody.GetLinearVelocity().x, mBody.GetLinearVelocity().y);
+   return Vector(mpBody->GetLinearVelocity().x, mpBody->GetLinearVelocity().y);
 }
 
 // query
@@ -114,7 +115,7 @@ b2Fixture* Box2DBody::createSensor(float halfx, float halfy, const b2Vec2& cente
    sensordef.shape    = &sensor;
    sensordef.userData = (void*)& Box2DSimulator::eObject;
 
-   return mBody.CreateFixture(&sensordef);
+   return mpBody->CreateFixture(&sensordef);
 }
 
 // forces
@@ -123,26 +124,26 @@ void Box2DBody::applyForce(const Vector& force)
 {
    // mBody.ApplyForce(b2Vec2(force.x, force.y), mBody.GetWorldCenter());
    b2Vec2 v = Box2DSimulator::vectorToB2(force);
-   b2Vec2 vel = mBody.GetLinearVelocity();
+   b2Vec2 vel = mpBody->GetLinearVelocity();
    vel.x = v.x;
-   mBody.SetLinearVelocity(vel);
+   mpBody->SetLinearVelocity(vel);
 }
 
 void Box2DBody::applyForce(const Vector& force, const Vector& pos)
 {
-   mBody.ApplyForce(b2Vec2(force.x, force.y), Box2DSimulator::vectorToB2(pos), true);
+   mpBody->ApplyForce(b2Vec2(force.x, force.y), Box2DSimulator::vectorToB2(pos), true);
 }
 
 void Box2DBody::applyImpulse(const Vector& impulse)
 {
-   mBody.ApplyLinearImpulse(b2Vec2(impulse.x, impulse.y), mBody.GetWorldCenter(), true);
+   mpBody->ApplyLinearImpulse(b2Vec2(impulse.x, impulse.y), mpBody->GetWorldCenter(), true);
 }
 
 // - Notifications
 
 void Box2DBody::notifyPositionChanged()
 {
-   mBody.SetTransform(Box2DSimulator::vectorToB2(getPosition()), getAngle());
+   mpBody->SetTransform(Box2DSimulator::vectorToB2(getPosition()), getAngle());
 }
 
 // integration
@@ -154,7 +155,7 @@ void Box2DBody::integrate(float timestep)
 
 void Box2DBody::finalize()
 {
-   XForm transform(Box2DSimulator::b2ToVector(mBody.GetPosition()), mBody.GetAngle());
+   XForm transform(Box2DSimulator::b2ToVector(mpBody->GetPosition()), mpBody->GetAngle());
    updateTransform(transform);
 
    firePositionChanged();

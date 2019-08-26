@@ -24,7 +24,7 @@ namespace c2d
 
    AnimationState::AnimationState():
       mDelta(0.0f),
-      mAnimation(0),
+      mAnimation(-1),
       mAnimFrame(0),
       mTileIndex(0)
    {

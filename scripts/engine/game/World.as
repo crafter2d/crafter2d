@@ -28,6 +28,13 @@ class World
 		mEntities.add(entity);
 	}
 	
+	public void remove(Entity actor)
+	{
+		mEntities.remove(actor);
+	
+		native(actor);
+	}
+	
 	// Collision detection
 	
 	public void onObjectCollision(Object source, Object target, int side, boolean begin)

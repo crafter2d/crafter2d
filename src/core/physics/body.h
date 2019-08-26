@@ -64,6 +64,7 @@ public:
  // maintenance
    void addListener(IBodyListener* plistener);
    void link(Body& to, const JointDefinition& definition);
+   void die();
    
  // generators
    void  addForceGenerator(ForceGenerator* pgenerator);

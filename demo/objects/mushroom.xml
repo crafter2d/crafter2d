@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- char sprite -->
+
+<entity class="demo.Mushroom" name="mushroom">
+   <sprite width="50" height="41">
+      <animations speed="125">
+         <anim name="idle">
+			<tile name="Mushroom_2.png" />
+		 </anim>
+      </animations>
+   </sprite>
+   <body inertia="1" mass="80" rotate="0">
+      <shape type="box" halfx="25" halfy="20.5" />
+   </body>
+</entity>

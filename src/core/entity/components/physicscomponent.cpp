@@ -17,6 +17,12 @@ PhysicsComponent::PhysicsComponent():
 {
 }
 
+PhysicsComponent::~PhysicsComponent()
+{
+   if ( mpBody )
+      mpBody->die();
+}
+
 // - Get/set
 
 void PhysicsComponent::setBody(Body& body)

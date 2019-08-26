@@ -166,6 +166,10 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
 
 void Box2DSimulator::removeBody(Body& body)
 {
+   Simulator::removeBody(body);
+
+   b2Body* pb2body = static_cast<Box2DBody&>(body).useBox2DBody();
+   mDeadBodies.push_back(pb2body);
 }
 
 void Box2DSimulator::createLink(const Body& left, const Body& right, const JointDefinition& definition)
@@ -253,6 +257,12 @@ void Box2DSimulator::run(float timestep)
 {
    static const int velocityIterations = 8;
    static const int positionIterations = 3;
+
+   for ( auto pbody : mDeadBodies )
+   {
+      mpb2World->DestroyBody(pbody);
+   }
+   mDeadBodies.clear();
 
    getBodies().integrate(timestep);
 

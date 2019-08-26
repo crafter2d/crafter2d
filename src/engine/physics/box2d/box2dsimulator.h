@@ -20,6 +20,8 @@
 #ifndef BOX2D_SIMULATOR_H_
 #define BOX2D_SIMULATOR_H_
 
+#include <vector>
+
 #include "core/physics/simulator.h"
 
 #include "box2dcontactlistener.h"
@@ -79,6 +81,7 @@ protected:
 
 private:
    typedef std::vector<Box2DJoint*> Joints;
+   using DeadBodies = std::vector<b2Body*>;
 
  // creation
    //void createRopeJoint(b2Body& left, b2Body& right, RopeJointDefinition& definition);
@@ -87,9 +90,12 @@ private:
  // operations
    void cleanUp();
 
+ // members
    b2World*             mpb2World;
    Box2DContactListener mContactListener;
    Joints               mJoints;
+   DeadBodies           mDeadBodies;
+
 
    static const String  sClassName;
 };

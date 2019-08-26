@@ -76,6 +76,11 @@ void Body::link(Body& to, const JointDefinition& definition)
    mSimulator.createLink(*this, to, definition);
 }
 
+void Body::die()
+{
+   mSimulator.removeBody(*this);
+}
+
 // ----------------------------------
 // -- Force Generators
 // ----------------------------------
