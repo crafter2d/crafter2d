@@ -32,6 +32,15 @@ const char* FileReaderStream::getData() const
    return mpData;
 }
 
+char* FileReaderStream::useData()
+{
+   char* pdata = nullptr;
+   std::swap(pdata, mpData);
+   mSize = 0;
+   mPos = 0;
+   return pdata;
+}
+
 // - Operations
 
 void FileReaderStream::buffer()

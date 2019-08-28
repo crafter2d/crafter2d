@@ -62,6 +62,8 @@ public:
 
    virtual int mkdir(const String& path) = 0;
    virtual bool copyFile(const String& from, const String& to) = 0;
+   virtual bool moveFile(const String& from, const String& to) = 0;
+   virtual bool deleteFile(const String& filename) = 0;
 
    virtual UChar getSeparator() const = 0;
    virtual bool find(const String& mask, std::vector<String>& result, bool recursive) = 0;

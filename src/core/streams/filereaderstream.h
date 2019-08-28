@@ -14,6 +14,7 @@ public:
  // query 
    virtual int         getDataSize() const override;
    virtual const char* getData() const override;
+           char*       useData();
    
 protected:
  // reading interface

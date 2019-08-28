@@ -22,16 +22,13 @@
 
 #include "core/core_base.h"
 
-#include <zip.h>
 #include <memory>
 #include <string>
 
 class String;
 
-class CORE_API ZipFile
+class CORE_API ZipFile final
 {
-   using ZipPtr = std::unique_ptr<zip_t, int(*)(zip_t*)>;
-
 public:
    static bool isZip(const String& path);
 
@@ -44,13 +41,15 @@ public:
    bool create(const String& path);
    bool open(const String& path);
 
-   void addFile(const String& name, void* pdata, int size);
+   void addFile(const String& name, const void* pdata, int size);
    bool readFile(const String& name, void*& pdata, int &size, bool casesensitive);
 
 private:
    bool open(const String& path, int flags);
 
-   ZipPtr      mZip;
+   class ZipImpl;
+
+   ZipImpl*    mImpl;
    std::string mError;
 };
 

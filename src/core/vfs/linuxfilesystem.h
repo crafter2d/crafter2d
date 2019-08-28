@@ -33,7 +33,8 @@ public:
 
    virtual int mkdir(const String& path) override;
    virtual bool copyFile(const String& from, const String& to) override;
-
+   virtual bool moveFile(const String& from, const String& to) override;
+   
    virtual UChar getSeparator() const override;
    virtual bool find(const String& mask, std::vector<String>& result, bool recursive) override;
 

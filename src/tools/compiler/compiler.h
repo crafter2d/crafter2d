@@ -24,16 +24,20 @@ namespace c2d::compiler
 
       void init();
       int compile();
+      void bundle();
 
       String determineExtension(const String& filename);
       void save(const String& filename, const DataStream& stream);
       c2d::ContentModule& resolveModule(c2d::ModuleManager& mgr, const String& extension);
-      
+      void findFiles();
+
     // members
       CommandLine mCommandLine;
       std::vector<String> mFiles;
       String      mSource;
       String      mDest;
+      bool        mBundle;
+      bool        mMove;
    };
 }
 

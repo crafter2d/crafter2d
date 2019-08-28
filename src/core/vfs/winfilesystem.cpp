@@ -66,6 +66,16 @@ bool WinFileSystem::copyFile(const String& from, const String& to)
   return SUCCEEDED(CopyFile2(from.c_str(), to.c_str(), nullptr));
 }
 
+bool WinFileSystem::moveFile(const String& from, const String& to)
+{
+   return MoveFileEx(from.c_str(), to.c_str(), MOVEFILE_REPLACE_EXISTING) == TRUE;
+}
+
+bool WinFileSystem::deleteFile(const String& filename)
+{
+   return DeleteFile(filename.c_str()) == TRUE;
+}
+
 bool WinFileSystem::recursiveFind(const FindInfo& findinfo, std::vector<String>& result)
 {
    WIN32_FIND_DATA ffd;

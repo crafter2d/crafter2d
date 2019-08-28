@@ -32,7 +32,9 @@ public:
    virtual ~WinFileSystem();
 
    virtual int mkdir(const String& path) override;
-   virtual bool copyFile(const String& from, const String& to);
+   virtual bool copyFile(const String& from, const String& to) override;
+   virtual bool moveFile(const String& from, const String& to) override;
+   virtual bool deleteFile(const String& filename) override;
 
    virtual UChar getSeparator() const override;
    virtual bool find(const String& mask, std::vector<String>& result, bool recursive) override;

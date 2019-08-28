@@ -49,6 +49,11 @@ bool LinuxFileSystem::copyFile(const String& from, const String& to)
    return true;
 }
 
+bool LinuxFileSystem::moveFile(const String&, const String&)
+{
+   return true;
+}
+
 UChar LinuxFileSystem::getSeparator() const
 {
    return L'/';

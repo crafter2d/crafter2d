@@ -21,9 +21,23 @@
 
 #include <memory>
 #include <string.h>
+#include <zip.h>
 
 #include "core/string/string.h"
 #include "core/defines.h"
+
+using ZipPtr = std::unique_ptr<zip_t, int(*)(zip_t*)>;
+
+class ZipFile::ZipImpl
+{
+public:
+   ZipImpl::ZipImpl():
+      zipptr(nullptr, nullptr)
+   {
+   }
+
+   ZipPtr zipptr;
+};
 
 bool ZipFile::isZip(const String& path)
 {
@@ -32,18 +46,20 @@ bool ZipFile::isZip(const String& path)
 }
 
 ZipFile::ZipFile():
-   mZip(nullptr, nullptr)
+   mImpl(new ZipImpl()),
+   mError()
 {
 }
 
 ZipFile::ZipFile(const String &path):
-   mZip(nullptr, nullptr)
+   ZipFile()
 {
-   open(path);
+   open(path, 0);
 }
 
 ZipFile::~ZipFile()
 {
+   delete mImpl;
 }
 
 bool ZipFile::open(const String& path)
@@ -71,7 +87,7 @@ bool ZipFile::open(const String& path, int flags)
       return false;
    }
 
-   mZip = { pzip, zip_close };
+   mImpl->zipptr = { pzip, zip_close };
 
    return true;
 }
@@ -87,19 +103,19 @@ std::string toZipPath(const String& path)
 bool ZipFile::contains(const String& name) const
 {
    std::string file = toZipPath(name);
-   auto index = zip_name_locate(mZip.get(), file.c_str(), 0);
+   auto index = zip_name_locate(mImpl->zipptr.get(), file.c_str(), 0);
    return index >= 0;
 }
 
-void ZipFile::addFile(const String& name, void* pdata, int size)
+void ZipFile::addFile(const String& name, const void* pdata, int size)
 {
-   struct zip_source* psource = zip_source_buffer(mZip.get(), pdata, size, 0);
+   struct zip_source* psource = zip_source_buffer(mImpl->zipptr.get(), pdata, size, 0);
 
    std::string file = toZipPath(name);
-   if ( zip_file_add(mZip.get(), file.c_str(), psource, ZIP_FL_ENC_UTF_8) < 0 )
+   if ( zip_file_add(mImpl->zipptr.get(), file.c_str(), psource, ZIP_FL_ENC_UTF_8) < 0 )
    {
       zip_source_free(psource);
-      mError = zip_strerror(mZip.get());
+      mError = zip_strerror(mImpl->zipptr.get());
    }
 }
 
@@ -107,21 +123,22 @@ bool ZipFile::readFile(const String& name, void*& pdata, int &size, bool casesen
 {
    C2D_UNUSED(casesensitive);
    
+   zip_t* pzip = mImpl->zipptr.get();
    std::string file = toZipPath(name);
-   auto index = zip_name_locate(mZip.get(), file.c_str(), 0);
+   auto index = zip_name_locate(pzip, file.c_str(), 0);
    if ( index < 0 )
    {
       return false;
    }
 
    struct zip_stat stat;
-   if ( zip_stat_index(mZip.get(), index, 0, &stat) != 0 )
+   if ( zip_stat_index(pzip, index, 0, &stat) != 0 )
    {
-      mError = zip_strerror(mZip.get());
+      mError = zip_strerror(pzip);
       return false;
    }
 
-   struct zip_file* pfile = zip_fopen(mZip.get(), file.c_str(), 0);
+   struct zip_file* pfile = zip_fopen(pzip, file.c_str(), 0);
 
    if ( pfile != nullptr )
    {

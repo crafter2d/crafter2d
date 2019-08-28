@@ -4,8 +4,10 @@
 #include "compiler.h"
 
 #include <algorithm>
+#include <iostream>
 
 #include "core/streams/bufferedstream.h"
+#include "core/streams/filereaderstream.h"
 #include "core/content/contentwriter.h"
 #include "core/content/contentmanager.h"
 #include "core/string/string.h"
@@ -14,6 +16,7 @@
 #include "core/modules/modulemanager.h"
 #include "core/vfs/stdiofile.h"
 #include "core/vfs/filesystem.h"
+#include "core/vfs/zipfile.h"
 #include "core/system/exception.h"
 
 #include "xml/xml/xmltools.h"
@@ -40,7 +43,9 @@ namespace c2d::compiler
       mCommandLine(argc, pargv),
       mFiles(),
       mSource(),
-      mDest()
+      mDest(),
+      mBundle(false),
+      mMove(false)
    {
       init();
    }
@@ -55,39 +60,16 @@ namespace c2d::compiler
       mSource = mCommandLine[0].getName();
       mDest = mCommandLine[1].getName();
 
-      FileSystem::getInstance().find(mSource, mFiles, true);
-
-      if ( mSource[mSource.length() - 1] == L'*' )
+      if ( mCommandLine.hasArgument(UTEXT("bundle")) )
       {
-         mSource = mSource.left(mSource.length() - 1);
-
-         std::vector<String> filters;
-         filters.push_back(UTEXT("*.craft"));
-         filters.push_back(mSource + UTEXT("images"));
-         filters.push_back(mSource + UTEXT("build"));
-         filters.push_back(mSource + UTEXT("scripts"));
-         
-         auto it = std::remove_if(mFiles.begin(), mFiles.end(), [filters](String& file) {
-            for ( auto& filter : filters )
-            {
-               size_t pos;
-               if ( filter[0] == L'*' )
-               {
-                  String realfilter = filter.right(1);
-                  pos = file.indexOf(realfilter);
-               }
-               else
-                  pos = file.indexOf(filter);
-
-               if ( pos != String::npos )
-               {
-                  return true;
-               }
-            }
-            return false;
-         });
-         mFiles.erase(it, mFiles.end());
+         mBundle = true;
       }
+      if ( mCommandLine.hasArgument(UTEXT("move")) )
+      {
+         mMove = true;
+      }
+
+      findFiles();
    }
 
    int Compiler::exec()
@@ -95,6 +77,9 @@ namespace c2d::compiler
       int ret = compile();
       if ( ret == SUCCESS )
       {
+         if ( mBundle )
+            bundle();
+
          printf("Compiled successfully!");
       }
       else
@@ -146,6 +131,38 @@ namespace c2d::compiler
       return SUCCESS;
    }
 
+   void Compiler::bundle()
+   {
+      String zipname = UTEXT("game.zip");
+      String zippath = File::concat(mDest, zipname);
+      FileSystem::getInstance().deleteFile(zippath);
+
+      std::cout << "Bundeling all files..." << std::endl;
+
+      {
+         ZipFile zip;
+         zip.create(zippath);
+
+         std::vector<String> files;
+         FileSystem::getInstance().find(File::concat(mDest, UTEXT("*")), files, true);
+         for ( auto& filename : files )
+         {
+            StdioFile file;
+            if ( file.open(filename) )
+            {
+               String name = filename.right(mDest.length() + 1);
+               FileReaderStream stream(file);
+               zip.addFile(name, stream.useData(), stream.getDataSize());
+            }
+         }
+      }
+
+      if ( mMove )
+      {
+         FileSystem::getInstance().moveFile(zippath, zipname);
+      }
+   }
+
    String Compiler::determineExtension(const String& filename)
    {
       std::size_t index = filename.lastIndexOf(L'.');
@@ -193,5 +210,42 @@ namespace c2d::compiler
       }
 
       throw new std::runtime_error("There is no compiler found for this file");
+   }
+
+   void Compiler::findFiles()
+   {
+      FileSystem::getInstance().find(mSource, mFiles, true);
+
+      if ( mSource[mSource.length() - 1] == L'*' )
+      {
+         mSource = mSource.left(mSource.length() - 1);
+
+         std::vector<String> filters;
+         filters.push_back(UTEXT("*.craft"));
+         filters.push_back(mSource + UTEXT("images"));
+         filters.push_back(mSource + UTEXT("build"));
+         filters.push_back(mSource + UTEXT("scripts"));
+
+         auto it = std::remove_if(mFiles.begin(), mFiles.end(), [filters](String& file) {
+            for ( auto& filter : filters )
+            {
+               size_t pos;
+               if ( filter[0] == L'*' )
+               {
+                  String realfilter = filter.right(1);
+                  pos = file.indexOf(realfilter);
+               }
+               else
+                  pos = file.indexOf(filter);
+
+               if ( pos != String::npos )
+               {
+                  return true;
+               }
+            }
+            return false;
+         });
+         mFiles.erase(it, mFiles.end());
+      }
    }
 }
