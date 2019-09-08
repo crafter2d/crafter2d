@@ -12,4 +12,16 @@
    <body inertia="1" mass="80" rotate="0">
       <shape type="box" halfx="25" halfy="20.5" />
    </body>
+   <particlesystem gravity="0">
+      <emit count="5" rate="100" max="15" />
+      <init>
+	     <area value="0,0" range="-20,0:40,0" />
+	     <lifetime value="3" range="-0.3:1" />
+		 <size value="2" range="-0.3:1" />
+		 <velocity value="0,-5" range="0,-1:0,2" />
+	  </init>
+	  <update>
+		 <!-- <velocity range="0,-15" /> -->
+	  </update>
+   </particlesystem>
 </entity>

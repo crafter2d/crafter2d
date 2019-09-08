@@ -18,11 +18,14 @@ public:
    int   emitCount;
    float emitRate;
    float gravity;
+   int   max;
 
-   float  initSize;
-   Range  initSizeRange;
-   float  initLifeTime;
-   Range  initLifeTimeRange;
+   Vector      initArea;
+   VectorRange initAreaRange;
+   float       initSize;
+   Range       initSizeRange;
+   float       initLifeTime;
+   Range       initLifeTimeRange;
    Vector      initVelocity;
    VectorRange initVelocityRange;
    

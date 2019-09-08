@@ -24,7 +24,7 @@ namespace c2d
          CHILD(tile)
       ELEMENT_IMP(anim)
          ATTRIBUTE_INIT(name, Attribute::eMandatory, Attribute::eString, "")
-         CHILD_INIT(tile, Child::eOneOrAny, false)
+         CHILD_INIT(tile, Child::eOneOrAny)
       ELEMENT_END
 
       ELEMENT_DEF(animations)
@@ -32,17 +32,25 @@ namespace c2d
          CHILD(anim)
       ELEMENT_IMP(animations)
          ATTRIBUTE_INIT(speed, Attribute::eOptional, Attribute::eFloat, 100.0f)
-         CHILD_INIT(anim, Child::eOneOrAny, false)
+         CHILD_INIT(anim, Child::eOneOrAny)
+      ELEMENT_END
+
+      ELEMENT_DEF(texture)
+         ATTRIBUTE(std::string, name)
+      ELEMENT_IMP(texture)
+         ATTRIBUTE_INIT(name, Attribute::eMandatory, Attribute::eString, "")
       ELEMENT_END
 
       ELEMENT_DEF(sprite)
          ATTRIBUTE(int, width)
          ATTRIBUTE(int, height)
          CHILD(animations)
+         CHILD(texture)
       ELEMENT_IMP(sprite)
          ATTRIBUTE_INIT(width, Attribute::eMandatory, Attribute::eInt, 0)
          ATTRIBUTE_INIT(height, Attribute::eMandatory, Attribute::eInt, 0)
-         CHILD_INIT(animations, Child::eOne, false)
+         CHILD_INIT(animations, Child::eOne)
+         CHILD_INIT(texture, Child::eZeroOrOne)
       ELEMENT_END
    }
 

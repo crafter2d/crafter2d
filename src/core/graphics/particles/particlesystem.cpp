@@ -40,6 +40,7 @@ ParticleSystem::ParticleSystem():
    mPosition(),
    mParticles(),
 	mpTexture(nullptr),
+   mInitAreaRange(),
    mInitSize(),
    mInitSizeRange(),
    mInitLifeTime(),
@@ -48,6 +49,7 @@ ParticleSystem::ParticleSystem():
    mInitVelocityRange(),
    emittime(0.0f),
    updatetime(0.0f),
+   mEmitCount(10),
    mEmitRate(0.0f),
    mGravity(0.0f),
    active(0),
@@ -75,7 +77,6 @@ bool ParticleSystem::create(Device& device)
    emittime = 0.0f;
    updatetime = 0.0f;
    active = 0;
-   maxActive = 2000;
    mParticles.initialize(maxActive);
 
 	return true;
@@ -109,12 +110,14 @@ void ParticleSystem::update(float delta)
 	}
 
    emittime += delta;
-   while ( emittime > mEmitRate && active < maxActive )
+   if ( emittime > mEmitRate )
    {
-      // fetch a particle from the free list
-      Particle& particle = mParticles[active++];
-      initParticle(particle);
-
+      for ( int i = 0; i < mEmitCount && active < maxActive; ++i )
+      {
+         // fetch a particle from the free list
+         Particle& particle = mParticles[active++];
+         initParticle(particle);
+      }
       emittime -= mEmitRate;
    }
 }
@@ -122,7 +125,7 @@ void ParticleSystem::update(float delta)
 void ParticleSystem::initParticle(Particle& particle)
 {
    // initialize the particle
-   particle.pos = mPosition;
+   particle.pos = mPosition + mInitAreaRange.getRandomVector();
    particle.color.set(0, 0, 1);
    particle.activeTime = 0;
    particle.size = mInitSize + mInitSizeRange.getRandom();

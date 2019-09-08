@@ -42,7 +42,7 @@ namespace c2d::xml
       {
          TiXmlElement* pxmlChild = pxmlElement->FirstChildElement(pchild->getName());
 
-         if ( pxmlChild == nullptr && !pchild->mAllowEmpty )
+         if ( pxmlChild == nullptr && !pchild->requiresChildren() )
          {
             // error!
             continue;
@@ -56,9 +56,20 @@ namespace c2d::xml
             pxmlChild = pxmlChild->NextSiblingElement(pchild->getName());
          }
 
-         if ( pchild->mRelation >= Child::eOne && !pchild->hasInstances() )
+         if ( pchild->mRelation == Child::eOne || pchild->mRelation == Child::eOneOrAny )
          {
-            std::string msg = "Relation " + pchild->getName() + " has no elements";
+            if ( !pchild->hasInstances() ) {
+               std::string msg = "Relation " + pchild->getName() + " has no elements";
+               throw std::runtime_error(msg);
+            }
+         }
+         
+         if ( pchild->mRelation == Child::eOne || pchild->mRelation == Child::eZeroOrOne )
+         {
+            if ( pchild->instanceCount() > 1 ) {
+               std::string msg = "Relation " + pchild->getName() + " has more than one element";
+               throw std::runtime_error(msg);
+            }
          }
       }
    }

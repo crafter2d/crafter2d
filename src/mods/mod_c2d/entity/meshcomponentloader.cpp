@@ -48,24 +48,33 @@ namespace c2d
       pdefinition->mWidth = sprite.width;
       pdefinition->mHeight = sprite.height;
 
-      auto& animations = sprite.animationss[0];
-
-      // query the animation speed (in mm)
-      pdefinition->mAnimationSpeed = animations.speed / 1000.0f;
-
-      for ( auto& anim : animations.anims )
+      if ( sprite.animationss.size() > 0 )
       {
-         MeshComponentDefinitionProto::Animation animation;
+         auto& animations = sprite.animationss[0];
 
-         auto it = AnimationMap.find(anim.name);
-         animation.type = it != AnimationMap.end() ? it->second : c2d::Animator::eInvalid;
+         // query the animation speed (in mm)
+         pdefinition->mAnimationSpeed = animations.speed / 1000.0f;
 
-         for ( auto& tile : anim.tiles )
+         for ( auto& anim : animations.anims )
          {
-            animation.frames.push_back(String(tile.name));
-         }
+            MeshComponentDefinitionProto::Animation animation;
 
-         pdefinition->mAnimations.push_back(std::move(animation));
+            auto it = AnimationMap.find(anim.name);
+            animation.type = it != AnimationMap.end() ? it->second : c2d::Animator::eInvalid;
+
+            for ( auto& tile : anim.tiles )
+            {
+               animation.frames.push_back(String(tile.name));
+            }
+
+            pdefinition->mAnimations.push_back(std::move(animation));
+         }
+      }
+
+      if ( sprite.textures.size() == 1 )
+      {
+         auto& texture = sprite.textures[0];
+         pdefinition->mTexture = texture.name;
       }
 
       return pdefinition.release();

@@ -148,6 +148,12 @@ void Entity::addComponent(Component* pcomponent)
    mComponents.addComponent(pcomponent);
 }
 
+void Entity::scale(float scale)
+{
+   ComponentMessage message(ComponentInterface::eScaleMsg, &scale);
+   mComponents.postMessage(message);
+}
+
 void Entity::flip()
 {
    ComponentMessage message(ComponentInterface::eFlipMsg);

@@ -41,7 +41,7 @@ void SpriteAtlasReader::readAtlas(SpriteAtlas& atlas)
                         sheet.clear();
 
                         QString imageName = reader.attributes().value("name").toString();
-                        int index = imageName.indexOf('/');
+                        int index = imageName.indexOf(QDir::separator());
                         if ( index != -1 )
                         {
                             imageName = imageName.right(imageName.length() - index - 1);

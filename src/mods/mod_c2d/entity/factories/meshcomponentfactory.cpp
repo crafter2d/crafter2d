@@ -28,11 +28,20 @@ Component* MeshComponentFactory::instantiate(const ComponentDefinitionProto& def
    const MeshComponentDefinitionProto& meshdef = static_cast<const MeshComponentDefinitionProto&>(definition);
 
    Size meshsize(meshdef.mWidth, meshdef.mHeight);
-   c2d::Animator* panimator = createAnimator(meshdef);
 
    auto pspritedef = new c2d::SpriteDefinition();
    pspritedef->setSize(meshsize);
-   pspritedef->setSpriteAnimator(panimator);
+   
+   if ( meshdef.mTexture.isEmpty() )
+   {
+      c2d::Animator* panimator = createAnimator(meshdef);
+      pspritedef->setSpriteAnimator(panimator);
+   }
+   else
+   {
+      auto& atlas = mDevice.getContext().getSpriteAtlas();
+      pspritedef->setTile(atlas.lookup(meshdef.mTexture));
+   }
 
    return new MeshComponent(c2d::SpriteFactory::create(mDevice, pspritedef));
 }

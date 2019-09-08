@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- char sprite -->
+
+<entity name="tree3">
+   <sprite width="282" height="275">
+      <texture name="Tree_3.png" />
+   </sprite>
+</entity>

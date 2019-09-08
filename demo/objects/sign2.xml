@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- char sprite -->
+
+<entity name="sign2">
+   <sprite width="62" height="64">
+      <texture name="Sign_2.png" />
+   </sprite>
+</entity>

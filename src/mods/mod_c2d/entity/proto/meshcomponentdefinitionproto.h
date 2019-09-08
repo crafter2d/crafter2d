@@ -27,6 +27,7 @@ public:
    int         mHeight;
    float       mAnimationSpeed;
    Animations  mAnimations;
+   String      mTexture;
 
 protected:
  // storage

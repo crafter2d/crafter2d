@@ -5,6 +5,7 @@
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
 #include "core/string/string.h"
+#include "core/string/stringinterface.h"
 
 #include "imagenode.h"
 #include "maxrectsalgorithm.h"
@@ -86,17 +87,15 @@ namespace c2d::gen
 
    void TileAtlasGenerator::createSheet(xml::XmlStreamWriter& writer, const std::vector<ImageNode>& images)
    {
-      Image sheet(2048, 2048, 4);
-
-      size_t pos = mOut.lastIndexOf(FileSystem::getNativeSeparator());
-      String path = mOut.right(pos + 1);
-      String sheetname = File::concat(path, mName + UTEXT("sheet_{0}").arg(0, mSheetIndex++));
+      auto parts = StringInterface::tokenize(mOut, FileSystem::getNativeSeparator());
+      String sheetname = mName + UTEXT("sheet_{0}").arg(0, mSheetIndex++);
 
       writer.startElement(UTEXT("tilesheet"));
-      writer.setAttribute(UTEXT("name"), sheetname);
+      writer.setAttribute(UTEXT("name"), File::concat(parts[parts.size() - 1], sheetname));
       writer.setAttribute(UTEXT("width"), 2048);
       writer.setAttribute(UTEXT("height"), 2048);
 
+      Image sheet(2048, 2048, 4);
       for ( const ImageNode& node : images )
       {
          if ( node.mRotated )

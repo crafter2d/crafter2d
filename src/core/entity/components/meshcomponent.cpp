@@ -43,10 +43,12 @@ void MeshComponent::registerComponent(Components& components)
 {
 	Component::registerComponent(components);
 
+   components.subscribeMessageType(*this, ComponentInterface::ePositionChangedMsg);
    components.subscribeMessageType(*this, ComponentInterface::eUpdatedMsg);
    components.subscribeMessageType(*this, ComponentInterface::eUpdateMsg);
    components.subscribeMessageType(*this, ComponentInterface::eAnimationMsg);
    components.subscribeMessageType(*this, ComponentInterface::eFlipMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eScaleMsg);
    components.subscribeMessageType(*this, ComponentInterface::eRenderMsg);
 }
 
@@ -56,6 +58,7 @@ void MeshComponent::handleMessage(ComponentMessage& message)
 
    switch ( message.getMessageType() )
    {
+   case ePositionChangedMsg:
    case eUpdatedMsg:
       {
          mpSprite->setTransform(getEntity().getTransform());
@@ -63,14 +66,20 @@ void MeshComponent::handleMessage(ComponentMessage& message)
       break;
    case eUpdateMsg:
       {
-         float* pdelta = static_cast<float*>(message.getData());
-         update(*pdelta);
+         float delta = *static_cast<const float*>(message.getData());
+         update(delta);
       }
       break;
    case eAnimationMsg:
       {
          AnimationComponentMessage& msg = static_cast<AnimationComponentMessage&>(message);
          mpSprite->setAnimation(msg.getAnimation());
+      }
+      break;
+   case eScaleMsg:
+      {
+         float scale = *static_cast<const float*>(message.getData());
+         mpSprite->scale(scale);
       }
       break;
    case eFlipMsg:

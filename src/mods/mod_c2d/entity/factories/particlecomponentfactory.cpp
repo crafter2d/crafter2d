@@ -32,9 +32,12 @@ Graphics::ParticleSystem* ParticleComponentFactory::instantiateParticleSystem(co
 {
    ParticleSystem* presult = new ParticleSystem();
 
+   presult->setEmitCount(proto.emitCount);
    presult->setEmitRate(proto.emitRate);
    presult->setGravity(proto.gravity);
+   presult->setMaxActive(proto.max);
 
+   presult->setInitAreaRange(proto.initAreaRange);
    presult->setInitSize(proto.initSize);
    presult->setInitSizeRange(proto.initSizeRange);
    presult->setInitLifeTime(proto.initLifeTime);

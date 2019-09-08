@@ -15,12 +15,12 @@
 #include "undosettile.h"
 
 TileView::TileView():
-    QWidget(NULL),
+    QWidget(nullptr),
     ui(new Ui::TileView),
     mTile(TileSet::INVALID_TILE),
-    mpWorld(NULL),
+    mpWorld(nullptr),
     mEditMode(eLayerMode),
-    mpSelectedBound(NULL),
+    mpSelectedBound(nullptr),
     mSelectedEdge(eNone),
     mUndoStack(),
     mLevel(TileField::eMid),
@@ -40,12 +40,12 @@ TileView::~TileView()
 
 bool TileView::hasWorld() const
 {
-    return mpWorld != NULL;
+    return mpWorld != nullptr;
 }
 
 TileWorld& TileView::getWorld()
 {
-    Q_ASSERT(mpWorld != NULL);
+    Q_ASSERT(mpWorld != nullptr);
     return *mpWorld;
 }
 
@@ -110,7 +110,7 @@ void TileView::paintEvent(QPaintEvent * /*event*/)
 
 void TileView::prepare()
 {
-    if ( mpWorld != NULL )
+    if ( mpWorld != nullptr )
     {
         QSize minsize = mpWorld->getMinimumSize();
         setMinimumSize(minsize);
@@ -188,6 +188,9 @@ void TileView::keyPressEvent(QKeyEvent *pevent)
                     break;
                 case Qt::Key_S:
                     mpWorld->straightenBounds();
+                    break;
+                case Qt::Key_Delete:
+                    mpWorld->deleteSelectedBound();
                     break;
                 }
 

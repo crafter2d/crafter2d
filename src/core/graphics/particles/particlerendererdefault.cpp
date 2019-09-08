@@ -19,6 +19,10 @@ bool c2d::ParticleRendererDefault::create(Graphics::Device & device)
 
 void c2d::ParticleRendererDefault::render(Graphics::RenderContext& context, const ParticleSystems& systems)
 {
+   for ( auto psystem : systems )
+   {
+
+   }
 }
 
 void c2d::ParticleRendererDefault::viewportChanged(Graphics::RenderContext & context, const Graphics::Viewport & viewport)

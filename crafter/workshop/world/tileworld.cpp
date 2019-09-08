@@ -219,6 +219,17 @@ TileBound &TileWorld::addBound(const QPoint& mousepos)
     return *pbound;
 }
 
+void TileWorld::deleteSelectedBound()
+{
+    Q_ASSERT(mpSelectedBound != nullptr);
+    TileBound* pbound = nullptr;
+    std::swap(pbound, mpSelectedBound);
+    int index = mBounds.indexOf(pbound);
+    mBounds.remove(index);
+
+    setDirty(true);
+}
+
 int TileWorld::getTile(const QPoint& mousepos, TileField::Level level) const
 {
     return mpActiveMap != NULL ? mpActiveMap->getTile(mousepos, level) : TileSet::INVALID_TILE;

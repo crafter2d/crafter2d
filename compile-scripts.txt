@@ -7,6 +7,9 @@ gen t -path ..\demo\images -out ..\demo\tileatlas -name tile
 # compile all files (that can be compiled)
 compiler ..\demo\* ..\demo\build
 
+# compile all & bundle and move to bin
+compiler ..\demo\* ..\demo\build -bundle -move
+
 # compile the unit test script files
 -p ..\scripts;..\src\unittest\unittests -r -o ..\src\unittest\compiledtests ..\src\unittest\unittests\*.as
 

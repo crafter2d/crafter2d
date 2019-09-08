@@ -81,7 +81,7 @@ QString NewLayerDialog::getTileset() const
     }
     else
     {
-        QModelIndexList& selection = ui->listView->selectionModel()->selectedRows();
+        QModelIndexList selection = ui->listView->selectionModel()->selectedRows();
         Q_ASSERT( selection.size() == 1 );
         const QModelIndex& index = selection.at(0);
         return QString("images/block.xml");

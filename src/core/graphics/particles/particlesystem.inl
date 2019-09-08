@@ -25,9 +25,19 @@ namespace Graphics
       mGravity = gravity;
    }
 
+   INLINE void ParticleSystem::setEmitCount(int count)
+   {
+      mEmitCount = count;
+   }
+
    INLINE void ParticleSystem::setEmitRate(float rate)
    {
       mEmitRate = 1.0f / rate;
+   }
+
+   INLINE void ParticleSystem::setMaxActive(int max)
+   {
+      maxActive = max;
    }
 
    INLINE void ParticleSystem::setPosition(const Vector& pos)
@@ -48,6 +58,11 @@ namespace Graphics
    INLINE const Texture& ParticleSystem::getTexture() const
    {
       return *mpTexture;
+   }
+
+   INLINE void ParticleSystem::setInitAreaRange(const VectorRange& range)
+   {
+      mInitAreaRange = range;
    }
 
    INLINE float ParticleSystem::getInitSize() const

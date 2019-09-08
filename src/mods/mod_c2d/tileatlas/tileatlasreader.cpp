@@ -21,6 +21,10 @@ IContent * c2d::TileAtlasReader::read(DataStream & stream)
       String textureName;
       stream.readString(textureName);
       auto ptexture = getContentManager().loadContent<Graphics::Texture>(textureName);
+      if ( ptexture == nullptr )
+      {
+         throw std::runtime_error("Could not load tile sheet texture");
+      }
       sheet.setTexture(ptexture);
 
       int nsprites = 0;

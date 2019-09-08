@@ -167,6 +167,8 @@ bool Game::initGame()
 {
    IniFile inifile(UTEXT("game.ini"));
 
+   FileSystem::getInstance().addPath(UTEXT("data.zip"));
+
    String path;
    const CommandLineArgument* parg = mCommandLine.getArgument(UTEXT("path"));
    if ( parg != nullptr )

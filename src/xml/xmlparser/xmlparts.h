@@ -95,21 +95,24 @@ namespace c2d::xml
    public:
       enum Relation { eZeroOrOne, eZeroOrAny, eOne, eOneOrAny };
 
-      Child(const std::string& name, Relation relation, bool allowempty) :
+      Child(const std::string& name, Relation relation) :
          mName(name),
-         mRelation(relation),
-         mAllowEmpty(allowempty)
+         mRelation(relation)
       {
       }
 
       const std::string& getName() const { return mName; }
 
+      bool requiresChildren() const {
+         return mRelation == eOne || mRelation == eOneOrAny;
+      }
+
       virtual Element& createInstance() = 0;
       virtual bool     hasInstances() const = 0;
+      virtual int      instanceCount() const = 0;
 
       std::string mName;
       Relation mRelation;
-      bool mAllowEmpty;
    };
 
    template <class E>
@@ -118,8 +121,8 @@ namespace c2d::xml
    public:
       using Instances = std::vector<E>;
 
-      ChildImp(const std::string& name, Instances& instances, Relation relation, bool allowempty) :
-         Child(name, relation, allowempty),
+      ChildImp(const std::string& name, Instances& instances, Relation relation) :
+         Child(name, relation),
          m_instances(instances)
       {
       }
@@ -131,6 +134,10 @@ namespace c2d::xml
 
       virtual bool hasInstances() const {
          return !m_instances.empty();
+      }
+
+      int instanceCount() const {
+         return m_instances.size();
       }
 
       Instances& m_instances;
@@ -151,8 +158,8 @@ namespace c2d::xml
 
 #define CHILD(type) std::vector<type> type##s;
 #define CHILD_NAMED(type, xmlname) std::vector<type> xmlname##s;
-#define CHILD_INIT(type, rel, empty) registerChild(new ChildImp<type>(#type, type##s, rel, empty));
-#define CHILD_INIT_NAMED(type, xmlname, rel, empty) registerChild(new ChildImp<type>(#xmlname, xmlname##s, rel, empty));
+#define CHILD_INIT(type, rel) registerChild(new ChildImp<type>(#type, type##s, rel));
+#define CHILD_INIT_NAMED(type, xmlname, rel) registerChild(new ChildImp<type>(#xmlname, xmlname##s, rel));
 
 #endif // XML_PARTS_H
 

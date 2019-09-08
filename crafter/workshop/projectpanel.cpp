@@ -19,8 +19,8 @@
 ProjectPanel::ProjectPanel(MainWindow& mainwindow) :
     DockPanel(mainwindow),
     ui(new Ui::ProjectPanel),
-    mpProject(NULL),
-    mpProjectModel(NULL)
+    mpProject(nullptr),
+    mpProjectModel(nullptr)
 {
     ui->setupUi(this);
 
@@ -62,7 +62,7 @@ void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
 
     if ( data.canConvert<ResourceHandle>() )
     {
-        ResourceHandle& handle = data.value<ResourceHandle>();
+        ResourceHandle handle = data.value<ResourceHandle>();
         switch ( handle->getType() )
         {
             case Resource::eObject:

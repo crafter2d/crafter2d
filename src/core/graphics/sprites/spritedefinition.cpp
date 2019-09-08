@@ -20,21 +20,19 @@
 #include "spritedefinition.h"
 
 #include "core/graphics/animator.h"
-#include "core/graphics/texture.h"
 #include "core/defines.h"
 
 namespace c2d
 {
    SpriteDefinition::SpriteDefinition() :
       mSize(),
-      mpTexture(nullptr),
+      mTile(-1),
       mpAnimator(nullptr)
    {
    }
 
    SpriteDefinition::~SpriteDefinition()
    {
-      delete mpTexture;
       delete mpAnimator;
    }
 

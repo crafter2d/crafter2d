@@ -24,6 +24,7 @@ namespace ComponentInterface
       eAnimationMsg,
       eFlipMsg,
       eNetStreamMsg,
+      eScaleMsg,
 	   eNUM_MESSAGE_TYPES
    };
 };

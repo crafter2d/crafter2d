@@ -25,11 +25,6 @@
 #include "core/core_base.h"
 #include "core/defines.h"
 
-namespace Graphics
-{   
-   class Texture;
-}
-
 namespace c2d
 {
    class Animator;
@@ -49,13 +44,12 @@ namespace c2d
          mSize = size;
       }
 
-      const Graphics::Texture& getTexture() const {
-         ASSERT_PTR(mpTexture);
-         return *mpTexture;
+      int getTile() const {
+         return mTile;
       }
 
-      void setTexture(Graphics::Texture* ptexture) {
-         mpTexture = ptexture;
+      void setTile(int tile) {
+         mTile = tile;
       }
 
       bool hasSpriteAnimator() const {
@@ -80,7 +74,7 @@ namespace c2d
 
     // data
       Size                 mSize;
-      Graphics::Texture*   mpTexture;
+      int                  mTile;
       Animator*            mpAnimator;
    };
 }

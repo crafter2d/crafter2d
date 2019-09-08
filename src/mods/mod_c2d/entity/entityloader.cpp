@@ -65,17 +65,19 @@ namespace c2d
          CHILD(child)
          CHILD(link)
          CHILD(body)
+         CHILD(particlesystem)
 
       ELEMENT_IMP(entity)
 
          ATTRIBUTE_INIT(name, Attribute::eMandatory, Attribute::eString, "")
          ATTRIBUTE_INIT_NAMED(klass, class, Attribute::eOptional, Attribute::eString, "engine.game.Entity")
 
-         CHILD_INIT(entity, Child::eZeroOrAny, true)
-         CHILD_INIT(sprite, Child::eZeroOrAny, true)
-         CHILD_INIT(child, Child::eZeroOrAny, true)
-         CHILD_INIT(link, Child::eZeroOrAny, true)
-         CHILD_INIT(body, Child::eZeroOrAny, true)
+         CHILD_INIT(entity, Child::eZeroOrAny)
+         CHILD_INIT(sprite, Child::eZeroOrAny)
+         CHILD_INIT(child, Child::eZeroOrAny)
+         CHILD_INIT(link, Child::eZeroOrAny)
+         CHILD_INIT(body, Child::eZeroOrAny)
+         CHILD_INIT(particlesystem, Child::eZeroOrAny)
 
       ELEMENT_END
    }
@@ -107,6 +109,7 @@ namespace c2d
 
       MeshComponentLoader::load(*pentitydef, ent.sprites);
       PhysicsComponentLoader::load(*pentitydef, ent.bodys);
+      ParticleComponentLoader::load(*pentitydef, ent.particlesystems);
 
       loadChildDefinitions(*pentitydef, ent.childs);
       loadLinkDefinitions(*pentitydef, ent.links);

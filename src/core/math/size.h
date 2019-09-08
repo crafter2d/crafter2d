@@ -12,6 +12,9 @@ struct CORE_API Size
 
    Size& operator=(const Size& that);
    Size operator/(float value) const;
+   Size operator*(float value) const {
+      return Size(width * value, height * value);
+   }
 
    float width;
    float height;

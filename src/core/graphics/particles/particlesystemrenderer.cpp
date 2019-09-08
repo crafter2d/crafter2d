@@ -10,7 +10,7 @@
 
 #include "particle.h"
 #include "particlesystem.h"
-#include "particlerendererdefault.h"
+#include "particlerenderergeometry.h"
 
 namespace Graphics
 {
@@ -24,7 +24,8 @@ namespace Graphics
 
    bool ParticleSystemRenderer::create(Device& device)
    {
-      mpRenderer = new c2d::ParticleRendererDefault();
+      mpRenderer = new c2d::ParticleRendererGeometry();
+      mpRenderer->create(device);
 
       return true;
    }

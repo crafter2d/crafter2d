@@ -55,6 +55,7 @@ public:
     const TileBound& getBound(int index) const;
     void addBound(TileBound* pbound);
     TileBound& addBound(const QPoint& mousepos);
+    void deleteSelectedBound();
 
   // operations
     int  getTile(const QPoint& mousepos, TileField::Level level) const;

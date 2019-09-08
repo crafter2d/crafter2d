@@ -8,6 +8,8 @@ ParticleComponentDefinitionProto::ParticleComponentDefinitionProto():
    emitCount(0),
    emitRate(0.0f),
    gravity(0.0f),
+   initArea(),
+   initAreaRange(),
    initSize(0.0f),
    initSizeRange(),
    initLifeTime(0.0f),
@@ -25,10 +27,11 @@ ParticleComponentDefinitionProto::~ParticleComponentDefinitionProto()
 
 void ParticleComponentDefinitionProto::virRead(DataStream& stream)
 {
-   stream >> emitCount >> emitRate >> gravity;
+   stream >> emitCount >> emitRate >> gravity >> max;
 
    // init settings
-   stream >> initSize >> initSizeRange
+   stream >> initArea >> initAreaRange
+      >> initSize >> initSizeRange
       >> initLifeTime >> initLifeTimeRange
       >> initVelocity >> initVelocityRange;
 
@@ -37,10 +40,11 @@ void ParticleComponentDefinitionProto::virRead(DataStream& stream)
    
 void ParticleComponentDefinitionProto::virWrite(DataStream& stream) const
 {
-   stream << emitCount << emitRate << gravity;
+   stream << emitCount << emitRate << gravity << max;
 
    // init settings
-   stream << initSize << initSizeRange 
+   stream << initArea << initAreaRange
+      << initSize << initSizeRange 
       << initLifeTime << initLifeTimeRange
       << initVelocity << initVelocityRange;
 

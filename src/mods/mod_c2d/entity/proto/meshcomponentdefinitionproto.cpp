@@ -19,7 +19,7 @@ MeshComponentDefinitionProto::~MeshComponentDefinitionProto()
 
 void MeshComponentDefinitionProto::virRead(DataStream& stream)
 {
-   stream >> mWidth >> mHeight >> mAnimationSpeed;
+   stream >> mWidth >> mHeight >> mTexture >> mAnimationSpeed;
 
    uint32_t size = 0;
    stream.readUint32(size);
@@ -43,7 +43,7 @@ void MeshComponentDefinitionProto::virRead(DataStream& stream)
 
 void MeshComponentDefinitionProto::virWrite(DataStream& stream) const
 {
-   stream << mWidth << mHeight << mAnimationSpeed;
+   stream << mWidth << mHeight << mTexture << mAnimationSpeed;
 
    stream.writeUint32(mAnimations.size());
    for ( auto& animation : mAnimations )

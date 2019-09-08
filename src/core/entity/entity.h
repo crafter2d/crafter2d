@@ -100,6 +100,7 @@ public:
 
    void addComponent(Component* pcomponent);
 
+   void scale(float scale);
    void flip();
 
  // update & drawing

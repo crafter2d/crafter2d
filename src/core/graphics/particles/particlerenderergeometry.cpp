@@ -41,6 +41,20 @@ bool c2d::ParticleRendererGeometry::create(Graphics::Device& device)
       return false;
    }
 
+   UNIFORM_BUFFER_DESC descs[] = {
+         { UTEXT("proj"), sizeof(float) * 16 },
+         { UTEXT("world"), sizeof(float) * 2 },
+   };
+
+   mpUniformBuffer = mpEffect->createUniformBuffer(UTEXT("mpv"));
+   if ( !mpUniformBuffer->create(device, descs, 3) )
+   {
+      return false;
+   }
+
+   mConstants.projection.setIdentity();
+   mConstants.world.set(0, 0);
+
    // create the blend state
    BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_ONE, true);
    BlendState* pblendstate = device.createBlendState(desc);
@@ -49,7 +63,7 @@ bool c2d::ParticleRendererGeometry::create(Graphics::Device& device)
       return false;
    }
 
-   mpEffect->setBlendState(pblendstate);
+   //mpEffect->setBlendState(pblendstate);
 
    mVertexBufferSize = 2048;
    int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
@@ -76,8 +90,6 @@ void c2d::ParticleRendererGeometry::render(Graphics::RenderContext& context, con
    mpEffect->enable(context);
    mpEffect->setConstantBuffer(context, 0, *mpUniformBuffer);
 
-   context.setVertexBuffer(*mpVertexBuffer);
-
    for ( auto psystem : systems )
    {
       int particleCount = psystem->getActiveParticleCount();
@@ -92,13 +104,14 @@ void c2d::ParticleRendererGeometry::render(Graphics::RenderContext& context, con
             auto particle = particles[pidx];
 
             ParticleVertex& v = verts[pidx];
-            v.pos = particle.pos;
+            v.pos = particle.pos;// -psystem->getPosition();
             v.col = particle.color;
             v.radius = particle.size * 0.5f;
          }
 
          mpVertexBuffer->unlock(context);
 
+         context.setVertexBuffer(*mpVertexBuffer);
          context.setTexture(0, psystem->getTexture());
          context.drawPoints(0, particleCount);
       }

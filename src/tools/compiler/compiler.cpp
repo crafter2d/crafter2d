@@ -111,10 +111,18 @@ namespace c2d::compiler
                // src = ../demo/world/world.j
                // dst = ../joop/build/ -> world/world.c2d
 
-               String filename = file.right(mSource.length());
-               auto pos = filename.lastIndexOf(L'.');
-               ASSERT(pos != String::npos);
-               filename = File::concat(mDest, filename.left(pos));
+               String filename;
+               if ( mSource[mSource.length() - 1] == L'*' )
+               {
+                  filename = file.right(mSource.length() - 1);
+                  auto pos = filename.lastIndexOf(L'.');
+                  ASSERT(pos != String::npos);
+                  filename = File::concat(mDest, filename.left(pos));
+               }
+               else
+               {
+                  filename = mDest;
+               }
                save(filename, stream);
             }
             else
@@ -179,8 +187,9 @@ namespace c2d::compiler
    {
       String outfile = filename;
       size_t pos = outfile.lastIndexOf(L'.');
+      size_t slashpos = outfile.indexOf(FileSystem::getNativeSeparator(), pos);
       // if there is no dot or if there is a dir separator after it we append the extention
-      if ( pos < 0 || outfile.indexOf(FileSystem::getNativeSeparator(), pos) > pos )
+      if ( pos < 0 || (slashpos != String::npos && slashpos > pos) )
       {
          outfile += UTEXT(".c2d");
       }
@@ -218,13 +227,13 @@ namespace c2d::compiler
 
       if ( mSource[mSource.length() - 1] == L'*' )
       {
-         mSource = mSource.left(mSource.length() - 1);
+         String source = mSource.left(mSource.length() - 1);
 
          std::vector<String> filters;
          filters.push_back(UTEXT("*.craft"));
-         filters.push_back(mSource + UTEXT("images"));
-         filters.push_back(mSource + UTEXT("build"));
-         filters.push_back(mSource + UTEXT("scripts"));
+         filters.push_back(source + UTEXT("images"));
+         filters.push_back(source + UTEXT("build"));
+         filters.push_back(source + UTEXT("scripts"));
 
          auto it = std::remove_if(mFiles.begin(), mFiles.end(), [filters](String& file) {
             for ( auto& filter : filters )

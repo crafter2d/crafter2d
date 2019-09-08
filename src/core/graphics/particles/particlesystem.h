@@ -57,9 +57,12 @@ namespace Graphics
       void destroy();
 
     // get/set
+      void  setEmitCount(int count);
 	   void  setEmitRate(float rate);
       void  setGravity(float gravity);
+      void  setMaxActive(int max);
 
+      void        setInitAreaRange(const VectorRange& range);
       float       getInitSize() const;
       void        setInitSize(float size);
       Range       getInitSizeRange() const;
@@ -73,6 +76,9 @@ namespace Graphics
       const VectorRange& getInitVelocityRange() const;
       void        setInitVelocityRange(const VectorRange& range);
 
+      const Vector& getPosition() const {
+         return mPosition;
+      }
       void setPosition(const Vector& pos);
 
       int getActiveParticleCount() const;
@@ -94,15 +100,17 @@ namespace Graphics
       Particles         mParticles;      
       Texture*          mpTexture;
 
+      VectorRange mInitAreaRange;
       float       mInitSize;
       Range       mInitSizeRange;
       float       mInitLifeTime;
       Range       mInitLifeTimeRange;
       Vector      mInitVelocity;
       VectorRange mInitVelocityRange;
-      	
+      
       float emittime;
       float updatetime;
+      int   mEmitCount;
 	   float mEmitRate;
       float mGravity;
 

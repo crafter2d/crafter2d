@@ -249,6 +249,7 @@ class Entity implements Collidable
 	
 	public native void setName(string name);
 	public native boolean hasLineOfSight(Entity to);
+	public native void scale(real s);
 	public native void flip();
 		
 	protected native void sendComponentMessage(ComponentMessage message);

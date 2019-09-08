@@ -39,14 +39,32 @@ class GameClient extends Client
 			return false;
 		}
 		
-		Vector2D position = new Vector2D();	
-		position.set(100, 30);
+		Vector2D position = new Vector2D();
+		position.set(100, 630);
 		
 		Hero hero = (Hero)Entity.construct(this, "Hero", position, "objects/char");
 		hero.setForceGenerator(new InputForceGenerator());
 		
 		position.set(850, 300);
 		Mushroom mush = (Mushroom) Entity.construct(this, "mushroom", position, "objects/mushroom");
+		
+		position.set(40, 755);
+		Entity.construct(this, "sign1", position, "objects/sign2");
+		position.set(150, 630);
+		Entity.construct(this, "tree1", position, "objects/tree2");
+		position.set(1500, 500);
+		Entity.construct(this, "tree2", position, "objects/tree2");
+		position.set(550, 515);
+		Entity.construct(this, "tree4", position, "objects/tree1");
+		position.set(1300, 540);
+		Entity e = Entity.construct(this, "tree3", position, "objects/tree3");
+		e.scale(0.8);
+		position.set(280, 765);
+		Entity.construct(this, "stone1", position, "objects/stone");
+		position.set(320, 765);
+		Entity.construct(this, "bush1", position, "objects/bush1");
+		position.set(1400, 630);
+		Entity.construct(this, "bush2", position, "objects/bush3");
 		
 		Viewport viewport = getViewport();
 		int left = 150;

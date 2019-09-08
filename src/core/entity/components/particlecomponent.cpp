@@ -29,6 +29,7 @@ void ParticleComponent::registerComponent(Components& components)
    Component::registerComponent(components);
 
    components.subscribeMessageType(*this, ComponentInterface::ePositionChangedMsg);
+   components.subscribeMessageType(*this, ComponentInterface::eUpdatedMsg);
    components.subscribeMessageType(*this, ComponentInterface::eUpdateMsg);
    components.subscribeMessageType(*this, ComponentInterface::eRenderMsg);
 }
@@ -42,6 +43,11 @@ void ParticleComponent::handleMessage(ComponentMessage& message)
    case ePositionChangedMsg:
       {
          mpSystem->setPosition(getEntity().getPosition());
+      }
+      break;
+   case eUpdatedMsg:
+      {
+      mpSystem->setPosition(getEntity().getTransform().getPosition());
       }
       break;
    case eUpdateMsg:

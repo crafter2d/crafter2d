@@ -63,10 +63,17 @@ namespace c2d
          return mFlipped;
       }
 
+      bool isAnimated() const {
+         return mpDefinition->hasSpriteAnimator();
+      }
+
     // operations
       bool initialize(Graphics::Device& device);
       void update(float delta);
       void setAnimation(int index);
+      void scale(float s) {
+         mHalfSize = mHalfSize * s;
+      }
       void flip();
 
    private:

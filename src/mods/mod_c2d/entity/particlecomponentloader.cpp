@@ -24,8 +24,12 @@ namespace c2d
    ComponentDefinitionProto* ParticleComponentLoader::load(const entity_definitions::particlesystem& element)
    {
       auto proto = std::make_unique<ParticleComponentDefinitionProto>();
-      proto->emitRate = element.emitrate;
       proto->gravity = element.gravity;
+
+      auto& emit = element.emits[0];
+      proto->emitCount = emit.count;
+      proto->emitRate = emit.rate;
+      proto->max = emit.max;
 
       if ( !element.inits.empty() )
       {
@@ -34,7 +38,7 @@ namespace c2d
 
       if ( !element.updates.empty() )
       {
-         loadParticleBehavior(*proto, element.updates[0]);
+         loadParticleUpdates(*proto, element.updates[0]);
       }
 
       return proto.release();
@@ -42,6 +46,13 @@ namespace c2d
 
    bool ParticleComponentLoader::loadParticleBehavior(ParticleComponentDefinitionProto& proto, const entity_definitions::particlebehavior& behavior)
    {
+      if ( !behavior.areas.empty() )
+      {
+         auto& area = behavior.areas[0];
+         proto.initArea = parseVector(area.value);
+         proto.initAreaRange = parseVectorRange(area.range);
+      }
+
       if ( !behavior.sizes.empty() )
       {
          auto& size = behavior.sizes[0];
@@ -61,6 +72,33 @@ namespace c2d
          auto& velocity = behavior.velocitys[0];
          proto.initVelocity = parseVector(velocity.value);
          proto.initVelocityRange = parseVectorRange(velocity.range);
+      }
+
+      return true;
+   }
+
+   bool ParticleComponentLoader::loadParticleUpdates(ParticleComponentDefinitionProto& proto, const entity_definitions::particlebehavior& behavior)
+   {
+      // NOT SUPPORTED yet!
+      if ( !behavior.sizes.empty() )
+      {
+         auto& size = behavior.sizes[0];
+         //proto.updateSize = parseFloat(size.value);
+         //proto.initSizeRange = parseRange(size.range);
+      }
+
+      if ( !behavior.lifetimes.empty() )
+      {
+         auto& lifetime = behavior.lifetimes[0];
+         //proto.initLifeTime = parseFloat(lifetime.value);
+         //proto.initLifeTimeRange = parseRange(lifetime.range);
+      }
+
+      if ( !behavior.velocitys.empty() )
+      {
+         auto& velocity = behavior.velocitys[0];
+         //proto.initVelocity = parseVector(velocity.value);
+         //proto.initVelocityRange = parseVectorRange(velocity.range);
       }
 
       return true;
