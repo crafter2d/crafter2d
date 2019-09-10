@@ -9,7 +9,7 @@ class SoundWriter : public c2d::ContentWriter
 public:
 
  // overrides
-   virtual bool write(DataStream& stream, const String& filename) override;
+   virtual Result write(DataStream& stream, const String& filename) override;
 
 };
 

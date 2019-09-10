@@ -49,7 +49,7 @@ namespace c2d
       ELEMENT_IMP(sprite)
          ATTRIBUTE_INIT(width, Attribute::eMandatory, Attribute::eInt, 0)
          ATTRIBUTE_INIT(height, Attribute::eMandatory, Attribute::eInt, 0)
-         CHILD_INIT(animations, Child::eOne)
+         CHILD_INIT(animations, Child::eZeroOrOne)
          CHILD_INIT(texture, Child::eZeroOrOne)
       ELEMENT_END
    }

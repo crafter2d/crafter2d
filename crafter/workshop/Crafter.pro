@@ -31,6 +31,9 @@ SOURCES += main.cpp\
     boundisland.cpp \
     resizelayerdialog.cpp \
     aboutdialog.cpp \
+    world/tileentity.cpp \
+    world/tileentityreader.cpp \
+    world/tileentitywriter.cpp \
     worldwizard_pageworld.cpp \
     worldwizard.cpp \
     worldwizard_pagefinalize.cpp \
@@ -105,6 +108,9 @@ HEADERS  += mainwindow.h \
     boundisland.h \
     resizelayerdialog.h \
     aboutdialog.h \
+    world/tileentity.h \
+    world/tileentityreader.h \
+    world/tileentitywriter.h \
     worldwizard_pageworld.h \
     worldwizard.h \
     worldwizard_pagefinalize.h \

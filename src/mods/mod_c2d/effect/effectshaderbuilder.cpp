@@ -36,7 +36,7 @@ void EffectShaderBuilder::build(ASTEffect& effect)
          break;
 
       default:
-         throw new std::runtime_error("No language specified!");
+         throw std::runtime_error("No language specified!");
       }
 
       builder->build(effect);

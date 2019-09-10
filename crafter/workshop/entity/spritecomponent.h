@@ -28,6 +28,14 @@ public:
         mSize = size;
     }
 
+    const QString& getTexture() const {
+        return mTexture;
+    }
+
+    void setTexture(const QString& texture) {
+        mTexture = texture;
+    }
+
     int getAnimationSpeed() const {
         return mAnimSpeed;
     }
@@ -44,6 +52,7 @@ public:
 private:
 
     QSize       mSize;
+    QString     mTexture;
     Animations  mAnimations;
     int         mAnimSpeed;
 };

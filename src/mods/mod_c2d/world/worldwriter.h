@@ -8,9 +8,12 @@ class WorldWriter : public c2d::ContentWriter
 {
 public:
 
-   virtual bool write(DataStream& stream, const String& filename) override;
+   virtual Result write(DataStream& stream, const String& filename) override;
 
 private:
+
+   void processWorldFile(DataStream& stream, const String& filename);
+   void processWorldInfo(DataStream& stream, const String& filename);
 
  // helpers
    String readString(DataStream& stream);

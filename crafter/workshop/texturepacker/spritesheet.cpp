@@ -71,7 +71,7 @@ void SpriteSheet::clear()
     mSpriteIndex.clear();
 }
 
-void SpriteSheet::paint(QPainter& painter, const QPoint& pos, int index)
+void SpriteSheet::paint(QPainter& painter, const QPoint& pos, int index, qreal scale)
 {
     const Sprite& sprite = mSprites[index];
     if ( sprite.mRotated )
@@ -81,15 +81,16 @@ void SpriteSheet::paint(QPainter& painter, const QPoint& pos, int index)
                            -90,
                            sprite.mCoordinates.width(),
                            sprite.mCoordinates.height(),
-                           sprite.mCoordinates.height(),
-                           sprite.mCoordinates.width(),
+                           sprite.mCoordinates.height() * scale,
+                           sprite.mCoordinates.width() * scale,
                            mImage,
                            sprite.mCoordinates);
     }
     else
     {
         const QRect& coords = mSprites[index].mCoordinates;
-        painter.drawImage(pos, mImage, coords);
+        QRect target(pos, coords.size() * scale);
+        painter.drawImage(target, mImage, coords);
     }
 }
 

@@ -113,7 +113,7 @@ extern "C" MOD_API Modules* MOD_DECL getModules()
    ptilesetmod->setWriter(new TileSetWriter());
 
    ContentModule* pworldmod = new ContentModule(WorldUUID);
-   pworldmod->setSupportedFiles(UTEXT("world"));
+   pworldmod->setSupportedFiles(UTEXT("world,worldinfo"));
    pworldmod->setReader(new WorldReader());
    pworldmod->setWriter(new WorldWriter());
 

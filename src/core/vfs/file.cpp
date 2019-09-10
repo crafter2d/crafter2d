@@ -77,6 +77,13 @@ String File::extractPath(const String& filepath)
 }
 
 // static 
+String File::extension(const String& filepath)
+{
+   std::size_t index = filepath.lastIndexOf(L'.');
+   return index != String::npos ? filepath.subStr(index + 1, filepath.length() - index - 1) : String::empty();
+}
+
+// static 
 String File::toNativeSeparator(const String& filepath)
 {
    UChar sep = FileSystem::getInstance().getSeparator();

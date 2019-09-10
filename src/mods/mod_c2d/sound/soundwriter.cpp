@@ -4,7 +4,7 @@
 #include "core/streams/arraystream.h"
 #include "core/vfs/stdiofile.h"
 
-bool SoundWriter::write(DataStream& stream, const String& filename)
+c2d::ContentWriter::Result SoundWriter::write(DataStream& stream, const String& filename)
 {
    StdioFile file;
 
@@ -19,8 +19,8 @@ bool SoundWriter::write(DataStream& stream, const String& filename)
       ArrayStream arraystream(pbuffer, actualsize);
       stream.write(arraystream);
 
-      return true;
+      return eOk;
    }
 
-   return false;
+   return eFail;
 }

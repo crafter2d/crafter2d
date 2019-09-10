@@ -16,7 +16,7 @@ class ProjectPanel : public DockPanel
 
 public:
     explicit ProjectPanel(MainWindow &mainwindow);
-    ~ProjectPanel();
+    virtual ~ProjectPanel();
 
 protected:
 
@@ -25,6 +25,7 @@ protected:
 
 private slots:
     void on_treeProject_activated(const QModelIndex &index);
+    void on_treeProject_clicked(const QModelIndex& index);
     void on_projectChanged(Project *pproject);
 
 private:

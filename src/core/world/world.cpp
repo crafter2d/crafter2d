@@ -427,9 +427,12 @@ void World::addEntity(Entity* pentity)
 
    notifyEntityAdded(*pentity);
 
-   mpScript->prepareCall(1);
-   mpScript->arg(0, pentity->getClassName(), pentity);
-   mpScript->call(UTEXT("onEntityAdded"));
+   if ( mpScript )
+   {
+      mpScript->prepareCall(1);
+      mpScript->arg(0, pentity->getClassName(), pentity);
+      mpScript->call(UTEXT("onEntityAdded"));
+   }
 }
 
 void World::removeEntity(Id id)

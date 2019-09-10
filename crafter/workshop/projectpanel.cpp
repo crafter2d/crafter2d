@@ -54,6 +54,19 @@ void ProjectPanel::on_projectChanged(Project *pproject)
     }
 }
 
+void ProjectPanel::on_treeProject_clicked(const QModelIndex& index)
+{
+    QVariant data = mpProjectModel->resourceData(index);
+    if ( data.isValid() && data.canConvert<ResourceHandle>() )
+    {
+        ResourceHandle handle = data.value<ResourceHandle>();
+        if ( handle->getType() == Resource::eObject )
+        {
+            getMainWindow().setSelectedEntity(&static_cast<Entity&>(*handle));
+        }
+    }
+}
+
 void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
 {
     QVariant data = mpProjectModel->resourceData(index);

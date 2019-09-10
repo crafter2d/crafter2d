@@ -27,7 +27,7 @@ public:
     void append(SpriteSheet &&sheet);
     void clear();
 
-    void paint(QPainter& painter, const QPoint &pos, int index);
+    void paint(QPainter& painter, const QPoint &pos, int index, float scale = 1.0f);
 
     void load(const QString& path);
     void save(const QString& path);

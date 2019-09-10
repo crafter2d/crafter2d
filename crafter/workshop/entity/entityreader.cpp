@@ -89,38 +89,47 @@ SpriteComponent* EntityReader::readSpriteComponent(QDomElement &element)
 
     sprite->setSize(size);
 
-    QDomElement animationelement = element.firstChildElement("animations");
-    if ( !animationelement.isNull() )
+    QDomElement textureelement = element.firstChildElement("texture");
+    if ( !textureelement.isNull() )
     {
-        QString speed = animationelement.attribute("speed", "100");
-        sprite->setAnimationSpeed(speed.toInt());
-
-        QDomElement animelement = animationelement.firstChildElement("anim");
-        while ( !animelement.isNull() )
+        QString texture = textureelement.attribute("name");
+        sprite->setTexture(texture);
+    }
+    else
+    {
+        QDomElement animationelement = element.firstChildElement("animations");
+        if ( !animationelement.isNull() )
         {
-            SpriteAnimation animation;
+            QString speed = animationelement.attribute("speed", "100");
+            sprite->setAnimationSpeed(speed.toInt());
 
-            if ( animelement.hasAttribute("name") )
+            QDomElement animelement = animationelement.firstChildElement("anim");
+            while ( !animelement.isNull() )
             {
-                animation.setName(animelement.attribute("name"));
-            }
+                SpriteAnimation animation;
 
-            QDomElement tileelement = animelement.firstChildElement("tile");
-            while ( !tileelement.isNull() )
-            {
-                QString tilename = animelement.attribute("name");
-                if ( tilename.isNull() || tilename.isEmpty() )
+                if ( animelement.hasAttribute("name") )
                 {
-                    // invalid name!
+                    animation.setName(animelement.attribute("name"));
                 }
 
-                animation.addTile(tilename);
-                tileelement = tileelement.nextSiblingElement("tile");
+                QDomElement tileelement = animelement.firstChildElement("tile");
+                while ( !tileelement.isNull() )
+                {
+                    QString tilename = animelement.attribute("name");
+                    if ( tilename.isNull() || tilename.isEmpty() )
+                    {
+                        // invalid name!
+                    }
+
+                    animation.addTile(tilename);
+                    tileelement = tileelement.nextSiblingElement("tile");
+                }
+
+                sprite->addAnimation(std::move(animation));
+
+                animelement = animelement.nextSiblingElement("anim");
             }
-
-            sprite->addAnimation(std::move(animation));
-
-            animelement = animelement.nextSiblingElement("anim");
         }
     }
 

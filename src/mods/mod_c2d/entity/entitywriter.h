@@ -14,7 +14,7 @@ public:
    EntityWriter();
 
  // writing
-   virtual bool write(DataStream& stream, const String& filename) override;
+   virtual Result write(DataStream& stream, const String& filename) override;
 };
 
 #endif // ENTITY_COMPILER_H

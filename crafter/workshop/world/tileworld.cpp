@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QPainter>
 
+#include "tileentity.h"
 #include "tilemap.h"
 #include "tilemapdesc.h"
 #include "tilebound.h"
@@ -13,8 +14,8 @@ TileWorld::TileWorld(const TileWorldDesc& desc):
     mDesc(desc),
     mMaps(),
     mBounds(),
-    mpActiveMap(NULL),
-    mpSelectedBound(NULL)
+    mpActiveMap(nullptr),
+    mpSelectedBound(nullptr)
 {
 }
 
@@ -27,7 +28,7 @@ const QString& TileWorld::getName() const
 
 bool TileWorld::hasSelectedBound() const
 {
-    return mpSelectedBound != NULL;
+    return mpSelectedBound != nullptr;
 }
 
 TileBound& TileWorld::getSelectedBound()
@@ -69,7 +70,7 @@ QSize TileWorld::getMinimumSize() const
 
 bool TileWorld::hasActiveMap() const
 {
-    return mpActiveMap != NULL;
+    return mpActiveMap != nullptr;
 }
 
 TileMap* TileWorld::getActiveMap()
@@ -112,12 +113,12 @@ void TileWorld::paint(QPainter& painter)
 {
     paintMaps(painter);
     paintBounds(painter);
+    paintEntities(painter);
 }
 
 void TileWorld::paintMaps(QPainter& painter)
 {
-    TileMap* pmap = NULL;
-    foreach(pmap, mMaps)
+    for( auto pmap : mMaps)
     {
         pmap->paint(painter);
     }
@@ -130,14 +131,12 @@ void TileWorld::paintBounds(QPainter& painter)
     painter.save();
     painter.setPen(pen);
 
-    for ( int index = 0; index < mBounds.size(); ++index )
+    for ( auto pbound : mBounds )
     {
-        const TileBound& bound = *mBounds[index];
-
-        painter.drawLine(bound.left(), bound.right());
+        painter.drawLine(pbound->left(), pbound->right());
     }
 
-    if ( mpSelectedBound != NULL )
+    if ( mpSelectedBound != nullptr )
     {
         paintSelectedBound(painter);
     }
@@ -160,6 +159,14 @@ void TileWorld::paintSelectedBound(QPainter& painter)
     painter.setBrush(brush);
     painter.drawEllipse(mpSelectedBound->left(), 3, 3);
     painter.drawEllipse(mpSelectedBound->right(), 3, 3);
+}
+
+void TileWorld::paintEntities(QPainter& painter)
+{
+    for ( auto pentity : mEntities )
+    {
+        pentity->paint(painter);
+    }
 }
 
 // - Maintenance
@@ -188,7 +195,7 @@ void TileWorld::removeMap(TileMap& map)
         }
         else
         {
-            setActiveMap(NULL);
+            setActiveMap(nullptr);
         }
     }
 
@@ -230,14 +237,24 @@ void TileWorld::deleteSelectedBound()
     setDirty(true);
 }
 
+TileEntity& TileWorld::addEntity(Entity& entity)
+{
+    TileEntity* pentity = new TileEntity(*this, entity);
+    mEntities.push_back(pentity);
+
+    setDirty(true);
+
+    return *mEntities.last();
+}
+
 int TileWorld::getTile(const QPoint& mousepos, TileField::Level level) const
 {
-    return mpActiveMap != NULL ? mpActiveMap->getTile(mousepos, level) : TileSet::INVALID_TILE;
+    return mpActiveMap != nullptr ? mpActiveMap->getTile(mousepos, level) : TileSet::INVALID_TILE;
 }
 
 bool TileWorld::setTile(const QPoint& mousepos, TileField::Level level, int tile)
 {
-    if ( mpActiveMap != NULL && mpActiveMap->setTile(mousepos, level, tile) )
+    if ( mpActiveMap != nullptr && mpActiveMap->setTile(mousepos, level, tile) )
     {
         emit worldDirty();
         return true;
@@ -247,7 +264,7 @@ bool TileWorld::setTile(const QPoint& mousepos, TileField::Level level, int tile
 
 void TileWorld::clearTile(const QPoint& mousepos, TileField::Level level)
 {
-    if ( mpActiveMap != NULL )
+    if ( mpActiveMap != nullptr )
     {
         mpActiveMap->clearTile(mousepos, level);
         emit worldDirty();
@@ -292,15 +309,14 @@ void TileWorld::on_mapChanged(TileMap& /* map */)
 
 // - Searching
 
-TileBound *TileWorld::findBound(const QPoint& mousepos)
+TileBound* TileWorld::findBound(const QPoint& mousepos)
 {
-    TileBound* presult = NULL;
+    TileBound* presult = nullptr;
     float nearest = 5.0f;
 
-    for ( int index = 0; index < mBounds.size(); ++index )
+    for ( auto pbound : mBounds )
     {
         float distance;
-        TileBound* pbound = mBounds[index];
         if ( pbound->hitTest(mousepos, distance) && distance < nearest )
         {
             presult = pbound;
@@ -309,4 +325,16 @@ TileBound *TileWorld::findBound(const QPoint& mousepos)
     }
 
     return presult;
+}
+
+TileEntity* TileWorld::findEntity(const QPoint& mousepos)
+{
+    for ( auto pentity : mEntities )
+    {
+        if ( pentity->hitTest(mousepos) )
+        {
+            return pentity;
+        }
+    }
+    return nullptr;
 }

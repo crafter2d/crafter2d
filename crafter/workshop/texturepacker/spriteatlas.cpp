@@ -38,10 +38,10 @@ QRect SpriteAtlas::bounds(int index)
     return QRect();
 }
 
-void SpriteAtlas::paint(QPainter& painter, const QPoint& pos, int index)
+void SpriteAtlas::paint(QPainter& painter, const QPoint& pos, int index, float scale)
 {
     int sheetidx = index >> 16;
-    mSheets[sheetidx].paint(painter, pos, index & 0xffff);
+    mSheets[sheetidx].paint(painter, pos, index & 0xffff, scale);
 }
 
 void SpriteAtlas::append(SpriteSheet&& sheet)

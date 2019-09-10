@@ -11,9 +11,11 @@
 class QSize;
 class QPainter;
 
+class Entity;
 class Tile;
 class TileBound;
 class TileMap;
+class TileEntity;
 
 class TileWorld : public Resource
 {
@@ -21,6 +23,8 @@ class TileWorld : public Resource
 
 public:
     enum Layout { eTopDown, eIsoMetric };
+
+    using Entities = QVector<TileEntity*>;
 
     explicit TileWorld(const TileWorldDesc& desc);
 
@@ -57,6 +61,9 @@ public:
     TileBound& addBound(const QPoint& mousepos);
     void deleteSelectedBound();
 
+    TileEntity& addEntity(Entity& entity);
+    Entities& getEntities() { return mEntities; }
+
   // operations
     int  getTile(const QPoint& mousepos, TileField::Level level) const;
     bool setTile(const QPoint& mousepos, TileField::Level level, int tile);
@@ -69,6 +76,7 @@ public:
 
   // finding
     TileBound* findBound(const QPoint& mousepos);
+    TileEntity* findEntity(const QPoint& mousepos);
 
 signals:
     void activeMapChanged(TileMap* pmap);
@@ -87,11 +95,13 @@ private:
     void paintMaps(QPainter& painter);
     void paintBounds(QPainter& painter);
     void paintSelectedBound(QPainter& painter);
+    void paintEntities(QPainter& painter);
 
   // data
     TileWorldDesc   mDesc;
     Maps            mMaps;
     Bounds          mBounds;
+    Entities        mEntities;
     TileMap*        mpActiveMap;
     TileBound*      mpSelectedBound;
 };

@@ -2,6 +2,7 @@
 #include "effectwriter.h"
 
 #include <memory>
+#include <stdexcept>
 
 #include "core/streams/datastream.h"
 #include "core/graphics/effect.h"
@@ -21,47 +22,35 @@
 
 using namespace Graphics;
 
-bool EffectWriter::write(DataStream& stream, const String& filename)
+c2d::ContentWriter::Result EffectWriter::write(DataStream& stream, const String& filename)
 {
    StdioFile file;
-   if ( file.open(filename, File::ERead | File::EText) )
+   if ( !file.open(filename, File::ERead | File::EText) )
+      throw std::runtime_error("Could not open the file!");
+
+   int size = file.size();
+   char* pdata = new char[size+1];
+   int read = file.read(pdata, size);
+   pdata[read] = 0;
+   String content = String::fromUtf8(pdata);
+   delete[] pdata;
+
+   EffectFileParser parser;
+   std::unique_ptr<ASTEffect> asteffect(parser.parse(content));
+   if ( !asteffect )
    {
-      int size = file.size();
-      char* pdata = new char[size+1];
-      int read = file.read(pdata, size);
-      pdata[read] = 0;
-      String content = String::fromUtf8(pdata);
-      delete[] pdata;
-
-      try
-      {
-         EffectFileParser parser;
-         std::unique_ptr<ASTEffect> asteffect(parser.parse(content));
-         if ( !asteffect )
-         {
-            printf("Could not parse the file.");
-            return false;
-         }
-
-         EffectValidator validator;
-         validator.validate(*asteffect);
-
-         EffectShaderBuilder shaderbuilder;
-         shaderbuilder.build(*asteffect);
-         
-         write(stream, *asteffect);
-      }
-      catch (std::exception& e)
-      {
-         printf(e.what());
-         return false;
-      }
-
-      return true;
+      throw std::runtime_error("Could not parse the file.");
    }
 
-   printf("Could not open the file!");
-   return false;
+   EffectValidator validator;
+   validator.validate(*asteffect);
+
+   EffectShaderBuilder shaderbuilder;
+   shaderbuilder.build(*asteffect);
+         
+   write(stream, *asteffect);
+
+   return eOk;
 }
    
 void EffectWriter::write(DataStream& stream, const ASTEffect& effect)

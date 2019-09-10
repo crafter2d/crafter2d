@@ -8,7 +8,7 @@ class TileSetWriter : public c2d::ContentWriter
 {
 public:
 
-   virtual bool write(DataStream& stream, const String& filename) override;
+   virtual Result write(DataStream& stream, const String& filename) override;
 };
 
 #endif // TILESET_WRITER_H

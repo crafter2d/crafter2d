@@ -8,11 +8,13 @@
 #include <QPalette>
 
 #include "world/tilebound.h"
+#include "world/tileentity.h"
 #include "world/tileset.h"
 #include "world/tileworld.h"
 
 #include "undocleartile.h"
 #include "undosettile.h"
+#include "mainwindow.h"
 
 TileView::TileView():
     QWidget(nullptr),
@@ -21,6 +23,7 @@ TileView::TileView():
     mpWorld(nullptr),
     mEditMode(eLayerMode),
     mpSelectedBound(nullptr),
+    mpSelectedEntity(nullptr),
     mSelectedEdge(eNone),
     mUndoStack(),
     mLevel(TileField::eMid),
@@ -83,6 +86,23 @@ TileField::Level TileView::getLevel() const
 void TileView::setLevel(TileField::Level level)
 {
     mLevel = level;
+}
+
+// - Query
+
+MainWindow* TileView::getMainWindow()
+{
+    QWidget* pparent = parentWidget();
+    while ( pparent != nullptr )
+    {
+        MainWindow* pwindow = dynamic_cast<MainWindow*>(pparent);
+        if ( pwindow != nullptr )
+        {
+            return pwindow;
+        }
+        pparent = pparent->parentWidget();
+    }
+    return nullptr;
 }
 
 // - Operations
@@ -198,6 +218,28 @@ void TileView::keyPressEvent(QKeyEvent *pevent)
             }
         }
         break;
+    case eObjectMode:
+        {
+            switch ( pevent->key() )
+            {
+            case Qt::Key_I:
+                // insert the new entity
+                MainWindow* pwindow = getMainWindow();
+                if ( pwindow != nullptr )
+                {
+                    Entity* pentity = pwindow->getSelectedEntity();
+                    if ( pentity )
+                    {
+                        QPoint pos = mapFromGlobal(QCursor::pos());
+                        auto& entity = mpWorld->addEntity(*pentity);
+                        entity.setPosition(pos);
+                        repaint();
+                    }
+                }
+                break;
+            }
+        }
+        break;
     default:
         QWidget::keyPressEvent(pevent);
         break;
@@ -206,7 +248,7 @@ void TileView::keyPressEvent(QKeyEvent *pevent)
 
 void TileView::mousePressEvent(QMouseEvent *pevent)
 {
-    if ( pevent == NULL )
+    if ( pevent == nullptr )
     {
         return;
     }
@@ -241,7 +283,7 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
                 else
                 {
                     TileBound* pbound = mpWorld->findBound(pevent->pos());
-                    if ( pbound != NULL )
+                    if ( pbound != nullptr )
                     {
                         mpSelectedBound = pbound;
 
@@ -259,6 +301,15 @@ void TileView::mousePressEvent(QMouseEvent *pevent)
                 repaint();
             }
             break;
+        case eObjectMode:
+            {
+                TileEntity* pentity = mpWorld->findEntity(pevent->pos());
+                if ( pentity != nullptr )
+                {
+                    mpSelectedEntity = pentity;
+                    mStartPos = pevent->pos();
+                }
+            }
         }
         break;
     case Qt::RightButton:
@@ -281,7 +332,8 @@ void TileView::mouseReleaseEvent(QMouseEvent *)
         mEditMode = eLayerMode;
     }
 
-    mpSelectedBound = NULL;
+    mpSelectedBound = nullptr;
+    mpSelectedEntity = nullptr;
 }
 
 void TileView::mouseMoveEvent(QMouseEvent* pevent)
@@ -310,7 +362,7 @@ void TileView::mouseMoveEvent(QMouseEvent* pevent)
         break;
 
     case eBoundMode:
-        if ( mpSelectedBound != NULL )
+        if ( mpSelectedBound != nullptr )
         {
             switch ( mSelectedEdge )
             {
@@ -327,6 +379,17 @@ void TileView::mouseMoveEvent(QMouseEvent* pevent)
             }
 
             repaint();
+        }
+        break;
+    case eObjectMode:
+        {
+            if ( mpSelectedEntity )
+            {
+                QPoint offset = pevent->pos() - mStartPos;
+                mStartPos = pevent->pos();
+                mpSelectedEntity->move(offset);
+                repaint();
+            }
         }
         break;
     }

@@ -12,6 +12,7 @@ class QMdiSubWindow;
 class QMdiArea;
 
 class DockPanel;
+class Entity;
 class Project;
 class TileMap;
 class TileView;
@@ -39,6 +40,9 @@ public:
  // operations
     void showWorld(TileWorld& world);
     ScriptView *showScript(ScriptFile& script);
+
+    Entity* getSelectedEntity() { return mpSelectedEntity; }
+    void setSelectedEntity(Entity* pentity);
 
   // error handling
     void gotoError(const QString& classname, int line);
@@ -114,6 +118,7 @@ private:
     Ui::MainWindow *ui;
     Project* mpProject;
     QAction* mpRecentFileActions[MaxRecentFiles];
+    Entity*  mpSelectedEntity;
 
     ProjectPanel*   mpProjectPanel;
     LayerPanel*     mpLayerPanel;

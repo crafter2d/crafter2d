@@ -9,7 +9,9 @@
 
 #include "world/tilefield.h"
 
+class MainWindow;
 class TileBound;
+class TileEntity;
 class TileWorld;
 
 namespace Ui {
@@ -62,13 +64,18 @@ private:
     bool selectBoundEdge(QMouseEvent *pevent);
     void straightenBounds();
 
+  // query
+    MainWindow* getMainWindow();
+
     Ui::TileView *ui;
     int           mTile;
     TileWorld*    mpWorld;
     EditMode      mEditMode;
     TileBound*    mpSelectedBound;
+    TileEntity*   mpSelectedEntity;
     BoundEdge     mSelectedEdge;
     QUndoStack    mUndoStack;
+    QPoint        mStartPos;
     TileField::Level mLevel;
     double           mTransparency;
 };

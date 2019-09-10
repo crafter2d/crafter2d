@@ -2,15 +2,7 @@
 <!-- char sprite -->
 
 <entity name="box">
-   <sprite width="32" height="32">
-      <texture>images/box</texture>
-      <animations speed="125">
-         <anim name="idle">
-			<tile name="box.png" />
-		 </anim>
-      </animations>
+   <sprite width="77" height="77">
+      <texture name="Crate.png" />
    </sprite>
-   <body inertia="1" mass="80">
-      <shape type="box" halfx="16" halfy="16" />
-   </body>
 </entity>

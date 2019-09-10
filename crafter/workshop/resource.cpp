@@ -3,7 +3,7 @@
 Resource::Resource(Type type):
     QObject(nullptr),
     mType(type),
-    mName(),
+    mResourceName(),
     mDirty(false)
 {
 }
@@ -11,7 +11,7 @@ Resource::Resource(Type type):
 Resource::Resource(const Resource& that):
     QObject(nullptr),
     mType(that.mType),
-    mName(that.mName),
+    mResourceName(that.mResourceName),
     mDirty(true)
 {
 }
@@ -19,7 +19,7 @@ Resource::Resource(const Resource& that):
 Resource& Resource::operator=(const Resource& that)
 {
     mType = that.mType;
-    mName = that.mName;
+    mResourceName = that.mResourceName;
     mDirty = true;
     return *this;
 }
@@ -28,12 +28,12 @@ Resource& Resource::operator=(const Resource& that)
 
 const QString& Resource::getResourceName() const
 {
-    return mName;
+    return mResourceName;
 }
 
 void Resource::setResourceName(const QString& name)
 {
-    mName = name;
+    mResourceName = name;
 }
 
 bool Resource::isDirty() const

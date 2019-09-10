@@ -114,7 +114,7 @@ namespace c2d
       std::size_t index = value.find(':');
       if ( index == value.npos )
       {
-         throw new std::runtime_error("Invalid range detected, expected 'from:to'");
+         throw std::runtime_error("Invalid range detected, expected 'from:to'");
       }
 
       std::string leftstr = value.substr(0, index);
@@ -131,7 +131,7 @@ namespace c2d
       std::size_t index = value.find(',');
       if ( index == std::string::npos )
       {
-         throw new std::runtime_error("Invalid vector detected, expected 'x,y' value");
+         throw std::runtime_error("Invalid vector detected, expected 'x,y' value");
       }
 
       std::string x = value.substr(0, index);
@@ -148,7 +148,7 @@ namespace c2d
       std::size_t index = value.find(':');
       if ( index == value.npos )
       {
-         throw new std::runtime_error("Invalid vector range, expected 'from:to'");
+         throw std::runtime_error("Invalid vector range, expected 'from:to'");
       }
 
       std::string leftrange = value.substr(0, index);

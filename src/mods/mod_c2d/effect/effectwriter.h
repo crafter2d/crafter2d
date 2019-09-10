@@ -17,7 +17,7 @@ class EffectWriter : public c2d::ContentWriter
 {
 protected:
 
-   virtual bool write(DataStream& stream, const String& filename) override;
+   virtual Result write(DataStream& stream, const String& filename) override;
 
 private:
 

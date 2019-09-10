@@ -17,11 +17,11 @@ RotateImagePainter::~RotateImagePainter()
 
 void RotateImagePainter::drawImage(const QPoint& pos, int angle, int srcWidth, int srcHeight, int dstWidth, int dstHeight, const QImage& image, const QRect &srcRect)
 {
-    float srcxc = pos.x() + srcWidth / 2.0f;
-    float srcyc = pos.y() + srcHeight / 2.0f;
+    qreal srcxc = pos.x() + srcWidth / 2.0;
+    qreal srcyc = pos.y() + srcHeight / 2.0;
 
-    float dstxc = pos.x() + dstWidth / 2.0f;
-    float dstyc = pos.y() + dstHeight / 2.0f;
+    qreal dstxc = pos.x() + dstWidth / 2.0;
+    qreal dstyc = pos.y() + dstHeight / 2.0;
 
     QTransform t;
     t.translate(dstxc, dstyc);
@@ -31,6 +31,8 @@ void RotateImagePainter::drawImage(const QPoint& pos, int angle, int srcWidth, i
     mPainter.setTransform(t);
     if ( srcRect == sEmptyRect )
         mPainter.drawImage(pos, image);
-    else
-        mPainter.drawImage(pos, image, srcRect);
+    else {
+        QRect target(pos, QSize(dstHeight, dstWidth));
+        mPainter.drawImage(target, image, srcRect);
+    }
 }

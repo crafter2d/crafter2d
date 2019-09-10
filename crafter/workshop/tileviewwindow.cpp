@@ -8,7 +8,7 @@
 
 TileViewWindow::TileViewWindow(QWidget *parent) :
     QScrollArea(parent),
-    mpTileView(NULL)
+    mpTileView(nullptr)
 {
     mpTileView = new TileView();
 

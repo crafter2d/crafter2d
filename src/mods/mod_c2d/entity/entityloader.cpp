@@ -98,7 +98,7 @@ namespace c2d
          return createDefinition(ent);
       }
 
-      throw new std::runtime_error("parsing failed");
+      throw std::runtime_error("parsing failed");
    }
 
    EntityDefinitionProto* EntityLoader::createDefinition(const entity_definitions::entity& ent)
@@ -146,7 +146,7 @@ namespace c2d
          }
          else
          {
-            throw new std::runtime_error("Should either have a file or local reference!");
+            throw std::runtime_error("Should either have a file or local reference!");
          }
 
          pchild->mOffset = Vector(child.offsetx, child.offsety);

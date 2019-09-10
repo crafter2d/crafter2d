@@ -12,10 +12,12 @@ namespace c2d
    class CORE_API ContentWriter
    {
    public:
+      enum Result { eOk, eOkNoStore, eFail };
+
       ContentWriter();
       virtual ~ContentWriter();
 
-      virtual bool write(DataStream& stream, const String& filename) = 0;
+      virtual Result write(DataStream& stream, const String& filename) = 0;
    };
 }
 

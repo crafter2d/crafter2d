@@ -64,7 +64,7 @@ namespace local_atlas
    ELEMENT_END
 }
 
-bool c2d::TileAtlasWriter::write(DataStream & stream, const String & filename)
+c2d::ContentWriter::Result c2d::TileAtlasWriter::write(DataStream & stream, const String & filename)
 {
    XmlParser parser;
    local_atlas::tileatlas atlas;
@@ -90,5 +90,5 @@ bool c2d::TileAtlasWriter::write(DataStream & stream, const String & filename)
       }
    }
    
-   return true;
+   return eOk;
 }

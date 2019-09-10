@@ -43,6 +43,7 @@ public:
    static String extractFileName(const String& filepath);
    static String extractPath(const String& filepath);
    static String toNativeSeparator(const String& filepath);
+   static String extension(const String& filepath);
    static bool   exists(const String& filepath);
 
    File();

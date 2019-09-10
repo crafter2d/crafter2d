@@ -48,7 +48,7 @@ namespace local
 }
 
 
-bool TileSetWriter::write(DataStream& stream, const String& filename)
+c2d::ContentWriter::Result TileSetWriter::write(DataStream& stream, const String& filename)
 {
    XmlParser parser;
    local::tileset ts;
@@ -64,5 +64,5 @@ bool TileSetWriter::write(DataStream& stream, const String& filename)
       }
    }
 
-   return true;
+   return eOk;
 }

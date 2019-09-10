@@ -38,7 +38,7 @@ public:
     void addSprite(const Sprite& sprite);
     void clear();
 
-    void paint(QPainter& painter, const QPoint &pos, int index);
+    void paint(QPainter& painter, const QPoint &pos, int index, qreal scale);
 
     bool load(const QString& filename);
     bool save(const QString& filename) const;

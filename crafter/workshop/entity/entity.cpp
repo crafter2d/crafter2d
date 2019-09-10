@@ -1,5 +1,7 @@
 #include "entity.h"
 
+#include "spritecomponent.h"
+
 Entity::Entity():
     Resource(eObject)
 {

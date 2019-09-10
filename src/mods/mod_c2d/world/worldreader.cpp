@@ -4,6 +4,7 @@
 #include <zlib.h>
 
 #include "core/defines.h"
+#include "core/entity/entity.h"
 #include "core/content/contentmanager.h"
 #include "core/physics/simulationfactory.h"
 #include "core/physics/simulationfactoryregistry.h"
@@ -66,7 +67,7 @@ IContent* WorldReader::read(DataStream& stream)
 
       Layer* player = pworld->createLayer();
       player->setTileSet(ptileset);
-      player->create(pdefinition);      
+      player->create(pdefinition);
       pworld->addLayer(player);
 
       TileField& field = player->getTileField();
@@ -80,6 +81,26 @@ IContent* WorldReader::read(DataStream& stream)
       Vector left, right;
       stream >> left >> right;
       pworld->addBound(left, right);
+   }
+
+   bool hasEntities = false;
+   stream >> hasEntities;
+   if ( hasEntities )
+   {
+      uint32_t count;
+      stream >> count;
+      for ( int index = 0; index < count; ++index )
+      {
+         String name;
+         float x, y, scale;
+         stream >> name >> x >> y >> scale;
+
+         Entity* pentity = getContentManager().loadContent<Entity>(name);
+         pentity->setPosition(Vector(x, y));
+         pentity->scale(scale);
+
+         pworld->addEntity(pentity);
+      }
    }
 
    // needs to be set here, otherwise the bounds are not added to the simulation

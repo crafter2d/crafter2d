@@ -29,7 +29,7 @@ private:
 
   // data
     Type    mType;
-    QString mName;
+    QString mResourceName;
     bool    mDirty;
 };
 

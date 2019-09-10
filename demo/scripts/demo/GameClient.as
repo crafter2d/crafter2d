@@ -48,6 +48,7 @@ class GameClient extends Client
 		position.set(850, 300);
 		Mushroom mush = (Mushroom) Entity.construct(this, "mushroom", position, "objects/mushroom");
 		
+		/*
 		position.set(40, 755);
 		Entity.construct(this, "sign1", position, "objects/sign2");
 		position.set(150, 630);
@@ -65,6 +66,7 @@ class GameClient extends Client
 		Entity.construct(this, "bush1", position, "objects/bush1");
 		position.set(1400, 630);
 		Entity.construct(this, "bush2", position, "objects/bush3");
+		*/
 		
 		Viewport viewport = getViewport();
 		int left = 150;

@@ -10,7 +10,7 @@
 #include "core/graphics/texture.h"
 #include "core/streams/arraystream.h"
 
-bool TextureWriter::write(DataStream& stream, const String& filename)
+c2d::ContentWriter::Result TextureWriter::write(DataStream& stream, const String& filename)
 {
    c2d::Image image;
    if ( image.load(filename) )
@@ -35,7 +35,7 @@ bool TextureWriter::write(DataStream& stream, const String& filename)
             image.addAlphaChannel();
             break;
          default:
-            throw new std::runtime_error("Invalid texture format detected");
+            throw std::runtime_error("Invalid texture format detected");
          }
 
          stream.writeInt(format);
@@ -59,14 +59,9 @@ bool TextureWriter::write(DataStream& stream, const String& filename)
          stream.write(imagestream);
       }
 
-      return true;
+      return eOk;
    }
-   else
-   {
-      // error!
-   }
-
-   return false;
+   throw std::runtime_error("Could not load file");
 }
 
 #endif // C2D_EXPORT_WRITERS

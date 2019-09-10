@@ -79,6 +79,7 @@ public:
 
  // search
     TileSet* lookupTileSet(const QString& name);
+    Entity* lookupEntity(const QString& name);
     ScriptFile* findScript(const QString& classname);
 
 public slots:

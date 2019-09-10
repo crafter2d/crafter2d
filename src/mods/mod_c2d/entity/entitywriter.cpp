@@ -21,7 +21,7 @@ EntityWriter::EntityWriter():
 
 // - Writing
 
-bool EntityWriter::write(DataStream& stream, const String& filename)
+c2d::ContentWriter::Result EntityWriter::write(DataStream& stream, const String& filename)
 {
    c2d::EntityLoader loader;
    std::unique_ptr<EntityDefinitionProto> definition(loader.load(filename));
@@ -29,8 +29,8 @@ bool EntityWriter::write(DataStream& stream, const String& filename)
    {
       definition->write(stream);
       
-      return true;
+      return eOk;
    }
 
-   return false;
+   return eFail;
 }

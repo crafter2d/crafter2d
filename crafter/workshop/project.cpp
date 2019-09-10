@@ -21,16 +21,18 @@
 #include "world/tilesetwriter.h"
 #include "world/tileset.h"
 #include "world/tileworld.h"
+#include "world/tileentityreader.h"
+#include "world/tileentitywriter.h"
 
 #include "newprojectdialog.h"
 
 // - Statics
 
-Project* Project::spActiveProject = NULL;
+Project* Project::spActiveProject = nullptr;
 
 Project* Project::createNew(QWidget* pparent)
 {
-    Project* pproject = NULL;
+    Project* pproject = nullptr;
 
     NewProjectDialog dialog(pparent);
     if ( dialog.exec() == QDialog::Accepted )
@@ -308,6 +310,12 @@ bool Project::loadWorld(const QString& fileName)
         TileWorld* pworld = reader.read();
         pworld->setResourceName(fileName);
 
+        QFileInfo info(file);
+        QString entityfilename = info.baseName() + ".xml";
+        QFile entityfile(info.dir().filePath(entityfilename));
+        TileEntityReader entityreader;
+        entityreader.load(entityfile, *pworld);
+
         addWorld(pworld);
 
         return true;
@@ -346,7 +354,8 @@ void Project::loadObjects()
             Entity* pentity = reader.read();
             if ( pentity != nullptr )
             {
-                pentity->setResourceName(filename);
+                QString name = filename.right(filename.length() - mBasePath.length() - 1); // we don't need the slash
+                pentity->setResourceName(name);
                 mEntities.append(pentity);
             }
         }
@@ -369,6 +378,8 @@ bool Project::load(const QString &fileName)
     mSpriteAtlas.load(getTileAtlasPath());
 
     setFileName(fileName);
+
+    loadObjects();
 
     while ( !stream.atEnd() )
     {
@@ -416,8 +427,6 @@ bool Project::load(const QString &fileName)
         }
     }
 
-    loadObjects();
-
     return true;
 }
 
@@ -461,6 +470,12 @@ void Project::saveProjectResources()
                 QTileWorldWriter writer(file);
                 writer.write(*pworld);
             }
+
+            QFileInfo info(file);
+            QString entityfilename = info.baseName() + ".xml";
+            QFile entityfile(info.dir().filePath(entityfilename));
+            TileEntityWriter entityWriter;
+            entityWriter.write(entityfile, pworld->getEntities());
         }
     }
 }
@@ -528,7 +543,17 @@ TileSet* Project::lookupTileSet(const QString& name)
             return ptileset;
         }
     }
-    return NULL;
+    return nullptr;
+}
+
+Entity* Project::lookupEntity(const QString& name)
+{
+    for ( auto pentity : mEntities )
+    {
+        if ( pentity->getResourceName() == name )
+            return pentity;
+    }
+    return nullptr;
 }
 
 ScriptFile* Project::findScript(const QString& classname)

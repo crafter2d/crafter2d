@@ -32,10 +32,13 @@
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mpProject(NULL),
+    mpProject(nullptr),
     mpRecentFileActions(),
-    mpLayerPanel(NULL),
-    mpTilesPanel(NULL)
+    mpSelectedEntity(nullptr),
+    mpProjectPanel(nullptr),
+    mpLayerPanel(nullptr),
+    mpTilesPanel(nullptr),
+    mpOutputPanel(nullptr)
 {
     ui->setupUi(this);
 
@@ -65,11 +68,11 @@ QMdiArea& MainWindow::getMdiArea()
 TileView* MainWindow::getActiveView()
 {
     QMdiSubWindow* pwindow = ui->centralWidget->activeSubWindow();
-    if ( pwindow != NULL )
+    if ( pwindow != nullptr )
     {
         return &dynamic_cast<TileViewWindow*>(pwindow->widget())->getTileView();
     }
-    return NULL;
+    return nullptr;
 }
 
 // - Operations
@@ -221,10 +224,15 @@ void MainWindow::showPanel(DockPanel* ppanel, bool show)
     }
 }
 
+void MainWindow::setSelectedEntity(Entity* pentity)
+{
+    mpSelectedEntity = pentity;
+}
+
 void MainWindow::showWorld(TileWorld& world)
 {
     TileViewWindow* pwindow = findWindow(world);
-    if ( pwindow != NULL )
+    if ( pwindow != nullptr )
     {
         ui->centralWidget->setActiveSubWindow(dynamic_cast<QMdiSubWindow*>(pwindow->parent()));
         pwindow->activateWindow();
@@ -242,7 +250,7 @@ void MainWindow::showWorld(TileWorld& world)
 ScriptView* MainWindow::showScript(ScriptFile& script)
 {
     ScriptView* pview = findWindow(script);
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         ui->centralWidget->setActiveSubWindow(dynamic_cast<QMdiSubWindow*>(pview->parent()));
         pview->activateWindow();

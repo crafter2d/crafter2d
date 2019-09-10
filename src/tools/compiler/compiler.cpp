@@ -102,11 +102,14 @@ namespace c2d::compiler
             String extension = determineExtension(file);
             ContentModule& cmod = resolveModule(mgr, extension);
 
+            //std::cout << "Compiling " << file.toUtf8() << std::endl;
+
             BufferedStream stream;
             cmod.getUuid().write(stream);
 
             ContentWriter& writer = cmod.getWriter();
-            if ( writer.write(stream, file) )
+            ContentWriter::Result result = writer.write(stream, file);
+            if ( result == ContentWriter::eOk )
             {
                // src = ../demo/world/world.j
                // dst = ../joop/build/ -> world/world.c2d
@@ -125,14 +128,19 @@ namespace c2d::compiler
                }
                save(filename, stream);
             }
+            else if ( result == ContentWriter::eOkNoStore )
+            {
+               // nothing to do here, it was successful
+            }
             else
             {
-               throw new std::runtime_error("Could not process file");
+               throw std::runtime_error("Could not process file");
             }
          }
-         catch ( std::exception* pex )
+         catch ( std::exception& ex )
          {
-            printf("Error (%s) - %s\n", file.toUtf8().c_str(), pex->what());
+            //std::cerr << "Error (" << file.toUtf8() << ") - " << ex.what();
+            printf("Error (%s) - %s\n", file.toUtf8().c_str(), ex.what());
          }
       }
 
@@ -173,8 +181,7 @@ namespace c2d::compiler
 
    String Compiler::determineExtension(const String& filename)
    {
-      std::size_t index = filename.lastIndexOf(L'.');
-      String extension = filename.subStr(index + 1, filename.length() - index - 1);
+      String extension = File::extension(filename);
 
       if ( extension == UTEXT("xml") )
       {
@@ -199,7 +206,7 @@ namespace c2d::compiler
       StdioFile file;
       if ( !file.open(outfile, File::EBinary | File::EWrite) )
       {
-         throw new std::runtime_error("Could not open file " + outfile.toUtf8());
+         throw std::runtime_error("Could not open file " + outfile.toUtf8());
       }
 
       file.write(stream.getData(), stream.getDataSize());
@@ -218,7 +225,7 @@ namespace c2d::compiler
          }
       }
 
-      throw new std::runtime_error("There is no compiler found for this file");
+      throw std::runtime_error("There is no compiler found for this file");
    }
 
    void Compiler::findFiles()
