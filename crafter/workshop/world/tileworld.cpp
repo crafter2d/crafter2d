@@ -1,5 +1,7 @@
 #include "tileworld.h"
 
+#include <limits>
+
 #include <QFileInfo>
 #include <QPainter>
 
@@ -329,12 +331,21 @@ TileBound* TileWorld::findBound(const QPoint& mousepos)
 
 TileEntity* TileWorld::findEntity(const QPoint& mousepos)
 {
+    TileEntity* pbestEntity = nullptr;
+    int closestDistance = std::numeric_limits<int>::max();
     for ( auto pentity : mEntities )
     {
-        if ( pentity->hitTest(mousepos) )
+        QRect bounds = pentity->getBoundingRect();
+        if ( bounds.contains(mousepos) )
         {
-            return pentity;
+            QPoint distance = bounds.topLeft() - mousepos;
+            int length = distance.manhattanLength();
+            if ( length < closestDistance  )
+            {
+                closestDistance = length;
+                pbestEntity = pentity;
+            }
         }
     }
-    return nullptr;
+    return pbestEntity;
 }

@@ -3,6 +3,7 @@
 
 #include <QPoint>
 
+class QRect;
 class QPainter;
 
 class Entity;
@@ -24,6 +25,7 @@ public:
 
   // query
     QPoint getCenterPos() const;
+    QRect getBoundingRect() const;
     void setCenterPosition(const QPoint& pos);
 
   // operations

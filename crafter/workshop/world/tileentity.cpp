@@ -1,6 +1,7 @@
 #include "tileentity.h"
 
 #include <QPainter>
+#include <QRect>
 
 #include "entity/entity.h"
 #include "entity/spritecomponent.h"
@@ -27,6 +28,16 @@ QPoint TileEntity::getCenterPos() const
         return QPoint(mPosition.x() + halfSize.width(), mPosition.y() + halfSize.height());
     }
     return mPosition;
+}
+
+QRect TileEntity::getBoundingRect() const
+{
+    auto psprite = mDefinition.component<SpriteComponent>();
+    if ( psprite )
+    {
+        return QRect(mPosition, psprite->getSize());
+    }
+    return QRect();
 }
 
 void TileEntity::setCenterPosition(const QPoint& pos)
