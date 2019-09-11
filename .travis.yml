@@ -8,11 +8,9 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gcc-7
     - cmake
     - zlib1g-dev
     - libsdl1.2-dev
-    - libssl-dev
     - libglew-dev
     - libfreetype6-dev
     - libtinyxml-dev
@@ -24,7 +22,6 @@ before_install:
   - ./projects/install-box2d.sh
   - ./projects/install-libantlr3.sh
   - ./projects/install-libsquish.sh
-  - export CXX="g++-5" CC="gcc-5"
 
 script:
   - premake-core/bin/release/premake5 --travis gmake
