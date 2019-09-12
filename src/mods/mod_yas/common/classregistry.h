@@ -26,11 +26,11 @@ public:
    ClassRegistry();
    ~ClassRegistry();
 
-   ClassRegistry& operator=(const ClassRegistry& that);
+   ClassRegistry& operator=(ClassRegistry&& that);
 
 
  // maintenance
-   void add(const ClassRegistry& that);
+   void add(ClassRegistry&& that);
    void addClass(const String& name);
    void addFunction(const String& name, yas::CallbackFunctor* pcallback);
    void clear();

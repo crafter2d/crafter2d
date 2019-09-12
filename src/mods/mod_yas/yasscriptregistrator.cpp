@@ -5,7 +5,8 @@
 #include "yasscriptmanager.h"
 
 YasScriptRegistrator::YasScriptRegistrator(YasScriptManager& manager):
-   mScriptManager(manager)
+   mScriptManager(manager),
+   mRegistry()
 {
 }
 
@@ -21,5 +22,5 @@ void YasScriptRegistrator::addFunction(const String& prototype, CallbackFnc call
 
 void YasScriptRegistrator::registerCallbacks()
 {
-   mScriptManager.getVM().mergeClassRegistry(mRegistry);
+   mScriptManager.getVM().mergeClassRegistry(std::move(mRegistry));
 }

@@ -20,10 +20,10 @@ ClassRegistry::~ClassRegistry()
    clear();
 }
 
-ClassRegistry& ClassRegistry::operator=(const ClassRegistry& that)
+ClassRegistry& ClassRegistry::operator=(ClassRegistry&& that)
 {
    clear();
-   add(that);
+   add(std::move(that));
    mpCurrent = nullptr;
    return *this;
 }
@@ -40,7 +40,7 @@ const FunctionRegistration& ClassRegistry::getFunction(int index) const
 
 // - Maintenance
 
-void ClassRegistry::add(const ClassRegistry& that)
+void ClassRegistry::add(ClassRegistry&& that)
 {
    mClasses.insert(mClasses.end(), that.mClasses.begin(), that.mClasses.end());
    mFunctions.insert(mFunctions.end(), that.mFunctions.begin(), that.mFunctions.end());

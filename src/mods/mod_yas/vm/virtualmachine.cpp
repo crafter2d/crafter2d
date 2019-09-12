@@ -75,7 +75,7 @@ void VirtualMachine::initialize()
 {
    ClassRegistry registry;
    VMInterface::registerCommonFunctions(registry);
-   mergeClassRegistry(registry);
+   mergeClassRegistry(std::move(registry));
 
    // initialize the CPU
    mpCPU->initialize(mContext);
@@ -104,9 +104,9 @@ bool VirtualMachine::loadClass(const String& classname)
    return doLoadClass(classname) != nullptr;
 }
 
-void VirtualMachine::mergeClassRegistry(const ClassRegistry& registry)
+void VirtualMachine::mergeClassRegistry(ClassRegistry&& registry)
 {
-   mContext.mNativeRegistry.add(registry);
+   mContext.mNativeRegistry.add(std::move(registry));
 }
 
 // - Stack access

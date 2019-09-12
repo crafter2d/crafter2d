@@ -63,7 +63,7 @@ public:
    
  // loading
    bool loadClass(const String& classname);
-   void mergeClassRegistry(const ClassRegistry& registry);
+   void mergeClassRegistry(ClassRegistry&& registry);
 
  // execution
    bool         execute(const String& classname, const String& function);
