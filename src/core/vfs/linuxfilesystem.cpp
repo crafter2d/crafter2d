@@ -54,6 +54,11 @@ bool LinuxFileSystem::moveFile(const String&, const String&)
    return true;
 }
 
+bool LinuxFileSystem::deleteFile(const String& filename)
+{
+   return true;
+}
+
 UChar LinuxFileSystem::getSeparator() const
 {
    return L'/';

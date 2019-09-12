@@ -8,5 +8,8 @@ if pkgconf == nil then
 	print("Failed to load the pkgconfig module")
 end
 
-local p = path.join(os.getcwd(), 'projects/pkgconfig')
-pkgconf.addPath(p)
+if _TARGET_OS == 'windows' then
+	local p = path.join(os.getcwd(), 'projects/pkgconfig')
+	pkgconf.addPath(p)
+end
+

@@ -49,6 +49,14 @@ local function strip(str)
   return str:gsub("^%s*(.-)%s*$", "%1")
 end
 
+function pkgconfig.setPrefix(prefix)
+  pkgconfig.prefix = prefix;
+end
+
+function pkgconfig.addPath(name)
+  pkgconfig.path = table.join(pkgconfig.path, { name })
+end
+
 function pkgconfig.readpc(name, extrapaths)
   if type(extrapaths) == 'string' then
     extrapaths = {extrapaths}
@@ -89,14 +97,6 @@ function pkgconfig.parse(pc)
   return rv
 end
 
-function pkgconfig.addPath(p)
-  pkgconfig.path = table.join(pkgconfig.path, { p })
-end
-
-function pkgconfig.setPrefix(p)
-   pkgconfig.prefix = p
-end
-
 function pkgconfig.load(name, extrapaths)
   local pc = pkgconfig.readpc(name, extrapaths)
   if pc then
@@ -106,19 +106,31 @@ function pkgconfig.load(name, extrapaths)
 end
 
 function pkgconfig.cflags(lib, extrapaths)
-  local cf = pkgconfig.load(lib, extrapaths).cflags
-  if _TARGET_OS == 'windows' then
-    cf = path.join(pkgconfig.prefix, cf)
+  local l = pkgconfig.load(lib, extrapaths)
+  if l ~= nil then
+    local cf = l.cflags
+    if _TARGET_OS == 'windows' then
+      cf = path.join(pkgconfig.prefix, cf)
+    end
+    return cf
   end
-  return cf
+  return ''
 end
 
 function pkgconfig.libs(lib, extrapaths)
-  return pkgconf.load(lib, extrapaths).libs
+  local l = pkgconf.load(lib, extrapaths)
+  if l ~= nil then
+    return l.libs
+  end
+  return ''
 end
 
 function pkgconfig.libdir(lib, extrapaths)
-  return path.join(pkgconfig.prefix, pkgconf.load(lib, extrapaths).libdir)
+  local l = pkgconf.load(lib, extrapaths)
+  if l ~= nil then
+    return path.join(pkgconfig.prefix, l.libdir)
+  end
+  return ''
 end
 
 return p.modules.pkgconfig;

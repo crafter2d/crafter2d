@@ -33,17 +33,10 @@ project "Core"
 	filter "system:Linux"
 		defines { "LINUX" }
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", "-Wunused-parameter", pkgconf.cflags('libzip') }
-        linkoptions { pkgconf.libs('libzip') }
-        links { "SDL" }
+		buildoptions { "-W", "-Wall", "-O0", "-Wunused-parameter", pkgconf.cflags('libzip') }
+        	linkoptions { pkgconf.libs('libzip') }
+		links { "SDL" }
 
---        if _OPTIONS["with-libzip"] then
---            includedirs { path.join(_OPTIONS["with-libzip"], "lib") }
---            links { path.join(_OPTIONS["with-libzip"], "lib/.libs/zip") }
---        else
---            links { "zip" }
---        end
-				
 	-- set IDE specific settings
 	filter "action:vs*"
 		links { "gdi32", "user32", "vfw32", "ws2_32", "dbghelp", pkgconf.libs('iconv') }

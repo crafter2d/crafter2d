@@ -31,7 +31,7 @@ using ZipPtr = std::unique_ptr<zip_t, int(*)(zip_t*)>;
 class ZipFile::ZipImpl
 {
 public:
-   ZipImpl::ZipImpl():
+   ZipImpl():
       zipptr(nullptr, nullptr)
    {
    }
