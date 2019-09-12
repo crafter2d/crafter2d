@@ -42,8 +42,12 @@ const FunctionRegistration& ClassRegistry::getFunction(int index) const
 
 void ClassRegistry::add(ClassRegistry&& that)
 {
-   mClasses.insert(mClasses.end(), that.mClasses.begin(), that.mClasses.end());
-   mFunctions.insert(mFunctions.end(), that.mFunctions.begin(), that.mFunctions.end());
+   std::move(that.mClasses.begin(), that.mClasses.end(), std::back_inserter(mClasses));
+   std::move(that.mFunctions.begin(), that.mFunctions.end(), std::back_inserter(mFunctions));
+
+   that.mClasses.clear();
+   that.mFunctions.clear();
+   that.mpCurrent = nullptr;
 
    renumber();
 }
