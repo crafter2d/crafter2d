@@ -3,6 +3,8 @@
 
 #include "ui_base.h"
 
+#include <memory>
+
 #include "core/defines.h"
 #include "core/modules/moduleinfo.h"
 #include "core/modules/module.h"

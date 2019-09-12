@@ -8,7 +8,7 @@ namespace c2d
    class ThemeWriter : public ContentWriter
    {
    public:
-      virtual bool write(DataStream& stream, const String& filename) override;
+      virtual Result write(DataStream& stream, const String& filename) override;
    };
 }
 

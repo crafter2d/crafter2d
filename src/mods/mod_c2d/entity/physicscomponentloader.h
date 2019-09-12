@@ -36,7 +36,7 @@ namespace c2d
          ATTRIBUTE_INIT(mass, Attribute::eMandatory, Attribute::eFloat, 0.0f)
          ATTRIBUTE_INIT_NAMED(statik, static, Attribute::eOptional, Attribute::eBool, false)
          ATTRIBUTE_INIT(rotate, Attribute::eOptional, Attribute::eBool, true);
-         CHILD_INIT(shape, Child::eOne, false)
+         CHILD_INIT(shape, Child::eOne)
       ELEMENT_END
    }
 

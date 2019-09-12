@@ -37,9 +37,9 @@ project "UnitTest"
 				
 	filter "system:linux"
 		defines { "LINUX" }
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
-        libdirs { "../bin" }
-		links { pkgconf.libs('googletest') }
+		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", pkgconf.cflags('gtest') }
+		links { 'gtest', 'pthread' }
+		libdirs { "../bin" }
 
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored", "-lEngined" }

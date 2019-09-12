@@ -1,6 +1,8 @@
 
 #include "executor.h"
 
+#include <stdexcept>
+
 #include <core/modules/modulemanager.h>
 #include <core/modules/scriptmodule.h>
 #include <core/script/scriptmanager.h>
@@ -43,14 +45,14 @@ c2d::ScriptManager& Executor::loadScriptManager()
 {
    if ( !mModuleMgr.initialize() )
    {
-      throw std::exception("Could not initialize the module manager");
+      throw std::runtime_error("Could not initialize the module manager");
    }
 
    c2d::Module* pmodule = mModuleMgr.lookup(c2d::UUID_ScriptModule);
    if ( pmodule == nullptr )
    {
       // no need to continue testing as it seems there is no script module available
-      throw std::exception("Could not load any script manager");
+      throw std::runtime_error("Could not load any script manager");
    }
 
    ScriptModule* pmod = static_cast<ScriptModule*>(pmodule);

@@ -29,5 +29,5 @@ project "mod_ui"
 
 	filter "system:linux"
 		defines { "LINUX" }
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+		buildoptions { "-W", "-Wall", "-O0" }
 		

@@ -106,8 +106,9 @@ bool OGLVertexBuffer::create(const VertexLayout& layout, int length, int usage)
    for ( int i = 0; i < layout.getSize(); ++i )
    {
       const VertexLayoutElement& field = layout[i];
-      glEnableVertexAttribArray(field.index);
-      glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), BUFFER_OFFSET(field.pos));
+      // TODO: fix this, we now have a semanics
+      // glEnableVertexAttribArray(field.index);
+      // glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), BUFFER_OFFSET(field.pos));
    }
 
    glBindVertexArray(0);

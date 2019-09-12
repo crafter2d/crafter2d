@@ -30,7 +30,7 @@ project "mod_yas"
 
 	filter "system:linux"
 		defines { "LINUX" }
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+		buildoptions { "-W", "-Wall", "-O0" }
         libdirs { "../bin" }
 
     filter { "system:linux", "Debug" }

@@ -145,7 +145,7 @@ namespace c2d::xml
 }
 
 #define ELEMENT_DEF(name) class name : public c2d::xml::Element { public:
-#define ELEMENT_IMP(name) name::name(): c2d::xml::Element(#name) {
+#define ELEMENT_IMP(name) name(): c2d::xml::Element(#name) {
 //#define ELEMENT_BASE_DEF(name) class name : public c2d::Element { public: name(const std::string&);
 //#define ELEMENT_BASE_IMP(name) }; name::name(const std::string& name): c2d::Element(name) {
 //#define ELEMENT_DERIVED_DEF(name, base) class name : public base { public: name();

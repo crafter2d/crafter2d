@@ -1,5 +1,6 @@
 
 #include <map>
+#include <memory>
 
 #include "meshcomponentloader.h"
 

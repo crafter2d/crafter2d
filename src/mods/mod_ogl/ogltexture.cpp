@@ -77,16 +77,6 @@ bool OGLTexture::create(const TextureDescription& desc)
       mFormat = GL_RGBA;
       mBytes = 4;
       break;
-   case Graphics::eFormat_BC1:
-      bc = true;
-      blockSize = 8;
-      mBytes = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-      break;
-   case Graphics::eFormat_BC2:
-      bc = true;
-      blockSize = 16;
-      mBytes = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-      break;
    case Graphics::eFormat_BC3:
       bc = true;
       blockSize = 16;

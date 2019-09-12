@@ -120,7 +120,8 @@ void ShaderObject::linkInput(VertexLayout& layout)
    for ( int index = 0; index < layout.getSize(); ++index )
    {
       VertexLayoutElement& field = layout[index];
-      field.index = glGetAttribLocation(program, field.semantic.toUtf8().c_str());
+      // TODO: index is missing!
+      // field.index = glGetAttribLocation(program, field.semantic.toUtf8().c_str());
       GLenum err = glGetError();
       if ( err != GL_NO_ERROR )
       {

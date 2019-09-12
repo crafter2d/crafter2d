@@ -211,13 +211,6 @@ GLenum OGLDevice::toGLBlendState(BlendStateDesc::BlendFactor blendfactor)
    return factor;
 }
 
-GlyphProvider* OGLDevice::createGlyphProvider(Font& font)
-{
-   OGLGlyphProvider* pprovider = new OGLGlyphProvider(mFreeTypeLib);
-   pprovider->initialize(static_cast<OGLFont&>(font));
-   return pprovider;
-}
-
 Font* OGLDevice::createFont(const String& name)
 {
    FT_Face face;
@@ -228,7 +221,7 @@ Font* OGLDevice::createFont(const String& name)
       return nullptr;
    }
 
-   OGLFont* pfont = new OGLFont(face);
+   OGLFont* pfont = new OGLFont(nullptr, face);
    pfont->setFamilyName(name);
 
    return pfont;

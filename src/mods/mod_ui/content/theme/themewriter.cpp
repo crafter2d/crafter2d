@@ -22,7 +22,7 @@ namespace c2d
       ELEMENT_END
    }
 
-   bool ThemeWriter::write(DataStream& stream, const String& filename)
+   ContentWriter::Result ThemeWriter::write(DataStream& stream, const String& filename)
    {
       XmlParser parser;
       xml_theme_definition::theme t;
@@ -33,6 +33,6 @@ namespace c2d
          stream << atlas;
       }
       
-      return true;
+      return eOk;
    }
 }

@@ -57,7 +57,7 @@ namespace c2d
          CHILD_NAMED(particlebehavior, update)
       ELEMENT_IMP(particlesystem)
          ATTRIBUTE_INIT(gravity, Attribute::eMandatory, Attribute::eFloat, 0)
-         CHILD_INIT(emit, Child::eOne, false)
+         CHILD_INIT(emit, Child::eOne)
          CHILD_INIT_NAMED(particlebehavior, init, Child::eZeroOrOne)
          CHILD_INIT_NAMED(particlebehavior, update, Child::eZeroOrOne)
       ELEMENT_END

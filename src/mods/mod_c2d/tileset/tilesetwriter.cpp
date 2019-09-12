@@ -42,7 +42,7 @@ namespace local
       ATTRIBUTE_INIT(tilewidth, Attribute::eMandatory, Attribute::eInt, -1)
       ATTRIBUTE_INIT(tileheight, Attribute::eMandatory, Attribute::eInt, -1)
 
-      CHILD_INIT(tile, Child::eOneOrAny, false)
+      CHILD_INIT(tile, Child::eOneOrAny)
 
    ELEMENT_END
 }

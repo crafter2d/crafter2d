@@ -49,7 +49,7 @@ namespace local_atlas
       ATTRIBUTE_INIT(width, Attribute::eMandatory, Attribute::eFloat, 0)
       ATTRIBUTE_INIT(height, Attribute::eMandatory, Attribute::eFloat, 0)
 
-      CHILD_INIT(tile, Child::eOneOrAny, false)
+      CHILD_INIT(tile, Child::eOneOrAny)
 
    ELEMENT_END
 
@@ -59,7 +59,7 @@ namespace local_atlas
 
    ELEMENT_IMP(tileatlas)
 
-      CHILD_INIT(tilesheet, Child::eOneOrAny, false)
+      CHILD_INIT(tilesheet, Child::eOneOrAny)
 
    ELEMENT_END
 }
