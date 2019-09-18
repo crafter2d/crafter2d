@@ -85,7 +85,7 @@ bool Shader::compile( const char* source, int length )
    {
 		GLint maxLength = 0;
       glGetShaderiv(mShader, GL_INFO_LOG_LENGTH, &maxLength);
-		GLchar *log = new GLcharARB[maxLength];
+		GLchar *log = new GLchar[maxLength];
 		glGetShaderInfoLog(mShader, maxLength, &length, log);
       Log::getInstance().info("Compiler log: %s", log);
 		delete[] log;
@@ -99,7 +99,7 @@ bool Shader::compile( const char* source, int length )
 /// \param[in] filename name of the shader file
 /// \param     length   set to length of the code
 /// \returns pointer to the source code loaded, user must release memory.
-GLcharARB* Shader::load (const String& filename, int& length)
+GLchar* Shader::load(const String& filename, int& length)
 {
    std::unique_ptr<File> pfile(FileSystem::getInstance().open(filename, File::ERead | File::EBinary));
    if ( !pfile )

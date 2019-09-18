@@ -8,11 +8,9 @@
 #include "virtualstring.h"
 
 VirtualStack::VirtualStack(int initialsize):
-   mStack(),
+   mStack(initialsize),
    mSize(0)
 {
-   mStack.resize(initialsize);
-   fill(0);
 }
 
 VirtualStack::~VirtualStack()
@@ -178,15 +176,6 @@ void VirtualStack::ensureFits(int amount)
    {
       int oldsize = mStack.size();
       mStack.resize(mStack.size() * 2);
-      //fill(oldsize);
-   }
-}
-
-void VirtualStack::fill(int from)
-{
-   for ( std::size_t index = from; index < mStack.size(); index++ )
-   {
-      mStack[index];
    }
 }
 

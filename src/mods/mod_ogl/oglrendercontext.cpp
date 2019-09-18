@@ -1,7 +1,7 @@
 
 #include "oglrendercontext.h"
 
-#include <GL/glew.h>
+#include "GL/gl3w.h"
 #include <GL/glu.h>
 
 #include "core/graphics/codepath.h"

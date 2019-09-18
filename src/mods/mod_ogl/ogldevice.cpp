@@ -47,14 +47,6 @@ OGLDevice::~OGLDevice()
    FT_Done_FreeType(mFreeTypeLib);
 }
 
-// - Query
-
-bool OGLDevice::supportGLSL() const
-{
-   // GLSL is only supported if both vertex- and fragment shaders are available
-   return (GLEW_ARB_shading_language_100 && GLEW_ARB_shader_objects && GLEW_ARB_vertex_shader);
-}
-
 // - Creation
 
 bool OGLDevice::create(GameWindow& window)
@@ -62,23 +54,24 @@ bool OGLDevice::create(GameWindow& window)
    Log& log = Log::getInstance();
    GLint units;
    
-   GLenum err = glewInit();
-   if ( err != GLEW_OK )
+   int err = gl3wInit();
+   if ( err != GL3W_OK )
    {
-      log << "Failed to initialize GLEW: " << (char*)glewGetErrorString(err) << "\n";
+      log << "Failed to initialize OpenGL\n";
+      return false;
    }
 
    log << "Graphics card:\t\t" << (char*)glGetString(GL_VENDOR) << "\n";
-   log << "OpenGL version:\t\t" << (char*)glGetString(GL_VERSION) << "\n";
+   log << "OpenGL version:\t\t" << (char*)glGetString(GL_VERSION) << ", shader version " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";
 
-   if ( !GLEW_VERSION_3_2 )
+   if ( !gl3wIsSupported(4, 3) )
    {
-      log << "OpenGL version 3.2 is required to run this application.\n";
+      log << "OpenGL version 4.3 is required to run this application.\n";
       return false;
    }
 
    // make sure that there are enough texture units
-   glGetIntegerv (GL_MAX_TEXTURE_UNITS, &units);
+   glGetIntegerv (GL_MAX_TEXTURE_IMAGE_UNITS, &units);
    if ( units < 2 )
    {
       log << "Videocard does not support 2 or more texture units.\n";
@@ -88,14 +81,7 @@ bool OGLDevice::create(GameWindow& window)
    int maxTextureSize = 0;
    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
    log << "Max texture size:\t" << maxTextureSize << "\n";
-   
-   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-   glShadeModel(GL_SMOOTH);
-
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-   glTranslatef(25, 125, 0);
-   
+  
    // initialize free type
    if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
       return false;

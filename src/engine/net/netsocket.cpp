@@ -98,6 +98,7 @@ bool NetSocket::bind(int port)
    }
 
    sockaddr_in sa;
+   memset(&sa, 0, sizeof(sockaddr_in));
    sa.sin_family = AF_INET;
    sa.sin_port = htons(port);
    sa.sin_addr.s_addr = htonl(INADDR_ANY);

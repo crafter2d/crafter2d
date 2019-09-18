@@ -4,9 +4,10 @@
 
 #include "core/graphics/device.h"
 
-#include <GL/glew.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
+#include "GL/gl3w.h"
 
 namespace Graphics
 {
@@ -39,7 +40,6 @@ namespace Graphics
 
    private:
     // query
-      bool supportCG() const;
       bool supportGLSL() const;
 
     // operations

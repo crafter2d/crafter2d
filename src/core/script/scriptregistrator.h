@@ -15,8 +15,9 @@ namespace c2d
    class ScriptRegistrator
    {
    public:
-
       typedef void(*CallbackFnc)(ScriptCall& call);
+
+      virtual ~ScriptRegistrator() {}
 
       // operations
       virtual void addClass(const String& name) = 0;

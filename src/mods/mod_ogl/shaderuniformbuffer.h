@@ -2,7 +2,7 @@
 #ifndef SHADER_UNIFORM_BLOCK_H
 #define SHADER_UNIFORM_BLOCK_H
 
-#include <GL/glew.h>
+#include "GL/gl3w.h"
 
 #include "core/graphics/uniformbuffer.h"
 

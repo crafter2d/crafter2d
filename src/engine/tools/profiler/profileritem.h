@@ -32,7 +32,7 @@ public:
 
    const std::string&   getName() const;
 
-   void asString(char line[]);
+   std::string toString() const;
 
    void increaseChildSampleTime(float amount);
 

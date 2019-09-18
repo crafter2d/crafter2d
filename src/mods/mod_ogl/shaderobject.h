@@ -15,7 +15,8 @@ namespace Graphics
    \brief The shader object class. It keeps track of the OpenGL program which can hold vertex- and fragment shaders. With this class
    you can use your shaders in the game.
    */
-   class ShaderObject{
+   class ShaderObject
+   {
    public:
                   ShaderObject();
                   ~ShaderObject();
@@ -23,7 +24,7 @@ namespace Graphics
       bool        create();
 	   void        release();
 
-      void        addShader(Shader* shader);
+      void        addShader(Shader&& shader);
       bool        link(VertexLayout& layout);
 
       void        enable() const;
@@ -45,13 +46,13 @@ namespace Graphics
       void        setUniform4f( GLint index, float x, float y, float z, float w );
 
    private:
-      typedef std::vector<Shader*> Shaders;
+      using Shaders = std::vector<Shader>;
 
     // operations
       void linkInput(VertexLayout& layout);
 
     // data
-      Shaders shaders;
+      Shaders mShaders;
       GLuint  program;
    };
 };

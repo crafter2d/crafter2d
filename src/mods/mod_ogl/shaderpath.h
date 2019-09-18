@@ -35,11 +35,8 @@ namespace Graphics
 
    private:
 
-    // opertions
-      void setupIndices(VertexLayout& layout);
-
     // data
-	   ShaderObject shader;
+	   ShaderObject mShader;
    };
 };
 

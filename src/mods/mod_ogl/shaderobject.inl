@@ -26,9 +26,9 @@ namespace Graphics
 /// \brief Adds a shader to the program. Do not release this shader untill you called the link function (also happens if
 /// the shader moves out of its scope!).
 /// \param shader Reference to the shader you want to add, this can either be a vertex- or fragment shader.
-INLINE void ShaderObject::addShader(Shader* pshader)
+INLINE void ShaderObject::addShader(Shader&& pshader)
 {
-	shaders.push_back(pshader);
+	mShaders.push_back(std::move(pshader));
 }
 
 INLINE GLuint ShaderObject::handle() const
@@ -53,12 +53,12 @@ INLINE void ShaderObject::disable() const
 
 INLINE void ShaderObject::setUniform1i (GLint index, int i)
 {
-	glUniform1iARB (index, i);
+	glUniform1i(index, i);
 }
 
 INLINE void ShaderObject::setUniform3f (GLint index, float x, float y, float z)
 {
-	glUniform3fARB (index, x, y, z);
+	glUniform3f(index, x, y, z);
 }
 
 /// \fn ShaderObject::setUniform4f(const char* name, float x, float y, float z, float w)
@@ -70,7 +70,7 @@ INLINE void ShaderObject::setUniform3f (GLint index, float x, float y, float z)
 /// \param[in] w the W coordinate
 INLINE void ShaderObject::setUniform4f(GLint index, float x, float y, float z, float w)
 {
-	glUniform4fARB (index, x, y, z, w);
+	glUniform4f(index, x, y, z, w);
 }
 
 };

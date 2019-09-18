@@ -6,6 +6,8 @@ namespace ByteCode
 {
    class Symbol
    {
+   public:
+      virtual ~Symbol() {}
    };
 }
 

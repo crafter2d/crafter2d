@@ -4,7 +4,7 @@
 #  include "shaderobject.inl"
 #endif
 
-#include <GL/glew.h>
+#include "GL/gl3w.h"
 #include <GL/glu.h>
 
 #include "core/graphics/vertexlayout.h"
@@ -68,7 +68,7 @@ bool ShaderObject::link(VertexLayout& layout)
 	GLint linked;
 	GLenum glErr;
 
-	if ( shaders.empty() )
+	if ( mShaders.empty() )
    {
 		Log::getInstance().error("ShaderObject.link: there are no shaders to link.");
 		return false;
@@ -76,15 +76,12 @@ bool ShaderObject::link(VertexLayout& layout)
 	glGetError();
 
 	// add the shaders to the program
-   std::vector<Shader*>::iterator it = shaders.begin();
-	for ( ; it != shaders.end(); ++it )
+	for ( auto& shader : mShaders )
    {
-      Shader* pshader = *it;
-		glAttachShader(program, pshader->handle());
-		pshader->release();
-      delete pshader;
+		glAttachShader(program, shader.handle());
+		shader.release();
 	}
-	shaders.clear();
+	mShaders.clear();
 
 	// now link them & make sure it went ok
 	glLinkProgram(program);
@@ -117,11 +114,9 @@ bool ShaderObject::link(VertexLayout& layout)
 void ShaderObject::linkInput(VertexLayout& layout)
 {
    glUseProgram(program);
-   for ( int index = 0; index < layout.getSize(); ++index )
+   for ( auto& field : layout )
    {
-      VertexLayoutElement& field = layout[index];
-      // TODO: index is missing!
-      // field.index = glGetAttribLocation(program, field.semantic.toUtf8().c_str());
+      field.index = glGetAttribLocation(program, field.semantic.toUtf8().c_str());
       GLenum err = glGetError();
       if ( err != GL_NO_ERROR )
       {
@@ -147,7 +142,7 @@ bool ShaderObject::valid() const
 
       // display linker error message
       glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
-      GLchar *log = new GLcharARB[length];
+      GLchar *log = new GLchar[length];
       glGetProgramInfoLog( program, length, &length, log );
       Log::getInstance().error( "Validate log: %s", log );
       delete[] log;
@@ -184,13 +179,13 @@ bool ShaderObject::bindTexture(int stage, const Texture& texture)
 /// \return The index of the attribute that is currently linked to it or -1 if the attribute was not found.
 GLint ShaderObject::getAttribute(const char* name) const
 {
-	return glGetAttribLocationARB (program, name);
+	return glGetAttribLocation(program, name);
 }
 
 GLint ShaderObject::getUniformLocation(const String& name) const
 {
    const std::string loc = name.toUtf8();
-   return glGetUniformLocationARB(program, loc.c_str());
+   return glGetUniformLocation(program, loc.c_str());
 }
 
 } // namespace Graphics

@@ -1,6 +1,8 @@
 
 #include "entityreader.h"
 
+#include <memory>
+
 #include "core/entity/entity.h"
 #include "core/defines.h"
 
@@ -16,7 +18,7 @@ IContent* EntityReader::read(DataStream& stream)
    ComponentFactories factories;
    setupFactories(factories);
 
-   EntityDefinitionProto* pentityproto = new EntityDefinitionProto();
+   auto pentityproto = std::make_unique<EntityDefinitionProto>();
    pentityproto->read(stream);
 
    return pentityproto->instantiate(getContentManager(), factories);

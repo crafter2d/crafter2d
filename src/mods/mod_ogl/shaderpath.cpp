@@ -14,7 +14,7 @@ using namespace Graphics;
 
 ShaderPath::ShaderPath():
    CodePath(),
-   shader()
+   mShader()
 {
 }
 
@@ -35,13 +35,13 @@ ShaderPath::ShaderPath():
 bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStream& geometryshader, DataStream& pixelshader)
 {
 	Log& log = Log::getInstance ();
-	shader.create();
+	mShader.create();
 
    setVertexLayout(playout);
 
 	// try to load and add the vertex shader
-   std::unique_ptr<VertexShader> vs(new VertexShader());
-   if ( !vs->compile(vertexshader.getData(), vertexshader.getDataSize()) )
+   VertexShader vs;
+   if ( !vs.compile(vertexshader.getData(), vertexshader.getDataSize()) )
    {
       log.error("ShaderPath.load: Failed to compile vertex shader");
 		return false;
@@ -50,55 +50,55 @@ bool ShaderPath::create(VertexLayout* playout, DataStream& vertexshader, DataStr
    // try to load the geometry shader
    if ( geometryshader.getDataSize() > 0 )
    {
-      std::unique_ptr<GeometryShader> gs(new GeometryShader());
-      if ( !gs->compile(geometryshader.getData(), geometryshader.getDataSize()) )
+      GeometryShader gs;
+      if ( !gs.compile(geometryshader.getData(), geometryshader.getDataSize()) )
       {
          log.error("ShaderPath.load: Failed to compile geometry shader");
          return false;
       }
 
-      shader.addShader(gs.release());
+      mShader.addShader(std::move(gs));
    }
 	
 	// try to load and add the fragment shader
-   std::unique_ptr<FragmentShader> fs(new FragmentShader());
-   if ( !fs->compile(pixelshader.getData(), pixelshader.getDataSize()) )
+   FragmentShader fs;
+   if ( !fs.compile(pixelshader.getData(), pixelshader.getDataSize()) )
    {
       log.error("ShaderPath.load: Failed to load or compile fragment shader");
       return false;
    }
 
-   shader.addShader(vs.release());
-   shader.addShader(fs.release());
+   mShader.addShader(std::move(vs));
+   mShader.addShader(std::move(fs));
 	
-   return shader.link(*playout);
+   return mShader.link(*playout);
 }
 
-void ShaderPath::release ()
+void ShaderPath::release()
 {
-	shader.release ();
+	mShader.release();
 }
 
 void ShaderPath::enable(RenderContext& context) const
 {
    C2D_UNUSED(context);
-	shader.enable();
+	mShader.enable();
 }
 
 void ShaderPath::disable(RenderContext& context) const
 {
    C2D_UNUSED(context);
-	shader.disable();
+	mShader.disable();
 }
 
 UniformBuffer* ShaderPath::getUniformBuffer(const String& name) const
 {
-   return shader.getUniformBuffer(name);
+   return mShader.getUniformBuffer(name);
 }
 
 void ShaderPath::bindTexture(RenderContext& context, int stage, const Texture& texture)
 {
-   shader.bindTexture(stage, texture);
+   mShader.bindTexture(stage, texture);
    texture.enable(context, stage);
 }
 

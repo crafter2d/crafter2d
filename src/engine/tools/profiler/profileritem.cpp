@@ -19,8 +19,10 @@
  ***************************************************************************/
 #include "profileritem.h"
 
-#include <cstdio>
-#include <cstring>
+#include <iomanip>
+#include <string>
+#include <iostream>
+#include <sstream>
 
 #include "core/defines.h"
 
@@ -54,24 +56,27 @@ const std::string& ProfilerItem::getName() const
    return mName;
 }
 
-void ProfilerItem::asString(char line[])
+std::string ProfilerItem::toString() const
 {
    char avg[16], min[16], max[16];
    char indentedname[256];
-   char name[256];
 
-   sprintf(avg, "%3.1f", mAverage);
-   sprintf(min, "%3.1f", mMinimum);
-   sprintf(max, "%3.1f", mMaximum);
+   std::stringstream stream;
 
-   strcpy(indentedname, mName.c_str());
+   stream << std::fixed << std::setprecision(1);
+   stream << std::setw(5) << mAverage << " : ";
+   stream << std::setw(5) << mMinimum << " : ";
+   stream << std::setw(5) << mMaximum << " : ";
+
+   std::string spaces;
    for ( int index = 0; index < mParents; ++index )
    {
-      sprintf(name, "   %s", indentedname);
-      strcpy(indentedname, name);
+      spaces += "   ";
    }
 
-   sprintf(line, "%5s, : %5s : %5s : %3s\n", avg, min, max, indentedname);
+   stream << spaces << mName;
+   return stream.str();
+   //sprintf(line, "%5s, : %5s : %5s : %3s\n", avg, min, max, indentedname);
 }
 
 void ProfilerItem::increaseChildSampleTime(float amount)

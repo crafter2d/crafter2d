@@ -950,7 +950,7 @@ String StackCPU::buildCallStack() const
 {
    String result;
 
-   for ( int index = mFP; index >= 0; --index )
+   for ( int index = static_cast<int>(mFP); index >= 0; --index )
    {
       const VM::StackFrame& frame = mCalls[index];
       ASSERT_PTR(frame.pentry);
@@ -977,9 +977,9 @@ String StackCPU::buildCallStack() const
 
 bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception)
 {
-   ASSERT(mFP >= 0);
+   ASSERT(mFP < mCalls.size());
    
-   while ( mFP >= 0 )
+   while ( mFP < mCalls.size() )
    {
       const VirtualFunctionTableEntry& entry = *mCalls[mFP].pentry;
       const VirtualGuard* pguard = entry.findGuard(mIP);
@@ -1001,8 +1001,8 @@ bool StackCPU::handleException(VirtualContext& context, VirtualObject& exception
          mIP = frame.retaddress;
          mpCode = frame.retcode;
 
-         mFP--;
-         if ( mFP >= 0 && mCalls[mFP].callnative )
+         mFP--; // check for unsigned wrapping
+         if ( mFP < mCalls.size() && mCalls[mFP].callnative )
          {
             // need to bail out of native function calls before handling an catch/finally
             // an example that triggers this is the UnitTesting framework. it at runtime

@@ -22,7 +22,7 @@
 
 #include "core/graphics/blendstate.h"
 
-#include <GL/glew.h>
+#include "GL/gl3w.h"
 
 namespace Graphics
 {

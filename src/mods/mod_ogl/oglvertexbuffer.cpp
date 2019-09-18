@@ -20,7 +20,7 @@
 
 #include "oglvertexbuffer.h"
 
-#include <GL/glew.h>
+#include "GL/gl3w.h"
 
 #include "core/graphics/vertexlayout.h"
 #include "core/graphics/vertexlayoutelement.h"
@@ -103,9 +103,8 @@ bool OGLVertexBuffer::create(const VertexLayout& layout, int length, int usage)
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
    glBufferData(GL_ARRAY_BUFFER, layout.getStride() * length, 0, flag);
 
-   for ( int i = 0; i < layout.getSize(); ++i )
+   for ( const auto& field : layout )
    {
-      const VertexLayoutElement& field = layout[i];
       // TODO: fix this, we now have a semanics
       // glEnableVertexAttribArray(field.index);
       // glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), BUFFER_OFFSET(field.pos));

@@ -40,14 +40,13 @@ bool AbstractBuilder::build(ASTEffect& effect)
 }
 
 void AbstractBuilder::buildInputLayout(const ASTStruct& input, VertexLayout& layout)
-{   
+{
    int pos = 0;
    for ( auto pentry : input.mEntries )
    {
       auto& semantic = pentry->location.isEmpty() ? pentry->name : pentry->location;
 
       layout.emplace_back(semantic, pos, toNativeType(*pentry->ptype));
-      VertexLayoutElement* pelement = new VertexLayoutElement();
 
       pos += getTypeSize(*pentry->ptype);
    }

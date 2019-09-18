@@ -1,7 +1,7 @@
 
 #include "oglindexbuffer.h"
 
-#include <GL/glew.h>
+#include "GL/gl3w.h"
 
 #include "core/defines.h"
 

@@ -9,8 +9,8 @@ project "mod_ogl"
 	setDefaultProjectSettings()
 	
 	-- set project files
-	files { "../src/mods/mod_ogl/**.cpp", "../src/mods/mod_ogl/**.h", "../src/mods/mod_ogl/**.inl" }
-	includedirs { "../src", "../src/mods" }
+	files { "../src/mods/mod_ogl/**.cpp", "../src/mods/mod_ogl/**.h", "../src/mods/mod_ogl/**.inl", "../src/mods/mod_ogl/**.c" }
+	includedirs { "../src", "../src/mods", "../src/mods/mod_ogl" }
 	links { "SDL" }
 
 	filter "configurations:Debug"
@@ -25,16 +25,14 @@ project "mod_ogl"
 	-- set the system specific settings
 	filter "system:Windows"
 		defines { "WIN32", "OGL_EXPORTS" }
-        links { "Core" }
+        links { "Core", "opengl32", "glu32", "freetype" }
 	
 		includedirs {
-			path.join(libdir, "glee/include"),
 			path.join(libdir, "sdl/include"),
 			path.join(libdir, "freetype2/include"),
 		}
 
 		libdirs {
-			path.join(libdir, "glee/lib"),
 			path.join(libdir, "sdl/lib"),
 			path.join(libdir, "freetype2/lib"),
 		}
@@ -44,23 +42,10 @@ project "mod_ogl"
 		defines { "LINUX" }
 		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
         libdirs { "../bin" }
-		links { "GLEW", "freetype" }
+		links { "freetype" }
 
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored" }
 
     filter { "system:linux", "Release" }
         linkoptions { "-lCore" }
-
-
-	-- set IDE specific settings
-	filter "action:vs*"
-		links { "opengl32", "glu32" }
-		
-	filter { "action:vs*", "Debug" }
-		links { "Glew_d", "freetype242MT_D" }
-				
-	filter { "action:vs*", "Release" }
-		links { "Glew", "freetype242MT" }
-
-

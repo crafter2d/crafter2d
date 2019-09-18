@@ -28,7 +28,7 @@ bool OGLTexture::create(int width, int height, int bytes)
    switch ( bytes )
    {
    case 1:
-      mFormat = GL_LUMINANCE;
+      mFormat = GL_RED;
       break;
    case 3:
       mFormat = GL_RGB;
@@ -66,7 +66,7 @@ bool OGLTexture::create(const TextureDescription& desc)
    switch ( desc.format )
    {
    case Graphics::eFormat_Luminance:
-      mFormat = GL_LUMINANCE;
+      mFormat = GL_RED;
       mBytes = 1;
       break;
    case Graphics::eFormat_RG:

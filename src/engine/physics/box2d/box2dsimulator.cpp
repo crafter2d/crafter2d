@@ -152,6 +152,7 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
 
             pboxbody->CreateFixture(&fixturedef);
          }
+         break;
       default:
          throw new c2d::Exception(UTEXT("invalid body shape."));
    }

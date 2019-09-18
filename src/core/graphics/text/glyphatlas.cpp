@@ -60,7 +60,7 @@ namespace Graphics
 
    void GlyphAtlas::bind(RenderContext& context, uint32_t sheet) const
    {
-      assert(sheet >= 0 && sheet < mSheets.size());
+      assert(sheet < mSheets.size());
       context.setTexture(0, mSheets[sheet].getGlyphTexture());
    }
    

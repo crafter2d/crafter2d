@@ -1,6 +1,10 @@
 
 #include "shaderuniformbuffer.h"
 
+#include "GL/gl3w.h"
+
+#include <memory>
+
 #include "core/defines.h"
 
 namespace Graphics
@@ -18,7 +22,7 @@ ShaderUniformBuffer::ShaderUniformBuffer(GLuint program, GLuint block):
 
 ShaderUniformBuffer::~ShaderUniformBuffer()
 {
-   delete mpElements;
+   delete[] mpElements;
    mElementNr = 0;
 }
 
@@ -58,16 +62,16 @@ bool ShaderUniformBuffer::createUniforms(UNIFORM_BUFFER_DESC* pdescs, int nr)
 
    GLint maxlength;
    glGetProgramiv(mProgram, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxlength);
-   GLchar* pname = new GLchar[maxlength];
-
+   auto pname = std::make_unique<GLchar[]>(maxlength);
+   
    mpElements = new BLOCK_UNIFORM[mElementNr];
    for ( int index = 0; index < mElementNr; ++index )
    {
       BLOCK_UNIFORM& element = mpElements[index];
 
       int length;
-      glGetActiveUniformName(mProgram, pindices[index], maxlength, &length, pname);
-      element.name = String::fromUtf8(pname);
+      glGetActiveUniformName(mProgram, pindices[index], maxlength, &length, pname.get());
+      element.name = String::fromUtf8(pname.get());
 
       glGetActiveUniformsiv(mProgram, 1, &pindices[index], GL_UNIFORM_OFFSET, &element.offset);
       

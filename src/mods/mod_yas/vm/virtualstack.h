@@ -32,7 +32,7 @@ public:
    void pushObject(VirtualObject& object);
    void pushArray(VirtualArray& array);
 
-   VirtualValue              pop();
+   VirtualValue         pop();
    void                 pop(int count);
    int                  popInt();
    float                popReal();
@@ -59,8 +59,8 @@ private:
  // operations
    VirtualValue& top();
    void          ensureFits(int amount);
-   void          fill(int from);
 
+ // members
    Stack mStack;
    int   mSize;
 };

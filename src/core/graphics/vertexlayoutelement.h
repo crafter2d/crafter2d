@@ -11,20 +11,23 @@ namespace Graphics
       VertexLayoutElement():
          semantic(),
          pos(0),
-         type(0)
+         type(0),
+         index(0)
       {
       }
 
       VertexLayoutElement(const String& _semantic, uint32_t _pos, uint32_t _type) :
          semantic(_semantic),
          pos(_pos),
-         type(_type)
+         type(_type),
+         index(0)
       {
       }
 
       String semantic;
 	   uint32_t pos;
       uint32_t type;
+      int index;
    };
 }
 
