@@ -22,7 +22,7 @@
 // static
 TileWorld* WorldWizard::show()
 {
-    TileWorld* presult = NULL;
+    TileWorld* presult = nullptr;
 
     WorldWizard wizard;
     if ( wizard.exec() == QDialog::Accepted )
@@ -82,25 +82,26 @@ TileWorld *WorldWizard::createWorld()
 
     if ( field("layer.create").toBool() )
     {
-        QString tileset = field("layer.tileset").toString();
-        auto ptileset = ProjectManager::getInstance().getActiveProject()->lookupTileSet(tileset);
-        Q_ASSERT(ptileset != nullptr);
-
         int width = field("layer.width").toString().toInt();
         int height = field("layer.height").toString().toInt();
 
         TileMapDesc mapdesc;
         mapdesc.name = field("layer.name").toString();
-        mapdesc.tileset = ptileset->getResourceName();
         mapdesc.effect = "shaders/basic";
         mapdesc.size = QSize(width, height);
 
-        TileField* pfield = new TileField();
-        pfield->create(QSize(width, height));
+        QString tileset = field("layer.tileset").toString();
+        if ( tileset != "none" )
+        {
+            mapdesc.tileset = tileset;// ptileset->getResourceName();
+            mapdesc.flags = TileMapDesc::eTileSet;
+        }
+        else
+        {
+            mapdesc.flags = TileMapDesc::eObjects;
+        }
 
         TileMap* pmap = new TileMap(mapdesc);
-        pmap->setTileSet(ptileset);
-        pmap->setField(pfield);
         pworld->addMap(pmap);
     }
 

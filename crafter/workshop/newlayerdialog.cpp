@@ -4,10 +4,12 @@
 #include "world/tilemap.h"
 #include "world/tilemapdesc.h"
 
+static const QString sNone("none");
+
 // static
 TileMap* NewLayerDialog::getMap()
 {
-    TileMap* presult = NULL;
+    TileMap* presult = nullptr;
 
     NewLayerDialog dialog;
     if ( dialog.exec() == DialogCode::Accepted )
@@ -15,8 +17,18 @@ TileMap* NewLayerDialog::getMap()
         TileMapDesc desc;
         desc.name = dialog.getName();
         desc.effect = dialog.getEffect();
-        desc.tileset = dialog.getTileset();
         desc.size = QSize(dialog.getWidth(), dialog.getHeight());
+
+        QString tileset = dialog.getTileset();
+        if ( tileset == "none" )
+        {
+            desc.flags |= TileMapDesc::eObjects;
+        }
+        else
+        {
+            desc.flags |= TileMapDesc::eTileSet;
+            desc.tileset = tileset;
+        }
 
         presult = new TileMap(desc);
     }
@@ -75,9 +87,13 @@ QString NewLayerDialog::getEffect() const
 
 QString NewLayerDialog::getTileset() const
 {
-    if ( ui->TileRadioGroup->checkedId() == 0 )
+    if ( ui->TileRadioGroup->checkedButton() == ui->radioNone )
     {
-        return QString("");
+        return sNone;
+    }
+    else if ( ui->TileRadioGroup->checkedButton() == ui->radioNew )
+    {
+        return QString();
     }
     else
     {
@@ -86,7 +102,6 @@ QString NewLayerDialog::getTileset() const
         const QModelIndex& index = selection.at(0);
         return QString("images/block.xml");
     }
-    //return ui->editTileset->text();
 }
 
 void NewLayerDialog::setDesc(const TileMapDesc& desc)

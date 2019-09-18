@@ -6,10 +6,18 @@
 
 struct TileMapDesc
 {
-    QString name;
-    QString effect;
-    QString tileset;
-    QSize   size;
+    enum Flags {
+        eTileSet = 1,
+        eObjects = 2,
+    };
+
+    TileMapDesc();
+
+    QString  name;
+    QString  effect;
+    QString  tileset;
+    QSize    size;
+    uint32_t flags;
 };
 
 QDataStream& operator<<(QDataStream& stream, const TileMapDesc& desc);

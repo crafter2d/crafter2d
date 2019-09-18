@@ -32,7 +32,7 @@ TilesPanel::~TilesPanel()
 void TilesPanel::worldActivated(TileWorld* pworld)
 {
     TileMap* pmap = nullptr;
-    if ( pworld != NULL )
+    if ( pworld != nullptr )
     {
         connect(pworld, SIGNAL(activeMapChanged(TileMap*)), SLOT(on_world_activeMapChanged(TileMap*)));
 
@@ -50,18 +50,18 @@ void TilesPanel::worldActivated(TileWorld* pworld)
 void TilesPanel::on_tileSelected(int tile)
 {
     TileView* pview = getMainWindow().getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         pview->setActiveTile(tile);
     }
 }
 
-void TilesPanel::on_world_activeMapChanged(TileMap* tilemap)
+void TilesPanel::on_world_activeMapChanged(TileMap* ptilemap)
 {
     TileSet* pset = nullptr;
-    if ( tilemap != nullptr )
+    if ( ptilemap != nullptr && ptilemap->hasTileSet() )
     {
-        pset = &tilemap->getTileSet();
+        pset = &ptilemap->getTileSet();
     }
 
     mpSelector->setTileSet(pset);

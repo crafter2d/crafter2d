@@ -18,7 +18,7 @@ public:
     static TileMap* getMap();
     static void edit(TileMap& map);
 
-    explicit NewLayerDialog(QWidget *parent = 0);
+    explicit NewLayerDialog(QWidget *parent = nullptr);
     ~NewLayerDialog();
 
   // get/set

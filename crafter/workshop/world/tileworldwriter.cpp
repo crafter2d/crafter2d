@@ -43,6 +43,11 @@ void QTileWorldWriter::write(const TileWorld& world)
 void QTileWorldWriter::writeMap(QDataStream& stream, const TileMap& map)
 {
     const TileMapDesc& desc = map.getDesc();
-    const TileField& field = map.getField();
-    stream << desc << field;
+    stream << desc;
+
+    if ( desc.flags == TileMapDesc::eTileSet )
+    {
+        const TileField& field = map.getField();
+        stream << field;
+    }
 }

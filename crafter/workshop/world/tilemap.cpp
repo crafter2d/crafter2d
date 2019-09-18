@@ -8,14 +8,23 @@
 #include "world/tileset.h"
 #include "world/tilesetreader.h"
 
+#include "project/projectmanager.h"
 #include "project.h"
 
 TileMap::TileMap(const TileMapDesc& desc):
     mDesc(desc),
-    mpField(NULL),
-    mpTileSet(NULL),
+    mpField(new TileField()),
+    mpTileSet(nullptr),
     mPixelSize()
 {
+    if ( desc.flags == TileMapDesc::eTileSet )
+    {
+        auto ptileset = ProjectManager::getInstance().getActiveProject()->lookupTileSet(desc.tileset);
+        setTileSet(ptileset);
+
+        mpField = new TileField();
+        mpField->create(QSize(desc.size.width(), desc.size.height()));
+    }
 }
 
 // - Query
@@ -71,7 +80,7 @@ TileSet& TileMap::getTileSet()
 
 void TileMap::paint(QPainter& painter)
 {
-    if ( mpTileSet != NULL )
+    if ( mpTileSet != nullptr )
     {
         int posy = 0;
         const QSize& tilesize = mpTileSet->getTileSize();
@@ -98,11 +107,6 @@ void TileMap::paint(QPainter& painter)
 }
 
 // - Operations
-
-void TileMap::setField(TileField* pfield)
-{
-    mpField = pfield;
-}
 
 void TileMap::setTileSet(TileSet* ptileset)
 {

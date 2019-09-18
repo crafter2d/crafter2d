@@ -20,8 +20,8 @@
 LayerPanel::LayerPanel(MainWindow& parent):
     DockPanel(parent),
     ui(new Ui::LayerPanel),
-    mpDeleteAct(NULL),
-    mpResizeAct(NULL)
+    mpDeleteAct(nullptr),
+    mpResizeAct(nullptr)
 {
     ui->setupUi(this);
 
@@ -89,7 +89,7 @@ void LayerPanel::createContextMenu()
 void LayerPanel::setActiveWorld()
 {
     TileView* pview = getMainWindow().getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         worldActivated(&pview->getWorld());
     }
@@ -98,7 +98,7 @@ void LayerPanel::setActiveWorld()
 void LayerPanel::setLevel(TileField::Level level)
 {
     TileView* pview = getMainWindow().getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         pview->setLevel(level);
     }
@@ -109,7 +109,7 @@ void LayerPanel::setLevel(TileField::Level level)
 void LayerPanel::on_layerSelectionChanged(const QItemSelection& selected, const QItemSelection& /* deselected */)
 {
     TileView* pview = getMainWindow().getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         TileWorld& world = pview->getWorld();
 
@@ -122,10 +122,29 @@ void LayerPanel::on_layerSelectionChanged(const QItemSelection& selected, const 
     }
 }
 
+void LayerPanel::on_buttonAddLayer_clicked()
+{
+    TileView* pview = getMainWindow().getActiveView();
+    if ( pview != nullptr )
+    {
+        auto pmap = NewLayerDialog::getMap();
+        if ( pmap )
+        {
+            TileWorld& world = pview->getWorld();
+            world.addMap(pmap);
+
+            // update the model
+            TileMapModel* pmapmodel = dynamic_cast<TileMapModel*>(ui->treeLayers->model());
+            Q_ASSERT(pmapmodel != nullptr);
+            pmapmodel->insertRow(0);
+        }
+    }
+}
+
 void LayerPanel::on_buttonMoveUp_clicked()
 {
     TileMapModel* pmapmodel = dynamic_cast<TileMapModel*>(ui->treeLayers->model());
-    if ( pmapmodel != NULL )
+    if ( pmapmodel != nullptr )
     {
         QModelIndex index;
         QModelIndexList indices = ui->treeLayers->selectionModel()->selectedRows();
@@ -139,7 +158,7 @@ void LayerPanel::on_buttonMoveUp_clicked()
 void LayerPanel::on_buttonMoveDown_clicked()
 {
     TileMapModel* pmapmodel = dynamic_cast<TileMapModel*>(ui->treeLayers->model());
-    if ( pmapmodel != NULL )
+    if ( pmapmodel != nullptr )
     {
         QModelIndex index;
         QModelIndexList indices = ui->treeLayers->selectionModel()->selectedRows();
@@ -153,7 +172,7 @@ void LayerPanel::on_buttonMoveDown_clicked()
 void LayerPanel::on_deleteact_triggered()
 {
     TileMapModel* pmapmodel = dynamic_cast<TileMapModel*>(ui->treeLayers->model());
-    if ( pmapmodel != NULL )
+    if ( pmapmodel != nullptr )
     {
         QModelIndex index;
         QModelIndexList indices = ui->treeLayers->selectionModel()->selectedRows();
@@ -167,7 +186,7 @@ void LayerPanel::on_deleteact_triggered()
 void LayerPanel::on_resizeact_triggered()
 {
     TileMapModel* pmapmodel = dynamic_cast<TileMapModel*>(ui->treeLayers->model());
-    if ( pmapmodel != NULL )
+    if ( pmapmodel != nullptr )
     {
         QModelIndexList indices = ui->treeLayers->selectionModel()->selectedRows();
         Q_ASSERT(indices.size() == 1);
@@ -178,7 +197,7 @@ void LayerPanel::on_resizeact_triggered()
         TileMap& map = pworld->getMap(index.row());
         QSize size = map.getDesc().size;
 
-        if ( ResizeLayerDialog::resize(NULL, size) )
+        if ( ResizeLayerDialog::resize(nullptr, size) )
         {
             map.resize(size);
         }

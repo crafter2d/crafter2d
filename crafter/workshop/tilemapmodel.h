@@ -23,6 +23,7 @@ public:
     void moveDown(const QModelIndex& index);
 
   // overrides
+    virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;

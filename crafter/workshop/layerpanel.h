@@ -31,6 +31,8 @@ signals:
 private slots:
     void on_layerSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
+    void on_buttonAddLayer_clicked();
+
     void on_buttonMoveUp_clicked();
     void on_buttonMoveDown_clicked();
 

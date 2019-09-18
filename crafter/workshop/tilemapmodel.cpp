@@ -4,8 +4,8 @@
 #include "world/tileworld.h"
 
 TileMapModel::TileMapModel():
-    QAbstractTableModel(NULL),
-    mpWorld(NULL)
+    QAbstractTableModel(nullptr),
+    mpWorld(nullptr)
 {
 }
 
@@ -23,7 +23,7 @@ void TileMapModel::setWorld(TileWorld* pworld)
 
 bool TileMapModel::hasWorld() const
 {
-    return mpWorld != NULL;
+    return mpWorld != nullptr;
 }
 
 TileWorld* TileMapModel::getWorld()
@@ -34,7 +34,7 @@ TileWorld* TileMapModel::getWorld()
 void TileMapModel::clearWorld()
 {
     beginResetModel();
-    mpWorld = NULL;
+    mpWorld = nullptr;
     endResetModel();
 }
 
@@ -62,9 +62,16 @@ void TileMapModel::moveDown(const QModelIndex& index)
 
 // - Overrides
 
+bool TileMapModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    beginInsertRows(parent, row, count);
+    endInsertRows();
+    return true;
+}
+
 bool TileMapModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    if ( mpWorld != NULL )
+    if ( mpWorld != nullptr )
     {
         beginRemoveRows(parent, row, count);
         TileMap& map = mpWorld->getMap(row);
@@ -79,7 +86,7 @@ bool TileMapModel::removeRows(int row, int count, const QModelIndex &parent)
 
 int TileMapModel::rowCount(const QModelIndex &/*parent*/) const
 {
-    if ( mpWorld != NULL )
+    if ( mpWorld != nullptr )
     {
         return mpWorld->getMapCount();
     }

@@ -34,6 +34,7 @@ public:
 
     const QSize& getMinimumSize() const;
 
+    bool           hasTileSet() const { return mpTileSet != nullptr; }
     const TileSet& getTileSet() const;
           TileSet& getTileSet();
 
@@ -43,7 +44,6 @@ public:
     void paint(QPainter& painter);
 
   // operations
-    void setField(TileField* pfield);
     void setTileSet(TileSet* ptileset);
 
     int  getTile(const QPoint& mousepos, TileField::Level level) const;

@@ -6,7 +6,7 @@
 TileField* TileField::fromByteArray(const QSize& dimension, QByteArray &data)
 {
     TileField* presult = new TileField();
-    presult->create(dimension, (quint8*)data.constData());
+    presult->create(dimension, reinterpret_cast<const quint8*>(data.constData()));
     return presult;
 }
 
@@ -14,6 +14,13 @@ TileField::TileField():
     mpField(nullptr),
     mDimension()
 {
+}
+
+TileField::TileField(const QSize& dimension):
+    mpField(nullptr),
+    mDimension()
+{
+    create(dimension);
 }
 
 TileField::~TileField()
@@ -50,9 +57,9 @@ QByteArray TileField::toByteArray() const
 void TileField::create(const QSize& dimension, const quint8* pdata)
 {
     mDimension = dimension;
-    int size = dimension.width() * dimension.height() * 3;
+    quint32 size = dimension.width() * dimension.height() * 3u;
     mpField = new quint8[size];
-    if ( pdata == NULL )
+    if ( pdata == nullptr )
     {
         memset(mpField, 255, sizeof(quint8) * size);
     }

@@ -6,7 +6,7 @@
 
 class QByteArray;
 
-class TileField
+class TileField final
 {
 public:
     enum Level { eFront, eMid, eBack };
@@ -14,6 +14,7 @@ public:
     static TileField* fromByteArray(const QSize &dimension, QByteArray& data);
 
     TileField();
+    explicit TileField(const QSize& dimension);
     ~TileField();
 
   // operations
@@ -21,11 +22,11 @@ public:
     void   set(Level level, int x, int y, quint8 tile);
 
   // operations
-    void create(const QSize& dimension, const quint8 *pdata = NULL);
+    void create(const QSize& dimension, const quint8 *pdata = nullptr);
     void resize(const QSize& newdim);
 
   // conversion
-    QByteArray TileField::toByteArray() const;
+    QByteArray toByteArray() const;
 
   // streaming
     friend QDataStream& operator<<(QDataStream& stream, const TileField& field);

@@ -42,7 +42,7 @@ TileWorld* QTileWorldReader::read()
 
     // ensure we are reading the correct version
     if ( worlddesc.version != 1 )
-        return NULL;
+        return nullptr;
 
     Project& project = Project::getActiveProject();
     TileWorld* presult = new TileWorld(worlddesc);
@@ -51,15 +51,14 @@ TileWorld* QTileWorldReader::read()
     stream >> layerCount;
     for ( int index = 0; index < layerCount; ++index )
     {
-        TileField* pfield = new TileField();
         TileMapDesc desc;
-        stream >> desc >> *pfield;
-
-        TileSet* ptileset = project.lookupTileSet(desc.tileset);
+        stream >> desc;
 
         TileMap* pmap = new TileMap(desc);
-        pmap->setField(pfield);
-        pmap->setTileSet(ptileset);
+        if ( desc.flags == TileMapDesc::eTileSet )
+        {
+            stream >> pmap->getField();
+        }
 
         presult->addMap(pmap);
     }
