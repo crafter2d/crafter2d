@@ -1,6 +1,7 @@
 #include "tileworld.h"
 
 #include <limits>
+#include <stdexcept>
 
 #include <QFileInfo>
 #include <QPainter>
@@ -106,6 +107,18 @@ const TileMap& TileWorld::getMap(int index) const
 TileMap& TileWorld::getMap(int index)
 {
     return *mMaps[index];
+}
+
+TileMap* TileWorld::findMap(const QString& name)
+{
+    for ( auto pmap : mMaps )
+    {
+        if ( pmap->getName() == name )
+        {
+            return pmap;
+        }
+    }
+    return nullptr;
 }
 
 // - Painting

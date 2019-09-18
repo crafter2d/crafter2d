@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <worldinfo>
     <entities>
-        <entity name="objects/sign2.xml" x="52" y="737" scale="1"/>
-        <entity name="objects/tree3.xml" x="506" y="380" scale="1"/>
-        <entity name="objects/bush1.xml" x="230" y="743" scale="1"/>
-        <entity name="objects/tree1.xml" x="332" y="753" scale="1"/>
-        <entity name="objects/tree2.xml" x="1174" y="495" scale="1"/>
-        <entity name="objects/stone.xml" x="1245" y="619" scale="1"/>
-        <entity name="objects/tree3.xml" x="1372" y="508" scale="1"/>
-        <entity name="objects/bush3.xml" x="931" y="745" scale="1"/>
-        <entity name="objects/bush3.xml" x="2005" y="365" scale="1"/>
-        <entity name="objects/tree2.xml" x="2190" y="237" scale="1"/>
-        <entity name="objects/tree2.xml" x="1890" y="622" scale="1"/>
-        <entity name="objects/tree1.xml" x="2085" y="749" scale="1"/>
-        <entity name="objects/bush3.xml" x="1921" y="754" scale="1"/>
-        <entity name="objects/stone.xml" x="2424" y="745" scale="1"/>
-        <entity name="objects/bush3.xml" x="2618" y="490" scale="1"/>
-        <entity name="objects/bush1.xml" x="2727" y="481" scale="1"/>
-        <entity name="objects/stone.xml" x="2664" y="489" scale="1"/>
-        <entity name="objects/tree3.xml" x="2887" y="635" scale="1"/>
-        <entity name="objects/box.xml" x="1531" y="225" scale="1"/>
-        <entity name="objects/box.xml" x="1610" y="225" scale="1"/>
-        <entity name="objects/box.xml" x="1567" y="148" scale="1"/>
-        <entity name="objects/bush1.xml" x="1716" y="227" scale="1"/>
+        <entity name="objects/sign2.xml" x="52" y="737" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/tree3.xml" x="507" y="380" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/bush1.xml" x="230" y="743" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/tree1.xml" x="332" y="753" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/tree2.xml" x="1174" y="495" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/stone.xml" x="1245" y="619" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/tree3.xml" x="1372" y="508" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/bush3.xml" x="931" y="745" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/bush3.xml" x="2005" y="365" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/tree2.xml" x="2190" y="237" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/tree2.xml" x="1890" y="622" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/tree1.xml" x="2085" y="749" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/bush3.xml" x="1921" y="754" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/stone.xml" x="2424" y="745" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/bush3.xml" x="2618" y="490" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/bush1.xml" x="2727" y="481" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/stone.xml" x="2664" y="489" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/tree3.xml" x="2887" y="635" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/box.xml" x="1531" y="225" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/box.xml" x="1610" y="225" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/box.xml" x="1567" y="148" scale="1" sortorder="0" tilemap="objects"/>
+        <entity name="objects/bush1.xml" x="1716" y="227" scale="1" sortorder="0" tilemap="objects"/>
     </entities>
 </worldinfo>

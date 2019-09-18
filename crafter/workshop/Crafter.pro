@@ -15,6 +15,7 @@ DESTDIR = $$PWD/../../bin
 RESOURCES = crafter.qrc
 
 SOURCES += main.cpp\
+    editentitydialog.cpp \
     mainwindow.cpp \
     newprojectdialog.cpp \
     tileview.cpp \
@@ -93,6 +94,7 @@ SOURCES += main.cpp\
     newentitydialog.cpp
 
 HEADERS  += mainwindow.h \
+    editentitydialog.h \
     newprojectdialog.h \
     tileview.h \
     project.h \
@@ -170,6 +172,7 @@ HEADERS  += mainwindow.h \
     newentitydialog.h
 
 FORMS    += mainwindow.ui \
+    editentitydialog.ui \
     newprojectdialog.ui \
     tileview.ui \
     newlayerdialog.ui \

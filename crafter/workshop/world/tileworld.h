@@ -25,6 +25,7 @@ public:
     enum Layout { eTopDown, eIsoMetric };
 
     using Entities = QVector<TileEntity*>;
+    using Maps = QVector<TileMap*>;
 
     explicit TileWorld(const TileWorldDesc& desc);
 
@@ -43,10 +44,13 @@ public:
     int            getMapCount() const;
     const TileMap& getMap(int index) const;
           TileMap& getMap(int index);
+    const Maps& getMaps() const { return mMaps; }
 
     bool       hasSelectedBound() const;
     TileBound& getSelectedBound();
     void       setSelectedBound(TileBound* pbound);
+
+    TileMap* findMap(const QString& name);
 
   // painting
     void paint(QPainter& painter);
@@ -86,7 +90,7 @@ public slots:
     void on_mapChanged(TileMap& map);
 
 private:
-    typedef QVector<TileMap*> Maps;
+
     typedef QVector<TileBound*> Bounds;
 
     TileWorld(const TileWorld& that);

@@ -12,6 +12,7 @@
 #include "world/tileset.h"
 #include "world/tileworld.h"
 
+#include "editentitydialog.h"
 #include "undocleartile.h"
 #include "undosettile.h"
 #include "mainwindow.h"
@@ -390,6 +391,20 @@ void TileView::mouseMoveEvent(QMouseEvent* pevent)
                 mpSelectedEntity->move(offset);
                 repaint();
             }
+        }
+        break;
+    }
+}
+
+void TileView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    switch ( mEditMode )
+    {
+    case eObjectMode:
+        TileEntity* pentity = mpWorld->findEntity(event->pos());
+        if ( pentity != nullptr )
+        {
+            EditEntityDialog::edit(*mpWorld, *pentity);
         }
         break;
     }

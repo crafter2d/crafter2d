@@ -10,9 +10,11 @@
 
 TileEntity::TileEntity(TileWorld& world, Entity& entity):
     mWorld(world),
+    mpMap(nullptr),
     mDefinition(entity),
     mPosition(),
-    mScale(1.0f)
+    mScale(1.0f),
+    mSortOrder(0)
 {
 
 }

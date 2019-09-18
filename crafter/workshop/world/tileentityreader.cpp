@@ -49,5 +49,19 @@ void TileEntityReader::loadEntity(QXmlStreamReader& stream, TileWorld& world)
         auto& entity = world.addEntity(*pentity);
         entity.setCenterPosition(pos);
         entity.setScale(stream.attributes().value("scale").toFloat());
+        if ( stream.attributes().hasAttribute("sortorder") )
+        {
+            entity.setSortOrder(stream.attributes().value("sortorder").toInt());
+        }
+
+        if ( stream.attributes().hasAttribute("tilemap") )
+        {
+            TileMap* pmap = world.findMap(stream.attributes().value("tilemap").toString());
+            if ( pmap == nullptr && world.getMapCount() > 0 )
+            {
+                pmap = &world.getMap(0);
+            }
+            entity.setTileMap(pmap);
+        }
     }
 }

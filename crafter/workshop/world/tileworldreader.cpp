@@ -44,7 +44,6 @@ TileWorld* QTileWorldReader::read()
     if ( worlddesc.version != 1 )
         return nullptr;
 
-    Project& project = Project::getActiveProject();
     TileWorld* presult = new TileWorld(worlddesc);
 
     int layerCount;

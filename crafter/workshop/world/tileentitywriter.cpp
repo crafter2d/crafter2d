@@ -6,6 +6,7 @@
 #include "../entity/entity.h"
 
 #include "tileentity.h"
+#include "tilemap.h"
 
 TileEntityWriter::TileEntityWriter()
 {
@@ -31,6 +32,9 @@ void TileEntityWriter::write(QFile& file, TileWorld::Entities& entities)
         stream.writeAttribute("x", QString::number(pos.x()));
         stream.writeAttribute("y", QString::number(pos.y()));
         stream.writeAttribute("scale", QString::number(static_cast<double>(pentity->getScale())));
+        stream.writeAttribute("sortorder", QString::number(pentity->sortOrder()));
+        if ( pentity->tileMap() )
+            stream.writeAttribute("tilemap", pentity->tileMap()->getName());
         stream.writeEndElement();
     }
 

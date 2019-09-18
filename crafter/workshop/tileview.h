@@ -57,6 +57,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *pevent) override;
     virtual void mouseReleaseEvent(QMouseEvent*) override;
     virtual void mouseMoveEvent(QMouseEvent* pevent) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
   // operations

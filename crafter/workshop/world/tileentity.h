@@ -7,6 +7,7 @@ class QRect;
 class QPainter;
 
 class Entity;
+class TileMap;
 class TileWorld;
 
 class TileEntity
@@ -17,11 +18,17 @@ public:
   // get/set
     const Entity& getEntity() const { return mDefinition; }
 
+    const TileMap* tileMap() const { return mpMap; }
+    void setTileMap(TileMap* pmap) { mpMap = pmap; }
+
     const QPoint& getPosition() const { return mPosition; }
     void setPosition(const QPoint& pos) { mPosition = pos; }
 
     float getScale() const { return mScale; }
     void setScale(float scale) { mScale = scale; }
+
+    int sortOrder() const { return mSortOrder; }
+    void setSortOrder(int order) { mSortOrder = order; }
 
   // query
     QPoint getCenterPos() const;
@@ -38,9 +45,11 @@ public:
 private:
 
     TileWorld&  mWorld;
+    TileMap*    mpMap;
     Entity&     mDefinition;
     QPoint      mPosition;
     float       mScale;
+    int         mSortOrder;
 };
 
 #endif // TILEENTITY_H
