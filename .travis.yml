@@ -10,7 +10,7 @@ addons:
     packages:
     - cmake
     - zlib1g-dev
-    - libsdl1.2-dev
+    - libsdl2-dev
     - libglew-dev
     - libfreetype6-dev
     - libtinyxml-dev
