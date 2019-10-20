@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "linuxtimer.h"
 
-#include <SDL/SDL_timer.h>
+#include <SDL2/SDL_timer.h>
 
 #include "timerdataimpl.h"
 
