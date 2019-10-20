@@ -73,15 +73,23 @@ bool ShaderObject::link(VertexLayout& layout)
 		Log::getInstance().error("ShaderObject.link: there are no shaders to link.");
 		return false;
 	}
-	glGetError();
+	glErr = glGetError();
 
 	// add the shaders to the program
 	for ( auto& shader : mShaders )
    {
-		glAttachShader(program, shader.handle());
-		shader.release();
+      GLuint handle = shader.handle();
+		glAttachShader(program, handle);
+      glErr = glGetError();
+      if ( glErr != GL_NO_ERROR )
+      {
+         Log::getInstance().error("GLerror: %s", (char*)gluErrorString(glErr));
+      }
+		// shader.release();
 	}
 	mShaders.clear();
+
+   glGetError();
 
 	// now link them & make sure it went ok
 	glLinkProgram(program);
@@ -159,6 +167,7 @@ ShaderUniformBuffer* ShaderObject::getUniformBuffer(const String& name) const
    if ( index != GL_INVALID_INDEX )
    {
       presult = new ShaderUniformBuffer(program, index);
+      glUniformBlockBinding(program, index, index);
    }
 
    return presult;

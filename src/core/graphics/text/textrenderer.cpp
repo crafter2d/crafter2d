@@ -43,7 +43,8 @@ namespace Graphics
       mpVB(nullptr),
       mpIB(nullptr),
       mpUB(nullptr),
-      mpTransformUB(nullptr)
+      mpTransformUB(nullptr),
+      mpDebugRenderer(nullptr)
    {
    }
 
@@ -87,11 +88,7 @@ namespace Graphics
       }
 
       mConstants.projection.setIdentity();
-
-      BlendStateDesc desc(BlendStateDesc::BS_SRC_ALPHA, BlendStateDesc::BS_ONE, true);
-      BlendState* pblendstate = mpDevice->createBlendState(desc);
-      mpEffect->setBlendState(pblendstate);
-
+      
       int batchsize = 256;
       int usage = VertexBuffer::eDynamic | VertexBuffer::eWriteOnly;
       mpVB = mpEffect->createVertexBuffer(device, batchsize * 4, usage);
@@ -108,6 +105,9 @@ namespace Graphics
 
       mAtlas = std::make_unique<GlyphAtlas>(device);
 
+      //mpDebugRenderer = new DebugGlyphSheetRenderer(*mAtlas);
+      //mpDebugRenderer->create(device);
+
       return true;
    }
 
@@ -116,6 +116,11 @@ namespace Graphics
       mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1.0f, 1.0f);
 
       mpUB->set(context, &mConstants, sizeof(mConstants));
+
+      if ( mpDebugRenderer )
+      {
+         mpDebugRenderer->viewportChanged(context, viewport);
+      }
    }
    
    void TextRenderer::draw(const TextLayout& layout)
@@ -193,11 +198,14 @@ namespace Graphics
 
             index++;
          }
-
-         
       }
 
       mTexts.clear();
+
+      if ( mpDebugRenderer )
+      {
+         mpDebugRenderer->render(context);
+      }
    }
 
    // - Font

@@ -71,12 +71,13 @@ void WorldWriter::processWorldFile(DataStream& stream, const String& filename)
       for ( int index = 0; index < layercount; ++index )
       {
          int width, height;
+         uint32_t flags;
 
          // read layer header
          String layername = readString(filestream);
          String effect = readString(filestream);
          String tileset = readString(filestream);
-         filestream >> width >> height;
+         filestream >> width >> height >> flags;
 
          std::size_t pos = effect.indexOf(L'.');
          if ( pos != String::npos )
@@ -88,20 +89,23 @@ void WorldWriter::processWorldFile(DataStream& stream, const String& filename)
          {
             tileset = tileset.subStr(0, pos);
          }
+            
+         stream << layername << effect << tileset << flags;
 
-         stream << layername << effect << tileset;
+         if ( (flags & 1) == 1 )
+         {
+            // read the field data
+            int fieldwidth, fieldheight, datasize;
+            filestream >> fieldwidth >> fieldheight >> datasize;
 
-         // read the field data
-         int fieldwidth, fieldheight, datasize;
-         filestream >> fieldwidth >> fieldheight >> datasize;
+            uint8_t* pdata = new uint8_t[datasize];
+            filestream.readBlob(pdata, datasize);
 
-         uint8_t* pdata = new uint8_t[datasize];
-         filestream.readBlob(pdata, datasize);
+            stream << fieldwidth << fieldheight << datasize;
+            stream.writeBlob(pdata, datasize);
 
-         stream << fieldwidth << fieldheight << datasize;
-         stream.writeBlob(pdata, datasize);
-
-         delete[] pdata;
+            delete[] pdata;
+         }
       }
 
       // read the bounds

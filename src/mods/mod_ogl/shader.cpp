@@ -41,6 +41,12 @@ Shader::Shader():
 {
 }
 
+Shader::Shader(Shader&& that) noexcept:
+   mShader(that.mShader)
+{
+   that.mShader = 0;
+}
+
 /*!
     \fn Shader::~Shader ()
 	 \brief Destructor of the Shader class. It releases the shader if not done so already.
@@ -48,6 +54,13 @@ Shader::Shader():
 Shader::~Shader()
 {
 	release ();
+}
+
+Shader& Graphics::Shader::operator=(Shader& that) noexcept
+{
+   mShader = that.mShader;
+   that.mShader = 0;
+   return *this;
 }
 
 /*!

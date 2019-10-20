@@ -3,6 +3,7 @@
 #define OPENGL_INPUT_DEVICE_H
 
 #include <cstdint>
+#include <vector>
 
 #include "core/input/input.h"
 
@@ -20,7 +21,8 @@ public:
 private:
 
  // data
-   uint8_t* mpKeyState;
+   std::vector<uint32_t> mKeys;
+   const uint8_t* mpKeyState;
 };
 
 #endif // OPENGL_INPUT_DEVICE_H

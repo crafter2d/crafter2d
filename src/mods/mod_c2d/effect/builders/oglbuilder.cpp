@@ -4,6 +4,7 @@
 #include "core/defines.h"
 
 #include "../astbuffer.h"
+#include "../astdefine.h"
 #include "../asteffect.h"
 #include "../astfunctionargument.h"
 #include "../aststructentry.h"
@@ -16,6 +17,10 @@ void OglBuilder::buildVertexShader(const ASTEffect& effect, ASTTechnique& techni
    const ASTFunction* pfunction = effect.findFunction(technique.mVertex.mEntry);
 
    String code = UTEXT("#version 150\n");
+   for ( auto pdefine : effect.mDefines )
+   {
+      code += String(L"#define {0} {1}\n").arg(0, pdefine->mName).arg(1, pdefine->mValue);
+   }
 
    for ( std::size_t index = 0; index < effect.mBuffers.size(); ++index )
    {
@@ -35,7 +40,7 @@ void OglBuilder::buildGeometryShader(const ASTEffect& effect, ASTTechnique& tech
    const ASTFunction* pfunction = effect.findFunction(technique.mGeometry.mEntry);
    if ( pfunction != nullptr )
    {
-      String code = UTEXT("#version 150\n");
+      String code = UTEXT("#version 430\n");
 
       const ASTAnnotation* panno = pfunction->findAnnotation(UTEXT("maxvertexcount"));
       if ( panno == nullptr )
@@ -65,7 +70,7 @@ void OglBuilder::buildPixelShader(const ASTEffect& effect, ASTTechnique& techniq
 {
    const ASTFunction* pfunction = effect.findFunction(technique.mPixel.mEntry);
 
-   String code = UTEXT("#version 150\n");
+   String code = UTEXT("#version 430\n");
 
    code += buildTextures(effect, *pfunction);
    code += buildPixelStructs(effect, *pfunction);
@@ -77,6 +82,19 @@ void OglBuilder::buildPixelShader(const ASTEffect& effect, ASTTechnique& techniq
 
 uint32_t OglBuilder::toNativeType(const ASTType& type)
 {
+   switch ( type.getType() )
+   {
+   case ASTType::eFloat:
+      return 1;
+   case ASTType::eFloat2:
+      return 2;
+   case ASTType::eFloat3:
+      return 3;
+   case ASTType::eFloat4:
+      return 4;
+   case ASTType::eUint:
+      return 5;
+   }
    return 0;
 }
 
@@ -114,15 +132,24 @@ int findIndexOf(const String& src, const String& find)
 String OglBuilder::buildVertexStructs(const ASTEffect& effect, ASTTechnique& technique, const ASTFunction& function)
 {
    String result;
-   for ( std::size_t index = 0; index < effect.mStructs.size(); ++index )
+   for ( auto pstruct : effect.mStructs )
    {
-      const ASTStruct* pstruct = effect.mStructs[index];
-
-      // check if this struct is used as input attributes
-      for ( std::size_t edx = 0; edx < pstruct->mEntries.size(); ++edx )
+      if ( pstruct->mName == function.mArguments[0]->mpType->getStruct().mName )
       {
-         const ASTStructEntry* pentry = pstruct->mEntries[edx];
+         // input struct
+         buildInputLayout(*pstruct, technique.mLayout);
 
+         result += buildInputStruct(*pstruct);
+      }
+
+      if ( pstruct->mName == function.mpType->getStruct().mName )
+      {
+         result += buildInputOutputStruct(*pstruct, UTEXT("out"));
+      }
+      /*
+      // check if this struct is used as input attributes
+      for ( auto pentry : pstruct->mEntries )
+      {
          int index = findIndexOf(function.mBody, pentry->name);
          if ( index > 0 && function.mBody[index - 1] != L'.' )
          {
@@ -139,7 +166,7 @@ String OglBuilder::buildVertexStructs(const ASTEffect& effect, ASTTechnique& tec
       {
          // this is the output struct
          result += buildInputOutputStruct(*pstruct, UTEXT("out"));
-      }
+      }*/
    }
    return result;
 }

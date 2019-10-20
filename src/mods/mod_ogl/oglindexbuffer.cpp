@@ -53,6 +53,8 @@ bool OGLIndexBuffer::create(IndexFormat format, int elements, void* data)
       glGenBuffers(1, &mBuffer);
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
       glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
    }
 
    return result;

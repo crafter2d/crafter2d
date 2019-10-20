@@ -33,6 +33,7 @@ namespace Graphics
       GLenum mTarget;
       GLenum mFormat;
       GLuint mBytes;
+      GLuint mSampler;
    };
 };
 

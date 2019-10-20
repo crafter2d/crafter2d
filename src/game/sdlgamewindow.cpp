@@ -35,9 +35,9 @@ using namespace Input;
 
 static int getModifiers()
 {
-   int mode = SDL_GetModState();
    int modifiers = InputEvent::eNone;
 
+   SDL_Keymod mode = SDL_GetModState();
    if ( mode & KMOD_SHIFT )
       SET_FLAG(modifiers, InputEvent::eShift);
 
@@ -52,6 +52,7 @@ static int getModifiers()
 
 static MouseEvent::Button toMouseEventButton(int sdlbutton)
 {
+   /*
    switch ( sdlbutton )
    {
       case SDL_BUTTON_LEFT:      return MouseEvent::eLeft;
@@ -60,15 +61,30 @@ static MouseEvent::Button toMouseEventButton(int sdlbutton)
       case SDL_BUTTON_WHEELUP:   return MouseEvent::eWheelUp;
       case SDL_BUTTON_WHEELDOWN: return MouseEvent::eWheelDown;
    }
+   */
 
    return MouseEvent::eInvalid;
 }
 
+struct SDLGameWindow::SDL_Info
+{
+   SDL_Window* mpWindow;
+   SDL_GLContext mGLContext;
+
+   SDL_Info() :
+      mpWindow(nullptr),
+      mGLContext(nullptr)
+   {
+   }
+};
+
 SDLGameWindow::SDLGameWindow():
    GameWindow(),
-   mpWindow(nullptr),
+   mpInfo(nullptr),
    mBackgroundColor(),
    mBitDepth(32),
+   mWidth(0),
+   mHeight(0),
    mFlags(0)
 {
 }
@@ -85,8 +101,22 @@ bool SDLGameWindow::doCreate(const String& title, int width, int height, int bit
       return false;
    }
 
-   mFlags = getWindowFlags(fullscreen);
+   mWidth = width;
+   mHeight = height;
+   mpInfo = new SDL_Info();
 
+   //mFlags = getWindowFlags(fullscreen);
+   mpInfo->mpWindow = SDL_CreateWindow(title.toUtf8().c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+   if ( mpInfo->mpWindow == nullptr )
+   {
+      Log::getInstance().error("Error creating window: %s", SDL_GetError());
+   }
+
+   atexit(SDL_Quit);
+
+   mpInfo->mGLContext = SDL_GL_CreateContext(mpInfo->mpWindow);
+
+   /*
    // make sure that the bitdepth is valid
    bitdepth = SDL_VideoModeOK(width, height, bitdepth, mFlags);
    if (bitdepth == 0)
@@ -103,22 +133,27 @@ bool SDLGameWindow::doCreate(const String& title, int width, int height, int bit
 
    SDL_WM_SetCaption(title.toUtf8().c_str(), title.toUtf8().c_str());
    SDL_EnableUNICODE(1);
+   */
 
    return true;
 }
 
 void SDLGameWindow::doDestroy()
 {
-   if ( mpWindow != nullptr)
+   if ( mpInfo )
    {
       // release main window
-      SDL_FreeSurface (mpWindow);
-      mpWindow = nullptr;
-   }
+      if ( mpInfo->mGLContext )
+      {
+         SDL_GL_DeleteContext(mpInfo->mGLContext);
+      }
 
-   if ( SDL_WasInit(SDL_INIT_VIDEO) )
-   {
-	   SDL_Quit ();
+      if ( mpInfo->mpWindow )
+      {
+         SDL_DestroyWindow(mpInfo->mpWindow);
+      }
+
+      delete mpInfo;
    }
 }
 
@@ -129,7 +164,7 @@ void SDLGameWindow::update()
 
 void SDLGameWindow::display()
 {
-   SDL_GL_SwapBuffers();
+   SDL_GL_SwapWindow(mpInfo->mpWindow);
 }
 
 //-----------------------------------
@@ -150,43 +185,6 @@ void SDLGameWindow::setBackgroundColor(const Color& color)
 // - Query
 //-----------------------------------
 
-int SDLGameWindow::getWindowFlags(bool fullscreen)
-{
-   Log& log = Log::getInstance();
-
-   const SDL_VideoInfo *videoInfo;
-   videoInfo = SDL_GetVideoInfo();
-
-   if ( videoInfo == nullptr )
-   {
-      log << "Can't get video information about graphics card.";
-      return 0;
-   }
-
-   // set up initial flags
-   int flags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER;
-   if ( fullscreen )
-      flags |= SDL_FULLSCREEN;
-
-   // try to use hardware surface (in videomemory)
-   if (videoInfo->hw_available)
-   {
-      flags |= SDL_HWSURFACE;
-      log << "Hardware rendering is supported\n";
-   }
-   else
-   {
-      log << "Switching to software rendering mode\n";
-      flags |= SDL_SWSURFACE;
-   }
-
-   // see if hardware blitting is supported on the platform
-   if (videoInfo->blit_hw)
-      flags |= SDL_HWACCEL;
-
-  return flags;
-}
-
 int SDLGameWindow::getHandle() const
 {
    return -1;
@@ -194,12 +192,12 @@ int SDLGameWindow::getHandle() const
 
 int SDLGameWindow::getWidth() const
 {
-   return mpWindow->w;
+   return mWidth;
 }
 
 int SDLGameWindow::getHeight() const
 {
-   return mpWindow->h;
+   return mHeight;
 }
 
 //-----------------------------------
@@ -208,12 +206,9 @@ int SDLGameWindow::getHeight() const
 
 void SDLGameWindow::resize(int width, int height)
 {
-  // try to set the new video mode
-   mpWindow = SDL_SetVideoMode(width, height, mBitDepth, mFlags);
-   if ( mpWindow == nullptr)
-   {
-      Log::getInstance() << "Could not resize window to " << width << "x" << height << ": " << SDL_GetError();
-   }
+   // try to set the new video mode
+   mWidth = width;
+   mHeight = height;
 
    fireWindowResized();
 }
@@ -225,7 +220,11 @@ void SDLGameWindow::toggleFullscreen()
 
 void SDLGameWindow::takeScreenshot()
 {
-  SDL_SaveBMP(mpWindow, "screen1");
+   SDL_Surface* psurface = SDL_GetWindowSurface(mpInfo->mpWindow);
+   if ( psurface )
+   {
+      SDL_SaveBMP(psurface, "screen1");
+   }
 }
 
 //-----------------------------------
@@ -240,8 +239,8 @@ void SDLGameWindow::handleEvents()
    {
       switch (event.type)
       {
-         case SDL_VIDEORESIZE:
-            resize(event.resize.w, event.resize.h);
+         case SDL_WINDOWEVENT_RESIZED:
+            resize(event.window.data1, event.window.data2);
             break;
          case SDL_KEYDOWN:
          case SDL_KEYUP:
@@ -265,7 +264,7 @@ void SDLGameWindow::handleEvents()
 
 void SDLGameWindow::onKeyboardEvent(SDL_KeyboardEvent& event)
 {
-   int key       = event.keysym.unicode == 0 ? event.keysym.sym : event.keysym.unicode & 0x7F;
+   int key       = event.keysym.sym;
    int modifiers = getModifiers();
 
    KeyEvent::EventType type = (event.type == SDL_KEYDOWN) ? KeyEvent::ePressed : KeyEvent::eReleased;

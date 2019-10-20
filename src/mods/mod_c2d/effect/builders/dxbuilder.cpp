@@ -6,7 +6,6 @@
 #include <d3d11.h>
 
 #include "core/graphics/vertexlayout.h"
-#include "core/graphics/vertexlayoutelement.h"
 #include "core/conv/numberconverter.h"
 #include "core/defines.h"
 

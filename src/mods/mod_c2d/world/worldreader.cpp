@@ -33,50 +33,54 @@ IContent* WorldReader::read(DataStream& stream)
    for ( int index = 0; index < layercount; ++index )
    {
       // read layer header
+      uint32_t flags;
       String layername, effect, tileset;
-      stream >> layername >> effect >> tileset;
+      stream >> layername >> effect >> tileset >> flags;
 
-      // read the field data
-      uint32_t datasize;
-      int width, height;
-      stream >> width >> height >> datasize;
-      if ( datasize < 4 )
-         throw std::length_error("Expected at least 4 bytes, but got less.");
-
-      auto pdata = std::make_unique<uint8_t[]>(datasize);
-      stream.readBlob(pdata.get(), datasize);
-
-      // we are importing the QByteArray data here, so we use
-      // the algorithm as used by Qt5
-
-      // get the expected length from the data
-      uint32_t explen = (pdata[0] << 24) | (pdata[1] << 16) |
-                        (pdata[2] <<  8) | (pdata[3]      );
-      uLongf len = explen;
-      if ( len > 0 )
+      if ( (flags & 1) == 1 )
       {
-         // decompress the field data
-         auto puncompressed = std::make_unique<uint8_t[]>(explen);
-         int result = uncompress(puncompressed.get(), &len, pdata.get() + 4, datasize - 4);
-         if ( result != Z_OK )
-            throw std::runtime_error("Could not decompress the layer information.");
+         // read the field data
+         uint32_t datasize;
+         int width, height;
+         stream >> width >> height >> datasize;
+         if ( datasize < 4 )
+            throw std::length_error("Expected at least 4 bytes, but got less.");
 
-         LayerDefinition* pdefinition = new LayerDefinition();
-         pdefinition->effect = effect;
-         pdefinition->tileset = tileset;
-         pdefinition->name = name;
-         pdefinition->width = width;
-         pdefinition->height = height;
+         auto pdata = std::make_unique<uint8_t[]>(datasize);
+         stream.readBlob(pdata.get(), datasize);
 
-         TileSet* ptileset = getContentManager().loadContent<TileSet>(tileset);
+         // we are importing the QByteArray data here, so we use
+         // the algorithm as used by Qt5
 
-         Layer* player = pworld->createLayer();
-         player->setTileSet(ptileset);
-         player->create(pdefinition);
-         pworld->addLayer(player);
+         // get the expected length from the data
+         uint32_t explen = (pdata[0] << 24) | (pdata[1] << 16) |
+            (pdata[2] << 8) | (pdata[3]);
+         uLongf len = explen;
+         if ( len > 0 )
+         {
+            // decompress the field data
+            auto puncompressed = std::make_unique<uint8_t[]>(explen);
+            int result = uncompress(puncompressed.get(), &len, pdata.get() + 4, datasize - 4);
+            if ( result != Z_OK )
+               throw std::runtime_error("Could not decompress the layer information.");
 
-         TileField& field = player->getTileField();
-         field.create(width, height, puncompressed.release());
+            LayerDefinition* pdefinition = new LayerDefinition();
+            pdefinition->effect = effect;
+            pdefinition->tileset = tileset;
+            pdefinition->name = name;
+            pdefinition->width = width;
+            pdefinition->height = height;
+
+            TileSet* ptileset = getContentManager().loadContent<TileSet>(tileset);
+
+            Layer* player = pworld->createLayer();
+            player->setTileSet(ptileset);
+            player->create(pdefinition);
+            pworld->addLayer(player);
+
+            TileField& field = player->getTileField();
+            field.create(width, height, puncompressed.release());
+         }
       }
    }
 

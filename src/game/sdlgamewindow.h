@@ -29,7 +29,6 @@
 struct SDL_KeyboardEvent;
 struct SDL_MouseMotionEvent;
 struct SDL_MouseButtonEvent;
-struct SDL_Surface;
 
 class GameWindowListener;
 
@@ -68,8 +67,6 @@ protected:
    void doDestroy();
 
 private:
- // query
-   int getWindowFlags(bool fullscreen);
 
  // event handling
    void handleEvents();
@@ -80,9 +77,13 @@ private:
    void onMouseButtonEvent(SDL_MouseButtonEvent& event);
    void onQuit();
 
-   SDL_Surface*          mpWindow;
+   struct SDL_Info;
+
+   SDL_Info*             mpInfo;
    Color                 mBackgroundColor;
    int                   mBitDepth;
+   int                   mWidth;
+   int                   mHeight;
    unsigned int          mFlags;
 };
 

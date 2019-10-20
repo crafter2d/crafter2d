@@ -44,7 +44,7 @@ void AbstractBuilder::buildInputLayout(const ASTStruct& input, VertexLayout& lay
    int pos = 0;
    for ( auto pentry : input.mEntries )
    {
-      auto& semantic = pentry->location.isEmpty() ? pentry->name : pentry->location;
+      const auto& semantic = pentry->location.isEmpty() ? pentry->name : pentry->location;
 
       layout.emplace_back(semantic, pos, toNativeType(*pentry->ptype));
 

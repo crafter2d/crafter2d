@@ -24,6 +24,7 @@
 
 #include "engine/game.h"
 // #include "sdlgamewindowfactory.h"
+//#undef WIN32
 #ifdef WIN32
 #include "win32gamewindowfactory.h"
 #else

@@ -51,8 +51,9 @@ void OGLRenderContext::setBlendState(const BlendState& state)
    const OGLBlendState& oglstate = static_cast<const OGLBlendState&>(state);
    if ( oglstate.isEnabled() )
    {
-      glBlendFunc(oglstate.getSourceFactor(), oglstate.getDestFactor());
       glEnable(GL_BLEND);
+      glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+      glBlendFuncSeparate(oglstate.getSourceFactor(), oglstate.getDestFactor(), GL_ZERO, GL_ONE);
    }
    else
    {
@@ -80,9 +81,10 @@ void OGLRenderContext::setTexture(int stage, const Texture& texture)
 
 void OGLRenderContext::clear()
 {
-   const Color& color = getClearColor();
+   //const Color& color = getClearColor();
 
-   glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+   //glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+   glClearColor(0, 0, 0, 1);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

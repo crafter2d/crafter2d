@@ -5,23 +5,6 @@
 
 #include <SDL/SDL.h>
 
-OGLInputDevice::OGLInputDevice():
-   InputDevice(),
-   mpKeyState(nullptr)
-{
-}
-
-bool OGLInputDevice::create(GameWindow& window)
-{
-   C2D_UNUSED(window);
-   return true;
-}
-
-void OGLInputDevice::update()
-{
-   mpKeyState = SDL_GetKeyState(nullptr);
-}
-
 static int Keys[] =
 {
    0,
@@ -48,10 +31,33 @@ static int Keys[] =
    SDLK_9,
 };
 
+OGLInputDevice::OGLInputDevice():
+   InputDevice(),
+   mKeys(),
+   mpKeyState(nullptr)
+{
+}
+
+bool OGLInputDevice::create(GameWindow& window)
+{
+   C2D_UNUSED(window);
+
+   for ( auto& key : Keys )
+   {
+      mKeys.push_back(SDL_GetScancodeFromKey(key));
+   }
+   return true;
+}
+
+void OGLInputDevice::update()
+{
+   mpKeyState = SDL_GetKeyboardState(nullptr);
+}
+
 bool OGLInputDevice::isKeyDown(int key)
 {
-   int sdlkey = Keys[key];
-   return mpKeyState[sdlkey];
+   int scancode = mKeys[key];
+   return mpKeyState[scancode];
 }
 
 bool OGLInputDevice::isMouseButtonDown(MouseButton button)

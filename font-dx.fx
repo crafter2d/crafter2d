@@ -8,8 +8,6 @@ sampler diffuseSampler : 0;
 cbuffer mpv : 0
 {
 	float4x4 proj;
-	float4x4 world;
-	float4x4 object;
 };
 
 cbuffer TransformVars : 1
@@ -32,29 +30,26 @@ struct OutputData
 
 OutputData mainVertex(InputData input)
 {
+	float4 pos = mul(mul(float4(input.pos, 0.0f, 1.0f), transforms[input.tr]), proj);
+	
+	//pos = mul(tranformedPos, object);
+	//pos = mul(pos, world);
+	//pos = mul(pos, proj);
+
 	OutputData data;
-	
-	float4 pos = float4(input.pos, 0.0f, 1.0f);
-	float4 tranformedPos = mul(pos, transforms[input.tr]);
-	
-	pos = mul(transformPos, object);
-	pos = mul(pos, world);
-	pos = mul(pos, proj);
-	
 	data.pos = pos;
 	data.tex = input.tex;
-	
 	return data;
 }
 
 float4 mainPixel(OutputData input) : SV_TARGET
 {
-	float4 texelColor = diffuseMap.Sample(diffuseSampler, input.tex);
-	return texelColor;
+	float texelColor = diffuseMap.Sample(diffuseSampler, input.tex);
+	return float4(texelColor, texelColor, texelColor, texelColor);
 }
 
 technique Basic
 {
-	vertex = vs_4_0_level_9_3 mainVertex
-	pixel  = ps_4_0_level_9_3 mainPixel
+	vertex = vs_4_1 mainVertex
+	pixel  = ps_4_1 mainPixel
 }

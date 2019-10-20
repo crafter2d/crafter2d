@@ -45,7 +45,7 @@ OutputData mainVertex(InputData input)
 float4 mainPixel(OutputData input) : SV_TARGET
 {
 	float texelColor = diffuseMap.Sample(diffuseSampler, input.tex);
-	return float4(texelColor, texelColor, texelColor, 1);
+	return float4(texelColor, texelColor, texelColor, texelColor);
 }
 
 technique Basic

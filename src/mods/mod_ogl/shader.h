@@ -39,7 +39,12 @@ namespace Graphics
    {
    public:
               Shader();
+              Shader(Shader&& that) noexcept;
+              Shader(const Shader& that) = delete;
       virtual ~Shader();
+
+      Shader& operator=(Shader& that) noexcept;
+      Shader& operator=(const Shader& that) = delete;
 
     // get/set
       GLuint handle() const;

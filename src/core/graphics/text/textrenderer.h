@@ -10,6 +10,7 @@
 #include "core/math/matrix4.h"
 
 #include "glyphatlas.h"
+#include "debugglyphsheetrenderer.h"
 
 class String;
 class Vector;
@@ -80,7 +81,9 @@ namespace Graphics
       VertexBuffer*     mpVB;
       IndexBuffer*      mpIB;
       UniformBuffer*    mpUB;
-      UniformBuffer*    mpTransformUB;      
+      UniformBuffer*    mpTransformUB;
+
+      DebugGlyphSheetRenderer* mpDebugRenderer;
    };
 }
 

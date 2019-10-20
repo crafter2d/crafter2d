@@ -49,6 +49,16 @@ OGLDevice::~OGLDevice()
 
 // - Creation
 
+void APIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+   if ( type == GL_DEBUG_TYPE_ERROR )
+   {
+      Log::getInstance().error("GL CALLBACK: type = 0x%x, severity = 0x%x, message = %s\n", type, severity, message);
+   }
+   //else
+      //Log::getInstance().info("GL CALLBACK: type = 0x%x, severity = 0x%x, message = %s\n", type, severity, message);
+}
+
 bool OGLDevice::create(GameWindow& window)
 {
    Log& log = Log::getInstance();
@@ -85,6 +95,11 @@ bool OGLDevice::create(GameWindow& window)
    // initialize free type
    if ( FT_Init_FreeType(&mFreeTypeLib) != 0 )
       return false;
+
+   // During init, enable debug output
+   glEnable(GL_DEBUG_OUTPUT);
+   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+   glDebugMessageCallback(MessageCallback, 0);
 
    return Device::create(window);
 }
@@ -207,8 +222,11 @@ Font* OGLDevice::createFont(const String& name)
       return nullptr;
    }
 
-   OGLFont* pfont = new OGLFont(nullptr, face);
+   OGLGlyphProvider* pprovider = new OGLGlyphProvider(mFreeTypeLib, getContext().getTextRenderer().getGlyphAtlas());
+   OGLFont* pfont = new OGLFont(pprovider, face);
    pfont->setFamilyName(name);
+   pfont->setSize(24.0f);
+   pprovider->initialize(*pfont);
 
    return pfont;
 }

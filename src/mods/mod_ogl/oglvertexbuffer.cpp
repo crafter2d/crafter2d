@@ -21,6 +21,7 @@
 #include "oglvertexbuffer.h"
 
 #include "GL/gl3w.h"
+#include <GL/glu.h>
 
 #include "core/graphics/vertexlayout.h"
 #include "core/graphics/vertexlayoutelement.h"
@@ -42,7 +43,8 @@ OGLVertexBuffer::OGLVertexBuffer()
  : VertexBuffer(),
    mVAO(0),
    mBuffer(0),
-   locked(false)
+   locked(false),
+   mLock(0)
 {
 }
 
@@ -105,9 +107,11 @@ bool OGLVertexBuffer::create(const VertexLayout& layout, int length, int usage)
 
    for ( const auto& field : layout )
    {
-      // TODO: fix this, we now have a semanics
-      // glEnableVertexAttribArray(field.index);
-      // glVertexAttribPointer(field.index, field.size, GL_FLOAT, GL_FALSE, layout.getStride(), BUFFER_OFFSET(field.pos));
+      GLint size = field.type < 5 ? field.type : 1;
+      GLenum type = field.type < 5 ? GL_FLOAT : GL_UNSIGNED_INT;
+
+      glEnableVertexAttribArray(field.index);
+      glVertexAttribPointer(field.index, size, type, GL_FALSE, layout.getStride(), BUFFER_OFFSET(field.pos));
    }
 
    glBindVertexArray(0);
@@ -120,6 +124,7 @@ bool OGLVertexBuffer::create(const VertexLayout& layout, int length, int usage)
  */
 void OGLVertexBuffer::release()
 {
+   glBindVertexArray(mVAO);
    glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDeleteBuffers(1, &mBuffer);
 
@@ -137,12 +142,21 @@ void OGLVertexBuffer::release()
 void* OGLVertexBuffer::lock(RenderContext& context)
 {
    C2D_UNUSED(context);
+
+   GLenum err = glGetError();
+   if ( err != GL_NO_ERROR )
+   {
+      int aap = 3;
+   }
    
    glBindVertexArray(mVAO);
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	void* pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-	if (pointer != nullptr)
-		locked = true;
+   if ( pointer != nullptr ) {
+      locked = true;
+      mLock++;
+   }
+
 	return pointer;
 }
 
@@ -152,11 +166,15 @@ void* OGLVertexBuffer::lock(RenderContext& context)
 void OGLVertexBuffer::unlock(RenderContext& context)
 {
    C2D_UNUSED(context);
+
+   ASSERT(mLock > 0);
    
 	if (locked) {
+      glBindVertexArray(mVAO);
       glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
       glUnmapBuffer(GL_ARRAY_BUFFER);
       locked = false;
+      mLock--;
    }
 }
 

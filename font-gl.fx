@@ -9,11 +9,9 @@ language ogl
 cbuffer mpv
 {
 	mat4 proj;
-	mat4 world;
-	mat4 object;
 };
 
-cbuffer transformBuffer
+cbuffer TransformVars
 {
 	mat4 transforms[MAX_TRANSFORMS];
 };
@@ -27,21 +25,20 @@ struct VertexData
 
 struct PixelData
 {
-    vec2 tex;
+    vec2 texCoord;
 };
 
-void mainVertex()
+PixelData mainVertex(VertexData in)
 {
 	PixelData.texCoord = tex;
 	
-	vec4 tpos = vec4(pos, 0, 1) * transforms[tr];
-	gl_Position = tpos * world * proj;
+	gl_Position = (vec4(pos, 0, 1) * transforms[tr]) * proj;
 }
 
 void mainPixel()
 {
-	vec4 color = texture2D(diffuseMap, PixelData.texCoord);
-	frag = color;
+	float color = texture2D(diffuseMap, PixelData.texCoord).r;
+	frag = vec4(color, color, color, color);
 }
 
 technique Basic

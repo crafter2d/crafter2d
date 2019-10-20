@@ -70,7 +70,7 @@ void D3DRenderContext::clear()
 {
    const Color& color = getClearColor();
    const float clear[4] = { color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() };
-
+   
    mpContext->ClearRenderTargetView(mpRenderTargetView, clear);
 }
 

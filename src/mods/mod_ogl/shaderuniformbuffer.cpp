@@ -107,7 +107,8 @@ void ShaderUniformBuffer::set(RenderContext& context, const void* pdata, const i
 
 void ShaderUniformBuffer::enable() const
 {
-   glBindBufferRange(GL_UNIFORM_BUFFER, mBlock, mBuffer, 0, mBufferSize);
+   //glBindBufferRange(GL_UNIFORM_BUFFER, mBlock, mBuffer, 0, mBufferSize);
+   glBindBufferBase(GL_UNIFORM_BUFFER, mBlock, mBuffer);
 }
 
 } // namespace Graphics

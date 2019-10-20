@@ -52,6 +52,7 @@ namespace Graphics
       GLuint mVAO;
       GLuint mBuffer;
       bool   locked;
+      int    mLock;
    };
 };
 

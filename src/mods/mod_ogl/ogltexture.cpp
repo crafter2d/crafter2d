@@ -11,7 +11,8 @@ OGLTexture::OGLTexture():
    mID(0),
    mTarget(0),
    mFormat(0),
-   mBytes(0)
+   mBytes(0),
+   mSampler(0)
 {
 }
 
@@ -29,6 +30,7 @@ bool OGLTexture::create(int width, int height, int bytes)
    {
    case 1:
       mFormat = GL_RED;
+      mBytes = GL_R8;
       break;
    case 3:
       mFormat = GL_RGB;
@@ -40,6 +42,8 @@ bool OGLTexture::create(int width, int height, int bytes)
 
    _actualwidth = Math::nextPowerOfTwo(width);
    _actualheight = Math::nextPowerOfTwo(height);
+
+   glGenSamplers(1, &mSampler);
 
    glGenTextures(1, &mID);
    glBindTexture(mTarget, mID);
@@ -129,6 +133,7 @@ void OGLTexture::enable(RenderContext& context, int stage) const
    
 	glActiveTexture (GL_TEXTURE0 + stage);
 	glBindTexture(mTarget, mID);
+   //glBindSampler(stage, mSampler);
 }
 
 void OGLTexture::disable(RenderContext& context) const
