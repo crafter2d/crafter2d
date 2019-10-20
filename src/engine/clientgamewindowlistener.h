@@ -32,10 +32,12 @@ namespace c2d
       explicit ClientGameWindowListener(Client& client);
       virtual ~ClientGameWindowListener();
 
+
       // notifications
-      virtual void onWindowResized();
-      virtual bool onWindowClosing();
-      virtual void onWindowClosed();
+      virtual void onWindowCreated() override;
+      virtual void onWindowResized() override;
+      virtual bool onWindowClosing() override;
+      virtual void onWindowClosed() override;
 
    private:
       Client& mClient;

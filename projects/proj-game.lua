@@ -24,19 +24,14 @@ project "Game"
 
 	-- System
 	filter "system:Windows"
-		defines { "WIN32" }
-		includedirs { path.join(libdir, "sdl/include") }
-
-		libdirs { path.join(libdir, "sdl/lib") }
-		
-		links { "Core", "Engine", "SDLmain", "SDL", "user32", "vfw32", "ws2_32" }
+		defines { "WIN32" }		
+		links { "Core", "Engine", "user32", "vfw32", "ws2_32" }
 
 	filter "system:Linux"
 		defines { "LINUX" }		
         excludes { "../src/game/win32*.*" }
         libdirs { "../bin" }
 		buildoptions { "-W", "-Wall", "-O0" }
-        links { "SDL2" }
 
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored", "-lEngined" }

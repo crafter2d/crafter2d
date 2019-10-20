@@ -63,7 +63,6 @@ class WorldChangedEvent;
 
 class Driver;
 class GameWindow;
-class GameWindowFactory;
 class WorldRenderer;
 class Player;
 
@@ -104,10 +103,7 @@ namespace c2d
       bool           hasKeyMap() const;
       KeyMap&        getKeyMap();
       void           setKeyMap(KeyMap* pkeymap);
-
-      GameWindowFactory& getWindowFactory();
-      void               setWindowFactory(GameWindowFactory& factory);
-
+      
       bool               hasWindow() const;
       GameWindow&        getWindow();
       void               setWindow(GameWindow* pwindow);
@@ -126,7 +122,7 @@ namespace c2d
       void           sendToServer(NetObject& object);
 
       // notifications
-      void onWindowChanged();
+      void onWindowCreated();
       void onWindowResized();
       void onWindowClosing();
       void onWindowClosed();
@@ -138,6 +134,9 @@ namespace c2d
       virtual void onNetEvent(int client, const NetEvent& event);
 
    protected:
+    // initialization
+      virtual bool doCreate() override;
+
       // notifications
       virtual void notifyWorldChanged();
 
@@ -164,7 +163,6 @@ namespace c2d
       void  handleScriptEvent(const ScriptEvent& event);
 
     // data
-      GameWindowFactory*         mpWindowFactory;
       GameWindow*                mpWindow;
       Graphics::Device*          mpDevice;
       Graphics::RenderContext*   mpRenderContext;

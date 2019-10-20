@@ -22,17 +22,6 @@
 namespace c2d
 {
 
-   INLINE GameWindowFactory& Client::getWindowFactory()
-   {
-      ASSERT_PTR(mpWindowFactory);
-      return *mpWindowFactory;
-   }
-
-   INLINE void Client::setWindowFactory(GameWindowFactory& factory)
-   {
-      mpWindowFactory = &factory;
-   }
-
    INLINE bool Client::hasWindow() const
    {
       return mpWindow != nullptr;

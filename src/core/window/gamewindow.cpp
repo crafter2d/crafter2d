@@ -44,7 +44,12 @@ GameWindow::~GameWindow()
 
 bool GameWindow::create(const String& title, int width, int height, int bitdepth, bool fullscreen)
 {
-   return doCreate(title, width, height, bitdepth, fullscreen);
+   if ( doCreate(title, width, height, bitdepth, fullscreen) )
+   {
+      fireWindowCreated();
+      return true;
+   }
+   return false;
 }
 
 void GameWindow::destroy()
@@ -122,6 +127,15 @@ void GameWindow::removeListener(GameWindowListener& listener)
 }
 
 // - Listener notifications
+
+
+void GameWindow::fireWindowCreated()
+{
+   for ( auto plistener : mListeners )
+   {
+      plistener->onWindowCreated();
+   }
+}
 
 void GameWindow::fireWindowClosed()
 {

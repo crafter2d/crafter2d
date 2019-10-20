@@ -84,6 +84,12 @@ namespace c2d
          return false;
       }
 
+      // initialize the process
+      if ( !doCreate() )
+      {
+         return false;
+      }
+
       mpScriptManager = &pmod->getManager();
       script_engine_register(*mpScriptManager);
       mpScript = mpScriptManager->load(classname, this, false);

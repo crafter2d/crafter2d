@@ -39,7 +39,6 @@
 #include "core/vfs/filesystem.h"
 #include "core/world/layer.h"
 #include "core/world/world.h"
-#include "core/window/gamewindowfactory.h"
 #include "core/window/gamewindow.h"
 #include "core/defines.h"
 
@@ -136,20 +135,11 @@ void Client_isActive(ScriptCall& accessor)
    accessor.setResult(client.isActive());
 }
 
-void Client_getWindowFactory(ScriptCall& accessor)
+void Client_getWindow(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
 
-   RETURN_CLASS(UTEXT("system.GameWindowFactory"), &client.getWindowFactory());
-}
-
-void Client_setWindow(ScriptCall& accessor)
-{
-   GET_THIS(Client, client);
-
-   GameWindow* pwindow = accessor.use<GameWindow>(1);
-
-   client.setWindow(pwindow);
+   RETURN_CLASS(UTEXT("system.GameWindow"), &client.getWindow());
 }
 
 void Client_getPlayer(ScriptCall& accessor)
@@ -196,6 +186,7 @@ void Client_getTexture(ScriptCall& accessor)
    RETURN_CLASS_OWNED(UTEXT("engine.core.Texture"), ptexture);
 }
 
+
 void Client_getViewport(ScriptCall& accessor)
 {
    GET_THIS(Client, client);
@@ -219,13 +210,6 @@ void ContentManager_loadEntity(ScriptCall& accessor)
 
    Entity* presult = contentmanager.loadContent<Entity>(filename);
    RETURN_CLASS_OWNED(presult->getClassName(), presult);
-}
-
-void GameWindowFactory_createWindow(ScriptCall& accessor)
-{
-   GET_THIS(GameWindowFactory, factory);
-
-   RETURN_CLASS_OWNED(UTEXT("system.GameWindow"), factory.createWindow());
 }
 
 void GameWindow_create(ScriptCall& accessor)
@@ -942,8 +926,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addClass(UTEXT("engine.game.Client"));
    pregistrator->addFunction(UTEXT("connect(string, int)"), Client_connect);
    pregistrator->addFunction(UTEXT("isActive()"), Client_isActive);
-   pregistrator->addFunction(UTEXT("getWindowFactory()"), Client_getWindowFactory);
-   pregistrator->addFunction(UTEXT("setWindow(system.GameWindow)"), Client_setWindow);
+   pregistrator->addFunction(UTEXT("getWindow()"), Client_getWindow);
    pregistrator->addFunction(UTEXT("setKeyMap(engine.game.KeyMap)"), Client_setKeyMap);
    pregistrator->addFunction(UTEXT("getPlayer()"), Client_getPlayer);
    pregistrator->addFunction(UTEXT("setPlayer(engine.game.Player)"), Client_setPlayer);
@@ -953,10 +936,7 @@ void script_engine_register(c2d::ScriptManager& manager)
 
    pregistrator->addClass(UTEXT("engine.game.ContentManager"));
    pregistrator->addFunction(UTEXT("loadEntity(string)"), ContentManager_loadEntity);
-
-   pregistrator->addClass(UTEXT("system.GameWindowFactory"));
-   pregistrator->addFunction(UTEXT("createWindow()"), GameWindowFactory_createWindow);
-
+   
    pregistrator->addClass(UTEXT("system.GameWindow"));
    pregistrator->addFunction(UTEXT("create(string, int, int, int, boolean)"), GameWindow_create);
 

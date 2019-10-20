@@ -25,13 +25,3 @@ INLINE TimerData& Game::getTimerData()
    return *mpTimerData;
 }
 
-INLINE GameWindowFactory& Game::getWindowFactory()
-{
-   ASSERT_PTR(mpWindowFactory);
-   return *mpWindowFactory;
-}
-
-INLINE void Game::setWindowFactory(GameWindowFactory& windowfactory)
-{
-   mpWindowFactory = &windowfactory;
-}

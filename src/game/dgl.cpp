@@ -23,13 +23,6 @@
 #include <memory>
 
 #include "engine/game.h"
-// #include "sdlgamewindowfactory.h"
-//#undef WIN32
-#ifdef WIN32
-#include "win32gamewindowfactory.h"
-#else
-#include "sdlgamewindowfactory.h"
-#endif
 
 /*!
  	\mainpage Crafter 2D - Game framework for traditional platform games
@@ -67,7 +60,7 @@
    <li>Zlib, http://zlib.net/
 	<li>FMOD, http://www.fmod.com/
    <li>DirectX, http://www.microsoft.com/directx
-   <li>SDL, http://libsdl.org/
+   <li>SDL2, http://libsdl.org/
    <li>SOIL, http://www.lonesock.net/soil.html
    <li>GLee, http://elf-stone.com/glee.php
    <li>FreeType2, http://freetype.org/
@@ -79,14 +72,7 @@ int main(int argc, char *argv[])
 {
    CommandLine cmd(argc, argv);
    
-#ifdef WIN32
-   Win32GameWindowFactory windowfactory;
-#else
-   SDLGameWindowFactory windowfactory;
-#endif
-
-   std::unique_ptr<Game> game(new Game(cmd));
-   game->setWindowFactory(windowfactory);
+   auto game = std::make_unique<Game>(cmd);
    if ( game->create() )
    {
       game->run ();

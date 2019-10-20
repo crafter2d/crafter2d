@@ -22,6 +22,8 @@ namespace Graphics
       {
       }
 
+      virtual ~GlyphProvider() = default;
+
       virtual uint32_t getGlyph(UChar ch) = 0;
 
    protected:

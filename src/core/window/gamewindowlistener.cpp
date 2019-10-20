@@ -32,6 +32,10 @@ GameWindowListener::~GameWindowListener()
 // - Callbacks
 //-----------------------------------
 
+void GameWindowListener::onWindowCreated()
+{
+}
+
 void GameWindowListener::onWindowResized()
 {
 }

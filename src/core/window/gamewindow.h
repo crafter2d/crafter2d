@@ -77,6 +77,7 @@ protected:
    virtual void doDestroy() = 0;
 
  // listener notification
+   void fireWindowCreated();
    void fireWindowClosed();
    void fireWindowResized();
 

@@ -34,6 +34,11 @@ namespace c2d
 
    // - Notifications
 
+   void ClientGameWindowListener::onWindowCreated()
+   {
+      mClient.onWindowCreated();
+   }
+
    void ClientGameWindowListener::onWindowResized()
    {
       mClient.onWindowResized();

@@ -28,10 +28,12 @@
 #include "core/modules/modulemanager.h"
 #include "core/modules/graphicsmodule.h"
 #include "core/modules/inputmodule.h"
+#include "core/modules/windowmodule.h"
 #include "core/modules/modulecollection.h"
 
 #include "ogldevice.h"
 #include "input/oglinputdevice.h"
+#include "window/sdlgamewindow.h"
 
 #ifdef WIN32
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -70,7 +72,9 @@ extern "C" MOD_API Modules* DECL getModules()
    InputModule* pinputmodule = new InputModule();
    pinputmodule->setDevice(new OGLInputDevice());
 
-   return Modules::create({ pmodule, pinputmodule });
+   WindowModule* pwindowmodule = new WindowModule(new SDLGameWindow());
+
+   return Modules::create({ pmodule, pinputmodule, pwindowmodule });
 }
 
 extern "C" MOD_API void DECL freeModules(Modules* pmodules)

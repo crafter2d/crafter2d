@@ -9,7 +9,7 @@ abstract class Client extends Process
 {
 	private MouseEventDispatcher 	mMouseDispatcher;
 	private KeyEventDispatcher		mKeyDispatcher;
-	private GameWindow 			mWindow;
+	private GameWindow 				mWindow;
 		
 	public Client()
 	{
@@ -21,7 +21,6 @@ abstract class Client extends Process
 	
 	// - Natives
 	public native boolean connect(string host, int port);
-	public native GameWindowFactory getWindowFactory();
 	public native void update(real delta);
 	public native void setKeyMap(KeyMap map);
 	public native boolean isActive();
@@ -29,6 +28,7 @@ abstract class Client extends Process
 	public native void setPlayer(Player player);
 	public native Viewport getViewport();
 	public native void setOverlay(Renderable overlay);
+	public native GameWindow getWindow();
 	
 	public boolean create()
 	{
@@ -43,15 +43,11 @@ abstract class Client extends Process
 	
 	public GameWindow getWindow()
 	{
+		if ( mWindow == null )
+			mWindow = native;
 		return mWindow;
 	}
-	
-	public void setWindow(GameWindow window)
-	{
-		mWindow = window;
-		native;
-	}
-	
+		
 	// - Connection
 	
 	/// called by the engine when a connection has successfully been established

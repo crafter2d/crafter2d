@@ -14,7 +14,7 @@ compiler ..\demo\* ..\demo\build -bundle -move
 -p ..\scripts;..\src\unittest\unittests -r -o ..\src\unittest\compiledtests ..\src\unittest\unittests\*.as
 
 # compile the engine scripts
-yasc -p ..\scripts -r -o ..\data\scripts ..\scripts\*.as
+yasc -p ..\scripts -r -o ..\data\build\scripts ..\scripts\*.as
 
 
 ..\demo\tileatlas\tileatlas.xml ..\demo\build\tileatlas\tileatlas.c2d

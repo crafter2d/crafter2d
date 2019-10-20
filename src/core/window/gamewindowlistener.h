@@ -28,6 +28,10 @@ public:
    GameWindowListener();
    virtual ~GameWindowListener() = 0;
 
+   /// \fn GameWindowListener::onWindowCreated()
+   /// Called when the window is created
+   virtual void onWindowCreated();
+
    /// \fn GameWindowListener::onWindowResized()
    /// Called when game window is resized
    virtual void onWindowResized();

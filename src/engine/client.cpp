@@ -35,6 +35,7 @@
 #include "core/modules/modulemanager.h"
 #include "core/modules/inputmodule.h"
 #include "core/modules/soundmodule.h"
+#include "core/modules/windowmodule.h"
 #include "core/graphics/device.h"
 #include "core/graphics/font.h"
 #include "core/graphics/renderable.h"
@@ -80,7 +81,6 @@ namespace c2d
 
    Client::Client() :
       Process(),
-      mpWindowFactory(nullptr),
       mpWindow(nullptr),
       mpDevice(nullptr),
       mpRenderContext(nullptr),
@@ -108,6 +108,20 @@ namespace c2d
    }
 
    // - Creation
+
+   bool Client::doCreate()
+   {
+      auto pwindowmod = static_cast<WindowModule*>(getModuleManager().lookup(UUID_WindowModule));
+      if ( pwindowmod == nullptr )
+      {
+         // could not find the window module
+         return false;
+      }
+
+      mpWindow = &pwindowmod->Window();
+      mpWindow->addListener(mWindowListener);
+      return true;
+   }
 
    bool Client::destroy()
    {
@@ -283,7 +297,7 @@ namespace c2d
          delete mpWindow;
          mpWindow = pwindow;
 
-         onWindowChanged();
+         onWindowCreated();
       }
    }
 
@@ -603,18 +617,16 @@ namespace c2d
       Process::notifyWorldChanged();
    }
 
-   void Client::onWindowChanged()
+   void Client::onWindowCreated()
    {
-      if ( hasWindow() )
-      {
-         mpWindow->addListener(mWindowListener);
-         //mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
-         //mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
+      ASSERT(hasWindow());
+      
+      //mpWindow->setKeyEventDispatcher(mKeyEventDispatcher);
+      //mpWindow->setMouseEventDispatcher(mMouseEventDispatcher);
 
-         if ( !initDevice() )
-         {
-            setActive(false);
-         }
+      if ( !initDevice() )
+      {
+         setActive(false);
       }
    }
 

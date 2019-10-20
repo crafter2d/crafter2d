@@ -29,7 +29,6 @@ namespace c2d
 }
 
 class CommandLine;
-class GameWindowFactory;
 class TimerData;
 
 /**
@@ -41,10 +40,6 @@ class ENGINE_API Game
 public:
    explicit Game(CommandLine& cmdline);
    ~Game();
-
- // get/set interface
-   GameWindowFactory&   getWindowFactory();
-   void                 setWindowFactory(GameWindowFactory& windowfactory);
 
  // operations
    bool                 create();
@@ -60,8 +55,8 @@ private:
    void                 endGame();
    void                 runFrame();
 
+ // data
    CommandLine&         mCommandLine;
-   GameWindowFactory*   mpWindowFactory;
    TimerData*           mpTimerData;
    c2d::Client*         mpClient;
    c2d::Server*         mpServer;

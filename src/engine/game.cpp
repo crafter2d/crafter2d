@@ -50,7 +50,6 @@
  */
 Game::Game(CommandLine& commandline):
    mCommandLine(commandline),
-   mpWindowFactory(nullptr),
    mpTimerData(nullptr),
    mpClient(nullptr),
    mpServer(nullptr)
@@ -197,7 +196,6 @@ bool Game::initGame()
 
    Log::getInstance().info("Starting client.");
    mpClient = new c2d::Client();
-   mpClient->setWindowFactory(*mpWindowFactory);
    if ( !mpClient->create(inifile.get(UTEXT("Process"), UTEXT("client")), path) )
    {
       Log::getInstance().error("FAILED to start the client.");

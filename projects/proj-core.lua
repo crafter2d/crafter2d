@@ -35,7 +35,7 @@ project "Core"
 		excludes { "../src/core/vfs/win*.*", "../src/core/system/win*.*" }
 		buildoptions { "-W", "-Wall", "-O0", "-Wunused-parameter", pkgconf.cflags('libzip') }
         	linkoptions { pkgconf.libs('libzip') }
-		links { "SDL" }
+		links { "SDL2" }
 
 	-- set IDE specific settings
 	filter "action:vs*"

@@ -6,8 +6,10 @@
 #include "core/modules/graphicsmodule.h"
 #include "core/modules/inputmodule.h"
 #include "core/modules/modulemanager.h"
+#include "core/modules/windowmodule.h"
 
 #include "input/dxinputdevice.h"
+#include "window/win32gamewindow.h"
 #include "d3ddevice.h"
 
 #pragma comment(lib, "d3d11.lib")
@@ -48,12 +50,14 @@ extern "C" MOD_API Modules* DECL getModules()
 
    InputModule* pinputmodule = new InputModule;
    pinputmodule->setDevice(new Input::DXInputDevice());
+
+   WindowModule* pwindowmod = new WindowModule(new Win32GameWindow());
    
-   return Modules::create({ pmodule, pinputmodule });
+   return Modules::create({ pmodule, pinputmodule, pwindowmod });
 }
 
 extern "C" MOD_API void DECL freeModules(Modules* pmodules)
 {
-   ASSERT(pmodules->count == 2);
+   ASSERT(pmodules->count == 3);
    Modules::free(pmodules);
 }

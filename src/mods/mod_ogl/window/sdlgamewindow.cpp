@@ -28,8 +28,7 @@
 #include "core/input/keyevent.h"
 #include "core/input/mouseeventdispatcher.h"
 #include "core/input/mouseevent.h"
-
-#include "console.h"
+#include "core/log/log.h"
 
 using namespace Input;
 

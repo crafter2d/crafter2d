@@ -83,6 +83,9 @@ namespace c2d
       virtual void onNetEvent(int clientid, const NetEvent& event) = 0;
 
    protected:
+      // initialization
+      virtual bool doCreate() = 0;
+
       // notifications
       virtual void notifyWorldChanged();
 

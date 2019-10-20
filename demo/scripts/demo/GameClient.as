@@ -21,12 +21,11 @@ class GameClient extends Client
 	
 	public boolean create()
 	{		
-		GameWindow window = getWindowFactory().createWindow();
+		GameWindow window = getWindow();
 		if ( !window.create("GameWindow", 800, 600, 32, false) )
 		{
 			return false;
 		}
-		setWindow(window);
 		initUI();
 		
 		Player player = new Player();
