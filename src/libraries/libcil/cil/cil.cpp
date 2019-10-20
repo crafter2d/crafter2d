@@ -5,7 +5,7 @@
 
 namespace CIL
 {
-   #define OPCODE(a, b) { a, b },
+#define OPCODE(a, b) { a, b },
    const OpcodeInfo opcodeinfo[CIL_last + 1] = {
       #include "cil.def"
    };
@@ -16,7 +16,6 @@ namespace CIL
    Instruction::Instruction():
       opcode(CIL_last)
    {
-      mInt = 0;
    }
    
    Instruction::Instruction(const Instruction& that):

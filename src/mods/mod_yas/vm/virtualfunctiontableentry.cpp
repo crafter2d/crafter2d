@@ -3,7 +3,7 @@
 
 #include "core/defines.h"
 
-#include "mod_yas/common/type.h"
+#include <libcil/common/type.h>
 
 #include "virtualfunction.h"
 #include "virtuallookuptable.h"

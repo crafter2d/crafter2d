@@ -20,4 +20,9 @@ namespace CIL
    {
       mInsts.push_back(inst);
    }
+
+   void Instructions::clear()
+   {
+      mInsts.clear();
+   }
 }

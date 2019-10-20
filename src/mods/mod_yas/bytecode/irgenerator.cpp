@@ -1,14 +1,14 @@
 
 #include "irgenerator.h"
 
-#include "core/defines.h"
+#include <libcil/cil/cil.h>
+#include <libcil/cil/function.h>
+#include <libcil/cil/guard.h>
+#include <libcil/cil/switchtabel.h>
+#include <libcil/cil/switchtableentry.h>
+#include <libcil/cil/switchtables.h>
 
-#include "mod_yas/cil/cil.h"
-#include "mod_yas/cil/function.h"
-#include "mod_yas/cil/guard.h"
-#include "mod_yas/cil/switchtabel.h"
-#include "mod_yas/cil/switchtableentry.h"
-#include "mod_yas/cil/switchtables.h"
+#include "core/defines.h"
 
 #include "mod_yas/vm/virtualclass.h"
 #include "mod_yas/vm/virtualcontext.h"

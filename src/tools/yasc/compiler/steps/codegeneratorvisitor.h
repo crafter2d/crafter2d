@@ -8,9 +8,10 @@
 #include <stack>
 #include <map>
 
+#include <libcil/cil/cil.h>
+
 #include "core/string/string.h"
 
-#include "yasc/cil/cil.h"
 #include "yasc/compiler/ast/asttype.h"
 #include "yasc/compiler/scope/scopestack.h"
 #include "yasc/compiler/functionbuilder.h"
@@ -108,7 +109,7 @@ private:
    
  // conversion
    CIL::Class* toCilClass(const ASTClass& klass);
-   yasc::Type* toCilType(const ASTType& type);
+   yasc::Type toCilType(const ASTType& type);
    Modifiers toCilModifiers(const ASTModifiers& modifiers);
          
  // data

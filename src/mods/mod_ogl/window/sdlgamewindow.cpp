@@ -167,20 +167,6 @@ void SDLGameWindow::display()
 }
 
 //-----------------------------------
-// - Get/set
-//-----------------------------------
-
-const Color& SDLGameWindow::getBackgroundColor() const
-{
-   return mBackgroundColor;
-}
-   
-void SDLGameWindow::setBackgroundColor(const Color& color)
-{
-   mBackgroundColor;
-}
-
-//-----------------------------------
 // - Query
 //-----------------------------------
 

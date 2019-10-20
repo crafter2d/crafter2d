@@ -1,12 +1,12 @@
 
 #include "functionbuilder.h"
 
+#include <libcil/cil/guard.h>
+#include <libcil/cil/switchtabel.h>
+#include <libcil/cil/switchtableentry.h>
+
 #include "core/string/string.h"
 #include "core/defines.h"
-
-#include "yasc/cil/guard.h"
-#include "yasc/cil/switchtabel.h"
-#include "yasc/cil/switchtableentry.h"
 
 FunctionBuilder::FunctionBuilder():
    mInstructions(),

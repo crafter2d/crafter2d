@@ -1,23 +1,22 @@
 
 #include "generator.h"
 
+#include <libcil/common/type.h>
+#include <libcil/cil/class.h>
+#include <libcil/cil/codestreamer.h>
+#include <libcil/cil/field.h>
+#include <libcil/cil/function.h>
+#include <libcil/cil/guard.h>
+#include <libcil/cil/guards.h>
+#include <libcil/cil/switchtabel.h>
+#include <libcil/cil/switchtableentry.h>
+#include <libcil/cil/switchtables.h>
+
 #include "core/streams/filereaderstream.h"
 #include "core/string/string.h"
 #include "core/string/stringinterface.h"
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
-
-#include "mod_yas/common/type.h"
-
-#include "mod_yas/cil/class.h"
-#include "mod_yas/cil/codestreamer.h"
-#include "mod_yas/cil/field.h"
-#include "mod_yas/cil/function.h"
-#include "mod_yas/cil/guard.h"
-#include "mod_yas/cil/guards.h"
-#include "mod_yas/cil/switchtabel.h"
-#include "mod_yas/cil/switchtableentry.h"
-#include "mod_yas/cil/switchtables.h"
 
 #include "mod_yas/vm/virtualarray.h"
 #include "mod_yas/vm/virtualclass.h"

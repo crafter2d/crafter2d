@@ -1,9 +1,9 @@
 
 #include "virtualfunction.h"
 
-#include "core/defines.h"
+#include <libcil/common/type.h>
 
-#include "mod_yas/common/type.h"
+#include "core/defines.h"
 
 #include "virtuallookuptable.h"
 

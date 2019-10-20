@@ -5,6 +5,10 @@
 #include <fstream>
 #include <algorithm>
 
+#include <libcil/cil/class.h>
+#include <libcil/cil/codestreamer.h>
+#include <libcil/common/type.h>
+
 #include "core/containers/listalgorithms.h"
 #include "core/string/string.h"
 #include "core/string/stringlist.h"
@@ -15,9 +19,6 @@
 #include "core/vfs/stdiofile.h"
 #include "core/vfs/filesystem.h"
 #include "core/defines.h"
-
-#include "yasc/cil/class.h"
-#include "yasc/cil/codestreamer.h"
 
 #include "antlr/antlrexception.h"
 #include "antlr/antlrinterface.h"
@@ -30,8 +31,6 @@
 #include "steps/resourcecheckvisitor.h"
 #include "steps/oocheckvisitor.h"
 #include "steps/codegeneratorvisitor.h"
-
-#include "../common/type.h"
 
 #include "compilecallback.h"
 

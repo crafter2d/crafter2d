@@ -2,17 +2,17 @@
 #ifndef VIRTUAL_FUNCTION_H
 #define VIRTUAL_FUNCTION_H
 
+#include <libcil/cil/instructions.h>
+#include <libcil/common/modifiers.h>
+#include <libcil/common/types.h>
+#include <libcil/common/type.h>
+
 #include "core/string/string.h"
 #include "core/string/stringlist.h"
-
-#include "mod_yas/common/modifiers.h"
-#include "mod_yas/common/types.h"
-#include "mod_yas/common/type.h"
 
 #include "virtualguards.h"
 #include "virtuallookuptables.h"
 
-#include "../cil/instructions.h"
 
 class VirtualClass;
 class VirtualValue;

@@ -11,7 +11,7 @@ project "Yasc"
 	
 	-- set project files
 	files { "../src/tools/yasc/**.cpp", "../src/tools/yasc/**.c", "../src/tools/yasc/**.h", "../src/tools/yasc/**.inl" }
-	includedirs { "../src", "../src/tools" }
+	includedirs { "../src", "../src/libraries", "../src/tools" }
 		
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
@@ -27,7 +27,7 @@ project "Yasc"
 		defines { "WIN32" }
 		includedirs { path.join(libdir, "antlr/include") }
 		libdirs { path.join(libdir, "antlr/lib") }
-    	links { "Core" }
+    	links { "Core", "libcil" }
 	
 	filter { "system:Windows", "Debug" }
 		links { "antlr3cd.lib" }
@@ -42,8 +42,8 @@ project "Yasc"
         links { "antlr3c" }
 
     filter { "system:linux", "Debug" }
-        linkoptions { "-lCored" }
+        linkoptions { "-lCored", "-lcild" }
 
     filter { "system:linux", "Release" }
-        linkoptions { "-lCore" }
+        linkoptions { "-lCore", "-lcil" }
 

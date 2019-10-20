@@ -2,7 +2,7 @@
 #ifndef IR_GENERATOR_H
 #define IR_GENERATOR_H
 
-#include "mod_yas/cil/cil.h"
+#include <libcil/cil/cil.h>
 
 #include "block.h"
 

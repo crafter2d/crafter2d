@@ -42,6 +42,9 @@ require "proj-unittest"
 require "proj-game"
 require "proj-xml"
 
+group "Libraries"
+	require "proj-libcil"
+
 group "Mods"
 	require "proj-modyas"
 	require "proj-modc2d"

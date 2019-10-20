@@ -79,6 +79,6 @@ extern "C" MOD_API Modules* DECL getModules()
 
 extern "C" MOD_API void DECL freeModules(Modules* pmodules)
 {
-   ASSERT(pmodules->count == 2);
+   ASSERT(pmodules->count == 3);
    Modules::free(pmodules);
 }

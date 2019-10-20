@@ -1,18 +1,17 @@
 
 #include "codegeneratorvisitor.h"
 
+#include <libcil/cil/class.h>
+#include <libcil/cil/field.h>
+#include <libcil/cil/function.h>
+#include <libcil/cil/guard.h>
+#include <libcil/cil/switchtabel.h>
+#include <libcil/cil/switchtableentry.h>
+#include <libcil/common/type.h>
+
 #include "core/defines.h"
 #include "core/string/stringinterface.h"
 #include "core/system/variant.h"
-
-#include "yasc/cil/class.h"
-#include "yasc/cil/field.h"
-#include "yasc/cil/function.h"
-#include "yasc/cil/guard.h"
-#include "yasc/cil/switchtabel.h"
-#include "yasc/cil/switchtableentry.h"
-
-#include "yasc/common/type.h"
 
 #include "yasc/compiler/ast/ast.h"
 #include "yasc/compiler/scope/scope.h"
@@ -129,8 +128,8 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
       for ( int index = 0; index < locals.size(); ++index )
       {
          const ASTType& local = locals[index];
-         yasc::Type* ptype = yasc::Type::fromString(local.toString());
-         pfunction->addLocal(ptype);
+         yasc::Type type = yasc::Type::fromString(local.toString());
+         pfunction->addLocal(type);
       }
       
       // clean up the code body to save memory
@@ -1680,7 +1679,7 @@ CIL::Class* CodeGeneratorVisitor::toCilClass(const ASTClass& klass)
    return pclass;
 }
 
-yasc::Type* CodeGeneratorVisitor::toCilType(const ASTType& type)
+yasc::Type CodeGeneratorVisitor::toCilType(const ASTType& type)
 {
    String typestr = type.toString();
    return yasc::Type::fromString(typestr);

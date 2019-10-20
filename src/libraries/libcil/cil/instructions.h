@@ -16,11 +16,26 @@ namespace CIL
 
       const Instructions& operator=(const Instructions& that);
 
-      const Instruction& operator[](int index) const;
-            Instruction& operator[](int index);
+      const Instruction& operator[](int index) const
+      {
+         return mInsts[index];
+      }
+      
+      Instruction& operator[](int index)
+      {
+         return mInsts[index];
+      }
+      
     // query
-      bool isEmpty() const;
-      int size() const;
+      bool isEmpty() const
+      {
+         return size() == 0;
+      }
+
+      std::size_t size() const
+      {
+         return mInsts.size();
+      }
 
     // operations
       void add(const Instruction& inst);

@@ -4,10 +4,10 @@
 
 #include <vector>
 
-#include "yasc/cil/cil.h"
-#include "yasc/cil/guards.h"
-#include "yasc/cil/instructions.h"
-#include "yasc/cil/switchtables.h"
+#include <libcil/cil/cil.h>
+#include <libcil/cil/guards.h>
+#include <libcil/cil/instructions.h>
+#include <libcil/cil/switchtables.h>
 
 class ASTFunction;
 class String;

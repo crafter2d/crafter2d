@@ -6,6 +6,10 @@
 #include <memory>
 #include <string.h>
 
+#include <libcil/cil/cil.h>
+#include <libcil/cil/instructions.h>
+#include <libcil/common/type.h>
+
 #include "core/defines.h"
 
 #include "mod_yas/bytecode/block.h"
@@ -19,10 +23,6 @@
 #include "mod_yas/bytecode/block.h"
 #include "mod_yas/bytecode/instruction.h"
 
-#include "mod_yas/cil/cil.h"
-#include "mod_yas/cil/instructions.h"
-
-#include "mod_yas/common/type.h"
 #include "mod_yas/common/classregistry.h"
 
 #include "mod_yas/vm/virtualclass.h"

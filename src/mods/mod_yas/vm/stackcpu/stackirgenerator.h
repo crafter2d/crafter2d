@@ -2,7 +2,8 @@
 #ifndef STACK_IR_GENERATOR_H
 #define STACK_IR_GENERATOR_H
 
-#include "mod_yas/cil/cil.h"
+#include <libcil/cil/cil.h>
+
 #include "mod_yas/common/functionregistration.h"
 #include "mod_yas/bytecode/irgenerator.h"
 #include "mod_yas/bytecode/instruction.h"

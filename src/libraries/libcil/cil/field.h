@@ -4,7 +4,7 @@
 
 #include "core/string/string.h"
 
-#include "mod_yas/common/type.h"
+#include "../common/type.h"
 
 namespace CIL
 {

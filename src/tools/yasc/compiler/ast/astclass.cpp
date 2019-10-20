@@ -5,7 +5,7 @@
 
 #include "yasc/compiler/scope/scope.h"
 #include "yasc/compiler/scope/scopevariable.h"
-#include "yasc/cil/class.h"
+#include "libraries/libcil/cil/class.h"
 
 #include "astfunction.h"
 #include "asttype.h"

@@ -2,9 +2,9 @@
 #ifndef VIRTUAL_FIELD_H
 #define VIRTUAL_FIELD_H
 
-#include "core/string/string.h"
+#include <libcil/common/type.h>
 
-#include "mod_yas/common/type.h"
+#include "core/string/string.h"
 
 class VirtualClass;
 
