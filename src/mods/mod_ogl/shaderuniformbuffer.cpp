@@ -57,8 +57,8 @@ bool ShaderUniformBuffer::createBuffer()
 bool ShaderUniformBuffer::createUniforms(UNIFORM_BUFFER_DESC* pdescs, int nr)
 {
    glGetActiveUniformBlockiv(mProgram, mBlock, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &mElementNr);
-   GLuint* pindices = new GLuint[mElementNr];
-   glGetActiveUniformBlockiv(mProgram, mBlock, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, (GLint*) pindices);
+   auto pindices = std::make_unique<GLuint[]>(mElementNr);
+   glGetActiveUniformBlockiv(mProgram, mBlock, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, (GLint*)pindices.get());
 
    GLint maxlength;
    glGetProgramiv(mProgram, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxlength);

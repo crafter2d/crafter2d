@@ -3,7 +3,7 @@
 
 #include "core/defines.h"
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 static int Keys[] =
 {

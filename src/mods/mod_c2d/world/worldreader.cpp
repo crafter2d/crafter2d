@@ -1,6 +1,7 @@
 
 #include "worldreader.h"
 
+#include <memory>
 #include <stdexcept>
 #include <zlib.h>
 

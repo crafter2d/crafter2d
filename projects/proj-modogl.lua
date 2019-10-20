@@ -11,7 +11,7 @@ project "mod_ogl"
 	-- set project files
 	files { "../src/mods/mod_ogl/**.cpp", "../src/mods/mod_ogl/**.h", "../src/mods/mod_ogl/**.inl", "../src/mods/mod_ogl/**.c" }
 	includedirs { "../src", "../src/mods", "../src/mods/mod_ogl" }
-	links { "SDL" }
+	links { "SDL2" }
 
 	filter "configurations:Debug"
 		defines { "_DEBUG" }
@@ -38,10 +38,10 @@ project "mod_ogl"
 		}
 		
 	filter "system:Linux"
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
+		buildoptions { "-W", "-Wall", "-O0" }
 		defines { "LINUX" }
 		includedirs { "/usr/include", "/usr/include/freetype2", "/usr/local/include" }
-        libdirs { "../bin" }
+		libdirs { "../bin" }
 		links { "freetype" }
 
     filter { "system:linux", "Debug" }

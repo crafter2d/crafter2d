@@ -35,8 +35,8 @@ project "Game"
 		defines { "LINUX" }		
         excludes { "../src/game/win32*.*" }
         libdirs { "../bin" }
-		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0" }
-        links { "SDL" }
+		buildoptions { "-W", "-Wall", "-O0" }
+        links { "SDL2" }
 
     filter { "system:linux", "Debug" }
         linkoptions { "-lCored", "-lEngined" }
