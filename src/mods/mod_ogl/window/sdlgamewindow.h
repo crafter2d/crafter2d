@@ -45,11 +45,11 @@ public:
    ~SDLGameWindow();
 
  // get/set
-   const Color& SDLGameWindow::getBackgroundColor() const {
+   const Color& getBackgroundColor() const {
       return mBackgroundColor;
    }
 
-   void SDLGameWindow::setBackgroundColor(const Color& color) {
+   void setBackgroundColor(const Color& color) {
       mBackgroundColor = color;
    }
 

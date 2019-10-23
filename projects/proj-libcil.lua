@@ -27,5 +27,5 @@ project "libcil"
 
 	filter "system:linux"
 		defines { "LINUX" }
-		buildoptions { "-W", "-Wall", "-O0" }
+		buildoptions { "-W", "-Wall", "-O0", "-fpic" }
         libdirs { "../bin" }

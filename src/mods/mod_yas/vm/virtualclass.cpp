@@ -3,7 +3,7 @@
 
 #include "core/defines.h"
 
-#include "mod_yas/cil/cil.h"
+#include <libcil/cil/cil.h>
 
 #include "virtualcontext.h"
 #include "virtualobject.h"

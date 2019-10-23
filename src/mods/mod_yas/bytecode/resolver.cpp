@@ -9,8 +9,8 @@
 #include "core/vfs/filesystem.h"
 #include "core/vfs/file.h"
 
-#include "mod_yas/common/type.h"
-#include "mod_yas/common/types.h"
+#include <libcil/common/type.h>
+#include <libcil/common/types.h>
 
 #include "mod_yas/vm/virtualclass.h"
 #include "mod_yas/vm/virtualcontext.h"
