@@ -9,6 +9,8 @@ namespace CIL
    class SwitchTableEntry
    {
    public:
+      SwitchTableEntry() : label(0), value() {}
+
       int      label;
       Variant  value;
    };

@@ -29,6 +29,7 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(CompileContext& context):
    mpAccess(nullptr),
    mpExpression(nullptr),
    mCurrentType(),
+   mpCilClass(nullptr),
    mpSwitchTable(nullptr),
    mScopeStack(),
    mLoopFlowStack(),

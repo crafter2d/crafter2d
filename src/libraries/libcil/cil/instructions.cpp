@@ -6,11 +6,14 @@ namespace CIL
 
    const Instructions& Instructions::operator=(const Instructions& that)
    {
+      mInsts = that.mInsts;
+      /*
       mInsts.resize(that.size());
       for ( int index = 0; index < that.size(); ++index )
       {
          mInsts[index] = that[index];
       }
+      */
       return *this;
    }
 

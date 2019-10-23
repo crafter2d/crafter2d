@@ -104,7 +104,6 @@ private:
    void handleVariable(const ASTVariable& variable);
    void handleStaticBlock(ASTClass& ast);
    void handleFieldBlock(ASTClass& ast);
-   void handleClassObject(const ASTClass& ast);
    void handleLiteral(const Literal& literal);
    
  // conversion

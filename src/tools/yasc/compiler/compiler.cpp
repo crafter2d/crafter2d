@@ -9,7 +9,6 @@
 #include <libcil/cil/codestreamer.h>
 #include <libcil/common/type.h>
 
-#include "core/containers/listalgorithms.h"
 #include "core/string/string.h"
 #include "core/string/stringlist.h"
 #include "core/string/stringinterface.h"
