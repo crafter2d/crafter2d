@@ -16,6 +16,11 @@ OGLTexture::OGLTexture():
 {
 }
 
+OGLTexture::~OGLTexture()
+{
+   release();
+}
+
 // - Creation
 
 bool OGLTexture::create(int width, int height, int bytes)

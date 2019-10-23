@@ -21,7 +21,6 @@
 
 #include <memory>
 
-#include "core/containers/hashinterface.h"
 #include "core/graphics/font.h"
 #include "core/graphics/texture.h"
 
@@ -31,7 +30,6 @@ ResourceManager::ResourceManager():
    mContentManager(),
    mResources()
 {
-   mResources.setHashFunction(HashInterface::hashString);
 }
 
 ResourceManager::~ResourceManager()
@@ -54,7 +52,8 @@ TexturePtr ResourceManager::getTexture(const String& file)
 {
    ResourceHandle<Graphics::Texture>* phandle = nullptr;
 
-   if ( !mResources.contains(file) )
+   auto it = mResources.find(file);
+   if ( it == mResources.end() )
    {
       String path = sPath + file;
       std::unique_ptr<Graphics::Texture> texture(mContentManager.loadContent<Graphics::Texture>(path));
@@ -65,11 +64,11 @@ TexturePtr ResourceManager::getTexture(const String& file)
       phandle->setName(file);
 
       ResourceHandleBase* pbasehandle = phandle; // needed for *& in container, perhaps time to change that..
-		mResources.insert(file, pbasehandle);
+      mResources.insert({ file, pbasehandle });
 	}
    else
    {
-      phandle = static_cast<ResourceHandle<Graphics::Texture>*>(*mResources.get(file));
+      phandle = static_cast<ResourceHandle<Graphics::Texture>*>(it->second);
    }
 
    ASSERT_PTR(phandle);
@@ -80,5 +79,5 @@ TexturePtr ResourceManager::getTexture(const String& file)
 
 void ResourceManager::notifyResourceDeleted(const ResourceHandleBase& resource)
 {
-   mResources.remove(resource.getName());
+   mResources.erase(resource.getName());
 }

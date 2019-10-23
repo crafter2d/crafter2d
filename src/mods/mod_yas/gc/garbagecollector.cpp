@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cstring>
 
-#include "core/containers/listiterator.h"
 #include "core/smartptr/scopedvalue.h"
 
 #include "mod_yas/vm/virtualobject.h"

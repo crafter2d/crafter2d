@@ -20,8 +20,8 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include "iterator.h"
 #include "treenode.h"
-#include "listiterator.h"
 
 template <class E>
 class Tree

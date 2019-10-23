@@ -29,7 +29,6 @@
 #include "core/streams/arraystream.h"
 #include "core/streams/bufferedstream.h"
 #include "core/string/string.h"
-#include "core/containers/listiterator.h"
 #include "core/log/log.h"
 #include "core/system/timer.h"
 

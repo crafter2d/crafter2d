@@ -12,6 +12,7 @@ namespace Graphics
    {
    public:
       OGLTexture();
+      virtual ~OGLTexture();
 
     // creation
       bool create(int width, int height, int bytes);
@@ -19,7 +20,6 @@ namespace Graphics
 
     // overrides
       virtual void   update(RenderContext& context, const void* pdata, int rowpitch) override;
-      virtual void   release() override;
 
       virtual void   enable(RenderContext& context, int stage) const override;
       virtual void   disable(RenderContext& context) const override;
@@ -27,6 +27,8 @@ namespace Graphics
       virtual bool   isValid() const override;
 
    private:
+    // operations
+      void release();
 
     // data
       GLuint mID;

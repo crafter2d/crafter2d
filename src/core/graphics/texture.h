@@ -55,8 +55,6 @@ namespace Graphics
       explicit       Texture();
       virtual        ~Texture();
 
-      virtual void   release();
-
       virtual void   update(RenderContext& context, const void* pdata, int rowpitch) = 0;
 
       virtual void   enable(RenderContext& context, int stage) const = 0;

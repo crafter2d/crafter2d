@@ -27,12 +27,6 @@
 
 struct Size;
 
-namespace Graphics
-{
-   class Texture;
-   class TextureCoordinate;
-}
-
 namespace c2d
 {
    class AnimationState;

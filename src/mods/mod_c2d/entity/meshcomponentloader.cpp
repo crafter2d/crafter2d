@@ -21,7 +21,6 @@ std::map<std::string, c2d::Animator::AnimationType> AnimationMap = {
    { "die", c2d::Animator::eDying },
 };
 
-using namespace Graphics;
 namespace c2d
 {
 

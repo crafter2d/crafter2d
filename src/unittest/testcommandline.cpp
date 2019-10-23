@@ -1,8 +1,6 @@
 
 #include <gtest/gtest.h>
 
-
-#include "core/containers/list.h"
 #include "core/commandline/commandline.h"
 
 static const int   sArgc = 6;

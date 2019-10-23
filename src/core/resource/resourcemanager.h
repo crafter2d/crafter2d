@@ -21,8 +21,8 @@
 #define RESOURCE_MANAGER_H_
 
 #include <string>
+#include <unordered_map>
 
-#include "core/containers/hashmap.h"
 #include "core/content/contentmanager.h"
 #include "core/string/string.h"
 
@@ -53,7 +53,7 @@ public:
    void notifyResourceDeleted(const ResourceHandleBase& resource);
 
 private:
-   typedef HashMap<String, ResourceHandleBase*> Resources;
+   using Resources = std::unordered_map<String, ResourceHandleBase*>;
 
    explicit ResourceManager();
    ResourceManager& operator=(const ResourceManager& mgr) = delete;

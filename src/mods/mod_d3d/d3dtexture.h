@@ -14,12 +14,12 @@ namespace Graphics
    {
    public:
       D3DTexture(ID3D11ShaderResourceView* presource, ID3D11Resource* ptexture);
+      virtual ~D3DTexture();
       
     // operations
       bool create(Device& device, int width, int height);
 
     // overrides
-      virtual void   release() override;
       virtual void   update(RenderContext& context, const void* pdata, int rowpitch) override;
 
       virtual void   enable(RenderContext& context, int stage) const override;
@@ -28,6 +28,8 @@ namespace Graphics
       virtual bool   isValid() const override;
 
    private:
+    // operations
+      void release();
 
     // data
       ID3D11Resource*           mpTexture;

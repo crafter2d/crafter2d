@@ -16,6 +16,11 @@ namespace Graphics
    {
    }
 
+   D3DTexture::~D3DTexture()
+   {
+      release();
+   }
+
    // - Operations
 
    bool D3DTexture::create(Device& device, int width, int height)

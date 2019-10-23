@@ -30,7 +30,8 @@ D3DDevice::D3DDevice():
    mpD2DFactory(nullptr),
    mpD2DDevice(nullptr),
    mpD2DContext(nullptr),
-   mpDWriteFactory(nullptr)
+   mpDWriteFactory(nullptr),
+   mpFontCollection(nullptr)
 {
 }
 
@@ -38,7 +39,6 @@ bool D3DDevice::create(GameWindow& window)
 {
    int windowhandle = window.getHandle();
 
-   D3D_FEATURE_LEVEL level;
    DXGI_SWAP_CHAIN_DESC sd;
    ZeroMemory(&sd, sizeof(sd));
    sd.BufferCount = 1;
@@ -66,6 +66,7 @@ bool D3DDevice::create(GameWindow& window)
       D3D_FEATURE_LEVEL_10_0,
    };
 
+   D3D_FEATURE_LEVEL level;
    HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE, nullptr, 
                                               creationFlags, requestedlevel, 3, D3D11_SDK_VERSION,
                                               &sd, &mpSwapChain, &mpDevice, &level, &mpContext);
@@ -115,8 +116,13 @@ bool D3DDevice::createD2D()
       return false;
    }
 
-   IDXGIDevice* dxgiDevice;
-   mpDevice->QueryInterface<IDXGIDevice>(&dxgiDevice);
+   IDXGIDevice* dxgiDevice = nullptr;
+   hr = mpDevice->QueryInterface<IDXGIDevice>(&dxgiDevice);
+   if ( FAILED(hr) )
+   {
+      return false;
+   }
+
    hr = mpD2DFactory->CreateDevice(dxgiDevice, &mpD2DDevice);
    dxgiDevice->Release();
    if ( FAILED(hr) )

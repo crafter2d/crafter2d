@@ -21,7 +21,6 @@
 #define TREE_ITERATOR_H_
 
 #include "iterator.h"
-#include "listiterator.h"
 #include "treenode.h"
 #include "tree.h"
 

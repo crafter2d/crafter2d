@@ -61,8 +61,7 @@ INLINE bool TreeNode<E>::hasChildren() const
 template <class E>
 INLINE TreeNode<E>* TreeNode<E>::getChild(int index)
 {
-   ListNode< TreeNode<E> >* pnode = _children.get(index);
-   return pnode != nullptr ? &pnode->data() : nullptr;
+   return index < _children.size() ? _children[index] : nullptr;
 }
 
 template<class E>
@@ -105,7 +104,7 @@ int TreeNode<E>::getDepth() const
 template<class E>
 INLINE void TreeNode<E>::add(TreeNode<E>* pchild)
 {
-   _children.addTail(pchild);
+   _children.push_back(pchild);
 }
 
 template <class E>

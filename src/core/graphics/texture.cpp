@@ -53,11 +53,6 @@ Texture::Texture():
  */
 Texture::~Texture()
 {
-	release();
-}
-
-void Texture::release()
-{
 }
 
 // - Operations

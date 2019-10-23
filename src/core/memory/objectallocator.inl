@@ -22,6 +22,7 @@
 template<class E>
 ObjectAllocator<E>::ObjectAllocator():
    mElements(),
+   mFunc(),
    mAvailable(0)
 {
    mElements.reserve(50);

@@ -20,17 +20,18 @@
 #ifndef TREE_NODE_H
 #define TREE_NODE_H
 
-#include "list.h"
+#include <vector>
 
 template <class E>
 class TreeNode
 {
 public:
- // typedefs
-   typedef List< TreeNode<E> > Children;
+ // types
+   using Children = std::vector<TreeNode<E>>;
 
-            TreeNode(E* pdata, TreeNode<E>* pparent);
-   virtual ~TreeNode();
+ // constructors
+   TreeNode(E* pdata, TreeNode<E>* pparent);
+   ~TreeNode();
 
  // get/set interface
    bool           hasParent() const;

@@ -21,8 +21,6 @@
 
 #include <algorithm>
 
-#include "listiterator.h"
-
 template <class E>
 INLINE SortedList<E>::SortedList():
    mList(),
@@ -39,12 +37,12 @@ INLINE void SortedList<E>::setCompareFnc(CompareFnc pcomparefunction)
 template<class E>
 INLINE bool SortedList<E>::ensureSorted()
 {
-   ListIterator<E> it = this->getFront();
-   while ( it.isValid() )
+   auto it = mList.begin();
+   while ( it != mList.end() )
    {
-      ListIterator<E> prev = it;
+      auto prev = it;
       ++it;
-      if ( it.isValid() && (*mpCompareFnc)(prev.item(), it.item()) > 0 )
+      if ( it != mList.end() && (*mpCompareFnc)(*prev, *it) > 0 )
       {
          return false;
       }
