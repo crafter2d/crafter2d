@@ -30,36 +30,75 @@ public:
    using Children = std::vector<TreeNode<E>>;
 
  // constructors
-   TreeNode(E* pdata, TreeNode<E>* pparent);
-   ~TreeNode();
+            TreeNode(): _pparent(nullptr), _children(), _data(), _expanded(true) {}
+   explicit TreeNode(E data): _pparent(nullptr), _children(), _data(data), _expanded(true) {}
+            TreeNode(TreeNode&& node);
+            ~TreeNode();
 
  // get/set interface
    bool           hasParent() const;
    TreeNode<E>&   getParent();
 
-   E&             getData();
+   E& getData() {
+      return _data;
+   }
 
    bool           hasChildren() const;
    Children&      getChildren() { return _children; }
 
    TreeNode<E>*   getChild(int index);
+   TreeNode<E>*   find(const E& element);
 
    bool           canExpand() const;
    bool           isExpanded() const;
 
    int            getDepth() const;
 
+ // query
+   size_t count() const {
+      int result = 1; // self
+      for ( auto& node : _children )
+      {
+         result += node.count();
+      }
+      return result;
+   }
+
  // operations
-   void           add(TreeNode<E>* pchild);
+   TreeNode<E>& insert_child(E& element) {
+      auto& node = _children.emplace_back(element);
+      node.setParent(this);
+      return node;
+   }
+
    void           expand();
    void           collapse();
 
 private:
+   void setParent(TreeNode<E>* pparent) {
+      _pparent = pparent;
+   }
+
    TreeNode<E>*   _pparent;
    Children       _children;
-   E*             _pdata;
+   E              _data;
    bool           _expanded;
 };
+
+template <class E>
+TreeNode<E>* TreeNode<E>::find(const E& element)
+{
+   if ( &_pdata == &element )
+      return _pdata;
+
+   for ( auto& child : _children )
+   {
+      auto pnode = child.find(element);
+      if ( pnode )
+         return pnode;
+   }
+   return nullptr;
+}
 
 #include "treenode.inl"
 

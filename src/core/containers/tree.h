@@ -20,33 +20,53 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include <type_traits>
+
 #include "iterator.h"
 #include "treenode.h"
+#include "treedepthfirstiterator.h"
 
 template <class E>
 class Tree
 {
 public:
-   Tree();
-   virtual ~Tree();
+   using iterator = TreeDepthFirstIterator<E>;
+
+   Tree() : _root() {}
+   ~Tree() {}
 
  // get/set interface
-   bool                 hasRoot() const;
-   const TreeNode<E>&   getRoot() const;
-   TreeNode<E>&         getRoot();
+   const TreeNode<E>& getRoot() const { return _root; }
+   TreeNode<E>& getRoot() { return _root; }
+
+ // iterators
+   iterator begin() {
+      return TreeDepthFirstIterator<E>(_root);
+   }
+
+   iterator end() {
+      return TreeDepthFirstIterator<E>(_root);
+   }
+
+ // query
+   size_t count() const {
+      return _root.count();
+   }
 
  // operations
-   void insert(TreeNode<E>* pposition, E& element);
-   void insert(Iterator<E>& it, E& element);
+   TreeNode<E>& insert_child(iterator& pos, E& element) {
+      TreeNode<E>& node = static_cast<TreeIterator<E>&>(pos).getNode();
+      return node.insert_child(element);
+   }
 
-   TreeNode<E>* findElement(const E& element);
+   TreeNode<E>* find(const E& element) {
+      return _root.find(element);
+   }
 
 private:
-   TreeNode<E>* findElement(TreeNode<E>& node, const E& element);
 
-   TreeNode<E>* _proot;
+ // data
+   TreeNode<E> _root;
 };
-
-#include "tree.inl"
 
 #endif

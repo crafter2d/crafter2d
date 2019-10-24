@@ -20,14 +20,12 @@
 #include "core/defines.h"
 
 template<class E>
-INLINE TreeNode<E>::TreeNode(E* pdata, TreeNode<E>* pparent):
-   _pparent(pparent),
-   _children(),
-   _pdata(pdata),
-   _expanded(true)
+TreeNode<E>::TreeNode(TreeNode<E>&& node):
+   _pparent(nullptr),
+   _children(std::move(node._children)),
+   _data(node._data),
+   _expanded(node._expanded)
 {
-   if ( hasParent() )
-      getParent().add(this);
 }
 
 template<class E>
@@ -61,14 +59,7 @@ INLINE bool TreeNode<E>::hasChildren() const
 template <class E>
 INLINE TreeNode<E>* TreeNode<E>::getChild(int index)
 {
-   return index < _children.size() ? _children[index] : nullptr;
-}
-
-template<class E>
-INLINE E& TreeNode<E>::getData()
-{
-   ASSERT_PTR(_pdata)
-   return *_pdata;
+   return index < _children.size() ? &_children[index] : nullptr;
 }
 
 template <class E>
@@ -100,12 +91,6 @@ int TreeNode<E>::getDepth() const
 //////////////////////////////////////////////////////////////////////////
 // - operations
 //////////////////////////////////////////////////////////////////////////
-
-template<class E>
-INLINE void TreeNode<E>::add(TreeNode<E>* pchild)
-{
-   _children.push_back(pchild);
-}
 
 template <class E>
 void TreeNode<E>::expand()

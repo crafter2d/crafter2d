@@ -20,7 +20,7 @@
 #ifndef TREE_DEPTH_FIRST_ITERATOR_H_
 #define TREE_DEPTH_FIRST_ITERATOR_H_
 
-#include <stack>
+#include <deque>
 #include "treeiterator.h"
 
 template<class E>
@@ -29,7 +29,7 @@ class TreeDepthFirstIterator : public TreeIterator<E>
 public:
    typedef TreeNode<E>* TreeHandle;
 
-   TreeDepthFirstIterator(Tree<E>& tree);
+   explicit TreeDepthFirstIterator(TreeNode<E>& node);
 
  // overloads
    virtual void     operator++();
@@ -49,11 +49,13 @@ private:
    class StackNode
    {
    public:
+      StackNode(TreeHandle node) : pnode(node), child(0) {}
+
       TreeHandle pnode;
       int child;
    };
 
-   std::stack<StackNode> _stack;
+   std::deque<StackNode> _stack;
 };
 
 #include "treedepthfirstiterator.inl"

@@ -20,8 +20,8 @@
 #include "core/defines.h"
 
 template<class E>
-TreeDepthFirstIterator<E>::TreeDepthFirstIterator(Tree<E>& tree):
-   TreeIterator<E>(tree),
+TreeDepthFirstIterator<E>::TreeDepthFirstIterator(TreeNode<E>& node):
+   TreeIterator<E>(node),
    _stack()
 {
    reset();
@@ -33,23 +33,20 @@ void* TreeDepthFirstIterator<E>::key()
    if ( _stack.empty() )
       return nullptr;
    else
-      return _stack.top().pnode;
+      return _stack.back().pnode;
 }
 
 template<class E>
 void TreeDepthFirstIterator<E>::reset()
 {
-   Tree<E> tree = TreeIterator<E>::_tree;
-   if ( tree.hasRoot() )
-   {
-      push(&tree.getRoot());
-   }
+   _stack.clear();
+   _stack.push_back(StackNode(&_node));
 }
 
 template<class E>
 void TreeDepthFirstIterator<E>::operator++()
 {
-   StackNode& node = _stack.top();
+   StackNode& node = _stack.back();
 
    if ( node.child < node.pnode->getChildren().size() && node.pnode->isExpanded() )
    {
@@ -61,9 +58,9 @@ void TreeDepthFirstIterator<E>::operator++()
    {
       while ( !_stack.empty() )
       {
-         _stack.pop();
+         _stack.pop_back();
 
-         if ( !_stack.empty() && _stack.top().child < _stack.top().pnode->getChildren().size() )
+         if ( !_stack.empty() && _stack.back().child < _stack.back().pnode->getChildren().size() )
          {
             operator++();
             return;
@@ -76,14 +73,14 @@ template<class E>
 E& TreeDepthFirstIterator<E>::item()
 {
    ASSERT(!_stack.empty());
-   StackNode& node = _stack.top();
+   StackNode& node = _stack.back();
    return node.pnode->getData();
 }
 
 template<class E>
 bool TreeDepthFirstIterator<E>::isValid() const
 {
-   if ( _stack.empty() || ( _stack.size() == 1 && _stack.top().child >= _stack.top().pnode->getChildren().size() ) )
+   if ( _stack.empty() || ( _stack.size() == 1 && _stack.back().child >= _stack.back().pnode->getChildren().size() ) )
       return false;
    else
       return true;
@@ -92,11 +89,7 @@ bool TreeDepthFirstIterator<E>::isValid() const
 template<class E>
 INLINE void TreeDepthFirstIterator<E>::push(TreeHandle pnode)
 {
-   StackNode newnode;
-   newnode.pnode = pnode;
-   newnode.child = 0;
-
-   _stack.push(newnode);
+   _stack.emplace_back(pnode);
 }
 
 template <class E>

@@ -26,8 +26,8 @@ TreeIterator<E>::TreeIterator()
 }
 
 template <class E>
-TreeIterator<E>::TreeIterator(Tree<E>& tree):
-   _tree(tree)
+TreeIterator<E>::TreeIterator(TreeNode<E>& node):
+   _node(node)
 {
    //reset();
 }

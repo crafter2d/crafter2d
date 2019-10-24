@@ -22,7 +22,6 @@
 
 #include "iterator.h"
 #include "treenode.h"
-#include "tree.h"
 
 /**
 @author Jeroen Broekhuizen
@@ -33,12 +32,20 @@ class TreeIterator : public Iterator<E>
 public:
    typedef TreeNode<E>* TreeHandle;
 
-   explicit TreeIterator(Tree<E>& tree);
+   virtual ~TreeIterator() = 0 {};
+
+   explicit TreeIterator(TreeNode<E>& node);
 
 protected:
-   Tree<E>&       _tree;
+   TreeNode<E>& getNode() const {
+      return _node;
+   }
+
+   TreeNode<E>&       _node;
 
 private:
+   template<class E> friend class Tree;
+
    TreeIterator();
 };
 
