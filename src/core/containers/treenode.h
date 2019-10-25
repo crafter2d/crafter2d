@@ -66,7 +66,8 @@ public:
 
  // operations
    TreeNode<E>& insert_child(E& element) {
-      auto& node = _children.emplace_back(element);
+      _children.emplace_back(element);
+      auto& node = _children.back();
       node.setParent(this);
       return node;
    }
@@ -88,8 +89,8 @@ private:
 template <class E>
 TreeNode<E>* TreeNode<E>::find(const E& element)
 {
-   if ( &_pdata == &element )
-      return _pdata;
+   if ( &_data == &element )
+      return this;
 
    for ( auto& child : _children )
    {

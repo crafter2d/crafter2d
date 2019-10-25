@@ -39,8 +39,9 @@ void* TreeDepthFirstIterator<E>::key()
 template<class E>
 void TreeDepthFirstIterator<E>::reset()
 {
+   auto node = std::move(_stack.front());
    _stack.clear();
-   _stack.push_back(StackNode(&_node));
+   _stack.push_back(StackNode(node));
 }
 
 template<class E>

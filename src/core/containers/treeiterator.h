@@ -32,7 +32,7 @@ class TreeIterator : public Iterator<E>
 public:
    typedef TreeNode<E>* TreeHandle;
 
-   virtual ~TreeIterator() = 0 {};
+   virtual ~TreeIterator() {};
 
    explicit TreeIterator(TreeNode<E>& node);
 
@@ -44,7 +44,7 @@ protected:
    TreeNode<E>&       _node;
 
 private:
-   template<class E> friend class Tree;
+   template<class Element> friend class Tree;
 
    TreeIterator();
 };
