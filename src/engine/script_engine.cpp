@@ -23,11 +23,9 @@
 #include "core/entity/componentmessages/querybodycomponentmessage.h"
 #include "core/entity/componentmessages/animationcomponentmessage.h"
 #include "core/graphics/effect.h"
-#include "core/graphics/texture.h"
 #include "core/graphics/viewport.h"
 #include "core/physics/inputforcegenerator.h"
 #include "core/physics/simulator.h"
-#include "core/resource/resourcemanager.h"
 #include "core/streams/datastream.h"
 #include "core/streams/bufferedstream.h"
 #include "core/script/scriptcall.h"
@@ -175,17 +173,6 @@ void Client_setKeyMap(ScriptCall& accessor)
 
    client.setKeyMap(pmap);
 }
-
-void Client_getTexture(ScriptCall& accessor)
-{
-   GET_THIS(Client, client);
-
-   const String& name = accessor.getString(1);
-
-   TexturePtr* ptexture = new TexturePtr(ResourceManager::getInstance().getTexture(name));
-   RETURN_CLASS_OWNED(UTEXT("engine.core.Texture"), ptexture);
-}
-
 
 void Client_getViewport(ScriptCall& accessor)
 {
@@ -808,46 +795,6 @@ void KeyMap_bind(ScriptCall& accessor)
    map.bind(key, action);
 }
 
-void Texture_destruct(ScriptCall& accessor)
-{
-   DESTRUCT_THIS(TexturePtr);
-}
-
-void Texture_getName(ScriptCall& accessor)
-{
-   GET_THIS(TexturePtr, texture);
-
-   accessor.setResult(texture->getName());
-}
-
-void Texture_getWidth(ScriptCall& accessor)
-{
-   GET_THIS(TexturePtr, texture);
-
-   accessor.setResult(texture->getWidth());
-}
-
-void Texture_getHeight(ScriptCall& accessor)
-{
-   GET_THIS(TexturePtr, texture);
-
-   accessor.setResult(texture->getHeight());
-}
-
-void Texture_getSourceWidth(ScriptCall& accessor)
-{
-   GET_THIS(TexturePtr, texture);
-
-   accessor.setResult(texture->getSourceWidth());
-}
-
-void Texture_getSourceHeight(ScriptCall& accessor)
-{
-   GET_THIS(TexturePtr, texture);
-
-   accessor.setResult(texture->getSourceHeight());
-}
-
 void FileSystem_getInstance(ScriptCall& accessor)
 {
    RETURN_CLASS(UTEXT("engine.io.FileSystem"), &FileSystem::getInstance());
@@ -930,7 +877,6 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("setKeyMap(engine.game.KeyMap)"), Client_setKeyMap);
    pregistrator->addFunction(UTEXT("getPlayer()"), Client_getPlayer);
    pregistrator->addFunction(UTEXT("setPlayer(engine.game.Player)"), Client_setPlayer);
-   pregistrator->addFunction(UTEXT("getTexture(string)"), Client_getTexture);
    pregistrator->addFunction(UTEXT("getViewport()"), Client_getViewport);
    pregistrator->addFunction(UTEXT("setOverlay(engine.game.Renderable)"), Client_setOverlay);
 
@@ -1049,15 +995,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("KeyMap()"), KeyMap_init);
    pregistrator->addFunction(UTEXT("finalize()"), KeyMap_destruct);
    pregistrator->addFunction(UTEXT("bind(int, int)"), KeyMap_bind);
-
-   pregistrator->addClass(UTEXT("engine.core.Texture"));
-   pregistrator->addFunction(UTEXT("finalize()"), Texture_destruct);
-   pregistrator->addFunction(UTEXT("getName()"), Texture_getName);
-   pregistrator->addFunction(UTEXT("getWidth()"), Texture_getWidth);
-   pregistrator->addFunction(UTEXT("getHeight()"), Texture_getHeight);
-   pregistrator->addFunction(UTEXT("getSourceWidth()"), Texture_getSourceWidth);
-   pregistrator->addFunction(UTEXT("getSourceHeight()"), Texture_getSourceHeight);
-
+   
    pregistrator->addClass(UTEXT("engine.io.FileSystem"));
    pregistrator->addFunction(UTEXT("getInstance()"), FileSystem_getInstance);
    pregistrator->addFunction(UTEXT("open(string, int)"), FileSystem_open);

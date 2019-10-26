@@ -20,35 +20,75 @@
 #ifndef TREE_ITERATOR_H_
 #define TREE_ITERATOR_H_
 
-#include "iterator.h"
+#include <iterator>
+
 #include "treenode.h"
+#include "treetraversal.h"
+
+template <class E> class Tree;
 
 /**
 @author Jeroen Broekhuizen
 */
-template <class E>
-class TreeIterator : public Iterator<E>
+template <class E, class A = std::allocator<E>>
+class TreeIterator final
 {
 public:
-   typedef TreeNode<E>* TreeHandle;
+   typedef typename A::difference_type difference_type;
+   typedef typename A::value_type value_type;
+   typedef typename A::reference reference;
+   typedef typename A::pointer pointer;
+   typedef std::forward_iterator_tag iterator_category;
 
-   virtual ~TreeIterator() {};
+   TreeIterator(Tree<E>& tree, ITreeTraversal<E>* ptraverser) : mpTree(&tree), mpTraverser(ptraverser) {}
+   TreeIterator(TreeIterator&& it): mpTree(that.mpTree), mpTraverser(that.mpTraverser) {
+      that.mpTraverser = nullptr;
+   }
+   ~TreeIterator() { delete mpTraverser; };
 
-   explicit TreeIterator(TreeNode<E>& node);
-
-protected:
-   TreeNode<E>& getNode() const {
-      return _node;
+   TreeIterator& operator=(TreeIterator&& it) {
+      if ( this != &it )
+      {
+         mpTree = it.mpTree;
+         mpTraverser = it.mpTraverser;
+         it.mpTraverser = nullptr;
+      }
+      return *this;
+   }
+   bool operator==(const TreeIterator<E>& it) const {
+      return mpTree == it.mpTree && node() == it.node();
+   }
+   bool operator!=(const TreeIterator<E>& it) const {
+      return mpTree == it.mpTree && node() == it.node();
    }
 
-   TreeNode<E>&       _node;
+   reference operator*() {
+      return mpTraverser->element();
+   }
 
+   pointer operator->() {
+      return &mpTraverser->element();
+   }
+
+   TreeIterator& operator++()
+   {
+      mpTraverser->traverse();
+      return *this;
+   }
+   
 private:
    template<class Element> friend class Tree;
 
-   TreeIterator();
-};
+   TreeNode<E>* node() {
+      return mpTraverser ? mpTraverser->node() : nullptr;
+   }
 
-#include "treeiterator.inl"
+   const TreeNode<E>* node() const {
+      return mpTraverser ? mpTraverser->node() : nullptr;
+   }
+
+   Tree<E>*           mpTree;
+   ITreeTraversal<E>* mpTraverser;
+};
 
 #endif

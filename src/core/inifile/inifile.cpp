@@ -20,7 +20,6 @@
 #include "inifile.h"
 
 #include "core/defines.h"
-#include "core/containers/hashinterface.h"
 #include "core/string/char.h"
 #include "core/string/string.h"
 #include "core/vfs/filesystem.h"

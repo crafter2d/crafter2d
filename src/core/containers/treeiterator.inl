@@ -18,16 +18,3 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "core/defines.h"
-
-template <class E>
-TreeIterator<E>::TreeIterator()
-{
-   ASSERT_MSG(false, "Should not be used!");
-}
-
-template <class E>
-TreeIterator<E>::TreeIterator(TreeNode<E>& node):
-   _node(node)
-{
-   //reset();
-}

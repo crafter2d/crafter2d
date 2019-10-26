@@ -26,7 +26,6 @@ namespace c2d
       eInputModule,
       eScriptModule,
       eContentModule,
-      ePluginModule,
       eSoundModule,
       eExtensionModule,
       eWindowModule,

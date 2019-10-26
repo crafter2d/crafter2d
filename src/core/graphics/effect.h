@@ -24,7 +24,6 @@
 
 #include "core/content/content.h"
 #include "core/string/string.h"
-#include "core/resource/resourcemanager.h"
 
 class TiXmlElement;
 
@@ -50,11 +49,15 @@ namespace Graphics
       using Techniques = std::vector<EffectTechnique*>;
 
       Effect();
-	  virtual ~Effect();
+	   virtual ~Effect();
 
     // get/set
-      const String& getName() const;
-      const Techniques& getTechniques() const;
+      const String& getName() const {
+         return mName;
+      }
+      const Techniques& getTechniques() const {
+         return mTechniques;
+      }
 
     // buffers
       UniformBuffer* createUniformBuffer(const String& name) const;
@@ -80,9 +83,5 @@ namespace Graphics
       BlendState*       mpBlendState;
    };
 }
-
-#ifdef JENGINE_INLINE
-#  include "effect.inl"
-#endif
 
 #endif

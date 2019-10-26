@@ -20,7 +20,7 @@
 #ifndef KEYBOARD_LISTENER_H
 #define KEYBOARD_LISTENER_H
 
-#include "core/containers/listeners.h"
+#include "listeners.h"
 
 namespace Input
 {
@@ -30,8 +30,6 @@ namespace Input
    class KeyListeners : public Listeners<KeyListener>
    {
    public:
-      typedef Listeners<KeyListener> KeyListenersImp;
-
       KeyListeners();
       ~KeyListeners();
 
@@ -42,6 +40,11 @@ namespace Input
      // notifications
       void fireKeyPressed(const KeyEvent& event);
       void fireKeyReleased(const KeyEvent& event);
+
+   private:
+
+    // listeners
+      Listeners mListeners;
    };
 }
 

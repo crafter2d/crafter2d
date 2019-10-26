@@ -21,10 +21,8 @@
 
 template<class E>
 TreeNode<E>::TreeNode(TreeNode<E>&& node):
-   _pparent(nullptr),
    _children(std::move(node._children)),
-   _data(node._data),
-   _expanded(node._expanded)
+   _data(node._data)
 {
 }
 
@@ -38,19 +36,6 @@ INLINE TreeNode<E>::~TreeNode()
 //////////////////////////////////////////////////////////////////////////
 
 template<class E>
-INLINE bool TreeNode<E>::hasParent() const
-{
-   return _pparent != nullptr;
-}
-
-template<class E>
-INLINE TreeNode<E>& TreeNode<E>::getParent()
-{
-   ASSERT_PTR(_pparent)
-   return *_pparent;
-}
-
-template<class E>
 INLINE bool TreeNode<E>::hasChildren() const
 {
    return _children.size() > 0;
@@ -60,46 +45,4 @@ template <class E>
 INLINE TreeNode<E>* TreeNode<E>::getChild(int index)
 {
    return index < _children.size() ? &_children[index] : nullptr;
-}
-
-template <class E>
-bool TreeNode<E>::canExpand() const
-{
-   return _children.size();
-}
-
-template <class E>
-bool TreeNode<E>::isExpanded() const
-{
-   return _expanded;
-}
-
-template <class E>
-int TreeNode<E>::getDepth() const
-{
-   int depth = 0;
-   TreeNode<E>* pcurrent = _pparent;
-   while ( pcurrent != nullptr )
-   {
-      ++depth;
-      pcurrent = pcurrent->_pparent;
-   }
-
-   return depth;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// - operations
-//////////////////////////////////////////////////////////////////////////
-
-template <class E>
-void TreeNode<E>::expand()
-{
-   _expanded = true;
-}
-
-template <class E>
-void TreeNode<E>::collapse()
-{
-   _expanded = false;
 }

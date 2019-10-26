@@ -18,9 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "effect.h"
-#ifndef JENGINE_INLINE
-#  include "effect.inl"
-#endif
 
 #include "core/log/log.h"
 

@@ -22,15 +22,15 @@
 
 #include <type_traits>
 
-#include "iterator.h"
+#include "treeiterator.h"
 #include "treenode.h"
-#include "treedepthfirstiterator.h"
+#include "treetraversal.h"
 
 template <class E>
 class Tree
 {
 public:
-   using iterator = TreeDepthFirstIterator<E>;
+   using iterator = TreeIterator<E>;
 
    Tree() : _root() {}
    ~Tree() {}
@@ -41,11 +41,11 @@ public:
 
  // iterators
    iterator begin() {
-      return TreeDepthFirstIterator<E>(_root);
+      return TreeIterator<E>(*this, new TreeDepthFirstTraversal<E>(_root));
    }
 
    iterator end() {
-      return TreeDepthFirstIterator<E>(_root);
+      return TreeIterator<E>(*this, nullptr);
    }
 
  // query
@@ -54,9 +54,18 @@ public:
    }
 
  // operations
-   TreeNode<E>& insert_child(iterator& pos, E& element) {
-      TreeNode<E>& node = static_cast<TreeIterator<E>&>(pos).getNode();
-      return node.insert_child(element);
+   TreeNode<E>& insert_child(iterator& pos, const E& element) {
+      TreeNode<E>* pnode = static_cast<TreeIterator<E>&>(pos).node();
+      if ( pnode )
+         return pnode->insert_child(element);
+      throw std::invalid_argument("Invalid iterator");
+   }
+
+   TreeNode<E>& insert_child(iterator& pos, E&& element) {
+      TreeNode<E>* pnode = static_cast<TreeIterator<E>&>(pos).node();
+      if ( pnode )
+         return pnode->insert_child(std::move(element));
+      throw std::invalid_argument("Invalid iterator");
    }
 
    TreeNode<E>* find(const E& element) {

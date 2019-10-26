@@ -29,7 +29,7 @@ namespace Input
 {
 
 KeyListeners::KeyListeners():
-   KeyListenersImp()
+   Listeners<KeyListener>()
 {
 }
 
