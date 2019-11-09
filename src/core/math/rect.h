@@ -21,6 +21,7 @@
 #define RECT_H
 
 #include "core/core_base.h"
+#include "core/math/vector.h"
 
 namespace c2d
 {
@@ -51,6 +52,10 @@ namespace c2d
       T height() const {
          return bottom - top;
       }
+      
+      Vector center() const {
+         return Vector(width() / 2, height() / 2);
+      }
 
       void set(T x, T y, T width, T height) {
          left = x;
@@ -59,12 +64,26 @@ namespace c2d
          bottom = y + height;
       }
 
-      bool contains(const Rect<T>& rect) const
-      {
+      bool contains(const Rect<T>& rect) const {
          return rect.left >= left
              && rect.top >= top
              && rect.right <= right
              && rect.bottom <= bottom;
+      }
+
+      bool overlaps(const Rect<T>& other) const {
+         if ( other.left > right || left > other.right )
+            return false;
+         if ( other.top > bottom || top > other.bottom )
+            return false;
+         return true;
+      }
+
+      void shift(T x, T y) {
+         left += x;
+         top += y;
+         right += x;
+         bottom += y;
       }
 
     // data

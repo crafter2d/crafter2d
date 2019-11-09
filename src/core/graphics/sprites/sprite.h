@@ -22,6 +22,7 @@
 
 #include "core/math/size.h"
 #include "core/math/xform.h"
+#include "core/math/rect.h"
 #include "core/graphics/texture.h"
 #include "core/graphics/texturecoordinate.h"
 #include "core/graphics/animation/animationstate.h"
@@ -40,7 +41,9 @@ namespace c2d
    {
    public:
       explicit Sprite(SpriteDefinition* definition);
+      Sprite(Sprite&& other) noexcept;
       ~Sprite();
+      Sprite& operator=(Sprite&& other) noexcept;
 
     // get/set
       const Size& getHalfSize() const {
@@ -67,8 +70,16 @@ namespace c2d
          return mpDefinition->hasSpriteAnimator();
       }
 
+      RectF getBounds() const {
+         return RectF(
+            mTransform.getPosition().x - mHalfSize.width,
+            mTransform.getPosition().y - mHalfSize.height,
+            mpDefinition->getSize().width,
+            mpDefinition->getSize().height);
+      }
+
     // operations
-      bool initialize(Graphics::Device& device);
+      bool initialize();
       void update(float delta);
       void setAnimation(int index);
       void scale(float s) {

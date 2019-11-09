@@ -32,7 +32,7 @@ namespace c2d
    Sprite* SpriteFactory::create(Graphics::Device& device, SpriteDefinition* pdefinition)
    {
       std::unique_ptr<Sprite> result(new Sprite(pdefinition));
-      if ( result->initialize(device) )
+      if ( result->initialize() )
          return result.release();
 
       return nullptr;

@@ -37,17 +37,42 @@ namespace c2d
       ASSERT_PTR(mpDefinition);
    }
 
+   Sprite::Sprite(Sprite&& other) noexcept :
+      mpDefinition(other.mpDefinition),
+      mAnimState(other.mAnimState),
+      mTransform(other.mTransform),
+      mHalfSize(other.mHalfSize),
+      mTile(other.mTile),
+      mFlipped(other.mFlipped)
+   {
+      other.mpDefinition = nullptr;
+   }
+
    Sprite::~Sprite()
    {
       delete mpDefinition;
    }
 
+   Sprite& Sprite::operator=(Sprite&& other) noexcept
+   {
+      if ( this != &other )
+      {
+         mpDefinition = other.mpDefinition;
+         mAnimState = other.mAnimState;
+         mTransform = other.mTransform;
+         mHalfSize = other.mHalfSize;
+         mTile = other.mTile;
+         mFlipped = other.mFlipped;
+
+         other.mpDefinition = nullptr;
+      }
+      return *this;
+   }
+
    // - Operations
 
-   bool Sprite::initialize(Graphics::Device& device)
+   bool Sprite::initialize()
    {
-      C2D_UNUSED(device);
-
       mHalfSize = mpDefinition->getSize() / 2.0f;
 
       setAnimation(0);
