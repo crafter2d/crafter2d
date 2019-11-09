@@ -41,8 +41,8 @@ public:
    typedef std::forward_iterator_tag iterator_category;
 
    TreeIterator(Tree<E>& tree, ITreeTraversal<E>* ptraverser) : mpTree(&tree), mpTraverser(ptraverser) {}
-   TreeIterator(TreeIterator&& it): mpTree(that.mpTree), mpTraverser(that.mpTraverser) {
-      that.mpTraverser = nullptr;
+   TreeIterator(TreeIterator&& it): mpTree(it.mpTree), mpTraverser(it.mpTraverser) {
+      it.mpTraverser = nullptr;
    }
    ~TreeIterator() { delete mpTraverser; };
 
