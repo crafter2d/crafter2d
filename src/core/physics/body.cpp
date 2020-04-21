@@ -34,8 +34,9 @@ Body::Body(Simulator& simulator):
    mSimulator(simulator),
    mTransform(),
    mpEntity(nullptr),
-   mpListener(nullptr),
-   mForceGenerators()
+   mListeners(),
+   mForceGenerators(),
+   mStatic(true)
 {
 }
 
@@ -68,7 +69,7 @@ void Body::cleanUp()
 
 void Body::addListener(IBodyListener* plistener)
 {
-   mpListener = plistener;
+   mListeners.push_back(plistener);
 }
 
 void Body::link(Body& to, const JointDefinition& definition)
@@ -118,9 +119,9 @@ void Body::notifyPositionChanged()
 
 void Body::firePositionChanged()
 {
-   if ( mpListener != nullptr )
+   for ( auto plistener : mListeners )
    {
-      mpListener->onPositionChanged(*this);
+      plistener->onPositionChanged(*this);
    }
 }
 

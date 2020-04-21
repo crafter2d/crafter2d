@@ -22,6 +22,8 @@
 
 #include "core/core_base.h"
 
+#include <memory>
+
 namespace Graphics
 {
    class Device;
@@ -36,7 +38,7 @@ namespace c2d
    {
    public:
 
-      static Sprite* create(Graphics::Device& device, SpriteDefinition* pdefinition);
+      static Sprite create(Graphics::Device& device, SpriteDefinition& definition);
    };
 }
 

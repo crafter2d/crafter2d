@@ -158,21 +158,21 @@ void TopDownLayer::updateTile(pv** pdata, int& indices, LayerLevel level, int x,
 void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 {
    // determine the tile we are in
-	int xstart = xscroll / tileWidth;
-	int ystart = yscroll / tileHeight;
+	int xstart = xscroll / mTileWidth;
+	int ystart = yscroll / mTileHeight;
 
 	int xend = xstart + maxTilesX + 1;
 	int yend = ystart + maxTilesY + 1;
 
 	// see if we have to render an extra tile
-	if (((int)xscroll % tileWidth) > (tileWidth>>1)) xend++;
-	if (((int)yscroll % tileHeight) > (tileHeight>>1)) yend++;
+	if (((int)xscroll % mTileWidth) > (mTileWidth>>1)) xend++;
+	if (((int)yscroll % mTileHeight) > (mTileHeight>>1)) yend++;
 
 	// check on bounds
 	if (xend > getWidth()) xend = getWidth();
 	if (yend > getHeight()) yend = getHeight();
 
-	float ypos = ystart * tileHeight;
+	float ypos = ystart * mTileHeight;
 
 	verts_to_render = 0;
    verts_to_render_front = 0;
@@ -181,7 +181,7 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
 
   	for ( int y = ystart; y < yend; y++ )
    {
-		float xpos = xstart * tileWidth;
+		float xpos = xstart * mTileWidth;
 
 		for ( int x = xstart; x < xend; x++ )
       {
@@ -189,11 +189,11 @@ void TopDownLayer::updateBuffers(Graphics::RenderContext& context)
          updateTile(&data, verts_to_render, LayerLevel::eMid, x, y, xpos, ypos);
          updateTile(&pfrontdata, verts_to_render_front, LayerLevel::eFront, x, y, xpos, ypos);
          
-			xpos += tileWidth;
+			xpos += mTileWidth;
 		}
 
       // (3D only: instead of + do a -)
-		ypos += tileHeight;
+		ypos += mTileHeight;
 	}
 
 	vb->unlock(context);
@@ -205,8 +205,8 @@ c2d::Point TopDownLayer::pointToTile(const c2d::Point& point)
    if ( point.x < 0 || point.y < 0)
       return c2d::Point();
 
-   int tileX = (point.x + xscroll) / tileWidth;
-   int tileY = (point.y + yscroll) / tileHeight;
+   int tileX = (point.x + xscroll) / mTileWidth;
+   int tileY = (point.y + yscroll) / mTileHeight;
 
    return c2d::Point(tileX, tileY);
 }

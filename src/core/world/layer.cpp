@@ -48,8 +48,8 @@ using namespace Graphics;
 /// \fn Layer::Layer()
 /// \brief Initializes the member variables.
 Layer::Layer():
-   tileWidth(0),
-   tileHeight(0),
+   mTileWidth(0),
+   mTileHeight(0),
    xscroll(0),
    yscroll(0),
    xscrollMax(0),
@@ -110,8 +110,8 @@ bool Layer::initialize(Device& device)
       return false;
    }
 
-   tileWidth = tileset().getTileWidth();
-   tileHeight = tileset().getTileHeight();
+   mTileWidth = tileset().getTileWidth();
+   mTileHeight = tileset().getTileHeight();
 
    return true;
 }
@@ -135,8 +135,8 @@ void Layer::release()
 void Layer::onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport)
 {
    // calculate maximum pixels to scroll
-   xscrollMax = std::max(getWidth() * tileWidth - viewport.getWidth(), 0);
-   yscrollMax = std::max(getHeight() * tileHeight - viewport.getHeight(), 0);
+   xscrollMax = std::max(getWidth() * mTileWidth - viewport.getWidth(), 0);
+   yscrollMax = std::max(getHeight() * mTileHeight - viewport.getHeight(), 0);
 
    // update scroll position to stay within the valid boundaries
    xscroll = std::max(0.0f, std::min(xscrollMax, xscroll));

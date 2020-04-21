@@ -21,13 +21,16 @@
 #define WORLD_H_
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #include "core/core_base.h"
 #include "core/content/content.h"
 #include "core/entity/idmanager.h"
 #include "core/math/vector.h"
+#include "core/math/rect.h"
+#include "core/quadtree/quadtree.h"
 #include "core/string/string.h"
+#include "core/physics/bodylistener.h"
 
 #include "bounds.h"
 #include "layertype.h"
@@ -73,14 +76,14 @@ By using the World::setScrollMode function you can change the behaviour of the e
 When using the FollowObject modus you must also set the object to follow with the
 setFollowObject function.
 */
-class CORE_API World : public IContent
+class CORE_API World : public IContent, IBodyListener
 {
 public:
    enum FollowMode { FollowObject=0, FollowMouse=1, NoFollow=2 };
 
    typedef std::vector<Layer*> Layers;
    typedef std::vector<WorldObserver*> Observers;
-   typedef std::map<Id, Entity*> EntityMap;
+   using EntityMap = std::unordered_map<Id, Entity*>;
    
    World();
    ~World();
@@ -95,7 +98,7 @@ public:
    void           setScrollMode(int fm);
    void           setFollowBorderWidth(int width);
    void           setFollowBorders(int left, int right, int top, int bottom);
-   void           setObjectLayer(int layer);
+   void           setObjectLayer(size_t layer);
 
    const String&   getName() const;
    void            setName(const String& name);
@@ -148,6 +151,8 @@ public:
    void notifyObjectWorldCollision(Entity& object, Bound& bound, int side, bool begin);
    void notifyObjectObjectCollision(Entity& object, Entity& target, int side, bool begin);
 
+   void onPositionChanged(Body& body) override;
+
    void onViewportChanged(Graphics::RenderContext& context, const Graphics::Viewport& viewport);
 
  // rendering
@@ -182,12 +187,14 @@ private:
    WorldSimulatorListener mSimulatorListener;
 
    c2d::ScriptObject* mpScript;
+   c2d::QuadTree<Entity> mTree;
 
-   LayerType _layerType;
+   c2d::RectF mView;
+   LayerType mLayerType;
    bool autoFollow;
    int followBorderWidth;
    int leftBorder, rightBorder, topBorder, bottomBorder;
-   int _objectLayer;
+   int mObjectLayer;
    FollowMode followMode;
    Entity* followObject;
 

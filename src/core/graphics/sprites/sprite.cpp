@@ -26,45 +26,40 @@
 namespace c2d
 {
 
-   Sprite::Sprite(SpriteDefinition* pdefinition) :
-      mpDefinition(pdefinition),
+   Sprite::Sprite(SpriteDefinition& definition) :
+      mDefinition(definition),
       mAnimState(),
       mTransform(),
       mHalfSize(),
-      mTile(pdefinition->getTile()),
+      mTile(definition.getTile()),
       mFlipped(false)
    {
-      ASSERT_PTR(mpDefinition);
    }
 
    Sprite::Sprite(Sprite&& other) noexcept :
-      mpDefinition(other.mpDefinition),
+      mDefinition(other.mDefinition),
       mAnimState(other.mAnimState),
       mTransform(other.mTransform),
       mHalfSize(other.mHalfSize),
       mTile(other.mTile),
       mFlipped(other.mFlipped)
    {
-      other.mpDefinition = nullptr;
    }
 
    Sprite::~Sprite()
    {
-      delete mpDefinition;
    }
 
    Sprite& Sprite::operator=(Sprite&& other) noexcept
    {
       if ( this != &other )
       {
-         mpDefinition = other.mpDefinition;
+         mDefinition = std::move(other.mDefinition);
          mAnimState = other.mAnimState;
          mTransform = other.mTransform;
          mHalfSize = other.mHalfSize;
          mTile = other.mTile;
          mFlipped = other.mFlipped;
-
-         other.mpDefinition = nullptr;
       }
       return *this;
    }
@@ -73,7 +68,7 @@ namespace c2d
 
    bool Sprite::initialize()
    {
-      mHalfSize = mpDefinition->getSize() / 2.0f;
+      mHalfSize = mDefinition.getSize() / 2.0f;
 
       setAnimation(0);
 
@@ -82,10 +77,10 @@ namespace c2d
 
    void Sprite::update(float delta)
    {
-      if ( mpDefinition->hasSpriteAnimator() )
+      if ( mDefinition.hasSpriteAnimator() )
       {
          mAnimState.update(delta);
-         if ( mpDefinition->getSpriteAnimator().animate(mAnimState) )
+         if ( mDefinition.getSpriteAnimator().animate(mAnimState) )
          {
             mTile = mAnimState.getTileIndex();
          }
@@ -94,9 +89,9 @@ namespace c2d
 
    void Sprite::setAnimation(int index)
    {
-      if ( mpDefinition->hasSpriteAnimator() )
+      if ( mDefinition.hasSpriteAnimator() )
       {
-         mpDefinition->getSpriteAnimator().setAnimation(mAnimState, index);
+         mDefinition.getSpriteAnimator().setAnimation(mAnimState, index);
          
          mTile = mAnimState.getTileIndex();
       }

@@ -10,47 +10,52 @@ class QuadTreeFixture : public ::testing::Test
 protected:
 
    c2d::Sprite createSprite(const Vector& pos) {
-      auto def = std::make_unique<c2d::SpriteDefinition>();
-      def->setSize(Size(10, 10));
-      c2d::Sprite sprite(def.release());
+      mSpriteDef.setSize(Size(10, 10));
+      c2d::Sprite sprite(mSpriteDef);
       sprite.setTransform(XForm(pos, 0));
       sprite.initialize();
       return sprite;
    }
 
+   std::vector<c2d::Sprite> construct(std::vector<Vector> positions) {
+      std::vector<c2d::Sprite> sprites;
+      for ( auto& pos : positions )
+      {
+         sprites.push_back(createSprite(pos));
+      }
+      return sprites;
+   }
+
+private:
+   c2d::SpriteDefinition mSpriteDef;
 };
 
 TEST_F(QuadTreeFixture, NewQuadTreeIsEmpty)
 {
-   c2d::QuadTree tree(Size(10, 10));
+   c2d::QuadTree<c2d::Sprite> tree(Size(10, 10));
    EXPECT_TRUE(tree.empty());
 }
 
 TEST_F(QuadTreeFixture, InsertSprite)
 {
    c2d::Sprite sprite = createSprite(Vector(0, 0));
-   c2d::QuadTree tree(Size(100, 100));
-   tree.insert(sprite);
+   c2d::QuadTree<c2d::Sprite> tree(Size(100, 100));
+   tree.insert(sprite, sprite.getBounds());
    EXPECT_FALSE(tree.empty());
 }
 
 TEST_F(QuadTreeFixture, LookupSprites)
 {
-   c2d::QuadTree tree(Size(200, 200));
-   Vector positions[] = { {5, 5}, {15, 15}, {35,35}, {75,75}, 
-                          {115,115}, {175,175}, {185,185} };
-   std::vector<c2d::Sprite> sprites;
-   for ( auto& pos : positions )
-   {
-      sprites.push_back(createSprite(pos));
-   }
+   c2d::QuadTree<c2d::Sprite> tree(Size(200, 200));
+   std::vector<Vector> positions = { {5, 5}, {15, 15}, {35,35}, {75,75}, {115,115}, {175,175}, {185,185} };
+   std::vector<c2d::Sprite> sprites = construct(positions);
 
    for ( auto& sprite : sprites )
    {
-      tree.insert(sprite);
+      tree.insert(sprite, sprite.getBounds());
    }
 
-   EXPECT_EQ(tree.count(), 7); // make sure we have saved all sprites in the tree
+   EXPECT_EQ(tree.count(), positions.size()); // make sure we have saved all sprites in the tree
 
    c2d::RectF bounds(0, 0, 100, 100);
    auto visible_sprites = tree.get(bounds);
@@ -65,4 +70,20 @@ TEST_F(QuadTreeFixture, LookupSprites)
    bounds = c2d::RectF(200, 200, 50, 50);
    visible_sprites = tree.get(bounds);
    EXPECT_TRUE(visible_sprites.empty());
+}
+
+TEST_F(QuadTreeFixture, ResizeTree)
+{
+   c2d::QuadTree<c2d::Sprite> tree(Size(200, 200));
+   std::vector<Vector> positions = { {5, 5}, {35,35}, {75,75}, {115,115}, {150, 150} };
+   std::vector<c2d::Sprite> sprites = construct(positions);
+
+   for ( auto& sprite : sprites )
+   {
+      tree.insert(sprite, sprite.getBounds());
+   }
+
+   tree.resize({ 300, 300 });
+   EXPECT_EQ(tree.count(), positions.size());
+
 }

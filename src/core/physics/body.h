@@ -56,6 +56,9 @@ public:
    const XForm& getTransform() const;
    void         setTransform(const XForm& transform);
 
+   bool isStatic() const { return mStatic; }
+   void setStatic(bool isstatic) { mStatic = isstatic; }
+
    ForceGenerators& getForceGenerators();
 
  // query
@@ -89,14 +92,17 @@ protected:
    void firePositionChanged();
 
 private:
+   using Listeners = std::vector<IBodyListener*>;
+
  // operations
    void cleanUp();
 
    Simulator&        mSimulator;
    XForm             mTransform;
    Entity*           mpEntity;
-   IBodyListener*    mpListener;
+   Listeners         mListeners;
    ForceGenerators   mForceGenerators;
+   bool              mStatic;
 };
 
 #ifdef JENGINE_INLINE

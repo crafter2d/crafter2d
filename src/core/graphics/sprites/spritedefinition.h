@@ -33,7 +33,12 @@ namespace c2d
    {
    public:
       SpriteDefinition();
+      SpriteDefinition(const SpriteDefinition& that) = delete;
+      SpriteDefinition(SpriteDefinition&& that) noexcept;
       ~SpriteDefinition();
+
+      SpriteDefinition& operator=(const SpriteDefinition& that) = delete;
+      SpriteDefinition& operator=(SpriteDefinition&& that) noexcept;
 
     // get/set
       const Size& getSize() const {

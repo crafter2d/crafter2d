@@ -8,8 +8,7 @@
 
 namespace c2d
 {
-   class Sprite;
-
+   template <typename T>
    class CORE_API QuadTree
    {
    public:
@@ -23,17 +22,25 @@ namespace c2d
          return mRoot.count();
       }
 
-      void insert(const Sprite& sprite) {
-         mRoot.insert(sprite);
+      void insert(const T& element, const RectF& bounds) {
+         mRoot.insert(element, bounds);
       }
 
-      std::vector<const Sprite*> get(const RectF& bounds) const {
+      void erase(const T& element) {
+         mRoot.erase(element);
+      }
+
+      std::vector<const T*> get(const RectF& bounds) const {
          return mRoot.get(bounds);
+      }
+
+      void resize(const Size& newdimension) {
+         mRoot.resize(newdimension);
       }
 
    private:
 
-      QuadNode mRoot;
+      QuadNode<T> mRoot;
    };
 }
 

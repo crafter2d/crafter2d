@@ -40,7 +40,7 @@ namespace c2d
    class CORE_API Sprite
    {
    public:
-      explicit Sprite(SpriteDefinition* definition);
+      explicit Sprite(SpriteDefinition& definition);
       Sprite(Sprite&& other) noexcept;
       ~Sprite();
       Sprite& operator=(Sprite&& other) noexcept;
@@ -67,15 +67,15 @@ namespace c2d
       }
 
       bool isAnimated() const {
-         return mpDefinition->hasSpriteAnimator();
+         return mDefinition.hasSpriteAnimator();
       }
 
       RectF getBounds() const {
          return RectF(
             mTransform.getPosition().x - mHalfSize.width,
             mTransform.getPosition().y - mHalfSize.height,
-            mpDefinition->getSize().width,
-            mpDefinition->getSize().height);
+            mDefinition.getSize().width,
+            mDefinition.getSize().height);
       }
 
     // operations
@@ -90,7 +90,7 @@ namespace c2d
    private:
 
     // data
-      SpriteDefinition* mpDefinition;
+      SpriteDefinition& mDefinition;
 
       AnimationState    mAnimState;
       XForm             mTransform;

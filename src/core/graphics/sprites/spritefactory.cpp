@@ -19,8 +19,6 @@
  ***************************************************************************/
 #include "spritefactory.h"
 
-#include <memory>
-
 #include "core/graphics/device.h"
 
 #include "sprite.h"
@@ -29,13 +27,14 @@
 namespace c2d
 {
 
-   Sprite* SpriteFactory::create(Graphics::Device& device, SpriteDefinition* pdefinition)
+   Sprite SpriteFactory::create(Graphics::Device& device, SpriteDefinition& definition)
    {
-      std::unique_ptr<Sprite> result(new Sprite(pdefinition));
-      if ( result->initialize() )
-         return result.release();
-
-      return nullptr;
+      Sprite sprite{ definition };
+      if ( !sprite.initialize() ) {
+         throw std::runtime_error("Could not initialize sprite");
+      }
+        
+      return sprite;
    }
 
 } // namespace c2d

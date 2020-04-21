@@ -108,6 +108,10 @@ public:
    void draw(Graphics::RenderContext& context) const;
 
  // messaging
+   template<typename Type>
+   Type* getComponent(ComponentInterface::ComponentType type) {
+      return mComponents.get<Type>(type);
+   }
    void sendComponentMessage(ComponentMessage& message);
 
  // maintenance

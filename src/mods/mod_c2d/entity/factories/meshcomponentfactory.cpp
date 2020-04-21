@@ -7,7 +7,6 @@
 #include "core/graphics/animator.h"
 #include "core/graphics/rendercontext.h"
 #include "core/graphics/sprites/sprite.h"
-#include "core/graphics/sprites/spritedefinition.h"
 #include "core/graphics/sprites/spritefactory.h"
 #include "core/graphics/tiles/tileatlas.h"
 
@@ -17,7 +16,8 @@ using namespace Graphics;
 
 MeshComponentFactory::MeshComponentFactory(Graphics::Device& device):
    ComponentFactory(ComponentInterface::eMeshComponent),
-   mDevice(device)
+   mDevice(device),
+   mSpriteDefinitions()
 {
 }
 
@@ -26,24 +26,35 @@ MeshComponentFactory::MeshComponentFactory(Graphics::Device& device):
 Component* MeshComponentFactory::instantiate(const ComponentDefinitionProto& definition) const
 {
    const MeshComponentDefinitionProto& meshdef = static_cast<const MeshComponentDefinitionProto&>(definition);
+   c2d::SpriteDefinition& spritedef = findOrAdd(meshdef);
 
-   Size meshsize(meshdef.mWidth, meshdef.mHeight);
+   return new MeshComponent(c2d::SpriteFactory::create(mDevice, spritedef));
+}
 
-   auto pspritedef = new c2d::SpriteDefinition();
-   pspritedef->setSize(meshsize);
-   
-   if ( meshdef.mTexture.isEmpty() )
+c2d::SpriteDefinition& MeshComponentFactory::findOrAdd(const MeshComponentDefinitionProto& definition) const
+{
+   auto it = mSpriteDefinitions.find(&definition);
+   if ( it != mSpriteDefinitions.end() ) {
+      return it->second;
+   }
+
+   c2d::SpriteDefinition spritedef;
+   Size meshsize(definition.mWidth, definition.mHeight);
+   spritedef.setSize(meshsize);
+
+   if ( definition.mTexture.isEmpty() )
    {
-      c2d::Animator* panimator = createAnimator(meshdef);
-      pspritedef->setSpriteAnimator(panimator);
+      c2d::Animator* panimator = createAnimator(definition);
+      spritedef.setSpriteAnimator(panimator);
    }
    else
    {
       auto& atlas = mDevice.getContext().getSpriteAtlas();
-      pspritedef->setTile(atlas.lookup(meshdef.mTexture));
+      spritedef.setTile(atlas.lookup(definition.mTexture));
    }
 
-   return new MeshComponent(c2d::SpriteFactory::create(mDevice, pspritedef));
+   auto pair = mSpriteDefinitions.insert(std::make_pair(&definition, std::move(spritedef)));
+   return pair.first->second;
 }
 
 c2d::Animator* MeshComponentFactory::createAnimator(const MeshComponentDefinitionProto& definition) const

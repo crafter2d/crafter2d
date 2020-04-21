@@ -31,9 +31,28 @@ namespace c2d
    {
    }
 
+   SpriteDefinition::SpriteDefinition(SpriteDefinition&& that) noexcept :
+      mSize(that.mSize),
+      mTile(that.mTile),
+      mpAnimator(that.mpAnimator)
+   {
+      that.mpAnimator = nullptr;
+   }
+
    SpriteDefinition::~SpriteDefinition()
    {
       delete mpAnimator;
+   }
+
+   SpriteDefinition& SpriteDefinition::operator=(SpriteDefinition&& that) noexcept
+   {
+      if ( this != &that ) {
+         mSize = that.mSize;
+         mTile = that.mTile;
+         mpAnimator = that.mpAnimator;
+         that.mpAnimator = nullptr;
+      }
+      return *this;
    }
 
 } // namespace c2d

@@ -46,8 +46,8 @@ bool IsoDiamondLayer::initialize(Graphics::Device& device)
       return false;
    }
 
-   tileWidth = 40;
-   tileHeight = 20;
+   mTileWidth = 40;
+   mTileHeight = 20;
 
    /*
    _halfTileWidth  = static_cast<float>(tileWidth) / 2;
@@ -166,8 +166,8 @@ c2d::Point IsoDiamondLayer::pointToTile(const c2d::Point& point)
    int y = (2 * p.y - p.x) / 2;
    int x = p.x + y;
 
-   float xtile = static_cast<float>(x) / tileheight() + 0.5f;
-   float ytile = static_cast<float>(y) / tileheight() + 0.5f;
+   float xtile = static_cast<float>(x) / mTileHeight + 0.5f;
+   float ytile = static_cast<float>(y) / mTileHeight + 0.5f;
 
    return c2d::Point(xtile, ytile);
 }

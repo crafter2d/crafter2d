@@ -46,6 +46,7 @@ namespace c2d
 {
 
    c2d::SpriteRenderer::SpriteRenderer() :
+      mTree({200, 100}),
       mSprites(),
       mConstants(),
       mOffset(),
@@ -124,6 +125,8 @@ namespace c2d
 
    void SpriteRenderer::viewportChanged(RenderContext& context, const Viewport& viewport)
    {
+      mTree.resize({ static_cast<float>(viewport.getWidth()), static_cast<float>(viewport.getHeight()) });
+
       mConstants.projection.setOrtho(viewport.getWidth(), viewport.getHeight(), -1, 1);
 
       mpUB->set(context, &mConstants, sizeof(mConstants));

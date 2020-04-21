@@ -3,6 +3,7 @@
 #define MESH_COMPONENT_H
 
 #include "core/defines.h"
+#include "core/graphics/sprites/sprite.h"
 #include "core/math/xform.h"
 #include "core/string/string.h"
 
@@ -13,15 +14,10 @@ namespace Graphics
    class RenderContext;
 }
 
-namespace c2d
-{
-   class Sprite;
-}
-
 class CORE_API MeshComponent final : public Component
 {
 public:
-   explicit MeshComponent(c2d::Sprite* psprite);
+   explicit MeshComponent(c2d::Sprite&& sprite);
    virtual ~MeshComponent();
 
  // get/set
@@ -29,8 +25,7 @@ public:
    float         getAngle() const;
 
    const c2d::Sprite& getSprite() const {
-      ASSERT_PTR(mpSprite);
-      return *mpSprite;
+      return mSprite;
    }
    
  // operations
@@ -44,8 +39,8 @@ public:
 private:
 
  // members
-   XForm        mTransform;
-   c2d::Sprite* mpSprite;
+   XForm       mTransform;
+   c2d::Sprite mSprite;
 };
 
 #endif // MESH_COMPONENT_H

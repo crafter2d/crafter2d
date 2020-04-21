@@ -158,6 +158,7 @@ Body& Box2DSimulator::createBody(const BodyDefinition& definition)
    }
 
    Box2DBody* pbody = new Box2DBody(*this, *pboxbody);
+   pbody->setStatic(definition.isStatic());
    pbody->setHalfSize(Size(definition.getWidth(), definition.getHeight()));
    pbody->createSensors();
    addBody(pbody);

@@ -26,8 +26,13 @@
 #include <functional>
 
 #include "core/entity/entity.h"
+#include "core/entity/componentmessages/componentmessage.h"
+#include "core/entity/components/meshcomponent.h"
+#include "core/entity/components/physicscomponent.h"
 #include "core/graphics/rendercontext.h"
+#include "core/graphics/sprites/sprite.h"
 #include "core/graphics/viewport.h"
+#include "core/physics/body.h"
 #include "core/log/log.h"
 #include "core/physics/simulator.h"
 #include "core/script/scriptobject.h"
@@ -42,7 +47,7 @@
 
 using namespace Graphics;
 
-World::World():
+World::World() :
    mName(),
    layers(),
    bounds(),
@@ -51,14 +56,15 @@ World::World():
    mpSimulator(nullptr),
    mSimulatorListener(*this),
    mpScript(nullptr),
-   _layerType(ETopDown),
+   mTree(Size(0, 0)),
+   mLayerType(ETopDown),
    autoFollow(true),
    followBorderWidth(5),
    leftBorder(0),
    rightBorder(0),
    topBorder(0),
    bottomBorder(0),
-   _objectLayer(0),
+   mObjectLayer(0),
    followMode(FollowMouse),
    followObject(nullptr),
    mBorderSet(false)
@@ -124,13 +130,13 @@ void World::destroy()
 
 /// \fn World::setObjectLayer(int layer)
 /// \brief Set the layer on which the objects live.
-void World::setObjectLayer(int objectlayerid)
+void World::setObjectLayer(size_t objectlayerid)
 {
    if ( objectlayerid < layers.size() )
    {
-      if ( objectlayerid != _objectLayer )
+      if ( objectlayerid != mObjectLayer )
       {
-         _objectLayer = objectlayerid;
+         mObjectLayer = objectlayerid;
          objectLayerChanged();
       }
    }
@@ -200,13 +206,14 @@ void World::draw(Graphics::RenderContext& context) const
    }
    
    // scroll the viewpoint to the right position
-   Vector scroll = layers[getObjectLayer()]->getScroll ();
+   Vector scroll = layers[getObjectLayer()]->getScroll();
    context.setSpriteOffset(scroll);
 
+   auto entities = mTree.get(mView);
    context.beginDraw();
-   for ( auto& it : mEntities )
+   for ( auto& entity : entities )
    {
-      it.second->draw(context);
+      entity->draw(context);
    }
    context.endDraw();
 
@@ -220,11 +227,14 @@ void World::draw(Graphics::RenderContext& context) const
 void World::objectLayerChanged()
 {
    calculateScrollSpeed();
+
+   Layer* pobjectlayer = layers[mObjectLayer];
+   mTree.resize(pobjectlayer->getPixelSize());
 }
 
 void World::calculateScrollSpeed()
 {
-   Layer* pobjectlayer = layers[_objectLayer];
+   Layer* pobjectlayer = layers[mObjectLayer];
    Vector area = pobjectlayer->getScrollArea();
 
    for ( auto player : layers )
@@ -283,6 +293,7 @@ void World::scroll (Graphics::RenderContext& context)
          yScroll = followBorderWidth - (height-y);
    }
 
+
    // scroll the layer
    //if ( xScroll != 0 || yScroll != 0 )
    {
@@ -293,6 +304,9 @@ void World::scroll (Graphics::RenderContext& context)
       {
          player->scroll(context, xScroll, yScroll);
       }
+
+      Layer& layer = *layers[getObjectLayer()];
+      mView.moveTo(layer.getScroll());
 
       //Vector scroll = layer.getScroll();
 
@@ -328,6 +342,8 @@ void World::onViewportChanged(Graphics::RenderContext& context, const Graphics::
 
    calculateScrollSpeed();
 
+   mView.set(0, 0, viewport.getWidth(), viewport.getHeight());
+
    mBorderSet = false;
    initializeBorders(viewport);
 }
@@ -335,7 +351,7 @@ void World::onViewportChanged(Graphics::RenderContext& context, const Graphics::
 
 Layer* World::createLayer()
 {
-   return LayerFactory::getInstance().create(_layerType);
+   return LayerFactory::getInstance().create(mLayerType);
 }
 
 int World::addLayer(Layer* player)
@@ -391,7 +407,7 @@ void World::removeBound(Bound& bound)
 
 WorldRenderer* World::createRenderer()
 {
-   switch ( _layerType )
+   switch ( mLayerType )
    {
       case ETopDown:
          return new TopDownWorldRenderer(*this);
@@ -425,13 +441,27 @@ void World::addEntity(Entity* pentity)
 {
    mEntities[pentity->getId()] = pentity;
 
+   auto pmesh = pentity->getComponent<MeshComponent>(ComponentInterface::eMeshComponent);
+   if ( pmesh )
+   {
+      mTree.insert(*pentity, pmesh->getSprite().getBounds());
+   }
+
+   auto pphysics = pentity->getComponent<PhysicsComponent>(ComponentInterface::ePhysisComponent);
+   if ( pphysics && !pphysics->getBody().isStatic() )
+   {
+      pphysics->getBody().addListener(this);
+   }
+
    notifyEntityAdded(*pentity);
 
    if ( mpScript )
    {
+      static const String sFunctionName(UTEXT("onEntityAdded"));
+
       mpScript->prepareCall(1);
       mpScript->arg(0, pentity->getClassName(), pentity);
-      mpScript->call(UTEXT("onEntityAdded"));
+      mpScript->call(sFunctionName);
    }
 }
 
@@ -441,6 +471,8 @@ void World::removeEntity(Id id)
    if ( it != mEntities.end() )
    {
       notifyEntityRemoved(*(it->second));
+
+      mTree.erase(*it->second);
 
       delete it->second;
 
@@ -479,6 +511,15 @@ void World::accept(NodeVisitor& nv)
 //////////////////////////////////////////////////////////////////////////
 // - Notifications
 //////////////////////////////////////////////////////////////////////////
+
+void World::onPositionChanged(Body& body)
+{
+   auto& entity = body.getEntity();
+   auto pmesh = entity.getComponent<MeshComponent>(ComponentInterface::eMeshComponent);
+
+   mTree.erase(entity);
+   mTree.insert(entity, pmesh->getSprite().getBounds());
+}
 
 void World::notifyScrollChange(const Vector& scrollposition)
 {

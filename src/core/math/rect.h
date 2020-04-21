@@ -54,7 +54,7 @@ namespace c2d
       }
       
       Vector center() const {
-         return Vector(width() / 2, height() / 2);
+         return Vector(left + width() / 2, top + height() / 2);
       }
 
       void set(T x, T y, T width, T height) {
@@ -72,11 +72,17 @@ namespace c2d
       }
 
       bool overlaps(const Rect<T>& other) const {
-         if ( other.left > right || left > other.right )
+         if ( other.left >= right || left >= other.right )
             return false;
-         if ( other.top > bottom || top > other.bottom )
+         if ( other.top >= bottom || top >= other.bottom )
             return false;
          return true;
+      }
+
+      void moveTo(const Vector& pos) {
+         T width = right - left;
+         T height = bottom - top;
+         set(pos.x, pos.y, width, height);
       }
 
       void shift(T x, T y) {

@@ -25,6 +25,7 @@
 #include "core/graphics/effect.h"
 #include "core/math/matrix4.h"
 #include "core/math/vertex.h"
+#include "core/quadtree/quadtree.h"
 #include "core/defines.h"
 
 #include "spritebatch.h"
@@ -46,7 +47,7 @@ namespace c2d
    class Sprite;
    class TileAtlas;
 
-   class CORE_API SpriteRenderer
+   class CORE_API SpriteRenderer final
    {
    public:
       SpriteRenderer();
@@ -85,6 +86,7 @@ namespace c2d
       void renderSprite(const TileAtlas& atlas, const Sprite& sprite, PTVertex* pbuffer);
 
     // data
+      QuadTree<Sprite> mTree;
       SpriteBatch    mSprites;
       Vector         mOffset;
       ConstantBuffer mConstants;

@@ -26,6 +26,7 @@
 #include "core/graphics/effect.h"
 #include "core/math/vector.h"
 #include "core/math/matrix4.h"
+#include "core/math/size.h"
 #include "core/defines.h"
 #include "core/string/string.h"
 
@@ -113,6 +114,8 @@ public:
    int            getWidth() const;
    int            getHeight() const;
 
+   Size getPixelSize() const { return Size(getWidth() * mTileWidth, getHeight() * mTileHeight); }
+
    void           enableTileAnimation( bool enable );
    bool           isTileAnimating() const;
 
@@ -120,8 +123,8 @@ public:
          TileSet& tileset();
    void           setTileSet(TileSet* ptileset);
 
-   int            tilewidth() const;
-   int            tileheight() const;
+   int            tileWidth() const { return mTileWidth; }
+   int            tileHeight() const { return mTileHeight; }
    
    const Graphics::Effect& getEffect() const;
          Graphics::Effect& getEffect();
@@ -149,7 +152,7 @@ protected:
  // operations
    void           setVertex(float** data, float x, float y, float texX, float texY);
 
-   int tileWidth, tileHeight;
+   int mTileWidth, mTileHeight;
    float xscroll, yscroll;
    float xscrollMax, yscrollMax;
    float scrollSpeedX, scrollSpeedY;

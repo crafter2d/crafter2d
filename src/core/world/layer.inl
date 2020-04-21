@@ -150,16 +150,6 @@ INLINE TileField& Layer::getTileField()
    return mTileMap;
 }
 
-INLINE int Layer::tilewidth() const
-{
-   return tileWidth;
-}
-
-INLINE int Layer::tileheight() const
-{
-   return tileHeight;
-}
-
 INLINE Vector Layer::getScrollSpeed() const
 {
    return Vector(scrollSpeedX, scrollSpeedY);

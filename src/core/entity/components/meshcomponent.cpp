@@ -13,16 +13,15 @@
 
 using namespace Graphics;
 
-MeshComponent::MeshComponent(c2d::Sprite* psprite):
+MeshComponent::MeshComponent(c2d::Sprite&& sprite):
    Component(ComponentInterface::eMeshComponent),
    mTransform(),
-   mpSprite(psprite)
+   mSprite(std::move(sprite))
 {
 }
 
 MeshComponent::~MeshComponent()
 {
-   delete mpSprite;
 }
 
 // - Get/set
@@ -61,7 +60,7 @@ void MeshComponent::handleMessage(ComponentMessage& message)
    case ePositionChangedMsg:
    case eUpdatedMsg:
       {
-         mpSprite->setTransform(getEntity().getTransform());
+         mSprite.setTransform(getEntity().getTransform());
       }
       break;
    case eUpdateMsg:
@@ -73,17 +72,17 @@ void MeshComponent::handleMessage(ComponentMessage& message)
    case eAnimationMsg:
       {
          AnimationComponentMessage& msg = static_cast<AnimationComponentMessage&>(message);
-         mpSprite->setAnimation(msg.getAnimation());
+         mSprite.setAnimation(msg.getAnimation());
       }
       break;
    case eScaleMsg:
       {
          float scale = *static_cast<const float*>(message.getData());
-         mpSprite->scale(scale);
+         mSprite.scale(scale);
       }
       break;
    case eFlipMsg:
-      mpSprite->flip();
+      mSprite.flip();
       break;
    case eRenderMsg:
       {
@@ -99,10 +98,10 @@ void MeshComponent::handleMessage(ComponentMessage& message)
 
 void MeshComponent::update(float delta)
 {
-   mpSprite->update(delta);
+   mSprite.update(delta);
 }
 
 void MeshComponent::render(RenderContext& context) const
 {
-   context.drawSprite(*mpSprite);
+   context.drawSprite(mSprite);
 }

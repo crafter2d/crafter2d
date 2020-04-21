@@ -29,6 +29,10 @@ public:
    void postMessage(ComponentMessage& message);
 
  // find
+   template<typename Type>
+   Type* get(ComponentInterface::ComponentType type) {
+      return static_cast<Type*>(findComponent(type));
+   }
    Component* findComponent(ComponentInterface::ComponentType type);
 
 private:

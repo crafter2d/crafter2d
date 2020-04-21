@@ -106,17 +106,17 @@ INLINE int World::getLayerCount() const
 
 INLINE int World::getObjectLayer() const
 {
-   return _objectLayer;
+   return mObjectLayer;
 }
 
 INLINE LayerType World::getLayerType() const
 {
-   return _layerType;
+   return mLayerType;
 }
 
 INLINE void World::setLayerType(int type)
 {
-   _layerType = (LayerType)type;
+   mLayerType = (LayerType)type;
 }
 
 INLINE Simulator& World::getSimulator()

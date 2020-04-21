@@ -43,7 +43,10 @@ bool D3DVertexBuffer::create(const VertexLayout& layout, int length, int usage)
 
 void D3DVertexBuffer::release()
 {
-   mpBuffer->Release();
+   if ( mpBuffer )
+   {
+      mpBuffer->Release();
+   }
 }
 
 void D3DVertexBuffer::update(RenderContext& context, void* pdata, int count)
