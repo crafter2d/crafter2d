@@ -222,7 +222,7 @@ void LayerPanel::on_buttonBack_clicked()
 void LayerPanel::on_transparencySlider_valueChanged(int value)
 {
     TileView* pview = getMainWindow().getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         pview->setTransparency(value / 100.0);
     }

@@ -7,6 +7,7 @@
 
 #include "core/defines.h"
 #include "core/entity/entity.h"
+#include "core/entity/components/meshcomponent.h"
 #include "core/content/contentmanager.h"
 #include "core/physics/simulationfactory.h"
 #include "core/physics/simulationfactoryregistry.h"
@@ -104,11 +105,19 @@ IContent* WorldReader::read(DataStream& stream)
       {
          String name;
          float x, y, scale;
-         stream >> name >> x >> y >> scale;
+         int sortorder;
+         stream >> name >> x >> y >> scale >> sortorder;
 
          Entity* pentity = getContentManager().loadContent<Entity>(name);
          pentity->setPosition(Vector(x, y));
-         pentity->scale(scale);
+
+         auto pmeshcomp = pentity->getComponent<MeshComponent>(ComponentInterface::eMeshComponent);
+         if ( pmeshcomp )
+         {
+            auto& sprite = pmeshcomp->getSprite();
+            sprite.scale(scale);
+            sprite.setSortOrder(sortorder);
+         }
 
          pworld->addEntity(pentity);
       }

@@ -15,25 +15,12 @@ using namespace Graphics;
 
 MeshComponent::MeshComponent(c2d::Sprite&& sprite):
    Component(ComponentInterface::eMeshComponent),
-   mTransform(),
    mSprite(std::move(sprite))
 {
 }
 
 MeshComponent::~MeshComponent()
 {
-}
-
-// - Get/set
-
-const Vector& MeshComponent::getPosition() const
-{
-   return mTransform.getPosition();
-}
-
-float MeshComponent::getAngle() const
-{
-   return mTransform.getAngle();
 }
 
 // - Operations
@@ -73,12 +60,6 @@ void MeshComponent::handleMessage(ComponentMessage& message)
       {
          AnimationComponentMessage& msg = static_cast<AnimationComponentMessage&>(message);
          mSprite.setAnimation(msg.getAnimation());
-      }
-      break;
-   case eScaleMsg:
-      {
-         float scale = *static_cast<const float*>(message.getData());
-         mSprite.scale(scale);
       }
       break;
    case eFlipMsg:

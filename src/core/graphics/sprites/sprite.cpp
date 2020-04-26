@@ -32,6 +32,7 @@ namespace c2d
       mTransform(),
       mHalfSize(),
       mTile(definition.getTile()),
+      mSortOrder(0),
       mFlipped(false)
    {
    }
@@ -42,6 +43,7 @@ namespace c2d
       mTransform(other.mTransform),
       mHalfSize(other.mHalfSize),
       mTile(other.mTile),
+      mSortOrder(other.mSortOrder),
       mFlipped(other.mFlipped)
    {
    }
@@ -59,6 +61,7 @@ namespace c2d
          mTransform = other.mTransform;
          mHalfSize = other.mHalfSize;
          mTile = other.mTile;
+         mSortOrder = other.mSortOrder;
          mFlipped = other.mFlipped;
       }
       return *this;

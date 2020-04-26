@@ -1,9 +1,10 @@
 
-#ifndef ENTITY_COMPONENTS_H
-#define ENTITY_COMPONENTS_H
+#pragma once
 
 #include <map>
 #include <set>
+
+#include "core/core_base.h"
 
 #include "componentinterface.h"
 
@@ -11,7 +12,7 @@ class Component;
 class ComponentMessage;
 class Entity;
 
-class Components
+class CORE_API Components
 {
 public:
    explicit Components(Entity& entity);
@@ -37,13 +38,11 @@ public:
 
 private:
  // typedefs
-   typedef std::map<ComponentInterface::ComponentType, Component*> ComponentMap;
-   typedef std::set<ComponentInterface::ComponentType> MessageToComponentSet;
+   using ComponentMap = std::map<ComponentInterface::ComponentType, Component*>;
+   using MessageToComponentSet = std::set<ComponentInterface::ComponentType>;
 
  // members
    Entity&					   mEntity;
    ComponentMap				mComponents;
    MessageToComponentSet	mMessageToComponent[ComponentInterface::eNUM_MESSAGE_TYPES];
 };
-
-#endif // ENTITY_COMPONENTS_H

@@ -38,7 +38,18 @@
     </item>
    </layout>
   </widget>
+  <action name="actionAdd_Existing">
+   <property name="text">
+    <string>Add Existing</string>
+   </property>
+   <property name="toolTip">
+    <string>Add existing file to project</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
+ <slots>
+  <slot>on_addExisting_triggered()</slot>
+ </slots>
 </ui>

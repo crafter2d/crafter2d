@@ -52,7 +52,7 @@ void ProjectTreeItem::setRoot()
 
 int ProjectTreeItem::row() const
 {
-    if ( mpParent != NULL )
+    if ( mpParent != nullptr )
     {
         return mpParent->indexOf(*this);
     }
@@ -72,6 +72,7 @@ ProjectTreeItem* ProjectTreeItem::child(int index)
 void ProjectTreeItem::clear()
 {
     qDeleteAll(mChildren);
+    mChildren.clear();
 }
 
 int ProjectTreeItem::indexOf(const ProjectTreeItem& item) const

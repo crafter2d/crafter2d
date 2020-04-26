@@ -83,9 +83,9 @@ namespace CIL
       return mReturnType;
    }
 
-   void Function::setReturnType(const yasc::Type& type)
+   void Function::setReturnType(yasc::Type&& type)
    {
-      mReturnType = type;
+      mReturnType = std::move(type);
    }
 
    const StringList& Function::getAnnotations() const

@@ -1,6 +1,5 @@
 
-#ifndef MESH_COMPONENT_H
-#define MESH_COMPONENT_H
+#pragma once
 
 #include "core/defines.h"
 #include "core/graphics/sprites/sprite.h"
@@ -21,12 +20,8 @@ public:
    virtual ~MeshComponent();
 
  // get/set
-   const Vector& getPosition() const;
-   float         getAngle() const;
-
-   const c2d::Sprite& getSprite() const {
-      return mSprite;
-   }
+   const c2d::Sprite& getSprite() const { return mSprite; }
+   c2d::Sprite& getSprite() { return mSprite; }
    
  // operations
    void render(Graphics::RenderContext& context) const;
@@ -39,8 +34,5 @@ public:
 private:
 
  // members
-   XForm       mTransform;
    c2d::Sprite mSprite;
 };
-
-#endif // MESH_COMPONENT_H

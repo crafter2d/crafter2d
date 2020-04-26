@@ -82,6 +82,11 @@ void SymbolCheckVisitor::visit(ASTFunction& ast)
    ScopedScope scope(mScopeStack);
    ScopedValue<ASTFunction*> scopedfunction(&mpFunction, &ast, mpFunction);
    ASSERT_PTR(mpFunction);
+   
+   if ( ast.getClass().getName() == UTEXT("TileCoordinates") && ast.getName() == UTEXT("initialize") )
+   {
+      int aap = 3;
+   }
 
    visitChildren(ast); // <-- arguments
 

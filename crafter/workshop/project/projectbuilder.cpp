@@ -90,11 +90,11 @@ void ProjectBuilder::buildScripts(QDir& path, const QString& name)
 
     QString command;
 #ifdef _DEBUG
-    command = "yascd.exe -p ../scripts;";
+    command = "yascd.exe -p ../scripts;../src/mods/mod_ui/scripts";
 #else
-    command = "yasc.exe -p ../scripts;";
+    command = "yasc.exe -p ../scripts;../src/mods/mod_ui/scripts";
 #endif
-    command += sourcepath + " -r -o " + destpath + " " + sourcepath + QDir::separator() + "*.as";
+    command += " -r -o " + destpath + " " + sourcepath + QDir::separator() + "*.as";
 
     QProcess yasc;
     yasc.setWorkingDirectory(QDir::currentPath());

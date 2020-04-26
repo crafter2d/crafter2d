@@ -3,6 +3,7 @@
 #define TYPE_H
 
 #include <memory>
+#include <variant>
 
 #include "core/string/string.h"
 
@@ -11,7 +12,7 @@ namespace yasc
    class Type
    {
    public:
-      enum Kind { enullptr, eInt, eReal, eBool, eChar, eString, eVoid, eGeneric, eObject, eArray };
+      enum Kind { eNull, eInt, eReal, eBool, eChar, eString, eVoid, eGeneric, eObject, eArray };
       
       static const String sInt;
       static const String sReal;
@@ -24,7 +25,6 @@ namespace yasc
       static Type fromString(const String& typestr);
 
       Type();
-      Type(Kind kind);
       Type(Type&& that);
       Type(const Type& that);
       ~Type();
@@ -36,7 +36,7 @@ namespace yasc
     // query
       Kind getKind() const;
 
-      bool isnullptr() const;
+      bool isNull() const;
       bool isVoid() const;
       bool isBool() const;
       bool isInt() const;
@@ -77,7 +77,7 @@ namespace yasc
 
       struct ArrayInfo
       {
-         ArrayInfo(Type* ptype);
+         ArrayInfo(std::unique_ptr<Type> type);
          ArrayInfo(ArrayInfo&& that);
          ArrayInfo(const ArrayInfo& that);
          ArrayInfo& operator=(ArrayInfo&& that);
@@ -94,11 +94,7 @@ namespace yasc
 
     // data      
       Kind mKind;
-      union
-      {
-         ObjectInfo mObject;
-         ArrayInfo  mArray;
-      };
+      std::variant<ArrayInfo, ObjectInfo> mInfo;
    };
 }
 

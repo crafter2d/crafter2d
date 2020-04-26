@@ -29,6 +29,6 @@ void c2d::SpriteBatch::sort()
 {
    std::sort(mSprites.begin(), mSprites.end(), [](const Sprite* pleft, const Sprite* pright)
    {
-      return pleft->getTile() < pright->getTile();
+      return pleft->getSortOrder() < pright->getSortOrder();
    });
 }

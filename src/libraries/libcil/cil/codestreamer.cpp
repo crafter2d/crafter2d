@@ -291,7 +291,7 @@ namespace CIL
       }
 
       yasc::Type rettype = readType();
-      pfunction->setReturnType(rettype);
+      pfunction->setReturnType(std::move(rettype));
 
       int guardc;
       mStream >> guardc;

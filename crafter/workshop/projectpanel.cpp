@@ -1,6 +1,9 @@
 #include "projectpanel.h"
 #include "ui_projectpanel.h"
 
+#include <QAction>
+#include <QFileDialog>
+#include <QMenu>
 #include <QVariant>
 
 #include "entity/entity.h"
@@ -28,11 +31,24 @@ ProjectPanel::ProjectPanel(MainWindow& mainwindow) :
     ui->treeProject->setModel(mpProjectModel);
 
     connect(&mainwindow, SIGNAL(projectChanged(Project*)), SLOT(on_projectChanged(Project*)));
+    connect(ui->actionAdd_Existing, SIGNAL(triggered()), SLOT(on_addExisting_triggered()));
 }
 
 ProjectPanel::~ProjectPanel()
 {
     delete ui;
+}
+
+// - Overrides
+
+void ProjectPanel::contextMenuEvent(QContextMenuEvent *event)
+{
+    if ( mpProject )
+    {
+        QMenu menu(this);
+        menu.addAction(ui->actionAdd_Existing);
+        menu.exec(event->globalPos());
+    }
 }
 
 // - Notifications
@@ -43,6 +59,22 @@ void ProjectPanel::worldActivated(TileWorld* /* pworld */)
 }
 
 // - Slots
+
+void ProjectPanel::on_addExisting_triggered()
+{
+    QString file = QFileDialog::getOpenFileName(this, tr("Select Existing File"), mpProject->getScriptPath(), tr("Script files (*.as)"));
+    if  ( file.length() > 0 )
+    {
+        QFileInfo info(file);
+
+        QString resourcepath = QString("scripts") + QDir::separator() + mpProject->getName() + QDir::separator() + info.fileName();
+        QString filepath = mpProject->getBasePath() + QDir::separator() + resourcepath;
+        ScriptFile* pscript = new ScriptFile(filepath);
+        pscript->setResourceName(resourcepath);
+
+        mpProject->addScript(pscript);
+    }
+}
 
 void ProjectPanel::on_projectChanged(Project *pproject)
 {

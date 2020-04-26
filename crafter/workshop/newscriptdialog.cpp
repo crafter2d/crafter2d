@@ -20,7 +20,7 @@ ScriptFile* NewScriptDialog::New(QWidget* parent, Project& project)
         QString base = dialog.getBaseClass();
 
         pscript = ScriptBuilder::build(project, name, base);
-        if ( pscript != NULL )
+        if ( pscript != nullptr )
         {
             project.addScript(pscript);
         }

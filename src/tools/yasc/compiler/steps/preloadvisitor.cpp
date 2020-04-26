@@ -192,6 +192,7 @@ void PreloadVisitor::visit(ASTFunctionArgument& ast)
    if ( !load(var.getType()) ) // <-- need to give class as param so the previous typevariable stuff can be moved there
    {
       // complain!
+      error(E0067, UTEXT("Can not find type '") + var.getType().getObjectName() + UTEXT("'."), ast);
    }
 
    checkVarInit(var, false);

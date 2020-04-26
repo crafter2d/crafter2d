@@ -40,7 +40,7 @@ namespace CIL
       void                setSwitchTables(const SwitchTables& tables);
 
       const yasc::Type& getReturnType() const;
-      void              setReturnType(const yasc::Type& type);
+      void              setReturnType(yasc::Type&& type);
 
       const StringList& getAnnotations() const;
 

@@ -8,6 +8,7 @@
     <script>scripts\demo\Grudge.as</script>
     <script>scripts\demo\Hero.as</script>
     <script>scripts\demo\PatrolState.as</script>
+    <script>scripts\Demo\Mushroom.as</script>
     <tileset>tilesets/forest-background.xml</tileset>
     <tileset>tilesets/blocks.xml</tileset>
     <world>worlds/map1.world</world>

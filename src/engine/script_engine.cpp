@@ -22,6 +22,7 @@
 #include "core/entity/entity.h"
 #include "core/entity/componentmessages/querybodycomponentmessage.h"
 #include "core/entity/componentmessages/animationcomponentmessage.h"
+#include "core/entity/components/meshcomponent.h"
 #include "core/graphics/effect.h"
 #include "core/graphics/viewport.h"
 #include "core/physics/inputforcegenerator.h"
@@ -365,6 +366,12 @@ void Entity_setName(ScriptCall& accessor)
    const String& name = accessor.getString(1);
 
    entity.setName(name);
+}
+
+void Entity_setSortOrder(ScriptCall& accessor)
+{
+   GET_THIS(Entity, entity);
+   entity.getComponent<MeshComponent>(ComponentInterface::eMeshComponent)->getSprite().setSortOrder(accessor.getInt(1));
 }
 
 void Entity_scale(ScriptCall& accessor)
@@ -906,6 +913,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("setPosition(real, real)"), Entity_setPosition);
    pregistrator->addFunction(UTEXT("setName(string)"), Entity_setName);
    pregistrator->addFunction(UTEXT("scale(real)"), Entity_scale);
+   pregistrator->addFunction(UTEXT("setSortOrder(int"), Entity_setSortOrder);
    pregistrator->addFunction(UTEXT("flip()"), Entity_flip);
    pregistrator->addFunction(UTEXT("setController(engine.game.Controller)"), Entity_setController);
    pregistrator->addFunction(UTEXT("sendComponentMessage(engine.game.ComponentMessage)"), Entity_sendComponentMessage);

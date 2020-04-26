@@ -2,6 +2,7 @@
 package box2d;
 
 use engine.core.*;
+use engine.game.*;
 
 public class Box2DSimulator
 {

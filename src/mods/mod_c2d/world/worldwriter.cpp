@@ -19,11 +19,13 @@ ELEMENT_DEF(entity)
    ATTRIBUTE(float, x)
    ATTRIBUTE(float, y)
    ATTRIBUTE(float, scale)
+   ATTRIBUTE(int, sortorder)
 ELEMENT_IMP(entity)
    ATTRIBUTE_INIT(name, Attribute::eMandatory, Attribute::eString, "")
    ATTRIBUTE_INIT(x, Attribute::eMandatory, Attribute::eFloat, 0.0f)
    ATTRIBUTE_INIT(y, Attribute::eMandatory, Attribute::eFloat, 0.0f)
    ATTRIBUTE_INIT(scale, Attribute::eMandatory, Attribute::eFloat, 1.0f)
+   ATTRIBUTE_INIT(sortorder, Attribute::eMandatory, Attribute::eInt, 0)
 ELEMENT_END
 
 ELEMENT_DEF(entities)
@@ -145,7 +147,7 @@ void WorldWriter::processWorldInfo(DataStream& stream, const String& filename)
          String name(entity.name);
          name = name.left(name.length() - 4);
 
-         stream << name << entity.x << entity.y << entity.scale;
+         stream << name << entity.x << entity.y << entity.scale << entity.sortorder;
       }
    }
 }

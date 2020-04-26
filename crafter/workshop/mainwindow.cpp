@@ -168,7 +168,7 @@ void MainWindow::loadProject(const QString& fileName)
 
 void MainWindow::saveProject()
 {
-    if ( mpProject != NULL )
+    if ( mpProject != nullptr )
     {
         mpProject->save();
 
@@ -282,7 +282,7 @@ void MainWindow::gotoError(const QString& classname, int line)
 
 TileViewWindow* MainWindow::findWindow(TileWorld& world)
 {
-    QMdiSubWindow* psubwindow = NULL;
+    QMdiSubWindow* psubwindow = nullptr;
     QList<QMdiSubWindow*> subwindows = ui->centralWidget->subWindowList();
     foreach (psubwindow, subwindows)
     {
@@ -293,12 +293,12 @@ TileViewWindow* MainWindow::findWindow(TileWorld& world)
             return pwindow;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 ScriptView* MainWindow::findWindow(ScriptFile& file)
 {
-    QMdiSubWindow* psubwindow = NULL;
+    QMdiSubWindow* psubwindow = nullptr;
     QList<QMdiSubWindow*> subwindows = ui->centralWidget->subWindowList();
     foreach (psubwindow, subwindows)
     {
@@ -308,7 +308,7 @@ ScriptView* MainWindow::findWindow(ScriptFile& file)
             return pview;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 // - Event handlers
@@ -325,7 +325,7 @@ void MainWindow::closeEvent(QCloseEvent *pevent)
 void MainWindow::on_actionFile_NewProject_triggered()
 {
     Project* pproject = Project::createNew(this);
-    if ( pproject != NULL )
+    if ( pproject != nullptr )
     {
         setProject(pproject);
         saveProject();
@@ -334,11 +334,11 @@ void MainWindow::on_actionFile_NewProject_triggered()
 
 void MainWindow::on_actionFile_NewWorld_triggered()
 {
-    if ( mpProject != NULL )
+    if ( mpProject != nullptr )
     {
         TileWorld* pworld = WorldWizard::show();
 
-        if ( pworld != NULL )
+        if ( pworld != nullptr )
         {
             mpProject->addWorld(pworld);
         }
@@ -352,10 +352,10 @@ void MainWindow::on_actionFile_NewWorld_triggered()
 void MainWindow::on_actionFile_NewLayer_triggered()
 {
     TileView* pview = getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         TileMap* pmap = NewLayerDialog::getMap();
-        if ( pmap != NULL )
+        if ( pmap != nullptr )
         {
             pview->getWorld().addMap(pmap);
         }
@@ -365,7 +365,7 @@ void MainWindow::on_actionFile_NewLayer_triggered()
 void MainWindow::on_actionFile_NewScript_triggered()
 {
     ScriptFile* pscript = NewScriptDialog::New(this, *mpProject);
-    if ( pscript != NULL )
+    if ( pscript != nullptr )
     {
         showScript(*pscript);
     }
@@ -389,7 +389,7 @@ void MainWindow::on_actionFile_Open_triggered()
 void MainWindow::on_actionFile_OpenRecentFile_triggered()
 {
     QAction *action = qobject_cast<QAction *>(sender());
-    if ( action != NULL )
+    if ( action != nullptr )
     {
         loadProject(action->data().toString());
     }
@@ -403,7 +403,7 @@ void MainWindow::on_actionFile_Exit_triggered()
 void MainWindow::on_actionEdit_Undo_triggered()
 {
     TileView* pview = getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         pview->undo();
     }
@@ -412,7 +412,7 @@ void MainWindow::on_actionEdit_Undo_triggered()
 void MainWindow::on_actionEdit_Redo_triggered()
 {
     TileView* pview = getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         pview->redo();
     }
@@ -421,7 +421,7 @@ void MainWindow::on_actionEdit_Redo_triggered()
 void MainWindow::on_actionEdit_Layers_triggered()
 {
     TileView* pview = getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         pview->setEditMode(TileView::eLayerMode);
     }
@@ -430,7 +430,7 @@ void MainWindow::on_actionEdit_Layers_triggered()
 void MainWindow::on_actionEdit_Bounds_triggered()
 {
     TileView* pview = getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         pview->setEditMode(TileView::eBoundMode);
     }
@@ -439,7 +439,7 @@ void MainWindow::on_actionEdit_Bounds_triggered()
 void MainWindow::on_actionEdit_Objects_triggered()
 {
     TileView* pview = getActiveView();
-    if ( pview != NULL )
+    if ( pview != nullptr )
     {
         pview->setEditMode(TileView::eObjectMode);
     }
@@ -447,7 +447,7 @@ void MainWindow::on_actionEdit_Objects_triggered()
 
 void MainWindow::on_actionProject_Build_triggered()
 {
-    if ( mpProject != NULL )
+    if ( mpProject != nullptr )
     {
         mpProject->build();
     }
@@ -455,7 +455,7 @@ void MainWindow::on_actionProject_Build_triggered()
 
 void MainWindow::on_actionProject_Run_triggered()
 {
-    if ( mpProject != NULL )
+    if ( mpProject != nullptr )
     {
         mpProject->run();
     }

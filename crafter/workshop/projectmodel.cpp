@@ -13,7 +13,7 @@
 
 ProjectModel::ProjectModel():
     QAbstractItemModel(),
-    mpProject(NULL),
+    mpProject(nullptr),
     mpRoot(new ProjectTreeRootItem())
 {
     mpRoot->setRoot();
@@ -22,7 +22,7 @@ ProjectModel::ProjectModel():
 ProjectModel::~ProjectModel()
 {
     delete mpRoot;
-    mpRoot = NULL;
+    mpRoot = nullptr;
 }
 
 // - Get/set
@@ -33,14 +33,14 @@ void ProjectModel::setProject(Project* pproject)
     {
         beginResetModel();
 
-        if ( mpProject != NULL )
+        if ( mpProject != nullptr )
         {
             disconnect(mpProject, SIGNAL(dataChanged()));
         }
 
         mpProject = pproject;
 
-        if ( mpProject != NULL )
+        if ( mpProject != nullptr )
         {
             buildTree();
 
@@ -67,7 +67,7 @@ QModelIndex ProjectModel::index(int row, int column, const QModelIndex &parent) 
 
     QModelIndex result;
     ProjectTreeItem *childItem = parentItem->child(row);
-    if ( childItem != NULL )
+    if ( childItem != nullptr )
         result = createIndex(row, column, childItem);
 
     return result;
@@ -89,15 +89,10 @@ QModelIndex ProjectModel::parent(const QModelIndex &index) const
 
 int ProjectModel::rowCount(const QModelIndex &parent) const
 {
-    ProjectTreeItem *parentItem;
     if ( parent.column() > 0 )
         return 0;
 
-    if ( !parent.isValid() )
-        parentItem = mpRoot;
-    else
-        parentItem = static_cast<ProjectTreeItem*>(parent.internalPointer());
-
+    ProjectTreeItem *parentItem = parent.isValid() ? static_cast<ProjectTreeItem*>(parent.internalPointer()) : mpRoot;
     return parentItem->childCount();
 }
 

@@ -17,8 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SPRITE_H
-#define SPRITE_H
+#pragma once
 
 #include "core/math/size.h"
 #include "core/math/xform.h"
@@ -70,6 +69,13 @@ namespace c2d
          return mDefinition.hasSpriteAnimator();
       }
 
+      int getSortOrder() const {
+         return mSortOrder;
+      }
+      void setSortOrder(int order) {
+         mSortOrder = order;
+      }
+
       RectF getBounds() const {
          return RectF(
             mTransform.getPosition().x - mHalfSize.width,
@@ -92,12 +98,11 @@ namespace c2d
     // data
       SpriteDefinition& mDefinition;
 
-      AnimationState    mAnimState;
-      XForm             mTransform;
-      Size              mHalfSize;
-      int               mTile;
-      bool              mFlipped;
+      AnimationState mAnimState;
+      XForm          mTransform;
+      Size           mHalfSize;
+      int            mTile;
+      int            mSortOrder;
+      bool           mFlipped;
    };
 }
-
-#endif // SPRITE_H
