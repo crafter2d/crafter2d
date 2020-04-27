@@ -913,7 +913,7 @@ void script_engine_register(c2d::ScriptManager& manager)
    pregistrator->addFunction(UTEXT("setPosition(real, real)"), Entity_setPosition);
    pregistrator->addFunction(UTEXT("setName(string)"), Entity_setName);
    pregistrator->addFunction(UTEXT("scale(real)"), Entity_scale);
-   pregistrator->addFunction(UTEXT("setSortOrder(int"), Entity_setSortOrder);
+   pregistrator->addFunction(UTEXT("setSortOrder(int)"), Entity_setSortOrder);
    pregistrator->addFunction(UTEXT("flip()"), Entity_flip);
    pregistrator->addFunction(UTEXT("setController(engine.game.Controller)"), Entity_setController);
    pregistrator->addFunction(UTEXT("sendComponentMessage(engine.game.ComponentMessage)"), Entity_sendComponentMessage);

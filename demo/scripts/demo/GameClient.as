@@ -43,6 +43,7 @@ class GameClient extends Client
 		
 		Hero hero = (Hero)Entity.construct(this, "Hero", position, "objects/char");
 		hero.setForceGenerator(new InputForceGenerator());
+		hero.setSortOrder(2);
 		
 		position.set(850, 300);
 		Mushroom mush = (Mushroom) Entity.construct(this, "mushroom", position, "objects/mushroom");
