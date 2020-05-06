@@ -18,6 +18,9 @@ SOURCES += main.cpp\
     editentitydialog.cpp \
     mainwindow.cpp \
     newprojectdialog.cpp \
+    project/projectdocument.cpp \
+    project/projectsettings.cpp \
+    projectsettingsdialog.cpp \
     tileview.cpp \
     project.cpp \
     projectmodel.cpp \
@@ -96,6 +99,9 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     editentitydialog.h \
     newprojectdialog.h \
+    project/projectdocument.h \
+    project/projectsettings.h \
+    projectsettingsdialog.h \
     tileview.h \
     project.h \
     projectmodel.h \
@@ -174,6 +180,7 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     editentitydialog.ui \
     newprojectdialog.ui \
+    projectsettingsdialog.ui \
     tileview.ui \
     newlayerdialog.ui \
     projectpanel.ui \

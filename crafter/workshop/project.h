@@ -6,6 +6,7 @@
 #include <QVector>
 
 #include "texturepacker/spriteatlas.h"
+#include "project/projectsettings.h"
 
 class QDir;
 class Entity;
@@ -42,6 +43,13 @@ public:
         return mBasePath;
     }
 
+    const ProjectSettings& getSettings() const {
+        return mSettings;
+    }
+    void setSettings(ProjectSettings&& settings) {
+        mSettings = std::move(settings);
+    }
+
     Entities& getEntities() { return mEntities; }
     Worlds &getWorlds() { return mWorlds; }
     Scripts& getScripts() { return mScripts; }
@@ -70,8 +78,7 @@ public:
     void addTileSet(TileSet *ptileset);
     void addScript(ScriptFile* pscript);
 
-    bool load(const QString& fileName);
-    void save();
+    bool load();
 
     void build();
 
@@ -90,6 +97,8 @@ signals:
     void messageAvailable(const QString& msg);
 
 private:
+    friend class ProjectDocument;
+
     enum PathName { eImagePath, eScriptPath, eTileAtlasPath, ePathCount };
   // get/set
     void setBasePath(const QString& path);
@@ -99,8 +108,7 @@ private:
     bool loadTileset(const QString& filename);
     void loadObjects();
 
-    void saveProjectResources();
-    void saveProjectFile();
+    void saveDirtyResources();
 
     void traverseDirectory(QDir& dir, const QStringList& filter, QStringList &result);
 
@@ -110,6 +118,7 @@ private:
     static Project* spActiveProject;
 
  // data
+    ProjectSettings mSettings;
     QString  mName;
     QString  mFileName;
     QString  mBasePath;

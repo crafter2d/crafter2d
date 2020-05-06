@@ -28,6 +28,8 @@ protected:
 
 private slots:
     void on_addExisting_triggered();
+    void on_settings_triggered();
+
     void on_treeProject_activated(const QModelIndex &index);
     void on_treeProject_clicked(const QModelIndex& index);
     void on_projectChanged(Project *pproject);

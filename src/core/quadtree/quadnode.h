@@ -65,7 +65,14 @@ namespace c2d
          if ( !mChildren.empty() )
          {
             auto& node = findQuadrant(element, bounds);
-            node.insert(element, bounds);
+            if ( node.fits(bounds) )
+            {
+               node.insert(element, bounds);
+            }
+            else
+            {
+               mElements.emplace_back(element, bounds);
+            }
          }
          else if ( mElements.size() >= 3 && canSplit() )
          {
@@ -110,6 +117,10 @@ namespace c2d
       enum class Quadrant : uint8_t { eTopLeft, eTopRight, eBottomRight, eBottomLeft };
       using Elements = std::vector<Element<T>>;
       using Nodes = std::vector<QuadNode<T>>;
+
+      bool fits(const RectF& bounds) const {
+         return mBounds.contains(bounds);
+      }
 
       void retrieve(const RectF& bounds, std::vector<const T*>& data) const {
          if ( mBounds.overlaps(bounds) )

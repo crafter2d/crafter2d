@@ -2,6 +2,7 @@
 #include "ui_projectpanel.h"
 
 #include <QAction>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QMenu>
 #include <QVariant>
@@ -16,6 +17,7 @@
 #include "newtilesetdialog.h"
 #include "mainwindow.h"
 #include "projectmodel.h"
+#include "projectsettingsdialog.h"
 #include "project.h"
 #include "tileviewwindow.h"
 
@@ -32,6 +34,7 @@ ProjectPanel::ProjectPanel(MainWindow& mainwindow) :
 
     connect(&mainwindow, SIGNAL(projectChanged(Project*)), SLOT(on_projectChanged(Project*)));
     connect(ui->actionAdd_Existing, SIGNAL(triggered()), SLOT(on_addExisting_triggered()));
+    connect(ui->actionSettings, SIGNAL(triggered()), SLOT(on_settings_triggered()));
 }
 
 ProjectPanel::~ProjectPanel()
@@ -47,6 +50,7 @@ void ProjectPanel::contextMenuEvent(QContextMenuEvent *event)
     {
         QMenu menu(this);
         menu.addAction(ui->actionAdd_Existing);
+        menu.addAction(ui->actionSettings);
         menu.exec(event->globalPos());
     }
 }
@@ -74,6 +78,13 @@ void ProjectPanel::on_addExisting_triggered()
 
         mpProject->addScript(pscript);
     }
+}
+
+void ProjectPanel::on_settings_triggered()
+{
+    ProjectSettingsDialog dlg(QApplication::desktop());
+    dlg.setModal(true);
+    dlg.exec();
 }
 
 void ProjectPanel::on_projectChanged(Project *pproject)

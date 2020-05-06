@@ -69,6 +69,7 @@ void Project::setActiveProject(Project *pproject)
 // - Project Implementation
 
 Project::Project():
+    mSettings(),
     mName(),
     mFileName(),
     mBasePath(),
@@ -362,81 +363,18 @@ void Project::loadObjects()
     }
 }
 
-bool Project::load(const QString &fileName)
+bool Project::load()
 {
     Project::setActiveProject(this);
 
-    QFile file(fileName);
-    file.open(QIODevice::ReadOnly);
-
-    QXmlStreamReader stream;
-    stream.setDevice(&file);
-
-    QFileInfo info(file);
-    setBasePath(info.absolutePath());
-
     mSpriteAtlas.load(getTileAtlasPath());
 
-    setFileName(fileName);
-
     loadObjects();
-
-    while ( !stream.atEnd() )
-    {
-        QXmlStreamReader::TokenType type = stream.readNext();
-        switch ( type )
-        {
-            case QXmlStreamReader::StartElement:
-                {
-                    if ( stream.name() == "project" )
-                    {
-                        QStringRef nameref = stream.attributes().value("name");
-                        if ( !nameref.isEmpty() )
-                        {
-                            setName(nameref.toString());
-                        }
-                    }
-                    else if ( stream.name() == "script" )
-                    {
-                        QString path = QDir::toNativeSeparators(stream.readElementText());
-                        QString filepath = mBasePath + QDir::separator() + path;
-                        ScriptFile* pscript = new ScriptFile(filepath);
-                        pscript->setResourceName(path);
-                        mScripts.append(pscript);
-                    }
-                    else if ( stream.name() == "world" )
-                    {
-                        QString filepath = stream.readElementText();
-                        if ( !loadWorld(filepath) )
-                        {
-                            return false;
-                        }
-                    }
-                    else if ( stream.name() == "tileset" )
-                    {
-                        QString filepath = stream.readElementText();
-                        if ( !loadTileset(filepath) )
-                        {
-                            return false;
-                        }
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-    }
 
     return true;
 }
 
-void Project::save()
-{
-    saveProjectResources();
-    saveProjectFile();
-}
-
-void Project::saveProjectResources()
+void Project::saveDirtyResources()
 {
     QDir path(mBasePath);
 
@@ -478,40 +416,6 @@ void Project::saveProjectResources()
             entityWriter.write(entityfile, pworld->getEntities());
         }
     }
-}
-
-void Project::saveProjectFile()
-{
-    QFile file(mFileName);
-    file.open(QIODevice::WriteOnly);
-
-    QXmlStreamWriter stream(&file);
-    stream.setAutoFormatting(true);
-    stream.writeStartDocument();
-
-    stream.writeStartElement("project");
-    stream.writeAttribute("name", mName);
-
-    ScriptFile* pscript;
-    foreach (pscript, mScripts)
-    {
-        stream.writeTextElement("script", pscript->getResourceName());
-    }
-
-    TileSet* ptileset;
-    foreach (ptileset, mTileSets)
-    {
-        stream.writeTextElement("tileset", ptileset->getResourceName());
-    }
-
-    TileWorld* pworld;
-    foreach (pworld, mWorlds)
-    {
-        stream.writeTextElement("world", pworld->getResourceName());
-    }
-
-    stream.writeEndElement();
-    stream.writeEndDocument();
 }
 
 // - Building

@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QProgressBar>
 
+#include "project/projectdocument.h"
 #include "texture/texturesplitter.h"
 #include "texturepacker/texturepacker.h"
 #include "world/tileworld.h"
@@ -151,8 +152,14 @@ QString MainWindow::strippedName(const QString& fullFileName)
 
 void MainWindow::loadProject(const QString& fileName)
 {
-    Project* pproject = new Project();
-    if ( !pproject->load(fileName) )
+    QFile loadfile(fileName);
+    if ( !loadfile.open(QIODevice::ReadOnly) ) {
+        qWarning("Could not open project file");
+        return;
+    }
+
+    auto pproject = ProjectDocument::fromJson(loadfile);
+    if ( pproject == nullptr )
     {
         QMessageBox box;
         box.setText("Could not load the world file.");
@@ -170,7 +177,14 @@ void MainWindow::saveProject()
 {
     if ( mpProject != nullptr )
     {
-        mpProject->save();
+        QFile savefile(mpProject->getFileName());
+        if ( !savefile.open(QIODevice::WriteOnly) ) {
+            qWarning("Could not open save file.");
+            return;
+        }
+
+        ProjectDocument doc(*mpProject);
+        savefile.write(doc.toJson());
 
         setCurrentFile(mpProject->getFileName());
     }

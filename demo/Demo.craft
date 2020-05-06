@@ -1,15 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="Demo">
-    <script>scripts\demo\ClubAttackState.as</script>
-    <script>scripts\demo\DemoActionMap.as</script>
-    <script>scripts\demo\DemoClientActionMap.as</script>
-    <script>scripts\demo\GameClient.as</script>
-    <script>scripts\demo\GameServer.as</script>
-    <script>scripts\demo\Grudge.as</script>
-    <script>scripts\demo\Hero.as</script>
-    <script>scripts\demo\PatrolState.as</script>
-    <script>scripts\Demo\Mushroom.as</script>
-    <tileset>tilesets/forest-background.xml</tileset>
-    <tileset>tilesets/blocks.xml</tileset>
-    <world>worlds/map1.world</world>
-</project>
+{
+    "resources": {
+        "scripts": [
+            "scripts\\demo\\ClubAttackState.as",
+            "scripts\\demo\\DemoActionMap.as",
+            "scripts\\demo\\DemoClientActionMap.as",
+            "scripts\\demo\\GameClient.as",
+            "scripts\\demo\\GameServer.as",
+            "scripts\\demo\\Grudge.as",
+            "scripts\\demo\\Hero.as",
+            "scripts\\demo\\PatrolState.as",
+            "scripts\\Demo\\Mushroom.as"
+        ],
+        "tilesets": [
+            "tilesets/forest-background.xml",
+            "tilesets/blocks.xml"
+        ],
+        "worlds": [
+            "worlds/map1.world"
+        ]
+    },
+    "settings": {
+        "buildpaths": "../scripts;../src/mods/mod_ui/scripts"
+    }
+}
