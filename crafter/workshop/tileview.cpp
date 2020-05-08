@@ -1,7 +1,6 @@
 #include "tileview.h"
 #include "ui_tileview.h"
 
-#include <QDebug>
 #include <QPixmap>
 #include <QMouseEvent>
 #include <QPainter>

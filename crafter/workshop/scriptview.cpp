@@ -1,6 +1,7 @@
 #include "scriptview.h"
 #include "ui_scriptview.h"
 
+#include <QChar>
 #include <QTextDocument>
 #include <QFont>
 #include <QPainter>
@@ -100,6 +101,21 @@ void ScriptView::resizeEvent(QResizeEvent *e)
     mpLineNumberArea->setGeometry(area);
 }
 
+void ScriptView::keyPressEvent(QKeyEvent *e)
+{
+    QPlainTextEdit::keyPressEvent(e);
+
+    int key = e->key();
+    if ( key == Qt::Key_Enter || key == Qt::Key_Return )
+    {
+        autoIndent();
+    }
+    else if ( key == '{' )
+    {
+        autoCloseBlock();
+    }
+}
+
 // - Operations
 
 void ScriptView::installFont()
@@ -182,6 +198,58 @@ void ScriptView::paintLineNumberArea(QPaintEvent* pevent)
         bottom = top + (int) + blockBoundingRect(block).height();
         ++blocknumber;
     }
+}
+
+int determineIndent(const QTextBlock& block)
+{
+   QString text = block.text();
+   QChar lastChar = text[text.length() - 1];
+   int count = 0;
+   if ( lastChar == '{' ) count++;
+   for ( auto c : text )
+   {
+      if ( c.isSpace() )
+      {
+         count++;
+      }
+      else
+      {
+         break;
+      }
+   }
+   return count;
+}
+
+void ScriptView::autoIndent()
+{
+    QTextCursor cursor = textCursor();
+    QTextBlock block = cursor.block().previous(); // get previous line
+    int count = determineIndent(block);
+
+    for ( int i = 0; i < count; ++i )
+        cursor.insertText("\t");
+}
+
+void ScriptView::autoCloseBlock()
+{
+    QTextCursor cursor = textCursor();
+    QTextBlock block = cursor.block(); // get current line
+    int count = determineIndent(block);
+
+    // insert empty line & remember position where to restore cursor for typing
+    cursor.insertText("\n");
+    for ( int i = 0; i < count; ++i )
+        cursor.insertText("\t");
+    int pos = cursor.position();
+
+    // add closing bracket
+    cursor.insertText("\n");
+    for ( int i = 0; i < count - 1; ++i )
+        cursor.insertText("\t");
+    cursor.insertText("}");
+
+    cursor.setPosition(pos);
+    setTextCursor(cursor);
 }
 
 // - Slots

@@ -39,6 +39,7 @@ public slots:
 protected:
   // overrides
     virtual void resizeEvent(QResizeEvent *e);
+    virtual void keyPressEvent(QKeyEvent *e);
 
 private slots:
     void updateLineNuberAreaWidth(int width);
@@ -51,6 +52,9 @@ private:
     void installHighlighter();
     void installLineNumberArea();
 
+    void autoIndent();
+    void autoCloseBlock();
+
   // data
     Ui::ScriptView *ui;
     ScriptFile*           mpScriptFile;
@@ -58,7 +62,6 @@ private:
     ScriptLineNumberArea* mpLineNumberArea;
     QPair<int, int>       mCountCache;
     int                   mTabWidth;
-
 };
 
 #endif // SCRIPTVIEW_H

@@ -2,7 +2,6 @@
 #include "ui_projectsettingsdialog.h"
 
 #include <QtGlobal>
-#include <QDebug>
 #include <QLineEdit>
 
 #include <iostream>
