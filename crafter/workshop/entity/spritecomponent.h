@@ -28,6 +28,10 @@ public:
         mSize = size;
     }
 
+    const Animations& getAnimations() const {
+        return mAnimations;
+    }
+
     const QString& getTexture() const {
         return mTexture;
     }

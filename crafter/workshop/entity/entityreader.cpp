@@ -116,7 +116,7 @@ SpriteComponent* EntityReader::readSpriteComponent(QDomElement &element)
                 QDomElement tileelement = animelement.firstChildElement("tile");
                 while ( !tileelement.isNull() )
                 {
-                    QString tilename = animelement.attribute("name");
+                    QString tilename = tileelement.attribute("name");
                     if ( tilename.isNull() || tilename.isEmpty() )
                     {
                         // invalid name!

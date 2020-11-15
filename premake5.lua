@@ -44,6 +44,7 @@ require "proj-xml"
 
 group "Libraries"
 	require "proj-libcil"
+	require "proj-libyasc"
 
 group "Mods"
 	require "proj-modyas"

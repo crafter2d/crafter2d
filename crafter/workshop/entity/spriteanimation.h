@@ -45,6 +45,9 @@ public:
         mName = name;
     }
 
+    const Tiles& getTiles() const {
+        return mTiles;
+    }
     void addTile(const QString& tilename);
 
 private:

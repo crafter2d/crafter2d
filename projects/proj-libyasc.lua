@@ -1,15 +1,15 @@
 -- Crafter 2D PreMake 5 configuration file
 -- Copyright 2010-2019, Jeroen Broekhuizen
 
-project "libcil"
+project "libyasc"
 	kind "StaticLib"
-	location "../build/libraries/libcil"
+	location "../build/libraries/libyasc"
 	
 	setDefaultProjectSettings()
 	
 	-- set project files
-	files { "../src/libraries/libcil/**.cpp", "../src/libraries/libcil/**.h", "../src/libraries/libcil/**.inl" }
-	includedirs { "../src" }
+	files { "../src/libraries/libyasc/**.cpp", "../src/libraries/libyasc/**.h", "../src/libraries/libyasc/**.inl" }
+	includedirs { "../src", "../src/libraries" }
     libdirs { "../bin" }
 	
 	filter "configurations:Debug"
@@ -24,6 +24,7 @@ project "libcil"
     -- Systems
 	filter "system:Windows"
 		defines { "WIN32", "_ALLOW_KEYWORD_MACROS" }
+		includedirs { path.join(libdir, "antlr/include") }
 
 	filter "system:linux"
 		defines { "LINUX" }
