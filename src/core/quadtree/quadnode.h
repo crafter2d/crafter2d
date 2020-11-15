@@ -2,6 +2,7 @@
 #define QUAD_NODE_H
 
 #include <algorithm>
+#include <iterator>
 #include <memory>
 #include <vector>
 
@@ -86,21 +87,16 @@ namespace c2d
       }
 
       void erase(const T& element) {
-         if ( mChildren.empty() )
-         {
-            auto it = std::find_if(mElements.begin(), mElements.end(), [&element](const Element<T>& e) {
-               return e.pdata == &element;
-            });
-            if ( it != mElements.end() ) {
-               mElements.erase(it);
-            }
+         auto it = std::find_if(mElements.begin(), mElements.end(), [&element](const Element<T>& e) {
+            return e.pdata == &element;
+         });
+         if ( it != mElements.end() ) {
+            mElements.erase(it);
          }
-         else
+         
+         for ( auto& node : mChildren )
          {
-            for ( auto& node : mChildren )
-            {
-               node.erase(element);
-            }
+            node.erase(element);
          }
       }
 
