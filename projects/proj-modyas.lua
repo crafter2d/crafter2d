@@ -34,7 +34,7 @@ project "mod_yas"
         libdirs { "../bin" }
 
     filter { "system:linux", "Debug" }
-        linkoptions { "-lCored", "-llibyas-cild" }
+        linkoptions { "-lCored", "-llibyas_cild" }
 
     filter { "system:linux", "Release" }
-        linkoptions { "-lCore", "-llibyas-cil" }
+        linkoptions { "-lCore", "-llibyas_cil" }

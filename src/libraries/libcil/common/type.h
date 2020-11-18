@@ -26,6 +26,7 @@ namespace yasc
 
       Type();
       Type(Type&& that);
+      Type(Kind kind);
       Type(const Type& that);
       ~Type();
 

@@ -27,19 +27,12 @@ namespace c2d
       }
 
       int count() const {
-         if ( !mChildren.empty() )
+         int total = 0;
+         for ( auto& node : mChildren )
          {
-            int total = 0;
-            for ( auto& node : mChildren )
-            {
-               total += node.count();
-            }
-            return total;
+            total += node.count();
          }
-         else
-         {
-            return mElements.size();
-         }
+         return total + mElements.size();
       }
 
       void resize(const Size& newdimension) {
@@ -102,12 +95,12 @@ namespace c2d
 
    private:
 
-      template <typename T>
+      template <class E>
       struct Element {
-         const T* pdata;
+         const E* pdata;
          RectF    bounds;
 
-         Element(const T& data, const RectF& bounds) : pdata(&data), bounds(bounds) {}
+         Element(const E& data, const RectF& bounds) : pdata(&data), bounds(bounds) {}
       };
 
       enum class Quadrant : uint8_t { eTopLeft, eTopRight, eBottomRight, eBottomLeft };
