@@ -143,15 +143,13 @@ namespace yasc
       mInfo(ObjectInfo(String::empty()))
    {
    }
-
-   /*
+   
    Type::Type(Kind kind):
       mKind(kind),
-      mInfo(kind == eArray ? ArrayInfo() : ObjectInfo())
+      mInfo(ObjectInfo(String::empty()))
    {
       ASSERT(kind < eObject || kind == eNull);
    }
-   */
 
    Type::Type(Type&& that):
       mKind(that.mKind),

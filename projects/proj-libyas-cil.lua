@@ -1,16 +1,16 @@
 -- Crafter 2D PreMake 5 configuration file
 -- Copyright 2010-2019, Jeroen Broekhuizen
 
-project "yas-cil"
+project "libyas_cil"
 	kind "StaticLib"
-	location "../build/libraries/yas-cil"
+	location "../build/libraries/libyas_cil"
 	
 	setDefaultProjectSettings()
 	
 	-- set project files
-	files { "../src/libraries/yas-cil/**.cpp", "../src/libraries/yas-cil/**.h", "../src/libraries/yas-cil/**.inl" }
+	files { "../src/libraries/libcil/**.cpp", "../src/libraries/libcil/**.h", "../src/libraries/libcil/**.inl" }
 	includedirs { "../src" }
-    libdirs { "../bin" }
+	libdirs { "../bin" }
 	
 	filter "configurations:Debug"
 		defines { "_DEBUG" }

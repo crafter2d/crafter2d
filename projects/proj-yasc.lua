@@ -42,8 +42,8 @@ project "Yasc"
         links { "antlr3c" }
 
     filter { "system:linux", "Debug" }
-        linkoptions { "-lCored", "-llibcild" }
+        linkoptions { "-lCored", "-llibyas_cild" }
 
     filter { "system:linux", "Release" }
-        linkoptions { "-lCore", "-llibcil" }
+        linkoptions { "-lCore", "-llibyas_cil" }
 
