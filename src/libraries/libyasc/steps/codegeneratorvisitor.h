@@ -16,14 +16,10 @@
 #include "libyasc/scope/scopestack.h"
 #include "libyasc/functionbuilder.h"
 
-namespace yasc
-{
-   class Type;
-}
-
 namespace CIL
 {
    class Class;
+   class Type;
    class SwitchTable;
 };
 
@@ -108,7 +104,7 @@ private:
    
  // conversion
    CIL::Class* toCilClass(const ASTClass& klass);
-   yasc::Type toCilType(const ASTType& type);
+   CIL::Type toCilType(const ASTType& type);
    Modifiers toCilModifiers(const ASTModifiers& modifiers);
          
  // data

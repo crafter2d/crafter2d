@@ -28,12 +28,12 @@ project "mod_ogl"
         links { "Core", "opengl32", "glu32", "freetype" }
 	
 		includedirs {
-			path.join(libdir, "sdl/include"),
+			path.join(libdir, "sdl2/include"),
 			path.join(libdir, "freetype2/include"),
 		}
 
 		libdirs {
-			path.join(libdir, "sdl/lib"),
+			path.join(libdir, "sdl2/lib"),
 			path.join(libdir, "freetype2/lib"),
 		}
 		

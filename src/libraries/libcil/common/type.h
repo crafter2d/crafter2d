@@ -1,13 +1,13 @@
 
-#ifndef TYPE_H
-#define TYPE_H
+#ifndef CIL_TYPE_H
+#define CIL_TYPE_H
 
 #include <memory>
 #include <variant>
 
 #include "core/string/string.h"
 
-namespace yasc
+namespace CIL
 {
    class Type
    {
@@ -25,8 +25,8 @@ namespace yasc
       static Type fromString(const String& typestr);
 
       Type();
+      explicit Type(Kind kind);
       Type(Type&& that);
-      Type(Kind kind);
       Type(const Type& that);
       ~Type();
 
@@ -91,7 +91,6 @@ namespace yasc
 
     // operations
       void determineArrayDimension();
-      void move(Type&& that);
 
     // data      
       Kind mKind;
@@ -99,4 +98,4 @@ namespace yasc
    };
 }
 
-#endif // TYPE_H
+#endif // CIL_TYPE_H

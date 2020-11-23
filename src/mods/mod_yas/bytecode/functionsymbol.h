@@ -11,6 +11,8 @@ namespace ByteCode
    class FunctionSymbol : public Symbol
    {
    public:
+      virtual ~FunctionSymbol() = default;
+
       String klass;
       int func;
       int args;

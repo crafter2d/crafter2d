@@ -40,3 +40,4 @@ Package.StoreAssociation.xml
 /src/unittest/test
 *.suo
 /.vs
+*.lastcodeanalysissucceeded

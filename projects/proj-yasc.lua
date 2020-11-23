@@ -27,7 +27,7 @@ project "Yasc"
 		defines { "WIN32" }
 		includedirs { path.join(libdir, "antlr/include") }
 		libdirs { path.join(libdir, "antlr/lib") }
-    	links { "Core", "libcil" }
+    	links { "Core", "libyas_cil" }
 	
 	filter { "system:Windows", "Debug" }
 		links { "antlr3cd.lib" }

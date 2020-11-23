@@ -25,6 +25,7 @@ project "libyasc"
 	filter "system:Windows"
 		defines { "WIN32", "_ALLOW_KEYWORD_MACROS" }
 		includedirs { path.join(libdir, "antlr/include") }
+		links { "Core", "libyas_cil" }
 
 	filter "system:linux"
 		defines { "LINUX" }
