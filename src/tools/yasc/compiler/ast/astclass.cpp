@@ -336,25 +336,36 @@ bool ASTClass::isMember(const String& name) const
 
 void ASTClass::addMember(ASTMember* pmember)
 {
-   if ( pmember->getKind() == ASTMember::eField )
+   switch ( pmember->getKind() )
    {
-      ASTField* pfield = dynamic_cast<ASTField*>(pmember);
-
-      if ( pfield->getVariable().getModifiers().isStatic() )
+   case ASTMember::eField:
       {
-         mStatics.push_back(pfield);
-      }
-      else
-      {
-         mFields.push_back(pfield);
-      }
-   }
-   else
-   {
-      ASTFunction* pfunction = dynamic_cast<ASTFunction*>(pmember);
-      pfunction->setClass(*this);
+         ASTField* pfield = static_cast<ASTField*>(pmember);
 
-      mFunctions.insert(pfunction);
+         if ( pfield->getVariable().getModifiers().isStatic() )
+         {
+            mStatics.push_back(pfield);
+         }
+         else
+         {
+            mFields.push_back(pfield);
+         }
+      }
+      break;
+   case ASTMember::eConstructor:
+   case ASTMember::eFunction:
+      {
+         ASTFunction* pfunction = static_cast<ASTFunction*>(pmember);
+         pfunction->setClass(*this);
+
+         mFunctions.insert(pfunction);
+      }
+      break;
+   case ASTMember::eProperty:
+      {
+         // not implemented yet
+      }
+      break;
    }
 
    pmember->setClass(*this);
