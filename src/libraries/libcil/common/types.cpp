@@ -3,7 +3,7 @@
 
 #include "type.h"
 
-namespace yasc
+namespace CIL
 {
    Types::Types() :
       mTypes()
