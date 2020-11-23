@@ -29,12 +29,12 @@ namespace CIL
       mName = name;
    }
 
-   const yasc::Type& Field::getType() const
+   const Type& Field::getType() const
    {
       return mType;
    }
 
-   void Field::setType(const yasc::Type& type)
+   void Field::setType(const Type& type)
    {
       mType = type;
    }

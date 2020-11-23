@@ -43,7 +43,7 @@ require "proj-game"
 require "proj-xml"
 
 group "Libraries"
-	require "proj-libyas-cil"
+	require "proj-libyas_cil"
 	require "proj-libyasc"
 
 group "Mods"

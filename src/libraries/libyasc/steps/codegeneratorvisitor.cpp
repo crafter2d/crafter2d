@@ -129,7 +129,7 @@ void CodeGeneratorVisitor::visit(ASTFunction& ast)
       for ( int index = 0; index < locals.size(); ++index )
       {
          const ASTType& local = locals[index];
-         yasc::Type type = yasc::Type::fromString(local.toString());
+         CIL::Type type = CIL::Type::fromString(local.toString());
          pfunction->addLocal(type);
       }
       
@@ -1680,10 +1680,10 @@ CIL::Class* CodeGeneratorVisitor::toCilClass(const ASTClass& klass)
    return pclass;
 }
 
-yasc::Type CodeGeneratorVisitor::toCilType(const ASTType& type)
+CIL::Type CodeGeneratorVisitor::toCilType(const ASTType& type)
 {
    String typestr = type.toString();
-   return yasc::Type::fromString(typestr);
+   return CIL::Type::fromString(typestr);
 }
 
 Modifiers CodeGeneratorVisitor::toCilModifiers(const ASTModifiers& modifiers)

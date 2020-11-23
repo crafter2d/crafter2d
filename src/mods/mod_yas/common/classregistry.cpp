@@ -1,6 +1,7 @@
 
 #include "classregistry.h"
 
+#include <iterator>
 #include <memory>
 
 #include "core/defines.h"

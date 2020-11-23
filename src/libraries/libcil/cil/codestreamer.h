@@ -2,11 +2,6 @@
 #ifndef CIL_CODE_STREAMER_H
 #define CIL_CODE_STREAMER_H
 
-namespace yasc
-{
-   class Type;
-}
-
 class DataStream;
 class String;
 
@@ -18,6 +13,7 @@ namespace CIL
    class Guard;
    class Instruction;
    class SwitchTable;
+   class Type;
 
    class CodeStreamer
    {
@@ -35,13 +31,13 @@ namespace CIL
       void writeFunction(const Function& function);
       void writeGuard(const Guard& guard);
       void writeTable(const SwitchTable& table);
-      void writeType(const yasc::Type& type);
+      void writeType(const Type& type);
       void writeInstruction(const Instruction& inst);
 
     // reading
       Field*       readField();
       Function*    readFunction(const String& klass);
-      yasc::Type   readType();
+      Type         readType();
       Guard*       readGuard();
       SwitchTable* readTable();
       Instruction  readInstruction();

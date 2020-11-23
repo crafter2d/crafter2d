@@ -2,7 +2,7 @@
 #ifndef VIRTUAL_FIELD_H
 #define VIRTUAL_FIELD_H
 
-#include <libcil/common/type.h>
+#include "libcil/common/type.h"
 
 #include "core/string/string.h"
 
@@ -12,7 +12,7 @@ class VirtualField
 {
 public:
    VirtualField();
-   VirtualField(const String& name, const yasc::Type& type);
+   VirtualField(const String& name, const CIL::Type& type);
    ~VirtualField();
 
  // get/set
@@ -22,8 +22,8 @@ public:
    const VirtualClass& getClass() const;
    void                setClass(VirtualClass& klass);
 
-   const yasc::Type& getType() const;
-   void              setType(const yasc::Type& type);
+   const CIL::Type& getType() const;
+   void             setType(const CIL::Type& type);
 
    int  getIndex() const;
    void setIndex(int index);
@@ -31,7 +31,7 @@ public:
 private:
 
  // data
-   yasc::Type     mType;
+   CIL::Type      mType;
    String         mName;
    VirtualClass*  mpClass;
    int            mIndex;
