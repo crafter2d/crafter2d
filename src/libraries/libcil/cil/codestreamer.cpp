@@ -94,20 +94,18 @@ namespace CIL
          }
       }
 
-      const yasc::Types& args = function.getArguments();
+      const Types& args = function.getArguments();
       mStream << args.size();
-      for ( int index = 0; index < args.size(); ++index )
+      for ( auto& arg : args )
       {
-         const yasc::Type& type = args[index];
-         writeType(type);
+         writeType(arg);
       }
 
-      const yasc::Types& locals = function.getLocals();
+      const Types& locals = function.getLocals();
       mStream << locals.size();
-      for ( int index = 0; index < locals.size(); ++index )
+      for ( auto& local : locals )
       {
-         const yasc::Type& type = locals[index];
-         writeType(type);
+         writeType(local);
       }
 
       writeType(function.getReturnType());
@@ -137,7 +135,7 @@ namespace CIL
       }
    }
 
-   void CodeStreamer::writeType(const yasc::Type& type)
+   void CodeStreamer::writeType(const Type& type)
    {
       mStream << type.toString();
    }
@@ -290,7 +288,7 @@ namespace CIL
          pfunction->addLocal(readType());
       }
 
-      yasc::Type rettype = readType();
+      Type rettype = readType();
       pfunction->setReturnType(std::move(rettype));
 
       int guardc;
@@ -322,11 +320,11 @@ namespace CIL
       return pfunction;
    }
 
-   yasc::Type CodeStreamer::readType()
+   Type CodeStreamer::readType()
    {
       String type;
       mStream >> type;
-      return yasc::Type::fromString(type);
+      return Type::fromString(type);
    }
 
    Guard* CodeStreamer::readGuard()

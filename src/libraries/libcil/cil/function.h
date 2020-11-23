@@ -2,6 +2,7 @@
 #ifndef CIL_FUNCTION_H
 #define CIL_FUNCTION_H
 
+#include "core/defines.h"
 #include "core/string/string.h"
 #include "core/string/stringlist.h"
 
@@ -24,40 +25,43 @@ namespace CIL
       ~Function();
 
     // get/set
-      const Class& getClass() const;
-      void         setClass(Class& klass);
+      const Class& getClass() const { 
+         ASSERT_PTR(mpClass);
+         return *mpClass;
+      }
+      void         setClass(Class& klass) { mpClass = &klass; }
 
-      const String& getName() const;
-      void          setName(const String& name);
+      const String& getName() const { return mName; }
+      void          setName(const String& name) { mName = name; }
 
-      const Instructions& getInstructions() const;
-      void                setInstructions(const Instructions& instructions);
+      const Instructions& getInstructions() const { return mInstructions; }
+      void                setInstructions(const Instructions& instructions) { mInstructions = instructions; }
 
-      const Guards& getGuards() const;
-      void          setGuards(const Guards& guards);
+      const Guards& getGuards() const { return mGuards; }
+      void          setGuards(const Guards& guards) { mGuards = guards; }
 
-      const SwitchTables& getSwitchTables() const;
-      void                setSwitchTables(const SwitchTables& tables);
+      const SwitchTables& getSwitchTables() const { return mSwitchTables; }
+      void                setSwitchTables(const SwitchTables& tables) { mSwitchTables = tables; }
 
-      const yasc::Type& getReturnType() const;
-      void              setReturnType(yasc::Type&& type);
+      const Type& getReturnType() const { return mReturnType; }
+      void        setReturnType(Type&& type) { mReturnType = std::move(type); }
 
-      const StringList& getAnnotations() const;
+      const StringList& getAnnotations() const { return mAnnotations; }
 
-      const Modifiers& getModifiers() const;
-      void             setModifiers(const Modifiers& modifiers);
+      const Modifiers& getModifiers() const { return mModifiers; }
+      void             setModifiers(const Modifiers& modifiers) { mModifiers = modifiers; }
 
-      const yasc::Types& getArguments() const;
-      const yasc::Types& getLocals() const;
+      const Types& getArguments() const { return mArguments; }
+      const Types& getLocals() const { return mLocals; }
 
     // query
       bool isMemberOf(const Class& klass) const;
 
     // operation
-      void addArgument(const yasc::Type& type);
-      void addArgument(yasc::Type&& type);
-      void addLocal(const yasc::Type& type);
-      void addLocal(yasc::Type&& type);
+      void addArgument(const Type& type);
+      void addArgument(Type&& type);
+      void addLocal(const Type& type);
+      void addLocal(Type&& type);
       void addGuard(Guard* pguard);
       void addSwitchTable(SwitchTable* ptable);
       void addAnnotation(const String& annotation);
@@ -66,9 +70,9 @@ namespace CIL
 
     // data
       Class*         mpClass;
-      yasc::Types    mArguments;
-      yasc::Types    mLocals;
-      yasc::Type     mReturnType;
+      Types          mArguments;
+      Types          mLocals;
+      Type           mReturnType;
       StringList     mAnnotations;
       String         mName;
       Instructions   mInstructions;
@@ -77,4 +81,5 @@ namespace CIL
       Modifiers      mModifiers;
    };
 }
+
 #endif // CIL_FUNCTION_H

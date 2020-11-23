@@ -26,7 +26,7 @@ project "mod_yas"
 		defines { "WIN32", "SCRIPT_EXPORTS", "_ALLOW_KEYWORD_MACROS" }
 		includedirs { path.join(libdir, "zlib/include") }
 		libdirs { path.join(libdir, "zlib/lib") }
-    	links { "Core", "yas-cil" }
+    	links { "Core", "libyas_cil" }
 
 	filter "system:linux"
 		defines { "LINUX" }

@@ -286,17 +286,7 @@ void SDLGameWindow::onMouseButtonEvent(SDL_MouseButtonEvent& event)
    MouseEvent::Button button = toMouseEventButton(event.button);
    int keymodifiers = getModifiers();
 
-   MouseEvent::EventType eventtype;
-   switch ( event.type )
-   {
-      case SDL_MOUSEBUTTONDOWN:
-         eventtype = MouseEvent::ePressed;
-         break;
-      case SDL_MOUSEBUTTONUP:
-         eventtype = MouseEvent::eReleased;
-         break;
-   }
-
+   MouseEvent::EventType eventtype = event.type == SDL_MOUSEBUTTONDOWN ? MouseEvent::ePressed : MouseEvent::eReleased;
    MouseEvent mouseevent(button, eventtype, keymodifiers, location);
 
    dispatch(mouseevent);

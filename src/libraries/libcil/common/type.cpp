@@ -5,7 +5,7 @@
 
 #include "core/defines.h"
 
-namespace yasc
+namespace CIL
 {
    // - Statics
 
