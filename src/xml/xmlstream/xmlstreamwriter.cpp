@@ -83,6 +83,11 @@ namespace c2d::xml
    {
    }
 
+   XmlStreamWriter::~XmlStreamWriter()
+   {
+      delete mpImpl;
+   }
+
    void XmlStreamWriter::startElement(const String& name)
    {
       mpImpl->startElement(name);

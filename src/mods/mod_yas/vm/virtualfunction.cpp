@@ -65,32 +65,32 @@ void VirtualFunction::setModifiers(const Modifiers& modifiers)
    mModifiers = modifiers;
 }
 
-const yasc::Types& VirtualFunction::getLocals() const
+const CIL::Types& VirtualFunction::getLocals() const
 {
    return mLocals;
 }
 
-void VirtualFunction::setLocals(const yasc::Types& types)
+void VirtualFunction::setLocals(const CIL::Types& types)
 {
    mLocals = types;
 }
 
-const yasc::Types& VirtualFunction::getArguments() const
+const CIL::Types& VirtualFunction::getArguments() const
 {
    return mArguments;
 }
 
-void VirtualFunction::setArguments(const yasc::Types& args)
+void VirtualFunction::setArguments(const CIL::Types& args)
 {
    mArguments = args;
 }
 
-const yasc::Type& VirtualFunction::getReturnType() const
+const CIL::Type& VirtualFunction::getReturnType() const
 {
    return mReturnType;
 }
 
-void VirtualFunction::setReturnType(const yasc::Type& type)
+void VirtualFunction::setReturnType(const CIL::Type& type)
 {
    mReturnType = type;
 }

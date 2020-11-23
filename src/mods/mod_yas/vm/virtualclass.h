@@ -6,6 +6,8 @@
 
 #include "core/string/string.h"
 
+#include "libcil/common/types.h"
+
 #include "mod_yas/script_base.h"
 
 #include "virtualclasses.h"
@@ -101,10 +103,8 @@ public:
          VirtualValue& getStatic(int index);
    void                setStatic(int index, const VirtualValue& value);
 
-   void offsetCode(int offset);
-
  // search
-   VirtualFunction* findExactMatch(const String& name, const yasc::Types& args);
+   VirtualFunction* findExactMatch(const String& name, const CIL::Types& args);
    
 private:
 

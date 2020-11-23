@@ -33,14 +33,14 @@ public:
    const Modifiers& getModifiers() const;
    void             setModifiers(const Modifiers& modifiers);
 
-   const yasc::Types& getArguments() const;
-   void               setArguments(const yasc::Types& args);
+   const CIL::Types& getArguments() const;
+   void               setArguments(const CIL::Types& args);
 
-   const yasc::Types& getLocals() const;
-   void               setLocals(const yasc::Types& args);
+   const CIL::Types& getLocals() const;
+   void               setLocals(const CIL::Types& args);
 
-   const yasc::Type& getReturnType() const;
-   void              setReturnType(const yasc::Type& type);
+   const CIL::Type& getReturnType() const;
+   void              setReturnType(const CIL::Type& type);
 
    const StringList& getAnnotations() const;
 
@@ -78,9 +78,9 @@ private:
    String               mName;
    VirtualClass*        mpClass;
    Modifiers            mModifiers;
-   yasc::Types          mArguments;
-   yasc::Types          mLocals;
-   yasc::Type           mReturnType;
+   CIL::Types          mArguments;
+   CIL::Types          mLocals;
+   CIL::Type           mReturnType;
    VirtualGuards        mGuards;
    VirtualLookupTables  mLookups;
    StringList           mAnnotations;

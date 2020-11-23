@@ -7,7 +7,7 @@ namespace ByteCode
    class Symbol
    {
    public:
-      virtual ~Symbol() {}
+      virtual ~Symbol() = default;
    };
 }
 
