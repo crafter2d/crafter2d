@@ -3,6 +3,12 @@ language: cpp
 compiler: gcc
 sudo: true
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "km9UY0OuSnNPThAXyBTCsS8LwnxtqvT+biaST93Zg867IyJ9Lu95w23Dd56iCeQQImJtrmQxS9eCCEWVdEA4mi34AgeHqFhiqVox9q0KQN4qal6zZipAnDk7Lxx5rbf7uzWIv9TncRQb+zplgMgrLHZcZ8R1SPeLMMJ9Xbwwsl6ZO/WyKMRRavcQv/MgUd7Xw64XQV9etARQHeBP6nvnNIDw1Kz9LW6R6oW5spSES06nyftwW1rowdepu6/Mob4m8PtsFq5plJMdl/z1ru4Pz6SbOsnop1gna8wqYwNFGa1K5JBLnjcYkJ1T8OtHy008ZeVxDmofBp60qT6SsH3E3hZELfc0bhK1J6KPNXKJDvGO0LuJkDVwmNmm1LsJ4ZSwpo7/QDVwSGq/SuVjreMtaKGaSxRbl2nlJDcdShu53aognwdoG5hrDEgnxaUADmMnAJI5GxNhuzHoCHoLpqh8lgQXBM5sZgJlKeHsNHV2AmCzc4O0QRQbIka+OUumKnom14Us7yPqNnv6RmDQ1olTqBZczdiPd1DVz6LyFFaY0c27in5ggKSWP50S78zs8NorEUXKN4oxIgwcaHKbULisJCliW5XGt+tOBhPu2cZWSjRYyiQXNwoo48EyVXhNUSqXMRRKTW/u8dfT7pH8Uv15/LfWApVt32Y64HJMGDP+UFo="
+
 addons:
   apt:
     sources:
@@ -15,6 +21,17 @@ addons:
     - libfreetype6-dev
     - libtinyxml-dev
     - libunittest++-dev
+    
+  coverity_scan:
+    project:
+      name: "crafter2d/crafter2d"
+      description: "2D Game Engine framework"
+    notification_email: jbroekhuizen@hotmail.nl
+    build_command_prepend:
+      - premake-core/bin/release/premake5 --travis gmake
+      - cd build
+    build_command: make
+    branch_pattern: coverity_scan
 
 before_install:
   - ./projects/install-libzip.sh
@@ -23,10 +40,13 @@ before_install:
   - ./projects/install-libantlr3.sh
   - ./projects/install-libsquish.sh
   - ./projects/install-googletest.sh
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 script:
-  - premake-core/bin/release/premake5 --travis gmake
-  - cd build
-  - make
-  - cd ../bin && LD_LIBRARY_PATH=. ./UnitTestd
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then 
+      premake-core/bin/release/premake5 --travis gmake;
+      cd build;
+      make;
+      cd ../bin && LD_LIBRARY_PATH=. ./UnitTestd;
+    fi
 
