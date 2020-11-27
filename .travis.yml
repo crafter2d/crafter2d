@@ -27,8 +27,8 @@ addons:
       name: "crafter2d/crafter2d"
       description: "2D Game Engine framework"
     notification_email: jbroekhuizen@hotmail.nl
-    build_command_prepend: premake-core/bin/release/premake5 --travis gmake
-    build_command: cd build && make
+    build_command_prepend: premake-core/bin/release/premake5 --travis gmake && cd build
+    build_command: make
     branch_pattern: coverity_scan
 
 before_install:
