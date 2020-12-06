@@ -19,10 +19,8 @@
  ***************************************************************************/
 #include "file.h"
 
-#include "core/defines.h"
 #include "core/string/string.h"
 
-#include "buffer.h"
 #include "filesystem.h"
 
 // static 
@@ -97,7 +95,7 @@ String File::toNativeSeparator(const String& filepath)
 
 File::File():
    mFilename(),
-   mpBuffer(nullptr)
+   mpBuffer()
 {
 }
 
@@ -105,25 +103,13 @@ File::~File()
 {
 }
 
-Buffer& File::getBuffer()
-{
-   ASSERT_PTR(mpBuffer)
-   return *mpBuffer;
-}
-
-void File::setBuffer(Buffer* pbuffer)
-{
-   delete mpBuffer;
-   mpBuffer = pbuffer;
-}
-
 bool File::open(const String& filename, int modus)
 {
    mFilename = filename;
    if ( virOpen(filename, modus) )
    {
-      getBuffer().setWritting(!IS_SET(modus, File::ERead));
-
+      ASSERT(mpBuffer);
+      mpBuffer->setWritting(!IS_SET(modus, File::ERead));
       return true;
    }
 
@@ -146,35 +132,35 @@ const String& File::getFileName() const
 
 int File::read(void* ptr, int size)
 {
-   return getBuffer().read(ptr, size);
+   return mpBuffer->read(ptr, size);
 }
 
 int File::write(const void* ptr, int size)
 {
-   return getBuffer().write(ptr, size);
+   return mpBuffer->write(ptr, size);
 }
 
 int File::write(const String& text)
 {
    std::string data = text.toUtf8();
-   return getBuffer().write((void*)data.c_str(), data.length());
+   return mpBuffer->write((void*)data.c_str(), data.length());
 }
 
 char File::getc()
 {
-   return getBuffer().getchar();
+   return mpBuffer->getchar();
 }
 
 char File::peekc()
 {
-   return getBuffer().peekchar();
+   return mpBuffer->peekchar();
 }
 
 // Search & positioning
 
 void File::seek(int pos, int mode)
 {
-   return getBuffer().seek(pos, mode);
+   return mpBuffer->seek(pos, mode);
 }
 
 int File::tell() const
@@ -202,6 +188,5 @@ bool File::virOpen(const String& , int)
 
 void File::virClose()
 {
-   delete mpBuffer;
-   mpBuffer = nullptr;
+   mpBuffer.reset();
 }

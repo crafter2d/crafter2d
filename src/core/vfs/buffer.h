@@ -22,10 +22,12 @@
 
 #include <string>
 
+#include "core/core_base.h"
+
 class FileBuffer;
 class MemoryBuffer;
 
-class Buffer
+class CORE_API Buffer
 {
 public:
    static Buffer*   fromFile(FILE* pfile);
@@ -46,7 +48,6 @@ public:
    virtual void seek(int pos, int mode) = 0;
    virtual int  tell() const = 0;
    virtual bool eof() const = 0;
-
    virtual int size() = 0;
 
  // casting

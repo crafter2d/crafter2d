@@ -20,12 +20,15 @@
 #ifndef FILE_H
 #define FILE_H
 
+#include <stdio.h>
+#include <memory>
+
 #include "core/string/string.h"
 #include "core/core_base.h"
+#include "core/defines.h"
 
-#include <stdio.h>
+#include "buffer.h"
 
-class Buffer;
 class String;
 
 /**
@@ -72,8 +75,13 @@ public:
    virtual bool isValid() const = 0;
 
 protected:
-   Buffer&  getBuffer();
-   void     setBuffer(Buffer* pbuffer);
+   Buffer& getBuffer() { 
+      ASSERT(mpBuffer);
+      return *mpBuffer;
+   }
+   void setBuffer(Buffer* pbuffer) {
+      mpBuffer.reset(pbuffer);
+   }
 
    virtual bool   virOpen(const String& filename, int modus) = 0;
    virtual void   virClose();
@@ -82,7 +90,7 @@ private:
 
  // data
    String   mFilename;
-   Buffer*  mpBuffer;
+   std::unique_ptr<Buffer> mpBuffer;
 };
 
 #endif
