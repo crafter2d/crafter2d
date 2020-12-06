@@ -8,6 +8,7 @@ ParticleComponentDefinitionProto::ParticleComponentDefinitionProto():
    emitCount(0),
    emitRate(0.0f),
    gravity(0.0f),
+   max(0),
    initArea(),
    initAreaRange(),
    initSize(0.0f),
