@@ -11,9 +11,11 @@
 
 OOCheckVisitor::OOCheckVisitor(CompileContext& context):
    CompileStep(context),
+   mpFunction(nullptr),
    mpVariable(nullptr),
    mpCurrentType(nullptr),
-   mScopeStack()
+   mScopeStack(),
+   mHasNativeCall(false)
 {
 }
 
