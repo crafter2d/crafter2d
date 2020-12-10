@@ -143,15 +143,15 @@ bool FileSystem::exists(const String& filename) const
    return false;
 }
 
-File* FileSystem::open(const String& filename, int modus) const
+std::unique_ptr<File> FileSystem::open(const String& filename, int modus) const
 {
    for ( int index = 0; index < mPaths.size(); index++ )
    {
       const FileSystemPath& path = mPaths[index];
-      File* pfile = path.open(filename, modus);
-      if ( pfile != nullptr )
+      auto file = path.open(filename, modus);
+      if ( file )
       {
-         return pfile;
+         return std::move(file);
       }
    }
 

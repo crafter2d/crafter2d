@@ -60,11 +60,11 @@ namespace c2d
       String path = name + sEXTENSION;
       path.toLower();
 
-      File* pfile = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
-      if ( pfile != nullptr )
+      auto file = FileSystem::getInstance().open(path, File::ERead | File::EBinary);
+      if ( file )
       {
          Uuid uuid;
-         FileReaderStream stream(*pfile);
+         FileReaderStream stream(*file);
          uuid.read(stream);
 
          ContentModule* pmodule = findModule(uuid);

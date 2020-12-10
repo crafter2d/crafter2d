@@ -41,7 +41,7 @@ public:
    bool exists(const String& filename) const;
 
  // operations
-   File* open(const String& filename, int modus) const;
+   std::unique_ptr<File> open(const String& filename, int modus) const;
 
  // comparison
    bool operator==(const String& path) const;

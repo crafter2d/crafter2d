@@ -814,10 +814,10 @@ void FileSystem_open(ScriptCall& accessor)
    const String& name = accessor.getString(1);
    int modus = accessor.getInt(2);
 
-   File* pfile = fs.open(name, modus);
-   if ( pfile != nullptr )
+   auto file = fs.open(name, modus);
+   if ( file )
    {
-      RETURN_CLASS_OWNED(UTEXT("engine.io.File"), pfile);
+      RETURN_CLASS_OWNED(UTEXT("engine.io.File"), file.release());
    }
    else
    {

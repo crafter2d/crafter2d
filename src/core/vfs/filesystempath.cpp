@@ -88,9 +88,9 @@ bool FileSystemPath::exists(const String& filename) const
 
 // - Operations
 
-File* FileSystemPath::open(const String& filename, int modus) const
+std::unique_ptr<File> FileSystemPath::open(const String& filename, int modus) const
 {
-   File* presult = nullptr;
+   std::unique_ptr<File> result;
    String file = File::concat(mPath, filename);
 
    if ( isZipped() )
@@ -99,7 +99,7 @@ File* FileSystemPath::open(const String& filename, int modus) const
 
       if ( mZip->contains(file) )
       {
-         presult = new CompressedFile(*mZip);
+         result = std::make_unique<CompressedFile>(*mZip);
       }
    }
    else
@@ -110,15 +110,15 @@ File* FileSystemPath::open(const String& filename, int modus) const
          return nullptr;
       }
 
-      presult = new StdioFile();
+      result = std::make_unique<StdioFile>();
    }
 
-   if ( presult != nullptr )
+   if ( result && result->open(file, modus) )
    {
-      presult->open(file, modus);
+      return std::move(result);
    }
 
-   return presult;
+   return nullptr;
 }
 
 //---------------------------------------
