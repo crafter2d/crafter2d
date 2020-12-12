@@ -38,7 +38,7 @@ project "UnitTest"
 	filter "system:linux"
 		defines { "LINUX" }
 		buildoptions { "-std=c++0x", "-W", "-Wall", "-O0", pkgconf.cflags('gtest') }
-		links { 'gtest', 'pthread' }
+		links { 'gtest', 'gmock', 'pthread' }
 		libdirs { "../bin" }
 
     filter { "system:linux", "Debug" }
