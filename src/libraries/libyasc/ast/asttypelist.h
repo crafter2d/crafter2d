@@ -7,13 +7,14 @@
 class ASTClass;
 class ASTType;
 
-class ASTTypeList
+class ASTTypeList final
 {
    typedef std::vector<ASTType*> TypeList;
 
 public:
    ASTTypeList() {}
    ASTTypeList(const ASTTypeList& that);
+   ASTTypeList(ASTTypeList&& that);
    ~ASTTypeList() {
       clear();
    }

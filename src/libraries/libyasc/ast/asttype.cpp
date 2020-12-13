@@ -96,8 +96,8 @@ ASTType::ASTType():
    mpObjectClass(nullptr),
    mTypeArguments(),
    mpTypeVariable(nullptr),
-   mArrayDimension(0),
-   mpArrayType(nullptr)
+   mpArrayType(nullptr),
+   mArrayDimension(0)   
 {
 }
 
@@ -108,8 +108,8 @@ ASTType::ASTType(Kind kind):
    mpObjectClass(nullptr),
    mTypeArguments(),
    mpTypeVariable(nullptr),
-   mArrayDimension(0),
-   mpArrayType(nullptr)
+   mpArrayType(nullptr),
+   mArrayDimension(0)
 {
 }
 
@@ -120,8 +120,8 @@ ASTType::ASTType(const ASTType& that):
    mpObjectClass(that.mpObjectClass),
    mTypeArguments(that.mTypeArguments),
    mpTypeVariable(that.mpTypeVariable),
-   mArrayDimension(that.mArrayDimension),
-   mpArrayType(that.mpArrayType != nullptr ? that.mpArrayType->clone() : nullptr)
+   mpArrayType(that.mpArrayType != nullptr ? that.mpArrayType->clone() : nullptr),
+   mArrayDimension(that.mArrayDimension)
 {
 }
 
