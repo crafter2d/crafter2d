@@ -142,7 +142,7 @@ void World::setObjectLayer(size_t objectlayerid)
    }
    else
    {
-      Log::getInstance().warning("World.setObjectLayer: trying to set invalid object layer (%d)", objectlayerid);
+      Log::getInstance().warning("World.setObjectLayer: trying to set invalid object layer (%ul)", objectlayerid);
    }
 }
 
