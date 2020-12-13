@@ -194,7 +194,7 @@ private:
    bool autoFollow;
    int followBorderWidth;
    int leftBorder, rightBorder, topBorder, bottomBorder;
-   int mObjectLayer;
+   size_t mObjectLayer;
    FollowMode followMode;
    Entity* followObject;
 
