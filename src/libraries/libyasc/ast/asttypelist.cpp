@@ -9,6 +9,12 @@ ASTTypeList::ASTTypeList(const ASTTypeList& that):
    append(that);
 }
 
+ASTTypeList::ASTTypeList(ASTTypeList&& that):
+   mTypeList(that.mTypeList.begin(), that.mTypeList.end())
+{
+   that.mTypeList.clear();
+}
+
 const ASTTypeList& ASTTypeList::operator=(const ASTTypeList& that)
 {
    clear();
