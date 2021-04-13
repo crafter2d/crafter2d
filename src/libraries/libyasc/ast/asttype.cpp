@@ -125,6 +125,19 @@ ASTType::ASTType(const ASTType& that):
 {
 }
 
+ASTType::ASTType(ASTType&& that):
+   mKind(that.mKind),
+   mPosition(that.mPosition),
+   mObjectName(that.mObjectName),
+   mpObjectClass(that.mpObjectClass),
+   mTypeArguments(that.mTypeArguments),
+   mpTypeVariable(that.mpTypeVariable),
+   mpArrayType(that.mpArrayType),
+   mArrayDimension(that.mArrayDimension)
+{
+   that.mpArrayType = nullptr;
+}
+
 ASTType::~ASTType()
 {
    clear();
