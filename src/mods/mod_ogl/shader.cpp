@@ -117,7 +117,7 @@ GLchar* Shader::load(const String& filename, int& length)
    std::unique_ptr<File> pfile(FileSystem::getInstance().open(filename, File::ERead | File::EBinary));
    if ( !pfile )
    {
-      Log::getInstance().error("Shader.load: Can not open shader file: %s", filename);
+      Log::getInstance().error("Shader.load: Can not open shader file: %s", filename.c_str());
 		return nullptr;
 	}
 

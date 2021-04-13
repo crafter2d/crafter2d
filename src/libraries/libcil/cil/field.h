@@ -20,14 +20,14 @@ namespace CIL
       const String& getName() const;
       void          setName(const String& name);
 
-      const yasc::Type& getType() const;
-      void              setType(const yasc::Type& type);
+      const Type& getType() const;
+      void        setType(const Type& type);
 
    private:
 
     // data
-      String      mName;
-      yasc::Type  mType;
+      String   mName;
+      Type     mType;
    };
 };
 

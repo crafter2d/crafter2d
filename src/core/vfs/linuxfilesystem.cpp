@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <fnmatch.h>
 
+#include "core/log/log.h"
 #include "core/string/string.h"
 #include "core/defines.h"
 
@@ -82,20 +83,27 @@ bool LinuxFileSystem::doRecurseDirectory(const String& dir, const String& mask, 
       dirent& entry = *pentries[index];
 
       String path = dir + L'/' + String::fromUtf8(entry.d_name);
-      stat(path.toUtf8().c_str(), &s);
-      if ( S_ISDIR(s.st_mode) )
+      int r = stat(path.toUtf8().c_str(), &s);
+      if ( r == 0 )
       {
-         if ( recursive && path != UTEXT(".") && path != UTEXT("..") )
+         if ( S_ISDIR(s.st_mode) )
          {
-            doRecurseDirectory(path, mask, result, recursive);
+            if ( recursive && path != UTEXT(".") && path != UTEXT("..") )
+            {
+               doRecurseDirectory(path, mask, result, recursive);
+            }
+         }
+         else
+         {
+            if ( fnmatch(pmask, entry.d_name, FNM_PATHNAME) == 0 )
+            {
+               result.push_back(path);
+            }
          }
       }
       else
       {
-         if ( fnmatch(pmask, entry.d_name, FNM_PATHNAME) == 0 )
-         {
-            result.push_back(path);
-         }
+         Log::getInstance().info("Error getting directory entry stats %s : %d", path.c_str(), errno);
       }
    }
 

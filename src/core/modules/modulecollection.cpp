@@ -53,12 +53,11 @@ namespace c2d
    void ModuleCollection::add(Module* pmodule)
    {
       auto it = mModules.find(pmodule->getUuid());
-      if ( it != mModules.end() && it->second != pmodule )
+      if ( it == mModules.end() )
       {
-         throw new c2d::Exception(UTEXT("Can not add module with duplicate key."));
+         //throw new c2d::Exception(UTEXT("Can not add module with duplicate key."));
+         mModules.insert(std::make_pair(pmodule->getUuid(), pmodule));
       }
-
-      mModules.insert(std::make_pair(pmodule->getUuid(), pmodule));
    }
 
    void ModuleCollection::add(const ModuleCollection& that)
