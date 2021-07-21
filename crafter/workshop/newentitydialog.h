@@ -23,11 +23,16 @@ public:
 
 private slots:
     void on_componentSelected(QListWidgetItem* pselected);
+    void on_componentContextMenu(const QPoint& position);
     void on_animationSelected(int row);
     void on_animationTimeout();
+    void on_addSpriteComponent();
+    void on_addPhysicsComponent();
+    void on_deleteComponent();
 
 private:
 
+    void createContextMenu();
     void setEntity(Entity& entity);
 
     Ui::NewEntityDialog *ui;

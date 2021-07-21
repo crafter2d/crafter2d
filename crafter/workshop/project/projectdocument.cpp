@@ -1,5 +1,7 @@
 #include "projectdocument.h"
 
+#include <memory>
+
 #include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>

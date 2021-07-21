@@ -1,6 +1,7 @@
 #include "entityreader.h"
 
 #include <memory>
+#include <stdexcept>
 
 #include <QSize>
 

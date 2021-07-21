@@ -1,5 +1,7 @@
 #include "tilebound.h"
 
+#include <cmath>
+
 TileBound::TileBound():
     mLeft(),
     mRight()

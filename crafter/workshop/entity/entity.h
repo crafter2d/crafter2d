@@ -31,7 +31,20 @@ public:
         mClass = klass;
     }
 
+    template<class ComponentType>
+    bool hasComponent() {
+        return mComponents.contains(ComponentType::sComponentId);
+    }
+
     void addComponent(EntityComponent* pcomponent);
+
+    template<class ComponentType>
+    void removeComponent() {
+        auto it = mComponents.find(ComponentType::sComponentId);
+        if (it != mComponents.end()) {
+            mComponents.erase(it);
+        }
+    }
 
     template <class ComponentType>
     ComponentType* component()

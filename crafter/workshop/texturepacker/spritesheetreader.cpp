@@ -1,8 +1,12 @@
 #include "spritesheetreader.h"
 
+#include <stdexcept>
+
 #include <QDir>
 #include <QFile>
 #include <QXmlStreamReader>
+
+#include "../project.h"
 
 #include "sprite.h"
 #include "spriteatlas.h"
@@ -46,7 +50,10 @@ void SpriteAtlasReader::readAtlas(SpriteAtlas& atlas)
                         {
                             imageName = imageName.right(imageName.length() - index - 1);
                         }
-                        sheet.load(mPath + QDir::separator() + imageName + ".png");
+                        bool loaded = sheet.load(Project::getActiveProject().getBasePath() + QDir::separator() + imageName + ".png");
+                        if (!loaded) {
+                            throw new std::runtime_error("Could not load tile atlas");
+                        }
                     }
                     else if ( reader.name() == "tile" )
                     {

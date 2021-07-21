@@ -1,107 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <tileatlas>
-    <tilesheet name="tileatlas\tilesheet_1" width="2048" height="2048">
-        <tile name="Tree_2.png" x="0" y="0" w="282" h="301" />
-        <tile name="Tree_3.png" x="282" y="0" w="275" h="282" r="true" />
-        <tile name="bridgepart.png" x="282" y="282" w="16" h="16" />
-        <tile name="bush1.png" x="557" y="0" w="65" h="133" r="true" />
-        <tile name="bush2.png" x="622" y="0" w="65" h="133" r="true" />
-        <tile name="bg/bg_00.png" x="687" y="0" w="128" h="128" />
-        <tile name="bg/bg_01.png" x="815" y="0" w="128" h="128" />
-        <tile name="bg/bg_02.png" x="943" y="0" w="128" h="128" />
-        <tile name="bg/bg_03.png" x="1071" y="0" w="128" h="128" />
-        <tile name="bg/bg_04.png" x="1199" y="0" w="128" h="128" />
-        <tile name="bg/bg_05.png" x="1327" y="0" w="128" h="128" />
-        <tile name="bg/bg_06.png" x="1455" y="0" w="128" h="128" />
-        <tile name="bg/bg_07.png" x="1583" y="0" w="128" h="128" />
-        <tile name="bg/bg_08.png" x="1711" y="0" w="128" h="128" />
-        <tile name="bg/bg_09.png" x="1839" y="0" w="128" h="128" />
-        <tile name="Crate.png" x="1967" y="0" w="77" h="77" />
-        <tile name="Mushroom_2.png" x="1967" y="77" w="41" h="50" r="true" />
-        <tile name="bg/bg_10.png" x="557" y="133" w="128" h="128" />
-        <tile name="bg/bg_11.png" x="685" y="133" w="128" h="128" />
-        <tile name="bg/bg_12.png" x="813" y="133" w="128" h="128" />
-        <tile name="bg/bg_13.png" x="941" y="133" w="128" h="128" />
-        <tile name="bg/bg_14.png" x="1069" y="133" w="128" h="128" />
-        <tile name="bg/bg_15.png" x="1197" y="133" w="128" h="128" />
-        <tile name="bg/bg_16.png" x="1325" y="133" w="128" h="128" />
-        <tile name="bg/bg_17.png" x="1453" y="133" w="128" h="128" />
-        <tile name="bg/bg_18.png" x="1581" y="133" w="128" h="128" />
-        <tile name="bg/bg_19.png" x="1709" y="133" w="128" h="128" />
-        <tile name="bg/bg_20.png" x="1837" y="133" w="128" h="128" />
-        <tile name="bush3.png" x="1965" y="133" w="73" h="47" />
-        <tile name="bush4.png" x="1965" y="180" w="46" h="73" r="true" />
-        <tile name="bg/bg_21.png" x="0" y="301" w="128" h="128" />
-        <tile name="bg/bg_22.png" x="128" y="301" w="128" h="128" />
-        <tile name="bg/bg_23.png" x="256" y="301" w="128" h="128" />
-        <tile name="bg/bg_24.png" x="384" y="301" w="128" h="128" />
-        <tile name="bg/bg_25.png" x="512" y="301" w="128" h="128" />
-        <tile name="bg/bg_26.png" x="640" y="301" w="128" h="128" />
-        <tile name="bg/bg_27.png" x="768" y="301" w="128" h="128" />
-        <tile name="bg/bg_28.png" x="896" y="301" w="128" h="128" />
-        <tile name="bg/bg_29.png" x="1024" y="301" w="128" h="128" />
-        <tile name="bg/bg_30.png" x="1152" y="301" w="128" h="128" />
-        <tile name="bg/bg_31.png" x="1280" y="301" w="128" h="128" />
-        <tile name="bg/bg_32.png" x="1408" y="301" w="128" h="128" />
-        <tile name="bg/bg_33.png" x="1536" y="301" w="128" h="128" />
-        <tile name="bg/bg_34.png" x="1664" y="301" w="128" h="128" />
-        <tile name="bg/bg_35.png" x="1792" y="301" w="128" h="128" />
-        <tile name="bg/bg_36.png" x="1920" y="301" w="128" h="128" />
-        <tile name="bg/bg_37.png" x="0" y="429" w="128" h="128" />
-        <tile name="bg/bg_38.png" x="128" y="429" w="128" h="128" />
-        <tile name="bg/bg_39.png" x="256" y="429" w="128" h="128" />
-        <tile name="bg/bg_40.png" x="384" y="429" w="128" h="128" />
-        <tile name="bg/bg_41.png" x="512" y="429" w="128" h="128" />
-        <tile name="bg/bg_42.png" x="640" y="429" w="128" h="128" />
-        <tile name="bg/bg_43.png" x="768" y="429" w="128" h="128" />
-        <tile name="bg/bg_44.png" x="896" y="429" w="128" h="128" />
-        <tile name="bg/bg_45.png" x="1024" y="429" w="128" h="128" />
-        <tile name="bg/bg_46.png" x="1152" y="429" w="128" h="128" />
-        <tile name="bg/bg_47.png" x="1280" y="429" w="128" h="128" />
-        <tile name="nature/1.png" x="1408" y="429" w="128" h="128" />
-        <tile name="nature/10.png" x="1536" y="429" w="128" h="128" />
-        <tile name="nature/11.png" x="1664" y="429" w="128" h="128" />
-        <tile name="nature/12.png" x="1792" y="429" w="128" h="128" />
-        <tile name="nature/16.png" x="1920" y="429" w="128" h="128" />
-        <tile name="nature/18.png" x="0" y="557" w="128" h="128" />
-        <tile name="nature/2.png" x="128" y="557" w="128" h="128" />
-        <tile name="nature/3.png" x="256" y="557" w="128" h="128" />
-        <tile name="nature/4.png" x="384" y="557" w="128" h="128" />
-        <tile name="nature/5.png" x="512" y="557" w="128" h="128" />
-        <tile name="nature/6.png" x="640" y="557" w="128" h="128" />
-        <tile name="nature/7.png" x="768" y="557" w="128" h="128" />
-        <tile name="nature/8.png" x="896" y="557" w="128" h="128" />
-        <tile name="nature/9.png" x="1024" y="557" w="128" h="128" />
-        <tile name="naturegirl/idle_1.png" x="1152" y="557" w="128" h="128" />
-        <tile name="naturegirl/idle_2.png" x="1280" y="557" w="128" h="128" />
-        <tile name="naturegirl/idle_3.png" x="1408" y="557" w="128" h="128" />
-        <tile name="naturegirl/idle_4.png" x="1536" y="557" w="128" h="128" />
-        <tile name="naturegirl/idle_5.png" x="1664" y="557" w="128" h="128" />
-        <tile name="naturegirl/idle_6.png" x="1792" y="557" w="128" h="128" />
-        <tile name="naturegirl/idle_7.png" x="1920" y="557" w="128" h="128" />
-        <tile name="naturegirl/idle_8.png" x="0" y="685" w="128" h="128" />
-        <tile name="naturegirl/idle_9.png" x="128" y="685" w="128" h="128" />
-        <tile name="naturegirl/run_1.png" x="256" y="685" w="128" h="128" />
-        <tile name="naturegirl/run_2.png" x="384" y="685" w="128" h="128" />
-        <tile name="naturegirl/run_3.png" x="512" y="685" w="128" h="128" />
-        <tile name="naturegirl/run_4.png" x="640" y="685" w="128" h="128" />
-        <tile name="naturegirl/run_5.png" x="768" y="685" w="128" h="128" />
-        <tile name="naturegirl/run_6.png" x="896" y="685" w="128" h="128" />
-        <tile name="naturegirl/run_7.png" x="1024" y="685" w="128" h="128" />
-        <tile name="naturegirl/run_8.png" x="1152" y="685" w="128" h="128" />
-        <tile name="naturegirl/slide_1.png" x="1280" y="685" w="128" h="128" />
-        <tile name="naturegirl/slide_2.png" x="1408" y="685" w="128" h="128" />
-        <tile name="naturegirl/slide_3.png" x="1536" y="685" w="128" h="128" />
-        <tile name="naturegirl/slide_4.png" x="1664" y="685" w="128" h="128" />
-        <tile name="naturegirl/slide_5.png" x="1792" y="685" w="128" h="128" />
-        <tile name="nature/17.png" x="1920" y="685" w="128" h="99" />
-        <tile name="nature/13.png" x="0" y="813" w="93" h="128" r="true" />
-        <tile name="nature/14.png" x="93" y="813" w="93" h="128" r="true" />
-        <tile name="nature/15.png" x="186" y="813" w="93" h="128" r="true" />
-        <tile name="Tree_1.png" x="279" y="813" w="44" h="116" r="true" />
-        <tile name="Stone.png" x="323" y="813" w="54" h="90" r="true" />
-        <tile name="Sign_1.png" x="377" y="813" w="63" h="65" />
-        <tile name="particle.png" x="440" y="813" w="64" h="64" />
-        <tile name="Sign_2.png" x="504" y="813" w="62" h="64" />
-        <tile name="Mushroom_1.png" x="566" y="813" w="41" h="49" r="true" />
+    <tilesheet name="tileatlas/tilesheet_1" width="2048" height="2048">
+        <tile name="Tree_2.png" x="1" y="1" w="282" h="301"/>
+        <tile name="Tree_3.png" x="1" y="302" w="275" h="282" r="true"/>
+        <tile name="bush1.png" x="1" y="584" w="65" h="133" r="true"/>
+        <tile name="bush2.png" x="1" y="717" w="65" h="133" r="true"/>
+        <tile name="bg/bg_00.png" x="1" y="850" w="128" h="128"/>
+        <tile name="bg/bg_01.png" x="66" y="584" w="128" h="128"/>
+        <tile name="bg/bg_02.png" x="66" y="712" w="128" h="128"/>
+        <tile name="bg/bg_03.png" x="1" y="978" w="128" h="128"/>
+        <tile name="bg/bg_04.png" x="1" y="1106" w="128" h="128"/>
+        <tile name="bg/bg_05.png" x="1" y="1234" w="128" h="128"/>
+        <tile name="bg/bg_06.png" x="1" y="1362" w="128" h="128"/>
+        <tile name="bg/bg_07.png" x="1" y="1490" w="128" h="128"/>
+        <tile name="bg/bg_08.png" x="1" y="1618" w="128" h="128"/>
+        <tile name="bg/bg_09.png" x="1" y="1746" w="128" h="128"/>
+        <tile name="bg/bg_10.png" x="1" y="1874" w="128" h="128"/>
+        <tile name="Tree_1.png" x="1" y="2002" w="116" h="44"/>
+        <tile name="Mushroom_2.png" x="117" y="2002" w="50" h="41"/>
+        <tile name="bg/bg_11.png" x="129" y="840" w="128" h="128"/>
+        <tile name="bg/bg_12.png" x="194" y="584" w="128" h="128"/>
+        <tile name="nature/17.png" x="194" y="712" w="128" h="99"/>
+        <tile name="bridgepart.png" x="194" y="811" w="16" h="16"/>
+        <tile name="bg/bg_13.png" x="276" y="302" w="128" h="128"/>
+        <tile name="bg/bg_14.png" x="276" y="430" w="128" h="128"/>
+        <tile name="bg/bg_15.png" x="283" y="1" w="128" h="128"/>
+        <tile name="bg/bg_16.png" x="283" y="129" w="128" h="128"/>
+        <tile name="Mushroom_1.png" x="283" y="257" w="49" h="41"/>
+        <tile name="bg/bg_17.png" x="129" y="968" w="128" h="128"/>
+        <tile name="bg/bg_18.png" x="129" y="1096" w="128" h="128"/>
+        <tile name="bg/bg_19.png" x="129" y="1224" w="128" h="128"/>
+        <tile name="bg/bg_20.png" x="129" y="1352" w="128" h="128"/>
+        <tile name="bg/bg_21.png" x="129" y="1480" w="128" h="128"/>
+        <tile name="bg/bg_22.png" x="129" y="1608" w="128" h="128"/>
+        <tile name="bg/bg_23.png" x="129" y="1736" w="128" h="128"/>
+        <tile name="bg/bg_24.png" x="129" y="1864" w="128" h="128"/>
+        <tile name="Stone.png" x="167" y="1992" w="90" h="54"/>
+        <tile name="bg/bg_25.png" x="257" y="811" w="128" h="128"/>
+        <tile name="bg/bg_26.png" x="322" y="558" w="128" h="128"/>
+        <tile name="nature/13.png" x="322" y="686" w="128" h="93"/>
+        <tile name="bg/bg_27.png" x="404" y="257" w="128" h="128"/>
+        <tile name="bg/bg_28.png" x="404" y="385" w="128" h="128"/>
+        <tile name="bg/bg_29.png" x="411" y="1" w="128" h="128"/>
+        <tile name="nature/14.png" x="411" y="129" w="128" h="93"/>
+        <tile name="bg/bg_30.png" x="257" y="939" w="128" h="128"/>
+        <tile name="bg/bg_31.png" x="257" y="1067" w="128" h="128"/>
+        <tile name="bg/bg_32.png" x="257" y="1195" w="128" h="128"/>
+        <tile name="bg/bg_33.png" x="257" y="1323" w="128" h="128"/>
+        <tile name="bg/bg_34.png" x="257" y="1451" w="128" h="128"/>
+        <tile name="bg/bg_35.png" x="257" y="1579" w="128" h="128"/>
+        <tile name="bg/bg_36.png" x="257" y="1707" w="128" h="128"/>
+        <tile name="bg/bg_37.png" x="257" y="1835" w="128" h="128"/>
+        <tile name="Crate.png" x="257" y="1963" w="77" h="77"/>
+        <tile name="bush3.png" x="334" y="1963" w="47" h="73" r="true"/>
+        <tile name="bush4.png" x="381" y="1963" w="46" h="73" r="true"/>
+        <tile name="bg/bg_38.png" x="385" y="779" w="128" h="128"/>
+        <tile name="bg/bg_39.png" x="450" y="513" w="128" h="128"/>
+        <tile name="bg/bg_40.png" x="450" y="641" w="128" h="128"/>
+        <tile name="bg/bg_41.png" x="532" y="222" w="128" h="128"/>
+        <tile name="bg/bg_42.png" x="532" y="350" w="128" h="128"/>
+        <tile name="bg/bg_43.png" x="539" y="1" w="128" h="128"/>
+        <tile name="Sign_1.png" x="539" y="129" w="63" h="65"/>
+        <tile name="particle.png" x="602" y="129" w="64" h="64"/>
+        <tile name="bg/bg_44.png" x="385" y="907" w="128" h="128"/>
+        <tile name="bg/bg_45.png" x="385" y="1035" w="128" h="128"/>
+        <tile name="bg/bg_46.png" x="385" y="1163" w="128" h="128"/>
+        <tile name="bg/bg_47.png" x="385" y="1291" w="128" h="128"/>
+        <tile name="nature/1.png" x="385" y="1419" w="128" h="128"/>
+        <tile name="nature/10.png" x="385" y="1547" w="128" h="128"/>
+        <tile name="nature/11.png" x="385" y="1675" w="128" h="128"/>
+        <tile name="nature/12.png" x="385" y="1803" w="128" h="128"/>
+        <tile name="nature/15.png" x="427" y="1931" w="128" h="93"/>
+        <tile name="nature/16.png" x="513" y="769" w="128" h="128"/>
+        <tile name="nature/18.png" x="578" y="478" w="128" h="128"/>
+        <tile name="nature/2.png" x="578" y="606" w="128" h="128"/>
+        <tile name="nature/3.png" x="660" y="193" w="128" h="128"/>
+        <tile name="Sign_2.png" x="666" y="129" w="64" h="62" r="true"/>
+        <tile name="nature/4.png" x="660" y="321" w="128" h="128"/>
+        <tile name="nature/5.png" x="730" y="1" w="128" h="128"/>
+        <tile name="nature/6.png" x="513" y="897" w="128" h="128"/>
+        <tile name="nature/7.png" x="513" y="1025" w="128" h="128"/>
+        <tile name="nature/8.png" x="513" y="1153" w="128" h="128"/>
+        <tile name="nature/9.png" x="513" y="1281" w="128" h="128"/>
+        <tile name="naturegirl/idle_1.png" x="513" y="1409" w="128" h="128"/>
+        <tile name="naturegirl/idle_2.png" x="513" y="1537" w="128" h="128"/>
+        <tile name="naturegirl/idle_3.png" x="513" y="1665" w="128" h="128"/>
+        <tile name="naturegirl/idle_4.png" x="513" y="1793" w="128" h="128"/>
+        <tile name="naturegirl/idle_5.png" x="858" y="1" w="128" h="128"/>
+        <tile name="naturegirl/idle_6.png" x="986" y="1" w="128" h="128"/>
+        <tile name="naturegirl/idle_7.png" x="1114" y="1" w="128" h="128"/>
+        <tile name="naturegirl/idle_8.png" x="1242" y="1" w="128" h="128"/>
+        <tile name="naturegirl/idle_9.png" x="1370" y="1" w="128" h="128"/>
+        <tile name="naturegirl/run_1.png" x="1498" y="1" w="128" h="128"/>
+        <tile name="naturegirl/run_2.png" x="1626" y="1" w="128" h="128"/>
+        <tile name="naturegirl/run_3.png" x="1754" y="1" w="128" h="128"/>
+        <tile name="naturegirl/run_4.png" x="1882" y="1" w="128" h="128"/>
+        <tile name="naturegirl/run_5.png" x="788" y="129" w="128" h="128"/>
+        <tile name="naturegirl/run_6.png" x="916" y="129" w="128" h="128"/>
+        <tile name="naturegirl/run_7.png" x="1044" y="129" w="128" h="128"/>
+        <tile name="naturegirl/run_8.png" x="1172" y="129" w="128" h="128"/>
+        <tile name="naturegirl/slide_1.png" x="1300" y="129" w="128" h="128"/>
+        <tile name="naturegirl/slide_2.png" x="1428" y="129" w="128" h="128"/>
+        <tile name="naturegirl/slide_3.png" x="1556" y="129" w="128" h="128"/>
+        <tile name="naturegirl/slide_4.png" x="1684" y="129" w="128" h="128"/>
+        <tile name="naturegirl/slide_5.png" x="1812" y="129" w="128" h="128"/>
     </tilesheet>
 </tileatlas>
