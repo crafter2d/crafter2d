@@ -17,7 +17,8 @@ SpriteComponent::SpriteComponent():
 
 void SpriteComponent::addAnimation(SpriteAnimation&& that)
 {
-    mAnimations.append(that);
+    mAnimations.push_back(std::move(that));
+    emit dataChanged();
 }
 
 // query

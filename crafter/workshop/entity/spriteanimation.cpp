@@ -5,6 +5,11 @@ SpriteAnimationTile::SpriteAnimationTile():
 {
 }
 
+SpriteAnimationTile::SpriteAnimationTile(const SpriteAnimationTile& that):
+    mName(that.mName)
+{
+}
+
 SpriteAnimationTile::SpriteAnimationTile(const QString& tilename):
     mName(tilename)
 {

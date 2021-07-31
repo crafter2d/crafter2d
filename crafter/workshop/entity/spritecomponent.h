@@ -11,9 +11,11 @@
 
 class SpriteComponent : public EntityComponent
 {
-    using Animations = QVector<SpriteAnimation>;
+    Q_OBJECT
 
 public:
+    using Animations = std::vector<SpriteAnimation>;
+
     static const QString sComponentName;
     static ComponentId   sComponentId;
 
@@ -28,6 +30,7 @@ public:
         mSize = size;
     }
 
+    Animations& getAnimations() { return mAnimations; }
     const Animations& getAnimations() const {
         return mAnimations;
     }
@@ -52,6 +55,9 @@ public:
 
   // query
     virtual ComponentId componentId() const override;
+
+signals:
+    void dataChanged();
 
 private:
 

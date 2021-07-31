@@ -16,11 +16,14 @@ RESOURCES = crafter.qrc
 
 SOURCES += main.cpp\
     editentitydialog.cpp \
+    entity/entitywriter.cpp \
     mainwindow.cpp \
+    models/spriteanimationmodel.cpp \
     newprojectdialog.cpp \
     project/projectdocument.cpp \
     project/projectsettings.cpp \
     projectsettingsdialog.cpp \
+    selectanimationdialog.cpp \
     tileview.cpp \
     project.cpp \
     projectmodel.cpp \
@@ -98,10 +101,13 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     editentitydialog.h \
+    entity/entitywriter.h \
+    models/spriteanimationmodel.h \
     newprojectdialog.h \
     project/projectdocument.h \
     project/projectsettings.h \
     projectsettingsdialog.h \
+    selectanimationdialog.h \
     tileview.h \
     project.h \
     projectmodel.h \

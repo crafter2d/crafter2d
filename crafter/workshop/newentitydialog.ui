@@ -66,7 +66,7 @@
            <number>9</number>
           </property>
           <item>
-           <widget class="QListWidget" name="listAnimations">
+           <widget class="QTreeView" name="treeAnimations">
             <property name="maximumSize">
              <size>
               <width>175</width>
@@ -164,6 +164,19 @@
    </property>
    <property name="toolTip">
     <string>Physics component</string>
+   </property>
+  </action>
+  <action name="actionAddAnimation">
+   <property name="text">
+    <string>Add</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new animation</string>
+   </property>
+  </action>
+  <action name="actionAddTile">
+   <property name="text">
+    <string>Add tile</string>
    </property>
   </action>
  </widget>

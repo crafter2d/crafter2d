@@ -9,12 +9,14 @@
 #include <QTimer>
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QInputDialog>
 
 #include "entity/entity.h"
 #include "entity/physicscomponent.h"
 #include "entity/spritecomponent.h"
 #include "entity/spriteanimation.h"
 
+#include "selectanimationdialog.h"
 #include "project.h"
 
 void NewEntityDialog::edit(Entity& entity)
@@ -31,15 +33,22 @@ NewEntityDialog::NewEntityDialog(QWidget *parent) :
     ui(new Ui::NewEntityDialog),
     mpEntity(nullptr),
     mpAnimationTimer(nullptr),
-    mAnimImages()
+    mAnimImages(),
+    mAnimationModel()
 {
     ui->setupUi(this);
 
+
     connect(ui->listComponents, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), SLOT(on_componentSelected(QListWidgetItem*)));
-    connect(ui->listAnimations, SIGNAL(currentRowChanged(int)), SLOT(on_animationSelected(int)));
+    connect(ui->treeAnimations, SIGNAL(clicked(const QModelIndex&)), SLOT(on_animationTreeClicked(const QModelIndex&)));
 
     ui->listComponents->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->listComponents, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(on_componentContextMenu(const QPoint&)));
+    connect(ui->listComponents, SIGNAL(customContextMenuRequested(QPoint)), SLOT(on_componentContextMenu(QPoint)));
+
+    ui->treeAnimations->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->treeAnimations, SIGNAL(customContextMenuRequested(QPoint)), SLOT(on_animationContextMenu(QPoint)));
+
+    ui->treeAnimations->setModel(&mAnimationModel);
 
     createContextMenu();
 }
@@ -56,6 +65,8 @@ void NewEntityDialog::createContextMenu()
     connect(ui->actionSprite, SIGNAL(triggered()), SLOT(on_addSpriteComponent()));
     connect(ui->actionPhysics, SIGNAL(triggered()), SLOT(on_addPhysicsComponent()));
     connect(ui->actionDelete, SIGNAL(triggered()), SLOT(on_deleteComponent()));
+
+    connect(ui->actionAddAnimation, SIGNAL(triggered()), SLOT(on_addAddAnimation()));
 }
 
 void NewEntityDialog::on_componentContextMenu(const QPoint& position)
@@ -78,6 +89,29 @@ void NewEntityDialog::on_componentContextMenu(const QPoint& position)
     menu.addAction(ui->actionDelete);
 
     menu.exec(ui->listComponents->mapToGlobal(position));
+}
+
+void NewEntityDialog::on_animationContextMenu(const QPoint& position)
+{
+    QMenu menu(this);
+
+    auto index = ui->treeAnimations->indexAt(position);
+    if (index.isValid()) {
+        QVariant data = mAnimationModel.actualData(index);
+        if (data.canConvert<SpriteAnimation>()) {
+            // selected an animation
+            menu.addAction(ui->actionAddTile);
+        }
+        else {
+            // selected an animation tile
+        }
+    }
+    else {
+        // white space
+        menu.addAction(ui->actionAddAnimation);
+    }
+
+    menu.exec(ui->treeAnimations->mapToGlobal(position));
 }
 
 void NewEntityDialog::on_addSpriteComponent()
@@ -114,8 +148,9 @@ void NewEntityDialog::on_deleteComponent()
                 delete mpAnimationTimer;
                 mpAnimationTimer = nullptr;
             }
-            else
+            else {
                 mpEntity->removeComponent<PhysicsComponent>();
+            }
         }
 
         qDeleteAll(selection);
@@ -124,6 +159,18 @@ void NewEntityDialog::on_deleteComponent()
             // no more components to navigate to
             ui->stackedWidget->setVisible(false);
         }
+    }
+}
+
+void NewEntityDialog::on_addAddAnimation()
+{
+    SelectAnimationDialog dialog;
+    QString animationType = dialog.exec();
+    if (!animationType.isEmpty()){
+        auto psprite = mpEntity->component<SpriteComponent>();
+        SpriteAnimation animation;
+        animation.setName(animationType);
+        psprite->addAnimation(std::move(animation));
     }
 }
 
@@ -138,13 +185,10 @@ void NewEntityDialog::setEntity(Entity& entity)
         if ( psprite->getAnimations().empty() ) {
             QPixmap pixmap(Project::getActiveProject().getImagePath() + QDir::separator() + psprite->getTexture());
             ui->labelImage->setPixmap(pixmap);
-            ui->listAnimations->setVisible(false);
+            ui->treeAnimations->setVisible(false);
         }
         else {
-            for ( auto& anim : psprite->getAnimations() ) {
-                ui->listAnimations->addItem(anim.getName());
-            }
-            ui->listAnimations->setCurrentRow(0);
+            mAnimationModel.setSprite(*psprite);
         }
 
         ui->listComponents->addItem("Sprite");
@@ -171,23 +215,29 @@ void NewEntityDialog::on_componentSelected(QListWidgetItem* pselected)
     }
 }
 
-void NewEntityDialog::on_animationSelected(int row)
+void NewEntityDialog::on_animationTreeClicked(const QModelIndex& index)
 {
-    mAnimImages.clear();
-    mAnimIndex = 0;
+    /*
+    if (current->parent() == nullptr) {
+        mAnimImages.clear();
+        mAnimIndex = 0;
 
-    auto* psprite = mpEntity->component<SpriteComponent>();
-    auto& animation = psprite->getAnimations()[row];
-    for ( auto& tile : animation.getTiles() ) {
-        mAnimImages.emplace_back(Project::getActiveProject().getImagePath() + QDir::separator() + tile.getName());
-    }
+        int row = ui->treeAnimations->indexOfTopLevelItem(current);
 
-    if ( mpAnimationTimer == nullptr ) {
-        mpAnimationTimer = new QTimer(this);
-        connect(mpAnimationTimer, SIGNAL(timeout()), SLOT(on_animationTimeout()));
-        mpAnimationTimer->setInterval(psprite->getAnimationSpeed());
-        mpAnimationTimer->start();
+        auto* psprite = mpEntity->component<SpriteComponent>();
+        auto& animation = psprite->getAnimations()[row];
+        for ( auto& tile : animation.getTiles() ) {
+            mAnimImages.emplace_back(Project::getActiveProject().getImagePath() + QDir::separator() + tile.getName());
+        }
+
+        if ( mpAnimationTimer == nullptr ) {
+            mpAnimationTimer = new QTimer(this);
+            connect(mpAnimationTimer, SIGNAL(timeout()), SLOT(on_animationTimeout()));
+            mpAnimationTimer->setInterval(psprite->getAnimationSpeed());
+            mpAnimationTimer->start();
+        }
     }
+    */
 }
 
 void NewEntityDialog::on_animationTimeout()

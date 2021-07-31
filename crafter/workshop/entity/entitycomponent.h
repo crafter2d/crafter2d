@@ -1,12 +1,16 @@
 #ifndef ENTITYCOMPONENT_H
 #define ENTITYCOMPONENT_H
 
+#include <QObject>
+
 class QString;
 
 using ComponentId = unsigned int;
 
-class EntityComponent
+class EntityComponent: public QObject
 {
+    Q_OBJECT
+
 public:
     static ComponentId GetIdFromString(const QString& name);
 

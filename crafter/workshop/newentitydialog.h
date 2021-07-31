@@ -3,13 +3,17 @@
 
 #include <QDialog>
 
+#include "models/spriteanimationmodel.h"
+
 namespace Ui {
 class NewEntityDialog;
 }
 
 class Entity;
 class QListWidgetItem;
+class QTreeWidgetItem;
 class QTimer;
+class SpriteAnimation;
 
 class NewEntityDialog : public QDialog
 {
@@ -24,11 +28,13 @@ public:
 private slots:
     void on_componentSelected(QListWidgetItem* pselected);
     void on_componentContextMenu(const QPoint& position);
-    void on_animationSelected(int row);
+    void on_animationContextMenu(const QPoint& position);
+    void on_animationTreeClicked(const QModelIndex& index);
     void on_animationTimeout();
     void on_addSpriteComponent();
     void on_addPhysicsComponent();
     void on_deleteComponent();
+    void on_addAddAnimation();
 
 private:
 
@@ -39,6 +45,7 @@ private:
     Entity* mpEntity;
     QTimer* mpAnimationTimer;
     std::vector<QPixmap> mAnimImages;
+    SpriteAnimationModel mAnimationModel;
     size_t mAnimIndex;
 };
 

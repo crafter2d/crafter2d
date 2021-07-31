@@ -1,14 +1,17 @@
 #ifndef SPRITEANIMATION_H
 #define SPRITEANIMATION_H
 
+#include <QObject>
 #include <QString>
 #include <QVector>
 
-class SpriteAnimationTile
+class SpriteAnimationTile: public QObject
 {
+    Q_OBJECT
 public:
 
     SpriteAnimationTile();
+    SpriteAnimationTile(const SpriteAnimationTile& that);
     explicit SpriteAnimationTile(const QString& tilename);
 
     const QString& getName() const {
@@ -25,8 +28,9 @@ private:
 };
 
 
-class SpriteAnimation
+class SpriteAnimation: public QObject
 {
+    Q_OBJECT
 public:
     using Tiles = QVector<SpriteAnimationTile>;
 
@@ -45,6 +49,7 @@ public:
         mName = name;
     }
 
+    Tiles& getTiles() { return mTiles; }
     const Tiles& getTiles() const {
         return mTiles;
     }
@@ -55,5 +60,8 @@ private:
     QString mName;
     Tiles   mTiles;
 };
+
+Q_DECLARE_METATYPE(SpriteAnimation)
+Q_DECLARE_METATYPE(SpriteAnimationTile)
 
 #endif // SPRITEANIMATION_H
