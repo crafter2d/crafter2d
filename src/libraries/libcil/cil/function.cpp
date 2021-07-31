@@ -25,94 +25,6 @@ namespace CIL
    {
    }
 
-   // - Get/set
-
-   const Class& Function::getClass() const
-   {
-      ASSERT_PTR(mpClass);
-      return *mpClass;
-   }
-      
-   void Function::setClass(Class& klass)
-   {
-      mpClass = &klass;
-   }
-
-   const String& Function::getName() const
-   {
-      return mName;
-   }
-   
-   void Function::setName(const String& name)
-   {
-      mName = name;
-   }
-
-   const Instructions& Function::getInstructions() const
-   {
-      return mInstructions;
-   }
-
-   void Function::setInstructions(const Instructions& instructions)
-   {
-      mInstructions = instructions;
-   }
-
-   const Guards& Function::getGuards() const
-   {
-      return mGuards;
-   }
-      
-   void Function::setGuards(const Guards& guards)
-   {
-      mGuards = guards;
-   }
-
-   const SwitchTables& Function::getSwitchTables() const
-   {
-      return mSwitchTables;
-   }
-
-   void Function::setSwitchTables(const SwitchTables& tables)
-   {
-      mSwitchTables = tables;
-   }
-
-   const yasc::Type& Function::getReturnType() const
-   {
-      return mReturnType;
-   }
-
-   void Function::setReturnType(yasc::Type&& type)
-   {
-      mReturnType = std::move(type);
-   }
-
-   const StringList& Function::getAnnotations() const
-   {
-      return mAnnotations;
-   }
-
-   const Modifiers& Function::getModifiers() const
-   {
-      return mModifiers;
-   }
-
-   void Function::setModifiers(const Modifiers& modifiers)
-   {
-      mModifiers = modifiers;
-   }
-
-   const yasc::Types& Function::getArguments() const
-   {
-      return mArguments;
-   }
-
-   const yasc::Types& Function::getLocals() const
-   {
-      return mLocals;
-   }
-
    // - Query
 
    bool Function::isMemberOf(const Class& klass) const
@@ -122,22 +34,22 @@ namespace CIL
 
    // - Operations
 
-   void Function::addArgument(const yasc::Type& type)
+   void Function::addArgument(const Type& type)
    {
       mArguments.add(type);
    }
 
-   void Function::addArgument(yasc::Type&& type)
+   void Function::addArgument(Type&& type)
    {
       mArguments.add(std::move(type));
    }
 
-   void Function::addLocal(const yasc::Type& type)
+   void Function::addLocal(const Type& type)
    {
       mLocals.add(type);
    }
 
-   void Function::addLocal(yasc::Type&& type)
+   void Function::addLocal(Type&& type)
    {
       mLocals.add(std::move(type));
    }

@@ -82,8 +82,8 @@ TEST(VirtualMachine, Run)
    c2d::Module* pmodule = modulemgr.lookup(c2d::UUID_ScriptModule);
    ASSERT_NE(pmodule, nullptr);
 
-   ScriptModule* pmod = static_cast<c2d::ScriptModule*>(pmodule);
-   ScriptManager& scriptmanager = pmod->getManager();
+   auto& scriptmod = static_cast<c2d::ScriptModule&>(*pmodule);
+   auto& scriptmanager = scriptmod.getManager();
 
    std::unique_ptr<ScriptRegistrator> pregistrator(scriptmanager.getRegistrator());
 

@@ -7,10 +7,11 @@ class String;
 
 namespace c2d::xml
 {
-   class XML_API XmlStreamWriter
+   class XML_API XmlStreamWriter final
    {
    public:
       XmlStreamWriter();
+      ~XmlStreamWriter();
 
       void startElement(const String& name);
       void endElement();

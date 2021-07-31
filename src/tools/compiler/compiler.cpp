@@ -33,8 +33,16 @@ static const int ERR_UNKNOWN           = -6;
 
 int main(int argc, char *argv[])
 {
-   c2d::compiler::Compiler compiler(argc, argv);
-   return compiler.exec();
+   try
+   {
+      c2d::compiler::Compiler compiler(argc, argv);
+      return compiler.exec();
+   }
+   catch ( std::exception& e )
+   {
+      printf("Error: %s", e.what());
+   }
+   return ERR_UNKNOWN;
 }
 
 namespace c2d::compiler
@@ -196,7 +204,7 @@ namespace c2d::compiler
       size_t pos = outfile.lastIndexOf(L'.');
       size_t slashpos = outfile.indexOf(FileSystem::getNativeSeparator(), pos);
       // if there is no dot or if there is a dir separator after it we append the extention
-      if ( pos < 0 || (slashpos != String::npos && slashpos > pos) )
+      if ( slashpos != String::npos && slashpos > pos )
       {
          outfile += UTEXT(".c2d");
       }

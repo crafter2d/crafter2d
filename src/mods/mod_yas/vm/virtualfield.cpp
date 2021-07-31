@@ -11,7 +11,7 @@ VirtualField::VirtualField():
 {
 }
 
-VirtualField::VirtualField(const String& name, const yasc::Type& type):
+VirtualField::VirtualField(const String& name, const CIL::Type& type):
    mType(type),
    mName(name),
    mpClass(nullptr),
@@ -46,12 +46,12 @@ void VirtualField::setClass(VirtualClass& klass)
    mpClass = &klass;
 }
 
-const yasc::Type& VirtualField::getType() const
+const CIL::Type& VirtualField::getType() const
 {
    return mType;
 }
 
-void VirtualField::setType(const yasc::Type& type)
+void VirtualField::setType(const CIL::Type& type)
 {
    mType = type;
 }

@@ -44,7 +44,7 @@ namespace ByteCode
          pos = funcproto.indexOf('(');
          if ( pos != String::npos )
          {
-            yasc::Types signature;
+            CIL::Types signature;
 
             String funcname = funcproto.subStr(0, pos);
             String args = funcproto.subStr(pos + 1, funcproto.length() - pos - 2);
@@ -54,7 +54,7 @@ namespace ByteCode
                for ( std::size_t index = 0; index < arguments.size(); ++index )
                {
                   String& arg = arguments[index];
-                  signature.add(yasc::Type::fromString(arg));
+                  signature.add(CIL::Type::fromString(arg));
                }
             }
 

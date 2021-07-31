@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GtaTestDurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Executable>D:\Dev\crafter2d\bin\UnitTestd.exe</Executable>
+  <TestDurations>
+    <TestDuration Test="BufferedStream.testReadWriteInt" Duration="1" />
+    <TestDuration Test="BufferedStream.testReadWriteFloat" Duration="1" />
+    <TestDuration Test="CommandLineFixture.testSize" Duration="1" />
+    <TestDuration Test="CommandLineFixture.testSingleCommand" Duration="1" />
+    <TestDuration Test="CommandLineFixture.testSpaceSeparatedArgument" Duration="1" />
+    <TestDuration Test="CommandLineFixture.testFindValidArgument" Duration="1" />
+    <TestDuration Test="CommandLineFixture.testFindNonExistingArgument" Duration="1" />
+    <TestDuration Test="CommandLineFixture.testResolveCommand" Duration="1" />
+    <TestDuration Test="CommandLineFixture.testResolveInvalidCommand" Duration="1" />
+    <TestDuration Test="File.testOpen" Duration="1" />
+    <TestDuration Test="File.testRead" Duration="1" />
+    <TestDuration Test="QuadTreeFixture.NewQuadTreeIsEmpty" Duration="1" />
+    <TestDuration Test="QuadTreeFixture.InsertSprite" Duration="1" />
+    <TestDuration Test="QuadTreeFixture.LookupSprites" Duration="1" />
+    <TestDuration Test="QuadTreeFixture.ResizeTree" Duration="1" />
+    <TestDuration Test="Rect.testCenter" Duration="1" />
+    <TestDuration Test="Tree.testTree" Duration="1" />
+    <TestDuration Test="Tree.testTreeIterator" Duration="1" />
+    <TestDuration Test="Variant.testInt" Duration="1" />
+    <TestDuration Test="Variant.testReal" Duration="1" />
+    <TestDuration Test="Variant.testBoolean" Duration="1" />
+    <TestDuration Test="Variant.testString" Duration="1" />
+    <TestDuration Test="Variant.testAssignment" Duration="1" />
+    <TestDuration Test="VirtualMachine.Run" Duration="143" />
+  </TestDurations>
+</GtaTestDurations>

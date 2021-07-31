@@ -13,7 +13,7 @@ class ASTTypeVariable;
 class ASTTypeVariables;
 class CompileContext;
 
-class ASTType
+class ASTType final
 {
 public:
    enum Kind { eNull, eBoolean, eInt, eReal, eChar, eString, eVoid, eObject, eArray, eGeneric, eUnknown, eInvalid };
@@ -27,6 +27,7 @@ public:
             ASTType();
    explicit ASTType(Kind kind);
             ASTType(const ASTType& that);
+            ASTType(ASTType&& that);
            ~ASTType();
 
    const ASTType& operator=(const ASTType& that);

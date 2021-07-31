@@ -276,7 +276,7 @@ void VirtualClass::buildFinalize(VirtualContext& context)
       VirtualFunction* pfunc = new VirtualFunction();
       pfunc->setName(UTEXT("finalize"));
       pfunc->setInstructions(instructions);
-      pfunc->setReturnType(yasc::Type(yasc::Type::eVoid));
+      pfunc->setReturnType(CIL::Type(CIL::Type::eVoid));
 
       addFunction(pfunc);
    }
@@ -401,7 +401,7 @@ void VirtualClass::setStatic(int index, const VirtualValue& value)
 
 // - Searching
 
-VirtualFunction* VirtualClass::findExactMatch(const String& name, const yasc::Types& args)
+VirtualFunction* VirtualClass::findExactMatch(const String& name, const CIL::Types& args)
 {
    for ( std::size_t index = 0; index < mFunctions.size(); ++index )
    {

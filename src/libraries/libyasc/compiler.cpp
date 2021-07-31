@@ -153,11 +153,6 @@ bool Compiler::compile(const String& filename)
    bool success = false;
    try
    {
-      if ( filename == UTEXT("..\\scripts\\engine\\collections\\ArrayIterator.as") )
-      {
-         int aap = 35;
-      }
-
       StdioFile file;
       if ( !file.open(filename, File::ERead | File::EText) )
       {
