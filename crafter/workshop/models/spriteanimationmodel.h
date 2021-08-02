@@ -10,7 +10,7 @@ class TreeItem {
 public:
     using DataFnc = std::function<QVariant(TreeItem&,int)>;
     enum class Kind {
-        eAnimation, eTile
+        eRoot, eAnimation, eTile
     };
 
     TreeItem(Kind kind, void* pdata, DataFnc pdataFnc): mKind(kind), mpData(pdata), mDataFnc(std::move(pdataFnc)), mpParent(nullptr) {}
@@ -18,7 +18,8 @@ public:
     bool isAnimation() const { return mKind == Kind::eAnimation; }
 
     TreeItem* getParent() { return mpParent; }
-    void addChild(std::unique_ptr<TreeItem> item) { item->mpParent = this; mChildren.push_back(std::move(item)); }
+    void add(std::unique_ptr<TreeItem> item) { item->mpParent = this; mChildren.push_back(std::move(item)); }
+    void clear() { mChildren.clear(); }
     size_t size() const { return mChildren.size(); }
     const TreeItem* getItem(int index) const { return index < mChildren.size() ? mChildren[index].get() : nullptr; }
     QVariant data(int col) { return mDataFnc(*this, col); }
@@ -63,13 +64,9 @@ private slots:
     void on_animationsChanged();
 
 private:
-    int indexOf(const TreeItem& item) const {
-        auto it = std::find_if(mAnimations.begin(), mAnimations.end(), [&item](const std::unique_ptr<TreeItem>& that) { return &item == that.get(); });
-        return it != mAnimations.end();
-    }
 
     SpriteComponent* mpSprite;
-    std::vector<std::unique_ptr<TreeItem>> mAnimations;
+    TreeItem mRoot;
 };
 
 #endif // SPRITEANIMATIONMODEL_H

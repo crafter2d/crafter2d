@@ -6,7 +6,7 @@
 SpriteAnimationModel::SpriteAnimationModel(QObject* parent):
     QAbstractItemModel(parent),
     mpSprite(nullptr),
-    mAnimations()
+    mRoot(TreeItem::Kind::eRoot, nullptr, nullptr)
 {
 }
 
@@ -20,7 +20,7 @@ QModelIndex SpriteAnimationModel::index(int row, int column, const QModelIndex &
         pitem = static_cast<TreeItem*>(parent.internalPointer())->getItem(row);
     }
     else {
-        pitem = mAnimations[row].get();
+        pitem = mRoot.getItem(row);
     }
 
     if (pitem)
@@ -34,8 +34,8 @@ int SpriteAnimationModel::rowCount(const QModelIndex &parent) const
     if ( parent.column() > 0 )
         return 0;
 
-    const TreeItem *parentItem = parent.isValid() ? static_cast<TreeItem*>(parent.internalPointer()) : nullptr;
-    return parentItem ? parentItem->size() : mAnimations.size();
+    const TreeItem &parentItem = parent.isValid() ? *static_cast<TreeItem*>(parent.internalPointer()) : mRoot;
+    return parentItem.size();
 }
 
 int SpriteAnimationModel::columnCount(const QModelIndex &/*parent*/) const
@@ -73,10 +73,10 @@ QModelIndex SpriteAnimationModel::parent(const QModelIndex &child) const
     TreeItem *pchildItem = static_cast<TreeItem*>(child.internalPointer());
     TreeItem *pparentItem = pchildItem->getParent();
 
-    if ( pparentItem == nullptr )
+    if ( pparentItem == nullptr || pparentItem == &mRoot )
         return QModelIndex();
 
-    return createIndex(indexOf(*pparentItem), 0, pparentItem);
+    return createIndex(pparentItem->indexOf(*pchildItem), 0, pparentItem);
 }
 
 QVariant SpriteAnimationModel::actualData(const QModelIndex &index) const
@@ -97,16 +97,16 @@ void SpriteAnimationModel::on_animationsChanged()
 
     beginResetModel();
 
-    mAnimations.clear();
+    mRoot.clear();
     if (mpSprite) {
         auto& animations = mpSprite->getAnimations();
 
         for (auto& anim : animations) {
             auto item = std::make_unique<TreeItem>(TreeItem::Kind::eAnimation, &anim, animationFnc);
             for (auto& tile : anim.getTiles()) {
-                item->addChild(std::make_unique<TreeItem>(TreeItem::Kind::eTile, &tile, tileFnc));
+                item->add(std::make_unique<TreeItem>(TreeItem::Kind::eTile, &tile, tileFnc));
             }
-            mAnimations.push_back(std::move(item));
+            mRoot.add(std::move(item));
         }
     }
 

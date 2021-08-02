@@ -30,31 +30,35 @@ void NewEntityDialog::edit(Entity& entity)
 
 NewEntityDialog::NewEntityDialog(QWidget *parent) :
     QDialog(parent),
+    mAnimImages(),
+    mAnimationModel(),
     ui(new Ui::NewEntityDialog),
     mpEntity(nullptr),
     mpAnimationTimer(nullptr),
-    mAnimImages(),
-    mAnimationModel()
+    mAnimIndex(0)
 {
     ui->setupUi(this);
 
+    ui->treeAnimations->setModel(&mAnimationModel);
 
+    auto pselectionModel = ui->treeAnimations->selectionModel();
     connect(ui->listComponents, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), SLOT(on_componentSelected(QListWidgetItem*)));
-    connect(ui->treeAnimations, SIGNAL(clicked(const QModelIndex&)), SLOT(on_animationTreeClicked(const QModelIndex&)));
+    connect(pselectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(on_animationSelected(QModelIndex,QModelIndex)));
 
     ui->listComponents->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->listComponents, SIGNAL(customContextMenuRequested(QPoint)), SLOT(on_componentContextMenu(QPoint)));
-
     ui->treeAnimations->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->treeAnimations, SIGNAL(customContextMenuRequested(QPoint)), SLOT(on_animationContextMenu(QPoint)));
-
-    ui->treeAnimations->setModel(&mAnimationModel);
 
     createContextMenu();
 }
 
 NewEntityDialog::~NewEntityDialog()
 {
+    if (mpAnimationTimer) {
+        mpAnimationTimer->stop();
+        delete mpAnimationTimer;
+    }
     delete ui;
 }
 
@@ -189,6 +193,7 @@ void NewEntityDialog::setEntity(Entity& entity)
         }
         else {
             mAnimationModel.setSprite(*psprite);
+            ui->treeAnimations->setCurrentIndex(mAnimationModel.index(0, 0));
         }
 
         ui->listComponents->addItem("Sprite");
@@ -215,29 +220,29 @@ void NewEntityDialog::on_componentSelected(QListWidgetItem* pselected)
     }
 }
 
-void NewEntityDialog::on_animationTreeClicked(const QModelIndex& index)
+void NewEntityDialog::on_animationSelected(const QModelIndex& index, const QModelIndex&)
 {
-    /*
-    if (current->parent() == nullptr) {
-        mAnimImages.clear();
-        mAnimIndex = 0;
+    if (index.isValid()) {
+        QVariant data = mAnimationModel.actualData(index);
+        if (data.canConvert<SpriteAnimation>()) {
+            auto panimation = static_cast<SpriteAnimation*>(data.data());
 
-        int row = ui->treeAnimations->indexOfTopLevelItem(current);
+            mAnimImages.clear();
+            mAnimIndex = 0;
 
-        auto* psprite = mpEntity->component<SpriteComponent>();
-        auto& animation = psprite->getAnimations()[row];
-        for ( auto& tile : animation.getTiles() ) {
-            mAnimImages.emplace_back(Project::getActiveProject().getImagePath() + QDir::separator() + tile.getName());
-        }
+            for ( auto& tile : panimation->getTiles() ) {
+                mAnimImages.emplace_back(Project::getActiveProject().getImagePath() + QDir::separator() + tile.getName());
+            }
 
-        if ( mpAnimationTimer == nullptr ) {
-            mpAnimationTimer = new QTimer(this);
-            connect(mpAnimationTimer, SIGNAL(timeout()), SLOT(on_animationTimeout()));
-            mpAnimationTimer->setInterval(psprite->getAnimationSpeed());
-            mpAnimationTimer->start();
+            if ( mpAnimationTimer == nullptr ) {
+                auto speed = mpEntity->component<SpriteComponent>()->getAnimationSpeed();
+                mpAnimationTimer = new QTimer(this);
+                connect(mpAnimationTimer, SIGNAL(timeout()), SLOT(on_animationTimeout()));
+                mpAnimationTimer->setInterval(speed);
+                mpAnimationTimer->start();
+            }
         }
     }
-    */
 }
 
 void NewEntityDialog::on_animationTimeout()

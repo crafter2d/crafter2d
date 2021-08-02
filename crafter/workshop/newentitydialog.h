@@ -29,7 +29,7 @@ private slots:
     void on_componentSelected(QListWidgetItem* pselected);
     void on_componentContextMenu(const QPoint& position);
     void on_animationContextMenu(const QPoint& position);
-    void on_animationTreeClicked(const QModelIndex& index);
+    void on_animationSelected(const QModelIndex& index, const QModelIndex&);
     void on_animationTimeout();
     void on_addSpriteComponent();
     void on_addPhysicsComponent();
@@ -41,11 +41,11 @@ private:
     void createContextMenu();
     void setEntity(Entity& entity);
 
-    Ui::NewEntityDialog *ui;
-    Entity* mpEntity;
-    QTimer* mpAnimationTimer;
     std::vector<QPixmap> mAnimImages;
     SpriteAnimationModel mAnimationModel;
+    Ui::NewEntityDialog *ui;
+    Entity* mpEntity; // not owning
+    QTimer* mpAnimationTimer;    
     size_t mAnimIndex;
 };
 
