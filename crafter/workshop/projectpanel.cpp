@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QVariant>
+#include <QContextMenuEvent>
 
 #include "entity/entity.h"
 #include "project/projecttreeobjectitem.h"
