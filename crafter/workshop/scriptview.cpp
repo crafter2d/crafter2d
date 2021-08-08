@@ -206,7 +206,7 @@ int determineIndent(const QTextBlock& block)
    QChar lastChar = text[text.length() - 1];
    int count = 0;
    if ( lastChar == '{' ) count++;
-   for ( auto c : text )
+   foreach ( auto c, text )
    {
       if ( c.isSpace() )
       {

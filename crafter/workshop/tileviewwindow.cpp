@@ -1,7 +1,5 @@
 #include "tileviewwindow.h"
 
-#include <QScrollArea>
-
 #include "world/tileworld.h"
 
 #include "tileview.h"

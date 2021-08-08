@@ -52,6 +52,7 @@ public:
     }
 
     void addAnimation(SpriteAnimation&& that);
+    void clearAnimations();
 
   // query
     virtual ComponentId componentId() const override;

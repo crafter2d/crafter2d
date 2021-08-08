@@ -111,7 +111,7 @@ TileMap& TileWorld::getMap(int index)
 
 TileMap* TileWorld::findMap(const QString& name)
 {
-    for ( auto pmap : mMaps )
+    foreach (auto pmap, mMaps)
     {
         if ( pmap->getName() == name )
         {
@@ -132,7 +132,7 @@ void TileWorld::paint(QPainter& painter)
 
 void TileWorld::paintMaps(QPainter& painter)
 {
-    for( auto pmap : mMaps)
+    foreach(auto pmap, mMaps)
     {
         pmap->paint(painter);
     }
@@ -145,7 +145,7 @@ void TileWorld::paintBounds(QPainter& painter)
     painter.save();
     painter.setPen(pen);
 
-    for ( auto pbound : mBounds )
+    foreach(auto pbound, mBounds)
     {
         painter.drawLine(pbound->left(), pbound->right());
     }
@@ -177,7 +177,7 @@ void TileWorld::paintSelectedBound(QPainter& painter)
 
 void TileWorld::paintEntities(QPainter& painter)
 {
-    for ( auto pentity : mEntities )
+    foreach(auto pentity, mEntities)
     {
         pentity->paint(painter);
     }
@@ -328,7 +328,7 @@ TileBound* TileWorld::findBound(const QPoint& mousepos)
     TileBound* presult = nullptr;
     float nearest = 5.0f;
 
-    for ( auto pbound : mBounds )
+    foreach(auto pbound, mBounds)
     {
         float distance;
         if ( pbound->hitTest(mousepos, distance) && distance < nearest )
@@ -345,7 +345,7 @@ TileEntity* TileWorld::findEntity(const QPoint& mousepos)
 {
     TileEntity* pbestEntity = nullptr;
     int closestDistance = std::numeric_limits<int>::max();
-    for ( auto pentity : mEntities )
+    foreach(auto pentity, mEntities)
     {
         QRect bounds = pentity->getBoundingRect();
         if ( bounds.contains(mousepos) )

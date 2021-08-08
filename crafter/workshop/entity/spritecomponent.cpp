@@ -21,6 +21,11 @@ void SpriteComponent::addAnimation(SpriteAnimation&& that)
     emit dataChanged();
 }
 
+void SpriteComponent::clearAnimations(){
+    mAnimations.clear();
+    emit dataChanged();
+}
+
 // query
 
 ComponentId SpriteComponent::componentId() const
