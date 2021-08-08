@@ -38,6 +38,7 @@ public:
     TileView *getActiveView();
 
  // operations
+    void showEntity(Entity& entity);
     void showWorld(TileWorld& world);
     ScriptView *showScript(ScriptFile& script);
 
@@ -91,6 +92,9 @@ private slots:
 
 private:
     enum { MaxRecentFiles = 5 };
+
+    template<class V, class E>
+    V* findWindow(E& element);
 
  // operations
     void setProject(Project* pproject);

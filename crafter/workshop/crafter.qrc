@@ -17,5 +17,7 @@
         <file>images/media-playback-start-7.png</file>
         <file>images/media-playback-stop-7.png</file>
         <file>images/view-refresh-5.png</file>
+        <file>images/arrow-down-2.png</file>
+        <file>images/arrow-up-2.png</file>
     </qresource>
 </RCC>

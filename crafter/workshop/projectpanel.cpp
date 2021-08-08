@@ -13,7 +13,6 @@
 #include "world/tileworld.h"
 #include "world/tileset.h"
 
-#include "newentitydialog.h"
 #include "newtilesetdialog.h"
 #include "mainwindow.h"
 #include "projectmodel.h"
@@ -122,7 +121,7 @@ void ProjectPanel::on_treeProject_activated(const QModelIndex &index)
         switch ( handle->getType() )
         {
             case Resource::eObject:
-                NewEntityDialog::edit(static_cast<Entity&>(*handle));
+                getMainWindow().showEntity(static_cast<Entity&>(*handle));
                 break;
             case Resource::eWorld:
                 getMainWindow().showWorld(static_cast<TileWorld&>(*handle));

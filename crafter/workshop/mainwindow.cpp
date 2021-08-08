@@ -243,6 +243,17 @@ void MainWindow::setSelectedEntity(Entity* pentity)
     mpSelectedEntity = pentity;
 }
 
+#include "entityview.h"
+
+void MainWindow::showEntity(Entity &entity)
+{
+    EntityView* pview = new EntityView();
+    pview->setEntity(entity);
+    pview->show();
+
+    ui->centralWidget->addSubWindow(pview);
+}
+
 void MainWindow::showWorld(TileWorld& world)
 {
     TileViewWindow* pwindow = findWindow(world);
@@ -253,7 +264,7 @@ void MainWindow::showWorld(TileWorld& world)
     }
     else
     {
-        TileViewWindow* pwindow = new TileViewWindow();
+        pwindow = new TileViewWindow();
         pwindow->setWorld(world);
         pwindow->show();
 
@@ -294,17 +305,28 @@ void MainWindow::gotoError(const QString& classname, int line)
 
 // - Search
 
+template<class V, class E>
+V* MainWindow::findWindow(E& element) {
+    QMdiSubWindow* psubwindow = nullptr;
+    QList<QMdiSubWindow*> subwindows = ui->centralWidget->subWindowList();
+    foreach (psubwindow, subwindows) {
+
+    }
+    return nullptr;
+}
+
 TileViewWindow* MainWindow::findWindow(TileWorld& world)
 {
     QMdiSubWindow* psubwindow = nullptr;
     QList<QMdiSubWindow*> subwindows = ui->centralWidget->subWindowList();
     foreach (psubwindow, subwindows)
     {
-        TileViewWindow* pwindow = static_cast<TileViewWindow*>(psubwindow->widget());
-        TileWorld& viewworld = pwindow->getTileView().getWorld();
-        if ( &viewworld == &world )
-        {
-            return pwindow;
+        TileViewWindow* pwindow = dynamic_cast<TileViewWindow*>(psubwindow->widget());
+        if (pwindow) {
+            TileWorld& viewworld = pwindow->getTileView().getWorld();
+            if ( &viewworld == &world ) {
+                return pwindow;
+            }
         }
     }
     return nullptr;

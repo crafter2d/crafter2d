@@ -17,13 +17,16 @@ RESOURCES = crafter.qrc
 SOURCES += main.cpp\
     editentitydialog.cpp \
     entity/entitywriter.cpp \
+    entityview.cpp \
     mainwindow.cpp \
     models/spriteanimationmodel.cpp \
     newprojectdialog.cpp \
+    physicscomponentwidget.cpp \
     project/projectdocument.cpp \
     project/projectsettings.cpp \
     projectsettingsdialog.cpp \
     selectanimationdialog.cpp \
+    spritecomponentwidget.cpp \
     tileview.cpp \
     project.cpp \
     projectmodel.cpp \
@@ -38,6 +41,9 @@ SOURCES += main.cpp\
     boundisland.cpp \
     resizelayerdialog.cpp \
     aboutdialog.cpp \
+    widgets/accordion/accordion.cpp \
+    widgets/accordion/accordionheader.cpp \
+    widgets/accordion/accordionitem.cpp \
     world/tileentity.cpp \
     world/tileentityreader.cpp \
     world/tileentitywriter.cpp \
@@ -96,18 +102,20 @@ SOURCES += main.cpp\
     texturepacker/spritesheetwriter.cpp \
     texturepacker/spritesheetreader.cpp \
     helpers/rotateimagepainter.cpp \
-    tilepropertiesdialog.cpp \
-    newentitydialog.cpp
+    tilepropertiesdialog.cpp
 
 HEADERS  += mainwindow.h \
     editentitydialog.h \
     entity/entitywriter.h \
+    entityview.h \
     models/spriteanimationmodel.h \
     newprojectdialog.h \
+    physicscomponentwidget.h \
     project/projectdocument.h \
     project/projectsettings.h \
     projectsettingsdialog.h \
     selectanimationdialog.h \
+    spritecomponentwidget.h \
     tileview.h \
     project.h \
     projectmodel.h \
@@ -122,6 +130,9 @@ HEADERS  += mainwindow.h \
     boundisland.h \
     resizelayerdialog.h \
     aboutdialog.h \
+    widgets/accordion/accordion.h \
+    widgets/accordion/accordionheader.h \
+    widgets/accordion/accordionitem.h \
     world/tileentity.h \
     world/tileentityreader.h \
     world/tileentitywriter.h \
@@ -180,13 +191,15 @@ HEADERS  += mainwindow.h \
     texturepacker/spritesheetwriter.h \
     texturepacker/spritesheetreader.h \
     helpers/rotateimagepainter.h \
-    tilepropertiesdialog.h \
-    newentitydialog.h
+    tilepropertiesdialog.h
 
 FORMS    += mainwindow.ui \
     editentitydialog.ui \
+    entityview.ui \
     newprojectdialog.ui \
+    physicscomponentwidget.ui \
     projectsettingsdialog.ui \
+    spritecomponentwidget.ui \
     tileview.ui \
     newlayerdialog.ui \
     projectpanel.ui \
@@ -202,8 +215,7 @@ FORMS    += mainwindow.ui \
     worldwizard_pagelayer.ui \
     texture/texturesplitter.ui \
     texturepacker/texturepacker.ui \
-    tilepropertiesdialog.ui \
-    newentitydialog.ui
+    tilepropertiesdialog.ui
 
 BaseDir = $$PWD/../build/workshop
 
